@@ -14,9 +14,12 @@ const mergeBy = (left = [], right = [], key = 'id') => {
 const emptyRecords = (book) => ({ kind: 'marginalia-personal-records', schemaVersion: 2, bookId: book.bookId, contentVersion: book.contentVersion, comments: [], questions: [], readingSessions: [], position: null });
 const emptyExperiences = (book) => ({ kind: 'marginalia-reading-experiences', schemaVersion: 1, bookId: book.bookId, contentVersion: book.contentVersion, states: {}, echoes: [], events: [] });
 
-function routeOf(req) {
+export function routeOf(req) {
   const value = req.query?.path;
-  return '/api/' + (Array.isArray(value) ? value.join('/') : value || '');
+  if (Array.isArray(value)) return '/api/' + value.join('/');
+  if (value) return '/api/' + value;
+  const pathname = new URL(req.url || '/', 'https://reader.invalid').pathname;
+  return pathname.startsWith('/api/') ? pathname : '/api/' + pathname.replace(/^\/+/, '');
 }
 
 async function readBody(req) {
