@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="paper">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>旁读 · 有限与无限的游戏</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script></head>
+<body>
+  <a href="#book-page" class="skip-link">跳到正文</a>
+  <header id="reading-header" class="reading-header">
+    <button id="open-toc" class="quiet-button" aria-controls="toc-dialog" aria-haspopup="dialog">目录</button>
+    <p class="running-title">有限与无限的游戏<span id="running-chapter"></span></p>
+    <div class="header-actions"><button id="open-settings" class="quiet-button typography-button" aria-label="阅读设置" aria-haspopup="dialog">Aa</button><button id="enter-focus" class="quiet-button">专注</button></div>
+  </header>
+  <button id="exit-focus" class="focus-exit" hidden>退出专注</button>
+  <main id="book-page" class="book-page" tabindex="-1">
+    <div id="loading" class="loading-state"><p>正在准备书页</p></div>
+    <div id="load-error" class="load-error" hidden><p>暂时无法打开这本书。</p><button id="retry-load">重新打开</button></div>
+    <header class="chapter-heading" id="chapter-heading" hidden><p id="chapter-number" class="chapter-number"></p><h1 id="chapter-title"></h1><p id="chapter-original-title" class="original-title"></p></header>
+    <article id="chapter-text" aria-label="书籍正文"></article>
+    <footer id="chapter-footer" class="chapter-footer" hidden><button id="previous-chapter">上一章</button><span id="chapter-fraction"></span><button id="next-chapter">下一章</button></footer>
+  </main>
+  <div id="paragraph-tools" class="paragraph-tools" role="toolbar" aria-label="当前段落操作" hidden>
+    <button id="show-share" hidden>分享摘录</button><button id="show-xray">透视</button><button id="show-original">原文</button><button id="show-annotations">注解</button><button id="show-comment">想法</button><button id="more-actions" aria-label="更多段落操作" aria-expanded="false">更多</button>
+    <div id="paragraph-more" class="paragraph-more" hidden><button id="share-passage">分享这一段</button><button id="show-stance">站队看看</button><button id="show-echo">用自己的话</button><button id="show-chat" hidden>解释（对照）</button><button data-passage-variant="literal">这一段直译</button><button data-passage-variant="interpretive">这一段意译</button><button id="show-question">留下问题</button></div>
+  </div>
+  <aside id="note-panel" class="note-panel" aria-label="段落旁注与个人记录" hidden>
+    <div class="panel-heading"><div><p id="panel-title">段落旁读</p><span id="panel-anchor"></span></div><button id="close-panel" class="quiet-button" aria-label="关闭段落旁读">关闭</button></div>
+    <button id="panel-source" class="panel-source" type="button"><span id="panel-source-label" class="panel-source-label"></span><span id="panel-source-text" class="panel-source-text"></span><span class="panel-source-return">回到正文 <span aria-hidden="true">↗</span></span></button>
+    <nav class="panel-tabs" aria-label="旁注类型"><button data-panel-tab="annotations">注解</button><button data-panel-tab="comment">我的想法</button><button data-panel-tab="question">问题</button></nav>
+    <div id="panel-content"></div>
+  </aside>
+  <dialog id="toc-dialog" class="toc-dialog"><header class="dialog-heading"><span>有限与无限的游戏</span><button data-close-dialog="toc-dialog" class="quiet-button">关闭</button></header><nav id="toc-list" aria-label="全书目录"></nav></dialog>
+  <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title">
+    <header class="dialog-heading"><div><h2 id="settings-title">你的阅读方式</h2><p>把这一页，调成喜欢的样子。</p></div><button data-close-dialog="settings-dialog" class="quiet-button" aria-label="关闭阅读设置">关闭</button></header>
+    <div class="settings-content">
+      <div class="drawer-shortcuts"><button id="settings-chapters">全书目录 <span>↗</span></button><button id="show-all-records">我的记录 <span>↗</span></button></div>
+      <section class="settings-section" aria-labelledby="language-heading"><h3 id="language-heading">正文</h3>
+        <div class="setting-row"><label for="view-mode">阅读语言</label><select id="view-mode"><option value="zh">中文</option><option value="en">英文原文</option><option value="parallel">中英对照</option></select></div>
+        <div class="setting-row"><label for="translation-variant">中文译法</label><select id="translation-variant"><option value="interpretive">意译</option><option value="literal">直译</option></select></div>
+      </section>
+      <section class="settings-section" aria-labelledby="paper-heading"><h3 id="paper-heading">纸面</h3>
+        <div id="theme-choice" class="theme-swatches" role="group" aria-label="纸面主题">
+          <button data-theme-choice="system" class="swatch-system" aria-label="跟随系统" aria-pressed="true"><span>◐</span></button>
+          <button data-theme-choice="paper" class="swatch-paper" aria-label="纸白" aria-pressed="false"><span>A</span></button>
+          <button data-theme-choice="warm" class="swatch-warm" aria-label="暖纸" aria-pressed="false"><span>A</span></button>
+          <button data-theme-choice="mist" class="swatch-mist" aria-label="雾灰" aria-pressed="false"><span>A</span></button>
+          <button data-theme-choice="leaf" class="swatch-leaf" aria-label="浅绿" aria-pressed="false"><span>A</span></button>
+          <button data-theme-choice="night" class="swatch-night" aria-label="夜读" aria-pressed="false"><span>A</span></button>
+        </div><p id="theme-label" class="setting-hint">跟随系统</p>
+      </section>
+      <section class="settings-section" aria-labelledby="type-heading"><h3 id="type-heading">排版</h3>
+        <div class="font-choices" role="group" aria-label="正文字体"><button data-font-family="song" aria-pressed="true">宋体</button><button data-font-family="kai" aria-pressed="false">楷体</button><button data-font-family="sans" aria-pressed="false">无衬线</button></div>
+        <div class="setting-row size-row"><label for="font-size">字号 <output id="font-size-label">22</output></label><input id="font-size" type="range" min="18" max="28" value="22"></div>
+        <details class="typography-details"><summary>精细排版 <span>行距、留白与缩进</span></summary>
+          <div id="typography-controls"></div>
+          <div class="setting-row indent-row"><label for="first-line-indent">首行缩进</label><input id="first-line-indent" type="checkbox" role="switch"></div>
+          <p class="setting-hint">字体使用本机字库；英文词距仅作用于英文。</p>
+        </details>
+        <button id="reset-appearance" class="reset-appearance">恢复默认排版与纸面</button>
+      </section>
+      <details class="reading-extras"><summary>阅读与数据</summary>
+        <div class="setting-row setting-invitations"><label for="chapter-invitations">每章一个小问题</label><input id="chapter-invitations" type="checkbox"></div>
+        <div class="setting-links"><a href="/evals">体验验证</a><a id="export-records" href="/api/records/export" download>导出记录与设置</a><button id="import-records">导入记录</button><input id="records-file" type="file" accept=".json" hidden></div>
+      </details>
+      <details class="book-details"><summary>关于这份译文</summary><p>七章完整双译初稿，尚未经本人逐段复核。原文与译文可以随时核对；章导读、小节标题和旁注由编辑补充。书籍内容保存在私有数据库中，不随开源代码发布。</p></details>
+      <p id="import-status" class="form-status" aria-live="polite"></p>
+    </div>
+  </dialog>
+  <dialog id="share-dialog" class="share-dialog" aria-labelledby="share-title">
+    <div class="share-shell">
+      <header class="share-heading"><h2 id="share-title">留住这句话<span>旁读 · 摘录</span></h2><button id="share-close" class="quiet-button">返回阅读</button></header>
+      <div class="share-workspace">
+        <figure class="share-stage"><canvas id="share-canvas" role="img" aria-labelledby="share-preview-description"></canvas><figcaption id="share-dimensions"></figcaption><p id="share-preview-description" class="visually-hidden"></p></figure>
+        <section class="share-controls" aria-label="分享图片配置">
+          <p>让这句话成为焦点。</p>
+          <div class="share-options">
+            <div class="share-field"><label for="share-language">语言</label><select id="share-language"><option value="zh">中文</option><option value="en">英文</option><option value="bilingual">双语</option></select></div>
+            <div class="share-field" id="share-layout-field" hidden><label for="share-layout">双语排版</label><select id="share-layout"><option value="stack">上下对照</option><option value="columns">左右对照</option></select></div>
+            <div class="share-field" id="share-variant-field"><label for="share-variant">中文译法</label><select id="share-variant"><option value="interpretive">意译</option><option value="literal">直译</option></select></div>
+            <div class="share-field"><label for="share-theme">纸面</label><select id="share-theme"><option value="paper">纸白</option><option value="warm">暖纸</option><option value="night">墨色</option></select></div>
+            <div class="share-field"><label for="share-ratio">比例</label><select id="share-ratio"><option value="portrait">4 : 5</option><option value="square">1 : 1</option><option value="story">9 : 16</option></select></div>
+          </div>
+          <details id="share-settings"><summary>上下文与细节</summary>
+            <div class="share-field"><label for="share-above">上文</label><select id="share-above"><option value="fade">淡化</option><option value="hide">隐藏</option><option value="keep">保留</option></select></div>
+            <div class="share-field"><label for="share-below">下文</label><select id="share-below"><option value="fade">淡化</option><option value="hide">隐藏</option><option value="keep">保留</option></select></div>
+            <div class="share-field"><label for="share-size">字号 <output id="share-size-label">48</output></label><input id="share-size" type="range" min="32" max="56" value="48"></div>
+            <label class="share-check" for="share-source">书籍出处<input id="share-source" type="checkbox" checked></label>
+          </details>
+          <div class="share-actions"><button id="share-download" class="share-primary">保存图片</button><button id="share-copy">复制图片</button><button id="share-system" hidden>系统分享</button></div>
+          <p id="share-status" class="share-status" aria-live="polite"></p>
+        </section>
+      </div>
+    </div>
+  </dialog>
+  <div id="announcement" class="visually-hidden" aria-live="polite"></div>
+  <p class="visually-hidden" id="reading-instructions">点击段落或聚焦段落后按回车，可以查看原文、注解和个人记录。Esc关闭浮层。F切换专注阅读。</p>
+</body></html>

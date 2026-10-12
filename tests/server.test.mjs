@@ -1,0 +1,36 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import {request} from 'node:http';
+import {createReaderServer} from '../server/server.mjs';
+
+test('reader service owns one book and persists records without exposing files',async t=>{
+  const dir=await mkdtemp(path.join(tmpdir(),'marginalia-test-'));
+  const bookPath=path.join(dir,'book.json'),recordsPath=path.join(dir,'records.json');
+  const book={bookId:'finite-infinite-games-1986',contentVersion:'full-book-draft-1',chapters:[{id:'ch01'}],sections:[{number:1,chapterId:'ch01',paragraphs:[{id:'fig-1986-s001-p001'}]}]};
+  await writeFile(bookPath,JSON.stringify(book));
+  const server=await createReaderServer({bookPath,recordsPath});await new Promise(r=>server.listen(0,'127.0.0.1',r));
+  const base='http://127.0.0.1:'+server.address().port;
+  t.after(async()=>{await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});});
+  const post=(url,data,origin=base)=>fetch(base+url,{method:'POST',headers:{'Content-Type':'application/json',Origin:origin},body:JSON.stringify(data)});
+  assert.equal((await (await fetch(base+'/api/book')).json()).bookId,book.bookId);
+  assert.equal((await fetch(base+'/local/finite-infinite-games/source-pages.json')).status,404);
+  const hostileHost=await new Promise((resolve,reject)=>{const req=request(base+'/api/book',{headers:{Host:'evil.example'}},res=>{res.resume();resolve(res.statusCode);});req.on('error',reject);req.end();});assert.equal(hostileHost,403);
+  assert.equal((await post('/api/comments',{id:'note-a',passageId:'fig-1986-s001-p001',text:'我的理解'},'https://evil.example')).status,403);
+  assert.equal((await post('/api/comments',{id:'note-a',passageId:'unknown',text:'invalid'})).status,400);
+  const note={id:'note-a',passageId:'fig-1986-s001-p001',text:'<script>只是原话</script>',quote:'原文引用',quoteLanguage:'zh'};
+  assert.equal((await post('/api/comments',note)).status,201);
+  assert.equal((await post('/api/comments',note)).status,200);
+  let records=await (await fetch(base+'/api/records')).json();assert.equal(records.comments.length,1);assert.equal(records.comments[0].origin,'user');assert.equal(records.comments[0].text,note.text);
+  assert.equal((await post('/api/progress',{chapterId:'ch01',passageId:'fig-1986-s001-p001',offset:120,mode:'parallel',variant:'literal',font:23,theme:'night'})).status,200);
+  const old={kind:'marginalia-personal-records',schemaVersion:1,bookId:book.bookId,contentVersion:'design-sample-1',comments:[{id:'legacy',bookId:book.bookId,contentVersion:'design-sample-1',passageId:'fig-1986-s001-p001',text:'旧的想法',origin:'user',createdAt:'2026-10-11T12:00:00Z'}],questions:[],readingSessions:[]};
+  assert.equal((await post('/api/records/import',old)).status,200);
+  assert.equal((await post('/api/records/import',old)).status,200);
+  const invalid=structuredClone(old);invalid.comments[0].id='bad';invalid.comments[0].passageId='unknown';assert.equal((await post('/api/records/import',invalid)).status,400);
+  records=JSON.parse(await readFile(recordsPath,'utf8'));assert.equal(records.comments.length,2);assert.equal(records.position.mode,'parallel');assert.equal(records.position.passageId,'fig-1986-s001-p001');
+  await new Promise(r=>server.close(r));
+  const restored=await createReaderServer({bookPath,recordsPath});await new Promise(r=>restored.listen(0,'127.0.0.1',r));
+  const restoredRecords=await (await fetch('http://127.0.0.1:'+restored.address().port+'/api/records')).json();assert.equal(restoredRecords.comments.length,2);assert.equal(restoredRecords.position.theme,'night');await new Promise(r=>restored.close(r));
+});

@@ -1,0 +1,11 @@
+const el=(tag,text,cls)=>{const n=document.createElement(tag);n.textContent=text;if(cls)n.className=cls;return n;};
+const percent=v=>v===null||v===undefined?'尚无记录':(v*100).toFixed(1)+'%';
+const row=(target,title,value,detail)=>{const n=el('div','', 'metric-row'),copy=el('div',title);copy.append(el('p',detail));n.append(copy,el('div',value,'metric-value'));document.getElementById(target).append(n);};
+try{const response=await fetch('/api/experience-metrics');if(!response.ok)throw Error();const m=await response.json();document.getElementById('status').textContent='记录来自 '+m.uniqueSessions+' 个本机阅读会话；当前 '+(m.sampleState==='insufficient'?'样本不足':'为行为观察，仍需真实试读解释')+'。';
+row('technical','E1.1 · 高亮片段能指回原文',percent(m.fragmentCoverage.rate),m.fragmentCoverage.numerator+' / '+m.fragmentCoverage.denominator+' 个展示片段的出处已匹配。目标≥90%；不代表论证语义已审阅。');
+row('technical','E1.2 · 点击到透视出现',m.latency.xray.p95Ms===null?'等待实际点击':m.latency.xray.p95Ms.toFixed(0)+' ms','当前 '+m.latency.xray.samples+' 次观测的95百分位；目标≤800ms。');
+row('technical','E4.1 · 安静的段落',percent(m.constraints.quiet.rate),'仅按自动邀请所在段落计算；每章至多一张，目标≥70%。默认关闭自动邀请。');
+const entries=[['xrayContinue','E1.3 · 关闭透视后继续向下读','30秒内的前台用户滚动代理，目标≥70%。聊天解释对照未采集时显示不可用。'],['stanceChoice','E2.1 · 做出选择并翻面','包括跳过与退出的全部邀请曝光为分母；目标≥80%。'],['stanceSource','E2.2 · 选择后回看原文','以选择为分母，目标≥40%。'],['share','E2.3 · 真实分享','结果页为分母，目标≥5%；目前没有系统截图观测。'],['observationCopy','复制这段观察','冷启动的传播代理，单列展示，不替代真实分享目标。'],['echoReread','E3.3 · 提交后重看被标段落','60秒内点击原句并前台可见至少2秒；目标≥60%，不能证明脑内重读。'],['immediateExit','E4.3 · 邀请后立即离开章节','曝光后10秒内切章或离页为分子，目标<15%；切换标签不计。']];
+for(const [key,title,detail]of entries){const r=m.behavior[key];row('behavior',title,percent(r.rate),r.numerator+' / '+r.denominator+'；'+(r.sampleState==='insufficient'?'样本不足，目标待验证。':r.targetReached===null?'仅作代理观察。':r.targetReached?'观测值达到目标，仍需试读。':'观测值尚未达到目标。')+detail);}
+const defs=document.getElementById('definitions');for(const text of ['回声只在提交以后给出核对。每一处标记需要精确原文依据，无法核对便不展示；模型对语义的判断仍需要抽查。','率指标按曝光或提交去重。每项少于20个样本时不标达标。自动化QA的观测不进入真实指标。','模型生成耗时不算读者的阅读时间。个人问题和原话不会混进这些事件字段。','聊天解释的同指标对照：'+(m.chatControl.available===false?'暂无同口径数据。':percent(m.chatControl.rate)+'，以关闭聊天解释后30秒为观察窗口。')])defs.append(el('p',text));
+}catch{document.getElementById('status').textContent='暂时无法读取体验记录。书页仍可继续阅读。';}
