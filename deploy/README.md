@@ -1,46 +1,19 @@
-# Vercel + Supabase 部署
+# Vercel + Supabase 托管
 
-## 1. 创建数据库
+官网 `/`、书房 `/library` 和阅读页 `/read?book=ID` 使用同一套网页与领域服务。默认三本公版书可匿名试读，许可与出处见 `catalog/manifest.json`。私人样书不会迁移到公开入口；旧单书 `/api/book`、`/api/records` 等接口返回 404。
 
-在 Supabase 新建项目，然后执行 `supabase/migrations/` 中的迁移。迁移只创建结构和权限，不包含书籍或个人数据。
+应用先执行 `supabase/migrations/202610130001_hosted_library.sql`。它新增 `reader_documents` 与只供服务端调用的比较写入函数，并创建 20 MB 限制的私人 `reader-originals` 存储桶；不修改现有 `reader_books` 和 `reader_states`。RLS 开启，匿名和普通认证角色无数据表权限。
 
-准备一个不会提交到 Git 的环境文件：
+服务端配置 `SUPABASE_URL`、`SUPABASE_SECRET_KEY`、`SUPABASE_PUBLISHABLE_KEY`、`READER_PUBLIC_ORIGIN`。密钥只留在 Vercel 的受保护环境变量，不能提交。可选 `DEEPSEEK_API_KEY` 提供显式的当前段落及邻段双译草稿。
 
-```bash
-cp .env.hosted.example .env
-```
+邮箱使用 Supabase Auth 的验证码验证与会话刷新。先在 Supabase 配好用于普通用户的 SMTP，以及含 `{{ .Token }}` 的登录邮件模板，再设 `READER_EMAIL_ENABLED=true`。验证码允许六到八位。未配置时保留匿名试读，禁用发信入口。默认 Supabase 邮件只供项目团队成员使用，不能视为生产注册服务。
 
-设置 `SUPABASE_URL`、`SUPABASE_SECRET_KEY`、`READER_BOOK_ID` 和 `READER_OWNER_ID`。服务端 secret 能绕过 RLS，只能用于服务器与导入脚本。
+PDF / TXT / Markdown 原文件通过短期签名直接上传私人存储，避免 Vercel 请求大小限制，处理完成后保存内容哈希验证的原件。原文件上限 20 MB，PDF 限 500 页和 200 万字；云端提取书籍 JSON 另限 350 万字节，超出时在加入书房前明确拒绝，需按章拆分。原件校验后使用一分钟有效的私人下载链接，避免函数响应体大小限制。扫描件需另做 OCR。每个账户每小时最多开始 6 次上传、每天 20 次；未完成的临时上传有一小时应用有效期，存储服务的签名本身有效期由 Supabase 控制，过期临时对象需运维清理。
 
-## 2. 导入私人书籍
+笔记、位置、译文与授权使用数据库版本比较写入，跨 Vercel 实例不会靠进程内队列猜顺序。按段翻译全服务最多同时两项；每个账户每小时最多 10 项、每天 50 项，全服务每小时 100 项、每天 500 项。失败请求也占用额度，以限制重复计费。限制不是订阅或购买。
 
-把 `book.json`、`experience-pack.json` 和 `experience-metrics.json` 放在 `local/finite-infinite-games/`，然后运行：
+网页与 MCP 共用授权，云端接入配置从开源 `v0.2.0` 包启动 stdio 客户端，显式连接 HTTPS 书房。令牌按指定书与正文、笔记、阅读活动、写评论范围生效，七天过期，可撤回。
 
-```bash
-npm run db:import
-```
+Vercel 的 JSON 请求和响应仍受平台限制（当前 4.5 MB）；大书房 JSON 备份应使用本机恢复，本版不声称支持无限大小的云端备份导入。原文件上传走直接存储通道，20 MB 上传不经过函数请求体。
 
-导入脚本只把内容传入你配置的 Supabase 项目；`local/` 和 `content/` 都被 Git 忽略。
-
-## 3. 连接 Vercel
-
-从 Vercel 导入 GitHub 仓库，Framework Preset 选择 `Other`。仓库已经提供：
-
-- Build Command：`npm run build:vercel`
-- Output Directory：`dist`
-- Functions：`api/[...path].js`
-
-在 Production、Preview、Development 三个环境设置同样四个变量。私有书籍部署建议开启 Vercel Deployment Protection；公开站点则应先增加 Supabase Auth 和按用户 RLS 策略。
-
-GitHub `main` 每次更新后，Vercel 会自动构建和发布。构建产物只有阅读器外壳，书籍从受保护的 API 读取。
-
-## 4. 验证
-
-部署后检查：
-
-```bash
-curl -I https://YOUR_DOMAIN/
-curl -I https://YOUR_DOMAIN/api/book
-```
-
-页面应显示完整章节；Supabase 的 `reader_books` 有一本书，`reader_states` 会在首次访问时创建。公开仓库和 Vercel 构建日志中不应出现 secret 或整书 JSON。
+发布前运行 `npm test` 与 `npm run build:vercel`，检查 `.vercelignore` 排除了私人内容、记录与凭据。代码镜像只复制已审核的软件路径和公版 `catalog/`，不得推送私人归档历史。先验证候选部署，再切换正式地址；线上验证仍须检查匿名试读、账户隔离、原件校验、并发记录和授权撤回。

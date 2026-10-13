@@ -25,8 +25,9 @@ export function buildShareModel(book,snapshot,rawOptions={}){
   if(typeof source!=='string'||!Number.isInteger(part.start)||!Number.isInteger(part.end)||part.start<0||part.end<=part.start||part.end>source.length||!validBoundary(source,part.start)||!validBoundary(source,part.end)||source.slice(part.start,part.end)!==part.text)throw Error('摘录无法对应当前原文或译文，请重新选择。');
   characters+=part.text.length;if(characters>4000)throw Error('摘录较长，请将选择控制在4000字以内。');
   const full=part.start===0&&part.end===source.length;
-  const selected={text:part.text,language:part.language,label:part.language==='en'?'英文原文':(part.variant==='literal'?'直译':'意译')+' · 草稿',wholeCounterpart:false};
-  const counterpart=(language,variant)=>{const text=textFor(p,language,variant);if(typeof text!=='string'||!text.trim())throw Error('这段对应译文尚未准备好。');const name=language==='en'?'英文原文':variant==='literal'?'直译':'意译';return {text,language,label:name+(full?'':' · 对应整段')+(language==='zh'?' · 草稿':''),wholeCounterpart:!full};};
+  const originalLabel=book.sourceLanguage==='zh'?'中文原文':'英文原文';
+  const selected={text:part.text,language:part.language,label:part.language==='en'?originalLabel:(part.variant==='literal'?'直译':'意译')+' · 草稿',wholeCounterpart:false};
+  const counterpart=(language,variant)=>{const text=textFor(p,language,variant);if(typeof text!=='string'||!text.trim())throw Error('这段对应译文尚未准备好。');const name=language==='en'?originalLabel:variant==='literal'?'直译':'意译';return {text,language,label:name+(full?'':' · 对应整段')+(language==='zh'?' · 草稿':''),wholeCounterpart:!full};};
   const desired=options.language==='bilingual'?part.language:options.language;
   const unchanged=desired===part.language&&(desired==='en'||options.variant===part.variant);
   const primary=unchanged?selected:counterpart(desired,options.variant);
@@ -40,7 +41,7 @@ export function buildShareModel(book,snapshot,rawOptions={}){
  const before=(sameFirst?beforeSource.slice(0,first.sourceStart):'')||adjacent(a.i-1,first.primary.language);
  const after=(sameLast?afterSource.slice(last.sourceEnd):'')||adjacent(z.i+1,last.primary.language);
  const chapter=book.chapters.find(c=>c.id===snapshot.chapterId);
- return {bookId:book.bookId,contentVersion:book.contentVersion,title:book.title?.zh||book.title?.en||'书籍摘录',author:typeof book.author==='string'?book.author:'',location:'第 '+(chapter?.number||'')+' 章 · §'+first.section+(last.section!==first.section?'–'+last.section:'')+(first.page?' · 原书 '+first.page+' 页':''),blocks,before,after,contextLanguage:first.primary.language,attribution:first.primary.label,selectedCharacters:characters};
+ return {bookId:book.bookId,contentVersion:book.contentVersion,title:book.title?.zh||book.title?.en||'书籍摘录',author:typeof book.author==='string'?book.author:'',location:(book.source?.structure==='automatic_groups'?'阅读片段 '+(chapter?.number||''):'第 '+(chapter?.number||'')+' 章')+' · §'+first.section+(last.section!==first.section?'–'+last.section:'')+(first.page?' · 原书 '+first.page+' 页':''),blocks,before,after,contextLanguage:first.primary.language,attribution:first.primary.label,selectedCharacters:characters};
 }
 export function paragraphSnapshot(book,p,chapterId,language='zh',variant='interpretive'){
  const text=textFor(p,language,variant);if(!text?.trim())throw Error('这段文字尚未准备好。');
@@ -58,7 +59,7 @@ export function captureDOMSelection(selection,paragraphMap,book){
   const value=node.textContent.slice(start,end);if(!value.trim())continue;
   start+=value.length-value.trimStart().length;end-=value.length-value.trimEnd().length;
   const p=paragraphMap.get(node.closest('.passage').dataset.id);if(!p)return null;
-  parts.push({passageId:p.id,language:node.lang==='en'?'en':'zh',variant:node.dataset.variant||'interpretive',start,end,text:node.textContent.slice(start,end)});
+  parts.push({passageId:p.id,language:node.dataset.readingLayer==='original'?'en':node.lang==='en'?'en':'zh',variant:node.dataset.variant||'interpretive',start,end,text:node.textContent.slice(start,end)});
  }
  if(!parts.length)return null;
  const snapshot={bookId:book.bookId,contentVersion:book.contentVersion,chapterId:paragraphMap.get(parts[0].passageId).chapterId,parts};

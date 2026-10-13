@@ -22,5 +22,7 @@ jobs:
       - run: npm run build:vercel
       - name: Ensure private content is absent
         run: |
-          test ! -d content
+          test ! -d dist/content
+          test ! -d dist/local
+          test ! -d dist/_briefs
           ! find dist -type f -size +200k | grep -q .
