@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="zh-Hans" data-theme="paper">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>旁读 · 有限与无限的游戏</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>旁读 · 阅读</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script></head>
 <body>
   <a href="#book-page" class="skip-link">跳到正文</a>
   <header id="reading-header" class="reading-header">
-    <button id="open-toc" class="quiet-button" aria-controls="toc-dialog" aria-haspopup="dialog">目录</button>
-    <p class="running-title">有限与无限的游戏<span id="running-chapter"></span></p>
+    <div class="reader-navigation"><a href="/library" class="quiet-button" aria-label="返回书房">← 书房</a><button id="open-toc" class="quiet-button" aria-controls="toc-dialog" aria-haspopup="dialog">目录</button></div>
+    <p class="running-title">旁读<span id="running-chapter"></span></p>
     <div class="header-actions"><button id="open-settings" class="quiet-button typography-button" aria-label="阅读设置" aria-haspopup="dialog">Aa</button><button id="enter-focus" class="quiet-button">专注</button></div>
   </header>
   <button id="exit-focus" class="focus-exit" hidden>退出专注</button>
@@ -26,7 +26,7 @@
     <nav class="panel-tabs" aria-label="旁注类型"><button data-panel-tab="annotations">注解</button><button data-panel-tab="comment">我的想法</button><button data-panel-tab="question">问题</button></nav>
     <div id="panel-content"></div>
   </aside>
-  <dialog id="toc-dialog" class="toc-dialog"><header class="dialog-heading"><span>有限与无限的游戏</span><button data-close-dialog="toc-dialog" class="quiet-button">关闭</button></header><nav id="toc-list" aria-label="全书目录"></nav></dialog>
+  <dialog id="toc-dialog" class="toc-dialog"><header class="dialog-heading"><span id="toc-book-title">目录</span><button data-close-dialog="toc-dialog" class="quiet-button">关闭</button></header><nav id="toc-list" aria-label="全书目录"></nav></dialog>
   <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title">
     <header class="dialog-heading"><div><h2 id="settings-title">你的阅读方式</h2><p>把这一页，调成喜欢的样子。</p></div><button data-close-dialog="settings-dialog" class="quiet-button" aria-label="关闭阅读设置">关闭</button></header>
     <div class="settings-content">
@@ -89,6 +89,8 @@
       </div>
     </div>
   </dialog>
+  <aside id="progress-notice" class="reading-progress-notice" role="status" hidden><p>阅读位置已在另一处更新。</p><div><button id="progress-use-remote">去较新的位置</button><button id="progress-keep-here">继续读这里</button></div></aside>
   <div id="announcement" class="visually-hidden" aria-live="polite"></div>
   <p class="visually-hidden" id="reading-instructions">点击段落或聚焦段落后按回车，可以查看原文、注解和个人记录。Esc关闭浮层。F切换专注阅读。</p>
+<script type="module" src="/reader-translation.js"></script>
 </body></html>

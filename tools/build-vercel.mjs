@@ -10,6 +10,9 @@ await rm(outputDir, { recursive: true, force: true });
 await mkdir(outputDir, { recursive: true });
 
 await cp(appDir, outputDir, { recursive: true });
+await cp(path.join(appDir, 'index.html'), path.join(outputDir, 'read.html'));
+await cp(path.join(appDir, 'home.html'), path.join(outputDir, 'index.html'));
+await cp(path.join(appDir, 'home.html'), path.join(outputDir, 'library.html'));
 
 const evalsPath = path.join(outputDir, 'evals.html');
 await mkdir(path.join(outputDir, 'evals'), { recursive: true });
@@ -20,4 +23,4 @@ await writeFile(
   '<!doctype html><meta charset="utf-8"><title>旁读</title><p>这个页面不存在。</p>',
 );
 
-console.log(`Built reader shell at ${outputDir}; private content stays in Supabase.`);
+console.log(`Built hosted library and reader at ${outputDir}; private content stays in Supabase.`);

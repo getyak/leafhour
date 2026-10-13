@@ -1,4 +1,5 @@
 import {buildShareModel,normaliseShareOptions,paragraphSnapshot,layoutShareCard,shareThemes,shareFonts} from './share-model.mjs';
+import {chineseOriginalOnly} from './source-language.mjs';
 
 const $=id=>document.getElementById(id),bridge=()=>window.marginaliaReader;
 const dialog=$('share-dialog'),canvas=$('share-canvas'),context=canvas.getContext('2d');
@@ -47,7 +48,8 @@ function openShare(whole=false){
  try{
   const selected=bridge().getExcerpt?.();const book=bridge().getBook(),state=bridge().getState(),p=book.sections.flatMap(s=>s.paragraphs).find(p=>p.id===bridge().getSelectedId());
   snapshot=!whole&&selected?selected:paragraphSnapshot(book,p,bridge().getChapterId(),selected?.parts[0]?.language||(state.mode==='en'?'en':'zh'),selected?.parts[0]?.variant||state.variant);
-  const source=snapshot.parts[0],opts=normaliseShareOptions({...saved,language:saved.language==='bilingual'?'bilingual':source.language,variant:source.variant});
+  const source=snapshot.parts[0],onlyOriginal=chineseOriginalOnly(book),opts=normaliseShareOptions({...saved,language:onlyOriginal?'en':saved.language==='bilingual'?'bilingual':source.language,variant:source.variant});
+  for(const choice of $('share-language').options){choice.disabled=onlyOriginal&&choice.value!=='en';if(choice.value==='en')choice.textContent=book.sourceLanguage==='zh'?'中文原文':'英文原文';}
   for(const [key,id]of Object.entries(fields)){if(key==='source')$(id).checked=opts.source;else $(id).value=String(opts[key]);}
   anchor=bridge().getAnchor();returnFocus=document.activeElement;bridge().dismissTools();document.body.classList.add('is-sharing');document.dispatchEvent(new CustomEvent('reader:sharing',{detail:{active:true}}));
   $('share-settings').open=false;dialog.showModal();$('share-close').focus();render();

@@ -1,6 +1,8 @@
 import http from 'node:http';
 import {normalizeAppearance} from '../app/reading-preferences.mjs';
+import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
 import {createExperienceService} from './experience-service.mjs';
+import {createPortal} from './portal.mjs';
 import {readFile,writeFile,rename,mkdir} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
@@ -10,13 +12,20 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const assets=new Map([['/',['app/index.html','text/html']],['/styles.css',['app/styles.css','text/css']],['/reader.js',['app/reader.js','text/javascript']],['/experiences.js',['app/experiences.js','text/javascript']],['/experiences.css',['app/experiences.css','text/css']]]);
 assets.set('/reading-preferences.mjs',['app/reading-preferences.mjs','text/javascript']);
 assets.set('/toolbar-placement.mjs',['app/toolbar-placement.mjs','text/javascript']);
+assets.set('/note-drafts.mjs',['app/note-drafts.mjs','text/javascript']);
+assets.set('/translation-state.mjs',['app/translation-state.mjs','text/javascript']);
+assets.set('/reader-return.mjs',['app/reader-return.mjs','text/javascript']);
+assets.set('/passage-layers.mjs',['app/passage-layers.mjs','text/javascript']);
+assets.set('/grant-result.mjs',['app/grant-result.mjs','text/javascript']);
+assets.set('/mcp-config.mjs',['app/mcp-config.mjs','text/javascript']);
 const downloads=new Map([['/exports/bilingual.md','book-bilingual.md'],['/exports/literal.md','book-literal.md'],['/exports/interpretive.md','book-interpretive.md'],['/exports/reading-pack.zip','reading-pack.zip']]);
 for(const [url,file,type] of [['/share.js','app/share.js','text/javascript'],['/share-model.mjs','app/share-model.mjs','text/javascript'],['/share.css','app/share.css','text/css']])assets.set(url,[file,type]);
 assets.set('/evals',['app/evals.html','text/html']);assets.set('/evals.js',['app/evals.js','text/javascript']);assets.set('/evals.css',['app/evals.css','text/css']);
 const fail=(message,status=400)=>Object.assign(new Error(message),{status});
 
-export async function createReaderServer({bookPath=path.join(root,'local/finite-infinite-games/book.json'),recordsPath=path.join(root,'local/service/records.json'),publicOrigin=null,experienceStorePath=path.join(path.dirname(recordsPath),'experience-records.json'),experiencePackPath=path.join(path.dirname(bookPath),'experience-pack.json'),generator=null}={}){
-  const book=JSON.parse(await readFile(bookPath,'utf8'));
+export async function createReaderServer({bookPath=path.join(root,'local/finite-infinite-games/book.json'),recordsPath=path.join(root,'local/service/records.json'),publicOrigin=null,experienceStorePath=path.join(path.dirname(recordsPath),'experience-records.json'),experiencePackPath=path.join(path.dirname(bookPath),'experience-pack.json'),generator=null,portalDataDir=path.join(path.dirname(recordsPath),'portal'),sendCode,translator,allowLocal=true}={}){
+  const portal=await createPortal({dataDir:portalDataDir,publicOrigin,sendCode,translator,allowLocal});
+  let book;try{book=JSON.parse(await readFile(bookPath,'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;book=await portal.library.getBook(null,'gutenberg-alice');}
   if(!Array.isArray(book.sections)||!Array.isArray(book.chapters))throw Error('Reading package is not ready');
   const experiences=await createExperienceService({book,storePath:experienceStorePath,packPath:experiencePackPath,generator});
   const ids=new Set(book.sections.flatMap(s=>s.paragraphs.map(p=>p.id))),chapterIds=new Set(book.chapters.map(c=>c.id));
@@ -28,9 +37,9 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
   const mutate=operation=>{const work=writes.catch(()=>{}).then(async()=>{const records=await readRecords();const result=operation(records);const temp=recordsPath+'.pending';await writeFile(temp,JSON.stringify(records,null,2),{mode:0o600});await rename(temp,recordsPath);return result;});writes=work;return work;};
   const checkPosition=p=>{
     if(!p||!chapterIds.has(p.chapterId)||!ids.has(p.passageId)||!book.sections.some(s=>s.chapterId===p.chapterId&&s.paragraphs.some(x=>x.id===p.passageId)))throw fail('阅读位置无法对应当前章节');
-    if(!Number.isFinite(p.offset)||Math.abs(p.offset)>4000||!['zh','en','parallel'].includes(p.mode)||!['literal','interpretive'].includes(p.variant)||!Number.isFinite(p.font)||typeof p.theme!=='string')throw fail('阅读偏好格式不正确');
+    if(!validParagraphAnchor(p)||!['zh','en','parallel'].includes(p.mode)||!['literal','interpretive'].includes(p.variant)||!Number.isFinite(p.font)||typeof p.theme!=='string')throw fail('阅读偏好格式不正确');
     let appearance;try{appearance=normalizeAppearance(p,true);}catch{throw fail('阅读偏好格式不正确');}
-    return {chapterId:p.chapterId,passageId:p.passageId,offset:p.offset,mode:p.mode,variant:p.variant,...appearance,updatedAt:new Date().toISOString()};
+    return {chapterId:p.chapterId,passageId:p.passageId,offset:p.offset,...(p.withinParagraph!==undefined?{withinParagraph:p.withinParagraph}:{}),mode:p.mode,variant:p.variant,...appearance,updatedAt:new Date().toISOString()};
   };
   const cleanRecord=(r,type)=>{
     if(!r||typeof r.id!=='string'||!r.id||r.id.length>128||!ids.has(r.passageId)||typeof r.text!=='string'||!r.text.trim()||r.text.length>2000)throw fail('记录无法安全对应原文');
@@ -53,9 +62,11 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
     const send=(status,data,type='application/json')=>{res.statusCode=status;res.setHeader('Content-Type',type+'; charset=utf-8');res.end(type==='application/json'?JSON.stringify(data):data);};
     try{
       const port=server.address()?.port,host=req.headers.host;
-      const allowed=new Set(['127.0.0.1:'+port,'localhost:'+port]);if(publicOrigin)allowed.add(new URL(publicOrigin).host);
+      const allowed=new Set(['127.0.0.1:'+port,'localhost:'+port,'[::1]:'+port]);if(publicOrigin)allowed.add(new URL(publicOrigin).host);
       if(!allowed.has(host))throw fail('当前地址未授权',403);
       const url=new URL(req.url,'http://'+host);
+      if(await portal.handle({req,res,url,send}))return;
+      if(publicOrigin&&(url.pathname.startsWith('/api/')||url.pathname.startsWith('/exports/')||url.pathname==='/evals'||url.pathname==='/health'))throw fail('旧样书入口仅用于本机；请从自己的书房进入',403);
       if(req.method==='POST'){
         const origin=req.headers.origin;
         if(origin!==('http://'+host)&&origin!==publicOrigin)throw fail('请求来源未授权',403);
@@ -83,6 +94,7 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
       if(url.pathname==='/api/book'){send(200,book);return;}
       if(url.pathname==='/api/records'||url.pathname==='/api/records/export'){await writes.catch(()=>{});if(url.pathname.endsWith('export'))res.setHeader('Content-Disposition','attachment; filename="marginalia-my-records.json"');send(200,await readRecords());return;}
       if(url.pathname==='/favicon.ico'){res.writeHead(204);res.end();return;}
+      if(url.pathname==='/read'){send(200,await readFile(path.join(root,'app/index.html')),'text/html');return;}
       if(assets.has(url.pathname)){const [file,type]=assets.get(url.pathname);send(200,await readFile(path.join(root,file)),type);return;}
       if(downloads.has(url.pathname)){const filename=downloads.get(url.pathname),file=path.join(path.dirname(bookPath),'exports',filename);res.setHeader('Content-Disposition','attachment; filename="'+filename+'"');send(200,await readFile(file),filename.endsWith('.zip')?'application/zip':'text/markdown');return;}
       throw fail('找不到这个页面',404);
@@ -91,6 +103,7 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
   const closeHttp=server.close.bind(server);
   server.close=callback=>{const closing=experiences.close();closeHttp(error=>{closing.then(()=>callback?.(error),failure=>callback?.(failure));});return server;};
   server.experiences=experiences;
+  server.portal=portal;
   return server;
 }
 

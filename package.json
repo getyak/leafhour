@@ -1,24 +1,32 @@
 {
   "name": "marginalia-reader",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "AGPL-3.0-only",
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.13.0"
   },
   "scripts": {
     "start": "node server/server.mjs",
     "start:configured": "node --env-file=.env server/server.mjs",
+    "mcp": "node server/mcp.mjs",
     "test": "node --test tests/*.test.mjs",
     "build:experiences": "node tools/build-experiences.mjs",
     "build:vercel": "node tools/build-vercel.mjs",
     "db:import": "node --env-file=.env tools/import-supabase-book.mjs"
   },
   "dependencies": {
-    "@deepseek-ai/dsh-sdk-client": "0.2.1-alpha.2"
+    "@deepseek-ai/dsh-sdk-client": "0.2.1-alpha.2",
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "nodemailer": "^10.1.0",
+    "pdfjs-dist": "^6.4.299",
+    "zod": "^4.6.6"
   },
   "overrides": {
     "fflate": "0.8.3"
+  },
+  "bin": {
+    "marginalia-mcp": "server/mcp.mjs"
   }
 }

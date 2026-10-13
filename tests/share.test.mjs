@@ -4,6 +4,14 @@ const book={bookId:'b',contentVersion:'v1',title:{zh:'一本书',en:'A book'},au
 const snapshot={bookId:'b',contentVersion:'v1',chapterId:'c1',parts:[{passageId:'p1',language:'zh',variant:'interpretive',start:0,end:5,text:'游戏继续。'}]};
 const model=()=>import('../app/share-model.mjs').catch(()=>({}));
 
+test('Chinese source excerpts keep their selected characters and original authorship',async()=>{
+ const {buildShareModel,paragraphSnapshot}=await model(),chinese={...book,sourceLanguage:'zh',source:{structure:'automatic_groups'},sections:[{chapterId:'c1',number:1,paragraphs:[{id:'p1',original:'保留原文，再写自己的问题。',translations:{}}]}]};
+ const p=chinese.sections[0].paragraphs[0],snap=paragraphSnapshot(chinese,p,'c1','en');
+ const share=buildShareModel(chinese,snap,{language:'en'});
+ assert.equal(share.blocks[0].primary.text,'保留原文，再写自己的问题。');assert.equal(share.blocks[0].primary.label,'中文原文');assert.equal(share.blocks[0].secondary,null);
+ assert.match(share.location,/^阅读片段 1/);
+});
+
 test('a shared excerpt preserves selected words and labels paragraph-level bilingual evidence',async()=>{
  const m=await model();assert.equal(typeof m.buildShareModel,'function','sharing requires a source-bound model');
  const share=m.buildShareModel(book,snapshot,{language:'bilingual',variant:'interpretive'});
