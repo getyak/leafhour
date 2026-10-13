@@ -5,6 +5,7 @@ import {createOwnerScope,readOwnerResponse} from './owner-scope.mjs';
 import {safeReaderReturn} from './reader-return.mjs';
 import {createGrantResult,grantScopeSummary} from './grant-result.mjs';
 import {makeMcpConfiguration} from './mcp-config.mjs';
+import {chineseTrialUrl} from './catalog-sample.mjs';
 const $=id=>document.getElementById(id);
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const ownerScope=createOwnerScope();
@@ -30,11 +31,13 @@ function clearPrivateUI(){
 function bookCard(book){
   const card=make('article','book-card'),art=make('a','book-art '+(book.cover||'private'));art.href='/read?book='+encodeURIComponent(book.bookId);art.setAttribute('aria-label','阅读'+book.title.zh);
   const cover=make('div','book-cover'),inner=make('div','cover-inner');inner.append(make('small','',book.visibility==='public'?'THE MARGINALIA LIBRARY':'MY READING ROOM'),make('strong','',book.title.zh.slice(0,28)),make('span','cover-ornament',book.cover==='alice'?'❦':book.cover==='walden'?'⌁':'☼'),make('small','',book.visibility==='public'?'ORIGINAL TEXT':'A BOOK OF MY OWN'));cover.append(inner);art.append(cover);
-  const meta=make('div','book-meta'),label=make('div','book-label');label.append(make('span','',book.visibility==='public'?'公版 · 英文原文':'自己的书 · '+book.source.format.toUpperCase()),make('span','',book.visibility==='public'?'按需翻译':'已提取'));
+  const meta=make('div','book-meta'),label=make('div','book-label');label.append(make('span','',book.visibility==='public'?'公版 · 英文原文':'自己的书 · '+book.source.format.toUpperCase()),make('span','',book.chineseSample?'双译开篇 · '+book.chineseSample.paragraphs+' 段':book.visibility==='public'?'按需翻译':'已提取'));
   meta.append(label,make('h3','',book.title.zh),make('p','book-author',book.author||book.source.filename),make('p','book-description',book.description||'原文已保留。译文和思考，从这一页开始。'));
   let resume=book.resume;if(!session?.user){try{const local=JSON.parse(localStorage.getItem(positionStorageKey(book.bookId))||'null');if(local?.passageId&&local.chapterLabel&&local.contentVersion===book.source.sha256)resume={label:local.chapterLabel,passageId:local.passageId};}catch{}}
   if(resume){meta.append(make('p','book-resume','上次读到 · '+resume.label));art.setAttribute('aria-label','继续阅读'+book.title.zh);}
-  const bottom=make('div','book-bottom'),read=make('a','book-read',resume?'继续阅读 →':'开始阅读 →');read.href=art.href;bottom.append(read);
+  if(book.chineseSample&&!resume)art.href=chineseTrialUrl(book);
+  const bottom=make('div','book-bottom'),read=make('a','book-read',resume?'继续阅读 →':book.chineseSample?'中文试读 →':'开始阅读 →');read.href=art.href;bottom.append(read);
+  if(book.chineseSample&&resume){const trial=make('a','source-link','中文试读 ↗');trial.href=chineseTrialUrl(book);meta.append(trial);}
   if(book.source.url){const source=make('a','source-link','来源 ↗');source.href=book.source.url;source.target='_blank';source.rel='noopener noreferrer';bottom.append(source);}else bottom.append(make('span','',book.paragraphs+' 段'));
   meta.append(bottom);card.append(art,meta);return card;
 }

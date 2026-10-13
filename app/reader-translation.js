@@ -2,6 +2,7 @@ import {selectedBookId,readerSession,readerFetch} from './reader-api.mjs';
 import {chineseOriginalOnly} from './source-language.mjs';
 import {createTranslationState,hasDualDrafts} from './translation-state.mjs';
 import {readerLoginUrl} from './reader-return.mjs';
+import {chineseSampleNotice} from './catalog-sample.mjs';
 if(selectedBookId){
   const button=document.createElement('button');button.id='translate-passage';button.type='button';button.textContent='翻译这段';document.getElementById('paragraph-tools').prepend(button);
   const hint=document.createElement('p');hint.className='translation-notice';hint.setAttribute('role','status');document.getElementById('chapter-heading').append(hint);
@@ -9,8 +10,8 @@ if(selectedBookId){
   const bridge=()=>window.marginaliaReader;
   const tasks=createTranslationState();
   const selectedPassage=()=>bridge()?.getBook()?.sections.flatMap(s=>s.paragraphs).find(p=>p.id===tasks.selectedId());
-  const defaultNotice=()=>bridge()?.getBook()&&chineseOriginalOnly(bridge().getBook())?'这本书原文为中文，无需翻译。可以选择原句，留下自己的想法或摘录。':readerSession?.translationAvailable?'点击段落可按需翻译。只向已配置的云模型发送当前及前后各一段；双译保存为 AI 草稿。':'翻译服务尚未配置，仍可阅读原文并保留自己的想法。';
-  function renderTranslation(){const view=tasks.view(selectedPassage(),{authenticated:!!readerSession?.user,available:!!readerSession?.translationAvailable,defaultNotice:defaultNotice()});button.textContent=view.label;button.disabled=view.disabled;hint.textContent=view.notice;}
+  const defaultNotice=()=>chineseSampleNotice(bridge()?.getBook()||{})||(bridge()?.getBook()&&chineseOriginalOnly(bridge().getBook())?'这本书原文为中文，无需翻译。可以选择原句，留下自己的想法或摘录。':readerSession?.translationAvailable?'点击段落可按需翻译。只向已配置的云模型发送当前及前后各一段；双译保存为 AI 草稿。':'翻译服务尚未配置，仍可阅读原文并保留自己的想法。');
+  function renderTranslation(){const view=tasks.view(selectedPassage(),{authenticated:!!readerSession?.user,available:!!readerSession?.translationAvailable,loginAvailable:!!(readerSession?.emailAvailable||readerSession?.localAvailable),defaultNotice:defaultNotice()});button.textContent=view.label;button.disabled=view.disabled;hint.textContent=view.notice;}
   async function originalFile(container){
     container.textContent='正在检查原文件…';
     try{

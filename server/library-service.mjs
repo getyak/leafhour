@@ -8,11 +8,12 @@ import {resumeSummary} from '../app/reading-progress.mjs';
 import {validateLibraryBackup} from '../app/library-backup.mjs';
 import {inferSourceLanguage} from '../app/source-language.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
+import {applyCatalogSample} from './catalog-sample.mjs';
 
 const requireUser=user=>{if(!user?.id)throw fail('请先进入自己的书房',401);return user;};
 const emptyRecords=book=>({kind:'marginalia-personal-records',schemaVersion:2,bookId:book.bookId,contentVersion:book.contentVersion,comments:[],questions:[],readingSessions:[],position:null});
 const allPassages=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
-const brief=book=>({bookId:book.bookId,title:book.title,author:book.author,visibility:book.visibility,source:book.source,cover:book.cover,description:book.description,paragraphs:allPassages(book).length,chapters:book.chapters.length,createdAt:book.createdAt});
+const brief=book=>({bookId:book.bookId,title:book.title,author:book.author,visibility:book.visibility,source:book.source,cover:book.cover,description:book.description,chineseSample:book.chineseSample,paragraphs:allPassages(book).length,chapters:book.chapters.length,createdAt:book.createdAt});
 
 export async function createLibraryService({dataDir,catalogDir=path.resolve('catalog'),translator=null,dataStore=null}={}){
   if(!dataStore)await mkdir(dataDir,{recursive:true,mode:0o700});
@@ -32,7 +33,9 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       const body=extracted.pages[0].text,match=body.match(/\*\*\* START OF THE PROJECT GUTENBERG EBOOK[^\n]*\*\*\*([\s\S]*?)\*\*\* END OF THE PROJECT GUTENBERG EBOOK/);
       if(match)extracted.pages[0].text=match[1].trim();
       const book=makeBook({bookId:entry.id,filename:entry.file,sourceHash:digest(bytes),extracted,title:entry.title,author:entry.author,visibility:'public',sourceUrl:entry.sourceUrl,license:'Project Gutenberg · Public domain in the USA; check your local law and the included Gutenberg license.'});
-      book.title.en=entry.originalTitle;book.description=entry.description;book.cover=entry.cover;publicBooks.set(book.bookId,applyCatalogChapters(book));
+      book.title.en=entry.originalTitle;book.description=entry.description;book.cover=entry.cover;
+      let prepared=applyCatalogChapters(book),sample;try{sample=JSON.parse(await readFile(path.join(catalogDir,'translations',entry.id+'.zh.json'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
+      if(sample)prepared=applyCatalogSample(prepared,sample);publicBooks.set(book.bookId,prepared);
     }
   }
   const bookFile=(user,id)=>path.join(userDir(user),'books',digest(id)+'.json');
