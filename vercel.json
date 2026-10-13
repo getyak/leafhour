@@ -16,9 +16,15 @@
     }
   ],
   "functions": {
-    "api/[...path].js": {
+    "api/*.js": {
       "maxDuration": 60,
       "includeFiles": "{catalog/**,server/**,deploy/**,app/*.mjs}"
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/service?path=:path*"
+    }
+  ]
 }
