@@ -16,6 +16,7 @@ assets.set('/note-drafts.mjs',['app/note-drafts.mjs','text/javascript']);
 assets.set('/translation-state.mjs',['app/translation-state.mjs','text/javascript']);
 assets.set('/reader-return.mjs',['app/reader-return.mjs','text/javascript']);
 assets.set('/passage-layers.mjs',['app/passage-layers.mjs','text/javascript']);
+assets.set('/catalog-sample.mjs',['app/catalog-sample.mjs','text/javascript']);
 assets.set('/grant-result.mjs',['app/grant-result.mjs','text/javascript']);
 assets.set('/mcp-config.mjs',['app/mcp-config.mjs','text/javascript']);
 const downloads=new Map([['/exports/bilingual.md','book-bilingual.md'],['/exports/literal.md','book-literal.md'],['/exports/interpretive.md','book-interpretive.md'],['/exports/reading-pack.zip','reading-pack.zip']]);

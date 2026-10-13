@@ -8,7 +8,7 @@ export function visibleQuoteLanguage(passage,{mode,variant='interpretive'}={},se
 }
 export function passagePresentation(passage,{mode='zh',variant='interpretive',sourceLanguage='en'}={}){
   const original={kind:'original',text:passage.original,lang:sourceLanguage==='zh'?'zh-Hans':'en',label:'原文'};
-  if(mode==='en')return {layers:[original],notice:null};
+  if(mode==='en'||passage.kind==='source_heading')return {layers:[original],notice:null};
   const text=translatedText(passage,variant),label=variantLabel(variant);
   const translation=text?{kind:'translation',text,lang:'zh-Hans',label}:{kind:'missing',text:null,lang:null,label:label+' · 尚未翻译',message:'这份'+label+'尚未准备好。可继续阅读原文。'};
   if(mode==='parallel')return {layers:[original,translation],notice:null};

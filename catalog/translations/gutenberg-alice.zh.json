@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "bookId": "gutenberg-alice",
+  "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+  "language": "zh",
+  "license": "CC0-1.0",
+  "passages": [
+    {
+      "id": "01b38ea4c710a84b-p00008",
+      "translations": {
+        "literal": {
+          "text": "爱丽丝开始觉得，坐在河岸上姐姐身旁、无事可做，实在很让人厌倦。她曾一两次偷看姐姐正在读的书，可书里既没有图画，也没有对话。“一本没有图画或对话的书，有什么用呢？”爱丽丝想。",
+          "status": "draft",
+          "variant": "literal",
+          "origin": "ai",
+          "translator": "Codex",
+          "model": "codex",
+          "sourceVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "createdAt": "2026-10-13T15:17:05.384268+00:00",
+          "license": "CC0-1.0"
+        },
+        "interpretive": {
+          "text": "爱丽丝坐在河边，陪着姐姐，什么事也没有，渐渐烦得厉害。她朝姐姐的书里瞄过一两眼，里面没有插图，也没有人物对话。她心想：“书里连图画和对话都没有，读它有什么意思？”",
+          "status": "draft",
+          "variant": "interpretive",
+          "origin": "ai",
+          "translator": "Codex",
+          "model": "codex",
+          "sourceVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "createdAt": "2026-10-13T15:17:05.384268+00:00",
+          "license": "CC0-1.0"
+        }
+      }
+    },
+    {
+      "id": "01b38ea4c710a84b-p00009",
+      "translations": {
+        "literal": {
+          "text": "于是，她正尽自己所能在心里思量——天太热，使她觉得十分困倦，脑子也迟钝了——编一条雏菊花链的乐趣，是否值得她费力起身去摘雏菊；就在这时，一只粉红眼睛的白兔突然从她身旁跑过。",
+          "status": "draft",
+          "variant": "literal",
+          "origin": "ai",
+          "translator": "Codex",
+          "model": "codex",
+          "sourceVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "createdAt": "2026-10-13T15:17:05.384268+00:00",
+          "license": "CC0-1.0"
+        },
+        "interpretive": {
+          "text": "她想起可以编一条雏菊花链，可为了这点乐趣，值得站起来去摘花吗？热天让她困得脑子发沉，连想这件事都费劲。忽然，一只长着粉红眼睛的白兔从身边跑了过去。",
+          "status": "draft",
+          "variant": "interpretive",
+          "origin": "ai",
+          "translator": "Codex",
+          "model": "codex",
+          "sourceVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "createdAt": "2026-10-13T15:17:05.384268+00:00",
+          "license": "CC0-1.0"
+        }
+      }
+    },
+    {
+      "id": "01b38ea4c710a84b-p00010",
+      "translations": {
+        "literal": {
+          "text": "这本身并没有什么特别引人注目的；爱丽丝听见兔子自言自语说“哎呀！哎呀！我要迟到了！”，也不觉得十分反常。（后来回想时，她才觉得自己当时理应惊讶，可那一刻，一切都显得很自然。）但当兔子竟然从背心口袋里掏出一只怀表，看看时间，又匆匆往前赶时，爱丽丝一下站了起来：她突然想到，自己以前从没见过一只兔子带着背心口袋，更没见过它从里面掏出怀表。好奇心烧得正旺，她便穿过田野追了上去，幸好恰好赶上，看见它钻进树篱下面一个大兔子洞。",
+          "status": "draft",
+          "variant": "literal",
+          "origin": "ai",
+          "translator": "Codex",
+          "model": "codex",
+          "sourceVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "createdAt": "2026-10-13T15:17:05.384268+00:00",
+          "license": "CC0-1.0"
+        },
+        "interpretive": {
+          "text": "兔子跑过去，倒也没什么稀奇。就连听它嘀咕“哎呀，哎呀，我要迟到了！”，爱丽丝也没觉得多么不对劲。后来她回想起来，才意识到这原该让她吃惊，可当时竟觉得再自然不过。直到兔子真的从背心口袋里掏出怀表，看了一眼，又赶忙往前跑，她才猛地跳起来：兔子有背心口袋，还能从里头掏出表？她以前可从来没见过！满心好奇的爱丽丝追过田野，刚好看到白兔一头钻进树篱下的大洞里。",
+          "status": "draft",
+          "variant": "interpretive",
+          "origin": "ai",
+          "translator": "Codex",
+          "model": "codex",
+          "sourceVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "createdAt": "2026-10-13T15:17:05.384268+00:00",
+          "license": "CC0-1.0"
+        }
+      }
+    },
+    {
+      "id": "01b38ea4c710a84b-p00011",
+      "translations": {
+        "literal": {
+          "text": "又过了一瞬，爱丽丝便跟着钻了下去，一次也没想过，自己究竟要怎样再出来。",
+          "status": "draft",
+          "variant": "literal",
+          "origin": "ai",
+          "translator": "Codex",
+          "model": "codex",
+          "sourceVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "createdAt": "2026-10-13T15:17:05.384268+00:00",
+          "license": "CC0-1.0"
+        },
+        "interpretive": {
+          "text": "爱丽丝紧接着也钻进了洞里，根本没想过到时候怎么出来。",
+          "status": "draft",
+          "variant": "interpretive",
+          "origin": "ai",
+          "translator": "Codex",
+          "model": "codex",
+          "sourceVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "createdAt": "2026-10-13T15:17:05.384268+00:00",
+          "license": "CC0-1.0"
+        }
+      }
+    },
+    {
+      "id": "01b38ea4c710a84b-p00012",
+      "translations": {
+        "literal": {
+          "text": "兔子洞先像隧道一样笔直延伸了一段，接着突然向下倾斜；这变化太突然，爱丽丝还来不及想要停住自己，就发现自己正掉进一口很深的井里。",
+          "status": "draft",
+          "variant": "literal",
+          "origin": "ai",
+          "translator": "Codex",
+          "model": "codex",
+          "sourceVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "createdAt": "2026-10-13T15:17:05.384268+00:00",
+          "license": "CC0-1.0"
+        },
+        "interpretive": {
+          "text": "洞里先是一段直直的隧道，忽然就陡陡地向下了。爱丽丝连停下来的念头都来不及有，已经掉进一口深井。",
+          "status": "draft",
+          "variant": "interpretive",
+          "origin": "ai",
+          "translator": "Codex",
+          "model": "codex",
+          "sourceVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "createdAt": "2026-10-13T15:17:05.384268+00:00",
+          "license": "CC0-1.0"
+        }
+      }
+    },
+    {
+      "id": "01b38ea4c710a84b-p00013",
+      "translations": {
+        "literal": {
+          "text": "或是井非常深，或是她下落得非常慢，因为下落时她有充分的时间环顾四周，猜想接下来会发生什么。起初，她试着往下看，想弄清自己将落到哪里，但下面太黑，什么也看不见。随后，她看向井壁，发现四周满是橱柜和书架；有些地方的钉子上挂着地图和图画。经过一个架子时，她从上面拿下一只罐子，标签写着“橙子果酱”；可令她大失所望的是，罐子是空的。她不愿把罐子扔下去，怕砸死下面的人，于是在继续下落、经过一个橱柜时，设法把罐子放了进去。",
+          "status": "draft",
+          "variant": "literal",
+          "origin": "ai",
+          "translator": "Codex",
+          "model": "codex",
+          "sourceVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "createdAt": "2026-10-13T15:17:05.384268+00:00",
+          "license": "CC0-1.0"
+        },
+        "interpretive": {
+          "text": "也许井实在太深，也许她掉得太慢，总之，爱丽丝有的是时间东张西望，琢磨下一刻会遇上什么。她先往下望，想看看会掉到哪儿，可下面黑乎乎的，什么也看不清。再看两边，井壁上竟排满了橱柜和书架，还零零散散挂着地图和画。经过一个书架时，她顺手拿下一只贴着“橙子果酱”标签的罐子，却失望地发现它空空如也。她怕随手扔下去会砸死下面的人，便趁下落经过另一只橱柜时，想办法把罐子塞了进去。",
+          "status": "draft",
+          "variant": "interpretive",
+          "origin": "ai",
+          "translator": "Codex",
+          "model": "codex",
+          "sourceVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "createdAt": "2026-10-13T15:17:05.384268+00:00",
+          "license": "CC0-1.0"
+        }
+      }
+    }
+  ]
+}

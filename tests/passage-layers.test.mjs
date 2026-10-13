@@ -1,6 +1,9 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {passagePresentation,visibleQuoteLanguage} from '../app/passage-layers.mjs';
 const passage={id:'p1',original:'The original words stay unchanged.',translations:{}};
+test('a source heading remains an original label rather than an untranslated prose warning',()=>{
+  const view=passagePresentation({...passage,kind:'source_heading'},{mode:'zh'});assert.equal(view.layers[0].kind,'original');assert.equal(view.notice,null);
+});
 test('an explicit DOM selection keeps its actual layer despite an original-view override',()=>{
   const p={...passage,translations:{interpretive:{text:'独立意译。'}}};assert.equal(visibleQuoteLanguage(p,{mode:'en',variant:'interpretive'},'zh'),'zh');assert.equal(visibleQuoteLanguage(p,{mode:'parallel',variant:'interpretive'},'en'),'en');assert.equal(visibleQuoteLanguage(p,{mode:'parallel',variant:'interpretive'}),'zh');
 });

@@ -9,6 +9,7 @@ import {captureParagraphAnchor,paragraphScrollDelta} from './paragraph-anchor.mj
 import {createNoteDrafts} from './note-drafts.mjs';
 import {readerLoginUrl,resolveReaderEntry} from './reader-return.mjs';
 import {passagePresentation,visibleQuoteLanguage} from './passage-layers.mjs';
+import {catalogReadingMode,chineseSampleEntry} from './catalog-sample.mjs';
 const $=id=>document.getElementById(id);
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
 const button=(text,action)=>{const b=el('button','',text);b.type='button';if(action)b.addEventListener('click',action);return b;};
@@ -88,7 +89,7 @@ function renderChapter(){
   $('chapter-number').textContent=chapterLabel(chapter);$('chapter-title').textContent=chapter.title.zh;$('chapter-original-title').textContent=chapter.title.en;$('running-chapter').textContent=book.source?.structure==='automatic_groups'?'片段 '+chapter.number:chapterLabel(chapter);
   for(const s of activeSections()){
     const section=el('section','reading-section');section.id='section-'+s.number;if(book.source?.structure!=='source_chapters')section.append(el('p','section-number','§'+s.number));
-    for(const raw of s.paragraphs){const p=paragraphMap.get(raw.id),node=el('div',p.kind==='source_heading'?'passage source-chapter-heading':'passage');node.id=p.id;node.dataset.id=p.id;node.tabIndex=0;node.setAttribute('aria-describedby','reading-instructions');fillPassage(node,p);section.append(node);} $('chapter-text').append(section);
+    for(const raw of s.paragraphs){const p=paragraphMap.get(raw.id),node=el('div',p.kind==='source_heading'?'passage source-chapter-heading':'passage');node.id=p.id;node.dataset.id=p.id;node.tabIndex=0;node.setAttribute('aria-describedby','reading-instructions');fillPassage(node,p);section.append(node);if(p.id===book.chineseSample?.endPassageId){const end=el('aside','sample-boundary');end.append(el('strong','','中文试读到这里'),el('p','','以上 '+book.chineseSample.paragraphs+' 段已有独立直译与意译草稿。以下尚未翻译，可以继续阅读英文原文。'));section.append(end);}} $('chapter-text').append(section);
   }
   const index=book.chapters.findIndex(c=>c.id===chapter.id),bodyCount=book.chapters.filter(c=>c.kind==='body').length;
   $('chapter-heading').hidden=false;$('chapter-footer').hidden=false;$('chapter-fraction').textContent=chapter.kind==='body'?chapter.number+' / '+bodyCount:chapter.kind?chapter.title.zh:(index+1)+' / '+book.chapters.length;
@@ -169,6 +170,7 @@ function returnToPanelSource(){
 }
 function renderRecordsAccess(content){
   if(selectedBookId&&!readerSession?.user){
+    if(!readerSession?.emailAvailable&&!readerSession?.localAvailable){content.append(el('p','empty-state','邮箱登录准备中，个人笔记暂未开放。你可以继续阅读中文试读、切换译法和核对原文。'));return;}
     content.append(el('p','empty-state','登录后，把想法和问题留在自己的书房。回来时仍在当前原文段落。'));const login=el('a','quiet-button','登录后回到这段 →');login.href=readerLoginUrl({bookId:selectedBookId,passageId:selectedId,note:allRecords?'records':panelTab==='question'?'question':'comment'});content.append(login);return;
   }
   content.append(el('p','empty-state','个人记录暂时无法读取。原来的记录不会被覆盖，正文仍可继续阅读。'));const retry=button(recordsRetryBusy?'正在读取…':'重新读取记录',recoverRecords);retry.disabled=recordsRetryBusy;content.append(retry);if(recordsRetryNotice){const notice=el('p','form-status',recordsRetryNotice);notice.setAttribute('role','status');content.append(notice);}
@@ -226,13 +228,14 @@ async function focusReading(){
 }
 async function boot(){
   try{
-    book=await api('/api/book');if(book.title?.zh){document.querySelector('.running-title').firstChild.textContent=book.title.zh;$('toc-book-title').textContent=book.title.zh;}if(selectedBookId){state.chapterId=book.readingStart?.chapterId||book.chapters[0].id;state.mode='en';recordsUnavailable=!readerSession?.user;}else recordsUnavailable=false;try{records=await api('/api/records');}catch{recordsUnavailable=true;records={comments:[],questions:[],position:null};}
+    book=await api('/api/book');if(book.title?.zh){document.querySelector('.running-title').firstChild.textContent=book.title.zh;$('toc-book-title').textContent=book.title.zh;}if(selectedBookId){state.chapterId=book.readingStart?.chapterId||book.chapters[0].id;state.mode=catalogReadingMode(book);recordsUnavailable=!readerSession?.user;}else recordsUnavailable=false;try{records=await api('/api/records');}catch{recordsUnavailable=true;records={comments:[],questions:[],position:null};}
     paragraphs=book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,section:s.number,chapterId:s.chapterId})));paragraphMap=new Map(paragraphs.map(p=>[p.id,p]));notesMap=new Map(book.annotations.map(n=>[n.id,n]));termsMap=new Map(book.glossary.map(t=>[t.id,t]));
     let localPosition=null;try{localPosition=JSON.parse(localStorage.getItem(progressKey)||'null');}catch{}
     let position=chooseReadingPosition({book,remote:records.position,local:localPosition,remoteAvailable:!recordsUnavailable});
     progressSync.adopt(recordsUnavailable?(position?.baseRevision??position?.revision??0):(records.position?.revision||0));
     if(position&&Number.isFinite(position.offset)&&Math.abs(position.offset)<=4000&&paragraphMap.has(position.passageId)){position.chapterId=paragraphMap.get(position.passageId).chapterId;state.chapterId=position.chapterId;if(['zh','en','parallel'].includes(position.mode))state.mode=position.mode;if(['literal','interpretive'].includes(position.variant))state.variant=position.variant;if(Number.isFinite(position.font))state.font=Math.max(18,Math.min(28,position.font));Object.assign(state,normalizeAppearance(position));}else position=null;
     const requestedEntry=resolveReaderEntry(book,new URLSearchParams(location.search));if(requestedEntry){state.chapterId=requestedEntry.chapterId;if(requestedEntry.note||requestedEntry.action==='translate')state.mode='en';position={...(position||{}),...state,chapterId:requestedEntry.chapterId,passageId:requestedEntry.passageId,offset:requestedEntry.offset,withinParagraph:undefined,contentVersion:book.contentVersion};}
+    const sampleEntry=!requestedEntry&&chineseSampleEntry(book,new URLSearchParams(location.search));if(sampleEntry){Object.assign(state,{chapterId:sampleEntry.chapterId,mode:sampleEntry.mode,variant:sampleEntry.variant});position={...(position||{}),...state,...sampleEntry,withinParagraph:undefined,contentVersion:book.contentVersion};const query=new URLSearchParams(location.search);query.delete('sample');history.replaceState(null,'',location.pathname+'?'+query);}
     if(selectedBookId){const onlyOriginal=chineseOriginalOnly(book);for(const option of $('view-mode').options){option.disabled=onlyOriginal&&option.value!=='en';if(option.value==='en')option.textContent=book.sourceLanguage==='zh'?'中文原文':'英文原文';if(option.value==='zh')option.textContent='中文译文';if(option.value==='parallel')option.textContent=book.sourceLanguage==='zh'?'原文与译文对照':'中英对照';}if(onlyOriginal)state.mode='en';}
     renderChapter();$('loading').hidden=true;$('load-error').hidden=true;await document.fonts.ready;if(position){restoreAnchor(position);cachePosition({...position,contentVersion:book.contentVersion,chapterLabel:resumeSummary(book,position)?.label});}else if(selectedBookId&&book.readingStart)restoreAnchor({...book.readingStart,offset:160});restoringProgress=false;document.body.dataset.ready='true';document.dispatchEvent(new CustomEvent('reader:ready'));if(requestedEntry){const query=new URLSearchParams(location.search);query.delete('passage');query.delete('note');query.delete('action');history.replaceState(null,'',location.pathname+'?'+query);if(requestedEntry.note){choosePassage(requestedEntry.passageId,null,paragraphMap.get(requestedEntry.passageId).original,'en');openPanel(requestedEntry.note==='question'?'question':'comment');if(requestedEntry.note==='records'){allRecords=true;renderPanel();}}else if(requestedEntry.action==='translate'){choosePassage(requestedEntry.passageId,null,'','en');}}
   }catch{ $('loading').hidden=true;$('load-error').hidden=false;}

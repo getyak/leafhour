@@ -1,6 +1,10 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createTranslationState} from '../app/translation-state.mjs';
 const first={id:'p1',original:'First paragraph.',translations:{}},second={id:'p2',original:'Another paragraph.',translations:{}},capabilities={authenticated:true,available:true};
+test('a guest cannot be sent to unavailable email login for untranslated text',()=>{
+  const state=createTranslationState();state.select(first.id);const view=state.view(first,{authenticated:false,available:true,loginAvailable:false});
+  assert.equal(view.disabled,true);assert.equal(view.label,'登录准备中');assert.match(view.notice,/尚未翻译/);
+});
 test('a late result belongs to its original paragraph and cannot reveal a different selection',()=>{
   const tasks=createTranslationState();tasks.select('p1');tasks.begin('p1');tasks.select('p2');assert.equal(tasks.complete('p1'),false);
   const view=tasks.view(second,capabilities);assert.equal(view.label,'翻译这段');assert.equal(view.disabled,false);assert.match(view.notice,/之前选择/);assert.match(view.notice,/当前段落尚未翻译/);
