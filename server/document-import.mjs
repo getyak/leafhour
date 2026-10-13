@@ -17,6 +17,9 @@ export async function extractDocument({filename,bytes}){
     return {pages:[{page:null,text}],format:ext.slice(1),review:'extracted_unreviewed'};
   }
   if(bytes.subarray(0,5).toString()!=='%PDF-')throw fail('文件内容不是有效 PDF');
+  // Explicitly trace the worker into serverless bundles. PDF.js otherwise imports
+  // workerSrc dynamically, which can be omitted from a deployed function.
+  await import('pdfjs-dist/legacy/build/pdf.worker.mjs');
   const {getDocument}=await import('pdfjs-dist/legacy/build/pdf.mjs');
   let task,document;
   try{
