@@ -2,7 +2,7 @@ import {selectedBookId,readerSession,readerFetch} from './reader-api.mjs';
 import {chineseOriginalOnly} from './source-language.mjs';
 import {createTranslationState,hasDualDrafts} from './translation-state.mjs';
 import {readerLoginUrl} from './reader-return.mjs';
-import {chineseSampleNotice} from './catalog-sample.mjs';
+import {chineseSampleNotice,translationDisclosure} from './catalog-sample.mjs';
 if(selectedBookId){
   const button=document.createElement('button');button.id='translate-passage';button.type='button';button.textContent='翻译这段';document.getElementById('paragraph-tools').prepend(button);
   const hint=document.createElement('p');hint.className='translation-notice';hint.setAttribute('role','status');document.getElementById('chapter-heading').append(hint);
@@ -23,6 +23,7 @@ if(selectedBookId){
   }
   document.addEventListener('reader:ready',()=>{
     const book=bridge().getBook();sourceReview.replaceChildren();sourceReview.hidden=book.visibility!=='private';
+    document.getElementById('translation-about').textContent=translationDisclosure(book);
     if(!sourceReview.hidden){const summary=document.createElement('summary'),filename=document.createElement('p'),detail=document.createElement('p'),original=document.createElement('div');summary.textContent=book.source.format==='pdf'?'PDF 文字已提取 · 未校对':'文字已导入 · 自动分段';filename.className='source-filename';filename.textContent=book.source.filename;detail.textContent=book.source.format==='pdf'?'文字在本机提取，换行和段落可能与 PDF 排版不同。建议对照你手中的原文件核对；段落保留 PDF 页码，自动分段不代表原书章节。':'原文保留在自己的书房。阅读片段由系统自动分组，不代表原书章节。';original.className='source-file-action';sourceReview.append(summary,filename,detail,original);void originalFile(original);}
     const onlyOriginal=chineseOriginalOnly(book);renderTranslation();for(const choice of document.querySelectorAll('[data-passage-variant]'))choice.hidden=onlyOriginal;for(const id of ['show-xray','show-stance','show-echo','show-chat','chapter-invitations'])document.getElementById(id).hidden=true;for(const link of document.querySelectorAll('a[href^="/exports/"],a[href="/evals"],a[href="/api/experiences/export"]'))link.hidden=true;const invitation=document.getElementById('chapter-invitations').closest('.setting-row');if(invitation)invitation.hidden=true;
   });

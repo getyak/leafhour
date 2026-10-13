@@ -52,3 +52,8 @@ test('Chinese trial links explicitly open the prepared start while ordinary read
   assert.deepEqual(chineseSampleEntry(book,new URLSearchParams('book=b1&sample=zh')),{chapterId:'ch01',passageId:'p1',mode:'zh',variant:'interpretive',offset:160});
   assert.equal(chineseSampleEntry(book,new URLSearchParams('book=b1')),null);assert.equal(chineseSampleEntry(book,new URLSearchParams('book=other&sample=zh')),null);
 });
+
+test('translation details describe only the actual public excerpt rather than the old seven-chapter private sample',async()=>{
+  const {translationDisclosure}=await import('../app/catalog-sample.mjs');const text=translationDisclosure({chineseSample:{paragraphs:6,translator:'Codex'}});
+  assert.match(text,/6 段/);assert.match(text,/Codex/);assert.match(text,/尚未人工审定/);assert.match(text,/其余.*英文/);assert.doesNotMatch(text,/七章|私有数据库/);
+});

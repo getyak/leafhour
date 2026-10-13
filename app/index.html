@@ -59,7 +59,7 @@
         <div class="setting-row setting-invitations"><label for="chapter-invitations">每章一个小问题</label><input id="chapter-invitations" type="checkbox"></div>
         <div class="setting-links"><a href="/evals">体验验证</a><a id="export-records" href="/api/records/export" download>导出记录与设置</a><button id="import-records">导入记录</button><input id="records-file" type="file" accept=".json" hidden></div>
       </details>
-      <details class="book-details"><summary>关于这份译文</summary><p>七章完整双译初稿，尚未经本人逐段复核。原文与译文可以随时核对；章导读、小节标题和旁注由编辑补充。书籍内容保存在私有数据库中，不随开源代码发布。</p></details>
+      <details class="book-details"><summary>关于这份译文</summary><p id="translation-about">直译与意译分别保存，AI 生成结果标为草稿。未翻译的段落保留原文，可以随时核对；章节的中文导航标题由编辑补充。</p></details>
       <p id="import-status" class="form-status" aria-live="polite"></p>
     </div>
   </dialog>
