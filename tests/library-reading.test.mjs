@@ -55,3 +55,19 @@ test('an oversized cloud record backup is rejected before importing a book or in
   const records={kind:'marginalia-personal-records',schemaVersion:3,bookId:book.bookId,contentVersion:book.contentVersion,comments:Array.from({length:1800},(_,i)=>({id:'note-'+i,bookId:book.bookId,contentVersion:book.contentVersion,passageId:book.sections[0].paragraphs[0].id,text:'x'.repeat(2000),origin:'user',createdAt:'2026-10-14T12:00:00Z'})),questions:[],readingSessions:[],readingMilestones:[],position:null};
   const targetFixture=hostedFixture(),target=await createLibraryService({dataDir:'fresh-cloud',catalogDir:null,translator:null,dataStore:createHostedStore(targetFixture)});await assert.rejects(target.restoreLibrary(other,{kind:'marginalia-library',schemaVersion:1,books:[{book,records}]}),e=>e.status===413);assert.equal((await target.list(other)).length,0);
 });
+
+test('cloud notes, questions and position updates preserve a history at its readable budget',async()=>{
+  for(const type of ['comments','questions']){
+    const fixture=hostedFixture(),store=createHostedStore(fixture),library=await createLibraryService({dataDir:'near-capacity-'+type,catalogDir:null,translator:null,dataStore:store}),book=await library.importDocument(owner,{filename:'history.txt',bytes:Buffer.from('A real paragraph for a substantial synthetic history.')}),file=path.join('near-capacity-'+type,'users',digest(owner.id),'records',digest(book.bookId)+'.json');
+    const history=await library.records(owner,book.bookId),row={passageId:book.sections[0].paragraphs[0].id,text:'甲'.repeat(2000),origin:'user',createdAt:'2026-10-14T12:00:00Z'};
+    const initial=Buffer.byteLength(JSON.stringify(history)),unit=Buffer.byteLength(JSON.stringify({...row,id:'history-0000'}))+1,count=Math.floor((3495000-initial)/unit);
+    history.comments=Array.from({length:count},(_,i)=>({...row,id:'history-'+String(i).padStart(4,'0')}));
+    for(const note of history.comments.slice(-3)){const remaining=3499980-Buffer.byteLength(JSON.stringify(history));if(remaining>11)note.quote='x'.repeat(Math.min(4000,remaining-11));}
+    assert.equal(Buffer.byteLength(JSON.stringify(history)),3499980);
+    await store.mutate(file,{},data=>Object.assign(data,history));
+    await assert.rejects(library.addComment(owner,book.bookId,{id:'beyond-readable-budget',passageId:row.passageId,text:'乙'.repeat(2000),quote:'丙'.repeat(4000)},type),error=>error.status===413);
+    await assert.rejects(library.saveProgress(owner,book.bookId,{chapterId:book.chapters[0].id,passageId:row.passageId,offset:0,mode:'en',variant:'literal'}),error=>error.status===413);
+    assert.deepEqual(await library.records(owner,book.bookId),history,'a refused write must preserve all existing source-linked records');
+    const part=await library.exportBookPart(owner,book.bookId);assert.ok(part.nextOffset,'the existing substantial history remains exportable');
+  }
+});
