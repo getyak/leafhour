@@ -1,6 +1,7 @@
-import { cp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, rm, writeFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {portalDocument} from '../server/portal-document.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const appDir = path.join(root, 'app');
@@ -12,7 +13,7 @@ await mkdir(outputDir, { recursive: true });
 await cp(appDir, outputDir, { recursive: true });
 await cp(path.join(appDir, 'index.html'), path.join(outputDir, 'read.html'));
 await cp(path.join(appDir, 'home.html'), path.join(outputDir, 'index.html'));
-await cp(path.join(appDir, 'home.html'), path.join(outputDir, 'library.html'));
+await writeFile(path.join(outputDir, 'library.html'),portalDocument(await readFile(path.join(appDir,'home.html'),'utf8'),'/library'));
 
 const evalsPath = path.join(outputDir, 'evals.html');
 await mkdir(path.join(outputDir, 'evals'), { recursive: true });

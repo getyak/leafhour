@@ -16,7 +16,7 @@ const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.classNa
 const ownerScope=createOwnerScope();
 const grantResult=createGrantResult();let grantBusy=false;
 let mcpSetup=null,mcpSetupBusy=false,mcpReceipt=null,mcpSetupSequence=0;
-const api=(url,data,ticket=ownerScope.capture())=>readOwnerResponse(ownerScope,ticket,()=>fetch(url,{...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json',...(url.startsWith('/api/library')?{'X-Reader-Owner':ticket.owner}:{})}}),()=>{ownerScope.adopt('guest');session={...session,user:null};clearPrivateUI();location.reload();});
+const api=(url,data,ticket=ownerScope.capture())=>readOwnerResponse(ownerScope,ticket,()=>fetch(url,{...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json',...(url.startsWith('/api/library')?{'X-Reader-Owner':ticket.owner}:{})}}).catch(()=>{throw Error('网络暂时无法连接，请稍后重试。');}),()=>{ownerScope.adopt('guest');session={...session,user:null};clearPrivateUI();location.reload();});
 const status=(id,text,error=false)=>{$(id).textContent=text;$(id).classList.toggle('error',error);};
 let session=null,books=[],shelf='all',pendingUpload=false,restoringLibrary=false,upload=createUploadState();
 const isLibrary=location.pathname==='/library';$('home-view').hidden=isLibrary;$('library-view').hidden=!isLibrary;
@@ -60,7 +60,7 @@ async function refresh(knownSession){
   authDialog.updateCapabilities();const user=session.user;
   $('account-button').textContent=user?(user.kind==='local'?'本机书房 · 退出':'已登录 · 退出'):'登录 / 注册 ↗';
   $('library-description').textContent=user?(user.kind==='local'?'自己的书，留在这台电脑。回来时，从上次停下的地方继续。':'自己的书与思考，安静地留在这里。'):'先选一本书，读几页。自己的书和笔记，登录后留在这里。';
-  books=(await api('/api/library')).books;renderBooks();$('featured-books').replaceChildren(...books.filter(b=>b.visibility==='public').slice(0,3).map(bookCard));
+  try{books=(await api('/api/library')).books;}catch(error){if(isLibrary)dashboard.fail(error);throw error;}renderBooks();$('featured-books').replaceChildren(...books.filter(b=>b.visibility==='public').slice(0,3).map(bookCard));
   if(isLibrary)dashboard.update();
 }
 $('account-button').addEventListener('click',async()=>{

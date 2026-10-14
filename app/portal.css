@@ -38,3 +38,5 @@ dialog:not(.auth-dialog){background:var(--paper);color:var(--ink);border-color:v
 @media(max-width:400px){.site-header #account-button{font-size:12px}}
 .today-copy,.book-meta{min-width:0}.today-copy h2,.book-meta h3,.day-record strong{overflow-wrap:anywhere}.hero-scene:after{background:linear-gradient(transparent,#20391cb3)}
 @media(max-width:760px){.search-label input,.today-book-choice,.reading-goal select{font-size:16px}}
+.today-progress{margin:16px 0 0;color:var(--muted);font-size:12px;line-height:1.7}.dashboard-loading{padding:30px 0;min-height:120px;color:var(--muted);font-size:14px}
+.dashboard-loading{min-height:360px}.dashboard-loading button{display:block;margin-top:16px}
