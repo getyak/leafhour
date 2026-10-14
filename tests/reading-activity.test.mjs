@@ -47,3 +47,11 @@ test('new activity backup validates all entries before mutation and preserves th
 test('calendar completion events return to an actual source passage in that chapter',async()=>{
   const {buildReadingCalendar}=await domain(),records=readingRecords();records.readingMilestones=[{id:'ch2-read',bookId:readingBook.bookId,contentVersion:readingBook.contentVersion,origin:'user',type:'chapter_read',chapterId:'ch02',createdAt:'2026-10-14T12:30:00Z'}];const data=buildReadingCalendar([{book:readingBook,records}],{month:'2026-10',timeZone:'Asia/Singapore'});assert.equal(data.days[13].details[0].passageId,'p3');
 });
+
+test('every daily book keeps its actual source when newer records exceed the visible timeline',async()=>{
+  const {buildReadingCalendar}=await domain(),a=readingRecords(),b=readingRecords();a.position={chapterId:'ch02',passageId:'p4'};a.readingSessions=[focusSession()];b.bookId='newer-book';b.comments=Array.from({length:21},(_,i)=>({id:'newer-'+i,origin:'user',passageId:'p3',text:'Synthetic later thought.',createdAt:new Date(Date.parse('2026-10-14T13:00:00Z')+i*1000).toISOString()}));
+  const day=buildReadingCalendar([{book:readingBook,records:a},{book:{...readingBook,bookId:b.bookId},records:b}],{month:'2026-10',timeZone:'UTC'}).days[13];
+  assert.equal(day.details.length,20);assert.equal(day.totalDetails,22);assert.ok(day.details.every(d=>d.bookId===b.bookId));
+  assert.deepEqual(day.books.find(r=>r.bookId===a.bookId).source,{bookId:a.bookId,type:'reading',chapterId:'ch01',passageId:'p2'},'the day’s source must survive independently of the visible list and the newer saved position');
+  assert.deepEqual(day.books.find(r=>r.bookId===b.bookId).source,{bookId:b.bookId,type:'comment',chapterId:'ch02',passageId:'p3'});
+});

@@ -29,6 +29,11 @@ export function buildReadingCalendar(entries,{month,timeZone}){
       if(mark.origin!=='user'||!['chapter_read','book_finished'].includes(mark.type))continue;const stamp=Date.parse(mark.createdAt);if(!Number.isFinite(stamp))continue;const day=byDay.get(dateKey(stamp));if(!day)continue;const row=rowFor(day,book);day.chapterMarks++;row.chapterMarks++;day.details.push({id:mark.id,type:mark.type,bookId:book.bookId,title:book.title,createdAt:mark.createdAt,origin:'user',chapterId:mark.chapterId,passageId:book.sections.find(s=>s.chapterId===mark.chapterId)?.paragraphs[0]?.id||book.readingStart?.passageId||book.sections[0]?.paragraphs[0]?.id});
     }
   }
-  for(const day of days){day.durationSeconds=readingIntervalSeconds(day._intervals);day.books=[...day._books.values()].map(row=>{const {_intervals,_sessions,...visible}=row;return {...visible,durationSeconds:readingIntervalSeconds(_intervals),sessionCount:_sessions.size};});day.details.sort((a,b)=>Date.parse(b.createdAt)-Date.parse(a.createdAt));day.totalDetails=day.details.length;day.details=day.details.slice(0,20);delete day._intervals;delete day._books;}
+  for(const day of days){
+    day.durationSeconds=readingIntervalSeconds(day._intervals);day.details.sort((a,b)=>Date.parse(b.createdAt)-Date.parse(a.createdAt));
+    const sources=new Map();for(const item of day.details){const old=sources.get(item.bookId);if(!old||old.type!=='reading'&&item.type==='reading')sources.set(item.bookId,item);}
+    day.books=[...day._books.values()].map(row=>{const {_intervals,_sessions,...visible}=row,item=sources.get(row.bookId),source=item?{bookId:item.bookId,type:item.type,chapterId:item.chapterId,passageId:item.passageId}:null;return {...visible,durationSeconds:readingIntervalSeconds(_intervals),sessionCount:_sessions.size,...(source?{source}:{})};});
+    day.totalDetails=day.details.length;day.details=day.details.slice(0,20);delete day._intervals;delete day._books;
+  }
   return {month,timeZone,days,durationSeconds:days.reduce((sum,d)=>sum+d.durationSeconds,0),readingDays:days.filter(d=>d.durationSeconds>0||d.chapterMarks>0).length,notes:days.reduce((sum,d)=>sum+d.notes,0),questions:days.reduce((sum,d)=>sum+d.questions,0),meaning:'前台阅读时段由用户开启；重叠时间不重复累计。笔记、读完标记与理解分别记录。'};
 }
