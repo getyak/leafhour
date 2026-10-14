@@ -13,7 +13,7 @@ export function readOwnerResponse(scope,ticket,request,onSessionChanged){
       onSessionChanged();throw Error('账户已切换，请重新进入书房。');
     }
     let body;try{body=await response.json();}catch{throw Error('服务暂时无法连接，请稍后重试');}
-    if(!response.ok)throw Error(body.error||'暂时无法完成');
+    if(!response.ok){const error=Object.assign(Error(body.error||'暂时无法完成'),{status:response.status});if(Number.isInteger(body.retryAfter)&&body.retryAfter>0)error.retryAfter=Math.min(3600,body.retryAfter);throw error;}
     return body;
   });
 }

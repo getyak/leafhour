@@ -2,6 +2,7 @@ import {positionStorageKey} from './reading-progress.mjs';
 import {validateLibraryBackup} from './library-backup.mjs';
 import {createUploadState} from './upload-state.mjs';
 import {createOwnerScope,readOwnerResponse} from './owner-scope.mjs';
+import {mountAuthDialog} from './auth-dialog.mjs';
 import {safeReaderReturn} from './reader-return.mjs';
 import {createGrantResult,grantScopeSummary} from './grant-result.mjs';
 import {makeMcpConfiguration} from './mcp-config.mjs';
@@ -18,12 +19,17 @@ const isLibrary=location.pathname==='/library';$('home-view').hidden=isLibrary;$
 const entryQuery=new URLSearchParams(location.search),returnToReader=safeReaderReturn(entryQuery.get('next'));
 const returnAfterAuth=()=>{if(returnToReader&&!pendingUpload){location.replace(returnToReader);return true;}if(!isLibrary){location.href='/library';return true;}return false;};
 if(isLibrary)document.title='我的书房 · 旁读 Marginalia';
-const openAuth=()=>{$('auth-status').textContent=session?.emailAvailable?'':session?.localAvailable?'邮箱服务尚未配置。你可以先试读，或进入本机书房。':'邮箱登录准备中。现在可以直接试读三本公版书。';$('auth-dialog').showModal();};
+const authDialog=mountAuthDialog({dialog:$('auth-dialog'),api,getSession:()=>session,getReturnTo:()=>pendingUpload?'/library?upload=1':returnToReader||'/library',onSessionSettled:()=>refresh().catch(error=>status('library-status',error.message,true)),onAuthenticated:async()=>{
+  if(returnAfterAuth())return;
+  try{await refresh();status('library-status','欢迎回来。');if(pendingUpload)openUpload();}
+  catch(error){status('library-status','已登录，书架暂时无法刷新。'+error.message,true);}
+}});
+const openAuth=message=>authDialog.open(typeof message==='string'?message:undefined);
 const ensureUser=()=>{if(session?.user)return true;openAuth();return false;};
 function clearPrivateUI(){
   $('data-controls').hidden=true;$('toggle-data').setAttribute('aria-expanded','false');grantResult.clear();renderGrantResult();grantBusy=false;$('create-grant').disabled=false;$('create-grant').textContent='创建 7 天授权 →';$('grant-list').replaceChildren();$('grant-form').reset();
   for(const id of ['data-status','upload-status','auth-status','library-status','upload-filename'])status(id,'');
-  for(const id of ['email','email-code','book-file','backup-file','book-search'])$(id).value='';$('verify-form').hidden=true;
+  for(const id of ['book-file','backup-file','book-search'])$(id).value='';authDialog.reset();
   if($('auth-dialog').open)$('auth-dialog').close();if($('upload-dialog').open)$('upload-dialog').close();$('upload-dialog').removeAttribute('aria-busy');$('confirm-upload').disabled=true;$('book-file').disabled=false;$('restore-library').disabled=false;
   pendingUpload=false;restoringLibrary=false;upload=createUploadState();shelf='all';document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
   books=books.filter(b=>b.visibility==='public').map(b=>({...b,resume:null}));renderBooks();$('featured-books').replaceChildren(...books.slice(0,3).map(bookCard));
@@ -45,7 +51,7 @@ function renderBooks(){const query=$('book-search').value.trim().toLowerCase();c
 async function refresh(knownSession){
   const next=knownSession||await api('/api/auth/session'),continueUpload=!session?.user&&next.user&&pendingUpload,changed=ownerScope.adopt(next.user?.id||'guest');session=next;
   if(changed){clearPrivateUI();pendingUpload=!!continueUpload;}
-  $('local-entry').hidden=!session.localAvailable;$('send-code').disabled=!session.emailAvailable;$('auth-intro').textContent=session.emailAvailable?'用邮箱进入，无需记住密码。第一次验证后，会为你建立书房。':session.localAvailable?'本机书房已准备好。邮箱登录需先配置邮件服务。':'邮箱登录准备中。你可以先试读，无需注册。';const user=session.user;
+  authDialog.updateCapabilities();const user=session.user;
   $('account-button').textContent=user?(user.kind==='local'?'本机书房 · 退出':'已登录 · 退出'):'登录 / 注册 ↗';
   $('library-description').textContent=user?(user.kind==='local'?'自己的书，留在这台电脑。回来时，从上次停下的地方继续。':'自己的书与思考，安静地留在这里。'):'先选一本书，读几页。自己的书和笔记，登录后留在这里。';
   books=(await api('/api/library')).books;renderBooks();$('featured-books').replaceChildren(...books.filter(b=>b.visibility==='public').slice(0,3).map(bookCard));
@@ -58,9 +64,6 @@ $('account-button').addEventListener('click',async()=>{
 });
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
 for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});
-$('email-form').addEventListener('submit',async e=>{e.preventDefault();const b=$('send-code');b.disabled=true;status('auth-status','正在发送验证码…');try{await api('/api/auth/code',{email:$('email').value});$('verify-form').hidden=false;$('email-code').focus();status('auth-status','验证码已发送，请查看邮箱。10 分钟内有效。');}catch(error){status('auth-status',error.message,true);}finally{b.disabled=!session?.emailAvailable;}});
-$('verify-form').addEventListener('submit',async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;try{await api('/api/auth/verify',{email:$('email').value,code:$('email-code').value});$('auth-dialog').close();if(returnAfterAuth())return;await refresh();status('library-status','欢迎回来。');if(pendingUpload)openUpload();}catch(error){status('auth-status',error.message,true);}finally{b.disabled=false;}});
-$('local-login').addEventListener('click',async()=>{try{await api('/api/auth/local',{});$('auth-dialog').close();if(returnAfterAuth())return;await refresh();if(pendingUpload)openUpload();}catch(error){status('auth-status',error.message,true);}});
 function openUpload(){pendingUpload=true;if(!ensureUser())return;pendingUpload=false;if(!upload.file){$('book-file').value='';$('upload-filename').textContent='';status('upload-status','');$('confirm-upload').textContent='放进我的书房 →';}$('confirm-upload').disabled=upload.busy||!upload.file;$('upload-dialog').showModal();}
 for(const id of ['upload-button','empty-upload'])$(id).addEventListener('click',openUpload);
 function selectFile(file){if(!file||upload.busy)return;$('upload-filename').textContent='';$('confirm-upload').disabled=true;$('book-file').value='';try{upload.select(file);$('upload-filename').textContent=file.name+' · '+(file.size>=1024*1024?(file.size/1024/1024).toFixed(2)+' MB':Math.max(1,Math.ceil(file.size/1024))+' KB');$('confirm-upload').textContent='放进我的书房 →';$('confirm-upload').disabled=false;status('upload-status','');}catch(error){status('upload-status',error.message,true);}}
@@ -139,7 +142,7 @@ $('grant-form').addEventListener('submit',async e=>{
 $('copy-token').addEventListener('click',async()=>{const ticket=ownerScope.capture(),receipt=grantResult.current();if(!receipt){renderGrantResult();return;}try{await navigator.clipboard.writeText(receipt.token);if(ownerScope.isCurrent(ticket)&&grantResult.isCurrent(receipt))status('data-status','已复制访问令牌。');}catch{if(ownerScope.isCurrent(ticket)&&grantResult.isCurrent(receipt))status('data-status','请先显示令牌，再选中手动复制。');}});
 $('show-token').addEventListener('click',()=>{if(!grantResult.current()){renderGrantResult();return;}const visible=$('grant-token').type==='password';$('grant-token').type=visible?'text':'password';$('show-token').textContent=visible?'隐藏令牌':'显示令牌';$('show-token').setAttribute('aria-pressed',String(visible));});
 $('dismiss-token').addEventListener('click',()=>{grantResult.clear();renderGrantResult();status('data-status','令牌已从本页收起。授权仍有效，可在下面撤回。');});
-refresh().then(()=>{if(isLibrary&&entryQuery.get('login')==='1'){if(session?.user&&returnToReader)location.replace(returnToReader);else if(!session?.user)openAuth();}}).catch(error=>{status('library-status',error.message,true);$('featured-books').replaceChildren(make('p','muted','书架暂时无法连接，请稍后重试。'));});
+refresh().then(()=>{if(isLibrary&&entryQuery.get('upload')==='1')openUpload();if(isLibrary&&entryQuery.get('login')==='1'){if(session?.user&&returnToReader)location.replace(returnToReader);else if(!session?.user){const messages={cancelled:'登录已取消，可以重新选择。',expired:'登录链接已过期，请重新开始。',unavailable:'登录服务暂时无法连接，请稍后重试。'};openAuth(messages[entryQuery.get('auth_error')]);}}}).catch(error=>{status('library-status',error.message,true);$('featured-books').replaceChildren(make('p','muted','书架暂时无法连接，请稍后重试。'));});
 
 const checkOwner=async()=>{if(document.hidden)return;try{const current=await api('/api/auth/session');if((current.user?.id||'guest')!==(session?.user?.id||'guest'))await refresh(current);}catch{}};
 window.addEventListener('focus',checkOwner);document.addEventListener('visibilitychange',checkOwner);

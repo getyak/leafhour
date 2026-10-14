@@ -2,6 +2,7 @@ import {mkdir,readFile,writeFile,rename} from 'node:fs/promises';
 import path from 'node:path';
 import {randomBytes,randomInt,randomUUID} from 'node:crypto';
 import {digest,fail} from './document-import.mjs';
+import {normalizeAuthEmail,OTP_POLICY} from './auth-policy.mjs';
 
 export async function smtpSender(env=process.env){
   if(!env.READER_SMTP_HOST||!env.READER_SMTP_FROM)return null;
@@ -14,7 +15,7 @@ export async function createEmailAuth({dataDir,sendCode=null,clock=Date.now}={})
   await mkdir(dataDir,{recursive:true,mode:0o700});const file=path.join(dataDir,'auth.json');let queue=Promise.resolve();
   const read=async()=>{try{return JSON.parse(await readFile(file,'utf8'));}catch(e){if(e.code==='ENOENT')return {codes:{},sessions:[]};throw e;}};
   const mutate=operation=>{const work=queue.catch(()=>{}).then(async()=>{const data=await read(),result=await operation(data);const pending=file+'.pending';await writeFile(pending,JSON.stringify(data),{mode:0o600});await rename(pending,file);return result;});queue=work;return work;};
-  const emailOf=value=>{if(typeof value!=='string'||value.length>254||!/^\S+@[^\s@]+\.[^\s@]+$/.test(value.trim()))throw fail('请输入有效的邮箱地址');return value.trim().toLowerCase();};
+  const emailOf=normalizeAuthEmail;
   const session=(data,user)=>{const token=randomBytes(32).toString('base64url');data.sessions=data.sessions.filter(s=>s.expiresAt>clock());data.sessions.push({tokenHash:digest(token),user,expiresAt:clock()+7*86400000});return {token,user};};
   async function requestCode(value){
     const email=emailOf(value);if(!sendCode)throw fail('邮箱服务尚未配置。现在可以试读，或进入本机书房。',503);
@@ -25,7 +26,7 @@ export async function createEmailAuth({dataDir,sendCode=null,clock=Date.now}={})
       const code=String(randomInt(100000,1000000)),salt=randomBytes(16).toString('hex');
       try{await sendCode(email,code);}catch{throw fail('邮件暂时未能发出，请稍后再试',502);}
       for(const [id,row] of Object.entries(data.codes))if(row.expiresAt<clock())delete data.codes[id];
-      data.codes[key]={salt,codeHash:digest(salt+code),requestedAt:clock(),expiresAt:clock()+600000,attempts:0};data.requests.push(clock());return {sent:true,expiresIn:600};
+      data.codes[key]={salt,codeHash:digest(salt+code),requestedAt:clock(),expiresAt:clock()+600000,attempts:0};data.requests.push(clock());return {sent:true,expiresIn:600,retryAfter:60};
     });
   }
   async function verifyCode(value,code){
@@ -37,5 +38,5 @@ export async function createEmailAuth({dataDir,sendCode=null,clock=Date.now}={})
   async function localSession(){return mutate(data=>session(data,{id:'local-owner',email:null,kind:'local'}));}
   async function userFor(token){if(typeof token!=='string'||token.length>128)return null;await queue.catch(()=>{});return (await read()).sessions.find(s=>s.tokenHash===digest(token)&&s.expiresAt>clock())?.user||null;}
   async function logout(token){return mutate(data=>{data.sessions=data.sessions.filter(s=>s.tokenHash!==digest(token||''));});}
-  return {requestCode,verifyCode,localSession,userFor,logout,emailAvailable:!!sendCode};
+  return {requestCode,verifyCode,localSession,userFor,logout,capabilities:async()=>({email:!!sendCode,providers:{google:false,apple:false},otp:{...OTP_POLICY}}),emailAvailable:!!sendCode};
 }

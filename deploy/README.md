@@ -6,7 +6,17 @@
 
 服务端配置 `SUPABASE_URL`、`SUPABASE_SECRET_KEY`、`SUPABASE_PUBLISHABLE_KEY`、`READER_PUBLIC_ORIGIN`。密钥只留在 Vercel 的受保护环境变量，不能提交。可选 `DEEPSEEK_API_KEY` 提供显式的当前段落及邻段双译草稿。
 
-邮箱使用 Supabase Auth 的验证码验证与会话刷新。先在 Supabase 配好用于普通用户的 SMTP，以及含 `{{ .Token }}` 的登录邮件模板，再设 `READER_EMAIL_ENABLED=true`。验证码允许六到八位。未配置时保留匿名试读，禁用发信入口。默认 Supabase 邮件只供项目团队成员使用，不能视为生产注册服务。
+邮箱使用 Supabase Auth 的验证码验证与会话刷新。生产设置为六位、十分钟有效，同一邮箱至少六十秒后重发。服务端保留六到八位的输入兼容，网页与新生产配置使用六位。未配置时保留匿名试读，禁用发信入口。默认 Supabase 邮件只供项目团队成员使用，不能视为生产注册服务。
+
+Resend 先验证自己的发件域名。按控制台返回的真实值添加发送用途的 DKIM、SPF 和 MX 记录，保留现有邮箱接收记录；不要把根域的接收 MX 改成 Resend。使用仅限该域名的发信密钥，在 Supabase Auth 的 Custom SMTP 设置 `smtp.resend.com`、端口 `465`、用户名 `resend`、密码为该密钥，发件名称和地址使用自己的产品配置。将 `deploy/auth-email.html` 同时用于确认注册与 Magic Link 模板，两个模板都要保留实际 `{{ .Token }}`。在 Supabase 设置 `mailer_otp_length=6`、`mailer_otp_exp=600`、`smtp_max_frequency=60`，邮件发送额度与本站每小时三十次总额度匹配。真实收信、验证和退出通过后，再设 `READER_EMAIL_ENABLED=true`。
+
+Google 与 Apple 从 Supabase 公共能力配置读取实际启用状态，未配置的入口显示“准备中”。Google 使用网站 OAuth 客户端，授权来源为本站正式 HTTPS 来源，授权回调为 `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback`，只申请登录所需的身份资料。Supabase 的 Site URL 设为本站正式来源，额外跳转白名单加入精确的 `https://YOUR_READER/api/auth/callback`；浏览器不保存供应商令牌。本站用一次性事务、浏览器 Cookie 和 PKCE 交换授权码，成功后继续使用随机会话 Cookie。
+
+Apple 使用网站 Services ID，与启用 Sign in with Apple 的主 App ID 关联，登记 Supabase 域名及上述供应商回调。网站登录需要专用签名密钥、Team ID 与六个月内有效的客户端密钥；iOS 分发密钥不能直接当作网站凭据。记录到期时间并在到期前更新 Supabase 配置，再做一次真实授权返回。使用隐藏邮箱时保留 Apple 给出的身份，不能按猜测的真实邮箱合并书房；如要向隐藏邮箱发信，先登记合法发信来源。
+
+会话在本站最多保留七天；令牌只留在服务端，多个实例共同持有刷新租约。退出先撤销本站会话，再通知供应商。网络或供应商短暂不可用显示可重试的错误，避免把服务故障当成错误验证码。登录返回只允许书房、上传入口及经过验证的阅读地址，不接受任意外站跳转。回调被取消或过期时可重新选择登录方式。
+
+验收分别记录“配置已保存”“邮件已发出”“邮箱实际收到”“登录已完成”。Google、Apple 必须各自经过官方授权页并返回本站，不能用测试响应或按钮可点击代替真实验证。维护凭据和验收记录时遵守实例拥有者指定的存储位置，勿进入发布镜像。
 
 PDF / TXT / Markdown 原文件通过短期签名直接上传私人存储，避免 Vercel 请求大小限制，处理完成后保存内容哈希验证的原件。原文件上限 20 MB，PDF 限 500 页和 200 万字；云端提取书籍 JSON 另限 350 万字节，超出时在加入书房前明确拒绝，需按章拆分。原件校验后使用一分钟有效的私人下载链接，避免函数响应体大小限制。扫描件需另做 OCR。每个账户每小时最多开始 6 次上传、每天 20 次；未完成的临时上传有一小时应用有效期，存储服务的签名本身有效期由 Supabase 控制，过期临时对象需运维清理。
 

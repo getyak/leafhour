@@ -170,7 +170,7 @@ function returnToPanelSource(){
 }
 function renderRecordsAccess(content){
   if(selectedBookId&&!readerSession?.user){
-    if(!readerSession?.emailAvailable&&!readerSession?.localAvailable){content.append(el('p','empty-state','邮箱登录准备中，个人笔记暂未开放。你可以继续阅读中文试读、切换译法和核对原文。'));return;}
+    if(!readerSession?.emailAvailable&&!readerSession?.localAvailable&&!readerSession?.providers?.google&&!readerSession?.providers?.apple){content.append(el('p','empty-state','邮箱登录准备中，个人笔记暂未开放。你可以继续阅读中文试读、切换译法和核对原文。'));return;}
     content.append(el('p','empty-state','登录后，把想法和问题留在自己的书房。回来时仍在当前原文段落。'));const login=el('a','quiet-button','登录后回到这段 →');login.href=readerLoginUrl({bookId:selectedBookId,passageId:selectedId,note:allRecords?'records':panelTab==='question'?'question':'comment'});content.append(login);return;
   }
   content.append(el('p','empty-state','个人记录暂时无法读取。原来的记录不会被覆盖，正文仍可继续阅读。'));const retry=button(recordsRetryBusy?'正在读取…':'重新读取记录',recoverRecords);retry.disabled=recordsRetryBusy;content.append(retry);if(recordsRetryNotice){const notice=el('p','form-status',recordsRetryNotice);notice.setAttribute('role','status');content.append(notice);}

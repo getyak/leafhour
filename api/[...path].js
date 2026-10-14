@@ -23,7 +23,7 @@ return async function handler(req,res){
     const portal=await portalPromise,url=new URL(req.url,origin);url.pathname=route;
     const handled=await portal.handle({req,res,url,send:(status,body)=>json(res,status,body)});
     if(!handled)json(res,404,{error:'找不到这个操作'});
-  }catch(error){json(res,error.status||500,{error:error.status?error.message:'服务暂时无法完成操作，请重试'});}
+  }catch(error){const retryAfter=Number.isInteger(error.retryAfter)&&error.retryAfter>0?Math.min(3600,error.retryAfter):null;if(retryAfter)res.setHeader('Retry-After',String(retryAfter));json(res,error.status||500,{error:error.status?error.message:'服务暂时无法完成操作，请重试',...(retryAfter?{retryAfter}:{})});}
 }
 }
 export default createHostedHandler();

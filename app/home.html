@@ -2,7 +2,7 @@
 <html lang="zh-Hans">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="description" content="旁读：从一本书开始，在原文、译文和自己的思考之间往返。上传 PDF，按需翻译，保留属于自己的阅读记录。">
-  <title>旁读 Marginalia · 在书页之间，读见自己</title><link rel="stylesheet" href="/portal.css"><script type="module" src="/portal.js"></script>
+  <title>旁读 Marginalia · 在书页之间，读见自己</title><link rel="stylesheet" href="/portal.css"><link rel="stylesheet" href="/auth.css"><script type="module" src="/portal.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -37,6 +37,26 @@
 </div>
 </main>
 <footer class="site-footer"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true">旁</span><span class="brand-name">旁读<small>MARGINALIA</small></span></a><p>读得慢一点，留下自己的思考。</p><a href="/library#agent">数据与 Agent ↗</a><span>本地运行 · 可自托管</span></footer>
-<dialog id="auth-dialog" class="auth-dialog" aria-labelledby="auth-title"><button class="dialog-close" data-close="auth-dialog" aria-label="关闭登录">×</button><span class="auth-symbol" aria-hidden="true">旁</span><p class="eyebrow">WELCOME TO YOUR READING ROOM</p><h2 id="auth-title">把阅读留在自己的书房。</h2><p id="auth-intro">用邮箱进入，无需记住密码。第一次验证后，会为你建立书房。</p><form id="email-form"><label for="email">邮箱地址</label><input id="email" type="email" name="email" autocomplete="email" placeholder="you@example.com" required maxlength="254"><button class="primary full" id="send-code" type="submit">获取登录验证码 <span>→</span></button></form><form id="verify-form" hidden><label for="email-code">邮件里的验证码</label><input id="email-code" name="code" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6,8}" maxlength="8" required><button class="primary full" type="submit">进入我的书房 <span>→</span></button></form><p id="auth-status" class="status" role="status"></p><div id="local-entry" hidden><div class="auth-divider"><span>本机使用</span></div><button id="local-login" class="outline full">进入本机书房 <span>↗</span></button><p class="local-note">仅在这台电脑使用，无需邮箱；与邮箱账户分开保存。</p></div><a class="auth-skip" href="/read?book=gutenberg-alice&amp;sample=zh">也可以先试读几页 →</a></dialog>
+<dialog id="auth-dialog" class="auth-dialog" aria-labelledby="auth-title" aria-describedby="auth-intro">
+  <button class="dialog-close" data-close="auth-dialog" aria-label="关闭登录">×</button>
+  <span class="auth-symbol" aria-hidden="true">旁</span>
+  <h2 id="auth-title">进入你的书房</h2><p id="auth-intro">保存自己的书，接着上次读。</p>
+  <div id="auth-email-step">
+    <div class="auth-providers">
+      <button id="login-google" class="auth-provider" disabled><img src="/auth-assets/google.png" alt="" width="20" height="20"><span>使用 Google 继续</span><span class="provider-state">准备中</span></button>
+      <button id="login-apple" class="auth-provider" disabled><img src="/auth-assets/apple.svg" alt="" width="20" height="20"><span>使用 Apple 继续</span><span class="provider-state">准备中</span></button>
+    </div>
+    <div class="auth-divider"><span>或使用邮箱</span></div>
+    <form id="email-form"><label for="email">邮箱地址</label><input id="email" type="email" name="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com" required maxlength="254"><button class="primary" id="send-code" type="submit" disabled>继续</button></form>
+  </div>
+  <div id="auth-code-step" hidden>
+    <div class="auth-mailbox"><span id="auth-recipient"></span><button id="change-email" class="auth-text-button">更换邮箱</button></div>
+    <form id="verify-form"><label for="email-code">登录验证码</label><input id="email-code" name="code" type="text" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="12" aria-describedby="auth-status" required><button class="primary" id="verify-code" type="submit" disabled>进入书房</button></form>
+    <button id="resend-code" class="auth-text-button" disabled>重新发送验证码</button>
+  </div>
+  <p id="auth-status" class="status" role="status" aria-live="polite"></p><p id="auth-availability" class="auth-availability">登录服务准备中，可以先试读。</p>
+  <div id="local-entry" hidden><div class="auth-divider"><span>本机使用</span></div><button id="local-login" class="outline full">进入本机书房 ↗</button><p class="local-note">仅在这台电脑使用，无需邮箱；与邮箱账户分开保存。</p></div>
+  <a class="auth-skip" href="/read?book=gutenberg-alice&amp;sample=zh">先试读几页 →</a>
+</dialog>
 <dialog id="upload-dialog" class="upload-dialog" aria-labelledby="upload-title"><button class="dialog-close" data-close="upload-dialog" aria-label="关闭上传">×</button><p class="eyebrow">BRING YOUR OWN BOOK</p><h2 id="upload-title">这次，你想读什么？</h2><p>文件在本机提取，上传到你自己的书房。</p><label class="drop-zone" id="drop-zone" for="book-file"><span class="upload-icon" aria-hidden="true">↥</span><strong>拖放一本书，或点击选择</strong><span>PDF、TXT、Markdown · 最多 20 MB</span><input type="file" id="book-file" accept=".pdf,.txt,.md" hidden></label><p id="upload-filename" class="selected-file"></p><p class="muted">文字版 PDF 可以直接提取。扫描件需要先做文字识别；排版提取后仍建议核对原文。</p><p id="upload-status" class="status" role="status"></p><button class="primary full" id="confirm-upload" disabled>放进我的书房 <span>→</span></button></dialog>
 </body></html>
