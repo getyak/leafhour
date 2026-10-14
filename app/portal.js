@@ -1,3 +1,4 @@
+import {exportLibraryInParts} from './library-export.mjs';
 import {retainedLibraryBackup,restoreRetainedDrafts} from './reading-retained-backup.mjs';
 import {positionStorageKey} from './reading-progress.mjs';
 import {validateLibraryBackup} from './library-backup.mjs';
@@ -18,7 +19,7 @@ const grantResult=createGrantResult();let grantBusy=false;
 let mcpSetup=null,mcpSetupBusy=false,mcpReceipt=null,mcpSetupSequence=0;
 const api=(url,data,ticket=ownerScope.capture())=>readOwnerResponse(ownerScope,ticket,()=>fetch(url,{...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json',...(url.startsWith('/api/library')?{'X-Reader-Owner':ticket.owner}:{})}}).catch(()=>{throw Error('网络暂时无法连接，请稍后重试。');}),()=>{ownerScope.adopt('guest');session={...session,user:null};clearPrivateUI();location.reload();});
 const status=(id,text,error=false)=>{$(id).textContent=text;$(id).classList.toggle('error',error);};
-let session=null,books=[],shelf='all',pendingUpload=false,restoringLibrary=false,upload=createUploadState();
+let session=null,books=[],shelf='all',pendingUpload=false,restoringLibrary=false,exportingLibrary=false,exportSequence=0,upload=createUploadState();
 const isLibrary=location.pathname==='/library';$('home-view').hidden=isLibrary;$('library-view').hidden=!isLibrary;
 const entryQuery=new URLSearchParams(location.search),returnToReader=safeReaderReturn(entryQuery.get('next'));
 const returnAfterAuth=()=>{if(returnToReader&&!pendingUpload){location.replace(returnToReader);return true;}if(!isLibrary){location.href='/library';return true;}return false;};
@@ -36,7 +37,7 @@ function clearPrivateUI(){
   for(const id of ['data-status','upload-status','auth-status','library-status','upload-filename'])status(id,'');
   for(const id of ['book-file','backup-file','book-search'])$(id).value='';authDialog.reset();
   if($('auth-dialog').open)$('auth-dialog').close();if($('upload-dialog').open)$('upload-dialog').close();$('upload-dialog').removeAttribute('aria-busy');$('confirm-upload').disabled=true;$('book-file').disabled=false;$('restore-library').disabled=false;
-  pendingUpload=false;restoringLibrary=false;upload=createUploadState();shelf='all';document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
+  pendingUpload=false;restoringLibrary=false;exportingLibrary=false;exportSequence++;$('export-library').disabled=false;$('export-library').textContent='导出书房';upload=createUploadState();shelf='all';document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
   books=books.filter(b=>b.visibility==='public').map(b=>({...b,resume:null,journey:null}));renderBooks();$('featured-books').replaceChildren(...books.slice(0,3).map(bookCard));
   dashboard.clear();
 }
@@ -98,7 +99,16 @@ $('confirm-upload').addEventListener('click',async()=>{
 });
 document.querySelectorAll('[data-shelf]').forEach(b=>b.addEventListener('click',()=>{shelf=b.dataset.shelf;document.querySelectorAll('[data-shelf]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderBooks();}));$('book-search').addEventListener('input',renderBooks);
 $('toggle-data').addEventListener('click',async()=>{if(!ensureUser())return;const expanded=$('data-controls').hidden;$('data-controls').hidden=!expanded;$('toggle-data').setAttribute('aria-expanded',String(expanded));if(expanded)await renderGrants();});
-$('export-library').addEventListener('click',async()=>{const ticket=ownerScope.capture();try{const server=await api('/api/library/export',undefined,ticket);ownerScope.assertCurrent(ticket);const result=retainedLibraryBackup({backup:server,storage:localStorage,owner:ticket.owner});validateLibraryBackup(result.backup);const url=URL.createObjectURL(new Blob([JSON.stringify(result.backup,null,2)],{type:'application/json'})),a=make('a');a.href=url;a.download='marginalia-library.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status('data-status','书房已导出，已合并本机待同步时段与标记。'+(result.draftCount?'另含 '+result.draftCount+' 份本机草稿，恢复后仍是草稿。':'')+(result.ongoingSessions?'有尚未结束的阅读，仅包含最近保存的时段；结束计时后可再导出。':''));}catch(error){if(ownerScope.isCurrent(ticket))status('data-status',error.message,true);}});
+$('export-library').addEventListener('click',async()=>{
+  if(exportingLibrary||!ensureUser())return;const ticket=ownerScope.capture(),sequence=++exportSequence,b=$('export-library');exportingLibrary=true;b.disabled=true;b.textContent='正在准备备份…';
+  try{
+    const server=await exportLibraryInParts({api:url=>api(url,undefined,ticket),assertCurrent:()=>ownerScope.assertCurrent(ticket),onProgress:({bookIndex,bookCount})=>{b.textContent='正在准备 '+bookIndex+' / '+bookCount;status('data-status','正在准备第 '+bookIndex+' / '+bookCount+' 本书的备份…');}});
+    ownerScope.assertCurrent(ticket);const result=retainedLibraryBackup({backup:server,storage:localStorage,owner:ticket.owner});validateLibraryBackup(result.backup);
+    const url=URL.createObjectURL(new Blob([JSON.stringify(result.backup,null,2)],{type:'application/json'})),a=make('a');a.href=url;a.download='marginalia-library.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    status('data-status','书房已导出，已合并本机待同步时段与标记。'+(result.draftCount?'另含 '+result.draftCount+' 份本机草稿，恢复后仍是草稿。':'')+(result.ongoingSessions?'有尚未结束的阅读，仅包含最近保存的时段；结束计时后可再导出。':''));
+  }catch(error){if(ownerScope.isCurrent(ticket))status('data-status','尚未生成备份。'+error.message,true);}
+  finally{if(ownerScope.isCurrent(ticket)&&sequence===exportSequence){exportingLibrary=false;b.disabled=false;b.textContent='导出书房';}}
+});
 $('restore-library').addEventListener('click',()=>{if(!restoringLibrary)$('backup-file').click();});
 $('backup-file').addEventListener('change',async e=>{
   const ticket=ownerScope.capture(),file=e.target.files[0];if(!file||restoringLibrary)return;restoringLibrary=true;$('restore-library').disabled=true;let restored=0,started=false;
