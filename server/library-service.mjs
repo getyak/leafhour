@@ -97,7 +97,8 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     const file=await getOriginal(user,id),book=await getBook(user,id);
     return {...file,bytes:undefined,url:await dataStore.signedBlob(path.join(userDir(user),'originals',book.source.sha256))};
   }
-  async function records(user,id){const book=await getBook(user,id);if(!user)return emptyRecords(book);const data=readingDefaults(await read(recordFile(user,id),emptyRecords(book)));data.position=alignReadingPosition(book,data.position);return data;}
+  async function recordsForBook(user,book){if(!user)return emptyRecords(book);const data=readingDefaults(await read(recordFile(user,book.bookId),emptyRecords(book)));data.position=alignReadingPosition(book,data.position);return data;}
+  async function records(user,id){return recordsForBook(user,await getBook(user,id));}
   const guardRecordSize=data=>{if(dataStore&&Buffer.byteLength(JSON.stringify(data))>3500000)throw fail('阅读记录已超过云端单书容量，请保留导出备份并在本机继续',413);};
   async function saveReadingSession(user,id,input){
     requireUser(user);const book=await getBook(user,id),next=normalizeReadingSession(input,book);
@@ -156,6 +157,23 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   async function grants(user){requireUser(user);return (await read(grantsFile,{grants:[]})).grants.filter(g=>g.ownerId===user.id).map(({ownerId,tokenHash,...g})=>g);}
   async function revokeGrant(user,id){requireUser(user);return mutate(grantsFile,{grants:[]},data=>{const grant=data.grants.find(g=>g.id===id&&g.ownerId===user.id);if(!grant)throw fail('找不到这条授权',404);grant.revoked=true;return {revoked:true};});}
   async function exportLibrary(user){requireUser(user);const books=[];for(const row of await list(user)){const book=await getBook(user,row.bookId);books.push({book,records:await records(user,row.bookId)});}return {kind:'marginalia-library',schemaVersion:1,exportedAt:new Date().toISOString(),books,includesOriginalFiles:false};}
+  async function exportManifest(user){
+    requireUser(user);const rows=await list(user);if(rows.length>100)throw fail('单份备份最多容纳100本书，请在本机按书整理后导出。',413);
+    return {kind:'marginalia-export-manifest',schemaVersion:1,exportedAt:new Date().toISOString(),books:rows.map(({bookId,contentVersion})=>({bookId,contentVersion}))};
+  }
+  async function exportBookPart(user,id,{offset=0,snapshot=null}={}){
+    requireUser(user);
+    if(!Number.isSafeInteger(offset)||offset<0||offset>512*1024*1024||snapshot!==null&&(typeof snapshot!=='string'||!/^[a-f0-9]{64}$/.test(snapshot))||offset>0&&!snapshot)throw fail('备份分段范围不正确。');
+    const book=await getBook(user,id),personal=await recordsForBook(user,book);
+    // Bundled editions are rebuilt on each instance; its start time is not source metadata.
+    if(book.visibility==='public')delete book.createdAt;
+    const bytes=Buffer.from(JSON.stringify({book,records:personal})),hash=digest(bytes);
+    if(bytes.length>512*1024*1024)throw fail('这本书的备份过大，请在本机导出。',413);
+    if(snapshot&&snapshot!==hash)throw fail('这本书刚刚有新记录，请重试导出。',409);
+    if(offset>=bytes.length)throw fail('备份分段范围不正确。');
+    const next=Math.min(bytes.length,offset+1048576);
+    return {kind:'marginalia-book-export-part',schemaVersion:1,bookId:book.bookId,contentVersion:book.contentVersion,offset,totalBytes:bytes.length,nextOffset:next<bytes.length?next:null,snapshot:hash,data:bytes.subarray(offset,next).toString('base64')};
+  }
   async function validateRestore(user,backup){
     requireUser(user);const summary=validateLibraryBackup(backup);
     // Validate the entire package before changing any persisted data.
@@ -178,5 +196,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       await mutate(recordFile(user,book.bookId),emptyRecords(book),raw=>{const data=mergedPersonalRecords(book,raw,incoming);guardRecordSize(data);Object.assign(raw,data);});
     }return {restored:backup.books.length};
   }
-  return {list,getBook,importDocument,originalInfo,getOriginal,originalDownload,records,addComment,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,validateRestore,restoreLibrary,translationAvailable:!!translator};
+  return {list,getBook,importDocument,originalInfo,getOriginal,originalDownload,records,addComment,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,validateRestore,restoreLibrary,translationAvailable:!!translator};
 }
