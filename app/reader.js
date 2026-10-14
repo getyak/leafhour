@@ -7,6 +7,7 @@ import {createProgressSync} from './progress-sync.mjs';
 import {chineseOriginalOnly} from './source-language.mjs';
 import {captureParagraphAnchor,paragraphScrollDelta} from './paragraph-anchor.mjs';
 import {createNoteDrafts} from './note-drafts.mjs';
+import {createReadingDraftStore} from './reading-draft-store.mjs';
 import {readerLoginUrl,resolveReaderEntry} from './reader-return.mjs';
 import {passagePresentation,visibleQuoteLanguage} from './passage-layers.mjs';
 import {catalogReadingMode,chineseSampleEntry} from './catalog-sample.mjs';
@@ -18,8 +19,8 @@ let book,records,recordsUnavailable=false,paragraphs=[],paragraphMap=new Map(),n
 let recordsRetryBusy=false,recordsRetryNotice='',recordsPositionUnresolved=false;
 const state={chapterId:'ch01',mode:'zh',variant:'interpretive',...appearanceDefaults};
 const draftKey=readerStorageKey('marginalia-focus-drafts-v2');let savedDrafts=null,legacyDrafts={};try{savedDrafts=JSON.parse(localStorage.getItem(draftKey)||'null');legacyDrafts=JSON.parse(localStorage.getItem(readerStorageKey('marginalia-focus-drafts-v1'))||'{}');}catch{}
-const noteDrafts=createNoteDrafts(savedDrafts,legacyDrafts);
-const persistDrafts=()=>{try{localStorage.setItem(draftKey,JSON.stringify(noteDrafts.snapshot()));return true;}catch{return false;}};
+let noteDrafts=createNoteDrafts(savedDrafts,legacyDrafts),noteDraftError=null;
+const persistDrafts=()=>{try{if(noteDraftError)return false;if(noteDrafts.persist)noteDrafts.persist();else localStorage.setItem(draftKey,JSON.stringify(noteDrafts.snapshot()));document.dispatchEvent(new CustomEvent('reader:drafts-updated'));return true;}catch{return false;}};
 const api=async(url,data)=>{const response=await readerFetch(url,data===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const body=await response.json();if(!response.ok)throw Object.assign(Error(body.error||'暂时无法完成操作'),{status:response.status});return body;};
 const progressKey=readerStorageKey('marginalia-focus-position-v1'),localWriterId=crypto.randomUUID();let progressSequence=0,restoringProgress=true,allowScrollSave=false;
 const cachePosition=position=>{try{localStorage.setItem(progressKey,JSON.stringify(position));}catch{}};
@@ -85,7 +86,7 @@ function fillPassage(node,p){
 }
 function renderChapter(){
   if($('chapter-text').contains($('note-panel')))document.body.append($('note-panel'));
-  $('chapter-text').replaceChildren();const chapter=currentChapter();document.title=chapter.title.zh+' · 旁读';
+  $('chapter-text').replaceChildren();const chapter=currentChapter();document.title=chapter.title.zh+' · 循页';
   $('chapter-number').textContent=chapterLabel(chapter);$('chapter-title').textContent=chapter.title.zh;$('chapter-original-title').textContent=chapter.title.en;$('running-chapter').textContent=book.source?.structure==='automatic_groups'?'片段 '+chapter.number:chapterLabel(chapter);
   for(const s of activeSections()){
     const section=el('section','reading-section');section.id='section-'+s.number;if(book.source?.structure!=='source_chapters')section.append(el('p','section-number','§'+s.number));
@@ -177,7 +178,7 @@ function renderRecordsAccess(content){
 }
 async function recoverRecords(event){
   event?.stopPropagation();if(recordsRetryBusy)return;recordsRetryBusy=true;recordsRetryNotice='';renderPanel();
-  try{const fresh=await api('/api/records');if(!Array.isArray(fresh.comments)||!Array.isArray(fresh.questions))throw Error('记录格式不完整');recordsPositionUnresolved=recoveredPositionNeedsChoice(progressSync.revision,fresh.position);records=fresh;recordsUnavailable=false;if(recordsPositionUnresolved){clearTimeout(persistTimer);$('progress-notice').hidden=false;announce('记录已读取。阅读位置已在另一处更新，请选择从哪里继续。');}else{progressSync.adopt(fresh.position?.revision||0);persist();}}
+  try{const fresh=await api('/api/records');if(!Array.isArray(fresh.comments)||!Array.isArray(fresh.questions))throw Error('记录格式不完整');recordsPositionUnresolved=recoveredPositionNeedsChoice(progressSync.revision,fresh.position);records=fresh;recordsUnavailable=false;document.dispatchEvent(new CustomEvent('reader:records-updated'));if(recordsPositionUnresolved){clearTimeout(persistTimer);$('progress-notice').hidden=false;announce('记录已读取。阅读位置已在另一处更新，请选择从哪里继续。');}else{progressSync.adopt(fresh.position?.revision||0);persist();}}
   catch{recordsRetryNotice='记录仍暂时无法读取，请稍后重试；原文和已有草稿保留。';}
   finally{recordsRetryBusy=false;if(!$('note-panel').hidden)renderPanel();}
 }
@@ -201,7 +202,7 @@ function renderPanel(){
   }
   const type=panelTab==='question'?'question':'comment',key=type==='question'?'questions':'comments',draftId=type+':'+p.id;
   if(recordsUnavailable){renderRecordsAccess(content);mountPanel();return;}
-  if(noteDrafts.reconcile(draftId,records[key]))persistDrafts();
+  noteDrafts.activate?.(draftId);if(noteDrafts.reconcile(draftId,records[key]))persistDrafts();
   const form=el('form','composer'),label=el('label','',type==='question'?'这个问题值得留下吗？':'用自己的话写下来'),area=el('textarea');area.id='thought-text';area.maxLength=2000;area.placeholder=type==='question'?'写下此刻没有想通的地方…':'先写你的理解，不必写完整…';label.htmlFor=area.id;area.value=noteDrafts.text(draftId);
   const save=button(''),pendingHint=el('p','form-status'),status=el('p','form-status');save.type='submit';status.setAttribute('aria-live','polite');
   const updateComposer=()=>{const pending=noteDrafts.pending(draftId),busy=noteDrafts.busy(draftId);save.disabled=busy;save.textContent=busy?'正在保存…':pending?'重试上次保存':type==='question'?'保存问题':'保存想法';pendingHint.hidden=!pending;pendingHint.textContent=pending?'待确认的提交：「'+pending.text.slice(0,80)+(pending.text.length>80?'…':'')+'」 重试先确认这次提交，新写的草稿会保留。':'';};
@@ -209,10 +210,10 @@ function renderPanel(){
   area.addEventListener('input',()=>{noteDrafts.edit(draftId,area.value);if(!persistDrafts())status.textContent='浏览器无法保留草稿，请先复制文字；刷新会丢失未保存内容。';});
   form.addEventListener('submit',async e=>{
     e.preventDefault();if(noteDrafts.busy(draftId)||!area.value.trim()&&!noteDrafts.pending(draftId))return;
-    noteDrafts.edit(draftId,area.value);const submission=noteDrafts.begin(draftId,{passageId:p.id,contentVersion:book.contentVersion,quote:selectedQuote,quoteLanguage:selectedQuoteLanguage==='en'?book.sourceLanguage||'en':'zh',quoteOrigin:selectedQuoteLanguage==='en'?'original':'translation'},()=>crypto.randomUUID());const durable=persistDrafts();updateComposer();status.textContent=durable?'正在保存':'正在保存；浏览器无法保留草稿，请先复制文字。';
-    try{const record=await api('/api/'+key,submission);if(!records[key].some(r=>r.id===record.id))records[key].push(record);noteDrafts.acknowledge(draftId,record);const cached=persistDrafts();if(form.isConnected){area.value=noteDrafts.text(draftId);status.setAttribute('role','status');status.textContent=area.value?'上次提交已保存，新写的文字仍是草稿。'+(cached?'':'浏览器无法保留草稿，请先复制；刷新会丢失未保存内容。'):'已保存到自己的书房';content.append(recordNode(record,type));}}
+    const draftEntryId=noteDrafts.activeId?.(draftId);noteDrafts.edit(draftId,area.value);const submission=noteDrafts.begin(draftId,{passageId:p.id,contentVersion:book.contentVersion,quote:selectedQuote,quoteLanguage:selectedQuoteLanguage==='en'?book.sourceLanguage||'en':'zh',quoteOrigin:selectedQuoteLanguage==='en'?'original':'translation'},()=>crypto.randomUUID());const durable=persistDrafts();updateComposer();status.textContent=durable?'正在保存':'正在保存；浏览器无法保留草稿，请先复制文字。';
+    try{const record=await api('/api/'+key,submission);if(!records[key].some(r=>r.id===record.id))records[key].push(record);noteDrafts.acknowledge(draftId,record,draftEntryId);const cached=persistDrafts();if(form.isConnected){area.value=noteDrafts.text(draftId);status.setAttribute('role','status');status.textContent=area.value?'上次提交已保存，新写的文字仍是草稿。'+(cached?'':'浏览器无法保留草稿，请先复制；刷新会丢失未保存内容。'):'已保存到自己的书房';content.append(recordNode(record,type));}}
     catch(error){if(form.isConnected){status.setAttribute('role','alert');status.textContent='保存尚未确认。文字仍保留，重试不会重复创建同一次提交。';}}
-    finally{noteDrafts.finish(draftId);if(form.isConnected)updateComposer();else if(!allRecords&&!$('note-panel').hidden&&selectedId===p.id&&panelTab===type)renderPanel();}
+    finally{noteDrafts.finish(draftId,draftEntryId);if(form.isConnected)updateComposer();else if(!allRecords&&!$('note-panel').hidden&&selectedId===p.id&&panelTab===type)renderPanel();}
   });
   for(const record of records[key].filter(r=>r.passageId===p.id))content.append(recordNode(record,type));mountPanel();
 }
@@ -228,7 +229,7 @@ async function focusReading(){
 }
 async function boot(){
   try{
-    book=await api('/api/book');if(book.title?.zh){document.querySelector('.running-title').firstChild.textContent=book.title.zh;$('toc-book-title').textContent=book.title.zh;}if(selectedBookId){state.chapterId=book.readingStart?.chapterId||book.chapters[0].id;state.mode=catalogReadingMode(book);recordsUnavailable=!readerSession?.user;}else recordsUnavailable=false;try{records=await api('/api/records');}catch{recordsUnavailable=true;records={comments:[],questions:[],position:null};}
+    book=await api('/api/book');if(selectedBookId){try{noteDrafts=createReadingDraftStore({storage:localStorage,scope:readerStorageKey('marginalia-reading-ending-drafts-v1'),book});noteDraftError=null;}catch(error){noteDraftError=error;announce('本机草稿暂时无法读取，原数据保留。请先另存待同步数据或复制新写的文字。');}}if(book.title?.zh){document.querySelector('.running-title').firstChild.textContent=book.title.zh;$('toc-book-title').textContent=book.title.zh;}if(selectedBookId){state.chapterId=book.readingStart?.chapterId||book.chapters[0].id;state.mode=catalogReadingMode(book);recordsUnavailable=!readerSession?.user;}else recordsUnavailable=false;try{records=await api('/api/records');}catch{recordsUnavailable=true;records={comments:[],questions:[],position:null};}
     paragraphs=book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,section:s.number,chapterId:s.chapterId})));paragraphMap=new Map(paragraphs.map(p=>[p.id,p]));notesMap=new Map(book.annotations.map(n=>[n.id,n]));termsMap=new Map(book.glossary.map(t=>[t.id,t]));
     let localPosition=null;try{localPosition=JSON.parse(localStorage.getItem(progressKey)||'null');}catch{}
     let position=chooseReadingPosition({book,remote:records.position,local:localPosition,remoteAvailable:!recordsUnavailable});
@@ -241,7 +242,7 @@ async function boot(){
   }catch{ $('loading').hidden=true;$('load-error').hidden=false;}
 }
 document.addEventListener('click',e=>{
-  if(e.target.closest('#note-panel,#paragraph-tools,dialog,.reading-header,#exit-focus,.experience-surface,.source-evidence'))return;
+  if(e.target.closest('#note-panel,#paragraph-tools,#reading-session,dialog,.reading-header,#exit-focus,.experience-surface,.source-evidence'))return;
   const selection=getSelection();if(selection?.toString().trim()&&selectedExcerpt&&$('paragraph-tools').dataset.excerpt==='true')return;
   const node=e.target.closest('.passage');if(node){if(!getSelection()?.toString()){const layer=e.target.closest('p')?.dataset.readingLayer;choosePassage(node.dataset.id,e.clientY,'',layer==='original'?'en':layer==='translation'?'zh':null);}return;}
   dismissTools();closePanel();
@@ -250,7 +251,7 @@ function captureExcerpt(y){
   try{const excerpt=captureDOMSelection(getSelection(),paragraphMap,book);if(!excerpt){if(getSelection()?.toString().trim()){selectedExcerpt=null;dismissTools();}return;}const first=excerpt.parts[0];choosePassage(first.passageId,y,excerpt.parts.length===1?first.text:'',first.language);selectedExcerpt=excerpt;selectionKind='excerpt';for(const part of excerpt.parts)document.getElementById(part.passageId)?.classList.add('is-selected');$('show-share').hidden=false;$('paragraph-tools').dataset.excerpt='true';positionTools();}
   catch(error){selectedExcerpt=null;$('show-share').hidden=true;announce(error.message||'请重新选择正文。');}
 }
-document.addEventListener('pointerup',e=>{if(e.button!==0||e.target.closest('#note-panel,#paragraph-tools,dialog,.experience-surface,.source-evidence')||!book)return;captureExcerpt(e.clientY);});
+document.addEventListener('pointerup',e=>{if(e.button!==0||e.target.closest('#note-panel,#paragraph-tools,#reading-session,dialog,.experience-surface,.source-evidence')||!book)return;captureExcerpt(e.clientY);});
 document.addEventListener('keyup',e=>{if(book&&!e.target.closest('input,textarea,select,dialog')&&(e.key==='Shift'||e.shiftKey))captureExcerpt();});
 document.addEventListener('keydown',e=>{
   if(document.querySelector('dialog[open]'))return;
@@ -287,7 +288,7 @@ $('export-records').addEventListener('click',async e=>{
   try{if(recordsUnavailable)throw Error('请先重新读取个人记录，再导出。');if(recordsPositionUnresolved||progressSync.paused)throw Error('请先选择从哪里继续，再导出当前阅读记录。');clearTimeout(persistTimer);const position=captureProgress();if(position){cachePosition({...position,pending:true});if(!await progressSync.save(position))throw Error('阅读位置正在确认，请确认后再导出。');}const data=await api('/api/records/export'),url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),download=document.createElement('a');download.href=url;download.download='marginalia-records.json';download.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('import-status').setAttribute('role','status');$('import-status').textContent='记录与当前排版已导出。';}
   catch(error){$('import-status').textContent=error.message||'暂时无法导出记录';$('import-status').setAttribute('role','alert');}finally{link.removeAttribute('aria-busy');}
 });
-$('import-records').addEventListener('click',()=>$('records-file').click());$('records-file').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;clearTimeout(persistTimer);try{if(file.size>4*1024*1024)throw Error('记录包过大');const imported=JSON.parse(await file.text());await api('/api/records/import',imported);records=await api('/api/records');if(imported.position&&records.position){state.mode=records.position.mode;state.variant=records.position.variant;overrides={};document.dispatchEvent(new CustomEvent('reader:jump'));updateText();adjustAppearance(records.position);}$('import-status').setAttribute('role','status');$('import-status').textContent='记录已合并，排版已恢复；重复记录不会重复生成';}catch(error){$('import-status').textContent=error.message||'记录无法导入';$('import-status').setAttribute('role','alert');}finally{e.target.value='';}});
+$('import-records').addEventListener('click',()=>$('records-file').click());$('records-file').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;clearTimeout(persistTimer);try{if(file.size>4*1024*1024)throw Error('记录包过大');const imported=JSON.parse(await file.text());await api('/api/records/import',imported);records=await api('/api/records');document.dispatchEvent(new CustomEvent('reader:records-updated'));if(imported.position&&records.position){state.mode=records.position.mode;state.variant=records.position.variant;overrides={};document.dispatchEvent(new CustomEvent('reader:jump'));updateText();adjustAppearance(records.position);}$('import-status').setAttribute('role','status');$('import-status').textContent='记录已合并，排版已恢复；重复记录不会重复生成';}catch(error){$('import-status').textContent=error.message||'记录无法导入';$('import-status').setAttribute('role','alert');}finally{e.target.value='';}});
 $('previous-chapter').addEventListener('click',()=>{const n=book.chapters.findIndex(c=>c.id===state.chapterId)-1;if(book.chapters[n])changeChapter(book.chapters[n].id);});$('next-chapter').addEventListener('click',()=>{const n=book.chapters.findIndex(c=>c.id===state.chapterId)+1;if(book.chapters[n])changeChapter(book.chapters[n].id);});
 $('enter-focus').addEventListener('click',focusReading);$('exit-focus').addEventListener('click',focusReading);
 document.addEventListener('fullscreenchange',()=>{document.body.dataset.fullscreen=document.fullscreenElement?'true':'false';});
@@ -307,6 +308,9 @@ $('progress-use-remote').addEventListener('click',()=>reconcileProgress(true));$
 new ResizeObserver(()=>{if(!$('paragraph-tools').hidden)positionTools();}).observe($('paragraph-tools'));
 window.addEventListener('resize',()=>{if(!$('note-panel').hidden)mountPanel();if(!$('paragraph-tools').hidden)positionTools();});
 $('retry-load').addEventListener('click',()=>{$('load-error').hidden=true;$('loading').hidden=false;boot();});
-window.marginaliaReader={getBook:()=>book,getState:()=>({...state}),getExcerpt:()=>selectedExcerpt?structuredClone(selectedExcerpt):null,getChapterId:()=>state.chapterId,getSelectedId:()=>selectedId,getAnchor:()=>{const a=anchor();return a?{...a,chapterId:state.chapterId}:null;},restoreAnchor:a=>{if(a&&a.chapterId===state.chapterId){restoreAnchor(a);persist();}},goToPassage:id=>{const p=paragraphMap.get(id);if(!p)return;if(p.chapterId!==state.chapterId)changeChapter(p.chapterId,id);else{restoreAnchor({passageId:id,offset:document.body.classList.contains('is-focused')?45:100});persist();}document.dispatchEvent(new CustomEvent('reader:jump',{detail:{passageId:id}}));},dismissTools};
+window.marginaliaReader={getBook:()=>book,getPersonalRecords:()=>records,getState:()=>({...state}),getExcerpt:()=>selectedExcerpt?structuredClone(selectedExcerpt):null,getChapterId:()=>state.chapterId,getSelectedId:()=>selectedId,getAnchor:()=>{const a=anchor();return a?{...a,chapterId:state.chapterId}:null;},restoreAnchor:a=>{if(a&&a.chapterId===state.chapterId){restoreAnchor(a);persist();}},goToPassage:id=>{const p=paragraphMap.get(id);if(!p)return;if(p.chapterId!==state.chapterId)changeChapter(p.chapterId,id);else{restoreAnchor({passageId:id,offset:document.body.classList.contains('is-focused')?45:100});persist();}document.dispatchEvent(new CustomEvent('reader:jump',{detail:{passageId:id}}));},dismissTools};
 document.addEventListener('reader:translation',e=>{const p=paragraphMap.get(e.detail.id);if(!p)return;p.translations=e.detail.translations;const raw=book.sections.flatMap(s=>s.paragraphs).find(x=>x.id===p.id);if(raw)raw.translations=p.translations;const reveal=e.detail.reveal!==false&&selectedId===p.id;if(reveal)state.mode='parallel';if(p.chapterId===state.chapterId)updateText();announce(reveal?'这段双译草稿已保存，可随时核对原文。':'之前选择的段落双译已保存，可以继续阅读。');});
 boot();
+
+document.addEventListener('reader:record-saved',e=>{const {type,record}=e.detail||{},field=type==='comment'?'comments':type==='question'?'questions':null;if(!field||!record||record.origin!=='user'||!paragraphMap.has(record.passageId)||record.bookId!==book?.bookId||record.contentVersion!==book?.contentVersion)return;if(!records[field].some(r=>r.id===record.id))records[field].push(record);if(!$('note-panel').hidden)renderPanel();document.dispatchEvent(new CustomEvent('reader:records-updated'));});
+document.addEventListener('reader:milestone-saved',e=>{const record=e.detail?.record;if(!record||record.origin!=='user'||record.bookId!==book?.bookId||record.contentVersion!==book?.contentVersion)return;records.readingMilestones??=[];if(!records.readingMilestones.some(m=>m.id===record.id))records.readingMilestones.push(record);document.dispatchEvent(new CustomEvent('reader:records-updated'));});

@@ -1,33 +1,33 @@
 <!doctype html>
 <html lang="zh-Hans">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light">
-  <meta name="description" content="旁读如何使用登录身份、保存阅读数据，以及如何导出、撤回授权和联系删除。">
-  <title>登录与个人数据 · 旁读 Marginalia</title><link rel="stylesheet" href="/portal.css">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">
+  <meta name="description" content="循页如何使用登录身份、保存阅读数据，以及如何导出、撤回授权和联系删除。">
+  <title>登录与个人数据 · 循页 Page by Page</title><link rel="stylesheet" href="/portal.css"><link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml"><script type="module" src="/site-appearance.mjs"></script>
   <style>
     .privacy-document{max-width:760px;margin:64px auto 88px;padding:0 24px;font-size:17px;line-height:1.85}.privacy-document h1{font-size:clamp(32px,6vw,46px);line-height:1.3;margin:12px 0 22px}.privacy-document h2{font-size:23px;margin:38px 0 12px}.privacy-document p{margin:12px 0}.privacy-document a{text-decoration:underline;text-underline-offset:4px}.privacy-date{font-size:14px;color:#666}.privacy-document .eyebrow{font-size:12px}.privacy-document address{font-style:normal}@media(max-width:600px){.privacy-document{margin-top:36px}.site-header{gap:16px}.site-header nav{display:block}}
   </style>
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
-<header class="site-header"><a class="brand" href="/" aria-label="旁读首页"><span class="brand-mark" aria-hidden="true">旁</span><span class="brand-name">旁读<small>MARGINALIA</small></span></a><nav aria-label="主导航"><a href="/library">回到书房 ↗</a></nav></header>
+<header class="site-header"><a class="brand" href="/" aria-label="循页首页"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 8c8-4 15-3 21 1v32c-6-4-13-5-21-1V8Zm21 1 8-4v33l-8 3M11 16c3-1 6-1 9 1M11 23c3-1 6-1 9 1M11 30c3-1 6-1 9 1"/></svg></span><span class="brand-name">循页<small>PAGE BY PAGE</small></span></a><nav aria-label="主导航"><a href="/library">回到书房 ↗</a></nav></header>
 <main id="main" class="privacy-document">
-  <p class="eyebrow">YOUR DATA, YOUR CHOICE</p><h1>登录与个人数据</h1><p class="privacy-date">适用于 reader.cubxxw.com · 更新于 2026 年 10 月 14 日</p>
-  <p>旁读用登录身份确认书房的归属，保存你选择上传的书和阅读记录。公版样书可以匿名试读。本文说明这个线上实例如何处理数据；自行部署的实例由它的运营者负责。</p>
+  <p class="eyebrow">YOUR DATA, YOUR CHOICE</p><h1>登录与个人数据</h1><p class="privacy-date">适用于 reader.cubxxw.com · 更新于 2026 年 10 月 15 日</p>
+  <p>循页用登录身份确认书房的归属，保存你选择上传的书和阅读记录。公版样书可以匿名试读。本文说明这个线上实例如何处理数据；自行部署的实例由它的运营者负责。</p>
   <h2>登录时会用到什么</h2>
-  <p>邮箱登录使用你填写的邮箱地址，由 Supabase Auth 生成和校验验证码，Resend 投递邮件。选择 Google 或 Apple 登录时，由相应供应商验证身份，Supabase 接收账户标识、邮箱及供应商提供的基本资料，例如姓名和头像。旁读用这些信息识别账户和维持登录，不申请邮箱正文、联系人、云盘或日历权限。</p>
-  <p>Apple 提供隐藏邮箱时，按这个身份保存账户。登录页显示某种方式可用后，才会发起对应的官方授权。你可以在 Google 或 Apple 的账号设置中撤回对旁读的授权。</p>
+  <p>邮箱登录使用你填写的邮箱地址，由 Supabase Auth 生成和校验验证码，Resend 投递邮件。选择 Google 或 Apple 登录时，由相应供应商验证身份，Supabase 接收账户标识、邮箱及供应商提供的基本资料，例如姓名和头像。循页用这些信息识别账户和维持登录，不申请邮箱正文、联系人、云盘或日历权限。</p>
+  <p>Apple 提供隐藏邮箱时，按这个身份保存账户。登录页显示某种方式可用后，才会发起对应的官方授权。你可以在 Google 或 Apple 的账号设置中撤回对循页的授权。</p>
   <p>供应商访问凭据与刷新凭据保存在服务端。浏览器使用仅供本站会话的 Cookie；普通登录会话最长七天，第三方登录的临时校验 Cookie 最长十分钟。退出会撤销本站会话；退出不会删除书房数据。</p>
   <h2>你的书和阅读记录</h2>
-  <p>选择上传后，文件与提取出的原文会保存到你的私人书房。评论、问题、阅读位置、阅读时长和已保存的译文按账户管理。线上存储由 Supabase 提供，网站由 Vercel 托管。匿名公版书与私人上传分别处理，私人文件和记录不会因上传自动公开。</p>
-  <p>浏览器会缓存阅读设置和部分阅读状态，方便继续阅读。选择文字、切换译文和调整排版在本地完成；显式请求 AI 翻译或解释时，才会把对应功能所需的段落上下文发送到配置的模型服务。当前按段翻译使用 DeepSeek，只发送所选段落及理解所需的邻段。登录资料不作为翻译上下文。</p>
+  <p>选择上传后，文件与提取出的原文会保存到你的私人书房。评论、问题、阅读位置、阅读时长、明确标记的读完状态和已保存的译文按账户管理。线上存储由 Supabase 提供，网站由 Vercel 托管。匿名公版书与私人上传分别处理，私人文件和记录不会因上传自动公开。</p>
+  <p>开始阅读后，页面只记录可见且处于前台的停留，后台暂停，浏览器挂起的长间隔也不累计；阅读时间不代表理解程度。日历按你的所在时区呈现，跨午夜的时间分别记录。浏览器会缓存阅读设置和部分阅读状态，方便继续阅读；断网时暂存本账户的待同步阅读时段、章节标记和待确认的提交，联网后可以重试。未主动保存的文字作为本机草稿保留。选择文字、切换译文和调整排版在本地完成；显式请求 AI 翻译或解释时，才会把对应功能所需的段落上下文发送到配置的模型服务。当前按段翻译使用 DeepSeek，只发送所选段落及理解所需的邻段。登录资料不作为翻译上下文。</p>
   <p>如果你给自己的 Agent 授权，它只能按授权读取指定书籍与数据类型；写入权限需要单独选择。你可以在“数据与 Agent”撤回授权。撤回会停止后续访问，不能自动清除已经被对方复制的数据。</p>
   <h2>保存、导出与删除</h2>
-  <p>书房数据会继续保存，供你恢复阅读和导出。你可以在书房的“数据与 Agent”导出自己的数据。需要删除账户或私人数据时，请联系下方邮箱；我们会先核对账户归属，再处理相关数据。托管服务为运行、安全和故障排查产生的日志或备份，由相应服务按其保留机制处理。</p>
+  <p>书房数据会继续保存，供你恢复阅读和导出。你可以在书房的“数据与 Agent”导出自己的数据；同一浏览器的待同步阅读时段、标记与读后草稿会一并保留，草稿在备份中单独标识，恢复后仍需主动保存。段落旁注与读后记录共用草稿入口，旧版草稿也可保留到备份。仍在进行的阅读只导出最近保存的时段，结束计时后可再导出完整记录。需要删除账户或私人数据时，请联系下方邮箱；我们会先核对账户归属，再处理相关数据。托管服务为运行、安全和故障排查产生的日志或备份，由相应服务按其保留机制处理。</p>
   <p>登录数据用于身份验证、会话、安全和你请求的阅读功能，不用于广告投放，也不会出售。Supabase、Resend、Vercel、身份供应商和你主动调用的模型服务，会为提供对应功能处理必要的数据，并适用各自的隐私政策。</p>
   <h2>联系</h2><address>这个实例由 cubxxw 运营。关于登录、数据导出、删除或本说明，请联系 <a href="mailto:hi@cubxxw.com">hi@cubxxw.com</a>。</address>
   <p><a href="/library">回到书房 →</a></p>
 </main>
-<footer class="site-footer"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true">旁</span><span class="brand-name">旁读<small>MARGINALIA</small></span></a><p>读得慢一点，留下自己的思考。</p><a href="/library#agent">数据与 Agent ↗</a></footer>
+<footer class="site-footer"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 8c8-4 15-3 21 1v32c-6-4-13-5-21-1V8Zm21 1 8-4v33l-8 3M11 16c3-1 6-1 9 1M11 23c3-1 6-1 9 1M11 30c3-1 6-1 9 1"/></svg></span><span class="brand-name">循页<small>PAGE BY PAGE</small></span></a><p>读得慢一点，留下自己的思考。</p><a href="/library#agent">数据与 Agent ↗</a></footer>
 </body>
 </html>

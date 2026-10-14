@@ -1,3 +1,4 @@
+import {retainedLibraryBackup,restoreRetainedDrafts} from './reading-retained-backup.mjs';
 import {positionStorageKey} from './reading-progress.mjs';
 import {validateLibraryBackup} from './library-backup.mjs';
 import {createUploadState} from './upload-state.mjs';
@@ -7,6 +8,9 @@ import {safeReaderReturn} from './reader-return.mjs';
 import {createGrantResult,grantScopeSummary} from './grant-result.mjs';
 import {makeMcpConfiguration} from './mcp-config.mjs';
 import {chineseTrialUrl} from './catalog-sample.mjs';
+import {mountReadingDashboard} from './reading-dashboard.mjs';
+import {libraryRestoreBatches} from './library-restore.mjs';
+import './site-appearance.mjs';
 const $=id=>document.getElementById(id);
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const ownerScope=createOwnerScope();
@@ -18,7 +22,7 @@ let session=null,books=[],shelf='all',pendingUpload=false,restoringLibrary=false
 const isLibrary=location.pathname==='/library';$('home-view').hidden=isLibrary;$('library-view').hidden=!isLibrary;
 const entryQuery=new URLSearchParams(location.search),returnToReader=safeReaderReturn(entryQuery.get('next'));
 const returnAfterAuth=()=>{if(returnToReader&&!pendingUpload){location.replace(returnToReader);return true;}if(!isLibrary){location.href='/library';return true;}return false;};
-if(isLibrary)document.title='我的书房 · 旁读 Marginalia';
+if(isLibrary)document.title='我的书房 · 循页 Page by Page';
 const authDialog=mountAuthDialog({dialog:$('auth-dialog'),api,getSession:()=>session,getReturnTo:()=>pendingUpload?'/library?upload=1':returnToReader||'/library',onSessionSettled:()=>refresh().catch(error=>status('library-status',error.message,true)),onAuthenticated:async()=>{
   if(returnAfterAuth())return;
   try{await refresh();status('library-status','欢迎回来。');if(pendingUpload)openUpload();}
@@ -26,17 +30,19 @@ const authDialog=mountAuthDialog({dialog:$('auth-dialog'),api,getSession:()=>ses
 }});
 const openAuth=message=>authDialog.open(typeof message==='string'?message:undefined);
 const ensureUser=()=>{if(session?.user)return true;openAuth();return false;};
+const dashboard=mountReadingDashboard({root:$('reading-dashboard'),api,getSession:()=>session,getBooks:()=>books,getOwner:()=>{const t=ownerScope.capture();return t.owner+':'+t.revision;},openAuth,refresh});
 function clearPrivateUI(){
   $('data-controls').hidden=true;$('toggle-data').setAttribute('aria-expanded','false');grantResult.clear();renderGrantResult();grantBusy=false;$('create-grant').disabled=false;$('create-grant').textContent='创建 7 天授权 →';$('grant-list').replaceChildren();$('grant-form').reset();
   for(const id of ['data-status','upload-status','auth-status','library-status','upload-filename'])status(id,'');
   for(const id of ['book-file','backup-file','book-search'])$(id).value='';authDialog.reset();
   if($('auth-dialog').open)$('auth-dialog').close();if($('upload-dialog').open)$('upload-dialog').close();$('upload-dialog').removeAttribute('aria-busy');$('confirm-upload').disabled=true;$('book-file').disabled=false;$('restore-library').disabled=false;
   pendingUpload=false;restoringLibrary=false;upload=createUploadState();shelf='all';document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
-  books=books.filter(b=>b.visibility==='public').map(b=>({...b,resume:null}));renderBooks();$('featured-books').replaceChildren(...books.slice(0,3).map(bookCard));
+  books=books.filter(b=>b.visibility==='public').map(b=>({...b,resume:null,journey:null}));renderBooks();$('featured-books').replaceChildren(...books.slice(0,3).map(bookCard));
+  dashboard.clear();
 }
 function bookCard(book){
   const card=make('article','book-card'),art=make('a','book-art '+(book.cover||'private'));art.href='/read?book='+encodeURIComponent(book.bookId);art.setAttribute('aria-label','阅读'+book.title.zh);
-  const cover=make('div','book-cover'),inner=make('div','cover-inner');inner.append(make('small','',book.visibility==='public'?'THE MARGINALIA LIBRARY':'MY READING ROOM'),make('strong','',book.title.zh.slice(0,28)),make('span','cover-ornament',book.cover==='alice'?'❦':book.cover==='walden'?'⌁':'☼'),make('small','',book.visibility==='public'?'ORIGINAL TEXT':'A BOOK OF MY OWN'));cover.append(inner);art.append(cover);
+  const cover=make('div','book-cover'),inner=make('div','cover-inner');inner.append(make('small','',book.visibility==='public'?'PAGE BY PAGE':'MY READING ROOM'),make('strong','',book.title.zh.slice(0,28)),make('span','cover-ornament',book.cover==='alice'?'❦':book.cover==='walden'?'⌁':'☼'),make('small','',book.visibility==='public'?'ORIGINAL TEXT':'A BOOK OF MY OWN'));cover.append(inner);art.append(cover);
   const meta=make('div','book-meta'),label=make('div','book-label');label.append(make('span','',book.visibility==='public'?'公版 · 英文原文':'自己的书 · '+book.source.format.toUpperCase()),make('span','',book.chineseSample?'双译开篇 · '+book.chineseSample.paragraphs+' 段':book.visibility==='public'?'按需翻译':'已提取'));
   meta.append(label,make('h3','',book.title.zh),make('p','book-author',book.author||book.source.filename),make('p','book-description',book.description||'原文已保留。译文和思考，从这一页开始。'));
   let resume=book.resume;if(!session?.user){try{const local=JSON.parse(localStorage.getItem(positionStorageKey(book.bookId))||'null');if(local?.passageId&&local.chapterLabel&&local.contentVersion===book.source.sha256)resume={label:local.chapterLabel,passageId:local.passageId};}catch{}}
@@ -55,6 +61,7 @@ async function refresh(knownSession){
   $('account-button').textContent=user?(user.kind==='local'?'本机书房 · 退出':'已登录 · 退出'):'登录 / 注册 ↗';
   $('library-description').textContent=user?(user.kind==='local'?'自己的书，留在这台电脑。回来时，从上次停下的地方继续。':'自己的书与思考，安静地留在这里。'):'先选一本书，读几页。自己的书和笔记，登录后留在这里。';
   books=(await api('/api/library')).books;renderBooks();$('featured-books').replaceChildren(...books.filter(b=>b.visibility==='public').slice(0,3).map(bookCard));
+  if(isLibrary)dashboard.update();
 }
 $('account-button').addEventListener('click',async()=>{
   if(!session?.user){openAuth();return;}const b=$('account-button'),ticket=ownerScope.capture();b.disabled=true;let signedOut=false;
@@ -91,12 +98,12 @@ $('confirm-upload').addEventListener('click',async()=>{
 });
 document.querySelectorAll('[data-shelf]').forEach(b=>b.addEventListener('click',()=>{shelf=b.dataset.shelf;document.querySelectorAll('[data-shelf]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderBooks();}));$('book-search').addEventListener('input',renderBooks);
 $('toggle-data').addEventListener('click',async()=>{if(!ensureUser())return;const expanded=$('data-controls').hidden;$('data-controls').hidden=!expanded;$('toggle-data').setAttribute('aria-expanded',String(expanded));if(expanded)await renderGrants();});
-$('export-library').addEventListener('click',async()=>{try{const data=await api('/api/library/export'),url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),a=make('a');a.href=url;a.download='marginalia-library.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status('data-status','书房已导出，包含原文与译文，也保存记录和位置。');}catch(error){status('data-status',error.message,true);}});
+$('export-library').addEventListener('click',async()=>{const ticket=ownerScope.capture();try{const server=await api('/api/library/export',undefined,ticket);ownerScope.assertCurrent(ticket);const result=retainedLibraryBackup({backup:server,storage:localStorage,owner:ticket.owner});validateLibraryBackup(result.backup);const url=URL.createObjectURL(new Blob([JSON.stringify(result.backup,null,2)],{type:'application/json'})),a=make('a');a.href=url;a.download='marginalia-library.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status('data-status','书房已导出，已合并本机待同步时段与标记。'+(result.draftCount?'另含 '+result.draftCount+' 份本机草稿，恢复后仍是草稿。':'')+(result.ongoingSessions?'有尚未结束的阅读，仅包含最近保存的时段；结束计时后可再导出。':''));}catch(error){if(ownerScope.isCurrent(ticket))status('data-status',error.message,true);}});
 $('restore-library').addEventListener('click',()=>{if(!restoringLibrary)$('backup-file').click();});
 $('backup-file').addEventListener('change',async e=>{
   const ticket=ownerScope.capture(),file=e.target.files[0];if(!file||restoringLibrary)return;restoringLibrary=true;$('restore-library').disabled=true;let restored=0,started=false;
   try{
-    status('data-status','正在检查备份，检查通过后才开始恢复…');let backup;try{backup=JSON.parse(await file.text());}catch{throw Error('备份无法读取，请选择完整的旁读 JSON 备份。');}validateLibraryBackup(backup);
+    status('data-status','正在检查备份，检查通过后才开始恢复…');let backup;try{backup=JSON.parse(await file.text());}catch{throw Error('备份无法读取，请选择完整的循页 JSON 备份。');}validateLibraryBackup(backup);
     for(const [index,entry] of backup.books.entries()){if(!ownerScope.isCurrent(ticket))return;status('data-status','正在检查第 '+(index+1)+' / '+backup.books.length+' 本书的原文版本…');await api('/api/library/validate',{kind:'marginalia-library',schemaVersion:1,books:[entry]},ticket);}
     started=true;for(const entry of backup.books){if(!ownerScope.isCurrent(ticket))return;status('data-status','正在恢复 '+(restored+1)+' / '+backup.books.length+' 本书…');await restoreBook(entry,ticket);restored++;}
     await refresh();if(ownerScope.isCurrent(ticket))status('data-status','已恢复 '+restored+' 本书及其记录。');
@@ -104,14 +111,8 @@ $('backup-file').addEventListener('change',async e=>{
   finally{if(ownerScope.isCurrent(ticket)){restoringLibrary=false;$('restore-library').disabled=false;e.target.value='';}}
 });
 async function restoreBook(entry,ticket){
-  if(!entry?.book||!entry.records||!Array.isArray(entry.book.sections)||!['comments','questions','readingSessions'].every(k=>Array.isArray(entry.records[k])))throw Error('备份格式不完整');
-  const baseBook={...entry.book,sections:entry.book.sections.map(s=>({...s,paragraphs:s.paragraphs.map(p=>({...p,translations:{}}))}))},empty={...entry.records,comments:[],questions:[],readingSessions:[],position:null};
-  const send=async(book,records)=>api('/api/library/import',{kind:'marginalia-library',schemaVersion:1,books:[{book,records}]},ticket);
-  await send(baseBook,empty);
-  for(const key of ['comments','questions','readingSessions'])for(let start=0;start<entry.records[key].length;start+=50)await send(baseBook,{...empty,[key]:entry.records[key].slice(start,start+50)});
-  const translated=entry.book.sections.flatMap(s=>s.paragraphs).filter(p=>Object.keys(p.translations||{}).length);
-  for(let i=0;i<translated.length;i+=20){const updates=new Map(translated.slice(i,i+20).map(p=>[p.id,p.translations])),book={...baseBook,sections:baseBook.sections.map(s=>({...s,paragraphs:s.paragraphs.map(p=>({...p,translations:updates.get(p.id)||{}}))}))};await send(book,empty);}
-  if(entry.records.position)await send(baseBook,{...empty,position:entry.records.position});
+  for(const batch of libraryRestoreBatches(entry)){if(!ownerScope.isCurrent(ticket))return;await api('/api/library/import',{kind:'marginalia-library',schemaVersion:1,books:[batch]},ticket);}
+  ownerScope.assertCurrent(ticket);restoreRetainedDrafts({backup:{kind:'marginalia-library',schemaVersion:1,books:[entry]},storage:localStorage,owner:ticket.owner});
 }
 async function renderGrants(ticket=ownerScope.capture()){
   const listTicket=grantResult.beginList();try{const {grants}=await api('/api/library/grants',undefined,ticket);if(!grantResult.reconcile(grants,Date.now(),listTicket))return null;renderGrantResult();const visible=grants.filter(g=>!g.revoked);$('grant-list').replaceChildren(...visible.map(g=>{

@@ -67,6 +67,7 @@ test('portal serves home, imports private text after explicit local entry, guard
   assert.match(await (await fetch(base+'/')).text(),/home-hero/);
   const privacy=await fetch(base+'/privacy');assert.equal(privacy.status,200);assert.match(privacy.headers.get('content-type'),/text\/html/);assert.match(await privacy.text(),/登录与个人数据/);
   assert.match(await (await fetch(base+'/')).text(),/href="\/privacy"/);
+  const backupSchema=await fetch(base+'/reading-session-record.mjs');assert.equal(backupSchema.status,200);assert.match(backupSchema.headers.get('content-type'),/javascript/);
   assert.equal((await post('/api/library/upload',{filename:'test.txt',base64:Buffer.from('Private text.').toString('base64')})).status,401);
   assert.equal((await post('/api/auth/local',{},'','https://evil.example')).status,403);
   const login=await post('/api/auth/local',{});assert.equal(login.status,200);

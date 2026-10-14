@@ -1,5 +1,7 @@
 import {normalizeAppearance} from './reading-preferences.mjs';
 import {validParagraphAnchor} from './paragraph-anchor.mjs';
+import {normalizeReadingSession,normalizeReadingMilestone,normalizeReadingGoal} from './reading-session-record.mjs';
+import {validateReadingDraftBackup} from './reading-draft-store.mjs';
 
 const object=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
 const text=(value,max=12000)=>typeof value==='string'&&value.trim().length>0&&value.length<=max;
@@ -9,7 +11,7 @@ const invalid=(where,message)=>{throw Object.assign(Error(where+'：'+message+'�
 
 // Used before browser batching and again at the server boundary. Never repairs source data silently.
 export function validateLibraryBackup(backup){
-  if(!object(backup)||backup.kind!=='marginalia-library'||backup.schemaVersion!==1||!Array.isArray(backup.books)||backup.books.length>100)invalid('备份','请选择旁读书房备份，最多 100 本');
+  if(!object(backup)||backup.kind!=='marginalia-library'||backup.schemaVersion!==1||!Array.isArray(backup.books)||backup.books.length>100)invalid('备份','请选择循页书房备份，最多 100 本');
   const bookIds=new Set();let paragraphs=0,notes=0;
   for(const [index,entry] of backup.books.entries()){
     const where='第 '+(index+1)+' 本书',b=entry?.book,r=entry?.records;
@@ -34,14 +36,21 @@ export function validateLibraryBackup(backup){
     for(const n of b.glossary){if(!object(n)||!id(n.id)||termIds.has(n.id)||!text(n.en,500)||!text(n.zh,500)||!text(n.definition))invalid(where,'术语解释不完整');termIds.add(n.id);}
     for(const s of b.sections)for(const p of s.paragraphs)if(p.annotationIds.some(key=>!annotationIds.has(key))||p.termIds.some(key=>!termIds.has(key)))invalid(where,'注解无法对应原文段落');
     if(object(r)&&r.contentVersion!==b.contentVersion)throw Object.assign(Error(where+'：备份的原文版本与个人记录冲突，未覆盖原书或记录。'),{status:409});
-    if(!object(r)||r.bookId!==b.bookId||r.contentVersion!==b.contentVersion||r.kind!=='marginalia-personal-records'||![1,2].includes(r.schemaVersion)||!['comments','questions','readingSessions'].every(key=>Array.isArray(r[key])&&r[key].length<=10000))invalid(where,'个人记录无法对应原文');
+    if(!object(r)||r.bookId!==b.bookId||r.contentVersion!==b.contentVersion||r.kind!=='marginalia-personal-records'||![1,2,3].includes(r.schemaVersion)||!['comments','questions','readingSessions'].every(key=>Array.isArray(r[key])&&r[key].length<=10000))invalid(where,'个人记录无法对应原文');
     for(const key of ['comments','questions']){
       const ids=new Set();for(const n of r[key]){
         if(!object(n)||!text(n.id,128)||ids.has(n.id)||!passageIds.has(n.passageId)||n.origin!=='user'||!text(n.text,2000)||!date(n.createdAt)||n.bookId!==undefined&&n.bookId!==b.bookId||n.contentVersion!==undefined&&n.contentVersion!==b.contentVersion||n.quote!==undefined&&(typeof n.quote!=='string'||n.quote.length>4000))invalid(where,'个人笔记的标识、时间或归属不正确');
         ids.add(n.id);notes++;
       }
     }
-    const sessionIds=new Set();for(const s of r.readingSessions){if(!object(s)||!text(s.id,128)||sessionIds.has(s.id)||s.bookId!==b.bookId||!date(s.startedAt)||!date(s.endedAt)||Date.parse(s.endedAt)<Date.parse(s.startedAt)||!Number.isFinite(s.durationSeconds)||s.durationSeconds<0||s.durationSeconds>86400||s.source!=='design_preview_focus_timer')invalid(where,'阅读时段的时间或来源不正确');sessionIds.add(s.id);}
+    const sessionIds=new Set();for(const s of r.readingSessions){
+      if(!object(s)||!text(s.id,128)||sessionIds.has(s.id)||s.bookId!==b.bookId||!date(s.startedAt)||!date(s.endedAt)||Date.parse(s.endedAt)<Date.parse(s.startedAt)||!Number.isFinite(s.durationSeconds)||s.durationSeconds<0||s.durationSeconds>86400)invalid(where,'阅读时段的时间或来源不正确');
+      if(s.source==='reader_focus'){try{const normalized=normalizeReadingSession(s,b);if(normalized.durationSeconds!==s.durationSeconds)invalid(where,'阅读时段与实际区间不一致');}catch{invalid(where,'阅读时段无法对应当前原文或实际时间');}}
+      else if(s.source!=='design_preview_focus_timer')invalid(where,'阅读时段的来源不正确');sessionIds.add(s.id);
+    }
+    if(r.schemaVersion===3||r.readingMilestones!==undefined){if(!Array.isArray(r.readingMilestones)||r.readingMilestones.length>10000)invalid(where,'阅读标记不完整');const marks=new Set();for(const mark of r.readingMilestones){try{if(marks.has(mark?.id)||mark?.origin!=='user'||mark.bookId!==b.bookId||mark.contentVersion!==b.contentVersion)invalid(where,'阅读标记归属不正确');normalizeReadingMilestone(mark,b);marks.add(mark.id);}catch{invalid(where,'阅读标记无法对应原文');}}}
+    if(r.readingGoal!==undefined){try{if(!date(r.readingGoal?.updatedAt))invalid(where,'阅读目标时间不正确');normalizeReadingGoal(r.readingGoal);}catch{invalid(where,'阅读目标不正确');}}
+    if(entry.localReadingDrafts!==undefined){try{validateReadingDraftBackup(entry.localReadingDrafts,b);}catch{invalid(where,'本机阅读草稿无法对应原文或待确认提交');}}
     if(r.position!==null&&r.position!==undefined){const p=r.position;if(!object(p)||passageIds.get(p.passageId)!==p.chapterId||!validParagraphAnchor(p)||!['zh','en','parallel'].includes(p.mode)||!['literal','interpretive'].includes(p.variant)||p.contentVersion!==undefined&&p.contentVersion!==b.contentVersion||p.revision!==undefined&&(!Number.isInteger(p.revision)||p.revision<0)||p.updatedAt!==undefined&&!date(p.updatedAt))invalid(where,'阅读位置不完整');try{normalizeAppearance(p,true);}catch{invalid(where,'阅读排版设置不正确');}}
   }
   return {books:backup.books.length,paragraphs,notes};

@@ -1,0 +1,7 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createReadingMarkActions} from '../app/reading-mark-actions.mjs';
+import {readingBook} from './reading-fixtures.mjs';
+test('an uncertain completion is retried with the same id after page reconstruction',async()=>{let saved=[],first=null;const storage={load:()=>saved,save:v=>saved=v},actions=createReadingMarkActions({book:readingBook,...storage,send:async m=>{first=m;throw Error('offline');}});await assert.rejects(actions.submit('chapter_read','ch01'));assert.equal(actions.pending('ch01').id,first.id);const next=createReadingMarkActions({book:readingBook,...storage,send:async m=>m});const result=await next.submit('chapter_read','ch01');assert.equal(result.id,first.id);assert.equal(saved.length,0);});
+test('a different chapter cannot acknowledge or overwrite a pending intent',async()=>{let saved=[],resolve;const actions=createReadingMarkActions({book:readingBook,load:()=>saved,save:v=>saved=v,send:async m=>new Promise(r=>resolve=()=>r(m))});const write=actions.submit('chapter_read','ch01');await assert.rejects(actions.submit('chapter_read','ch01'),/正在/);assert.equal(actions.pending('ch02'),null);assert.equal(saved.length,1);resolve();await write;});
+test('a receipt with a different milestone is not treated as a saved completion',async()=>{let saved=[];const actions=createReadingMarkActions({book:readingBook,load:()=>saved,save:v=>saved=v,send:async m=>({...m,id:'other'})});await assert.rejects(actions.submit('chapter_read','ch01'),/确认/);assert.equal(saved.length,1);});
