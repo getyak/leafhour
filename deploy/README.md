@@ -8,7 +8,7 @@
 
 邮箱使用 Supabase Auth 的验证码验证与会话刷新。生产设置为六位、十分钟有效，同一邮箱至少六十秒后重发。服务端保留六到八位的输入兼容，网页与新生产配置使用六位。未配置时保留匿名试读，禁用发信入口。默认 Supabase 邮件只供项目团队成员使用，不能视为生产注册服务。
 
-Resend 先验证自己的发件域名。按控制台返回的真实值添加发送用途的 DKIM、SPF 和 MX 记录，保留现有邮箱接收记录；不要把根域的接收 MX 改成 Resend。使用仅限该域名的发信密钥，在 Supabase Auth 的 Custom SMTP 设置 `smtp.resend.com`、端口 `465`、用户名 `resend`、密码为该密钥，发件名称和地址使用自己的产品配置。将 `deploy/auth-email.html` 同时用于确认注册与 Magic Link 模板，两个模板都要保留实际 `{{ .Token }}`。在 Supabase 设置 `mailer_otp_length=6`、`mailer_otp_exp=600`、`smtp_max_frequency=60`，邮件发送额度与本站每小时三十次总额度匹配。真实收信、验证和退出通过后，再设 `READER_EMAIL_ENABLED=true`。
+Resend 先验证自己的发件域名。按控制台返回的真实类型和内容添加发信用途的 DNS 记录；用于域名验证的 CNAME 保持 DNS only。保留现有邮箱接收记录，不要把根域的接收 MX 改成 Resend。使用仅限该域名的发信密钥，在 Supabase Auth 的 Custom SMTP 设置 `smtp.resend.com`、端口 `465`、用户名 `resend`、密码为该密钥，发件名称和地址使用自己的产品配置。将 `deploy/auth-email.html` 同时用于确认注册与 Magic Link 模板，两个模板都要保留实际 `{{ .Token }}`。在 Supabase 设置 `mailer_otp_length=6`、`mailer_otp_exp=600`、`smtp_max_frequency=60`，邮件发送额度与本站每小时三十次总额度匹配。真实收信、验证和退出通过后，再设 `READER_EMAIL_ENABLED=true`。
 
 Google 与 Apple 从 Supabase 公共能力配置读取实际启用状态，未配置的入口显示“准备中”。Google 使用网站 OAuth 客户端，授权来源为本站正式 HTTPS 来源，授权回调为 `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback`，只申请登录所需的身份资料。Supabase 的 Site URL 设为本站正式来源，额外跳转白名单加入精确的 `https://YOUR_READER/api/auth/callback`；浏览器不保存供应商令牌。本站用一次性事务、浏览器 Cookie 和 PKCE 交换授权码，成功后继续使用随机会话 Cookie。
 
