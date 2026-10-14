@@ -16,8 +16,10 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
   async function handle({req,res,url,send}){
     const p=url.pathname,isAPI=p.startsWith('/api/auth/')||p.startsWith('/api/library')||p.startsWith('/api/agent/');
     const files={'/':'home.html','/library':'home.html','/privacy':'privacy.html','/auth.css':'auth.css','/auth-dialog.mjs':'auth-dialog.mjs','/auth-flow.mjs':'auth-flow.mjs','/auth-assets/google.png':'auth-assets/google.png','/auth-assets/apple.svg':'auth-assets/apple.svg','/portal.css':'portal.css','/portal.js':'portal.js','/owner-scope.mjs':'owner-scope.mjs','/paragraph-anchor.mjs':'paragraph-anchor.mjs','/source-language.mjs':'source-language.mjs','/upload-state.mjs':'upload-state.mjs','/library-backup.mjs':'library-backup.mjs','/reader-api.mjs':'reader-api.mjs','/reading-progress.mjs':'reading-progress.mjs','/progress-sync.mjs':'progress-sync.mjs','/reader-translation.js':'reader-translation.js'};
+    files['/reading-session-record.mjs']='reading-session-record.mjs';
+    for(const file of ['reading-calendar.mjs','reading-dashboard.mjs','library-restore.mjs','site-appearance.mjs','reading-clock.mjs','reading-outbox.mjs','reading-queue-store.mjs','reading-session-coordinator.mjs','reading-mark-actions.mjs','reading-mark-store.mjs','reading-draft-store.mjs','reading-retained-backup.mjs','reading-journey.mjs','reading-pending-backup.mjs','reading-ending-context.mjs','reading-session.js','reading-session.css','brand-assets/reading-window.webp','brand-assets/page-detail.webp','brand-assets/page-mark.svg'])files['/'+file]=file;
     if(!isAPI&&!files[p])return false;
-    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';send(200,await readFile(path.join(root,'app',files[p])),type);return true;}
+    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';send(200,await readFile(path.join(root,'app',files[p])),type);return true;}
     if(req.method!=='GET'&&req.method!=='POST')throw fail('不支持这个请求',405);
     const origin='http://'+req.headers.host;
     if(req.headers.origin&&req.headers.origin!==origin&&req.headers.origin!==publicOrigin)throw fail('请求来源未授权',403);
@@ -52,10 +54,11 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     if(p==='/api/auth/verify'&&req.method==='POST'){const session=await auth.verifyCode(body.email,body.code);setSession(session.token);send(200,{user:session.user});return true;}
     if(p==='/api/auth/local'&&req.method==='POST'){if(!localAllowed)throw fail('本机书房只在本机模式可用',403);const session=await auth.localSession();setSession(session.token);send(200,{user:session.user});return true;}
     if(p==='/api/library'&&req.method==='GET'){send(200,{books:await library.list(user),user});return true;}
+    if(p==='/api/library/activity'&&req.method==='GET'){send(200,await library.readingActivity(user,{month:url.searchParams.get('month'),timeZone:url.searchParams.get('timeZone')}));return true;}
     if(p==='/api/library/mcp-setup'&&req.method==='GET'){
       if(!user)throw fail('请先进入自己的书房',401);
       if(hostedMcp){send(200,{hosted:true,serviceUrl:publicOrigin});return true;}
-      if(!localAllowed)throw fail('本机接入配置只能在运行旁读的电脑上读取。远程接入尚未支持。',403);
+      if(!localAllowed)throw fail('本机接入配置只能在运行循页的电脑上读取。远程接入尚未支持。',403);
       const loopback=req.socket.localAddress==='::1'?'[::1]':'127.0.0.1';
       send(200,{command:process.execPath,args:[path.join(root,'server/mcp.mjs')],serviceUrl:'http://'+loopback+':'+req.socket.localPort});return true;
     }
@@ -84,6 +87,9 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
       if(['records','records/export'].includes(action)&&req.method==='GET'){send(200,await library.records(user,id));return true;}
       if(['comments','questions'].includes(action)&&req.method==='POST'){send(201,await library.addComment(user,id,body,action));return true;}
       if(action==='progress'&&req.method==='POST'){send(200,await library.saveProgress(user,id,body));return true;}
+      if(action==='reading-sessions'&&req.method==='POST'){send(201,await library.saveReadingSession(user,id,body));return true;}
+      if(action==='reading-milestones'&&req.method==='POST'){send(201,await library.recordReadingMilestone(user,id,body));return true;}
+      if(action==='reading-goal'&&req.method==='POST'){send(200,await library.setReadingGoal(user,id,body));return true;}
       if(action==='translate'&&req.method==='POST'){send(200,await library.translate(user,id,body.passageId));return true;}
       if(action==='experiences'&&req.method==='GET'){const book=await library.getBook(user,id);send(200,{bookId:id,contentVersion:book.contentVersion,xrays:[],cards:[],invitations:[],states:{},echoes:[],echoAvailable:false});return true;}
       if(action==='experience-events'&&req.method==='POST'){await library.getBook(user,id);send(200,{accepted:0,reason:'本书尚未开启探索体验统计'});return true;}
@@ -98,7 +104,7 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
       if(action==='chapter'&&req.method==='GET'){const chapterId=url.searchParams.get('chapterId');if(!book.chapters.some(c=>c.id===chapterId))throw fail('找不到这一章',404);const start=Number(url.searchParams.get('offset')||0),limit=Number(url.searchParams.get('limit')||10);if(!Number.isInteger(start)||start<0||!Number.isInteger(limit)||limit<1||limit>20)throw fail('分页范围无效');const chapter=passages.filter(p=>p.chapterId===chapterId);send(200,{bookId,contentVersion:book.contentVersion,passages:chapter.slice(start,start+limit),nextOffset:start+limit<chapter.length?start+limit:null});return true;}
       if(action==='search'&&req.method==='GET'){const query=url.searchParams.get('query');if(!query?.trim()||query.length>200)throw fail('请输入检索词');send(200,{bookId,results:passages.filter(p=>p.original.toLowerCase().includes(query.toLowerCase())).slice(0,20).map(p=>({id:p.id,chapterId:p.chapterId,excerpt:p.original.slice(0,800),source:p.source}))});return true;}
       if(action==='notes'&&req.method==='GET'){const data=await records(),offset=Number(url.searchParams.get('offset')||0);if(!Number.isInteger(offset)||offset<0)throw fail('分页范围无效');const rows=[...data.comments.map(r=>({...r,type:'comment'})),...data.questions.map(r=>({...r,type:'question'}))];send(200,{bookId,records:rows.slice(offset,offset+20),nextOffset:offset+20<rows.length?offset+20:null});return true;}
-      if(action==='activity'&&req.method==='GET'){const data=await records();send(200,{bookId,position:data.position,readingSessions:data.readingSessions.slice(-20),meaning:'阅读记录只记录投入，Agent 访问不计入阅读时间'});return true;}
+      if(action==='activity'&&req.method==='GET'){const data=await records();send(200,{bookId,position:data.position,readingSessions:data.readingSessions.slice(-20),readingMilestones:data.readingMilestones.slice(-20),readingGoal:data.readingGoal||null,meaning:'阅读记录只记录投入和用户自己的标记，Agent 访问不计入阅读时间，时长不证明理解'});return true;}
       if(action==='comment'&&req.method==='POST'){if(body.origin!=='user')throw fail('只保存用户明确提供的原话');send(201,await library.addComment(owner,bookId,body));return true;}
       throw fail('不支持这个请求',405);
     }

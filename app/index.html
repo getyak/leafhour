@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="zh-Hans" data-theme="paper">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>旁读 · 阅读</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>循页 · 阅读</title><link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script></head>
 <body>
   <a href="#book-page" class="skip-link">跳到正文</a>
   <header id="reading-header" class="reading-header">
     <div class="reader-navigation"><a href="/library" class="quiet-button" aria-label="返回书房">← 书房</a><button id="open-toc" class="quiet-button" aria-controls="toc-dialog" aria-haspopup="dialog">目录</button></div>
-    <p class="running-title">旁读<span id="running-chapter"></span></p>
+    <p class="running-title">循页<span id="running-chapter"></span></p>
     <div class="header-actions"><button id="open-settings" class="quiet-button typography-button" aria-label="阅读设置" aria-haspopup="dialog">Aa</button><button id="enter-focus" class="quiet-button">专注</button></div>
   </header>
   <button id="exit-focus" class="focus-exit" hidden>退出专注</button>
@@ -15,13 +15,37 @@
     <header class="chapter-heading" id="chapter-heading" hidden><p id="chapter-number" class="chapter-number"></p><h1 id="chapter-title"></h1><p id="chapter-original-title" class="original-title"></p></header>
     <article id="chapter-text" aria-label="书籍正文"></article>
     <footer id="chapter-footer" class="chapter-footer" hidden><button id="previous-chapter">上一章</button><span id="chapter-fraction"></span><button id="next-chapter">下一章</button></footer>
+    <div id="chapter-reading-actions" class="chapter-reading-actions" hidden><button id="mark-chapter-read" type="button">这一章读完了</button><p id="chapter-read-state"></p></div>
   </main>
+  <section id="reading-session" class="reading-session" aria-label="今日阅读" hidden>
+    <div id="reading-controls" class="reading-controls"><div class="reading-meter"><span id="reading-state">今日阅读</span><output id="reading-time" aria-label="本次前台阅读时间" aria-live="off">00:00</output></div><button id="reading-toggle" type="button">开始阅读</button><button id="reading-end" type="button" disabled>结束</button></div>
+    <a id="reading-login" class="reading-login" href="/library?login=1">登录后记录阅读 →</a><button id="reading-guide-open" type="button">深读提示</button><button id="reading-drafts-open" type="button" hidden>草稿</button>
+    <span id="reading-goal-hint" class="reading-goal-hint"></span><div class="reading-sync-row"><p id="reading-sync" role="status"></p><button id="reading-retry" type="button" hidden>重试保存</button><button id="reading-backup" type="button" hidden>另存待同步时段</button></div>
+  </section>
+  <dialog id="reading-guide" class="reading-dialog" aria-labelledby="reading-guide-title">
+    <header><div><p class="reading-dialog-kicker">循页 · 深读提示</p><h2 id="reading-guide-title">从一个问题开始。</h2></div><button data-reading-close="reading-guide" aria-label="关闭深读提示">×</button></header>
+    <p id="guide-session-state" class="reading-guide-reference" hidden>计时已暂停，回到阅读后继续。</p><div class="reading-source"><p id="guide-source-label"></p><blockquote id="guide-source"></blockquote></div>
+    <div class="reading-guide-steps"><section><h3>带着问题读</h3><p>先想一想，这一节想回答什么。把自己的疑问带进接下来的几页。</p></section><section><h3>合上书，用自己的话说</h3><p>暂时移开目光，试着说清刚才读到的意思。一句话也可以。</p></section><section><h3>回到原文核对</h3><p>再看作者实际写了什么。哪些是原文，哪些是自己的推断？难句可以对照译文。</p></section><section><h3>留住还没想通的地方</h3><p>记下问题，下次从这里继续。读小说也可以只留住一个场景或一种感受。</p></section></div>
+    <p class="reading-guide-reference">教材阅读的提问、复述与回顾，参考 <a href="https://lsc.cornell.edu/how-to-study/reading-strategies/textbook-reading-systems/" target="_blank" rel="noopener noreferrer">Cornell 阅读策略 ↗</a>。这些是可选提示，按书和自己的节奏选择。</p>
+    <button id="reading-guide-return" class="reading-primary" type="button">回到阅读</button>
+  </dialog>
+  <dialog id="reading-drafts" class="reading-dialog" aria-labelledby="reading-drafts-title">
+    <header><div><p class="reading-dialog-kicker">只留在本机，等待你回来。</p><h2 id="reading-drafts-title">还没写完的想法</h2></div><button data-reading-close="reading-drafts" aria-label="关闭草稿列表">×</button></header>
+    <p class="reading-guide-reference">每份草稿保留原文位置。多个阅读页里的文字分别保留，保存后才进入书房笔记。</p><div id="reading-drafts-list" class="reading-drafts-list"></div>
+  </dialog>
+  <dialog id="reading-ending" class="reading-dialog" aria-labelledby="reading-ending-title">
+    <header><div><p class="reading-dialog-kicker">一页，再一页。</p><h2 id="reading-ending-title">今天，就读到这里。</h2></div><button data-reading-close="reading-ending" aria-label="关闭读后记录">×</button></header>
+    <p id="ending-duration" class="ending-duration"></p><details class="ending-source-details"><summary id="ending-source-summary">这次停下的原文</summary><div class="reading-source"><p id="ending-source-label"></p><blockquote id="ending-source"></blockquote></div></details>
+    <div class="ending-field"><label for="ending-comment">自己理解的一句话 <span>可选</span></label><textarea id="ending-comment" maxlength="2000" rows="3" placeholder="不看原文，试着用自己的话说一说…"></textarea><p id="ending-comment-pending" class="ending-pending"></p><button id="save-ending-comment" type="button">保存理解</button><p id="ending-comment-status" role="status"></p></div>
+    <div class="ending-field"><label for="ending-question">还有哪里没想通 <span>可选</span></label><textarea id="ending-question" maxlength="2000" rows="2" placeholder="留下一个值得回来的问题…"></textarea><p id="ending-question-pending" class="ending-pending"></p><button id="save-ending-question" type="button">保存问题</button><p id="ending-question-status" role="status"></p></div>
+    <div class="ending-actions"><a href="/library" class="reading-primary">回到书房与日历 →</a><button data-reading-close="reading-ending" type="button">继续翻书</button></div><p class="ending-footnote">结束计时不会标记读完。未提交的文字只留在本机草稿中。</p>
+  </dialog>
   <div id="paragraph-tools" class="paragraph-tools" role="toolbar" aria-label="当前段落操作" hidden>
     <button id="show-share" hidden>分享摘录</button><button id="show-xray">透视</button><button id="show-original">原文</button><button id="show-annotations">注解</button><button id="show-comment">想法</button><button id="more-actions" aria-label="更多段落操作" aria-expanded="false">更多</button>
     <div id="paragraph-more" class="paragraph-more" hidden><button id="share-passage">分享这一段</button><button id="show-stance">站队看看</button><button id="show-echo">用自己的话</button><button id="show-chat" hidden>解释（对照）</button><button data-passage-variant="literal">这一段直译</button><button data-passage-variant="interpretive">这一段意译</button><button id="show-question">留下问题</button></div>
   </div>
   <aside id="note-panel" class="note-panel" aria-label="段落旁注与个人记录" hidden>
-    <div class="panel-heading"><div><p id="panel-title">段落旁读</p><span id="panel-anchor"></span></div><button id="close-panel" class="quiet-button" aria-label="关闭段落旁读">关闭</button></div>
+    <div class="panel-heading"><div><p id="panel-title">段落旁注</p><span id="panel-anchor"></span></div><button id="close-panel" class="quiet-button" aria-label="关闭段落旁注">关闭</button></div>
     <button id="panel-source" class="panel-source" type="button"><span id="panel-source-label" class="panel-source-label"></span><span id="panel-source-text" class="panel-source-text"></span><span class="panel-source-return">回到正文 <span aria-hidden="true">↗</span></span></button>
     <nav class="panel-tabs" aria-label="旁注类型"><button data-panel-tab="annotations">注解</button><button data-panel-tab="comment">我的想法</button><button data-panel-tab="question">问题</button></nav>
     <div id="panel-content"></div>
@@ -65,7 +89,7 @@
   </dialog>
   <dialog id="share-dialog" class="share-dialog" aria-labelledby="share-title">
     <div class="share-shell">
-      <header class="share-heading"><h2 id="share-title">留住这句话<span>旁读 · 摘录</span></h2><button id="share-close" class="quiet-button">返回阅读</button></header>
+      <header class="share-heading"><h2 id="share-title">留住这句话<span>循页 · 摘录</span></h2><button id="share-close" class="quiet-button">返回阅读</button></header>
       <div class="share-workspace">
         <figure class="share-stage"><canvas id="share-canvas" role="img" aria-labelledby="share-preview-description"></canvas><figcaption id="share-dimensions"></figcaption><p id="share-preview-description" class="visually-hidden"></p></figure>
         <section class="share-controls" aria-label="分享图片配置">

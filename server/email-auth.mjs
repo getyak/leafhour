@@ -8,7 +8,7 @@ export async function smtpSender(env=process.env){
   if(!env.READER_SMTP_HOST||!env.READER_SMTP_FROM)return null;
   const {default:nodemailer}=await import('nodemailer');
   const transport=nodemailer.createTransport({host:env.READER_SMTP_HOST,port:Number(env.READER_SMTP_PORT||587),secure:env.READER_SMTP_SECURE==='true',requireTLS:env.READER_SMTP_SECURE!=='true',connectionTimeout:10000,socketTimeout:15000,...(env.READER_SMTP_USER?{auth:{user:env.READER_SMTP_USER,pass:env.READER_SMTP_PASSWORD}}:{})});
-  return async(email,code)=>{await transport.sendMail({from:env.READER_SMTP_FROM,to:email,subject:'旁读 · 你的登录验证码',text:`你的旁读验证码是 ${code}。\n\n10 分钟内有效，只能使用一次。首次验证后会建立你的私人书房。\n如果不是你发起的请求，可以忽略这封邮件。`});};
+  return async(email,code)=>{await transport.sendMail({from:env.READER_SMTP_FROM,to:email,subject:'循页 · 你的登录验证码',text:`你的循页验证码是 ${code}。\n\n10 分钟内有效，只能使用一次。首次验证后会建立你的私人书房。\n如果不是你发起的请求，可以忽略这封邮件。`});};
 }
 
 export async function createEmailAuth({dataDir,sendCode=null,clock=Date.now}={}){

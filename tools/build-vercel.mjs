@@ -20,7 +20,7 @@ await cp(evalsPath, path.join(outputDir, 'evals', 'index.html'));
 
 await writeFile(
   path.join(outputDir, '404.html'),
-  '<!doctype html><meta charset="utf-8"><title>旁读</title><p>这个页面不存在。</p>',
+  '<!doctype html><meta charset="utf-8"><title>循页</title><p>这个页面不存在。</p>',
 );
 
 console.log(`Built hosted library and reader at ${outputDir}; private content stays in Supabase.`);

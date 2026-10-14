@@ -9,11 +9,26 @@ import {validateLibraryBackup} from '../app/library-backup.mjs';
 import {inferSourceLanguage} from '../app/source-language.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
 import {applyCatalogSample} from './catalog-sample.mjs';
+import {normalizeReadingSession,mergeReadingSession,normalizeReadingMilestone,normalizeReadingGoal,readingJourney,buildReadingCalendar} from './reading-activity.mjs';
 
 const requireUser=user=>{if(!user?.id)throw fail('请先进入自己的书房',401);return user;};
-const emptyRecords=book=>({kind:'marginalia-personal-records',schemaVersion:2,bookId:book.bookId,contentVersion:book.contentVersion,comments:[],questions:[],readingSessions:[],position:null});
+const emptyRecords=book=>({kind:'marginalia-personal-records',schemaVersion:3,bookId:book.bookId,contentVersion:book.contentVersion,comments:[],questions:[],readingSessions:[],readingMilestones:[],position:null});
+const readingDefaults=data=>Object.assign(data,{schemaVersion:3,readingMilestones:data.readingMilestones||[],readingSessions:data.readingSessions||[]});
+function mergedPersonalRecords(book,current,incoming){
+  const data=readingDefaults(structuredClone(current));
+  for(const key of ['comments','questions']){const map=new Map(data[key].map(r=>[r.id,r]));for(const row of incoming[key])if(!map.has(row.id))map.set(row.id,row);data[key]=[...map.values()];}
+  const sessions=new Map(data.readingSessions.map(r=>[r.id,r]));
+  for(const session of incoming.readingSessions){const old=sessions.get(session.id);if(session.source==='reader_focus')sessions.set(session.id,mergeReadingSession(old,normalizeReadingSession(session,book)));else if(old&&old.source!==session.source)throw fail('备份中的阅读时段标识冲突，未覆盖记录',409);else if(!old)sessions.set(session.id,session);}
+  data.readingSessions=[...sessions.values()];
+  const marks=new Map(data.readingMilestones.map(r=>[r.id,r]));
+  for(const mark of incoming.readingMilestones||[]){const old=marks.get(mark.id);if(old&&(old.type!==mark.type||old.chapterId!==mark.chapterId||old.contentVersion!==mark.contentVersion))throw fail('备份中的阅读标记标识冲突，未覆盖记录',409);if(!old)marks.set(mark.id,normalizeReadingMilestone(mark,book));}
+  data.readingMilestones=[...marks.values()];
+  if(incoming.readingGoal&&(!data.readingGoal||Date.parse(incoming.readingGoal.updatedAt)>Date.parse(data.readingGoal.updatedAt)))data.readingGoal=normalizeReadingGoal(incoming.readingGoal);
+  if(incoming.position)data.position={...incoming.position,contentVersion:book.contentVersion,revision:(data.position?.revision||0)+1,updatedAt:new Date().toISOString()};
+  return data;
+}
 const allPassages=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
-const brief=book=>({bookId:book.bookId,title:book.title,author:book.author,visibility:book.visibility,source:book.source,cover:book.cover,description:book.description,chineseSample:book.chineseSample,paragraphs:allPassages(book).length,chapters:book.chapters.length,createdAt:book.createdAt});
+const brief=book=>({bookId:book.bookId,contentVersion:book.contentVersion,title:book.title,author:book.author,visibility:book.visibility,source:book.source,cover:book.cover,description:book.description,chineseSample:book.chineseSample,paragraphs:allPassages(book).length,chapters:book.chapters.length,chapterIndex:book.chapters.map(c=>({id:c.id,kind:c.kind,number:c.number,title:c.title})),createdAt:book.createdAt});
 
 export async function createLibraryService({dataDir,catalogDir=path.resolve('catalog'),translator=null,dataStore=null}={}){
   if(!dataStore)await mkdir(dataDir,{recursive:true,mode:0o700});
@@ -52,7 +67,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   }
   async function list(user){
     const index=user?await read(path.join(userDir(user),'index.json'),{books:[]}):{books:[]},rows=[...publicBooks.values()].map(brief).concat(index.books);
-    return Promise.all(rows.map(async row=>{if(!user)return {...row,resume:null};const data=await read(recordFile(user,row.bookId),{position:null});if(!data.position)return {...row,resume:null};const book=publicBooks.get(row.bookId)||await read(bookFile(user,row.bookId),null);return {...row,resume:book?resumeSummary(book,data.position):null};}));
+    return Promise.all(rows.map(async row=>{if(!user)return {...row,resume:null,journey:null};const data=await read(recordFile(user,row.bookId),{position:null});const book=publicBooks.get(row.bookId)||(!data.position&&row.chapterIndex&&row.contentVersion?{bookId:row.bookId,contentVersion:row.contentVersion,chapters:row.chapterIndex}:await read(bookFile(user,row.bookId),null));return {...row,resume:book&&data.position?resumeSummary(book,data.position):null,journey:book?readingJourney(book,data):null};}));
   }
   async function importDocument(user,input){
     requireUser(user);const extracted=await extractDocument(input),hash=digest(input.bytes);let id='private-'+digest(user.id+hash).slice(0,24),existing=await read(bookFile(user,id),null);
@@ -82,7 +97,23 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     const file=await getOriginal(user,id),book=await getBook(user,id);
     return {...file,bytes:undefined,url:await dataStore.signedBlob(path.join(userDir(user),'originals',book.source.sha256))};
   }
-  async function records(user,id){const book=await getBook(user,id);if(!user)return emptyRecords(book);const data=await read(recordFile(user,id),emptyRecords(book));data.position=alignReadingPosition(book,data.position);return data;}
+  async function records(user,id){const book=await getBook(user,id);if(!user)return emptyRecords(book);const data=readingDefaults(await read(recordFile(user,id),emptyRecords(book)));data.position=alignReadingPosition(book,data.position);return data;}
+  const guardRecordSize=data=>{if(dataStore&&Buffer.byteLength(JSON.stringify(data))>3500000)throw fail('阅读记录已超过云端单书容量，请保留导出备份并在本机继续',413);};
+  async function saveReadingSession(user,id,input){
+    requireUser(user);const book=await getBook(user,id),next=normalizeReadingSession(input,book);
+    return mutate(recordFile(user,id),emptyRecords(book),raw=>{const data=readingDefaults(raw),index=data.readingSessions.findIndex(s=>s.id===next.id),previous=index>=0?data.readingSessions[index]:null;if(!previous&&data.readingSessions.length>=10000)throw fail('阅读时段较多，请保留导出备份',413);const merged=mergeReadingSession(previous,next),saved=merged===previous?previous:{...merged,recordedAt:new Date().toISOString()};if(index>=0)data.readingSessions[index]=saved;else data.readingSessions.push(saved);guardRecordSize(data);return saved;});
+  }
+  async function recordReadingMilestone(user,id,input){
+    requireUser(user);const book=await getBook(user,id),mark=normalizeReadingMilestone(input,book);
+    return mutate(recordFile(user,id),emptyRecords(book),raw=>{const data=readingDefaults(raw),old=data.readingMilestones.find(r=>r.id===mark.id);if(old){if(old.type!==mark.type||old.chapterId!==mark.chapterId||old.contentVersion!==mark.contentVersion)throw fail('阅读标记标识冲突，原标记已保留',409);return old;}if(data.readingMilestones.length>=10000)throw fail('阅读标记较多，请保留导出备份',413);data.readingMilestones.push(mark);guardRecordSize(data);return mark;});
+  }
+  async function setReadingGoal(user,id,input){
+    requireUser(user);const book=await getBook(user,id),goal=normalizeReadingGoal({minutes:input?.minutes});return mutate(recordFile(user,id),emptyRecords(book),raw=>{const data=readingDefaults(raw);data.readingGoal=goal;guardRecordSize(data);return goal;});
+  }
+  async function readingActivity(user,query){
+    requireUser(user);buildReadingCalendar([],query);const index=await read(path.join(userDir(user),'index.json'),{books:[]}),ids=[...new Set([...publicBooks.keys(),...index.books.map(b=>b.bookId)])];
+    const entries=await Promise.all(ids.map(async id=>{const book=publicBooks.get(id)||await read(bookFile(user,id),null);if(!book)return null;return {book,records:await read(recordFile(user,id),emptyRecords(book))};}));return buildReadingCalendar(entries.filter(Boolean),query);
+  }
   async function addComment(user,id,input,type='comments'){
     requireUser(user);const book=await getBook(user,id);
     if(!['comments','questions'].includes(type)||typeof input?.id!=='string'||!input.id||input.id.length>128||typeof input.text!=='string'||!input.text.trim()||input.text.length>2000||!allPassages(book).some(p=>p.id===input.passageId)||input.origin&&input.origin!=='user'||input.contentVersion&&input.contentVersion!==book.contentVersion)throw fail('记录无法对应当前原文');
@@ -134,6 +165,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       const passages=allPassages(b),ids=new Set(passages.map(p=>p.id));if(!passages.length||ids.size!==passages.length||passages.some(p=>typeof p.id!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(p.id)||typeof p.original!=='string'||!p.translations||Array.isArray(p.translations)||!b.chapters.some(c=>c.id===p.chapterId)))throw fail('原文锚点不完整');
       if(!r||r.bookId!==b.bookId||!Array.isArray(r.comments)||!Array.isArray(r.questions)||!Array.isArray(r.readingSessions)||[...r.comments,...r.questions].some(n=>!ids.has(n.passageId)||n.origin!=='user'||typeof n.text!=='string'||n.text.length>2000))throw fail('个人记录无法对应原文');
       if(r.position&&!passages.some(p=>p.id===r.position.passageId&&p.chapterId===r.position.chapterId))throw fail('阅读位置无法恢复');
+      const saved=existing?await read(recordFile(user,b.bookId),emptyRecords(b)):emptyRecords(b);guardRecordSize(mergedPersonalRecords(b,saved,r));
     }
     return summary;
   }
@@ -143,8 +175,8 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       if(!publicBooks.has(book.bookId)){const privateBook={...book,visibility:'private'};await mutate(bookFile(user,book.bookId),{},data=>Object.assign(data,privateBook));await mutate(path.join(userDir(user),'index.json'),{books:[]},data=>{data.books=data.books.filter(b=>b.bookId!==book.bookId);data.books.push(brief(privateBook));});}
       const overlay={};for(const p of allPassages(book))if(Object.keys(p.translations).length)overlay[p.id]={contentVersion:book.contentVersion,translations:p.translations};
       await mutate(path.join(userDir(user),'translations',digest(book.bookId)+'.json'),{},data=>Object.assign(data,overlay));
-      await mutate(recordFile(user,book.bookId),emptyRecords(book),data=>{for(const key of ['comments','questions','readingSessions']){const map=new Map(data[key].map(r=>[r.id,r]));for(const r of incoming[key])if(!map.has(r.id))map.set(r.id,r);data[key]=[...map.values()];}if(incoming.position)data.position={...incoming.position,contentVersion:book.contentVersion,revision:(data.position?.revision||0)+1,updatedAt:new Date().toISOString()};});
+      await mutate(recordFile(user,book.bookId),emptyRecords(book),raw=>{const data=mergedPersonalRecords(book,raw,incoming);guardRecordSize(data);Object.assign(raw,data);});
     }return {restored:backup.books.length};
   }
-  return {list,getBook,importDocument,originalInfo,getOriginal,originalDownload,records,addComment,saveProgress,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,validateRestore,restoreLibrary,translationAvailable:!!translator};
+  return {list,getBook,importDocument,originalInfo,getOriginal,originalDownload,records,addComment,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,validateRestore,restoreLibrary,translationAvailable:!!translator};
 }
