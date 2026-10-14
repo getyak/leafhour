@@ -120,7 +120,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(!['comments','questions'].includes(type)||typeof input?.id!=='string'||!input.id||input.id.length>128||typeof input.text!=='string'||!input.text.trim()||input.text.length>2000||!allPassages(book).some(p=>p.id===input.passageId)||input.origin&&input.origin!=='user'||input.contentVersion&&input.contentVersion!==book.contentVersion)throw fail('记录无法对应当前原文');
     const record={id:input.id,bookId:id,contentVersion:book.contentVersion,passageId:input.passageId,text:input.text,origin:'user',createdAt:new Date().toISOString(),...(type==='questions'?{status:'open'}:{})};
     if(typeof input.quote==='string'&&input.quote.length<=4000){record.quote=input.quote;record.quoteLanguage=input.quoteLanguage==='en'?'en':'zh';if(['original','translation'].includes(input.quoteOrigin))record.quoteOrigin=input.quoteOrigin;}
-    return mutate(recordFile(user,id),emptyRecords(book),data=>{const old=data[type].find(r=>r.id===record.id);if(old){if(old.passageId!==record.passageId||old.text!==record.text)throw fail('记录标识冲突',409);return old;}if(data[type].length>=10000)throw fail('请先导出记录',413);data[type].push(record);return record;});
+    return mutate(recordFile(user,id),emptyRecords(book),data=>{const old=data[type].find(r=>r.id===record.id);if(old){if(old.passageId!==record.passageId||old.text!==record.text)throw fail('记录标识冲突',409);return old;}if(data[type].length>=10000)throw fail('请先导出记录',413);data[type].push(record);guardRecordSize(data);return record;});
   }
   async function saveProgress(user,id,input){
     requireUser(user);const book=await getBook(user,id),passage=allPassages(book).find(p=>p.id===input.passageId);
@@ -128,7 +128,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     let appearance;try{appearance=normalizeAppearance(input,true);}catch{throw fail('阅读设置不正确');}
     if(input.baseRevision!==undefined&&(!Number.isInteger(input.baseRevision)||input.baseRevision<0))throw fail('阅读位置版本不正确');
     const position={chapterId:input.chapterId,passageId:input.passageId,contentVersion:book.contentVersion,offset:input.offset,...(input.withinParagraph!==undefined?{withinParagraph:input.withinParagraph}:{}),mode:input.mode,variant:input.variant,...appearance};
-    return mutate(recordFile(user,id),emptyRecords(book),data=>{const revision=data.position?.revision||0;if(input.baseRevision!==undefined&&input.baseRevision!==revision)throw fail('阅读位置已在另一处更新，请选择从哪里继续',409);data.position={...position,revision:revision+1,updatedAt:new Date().toISOString()};return data.position;});
+    return mutate(recordFile(user,id),emptyRecords(book),data=>{const revision=data.position?.revision||0;if(input.baseRevision!==undefined&&input.baseRevision!==revision)throw fail('阅读位置已在另一处更新，请选择从哪里继续',409);data.position={...position,revision:revision+1,updatedAt:new Date().toISOString()};guardRecordSize(data);return data.position;});
   }
   async function translate(user,id,passageId){
     requireUser(user);const book=await getBook(user,id),passages=allPassages(book),i=passages.findIndex(p=>p.id===passageId);
