@@ -29,7 +29,7 @@ const progressSync=createProgressSync({
   beforeSend:position=>{if(position.localSequence===progressSequence)cachePosition({...position,pending:true});},
   onSaved:(saved,submitted)=>{try{const cached=JSON.parse(localStorage.getItem(progressKey)||'null'),next=acknowledgePosition(cached,saved,submitted);if(next)cachePosition({...next,chapterLabel:resumeSummary(book,next)?.label});}catch{}},
   onConflict:()=>{$('progress-notice').hidden=false;announce('阅读位置已在另一处更新。当前书页保留，请选择从哪里继续。');},
-  onFailure:()=>announce('阅读位置暂未同步；本机浏览器保留当前位置。')
+  onFailure:error=>announce(error.status===413?error.message+'；本机浏览器仍保留当前位置。':'阅读位置暂未同步；本机浏览器保留当前位置。')
 });
 const currentChapter=()=>book.chapters.find(c=>c.id===state.chapterId);
 const activeSections=()=>book.sections.filter(s=>s.chapterId===state.chapterId);
@@ -205,14 +205,14 @@ function renderPanel(){
   noteDrafts.activate?.(draftId);if(noteDrafts.reconcile(draftId,records[key]))persistDrafts();
   const form=el('form','composer'),label=el('label','',type==='question'?'这个问题值得留下吗？':'用自己的话写下来'),area=el('textarea');area.id='thought-text';area.maxLength=2000;area.placeholder=type==='question'?'写下此刻没有想通的地方…':'先写你的理解，不必写完整…';label.htmlFor=area.id;area.value=noteDrafts.text(draftId);
   const save=button(''),pendingHint=el('p','form-status'),status=el('p','form-status');save.type='submit';status.setAttribute('aria-live','polite');
-  const updateComposer=()=>{const pending=noteDrafts.pending(draftId),busy=noteDrafts.busy(draftId);save.disabled=busy;save.textContent=busy?'正在保存…':pending?'重试上次保存':type==='question'?'保存问题':'保存想法';pendingHint.hidden=!pending;pendingHint.textContent=pending?'待确认的提交：「'+pending.text.slice(0,80)+(pending.text.length>80?'…':'')+'」 重试先确认这次提交，新写的草稿会保留。':'';};
+  const updateComposer=()=>{const pending=noteDrafts.pending(draftId),busy=noteDrafts.busy(draftId);save.disabled=busy||!noteDrafts.text(draftId).trim()&&!pending;save.textContent=busy?'正在保存…':pending?'重试上次保存':type==='question'?'保存问题':'保存想法';pendingHint.hidden=!pending;pendingHint.textContent=pending?'待确认的提交：「'+pending.text.slice(0,80)+(pending.text.length>80?'…':'')+'」 重试先确认这次提交，新写的草稿会保留。':'';};
   updateComposer();form.append(label,area,pendingHint,save,status);content.append(form);
-  area.addEventListener('input',()=>{noteDrafts.edit(draftId,area.value);if(!persistDrafts())status.textContent='浏览器无法保留草稿，请先复制文字；刷新会丢失未保存内容。';});
+  area.addEventListener('input',()=>{noteDrafts.edit(draftId,area.value);updateComposer();if(!persistDrafts())status.textContent='浏览器无法保留草稿，请先复制文字；刷新会丢失未保存内容。';});
   form.addEventListener('submit',async e=>{
     e.preventDefault();if(noteDrafts.busy(draftId)||!area.value.trim()&&!noteDrafts.pending(draftId))return;
     const draftEntryId=noteDrafts.activeId?.(draftId);noteDrafts.edit(draftId,area.value);const submission=noteDrafts.begin(draftId,{passageId:p.id,contentVersion:book.contentVersion,quote:selectedQuote,quoteLanguage:selectedQuoteLanguage==='en'?book.sourceLanguage||'en':'zh',quoteOrigin:selectedQuoteLanguage==='en'?'original':'translation'},()=>crypto.randomUUID());const durable=persistDrafts();updateComposer();status.textContent=durable?'正在保存':'正在保存；浏览器无法保留草稿，请先复制文字。';
     try{const record=await api('/api/'+key,submission);if(!records[key].some(r=>r.id===record.id))records[key].push(record);noteDrafts.acknowledge(draftId,record,draftEntryId);const cached=persistDrafts();if(form.isConnected){area.value=noteDrafts.text(draftId);status.setAttribute('role','status');status.textContent=area.value?'上次提交已保存，新写的文字仍是草稿。'+(cached?'':'浏览器无法保留草稿，请先复制；刷新会丢失未保存内容。'):'已保存到自己的书房';content.append(recordNode(record,type));}}
-    catch(error){if(form.isConnected){status.setAttribute('role','alert');status.textContent='保存尚未确认。文字仍保留，重试不会重复创建同一次提交。';}}
+    catch(error){if(form.isConnected){status.setAttribute('role','alert');status.textContent=error.status===413?error.message+'。未提交的文字仍保留在本机草稿中。':'保存尚未确认。文字仍保留，重试不会重复创建同一次提交。';}}
     finally{noteDrafts.finish(draftId,draftEntryId);if(form.isConnected)updateComposer();else if(!allRecords&&!$('note-panel').hidden&&selectedId===p.id&&panelTab===type)renderPanel();}
   });
   for(const record of records[key].filter(r=>r.passageId===p.id))content.append(recordNode(record,type));mountPanel();

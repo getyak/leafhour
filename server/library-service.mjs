@@ -143,7 +143,11 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       const result=await translator({passageId,sourceLanguage:inferSourceLanguage(passages[i].original),targetLanguage:'zh',passages:passages.slice(Math.max(0,i-1),i+2).map(p=>({id:p.id,original:p.original})),sourceVersion:book.contentVersion});
       if(!result||!['literal','interpretive'].every(k=>typeof result[k]==='string'&&result[k].trim()&&result[k].length<=12000))throw fail('翻译结果不完整，请重试；原文已保留',502);
       const translations=Object.fromEntries(['literal','interpretive'].map(variant=>[variant,{text:result[variant],status:'draft',variant,origin:'ai',model:result.model||'configured-provider',sourceVersion:book.contentVersion,createdAt:new Date().toISOString()}]));
-      await mutate(path.join(userDir(user),'translations',digest(id)+'.json'),{},data=>{data[passageId]={contentVersion:book.contentVersion,translations};});return {...passages[i],translations};
+      await mutate(path.join(userDir(user),'translations',digest(id)+'.json'),{},data=>{
+        const next={...data,[passageId]:{contentVersion:book.contentVersion,translations}};
+        if(dataStore){const projected={...book,sections:book.sections.map(s=>({...s,paragraphs:s.paragraphs.map(p=>next[p.id]?.contentVersion===book.contentVersion?{...p,translations:next[p.id].translations}:p)}))};if(Buffer.byteLength(JSON.stringify(projected))>3500000)throw fail('这本书的文字量已接近云端容量，请先导出备份并在本机继续。本次新译文未保存，已有原文与译文仍保留。',413);}
+        data[passageId]=next[passageId];
+      });return {...passages[i],translations};
     }finally{translationsRunning.delete(key);if(ticket)await dataStore.releaseTranslation(ticket).catch(()=>{});}
   }
   const grantsFile=path.join(dataDir,'grants.json');

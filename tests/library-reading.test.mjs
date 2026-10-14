@@ -71,3 +71,17 @@ test('cloud notes, questions and position updates preserve a history at its read
     const part=await library.exportBookPart(owner,book.bookId);assert.ok(part.nextOffset,'the existing substantial history remains exportable');
   }
 });
+
+test('concurrent translations cannot make an allowed cloud book unreadable',async()=>{
+  const fixture=hostedFixture(),store=createHostedStore(fixture),root='translation-budget',base=await createLibraryService({dataDir:root,catalogDir:null,translator:null,dataStore:store}),book=await base.importDocument(owner,{filename:'substantial-English.txt',bytes:Buffer.from(Array.from({length:500},()=>'A '.repeat(2500).trim()).join('\n\n'))}),projected=structuredClone(book),rows=projected.sections.flatMap(s=>s.paragraphs),overlay={};
+  const draft=(variant,text)=>({text,variant,status:'draft',origin:'ai',model:'synthetic-only',sourceVersion:book.contentVersion,createdAt:'2026-10-14T12:00:00Z'});
+  for(const p of rows){p.translations={literal:draft('literal','甲'.repeat(12000)),interpretive:draft('interpretive','乙'.repeat(12000))};if(Buffer.byteLength(JSON.stringify(projected))>3500000){p.translations={};break;}overlay[p.id]={contentVersion:book.contentVersion,translations:p.translations};}
+  let remaining=3500000-Buffer.byteLength(JSON.stringify(projected));if(remaining<2000){const last=rows.filter(p=>p.translations.literal).at(-1);last.translations.literal.text=last.translations.literal.text.slice(0,-1000);remaining+=3000;}
+  await store.mutate(path.join(root,'users',digest(owner.id),'translations',digest(book.bookId)+'.json'),{},data=>Object.assign(data,overlay));
+  const length=Math.floor(remaining/10),translate=async()=>({literal:'丙'.repeat(length),interpretive:'丁'.repeat(length),model:'synthetic-only'}),a=await createLibraryService({dataDir:root,catalogDir:null,translator:translate,dataStore:createHostedStore(fixture)}),b=await createLibraryService({dataDir:root,catalogDir:null,translator:translate,dataStore:createHostedStore(fixture)}),targets=rows.filter(p=>!p.translations.literal).slice(0,2);
+  const outcomes=await Promise.allSettled([a.translate(owner,book.bookId,targets[0].id),b.translate(owner,book.bookId,targets[1].id)]);
+  assert.equal(outcomes.filter(r=>r.status==='fulfilled').length,1,'one new translation fits, while both together exceed the existing cloud budget');
+  const refusal=outcomes.find(r=>r.status==='rejected');assert.equal(refusal.reason.status,413);assert.match(refusal.reason.message,/本次.*未保存/);
+  const actual=await base.getBook(owner,book.bookId);assert.ok(Buffer.byteLength(JSON.stringify(actual))<=3500000);const passages=actual.sections.flatMap(s=>s.paragraphs);
+  assert.deepEqual(passages.map(p=>[p.id,p.original]),rows.map(p=>[p.id,p.original]));for(const [id,value]of Object.entries(overlay))assert.deepEqual(passages.find(p=>p.id===id).translations,value.translations);
+});
