@@ -19,7 +19,7 @@ export function mountReadingDashboard({root,api,getSession,getBooks,getOwner,ope
     const href=item=>'/read?book='+encodeURIComponent(item.bookId)+(item.passageId?'&passage='+encodeURIComponent(item.passageId):'')+(['comment','question'].includes(item.type)?'&note='+item.type:'');
     const books=node('ul','day-books');books.setAttribute('aria-label','这一天的书与记录');
     for(const book of [...(day.books||[])].sort((a,b)=>b.durationSeconds-a.durationSeconds)){
-      const source=day.details.find(item=>item.bookId===book.bookId&&item.type==='reading')||day.details.find(item=>item.bookId===book.bookId),li=node('li'),link=node('a'),summary=[];
+      const source=book.source||day.details.find(item=>item.bookId===book.bookId&&item.type==='reading')||day.details.find(item=>item.bookId===book.bookId),li=node('li'),link=node('a'),summary=[];
       link.href=href(source||book);link.append(node('strong','',book.title.zh));
       if(book.durationSeconds)summary.push(readingTimeLabel(book.durationSeconds));if(book.notes)summary.push(book.notes+' 条笔记');if(book.questions)summary.push(book.questions+' 个问题');if(book.chapterMarks)summary.push(book.chapterMarks+' 次读完标记');
       link.append(node('span','',summary.join(' · ')));li.append(link);books.append(li);
