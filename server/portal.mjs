@@ -5,6 +5,7 @@ import {createLibraryService} from './library-service.mjs';
 import {createEmailAuth,smtpSender} from './email-auth.mjs';
 import {createTranslator} from './translation.mjs';
 import {fail} from './document-import.mjs';
+import {portalDocument} from './portal-document.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
@@ -19,7 +20,7 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     files['/reading-session-record.mjs']='reading-session-record.mjs';
     for(const file of ['reading-calendar.mjs','reading-dashboard.mjs','library-restore.mjs','site-appearance.mjs','reading-clock.mjs','reading-outbox.mjs','reading-queue-store.mjs','reading-session-coordinator.mjs','reading-mark-actions.mjs','reading-mark-store.mjs','reading-draft-store.mjs','reading-retained-backup.mjs','reading-journey.mjs','reading-pending-backup.mjs','reading-ending-context.mjs','reading-session.js','reading-session.css','brand-assets/reading-window.webp','brand-assets/page-detail.webp','brand-assets/page-mark.svg'])files['/'+file]=file;
     if(!isAPI&&!files[p])return false;
-    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';send(200,await readFile(path.join(root,'app',files[p])),type);return true;}
+    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));send(200,files[p]==='home.html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
     if(req.method!=='GET'&&req.method!=='POST')throw fail('不支持这个请求',405);
     const origin='http://'+req.headers.host;
     if(req.headers.origin&&req.headers.origin!==origin&&req.headers.origin!==publicOrigin)throw fail('请求来源未授权',403);
