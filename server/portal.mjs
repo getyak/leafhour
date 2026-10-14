@@ -15,23 +15,42 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
   const library=await createLibraryService({dataDir:path.join(dataDir,'library'),catalogDir,translator:translator===undefined?createTranslator():translator,dataStore});
   async function handle({req,res,url,send}){
     const p=url.pathname,isAPI=p.startsWith('/api/auth/')||p.startsWith('/api/library')||p.startsWith('/api/agent/');
-    const files={'/':'home.html','/library':'home.html','/portal.css':'portal.css','/portal.js':'portal.js','/owner-scope.mjs':'owner-scope.mjs','/paragraph-anchor.mjs':'paragraph-anchor.mjs','/source-language.mjs':'source-language.mjs','/upload-state.mjs':'upload-state.mjs','/library-backup.mjs':'library-backup.mjs','/reader-api.mjs':'reader-api.mjs','/reading-progress.mjs':'reading-progress.mjs','/progress-sync.mjs':'progress-sync.mjs','/reader-translation.js':'reader-translation.js'};
+    const files={'/':'home.html','/library':'home.html','/auth.css':'auth.css','/auth-dialog.mjs':'auth-dialog.mjs','/auth-flow.mjs':'auth-flow.mjs','/auth-assets/google.png':'auth-assets/google.png','/auth-assets/apple.svg':'auth-assets/apple.svg','/portal.css':'portal.css','/portal.js':'portal.js','/owner-scope.mjs':'owner-scope.mjs','/paragraph-anchor.mjs':'paragraph-anchor.mjs','/source-language.mjs':'source-language.mjs','/upload-state.mjs':'upload-state.mjs','/library-backup.mjs':'library-backup.mjs','/reader-api.mjs':'reader-api.mjs','/reading-progress.mjs':'reading-progress.mjs','/progress-sync.mjs':'progress-sync.mjs','/reader-translation.js':'reader-translation.js'};
     if(!isAPI&&!files[p])return false;
-    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';send(200,await readFile(path.join(root,'app',files[p])),type);return true;}
+    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';send(200,await readFile(path.join(root,'app',files[p])),type);return true;}
     if(req.method!=='GET'&&req.method!=='POST')throw fail('不支持这个请求',405);
     const origin='http://'+req.headers.host;
     if(req.headers.origin&&req.headers.origin!==origin&&req.headers.origin!==publicOrigin)throw fail('请求来源未授权',403);
     if(req.method==='POST'&&!p.startsWith('/api/agent/')&&req.headers.origin!==origin&&req.headers.origin!==publicOrigin)throw fail('请求来源未授权',403);
-    const token=cookieToken(req),user=await auth.userFor(token);
+    const flowToken=(req.headers.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith('marginalia_auth_flow='))?.slice('marginalia_auth_flow='.length);
+    const setFlow=value=>`marginalia_auth_flow=${value}; HttpOnly; Secure; SameSite=Lax; Path=/api/auth; Max-Age=${value?600:0}`;
+    if(p==='/api/auth/callback'&&req.method==='GET'){
+      if(!publicOrigin||typeof auth.finishOAuth!=='function'){send(404,{error:'这个登录入口尚未开放'});return true;}
+      let next,session,returnTo=null,errorCode='expired';
+      try{
+        if(url.searchParams.has('error')){returnTo=await auth.cancelOAuth(flowToken);errorCode='cancelled';}
+        else{session=await auth.finishOAuth(flowToken,url.searchParams.get('code'));next=session.next;}
+      }catch(error){errorCode=error.status>=500?'unavailable':'expired';returnTo=await auth.cancelOAuth(flowToken).catch(()=>null);}
+      if(!session){const query=new URLSearchParams({login:'1',auth_error:errorCode});if(returnTo?.startsWith('/read?'))query.set('next',returnTo);else if(returnTo==='/library?upload=1')query.set('upload','1');next='/library?'+query;}
+      const cookies=[setFlow('')];if(session)cookies.push(`marginalia_session=${session.token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=604800; Secure`);
+      res.setHeader('Set-Cookie',cookies);res.setHeader('Cache-Control','private, no-store');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Location',new URL(next,publicOrigin).href);res.statusCode=303;res.end();return true;
+    }
+    const token=cookieToken(req);
+    if(p==='/api/auth/logout'&&req.method==='POST'){await jsonBody(req,4096);await auth.logout(token);res.setHeader('Set-Cookie',`marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${publicOrigin?.startsWith('https:')?'; Secure':''}`);send(200,{signedOut:true});return true;}
+    const user=await auth.userFor(token);
     if(p.startsWith('/api/library')&&req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==(user?.id||'guest')){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房。原账户草稿仍留在原处。',409);}
-    const body=req.method==='POST'?await jsonBody(req,['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
+    const body=req.method==='POST'?await jsonBody(req,p.startsWith('/api/auth/')?4096:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
     const localAllowed=allowLocal&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)&&!publicOrigin;
     const setSession=value=>res.setHeader('Set-Cookie',`marginalia_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${value?604800:0}${publicOrigin?.startsWith('https:')?'; Secure':''}`);
-    if(p==='/api/auth/session'&&req.method==='GET'){send(200,{user,emailAvailable:auth.emailAvailable,localAvailable:localAllowed,translationAvailable:library.translationAvailable,directUpload:!!dataStore?.beginUpload});return true;}
+    if(p==='/api/auth/session'&&req.method==='GET'){const capabilities=auth.capabilities?await auth.capabilities():{email:auth.emailAvailable,providers:{google:false,apple:false},otp:{digits:6,expiresIn:600,retryAfter:60}};send(200,{user,emailAvailable:capabilities.email,providers:capabilities.providers,otp:capabilities.otp,localAvailable:localAllowed,translationAvailable:library.translationAvailable,directUpload:!!dataStore?.beginUpload});return true;}
+    if(p==='/api/auth/oauth'&&req.method==='POST'){
+      if(typeof auth.beginOAuth!=='function')throw fail('这个登录方式正在准备中',503);
+      if(flowToken)await auth.cancelOAuth(flowToken);
+      const flow=await auth.beginOAuth(body.provider,body.next);res.setHeader('Set-Cookie',setFlow(flow.transactionToken));send(200,{url:flow.authorizeUrl});return true;
+    }
     if(p==='/api/auth/code'&&req.method==='POST'){send(200,await auth.requestCode(body.email));return true;}
     if(p==='/api/auth/verify'&&req.method==='POST'){const session=await auth.verifyCode(body.email,body.code);setSession(session.token);send(200,{user:session.user});return true;}
     if(p==='/api/auth/local'&&req.method==='POST'){if(!localAllowed)throw fail('本机书房只在本机模式可用',403);const session=await auth.localSession();setSession(session.token);send(200,{user:session.user});return true;}
-    if(p==='/api/auth/logout'&&req.method==='POST'){await auth.logout(token);setSession('');send(200,{signedOut:true});return true;}
     if(p==='/api/library'&&req.method==='GET'){send(200,{books:await library.list(user),user});return true;}
     if(p==='/api/library/mcp-setup'&&req.method==='GET'){
       if(!user)throw fail('请先进入自己的书房',401);

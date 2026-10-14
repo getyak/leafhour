@@ -21,3 +21,7 @@ test('a batch belonging to the previous owner is stopped before the next write',
   const scope=createOwnerScope('alice'),ticket=scope.capture();scope.adopt('bob');let writes=0;
   await assert.rejects(scope.run(ticket,async()=>{writes++;return 'saved';}),e=>e.status===409);assert.equal(writes,0);
 });
+test('authentication limits keep their server-provided retry time in the client error',async()=>{
+  const scope=createOwnerScope();
+  await assert.rejects(readOwnerResponse(scope,scope.capture(),async()=>Response.json({error:'Limited',retryAfter:120},{status:429}),()=>{}),e=>e.status===429&&e.retryAfter===120);
+});

@@ -1,34 +1,134 @@
-import {randomBytes} from 'node:crypto';
+import {randomBytes,createHash} from 'node:crypto';
 import {digest,fail} from '../server/document-import.mjs';
+import {normalizeAuthEmail,OTP_POLICY,safeAuthReturn} from '../server/auth-policy.mjs';
 
+const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const validToken=token=>typeof token==='string'&&/^[A-Za-z0-9_-]{43}$/.test(token);
+// A store request may take 45s. Cover the provider (15s), then snapshot + CAS (90s).
+const REFRESH_LEASE_MS=180000,REFRESH_DISPATCH_BUDGET_MS=110000;
 export function createHostedAuth({store,env=process.env,fetcher=fetch,clock=Date.now}={}){
   const base=env.SUPABASE_URL?.replace(/\/$/,''),key=env.SUPABASE_PUBLISHABLE_KEY;
-  if(!base||!key)throw fail('邮箱登录尚未配置',503);
-  const emailOf=value=>{if(typeof value!=='string'||value.length>254||!/^\S+@[^\s@]+\.[^\s@]+$/.test(value.trim()))throw fail('请输入有效的邮箱地址');return value.trim().toLowerCase();};
-  async function request(route,body,access){
-    const response=await fetcher(base+'/auth/v1/'+route,{method:body?'POST':'GET',headers:{apikey:key,'Content-Type':'application/json',...(access?{Authorization:'Bearer '+access}:{})},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(15000)});
-    const data=await response.json();if(!response.ok)throw fail(response.status===429?'验证码请求较多，请稍后再试':route==='otp'?'验证码邮件未能发出，请稍后重试':'登录已失效，请重新验证邮箱',response.status===429?429:400);return data;
-  }
+  if(!base?.startsWith('https://')||!key)throw fail('登录服务尚未配置',503);
   const sessionKey=token=>'auth/sessions/'+digest(token);
-  const visible=user=>({id:user.id,email:user.email,kind:'email'});
-  async function requestCode(value){if(env.READER_EMAIL_ENABLED!=='true')throw fail('邮箱登录正在准备中。你可以先试读公版书。',503);const email=emailOf(value);await request('otp',{email,create_user:true});return {sent:true,expiresIn:600};}
-  async function verifyCode(value,code){
-    const email=emailOf(value);if(typeof code!=='string'||!/^\d{6,8}$/.test(code))throw fail('请输入邮件里的验证码');
-    const data=await request('verify',{email,token:code,type:'email'});
-    if(!data.user?.id||!data.access_token||!data.refresh_token)throw fail('邮箱验证未完成，请重新获取验证码',502);
-    const token=randomBytes(32).toString('base64url'),row={user:visible(data.user),access:data.access_token,refresh:data.refresh_token,accessExpiresAt:clock()+data.expires_in*1000,expiresAt:clock()+7*86400000};
+  const visible=user=>({id:user.id,email:user.email||null,kind:['google','apple'].includes(user.app_metadata?.provider)?user.app_metadata.provider:'email'});
+  let settingsPromise,settingsExpire=0;
+  async function request(route,body,access){
+    let response,data;
+    try{
+      response=await fetcher(base+'/auth/v1/'+route,{method:body?'POST':'GET',headers:{apikey:key,'Content-Type':'application/json',...(access?{Authorization:'Bearer '+access}:{})},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(15000)});
+      data=response.status===204?{}:await response.json();
+    }catch{throw fail(route==='otp'?'邮件发送暂未确认，请稍后查看邮箱再重试':'登录服务暂时无法连接，请稍后重试',503);}
+    if(response.ok)return data;
+    if(response.status===429){const error=fail('请求较频繁，请稍后再试',429);error.retryAfter=Math.max(60,Math.min(3600,Number(response.headers.get('retry-after'))||60));throw error;}
+    if(response.status>=500)throw fail('登录服务暂时不可用，请稍后重试',503);
+    const code=data?.error_code||data?.code;
+    if(route==='verify'&&['otp_expired','otp_disabled','validation_failed'].includes(code))throw fail('验证码不正确或已过期，请重新获取',400);
+    if(route==='verify')throw fail('验证码未能验证，请核对邮件里的数字',400);
+    if(route==='otp')throw fail('验证码邮件暂时无法发出，请稍后重试',503);
+    if(route.startsWith('token')||route==='user')throw fail('登录已失效，请重新进入',401);
+    throw fail('登录未能完成，请重新尝试',400);
+  }
+  async function capabilities(){
+    if(!settingsPromise||clock()>=settingsExpire){settingsExpire=clock()+60000;settingsPromise=request('settings').catch(error=>{settingsPromise=null;throw error;});}
+    const settings=await settingsPromise;
+    return {email:env.READER_EMAIL_ENABLED==='true'&&settings.external?.email!==false,providers:{google:settings.external?.google===true,apple:settings.external?.apple===true},otp:{...OTP_POLICY}};
+  }
+  async function requestCode(value){
+    if(env.READER_EMAIL_ENABLED!=='true')throw fail('邮箱登录正在准备中。你可以先试读公版书。',503);
+    const email=normalizeAuthEmail(value),emailKey=digest(email),now=clock();
+    await store.mutate('auth/limits/mail',{requests:[]},row=>{
+      row.requests=(row.requests||[]).filter(x=>now-x.time<3600000);
+      const previous=row.requests.filter(x=>x.email===emailKey).at(-1);
+      if(previous&&now-previous.time<60000){const error=fail('请稍后再获取验证码',429);error.retryAfter=Math.ceil((previous.time+60000-now)/1000);throw error;}
+      if(row.requests.length>=30){const error=fail('邮件请求较多，请稍后再试',429);error.retryAfter=Math.ceil((row.requests[0].time+3600000-now)/1000);throw error;}
+      row.requests.push({email:emailKey,time:now});
+    });
+    await request('otp',{email,create_user:true});return {sent:true,expiresIn:OTP_POLICY.expiresIn,retryAfter:OTP_POLICY.retryAfter};
+  }
+  function providerTokens(data){
+    if(typeof data?.user?.id!=='string'||!data.access_token||!data.refresh_token||!Number.isFinite(data.expires_in)||data.expires_in<=0)throw fail('登录信息未能确认，请重新尝试',502);
+    return {user:visible(data.user),access:data.access_token,refresh:data.refresh_token,accessExpiresAt:clock()+data.expires_in*1000};
+  }
+  async function createSession(data){
+    const token=randomBytes(32).toString('base64url'),row={...providerTokens(data),expiresAt:clock()+7*86400000};
     await store.mutate(sessionKey(token),{},saved=>Object.assign(saved,row));return {token,user:row.user};
   }
-  async function userFor(token){
-    if(typeof token!=='string'||!/^[A-Za-z0-9_-]{43}$/.test(token))return null;
-    let row=await store.read(sessionKey(token),null);if(!row||row.revoked||row.expiresAt<=clock())return null;
-    if(row.accessExpiresAt<=clock()+60000){
-      let refreshed;try{refreshed=await request('token?grant_type=refresh_token',{refresh_token:row.refresh});}catch{return null;}
-      if(refreshed.user?.id!==row.user.id||!refreshed.access_token||!refreshed.refresh_token)return null;
-      row=await store.mutate(sessionKey(token),{},saved=>{if(saved.revoked||saved.expiresAt<=clock())return null;Object.assign(saved,{access:refreshed.access_token,refresh:refreshed.refresh_token,accessExpiresAt:clock()+refreshed.expires_in*1000});return saved;});if(!row)return null;
-    }
-    try{const user=await request('user',null,row.access);return user.id===row.user.id?visible(user):null;}catch{return null;}
+  async function verifyCode(value,code){
+    const email=normalizeAuthEmail(value);if(typeof code!=='string'||!/^\d{6,8}$/.test(code))throw fail('请输入邮件里的验证码');
+    return createSession(await request('verify',{email,token:code,type:'email'}));
   }
-  async function logout(token){if(typeof token!=='string'||!/^[A-Za-z0-9_-]{43}$/.test(token))return;await store.mutate(sessionKey(token),{},saved=>{saved.revoked=true;delete saved.access;delete saved.refresh;});}
-  return {requestCode,verifyCode,userFor,logout,emailAvailable:env.READER_EMAIL_ENABLED==='true'};
+  const transactionKey=token=>'auth/oauth/'+digest(token);
+  async function beginOAuth(provider,next='/library'){
+    if(!['google','apple'].includes(provider))throw fail('不支持这个登录方式',400);
+    const returnTo=safeAuthReturn(next);if(!returnTo)throw fail('登录返回地址无效',400);
+    if(!(await capabilities()).providers[provider])throw fail('这个登录方式正在准备中，请使用其他方式',503);
+    const origin=env.READER_PUBLIC_ORIGIN;
+    if(!origin?.startsWith('https://')||new URL(origin).origin!==origin)throw fail('正式登录地址尚未配置',503);
+    const transactionToken=randomBytes(32).toString('base64url'),verifier=randomBytes(32).toString('base64url');
+    await store.mutate(transactionKey(transactionToken),{},row=>Object.assign(row,{provider,next:returnTo,verifier,expiresAt:clock()+600000,consumed:false}));
+    const url=new URL(base+'/auth/v1/authorize');url.search=new URLSearchParams({provider,redirect_to:origin+'/api/auth/callback',code_challenge:createHash('sha256').update(verifier).digest('base64url'),code_challenge_method:'s256'}).toString();
+    return {transactionToken,authorizeUrl:url.href,expiresIn:600};
+  }
+  async function cancelOAuth(token){
+    if(!validToken(token))return null;
+    return store.mutate(transactionKey(token),{},row=>{const next=safeAuthReturn(row.next);row.consumed=true;delete row.verifier;return next;});
+  }
+  async function finishOAuth(token,code){
+    if(!validToken(token)||typeof code!=='string'||!code||code.length>4096||/[\s\u0000-\u001f\u007f]/.test(code))throw fail('登录请求已失效，请重新尝试',400);
+    const flow=await store.mutate(transactionKey(token),{},row=>{
+      if(row.consumed||!row.verifier||row.expiresAt<=clock())throw fail('登录请求已失效，请重新尝试',400);
+      const flow={verifier:row.verifier,next:row.next};row.consumed=true;delete row.verifier;return flow;
+    });
+    const session=await createSession(await request('token?grant_type=pkce',{auth_code:code,code_verifier:flow.verifier}));
+    return {...session,next:safeAuthReturn(flow.next)||'/library'};
+  }
+  async function freshSession(token){
+    const path=sessionKey(token),leaseId=randomBytes(16).toString('hex'),deadline=Date.now()+18000;
+    while(Date.now()<deadline){
+      const row=await store.read(path,null);if(!row||row.revoked||row.expiresAt<=clock())return null;
+      if(row.accessExpiresAt>clock()+60000)return row;
+      if(row.refreshLease?.expiresAt>clock()){await wait(50);continue;}
+      const claim=await store.mutate(path,{},saved=>{
+        if(saved.revoked||saved.expiresAt<=clock()||!saved.refresh)return {kind:'revoked'};
+        if(saved.accessExpiresAt>clock()+60000)return {kind:'fresh',row:saved};
+        if(saved.refreshLease?.expiresAt>clock())return {kind:'wait'};
+        saved.refreshLease={id:leaseId,expiresAt:clock()+REFRESH_LEASE_MS};return {kind:'claimed',refresh:saved.refresh,userId:saved.user.id};
+      });
+      if(claim.kind==='revoked')return null;
+      if(claim.kind==='fresh')return claim.row;
+      if(claim.kind==='wait'){await wait(50);continue;}
+      const lease=await store.read(path,null);
+      if(!lease||lease.revoked||lease.expiresAt<=clock())return null;
+      if(lease.accessExpiresAt>clock()+60000||lease.refreshLease?.id!==leaseId)continue;
+      if(lease.refreshLease.expiresAt<=clock()+REFRESH_DISPATCH_BUDGET_MS){
+        await store.mutate(path,{},saved=>{if(saved.refreshLease?.id===leaseId)delete saved.refreshLease;});
+        throw fail('登录更新暂时较慢，请稍后重试',503);
+      }
+      try{
+        const updated=providerTokens(await request('token?grant_type=refresh_token',{refresh_token:claim.refresh}));
+        if(updated.user.id!==claim.userId)throw fail('登录身份无法确认，请重新进入',401);
+        return await store.mutate(path,{},saved=>{
+          if(saved.revoked||saved.expiresAt<=clock()||saved.refreshLease?.id!==leaseId)return null;
+          Object.assign(saved,updated);delete saved.refreshLease;return saved;
+        });
+      }catch(error){
+        await store.mutate(path,{},saved=>{if(saved.refreshLease?.id===leaseId){delete saved.refreshLease;if(error.status===401){saved.revoked=true;delete saved.access;delete saved.refresh;}}});
+        if(error.status===401)return null;throw error;
+      }
+    }
+    throw fail('另一处正在更新登录，请稍后重试',503);
+  }
+  async function userFor(token){
+    if(!validToken(token))return null;const row=await freshSession(token);if(!row)return null;
+    try{
+      const user=await request('user',null,row.access),current=await store.read(sessionKey(token),null);
+      return current&&!current.revoked&&current.expiresAt>clock()&&user.id===current.user.id?visible(user):null;
+    }catch(error){if(error.status===401)return null;throw error;}
+  }
+  async function logout(token){
+    if(!validToken(token))return;
+    const access=await store.mutate(sessionKey(token),{},saved=>{const access=saved.access;saved.revoked=true;delete saved.access;delete saved.refresh;delete saved.refreshLease;return access;});
+    if(access)await request('logout?scope=local',{},access).catch(()=>{});
+  }
+  return {requestCode,verifyCode,userFor,logout,capabilities,beginOAuth,finishOAuth,cancelOAuth,emailAvailable:env.READER_EMAIL_ENABLED==='true'};
 }

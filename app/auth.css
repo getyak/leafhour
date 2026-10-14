@@ -1,0 +1,37 @@
+.auth-dialog{width:400px;max-width:calc(100vw - 32px);padding:36px 32px 25px;background:#fffefa;border:1px solid #e6e5de;border-radius:16px;box-shadow:0 24px 100px #16261c29;color:#252b26;max-height:calc(100dvh - 32px);overflow:auto}
+.auth-dialog[open]{animation:auth-enter .2s ease-out}
+.auth-dialog::backdrop{background:#16261c55;backdrop-filter:blur(4px)}
+.auth-dialog .dialog-close{top:6px;right:6px;width:44px;height:44px;font-size:25px;color:#737973;border-radius:50%;display:grid;place-items:center;transition:background .16s}
+.auth-dialog .dialog-close:hover{background:#eeeee8}
+.auth-dialog .auth-symbol{display:grid;place-items:center;width:44px;height:44px;margin:0 auto 18px;border:1px solid #d4d9cf;border-radius:12px;font-size:26px;line-height:1;color:#516442;background:#f4f6ef;box-shadow:0 2px 5px #5063430a}
+.auth-dialog h2{font-family:inherit;font-size:25px;font-weight:600;letter-spacing:-.8px;line-height:1.4;margin:0 0 8px;text-align:center}
+.auth-dialog #auth-intro{font-size:13px;line-height:1.7;color:#737973;text-align:center;margin:0 0 25px}
+.auth-providers{display:grid;gap:10px}
+.auth-provider{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:44px;border:1px solid #747775;border-radius:8px;background:#fff;color:#1f1f1f;font-size:14px;font-weight:500;transition:background .16s,box-shadow .16s}
+.auth-provider img,.auth-provider svg{width:20px;height:20px;flex:none}
+.auth-provider:hover:enabled{background:#f7f8f6;box-shadow:0 1px 3px #0000000d}
+.auth-provider .provider-state{font-size:10px;font-weight:400;color:#747775;margin-left:2px}
+.auth-dialog button:disabled{cursor:default;opacity:.5}
+.auth-dialog .auth-divider{font-size:11px;margin:22px 0;color:#8b9089;gap:13px}
+.auth-dialog label{display:block;font-size:12px;font-weight:500;margin:0 0 8px}
+.auth-dialog input{width:100%;height:44px;border:1px solid #d3d7cf;border-radius:8px;background:#fff;font-family:inherit;font-size:15px;color:#252b26;padding:10px 12px;outline:none;margin:0;box-shadow:0 1px 2px #00000003;transition:border-color .16s,box-shadow .16s}
+.auth-dialog input:focus{border-color:#718563;box-shadow:0 0 0 3px #6b825717}
+.auth-dialog input[aria-invalid=true]{border-color:#b26553}
+.auth-dialog .primary{display:flex;align-items:center;justify-content:center;background:#526b43;border:1px solid #526b43;border-radius:8px;font-size:14px;line-height:1.4;font-weight:500;height:44px;padding:10px 16px;margin-top:12px;width:100%;transition:background .16s,box-shadow .16s}
+.auth-dialog .primary:hover:enabled{background:#425a34;box-shadow:0 2px 4px #24391b1a}
+.auth-dialog :is(button,a):focus-visible{outline:2px solid #647d55;outline-offset:3px}
+.auth-mailbox{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:5px 10px;margin:0 0 26px;font-size:13px}
+#auth-recipient{max-width:100%;overflow-wrap:anywhere;font-weight:500}
+.auth-dialog .auth-text-button{font-size:12px;background:none;border:0;color:#526b43;padding:4px 0;min-height:44px;text-decoration:underline;text-underline-offset:3px}
+.auth-dialog #email-code{height:52px;font:24px/1.2 ui-monospace,SFMono-Regular,monospace;letter-spacing:8px;text-align:center;padding-left:20px}
+.auth-dialog #resend-code{display:block;text-align:center;margin:12px auto 0;min-height:44px}
+.auth-dialog #auth-status{font-size:12px;line-height:1.7;margin:16px 0 0;overflow-wrap:anywhere;min-height:0}
+.auth-dialog #auth-status:empty{display:none}
+.auth-dialog #auth-status.error{color:#a54835}
+.auth-availability{font-size:10px;line-height:1.7;color:#93988f;text-align:center;margin-top:15px}
+.auth-dialog .auth-skip{font-size:12px;color:#808779;margin-top:24px;padding-top:18px;border-top:1px solid #eaede5;text-align:center}
+.auth-dialog .local-note{font-size:11px;line-height:1.6}
+.auth-dialog [hidden]{display:none!important}
+@keyframes auth-enter{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+@media(max-width:440px){.auth-dialog{padding:34px 24px 23px}.auth-dialog h2{font-size:24px}}
+@media(prefers-reduced-motion:reduce){.auth-dialog[open]{animation:none}.auth-dialog *{transition:none}}
