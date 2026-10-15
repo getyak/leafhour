@@ -36,5 +36,8 @@
   },
   "devDependencies": {
     "@vercel/nft": "1.11.0"
+  },
+  "optionalDependencies": {
+    "node-linux-x64": "22.23.3"
   }
 }

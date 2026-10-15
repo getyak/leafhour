@@ -24,3 +24,11 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - run: npm run verify:deploy
+      - name: Check the packaged reader in the AWS function runtime without network or model requests
+        run: >-
+          docker run --rm --network none --platform linux/amd64
+          --read-only --tmpfs /tmp:rw,exec,nosuid,size=256m
+          --entrypoint /var/lang/bin/node
+          --mount type=bind,source="$PWD",target=/workspace,readonly
+          public.ecr.aws/lambda/nodejs:24@sha256:9a096eb2cb6fa96419b5742e1b4a64b6bf7d3aa954beb92461a2a3e072061497
+          /workspace/tools/check-reader-runtime.mjs /workspace/.reader-runtime
