@@ -8,20 +8,25 @@ const readUrl=(bookId,passageId)=>'/read?book='+encodeURIComponent(bookId)+(pass
 const draftKey=(owner,book)=>'marginalia:chat-draft:'+encodeURIComponent(owner)+':'+encodeURIComponent(book);
 const pendingKey=(owner,book)=>'marginalia:chat-pending:'+encodeURIComponent(owner)+':'+encodeURIComponent(book);
 
-export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth,getCurrentBook=()=>null}){
+export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth,getCurrentBook=()=>null,getCurrentPassage=()=>null,onNavigateToPassage=null}){
   const state=createLibraryChatState({readDraft:(owner,book)=>localStorage.getItem(draftKey(owner,book))||'',writeDraft:(owner,book,text)=>{if(text)localStorage.setItem(draftKey(owner,book),text);else localStorage.removeItem(draftKey(owner,book));},readPending:(owner,book)=>JSON.parse(localStorage.getItem(pendingKey(owner,book))||'null'),writePending:(owner,book,record)=>{if(record)localStorage.setItem(pendingKey(owner,book),JSON.stringify(record));else localStorage.removeItem(pendingKey(owner,book));}});
-  let opener=null,owner=null,selectedBook=null,requestedPassage=null,pollTimer=null,pollCount=0,loadInFlight=null,composing=false,focusComposer=false,historySignature='';
+  let opener=null,owner=null,selectedBook=null,requestedPassage=null,pollTimer=null,pollCount=0,loadInFlight=null,composing=false,focusComposer=false,historySignature='',contextSignature='',booksSignature='';
   root.classList.add('library-chat-dialog');root.setAttribute('aria-labelledby','library-chat-title');
-  const frame=node('div','library-chat-frame'),header=node('header','library-chat-header'),brand=node('span','library-chat-mark','循');brand.setAttribute('aria-hidden','true');
-  const heading=node('div','library-chat-heading');heading.append(node('p','library-chat-eyebrow','循页 · 阅读助手'));const title=node('h2','','从这一页继续');title.id='library-chat-title';heading.append(title,node('p','library-chat-subtitle','把疑问留在原文旁边。'));
-  const closeButton=button('×','library-chat-close');closeButton.setAttribute('aria-label','收起阅读助手');closeButton.title='收起阅读助手';header.append(brand,heading,closeButton);
-  const bookRow=node('div','library-chat-book-row'),bookLabel=node('label','','正在读'),chooser=node('select','library-chat-book-choice');chooser.id='library-chat-book';bookLabel.htmlFor=chooser.id;bookRow.append(bookLabel,chooser);
+  root.setAttribute('aria-modal','false');
+  const frame=node('div','library-chat-frame'),header=node('header','library-chat-header');
+  const heading=node('div','library-chat-heading'),title=node('h2','','阅读对话');title.id='library-chat-title';
+  const bookRow=node('div','library-chat-book-row'),bookLabel=node('label','sr-only','正在读'),chooser=node('select','library-chat-book-choice');chooser.id='library-chat-book';bookLabel.htmlFor=chooser.id;const singleBookTitle=node('p','library-chat-book-title');bookRow.append(bookLabel,chooser,singleBookTitle);heading.append(title,bookRow);
+  const menu=node('details','library-chat-menu'),menuSummary=node('summary','','···');menuSummary.setAttribute('aria-label','更多对话操作');const menuItems=node('div','library-chat-menu-items');menu.append(menuSummary,menuItems);
+  const closeButton=button('−','library-chat-close');closeButton.setAttribute('aria-label','收起阅读对话');closeButton.title='收起阅读对话';header.append(heading,menu,closeButton);
+  const launcher=button('','library-chat-launcher');launcher.setAttribute('aria-label','打开阅读对话');launcher.setAttribute('aria-controls',root.id);launcher.setAttribute('aria-expanded','false');launcher.title='阅读对话';
+  const squirrel=node('span','library-chat-squirrel'),tail=node('span','library-chat-tail'),head=node('span','library-chat-head'),eyes=node('span','library-chat-eyes');eyes.append(node('i'),node('i'));head.append(eyes);squirrel.append(tail,head);squirrel.setAttribute('aria-hidden','true');launcher.append(squirrel);root.after(launcher);
+  const legacyOpener=document.getElementById('library-chat-open');if(legacyOpener)legacyOpener.hidden=true;
   const context=node('details','library-chat-context'),contextSummary=node('summary'),contextLabel=node('span'),contextHint=node('span','library-chat-context-hint','查看原文与译文');contextSummary.append(contextLabel,contextHint);const contextBody=node('div','library-chat-context-body');context.append(contextSummary,contextBody);
   const messages=node('div','library-chat-messages');messages.setAttribute('role','log');messages.setAttribute('aria-label','和这本书的对话');messages.setAttribute('aria-live','polite');messages.setAttribute('aria-relevant','additions text');
   const statusBar=node('div','library-chat-status-row'),status=node('p','library-chat-status');status.id='library-chat-status';status.setAttribute('role','status');const refreshButton=button('重新载入','library-chat-text-button');statusBar.append(status,refreshButton);
-  const form=node('form','library-chat-composer'),inputLabel=node('label','sr-only','想问这本书什么？'),input=node('textarea');input.id='library-chat-input';inputLabel.htmlFor=input.id;input.rows=3;input.placeholder='哪一句让你停了下来？';input.setAttribute('aria-describedby','library-chat-status library-chat-hint library-chat-count');
-  const composerBottom=node('div','library-chat-composer-bottom'),count=node('span','library-chat-count');count.id='library-chat-count';const composerActions=node('div','library-chat-composer-actions'),stopButton=button('停止','library-chat-stop'),sendButton=node('button','library-chat-send','发送 ↑');sendButton.type='submit';composerActions.append(stopButton,sendButton);composerBottom.append(count,composerActions);form.append(inputLabel,input,composerBottom);
-  const footer=node('div','library-chat-footer'),hint=node('p','library-chat-hint','发送后，助手会结合当前段与相邻段给出解释候选。');hint.id='library-chat-hint';const exportButton=button('导出这段对话','library-chat-text-button');footer.append(hint,exportButton);frame.append(header,bookRow,context,messages,statusBar,form,footer);root.replaceChildren(frame);
+  const form=node('form','library-chat-composer'),inputLabel=node('label','sr-only','想问这本书什么？'),input=node('textarea');input.id='library-chat-input';inputLabel.htmlFor=input.id;input.rows=2;input.placeholder='哪一句让你停了下来？';input.setAttribute('aria-describedby','library-chat-status library-chat-hint library-chat-count');
+  const composerBottom=node('div','library-chat-composer-bottom'),count=node('span','library-chat-count');count.id='library-chat-count';const composerActions=node('div','library-chat-composer-actions'),stopButton=button('停止','library-chat-stop'),sendButton=node('button','library-chat-send','↑');sendButton.type='submit';composerActions.append(stopButton,sendButton);composerBottom.append(count,composerActions);form.append(inputLabel,input,composerBottom);
+  const footer=node('div','library-chat-footer'),hint=node('p','library-chat-hint sr-only','发送后，助手会结合当前段与相邻段给出解释候选。');hint.id='library-chat-hint';const exportButton=button('导出这段对话','library-chat-text-button'),menuHint=node('p','library-chat-menu-hint',hint.textContent);menuItems.append(exportButton,menuHint);footer.append(hint);frame.append(header,messages,statusBar,context,form,footer);root.replaceChildren(frame);
 
   const signedIn=()=>!!getSession()?.user;
   const activeOwner=()=>signedIn()?String(getOwner()||getSession().user.id):null;
@@ -35,10 +40,10 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   }
   function isCurrent(captured){if(captured===activeOwner()&&captured===owner)return true;syncOwner();render();return false;}
   function routeBack(label='回到书架'){const b=button(label,'library-chat-button');b.addEventListener('click',()=>{close();const shelf=document.getElementById('library-view');if(shelf&&!shelf.hidden)shelf.scrollIntoView({block:'start'});else location.assign('/library');});return b;}
-  function sourceLink(label,passageId,bookId=selectedBook){const link=node('a','library-chat-source-link',label);link.href=readUrl(bookId,passageId);return link;}
+  function sourceLink(label,passageId,bookId=selectedBook){const link=node('a','library-chat-source-link',label);link.href=readUrl(bookId,passageId);link.addEventListener('click',event=>{if(event.button>0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;if(onNavigateToPassage?.(bookId,passageId)===true){event.preventDefault();close();}});return link;}
   function renderContext(view){
-    const item=view.data?.context;context.hidden=!item;contextLabel.textContent=chapterTitle(item?.chapterTitle);
-    if(!item)return;
+    const item=view.data?.context,signature=JSON.stringify([owner,selectedBook,item]);if(signature===contextSignature)return;contextSignature=signature;context.hidden=!item;contextLabel.textContent=chapterTitle(item?.chapterTitle);
+    if(!item){contextBody.replaceChildren();return;}
     contextBody.replaceChildren();contextBody.append(sourceLink('回到当前段落 ↗',item.passageId));
     for(const [key,label] of [['original','原文'],['literal','直译'],['interpretive','意译']]){
       const block=node('div','library-chat-source'),value=item[key],status=item.translationStatus?.[key];block.append(node('p','library-chat-source-label',label+(key!=='original'&&status==='draft'?' · 草稿':'')));
@@ -46,21 +51,26 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     }
   }
   function emptyState(headingText,bodyText){const empty=node('section','library-chat-empty');empty.append(node('span','library-chat-empty-rule'),node('h3','',headingText),node('p','',bodyText));return empty;}
+  const turnNodes=new Map();
+  function showEmpty(element){turnNodes.clear();messages.replaceChildren(element);}
   function renderMessages(view){
-    const signature=JSON.stringify([owner,selectedBook,view.phase,view.turns,view.pending?.status,view.retry,signedIn(),books().length]);
-    if(signature===historySignature)return;historySignature=signature;const nearBottom=messages.scrollHeight-messages.scrollTop-messages.clientHeight<90;messages.replaceChildren();
+    const signature=JSON.stringify([owner,selectedBook,view.data?'ready':view.phase,view.turns,view.pending?.status,view.retry,signedIn(),books().length]);
+    if(signature===historySignature)return;historySignature=signature;const nearBottom=messages.scrollHeight-messages.scrollTop-messages.clientHeight<90,scrollTop=messages.scrollTop;
     if(!signedIn()){
-      const empty=emptyState('和书多聊几句','登录后，可以围绕原文提问，也能回来接着看自己的问题。');const login=button('登录后开始','library-chat-send');login.addEventListener('click',()=>{close();openAuth();});empty.append(login);messages.append(empty);return;
+      const empty=emptyState('和书多聊几句','登录后，可以围绕原文提问，也能回来接着看自己的问题。');const login=button('登录后开始','library-chat-send');login.addEventListener('click',()=>{close();openAuth();});empty.append(login);showEmpty(empty);return;
     }
-    if(!selectedBook){const empty=emptyState('先选一本想读的书','回到书架打开一本书，再带着问题回来。');empty.append(routeBack());messages.append(empty);return;}
-    if(view.phase==='loading'&&!view.data){const empty=emptyState('正在翻到这一页','正在载入原文和已有对话…');empty.classList.add('is-loading');messages.append(empty);return;}
-    if(view.phase==='error'&&!view.data){messages.append(emptyState('这一页暂时没有打开','可以重新载入，已经写下的问题会保留。'));return;}
+    if(!selectedBook){const empty=emptyState('先选一本想读的书','回到书架打开一本书，再带着问题回来。');empty.append(routeBack());showEmpty(empty);return;}
+    if(view.phase==='loading'&&!view.data){const empty=emptyState('正在翻到这一页','正在载入原文和已有对话…');empty.classList.add('is-loading');showEmpty(empty);return;}
+    if(view.phase==='error'&&!view.data){showEmpty(emptyState('这一页暂时没有打开','可以重新载入，已经写下的问题会保留。'));return;}
     const displayTurns=[...view.turns];if(view.retry?.uncertain&&!displayTurns.some(turn=>turn.id===view.retry.payload.id))displayTurns.push({...view.retry.payload,origin:'user',status:'running',answer:null});
     if(!displayTurns.length){
       const empty=emptyState('哪一句让你停了下来？','可以问一个词，也可以试着说出自己的理解，再一起核对原文。');
-      const suggestions=node('div','library-chat-suggestions');for(const text of ['这段最容易被误读的地方是什么？','帮我把这段的论证拆开看看。','我想用自己的话复述这段。']){const suggestion=button(text,'library-chat-suggestion');suggestion.disabled=!!view.pending;suggestion.addEventListener('click',()=>{state.setDraft(text);render();input.focus();});suggestions.append(suggestion);}empty.append(suggestions);messages.append(empty);
+      const suggestions=node('div','library-chat-suggestions');for(const text of ['这段最容易被误读的地方是什么？','帮我把这段的论证拆开看看。','我想用自己的话复述这段。']){const suggestion=button(text,'library-chat-suggestion');suggestion.disabled=!!view.pending;suggestion.addEventListener('click',()=>{state.setDraft(text);render();input.focus();});suggestions.append(suggestion);}empty.append(suggestions);showEmpty(empty);return;
     }
+    const desired=[],nextNodes=new Map();
     for(const turn of displayTurns){
+      const key=JSON.stringify([owner,selectedBook,turn.id]),rowSignature=JSON.stringify([turn,turn.status==='running'?view.pending?.status:null,view.retry?.payload.id===turn.id?view.retry:null]);
+      const cached=turnNodes.get(key);if(cached?.signature===rowSignature){desired.push(cached.node);nextNodes.set(key,cached);continue;}
       const row=node('article','library-chat-turn'),question=node('div','library-chat-question');question.append(node('p','library-chat-attribution','我的提问'),node('p','library-chat-text',turn.text));row.append(question);
       if(turn.answer?.summary){
         const answer=node('div','library-chat-answer'),answerHeading=node('div','library-chat-answer-heading'),copy=button('复制','library-chat-text-button');const answerText=node('p','library-chat-text',turn.answer.summary);copy.setAttribute('aria-label','复制这条 AI 解释');copy.addEventListener('click',()=>copyAnswer(turn.answer.summary,answerText,copy));answerHeading.append(node('p','library-chat-attribution','AI 解释 · 候选'),copy);answer.append(answerHeading,answerText);
@@ -69,19 +79,23 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
         let text=turn.status==='running'?(view.pending?.status==='stopping'?'正在停止这次提问…':'正在对照原文思考…'):turn.status==='cancelled'?'这次提问已停止。':'这次没有得到回答。';
         if(view.retry?.uncertain&&view.retry.payload.id===turn.id)text=view.retry.checked?'暂未收到回答，可以继续上次提问。':'正在确认这次提问的结果。';const pending=node('p','library-chat-turn-status',text);if(turn.status==='running')pending.classList.add('is-pending');row.append(pending);
       }
-      messages.append(row);
+      desired.push(row);nextNodes.set(key,{signature:rowSignature,node:row});
     }
-    if(nearBottom||focusComposer)messages.scrollTop=messages.scrollHeight;
+    // Leave unchanged nodes in place, retaining text selection and open references.
+    const retained=new Set(desired);for(const child of [...messages.children])if(!retained.has(child))child.remove();
+    desired.forEach((row,index)=>{if(messages.children[index]!==row)messages.insertBefore(row,messages.children[index]||null);});
+    turnNodes.clear();for(const [key,value] of nextNodes)turnNodes.set(key,value);
+    messages.scrollTop=nearBottom?messages.scrollHeight:scrollTop;
   }
   function render(){
     const view=state.view(),list=books(),visibleDraft=view.pending?'':view.draft;if(input.value!==visibleDraft)input.value=visibleDraft;input.placeholder=view.pending?'正在对照原文思考…':'哪一句让你停了下来？';
-    chooser.replaceChildren(...list.map(book=>{const option=node('option','',bookTitle(book));option.value=book.bookId;return option;}));chooser.value=selectedBook||'';chooser.disabled=!!view.pending||!!view.retry?.uncertain;bookRow.hidden=!signedIn()||!selectedBook;
+    const listSignature=JSON.stringify(list.map(book=>[book.bookId,bookTitle(book)]));if(listSignature!==booksSignature){booksSignature=listSignature;chooser.replaceChildren(...list.map(book=>{const option=node('option','',bookTitle(book));option.value=book.bookId;return option;}));}chooser.value=selectedBook||'';chooser.hidden=list.length<2;singleBookTitle.hidden=list.length>1;singleBookTitle.textContent=bookTitle(list.find(book=>book.bookId===selectedBook));chooser.disabled=!!view.pending||!!view.retry?.uncertain;bookRow.hidden=!signedIn()||!selectedBook;
     renderContext(view);renderMessages(view);form.hidden=!signedIn()||!selectedBook;footer.hidden=form.hidden;
     const length=view.draft.length;count.textContent=length>=1800?(length>CHAT_TEXT_LIMIT?'已超出 '+(length-CHAT_TEXT_LIMIT)+' 字':'还可写 '+(CHAT_TEXT_LIMIT-length)+' 字'):'';count.classList.toggle('is-over-limit',length>CHAT_TEXT_LIMIT);input.setAttribute('aria-invalid',String(length>CHAT_TEXT_LIMIT));
-    input.disabled=!!view.pending||!!view.retry?.uncertain;count.hidden=!!view.pending;sendButton.disabled=!view.canSend;sendButton.textContent=view.retry?.uncertain?'继续上次提问 ↑':view.retry?'再试一次 ↑':'发送 ↑';stopButton.hidden=!view.pending;stopButton.disabled=view.pending?.status==='stopping';
+    input.disabled=!!view.pending||!!view.retry?.uncertain;count.hidden=!!view.pending;sendButton.disabled=!view.canSend;const sendLabel=view.retry?.uncertain?'继续上次提问':view.retry?'再试一次':'发送问题';sendButton.textContent=view.retry?'↻':'↑';sendButton.setAttribute('aria-label',sendLabel);sendButton.title=sendLabel;launcher.classList.toggle('is-waiting',!!view.pending);launcher.setAttribute('aria-label',root.open?'收起阅读对话':view.pending?'打开阅读对话，提问正在处理':'打开阅读对话');stopButton.hidden=!view.pending;stopButton.disabled=view.pending?.status==='stopping';
     if(!signedIn())status.textContent='';else if(!selectedBook)status.textContent='';else if(view.pending)status.textContent=view.pending.status==='stopping'?'正在停止。确认后可以重新提问。':pollCount>=12?'还在处理，可以点“查看进度”确认，也可以先收起窗口。':'可以先收起窗口，回答会留在这里。';else if(view.loadError)status.textContent=view.loadError;else if(view.notice)status.textContent=view.notice;else if(view.data?.available===false)status.textContent='阅读助手暂时不可用。可以先写下问题，稍后再试。';else if(view.phase==='loading')status.textContent='正在载入原文和已有对话…';else status.textContent='';
     statusBar.hidden=!status.textContent;status.classList.toggle('has-error',!!view.loadError);refreshButton.hidden=!signedIn()||!selectedBook||(!view.loadError&&!view.retry?.uncertain&&!view.pending&&view.data?.available!==false);refreshButton.disabled=!!loadInFlight||view.pending?.status==='stopping';refreshButton.textContent=view.pending||view.retry?.uncertain?'查看进度':'重新载入';exportButton.hidden=!view.turns.length;contextHint.textContent=context.open?'收起原文与译文':'查看原文与译文';
-    hint.textContent=view.pending?'收起窗口不会停止提问。需要中断时，请点“停止”。':'发送后，助手会结合当前段与相邻段给出解释候选。';
+    menuHint.textContent=hint.textContent=view.pending?'收起窗口不会停止提问。需要中断时，请点“停止”。':'发送后，助手会结合当前段与相邻段给出解释候选。';
     if(focusComposer&&root.open&&!input.disabled&&!form.hidden){focusComposer=false;input.focus();}
   }
   function schedulePoll(){
@@ -109,25 +123,34 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     catch(error){if(isCurrent(captured)){state.rejectCancel(ticket,error);render();await load();}}
     finally{if(isCurrent(captured))render();}
   }
-  function close(){clearPoll();focusComposer=false;if(root.open)root.close();if(opener?.isConnected)opener.focus();}
+  function close(){clearPoll();focusComposer=false;menu.open=false;if(root.open)root.close();launcher.setAttribute('aria-expanded','false');launcher.setAttribute('aria-label',state.view().pending?'打开阅读对话，提问正在处理':'打开阅读对话');if(opener?.isConnected&&!opener.hidden)opener.focus();else launcher.focus();}
   function choose(bookId,passageId=null){if(state.view().pending||state.view().retry?.uncertain)return false;clearPoll();loadInFlight=null;pollCount=0;selectedBook=bookId;requestedPassage=passageId;historySignature='';context.open=false;state.setContext(owner,selectedBook);requestedPassage=state.view().retry?.payload.passageId||requestedPassage;return true;}
   async function copyAnswer(text,element,control){try{await navigator.clipboard.writeText(text);control.textContent='已复制';}catch{const range=document.createRange();range.selectNodeContents(element);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);control.textContent='已选中，可复制';}}
   function exportChat(){
     const view=state.view();if(!view.turns.length)return;const data={kind:'marginalia-book-chat',schemaVersion:1,exportedAt:new Date().toISOString(),bookId:selectedBook,title:view.data?.title,contentVersion:view.data?.contentVersion,turns:view.turns};
     const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'})),link=node('a');link.href=url;link.download='循页-对话-'+selectedBook+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   }
+  launcher.addEventListener('click',()=>root.open?close():controls.open());
+  function escape(event){if(event.key==='Escape'&&root.open){event.preventDefault();event.stopPropagation();close();}}
+  root.addEventListener('keydown',escape);launcher.addEventListener('keydown',escape);
+  // Match the visible viewport when a mobile keyboard reduces or pans it.
+  function fitViewport(){const viewport=window.visualViewport;if(!viewport)return;root.style.setProperty('--chat-viewport-height',viewport.height+'px');root.style.setProperty('--chat-viewport-top',viewport.offsetTop+'px');root.classList.toggle('is-compact-viewport',viewport.height<=500);}
+  window.visualViewport?.addEventListener('resize',fitViewport);window.visualViewport?.addEventListener('scroll',fitViewport);fitViewport();
   closeButton.addEventListener('click',close);root.addEventListener('cancel',event=>{event.preventDefault();close();});root.addEventListener('close',()=>{clearPoll();if(opener?.isConnected)opener.focus();});
   chooser.addEventListener('change',()=>{if(choose(chooser.value)){render();load();}});context.addEventListener('toggle',()=>{contextHint.textContent=context.open?'收起原文与译文':'查看原文与译文';});
   input.addEventListener('input',()=>{state.setDraft(input.value);render();});input.addEventListener('compositionstart',()=>{composing=true;});input.addEventListener('compositionend',()=>{composing=false;});input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing&&!composing&&event.keyCode!==229){event.preventDefault();send();}});
-  form.addEventListener('submit',event=>{event.preventDefault();if(!composing)send();});stopButton.addEventListener('click',stop);refreshButton.addEventListener('click',()=>{pollCount=0;load();});exportButton.addEventListener('click',exportChat);
-  return {
+  form.addEventListener('submit',event=>{event.preventDefault();if(!composing)send();});stopButton.addEventListener('click',stop);refreshButton.addEventListener('click',()=>{pollCount=0;load();});exportButton.addEventListener('click',()=>{exportChat();menu.open=false;menuSummary.focus();});
+  const controls={
     open({bookId,passageId}={}){
-      syncOwner();const candidate=bookId||selectedBook||currentBookId()||books()[0]?.bookId||null,valid=books().some(book=>book.bookId===candidate)?candidate:books()[0]?.bookId||null;
-      if(!state.view().pending&&(selectedBook!==valid||passageId&&passageId!==requestedPassage))choose(valid,passageId||null);
-      if(!root.open){opener=document.activeElement;root.showModal();}focusComposer=true;render();pollCount=0;load();
+      syncOwner();const view=state.view(),canFollow=!view.draft&&!view.pending&&!view.retry?.uncertain;
+      const candidate=bookId||(canFollow?currentBookId():null)||selectedBook||books()[0]?.bookId||null,valid=books().some(book=>book.bookId===candidate)?candidate:books()[0]?.bookId||null;
+      const currentPassage=canFollow?(passageId||getCurrentPassage()||null):requestedPassage;
+      if(!view.pending&&!view.retry?.uncertain&&(selectedBook!==valid||canFollow&&currentPassage!==requestedPassage))choose(valid,currentPassage);
+      if(!root.open){opener=document.activeElement;root.show();closeButton.focus();}launcher.setAttribute('aria-expanded','true');focusComposer=false;render();pollCount=0;load();
     },
     close,
     reset(){clearPoll();loadInFlight=null;pollCount=0;owner=null;selectedBook=null;requestedPassage=null;historySignature='';state.reset();input.value='';context.open=false;render();},
     update(){const changed=syncOwner();if(!books().some(book=>book.bookId===selectedBook)&&!state.view().pending)choose(books().find(book=>book.bookId===currentBookId())?.bookId||books()[0]?.bookId||null);render();if(root.open&&(changed||state.view().phase==='idle'))load();}
   };
+  return controls;
 }

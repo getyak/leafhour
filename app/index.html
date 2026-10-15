@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-Hans" data-theme="paper">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>循页 · 阅读</title><link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><link rel="stylesheet" href="/reading-flow.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script><link rel="stylesheet" href="/reading-arrival.css"><script type="module" src="/reading-arrival.mjs"></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>循页 · 阅读</title><link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><link rel="stylesheet" href="/reading-flow.css"><link rel="stylesheet" href="/library-chat.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script><link rel="stylesheet" href="/reading-arrival.css"><script type="module" src="/reading-arrival.mjs"></script></head>
 <body class="is-focused" data-reading-tools="closed">
   <div class="atmosphere-backdrop" aria-hidden="true"><div class="atmosphere-elements"></div></div>
   <link rel="stylesheet" href="/reader-atmosphere.css"><script type="module" src="/reader-atmosphere.js"></script>
@@ -146,6 +146,7 @@
     </div>
   </dialog>
   <aside id="progress-notice" class="reading-progress-notice" role="status" hidden><p>书房里的阅读位置已就绪。可以回去，也可以继续读这里。</p><div><button id="progress-use-remote">回到书房的位置</button><button id="progress-keep-here">继续读这里</button></div></aside>
+  <dialog id="reader-conversation" class="library-chat-dialog" aria-label="阅读对话"></dialog>
   <div id="announcement" class="visually-hidden" aria-live="polite"></div>
   <p class="visually-hidden" id="reading-instructions">点击段落或聚焦段落后按回车，可以查看原文、注解和个人记录。Esc关闭浮层。F切换专注阅读。</p>
 <script type="module" src="/reader-translation.js"></script>

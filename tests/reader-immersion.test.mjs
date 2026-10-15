@@ -47,3 +47,13 @@ test('a rejected fullscreen request keeps immersion and announces an honest fall
   const reader=mountReaderImmersion({document,announce:text=>messages.push(text)});
   assert.equal(await reader.toggleFullscreen(),false);assert.equal(document.body.classList.contains('is-focused'),true);assert.equal(document.body.dataset.fullscreen,'false');assert.match(messages[0],/沉浸阅读/);
 });
+
+test('nonmodal reading chat leaves page tool dismissal usable without stealing chat interactions',async()=>{
+  const {mountReaderImmersion}=await import('../app/reader-immersion.mjs'),{document}=fixture();
+  document.querySelector=selector=>selector.includes(':not(.library-chat-dialog)')?null:{open:true};
+  const reader=mountReaderImmersion({document});reader.toggleTools();
+  const outside=new Event('pointerdown');Object.defineProperty(outside,'target',{value:{closest:()=>null}});document.dispatchEvent(outside);
+  assert.equal(document.body.dataset.readingTools,'closed');
+  reader.toggleTools();const inside=new Event('pointerdown');Object.defineProperty(inside,'target',{value:{closest:()=>({tagName:'DIALOG'})}});document.dispatchEvent(inside);
+  assert.equal(document.body.dataset.readingTools,'open');
+});
