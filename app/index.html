@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-Hans" data-theme="paper">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>循页 · 阅读</title><link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>循页 · 阅读</title><link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><link rel="stylesheet" href="/reading-flow.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script></head>
 <body>
   <a href="#book-page" class="skip-link">跳到正文</a>
   <header id="reading-header" class="reading-header">
@@ -10,7 +10,7 @@
   </header>
   <button id="exit-focus" class="focus-exit" hidden>退出专注</button>
   <main id="book-page" class="book-page" tabindex="-1">
-    <div id="loading" class="loading-state"><p>正在准备书页</p></div>
+    <div id="loading" class="loading-state reading-loading" role="status"><div class="reading-skeleton" aria-hidden="true"><i class="skeleton-eyebrow"></i><i class="skeleton-title"></i><div class="skeleton-lines"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p>正在展开书页</p></div>
     <div id="load-error" class="load-error" hidden><p>暂时无法打开这本书。</p><button id="retry-load">重新打开</button></div>
     <header class="chapter-heading" id="chapter-heading" hidden><p id="chapter-number" class="chapter-number"></p><h1 id="chapter-title"></h1><p id="chapter-original-title" class="original-title"></p></header>
     <article id="chapter-text" aria-label="书籍正文"></article>
@@ -62,6 +62,7 @@
       <div class="drawer-shortcuts"><button id="settings-chapters">全书目录 <span>↗</span></button><button id="show-all-records">我的记录 <span>↗</span></button></div>
       <section class="settings-section" aria-labelledby="language-heading"><h3 id="language-heading">正文</h3>
         <div class="setting-row"><label for="view-mode">阅读语言</label><select id="view-mode"><option value="zh">中文</option><option value="en">英文原文</option><option value="parallel">中英对照</option></select></div>
+        <div class="setting-row"><label for="continuous-reading">连续阅读</label><input id="continuous-reading" type="checkbox" checked aria-describedby="continuous-reading-hint"></div><p id="continuous-reading-hint" class="settings-hint">下一章自然接上，读完仍由你确认。</p>
         <div class="setting-row"><label for="translation-variant">中文译法</label><select id="translation-variant"><option value="interpretive">意译</option><option value="literal">直译</option></select></div>
       </section>
       <section class="settings-section" aria-labelledby="paper-heading"><h3 id="paper-heading">纸面</h3>
@@ -118,7 +119,7 @@
       </div>
     </div>
   </dialog>
-  <aside id="progress-notice" class="reading-progress-notice" role="status" hidden><p>阅读位置已在另一处更新。</p><div><button id="progress-use-remote">去较新的位置</button><button id="progress-keep-here">继续读这里</button></div></aside>
+  <aside id="progress-notice" class="reading-progress-notice" role="status" hidden><p>书房里的阅读位置已就绪。可以回去，也可以继续读这里。</p><div><button id="progress-use-remote">回到书房的位置</button><button id="progress-keep-here">继续读这里</button></div></aside>
   <div id="announcement" class="visually-hidden" aria-live="polite"></div>
   <p class="visually-hidden" id="reading-instructions">点击段落或聚焦段落后按回车，可以查看原文、注解和个人记录。Esc关闭浮层。F切换专注阅读。</p>
 <script type="module" src="/reader-translation.js"></script>
