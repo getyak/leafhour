@@ -4,10 +4,11 @@
 <body>
   <div class="atmosphere-backdrop" aria-hidden="true"><div class="atmosphere-elements"></div></div>
   <link rel="stylesheet" href="/reader-atmosphere.css"><script type="module" src="/reader-atmosphere.js"></script>
+  <link rel="stylesheet" href="/reader-navigation.css">
   <a href="#book-page" class="skip-link">跳到正文</a>
   <header id="reading-header" class="reading-header">
-    <div class="reader-navigation"><a href="/library" class="quiet-button" aria-label="返回书房">← 书房</a><button id="open-toc" class="quiet-button" aria-controls="toc-dialog" aria-haspopup="dialog">目录</button></div>
-    <p class="running-title">循页<span id="running-chapter"></span></p>
+    <nav class="reader-navigation" aria-label="阅读导航"><a href="/library" class="reader-nav-item" aria-label="返回书房"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12 5l-5 5 5 5"/></svg><span class="reader-home-label">书房</span></a><span class="reader-nav-divider" aria-hidden="true"></span><button id="open-toc" class="reader-nav-item" disabled aria-controls="toc-dialog" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M4 10h8M4 15h12"/></svg><span>目录</span></button></nav>
+    <button id="open-book-info" class="running-title" type="button" popovertarget="book-info" aria-haspopup="dialog" aria-controls="book-info" aria-expanded="false" disabled><span id="running-book-title">循页</span><span id="running-chapter"></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5 6 3 3 3-3"/></svg></button>
     <div class="header-actions"><div class="atmosphere-header-control"><button id="open-atmosphere" class="quiet-button" aria-haspopup="dialog" aria-controls="atmosphere-dialog" aria-label="阅读氛围">氛围</button><button id="atmosphere-quick-pause" class="quiet-button" aria-label="暂停氛围声音" hidden>Ⅱ</button></div><button id="open-settings" class="quiet-button typography-button" aria-label="阅读设置" aria-haspopup="dialog">Aa</button><button id="enter-focus" class="quiet-button">专注</button></div>
   </header>
   <link rel="stylesheet" href="/reader-audio.css"><script type="module" src="/reader-audio.js"></script>
@@ -58,11 +59,17 @@
     <nav class="panel-tabs" aria-label="旁注类型"><button data-panel-tab="annotations">注解</button><button data-panel-tab="comment">我的想法</button><button data-panel-tab="question">问题</button></nav>
     <div id="panel-content"></div>
   </aside>
-  <dialog id="toc-dialog" class="toc-dialog"><header class="dialog-heading"><span id="toc-book-title">目录</span><button data-close-dialog="toc-dialog" class="quiet-button">关闭</button></header><nav id="toc-list" aria-label="全书目录"></nav></dialog>
+  <section id="book-info" class="book-info" popover="auto" role="dialog" aria-labelledby="book-info-title" tabindex="-1">
+    <header class="book-info-heading"><span>关于这本书</span><button id="close-book-info" class="reader-surface-close" aria-label="关闭书籍介绍"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 6 8 8M14 6l-8 8"/></svg></button></header>
+    <div class="book-info-identity"><div class="book-info-cover" aria-hidden="true"><span>循页</span><strong id="book-info-cover-title"></strong><i>❦</i></div><div><h2 id="book-info-title"></h2><p id="book-info-original-title" class="book-info-original"></p><p id="book-info-author" class="book-info-author"></p></div></div>
+    <p id="book-info-description" class="book-info-description"></p><p id="book-info-current" class="book-info-current"></p><p id="book-info-sample" class="book-info-sample"></p>
+    <footer class="book-info-footer"><span id="book-info-extent"></span><a id="book-info-source" target="_blank" rel="noopener noreferrer" hidden>原文出处 <span aria-hidden="true">↗</span></a></footer>
+  </section>
+  <dialog id="toc-dialog" class="toc-dialog" aria-labelledby="toc-heading-title"><header class="toc-heading"><div><p id="toc-book-title">循页</p><h2 id="toc-heading-title">全书目录</h2></div><button data-close-dialog="toc-dialog" class="reader-surface-close" aria-label="关闭目录"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 6 8 8M14 6l-8 8"/></svg></button></header><nav id="toc-list" aria-label="全书目录"></nav></dialog>
   <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title">
     <header class="dialog-heading"><div><h2 id="settings-title">你的阅读方式</h2><p>把这一页，调成喜欢的样子。</p></div><button data-close-dialog="settings-dialog" class="quiet-button" aria-label="关闭阅读设置">关闭</button></header>
     <div class="settings-content">
-      <div class="drawer-shortcuts"><button id="settings-chapters">全书目录 <span>↗</span></button><button id="show-all-records">我的记录 <span>↗</span></button></div>
+      <div class="drawer-shortcuts"><button id="settings-chapters" disabled>全书目录 <span>↗</span></button><button id="show-all-records">我的记录 <span>↗</span></button></div>
       <section class="settings-section" aria-labelledby="language-heading"><h3 id="language-heading">正文</h3>
         <div class="setting-row"><label for="view-mode">阅读语言</label><select id="view-mode" aria-describedby="reading-language-hint"><option value="en" selected>英文原文</option><option value="zh">中文译文</option><option value="parallel">中英对照</option></select></div><p id="reading-language-hint" class="settings-hint">默认读原文；译文使用中文，与你当前的界面语言一致。</p>
         <div class="setting-row"><label for="continuous-reading">连续阅读</label><input id="continuous-reading" type="checkbox" checked aria-describedby="continuous-reading-hint"></div><p id="continuous-reading-hint" class="settings-hint">下一章自然接上，读完仍由你确认。</p>
