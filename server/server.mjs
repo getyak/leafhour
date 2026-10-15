@@ -18,6 +18,7 @@ assets.set('/reader-return.mjs',['app/reader-return.mjs','text/javascript']);
 assets.set('/passage-layers.mjs',['app/passage-layers.mjs','text/javascript']);
 assets.set('/catalog-sample.mjs',['app/catalog-sample.mjs','text/javascript']);
 assets.set('/reader-navigation.mjs',['app/reader-navigation.mjs','text/javascript']);
+assets.set('/reader-immersion.mjs',['app/reader-immersion.mjs','text/javascript']);
 assets.set('/reader-navigation.css',['app/reader-navigation.css','text/css']);
 assets.set('/parallel-reading.mjs',['app/parallel-reading.mjs','text/javascript']);
 assets.set('/parallel-reading.css',['app/parallel-reading.css','text/css']);
