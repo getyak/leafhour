@@ -38,20 +38,21 @@ export function createHarnessGenerator({runRoot=path.join(project,'local/harness
   const env={PATH:process.env.PATH,DEEPSEEK_API_KEY:process.env.DEEPSEEK_API_KEY,DSH_SYSTEM_PROMPT:persona+common};
   if(!env.DEEPSEEK_API_KEY)throw Error('尚未配置本机模型。');
   const harness=new DeepSeekHarness({profile:'sdk-minimal',patches:[path.join(dir,'reader.patch.json')],dshHome:path.join(dir,'home'),processCwd:dir,cwd:dir,env,provider:'deepseek-official',model,reasoningEffort:'off',maxTokens:1024,initializeTimeoutMs:20000,requestTimeoutMs:65000,disposeEofGraceMs:1500,disposeGraceMs:3000});
-  const trace=[];let stopping=null;
+  const trace=[];let stopping=null,readerStage='initialize';
   const stop=()=>{stopping??=(async()=>{await writeFile(path.join(dir,'revoked'),'',{mode:0o600});await harness.close();})();return stopping;};
   const abort=()=>{void stop().catch(()=>{});};job.signal?.addEventListener('abort',abort,{once:true});const timer=setTimeout(abort,timeoutMs);
   try{
    if(job.signal?.aborted)throw Error('已取消');
+   await harness.start();readerStage='run';
    const request=snapshot.kind==='explain'?'根据授权上下文解释当前段落，回应阅读问题，不批改问题。':'根据授权上下文，对读者的一句话做回声批改。';
    const result=await harness.run(request+'请先调用 reader_get_context；候选提交和复核必须按约定完成。',{sessionId:job.runId,onNotification:n=>{if(n.method==='session.event')trace.push({type:n.params?.event?.type,sessionId:n.params?.sessionId});}});
    if(job.signal?.aborted||stopping)throw Error('已取消');
-   const published=JSON.parse(await readFile(path.join(dir,'output.json'),'utf8'));if(published.runId!==job.runId||published.contentVersion!==job.book.contentVersion||published.kind!==snapshot.kind)throw Error('反馈关联已失效');
+   readerStage='publish';const published=JSON.parse(await readFile(path.join(dir,'output.json'),'utf8'));if(published.runId!==job.runId||published.contentVersion!==job.book.contentVersion||published.kind!==snapshot.kind)throw Error('反馈关联已失效');
    await writeFile(path.join(dir,'receipt.json'),JSON.stringify({provider:'deepseek-official',model,kernel:'official-deepseek-harness',sessionId:result.sessionId,trace,completed:true},null,2),{mode:0o600});
    return normaliseEcho(published.asset,job.text);
   }catch(error){
    await writeFile(path.join(dir,'receipt.json'),JSON.stringify({provider:'deepseek-official',model,kernel:'official-deepseek-harness',trace,completed:false,errorType:error.name||'Error'},null,2),{mode:0o600});
-   throw Error(job.signal?.aborted||stopping?'已取消这次回声。':'回声暂时没有得到可核验的结果；原话已保留，请继续阅读。',{cause:error});
+   const failure=Error(job.signal?.aborted||stopping?'已取消这次回声。':'回声暂时没有得到可核验的结果；原话已保留，请继续阅读。',{cause:error});failure.readerStage=readerStage;throw failure;
   }finally{clearTimeout(timer);job.signal?.removeEventListener('abort',abort);await stop();}
  };
 }

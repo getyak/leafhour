@@ -1,4 +1,4 @@
-import {copyFile,mkdir,mkdtemp,readFile,readdir,rename,rm,stat,writeFile,chmod} from 'node:fs/promises';
+import {copyFile,lstat,mkdir,mkdtemp,readFile,readdir,rename,rm,stat,writeFile,chmod} from 'node:fs/promises';
 import {createRequire} from 'node:module';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
@@ -11,13 +11,20 @@ const disabled=['persistent-bash','persistent-pwsh','tool-working-directory','ll
 const inDirectory=(directory,file)=>file===directory||file.startsWith(directory+path.sep);
 const privateFile=file=>/(^|[\\/])\.env(?:$|\.)/.test(file);
 
-async function assertGeneratedOutput(directory){
-  let entries;
-  try{entries=await readdir(directory);}catch(error){if(error.code==='ENOENT')return;throw error;}
+async function assertGeneratedOutput(directory,{allowDependencyCache=false}={}){
+  const refuse=()=>{throw Error('Refusing to replace a non-empty directory that is not a generated runtime: '+directory);};
+  let info;
+  try{info=await lstat(directory);}catch(error){if(error.code==='ENOENT')return;throw error;}
+  if(!info.isDirectory()||info.isSymbolicLink())refuse();
+  const entries=await readdir(directory,{withFileTypes:true});
   if(!entries.length)return;
   let manifest;
   try{manifest=JSON.parse(await readFile(path.join(directory,'manifest.json'),'utf8'));}catch{}
-  if(manifest?.kind!=='marginalia-reader-runtime')throw Error('Refusing to replace a non-empty directory that is not a generated runtime: '+directory);
+  if(manifest?.kind==='marginalia-reader-runtime')return;
+  // Vercel may restore nested dependencies without the generated manifest.
+  // This exception is explicit and accepts only a plain dependency directory.
+  if(allowDependencyCache===true&&entries.length===1&&entries[0].name==='node_modules'&&entries[0].isDirectory()&&!entries[0].isSymbolicLink())return;
+  refuse();
 }
 
 async function filesBelow(directory){
@@ -57,11 +64,11 @@ async function initialize(outputDir){
   }
 }
 
-export async function buildReaderRuntime({root=project,outputDir=path.join(root,'.reader-runtime'),verify=true}={}){
+export async function buildReaderRuntime({root=project,outputDir=path.join(root,'.reader-runtime'),verify=true,allowDependencyCache=false}={}){
   root=path.resolve(root);outputDir=path.resolve(outputDir);
   const modules=path.join(root,'node_modules');
   if(inDirectory(outputDir,root)||inDirectory(modules,outputDir))throw Error('The runtime output must be a separate generated directory');
-  await assertGeneratedOutput(outputDir);
+  await assertGeneratedOutput(outputDir,{allowDependencyCache});
   const require=createRequire(path.join(root,'package.json'));
   const profileManifest=require.resolve('@deepseek-ai/dsh-sdk-minimal/package.json');
   const profileDir=path.dirname(profileManifest),profilePatch=path.join(profileDir,'cordis.patch.yml');
@@ -101,13 +108,13 @@ export async function buildReaderRuntime({root=project,outputDir=path.join(root,
     if(verify)await initialize(staging);
     const manifest={kind:'marginalia-reader-runtime',schemaVersion:1,platform:process.platform,arch:process.arch,nodeMajor:Number(process.versions.node.split('.')[0]),files:[...files].sort(),plugins:plugins.map(({id,name})=>({id,name})),bytes,initialized:!!verify};
     await writeFile(path.join(staging,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');
-    await assertGeneratedOutput(outputDir);
+    await assertGeneratedOutput(outputDir,{allowDependencyCache});
     await rm(outputDir,{recursive:true,force:true});await rename(staging,outputDir);
     return {outputDir,...manifest};
   }catch(error){await rm(staging,{recursive:true,force:true});throw error;}
 }
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href){
-  const runtime=await buildReaderRuntime();
+  const runtime=await buildReaderRuntime({allowDependencyCache:process.env.VERCEL==='1'});
   console.log('Built and initialized the isolated reading runtime: '+runtime.files.length+' files, '+(runtime.bytes/1024/1024).toFixed(1)+' MB; no model requests.');
 }

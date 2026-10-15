@@ -350,3 +350,9 @@ test('separate Node processes atomically claim one model run for the same owner 
   const results=await Promise.all([run(),run()]);assert.deepEqual(results.map(r=>r.status).sort((a,b)=>String(a).localeCompare(String(b))),[409,'completed']);
   assert.equal((await readFile(path.join(dataDir,'model-calls'),'utf8')).trim(),'called');
 });
+
+test('a recording failure reports its stage without exposing the private question in diagnostic context',async t=>{
+  const {create,library}=await fixture(t),diagnostics=[];
+  const service=await create({library:{...library,addComment:async()=>{throw Error('private storage error');}},onError:(error,context)=>diagnostics.push(context)});
+  const result=await service.send(alice,'chat-book',input());assert.equal(result.status,'failed');assert.deepEqual(diagnostics,[{phase:'record-question'}]);assert.doesNotMatch(JSON.stringify(diagnostics),/这里|private storage/);
+});

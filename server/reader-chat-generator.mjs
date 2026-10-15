@@ -13,11 +13,14 @@ function failure(error){
 export function createReaderChatGenerator({env=process.env,makeGenerator=createHarnessGenerator,logger=diagnostic=>console.error(JSON.stringify(diagnostic))}={}){
   if(!env.DEEPSEEK_API_KEY)return null;
   const generate=makeGenerator({runRoot:env.VERCEL?path.join(tmpdir(),'marginalia-reading-chat'):undefined,timeoutMs:45000});
-  return async job=>{
-    try{return await generate(job);}catch(error){
-      // Fixed classifications only: never log provider messages, keys, source or questions.
-      const diagnostic={event:'reading-chat-runtime-failed',...failure(error),hosted:!!env.VERCEL,platform:process.platform,arch:process.arch,nodeMajor:Number(process.versions.node.split('.')[0]),bundleManifest:existsSync(path.join(project,'.reader-runtime/manifest.json')),bundleClient:existsSync(path.join(project,'.reader-runtime/node_modules/@deepseek-ai/dsh-sdk-client/lib/index.js'))};
-      try{logger(diagnostic);}catch{}throw error;
-    }
+  const reported=new WeakSet();
+  const phases=new Set(['record-question','quota','generation','verify-source','verify-version','save-answer','initialize','run','publish']);
+  const reportFailure=(error,{phase}={})=>{
+    if(error&&typeof error==='object'){if(reported.has(error))return;reported.add(error);}
+    const stage=phases.has(error?.readerStage)?error.readerStage:phases.has(phase)?phase:'setup';
+    const diagnostic={event:'reading-chat-runtime-failed',stage,...failure(error),hosted:!!env.VERCEL,platform:process.platform,arch:process.arch,nodeMajor:Number(process.versions.node.split('.')[0]),bundleManifest:existsSync(path.join(project,'.reader-runtime/manifest.json')),bundleClient:existsSync(path.join(project,'.reader-runtime/node_modules/@deepseek-ai/dsh-sdk-client/lib/index.js'))};
+    try{logger(diagnostic);}catch{}
   };
+  const wrapped=async job=>{try{return await generate(job);}catch(error){reportFailure(error);throw error;}};
+  wrapped.reportFailure=reportFailure;return wrapped;
 }

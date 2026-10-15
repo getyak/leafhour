@@ -60,7 +60,7 @@ function generationText(turn,turns,book){
   return prompt;
 }
 
-export async function createReaderChatService({library,dataDir,dataStore=null,generator=null,clock=Date.now}){
+export async function createReaderChatService({library,dataDir,dataStore=null,generator=null,clock=Date.now,onError=()=>{}}){
   if(!library?.getBook||!library?.records||!library?.addComment||!dataDir)throw new TypeError('Reader chat requires a library and data directory');
   let closed=false;const queues=new Map(),active=new Map();
   const ownerDir=user=>path.join(dataDir,'users',digest(identity(user).id),'chat');
@@ -185,11 +185,11 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
     if(!claimed.created)return claimed.turn;
     const controller=new AbortController(),key=runId;
     const running={controller,user,bookId,id:input.id,runId};active.set(key,running);
-    let timer,ticket=null,stopWatching=()=>{};
+    let timer,ticket=null,stopWatching=()=>{},phase='record-question';
     try{
       if(closed)return await finish(user,bookId,input.id,runId,{status:'cancelled',answer:null});
       await library.addComment(user,bookId,{id:'chat-'+input.id,passageId:input.passageId,text:input.text,origin:'user',contentVersion:input.contentVersion},'questions');
-      await quota(user,runId);
+      phase='quota';await quota(user,runId);
       ticket=await reserveGlobal(runId);
       // Cancellation may have been persisted by another process while the
       // original question was entering the library or waiting for its quota.
@@ -200,15 +200,16 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
       });
       timer=setTimeout(()=>controller.abort(),Math.max(0,now+RUN_MS-clock()));timer.unref?.();
       stopWatching=watchRun(user,bookId,input.id,runId,controller);
-      const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'explain',book:claimed.book,passageId:input.passageId,text:claimed.prompt,runId,signal:controller.signal})),abort]);
-      const reducedIndex=sourceIndex(claimed.book),checked=validateEcho(candidate,{index:reducedIndex,passageId:input.passageId,text:claimed.prompt,kind:'explain'});
+      phase='generation';const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'explain',book:claimed.book,passageId:input.passageId,text:claimed.prompt,runId,signal:controller.signal})),abort]);
+      phase='verify-source';const reducedIndex=sourceIndex(claimed.book),checked=validateEcho(candidate,{index:reducedIndex,passageId:input.passageId,text:claimed.prompt,kind:'explain'});
       const answer={summary:checked.summary,sourceRefs:checked.sourceRefs,origin:'ai'};
       if(bytes(answer)>16000||checked.sourceRefs.reduce((n,r)=>n+Buffer.byteLength(r.quote),0)>MAX_SOURCE_BYTES)throw invalid('回答引用过长');
-      const fresh=await bookFor(user,bookId),freshIndex=sourceIndex(fresh);
+      phase='verify-version';const fresh=await bookFor(user,bookId),freshIndex=sourceIndex(fresh);
       if(fresh.contentVersion!==book.contentVersion||reducedIndex.rows.some(p=>hashSource(freshIndex.byId.get(p.id)?.original)!==hashSource(p.original)))throw invalid('原文版本已变化',409);
       if(controller.signal.aborted)throw invalid('回答已取消',408);
-      return await finish(user,bookId,input.id,runId,{status:'completed',answer});
+      phase='save-answer';return await finish(user,bookId,input.id,runId,{status:'completed',answer});
     }catch(error){
+      if(!controller.signal.aborted&&error?.status!==429)try{onError(error,{phase});}catch{}
       const turn=await finish(user,bookId,input.id,runId,{status:'failed',answer:null,error:FAILED});
       if(error?.status===429)throw error;
       return turn;
