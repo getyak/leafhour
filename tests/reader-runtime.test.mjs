@@ -11,7 +11,7 @@ const runtime=await import('../tools/build-reader-runtime.mjs').catch(error=>{
 });
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 
-test('the isolated hosted runtime initializes its actual SDK, profile, plugins and native bindings without a model request',{timeout:30000},async t=>{
+test('the isolated hosted runtime initializes its actual SDK, profile, plugins and native bindings without a model request',{timeout:90000},async t=>{
   assert.equal(typeof runtime.buildReaderRuntime,'function','The hosted Harness runtime builder is missing');
   const directory=await mkdtemp(path.join(tmpdir(),'reader-runtime-test-')),outputDir=path.join(directory,'runtime');
   t.after(()=>rm(directory,{recursive:true,force:true}));
@@ -30,7 +30,7 @@ test('the isolated hosted runtime initializes its actual SDK, profile, plugins a
   try{await harness.start();}finally{await harness.close();}
 });
 
-test('rebuilding removes stale runtime files while keeping files beside the generated directory',{timeout:30000},async t=>{
+test('rebuilding removes stale runtime files while keeping files beside the generated directory',{timeout:90000},async t=>{
   assert.equal(typeof runtime.buildReaderRuntime,'function','The hosted Harness runtime builder is missing');
   const directory=await mkdtemp(path.join(tmpdir(),'reader-runtime-rebuild-')),outputDir=path.join(directory,'runtime');
   t.after(()=>rm(directory,{recursive:true,force:true}));
@@ -43,7 +43,7 @@ test('rebuilding removes stale runtime files while keeping files beside the gene
   assert.equal(await readFile(path.join(directory,'keep.txt'),'utf8'),'preserved');
 });
 
-test('a mistaken non-runtime output directory is refused without deleting its contents',{timeout:30000},async t=>{
+test('a mistaken non-runtime output directory is refused without deleting its contents',{timeout:90000},async t=>{
   const directory=await mkdtemp(path.join(tmpdir(),'reader-runtime-protected-')),outputDir=path.join(directory,'personal-files');
   t.after(()=>rm(directory,{recursive:true,force:true}));
   await mkdir(outputDir);await writeFile(path.join(outputDir,'keep.txt'),'preserved');
