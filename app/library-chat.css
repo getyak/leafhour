@@ -48,3 +48,25 @@ body:has(#reader-conversation + .library-chat-launcher) .reading-tools-panel{rig
 /* In a keyboard-sized viewport the close button is the available exit; the
    launcher would otherwise cover the composer at the bottom-right corner. */
 .library-chat-dialog.is-compact-viewport[open] + .library-chat-launcher{visibility:hidden}
+/* Flexible answers keep the companion's existing reading rhythm. */
+.library-chat-markdown p{margin:0 0 .85em;white-space:pre-wrap}
+.library-chat-markdown p:last-child{margin-bottom:0}
+.library-chat-markdown h1,.library-chat-markdown h2,.library-chat-markdown h3,.library-chat-markdown h4,.library-chat-markdown h5,.library-chat-markdown h6{margin:1.15em 0 .55em;font:600 1em/1.65 var(--chat-font);color:var(--chat-ink)}
+.library-chat-markdown> :first-child{margin-top:0}
+.library-chat-markdown ul,.library-chat-markdown ol{margin:.7em 0;padding-left:1.5em}
+.library-chat-markdown li{margin:.35em 0}
+.library-chat-markdown a{color:inherit;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+.library-chat-markdown blockquote{margin:.8em 0;padding-left:12px;border-left:2px solid var(--chat-line);color:var(--chat-muted)}
+.library-chat-markdown code{font:.88em/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;background:color-mix(in srgb,var(--chat-ink) 5%,transparent);border-radius:3px;padding:.1em .25em;overflow-wrap:anywhere}
+.library-chat-markdown pre{max-width:100%;overflow:auto;margin:.8em 0;padding:10px;border:1px solid var(--chat-line);border-radius:5px;white-space:pre}
+.library-chat-markdown pre code{background:none;padding:0;overflow-wrap:normal}
+.library-chat-table{max-width:100%;overflow-x:auto;margin:.85em 0}
+.library-chat-table table{width:100%;border-collapse:collapse;font:.9em/1.7 var(--chat-font);text-align:left}
+.library-chat-table th,.library-chat-table td{min-width:90px;padding:7px 9px;border:1px solid var(--chat-line);vertical-align:top}
+.library-chat-table th{font-weight:600}
+.library-chat-activity,.library-chat-activity-details{margin:10px 0 0;font:11px/1.8 var(--chat-font);color:var(--chat-muted)}
+.library-chat-activity-details summary{cursor:pointer}
+.library-chat-activity-details p{margin:3px 0}
+.library-chat-recommendations{margin-top:18px}
+.library-chat-recommendation{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:7px;padding:9px 0;border-bottom:1px solid var(--chat-line);color:inherit;text-decoration:none;font:12px/1.7 var(--chat-font)}
+.library-chat-recommendation small{flex-shrink:0;color:var(--chat-muted);font-size:10px}

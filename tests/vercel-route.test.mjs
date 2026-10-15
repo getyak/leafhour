@@ -26,3 +26,7 @@ test('gift and local-preview rewrites resolve the letter page with Vercel clean 
   const preview=config.headers.find(rule=>rule.source==='/gift-preview');
   assert.equal(preview.headers.find(header=>header.key==='Content-Security-Policy').value,"frame-ancestors 'self'");
 });
+test('hosted function outlives the conversation lease with room for cleanup and durable save',async()=>{
+ const config=JSON.parse(await readFile(new URL('../vercel.json',import.meta.url),'utf8'));
+ assert.ok(config.functions['api/*.js'].maxDuration>=120,'90 second conversation lease requires cleanup and save time');
+});

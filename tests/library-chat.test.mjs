@@ -66,3 +66,11 @@ test('an uncertain retry cannot silently use a different passage than the one sh
 test('recovery can retry the old id while preserving a different new draft',()=>{const {state,create}=durableSetup();state.setDraft('这个词是什么意思？');const sent=state.beginSend();state.setDraft('后来写下的新问题');const reloaded=create();reloaded.resolveLoad(reloaded.beginLoad(),content);const retry=reloaded.beginSend();assert.ok(retry);assert.deepEqual(retry.payload,sent.payload);reloaded.resolveSend(retry.ticket,turn(sent.payload.id));assert.equal(reloaded.view().draft,'后来写下的新问题');});
 
 test('failed persistence of a later edit cannot erase the last recoverable request id',()=>{let draft='',saved=null,deny=false;const create=()=>{const state=createLibraryChatState({readDraft:()=>draft,writeDraft:(o,b,text)=>{if(deny)throw Error('denied');draft=text;},readPending:()=>saved,writePending:(o,b,record)=>{saved=structuredClone(record);},makeId:()=> 'keep-request-id'});state.setContext('alice','one');return state;};const state=create();state.resolveLoad(state.beginLoad(),content);state.setDraft('这个词是什么意思？');const sent=state.beginSend();deny=true;state.setDraft('后来写的新问题');state.resolveSend(sent.ticket,turn(sent.payload.id));assert.equal(create().view().retry?.payload.id,sent.payload.id);});
+
+for(const terminal of ['completed','failed','cancelled'])test(`a terminal ${terminal} send receipt invalidates earlier empty reads and remains ready`,()=>{
+ const {state}=setup();state.setDraft('这个词是什么意思？');const request=state.beginSend(),early=state.beginLoad();
+ assert.equal(state.resolveSend(request.ticket,turn(request.payload.id,terminal)),true);
+ assert.equal(state.resolveLoad(early,content),false);assert.equal(state.view().turns.length,1);assert.equal(state.view().turns[0].status,terminal);assert.equal(state.view().pending,null);
+ state.setDraft('下一个问题');assert.equal(state.view().canSend,true);
+ assert.equal(state.rejectLoad(early,new Error('迟到的网络错误')),false);assert.equal(state.view().loadError,'');
+});
