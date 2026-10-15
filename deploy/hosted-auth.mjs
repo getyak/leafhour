@@ -1,5 +1,6 @@
 import {randomBytes,createHash} from 'node:crypto';
 import {digest,fail} from '../server/document-import.mjs';
+import {providerProfile} from '../server/account-profile.mjs';
 import {normalizeAuthEmail,OTP_POLICY,safeAuthReturn,authPurpose,validateAuthPassword} from '../server/auth-policy.mjs';
 
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -10,7 +11,7 @@ export function createHostedAuth({store,env=process.env,fetcher=fetch,clock=Date
   const base=env.SUPABASE_URL?.replace(/\/$/,''),key=env.SUPABASE_PUBLISHABLE_KEY;
   if(!base?.startsWith('https://')||!key)throw fail('登录服务尚未配置',503);
   const sessionKey=token=>'auth/sessions/'+digest(token);
-  const visible=user=>({id:user.id,email:user.email||null,kind:['google','apple'].includes(user.app_metadata?.provider)?user.app_metadata.provider:'email'});
+  const visible=user=>({id:user.id,email:user.email||null,kind:['google','apple'].includes(user.app_metadata?.provider)?user.app_metadata.provider:'email',...providerProfile(user)});
   let settingsPromise,settingsExpire=0;
   async function request(route,body,access,method){
     let response,data;
