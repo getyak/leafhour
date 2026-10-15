@@ -8,6 +8,7 @@ import {mountReadingDashboard} from './reading-dashboard.mjs';
 import {roomShelf,readingBookUrl} from './library-workspace.mjs';
 import {mountLibraryShell,roomIcons} from './library-shell.mjs';
 import {mountLibraryChat} from './library-chat.mjs';
+import {paintBookCover} from './book-binding.mjs';
 import './site-appearance.mjs';
 const $=id=>document.getElementById(id);
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
@@ -50,7 +51,7 @@ function landingBookCard(book){
 }
 function bookCard(book){
   const card=make('article','book-card'),art=make('a','book-art '+(book.cover||'private'));art.href=readingBookUrl(book);art.setAttribute('aria-label',(book.resume?'继续阅读':'阅读')+book.title.zh);
-  const cover=make('div','book-cover'),inner=make('div','cover-inner');inner.append(make('small','',(book.author||'自己的书').split(' · ')[0]),make('strong','',book.title.zh==='爱丽丝梦游仙境'?'爱丽丝\n梦游仙境':book.title.zh),make('small','',book.title.en||''));cover.append(inner);art.append(cover);
+  const cover=make('div','book-cover');paintBookCover(cover,book);art.append(cover);
   const meta=make('div','book-meta');meta.append(make('h3','',book.title.zh),make('p','book-author',book.author||book.source?.filename||''));
   const description=book.chineseSample?'中文双译开篇 · '+book.chineseSample.paragraphs+' 段':book.visibility==='public'?'英文原文 · 按需翻译':'原文已保存 · '+String(book.source?.format||'文本').toUpperCase();meta.append(make('p','book-label',description));
   const bottom=make('div','book-bottom'),read=make('a','book-read',book.resume?'继续阅读 →':'开始阅读 →');read.href=art.href;
