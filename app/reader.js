@@ -43,7 +43,12 @@ function anchor(){
   const node=[...$('chapter-text').querySelectorAll('.passage')].find(n=>n.getBoundingClientRect().bottom>threshold);
   return node?{passageId:node.dataset.id,...captureParagraphAnchor(node.getBoundingClientRect(),threshold)}:null;
 }
-function restoreAnchor(a){if(!a)return;const node=$('chapter-text').querySelector('[data-id="'+a.passageId+'"]'),threshold=document.body.classList.contains('is-focused')?24:80;if(node)window.scrollBy(0,paragraphScrollDelta(node.getBoundingClientRect(),a,threshold));}
+function restoreAnchor(a){
+  if(!a)return;const node=$('chapter-text').querySelector('[data-id="'+a.passageId+'"]'),threshold=document.body.classList.contains('is-focused')?24:80;if(!node)return;
+  // Make room below an end-of-chapter anchor before the browser clamps scrolling.
+  while(continuous&&flow?.nextId&&scrollY+paragraphScrollDelta(node.getBoundingClientRect(),a,threshold)>document.documentElement.scrollHeight-innerHeight+.5){if(!insertFollowingChapter())break;}
+  window.scrollBy(0,paragraphScrollDelta(node.getBoundingClientRect(),a,threshold));
+}
 function captureProgress(){
   if(!book||restoringProgress)return null;const a=anchor();if(!a)return null;
   return {...state,...a,chapterId:paragraphMap.get(a.passageId)?.chapterId||state.chapterId,contentVersion:book.contentVersion,baseRevision:progressSync.revision,localWriterId,localSequence:++progressSequence,chapterLabel:resumeSummary(book,{...state,...a})?.label};
@@ -119,7 +124,10 @@ function prepareFollowingChapter(){
 function extendReadingFlow(){
   if(!continuous||restoringProgress||!flow?.nextId||document.hidden||document.querySelector('dialog[open]')||!$('note-panel').hidden||$('chapter-footer').contains(document.activeElement))return;
   const last=$('chapter-text').lastElementChild;if(!last||last.getBoundingClientRect().bottom>innerHeight*2.5)return;
-  const next=flow.appendNext();if(!next)return;$('chapter-text').append(next.node);prepareFollowingChapter();document.dispatchEvent(new CustomEvent('reader:layout'));document.dispatchEvent(new CustomEvent('reader:flow-extended'));queueReadingFlow();
+  insertFollowingChapter();
+}
+function insertFollowingChapter(){
+  const next=flow?.appendNext();if(!next)return false;$('chapter-text').append(next.node);prepareFollowingChapter();document.dispatchEvent(new CustomEvent('reader:layout'));document.dispatchEvent(new CustomEvent('reader:flow-extended'));queueReadingFlow();return true;
 }
 function syncFlowChapter(){
   if(!continuous||restoringProgress||!book||document.querySelector('dialog[open]')||!$('note-panel').hidden||document.querySelector('.experience-surface'))return;
