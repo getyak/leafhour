@@ -37,7 +37,7 @@ async function fixture(t,result=good,runImpl,options={}){const runRoot=await mkd
 const job=()=>({runId:'same-id',book:{bookId:'book',contentVersion:'v1',title:'Book'},passageId:'p1',text:'Hi',history:[{role:'assistant',content:'earlier'}],tools});
 test('native free answer permits no references, encodes role-labelled data, isolates sessions and cleans files',async t=>{
  const f=await fixture(t);assert.deepEqual(await f.generate(job()),{kind:'conversation',summary:good.finalResponse,sourceRefs:[],recommendations:[],origin:'ai'});await f.generate(job());
- assert.notEqual(f.calls[1].opts.sessionId,f.calls[3].opts.sessionId);assert.equal(JSON.parse(f.calls[1].text).history[0].role,'assistant');assert.equal(f.calls[0].env.DATABASE_SECRET,undefined);assert.equal(f.closed,2);assert.deepEqual(await readdir(f.runRoot),[]);
+ assert.notEqual(f.calls[1].opts.sessionId,f.calls[3].opts.sessionId);assert.equal(JSON.parse(f.calls[1].text.split('\n\n读者这次说：\n')[0]).history[0].role,'assistant');assert.equal(f.calls[0].env.DATABASE_SECRET,undefined);assert.equal(f.closed,2);assert.deepEqual(await readdir(f.runRoot),[]);
 });
 test('intermediate assistant before failed or truncated turn cannot publish',async t=>{for(const kind of ['error','max-tokens','aborted']){const f=await fixture(t,{...good,events:[good.events[0],{type:'turn/end',data:{reason:{kind}}}]});await assert.rejects(f.generate(job()));assert.equal(f.closed,1);}});
 test('timeout and cancellation reject uncooperative runtime and close it',async t=>{const f=await fixture(t,good,()=>new Promise(()=>{}));const ac=new AbortController();const pending=f.generate({...job(),signal:ac.signal});await f.started;ac.abort();await assert.rejects(pending,/取消|cancel/i);assert.equal(f.closed,1);assert.deepEqual(await readdir(f.runRoot),[]);});
@@ -56,7 +56,7 @@ test('failed last tool after intermediate prose cannot masquerade as final respo
  const f=await fixture(t,{...good,events:[good.events[0],{type:'tool/result',data:{message:{isError:true}}},good.events[1]]});await assert.rejects(f.generate(job()));
 });
 test('large old history is trimmed without dropping current question or role labels',async t=>{
- const f=await fixture(t);await f.generate({...job(),history:[{role:'user',content:'old'.repeat(10000)},{role:'assistant',content:'old reply'},{role:'user',content:'recent'},{role:'assistant',content:'recent reply'}]});const input=JSON.parse(f.calls[1].text);assert.equal(input.currentMessage,'Hi');assert.deepEqual(input.history,[{role:'user',content:'recent'},{role:'assistant',content:'recent reply'}]);
+ const f=await fixture(t);await f.generate({...job(),history:[{role:'user',content:'old'.repeat(10000)},{role:'assistant',content:'old reply'},{role:'user',content:'recent'},{role:'assistant',content:'recent reply'}]});const [background,current]=f.calls[1].text.split('\n\n读者这次说：\n');const input=JSON.parse(background);assert.equal(current,'Hi');assert.equal(input.currentMessage,undefined);assert.deepEqual(input.history,[{role:'user',content:'recent'},{role:'assistant',content:'recent reply'}]);
 });
 test('registered chat tool executes through authenticated bridge and cannot exceed call budget',async()=>{
  const budget=createChatBudget({pricing,maxToolCalls:1}),bridge=await createChatBridge({tools,budget});try{const ctx=pluginContext();apply(ctx,{definitions:tools.definitions,bridgeUrl:bridge.url,token:bridge.token,expiresAt:Date.now()+2000});assert.deepEqual(await ctx.registered[0].execute({}),{name:'reader_get_context'});await assert.rejects(ctx.registered[0].execute({}));assert.equal(budget.snapshot().toolCalls,2);}finally{await bridge.close();}
@@ -66,3 +66,23 @@ test('expired and revoked plugins stop before model dispatch, including during s
 });
 
 test('timeout closes started runtime and sends only a secret-free reservation receipt',async t=>{const receipts=[];const f=await fixture(t,good,()=>new Promise(()=>{}),{timeoutMs:500,onReceipt:r=>receipts.push(r)});await assert.rejects(f.generate(job()),/取消|超时/);assert.equal(f.closed,1);assert.equal(receipts.length,1);assert.equal(receipts[0].settlement,'reservation-not-invoice');assert.ok(receipts[0].pricing.source);assert.ok(receipts[0].pricing.checkedAt);assert.doesNotMatch(JSON.stringify(receipts),/fake|earlier|Book/);});
+for(const boundary of ['close','abort','expiry'])test(`auxiliary reservation capability is revoked across await on ${boundary}`,async()=>{
+ let ready,release,settle,dispatches=0;const started=new Promise(r=>ready=r),paused=new Promise(r=>release=r),finished=new Promise(r=>settle=r),controller=new AbortController(),budget=createChatBudget({pricing});
+ const bridge=await createChatBridge({budget,signal:controller.signal,expiresAt:Date.now()+100,tools:{...tools,async execute(name,args,{reserveRequest}){ready();await paused;try{reserveRequest({kind:'web',inputBytes:100,maxTokens:1024});dispatches++;}finally{settle();}return {};}}});
+ const pending=fetch(bridge.url+'/tool',{method:'POST',headers:{Authorization:'Bearer '+bridge.token},body:JSON.stringify({name:'reader_get_context',args:{}})}).catch(()=>null);
+ await started;if(boundary==='close')await bridge.close();else if(boundary==='abort')controller.abort();else await new Promise(r=>setTimeout(r,120));release();await finished;await pending;await bridge.close();assert.equal(dispatches,0);assert.equal(budget.snapshot().requests,0);
+});
+test('bridge revocation aborts already-dispatched provider through internal tool signal',async()=>{
+ const {createReadingAgentTools}=await import('../server/reading-agent-tools.mjs');let ready,providerSignal;const started=new Promise(r=>ready=r),activities=[];
+ const domain=createReadingAgentTools({library:{},user:{id:'me'},bookId:'one',onActivity:async a=>activities.push(a),searchWeb:async(q,{signal})=>{providerSignal=signal;ready();return new Promise((resolve,reject)=>signal?.addEventListener('abort',()=>reject(signal.reason),{once:true}));}});
+ const bridge=await createChatBridge({budget:createChatBudget({pricing}),tools:domain});const pending=fetch(bridge.url+'/tool',{method:'POST',headers:{Authorization:'Bearer '+bridge.token},body:JSON.stringify({name:'reader_search_web',args:{query:'x'}})}).catch(()=>null);await started;await bridge.close();await pending;assert.equal(providerSignal?.aborted,true);await new Promise(r=>setTimeout(r,0));assert.deepEqual(activities.map(a=>a.status),['running']);
+});
+test('default budget permits eight bounded requests and receipts expose only per-request sizes',()=>{
+ const budget=createChatBudget({pricing});for(let i=0;i<8;i++)budget.reserveRequest({kind:'main',inputBytes:30000,maxTokens:3072});const snapshot=budget.snapshot();assert.equal(snapshot.requests,8);assert.ok(snapshot.reservedCostCny<.75);assert.equal(snapshot.requestSizes.length,8);assert.deepEqual(snapshot.requestSizes[0],{kind:'main',inputBytes:30000,maxTokens:3072});snapshot.requestSizes[0].inputBytes=0;assert.equal(budget.snapshot().requestSizes[0].inputBytes,30000);
+});
+test('runtime internal timeout aborts parent provider and leaves no late completion activity',async t=>{
+ const {createReadingAgentTools}=await import('../server/reading-agent-tools.mjs');let ready,providerSignal;const started=new Promise(r=>ready=r),activities=[];
+ const domain=createReadingAgentTools({library:{},user:{id:'me'},bookId:'one',onActivity:async a=>activities.push(a),searchWeb:async(q,{signal})=>{providerSignal=signal;ready();return new Promise((resolve,reject)=>signal.addEventListener('abort',()=>reject(signal.reason),{once:true}));}});
+ const f=await fixture(t,good,()=>new Promise(()=>{}),{timeoutMs:500});const pending=f.generate({...job(),tools:domain});const result=assert.rejects(pending,/取消|超时/);await f.started;const patch=JSON.parse(await readFile(f.calls[0].patches[0],'utf8')),config=patch.at(-1).insert[0].config;
+ const request=fetch(config.bridgeUrl+'/tool',{method:'POST',headers:{Authorization:'Bearer '+config.token},body:JSON.stringify({name:'reader_search_web',args:{query:'x'}})}).catch(()=>null);await started;await result;await request;assert.equal(providerSignal.aborted,true);assert.deepEqual(activities.map(a=>a.status),['running']);assert.deepEqual(await readdir(f.runRoot),[]);
+});
