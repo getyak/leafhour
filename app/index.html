@@ -1,19 +1,22 @@
 <!doctype html>
 <html lang="zh-Hans" data-theme="paper">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>循页 · 阅读</title><link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><link rel="stylesheet" href="/reading-flow.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script><link rel="stylesheet" href="/reading-arrival.css"><script type="module" src="/reading-arrival.mjs"></script></head>
-<body>
+<body class="is-focused" data-reading-tools="closed">
   <div class="atmosphere-backdrop" aria-hidden="true"><div class="atmosphere-elements"></div></div>
   <link rel="stylesheet" href="/reader-atmosphere.css"><script type="module" src="/reader-atmosphere.js"></script>
   <link rel="stylesheet" href="/reader-navigation.css">
   <link rel="stylesheet" href="/parallel-reading.css">
   <a href="#book-page" class="skip-link">跳到正文</a>
-  <header id="reading-header" class="reading-header">
+  <header id="reading-header" class="reading-header" inert aria-hidden="true">
     <nav class="reader-navigation" aria-label="阅读导航"><a href="/library" class="reader-nav-item" aria-label="返回书房"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12 5l-5 5 5 5"/></svg><span class="reader-home-label">书房</span></a><span class="reader-nav-divider" aria-hidden="true"></span><button id="open-toc" class="reader-nav-item" disabled aria-controls="toc-dialog" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M4 10h8M4 15h12"/></svg><span>目录</span></button></nav>
     <button id="open-book-info" class="running-title" type="button" popovertarget="book-info" aria-haspopup="dialog" aria-controls="book-info" aria-expanded="false" disabled><span id="running-book-title">循页</span><span id="running-chapter"></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5 6 3 3 3-3"/></svg></button>
     <div class="header-actions"><div class="atmosphere-header-control"><button id="open-atmosphere" class="quiet-button" aria-haspopup="dialog" aria-controls="atmosphere-dialog" aria-label="阅读氛围">氛围</button><button id="atmosphere-quick-pause" class="quiet-button" aria-label="暂停氛围声音" hidden>Ⅱ</button></div><button id="open-settings" class="quiet-button typography-button" aria-label="阅读设置" aria-haspopup="dialog">Aa</button><button id="enter-focus" class="quiet-button">专注</button></div>
   </header>
   <link rel="stylesheet" href="/reader-audio.css"><script type="module" src="/reader-audio.js"></script>
-  <button id="exit-focus" class="focus-exit" hidden>退出专注</button>
+  <div class="focus-actions" role="group" aria-label="沉浸阅读工具">
+    <button id="focus-fullscreen" type="button" class="focus-action" aria-label="全屏阅读" title="全屏阅读 · F"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 3H3v4m10-4h4v4M3 13v4h4m10-4v4h-4"/></svg></button>
+    <button id="exit-focus" type="button" class="focus-action" aria-label="阅读工具" aria-controls="reading-header" aria-expanded="false" title="阅读工具"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M4 10h12M4 15h12"/></svg></button>
+  </div>
   <main id="book-page" class="book-page" tabindex="-1">
     <div id="loading" class="loading-state reading-loading" data-reading-arrival="reader"><p role="status">正在展开书页…</p></div>
     <div id="load-error" class="load-error" hidden><p>暂时无法打开这本书。</p><button id="retry-load">重新打开</button></div>
@@ -72,6 +75,7 @@
     <div class="settings-content">
       <div class="drawer-shortcuts"><button id="settings-chapters" disabled>全书目录 <span>↗</span></button><button id="show-all-records">我的记录 <span>↗</span></button></div>
       <section class="settings-section" aria-labelledby="language-heading"><h3 id="language-heading">正文</h3>
+        <div class="setting-row"><label for="immersive-reading">沉浸阅读</label><input id="immersive-reading" type="checkbox" role="switch" checked></div>
         <div class="setting-row"><label for="view-mode">阅读语言</label><select id="view-mode" aria-describedby="reading-language-hint"><option value="en" selected>英文原文</option><option value="zh">中文译文</option><option value="parallel">中英对照</option></select></div><p id="reading-language-hint" class="settings-hint">默认读原文；译文使用中文，与你当前的界面语言一致。</p>
         <div class="setting-row"><label for="continuous-reading">连续阅读</label><input id="continuous-reading" type="checkbox" checked aria-describedby="continuous-reading-hint"></div><p id="continuous-reading-hint" class="settings-hint">下一章自然接上，读完仍由你确认。</p>
         <div class="setting-row"><label for="translation-variant">中文译法</label><select id="translation-variant"><option value="interpretive">意译</option><option value="literal">直译</option></select></div>

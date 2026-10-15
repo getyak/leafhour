@@ -11,7 +11,7 @@ export function createParallelPair({document,layers,variant,prose,passageId,reve
   const pair=document.createElement('div');pair.className='parallel-pair';
   for(const layer of layers){
     const column=document.createElement('div');column.className='parallel-column parallel-'+layer.kind;
-    const label=document.createElement('span');label.className='pair-label';label.textContent=layer.label;column.append(label);
+    column.setAttribute('role','group');column.setAttribute('aria-label',layer.label);
     const text=prose(layer,variant);
     if(layer.kind==='translation'){
       const key=passageId+':'+variant,toggle=document.createElement('button');toggle.type='button';toggle.className='parallel-reveal';
