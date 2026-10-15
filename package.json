@@ -17,6 +17,7 @@
     "db:import": "node --env-file=.env tools/import-supabase-book.mjs",
     "check:release": "node tools/release-policy.mjs && node tools/verify-release.mjs",
     "verify:deploy": "node tools/verify-deploy.mjs",
+    "verify:hosted": "node tools/verify-deploy.mjs --hosted",
     "smoke:production": "node tools/smoke-release.mjs"
   },
   "dependencies": {

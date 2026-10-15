@@ -19,7 +19,7 @@
 
 同步目标固定为 `getyak/marginalia-reader` 和 `cubxxw/marginalia-reader-deploy`。两个仓库各有一个专用写入 deploy key，私钥仅存于私人归档的 Actions secrets：`PUBLIC_MIRROR_DEPLOY_KEY`、`DEPLOY_MIRROR_DEPLOY_KEY`。密钥只授予对应仓库，不使用个人访问令牌。撤销对应仓库 deploy key 即可停用。
 
-Vercel 沿用部署镜像的原生 Git 集成，无需把生产数据库、登录服务或 Vercel 凭据交给 Actions。`vercel.json` 的构建命令是 `npm run verify:deploy`，测试或边界检查失败时不会替换正式域名。自动验收仅执行匿名读取，不发送邮件、写入阅读记录或调用模型。
+Vercel 沿用部署镜像的原生 Git 集成，无需把生产数据库、登录服务或 Vercel 凭据交给 Actions。GitHub 用 `npm run verify:deploy` 检查完整发布包；Vercel 会预先排除配置模板等文件，因此构建命令为 `npm run verify:hosted`，执行隔离测试、构建与公开产物检查。测试或产物检查失败时不会替换正式域名。自动验收仅执行匿名读取，不发送邮件、写入阅读记录或调用模型。
 
 `/release.json` 保存实际发布的源提交。发布结束前，任务等待正式域名返回该提交，再检查首页、书房、阅读页、主要资源、匿名会话、公版书接口与旧接口关闭状态。通过后才视为发布成功；超时或异常会让任务失败。它不能代替真实登录、上传与跨设备阅读验收。
 
