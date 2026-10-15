@@ -29,3 +29,10 @@ test('runtime abort during awaited activity prevents subsequent provider dispatc
 test('synchronous abort from an activity consumes its concurrent rejection',async()=>{
  const controller=new AbortController();const tools=createReadingAgentTools({library:{},user:{id:'me'},bookId:'one',onActivity:()=>{controller.abort();return Promise.reject(Error('late activity failure'));}});await assert.rejects(tools.execute('reader_search_web',{query:'x'},{signal:controller.signal}),{name:'AbortError'});await new Promise(r=>setTimeout(r,0));
 });
+test('partial translated paragraph exposes only a continuation cursor then allows its exact tail citation',async()=>{
+ const b=book();b.sections[0].paragraphs[1].translations={literal:{text:'译😀'.repeat(6000)+'真实尾部',status:'draft'}};
+ const {tools}=setup([b]);let page=await tools.execute('reader_read_chapter',{bookId:'one',chapterId:'c1'});assert.ok(page.nextCursor);assert.equal(page.nextOffset,null);
+ assert.ok((await tools.execute('reader_cite',{bookId:'one',passageId:'p2',layer:'literal',quote:'真实尾部'})).error);
+ while(page.nextCursor){page=await tools.execute('reader_read_chapter',page.nextCursor);if(page.nextCursor)assert.equal(page.nextOffset,null);}
+ assert.equal((await tools.execute('reader_cite',{bookId:'one',passageId:'p2',layer:'literal',quote:'真实尾部'})).quote,'真实尾部');
+});

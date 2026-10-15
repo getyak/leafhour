@@ -22,3 +22,7 @@ test('the public gift rewrite resolves an existing page with Vercel clean URLs',
   const page=await readFile(new URL('../app'+destination+'.html',import.meta.url),'utf8');
   for(const marker of ['src="/book-gift.mjs"','id="gift-open"','id="gift-error"'])assert.ok(page.includes(marker),'Rewrite must resolve the gift letter page');
 });
+test('hosted function outlives the conversation lease with room for cleanup and durable save',async()=>{
+ const config=JSON.parse(await readFile(new URL('../vercel.json',import.meta.url),'utf8'));
+ assert.ok(config.functions['api/*.js'].maxDuration>=120,'90 second conversation lease requires cleanup and save time');
+});

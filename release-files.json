@@ -63,6 +63,7 @@
   "app/shelf-order.mjs",
   "app/library-backup.mjs",
   "app/library-craft.css",
+  "app/library-chat-markdown.mjs",
   "app/library-chat-state.mjs",
   "app/library-chat.css",
   "app/library-chat.mjs",

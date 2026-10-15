@@ -51,7 +51,7 @@ export function createReadingAgentTools({library,user,bookId,passageId,signal,on
         piece[l]=chars.slice(start,end).join('');piece.visibleRanges[l]={charOffset:start,charEnd:end,totalChars:chars.length};remember(b,p,l,start,end);
         if(end<chars.length){out.nextCursor={bookId:b.bookId,chapterId,passageId:p.id,layer:l,charOffset:end};out.truncated=true;break;}
       }
-      out.passages.push(piece);used=bytes(out);if(out.nextCursor)break;
+      out.passages.push(piece);used=bytes(out);if(out.nextCursor){out.nextOffset=null;break;}
       if(i+1<all.length){out.nextOffset=i+1;if(used>TARGET-1000)break;}else out.nextOffset=null;
     }
     if(!out.nextCursor&&offset+out.passages.length<all.length)out.nextOffset=offset+out.passages.length;
