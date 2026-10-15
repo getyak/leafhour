@@ -74,7 +74,7 @@ test('toolbar cannot reuse an old ending receipt during initial empty sync or a 
   assert.match(receipts.currentSessionReceipt({status:'finished',id:final.id},final,confirmed),/时段已保存到书房/);
 });
 
-test('outbox confirmation uses the actual returned snapshot, not the submitted payload',async()=>{
+test('an unconfirmed final remains durable and a later exact receipt really retries it',async()=>{
   const submitted={...final,bookId:'book-a',contentVersion:'version-a'};
   const mismatches=[
     {id:submitted.id,sequence:submitted.sequence},
@@ -88,9 +88,11 @@ test('outbox confirmation uses the actual returned snapshot, not the submitted p
     {...submitted,durationSeconds:submitted.durationSeconds+1}
   ];
   for(const receipt of mismatches){
-    let disk=[];const q=createReadingOutbox({load:()=>disk,save:rows=>disk=rows,send:async()=>receipt});q.enqueue(submitted);const result=await q.flush();
-    assert.equal(result.error,null,'existing queue delivery handling is preserved');
-    assert.equal(q.confirmed(submitted),false,JSON.stringify(receipt));
+    let disk=[],reply=receipt,calls=0;const q=createReadingOutbox({load:()=>disk,save:rows=>disk=rows,send:async()=>{calls++;return reply;}});q.enqueue(submitted);const result=await q.flush();
+    assert.equal(result.error?.status,502,JSON.stringify(receipt));assert.equal(result.remaining,1);assert.equal(result.sent,0);
+    assert.equal(q.confirmed(submitted),false);assert.deepEqual(disk,[submitted]);
+    reply=structuredClone(submitted);q.refresh();const retry=await q.flush();
+    assert.equal(calls,2,'retry must send the retained final again');assert.equal(retry.error,null);assert.equal(retry.remaining,0);assert.equal(disk.length,0);assert.equal(q.confirmed(submitted),true);
   }
   let disk=[];const q=createReadingOutbox({load:()=>disk,save:rows=>disk=rows,send:async()=>structuredClone(submitted)});q.enqueue(submitted);await q.flush();assert.equal(q.confirmed(submitted),true);
 });
