@@ -19,6 +19,7 @@ import {mountBookIntroduction,renderBookContents} from './reader-navigation.mjs'
 import {mountParallelSettings,applyParallelAppearance,createParallelPair} from './parallel-reading.mjs';
 import {mountReaderImmersion} from './reader-immersion.mjs';
 import {mountReaderConversation,readerInteractionBlocked} from './reader-conversation.mjs';
+import {mountReaderSettings} from './reader-settings.mjs';
 const $=id=>document.getElementById(id);
 const arrival=mountReadingArrival($('loading'));
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
@@ -30,6 +31,7 @@ let continuous=true;try{continuous=localStorage.getItem(readerStorageKey('margin
 $('continuous-reading').checked=continuous;document.body.dataset.continuous=String(continuous);
 const state={chapterId:'ch01',...openingReadingPreferences()};
 const revealedTranslations=new Set();
+const settingsUI=mountReaderSettings({document});
 const immersion=mountReaderImmersion({document,announce,beforeLayout:()=>anchor(),afterLayout:a=>{restoreAnchor(a);if(!$('paragraph-tools').hidden)positionTools();document.dispatchEvent(new CustomEvent('reader:layout'));}});
 const draftKey=readerStorageKey('marginalia-focus-drafts-v2');let savedDrafts=null,legacyDrafts={};try{savedDrafts=JSON.parse(localStorage.getItem(draftKey)||'null');legacyDrafts=JSON.parse(localStorage.getItem(readerStorageKey('marginalia-focus-drafts-v1'))||'{}');}catch{}
 let noteDrafts=createNoteDrafts(savedDrafts,legacyDrafts),noteDraftError=null;
@@ -85,6 +87,7 @@ function applyAppearance(){
   for(const [key] of typographyFields){$('setting-'+key).value=prettyValue(key,state[key]);for(const b of document.querySelectorAll('[data-adjust="'+key+'"]'))b.disabled=Number(b.dataset.direction)<0?state[key]<=appearanceBounds[key][0]:state[key]>=appearanceBounds[key][1];}
   $('first-line-indent').checked=state.indent;
   applyParallelAppearance(document,state);
+  settingsUI.update(state);
 }
 function adjustAppearance(patch){
   const a=anchor();Object.assign(state,normalizeAppearance({...state,...patch}));document.dispatchEvent(new CustomEvent('reader:jump'));applyAppearance();restoreAnchor(a);if(!$('paragraph-tools').hidden)positionTools();persist();document.dispatchEvent(new CustomEvent('reader:layout'));
@@ -341,7 +344,7 @@ $('open-toc').addEventListener('click',openContents);$('open-settings').addEvent
 for(const b of document.querySelectorAll('[data-close-dialog]'))b.addEventListener('click',()=>$(b.dataset.closeDialog).close());
 for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const rect=dialog.getBoundingClientRect();if(e.clientX<rect.left||e.clientX>rect.right||e.clientY<rect.top||e.clientY>rect.bottom)dialog.close();});
 $('view-mode').addEventListener('change',e=>{state.mode=e.target.value;overrides={};dismissTools();updateText();});
-mountParallelSettings({document,onChange:adjustAppearance,onActivate:()=>{if($('view-mode').querySelector('option[value=parallel]').disabled){announce('这本书目前只有原文。');return;}state.mode='parallel';overrides={};dismissTools();updateText();$('settings-dialog').close();}});
+mountParallelSettings({document,onChange:adjustAppearance});
 $('translation-variant').addEventListener('change',e=>{state.variant=e.target.value;for(const value of Object.values(overrides))delete value.variant;updateText();});
 for(const b of document.querySelectorAll('[data-theme-choice]'))b.addEventListener('click',()=>adjustAppearance({theme:b.dataset.themeChoice}));
 for(const b of document.querySelectorAll('[data-font-family]'))b.addEventListener('click',()=>adjustAppearance({fontFamily:b.dataset.fontFamily}));
