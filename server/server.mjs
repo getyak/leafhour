@@ -19,6 +19,8 @@ assets.set('/passage-layers.mjs',['app/passage-layers.mjs','text/javascript']);
 assets.set('/catalog-sample.mjs',['app/catalog-sample.mjs','text/javascript']);
 assets.set('/reader-navigation.mjs',['app/reader-navigation.mjs','text/javascript']);
 assets.set('/reader-immersion.mjs',['app/reader-immersion.mjs','text/javascript']);
+assets.set('/reader-settings.mjs',['app/reader-settings.mjs','text/javascript']);
+assets.set('/reader-settings.css',['app/reader-settings.css','text/css']);
 assets.set('/reader-navigation.css',['app/reader-navigation.css','text/css']);
 assets.set('/parallel-reading.mjs',['app/parallel-reading.mjs','text/javascript']);
 assets.set('/parallel-reading.css',['app/parallel-reading.css','text/css']);
