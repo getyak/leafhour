@@ -1,0 +1,168 @@
+/* A reading room has a near field, a window, and time to settle into a page.
+   Motion stays in the public homepage; all text and actions work without it. */
+body:not(.library-page) > .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 80px;
+  max-width: none;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+#home-view {
+  --arrival-ease: cubic-bezier(.22, 1, .36, 1);
+  overflow: clip;
+}
+#home-view .home-hero {
+  min-height: 620px;
+  margin-top: 26px;
+  padding-bottom: 30px;
+  gap: 50px;
+  align-items: center;
+}
+#home-view .hero-copy { padding-top: 26px; animation: none; }
+.hero-line { display: block; }
+.hero-stage { position: relative; min-width: 0; isolation: isolate; }
+.hero-stage::before {
+  content: '';
+  position: absolute;
+  inset: 25px -10px -16px 23px;
+  z-index: -1;
+  border: 1px solid var(--line);
+  border-radius: 8px 80px 8px 8px;
+  transform: rotate(2.5deg);
+  background: var(--surface-soft);
+}
+#home-view .hero-scene {
+  min-height: 570px;
+  transform: rotate(1deg);
+  transform-origin: 50% 80%;
+}
+#home-view .hero-scene img { transform: scale(1.06); }
+#home-view .hero-scene figcaption { left: auto; right: 30px; text-align: right; }
+.hero-object {
+  position: absolute;
+  z-index: 2;
+  width: clamp(130px, 14vw, 192px);
+  aspect-ratio: .8;
+  left: -42px;
+  bottom: -15px;
+  padding: 7px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  box-shadow: 8px 20px 32px #14291c26;
+  transform: rotate(-9deg);
+  pointer-events: none;
+}
+.hero-object img { display: block; width: 100%; height: 100%; object-fit: cover; }
+#home-view .reading-promise { margin-top: 38px; padding-bottom: 28px; }
+#home-view .sample-sheet {
+  position: relative;
+  isolation: isolate;
+  background: var(--paper);
+  box-shadow: 0 18px 50px #2036200a;
+}
+#home-view .sample-sheet::before {
+  content: '';
+  position: absolute;
+  inset: 9px -8px -9px 8px;
+  z-index: -1;
+  border: 1px solid var(--line);
+  border-radius: inherit;
+  background: var(--surface-soft);
+  transform: rotate(-2deg);
+}
+#home-view .page-detail img { display: block; transform: scale(1.06); }
+#home-view .book-art { perspective: 900px; }
+#home-view .book-cover { transition: transform 450ms var(--arrival-ease); }
+#home-view .primary, #home-view .text-link span, #home-view .book-read {
+  transition: transform 220ms var(--arrival-ease), background 220ms, color 220ms;
+}
+#home-view .primary span { transition: translate 220ms var(--arrival-ease); }
+#home-view .primary:active { transform: translateY(1px) scale(.98); }
+#home-view .primary:focus-visible span { translate: 4px 0; }
+#home-view .book-card:focus-within .book-cover { transform: rotate(-2deg) translateY(-7px) rotateY(-10deg); }
+@media (hover: hover) and (pointer: fine) {
+  #home-view .primary:hover span { translate: 4px 0; }
+  #home-view .text-link:hover span { transform: translateX(4px); }
+  #home-view .book-card:hover .book-cover { transform: rotate(-2deg) translateY(-7px) rotateY(-10deg); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-line {
+    animation: home-arrive 920ms var(--arrival-ease) both;
+    animation-delay: calc(100ms + var(--line-index, 0) * 90ms);
+  }
+  .hero-line:nth-child(2) { --line-index: 1; }
+  .hero-line:nth-child(3) { --line-index: 2; }
+  #home-view .hero-kicker, #home-view .hero-description, #home-view .hero-actions, #home-view .hero-footnote {
+    animation: home-arrive 800ms var(--arrival-ease) both;
+  }
+  #home-view .hero-description { animation-delay: 250ms; }
+  #home-view .hero-actions { animation-delay: 340ms; }
+  #home-view .hero-footnote { animation-delay: 410ms; }
+  .hero-stage { animation: home-scene-arrive 1200ms var(--arrival-ease) both; }
+  .hero-object { animation: home-object-arrive 1300ms 180ms var(--arrival-ease) both; }
+  #home-view .hero-actions:focus-within { animation: none; }
+  @supports (animation-timeline: view()) {
+    /* The figure is the subject. Using view() on its image would bind to
+       the figure's overflow:hidden crop instead of the document scroll. */
+    #home-view .hero-scene { view-timeline: --home-window block; }
+    #home-view .page-detail { view-timeline: --home-page block; }
+    #home-view .hero-scene img, #home-view .page-detail img {
+      animation: home-window-travel 1s linear both;
+      animation-range: entry 0% exit 100%;
+    }
+    #home-view .hero-scene img { animation-timeline: --home-window; }
+    #home-view .page-detail img { animation-timeline: --home-page; }
+  }
+}
+@keyframes home-arrive {
+  from { opacity: 0; translate: 0 22px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes home-scene-arrive {
+  from { opacity: .2; translate: 0 28px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes home-object-arrive {
+  from { opacity: 0; translate: -12px 32px; rotate: -5deg; }
+  to { opacity: 1; translate: 0 0; rotate: 0deg; }
+}
+@keyframes home-window-travel {
+  from { transform: scale(1.08) translateY(-2%); }
+  to { transform: scale(1.08) translateY(2%); }
+}
+@media (max-width: 1050px) {
+  #home-view .home-hero { gap: 34px; min-height: 580px; }
+  #home-view .hero-scene { min-height: 520px; }
+  #home-view .hero-description { font-size: 15px; }
+  .hero-object { left: -20px; width: 132px; }
+  #home-view .hero-scene figcaption { right: 22px; font-size: 23px; }
+}
+@media (max-width: 760px) {
+  body:not(.library-page) > .site-header { height: 76px; }
+  #home-view .home-hero { gap: 28px; margin-top: 4px; min-height: 0; padding-bottom: 12px; }
+  #home-view .hero-copy { padding-top: 14px; }
+  #home-view .hero-copy h1 { font-size: clamp(40px, 7.5vw, 58px); }
+  #home-view .hero-scene { min-height: 0; transform: none; }
+  .hero-stage::before { inset: 10px -3px -8px 10px; transform: rotate(1deg); }
+  .hero-object { display: none; }
+  #home-view .hero-scene figcaption { font-size: 23px; }
+  #home-view .reading-promise { margin-top: 23px; }
+  #home-view .sample-sheet::before { inset: 6px -4px -6px 4px; transform: rotate(-1deg); }
+  @keyframes home-window-travel {
+    from { transform: scale(1.06) translateY(-1%); }
+    to { transform: scale(1.06) translateY(1%); }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #home-view *, #home-view *::before, #home-view *::after { animation: none !important; transition: none !important; }
+  #home-view .hero-scene img, #home-view .page-detail img { transform: none; }
+  #home-view .primary:active, #home-view .book-card:is(:hover, :focus-within) .book-cover { transform: none; }
+  #home-view .primary span, #home-view .text-link span { translate: none; transform: none; }
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  body:not(.library-page) > .site-header { background: var(--paper); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}

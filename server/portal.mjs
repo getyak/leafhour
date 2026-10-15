@@ -32,6 +32,7 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
   async function handle({req,res,url,send}){
     const p=url.pathname,isAPI=p.startsWith('/api/auth/')||p.startsWith('/api/library')||p.startsWith('/api/agent/');
     const files={'/':'home.html','/library':'home.html','/privacy':'privacy.html','/auth.css':'auth.css','/auth-dialog.mjs':'auth-dialog.mjs','/auth-flow.mjs':'auth-flow.mjs','/auth-assets/google.png':'auth-assets/google.png','/auth-assets/apple.svg':'auth-assets/apple.svg','/portal.css':'portal.css','/portal.js':'portal.js','/owner-scope.mjs':'owner-scope.mjs','/paragraph-anchor.mjs':'paragraph-anchor.mjs','/source-language.mjs':'source-language.mjs','/upload-state.mjs':'upload-state.mjs','/library-backup.mjs':'library-backup.mjs','/reader-api.mjs':'reader-api.mjs','/reading-progress.mjs':'reading-progress.mjs','/progress-sync.mjs':'progress-sync.mjs','/reader-translation.js':'reader-translation.js'};
+    files['/home-motion.css']='home-motion.css';files['/home-motion.mjs']='home-motion.mjs';
     files['/reading-session-record.mjs']='reading-session-record.mjs';
     files['/reading-toolbar.mjs']='reading-toolbar.mjs';
     files['/reading-flow.mjs']='reading-flow.mjs';files['/reading-load.mjs']='reading-load.mjs';
