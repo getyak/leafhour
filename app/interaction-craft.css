@@ -225,6 +225,7 @@ dialog .status:empty { display: none; }
 .library-chat-dialog .library-chat-menu > summary { min-width: 44px; min-height: 44px; }
 .library-chat-source-link { display: flex; align-items: center; }
 .library-chat-composer-bottom { min-height: 44px; }
+.library-chat-dialog .library-chat-composer textarea { height: 3.6em; min-height: 3.6em; padding-block: 0; }
 .audio-player-details button { min-width: 44px; }
 .library-chat-dialog .library-chat-text-button { min-height: 44px; display: inline-flex; align-items: center; }
 /* New settings and personal shelves share the same target sizes after integration. */
