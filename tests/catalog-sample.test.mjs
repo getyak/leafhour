@@ -45,10 +45,9 @@ test('published samples refuse another source version and preserve personal tran
   const imported=await service.importDocument(user,{filename:'my-alice.txt',bytes:Buffer.from('Alice was beginning to read a book of her own.')});assert.equal(imported.chineseSample,undefined);assert.deepEqual(imported.sections[0].paragraphs[0].translations,{});
 });
 
-test('Chinese trial links explicitly open the prepared start while ordinary reading keeps saved preferences',async()=>{
-  const {catalogReadingMode,chineseSampleEntry}=await import('../app/catalog-sample.mjs');
+test('Chinese trial links explicitly open the prepared translated start',async()=>{
+  const {chineseSampleEntry}=await import('../app/catalog-sample.mjs');
   const book={bookId:'b1',visibility:'public',readingStart:{chapterId:'ch01',passageId:'p1'},chineseSample:{paragraphs:4,startPassageId:'p1'}};
-  assert.equal(catalogReadingMode(book),'zh');assert.equal(catalogReadingMode({...book,chineseSample:undefined}),'en');
   assert.deepEqual(chineseSampleEntry(book,new URLSearchParams('book=b1&sample=zh')),{chapterId:'ch01',passageId:'p1',mode:'zh',variant:'interpretive',offset:160});
   assert.equal(chineseSampleEntry(book,new URLSearchParams('book=b1')),null);assert.equal(chineseSampleEntry(book,new URLSearchParams('book=other&sample=zh')),null);
 });

@@ -61,7 +61,7 @@
     <div class="settings-content">
       <div class="drawer-shortcuts"><button id="settings-chapters">全书目录 <span>↗</span></button><button id="show-all-records">我的记录 <span>↗</span></button></div>
       <section class="settings-section" aria-labelledby="language-heading"><h3 id="language-heading">正文</h3>
-        <div class="setting-row"><label for="view-mode">阅读语言</label><select id="view-mode"><option value="zh">中文</option><option value="en">英文原文</option><option value="parallel">中英对照</option></select></div>
+        <div class="setting-row"><label for="view-mode">阅读语言</label><select id="view-mode" aria-describedby="reading-language-hint"><option value="en" selected>英文原文</option><option value="zh">中文译文</option><option value="parallel">中英对照</option></select></div><p id="reading-language-hint" class="settings-hint">默认读原文；译文使用中文，与你当前的界面语言一致。</p>
         <div class="setting-row"><label for="continuous-reading">连续阅读</label><input id="continuous-reading" type="checkbox" checked aria-describedby="continuous-reading-hint"></div><p id="continuous-reading-hint" class="settings-hint">下一章自然接上，读完仍由你确认。</p>
         <div class="setting-row"><label for="translation-variant">中文译法</label><select id="translation-variant"><option value="interpretive">意译</option><option value="literal">直译</option></select></div>
       </section>

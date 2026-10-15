@@ -5,6 +5,18 @@ import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {createReaderServer} from '../server/server.mjs';
 
+test('opening a saved translated view shows the original without losing typography or the chosen translation variant',async()=>{
+  const preferences=await import('../app/reading-preferences.mjs');
+  const {passagePresentation}=await import('../app/passage-layers.mjs');
+  for(const previousMode of [undefined,'zh','parallel']){
+    const saved={mode:previousMode,variant:'literal',font:26,theme:'night',chapterId:'ch02',passageId:'p2'};
+    const opening=preferences.openingReadingPreferences?.(saved)||saved;
+    const view=passagePresentation({original:'Original prose.',translations:{literal:{text:'已有直译。'}}},opening);
+    assert.equal(view.layers.length,1);assert.equal(view.layers[0].kind,'original');assert.equal(view.layers[0].text,'Original prose.');
+    assert.equal(opening.variant,'literal');assert.equal(opening.font,26);assert.equal(opening.theme,'night');
+  }
+});
+
 test('reading appearance travels with exported records, rejects invalid imports atomically, and accepts old positions',async t=>{
   const dir=await mkdtemp(path.join(tmpdir(),'reader-appearance-'));
   t.after(()=>rm(dir,{recursive:true,force:true}));
