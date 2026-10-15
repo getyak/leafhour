@@ -239,7 +239,7 @@ function renderPanel(){
   const content=$('panel-content');content.replaceChildren();const p=paragraphMap.get(selectedId);if(!p)return;
   $('panel-title').textContent=allRecords?'我的记录':panelTab==='annotations'?'段落注解':panelTab==='question'?'留下问题':'写下想法';
   $('panel-anchor').textContent='§'+p.section+(p.source?.printedPage?' · 原书 '+p.source.printedPage+' 页':p.source?.pdfPage?' · PDF 第 '+p.source.pdfPage+' 页':' · 自动分段');
-  for(const tab of document.querySelectorAll('[data-panel-tab]'))tab.setAttribute('aria-selected',String(tab.dataset.panelTab===panelTab));
+  for(const tab of document.querySelectorAll('[data-panel-tab]')){const active=tab.dataset.panelTab===panelTab;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;}content.setAttribute('aria-labelledby','panel-tab-'+panelTab);
   document.querySelector('.panel-tabs').hidden=allRecords;$('panel-source').hidden=allRecords;
   if(!allRecords){renderPanelSource(p);syncPanelTextHighlight();}else clearPanelTextHighlight();
   if(allRecords){
@@ -271,7 +271,7 @@ function renderPanel(){
   for(const record of records[key].filter(r=>r.passageId===p.id))content.append(recordNode(record,type));mountPanel();
 }
 function openPanel(tab){
-  if(!selectedId)return;const a=anchor();panelTab=tab;allRecords=false;$('note-panel').hidden=false;document.body.classList.add('has-panel');for(const node of $('chapter-text').querySelectorAll('.is-selected'))node.classList.add('is-panel-anchor');renderPanel();restoreAnchor(a);dismissTools({preserveSelection:true});
+  if(!selectedId)return;const a=anchor();panelTab=tab;allRecords=false;$('note-panel').hidden=false;document.body.classList.add('has-panel');for(const node of $('chapter-text').querySelectorAll('.is-selected'))node.classList.add('is-panel-anchor');renderPanel();restoreAnchor(a);dismissTools({preserveSelection:true});document.querySelector('[data-panel-tab="'+tab+'"]')?.focus({preventScroll:true});if($('note-panel').classList.contains('is-inline'))$('note-panel').scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
 }
 function updateText(){flow?.invalidatePrepared();prepareFollowingChapter();const a=anchor();for(const node of $('chapter-text').querySelectorAll('.passage'))fillPassage(node,paragraphMap.get(node.dataset.id));applyAppearance();if(!$('note-panel').hidden)renderPanel();restoreAnchor(a);if(!$('paragraph-tools').hidden)positionTools();persist();document.dispatchEvent(new CustomEvent('reader:layout'));}
 async function boot(){

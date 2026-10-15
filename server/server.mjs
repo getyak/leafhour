@@ -10,6 +10,7 @@ import {fileURLToPath,pathToFileURL} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 // The verification page reads the same private, local observations as the book page.
 const assets=new Map([['/',['app/index.html','text/html']],['/styles.css',['app/styles.css','text/css']],['/reader.js',['app/reader.js','text/javascript']],['/experiences.js',['app/experiences.js','text/javascript']],['/experiences.css',['app/experiences.css','text/css']]]);
+for(const file of ['interaction-craft.css','interaction-craft.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/reading-preferences.mjs',['app/reading-preferences.mjs','text/javascript']);
 assets.set('/toolbar-placement.mjs',['app/toolbar-placement.mjs','text/javascript']);
 assets.set('/note-drafts.mjs',['app/note-drafts.mjs','text/javascript']);

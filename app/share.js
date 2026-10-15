@@ -8,7 +8,7 @@ try{saved=JSON.parse(localStorage.getItem(preferenceKey)||'{}')||{};if(typeof sa
 const fields={language:'share-language',variant:'share-variant',theme:'share-theme',ratio:'share-ratio',layout:'share-layout',above:'share-above',below:'share-below',size:'share-size',source:'share-source'};
 const options=()=>normaliseShareOptions(Object.fromEntries(Object.entries(fields).map(([key,id])=>[key,key==='source'?$(id).checked:$(id).value])));
 function status(message,error=false){$('share-status').textContent=message;$('share-status').setAttribute('role',error?'alert':'status');}
-function controlsBusy(busy){for(const id of ['share-download','share-copy','share-system'])$(id).disabled=busy;}
+function controlsBusy(busy){dialog.setAttribute('aria-busy',String(busy));for(const id of ['share-download','share-copy','share-system'])$(id).disabled=busy;}
 function hexAlpha(hex,alpha){const n=parseInt(hex.slice(1),16);return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+alpha+')';}
 function setFont(size,language,italic=false){context.font=(italic?'italic ':'')+size+'px '+shareFonts[language==='ui'?'ui':language==='en'?'en':'zh'];}
 function draw(){
@@ -41,7 +41,7 @@ async function render(){
   const counterpart=model.blocks.some(b=>b.primary.wholeCounterpart||b.secondary?.wholeCounterpart);
   status(counterpart?'对照按整段显示，图片中已注明。':'预览与导出的图片一致，全部在本机生成。');
   saved={...opts};try{localStorage.setItem(preferenceKey,JSON.stringify(saved));}catch{}
- }catch(error){renderedVersion=0;status(error.message||'图片暂时无法生成，请缩小摘录范围。',true);}
+ }catch(error){renderedVersion=0;dialog.setAttribute('aria-busy','false');status(error.message||'图片暂时无法生成，请缩小摘录范围。',true);}
 }
 function openShare(whole=false){
  if(!bridge()?.getBook())return;

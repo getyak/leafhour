@@ -24,7 +24,12 @@ export function mountHomeMotion(root,win=root?.ownerDocument?.defaultView){
         if(!entry.isIntersecting||seen.has(entry.target))continue;
         const element=entry.target;seen.add(element);observer.unobserve(element);
         if(element.contains(doc.activeElement))continue;
-        const animation=element.animate([{opacity:.25,translate:'0 24px'},{opacity:1,translate:'0 0'}],{
+        // Focus follows pointerdown. Cancelling a moving link here would make
+        // pointerup land on its parent, so interactive hit areas never translate.
+        const actionable='a[href], button, input, select, textarea, summary, [tabindex], [contenteditable]';
+        const interactive=element.matches(actionable)||element.querySelector(actionable);
+        const frames=interactive?[{opacity:.25},{opacity:1}]:[{opacity:.25,translate:'0 24px'},{opacity:1,translate:'0 0'}];
+        const animation=element.animate(frames,{
           duration:780,delay:Math.min(index++*75,150),fill:'backwards',easing:'cubic-bezier(.22,1,.36,1)'
         });
         active.set(element,animation);

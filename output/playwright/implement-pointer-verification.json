@@ -1,0 +1,241 @@
+[
+  {
+    "width": 1200,
+    "id": "gutenberg-alice",
+    "action": "pointer-trial",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-alice",
+    "mode": "zh",
+    "trace": [
+      {
+        "type": "pointerdown",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "focusin",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "pointerup",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "click",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      }
+    ]
+  },
+  {
+    "width": 1200,
+    "id": "gutenberg-meditations",
+    "action": "pointer-trial",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-meditations",
+    "mode": "zh",
+    "trace": [
+      {
+        "type": "pointerdown",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "focusin",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "pointerup",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "click",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      }
+    ]
+  },
+  {
+    "width": 1200,
+    "id": "gutenberg-walden",
+    "action": "pointer-trial",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-walden",
+    "mode": "zh",
+    "trace": [
+      {
+        "type": "pointerdown",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "focusin",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "pointerup",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "click",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      }
+    ]
+  },
+  {
+    "width": 1200,
+    "id": "gutenberg-meditations",
+    "action": "pointer-resume",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-meditations"
+  },
+  {
+    "width": 390,
+    "id": "gutenberg-alice",
+    "action": "pointer-trial",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-alice",
+    "mode": "zh",
+    "trace": [
+      {
+        "type": "pointerdown",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "focusin",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "pointerup",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "click",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "id": "gutenberg-meditations",
+    "action": "pointer-trial",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-meditations",
+    "mode": "zh",
+    "trace": [
+      {
+        "type": "pointerdown",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "focusin",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "pointerup",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "click",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "id": "gutenberg-walden",
+    "action": "pointer-trial",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-walden",
+    "mode": "zh",
+    "trace": [
+      {
+        "type": "pointerdown",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "focusin",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "pointerup",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      },
+      {
+        "type": "click",
+        "target": "A",
+        "text": "中文试读 ↗",
+        "translate": "none"
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "id": "gutenberg-meditations",
+    "action": "pointer-resume",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-meditations&passage=6977474f82a39dd8-p00055"
+  },
+  {
+    "width": 1200,
+    "id": "gutenberg-alice",
+    "action": "keyboard-trial",
+    "mode": "zh",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-alice"
+  },
+  {
+    "width": 1200,
+    "id": "gutenberg-meditations",
+    "action": "keyboard-trial",
+    "mode": "zh",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-meditations"
+  },
+  {
+    "width": 1200,
+    "id": "gutenberg-walden",
+    "action": "keyboard-trial",
+    "mode": "zh",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-walden"
+  },
+  {
+    "action": "pointer-ownership",
+    "url": "http://127.0.0.1:8337/library"
+  },
+  {
+    "action": "pointer-hero",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-alice"
+  }
+]

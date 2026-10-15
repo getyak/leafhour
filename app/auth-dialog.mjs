@@ -3,7 +3,7 @@ import {createAuthFlow,createAuthRequestGuard} from './auth-flow.mjs';
 export function mountAuthDialog({dialog,api,getSession,onAuthenticated,onSessionSettled=async()=>{},getReturnTo}){
   const $=id=>dialog.querySelector('#'+id);
   const requestGuard=createAuthRequestGuard();let flow=createAuthFlow({requestGuard}),timer=null,provisional=null;
-  function clearPasswords(){for(const id of ['auth-password','new-password']){$(id).value='';$(id).type='password';}for(const button of dialog.querySelectorAll('[data-password-toggle]')){button.textContent='显示';button.setAttribute('aria-pressed','false');}}
+  function clearPasswords(){for(const id of ['auth-password','new-password']){$(id).value='';$(id).type='password';}for(const button of dialog.querySelectorAll('[data-password-toggle]')){button.textContent='显示';button.setAttribute('aria-pressed','false');button.setAttribute('aria-label',button.dataset.passwordToggle==='new-password'?'显示新密码':'显示登录密码');}}
   function render(){
     const v=flow.view(),session=getSession()||{},codeStep=v.step==='code',setup=v.step==='set-password',password=v.method==='password',login=v.purpose==='login';
     $('auth-email-step').hidden=codeStep||setup;$('auth-code-step').hidden=!codeStep;$('auth-setup-step').hidden=!setup;
@@ -21,7 +21,7 @@ export function mountAuthDialog({dialog,api,getSession,onAuthenticated,onSession
     if($('email-code').value!==v.code)$('email-code').value=v.code;
     for(const id of ['email','email-code','auth-password','new-password'])$(id).disabled=v.busy;
     $('change-email').disabled=!!requestGuard.current();
-    $('send-code').disabled=v.busy||(password?!session.passwordAvailable||v.passwordCooldownSeconds>0:!session.emailAvailable||v.cooldownSeconds>0);
+    $('send-code').disabled=v.busy||!$('email').validity.valid||password&&!$('auth-password').value||(password?!session.passwordAvailable||v.passwordCooldownSeconds>0:!session.emailAvailable||v.cooldownSeconds>0);
     $('send-code').textContent=v.action==='password'?'正在进入…':v.action==='send'?'正在发送…':password?(v.passwordCooldownSeconds?v.passwordCooldownSeconds+' 秒后重试':'进入书房'):(v.cooldownSeconds?v.cooldownSeconds+' 秒后可发送':'发送验证码');
     $('verify-code').disabled=v.busy||v.code.length!==v.digits||v.expired;
     $('verify-code').textContent=v.action==='verify'?'正在验证…':login?'进入书房':'验证邮箱';
@@ -42,8 +42,9 @@ export function mountAuthDialog({dialog,api,getSession,onAuthenticated,onSession
     $('auth-availability').textContent='登录服务暂时不可用，可以先试读。';
     $('local-entry').hidden=!session.localAvailable;$('local-login').disabled=v.busy;
     dialog.setAttribute('aria-busy',String(v.busy));dialog.dataset.step=v.step;
-    $('auth-status').classList.toggle('error',!!v.error);
+    $('auth-status').classList.toggle('error',!!v.error);$('auth-status').setAttribute('role',v.error?'alert':'status');
     $('auth-status').textContent=v.error||(v.action==='send'?'正在发送验证码…':codeStep&&v.expired?'验证码已过期，请重新发送。':'');
+    $('email').setAttribute('aria-invalid',String(!!v.error&&!codeStep&&!setup&&!password));
     $('email-code').setAttribute('aria-invalid',String(!!v.error&&codeStep));
     $('auth-password').setAttribute('aria-invalid',String(!!v.error&&password));
   }
@@ -53,7 +54,7 @@ export function mountAuthDialog({dialog,api,getSession,onAuthenticated,onSession
   async function send(){
     const operation=flow;operation.setEmail($('email').value);const ticket=operation.begin('send');if(!ticket)return;render();
     try{const result=await api('/api/auth/code',{email:ticket.email,purpose:ticket.purpose});if(flow===operation&&operation.sent(ticket,result)){render();$('email-code').focus();}}
-    catch(error){if(flow===operation&&operation.failed(ticket,error)){render();if(dialog.open)$('email-code').focus();}}
+    catch(error){if(flow===operation&&operation.failed(ticket,error)){render();if(dialog.open)$(operation.view().step==='code'?'email-code':'email').focus();}}
   }
   async function finish(ticket,url,body){
     const operation=flow;render();
@@ -71,7 +72,8 @@ export function mountAuthDialog({dialog,api,getSession,onAuthenticated,onSession
     if(flow.view().method==='code'){send();return;}
     const ticket=flow.begin('password');if(ticket)finish(ticket,'/api/auth/password',{email:ticket.email,password:$('auth-password').value});
   });
-  $('email').addEventListener('input',()=>flow.setEmail($('email').value));
+  $('email').addEventListener('input',()=>{flow.setEmail($('email').value);render();});
+  $('auth-password').addEventListener('input',render);
   $('email-code').addEventListener('input',()=>{flow.setCode($('email-code').value);render();});
   $('verify-form').addEventListener('submit',e=>{e.preventDefault();const ticket=flow.begin('verify');if(ticket)finish(ticket,'/api/auth/verify',{email:ticket.email,code:ticket.code,purpose:ticket.purpose});});
   $('password-setup-form').addEventListener('submit',e=>{e.preventDefault();const ticket=flow.begin('save-password');if(ticket)finish(ticket,'/api/auth/password/setup',{password:$('new-password').value,setupToken:provisional?.setupToken});});
@@ -81,7 +83,7 @@ export function mountAuthDialog({dialog,api,getSession,onAuthenticated,onSession
   $('use-password').addEventListener('click',()=>choose('password'));
   $('forgot-password').addEventListener('click',()=>choose('code','recovery'));
   $('create-account').addEventListener('click',()=>choose('code','signup'));
-  for(const button of dialog.querySelectorAll('[data-password-toggle]'))button.addEventListener('click',()=>{const input=$(button.dataset.passwordToggle),visible=input.type==='password';input.type=visible?'text':'password';button.textContent=visible?'隐藏':'显示';button.setAttribute('aria-pressed',String(visible));});
+  for(const button of dialog.querySelectorAll('[data-password-toggle]'))button.addEventListener('click',()=>{const input=$(button.dataset.passwordToggle),visible=input.type==='password';input.type=visible?'text':'password';button.textContent=visible?'隐藏':'显示';button.setAttribute('aria-pressed',String(visible));button.setAttribute('aria-label',(visible?'隐藏':'显示')+(button.dataset.passwordToggle==='new-password'?'新密码':'登录密码'));});
   $('local-login').addEventListener('click',()=>{const ticket=flow.begin('local');if(ticket)finish(ticket,'/api/auth/local',{});});
   for(const provider of ['google','apple'])$('login-'+provider).addEventListener('click',async()=>{
     if(!getSession()?.providers?.[provider])return;const operation=flow,ticket=operation.begin('oauth');if(!ticket)return;render();

@@ -1,0 +1,170 @@
+[
+  {
+    "file": "review-atmosphere-mobile-before.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 143499
+  },
+  {
+    "file": "review-audio-mobile-before.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 77476
+  },
+  {
+    "file": "review-audio-player-fixture-mobile.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 90173
+  },
+  {
+    "file": "review-audio-records-fixture-mobile-after.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 59691
+  },
+  {
+    "file": "review-auth-desktop-before.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 667069
+  },
+  {
+    "file": "review-auth-fixture-recovery-mobile.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 138323
+  },
+  {
+    "file": "review-calendar-mobile-after.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 52982
+  },
+  {
+    "file": "review-ending-fixture-mobile.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 55505
+  },
+  {
+    "file": "review-final-atmosphere-mobile.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 123536
+  },
+  {
+    "file": "review-final-calendar-mobile.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 51039
+  },
+  {
+    "file": "review-final-settings-mobile.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 56283
+  },
+  {
+    "file": "review-home-desktop-before.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 1372640
+  },
+  {
+    "file": "review-library-desktop-before.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 1204022
+  },
+  {
+    "file": "review-note-desktop-before.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 204065
+  },
+  {
+    "file": "review-note-mobile-after.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 78866
+  },
+  {
+    "file": "review-parallel-desktop-before.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 297413
+  },
+  {
+    "file": "review-parallel-reveal-mobile-after.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 98698
+  },
+  {
+    "file": "review-reader-desktop-before.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 243376
+  },
+  {
+    "file": "review-reader-mobile-before.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 113927
+  },
+  {
+    "file": "review-reader-tablet-after.png",
+    "width": 768,
+    "height": 1000,
+    "bytes": 165562
+  },
+  {
+    "file": "review-script-fixture-mobile.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 73958
+  },
+  {
+    "file": "review-settings-night-mobile-after.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 66616
+  },
+  {
+    "file": "review-share-desktop-before.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 107912
+  },
+  {
+    "file": "review-share-export.png",
+    "width": 1080,
+    "height": 1323,
+    "bytes": 214328
+  },
+  {
+    "file": "review-share-final-mobile.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 38643
+  },
+  {
+    "file": "review-share-mobile-before.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 67448
+  },
+  {
+    "file": "review-typography-mobile-after.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 54056
+  },
+  {
+    "file": "review-voices-fixture-mobile.png",
+    "width": 2400,
+    "height": 1884,
+    "bytes": 282315
+  }
+]
