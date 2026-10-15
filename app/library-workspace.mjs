@@ -36,6 +36,22 @@ export function roomExcerpt(book,passageId){
   return {bookId:book.bookId,contentVersion:book.contentVersion,passageId:paragraph.id,chapterId:paragraph.chapterId,chapterTitle:selectedChapter?.title||null,original:bounded(paragraph.original),literal:bounded(paragraph.translations?.literal?.text),interpretive:bounded(paragraph.translations?.interpretive?.text),translationStatus:{literal:paragraph.translations?.literal?.status||'missing',interpretive:paragraph.translations?.interpretive?.status||'missing'},truncated};
 }
 
+// Read only the selected book's records, then expose one current user-authored question.
+export function latestRoomQuestion(book,records){
+  const passages=new Set(book.sections.flatMap(section=>section.paragraphs.map(p=>p.id)));
+  let latest=null,latestAt=-Infinity;
+  for(const question of records?.questions||[]){
+    if(!question||question.bookId!==book.bookId||question.contentVersion!==book.contentVersion||question.origin!=='user'||!passages.has(question.passageId)||typeof question.id!=='string'||!question.id||question.id.length>128||typeof question.text!=='string'||!question.text.trim()||question.text.length>2000)continue;
+    const createdAt=typeof question.createdAt==='string'?Date.parse(question.createdAt):NaN;
+    if(Number.isFinite(createdAt)&&createdAt>=latestAt){latest=question;latestAt=createdAt;}
+  }
+  return latest?{id:latest.id,passageId:latest.passageId,text:latest.text}:null;
+}
+
+export function roomQuestionUrl(book,question){
+  return readingBookUrl(book,{passageId:question.passageId})+'&note=question';
+}
+
 export function readingBookUrl(book,resume=book.resume){
   const query=new URLSearchParams({book:book.bookId});
   if(resume?.passageId)query.set('passage',resume.passageId);

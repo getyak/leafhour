@@ -9,7 +9,7 @@ if(expected){
     await new Promise(resolve=>setTimeout(resolve,15000));
   }
 }
-for(const route of ['/','/library','/read?book=gutenberg-alice','/portal.js','/library-workspace.css','/library-workspace.mjs','/reading-flow.mjs','/reading-load.mjs','/reading-arrival.mjs','/reading-arrival.css']){
+for(const route of ['/','/library','/read?book=gutenberg-alice','/portal.js','/library-workspace.css','/library-workspace.mjs','/reading-flow.mjs','/reading-load.mjs','/reading-arrival.mjs','/reading-arrival.css','/save-receipts.mjs']){
   const response=await get(route);const body=await response.text();if(!body.length)throw Error('Empty response: '+route);
   if(/\.(?:mjs|js|css)$/.test(route)&&response.headers.get('content-type')?.includes('text/html'))throw Error('Asset returned an HTML page: '+route);
 }

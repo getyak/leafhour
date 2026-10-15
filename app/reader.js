@@ -13,6 +13,7 @@ import {passagePresentation,visibleQuoteLanguage} from './passage-layers.mjs';
 import {chineseSampleEntry} from './catalog-sample.mjs';
 import {createChapterFlow,isReadingDivider} from './reading-flow.mjs';
 import {startReadingLoad,mergeLoadedReadingRecords} from './reading-load.mjs';
+import {noteSaveReceipt,positionSaveState,draftSaveReceipt} from './save-receipts.mjs';
 import {mountReadingArrival} from './reading-arrival.mjs';
 const $=id=>document.getElementById(id);
 const arrival=mountReadingArrival($('loading'));
@@ -29,13 +30,15 @@ let noteDrafts=createNoteDrafts(savedDrafts,legacyDrafts),noteDraftError=null;
 const persistDrafts=()=>{try{if(noteDraftError)return false;if(noteDrafts.persist)noteDrafts.persist();else localStorage.setItem(draftKey,JSON.stringify(noteDrafts.snapshot()));document.dispatchEvent(new CustomEvent('reader:drafts-updated'));return true;}catch{return false;}};
 const api=async(url,data)=>{const response=await readerFetch(url,data===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const body=await response.json();if(!response.ok)throw Object.assign(Error(body.error||'暂时无法完成操作'),{status:response.status});return body;};
 const progressKey=readerStorageKey('marginalia-focus-position-v1'),localWriterId=crypto.randomUUID();let progressSequence=0,restoringProgress=true,allowScrollSave=false;
-const cachePosition=position=>{try{localStorage.setItem(progressKey,JSON.stringify(position));}catch{}};
+let latestPositionAttempt=null,latestPositionDurable=false,confirmedPosition=null;
+const positionChanged=()=>document.dispatchEvent(new CustomEvent('reader:position-status'));
+const cachePosition=(position,{track=true}={})=>{let durable=false;try{localStorage.setItem(progressKey,JSON.stringify(position));durable=true;}catch{}if(track){latestPositionAttempt=position;latestPositionDurable=durable;}positionChanged();return durable;};
 const progressSync=createProgressSync({
   send:({localSequence,localWriterId,...position})=>api('/api/progress',position),
   beforeSend:position=>{if(position.localSequence===progressSequence)cachePosition({...position,pending:true});},
-  onSaved:(saved,submitted)=>{try{const cached=JSON.parse(localStorage.getItem(progressKey)||'null'),next=acknowledgePosition(cached,saved,submitted);if(next)cachePosition({...next,chapterLabel:resumeSummary(book,next)?.label});}catch{}},
-  onConflict:()=>{$('progress-notice').hidden=false;announce('阅读位置已在另一处更新。当前书页保留，请选择从哪里继续。');},
-  onFailure:error=>announce(error.status===413?error.message+'；本机浏览器仍保留当前位置。':'阅读位置暂未同步；本机浏览器保留当前位置。')
+  onSaved:(saved,submitted)=>{confirmedPosition={...submitted,...saved};try{const cached=JSON.parse(localStorage.getItem(progressKey)||'null'),next=acknowledgePosition(cached,saved,submitted);if(next){const durable=cachePosition({...next,chapterLabel:resumeSummary(book,next)?.label},{track:false});if(latestPositionAttempt?.localWriterId===submitted.localWriterId&&latestPositionAttempt?.localSequence===submitted.localSequence)latestPositionDurable=durable;}}catch{}positionChanged();},
+  onConflict:()=>{$('progress-notice').hidden=false;announce('阅读位置已在另一处更新。当前书页保留，请选择从哪里继续。');positionChanged();},
+  onFailure:error=>{announce((error.status===413?error.message+'；':'阅读位置暂未同步；')+(latestPositionDurable?'当前位置已留本机。':'当前位置仅在当前页面，离开前请重试保存。'));positionChanged();}
 });
 const currentChapter=()=>book.chapters.find(c=>c.id===state.chapterId);
 const activeSections=()=>book.sections.filter(s=>s.chapterId===state.chapterId);
@@ -255,12 +258,12 @@ function renderPanel(){
   const save=button(''),pendingHint=el('p','form-status'),status=el('p','form-status');save.type='submit';status.setAttribute('aria-live','polite');
   const updateComposer=()=>{const pending=noteDrafts.pending(draftId),busy=noteDrafts.busy(draftId);save.disabled=busy||!noteDrafts.text(draftId).trim()&&!pending;save.textContent=busy?'正在保存…':pending?'重试上次保存':type==='question'?'保存问题':'保存想法';pendingHint.hidden=!pending;pendingHint.textContent=pending?'待确认的提交：「'+pending.text.slice(0,80)+(pending.text.length>80?'…':'')+'」 重试先确认这次提交，新写的草稿会保留。':'';};
   updateComposer();form.append(label,area,pendingHint,save,status);content.append(form);
-  area.addEventListener('input',()=>{noteDrafts.edit(draftId,area.value);updateComposer();if(!persistDrafts())status.textContent='浏览器无法保留草稿，请先复制文字；刷新会丢失未保存内容。';});
+  area.addEventListener('input',()=>{noteDrafts.edit(draftId,area.value);updateComposer();status.textContent=draftSaveReceipt({durable:persistDrafts()});});
   form.addEventListener('submit',async e=>{
     e.preventDefault();if(noteDrafts.busy(draftId)||!area.value.trim()&&!noteDrafts.pending(draftId))return;
     const draftEntryId=noteDrafts.activeId?.(draftId);noteDrafts.edit(draftId,area.value);const submission=noteDrafts.begin(draftId,{passageId:p.id,contentVersion:book.contentVersion,quote:selectedQuote,quoteLanguage:selectedQuoteLanguage==='en'?book.sourceLanguage||'en':'zh',quoteOrigin:selectedQuoteLanguage==='en'?'original':'translation'},()=>crypto.randomUUID());const durable=persistDrafts();updateComposer();status.textContent=durable?'正在保存':'正在保存；浏览器无法保留草稿，请先复制文字。';
-    try{const record=await api('/api/'+key,submission);if(!records[key].some(r=>r.id===record.id))records[key].push(record);noteDrafts.acknowledge(draftId,record,draftEntryId);const cached=persistDrafts();if(form.isConnected){area.value=noteDrafts.text(draftId);status.setAttribute('role','status');status.textContent=area.value?'上次提交已保存，新写的文字仍是草稿。'+(cached?'':'浏览器无法保留草稿，请先复制；刷新会丢失未保存内容。'):'已保存到自己的书房';content.append(recordNode(record,type));}}
-    catch(error){if(form.isConnected){status.setAttribute('role','alert');status.textContent=error.status===413?error.message+'。未提交的文字仍保留在本机草稿中。':'保存尚未确认。文字仍保留，重试不会重复创建同一次提交。';}}
+    try{const record=await api('/api/'+key,submission);if(!noteDrafts.acknowledge(draftId,record,draftEntryId))throw Error('服务尚未确认这次提交。');if(!records[key].some(r=>r.id===record.id))records[key].push(record);const cached=persistDrafts();if(form.isConnected){area.value=noteDrafts.text(draftId);status.setAttribute('role','status');status.textContent=noteSaveReceipt({confirmed:true,durable:cached,hasDraft:!!area.value});content.append(recordNode(record,type));}}
+    catch(error){if(form.isConnected){status.setAttribute('role','alert');status.textContent=(error.status===413?error.message+'。':'')+noteSaveReceipt({durable:persistDrafts()});}}
     finally{noteDrafts.finish(draftId,draftEntryId);if(form.isConnected)updateComposer();else if(!allRecords&&!$('note-panel').hidden&&selectedId===p.id&&panelTab===type)renderPanel();}
   });
   for(const record of records[key].filter(r=>r.passageId===p.id))content.append(recordNode(record,type));mountPanel();
@@ -381,7 +384,7 @@ new ResizeObserver(()=>{if(!$('paragraph-tools').hidden)positionTools();}).obser
 document.addEventListener('reader:layout',queueReadingFlow);for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('close',queueReadingFlow);
 window.addEventListener('resize',()=>{queueReadingFlow();if(!$('note-panel').hidden)mountPanel();if(!$('paragraph-tools').hidden)positionTools();});
 $('retry-load').addEventListener('click',()=>{$('load-error').hidden=true;$('loading').hidden=false;boot();});
-window.marginaliaReader={getBook:()=>book,getPersonalRecords:()=>records,areRecordsAvailable:()=>!recordsUnavailable,getState:()=>({...state}),getAudioSelection:()=>{if(selectedExcerpt)return structuredClone(selectedExcerpt);const p=paragraphMap.get(selectedId);if(!p)return null;const v=passageView(p);return paragraphSnapshot(book,p,p.chapterId,selectedQuoteLanguage,v.variant);},getExcerpt:()=>selectedExcerpt?structuredClone(selectedExcerpt):null,getChapterId:()=>state.chapterId,getSelectedId:()=>selectedId,getAnchor:()=>{const a=anchor();return a?{...a,chapterId:paragraphMap.get(a.passageId)?.chapterId||state.chapterId}:null;},restoreAnchor:a=>{if(a&&document.getElementById(a.passageId)){restoreAnchor(a);persist();}},goToPassage:id=>{const p=paragraphMap.get(id);if(!p)return;if(p.chapterId!==state.chapterId)changeChapter(p.chapterId,id);else{restoreAnchor({passageId:id,offset:document.body.classList.contains('is-focused')?45:100});persist();}document.dispatchEvent(new CustomEvent('reader:jump',{detail:{passageId:id}}));},dismissTools};
+window.marginaliaReader={getBook:()=>book,retryPositionSave:()=>{if(recordsUnavailable||recordsPositionUnresolved||progressSync.paused)return Promise.resolve(null);clearTimeout(persistTimer);const position=captureProgress();if(!position)return Promise.resolve(null);cachePosition({...position,pending:true});return progressSync.save(position);},getPositionSaveState:()=>positionSaveState(latestPositionAttempt,confirmedPosition||records?.position,{durable:latestPositionDurable,unresolved:recordsPositionUnresolved||progressSync.paused}),getPersonalRecords:()=>records,areRecordsAvailable:()=>!recordsUnavailable,getState:()=>({...state}),getAudioSelection:()=>{if(selectedExcerpt)return structuredClone(selectedExcerpt);const p=paragraphMap.get(selectedId);if(!p)return null;const v=passageView(p);return paragraphSnapshot(book,p,p.chapterId,selectedQuoteLanguage,v.variant);},getExcerpt:()=>selectedExcerpt?structuredClone(selectedExcerpt):null,getChapterId:()=>state.chapterId,getSelectedId:()=>selectedId,getAnchor:()=>{const a=anchor();return a?{...a,chapterId:paragraphMap.get(a.passageId)?.chapterId||state.chapterId}:null;},restoreAnchor:a=>{if(a&&document.getElementById(a.passageId)){restoreAnchor(a);persist();}},goToPassage:id=>{const p=paragraphMap.get(id);if(!p)return;if(p.chapterId!==state.chapterId)changeChapter(p.chapterId,id);else{restoreAnchor({passageId:id,offset:document.body.classList.contains('is-focused')?45:100});persist();}document.dispatchEvent(new CustomEvent('reader:jump',{detail:{passageId:id}}));},dismissTools};
 document.addEventListener('reader:translation',e=>{const p=paragraphMap.get(e.detail.id);if(!p)return;p.translations=e.detail.translations;const raw=book.sections.flatMap(s=>s.paragraphs).find(x=>x.id===p.id);if(raw)raw.translations=p.translations;const reveal=e.detail.reveal!==false&&selectedId===p.id;if(reveal)state.mode='parallel';if(document.getElementById(p.id))updateText();announce(reveal?'这段双译草稿已保存，可随时核对原文。':'之前选择的段落双译已保存，可以继续阅读。');});
 boot();
 

@@ -11,7 +11,7 @@ import {createSpeechProvider} from './audio-provider.mjs';
 import {createDialogueGenerator} from './dialogue-generator.mjs';
 import {createAudioRoutes} from './audio-routes.mjs';
 import {portalDocument} from './portal-document.mjs';
-import {roomExcerpt} from '../app/library-workspace.mjs';
+import {roomExcerpt,latestRoomQuestion} from '../app/library-workspace.mjs';
 import {createReaderChatService} from './reader-chat.mjs';
 import {createReaderChatGenerator} from './reader-chat-generator.mjs';
 import {authPurpose} from './auth-policy.mjs';
@@ -32,7 +32,7 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
   async function handle({req,res,url,send}){
     const p=url.pathname,isAPI=p.startsWith('/api/auth/')||p.startsWith('/api/library')||p.startsWith('/api/agent/');
     const files={'/':'home.html','/library':'home.html','/privacy':'privacy.html','/auth.css':'auth.css','/auth-dialog.mjs':'auth-dialog.mjs','/auth-flow.mjs':'auth-flow.mjs','/auth-assets/google.png':'auth-assets/google.png','/auth-assets/apple.svg':'auth-assets/apple.svg','/portal.css':'portal.css','/portal.js':'portal.js','/owner-scope.mjs':'owner-scope.mjs','/paragraph-anchor.mjs':'paragraph-anchor.mjs','/source-language.mjs':'source-language.mjs','/upload-state.mjs':'upload-state.mjs','/library-backup.mjs':'library-backup.mjs','/reader-api.mjs':'reader-api.mjs','/reading-progress.mjs':'reading-progress.mjs','/progress-sync.mjs':'progress-sync.mjs','/reader-translation.js':'reader-translation.js'};
-    files['/reading-arrival.css']='reading-arrival.css';files['/reading-arrival.mjs']='reading-arrival.mjs';
+    files['/reading-arrival.css']='reading-arrival.css';files['/reading-arrival.mjs']='reading-arrival.mjs';files['/save-receipts.mjs']='save-receipts.mjs';
     files['/home-motion.css']='home-motion.css';files['/home-motion.mjs']='home-motion.mjs';
     for(const file of ['home-atmosphere.css','home-atmosphere.mjs','brand-assets/sunlit-room.webp','brand-assets/foliage-canopy.webp'])files['/'+file]=file;
     files['/reading-session-record.mjs']='reading-session-record.mjs';
@@ -112,7 +112,12 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     if(match){const [,id,action]=match;
       if(action?.startsWith('audio/'))return audioRoutes.handle({req,res,url,user,bookId:id,action:action.slice(6),body,send});
       if(!action&&req.method==='GET'){send(200,await library.getBook(user,id));return true;}
-      if(action==='preview'&&req.method==='GET'){const book=await library.getBook(user,id);send(200,roomExcerpt(book,url.searchParams.get('passageId')||undefined));return true;}
+      if(action==='preview'&&req.method==='GET'){
+        const book=await library.getBook(user,id),excerpt=roomExcerpt(book,url.searchParams.get('passageId')||undefined);
+        let question=null;
+        if(user){try{question=latestRoomQuestion(book,await library.records(user,id));}catch{/* An optional personal slip must not hide a readable source excerpt. */}}
+        send(200,{...excerpt,question});return true;
+      }
       if(action==='chat'&&req.method==='GET'){send(200,await chat.view(user,id,{passageId:url.searchParams.get('passageId')||undefined}));return true;}
       if(action==='chat'&&req.method==='POST'){send(200,await chat.send(user,id,body));return true;}
       const cancelChat=action?.match(/^chat\/([^/]+)\/cancel$/);if(cancelChat&&req.method==='POST'){send(200,await chat.cancel(user,id,cancelChat[1]));return true;}

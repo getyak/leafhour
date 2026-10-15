@@ -16,3 +16,45 @@ test('the bookshelf fetches only the requested paragraph and private previews re
   assert.equal((await fetch(base+'/api/library/books/'+privateBook.bookId+'/preview')).status,404);
   const own=await fetch(base+'/api/library/books/'+privateBook.bookId+'/preview',{headers:{Cookie:'marginalia_session='+session.token,'X-Reader-Owner':session.user.id}});assert.equal(own.status,200);assert.equal((await own.json()).original,'Private paragraph.');
 });
+
+test('preview returns one latest valid user question only for the authenticated selected book',async t=>{
+  const dir=await mkdtemp(path.join(tmpdir(),'reader-question-preview-'));let code;
+  const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),translator:null,sendCode:async(_,value)=>{code=value;}});
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  t.after(async()=>{await new Promise(resolve=>server.close(resolve));await rm(dir,{recursive:true,force:true});});
+  const base='http://127.0.0.1:'+server.address().port,{auth,library}=server.portal;
+  const signIn=async email=>{await auth.requestCode(email);return auth.verifyCode(email,code);};
+  const alice=await signIn('alice@example.test'),bob=await signIn('bob@example.test');
+  const book=await library.getBook(alice.user,'gutenberg-alice'),passages=book.sections.flatMap(s=>s.paragraphs),first=passages[0].id,questionPassage=passages[1].id;
+  await library.addComment(alice.user,book.bookId,{id:'first',passageId:first,text:'An earlier question.'},'questions');
+  const saved=await library.addComment(alice.user,book.bookId,{id:'latest',passageId:questionPassage,text:'What does this mean? '.repeat(90)},'questions');
+  await library.addComment(bob.user,book.bookId,{id:'bob',passageId:first,text:'Bob only.'},'questions');
+  const records=library.records.bind(library),reads=[];
+  library.records=async(user,id)=>{reads.push([user?.id,id]);return records(user,id);};
+  const request=async session=>fetch(base+'/api/library/books/'+book.bookId+'/preview?passageId='+first,{headers:session?{Cookie:'marginalia_session='+session.token,'X-Reader-Owner':session.user.id}:{}});
+  const anonymous=await request();assert.equal(anonymous.status,200);assert.equal((await anonymous.json()).question,null);assert.deepEqual(reads,[]);
+  const own=await request(alice),preview=await own.json();assert.equal(own.status,200);
+  assert.deepEqual(preview.question,{id:saved.id,passageId:questionPassage,text:saved.text});
+  assert.equal(preview.passageId,first);assert.equal(preview.original,passages[0].original);
+  assert.equal(preview.questions,undefined);assert.ok(JSON.stringify(preview).length<22000);assert.deepEqual(reads,[[alice.user.id,book.bookId]]);
+  assert.equal((await (await request(bob)).json()).question.text,'Bob only.');
+  const mismatch=await fetch(base+'/api/library/books/'+book.bookId+'/preview',{headers:{Cookie:'marginalia_session='+bob.token,'X-Reader-Owner':alice.user.id}});assert.equal(mismatch.status,409);
+  await auth.logout(alice.token);assert.equal((await (await request()).json()).question,null);
+});
+
+test('a personal records outage leaves the source preview readable without weakening access or passage checks',async t=>{
+  const dir=await mkdtemp(path.join(tmpdir(),'reader-question-outage-'));
+  const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),translator:null,sendCode:null});
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  t.after(async()=>{await new Promise(resolve=>server.close(resolve));await rm(dir,{recursive:true,force:true});});
+  const base='http://127.0.0.1:'+server.address().port,{auth,library}=server.portal,session=await auth.localSession();
+  const headers={Cookie:'marginalia_session='+session.token,'X-Reader-Owner':session.user.id};
+  const url=base+'/api/library/books/gutenberg-alice/preview',before=await (await fetch(url,{headers})).json();let reads=0;
+  library.records=async()=>{reads++;throw Object.assign(Error('Temporary personal records outage'),{status:503});};
+  const response=await fetch(url,{headers});assert.equal(response.status,200);
+  const preview=await response.json();assert.deepEqual(preview,{...before,question:null});assert.equal(typeof preview.original,'string');assert.equal(reads,1);
+  assert.equal((await fetch(url+'?passageId=missing',{headers})).status,404);
+  assert.equal((await fetch(base+'/api/library/books/private-inaccessible/preview',{headers})).status,404);
+  assert.equal((await fetch(url,{headers:{...headers,'X-Reader-Owner':'another-owner'}})).status,409);
+  assert.equal(reads,1,'access and passage validation must reject before optional enrichment');
+});
