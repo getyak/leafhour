@@ -41,3 +41,20 @@ test('preview returns one latest valid user question only for the authenticated 
   const mismatch=await fetch(base+'/api/library/books/'+book.bookId+'/preview',{headers:{Cookie:'marginalia_session='+bob.token,'X-Reader-Owner':alice.user.id}});assert.equal(mismatch.status,409);
   await auth.logout(alice.token);assert.equal((await (await request()).json()).question,null);
 });
+
+test('a personal records outage leaves the source preview readable without weakening access or passage checks',async t=>{
+  const dir=await mkdtemp(path.join(tmpdir(),'reader-question-outage-'));
+  const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),translator:null,sendCode:null});
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  t.after(async()=>{await new Promise(resolve=>server.close(resolve));await rm(dir,{recursive:true,force:true});});
+  const base='http://127.0.0.1:'+server.address().port,{auth,library}=server.portal,session=await auth.localSession();
+  const headers={Cookie:'marginalia_session='+session.token,'X-Reader-Owner':session.user.id};
+  const url=base+'/api/library/books/gutenberg-alice/preview',before=await (await fetch(url,{headers})).json();let reads=0;
+  library.records=async()=>{reads++;throw Object.assign(Error('Temporary personal records outage'),{status:503});};
+  const response=await fetch(url,{headers});assert.equal(response.status,200);
+  const preview=await response.json();assert.deepEqual(preview,{...before,question:null});assert.equal(typeof preview.original,'string');assert.equal(reads,1);
+  assert.equal((await fetch(url+'?passageId=missing',{headers})).status,404);
+  assert.equal((await fetch(base+'/api/library/books/private-inaccessible/preview',{headers})).status,404);
+  assert.equal((await fetch(url,{headers:{...headers,'X-Reader-Owner':'another-owner'}})).status,409);
+  assert.equal(reads,1,'access and passage validation must reject before optional enrichment');
+});

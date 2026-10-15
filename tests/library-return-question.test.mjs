@@ -49,6 +49,7 @@ test('dashboard hides stale questions while switching, ignores late previews, an
   dashboard.update(dashboard.begin());
   const slip=root.querySelector('.room-question'),text=root.querySelector('.room-question-text'),link=root.querySelector('.room-question-link'),choice=root.querySelector('.today-book-choice');
   const data=(id,wording)=>({bookId:id,original:'Source excerpt.',translationStatus:{},question:{id:'q',passageId:id+'2',text:wording}});
+  assert.deepEqual(root.querySelector('.today-copy').children.map(child=>child.className),['today-heading','room-excerpt','today-actions','room-question']);
   assert.equal(slip.hidden,true);pending[0].resolve(data('a','Actual A question'));await new Promise(resolve=>setImmediate(resolve));
   assert.equal(slip.hidden,false);assert.equal(text.textContent,'Actual A question');assert.equal(link.href,'/read?book=a&passage=a2&note=question');assert.equal(historyRoot.open,false);
   choice.value='b';choice.events.change();assert.equal(slip.hidden,true);assert.equal(text.textContent,'');assert.equal(link.href,undefined);

@@ -111,7 +111,12 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     if(match){const [,id,action]=match;
       if(action?.startsWith('audio/'))return audioRoutes.handle({req,res,url,user,bookId:id,action:action.slice(6),body,send});
       if(!action&&req.method==='GET'){send(200,await library.getBook(user,id));return true;}
-      if(action==='preview'&&req.method==='GET'){const book=await library.getBook(user,id),excerpt=roomExcerpt(book,url.searchParams.get('passageId')||undefined),question=user?latestRoomQuestion(book,await library.records(user,id)):null;send(200,{...excerpt,question});return true;}
+      if(action==='preview'&&req.method==='GET'){
+        const book=await library.getBook(user,id),excerpt=roomExcerpt(book,url.searchParams.get('passageId')||undefined);
+        let question=null;
+        if(user){try{question=latestRoomQuestion(book,await library.records(user,id));}catch{/* An optional personal slip must not hide a readable source excerpt. */}}
+        send(200,{...excerpt,question});return true;
+      }
       if(action==='chat'&&req.method==='GET'){send(200,await chat.view(user,id,{passageId:url.searchParams.get('passageId')||undefined}));return true;}
       if(action==='chat'&&req.method==='POST'){send(200,await chat.send(user,id,body));return true;}
       const cancelChat=action?.match(/^chat\/([^/]+)\/cancel$/);if(cancelChat&&req.method==='POST'){send(200,await chat.cancel(user,id,cancelChat[1]));return true;}
