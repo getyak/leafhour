@@ -86,3 +86,6 @@ test('runtime internal timeout aborts parent provider and leaves no late complet
  const f=await fixture(t,good,()=>new Promise(()=>{}),{timeoutMs:500});const pending=f.generate({...job(),tools:domain});const result=assert.rejects(pending,/取消|超时/);await f.started;const patch=JSON.parse(await readFile(f.calls[0].patches[0],'utf8')),config=patch.at(-1).insert[0].config;
  const request=fetch(config.bridgeUrl+'/tool',{method:'POST',headers:{Authorization:'Bearer '+config.token},body:JSON.stringify({name:'reader_search_web',args:{query:'x'}})}).catch(()=>null);await started;await result;await request;assert.equal(providerSignal.aborted,true);assert.deepEqual(activities.map(a=>a.status),['running']);assert.deepEqual(await readdir(f.runRoot),[]);
 });
+test('current chapter metadata is passed as background only when supplied',async t=>{
+ const f=await fixture(t);await f.generate({...job(),chapterId:'chapter-real-2',chapterTitle:'第二章'});const location=JSON.parse(f.calls[1].text.split('\n\n读者这次说：\n')[0]).location;assert.equal(location.chapterId,'chapter-real-2');assert.equal(location.chapterTitle,'第二章');await f.generate(job());const noChapter=JSON.parse(f.calls[3].text.split('\n\n读者这次说：\n')[0]).location;assert.equal(Object.hasOwn(noChapter,'chapterId'),false);assert.equal(Object.hasOwn(noChapter,'chapterTitle'),false);
+});
