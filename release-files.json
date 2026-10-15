@@ -290,5 +290,16 @@
   "tools/smoke-release.mjs",
   "tools/verify-deploy.mjs",
   "tools/verify-release.mjs",
-  "vercel.json"
+  "vercel.json",
+  "app/brand-assets/envelope-edge.svg",
+  "app/brand-assets/letter-edge.svg",
+  "app/gift-compose.css",
+  "app/gift-compose.mjs",
+  "app/gift-preview.mjs",
+  "app/gift-ritual.mjs",
+  "tests/gift-preview.test.mjs",
+  "tests/gift-ritual.test.mjs",
+  "app/gift-identity.mjs",
+  "app/gift-compose-state.mjs",
+  "tests/gift-compose-state.test.mjs"
 ]

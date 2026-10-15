@@ -42,6 +42,16 @@ test('an explicit original-only gift leaves untranslated passages empty',async t
   assert.equal(gift.includeTranslations,false);for(const p of backup.books[0].book.sections.flatMap(s=>s.paragraphs))assert.deepEqual(p.translations,{});
 });
 
+test('the published sender matches the preview and never falls back to an email identity',async t=>{
+  const {createGiftPreview}=await import('../app/gift-preview.mjs');
+  for(const profile of [{},{displayName:' '},{displayName:'private@handle'},{displayName:' 林间 '}]){
+    const {book,service}=await fixture(t,{getProfile:async()=>profile});
+    const gift=await service.create(owner,book.bookId,{}),view=await service.view(gift.token);
+    assert.equal(view.sender,createGiftPreview(book,{...owner,...profile}).gift.sender);
+    assert.equal(view.sender,profile.displayName===' 林间 '?'林间':'一位读者');
+  }
+});
+
 test('gift inputs and private ownership are checked before publishing',async t=>{
   const {book,service}=await fixture(t);
   for(const input of [{message:'a'.repeat(501)},{recipient:'a'.repeat(81)},{message:15},{recipient:{}},{includeTranslations:'false'},null,[]])await assert.rejects(service.create(owner,book.bookId,input),e=>e.status===400);
