@@ -53,13 +53,19 @@ function bookCard(book){
   const meta=make('div','book-meta');meta.append(make('h3','',book.title.zh),make('p','book-author',book.author||book.source?.filename||''));
   const description=book.chineseSample?'中文双译开篇 · '+book.chineseSample.paragraphs+' 段':book.visibility==='public'?'英文原文 · 按需翻译':'原文已保存 · '+String(book.source?.format||'文本').toUpperCase();meta.append(make('p','book-label',description));
   const bottom=make('div','book-bottom'),read=make('a','book-read',book.resume?'继续阅读 →':'开始阅读 →');read.href=art.href;
-  const details=make('details','book-details'),summary=make('summary','','书籍信息'),detail=make('div','book-details-body');details.append(summary,detail);
+  const details=make('details','book-details'),summary=make('summary','','书籍信息'),detail=make('div','book-details-body');details.append(summary,detail);details.addEventListener('toggle',()=>positionBookDetails(details));details.addEventListener('keydown',event=>{if(event.key==='Escape'&&details.open){event.preventDefault();details.open=false;summary.focus();}});
   if(book.resume?.label)detail.append(make('p','',book.resume.label));
   detail.append(make('p','',book.visibility==='public'?'公版底本 · 英文原文':'个人上传 · '+(book.paragraphs||0)+' 段原文'));
   if(book.chineseSample){const trial=make('a','','中文试读 ↗');trial.href=chineseTrialUrl(book);detail.append(trial,make('p','','已保存的双译为 AI 草稿。其余段落保留原文，按需翻译。'));}
   if(book.source?.url){const source=make('a','','查看来源与许可 ↗');source.href=book.source.url;source.target='_blank';source.rel='noopener noreferrer';detail.append(source);}else detail.append(make('p','','原件与阅读记录归入自己的书房。'));
   bottom.append(read,details);meta.append(bottom);card.append(art,meta);return card;
 }
+function positionBookDetails(details){
+  if(!details.open)return;const panel=details.querySelector('.book-details-body');panel.style.transform='';
+  const bounds=$('library-view').getBoundingClientRect(),rect=panel.getBoundingClientRect(),left=Math.max(12,bounds.left+12),right=Math.min(innerWidth-12,bounds.right-12);
+  const shift=rect.left<left?left-rect.left:rect.right>right?right-rect.right:0;panel.style.transform='translateX('+shift+'px)';
+}
+window.addEventListener('resize',()=>{for(const details of document.querySelectorAll('.book-details[open]'))positionBookDetails(details);});
 function renderBooks(){
   const query=$('book-search').value.trim(),room=roomShelf(books,{scope:shelf,query,selectedBookId:selectedCurrent});
   $('library-books').replaceChildren(...room.books.map(bookCard));$('library-books').setAttribute('aria-busy','false');$('reading-dashboard').hidden=!room.featured;$('shelf-title').hidden=!room.books.length;$('shelf-title').textContent=room.featured?'书架上的其他书':'书架';$('shelf-title').classList.toggle('sr-only',!room.featured);$('library-shelf').classList.toggle('with-current',!!room.featured);$('library-shelf').hidden=!!room.featured&&!room.books.length;

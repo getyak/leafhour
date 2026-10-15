@@ -51,7 +51,7 @@ export function createHarnessGenerator({runRoot=path.join(project,'local/harness
    return normaliseEcho(published.asset,job.text);
   }catch(error){
    await writeFile(path.join(dir,'receipt.json'),JSON.stringify({provider:'deepseek-official',model,kernel:'official-deepseek-harness',trace,completed:false,errorType:error.name||'Error'},null,2),{mode:0o600});
-   throw Error(job.signal?.aborted||stopping?'已取消这次回声。':'回声暂时没有得到可核验的结果；原话已保留，请继续阅读。');
+   throw Error(job.signal?.aborted||stopping?'已取消这次回声。':'回声暂时没有得到可核验的结果；原话已保留，请继续阅读。',{cause:error});
   }finally{clearTimeout(timer);job.signal?.removeEventListener('abort',abort);await stop();}
  };
 }
