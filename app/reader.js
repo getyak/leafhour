@@ -18,6 +18,7 @@ import {mountReadingArrival} from './reading-arrival.mjs';
 import {mountBookIntroduction,renderBookContents} from './reader-navigation.mjs';
 import {mountParallelSettings,applyParallelAppearance,createParallelPair} from './parallel-reading.mjs';
 import {mountReaderImmersion} from './reader-immersion.mjs';
+import {mountReaderConversation,readerInteractionBlocked} from './reader-conversation.mjs';
 import {mountReaderSettings} from './reader-settings.mjs';
 const $=id=>document.getElementById(id);
 const arrival=mountReadingArrival($('loading'));
@@ -137,7 +138,7 @@ function prepareFollowingChapter(){
   flowIdle=window.requestIdleCallback?requestIdleCallback(prepare,{timeout:800}):setTimeout(prepare,80);
 }
 function extendReadingFlow(){
-  if(!continuous||restoringProgress||!flow?.nextId||document.hidden||document.querySelector('dialog[open]')||!$('note-panel').hidden||$('chapter-footer').contains(document.activeElement))return;
+  if(!continuous||restoringProgress||!flow?.nextId||document.hidden||document.querySelector('dialog[open]:not(.library-chat-dialog)')||!$('note-panel').hidden||$('chapter-footer').contains(document.activeElement))return;
   const last=$('chapter-text').lastElementChild;if(!last||last.getBoundingClientRect().bottom>innerHeight*2.5)return;
   insertFollowingChapter();
 }
@@ -145,7 +146,7 @@ function insertFollowingChapter(){
   const next=flow?.appendNext();if(!next)return false;$('chapter-text').append(next.node);prepareFollowingChapter();document.dispatchEvent(new CustomEvent('reader:layout'));document.dispatchEvent(new CustomEvent('reader:flow-extended'));queueReadingFlow();return true;
 }
 function syncFlowChapter(){
-  if(!continuous||restoringProgress||!book||document.querySelector('dialog[open]')||!$('note-panel').hidden||document.querySelector('.experience-surface'))return;
+  if(!continuous||restoringProgress||!book||document.querySelector('dialog[open]:not(.library-chat-dialog)')||!$('note-panel').hidden||document.querySelector('.experience-surface'))return;
   const id=paragraphMap.get(anchor()?.passageId)?.chapterId;if(id&&id!==state.chapterId){state.chapterId=id;updateChapterNavigation();}
 }
 function renderChapter(){
@@ -316,7 +317,7 @@ $('continuous-reading').addEventListener('change',event=>{
   closePanel();dismissTools();renderChapter();restoreAnchor(a);queueReadingFlow();persist();
 });
 document.addEventListener('click',e=>{
-  if(e.target.closest('#note-panel,#paragraph-tools,#reading-session,dialog,.reading-header,.focus-actions,.experience-surface,.source-evidence'))return;
+  if(e.target.closest('#note-panel,#paragraph-tools,#reading-session,dialog,.library-chat-launcher,.reading-header,.focus-actions,.experience-surface,.source-evidence'))return;
   const selection=getSelection();if(selection?.toString().trim()&&selectedExcerpt&&$('paragraph-tools').dataset.excerpt==='true')return;
   const node=e.target.closest('.passage');if(node){if(!getSelection()?.toString()){const layer=e.target.closest('p')?.dataset.readingLayer;choosePassage(node.dataset.id,e.clientY,'',layer==='original'?'en':layer==='translation'?'zh':null);}return;}
   dismissTools();closePanel();
@@ -325,10 +326,10 @@ function captureExcerpt(y){
   try{const excerpt=captureDOMSelection(getSelection(),paragraphMap,book);if(!excerpt){if(getSelection()?.toString().trim()){selectedExcerpt=null;dismissTools();}return;}const first=excerpt.parts[0];choosePassage(first.passageId,y,excerpt.parts.length===1?first.text:'',first.language);selectedExcerpt=excerpt;selectionKind='excerpt';for(const part of excerpt.parts)document.getElementById(part.passageId)?.classList.add('is-selected');$('show-share').hidden=false;$('paragraph-tools').dataset.excerpt='true';positionTools();}
   catch(error){selectedExcerpt=null;$('show-share').hidden=true;announce(error.message||'请重新选择正文。');}
 }
-document.addEventListener('pointerup',e=>{if(e.button!==0||e.target.closest('#note-panel,#paragraph-tools,#reading-session,dialog,[popover],.experience-surface,.source-evidence')||!book)return;captureExcerpt(e.clientY);});
-document.addEventListener('keyup',e=>{if(book&&!e.target.closest('input,textarea,select,dialog,[popover]')&&(e.key==='Shift'||e.shiftKey))captureExcerpt();});
+document.addEventListener('pointerup',e=>{if(e.button!==0||e.target.closest('#note-panel,#paragraph-tools,#reading-session,dialog,.library-chat-launcher,[popover],.experience-surface,.source-evidence')||!book)return;captureExcerpt(e.clientY);});
+document.addEventListener('keyup',e=>{if(book&&!e.target.closest('input,textarea,select,dialog,.library-chat-launcher,[popover]')&&(e.key==='Shift'||e.shiftKey))captureExcerpt();});
 document.addEventListener('keydown',e=>{
-  if(document.querySelector('dialog[open],[popover]:popover-open'))return;
+  if(readerInteractionBlocked(document,e.target))return;
   if(e.target.closest('input,textarea,select')||e.target.isContentEditable)return;
   if(e.key==='Escape'){
     if(!$('paragraph-tools').hidden){dismissTools();return;}if(!$('note-panel').hidden){closePanel();$('chapter-text').querySelector('[data-id="'+selectedId+'"]')?.focus({preventScroll:true});return;}
@@ -384,8 +385,9 @@ new ResizeObserver(()=>{if(!$('paragraph-tools').hidden)positionTools();}).obser
 document.addEventListener('reader:layout',queueReadingFlow);for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('close',queueReadingFlow);
 window.addEventListener('resize',()=>{queueReadingFlow();if(!$('note-panel').hidden)mountPanel();if(!$('paragraph-tools').hidden)positionTools();});
 $('retry-load').addEventListener('click',()=>{$('load-error').hidden=true;$('loading').hidden=false;boot();});
-window.marginaliaReader={getBook:()=>book,retryPositionSave:()=>{if(recordsUnavailable||recordsPositionUnresolved||progressSync.paused)return Promise.resolve(null);clearTimeout(persistTimer);const position=captureProgress();if(!position)return Promise.resolve(null);cachePosition({...position,pending:true});return progressSync.save(position);},getPositionSaveState:()=>positionSaveState(latestPositionAttempt,confirmedPosition||records?.position,{durable:latestPositionDurable,unresolved:recordsPositionUnresolved||progressSync.paused}),getPersonalRecords:()=>records,areRecordsAvailable:()=>!recordsUnavailable,getState:()=>({...state}),getAudioSelection:()=>{if(selectedExcerpt)return structuredClone(selectedExcerpt);const p=paragraphMap.get(selectedId);if(!p)return null;const v=passageView(p);return paragraphSnapshot(book,p,p.chapterId,selectedQuoteLanguage,v.variant);},getExcerpt:()=>selectedExcerpt?structuredClone(selectedExcerpt):null,getChapterId:()=>state.chapterId,getSelectedId:()=>selectedId,getAnchor:()=>{const a=anchor();return a?{...a,chapterId:paragraphMap.get(a.passageId)?.chapterId||state.chapterId}:null;},restoreAnchor:a=>{if(a&&document.getElementById(a.passageId)){restoreAnchor(a);persist();}},goToPassage:id=>{const p=paragraphMap.get(id);if(!p)return;if(p.chapterId!==state.chapterId)changeChapter(p.chapterId,id);else{restoreAnchor({passageId:id,offset:document.body.classList.contains('is-focused')?45:100});persist();}document.dispatchEvent(new CustomEvent('reader:jump',{detail:{passageId:id}}));},dismissTools};
+window.marginaliaReader={getBook:()=>book,retryPositionSave:()=>{if(recordsUnavailable||recordsPositionUnresolved||progressSync.paused)return Promise.resolve(null);clearTimeout(persistTimer);const position=captureProgress();if(!position)return Promise.resolve(null);cachePosition({...position,pending:true});return progressSync.save(position);},getPositionSaveState:()=>positionSaveState(latestPositionAttempt,confirmedPosition||records?.position,{durable:latestPositionDurable,unresolved:recordsPositionUnresolved||progressSync.paused}),getPersonalRecords:()=>records,areRecordsAvailable:()=>!recordsUnavailable,getState:()=>({...state}),getAudioSelection:()=>{if(selectedExcerpt)return structuredClone(selectedExcerpt);const p=paragraphMap.get(selectedId);if(!p)return null;const v=passageView(p);return paragraphSnapshot(book,p,p.chapterId,selectedQuoteLanguage,v.variant);},getExcerpt:()=>selectedExcerpt?structuredClone(selectedExcerpt):null,getChapterId:()=>state.chapterId,getSelectedId:()=>selectedId,isSelectionActive:()=>!$('paragraph-tools').hidden||!$('note-panel').hidden,getAnchor:()=>{const a=anchor();return a?{...a,chapterId:paragraphMap.get(a.passageId)?.chapterId||state.chapterId}:null;},restoreAnchor:a=>{if(a&&document.getElementById(a.passageId)){restoreAnchor(a);persist();}},goToPassage:id=>{const p=paragraphMap.get(id);if(!p)return;if(p.chapterId!==state.chapterId)changeChapter(p.chapterId,id);else{restoreAnchor({passageId:id,offset:document.body.classList.contains('is-focused')?45:100});persist();}document.dispatchEvent(new CustomEvent('reader:jump',{detail:{passageId:id}}));},dismissTools};
 document.addEventListener('reader:translation',e=>{const p=paragraphMap.get(e.detail.id);if(!p)return;p.translations=e.detail.translations;const raw=book.sections.flatMap(s=>s.paragraphs).find(x=>x.id===p.id);if(raw)raw.translations=p.translations;const reveal=e.detail.reveal!==false&&selectedId===p.id;if(reveal)state.mode='parallel';if(document.getElementById(p.id))updateText();announce(reveal?'这段双译草稿已保存，可随时核对原文。':'之前选择的段落双译已保存，可以继续阅读。');});
+mountReaderConversation({bookId:selectedBookId,session:readerSession,getReader:()=>window.marginaliaReader,root:$('reader-conversation')});
 boot();
 
 document.addEventListener('reader:record-saved',e=>{const {type,record}=e.detail||{},field=type==='comment'?'comments':type==='question'?'questions':null;if(!field||!record||record.origin!=='user'||!paragraphMap.has(record.passageId)||record.bookId!==book?.bookId||record.contentVersion!==book?.contentVersion)return;if(!records[field].some(r=>r.id===record.id))records[field].push(record);if(!$('note-panel').hidden)renderPanel();document.dispatchEvent(new CustomEvent('reader:records-updated'));});
