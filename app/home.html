@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/home-motion.css"><script type="module" src="/home-motion.mjs"></script>
   <link rel="stylesheet" href="/home-atmosphere.css"><script type="module" src="/home-atmosphere.mjs"></script>
   <link rel="stylesheet" href="/library-craft.css">
+  <link rel="stylesheet" href="/library-personal.css">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -18,7 +19,7 @@
     <nav class="shelf-tabs" aria-label="书籍筛选"><button type="button" aria-pressed="true" data-shelf="all" data-hint="我的书房"><span data-icon="library" aria-hidden="true"></span><span class="sidebar-label">我的书房</span><span class="sidebar-book-count" id="sidebar-book-count"></span></button><button type="button" aria-pressed="false" data-shelf="private" data-hint="我上传的"><span data-icon="folder-open" aria-hidden="true"></span><span class="sidebar-label">我上传的</span></button></nav>
     <div class="sidebar-secondary"><button id="library-calendar" type="button" data-hint="阅读日历"><span data-icon="calendar-days" aria-hidden="true"></span><span class="sidebar-label">阅读日历</span></button><button id="library-chat-open" type="button" data-hint="阅读对话"><span data-icon="message-circle" aria-hidden="true"></span><span class="sidebar-label">阅读对话</span></button><button id="upload-button" type="button" data-hint="带来一本书"><span data-icon="plus" aria-hidden="true"></span><span class="sidebar-label">带来一本书</span></button></div>
   </div>
-  <button class="library-settings library-only" id="library-settings" type="button" data-hint="设置"><span data-icon="settings-2" aria-hidden="true"></span><span class="sidebar-label">设置</span></button>
+  <div class="library-footer library-only"><button class="library-trash" id="library-trash" type="button" data-hint="回收站" aria-label="回收站"><span data-icon="trash-2" aria-hidden="true"></span><span class="sidebar-label">回收站</span></button><button class="library-settings" id="library-settings" type="button" data-hint="设置"><span data-icon="settings-2" aria-hidden="true"></span><span class="sidebar-label">设置</span></button></div>
   <button class="site-theme" id="site-theme" type="button" aria-label="切换页面外观">◐</button><button class="outline small" id="account-button">登录 / 注册 <span aria-hidden="true">↗</span></button>
 </header>
 <main id="main">
@@ -39,7 +40,7 @@
 </div>
 <div id="library-view" hidden>
   <div class="library-mobile-bar"><a class="brand" href="/" aria-label="循页首页"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 8c8-4 15-3 21 1v32c-6-4-13-5-21-1V8Zm21 1 8-4v33l-8 3M11 16c3-1 6-1 9 1M11 23c3-1 6-1 9 1M11 30c3-1 6-1 9 1"/></svg></span><span class="brand-name">循页<small>PAGE BY PAGE</small></span></a><button id="library-menu" type="button" class="sidebar-icon-button" aria-label="打开书房导航" aria-controls="library-nav-dialog"><span data-icon="panel-left" aria-hidden="true"></span></button></div>
-  <div class="room-heading"><h1 id="room-title">我的书房</h1><span id="room-count" aria-live="polite"></span></div><p id="library-description" class="sr-only">自己的书与阅读记录。</p>
+  <div class="room-heading"><h1 id="room-title">我的书房</h1><span id="room-count" aria-live="polite"></span></div><p id="library-description" class="sr-only">自己的书与阅读记录。</p><p id="shelf-order-help" class="sr-only">可拖动封面或拖动手柄调整位置。手柄也支持左右方向键；更多操作中可向前或向后移动。</p>
   <p id="library-status" class="status" role="status"></p><button id="library-retry" class="text-link" type="button" hidden>重新打开书房</button>
   <div class="library-workspace"><div class="library-main"><div id="reading-dashboard"><div data-reading-arrival="library"><p role="status">正在打开书房…</p></div></div><section class="library-shelf" id="library-shelf" aria-label="书架"><h2 id="shelf-title" hidden>书架上的其他书</h2><div id="library-books" class="book-grid library-grid" aria-busy="true"></div><div id="empty-shelf" class="empty-shelf" hidden><h2>还没有自己的书</h2><p>带来一份 PDF、TXT 或 Markdown。</p><button class="outline" id="empty-upload" type="button">带来第一本书</button><button class="text-link" id="empty-clear" type="button" hidden>清空搜索</button></div></section></div><aside id="reading-overview" hidden aria-label="阅读近况"></aside></div>
 </div>

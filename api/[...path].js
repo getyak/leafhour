@@ -16,7 +16,7 @@ return async function handler(req,res){
   try{
     const route=routeOf(req);
     // Legacy single-owner APIs never read the private archive on this public surface.
-    if(!/^\/api\/(auth\/|library(?:\/|$)|agent\/)/.test(route))return json(res,404,{error:'请从书房选择一本书再开始阅读'});
+    if(!/^\/api\/(auth\/|library(?:\/|$)|account\/profile$|book-gifts\/|agent\/)/.test(route))return json(res,404,{error:'请从书房选择一本书再开始阅读'});
     const origin=env.READER_PUBLIC_ORIGIN;
     if(!origin?.startsWith('https://'))return json(res,503,{error:'线上书房地址尚未配置'});
     if(!portalPromise){const store=storeFactory({env});portalPromise=portalFactory({dataDir:'hosted',publicOrigin:origin,allowLocal:false,dataStore:store,authService:authFactory({store,env}),hostedMcp:true}).catch(e=>{portalPromise=null;throw e;});}

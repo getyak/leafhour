@@ -41,7 +41,7 @@ test('cancelled, missing and expired browser transactions cannot create a sessio
 test('Apple relay identities keep their verified provider ID instead of joining another mailbox',async()=>{
   const f=authFixture({onProvider:({url,providerSession})=>url.pathname.endsWith('/settings')?Response.json({external:{email:true,google:true,apple:true}}):url.searchParams.get('grant_type')==='pkce'?Response.json({...providerSession(),user:{id:'apple-relay-owner',email:'relay@privaterelay.appleid.com',app_metadata:{provider:'apple'}}}):undefined});
   const auth=createHostedAuth({...f,store:f.store()});assert.equal(typeof auth.beginOAuth,'function');const flow=await auth.beginOAuth('apple','/library'),result=await auth.finishOAuth(flow.transactionToken,'apple-code');
-  assert.deepEqual(result.user,{id:'apple-relay-owner',email:'relay@privaterelay.appleid.com',kind:'apple'});
+  assert.deepEqual(result.user,{id:'apple-relay-owner',email:'relay@privaterelay.appleid.com',kind:'apple',displayName:'',avatarUrl:null});
 });
 async function portalServer(t){
   const f=authFixture(),auth=createHostedAuth({...f,store:f.store()}),portal=await createPortal({dataDir:'hosted-fixture',publicOrigin:f.env.READER_PUBLIC_ORIGIN,allowLocal:false,dataStore:f.store(),authService:auth,catalogDir:null});
