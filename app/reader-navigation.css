@@ -1,0 +1,87 @@
+/* One quiet baseline for the navigation, book identity and reading controls. */
+.reading-header{grid-template-columns:minmax(0,1fr) minmax(0,auto) minmax(0,1fr)}
+.reading-header .reader-navigation{display:flex;align-items:center;gap:7px;min-width:0}
+.reader-nav-item{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:0 10px;border-radius:7px;color:var(--muted);font:400 12px/1 var(--interface);letter-spacing:.03em;text-decoration:none;white-space:nowrap;transition:color .16s,background .16s}
+.reader-nav-item:hover,.reader-nav-item[aria-expanded=true]{color:var(--ink);background:color-mix(in srgb,var(--accent) 6%,transparent)}
+.reader-nav-item svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.reader-nav-divider{width:1px;height:13px;background:var(--line);flex:none;opacity:.8}
+.reading-header .running-title{display:flex;align-items:center;justify-content:center;gap:10px;min-width:0;max-width:min(430px,36vw);min-height:44px;padding:0 10px;border-radius:8px;font:400 12px/1.5 var(--interface);letter-spacing:.02em;color:var(--muted);cursor:pointer;transition:color .16s,background .16s}
+.reading-header .running-title:hover,.reading-header .running-title[aria-expanded=true]{background:color-mix(in srgb,var(--accent) 5%,transparent);color:var(--ink)}
+.reading-header .running-title>span{margin:0;min-width:0}
+.reading-header #running-book-title{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+.reading-header #running-chapter{flex:none;font-size:10px;letter-spacing:.02em;padding-left:10px;border-left:1px solid var(--line)}
+.running-title>svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;opacity:.55;flex:none;transition:transform .18s}
+.running-title[aria-expanded=true]>svg{transform:rotate(180deg)}
+.reader-surface-close{display:grid;place-items:center;width:36px;min-height:44px;padding:0;border-radius:7px;color:var(--muted);flex:none}
+.reader-surface-close:hover{background:var(--wash);color:var(--ink)}
+.reader-surface-close svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round}
+
+/* A bookplate below the title, leaving the reading page in place. */
+.book-info{position:fixed;inset:auto;margin:0;width:min(380px,calc(100vw - 32px));max-height:calc(100dvh - var(--book-info-top,80px) - 16px);overflow:auto;overscroll-behavior:contain;padding:18px 23px 20px;border:1px solid color-mix(in srgb,var(--line) 75%,transparent);border-radius:13px;background:var(--panel);color:var(--ink);box-shadow:0 10px 28px #1523190c,0 30px 80px #15231914;font-family:var(--interface);outline-offset:3px}
+.book-info::backdrop{background:transparent}
+.book-info-heading{display:flex;align-items:center;justify-content:space-between;margin:-6px -9px 14px 0}
+.book-info-heading>span{font:10px/1.6 var(--interface);color:var(--muted);letter-spacing:.1em}
+.book-info-identity{display:grid;grid-template-columns:72px minmax(0,1fr);align-items:center;gap:20px}
+.book-info-cover{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;min-height:105px;padding:10px 9px 9px;background:#6d7865;color:#fcf8e9;box-shadow:inset 3px 0 #0002,inset 4px 0 #fff2,2px 3px 6px #1523191a;border-radius:1px 4px 4px 1px;text-align:center}
+.book-info[data-cover=alice] .book-info-cover{background:#658779}
+.book-info[data-cover=walden] .book-info-cover{background:#68765e}
+.book-info[data-cover=meditations] .book-info-cover{background:#8c7659}
+.book-info-cover>span{font:8px/1.4 var(--interface);letter-spacing:.12em;opacity:.7}
+.book-info-cover strong{font:400 12px/1.6 var(--book);overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+.book-info-cover i{font:15px/1 Georgia,serif;opacity:.8}
+.book-info-identity h2{font:400 22px/1.5 var(--book);margin:0 0 6px;overflow-wrap:anywhere;letter-spacing:.01em}
+.book-info-original{font:italic 12px/1.65 var(--english);color:var(--muted);margin:0 0 10px;overflow-wrap:anywhere}
+.book-info-author{font:11px/1.7 var(--interface);color:var(--muted);margin:0;overflow-wrap:anywhere}
+.book-info-description{font:14px/1.95 var(--book);margin:23px 0 16px;overflow-wrap:anywhere}
+.book-info-current{font:11px/1.8 var(--interface);color:var(--accent);margin:0 0 13px;overflow-wrap:anywhere}
+.book-info-sample{font:10px/1.8 var(--interface);color:var(--muted);margin:0 0 16px;overflow-wrap:anywhere}
+.book-info-footer{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:14px;border-top:1px solid var(--line);font:10px/1.6 var(--interface);color:var(--muted)}
+.book-info-footer a{text-decoration:none;min-height:32px;display:inline-flex;align-items:center;gap:8px}
+.book-info-footer a:hover{text-decoration:underline;text-underline-offset:4px}
+
+/* Number, title and current location are columns rather than spaced text. */
+.toc-dialog{position:fixed;inset:84px auto auto 24px;margin:0;padding:0;width:min(404px,calc(100vw - 48px));max-height:calc(100dvh - 108px);overflow:hidden;border:1px solid var(--line);border-radius:13px;box-shadow:0 14px 60px #15231920}
+.toc-dialog[open]{display:flex;flex-direction:column}
+.toc-dialog::backdrop{background:#15231912;backdrop-filter:blur(1px)}
+.toc-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:25px 25px 20px;flex:none}
+.toc-heading p{font:11px/1.6 var(--interface);color:var(--muted);margin:0 0 8px;overflow-wrap:anywhere}
+.toc-heading h2{font:400 25px/1.4 var(--book);margin:0;letter-spacing:.04em}
+.toc-heading>.reader-surface-close{margin:-8px -11px 0 0}
+#toc-list{padding:0 12px 15px;overflow:auto;overscroll-behavior:contain;min-height:0;scrollbar-width:thin}
+.toc-entry+.toc-entry{border-top:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
+.toc-dialog .toc-chapter{display:grid;grid-template-columns:25px minmax(0,1fr) 27px;align-items:center;gap:12px;width:100%;min-height:63px;padding:12px 13px;border-radius:7px;text-align:left;color:var(--muted);font:12px/1.6 var(--interface);transition:background .15s,color .15s}
+.toc-chapter:hover{background:var(--wash);color:var(--ink)}
+.toc-chapter[aria-current=location]{background:color-mix(in srgb,var(--accent) 7%,transparent);color:var(--accent)}
+.toc-number{font:12px/1.6 var(--english);font-variant-numeric:tabular-nums;align-self:start;padding-top:2px;opacity:.7}
+.toc-title{min-width:0}
+.toc-title-main{display:block;font:14px/1.65 var(--book);color:var(--ink);overflow-wrap:anywhere}
+.toc-title-original{display:block;font:10px/1.7 var(--english);color:var(--muted);margin-top:3px;overflow-wrap:anywhere;opacity:.8}
+.toc-current{font:9px/1.5 var(--interface);text-align:right;opacity:0;transition:opacity .15s}
+.toc-chapter:hover .toc-current,.toc-chapter[aria-current=location] .toc-current{opacity:1}
+.toc-dialog .toc-section-disclosure{margin:0 13px 12px 50px}
+.toc-dialog .toc-section-disclosure>summary{font:10px/1.8 var(--interface);color:var(--muted);padding:5px 0;list-style:revert;min-height:32px}
+.toc-dialog .toc-sections{padding:2px 0 0}
+.toc-dialog .toc-sections button{min-height:36px;font-size:11px;padding:6px 0;color:var(--muted)}
+
+@media(max-width:767px){
+  .reading-header{grid-template-columns:auto minmax(0,1fr) auto;gap:5px;padding-inline:12px}
+  .reading-header .reader-navigation{gap:3px}
+  .reader-nav-item{padding-inline:7px;gap:5px;font-size:11px}
+  .reading-header .running-title{max-width:100%;padding-inline:5px;gap:6px}
+  .reading-header #running-book-title{font-size:11px}
+  .reading-header #running-chapter{display:none}
+  .toc-dialog{inset:74px auto auto 12px;width:calc(100vw - 24px);max-width:404px;max-height:calc(100dvh - 86px)}
+  .toc-heading{padding:21px 22px 17px}
+}
+@media(max-width:560px){
+  .reader-nav-item .reader-home-label{display:none}
+  .reader-nav-item:first-child{width:30px;padding:0}
+  .reader-nav-divider{height:11px}
+  .reading-header .running-title{gap:3px}
+  .running-title>svg{width:10px}
+  .book-info{padding:16px 20px 18px}
+}
+@media(max-width:390px){.reading-header{padding-inline:8px;gap:3px}.reader-nav-item{padding-inline:5px}.reading-header #running-book-title{font-size:10px}}
+@media(prefers-reduced-motion:no-preference){.book-info:popover-open{animation:book-info-arrive .18s ease-out}@keyframes book-info-arrive{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}}
+@media(prefers-reduced-motion:reduce){.reader-nav-item,.reading-header .running-title,.running-title>svg,.toc-dialog .toc-chapter,.toc-current{transition:none}}
+@media(prefers-contrast:more){.book-info,.toc-dialog{border-color:var(--muted)}}
