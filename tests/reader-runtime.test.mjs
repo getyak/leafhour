@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdir,mkdtemp,readFile,rm,stat,writeFile} from 'node:fs/promises';
+import {mkdir,mkdtemp,readFile,rm,stat,symlink,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {tmpdir} from 'node:os';
 import {fileURLToPath,pathToFileURL} from 'node:url';
@@ -52,4 +52,44 @@ test('a mistaken non-runtime output directory is refused without deleting its co
   await writeFile(path.join(outputDir,'manifest.json'),JSON.stringify({kind:'some-other-artifact'}));
   await assert.rejects(runtime.buildReaderRuntime({root,outputDir,verify:false}),/generated runtime/i);
   assert.equal(await readFile(path.join(outputDir,'keep.txt'),'utf8'),'preserved');
+});
+
+test('an explicitly allowed Vercel dependency-only cache can be rebuilt without a restored manifest',{timeout:90000},async t=>{
+  const directory=await mkdtemp(path.join(tmpdir(),'reader-runtime-partial-cache-')),outputDir=path.join(directory,'runtime');
+  t.after(()=>rm(directory,{recursive:true,force:true}));
+  await mkdir(path.join(outputDir,'node_modules'),{recursive:true});
+  await writeFile(path.join(outputDir,'node_modules','obsolete-cache.txt'),'old dependency');
+  await assert.rejects(runtime.buildReaderRuntime({root,outputDir,verify:false}),/generated runtime/i);
+  const built=await runtime.buildReaderRuntime({root,outputDir,verify:false,allowDependencyCache:true});
+  assert.equal(built.kind,'marginalia-reader-runtime');
+  assert.equal(JSON.parse(await readFile(path.join(outputDir,'manifest.json'),'utf8')).kind,'marginalia-reader-runtime');
+  await assert.rejects(stat(path.join(outputDir,'node_modules','obsolete-cache.txt')),error=>error.code==='ENOENT');
+  assert.ok((await stat(path.join(outputDir,'node_modules/@deepseek-ai/dsh-sdk-client/lib/index.js'))).isFile());
+});
+
+test('dependency-cache recovery still refuses extra files, fake manifests, files and symbolic links',{timeout:90000},async t=>{
+  const directory=await mkdtemp(path.join(tmpdir(),'reader-runtime-bad-cache-'));
+  t.after(()=>rm(directory,{recursive:true,force:true}));
+  const target=path.join(directory,'outside');await mkdir(target);await writeFile(path.join(target,'keep.txt'),'preserved');
+  for(const kind of ['extra-file','fake-manifest','file-as-modules','linked-modules','linked-output']){
+    const outputDir=path.join(directory,kind);
+    if(kind==='linked-output'){
+      const cache=path.join(directory,'outside-cache');
+      await mkdir(path.join(cache,'node_modules'),{recursive:true});await writeFile(path.join(cache,'node_modules','keep.txt'),'preserved');await symlink(cache,outputDir,'dir');
+    }else{
+      await mkdir(outputDir);
+      if(kind==='file-as-modules')await writeFile(path.join(outputDir,'node_modules'),'preserved');
+      else if(kind==='linked-modules')await symlink(target,path.join(outputDir,'node_modules'),'dir');
+      else{
+        await mkdir(path.join(outputDir,'node_modules'));
+        await writeFile(path.join(outputDir,kind==='fake-manifest'?'manifest.json':'keep.txt'),kind==='fake-manifest'?JSON.stringify({kind:'some-other-artifact'}):'preserved');
+      }
+    }
+    await assert.rejects(runtime.buildReaderRuntime({root,outputDir,verify:false,allowDependencyCache:true}),/generated runtime/i,kind);
+    assert.equal(await readFile(path.join(target,'keep.txt'),'utf8'),'preserved');
+    if(kind==='file-as-modules')assert.equal(await readFile(path.join(outputDir,'node_modules'),'utf8'),'preserved');
+    if(kind==='extra-file')assert.equal(await readFile(path.join(outputDir,'keep.txt'),'utf8'),'preserved');
+    if(kind==='fake-manifest')assert.equal(JSON.parse(await readFile(path.join(outputDir,'manifest.json'),'utf8')).kind,'some-other-artifact');
+    if(kind==='linked-output')assert.equal(await readFile(path.join(directory,'outside-cache','node_modules','keep.txt'),'utf8'),'preserved');
+  }
 });

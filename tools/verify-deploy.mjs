@@ -8,6 +8,7 @@ const tests=(await readdir('tests')).filter(file=>file.endsWith('.test.mjs')).so
 // Full deployment snapshot validation runs in Actions before production verification.
 const stages=[['--test',...tests],['tools/build-reader-runtime.mjs'],['tools/build-vercel.mjs'],['tools/check-public-build.mjs','dist'],...(process.argv.includes('--hosted')?[]:[['tools/release-policy.mjs']]),['tools/verify-release.mjs']];
 for(const args of stages){
-  const result=spawnSync(process.execPath,args,{env:environment,stdio:'inherit'});
+  const stageEnvironment=args[0]==='tools/build-reader-runtime.mjs'&&process.env.VERCEL==='1'?{...environment,VERCEL:'1'}:environment;
+  const result=spawnSync(process.execPath,args,{env:stageEnvironment,stdio:'inherit'});
   if(result.error)throw result.error;if(result.status!==0)process.exit(result.status||1);
 }
