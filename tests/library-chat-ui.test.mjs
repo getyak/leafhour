@@ -85,3 +85,14 @@ test('unsafe URLs and same-origin absolute navigation cannot bypass the citation
  for(const value of ['javascript:alert(1)','data:text/html,x','https://name:password@example.org/','//example.org/','/read?book=secret','https://reader.example/read?book=secret&passage=p1','https://reader.example/library'])assert.equal(safeChatUrl(value,{origin:'https://reader.example'}),null,value);
  assert.equal(safeChatUrl('https://example.org/article',{origin:'https://reader.example'}),'https://example.org/article');
 });
+test('completed POST survives a delayed pre-claim empty GET in the view and exported conversation',async t=>{
+ const post=deferred(),earlyGet=deferred();let reads=0,receipt;
+ const s=setup(t,{handler:async(url,payload)=>{if(payload){receipt={...payload,status:'running',answer:null};return post.promise;}reads++;return reads===1?response([]):earlyGet.promise;}});
+ const create=URL.createObjectURL,revoke=URL.revokeObjectURL;let exported;
+ URL.createObjectURL=blob=>{exported=blob;return 'blob:chat-export';};URL.revokeObjectURL=()=>{};t.after(()=>{URL.createObjectURL=create;URL.revokeObjectURL=revoke;});
+ s.chat.open();await flush();type(s.input(),'先完成这个问题');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();assert.equal(reads,2);
+ post.resolve({...receipt,status:'completed',answer:{summary:'已经保存的完整回答',sourceRefs:[]}});await flush();assert.ok(s.find('library-chat-answer'));assert.equal(s.input().disabled,false);
+ earlyGet.resolve(response([]));await flush();assert.ok(s.find('library-chat-answer'),'old empty snapshot cannot erase completed POST');assert.ok(plain(s.find('library-chat-answer')).includes('已经保存的完整回答'));
+ const exportButton=s.all().find(n=>n.tagName==='BUTTON'&&n.textContent==='导出这段对话');exportButton.click();const data=JSON.parse(await exported.text());assert.equal(data.turns.length,1);assert.equal(data.turns[0].answer.summary,'已经保存的完整回答');
+ type(s.input(),'下一个问题');assert.equal(s.find('library-chat-send').disabled,false);assert.equal(s.input().value,'下一个问题');
+});
