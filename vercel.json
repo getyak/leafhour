@@ -26,6 +26,10 @@
   },
   "rewrites": [
     {
+      "source": "/gift/:token",
+      "destination": "/book-gift.html"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/service?path=:path*"
     }

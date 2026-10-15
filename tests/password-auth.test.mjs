@@ -120,7 +120,7 @@ test('password HTTP login returns a private cookie and exposes no provider crede
   const headers={};let status,body;
   const req={method:'POST',headers:{host:'reader.example.com',origin:f.env.READER_PUBLIC_ORIGIN,'content-type':'application/json'},body:{email:'reader@example.com',password:'secret'},socket:{remoteAddress:'127.0.0.1'}};
   await portal.handle({req,res:{setHeader:(k,v)=>{headers[k]=v;}},url:new URL('/api/auth/password',f.env.READER_PUBLIC_ORIGIN),send:(s,b)=>{status=s;body=b;}});
-  assert.equal(status,200);assert.deepEqual(body,{user:{id:'user-a',email:'reader@example.com',kind:'email'}});
+  assert.equal(status,200);assert.deepEqual(body,{user:{id:'user-a',email:'reader@example.com',kind:'email',displayName:'',avatarUrl:null}});
   assert.match(headers['Set-Cookie'],/HttpOnly/);assert.match(headers['Set-Cookie'],/Secure/);
   req.headers.origin='https://unrelated.example';await assert.rejects(portal.handle({req,res:{setHeader(){}},url:new URL('/api/auth/password',f.env.READER_PUBLIC_ORIGIN),send(){}}),e=>e.status===403);
 });

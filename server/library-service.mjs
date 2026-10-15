@@ -29,6 +29,18 @@ function mergedPersonalRecords(book,current,incoming){
 }
 const allPassages=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
 const brief=book=>({bookId:book.bookId,contentVersion:book.contentVersion,title:book.title,author:book.author,visibility:book.visibility,source:book.source,cover:book.cover,description:book.description,chineseSample:book.chineseSample,paragraphs:allPassages(book).length,chapters:book.chapters.length,chapterIndex:book.chapters.map(c=>({id:c.id,kind:c.kind,number:c.number,title:c.title})),createdAt:book.createdAt});
+const emptyShelf=()=>({revision:0,order:[],archived:{}});
+const shelfLimit=1000;
+const shelfId=id=>typeof id==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(id);
+function validateShelfOrder(order){
+  if(!Array.isArray(order)||order.length>shelfLimit||order.some(id=>!shelfId(id))||new Set(order).size!==order.length)throw fail('书架顺序不正确，请刷新后重新排列');
+}
+function validateShelfBackup(entry){
+  const shelf=entry.shelf;if(shelf===undefined)return;
+  if(!shelf||typeof shelf!=='object'||Array.isArray(shelf)||Object.keys(shelf).some(key=>!['order','archivedAt'].includes(key)))throw fail('备份中的书架信息不完整');
+  if(shelf.order!==undefined)validateShelfOrder(shelf.order);
+  if(shelf.archivedAt!==undefined&&(typeof shelf.archivedAt!=='string'||!Number.isFinite(Date.parse(shelf.archivedAt))))throw fail('备份中的移除时间不正确');
+}
 
 export async function createLibraryService({dataDir,catalogDir=path.resolve('catalog'),translator=null,dataStore=null}={}){
   if(!dataStore)await mkdir(dataDir,{recursive:true,mode:0o700});
@@ -61,13 +73,49 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(!book){if(!user)throw fail('找不到这本书',404);book=await read(bookFile(user,id),null);}
     if(!book)throw fail('找不到这本书',404);
     book=structuredClone(book);
+    delete book._giftReceive;
     if(book.visibility==='private')book.sourceLanguage=inferSourceLanguage(book.sections.flatMap(s=>s.paragraphs).slice(0,10).map(p=>p.original).join('\n'));
     if(user){const overlay=await read(path.join(userDir(user),'translations',digest(id)+'.json'),{});for(const p of book.sections.flatMap(s=>s.paragraphs))if(overlay[p.id]?.contentVersion===book.contentVersion)p.translations=overlay[p.id].translations;}
     return book;
   }
+  const shelfFile=user=>path.join(userDir(user),'shelf.json');
+  async function allShelfRows(user){const index=user?await read(path.join(userDir(user),'index.json'),{books:[]}):{books:[]};return [...publicBooks.values()].map(brief).concat(index.books);}
+  const activeOrder=(shelf,rows)=>{const visible=rows.filter(row=>!Object.hasOwn(shelf.archived,row.bookId)).map(row=>row.bookId),available=new Set(visible);return [...shelf.order.filter(id=>available.has(id)),...visible.filter(id=>!shelf.order.includes(id))];};
+  function visibleShelf(shelf,rows){const available=new Set(rows.map(row=>row.bookId));return {revision:shelf.revision,order:shelf.order.length?activeOrder(shelf,rows):[],archived:Object.fromEntries(Object.entries(shelf.archived).filter(([id])=>available.has(id)))};}
+  async function shelfState(user){if(!user)return emptyShelf();const [shelf,rows]=await Promise.all([read(shelfFile(user),emptyShelf()),allShelfRows(user)]);return visibleShelf(shelf,rows);}
+  const requireShelfRevision=input=>{if(!Number.isSafeInteger(input?.baseRevision)||input.baseRevision<0)throw fail('请先读取当前书架版本，再保存调整');return input.baseRevision;};
+  const checkShelfRevision=(shelf,revision)=>{if(shelf.revision!==revision)throw fail('书架已在另一处更新，请刷新后再试',409);if(shelf.revision>=Number.MAX_SAFE_INTEGER)throw fail('书架版本已超过可保存范围',409);};
+  async function reorderShelf(user,input){
+    requireUser(user);const revision=requireShelfRevision(input);validateShelfOrder(input?.bookIds);
+    return mutate(shelfFile(user),emptyShelf(),async shelf=>{
+      checkShelfRevision(shelf,revision);const rows=await allShelfRows(user),available=new Set(rows.map(row=>row.bookId)),active=activeOrder(shelf,rows);
+      if(input.bookIds.some(id=>!available.has(id)||Object.hasOwn(shelf.archived,id)))throw fail('找不到要排列的书籍',404);
+      if(input.bookIds.length!==active.length)throw fail('书架已有变化，请刷新后重新排列',409);
+      // Keep archived slots so restoring a book returns it to its former place.
+      const next=[...input.bookIds];shelf.order=shelf.order.filter(id=>available.has(id)).map(id=>Object.hasOwn(shelf.archived,id)?id:next.shift()).filter(Boolean).concat(next);
+      if(shelf.order.length>shelfLimit)throw fail('书架最多支持排列 1000 本书，请先导出整理',413);
+      shelf.revision++;return visibleShelf(shelf,rows);
+    });
+  }
+  async function changeArchive(user,id,input,restore){
+    requireUser(user);const revision=requireShelfRevision(input);await getBook(user,id);
+    return mutate(shelfFile(user),emptyShelf(),async shelf=>{
+      checkShelfRevision(shelf,revision);const rows=await allShelfRows(user);
+      if(!rows.some(row=>row.bookId===id))throw fail('找不到这本书',404);
+      const archived=Object.hasOwn(shelf.archived,id);
+      if(restore){if(archived)delete shelf.archived[id];}
+      else if(!archived){if(Object.keys(shelf.archived).length>=shelfLimit)throw fail('已移除的书较多，请先导出整理',413);shelf.archived={...shelf.archived,[id]:new Date().toISOString()};}
+      if(archived===restore)shelf.revision++;
+      return visibleShelf(shelf,rows);
+    });
+  }
+  const archiveBook=(user,id,input)=>changeArchive(user,id,input,false);
+  const restoreBook=(user,id,input)=>changeArchive(user,id,input,true);
+  async function trash(user){if(!user)return [];const [shelf,rows]=await Promise.all([read(shelfFile(user),emptyShelf()),allShelfRows(user)]);return rows.filter(row=>Object.hasOwn(shelf.archived,row.bookId)).map(row=>({...row,archivedAt:shelf.archived[row.bookId]}));}
   async function list(user){
-    const index=user?await read(path.join(userDir(user),'index.json'),{books:[]}):{books:[]},rows=[...publicBooks.values()].map(brief).concat(index.books);
-    return Promise.all(rows.map(async row=>{if(!user)return {...row,resume:null,journey:null};const data=await read(recordFile(user,row.bookId),{position:null});const book=publicBooks.get(row.bookId)||(!data.position&&row.chapterIndex&&row.contentVersion?{bookId:row.bookId,contentVersion:row.contentVersion,chapters:row.chapterIndex}:await read(bookFile(user,row.bookId),null));return {...row,resume:book&&data.position?resumeSummary(book,data.position):null,journey:book?readingJourney(book,data):null};}));
+    const [all,shelf]=await Promise.all([allShelfRows(user),user?read(shelfFile(user),emptyShelf()):emptyShelf()]),order=shelf.order.length?activeOrder(shelf,all):null,positions=order&&new Map(order.map((id,index)=>[id,index])),rows=all.filter(row=>!Object.hasOwn(shelf.archived,row.bookId));
+    if(positions)rows.sort((a,b)=>positions.get(a.bookId)-positions.get(b.bookId));
+    return Promise.all(rows.map(async row=>{if(!user)return {...row,resume:null,journey:null};const data=await read(recordFile(user,row.bookId),{position:null});const book=publicBooks.get(row.bookId)||(!data.position&&row.chapterIndex&&row.contentVersion?{bookId:row.bookId,contentVersion:row.contentVersion,chapters:row.chapterIndex}:await read(bookFile(user,row.bookId),null));return {...row,...(positions?{shelfPosition:positions.get(row.bookId)}:{}),resume:book&&data.position?resumeSummary(book,data.position):null,journey:book?readingJourney(book,data):null};}));
   }
   async function importDocument(user,input){
     requireUser(user);const extracted=await extractDocument(input),hash=digest(input.bytes);let id='private-'+digest(user.id+hash).slice(0,24),existing=await read(bookFile(user,id),null);
@@ -160,9 +208,14 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   async function authorize(token,id,scope){const data=await read(grantsFile,{grants:[]}),grant=typeof token==='string'&&data.grants.find(g=>g.tokenHash===digest(token));if(!grant||grant.revoked||Date.parse(grant.expiresAt)<=Date.now()||grant.bookId!==id||!grant.scopes.includes(scope))throw fail('Agent 授权无效或范围不足',403);return {id:grant.ownerId};}
   async function grants(user){requireUser(user);return (await read(grantsFile,{grants:[]})).grants.filter(g=>g.ownerId===user.id).map(({ownerId,tokenHash,...g})=>g);}
   async function revokeGrant(user,id){requireUser(user);return mutate(grantsFile,{grants:[]},data=>{const grant=data.grants.find(g=>g.id===id&&g.ownerId===user.id);if(!grant)throw fail('找不到这条授权',404);grant.revoked=true;return {revoked:true};});}
-  async function exportLibrary(user){requireUser(user);const books=[];for(const row of await list(user)){const book=await getBook(user,row.bookId);books.push({book,records:await records(user,row.bookId)});}return {kind:'marginalia-library',schemaVersion:1,exportedAt:new Date().toISOString(),books,includesOriginalFiles:false};}
+  async function shelfBackup(user,id){
+    const shelf=await read(shelfFile(user),emptyShelf());if(!shelf.order.length&&!Object.hasOwn(shelf.archived,id))return {};
+    const available=new Set((await allShelfRows(user)).map(row=>row.bookId));
+    return {shelf:{...(shelf.order.length?{order:shelf.order.filter(key=>available.has(key))}:{}),...(Object.hasOwn(shelf.archived,id)?{archivedAt:shelf.archived[id]}:{})}};
+  }
+  async function exportLibrary(user){requireUser(user);const books=[];for(const row of await allShelfRows(user)){const book=await getBook(user,row.bookId);books.push({book,records:await records(user,row.bookId),...await shelfBackup(user,row.bookId)});}return {kind:'marginalia-library',schemaVersion:1,exportedAt:new Date().toISOString(),books,includesOriginalFiles:false};}
   async function exportManifest(user){
-    requireUser(user);const rows=await list(user);if(rows.length>100)throw fail('单份备份最多容纳100本书，请在本机按书整理后导出。',413);
+    requireUser(user);const rows=await allShelfRows(user);if(rows.length>100)throw fail('单份备份最多容纳100本书，请在本机按书整理后导出。',413);
     return {kind:'marginalia-export-manifest',schemaVersion:1,exportedAt:new Date().toISOString(),books:rows.map(({bookId,contentVersion})=>({bookId,contentVersion}))};
   }
   async function exportBookPart(user,id,{offset=0,snapshot=null}={}){
@@ -171,7 +224,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     const book=await getBook(user,id),personal=await recordsForBook(user,book);
     // Bundled editions are rebuilt on each instance; its start time is not source metadata.
     if(book.visibility==='public')delete book.createdAt;
-    const bytes=Buffer.from(JSON.stringify({book,records:personal})),hash=digest(bytes);
+    const bytes=Buffer.from(JSON.stringify({book,records:personal,...await shelfBackup(user,id)})),hash=digest(bytes);
     if(bytes.length>512*1024*1024)throw fail('这本书的备份过大，请在本机导出。',413);
     if(snapshot&&snapshot!==hash)throw fail('这本书刚刚有新记录，请重试导出。',409);
     if(offset>=bytes.length)throw fail('备份分段范围不正确。');
@@ -180,6 +233,9 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   }
   async function validateRestore(user,backup){
     requireUser(user);const summary=validateLibraryBackup(backup);
+    for(const entry of backup.books)validateShelfBackup(entry);
+    const shelf=await read(shelfFile(user),emptyShelf()),incomingOrders=backup.books.flatMap(entry=>entry.shelf?.order||[]),incomingArchived=backup.books.filter(entry=>entry.shelf?.archivedAt).map(entry=>entry.book.bookId);
+    if(new Set([...shelf.order,...incomingOrders]).size>shelfLimit||new Set([...Object.keys(shelf.archived),...incomingArchived]).size>shelfLimit)throw fail('备份中的书架超过 1000 本，请在本机整理后恢复',413);
     // Validate the entire package before changing any persisted data.
     for(const entry of backup.books){const b=entry?.book,r=entry?.records;if(!b||typeof b.bookId!=='string'||!b.bookId||b.bookId.length>128||typeof b.contentVersion!=='string'||!Array.isArray(b.chapters)||!b.chapters.length||!Array.isArray(b.sections)||b.sections.some(s=>!Array.isArray(s?.paragraphs))||!Array.isArray(b.annotations)||!Array.isArray(b.glossary)||!b.title||typeof b.title.zh!=='string'||!b.source||typeof b.source.format!=='string')throw fail('书籍格式不完整');
       if(dataStore&&Buffer.byteLength(JSON.stringify(b))>3500000)throw fail('这本备份的文字量超过云端限制，请在本机恢复',413);
@@ -198,7 +254,70 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       const overlay={};for(const p of allPassages(book))if(Object.keys(p.translations).length)overlay[p.id]={contentVersion:book.contentVersion,translations:p.translations};
       await mutate(path.join(userDir(user),'translations',digest(book.bookId)+'.json'),{},data=>Object.assign(data,overlay));
       await mutate(recordFile(user,book.bookId),emptyRecords(book),raw=>{const data=mergedPersonalRecords(book,raw,incoming);guardRecordSize(data);Object.assign(raw,data);});
-    }return {restored:backup.books.length};
+    }
+    if(backup.books.some(entry=>entry.shelf))await mutate(shelfFile(user),emptyShelf(),shelf=>{
+      const order=[...new Set([...shelf.order,...backup.books.flatMap(entry=>entry.shelf?.order||[])])],archived={...shelf.archived};
+      for(const entry of backup.books)if(entry.shelf?.archivedAt&&!Object.hasOwn(archived,entry.book.bookId))Object.defineProperty(archived,entry.book.bookId,{value:entry.shelf.archivedAt,enumerable:true,writable:true,configurable:true});
+      if(order.length>shelfLimit||Object.keys(archived).length>shelfLimit)throw fail('书架正在另一处更新，请刷新后重新恢复',409);
+      if(JSON.stringify(order)!==JSON.stringify(shelf.order)||JSON.stringify(archived)!==JSON.stringify(shelf.archived)){checkShelfRevision(shelf,shelf.revision);shelf.order=order;shelf.archived=archived;shelf.revision++;}
+    });
+    return {restored:backup.books.length};
   }
-  return {list,getBook,importDocument,originalInfo,getOriginal,originalDownload,records,addComment,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,validateRestore,restoreLibrary,translationAvailable:!!translator};
+  async function receiveGift(user,backup){
+    requireUser(user);validateLibraryBackup(backup);
+    if(backup.books.length!==1||Buffer.byteLength(JSON.stringify(backup))>MAX_FILE_BYTES)throw fail('请选择一份 20 MB 以内的单书阅读包',413);
+    const entry=backup.books[0],incoming=entry.book,personal=entry.records;
+    if(entry.shelf!==undefined||entry.localReadingDrafts!==undefined||['comments','questions','readingSessions','readingMilestones'].some(key=>personal[key]?.length)||personal.position||personal.readingGoal)throw fail('赠书阅读包不能包含个人记录');
+    const unreadable=()=>fail('这份阅读包的原文与译文合计超过云端阅读容量，请下载后在本机接收',413);
+    if(dataStore&&Buffer.byteLength(JSON.stringify(incoming))>3500000)throw unreadable();
+    const original=structuredClone(incoming),overlay={},fingerprint=digest(JSON.stringify(incoming));original.visibility='private';delete original._giftReceive;
+    for(const paragraph of allPassages(original))if(Object.keys(paragraph.translations).length)overlay[paragraph.id]={contentVersion:original.contentVersion,translations:paragraph.translations};
+    for(const section of original.sections)for(const paragraph of section.paragraphs)paragraph.translations={};
+    const pendingOriginal={...original,_giftReceive:{fingerprint}};
+    if(dataStore&&[pendingOriginal,overlay].some(document=>Buffer.byteLength(JSON.stringify(document))>3500000))throw fail('阅读包的原文或译文超过云端单份容量，请在本机接收',413);
+    const guardOverlay=(source,next)=>{
+      if(!dataStore)return;
+      if(Buffer.byteLength(JSON.stringify(next))>3500000)throw fail('译文已超过云端单份容量，已有记录已保留',413);
+      const projected=structuredClone(source);
+      for(const section of projected.sections)for(const paragraph of section.paragraphs)if(next[paragraph.id]?.contentVersion===source.contentVersion)paragraph.translations=next[paragraph.id].translations;
+      if(Buffer.byteLength(JSON.stringify(projected))>3500000)throw unreadable();
+    };
+    const sameOriginal=book=>book.contentVersion===incoming.contentVersion&&JSON.stringify(allPassages(book).map(p=>[p.id,p.original]))===JSON.stringify(allPassages(incoming).map(p=>[p.id,p.original]));
+    if(publicBooks.has(incoming.bookId)){
+      const catalog=publicBooks.get(incoming.bookId);if(!sameOriginal(catalog))throw fail('书架已有同标识的另一版本，原书和记录已保留',409);
+      if(Object.keys(overlay).length){
+        const paragraphs=new Map(allPassages(catalog).map(paragraph=>[paragraph.id,paragraph]));
+        await mutate(path.join(userDir(user),'translations',digest(incoming.bookId)+'.json'),{},current=>{
+          for(const [id,translation]of Object.entries(overlay)){
+            const saved=current[id];if(saved&&saved.contentVersion!==catalog.contentVersion)throw fail('译文来源版本已变化，已有译文已保留',409);
+            const existing=saved?.translations||paragraphs.get(id)?.translations||{},missing=Object.fromEntries(Object.entries(translation.translations).filter(([variant])=>!Object.hasOwn(existing,variant)));
+            if(Object.keys(missing).length)current[id]={...saved,contentVersion:catalog.contentVersion,translations:{...missing,...existing}};
+          }
+          guardOverlay(catalog,current);
+        });
+      }
+      return {bookId:incoming.bookId,alreadyOwned:true};
+    }
+    // Claim the original with CAS. A concurrent import wins intact; accepting a
+    // letter must never replace that copy, its translations or personal records.
+    const claim=await mutate(bookFile(user,incoming.bookId),{},current=>{
+      if(Object.keys(current).length){
+        if(!sameOriginal(current))throw fail('书架已有同标识的另一版本，原书和记录已保留',409);
+        if(current._giftReceive&&current._giftReceive.fingerprint!==fingerprint)throw fail('另一封赠书尚未收好，请先重试原来的赠书链接',409);
+        return {created:false,pending:!!current._giftReceive};
+      }
+      Object.assign(current,pendingOriginal);return {created:true,pending:true};
+    });
+    if(claim.pending&&Object.keys(overlay).length)await mutate(path.join(userDir(user),'translations',digest(incoming.bookId)+'.json'),{},current=>{
+      for(const [id,translation]of Object.entries(overlay)){
+        if(current[id]&&current[id].contentVersion!==original.contentVersion)throw fail('译文来源版本已变化，已有译文已保留',409);
+        current[id]={...translation,translations:{...translation.translations,...current[id]?.translations}};
+      }
+      guardOverlay(original,current);
+    });
+    await mutate(path.join(userDir(user),'index.json'),{books:[]},current=>{if(!current.books.some(row=>row.bookId===incoming.bookId))current.books.push(brief(original));});
+    if(claim.pending)await mutate(bookFile(user,incoming.bookId),{},current=>{if(current._giftReceive?.fingerprint===fingerprint)delete current._giftReceive;});
+    return {bookId:incoming.bookId,alreadyOwned:!claim.created};
+  }
+  return {list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,originalInfo,getOriginal,originalDownload,records,addComment,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,validateRestore,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }
