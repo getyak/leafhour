@@ -1,0 +1,24 @@
+.reading-loading{padding:0;max-width:100%;min-height:560px}
+.reading-loading>p{font:12px/1.8 var(--interface);color:var(--muted);margin:32px 0 0;letter-spacing:.04em}
+.reading-skeleton i{display:block;background:var(--line);border-radius:2px;opacity:.38;height:9px}
+.reading-skeleton .skeleton-eyebrow{width:50px;height:7px;margin-bottom:28px}
+.reading-skeleton .skeleton-title{width:40%;height:28px;margin-bottom:70px}
+.skeleton-lines{display:grid;gap:32px}
+.skeleton-lines i:nth-child(3n){width:73%;margin-bottom:20px}
+.skeleton-lines i:last-child{width:56%}
+.flow-chapter[data-first=true]>.flow-heading{display:none}
+.flow-heading{padding-top:38px;margin-bottom:34px;scroll-margin-top:100px}
+.flow-heading h2{font:400 29px/1.6 var(--book);margin:10px 0 0;text-wrap:balance}
+.flow-heading .chapter-number{font-size:11px;margin:0}
+.flow-chapter-end{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:52px;margin-top:32px;border-top:1px solid var(--line);font:11px/1.8 var(--interface);color:var(--muted)}
+.flow-chapter-end button{min-height:44px;min-width:44px;color:var(--muted);padding:8px 0;font-size:11px}
+.flow-chapter-end button:hover{color:var(--accent)}
+body[data-continuous=false] .flow-chapter-end{display:none}
+.flow-chapter .reading-divider{margin:3px 0!important;min-height:0}
+.flow-chapter .reading-divider p{font:12px/1.4 var(--english)!important;letter-spacing:.15em!important;color:var(--muted);text-align:center;text-indent:0!important;margin:0}
+.flow-chapter .reading-divider .translation-status{display:none}
+.settings-hint{font:11px/1.8 var(--interface);color:var(--muted);margin:-5px 0 18px}
+#continuous-reading{width:18px;height:18px;accent-color:var(--accent);margin:10px 0}
+.flow-chapter:last-child .flow-chapter-end{margin-bottom:0}
+body[data-continuous=true] .chapter-footer{display:none}
+@media(max-width:767px){.flow-heading{padding-top:28px;margin-bottom:28px}.flow-heading h2{font-size:26px}.flow-chapter-end{margin-top:24px}.reading-loading{min-height:500px}}
