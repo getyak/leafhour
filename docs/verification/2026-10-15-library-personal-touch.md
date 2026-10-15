@@ -28,3 +28,11 @@ The seven-width integrated library sweep, real touch/native drag, avatar file up
 ## Release checks
 
 Deployment status and the exact source revision are verified after merge. Production verification is read-only: public page/assets, new hosted-route responses and release identity. It does not create a public gift or modify a real profile or shelf.
+
+## Production routing follow-up — 2026-10-16
+
+The first expanded live probe found `/gift/<token>` returned the static 404 even though `/book-gift` and all new modules were present. The gift API already returned its expected missing-letter JSON. Root cause: `cleanUrls: true` removes HTML suffixes, but the new rewrite still targeted `/book-gift.html`. [Vercel's rewrite contract](https://vercel.com/docs/project-configuration/vercel-json#rewrites) requires an extensionless destination with clean URLs. A new deployment-contract regression failed on that mismatch before the one-line destination fix.
+
+Automatic production smoke now requests the public gift path, its modules, the library action/profile modules, the unknown-letter API response and rejection of an anonymous profile write. It will no longer report a successful release when the gift entry is missing. Final live verification belongs to the follow-up PR and exact deployed source revision.
+
+Follow-up local verification passed: 545 tests, zero failures, one existing platform skip (546 total), plus runtime/public build/release checks. Independent review also strengthened the smoke assertion to require the gift page's module and envelope/error elements; a generic non-empty 200 page cannot satisfy it.
