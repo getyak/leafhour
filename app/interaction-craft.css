@@ -236,3 +236,4 @@ dialog .status:empty { display: none; }
 .book-action-menu .book-menu-item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .profile-avatar-actions :is(.profile-avatar-upload, .profile-avatar-reset) { display: inline-flex; align-items: center; min-height: 44px; }
 .library-page #library-books .source-link, .trash-book-row button { min-height: 44px; }
+.settings-dialog .settings-sound-heading button { min-width: 44px; }
