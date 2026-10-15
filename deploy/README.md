@@ -6,7 +6,7 @@
 
 应用先执行 `supabase/migrations/202610130001_hosted_library.sql`。它新增 `reader_documents` 与只供服务端调用的比较写入函数，并创建 20 MB 限制的私人 `reader-originals` 存储桶；不修改现有 `reader_books` 和 `reader_states`。RLS 开启，匿名和普通认证角色无数据表权限。
 
-服务端配置 `SUPABASE_URL`、`SUPABASE_SECRET_KEY`、`SUPABASE_PUBLISHABLE_KEY`、`READER_PUBLIC_ORIGIN`。密钥只留在 Vercel 的受保护环境变量，不能提交。可选 `DEEPSEEK_API_KEY` 提供显式的当前段落及邻段双译草稿。
+服务端配置 `SUPABASE_URL`、`SUPABASE_SECRET_KEY`、`SUPABASE_PUBLISHABLE_KEY`、`READER_PUBLIC_ORIGIN`。密钥只留在 Vercel 的受保护环境变量，不能提交。可选 `DEEPSEEK_API_KEY` 提供显式的当前段落及邻段双译草稿，以及官方 DeepSeek Harness 阅读对话。对话临时运行文件使用函数临时目录，问题和回答按账号保存在共享领域存储。每次生成最多 45 秒、费用预留最多 0.10 元；每个账号每小时最多 10 次提问，同书只允许一个运行中的请求；全服务最多同时 2 项、每小时 100 项、每天 500 项。关闭窗口保留任务，停止操作通过共享状态通知运行实例。费用预留不是供应商结算金额，费用参照过期时拒绝生成。构建时按部署平台提取官方 SDK、最小 profile 与实际插件依赖，生成不公开的 `.reader-runtime/`，并在无真实密钥、零模型请求的条件下启动一次真实子进程。不得把本机生成的原生绑定直接复制到其他平台。
 
 托管版默认用邮箱与密码登录，密码直接交给 Supabase Auth 验证，不写入应用数据。验证码登录继续可用；新建书房使用邮箱验证码确认身份后设置密码，找回密码使用 Supabase recovery 验证码后设置密码。新密码至少八个字符，已有密码登录兼容旧长度。密码尝试按邮箱与全站共享限流，供应商故障保留可重试提示。仅配置 SMTP 的本机实例保留原有验证码与本机书房入口。
 

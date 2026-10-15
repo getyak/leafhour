@@ -16,3 +16,5 @@ test-results/
 .playwright-cli/
 __pycache__/
 
+
+.reader-runtime/

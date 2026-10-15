@@ -18,7 +18,8 @@
     "check:release": "node tools/release-policy.mjs && node tools/verify-release.mjs",
     "verify:deploy": "node tools/verify-deploy.mjs",
     "verify:hosted": "node tools/verify-deploy.mjs --hosted",
-    "smoke:production": "node tools/smoke-release.mjs"
+    "smoke:production": "node tools/smoke-release.mjs",
+    "build:reader-runtime": "node tools/build-reader-runtime.mjs"
   },
   "dependencies": {
     "@deepseek-ai/dsh-sdk-client": "0.2.1-alpha.2",
@@ -32,5 +33,8 @@
   },
   "bin": {
     "marginalia-mcp": "server/mcp.mjs"
+  },
+  "devDependencies": {
+    "@vercel/nft": "1.11.0"
   }
 }

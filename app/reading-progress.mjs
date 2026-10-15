@@ -24,7 +24,7 @@ export function resumeSummary(book,position){
   const chapter=book.chapters.find(c=>c.id===saved.chapterId);if(!chapter)return null;
   const title=chapter.title?.zh||chapter.title?.en||'上次的位置';
   const label=chapter.kind==='body'&&!/^第 .+ [章卷]$/.test(title)?'第 '+chapter.number+' 章 · '+title:title;
-  return {chapterId:chapter.id,passageId:saved.passageId,chapterTitle:title,label,updatedAt:saved.updatedAt||null,revision:saved.revision||0};
+  return {chapterId:chapter.id,passageId:saved.passageId,chapterTitle:title,label,mode:saved.mode,variant:saved.variant,updatedAt:saved.updatedAt||null,revision:saved.revision||0};
 }
 export const recoveredPositionNeedsChoice=(knownRevision,remote)=>!!remote&&(remote.revision||0)!==knownRevision;
 import {validParagraphAnchor} from './paragraph-anchor.mjs';

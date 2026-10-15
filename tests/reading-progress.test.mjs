@@ -39,6 +39,7 @@ test('a newer server position beats an old browser cache; unsent compatible work
 });
 test('resume summaries preserve the anchor and name its actual chapter, without invented completion percentages',()=>{
   const summary=resumeSummary(book,position('p2',5));assert.equal(summary.passageId,'p2');assert.equal(summary.chapterTitle,'继续');assert.equal(summary.label,'第 2 章 · 继续');assert.ok(!('percentage' in summary));
+  assert.equal(summary.mode,'en');assert.equal(summary.variant,'literal');
   assert.equal(resumeSummary(book,{...position('p2',5),passageId:'missing'}),null);
 });
 test('library returns only the signed-in reader resume and refuses stale browser writes atomically',async t=>{
