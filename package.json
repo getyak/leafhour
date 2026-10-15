@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node server/server.mjs",
-    "start:configured": "node --env-file=.env server/server.mjs",
+    "start:configured": "node --env-file=.env --env-file-if-exists=.env.audio server/server.mjs",
     "mcp": "node server/mcp.mjs",
     "test": "node --test tests/*.test.mjs",
     "build:experiences": "node tools/build-experiences.mjs",

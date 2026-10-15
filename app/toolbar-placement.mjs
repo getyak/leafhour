@@ -15,3 +15,9 @@ export function placeFloatingToolbar({anchor,fallbackAnchor=anchor,toolbar,viewp
   const top=Math.max(headerBottom+HEADER_GAP,Math.min(preferred,viewport.height-toolbar.height-EDGE_GAP));
   return {left,top,placement,visible};
 }
+
+export function placeFloatingMenu({toolbar,menu,viewport,headerBottom,gap=7}){
+ const minimum=headerBottom+HEADER_GAP,above=Math.max(0,toolbar.top-gap-minimum),below=Math.max(0,viewport.height-EDGE_GAP-toolbar.bottom-gap);
+ const down=below>=menu.height||below>=above,maxHeight=Math.min(menu.height,down?below:above);
+ return {left:Math.max(EDGE_GAP,Math.min(toolbar.right-menu.width,viewport.width-menu.width-EDGE_GAP)),top:down?toolbar.bottom+gap:toolbar.top-gap-maxHeight,maxHeight};
+}

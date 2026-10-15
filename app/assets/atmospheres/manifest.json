@@ -1,0 +1,61 @@
+[
+  {
+    "file": "forest.jpg",
+    "source": "https://images.unsplash.com/photo-1766345623619-f1660ddd567a?fm=jpg&q=80&w=1800&fit=max",
+    "sha256": "45671f4e3c0e112487aba640c4c628e0b59596e4750e4fa0504d290b09c2af5b",
+    "bytes": 842499
+  },
+  {
+    "file": "rain.jpg",
+    "source": "https://images.unsplash.com/photo-1509635022432-0220ac12960b?fm=jpg&q=80&w=1800&fit=max",
+    "sha256": "d463dd877c4f645d76fdb9b6f42d3a1d2a7c2b98a12ef7d831ca90c2c2c9a4d8",
+    "bytes": 549743
+  },
+  {
+    "file": "hearth.jpg",
+    "source": "https://images.unsplash.com/photo-1518570932309-3f370342d0ff?fm=jpg&q=80&w=1800&fit=max",
+    "sha256": "aa0bd2821fc8c09be38e93207a1540149f46beef34e2093507b105e8b1998360",
+    "bytes": 249543
+  },
+  {
+    "file": "sea.jpg",
+    "source": "https://images.unsplash.com/photo-1554141885-8b3195937299?fm=jpg&q=80&w=1800&fit=max",
+    "sha256": "b39d0c310472a1e5a9b306712b38362201b231aa415931fe0bd78b45d1112fa9",
+    "bytes": 243764
+  },
+  {
+    "file": "wind.mp3",
+    "source": "https://raw.githubusercontent.com/remvze/moodist/main/public/sounds/nature/wind-in-trees.mp3",
+    "sourceSha256": "b29f775dda9789004aaceee392e124eaa35c0386d27f99b93a639185d98f6b4b",
+    "sha256": "273b64a9fd699ee4c9dfa10dd17ea4e0b800142d627915eded24e9c04819eb51",
+    "bytes": 384670
+  },
+  {
+    "file": "birds.mp3",
+    "source": "https://raw.githubusercontent.com/remvze/moodist/main/public/sounds/animals/birds.mp3",
+    "sourceSha256": "f9b022ed2df9f727a8e84e614b25965112dfe2bbb30cdf8c3db0442ae1eed489",
+    "sha256": "0d93aa23d320990c23ecc7d80e68759fc71e2a200ac27f0c998d24a61c5122b4",
+    "bytes": 384670
+  },
+  {
+    "file": "rain.mp3",
+    "source": "https://raw.githubusercontent.com/remvze/moodist/main/public/sounds/rain/light-rain.mp3",
+    "sourceSha256": "967eab5ddc2b84808a05fea757460d51461e9dc56e72a3d1490bbb58e7bc6578",
+    "sha256": "5eaa9144ece8b4ab1fa718e54b87a7d0de2d459dffe648240844a2ae57c49203",
+    "bytes": 384670
+  },
+  {
+    "file": "fire.mp3",
+    "source": "https://raw.githubusercontent.com/remvze/moodist/main/public/sounds/nature/campfire.mp3",
+    "sourceSha256": "9625b15c7f6a4a2d16db937f0e1042762421f9a3ab74f60235bd63654bba13db",
+    "sha256": "4449dc217eed71e782172db3376fe27d9c860394314fba845c16aad4ae973afb",
+    "bytes": 384670
+  },
+  {
+    "file": "waves.mp3",
+    "source": "https://raw.githubusercontent.com/remvze/moodist/main/public/sounds/nature/waves.mp3",
+    "sourceSha256": "40c670e678b5ee19ff67a8c322490b1f7d2d53124cf9e8b07efd329138aaa8f8",
+    "sha256": "a72d6baaf0e16ad215e2dd926a7ea3f372597b6ffc9bafbd3c76f3c6b775f992",
+    "bytes": 384670
+  }
+]

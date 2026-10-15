@@ -2,17 +2,20 @@
 <html lang="zh-Hans" data-theme="paper">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>循页 · 阅读</title><link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><link rel="stylesheet" href="/reading-flow.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script></head>
 <body>
+  <div class="atmosphere-backdrop" aria-hidden="true"></div>
+  <link rel="stylesheet" href="/reader-atmosphere.css"><script type="module" src="/reader-atmosphere.js"></script>
   <a href="#book-page" class="skip-link">跳到正文</a>
   <header id="reading-header" class="reading-header">
     <div class="reader-navigation"><a href="/library" class="quiet-button" aria-label="返回书房">← 书房</a><button id="open-toc" class="quiet-button" aria-controls="toc-dialog" aria-haspopup="dialog">目录</button></div>
     <p class="running-title">循页<span id="running-chapter"></span></p>
-    <div class="header-actions"><button id="open-settings" class="quiet-button typography-button" aria-label="阅读设置" aria-haspopup="dialog">Aa</button><button id="enter-focus" class="quiet-button">专注</button></div>
+    <div class="header-actions"><div class="atmosphere-header-control"><button id="open-atmosphere" class="quiet-button" aria-haspopup="dialog" aria-controls="atmosphere-dialog" aria-label="阅读氛围">氛围</button><button id="atmosphere-quick-pause" class="quiet-button" aria-label="暂停氛围声音" hidden>Ⅱ</button></div><button id="open-settings" class="quiet-button typography-button" aria-label="阅读设置" aria-haspopup="dialog">Aa</button><button id="enter-focus" class="quiet-button">专注</button></div>
   </header>
+  <link rel="stylesheet" href="/reader-audio.css"><script type="module" src="/reader-audio.js"></script>
   <button id="exit-focus" class="focus-exit" hidden>退出专注</button>
   <main id="book-page" class="book-page" tabindex="-1">
     <div id="loading" class="loading-state reading-loading" role="status"><div class="reading-skeleton" aria-hidden="true"><i class="skeleton-eyebrow"></i><i class="skeleton-title"></i><div class="skeleton-lines"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><p>正在展开书页</p></div>
     <div id="load-error" class="load-error" hidden><p>暂时无法打开这本书。</p><button id="retry-load">重新打开</button></div>
-    <header class="chapter-heading" id="chapter-heading" hidden><p id="chapter-number" class="chapter-number"></p><h1 id="chapter-title"></h1><p id="chapter-original-title" class="original-title"></p></header>
+    <header class="chapter-heading" id="chapter-heading" hidden><p id="chapter-number" class="chapter-number"></p><h1 id="chapter-title"></h1><p id="chapter-original-title" class="original-title"></p><button id="listen-chapter" class="listen-chapter" aria-haspopup="dialog"><span aria-hidden="true">◖</span> 听这一章 <span aria-hidden="true">↗</span></button></header>
     <article id="chapter-text" aria-label="书籍正文"></article>
     <footer id="chapter-footer" class="chapter-footer" hidden><button id="previous-chapter">上一章</button><span id="chapter-fraction"></span><button id="next-chapter">下一章</button></footer>
     <div id="chapter-reading-actions" class="chapter-reading-actions" hidden><button id="mark-chapter-read" type="button">这一章读完了</button><p id="chapter-read-state"></p></div>
@@ -46,8 +49,8 @@
     <div class="ending-actions"><a href="/library" class="reading-primary">回到书房与日历 →</a><button data-reading-close="reading-ending" type="button">继续翻书</button></div><p class="ending-footnote">结束计时不会标记读完。未提交的文字只留在本机草稿中。</p>
   </dialog>
   <div id="paragraph-tools" class="paragraph-tools" role="toolbar" aria-label="当前段落操作" hidden>
-    <button id="show-share" hidden>分享摘录</button><button id="show-xray">透视</button><button id="show-original">原文</button><button id="show-annotations">注解</button><button id="show-comment">想法</button><button id="more-actions" aria-label="更多段落操作" aria-expanded="false">更多</button>
-    <div id="paragraph-more" class="paragraph-more" hidden><button id="share-passage">分享这一段</button><button id="show-stance">站队看看</button><button id="show-echo">用自己的话</button><button id="show-chat" hidden>解释（对照）</button><button data-passage-variant="literal">这一段直译</button><button data-passage-variant="interpretive">这一段意译</button><button id="show-question">留下问题</button></div>
+    <button id="show-share" hidden>分享摘录</button><button id="show-xray">透视</button><button id="show-original">原文</button><button id="show-audio">朗读</button><button id="show-annotations">注解</button><button id="show-comment">想法</button><button id="more-actions" aria-label="更多段落操作" aria-expanded="false">更多</button>
+    <div id="paragraph-more" class="paragraph-more" hidden><button id="share-passage">分享这一段</button><button id="listen-from-here">从这里开始听</button><button id="show-stance">站队看看</button><button id="show-echo">用自己的话</button><button id="show-chat" hidden>解释（对照）</button><button data-passage-variant="literal">这一段直译</button><button data-passage-variant="interpretive">这一段意译</button><button id="show-question">留下问题</button></div>
   </div>
   <aside id="note-panel" class="note-panel" aria-label="段落旁注与个人记录" hidden>
     <div class="panel-heading"><div><p id="panel-title">段落旁注</p><span id="panel-anchor"></span></div><button id="close-panel" class="quiet-button" aria-label="关闭段落旁注">关闭</button></div>
@@ -65,6 +68,7 @@
         <div class="setting-row"><label for="continuous-reading">连续阅读</label><input id="continuous-reading" type="checkbox" checked aria-describedby="continuous-reading-hint"></div><p id="continuous-reading-hint" class="settings-hint">下一章自然接上，读完仍由你确认。</p>
         <div class="setting-row"><label for="translation-variant">中文译法</label><select id="translation-variant"><option value="interpretive">意译</option><option value="literal">直译</option></select></div>
       </section>
+      <section class="settings-section" aria-labelledby="voice-settings-heading"><h3 id="voice-settings-heading">听读</h3><button id="open-voice-settings" class="voice-settings-shortcut">声音与语速 <span>选择你听得舒服的声音 ↗</span></button></section>
       <section class="settings-section" aria-labelledby="paper-heading"><h3 id="paper-heading">纸面</h3>
         <div id="theme-choice" class="theme-swatches" role="group" aria-label="纸面主题">
           <button data-theme-choice="system" class="swatch-system" aria-label="跟随系统" aria-pressed="true"><span>◐</span></button>
@@ -75,6 +79,7 @@
           <button data-theme-choice="night" class="swatch-night" aria-label="夜读" aria-pressed="false"><span>A</span></button>
         </div><p id="theme-label" class="setting-hint">跟随系统</p>
       </section>
+      <section class="settings-section" aria-labelledby="atmosphere-settings-heading"><h3 id="atmosphere-settings-heading">氛围</h3><button id="settings-atmosphere" class="voice-settings-shortcut">选择阅读氛围 <span>林风、细雨与轻音乐 ↗</span></button></section>
       <section class="settings-section" aria-labelledby="type-heading"><h3 id="type-heading">排版</h3>
         <div class="font-choices" role="group" aria-label="正文字体"><button data-font-family="song" aria-pressed="true">宋体</button><button data-font-family="kai" aria-pressed="false">楷体</button><button data-font-family="sans" aria-pressed="false">无衬线</button></div>
         <div class="setting-row size-row"><label for="font-size">字号 <output id="font-size-label">22</output></label><input id="font-size" type="range" min="18" max="28" value="22"></div>

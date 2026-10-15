@@ -1,4 +1,4 @@
-const scopeNames={content:'原文与译文',notes:'我的评论与问题',activity:'阅读位置与时段','comment:write':'写入明确提供的评论'};
+const scopeNames={content:'原文与译文',notes:'我的评论与问题',activity:'阅读位置与时段','comment:write':'写入明确提供的评论','audio:read':'读取已生成的声音','audio:generate':'生成声音（会计费）'};
 export const grantScopeSummary=scopes=>scopes.map(scope=>scopeNames[scope]||scope).join(' / ');
 // This receipt is memory-only; dismissing it does not revoke the server grant.
 export function createGrantResult(){

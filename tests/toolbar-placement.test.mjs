@@ -3,6 +3,14 @@ import assert from 'node:assert/strict';
 
 const placementModule=await import('../app/toolbar-placement.mjs').catch(()=>({}));
 
+test('more menu independently fits below a top toolbar and above a bottom toolbar',()=>{
+ const place=placementModule.placeFloatingMenu;assert.equal(typeof place,'function');
+ for(const [toolbar,height] of [[{left:120,right:380,top:110,bottom:158},844],[{left:120,right:380,top:710,bottom:758},844],[{left:12,right:298,top:230,bottom:278},480]]){
+  const result=place({toolbar,menu:{width:180,height:340},viewport:{width:390,height},headerBottom:72});
+  assert.ok(result.top>=80);assert.ok(result.top+result.maxHeight<=height-12);assert.ok(result.left>=12);assert.ok(result.left+180<=378);
+ }
+});
+
 test('floating paragraph tools prefer the already-read space above the selection',()=>{
   assert.equal(typeof placementModule.placeFloatingToolbar,'function','floating placement helper is missing');
   const result=placementModule.placeFloatingToolbar({

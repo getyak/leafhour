@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import {mkdtemp,writeFile,mkdir,readFile,readdir,symlink,rm,stat,chmod} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
-import {validReleasePath,exportRelease,releaseCommit} from '../tools/release-policy.mjs';
+import {validReleasePath,exportRelease,releaseCommit,releaseFiles} from '../tools/release-policy.mjs';
+import {fileURLToPath} from 'node:url';
 
 const commit='a'.repeat(40);
 async function fixture(t,files){const root=await mkdtemp(path.join(tmpdir(),'release-test-'));t.after(()=>rm(root,{recursive:true,force:true}));await writeFile(path.join(root,'release-files.json'),JSON.stringify(files));return root;}
@@ -27,4 +28,18 @@ test('publication fails closed on missing files, symlinks and credential content
   await assert.rejects(exportRelease(root,dest,{commit}),/Symlinks/);await rm(path.join(root,'app.mjs'));
   await writeFile(path.join(root,'app.mjs'),'ghp_'+'A'.repeat(40));await assert.rejects(exportRelease(root,dest,{commit}),/Credential/);
   await assert.rejects(exportRelease(root,dest,{commit:'short'}),/full source commit/);
+});
+test('the release snapshot contains local module imports and reader page assets',async()=>{
+  const root=fileURLToPath(new URL('..',import.meta.url)),files=await releaseFiles(root),allowed=new Set(files);
+  for(const file of files){
+    if(!/\.(?:mjs|js|html)$/.test(file))continue;
+    const source=await readFile(path.join(root,file),'utf8');
+    if(/\.(?:mjs|js)$/.test(file))for(const match of source.matchAll(/\b(?:from\s*|import\s*(?:\(\s*)?)['"](\.{1,2}\/[^'"]+)['"]/g)){
+      const dependency=path.posix.normalize(path.posix.join(path.posix.dirname(file),match[1]));
+      assert.ok(allowed.has(dependency),file+' imports missing release file '+dependency);
+    }
+    if(file.startsWith('app/')&&file.endsWith('.html'))for(const match of source.matchAll(/(?:src|href)="(\/[^"#?]+\.(?:mjs|js|css|svg|png|webp|jpg|mp3))"/g)){
+      assert.ok(allowed.has('app'+match[1]),file+' references missing release asset '+match[1]);
+    }
+  }
 });

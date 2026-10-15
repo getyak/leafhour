@@ -20,14 +20,20 @@ assets.set('/catalog-sample.mjs',['app/catalog-sample.mjs','text/javascript']);
 assets.set('/grant-result.mjs',['app/grant-result.mjs','text/javascript']);
 assets.set('/mcp-config.mjs',['app/mcp-config.mjs','text/javascript']);
 const downloads=new Map([['/exports/bilingual.md','book-bilingual.md'],['/exports/literal.md','book-literal.md'],['/exports/interpretive.md','book-interpretive.md'],['/exports/reading-pack.zip','reading-pack.zip']]);
+for(const file of ['reader-audio.js','reader-audio.css','audio-state.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
+for(const file of ['reader-atmosphere.js','reader-atmosphere.css','atmosphere-state.mjs','atmosphere-audio.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
+for(const name of ['forest','rain','hearth','sea'])assets.set('/assets/atmospheres/'+name+'.jpg',['app/assets/atmospheres/'+name+'.jpg','image/jpeg']);
+for(const name of ['wind','birds','rain','fire','waves'])assets.set('/assets/atmospheres/'+name+'.mp3',['app/assets/atmospheres/'+name+'.mp3','audio/mpeg']);
+assets.set('/assets/atmospheres/NOTICE.md',['app/assets/atmospheres/NOTICE.md','text/plain']);
 for(const [url,file,type] of [['/share.js','app/share.js','text/javascript'],['/share-model.mjs','app/share-model.mjs','text/javascript'],['/share.css','app/share.css','text/css']])assets.set(url,[file,type]);
 assets.set('/evals',['app/evals.html','text/html']);assets.set('/evals.js',['app/evals.js','text/javascript']);assets.set('/evals.css',['app/evals.css','text/css']);
 const fail=(message,status=400)=>Object.assign(new Error(message),{status});
 
-export async function createReaderServer({bookPath=path.join(root,'local/finite-infinite-games/book.json'),recordsPath=path.join(root,'local/service/records.json'),publicOrigin=null,experienceStorePath=path.join(path.dirname(recordsPath),'experience-records.json'),experiencePackPath=path.join(path.dirname(bookPath),'experience-pack.json'),generator=null,portalDataDir=path.join(path.dirname(recordsPath),'portal'),sendCode,translator,allowLocal=true}={}){
-  const portal=await createPortal({dataDir:portalDataDir,publicOrigin,sendCode,translator,allowLocal});
+export async function createReaderServer({bookPath=path.join(root,'local/finite-infinite-games/book.json'),recordsPath=path.join(root,'local/service/records.json'),publicOrigin=null,experienceStorePath=path.join(path.dirname(recordsPath),'experience-records.json'),experiencePackPath=path.join(path.dirname(bookPath),'experience-pack.json'),generator=null,portalDataDir=path.join(path.dirname(recordsPath),'portal'),sendCode,translator,allowLocal=true,speechProvider,dialogueGenerator}={}){
+  const portal=await createPortal({dataDir:portalDataDir,publicOrigin,sendCode,translator,allowLocal,speechProvider,dialogueGenerator});
   let book;try{book=JSON.parse(await readFile(bookPath,'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;book=await portal.library.getBook(null,'gutenberg-alice');}
   if(!Array.isArray(book.sections)||!Array.isArray(book.chapters))throw Error('Reading package is not ready');
+  portal.setLegacyBook(book);
   const experiences=await createExperienceService({book,storePath:experienceStorePath,packPath:experiencePackPath,generator});
   const ids=new Set(book.sections.flatMap(s=>s.paragraphs.map(p=>p.id))),chapterIds=new Set(book.chapters.map(c=>c.id));
   const legacyIds=new Set(['fig-1986-s001-p001','fig-1986-s001-p002','fig-1986-s002-p001','fig-1986-s002-p002']);
@@ -53,13 +59,13 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
     if(typeof r.quote==='string'&&r.quote.length<=4000){out.quote=r.quote;out.quoteLanguage=['zh','en'].includes(r.quoteLanguage)?r.quoteLanguage:'zh';}
     if(type==='question')out.status='open';return out;
   };
-  const parseBody=async req=>{
+  const parseBody=async(req,limit=4*1024*1024)=>{
     if(!req.headers['content-type']?.startsWith('application/json'))throw fail('需要JSON记录',415);
-    let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>4*1024*1024)throw fail('记录包过大',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('记录包不是有效JSON');}
+    let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('记录包过大',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('记录包不是有效JSON');}
   };
   const server=http.createServer(async(req,res)=>{
     res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','same-origin');res.setHeader('Cache-Control','no-store');
-    res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");
+    res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; media-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");
     const send=(status,data,type='application/json')=>{res.statusCode=status;res.setHeader('Content-Type',type+'; charset=utf-8');res.end(type==='application/json'?JSON.stringify(data):data);};
     try{
       const port=server.address()?.port,host=req.headers.host;
@@ -71,7 +77,8 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
       if(req.method==='POST'){
         const origin=req.headers.origin;
         if(origin!==('http://'+host)&&origin!==publicOrigin)throw fail('请求来源未授权',403);
-        const body=await parseBody(req);
+        const body=await parseBody(req,['/api/audio/import','/api/audio/validate'].includes(url.pathname)?32*1024*1024:undefined);
+        if(url.pathname.startsWith('/api/audio/')&&await portal.audioRoutes.handle({req,res,url,user:{id:'legacy-local'},bookId:book.bookId,action:url.pathname.slice(11),body,send}))return;
         if(await experiences.handle({req,res,url,body,send}))return;
         if(url.pathname==='/api/comments'||url.pathname==='/api/questions'){
           const type=url.pathname.endsWith('questions')?'question':'comment',key=type==='question'?'questions':'comments';const record=cleanRecord(body,type);
@@ -90,19 +97,20 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
         throw fail('找不到这个操作',404);
       }
       if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);
+      if(url.pathname.startsWith('/api/audio/')&&await portal.audioRoutes.handle({req,res,url,user:{id:'legacy-local'},bookId:book.bookId,action:url.pathname.slice(11),body:null,send}))return;
       if(await experiences.handle({req,res,url,body:null,send}))return;
       if(url.pathname==='/health'){send(200,{ready:true,bookId:book.bookId,chapters:book.chapters.length});return;}
       if(url.pathname==='/api/book'){send(200,book);return;}
       if(url.pathname==='/api/records'||url.pathname==='/api/records/export'){await writes.catch(()=>{});if(url.pathname.endsWith('export'))res.setHeader('Content-Disposition','attachment; filename="marginalia-my-records.json"');send(200,await readRecords());return;}
       if(url.pathname==='/favicon.ico'){res.writeHead(204);res.end();return;}
       if(url.pathname==='/read'){send(200,await readFile(path.join(root,'app/index.html')),'text/html');return;}
-      if(assets.has(url.pathname)){const [file,type]=assets.get(url.pathname);send(200,await readFile(path.join(root,file)),type);return;}
+      if(assets.has(url.pathname)){const [file,type]=assets.get(url.pathname);const data=await readFile(path.join(root,file));if(type.startsWith('image/')||type.startsWith('audio/')){res.writeHead(200,{'Content-Type':type,'Content-Length':data.length});res.end(req.method==='HEAD'?undefined:data);}else send(200,data,type);return;}
       if(downloads.has(url.pathname)){const filename=downloads.get(url.pathname),file=path.join(path.dirname(bookPath),'exports',filename);res.setHeader('Content-Disposition','attachment; filename="'+filename+'"');send(200,await readFile(file),filename.endsWith('.zip')?'application/zip':'text/markdown');return;}
       throw fail('找不到这个页面',404);
     }catch(e){send(e.status||500,{error:e.status?e.message:'服务暂时无法完成操作'});}
   });
   const closeHttp=server.close.bind(server);
-  server.close=callback=>{const closing=experiences.close();closeHttp(error=>{closing.then(()=>callback?.(error),failure=>callback?.(failure));});return server;};
+  server.close=callback=>{const closing=Promise.all([experiences.close(),portal.audio?.close()]);closeHttp(error=>{closing.then(()=>callback?.(error),failure=>callback?.(failure));});return server;};
   server.experiences=experiences;
   server.portal=portal;
   return server;

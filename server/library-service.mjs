@@ -152,7 +152,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   }
   const grantsFile=path.join(dataDir,'grants.json');
   async function createGrant(user,{bookId,scopes}){
-    requireUser(user);await getBook(user,bookId);if(!Array.isArray(scopes)||!scopes.length||scopes.some(s=>!['content','notes','activity','comment:write'].includes(s)))throw fail('请选择授权范围');
+    requireUser(user);await getBook(user,bookId);if(!Array.isArray(scopes)||!scopes.length||scopes.some(s=>!['content','notes','activity','comment:write','audio:read','audio:generate'].includes(s)))throw fail('请选择授权范围');
     const token=randomBytes(32).toString('base64url'),grant={id:randomUUID(),ownerId:user.id,bookId,scopes:[...new Set(scopes)],tokenHash:digest(token),createdAt:new Date().toISOString(),expiresAt:new Date(Date.now()+7*86400000).toISOString(),revoked:false};
     await mutate(grantsFile,{grants:[]},data=>{if(data.grants.filter(g=>g.ownerId===user.id&&!g.revoked).length>=50)throw fail('请先撤回不再使用的授权',413);data.grants.push(grant);});
     const {tokenHash,ownerId,...visible}=grant;return {...visible,token};
