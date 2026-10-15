@@ -6,9 +6,10 @@ const bookTitle=book=>book?.title?.zh||book?.title?.en||'这本书';
 const chapterTitle=value=>typeof value==='string'?value:value?.zh||value?.en||'当前阅读位置';
 const readUrl=(bookId,passageId)=>'/read?book='+encodeURIComponent(bookId)+(passageId?'&passage='+encodeURIComponent(passageId):'');
 const draftKey=(owner,book)=>'marginalia:chat-draft:'+encodeURIComponent(owner)+':'+encodeURIComponent(book);
+const pendingKey=(owner,book)=>'marginalia:chat-pending:'+encodeURIComponent(owner)+':'+encodeURIComponent(book);
 
 export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth,getCurrentBook=()=>null}){
-  const state=createLibraryChatState({readDraft:(owner,book)=>localStorage.getItem(draftKey(owner,book))||'',writeDraft:(owner,book,text)=>{if(text)localStorage.setItem(draftKey(owner,book),text);else localStorage.removeItem(draftKey(owner,book));}});
+  const state=createLibraryChatState({readDraft:(owner,book)=>localStorage.getItem(draftKey(owner,book))||'',writeDraft:(owner,book,text)=>{if(text)localStorage.setItem(draftKey(owner,book),text);else localStorage.removeItem(draftKey(owner,book));},readPending:(owner,book)=>JSON.parse(localStorage.getItem(pendingKey(owner,book))||'null'),writePending:(owner,book,record)=>{if(record)localStorage.setItem(pendingKey(owner,book),JSON.stringify(record));else localStorage.removeItem(pendingKey(owner,book));}});
   let opener=null,owner=null,selectedBook=null,requestedPassage=null,pollTimer=null,pollCount=0,loadInFlight=null,composing=false,focusComposer=false,historySignature='';
   root.classList.add('library-chat-dialog');root.setAttribute('aria-labelledby','library-chat-title');
   const frame=node('div','library-chat-frame'),header=node('header','library-chat-header'),brand=node('span','library-chat-mark','循');brand.setAttribute('aria-hidden','true');
@@ -30,7 +31,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   function syncOwner(){
     const next=activeOwner();if(next===owner)return false;
     owner=next;clearPoll();loadInFlight=null;pollCount=0;requestedPassage=null;historySignature='';selectedBook=books().some(book=>book.bookId===currentBookId())?currentBookId():books()[0]?.bookId||null;
-    state.reset();state.setContext(owner,selectedBook);input.value='';context.open=false;return true;
+    state.reset();state.setContext(owner,selectedBook);requestedPassage=state.view().retry?.payload.passageId||null;input.value='';context.open=false;return true;
   }
   function isCurrent(captured){if(captured===activeOwner()&&captured===owner)return true;syncOwner();render();return false;}
   function routeBack(label='回到书架'){const b=button(label,'library-chat-button');b.addEventListener('click',()=>{close();const shelf=document.getElementById('library-view');if(shelf&&!shelf.hidden)shelf.scrollIntoView({block:'start'});else location.assign('/library');});return b;}
@@ -46,7 +47,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   }
   function emptyState(headingText,bodyText){const empty=node('section','library-chat-empty');empty.append(node('span','library-chat-empty-rule'),node('h3','',headingText),node('p','',bodyText));return empty;}
   function renderMessages(view){
-    const signature=JSON.stringify([owner,selectedBook,view.phase,view.turns,view.pending?.status,signedIn(),books().length]);
+    const signature=JSON.stringify([owner,selectedBook,view.phase,view.turns,view.pending?.status,view.retry,signedIn(),books().length]);
     if(signature===historySignature)return;historySignature=signature;const nearBottom=messages.scrollHeight-messages.scrollTop-messages.clientHeight<90;messages.replaceChildren();
     if(!signedIn()){
       const empty=emptyState('和书多聊几句','登录后，可以围绕原文提问，也能回来接着看自己的问题。');const login=button('登录后开始','library-chat-send');login.addEventListener('click',()=>{close();openAuth();});empty.append(login);messages.append(empty);return;
@@ -54,18 +55,19 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     if(!selectedBook){const empty=emptyState('先选一本想读的书','回到书架打开一本书，再带着问题回来。');empty.append(routeBack());messages.append(empty);return;}
     if(view.phase==='loading'&&!view.data){const empty=emptyState('正在翻到这一页','正在载入原文和已有对话…');empty.classList.add('is-loading');messages.append(empty);return;}
     if(view.phase==='error'&&!view.data){messages.append(emptyState('这一页暂时没有打开','可以重新载入，已经写下的问题会保留。'));return;}
-    if(!view.turns.length){
+    const displayTurns=[...view.turns];if(view.retry?.uncertain&&!displayTurns.some(turn=>turn.id===view.retry.payload.id))displayTurns.push({...view.retry.payload,origin:'user',status:'running',answer:null});
+    if(!displayTurns.length){
       const empty=emptyState('哪一句让你停了下来？','可以问一个词，也可以试着说出自己的理解，再一起核对原文。');
       const suggestions=node('div','library-chat-suggestions');for(const text of ['这段最容易被误读的地方是什么？','帮我把这段的论证拆开看看。','我想用自己的话复述这段。']){const suggestion=button(text,'library-chat-suggestion');suggestion.disabled=!!view.pending;suggestion.addEventListener('click',()=>{state.setDraft(text);render();input.focus();});suggestions.append(suggestion);}empty.append(suggestions);messages.append(empty);
     }
-    for(const turn of view.turns){
+    for(const turn of displayTurns){
       const row=node('article','library-chat-turn'),question=node('div','library-chat-question');question.append(node('p','library-chat-attribution','我的提问'),node('p','library-chat-text',turn.text));row.append(question);
       if(turn.answer?.summary){
         const answer=node('div','library-chat-answer'),answerHeading=node('div','library-chat-answer-heading'),copy=button('复制','library-chat-text-button');const answerText=node('p','library-chat-text',turn.answer.summary);copy.setAttribute('aria-label','复制这条 AI 解释');copy.addEventListener('click',()=>copyAnswer(turn.answer.summary,answerText,copy));answerHeading.append(node('p','library-chat-attribution','AI 解释 · 候选'),copy);answer.append(answerHeading,answerText);
         if(turn.answer.sourceRefs?.length){const references=node('details','library-chat-references');references.append(node('summary','','核对原文 · '+turn.answer.sourceRefs.length+' 处'));for(const ref of turn.answer.sourceRefs){const quote=node('blockquote','',ref.quote);quote.append(sourceLink('回到引用段落 ↗',ref.passageId));references.append(quote);}answer.append(references);}row.append(answer);
       }else{
         let text=turn.status==='running'?(view.pending?.status==='stopping'?'正在停止这次提问…':'正在对照原文思考…'):turn.status==='cancelled'?'这次提问已停止。':'这次没有得到回答。';
-        if(view.retry?.uncertain&&view.retry.payload.id===turn.id)text='正在确认这次提问的结果。';const pending=node('p','library-chat-turn-status',text);if(turn.status==='running')pending.classList.add('is-pending');row.append(pending);
+        if(view.retry?.uncertain&&view.retry.payload.id===turn.id)text=view.retry.checked?'暂未收到回答，可以继续上次提问。':'正在确认这次提问的结果。';const pending=node('p','library-chat-turn-status',text);if(turn.status==='running')pending.classList.add('is-pending');row.append(pending);
       }
       messages.append(row);
     }
@@ -76,7 +78,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     chooser.replaceChildren(...list.map(book=>{const option=node('option','',bookTitle(book));option.value=book.bookId;return option;}));chooser.value=selectedBook||'';chooser.disabled=!!view.pending||!!view.retry?.uncertain;bookRow.hidden=!signedIn()||!selectedBook;
     renderContext(view);renderMessages(view);form.hidden=!signedIn()||!selectedBook;footer.hidden=form.hidden;
     const length=view.draft.length;count.textContent=length>=1800?(length>CHAT_TEXT_LIMIT?'已超出 '+(length-CHAT_TEXT_LIMIT)+' 字':'还可写 '+(CHAT_TEXT_LIMIT-length)+' 字'):'';count.classList.toggle('is-over-limit',length>CHAT_TEXT_LIMIT);input.setAttribute('aria-invalid',String(length>CHAT_TEXT_LIMIT));
-    input.disabled=!!view.pending||!!view.retry?.uncertain;count.hidden=!!view.pending;sendButton.disabled=!view.canSend;sendButton.textContent=view.retry?.uncertain?'继续这次提问 ↑':view.retry?'再试一次 ↑':'发送 ↑';stopButton.hidden=!view.pending;stopButton.disabled=view.pending?.status==='stopping';
+    input.disabled=!!view.pending||!!view.retry?.uncertain;count.hidden=!!view.pending;sendButton.disabled=!view.canSend;sendButton.textContent=view.retry?.uncertain?'继续上次提问 ↑':view.retry?'再试一次 ↑':'发送 ↑';stopButton.hidden=!view.pending;stopButton.disabled=view.pending?.status==='stopping';
     if(!signedIn())status.textContent='';else if(!selectedBook)status.textContent='';else if(view.pending)status.textContent=view.pending.status==='stopping'?'正在停止。确认后可以重新提问。':pollCount>=12?'还在处理，可以点“查看进度”确认，也可以先收起窗口。':'可以先收起窗口，回答会留在这里。';else if(view.loadError)status.textContent=view.loadError;else if(view.notice)status.textContent=view.notice;else if(view.data?.available===false)status.textContent='阅读助手暂时不可用。可以先写下问题，稍后再试。';else if(view.phase==='loading')status.textContent='正在载入原文和已有对话…';else status.textContent='';
     statusBar.hidden=!status.textContent;status.classList.toggle('has-error',!!view.loadError);refreshButton.hidden=!signedIn()||!selectedBook||(!view.loadError&&!view.retry?.uncertain&&!view.pending&&view.data?.available!==false);refreshButton.disabled=!!loadInFlight||view.pending?.status==='stopping';refreshButton.textContent=view.pending||view.retry?.uncertain?'查看进度':'重新载入';exportButton.hidden=!view.turns.length;contextHint.textContent=context.open?'收起原文与译文':'查看原文与译文';
     hint.textContent=view.pending?'收起窗口不会停止提问。需要中断时，请点“停止”。':'发送后，助手会结合当前段与相邻段给出解释候选。';
@@ -108,7 +110,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     finally{if(isCurrent(captured))render();}
   }
   function close(){clearPoll();focusComposer=false;if(root.open)root.close();if(opener?.isConnected)opener.focus();}
-  function choose(bookId,passageId=null){if(state.view().pending||state.view().retry?.uncertain)return false;clearPoll();loadInFlight=null;pollCount=0;selectedBook=bookId;requestedPassage=passageId;historySignature='';context.open=false;state.setContext(owner,selectedBook);return true;}
+  function choose(bookId,passageId=null){if(state.view().pending||state.view().retry?.uncertain)return false;clearPoll();loadInFlight=null;pollCount=0;selectedBook=bookId;requestedPassage=passageId;historySignature='';context.open=false;state.setContext(owner,selectedBook);requestedPassage=state.view().retry?.payload.passageId||requestedPassage;return true;}
   async function copyAnswer(text,element,control){try{await navigator.clipboard.writeText(text);control.textContent='已复制';}catch{const range=document.createRange();range.selectNodeContents(element);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);control.textContent='已选中，可复制';}}
   function exportChat(){
     const view=state.view();if(!view.turns.length)return;const data={kind:'marginalia-book-chat',schemaVersion:1,exportedAt:new Date().toISOString(),bookId:selectedBook,title:view.data?.title,contentVersion:view.data?.contentVersion,turns:view.turns};

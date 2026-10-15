@@ -114,3 +114,5 @@
 /* The cover and heading stay together; the page excerpt gets the full mobile width. */
 .library-page .today-copy{display:contents}.library-page .today-heading{grid-column:2;min-width:0}.library-page .today-panel{row-gap:21px}.library-page .continue-cover{grid-column:1;grid-row:1/4}.library-page .room-excerpt{grid-column:2;margin-top:0}.library-page .today-actions{grid-column:2;margin-top:0}
 @media(max-width:760px){.library-page .today-heading{grid-column:2}.library-page .today-label{margin:0 0 8px}.library-page .today-copy h2{margin:0 0 6px}.library-page .today-author{margin:0}.library-page .today-description{margin:15px 0 0}.library-page .continue-cover{grid-row:1}.library-page .room-excerpt,.library-page .today-actions{grid-column:1/-1;margin:0}}
+
+.library-page .library-grid .cover-inner strong{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}

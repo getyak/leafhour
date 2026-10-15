@@ -18,3 +18,9 @@
 @media(prefers-reduced-motion:reduce){.library-page .site-header{transition:none}}
 
 @media(max-width:760px){.library-page[data-sidebar-collapsed=true] #search-clear:not([hidden]){display:grid!important}}
+
+.library-page .upload-dialog .drop-zone{background:var(--surface-soft);border-color:var(--line)}.library-page .upload-dialog .drop-zone.dragging{background:var(--surface);border-color:var(--accent)}.library-page .drop-zone:focus-visible{outline:2px solid var(--accent);outline-offset:5px}.library-page .upload-dialog>p,.library-page .drop-zone>span:not(.upload-icon){color:var(--muted)}
+
+@media(pointer:coarse){.sidebar-toggle,.sidebar-icon-button,.settings-heading .dialog-close{min-width:44px;min-height:44px}}
+
+.site-header .sidebar-toggle{display:none}.library-page .site-header .sidebar-toggle{display:grid}

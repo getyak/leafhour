@@ -5,13 +5,14 @@ import path from 'node:path';
 import os from 'node:os';
 import {createHash} from 'node:crypto';
 import {spawn} from 'node:child_process';
+import {setTimeout as delay} from 'node:timers/promises';
 import {createLibraryService} from '../server/library-service.mjs';
 
 const module = await import('../server/reader-chat.mjs').catch(error => {
   if (error.code === 'ERR_MODULE_NOT_FOUND') return {};
   throw error;
 });
-const alice={id:'chat-reader-a'},bob={id:'chat-reader-b'};
+const alice={id:'chat-reader-a'},bob={id:'chat-reader-b'},charlie={id:'chat-reader-c'};
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const paragraph=(id,original)=>({id,original,translations:{},annotationIds:[],termIds:[]});
 const bookFixture=()=>({
@@ -29,6 +30,20 @@ const validAnswer=(passageId='p1',quote='First source sentence.',summary='这里
 const input=(patch={})=>({id:'question-1',passageId:'p1',text:'  这里为什么这样说？  ',contentVersion:'edition-1',...patch});
 const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return {promise,resolve};};
 const status=n=>error=>error.status===n;
+const sharedStore=({replay=false}={})=>{
+  const values=new Map(),queues=new Map();
+  return {
+    async read(file,fallback){return structuredClone(values.has(file)?values.get(file):fallback);},
+    async mutate(file,fallback,operation){
+      const prior=queues.get(file)||Promise.resolve();
+      const work=prior.catch(()=>{}).then(async()=>{const data=await this.read(file,fallback);if(replay)await operation(structuredClone(data));const result=await operation(data);values.set(file,structuredClone(data));return structuredClone(result);});
+      queues.set(file,work);try{return await work;}finally{if(queues.get(file)===work)queues.delete(file);}
+    }
+  };
+};
+async function within(promise,ms,message){
+  let timer;try{return await Promise.race([promise,new Promise((resolve,reject)=>{timer=setTimeout(()=>reject(new Error(message)),ms);})]);}finally{clearTimeout(timer);}
+}
 
 async function fixture(t,{generator=async()=>validAnswer(),clock=Date.now,dataStore=null,book=bookFixture()}={}){
   assert.equal(typeof module.createReaderChatService,'function','Reading chat domain service is not implemented');
@@ -189,6 +204,26 @@ test('cancellation from another service defeats a late model answer durably',asy
   await assert.rejects(other.cancel(alice,'chat-book','missing'),status(404));
 });
 
+for(const persistence of ['local files','shared dataStore'])test('cancelling from another service promptly aborts the generating signal with '+persistence,async t=>{
+  const entered=deferred(),aborted=deferred();let signal;
+  const {service,create}=await fixture(t,{dataStore:persistence==='shared dataStore'?sharedStore():null,generator:async job=>{
+    signal=job.signal;entered.resolve();await new Promise(resolve=>job.signal.addEventListener('abort',()=>{aborted.resolve();resolve();},{once:true}));return validAnswer();
+  }});
+  const pending=service.send(alice,'chat-book',input());await entered.promise;const other=await create();
+  assert.equal((await other.cancel(alice,'chat-book','question-1')).status,'cancelled');
+  await within(aborted.promise,2000,'The executing service kept generating after another service persisted cancellation');
+  assert.equal(signal.aborted,true);assert.equal((await pending).status,'cancelled');
+  const stored=(await service.view(alice,'chat-book')).turns[0];assert.equal(stored.status,'cancelled');assert.equal(stored.answer,null);
+});
+
+test('successful generation stops cancellation polling instead of reading storage after completion',async t=>{
+  const dataStore=sharedStore(),read=dataStore.read;let reads=0,signal;
+  dataStore.read=async function(...args){reads++;return read.apply(this,args);};
+  const {service}=await fixture(t,{dataStore,generator:async job=>{signal=job.signal;return validAnswer();}});
+  assert.equal((await service.send(alice,'chat-book',input())).status,'completed');const settledReads=reads;
+  await delay(1100);assert.equal(reads,settledReads);assert.equal(signal.aborted,false);
+});
+
 test('generator failure retains the original exportable question with a safe error',async t=>{
   const {service,library}=await fixture(t,{generator:async()=>{throw new Error('SECRET PROVIDER TOKEN /private/path');}});
   const turn=await service.send(alice,'chat-book',input());assert.equal(turn.status,'failed');assert.equal(turn.answer,null);
@@ -217,6 +252,54 @@ test('the hourly quota is shared across books, survives restart and resets after
   for(let i=0;i<10;i++)assert.equal((await service.send(alice,i%2?'second-book':'chat-book',input({id:'quota-'+i}))).status,'completed');
   const restarted=await create();await assert.rejects(restarted.send(alice,'second-book',input({id:'quota-over'})),status(429));assert.equal(calls,10);
   now+=3600001;assert.equal((await restarted.send(alice,'second-book',input({id:'quota-new-hour'}))).status,'completed');assert.equal(calls,11);
+});
+
+for(const persistence of ['local files','shared dataStore'])test('the global two-run gate spans accounts and services and releases only completed or cancelled leases with '+persistence,{timeout:12000},async t=>{
+  const enteredA=deferred(),enteredB=deferred(),enteredC=deferred(),finishA=deferred(),finishB=deferred(),finishC=deferred();let calls=0;
+  const wait=async(job,entered,finish)=>{entered.resolve();await Promise.race([finish.promise,new Promise(resolve=>job.signal.addEventListener('abort',resolve,{once:true}))]);};
+  const {service,create,seed}=await fixture(t,{dataStore:persistence==='shared dataStore'?sharedStore():null,generator:async job=>{
+    calls++;if(calls===1)await wait(job,enteredA,finishA);else if(calls===2)await wait(job,enteredB,finishB);else if(job.text.includes('hold-c'))await wait(job,enteredC,finishC);return validAnswer();
+  }});
+  await seed(bob);await seed(charlie);const other=await create(),third=await create();
+  const pendingA=service.send(alice,'chat-book',input({id:'hold-a'}));await enteredA.promise;
+  const pendingB=other.send(bob,'chat-book',input({id:'hold-b'}));await enteredB.promise;
+  await assert.rejects(third.send(charlie,'chat-book',input({id:'third-rejected'})),status(429));assert.equal(calls,2);
+  finishA.resolve();assert.equal((await pendingA).status,'completed');
+  const pendingC=third.send(charlie,'chat-book',input({id:'hold-c',text:'hold-c'}));await enteredC.promise;
+  await assert.rejects(service.send(alice,'chat-book',input({id:'still-two-running'})),status(429));assert.equal(calls,3);
+  await third.cancel(bob,'chat-book','hold-b');assert.equal((await within(pendingB,2000,'The cancelled run did not release its global lease')).status,'cancelled');
+  assert.equal((await service.send(alice,'chat-book',input({id:'after-cancel'}))).status,'completed');assert.equal(calls,4);
+  finishC.resolve();assert.equal((await pendingC).status,'completed');
+});
+
+test('global leases expire within ninety seconds even when their execution instances never release them',async t=>{
+  const start=Date.parse('2026-10-15T08:00:00Z');let now=start,calls=0;const bothEntered=deferred();
+  const {service,create,seed}=await fixture(t,{clock:()=>start,dataStore:sharedStore(),generator:async job=>{
+    if(++calls<=2){if(calls===2)bothEntered.resolve();await new Promise(resolve=>job.signal.addEventListener('abort',resolve,{once:true}));}return validAnswer();
+  }});
+  await seed(bob);await seed(charlie);const second=await create(),recovering=await create({clock:()=>now});
+  const pendingA=service.send(alice,'chat-book',input({id:'stuck-a'})),pendingB=second.send(bob,'chat-book',input({id:'stuck-b'}));await bothEntered.promise;
+  now=start+89999;await assert.rejects(recovering.send(charlie,'chat-book',input({id:'not-expired'})),status(429));assert.equal(calls,2);
+  now=start+90001;assert.equal((await recovering.send(charlie,'chat-book',input({id:'after-expiry'}))).status,'completed');assert.equal(calls,3);
+  await service.close();await second.close();await Promise.all([pendingA,pendingB]);
+});
+
+test('the shared global hourly budget stops request 101 across accounts and survives CAS callback replay',async t=>{
+  let now=Date.parse('2026-10-15T08:00:00Z'),calls=0;const {service,create,seed}=await fixture(t,{clock:()=>now,dataStore:sharedStore({replay:true}),generator:async()=>{calls++;return validAnswer();}});
+  const users=Array.from({length:11},(_,i)=>({id:'global-hour-reader-'+i}));for(const user of users)await seed(user);
+  const other=await create();
+  for(let i=0;i<100;i++)assert.equal((await (i%2?service:other).send(users[Math.floor(i/10)],'chat-book',input({id:'global-hour-'+i}))).status,'completed');
+  const restarted=await create();await assert.rejects(restarted.send(users[10],'chat-book',input({id:'global-hour-over'})),status(429));assert.equal(calls,100);
+  now+=3600001;assert.equal((await restarted.send(users[10],'chat-book',input({id:'global-new-hour'}))).status,'completed');assert.equal(calls,101);
+});
+
+test('the shared global daily budget stops request 501 while fresh hourly and owner budgets remain available',async t=>{
+  const start=Date.parse('2026-10-15T08:00:00Z');let now=start,calls=0;const {service,create,seed}=await fixture(t,{clock:()=>now,dataStore:sharedStore(),generator:async()=>{calls++;return validAnswer();}});
+  const users=Array.from({length:10},(_,i)=>({id:'global-day-reader-'+i}));for(const user of users)await seed(user);await seed(charlie);
+  const other=await create();
+  for(let hour=0;hour<5;hour++){now=start+hour*3600001;for(let i=0;i<100;i++)assert.equal((await (i%2?service:other).send(users[i%10],'chat-book',input({id:'global-day-'+hour+'-'+i}))).status,'completed');}
+  now=start+5*3600001;const restarted=await create();await assert.rejects(restarted.send(charlie,'chat-book',input({id:'global-day-over'})),status(429));assert.equal(calls,500);
+  now+=86400001;assert.equal((await restarted.send(charlie,'chat-book',input({id:'global-new-day'}))).status,'completed');assert.equal(calls,501);
 });
 
 test('invalid IDs, question sizes, anchors and versions never invoke the generator',async t=>{

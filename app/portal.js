@@ -12,7 +12,7 @@ import './site-appearance.mjs';
 const $=id=>document.getElementById(id);
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const ownerScope=createOwnerScope();
-let session=null,books=[],shelf='all',selectedCurrent=null,pendingUpload=false,upload=createUploadState(),shell=null,chat=null,dashboard=null;
+let session=null,books=[],shelf='all',selectedCurrent=null,pendingUpload=false,pendingChat=false,upload=createUploadState(),shell=null,chat=null,dashboard=null;
 const status=(id,text,error=false)=>{$(id).textContent=text;$(id).classList.toggle('error',error);};
 const api=(url,data,ticket=ownerScope.capture())=>readOwnerResponse(ownerScope,ticket,()=>fetch(url,{...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json',...(url.startsWith('/api/library')?{'X-Reader-Owner':ticket.owner}:{})}}).catch(()=>{throw Error('网络暂时无法连接，请稍后重试。');}),()=>{ownerScope.adopt('guest');session={...session,user:null};clearPrivateUI();location.reload();});
 const isLibrary=location.pathname==='/library';$('home-view').hidden=isLibrary;$('library-view').hidden=!isLibrary;document.body.classList.toggle('library-page',isLibrary);
@@ -20,17 +20,18 @@ const entryQuery=new URLSearchParams(location.search),returnToReader=safeReaderR
 let pendingCalendar=isLibrary&&entryQuery.get('calendar')==='1',pendingSettings=isLibrary&&(entryQuery.get('settings')||location.hash==='#agent');
 const returnAfterAuth=()=>{if(returnToReader&&!pendingUpload){location.replace(returnToReader);return true;}if(!isLibrary){location.href='/library';return true;}return false;};
 if(isLibrary)document.title='我的书房 · 循页 Page by Page';
-const authDialog=mountAuthDialog({dialog:$('auth-dialog'),api,getSession:()=>session,getReturnTo:()=>pendingUpload?'/library?upload=1':returnToReader||'/library',onSessionSettled:()=>refresh().catch(error=>status('library-status',error.message,true)),onAuthenticated:async()=>{if(returnAfterAuth())return;try{await refresh();status('library-status','');if(pendingUpload)openUpload();}catch(error){status('library-status','已登录，书架暂时无法刷新。'+error.message,true);}}});
+const authDialog=mountAuthDialog({dialog:$('auth-dialog'),api,getSession:()=>session,getReturnTo:()=>pendingUpload?'/library?upload=1':returnToReader||'/library',onSessionSettled:()=>refresh().catch(error=>status('library-status',error.message,true)),onAuthenticated:async()=>{const returnToChat=pendingChat;pendingChat=false;if(returnAfterAuth())return;try{await refresh();status('library-status','');if(pendingUpload)openUpload();else if(returnToChat)chat?.open();}catch(error){status('library-status','已登录，书架暂时无法刷新。'+error.message,true);}}});
 const openAuth=message=>authDialog.open(typeof message==='string'?message:undefined);
+$('auth-dialog').addEventListener('close',()=>{pendingChat=false;});
 const ensureUser=()=>{if(session?.user)return true;openAuth();return false;};
 const getOwner=()=>{const t=ownerScope.capture();return t.owner+':'+t.revision;};
 dashboard=mountReadingDashboard({root:$('reading-dashboard'),overviewRoot:$('reading-overview'),historyRoot:$('reading-history'),api,getSession:()=>session,getBooks:()=>books,getOwner,openAuth,refresh,onCurrentBook:book=>{selectedCurrent=book?.bookId||null;renderBooks();}});
-if(isLibrary){chat=mountLibraryChat({root:$('library-chat'),api,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture().owner,openAuth,getCurrentBook:()=>dashboard.getCurrentBook()});shell=mountLibraryShell({getSession:()=>session,openAuth,onLogout:signOut,onHistory:()=>dashboard.openHistory(),onOpenChat:()=>chat.open()});}else roomIcons();
+if(isLibrary){chat=mountLibraryChat({root:$('library-chat'),api,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture().owner,openAuth:message=>{pendingChat=true;openAuth(message);},getCurrentBook:()=>dashboard.getCurrentBook()});shell=mountLibraryShell({getSession:()=>session,openAuth,onLogout:signOut,onHistory:()=>dashboard.openHistory(),onOpenChat:()=>chat.open()});}else roomIcons();
 function clearPrivateUI({keepAuthDialog=false}={}){
   for(const id of ['upload-status','library-status','upload-filename'])status(id,'');
   for(const id of ['book-file','book-search'])$(id).value='';if(!keepAuthDialog){status('auth-status','');authDialog.reset();if($('auth-dialog').open)$('auth-dialog').close();}
   if($('upload-dialog').open)$('upload-dialog').close();$('upload-dialog').removeAttribute('aria-busy');$('confirm-upload').disabled=true;$('book-file').disabled=false;
-  if($('reading-history').open)$('reading-history').close();pendingUpload=false;selectedCurrent=null;upload=createUploadState();shelf='all';document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
+  if($('reading-history').open)$('reading-history').close();pendingUpload=false;pendingChat=false;selectedCurrent=null;upload=createUploadState();shelf='all';document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
   books=books.filter(b=>b.visibility==='public').map(b=>({...b,resume:null,journey:null}));chat?.reset();shell?.update();dashboard?.clear();renderBooks();$('featured-books').replaceChildren(...books.slice(0,3).map(landingBookCard));
 }
 function landingBookCard(book){
@@ -61,14 +62,14 @@ function bookCard(book){
 }
 function renderBooks(){
   const query=$('book-search').value.trim(),room=roomShelf(books,{scope:shelf,query,selectedBookId:selectedCurrent});
-  $('library-books').replaceChildren(...room.books.map(bookCard));$('library-books').setAttribute('aria-busy','false');$('reading-dashboard').hidden=!room.featured;$('shelf-title').hidden=!room.featured||!room.books.length;$('library-shelf').classList.toggle('with-current',!!room.featured);$('library-shelf').hidden=!!room.featured&&!room.books.length;
+  $('library-books').replaceChildren(...room.books.map(bookCard));$('library-books').setAttribute('aria-busy','false');$('reading-dashboard').hidden=!room.featured;$('shelf-title').hidden=!room.books.length;$('shelf-title').textContent=room.featured?'书架上的其他书':'书架';$('shelf-title').classList.toggle('sr-only',!room.featured);$('library-shelf').classList.toggle('with-current',!!room.featured);$('library-shelf').hidden=!!room.featured&&!room.books.length;
   $('room-title').textContent=query?'搜索结果':shelf==='private'?'我上传的':'我的书房';$('room-count').textContent=room.total+' 本书';$('sidebar-book-count').textContent=books.length;$('search-clear').hidden=!query;
   $('empty-shelf').hidden=!!room.total;$('empty-shelf').querySelector('h2').textContent=query?'没有找到这本书':'还没有自己的书';$('empty-shelf').querySelector('p').textContent=query?'换一个书名或作者，再找找看。':session?.user?'带来一份 PDF、TXT 或 Markdown，从自己的书开始。':'登录后，带来自己的书，留下自己的阅读记录。';$('empty-upload').hidden=!!query;$('empty-clear').hidden=!query;
   chat?.update();
 }
 async function refresh(knownSession){
-  const next=knownSession||await api('/api/auth/session'),continueUpload=!session?.user&&next.user&&pendingUpload,changed=ownerScope.adopt(next.user?.id||'guest');session=next;
-  if(changed){clearPrivateUI({keepAuthDialog:authDialog.isSettingPasswordFor(next.user?.id)});pendingUpload=!!continueUpload;}authDialog.updateCapabilities();shell?.update();
+  const next=knownSession||await api('/api/auth/session'),continueUpload=!session?.user&&next.user&&pendingUpload,continueChat=!session?.user&&next.user&&pendingChat,changed=ownerScope.adopt(next.user?.id||'guest');session=next;
+  if(changed){clearPrivateUI({keepAuthDialog:authDialog.isSettingPasswordFor(next.user?.id)});pendingUpload=!!continueUpload;pendingChat=!!continueChat;}authDialog.updateCapabilities();shell?.update();
   $('account-button').textContent=session.user?'我的书房 ↗':'登录 / 注册 ↗';$('library-description').textContent=session.user?'自己的书与阅读记录。':'先选一本书，读几页。';
   try{books=(await api('/api/library')).books;}catch(error){if(isLibrary){dashboard.fail(error);$('library-retry').hidden=false;$('library-books').setAttribute('aria-busy','false');}throw error;}
   if(!session.user)for(const book of books){try{const local=JSON.parse(localStorage.getItem(positionStorageKey(book.bookId))||'null');if(local?.passageId&&local.chapterLabel&&local.contentVersion===book.source.sha256)book.resume={label:local.chapterLabel,passageId:local.passageId,updatedAt:local.updatedAt,mode:local.mode,variant:local.variant};}catch{}}
@@ -87,7 +88,7 @@ function openUpload(){shell?.closeNavigation();pendingUpload=true;if(!ensureUser
 for(const id of ['upload-button','empty-upload'])$(id).addEventListener('click',openUpload);
 function selectFile(file){if(!file||upload.busy)return;$('upload-filename').textContent='';$('confirm-upload').disabled=true;$('book-file').value='';try{upload.select(file);$('upload-filename').textContent=file.name+' · '+(file.size>=1024*1024?(file.size/1024/1024).toFixed(2)+' MB':Math.max(1,Math.ceil(file.size/1024))+' KB');$('confirm-upload').textContent='放进我的书房 →';$('confirm-upload').disabled=false;status('upload-status','');}catch(error){status('upload-status',error.message,true);}}
 $('book-file').addEventListener('change',e=>selectFile(e.target.files[0]));
-const drop=$('drop-zone');for(const event of ['dragenter','dragover'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.add('dragging');});for(const event of ['dragleave','drop'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.remove('dragging');if(event==='drop')selectFile(e.dataTransfer.files[0]);});
+const drop=$('drop-zone');drop.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();if(!upload.busy)$('book-file').click();}});$('upload-dialog').addEventListener('close',()=>{if(upload.busy)status('library-status','正在导入 '+upload.file.name+'，完成后会更新书架。');});for(const event of ['dragenter','dragover'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.add('dragging');});for(const event of ['dragleave','drop'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.remove('dragging');if(event==='drop')selectFile(e.dataTransfer.files[0]);});
 $('confirm-upload').addEventListener('click',async()=>{
   if(!upload.file||upload.busy)return;const ticket=ownerScope.capture(),operation=upload,file=operation.begin(),b=$('confirm-upload');let succeeded=false;b.disabled=true;$('book-file').disabled=true;b.textContent='正在放进书房…';$('upload-dialog').setAttribute('aria-busy','true');status('upload-status',file.name.toLowerCase().endsWith('.pdf')?'正在提取 PDF 文字，请稍等…':'正在整理段落…');
   try{

@@ -4,7 +4,7 @@ import {randomUUID,createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {sourceIndex,allowedSources,validateEcho,hashSource,invalid} from './experience-validation.mjs';
 
-const MAX_TURNS=100,MAX_SOURCE_BYTES=8000,MAX_JOB_BYTES=14000,RUN_MS=90000,HOUR_MS=3600000;
+const MAX_TURNS=100,MAX_SOURCE_BYTES=8000,MAX_JOB_BYTES=14000,RUN_MS=90000,HOUR_MS=3600000,DAY_MS=86400000,CANCEL_POLL_MS=500;
 const FAILED='这次回答未通过生成或来源核验，你的提问已保留。';
 const EXPIRED='上次回答已中断或超时，你的提问已保留。';
 const digest=value=>createHash('sha256').update(value).digest('hex');
@@ -65,6 +65,8 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
   let closed=false;const queues=new Map(),active=new Map();
   const ownerDir=user=>path.join(dataDir,'users',digest(identity(user).id),'chat');
   const filename=(user,bookId)=>path.join(ownerDir(user),digest(bookId)+'.json');
+  const budgetFile=dataStore?'limits/reader-chat':path.join(dataDir,'limits','reader-chat.json');
+  const emptyBudget=()=>({requests:[],active:{}});
   const read=async(file,fallback)=>{if(dataStore)return dataStore.read(file,fallback);try{return JSON.parse(await readFile(file,'utf8'));}catch(error){if(error.code==='ENOENT')return structuredClone(fallback);throw error;}};
 
   // Local atomic renames alone do not prevent two Node processes from both
@@ -112,6 +114,25 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
     for(const turn of data.turns)if(turn.status==='running'&&(!Number.isFinite(turn.expiresAt)||turn.expiresAt<=now))Object.assign(turn,{status:'failed',answer:null,error:EXPIRED});
   }
   const mutateBook=(user,bookId,operation)=>{const now=clock();return mutate(filename(user,bookId),empty(bookId),data=>{expire(data,now);return operation(data);});};
+  function watchRun(user,bookId,id,runId,controller){
+    let stopped=false,timer;
+    const stop=()=>{stopped=true;clearTimeout(timer);controller.signal.removeEventListener('abort',stop);};
+    const schedule=()=>{timer=setTimeout(check,CANCEL_POLL_MS);timer.unref?.();};
+    async function check(){
+      if(stopped||controller.signal.aborted)return;
+      try{
+        // Cancellation can be handled by another process or hosted instance.
+        // Read the shared authority while generating, without extending its lease.
+        const data=await read(filename(user,bookId),empty(bookId));
+        if(stopped||controller.signal.aborted)return;
+        const turn=data.turns.find(t=>t.id===id);
+        if(closed||!turn||turn.runId!==runId||turn.status!=='running'||!Number.isFinite(turn.expiresAt)||turn.expiresAt<=clock()){controller.abort();return;}
+      }catch{if(!stopped)controller.abort();return;}
+      if(!stopped)schedule();
+    }
+    controller.signal.addEventListener('abort',stop,{once:true});
+    schedule();return stop;
+  }
   async function bookFor(user,bookId){identity(user);if(!text(bookId,128))throw invalid('找不到这本书',404);return library.getBook(user,bookId);}
   async function view(user,bookId,{passageId}={}){
     const book=await bookFor(user,bookId),index=sourceIndex(book),records=await library.records(user,bookId),context=contextFor(book,index,passageId,records.position);
@@ -126,6 +147,20 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
       if(data.requests.length>=10)throw invalid('这一小时的提问次数已用完，请稍后继续',429);
       data.requests.push({id:runId,at:now});return null;
     });
+  }
+  async function reserveGlobal(nonce){
+    const now=clock();
+    return mutate(budgetFile,emptyBudget(),data=>{
+      data.requests=data.requests.filter(r=>Number.isFinite(r.at)&&r.at>now-DAY_MS);
+      for(const [key,lease]of Object.entries(data.active))if(!Number.isFinite(lease.expiresAt)||lease.expiresAt<=now)delete data.active[key];
+      if(data.active[nonce]?.nonce===nonce)return {nonce};
+      if(Object.keys(data.active).length>=2)throw invalid('阅读对话正在处理其他提问，请稍后再试',429);
+      if(data.requests.filter(r=>r.at>now-HOUR_MS).length>=100||data.requests.length>=500)throw invalid('阅读对话的共享请求额度已用完，请稍后继续',429);
+      data.requests.push({nonce,at:now});data.active[nonce]={nonce,expiresAt:now+RUN_MS};return {nonce};
+    });
+  }
+  async function releaseGlobal(ticket){
+    await mutate(budgetFile,emptyBudget(),data=>{if(data.active[ticket.nonce]?.nonce===ticket.nonce)delete data.active[ticket.nonce];return null;});
   }
   async function finish(user,bookId,id,runId,changes){
     return mutateBook(user,bookId,data=>{const turn=data.turns.find(t=>t.id===id);if(!turn)throw invalid('找不到这次提问',404);if(turn.status==='running'&&turn.runId===runId)Object.assign(turn,changes);return publicTurn(turn);});
@@ -150,11 +185,12 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
     if(!claimed.created)return claimed.turn;
     const controller=new AbortController(),key=runId;
     const running={controller,user,bookId,id:input.id,runId};active.set(key,running);
-    let timer;
+    let timer,ticket=null,stopWatching=()=>{};
     try{
       if(closed)return await finish(user,bookId,input.id,runId,{status:'cancelled',answer:null});
       await library.addComment(user,bookId,{id:'chat-'+input.id,passageId:input.passageId,text:input.text,origin:'user',contentVersion:input.contentVersion},'questions');
       await quota(user,runId);
+      ticket=await reserveGlobal(runId);
       // Cancellation may have been persisted by another process while the
       // original question was entering the library or waiting for its quota.
       const current=await mutateBook(user,bookId,data=>publicTurn(data.turns.find(t=>t.id===input.id)));
@@ -163,6 +199,7 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
         controller.signal.addEventListener('abort',()=>reject(invalid('回答已取消或超时',408)),{once:true});
       });
       timer=setTimeout(()=>controller.abort(),Math.max(0,now+RUN_MS-clock()));timer.unref?.();
+      stopWatching=watchRun(user,bookId,input.id,runId,controller);
       const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'explain',book:claimed.book,passageId:input.passageId,text:claimed.prompt,runId,signal:controller.signal})),abort]);
       const reducedIndex=sourceIndex(claimed.book),checked=validateEcho(candidate,{index:reducedIndex,passageId:input.passageId,text:claimed.prompt,kind:'explain'});
       const answer={summary:checked.summary,sourceRefs:checked.sourceRefs,origin:'ai'};
@@ -175,7 +212,7 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
       const turn=await finish(user,bookId,input.id,runId,{status:'failed',answer:null,error:FAILED});
       if(error?.status===429)throw error;
       return turn;
-    }finally{clearTimeout(timer);active.delete(key);}
+    }finally{stopWatching();clearTimeout(timer);active.delete(key);if(ticket)await releaseGlobal(ticket).catch(()=>{});}
   }
   async function cancel(user,bookId,id){
     await bookFor(user,bookId);if(!safeId(id))throw invalid('提问标识不正确');

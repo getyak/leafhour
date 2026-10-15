@@ -12,3 +12,5 @@ playwright-report
 *.pdf
 *.epub
 supabase/.temp
+
+.reader-runtime
