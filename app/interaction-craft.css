@@ -7,7 +7,7 @@
   --interaction-error: #923f30;
   scrollbar-gutter: stable;
 }
-html:has(dialog[open]) { overflow: hidden; }
+html:has(dialog:modal) { overflow: hidden; }
 [hidden] { display: none !important; }
 button, a, summary, select, input, textarea { -webkit-tap-highlight-color: transparent; }
 button, summary, select { touch-action: manipulation; }
@@ -221,6 +221,8 @@ dialog .status:empty { display: none; }
 .library-chat-dialog :is(button, select, summary), .library-chat-source-link { min-height: 44px; }
 .library-chat-dialog button { min-width: 44px; }
 .library-chat-dialog .library-chat-close { width: 44px; height: 44px; }
+.library-chat-dialog .library-chat-send,
+.library-chat-dialog .library-chat-menu > summary { min-width: 44px; min-height: 44px; }
 .library-chat-source-link { display: flex; align-items: center; }
 .library-chat-composer-bottom { min-height: 44px; }
 .audio-player-details button { min-width: 44px; }

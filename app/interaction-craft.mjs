@@ -39,7 +39,7 @@ export function mountInteractionCraft(document) {
       syncDialog(dialog, false);
       const opener = openers.get(dialog); gestures.delete(dialog);
       win.requestAnimationFrame(() => {
-        if (document.querySelector('dialog[open]') || visible(document.activeElement) && document.activeElement !== document.body && !dialog.contains(document.activeElement)) return;
+        if (document.querySelector('dialog:modal') || visible(document.activeElement) && document.activeElement !== document.body && !dialog.contains(document.activeElement)) return;
         const target = visible(opener) && !opener.disabled ? opener : fallback();
         target?.focus({preventScroll: true});
       });
