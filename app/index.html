@@ -17,10 +17,15 @@
     <footer id="chapter-footer" class="chapter-footer" hidden><button id="previous-chapter">上一章</button><span id="chapter-fraction"></span><button id="next-chapter">下一章</button></footer>
     <div id="chapter-reading-actions" class="chapter-reading-actions" hidden><button id="mark-chapter-read" type="button">这一章读完了</button><p id="chapter-read-state"></p></div>
   </main>
-  <section id="reading-session" class="reading-session" aria-label="今日阅读" hidden>
+  <section id="reading-session" class="reading-session" aria-label="今日阅读" data-expanded="false" hidden>
+    <button id="reading-tools-trigger" class="reading-tools-trigger" type="button" aria-controls="reading-tools-panel" aria-expanded="false" aria-label="展开阅读工具" title="阅读工具 · 靠近或轻触展开"><svg class="reading-sand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 8c5-4 13-4 18 0M3 13c5-4 13-4 18 0M3 18c5-4 13-4 18 0" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg><span id="reading-tools-label">阅读</span><span class="reading-tools-dot" aria-hidden="true"></span></button>
+    <span id="reading-tools-notice" class="visually-hidden" role="status" aria-live="polite"></span>
+    <div id="reading-tools-panel" class="reading-tools-panel" role="group" aria-labelledby="reading-tools-heading" aria-hidden="true" inert>
+    <div class="reading-tools-heading"><span id="reading-tools-heading">留一点时间给书</span><button id="reading-tools-close" type="button" aria-label="收起阅读工具">收起 <span aria-hidden="true">↓</span></button></div>
     <div id="reading-controls" class="reading-controls"><div class="reading-meter"><span id="reading-state">今日阅读</span><output id="reading-time" aria-label="本次前台阅读时间" aria-live="off">00:00</output></div><button id="reading-toggle" type="button">开始阅读</button><button id="reading-end" type="button" disabled>结束</button></div>
     <a id="reading-login" class="reading-login" href="/library?login=1">登录后记录阅读 →</a><button id="reading-guide-open" type="button">深读提示</button><button id="reading-drafts-open" type="button" hidden>草稿</button>
     <span id="reading-goal-hint" class="reading-goal-hint"></span><div class="reading-sync-row"><p id="reading-sync" role="status"></p><button id="reading-retry" type="button" hidden>重试保存</button><button id="reading-backup" type="button" hidden>另存待同步时段</button></div>
+    </div>
   </section>
   <dialog id="reading-guide" class="reading-dialog" aria-labelledby="reading-guide-title">
     <header><div><p class="reading-dialog-kicker">循页 · 深读提示</p><h2 id="reading-guide-title">从一个问题开始。</h2></div><button data-reading-close="reading-guide" aria-label="关闭深读提示">×</button></header>
