@@ -23,6 +23,10 @@ body{isolation:isolate}
 .atmosphere-preview{position:sticky;top:0;align-self:start;height:100%;max-height:calc(100dvh - 66px);isolation:isolate;background:#26372d;overflow:hidden;color:#fffdf4}
 .atmosphere-preview::before{content:"";position:absolute;inset:0;z-index:-2;background:var(--scene-image) center/cover;filter:saturate(.75) brightness(.82);transition:opacity .25s}
 .atmosphere-preview::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#0a171118 35%,#0a1711b8 100%)}
+.atmosphere-preview .atmosphere-elements{z-index:-1}
+.atmosphere-preview[data-scene=none]{background:var(--paper);color:var(--ink)}
+.atmosphere-preview[data-scene=none]::before,.atmosphere-preview[data-scene=none]::after,.atmosphere-preview[data-scene=none] .atmosphere-elements{display:none}
+.atmosphere-preview[data-scene=none] .atmosphere-preview-text :is(span,p){color:var(--muted)}
 .atmosphere-preview-text{position:absolute;bottom:40px;left:28px;right:24px}
 .atmosphere-preview-text>span{font:10px/1.8 var(--interface);letter-spacing:.15em;color:#eeeeddc9}
 .atmosphere-preview-text h2{font:400 32px/1.6 var(--book);margin:12px 0 6px;letter-spacing:.06em}
@@ -53,6 +57,7 @@ body{isolation:isolate}
 .atmosphere-volume input{width:100%;min-width:0;accent-color:var(--accent);height:44px;cursor:pointer}
 .atmosphere-volume output{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
 .atmosphere-motion{display:flex;align-items:center;justify-content:space-between;min-height:32px;font-size:11px;margin-top:4px}
+.atmosphere-motion label span{display:block;color:var(--muted);font-size:10px;line-height:1.8;margin-top:3px}
 .atmosphere-motion input{appearance:none;position:relative;flex:none;width:34px;height:20px;border:1px solid var(--line);border-radius:20px;background:var(--wash);cursor:pointer}
 .atmosphere-motion input::before{content:"";position:absolute;top:3px;left:3px;width:12px;height:12px;border-radius:50%;background:var(--muted)}
 .atmosphere-motion input:checked{background:var(--accent);border-color:var(--accent)}
@@ -65,9 +70,69 @@ body{isolation:isolate}
 .atmosphere-dialog[data-playback=error] .atmosphere-status{color:var(--ink)}
 .atmosphere-about{font:10px/1.8 var(--interface);margin-top:13px;color:var(--muted)}
 .atmosphere-about summary{cursor:pointer;font-size:10px;min-height:24px}.atmosphere-about p{margin:10px 0}.atmosphere-about a{color:var(--accent)}
-@media(prefers-reduced-motion:no-preference){:root[data-atmosphere-motion=true] .atmosphere-backdrop::before{animation:atmosphere-light 42s ease-in-out infinite alternate}@keyframes atmosphere-light{from{filter:saturate(.62) brightness(.7)}to{filter:saturate(.62) brightness(.8)}}:root[data-theme=night][data-atmosphere-motion=true] .atmosphere-backdrop::before{animation:none}}
+/* The photograph and weather move independently, behind the fixed paper mask.
+   Only transform and opacity animate; no frame loop, video download, or moving text. */
+.atmosphere-elements{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:0}
+.atmosphere-elements::before,.atmosphere-elements::after{content:"";position:absolute;inset:var(--weather-inset,-12%);background-position:center;background-size:var(--weather-size,cover);mask-image:var(--weather-mask,none);opacity:var(--weather-opacity,.35)}
+.atmosphere-elements::before{background-image:var(--weather-near,none)}
+.atmosphere-elements::after{background-image:var(--weather-far,none);opacity:var(--weather-far-opacity,.2)}
+:root[data-atmosphere=forest],.atmosphere-preview[data-scene=forest]{
+  --weather-near:radial-gradient(ellipse at 18% 10%,#f8e9a4a0 0%,transparent 43%),radial-gradient(ellipse at 82% 48%,#e8efc976 0%,transparent 32%);
+  --weather-far:radial-gradient(ellipse at 23% 28%,#0c261da6 0% 12%,transparent 30%),radial-gradient(ellipse at 78% 60%,#0c261d91 0% 10%,transparent 32%);
+  --weather-near-motion:atmosphere-canopy 13s ease-in-out infinite alternate;
+  --weather-far-motion:atmosphere-canopy 19s ease-in-out -6s infinite alternate-reverse;
+  --scene-drift:atmosphere-forest-drift 24s ease-in-out infinite alternate;
+}
+:root[data-atmosphere=rain],.atmosphere-preview[data-scene=rain]{
+  --weather-near:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='173' height='212' fill='none' stroke='%23d9edf5' stroke-linecap='round'%3E%3Cpath d='M19 16l-4 23M77 83l-3 18M142 147l-4 24M48 174l-2 14M121 31l-3 19'/%3E%3C/svg%3E");
+  --weather-far:var(--weather-near);
+  --weather-size:173px 212px;--weather-inset:-212px -12%;--weather-opacity:.32;--weather-far-opacity:.18;
+  --weather-near-motion:atmosphere-rain 1.7s linear infinite;
+  --weather-far-motion:atmosphere-rain 2.8s linear -.8s infinite;
+  --scene-drift:atmosphere-rain-drift 26s ease-in-out infinite alternate;
+}
+:root[data-atmosphere=hearth],.atmosphere-preview[data-scene=hearth]{
+  --weather-near:radial-gradient(ellipse at 76% 72%,#ffb35bd4 0%,#eb8a3930 24%,transparent 56%);
+  --weather-far:radial-gradient(ellipse at 25% 90%,#ffe5b4b3 0%,transparent 48%);
+  --weather-opacity:.28;--weather-far-opacity:.24;
+  --weather-near-motion:atmosphere-fire 4.7s ease-in-out infinite alternate;
+  --weather-far-motion:atmosphere-fire 7.3s ease-in-out -2s infinite alternate-reverse;
+  --scene-drift:atmosphere-hearth-drift 28s ease-in-out infinite alternate;
+}
+:root[data-atmosphere=sea],.atmosphere-preview[data-scene=sea]{
+  --weather-near:var(--scene-image);
+  --weather-far:radial-gradient(ellipse at 18% 68%,#f5eac975 0%,transparent 44%),radial-gradient(ellipse at 82% 88%,#d2e8e04d 0%,transparent 36%);
+  --weather-mask:linear-gradient(transparent 28%,#000 56%);--weather-opacity:.27;--weather-far-opacity:.22;
+  --weather-near-motion:atmosphere-tide 8s ease-in-out infinite alternate;
+  --weather-far-motion:atmosphere-tide 11s ease-in-out -4s infinite alternate-reverse;
+  --scene-drift:atmosphere-sea-drift 20s ease-in-out infinite alternate;
+}
+:root[data-atmosphere=sea] .atmosphere-backdrop .atmosphere-elements::before,.atmosphere-preview[data-scene=sea] .atmosphere-elements::before{inset:0;filter:saturate(.62) brightness(.72)}
+.atmosphere-preview[data-scene=sea] .atmosphere-elements::before{filter:saturate(.75) brightness(.82)}
+:root[data-theme=night][data-atmosphere=sea] .atmosphere-backdrop .atmosphere-elements::before{filter:saturate(.55) brightness(.4)}
+@media(prefers-reduced-motion:no-preference){
+  :root[data-atmosphere-motion=true] :is(.atmosphere-backdrop,.atmosphere-preview)::before{animation:var(--scene-drift,none)}
+  :root[data-atmosphere-motion=true] .atmosphere-elements{opacity:1}
+  :root[data-atmosphere-motion=true] .atmosphere-elements::before{animation:var(--weather-near-motion,none)}
+  :root[data-atmosphere-motion=true] .atmosphere-elements::after{animation:var(--weather-far-motion,none)}
+}
+@keyframes atmosphere-forest-drift{from{transform:scale(1.035) translate(-.5%,0)}to{transform:scale(1.065) translate(.5%,.4%)}}
+@keyframes atmosphere-rain-drift{from{transform:scale(1.03) translate(0,-.3%)}to{transform:scale(1.045) translate(.4%,.3%)}}
+@keyframes atmosphere-hearth-drift{from{transform:scale(1.025)}to{transform:scale(1.05) translate(-.3%,.2%)}}
+@keyframes atmosphere-sea-drift{from{transform:scale(1.045) translate(-.6%,-.2%)}to{transform:scale(1.065) translate(.6%,.3%)}}
+@keyframes atmosphere-canopy{from{transform:translate(-2%,-1%) rotate(-2deg);opacity:.2}to{transform:translate(2%,1%) rotate(2deg);opacity:.48}}
+@keyframes atmosphere-rain{from{transform:translateY(-212px)}to{transform:translateY(0)}}
+@keyframes atmosphere-fire{0%,100%{transform:scale(1);opacity:.13}37%{transform:scale(1.07,.98);opacity:.31}68%{transform:scale(1.02,1.05);opacity:.2}}
+@keyframes atmosphere-tide{from{transform:translate(-1.4%,-1%) scale(1.02,.99);opacity:.13}to{transform:translate(1.4%,1.4%) scale(1.05,1.04);opacity:.3}}
+:root[data-atmosphere-active=false] :is(.atmosphere-backdrop,.atmosphere-preview)::before,
+:root[data-atmosphere-active=false] .atmosphere-elements::before,
+:root[data-atmosphere-active=false] .atmosphere-elements::after,
+.atmosphere-dialog:not([open]) .atmosphere-preview::before,
+.atmosphere-dialog:not([open]) .atmosphere-elements::before,
+.atmosphere-dialog:not([open]) .atmosphere-elements::after{animation-play-state:paused!important}
+:root[data-theme=night] .atmosphere-backdrop .atmosphere-elements{filter:brightness(.55) saturate(.65)}
 @media(max-width:1000px){.atmosphere-backdrop::after{background:color-mix(in srgb,var(--paper) 96%,transparent)}}
 @media(max-width:680px){.atmosphere-dialog{width:calc(100vw - 24px);max-height:calc(100dvh - 32px);border-radius:10px}.atmosphere-shell{grid-template-columns:1fr;min-height:0}.atmosphere-preview{position:relative;height:160px;max-height:none;min-height:160px}.atmosphere-preview::before{background-position:center 47%}.atmosphere-preview-text{bottom:20px;left:24px}.atmosphere-preview-text>span{display:none}.atmosphere-preview-text h2{font-size:27px;margin:0 0 2px}.atmosphere-preview-text p{font-size:11px}.atmosphere-panel{padding:23px 24px 20px}.atmosphere-heading{margin-bottom:19px}.atmosphere-heading h2{font-size:21px}.atmosphere-heading p{font-size:10px}.atmosphere-choice img{height:68px}.atmosphere-volume{grid-template-columns:92px minmax(45px,1fr) 30px;gap:10px}.atmosphere-sound-heading>span{font-size:8px}.atmosphere-sound{margin-top:19px;padding-top:17px}.atmosphere-none>span:not(.atmosphere-choice-check){font-size:9px}.atmosphere-footer{gap:8px}.atmosphere-play{min-width:130px;padding:12px 14px}}
 @media(max-width:390px){.atmosphere-panel{padding-left:18px;padding-right:18px}.atmosphere-choices{gap:10px}.atmosphere-heading h2{font-size:20px}.reading-header{gap:2px;padding-left:8px;padding-right:8px}.running-title{font-size:10px}.header-actions .quiet-button{padding-left:7px;padding-right:7px}.atmosphere-sound-heading>span{display:none}.atmosphere-volume{grid-template-columns:85px minmax(45px,1fr) 28px;gap:7px}}
-@media(prefers-reduced-motion:reduce){.atmosphere-backdrop::before,.atmosphere-preview::before{animation:none!important;transition:none}.atmosphere-choice,.atmosphere-choice img{transition:none}}
+@media(prefers-reduced-motion:reduce){.atmosphere-backdrop::before,.atmosphere-preview::before,.atmosphere-elements::before,.atmosphere-elements::after{animation:none!important;transition:none}.atmosphere-elements{display:none}.atmosphere-choice,.atmosphere-choice img{transition:none}}
 @media(prefers-reduced-transparency:reduce){.atmosphere-dialog::backdrop{backdrop-filter:none;background:#17251be6}}
