@@ -18,3 +18,13 @@ The second homepage pass uses two additional original assets generated with the 
 These assets contain no people, product interface, logos or readable copy. Compression stripped metadata and changed no semantic image content. Original PNGs remain in the local image-generation archive. The original hero and page-detail assets remain available; the new homepage uses the wider scene and keeps the page detail in the daily-reading section.
 
 Alternative text identifies the illustrations. The hero remains readable with the image unavailable; no essential action depends on a bitmap. No external font requests are required.
+
+## Paper bookshelf, 2026-10-15
+
+`sage-paper.webp` is an original paper material generated with the built-in OpenAI image tool. It is a background texture, not a photograph of a book or evidence of reading. The library uses a translucent sage wash over the texture; cloth covers reuse it with multiply blending. Cover lettering stays real, selectable browser text. No publisher artwork or external fonts are used.
+
+The delivery asset is 768 × 768px, 56194 bytes, encoded with cwebp quality82 from the generated PNG; encoding and resizing only. The original remains in the local image-generation archive. The flat-colour fallback keeps all content usable if the texture does not load.
+
+Exact generation prompt:
+
+> Use case: photorealistic-natural. Asset type: subtle seamless material texture for a Chinese personal reading-room website background, not a mockup. Primary request: a flatbed scan of premium handmade pale sage-green cotton rag paper, fine irregular paper fibres and very fine tactile grain, softly clouded low contrast mottling from natural pulp. Color overall pale muted grey sage #e3e8dd, faint cooler olive/sage tonal variation, extremely quiet diffuse natural light, uniform across entire square. All-over edge-to-edge material, orthographic macro scan, no perspective. It will be used behind dark readable text at low opacity; make the detail delicate and believable. No objects, no book, no drawing, no text, no border, no corners, no stains, no creases, no dark vignette, no bright spots, no watermark. Texture should tile naturally with no visible seams. Output square 1024x1024.
