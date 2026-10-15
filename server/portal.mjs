@@ -11,7 +11,7 @@ import {createSpeechProvider} from './audio-provider.mjs';
 import {createDialogueGenerator} from './dialogue-generator.mjs';
 import {createAudioRoutes} from './audio-routes.mjs';
 import {portalDocument} from './portal-document.mjs';
-import {roomExcerpt} from '../app/library-workspace.mjs';
+import {roomExcerpt,latestRoomQuestion} from '../app/library-workspace.mjs';
 import {createReaderChatService} from './reader-chat.mjs';
 import {createReaderChatGenerator} from './reader-chat-generator.mjs';
 import {authPurpose} from './auth-policy.mjs';
@@ -111,7 +111,7 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     if(match){const [,id,action]=match;
       if(action?.startsWith('audio/'))return audioRoutes.handle({req,res,url,user,bookId:id,action:action.slice(6),body,send});
       if(!action&&req.method==='GET'){send(200,await library.getBook(user,id));return true;}
-      if(action==='preview'&&req.method==='GET'){const book=await library.getBook(user,id);send(200,roomExcerpt(book,url.searchParams.get('passageId')||undefined));return true;}
+      if(action==='preview'&&req.method==='GET'){const book=await library.getBook(user,id),excerpt=roomExcerpt(book,url.searchParams.get('passageId')||undefined),question=user?latestRoomQuestion(book,await library.records(user,id)):null;send(200,{...excerpt,question});return true;}
       if(action==='chat'&&req.method==='GET'){send(200,await chat.view(user,id,{passageId:url.searchParams.get('passageId')||undefined}));return true;}
       if(action==='chat'&&req.method==='POST'){send(200,await chat.send(user,id,body));return true;}
       const cancelChat=action?.match(/^chat\/([^/]+)\/cancel$/);if(cancelChat&&req.method==='POST'){send(200,await chat.cancel(user,id,cancelChat[1]));return true;}

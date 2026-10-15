@@ -41,3 +41,10 @@ dialog:not(.auth-dialog){background:var(--paper);color:var(--ink);border-color:v
 .today-progress{margin:16px 0 0;color:var(--muted);font-size:12px;line-height:1.7}.dashboard-loading{padding:30px 0;min-height:120px;color:var(--muted);font-size:14px}
 .dashboard-loading{min-height:360px}.dashboard-loading button{display:block;margin-top:16px}
 .day-books{padding:0;margin:20px 0 24px;list-style:none;display:grid;gap:10px}.day-books a{display:grid;gap:4px;min-height:58px;padding:11px 0;border-bottom:1px solid var(--line)}.day-books strong{font-size:14px;font-weight:500;line-height:1.6;overflow-wrap:anywhere}.day-books span,.day-overlap{font-size:12px;line-height:1.6;color:var(--muted)}.day-history>summary{cursor:pointer;min-height:44px;display:list-item;padding:12px 0;color:var(--accent);font-size:12px}.record-time{display:block;color:var(--muted);font-size:11px;line-height:1.6;margin-top:4px}.day-history .day-records{margin-top:4px}
+
+/* A reader's own words sit beside the return path, separate from the source excerpt. */
+.library-page .room-question{grid-column:2;min-width:0;max-width:520px;margin:0;padding:0 0 0 15px;border-left:2px solid var(--line)}
+.library-page .room-question-label{font:12px/1.7 var(--sans);color:var(--muted);margin:0 0 7px}
+.library-page .room-question-text{font:16px/1.9 var(--serif);color:var(--ink);margin:0;white-space:pre-wrap;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+.library-page .room-question-link{display:inline-flex;align-items:center;min-height:44px;font:12px/1.7 var(--sans);color:var(--accent);text-decoration:underline;text-underline-offset:4px}
+@media(max-width:760px){.library-page .room-question{grid-column:1/-1}}
