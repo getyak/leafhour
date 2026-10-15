@@ -1,5 +1,15 @@
 # 执行约定
 
+## 默认数据账号
+
+2026-10-15 用户指定：本项目持久保存的测试书籍、上传资源、译文、注解与验收记录，默认归入 `test@cubxxw.com` 的书房。执行前从当前 Supabase Auth 查询此邮箱的真实用户 ID，以领域服务的账号目录保存，不使用 `owner`、`local-owner` 或临时 QA 目录作为新的云端数据归属。用户当次指定其他账号时，以当次要求为准。
+
+登录密码只从 macOS 登录钥匙串读取，service 为 `com.cubxxw.agents.default-data-workspace`，account 为 `test@cubxxw.com`；禁止在命令、代码、文档、日志或回复中写出密码。网页仍使用现有验证码或第三方登录，不能因为测试账号有密码就擅自增加网站登录方式。
+
+单元测试继续使用临时目录与隔离数据，不能向真实账号写测试垃圾；需要持久保存的联调和验收资源统一放入上述账号。检查账号隔离时优先使用匿名请求和隔离身份，不能读取或覆盖其他真实用户的数据。公版目录继续共享，个人译文与阅读记录按账号保存。
+
+旧数据先清点、备份并验证，再通过现有书房服务导入；保留段落 ID、原文、两种译文、注解归属及草稿状态。旧目录作为恢复依据保留，不能因迁移完成擅自删除。数据结构和迁移操作见 `docs/data-workspace.md`。
+
 先读 `_briefs/product-brief.md`、`_briefs/reader-demo.md`、`_briefs/content-contract.md`、`_briefs/private-library-architecture.md`、`_briefs/data-ownership.md`、`_briefs/mcp-contract.md` 和 `_briefs/pi-handoff.md`。`architecture.md` 只保留初版历史。
 
 2026-10-12用户已明确授权实现四条阅读故事与官方DSH回声，当前为本机实现阶段；接口与验收见 `_briefs/four-reading-experiences-implementation.md`。后续范围依具体用户请求，不能因看到交接就自动全书重译、新增付费任务或部署。模型调用只用本次允许的有界上下文。
