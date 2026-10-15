@@ -206,6 +206,7 @@
   "tests/portal.test.mjs",
   "tests/progress-sync.test.mjs",
   "tests/public-build.test.mjs",
+  "tests/reader-chat-generator.test.mjs",
   "tests/reader-chat.test.mjs",
   "tests/reader-return.test.mjs",
   "tests/reader-runtime.test.mjs",
