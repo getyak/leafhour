@@ -28,7 +28,7 @@ dialog.innerHTML=`
       </section>
       <footer class="atmosphere-footer"><button id="atmosphere-play" class="atmosphere-play" disabled><span aria-hidden="true">▷</span><span id="atmosphere-play-label">先选一种氛围</span></button><button id="atmosphere-return">回到书页 <span aria-hidden="true">↗</span></button></footer>
       <p id="atmosphere-status" class="atmosphere-status" role="status" aria-live="polite">选择场景，配乐与环境声会一起开启。</p>
-      <details class="atmosphere-about"><summary>关于声音与素材</summary><p>配乐为本机合成的琴音与和声，环境录音随应用保存。音量调至零即可关闭对应声音。切到后台会暂停，开始朗读时背景声会自动降低。</p><a href="/assets/atmospheres/NOTICE.md" target="_blank" rel="noopener">查看素材来源</a><p>氛围偏好保存在当前浏览器，暂不随书房备份迁移。</p></details>
+      <details class="atmosphere-about"><summary>关于声音与素材</summary><p>配乐为本机合成的琴音与和声，环境录音随应用保存。音量调至零即可关闭对应声音。切换网页或应用时继续播放，暂停请使用播放按钮。开始朗读时背景声会自动降低。</p><a href="/assets/atmospheres/NOTICE.md" target="_blank" rel="noopener">查看素材来源</a><p>氛围偏好保存在当前浏览器，暂不随书房备份迁移。</p></details>
     </div>
   </div>`;
 document.body.append(dialog);
@@ -44,9 +44,12 @@ function save(){try{localStorage.setItem(key,JSON.stringify(prefs));}catch{notic
 function renderMotion(){
   document.documentElement.dataset.atmosphereMotion=String(prefs.motion&&!reducedMotion.matches);
   document.documentElement.dataset.atmosphereActive=String(!document.hidden);
-  $('atmosphere-motion').checked=prefs.motion&&!reducedMotion.matches;
-  $('atmosphere-motion').disabled=prefs.scene==='none'||reducedMotion.matches;
-  $('atmosphere-motion-hint').textContent=reducedMotion.matches?'已跟随系统减少动态效果':'让风、雨与潮汐轻轻流动';
+  for(const prefix of ['atmosphere-','settings-atmosphere-']){
+    const control=$(prefix+'motion');if(!control)continue;
+    control.checked=prefs.motion&&!reducedMotion.matches;
+    control.disabled=prefs.scene==='none'||reducedMotion.matches;
+    $(prefix+'motion-hint').textContent=reducedMotion.matches?'已跟随系统减少动态效果':'让风、雨与潮汐轻轻流动';
+  }
 }
 function render(){
   const scene=atmospheres.find(s=>s.id===prefs.scene);
@@ -55,7 +58,15 @@ function render(){
   $('atmosphere-preview-name').textContent=scene?.name||'只留纸面';$('atmosphere-preview-caption').textContent=scene?.caption||'把这一刻，留给书里的世界。';
   for(const button of dialog.querySelectorAll('[data-scene].atmosphere-choice'))button.setAttribute('aria-pressed',String(button.dataset.scene===prefs.scene));
   $('atmosphere-none').setAttribute('aria-pressed',String(prefs.scene==='none'));
-  for(const name of ['music','nature']){$('atmosphere-'+name).value=prefs[name];$('atmosphere-'+name).disabled=!scene;$('atmosphere-'+name+'-value').value=prefs[name]+'%';$('atmosphere-'+name+'-name').textContent=scene?.[name]||'';}
+  for(const name of ['music','nature']){
+    for(const prefix of ['atmosphere-','settings-atmosphere-']){
+      const control=$(prefix+name);if(!control)continue;
+      control.value=prefs[name];control.disabled=!scene;$(prefix+name+'-value').value=prefs[name]+'%';
+    }
+    $('atmosphere-'+name+'-name').textContent=scene?.[name]||'';
+  }
+  if($('settings-atmosphere-levels'))$('settings-atmosphere-levels').hidden=!scene;
+  if($('settings-atmosphere-scene'))$('settings-atmosphere-scene').textContent=scene?.name||'只留纸面';
   $('open-atmosphere').setAttribute('aria-label','阅读氛围'+(scene?'：'+scene.name:''));session.setMix(atmosphereMix(prefs,{narrating}));renderPlayback();
 }
 function renderPlayback(){
@@ -66,6 +77,9 @@ function renderPlayback(){
   $('atmosphere-play-label').textContent=!hasScene?'先选一种氛围':loading?'取消准备':playing?'暂停声音':session.status==='error'?'重试播放':'开启声音';
   $('atmosphere-quick-pause').hidden=!playing&&!loading;$('open-atmosphere').dataset.playing=String(playing&&!silent);
   $('atmosphere-status').textContent=notice||(session.status==='error'?(session.error?.message||'声音暂时无法播放，请重试。'):loading?'正在准备声音，书页已经就绪。':playing?(silent?'两路声音已静音。':narrating?'朗读进行中，背景声音已降低。':'声音已开启，合上面板就可以继续读。'):hasScene?'声音已暂停。点击开启，慢慢读。':'选择场景，配乐与环境声会一起开启。');
+  const quick=$('settings-atmosphere-toggle');
+  if(quick){quick.disabled=!hasScene;quick.textContent=loading?'取消准备':playing?'暂停':'播放';quick.setAttribute('aria-pressed',String(playing||loading));}
+  if($('settings-atmosphere-status'))$('settings-atmosphere-status').textContent=$('atmosphere-status').textContent;
 }
 function choose(id){
   const anchor=window.marginaliaReader?.getAnchor();notice='';prefs={...prefs,scene:id};save();render();
@@ -79,14 +93,16 @@ for(const id of ['close-atmosphere','atmosphere-return'])$(id).addEventListener(
 dialog.addEventListener('close',()=>{$('open-atmosphere').setAttribute('aria-expanded','false');});
 dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();});
 $('atmosphere-none').addEventListener('click',()=>choose('none'));
-$('atmosphere-play').addEventListener('click',()=>{notice='';if(['playing','loading'].includes(session.status))session.stop();else session.play(prefs.scene);});
+function toggleSound(){notice='';if(['playing','loading'].includes(session.status))session.stop();else session.play(prefs.scene);}
+for(const id of ['atmosphere-play','settings-atmosphere-toggle'])$(id)?.addEventListener('click',toggleSound);
 $('atmosphere-quick-pause').addEventListener('click',()=>{notice='';session.stop();});
-for(const name of ['music','nature'])$('atmosphere-'+name).addEventListener('input',event=>{notice='';prefs=normalizeAtmosphere({...prefs,[name]:Number(event.target.value)});save();session.setMix(atmosphereMix(prefs,{narrating}));render();});
-$('atmosphere-motion').addEventListener('change',event=>{prefs={...prefs,motion:event.target.checked};save();render();});
+for(const name of ['music','nature'])for(const prefix of ['atmosphere-','settings-atmosphere-'])$(prefix+name)?.addEventListener('input',event=>{notice='';prefs=normalizeAtmosphere({...prefs,[name]:Number(event.target.value)});save();render();});
+for(const prefix of ['atmosphere-','settings-atmosphere-'])$(prefix+'motion')?.addEventListener('change',event=>{prefs={...prefs,motion:event.target.checked};save();render();});
 reducedMotion.addEventListener('change',renderMotion);
 // Native media events cover play, pause, end, source replacement, and future narration players.
 function syncNarration(){narrating=[...document.querySelectorAll('audio:not([data-atmosphere])')].some(audio=>!audio.paused&&!audio.ended);session.setMix(atmosphereMix(prefs,{narrating}));renderPlayback();}
 for(const event of ['play','pause','ended','emptied'])document.addEventListener(event,syncNarration,true);
-document.addEventListener('visibilitychange',()=>{renderMotion();if(document.hidden&&['playing','loading'].includes(session.status)){session.stop();notice='离开书页时，声音已暂停。点击可继续。';renderPlayback();}});
+// Visibility controls visual motion, never the listener's playback choice.
+document.addEventListener('visibilitychange',renderMotion);
 window.addEventListener('pagehide',()=>session.stop());
 render();syncNarration();
