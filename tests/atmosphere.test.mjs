@@ -66,7 +66,7 @@ function readerFixture({saved=null,reduced=false,delayed=false}={}){
     showModal(){this.open=true;}
     close(){this.open=false;this.dispatchEvent(new Event('close'));}
   }
-  for(const id of ['open-atmosphere','settings-atmosphere','settings-dialog','atmosphere-quick-pause'])elements.set(id,new Element());
+  for(const id of ['open-atmosphere','settings-atmosphere','settings-dialog','atmosphere-quick-pause',...['toggle','status','scene','levels','music','music-value','nature','nature-value','motion','motion-hint'].map(name=>'settings-atmosphere-'+name)])elements.set(id,new Element());
   const motion=new EventTarget();motion.matches=reduced;
   const doc=new EventTarget();Object.assign(doc,{hidden:false,documentElement:new Element(),body:new Element(),createElement:()=>new Element(),getElementById:id=>elements.get(id),querySelectorAll:()=>[]});
   const win=new EventTarget();win.matchMedia=()=>motion;
@@ -102,17 +102,33 @@ test('restoring a scene stays silent and selecting another scene respects an ind
   assert.equal(f.dialog.dataset.playback,'paused');assert.equal(f.started.length,1);
 });
 
+test('settings and scene controls share volume, motion and manual playback without restarting sound',async()=>{
+  const f=readerFixture();assert.equal(f.$('settings-atmosphere-levels').hidden,true);
+  await f.choose('rain');assert.equal(f.$('settings-atmosphere-levels').hidden,false);
+  assert.equal(f.$('settings-atmosphere-scene').textContent,atmospheres.find(s=>s.id==='rain').name);
+  f.$('settings-atmosphere-music').value='0';f.$('settings-atmosphere-music').dispatchEvent(new Event('input'));
+  assert.equal(f.$('atmosphere-music').value,0);assert.equal(f.$('settings-atmosphere-music-value').value,'0%');
+  f.$('atmosphere-nature').value='61';f.$('atmosphere-nature').dispatchEvent(new Event('input'));
+  assert.equal(f.$('settings-atmosphere-nature').value,61);assert.equal(f.started.length,1);
+  f.$('settings-atmosphere-motion').checked=false;f.$('settings-atmosphere-motion').dispatchEvent(new Event('change'));
+  assert.equal(f.$('atmosphere-motion').checked,false);
+  f.$('settings-atmosphere-toggle').dispatchEvent(new Event('click'));assert.equal(f.dialog.dataset.playback,'paused');
+  assert.equal(f.$('settings-atmosphere-toggle').textContent,'播放');assert.equal(f.$('atmosphere-play-label').textContent,'开启声音');
+  f.$('settings-atmosphere-toggle').dispatchEvent(new Event('click'));await f.tick();assert.equal(f.dialog.dataset.playback,'playing');
+  await f.choose('none');assert.equal(f.$('settings-atmosphere-toggle').disabled,true);assert.equal(f.$('settings-atmosphere-levels').hidden,true);
+});
+
 test('quick pause cancels a scene selected while its recording is still loading',async()=>{
   const f=readerFixture({delayed:true});await f.choose('rain');assert.equal(f.dialog.dataset.playback,'loading');
   f.$('atmosphere-quick-pause').dispatchEvent(new Event('click'));f.pending[0]();await f.tick();
   assert.equal(f.dialog.dataset.playback,'paused');assert.deepEqual(f.stopped,['rain']);
 });
 
-test('background motion follows visibility and live reduced-motion changes without changing saved intent',async()=>{
+test('switching tabs pauses visual motion but keeps the selected sound playing without restarting it',async()=>{
   const f=readerFixture();await f.choose('sea');
   assert.equal(f.root.dataset.atmosphereActive,'true');
   f.doc.hidden=true;f.doc.dispatchEvent(new Event('visibilitychange'));
-  assert.equal(f.root.dataset.atmosphereActive,'false');assert.equal(f.dialog.dataset.playback,'paused');
+  assert.equal(f.root.dataset.atmosphereActive,'false');assert.equal(f.dialog.dataset.playback,'playing');assert.equal(f.stopped.length,0);
   f.doc.hidden=false;f.doc.dispatchEvent(new Event('visibilitychange'));
   assert.equal(f.root.dataset.atmosphereActive,'true');assert.equal(f.started.length,1);
   f.motion.matches=true;f.motion.dispatchEvent(new Event('change'));
@@ -120,4 +136,14 @@ test('background motion follows visibility and live reduced-motion changes witho
   f.motion.matches=false;f.motion.dispatchEvent(new Event('change'));
   assert.equal(f.root.dataset.atmosphereMotion,'true');assert.equal(f.$('atmosphere-motion').disabled,false);
   assert.equal(f.started.length,1);assert.equal(JSON.parse(f.storage.get('marginalia-atmosphere-v1')).motion,true);
+});
+
+test('a background load may finish playing; an explicit pause stays paused on return and leaving the document stops it',async()=>{
+  const f=readerFixture({delayed:true});await f.choose('rain');
+  f.doc.hidden=true;f.doc.dispatchEvent(new Event('visibilitychange'));f.pending[0]();await f.tick();
+  assert.equal(f.dialog.dataset.playback,'playing');assert.equal(f.stopped.length,0);
+  f.$('atmosphere-quick-pause').dispatchEvent(new Event('click'));
+  f.doc.hidden=false;f.doc.dispatchEvent(new Event('visibilitychange'));assert.equal(f.dialog.dataset.playback,'paused');assert.equal(f.started.length,1);
+  await f.choose('sea');f.pending[1]();await f.tick();f.win.dispatchEvent(new Event('pagehide'));
+  assert.equal(f.dialog.dataset.playback,'paused');assert.deepEqual(f.stopped,['rain','sea']);
 });

@@ -26,23 +26,18 @@ export function createParallelPair({document,layers,variant,prose,passageId,reve
   return pair;
 }
 
-export function mountParallelSettings({document,onChange,onActivate}){
-  const root=document.getElementById('parallel-style-options');
+export function mountParallelSettings({document,onChange}){
+  const root=document.getElementById('parallelStyle');
   for(const style of parallelStyles){
-    const button=document.createElement('button');button.type='button';button.dataset.parallelStyleChoice=style.id;button.setAttribute('aria-pressed','false');
-    const sample=document.createElement('span');sample.className='parallel-style-sample sample-'+style.id;sample.setAttribute('aria-hidden','true');sample.append(document.createElement('i'),document.createElement('i'));
-    const copy=document.createElement('span'),title=document.createElement('strong'),description=document.createElement('span');title.textContent=style.name;description.textContent=style.description;copy.append(title,description);button.append(sample,copy);
-    button.addEventListener('click',()=>onChange({parallelStyle:style.id}));root.append(button);
+    const option=document.createElement('option');option.value=style.id;option.textContent=style.name;root.append(option);
   }
-  for(const key of ['parallelLayout','parallelColor','parallelBackground'])document.getElementById(key).addEventListener('change',event=>onChange({[key]:event.target.value}));
-  document.getElementById('activate-parallel').addEventListener('click',onActivate);
+  for(const key of ['parallelLayout','parallelStyle','parallelColor','parallelBackground'])document.getElementById(key).addEventListener('change',event=>onChange({[key]:event.target.value}));
   const preview=document.getElementById('parallel-preview');
   preview.append(createParallelPair({document,passageId:'settings-preview',variant:'interpretive',layers:[{kind:'original',label:'原文',lang:'en',text:'Who in the world am I?'},{kind:'translation',label:'意译 · 示例',lang:'zh-Hans',text:'我究竟是谁？'}],prose:layer=>{const p=document.createElement('p');p.lang=layer.lang;p.textContent=layer.text;return p;}}));
 }
 
 export function applyParallelAppearance(document,state){
   for(const key of ['parallelLayout','parallelStyle','parallelColor','parallelBackground'])document.body.dataset[key]=state[key];
-  for(const key of ['parallelLayout','parallelColor','parallelBackground'])document.getElementById(key).value=state[key];
-  for(const button of document.querySelectorAll('[data-parallel-style-choice]'))button.setAttribute('aria-pressed',String(button.dataset.parallelStyleChoice===state.parallelStyle));
-  document.getElementById('activate-parallel').hidden=state.mode==='parallel';
+  for(const key of ['parallelLayout','parallelStyle','parallelColor','parallelBackground'])document.getElementById(key).value=state[key];
+  document.getElementById('parallel-style-description').textContent=parallelStyles.find(style=>style.id===state.parallelStyle)?.description||'';
 }

@@ -26,7 +26,7 @@ test('reading appearance travels with exported records, rejects invalid imports 
   t.after(async()=>{for(const server of servers)await new Promise(r=>server.close(r));});
   async function open(name){const server=await createReaderServer({bookPath,recordsPath:path.join(dir,name,'records.json')});servers.push(server);await new Promise(r=>server.listen(0,'127.0.0.1',r));return 'http://127.0.0.1:'+server.address().port;}
   const base=await open('first'),other=await open('second');
-  for(const [file,type]of [['parallel-reading.mjs','javascript'],['parallel-reading.css','css'],['reader-immersion.mjs','javascript']]){
+  for(const [file,type]of [['parallel-reading.mjs','javascript'],['parallel-reading.css','css'],['reader-immersion.mjs','javascript'],['reader-settings.mjs','javascript'],['reader-settings.css','css']]){
     const response=await fetch(base+'/'+file);assert.equal(response.status,200,file);assert.ok(response.headers.get('content-type').includes(type));
   }
   const post=(base,url,data)=>fetch(base+url,{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body:JSON.stringify(data)});
