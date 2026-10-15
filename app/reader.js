@@ -1,4 +1,4 @@
-import {appearanceDefaults,appearanceBounds,normalizeAppearance} from './reading-preferences.mjs';
+import {appearanceDefaults,appearanceBounds,normalizeAppearance,openingReadingPreferences} from './reading-preferences.mjs';
 import {captureDOMSelection,paragraphSnapshot} from './share-model.mjs';
 import {placeFloatingToolbar} from './toolbar-placement.mjs';
 import {readerFetch,readerStorageKey,selectedBookId,readerSession} from './reader-api.mjs';
@@ -10,7 +10,7 @@ import {createNoteDrafts} from './note-drafts.mjs';
 import {createReadingDraftStore} from './reading-draft-store.mjs';
 import {readerLoginUrl,resolveReaderEntry} from './reader-return.mjs';
 import {passagePresentation,visibleQuoteLanguage} from './passage-layers.mjs';
-import {catalogReadingMode,chineseSampleEntry} from './catalog-sample.mjs';
+import {chineseSampleEntry} from './catalog-sample.mjs';
 import {createChapterFlow,isReadingDivider} from './reading-flow.mjs';
 import {startReadingLoad,mergeLoadedReadingRecords} from './reading-load.mjs';
 const $=id=>document.getElementById(id);
@@ -21,7 +21,7 @@ let book,records,recordsUnavailable=false,paragraphs=[],paragraphMap=new Map(),n
 let recordsRetryBusy=false,recordsRetryNotice='',recordsPositionUnresolved=false,recordsPending=false,loadGeneration=0,entryInteracted=false,flow=null,flowIdle=null,flowFrame=false,deferredProgress=false;
 let continuous=true;try{continuous=localStorage.getItem(readerStorageKey('marginalia-continuous-v1'))!=='false';}catch{}
 $('continuous-reading').checked=continuous;document.body.dataset.continuous=String(continuous);
-const state={chapterId:'ch01',mode:'zh',variant:'interpretive',...appearanceDefaults};
+const state={chapterId:'ch01',...openingReadingPreferences()};
 const draftKey=readerStorageKey('marginalia-focus-drafts-v2');let savedDrafts=null,legacyDrafts={};try{savedDrafts=JSON.parse(localStorage.getItem(draftKey)||'null');legacyDrafts=JSON.parse(localStorage.getItem(readerStorageKey('marginalia-focus-drafts-v1'))||'{}');}catch{}
 let noteDrafts=createNoteDrafts(savedDrafts,legacyDrafts),noteDraftError=null;
 const persistDrafts=()=>{try{if(noteDraftError)return false;if(noteDrafts.persist)noteDrafts.persist();else localStorage.setItem(draftKey,JSON.stringify(noteDrafts.snapshot()));document.dispatchEvent(new CustomEvent('reader:drafts-updated'));return true;}catch{return false;}};
@@ -276,12 +276,12 @@ async function boot(){
   const generation=++loadGeneration;entryInteracted=false;restoringProgress=true;
   const loading=startReadingLoad({readBook:()=>api('/api/book'),readRecords:()=>api('/api/records')});
   try{
-    book=await loading.book;if(generation!==loadGeneration)return;if(selectedBookId){try{noteDrafts=createReadingDraftStore({storage:localStorage,scope:readerStorageKey('marginalia-reading-ending-drafts-v1'),book});noteDraftError=null;}catch(error){noteDraftError=error;announce('本机草稿暂时无法读取，原数据保留。请先另存待同步数据或复制新写的文字。');}}if(book.title?.zh){document.querySelector('.running-title').firstChild.textContent=book.title.zh;$('toc-book-title').textContent=book.title.zh;}if(selectedBookId){state.chapterId=book.readingStart?.chapterId||book.chapters[0].id;state.mode=catalogReadingMode(book);recordsUnavailable=!readerSession?.user;}else recordsUnavailable=false;const initialRecords=loading.peekRecords();recordsPending=initialRecords===undefined;records=initialRecords||{comments:[],questions:[],readingSessions:[],readingMilestones:[],position:null};recordsUnavailable=selectedBookId&&!readerSession?.user||!initialRecords;
+    book=await loading.book;if(generation!==loadGeneration)return;if(selectedBookId){try{noteDrafts=createReadingDraftStore({storage:localStorage,scope:readerStorageKey('marginalia-reading-ending-drafts-v1'),book});noteDraftError=null;}catch(error){noteDraftError=error;announce('本机草稿暂时无法读取，原数据保留。请先另存待同步数据或复制新写的文字。');}}if(book.title?.zh){document.querySelector('.running-title').firstChild.textContent=book.title.zh;$('toc-book-title').textContent=book.title.zh;}if(selectedBookId){state.chapterId=book.readingStart?.chapterId||book.chapters[0].id;state.mode='en';recordsUnavailable=!readerSession?.user;}else recordsUnavailable=false;const initialRecords=loading.peekRecords();recordsPending=initialRecords===undefined;records=initialRecords||{comments:[],questions:[],readingSessions:[],readingMilestones:[],position:null};recordsUnavailable=selectedBookId&&!readerSession?.user||!initialRecords;
     paragraphs=book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,section:s.number,chapterId:s.chapterId})));paragraphMap=new Map(paragraphs.map(p=>[p.id,p]));notesMap=new Map(book.annotations.map(n=>[n.id,n]));termsMap=new Map(book.glossary.map(t=>[t.id,t]));
     let localPosition=null;try{localPosition=JSON.parse(localStorage.getItem(progressKey)||'null');}catch{}
     let position=chooseReadingPosition({book,remote:records.position,local:localPosition,remoteAvailable:!recordsUnavailable});
     progressSync.adopt(recordsUnavailable?(position?.baseRevision??position?.revision??0):(records.position?.revision||0));
-    if(position&&Number.isFinite(position.offset)&&Math.abs(position.offset)<=4000&&paragraphMap.has(position.passageId)){position.chapterId=paragraphMap.get(position.passageId).chapterId;state.chapterId=position.chapterId;if(['zh','en','parallel'].includes(position.mode))state.mode=position.mode;if(['literal','interpretive'].includes(position.variant))state.variant=position.variant;if(Number.isFinite(position.font))state.font=Math.max(18,Math.min(28,position.font));Object.assign(state,normalizeAppearance(position));}else position=null;
+    if(position&&Number.isFinite(position.offset)&&Math.abs(position.offset)<=4000&&paragraphMap.has(position.passageId)){position.chapterId=paragraphMap.get(position.passageId).chapterId;state.chapterId=position.chapterId;Object.assign(state,openingReadingPreferences(position));}else position=null;
     const requestedEntry=resolveReaderEntry(book,new URLSearchParams(location.search));if(requestedEntry){state.chapterId=requestedEntry.chapterId;if(requestedEntry.note||requestedEntry.action==='translate')state.mode='en';position={...(position||{}),...state,chapterId:requestedEntry.chapterId,passageId:requestedEntry.passageId,offset:requestedEntry.offset,withinParagraph:undefined,contentVersion:book.contentVersion};}
     const sampleEntry=!requestedEntry&&chineseSampleEntry(book,new URLSearchParams(location.search));if(sampleEntry){Object.assign(state,{chapterId:sampleEntry.chapterId,mode:sampleEntry.mode,variant:sampleEntry.variant});position={...(position||{}),...state,...sampleEntry,withinParagraph:undefined,contentVersion:book.contentVersion};const query=new URLSearchParams(location.search);query.delete('sample');history.replaceState(null,'',location.pathname+'?'+query);}
     if(selectedBookId){const onlyOriginal=chineseOriginalOnly(book);for(const option of $('view-mode').options){option.disabled=onlyOriginal&&option.value!=='en';if(option.value==='en')option.textContent=book.sourceLanguage==='zh'?'中文原文':'英文原文';if(option.value==='zh')option.textContent='中文译文';if(option.value==='parallel')option.textContent=book.sourceLanguage==='zh'?'原文与译文对照':'中英对照';}if(onlyOriginal)state.mode='en';}
@@ -297,7 +297,7 @@ async function adoptLoadedRecords(fresh,{generation,explicitEntry}){
     if(!entryInteracted){
       let local=null;try{local=JSON.parse(localStorage.getItem(progressKey)||'null');}catch{}
       const chosen=chooseReadingPosition({book,remote,local});
-      if(chosen){restoringProgress=true;Object.assign(state,{chapterId:chosen.chapterId,mode:chosen.mode,variant:chosen.variant},normalizeAppearance(chosen));renderChapter();restoreAnchor(chosen);cachePosition({...chosen,chapterLabel:resumeSummary(book,chosen)?.label});restoringProgress=false;}
+      if(chosen){restoringProgress=true;Object.assign(state,{chapterId:chosen.chapterId},openingReadingPreferences(chosen));renderChapter();restoreAnchor(chosen);cachePosition({...chosen,chapterLabel:resumeSummary(book,chosen)?.label});restoringProgress=false;}
     }else if(recoveredPositionNeedsChoice(progressSync.revision,fresh.position)){
       recordsPositionUnresolved=true;clearTimeout(persistTimer);$('progress-notice').hidden=false;announce('上次的位置已就绪。当前书页保留，可以选择回去或继续读这里。');
     }
@@ -368,7 +368,7 @@ async function reconcileProgress(useRemote){
   const buttons=[$('progress-use-remote'),$('progress-keep-here')];buttons.forEach(b=>b.disabled=true);restoringProgress=true;progressSequence++;clearTimeout(persistTimer);
   try{
     const fresh=await api('/api/records'),position=resolveReadingPosition(book,fresh.position);if(useRemote&&!position)throw Error('较新的位置暂时无法对应原文，请继续读这里。');clearTimeout(persistTimer);progressSync.adopt(fresh.position?.revision||0);recordsPositionUnresolved=false;
-    if(useRemote){closePanel();dismissTools();records=fresh;Object.assign(state,{chapterId:position.chapterId,mode:position.mode,variant:position.variant},normalizeAppearance(position));overrides={};selectedId=null;renderChapter();restoreAnchor(position);cachePosition({...position,contentVersion:book.contentVersion,chapterLabel:resumeSummary(book,position)?.label,pending:false});allowScrollSave=false;announce('已回到另一处较新的阅读位置。');}
+    if(useRemote){closePanel();dismissTools();records=fresh;Object.assign(state,{chapterId:position.chapterId},openingReadingPreferences(position));overrides={};selectedId=null;renderChapter();restoreAnchor(position);cachePosition({...position,contentVersion:book.contentVersion,chapterLabel:resumeSummary(book,position)?.label,pending:false});allowScrollSave=false;announce('已回到另一处较新的阅读位置。');}
     else{restoringProgress=false;persist();announce('继续读这里，当前位置会保存到自己的书房。');}
     $('progress-notice').hidden=true;
   }catch(error){announce(error.message||'阅读位置暂时无法同步');}finally{restoringProgress=false;buttons.forEach(b=>b.disabled=false);}

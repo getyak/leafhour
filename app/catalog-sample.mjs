@@ -1,4 +1,3 @@
-export const catalogReadingMode=book=>book.chineseSample?'zh':'en';
 export const chineseTrialUrl=book=>'/read?'+new URLSearchParams({book:book.bookId,sample:'zh'});
 export function chineseSampleEntry(book,query){
   if(query.get('book')!==book.bookId||query.get('sample')!=='zh'||book.visibility!=='public'||!book.chineseSample)return null;

@@ -12,3 +12,8 @@ export function normalizeAppearance(source={},strict=false){
   }
   return result;
 }
+
+// Reopening restores the place and typography, while the original leads each visit.
+export function openingReadingPreferences(position={}){
+  return {...normalizeAppearance(position),mode:'en',variant:position.variant==='literal'?'literal':'interpretive'};
+}

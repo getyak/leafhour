@@ -48,9 +48,8 @@ function bookCard(book){
   meta.append(label,make('h3','',book.title.zh),make('p','book-author',book.author||book.source.filename),make('p','book-description',book.description||'原文已保留。译文和思考，从这一页开始。'));
   let resume=book.resume;if(!session?.user){try{const local=JSON.parse(localStorage.getItem(positionStorageKey(book.bookId))||'null');if(local?.passageId&&local.chapterLabel&&local.contentVersion===book.source.sha256)resume={label:local.chapterLabel,passageId:local.passageId};}catch{}}
   if(resume){meta.append(make('p','book-resume','上次读到 · '+resume.label));art.setAttribute('aria-label','继续阅读'+book.title.zh);}
-  if(book.chineseSample&&!resume)art.href=chineseTrialUrl(book);
-  const bottom=make('div','book-bottom'),read=make('a','book-read',resume?'继续阅读 →':book.chineseSample?'中文试读 →':'开始阅读 →');read.href=art.href;bottom.append(read);
-  if(book.chineseSample&&resume){const trial=make('a','source-link','中文试读 ↗');trial.href=chineseTrialUrl(book);meta.append(trial);}
+  const bottom=make('div','book-bottom'),read=make('a','book-read',resume?'继续阅读 →':'开始阅读 →');read.href=art.href;bottom.append(read);
+  if(book.chineseSample){const trial=make('a','source-link','中文试读 ↗');trial.href=chineseTrialUrl(book);meta.append(trial);}
   if(book.source.url){const source=make('a','source-link','来源 ↗');source.href=book.source.url;source.target='_blank';source.rel='noopener noreferrer';bottom.append(source);}else bottom.append(make('span','',book.paragraphs+' 段'));
   meta.append(bottom);card.append(art,meta);return card;
 }
