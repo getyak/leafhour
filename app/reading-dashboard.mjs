@@ -1,4 +1,5 @@
 import {inferSourceLanguage} from './source-language.mjs';
+import {paintBookCover} from './book-binding.mjs';
 import {mountReadingArrival} from './reading-arrival.mjs';
 import {calendarMonth,shiftReadingMonth,createCalendarRequestState,localReadingDate,readingTimeLabel} from './reading-calendar.mjs';
 import {readingBookUrl,readingWeek,latestReadingEntry,workspaceCurrentBook,loadWorkspaceActivity,roomQuestionUrl} from './library-workspace.mjs';
@@ -32,7 +33,7 @@ export function mountReadingDashboard({root,overviewRoot,historyRoot,api,getSess
     const books=getBooks(),current=workspaceCurrentBook(books);if(!books.some(b=>b.bookId===selectedBook))selectedBook=current?.bookId||null;const book=activeBook();todayPanel.hidden=!book;
     choice.replaceChildren(...books.map(b=>{const o=node('option','',b.title.zh+(b.journey?.status==='finished'?' · 已读完':''));o.value=b.bookId;return o;}));choice.value=selectedBook||'';choice.hidden=books.length<2;
     title.textContent=book?.title.zh||'';author.textContent=book?.author||'';label.textContent=book?.journey?.status==='finished'?'再读这一本':book?.resume?'继续上次':'翻开这一本';description.textContent=book?.resume?.label||'';read.hidden=!book;read.textContent=book?.resume?'继续阅读 →':'打开这本书 →';read.href=book?readingBookUrl(book):'/library';
-    illustration.textContent=book?.title.zh||'';illustration.dataset.cover=book?.cover||'private';options.hidden=!getSession()?.user;goalLabel.hidden=mark.hidden=!book||!getSession()?.user;
+    paintBookCover(illustration,book);options.hidden=!getSession()?.user;goalLabel.hidden=mark.hidden=!book||!getSession()?.user;
     goal.value=book?.journey?.dailyGoalMinutes||15;if(!goal.value&&book){const o=node('option','',book.journey.dailyGoalMinutes+' 分钟');o.value=book.journey.dailyGoalMinutes;goal.append(o);goal.value=o.value;}
     const journey=book?.journey;progress.hidden=!getSession()?.user||!journey;progress.textContent=journey?.status==='finished'?'已标记整本读完':journey?.totalChapters?'已标记读完 '+journey.completedChapters+' / '+journey.totalChapters+(book.source?.structure==='automatic_groups'?' 个阅读片段':' 个正文章节'):'';mark.textContent=book?.journey?.status==='finished'?'重新开始这本书':'标记整本读完';loadPreview();onCurrentBook(book);
   }
