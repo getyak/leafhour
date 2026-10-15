@@ -17,6 +17,25 @@ export function libraryShelf(books,{scope='all',query=''}={}){
     .sort((a,b)=>Number(b.visibility==='private')-Number(a.visibility==='private')||activityAt(b).localeCompare(activityAt(a)));
 }
 
+export function roomShelf(books,{scope='all',query='',selectedBookId}={}){
+  const filtered=libraryShelf(books,{scope,query});
+  const current=books.find(book=>book.bookId===selectedBookId)||workspaceCurrentBook(books);
+  const featured=!query.trim()&&filtered.some(book=>book.bookId===current?.bookId)?current:null;
+  return {featured,books:filtered.filter(book=>book!==featured),total:filtered.length};
+}
+
+export function roomExcerpt(book,passageId){
+  const rows=book.sections.flatMap(section=>section.paragraphs.map(p=>({...p,chapterId:section.chapterId})));
+  const chapter=book.chapters.find(c=>['body','chapter'].includes(c.kind))||book.chapters.find(c=>!String(c.kind).startsWith('front'))||book.chapters[0];
+  const id=passageId||book.readingStart?.passageId||chapter?.startPassageId;
+  const paragraph=id?rows.find(p=>p.id===id):rows.find(p=>p.chapterId===chapter?.id&&p.kind!=='source_heading');
+  if(!paragraph)throw Object.assign(Error('找不到这段原文，请重新选择段落。'),{status:404});
+  const selectedChapter=book.chapters.find(c=>c.id===paragraph.chapterId);
+  let truncated=false;
+  const bounded=text=>{if(typeof text!=='string'||!text)return null;if(text.length<=6000)return text;truncated=true;let end=6000;if(text.charCodeAt(end-1)>=0xD800&&text.charCodeAt(end-1)<=0xDBFF)end--;return text.slice(0,end);};
+  return {bookId:book.bookId,contentVersion:book.contentVersion,passageId:paragraph.id,chapterId:paragraph.chapterId,chapterTitle:selectedChapter?.title||null,original:bounded(paragraph.original),literal:bounded(paragraph.translations?.literal?.text),interpretive:bounded(paragraph.translations?.interpretive?.text),translationStatus:{literal:paragraph.translations?.literal?.status||'missing',interpretive:paragraph.translations?.interpretive?.status||'missing'},truncated};
+}
+
 export function readingBookUrl(book,resume=book.resume){
   const query=new URLSearchParams({book:book.bookId});
   if(resume?.passageId)query.set('passage',resume.passageId);

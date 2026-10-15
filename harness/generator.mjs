@@ -22,7 +22,7 @@ export function normaliseEcho(value,text){
  }).sort((a,b)=>a.start-b.start);
  return {verdict:value.verdict,summary:value.summary,segments:value.verdict==='uncertain'?[]:segments,sourceRefs:value.sourceRefs};
 }
-export function createHarnessGenerator({runRoot=path.join(project,'local/harness/runs'),model='deepseek-flash',maxCostCny=.10}={}){
+export function createHarnessGenerator({runRoot=path.join(project,'local/harness/runs'),model='deepseek-flash',maxCostCny=.10,timeoutMs=60000}={}){
  if(model!=='deepseek-flash')throw Error('未配置这个模型的费用与运行策略。');
  return async job=>{
   const snapshot=makeSnapshot(job),dir=path.join(runRoot,job.runId.replace(/[^a-zA-Z0-9_-]/g,''));
@@ -39,7 +39,7 @@ export function createHarnessGenerator({runRoot=path.join(project,'local/harness
   const harness=new DeepSeekHarness({profile:'sdk-minimal',patches:[path.join(dir,'reader.patch.json')],dshHome:path.join(dir,'home'),processCwd:dir,cwd:dir,env,provider:'deepseek-official',model,reasoningEffort:'off',maxTokens:1024,initializeTimeoutMs:20000,requestTimeoutMs:65000,disposeEofGraceMs:1500,disposeGraceMs:3000});
   const trace=[];let stopping=null;
   const stop=()=>{stopping??=(async()=>{await writeFile(path.join(dir,'revoked'),'',{mode:0o600});await harness.close();})();return stopping;};
-  const abort=()=>{void stop().catch(()=>{});};job.signal?.addEventListener('abort',abort,{once:true});const timer=setTimeout(abort,60000);
+  const abort=()=>{void stop().catch(()=>{});};job.signal?.addEventListener('abort',abort,{once:true});const timer=setTimeout(abort,timeoutMs);
   try{
    if(job.signal?.aborted)throw Error('已取消');
    const request=snapshot.kind==='explain'?'根据授权上下文解释当前段落，回应阅读问题，不批改问题。':'根据授权上下文，对读者的一句话做回声批改。';

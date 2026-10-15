@@ -11,14 +11,18 @@ import {createSpeechProvider} from './audio-provider.mjs';
 import {createDialogueGenerator} from './dialogue-generator.mjs';
 import {createAudioRoutes} from './audio-routes.mjs';
 import {portalDocument} from './portal-document.mjs';
+import {roomExcerpt} from '../app/library-workspace.mjs';
+import {createReaderChatService} from './reader-chat.mjs';
+import {createReaderChatGenerator} from './reader-chat-generator.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
 const jsonBody=async(req,limit=29*1024*1024)=>{if(!req.headers['content-type']?.startsWith('application/json'))throw fail('请使用 JSON 请求',415);if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>limit)throw fail('这次导入内容过大，请分书恢复',413);return req.body;}let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('这次导入内容过大，请分书恢复',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('请求格式不正确');}};
 const passageList=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
-export async function createPortal({dataDir,publicOrigin=null,sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator}={}){
+export async function createPortal({dataDir,publicOrigin=null,sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,chatGenerator}={}){
   const auth=authService||await createEmailAuth({dataDir:path.join(dataDir,'auth'),sendCode:sendCode===undefined?await smtpSender():sendCode});
   const library=await createLibraryService({dataDir:path.join(dataDir,'library'),catalogDir,translator:translator===undefined?createTranslator():translator,dataStore});
+  const chat=await createReaderChatService({library,dataDir:path.join(dataDir,'library'),dataStore,generator:chatGenerator===undefined?createReaderChatGenerator():chatGenerator});
   let legacyBook=null;
   const audioLibrary={getBook:(owner,id)=>owner?.id==='legacy-local'&&legacyBook?.bookId===id?Promise.resolve(legacyBook):library.getBook(owner,id)};
   const audio=allowLocal&&!publicOrigin&&!dataStore?await createAudioService({store:await createAudioStore({dataDir:path.join(dataDir,'audio')}),getBook:audioLibrary.getBook,speechProvider:speechProvider===undefined?createSpeechProvider():speechProvider,dialogueGenerator:dialogueGenerator===undefined?createDialogueGenerator():dialogueGenerator}):null;
@@ -31,6 +35,7 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     files['/reading-flow.mjs']='reading-flow.mjs';files['/reading-load.mjs']='reading-load.mjs';
     files['/reading-flow.css']='reading-flow.css';
     for(const file of ['library-workspace.mjs','library-workspace.css','reading-calendar.mjs','reading-dashboard.mjs','library-restore.mjs','library-export.mjs','site-appearance.mjs','reading-clock.mjs','reading-outbox.mjs','reading-queue-store.mjs','reading-session-coordinator.mjs','reading-mark-actions.mjs','reading-mark-store.mjs','reading-draft-store.mjs','reading-retained-backup.mjs','reading-journey.mjs','reading-pending-backup.mjs','reading-ending-context.mjs','reading-session.js','reading-session.css','brand-assets/reading-window.webp','brand-assets/page-detail.webp','brand-assets/page-mark.svg'])files['/'+file]=file;
+    for(const file of ['library-shell.mjs','library-shell.css','library-chat.mjs','library-chat-state.mjs','library-chat.css','icons.svg','icons-LICENSE.txt'])files['/'+file]=file;
     if(!isAPI&&!files[p])return false;
     if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));send(200,files[p]==='home.html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
     if(req.method!=='GET'&&req.method!=='POST')throw fail('不支持这个请求',405);
@@ -97,6 +102,10 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     if(match){const [,id,action]=match;
       if(action?.startsWith('audio/'))return audioRoutes.handle({req,res,url,user,bookId:id,action:action.slice(6),body,send});
       if(!action&&req.method==='GET'){send(200,await library.getBook(user,id));return true;}
+      if(action==='preview'&&req.method==='GET'){const book=await library.getBook(user,id);send(200,roomExcerpt(book,url.searchParams.get('passageId')||undefined));return true;}
+      if(action==='chat'&&req.method==='GET'){send(200,await chat.view(user,id,{passageId:url.searchParams.get('passageId')||undefined}));return true;}
+      if(action==='chat'&&req.method==='POST'){send(200,await chat.send(user,id,body));return true;}
+      const cancelChat=action?.match(/^chat\/([^/]+)\/cancel$/);if(cancelChat&&req.method==='POST'){send(200,await chat.cancel(user,id,cancelChat[1]));return true;}
       if(action==='export-part'&&req.method==='GET'){send(200,await library.exportBookPart(user,id,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
       if(action==='original/info'&&req.method==='GET'){send(200,await library.originalInfo(user,id));return true;}
       if(action==='original'&&req.method==='GET'){if(dataStore?.signedBlob){const file=await library.originalDownload(user,id);res.statusCode=302;res.setHeader('Location',file.url+'&download=original.'+(['pdf','txt','md'].includes(file.format)?file.format:'bin'));res.setHeader('Cache-Control','private, no-store');res.end();return true;}const file=await library.getOriginal(user,id);res.statusCode=200;res.setHeader('Content-Type','application/octet-stream');res.setHeader('Content-Disposition','attachment; filename="original.'+(['pdf','txt','md'].includes(file.format)?file.format:'bin')+'"');res.setHeader('Cache-Control','private, no-store');res.setHeader('Content-Length',file.bytes.length);res.end(file.bytes);return true;}
@@ -135,5 +144,5 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     }
     throw fail('找不到这个操作',404);
   }
-  return {handle,library,auth,audio,audioRoutes,setLegacyBook:book=>{legacyBook=book;}};
+  return {handle,library,auth,audio,audioRoutes,chat,setLegacyBook:book=>{legacyBook=book;}};
 }
