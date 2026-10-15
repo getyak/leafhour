@@ -1,0 +1,238 @@
+/* Morning light belongs to the room, not to a cursor-shaped spotlight.
+   Independent optical planes move at different speeds, with a static fallback. */
+#home-view {
+  --light-x: 0px;
+  --light-y: 0px;
+  --light-scroll: 0px;
+  --sun-theme-strength: 1;
+  --sun-screen-strength: 1;
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+}
+.home-atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+.ambient-wash {
+  position: absolute;
+  inset: -10%;
+  background: radial-gradient(ellipse at 95% 12%, #dfe6ca80, transparent 48%), radial-gradient(ellipse at 0% 85%, #dce4d14d, transparent 40%);
+}
+.ambient-canopy {
+  position: absolute;
+  top: -25px;
+  right: -80px;
+  width: clamp(400px, 44vw, 690px);
+  opacity: .75;
+  translate: calc(var(--light-x) * -.85) calc(var(--light-y) * -.7);
+}
+.ambient-canopy img, .ambient-near img { display: block; width: 100%; height: auto; }
+.ambient-canopy img { transform-origin: 95% 0%; animation: leaf-breeze 19s ease-in-out infinite alternate; will-change: transform; }
+.ambient-near {
+  position: absolute;
+  left: -200px;
+  bottom: -130px;
+  width: 540px;
+  opacity: .34;
+  filter: blur(8px);
+  rotate: 176deg;
+  translate: calc(var(--light-x) * -1.3) calc(var(--light-y) * -1.1);
+}
+.ambient-near img { transform-origin: 85% 0%; animation: leaf-breeze 23s -9s ease-in-out infinite alternate-reverse; }
+.sunlight-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+.sunlight-plane {
+  position: absolute;
+  inset: -12%;
+  translate: calc(var(--light-x) * 2.2) calc(var(--light-y) * 1.2 + var(--light-scroll));
+  opacity: calc(var(--sun-theme-strength) * var(--sun-screen-strength));
+}
+.sunlight-rays {
+  position: absolute;
+  inset: -8%;
+  background: linear-gradient(119deg, transparent 18%, #91a17c16 24%, #fff4c766 30%, transparent 35%, #91a17c12 39%, #fff8d485 43%, transparent 48%, #a4af911a 54%, #fff6ce66 58%, transparent 64%, transparent 72%);
+  mix-blend-mode: normal;
+  opacity: .66;
+  transform-origin: 85% -15%;
+  animation: sunlight-drift 24s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+.sunlight-shadow {
+  position: absolute;
+  top: -60px;
+  right: -70px;
+  width: min(1000px, 85vw);
+  aspect-ratio: 1.5;
+  background: #34432b;
+  opacity: .1;
+  mask: url('/brand-assets/foliage-canopy.webp') no-repeat center / 100% auto;
+  -webkit-mask: url('/brand-assets/foliage-canopy.webp') no-repeat center / 100% auto;
+  filter: blur(12px);
+  transform-origin: 90% 0%;
+  animation: shadow-breeze 21s -5s ease-in-out infinite alternate;
+  will-change: transform;
+}
+#home-view .home-hero {
+  display: flex;
+  align-items: center;
+  position: relative;
+  max-width: none;
+  min-height: clamp(640px, calc(100svh - 80px), 820px);
+  margin: 0;
+  padding: 0 max(6%, calc((100vw - 1240px) / 2));
+  background: transparent;
+}
+#home-view .hero-copy { position: relative; z-index: 3; width: 45%; max-width: 520px; padding: 15px 0 45px; }
+#home-view .hero-copy h1 { font-size: clamp(46px, 4.65vw, 72px); line-height: 1.32; }
+#home-view .hero-stage { position: absolute; inset: 0; z-index: 0; isolation: isolate; }
+#home-view .hero-stage::before { display: none; }
+#home-view .hero-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--paper) 0%, color-mix(in srgb, var(--paper) 94%, transparent) 19%, color-mix(in srgb, var(--paper) 70%, transparent) 35%, transparent 62%), linear-gradient(0deg, var(--paper), transparent 23%), linear-gradient(180deg, var(--paper), transparent 20%);
+}
+#home-view .hero-scene { width: 100%; height: 100%; min-height: 0; border-radius: 0; transform: none; background: transparent; }
+#home-view .hero-scene img {
+  object-position: 65% 50%;
+  translate: calc(var(--light-x) * -.18) calc(var(--light-y) * -.12);
+}
+#home-view .hero-scene::after { background: none; }
+#home-view .hero-scene figcaption {
+  z-index: 3;
+  bottom: 55px;
+  right: max(125px, 6.5%);
+  color: var(--ink);
+  text-shadow: 0 1px 12px var(--paper);
+  font-size: 24px;
+}
+#home-view .hero-scene figcaption span { color: var(--muted); }
+.book-light { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; mix-blend-mode: soft-light; opacity: var(--sun-theme-strength); }
+.book-light::before {
+  content: '';
+  position: absolute;
+  inset: -15%;
+  background: linear-gradient(117deg, transparent 38%, #fffef0a6 44%, transparent 50%, #fff9d35c 58%, transparent 64%);
+  translate: calc(var(--light-x) * 2) calc(var(--light-y) * 1.5);
+  animation: book-sunlight 17s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+.book-light::after {
+  content: '';
+  position: absolute;
+  top: 43%;
+  left: 42%;
+  width: 65%;
+  height: 65%;
+  background: #263b24;
+  opacity: .16;
+  mask: url('/brand-assets/foliage-canopy.webp') no-repeat center / 100% auto;
+  -webkit-mask: url('/brand-assets/foliage-canopy.webp') no-repeat center / 100% auto;
+  filter: blur(10px);
+  translate: calc(var(--light-x) * -.8) var(--light-y);
+  animation: shadow-breeze 20s -8s ease-in-out infinite alternate;
+  will-change: transform;
+}
+#home-view .reading-promise { position: relative; margin-top: 0; padding-top: 24px; border-color: color-mix(in srgb, var(--line) 65%, transparent); }
+#home-view .home-section { position: relative; }
+#home-view .section-number { display: none; }
+#home-view .sample-sheet { background: color-mix(in srgb, var(--paper) 93%, transparent); box-shadow: 0 22px 60px #304b2010; }
+#home-view .sample-sheet::before { background: color-mix(in srgb, var(--surface-soft) 94%, transparent); }
+#home-view .ownership-section { background: color-mix(in srgb, var(--surface) 64%, transparent); }
+#home-view .book-art { background: color-mix(in srgb, var(--surface) 80%, transparent); }
+.light-toggle {
+  position: fixed;
+  right: 24px;
+  bottom: 22px;
+  z-index: 12;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 82px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--muted);
+  font-size: 12px;
+}
+.light-toggle svg { width: 17px; height: 17px; }
+.light-toggle[aria-pressed=true] { color: var(--accent); }
+.light-toggle:disabled { opacity: .65; cursor: default; }
+#home-view:not([data-atmosphere=running]) :is(.ambient-canopy img, .ambient-near img, .sunlight-rays, .sunlight-shadow),
+#home-view:not([data-atmosphere=running]) .book-light::before,
+#home-view:not([data-atmosphere=running]) .book-light::after { animation-play-state: paused; }
+@keyframes leaf-breeze {
+  from { transform: rotate(-2deg) translate3d(-8px, -6px, 0); }
+  to { transform: rotate(2deg) translate3d(9px, 12px, 0); }
+}
+@keyframes sunlight-drift {
+  0% { transform: translate3d(-35px, -20px, 0) rotate(-3deg); opacity: .42; }
+  45% { opacity: .72; }
+  100% { transform: translate3d(35px, 35px, 0) rotate(3deg); opacity: .55; }
+}
+@keyframes shadow-breeze {
+  from { transform: translate3d(-14px, -12px, 0) rotate(-2deg); }
+  to { transform: translate3d(20px, 18px, 0) rotate(2.5deg); }
+}
+@keyframes book-sunlight {
+  from { transform: translate3d(-4%, -2%, 0) rotate(-2deg); opacity: .35; }
+  to { transform: translate3d(6%, 3%, 0) rotate(2deg); opacity: .85; }
+}
+:root[data-site-theme=night] #home-view .hero-scene img { filter: brightness(.58) saturate(.8); }
+:root[data-site-theme=night] #home-view { --sun-theme-strength: .35; }
+:root[data-site-theme=night] .sunlight-rays { mix-blend-mode: screen; }
+:root[data-site-theme=night] .sunlight-shadow { opacity: .15; }
+:root[data-site-theme=night] .ambient-canopy { opacity: .35; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-site-theme=paper]) #home-view .hero-scene img { filter: brightness(.58) saturate(.8); }
+  :root:not([data-site-theme=paper]) #home-view { --sun-theme-strength: .35; }
+  :root:not([data-site-theme=paper]) .sunlight-rays { mix-blend-mode: screen; }
+  :root:not([data-site-theme=paper]) .ambient-canopy { opacity: .35; }
+}
+@media (max-width: 1050px) {
+  #home-view .hero-copy { width: 47%; }
+  #home-view .hero-copy h1 { font-size: clamp(42px, 5.3vw, 58px); }
+  #home-view .hero-scene img { object-position: 62% 50%; }
+  .ambient-canopy { right: -85px; top: -20px; width: 510px; }
+}
+@media (max-width: 760px) {
+  #home-view { --sun-screen-strength: .7; }
+  #home-view .home-hero { display: block; min-height: 790px; padding: 0 6%; }
+  #home-view .hero-copy { width: 100%; max-width: none; padding: 23px 0 0; }
+  #home-view .hero-copy h1 { font-size: clamp(41px, 8vw, 58px); line-height: 1.3; margin: 19px 0; }
+  #home-view .hero-stage { top: 300px; bottom: 0; }
+  #home-view .hero-scene img { object-position: 74% 50%; }
+  #home-view .hero-stage::after { background: linear-gradient(180deg, var(--paper) 0%, color-mix(in srgb, var(--paper) 88%, transparent) 22%, transparent 52%), linear-gradient(0deg, var(--paper), transparent 24%); }
+  #home-view .hero-scene figcaption { bottom: 32px; left: 6%; right: auto; font-size: 21px; text-align: left; }
+  .ambient-canopy { width: 380px; right: -235px; top: -10px; opacity: .52; }
+  .ambient-near { width: 430px; left: -340px; bottom: -70px; opacity: .25; }
+  .sunlight-shadow { opacity: .06; }
+  .light-toggle { right: 15px; bottom: 15px; min-width: 76px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #home-view .ambient-canopy img, #home-view .ambient-near img, #home-view .sunlight-rays, #home-view .sunlight-shadow,
+  #home-view .book-light::before, #home-view .book-light::after { animation: none !important; }
+  #home-view .hero-scene img, .ambient-canopy, .ambient-near, .sunlight-plane, .book-light::before, .book-light::after { translate: none; }
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .sunlight-overlay, .book-light { display: none; }
+  #home-view .sample-sheet, .light-toggle { background: var(--paper); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}

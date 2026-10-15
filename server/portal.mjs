@@ -34,6 +34,7 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     const files={'/':'home.html','/library':'home.html','/privacy':'privacy.html','/auth.css':'auth.css','/auth-dialog.mjs':'auth-dialog.mjs','/auth-flow.mjs':'auth-flow.mjs','/auth-assets/google.png':'auth-assets/google.png','/auth-assets/apple.svg':'auth-assets/apple.svg','/portal.css':'portal.css','/portal.js':'portal.js','/owner-scope.mjs':'owner-scope.mjs','/paragraph-anchor.mjs':'paragraph-anchor.mjs','/source-language.mjs':'source-language.mjs','/upload-state.mjs':'upload-state.mjs','/library-backup.mjs':'library-backup.mjs','/reader-api.mjs':'reader-api.mjs','/reading-progress.mjs':'reading-progress.mjs','/progress-sync.mjs':'progress-sync.mjs','/reader-translation.js':'reader-translation.js'};
     files['/reading-arrival.css']='reading-arrival.css';files['/reading-arrival.mjs']='reading-arrival.mjs';files['/save-receipts.mjs']='save-receipts.mjs';
     files['/home-motion.css']='home-motion.css';files['/home-motion.mjs']='home-motion.mjs';
+    for(const file of ['home-atmosphere.css','home-atmosphere.mjs','brand-assets/sunlit-room.webp','brand-assets/foliage-canopy.webp'])files['/'+file]=file;
     files['/reading-session-record.mjs']='reading-session-record.mjs';
     files['/reading-toolbar.mjs']='reading-toolbar.mjs';
     files['/reading-flow.mjs']='reading-flow.mjs';files['/reading-load.mjs']='reading-load.mjs';
