@@ -19,7 +19,7 @@ export function createReadingOutbox({load,save,send}){
     flush(){
       if(running)return running;
       const work=async()=>{let sent=0,error=null;while(rows.length){const submitted=structuredClone(rows[0]);
-        try{const receipt=await send(submitted);if(!receipt||receipt.id!==submitted.id||!Number.isInteger(receipt.sequence)||receipt.sequence<submitted.sequence)throw Object.assign(Error('服务尚未确认这次阅读，记录仍留在本机'),{status:502});confirmations.set(submitted.id,submitted);const index=rows.findIndex(row=>row.id===submitted.id);if(index>=0&&rows[index].sequence===submitted.sequence)persist(rows.filter((_,i)=>i!==index));sent++;}
+        try{const receipt=await send(submitted);if(!receipt||receipt.id!==submitted.id||!Number.isInteger(receipt.sequence)||receipt.sequence<submitted.sequence)throw Object.assign(Error('服务尚未确认这次阅读，记录仍留在本机'),{status:502});confirmations.set(submitted.id,structuredClone(receipt));const index=rows.findIndex(row=>row.id===submitted.id);if(index>=0&&rows[index].sequence===submitted.sequence)persist(rows.filter((_,i)=>i!==index));sent++;}
         catch(failure){error=failure;break;}
       }return {sent,remaining:rows.length,error};};
       running=work();const completion=running;completion.finally(()=>{if(running===completion)running=null;}).catch(()=>{});return completion;

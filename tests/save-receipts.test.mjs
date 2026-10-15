@@ -73,3 +73,24 @@ test('toolbar cannot reuse an old ending receipt during initial empty sync or a 
   assert.equal(receipts.currentSessionReceipt({status:'finished',id:'different-reading'},final,confirmed),'');
   assert.match(receipts.currentSessionReceipt({status:'finished',id:final.id},final,confirmed),/时段已保存到书房/);
 });
+
+test('outbox confirmation uses the actual returned snapshot, not the submitted payload',async()=>{
+  const submitted={...final,bookId:'book-a',contentVersion:'version-a'};
+  const mismatches=[
+    {id:submitted.id,sequence:submitted.sequence},
+    {...submitted,sequence:submitted.sequence+1,status:'active'},
+    {...submitted,sequence:submitted.sequence+1},
+    {...submitted,sequence:submitted.sequence+1,contentVersion:'version-b'},
+    {...submitted,sequence:submitted.sequence+1,end:{chapterId:'c1',passageId:'other'}},
+    {...submitted,contentVersion:'version-b'},
+    {...submitted,bookId:'book-b'},
+    {...submitted,end:{chapterId:'c1',passageId:'other'}},
+    {...submitted,durationSeconds:submitted.durationSeconds+1}
+  ];
+  for(const receipt of mismatches){
+    let disk=[];const q=createReadingOutbox({load:()=>disk,save:rows=>disk=rows,send:async()=>receipt});q.enqueue(submitted);const result=await q.flush();
+    assert.equal(result.error,null,'existing queue delivery handling is preserved');
+    assert.equal(q.confirmed(submitted),false,JSON.stringify(receipt));
+  }
+  let disk=[];const q=createReadingOutbox({load:()=>disk,save:rows=>disk=rows,send:async()=>structuredClone(submitted)});q.enqueue(submitted);await q.flush();assert.equal(q.confirmed(submitted),true);
+});
