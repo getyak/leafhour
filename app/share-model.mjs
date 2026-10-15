@@ -49,10 +49,10 @@ export function paragraphSnapshot(book,p,chapterId,language='zh',variant='interp
 }
 export function captureDOMSelection(selection,paragraphMap,book){
  if(!selection||selection.isCollapsed||selection.rangeCount!==1)return null;
- const range=selection.getRangeAt(0),prose=[...document.querySelectorAll('.passage > p[lang], .passage > .parallel-pair > div > p[lang]')];
+ const range=selection.getRangeAt(0),prose=[...document.querySelectorAll('.passage p[data-reading-layer]')];
  const parts=[];
  for(const node of prose){
-  if(!range.intersectsNode(node))continue;
+  if(!node.getClientRects().length||!range.intersectsNode(node))continue;
   let start=0,end=node.textContent.length;
   if(node.contains(range.startContainer)){const prefix=range.cloneRange();prefix.selectNodeContents(node);prefix.setEnd(range.startContainer,range.startOffset);start=prefix.toString().length;}
   if(node.contains(range.endContainer)){const prefix=range.cloneRange();prefix.selectNodeContents(node);prefix.setEnd(range.endContainer,range.endOffset);end=prefix.toString().length;}
