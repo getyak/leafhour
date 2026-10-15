@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Marginalia chapter design contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "bookId", "contentVersion", "chapterId", "title", "isSample", "sections", "glossary", "annotations"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "bookId": {"type": "string", "minLength": 1},
+    "contentVersion": {"type": "string", "minLength": 1},
+    "chapterId": {"type": "string", "minLength": 1},
+    "title": {
+      "type": "object", "additionalProperties": false, "required": ["en", "zh"],
+      "properties": {"en": {"type": "string"}, "zh": {"type": "string"}}
+    },
+    "isSample": {"type": "boolean"},
+    "sections": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/section"}},
+    "glossary": {"type": "array", "items": {"$ref": "#/$defs/term"}},
+    "annotations": {"type": "array", "items": {"$ref": "#/$defs/annotation"}}
+  },
+  "$defs": {
+    "translation": {
+      "type": ["object", "null"], "additionalProperties": false, "required": ["text", "status"],
+      "properties": {"text": {"type": "string", "minLength": 1}, "status": {"enum": ["draft", "reviewed"]}}
+    },
+    "section": {
+      "type": "object", "additionalProperties": false, "required": ["id", "number", "paragraphs"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "number": {"type": "integer", "minimum": 1},
+        "paragraphs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/paragraph"}}
+      }
+    },
+    "paragraph": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "source", "original", "translations", "termIds", "annotationIds"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "source": {
+          "type": "object", "additionalProperties": false, "required": ["pdfPage", "printedPage", "review"],
+          "properties": {
+            "pdfPage": {"type": "integer", "minimum": 1},
+            "printedPage": {"type": ["string", "null"]},
+            "review": {"enum": ["visually_checked", "extracted_unreviewed"]}
+          }
+        },
+        "original": {"type": "string", "minLength": 1},
+        "translations": {
+          "type": "object", "additionalProperties": false, "required": ["literal", "interpretive"],
+          "properties": {"literal": {"$ref": "#/$defs/translation"}, "interpretive": {"$ref": "#/$defs/translation"}}
+        },
+        "termIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "annotationIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "term": {
+      "type": "object", "additionalProperties": false, "required": ["id", "en", "zh", "definition"],
+      "properties": {"id": {"type": "string"}, "en": {"type": "string"}, "zh": {"type": "string"}, "definition": {"type": "string"}}
+    },
+    "annotation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "anchorIds", "kind", "attribution", "title", "text", "references"],
+      "properties": {
+        "id": {"type": "string"},
+        "anchorIds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "kind": {"enum": ["term", "difficulty", "paradox", "example", "context", "cross_reference"]},
+        "attribution": {"enum": ["editorial", "author_note"]},
+        "title": {"type": "string"}, "text": {"type": "string"},
+        "references": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

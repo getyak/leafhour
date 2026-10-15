@@ -2,7 +2,7 @@
 
 循页帮助人一点一点读完一本想读的书：今天从上次停下的原句继续，读后留下一点自己的理解，明天再回来。正文保持安静；原文与双译、个人笔记和深读提示在需要时出现。
 
-软件代码采用 AGPL-3.0 开源。默认公版英文原文及来源许可在 `catalog/`，私人书籍、个人译文、笔记、阅读记录和服务端密钥不随源码发布。
+项目在唯一公开仓库 [getyak/marginalia-reader](https://github.com/getyak/marginalia-reader) 开发，代码、设计文档、执行计划与验收记录均采用 AGPL-3.0 开源。默认公版英文原文及来源许可在 `catalog/`，私人书籍、个人译文、笔记、阅读记录和服务端密钥不随源码发布。
 
 ## 现在能做什么
 
@@ -117,13 +117,12 @@ PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF �
 公开代码与私人数据分开：
 
 ```text
-开发仓库 main ──检查与白名单同步──> 公开源码仓库
-                          └──> 私有部署镜像 ──验证与构建──> Vercel
-                                                           │ server-side secret
-                                                           ▼
-                                                  Supabase private tables
-                                                  ├─ book + translations
-                                                  └─ notes + reading state
+公开仓库：功能分支 → PR → main → Vercel 验证与部署
+                                 │ server-side secret
+                                 ▼
+                         Supabase private tables
+                         ├─ book + translations
+                         └─ notes + reading state
 ```
 
 建表迁移在 `supabase/migrations/`。新版使用独立的 `reader_documents` 表与私人 `reader-originals` 存储桶；RLS 开启，`anon` 和 `authenticated` 没有直接表权限。原有两张单书数据表保留，不作为公开入口。Vercel Function 使用服务端 secret 访问。完整部署步骤见 [deploy/README.md](deploy/README.md)，自动更新流程见 [docs/ci-cd.md](docs/ci-cd.md)。

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "scriptId": "fig-purpose-exploration-draft-1",
+  "bookId": "finite-infinite-games-1986",
+  "chapterId": "ch01",
+  "contentVersion": "full-book-draft-1",
+  "sourceRefs": [
+    {
+      "passageId": "fig-1986-s001-p002",
+      "sha256": "36f3596859d4dfd086e9dd5a23b4ce9f5465ed3ab7f9bf282e24219a9c755718"
+    }
+  ],
+  "review": {
+    "content": "draft",
+    "humanReviewed": false
+  },
+  "component": {
+    "type": "compare_purposes",
+    "version": 1
+  },
+  "props": {
+    "attribution": "editorial",
+    "purpose": "说明活动目的与有限/无限游戏区分的关系",
+    "scenarios": [
+      {
+        "id": "A",
+        "goal": "赢得这一场比赛"
+      },
+      {
+        "id": "B",
+        "goal": "让参与能够继续"
+      }
+    ],
+    "prompt": "分别解释判断；材料不足也可以回答。",
+    "feedback": "核对本段对目的的区分，保留你认为材料不足的部分。",
+    "limitation": "情境为编辑构造；本活动只演示这一段。",
+    "allowSwapGoals": true,
+    "estimatedMinutes": 3
+  },
+  "initialState": "offered",
+  "transitions": [
+    {
+      "from": "offered",
+      "on": "start",
+      "to": "attempt"
+    },
+    {
+      "from": "offered",
+      "on": "skip",
+      "to": "closed"
+    },
+    {
+      "from": "attempt",
+      "on": "swap_goals",
+      "to": "attempt"
+    },
+    {
+      "from": "attempt",
+      "on": "submit",
+      "to": "feedback"
+    },
+    {
+      "from": "attempt",
+      "on": "show_feedback",
+      "to": "feedback"
+    },
+    {
+      "from": "attempt",
+      "on": "skip",
+      "to": "closed"
+    },
+    {
+      "from": "feedback",
+      "on": "retry",
+      "to": "attempt"
+    },
+    {
+      "from": "feedback",
+      "on": "return",
+      "to": "closed"
+    }
+  ],
+  "returnAnchor": "fig-1986-s001-p002",
+  "provenance": {
+    "tool": "spawn_card",
+    "toolVersion": "draft-1",
+    "promptVersion": "compare-purposes-1"
+  }
+}

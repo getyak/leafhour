@@ -1,0 +1,60 @@
+{
+  "kind": "marginalia-harness-profile-design",
+  "schemaVersion": 1,
+  "status": "implemented-local-prototype",
+  "upstream": {
+    "repository": "https://github.com/deepseek-ai/deepseek-harness",
+    "commit": "d743267388641bc76f17c45ce8b4c231aed1d32c",
+    "profile": "sdk-minimal",
+    "packageVersion": "0.2.1-alpha.2",
+    "commitRole": "documentation-and-contract-source-baseline"
+  },
+  "route": {
+    "provider": "deepseek-official",
+    "model": "deepseek-flash",
+    "credentialEnv": "DEEPSEEK_API_KEY",
+    "transport": "anthropic-messages",
+    "reasoningEffort": "off"
+  },
+  "isolation": {
+    "runtimePerRun": true,
+    "sharedSession": false,
+    "toolsMode": "native",
+    "sandboxMode": "read-only",
+    "disableEntryIds": [
+      "persistent-bash",
+      "persistent-pwsh",
+      "tool-working-directory",
+      "llm-retry",
+      "session-title"
+    ],
+    "requiredPrivatePlugins": [
+      "reader-runtime"
+    ],
+    "allowToolNames": [
+      "reader_get_context",
+      "reader_publish_asset"
+    ],
+    "externalMcpServers": []
+  },
+  "hostBudget": {
+    "maxSteps": 4,
+    "maxToolCalls": 8,
+    "maxOutputTokensPerRequest": 1024,
+    "maxWallClockMs": 60000,
+    "maxReservedCostCny": 0.1,
+    "maxActiveRunsPerUser": 1,
+    "unknownPricePolicy": "deny-generation",
+    "maxModelRequests": 4,
+    "maxRequestUtf8Bytes": 24576,
+    "retryOwner": "reader-service"
+  },
+  "settlement": {
+    "artifactOwner": "reader-service",
+    "lateResultPolicy": "discard-if-cancelled-revoked-or-source-changed",
+    "idempotency": "host-owned",
+    "cancel": "revoke-grant-and-close-runtime",
+    "resume": "new-attempt-from-persisted-input",
+    "bridge": "private-immutable-run-snapshot-and-candidate-file"
+  }
+}

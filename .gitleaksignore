@@ -1,0 +1,2 @@
+# Historical false positive: a browser localStorage identifier, not a credential.
+f02baea3c8ce2b82db20956bd45640d7c7861138:app/experiences.js:generic-api-key:7

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>旁读 · 我的私人书房</title><style>html{color-scheme:light dark}body{margin:0;background:light-dark(#efefe8,#111511)}.preview-stage{max-width:1100px;margin:28px auto}button{cursor:pointer}@media(max-width:720px){.preview-stage{margin:0}}
+#marginalia-demo .mr-chapter-nav { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:20px 0 4px; }
+#marginalia-demo .mr-top { position:sticky; top:var(--room-nav-height,56px); z-index:10; background:var(--mr-paper); }
+#marginalia-demo .room-nav { position:sticky; top:0; z-index:11; background:var(--mr-paper); }
+#marginalia-demo .mr-chapter-nav button { border:0; background:transparent; color:var(--mr-accent); font-size:14px; padding:8px 0; }
+#marginalia-demo button:disabled { opacity:.45; cursor:default; }
+#marginalia-demo .mr-source-page { color:var(--mr-muted); font-size:11px; margin-left:auto; }
+#marginalia-demo .mr-section-title { max-width:75%; line-height:1.7; }
+#marginalia-demo .mr-reading-options label[for=mr-chapter] { max-width:100%; min-width:0; flex-basis:100%; }
+#marginalia-demo #mr-chapter { min-width:0; max-width:calc(100% - 40px); }
+#marginalia-demo .mr-toc { position:sticky; top:0; max-height:95vh; overflow-y:auto; align-self:start; }
+#marginalia-demo a.room-secondary { text-decoration:none; display:inline-block; }
+</style></head><body><div class="preview-stage">
+<style>
+#marginalia-demo { --mr-paper:light-dark(#faf8f3,#191c19); --mr-ink:light-dark(#292c26,#ebece3); --mr-muted:light-dark(#676b61,#a9afa3); --mr-line:light-dark(#e2e2d8,#353b33); --mr-accent:light-dark(#395c4a,#a8c6af); --mr-wash:light-dark(#eef1e8,#252f26); --mr-font:21px; --mr-leading:1.9; --mr-width:680px; color:var(--mr-ink); background:var(--mr-paper); font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; width:100%; min-width:0; }
+#marginalia-demo * { box-sizing:border-box; }
+#marginalia-demo [hidden] { display:none !important; }
+#marginalia-demo button,#marginalia-demo select,#marginalia-demo input { font:inherit; color:inherit; }
+#marginalia-demo button { cursor:inherit; }
+#marginalia-demo .mr-top { display:flex; align-items:center; flex-wrap:wrap; gap:18px; padding:19px 108px 19px 26px; border-bottom:1px solid var(--mr-line); }
+#marginalia-demo .mr-brand { display:flex; align-items:baseline; gap:10px; margin-right:auto; }
+#marginalia-demo .mr-brand strong { font:500 24px "Songti SC","STSong",serif; letter-spacing:.12em; }
+#marginalia-demo .mr-brand em { color:var(--mr-muted); font:italic 13px Georgia,serif; }
+#marginalia-demo .mr-modes { display:flex; gap:3px; padding:3px; border:1px solid var(--mr-line); border-radius:7px; }
+#marginalia-demo .mr-modes button { padding:6px 13px; border:0; background:transparent; border-radius:4px; font-size:13px; }
+#marginalia-demo .mr-modes button[aria-pressed=true] { background:var(--mr-ink); color:var(--mr-paper); }
+#marginalia-demo .mr-quiet { background:transparent; border:0; color:var(--mr-muted); font-size:13px; padding:7px 5px; }
+#marginalia-demo .mr-layout { display:grid; grid-template-columns:158px minmax(0,1fr); min-height:620px; }
+#marginalia-demo .mr-toc { padding:31px 17px; border-right:1px solid var(--mr-line); }
+#marginalia-demo .mr-toc-label { color:var(--mr-muted); font-size:12px; letter-spacing:.16em; margin:0 0 20px; }
+#marginalia-demo .mr-toc button { width:100%; text-align:left; border:0; background:transparent; border-radius:3px; font-size:13px; padding:10px 8px; line-height:1.6; }
+#marginalia-demo .mr-toc button[aria-current] { color:var(--mr-accent); background:var(--mr-wash); }
+#marginalia-demo .mr-toc button:disabled { color:var(--mr-muted); opacity:.7; }
+#marginalia-demo .mr-toc .mr-sub { padding-left:17px; }
+#marginalia-demo .mr-toc small { display:block; color:var(--mr-muted); font-size:11px; margin:20px 8px 0; line-height:1.7; }
+#marginalia-demo .mr-page { min-width:0; padding:36px 40px 40px; }
+#marginalia-demo .mr-page-inner { max-width:var(--mr-width); margin:0 auto; }
+#marginalia-demo .mr-eyebrow { font-size:12px; color:var(--mr-muted); letter-spacing:.06em; margin:0 0 16px; }
+#marginalia-demo h1 { font:500 32px/1.35 "Songti SC","STSong","Noto Serif CJK SC",serif; margin:0 0 8px; }
+#marginalia-demo .mr-en-title { font:italic 15px/1.5 Georgia,serif; color:var(--mr-muted); margin:0 0 24px; }
+#marginalia-demo .mr-reading-options { display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:12px 0; border-top:1px solid var(--mr-line); border-bottom:1px solid var(--mr-line); font-size:12px; }
+#marginalia-demo .mr-reading-options label { display:flex; gap:8px; align-items:center; }
+#marginalia-demo .mr-reading-options select { background:var(--mr-paper); border:1px solid var(--mr-line); padding:5px 24px 5px 8px; border-radius:4px; font-size:13px; }
+#marginalia-demo .mr-hint { color:var(--mr-muted); margin-left:auto; font-size:12px; }
+#marginalia-demo .mr-setting { padding:14px 0; border-bottom:1px solid var(--mr-line); display:flex; align-items:center; flex-wrap:wrap; gap:12px; font-size:13px; }
+#marginalia-demo .mr-setting label { display:flex; align-items:center; gap:10px; }
+#marginalia-demo .mr-setting input { max-width:180px; accent-color:var(--mr-accent); }
+#marginalia-demo .mr-section-label { display:flex; align-items:center; gap:12px; margin:28px 0 17px; font-size:13px; color:var(--mr-muted); }
+#marginalia-demo .mr-section-label span:first-child { color:var(--mr-accent); font-family:Georgia,serif; }
+#marginalia-demo .mr-section-label span:last-child { flex:1; height:1px; background:var(--mr-line); }
+#marginalia-demo .mr-unit { margin:0 0 22px; min-width:0; }
+#marginalia-demo .mr-prose { margin:0; font:400 var(--mr-font)/var(--mr-leading) "Songti SC","STSong","Noto Serif CJK SC",serif; overflow-wrap:anywhere; }
+#marginalia-demo .mr-prose[lang=en] { font-family:Georgia,"Times New Roman",serif; font-size:calc(var(--mr-font) - 1px); line-height:1.75; }
+#marginalia-demo .mr-unit.is-active .mr-prose { border-left:2px solid var(--mr-accent); padding-left:13px; }
+#marginalia-demo .mr-term { border:0; border-bottom:1px dotted var(--mr-accent); background:transparent; padding:0; font:inherit; color:inherit; }
+#marginalia-demo .mr-unit-actions { display:flex; flex-wrap:wrap; align-items:center; gap:15px; margin-top:8px; min-height:25px; }
+#marginalia-demo .mr-unit-actions button { border:0; padding:4px 0; background:transparent; color:var(--mr-accent); font-size:12px; }
+#marginalia-demo .mr-language-label { color:var(--mr-muted); font-size:11px; letter-spacing:.02em; }
+#marginalia-demo .mr-pair { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:30px; }
+#marginalia-demo .mr-pair .mr-prose { font-size:calc(var(--mr-font) - 2px); }
+#marginalia-demo .mr-pair-label { display:block; color:var(--mr-muted); font-size:11px; margin-bottom:9px; }
+#marginalia-demo[data-mode=parallel] .mr-layout { grid-template-columns:1fr; }
+#marginalia-demo[data-mode=parallel] .mr-toc,#marginalia-demo.is-focus .mr-toc { display:none; }
+#marginalia-demo[data-mode=parallel] .mr-page-inner { max-width:910px; }
+#marginalia-demo.is-focus .mr-layout { grid-template-columns:1fr; }
+#marginalia-demo.notes-open .mr-layout { grid-template-columns:minmax(0,1fr) 270px; }
+#marginalia-demo.notes-open .mr-toc { display:none; }
+#marginalia-demo .mr-note { border-left:1px solid var(--mr-line); padding:33px 24px; min-width:0; }
+#marginalia-demo .mr-note-top { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:24px; }
+#marginalia-demo .mr-note-top span { font-size:12px; color:var(--mr-muted); letter-spacing:.04em; }
+#marginalia-demo .mr-note-top button { font-size:20px; padding:2px 7px; background:transparent; border:0; color:var(--mr-muted); }
+#marginalia-demo .mr-note-block { margin-bottom:27px; }
+#marginalia-demo .mr-note-kind { display:block; color:var(--mr-accent); font-size:11px; margin-bottom:8px; }
+#marginalia-demo .mr-note h3 { font:500 18px/1.5 "Songti SC","STSong",serif; margin:0 0 9px; }
+#marginalia-demo .mr-note p { margin:0; font-size:14px; line-height:1.85; color:var(--mr-ink); }
+#marginalia-demo .mr-note .mr-term-en { font:italic 15px Georgia,serif; color:var(--mr-muted); margin:4px 0 9px; }
+#marginalia-demo .mr-terms-title { padding-top:20px; border-top:1px solid var(--mr-line); }
+#marginalia-demo .mr-term-links button { display:block; background:transparent; border:0; padding:6px 0; color:var(--mr-accent); font-size:13px; text-align:left; line-height:1.6; }
+#marginalia-demo .mr-footer { display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between; padding-top:22px; border-top:1px solid var(--mr-line); color:var(--mr-muted); font-size:11px; line-height:1.7; margin-top:29px; }
+#marginalia-demo .mr-bottom { border-top:1px solid var(--mr-line); padding:13px 26px; color:var(--mr-muted); font-size:11px; display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+#marginalia-demo .mr-a11y { position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip-path:inset(50%); }
+@media(max-width:900px) {
+  #marginalia-demo.notes-open .mr-layout { grid-template-columns:1fr; }
+  #marginalia-demo .mr-note { border-left:0; border-top:1px solid var(--mr-line); padding:24px 0 8px; margin-top:20px; }
+}
+@media(max-width:720px) {
+  #marginalia-demo .mr-top { padding:16px 18px; gap:12px; }
+  #marginalia-demo .mr-brand { flex-basis:100%; padding-right:100px; }
+  #marginalia-demo .mr-layout,#marginalia-demo.notes-open .mr-layout { grid-template-columns:1fr; min-height:0; }
+  #marginalia-demo .mr-toc { display:none; }
+  #marginalia-demo.show-toc .mr-toc { display:block; border-right:0; border-bottom:1px solid var(--mr-line); padding:20px; }
+  #marginalia-demo .mr-page { padding:29px 22px 32px; }
+  #marginalia-demo h1 { font-size:27px; }
+  #marginalia-demo .mr-prose { font-size:calc(var(--mr-font) - 1px); }
+  #marginalia-demo .mr-hint { margin-left:0; flex-basis:100%; }
+  #marginalia-demo .mr-note { border-left:0; border-top:1px solid var(--mr-line); padding:24px; }
+  #marginalia-demo .mr-pair { grid-template-columns:1fr; gap:17px; }
+  #marginalia-demo .mr-pair .mr-prose { font-size:calc(var(--mr-font) - 1px); }
+}
+@media(pointer:coarse) { #marginalia-demo .mr-quiet,#marginalia-demo .mr-modes button,#marginalia-demo .mr-unit-actions button,#marginalia-demo .mr-note-top button { min-height:44px; } }
+</style>
+<div id="marginalia-demo" data-mode="zh" aria-label="旁读阅读页面设计">
+  <header class="mr-top">
+    <div class="mr-brand"><strong>旁读</strong><em>Marginalia</em></div>
+    <div class="mr-modes" role="group" aria-label="阅读语言">
+      <button type="button" class="cursor-interaction" data-mode="zh" aria-pressed="true">中文</button>
+      <button type="button" class="cursor-interaction" data-mode="en" aria-pressed="false">原文</button>
+      <button type="button" class="cursor-interaction" data-mode="parallel" aria-pressed="false">对照</button>
+    </div>
+    <button type="button" class="mr-quiet cursor-interaction" id="mr-toc-toggle" aria-pressed="false">目录</button>
+    <button type="button" class="mr-quiet cursor-interaction" id="mr-settings-toggle" aria-expanded="false" aria-controls="mr-settings">Aa 排版</button>
+  </header>
+  <div class="mr-layout">
+    <nav class="mr-toc" aria-label="书籍目录">
+      <p class="mr-toc-label">有限与无限的游戏</p>
+      <button type="button" class="cursor-interaction" data-section="1" aria-current="location">一　至少有两种游戏</button>
+      <button type="button" class="mr-sub cursor-interaction" data-section="1">§1　目的不同</button>
+      <button type="button" class="mr-sub cursor-interaction" data-section="2">§2　胜负与结束</button>
+      <button type="button" disabled>二　没有人能独自游戏</button>
+      <button type="button" disabled>三　我是自己的天才</button>
+      <button type="button" disabled>四　有限游戏与世界</button>
+      <button type="button" disabled>五　自然与不可言说</button>
+      <button type="button" disabled>六　控制自然的理由</button>
+      <button type="button" disabled>七　神话与解释</button>
+      <small>当前只展示 §1—2 的开头样本，后续章节尚未导入。</small>
+    </nav>
+    <main class="mr-page">
+      <div class="mr-page-inner">
+        <p class="mr-eyebrow">James P. Carse　／　第一章</p>
+        <h1>至少有两种游戏</h1>
+        <p class="mr-en-title">There Are at Least Two Kinds of Games</p>
+        <div class="mr-reading-options">
+          <label for="mr-variant">中文译法 <select id="mr-variant"><option value="interpretive">意译</option><option value="literal">直译</option></select></label>
+          <span class="mr-hint" id="mr-hint">轻点正文看原文，再点返回。</span>
+        </div>
+        <div class="mr-setting" id="mr-settings" hidden>
+          <label for="mr-font">字号 <input id="mr-font" type="range" min="18" max="25" value="21"><output id="mr-font-value">21</output></label>
+          <label for="mr-leading">行距 <input id="mr-leading" type="range" min="1.6" max="2.2" step="0.1" value="1.9"><output id="mr-leading-value">1.9</output></label>
+        </div>
+        <div id="mr-passages"></div>
+        <footer class="mr-footer"><span>英文已对照扫描页核读。中文与注解为设计样本，待复核。</span><span>原书第 3 页 · PDF 第 10 页</span></footer>
+      </div>
+    </main>
+    <aside class="mr-note" id="mr-note" aria-label="选中段落旁注" hidden>
+      <div class="mr-note-top"><span id="mr-note-label">旁注</span><button type="button" class="cursor-interaction" id="mr-note-close" aria-label="关闭旁注">×</button></div>
+      <div id="mr-note-content"></div>
+    </aside>
+  </div>
+  <div class="mr-bottom"><span>Finite and Infinite Games</span><span>阅读设计小样 · §1—2</span></div>
+  <div class="mr-a11y" id="mr-announcement" aria-live="polite"></div>
+</div>
+<script type="application/json" id="mr-data">{"schemaVersion": 1, "bookId": "finite-infinite-games-1986", "contentVersion": "design-sample-1", "chapterId": "ch01", "title": {"en": "There Are at Least Two Kinds of Games", "zh": "至少有两种游戏"}, "isSample": true, "sections": [{"id": "fig-1986-s001", "number": 1, "paragraphs": [{"id": "fig-1986-s001-p001", "source": {"pdfPage": 10, "printedPage": "3", "review": "visually_checked"}, "original": "There are at least two kinds of games. One could be called finite, the other infinite.", "translations": {"literal": {"text": "至少存在两种游戏。一种可以称为有限游戏，另一种可以称为无限游戏。", "status": "draft"}, "interpretive": {"text": "游戏至少有两种，可以分别称为有限游戏与无限游戏。", "status": "draft"}}, "termIds": ["finite-game", "infinite-game"], "annotationIds": ["note-at-least"]}, {"id": "fig-1986-s001-p002", "source": {"pdfPage": 10, "printedPage": "3", "review": "visually_checked"}, "original": "A finite game is played for the purpose of winning, an infinite game for the purpose of continuing the play.", "translations": {"literal": {"text": "有限游戏以获胜为目的而进行，无限游戏以继续游戏为目的而进行。", "status": "draft"}, "interpretive": {"text": "玩有限游戏，是为了赢；玩无限游戏，是为了让游戏继续进行。", "status": "draft"}}, "termIds": ["finite-game", "infinite-game", "play"], "annotationIds": ["note-purpose", "example-badminton"]}]}, {"id": "fig-1986-s002", "number": 2, "paragraphs": [{"id": "fig-1986-s002-p001", "source": {"pdfPage": 10, "printedPage": "3", "review": "visually_checked"}, "original": "If a finite game is to be won by someone it must come to a definitive end. It will come to an end when someone has won.", "translations": {"literal": {"text": "如果一场有限游戏要由某个人赢得，它就必须有一个确定的终结。当有人获胜时，它就会结束。", "status": "draft"}, "interpretive": {"text": "一场有限游戏若要决出赢家，就必须有明确的终点；当有人赢了，这场游戏便结束了。", "status": "draft"}}, "termIds": ["finite-game"], "annotationIds": []}, {"id": "fig-1986-s002-p002", "source": {"pdfPage": 10, "printedPage": "3", "review": "visually_checked"}, "original": "We know that someone has won the game when all the players have agreed who among them is the winner. No other condition than the agreement of the players is absolutely required in determining who has won the game.", "translations": {"literal": {"text": "当所有参与者都同意他们之中谁是赢家时，我们就知道有人赢得了游戏。在确定谁赢得游戏时，除了参与者的同意，没有其他条件是绝对必需的。", "status": "draft"}, "interpretive": {"text": "当所有参与者都认可谁是赢家，我们就知道这场游戏已经有人获胜。要判断谁赢了，参与者的共同认可之外，并没有别的绝对必要条件。", "status": "draft"}}, "termIds": ["agreement"], "annotationIds": ["note-agreement"]}]}], "glossary": [{"id": "finite-game", "en": "finite game", "zh": "有限游戏", "definition": "本段以获胜为目的的游戏。这里先按目的理解，不能只凭持续时间判断。"}, {"id": "infinite-game", "en": "infinite game", "zh": "无限游戏", "definition": "本段以继续游戏为目的的游戏。这是作者提出的概念，不等于日常所说的无限长的一场比赛。"}, {"id": "play", "en": "play", "zh": "游戏／参与游戏", "definition": "这里既指游戏活动，也指持续参与的过程。术语在全书中的用法留待后续核对。"}, {"id": "agreement", "en": "agreement", "zh": "同意／共同认可", "definition": "这段关注所有参与者如何承认胜负。它本身没有完整讨论公平的全部条件。"}], "annotations": [{"id": "note-at-least", "anchorIds": ["fig-1986-s001-p001"], "kind": "difficulty", "attribution": "editorial", "title": "保留“至少”", "text": "at least（至少）留下了开放性：作者在这里提出两类游戏，没有说世界只能被穷尽地分成这两类。意译也要保留这个限定。", "references": []}, {"id": "note-purpose", "anchorIds": ["fig-1986-s001-p002"], "kind": "difficulty", "attribution": "editorial", "title": "为什么游戏不以赢为目的？", "text": "难点在于，我们习惯用输赢理解游戏。作者换了一个判断标准：参与者究竟想达成什么。这里先区分“赢得这一局”和“让参与继续”，不能据此断言所有竞争都有害。", "references": []}, {"id": "example-badminton", "anchorIds": ["fig-1986-s001-p002"], "kind": "example", "attribution": "editorial", "title": "打一局球，也维持一种关系", "text": "你和朋友打一局羽毛球，计分是为了决出这一局的胜负；你们也可能更在乎下周还能一起打。这个例子帮助区分两种目的，不表示作者把友谊简单等同于无限游戏。", "references": []}, {"id": "note-agreement", "anchorIds": ["fig-1986-s002-p002"], "kind": "difficulty", "attribution": "editorial", "title": "赢了，还需要共同认可？", "text": "作者将注意力放在胜负如何成为参与者共同承认的结果。“同意”不是说每个人都喜欢这个结果，也不能直接推出只要所有人同意，比赛就一定公平。后续段落还要继续检验这个区分。", "references": []}]}</script>
+<script src="../local/finite-infinite-games/book-data.js"></script>
+<script src="full-book-loader.js"></script>
+<script src="full-book-reader.js"></script>
+
+<style>
+#marginalia-demo .room-nav { display:flex; align-items:center; flex-wrap:wrap; gap:15px; padding:16px 108px 16px 26px; border-bottom:1px solid var(--mr-line); font-size:12px; }
+#marginalia-demo .room-home { border:0; background:transparent; padding:5px 0; font:500 19px "Songti SC","STSong",serif; }
+#marginalia-demo .room-space { color:var(--mr-muted); margin-right:auto; }
+#marginalia-demo .room-link { border:0; background:transparent; padding:7px 0; font-size:12px; color:var(--mr-accent); }
+#marginalia-demo .room-section { padding:38px 40px 48px; max-width:920px; margin:0 auto; min-height:600px; }
+#marginalia-demo .room-section h2 { margin:0 0 12px; font:500 29px/1.4 "Songti SC","STSong",serif; }
+#marginalia-demo .room-section h3 { font:500 19px/1.5 "Songti SC","STSong",serif; margin:23px 0 10px; }
+#marginalia-demo .room-section p,#marginalia-demo .room-personal p { line-height:1.8; font-size:14px; margin:9px 0; }
+#marginalia-demo .room-muted { color:var(--mr-muted); font-size:12px !important; }
+#marginalia-demo .room-book { display:flex; gap:25px; margin-top:32px; padding:30px 0; border-top:1px solid var(--mr-line); border-bottom:1px solid var(--mr-line); align-items:center; }
+#marginalia-demo .room-jacket { width:98px; min-width:98px; height:139px; padding:18px 12px; background:var(--mr-accent); color:var(--mr-paper); font:400 15px/1.5 Georgia,serif; }
+#marginalia-demo .room-book h3 { margin:0 0 4px; font-size:25px; }
+#marginalia-demo .room-primary { background:var(--mr-ink); color:var(--mr-paper); border:0; border-radius:4px; padding:10px 16px; font-size:13px; }
+#marginalia-demo .room-secondary { background:transparent; border:1px solid var(--mr-line); border-radius:4px; padding:9px 13px; font-size:13px; }
+#marginalia-demo .room-actions { display:flex; gap:13px; flex-wrap:wrap; align-items:center; margin-top:15px; }
+#marginalia-demo .room-goal { display:flex; align-items:center; gap:8px; font-size:12px; }
+#marginalia-demo .room-goal select { font-size:12px; background:var(--mr-paper); color:var(--mr-ink); border:1px solid var(--mr-line); border-radius:4px; padding:5px 8px; }
+#marginalia-demo .room-focus { margin-left:auto; display:flex; align-items:center; gap:11px; color:var(--mr-muted); font-size:12px; }
+#marginalia-demo .room-focus button { border:0; background:transparent; color:var(--mr-accent); padding:5px 0; font-size:12px; }
+#marginalia-demo .room-personal { min-width:0; padding:27px 22px; border-left:1px solid var(--mr-line); }
+#marginalia-demo .room-personal-header { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:20px; font-size:13px; }
+#marginalia-demo .room-personal-header button { background:transparent; border:0; font-size:21px; padding:4px 7px; }
+#marginalia-demo .room-personal textarea,#marginalia-demo .room-section textarea { width:100%; background:var(--mr-paper); border:1px solid var(--mr-line); border-radius:4px; padding:12px; color:var(--mr-ink); min-height:118px; font-family:inherit; font-size:16px; line-height:1.7; resize:vertical; }
+#marginalia-demo .room-record { padding:18px 0; border-bottom:1px solid var(--mr-line); overflow-wrap:anywhere; }
+#marginalia-demo .room-record p { white-space:pre-wrap; margin:7px 0; }
+#marginalia-demo .room-record-meta { font-size:11px; color:var(--mr-muted); }
+#marginalia-demo .mr-unit.room-active .mr-prose { border-left:2px solid var(--mr-accent); padding-left:13px; }
+#marginalia-demo .room-block { margin:28px 0; padding-top:24px; border-top:1px solid var(--mr-line); }
+#marginalia-demo .room-choice { display:flex; align-items:center; gap:10px; margin:12px 0; font-size:14px; }
+#marginalia-demo .room-choice input { accent-color:var(--mr-accent); }
+#marginalia-demo .room-time { background:var(--mr-paper); color:var(--mr-ink); border:1px solid var(--mr-line); padding:7px; border-radius:3px; font-size:16px; }
+#marginalia-demo .room-label { display:block; font-size:12px; color:var(--mr-muted); margin:15px 0 8px; }
+#marginalia-demo[data-room-page=library]>.mr-top,#marginalia-demo[data-room-page=records]>.mr-top,#marginalia-demo[data-room-page=data]>.mr-top { display:none; }
+#marginalia-demo[data-room-page=library]>.mr-layout,#marginalia-demo[data-room-page=records]>.mr-layout,#marginalia-demo[data-room-page=data]>.mr-layout { display:none; }
+#marginalia-demo[data-room-page=library]>.mr-bottom,#marginalia-demo[data-room-page=records]>.mr-bottom,#marginalia-demo[data-room-page=data]>.mr-bottom { display:none; }
+#marginalia-demo.room-personal-open .mr-layout { grid-template-columns:minmax(0,1fr) 282px; }
+#marginalia-demo.room-personal-open .mr-toc { display:none; }
+#marginalia-demo .room-message { color:var(--mr-accent); min-height:24px; font-size:12px; line-height:1.7; }
+#marginalia-demo .room-message[role=alert] { color:light-dark(#9c3730,#f0a49b); }
+@media(max-width:900px){#marginalia-demo.room-personal-open .mr-layout{grid-template-columns:1fr}#marginalia-demo .room-personal{border-left:0;border-top:1px solid var(--mr-line);padding:22px 0;margin-top:18px}}
+@media(max-width:720px){#marginalia-demo .room-nav{padding:15px 20px;gap:14px}#marginalia-demo .room-space{flex-basis:calc(100% - 120px);margin-right:0}#marginalia-demo .room-section{padding:30px 22px;min-height:0}#marginalia-demo .room-book{gap:17px;align-items:flex-start}#marginalia-demo .room-jacket{width:77px;min-width:77px;height:119px;font-size:13px}#marginalia-demo .room-book h3{font-size:22px}#marginalia-demo .room-focus{margin-left:0;flex-basis:100%}#marginalia-demo .room-personal{padding:22px 0}#marginalia-demo .room-section h2{font-size:26px}}
+@media(pointer:coarse){#marginalia-demo .room-link,#marginalia-demo .room-focus button,#marginalia-demo .room-secondary,#marginalia-demo .room-primary{min-height:44px}}
+</style>
+<nav class="room-nav" id="room-nav" aria-label="私人书房">
+  <button type="button" class="room-home cursor-interaction" data-room-page="library">我的书房</button>
+  <span class="room-space">私人空间 · 设计小样</span>
+  <button type="button" class="room-link cursor-interaction" data-room-page="reader">正在读</button>
+  <button type="button" class="room-link cursor-interaction" data-room-page="records">我的记录</button>
+  <button type="button" class="room-link cursor-interaction" data-room-page="data">数据与 Agent</button>
+</nav>
+<section id="room-library" class="room-section" aria-label="我的书房" hidden>
+  <h2>从你真心想读的那一本开始。</h2>
+  <p class="room-muted">书、自己的评论和仍没想明白的问题，放在同一个地方。</p>
+  <div class="room-book">
+    <div class="room-jacket" aria-hidden="true">FINITE<br>AND<br>INFINITE<br>GAMES</div>
+    <div><h3>有限与无限的游戏</h3><p>James P. Carse</p><p class="room-muted">当前样本 · 第一章 §1—2 · 四段正文</p><div class="room-actions"><button type="button" class="room-primary cursor-interaction" data-room-page="reader">继续读这本</button><button type="button" class="room-secondary cursor-interaction" data-room-page="data">导入自己的书</button></div></div>
+  </div>
+  <p class="room-muted">这份设计小样保留一份真实样本，完整书籍解析将在正式应用中提供。</p>
+  <div id="room-pending-uploads"></div>
+</section>
+<section id="room-records" class="room-section" aria-label="我的阅读记录" hidden>
+  <h2>我的记录</h2><p class="room-muted">有限与无限的游戏 · 评论与问题都带着原文的位置。</p>
+  <div class="room-actions"><button type="button" class="room-secondary cursor-interaction" id="room-export-records">导出我的记录</button><button type="button" class="room-link cursor-interaction" data-room-page="reader">回到正文</button></div>
+  <div id="room-records-list"></div>
+</section>
+<section id="room-data" class="room-section" aria-label="数据与个人 Agent" hidden>
+  <h2>你的书房，由你决定。</h2>
+  <p class="room-muted">正式应用以开源、本地运行和自托管为目标。当前是交互设计预览。</p>
+  <div class="room-block"><h3>带进来，也能带走。</h3>
+    <label class="room-label" for="room-book-file">选择自己的书 · PDF / EPUB / TXT / Markdown</label><input id="room-book-file" type="file" accept=".pdf,.epub,.txt,.md">
+    <p class="room-muted">此处预览文件选择，不解析或保存原件。</p><div id="room-book-status" class="room-message" aria-live="polite"></div>
+    <div class="room-actions"><button type="button" class="room-secondary cursor-interaction" id="room-export">导出我的记录</button><button type="button" class="room-secondary cursor-interaction" id="room-import-button">导入记录包</button><input id="room-record-file" type="file" accept=".json" hidden></div>
+    <p class="room-muted">小样记录包包含评论、问题和专注时段，不含整本书或密钥。</p><div id="room-import-status" class="room-message" aria-live="polite"></div>
+  </div>
+  <div class="room-block"><h3>分享由你选中的一条评论。</h3>
+    <label class="room-label" for="room-share-choice">选择评论</label><select id="room-share-choice" class="room-time"><option value="">先在正文留下一条自己的评论</option></select>
+    <label class="room-label" for="room-share-text">分享内容预览 · 这里不会对外发布</label><textarea id="room-share-text" readonly aria-label="选定评论的分享预览" placeholder="只包含所选评论与书内定位。"></textarea>
+  </div>
+  <div class="room-block"><h3>让自己的 Agent 来陪读。</h3><p class="room-muted">接入与授权方式示意 · MCP 尚未连接。</p>
+    <label class="room-choice"><input type="checkbox" id="room-grant-book">读取这本书的章节与资源</label>
+    <label class="room-choice"><input type="checkbox" id="room-grant-notes">读取我的评论与未解决问题</label>
+    <label class="room-choice"><input type="checkbox" id="room-grant-time">读取我的阅读位置与时间记录</label>
+    <p class="room-muted">每一种数据分别授权，其他书籍保持私有。</p>
+    <label class="room-choice"><input type="checkbox" id="room-daily">希望我的 Agent 每天提醒我继续读</label>
+    <label class="room-choice" for="room-daily-time">我的时间 <input id="room-daily-time" type="time" value="20:30" class="room-time"></label>
+    <p class="room-muted" id="room-daily-status">偏好预览，不创建日程或发送消息。阅读时保持安静，随时可暂停。</p>
+  </div>
+</section>
+<div id="room-reader-controls" class="mr-reading-options" hidden>
+  <label class="room-goal" for="room-goal">这次怎么读 <select id="room-goal"><option value="deep">深度阅读</option><option value="language">语言学习</option></select></label>
+  <div class="room-focus"><span>本轮专注 <output id="room-elapsed">00:00</output></span><button type="button" class="cursor-interaction" id="room-timer-toggle">开始</button></div>
+</div>
+<aside id="room-personal" class="room-personal" aria-label="当前段落的个人记录" hidden>
+  <div class="room-personal-header"><span id="room-personal-title">我的评论</span><button type="button" class="cursor-interaction" id="room-personal-close" aria-label="关闭个人记录">×</button></div>
+  <p class="room-muted" id="room-anchor-label"></p>
+  <div id="room-comment-composer"><label class="room-label" for="room-comment">留下一点自己的理解</label><textarea id="room-comment" maxlength="2000" placeholder="这段让我想到什么？我同意哪里，还有什么疑问？"></textarea><div class="room-actions"><button type="button" class="room-primary cursor-interaction" id="room-save-comment">保存我的评论</button></div><p class="room-muted">我的原话 · 默认仅自己可见</p></div>
+  <div id="room-question-composer" hidden><label class="room-label" for="room-question">围绕这段继续问</label><textarea id="room-question" maxlength="2000" placeholder="这里为什么这样说？和前文有什么关系？"></textarea><div class="room-actions"><button type="button" class="room-primary cursor-interaction" id="room-save-question">留下这个问题</button><button type="button" class="room-link cursor-interaction" id="room-show-example">看回答示例</button></div><p class="room-muted">设计小样只保留问题，尚未连接模型。示例回答来自已有旁注。</p><div id="room-answer-example" class="room-record" hidden></div></div>
+  <div id="room-composer-message" class="room-message" aria-live="polite"></div><div id="room-personal-records"></div>
+</aside>
+
+<script src="room-interactions.js"></script>
+
+</div></body></html>

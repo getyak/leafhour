@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:marginalia:chapter-script:v1",
+  "title": "Chapter Script v1 · design contract",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "scriptId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "bookId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "chapterId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "contentVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "sourceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "passageId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_-]+$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "passageId",
+          "sha256"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "enum": [
+            "draft",
+            "reviewed"
+          ]
+        },
+        "humanReviewed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "content",
+        "humanReviewed"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "content": {
+                "const": "reviewed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "humanReviewed": {
+                "const": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    "component": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "compare_purposes"
+        },
+        "version": {
+          "const": 1
+        }
+      },
+      "required": [
+        "type",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "props": {
+      "type": "object",
+      "properties": {
+        "attribution": {
+          "const": "editorial"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "scenarios": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "enum": [
+                  "A",
+                  "B"
+                ]
+              },
+              "goal": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "id",
+              "goal"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "feedback": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "limitation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "allowSwapGoals": {
+          "type": "boolean"
+        },
+        "estimatedMinutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 15
+        }
+      },
+      "required": [
+        "attribution",
+        "purpose",
+        "scenarios",
+        "prompt",
+        "feedback",
+        "limitation",
+        "allowSwapGoals",
+        "estimatedMinutes"
+      ],
+      "additionalProperties": false
+    },
+    "initialState": {
+      "const": "offered"
+    },
+    "transitions": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "enum": [
+              "offered",
+              "attempt",
+              "feedback",
+              "closed"
+            ]
+          },
+          "on": {
+            "enum": [
+              "start",
+              "skip",
+              "swap_goals",
+              "submit",
+              "show_feedback",
+              "retry",
+              "return"
+            ]
+          },
+          "to": {
+            "enum": [
+              "offered",
+              "attempt",
+              "feedback",
+              "closed"
+            ]
+          }
+        },
+        "required": [
+          "from",
+          "on",
+          "to"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "returnAnchor": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "spawn_card"
+        },
+        "toolVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "promptVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        }
+      },
+      "required": [
+        "tool",
+        "toolVersion",
+        "promptVersion"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "scriptId",
+    "bookId",
+    "chapterId",
+    "contentVersion",
+    "sourceRefs",
+    "review",
+    "component",
+    "props",
+    "initialState",
+    "transitions",
+    "returnAnchor",
+    "provenance"
+  ],
+  "additionalProperties": false
+}

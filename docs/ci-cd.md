@@ -1,27 +1,24 @@
 # 自动检查与发布
 
-开发入口是私人归档仓库 `getyak/marginalia-reader-private-archive`。功能分支提交 PR，检查通过后合入 `main`，GitHub Actions 自动同步源码并更新 [循页](https://reader.cubxxw.com)。
+唯一开发仓库是公开的 [getyak/marginalia-reader](https://github.com/getyak/marginalia-reader)。代码、Agent 规范、设计文档、开发计划和验收记录直接在这里维护，功能分支经过 PR 检查后合并到 `main`。不再通过私有主仓库、公开源码镜像或部署镜像中转。
 
 ```text
-功能分支 → PR 检查 → main
-                      ↓ 测试、构建、发布边界检查
-                 白名单软件快照
-                  ↙           ↘
-         公开源码仓库         私有部署镜像
-                                 ↓ Vercel 再验证、构建
-                            reader.cubxxw.com
-                                 ↓ 版本与匿名访问检查
+公开仓库：功能分支 → PR 检查 → main → Vercel 验证、构建与部署
+                                  ↓
+                         Production 等待同一源提交上线
+                                  ↓
+                         reader.cubxxw.com 匿名验收
 ```
 
-`CI` 在 PR 与 `main` 执行测试、构建和发布边界检查。`Publish` 仅在私人归档的 `main` 执行，也可从 Actions 手动重跑；相同源码重跑也会重新触发 Vercel，便于恢复偶发构建故障。发布串行执行；每次同步镜像前检查 `main`，已有更新提交时，旧任务跳过后续同步。构建失败保留上一版线上部署；上线后的匿名检查若失败，任务报错，需要检查并按下述方式回退。
+`CI` 在 PR 与 `main` 执行 `npm run verify:deploy`：隔离环境中的完整测试、构建、媒体完整性与部署内容检查。用户已授权 Agent 在检查通过后直接合并 PR，无需重复确认；不得绕过失败的检查。
 
-`release-files.json` 是逐文件白名单。新增软件文件需加入此文件；缺文件、符号链接、疑似密钥、私人目录、验证资料或 PDF/EPUB 都会阻止发布。公开样书只包含已审核的三本公版书。镜像创建自己的提交，不复制私人仓库历史；README 的内部项目入口也不会发布。数据库与个人阅读记录保留在各自存储中。
+Vercel 直接连接公开仓库的 `main`，执行 `npm run verify:hosted`。生产数据库、邮箱、登录与模型凭据保存在 Vercel 环境变量中，GitHub 不需要镜像写入密钥。测试或构建失败时不会替换线上版本。
 
-同步目标固定为 `getyak/marginalia-reader` 和 `cubxxw/marginalia-reader-deploy`。两个仓库各有一个专用写入 deploy key，私钥仅存于私人归档的 Actions secrets：`PUBLIC_MIRROR_DEPLOY_KEY`、`DEPLOY_MIRROR_DEPLOY_KEY`。密钥只授予对应仓库，不使用个人访问令牌。撤销对应仓库 deploy key 即可停用。
+`Production` 仅跟随公开主分支上成功的 CI，等待 `/release.json` 返回同一提交，再验证首页、书房、阅读页、静态资源、匿名会话、公版书接口和旧接口关闭状态。自动验收只执行匿名读取，不发送邮件、写入阅读记录或调用模型；它不能代替真实登录、上传和跨设备验收。
 
-Vercel 沿用部署镜像的原生 Git 集成，无需把生产数据库、登录服务或 Vercel 凭据交给 Actions。GitHub 用 `npm run verify:deploy` 检查完整发布包；Vercel 会预先排除配置模板等文件，因此构建命令为 `npm run verify:hosted`，执行隔离测试、构建与公开产物检查。测试或产物检查失败时不会替换正式域名。自动验收仅执行匿名读取，不发送邮件、写入阅读记录或调用模型。
+源码公开与用户数据存储各有职责：`.env`、实际密钥、用户上传的书籍、个人记录与数据库不进入 Git。`catalog/` 提供来源和许可明确的公版样书。旧开发历史包含商业书籍全文，已在本机保留恢复备份；迁移只引入源码与开发文档，避免将该历史带入公开 PR。
 
-`/release.json` 保存实际发布的源提交。发布结束前，任务等待正式域名返回该提交，再检查首页、书房、阅读页、主要资源、匿名会话、公版书接口与旧接口关闭状态。通过后才视为发布成功；超时或异常会让任务失败。它不能代替真实登录、上传与跨设备阅读验收。
+`release-files.json` 仅列出部署快照所需的软件文件，不再决定哪些开发文档可以开源。设计、计划、验收与 `AGENTS.md` 已在公开仓库中，部署时可由 `.vercelignore` 排除。配置示例保留变量名，实际值不写入文件或日志。
 
 本机验证：
 
@@ -31,6 +28,4 @@ npm run verify:deploy
 npm run smoke:production
 ```
 
-回退代码时在开发仓库撤销相关提交，合入 `main` 后走同一条发布流程；紧急情况可在 Vercel 将正式域名回退到上一部署。数据库迁移继续单独审核与执行，不能用代码回退推断数据可回退。直接修改镜像可能被下一次同步覆盖，应先回到开发仓库修正。
-
-当前账户的私人仓库不支持强制分支保护；发布流程自身执行完整验证，Vercel 构建也有同一检查。若未来开启分支保护，可要求 PR 的 `test` 检查通过并禁止直接写 `main`。
+回退时在同一公开仓库撤销相关代码提交，经 PR 合入 `main` 后重新部署；紧急情况可在 Vercel 将正式域名回退到已验证版本。数据库迁移需要单独审核与执行，代码回退不代表数据回退。

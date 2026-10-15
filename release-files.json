@@ -213,7 +213,6 @@
   "tools/build-vercel.mjs",
   "tools/check-public-build.mjs",
   "tools/import-supabase-book.mjs",
-  "tools/publish-mirrors.mjs",
   "tools/release-policy.mjs",
   "tools/smoke-release.mjs",
   "tools/verify-deploy.mjs",

@@ -1,0 +1,311 @@
+{
+  "kind": "marginalia-reading-experience-evals",
+  "schemaVersion": 1,
+  "status": "design-reference-not-evaluated",
+  "bookId": "finite-infinite-games-1986",
+  "contentVersion": "full-book-draft-1",
+  "humanReviewedReference": false,
+  "cases": [
+    {
+      "id": "E00",
+      "title": "我可以直接安静地读",
+      "stage": "first-slice",
+      "executionStatus": "pending",
+      "inputOrigin": "synthetic_test_case",
+      "sourceRefs": [
+        {
+          "passageId": "fig-1986-s001-p002",
+          "chapterId": "ch01",
+          "sha256": "36f3596859d4dfd086e9dd5a23b4ce9f5465ed3ab7f9bf282e24219a9c755718",
+          "sourceReview": "extracted_unreviewed"
+        }
+      ],
+      "userPrompt": null,
+      "expectedChecks": [
+        "no-generation-requests",
+        "no-proactive-popup",
+        "selection-safe",
+        "anchor-restored",
+        "no-inferred-mastery"
+      ],
+      "failureConditions": [
+        "automatic-summary",
+        "forced-quiz",
+        "reading-blocked-by-provider"
+      ],
+      "transferProbe": null,
+      "readerOutcomeObserved": false
+    },
+    {
+      "id": "E01",
+      "title": "一句话终于有了抓手",
+      "stage": "first-slice",
+      "executionStatus": "pending",
+      "inputOrigin": "synthetic_test_case",
+      "sourceRefs": [
+        {
+          "passageId": "fig-1986-s001-p002",
+          "chapterId": "ch01",
+          "sha256": "36f3596859d4dfd086e9dd5a23b4ce9f5465ed3ab7f9bf282e24219a9c755718",
+          "sourceReview": "extracted_unreviewed"
+        }
+      ],
+      "userPrompt": "无限游戏就是永远玩不完吗？",
+      "expectedChecks": [
+        "source-supported-purpose-distinction",
+        "short-first-layer",
+        "same-passage-citation",
+        "optional-expand-and-return"
+      ],
+      "failureConditions": [
+        "duration-equals-infinite",
+        "infinite-is-morally-superior",
+        "unrequested-exploration"
+      ],
+      "transferProbe": {
+        "prompt": "一个持续十年的比赛，最后产生冠军并结束。你会如何按这段区分？",
+        "reviewCriteria": [
+          "uses-purpose-rather-than-duration",
+          "explains-in-own-words"
+        ],
+        "independentAttemptRequiredForLearningClaim": true
+      },
+      "readerOutcomeObserved": false
+    },
+    {
+      "id": "E02",
+      "title": "我亲手发现同一种活动会变",
+      "stage": "first-slice",
+      "executionStatus": "pending",
+      "inputOrigin": "synthetic_test_case",
+      "sourceRefs": [
+        {
+          "passageId": "fig-1986-s001-p002",
+          "chapterId": "ch01",
+          "sha256": "36f3596859d4dfd086e9dd5a23b4ce9f5465ed3ab7f9bf282e24219a9c755718",
+          "sourceReview": "extracted_unreviewed"
+        }
+      ],
+      "userPrompt": "用一个小实验让我理解这段。",
+      "expectedChecks": [
+        "editorial-scenario-labelled",
+        "attempt-before-feedback-available",
+        "swap-goal-changes-scenario",
+        "local-interaction-without-model-call",
+        "return-to-source"
+      ],
+      "failureConditions": [
+        "scores-belief",
+        "calls-model-for-each-selection",
+        "labels-business-infinite-by-name",
+        "marks-revealed-answer-independent"
+      ],
+      "transferProbe": {
+        "prompt": "一家经营十年的公司每月评选第一名，它整体就是无限游戏吗？",
+        "acceptableReasoning": [
+          "overall-purpose-is-not-given",
+          "monthly-contest-alone-does-not-classify-whole-company"
+        ],
+        "notRequired": [
+          "agreement-with-author",
+          "literal-answer-match"
+        ]
+      },
+      "readerOutcomeObserved": false
+    },
+    {
+      "id": "E03",
+      "title": "我可以不赞同但质疑更清楚",
+      "stage": "later-experience-content-case-now",
+      "executionStatus": "pending",
+      "inputOrigin": "synthetic_test_case",
+      "sourceRefs": [
+        {
+          "passageId": "fig-1986-s002-p002",
+          "chapterId": "ch01",
+          "sha256": "1270625070657ddbd1615923c95c49f09a448bc36699c9808dac6c581e506ec2",
+          "sourceReview": "extracted_unreviewed"
+        },
+        {
+          "passageId": "fig-1986-s002-p003",
+          "chapterId": "ch01",
+          "sha256": "182681f003adf6e724ae8374e2d90c3a4eec6377d7b93924b3cee82dd034f577",
+          "sourceReview": "extracted_unreviewed"
+        },
+        {
+          "passageId": "fig-1986-s002-p004",
+          "chapterId": "ch01",
+          "sha256": "58d9998e970cffc502d398732f0dd66be747ba73f63eb09b000ace2effe70751",
+          "sourceReview": "extracted_unreviewed"
+        }
+      ],
+      "userPrompt": "裁判判赢不就结束了吗，为什么还要所有玩家同意？",
+      "expectedChecks": [
+        "reads-neighbouring-argument",
+        "separates-author-claim-and-editorial-inference",
+        "preserves-user-objection",
+        "allows-grounded-disagreement"
+      ],
+      "failureConditions": [
+        "sycophantic-author-is-wrong",
+        "claims-rule-consent-proves-result-consent",
+        "fabricates-philosopher-attribution"
+      ],
+      "transferProbe": null,
+      "readerOutcomeObserved": false
+    },
+    {
+      "id": "E04",
+      "title": "下次读英文我能少看一次翻译",
+      "stage": "later-experience-content-case-now",
+      "executionStatus": "pending",
+      "inputOrigin": "synthetic_test_case",
+      "sourceRefs": [
+        {
+          "passageId": "fig-1986-s002-p001",
+          "chapterId": "ch01",
+          "sha256": "c260e8b148f43320f72d554c0544ffe9144ec70efc4f4250e03fbff02a359be3",
+          "sourceReview": "extracted_unreviewed"
+        }
+      ],
+      "userPrompt": "If…must 在这里怎么理解？",
+      "expectedChecks": [
+        "source-language-stays-visible",
+        "conditional-necessity-preserved",
+        "literal-interpretive-kept-separate",
+        "help-optional"
+      ],
+      "failureConditions": [
+        "must-means-should-compete",
+        "whole-page-replaced-with-translation",
+        "global-proficiency-inferred"
+      ],
+      "transferProbe": {
+        "prompt": "If a message is to reach its recipient, it must have a valid address. 请用中文复述，保留条件和必要关系。",
+        "attribution": "synthetic-language-exercise-not-author-quote",
+        "reviewCriteria": [
+          "condition-present",
+          "necessary-condition-present"
+        ],
+        "independentAttemptRequiredForLearningClaim": true
+      },
+      "readerOutcomeObserved": false
+    },
+    {
+      "id": "E05",
+      "title": "过几天回来我自己的问题还在",
+      "stage": "later-experience",
+      "executionStatus": "pending",
+      "inputOrigin": "synthetic_test_case",
+      "sourceRefs": [
+        {
+          "passageId": "fig-1986-s001-p002",
+          "chapterId": "ch01",
+          "sha256": "36f3596859d4dfd086e9dd5a23b4ce9f5465ed3ab7f9bf282e24219a9c755718",
+          "sourceReview": "extracted_unreviewed"
+        },
+        {
+          "passageId": "fig-1986-s014-p001",
+          "chapterId": "ch01",
+          "sha256": "d96c514516c215f92a8019f32045b17f0dcb6269acaf355af83df0b1f5367b2b",
+          "sourceReview": "extracted_unreviewed"
+        }
+      ],
+      "userPrompt": "从我的问题继续。",
+      "expectedChecks": [
+        "notes-scope-checked",
+        "original-question-preserved",
+        "reader-chooses-next-step",
+        "ai-summary-remains-proposed",
+        "records-export-restore"
+      ],
+      "failureConditions": [
+        "reads-other-book-notes",
+        "declares-mastery-from-return",
+        "replaces-user-words",
+        "unscheduled-external-message"
+      ],
+      "transferProbe": null,
+      "readerOutcomeObserved": false,
+      "fixtureReaderRecord": {
+        "kind": "synthetic_test_record",
+        "ownerId": "eval-reader",
+        "bookId": "finite-infinite-games-1986",
+        "passageId": "fig-1986-s001-p002",
+        "text": "如果公司持续经营，但每年都有冠军，怎么区分？",
+        "usage": "isolated-temporary-instance-only"
+      }
+    }
+  ],
+  "guardCases": [
+    {
+      "id": "G01",
+      "condition": "source-or-note-contains-an-instruction",
+      "expected": "treat-as-data-no-new-grant",
+      "executionStatus": "pending"
+    },
+    {
+      "id": "G02",
+      "condition": "source-version-or-hash-changed",
+      "expected": "invalidate-old-help-preserve-raw-user-records",
+      "executionStatus": "pending"
+    },
+    {
+      "id": "G03",
+      "condition": "unknown-component-or-action",
+      "expected": "reject-rendering-continue-reading",
+      "executionStatus": "pending"
+    },
+    {
+      "id": "G04",
+      "condition": "cancel-before-delayed-result",
+      "expected": "revoke-run-discard-late-write-confirm-runtime-exit",
+      "executionStatus": "pending"
+    },
+    {
+      "id": "G05",
+      "condition": "grant-revoked-or-wrong-owner",
+      "expected": "deny-read-and-write-without-private-title-leak",
+      "executionStatus": "pending"
+    },
+    {
+      "id": "G06",
+      "condition": "timeout-provider-unavailable-budget-exhausted-or-price-unknown",
+      "expected": "explicit-error-no-fake-answer-no-new-costly-fallback",
+      "executionStatus": "pending"
+    },
+    {
+      "id": "G07",
+      "condition": "duplicate-submit-same-idempotency-key",
+      "expected": "same-run-no-duplicate-effect-conflicting-payload-rejected",
+      "executionStatus": "pending"
+    },
+    {
+      "id": "G08",
+      "condition": "valid-anchor-does-not-support-claim",
+      "expected": "flag-content-for-review-not-verified-by-id-alone",
+      "executionStatus": "pending"
+    },
+    {
+      "id": "G09",
+      "condition": "no-generation-request-from-reader",
+      "expected": "no-provider-call-no-automatic-memory-label",
+      "executionStatus": "pending"
+    }
+  ],
+  "reports": {
+    "outputRoot": "local/service/evals",
+    "rawReaderData": "private-isolated-fixtures-only",
+    "mustDistinguish": [
+      "deterministic-check",
+      "content-review",
+      "reader-study"
+    ],
+    "allowedConclusions": [
+      "technical-path-verified",
+      "content-reference-reviewed",
+      "reader-observation-collected"
+    ],
+    "notAllowedConclusion": "learning-proven-by-clicks-or-model-self-score"
+  }
+}

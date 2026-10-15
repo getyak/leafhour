@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "bookId": "finite-infinite-games-1986",
+  "contentVersion": "design-sample-1",
+  "chapterId": "ch01",
+  "title": {"en": "There Are at Least Two Kinds of Games", "zh": "至少有两种游戏"},
+  "isSample": true,
+  "sections": [
+    {
+      "id": "fig-1986-s001",
+      "number": 1,
+      "paragraphs": [
+        {
+          "id": "fig-1986-s001-p001",
+          "source": {"pdfPage": 10, "printedPage": "3", "review": "visually_checked"},
+          "original": "There are at least two kinds of games. One could be called finite, the other infinite.",
+          "translations": {
+            "literal": {"text": "至少存在两种游戏。一种可以称为有限游戏，另一种可以称为无限游戏。", "status": "draft"},
+            "interpretive": {"text": "游戏至少有两种，可以分别称为有限游戏与无限游戏。", "status": "draft"}
+          },
+          "termIds": ["finite-game", "infinite-game"],
+          "annotationIds": ["note-at-least"]
+        },
+        {
+          "id": "fig-1986-s001-p002",
+          "source": {"pdfPage": 10, "printedPage": "3", "review": "visually_checked"},
+          "original": "A finite game is played for the purpose of winning, an infinite game for the purpose of continuing the play.",
+          "translations": {
+            "literal": {"text": "有限游戏以获胜为目的而进行，无限游戏以继续游戏为目的而进行。", "status": "draft"},
+            "interpretive": {"text": "玩有限游戏，是为了赢；玩无限游戏，是为了让游戏继续进行。", "status": "draft"}
+          },
+          "termIds": ["finite-game", "infinite-game", "play"],
+          "annotationIds": ["note-purpose", "example-badminton"]
+        }
+      ]
+    },
+    {
+      "id": "fig-1986-s002",
+      "number": 2,
+      "paragraphs": [
+        {
+          "id": "fig-1986-s002-p001",
+          "source": {"pdfPage": 10, "printedPage": "3", "review": "visually_checked"},
+          "original": "If a finite game is to be won by someone it must come to a definitive end. It will come to an end when someone has won.",
+          "translations": {
+            "literal": {"text": "如果一场有限游戏要由某个人赢得，它就必须有一个确定的终结。当有人获胜时，它就会结束。", "status": "draft"},
+            "interpretive": {"text": "一场有限游戏若要决出赢家，就必须有明确的终点；当有人赢了，这场游戏便结束了。", "status": "draft"}
+          },
+          "termIds": ["finite-game"],
+          "annotationIds": []
+        },
+        {
+          "id": "fig-1986-s002-p002",
+          "source": {"pdfPage": 10, "printedPage": "3", "review": "visually_checked"},
+          "original": "We know that someone has won the game when all the players have agreed who among them is the winner. No other condition than the agreement of the players is absolutely required in determining who has won the game.",
+          "translations": {
+            "literal": {"text": "当所有参与者都同意他们之中谁是赢家时，我们就知道有人赢得了游戏。在确定谁赢得游戏时，除了参与者的同意，没有其他条件是绝对必需的。", "status": "draft"},
+            "interpretive": {"text": "当所有参与者都认可谁是赢家，我们就知道这场游戏已经有人获胜。要判断谁赢了，参与者的共同认可之外，并没有别的绝对必要条件。", "status": "draft"}
+          },
+          "termIds": ["agreement"],
+          "annotationIds": ["note-agreement"]
+        }
+      ]
+    }
+  ],
+  "glossary": [
+    {"id": "finite-game", "en": "finite game", "zh": "有限游戏", "definition": "本段以获胜为目的的游戏。这里先按目的理解，不能只凭持续时间判断。"},
+    {"id": "infinite-game", "en": "infinite game", "zh": "无限游戏", "definition": "本段以继续游戏为目的的游戏。这是作者提出的概念，不等于日常所说的无限长的一场比赛。"},
+    {"id": "play", "en": "play", "zh": "游戏／参与游戏", "definition": "这里既指游戏活动，也指持续参与的过程。术语在全书中的用法留待后续核对。"},
+    {"id": "agreement", "en": "agreement", "zh": "同意／共同认可", "definition": "这段关注所有参与者如何承认胜负。它本身没有完整讨论公平的全部条件。"}
+  ],
+  "annotations": [
+    {"id": "note-at-least", "anchorIds": ["fig-1986-s001-p001"], "kind": "difficulty", "attribution": "editorial", "title": "保留“至少”", "text": "at least（至少）留下了开放性：作者在这里提出两类游戏，没有说世界只能被穷尽地分成这两类。意译也要保留这个限定。", "references": []},
+    {"id": "note-purpose", "anchorIds": ["fig-1986-s001-p002"], "kind": "difficulty", "attribution": "editorial", "title": "为什么游戏不以赢为目的？", "text": "难点在于，我们习惯用输赢理解游戏。作者换了一个判断标准：参与者究竟想达成什么。这里先区分“赢得这一局”和“让参与继续”，不能据此断言所有竞争都有害。", "references": []},
+    {"id": "example-badminton", "anchorIds": ["fig-1986-s001-p002"], "kind": "example", "attribution": "editorial", "title": "打一局球，也维持一种关系", "text": "你和朋友打一局羽毛球，计分是为了决出这一局的胜负；你们也可能更在乎下周还能一起打。这个例子帮助区分两种目的，不表示作者把友谊简单等同于无限游戏。", "references": []},
+    {"id": "note-agreement", "anchorIds": ["fig-1986-s002-p002"], "kind": "difficulty", "attribution": "editorial", "title": "赢了，还需要共同认可？", "text": "作者将注意力放在胜负如何成为参与者共同承认的结果。“同意”不是说每个人都喜欢这个结果，也不能直接推出只要所有人同意，比赛就一定公平。后续段落还要继续检验这个区分。", "references": []}
+  ]
+}

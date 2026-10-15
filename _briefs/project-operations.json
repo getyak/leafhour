@@ -1,0 +1,211 @@
+{
+  "version": 1,
+  "registeredOn": "2026-10-11",
+  "github": {
+    "repository": "getyak/marginalia-reader",
+    "url": "https://github.com/getyak/marginalia-reader",
+    "repositoryId": 1414036624,
+    "visibilityAtRegistration": "private"
+  },
+  "notion": {
+    "workspaceId": "3f6a444a-6c00-8155-8966-e38cc6880a86",
+    "workspaceUrl": "https://app.notion.com/p/3f6a444a6c0081558966e38cc6880a86",
+    "hubId": "3d3a444a-6c00-8163-891b-ed1d697582a6",
+    "documentsDataSourceId": "432a444a-6c00-826d-ab96-870c7915a933",
+    "workspaceTemplateId": "3d5a444a6c008121a6f0dc77344d95c2",
+    "documents": {
+      "story": {
+        "id": "3f6a444a-6c00-81aa-8f60-dfd800e120fd",
+        "url": "https://app.notion.com/p/3f6a444a6c0081aa8f60dfd800e120fd",
+        "title": "User Story & Feedback"
+      },
+      "product": {
+        "id": "3f6a444a-6c00-8151-92bf-f9c8a7dc19d9",
+        "url": "https://app.notion.com/p/3f6a444a6c00815192bff9c8a7dc19d9",
+        "title": "Product Design"
+      },
+      "technical": {
+        "id": "3f6a444a-6c00-8199-b41a-e87fd4372e2f",
+        "url": "https://app.notion.com/p/3f6a444a6c008199b41ae87fd4372e2f",
+        "title": "Technical Design"
+      },
+      "research": {
+        "id": "3f6a444a-6c00-81fe-a95f-cc80f118eff8",
+        "url": "https://app.notion.com/p/3f6a444a6c0081fea95fcc80f118eff8",
+        "title": "Evaluation & Research"
+      },
+      "decision": {
+        "id": "3f6a444a-6c00-816b-b12e-d846b9bec747",
+        "url": "https://app.notion.com/p/3f6a444a6c00816bb12ed846b9bec747",
+        "title": "Decision Record & Outcome"
+      }
+    }
+  },
+  "linear": {
+    "workspace": "GetYak",
+    "teamId": "d4f97c0f-65ec-4ad5-82f3-69c98112dade",
+    "teamKey": "GET",
+    "projectId": "P-GET-8",
+    "projectUuid": "df570618-2fbd-44d8-8619-47bbb1923aaa",
+    "projectUrl": "https://linear.app/getyak/project/marginalia-旁读-d51582413114",
+    "milestones": {
+      "reading": {
+        "id": "38ea5192-9b3f-4b05-bf5b-59ecb54fb085",
+        "name": "私人阅读闭环"
+      },
+      "translation": {
+        "id": "7ac8cebb-9a84-4e16-a265-579042074c39",
+        "name": "整书内容与翻译质量"
+      },
+      "agent": {
+        "id": "937e2643-3af6-403a-975b-5ca9cd0229bf",
+        "name": "Personal Agent 接入"
+      },
+      "validation": {
+        "id": "f1388797-f599-46d3-a0e8-b2bffa4bd6eb",
+        "name": "自用验证与开源准备"
+      }
+    },
+    "issues": {
+      "design": {
+        "id": "GET-142",
+        "url": "https://linear.app/getyak/issue/GET-142/确认私人书房的阅读样式与首版边界",
+        "title": "确认私人书房的阅读样式与首版边界",
+        "milestone": "reading",
+        "blockedBy": []
+      },
+      "service": {
+        "id": "GET-143",
+        "url": "https://linear.app/getyak/issue/GET-143/建立本地阅读服务与稳定内容个人记录存储",
+        "title": "建立本地阅读服务与稳定内容、个人记录存储",
+        "milestone": "reading",
+        "blockedBy": [
+          "GET-142"
+        ]
+      },
+      "reader": {
+        "id": "GET-144",
+        "url": "https://linear.app/getyak/issue/GET-144/实现正式阅读器的双语切换双译与稳定定位",
+        "title": "实现正式阅读器的双语切换、双译与稳定定位",
+        "milestone": "reading",
+        "blockedBy": [
+          "GET-143"
+        ]
+      },
+      "comments": {
+        "id": "GET-145",
+        "url": "https://linear.app/getyak/issue/GET-145/保存自己的段落评论与可继续的问题",
+        "title": "保存自己的段落评论与可继续的问题",
+        "milestone": "reading",
+        "blockedBy": [
+          "GET-144"
+        ]
+      },
+      "questions": {
+        "id": "GET-146",
+        "url": "https://linear.app/getyak/issue/GET-146/接入带原文引用范围清楚的章节追问",
+        "title": "接入带原文引用、范围清楚的章节追问",
+        "milestone": "reading",
+        "blockedBy": [
+          "GET-145"
+        ]
+      },
+      "time": {
+        "id": "GET-147",
+        "url": "https://linear.app/getyak/issue/GET-147/记录能暂停口径清楚的阅读与专注时间",
+        "title": "记录能暂停、口径清楚的阅读与专注时间",
+        "milestone": "reading",
+        "blockedBy": [
+          "GET-144"
+        ]
+      },
+      "backup": {
+        "id": "GET-148",
+        "url": "https://linear.app/getyak/issue/GET-148/实现完整备份个人记录导出与干净实例恢复",
+        "title": "实现完整备份、个人记录导出与干净实例恢复",
+        "milestone": "reading",
+        "blockedBy": [
+          "GET-145",
+          "GET-146",
+          "GET-147"
+        ]
+      },
+      "extract": {
+        "id": "GET-149",
+        "url": "https://linear.app/getyak/issue/GET-149/导入-pdf-与-epub-并校对章节来源页码和段落",
+        "title": "导入 PDF 与 EPUB 并校对章节、来源页码和段落",
+        "milestone": "translation",
+        "blockedBy": [
+          "GET-148"
+        ]
+      },
+      "translation_review": {
+        "id": "GET-150",
+        "url": "https://linear.app/getyak/issue/GET-150/审阅小样的直译意译术语与哲学注解",
+        "title": "审阅小样的直译、意译、术语与哲学注解",
+        "milestone": "translation",
+        "blockedBy": [
+          "GET-149"
+        ]
+      },
+      "full_translation": {
+        "id": "GET-151",
+        "url": "https://linear.app/getyak/issue/GET-151/在用户启动后分批翻译全书并支持断点恢复",
+        "title": "在用户启动后分批翻译全书并支持断点恢复",
+        "milestone": "translation",
+        "blockedBy": [
+          "GET-150"
+        ]
+      },
+      "mcp": {
+        "id": "GET-152",
+        "url": "https://linear.app/getyak/issue/GET-152/让-mcp-只读取授权书籍章节与个人记录",
+        "title": "让 MCP 只读取授权书籍、章节与个人记录",
+        "milestone": "agent",
+        "blockedBy": [
+          "GET-148"
+        ]
+      },
+      "companion": {
+        "id": "GET-155",
+        "url": "https://linear.app/getyak/issue/GET-155/接入用户主动开启阅读中安静的每日陪读",
+        "title": "接入用户主动开启、阅读中安静的每日陪读",
+        "milestone": "agent",
+        "blockedBy": [
+          "GET-152",
+          "GET-153"
+        ]
+      },
+      "trial": {
+        "id": "GET-153",
+        "url": "https://linear.app/getyak/issue/GET-153/用真实试读验证深读语言学习与付费理由",
+        "title": "用真实试读验证深读、语言学习与付费理由",
+        "milestone": "validation",
+        "blockedBy": [
+          "GET-148",
+          "GET-146"
+        ]
+      },
+      "open_source": {
+        "id": "GET-154",
+        "url": "https://linear.app/getyak/issue/GET-154/准备软件开源许可可公开样本与数据边界",
+        "title": "准备软件开源许可、可公开样本与数据边界",
+        "milestone": "validation",
+        "blockedBy": [
+          "GET-143"
+        ]
+      }
+    }
+  },
+  "ownership": {
+    "notion": "Long-lived user stories, designs, research interpretations and decisions.",
+    "linear": "Execution state, priorities, dependencies and milestones.",
+    "github": "Implementation, versioned contracts, tests and PI runbook."
+  },
+  "boundaries": {
+    "implementationNotDispatched": true,
+    "fullBookTranslationNotStarted": true,
+    "realNotificationsNotScheduled": true,
+    "repositoryPublicReleaseRequiresSeparateDecision": true
+  }
+}
