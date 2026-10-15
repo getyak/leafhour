@@ -12,15 +12,19 @@ test('Vercel route falls back to the request URL', () => {
   assert.equal(routeOf({ query: {}, url: '/api/book?source=reader' }), '/api/book');
 });
 
-test('the public gift rewrite resolves an existing page with Vercel clean URLs',async()=>{
+test('gift and local-preview rewrites resolve the letter page with Vercel clean URLs',async()=>{
   const config=JSON.parse(await readFile(new URL('../vercel.json',import.meta.url),'utf8'));
-  const gift=config.rewrites.find(rule=>rule.source==='/gift/:token');assert.ok(gift,'Gift links need an explicit hosted page');
+  for(const source of ['/gift/:token','/gift-preview']){
+  const gift=config.rewrites.find(rule=>rule.source===source);assert.ok(gift,'Gift links and preview need an explicit hosted page');
   const destination=new URL(gift.destination,'https://reader.example.com').pathname;
   // Vercel removes HTML suffixes before rewrite destinations are resolved.
   // https://vercel.com/docs/project-configuration/vercel-json#rewrites
   assert.equal(config.cleanUrls,true);assert.equal(path.extname(destination),'','A clean-URL rewrite must omit .html');
   const page=await readFile(new URL('../app'+destination+'.html',import.meta.url),'utf8');
   for(const marker of ['src="/book-gift.mjs"','id="gift-open"','id="gift-error"'])assert.ok(page.includes(marker),'Rewrite must resolve the gift letter page');
+  }
+  const preview=config.headers.find(rule=>rule.source==='/gift-preview');
+  assert.equal(preview.headers.find(header=>header.key==='Content-Security-Policy').value,"frame-ancestors 'self'");
 });
 test('hosted function outlives the conversation lease with room for cleanup and durable save',async()=>{
  const config=JSON.parse(await readFile(new URL('../vercel.json',import.meta.url),'utf8'));

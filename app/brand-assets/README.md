@@ -28,3 +28,7 @@ The delivery asset is 768 × 768px, 56194 bytes, encoded with cwebp quality82 fr
 Exact generation prompt:
 
 > Use case: photorealistic-natural. Asset type: subtle seamless material texture for a Chinese personal reading-room website background, not a mockup. Primary request: a flatbed scan of premium handmade pale sage-green cotton rag paper, fine irregular paper fibres and very fine tactile grain, softly clouded low contrast mottling from natural pulp. Color overall pale muted grey sage #e3e8dd, faint cooler olive/sage tonal variation, extremely quiet diffuse natural light, uniform across entire square. All-over edge-to-edge material, orthographic macro scan, no perspective. It will be used behind dark readable text at low opacity; make the detail delicate and believable. No objects, no book, no drawing, no text, no border, no corners, no stains, no creases, no dark vignette, no bright spots, no watermark. Texture should tile naturally with no visible seams. Output square 1024x1024.
+
+## Gift stationery, 2026-10-16
+
+`envelope-edge.svg` and `letter-edge.svg` are original hand-authored vector alpha masks. The envelope has a subtly uneven cut; the letter combines a rough outline and varied postal perforations. They reuse the existing paper material without copying reference artwork. The stamp and seal reuse the project's own page mark. Chinese personal notes use available system Kaiti fonts, with the existing serif fallback; no font service is contacted.
