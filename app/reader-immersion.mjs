@@ -1,3 +1,5 @@
+import {readerInteractionBlocked} from './reader-conversation.mjs';
+
 // Immersion is a page layout. Browser fullscreen is requested only by a user action.
 export function mountReaderImmersion({document,announce=()=>{},beforeLayout=()=>null,afterLayout=()=>{}}){
   const header=document.getElementById('reading-header'),menu=document.getElementById('exit-focus'),screen=document.getElementById('focus-fullscreen'),headerScreen=document.getElementById('enter-focus'),setting=document.getElementById('immersive-reading');
@@ -32,7 +34,7 @@ export function mountReaderImmersion({document,announce=()=>{},beforeLayout=()=>
   setting.addEventListener('change',()=>setFocused(setting.checked));
   document.addEventListener('fullscreenchange',()=>{sync();afterLayout(null);});
   document.addEventListener('pointerdown',event=>{
-    if(!toolsOpen||document.querySelector('dialog[open],[popover]:popover-open')||event.target.closest('.reading-header,.focus-actions'))return;
+    if(!toolsOpen||readerInteractionBlocked(document,event.target)||event.target.closest('.reading-header,.focus-actions'))return;
     closeTools();
   });
   sync();return {setFocused,toggleTools,closeTools,toggleFullscreen};

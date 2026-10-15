@@ -27,7 +27,7 @@
   "rewrites": [
     {
       "source": "/gift/:token",
-      "destination": "/book-gift.html"
+      "destination": "/book-gift"
     },
     {
       "source": "/api/:path*",
