@@ -11,6 +11,7 @@ import {createSpeechProvider} from './audio-provider.mjs';
 import {createDialogueGenerator} from './dialogue-generator.mjs';
 import {createAudioRoutes} from './audio-routes.mjs';
 import {portalDocument} from './portal-document.mjs';
+import {authPurpose} from './auth-policy.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
@@ -57,14 +58,19 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     const body=req.method==='POST'?await jsonBody(req,p.startsWith('/api/auth/')?4096:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
     const localAllowed=allowLocal&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)&&!publicOrigin;
     const setSession=value=>res.setHeader('Set-Cookie',`marginalia_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${value?604800:0}${publicOrigin?.startsWith('https:')?'; Secure':''}`);
-    if(p==='/api/auth/session'&&req.method==='GET'){const capabilities=auth.capabilities?await auth.capabilities():{email:auth.emailAvailable,providers:{google:false,apple:false},otp:{digits:6,expiresIn:600,retryAfter:60}};send(200,{user,emailAvailable:capabilities.email,providers:capabilities.providers,otp:capabilities.otp,localAvailable:localAllowed,translationAvailable:library.translationAvailable,directUpload:!!dataStore?.beginUpload});return true;}
+    if(p==='/api/auth/session'&&req.method==='GET'){const capabilities=auth.capabilities?await auth.capabilities():{email:auth.emailAvailable,providers:{google:false,apple:false},otp:{digits:6,expiresIn:600,retryAfter:60}};send(200,{user,emailAvailable:capabilities.email,passwordAvailable:capabilities.password===true,providers:capabilities.providers,otp:capabilities.otp,localAvailable:localAllowed,translationAvailable:library.translationAvailable,directUpload:!!dataStore?.beginUpload});return true;}
     if(p==='/api/auth/oauth'&&req.method==='POST'){
       if(typeof auth.beginOAuth!=='function')throw fail('这个登录方式正在准备中',503);
       if(flowToken)await auth.cancelOAuth(flowToken);
       const flow=await auth.beginOAuth(body.provider,body.next);res.setHeader('Set-Cookie',setFlow(flow.transactionToken));send(200,{url:flow.authorizeUrl});return true;
     }
-    if(p==='/api/auth/code'&&req.method==='POST'){send(200,await auth.requestCode(body.email));return true;}
-    if(p==='/api/auth/verify'&&req.method==='POST'){const session=await auth.verifyCode(body.email,body.code);setSession(session.token);send(200,{user:session.user});return true;}
+    if(p==='/api/auth/password'&&req.method==='POST'){if(typeof auth.signInPassword!=='function')throw fail('此书房尚未开启密码登录，可以使用验证码或本机书房',503);const session=await auth.signInPassword(body.email,body.password);setSession(session.token);send(200,{user:session.user});return true;}
+    if(p==='/api/auth/password/setup'&&req.method==='POST'){if(typeof auth.setPassword!=='function')throw fail('此书房尚未开启密码设置',503);send(200,await auth.setPassword(token,body.password,body.setupToken));return true;}
+    if(['/api/auth/code','/api/auth/verify'].includes(p)&&req.method==='POST'){
+      const purpose=authPurpose(body.purpose);if(purpose!=='login'&&typeof auth.setPassword!=='function')throw fail('此书房尚未开启密码设置',503);
+      if(p==='/api/auth/code'){send(200,await auth.requestCode(body.email,purpose));return true;}
+      const session=await auth.verifyCode(body.email,body.code,purpose);setSession(session.token);send(200,{user:session.user,...(session.passwordSetup?{passwordSetup:true,passwordSetupToken:session.passwordSetupToken}:{})});return true;
+    }
     if(p==='/api/auth/local'&&req.method==='POST'){if(!localAllowed)throw fail('本机书房只在本机模式可用',403);const session=await auth.localSession();setSession(session.token);send(200,{user:session.user});return true;}
     if(p==='/api/library'&&req.method==='GET'){send(200,{books:await library.list(user),user});return true;}
     if(p==='/api/library/activity'&&req.method==='GET'){send(200,await library.readingActivity(user,{month:url.searchParams.get('month'),timeZone:url.searchParams.get('timeZone')}));return true;}

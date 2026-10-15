@@ -40,7 +40,7 @@ test('an expired refresh lease can be recovered after another instance stops',as
 test('hosted capabilities expose configured providers without secrets',async()=>{
   const f=authFixture(),auth=createHostedAuth({...f,store:f.store()});
   assert.equal(typeof auth.capabilities,'function');
-  const c=await auth.capabilities();assert.deepEqual(c,{email:true,providers:{google:true,apple:false},otp:{digits:6,expiresIn:600,retryAfter:60}});
+  const c=await auth.capabilities();assert.deepEqual(c,{email:true,password:true,providers:{google:true,apple:false},otp:{digits:6,expiresIn:600,retryAfter:60}});
   assert.ok(!JSON.stringify(c).includes('fixture'));await auth.capabilities();assert.equal(f.calls.filter(x=>x.url.pathname.endsWith('/settings')).length,1);
 });
 test('a temporarily unavailable auth provider remains a retryable service error',async()=>{

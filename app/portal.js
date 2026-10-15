@@ -36,11 +36,11 @@ const authDialog=mountAuthDialog({dialog:$('auth-dialog'),api,getSession:()=>ses
 const openAuth=message=>authDialog.open(typeof message==='string'?message:undefined);
 const ensureUser=()=>{if(session?.user)return true;openAuth();return false;};
 const dashboard=mountReadingDashboard({root:$('reading-dashboard'),overviewRoot:$('reading-overview'),historyRoot:$('reading-history'),api,getSession:()=>session,getBooks:()=>books,getOwner:()=>{const t=ownerScope.capture();return t.owner+':'+t.revision;},openAuth,refresh});
-function clearPrivateUI(){
+function clearPrivateUI({keepAuthDialog=false}={}){
   $('data-controls').hidden=true;$('toggle-data').setAttribute('aria-expanded','false');grantResult.clear();renderGrantResult();grantBusy=false;$('create-grant').disabled=false;$('create-grant').textContent='创建 7 天授权 →';$('grant-list').replaceChildren();$('grant-form').reset();
-  for(const id of ['data-status','upload-status','auth-status','library-status','upload-filename'])status(id,'');
-  for(const id of ['book-file','backup-file','book-search'])$(id).value='';authDialog.reset();
-  if($('auth-dialog').open)$('auth-dialog').close();if($('upload-dialog').open)$('upload-dialog').close();$('upload-dialog').removeAttribute('aria-busy');$('confirm-upload').disabled=true;$('book-file').disabled=false;$('restore-library').disabled=false;
+  for(const id of ['data-status','upload-status','library-status','upload-filename'])status(id,'');
+  for(const id of ['book-file','backup-file','book-search'])$(id).value='';if(!keepAuthDialog){status('auth-status','');authDialog.reset();}
+  if(!keepAuthDialog&&$('auth-dialog').open)$('auth-dialog').close();if($('upload-dialog').open)$('upload-dialog').close();$('upload-dialog').removeAttribute('aria-busy');$('confirm-upload').disabled=true;$('book-file').disabled=false;$('restore-library').disabled=false;
   if($('library-data').open)$('library-data').close();if($('reading-history').open)$('reading-history').close();$('library-recent').replaceChildren();$('library-recent').hidden=true;
   pendingUpload=false;restoringLibrary=false;exportingLibrary=false;exportSequence++;$('export-library').disabled=false;$('export-library').textContent='导出书房';upload=createUploadState();shelf='all';document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
   books=books.filter(b=>b.visibility==='public').map(b=>({...b,resume:null,journey:null}));renderBooks();$('featured-books').replaceChildren(...books.slice(0,3).map(bookCard));
@@ -69,7 +69,7 @@ function renderBooks(){
 }
 async function refresh(knownSession){
   const next=knownSession||await api('/api/auth/session'),continueUpload=!session?.user&&next.user&&pendingUpload,changed=ownerScope.adopt(next.user?.id||'guest');session=next;
-  if(changed){clearPrivateUI();pendingUpload=!!continueUpload;}
+  if(changed){clearPrivateUI({keepAuthDialog:authDialog.isSettingPasswordFor(next.user?.id)});pendingUpload=!!continueUpload;}
   authDialog.updateCapabilities();const user=session.user;
   $('account-button').textContent=user?(user.kind==='local'?'本机书房 · 退出':'已登录 · 退出'):'登录 / 注册 ↗';
   $('library-description').textContent=user?(user.kind==='local'?'自己的书，留在这台电脑。回来时，从上次停下的地方继续。':'自己的书与思考，安静地留在这里。'):'先选一本书，读几页。自己的书和笔记，登录后留在这里。';
@@ -169,5 +169,5 @@ $('show-token').addEventListener('click',()=>{if(!grantResult.current()){renderG
 $('dismiss-token').addEventListener('click',()=>{grantResult.clear();renderGrantResult();status('data-status','令牌已从本页收起。授权仍有效，可在下面撤回。');});
 refresh().then(()=>{if(isLibrary&&entryQuery.get('upload')==='1')openUpload();if(isLibrary&&entryQuery.get('login')==='1'){if(session?.user&&returnToReader)location.replace(returnToReader);else if(!session?.user){const messages={cancelled:'登录已取消，可以重新选择。',expired:'登录链接已过期，请重新开始。',unavailable:'登录服务暂时无法连接，请稍后重试。'};openAuth(messages[entryQuery.get('auth_error')]);}}}).catch(error=>{status('library-status',error.message,true);$('featured-books').replaceChildren(make('p','muted','书架暂时无法连接，请稍后重试。'));});
 
-const checkOwner=async()=>{if(document.hidden)return;try{const current=await api('/api/auth/session');if((current.user?.id||'guest')!==(session?.user?.id||'guest'))await refresh(current);}catch{}};
+const checkOwner=async()=>{if(document.hidden||authDialog.hasPendingSessionChange())return;try{const current=await api('/api/auth/session');if(authDialog.hasPendingSessionChange())return;if((current.user?.id||'guest')!==(session?.user?.id||'guest'))await refresh(current);}catch{}};
 window.addEventListener('focus',checkOwner);document.addEventListener('visibilitychange',checkOwner);
