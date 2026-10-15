@@ -20,3 +20,7 @@ export function positionSaveState(attempted,confirmed,{durable=false,unresolved=
 export function draftSaveReceipt({durable=false}={}){
   return '当前文字是草稿，尚未提交。'+(durable?'已留本机。':'仅在当前页面，请先复制；刷新或离开可能丢失。');
 }
+
+export function currentSessionReceipt(view,ending,state){
+  return view?.status==='finished'&&view.id===ending?.id?readingSessionReceipt(state):'';
+}

@@ -64,3 +64,12 @@ test('real draft persistence failure preserves the retry identity and new memory
   assert.match(noteSaveReceipt({confirmed:true,durable:false,hasDraft:true}),/仅在当前页面/);
   fail=false;drafts.persist();assert.equal(createReadingDraftStore({storage,scope,book:readingBook}).list()[0].text,'New text while saving');
 });
+
+test('toolbar cannot reuse an old ending receipt during initial empty sync or a newly active session',async()=>{
+  const receipts=await import('../app/save-receipts.mjs');assert.equal(typeof receipts.currentSessionReceipt,'function');
+  const confirmed={confirmed:true,durable:false};
+  assert.equal(receipts.currentSessionReceipt({status:'idle'},final,confirmed),'');
+  assert.equal(receipts.currentSessionReceipt({status:'active',id:'new-reading'},final,confirmed),'');
+  assert.equal(receipts.currentSessionReceipt({status:'finished',id:'different-reading'},final,confirmed),'');
+  assert.match(receipts.currentSessionReceipt({status:'finished',id:final.id},final,confirmed),/时段已保存到书房/);
+});
