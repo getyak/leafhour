@@ -14,7 +14,7 @@ const specs=[
  ['reader_get_outline','读取真实目录',{bookId:str(),offset:integer(1000000),limit:{type:'integer',minimum:1,maximum:100}},['bookId']],
  ['reader_read_chapter','分页读取章节，或按单段游标续读',{bookId:str(),chapterId:str(),...paging,passageId:str(),layer,charOffset:integer(10000000)},['bookId','chapterId']],
  ['reader_search','检索可读原文与两种译文',{query:str(2000),bookIds:{type:'array',maxItems:20,items:str()},...paging},['query']],
- ['reader_recommend_books','检索书房及外部书目候选',{query:str(2000),limit:{type:'integer',minimum:1,maximum:5}},['query']],
+ ['reader_recommend_books','检索并核实书房与外部书目候选。书房提供阅读背景，不限定推荐范围；外部书目独立检索，无需书房已有。你可以自由推荐书房之外的书，也可用已知具体书名核实候选。空结果仅表示本次检索未命中，不表示不能推荐或阅读。返回书目是检索候选，不等同于最终推荐。',{query:{...str(2000),description:'具体书名、作者或简短检索关键词，可用英文原名提高匹配机会；这是书目搜索词，不是整段推荐任务或自然语言指令。'},limit:{type:'integer',minimum:1,maximum:5,description:'各来源最多返回的候选书目数量。'}},['query']],
  ['reader_search_web','检索公开网络',{query:str(2000)},['query']],
  ['reader_cite','登记已经读到的精确引文',{bookId:str(),passageId:str(),quote:str(12000),layer},['bookId','passageId','quote']]
 ];
