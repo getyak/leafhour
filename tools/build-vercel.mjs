@@ -25,7 +25,7 @@ await writeFile(
   '<!doctype html><meta charset="utf-8"><title>循页</title><p>这个页面不存在。</p>',
 );
 
-const sourceCommit=await releaseCommit(root);
+const sourceCommit=await releaseCommit(root,{sourceCommit:process.env.VERCEL_GIT_COMMIT_SHA||process.env.GITHUB_SHA});
 await writeFile(path.join(outputDir,'release.json'),JSON.stringify({sourceCommit})+'\n');
 
 console.log(`Built hosted library and reader at ${outputDir}; private content stays in Supabase.`);

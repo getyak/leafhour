@@ -1,0 +1,100 @@
+<style>
+#marginalia-demo .room-nav { display:flex; align-items:center; flex-wrap:wrap; gap:15px; padding:16px 108px 16px 26px; border-bottom:1px solid var(--mr-line); font-size:12px; }
+#marginalia-demo .room-home { border:0; background:transparent; padding:5px 0; font:500 19px "Songti SC","STSong",serif; }
+#marginalia-demo .room-space { color:var(--mr-muted); margin-right:auto; }
+#marginalia-demo .room-link { border:0; background:transparent; padding:7px 0; font-size:12px; color:var(--mr-accent); }
+#marginalia-demo .room-section { padding:38px 40px 48px; max-width:920px; margin:0 auto; min-height:600px; }
+#marginalia-demo .room-section h2 { margin:0 0 12px; font:500 29px/1.4 "Songti SC","STSong",serif; }
+#marginalia-demo .room-section h3 { font:500 19px/1.5 "Songti SC","STSong",serif; margin:23px 0 10px; }
+#marginalia-demo .room-section p,#marginalia-demo .room-personal p { line-height:1.8; font-size:14px; margin:9px 0; }
+#marginalia-demo .room-muted { color:var(--mr-muted); font-size:12px !important; }
+#marginalia-demo .room-book { display:flex; gap:25px; margin-top:32px; padding:30px 0; border-top:1px solid var(--mr-line); border-bottom:1px solid var(--mr-line); align-items:center; }
+#marginalia-demo .room-jacket { width:98px; min-width:98px; height:139px; padding:18px 12px; background:var(--mr-accent); color:var(--mr-paper); font:400 15px/1.5 Georgia,serif; }
+#marginalia-demo .room-book h3 { margin:0 0 4px; font-size:25px; }
+#marginalia-demo .room-primary { background:var(--mr-ink); color:var(--mr-paper); border:0; border-radius:4px; padding:10px 16px; font-size:13px; }
+#marginalia-demo .room-secondary { background:transparent; border:1px solid var(--mr-line); border-radius:4px; padding:9px 13px; font-size:13px; }
+#marginalia-demo .room-actions { display:flex; gap:13px; flex-wrap:wrap; align-items:center; margin-top:15px; }
+#marginalia-demo .room-goal { display:flex; align-items:center; gap:8px; font-size:12px; }
+#marginalia-demo .room-goal select { font-size:12px; background:var(--mr-paper); color:var(--mr-ink); border:1px solid var(--mr-line); border-radius:4px; padding:5px 8px; }
+#marginalia-demo .room-focus { margin-left:auto; display:flex; align-items:center; gap:11px; color:var(--mr-muted); font-size:12px; }
+#marginalia-demo .room-focus button { border:0; background:transparent; color:var(--mr-accent); padding:5px 0; font-size:12px; }
+#marginalia-demo .room-personal { min-width:0; padding:27px 22px; border-left:1px solid var(--mr-line); }
+#marginalia-demo .room-personal-header { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:20px; font-size:13px; }
+#marginalia-demo .room-personal-header button { background:transparent; border:0; font-size:21px; padding:4px 7px; }
+#marginalia-demo .room-personal textarea,#marginalia-demo .room-section textarea { width:100%; background:var(--mr-paper); border:1px solid var(--mr-line); border-radius:4px; padding:12px; color:var(--mr-ink); min-height:118px; font-family:inherit; font-size:16px; line-height:1.7; resize:vertical; }
+#marginalia-demo .room-record { padding:18px 0; border-bottom:1px solid var(--mr-line); overflow-wrap:anywhere; }
+#marginalia-demo .room-record p { white-space:pre-wrap; margin:7px 0; }
+#marginalia-demo .room-record-meta { font-size:11px; color:var(--mr-muted); }
+#marginalia-demo .mr-unit.room-active .mr-prose { border-left:2px solid var(--mr-accent); padding-left:13px; }
+#marginalia-demo .room-block { margin:28px 0; padding-top:24px; border-top:1px solid var(--mr-line); }
+#marginalia-demo .room-choice { display:flex; align-items:center; gap:10px; margin:12px 0; font-size:14px; }
+#marginalia-demo .room-choice input { accent-color:var(--mr-accent); }
+#marginalia-demo .room-time { background:var(--mr-paper); color:var(--mr-ink); border:1px solid var(--mr-line); padding:7px; border-radius:3px; font-size:16px; }
+#marginalia-demo .room-label { display:block; font-size:12px; color:var(--mr-muted); margin:15px 0 8px; }
+#marginalia-demo[data-room-page=library]>.mr-top,#marginalia-demo[data-room-page=records]>.mr-top,#marginalia-demo[data-room-page=data]>.mr-top { display:none; }
+#marginalia-demo[data-room-page=library]>.mr-layout,#marginalia-demo[data-room-page=records]>.mr-layout,#marginalia-demo[data-room-page=data]>.mr-layout { display:none; }
+#marginalia-demo[data-room-page=library]>.mr-bottom,#marginalia-demo[data-room-page=records]>.mr-bottom,#marginalia-demo[data-room-page=data]>.mr-bottom { display:none; }
+#marginalia-demo.room-personal-open .mr-layout { grid-template-columns:minmax(0,1fr) 282px; }
+#marginalia-demo.room-personal-open .mr-toc { display:none; }
+#marginalia-demo .room-message { color:var(--mr-accent); min-height:24px; font-size:12px; line-height:1.7; }
+#marginalia-demo .room-message[role=alert] { color:light-dark(#9c3730,#f0a49b); }
+@media(max-width:900px){#marginalia-demo.room-personal-open .mr-layout{grid-template-columns:1fr}#marginalia-demo .room-personal{border-left:0;border-top:1px solid var(--mr-line);padding:22px 0;margin-top:18px}}
+@media(max-width:720px){#marginalia-demo .room-nav{padding:15px 20px;gap:14px}#marginalia-demo .room-space{flex-basis:calc(100% - 120px);margin-right:0}#marginalia-demo .room-section{padding:30px 22px;min-height:0}#marginalia-demo .room-book{gap:17px;align-items:flex-start}#marginalia-demo .room-jacket{width:77px;min-width:77px;height:119px;font-size:13px}#marginalia-demo .room-book h3{font-size:22px}#marginalia-demo .room-focus{margin-left:0;flex-basis:100%}#marginalia-demo .room-personal{padding:22px 0}#marginalia-demo .room-section h2{font-size:26px}}
+@media(pointer:coarse){#marginalia-demo .room-link,#marginalia-demo .room-focus button,#marginalia-demo .room-secondary,#marginalia-demo .room-primary{min-height:44px}}
+</style>
+<nav class="room-nav" id="room-nav" aria-label="私人书房">
+  <button type="button" class="room-home cursor-interaction" data-room-page="library">我的书房</button>
+  <span class="room-space">私人空间 · 设计小样</span>
+  <button type="button" class="room-link cursor-interaction" data-room-page="reader">正在读</button>
+  <button type="button" class="room-link cursor-interaction" data-room-page="records">我的记录</button>
+  <button type="button" class="room-link cursor-interaction" data-room-page="data">数据与 Agent</button>
+</nav>
+<section id="room-library" class="room-section" aria-label="我的书房" hidden>
+  <h2>从你真心想读的那一本开始。</h2>
+  <p class="room-muted">书、自己的评论和仍没想明白的问题，放在同一个地方。</p>
+  <div class="room-book">
+    <div class="room-jacket" aria-hidden="true">FINITE<br>AND<br>INFINITE<br>GAMES</div>
+    <div><h3>有限与无限的游戏</h3><p>James P. Carse</p><p class="room-muted">当前样本 · 第一章 §1—2 · 四段正文</p><div class="room-actions"><button type="button" class="room-primary cursor-interaction" data-room-page="reader">继续读这本</button><button type="button" class="room-secondary cursor-interaction" data-room-page="data">导入自己的书</button></div></div>
+  </div>
+  <p class="room-muted">这份设计小样保留一份真实样本，完整书籍解析将在正式应用中提供。</p>
+  <div id="room-pending-uploads"></div>
+</section>
+<section id="room-records" class="room-section" aria-label="我的阅读记录" hidden>
+  <h2>我的记录</h2><p class="room-muted">有限与无限的游戏 · 评论与问题都带着原文的位置。</p>
+  <div class="room-actions"><button type="button" class="room-secondary cursor-interaction" id="room-export-records">导出我的记录</button><button type="button" class="room-link cursor-interaction" data-room-page="reader">回到正文</button></div>
+  <div id="room-records-list"></div>
+</section>
+<section id="room-data" class="room-section" aria-label="数据与个人 Agent" hidden>
+  <h2>你的书房，由你决定。</h2>
+  <p class="room-muted">正式应用以开源、本地运行和自托管为目标。当前是交互设计预览。</p>
+  <div class="room-block"><h3>带进来，也能带走。</h3>
+    <label class="room-label" for="room-book-file">选择自己的书 · PDF / EPUB / TXT / Markdown</label><input id="room-book-file" type="file" accept=".pdf,.epub,.txt,.md">
+    <p class="room-muted">此处预览文件选择，不解析或保存原件。</p><div id="room-book-status" class="room-message" aria-live="polite"></div>
+    <div class="room-actions"><button type="button" class="room-secondary cursor-interaction" id="room-export">导出我的记录</button><button type="button" class="room-secondary cursor-interaction" id="room-import-button">导入记录包</button><input id="room-record-file" type="file" accept=".json" hidden></div>
+    <p class="room-muted">小样记录包包含评论、问题和专注时段，不含整本书或密钥。</p><div id="room-import-status" class="room-message" aria-live="polite"></div>
+  </div>
+  <div class="room-block"><h3>分享由你选中的一条评论。</h3>
+    <label class="room-label" for="room-share-choice">选择评论</label><select id="room-share-choice" class="room-time"><option value="">先在正文留下一条自己的评论</option></select>
+    <label class="room-label" for="room-share-text">分享内容预览 · 这里不会对外发布</label><textarea id="room-share-text" readonly aria-label="选定评论的分享预览" placeholder="只包含所选评论与书内定位。"></textarea>
+  </div>
+  <div class="room-block"><h3>让自己的 Agent 来陪读。</h3><p class="room-muted">接入与授权方式示意 · MCP 尚未连接。</p>
+    <label class="room-choice"><input type="checkbox" id="room-grant-book">读取这本书的章节与资源</label>
+    <label class="room-choice"><input type="checkbox" id="room-grant-notes">读取我的评论与未解决问题</label>
+    <label class="room-choice"><input type="checkbox" id="room-grant-time">读取我的阅读位置与时间记录</label>
+    <p class="room-muted">每一种数据分别授权，其他书籍保持私有。</p>
+    <label class="room-choice"><input type="checkbox" id="room-daily">希望我的 Agent 每天提醒我继续读</label>
+    <label class="room-choice" for="room-daily-time">我的时间 <input id="room-daily-time" type="time" value="20:30" class="room-time"></label>
+    <p class="room-muted" id="room-daily-status">偏好预览，不创建日程或发送消息。阅读时保持安静，随时可暂停。</p>
+  </div>
+</section>
+<div id="room-reader-controls" class="mr-reading-options" hidden>
+  <label class="room-goal" for="room-goal">这次怎么读 <select id="room-goal"><option value="deep">深度阅读</option><option value="language">语言学习</option></select></label>
+  <div class="room-focus"><span>本轮专注 <output id="room-elapsed">00:00</output></span><button type="button" class="cursor-interaction" id="room-timer-toggle">开始</button></div>
+</div>
+<aside id="room-personal" class="room-personal" aria-label="当前段落的个人记录" hidden>
+  <div class="room-personal-header"><span id="room-personal-title">我的评论</span><button type="button" class="cursor-interaction" id="room-personal-close" aria-label="关闭个人记录">×</button></div>
+  <p class="room-muted" id="room-anchor-label"></p>
+  <div id="room-comment-composer"><label class="room-label" for="room-comment">留下一点自己的理解</label><textarea id="room-comment" maxlength="2000" placeholder="这段让我想到什么？我同意哪里，还有什么疑问？"></textarea><div class="room-actions"><button type="button" class="room-primary cursor-interaction" id="room-save-comment">保存我的评论</button></div><p class="room-muted">我的原话 · 默认仅自己可见</p></div>
+  <div id="room-question-composer" hidden><label class="room-label" for="room-question">围绕这段继续问</label><textarea id="room-question" maxlength="2000" placeholder="这里为什么这样说？和前文有什么关系？"></textarea><div class="room-actions"><button type="button" class="room-primary cursor-interaction" id="room-save-question">留下这个问题</button><button type="button" class="room-link cursor-interaction" id="room-show-example">看回答示例</button></div><p class="room-muted">设计小样只保留问题，尚未连接模型。示例回答来自已有旁注。</p><div id="room-answer-example" class="room-record" hidden></div></div>
+  <div id="room-composer-message" class="room-message" aria-live="polite"></div><div id="room-personal-records"></div>
+</aside>
