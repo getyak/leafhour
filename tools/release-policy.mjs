@@ -14,7 +14,8 @@ export async function releaseFiles(root){
   if(!Array.isArray(files)||!files.length||new Set(files).size!==files.length||files.some(file=>!validReleasePath(file)))throw Error('Invalid release allowlist');
   return files;
 }
-export async function releaseCommit(root){
+export async function releaseCommit(root,{sourceCommit}={}){
+  if(sourceCommit!==undefined){if(!/^[a-f0-9]{40}$/.test(sourceCommit))throw Error('Invalid release source commit');return sourceCommit;}
   let commit;
   try{commit=JSON.parse(await readFile(path.join(root,'release-source.json'),'utf8')).commit;}
   catch(error){if(error.code!=='ENOENT')throw error;commit=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();}
@@ -42,5 +43,5 @@ export async function exportRelease(root,destination,{commit}={}){
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href){
   const root=process.cwd(),destination=await mkdtemp(path.join(tmpdir(),'reader-release-check-'));
-  try{const commit=await releaseCommit(root);const files=await exportRelease(root,destination,{commit});console.log('Release allowlist checked: '+files.length+' software files; private history and data excluded.');}finally{await rm(destination,{recursive:true,force:true});}
+  try{const commit=await releaseCommit(root,{sourceCommit:process.env.VERCEL_GIT_COMMIT_SHA||process.env.GITHUB_SHA});const files=await exportRelease(root,destination,{commit});console.log('Release allowlist checked: '+files.length+' software files; private history and data excluded.');}finally{await rm(destination,{recursive:true,force:true});}
 }

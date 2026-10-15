@@ -29,6 +29,13 @@ test('publication fails closed on missing files, symlinks and credential content
   await writeFile(path.join(root,'app.mjs'),'ghp_'+'A'.repeat(40));await assert.rejects(exportRelease(root,dest,{commit}),/Credential/);
   await assert.rejects(exportRelease(root,dest,{commit:'short'}),/full source commit/);
 });
+test('hosted source metadata works without Git history and cannot fall back from an invalid ID',async t=>{
+  const root=await fixture(t,['app.mjs']),sourceCommit='b'.repeat(40);
+  assert.equal(await releaseCommit(root,{sourceCommit}),sourceCommit);
+  await writeFile(path.join(root,'release-source.json'),JSON.stringify({commit}));
+  assert.equal(await releaseCommit(root,{sourceCommit}),sourceCommit);
+  await assert.rejects(releaseCommit(root,{sourceCommit:'invalid'}),/Invalid release source commit/);
+});
 test('the release snapshot contains local module imports and reader page assets',async()=>{
   const root=fileURLToPath(new URL('..',import.meta.url)),files=await releaseFiles(root),allowed=new Set(files);
   for(const file of files){

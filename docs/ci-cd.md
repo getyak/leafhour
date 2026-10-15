@@ -12,7 +12,7 @@
 
 `CI` 在 PR 与 `main` 执行 `npm run verify:deploy`：隔离环境中的完整测试、构建、媒体完整性与部署内容检查。用户已授权 Agent 在检查通过后直接合并 PR，无需重复确认；不得绕过失败的检查。
 
-Vercel 直接连接公开仓库的 `main`，执行 `npm run verify:hosted`。生产数据库、邮箱、登录与模型凭据保存在 Vercel 环境变量中，GitHub 不需要镜像写入密钥。测试或构建失败时不会替换线上版本。
+Vercel 直接连接公开仓库的 `main`，执行 `npm run verify:hosted`。构建版本读取 Vercel 提供的 `VERCEL_GIT_COMMIT_SHA`，无需依赖平台未提供的 `.git` 目录；本机可回退到当前 Git 提交。生产数据库、邮箱、登录与模型凭据保存在 Vercel 环境变量中，GitHub 不需要镜像写入密钥。测试或构建失败时不会替换线上版本。
 
 `Production` 仅跟随公开主分支上成功的 CI，等待 `/release.json` 返回同一提交，再验证首页、书房、阅读页、静态资源、匿名会话、公版书接口和旧接口关闭状态。自动验收只执行匿名读取，不发送邮件、写入阅读记录或调用模型；它不能代替真实登录、上传和跨设备验收。
 
