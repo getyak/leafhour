@@ -53,3 +53,13 @@ test('an unknown or private book uses a clearly separate public reading-room quo
   assert.equal(quote.bookId,'gutenberg-alice');
   assert.equal(arrival.arrivalQuote('gutenberg-alice').context,'书中一句');
 });
+
+test('the ending companion reuses the paper drawing in a decorative bookmark pose without floating leaves',()=>{
+  const doc={createElement:tag=>({tag,children:[],className:'',setAttribute(name,value){this[name]=value;},append(...nodes){this.children.push(...nodes);}})};
+  const ending=arrival.createPaperCompanion(doc,{pose:'bookmark'});
+  assert.match(ending.className,/paper-companion-bookmark/);assert.equal(ending['aria-hidden'],'true');
+  const classes=node=>[node.className,...node.children.flatMap(classes)];
+  assert.ok(classes(ending).includes('arrival-bookmark'));assert.ok(classes(ending).includes('arrival-face'));
+  assert.ok(!classes(ending).some(name=>name.includes('arrival-leaf')));
+  const loading=arrival.createPaperCompanion(doc);assert.ok(classes(loading).includes('arrival-page arrival-page-turn'));
+});

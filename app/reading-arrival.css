@@ -1,3 +1,4 @@
+.paper-companion{--arrival-ink:var(--ink);--arrival-green:var(--accent);--arrival-paper:var(--paper);--arrival-cream:color-mix(in srgb,var(--paper) 88%,#d6b86a);--arrival-fold:color-mix(in srgb,var(--paper) 67%,#b69b54);--arrival-cheek:#d9a18c}
 .reading-arrival{--arrival-ink:var(--ink);--arrival-green:var(--accent);--arrival-paper:var(--paper);--arrival-cream:color-mix(in srgb,var(--paper) 88%,#d6b86a);--arrival-fold:color-mix(in srgb,var(--paper) 67%,#b69b54);--arrival-cheek:#d9a18c;box-sizing:border-box;max-width:600px;margin:0 auto;padding:8px 20px 40px;text-align:center;color:var(--ink);font-family:var(--interface,system-ui,sans-serif);min-height:520px}
 .reading-arrival[hidden],.reading-arrival [hidden]{display:none}
 .reading-arrival *{box-sizing:border-box}
@@ -41,3 +42,16 @@
 @keyframes arrival-leaf{0%,100%{translate:0 0}50%{translate:0 -6px}}
 @media(max-width:600px){.reading-arrival{min-height:500px;padding:0 4px 32px}.reading-arrival .arrival-quote{font-size:23px}.reading-arrival .arrival-greeting{margin-bottom:24px}.reading-arrival .arrival-original{font-size:12px;max-width:340px}.arrival-library{padding-top:0}.arrival-scene{height:148px}}
 @media(prefers-reduced-motion:reduce){.reading-arrival *{animation:none}}
+
+/* The bookmark is deliberately still, even when the dialog is open. */
+.ending-companion{flex:none;width:68px;height:70px;overflow:hidden;margin:-5px -3px 0 auto;opacity:.82;pointer-events:none;user-select:none}
+.ending-companion .paper-companion{margin:0;transform:scale(.42);transform-origin:top left}
+.paper-companion-bookmark *{animation:none!important}
+.paper-companion-bookmark .arrival-person{transform:rotate(-3deg)}
+.paper-companion-bookmark .arrival-book{transform:rotate(-6deg);top:79px}
+.paper-companion-bookmark .arrival-arm-left{transform:rotate(17deg)}
+.paper-companion-bookmark .arrival-arm-right{transform:rotate(-46deg);top:73px}
+.arrival-bookmark{position:absolute;left:46px;top:-8px;width:8px;height:30px;background:var(--arrival-green);border:1px solid var(--arrival-ink);clip-path:polygon(0 0,100% 0,100% 100%,50% 83%,0 100%);z-index:6}
+.ending-save-state{font-size:12px;color:var(--muted);line-height:1.8;margin:0 0 7px}
+.ending-save-state p{margin:3px 0}.ending-save-state p:empty{display:none}
+@media(max-width:400px){.ending-companion{width:56px}.ending-companion .paper-companion{transform:scale(.36)}}
