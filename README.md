@@ -10,7 +10,7 @@
 
 新版书房同时支持本机服务与 Vercel + Supabase。云端使用独立的私人数据表、版本检查和私人原文件存储；默认公版书允许匿名试读。正式实例使用自己的发件域名提供邮箱验证码，并支持 Google 与 Apple 登录；自托管时按实际配置显示可用方式。
 
-阅读记录、计时口径、草稿与备份的具体行为见 [阅读与数据保留](docs/reading-journey.md)。
+书房把书籍、继续阅读和阅读近况放在同一页，完整阅读日历在页内展开；“数据与 Agent”集中管理备份与授权。阅读记录、计时口径、草稿与备份的具体行为见 [阅读与数据保留](docs/reading-journey.md)。
 
 - 中文、英文、对照三种阅读方式，直译和意译独立保存；缺译对照只显示一次原文，明确标示缺失的版本
 - 试读时登录翻译会返回同一原文段落，再次明确点击才生成；服务未配置时如实禁用入口
@@ -93,15 +93,16 @@ PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF �
 公开代码与私人数据分开：
 
 ```text
-GitHub public repo ──自动部署──> Vercel
-                                  │ server-side secret
-                                  ▼
-                         Supabase private tables
-                         ├─ book + translations
-                         └─ notes + reading state
+开发仓库 main ──检查与白名单同步──> 公开源码仓库
+                          └──> 私有部署镜像 ──验证与构建──> Vercel
+                                                           │ server-side secret
+                                                           ▼
+                                                  Supabase private tables
+                                                  ├─ book + translations
+                                                  └─ notes + reading state
 ```
 
-建表迁移在 `supabase/migrations/`。新版使用独立的 `reader_documents` 表与私人 `reader-originals` 存储桶；RLS 开启，`anon` 和 `authenticated` 没有直接表权限。原有两张单书数据表保留，不作为公开入口。Vercel Function 使用服务端 secret 访问。完整部署步骤见 [deploy/README.md](deploy/README.md)。
+建表迁移在 `supabase/migrations/`。新版使用独立的 `reader_documents` 表与私人 `reader-originals` 存储桶；RLS 开启，`anon` 和 `authenticated` 没有直接表权限。原有两张单书数据表保留，不作为公开入口。Vercel Function 使用服务端 secret 访问。完整部署步骤见 [deploy/README.md](deploy/README.md)，自动更新流程见 [docs/ci-cd.md](docs/ci-cd.md)。
 
 浏览器端不需要服务端 key。`.env.hosted.example` 只列变量名，真实值应放入 Vercel Environment Variables 或本机被忽略的 `.env`。
 

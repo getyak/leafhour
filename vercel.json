@@ -1,10 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run build:vercel",
+  "buildCommand": "npm run verify:deploy",
   "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
-  "regions": ["sin1"],
+  "regions": [
+    "sin1"
+  ],
   "headers": [
     {
       "source": "/api/(.*)",

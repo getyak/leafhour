@@ -2,6 +2,7 @@ import { cp, mkdir, rm, writeFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {portalDocument} from '../server/portal-document.mjs';
+import {releaseCommit} from './release-policy.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const appDir = path.join(root, 'app');
@@ -23,5 +24,8 @@ await writeFile(
   path.join(outputDir, '404.html'),
   '<!doctype html><meta charset="utf-8"><title>循页</title><p>这个页面不存在。</p>',
 );
+
+const sourceCommit=await releaseCommit(root);
+await writeFile(path.join(outputDir,'release.json'),JSON.stringify({sourceCommit})+'\n');
 
 console.log(`Built hosted library and reader at ${outputDir}; private content stays in Supabase.`);

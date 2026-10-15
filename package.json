@@ -14,7 +14,10 @@
     "test": "node --test tests/*.test.mjs",
     "build:experiences": "node tools/build-experiences.mjs",
     "build:vercel": "node tools/build-vercel.mjs",
-    "db:import": "node --env-file=.env tools/import-supabase-book.mjs"
+    "db:import": "node --env-file=.env tools/import-supabase-book.mjs",
+    "check:release": "node tools/release-policy.mjs && node tools/verify-release.mjs",
+    "verify:deploy": "node tools/verify-deploy.mjs",
+    "smoke:production": "node tools/smoke-release.mjs"
   },
   "dependencies": {
     "@deepseek-ai/dsh-sdk-client": "0.2.1-alpha.2",
