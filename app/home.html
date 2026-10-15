@@ -44,24 +44,29 @@
 <dialog id="library-chat" class="library-chat-dialog" aria-labelledby="library-chat-title"></dialog>
 <dialog id="auth-dialog" class="auth-dialog" aria-labelledby="auth-title" aria-describedby="auth-intro">
   <button class="dialog-close" data-close="auth-dialog" aria-label="关闭登录">×</button>
-  <span class="auth-symbol" aria-hidden="true">循</span>
-  <h2 id="auth-title">进入你的书房</h2><p id="auth-intro">保存自己的书，接着上次读。</p>
+  <div class="auth-brand" aria-hidden="true"><span>循页</span><small>PAGE BY PAGE</small></div>
+  <h2 id="auth-title">回到你的书房</h2><p id="auth-intro">从上次停下的地方继续。</p>
   <div id="auth-email-step">
-    <div class="auth-providers">
-      <button id="login-google" class="auth-provider" disabled><img src="/auth-assets/google.png" alt="" width="20" height="20"><span>使用 Google 继续</span><span class="provider-state">准备中</span></button>
-      <button id="login-apple" class="auth-provider" disabled><img src="/auth-assets/apple.svg" alt="" width="20" height="20"><span>使用 Apple 继续</span><span class="provider-state">准备中</span></button>
-    </div>
-    <div class="auth-divider"><span>或使用邮箱</span></div>
-    <form id="email-form"><label for="email">邮箱地址</label><input id="email" type="email" name="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com" required maxlength="254"><button class="primary" id="send-code" type="submit" disabled>继续</button></form>
+    <form id="email-form">
+      <label for="email">邮箱</label><input id="email" type="email" name="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="you@example.com" required maxlength="254">
+      <div id="auth-password-field" class="auth-password-field"><label for="auth-password">密码</label><div class="auth-password-input"><input id="auth-password" name="password" type="password" autocomplete="current-password" required maxlength="1024" aria-describedby="auth-status"><button type="button" data-password-toggle="auth-password" aria-label="显示或隐藏登录密码" aria-pressed="false">显示</button></div></div>
+      <button class="primary" id="send-code" type="submit" disabled>进入书房</button>
+    </form>
   </div>
   <div id="auth-code-step" hidden>
     <div class="auth-mailbox"><span id="auth-recipient"></span><button id="change-email" class="auth-text-button">更换邮箱</button></div>
     <form id="verify-form"><label for="email-code">登录验证码</label><input id="email-code" name="code" type="text" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="12" aria-describedby="auth-status" required><button class="primary" id="verify-code" type="submit" disabled>进入书房</button></form>
-    <button id="resend-code" class="auth-text-button" disabled>重新发送验证码</button>
+    <div class="auth-code-meta"><span id="auth-expiry"></span><button id="resend-code" class="auth-text-button" disabled>重新发送</button></div>
   </div>
+  <div id="auth-setup-step" hidden><form id="password-setup-form"><label for="new-password">新密码</label><div class="auth-password-input"><input id="new-password" name="new-password" type="password" autocomplete="new-password" minlength="8" maxlength="1024" aria-describedby="new-password-hint auth-status" required><button type="button" data-password-toggle="new-password" aria-label="显示或隐藏新密码" aria-pressed="false">显示</button></div><p id="new-password-hint">至少 8 个字符。</p><button class="primary" id="save-password" type="submit">保存并进入书房</button></form></div>
   <p id="auth-status" class="status" role="status" aria-live="polite"></p><p id="auth-availability" class="auth-availability">登录服务准备中，可以先试读。</p>
+  <div id="auth-entry-actions" class="auth-entry-actions"><button id="use-code" class="auth-text-button">验证码登录</button><button id="use-password" class="auth-text-button" hidden>返回密码登录</button><button id="forgot-password" class="auth-text-button">忘记密码？</button></div>
+  <div id="auth-alternatives"><div class="auth-divider"><span>或</span></div><div class="auth-providers">
+    <button id="login-google" class="auth-provider" disabled aria-label="使用 Google 登录"><img src="/auth-assets/google.png" alt="" width="18" height="18"><span>Google</span><span class="provider-state">准备中</span></button>
+    <button id="login-apple" class="auth-provider" disabled aria-label="使用 Apple 登录"><img src="/auth-assets/apple.svg" alt="" width="18" height="18"><span>Apple</span><span class="provider-state">准备中</span></button>
+  </div></div>
   <div id="local-entry" hidden><div class="auth-divider"><span>本机使用</span></div><button id="local-login" class="outline full">进入本机书房 ↗</button><p class="local-note">仅在这台电脑使用，无需邮箱；与邮箱账户分开保存。</p></div>
-  <a class="auth-skip" href="/read?book=gutenberg-alice">先试读几页 →</a>
+  <div class="auth-footer"><p id="auth-signup" class="auth-signup">第一次来？<button id="create-account" class="auth-text-button">创建书房</button></p><a class="auth-skip" href="/read?book=gutenberg-alice">先试读几页 <span aria-hidden="true">↗</span></a></div>
 </dialog>
 <dialog id="upload-dialog" class="upload-dialog" aria-labelledby="upload-title"><button class="dialog-close" data-close="upload-dialog" aria-label="关闭上传">×</button><p class="eyebrow">BRING YOUR OWN BOOK</p><h2 id="upload-title">这次，你想读什么？</h2><p>文件在本机提取，上传到你自己的书房。</p><label class="drop-zone" id="drop-zone" for="book-file"><span class="upload-icon" aria-hidden="true">↥</span><strong>拖放一本书，或点击选择</strong><span>PDF、TXT、Markdown · 最多 20 MB</span><input type="file" id="book-file" accept=".pdf,.txt,.md" hidden></label><p id="upload-filename" class="selected-file"></p><p class="muted">文字版 PDF 可以直接提取。扫描件需要先做文字识别；排版提取后仍建议核对原文。</p><p id="upload-status" class="status" role="status"></p><button class="primary full" id="confirm-upload" disabled>放进我的书房 <span>→</span></button></dialog>
 </body></html>

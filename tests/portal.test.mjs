@@ -43,6 +43,18 @@ test('email codes must be delivered, expire, cannot be replayed and sessions rev
   await assert.rejects(unavailable.requestCode('reader@example.com'),e=>e.status===503);
 });
 
+test('SMTP-only hosting rejects password setup purposes before sending or verifying mail',async t=>{
+  const dir=await mkdtemp(path.join(tmpdir(),'marginalia-auth-capability-'));let delivered=0;
+  const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),translator:null,sendCode:async()=>{delivered++;}});await new Promise(r=>server.listen(0,'127.0.0.1',r));
+  t.after(async()=>{await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});});
+  const base='http://127.0.0.1:'+server.address().port;
+  for(const route of ['code','verify'])for(const purpose of ['signup','recovery']){
+    const response=await fetch(base+'/api/auth/'+route,{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body:JSON.stringify({email:'reader@example.com',code:'123456',purpose})});
+    assert.equal(response.status,503);
+  }
+  assert.equal(delivered,0);
+});
+
 test('original downloads keep exact bytes private and restored books can reattach their original',async t=>{
   const dir=await mkdtemp(path.join(tmpdir(),'marginalia-original-'));let code;
   const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),sendCode:async(_,value)=>{code=value;},translator:null});await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(async()=>{await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});});

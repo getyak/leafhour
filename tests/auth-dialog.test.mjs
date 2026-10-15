@@ -1,0 +1,43 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import{readFile}from'node:fs/promises';
+import{mountAuthDialog}from'../app/auth-dialog.mjs';
+
+// Exercise the real controller with small DOM primitives; HTTP/provider behavior has separate tests.
+async function fixture({api,session={passwordAvailable:true,emailAvailable:true,providers:{google:true,apple:true}}}={}){
+  const html=await readFile(new URL('../app/home.html',import.meta.url),'utf8'),nodes=new Map(),doc={active:null};
+  class Node extends EventTarget{
+    constructor(id){super();this.id=id;this.value='';this.hidden=false;this.type='password';this.dataset={};this.classList={toggle(){}};this.attrs={};}
+    set disabled(v){this._disabled=v;if(v&&doc.active===this)doc.active=null;}get disabled(){return this._disabled;}
+    setAttribute(k,v){this.attrs[k]=v;}focus(){if(!this.disabled)doc.active=this;}
+    querySelector(){return new Node('provider-state');}
+  }
+  for(const [,id]of html.matchAll(/\bid="([^"]+)"/g))nodes.set(id,new Node(id));
+  const toggles=['auth-password','new-password'].map(id=>{const node=new Node('toggle-'+id);node.dataset.passwordToggle=id;return node;});
+  const dialog=nodes.get('auth-dialog');dialog.querySelector=selector=>nodes.get(selector.slice(1));dialog.querySelectorAll=()=>toggles;
+  dialog.showModal=()=>{dialog.open=true;};dialog.close=()=>{dialog.open=false;dialog.dispatchEvent(new Event('close'));};
+  let authenticated=0,settled=0;
+  const controller=mountAuthDialog({dialog,api,getSession:()=>session,getReturnTo:()=>'/library',onAuthenticated:async()=>{authenticated++;},onSessionSettled:async()=>{settled++;}});
+  const fire=async(id,type='click')=>{nodes.get(id).dispatchEvent(new Event(type,{cancelable:true}));await new Promise(setImmediate);};
+  const input=async(id,value)=>{nodes.get(id).value=value;await fire(id,'input');};
+  return{nodes,doc,dialog,controller,fire,input,counts:()=>({authenticated,settled})};
+}
+test('password errors restore focus after disabled controls are re-enabled',async(t)=>{
+  const f=await fixture({api:async()=>{throw Error('邮箱或密码不正确');}});t.after(()=>f.controller.close());f.controller.open();
+  await f.input('email','reader@example.com');await f.input('auth-password','fixture-password');f.nodes.get('auth-password').focus();
+  await f.fire('email-form','submit');assert.equal(f.nodes.get('auth-password').disabled,false);assert.equal(f.doc.active?.id,'auth-password');f.controller.close();
+});
+test('pending verification is exposed until the receipt establishes matching password setup',async(t)=>{
+  let resolve;const pending=new Promise(r=>{resolve=r;});
+  const f=await fixture({api:async path=>path==='/api/auth/code'?{sent:true,expiresIn:600,retryAfter:60}:pending});t.after(()=>f.controller.close());f.controller.open();
+  await f.fire('create-account');await f.input('email','reader@example.com');await f.fire('email-form','submit');await f.input('email-code','123456');await f.fire('verify-form','submit');
+  assert.equal(f.controller.hasPendingSessionChange(),true);
+  assert.equal(f.controller.isSettingPasswordFor('user-a'),false);
+  resolve({user:{id:'user-a'},passwordSetup:true,passwordSetupToken:'fixture-setup-token'});await new Promise(setImmediate);
+  assert.equal(f.controller.hasPendingSessionChange(),false);assert.equal(f.controller.isSettingPasswordFor('user-a'),true);assert.equal(f.controller.isSettingPasswordFor('user-b'),false);
+  assert.equal(f.nodes.get('auth-setup-step').hidden,false);assert.equal(f.doc.active?.id,'new-password');f.controller.close();
+});
+test('SMTP-only local auth keeps password-specific registration hidden',async(t)=>{
+  const f=await fixture({api:async()=>({}),session:{passwordAvailable:false,emailAvailable:true,providers:{}}});t.after(()=>f.controller.close());f.controller.open();
+  assert.equal(f.nodes.get('auth-password-field').hidden,true);assert.equal(f.nodes.get('auth-signup').hidden,true);assert.equal(f.nodes.get('create-account').disabled,true);f.controller.close();
+});
