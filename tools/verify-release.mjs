@@ -13,5 +13,5 @@ for(const file of await list(dist)){
 }
 const release=JSON.parse(await readFile(path.join(dist,'release.json'),'utf8'));
 if(!/^[a-f0-9]{40}$/.test(release.sourceCommit))throw Error('Missing source provenance');
-for(const file of ['index.html','library.html','read.html','portal.js','library-workspace.mjs','library-workspace.css','reading-flow.mjs','reading-load.mjs'])await lstat(path.join(dist,file));
+for(const file of ['index.html','library.html','read.html','portal.js','library-workspace.mjs','library-workspace.css','reading-flow.mjs','reading-load.mjs','reading-arrival.mjs','reading-arrival.css'])await lstat(path.join(dist,file));
 console.log('Public build checked: expected assets and source provenance only.');
