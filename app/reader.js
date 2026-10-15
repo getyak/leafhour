@@ -16,6 +16,7 @@ import {startReadingLoad,mergeLoadedReadingRecords} from './reading-load.mjs';
 import {noteSaveReceipt,positionSaveState,draftSaveReceipt} from './save-receipts.mjs';
 import {mountReadingArrival} from './reading-arrival.mjs';
 import {mountBookIntroduction,renderBookContents} from './reader-navigation.mjs';
+import {mountParallelSettings,applyParallelAppearance,createParallelPair} from './parallel-reading.mjs';
 const $=id=>document.getElementById(id);
 const arrival=mountReadingArrival($('loading'));
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
@@ -26,6 +27,7 @@ let recordsRetryBusy=false,recordsRetryNotice='',recordsPositionUnresolved=false
 let continuous=true;try{continuous=localStorage.getItem(readerStorageKey('marginalia-continuous-v1'))!=='false';}catch{}
 $('continuous-reading').checked=continuous;document.body.dataset.continuous=String(continuous);
 const state={chapterId:'ch01',...openingReadingPreferences()};
+const revealedTranslations=new Set();
 const draftKey=readerStorageKey('marginalia-focus-drafts-v2');let savedDrafts=null,legacyDrafts={};try{savedDrafts=JSON.parse(localStorage.getItem(draftKey)||'null');legacyDrafts=JSON.parse(localStorage.getItem(readerStorageKey('marginalia-focus-drafts-v1'))||'{}');}catch{}
 let noteDrafts=createNoteDrafts(savedDrafts,legacyDrafts),noteDraftError=null;
 const persistDrafts=()=>{try{if(noteDraftError)return false;if(noteDrafts.persist)noteDrafts.persist();else localStorage.setItem(draftKey,JSON.stringify(noteDrafts.snapshot()));document.dispatchEvent(new CustomEvent('reader:drafts-updated'));return true;}catch{return false;}};
@@ -79,6 +81,7 @@ function applyAppearance(){
   for(const b of document.querySelectorAll('[data-font-family]'))b.setAttribute('aria-pressed',String(b.dataset.fontFamily===state.fontFamily));
   for(const [key] of typographyFields){$('setting-'+key).value=prettyValue(key,state[key]);for(const b of document.querySelectorAll('[data-adjust="'+key+'"]'))b.disabled=Number(b.dataset.direction)<0?state[key]<=appearanceBounds[key][0]:state[key]>=appearanceBounds[key][1];}
   $('first-line-indent').checked=state.indent;
+  applyParallelAppearance(document,state);
 }
 function adjustAppearance(patch){
   const a=anchor();Object.assign(state,normalizeAppearance({...state,...patch}));document.dispatchEvent(new CustomEvent('reader:jump'));applyAppearance();restoreAnchor(a);if(!$('paragraph-tools').hidden)positionTools();persist();document.dispatchEvent(new CustomEvent('reader:layout'));
@@ -96,7 +99,7 @@ function fillPassage(node,p){
   if(node.contains($('note-panel')))document.body.append($('note-panel'));
   node.replaceChildren();const v=passageView(p),view=passagePresentation(p,{...v,mode:state.mode==='parallel'?'parallel':v.mode,sourceLanguage:book.sourceLanguage});
   if(state.mode==='parallel'){
-    const pair=el('div','parallel-pair');for(const layer of view.layers){const column=el('div');column.append(el('span','pair-label',layer.label),prose(layer,v.variant));pair.append(column);}node.append(pair);
+    node.append(createParallelPair({document,layers:view.layers,variant:v.variant,prose,passageId:p.id,revealed:revealedTranslations,onReveal:change=>{const a=anchor();change();restoreAnchor(a);document.dispatchEvent(new CustomEvent('reader:layout'));}}));
   }else node.append(prose(view.layers[0],v.variant));
   if(view.notice)node.append(el('span','translation-status',view.notice));
 }
@@ -179,7 +182,7 @@ function positionTools(){
   const menu=$('paragraph-more');if(!menu.hidden){menu.style.maxHeight='';const at=placeFloatingMenu({toolbar:tools.getBoundingClientRect(),menu:{width:menu.offsetWidth,height:menu.scrollHeight+2},viewport:{width:innerWidth,height:innerHeight},headerBottom:header});Object.assign(menu.style,{position:'absolute',left:(at.left-tools.getBoundingClientRect().left)+'px',top:(at.top-tools.getBoundingClientRect().top)+'px',right:'auto',bottom:'auto',maxHeight:at.maxHeight+'px'});}
 }
 function choosePassage(id,y=null,quote='',quoteLanguage=null){
-  if(!paragraphMap.has(id))return;const p=paragraphMap.get(id),v=passageView(p);quoteLanguage=visibleQuoteLanguage(p,{...v,mode:state.mode==='parallel'?'parallel':v.mode},quoteLanguage);const node=$('chapter-text').querySelector('[data-id="'+id+'"]'),pin={passageId:id,offset:node.getBoundingClientRect().top};dismissTools();selectedId=id;selectedQuote=quote;selectedQuoteLanguage=quoteLanguage;selectionKind='passage';node.classList.add('is-selected');
+  if(!paragraphMap.has(id))return;const p=paragraphMap.get(id),v=passageView(p);quoteLanguage=visibleQuoteLanguage(p,{...v,mode:state.mode==='parallel'?'parallel':v.mode,translationHidden:state.mode==='parallel'&&state.parallelStyle==='reveal'&&!revealedTranslations.has(id+':'+v.variant)},quoteLanguage);const node=$('chapter-text').querySelector('[data-id="'+id+'"]'),pin={passageId:id,offset:node.getBoundingClientRect().top};dismissTools();selectedId=id;selectedQuote=quote;selectedQuoteLanguage=quoteLanguage;selectionKind='passage';node.classList.add('is-selected');
   try{selectedExcerpt=paragraphSnapshot(book,p,p.chapterId,quoteLanguage,v.variant);}catch{selectedExcerpt=null;}$('show-share').hidden=true;$('paragraph-tools').dataset.excerpt='false';$('show-original').hidden=state.mode==='parallel'||chineseOriginalOnly(book);$('show-original').textContent=v.mode==='en'?'译文':'原文';$('show-annotations').hidden=!p.annotationIds.length&&!p.termIds.length;
   document.dispatchEvent(new CustomEvent("reader:selection",{detail:{passageId:id}}));positionTools();if(!$('note-panel').hidden&&!allRecords)renderPanel();restoreAnchor(pin);positionTools();
 }
@@ -207,7 +210,7 @@ function syncPanelTextHighlight(){
   const groups=new Map();for(const entry of entries){if(!groups.has(entry.prose))groups.set(entry.prose,[]);groups.get(entry.prose).push(entry.part);}for(const [prose,parts]of groups){const source=prose.textContent,fragment=document.createDocumentFragment();let cursor=0;for(const part of parts.sort((a,b)=>a.start-b.start)){fragment.append(document.createTextNode(source.slice(cursor,part.start)));const mark=el('mark','panel-reference-mark',source.slice(part.start,part.end));fragment.append(mark);cursor=part.end;}fragment.append(document.createTextNode(source.slice(cursor)));prose.replaceChildren(fragment);}
 }
 function renderPanelSource(p){
-  const excerpt=selectionKind==='excerpt'&&selectedExcerpt?.parts?.length?selectedExcerpt:null,v=passageView(p),language=excerpt?.parts[0]?.language||visibleQuoteLanguage(p,v),variant=excerpt?.parts[0]?.variant||v.variant;
+  const excerpt=selectionKind==='excerpt'&&selectedExcerpt?.parts?.length?selectedExcerpt:null,v=passageView(p),language=excerpt?.parts[0]?.language||visibleQuoteLanguage(p,v,selectedQuoteLanguage),variant=excerpt?.parts[0]?.variant||v.variant;
   const text=excerpt?excerpt.parts.map(part=>part.text).join('　'):language==='en'?p.original:p.translations[variant]?.text||'这段译文尚未准备好。';
   $('panel-source-label').textContent=(excerpt?'所选文字':'当前段落')+' · '+(language==='en'?(book.sourceLanguage==='zh'?'中文原文':'英文原文'):variant==='literal'?'中文直译':'中文意译');
   $('panel-source-text').textContent=text;$('panel-source').setAttribute('aria-label','回到正文：'+text.slice(0,120));
@@ -341,6 +344,7 @@ $('open-toc').addEventListener('click',openContents);$('open-settings').addEvent
 for(const b of document.querySelectorAll('[data-close-dialog]'))b.addEventListener('click',()=>$(b.dataset.closeDialog).close());
 for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const rect=dialog.getBoundingClientRect();if(e.clientX<rect.left||e.clientX>rect.right||e.clientY<rect.top||e.clientY>rect.bottom)dialog.close();});
 $('view-mode').addEventListener('change',e=>{state.mode=e.target.value;overrides={};dismissTools();updateText();});
+mountParallelSettings({document,onChange:adjustAppearance,onActivate:()=>{if($('view-mode').querySelector('option[value=parallel]').disabled){announce('这本书目前只有原文。');return;}state.mode='parallel';overrides={};dismissTools();updateText();$('settings-dialog').close();}});
 $('translation-variant').addEventListener('change',e=>{state.variant=e.target.value;for(const value of Object.values(overrides))delete value.variant;updateText();});
 for(const b of document.querySelectorAll('[data-theme-choice]'))b.addEventListener('click',()=>adjustAppearance({theme:b.dataset.themeChoice}));
 for(const b of document.querySelectorAll('[data-font-family]'))b.addEventListener('click',()=>adjustAppearance({fontFamily:b.dataset.fontFamily}));

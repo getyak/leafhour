@@ -7,6 +7,11 @@ test('a source heading remains an original label rather than an untranslated pro
 test('an explicit DOM selection keeps its actual layer despite an original-view override',()=>{
   const p={...passage,translations:{interpretive:{text:'独立意译。'}}};assert.equal(visibleQuoteLanguage(p,{mode:'en',variant:'interpretive'},'zh'),'zh');assert.equal(visibleQuoteLanguage(p,{mode:'parallel',variant:'interpretive'},'en'),'en');assert.equal(visibleQuoteLanguage(p,{mode:'parallel',variant:'interpretive'}),'zh');
 });
+test('an unrevealed parallel translation is never the default quotation for notes or listening',()=>{
+  const p={...passage,translations:{interpretive:{text:'尚未揭晓的意译。'}}};
+  assert.equal(visibleQuoteLanguage(p,{mode:'parallel',variant:'interpretive',translationHidden:true}),'en');
+  assert.equal(visibleQuoteLanguage(p,{mode:'parallel',variant:'interpretive',translationHidden:false}),'zh');
+});
 test('a parallel untranslated passage contains one original and a truthful empty translation layer',()=>{
   const view=passagePresentation(passage,{mode:'parallel',variant:'literal',sourceLanguage:'en'});assert.equal(view.layers.filter(p=>p.kind==='original').length,1);assert.equal(view.layers[0].text,passage.original);assert.equal(view.layers[1].kind,'missing');assert.equal(view.layers[1].text,null);assert.match(view.layers[1].label,/直译.*尚未翻译/);assert.equal(view.notice,null);
 });

@@ -19,6 +19,8 @@ assets.set('/passage-layers.mjs',['app/passage-layers.mjs','text/javascript']);
 assets.set('/catalog-sample.mjs',['app/catalog-sample.mjs','text/javascript']);
 assets.set('/reader-navigation.mjs',['app/reader-navigation.mjs','text/javascript']);
 assets.set('/reader-navigation.css',['app/reader-navigation.css','text/css']);
+assets.set('/parallel-reading.mjs',['app/parallel-reading.mjs','text/javascript']);
+assets.set('/parallel-reading.css',['app/parallel-reading.css','text/css']);
 assets.set('/grant-result.mjs',['app/grant-result.mjs','text/javascript']);
 assets.set('/mcp-config.mjs',['app/mcp-config.mjs','text/javascript']);
 const downloads=new Map([['/exports/bilingual.md','book-bilingual.md'],['/exports/literal.md','book-literal.md'],['/exports/interpretive.md','book-interpretive.md'],['/exports/reading-pack.zip','reading-pack.zip']]);

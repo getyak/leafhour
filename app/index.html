@@ -5,6 +5,7 @@
   <div class="atmosphere-backdrop" aria-hidden="true"><div class="atmosphere-elements"></div></div>
   <link rel="stylesheet" href="/reader-atmosphere.css"><script type="module" src="/reader-atmosphere.js"></script>
   <link rel="stylesheet" href="/reader-navigation.css">
+  <link rel="stylesheet" href="/parallel-reading.css">
   <a href="#book-page" class="skip-link">跳到正文</a>
   <header id="reading-header" class="reading-header">
     <nav class="reader-navigation" aria-label="阅读导航"><a href="/library" class="reader-nav-item" aria-label="返回书房"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12 5l-5 5 5 5"/></svg><span class="reader-home-label">书房</span></a><span class="reader-nav-divider" aria-hidden="true"></span><button id="open-toc" class="reader-nav-item" disabled aria-controls="toc-dialog" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M4 10h8M4 15h12"/></svg><span>目录</span></button></nav>
@@ -74,6 +75,15 @@
         <div class="setting-row"><label for="view-mode">阅读语言</label><select id="view-mode" aria-describedby="reading-language-hint"><option value="en" selected>英文原文</option><option value="zh">中文译文</option><option value="parallel">中英对照</option></select></div><p id="reading-language-hint" class="settings-hint">默认读原文；译文使用中文，与你当前的界面语言一致。</p>
         <div class="setting-row"><label for="continuous-reading">连续阅读</label><input id="continuous-reading" type="checkbox" checked aria-describedby="continuous-reading-hint"></div><p id="continuous-reading-hint" class="settings-hint">下一章自然接上，读完仍由你确认。</p>
         <div class="setting-row"><label for="translation-variant">中文译法</label><select id="translation-variant"><option value="interpretive">意译</option><option value="literal">直译</option></select></div>
+      </section>
+      <section class="settings-section" aria-labelledby="parallel-heading"><h3 id="parallel-heading">对照阅读</h3>
+        <div class="setting-row"><label for="parallelLayout">排列</label><select id="parallelLayout"><option value="columns">左右对照</option><option value="stack">上下对照</option></select></div>
+        <div id="parallel-style-options" class="parallel-style-options" role="group" aria-label="对照风格"></div>
+        <p class="parallel-preview-label">即时预览 · 示例</p><div id="parallel-preview" class="parallel-preview" aria-label="对照风格预览"></div>
+        <div class="setting-row"><label for="parallelColor">译文颜色</label><select id="parallelColor"><option value="auto">跟随纸面</option><option value="green">松绿</option><option value="blue">墨蓝</option><option value="amber">茶褐</option></select></div>
+        <div class="setting-row"><label for="parallelBackground">译文背景</label><select id="parallelBackground"><option value="auto">跟随风格</option><option value="none">无底色</option><option value="soft">柔和底色</option></select></div>
+        <p class="setting-hint">手机窄屏自动上下排列。整页背景可在下方「纸面」中设置。</p>
+        <button id="activate-parallel" class="activate-parallel" type="button">用这个样式对照阅读</button>
       </section>
       <section class="settings-section" aria-labelledby="voice-settings-heading"><h3 id="voice-settings-heading">听读</h3><button id="open-voice-settings" class="voice-settings-shortcut">声音与语速 <span>选择你听得舒服的声音 ↗</span></button></section>
       <section class="settings-section" aria-labelledby="paper-heading"><h3 id="paper-heading">纸面</h3>
