@@ -13,7 +13,7 @@ export function tabDestination(key, index, length) {
 export function mountInteractionCraft(document) {
   const win = document.defaultView, openers = new WeakMap(), gestures = new WeakMap(), mounted = new WeakSet();
   const visible = node => node?.isConnected && !node.closest('[hidden], [inert]') && node.getClientRects().length;
-  const fallback = () => [...document.querySelectorAll('#library-menu, #exit-focus, #account-button, #book-page')].find(visible);
+  const fallback = () => [...document.querySelectorAll('#library-menu, #exit-focus, #library-account, #library-settings, #account-button, #book-page')].find(visible);
   function syncDialog(dialog, open = dialog.open) {
     if (!dialog.id) return;
     for (const trigger of document.querySelectorAll('[aria-controls="' + dialog.id + '"]')) if (trigger.hasAttribute('aria-expanded')) trigger.setAttribute('aria-expanded', String(open));

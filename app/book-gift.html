@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>一封赠书信 · 循页</title>
+  <link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/book-gift.css">
+  <script type="module" src="/book-gift.mjs"></script>
+  <link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script>
+</head>
+<body class="gift-page">
+  <a class="skip-link" href="#gift-main">跳到赠书信</a>
+  <header class="gift-site-header">
+    <a class="gift-brand" href="/" aria-label="循页首页"><svg viewBox="0 0 28 34" aria-hidden="true"><path d="M3 2h15l7 7v23H3zM18 2v8h7M8 17h12M8 23h9"/></svg><span>循页<small>PAGE BY PAGE</small></span></a>
+    <div class="gift-header-actions"><button id="site-theme" type="button" aria-label="页面外观">◐</button><a href="/library">我的书房 <span aria-hidden="true">↗</span></a></div>
+  </header>
+  <main id="gift-main" tabindex="-1">
+    <p id="gift-loading" class="gift-loading" role="status">正在取出信笺…</p>
+    <section id="gift-error" class="gift-error paper-frame" aria-labelledby="gift-error-title" hidden>
+      <p class="gift-eyebrow">赠书信</p><h1 id="gift-error-title">这封信暂时无法打开</h1>
+      <p id="gift-error-message" role="alert"></p><button id="gift-retry" class="gift-secondary" type="button">重新打开</button><a href="/library">回到书房</a>
+    </section>
+    <div id="gift-scene" class="gift-scene" data-open="false" hidden>
+      <div id="gift-envelope-wrap" class="envelope-reveal">
+        <section class="gift-envelope" aria-labelledby="envelope-title">
+          <div class="envelope-flap" aria-hidden="true"></div>
+          <svg class="envelope-folds" viewBox="0 0 700 420" preserveAspectRatio="none" aria-hidden="true"><path d="M1 419 350 210 699 419M1 120l80 49M699 120l-80 49"/></svg>
+          <div class="envelope-address">
+            <p class="gift-eyebrow">一封赠书信</p>
+            <h1 id="envelope-title">给 <span id="envelope-recipient">你</span></h1>
+            <p class="envelope-from"><span id="envelope-sender"></span> 寄</p>
+            <button id="gift-open" class="gift-open" type="button" aria-controls="gift-letter" aria-expanded="false">拆开这封信 <span aria-hidden="true">↗</span></button>
+          </div>
+          <span class="envelope-colophon" aria-hidden="true">循页 · 书与书之间</span>
+        </section>
+      </div>
+      <div id="gift-letter-wrap" class="letter-reveal" aria-hidden="true" inert>
+        <article id="gift-letter" class="gift-letter paper-frame" aria-labelledby="gift-title">
+          <div class="letter-topline"><p class="gift-eyebrow">赠书信</p><button id="gift-close" type="button" aria-controls="gift-letter" aria-label="折起信笺">折起信笺 <span aria-hidden="true">↙</span></button></div>
+          <p id="letter-salutation" class="letter-salutation"></p>
+          <p id="gift-message" class="gift-message"></p>
+          <div class="gift-book">
+            <div id="gift-cover" class="gift-cover" aria-hidden="true"></div>
+            <div class="gift-book-info"><p class="gift-eyebrow">送给你的这本书</p><h2 id="gift-title" tabindex="-1"></h2><p id="gift-original-title" class="gift-original-title"></p><p id="gift-author" class="gift-author"></p><p id="gift-description" class="gift-description"></p></div>
+          </div>
+          <div class="letter-signature"><p id="letter-sender"></p><time id="gift-date"></time></div>
+          <footer class="letter-footer">
+            <div class="gift-actions"><button id="gift-accept" class="gift-primary" type="button">放进我的书架 <span aria-hidden="true">↗</span></button><a id="gift-saved-read" class="gift-primary" hidden>打开这本书 <span aria-hidden="true">↗</span></a><a id="gift-download" class="gift-secondary" download="marginalia-reading-package.json">下载阅读包 <span aria-hidden="true">↓</span></a><a id="gift-public-read" class="gift-text-link" hidden>先读几页 <span aria-hidden="true">↗</span></a></div>
+            <p id="gift-action-status" class="gift-action-status" role="status" aria-live="polite"></p>
+            <p id="gift-download-status" class="gift-action-status" role="status" aria-live="polite"></p>
+            <p id="gift-package-scope" class="gift-package-scope"></p>
+          </footer>
+        </article>
+      </div>
+    </div>
+    <noscript><p class="gift-loading">请开启 JavaScript 以打开赠书信。</p></noscript>
+  </main>
+  <footer class="gift-site-footer"><a href="/">循页 Page by Page</a><span>给阅读留一页纸</span></footer>
+</body>
+</html>

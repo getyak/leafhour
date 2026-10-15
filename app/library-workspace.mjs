@@ -14,7 +14,7 @@ export async function loadWorkspaceActivity(api,{month,date,timeZone}){
 export function libraryShelf(books,{scope='all',query=''}={}){
   const needle=query.trim().toLocaleLowerCase();
   return books.filter(book=>(scope!=='private'||book.visibility==='private')&&(!needle||[book.title?.zh,book.title?.en,book.author].filter(Boolean).join(' ').toLocaleLowerCase().includes(needle)))
-    .sort((a,b)=>Number(b.visibility==='private')-Number(a.visibility==='private')||activityAt(b).localeCompare(activityAt(a)));
+    .sort((a,b)=>(Number.isFinite(a.shelfPosition)||Number.isFinite(b.shelfPosition)?(a.shelfPosition??Number.MAX_SAFE_INTEGER)-(b.shelfPosition??Number.MAX_SAFE_INTEGER):0)||Number(b.visibility==='private')-Number(a.visibility==='private')||activityAt(b).localeCompare(activityAt(a)));
 }
 
 export function roomShelf(books,{scope='all',query='',selectedBookId}={}){

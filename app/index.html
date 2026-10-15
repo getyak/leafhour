@@ -1,11 +1,9 @@
 <!doctype html>
 <html lang="zh-Hans" data-theme="paper">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>循页 · 阅读</title><link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><link rel="stylesheet" href="/reading-flow.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script><link rel="stylesheet" href="/reading-arrival.css"><script type="module" src="/reading-arrival.mjs"></script><link rel="stylesheet" href="/reader-atmosphere.css"><link rel="stylesheet" href="/reader-navigation.css"><link rel="stylesheet" href="/parallel-reading.css"><link rel="stylesheet" href="/reader-audio.css"><link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>循页 · 阅读</title><link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><link rel="stylesheet" href="/reading-flow.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script><link rel="stylesheet" href="/reading-arrival.css"><script type="module" src="/reading-arrival.mjs"></script><link rel="stylesheet" href="/reader-atmosphere.css"><link rel="stylesheet" href="/reader-navigation.css"><link rel="stylesheet" href="/parallel-reading.css"><link rel="stylesheet" href="/reader-audio.css"><link rel="stylesheet" href="/reader-settings.css"><link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script></head>
 <body class="is-focused" data-reading-tools="closed">
   <div class="atmosphere-backdrop" aria-hidden="true"><div class="atmosphere-elements"></div></div>
   <script type="module" src="/reader-atmosphere.js"></script>
-
-
   <a href="#book-page" class="skip-link">跳到正文</a>
   <header id="reading-header" class="reading-header" inert aria-hidden="true">
     <nav class="reader-navigation" aria-label="阅读导航"><a href="/library" class="reader-nav-item" aria-label="返回书房"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12 5l-5 5 5 5"/></svg><span class="reader-home-label">书房</span></a><span class="reader-nav-divider" aria-hidden="true"></span><button id="open-toc" class="reader-nav-item" disabled aria-controls="toc-dialog" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M4 10h8M4 15h12"/></svg><span>目录</span></button></nav>
@@ -72,52 +70,69 @@
   <dialog id="toc-dialog" class="toc-dialog" aria-labelledby="toc-heading-title"><header class="toc-heading"><div><p id="toc-book-title">循页</p><h2 id="toc-heading-title">全书目录</h2></div><button data-close-dialog="toc-dialog" class="reader-surface-close" aria-label="关闭目录"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 6 8 8M14 6l-8 8"/></svg></button></header><nav id="toc-list" aria-label="全书目录"></nav></dialog>
   <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title">
     <header class="dialog-heading"><div><h2 id="settings-title">你的阅读方式</h2><p>把这一页，调成喜欢的样子。</p></div><button data-close-dialog="settings-dialog" class="quiet-button" aria-label="关闭阅读设置">关闭</button></header>
-    <div class="settings-content">
-      <div class="drawer-shortcuts"><button id="settings-chapters" disabled>全书目录 <span>↗</span></button><button id="show-all-records">我的记录 <span>↗</span></button></div>
-      <section class="settings-section" aria-labelledby="language-heading"><h3 id="language-heading">正文</h3>
-        <div class="setting-row"><label for="immersive-reading">沉浸阅读</label><input id="immersive-reading" type="checkbox" role="switch" checked></div>
-        <div class="setting-row"><label for="view-mode">阅读语言</label><select id="view-mode" aria-describedby="reading-language-hint"><option value="en" selected>英文原文</option><option value="zh">中文译文</option><option value="parallel">中英对照</option></select></div><p id="reading-language-hint" class="settings-hint">默认读原文；译文使用中文，与你当前的界面语言一致。</p>
-        <div class="setting-row"><label for="continuous-reading">连续阅读</label><input id="continuous-reading" type="checkbox" checked aria-describedby="continuous-reading-hint"></div><p id="continuous-reading-hint" class="settings-hint">下一章自然接上，读完仍由你确认。</p>
-        <div class="setting-row"><label for="translation-variant">中文译法</label><select id="translation-variant"><option value="interpretive">意译</option><option value="literal">直译</option></select></div>
-      </section>
-      <section class="settings-section" aria-labelledby="parallel-heading"><h3 id="parallel-heading">对照阅读</h3>
-        <div class="setting-row"><label for="parallelLayout">排列</label><select id="parallelLayout"><option value="columns">左右对照</option><option value="stack">上下对照</option></select></div>
-        <div id="parallel-style-options" class="parallel-style-options" role="group" aria-label="对照风格"></div>
-        <p class="parallel-preview-label">即时预览 · 示例</p><div id="parallel-preview" class="parallel-preview" aria-label="对照风格预览"></div>
-        <div class="setting-row"><label for="parallelColor">译文颜色</label><select id="parallelColor"><option value="auto">跟随纸面</option><option value="green">松绿</option><option value="blue">墨蓝</option><option value="amber">茶褐</option></select></div>
-        <div class="setting-row"><label for="parallelBackground">译文背景</label><select id="parallelBackground"><option value="auto">跟随风格</option><option value="none">无底色</option><option value="soft">柔和底色</option></select></div>
-        <p class="setting-hint">手机窄屏自动上下排列。整页背景可在下方「纸面」中设置。</p>
-        <button id="activate-parallel" class="activate-parallel" type="button">用这个样式对照阅读</button>
-      </section>
-      <section class="settings-section" aria-labelledby="voice-settings-heading"><h3 id="voice-settings-heading">听读</h3><button id="open-voice-settings" class="voice-settings-shortcut">声音与语速 <span>选择你听得舒服的声音 ↗</span></button></section>
-      <section class="settings-section" aria-labelledby="paper-heading"><h3 id="paper-heading">纸面</h3>
-        <div id="theme-choice" class="theme-swatches" role="group" aria-label="纸面主题">
-          <button data-theme-choice="system" class="swatch-system" aria-label="跟随系统" aria-pressed="true"><span>◐</span></button>
-          <button data-theme-choice="paper" class="swatch-paper" aria-label="纸白" aria-pressed="false"><span>A</span></button>
-          <button data-theme-choice="warm" class="swatch-warm" aria-label="暖纸" aria-pressed="false"><span>A</span></button>
-          <button data-theme-choice="mist" class="swatch-mist" aria-label="雾灰" aria-pressed="false"><span>A</span></button>
-          <button data-theme-choice="leaf" class="swatch-leaf" aria-label="浅绿" aria-pressed="false"><span>A</span></button>
-          <button data-theme-choice="night" class="swatch-night" aria-label="夜读" aria-pressed="false"><span>A</span></button>
-        </div><p id="theme-label" class="setting-hint">跟随系统</p>
-      </section>
-      <section class="settings-section" aria-labelledby="atmosphere-settings-heading"><h3 id="atmosphere-settings-heading">氛围</h3><button id="settings-atmosphere" class="voice-settings-shortcut">选择阅读氛围 <span>林风、细雨与轻音乐 ↗</span></button></section>
-      <section class="settings-section" aria-labelledby="type-heading"><h3 id="type-heading">排版</h3>
-        <div class="font-choices" role="group" aria-label="正文字体"><button data-font-family="song" aria-pressed="true">宋体</button><button data-font-family="kai" aria-pressed="false">楷体</button><button data-font-family="sans" aria-pressed="false">无衬线</button></div>
-        <div class="setting-row size-row"><label for="font-size">字号 <output id="font-size-label">22</output></label><input id="font-size" type="range" min="18" max="28" value="22"></div>
-        <details class="typography-details"><summary>精细排版 <span>行距、留白与缩进</span></summary>
-          <div id="typography-controls"></div>
-          <div class="setting-row indent-row"><label for="first-line-indent">首行缩进</label><input id="first-line-indent" type="checkbox" role="switch"></div>
-          <p class="setting-hint">字体使用本机字库；英文词距仅作用于英文。</p>
-        </details>
-        <button id="reset-appearance" class="reset-appearance">恢复默认排版与纸面</button>
-      </section>
-      <details class="reading-extras"><summary>阅读与数据</summary>
-        <div class="setting-row setting-invitations"><label for="chapter-invitations">每章一个小问题</label><input id="chapter-invitations" type="checkbox"></div>
-        <div class="setting-links"><a href="/evals">体验验证</a><a id="export-records" href="/api/records/export" download>导出记录与设置</a><button id="import-records">导入记录</button><input id="records-file" type="file" accept=".json" hidden></div>
-      </details>
-      <details class="book-details"><summary>关于这份译文</summary><p id="translation-about">直译与意译分别保存，AI 生成结果标为草稿。未翻译的段落保留原文，可以随时核对；章节的中文导航标题由编辑补充。</p></details>
-      <p id="import-status" class="form-status" aria-live="polite"></p>
+    <nav class="settings-tabs" role="tablist" aria-label="阅读设置分类">
+      <button id="settings-tab-reading" data-settings-tab="reading" role="tab" aria-selected="true" aria-controls="settings-reading">阅读</button>
+      <button id="settings-tab-sound" data-settings-tab="sound" role="tab" aria-selected="false" aria-controls="settings-sound" tabindex="-1">声音</button>
+      <button id="settings-tab-habits" data-settings-tab="habits" role="tab" aria-selected="false" aria-controls="settings-habits" tabindex="-1">习惯</button>
+      <button id="settings-tab-data" data-settings-tab="data" role="tab" aria-selected="false" aria-controls="settings-data" tabindex="-1">数据</button>
+    </nav>
+    <div id="settings-content" class="settings-content">
+      <div id="settings-reading" class="settings-panel" role="tabpanel" aria-labelledby="settings-tab-reading">
+        <section class="settings-section" aria-labelledby="language-heading"><h3 id="language-heading">阅读内容</h3>
+          <div class="setting-row"><label for="view-mode">阅读方式</label><select id="view-mode"><option value="en" selected>英文原文</option><option value="zh">中文译文</option><option value="parallel">中英对照</option></select></div>
+          <div id="translation-settings" class="setting-row" hidden><label for="translation-variant">中文译法</label><select id="translation-variant"><option value="interpretive">意译</option><option value="literal">直译</option></select></div>
+        </section>
+        <section id="parallel-settings" class="settings-section" aria-labelledby="parallel-heading" hidden><h3 id="parallel-heading">对照方式</h3>
+          <div class="setting-row"><label for="parallelLayout">排列</label><select id="parallelLayout"><option value="columns">左右对照</option><option value="stack">上下对照</option></select></div>
+          <div class="setting-row"><label for="parallelStyle">风格</label><select id="parallelStyle" aria-describedby="parallel-style-description"></select></div>
+          <p id="parallel-style-description" class="style-description"></p>
+          <p class="parallel-preview-label">即时预览 · 示例</p><div id="parallel-preview" class="parallel-preview" aria-label="对照风格预览"></div>
+          <details class="settings-details"><summary>配色与底色</summary><div>
+            <div class="setting-row"><label for="parallelColor">译文颜色</label><select id="parallelColor"><option value="auto">跟随纸面</option><option value="green">松绿</option><option value="blue">墨蓝</option><option value="amber">茶褐</option></select></div>
+            <div class="setting-row"><label for="parallelBackground">译文背景</label><select id="parallelBackground"><option value="auto">跟随风格</option><option value="none">无底色</option><option value="soft">柔和底色</option></select></div>
+          </div></details>
+          <p class="setting-hint">手机窄屏会自动上下排列。</p>
+        </section>
+        <section class="settings-section" aria-labelledby="type-heading"><h3 id="type-heading">文字与纸面</h3>
+          <div class="setting-row size-row"><label for="font-size">字号 <output id="font-size-label">22</output></label><input id="font-size" type="range" min="18" max="28" value="22"></div>
+          <div class="font-choices" role="group" aria-label="正文字体"><button data-font-family="song" aria-pressed="true">宋体</button><button data-font-family="kai" aria-pressed="false">楷体</button><button data-font-family="sans" aria-pressed="false">无衬线</button></div>
+          <div class="settings-paper-heading"><span>纸面</span><span id="theme-label">跟随系统</span></div>
+          <div id="theme-choice" class="theme-swatches" role="group" aria-label="纸面主题">
+            <button data-theme-choice="system" class="swatch-system" aria-label="跟随系统" aria-pressed="true"><span>◐</span></button><button data-theme-choice="paper" class="swatch-paper" aria-label="纸白" aria-pressed="false"><span>A</span></button><button data-theme-choice="warm" class="swatch-warm" aria-label="暖纸" aria-pressed="false"><span>A</span></button><button data-theme-choice="mist" class="swatch-mist" aria-label="雾灰" aria-pressed="false"><span>A</span></button><button data-theme-choice="leaf" class="swatch-leaf" aria-label="浅绿" aria-pressed="false"><span>A</span></button><button data-theme-choice="night" class="swatch-night" aria-label="夜读" aria-pressed="false"><span>A</span></button>
+          </div>
+          <details class="typography-details"><summary>精细排版 <span>行距、留白与缩进</span></summary><div id="typography-controls"></div><div class="setting-row indent-row"><label for="first-line-indent">首行缩进</label><input id="first-line-indent" type="checkbox" role="switch"></div><p class="setting-hint">字体使用本机字库；英文词距仅作用于英文。</p></details>
+          <button id="reset-appearance" class="reset-appearance">恢复阅读外观</button>
+        </section>
+        <details id="translation-details" class="book-details" hidden><summary>关于这份译文</summary><p id="translation-about">直译与意译分别保存，AI 生成结果标为草稿。未翻译的段落保留原文，可以随时核对；章节的中文导航标题由编辑补充。</p></details>
+      </div>
+      <div id="settings-sound" class="settings-panel" role="tabpanel" aria-labelledby="settings-tab-sound" hidden>
+        <section class="settings-section" aria-labelledby="atmosphere-settings-heading">
+          <div class="settings-sound-heading"><h3 id="atmosphere-settings-heading">阅读氛围</h3><button id="settings-atmosphere-toggle" type="button" disabled>播放</button></div>
+          <p id="settings-atmosphere-status" class="settings-sound-summary" role="status">尚未选择氛围</p>
+          <button id="settings-atmosphere" class="settings-action">选择场景 <span id="settings-atmosphere-scene">林间、雨窗、炉火、海边</span></button>
+          <div id="settings-atmosphere-levels" hidden>
+            <div class="settings-volume"><label for="settings-atmosphere-music">轻音乐</label><input id="settings-atmosphere-music" type="range" min="0" max="100" value="28"><output id="settings-atmosphere-music-value" for="settings-atmosphere-music">28%</output></div>
+            <div class="settings-volume"><label for="settings-atmosphere-nature">环境声</label><input id="settings-atmosphere-nature" type="range" min="0" max="100" value="32"><output id="settings-atmosphere-nature-value" for="settings-atmosphere-nature">32%</output></div>
+            <details class="settings-details"><summary>场景细节</summary><div><div class="setting-row"><label for="settings-atmosphere-motion">场景动效</label><input id="settings-atmosphere-motion" type="checkbox" role="switch" checked></div><p id="settings-atmosphere-motion-hint" class="setting-hint">跟随系统减少动态效果的偏好。</p></div></details>
+          </div>
+          <p class="setting-hint">切换网页或应用时继续播放，暂停请使用上方按钮。</p>
+        </section>
+        <section class="settings-section" aria-labelledby="voice-settings-heading"><h3 id="voice-settings-heading">正文听读</h3><button id="open-voice-settings" class="voice-settings-shortcut">声音与语速 <span id="settings-listening-summary">选择朗读声音、速度与跟随方式</span></button><p class="setting-hint">朗读时背景声音会自动降低。</p></section>
+      </div>
+      <div id="settings-habits" class="settings-panel" role="tabpanel" aria-labelledby="settings-tab-habits" hidden>
+        <section class="settings-habit"><div class="setting-row"><label for="immersive-reading">沉浸阅读</label><input id="immersive-reading" type="checkbox" role="switch" checked></div><p class="setting-hint">收起顶栏，工具随时可唤出。每次打开书页默认开启。</p></section>
+        <section class="settings-habit"><div class="setting-row"><label for="continuous-reading">连续阅读</label><input id="continuous-reading" type="checkbox" role="switch" checked aria-describedby="continuous-reading-hint"></div><p id="continuous-reading-hint" class="setting-hint">下一章自然接上，读完仍由你确认。</p></section>
+        <section class="settings-habit"><div class="setting-row"><label for="chapter-invitations">每章一个小问题</label><input id="chapter-invitations" type="checkbox" role="switch"></div><p class="setting-hint">普通阅读时提供思考入口；沉浸阅读时不主动弹出。</p></section>
+      </div>
+      <div id="settings-data" class="settings-panel" role="tabpanel" aria-labelledby="settings-tab-data" hidden>
+        <section class="settings-section"><h3>我的记录</h3><button id="show-all-records" class="settings-action">查看想法与问题 <span>按原文归档</span></button></section>
+        <section class="settings-section"><h3>阅读备份</h3><div class="settings-actions"><a id="export-records" class="settings-action" href="/api/records/export" download>导出阅读记录与外观</a><button id="import-records" class="settings-action">导入阅读记录</button><input id="records-file" type="file" accept=".json" hidden></div><p class="setting-hint">备份保留阅读位置和外观。声音记录请单独导出。</p></section>
+        <section class="settings-section"><h3>听读备份</h3><div class="settings-actions"><button id="settings-listening-records" class="settings-action">查看已保存的听读</button><button id="export-listening" class="settings-action">导出听读记录</button><button id="import-listening" class="settings-action">恢复听读记录</button></div><p class="setting-hint">包含讲稿、声音与播放位置。氛围偏好仍保存在当前浏览器。</p></section>
+        <section class="settings-section"><h3>阅读体验备份</h3><div id="settings-experience-transfers" class="settings-actions"></div><p class="setting-hint">保留站队选择、自己的复述与核对结果。</p></section>
+        <p id="import-status" class="form-status" aria-live="polite"></p>
+      </div>
     </div>
+    <footer class="settings-footer"><button id="settings-chapters" disabled>全书目录</button><button data-close-dialog="settings-dialog">返回书页</button></footer>
   </dialog>
   <dialog id="share-dialog" class="share-dialog" aria-labelledby="share-title">
     <div class="share-shell">

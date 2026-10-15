@@ -18,10 +18,10 @@ test('keyboard tab movement wraps, supports first/last, and ignores text keys',(
   assert.equal(tabDestination('Home',0,0),null);
   assert.equal(tabDestination('ArrowRight',-1,3),null);
 });
-function fixture(){
+function fixture({fallback=[]}={}){
   const handlers=new Map();
   const dialog={closed:0,contains:()=>false,getBoundingClientRect:()=>rect,addEventListener(type,fn){handlers.set(type,fn);},close(){this.closed++;}};
-  const doc={body:{},defaultView:{MutationObserver:class {observe(){}disconnect(){}},requestAnimationFrame:fn=>fn()},querySelectorAll:selector=>selector==='dialog'?[dialog]:[],querySelector:()=>null,addEventListener(){}};
+  const doc={body:{},defaultView:{MutationObserver:class {observe(){}disconnect(){}},requestAnimationFrame:fn=>fn()},querySelectorAll:selector=>selector==='dialog'?[dialog]:selector.split(',').flatMap(part=>fallback.filter(node=>part.trim()==='#'+node.id)),querySelector:()=>null,addEventListener(){}};
   mountInteractionCraft(doc);
   const dispatch=(type,target,x,y)=>{let stopped=false;handlers.get(type)({target,clientX:x,clientY:y,stopImmediatePropagation(){stopped=true;}});return stopped;};
   return {dialog,dispatch};
@@ -36,4 +36,9 @@ test('a fresh backdrop gesture closes a dynamic modal on every side',()=>{
   for(const [x,y]of [[10,100],[350,100],[120,20],[120,460]]){
     const {dialog,dispatch}=fixture();dispatch('pointerdown',dialog,x,y);dispatch('click',dialog,x,y);assert.equal(dialog.closed,1);
   }
+});
+
+test('a refreshed personal library still provides a visible focus target after its old opener disappears',()=>{
+ const account={id:'library-account',isConnected:true,closest:()=>null,getClientRects:()=>[rect],focus(){this.focused=true;}};
+ const {dialog,dispatch}=fixture({fallback:[account]});dispatch('close',dialog);assert.equal(account.focused,true);
 });

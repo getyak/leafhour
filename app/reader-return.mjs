@@ -1,6 +1,7 @@
 const bookKey=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(value);
 const passageKey=value=>typeof value==='string'&&/^[A-Za-z0-9_.:-]{1,256}$/.test(value);
 const noteKey=value=>['comment','question','records'].includes(value);
+export function safeGiftReturn(value){return typeof value==='string'&&/^\/gift\/[A-Za-z0-9_-]{43}$/.test(value)?value:null;}
 export function safeReaderReturn(value){
   if(typeof value!=='string'||value.length>1500||!value.startsWith('/')||value.startsWith('//'))return null;
   let url;try{url=new URL(value,'http://reader.local');}catch{return null;}

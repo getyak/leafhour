@@ -20,6 +20,8 @@ assets.set('/passage-layers.mjs',['app/passage-layers.mjs','text/javascript']);
 assets.set('/catalog-sample.mjs',['app/catalog-sample.mjs','text/javascript']);
 assets.set('/reader-navigation.mjs',['app/reader-navigation.mjs','text/javascript']);
 assets.set('/reader-immersion.mjs',['app/reader-immersion.mjs','text/javascript']);
+assets.set('/reader-settings.mjs',['app/reader-settings.mjs','text/javascript']);
+assets.set('/reader-settings.css',['app/reader-settings.css','text/css']);
 assets.set('/reader-navigation.css',['app/reader-navigation.css','text/css']);
 assets.set('/parallel-reading.mjs',['app/parallel-reading.mjs','text/javascript']);
 assets.set('/parallel-reading.css',['app/parallel-reading.css','text/css']);
@@ -71,7 +73,7 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
   };
   const server=http.createServer(async(req,res)=>{
     res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','same-origin');res.setHeader('Cache-Control','no-store');
-    res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; media-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");
+    res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data: https:; media-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");
     const send=(status,data,type='application/json')=>{res.statusCode=status;res.setHeader('Content-Type',type+'; charset=utf-8');res.end(type==='application/json'?JSON.stringify(data):data);};
     try{
       const port=server.address()?.port,host=req.headers.host;
