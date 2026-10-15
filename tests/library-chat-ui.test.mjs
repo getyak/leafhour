@@ -19,6 +19,9 @@ class Element extends EventTarget {
   showModal(){this.open=true;this.mode='modal';}
   close(){this.open=false;this.dispatchEvent(new Event('close'));}
   click(){this.dispatchEvent(new Event('click',{cancelable:true}));}
+  getBoundingClientRect(){return {top:0};}
+  get clientTop(){return this._clientTop||0;}
+  set clientTop(value){this._clientTop=value;}
   querySelector(){return null;}
 }
 const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
@@ -95,4 +98,27 @@ test('completed POST survives a delayed pre-claim empty GET in the view and expo
  earlyGet.resolve(response([]));await flush();assert.ok(s.find('library-chat-answer'),'old empty snapshot cannot erase completed POST');assert.ok(plain(s.find('library-chat-answer')).includes('已经保存的完整回答'));
  const exportButton=s.all().find(n=>n.tagName==='BUTTON'&&n.textContent==='导出这段对话');exportButton.click();const data=JSON.parse(await exported.text());assert.equal(data.turns.length,1);assert.equal(data.turns[0].answer.summary,'已经保存的完整回答');
  type(s.input(),'下一个问题');assert.equal(s.find('library-chat-send').disabled,false);assert.equal(s.input().value,'下一个问题');
+});
+test('a newly completed long answer opens at its beginning without moving the page or resetting reopened history',async t=>{
+ const post=deferred();let receipt;
+ const s=setup(t,{handler:async(url,payload)=>{if(payload){receipt={...payload,status:'running',answer:null};return post.promise;}return response(receipt?[receipt]:[]);}});
+ s.chat.open();await flush();type(s.input(),'你最喜欢哪一句？');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();
+ const messages=s.find('library-chat-messages');messages.scrollTop=700;messages.clientHeight=300;messages.clientTop=0;messages.getBoundingClientRect=()=>({top:100});
+ Object.defineProperty(messages,'scrollHeight',{get:()=>s.find('library-chat-answer')?1800:1000});
+ const create=s.doc.createElement;s.doc.createElement=tag=>{const element=create(tag);element.getBoundingClientRect=()=>({top:element.className==='library-chat-answer'?100+420-messages.scrollTop:100});element.scrollIntoView=()=>assert.fail('completion may scroll only the message container');return element;};
+ const longAnswer=Array.from({length:20},(_,i)=>'第 '+i+' 段：这一句值得从开头慢慢读。').join('\n\n');
+ receipt={...receipt,status:'completed',answer:{summary:longAnswer,sourceRefs:[]}};post.resolve(receipt);await flush();
+ assert.equal(messages.scrollTop,420,'align the new AI answer beginning, not its long tail');
+ messages.scrollTop=180;s.chat.close();s.chat.open();await flush();assert.equal(messages.scrollTop,180,'reopening existing completed history preserves its position');
+});
+test('pending turn has one stable status for neutral thinking and real tool activity',async t=>{
+ const s=setup(t);s.chat.open();await flush();type(s.input(),'读这一章');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();
+ const row=s.find('library-chat-turn'),pending=s.find('library-chat-turn-status');assert.equal(plain(row).split('正在思考…').length-1,1);
+ const receipt=s.calls.find(c=>c.payload).payload;
+ for(const activity of [[{tool:'reader_read_chapter',label:'正在阅读章节',status:'running',bookId:'one',chapterId:'ch1'}],[{tool:'reader_read_chapter',label:'正在阅读章节',status:'completed',bookId:'one',chapterId:'ch1'}]]){
+  s.setTurns([{...receipt,status:'running',answer:null,activity}]);s.chat.close();s.chat.open();await flush();
+  assert.ok(s.find('library-chat-turn-status')===pending,'status DOM remains stable across activities');
+  const visibleStatuses=row.children.filter(n=>n.className.includes('library-chat-turn-status')||n.className==='library-chat-activity');assert.equal(visibleStatuses.length,1,'one visual status per pending turn');
+  assert.equal(plain(pending),activity[0].status==='running'?'正在阅读章节':'正在思考…');
+ }
 });
