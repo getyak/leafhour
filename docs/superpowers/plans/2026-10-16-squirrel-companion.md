@@ -33,10 +33,10 @@
 
 **Interfaces:** `createReaderCompanionState({clock=Date.now})` returns configure, sample, activity, attempted, suspend, view. `sample({passageId,chapterId,visible,focused,blocked,eligiblePassage})` advances bounded foreground time; view exposes activeMs, qualified IDs, eligibility and safeToPresent. Export `COMPANION_TIMING` with production defaults. No test-only runtime flags.
 
-- [ ] Write behavior tests for warm-up, five-minute minimum, new passage counts, long passage observation, idle/hidden exclusion, chapter warm-up, interruption windows and reset/revision changes.
-- [ ] Run `node --test tests/reader-companion-state.test.mjs`; expect missing module/API failures before implementation.
-- [ ] Implement the deterministic state machine and run the same tests to PASS.
-- [ ] Commit this task's state and tests with the approved spec and plan.
+- [x] Write behavior tests for warm-up, five-minute minimum, new passage counts, long passage observation, idle/hidden exclusion, chapter warm-up, interruption windows and reset/revision changes.
+- [x] Run `node --test tests/reader-companion-state.test.mjs`; expect missing module/API failures before implementation.
+- [x] Implement the deterministic state machine and run the same tests to PASS.
+- [x] Commit this task's state and tests with the approved spec and plan.
 
 ## Task 2: Authorized companion messages and bounded generation
 
@@ -44,10 +44,10 @@
 
 **Interfaces:** existing chat service gains `companion.view(user,bookId)`, `configure(user,bookId,input)`, `observe(user,bookId,input)`, `generate(user,bookId,input)` and cancellation through normal chat cancel. Configure accepts enabled/contentVersion; observe accepts revision/contentVersion/passageId and bounded activity; generate accepts stable id/revision/contentVersion/sessionId/passageId. HTTP routes live under `/api/library/books/:bookId/companion[/observe|/messages]` with existing identity/origin guards. Mixed turns use `kind:'companion',origin:'ai',text:null,answer.summary`; user turns retain original format. Generator factory `createCompanionGenerator(options)` returns message/silence; reuse configurable budgeted chat runtime with empty tools and separate system prompt.
 
-- [ ] Write service tests for default off, canonical observed context, no notes/question writes, fake/future IDs, exact source checks, silence, shared quotas, retries, disable/race and mixed-history export/readback.
-- [ ] Write generator tests using the existing injected harness seam for one request, empty tools, bounded payload, structured output and cancellation. Write authenticated HTTP denial/enable/observe/message/readback tests.
-- [ ] Run the new tests and observe intended failures; implement domain storage/admission, the generator and routes until PASS.
-- [ ] Run new tests plus `tests/reader-chat.test.mjs`, `tests/chat-runtime.test.mjs`, `tests/library-chat-http.test.mjs`; expect all PASS. Commit.
+- [x] Write service tests for default off, canonical observed context, no notes/question writes, fake/future IDs, exact source checks, silence, shared quotas, retries, disable/race and mixed-history export/readback.
+- [x] Write generator tests using the existing injected harness seam for one request, empty tools, bounded payload, structured output and cancellation. Write authenticated HTTP denial/enable/observe/message/readback tests.
+- [x] Run the new tests and observe intended failures; implement domain storage/admission, the generator and routes until PASS.
+- [x] Run new tests plus `tests/reader-chat.test.mjs`, `tests/chat-runtime.test.mjs`, `tests/library-chat-http.test.mjs`; expect all PASS. Commit.
 
 ## Task 3: Squirrel bubble, controls and IM continuity
 
@@ -55,9 +55,9 @@
 
 **Interfaces:** reader adapter mounts companion with current owner/book/reader/api and chat controls. Existing chat exposes launcher/header mount points, open({messageId,passageId}), refresh and lifecycle notifications. Companion controller observes actual DOM passage visibility, sends throttled observations, handles safe presentation and consent updates. Mixed AI entries never create pending user state or draft recovery. Reader-only controls do not add companion to the library surface.
 
-- [ ] Write failing behavior tests for AI-only entries, draft-preserving message targeting, adapter guards and cancellation hooks.
-- [ ] Implement controls and bubble using existing colors/type/squirrel. Validate HTML safe text, accessible controls, keyboard focus, reduced motion, 320px sizing and mobile keyboard behavior.
-- [ ] Run state/service/chat/adapter tests to PASS. Commit.
+- [x] Write failing behavior tests for AI-only entries, draft-preserving message targeting, adapter guards and cancellation hooks.
+- [x] Implement controls and bubble using existing colors/type/squirrel. Validate HTML safe text, accessible controls, keyboard focus, reduced motion, 320px sizing and mobile keyboard behavior.
+- [x] Run state/service/chat/adapter tests to PASS. Commit.
 
 ### Task 3 motion extension (user steering, 2026-10-16)
 
@@ -67,8 +67,8 @@ Add `app/squirrel-motion.mjs` using the existing body/eyes/head/tail and native 
 
 **Files:** update `release-files.json`, relevant `_briefs/` trigger boundaries, `README.md`; create `docs/verification/2026-10-16-squirrel-companion.md`.
 
-- [ ] Register runtime assets/modules/tests in the existing release contract. Run full `npm test`, build and `verify:deploy`; fix relevant failures with a regression test.
-- [ ] Start a separate isolated local server and perform real browser flows for enabling, actual waiting/observation, ignoring, opening IM, continuing with a draft and disabling. Check blocked/hidden/mobile behavior. Keep fixture mechanisms and real model quality evidence distinct.
-- [ ] Run a small bounded real-model check if credentials/runtime are available without exposing them. Record any remaining gate explicitly.
-- [ ] Dispatch one independent whole-branch reviewer using requesting-code-review; fix material findings with regression checks. Do not merge with unresolved blocking checks.
+- [x] Register runtime assets/modules/tests in the existing release contract. Run full `npm test`, build and `verify:deploy`; fix relevant failures with a regression test.
+- [x] Start a separate isolated local server and perform real browser flows for enabling, actual waiting/observation, ignoring, opening IM, continuing with a draft and disabling. Check blocked/hidden/mobile behavior. Keep fixture mechanisms and real model quality evidence distinct.
+- [x] Run a small bounded real-model check if credentials/runtime are available without exposing them. Record any remaining gate explicitly.
+- [x] Dispatch one independent whole-branch reviewer using requesting-code-review; fix material findings with regression checks. Do not merge with unresolved blocking checks.
 - [ ] Sync main, rerun required checks, push this branch, create and attach PR, wait for CI then normal merge under existing user authorization. Verify remote merge and automatic deployment/source identity and representative production routes.

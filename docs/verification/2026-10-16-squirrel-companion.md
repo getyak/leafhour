@@ -4,7 +4,7 @@ Scope: optional current-book companion, five-minute foreground reading interval,
 
 ## Automated checks
 
-On Node 22.22.0, after integrating the latest main branch and the final authorization race fix, `npm run verify:deploy` passed: 733 tests passed, zero failed, one platform-specific test skipped. The isolated official reading runtime initialized (928 files, 9.0 MB) without a model request. The hosted build passed (157 files, nine registered media assets), as did the 347-file software release allowlist and private-content exclusion checks.
+On Node 22.22.0, after integrating the latest main branch, the final authorization race fix and keyboard viewport repair, `npm run verify:deploy` passed: 734 tests passed, zero failed, one platform-specific test skipped. The isolated official reading runtime initialized (928 files, 9.0 MB) without a model request. The hosted build passed (157 files, nine registered media assets), as did the 347-file software release allowlist and private-content exclusion checks.
 
 The suite covers foreground versus background time, five-minute cooldown and newly observed material, bounded canonical sources, no future-text/private-note access, AI-only history, account isolation, consent revisions, duplicate claims, cross-instance cancellation, invalid references, silence and quotas. A deferred authorization test first reproduced a model dispatch after another instance disabled companion; moving authorization before the final durable consent check made that regression pass.
 
@@ -22,4 +22,12 @@ These samples prove the provider path runs. They do not establish long-term conv
 
 Browser interaction uses an isolated local store and synthetic local authentication. Its message generator returns an explicitly labeled fixture; it is separate from the actual-provider checks above. Local native browser execution exposed a Window timer receiver error, which was fixed and covered by a regression test.
 
-Final interaction results and hosted delivery receipts are recorded below after verification.
+The actual local reading clock produced a bubble after sustained reading across visible paragraphs. Ignoring it collapsed the bubble. Opening the existing conversation showed its AI-only message and preserved an unfinished draft. Continuing the draft produced a second turn. Reader scroll position remained exactly 622 px before and after opening. A fresh isolated reading session also verified clicking the visible bubble: the exact AI message opened in the existing IM, the unfinished draft remained intact, and reader scroll stayed at 1007 px. Closing companion removed its active pill.
+
+Two native frame samples 500 ms apart measured body translations of -0.531503 and -0.882109 px, proving movement rather than just animation declarations. With reduced motion enabled, the browser reported zero active animations. At 390 px and 320 px, document scroll width matched viewport width. The settled narrow conversation retained an opaque readable surface and visible composer.
+
+Shrinking an already focused conversation to a 400 px viewport exposed an obscured composer. A regression test first failed, then passed after adjusting only the conversation frame scroll position. The browser retest measured the input bottom at 331.59 px in a 400 px viewport after scrolling the frame by 78 px, with no horizontal overflow. Independent follow-up review passed all 23 chat UI tests without new blockers.
+
+The headless browser kept the first page visible and focused after opening a second tab. This does not constitute background-tab proof. Hidden/blur cancellation is covered by the isolated motion lifecycle and reading-clock tests; a real-device mobile keyboard and an actual background tab remain separate environment checks.
+
+Hosted delivery receipts are recorded after the public checks finish.
