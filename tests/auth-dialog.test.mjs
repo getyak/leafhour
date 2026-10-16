@@ -36,6 +36,40 @@ test('English home login keeps its language across method changes, countdowns an
   assert.equal(f.nodes.get('auth-title').textContent,'Verify your email');assert.match(f.nodes.get('resend-code').textContent,/Resend in \d+s/);
   f.controller.close();f.controller.open();assert.equal(f.nodes.get('auth-title').textContent,'Welcome back to your reading room');
 });
+test('English sign-in failures explain the available recovery action',async t=>{
+  for(const [message,expected]of [
+    ['邮箱或密码不正确，请重试或使用验证码登录','The email or password is incorrect. Try again or use an email code.'],
+    ['登录尝试较多，请稍后再试，也可以使用验证码登录','Too many sign-in attempts. Try again later or use an email code.'],
+    ['未来新增的登录错误','Unable to complete sign-in. Please try again or choose another sign-in method.']
+  ])await t.test(message,async t=>{
+    const f=await fixture({locale:'en',api:async()=>{throw Error(message);}});t.after(()=>f.controller.close());f.controller.open();
+    await f.input('email','reader@example.com');await f.input('auth-password','fixture-password');await f.fire('email-form','submit');
+    assert.equal(f.nodes.get('auth-status').textContent,expected);assert.equal(f.nodes.get('auth-status').attrs.role,'alert');assert.equal(f.doc.active?.id,'auth-password');
+  });
+});
+test('English email-code errors stay readable in sending and verification steps',async t=>{
+  for(const [path,message,expected]of [
+    ['/api/auth/code','验证码邮件暂时无法发出，请稍后重试','The code email could not be sent. Please try again later.'],
+    ['/api/auth/verify','验证码不正确或已过期，请重新获取','The code is incorrect or has expired. Request another one.']
+  ])await t.test(path,async t=>{
+    const f=await fixture({locale:'en',api:async route=>{if(route===path)throw Error(message);return{sent:true,expiresIn:600,retryAfter:60};}});t.after(()=>f.controller.close());f.controller.open();
+    await f.fire('use-code');await f.input('email','reader@example.com');await f.fire('email-form','submit');
+    if(path.endsWith('verify')){await f.input('email-code','123456');await f.fire('verify-form','submit');}
+    assert.equal(f.nodes.get('auth-status').textContent,expected);assert.equal(f.nodes.get('auth-code-step').hidden,false);assert.equal(f.doc.active?.id,'email-code');
+  });
+});
+test('English password setup retains the verified flow after a rejected password',async t=>{
+  for(const [message,expected]of [
+    ['请设置至少 8 个字符的密码','Choose a password with at least eight characters.'],
+    ['这个密码不够安全，请换一个较长的密码','This password is too weak. Choose a longer password.'],
+    ['新密码与原密码相同，请换一个','This is your current password. Choose a different one.']
+  ])await t.test(message,async t=>{
+    const f=await fixture({locale:'en',api:async route=>{if(route.endsWith('/setup'))throw Error(message);return route.endsWith('/code')?{sent:true,expiresIn:600,retryAfter:60}:{user:{id:'user-a'},passwordSetup:true,passwordSetupToken:'fixture-setup-token'};}});t.after(()=>f.controller.close());f.controller.open();
+    await f.fire('create-account');await f.input('email','reader@example.com');await f.fire('email-form','submit');await f.input('email-code','123456');await f.fire('verify-form','submit');
+    await f.input('new-password','fixture-password');await f.fire('password-setup-form','submit');
+    assert.equal(f.nodes.get('auth-status').textContent,expected);assert.equal(f.nodes.get('auth-setup-step').hidden,false);assert.equal(f.controller.isSettingPasswordFor('user-a'),true);assert.equal(f.doc.active?.id,'new-password');
+  });
+});
 test('pending verification is exposed until the receipt establishes matching password setup',async(t)=>{
   let resolve;const pending=new Promise(r=>{resolve=r;});
   const f=await fixture({api:async path=>path==='/api/auth/code'?{sent:true,expiresIn:600,retryAfter:60}:pending});t.after(()=>f.controller.close());f.controller.open();

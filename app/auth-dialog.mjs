@@ -1,5 +1,5 @@
 import {createAuthFlow,createAuthRequestGuard} from './auth-flow.mjs';
-import {homeLocale,homeText} from './home-locale.mjs';
+import {homeLocale,homeText,authErrorText} from './home-locale.mjs';
 
 export function mountAuthDialog({dialog,api,getSession,onAuthenticated,onSessionSettled=async()=>{},getReturnTo,locale=homeLocale(dialog.ownerDocument)}){
   const $=id=>dialog.querySelector('#'+id);
@@ -45,7 +45,7 @@ export function mountAuthDialog({dialog,api,getSession,onAuthenticated,onSession
     $('local-entry').hidden=!session.localAvailable;$('local-login').disabled=v.busy;
     dialog.setAttribute('aria-busy',String(v.busy));dialog.dataset.step=v.step;
     $('auth-status').classList.toggle('error',!!v.error);$('auth-status').setAttribute('role',v.error?'alert':'status');
-    $('auth-status').textContent=v.error||(v.action==='send'?'正在发送验证码…':codeStep&&v.expired?'验证码已过期，请重新发送。':'');
+    $('auth-status').textContent=v.error?authErrorText(v.error,locale):(v.action==='send'?'正在发送验证码…':codeStep&&v.expired?'验证码已过期，请重新发送。':'');
     $('email').setAttribute('aria-invalid',String(!!v.error&&!codeStep&&!setup&&!password));
     $('email-code').setAttribute('aria-invalid',String(!!v.error&&codeStep));
     $('auth-password').setAttribute('aria-invalid',String(!!v.error&&password));

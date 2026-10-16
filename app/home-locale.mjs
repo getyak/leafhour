@@ -49,6 +49,46 @@ export function homeText(value,locale){
     .replace(/(\d+) 秒后重发/g,'Resend in $1s').replace(/(\d+) 秒后重试/g,'Try again in $1s').replace(/(\d+) 秒后可发送/g,'Send in $1s')
     .replace(/双译开篇 · (\d+) 段/g,'Two translations · $1 opening passages');
 }
+const authErrors=new Map([
+  ['邮箱或密码不正确，请重试或使用验证码登录','The email or password is incorrect. Try again or use an email code.'],
+  ['请先验证邮箱，也可以使用验证码登录','Verify your email first, or sign in with an email code.'],
+  ['验证码不正确或已过期，请重新获取','The code is incorrect or has expired. Request another one.'],
+  ['验证码未能验证，请核对邮件里的数字','The code could not be verified. Check the digits in your email.'],
+  ['验证码邮件暂时无法发出，请稍后重试','The code email could not be sent. Please try again later.'],
+  ['邮件暂时未能发出，请稍后再试','The code email could not be sent. Please try again later.'],
+  ['邮件发送暂未确认，请稍后查看邮箱再重试','Email delivery is not yet confirmed. Check your inbox before trying again.'],
+  ['新密码与原密码相同，请换一个','This is your current password. Choose a different one.'],
+  ['这个密码不够安全，请换一个较长的密码','This password is too weak. Choose a longer password.'],
+  ['请设置至少 8 个字符的密码','Choose a password with at least eight characters.'],
+  ['密码暂未保存，请重试或重新验证邮箱','Your password has not been saved. Try again or verify your email again.'],
+  ['请输入密码','Enter your password.'],['请输入有效的邮箱地址','Enter a valid email address.'],
+  ['请输入邮件里的验证码','Enter the verification code from your email.'],['请输入邮件里的六位验证码','Enter the six-digit code from your email.'],
+  ['请稍后再获取验证码','Wait before requesting another code.'],['请一分钟后再获取验证码','Wait one minute before requesting another code.'],
+  ['请求较频繁，请稍后再试','Too many requests. Please try again later.'],
+  ['邮件请求较多，请稍后再试','Too many email requests. Please try again later.'],['验证码请求较多，请稍后再试','Too many code requests. Please try again later.'],
+  ['登录尝试较多，请稍后再试，也可以使用验证码登录','Too many sign-in attempts. Try again later or use an email code.'],
+  ['请重新验证邮箱后设置密码','Verify your email again before setting your password.'],
+  ['这次邮箱验证与当前账户不一致，请重新验证','This email verification does not match the current account. Verify your email again.'],
+  ['这次验证已用于保存密码，请尝试密码登录或重新验证邮箱','This verification has already been used. Sign in with your password or verify your email again.'],
+  ['邮箱验证已过期，请重新验证后设置密码','Email verification has expired. Verify your email again before setting your password.'],
+  ['登录服务暂时无法连接，请稍后重试','Unable to reach the sign-in service. Please try again later.'],
+  ['登录服务暂时不可用，请稍后重试','Sign-in is temporarily unavailable. Please try again later.'],
+  ['登录已失效，请重新进入','Your session has expired. Please sign in again.'],
+  ['登录未能完成，请重新尝试','Sign-in could not be completed. Please try again.'],
+  ['登录信息未能确认，请重新尝试','Your sign-in could not be confirmed. Please try again.'],
+  ['这个登录方式正在准备中，请使用其他方式','This sign-in method is not available yet. Choose another method.'],
+  ['这个登录方式正在准备中','This sign-in method is not available yet. Choose another method.'],
+  ['邮箱登录正在准备中。你可以先试读公版书。','Email sign-in is not available yet. You can read a public sample first.'],
+  ['邮箱服务尚未配置。现在可以试读，或进入本机书房。','Email sign-in is not configured. Read a sample or use the local reading room.'],
+  ['此书房尚未开启密码登录，可以使用验证码或本机书房','Password sign-in is not enabled. Use an email code or the local reading room.'],
+  ['此书房尚未开启密码设置','Password setup is not enabled for this reading room.']
+]);
+export function authErrorText(value,locale){
+  if(locale!=='en'||typeof value!=='string')return value;
+  const translated=authErrors.get(value)||homeText(value,locale);
+  // Keep future server messages readable without leaking partial Chinese into English UI.
+  return /\p{Script=Han}/u.test(translated)?'Unable to complete sign-in. Please try again or choose another sign-in method.':translated;
+}
 export function englishHomeDocument(source){
   return homeText(source,'en')
     .replace('<html lang="zh-Hans">','<html lang="en">')
