@@ -193,7 +193,7 @@ function positionTools(){
   const nodeRect=node.getBoundingClientRect();tools.hidden=false;tools.inert=false;tools.style.visibility='hidden';tools.style.opacity='0';tools.style.maxWidth=Math.min(nodeRect.width,innerWidth-24)+'px';
   const rangeRect=tools.dataset.excerpt==='true'?selectedRangeRect():null,anchorRect=rangeRect||nodeRect;
   const header=document.body.classList.contains('is-focused')?0:$('reading-header').getBoundingClientRect().bottom;
-  const placement=placeFloatingToolbar({anchor:anchorRect,fallbackAnchor:rangeRect?nodeRect:anchorRect,toolbar:{width:tools.offsetWidth,height:tools.offsetHeight},viewport:{width:innerWidth,height:innerHeight},headerBottom:header});
+  const placement=placeFloatingToolbar({anchor:anchorRect,fallbackAnchor:rangeRect?nodeRect:anchorRect,toolbar:{width:tools.offsetWidth,height:tools.offsetHeight},viewport:{width:innerWidth,height:innerHeight},headerBottom:header,gap:rangeRect?10:24});
   tools.style.left=placement.left+'px';tools.style.top=placement.top+'px';tools.dataset.placement=placement.placement;tools.inert=!placement.visible;tools.setAttribute('aria-hidden',String(!placement.visible));tools.style.visibility=placement.visible?'visible':'hidden';tools.style.opacity=placement.visible?'1':'0';
   const menu=$('paragraph-more');if(!menu.hidden){menu.style.maxHeight='';const at=placeFloatingMenu({toolbar:tools.getBoundingClientRect(),menu:{width:menu.offsetWidth,height:menu.scrollHeight+2},viewport:{width:innerWidth,height:innerHeight},headerBottom:header});Object.assign(menu.style,{position:'absolute',left:(at.left-tools.getBoundingClientRect().left)+'px',top:(at.top-tools.getBoundingClientRect().top)+'px',right:'auto',bottom:'auto',maxHeight:at.maxHeight+'px'});}
 }
