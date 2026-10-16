@@ -6,6 +6,7 @@ import {normalizeAppearance} from '../app/reading-preferences.mjs';
 import {applyCatalogChapters,alignReadingPosition} from './catalog-chapters.mjs';
 import {resumeSummary} from '../app/reading-progress.mjs';
 import {validateLibraryBackup} from '../app/library-backup.mjs';
+import {normalizeHighlight,highlightKey,mergeHighlights} from '../app/highlights.mjs';
 import {inferSourceLanguage} from '../app/source-language.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
 import {applyCatalogSample} from './catalog-sample.mjs';
@@ -13,9 +14,10 @@ import {normalizeReadingSession,mergeReadingSession,normalizeReadingMilestone,no
 
 const requireUser=user=>{if(!user?.id)throw fail('请先进入自己的书房',401);return user;};
 const emptyRecords=book=>({kind:'marginalia-personal-records',schemaVersion:3,bookId:book.bookId,contentVersion:book.contentVersion,comments:[],questions:[],readingSessions:[],readingMilestones:[],position:null});
-const readingDefaults=data=>Object.assign(data,{schemaVersion:3,readingMilestones:data.readingMilestones||[],readingSessions:data.readingSessions||[]});
+const readingDefaults=data=>Object.assign(data,{schemaVersion:3,readingMilestones:data.readingMilestones||[],readingSessions:data.readingSessions||[],highlights:data.highlights||[]});
 function mergedPersonalRecords(book,current,incoming){
   const data=readingDefaults(structuredClone(current));
+  data.highlights=mergeHighlights(data.highlights,incoming.highlights||[]);
   for(const key of ['comments','questions']){const map=new Map(data[key].map(r=>[r.id,r]));for(const row of incoming[key])if(!map.has(row.id))map.set(row.id,row);data[key]=[...map.values()];}
   const sessions=new Map(data.readingSessions.map(r=>[r.id,r]));
   for(const session of incoming.readingSessions){const old=sessions.get(session.id);if(session.source==='reader_focus')sessions.set(session.id,mergeReadingSession(old,normalizeReadingSession(session,book)));else if(old&&old.source!==session.source)throw fail('备份中的阅读时段标识冲突，未覆盖记录',409);else if(!old)sessions.set(session.id,session);}
@@ -163,6 +165,21 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     requireUser(user);buildReadingCalendar([],query);const index=await read(path.join(userDir(user),'index.json'),{books:[]}),ids=[...new Set([...publicBooks.keys(),...index.books.map(b=>b.bookId)])];
     const entries=await Promise.all(ids.map(async id=>{const book=publicBooks.get(id)||await read(bookFile(user,id),null);if(!book)return null;return {book,records:await read(recordFile(user,id),emptyRecords(book))};}));return buildReadingCalendar(entries.filter(Boolean),query);
   }
+  async function addHighlight(user,id,input){
+    requireUser(user);const book=await getBook(user,id),row=normalizeHighlight(input,book,{matchCurrent:false});
+    return mutate(recordFile(user,id),emptyRecords(book),raw=>{
+      const data=readingDefaults(raw),old=data.highlights.find(item=>item.id===row.id);
+      if(old){if(highlightKey(old)!==highlightKey(row))throw fail('高亮标识冲突，原记录已保留',409);return old;}
+      normalizeHighlight(input,book);
+      const duplicate=data.highlights.find(item=>!item.deletedAt&&highlightKey(item)===highlightKey(row));if(duplicate)return duplicate;
+      if(data.highlights.length>=10000)throw fail('高亮较多，请先导出整理',413);
+      const saved={...row,createdAt:new Date().toISOString()};data.highlights.push(saved);guardRecordSize(data);return saved;
+    });
+  }
+  async function removeHighlight(user,id,highlightId){
+    requireUser(user);const book=await getBook(user,id);
+    return mutate(recordFile(user,id),emptyRecords(book),raw=>{const data=readingDefaults(raw),row=data.highlights.find(item=>item.id===highlightId);if(!row)throw fail('找不到这条高亮',404);row.deletedAt??=new Date().toISOString();guardRecordSize(data);return row;});
+  }
   async function addComment(user,id,input,type='comments'){
     requireUser(user);const book=await getBook(user,id);
     if(!['comments','questions'].includes(type)||typeof input?.id!=='string'||!input.id||input.id.length>128||typeof input.text!=='string'||!input.text.trim()||input.text.length>2000||!allPassages(book).some(p=>p.id===input.passageId)||input.origin&&input.origin!=='user'||input.contentVersion&&input.contentVersion!==book.contentVersion)throw fail('记录无法对应当前原文');
@@ -267,7 +284,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     requireUser(user);validateLibraryBackup(backup);
     if(backup.books.length!==1||Buffer.byteLength(JSON.stringify(backup))>MAX_FILE_BYTES)throw fail('请选择一份 20 MB 以内的单书阅读包',413);
     const entry=backup.books[0],incoming=entry.book,personal=entry.records;
-    if(entry.shelf!==undefined||entry.localReadingDrafts!==undefined||['comments','questions','readingSessions','readingMilestones'].some(key=>personal[key]?.length)||personal.position||personal.readingGoal)throw fail('赠书阅读包不能包含个人记录');
+    if(entry.shelf!==undefined||entry.localReadingDrafts!==undefined||['comments','questions','readingSessions','readingMilestones','highlights'].some(key=>personal[key]?.length)||personal.position||personal.readingGoal)throw fail('赠书阅读包不能包含个人记录');
     const unreadable=()=>fail('这份阅读包的原文与译文合计超过云端阅读容量，请下载后在本机接收',413);
     if(dataStore&&Buffer.byteLength(JSON.stringify(incoming))>3500000)throw unreadable();
     const original=structuredClone(incoming),overlay={},fingerprint=digest(JSON.stringify(incoming));original.visibility='private';delete original._giftReceive;
@@ -319,5 +336,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(claim.pending)await mutate(bookFile(user,incoming.bookId),{},current=>{if(current._giftReceive?.fingerprint===fingerprint)delete current._giftReceive;});
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,originalInfo,getOriginal,originalDownload,records,addComment,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,validateRestore,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,originalInfo,getOriginal,originalDownload,records,addComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,validateRestore,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }

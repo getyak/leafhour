@@ -34,6 +34,18 @@ async function seed(library,user,id='reading-test'){
   await library.restoreLibrary(user,{kind:'marginalia-library',schemaVersion:1,books:[{book,records:{...readingRecords(),bookId:id}}]});return book;
 }
 
+test('HTTP highlights save through the account store and refuse guests, stale owners and other accounts',async t=>{
+  const {post,get,portal,a,b}=await setup(t),book=await seed(portal.library,sender),route='/api/library/books/'+book.bookId+'/highlights';
+  const input={id:'highlight-1',bookId:book.bookId,contentVersion:book.contentVersion,chapterId:'ch01',parts:[{passageId:'p1',language:'en',variant:'interpretive',start:5,end:9,text:'this'}]};
+  assert.equal((await post(route,input)).status,401);
+  assert.equal((await post(route,input,b,sender.id)).status,409);
+  assert.equal((await post(route,input,b)).status,404);
+  const response=await post(route,input,a);assert.equal(response.status,201);assert.equal((await response.json()).parts[0].text,'this');
+  assert.equal((await (await get('/api/library/books/'+book.bookId+'/records',a)).json()).highlights.length,1);
+  assert.equal((await post(route+'/highlight-1/remove',{},b)).status,404);
+  const removed=await post(route+'/highlight-1/remove',{},a);assert.equal(removed.status,200);assert.ok((await removed.json()).deletedAt);
+});
+
 test('gift return paths accept only one exact token path and reject redirect material',()=>{
   const token='A'.repeat(43),target='/gift/'+token;assert.equal(typeof returns.safeGiftReturn,'function');assert.equal(returns.safeGiftReturn(target),target);assert.equal(safeAuthReturn(target),target);
   for(const value of [target+'?next=https://evil.invalid',target+'#fragment',target+'/',target+'/..','/gift/'+'A'.repeat(42),'/gift/'+'A'.repeat(44),'//evil.invalid/gift/'+token,'https://evil.invalid/gift/'+token,'/gift/%41'+token.slice(1),'/gift/../'+token,'/gift/\\'+token]){assert.equal(returns.safeGiftReturn(value),null);assert.equal(safeAuthReturn(value),null);}
