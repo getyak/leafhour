@@ -19,7 +19,7 @@ return async function handler(req,res){
     if(!/^\/api\/(auth\/|library(?:\/|$)|account\/profile$|book-gifts\/|agent\/)/.test(route))return json(res,404,{error:'请从书房选择一本书再开始阅读'});
     const origin=env.READER_PUBLIC_ORIGIN;
     if(!origin?.startsWith('https://'))return json(res,503,{error:'线上书房地址尚未配置'});
-    if(!portalPromise){const store=storeFactory({env});portalPromise=portalFactory({dataDir:'hosted',publicOrigin:origin,allowLocal:false,dataStore:store,authService:authFactory({store,env}),hostedMcp:true}).catch(e=>{portalPromise=null;throw e;});}
+    if(!portalPromise){const store=storeFactory({env}),additionalWebOrigins=(env.READER_ADDITIONAL_WEB_ORIGINS||'').split(',').map(value=>value.trim()).filter(Boolean);portalPromise=portalFactory({dataDir:'hosted',publicOrigin:origin,additionalWebOrigins,allowLocal:false,dataStore:store,authService:authFactory({store,env}),hostedMcp:true}).catch(e=>{portalPromise=null;throw e;});}
     const portal=await portalPromise,url=new URL(req.url,origin);url.pathname=route;
     const handled=await portal.handle({req,res,url,send:(status,body)=>json(res,status,body)});
     if(!handled)json(res,404,{error:'找不到这个操作'});

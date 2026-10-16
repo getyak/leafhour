@@ -124,3 +124,57 @@ test('password HTTP login returns a private cookie and exposes no provider crede
   assert.match(headers['Set-Cookie'],/HttpOnly/);assert.match(headers['Set-Cookie'],/Secure/);
   req.headers.origin='https://unrelated.example';await assert.rejects(portal.handle({req,res:{setHeader(){}},url:new URL('/api/auth/password',f.env.READER_PUBLIC_ORIGIN),send(){}}),e=>e.status===403);
 });
+
+async function portalRequest(portal,route,{origin='https://reader.cubxxw.com',method='POST',body={},headers={}}={}){
+  const result={headers:{}},res={setHeader:(key,value)=>{result.headers[key]=value;},end(){}};
+  const req={method,headers:{host:'reader.cubxxw.com',origin,'content-type':'application/json',...headers},body,socket:{remoteAddress:'127.0.0.1'}};
+  await portal.handle({req,res,url:new URL(route,'https://leafhour.com'),send:(status,value)=>Object.assign(result,{status,body:value})});
+  return {...result,status:result.status||res.statusCode};
+}
+const transitionPortal=async(f,options={})=>createPortal({dataDir:'legacy-origin-fixture',dataStore:f.store(),authService:make(f),catalogDir:null,allowLocal:false,publicOrigin:'https://leafhour.com',additionalWebOrigins:['https://reader.cubxxw.com'],...options});
+
+test('an explicitly configured legacy HTTPS origin can sign in, save a local draft and export its backup',async()=>{
+  const f=authFixture(),objects=new Map(),dataStore={...f.store(),putBlob:async(key,bytes)=>{objects.set(key,Buffer.from(bytes));}},portal=await transitionPortal(f,{dataStore});
+  const login=await portalRequest(portal,'/api/auth/password',{body:{email:'reader@example.com',password:'fixture-password'}});
+  assert.equal(login.status,200);assert.equal(login.body.user.id,'user-a');
+  assert.match(login.headers['Set-Cookie'],/marginalia_session=.*HttpOnly.*Secure/);assert.ok(!login.headers['Set-Cookie'].includes('Domain='));
+  const cookie=login.headers['Set-Cookie'].split(';')[0],headers={cookie,'x-reader-owner':'user-a'};
+  const book=await portal.library.importDocument(login.body.user,{filename:'legacy-draft.txt',bytes:Buffer.from('A synthetic book used only for draft recovery.')}),passageId=book.sections[0].paragraphs[0].id;
+  const saved=await portalRequest(portal,'/api/library/books/'+book.bookId+'/comments',{headers,body:{id:'legacy-draft',passageId,text:'An unsynced legacy draft.'}});
+  assert.equal(saved.status,201);
+  const backup=await portalRequest(portal,'/api/library/export',{method:'GET',headers});
+  assert.equal(backup.status,200);assert.equal(backup.body.kind,'marginalia-library');assert.equal(backup.body.books[0].records.comments[0].text,'An unsynced legacy draft.');
+  assert.equal((await portalRequest(portal,'/api/auth/code',{body:{email:'reader@example.com'}})).body.sent,true);
+  const verified=await portalRequest(portal,'/api/auth/verify',{body:{email:'reader@example.com',code:'123456'}});
+  assert.equal(verified.status,200);assert.equal(verified.body.user.id,'user-a');
+});
+test('extra web origins reject non-exact or non-HTTPS configuration before services are used',async()=>{
+  for(const additionalWebOrigins of [null,'https://reader.cubxxw.com',[null],[42],['https://*.cubxxw.com'],['https://reader.cubxxw.com/'],['https://reader.cubxxw.com/path'],['https://reader.cubxxw.com?x=1'],['https://reader.cubxxw.com#x'],['https://user:password@reader.cubxxw.com'],['http://reader.cubxxw.com'],['not a URL']]){
+    const f=authFixture();await assert.rejects(transitionPortal(f,{additionalWebOrigins}),error=>error.status===503);assert.equal(f.calls.length,0);
+  }
+});
+test('hosted web origins remain opt-in and never come from Host or forwarded headers',async()=>{
+  const f=authFixture(),portal=await transitionPortal(f);
+  for(const origin of ['http://unrelated.example','https://unrelated.example','http://reader.cubxxw.com','https://reader.cubxxw.com:8443','https://reader.cubxxw.com.evil.example',undefined,'null']){
+    await assert.rejects(portalRequest(portal,'/api/auth/password',{origin,headers:{origin,host:'unrelated.example','x-forwarded-host':'reader.cubxxw.com','x-forwarded-proto':'https'},body:{email:'reader@example.com',password:'fixture-password'}}),error=>error.status===403);
+  }
+  const canonicalOnly=await transitionPortal(f,{additionalWebOrigins:[]});
+  await assert.rejects(portalRequest(canonicalOnly,'/api/auth/password',{body:{email:'reader@example.com',password:'fixture-password'}}),error=>error.status===403);
+  assert.equal(f.calls.length,0);
+});
+test('a legacy host exposes password and email recovery without offering OAuth providers',async()=>{
+  const f=authFixture(),portal=await transitionPortal(f);
+  const legacy=await portalRequest(portal,'/api/auth/session',{method:'GET',headers:{origin:undefined}});
+  assert.equal(legacy.status,200);assert.equal(legacy.body.passwordAvailable,true);assert.equal(legacy.body.emailAvailable,true);assert.deepEqual(legacy.body.providers,{google:false,apple:false});
+  const canonical=await portalRequest(portal,'/api/auth/session',{method:'GET',headers:{origin:undefined,host:'leafhour.com'}});
+  assert.deepEqual(canonical.body.providers,{google:true,apple:false});
+});
+test('the legacy origin cannot start OAuth and the canonical origin retains its sole callback',async()=>{
+  const f=authFixture();f.env.READER_PUBLIC_ORIGIN='https://leafhour.com';const portal=await transitionPortal(f);
+  await assert.rejects(portalRequest(portal,'/api/auth/oauth',{body:{provider:'google',next:'/library'}}),error=>error.status===403&&error.message.includes('https://leafhour.com'));
+  assert.equal(f.calls.length,0);assert.equal([...f.rows.keys()].filter(key=>key.startsWith('auth/oauth/')).length,0);
+  const start=await portalRequest(portal,'/api/auth/oauth',{origin:'https://leafhour.com',headers:{host:'leafhour.com'},body:{provider:'google',next:'/library'}});
+  assert.equal(start.status,200);assert.equal(new URL(start.body.url).searchParams.get('redirect_to'),'https://leafhour.com/api/auth/callback');
+  const callback=await portalRequest(portal,'/api/auth/callback?error=access_denied',{method:'GET',headers:{cookie:start.headers['Set-Cookie'].split(';')[0]}});
+  assert.equal(callback.status,303);assert.equal(new URL(callback.headers.Location).origin,'https://leafhour.com');
+});

@@ -27,3 +27,13 @@ The old host remains available for recovering or exporting unsynced browser draf
 Production source commit and assets, www HTTPS redirect, existing-account login/library continuity, Resend domain authentication and inbox receipt, Supabase sender/templates/site URL/redirect allowlist, Google origin, Apple web domain and Private Email Relay sender, and desktop/mobile actual page layout. A prior test-recipient bounce was observed and requires checking recipient routing and suppression before claiming delivery.
 
 Browser configuration access became unavailable during this checkpoint. No provider success, inbox receipt, real-login success, or actual app visual acceptance is inferred from source tests or HTTP asset responses. Subsequent verified results should be appended below with their evidence and limits.
+
+## Follow-up transition checks
+
+Normal TLS validation now succeeds for www, which returns HTTP 308 with `Location: https://leafhour.com/`. Both domain DNS checks are valid. Vercel's Git connection now identifies `getyak/leafhour` with the original repository ID.
+
+The hosted adapter now consumes `READER_ADDITIONAL_WEB_ORIGINS`, configured in production as the exact former HTTPS origin. This preserves password/email login and account-scoped draft/backup operations on the old host. Extra origins are strictly validated; request Host and forwarded headers do not authorize hosted requests. Third-party providers are hidden on noncanonical hosts, and starting OAuth there is rejected before creating a transaction, because its host-only flow cookie could not reach the canonical callback. The canonical OAuth origin stays unchanged. The standalone local entry point does not consume this hosted environment variable.
+
+These behavior changes had observed failing tests before implementation. All 66 focused auth/origin/hosted/local checks passed, and a second independent security review found no P1/P2 issue. The original default account was authenticated by an in-memory HTTP client using its existing secure credential reference. Account identity, book IDs, and personal-record fingerprints were captured only in ignored local evidence for post-deployment comparison; no source data was changed or published.
+
+Final full verification after the origin change: Node 24.22.0, 685 tests, 684 pass, zero failures, one environment-dependent skip; runtime initialization, public build, media integrity, software allowlist, and source-provenance stages all passed. No model request or user-book write was made.
