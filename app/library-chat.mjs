@@ -166,8 +166,9 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   function escape(event){if(event.key==='Escape'&&root.open){event.preventDefault();event.stopPropagation();close();}}
   root.addEventListener('keydown',escape);launcher.addEventListener('keydown',escape);
   // Match the visible viewport when a mobile keyboard reduces or pans it.
-  function fitViewport(){const viewport=window.visualViewport;if(!viewport)return;root.style.setProperty('--chat-viewport-height',viewport.height+'px');root.style.setProperty('--chat-viewport-top',viewport.offsetTop+'px');root.classList.toggle('is-compact-viewport',viewport.height<=500);}
+  function fitViewport(){const viewport=window.visualViewport;if(!viewport)return;root.style.setProperty('--chat-viewport-height',viewport.height+'px');root.style.setProperty('--chat-viewport-top',viewport.offsetTop+'px');root.classList.toggle('is-compact-viewport',viewport.height<=500);if(root.open&&viewport.height<=500&&document.activeElement===input)frame.scrollTop+=Math.max(0,form.getBoundingClientRect().bottom-Math.min(frame.getBoundingClientRect().bottom,viewport.offsetTop+viewport.height-8));}
   window.visualViewport?.addEventListener('resize',fitViewport);window.visualViewport?.addEventListener('scroll',fitViewport);fitViewport();
+  input.addEventListener('focus',fitViewport);
   closeButton.addEventListener('click',close);root.addEventListener('cancel',event=>{event.preventDefault();close();});root.addEventListener('close',()=>{clearPoll();if(opener?.isConnected)opener.focus();});
   chooser.addEventListener('change',()=>{if(choose(chooser.value)){render();load();}});context.addEventListener('toggle',()=>{contextHint.textContent=context.open?'收起原文与译文':'查看原文与译文';});
   input.addEventListener('input',()=>{state.setDraft(input.value);render();});input.addEventListener('compositionstart',()=>{composing=true;});input.addEventListener('compositionend',()=>{composing=false;});input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing&&!composing&&event.keyCode!==229){event.preventDefault();send();}});
