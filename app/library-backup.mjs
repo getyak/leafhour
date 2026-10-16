@@ -46,7 +46,7 @@ export function validateLibraryBackup(backup){
     }
     if(r.highlights!==undefined){
       if(!Array.isArray(r.highlights)||r.highlights.length>10000)invalid(where,'高亮记录不完整');
-      const ids=new Set();for(const row of r.highlights){try{normalizeHighlight(row,b,{stored:true});if(ids.has(row.id))invalid(where,'高亮标识重复');ids.add(row.id);}catch{invalid(where,'高亮记录无法对应原文位置');}}
+      const ids=new Set();for(const row of r.highlights){try{normalizeHighlight(row,b,{stored:true});for(const id of [row.id,...row.requestIds||[]]){if(ids.has(id))invalid(where,'高亮标识重复');ids.add(id);}}catch{invalid(where,'高亮记录无法对应原文位置');}}
     }
     const sessionIds=new Set();for(const s of r.readingSessions){
       if(!object(s)||!text(s.id,128)||sessionIds.has(s.id)||s.bookId!==b.bookId||!date(s.startedAt)||!date(s.endedAt)||Date.parse(s.endedAt)<Date.parse(s.startedAt)||!Number.isFinite(s.durationSeconds)||s.durationSeconds<0||s.durationSeconds>86400)invalid(where,'阅读时段的时间或来源不正确');

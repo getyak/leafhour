@@ -1,7 +1,7 @@
 import http from 'node:http';
 import {normalizeAppearance} from '../app/reading-preferences.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
-import {normalizeHighlight,highlightKey,mergeHighlights} from '../app/highlights.mjs';
+import {normalizeHighlight,saveHighlight,findHighlight,mergeHighlights} from '../app/highlights.mjs';
 import {createExperienceService} from './experience-service.mjs';
 import {createPortal} from './portal.mjs';
 import {readFile,writeFile,rename,mkdir} from 'node:fs/promises';
@@ -91,9 +91,9 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
         if(url.pathname.startsWith('/api/audio/')&&await portal.audioRoutes.handle({req,res,url,user:{id:'legacy-local'},bookId:book.bookId,action:url.pathname.slice(11),body,send}))return;
         if(await experiences.handle({req,res,url,body,send}))return;
         if(url.pathname==='/api/highlights'){
-          const row=normalizeHighlight(body,book,{matchCurrent:false}),saved=await mutate(records=>{records.highlights??=[];const old=records.highlights.find(item=>item.id===row.id);if(old){if(highlightKey(old)!==highlightKey(row))throw fail('高亮标识冲突',409);return old;}normalizeHighlight(body,book);const duplicate=records.highlights.find(item=>!item.deletedAt&&highlightKey(item)===highlightKey(row));if(duplicate)return duplicate;if(records.highlights.length>=10000)throw fail('高亮较多，请先导出整理',413);const record={...row,createdAt:new Date().toISOString()};records.highlights.push(record);return record;});send(201,saved);return;
+          const saved=await mutate(records=>{records.highlights??=[];return saveHighlight(records.highlights,body,book);});send(201,saved);return;
         }
-        const removeHighlight=url.pathname.match(/^\/api\/highlights\/([A-Za-z0-9_-]{1,128})\/remove$/);if(removeHighlight){const saved=await mutate(records=>{const row=records.highlights?.find(item=>item.id===removeHighlight[1]);if(!row)throw fail('找不到这条高亮',404);row.deletedAt??=new Date().toISOString();return row;});send(200,saved);return;}
+        const removeHighlight=url.pathname.match(/^\/api\/highlights\/([A-Za-z0-9_-]{1,128})\/remove$/);if(removeHighlight){const saved=await mutate(records=>{const row=findHighlight(records.highlights||[],removeHighlight[1]);if(!row)throw fail('找不到这条高亮',404);row.deletedAt??=new Date().toISOString();return row;});send(200,saved);return;}
         if(url.pathname==='/api/comments'||url.pathname==='/api/questions'){
           const type=url.pathname.endsWith('questions')?'question':'comment',key=type==='question'?'questions':'comments';const record=cleanRecord(body,type);
           const result=await mutate(records=>{const old=records[key].find(r=>r.id===record.id);if(old){if(old.passageId!==record.passageId||old.text!==record.text)throw fail('记录ID冲突',409);return {record:old,existing:true};}records[key].push(record);return {record,existing:false};});send(result.existing?200:201,result.record);return;

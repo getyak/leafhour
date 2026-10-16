@@ -21,7 +21,7 @@ test('a selected phrase is saved once and is private to its account',async t=>{
   const record=await library.addHighlight(owner,readingBook.bookId,selection());
   assert.equal(record.origin,'user');assert.equal(record.parts[0].text,'this');
   assert.deepEqual(await library.addHighlight(owner,readingBook.bookId,selection()),record);
-  assert.deepEqual(await library.addHighlight(owner,readingBook.bookId,selection({id:'retry-with-new-id'})),record);
+  assert.equal((await library.addHighlight(owner,readingBook.bookId,selection({id:'retry-with-new-id'}))).id,record.id);
   assert.equal((await library.records(owner,readingBook.bookId)).highlights.length,1);
   await assert.rejects(library.addHighlight(null,readingBook.bookId,selection()),e=>e.status===401);
   await assert.rejects(library.records(other,readingBook.bookId),e=>e.status===404);
@@ -81,4 +81,14 @@ test('an identical acknowledged highlight remains retryable after its translatio
   const changed=await library.exportLibrary(owner);changed.books[0].book.sections[0].paragraphs[0].translations.interpretive.text='这里是新文字。';await library.restoreLibrary(owner,changed);
   assert.deepEqual(await library.addHighlight(owner,readingBook.bookId,input),saved);
   await assert.rejects(library.addHighlight(owner,readingBook.bookId,{...input,id:'new-stale-request'}),e=>e.status===400);
+});
+
+test('a deduplicated request stays canceled when its lost acknowledgement is retried, including after restore',async t=>{
+  const {library,dir}=await setup(t);await library.addHighlight(owner,readingBook.bookId,selection());
+  const duplicate=selection({id:'second-tab-request'});assert.equal((await library.addHighlight(owner,readingBook.bookId,duplicate)).id,'highlight-1');
+  await library.removeHighlight(owner,readingBook.bookId,'highlight-1');
+  assert.ok((await library.addHighlight(owner,readingBook.bookId,duplicate)).deletedAt);
+  const fresh=await createLibraryService({dataDir:path.join(dir,'alias-restored'),catalogDir:null});await fresh.restoreLibrary(other,await library.exportLibrary(owner));
+  assert.ok((await fresh.addHighlight(other,readingBook.bookId,duplicate)).deletedAt);
+  assert.equal((await fresh.records(other,readingBook.bookId)).highlights.filter(row=>!row.deletedAt).length,0);
 });

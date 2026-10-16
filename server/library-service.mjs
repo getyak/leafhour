@@ -6,7 +6,7 @@ import {normalizeAppearance} from '../app/reading-preferences.mjs';
 import {applyCatalogChapters,alignReadingPosition} from './catalog-chapters.mjs';
 import {resumeSummary} from '../app/reading-progress.mjs';
 import {validateLibraryBackup} from '../app/library-backup.mjs';
-import {normalizeHighlight,highlightKey,mergeHighlights} from '../app/highlights.mjs';
+import {saveHighlight,findHighlight,mergeHighlights} from '../app/highlights.mjs';
 import {inferSourceLanguage} from '../app/source-language.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
 import {applyCatalogSample} from './catalog-sample.mjs';
@@ -166,19 +166,14 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     const entries=await Promise.all(ids.map(async id=>{const book=publicBooks.get(id)||await read(bookFile(user,id),null);if(!book)return null;return {book,records:await read(recordFile(user,id),emptyRecords(book))};}));return buildReadingCalendar(entries.filter(Boolean),query);
   }
   async function addHighlight(user,id,input){
-    requireUser(user);const book=await getBook(user,id),row=normalizeHighlight(input,book,{matchCurrent:false});
+    requireUser(user);const book=await getBook(user,id);
     return mutate(recordFile(user,id),emptyRecords(book),raw=>{
-      const data=readingDefaults(raw),old=data.highlights.find(item=>item.id===row.id);
-      if(old){if(highlightKey(old)!==highlightKey(row))throw fail('高亮标识冲突，原记录已保留',409);return old;}
-      normalizeHighlight(input,book);
-      const duplicate=data.highlights.find(item=>!item.deletedAt&&highlightKey(item)===highlightKey(row));if(duplicate)return duplicate;
-      if(data.highlights.length>=10000)throw fail('高亮较多，请先导出整理',413);
-      const saved={...row,createdAt:new Date().toISOString()};data.highlights.push(saved);guardRecordSize(data);return saved;
+      const data=readingDefaults(raw),saved=saveHighlight(data.highlights,input,book);guardRecordSize(data);return saved;
     });
   }
   async function removeHighlight(user,id,highlightId){
     requireUser(user);const book=await getBook(user,id);
-    return mutate(recordFile(user,id),emptyRecords(book),raw=>{const data=readingDefaults(raw),row=data.highlights.find(item=>item.id===highlightId);if(!row)throw fail('找不到这条高亮',404);row.deletedAt??=new Date().toISOString();guardRecordSize(data);return row;});
+    return mutate(recordFile(user,id),emptyRecords(book),raw=>{const data=readingDefaults(raw),row=findHighlight(data.highlights,highlightId);if(!row)throw fail('找不到这条高亮',404);row.deletedAt??=new Date().toISOString();guardRecordSize(data);return row;});
   }
   async function addComment(user,id,input,type='comments'){
     requireUser(user);const book=await getBook(user,id);
