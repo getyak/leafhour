@@ -52,9 +52,10 @@
     <div class="ending-actions"><a href="/library?calendar=1" class="reading-primary">回到书房与日历 →</a><button data-reading-close="reading-ending" type="button">继续翻书</button></div><p class="ending-footnote">结束计时不会标记读完。理解与问题需分别保存；未提交的文字请留意保存提示。</p>
   </dialog>
   <div id="paragraph-tools" class="paragraph-tools" role="toolbar" aria-label="当前段落操作" hidden>
-    <button id="show-share" hidden>分享摘录</button><button id="show-xray">透视</button><button id="show-original">原文</button><button id="show-audio">朗读</button><button id="show-annotations">注解</button><button id="show-comment">想法</button><button id="more-actions" aria-label="更多段落操作" aria-expanded="false">更多</button>
+    <button id="show-highlight" hidden>高亮</button><button id="show-share" hidden>分享摘录</button><button id="show-xray">透视</button><button id="show-original">原文</button><button id="show-audio">朗读</button><button id="show-annotations">注解</button><button id="show-comment">想法</button><button id="more-actions" aria-label="更多段落操作" aria-expanded="false">更多</button>
     <div id="paragraph-more" class="paragraph-more" hidden><button id="share-passage">分享这一段</button><button id="listen-from-here">从这里开始听</button><button id="show-stance">站队看看</button><button id="show-echo">用自己的话</button><button id="show-chat" hidden>解释（对照）</button><button data-passage-variant="literal">这一段直译</button><button data-passage-variant="interpretive">这一段意译</button><button id="show-question">留下问题</button></div>
   </div>
+  <p id="highlight-status" class="highlight-status" role="status" aria-live="polite" hidden></p>
   <aside id="note-panel" class="note-panel" aria-label="段落旁注与个人记录" hidden>
     <div class="panel-heading"><div><p id="panel-title">段落旁注</p><span id="panel-anchor"></span></div><button id="close-panel" class="quiet-button" aria-label="关闭段落旁注">关闭</button></div>
     <button id="panel-source" class="panel-source" type="button"><span id="panel-source-label" class="panel-source-label"></span><span id="panel-source-text" class="panel-source-text"></span><span class="panel-source-return">回到正文 <span aria-hidden="true">↗</span></span></button>
@@ -125,7 +126,7 @@
         <section class="settings-habit"><div class="setting-row"><label for="chapter-invitations">每章一个小问题</label><input id="chapter-invitations" type="checkbox" role="switch"></div><p class="setting-hint">普通阅读时提供思考入口；沉浸阅读时不主动弹出。</p></section>
       </div>
       <div id="settings-data" class="settings-panel" role="tabpanel" aria-labelledby="settings-tab-data" hidden>
-        <section class="settings-section"><h3>我的记录</h3><button id="show-all-records" class="settings-action">查看想法与问题 <span>按原文归档</span></button></section>
+        <section class="settings-section"><h3>我的记录</h3><button id="show-all-records" class="settings-action">查看高亮、想法与问题 <span>按原文归档</span></button></section>
         <section class="settings-section"><h3>阅读备份</h3><div class="settings-actions"><a id="export-records" class="settings-action" href="/api/records/export" download>导出阅读记录与外观</a><button id="import-records" class="settings-action">导入阅读记录</button><input id="records-file" type="file" accept=".json" hidden></div><p class="setting-hint">备份保留阅读位置和外观。声音记录请单独导出。</p></section>
         <section class="settings-section"><h3>听读备份</h3><div class="settings-actions"><button id="settings-listening-records" class="settings-action">查看已保存的听读</button><button id="export-listening" class="settings-action">导出听读记录</button><button id="import-listening" class="settings-action">恢复听读记录</button></div><p class="setting-hint">包含讲稿、声音与播放位置。氛围偏好仍保存在当前浏览器。</p></section>
         <section class="settings-section" hidden><h3>阅读体验备份</h3><div id="settings-experience-transfers" class="settings-actions"></div><p class="setting-hint">保留站队选择、自己的复述与核对结果。</p></section>

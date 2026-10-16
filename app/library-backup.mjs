@@ -2,6 +2,7 @@ import {normalizeAppearance} from './reading-preferences.mjs';
 import {validParagraphAnchor} from './paragraph-anchor.mjs';
 import {normalizeReadingSession,normalizeReadingMilestone,normalizeReadingGoal} from './reading-session-record.mjs';
 import {validateReadingDraftBackup} from './reading-draft-store.mjs';
+import {normalizeHighlight} from './highlights.mjs';
 
 const object=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
 const text=(value,max=12000)=>typeof value==='string'&&value.trim().length>0&&value.length<=max;
@@ -42,6 +43,10 @@ export function validateLibraryBackup(backup){
         if(!object(n)||!text(n.id,128)||ids.has(n.id)||!passageIds.has(n.passageId)||n.origin!=='user'||!text(n.text,2000)||!date(n.createdAt)||n.bookId!==undefined&&n.bookId!==b.bookId||n.contentVersion!==undefined&&n.contentVersion!==b.contentVersion||n.quote!==undefined&&(typeof n.quote!=='string'||n.quote.length>4000))invalid(where,'个人笔记的标识、时间或归属不正确');
         ids.add(n.id);notes++;
       }
+    }
+    if(r.highlights!==undefined){
+      if(!Array.isArray(r.highlights)||r.highlights.length>10000)invalid(where,'高亮记录不完整');
+      const ids=new Set();for(const row of r.highlights){try{normalizeHighlight(row,b,{stored:true});for(const id of [row.id,...row.requestIds||[]]){if(ids.has(id))invalid(where,'高亮标识重复');ids.add(id);}}catch{invalid(where,'高亮记录无法对应原文位置');}}
     }
     const sessionIds=new Set();for(const s of r.readingSessions){
       if(!object(s)||!text(s.id,128)||sessionIds.has(s.id)||s.bookId!==b.bookId||!date(s.startedAt)||!date(s.endedAt)||Date.parse(s.endedAt)<Date.parse(s.startedAt)||!Number.isFinite(s.durationSeconds)||s.durationSeconds<0||s.durationSeconds>86400)invalid(where,'阅读时段的时间或来源不正确');

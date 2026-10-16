@@ -43,6 +43,11 @@ test('continuous reading prepares only the adjacent chapter and reuses it on app
   assert.deepEqual(flow.renderedIds,['one','two']);
   assert.equal(flow.nextId,'three');
 });
+test('a delayed records response cannot resurrect a removed highlight',()=>{
+  const row={id:'highlight',bookId:'book',contentVersion:'v1',chapterId:'one',parts:[]};
+  const merged=loadModule.mergeLoadedReadingRecords({highlights:[row]},{highlights:[{...row,deletedAt:'2026-10-16T00:00:00Z'}]});
+  assert.equal(merged.highlights[0].deletedAt,'2026-10-16T00:00:00Z');
+});
 test('chapter ordering is retained, duplicate appends stop at the end, and a jump resets the flow',()=>{
   assert.equal(typeof flowModule.createChapterFlow,'function');
   const flow=flowModule.createChapterFlow({chapters,render:chapter=>({id:chapter.id})});

@@ -1,6 +1,7 @@
 import http from 'node:http';
 import {normalizeAppearance} from '../app/reading-preferences.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
+import {normalizeHighlight,saveHighlight,findHighlight,mergeHighlights} from '../app/highlights.mjs';
 import {createExperienceService} from './experience-service.mjs';
 import {createPortal} from './portal.mjs';
 import {readFile,writeFile,rename,mkdir} from 'node:fs/promises';
@@ -89,6 +90,10 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
         const body=await parseBody(req,['/api/audio/import','/api/audio/validate'].includes(url.pathname)?32*1024*1024:undefined);
         if(url.pathname.startsWith('/api/audio/')&&await portal.audioRoutes.handle({req,res,url,user:{id:'legacy-local'},bookId:book.bookId,action:url.pathname.slice(11),body,send}))return;
         if(await experiences.handle({req,res,url,body,send}))return;
+        if(url.pathname==='/api/highlights'){
+          const saved=await mutate(records=>{records.highlights??=[];return saveHighlight(records.highlights,body,book);});send(201,saved);return;
+        }
+        const removeHighlight=url.pathname.match(/^\/api\/highlights\/([A-Za-z0-9_-]{1,128})\/remove$/);if(removeHighlight){const saved=await mutate(records=>{const row=findHighlight(records.highlights||[],removeHighlight[1]);if(!row)throw fail('找不到这条高亮',404);row.deletedAt??=new Date().toISOString();return row;});send(200,saved);return;}
         if(url.pathname==='/api/comments'||url.pathname==='/api/questions'){
           const type=url.pathname.endsWith('questions')?'question':'comment',key=type==='question'?'questions':'comments';const record=cleanRecord(body,type);
           const result=await mutate(records=>{const old=records[key].find(r=>r.id===record.id);if(old){if(old.passageId!==record.passageId||old.text!==record.text)throw fail('记录ID冲突',409);return {record:old,existing:true};}records[key].push(record);return {record,existing:false};});send(result.existing?200:201,result.record);return;
@@ -98,10 +103,11 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
           if(body.kind!=='marginalia-personal-records'||![1,2].includes(body.schemaVersion)||body.bookId!==book.bookId)throw fail('请选择这本书的个人记录包');
           const clean=(rows,type)=>{if(!Array.isArray(rows)||rows.length>1000)throw fail('记录数量或格式不正确');return rows.map(r=>cleanRecord(r,type));};
           const comments=clean(body.comments,'comment'),questions=clean(body.questions,'question');
+          if(body.highlights!==undefined&&(!Array.isArray(body.highlights)||body.highlights.length>10000))throw fail('高亮格式不正确');const highlights=(body.highlights||[]).map(row=>normalizeHighlight(row,book,{stored:true}));
           if(!Array.isArray(body.readingSessions)||body.readingSessions.length>1000)throw fail('时段格式不正确');
           const sessions=body.readingSessions.map(r=>{if(typeof r.id!=='string'||!r.id||r.bookId!==book.bookId||!Number.isFinite(Date.parse(r.startedAt))||!Number.isFinite(Date.parse(r.endedAt))||!Number.isFinite(r.durationSeconds)||r.durationSeconds<0||r.durationSeconds>86400||r.source!=='design_preview_focus_timer')throw fail('时段格式不正确');return {...r};});
           const position=body.position?checkPosition(body.position):null;
-          const result=await mutate(records=>{const merge=(old,incoming)=>{const map=new Map(old.map(r=>[r.id,r]));for(const r of incoming)if(!map.has(r.id))map.set(r.id,r);return [...map.values()];};records.comments=merge(records.comments,comments);records.questions=merge(records.questions,questions);records.readingSessions=merge(records.readingSessions,sessions);if(position)records.position=position;return {comments:records.comments.length,questions:records.questions.length};});send(200,result);return;
+          const result=await mutate(records=>{const merge=(old,incoming)=>{const map=new Map(old.map(r=>[r.id,r]));for(const r of incoming)if(!map.has(r.id))map.set(r.id,r);return [...map.values()];};records.highlights=mergeHighlights(records.highlights||[],highlights);records.comments=merge(records.comments,comments);records.questions=merge(records.questions,questions);records.readingSessions=merge(records.readingSessions,sessions);if(position)records.position=position;return {comments:records.comments.length,questions:records.questions.length};});send(200,result);return;
         }
         throw fail('找不到这个操作',404);
       }

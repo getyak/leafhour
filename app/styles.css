@@ -86,6 +86,15 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line);bor
 body.has-panel .passage.is-panel-anchor::before{inset:-10px -12px;border-color:color-mix(in srgb,var(--accent) 14%,transparent);background:color-mix(in srgb,var(--accent) 4.5%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--paper) 38%,transparent)}
 ::highlight(panel-reference){color:inherit;background:color-mix(in srgb,var(--accent) 18%,transparent)}
 .panel-reference-mark{color:inherit;background:color-mix(in srgb,var(--accent) 18%,transparent);border-radius:2px;padding:0 .03em}
+.reader-highlight{color:inherit;background:color-mix(in srgb,#e8c65b 38%,transparent);box-decoration-break:clone;-webkit-box-decoration-break:clone;cursor:pointer;padding:0;border-radius:2px}
+.reader-highlight:hover{background:color-mix(in srgb,#e8c65b 52%,transparent)}
+[data-theme=night] .reader-highlight{background:#79632385}
+#show-highlight{color:var(--accent);font-weight:600}
+.highlight-status{position:fixed;left:50%;bottom:max(80px,env(safe-area-inset-bottom));transform:translateX(-50%);max-width:calc(100vw - 32px);width:max-content;margin:0;padding:12px 18px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);box-shadow:0 5px 24px #00000014;font:13px/1.7 var(--interface);z-index:12}
+.highlight-status a{display:block;color:var(--accent);padding-top:7px;min-height:32px}
+.highlight-record blockquote{margin:12px 0;padding:0 0 0 14px;border-left:3px solid #d9ba55;white-space:pre-wrap;font:17px/1.9 var(--book)}
+.highlight-record-actions{display:flex;flex-wrap:wrap;gap:4px 16px}.highlight-record-actions button{font:12px var(--interface);color:var(--accent);min-height:44px;padding:6px 0}
+body.is-focused .note-panel:not(.is-inline) .panel-heading{padding-top:76px}
 .passage.is-locating::before{border-color:color-mix(in srgb,var(--accent) 30%,transparent)!important;background:color-mix(in srgb,var(--accent) 7%,transparent)!important}
 @media(min-width:1320px){body.has-panel[data-mode=zh] .book-page,body.has-panel[data-mode=en] .book-page{transform:translateX(-190px);transition:transform 180ms ease}}
 body.is-focused .note-panel:not(.is-inline){top:0;height:100dvh;max-height:none}

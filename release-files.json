@@ -316,5 +316,8 @@
   "app/gift-identity.mjs",
   "app/gift-compose-state.mjs",
   "tests/gift-compose-state.test.mjs",
-  "tests/gift-compose-ui.test.mjs"
+  "tests/gift-compose-ui.test.mjs",
+  "app/highlights.mjs",
+  "app/reader-highlights.mjs",
+  "tests/highlights.test.mjs"
 ]

@@ -53,6 +53,7 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     files['/reading-session-record.mjs']='reading-session-record.mjs';
     files['/reading-toolbar.mjs']='reading-toolbar.mjs';
     files['/reading-flow.mjs']='reading-flow.mjs';files['/reading-load.mjs']='reading-load.mjs';
+    for(const file of ['highlights.mjs','reader-highlights.mjs'])files['/'+file]=file;
     files['/reading-flow.css']='reading-flow.css';
     for(const file of ['library-workspace.mjs','library-workspace.css','reading-calendar.mjs','reading-dashboard.mjs','library-restore.mjs','library-export.mjs','site-appearance.mjs','reading-clock.mjs','reading-outbox.mjs','reading-queue-store.mjs','reading-session-coordinator.mjs','reading-mark-actions.mjs','reading-mark-store.mjs','reading-draft-store.mjs','reading-retained-backup.mjs','reading-journey.mjs','reading-pending-backup.mjs','reading-ending-context.mjs','reading-session.js','reading-session.css','brand-assets/reading-window.webp','brand-assets/page-detail.webp','brand-assets/page-mark.svg'])files['/'+file]=file;
     for(const file of ['library-shell.mjs','library-shell.css','library-chat.mjs','library-chat-state.mjs','library-chat-markdown.mjs','library-chat.css','icons.svg','icons-LICENSE.txt'])files['/'+file]=file;
@@ -161,6 +162,8 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
       if(action==='original'&&req.method==='GET'){if(dataStore?.signedBlob){const file=await library.originalDownload(user,id);res.statusCode=302;res.setHeader('Location',file.url+'&download=original.'+(['pdf','txt','md'].includes(file.format)?file.format:'bin'));res.setHeader('Cache-Control','private, no-store');res.end();return true;}const file=await library.getOriginal(user,id);res.statusCode=200;res.setHeader('Content-Type','application/octet-stream');res.setHeader('Content-Disposition','attachment; filename="original.'+(['pdf','txt','md'].includes(file.format)?file.format:'bin')+'"');res.setHeader('Cache-Control','private, no-store');res.setHeader('Content-Length',file.bytes.length);res.end(file.bytes);return true;}
       if(['records','records/export'].includes(action)&&req.method==='GET'){send(200,await library.records(user,id));return true;}
       if(['comments','questions'].includes(action)&&req.method==='POST'){send(201,await library.addComment(user,id,body,action));return true;}
+      if(action==='highlights'&&req.method==='POST'){send(201,await library.addHighlight(user,id,body));return true;}
+      const removeHighlight=action?.match(/^highlights\/([A-Za-z0-9_-]{1,128})\/remove$/);if(removeHighlight&&req.method==='POST'){send(200,await library.removeHighlight(user,id,removeHighlight[1]));return true;}
       if(action==='progress'&&req.method==='POST'){send(200,await library.saveProgress(user,id,body));return true;}
       if(action==='reading-sessions'&&req.method==='POST'){send(201,await library.saveReadingSession(user,id,body));return true;}
       if(action==='reading-milestones'&&req.method==='POST'){send(201,await library.recordReadingMilestone(user,id,body));return true;}
