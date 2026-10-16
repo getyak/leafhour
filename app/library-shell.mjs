@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 const node=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
 export function roomIcons(root=document){for(const holder of root.querySelectorAll('[data-icon]')){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'),use=document.createElementNS(svg.namespaceURI,'use');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('aria-hidden','true');use.setAttribute('href','/icons.svg#'+holder.dataset.icon);svg.append(use);holder.replaceChildren(svg);}}
 export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpenChat,api,onProfileUpdated}){
-  const header=$('library-sidebar'),navigation=$('library-nav-dialog'),settings=$('library-settings-dialog'),media=matchMedia('(max-width:980px)'),key='marginalia-library-sidebar';let collapsed=false,opener=null;
+  const header=$('library-sidebar'),navigation=$('library-nav-dialog'),settings=$('library-settings-dialog'),media=matchMedia('(max-width:980px)'),key='marginalia-library-sidebar';let collapsed=false,opener=null,navigationReturn=null;
   for(const control of header.querySelectorAll('button[data-hint]'))if(!control.hasAttribute('aria-label'))control.setAttribute('aria-label',control.dataset.hint);
   const accountButton=node('button','sidebar-account');accountButton.id='library-account';accountButton.type='button';
   const accountAvatar=node('span','sidebar-avatar'),accountCopy=node('span','sidebar-account-copy'),accountName=node('span','sidebar-account-name'),accountEmail=node('span','sidebar-account-email');accountCopy.append(accountName,accountEmail);accountButton.append(accountAvatar,accountCopy);$('library-settings').insertAdjacentElement('afterend',accountButton);
@@ -33,9 +33,9 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   function closeNavigation(){if(navigation.open)navigation.close();}
   function adapt(){closeNavigation();if(media.matches)navigation.append(header);else document.body.insertBefore(header,$('main'));syncSidebar();}
   $('sidebar-toggle').addEventListener('click',()=>{if(media.matches){closeNavigation();return;}collapsed=!collapsed;try{localStorage.setItem(key,collapsed?'collapsed':'expanded');}catch{}syncSidebar();if(!collapsed)$('sidebar-toggle').focus();});
-  $('library-menu').addEventListener('click',()=>{navigation.showModal();syncSidebar();$('book-search').focus();});
-  $('sidebar-search-open').addEventListener('click',()=>{if(!media.matches&&collapsed){collapsed=false;try{localStorage.setItem(key,'expanded');}catch{}syncSidebar();}$('book-search').focus();});
-  navigation.addEventListener('close',()=>{syncSidebar();if(media.matches)$('library-menu').focus();});media.addEventListener('change',adapt);adapt();
+  $('library-menu').addEventListener('click',()=>{navigation.showModal();syncSidebar();$('sidebar-toggle').focus();});
+  $('sidebar-search-open').addEventListener('click',()=>{if(navigation.open){navigationReturn=$('book-search');closeNavigation();}else $('book-search').focus();});
+  navigation.addEventListener('close',()=>{syncSidebar();if(media.matches)(navigationReturn||$('library-menu')).focus();navigationReturn=null;});media.addEventListener('change',adapt);adapt();
   function openSettings(name='account'){opener=media.matches?$('library-menu'):document.activeElement;closeNavigation();update();select(panels[name]?name:'account');if(!settings.open)settings.showModal();tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.focus();}
   settings.addEventListener('close',()=>{if(opener?.isConnected)opener.focus();});
   $('library-settings').addEventListener('click',()=>openSettings('account'));

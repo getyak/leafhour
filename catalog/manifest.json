@@ -1,5 +1,45 @@
 [
-  {"id":"gutenberg-alice","file":"alice.txt","title":"爱丽丝梦游仙境","originalTitle":"Alice’s Adventures in Wonderland","author":"Lewis Carroll","sourceUrl":"https://www.gutenberg.org/ebooks/11","description":"跟着白兔进入一个熟悉的陌生世界。","cover":"alice"},
-  {"id":"gutenberg-meditations","file":"meditations.txt","title":"沉思录","originalTitle":"Meditations","author":"Marcus Aurelius · 英译 Meric Casaubon","sourceUrl":"https://www.gutenberg.org/ebooks/2680","description":"写给自己的话，也留给每一个普通的今天。","cover":"meditations"},
-  {"id":"gutenberg-walden","file":"walden.txt","title":"瓦尔登湖","originalTitle":"Walden, and On The Duty Of Civil Disobedience","author":"Henry David Thoreau","sourceUrl":"https://www.gutenberg.org/ebooks/205","description":"走进树林，重新观察生活的尺度。","cover":"walden"}
+  {
+    "id": "gutenberg-alice",
+    "file": "alice.txt",
+    "title": "爱丽丝梦游仙境",
+    "originalTitle": "Alice’s Adventures in Wonderland",
+    "author": "Lewis Carroll",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/11",
+    "description": "跟着白兔进入一个熟悉的陌生世界。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "topics": [
+      "literature"
+    ]
+  },
+  {
+    "id": "gutenberg-meditations",
+    "file": "meditations.txt",
+    "title": "沉思录",
+    "originalTitle": "Meditations",
+    "author": "Marcus Aurelius · 英译 Meric Casaubon",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/2680",
+    "description": "写给自己的话，也留给每一个普通的今天。",
+    "cover": "meditations",
+    "sourceLanguage": "en",
+    "topics": [
+      "philosophy"
+    ]
+  },
+  {
+    "id": "gutenberg-walden",
+    "file": "walden.txt",
+    "title": "瓦尔登湖",
+    "originalTitle": "Walden, and On The Duty Of Civil Disobedience",
+    "author": "Henry David Thoreau",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/205",
+    "description": "走进树林，重新观察生活的尺度。",
+    "cover": "walden",
+    "sourceLanguage": "en",
+    "topics": [
+      "philosophy",
+      "literature"
+    ]
+  }
 ]

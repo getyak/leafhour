@@ -30,7 +30,7 @@ function mergedPersonalRecords(book,current,incoming){
   return data;
 }
 const allPassages=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
-const brief=book=>({bookId:book.bookId,contentVersion:book.contentVersion,title:book.title,author:book.author,visibility:book.visibility,source:book.source,cover:book.cover,description:book.description,chineseSample:book.chineseSample,paragraphs:allPassages(book).length,chapters:book.chapters.length,chapterIndex:book.chapters.map(c=>({id:c.id,kind:c.kind,number:c.number,title:c.title})),createdAt:book.createdAt});
+const brief=book=>({bookId:book.bookId,contentVersion:book.contentVersion,title:book.title,author:book.author,visibility:book.visibility,sourceLanguage:book.sourceLanguage,topics:book.topics||[],source:book.source,cover:book.cover,description:book.description,chineseSample:book.chineseSample,paragraphs:allPassages(book).length,chapters:book.chapters.length,chapterIndex:book.chapters.map(c=>({id:c.id,kind:c.kind,number:c.number,title:c.title})),createdAt:book.createdAt});
 const emptyShelf=()=>({revision:0,order:[],archived:{}});
 const shelfLimit=1000;
 const shelfId=id=>typeof id==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(id);
@@ -62,7 +62,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       const body=extracted.pages[0].text,match=body.match(/\*\*\* START OF THE PROJECT GUTENBERG EBOOK[^\n]*\*\*\*([\s\S]*?)\*\*\* END OF THE PROJECT GUTENBERG EBOOK/);
       if(match)extracted.pages[0].text=match[1].trim();
       const book=makeBook({bookId:entry.id,filename:entry.file,sourceHash:digest(bytes),extracted,title:entry.title,author:entry.author,visibility:'public',sourceUrl:entry.sourceUrl,license:'Project Gutenberg · Public domain in the USA; check your local law and the included Gutenberg license.'});
-      book.title.en=entry.originalTitle;book.description=entry.description;book.cover=entry.cover;
+      book.title.en=entry.originalTitle;book.description=entry.description;book.cover=entry.cover;book.topics=entry.topics||[];book.sourceLanguage=entry.sourceLanguage||book.sourceLanguage;
       let prepared=applyCatalogChapters(book),sample;try{sample=JSON.parse(await readFile(path.join(catalogDir,'translations',entry.id+'.zh.json'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
       if(sample)prepared=applyCatalogSample(prepared,sample);publicBooks.set(book.bookId,prepared);
     }
@@ -117,7 +117,14 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   async function list(user){
     const [all,shelf]=await Promise.all([allShelfRows(user),user?read(shelfFile(user),emptyShelf()):emptyShelf()]),order=shelf.order.length?activeOrder(shelf,all):null,positions=order&&new Map(order.map((id,index)=>[id,index])),rows=all.filter(row=>!Object.hasOwn(shelf.archived,row.bookId));
     if(positions)rows.sort((a,b)=>positions.get(a.bookId)-positions.get(b.bookId));
-    return Promise.all(rows.map(async row=>{if(!user)return {...row,resume:null,journey:null};const data=await read(recordFile(user,row.bookId),{position:null});const book=publicBooks.get(row.bookId)||(!data.position&&row.chapterIndex&&row.contentVersion?{bookId:row.bookId,contentVersion:row.contentVersion,chapters:row.chapterIndex}:await read(bookFile(user,row.bookId),null));return {...row,...(positions?{shelfPosition:positions.get(row.bookId)}:{}),resume:book&&data.position?resumeSummary(book,data.position):null,journey:book?readingJourney(book,data):null};}));
+    return Promise.all(rows.map(async row=>{
+      if(!user)return {...row,resume:null,journey:null};
+      const data=await read(recordFile(user,row.bookId),{position:null});
+      // Older indexes lack language metadata. Derive it without rewriting the account's files.
+      const book=publicBooks.get(row.bookId)||(!data.position&&row.chapterIndex&&row.contentVersion&&row.sourceLanguage?{bookId:row.bookId,contentVersion:row.contentVersion,chapters:row.chapterIndex}:await read(bookFile(user,row.bookId),null));
+      const sourceLanguage=row.sourceLanguage||book?.sourceLanguage||(book?.sections?inferSourceLanguage(book.sections.flatMap(s=>s.paragraphs).slice(0,10).map(p=>p.original).join('\n')):null);
+      return {...row,sourceLanguage,topics:row.topics||book?.topics||[],...(positions?{shelfPosition:positions.get(row.bookId)}:{}),resume:book&&data.position?resumeSummary(book,data.position):null,journey:book?readingJourney(book,data):null};
+    }));
   }
   async function importDocument(user,input){
     requireUser(user);const extracted=await extractDocument(input),hash=digest(input.bytes);let id='private-'+digest(user.id+hash).slice(0,24),existing=await read(bookFile(user,id),null);
