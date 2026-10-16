@@ -10,6 +10,10 @@ if(expected){
   }
 }
 const giftProbe='A'.repeat(43);
+for(const route of ['/reader-companion.mjs','/reader-companion-state.mjs','/reader-companion.css','/squirrel-motion.mjs']){
+  const response=await get(route);if(response.headers.get('content-type')?.includes('text/html')||!(await response.text()).length)throw Error('Missing companion asset: '+route);
+}
+const companion=await fetch(new URL('/api/library/books/gutenberg-alice/companion',base),{signal:AbortSignal.timeout(15000)});if(companion.status!==401)throw Error('Anonymous companion access did not require authentication');
 for(const route of ['/','/library','/gift/'+giftProbe,'/gift-preview','/book-gift.mjs','/book-gift.css','/gift-compose.mjs','/gift-compose.css','/gift-identity.mjs','/gift-compose-state.mjs','/gift-preview.mjs','/gift-ritual.mjs','/brand-assets/envelope-edge.svg','/brand-assets/letter-edge.svg','/library-profile.mjs','/library-book-actions.mjs','/library-personal.css','/reading-schedule.mjs','/shelf-order.mjs','/read?book=gutenberg-alice','/portal.js','/library-workspace.css','/library-workspace.mjs','/reading-flow.mjs','/reading-load.mjs','/reading-arrival.mjs','/reading-arrival.css','/save-receipts.mjs']){
   const response=await get(route);const body=await response.text();if(!body.length)throw Error('Empty response: '+route);
   if((route==='/gift/'+giftProbe||route==='/gift-preview')&&!['src="/book-gift.mjs"','id="gift-open"','id="gift-error"'].every(marker=>body.includes(marker)))throw Error('Gift entry did not serve the gift letter page');

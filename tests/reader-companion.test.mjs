@@ -70,12 +70,12 @@ test('inactive heartbeats do not prevent a new reading session after thirty minu
   for(let i=0;i<230;i++)await f.observe('p8',false);
   const next=await f.service.companion.view(user,'one');assert.notEqual(next.sessionId,previous);assert.equal(next.attempts,0);assert.ok(next.observedIds.includes('p1'),'recent prior context survives a new session');
 });
-test('a persisted close during quota admission prevents dispatch on another instance',async()=>{
+for(const gateAt of ['quota','authorization'])test('a persisted close during '+gateAt+' admission prevents dispatch on another instance',async()=>{
   let now=1700000000000,release,entered;const waiting=new Promise(r=>release=r),started=new Promise(r=>entered=r);let calls=0;const data={turns:[]};
-  const options={bookFor:async()=>structuredClone(book),mutateBook:async(u,b,operation)=>structuredClone(await operation(data)),clock:()=>now,generator:async()=>{calls++;return {kind:'silence'};},quota:async()=>{entered();await waiting;},reserveGlobal:async()=>({nonce:'fixture'}),releaseGlobal:async()=>{},watchRun:()=>()=>{},active:new Map(),publicTurn:t=>structuredClone(t),conversationHistory:()=>[],cancel:async()=>{},getClosed:()=>false};
+  const options={bookFor:async()=>structuredClone(book),mutateBook:async(u,b,operation)=>structuredClone(await operation(data)),clock:()=>now,generator:async()=>{calls++;return {kind:'silence'};},quota:async()=>{if(gateAt==='quota'){entered();await waiting;}},reserveGlobal:async()=>({nonce:'fixture'}),releaseGlobal:async()=>{},watchRun:()=>()=>{},active:new Map(),publicTurn:t=>structuredClone(t),conversationHistory:()=>[],cancel:async()=>{},getClosed:()=>false};
   const first=createReaderCompanionService(options),second=createReaderCompanionService({...options,active:new Map()});let meta=await first.configure(user,'one',{enabled:true,contentVersion:'v1'});
   for(const passageId of ['p1','p2'])for(let i=0;i<7;i++){now+=8000;meta=await first.observe(user,'one',{revision:meta.revision,sessionId:meta.sessionId,contentVersion:'v1',passageId,active:true});}
-  const pending=first.generate(user,'one',{id:'admission-race',revision:meta.revision,sessionId:meta.sessionId,contentVersion:'v1',passageId:'p2'});await started;
+  const pending=first.generate(user,'one',{id:'admission-race',revision:meta.revision,sessionId:meta.sessionId,contentVersion:'v1',passageId:'p2'},{authorize:async()=>{if(gateAt==='authorization'){entered();await waiting;}return true;}});await started;
   await second.configure(user,'one',{enabled:false,contentVersion:'v1'});release();assert.equal((await pending).status,'cancelled');assert.equal(calls,0);
 });
 test('revoked request authorization cancels a model result instead of publishing it',async t=>{

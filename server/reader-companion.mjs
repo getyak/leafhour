@@ -86,8 +86,9 @@ export function createReaderCompanionService({bookFor,mutateBook,clock,generator
     const finish=changes=>mutateBook(user,bookId,data=>{const m=state(data,book),t=data.turns.find(t=>t.id===input.id);if(!t)throw invalid('找不到陪读消息',404);if(t.status==='running'&&t.runId===runId){if(!m.enabled||m.revision!==input.revision||m.sessionId!==input.sessionId||controller.signal.aborted)Object.assign(t,{status:'cancelled',answer:null});else Object.assign(t,changes);}return publicTurn(t);});
     try{
       await quota(user,runId,{kind:'companion'});ticket=await reserveGlobal(runId);
+      if(!await authorize())return await finish({status:'cancelled',answer:null});
       const mayStart=await mutateBook(user,bookId,data=>{const m=state(data,book),t=data.turns.find(t=>t.id===input.id);return m.enabled&&m.revision===input.revision&&m.sessionId===input.sessionId&&t?.status==='running'&&t.runId===runId&&t.expiresAt>clock()&&!getClosed();});
-      if(!mayStart||controller.signal.aborted||!await authorize())return await finish({status:'cancelled',answer:null});
+      if(!mayStart||controller.signal.aborted)return await finish({status:'cancelled',answer:null});
       const interrupted=new Promise((_,reject)=>controller.signal.addEventListener('abort',()=>reject(invalid('陪读已停止',408)),{once:true}));
       timer=setTimeout(()=>controller.abort(),90000);timer.unref?.();stopWatching=watchRun(user,bookId,input.id,runId,controller);
       const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'companion',book:{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title},passageId:input.passageId,chapterId:index.byId.get(input.passageId).chapterId,context:claimed.context,history:claimed.history,signal:controller.signal,runId})),interrupted]);
