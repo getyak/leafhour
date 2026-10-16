@@ -1,5 +1,6 @@
 import {createLibraryChatState,CHAT_TEXT_LIMIT} from './library-chat-state.mjs';
 import {renderChatMarkdown,safeChatUrl} from './library-chat-markdown.mjs';
+import {mountSquirrelPosition} from './squirrel-position.mjs';
 import {mountSquirrelMotion} from './squirrel-motion.mjs';
 import {trackActionFocus} from './action-focus.mjs';
 
@@ -23,6 +24,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   const closeButton=button('−','library-chat-close');closeButton.setAttribute('aria-label','收起阅读对话');closeButton.title='收起阅读对话';header.append(heading,menu,closeButton);
   const launcher=button('','library-chat-launcher');launcher.setAttribute('aria-label','打开阅读对话');launcher.setAttribute('aria-controls',root.id);launcher.setAttribute('aria-expanded','false');launcher.title='阅读对话';
   const squirrel=node('span','library-chat-squirrel'),tail=node('span','library-chat-tail'),head=node('span','library-chat-head'),eyes=node('span','library-chat-eyes');eyes.append(node('i'),node('i'));head.append(eyes);squirrel.append(tail,head);squirrel.setAttribute('aria-hidden','true');launcher.append(squirrel);root.after(launcher);const characterMotion=mountSquirrelMotion({launcher,squirrel,head,tail,eyes:[...eyes.children]});
+  const characterPosition=mountSquirrelPosition({launcher});
   const legacyOpener=document.getElementById('library-chat-open');if(legacyOpener)legacyOpener.hidden=true;
   const context=node('details','library-chat-context'),contextSummary=node('summary'),contextLabel=node('span'),contextHint=node('span','library-chat-context-hint','查看原文与译文');contextSummary.append(contextLabel,contextHint);const contextBody=node('div','library-chat-context-body');context.append(contextSummary,contextBody);
   const messages=node('div','library-chat-messages');messages.setAttribute('role','log');messages.setAttribute('aria-label','和这本书的对话');messages.setAttribute('aria-live','polite');messages.setAttribute('aria-relevant','additions text');
@@ -182,7 +184,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
       if(!view.pending&&!view.retry?.uncertain&&(selectedBook!==valid||canFollow&&currentPassage!==requestedPassage))choose(valid,currentPassage);
       if(!root.open){opener=document.activeElement;root.show();closeButton.focus();}launcher.setAttribute('aria-expanded','true');focusComposer=!!messageId;render();pollCount=0;load();
     },
-    surface:()=>({launcher,header,root,motion:characterMotion}),
+    surface:()=>({launcher,header,root,motion:characterMotion,position:characterPosition}),
     refresh:()=>root.open?load():Promise.resolve(),
     close,
     reset(){clearPoll();loadInFlight=null;pollCount=0;pollStarted=0;owner=null;selectedBook=null;requestedPassage=null;historySignature='';state.reset();input.value='';context.open=false;render();},

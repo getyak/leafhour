@@ -22,8 +22,8 @@ async function fixture(t,generate=async()=>({kind:'message',text:'前面那段�
   const send=(id='companion-1',p='p2')=>service.companion.generate(user,'one',{id,revision:meta.revision,contentVersion:'v1',sessionId:meta.sessionId,passageId:p});
   return {service,options,services,jobs,questions,start,read,ready,send,observe,advance:ms=>now+=ms,meta:()=>meta};
 }
-test('companion is opt-in and rejects anonymous other-account stale and unobserved source access',async t=>{
-  const f=await fixture(t);assert.equal((await f.service.companion.view(user,'one')).enabled,false);
+test('companion defaults on but rejects anonymous other-account stale and unobserved source access',async t=>{
+  const f=await fixture(t);assert.equal((await f.service.companion.view(user,'one')).enabled,true);
   await assert.rejects(f.service.companion.view(other,'one'),e=>e.status===404);
   await assert.rejects(f.service.companion.view({id:'anon',is_anonymous:true},'one'),e=>e.status===401);
   await f.start();await assert.rejects(f.send(),e=>e.status===409);assert.equal(f.jobs.length,0);
@@ -83,4 +83,17 @@ test('revoked request authorization cancels a model result instead of publishing
   const m=f.meta(),generated=f.service.companion.generate(user,'one',{id:'auth-revoked',revision:m.revision,sessionId:m.sessionId,contentVersion:'v1',passageId:'p2'},{authorize:async()=>allowed});
   while(!f.jobs.length)await new Promise(r=>setTimeout(r,5));allowed=false;finish({kind:'message',text:'这条不应发布。',sourcePassageIds:['p1']});
   assert.equal((await generated).status,'cancelled');assert.equal((await f.service.view(user,'one')).turns.length,0);
+});
+
+test('default-on migration preserves explicit closes across reloads and new content versions',async()=>{
+ const data={turns:[]};let version='v1';
+ const service=createReaderCompanionService({bookFor:async()=>({...structuredClone(book),contentVersion:version}),mutateBook:async(u,b,operation)=>structuredClone(await operation(data)),generator:async()=>assert.fail('settings must never generate'),getClosed:()=>false,active:new Map()});
+ assert.equal((await service.view(user,'one')).enabled,true);
+ delete data.companion.preference;data.companion.enabled=false;data.companion.revision=1;
+ assert.equal((await service.view(user,'one')).enabled,true,'old untouched defaults adopt the new default');
+ await service.configure(user,'one',{enabled:false,contentVersion:'v1'});
+ assert.equal((await service.view(user,'one')).enabled,false);
+ version='v2';assert.equal((await service.view(user,'one')).enabled,false,'a new book version must not undo a close');
+ delete data.companion.preference;data.companion.enabled=false;data.companion.revision=3;
+ assert.equal((await service.view(user,'one')).enabled,false,'legacy explicit closes remain off');
 });
