@@ -37,3 +37,9 @@ The hosted adapter now consumes `READER_ADDITIONAL_WEB_ORIGINS`, configured in p
 These behavior changes had observed failing tests before implementation. All 66 focused auth/origin/hosted/local checks passed, and a second independent security review found no P1/P2 issue. The original default account was authenticated by an in-memory HTTP client using its existing secure credential reference. Account identity, book IDs, and personal-record fingerprints were captured only in ignored local evidence for post-deployment comparison; no source data was changed or published.
 
 Final full verification after the origin change: Node 24.22.0, 685 tests, 684 pass, zero failures, one environment-dependent skip; runtime initialization, public build, media integrity, software allowlist, and source-provenance stages all passed. No model request or user-book write was made.
+
+## Staged public launch
+
+While provider-dashboard access is unavailable, retain the last verified OAuth canonical origin on the former host and explicitly allow both owned HTTPS web origins. This makes the new Leafhour site usable with password/email while retaining working provider login on the old host; noncanonical hosts hide third-party buttons. After Supabase/provider redirects and sender identity are verified, change the canonical origin to Leafhour and retain only the former host as an additional recovery origin, then redeploy and verify again. This staged configuration is not a claim that the final provider migration is complete.
+
+Final brand polish also changes user-visible gift/backup download filenames to Leafhour while preserving their legacy schema kinds and import compatibility. English/Chinese spacing is consistent in the privacy page and service messages. The 38 affected export/gift/audio/metadata checks passed after this polish.

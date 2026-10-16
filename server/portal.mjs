@@ -123,7 +123,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(p==='/api/library/mcp-setup'&&req.method==='GET'){
       if(!user)throw fail('请先进入自己的书房',401);
       if(hostedMcp){send(200,{hosted:true,serviceUrl:publicOrigin});return true;}
-      if(!localAllowed)throw fail('本机接入配置只能在运行Leafhour的电脑上读取。远程接入尚未支持。',403);
+      if(!localAllowed)throw fail('本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。',403);
       const loopback=req.socket.localAddress==='::1'?'[::1]':'127.0.0.1';
       send(200,{command:process.execPath,args:[path.join(root,'server/mcp.mjs')],serviceUrl:'http://'+loopback+':'+req.socket.localPort});return true;
     }
@@ -139,7 +139,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(!user)throw fail('请先进入自己的书房',401);if(typeof body.base64!=='string'||!body.base64.length||body.base64.length>28*1024*1024||!/^[A-Za-z0-9+/]*={0,2}$/.test(body.base64))throw fail('文件编码不正确');
       send(201,await library.importDocument(user,{filename:body.filename,bytes:Buffer.from(body.base64,'base64')}));return true;
     }
-    if(p==='/api/library/export'&&req.method==='GET'){res.setHeader('Content-Disposition','attachment; filename="marginalia-library.json"');send(200,await library.exportLibrary(user));return true;}
+    if(p==='/api/library/export'&&req.method==='GET'){res.setHeader('Content-Disposition','attachment; filename="leafhour-library.json"');send(200,await library.exportLibrary(user));return true;}
     if(p==='/api/library/export/manifest'&&req.method==='GET'){send(200,await library.exportManifest(user));return true;}
     if(p==='/api/library/import'&&req.method==='POST'){send(200,await library.restoreLibrary(user,body));return true;}
     if(p==='/api/library/validate'&&req.method==='POST'){send(200,await library.validateRestore(user,body));return true;}
@@ -149,7 +149,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(gift){
       const [,giftToken,action]=gift;res.setHeader('Cache-Control','private, no-store');res.setHeader('Referrer-Policy','no-referrer');
       if(!action&&req.method==='GET'){send(200,await gifts.view(giftToken));return true;}
-      if(action==='download'&&req.method==='GET'){const backup=await gifts.download(giftToken);if(Buffer.byteLength(JSON.stringify(backup))>3*1024*1024)throw fail('这份阅读包较大，请从赠书信页面分段下载',413);res.setHeader('Content-Disposition','attachment; filename="marginalia-book-gift.json"');send(200,backup);return true;}
+      if(action==='download'&&req.method==='GET'){const backup=await gifts.download(giftToken);if(Buffer.byteLength(JSON.stringify(backup))>3*1024*1024)throw fail('这份阅读包较大，请从赠书信页面分段下载',413);res.setHeader('Content-Disposition','attachment; filename="leafhour-book-gift.json"');send(200,backup);return true;}
       if(action==='download-part'&&req.method==='GET'){send(200,await gifts.downloadPart(giftToken,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
       if(action==='accept'&&req.method==='POST'){send(200,await gifts.accept(user,giftToken));return true;}
       if(action==='revoke'&&req.method==='POST'){send(200,await gifts.revoke(user,giftToken));return true;}

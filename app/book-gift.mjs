@@ -120,7 +120,7 @@ $('gift-download').addEventListener('click',async event=>{
   link.setAttribute('aria-disabled','true');link.setAttribute('aria-busy','true');status.classList.remove('error');status.textContent='正在准备阅读包…';
   try{
     const blob=await downloadGiftPackage({token,request,onProgress:({received,total})=>{status.textContent='正在核对阅读包 · '+Math.round(received/total*100)+'%';}}),url=URL.createObjectURL(blob),save=document.createElement('a');
-    save.href=url;save.download='marginalia-reading-package.json';save.hidden=true;document.body.append(save);save.click();save.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+    save.href=url;save.download='leafhour-reading-package.json';save.hidden=true;document.body.append(save);save.click();save.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
     status.textContent='阅读包已校验，已交给浏览器保存。';
   }catch(error){if(error.status===404)showError(error);else{status.classList.add('error');status.textContent=error.message;}}
   finally{downloading=false;link.removeAttribute('aria-disabled');link.removeAttribute('aria-busy');}

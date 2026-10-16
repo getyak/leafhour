@@ -19,7 +19,7 @@ export async function createExperienceService({book,storePath,packPath,generator
   if(req.method==='GET'||req.method==='HEAD'){
    if(p==='/api/experiences'){await writes;send(200,{bookId:book.bookId,contentVersion:book.contentVersion,...assets,states:records.states,echoes:records.echoes.map(publicRun),echoAvailable:typeof generator==='function'});return true;}
    if(p==='/api/experience-metrics'){send(200,experienceMetrics({book,index,assets,events:records.events}));return true;}
-   if(p==='/api/experiences/export'){await writes;res.setHeader('Content-Disposition','attachment; filename="marginalia-my-experiences.json"');send(200,exported());return true;}
+   if(p==='/api/experiences/export'){await writes;res.setHeader('Content-Disposition','attachment; filename="leafhour-my-experiences.json"');send(200,exported());return true;}
    const match=p.match(/^\/api\/echo\/([^/]+)$/);if(match){const r=records.echoes.find(r=>r.runId===match[1]);if(!r)throw invalid('找不到这次回声',404);send(200,publicRun(r));return true;}
    return false;
   }

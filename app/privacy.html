@@ -2,7 +2,7 @@
 <html lang="zh-Hans">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">
-  <meta name="description" content="Leafhour如何使用登录身份、保存阅读数据，以及如何导出、撤回授权和联系删除。">
+  <meta name="description" content="Leafhour 如何使用登录身份、保存阅读数据，以及如何导出、撤回授权和联系删除。">
   <title>登录与个人数据 · Leafhour</title><link rel="canonical" href="https://leafhour.com/privacy"><meta property="og:site_name" content="Leafhour"><meta property="og:title" content="登录与个人数据 · Leafhour"><meta property="og:description" content="Leafhour 如何保存你的书和阅读记录，以及如何导出、撤回授权和联系删除。"><meta property="og:url" content="https://leafhour.com/privacy"><meta property="og:type" content="website"><meta property="og:image" content="https://leafhour.com/brand-assets/leafhour-social.png"><link rel="stylesheet" href="/portal.css"><link rel="icon" href="/brand-assets/leafhour-mark.svg" type="image/svg+xml"><script type="module" src="/site-appearance.mjs"></script>
 <link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script><link rel="stylesheet" href="/leafhour-brand.css">
 </head>
@@ -11,10 +11,10 @@
 <header class="site-header"><a class="brand" href="/" aria-label="Leafhour 首页"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="brand-name" lang="en">Leafhour</span></a><nav aria-label="主导航"><a href="/library">回到书房 ↗</a></nav></header>
 <main id="main" class="privacy-document">
   <h1>登录与个人数据</h1><p class="privacy-date">适用于 leafhour.com · 更新于 2026 年 10 月 16 日</p>
-  <p>Leafhour用登录身份确认书房的归属，保存你选择上传的书和阅读记录。公版样书可以匿名试读。本文说明这个线上实例如何处理数据；自行部署的实例由它的运营者负责。</p>
+  <p>Leafhour 用登录身份确认书房的归属，保存你选择上传的书和阅读记录。公版样书可以匿名试读。本文说明这个线上实例如何处理数据；自行部署的实例由它的运营者负责。</p>
   <h2>登录时会用到什么</h2>
-  <p>邮箱登录使用你填写的邮箱地址，由 Supabase Auth 校验密码或验证码，Resend 投递验证邮件。注册与找回密码先验证邮箱，再设置密码。选择 Google 或 Apple 登录时，由相应供应商验证身份，Supabase 接收账户标识、邮箱及供应商提供的基本资料，例如姓名和头像。Leafhour用这些信息识别账户和维持登录，不申请邮箱正文、联系人、云盘或日历权限。</p>
-  <p>Apple 提供隐藏邮箱时，按这个身份保存账户。登录页显示某种方式可用后，才会发起对应的官方授权。你可以在 Google 或 Apple 的账号设置中撤回对Leafhour的授权。</p>
+  <p>邮箱登录使用你填写的邮箱地址，由 Supabase Auth 校验密码或验证码，Resend 投递验证邮件。注册与找回密码先验证邮箱，再设置密码。选择 Google 或 Apple 登录时，由相应供应商验证身份，Supabase 接收账户标识、邮箱及供应商提供的基本资料，例如姓名和头像。Leafhour 用这些信息识别账户和维持登录，不申请邮箱正文、联系人、云盘或日历权限。</p>
+  <p>Apple 提供隐藏邮箱时，按这个身份保存账户。登录页显示某种方式可用后，才会发起对应的官方授权。你可以在 Google 或 Apple 的账号设置中撤回对 Leafhour 的授权。</p>
   <p>供应商访问凭据与刷新凭据保存在服务端。浏览器使用仅供本站会话的 Cookie；普通登录会话最长七天，第三方登录的临时校验 Cookie 最长十分钟。退出会撤销本站会话；退出不会删除书房数据。</p>
   <h2>你的书和阅读记录</h2>
   <p>选择上传后，文件与提取出的原文会保存到你的私人书房。评论、问题、阅读位置、阅读时长、明确标记的读完状态和已保存的译文按账户管理。线上存储由 Supabase 提供，网站由 Vercel 托管。匿名公版书与私人上传分别处理，私人文件和记录不会因上传自动公开。</p>

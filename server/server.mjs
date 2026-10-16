@@ -117,7 +117,7 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
       if(await experiences.handle({req,res,url,body:null,send}))return;
       if(url.pathname==='/health'){send(200,{ready:true,bookId:book.bookId,chapters:book.chapters.length});return;}
       if(url.pathname==='/api/book'){send(200,book);return;}
-      if(url.pathname==='/api/records'||url.pathname==='/api/records/export'){await writes.catch(()=>{});if(url.pathname.endsWith('export'))res.setHeader('Content-Disposition','attachment; filename="marginalia-my-records.json"');send(200,await readRecords());return;}
+      if(url.pathname==='/api/records'||url.pathname==='/api/records/export'){await writes.catch(()=>{});if(url.pathname.endsWith('export'))res.setHeader('Content-Disposition','attachment; filename="leafhour-my-records.json"');send(200,await readRecords());return;}
       if(url.pathname==='/favicon.ico'){res.writeHead(204);res.end();return;}
       if(url.pathname==='/read'){send(200,await readFile(path.join(root,'app/index.html')),'text/html');return;}
       if(assets.has(url.pathname)){const [file,type]=assets.get(url.pathname);const data=await readFile(path.join(root,file));if(type.startsWith('image/')||type.startsWith('audio/')){res.writeHead(200,{'Content-Type':type,'Content-Length':data.length});res.end(req.method==='HEAD'?undefined:data);}else send(200,data,type);return;}
@@ -138,6 +138,6 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1]
   let generator=null;
   if(process.env.DEEPSEEK_API_KEY){const {createHarnessGenerator}=await import('../harness/generator.mjs');generator=await createHarnessGenerator();}
   const server=await createReaderServer({generator,bookPath:process.env.READER_BOOK_PATH?path.resolve(process.env.READER_BOOK_PATH):undefined,publicOrigin:process.env.READER_PUBLIC_ORIGIN||null});
-  server.listen(port,host,()=>console.log('Leafhour已启动：http://'+host+':'+port));
+  server.listen(port,host,()=>console.log('Leafhour 已启动：http://'+host+':'+port));
   process.on('SIGTERM',()=>server.close());process.on('SIGINT',()=>server.close());
 }
