@@ -1,6 +1,7 @@
 import {readerStorageKey} from './reader-api.mjs';
 import {atmospheres,normalizeAtmosphere,atmosphereMix,createAtmosphereSession} from './atmosphere-state.mjs';
 import {createAtmosphereAudio} from './atmosphere-audio.mjs';
+import {createHearthMotion} from './hearth-motion.mjs';
 
 const $=id=>document.getElementById(id),key=readerStorageKey('marginalia-atmosphere-v1');
 let stored;try{stored=JSON.parse(localStorage.getItem(key)||'null');}catch{}
@@ -32,6 +33,9 @@ dialog.innerHTML=`
     </div>
   </div>`;
 document.body.append(dialog);
+const hearthLayers=[...document.querySelectorAll('.atmosphere-backdrop,.atmosphere-preview')].map(host=>({
+  preview:host.classList.contains('atmosphere-preview'),motion:createHearthMotion(host.querySelector('.atmosphere-elements')),
+}));
 const session=createAtmosphereSession({start:scene=>engine.start(scene,()=>atmosphereMix(prefs,{narrating})),onState:()=>renderPlayback()});
 for(const scene of atmospheres){
   const button=document.createElement('button');button.className='atmosphere-choice';button.dataset.scene=scene.id;button.setAttribute('aria-pressed','false');
@@ -44,6 +48,7 @@ function save(){try{localStorage.setItem(key,JSON.stringify(prefs));}catch{notic
 function renderMotion(){
   document.documentElement.dataset.atmosphereMotion=String(prefs.motion&&!reducedMotion.matches);
   document.documentElement.dataset.atmosphereActive=String(!document.hidden);
+  for(const layer of hearthLayers)layer.motion.setActive(prefs.scene==='hearth'&&prefs.motion&&!reducedMotion.matches&&!document.hidden&&(!layer.preview||dialog.open));
   for(const prefix of ['atmosphere-','settings-atmosphere-']){
     const control=$(prefix+'motion');if(!control)continue;
     control.checked=prefs.motion&&!reducedMotion.matches;
@@ -86,11 +91,11 @@ function choose(id){
   requestAnimationFrame(()=>{if(anchor)window.marginaliaReader?.restoreAnchor(anchor);});
   if(id==='none')session.stop();else session.play(id);
 }
-function open(){window.marginaliaReader?.dismissTools();notice='';render();dialog.showModal();$('open-atmosphere').setAttribute('aria-expanded','true');}
+function open(){window.marginaliaReader?.dismissTools();notice='';render();dialog.showModal();renderMotion();$('open-atmosphere').setAttribute('aria-expanded','true');}
 $('open-atmosphere').addEventListener('click',open);
 $('settings-atmosphere').addEventListener('click',()=>{$('settings-dialog').close();open();});
 for(const id of ['close-atmosphere','atmosphere-return'])$(id).addEventListener('click',()=>dialog.close());
-dialog.addEventListener('close',()=>{$('open-atmosphere').setAttribute('aria-expanded','false');});
+dialog.addEventListener('close',()=>{$('open-atmosphere').setAttribute('aria-expanded','false');renderMotion();});
 dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();});
 $('atmosphere-none').addEventListener('click',()=>choose('none'));
 function toggleSound(){notice='';if(['playing','loading'].includes(session.status))session.stop();else session.play(prefs.scene);}
@@ -104,5 +109,6 @@ function syncNarration(){narrating=[...document.querySelectorAll('audio:not([dat
 for(const event of ['play','pause','ended','emptied'])document.addEventListener(event,syncNarration,true);
 // Visibility controls visual motion, never the listener's playback choice.
 document.addEventListener('visibilitychange',renderMotion);
-window.addEventListener('pagehide',()=>session.stop());
+window.addEventListener('pagehide',()=>{session.stop();for(const layer of hearthLayers)layer.motion.setActive(false);});
+window.addEventListener('pageshow',renderMotion);
 render();syncNarration();
