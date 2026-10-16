@@ -138,7 +138,7 @@ PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF �
 }
 ```
 
-工具包括 `reader_get_context`、`reader_get_chapter`、`reader_search`、`reader_get_notes`、`reader_get_reading_activity` 和 `reader_add_comment`。正文、笔记、活动与写评论分别授权；写入只接受明确提供的用户原话，幂等键防止重复保存。Agent 读取不增加阅读时间。本机配置连接环回地址；云端配置通过发布的 `v0.3.0` 源码包启动同一 stdio 适配器，并显式允许配置中的 HTTPS 书房。远程访问仍按书与数据类型授权，拒绝重定向；这不是远程 OAuth MCP 端点。配置生成不代表已在用户 Agent 中安装。
+工具包括 `reader_get_context`、`reader_get_chapter`、`reader_search`、`reader_get_notes`、`reader_get_reading_activity` 和 `reader_add_comment`。正文、笔记、活动与写评论分别授权；写入只接受明确提供的用户原话，幂等键防止重复保存。Agent 读取不增加阅读时间。本机配置连接环回地址；云端配置固定到发布标签 `v0.3.0` 对应的完整提交 `fb6141fc4ceea4a15131fb7abca8a2d6579d6eb1`，通过源码包启动同一 stdio 适配器，并显式允许配置中的 HTTPS 书房。完整提交固定了实际运行的版本，也让 npm 可以直接获取托管源码包。远程访问仍按书与数据类型授权，拒绝重定向；这不是远程 OAuth MCP 端点。配置生成不代表已在用户 Agent 中安装。
 
 ## 私有托管
 

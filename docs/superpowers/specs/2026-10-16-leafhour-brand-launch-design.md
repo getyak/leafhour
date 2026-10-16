@@ -24,7 +24,9 @@ Home hierarchy: unmistakable Leafhour wordmark; one concise product promise; dir
 
 ## Domain and service topology
 
-Canonical origin: https://leafhour.com . www.leafhour.com redirects to the apex. Preserve the former reader host during transition, with a safe GET navigation redirect once the new domain is verified. Do not forward posted passwords or OAuth codes across origins. Existing host-only sessions require a fresh sign-in; Supabase identities and account-scoped data stay unchanged.
+Canonical public site: https://leafhour.com . www.leafhour.com redirects to the apex. Preserve the former reader host for recovering and exporting unsynced browser drafts; verifying the new domain alone does not make a blanket redirect safe. Do not forward posted passwords or OAuth codes across origins. Existing host-only sessions require a fresh sign-in; Supabase identities and account-scoped data stay unchanged.
+
+During the staged launch, retain the last verified OAuth canonical origin on the former host and explicitly allow both owned HTTPS web origins for password/email access. Move the OAuth canonical origin only after the provider dashboard configuration has been verified. This keeps the published Leafhour site usable while preserving the existing provider entry during the transition.
 
 Rename the existing public GitHub repository to getyak/leafhour, retaining history, issues, and redirects. Update visible URLs, project description/homepage, generated MCP configuration, and current deployment instructions. Keep legacy MCP binary alias for compatibility. Vercel project identity can stay stable; its display name may change only if deployment linkage remains verified.
 

@@ -9,3 +9,7 @@ Use the isolated codex/leafhour-brand-launch worktree based on origin/main 42427
 5. Render local desktop/mobile branding and email templates; exercise login, recovery contracts and MCP config. Run verify:deploy. Independent reviewer checks design coherence, auth/security, domain transitions, compatibility, and deployment scope. Fix actionable findings and rerun affected checks.
 6. Sync target main without overwriting other work; commit only task changes, push, create/attach PR, wait for passing checks, normal merge. Follow production deploy and verify source commit.
 7. Verify leafhour.com HTTPS, www behavior, production assets/title, existing-account login and book continuity, actual email receipt, and provider callback settings. Record evidence and any precise remaining external gate. Repeat final design review against the product promise.
+
+## Release verification refinement
+
+The real first-install check exposed tag-resolution clones during npm setup. Pin the generated hosted MCP command to the immutable commit underlying `v0.3.0`, which completed actual installation, initialization, and ten-tool discovery. Keep the release tag, scoped-grant boundaries, and legacy binary alias. Update the existing configuration contract, rerun deployment checks, and obtain independent review before normal PR delivery. Keep provider dashboards, inbox receipt, and interactive page layout as explicit external gates.
