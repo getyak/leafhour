@@ -11,16 +11,24 @@ export async function loadWorkspaceActivity(api,{month,date,timeZone}){
   return {calendar:results[0],overview:month===date.slice(0,7)?{...results[0],days:results.flatMap(result=>result.days)}:null};
 }
 
-export function libraryShelf(books,{scope='all',query=''}={}){
+export function shelfReadingStatus(book){
+  if(book.journey?.status==='finished')return 'finished';
+  return book.resume?.passageId||book.journey?.lastReadAt||book.journey?.completedChapters>0?'reading':'unread';
+}
+
+export const shelfLanguage=book=>typeof book.sourceLanguage==='string'&&book.sourceLanguage?book.sourceLanguage.toLowerCase().split(/[-_]/)[0]:'unknown';
+export const hasShelfFilters=({scope='all',status='all',topic='all',language='all',query=''}={})=>scope!=='all'||status!=='all'||topic!=='all'||language!=='all'||!!query.trim();
+
+export function libraryShelf(books,{scope='all',query='',status='all',topic='all',language='all'}={}){
   const needle=query.trim().toLocaleLowerCase();
-  return books.filter(book=>(scope!=='private'||book.visibility==='private')&&(!needle||[book.title?.zh,book.title?.en,book.author].filter(Boolean).join(' ').toLocaleLowerCase().includes(needle)))
+  return books.filter(book=>(scope==='all'||book.visibility===scope)&&(status==='all'||shelfReadingStatus(book)===status)&&(topic==='all'||Array.isArray(book.topics)&&book.topics.includes(topic))&&(language==='all'||shelfLanguage(book)===language)&&(!needle||[book.title?.zh,book.title?.en,book.author].filter(Boolean).join(' ').toLocaleLowerCase().includes(needle)))
     .sort((a,b)=>(Number.isFinite(a.shelfPosition)||Number.isFinite(b.shelfPosition)?(a.shelfPosition??Number.MAX_SAFE_INTEGER)-(b.shelfPosition??Number.MAX_SAFE_INTEGER):0)||Number(b.visibility==='private')-Number(a.visibility==='private')||activityAt(b).localeCompare(activityAt(a)));
 }
 
-export function roomShelf(books,{scope='all',query='',selectedBookId}={}){
-  const filtered=libraryShelf(books,{scope,query});
+export function roomShelf(books,{selectedBookId,...filters}={}){
+  const filtered=libraryShelf(books,filters);
   const current=books.find(book=>book.bookId===selectedBookId)||workspaceCurrentBook(books);
-  const featured=!query.trim()&&filtered.some(book=>book.bookId===current?.bookId)?current:null;
+  const featured=!hasShelfFilters(filters)&&filtered.some(book=>book.bookId===current?.bookId)?current:null;
   return {featured,books:filtered.filter(book=>book!==featured),total:filtered.length};
 }
 

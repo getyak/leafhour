@@ -6,7 +6,8 @@ import {mountAuthDialog} from './auth-dialog.mjs';
 import {safeReaderReturn,safeGiftReturn} from './reader-return.mjs';
 import {chineseTrialUrl} from './catalog-sample.mjs';
 import {mountReadingDashboard} from './reading-dashboard.mjs';
-import {roomShelf,readingBookUrl,libraryShelf} from './library-workspace.mjs';
+import {roomShelf,readingBookUrl,libraryShelf,hasShelfFilters} from './library-workspace.mjs';
+import {mountShelfFilters} from './library-filter-controls.mjs';
 import {mountLibraryShell,roomIcons} from './library-shell.mjs';
 import {mountLibraryChat} from './library-chat.mjs';
 import {paintBookCover} from './book-binding.mjs';
@@ -18,7 +19,7 @@ const $=id=>document.getElementById(id);
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const ownerScope=createOwnerScope();
 let refreshGeneration=0;
-let session=null,books=[],shelf='all',selectedCurrent=null,pendingUpload=false,pendingChat=false,upload=createUploadState(),shell=null,chat=null,dashboard=null,bookActions=null,shelfDrag=null,shelfRevision=0,orderOperation=null;
+let session=null,books=[],shelfControls=null,selectedCurrent=null,pendingUpload=false,pendingChat=false,upload=createUploadState(),shell=null,chat=null,dashboard=null,bookActions=null,shelfDrag=null,shelfRevision=0,orderOperation=null;
 const status=(id,text,error=false)=>{$(id).textContent=text;$(id).classList.toggle('error',error);};
 const api=(url,data,ticket=ownerScope.capture())=>readOwnerResponse(ownerScope,ticket,()=>fetch(url,{...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json',...((url.startsWith('/api/library')||url.startsWith('/api/account')||url.startsWith('/api/book-gifts'))?{'X-Reader-Owner':ticket.owner}:{})}}).catch(()=>{throw Error('网络暂时无法连接，请稍后重试。');}),()=>{ownerScope.adopt('guest');session={...session,user:null};clearPrivateUI();location.reload();});
 const isLibrary=location.pathname==='/library';$('home-view').hidden=isLibrary;$('library-view').hidden=!isLibrary;document.body.classList.toggle('library-page',isLibrary);
@@ -32,13 +33,13 @@ $('auth-dialog').addEventListener('close',()=>{pendingChat=false;});
 const ensureUser=()=>{if(session?.user)return true;openAuth();return false;};
 const getOwner=()=>{const t=ownerScope.capture();return t.owner+':'+t.revision;};
 dashboard=mountReadingDashboard({root:$('reading-dashboard'),overviewRoot:$('reading-overview'),historyRoot:$('reading-history'),api,getSession:()=>session,getBooks:()=>books,getOwner,openAuth,refresh,onCurrentBook:book=>{selectedCurrent=book?.bookId||null;renderBooks();}});
-if(isLibrary){chat=mountLibraryChat({root:$('library-chat'),api,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture().owner,openAuth:message=>{pendingChat=true;openAuth(message);},getCurrentBook:()=>dashboard.getCurrentBook()});shell=mountLibraryShell({getSession:()=>session,api,onProfileUpdated:(profile,userId)=>{if(session?.user?.id!==userId)return;Object.assign(session.user,profile);shell.update();},openAuth,onLogout:signOut,onHistory:()=>dashboard.openHistory(),onOpenChat:()=>chat.open()});bookActions=mountLibraryBookActions({api,getSession:()=>session,getBooks:()=>libraryShelf(books),getOwner,getRevision:()=>shelfRevision,setRevision:value=>{shelfRevision=value;},onReorder:saveShelfOrder,onChanged:()=>refresh(),openAuth});shelfDrag=mountShelfDrag({grid:$('library-books'),getBooks:()=>libraryShelf(books),getOwner,onReorder:saveShelfOrder,onError:error=>status('library-status',error.message,true)});$('library-trash').addEventListener('click',()=>{shell.closeNavigation();bookActions.trash();});}else roomIcons();
+if(isLibrary){shelfControls=mountShelfFilters({root:$('library-filter-controls'),onChange:()=>{shelfDrag?.reset();renderBooks();}});chat=mountLibraryChat({root:$('library-chat'),api,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture().owner,openAuth:message=>{pendingChat=true;openAuth(message);},getCurrentBook:()=>dashboard.getCurrentBook()});shell=mountLibraryShell({getSession:()=>session,api,onProfileUpdated:(profile,userId)=>{if(session?.user?.id!==userId)return;Object.assign(session.user,profile);shell.update();},openAuth,onLogout:signOut,onHistory:()=>dashboard.openHistory(),onOpenChat:()=>chat.open()});bookActions=mountLibraryBookActions({api,getSession:()=>session,getBooks:()=>libraryShelf(books),getOwner,getRevision:()=>shelfRevision,setRevision:value=>{shelfRevision=value;},onReorder:saveShelfOrder,onChanged:()=>refresh(),openAuth});shelfDrag=mountShelfDrag({grid:$('library-books'),getBooks:()=>libraryShelf(books),getOwner,onReorder:saveShelfOrder,onError:error=>status('library-status',error.message,true)});$('library-trash').addEventListener('click',()=>{shell.closeNavigation();bookActions.trash();});}else roomIcons();
 function clearPrivateUI({keepAuthDialog=false}={}){
   bookActions?.clear();shelfDrag?.reset();shelfRevision=0;orderOperation=null;
   for(const id of ['upload-status','library-status','upload-filename'])status(id,'');
   for(const id of ['book-file','book-search'])$(id).value='';if(!keepAuthDialog){status('auth-status','');authDialog.reset();if($('auth-dialog').open)$('auth-dialog').close();}
   if($('upload-dialog').open)$('upload-dialog').close();$('upload-dialog').removeAttribute('aria-busy');$('confirm-upload').disabled=true;$('book-file').disabled=false;
-  if($('reading-history').open)$('reading-history').close();pendingUpload=false;pendingChat=false;selectedCurrent=null;upload=createUploadState();shelf='all';document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
+  if($('reading-history').open)$('reading-history').close();pendingUpload=false;pendingChat=false;selectedCurrent=null;upload=createUploadState();shelfControls?.reset();document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
   books=books.filter(b=>b.visibility==='public').map(b=>({...b,resume:null,journey:null}));chat?.reset();shell?.update();dashboard?.clear();renderBooks();$('featured-books').replaceChildren(...books.slice(0,3).map(landingBookCard));
 }
 function landingBookCard(book){
@@ -72,11 +73,11 @@ async function saveShelfOrder(ids){
   finally{if(orderOperation===operation)orderOperation=null;if(focus){if(owner===getOwner()){const card=[...document.querySelectorAll('[data-book-id]')].find(node=>node.dataset.bookId===focusBook);focus.restore(card?.querySelector('.'+focusClass));}else focus.stop();}}
 }
 function renderBooks(){
-  const query=$('book-search').value.trim(),room=roomShelf(books,{scope:shelf,query,selectedBookId:selectedCurrent});
+  const filters=shelfControls?.read()||{query:$('book-search').value},query=filters.query.trim(),filtered=hasShelfFilters(filters),room=roomShelf(books,{...filters,selectedBookId:selectedCurrent});shelfControls?.update(books);
   $('library-books').replaceChildren(...room.books.map(bookCard));$('library-books').setAttribute('aria-busy','false');$('reading-dashboard').hidden=!room.featured&&!dashboard?.isLoading();$('shelf-title').hidden=!room.books.length;$('shelf-title').textContent=room.featured?'书架上的其他书':'书架';$('shelf-title').classList.toggle('sr-only',!room.featured);$('library-shelf').classList.toggle('with-current',!!room.featured);$('library-shelf').hidden=dashboard?.isLoading()||!!room.featured&&!room.books.length;
   const currentBook=dashboard?.getCurrentBook(),todayHeading=$('reading-dashboard').querySelector('.today-heading');if(currentBook&&todayHeading)bookActions?.decorate(todayHeading,currentBook);
-  $('room-title').textContent=query?'搜索结果':shelf==='private'?'我上传的':'我的书房';$('room-count').textContent=dashboard?.isLoading()?'':room.total+' 本书';$('sidebar-book-count').textContent=books.length;$('search-clear').hidden=!query;
-  $('empty-shelf').hidden=!!room.total;$('empty-shelf').querySelector('h2').textContent=query?'没有找到这本书':'还没有自己的书';$('empty-shelf').querySelector('p').textContent=query?'换一个书名或作者，再找找看。':session?.user?'带来一份 PDF、TXT 或 Markdown，从自己的书开始。':'登录后，带来自己的书，留下自己的阅读记录。';$('empty-upload').hidden=!!query;$('empty-clear').hidden=!query;
+  $('room-title').textContent=query?'搜索结果':filters.scope==='private'?'我上传的':'我的书房';$('room-count').textContent=dashboard?.isLoading()?'':filtered?room.total+' / '+books.length+' 本书':room.total+' 本书';$('sidebar-book-count').textContent=books.length;$('search-clear').hidden=!query;
+  $('empty-shelf').hidden=!!room.total;$('empty-shelf').querySelector('h2').textContent=filtered?'没有符合条件的书':'还没有自己的书';$('empty-shelf').querySelector('p').textContent=filtered?'换一个书名，或减少一些筛选条件。':session?.user?'带来一份 PDF、TXT 或 Markdown，从自己的书开始。':'登录后，带来自己的书，留下自己的阅读记录。';$('empty-upload').hidden=filtered;$('empty-clear').hidden=!filtered;$('empty-clear').textContent=query?'清除搜索和筛选':'清除筛选';
   chat?.update();
 }
 async function refresh(knownSession){
@@ -128,9 +129,10 @@ $('confirm-upload').addEventListener('click',async()=>{
   }catch(error){if(!ownerScope.isCurrent(ticket))return;status('upload-status',error.message+' 你可以重试，或选择另一份文件。',true);b.textContent='重试上传 →';if(!$('upload-dialog').open)status('library-status',file.name+' 上传未完成。打开上传窗口可重试。',true);}
   finally{operation.finish();if(succeeded)operation.reset();if(ownerScope.isCurrent(ticket)){b.disabled=!operation.file;$('book-file').disabled=false;$('upload-dialog').removeAttribute('aria-busy');if($('upload-dialog').open)focus.restore(b);else focus.stop();}else focus.stop();}
 });
-document.querySelectorAll('[data-shelf]').forEach(button=>{button.setAttribute('aria-label',button.dataset.shelf==='all'?'我的书房':'我上传的');button.addEventListener('click',()=>{shelf=button.dataset.shelf;document.querySelectorAll('[data-shelf]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));renderBooks();});});
-$('book-search').addEventListener('input',renderBooks);
-for(const id of ['search-clear','empty-clear'])$(id).addEventListener('click',()=>{$('book-search').value='';renderBooks();$('book-search').focus();});
+document.querySelectorAll('[data-shelf]').forEach(button=>{button.setAttribute('aria-label',button.dataset.shelf==='all'?'我的书房':'我上传的');button.addEventListener('click',()=>shelfControls?.set({scope:button.dataset.shelf}));});
+$('book-search').addEventListener('input',()=>{shelfDrag?.reset();renderBooks();});
+$('search-clear').addEventListener('click',()=>{$('book-search').value='';shelfDrag?.reset();renderBooks();$('book-search').focus();});
+$('empty-clear').addEventListener('click',()=>{shelfControls?.reset();shelfDrag?.reset();renderBooks();$('book-search').focus();});
 $('library-retry').addEventListener('click',async event=>{const focus=trackActionFocus(document,event.currentTarget);status('library-status','正在重新打开书房…');try{await refresh();}catch(error){status('library-status',error.message,true);}finally{focus.restore($('library-retry').hidden?$('main'):$('library-retry'));}});
 refresh().then(()=>{if(isLibrary&&entryQuery.get('upload')==='1')openUpload();if(isLibrary&&entryQuery.get('login')==='1'){if(session?.user&&returnToReader)location.replace(returnToReader);else if(!session?.user){const messages={cancelled:'登录已取消，可以重新选择。',expired:'登录链接已过期，请重新开始。',unavailable:'登录服务暂时无法连接，请稍后重试。'};openAuth(messages[entryQuery.get('auth_error')]);}}}).catch(error=>{status('library-status',error.message,true);$('featured-books').replaceChildren(make('p','muted',homeText('书架暂时无法连接，请稍后重试。',homeLocale(document))));});
 

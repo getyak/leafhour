@@ -10,7 +10,7 @@ if(expected){
   }
 }
 const giftProbe='A'.repeat(43);
-for(const route of ['/reader-companion.mjs','/reader-companion-state.mjs','/reader-companion.css','/squirrel-motion.mjs','/squirrel-position.mjs']){
+for(const route of ['/reader-companion.mjs','/reader-companion-state.mjs','/reader-companion.css','/squirrel-motion.mjs','/squirrel-position.mjs','/library-filter-controls.mjs','/library-filters.css']){
   const response=await get(route);if(response.headers.get('content-type')?.includes('text/html')||!(await response.text()).length)throw Error('Missing companion asset: '+route);
 }
 const companion=await fetch(new URL('/api/library/books/gutenberg-alice/companion',base),{signal:AbortSignal.timeout(15000)});if(companion.status!==401)throw Error('Anonymous companion access did not require authentication');
@@ -35,6 +35,7 @@ for(const route of ['/library?login=1','/read?book=gutenberg-alice','/gift-previ
 }
 const session=await(await get('/api/auth/session')).json();if(session.user)throw Error('Anonymous request received a user');
 const library=await(await get('/api/library')).json();if(library.books?.length!==3||library.books.some(book=>book.visibility!=='public'))throw Error('Anonymous catalog is not the three public samples');
+if(library.books.some(book=>book.sourceLanguage!=='en'||!Array.isArray(book.topics)||!book.topics.length))throw Error('Public catalog is missing original language or curated filter metadata');
 await get('/api/library/books/gutenberg-alice');
 for(const route of ['/api/book','/api/records']){const response=await fetch(new URL(route,base),{signal:AbortSignal.timeout(15000)});if(response.status!==404)throw Error('Retired route is accessible: '+route);}
 const gift=await fetch(new URL('/api/book-gifts/'+giftProbe,base),{signal:AbortSignal.timeout(15000)});if(gift.status!==404||!String((await gift.json()).error).includes('赠书信'))throw Error('Public gift endpoint did not reach its missing-letter response');
