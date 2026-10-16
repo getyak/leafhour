@@ -1,4 +1,4 @@
-> 当前交付入口已迁移到唯一公开仓库 `getyak/marginalia-reader`，按 [自动检查与发布](../docs/ci-cd.md) 直接部署。下文保留此前部署与验收历史，旧镜像关系已停用。
+> 当前品牌为 Leafhour，正式网站为 https://leafhour.com，唯一公开仓库为 `getyak/leafhour`，按 [自动检查与发布](../docs/ci-cd.md) 直接部署。最新服务与验收见 [品牌上线记录](../docs/verification/2026-10-16-leafhour-launch.md)。下文保留此前部署与验收历史，旧镜像关系已停用，旧站仅保留兼容与草稿恢复入口。
 
 # 2026-10-13 云端发布接续
 
