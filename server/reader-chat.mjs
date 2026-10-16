@@ -4,6 +4,7 @@ import {randomUUID,createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {sourceIndex,invalid} from './experience-validation.mjs';
 
+import {createReaderCompanionService} from './reader-companion.mjs';
 import {createReadingAgentTools} from './reading-agent-tools.mjs';
 
 const MAX_TURNS=100,RUN_MS=90000,HOUR_MS=3600000,DAY_MS=86400000,CANCEL_POLL_MS=500;
@@ -14,7 +15,7 @@ const bytes=value=>Buffer.byteLength(JSON.stringify(value));
 const text=(value,max)=>typeof value==='string'&&value.trim().length>0&&value.length<=max&&value.isWellFormed();
 const safeId=value=>typeof value==='string'&&/^[A-Za-z0-9][A-Za-z0-9_-]{0,119}$/.test(value);
 const identity=user=>{if(!text(user?.id,256)||user.is_anonymous)throw invalid('请先进入自己的书房',401);return user;};
-const publicTurn=turn=>structuredClone({id:turn.id,passageId:turn.passageId,contentVersion:turn.contentVersion,text:turn.text,origin:'user',createdAt:turn.createdAt,status:turn.status,answer:turn.answer,activity:safeActivity(turn.activity),...(turn.error?{error:turn.error}:{})});
+const publicTurn=turn=>structuredClone({id:turn.id,passageId:turn.passageId,contentVersion:turn.contentVersion,text:turn.text,origin:turn.kind==='companion'?'ai':'user',...(turn.kind==='companion'?{kind:'companion'}:{}),createdAt:turn.createdAt,status:turn.status,answer:turn.answer,activity:safeActivity(turn.activity),...(turn.error?{error:turn.error}:{})});
 const safeActivity=value=>(Array.isArray(value)?value:[]).slice(-48).map(item=>Object.fromEntries(['tool','label','status','bookId','chapterId'].filter(key=>typeof item[key]==='string'&&item[key].length<=200).map(key=>[key,item[key]])));
 const empty=bookId=>({kind:'marginalia-reader-chat',schemaVersion:1,bookId,turns:[]});
 
@@ -32,12 +33,12 @@ function contextFor(book,index,passageId,position){
 }
 
 function conversationHistory(turns){
-  const pairs=turns.filter(t=>t.status==='completed'&&typeof t.answer?.summary==='string').slice(-6).map(t=>[{role:'user',content:t.text},{role:'assistant',content:t.answer.summary}]);
+  const pairs=turns.filter(t=>t.status==='completed'&&typeof t.answer?.summary==='string').slice(-6).map(t=>t.kind==='companion'?[{role:'assistant',content:t.answer.summary}]:[{role:'user',content:t.text},{role:'assistant',content:t.answer.summary}]);
   while(pairs.length&&bytes(pairs.flat())>24576)pairs.shift();
   return pairs.flat();
 }
 
-export async function createReaderChatService({library,dataDir,dataStore=null,generator=null,clock=Date.now,onError=()=>{}}){
+export async function createReaderChatService({library,dataDir,dataStore=null,generator=null,clock=Date.now,onError=()=>{},companionGenerator=null}){
   if(!library?.getBook||!library?.records||!library?.addComment||!dataDir)throw new TypeError('Reader chat requires a library and data directory');
   let closed=false;const queues=new Map(),active=new Map();
   const ownerDir=user=>path.join(dataDir,'users',digest(identity(user).id),'chat');
@@ -113,16 +114,17 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
   async function bookFor(user,bookId){identity(user);if(!text(bookId,128))throw invalid('找不到这本书',404);return library.getBook(user,bookId);}
   async function view(user,bookId,{passageId}={}){
     const book=await bookFor(user,bookId),index=sourceIndex(book),records=await library.records(user,bookId),context=contextFor(book,index,passageId,records.position);
-    const turns=await mutateBook(user,bookId,data=>data.turns.map(publicTurn));
+    const turns=await mutateBook(user,bookId,data=>data.turns.filter(t=>t.kind!=='companion'||t.status==='completed'&&t.answer).map(publicTurn));
     return {available:!closed&&typeof generator==='function',bookId,title:book.title,contentVersion:book.contentVersion,context,turns};
   }
-  async function quota(user,runId){
+  async function quota(user,runId,{kind='conversation'}={}){
     const now=clock();
     await mutate(path.join(ownerDir(user),'requests.json'),{requests:[]},data=>{
       data.requests=data.requests.filter(r=>Number.isFinite(r.at)&&r.at>now-HOUR_MS);
       if(data.requests.some(r=>r.id===runId))return null;
       if(data.requests.length>=10)throw invalid('这一小时的提问次数已用完，请稍后继续',429);
-      data.requests.push({id:runId,at:now});return null;
+      if(kind==='companion'){const prior=data.requests.filter(r=>r.kind==='companion');if(prior.length>=3||prior.some(r=>now-r.at<300000))throw invalid('陪读稍后再来，先继续阅读',429);}
+      data.requests.push({id:runId,at:now,kind});return null;
     });
   }
   async function reserveGlobal(nonce){
@@ -147,6 +149,7 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
     if(!input||!safeId(input.id)||!text(input.text,2000)||!text(input.contentVersion,256)||!text(input.passageId,128))throw invalid('请提交当前段落中不超过 2,000 字的提问');
     const index=sourceIndex(book);if(!index.byId.has(input.passageId))throw invalid('这段原文不存在');
     if(input.contentVersion!==book.contentVersion)throw invalid('原文版本已变化，请重新打开这一段',409);
+    await companion.pause(user,bookId);
     const runId=randomUUID(),now=clock();
     const claimed=await mutateBook(user,bookId,data=>{
       const old=data.turns.find(t=>t.id===input.id);
@@ -218,5 +221,6 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
     await Promise.all([...active.values()].map(async run=>{await finish(run.user,run.bookId,run.id,run.runId,{status:'cancelled',answer:null});run.controller.abort();}));
     await Promise.allSettled([...queues.values()]);
   }
-  return {get available(){return !closed&&typeof generator==='function';},view,send,cancel,close};
+  const companion=createReaderCompanionService({bookFor,mutateBook,clock,generator:companionGenerator,quota,reserveGlobal,releaseGlobal,watchRun,active,publicTurn,conversationHistory,cancel,getClosed:()=>closed});
+  return {get available(){return !closed&&typeof generator==='function';},view,send,cancel,close,companion};
 }
