@@ -55,4 +55,9 @@ test('restoring a later page moves the viewport and retains only the reading anc
   viewport.scrollLeft=540;passages[1].matches=()=>true;
   const focus=new Event('focusin');Object.defineProperty(focus,'target',{value:passages[1]});text.dispatchEvent(focus);
   assert.equal(pages.anchor().passageId,'p1');assert.equal(turns,2);
+  passages[1].getClientRects=()=>[0,540,1080].map(left=>({left:left-viewport.scrollLeft,right:left-viewport.scrollLeft+450,top:100,bottom:400,height:300}));
+  text.dispatchEvent(focus);
+  assert.equal(viewport.scrollLeft,540);assert.equal(pages.anchor().withinParagraph,1/3);
+  assert.equal(typeof pages.revealRect,'function');pages.revealRect({left:550,top:150},'p1');
+  assert.equal(viewport.scrollLeft,1080);assert.equal(pages.anchor().withinParagraph,2/3);
 });

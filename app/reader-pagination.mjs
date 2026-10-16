@@ -38,6 +38,11 @@ export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{
   }
   function anchor(){return active?(lastAnchor||visibleAnchor()):null;}
   function visibleRect(node){const bounds=viewport.getBoundingClientRect();return [...node.getClientRects()].find(r=>r.right>bounds.left+1&&r.left<bounds.right-1)||null;}
+  function revealRect(rect,passageId){
+    if(!active||!rect)return false;const node=document.getElementById(passageId);if(!node)return false;
+    const rects=[...node.getClientRects()],index=rects.findIndex(r=>rect.left>=r.left-.5&&rect.left<r.right+.5);if(index<0)return false;
+    restore({passageId,offset:rect.top,withinParagraph:fragmentProgress(rects,index)});return true;
+  }
   function restore(position){
     if(!active||!position)return;const node=document.getElementById(position.passageId);if(!node||!text.contains(node))return;
     const rects=[...node.getClientRects()],rect=rects[fragmentIndex(rects,position.withinParagraph)];if(!rect)return;
@@ -59,13 +64,17 @@ export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{
   });
   viewport.addEventListener('scroll',()=>{if(active)sync();},{passive:true});
   text.addEventListener('pointerdown',event=>{if(active){pointerFocus=true;try{event.target.closest('.passage')?.focus({preventScroll:true});}finally{pointerFocus=false;}}});
-  text.addEventListener('focusin',event=>{if(active&&!pointerFocus&&event.target.matches('.passage')){restore({passageId:event.target.dataset.id});onTurn();}});
+  text.addEventListener('focusin',event=>{
+    if(!active||pointerFocus||!event.target.matches('.passage'))return;
+    const rects=[...event.target.getClientRects()],visible=visibleRect(event.target),index=visible?rects.findIndex(r=>r.left===visible.left&&r.top===visible.top):0;
+    restore({passageId:event.target.dataset.id,...(visible?{offset:visible.top,withinParagraph:fragmentProgress(rects,index)}:{})});onTurn();
+  });
   const observer=new view.ResizeObserver(()=>{
     if(!active)return;view.cancelAnimationFrame(resizeFrame);const position=lastAnchor;
     resizeFrame=view.requestAnimationFrame(()=>{restore(position);sync();});
   });observer.observe(viewport);
   return {
-    get active(){return active;},anchor,restore,sync,visibleRect,
+    get active(){return active;},anchor,restore,sync,visibleRect,revealRect,
     update(state){
       const enabled=state.pageLayout==='spread'&&state.mode!=='parallel';
       if(enabled!==active){active=enabled;document.body.dataset.paginated=String(active);controls.hidden=!active;end.hidden=!active;viewport.scrollLeft=0;page=0;lastAnchor=null;if(active)view.scrollTo(0,0);}

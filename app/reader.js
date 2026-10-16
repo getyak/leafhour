@@ -213,7 +213,7 @@ function selectHighlight(row,{passageId}={}){
   if(!document.getElementById(p.id)||state.chapterId!==p.chapterId)changeChapter(p.chapterId,p.id);overrides=Object.fromEntries(row.parts.map(part=>[part.passageId,{mode:part.language==='en'?'en':'zh',variant:part.variant}]));updateText();
   window.marginaliaReader?.goToPassage(p.id);choosePassage(p.id,null,row.parts.map(part=>part.text).join('\n\n'),first.language);
   selectedExcerpt=structuredClone(row);selectionKind='excerpt';$('paragraph-tools').dataset.excerpt='true';$('show-share').hidden=false;highlights.updateTools(selectedExcerpt);positionTools();
-  const prose=proseForPart(target),rect=prose&&prose.textContent.slice(target.start,target.end)===target.text&&textRange(document,prose,target.start,target.end)?.getClientRects()[0];if(rect){window.scrollBy(0,rect.top-160);positionTools();}
+  const prose=proseForPart(target),rect=prose&&prose.textContent.slice(target.start,target.end)===target.text&&textRange(document,prose,target.start,target.end)?.getClientRects()[0];if(rect){if(pagination.active)pagination.revealRect(rect,target.passageId);else window.scrollBy(0,rect.top-160);persist();positionTools();}
   if(row.parts.some(part=>{const source=paragraphMap.get(part.passageId),text=part.language==='en'?source?.original:source?.translations?.[part.variant]?.text;return text?.slice(part.start,part.end)!==part.text;}))highlights.notify('当前文字已更新，保留当时的高亮摘录；请核对后重新标记。');
 }
 function mountPanel(){

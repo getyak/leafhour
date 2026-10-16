@@ -21,7 +21,6 @@ body[data-paginated=true] .flow-chapter-end{break-inside:avoid}
 body[data-paginated=true] .chapter-footer{display:none}
 .page-end{position:absolute;top:0;width:1px;height:1px;pointer-events:none}
 body[data-paginated=true] .note-panel{position:fixed;inset:90px 24px auto auto;width:min(360px,calc(100vw - 40px));max-height:calc(100dvh - 120px);margin:0;padding:22px 24px;z-index:6;overflow:auto;background:var(--panel);box-shadow:0 12px 55px #0002}
-body[data-paginated=true].has-audio .book-page{padding-bottom:142px}
 @media(max-width:899px){
  body[data-paginated=true] .book-page{width:min(650px,calc(100% - 56px))}
  body[data-paginated=true] #chapter-text{column-count:1;column-gap:32px}
@@ -34,7 +33,6 @@ body[data-paginated=true].has-audio .book-page{padding-bottom:142px}
  .page-turner button{padding-inline:8px;font-size:11px}
  .page-position{min-width:85px;font-size:10px}
  body[data-paginated=true] .note-panel{inset:76px 12px auto;width:calc(100vw - 24px);max-height:calc(100dvh - 100px)}
- body[data-paginated=true].has-audio .book-page{padding-bottom:142px}
 }
 @media(max-height:500px){
  body[data-paginated=true] .book-page,body.is-focused[data-paginated=true] .book-page{padding-top:54px;padding-bottom:4px}
