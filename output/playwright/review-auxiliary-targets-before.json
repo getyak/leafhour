@@ -1,0 +1,25 @@
+{
+  "path": "/evals",
+  "width": 1280,
+  "observedBeforeFix": [
+    {
+      "id": "E14",
+      "name": "回到首页",
+      "width": 52,
+      "height": 16
+    },
+    {
+      "id": "E15",
+      "name": "这些数字怎样计算",
+      "width": 768,
+      "height": 18
+    },
+    {
+      "id": "E17",
+      "name": "导出自己的体验记录",
+      "width": 117,
+      "height": 24.6875
+    }
+  ],
+  "classification": "Real DOM geometry before scoped evals-page44 rules; no score96 granted until retest."
+}

@@ -1,0 +1,29 @@
+{
+  "source": "working tree before sticky calendar close fix; based on 5f10905",
+  "width": 390,
+  "geometry": {
+    "dialog": {
+      "top": 12,
+      "bottom": 832,
+      "scrollTop": 36,
+      "overflow": "auto"
+    },
+    "close": {
+      "top": -11,
+      "bottom": 33,
+      "left": 321,
+      "right": 365,
+      "width": 44,
+      "height": 44
+    },
+    "visibleHeight": 21,
+    "visibleWidth": 44
+  },
+  "checks": [
+    {
+      "name": "calendar close remains a fully visible 44px target after details scrolling",
+      "pass": false
+    }
+  ],
+  "boundary": "DOM target size alone was insufficient; visible intersection was clipped."
+}

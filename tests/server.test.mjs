@@ -15,7 +15,11 @@ test('reader service owns one book and persists records without exposing files',
   const base='http://127.0.0.1:'+server.address().port;
   t.after(async()=>{await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});});
   const post=(url,data,origin=base)=>fetch(base+url,{method:'POST',headers:{'Content-Type':'application/json',Origin:origin},body:JSON.stringify(data)});
-  assert.equal((await (await fetch(base+'/api/book')).json()).bookId,book.bookId);
+  const bookResponse=await fetch(base+'/api/book');
+  assert.equal((await bookResponse.json()).bookId,book.bookId);
+  const policy=bookResponse.headers.get('content-security-policy'),imagePolicy=policy.split(';').find(part=>part.trim().startsWith('img-src '));
+  assert.match(imagePolicy,/\bblob:/,'local avatar image previews must be allowed by the real HTTP policy');
+  assert.doesNotMatch(policy.split(';').find(part=>part.trim().startsWith('script-src ')),/blob:/,'image preview permission must not broaden script execution');
   assert.equal((await fetch(base+'/local/finite-infinite-games/source-pages.json')).status,404);
   const hostileHost=await new Promise((resolve,reject)=>{const req=request(base+'/api/book',{headers:{Host:'evil.example'}},res=>{res.resume();resolve(res.statusCode);});req.on('error',reject);req.end();});assert.equal(hostileHost,403);
   assert.equal((await post('/api/comments',{id:'note-a',passageId:'fig-1986-s001-p001',text:'我的理解'},'https://evil.example')).status,403);

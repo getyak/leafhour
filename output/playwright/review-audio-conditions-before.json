@@ -1,0 +1,62 @@
+{
+  "fixture": true,
+  "checks": [
+    {
+      "label": "O08 missing translation offers corresponding source",
+      "pass": true
+    },
+    {
+      "label": "O08 source retry reaches source preview",
+      "pass": true
+    },
+    {
+      "label": "O09 actual section scope can be selected",
+      "pass": true
+    },
+    {
+      "label": "O10 failed isolated generation restores controls",
+      "pass": true
+    },
+    {
+      "label": "O03 O10 retry shows attributed editable script",
+      "pass": true
+    },
+    {
+      "label": "O41 explicit follow restores marker and hides action",
+      "pass": true
+    },
+    {
+      "label": "O40 current player opens the audio snapshot revision",
+      "pass": true
+    },
+    {
+      "label": "O40 snapshot fields remain read-only",
+      "pass": true
+    },
+    {
+      "label": "O40 snapshot does not silently use latest text",
+      "pass": true
+    },
+    {
+      "label": "O15 latest script is editable",
+      "pass": false
+    }
+  ],
+  "prepareFocus": {
+    "tag": "BODY",
+    "id": ""
+  },
+  "scopeFocus": {
+    "tag": "BODY",
+    "id": ""
+  },
+  "generationFailureFocus": {
+    "tag": "BODY",
+    "id": ""
+  },
+  "generatedFocus": {
+    "tag": "BODY",
+    "id": ""
+  },
+  "failure": "O15 latest script is editable"
+}

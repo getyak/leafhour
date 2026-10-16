@@ -1,0 +1,316 @@
+{
+  "checks": [
+    {
+      "label": "native cover drag with continuous movement saves one order",
+      "pass": true
+    },
+    {
+      "label": "Escape cancels handle drag and removes ghost",
+      "pass": true
+    },
+    {
+      "label": "pointer handle drag saves exactly one order",
+      "pass": true
+    },
+    {
+      "label": "both menu reorder actions preserve the same book focus",
+      "pass": true
+    },
+    {
+      "label": "390 keyboard handle retains focus after reorder",
+      "pass": true
+    },
+    {
+      "label": "both shelf action controls retain 44 targets at390",
+      "pass": true
+    }
+  ],
+  "rectsBefore": {
+    "a": {
+      "x": 290,
+      "y": 749.8828125,
+      "width": 185.59375,
+      "height": 250
+    },
+    "b": {
+      "x": 511.59375,
+      "y": 749.8828125,
+      "width": 185.6015625,
+      "height": 250
+    },
+    "hit": {
+      "tag": "DIV",
+      "cls": "binding-type",
+      "book": "gutenberg-meditations"
+    }
+  },
+  "trace": [
+    {
+      "type": "pointerdown",
+      "prevented": false,
+      "sorting": false,
+      "target": "DIV",
+      "x": 382.796875,
+      "y": 874.8828125
+    },
+    {
+      "type": "dragstart",
+      "prevented": false,
+      "sorting": true,
+      "target": "A",
+      "x": 382,
+      "y": 874
+    },
+    {
+      "type": "pointercancel",
+      "prevented": false,
+      "sorting": true,
+      "target": "DIV",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 386,
+      "y": 878
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 388,
+      "y": 880
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 390,
+      "y": 882
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 408,
+      "y": 882
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 426,
+      "y": 881
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 498,
+      "y": 879
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 552,
+      "y": 878
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 588,
+      "y": 877
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 606,
+      "y": 876
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 624,
+      "y": 875
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 642,
+      "y": 875
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 660,
+      "y": 874
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 660,
+      "y": 875
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 661,
+      "y": 875
+    },
+    {
+      "type": "dragover",
+      "prevented": true,
+      "sorting": true,
+      "target": "DIV",
+      "x": 661,
+      "y": 875
+    },
+    {
+      "type": "drop",
+      "prevented": true,
+      "sorting": false,
+      "target": "DIV",
+      "x": 661,
+      "y": 875
+    }
+  ],
+  "nativeRequests": [
+    {
+      "method": "POST",
+      "path": "/api/library/order",
+      "body": {
+        "bookIds": [
+          "gutenberg-alice",
+          "gutenberg-walden",
+          "gutenberg-meditations",
+          "isolated-uploaded-text"
+        ],
+        "baseRevision": 15
+      }
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/api/library/order",
+      "body": {
+        "bookIds": [
+          "gutenberg-alice",
+          "gutenberg-walden",
+          "gutenberg-meditations",
+          "isolated-uploaded-text"
+        ],
+        "baseRevision": 15
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/order",
+      "body": {
+        "bookIds": [
+          "gutenberg-alice",
+          "gutenberg-walden",
+          "gutenberg-meditations",
+          "isolated-uploaded-text"
+        ],
+        "baseRevision": 16
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/order",
+      "body": {
+        "bookIds": [
+          "gutenberg-alice",
+          "gutenberg-meditations",
+          "gutenberg-walden",
+          "isolated-uploaded-text"
+        ],
+        "baseRevision": 17
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/order",
+      "body": {
+        "bookIds": [
+          "gutenberg-alice",
+          "gutenberg-walden",
+          "gutenberg-meditations",
+          "isolated-uploaded-text"
+        ],
+        "baseRevision": 18
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/order",
+      "body": {
+        "bookIds": [
+          "gutenberg-alice",
+          "gutenberg-meditations",
+          "gutenberg-walden",
+          "isolated-uploaded-text"
+        ],
+        "baseRevision": 19
+      }
+    }
+  ],
+  "rects": [
+    {
+      "name": "《沉思录》更多操作",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "name": "拖动《沉思录》调整位置",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "name": "《瓦尔登湖》更多操作",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "name": "拖动《瓦尔登湖》调整位置",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "name": "《隔离上传样本》更多操作",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "name": "拖动《隔离上传样本》调整位置",
+      "width": 44,
+      "height": 44
+    }
+  ],
+  "sourceLog": "conditional-drag-result.log"
+}

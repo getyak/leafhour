@@ -1,0 +1,313 @@
+{
+  "group": "L14,L17,L19–22,L31–32,L34–37",
+  "checks": [
+    {
+      "label": "library failure keeps an actionable error",
+      "pass": true
+    },
+    {
+      "label": "library retry restores loaded room focus",
+      "pass": true
+    },
+    {
+      "label": "preview retry restores excerpt action focus",
+      "pass": true
+    },
+    {
+      "label": "latest question carries exact book/passage/note",
+      "pass": true
+    },
+    {
+      "label": "rapid book switch keeps title/excerpt on final book",
+      "pass": true
+    },
+    {
+      "label": "goal write locks related book controls",
+      "pass": true
+    },
+    {
+      "label": "failed goal restores last saved value",
+      "pass": true
+    },
+    {
+      "label": "failed goal preserves retry control focus",
+      "pass": true
+    },
+    {
+      "label": "goal retry saves selected value",
+      "pass": true
+    },
+    {
+      "label": "successful goal preserves control focus",
+      "pass": true
+    },
+    {
+      "label": "failed milestone retains original status and retry",
+      "pass": true
+    },
+    {
+      "label": "failed milestone preserves retry focus",
+      "pass": true
+    },
+    {
+      "label": "successful milestone preserves changed control focus",
+      "pass": true
+    },
+    {
+      "label": "reopen milestone preserves original reading data",
+      "pass": true
+    },
+    {
+      "label": "wrong upload type 1440 explains supported files",
+      "pass": true
+    },
+    {
+      "label": "oversized upload 1440 is recoverable before request",
+      "pass": true
+    },
+    {
+      "label": "cancel file choice 1440 retains prior valid file",
+      "pass": true
+    },
+    {
+      "label": "upload 1440 exposes busy and prevents duplicate task",
+      "pass": true
+    },
+    {
+      "label": "upload failure 1440 keeps file for one retry",
+      "pass": true
+    },
+    {
+      "label": "upload error 1440 preserves retry focus",
+      "pass": true
+    },
+    {
+      "label": "upload 1440 targets44",
+      "pass": true
+    },
+    {
+      "label": "wrong upload type 390 explains supported files",
+      "pass": true
+    },
+    {
+      "label": "oversized upload 390 is recoverable before request",
+      "pass": true
+    },
+    {
+      "label": "cancel file choice 390 retains prior valid file",
+      "pass": true
+    },
+    {
+      "label": "upload 390 exposes busy and prevents duplicate task",
+      "pass": true
+    },
+    {
+      "label": "upload failure 390 keeps file for one retry",
+      "pass": true
+    },
+    {
+      "label": "upload error 390 preserves retry focus",
+      "pass": true
+    },
+    {
+      "label": "upload 390 targets44",
+      "pass": true
+    },
+    {
+      "label": "closing busy upload explains continuing task",
+      "pass": true
+    },
+    {
+      "label": "closed upload refreshes shelf on isolated success",
+      "pass": true
+    },
+    {
+      "label": "all mutations remain intercepted",
+      "pass": true
+    }
+  ],
+  "focus": [
+    {
+      "label": "library-retry",
+      "active": {
+        "tag": "MAIN",
+        "label": null,
+        "id": "main",
+        "text": "\n\n  \n  \n  光影\n  \n    循页 · "
+      }
+    },
+    {
+      "label": "preview-retry",
+      "active": {
+        "tag": "BUTTON",
+        "label": null,
+        "id": "",
+        "text": "看原文 ↔"
+      }
+    },
+    {
+      "label": "goal-error",
+      "active": {
+        "tag": "SELECT",
+        "label": "每日阅读目标",
+        "id": "",
+        "text": "5 分钟10 分钟15 分钟20 分钟25 分钟3"
+      }
+    },
+    {
+      "label": "goal-success",
+      "active": {
+        "tag": "SELECT",
+        "label": "每日阅读目标",
+        "id": "",
+        "text": "5 分钟10 分钟15 分钟20 分钟25 分钟3"
+      }
+    },
+    {
+      "label": "milestone-error",
+      "active": {
+        "tag": "BUTTON",
+        "label": null,
+        "id": "",
+        "text": "标记整本读完"
+      }
+    },
+    {
+      "label": "milestone-success",
+      "active": {
+        "tag": "BUTTON",
+        "label": null,
+        "id": "",
+        "text": "重新开始这本书"
+      }
+    },
+    {
+      "label": "upload-error-1440",
+      "active": {
+        "tag": "BUTTON",
+        "label": null,
+        "id": "confirm-upload",
+        "text": "重试上传 →"
+      }
+    },
+    {
+      "label": "upload-error-390",
+      "active": {
+        "tag": "BUTTON",
+        "label": null,
+        "id": "confirm-upload",
+        "text": "重试上传 →"
+      }
+    }
+  ],
+  "targets": [
+    {
+      "width": 1440,
+      "rects": [
+        {
+          "name": "关闭上传",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "选择 PDF、TXT 或 Markdown 文件",
+          "w": 394,
+          "h": 168.09375
+        },
+        {
+          "name": "重试上传 →",
+          "w": 394,
+          "h": 50.1953125
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "rects": [
+        {
+          "name": "关闭上传",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "选择 PDF、TXT 或 Markdown 文件",
+          "w": 304,
+          "h": 168.09375
+        },
+        {
+          "name": "重试上传 →",
+          "w": 304,
+          "h": 50.1953125
+        }
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-alice/reading-goal",
+      "body": {
+        "minutes": 30
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-alice/reading-goal",
+      "body": {
+        "minutes": 20
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-alice/reading-milestones",
+      "body": {
+        "id": "fec6cfb8-6cbe-4043-aa28-feafda8c5282",
+        "type": "book_finished",
+        "createdAt": "2026-10-15T17:38:58.361Z"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-alice/reading-milestones",
+      "body": {
+        "id": "30128eec-8479-4ab5-a8ba-5152b2c84456",
+        "type": "book_finished",
+        "createdAt": "2026-10-15T17:38:59.445Z"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-alice/reading-milestones",
+      "body": {
+        "id": "9535dc92-c099-4e01-9b72-e1fc69b3a4bd",
+        "type": "book_reopened",
+        "createdAt": "2026-10-15T17:39:00.794Z"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/upload",
+      "body": {
+        "filename": "conditional-fixture.txt",
+        "base64": "[isolated file omitted]"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/upload",
+      "body": {
+        "filename": "conditional-fixture.txt",
+        "base64": "[isolated file omitted]"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/upload",
+      "body": {
+        "filename": "conditional-fixture.txt",
+        "base64": "[isolated file omitted]"
+      }
+    }
+  ],
+  "sourceLog": "conditional-library-result.log"
+}

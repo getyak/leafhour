@@ -6,6 +6,12 @@
     "bytes": 143499
   },
   {
+    "file": "review-audio-latest-390.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 69525
+  },
+  {
     "file": "review-audio-mobile-before.png",
     "width": 390,
     "height": 844,
@@ -22,6 +28,24 @@
     "width": 390,
     "height": 844,
     "bytes": 59691
+  },
+  {
+    "file": "review-audio-script-1440-conditional.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 165984
+  },
+  {
+    "file": "review-audio-script-390-conditional.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 67036
+  },
+  {
+    "file": "review-audio-snapshot-390.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 75856
   },
   {
     "file": "review-auth-desktop-before.png",
@@ -42,10 +66,52 @@
     "bytes": 52982
   },
   {
+    "file": "review-current-chat-1440-wait.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 1079745
+  },
+  {
+    "file": "review-current-chat-390-stopped.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 124861
+  },
+  {
+    "file": "review-current-chat-390-unavailable.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 135358
+  },
+  {
     "file": "review-ending-fixture-mobile.png",
     "width": 390,
     "height": 844,
     "bytes": 55505
+  },
+  {
+    "file": "review-evals-1440-definitions.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 149864
+  },
+  {
+    "file": "review-evals-1440-overview.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 114153
+  },
+  {
+    "file": "review-evals-390-definitions.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 79808
+  },
+  {
+    "file": "review-evals-390-overview.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 64630
   },
   {
     "file": "review-final-atmosphere-mobile.png",
@@ -162,6 +228,90 @@
     "bytes": 98698
   },
   {
+    "file": "review-pending-1440-ending.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 183773
+  },
+  {
+    "file": "review-pending-390-draft.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 59484
+  },
+  {
+    "file": "review-pending-390-ending.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 62897
+  },
+  {
+    "file": "review-pending-390-saved.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 51539
+  },
+  {
+    "file": "review-personal-profile-390x844.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 64519
+  },
+  {
+    "file": "review-privacy-1440-before.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 379991
+  },
+  {
+    "file": "review-privacy-1440-email-final.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 227773
+  },
+  {
+    "file": "review-privacy-1440-email.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 379991
+  },
+  {
+    "file": "review-privacy-1440-overview-final.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 218385
+  },
+  {
+    "file": "review-privacy-390-before.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 155247
+  },
+  {
+    "file": "review-privacy-390-email-final.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 87014
+  },
+  {
+    "file": "review-privacy-390-email.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 155247
+  },
+  {
+    "file": "review-privacy-390-night-final.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 115201
+  },
+  {
+    "file": "review-privacy-390-overview-final.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 113598
+  },
+  {
     "file": "review-reader-desktop-before.png",
     "width": 1440,
     "height": 1000,
@@ -174,10 +324,34 @@
     "bytes": 113927
   },
   {
+    "file": "review-reader-recovery-1440-records.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 245725
+  },
+  {
+    "file": "review-reader-recovery-390-records.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 83609
+  },
+  {
+    "file": "review-reader-source-390.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 74960
+  },
+  {
     "file": "review-reader-tablet-after.png",
     "width": 768,
     "height": 1000,
     "bytes": 165562
+  },
+  {
+    "file": "review-reader-transfer-390.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 56530
   },
   {
     "file": "review-script-fixture-mobile.png",

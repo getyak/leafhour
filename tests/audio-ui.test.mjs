@@ -39,3 +39,12 @@ test('audio action clicks do not become record-list messages, while restore rece
  assert.equal(body.children.some(child=>String(child.textContent).includes('[object ')),false);
  await context.showRecords('听读记录已恢复。');assert.equal(body.children.find(child=>child.className==='audio-intro').textContent,'听读记录已恢复。');
 });
+
+test('switching an open audio panel preserves a stable focus target without taking focus from outside',()=>{
+ const oldControl={},external={},document={body:{},activeElement:oldControl},close={focus(){document.activeElement=this;}};
+ const body={contains:node=>node===oldControl,replaceChildren(){if(document.activeElement===oldControl)document.activeElement=document.body;}};
+ const dialog={open:true,querySelector:()=>close},context=vm.createContext({body,dialog,document,panelRevision:0,$:()=>({})});
+ vm.runInContext(source.slice(source.indexOf('function panel('),source.indexOf('function status(')),context);
+ context.panel('准备听读');assert.equal(document.activeElement===close,true);
+ document.activeElement=external;context.panel('后台载入');assert.equal(document.activeElement===external,true);
+});

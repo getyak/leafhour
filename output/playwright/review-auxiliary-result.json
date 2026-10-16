@@ -1,0 +1,574 @@
+{
+  "fixture": true,
+  "widths": [
+    {
+      "width": 1440,
+      "height": 1000,
+      "checks": [
+        {
+          "label": "evals truthful insufficient sample and matching definitions",
+          "pass": true
+        },
+        {
+          "label": "E14 first keyboard target named homepage with visible focus",
+          "pass": true
+        },
+        {
+          "label": "E15 summary reached in Tab order",
+          "pass": true
+        },
+        {
+          "label": "E15 Enter reveals calculation and no invented sample attainment",
+          "pass": true
+        },
+        {
+          "label": "E15 Space closes native details and retains focus",
+          "pass": true
+        },
+        {
+          "label": "evals every independent link and summary at least44",
+          "pass": true,
+          "detail": [
+            {
+              "name": "回到首页",
+              "width": 52,
+              "height": 44,
+              "outlineWidth": "3px",
+              "outlineStyle": "none",
+              "href": "/",
+              "active": false
+            },
+            {
+              "name": "这些数字怎样计算",
+              "width": 768,
+              "height": 44,
+              "outlineWidth": "2px",
+              "outlineStyle": "solid",
+              "href": null,
+              "active": true
+            },
+            {
+              "name": "打开聊天解释对照",
+              "width": 104,
+              "height": 44,
+              "outlineWidth": "3px",
+              "outlineStyle": "none",
+              "href": "/read?study=chat",
+              "active": false
+            },
+            {
+              "name": "导出自己的体验记录",
+              "width": 117,
+              "height": 44,
+              "outlineWidth": "3px",
+              "outlineStyle": "none",
+              "href": "/api/experiences/export",
+              "active": false
+            }
+          ]
+        },
+        {
+          "label": "evals no horizontal overflow",
+          "pass": true
+        },
+        {
+          "label": "E16 keyboard target is exact compatible reader route",
+          "pass": true
+        },
+        {
+          "label": "E16 Enter reaches readable public reader without generation",
+          "pass": true
+        },
+        {
+          "label": "E17 Enter saves an actual browser download with the correct filename",
+          "pass": true
+        },
+        {
+          "label": "E17 export leaves focus on usable download link",
+          "pass": true
+        },
+        {
+          "label": "evals load503 explicitly preserves a reading exit",
+          "pass": true
+        },
+        {
+          "label": "E14 keyboard homepage exit actually arrives",
+          "pass": true
+        },
+        {
+          "label": "evals reload recovers after isolated failure",
+          "pass": true
+        },
+        {
+          "label": "E18 skip link receives first keyboard focus",
+          "pass": true
+        },
+        {
+          "label": "E18 Enter moves to real main anchor",
+          "pass": true
+        },
+        {
+          "label": "E20 email reachable by Tab with visible focus and correct mailto",
+          "pass": true
+        },
+        {
+          "label": "E20 address text really copies without opening mail",
+          "pass": true
+        },
+        {
+          "label": "E18 E19 repeated brand and library destinations remain correct",
+          "pass": true
+        },
+        {
+          "label": "privacy independent targets44 with natural inline email exception",
+          "pass": true,
+          "detail": [
+            {
+              "name": "跳到正文",
+              "href": "#main",
+              "width": 84,
+              "height": 49.5
+            },
+            {
+              "name": "循页PAGE BY PAGE",
+              "href": "/",
+              "width": 129.3125,
+              "height": 46.734375
+            },
+            {
+              "name": "回到书房 ↗",
+              "href": "/library",
+              "width": 65.453125,
+              "height": 44
+            },
+            {
+              "name": "hi@cubxxw.com",
+              "href": "mailto:hi@cubxxw.com",
+              "width": 110.28125,
+              "height": 18
+            },
+            {
+              "name": "回到书房 →",
+              "href": "/library",
+              "width": 77.34375,
+              "height": 44
+            },
+            {
+              "name": "循页PAGE BY PAGE",
+              "href": "/",
+              "width": 129.3125,
+              "height": 44
+            },
+            {
+              "name": "我的书房 ↗",
+              "href": "/library",
+              "width": 60.546875,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "label": "privacy no horizontal overflow",
+          "pass": true
+        },
+        {
+          "label": "E19 keyboard return arrives at actual library",
+          "pass": true
+        },
+        {
+          "label": "privacy browser Back returns to readable document",
+          "pass": true
+        }
+      ],
+      "targets": [
+        {
+          "name": "回到首页",
+          "width": 52,
+          "height": 44,
+          "outlineWidth": "3px",
+          "outlineStyle": "none",
+          "href": "/",
+          "active": false
+        },
+        {
+          "name": "这些数字怎样计算",
+          "width": 768,
+          "height": 44,
+          "outlineWidth": "2px",
+          "outlineStyle": "solid",
+          "href": null,
+          "active": true
+        },
+        {
+          "name": "打开聊天解释对照",
+          "width": 104,
+          "height": 44,
+          "outlineWidth": "3px",
+          "outlineStyle": "none",
+          "href": "/read?study=chat",
+          "active": false
+        },
+        {
+          "name": "导出自己的体验记录",
+          "width": 117,
+          "height": 44,
+          "outlineWidth": "3px",
+          "outlineStyle": "none",
+          "href": "/api/experiences/export",
+          "active": false
+        }
+      ],
+      "download": {
+        "name": "marginalia-my-experiences.json",
+        "file": "output/playwright/review-evals-1440-download.json",
+        "intercepted": false,
+        "localRuntimeDataNotPublished": true,
+        "parsed": {
+          "kind": "marginalia-reading-experiences",
+          "schemaVersion": 1,
+          "bookId": "gutenberg-alice",
+          "states": 0,
+          "echoes": 0,
+          "eventCount": 17,
+          "eventTypes": [
+            "reader_visible"
+          ]
+        }
+      },
+      "mailCopied": "hi@cubxxw.com",
+      "privacyTargets": [
+        {
+          "name": "跳到正文",
+          "href": "#main",
+          "width": 84,
+          "height": 49.5
+        },
+        {
+          "name": "循页PAGE BY PAGE",
+          "href": "/",
+          "width": 129.3125,
+          "height": 46.734375
+        },
+        {
+          "name": "回到书房 ↗",
+          "href": "/library",
+          "width": 65.453125,
+          "height": 44
+        },
+        {
+          "name": "hi@cubxxw.com",
+          "href": "mailto:hi@cubxxw.com",
+          "width": 110.28125,
+          "height": 18
+        },
+        {
+          "name": "回到书房 →",
+          "href": "/library",
+          "width": 77.34375,
+          "height": 44
+        },
+        {
+          "name": "循页PAGE BY PAGE",
+          "href": "/",
+          "width": 129.3125,
+          "height": 44
+        },
+        {
+          "name": "我的书房 ↗",
+          "href": "/library",
+          "width": 60.546875,
+          "height": 44
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "checks": [
+        {
+          "label": "evals truthful insufficient sample and matching definitions",
+          "pass": true
+        },
+        {
+          "label": "E14 first keyboard target named homepage with visible focus",
+          "pass": true
+        },
+        {
+          "label": "E15 summary reached in Tab order",
+          "pass": true
+        },
+        {
+          "label": "E15 Enter reveals calculation and no invented sample attainment",
+          "pass": true
+        },
+        {
+          "label": "E15 Space closes native details and retains focus",
+          "pass": true
+        },
+        {
+          "label": "evals every independent link and summary at least44",
+          "pass": true,
+          "detail": [
+            {
+              "name": "回到首页",
+              "width": 52,
+              "height": 44,
+              "outlineWidth": "3px",
+              "outlineStyle": "none",
+              "href": "/",
+              "active": false
+            },
+            {
+              "name": "这些数字怎样计算",
+              "width": 348,
+              "height": 44,
+              "outlineWidth": "2px",
+              "outlineStyle": "solid",
+              "href": null,
+              "active": true
+            },
+            {
+              "name": "打开聊天解释对照",
+              "width": 104,
+              "height": 44,
+              "outlineWidth": "3px",
+              "outlineStyle": "none",
+              "href": "/read?study=chat",
+              "active": false
+            },
+            {
+              "name": "导出自己的体验记录",
+              "width": 117,
+              "height": 44,
+              "outlineWidth": "3px",
+              "outlineStyle": "none",
+              "href": "/api/experiences/export",
+              "active": false
+            }
+          ]
+        },
+        {
+          "label": "evals no horizontal overflow",
+          "pass": true
+        },
+        {
+          "label": "E16 keyboard target is exact compatible reader route",
+          "pass": true
+        },
+        {
+          "label": "E16 Enter reaches readable public reader without generation",
+          "pass": true
+        },
+        {
+          "label": "E17 Enter saves an actual browser download with the correct filename",
+          "pass": true
+        },
+        {
+          "label": "E17 export leaves focus on usable download link",
+          "pass": true
+        },
+        {
+          "label": "evals load503 explicitly preserves a reading exit",
+          "pass": true
+        },
+        {
+          "label": "E14 keyboard homepage exit actually arrives",
+          "pass": true
+        },
+        {
+          "label": "evals reload recovers after isolated failure",
+          "pass": true
+        },
+        {
+          "label": "E18 skip link receives first keyboard focus",
+          "pass": true
+        },
+        {
+          "label": "E18 Enter moves to real main anchor",
+          "pass": true
+        },
+        {
+          "label": "E20 email reachable by Tab with visible focus and correct mailto",
+          "pass": true
+        },
+        {
+          "label": "E20 address text really copies without opening mail",
+          "pass": true
+        },
+        {
+          "label": "E18 E19 repeated brand and library destinations remain correct",
+          "pass": true
+        },
+        {
+          "label": "privacy independent targets44 with natural inline email exception",
+          "pass": true,
+          "detail": [
+            {
+              "name": "跳到正文",
+              "href": "#main",
+              "width": 84,
+              "height": 49.5
+            },
+            {
+              "name": "循页PAGE BY PAGE",
+              "href": "/",
+              "width": 109.859375,
+              "height": 44
+            },
+            {
+              "name": "回到书房 ↗",
+              "href": "/library",
+              "width": 0,
+              "height": 0
+            },
+            {
+              "name": "hi@cubxxw.com",
+              "href": "mailto:hi@cubxxw.com",
+              "width": 116.8125,
+              "height": 18
+            },
+            {
+              "name": "回到书房 →",
+              "href": "/library",
+              "width": 82.375,
+              "height": 44
+            },
+            {
+              "name": "循页PAGE BY PAGE",
+              "href": "/",
+              "width": 116.859375,
+              "height": 44
+            },
+            {
+              "name": "我的书房 ↗",
+              "href": "/library",
+              "width": 50.703125,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "label": "privacy no horizontal overflow",
+          "pass": true
+        },
+        {
+          "label": "E19 keyboard return arrives at actual library",
+          "pass": true
+        },
+        {
+          "label": "privacy browser Back returns to readable document",
+          "pass": true
+        }
+      ],
+      "targets": [
+        {
+          "name": "回到首页",
+          "width": 52,
+          "height": 44,
+          "outlineWidth": "3px",
+          "outlineStyle": "none",
+          "href": "/",
+          "active": false
+        },
+        {
+          "name": "这些数字怎样计算",
+          "width": 348,
+          "height": 44,
+          "outlineWidth": "2px",
+          "outlineStyle": "solid",
+          "href": null,
+          "active": true
+        },
+        {
+          "name": "打开聊天解释对照",
+          "width": 104,
+          "height": 44,
+          "outlineWidth": "3px",
+          "outlineStyle": "none",
+          "href": "/read?study=chat",
+          "active": false
+        },
+        {
+          "name": "导出自己的体验记录",
+          "width": 117,
+          "height": 44,
+          "outlineWidth": "3px",
+          "outlineStyle": "none",
+          "href": "/api/experiences/export",
+          "active": false
+        }
+      ],
+      "download": {
+        "name": "marginalia-my-experiences.json",
+        "file": "output/playwright/review-evals-390-download.json",
+        "intercepted": false,
+        "localRuntimeDataNotPublished": true,
+        "parsed": {
+          "kind": "marginalia-reading-experiences",
+          "schemaVersion": 1,
+          "bookId": "gutenberg-alice",
+          "states": 0,
+          "echoes": 0,
+          "eventCount": 19,
+          "eventTypes": [
+            "reader_visible"
+          ]
+        }
+      },
+      "mailCopied": "hi@cubxxw.com",
+      "privacyTargets": [
+        {
+          "name": "跳到正文",
+          "href": "#main",
+          "width": 84,
+          "height": 49.5
+        },
+        {
+          "name": "循页PAGE BY PAGE",
+          "href": "/",
+          "width": 109.859375,
+          "height": 44
+        },
+        {
+          "name": "回到书房 ↗",
+          "href": "/library",
+          "width": 0,
+          "height": 0
+        },
+        {
+          "name": "hi@cubxxw.com",
+          "href": "mailto:hi@cubxxw.com",
+          "width": 116.8125,
+          "height": 18
+        },
+        {
+          "name": "回到书房 →",
+          "href": "/library",
+          "width": 82.375,
+          "height": 44
+        },
+        {
+          "name": "循页PAGE BY PAGE",
+          "href": "/",
+          "width": 116.859375,
+          "height": 44
+        },
+        {
+          "name": "我的书房 ↗",
+          "href": "/library",
+          "width": 50.703125,
+          "height": 44
+        }
+      ]
+    }
+  ],
+  "blockedMutations": [],
+  "exportRequests": 0,
+  "mailApplicationOpened": false,
+  "noLiveWrites": true,
+  "corrections": [
+    "Download anchors bypassed page.route: exportRequests=0, and actual downloaded bytes were local public-book QA events rather than the proposed empty fixture. Both files were parsed after capture: schema1 reading experiences, no states or echoes. Runtime downloads stay local, outside source publication.",
+    "The browser assertions initially used a syntheticEmptyEvents marker without parsing. Final receipt replaces that unsupported claim with the observed filename and separate real-file parse; no empty-fixture claim remains.",
+    "The reader ready attribute belongs to BODY, not main; fixed assertion selector. Mobile hidden header link has 0x0 and is excluded from visible touch targets, while its two visible library alternatives remain44."
+  ]
+}

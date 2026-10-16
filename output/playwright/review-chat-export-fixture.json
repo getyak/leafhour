@@ -1,0 +1,24 @@
+{
+  "kind": "marginalia-book-chat",
+  "schemaVersion": 1,
+  "exportedAt": "2026-10-15T17:40:08.176Z",
+  "bookId": "gutenberg-alice",
+  "title": {
+    "zh": "爱丽丝梦游仙境",
+    "en": "Alice’s Adventures in Wonderland"
+  },
+  "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+  "turns": [
+    {
+      "id": "56edc0a9-1ce6-4e1f-b113-c4e2d5c63191",
+      "passageId": "01b38ea4c710a84b-p00008",
+      "text": "隔离验收：这段论证的前提是什么？",
+      "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+      "bookId": "gutenberg-alice",
+      "origin": "user",
+      "status": "cancelled",
+      "createdAt": "2026-10-15T17:38:51.367Z",
+      "answer": null
+    }
+  ]
+}

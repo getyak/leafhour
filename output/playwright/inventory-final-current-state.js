@@ -1,0 +1,5 @@
+async (page) => {
+ await page.setViewportSize({width:1440,height:1000});
+ const metrics=[];for(const name of ['上一章','下一章']){const b=page.getByRole('button',{name,exact:true});await page.keyboard.press('Tab');await b.focus();metrics.push({name,...await b.evaluate(el=>{const r=el.getBoundingClientRect();return {width:r.width,height:r.height,focusVisible:el.matches(':focus-visible'),outline:getComputedStyle(el).outline}})});}
+ await page.getByRole('button',{name:'阅读工具',exact:true}).click();await page.locator('body').ariaSnapshot();await page.getByRole('button',{name:'阅读设置',exact:true}).click();await page.getByRole('dialog',{name:'你的阅读方式'}).ariaSnapshot();await page.getByRole('tab',{name:'数据',exact:true}).click();const dialog=page.getByRole('dialog',{name:'你的阅读方式'});const snapshot=await dialog.ariaSnapshot();await page.screenshot({path:'/tmp/inventory-final-data-1440.png'});await dialog.getByRole('button',{name:'关闭阅读设置',exact:true}).click();await page.locator('body').ariaSnapshot();return {width:1440,metrics,snapshot,experienceState:await page.evaluate(()=>document.body.dataset.experiencesReady)};
+}

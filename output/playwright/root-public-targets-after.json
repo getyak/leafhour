@@ -1,0 +1,83 @@
+[
+  {
+    "width": 1440,
+    "path": "/",
+    "overflow": 0,
+    "small": []
+  },
+  {
+    "width": 1440,
+    "path": "/library",
+    "overflow": 0,
+    "small": []
+  },
+  {
+    "width": 1440,
+    "path": "/privacy",
+    "overflow": 0,
+    "small": [
+      {
+        "id": "",
+        "tag": "A",
+        "name": "hi@cubxxw.com",
+        "href": "mailto:hi@cubxxw.com",
+        "width": 110.2734375,
+        "height": 17.5
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "path": "/",
+    "overflow": 0,
+    "small": []
+  },
+  {
+    "width": 390,
+    "path": "/library",
+    "overflow": 0,
+    "small": []
+  },
+  {
+    "width": 390,
+    "path": "/privacy",
+    "overflow": 0,
+    "small": [
+      {
+        "id": "",
+        "tag": "A",
+        "name": "hi@cubxxw.com",
+        "href": "mailto:hi@cubxxw.com",
+        "width": 116.8125,
+        "height": 19
+      }
+    ]
+  },
+  {
+    "width": 320,
+    "path": "/",
+    "overflow": 0,
+    "small": []
+  },
+  {
+    "width": 320,
+    "path": "/library",
+    "overflow": 0,
+    "small": []
+  },
+  {
+    "width": 320,
+    "path": "/privacy",
+    "overflow": 0,
+    "small": [
+      {
+        "id": "",
+        "tag": "A",
+        "name": "hi@cubxxw.com",
+        "href": "mailto:hi@cubxxw.com",
+        "width": 116.8125,
+        "height": 19
+      }
+    ]
+  }
+]

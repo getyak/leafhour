@@ -1,3 +1,4 @@
+import {trackActionFocus} from './action-focus.mjs';
 const node=(tag,className,text)=>{const element=document.createElement(tag);if(className)element.className=className;if(text!==undefined)element.textContent=text;return element;};
 const MAX_AVATAR_BYTES=100*1024;
 export function profileInitials(user){
@@ -67,14 +68,14 @@ export function mountLibraryProfile({root,getSession,api,onProfileUpdated=()=>{}
   form.addEventListener('submit',async event=>{
     event.preventDefault();if(busy||preparing||!getSession()?.user||typeof api!=='function')return;
     const ticket=capture(),displayName=name.value.trim();if([...displayName].length>80||/[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/.test(displayName)){message('称呼请使用 80 字以内的单行文字。',true);name.focus();return;}
-    busy=true;message('');controls();
+    const focus=trackActionFocus(document,document.activeElement);busy=true;message('');controls();
     try{
       const profile=await api('/api/account/profile',{displayName,...(pendingAvatar===undefined?{}:{avatarData:pendingAvatar})});if(!current(ticket))return;
       onProfileUpdated(profile,ticket.owner);
       if(revision!==ticket.revision||getSession()?.user?.id!==ticket.owner)return;
       name.value=profile.displayName||'';pendingAvatar=undefined;preview({...getSession().user,...profile});message('个人资料已保存。');
     }catch(error){if(current(ticket))message(error.message||'个人资料暂未保存，请重试。',true);}
-    finally{if(current(ticket)){busy=false;controls();}}
+    finally{if(current(ticket)){busy=false;controls();focus.restore(save);}else focus.stop();}
   });
   update();return {update,clear(){sourceSession=null;update();}};
 }

@@ -1,4 +1,5 @@
 import {paintBookCover} from './book-binding.mjs';
+import {trackActionFocus} from './action-focus.mjs';
 
 const MAX_PACKAGE_BYTES=20*1024*1024;
 const hex=bytes=>Array.from(new Uint8Array(bytes),byte=>byte.toString(16).padStart(2,'0')).join('');
@@ -70,11 +71,11 @@ function present(data){
   $('gift-loading').hidden=true;$('gift-error').hidden=true;$('gift-scene').hidden=false;
 }
 async function load(){
-  const ticket=++generation;$('gift-loading').hidden=false;$('gift-error').hidden=true;
-  try{if(!token)throw Object.assign(Error('链接不完整'),{status:404});const data=await request('/api/book-gifts/'+token);if(ticket===generation)present(data);}catch(error){if(ticket===generation)showError(error);}
+  const ticket=++generation,focus=trackActionFocus(document,$('gift-retry'));$('gift-loading').hidden=false;$('gift-error').hidden=true;
+  try{if(!token)throw Object.assign(Error('链接不完整'),{status:404});const data=await request('/api/book-gifts/'+token);if(ticket===generation)present(data);}catch(error){if(ticket===generation)showError(error);}finally{if(ticket===generation)focus.restore($('gift-scene').hidden?$('gift-retry').hidden?$('gift-error').querySelector('a'):$('gift-retry'):$('gift-scene').dataset.open==='true'?$('gift-title'):$('gift-open'));else focus.stop();}
 }
 async function accept(){
-  if(receiving||!gift)return;receiving=true;$('gift-accept').disabled=true;$('gift-action-status').classList.remove('error');$('gift-action-status').textContent='正在放进你的书架…';
+  if(receiving||!gift)return;const focus=trackActionFocus(document,$('gift-accept'));receiving=true;$('gift-accept').disabled=true;$('gift-action-status').classList.remove('error');$('gift-action-status').textContent='正在放进你的书架…';
   try{
     const session=await request('/api/auth/session');
     if(!session.user?.id){location.assign('/library?login=1&next='+encodeURIComponent('/gift/'+token));return;}
@@ -87,7 +88,7 @@ async function accept(){
     if(error.status===401){location.assign('/library?login=1&next='+encodeURIComponent('/gift/'+token));return;}
     if(error.status===404){showError(error);return;}
     $('gift-action-status').classList.add('error');$('gift-action-status').textContent=error.message;
-  }finally{receiving=false;$('gift-accept').disabled=false;}
+  }finally{receiving=false;$('gift-accept').disabled=false;focus.restore(!$('gift-error').hidden?$('gift-error').querySelector('a'):$('gift-accept').hidden?$('gift-saved-read'):$('gift-accept'));}
 }
 $('gift-open').addEventListener('click',()=>setOpen(true));$('gift-close').addEventListener('click',()=>setOpen(false));
 $('gift-accept').addEventListener('click',accept);$('gift-retry').addEventListener('click',load);

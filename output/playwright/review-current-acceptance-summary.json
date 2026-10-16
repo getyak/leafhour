@@ -1,0 +1,104 @@
+{
+  "date": "2026-10-16",
+  "scoreType": "independent design review, not user research or provider outcome",
+  "rubric": {
+    "visual": 20,
+    "discoverability": 15,
+    "clickFeedback": 20,
+    "keyboard": 15,
+    "mobile": 15,
+    "stateRecovery": 15
+  },
+  "historicalCoverage": {
+    "families": 311,
+    "operated": 133,
+    "observedOnly": 99,
+    "unverified": 79
+  },
+  "currentIndex": {
+    "canonicalCurrentOrConditional": 342,
+    "legacyNotApplicable": 22,
+    "retired": 2,
+    "isCoverageRate": false
+  },
+  "currentBrowserEvidence": {
+    "scorer": {
+      "chat": {
+        "assertions": 35,
+        "files": [
+          "review-integrated-chat-result.json",
+          "review-current-chat-conditions.json"
+        ]
+      },
+      "readerSettingsNotes": {
+        "assertions": 42,
+        "files": [
+          "review-reader-conditions.json"
+        ]
+      },
+      "audio": {
+        "assertions": 36,
+        "files": [
+          "review-audio-conditions.json"
+        ]
+      },
+      "readingPending": {
+        "assertions": 40,
+        "files": [
+          "review-reading-pending-conditions.json"
+        ]
+      },
+      "auxiliaryPages": {
+        "assertions": 46,
+        "files": [
+          "review-auxiliary-result.json"
+        ]
+      },
+      "privacyAfterCspFix": {
+        "assertions": 24,
+        "files": [
+          "review-privacy-final-result.json"
+        ]
+      }
+    },
+    "rootIndependentlyReviewed": {
+      "calendar": {
+        "assertions": 42,
+        "files": [
+          "root-calendar-conditional-desktop.json",
+          "root-calendar-conditional-mobile.json"
+        ]
+      },
+      "publicTargets": {
+        "scenarios": 9,
+        "file": "root-public-targets-after.json"
+      }
+    },
+    "implementationIndependentlyReviewed": {
+      "assertions": 132,
+      "file": "conditional-execution-results.json"
+    }
+  },
+  "remainingBoundaries": [
+    "system share and OS permission denial paths",
+    "real touch, mobile software keyboard, tab/app background or lockscreen behavior",
+    "real account persistence and full account-switch races",
+    "real model, speech, email or gift creation/receipt/revocation",
+    "cross-instance restoration, system calendar import, deployed clean-URL rewrite",
+    "Email link target and copy were verified; no external mail app or email sending was activated."
+  ],
+  "notes": [
+    "Assertions are not control-family counts.",
+    "All non-GET browser mutations in conditional fixtures were intercepted.",
+    "Partial extra profile 844 smoke records two completed checks; hidden-menu timeout is retained and not classified as a product defect.",
+    "CLI background attempt did not produce a hidden page; no background pass or product failure is claimed.",
+    "All scorer browser sessions are closed.",
+    "Auxiliary export downloads bypassed page.route: they were parsed actual local public-book QA events, not the proposed empty fixture. Final public receipts state this correction."
+  ],
+  "localRuntimeDownloadsExcludedFromPublication": [
+    "review-pending-fixture-download.json",
+    "review-records-fixture-download.json",
+    "review-evals-1440-download.json",
+    "review-evals-390-download.json"
+  ]
+}

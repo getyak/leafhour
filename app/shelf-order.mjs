@@ -39,7 +39,7 @@ export function mountShelfDrag({grid,getBooks,getOwner,onReorder,onError=()=>{}}
   });
   grid.addEventListener('pointermove',event=>{if(!drag||drag.pointer!==event.pointerId)return;event.preventDefault();drag.ghost.style.left=drag.left+event.clientX-drag.startX+'px';drag.ghost.style.top=drag.top+event.clientY-drag.startY+'px';over(event.clientX,event.clientY);});
   grid.addEventListener('pointerup',event=>{if(!drag||drag.pointer!==event.pointerId)return;event.preventDefault();over(event.clientX,event.clientY);finish();});
-  grid.addEventListener('pointercancel',reset);grid.addEventListener('keydown',event=>{if(event.key==='Escape'&&drag){event.preventDefault();reset();}});window.addEventListener('blur',reset);
+  grid.addEventListener('pointercancel',event=>{if(drag?.pointer!==undefined&&drag.pointer===event.pointerId)reset();});grid.addEventListener('keydown',event=>{if(event.key==='Escape'&&drag){event.preventDefault();reset();}});window.addEventListener('blur',reset);
   function decorate(card){const art=card.querySelector('.book-art');if(art)art.draggable=true;}
   return {decorate,reset};
 }

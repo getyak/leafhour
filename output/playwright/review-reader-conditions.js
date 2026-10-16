@@ -1,0 +1,58 @@
+async page => {
+  const f=globalThis.reviewReaderFixture,out={fixture:true,checks:[],startWidth:page.viewportSize().width,measurements:[]};
+  const check=(pass,label)=>{out.checks.push({label,pass:!!pass});if(!pass)throw Error(label);};
+  const measure=async(selector,state)=>{const rows=await page.locator(selector).evaluateAll(ns=>ns.filter(n=>n.getClientRects().length).filter(n=>!n.closest('details:not([open])')||n.tagName==='SUMMARY').map(n=>({name:n.getAttribute('aria-label')||n.textContent.trim().slice(0,40),w:n.getBoundingClientRect().width,h:n.getBoundingClientRect().height})));out.measurements.push({state,rows});};
+  const openSettings=async()=>{await page.getByRole('button',{name:'阅读工具',exact:true}).click();await page.getByRole('button',{name:'阅读设置',exact:true}).click();await page.locator('#settings-tab-data').click();};
+  try {
+    await page.locator('#retry-load').waitFor({state:'visible'});await measure('#retry-load','book load error');f.loadFail=false;await page.locator('#retry-load').focus();await page.keyboard.press('Enter');
+    await page.waitForFunction(()=>document.body.dataset.ready==='true');check(await page.locator('#load-error').isHidden(),'R11 retry book loads readable page');
+    await page.waitForTimeout(100);out.loadRetryFocus=await page.evaluate(()=>({tag:document.activeElement.tagName,id:document.activeElement.id}));
+    check(out.loadRetryFocus.id==='book-page','R11 retry success has valid page focus');
+    const passage=page.locator('[data-id="'+f.firstId+'"]');await passage.scrollIntoViewIfNeeded();await passage.focus();await passage.press('Enter');await page.locator('#show-annotations').click();
+    check((await page.locator('#panel-content').innerText()).includes('背景 · 编辑补充'),'P06 editorial annotation attribution is visible');
+    await page.locator('.term-definition > summary').focus();await page.keyboard.press('Enter');check((await page.locator('.term-definition').innerText()).includes('isolated term'),'P20 term expands with keyboard');
+    await measure('#note-panel button,#note-panel summary','editorial and glossary');
+    await page.locator('#panel-tab-comment').click();await page.getByRole('button',{name:'重新读取记录',exact:true}).click();
+    await page.getByText('记录仍暂时无法读取，请稍后重试；原文和已有草稿保留。',{exact:true}).waitFor();
+    check((await page.locator('#panel-content').innerText()).includes('记录仍暂时无法读取'),'P22 failed retry preserves concrete recovery text');
+    out.failedRecordsRetryFocus=await page.evaluate(()=>({tag:document.activeElement.tagName,id:document.activeElement.id}));
+    check(out.failedRecordsRetryFocus.tag==='BUTTON','P22 failure returns focus to new retry');
+    await measure('#note-panel button,#note-panel summary','records retry failure');
+    await page.screenshot({path:'output/playwright/review-reader-recovery-'+out.startWidth+'-records.png',animations:'disabled'});
+    f.recordsFail=false;f.records.position={chapterId:f.chapterId,passageId:f.secondId,offset:100,mode:'en',variant:'literal',revision:4,contentVersion:f.book.contentVersion};
+    await page.getByRole('button',{name:'重新读取记录',exact:true}).click();await page.locator('#progress-notice').waitFor({state:'visible'});
+    out.retryFocus=await page.evaluate(()=>({tag:document.activeElement.tagName,id:document.activeElement.id}));
+    check(out.retryFocus.id==='progress-use-remote','P22 recovered records focus conflict choice');
+    await measure('#progress-notice button','position conflict');
+    await page.locator('#progress-use-remote').focus();await page.keyboard.press('Enter');await page.locator('#progress-notice').waitFor({state:'hidden'});
+    check(await page.locator('#progress-notice').isHidden(),'R25 use remote resolves conflict');
+    await page.waitForTimeout(100);out.remoteChoiceFocus=await page.evaluate(()=>({tag:document.activeElement.tagName,id:document.activeElement.id}));check(out.remoteChoiceFocus.tag!=='BODY','R25 completed choice returns valid reader focus');
+    await openSettings();f.progressConflict=true;await page.locator('#export-records').click();await page.locator('#progress-notice').waitFor({state:'visible'});
+    await page.waitForFunction(()=>document.querySelector('#import-status').getAttribute('role')==='alert');
+    out.exportConflictText=await page.locator('#import-status').innerText();
+    check(out.exportConflictText.includes('位置'),'T30 conflicting export gives a concrete alert');
+    await page.keyboard.press('Escape');await page.locator('#progress-keep-here').click();await page.locator('#progress-notice').waitFor({state:'hidden'});check(true,'R26 keep here resolves conflict');
+    await page.waitForTimeout(100);out.keepChoiceFocus=await page.evaluate(()=>({tag:document.activeElement.tagName,id:document.activeElement.id}));check(out.keepChoiceFocus.tag!=='BODY','R26 completed choice returns valid reader focus');
+    await openSettings();const downloadPromise=page.waitForEvent('download');await page.locator('#export-records').click();const download=await downloadPromise;await download.saveAs('output/playwright/review-records-fixture-download.json');
+    check((await page.locator('#import-status').innerText()).includes('已导出'),'T30 export delivers local file with receipt');
+    await page.locator('#records-file').setInputFiles({name:'broken.json',mimeType:'application/json',buffer:Buffer.from('{broken')});
+    await page.waitForFunction(()=>document.querySelector('#import-status').getAttribute('role')==='alert');
+    check(await page.locator('#import-status').getAttribute('role')==='alert','T31 malformed JSON gives alert');
+    const pkg={schemaVersion:3,comments:[],questions:[]};f.importFail=true;await page.locator('#records-file').setInputFiles({name:'isolated.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(pkg))});await page.getByText('隔离记录包暂时无法合并，请重试。',{exact:true}).waitFor();
+    f.importFail=false;await page.locator('#records-file').setInputFiles({name:'isolated.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(pkg))});await page.getByText('记录已合并，排版已恢复；重复记录不会重复生成',{exact:true}).waitFor();check(true,'T31 failed import retries to explicit isolated merge receipt');
+    await measure('#settings-dialog button,#settings-dialog a,#settings-dialog select,#settings-dialog summary','record transfer');
+    await page.setViewportSize({width:390,height:844});await page.screenshot({path:'output/playwright/review-reader-transfer-390.png',animations:'disabled'});await page.keyboard.press('Escape');
+    await page.locator('.source-review > summary').scrollIntoViewIfNeeded();await page.locator('.source-review > summary').click();check((await page.locator('.source-review').innerText()).includes('自动分段'),'P27 private-source disclosure distinguishes automatic grouping');
+    await page.getByRole('button',{name:'下载原文件校对 ↗',exact:true}).click();await page.getByText('隔离原文件下载失败，请重试。',{exact:true}).waitFor();check(await page.getByRole('button',{name:'下载原文件校对 ↗',exact:true}).isEnabled(),'P28 failed original download can retry');
+    await measure('.source-review button,.source-review summary','original file failed download');
+    const originalPromise=page.waitForEvent('download');await page.getByRole('button',{name:'下载原文件校对 ↗',exact:true}).click();const original=await originalPromise;await original.saveAs('output/playwright/review-original-fixture.txt');check((await page.locator('.source-file-action').innerText()).includes('已准备'),'P28 original delivers local fixture file');
+    await page.screenshot({path:'output/playwright/review-reader-source-390.png',animations:'disabled'});
+    f.originalAvailable=false;await page.reload();await page.waitForFunction(()=>document.body.dataset.ready==='true');await page.locator('.source-review > summary').click();
+    const back=page.getByRole('link',{name:'去书房补回原文件 →',exact:true});check(await back.getAttribute('href')==='/library','P29 missing original offers exact library route');
+    check((await page.locator('.source-file-action').innerText()).includes('暂缺原文件'),'P29 reason remains concrete');
+    await measure('.source-review a,.source-review summary','original file missing');
+    out.mobileOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);check(out.mobileOverflow===0,'390 conditional reader has no horizontal overflow');
+    out.writes=f.writes.map(w=>({action:w.action,baseRevision:w.data?.baseRevision}));out.downloads=[download.suggestedFilename(),original.suggestedFilename()];
+  } catch(error){out.failure=error.message;}
+  return out;
+}

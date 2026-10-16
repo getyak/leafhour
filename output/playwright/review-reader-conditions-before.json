@@ -1,0 +1,103 @@
+{
+  "fixture": true,
+  "checks": [
+    {
+      "label": "R11 retry book loads readable page",
+      "pass": true
+    },
+    {
+      "label": "P06 editorial annotation attribution is visible",
+      "pass": true
+    },
+    {
+      "label": "P20 term expands with keyboard",
+      "pass": true
+    },
+    {
+      "label": "P22 failed retry preserves concrete recovery text",
+      "pass": true
+    },
+    {
+      "label": "R25 use remote resolves conflict",
+      "pass": true
+    },
+    {
+      "label": "T30 conflicting export gives a concrete alert",
+      "pass": true
+    },
+    {
+      "label": "R26 keep here resolves conflict",
+      "pass": true
+    },
+    {
+      "label": "T30 export delivers local file with receipt",
+      "pass": true
+    },
+    {
+      "label": "T31 malformed JSON gives alert",
+      "pass": true
+    },
+    {
+      "label": "T31 failed import retries to explicit isolated merge receipt",
+      "pass": true
+    },
+    {
+      "label": "P27 private-source disclosure distinguishes automatic grouping",
+      "pass": true
+    },
+    {
+      "label": "P28 failed original download can retry",
+      "pass": true
+    },
+    {
+      "label": "P28 original delivers local fixture file",
+      "pass": true
+    },
+    {
+      "label": "P29 missing original offers exact library route",
+      "pass": true
+    },
+    {
+      "label": "P29 reason remains concrete",
+      "pass": true
+    },
+    {
+      "label": "390 conditional reader has no horizontal overflow",
+      "pass": true
+    }
+  ],
+  "loadRetryFocus": {
+    "tag": "BODY",
+    "id": ""
+  },
+  "failedRecordsRetryFocus": {
+    "tag": "BODY",
+    "id": ""
+  },
+  "retryFocus": {
+    "tag": "BODY",
+    "id": ""
+  },
+  "exportConflictText": "隔离位置已在另一处更新。",
+  "mobileOverflow": 0,
+  "writes": [
+    {
+      "action": "progress",
+      "baseRevision": 4
+    },
+    {
+      "action": "progress",
+      "baseRevision": 4
+    },
+    {
+      "action": "records/import"
+    },
+    {
+      "action": "records/import"
+    }
+  ],
+  "downloads": [
+    "marginalia-records.json",
+    "isolated-source.txt"
+  ]
+}

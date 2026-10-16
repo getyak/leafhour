@@ -1,0 +1,406 @@
+[
+  {
+    "fixture": true,
+    "checks": [
+      {
+        "label": "O08 missing translation offers corresponding source",
+        "pass": true
+      },
+      {
+        "label": "O08 source retry reaches source preview",
+        "pass": true
+      },
+      {
+        "label": "O08 completed source retry keeps dialog focus",
+        "pass": true
+      },
+      {
+        "label": "O03 scope panel transition keeps dialog focus",
+        "pass": true
+      },
+      {
+        "label": "O09 actual section scope can be selected",
+        "pass": true
+      },
+      {
+        "label": "O10 failed isolated generation restores controls",
+        "pass": true
+      },
+      {
+        "label": "O10 failed generation restores valid focus",
+        "pass": true
+      },
+      {
+        "label": "O03 O10 retry shows attributed editable script",
+        "pass": true
+      },
+      {
+        "label": "O10 completed generation focuses editable script",
+        "pass": true
+      },
+      {
+        "label": "O41 explicit follow restores marker and hides action",
+        "pass": true
+      },
+      {
+        "label": "O41 hidden follow action restores stable player focus",
+        "pass": true
+      },
+      {
+        "label": "O40 current player opens the audio snapshot revision",
+        "pass": true
+      },
+      {
+        "label": "O40 snapshot fields remain read-only",
+        "pass": true
+      },
+      {
+        "label": "O40 snapshot does not silently use latest text",
+        "pass": true
+      },
+      {
+        "label": "O15 latest script is editable",
+        "pass": true
+      },
+      {
+        "label": "O15 explicit latest action shows latest revision text",
+        "pass": true
+      },
+      {
+        "label": "390 script controls have 44px targets",
+        "pass": true
+      },
+      {
+        "label": "390 audio conditional layout has no horizontal overflow",
+        "pass": true
+      }
+    ],
+    "startWidth": 1440,
+    "measurements": [
+      {
+        "state": "missing translation",
+        "rows": [
+          {
+            "name": "关闭听读面板",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "改听对应原文",
+            "w": 100,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "dialogue scope",
+        "rows": [
+          {
+            "name": "关闭听读面板",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "讲解范围",
+            "w": 115,
+            "h": 44
+          },
+          {
+            "name": "生成双人讲稿",
+            "w": 118,
+            "h": 48
+          }
+        ]
+      },
+      {
+        "state": "generated latest script",
+        "rows": [
+          {
+            "name": "关闭听读面板",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "原文 · Alice was beginning to get very tir",
+            "w": 330.0703125,
+            "h": 44
+          },
+          {
+            "name": "原文 · Alice was beginning to get very tir",
+            "w": 330.0703125,
+            "h": 44
+          },
+          {
+            "name": "听这段对话",
+            "w": 105,
+            "h": 48
+          },
+          {
+            "name": "保存修改",
+            "w": 76,
+            "h": 44
+          }
+        ]
+      }
+    ],
+    "prepareFocus": {
+      "tag": "BUTTON",
+      "id": ""
+    },
+    "scopeFocus": {
+      "tag": "BUTTON",
+      "id": ""
+    },
+    "generationFailureFocus": {
+      "tag": "BUTTON",
+      "id": ""
+    },
+    "generatedFocus": {
+      "tag": "TEXTAREA",
+      "id": ""
+    },
+    "followFocus": {
+      "tag": "BUTTON",
+      "id": "audio-expand"
+    },
+    "mobileRects": [
+      {
+        "name": "关闭听读面板",
+        "w": 44,
+        "h": 44
+      },
+      {
+        "name": "原文 · Alice was beginning to get ver",
+        "w": 308,
+        "h": 55.59375
+      },
+      {
+        "name": "原文 · Alice was beginning to get ver",
+        "w": 308,
+        "h": 55.59375
+      },
+      {
+        "name": "听这段对话",
+        "w": 105,
+        "h": 48
+      },
+      {
+        "name": "保存修改",
+        "w": 76,
+        "h": 44
+      }
+    ],
+    "writeActions": [
+      "audio/prepare",
+      "audio/prepare",
+      "progress",
+      "audio/dialogues",
+      "audio/dialogues",
+      "audio/prepare",
+      "progress",
+      "audio/prepare"
+    ]
+  },
+  {
+    "fixture": true,
+    "checks": [
+      {
+        "label": "O08 missing translation offers corresponding source",
+        "pass": true
+      },
+      {
+        "label": "O08 source retry reaches source preview",
+        "pass": true
+      },
+      {
+        "label": "O08 completed source retry keeps dialog focus",
+        "pass": true
+      },
+      {
+        "label": "O03 scope panel transition keeps dialog focus",
+        "pass": true
+      },
+      {
+        "label": "O09 actual section scope can be selected",
+        "pass": true
+      },
+      {
+        "label": "O10 failed isolated generation restores controls",
+        "pass": true
+      },
+      {
+        "label": "O10 failed generation restores valid focus",
+        "pass": true
+      },
+      {
+        "label": "O03 O10 retry shows attributed editable script",
+        "pass": true
+      },
+      {
+        "label": "O10 completed generation focuses editable script",
+        "pass": true
+      },
+      {
+        "label": "O41 explicit follow restores marker and hides action",
+        "pass": true
+      },
+      {
+        "label": "O41 hidden follow action restores stable player focus",
+        "pass": true
+      },
+      {
+        "label": "O40 current player opens the audio snapshot revision",
+        "pass": true
+      },
+      {
+        "label": "O40 snapshot fields remain read-only",
+        "pass": true
+      },
+      {
+        "label": "O40 snapshot does not silently use latest text",
+        "pass": true
+      },
+      {
+        "label": "O15 latest script is editable",
+        "pass": true
+      },
+      {
+        "label": "O15 explicit latest action shows latest revision text",
+        "pass": true
+      },
+      {
+        "label": "390 script controls have 44px targets",
+        "pass": true
+      },
+      {
+        "label": "390 audio conditional layout has no horizontal overflow",
+        "pass": true
+      }
+    ],
+    "startWidth": 390,
+    "measurements": [
+      {
+        "state": "missing translation",
+        "rows": [
+          {
+            "name": "关闭听读面板",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "改听对应原文",
+            "w": 100,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "dialogue scope",
+        "rows": [
+          {
+            "name": "关闭听读面板",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "讲解范围",
+            "w": 132,
+            "h": 44
+          },
+          {
+            "name": "生成双人讲稿",
+            "w": 118,
+            "h": 48
+          }
+        ]
+      },
+      {
+        "state": "generated latest script",
+        "rows": [
+          {
+            "name": "关闭听读面板",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "原文 · Alice was beginning to get very tir",
+            "w": 308,
+            "h": 55.59375
+          },
+          {
+            "name": "原文 · Alice was beginning to get very tir",
+            "w": 308,
+            "h": 55.59375
+          },
+          {
+            "name": "听这段对话",
+            "w": 105,
+            "h": 48
+          },
+          {
+            "name": "保存修改",
+            "w": 76,
+            "h": 44
+          }
+        ]
+      }
+    ],
+    "prepareFocus": {
+      "tag": "BUTTON",
+      "id": ""
+    },
+    "scopeFocus": {
+      "tag": "BUTTON",
+      "id": ""
+    },
+    "generationFailureFocus": {
+      "tag": "BUTTON",
+      "id": ""
+    },
+    "generatedFocus": {
+      "tag": "TEXTAREA",
+      "id": ""
+    },
+    "followFocus": {
+      "tag": "BUTTON",
+      "id": "audio-expand"
+    },
+    "mobileRects": [
+      {
+        "name": "关闭听读面板",
+        "w": 44,
+        "h": 44
+      },
+      {
+        "name": "原文 · Alice was beginning to get ver",
+        "w": 308,
+        "h": 55.59375
+      },
+      {
+        "name": "原文 · Alice was beginning to get ver",
+        "w": 308,
+        "h": 55.59375
+      },
+      {
+        "name": "听这段对话",
+        "w": 105,
+        "h": 48
+      },
+      {
+        "name": "保存修改",
+        "w": 76,
+        "h": 44
+      }
+    ],
+    "writeActions": [
+      "audio/prepare",
+      "audio/prepare",
+      "progress",
+      "audio/dialogues",
+      "audio/dialogues",
+      "audio/prepare",
+      "progress",
+      "audio/prepare"
+    ]
+  }
+]

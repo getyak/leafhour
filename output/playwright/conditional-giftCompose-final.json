@@ -1,0 +1,313 @@
+{
+  "group": "N48,N66–77",
+  "checks": [
+    {
+      "label": "gift includes existing translation by explicit default",
+      "pass": true
+    },
+    {
+      "label": "share scope precedes explicit create",
+      "pass": true
+    },
+    {
+      "label": "gift create locks while busy",
+      "pass": true
+    },
+    {
+      "label": "gift failed create preserves both fields",
+      "pass": true
+    },
+    {
+      "label": "gift failed create retains retry focus",
+      "pass": true
+    },
+    {
+      "label": "failed create and one retry are exactly two requests",
+      "pass": true
+    },
+    {
+      "label": "explicit checkbox is sent without generating translation",
+      "pass": true
+    },
+    {
+      "label": "newly created letter opens actual envelope in separate tab",
+      "pass": true
+    },
+    {
+      "label": "result is a gift route, retained as read-only link",
+      "pass": true
+    },
+    {
+      "label": "copy has a usable receipt",
+      "pass": true
+    },
+    {
+      "label": "clipboard failure selects complete link",
+      "pass": true
+    },
+    {
+      "label": "historical letter opens its own exact envelope route",
+      "pass": true
+    },
+    {
+      "label": "revoke confirmation explains retained downloads",
+      "pass": true
+    },
+    {
+      "label": "keep gift cancels without revoke request",
+      "pass": true
+    },
+    {
+      "label": "keep returns to revoke opener",
+      "pass": true
+    },
+    {
+      "label": "failed revoke leaves explicit retry",
+      "pass": true
+    },
+    {
+      "label": "failed revoke retains explicit confirmation focus",
+      "pass": true
+    },
+    {
+      "label": "gift compose 1440 targets44",
+      "pass": true
+    },
+    {
+      "label": "gift compose 1440 overflow0",
+      "pass": true
+    },
+    {
+      "label": "gift compose 390 targets44",
+      "pass": true
+    },
+    {
+      "label": "gift compose 390 overflow0",
+      "pass": true
+    },
+    {
+      "label": "revoking older letter retains new letter result",
+      "pass": true
+    },
+    {
+      "label": "revoked current result removes usable link",
+      "pass": true
+    },
+    {
+      "label": "all gift mutations remain browser fixture",
+      "pass": true
+    }
+  ],
+  "targets": [
+    {
+      "width": 1440,
+      "rects": [
+        {
+          "name": "关闭书籍操作",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "text",
+          "w": 540,
+          "h": 44.3984375
+        },
+        {
+          "name": "一并送出已有译文",
+          "w": 540,
+          "h": 44
+        },
+        {
+          "name": "再生成一封",
+          "w": 115,
+          "h": 50.1953125
+        },
+        {
+          "name": "赠书信链接",
+          "w": 758,
+          "h": 44
+        },
+        {
+          "name": "复制赠书链接",
+          "w": 122,
+          "h": 48.796875
+        },
+        {
+          "name": "看看这封信 ↗",
+          "w": 72.546875,
+          "h": 44
+        },
+        {
+          "name": "之前送出的信",
+          "w": 758,
+          "h": 44
+        },
+        {
+          "name": "打开 ↗",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "收回",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "打开 ↗",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "收回",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "确认收回",
+          "w": 88,
+          "h": 46.6953125
+        },
+        {
+          "name": "保留",
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "rects": [
+        {
+          "name": "关闭书籍操作",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "text",
+          "w": 320,
+          "h": 47.59375
+        },
+        {
+          "name": "一并送出已有译文",
+          "w": 320,
+          "h": 44
+        },
+        {
+          "name": "再生成一封",
+          "w": 115,
+          "h": 50.1953125
+        },
+        {
+          "name": "赠书信链接",
+          "w": 320,
+          "h": 44
+        },
+        {
+          "name": "复制赠书链接",
+          "w": 122,
+          "h": 48.796875
+        },
+        {
+          "name": "看看这封信 ↗",
+          "w": 72.546875,
+          "h": 44
+        },
+        {
+          "name": "之前送出的信",
+          "w": 320,
+          "h": 44
+        },
+        {
+          "name": "打开 ↗",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "收回",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "打开 ↗",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "收回",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "确认收回",
+          "w": 88,
+          "h": 46.6953125
+        },
+        {
+          "name": "保留",
+          "w": 44,
+          "h": 44
+        }
+      ]
+    }
+  ],
+  "focus": [
+    {
+      "case": "gift-create-error",
+      "active": {
+        "tag": "BUTTON",
+        "text": "生成赠书信"
+      }
+    },
+    {
+      "case": "gift-keep",
+      "active": {
+        "tag": "BUTTON",
+        "text": "收回"
+      }
+    },
+    {
+      "case": "gift-revoke-error",
+      "active": {
+        "tag": "BUTTON",
+        "text": "确认收回"
+      }
+    }
+  ],
+  "link": "http://127.0.0.1:8337/gift/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-alice/gifts",
+      "body": {
+        "recipient": "隔离收信人",
+        "message": "这一页让我想起了你。\n这只是浏览器内的界面验证。",
+        "includeTranslations": false
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-alice/gifts",
+      "body": {
+        "recipient": "隔离收信人",
+        "message": "这一页让我想起了你。\n这只是浏览器内的界面验证。",
+        "includeTranslations": false
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/book-gifts/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB/revoke",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "path": "/api/book-gifts/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB/revoke",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "path": "/api/book-gifts/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/revoke",
+      "body": {}
+    }
+  ],
+  "sourceLog": "conditional-gift-compose-result.log"
+}

@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-16",
+  "baseCommit": "5f10905fda5a9b404d769bba540cb4e23d3d25b7",
+  "tests": {
+    "total": 585,
+    "passed": 584,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 1,
+    "skipReason": "Linux-specific runtime guard on macOS",
+    "durationMs": 44584.0925,
+    "concurrency": 1,
+    "environment": "sanitized; browser sessions closed"
+  },
+  "priorRun": {
+    "total": 583,
+    "passed": 581,
+    "failed": 0,
+    "cancelled": 1,
+    "skipped": 1,
+    "problem": "runtime initialization exceeded 90000ms; did not count as passed",
+    "isolatedRetry": {
+      "passed": 1,
+      "durationSeconds": 7.29
+    }
+  },
+  "releaseChecks": {
+    "readerRuntimeFiles": 927,
+    "readerRuntimeMB": 9,
+    "publicFiles": 129,
+    "registeredMedia": 9,
+    "softwareAllowlistFiles": 297,
+    "allPassed": true,
+    "modelRequests": 0
+  },
+  "changedSourceHashes": {
+    "app/action-focus.mjs": "c21ae9bea3965fe99a29b6349f46636574bbd58d560c07982c0515fc41a01586",
+    "app/book-gift.mjs": "606b7fb1707ba1897296d6b9319eab444a44b9bd7f754fcae66b6b76bcb3c902",
+    "app/evals.html": "6dfc9bba64641fc2ae300352b5ef6109f261f27d0148f61f19664577c4eda706",
+    "app/experiences.js": "c3f43224fbc41cba02183984abee03a8b615f4bc165e7ae9e4bd187095fffec3",
+    "app/home.html": "d168ba4e6778d021d5d37c9a4e402ffd3c147032812195bfa721d9f0fc8aa57d",
+    "app/index.html": "9814b674846fa307df0e236aa714d6c47442cd8cb44f400786110cc5ca06c699",
+    "app/interaction-craft.css": "b0fe44694b040d4988cfbfbe93f18826f99d2dfee30973466de23ff0e5f2e993",
+    "app/library-book-actions.mjs": "c2c5aefd9c269cacd04b97a8ad26ccd96254e4aae810205645d84365a8caac0e",
+    "app/library-profile.mjs": "a64fa8811615c32304afcfc444b16d545e8d78f08c7192c1e386972aa73bdc98",
+    "app/library-shell.mjs": "bceedb76dfb68b10ced5025e8df410a451eff1c2e6078c65e722934e116e9c23",
+    "app/portal.js": "5fddd80e363461f22d4434f6964c91a89050b84f294e3738e6c183b26840fa72",
+    "app/privacy.html": "c8b12bd078ada2f0e3d0f5a44f3cd944cb258118960cdcbc890ff65041731366",
+    "app/reader-audio.js": "0f03b304e20cb9411046219f3640ef9d593453e8486e3627c1c6df9399a75efa",
+    "app/reader.js": "233f980393906bf37bb974ebdf48d93723a7987ff94b2ce2703a9f6a6b135fe2",
+    "app/reading-dashboard.mjs": "6f00ce2a384a0873fb87260bf1d57db03dbc793317b7de58ca4237caca0f9c37",
+    "app/reading-session.js": "d60bcacd4ede52e0fb25a9fd885b8f7600dafb1be3c8852ac46f9ecc3bb56fc1",
+    "app/shelf-order.mjs": "e55dce4eb2703f649cea5923839569ae1b4a4d2f4e9cd5dda500cc5a3e5f9bd0",
+    "server/server.mjs": "f6eb31878865f334ddde52a07a557968548f5754e68ef0eea51c36fcf2e9e4ae",
+    "tests/action-focus.test.mjs": "1a0c53ad3e980498257f4951c43cd58fb0d48eaa895cea9e5dbfe76cc570d391",
+    "tests/audio-ui.test.mjs": "500258a4134397e61225db2e7fc3e75ad67c7a7aabbd09159a795edb2ad8e5cf",
+    "tests/library-profile-shell.test.mjs": "b6aea906114dfeab024928d7b38d26f2fa79a95ca1a5fbf7c1ad5c13fafcdff5",
+    "tests/library-profile.test.mjs": "fe857bbb9fc6a7ed8f6e51b0759c98a8594125c4247dee8f501189acb7bceb58",
+    "tests/server.test.mjs": "cf51110ba62e65b9768f1a40421897b5dfc69047b8561e389f5ff818c57a139a",
+    "tests/shelf-order.test.mjs": "d63ed4ee15873e61c9e0e0a0d2233484172212d65acfc1ff5128546feef2ee3a"
+  },
+  "postSuiteMarkupAndStyles": {
+    "changes": [
+      "evals independent action target size",
+      "privacy inline rules moved to existing external stylesheet; CSP unchanged"
+    ],
+    "checks": [
+      "browser two-width review recorded separately",
+      "hosted build",
+      "public media and data exclusion",
+      "release allowlist and provenance"
+    ],
+    "businessLogicUnchanged": true,
+    "browserChecksPassed": true
+  }
+}

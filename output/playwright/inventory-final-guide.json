@@ -1,0 +1,55 @@
+[
+  {
+    "id": "D11",
+    "width": 1440,
+    "dest": "https://lsc.cornell.edu/how-to-study/reading-strategies/textbook-reading-systems/",
+    "popupURL": "https://lsc.cornell.edu/how-to-study/reading-strategies/textbook-reading-systems/",
+    "loaded": true,
+    "metric": {
+      "x": 650.1640625,
+      "y": 804.609375,
+      "width": 96.1796875,
+      "height": 13,
+      "focus": true,
+      "focusVisible": true,
+      "outline": "rgb(63, 89, 76) solid 2px"
+    }
+  },
+  {
+    "id": "D10",
+    "width": 1440,
+    "metric": {
+      "x": 937,
+      "y": 95.9453125,
+      "width": 44,
+      "height": 44,
+      "focus": true,
+      "focusVisible": true,
+      "outline": "rgb(63, 89, 76) solid 2px"
+    },
+    "closed": true,
+    "focus": {
+      "id": "reading-guide-open",
+      "name": "深读提示"
+    },
+    "snapshotConfirmed": true
+  },
+  {
+    "id": "D12",
+    "width": 1440,
+    "metric": {
+      "x": 471,
+      "y": 844.0078125,
+      "width": 90,
+      "height": 48.046875,
+      "focus": true,
+      "focusVisible": true,
+      "outline": "rgb(63, 89, 76) solid 2px"
+    },
+    "closed": true,
+    "focus": {
+      "id": "reading-guide-open",
+      "name": "深读提示"
+    }
+  }
+]

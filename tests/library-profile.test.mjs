@@ -11,7 +11,7 @@ class Element extends EventTarget{
   getAttribute(key){return this.attributes[key];}
   focus(){}
 }
-const documentFixture={createElement:tag=>new Element(tag)};
+const documentFixture=Object.assign(new EventTarget(),{body:{},createElement:tag=>new Element(tag)});
 function find(node,id){if(node.id===id)return node;return node.children.map(child=>find(child,id)).find(Boolean);}
 const tick=()=>new Promise(setImmediate);
 function mount({api=async()=>({displayName:'New'}),onProfileUpdated=()=>{}}={}){

@@ -1,0 +1,15 @@
+{
+  "fixture": true,
+  "sourceCommit": "5f10905fda5a9b404d769bba540cb4e23d3d25b7",
+  "afterRetryFocus": {
+    "tag": "BODY",
+    "id": "",
+    "text": "\n跳到正文\n\n\n  循页PAGE BY PAGE\n  书房阅读的方法自己的书房\n  \n    搜索书名或作者\n    我的书房3我上传的\n    阅读日历阅读对话带来一本书\n  \n  回收站设置隔隔离"
+  },
+  "afterLogoutErrorFocus": {
+    "tag": "BODY",
+    "id": "",
+    "text": "\n跳到正文\n\n\n  循页PAGE BY PAGE\n  书房阅读的方法自己的书房\n  \n    搜索书名或作者\n    我的书房3我上传的\n    阅读日历阅读对话带来一本书\n  \n"
+  },
+  "scope": "Only the two directly observed focus defects; unrelated draft assertion assumptions are not product failures."
+}

@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-16",
+  "session": "implement",
+  "environment": "http://127.0.0.1:8337",
+  "safety": {
+    "identity": "conditional@example.invalid",
+    "allNonGetRequestsIntercepted": true,
+    "publicContentGetsAnonymous": true,
+    "liveAccountWrites": 0,
+    "realGiftCreation": 0,
+    "modelRequests": 0,
+    "emailRequests": 0,
+    "tokens": "43 repeated A or B characters; fixture only",
+    "downloadScope": "real browser ICS and SHA-verified public-book package; no system calendar import or cross-instance restore"
+  },
+  "assertions": {
+    "profile": {
+      "passed": 16,
+      "failed": 0
+    },
+    "books": {
+      "passed": 33,
+      "failed": 0
+    },
+    "shelf": {
+      "passed": 6,
+      "failed": 0
+    },
+    "giftCompose": {
+      "passed": 24,
+      "failed": 0
+    },
+    "giftPage": {
+      "passed": 22,
+      "failed": 0
+    },
+    "library": {
+      "passed": 31,
+      "failed": 0
+    }
+  },
+  "totalPassed": 132,
+  "totalFailed": 0,
+  "phases": {
+    "profile": "conditional-profile-final.json",
+    "books": "conditional-books-final.json",
+    "shelf": "conditional-shelf-final.json",
+    "giftCompose": "conditional-giftCompose-final.json",
+    "giftPage": "conditional-giftPage-final.json",
+    "library": "conditional-library-final.json"
+  },
+  "bookContinuation": "book phase recorded 33 passes then stopped in the separately diagnosed native drag; final native/pointer/menu/keyboard continuation passed all six checks",
+  "knownUnverifiedBoundaries": [
+    "No real authenticated persistence was exercised.",
+    "No model, speech, mail, or real gift was created.",
+    "Browser downloads were not imported into a system calendar or another instance.",
+    "There is no current book title/author metadata editor."
+  ]
+}

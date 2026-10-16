@@ -1,0 +1,20 @@
+{
+  "provenance": "Transcribed from the actual ui3 tool return; full reproduction script is inventory-final-ui3.js",
+  "width": 1440,
+  "height": 1000,
+  "next": {
+    "activation": "Enter",
+    "title": "泪水池",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-alice"
+  },
+  "previous": {
+    "activation": "pointer click",
+    "title": "掉进兔子洞",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-alice"
+  },
+  "nextBox": {
+    "width": 70,
+    "height": 44
+  },
+  "freshSnapshotsAfterEachNavigation": true
+}

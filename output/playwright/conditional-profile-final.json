@@ -1,0 +1,168 @@
+{
+  "group": "N38–43",
+  "checks": [
+    {
+      "label": "read-only current identity",
+      "pass": true
+    },
+    {
+      "label": "invalid avatar never submits and retains name",
+      "pass": true
+    },
+    {
+      "label": "local bounded avatar preview precedes explicit save",
+      "pass": true
+    },
+    {
+      "label": "cancelled file selection retains draft",
+      "pass": true
+    },
+    {
+      "label": "profile busy locks all editing controls",
+      "pass": true
+    },
+    {
+      "label": "failed save retains draft and allows one retry",
+      "pass": true
+    },
+    {
+      "label": "successful profile updates visible identity",
+      "pass": true
+    },
+    {
+      "label": "reset is an explicit pending preview",
+      "pass": true
+    },
+    {
+      "label": "default avatar applies only after save",
+      "pass": true
+    },
+    {
+      "label": "profile targets 1440 at least 44 high",
+      "pass": true
+    },
+    {
+      "label": "profile 1440 no horizontal overflow",
+      "pass": true
+    },
+    {
+      "label": "profile targets 390 at least 44 high",
+      "pass": true
+    },
+    {
+      "label": "profile 390 no horizontal overflow",
+      "pass": true
+    },
+    {
+      "label": "settings tab key advances exactly once",
+      "pass": true
+    },
+    {
+      "label": "Home returns to account tab",
+      "pass": true
+    },
+    {
+      "label": "mobile close returns to navigation launcher",
+      "pass": true
+    }
+  ],
+  "targets": [
+    {
+      "width": 1440,
+      "rects": [
+        {
+          "name": "更换头像",
+          "width": 48,
+          "height": 44
+        },
+        {
+          "name": "恢复默认头像",
+          "width": 72,
+          "height": 44
+        },
+        {
+          "name": "profile-display-name",
+          "width": 390,
+          "height": 44
+        },
+        {
+          "name": "profile-email",
+          "width": 390,
+          "height": 44
+        },
+        {
+          "name": "保存个人资料",
+          "width": 128,
+          "height": 50.1953125
+        },
+        {
+          "name": "退出登录",
+          "width": 88,
+          "height": 44
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "rects": [
+        {
+          "name": "更换头像",
+          "width": 48,
+          "height": 44
+        },
+        {
+          "name": "恢复默认头像",
+          "width": 72,
+          "height": 44
+        },
+        {
+          "name": "profile-display-name",
+          "width": 320,
+          "height": 46
+        },
+        {
+          "name": "profile-email",
+          "width": 320,
+          "height": 46
+        },
+        {
+          "name": "保存个人资料",
+          "width": 128,
+          "height": 50.1953125
+        },
+        {
+          "name": "退出登录",
+          "width": 88,
+          "height": 44
+        }
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/api/account/profile",
+      "body": {
+        "displayName": "保留的资料草稿",
+        "avatarData": "[isolated preview omitted]"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/account/profile",
+      "body": {
+        "displayName": "保留的资料草稿",
+        "avatarData": "[isolated preview omitted]"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/account/profile",
+      "body": {
+        "displayName": "保留的资料草稿",
+        "avatarData": null
+      }
+    }
+  ],
+  "sourceLog": "conditional-profile-result.log"
+}

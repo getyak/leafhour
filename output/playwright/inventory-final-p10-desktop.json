@@ -1,0 +1,21 @@
+{
+  "id": "P10",
+  "width": 1440,
+  "metric": {
+    "x": 521,
+    "y": 149.2421875,
+    "width": 166,
+    "height": 44,
+    "focusVisible": true,
+    "outline": "rgb(63, 89, 76) solid 2px"
+  },
+  "menuSnapshot": "ld not possibly reach it: she could see it quite plainly through the glass, and she tried her best to climb up one of the legs of the table, but it was too slippery; and when she had tired herself out with trying, the poor little thing sat down and cried.\"\n      - paragraph: “Come, there’s no use in crying like that!” said Alice to herself, rather sharply; “I advise you to leave off this minute!” She generally gave herself very good advice, (though she very seldom followed it), and sometimes she scolded herself so severely as to bring tears into her eyes; and once she remembered trying to box her own ears for having cheated herself in a game of croquet she was playing against herself, for this curious child was very fond of pretending to be two people. “But it’s no use now,” thought poor Alice, “to pretend to be two people! Why, there’s hardly enough of me left to make _one_ respectable person!”\n      - paragraph: \"Soon her eye fell on a little glass box that was lying under the table: she opened it, and found in it a very small cake, on which the words “EAT ME” were beautifully marked in currants. “Well, I’ll eat it,” said Alice, “and if it makes me grow larger, I can reach the key; and if it makes me grow smaller, I can creep under the door; so either way I’ll get into the garden, and I don’t care which happens!”\"\n      - paragraph: \"She ate a little bit, and said anxiously to herself, “Which way? Which way?”, holding her hand on the top of her head to feel which way it was growing, and she was quite surprised to find that she remained the same size: to be sure, this generally happens when one eats cake, but Alice had got so much into the way of expecting nothing but out-of-the-way things to happen, that it seemed quite dull and stupid for life to go on in the common way.\"\n      - paragraph: So she set to work, and very soon finished off the cake.\n      - paragraph: \"* * * * * * *\"\n      - paragraph: \"* * * * * *\"\n      - paragraph: \"* * * * * * *\"\n  - button \"上一章\"\n  - text: 1 / 12\n  - button \"下一章\"\n- region \"今日阅读\":\n  - button \"展开阅读工具\": 阅读\n  - status\n- toolbar \"当前段落操作\":\n  - button \"查看双译\"\n  - button \"译文\"\n  - button \"朗读所选\"\n  - button \"想法\"\n  - button \"更多段落操作\" [expanded]: 更多\n  - button \"分享这一段\"\n  - button \"从这里开始听\"\n  - button \"这一段直译\"\n  - button \"这一段意译\"\n  - button \"留下问题\"\n- button \"打开阅读对话\"\n- text: 已进入第 1 章。\n- paragraph: 点击段落或聚焦段落后按回车，可以查看原文、注解和个人记录。Esc关闭浮层。F切换专注阅读。",
+  "audioSnapshot": "- dialog \"听这一段\":\n  - banner:\n    - heading \"听这一段\" [level=2]\n    - button \"关闭听读面板\": 关闭\n  - paragraph: 原文朗读\n  - status: 进入自己的书房后，即可准备声音和保存听读位置。\n  - button \"登录后回到这里\"",
+  "posts": [],
+  "closed": true,
+  "returnFocus": {
+    "tag": "BUTTON",
+    "id": "exit-focus",
+    "label": "阅读工具"
+  }
+}

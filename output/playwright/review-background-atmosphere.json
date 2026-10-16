@@ -1,0 +1,36 @@
+{
+  "fixture": true,
+  "realStaticAudio": true,
+  "checks": [
+    {
+      "label": "actual background tab pauses visual atmosphere",
+      "pass": false
+    }
+  ],
+  "foreground": {
+    "hidden": false,
+    "active": "true",
+    "playback": "playing",
+    "contexts": [
+      {
+        "state": "running",
+        "time": 0
+      }
+    ],
+    "reading": "阅读中"
+  },
+  "background": {
+    "hidden": false,
+    "active": "true",
+    "playback": "playing",
+    "contexts": [
+      {
+        "state": "running",
+        "time": 0
+      }
+    ],
+    "reading": "阅读中"
+  },
+  "failure": "actual background tab pauses visual atmosphere",
+  "classification": "Environment gate not reached: a new target did not make the original document hidden; AudioContext time stayed zero. This is not evidence of a site background-playback defect or pass."
+}
