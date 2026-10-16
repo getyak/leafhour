@@ -11,7 +11,7 @@ export function mountSquirrelPosition({launcher,window=globalThis.window,storage
  function normalized(left,top){const b=bounds(),r=launcher.getBoundingClientRect();return {x:clamp((left-b.left)/Math.max(1,b.width-r.width),0,1),y:clamp((top-b.top)/Math.max(1,b.height-r.height),0,1)};}
  function bubbles(){
   const b=bounds(),r=launcher.getBoundingClientRect();
-  for(const node of floating){if(node.hidden)continue;const above=Math.max(0,r.top-b.top-GAP),below=Math.max(0,b.top+b.height-r.bottom-GAP);node.style.maxHeight=Math.max(40,above,below)+'px';
+  for(const node of floating){if(node.hidden)continue;const above=Math.max(0,r.top-b.top-GAP),below=Math.max(0,b.top+b.height-r.bottom-GAP);node.style.maxHeight=Math.max(40,above,below)+'px';node.style.maxWidth=b.width+'px';
    const box=node.getBoundingClientRect(),under=above<box.height&&below>above,left=clamp(r.left+r.width/2<b.left+b.width/2?r.left:r.right-box.width,b.left,Math.max(b.left,b.left+b.width-box.width)),top=clamp(under?r.bottom+GAP:r.top-box.height-GAP,b.top,Math.max(b.top,b.top+b.height-box.height));
    Object.assign(node.style,{left:left+'px',top:top+'px',right:'auto',bottom:'auto'});node.classList.toggle('is-below',under);
   }

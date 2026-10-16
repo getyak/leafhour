@@ -66,11 +66,12 @@ test('expired and revoked plugins stop before model dispatch, including during s
 });
 
 test('timeout closes started runtime and sends only a secret-free reservation receipt',async t=>{const receipts=[];const f=await fixture(t,good,()=>new Promise(()=>{}),{timeoutMs:500,onReceipt:r=>receipts.push(r)});await assert.rejects(f.generate(job()),/取消|超时/);assert.equal(f.closed,1);assert.equal(receipts.length,1);assert.equal(receipts[0].settlement,'reservation-not-invoice');assert.ok(receipts[0].pricing.source);assert.ok(receipts[0].pricing.checkedAt);assert.doesNotMatch(JSON.stringify(receipts),/fake|earlier|Book/);});
-for(const boundary of ['close','abort','expiry'])test(`auxiliary reservation capability is revoked across await on ${boundary}`,async()=>{
+for(const boundary of ['close','abort','expiry'])test(`auxiliary reservation capability is revoked across await on ${boundary}`,async t=>{
+ t.mock.timers.enable({apis:['Date','setTimeout'],now:1700000000000});
  let ready,release,settle,dispatches=0;const started=new Promise(r=>ready=r),paused=new Promise(r=>release=r),finished=new Promise(r=>settle=r),controller=new AbortController(),budget=createChatBudget({pricing});
  const bridge=await createChatBridge({budget,signal:controller.signal,expiresAt:Date.now()+100,tools:{...tools,async execute(name,args,{reserveRequest}){ready();await paused;try{reserveRequest({kind:'web',inputBytes:100,maxTokens:1024});dispatches++;}finally{settle();}return {};}}});
  const pending=fetch(bridge.url+'/tool',{method:'POST',headers:{Authorization:'Bearer '+bridge.token},body:JSON.stringify({name:'reader_get_context',args:{}})}).catch(()=>null);
- await started;if(boundary==='close')await bridge.close();else if(boundary==='abort')controller.abort();else await new Promise(r=>setTimeout(r,120));release();await finished;await pending;await bridge.close();assert.equal(dispatches,0);assert.equal(budget.snapshot().requests,0);
+ await started;if(boundary==='close')await bridge.close();else if(boundary==='abort')controller.abort();else t.mock.timers.tick(120);release();await finished;await pending;await bridge.close();assert.equal(dispatches,0);assert.equal(budget.snapshot().requests,0);
 });
 test('bridge revocation aborts already-dispatched provider through internal tool signal',async()=>{
  const {createReadingAgentTools}=await import('../server/reading-agent-tools.mjs');let ready,providerSignal;const started=new Promise(r=>ready=r),activities=[];

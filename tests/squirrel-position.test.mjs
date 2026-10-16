@@ -35,3 +35,9 @@ test('bubble follows the squirrel and flips below near the top without leaving t
  s.position.attach(bubble);s.position.layout();assert.equal(parseFloat(bubble.style.left),12);assert.equal(parseFloat(bubble.style.top),68);
  s.fire('keydown',{altKey:true,key:'ArrowDown'});assert.equal(parseFloat(bubble.style.top),84);
 });
+test('pinch-zoomed visual viewport keeps the whole bubble within reach',t=>{
+ const s=setup(t,{x:0,y:0}),bubble={hidden:false,style:{},classList:{toggle(){}},getBoundingClientRect:()=>({width:Math.min(290,parseFloat(bubble.style.maxWidth)||290),height:130})};
+ Object.assign(s.viewport,{width:195,height:400,offsetLeft:80,offsetTop:10});s.position.attach(bubble);
+ assert.equal(parseFloat(bubble.style.maxWidth),171);assert.equal(parseFloat(bubble.style.left),92);
+ assert.equal(parseFloat(bubble.style.left)+bubble.getBoundingClientRect().width,263);
+});
