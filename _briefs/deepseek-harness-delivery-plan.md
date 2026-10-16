@@ -1,12 +1,14 @@
 # DeepSeek Harness · 实现交接
 
+当前品牌为 Leafhour，正式网站 https://leafhour.com，唯一公开仓库为 `getyak/leafhour`。下方设计与交接保留各自日期及授权范围；当前发布与验收见 [品牌上线记录](../docs/verification/2026-10-16-leafhour-launch.md)。
+
 2026-10-12。这是系统设计的工程拆分，供后续 PI 执行；读取不表示已完成下列功能。原有阅读服务继续作为基线，不重复生成全书。
 
 本次体验验收已具体化为 [reading-experience-evals.md](reading-experience-evals.md) 和对应 JSON 案例。第一批代码优先满足 E00（安静阅读）、E01（准确解释）与 E02（可选探索）；E03–E05 为后续体验，完整流程尚未实现。9 类失败边界需要单独验收。案例输入属于合成测试资料，正式读者效果另行观察。
 
 ## Kernel Slice
 
-从系统设计冻结的源码 SHA 构建同版本 SDK、CLI 和依赖。用 sdk-minimal 加显式 patch；禁用 shell 与工作目录工具，启用旁读的 policy/context/tools 插件。插件只有授权段落读取和候选提交能力，首轮不接私人评论。
+从系统设计冻结的源码 SHA 构建同版本 SDK、CLI 和依赖。用 sdk-minimal 加显式 patch；禁用 shell 与工作目录工具，启用 Leafhour 的 policy/context/tools 插件。插件只有授权段落读取和候选提交能力，首轮不接私人评论。
 
 完成真实 SDK 握手、模型调用与一次阅读工具往返。测试不得使用伪 Harness 命名包装普通 fetch；回执必须有官方 session/step/tool 事件。检查实际工具名单、进程退出及 Messages 请求错误。生成次数、费用与日志范围受 Host 限制。
 

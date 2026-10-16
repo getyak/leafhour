@@ -1,8 +1,10 @@
 # MCP 与 Personal Agent 交接契约
 
+当前品牌为 Leafhour，正式网站 https://leafhour.com，唯一公开仓库为 `getyak/leafhour`。下方设计与交接保留各自日期及授权范围；当前发布与验收见 [品牌上线记录](../docs/verification/2026-10-16-leafhour-launch.md)。
+
 状态：下文为初版接口设计。2026-10-13 本机 stdio 已实现六项工具、书目及单段两类资源，网页与 MCP 共用书房服务；官方 MCP 客户端已实际验证读取、范围拒绝及网页撤回后的拒绝。章节资源 URI、远程 OAuth 和宿主 Agent 的实际配置仍未验收，不能将本机客户端验证视为已连接用户的 Personal Agent。当前启动与配置见项目 README。
 
-2026-10-12补充：内部 Chapter Agent 采用官方 DeepSeek Harness，MCP 继续作为外部 Personal Agent 的接口；两者共用旁读的领域数据、授权及 Run 管理。网页和 MCP 后续调用 prepare/act/cancel，模型不能声明自己的 grant。具体运行关联、取消与恢复见 [系统设计](deepseek-harness-system-design.md)，不能把 SDK close 与本产品的单次 cancel 直接混为一谈。
+2026-10-12补充：内部 Chapter Agent 采用官方 DeepSeek Harness，MCP 继续作为外部 Personal Agent 的接口；两者共用 Leafhour 的领域数据、授权及 Run 管理。网页和 MCP 后续调用 prepare/act/cancel，模型不能声明自己的 grant。具体运行关联、取消与恢复见 [系统设计](deepseek-harness-system-design.md)，不能把 SDK close 与本产品的单次 cancel 直接混为一谈。
 
 ## 2026-10-16 站内阅读对话补充
 

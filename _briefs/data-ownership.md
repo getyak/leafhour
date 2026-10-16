@@ -1,5 +1,7 @@
 # 数据归属与可迁移性
 
+当前品牌为 Leafhour，正式网站 https://leafhour.com，唯一公开仓库为 `getyak/leafhour`。下方设计与交接保留各自日期及授权范围；当前发布与验收见 [品牌上线记录](../docs/verification/2026-10-16-leafhour-launch.md)。
+
 这里描述产品承诺与实现验收，不替代正式法律条款。
 
 ## 用户控制什么

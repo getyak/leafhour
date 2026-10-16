@@ -1,4 +1,6 @@
-# 旁读听读实现计划
+# Leafhour 听读实现计划
+
+> 当前品牌为 Leafhour，正式网站为 https://leafhour.com。本文保留原设计或验收日期；其中旧名称只表示当时的品牌。
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans for native execution, or superpowers:subagent-driven-development if the user selects delegation. Steps use checkbox syntax for tracking.
 
