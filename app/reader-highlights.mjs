@@ -1,4 +1,5 @@
 import {activeHighlights,highlightKey,highlightSegments} from './highlights.mjs';
+import {sourceLineatedNodes} from './passage-layers.mjs';
 
 // Works with text nodes inside persistent marks as well as plain prose.
 export function textRange(document,prose,start,end){
@@ -24,7 +25,13 @@ export function mountReaderHighlights({document,getRecords,signedIn,available,se
     const all=getRecords()?.highlights;if(indexed!==all){indexed=all;index=new Map();for(const row of rows())for(const part of row.parts){const key=part.passageId+'|'+part.language+'|'+(part.language==='en'?'original':part.variant);if(!index.has(key))index.set(key,[]);index.get(key).push({id:row.id,part});}}
     const language=prose.dataset.readingLayer==='original'?'en':'zh',entries=index.get(passageId+'|'+language+'|'+(language==='en'?'original':prose.dataset.variant))||[],segments=highlightSegments(prose.textContent,entries),signature=JSON.stringify(segments);
     if(prose.dataset.highlightSignature===signature)return;prose.dataset.highlightSignature=signature;
-    const fragment=document.createDocumentFragment();for(const segment of segments){if(!segment.ids.length){fragment.append(document.createTextNode(segment.text));continue;}const mark=document.createElement('mark');mark.className='reader-highlight';mark.dataset.highlightIds=segment.ids.join(' ');mark.title='点击查看高亮';mark.textContent=segment.text;fragment.append(mark);}prose.replaceChildren(fragment);
+    const fragment=document.createDocumentFragment();let start=0;
+    for(const segment of segments){
+      const nodes=sourceLineatedNodes(prose,segment.text,start,document);start+=segment.text.length;
+      if(!segment.ids.length){fragment.append(...nodes);continue;}
+      const mark=document.createElement('mark');mark.className='reader-highlight';mark.dataset.highlightIds=segment.ids.join(' ');mark.title='点击查看高亮';mark.append(...nodes);fragment.append(mark);
+    }
+    prose.replaceChildren(fragment);
   }
   function paintAll(){
     const selection=document.getSelection();if(selection&&!selection.isCollapsed&&root.contains(selection.anchorNode))return;

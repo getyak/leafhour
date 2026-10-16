@@ -9,7 +9,7 @@ import {captureParagraphAnchor,paragraphScrollDelta} from './paragraph-anchor.mj
 import {createNoteDrafts} from './note-drafts.mjs';
 import {createReadingDraftStore} from './reading-draft-store.mjs';
 import {readerLoginUrl,resolveReaderEntry} from './reader-return.mjs';
-import {passagePresentation,visibleQuoteLanguage} from './passage-layers.mjs';
+import {passagePresentation,visibleQuoteLanguage,applySourceLineation} from './passage-layers.mjs';
 import {chineseSampleEntry} from './catalog-sample.mjs';
 import {createChapterFlow,isReadingDivider} from './reading-flow.mjs';
 import {startReadingLoad,mergeLoadedReadingRecords} from './reading-load.mjs';
@@ -108,13 +108,14 @@ for(const [key,label,unit] of typographyFields){
   controls.append(minus,value,plus);row.append(name,controls);$('typography-controls').append(row);
 }
 function passageView(p){return {mode:overrides[p.id]?.mode||(state.mode==='en'?'en':'zh'),variant:overrides[p.id]?.variant||state.variant};}
-function prose(layer,variant){if(layer.kind==='missing')return el('div','translation-placeholder',layer.message);const n=el('p',layer.fallback?'untranslated-original':'',layer.text);n.lang=layer.lang;n.dataset.readingLayer=layer.kind;n.dataset.variant=variant;return n;}
+function prose(layer,variant){if(layer.kind==='missing')return el('div','translation-placeholder',layer.message);const n=el('p',layer.fallback?'untranslated-original':'',layer.text);if(layer.kind==='original')applySourceLineation(n,layer.lineBreaks,document);n.lang=layer.lang;n.dataset.readingLayer=layer.kind;n.dataset.variant=variant;return n;}
 function fillPassage(node,p){
   if(node.contains($('note-panel')))document.body.append($('note-panel'));
   node.replaceChildren();const v=passageView(p),view=passagePresentation(p,{...v,mode:state.mode==='parallel'?'parallel':v.mode,sourceLanguage:book.sourceLanguage});
   if(state.mode==='parallel'){
     node.append(createParallelPair({document,layers:view.layers,variant:v.variant,prose,passageId:p.id,revealed:revealedTranslations,onReveal:change=>{const a=anchor();change();restoreAnchor(a);document.dispatchEvent(new CustomEvent('reader:layout'));}}));
   }else node.append(prose(view.layers[0],v.variant));
+  if(p.source?.labelBefore)node.prepend(el('span','source-passage-label',p.source.labelBefore));
   if(view.notice)node.append(el('span','translation-status',view.notice));
   for(const text of node.querySelectorAll('p[data-reading-layer]'))highlights.paint(text,p.id);
 }

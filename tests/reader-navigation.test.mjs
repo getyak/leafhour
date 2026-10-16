@@ -45,3 +45,8 @@ test('books with numbered sections retain direct paragraph anchors in their expa
   const details=all(list,'details');assert.equal(details.length,2);assert.equal(details[1].open,true);
   const sectionButton=all(details[1],'button')[0];sectionButton.dispatchEvent(new Event('click'));assert.deepEqual(calls,[['ch03','p3']]);
 });
+
+test('the edition scope is visible separately from an editorial description and is absent for unmarked books',()=>{
+ assert.equal(navigation.bookIntroduction({...book,source:{...book.source,scopeNote:'本版收录正文，作者序言见出处。'}}).scopeNote,'本版收录正文，作者序言见出处。');
+ assert.equal(navigation.bookIntroduction(book).scopeNote,'');
+});
