@@ -1,0 +1,52 @@
+/* A spread uses the same text flow; narrow windows turn one page at a time. */
+.page-turner{display:flex;align-items:center;justify-content:center;gap:22px;flex:none;min-height:48px;font:11px/1.5 var(--interface);color:var(--muted)}
+.page-turner button{min-height:44px;min-width:44px;padding:8px 14px;border-radius:6px;color:var(--accent);font-size:12px}
+.page-turner button:hover:enabled{background:var(--wash)}
+.page-position{min-width:100px;text-align:center;font-variant-numeric:tabular-nums}
+body[data-paginated=true]{overflow:hidden}
+body[data-paginated=true] .book-page{width:min(1200px,calc(100% - 96px));height:100dvh;min-height:0;display:flex;flex-direction:column;padding:90px 0 14px;transform:none!important}
+body.is-focused[data-paginated=true] .book-page{padding-top:64px}
+body[data-paginated=true] .chapter-heading{flex:none;margin:0 0 20px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:baseline;gap:4px 14px;min-height:34px}
+body[data-paginated=true] .chapter-heading .chapter-number{font-size:10px;margin:0;white-space:nowrap}
+body[data-paginated=true] .chapter-heading h1{font:400 18px/1.6 var(--book);margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body[data-paginated=true] .chapter-heading .original-title{display:none}
+body[data-paginated=true] .chapter-heading .listen-chapter{grid-column:3;grid-row:1;min-height:32px;margin:0;padding:0;font-size:10px}
+body[data-paginated=true] .chapter-heading .translation-notice{grid-column:1/-1;font-size:10px;line-height:1.7;margin:0}
+body[data-paginated=true] .chapter-heading .source-review{grid-column:1/-1;max-height:20dvh;overflow:auto;margin:0;padding-top:4px}
+body[data-paginated=true] .reading-pages{position:relative;flex:1;min-height:0;overflow:hidden;overscroll-behavior:none}
+body[data-paginated=true] #chapter-text{height:100%;column-count:2;column-gap:clamp(36px,5vw,72px);column-fill:auto}
+body[data-paginated=true] .passage{break-inside:auto}
+body[data-paginated=true] .passage.is-selected::before{inset:0}
+body[data-paginated=true] .flow-chapter-end{break-inside:avoid}
+body[data-paginated=true] .chapter-footer{display:none}
+.page-end{position:absolute;top:0;width:1px;height:1px;pointer-events:none}
+body[data-paginated=true] .note-panel{position:fixed;inset:90px 24px auto auto;width:min(360px,calc(100vw - 40px));max-height:calc(100dvh - 120px);margin:0;padding:22px 24px;z-index:6;overflow:auto;background:var(--panel);box-shadow:0 12px 55px #0002}
+body[data-paginated=true].has-audio .book-page{padding-bottom:142px}
+@media(max-width:899px){
+ body[data-paginated=true] .book-page{width:min(650px,calc(100% - 56px))}
+ body[data-paginated=true] #chapter-text{column-count:1;column-gap:32px}
+}
+@media(max-width:600px){
+ body[data-paginated=true] .book-page{width:calc(100% - 40px);padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+ body[data-paginated=true] .chapter-heading{margin-bottom:16px;gap:10px;padding-right:0}
+ body[data-paginated=true] .chapter-heading h1{font-size:16px}
+ .page-turner{gap:8px;justify-content:space-between;padding-inline:0}
+ .page-turner button{padding-inline:8px;font-size:11px}
+ .page-position{min-width:85px;font-size:10px}
+ body[data-paginated=true] .note-panel{inset:76px 12px auto;width:calc(100vw - 24px);max-height:calc(100dvh - 100px)}
+ body[data-paginated=true].has-audio .book-page{padding-bottom:142px}
+}
+@media(max-height:500px){
+ body[data-paginated=true] .book-page,body.is-focused[data-paginated=true] .book-page{padding-top:54px;padding-bottom:4px}
+ body[data-paginated=true] .chapter-heading{margin-bottom:8px;min-height:24px}
+ body[data-paginated=true] .chapter-heading h1{font-size:15px}
+ .page-turner{min-height:44px}
+}
+@media(max-height:500px) and (max-width:600px){body[data-paginated=true] .book-page{padding-bottom:76px}}
+@media print{
+ body[data-paginated=true]{overflow:visible}
+ body[data-paginated=true] .book-page{height:auto;display:block;width:auto}
+ body[data-paginated=true] .reading-pages{overflow:visible}
+ body[data-paginated=true] #chapter-text{height:auto;columns:auto}
+ .page-turner,.page-end{display:none!important}
+}

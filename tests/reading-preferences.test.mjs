@@ -26,19 +26,19 @@ test('reading appearance travels with exported records, rejects invalid imports 
   t.after(async()=>{for(const server of servers)await new Promise(r=>server.close(r));});
   async function open(name){const server=await createReaderServer({bookPath,recordsPath:path.join(dir,name,'records.json')});servers.push(server);await new Promise(r=>server.listen(0,'127.0.0.1',r));return 'http://127.0.0.1:'+server.address().port;}
   const base=await open('first'),other=await open('second');
-  for(const [file,type]of [['parallel-reading.mjs','javascript'],['parallel-reading.css','css'],['reader-immersion.mjs','javascript'],['reader-settings.mjs','javascript'],['reader-settings.css','css']]){
+  for(const [file,type]of [['parallel-reading.mjs','javascript'],['parallel-reading.css','css'],['reader-immersion.mjs','javascript'],['reader-settings.mjs','javascript'],['reader-settings.css','css'],['reader-pagination.mjs','javascript'],['reader-pagination.css','css']]){
     const response=await fetch(base+'/'+file);assert.equal(response.status,200,file);assert.ok(response.headers.get('content-type').includes(type));
   }
   const post=(base,url,data)=>fetch(base+url,{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body:JSON.stringify(data)});
   const legacy={chapterId:'ch01',passageId:'p1',offset:100,mode:'parallel',variant:'literal',font:23,theme:'night'};
-  const custom={...legacy,theme:'leaf',fontFamily:'kai',lineHeight:2.2,paragraphGap:32,letterSpacing:0.04,wordSpacing:0.12,fontWeight:600,indent:true,parallelLayout:'stack',parallelStyle:'reveal',parallelColor:'blue',parallelBackground:'soft'};
+  const custom={...legacy,pageLayout:'spread',theme:'leaf',fontFamily:'kai',lineHeight:2.2,paragraphGap:32,letterSpacing:0.04,wordSpacing:0.12,fontWeight:600,indent:true,parallelLayout:'stack',parallelStyle:'reveal',parallelColor:'blue',parallelBackground:'soft'};
   assert.equal((await post(base,'/api/progress',custom)).status,200);
   const exported=await (await fetch(base+'/api/records/export')).json();
   for(const [key,value] of Object.entries(custom))assert.equal(exported.position[key],value,key);
   assert.equal((await post(other,'/api/records/import',exported)).status,200);
   const restored=await (await fetch(other+'/api/records')).json();
   for(const [key,value] of Object.entries(custom))assert.equal(restored.position[key],value,key);
-  for(const invalid of [{fontFamily:'injected'},{theme:'unknown'},{lineHeight:9},{paragraphGap:-4},{letterSpacing:1},{wordSpacing:-1},{fontWeight:900},{indent:'yes'},{parallelLayout:'injected'},{parallelStyle:'blur(9px)'},{parallelColor:'#fff'},{parallelBackground:'url(evil)'}]){
+  for(const invalid of [{pageLayout:'injected'},{fontFamily:'injected'},{theme:'unknown'},{lineHeight:9},{paragraphGap:-4},{letterSpacing:1},{wordSpacing:-1},{fontWeight:900},{indent:'yes'},{parallelLayout:'injected'},{parallelStyle:'blur(9px)'},{parallelColor:'#fff'},{parallelBackground:'url(evil)'}]){
     const bad={...exported,position:{...custom,...invalid},comments:[{id:'bad-note',passageId:'p1',text:'should never be imported'}]};
     assert.equal((await post(other,'/api/records/import',bad)).status,400,JSON.stringify(invalid));
     const unchanged=await (await fetch(other+'/api/records')).json();
@@ -46,7 +46,7 @@ test('reading appearance travels with exported records, rejects invalid imports 
   }
   assert.equal((await post(other,'/api/progress',legacy)).status,200);
   const migrated=await (await fetch(other+'/api/records')).json();
-  assert.equal(migrated.position.fontFamily,'song');assert.equal(migrated.position.lineHeight,1.98);assert.equal(migrated.position.indent,false);
+  assert.equal(migrated.position.pageLayout,'scroll');assert.equal(migrated.position.fontFamily,'song');assert.equal(migrated.position.lineHeight,1.98);assert.equal(migrated.position.indent,false);
   assert.equal(migrated.position.parallelLayout,'columns');assert.equal(migrated.position.parallelStyle,'plain');
 });
 
