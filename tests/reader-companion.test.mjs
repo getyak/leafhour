@@ -4,6 +4,7 @@ import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {createReaderChatService} from '../server/reader-chat.mjs';
+import {createReaderCompanionService} from '../server/reader-companion.mjs';
 const user={id:'reader'},other={id:'other'};
 const book={bookId:'one',contentVersion:'v1',title:{en:'Fixture'},chapters:[{id:'ch1',kind:'body',title:'One'},{id:'ch2',kind:'body',title:'Two'}],sections:[{chapterId:'ch1',number:1,paragraphs:Array.from({length:8},(_,i)=>({id:'p'+(i+1),original:'Source sentence '+(i+1)+'.',translations:{},annotationIds:[],termIds:[]}))},{chapterId:'ch2',number:2,paragraphs:[{id:'future',original:'SECRET ENDING',translations:{}}]}],glossary:[],annotations:[],privateMetadata:'PRIVATE'};
 async function fixture(t,generate=async()=>({kind:'message',text:'前面那段和这里放在一起，倒多了一种理解。',sourcePassageIds:['p1','p2']})){
@@ -15,7 +16,7 @@ async function fixture(t,generate=async()=>({kind:'message',text:'前面那段�
   const config=()=>service.companion.configure(user,'one',{enabled:true,contentVersion:'v1'});
   let meta;
   const start=async()=>meta=await config();
-  const observe=async(p,active=true)=>{now+=8000;return service.companion.observe(user,'one',{revision:meta.revision,contentVersion:'v1',sessionId:meta.sessionId,passageId:p,active});};
+  const observe=async(p,active=true)=>{now+=8000;meta=await service.companion.observe(user,'one',{revision:meta.revision,contentVersion:'v1',sessionId:meta.sessionId,passageId:p,active});return meta;};
   const read=async(p,n=7)=>{let value;for(let i=0;i<n;i++)value=await observe(p);return value;};
   const ready=async()=>{await start();await read('p1');await read('p2');};
   const send=(id='companion-1',p='p2')=>service.companion.generate(user,'one',{id,revision:meta.revision,contentVersion:'v1',sessionId:meta.sessionId,passageId:p});
@@ -61,4 +62,25 @@ test('two service instances cannot generate the same candidate twice',async t=>{
   const a=f.send();while(!f.jobs.length)await new Promise(r=>setTimeout(r,5));
   await assert.rejects(second.companion.generate(user,'one',{id:'companion-1',passageId:'p2',contentVersion:'v1',revision:f.meta().revision,sessionId:f.meta().sessionId}),e=>e.status===409);
   resolve({kind:'silence'});await a;assert.equal(f.jobs.length,1);
+});
+test('inactive heartbeats do not prevent a new reading session after thirty minutes',async t=>{
+  const f=await fixture(t,async()=>({kind:'silence'}));await f.ready();await f.send();
+  for(const [id,passages]of [['second',['p3','p4','p5']],['third',['p6','p7','p8']]]){for(const p of passages)await f.read(p,13);await f.send(id,passages.at(-1));}
+  const previous=f.meta().sessionId;assert.equal((await f.service.companion.view(user,'one')).attempts,3);
+  for(let i=0;i<230;i++)await f.observe('p8',false);
+  const next=await f.service.companion.view(user,'one');assert.notEqual(next.sessionId,previous);assert.equal(next.attempts,0);assert.ok(next.observedIds.includes('p1'),'recent prior context survives a new session');
+});
+test('a persisted close during quota admission prevents dispatch on another instance',async()=>{
+  let now=1700000000000,release,entered;const waiting=new Promise(r=>release=r),started=new Promise(r=>entered=r);let calls=0;const data={turns:[]};
+  const options={bookFor:async()=>structuredClone(book),mutateBook:async(u,b,operation)=>structuredClone(await operation(data)),clock:()=>now,generator:async()=>{calls++;return {kind:'silence'};},quota:async()=>{entered();await waiting;},reserveGlobal:async()=>({nonce:'fixture'}),releaseGlobal:async()=>{},watchRun:()=>()=>{},active:new Map(),publicTurn:t=>structuredClone(t),conversationHistory:()=>[],cancel:async()=>{},getClosed:()=>false};
+  const first=createReaderCompanionService(options),second=createReaderCompanionService({...options,active:new Map()});let meta=await first.configure(user,'one',{enabled:true,contentVersion:'v1'});
+  for(const passageId of ['p1','p2'])for(let i=0;i<7;i++){now+=8000;meta=await first.observe(user,'one',{revision:meta.revision,sessionId:meta.sessionId,contentVersion:'v1',passageId,active:true});}
+  const pending=first.generate(user,'one',{id:'admission-race',revision:meta.revision,sessionId:meta.sessionId,contentVersion:'v1',passageId:'p2'});await started;
+  await second.configure(user,'one',{enabled:false,contentVersion:'v1'});release();assert.equal((await pending).status,'cancelled');assert.equal(calls,0);
+});
+test('revoked request authorization cancels a model result instead of publishing it',async t=>{
+  let finish,allowed=true;const pending=new Promise(r=>finish=r),f=await fixture(t,()=>pending);await f.ready();
+  const m=f.meta(),generated=f.service.companion.generate(user,'one',{id:'auth-revoked',revision:m.revision,sessionId:m.sessionId,contentVersion:'v1',passageId:'p2'},{authorize:async()=>allowed});
+  while(!f.jobs.length)await new Promise(r=>setTimeout(r,5));allowed=false;finish({kind:'message',text:'这条不应发布。',sourcePassageIds:['p1']});
+  assert.equal((await generated).status,'cancelled');assert.equal((await f.service.view(user,'one')).turns.length,0);
 });

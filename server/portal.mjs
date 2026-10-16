@@ -176,7 +176,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='companion'&&req.method==='GET'){send(200,await chat.companion.view(user,id));return true;}
       if(action==='companion'&&req.method==='POST'){send(200,await chat.companion.configure(user,id,body));return true;}
       if(action==='companion/observe'&&req.method==='POST'){send(200,await chat.companion.observe(user,id,body));return true;}
-      if(action==='companion/messages'&&req.method==='POST'){send(200,await chat.companion.generate(user,id,body));return true;}
+      if(action==='companion/messages'&&req.method==='POST'){send(200,await chat.companion.generate(user,id,body,{authorize:async()=>(await auth.userFor(token))?.id===user?.id}));return true;}
       if(action==='chat'&&req.method==='GET'){send(200,await chat.view(user,id,{passageId:url.searchParams.get('passageId')||undefined}));return true;}
       if(action==='chat'&&req.method==='POST'){send(200,await chat.send(user,id,body));return true;}
       const cancelChat=action?.match(/^chat\/([^/]+)\/cancel$/);if(cancelChat&&req.method==='POST'){send(200,await chat.cancel(user,id,cancelChat[1]));return true;}

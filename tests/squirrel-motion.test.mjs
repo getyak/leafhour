@@ -2,14 +2,20 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mountSquirrelMotion} from '../app/squirrel-motion.mjs';
 
-function setup({reduced=false,visible=true}={}){
+function setup({reduced=false,visible=true,useDefaultScheduler=false}={}){
   const document=new EventTarget(),window=new EventTarget(),media=new EventTarget(),jobs=new Map(),animations=[];let id=0;
   document.visibilityState=visible?'visible':'hidden';document.hasFocus=()=>true;media.matches=reduced;window.matchMedia=()=>media;
   const part=()=>Object.assign(new EventTarget(),{setAttribute(){},animate(frames,options){const a={frames,options,cancelled:false,cancel(){this.cancelled=true;},finished:new Promise(()=>{})};animations.push(a);return a;}});
   const launcher=part(),squirrel=part(),head=part(),tail=part(),eyes=[part(),part()];
-  const motion=mountSquirrelMotion({launcher,squirrel,head,tail,eyes,document,window,random:()=>.5,scheduler:{setTimeout(fn){jobs.set(++id,fn);return id;},clearTimeout(key){jobs.delete(key);}}});
+  const motion=mountSquirrelMotion({launcher,squirrel,head,tail,eyes,document,window,random:()=>.5,...(useDefaultScheduler?{}:{scheduler:{setTimeout(fn){jobs.set(++id,fn);return id;},clearTimeout(key){jobs.delete(key);}}})});
   return {motion,document,window,media,jobs,animations,launcher};
 }
+test('native browser timers retain their global receiver when scheduling character life',()=>{
+  const saved={setTimeout:globalThis.setTimeout,clearTimeout:globalThis.clearTimeout};let count=0;
+  globalThis.setTimeout=function(){assert.equal(this,globalThis,'native timer requires Window receiver');return ++count;};
+  globalThis.clearTimeout=function(){assert.equal(this,globalThis,'native timer requires Window receiver');};
+  try{const f=setup({useDefaultScheduler:true});assert.equal(count,2);f.motion.dispose();}finally{Object.assign(globalThis,saved);}
+});
 test('the squirrel has ambient life without generating messages, and a tap reacts immediately',()=>{
   const f=setup();assert.ok(f.animations.length>0);assert.equal(f.jobs.size,2);const before=f.animations.length;
   f.launcher.dispatchEvent(new Event('pointerenter'));assert.ok(f.animations.length>before);f.motion.dispose();assert.equal(f.jobs.size,0);assert.ok(f.animations.every(a=>a.cancelled));

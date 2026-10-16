@@ -22,6 +22,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
     if(response.headers.get('X-Reader-Session-Changed')==='1'){
       companion?.dispose();chat?.reset();replace('/library');throw Object.assign(Error('账户已切换，请重新进入书房。'),{status:409});
     }
+    if(url.endsWith('/companion/messages')&&response.ok){const identity=await request('/api/auth/session',{cache:'no-store'});const current=await identity.json();if(!identity.ok||(current.user?.id||'guest')!==(session?.user?.id||'guest')){companion?.dispose();chat?.reset();replace('/library');throw Object.assign(Error('账户已切换，请重新进入书房。'),{status:409});}}
     const value=await response.json();
     if(!response.ok)throw Object.assign(Error(value.error||'对话暂时无法载入，请重试。'),{status:response.status});
     return value;

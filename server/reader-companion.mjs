@@ -9,7 +9,7 @@ export function createReaderCompanionService({bookFor,mutateBook,clock,generator
   const available=()=>!getClosed()&&typeof generator==='function';
   function state(data,book){
     let m=data.companion;
-    if(!m||m.contentVersion!==book.contentVersion){m=data.companion={enabled:false,revision:(m?.revision||0)+1,contentVersion:book.contentVersion,recent:[],activeMs:0,chapterMs:0,chapterId:null,seenCount:0,lastAttemptCount:0,lastAttemptMs:null,attempts:0,sessionId:randomUUID(),lastAt:null};}
+    if(!m||m.contentVersion!==book.contentVersion){m=data.companion={enabled:false,revision:(m?.revision||0)+1,contentVersion:book.contentVersion,recent:[],activeMs:0,chapterMs:0,chapterId:null,seenCount:0,lastAttemptCount:0,lastAttemptMs:null,attempts:0,sessionId:randomUUID(),lastAt:null,lastActiveAt:null};}
     return m;
   }
   const meta=m=>({enabled:m.enabled,revision:m.revision,contentVersion:m.contentVersion,available:available(),sessionId:m.sessionId,activeMs:m.activeMs,chapterMs:m.chapterMs,attempts:m.attempts,observedIds:m.recent.filter(p=>p.ms>=SEEN).map(p=>p.id)});
@@ -37,13 +37,14 @@ export function createReaderCompanionService({bookFor,mutateBook,clock,generator
     if(typeof input.active!=='boolean')throw invalid('阅读观察格式不正确');
     return mutateBook(user,bookId,data=>{
       const m=state(data,book);check(m,input);
-      if(m.lastAt!==null&&now-m.lastAt>=IDLE){Object.assign(m,{activeMs:0,chapterMs:0,seenCount:0,lastAttemptCount:0,lastAttemptMs:null,attempts:0,sessionId:randomUUID(),lastAt:null});m.recent=[];}
+      if(m.lastActiveAt!=null&&now-m.lastActiveAt>=IDLE){Object.assign(m,{activeMs:0,chapterMs:0,seenCount:0,lastAttemptCount:0,lastAttemptMs:null,attempts:0,sessionId:randomUUID(),lastAt:null,lastActiveAt:null});}
       const elapsed=input.active&&m.wasActive&&m.lastAt!==null?Math.max(0,Math.min(10000,now-m.lastAt)):0;
       m.activeMs+=elapsed;if(m.chapterId!==p.chapterId){m.chapterId=p.chapterId;m.chapterMs=0;}else m.chapterMs+=elapsed;
       if(input.active){
-        let row=m.recent.find(r=>r.id===p.id);if(!row){row={id:p.id,ms:0,at:now};m.recent.push(row);}
-        const before=row.ms;if(m.lastPassageId===p.id)row.ms+=elapsed;row.at=now;
-        if(before<SEEN&&row.ms>=SEEN)m.seenCount++;
+        let row=m.recent.find(r=>r.id===p.id);if(!row){row={id:p.id,ms:0,sessionMs:0,sessionId:m.sessionId,at:now};m.recent.push(row);}
+        if(row.sessionId!==m.sessionId){row.sessionId=m.sessionId;row.sessionMs=0;}
+        const before=row.sessionMs||0;if(m.lastPassageId===p.id){row.ms=Math.min(SEEN,row.ms+elapsed);row.sessionMs=before+elapsed;}row.at=now;m.lastActiveAt=now;
+        if(before<SEEN&&row.sessionMs>=SEEN)m.seenCount++;
         m.recent=m.recent.slice(-48);
       }
       m.lastAt=now;m.wasActive=input.active;m.lastPassageId=p.id;
@@ -66,7 +67,7 @@ export function createReaderCompanionService({bookFor,mutateBook,clock,generator
     for(const [,quote]of candidate.text.matchAll(/[“「]([^”」]+)[”」]/gu))if(!texts.some(text=>text.includes(quote)))throw invalid('陪读引文无法核对');
     return {kind:'companion',summary:candidate.text.trim(),origin:'ai',sourceRefs:rows.map(p=>({bookId,passageId:p.id,layer:'original',quote:clip(p.original,300),url:'/read?book='+encodeURIComponent(bookId)+'&passage='+encodeURIComponent(p.id)})),recommendations:[]};
   }
-  async function generate(user,bookId,input){
+  async function generate(user,bookId,input,{authorize=async()=>true}={}){
     const book=await bookFor(user,bookId),index=sourceIndex(book),now=clock(),runId=randomUUID();
     if(!safeId(input?.id)||!safeId(input?.passageId))throw invalid('陪读消息标识不正确');validPassage(index,input.passageId);
     const claimed=await mutateBook(user,bookId,data=>{
@@ -85,10 +86,12 @@ export function createReaderCompanionService({bookFor,mutateBook,clock,generator
     const finish=changes=>mutateBook(user,bookId,data=>{const m=state(data,book),t=data.turns.find(t=>t.id===input.id);if(!t)throw invalid('找不到陪读消息',404);if(t.status==='running'&&t.runId===runId){if(!m.enabled||m.revision!==input.revision||m.sessionId!==input.sessionId||controller.signal.aborted)Object.assign(t,{status:'cancelled',answer:null});else Object.assign(t,changes);}return publicTurn(t);});
     try{
       await quota(user,runId,{kind:'companion'});ticket=await reserveGlobal(runId);
-      if(controller.signal.aborted)return await finish({status:'cancelled',answer:null});
+      const mayStart=await mutateBook(user,bookId,data=>{const m=state(data,book),t=data.turns.find(t=>t.id===input.id);return m.enabled&&m.revision===input.revision&&m.sessionId===input.sessionId&&t?.status==='running'&&t.runId===runId&&t.expiresAt>clock()&&!getClosed();});
+      if(!mayStart||controller.signal.aborted||!await authorize())return await finish({status:'cancelled',answer:null});
       const interrupted=new Promise((_,reject)=>controller.signal.addEventListener('abort',()=>reject(invalid('陪读已停止',408)),{once:true}));
       timer=setTimeout(()=>controller.abort(),90000);timer.unref?.();stopWatching=watchRun(user,bookId,input.id,runId,controller);
       const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'companion',book:{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title},passageId:input.passageId,chapterId:index.byId.get(input.passageId).chapterId,context:claimed.context,history:claimed.history,signal:controller.signal,runId})),interrupted]);
+      if(!await authorize())return await finish({status:'cancelled',answer:null});
       const answer=answerFor(candidate,claimed.context,bookId),fresh=await bookFor(user,bookId),freshIndex=sourceIndex(fresh);
       if(fresh.contentVersion!==book.contentVersion||claimed.context.passages.some(p=>freshIndex.byId.get(p.id)?.original!==index.byId.get(p.id)?.original))throw invalid('原文版本已变化',409);
       return await finish({status:answer?'completed':'silent',answer});

@@ -67,7 +67,7 @@ export function mountReaderCompanion({bookId,getOwner,getReader,api,chat,openAut
   function scheduleCollapse(){clearTimeout(bubbleTimer);bubbleTimer=setTimeout(()=>{if(hovering||bubble.contains(document.activeElement)||getSelection()?.toString().trim())scheduleCollapse();else hideBubble();},COMPANION_TIMING.bubbleMs);}
   function present(){
     if(!pending)return;const c=context(),view=state.view();
-    if(!c||pending.chapterId!==c.reader.getChapterId()||view.activeMs-pending.readyAt>COMPANION_TIMING.presentationMs){pending=null;return;}
+    if(!c||pending.chapterId!==c.reader.getChapterId()||view.foregroundMs-pending.readyAt>=COMPANION_TIMING.presentationMs){pending=null;return;}
     if(!view.safeToPresent||blocked()||!visible())return;
     body.textContent=pending.turn.answer.summary;body.setAttribute('aria-label','和松鼠接着聊：'+pending.turn.answer.summary);body.onclick=()=>{const message=pending?.turn||shown;markUnread(false);collapse();if(message)chat.open({bookId,passageId:message.passageId,messageId:message.id});};
     shown=pending.turn;pending=null;bubble.hidden=false;scheduleCollapse();
@@ -79,7 +79,7 @@ export function mountReaderCompanion({bookId,getOwner,getReader,api,chat,openAut
     try{
       const turn=await api(route+'/messages',{id:job.id,revision:job.revision,contentVersion:meta.contentVersion,sessionId:meta.sessionId,passageId:p.passageId},{signal:job.controller.signal});
       if(!current()||running!==job||job.ticket!==epoch||meta.revision!==job.revision||!meta.enabled||localStopped)return;
-      if(turn.kind==='companion'&&turn.status==='completed'&&turn.answer?.summary){surface.motion?.setState({companionThinking:false});markUnread(true);pending={turn,chapterId:job.chapterId,readyAt:state.view().activeMs};present();}
+      if(turn.kind==='companion'&&turn.status==='completed'&&turn.answer?.summary){surface.motion?.setState({companionThinking:false});markUnread(true);pending={turn,chapterId:job.chapterId,readyAt:state.view().foregroundMs};present();}
     }catch{}
     finally{if(running===job){running=null;surface.motion?.setState({companionThinking:false});}}
   }

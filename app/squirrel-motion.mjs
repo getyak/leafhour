@@ -1,5 +1,5 @@
 // Ambient character movement is local. It never schedules model work.
-export function mountSquirrelMotion({launcher,squirrel,head,tail,eyes,document=globalThis.document,window=globalThis.window,random=Math.random,scheduler={setTimeout,clearTimeout}}){
+export function mountSquirrelMotion({launcher,squirrel,head,tail,eyes,document=globalThis.document,window=globalThis.window,random=Math.random,scheduler={setTimeout:(fn,ms)=>globalThis.setTimeout(fn,ms),clearTimeout:id=>globalThis.clearTimeout(id)}}){
   if(typeof squirrel?.animate!=='function')return {setState(){},react(){},dispose(){}};
   const media=window.matchMedia('(prefers-reduced-motion: reduce)'),animations=new Map(),timers=new Set(),listeners=[];
   let disposed=false,awake=false,state={thinking:false,companionThinking:false,chatOpen:false,hasMessage:false};

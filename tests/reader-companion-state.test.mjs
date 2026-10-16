@@ -40,6 +40,11 @@ test('scrolling and reading tools defer presentation without stealing the opport
   f.state.activity('scroll');f.sample('p2');assert.equal(f.state.view().safeToPresent,false);f.read(6,'p2');assert.equal(f.state.view().safeToPresent,true);
   f.sample('p2','ch1',{blocked:true});assert.equal(f.state.view().safeToPresent,false);
 });
+test('a waiting bubble ages in foreground time even while a note blocks reading time',()=>{
+  const f=setup();f.read(45);f.read(45,'p2');const start=f.state.view();
+  f.read(180,'p2','ch1',{blocked:true});const after=f.state.view();
+  assert.equal(after.activeMs,start.activeMs);assert.equal(after.foregroundMs-start.foregroundMs,180000);
+});
 test('silence and failures consume attempts and disabling invalidates warm-up',()=>{
   const f=setup();f.read(45);f.read(45,'p2');f.state.attempted();
   f.read(100,'p3');f.read(100,'p4');f.read(100,'p5');f.state.attempted();
