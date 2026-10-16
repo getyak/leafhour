@@ -70,8 +70,8 @@ body{isolation:isolate}
 .atmosphere-dialog[data-playback=error] .atmosphere-status{color:var(--ink)}
 .atmosphere-about{font:10px/1.8 var(--interface);margin-top:13px;color:var(--muted)}
 .atmosphere-about summary{cursor:pointer;font-size:10px;min-height:24px}.atmosphere-about p{margin:10px 0}.atmosphere-about a{color:var(--accent)}
-/* The photograph and weather move independently, behind the fixed paper mask.
-   Only transform and opacity animate; no frame loop, video download, or moving text. */
+/* Weather stays behind the fixed paper mask. The hearth adds a small flame field
+   anchored to its fuel; its photograph remains still. */
 .atmosphere-elements{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:0}
 .atmosphere-elements::before,.atmosphere-elements::after{content:"";position:absolute;inset:var(--weather-inset,-12%);background-position:center;background-size:var(--weather-size,cover);mask-image:var(--weather-mask,none);opacity:var(--weather-opacity,.35)}
 .atmosphere-elements::before{background-image:var(--weather-near,none)}
@@ -97,8 +97,13 @@ body{isolation:isolate}
   --weather-opacity:.28;--weather-far-opacity:.24;
   --weather-near-motion:atmosphere-fire 4.7s ease-in-out infinite alternate;
   --weather-far-motion:atmosphere-fire 7.3s ease-in-out -2s infinite alternate-reverse;
-  --scene-drift:atmosphere-hearth-drift 28s ease-in-out infinite alternate;
+  --scene-drift:none;
 }
+.hearth-flames{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;mix-blend-mode:screen;opacity:.68;filter:saturate(.8) brightness(.85)}
+.hearth-flames[hidden]{display:none}
+.atmosphere-preview[data-scene=hearth]{--hearth-position:78% 50%}
+.atmosphere-preview[data-scene=hearth]::before{background-position:var(--hearth-position)}
+.atmosphere-preview[data-scene=hearth] .hearth-flames{object-position:var(--hearth-position)}
 :root[data-atmosphere=sea],.atmosphere-preview[data-scene=sea]{
   --weather-near:var(--scene-image);
   --weather-far:radial-gradient(ellipse at 18% 68%,#f5eac975 0%,transparent 44%),radial-gradient(ellipse at 82% 88%,#d2e8e04d 0%,transparent 36%);
@@ -118,7 +123,6 @@ body{isolation:isolate}
 }
 @keyframes atmosphere-forest-drift{from{transform:scale(1.035) translate(-.5%,0)}to{transform:scale(1.065) translate(.5%,.4%)}}
 @keyframes atmosphere-rain-drift{from{transform:scale(1.03) translate(0,-.3%)}to{transform:scale(1.045) translate(.4%,.3%)}}
-@keyframes atmosphere-hearth-drift{from{transform:scale(1.025)}to{transform:scale(1.05) translate(-.3%,.2%)}}
 @keyframes atmosphere-sea-drift{from{transform:scale(1.045) translate(-.6%,-.2%)}to{transform:scale(1.065) translate(.6%,.3%)}}
 @keyframes atmosphere-canopy{from{transform:translate(-2%,-1%) rotate(-2deg);opacity:.2}to{transform:translate(2%,1%) rotate(2deg);opacity:.48}}
 @keyframes atmosphere-rain{from{transform:translateY(-212px)}to{transform:translateY(0)}}
@@ -136,3 +140,4 @@ body{isolation:isolate}
 @media(max-width:390px){.atmosphere-panel{padding-left:18px;padding-right:18px}.atmosphere-choices{gap:10px}.atmosphere-heading h2{font-size:20px}.reading-header{gap:2px;padding-left:8px;padding-right:8px}.running-title{font-size:10px}.header-actions .quiet-button{padding-left:7px;padding-right:7px}.atmosphere-sound-heading>span{display:none}.atmosphere-volume{grid-template-columns:85px minmax(45px,1fr) 28px;gap:7px}}
 @media(prefers-reduced-motion:reduce){.atmosphere-backdrop::before,.atmosphere-preview::before,.atmosphere-elements::before,.atmosphere-elements::after{animation:none!important;transition:none}.atmosphere-elements{display:none}.atmosphere-choice,.atmosphere-choice img{transition:none}}
 @media(prefers-reduced-transparency:reduce){.atmosphere-dialog::backdrop{backdrop-filter:none;background:#17251be6}}
+@media(max-width:680px){.atmosphere-preview[data-scene=hearth]{--hearth-position:78% 47%}}
