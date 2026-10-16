@@ -1,3 +1,4 @@
+import {readFile} from 'node:fs/promises';
 const base=process.env.READER_URL||'https://leafhour.com',expected=process.env.EXPECTED_SOURCE_COMMIT;
 const deadline=Date.now()+Number(process.env.RELEASE_WAIT_SECONDS||600)*1000;
 async function get(route){const response=await fetch(new URL(route,base),{signal:AbortSignal.timeout(15000),headers:{'Cache-Control':'no-cache'}});if(!response.ok)throw Error(route+' returned '+response.status);return response;}
@@ -34,9 +35,18 @@ for(const route of ['/library?login=1','/read?book=gutenberg-alice','/gift-previ
   const response=await get(route);if(!response.headers.get('x-robots-tag')?.includes('noindex'))throw Error('Missing private search exclusion: '+route);
 }
 const session=await(await get('/api/auth/session')).json();if(session.user)throw Error('Anonymous request received a user');
-const library=await(await get('/api/library')).json();if(library.books?.length!==3||library.books.some(book=>book.visibility!=='public'))throw Error('Anonymous catalog is not the three public samples');
+const library=await(await get('/api/library')).json();if(library.books?.length!==30||library.books.some(book=>book.visibility!=='public'))throw Error('Anonymous catalog is not the thirty shared English editions');
 if(library.books.some(book=>book.sourceLanguage!=='en'||!Array.isArray(book.topics)||!book.topics.length))throw Error('Public catalog is missing original language or curated filter metadata');
-await get('/api/library/books/gutenberg-alice');
+const catalog=JSON.parse(await readFile(new URL('../catalog/manifest.json',import.meta.url),'utf8'));
+if(JSON.stringify(library.books.map(b=>b.bookId).sort())!==JSON.stringify(catalog.map(b=>b.id).sort()))throw Error('Production catalog IDs differ from the released manifest');
+for(const entry of catalog){
+ const book=await(await get('/api/library/books/'+entry.id)).json(),paragraphs=book.sections.flatMap(s=>s.paragraphs);
+ if(book.visibility!=='public'||!paragraphs.some(p=>p.id===book.readingStart?.passageId))throw Error('Missing readable body: '+entry.id);
+ if(entry.format==='structured'){
+  if(book.chapters.filter(c=>c.kind==='body').length!==entry.bodyChapters||!paragraphs.some(p=>p.original.includes(entry.opening))||!paragraphs.some(p=>p.original.includes(entry.ending)))throw Error('Truncated catalog edition: '+entry.id);
+  if(paragraphs.some(p=>Object.keys(p.translations).length))throw Error('Unexpected published translation: '+entry.id);
+ }
+}
 for(const route of ['/api/book','/api/records']){const response=await fetch(new URL(route,base),{signal:AbortSignal.timeout(15000)});if(response.status!==404)throw Error('Retired route is accessible: '+route);}
 const gift=await fetch(new URL('/api/book-gifts/'+giftProbe,base),{signal:AbortSignal.timeout(15000)});if(gift.status!==404||!String((await gift.json()).error).includes('赠书信'))throw Error('Public gift endpoint did not reach its missing-letter response');
 const profile=await fetch(new URL('/api/account/profile',base),{method:'POST',headers:{Origin:new URL(base).origin,'Content-Type':'application/json','X-Reader-Owner':'guest'},body:'{}',signal:AbortSignal.timeout(15000)});if(profile.status!==401)throw Error('Anonymous profile write did not fail with authentication required');

@@ -33,7 +33,7 @@ test('the slower-load message only appears while that same load remains pending'
 
 test('arrival quotes preserve catalog source text, translation provenance and the matching book',async()=>{
   const catalog=JSON.parse(await readFile(new URL('../catalog/manifest.json',import.meta.url)));
-  for(const book of catalog){
+  for(const book of catalog.filter(book=>book.format!=='structured')){
     const quote=arrival.arrivalQuote(book.id);
     assert.equal(quote.bookId,book.id);
     assert.equal(quote.sourceUrl,book.sourceUrl);

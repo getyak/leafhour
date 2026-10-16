@@ -9,6 +9,7 @@ import {validateLibraryBackup} from '../app/library-backup.mjs';
 import {saveHighlight,findHighlight,mergeHighlights} from '../app/highlights.mjs';
 import {inferSourceLanguage} from '../app/source-language.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
+import {structuredCatalogBook} from './structured-catalog.mjs';
 import {applyCatalogSample} from './catalog-sample.mjs';
 import {normalizeReadingSession,mergeReadingSession,normalizeReadingMilestone,normalizeReadingGoal,readingJourney,buildReadingCalendar} from './reading-activity.mjs';
 
@@ -57,7 +58,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   };
   if(catalogDir){
     const entries=JSON.parse(await readFile(path.join(catalogDir,'manifest.json'),'utf8'));
-    for(const entry of entries){const bytes=await readFile(path.join(catalogDir,entry.file));const extracted=await extractDocument({filename:entry.file,bytes});
+    for(const entry of entries){const bytes=await readFile(path.join(catalogDir,entry.file));if(entry.format==='structured'){publicBooks.set(entry.id,structuredCatalogBook(entry,bytes));continue;}const extracted=await extractDocument({filename:entry.file,bytes});
       // Keep the complete licensed original in the source file; remove only the Gutenberg wrapper from the reading view.
       const body=extracted.pages[0].text,match=body.match(/\*\*\* START OF THE PROJECT GUTENBERG EBOOK[^\n]*\*\*\*([\s\S]*?)\*\*\* END OF THE PROJECT GUTENBERG EBOOK/);
       if(match)extracted.pages[0].text=match[1].trim();
