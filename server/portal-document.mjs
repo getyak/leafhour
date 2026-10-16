@@ -1,5 +1,7 @@
 // Serve the correct public shell on the first paint, even before modules load.
+import {englishHomeDocument} from '../app/home-locale.mjs';
 export function portalDocument(source,pathname){
+  if(pathname==='/en')return englishHomeDocument(source);
   if(pathname!=='/library')return source;
   source=source.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g,'').replace(/<link rel="alternate" hreflang="[^"]+" href="[^"]+">/g,'');
   const privateMetadata=source.includes('<meta name="robots"')?source.replace(/<meta name="robots"[^>]*>/,'<meta name="robots" content="noindex,nofollow">'):source.replace('</head>','<meta name="robots" content="noindex,nofollow"></head>');

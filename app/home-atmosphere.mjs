@@ -1,4 +1,5 @@
 // Decorative input only. No reading state, account data, timers, or model calls.
+import {homeLocale,homeText} from './home-locale.mjs';
 export function mountHomeAtmosphere(root,win=root?.ownerDocument?.defaultView){
   if(!root||root.hidden||!win?.requestAnimationFrame||!win.matchMedia)return ()=>{};
   const doc=root.ownerDocument,toggle=root.querySelector('.light-toggle');
@@ -36,7 +37,7 @@ export function mountHomeAtmosphere(root,win=root?.ownerDocument?.defaultView){
     if(reduced.matches||!fine.matches)x=y=0;
     targetX=x;targetY=y;targetScroll=scroll;render();
     root.dataset.atmosphere=reduced.matches?'still':running()?'running':'paused';
-    if(toggle){toggle.hidden=false;toggle.disabled=reduced.matches;toggle.setAttribute('aria-pressed',String(enabled&&!reduced.matches));toggle.setAttribute('aria-label',reduced.matches?'系统已减少动态效果':enabled?'暂停光影':'开启光影');toggle.setAttribute('title',reduced.matches?'系统已减少动态效果':enabled?'暂停光影':'开启光影');}
+    if(toggle){const label=homeText(reduced.matches?'系统已减少动态效果':enabled?'暂停光影':'开启光影',homeLocale(doc));toggle.hidden=false;toggle.disabled=reduced.matches;toggle.setAttribute('aria-pressed',String(enabled&&!reduced.matches));toggle.setAttribute('aria-label',label);toggle.setAttribute('title',label);}
   };
   const click=()=>{if(reduced.matches)return;enabled=!enabled;try{win.localStorage.setItem(key,enabled?'on':'off');}catch{}sync();};
   const hide=()=>{suspended=true;sync();},show=()=>{suspended=false;sync();};

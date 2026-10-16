@@ -14,6 +14,7 @@ await mkdir(outputDir, { recursive: true });
 await cp(appDir, outputDir, { recursive: true });
 await cp(path.join(appDir, 'index.html'), path.join(outputDir, 'read.html'));
 await cp(path.join(appDir, 'home.html'), path.join(outputDir, 'index.html'));
+await writeFile(path.join(outputDir,'en.html'),portalDocument(await readFile(path.join(appDir,'home.html'),'utf8'),'/en'));
 await writeFile(path.join(outputDir, 'library.html'),portalDocument(await readFile(path.join(appDir,'home.html'),'utf8'),'/library'));
 
 const evalsPath = path.join(outputDir, 'evals.html');

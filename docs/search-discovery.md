@@ -9,11 +9,13 @@ Leafhour is an open-source AI reading room, with original text, translations and
 | Public page | Job |
 | --- | --- |
 | `/` | Chinese introduction, reading demonstration and visible questions about formats, translations, records and current limitations. |
-| `/en` | English product introduction with source-linked public samples, actual capabilities and explicit language/backup limitations. |
+| `/en` | English homepage generated from the same template as `/`, including the same imagery, sections, live public shelf, appearance/sunlight controls and sign-in dialog. |
 | `/en/mcp` | Technical guide to the existing adapter, scopes, current setup path, revocation and hosted audio limitations. |
 | `/privacy` | Public account and data-handling notice, currently in Chinese. |
 
-The English introduction is a product page, not a claim that the reading application has been fully localized. Its language link is visible in the Chinese homepage navigation and footer. The Chinese and English introductions declare reciprocal `hreflang` references and separate canonical URLs. The MCP guide has its own canonical URL and breadcrumbs.
+The English homepage is generated from `app/home.html` through `portalDocument`, using authored presentation strings in `app/home-locale.mjs`. Both the local route and hosted build use this renderer; there is no separate English homepage layout to drift. The page uses the same styles, modules, section IDs, public shelf and sign-in controller as the Chinese homepage. Controls and public catalog labels respect the page language. The original Chinese translation example remains labeled Chinese content. These presentation changes do not translate stored books or user records, change authentication policy, or claim that the library/reader application is fully localized.
+
+Language links are available in navigation, the hero footnote and footer. In-page links stay on the current language's page. The Chinese and English homepages declare reciprocal `hreflang` references and separate canonical URLs. The MCP guide retains its own documentation layout, canonical URL and breadcrumbs.
 
 Every discovery page is authored HTML available before JavaScript. People and crawlers receive the same facts. The new public pages reuse Leafhour's existing mark, illustration, paper and forest palette, with no third-party font, tracking script or additional model call.
 
