@@ -26,8 +26,10 @@ The actual local reading clock produced a bubble after sustained reading across 
 
 Two native frame samples 500 ms apart measured body translations of -0.531503 and -0.882109 px, proving movement rather than just animation declarations. With reduced motion enabled, the browser reported zero active animations. At 390 px and 320 px, document scroll width matched viewport width. The settled narrow conversation retained an opaque readable surface and visible composer.
 
+The final theme check caught a bubble text token mismatch. It now uses the shared ink token. Browser-computed colors were RGB 40/46/42 on white in paper mode and RGB 232/236/232 on RGB 36/40/38 in night mode. Hosted build and release checks passed again after this CSS-only repair.
+
 Shrinking an already focused conversation to a 400 px viewport exposed an obscured composer. A regression test first failed, then passed after adjusting only the conversation frame scroll position. The browser retest measured the input bottom at 331.59 px in a 400 px viewport after scrolling the frame by 78 px, with no horizontal overflow. Independent follow-up review passed all 23 chat UI tests without new blockers.
 
 The headless browser kept the first page visible and focused after opening a second tab. This does not constitute background-tab proof. Hidden/blur cancellation is covered by the isolated motion lifecycle and reading-clock tests; a real-device mobile keyboard and an actual background tab remain separate environment checks.
 
-Hosted delivery receipts are recorded after the public checks finish.
+Hosted delivery is tracked in [PR 50](https://github.com/getyak/leafhour/pull/50), its CI checks and the main-branch Production workflow. The production smoke requires the exact deployed source commit, companion modules/styles, anonymous authentication boundaries and representative reader/library routes. A passing build alone is not a production receipt; the final delivery status is recorded on the PR after those checks.
