@@ -6,7 +6,7 @@ import path from 'node:path';
 import {createReaderServer} from '../server/server.mjs';
 test('the reading window uses authenticated chat routes, real source references and account guarded requests',async t=>{
   const dir=await mkdtemp(path.join(tmpdir(),'reader-chat-http-'));let calls=0;
-  const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),translator:null,sendCode:null,chatGenerator:async job=>{calls++;const p=job.book.sections.flatMap(s=>s.paragraphs).find(p=>p.id===job.passageId);return {verdict:'consistent',summary:'这是依据当前原文的解释候选。',segments:[],sourceRefs:[{passageId:p.id,quote:p.original.slice(0,24)}]};}});
+  const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),translator:null,sendCode:null,chatGenerator:async job=>{calls++;assert.equal(job.kind,'conversation');const context=await job.tools.execute('reader_get_context',{});const p=context.passages[0];await job.tools.execute('reader_cite',{bookId:job.book.bookId,passageId:p.passageId,layer:'original',quote:p.original.slice(0,24)});return {kind:'conversation',summary:'这是依据当前原文的回答。'};}});
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));t.after(async()=>{await new Promise(resolve=>server.close(resolve));await rm(dir,{recursive:true,force:true});});
   const base='http://127.0.0.1:'+server.address().port,url=base+'/api/library/books/gutenberg-alice/chat';
   assert.equal((await fetch(url)).status,401);
@@ -17,5 +17,7 @@ test('the reading window uses authenticated chat routes, real source references 
   const answer=await fetch(url,{method:'POST',headers,body:JSON.stringify(input)});assert.equal(answer.status,200);const turn=await answer.json();assert.equal(turn.status,'completed');assert.equal(turn.answer.origin,'ai');assert.equal(turn.text,input.text);assert.equal(calls,1);
   const repeat=await fetch(url,{method:'POST',headers,body:JSON.stringify(input)});assert.equal(repeat.status,200);assert.equal(calls,1);
   const records=await server.portal.library.records(session.user,'gutenberg-alice');assert.equal(records.questions.at(-1).text,input.text);
+  const markdown=await fetch(base+'/library-chat-markdown.mjs');assert.equal(markdown.status,200);assert.match(await markdown.text(),/renderChatMarkdown/);
+  assert.equal(turn.answer.sourceRefs[0].bookId,'gutenberg-alice');
   const assets=await fetch(base+'/library-shell.mjs');assert.equal(assets.status,200);assert.match(assets.headers.get('content-type'),/javascript/);
 });

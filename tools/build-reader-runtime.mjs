@@ -81,14 +81,14 @@ export async function buildReaderRuntime({root=project,outputDir=path.join(root,
   const excluded=new Set([...disabled,process.platform==='win32'?'terminal-bash':'terminal-pwsh']);
   const plugins=[...yaml.matchAll(/- id: ([^\n]+)\n\s+name: '([^']+)'/g)].filter(([,id])=>!excluded.has(id.trim())).map(([,id,name])=>({id:id.trim(),name,entry:require.resolve(name)}));
   if(!plugins.length)throw Error('The installed sdk-minimal profile has no recognizable plugins');
-  const readerPlugin=path.join(root,'harness/reader-plugin.mjs');
-  const entries=[require.resolve('@deepseek-ai/dsh/lib/bin.js'),require.resolve('@deepseek-ai/dsh-sdk-client'),readerPlugin,...plugins.map(plugin=>plugin.entry)];
-  const allowed=file=>!privateFile(file)&&(inDirectory(modules,file)||file===readerPlugin||file===path.join(root,'package.json'));
+  const readerPlugin=path.join(root,'harness/reader-plugin.mjs'),chatPlugin=path.join(root,'harness/chat-plugin.mjs');
+  const entries=[require.resolve('@deepseek-ai/dsh/lib/bin.js'),require.resolve('@deepseek-ai/dsh-sdk-client'),readerPlugin,chatPlugin,...plugins.map(plugin=>plugin.entry)];
+  const allowed=file=>!privateFile(file)&&(inDirectory(modules,file)||file===readerPlugin||file===chatPlugin||file===path.join(root,'package.json'));
   const trace=await nodeFileTrace(entries,{base:root,processCwd:root,ignore:relative=>!allowed(path.resolve(root,relative)),readFile:async file=>{
     if(!allowed(file))return null;
     try{return await readFile(file);}catch(error){if(['ENOENT','EISDIR'].includes(error.code))return null;throw error;}
   }});
-  const files=new Set([...trace.fileList].filter(file=>file.startsWith('node_modules/')||file==='harness/reader-plugin.mjs'));
+  const files=new Set([...trace.fileList].filter(file=>file.startsWith('node_modules/')||['harness/reader-plugin.mjs','harness/chat-plugin.mjs'].includes(file)));
   files.add(path.relative(root,profileManifest));files.add(path.relative(root,profilePatch));
   // These loaders derive package names at runtime, so NFT cannot discover the
   // platform-specific native bindings from their JavaScript imports alone.

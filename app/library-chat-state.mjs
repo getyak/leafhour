@@ -75,7 +75,13 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
       // Save the original id before dispatch so reloading cannot create a paid duplicate.
       return {ticket:request,payload};
     },
-    resolveSend(request,turn){if(!current(request)||request.operation!==operation||request.id!==state.pending?.id||state.pending.status==='stopping'||turn?.id!==request.id||turn.passageId!==state.pending.payload.passageId||turn.contentVersion!==state.pending.payload.contentVersion)return false;finish(turn);return true;},
+    resolveSend(request,turn){
+      if(!current(request)||request.operation!==operation||request.id!==state.pending?.id||state.pending.status==='stopping'||turn?.id!==request.id||turn.passageId!==state.pending.payload.passageId||turn.contentVersion!==state.pending.payload.contentVersion)return false;
+      // A concurrent GET may have snapshotted the book before this POST claimed
+      // its turn. A confirmed terminal receipt supersedes that older read.
+      if(turn.status!=='running'){loadSequence++;state.phase=state.data?'ready':'idle';state.loadError='';}
+      finish(turn);return true;
+    },
     rejectSend(request,error,{uncertain=false}={}){
       if(!current(request)||request.operation!==operation||request.id!==state.pending?.id)return false;
       const pending=state.pending;state.pending=null;restore(pending.text);state.retry={payload:pending.payload,draftText:pending.draftText,uncertain,checked:!uncertain};if(uncertain)persistPending(state.retry);else clearPending(pending.payload);

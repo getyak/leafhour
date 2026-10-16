@@ -1,5 +1,7 @@
 import {paintBookCover} from './book-binding.mjs';
 import {trackActionFocus} from './action-focus.mjs';
+import {createGiftSpring} from './gift-ritual.mjs';
+import {readGiftPreview} from './gift-preview.mjs';
 
 const MAX_PACKAGE_BYTES=20*1024*1024;
 const hex=bytes=>Array.from(new Uint8Array(bytes),byte=>byte.toString(16).padStart(2,'0')).join('');
@@ -32,21 +34,38 @@ if(typeof document!=='undefined'){
 await import('./site-appearance.mjs');
 const $=id=>document.getElementById(id);
 const token=location.pathname.match(/^\/gift\/([A-Za-z0-9_-]{43})\/?$/)?.[1];
-let generation=0,gift=null,receiving=false,downloading=false;
+const preview=location.pathname==='/gift-preview';
+let generation=0,gift=null,receiving=false,downloading=false,openTarget=false,progress=0,focusedLetter=false;
+if(preview)document.body.dataset.preview='true';
 async function request(url,{body,owner}={}){
+  if(preview)throw Error('收信预览不会创建分享或收取书籍。');
   let response;try{response=await fetch(url,{credentials:'same-origin',cache:'no-store',referrerPolicy:'no-referrer',...(body===undefined?{}:{method:'POST',body:JSON.stringify(body)}),headers:{...(body===undefined?{}:{'Content-Type':'application/json'}),...(owner?{'X-Reader-Owner':owner}:{})}});}catch{throw Error('网络暂时无法连接，请稍后再试。');}
   if(response.headers.get('X-Reader-Session-Changed')==='1')throw Object.assign(Error('账户已切换，请重新打开信笺再收书。'),{status:409});
   let data;try{data=await response.json();}catch{throw Error('信笺暂时无法读取，请稍后再试。');}
   if(!response.ok)throw Object.assign(Error(data.error||'暂时无法完成，请稍后再试。'),{status:response.status});return data;
 }
-function setOpen(open){
-  $('gift-scene').dataset.open=String(open);$('gift-open').setAttribute('aria-expanded',String(open));
-  $('gift-letter-wrap').inert=!open;$('gift-letter-wrap').setAttribute('aria-hidden',String(!open));
-  $('gift-envelope-wrap').inert=open;$('gift-envelope-wrap').setAttribute('aria-hidden',String(open));
-  (open?$('gift-title'):$('gift-open')).focus({preventScroll:true});
+const scene=$('gift-scene'),envelope=$('gift-envelope-wrap'),letter=$('gift-letter-wrap'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
+const phase=(p,start,end)=>Math.max(0,Math.min(1,(p-start)/(end-start)));
+function paintRitual(p,target){
+  progress=p;const envelopeHeight=envelope.querySelector('.gift-envelope').offsetHeight,letterHeight=$('gift-letter').offsetHeight,reveal=phase(p,.2,.7),visible=p>.6;
+  scene.style.height=(envelopeHeight+(letterHeight-envelopeHeight)*phase(p,.16,1))+'px';
+  for(const [name,value]of Object.entries({p,flap:phase(p,0,.42),lift:phase(p,.12,.65),reveal,depart:phase(p,.48,.9),spread:phase(p,.4,1)}))scene.style.setProperty('--'+name,String(value));
+  scene.style.setProperty('--visible-height',String(letterHeight*reveal)+'px');scene.dataset.settled=String(p===target);
+  letter.inert=!visible;letter.setAttribute('aria-hidden',String(!visible));letter.style.pointerEvents=visible?'':'none';
+  envelope.inert=visible;envelope.setAttribute('aria-hidden',String(visible));
+  if(target&&visible&&!focusedLetter){focusedLetter=true;$('gift-title').focus({preventScroll:true});}
+  if(!target&&!visible&&focusedLetter){focusedLetter=false;$('gift-open').focus({preventScroll:true});}
 }
+const ritual=createGiftSpring({onFrame:paintRitual,isReduced:()=>reduced.matches});
+function setOpen(open){openTarget=open;scene.dataset.open=String(open);$('gift-open').setAttribute('aria-expanded',String(open));ritual.setOpen(open);}
+const resize=()=>paintRitual(progress,openTarget?1:0);
+if(typeof ResizeObserver==='function'){const observer=new ResizeObserver(resize);observer.observe($('gift-letter'));observer.observe(envelope.querySelector('.gift-envelope'));}else window.addEventListener('resize',resize);
+reduced.addEventListener('change',()=>{if(reduced.matches)ritual.finish();});document.addEventListener('visibilitychange',()=>{if(document.hidden)ritual.finish();});window.addEventListener('pagehide',()=>ritual.finish());
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!scene.hidden){if(openTarget||progress>.01){event.preventDefault();setOpen(false);}else if(preview){event.preventDefault();parent.postMessage({kind:'marginalia-gift-preview-close'},location.origin);}}});
+function rememberReturn(){try{sessionStorage.setItem('marginalia-gift-return',token);}catch{}}
+function resumeReturn(){try{if(sessionStorage.getItem('marginalia-gift-return')===token){sessionStorage.removeItem('marginalia-gift-return');setOpen(true);ritual.finish();}}catch{}}
 function showError(error){
-  $('gift-loading').hidden=true;$('gift-scene').hidden=true;$('gift-error').hidden=false;
+  $('gift-loading').hidden=true;$('gift-scene').hidden=true;$('gift-error').hidden=false;$('gift-arrival').hidden=true;
   $('gift-error-title').textContent=error.status===404?'这封赠书信已收回':'这封信暂时无法打开';
   $('gift-error-message').textContent=error.status===404?'链接可能不完整，也可能已被寄信人收回。可以请对方重新寄一封。':error.message;
   $('gift-retry').hidden=error.status===404;
@@ -54,7 +73,7 @@ function showError(error){
 function present(data){
   gift=data;const bookTitle=data.title?.zh||data.title?.en||'一本书',recipient=data.recipient||'你',sender=data.sender||'一位读者';
   document.title=bookTitle+' · 一封赠书信 · 循页';
-  $('envelope-recipient').textContent=recipient;$('envelope-sender').textContent=sender;
+  $('envelope-recipient').textContent=recipient;$('envelope-recipient').title=recipient;$('envelope-sender').textContent=sender;$('arrival-sender').textContent=sender;
   $('letter-salutation').textContent='给'+(data.recipient?' '+data.recipient:'你')+'：';
   $('gift-message').textContent=data.message;$('gift-message').hidden=!data.message;
   $('gift-title').textContent=bookTitle;$('gift-original-title').textContent=data.title?.en!==bookTitle?data.title?.en||'':'';
@@ -65,35 +84,40 @@ function present(data){
   $('letter-sender').textContent=sender;
   const date=new Date(data.createdAt);$('gift-date').textContent=Number.isFinite(date.getTime())?new Intl.DateTimeFormat('zh-CN',{year:'numeric',month:'long',day:'numeric'}).format(date):'';
   $('gift-date').dateTime=data.createdAt;
-  $('gift-download').href='/api/book-gifts/'+token+'/download';
-  $('gift-public-read').hidden=!data.readUrl;if(data.readUrl)$('gift-public-read').href='/read?book='+encodeURIComponent(data.bookId);
+  $('envelope-date').textContent=Number.isFinite(date.getTime())?new Intl.DateTimeFormat('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit'}).format(date).replaceAll('/','.') :'';
+  if(!preview)$('gift-download').href='/api/book-gifts/'+token+'/download';
+  $('gift-public-read').hidden=preview?!data.publicRead:!data.readUrl;
+  if(preview){$('gift-public-read').href='#gift-main';$('gift-public-read').setAttribute('aria-disabled','true');}
+  else if(data.readUrl)$('gift-public-read').href='/read?book='+encodeURIComponent(data.bookId);
   $('gift-package-scope').textContent=data.includeTranslations?'阅读包收录全书提取文字与寄信时已有的译文，不含原文件、个人笔记和阅读记录。':'阅读包收录全书提取文字，不含译文、原文件、个人笔记和阅读记录。';
-  $('gift-loading').hidden=true;$('gift-error').hidden=true;$('gift-scene').hidden=false;
+  $('gift-loading').hidden=true;$('gift-error').hidden=true;$('gift-scene').hidden=false;$('gift-arrival').hidden=false;resize();if(!preview)resumeReturn();
 }
 async function load(){
   const ticket=++generation,focus=trackActionFocus(document,$('gift-retry'));$('gift-loading').hidden=false;$('gift-error').hidden=true;
   try{if(!token)throw Object.assign(Error('链接不完整'),{status:404});const data=await request('/api/book-gifts/'+token);if(ticket===generation)present(data);}catch(error){if(ticket===generation)showError(error);}finally{if(ticket===generation)focus.restore($('gift-scene').hidden?$('gift-retry').hidden?$('gift-error').querySelector('a'):$('gift-retry'):$('gift-scene').dataset.open==='true'?$('gift-title'):$('gift-open'));else focus.stop();}
 }
 async function accept(){
+  if(preview){$('gift-action-status').textContent='这是收信预览，书籍不会加入书架。';return;}
   if(receiving||!gift)return;const focus=trackActionFocus(document,$('gift-accept'));receiving=true;$('gift-accept').disabled=true;$('gift-action-status').classList.remove('error');$('gift-action-status').textContent='正在放进你的书架…';
   try{
     const session=await request('/api/auth/session');
-    if(!session.user?.id){location.assign('/library?login=1&next='+encodeURIComponent('/gift/'+token));return;}
+    if(!session.user?.id){rememberReturn();location.assign('/library?login=1&next='+encodeURIComponent('/gift/'+token));return;}
     const saved=await request('/api/book-gifts/'+token+'/accept',{body:{},owner:session.user.id});
     if(typeof saved.bookId!=='string'||!saved.bookId||saved.readUrl!=='/read?book='+encodeURIComponent(saved.bookId))throw Error('收书结果无法核验，请回到书房确认。');
     $('gift-accept').hidden=true;$('gift-saved-read').href=saved.readUrl;$('gift-saved-read').hidden=false;
     $('gift-action-status').textContent=saved.alreadyOwned?'这本书已在你的书架上，自己的译文和笔记都已保留。':'已放进你的书架。从第一页开始，写下自己的旁注。';
     $('gift-saved-read').focus({preventScroll:true});
   }catch(error){
-    if(error.status===401){location.assign('/library?login=1&next='+encodeURIComponent('/gift/'+token));return;}
+    if(error.status===401){rememberReturn();location.assign('/library?login=1&next='+encodeURIComponent('/gift/'+token));return;}
     if(error.status===404){showError(error);return;}
     $('gift-action-status').classList.add('error');$('gift-action-status').textContent=error.message;
   }finally{receiving=false;$('gift-accept').disabled=false;focus.restore(!$('gift-error').hidden?$('gift-error').querySelector('a'):$('gift-accept').hidden?$('gift-saved-read'):$('gift-accept'));}
 }
 $('gift-open').addEventListener('click',()=>setOpen(true));$('gift-close').addEventListener('click',()=>setOpen(false));
 $('gift-accept').addEventListener('click',accept);$('gift-retry').addEventListener('click',load);
+$('gift-public-read').addEventListener('click',event=>{if(preview){event.preventDefault();$('gift-action-status').textContent='这是收信预览，不会离开信笺。';}});
 $('gift-download').addEventListener('click',async event=>{
-  event.preventDefault();if(downloading||!gift)return;downloading=true;const link=$('gift-download'),status=$('gift-download-status');
+  event.preventDefault();if(preview){$('gift-download-status').textContent='这是收信预览，不会下载或公开书籍。';return;}if(downloading||!gift)return;downloading=true;const link=$('gift-download'),status=$('gift-download-status');
   link.setAttribute('aria-disabled','true');link.setAttribute('aria-busy','true');status.classList.remove('error');status.textContent='正在准备阅读包…';
   try{
     const blob=await downloadGiftPackage({token,request,onProgress:({received,total})=>{status.textContent='正在核对阅读包 · '+Math.round(received/total*100)+'%';}}),url=URL.createObjectURL(blob),save=document.createElement('a');
@@ -102,6 +126,14 @@ $('gift-download').addEventListener('click',async event=>{
   }catch(error){if(error.status===404)showError(error);else{status.classList.add('error');status.textContent=error.message;}}
   finally{downloading=false;link.removeAttribute('aria-disabled');link.removeAttribute('aria-busy');}
 });
-await load();
+if(preview){
+  $('gift-preview-label').hidden=false;$('gift-accept').setAttribute('aria-disabled','true');$('gift-download').setAttribute('aria-disabled','true');
+  if(parent===window){showError(Error('请从书房的赠书窗口打开收信预览。'));$('gift-retry').hidden=true;}
+  else{
+    $('gift-loading').querySelector('p').textContent='正在展开收信预览…';
+    window.addEventListener('message',event=>{const data=readGiftPreview(event,{origin:location.origin,source:parent});if(data)present(data);});
+    parent.postMessage({kind:'marginalia-gift-preview-ready'},location.origin);
+  }
+}else await load();
 
 }

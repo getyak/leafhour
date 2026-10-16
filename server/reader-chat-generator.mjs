@@ -2,7 +2,7 @@ import path from 'node:path';
 import {tmpdir} from 'node:os';
 import {existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
-import {createHarnessGenerator} from '../harness/generator.mjs';
+import {createChatGenerator} from '../harness/chat-generator.mjs';
 const project=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 function failure(error){
   const causes=[error,error?.cause,error?.cause?.cause].filter(Boolean),message=causes.map(e=>String(e.message||'')).join(' '),codes=['ERR_MODULE_NOT_FOUND','MODULE_NOT_FOUND','ERR_DLOPEN_FAILED','ERR_INVALID_ARG_TYPE','ENOENT','EROFS','EACCES','EPERM','ETIMEDOUT'];
@@ -12,9 +12,9 @@ function failure(error){
   const reason=signals.includes('missing-package')?'missing-runtime-package':signals.some(s=>['native-binding','native-probe','node-internals','shared-library'].includes(s))?'native-runtime':signals.includes('sandbox-host')?'sandbox-preparation':signals.includes('host-preparation')?'host-preparation':signals.includes('read-only-filesystem')?'read-only-filesystem':/initialize|handshake|transport closed/i.test(message)?'runtime-initialization':/pricing|费用参照/i.test(message)?'pricing-reference':/budget|额度/i.test(message)?'generation-budget':'runtime-failure';
   return {code,reason,signals};
 }
-export function createReaderChatGenerator({env=process.env,makeGenerator=createHarnessGenerator,logger=diagnostic=>console.error(JSON.stringify(diagnostic))}={}){
+export function createReaderChatGenerator({env=process.env,makeGenerator=createChatGenerator,logger=diagnostic=>console.error(JSON.stringify(diagnostic))}={}){
   if(!env.DEEPSEEK_API_KEY)return null;
-  const generate=makeGenerator({runRoot:env.VERCEL?path.join(tmpdir(),'marginalia-reading-chat'):undefined,timeoutMs:45000});
+  const generate=makeGenerator({runRoot:env.VERCEL?path.join(tmpdir(),'marginalia-reading-chat'):undefined,timeoutMs:75000,env});
   const reported=new WeakSet();
   const phases=new Set(['record-question','quota','generation','verify-source','verify-version','save-answer','initialize','run','publish']);
   const reportFailure=(error,{phase}={})=>{

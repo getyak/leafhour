@@ -16,15 +16,32 @@
           "value": "private, no-cache, no-store, must-revalidate"
         }
       ]
+    },
+    {
+      "source": "/gift-preview",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self'"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        }
+      ]
     }
   ],
   "functions": {
     "api/*.js": {
-      "maxDuration": 60,
+      "maxDuration": 120,
       "includeFiles": "{catalog/**,server/**,deploy/**,app/*.mjs,harness/**,.reader-runtime/**}"
     }
   },
   "rewrites": [
+    {
+      "source": "/gift-preview",
+      "destination": "/book-gift"
+    },
     {
       "source": "/gift/:token",
       "destination": "/book-gift"

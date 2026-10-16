@@ -24,3 +24,5 @@ test('an unsupported native getter probe is distinct from sandbox policy',async(
  assert.equal(diagnostics[0].reason,'native-runtime');
  assert.deepEqual(diagnostics[0].signals,['host-preparation','native-probe']);
 });
+
+test('injected environment reaches the independent chat generator',async()=>{const env={DEEPSEEK_API_KEY:'fixture',VERCEL:'1'};let options;createReaderChatGenerator({env,makeGenerator:value=>{options=value;return async()=>({});}});assert.equal(options.env,env);assert.equal(options.timeoutMs,75000);});

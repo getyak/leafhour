@@ -3,6 +3,7 @@ import path from 'node:path';
 import {randomBytes,randomUUID} from 'node:crypto';
 import {digest,fail,MAX_FILE_BYTES} from './document-import.mjs';
 import {validateLibraryBackup} from '../app/library-backup.mjs';
+import {publicGiftSender} from '../app/gift-identity.mjs';
 
 const TOKEN=/^[A-Za-z0-9_-]{43}$/;
 const CHUNK_BYTES=700*1024;
@@ -45,12 +46,6 @@ function optionsOf(input){
   if(typeof message!=='string'||message.length>500||typeof recipient!=='string'||recipient.length>80||typeof includeTranslations!=='boolean'||/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(message+recipient))throw fail('留言最多 500 字，收信人最多 80 字');
   return {message:message.trim(),recipient:recipient.trim(),includeTranslations};
 }
-function senderName(profile,user){
-  const name=profile?.displayName||profile?.name;
-  if(typeof name==='string'&&name.trim()&&name.length<=80&&!/[\u0000-\u001f@]/u.test(name))return name.trim();
-  const local=typeof user.email==='string'?user.email.split('@')[0]:'';
-  return local&&local.length<=80&&!/[\u0000-\u001f]/u.test(local)?local:'一位读者';
-}
 
 export function createBookGifts({library,dataDir,dataStore=null,getProfile=null}={}){
   if(!library?.getBook||typeof dataDir!=='string')throw Error('Gift service requires a library and data directory');
@@ -87,7 +82,7 @@ export function createBookGifts({library,dataDir,dataStore=null,getProfile=null}
       const part=bytes.subarray(index*CHUNK_BYTES,Math.min(bytes.length,(index+1)*CHUNK_BYTES));
       await mutate(chunkFile(token,index),{},row=>{if(Object.keys(row).length)throw fail('赠书信保存冲突，请重试',409);Object.assign(row,{data:part.toString('base64'),sha256:digest(part)});});
     }
-    const metadata={token,ownerId:user.id,published:true,revokedAt:null,bookId:book.bookId,title:book.title,author:book.author||'',description:typeof book.description==='string'?book.description.slice(0,2000):'',cover:book.cover||null,sender:senderName(profile,user),...options,createdAt,publicBook:book.visibility==='public',snapshot:{chunks,bytes:bytes.length,sha256:digest(bytes)}};
+    const metadata={token,ownerId:user.id,published:true,revokedAt:null,bookId:book.bookId,title:book.title,author:book.author||'',description:typeof book.description==='string'?book.description.slice(0,2000):'',cover:book.cover||null,sender:publicGiftSender(profile),...options,createdAt,publicBook:book.visibility==='public',snapshot:{chunks,bytes:bytes.length,sha256:digest(bytes)}};
     const indexFile=ownerIndex(user);
     await mutate(indexFile,{gifts:[]},row=>{
       if(row.gifts.filter(gift=>!gift.revoked).length>=100)throw fail('已有 100 封仍可访问的赠书信，请先收回不用的链接',429);

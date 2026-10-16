@@ -13,34 +13,38 @@
   <link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script>
 </head>
 <body class="gift-page">
+  <div class="gift-atmosphere" aria-hidden="true"></div>
   <a class="skip-link" href="#gift-main">跳到赠书信</a>
   <header class="gift-site-header">
-    <a class="gift-brand" href="/" aria-label="循页首页"><svg viewBox="0 0 28 34" aria-hidden="true"><path d="M3 2h15l7 7v23H3zM18 2v8h7M8 17h12M8 23h9"/></svg><span>循页<small>PAGE BY PAGE</small></span></a>
-    <div class="gift-header-actions"><button id="site-theme" type="button" aria-label="页面外观">◐</button><a href="/library">我的书房 <span aria-hidden="true">↗</span></a></div>
+    <a class="gift-brand" href="/" aria-label="循页首页"><svg viewBox="0 0 40 48" aria-hidden="true"><path d="M5 8c8-4 15-3 21 1v32c-6-4-13-5-21-1V8Zm21 1 8-4v33l-8 3M11 16c3-1 6-1 9 1M11 23c3-1 6-1 9 1M11 30c3-1 6-1 9 1"/></svg><span>循页</span></a>
+    <div class="gift-header-actions"><button id="site-theme" type="button" aria-label="页面外观">◐</button><a href="/library">我的书房</a></div>
   </header>
   <main id="gift-main" tabindex="-1">
-    <p id="gift-loading" class="gift-loading" role="status">正在取出信笺…</p>
+    <div id="gift-loading" class="gift-loading" role="status"><span class="loading-fold" aria-hidden="true"></span><p>正在取出信笺…</p></div>
     <section id="gift-error" class="gift-error paper-frame" aria-labelledby="gift-error-title" hidden>
-      <p class="gift-eyebrow">赠书信</p><h1 id="gift-error-title">这封信暂时无法打开</h1>
+      <p class="gift-eyebrow">一封赠书信</p><h1 id="gift-error-title">这封信暂时无法打开</h1>
       <p id="gift-error-message" role="alert"></p><button id="gift-retry" class="gift-secondary" type="button">重新打开</button><a href="/library">回到书房</a>
     </section>
+    <p id="gift-arrival" class="gift-arrival" hidden><span id="arrival-sender"></span> 寄来了一封书信</p>
+    <p id="gift-preview-label" class="gift-preview-label" hidden>收信预览 · 还没有生成分享链接</p>
     <div id="gift-scene" class="gift-scene" data-open="false" hidden>
       <div id="gift-envelope-wrap" class="envelope-reveal">
         <section class="gift-envelope" aria-labelledby="envelope-title">
+          <div class="envelope-back" aria-hidden="true"></div>
+          <div class="envelope-peek" aria-hidden="true"><span>见字如面</span></div>
           <div class="envelope-flap" aria-hidden="true"></div>
-          <svg class="envelope-folds" viewBox="0 0 700 420" preserveAspectRatio="none" aria-hidden="true"><path d="M1 419 350 210 699 419M1 120l80 49M699 120l-80 49"/></svg>
-          <div class="envelope-address">
-            <p class="gift-eyebrow">一封赠书信</p>
-            <h1 id="envelope-title">给 <span id="envelope-recipient">你</span></h1>
-            <p class="envelope-from"><span id="envelope-sender"></span> 寄</p>
-            <button id="gift-open" class="gift-open" type="button" aria-controls="gift-letter" aria-expanded="false">拆开这封信 <span aria-hidden="true">↗</span></button>
-          </div>
-          <span class="envelope-colophon" aria-hidden="true">循页 · 书与书之间</span>
+          <div class="envelope-front" aria-hidden="true"></div>
+          <svg class="envelope-folds" viewBox="0 0 720 425" preserveAspectRatio="none" aria-hidden="true"><path d="M3 2Q180 130 358 210Q540 131 717 3M3 422Q145 324 254 262M717 422Q578 324 465 263"/></svg>
+          <div class="envelope-postmark" aria-hidden="true"><svg viewBox="0 0 190 100"><path d="M72 8C111 5 120 49 101 70C81 94 40 87 31 60C20 33 39 8 72 8ZM44 18C22 41 38 75 65 77C97 83 114 52 97 28M106 31Q128 21 146 31T184 30M108 44Q128 35 147 44T185 43M108 57Q130 47 148 57T187 56"/></svg><span>循页</span><time id="envelope-date"></time></div>
+          <div class="envelope-stamp" aria-hidden="true"><svg viewBox="0 0 40 48"><path d="M5 8c8-4 15-3 21 1v32c-6-4-13-5-21-1V8Zm21 1 8-4v33l-8 3M11 16c3-1 6-1 9 1M11 23c3-1 6-1 9 1"/></svg><small>循页</small></div>
+          <div class="envelope-address"><p class="gift-eyebrow">致</p><h1 id="envelope-title"><span id="envelope-recipient">你</span></h1><p class="envelope-from"><span id="envelope-sender"></span> 寄</p></div>
+          <button id="gift-open" class="gift-open" type="button" aria-controls="gift-letter" aria-expanded="false"><span class="gift-seal" aria-hidden="true"><svg viewBox="0 0 40 48"><path d="M5 8c8-4 15-3 21 1v32c-6-4-13-5-21-1V8Zm21 1 8-4v33l-8 3M11 16c3-1 6-1 9 1M11 23c3-1 6-1 9 1"/></svg></span><span class="gift-open-label">拆开这封信</span></button>
+          <span class="envelope-colophon" aria-hidden="true">书与书之间</span>
         </section>
       </div>
       <div id="gift-letter-wrap" class="letter-reveal" aria-hidden="true" inert>
         <article id="gift-letter" class="gift-letter paper-frame" aria-labelledby="gift-title">
-          <div class="letter-topline"><p class="gift-eyebrow">赠书信</p><button id="gift-close" type="button" aria-controls="gift-letter" aria-label="折起信笺">折起信笺 <span aria-hidden="true">↙</span></button></div>
+          <div class="letter-topline"><span class="letter-mark" aria-hidden="true">循页</span><button id="gift-close" type="button" aria-controls="gift-letter" aria-label="折起信笺">折起信笺 <span aria-hidden="true">⌃</span></button></div>
           <p id="letter-salutation" class="letter-salutation"></p>
           <p id="gift-message" class="gift-message"></p>
           <div class="gift-book">
@@ -49,16 +53,15 @@
           </div>
           <div class="letter-signature"><p id="letter-sender"></p><time id="gift-date"></time></div>
           <footer class="letter-footer">
-            <div class="gift-actions"><button id="gift-accept" class="gift-primary" type="button">放进我的书架 <span aria-hidden="true">↗</span></button><a id="gift-saved-read" class="gift-primary" hidden>打开这本书 <span aria-hidden="true">↗</span></a><a id="gift-download" class="gift-secondary" download="marginalia-reading-package.json">下载阅读包 <span aria-hidden="true">↓</span></a><a id="gift-public-read" class="gift-text-link" hidden>先读几页 <span aria-hidden="true">↗</span></a></div>
-            <p id="gift-action-status" class="gift-action-status" role="status" aria-live="polite"></p>
-            <p id="gift-download-status" class="gift-action-status" role="status" aria-live="polite"></p>
-            <p id="gift-package-scope" class="gift-package-scope"></p>
+            <span class="letter-fold-line" aria-hidden="true"></span>
+            <div class="gift-actions"><button id="gift-accept" class="gift-primary" type="button">放进我的书架 <span aria-hidden="true">↗</span></button><a id="gift-saved-read" class="gift-primary" hidden>打开这本书 <span aria-hidden="true">↗</span></a><a id="gift-download" class="gift-secondary" download="marginalia-reading-package.json">下载阅读包 <span aria-hidden="true">↓</span></a><a id="gift-public-read" class="gift-text-link" hidden>先读几页</a></div>
+            <p id="gift-action-status" class="gift-action-status" role="status" aria-live="polite"></p><p id="gift-download-status" class="gift-action-status" role="status" aria-live="polite"></p><p id="gift-package-scope" class="gift-package-scope"></p>
           </footer>
         </article>
       </div>
     </div>
     <noscript><p class="gift-loading">请开启 JavaScript 以打开赠书信。</p></noscript>
   </main>
-  <footer class="gift-site-footer"><a href="/">循页 Page by Page</a><span>给阅读留一页纸</span></footer>
+  <footer class="gift-site-footer"><a href="/">循页 Page by Page</a><span>书从一人，去往另一人。</span></footer>
 </body>
 </html>

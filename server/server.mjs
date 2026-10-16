@@ -80,6 +80,7 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
       const allowed=new Set(['127.0.0.1:'+port,'localhost:'+port,'[::1]:'+port]);if(publicOrigin)allowed.add(new URL(publicOrigin).host);
       if(!allowed.has(host))throw fail('当前地址未授权',403);
       const url=new URL(req.url,'http://'+host);
+      if(url.pathname==='/gift-preview')res.setHeader('Content-Security-Policy',res.getHeader('Content-Security-Policy').replace("frame-ancestors 'none'","frame-ancestors 'self'"));
       if(await portal.handle({req,res,url,send}))return;
       if(publicOrigin&&(url.pathname.startsWith('/api/')||url.pathname.startsWith('/exports/')||url.pathname==='/evals'||url.pathname==='/health'))throw fail('旧样书入口仅用于本机；请从自己的书房进入',403);
       if(req.method==='POST'){

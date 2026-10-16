@@ -26,7 +26,7 @@ const bookFixture=()=>({
     {number:3,chapterId:'ch2',paragraphs:[paragraph('p4','Another chapter begins.'),paragraph('p5','A separate final sentence.')]}
   ],annotations:[{text:'PRIVATE OUTSIDE CONTEXT'}],glossary:[{text:'PRIVATE GLOSSARY'}],privateMetadata:'DO NOT SEND THIS'
 });
-const validAnswer=(passageId='p1',quote='First source sentence.',summary='这里解释当前原文的意思。')=>({verdict:'consistent',summary,segments:[],sourceRefs:[{passageId,quote}]});
+const validAnswer=(passageId='p1',quote='First source sentence.',summary='这里解释当前原文的意思。')=>({kind:'conversation',summary});
 const input=(patch={})=>({id:'question-1',passageId:'p1',text:'  这里为什么这样说？  ',contentVersion:'edition-1',...patch});
 const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return {promise,resolve};};
 const status=n=>error=>error.status===n;
@@ -45,7 +45,7 @@ async function within(promise,ms,message){
   let timer;try{return await Promise.race([promise,new Promise((resolve,reject)=>{timer=setTimeout(()=>reject(new Error(message)),ms);})]);}finally{clearTimeout(timer);}
 }
 
-async function fixture(t,{generator=async()=>validAnswer(),clock=Date.now,dataStore=null,book=bookFixture()}={}){
+async function fixture(t,{generator=async job=>{await job.tools.execute('reader_get_context',{});await job.tools.execute('reader_cite',{bookId:'chat-book',passageId:job.passageId,layer:'original',quote:job.passageId==='p1'?'First source sentence.':'Second source sentence.'});return validAnswer();},clock=Date.now,dataStore=null,book=bookFixture()}={}){
   assert.equal(typeof module.createReaderChatService,'function','Reading chat domain service is not implemented');
   const dataDir=await mkdtemp(path.join(os.tmpdir(),'marginalia-chat-'));
   const library=await createLibraryService({dataDir,catalogDir:null});
@@ -109,14 +109,14 @@ test('private access and chat history stay within the authenticated account',asy
 test('the original question is durable and exportable before generation starts, with AI attribution separate',async t=>{
   let service,library,calls=0;
   const setup=await fixture(t,{generator:async job=>{
-    calls++;assert.equal(job.kind,'explain');assert.ok(job.runId);assert.ok(job.signal instanceof AbortSignal);
+    calls++;assert.equal(job.kind,'conversation');assert.ok(job.runId);assert.ok(job.signal instanceof AbortSignal);
     const view=await service.view(alice,'chat-book');assert.equal(view.turns[0].status,'running');assert.equal(view.turns[0].answer,null);
     const records=await library.records(alice,'chat-book');assert.equal(records.questions[0].id,'chat-question-1');assert.equal(records.questions[0].origin,'user');assert.equal(records.questions[0].text,'  这里为什么这样说？  ');
     return validAnswer();
   }});({service,library}=setup);
   const turn=await service.send(alice,'chat-book',input());
   assert.equal(calls,1);assert.equal(turn.origin,'user');assert.equal(turn.text,'  这里为什么这样说？  ');assert.equal(turn.status,'completed');
-  assert.deepEqual(turn.answer,{summary:'这里解释当前原文的意思。',sourceRefs:[{passageId:'p1',quote:'First source sentence.'}],origin:'ai'});
+  assert.equal(turn.answer.summary,'这里解释当前原文的意思。');assert.deepEqual(turn.answer.sourceRefs,[]);assert.equal(turn.answer.origin,'ai');
   assert.ok(Number.isFinite(Date.parse(turn.createdAt)));assert.equal(turn.contentVersion,'edition-1');
   assert.equal((await library.records(alice,'chat-book')).questions.length,1);
 });
@@ -156,44 +156,38 @@ test('a second service cannot launch a duplicate or another turn while a book is
   finish.resolve();assert.equal((await pending).status,'completed');assert.equal(calls,1);
 });
 
-test('generation receives only the selected paragraph and adjacent paragraphs of its own chapter',async t=>{
-  let job;const {service}=await fixture(t,{generator:async value=>{job=value;return validAnswer('p2','Second source sentence.');}});
-  await service.send(alice,'chat-book',input({passageId:'p2'}));
-  assert.deepEqual(job.book.sections.flatMap(s=>s.paragraphs.map(p=>p.id)),['p1','p2','p3']);
-  assert.deepEqual(job.book.chapters.map(c=>c.id),['ch1']);assert.equal(job.book.bookId,'chat-book');
-  assert.ok(!JSON.stringify(job.book).includes('PRIVATE'));assert.ok(!JSON.stringify(job.book).includes('DO NOT SEND'));
-  assert.ok(!JSON.stringify(job.book).includes('Another chapter'));
-  let edge;const second=await fixture(t,{generator:async value=>{edge=value;return validAnswer('p3','Third source sentence.');}});
-  await second.service.send(alice,'chat-book',input({passageId:'p3'}));
-  assert.deepEqual(edge.book.sections.flatMap(s=>s.paragraphs.map(p=>p.id)),['p2','p3']);
+test('new conversations receive metadata, chapter location and real account tools rather than book dumps',async t=>{
+  let job;const {service}=await fixture(t,{generator:async value=>{job=value;const context=await job.tools.execute('reader_get_context',{});assert.equal(context.passageId,'p2');await job.tools.execute('reader_cite',{bookId:'chat-book',passageId:'p2',layer:'original',quote:'Second source sentence.'});return {kind:'conversation',summary:'我喜欢这里的转折。',sourceRefs:[{passageId:'invented'}]};}});
+  const turn=await service.send(alice,'chat-book',input({passageId:'p2'}));
+  assert.equal(turn.status,'completed');assert.deepEqual(Object.keys(job.book).sort(),['bookId','contentVersion','title']);assert.equal(job.chapterId,'ch1');assert.deepEqual(job.chapterTitle,{zh:'第一章'});assert.equal(job.text,input().text);assert.deepEqual(job.history,[]);
+  assert.equal(turn.answer.sourceRefs[0].passageId,'p2');assert.equal(turn.answer.sourceRefs[0].bookId,'chat-book');assert.ok(turn.activity.some(a=>a.status==='completed'));assert.equal(job.signal.aborted,true);
 });
 
-test('oversized context cannot reach generation and an oversized neighbor is omitted whole',async t=>{
-  const book=bookFixture();book.sections[1].paragraphs[0].original='界'.repeat(4000);let calls=0;
-  const {service}=await fixture(t,{book,generator:async()=>{calls++;return validAnswer();}});
-  await assert.rejects(service.send(alice,'chat-book',input()),status(413));assert.equal(calls,0);
-  let job;const other=await fixture(t,{book,generator:async value=>{job=value;return validAnswer('p2','Second source sentence.');}});
-  assert.equal((await other.service.send(alice,'chat-book',input({passageId:'p2'}))).status,'completed');
-  assert.deepEqual(job.book.sections.flatMap(s=>s.paragraphs.map(p=>p.id)),['p2','p3']);
-  assert.ok(Buffer.byteLength(JSON.stringify(job.book))<10000);
+test('long source paragraphs stay behind paged tools without preventing a greeting',async t=>{
+  const book=bookFixture();book.sections[1].paragraphs[0].original='界'.repeat(40000);
+  const {service}=await fixture(t,{book,generator:async()=>({kind:'conversation',summary:'你好！'})});
+  assert.equal((await service.send(alice,'chat-book',input())).status,'completed');
 });
 
-test('follow-ups carry only a small same-passage history marked as data and preserve exact user text',async t=>{
-  const jobs=[];const {service}=await fixture(t,{generator:async job=>{jobs.push(job);return job.passageId==='p1'?validAnswer('p1','First source sentence.','第一个锚点的回答'):validAnswer('p2','Second source sentence.','另一段私有回答');}});
-  await service.send(alice,'chat-book',input({id:'first',text:'第一个锚点的提问'}));
-  await service.send(alice,'chat-book',input({id:'other',passageId:'p2',text:'另一段私有提问'}));
-  const original='  继续解释这个限定。  ';const turn=await service.send(alice,'chat-book',input({id:'follow-up',text:original}));
-  assert.equal(turn.text,original);const prompt=jobs[2].text;
-  assert.ok(prompt.includes('第一个锚点的提问'));assert.ok(prompt.includes('第一个锚点的回答'));assert.ok(prompt.includes(original));
-  assert.ok(!prompt.includes('另一段私有'));assert.ok(/资料|data/i.test(prompt));assert.ok(prompt.length<=6000);
+test('follow-ups retain six complete cross-passage role pairs and unchanged current question',async t=>{
+  const jobs=[];const {service}=await fixture(t,{generator:async job=>{jobs.push(job);return {kind:'conversation',summary:'回答 '+job.text};}});
+  for(let i=0;i<8;i++)await service.send(alice,'chat-book',input({id:'q'+i,passageId:i%2?'p2':'p1',text:'问题 '+i}));
+  assert.equal(jobs[7].text,'问题 7');assert.equal(jobs[7].history.length,12);assert.deepEqual(jobs[7].history.slice(0,2),[{role:'user',content:'问题 1'},{role:'assistant',content:'回答 问题 1'}]);assert.equal(jobs[7].history.at(-1).content,'回答 问题 6');
 });
 
-test('fabricated, out-of-scope and oversized answer citations fail without exposing generator output',async t=>{
-  const bad=[validAnswer('p1','invented original'),validAnswer('p4','Another chapter begins.'),{...validAnswer(),summary:'界'.repeat(4001)}, {...validAnswer(),sourceRefs:Array.from({length:20},()=>({passageId:'p1',quote:'First source sentence.'.repeat(1)})),segments:[{start:0,end:1,reason:'not allowed',sourceRef:{passageId:'p1',quote:'First'}}]}];
-  for(let i=0;i<bad.length;i++){
-    const {service}=await fixture(t,{generator:async()=>bad[i]});const turn=await service.send(alice,'chat-book',input());
-    assert.equal(turn.status,'failed');assert.equal(turn.answer,null);assert.equal(turn.text,'  这里为什么这样说？  ');assert.ok(turn.error);assert.ok(!turn.error.includes('invented'));
-  }
+test('native Unicode answers have no echo schema and candidate references never become evidence',async t=>{
+  const {service}=await fixture(t,{generator:async()=>({kind:'conversation',summary:'界'.repeat(12000),sourceRefs:[{bookId:'fake',quote:'invented'}]})});
+  const turn=await service.send(alice,'chat-book',input());assert.equal(turn.status,'completed');assert.equal(turn.answer.summary.length,12000);assert.deepEqual(turn.answer.sourceRefs,[]);
+  for(const summary of ['', '  ', '界'.repeat(12001)]){const other=await fixture(t,{generator:async()=>({kind:'conversation',summary})});assert.equal((await other.service.send(alice,'chat-book',input())).status,'failed');}
+});
+
+test('actual activity is visible during pending generation and cancelled runs cannot revive it',async t=>{
+  const entered=deferred(),finish=deferred();let captured;
+  const {service}=await fixture(t,{generator:async job=>{captured=job;await job.tools.execute('reader_read_chapter',{bookId:'chat-book',chapterId:'ch2'});entered.resolve();await finish.promise;return {kind:'conversation',summary:'完成'};}});
+  const pending=service.send(alice,'chat-book',input());await entered.promise;
+  const during=(await service.view(alice,'chat-book')).turns[0];assert.equal(during.status,'running');assert.ok(during.activity.some(a=>a.chapterId==='ch2'&&a.status==='completed'));
+  await service.cancel(alice,'chat-book','question-1');finish.resolve();await pending;
+  await assert.rejects(captured.tools.execute('reader_get_context',{}));assert.equal((await service.view(alice,'chat-book')).turns[0].status,'cancelled');
 });
 
 test('cancellation from another service defeats a late model answer durably',async t=>{
@@ -221,7 +215,7 @@ test('successful generation stops cancellation polling instead of reading storag
   dataStore.read=async function(...args){reads++;return read.apply(this,args);};
   const {service}=await fixture(t,{dataStore,generator:async job=>{signal=job.signal;return validAnswer();}});
   assert.equal((await service.send(alice,'chat-book',input())).status,'completed');const settledReads=reads;
-  await delay(1100);assert.equal(reads,settledReads);assert.equal(signal.aborted,false);
+  await delay(1100);assert.equal(reads,settledReads);assert.equal(signal.aborted,true);
 });
 
 test('generator failure retains the original exportable question with a safe error',async t=>{
@@ -355,4 +349,16 @@ test('a recording failure reports its stage without exposing the private questio
   const {create,library}=await fixture(t),diagnostics=[];
   const service=await create({library:{...library,addComment:async()=>{throw Error('private storage error');}},onError:(error,context)=>diagnostics.push(context)});
   const result=await service.send(alice,'chat-book',input());assert.equal(result.status,'failed');assert.deepEqual(diagnostics,[{phase:'record-question'}]);assert.doesNotMatch(JSON.stringify(diagnostics),/这里|private storage/);
+});
+test('a cross-book source is registered under its actual book',async t=>{
+  const other=bookFixture();other.bookId='second-book';other.sections[1].paragraphs[0].original='A real second-book source.';
+  const entered=deferred(),finish=deferred();let captured;
+  const {service,seed}=await fixture(t,{generator:async job=>{captured=job;await job.tools.execute('reader_read_chapter',{bookId:'second-book',chapterId:'ch1'});await job.tools.execute('reader_cite',{bookId:'second-book',passageId:'p1',layer:'original',quote:'A real second-book source.'});entered.resolve();await finish.promise;return {kind:'conversation',summary:'跨书比较'};}});
+  await seed(alice,other);const pending=service.send(alice,'chat-book',input());await entered.promise;finish.resolve();const turn=await pending;
+  assert.equal(turn.status,'completed');assert.equal(turn.answer.sourceRefs[0].bookId,'second-book');assert.equal(turn.answer.sourceRefs[0].url,'/read?book=second-book&passage=p1');assert.ok(turn.activity.some(a=>a.bookId==='second-book'&&a.status==='completed'));assert.equal(captured.signal.aborted,true);
+});
+test('history byte limits discard only oldest complete pairs while preserving the current question',async t=>{
+ const jobs=[];const {service}=await fixture(t,{generator:async job=>{jobs.push(job);return {kind:'conversation',summary:'中'.repeat(4000)};}});
+ for(let i=0;i<4;i++)await service.send(alice,'chat-book',input({id:'large-'+i,text:'提问 '+i}));
+ assert.ok(Buffer.byteLength(JSON.stringify(jobs[3].history))<=24576);assert.equal(jobs[3].history[0].role,'user');assert.equal(jobs[3].history.at(-1).role,'assistant');assert.equal(jobs[3].text,'提问 3');assert.ok(jobs[3].history.length<6);
 });
