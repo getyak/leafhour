@@ -10,7 +10,7 @@ if(expected){
   }
 }
 const giftProbe='A'.repeat(43);
-for(const route of ['/reader-companion.mjs','/reader-companion-state.mjs','/reader-companion.css','/squirrel-motion.mjs']){
+for(const route of ['/reader-companion.mjs','/reader-companion-state.mjs','/reader-companion.css','/squirrel-motion.mjs','/squirrel-position.mjs']){
   const response=await get(route);if(response.headers.get('content-type')?.includes('text/html')||!(await response.text()).length)throw Error('Missing companion asset: '+route);
 }
 const companion=await fetch(new URL('/api/library/books/gutenberg-alice/companion',base),{signal:AbortSignal.timeout(15000)});if(companion.status!==401)throw Error('Anonymous companion access did not require authentication');

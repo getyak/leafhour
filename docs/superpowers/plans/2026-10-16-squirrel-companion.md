@@ -1,5 +1,7 @@
 # Squirrel Companion Implementation Plan
 
+Historical first-version execution plan. The user's later default-on, draggable-character and label-removal revision is recorded in the current spec and `docs/verification/2026-10-16-squirrel-placement.md`.
+
 > **For agentic workers:** Use superpowers:executing-plans in this session. The user reviewed the design, changed the interval to five minutes, and explicitly requested implementation. Finish with one fresh whole-branch review.
 
 **Goal:** Let a reader enable the existing squirrel to occasionally send a short asynchronous message that opens the same book conversation.

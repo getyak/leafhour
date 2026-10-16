@@ -9,7 +9,9 @@ export function createReaderCompanionService({bookFor,mutateBook,clock,generator
   const available=()=>!getClosed()&&typeof generator==='function';
   function state(data,book){
     let m=data.companion;
-    if(!m||m.contentVersion!==book.contentVersion){m=data.companion={enabled:false,revision:(m?.revision||0)+1,contentVersion:book.contentVersion,recent:[],activeMs:0,chapterMs:0,chapterId:null,seenCount:0,lastAttemptCount:0,lastAttemptMs:null,attempts:0,sessionId:randomUUID(),lastAt:null,lastActiveAt:null};}
+    const preference=['on','off','default'].includes(m?.preference)?m.preference:m?.enabled===false&&m.revision>1?'off':m?.enabled===true?'on':'default';
+    if(!m||m.contentVersion!==book.contentVersion){m=data.companion={enabled:preference!=='off',preference,revision:(m?.revision||0)+1,contentVersion:book.contentVersion,recent:[],activeMs:0,chapterMs:0,chapterId:null,seenCount:0,lastAttemptCount:0,lastAttemptMs:null,attempts:0,sessionId:randomUUID(),lastAt:null,lastActiveAt:null};}
+    if(!m.preference){m.preference=preference;if(!m.enabled&&preference!=='off'){m.enabled=true;m.revision++;m.lastAt=null;}}
     return m;
   }
   const meta=m=>({enabled:m.enabled,revision:m.revision,contentVersion:m.contentVersion,available:available(),sessionId:m.sessionId,activeMs:m.activeMs,chapterMs:m.chapterMs,attempts:m.attempts,observedIds:m.recent.filter(p=>p.ms>=SEEN).map(p=>p.id)});
@@ -25,6 +27,7 @@ export function createReaderCompanionService({bookFor,mutateBook,clock,generator
     const book=await bookFor(user,bookId);if(typeof input?.enabled!=='boolean'||input.contentVersion!==book.contentVersion)throw invalid('请确认当前书籍与陪读设置',409);
     const result=await mutateBook(user,bookId,data=>{
       const m=state(data,book);if(input.enabled&&!available())throw invalid('阅读伙伴暂时不可用',503);
+      m.preference=input.enabled?'on':'off';
       if(m.enabled!==input.enabled){m.enabled=input.enabled;m.revision++;m.lastAt=null;}
       if(!m.enabled)for(const t of data.turns)if(t.kind==='companion'&&t.status==='running'){t.status='cancelled';t.answer=null;}
       return meta(m);
