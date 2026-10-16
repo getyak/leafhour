@@ -331,7 +331,8 @@
   "app/discovery.css",
   "app/robots.txt",
   "app/sitemap.xml",
-  "app/en.html",
   "app/en/mcp.html",
-  "tests/search-discovery.test.mjs"
+  "tests/search-discovery.test.mjs",
+  "app/home-locale.mjs",
+  "tests/home-locale.test.mjs"
 ]

@@ -67,7 +67,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['library-profile.mjs','library-book-actions.mjs','reading-schedule.mjs','shelf-order.mjs','library-personal.css','book-gift.css','book-gift.mjs','gift-preview.mjs','gift-ritual.mjs','gift-compose.mjs','gift-compose.css','gift-identity.mjs','gift-compose-state.mjs','reader-return.mjs'])files['/'+file]=file;
     files['/gift-preview']='book-gift.html';for(const file of ['brand-assets/letter-edge.svg','brand-assets/envelope-edge.svg'])files['/'+file]=file;
     if(safeGiftReturn(p)){files[p]='book-gift.html';res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Cache-Control','private, no-store');}
-    Object.assign(files,{'/en':'en.html','/en/mcp':'en/mcp.html','/discovery.css':'discovery.css','/robots.txt':'robots.txt','/sitemap.xml':'sitemap.xml'});
+    Object.assign(files,{'/en':'home.html','/en/mcp':'en/mcp.html','/home-locale.mjs':'home-locale.mjs','/discovery.css':'discovery.css','/robots.txt':'robots.txt','/sitemap.xml':'sitemap.xml'});
     if(!isAPI&&!files[p])return false;
     if(isAPI||p==='/library'||p==='/gift-preview'||safeGiftReturn(p))res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
     if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p==="/robots.txt"?"text/plain":p==="/sitemap.xml"?"application/xml":p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));send(200,files[p]==='home.html'?portalDocument(file.toString('utf8'),p):file,type);return true;}

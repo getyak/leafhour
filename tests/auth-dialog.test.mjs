@@ -4,7 +4,7 @@ import{readFile}from'node:fs/promises';
 import{mountAuthDialog}from'../app/auth-dialog.mjs';
 
 // Exercise the real controller with small DOM primitives; HTTP/provider behavior has separate tests.
-async function fixture({api,session={passwordAvailable:true,emailAvailable:true,providers:{google:true,apple:true}}}={}){
+async function fixture({api,locale='zh-Hans',session={passwordAvailable:true,emailAvailable:true,providers:{google:true,apple:true}}}={}){
   const html=await readFile(new URL('../app/home.html',import.meta.url),'utf8'),nodes=new Map(),doc={active:null};
   class Node extends EventTarget{
     constructor(id){super();this.id=id;this.value='';this.hidden=false;this.type='password';this.dataset={};this.classList={toggle(){}};this.attrs={};}
@@ -18,7 +18,7 @@ async function fixture({api,session={passwordAvailable:true,emailAvailable:true,
   const dialog=nodes.get('auth-dialog');dialog.querySelector=selector=>nodes.get(selector.slice(1));dialog.querySelectorAll=()=>toggles;
   dialog.showModal=()=>{dialog.open=true;};dialog.close=()=>{dialog.open=false;dialog.dispatchEvent(new Event('close'));};
   let authenticated=0,settled=0;
-  const controller=mountAuthDialog({dialog,api,getSession:()=>session,getReturnTo:()=>'/library',onAuthenticated:async()=>{authenticated++;},onSessionSettled:async()=>{settled++;}});
+  const controller=mountAuthDialog({dialog,api,locale,getSession:()=>session,getReturnTo:()=>'/library',onAuthenticated:async()=>{authenticated++;},onSessionSettled:async()=>{settled++;}});
   const fire=async(id,type='click')=>{nodes.get(id).dispatchEvent(new Event(type,{cancelable:true}));await new Promise(setImmediate);};
   const input=async(id,value)=>{nodes.get(id).value=value;await fire(id,'input');};
   return{nodes,doc,dialog,controller,fire,input,counts:()=>({authenticated,settled})};
@@ -27,6 +27,14 @@ test('password errors restore focus after disabled controls are re-enabled',asyn
   const f=await fixture({api:async()=>{throw Error('邮箱或密码不正确');}});t.after(()=>f.controller.close());f.controller.open();
   await f.input('email','reader@example.com');await f.input('auth-password','fixture-password');f.nodes.get('auth-password').focus();
   await f.fire('email-form','submit');assert.equal(f.nodes.get('auth-password').disabled,false);assert.equal(f.doc.active?.id,'auth-password');f.controller.close();
+});
+test('English home login keeps its language across method changes, countdowns and reopening',async t=>{
+  const f=await fixture({locale:'en',api:async()=>({sent:true,expiresIn:600,retryAfter:60})});t.after(()=>f.controller.close());f.controller.open();
+  assert.equal(f.nodes.get('auth-title').textContent,'Welcome back to your reading room');
+  assert.equal(f.nodes.get('send-code').textContent,'Enter reading room');
+  await f.fire('use-code');await f.input('email','reader@example.com');await f.fire('email-form','submit');
+  assert.equal(f.nodes.get('auth-title').textContent,'Verify your email');assert.match(f.nodes.get('resend-code').textContent,/Resend in \d+s/);
+  f.controller.close();f.controller.open();assert.equal(f.nodes.get('auth-title').textContent,'Welcome back to your reading room');
 });
 test('pending verification is exposed until the receipt establishes matching password setup',async(t)=>{
   let resolve;const pending=new Promise(r=>{resolve=r;});

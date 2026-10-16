@@ -1,9 +1,11 @@
 import {createAuthFlow,createAuthRequestGuard} from './auth-flow.mjs';
+import {homeLocale,homeText} from './home-locale.mjs';
 
-export function mountAuthDialog({dialog,api,getSession,onAuthenticated,onSessionSettled=async()=>{},getReturnTo}){
+export function mountAuthDialog({dialog,api,getSession,onAuthenticated,onSessionSettled=async()=>{},getReturnTo,locale=homeLocale(dialog.ownerDocument)}){
   const $=id=>dialog.querySelector('#'+id);
+  const text=value=>homeText(value,locale);
   const requestGuard=createAuthRequestGuard();let flow=createAuthFlow({requestGuard}),timer=null,provisional=null;
-  function clearPasswords(){for(const id of ['auth-password','new-password']){$(id).value='';$(id).type='password';}for(const button of dialog.querySelectorAll('[data-password-toggle]')){button.textContent='显示';button.setAttribute('aria-pressed','false');button.setAttribute('aria-label',button.dataset.passwordToggle==='new-password'?'显示新密码':'显示登录密码');}}
+  function clearPasswords(){for(const id of ['auth-password','new-password']){$(id).value='';$(id).type='password';}for(const button of dialog.querySelectorAll('[data-password-toggle]')){button.textContent=text('显示');button.setAttribute('aria-pressed','false');button.setAttribute('aria-label',text(button.dataset.passwordToggle==='new-password'?'显示新密码':'显示登录密码'));}}
   function render(){
     const v=flow.view(),session=getSession()||{},codeStep=v.step==='code',setup=v.step==='set-password',password=v.method==='password',login=v.purpose==='login';
     $('auth-email-step').hidden=codeStep||setup;$('auth-code-step').hidden=!codeStep;$('auth-setup-step').hidden=!setup;
@@ -47,6 +49,7 @@ export function mountAuthDialog({dialog,api,getSession,onAuthenticated,onSession
     $('email').setAttribute('aria-invalid',String(!!v.error&&!codeStep&&!setup&&!password));
     $('email-code').setAttribute('aria-invalid',String(!!v.error&&codeStep));
     $('auth-password').setAttribute('aria-invalid',String(!!v.error&&password));
+    for(const id of ['auth-title','auth-intro','send-code','verify-code','save-password','resend-code','auth-expiry','auth-availability','auth-status'])$(id).textContent=text($(id).textContent);
   }
   function choose(method,purpose='login'){
     flow.setEmail($('email').value);if(!flow.choose(method,purpose))return;clearPasswords();render();$('email').focus();
@@ -83,7 +86,7 @@ export function mountAuthDialog({dialog,api,getSession,onAuthenticated,onSession
   $('use-password').addEventListener('click',()=>choose('password'));
   $('forgot-password').addEventListener('click',()=>choose('code','recovery'));
   $('create-account').addEventListener('click',()=>choose('code','signup'));
-  for(const button of dialog.querySelectorAll('[data-password-toggle]'))button.addEventListener('click',()=>{const input=$(button.dataset.passwordToggle),visible=input.type==='password';input.type=visible?'text':'password';button.textContent=visible?'隐藏':'显示';button.setAttribute('aria-pressed',String(visible));button.setAttribute('aria-label',(visible?'隐藏':'显示')+(button.dataset.passwordToggle==='new-password'?'新密码':'登录密码'));});
+  for(const button of dialog.querySelectorAll('[data-password-toggle]'))button.addEventListener('click',()=>{const input=$(button.dataset.passwordToggle),visible=input.type==='password';input.type=visible?'text':'password';button.textContent=text(visible?'隐藏':'显示');button.setAttribute('aria-pressed',String(visible));button.setAttribute('aria-label',text((visible?'隐藏':'显示')+(button.dataset.passwordToggle==='new-password'?'新密码':'登录密码')));});
   $('local-login').addEventListener('click',()=>{const ticket=flow.begin('local');if(ticket)finish(ticket,'/api/auth/local',{});});
   for(const provider of ['google','apple'])$('login-'+provider).addEventListener('click',async()=>{
     if(!getSession()?.providers?.[provider])return;const operation=flow,ticket=operation.begin('oauth');if(!ticket)return;render();
