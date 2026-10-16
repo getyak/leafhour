@@ -41,5 +41,565 @@
       "philosophy",
       "literature"
     ]
+  },
+  {
+    "id": "gutenberg-flatland",
+    "file": "world/flatland.json",
+    "format": "structured",
+    "title": "平面国",
+    "originalTitle": "Flatland: A Romance of Many Dimensions",
+    "author": "Edwin A. Abbott",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/201",
+    "description": "在二维世界里，重新看待常识、阶层和想象力。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "en",
+    "translation": null,
+    "topics": [
+      "science",
+      "literature"
+    ],
+    "bodyChapters": 22,
+    "opening": "I call our world Flatland, not because we call it so, b",
+    "ending": "ing of a diseased imagination, or the baseless fabric of a dream."
+  },
+  {
+    "id": "gutenberg-frankenstein",
+    "file": "world/frankenstein.json",
+    "format": "structured",
+    "title": "弗兰肯斯坦",
+    "originalTitle": "Frankenstein; or, the Modern Prometheus",
+    "author": "Mary Shelley",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/84",
+    "description": "创造生命之后，创造者要承担什么责任？",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "en",
+    "translation": null,
+    "topics": [
+      "science",
+      "literature"
+    ],
+    "bodyChapters": 28,
+    "opening": "To Mrs. Saville, England.",
+    "ending": "s soon borne away by the waves and lost in darkness and distance."
+  },
+  {
+    "id": "gutenberg-erewhon",
+    "file": "world/erewhon.json",
+    "format": "structured",
+    "title": "埃瑞璜",
+    "originalTitle": "Erewhon; or, Over the Range",
+    "author": "Samuel Butler",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/1906",
+    "description": "走进一个把我们的文明倒过来看的国度。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "en",
+    "translation": null,
+    "topics": [
+      "science",
+      "literature"
+    ],
+    "bodyChapters": 29,
+    "opening": "If the reader will excuse me, I will say nothing of my ",
+    "ending": "whonian Professor’s theory, but from the interest of the subject."
+  },
+  {
+    "id": "gutenberg-time-machine",
+    "file": "world/time-machine.json",
+    "format": "structured",
+    "title": "时间机器",
+    "originalTitle": "The Time Machine",
+    "author": "H. G. Wells",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/35",
+    "description": "去遥远的未来，看阶层与技术留下的后果。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "en",
+    "translation": null,
+    "topics": [
+      "science",
+      "literature"
+    ],
+    "bodyChapters": 17,
+    "opening": "The Time Traveller (for so it will be convenient to spe",
+    "ending": "itude and a mutual tenderness still lived on in the heart of man."
+  },
+  {
+    "id": "gutenberg-au-room-of-ones-own",
+    "file": "world/room-of-ones-own.json",
+    "format": "structured",
+    "title": "一间自己的房间",
+    "originalTitle": "A Room of One’s Own",
+    "author": "Virginia Woolf",
+    "sourceUrl": "https://gutenberg.net.au/ebooks02/0200791h.html",
+    "description": "写作需要的空间、收入和自由。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "en",
+    "translation": null,
+    "topics": [
+      "history",
+      "literature"
+    ],
+    "bodyChapters": 6,
+    "opening": "But, you may say, we asked you to speak about women and",
+    "ending": "d that so to work, even in poverty and obscurity, is worth while."
+  },
+  {
+    "id": "gutenberg-on-liberty",
+    "file": "world/on-liberty.json",
+    "format": "structured",
+    "title": "论自由",
+    "originalTitle": "On Liberty",
+    "author": "John Stuart Mill",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/34901",
+    "description": "个人自由与社会干预的边界在哪里？",
+    "cover": "meditations",
+    "sourceLanguage": "en",
+    "originalLanguage": "en",
+    "translation": null,
+    "topics": [
+      "philosophy",
+      "history"
+    ],
+    "bodyChapters": 5,
+    "opening": "The subject of this Essay is not the so-called Liberty ",
+    "ending": "the machine might work more smoothly, it has preferred to banish."
+  },
+  {
+    "id": "ccel-ivan-ilych",
+    "file": "world/ivan-ilych.json",
+    "format": "structured",
+    "title": "伊凡·伊里奇之死",
+    "originalTitle": "The Death of Ivan Ilych",
+    "author": "Leo Tolstoy · 英译 Louise and Aylmer Maude",
+    "sourceUrl": "https://ccel.org/ccel/tolstoy/ivan/ivan",
+    "description": "生命将尽时，一个人怎样重新看待自己的一生。",
+    "cover": "meditations",
+    "sourceLanguage": "en",
+    "originalLanguage": "ru",
+    "translation": "Louise and Aylmer Maude",
+    "topics": [
+      "philosophy",
+      "literature"
+    ],
+    "bodyChapters": 12,
+    "opening": "During an interval in the Melvinski trial in the large ",
+    "ending": " breath, stopped in the midst of a sigh, stretched out, and died."
+  },
+  {
+    "id": "gutenberg-awakening",
+    "file": "world/awakening.json",
+    "format": "structured",
+    "title": "觉醒及短篇选",
+    "originalTitle": "The Awakening, and Selected Short Stories",
+    "author": "Kate Chopin",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/160",
+    "description": "一个女人开始辨认自己的欲望与生活。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "en",
+    "translation": null,
+    "topics": [
+      "literature",
+      "history"
+    ],
+    "bodyChapters": 51,
+    "opening": "A green and yellow parrot, which hung in a cage outside",
+    "ending": "Salve! ye dumb hearts. Let us be still and wait by the roadside."
+  },
+  {
+    "id": "gutenberg-home-and-world",
+    "file": "world/home-and-world.json",
+    "format": "structured",
+    "title": "家庭与世界",
+    "originalTitle": "The Home and the World",
+    "author": "Rabindranath Tagore · 英译 Surendranath Tagore",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/7166",
+    "description": "家庭、爱情与民族主义之间的冲突。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "bn",
+    "translation": "Surendranath Tagore",
+    "topics": [
+      "literature",
+      "history"
+    ],
+    "bodyChapters": 12,
+    "opening": "Bimala's Story",
+    "ending": "\"He has a bullet through the heart. He is done for.\""
+  },
+  {
+    "id": "gutenberg-brazilian-tales",
+    "file": "world/brazilian-tales.json",
+    "format": "structured",
+    "title": "巴西短篇小说选",
+    "originalTitle": "Brazilian Tales",
+    "author": "Machado de Assis; Medeiros e Albuquerque; Henrique Coelho Netto; Carmen Dolores · 英译 Isaac Goldberg",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/21040",
+    "description": "六个故事，观察巴西社会、人心与命运。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "pt",
+    "translation": "Isaac Goldberg",
+    "topics": [
+      "literature"
+    ],
+    "bodyChapters": 6,
+    "opening": "The noted Brazilian critic, José Verissimo, in a short ",
+    "ending": " most beautiful homage that could be rendered to my poor verses.\""
+  },
+  {
+    "id": "gutenberg-book-of-tea",
+    "file": "world/book-of-tea.json",
+    "format": "structured",
+    "title": "茶之书",
+    "originalTitle": "The Book of Tea",
+    "author": "Kakuzo Okakura",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/769",
+    "description": "从一杯茶进入审美、日常生活与不完美。",
+    "cover": "meditations",
+    "sourceLanguage": "en",
+    "originalLanguage": "en",
+    "translation": null,
+    "topics": [
+      "philosophy",
+      "literature"
+    ],
+    "bodyChapters": 7,
+    "opening": "Tea began as a medicine and grew into a beverage. In Ch",
+    "ending": "With a smile upon his face Rikiu passed forth into the unknown."
+  },
+  {
+    "id": "gutenberg-prophet",
+    "file": "world/prophet.json",
+    "format": "structured",
+    "title": "先知",
+    "originalTitle": "The Prophet",
+    "author": "Kahlil Gibran",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/58585",
+    "description": "用诗的语言谈爱、工作、自由与告别。",
+    "cover": "meditations",
+    "sourceLanguage": "en",
+    "originalLanguage": "en",
+    "translation": null,
+    "topics": [
+      "philosophy",
+      "literature"
+    ],
+    "bodyChapters": 28,
+    "opening": "Almustafa, the chosen and the beloved, who was a dawn u",
+    "ending": "a moment of rest upon the wind, and another woman shall bear me.”"
+  },
+  {
+    "id": "gutenberg-tao-te-ching",
+    "file": "world/tao-te-ching.json",
+    "format": "structured",
+    "title": "道德经",
+    "originalTitle": "The Tao Teh King",
+    "author": "Laozi · 英译 James Legge",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/216",
+    "description": "从无为、柔弱和变化，重新思考行动。",
+    "cover": "meditations",
+    "sourceLanguage": "en",
+    "originalLanguage": "zh",
+    "translation": "James Legge",
+    "topics": [
+      "philosophy"
+    ],
+    "bodyChapters": 81,
+    "opening": "Ch. 1. 1. The Tao that can be trodden is not the enduri",
+    "ending": "ot; with all the doing in the way of the sage he does not strive."
+  },
+  {
+    "id": "gutenberg-dhammapada",
+    "file": "world/dhammapada.json",
+    "format": "structured",
+    "title": "法句经",
+    "originalTitle": "The Dhammapada",
+    "author": "Buddhist canon · 英译 F. Max Müller",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/2017",
+    "description": "关于心念、痛苦与修行的短偈。",
+    "cover": "meditations",
+    "sourceLanguage": "en",
+    "originalLanguage": "pi",
+    "translation": "F. Max Müller",
+    "topics": [
+      "philosophy"
+    ],
+    "bodyChapters": 26,
+    "opening": "1. All that we are is the result of what we have though",
+    "ending": "fect in knowledge, a sage, and whose perfections are all perfect."
+  },
+  {
+    "id": "gutenberg-bhagavad-gita",
+    "file": "world/bhagavad-gita.json",
+    "format": "structured",
+    "title": "薄伽梵歌",
+    "originalTitle": "The Song Celestial; or, Bhagavad-Gita",
+    "author": "Vyasa (traditional attribution) · 英译 Edwin Arnold · 英语诗译",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/2388",
+    "description": "在行动与犹疑之间，追问责任和自我。",
+    "cover": "meditations",
+    "sourceLanguage": "en",
+    "originalLanguage": "sa",
+    "translation": "Edwin Arnold · 英语诗译",
+    "topics": [
+      "philosophy",
+      "literature"
+    ],
+    "bodyChapters": 18,
+    "opening": "Dhritirashtra:",
+    "ending": " I omit the concluding shlokas, as of very doubtful authenticity."
+  },
+  {
+    "id": "gutenberg-rubaiyat",
+    "file": "world/rubaiyat.json",
+    "format": "structured",
+    "title": "鲁拜集",
+    "originalTitle": "The Rubaiyat of Omar Khayyam",
+    "author": "Omar Khayyam · 英译 Edward FitzGerald · 英语译写",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/246",
+    "description": "关于时间、酒与命运的四行诗；含第一版与第五版。",
+    "cover": "meditations",
+    "sourceLanguage": "en",
+    "originalLanguage": "fa",
+    "translation": "Edward FitzGerald · 英语译写",
+    "topics": [
+      "philosophy",
+      "literature"
+    ],
+    "bodyChapters": 2,
+    "opening": "I.",
+    "ending": "agre, bent, and wan\nWith Age and Fast, is fainting from the Sky!\""
+  },
+  {
+    "id": "gutenberg-notes-underground",
+    "file": "world/notes-underground.json",
+    "format": "structured",
+    "title": "地下室手记",
+    "originalTitle": "Notes from the Underground",
+    "author": "Fyodor Dostoyevsky · 英译 Constance Garnett",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/600",
+    "description": "一个不肯被理性公式解释的人，怎样与自己争辩。",
+    "cover": "meditations",
+    "sourceLanguage": "en",
+    "originalLanguage": "ru",
+    "translation": "Constance Garnett",
+    "topics": [
+      "philosophy",
+      "literature"
+    ],
+    "bodyChapters": 21,
+    "opening": "I am a sick man.... I am a spiteful man. I am an unattr",
+    "ending": "om going on with them, but it seems to us that we may stop here.]"
+  },
+  {
+    "id": "gutenberg-young-werther",
+    "file": "world/young-werther.json",
+    "format": "structured",
+    "title": "少年维特之烦恼",
+    "originalTitle": "The Sorrows of Young Werther",
+    "author": "Johann Wolfgang von Goethe · 英译 R. Dillon Boylan",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/2527",
+    "description": "书信中的爱情、孤独和自我投射。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "de",
+    "translation": "R. Dillon Boylan",
+    "topics": [
+      "literature"
+    ],
+    "bodyChapters": 2,
+    "opening": "MAY 4.",
+    "ending": "paired of. The body was carried by labourers. No priest attended."
+  },
+  {
+    "id": "gutenberg-pride-prejudice",
+    "file": "world/pride-prejudice.json",
+    "format": "structured",
+    "title": "傲慢与偏见",
+    "originalTitle": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/1342",
+    "description": "在爱情与婚姻里，辨认判断、误会和阶层。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "en",
+    "translation": null,
+    "topics": [
+      "literature"
+    ],
+    "bodyChapters": 61,
+    "opening": "IT is a truth universally acknowledged, that a single m",
+    "ending": "bringing her into Derbyshire, had been the means of uniting them."
+  },
+  {
+    "id": "gutenberg-don-quixote",
+    "file": "world/don-quixote.json",
+    "format": "structured",
+    "title": "堂吉诃德",
+    "originalTitle": "Don Quixote",
+    "author": "Miguel de Cervantes · 英译 John Ormsby",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/996",
+    "description": "理想与现实一路相撞；收录完整上下部。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "es",
+    "translation": "John Ormsby",
+    "topics": [
+      "literature"
+    ],
+    "bodyChapters": 126,
+    "opening": "In a village of La Mancha, the name of which I have no ",
+    "ending": " now tottering, and doubtless doomed to fall for ever. Farewell.”"
+  },
+  {
+    "id": "gutenberg-candide",
+    "file": "world/candide.json",
+    "format": "structured",
+    "title": "老实人",
+    "originalTitle": "Candide",
+    "author": "Voltaire · 英译 The Modern Library · 1918 edition; translator unnamed",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/19942",
+    "description": "天真的乐观主义，如何经受世界的检验。",
+    "cover": "meditations",
+    "sourceLanguage": "en",
+    "originalLanguage": "fr",
+    "translation": "The Modern Library · 1918 edition; translator unnamed",
+    "topics": [
+      "philosophy",
+      "literature"
+    ],
+    "bodyChapters": 30,
+    "opening": "HOW CANDIDE WAS BROUGHT UP IN A MAGNIFICENT CASTLE, AND",
+    "ending": "[35] P. 149. François Leopold Ragotsky (1676-1735)."
+  },
+  {
+    "id": "gutenberg-arabian-nights",
+    "file": "world/arabian-nights.json",
+    "format": "structured",
+    "title": "一千零一夜选编",
+    "originalTitle": "The Arabian Nights Entertainments",
+    "author": "Traditional stories · selected and edited by Andrew Lang · 英译 Andrew Lang · 英语选编",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/128",
+    "description": "在层层嵌套的故事里，遇见欲望、智慧与奇迹。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "ar",
+    "translation": "Andrew Lang · 英语选编",
+    "topics": [
+      "literature"
+    ],
+    "bodyChapters": 34,
+    "opening": "The stories in the Fairy Books have generally been such",
+    "ending": "And in this manner they came back to their father's palace."
+  },
+  {
+    "id": "gutenberg-underdogs",
+    "file": "world/underdogs.json",
+    "format": "structured",
+    "title": "底层的人们",
+    "originalTitle": "The Underdogs: A Novel of the Mexican Revolution",
+    "author": "Mariano Azuela · 英译 Enrique Munguía (E. Munguia, Jr.)",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/549",
+    "description": "跟随普通人进入墨西哥革命的混乱与理想。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "es",
+    "translation": "Enrique Munguía (E. Munguia, Jr.)",
+    "topics": [
+      "literature",
+      "history"
+    ],
+    "bodyChapters": 42,
+    "opening": "\"That's no animal, I tell you! Listen to the dog barkin",
+    "ending": "d in an eternal glance, continues to point the barrel of his gun."
+  },
+  {
+    "id": "gutenberg-equiano",
+    "file": "world/equiano.json",
+    "format": "structured",
+    "title": "埃奎亚诺自传",
+    "originalTitle": "The Interesting Narrative of the Life of Olaudah Equiano",
+    "author": "Olaudah Equiano",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/15399",
+    "description": "穿越奴役、航海、贸易与争取自由的一生。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "en",
+    "translation": null,
+    "topics": [
+      "history",
+      "literature"
+    ],
+    "bodyChapters": 12,
+    "opening": "The author's account of his country, and their manners ",
+    "ending": "to human nature, happy in themselves, and benefactors to mankind!"
+  },
+  {
+    "id": "gutenberg-african-farm",
+    "file": "world/african-farm.json",
+    "format": "structured",
+    "title": "非洲农场的故事",
+    "originalTitle": "The Story of an African Farm",
+    "author": "Olive Schreiner",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/1441",
+    "description": "南部非洲农场上的成长、信仰与女性处境。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "en",
+    "translation": null,
+    "topics": [
+      "literature",
+      "history"
+    ],
+    "bodyChapters": 27,
+    "opening": "The Watch.",
+    "ending": "But the chickens were wiser."
+  },
+  {
+    "id": "gutenberg-douglass",
+    "file": "world/douglass.json",
+    "format": "structured",
+    "title": "弗雷德里克·道格拉斯自传",
+    "originalTitle": "Narrative of the Life of Frederick Douglass, an American Slave",
+    "author": "Frederick Douglass",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/23",
+    "description": "识字与反抗，怎样成为走向自由的力量。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "en",
+    "translation": null,
+    "topics": [
+      "history",
+      "literature"
+    ],
+    "bodyChapters": 11,
+    "opening": "I was born in Tuckahoe, near Hillsborough, and about tw",
+    "ending": "THE END"
+  },
+  {
+    "id": "gutenberg-seacole",
+    "file": "world/seacole.json",
+    "format": "structured",
+    "title": "西科尔夫人历险记",
+    "originalTitle": "Wonderful Adventures of Mrs. Seacole in Many Lands",
+    "author": "Mary Seacole",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/23031",
+    "description": "一位牙买加女性穿越国界，走进战争与照护。",
+    "cover": "alice",
+    "sourceLanguage": "en",
+    "originalLanguage": "en",
+    "translation": null,
+    "topics": [
+      "history",
+      "literature"
+    ],
+    "bodyChapters": 20,
+    "opening": "MY BIRTH AND PARENTAGE—EARLY TASTES AND TRAVELS—MARRIAG",
+    "ending": "THE END."
   }
 ]

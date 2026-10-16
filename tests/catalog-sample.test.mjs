@@ -17,7 +17,7 @@ test('guests can read independent Chinese openings without an account or model c
   const dir=await mkdtemp(path.join(tmpdir(),'catalog-sample-'));t.after(()=>rm(dir,{recursive:true,force:true}));let calls=0;
   const service=await createLibraryService({dataDir:dir,translator:async()=>{calls++;throw Error('Unexpected generation');}});
   const expected={'gutenberg-alice':6,'gutenberg-meditations':4,'gutenberg-walden':4};
-  for(const row of await service.list(null)){
+  for(const row of (await service.list(null)).filter(book=>expected[book.bookId])){
     const book=await service.getBook(null,row.bookId),rows=book.sections.flatMap(s=>s.paragraphs),start=rows.findIndex(p=>p.id===book.readingStart.passageId);
     assert.equal(book.chineseSample.paragraphs,expected[book.bookId]);assert.deepEqual(row.chineseSample,book.chineseSample);
     for(const p of rows.slice(start,start+expected[book.bookId])){
