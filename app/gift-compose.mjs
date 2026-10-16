@@ -74,7 +74,7 @@ export function mountGiftComposer({api,dialog,body,getSession,getOwner,show,curr
     function showSealed(gift,{focus=true}={}){
       if(typeof gift.token!=='string'||!/^[A-Za-z0-9_-]{43}$/.test(gift.token))throw Error('赠书链接未能核验，请从已封好的信中重新打开。');
       const url=new URL('/gift/'+gift.token,location.origin).href;
-      setStage('sealed');result.dataset.token=gift.token;result.replaceChildren();const envelope=node('div','gift-sealed-envelope'),sealMark=node('span','gift-sealed-mark','循页');envelope.append(sealMark,node('p','gift-sealed-to',gift.recipient?'致 '+gift.recipient:'致 收信人'),node('p','gift-sealed-book',title(book)),node('p','gift-sealed-from',sender+' 寄'));
+      setStage('sealed');result.dataset.token=gift.token;result.replaceChildren();const envelope=node('div','gift-sealed-envelope'),sealMark=node('span','gift-sealed-mark','Leafhour');envelope.append(sealMark,node('p','gift-sealed-to',gift.recipient?'致 '+gift.recipient:'致 收信人'),node('p','gift-sealed-book',title(book)),node('p','gift-sealed-from',sender+' 寄'));
       const actions=node('div','gift-sealed-actions'),copy=button('复制赠书链接','primary'),open=node('a','text-link','打开这封信');open.href=url;open.target='_blank';open.rel='noopener noreferrer';actions.append(copy,open);
       const linkDetails=node('details','gift-sealed-link'),input=node('input','gift-share-url');linkDetails.append(node('summary','','查看链接'),input);input.value=url;input.readOnly=true;input.setAttribute('aria-label','赠书信链接');
       copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(url);if(active()){copy.textContent='链接已复制';message('信已封好，把链接交给你想送书的人。');}}catch{if(active()){linkDetails.open=true;input.focus();input.select();message('请复制这里的赠书链接。');}}},{signal});

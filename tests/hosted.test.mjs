@@ -56,7 +56,7 @@ test('hosted entry forwards profile and gift routes through the shared portal',a
 });
 test('disabled hosted email never sends an OTP and hosted MCP uses only explicit HTTPS configuration',async()=>{
   const auth=createHostedAuth({env,store:{},fetcher:()=>{throw Error('must not send');}});assert.equal(auth.emailAvailable,false);await assert.rejects(auth.requestCode('reader@example.com'),e=>e.status===503);
-  const config=makeMcpConfiguration({hosted:true,serviceUrl:env.READER_PUBLIC_ORIGIN},'fixture').mcpServers.marginalia;assert.equal(config.command,'npx');assert.equal(config.env.READER_ALLOW_REMOTE,'true');assert.throws(()=>makeMcpConfiguration({hosted:true,serviceUrl:'http://reader.example.com'},'fixture'));
+  const config=makeMcpConfiguration({hosted:true,serviceUrl:env.READER_PUBLIC_ORIGIN},'fixture').mcpServers.leafhour;assert.equal(config.command,'npx');assert.equal(config.env.READER_ALLOW_REMOTE,'true');assert.throws(()=>makeMcpConfiguration({hosted:true,serviceUrl:'http://reader.example.com'},'fixture'));
 });
 test('oversized extracted cloud books are rejected before originals or shelf entries are saved',async()=>{
   const fixture=database(),store=createHostedStore({env,fetcher:fixture.fetcher}),library=await createLibraryService({dataDir:'hosted',catalogDir:null,dataStore:store}),user={id:'large-source'};

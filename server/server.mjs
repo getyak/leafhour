@@ -138,6 +138,6 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1]
   let generator=null;
   if(process.env.DEEPSEEK_API_KEY){const {createHarnessGenerator}=await import('../harness/generator.mjs');generator=await createHarnessGenerator();}
   const server=await createReaderServer({generator,bookPath:process.env.READER_BOOK_PATH?path.resolve(process.env.READER_BOOK_PATH):undefined,publicOrigin:process.env.READER_PUBLIC_ORIGIN||null});
-  server.listen(port,host,()=>console.log('循页已启动：http://'+host+':'+port));
+  server.listen(port,host,()=>console.log('Leafhour已启动：http://'+host+':'+port));
   process.on('SIGTERM',()=>server.close());process.on('SIGINT',()=>server.close());
 }

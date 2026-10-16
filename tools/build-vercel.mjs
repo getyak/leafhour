@@ -22,7 +22,7 @@ await cp(evalsPath, path.join(outputDir, 'evals', 'index.html'));
 
 await writeFile(
   path.join(outputDir, '404.html'),
-  '<!doctype html><meta charset="utf-8"><title>循页</title><p>这个页面不存在。</p>',
+  '<!doctype html><meta charset="utf-8"><title>Leafhour</title><p>这个页面不存在。</p>',
 );
 
 const sourceCommit=await releaseCommit(root,{sourceCommit:process.env.VERCEL_GIT_COMMIT_SHA||process.env.GITHUB_SHA});

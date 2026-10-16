@@ -8,7 +8,7 @@ const local=base.protocol==='http:'&&['127.0.0.1','localhost','[::1]'].includes(
 const remote=base.protocol==='https:'&&process.env.READER_ALLOW_REMOTE==='true';
 if((!local&&!remote)||base.username||base.password||base.pathname!=='/'||base.search||base.hash)throw Error('Use a local reader service, or explicitly enable your configured HTTPS reader.');
 const token=process.env.READER_AGENT_TOKEN;if(!token)throw Error('Create a scoped Agent grant in the reader library and set READER_AGENT_TOKEN.');
-const server=new McpServer({name:'marginalia-reader',version:'0.2.0'});
+const server=new McpServer({name:'leafhour',version:'0.3.0'});
 const bookId=z.string().min(1).max(128).describe('用户授权的书籍 ID，来源于书房或资源 URI。');
 const passageId=z.string().min(1).max(128).optional().describe('可选的稳定段落 ID；省略时读取当前阅读位置。');
 async function request(action,args,method='GET'){

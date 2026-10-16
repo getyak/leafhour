@@ -33,7 +33,7 @@ export async function exportRelease(root,destination,{commit}={}){
     if(!sourceStat.isFile())throw Error('Release entry is not a file: '+file);
     let bytes=await readFile(current);
     if(secret.test(bytes.toString('utf8')))throw Error('Credential pattern in release file: '+file);
-    if(file==='README.md')bytes=Buffer.from(bytes.toString('utf8').replace(/^项目主页：.*$/m,'项目主页：[GitHub](https://github.com/getyak/marginalia-reader)'));
+    if(file==='README.md')bytes=Buffer.from(bytes.toString('utf8').replace(/^项目主页：.*$/m,'项目主页：[GitHub](https://github.com/getyak/leafhour)'));
     const target=path.join(destination,file);await mkdir(path.dirname(target),{recursive:true});
     await writeFile(target,bytes);
     await chmod(target,sourceStat.mode&0o111?0o755:0o644);

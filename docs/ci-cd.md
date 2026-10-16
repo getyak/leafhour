@@ -1,13 +1,13 @@
 # 自动检查与发布
 
-唯一开发仓库是公开的 [getyak/marginalia-reader](https://github.com/getyak/marginalia-reader)。代码、Agent 规范、设计文档、开发计划和验收记录直接在这里维护，功能分支经过 PR 检查后合并到 `main`。不再通过私有主仓库、公开源码镜像或部署镜像中转。
+唯一开发仓库是公开的 [getyak/leafhour](https://github.com/getyak/leafhour)。代码、Agent 规范、设计文档、开发计划和验收记录直接在这里维护，功能分支经过 PR 检查后合并到 `main`。不再通过私有主仓库、公开源码镜像或部署镜像中转。
 
 ```text
 公开仓库：功能分支 → PR 检查 → main → Vercel 验证、构建与部署
                                   ↓
                          Production 等待同一源提交上线
                                   ↓
-                         reader.cubxxw.com 匿名验收
+                         leafhour.com 匿名验收
 ```
 
 `CI` 在 PR 与 `main` 执行 `npm run verify:deploy`：隔离环境中的完整测试、构建、媒体完整性与部署内容检查。用户已授权 Agent 在检查通过后直接合并 PR，无需重复确认；不得绕过失败的检查。

@@ -1,8 +1,10 @@
-# 循页 · Page by Page
+# Leafhour
 
-循页帮助人一点一点读完一本想读的书：今天从上次停下的原句继续，读后留下一点自己的理解，明天再回来。正文保持安静；原文与双译、个人笔记和深读提示在需要时出现。
+**Stay with a book.** Your personal reading room, with AI by your side.
 
-项目在唯一公开仓库 [getyak/marginalia-reader](https://github.com/getyak/marginalia-reader) 开发，代码、设计文档、执行计划与验收记录均采用 AGPL-3.0 开源。默认公版英文原文及来源许可在 `catalog/`，私人书籍、个人译文、笔记、阅读记录和服务端密钥不随源码发布。
+Leafhour 帮助人一点一点读完一本想读的书：今天从上次停下的原句继续，读后留下一点自己的理解，明天再回来。正文保持安静；原文与双译、个人笔记和深读提示在需要时出现。
+
+项目在唯一公开仓库 [getyak/leafhour](https://github.com/getyak/leafhour) 开发，代码、设计文档、执行计划与验收记录均采用 AGPL-3.0 开源。默认公版英文原文及来源许可在 `catalog/`，私人书籍、个人译文、笔记、阅读记录和服务端密钥不随源码发布。
 
 ## 现在能做什么
 
@@ -126,7 +128,7 @@ PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF �
   "mcpServers": {
     "marginalia": {
       "command": "node",
-      "args": ["/absolute/path/to/marginalia-reader/server/mcp.mjs"],
+      "args": ["/absolute/path/to/leafhour/server/mcp.mjs"],
       "env": {
         "READER_SERVICE_URL": "http://127.0.0.1:8330",
         "READER_AGENT_TOKEN": "your-scoped-token"
@@ -136,7 +138,7 @@ PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF �
 }
 ```
 
-工具包括 `reader_get_context`、`reader_get_chapter`、`reader_search`、`reader_get_notes`、`reader_get_reading_activity` 和 `reader_add_comment`。正文、笔记、活动与写评论分别授权；写入只接受明确提供的用户原话，幂等键防止重复保存。Agent 读取不增加阅读时间。本机配置连接环回地址；云端配置通过发布的 `v0.2.0` 源码包启动同一 stdio 适配器，并显式允许配置中的 HTTPS 书房。远程访问仍按书与数据类型授权，拒绝重定向；这不是远程 OAuth MCP 端点。配置生成不代表已在用户 Agent 中安装。
+工具包括 `reader_get_context`、`reader_get_chapter`、`reader_search`、`reader_get_notes`、`reader_get_reading_activity` 和 `reader_add_comment`。正文、笔记、活动与写评论分别授权；写入只接受明确提供的用户原话，幂等键防止重复保存。Agent 读取不增加阅读时间。本机配置连接环回地址；云端配置通过发布的 `v0.3.0` 源码包启动同一 stdio 适配器，并显式允许配置中的 HTTPS 书房。远程访问仍按书与数据类型授权，拒绝重定向；这不是远程 OAuth MCP 端点。配置生成不代表已在用户 Agent 中安装。
 
 ## 私有托管
 
@@ -161,7 +163,9 @@ PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF �
 
 阅读器、数据格式、迁移、导入导出与 Agent 适配可以开源。书籍内容是否可公开取决于书籍授权；软件许可证不会自动授予原书的传播权。个人记录默认只属于部署者自己的实例。
 
-项目主页：[GitHub](https://github.com/getyak/marginalia-reader)
+在线阅读：[leafhour.com](https://leafhour.com)
+
+项目主页：[GitHub](https://github.com/getyak/leafhour)
 
 ## 许可证
 

@@ -72,7 +72,7 @@ function showError(error){
 }
 function present(data){
   gift=data;const bookTitle=data.title?.zh||data.title?.en||'一本书',recipient=data.recipient||'你',sender=data.sender||'一位读者';
-  document.title=bookTitle+' · 一封赠书信 · 循页';
+  document.title=bookTitle+' · 一封赠书信 · Leafhour';
   $('envelope-recipient').textContent=recipient;$('envelope-recipient').title=recipient;$('envelope-sender').textContent=sender;$('arrival-sender').textContent=sender;
   $('letter-salutation').textContent='给'+(data.recipient?' '+data.recipient:'你')+'：';
   $('gift-message').textContent=data.message;$('gift-message').hidden=!data.message;

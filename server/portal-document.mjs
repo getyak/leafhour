@@ -1,7 +1,10 @@
 // Serve the correct public shell on the first paint, even before modules load.
 export function portalDocument(source,pathname){
   if(pathname!=='/library')return source;
-  return source.replace(/<title>[^<]*<\/title>/,'<title>我的书房 · 循页 Page by Page</title>')
+  const privateMetadata=source.includes('<meta name="robots"')?source.replace(/<meta name="robots"[^>]*>/,'<meta name="robots" content="noindex,nofollow">'):source.replace('</head>','<meta name="robots" content="noindex,nofollow"></head>');
+  return privateMetadata.replace(/<title>[^<]*<\/title>/,'<title>我的书房 · Leafhour</title>')
+    .replace('<link rel="canonical" href="https://leafhour.com/">','<link rel="canonical" href="https://leafhour.com/library">')
+    .replace('<meta property="og:url" content="https://leafhour.com/">','<meta property="og:url" content="https://leafhour.com/library">')
     .replace('<body>','<body class="library-page">')
     .replace('<div id="home-view">','<div id="home-view" hidden>')
     .replace('<div id="library-view" hidden>','<div id="library-view">')
