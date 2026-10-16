@@ -54,7 +54,7 @@ test('volume or narration changes made while recordings load reach the accepted 
 // Run the real UI controller; only the DOM and the audio device are stand-ins.
 const controller=await readFile(new URL('../app/reader-atmosphere.js',import.meta.url),'utf8');
 function readerFixture({saved=null,reduced=false,delayed=false}={}){
-  const elements=new Map(),started=[],stopped=[],pending=[];
+  const elements=new Map(),started=[],stopped=[],pending=[],hearthMotion=[];
   class Element extends EventTarget{
     constructor(){super();this.dataset={};this.attributes=new Map();this.children=[];this.firstElementChild={};}
     setAttribute(name,value){this.attributes.set(name,value);}
@@ -68,7 +68,8 @@ function readerFixture({saved=null,reduced=false,delayed=false}={}){
   }
   for(const id of ['open-atmosphere','settings-atmosphere','settings-dialog','atmosphere-quick-pause',...['toggle','status','scene','levels','music','music-value','nature','nature-value','motion','motion-hint'].map(name=>'settings-atmosphere-'+name)])elements.set(id,new Element());
   const motion=new EventTarget();motion.matches=reduced;
-  const doc=new EventTarget();Object.assign(doc,{hidden:false,documentElement:new Element(),body:new Element(),createElement:()=>new Element(),getElementById:id=>elements.get(id),querySelectorAll:()=>[]});
+  const hosts=[false,true].map(preview=>{const host=new Element();host.classList={contains:name=>name==='atmosphere-preview'&&preview};return host;});
+  const doc=new EventTarget();Object.assign(doc,{hidden:false,documentElement:new Element(),body:new Element(),createElement:()=>new Element(),getElementById:id=>elements.get(id),querySelectorAll:selector=>selector==='.atmosphere-backdrop,.atmosphere-preview'?hosts:[]});
   const win=new EventTarget();win.matchMedia=()=>motion;
   const storage=new Map(saved?[['marginalia-atmosphere-v1',JSON.stringify(saved)]]:[]);
   const engine={start:async(scene,getMix)=>{
@@ -77,11 +78,12 @@ function readerFixture({saved=null,reduced=false,delayed=false}={}){
   }};
   vm.runInNewContext(controller.replace(/^import .*;\n/gm,''),{document:doc,window:win,location:{search:''},URLSearchParams,
     localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)},readerStorageKey:key=>key,
-    atmospheres,normalizeAtmosphere,atmosphereMix,createAtmosphereSession,createAtmosphereAudio:()=>engine,requestAnimationFrame:fn=>fn()});
+    atmospheres,normalizeAtmosphere,atmosphereMix,createAtmosphereSession,createAtmosphereAudio:()=>engine,
+    createHearthMotion:()=>{const layer={active:false,setActive(value){this.active=!!value;}};hearthMotion.push(layer);return layer;},requestAnimationFrame:fn=>fn()});
   const dialog=doc.body.children[0],root=doc.documentElement,$=id=>elements.get(id);
   const tick=()=>new Promise(resolve=>setImmediate(resolve));
   const choose=async id=>{(id==='none'?$('atmosphere-none'):dialog.querySelectorAll().find(button=>button.dataset.scene===id)).dispatchEvent(new Event('click'));await tick();};
-  return {doc,win,root,dialog,motion,$,started,stopped,pending,storage,tick,choose};
+  return {doc,win,root,dialog,motion,$,started,stopped,pending,storage,tick,choose,hearthMotion};
 }
 
 test('selecting a scene starts its matching sound immediately, including after an explicit pause',async()=>{
@@ -146,4 +148,21 @@ test('a background load may finish playing; an explicit pause stays paused on re
   f.doc.hidden=false;f.doc.dispatchEvent(new Event('visibilitychange'));assert.equal(f.dialog.dataset.playback,'paused');assert.equal(f.started.length,1);
   await f.choose('sea');f.pending[1]();await f.tick();f.win.dispatchEvent(new Event('pagehide'));
   assert.equal(f.dialog.dataset.playback,'paused');assert.deepEqual(f.stopped,['rain','sea']);
+});
+
+test('the hearth controller starts only visible layers and stops them for motion preferences, other scenes and page exit',async()=>{
+  const f=readerFixture({saved:{scene:'hearth',motion:true}}),active=()=>f.hearthMotion?.map(layer=>layer.active);
+  assert.deepEqual(active(),[true,false]);
+  f.$('open-atmosphere').dispatchEvent(new Event('click'));assert.deepEqual(active(),[true,true]);
+  f.dialog.close();assert.deepEqual(active(),[true,false]);
+  f.doc.hidden=true;f.doc.dispatchEvent(new Event('visibilitychange'));assert.deepEqual(active(),[false,false]);
+  f.doc.hidden=false;f.doc.dispatchEvent(new Event('visibilitychange'));assert.deepEqual(active(),[true,false]);
+  f.motion.matches=true;f.motion.dispatchEvent(new Event('change'));assert.deepEqual(active(),[false,false]);
+  f.motion.matches=false;f.motion.dispatchEvent(new Event('change'));assert.deepEqual(active(),[true,false]);
+  f.$('atmosphere-motion').checked=false;f.$('atmosphere-motion').dispatchEvent(new Event('change'));assert.deepEqual(active(),[false,false]);
+  f.$('atmosphere-motion').checked=true;f.$('atmosphere-motion').dispatchEvent(new Event('change'));assert.deepEqual(active(),[true,false]);
+  await f.choose('rain');assert.deepEqual(active(),[false,false]);
+  await f.choose('hearth');assert.deepEqual(active(),[true,false]);
+  f.win.dispatchEvent(new Event('pagehide'));assert.deepEqual(active(),[false,false]);
+  f.win.dispatchEvent(new Event('pageshow'));assert.deepEqual(active(),[true,false]);
 });
