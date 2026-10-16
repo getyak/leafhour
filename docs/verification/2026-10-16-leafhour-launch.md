@@ -42,9 +42,9 @@ The former host remains available for unsynced browser drafts and compatible rec
 
 ## Account and data continuity
 
-Before and after the brand launch, the existing default account successfully used the actual password endpoint through an in-memory client and its secure credential reference. Account identity, all ten book IDs, 209 comments, two highlights, and record fingerprints matched. Fingerprints and private records stayed in ignored local evidence.
+Before and after the brand launch, the existing default account successfully used the actual password endpoint through an in-memory client and its secure credential reference. Account identity, book inventory, and personal-record fingerprints matched. Usage counts, fingerprints, and private records stayed in ignored local evidence.
 
-The later real browser email-code and password checks opened the same default account and confirmed its login email and ten-book room count. The layout showed one featured book and nine remaining shelf cards. The account password was not changed, and these checks did not upload books or alter the default account's notes, highlights or progress.
+The later real browser email-code and password checks opened the same default account and confirmed its login identity and complete book inventory, including the featured book and remaining shelf cards. The account password was not changed, and these checks did not upload books or alter the default account's notes, highlights or progress.
 
 Internal cookies, storage keys, book/paragraph IDs, export schema kinds, and the legacy `marginalia-mcp` binary remain compatible. User-visible package/export naming is Leafhour. The user's original checkout remains clean at `d7eb1e3435c9e1323b7033a7ba3ee85523b7c84c`; task changes and ignored evidence were prepared in the isolated launch worktree.
 
