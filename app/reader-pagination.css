@@ -40,7 +40,7 @@ body[data-paginated=true] .note-panel{position:fixed;inset:90px 24px auto auto;w
  body[data-paginated=true] .chapter-heading h1{font-size:15px}
  .page-turner{min-height:44px}
 }
-@media(max-height:500px) and (max-width:600px){body[data-paginated=true] .book-page{padding-bottom:76px}}
+@media(max-height:500px) and (max-width:600px){body[data-paginated=true] .book-page,body.is-focused[data-paginated=true] .book-page{padding-bottom:76px}}
 @media print{
  body[data-paginated=true]{overflow:visible}
  body[data-paginated=true] .book-page{height:auto;display:block;width:auto}
