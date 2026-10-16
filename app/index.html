@@ -1,13 +1,14 @@
 <!doctype html>
 <html lang="zh-Hans" data-theme="paper">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>循页 · 阅读</title><link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><link rel="stylesheet" href="/reading-flow.css"><link rel="stylesheet" href="/library-chat.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script><link rel="stylesheet" href="/reading-arrival.css"><script type="module" src="/reading-arrival.mjs"></script><link rel="stylesheet" href="/reader-atmosphere.css"><link rel="stylesheet" href="/reader-navigation.css"><link rel="stylesheet" href="/parallel-reading.css"><link rel="stylesheet" href="/reader-pagination.css"><link rel="stylesheet" href="/reader-audio.css"><link rel="stylesheet" href="/reader-settings.css"><link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="robots" content="noindex,nofollow,noarchive"><title>Leafhour · 阅读</title><link rel="icon" href="/brand-assets/leafhour-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><link rel="stylesheet" href="/reading-flow.css"><link rel="stylesheet" href="/library-chat.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script><link rel="stylesheet" href="/reading-arrival.css"><script type="module" src="/reading-arrival.mjs"></script><link rel="stylesheet" href="/reader-atmosphere.css"><link rel="stylesheet" href="/reader-navigation.css"><link rel="stylesheet" href="/parallel-reading.css"><link rel="stylesheet" href="/reader-pagination.css"><link rel="stylesheet" href="/reader-audio.css"><link rel="stylesheet" href="/reader-settings.css"><link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script><link rel="stylesheet" href="/leafhour-brand.css">
+</head>
 <body class="is-focused" data-reading-tools="closed">
   <div class="atmosphere-backdrop" aria-hidden="true"><div class="atmosphere-elements"></div></div>
   <script type="module" src="/reader-atmosphere.js"></script>
   <a href="#book-page" class="skip-link">跳到正文</a>
   <header id="reading-header" class="reading-header" inert aria-hidden="true">
     <nav class="reader-navigation" aria-label="阅读导航"><a href="/library" class="reader-nav-item" aria-label="返回书房"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12 5l-5 5 5 5"/></svg><span class="reader-home-label">书房</span></a><span class="reader-nav-divider" aria-hidden="true"></span><button id="open-toc" class="reader-nav-item" disabled aria-controls="toc-dialog" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M4 10h8M4 15h12"/></svg><span>目录</span></button></nav>
-    <button id="open-book-info" class="running-title" type="button" popovertarget="book-info" aria-haspopup="dialog" aria-controls="book-info" aria-expanded="false" disabled><span id="running-book-title">循页</span><span id="running-chapter"></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5 6 3 3 3-3"/></svg></button>
+    <button id="open-book-info" class="running-title" type="button" popovertarget="book-info" aria-haspopup="dialog" aria-controls="book-info" aria-expanded="false" disabled><span id="running-book-title">Leafhour</span><span id="running-chapter"></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5 6 3 3 3-3"/></svg></button>
     <div class="header-actions"><div class="atmosphere-header-control"><button id="open-atmosphere" class="quiet-button" aria-haspopup="dialog" aria-controls="atmosphere-dialog" aria-label="阅读氛围">氛围</button><button id="atmosphere-quick-pause" class="quiet-button" aria-label="暂停氛围声音" hidden>Ⅱ</button></div><button id="open-settings" aria-controls="settings-dialog" aria-expanded="false" class="quiet-button typography-button" aria-label="阅读设置" aria-haspopup="dialog">Aa</button><button id="enter-focus" class="quiet-button">专注</button></div>
   </header>
   <script type="module" src="/reader-audio.js"></script>
@@ -35,7 +36,7 @@
     </div>
   </section>
   <dialog id="reading-guide" class="reading-dialog" aria-labelledby="reading-guide-title">
-    <header><div><p class="reading-dialog-kicker">循页 · 深读提示</p><h2 id="reading-guide-title">从一个问题开始。</h2></div><button data-reading-close="reading-guide" aria-label="关闭深读提示">×</button></header>
+    <header><div><p class="reading-dialog-kicker">Leafhour · 深读提示</p><h2 id="reading-guide-title">从一个问题开始。</h2></div><button data-reading-close="reading-guide" aria-label="关闭深读提示">×</button></header>
     <p id="guide-session-state" class="reading-guide-reference" hidden>计时已暂停，回到阅读后继续。</p><div class="reading-source"><p id="guide-source-label"></p><blockquote id="guide-source"></blockquote></div>
     <div class="reading-guide-steps"><section><h3>带着问题读</h3><p>先想一想，这一节想回答什么。把自己的疑问带进接下来的几页。</p></section><section><h3>合上书，用自己的话说</h3><p>暂时移开目光，试着说清刚才读到的意思。一句话也可以。</p></section><section><h3>回到原文核对</h3><p>再看作者实际写了什么。哪些是原文，哪些是自己的推断？难句可以对照译文。</p></section><section><h3>留住还没想通的地方</h3><p>记下问题，下次从这里继续。读小说也可以只留住一个场景或一种感受。</p></section></div>
     <p class="reading-guide-reference">教材阅读的提问、复述与回顾，参考 <a href="https://lsc.cornell.edu/how-to-study/reading-strategies/textbook-reading-systems/" target="_blank" rel="noopener noreferrer">Cornell 阅读策略 ↗</a>。这些是可选提示，按书和自己的节奏选择。</p>
@@ -65,11 +66,11 @@
   </aside>
   <section id="book-info" class="book-info" popover="auto" role="dialog" aria-labelledby="book-info-title" tabindex="-1">
     <header class="book-info-heading"><span>关于这本书</span><button id="close-book-info" class="reader-surface-close" aria-label="关闭书籍介绍"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 6 8 8M14 6l-8 8"/></svg></button></header>
-    <div class="book-info-identity"><div class="book-info-cover" aria-hidden="true"><span>循页</span><strong id="book-info-cover-title"></strong><i>❦</i></div><div><h2 id="book-info-title"></h2><p id="book-info-original-title" class="book-info-original"></p><p id="book-info-author" class="book-info-author"></p></div></div>
+    <div class="book-info-identity"><div class="book-info-cover" aria-hidden="true"><span>Leafhour</span><strong id="book-info-cover-title"></strong><i>❦</i></div><div><h2 id="book-info-title"></h2><p id="book-info-original-title" class="book-info-original"></p><p id="book-info-author" class="book-info-author"></p></div></div>
     <p id="book-info-description" class="book-info-description"></p><p id="book-info-current" class="book-info-current"></p><p id="book-info-sample" class="book-info-sample"></p>
     <footer class="book-info-footer"><span id="book-info-extent"></span><a id="book-info-source" target="_blank" rel="noopener noreferrer" hidden>原文出处 <span aria-hidden="true">↗</span></a></footer>
   </section>
-  <dialog id="toc-dialog" class="toc-dialog" aria-labelledby="toc-heading-title"><header class="toc-heading"><div><p id="toc-book-title">循页</p><h2 id="toc-heading-title">全书目录</h2></div><button data-close-dialog="toc-dialog" class="reader-surface-close" aria-label="关闭目录"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 6 8 8M14 6l-8 8"/></svg></button></header><nav id="toc-list" aria-label="全书目录"></nav></dialog>
+  <dialog id="toc-dialog" class="toc-dialog" aria-labelledby="toc-heading-title"><header class="toc-heading"><div><p id="toc-book-title">Leafhour</p><h2 id="toc-heading-title">全书目录</h2></div><button data-close-dialog="toc-dialog" class="reader-surface-close" aria-label="关闭目录"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 6 8 8M14 6l-8 8"/></svg></button></header><nav id="toc-list" aria-label="全书目录"></nav></dialog>
   <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title">
     <header class="dialog-heading"><div><h2 id="settings-title">你的阅读方式</h2><p>把这一页，调成喜欢的样子。</p></div><button data-close-dialog="settings-dialog" class="quiet-button" aria-label="关闭阅读设置">关闭</button></header>
     <nav class="settings-tabs" role="tablist" aria-label="阅读设置分类">
@@ -139,7 +140,7 @@
   </dialog>
   <dialog id="share-dialog" class="share-dialog" aria-labelledby="share-title">
     <div class="share-shell">
-      <header class="share-heading"><h2 id="share-title">留住这句话<span>循页 · 摘录</span></h2><button id="share-close" class="quiet-button">返回阅读</button></header>
+      <header class="share-heading"><h2 id="share-title">留住这句话<span>Leafhour · 摘录</span></h2><button id="share-close" class="quiet-button">返回阅读</button></header>
       <div class="share-workspace">
         <figure class="share-stage"><canvas id="share-canvas" role="img" aria-labelledby="share-preview-description"></canvas><figcaption id="share-dimensions"></figcaption><p id="share-preview-description" class="visually-hidden"></p></figure>
         <section class="share-controls" aria-label="分享图片配置">

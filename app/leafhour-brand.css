@@ -1,0 +1,140 @@
+/* Leafhour's wordmark and single-colour page/leaf/hour mark.
+   Reader colours and reading preferences remain owned by their existing themes. */
+:root {
+  --leafhour-serif: "Iowan Old Style", "Baskerville", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+}
+.brand { gap: 8px; }
+.brand .brand-mark,
+.library-page .site-header .sidebar-brand .brand-mark {
+  display: block;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  color: currentColor;
+}
+.brand .brand-mark::after { content: none; }
+.brand .brand-mark svg { display: block; width: 100%; height: 100%; }
+.brand .brand-name,
+.library-page .site-header .sidebar-brand .brand-name {
+  font: 400 32px/1.1 var(--leafhour-serif);
+  letter-spacing: -.045em;
+  white-space: nowrap;
+}
+.site-header .brand { color: var(--ink); }
+.site-header #account-button { gap: 9px; }
+.site-footer .brand .brand-name { font-size: 27px; }
+.site-footer .brand .brand-mark { width: 30px; height: 30px; }
+.library-page .site-header .sidebar-brand .brand-name { font-size: 28px; }
+.library-page .site-header .sidebar-brand .brand-mark { width: 30px; height: 30px; }
+.library-mobile-bar .brand .brand-name { font-size: 29px; }
+
+#home-view .hero-copy h1 {
+  font: 400 clamp(72px, 7.2vw, 106px)/1.02 var(--leafhour-serif);
+  letter-spacing: -.05em;
+  color: var(--ink);
+  margin: 8px 0 27px;
+}
+#home-view .hero-copy h1 .hero-line { display: block; }
+#home-view .hero-description {
+  margin: 0;
+  font: 400 clamp(19px, 1.65vw, 23px)/1.65 var(--serif);
+  color: var(--ink);
+}
+#home-view .hero-detail {
+  font: 14px/1.9 var(--sans);
+  color: var(--muted);
+  margin: 13px 0 0;
+}
+#home-view .hero-footnote { max-width: 30em; line-height: 1.8; }
+#home-view .reading-promise p { max-width: 34em; line-height: 1.7; }
+.closing .closing-page {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 0;
+  transform: none;
+  background: var(--accent);
+  mask: url('/brand-assets/leafhour-mark.svg') center / contain no-repeat;
+  -webkit-mask: url('/brand-assets/leafhour-mark.svg') center / contain no-repeat;
+}
+.closing .closing-page::after { content: none; }
+
+.auth-brand { align-items: center; gap: 7px; }
+.auth-brand > svg { width: 29px; height: 29px; flex: none; }
+.auth-brand > span { font: 400 28px/1.1 var(--leafhour-serif); letter-spacing: -.045em; }
+.settings-panel .settings-brand-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font: 400 33px/1.2 var(--leafhour-serif);
+  letter-spacing: -.045em;
+  margin-bottom: 13px;
+}
+.settings-brand-title .settings-brand-mark {
+  display: block;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  background: currentColor;
+  mask: url('/brand-assets/leafhour-mark.svg') center / contain no-repeat;
+  -webkit-mask: url('/brand-assets/leafhour-mark.svg') center / contain no-repeat;
+}
+.settings-brand-promise { font: 24px/1.4 var(--leafhour-serif); letter-spacing: -.02em; margin: 0 0 19px; }
+.book-info-cover > span { font-family: var(--leafhour-serif); font-size: 10px; letter-spacing: -.015em; }
+
+.gift-brand { gap: 7px; }
+.gift-brand > svg { width: 34px; height: 34px; stroke-width: 2; }
+.gift-brand > span { font: 400 31px/1.1 var(--leafhour-serif); letter-spacing: -.045em; }
+.gift-site-footer > a { font: 22px/1.2 var(--leafhour-serif); letter-spacing: -.035em; }
+.envelope-postmark > span { left: 21px; top: 24px; font: 16px/1.2 var(--leafhour-serif); letter-spacing: -.04em; }
+.envelope-stamp > svg { width: 34px; height: 34px; stroke-width: 1.8; }
+.envelope-stamp small { font: 11px/1.4 var(--leafhour-serif); letter-spacing: -.035em; }
+.gift-seal > svg { width: 32px; height: 32px; stroke-width: 1.8; }
+.letter-mark { font: 20px/1.4 var(--leafhour-serif); letter-spacing: -.035em; }
+.gift-sealed-mark { font-size: 0; }
+.gift-sealed-mark::after {
+  content: '';
+  display: block;
+  width: 29px;
+  height: 29px;
+  background: currentColor;
+  mask: url('/brand-assets/leafhour-mark.svg') center / contain no-repeat;
+  -webkit-mask: url('/brand-assets/leafhour-mark.svg') center / contain no-repeat;
+}
+
+@media (max-width: 980px) and (min-width: 761px) {
+  #home-view .hero-copy h1 { font-size: clamp(66px, 8.4vw, 80px); }
+}
+@media (max-width: 760px) {
+  .brand .brand-name { font-size: 30px; }
+  .brand .brand-mark { width: 32px; height: 32px; }
+  #home-view .hero-copy h1 { font-size: clamp(68px, 15vw, 88px); line-height: 1.02; margin: 17px 0 21px; }
+  #home-view .hero-description { font-size: 21px; }
+  #home-view .hero-detail { font-size: 14px; margin-top: 9px; }
+  #home-view .hero-actions { margin-top: 24px; }
+  #home-view .hero-footnote { font-size: 11px; }
+  #home-view .reading-promise { align-items: start; gap: 12px; }
+  #home-view .reading-promise p { flex: 1 1 200px; margin: 8px 0; }
+  #home-view .reading-promise a { flex: none; }
+  .gift-brand > span { font-size: 29px; }
+  .gift-brand > svg { width: 30px; height: 30px; }
+  .envelope-postmark > span { left: 18px; top: 19px; font-size: 13px; }
+  .envelope-stamp > svg { width: 27px; height: 27px; }
+  .envelope-stamp small { font-size: 9px; }
+  .gift-site-footer > a { font-size: 20px; }
+}
+@media (max-width: 400px) {
+  .site-header .brand { gap: 5px; }
+  .site-header .brand .brand-name { font-size: 28px; }
+  .site-header .brand .brand-mark { width: 28px; height: 28px; }
+  #home-view .hero-copy h1 { font-size: clamp(58px, 17.4vw, 68px); }
+  #home-view .hero-description { font-size: 20px; }
+  #home-view .hero-detail { font-size: 13px; }
+}
+@media (forced-colors: active) {
+  .closing .closing-page,
+  .gift-sealed-mark::after,
+  .settings-brand-title .settings-brand-mark { background: CanvasText; }
+}

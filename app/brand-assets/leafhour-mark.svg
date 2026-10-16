@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none" stroke="#365b45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <style>@media(prefers-color-scheme:dark){svg{stroke:#c4d5b8}}</style>
+  <path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/>
+  <path d="M16 23h7v-9"/>
+</svg>

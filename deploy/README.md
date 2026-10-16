@@ -16,7 +16,7 @@ Linux x64 托管运行包同时携带固定的官方 Node 22.23.3 二进制和�
 
 Resend 先验证自己的发件域名。按控制台返回的真实类型和内容添加发信用途的 DNS 记录；用于域名验证的 CNAME 保持 DNS only。保留现有邮箱接收记录，不要把根域的接收 MX 改成 Resend。使用仅限该域名的发信密钥，在 Supabase Auth 的 Custom SMTP 设置 `smtp.resend.com`、端口 `465`、用户名 `resend`、密码为该密钥，发件名称和地址使用自己的产品配置。将 `deploy/auth-email.html` 同时用于确认注册与 Magic Link 模板，两个模板都要保留实际 `{{ .Token }}`。在 Supabase 设置 `mailer_otp_length=6`、`mailer_otp_exp=600`、`smtp_max_frequency=60`，邮件发送额度与本站每小时三十次总额度匹配。真实收信、验证和退出通过后，再设 `READER_EMAIL_ENABLED=true`。
 
-将 `deploy/auth-recovery-email.html` 用于 Reset Password 邮件模板，标题可设为“循页 · 重设密码验证码”。模板必须包含 `{{ .Token }}`，默认重设链接无法填入本站的验证码表单。设置密码需要当前会话与本次验证返回的独立凭据同时匹配，十分钟内有效；普通登录会话不能调用改密入口。凭据在首次派发改密前消费，响应不确定时需重新验证，避免重复修改。
+将 `deploy/auth-recovery-email.html` 用于 Reset Password 邮件模板，标题可设为“Leafhour · Reset your password / 重设密码验证码”。模板必须包含 `{{ .Token }}`，默认重设链接无法填入本站的验证码表单。设置密码需要当前会话与本次验证返回的独立凭据同时匹配，十分钟内有效；普通登录会话不能调用改密入口。凭据在首次派发改密前消费，响应不确定时需重新验证，避免重复修改。
 
 Google 与 Apple 从 Supabase 公共能力配置读取实际启用状态，未配置的入口显示“准备中”。Google 使用网站 OAuth 客户端，授权来源为本站正式 HTTPS 来源，授权回调为 `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback`，只申请登录所需的身份资料。Supabase 的 Site URL 设为本站正式来源，额外跳转白名单加入精确的 `https://YOUR_READER/api/auth/callback`；浏览器不保存供应商令牌。本站用一次性事务、浏览器 Cookie 和 PKCE 交换授权码，成功后继续使用随机会话 Cookie。
 
@@ -30,8 +30,18 @@ PDF / TXT / Markdown 原文件通过短期签名直接上传私人存储，避�
 
 笔记、位置、译文与授权使用数据库版本比较写入，跨 Vercel 实例不会靠进程内队列猜顺序。按段翻译全服务最多同时两项；每个账户每小时最多 10 项、每天 50 项，全服务每小时 100 项、每天 500 项。失败请求也占用额度，以限制重复计费。限制不是订阅或购买。
 
-网页与 MCP 共用授权，云端接入配置从开源 `v0.2.0` 包启动 stdio 客户端，显式连接 HTTPS 书房。令牌按指定书与正文、笔记、阅读活动、写评论范围生效，七天过期，可撤回。
+网页与 MCP 共用授权，云端接入配置从开源 `v0.3.0` 包启动 stdio 客户端，显式连接 HTTPS 书房。令牌按指定书与正文、笔记、阅读活动、写评论范围生效，七天过期，可撤回。
 
 Vercel 的 JSON 请求和响应仍受平台限制（当前 4.5 MB）；网页整库导出使用带SHA256校验的逐书分段传输，每份响应最多1MiB原始字节，浏览器合成普通JSON。旧整库导出接口供现有本机客户端兼容，仍受托管响应上限约束。单份备份最多100本；云端恢复仍受单书、单次请求与文档上限约束，特别大的单本备份应在本机恢复。原文件上传走直接存储通道，20 MB 上传不经过函数请求体。
 
 发布前运行 `npm run verify:deploy`，执行测试、构建与发布边界检查；`release-files.json` 和 `.vercelignore` 共同限定发布内容，排除私人资料、记录与凭据。源代码与开发文档统一在公开仓库维护，Vercel 直接连接该仓库的 `main`；不再同步源码或部署镜像。发布流程与回退方式见 [自动检查与发布](../docs/ci-cd.md)。正式域名更新后，自动检查源提交与匿名访问；账户隔离、原件校验、并发记录和授权撤回仍需另外验收。
+
+## Leafhour production domain
+
+The managed service uses `https://leafhour.com`. Set `READER_PUBLIC_ORIGIN` to that exact origin and allow `https://leafhour.com/api/auth/callback` in Supabase. Keep the provider callback at the existing Supabase project; update Google web origin and Apple web domain/Private Email Relay sources separately. The user's self-hosted installation must use its own origin and provider configuration.
+
+Before selecting `Leafhour <hello@leafhour.com>` as SMTP sender, verify its Resend domain with the provider's exact DKIM and SPF records, retain the existing SMTP credential, and apply both source templates. Confirmation and magic-link subjects: `Leafhour · Your verification code / 邮箱验证码`; recovery: `Leafhour · Reset your password / 重设密码`. Keep six-digit, ten-minute codes and the existing rate limits. A successful send response does not prove inbox delivery.
+
+Changing the origin requires a fresh sign-in; the account ID and stored library remain stable. Local browser drafts belong to each origin. Preserve access to the former host for recovering or exporting unsynced drafts. Do not configure a blanket redirect that forwards posted passwords or authorization codes. See `docs/superpowers/specs/2026-10-16-leafhour-brand-launch-design.md` for the design and launch gates.
+
+For the Leafhour transition, set `READER_ADDITIONAL_WEB_ORIGINS=https://reader.cubxxw.com` in the production environment. This is an explicit HTTPS-origin allowlist for legacy password/email login and draft recovery; it never changes the canonical OAuth callback. Extra origins with paths, wildcards, credentials, query/fragment, or plain HTTP are rejected. Third-party buttons are hidden on noncanonical hosts, and OAuth starts there are rejected before provider state is created. Neither the request Host nor forwarded-origin headers grant authorization.

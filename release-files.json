@@ -322,5 +322,10 @@
   "tests/gift-compose-ui.test.mjs",
   "app/highlights.mjs",
   "app/reader-highlights.mjs",
-  "tests/highlights.test.mjs"
+  "tests/highlights.test.mjs",
+  "app/leafhour-brand.css",
+  "app/brand-assets/leafhour-mark.svg",
+  "app/brand-assets/leafhour-social.svg",
+  "app/brand-assets/leafhour-social.png",
+  ".github/workflows/production.yml"
 ]

@@ -1,4 +1,4 @@
-const base=process.env.READER_URL||'https://reader.cubxxw.com',expected=process.env.EXPECTED_SOURCE_COMMIT;
+const base=process.env.READER_URL||'https://leafhour.com',expected=process.env.EXPECTED_SOURCE_COMMIT;
 const deadline=Date.now()+Number(process.env.RELEASE_WAIT_SECONDS||600)*1000;
 async function get(route){const response=await fetch(new URL(route,base),{signal:AbortSignal.timeout(15000),headers:{'Cache-Control':'no-cache'}});if(!response.ok)throw Error(route+' returned '+response.status);return response;}
 if(expected){

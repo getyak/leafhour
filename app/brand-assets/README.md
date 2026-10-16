@@ -1,10 +1,10 @@
-# Page by Page artwork
+# Leafhour artwork
 
 Created for this project on 2026-10-15 with the builtin OpenAI image generation tool, using text-to-image generation. These are original brand illustrations, not product screenshots or evidence of a person's reading.
 
 - `reading-window.webp`: natural morning light on an open book, deep green cloth cover, a stone window ledge and a quiet garden; no readable text, people, UI, or third-party branding. Landscape composition for the homepage.
 - `page-detail.webp`: close view of a lifted paper page, a slim bookmark and a green cloth spine, in the same quiet natural-light palette. Portrait composition for the daily reading story.
-- `page-mark.svg`: hand-authored vector mark suggesting an open book and a returning page; used as the site icon. It is not copied from the reference brands.
+- The original hand-authored page icon was replaced by the Leafhour identity on 2026-10-16; `page-mark.svg` remains a compatibility URL, documented below.
 
 The descriptions above are summaries of the generation briefs. Original generated PNGs are retained in the local verification archive, excluded from publishing. Delivery WebPs use cwebp quality84 for the hero and quality88 for the detail, method6, without metadata: encoding only, no semantic image editing. Hero163634bytes; detail119462bytes. Public reference sites informed design principles; their images, logos and fonts were not copied.
 
@@ -32,3 +32,16 @@ Exact generation prompt:
 ## Gift stationery, 2026-10-16
 
 `envelope-edge.svg` and `letter-edge.svg` are original hand-authored vector alpha masks. The envelope has a subtly uneven cut; the letter combines a rough outline and varied postal perforations. They reuse the existing paper material without copying reference artwork. The stamp and seal reuse the project's own page mark. Chinese personal notes use available system Kaiti fonts, with the existing serif fallback; no font service is contacted.
+
+## Leafhour identity, 2026-10-16
+
+The global brand is **Leafhour**, with the line **Stay with a book.** The current interface remains Chinese. Existing natural-light illustrations and paper textures stay in use; this rename does not change their provenance.
+
+- `leafhour-mark.svg`: original hand-authored, one-colour mark. The silhouette combines a page's square corner with the round growth of a leaf; the two inner strokes suggest clock hands. Its 40-unit canvas supplies at least seven units of clear space around the main silhouette. Use the complete shape without stretching, extra outlines or rotation. The visible mark remains legible at 16px; use at least 24px in interface headers. The favicon adapts its ink to the device colour scheme.
+- `page-mark.svg`: identical compatibility alias for existing icon URLs. New surfaces use `leafhour-mark.svg`.
+- `leafhour-social.svg`: editable, original 1200×630 vector layout of the wordmark, promise and emblem. It uses paper `#F7F5EF`, ink `#263B32` and forest `#365B45`; it contains no third-party image or logo.
+- `leafhour-social.png`: deterministic PNG rendering of that SVG for social previews. It is a brand graphic, not a screenshot or evidence of a product feature.
+
+The Leafhour wordmark uses the available system Iowan Old Style, Baskerville, Palatino, Book Antiqua or Georgia serif. Interface copy keeps the existing system sans and Chinese serif stacks. No remote font is downloaded. Inline marks inherit their surrounding text colour, including reader and dark themes. The shared identity rules are in `app/leafhour-brand.css`; the reading workspace continues to own its colour and layout preferences.
+
+The wordmark and emblem are original and not copied from the AI-company references. Their consistency, clear space and small-scale legibility follow the design principles recorded in the approved launch design. No new animated brand treatment was added; existing reduced-motion and light controls remain effective.

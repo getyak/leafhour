@@ -26,7 +26,7 @@ function draw(){
   setFont(27,'zh');context.fillStyle=colors.ink;context.fillText(model.title,104,layout.footerY);
   setFont(20,'en');context.fillStyle=colors.muted;context.fillText(model.author,104,layout.footerY+43);
   setFont(17,'ui');context.fillText(model.location+' · '+model.attribution,104,layout.footerY+81);
-  context.textAlign='right';setFont(19,'zh');context.fillText('循页',layout.width-104,layout.footerY+3);context.textAlign='left';
+  context.textAlign='right';setFont(19,'en');context.fillText('Leafhour',layout.width-104,layout.footerY+3);context.textAlign='left';
  }
  $('share-dimensions').textContent=layout.width+' × '+layout.height+' · PNG'+(layout.extended?' · 已延展以保留全文':'');
  $('share-preview-description').textContent=model.blocks.map(b=>b.primary.text+(b.secondary?'\n'+b.secondary.label+'：'+b.secondary.text:'')).join('\n\n');
@@ -56,7 +56,7 @@ function openShare(whole=false){
  }catch(error){$('announcement').textContent=error.message||'请先选择正文。';}
 }
 function png(){if(!dialog.open||!layout||renderedVersion!==renderVersion)return Promise.reject(Error('请等待预览生成。'));return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(Error('图片暂时无法保存。')),'image/png'));}
-function filename(){return (layout.options.source?model.title.replace(/[\\/:*?"<>|]/g,'').slice(0,40)||'循页':'循页')+'-摘录.png';}
+function filename(){return (layout.options.source?model.title.replace(/[\\/:*?"<>|]/g,'').slice(0,40)||'Leafhour':'Leafhour')+'-摘录.png';}
 async function download(){const blob=await png(),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename();document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);status('图片已交给浏览器保存。');}
 $('share-download').addEventListener('click',async()=>{if(pending)return;pending=true;controlsBusy(true);try{await download();}catch(e){status(e.message,true);}finally{pending=false;if(renderedVersion===renderVersion)controlsBusy(false);}});
 $('share-copy').hidden=!window.ClipboardItem||!navigator.clipboard?.write;

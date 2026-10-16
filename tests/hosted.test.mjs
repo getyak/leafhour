@@ -5,6 +5,7 @@ import {createHostedAuth} from '../deploy/hosted-auth.mjs';
 import {createHostedHandler} from '../api/[...path].js';
 import {createLibraryService} from '../server/library-service.mjs';
 import {makeMcpConfiguration} from '../app/mcp-config.mjs';
+import {authFixture} from './auth-fixture.mjs';
 
 const env={SUPABASE_URL:'https://storage.example.com',SUPABASE_SECRET_KEY:'server-fixture',SUPABASE_PUBLISHABLE_KEY:'public-fixture',READER_PUBLIC_ORIGIN:'https://reader.example.com'};
 function database(){
@@ -47,6 +48,21 @@ test('hosting adapter selects shared portal with durable store and no local owne
   let result;const res={setHeader(){},end(value){result=JSON.parse(value);}};
   await handler({url:'/api/library',method:'GET',headers:{}},res);assert.equal(result.ready,true);assert.equal(calls[0].dataStore,store);assert.equal(calls[0].authService,auth);assert.equal(calls[0].allowLocal,false);assert.equal(calls[0].hostedMcp,true);
 });
+test('hosted origin CSV enables only configured HTTPS web clients through the real portal',async()=>{
+  const fixture=authFixture(),configured={...fixture.env,READER_PUBLIC_ORIGIN:'https://leafhour.com',READER_ADDITIONAL_WEB_ORIGINS:' https://reader.cubxxw.com, https://legacy.leafhour.com '};
+  const handler=createHostedHandler({env:configured,storeFactory:()=>fixture.store(),authFactory:({store,env})=>createHostedAuth({...fixture,store,env})});
+  const login=async origin=>{
+    let body;const headers={},res={setHeader:(key,value)=>{headers[key]=value;},end:value=>{body=JSON.parse(value);}};
+    await handler({url:'/api/auth/password',method:'POST',headers:{host:'reader.cubxxw.com',origin,'content-type':'application/json'},body:{email:'reader@example.com',password:'fixture-password'},socket:{remoteAddress:'127.0.0.1'}},res);
+    return {status:res.statusCode,body,headers};
+  };
+  for(const origin of ['https://reader.cubxxw.com','https://legacy.leafhour.com','https://leafhour.com']){
+    const response=await login(origin);assert.equal(response.status,200);assert.equal(response.body.user.id,'user-a');assert.match(response.headers['Set-Cookie'],/Secure/);
+  }
+  assert.equal((await login('https://unrelated.example')).status,403);
+  const disabled=createHostedHandler({env:{...configured,READER_ADDITIONAL_WEB_ORIGINS:'https://*.cubxxw.com'},storeFactory:()=>fixture.store(),authFactory:({store,env})=>createHostedAuth({...fixture,store,env})});
+  const res={setHeader(){},end(){}};await disabled({url:'/api/auth/session',method:'GET',headers:{}},res);assert.equal(res.statusCode,503);
+});
 test('hosted entry forwards profile and gift routes through the shared portal',async()=>{
   const routes=[],handler=createHostedHandler({env,storeFactory:()=>({}),authFactory:()=>({}),portalFactory:async()=>({handle:async({url,send})=>{routes.push(url.pathname);send(200,{ready:true});return true;}})});
   for(const path of ['/api/account/profile','/api/book-gifts/'+ 'a'.repeat(43),'/api/book-gifts/'+ 'a'.repeat(43)+'/accept','/api/library/books/alice/gifts']){
@@ -56,7 +72,7 @@ test('hosted entry forwards profile and gift routes through the shared portal',a
 });
 test('disabled hosted email never sends an OTP and hosted MCP uses only explicit HTTPS configuration',async()=>{
   const auth=createHostedAuth({env,store:{},fetcher:()=>{throw Error('must not send');}});assert.equal(auth.emailAvailable,false);await assert.rejects(auth.requestCode('reader@example.com'),e=>e.status===503);
-  const config=makeMcpConfiguration({hosted:true,serviceUrl:env.READER_PUBLIC_ORIGIN},'fixture').mcpServers.marginalia;assert.equal(config.command,'npx');assert.equal(config.env.READER_ALLOW_REMOTE,'true');assert.throws(()=>makeMcpConfiguration({hosted:true,serviceUrl:'http://reader.example.com'},'fixture'));
+  const config=makeMcpConfiguration({hosted:true,serviceUrl:env.READER_PUBLIC_ORIGIN},'fixture').mcpServers.leafhour;assert.equal(config.command,'npx');assert.equal(config.env.READER_ALLOW_REMOTE,'true');assert.throws(()=>makeMcpConfiguration({hosted:true,serviceUrl:'http://reader.example.com'},'fixture'));
 });
 test('oversized extracted cloud books are rejected before originals or shelf entries are saved',async()=>{
   const fixture=database(),store=createHostedStore({env,fetcher:fixture.fetcher}),library=await createLibraryService({dataDir:'hosted',catalogDir:null,dataStore:store}),user={id:'large-source'};

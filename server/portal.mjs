@@ -23,7 +23,14 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
 const jsonBody=async(req,limit=29*1024*1024)=>{if(!req.headers['content-type']?.startsWith('application/json'))throw fail('请使用 JSON 请求',415);if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>limit)throw fail('这次导入内容过大，请分书恢复',413);return req.body;}let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('这次导入内容过大，请分书恢复',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('请求格式不正确');}};
 const passageList=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
-export async function createPortal({dataDir,publicOrigin=null,sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,chatGenerator}={}){
+export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,chatGenerator}={}){
+  const webOrigins=new Set(publicOrigin?[publicOrigin]:[]);
+  if(!Array.isArray(additionalWebOrigins))throw fail('额外网页来源配置无效',503);
+  for(const value of additionalWebOrigins){
+    let url;try{if(typeof value!=='string'||value.includes('*'))throw Error();url=new URL(value);}catch{throw fail('额外网页来源配置无效',503);}
+    if(url.protocol!=='https:'||url.origin!==value||url.username||url.password)throw fail('额外网页来源配置无效',503);
+    webOrigins.add(value);
+  }
   const auth=authService||await createEmailAuth({dataDir:path.join(dataDir,'auth'),sendCode:sendCode===undefined?await smtpSender():sendCode});
   const library=await createLibraryService({dataDir:path.join(dataDir,'library'),catalogDir,translator:translator===undefined?createTranslator():translator,dataStore});
   const profile=createAccountProfile({dataDir:path.join(dataDir,'library'),dataStore});
@@ -55,7 +62,7 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     files['/reading-flow.mjs']='reading-flow.mjs';files['/reading-load.mjs']='reading-load.mjs';
     for(const file of ['highlights.mjs','reader-highlights.mjs'])files['/'+file]=file;
     files['/reading-flow.css']='reading-flow.css';
-    for(const file of ['library-workspace.mjs','library-workspace.css','reading-calendar.mjs','reading-dashboard.mjs','library-restore.mjs','library-export.mjs','site-appearance.mjs','reading-clock.mjs','reading-outbox.mjs','reading-queue-store.mjs','reading-session-coordinator.mjs','reading-mark-actions.mjs','reading-mark-store.mjs','reading-draft-store.mjs','reading-retained-backup.mjs','reading-journey.mjs','reading-pending-backup.mjs','reading-ending-context.mjs','reading-session.js','reading-session.css','brand-assets/reading-window.webp','brand-assets/page-detail.webp','brand-assets/page-mark.svg'])files['/'+file]=file;
+    for(const file of ['library-workspace.mjs','library-workspace.css','reading-calendar.mjs','reading-dashboard.mjs','library-restore.mjs','library-export.mjs','site-appearance.mjs','reading-clock.mjs','reading-outbox.mjs','reading-queue-store.mjs','reading-session-coordinator.mjs','reading-mark-actions.mjs','reading-mark-store.mjs','reading-draft-store.mjs','reading-retained-backup.mjs','reading-journey.mjs','reading-pending-backup.mjs','reading-ending-context.mjs','reading-session.js','reading-session.css','brand-assets/reading-window.webp','brand-assets/page-detail.webp','brand-assets/page-mark.svg','leafhour-brand.css','brand-assets/leafhour-mark.svg','brand-assets/leafhour-social.svg','brand-assets/leafhour-social.png'])files['/'+file]=file;
     for(const file of ['library-shell.mjs','library-shell.css','library-chat.mjs','library-chat-state.mjs','library-chat-markdown.mjs','library-chat.css','icons.svg','icons-LICENSE.txt'])files['/'+file]=file;
     for(const file of ['library-profile.mjs','library-book-actions.mjs','reading-schedule.mjs','shelf-order.mjs','library-personal.css','book-gift.css','book-gift.mjs','gift-preview.mjs','gift-ritual.mjs','gift-compose.mjs','gift-compose.css','gift-identity.mjs','gift-compose-state.mjs','reader-return.mjs'])files['/'+file]=file;
     files['/gift-preview']='book-gift.html';for(const file of ['brand-assets/letter-edge.svg','brand-assets/envelope-edge.svg'])files['/'+file]=file;
@@ -63,9 +70,11 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     if(!isAPI&&!files[p])return false;
     if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));send(200,files[p]==='home.html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
     if(req.method!=='GET'&&req.method!=='POST')throw fail('不支持这个请求',405);
-    const origin='http://'+req.headers.host;
-    if(req.headers.origin&&req.headers.origin!==origin&&req.headers.origin!==publicOrigin)throw fail('请求来源未授权',403);
-    if(req.method==='POST'&&!p.startsWith('/api/agent/')&&req.headers.origin!==origin&&req.headers.origin!==publicOrigin)throw fail('请求来源未授权',403);
+    // Hosted clients must be configured explicitly; Host only describes a local HTTP instance.
+    const originAllowed=webOrigins.has(req.headers.origin)||!publicOrigin&&req.headers.origin==='http://'+req.headers.host;
+    if(req.headers.origin&&!originAllowed)throw fail('请求来源未授权',403);
+    if(req.method==='POST'&&!p.startsWith('/api/agent/')&&!originAllowed)throw fail('请求来源未授权',403);
+    if(p==='/api/auth/oauth'&&req.method==='POST'&&publicOrigin&&req.headers.origin!==publicOrigin)throw fail('请在 '+publicOrigin+' 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。',403);
     const flowToken=(req.headers.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith('marginalia_auth_flow='))?.slice('marginalia_auth_flow='.length);
     const setFlow=value=>`marginalia_auth_flow=${value}; HttpOnly; Secure; SameSite=Lax; Path=/api/auth; Max-Age=${value?600:0}`;
     if(p==='/api/auth/callback'&&req.method==='GET'){
@@ -87,7 +96,12 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     const body=req.method==='POST'?await jsonBody(req,p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')?4096:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
     const localAllowed=allowLocal&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)&&!publicOrigin;
     const setSession=value=>res.setHeader('Set-Cookie',`marginalia_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${value?604800:0}${publicOrigin?.startsWith('https:')?'; Secure':''}`);
-    if(p==='/api/auth/session'&&req.method==='GET'){const capabilities=auth.capabilities?await auth.capabilities():{email:auth.emailAvailable,providers:{google:false,apple:false},otp:{digits:6,expiresIn:600,retryAfter:60}};send(200,{user:await visibleUser(user),emailAvailable:capabilities.email,passwordAvailable:capabilities.password===true,providers:capabilities.providers,otp:capabilities.otp,localAvailable:localAllowed,translationAvailable:library.translationAvailable,directUpload:!!dataStore?.beginUpload});return true;}
+    if(p==='/api/auth/session'&&req.method==='GET'){
+      const capabilities=auth.capabilities?await auth.capabilities():{email:auth.emailAvailable,providers:{google:false,apple:false},otp:{digits:6,expiresIn:600,retryAfter:60}};
+      // Host only hides unusable OAuth buttons; it never authorizes a web origin.
+      const providers=publicOrigin&&req.headers.host!==new URL(publicOrigin).host?{google:false,apple:false}:capabilities.providers;
+      send(200,{user:await visibleUser(user),emailAvailable:capabilities.email,passwordAvailable:capabilities.password===true,providers,otp:capabilities.otp,localAvailable:localAllowed,translationAvailable:library.translationAvailable,directUpload:!!dataStore?.beginUpload});return true;
+    }
     if(p==='/api/account/profile'&&req.method==='POST'){send(200,await profile.save(user,body));return true;}
     if(p==='/api/auth/oauth'&&req.method==='POST'){
       if(typeof auth.beginOAuth!=='function')throw fail('这个登录方式正在准备中',503);
@@ -109,7 +123,7 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     if(p==='/api/library/mcp-setup'&&req.method==='GET'){
       if(!user)throw fail('请先进入自己的书房',401);
       if(hostedMcp){send(200,{hosted:true,serviceUrl:publicOrigin});return true;}
-      if(!localAllowed)throw fail('本机接入配置只能在运行循页的电脑上读取。远程接入尚未支持。',403);
+      if(!localAllowed)throw fail('本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。',403);
       const loopback=req.socket.localAddress==='::1'?'[::1]':'127.0.0.1';
       send(200,{command:process.execPath,args:[path.join(root,'server/mcp.mjs')],serviceUrl:'http://'+loopback+':'+req.socket.localPort});return true;
     }
@@ -125,7 +139,7 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
       if(!user)throw fail('请先进入自己的书房',401);if(typeof body.base64!=='string'||!body.base64.length||body.base64.length>28*1024*1024||!/^[A-Za-z0-9+/]*={0,2}$/.test(body.base64))throw fail('文件编码不正确');
       send(201,await library.importDocument(user,{filename:body.filename,bytes:Buffer.from(body.base64,'base64')}));return true;
     }
-    if(p==='/api/library/export'&&req.method==='GET'){res.setHeader('Content-Disposition','attachment; filename="marginalia-library.json"');send(200,await library.exportLibrary(user));return true;}
+    if(p==='/api/library/export'&&req.method==='GET'){res.setHeader('Content-Disposition','attachment; filename="leafhour-library.json"');send(200,await library.exportLibrary(user));return true;}
     if(p==='/api/library/export/manifest'&&req.method==='GET'){send(200,await library.exportManifest(user));return true;}
     if(p==='/api/library/import'&&req.method==='POST'){send(200,await library.restoreLibrary(user,body));return true;}
     if(p==='/api/library/validate'&&req.method==='POST'){send(200,await library.validateRestore(user,body));return true;}
@@ -135,7 +149,7 @@ export async function createPortal({dataDir,publicOrigin=null,sendCode,translato
     if(gift){
       const [,giftToken,action]=gift;res.setHeader('Cache-Control','private, no-store');res.setHeader('Referrer-Policy','no-referrer');
       if(!action&&req.method==='GET'){send(200,await gifts.view(giftToken));return true;}
-      if(action==='download'&&req.method==='GET'){const backup=await gifts.download(giftToken);if(Buffer.byteLength(JSON.stringify(backup))>3*1024*1024)throw fail('这份阅读包较大，请从赠书信页面分段下载',413);res.setHeader('Content-Disposition','attachment; filename="marginalia-book-gift.json"');send(200,backup);return true;}
+      if(action==='download'&&req.method==='GET'){const backup=await gifts.download(giftToken);if(Buffer.byteLength(JSON.stringify(backup))>3*1024*1024)throw fail('这份阅读包较大，请从赠书信页面分段下载',413);res.setHeader('Content-Disposition','attachment; filename="leafhour-book-gift.json"');send(200,backup);return true;}
       if(action==='download-part'&&req.method==='GET'){send(200,await gifts.downloadPart(giftToken,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
       if(action==='accept'&&req.method==='POST'){send(200,await gifts.accept(user,giftToken));return true;}
       if(action==='revoke'&&req.method==='POST'){send(200,await gifts.revoke(user,giftToken));return true;}

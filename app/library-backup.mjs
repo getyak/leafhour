@@ -12,7 +12,7 @@ const invalid=(where,message)=>{throw Object.assign(Error(where+'：'+message+'�
 
 // Used before browser batching and again at the server boundary. Never repairs source data silently.
 export function validateLibraryBackup(backup){
-  if(!object(backup)||backup.kind!=='marginalia-library'||backup.schemaVersion!==1||!Array.isArray(backup.books)||backup.books.length>100)invalid('备份','请选择循页书房备份，最多 100 本');
+  if(!object(backup)||backup.kind!=='marginalia-library'||backup.schemaVersion!==1||!Array.isArray(backup.books)||backup.books.length>100)invalid('备份','请选择 Leafhour 书房备份，最多 100 本');
   const bookIds=new Set();let paragraphs=0,notes=0;
   for(const [index,entry] of backup.books.entries()){
     const where='第 '+(index+1)+' 本书',b=entry?.book,r=entry?.records;

@@ -134,7 +134,7 @@ function buildChapter(chapter){
 }
 function updateChapterNavigation(){
   const chapter=currentChapter(),index=book.chapters.findIndex(c=>c.id===chapter.id),bodyCount=book.chapters.filter(c=>c.kind==='body').length;
-  document.title=chapter.title.zh+' · 循页';$('running-chapter').textContent=book.source?.structure==='automatic_groups'?'片段 '+chapter.number:chapterLabel(chapter);
+  document.title=chapter.title.zh+' · Leafhour';$('running-chapter').textContent=book.source?.structure==='automatic_groups'?'片段 '+chapter.number:chapterLabel(chapter);
   $('chapter-fraction').textContent=chapter.kind==='body'?chapter.number+' / '+bodyCount:chapter.kind?chapter.title.zh:(index+1)+' / '+book.chapters.length;
   $('previous-chapter').disabled=index===0;$('next-chapter').disabled=index===book.chapters.length-1;
   renderToc();document.dispatchEvent(new CustomEvent('reader:chapter',{detail:{chapterId:state.chapterId}}));

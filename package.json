@@ -1,7 +1,7 @@
 {
-  "name": "marginalia-reader",
+  "name": "leafhour",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "AGPL-3.0-only",
   "type": "module",
   "engines": {
@@ -32,6 +32,7 @@
     "fflate": "0.8.3"
   },
   "bin": {
+    "leafhour-mcp": "server/mcp.mjs",
     "marginalia-mcp": "server/mcp.mjs"
   },
   "devDependencies": {

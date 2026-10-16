@@ -15,7 +15,7 @@ dialog.innerHTML=`
   <div class="atmosphere-shell">
     <div class="atmosphere-preview" data-scene="forest">
       <div class="atmosphere-elements" aria-hidden="true"></div>
-      <div class="atmosphere-preview-text"><span>循页 · 一处安静的地方</span><h2 id="atmosphere-preview-name">林间书页</h2><p id="atmosphere-preview-caption">风过树梢，读到日落。</p></div>
+      <div class="atmosphere-preview-text"><span>Leafhour · 一处安静的地方</span><h2 id="atmosphere-preview-name">林间书页</h2><p id="atmosphere-preview-caption">风过树梢，读到日落。</p></div>
     </div>
     <div class="atmosphere-panel">
       <header class="atmosphere-heading"><div><p>阅读氛围</p><h2 id="atmosphere-title">此刻，想在哪里读？</h2></div><button id="close-atmosphere" aria-label="关闭阅读氛围">关闭</button></header>
