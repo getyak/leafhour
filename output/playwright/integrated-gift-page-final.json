@@ -1,0 +1,279 @@
+{
+  "group": "integrated N78–90",
+  "isolated": true,
+  "checks": [
+    {
+      "label": "retry enters envelope opener 1440",
+      "pass": true
+    },
+    {
+      "label": "real pointer opens spring and focuses title 1440",
+      "pass": true
+    },
+    {
+      "label": "only opened letter is keyboard reachable 1440",
+      "pass": true
+    },
+    {
+      "label": "letter independent targets44 1440",
+      "pass": true
+    },
+    {
+      "label": "letter overflow0 1440",
+      "pass": true
+    },
+    {
+      "label": "Esc folds and returns opener 1440",
+      "pass": true
+    },
+    {
+      "label": "pointer fold restores opener 1440",
+      "pass": true
+    },
+    {
+      "label": "reduced motion reveals complete letter immediately 1440",
+      "pass": true
+    },
+    {
+      "label": "reduced motion fold restores opener 1440",
+      "pass": true
+    },
+    {
+      "label": "reversed spring settles to usable envelope 1440",
+      "pass": true
+    },
+    {
+      "label": "accept locks duplicate submit 1440",
+      "pass": true
+    },
+    {
+      "label": "accept failure remains one intercepted request 1440",
+      "pass": true
+    },
+    {
+      "label": "accept failure restores retry focus 1440",
+      "pass": true
+    },
+    {
+      "label": "accept success focuses reading link 1440",
+      "pass": true
+    },
+    {
+      "label": "already-owned receipt preserves personal records 1440",
+      "pass": true
+    },
+    {
+      "label": "busy download sends one request",
+      "pass": true
+    },
+    {
+      "label": "failed verification restores download",
+      "pass": true
+    },
+    {
+      "label": "part and full SHA256 precede browser download",
+      "pass": true
+    },
+    {
+      "label": "revoked letter has no impossible retry 1440",
+      "pass": true
+    },
+    {
+      "label": "mutations all remained fixture 1440",
+      "pass": true
+    },
+    {
+      "label": "retry enters envelope opener 390",
+      "pass": true
+    },
+    {
+      "label": "real pointer opens spring and focuses title 390",
+      "pass": true
+    },
+    {
+      "label": "only opened letter is keyboard reachable 390",
+      "pass": true
+    },
+    {
+      "label": "letter independent targets44 390",
+      "pass": true
+    },
+    {
+      "label": "letter overflow0 390",
+      "pass": true
+    },
+    {
+      "label": "Esc folds and returns opener 390",
+      "pass": true
+    },
+    {
+      "label": "pointer fold restores opener 390",
+      "pass": true
+    },
+    {
+      "label": "reduced motion reveals complete letter immediately 390",
+      "pass": true
+    },
+    {
+      "label": "reduced motion fold restores opener 390",
+      "pass": true
+    },
+    {
+      "label": "reversed spring settles to usable envelope 390",
+      "pass": true
+    },
+    {
+      "label": "accept locks duplicate submit 390",
+      "pass": true
+    },
+    {
+      "label": "accept failure remains one intercepted request 390",
+      "pass": true
+    },
+    {
+      "label": "accept failure restores retry focus 390",
+      "pass": true
+    },
+    {
+      "label": "accept does not steal moved focus 390",
+      "pass": true
+    },
+    {
+      "label": "already-owned receipt preserves personal records 390",
+      "pass": true
+    },
+    {
+      "label": "revoked letter has no impossible retry 390",
+      "pass": true
+    },
+    {
+      "label": "mutations all remained fixture 390",
+      "pass": true
+    }
+  ],
+  "targets": [
+    {
+      "width": 1440,
+      "rects": [
+        {
+          "name": "循页首页",
+          "w": 92,
+          "h": 44
+        },
+        {
+          "name": "页面外观：跟随系统；切换为纸白",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "我的书房",
+          "w": 48,
+          "h": 44
+        },
+        {
+          "name": "折起信笺",
+          "w": 63.7109375,
+          "h": 44
+        },
+        {
+          "name": "放进我的书架 ↗",
+          "w": 141.859375,
+          "h": 46
+        },
+        {
+          "name": "下载阅读包 ↓",
+          "w": 97.0859375,
+          "h": 46
+        },
+        {
+          "name": "先读几页",
+          "w": 48,
+          "h": 44
+        },
+        {
+          "name": "循页 Page by Page",
+          "w": 88.3046875,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "rects": [
+        {
+          "name": "循页首页",
+          "w": 87.6875,
+          "h": 44
+        },
+        {
+          "name": "页面外观：跟随系统；切换为纸白",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "我的书房",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "折起信笺",
+          "w": 63.7109375,
+          "h": 44
+        },
+        {
+          "name": "放进我的书架 ↗",
+          "w": 119.171875,
+          "h": 46
+        },
+        {
+          "name": "下载阅读包 ↓",
+          "w": 83.375,
+          "h": 46
+        },
+        {
+          "name": "先读几页",
+          "w": 48,
+          "h": 44
+        },
+        {
+          "name": "循页 Page by Page",
+          "w": 80.2734375,
+          "h": 44
+        }
+      ]
+    }
+  ],
+  "focus": [],
+  "download": {
+    "filename": "marginalia-reading-package.json",
+    "fixtureOnly": true,
+    "published": false
+  },
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/api/book-gifts/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/accept",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "path": "/api/book-gifts/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/accept",
+      "body": {}
+    }
+  ],
+  "unhandled": [],
+  "screenshots": [
+    "output/playwright/integrated-gift-letter-1440.png",
+    "output/playwright/integrated-gift-letter-390.png"
+  ],
+  "passed": 37,
+  "failed": 0,
+  "safety": {
+    "writes": "Browser fixture only",
+    "realProviderCalls": 0,
+    "realAccountWrites": 0,
+    "realGifts": 0,
+    "package": "Synthetic isolated fixture; filename-only receipt published; downloaded reading package stays local"
+  },
+  "captureNote": "Actual Page.captureScreenshot pixels, with headed page foreground and final target layer plus spring settled before capture. No product DOM or style was changed for capture."
+}

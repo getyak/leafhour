@@ -6,10 +6,12 @@ function setup({reduced=false,hidden=false}={}){
   const media=new EventTarget();media.matches=reduced;
   const doc=new EventTarget();doc.hidden=false;
   const observers=[],mutations=[],animations=[];
-  const makeElement=()=>({contains:target=>target===element,animate:()=>{
-    let finish;const animation={cancelled:false,finished:new Promise(resolve=>{finish=resolve;}),cancel(){this.cancelled=true;finish();}};
-    animations.push(animation);return animation;
-  }});
+  const makeElement=({interactive=false}={})=>{
+    const control={};const node={control,contains:target=>target===node||target===control,matches:()=>false,querySelector:()=>interactive?control:null,animate:(frames,options)=>{
+      let finish;const animation={frames,options,cancelled:false,finished:new Promise(resolve=>{finish=resolve;}),cancel(){this.cancelled=true;finish();}};
+      animations.push(animation);return animation;
+    }};return node;
+  };
   const element=makeElement(),cards=[];
   const shelf={querySelectorAll:()=>cards};
   const root=new EventTarget();Object.assign(root,{hidden,ownerDocument:doc,querySelectorAll:()=>[element],querySelector:()=>shelf});
@@ -47,4 +49,16 @@ test('unsupported observation leaves the document readable without an animation 
 test('tabbing into a section before its intersection callback never dims the focused action',()=>{
   const s=setup();mountHomeMotion(s.root);s.doc.activeElement=s.element;s.observers.at(-1).enter(s.element);
   assert.equal(s.animations.length,0);assert.equal(s.observers.at(-1).elements.has(s.element),false);
+});
+
+test('pointer focus during an interactive card entrance never changes its hit geometry',()=>{
+  const s=setup(),card=s.makeElement({interactive:true});s.cards.push(card);mountHomeMotion(s.root);
+  s.observers.at(-1).enter(card);const animation=s.animations.at(-1);
+  assert.ok(animation.frames.every(frame=>!Object.hasOwn(frame,'translate')&&!Object.hasOwn(frame,'transform')),'interactive entrance must not move the pressed link');
+  const event=new Event('focusin');Object.defineProperty(event,'target',{value:card.control});s.root.dispatchEvent(event);
+  assert.equal(animation.cancelled,true,'focus still removes entrance dimming immediately');
+});
+test('a decorative figure can retain its entrance movement',()=>{
+  const s=setup();mountHomeMotion(s.root);s.observers.at(-1).enter(s.element);
+  assert.ok(s.animations[0].frames.some(frame=>frame.translate),'noninteractive artwork retains movement');
 });

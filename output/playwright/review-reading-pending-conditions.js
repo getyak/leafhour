@@ -1,0 +1,50 @@
+async page => {
+  const f=globalThis.reviewReaderFixture,out={fixture:true,checks:[],startWidth:page.viewportSize().width,measurements:[]};
+  const check=(pass,label)=>{out.checks.push({label,pass:!!pass});if(!pass)throw Error(label);};
+  const measure=async(selector,state)=>{out.measurements.push({state,rows:await page.locator(selector).evaluateAll(ns=>ns.filter(n=>n.getClientRects().length).map(n=>({name:n.getAttribute('aria-label')||n.textContent.trim().slice(0,40),w:n.getBoundingClientRect().width,h:n.getBoundingClientRect().height})))});};
+  const tools=async()=>{const trigger=page.locator('#reading-tools-trigger');if(await trigger.getAttribute('aria-expanded')!=='true'){await trigger.focus();await trigger.press('Enter');}await page.waitForFunction(()=>document.querySelector('#reading-tools-trigger').getAttribute('aria-expanded')==='true');await page.locator('#reading-tools-panel').waitFor({state:'visible'});};
+  try{
+    out.phase='reader ready';f.loadFail=false;f.recordsFail=false;f.records.position=null;await page.reload();await page.bringToFront();await page.waitForFunction(()=>document.body.dataset.ready==='true');
+    out.phase='toolbar open';await page.locator('#reading-session').waitFor({state:'visible'});await tools();
+    out.phase='keyboard start';await page.locator('#reading-toggle').focus();out.focusBeforeStart=await page.evaluate(()=>({active:document.activeElement.id,window:document.hasFocus(),state:document.querySelector('#reading-state').textContent}));await page.keyboard.press('Enter');await page.waitForFunction(()=>document.querySelector('#reading-state').textContent==='阅读中');check((await page.locator('#reading-state').innerText())==='阅读中','keyboard starts actual reading UI');
+    await page.waitForTimeout(1100);await page.locator('#reading-guide-open').click();await page.locator('[aria-label="关闭深读提示"]').click();await page.waitForFunction(()=>document.querySelector('#reading-state').textContent==='阅读中');
+    out.guideCloseState=await page.locator('#reading-state').innerText();
+    check(out.guideCloseState==='阅读中','guide X restores preceding active session');
+    await page.locator('#reading-guide-open').click();await page.locator('#reading-guide-return').click();await page.waitForFunction(()=>document.querySelector('#reading-state').textContent==='阅读中');check((await page.locator('#reading-state').innerText())==='阅读中','guide return resumes only preceding active session');
+    await page.locator('#reading-guide-open').click();await page.keyboard.press('Escape');await page.waitForFunction(()=>document.querySelector('#reading-state').textContent==='阅读中');check((await page.locator('#reading-state').innerText())==='阅读中','guide Escape restores preceding active session');
+    await page.locator('#reading-toggle').click();await page.locator('#reading-guide-open').click();await page.locator('[aria-label="关闭深读提示"]').click();await page.waitForTimeout(120);check((await page.locator('#reading-state').innerText())==='已暂停','guide close preserves preceding paused session');await page.locator('#reading-toggle').click();
+    await page.locator('#reading-end').click();await page.locator('#reading-ending').waitFor({state:'visible'});
+    await page.waitForFunction(()=>document.querySelector('#ending-session-status').textContent.includes('本机'));
+    out.failedSessionReceipt=await page.locator('#ending-session-status').innerText();check(out.failedSessionReceipt.includes('本机'),'failed session save distinguishes local retention');
+    await page.locator('#ending-comment').fill('隔离待同步理解：这一句仍需要回原文核对。');await page.locator('#save-ending-comment').click();
+    await page.waitForFunction(()=>document.querySelector('#ending-comment-pending').textContent.includes('待确认'));
+    check((await page.locator('#ending-comment').inputValue()).includes('隔离待同步理解'),'failed understanding save retains text and pending state');
+    await measure('#reading-ending button,#reading-ending summary','pending ending');
+    await page.screenshot({path:'output/playwright/review-pending-'+out.startWidth+'-ending.png',animations:'disabled'});
+    await page.locator('[aria-label="关闭读后记录"]').click();await tools();await page.locator('#reading-retry').click();await page.waitForTimeout(120);check(await page.locator('#reading-retry').isVisible(),'D08 failed retry retains pending queue and recovery');
+    const backupPromise=page.waitForEvent('download');await page.locator('#reading-backup').click();const backup=await backupPromise;await backup.saveAs('output/playwright/review-pending-fixture-download.json');
+    check((await page.locator('#reading-sync').innerText()).includes('另存'),'D09 local pending backup has explicit receipt');
+    await page.locator('#reading-drafts-open').click();check((await page.locator('#reading-drafts-list').innerText()).includes('待确认保存'),'D07 draft list marks pending instead of saved');await measure('#reading-drafts button','pending draft list');
+    await page.locator('[aria-label="关闭草稿列表"]').click();await page.waitForTimeout(100);out.draftCloseFocus=await page.evaluate(()=>document.activeElement.id);check(out.draftCloseFocus==='reading-drafts-open','D13 draft close restores opener');
+    await page.setViewportSize({width:390,height:844});await tools();await page.locator('#reading-drafts-open').click();await page.locator('#reading-drafts-list button').first().focus();await page.keyboard.press('Enter');
+    check((await page.locator('#ending-comment').inputValue()).includes('隔离待同步理解'),'D14 draft opens matching original understanding');
+    await page.locator('#ending-source-summary').click();
+    check((await page.locator('#ending-source').innerText()).length>20,'D14 original context remains visible');
+    await page.screenshot({path:'output/playwright/review-pending-390-draft.png',animations:'disabled'});
+    await page.locator('[aria-label="关闭读后记录"]').click();await tools();await page.locator('#reading-end').click();await page.locator('#reading-ending').waitFor({state:'visible'});f.sessionSaveFail=false;await page.locator('#ending-retry').click();
+    await page.waitForFunction(()=>document.querySelector('#ending-session-status').textContent.includes('已保存'));check(await page.locator('#reading-retry').isHidden(),'D16 retry clears acknowledged pending queue');
+    out.retryFocus=await page.evaluate(()=>({tag:document.activeElement.tagName,id:document.activeElement.id}));
+    check(out.retryFocus.id==='ending-comment','D16 successful retry restores stable ending input focus');
+    out.sessionReceipt=await page.locator('#ending-session-status').innerText();out.positionReceipt=await page.locator('#ending-position-status').innerText();
+    check(out.sessionReceipt.includes('已保存'),'D16 separate session receipt confirms save');
+    f.noteSaveFail=false;await page.locator('#save-ending-comment').click();await page.waitForFunction(()=>document.querySelector('#ending-comment-status').textContent.includes('已保存'));check(true,'pending understanding retries to explicit save receipt');
+    out.mobileRects=await page.locator('#reading-ending button,#reading-ending summary').evaluateAll(ns=>ns.filter(n=>n.getClientRects().length).map(n=>({name:n.getAttribute('aria-label')||n.textContent.trim().slice(0,30),w:n.getBoundingClientRect().width,h:n.getBoundingClientRect().height})));
+    check(out.mobileRects.every(r=>r.w>=44&&r.h>=44),'390 ending controls have 44px targets');
+    check(await page.evaluate(()=>document.documentElement.scrollWidth===innerWidth),'390 pending UI has no horizontal overflow');
+    await page.screenshot({path:'output/playwright/review-pending-390-saved.png',animations:'disabled'});
+    await page.locator('[aria-label="关闭读后记录"]').click();await tools();f.sessionSaveFail=true;await page.locator('#reading-toggle').click();await page.waitForFunction(()=>document.querySelector('#reading-state').textContent==='阅读中');await page.waitForTimeout(150);await page.locator('#reading-end').click();await page.waitForFunction(()=>document.querySelector('#ending-session-status').textContent.includes('本机'));await page.locator('[aria-label="关闭读后记录"]').click();await tools();f.sessionSaveFail=false;await page.locator('#reading-retry').click();await page.waitForFunction(()=>document.querySelector('#reading-retry').hidden);await page.waitForTimeout(100);
+    out.globalRetryFocus=await page.evaluate(()=>document.activeElement.id);check(out.globalRetryFocus==='reading-toggle','D08 successful toolbar retry restores stable reading control focus');
+    out.writeActions=f.writes.map(w=>w.action);out.backupFilename=backup.suggestedFilename();
+  }catch(error){out.failure=error.message;out.failureState=await page.evaluate(()=>({ready:document.body.dataset.ready,focus:document.activeElement.id,window:document.hasFocus(),state:document.querySelector('#reading-state')?.textContent,toggle:document.querySelector('#reading-toggle')?.textContent,expanded:document.querySelector('#reading-tools-trigger')?.getAttribute('aria-expanded'),sync:document.querySelector('#reading-sync')?.textContent}));}
+  return out;
+}

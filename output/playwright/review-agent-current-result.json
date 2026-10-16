@@ -1,0 +1,692 @@
+{
+  "fixture": true,
+  "baseline": "origin/main79b3025 integrated",
+  "widths": [
+    {
+      "width": 1440,
+      "checks": [
+        {
+          "label": "nonmodal does not lock original reader",
+          "pass": true
+        },
+        {
+          "label": "real pointer wheel scrolls exposed reader with chat open",
+          "pass": true
+        },
+        {
+          "label": "new input copy and help describe open reading tools",
+          "pass": true
+        },
+        {
+          "label": "more menu discloses library catalog and web access",
+          "pass": true
+        },
+        {
+          "label": "Markdown heading list table code quote and literal HTML render",
+          "pass": true
+        },
+        {
+          "label": "unsafe Markdown scheme remains text rather than an action",
+          "pass": true
+        },
+        {
+          "label": "registered internal refs preserve actual cross-book identity",
+          "pass": true
+        },
+        {
+          "label": "at most3 related candidates distinguish owned catalog external",
+          "pass": true
+        },
+        {
+          "label": "completed tool details Enter reveals factual completed failed statuses",
+          "pass": true
+        },
+        {
+          "label": "tool details Space closes and retains focus",
+          "pass": true
+        },
+        {
+          "label": "all new independent controls and recommendation cards44",
+          "pass": true,
+          "detail": []
+        },
+        {
+          "label": "wide Markdown table is keyboard-reachable and scrolls",
+          "pass": true,
+          "detail": [
+            {
+              "tag": "DIV",
+              "cls": "library-chat-table",
+              "before": 0,
+              "max": 83,
+              "after": 18
+            },
+            {
+              "tag": "PRE",
+              "cls": "",
+              "before": 0,
+              "max": 2823,
+              "after": 18
+            }
+          ]
+        },
+        {
+          "label": "long code block is keyboard-reachable and scrolls",
+          "pass": true,
+          "detail": [
+            {
+              "tag": "DIV",
+              "cls": "library-chat-table",
+              "before": 0,
+              "max": 83,
+              "after": 18
+            },
+            {
+              "tag": "PRE",
+              "cls": "",
+              "before": 0,
+              "max": 2823,
+              "after": 18
+            }
+          ]
+        },
+        {
+          "label": "copy returns exact Markdown source",
+          "pass": true
+        },
+        {
+          "label": "Escape closes to launcher focus",
+          "pass": true
+        },
+        {
+          "label": "reopen preserves unsent draft",
+          "pass": true
+        },
+        {
+          "label": "ordinary external Markdown link has safe new-tab semantics",
+          "pass": true
+        },
+        {
+          "label": "external link opens exact isolated destination without replacing reader",
+          "pass": true
+        },
+        {
+          "label": "current-book Markdown reference closes chat and jumps to registered passage",
+          "pass": true
+        },
+        {
+          "label": "cross-book Markdown reference really navigates to matching book",
+          "pass": true
+        },
+        {
+          "label": "IME Enter and ShiftEnter do not submit a request",
+          "pass": true
+        },
+        {
+          "label": "Enter starts exactly1 isolated request and locks sending controls",
+          "pass": true
+        },
+        {
+          "label": "actual tool activity appears while POST is still unresolved",
+          "pass": true
+        },
+        {
+          "label": "activity poll updates row without replacing its DOM",
+          "pass": true
+        },
+        {
+          "label": "tool progress polls beyond12 during controlled85seconds",
+          "pass": true
+        },
+        {
+          "label": "collapse retains pending turn and reopens without a duplicate send",
+          "pass": true
+        },
+        {
+          "label": "new long answer reveals its opening inside message log",
+          "pass": true
+        },
+        {
+          "label": "terminal answer removes live activity and restores composer",
+          "pass": true
+        },
+        {
+          "label": "current page and companion do not overflow horizontally",
+          "pass": true
+        },
+        {
+          "label": "second turn retains the first completed answer",
+          "pass": true
+        },
+        {
+          "label": "stop sends exactly1 cancel and restores original second question",
+          "pass": true
+        },
+        {
+          "label": "late completed POST does not replace cancelled status or fresh draft",
+          "pass": true
+        },
+        {
+          "label": "cancelled live tool is historical interrupted status",
+          "pass": true
+        }
+      ],
+      "measurements": [
+        {
+          "name": "更多对话操作",
+          "tag": "SUMMARY",
+          "className": "",
+          "width": 44,
+          "height": 44
+        },
+        {
+          "name": "导出这段对话",
+          "tag": "BUTTON",
+          "className": "library-chat-text-button",
+          "width": 190,
+          "height": 44
+        },
+        {
+          "name": "收起阅读对话",
+          "tag": "BUTTON",
+          "className": "library-chat-close",
+          "width": 44,
+          "height": 44
+        },
+        {
+          "name": "复制这条 AI 回答",
+          "tag": "BUTTON",
+          "className": "library-chat-text-button",
+          "width": 44,
+          "height": 44
+        },
+        {
+          "name": "核对原文 · 2 处",
+          "tag": "SUMMARY",
+          "className": "",
+          "width": 354,
+          "height": 44
+        },
+        {
+          "name": "爱丽丝梦游仙境书房已有",
+          "tag": "A",
+          "className": "library-chat-recommendation",
+          "width": 368,
+          "height": 44
+        },
+        {
+          "name": "瓦尔登湖可直接阅读",
+          "tag": "A",
+          "className": "library-chat-recommendation",
+          "width": 368,
+          "height": 44
+        },
+        {
+          "name": "隔离外部书目外部书目",
+          "tag": "A",
+          "className": "library-chat-recommendation",
+          "width": 368,
+          "height": 44
+        },
+        {
+          "name": "查阅了 2 个章节",
+          "tag": "SUMMARY",
+          "className": "",
+          "width": 368,
+          "height": 44
+        },
+        {
+          "name": "掉进兔子洞查看原文与译文",
+          "tag": "SUMMARY",
+          "className": "",
+          "width": 370,
+          "height": 44
+        },
+        {
+          "name": "发送问题",
+          "tag": "BUTTON",
+          "className": "library-chat-send",
+          "width": 44,
+          "height": 44
+        }
+      ],
+      "keyboardScroll": [
+        {
+          "tag": "DIV",
+          "cls": "library-chat-table",
+          "before": 0,
+          "max": 83,
+          "after": 18
+        },
+        {
+          "tag": "PRE",
+          "cls": "",
+          "before": 0,
+          "max": 2823,
+          "after": 18
+        }
+      ],
+      "readerScroll": {
+        "before": 332,
+        "after": 572
+      },
+      "sourceJump": {
+        "passageId": "01b38ea4c710a84b-p00008"
+      },
+      "longRunning": {
+        "polls": 17,
+        "toolLabel": "正在检索外部书目"
+      },
+      "answerOpening": {
+        "top": 405.0132141113281,
+        "logTop": 404.5174560546875,
+        "logBottom": 730.3319091796875
+      }
+    },
+    {
+      "width": 390,
+      "checks": [
+        {
+          "label": "nonmodal does not lock original reader",
+          "pass": true
+        },
+        {
+          "label": "real pointer wheel scrolls exposed reader with chat open",
+          "pass": true
+        },
+        {
+          "label": "new input copy and help describe open reading tools",
+          "pass": true
+        },
+        {
+          "label": "more menu discloses library catalog and web access",
+          "pass": true
+        },
+        {
+          "label": "Markdown heading list table code quote and literal HTML render",
+          "pass": true
+        },
+        {
+          "label": "unsafe Markdown scheme remains text rather than an action",
+          "pass": true
+        },
+        {
+          "label": "registered internal refs preserve actual cross-book identity",
+          "pass": true
+        },
+        {
+          "label": "at most3 related candidates distinguish owned catalog external",
+          "pass": true
+        },
+        {
+          "label": "completed tool details Enter reveals factual completed failed statuses",
+          "pass": true
+        },
+        {
+          "label": "tool details Space closes and retains focus",
+          "pass": true
+        },
+        {
+          "label": "all new independent controls and recommendation cards44",
+          "pass": true,
+          "detail": []
+        },
+        {
+          "label": "wide Markdown table is keyboard-reachable and scrolls",
+          "pass": true,
+          "detail": [
+            {
+              "tag": "DIV",
+              "cls": "library-chat-table",
+              "before": 0,
+              "max": 119,
+              "after": 18
+            },
+            {
+              "tag": "PRE",
+              "cls": "",
+              "before": 0,
+              "max": 2859,
+              "after": 17
+            }
+          ]
+        },
+        {
+          "label": "long code block is keyboard-reachable and scrolls",
+          "pass": true,
+          "detail": [
+            {
+              "tag": "DIV",
+              "cls": "library-chat-table",
+              "before": 0,
+              "max": 119,
+              "after": 18
+            },
+            {
+              "tag": "PRE",
+              "cls": "",
+              "before": 0,
+              "max": 2859,
+              "after": 17
+            }
+          ]
+        },
+        {
+          "label": "copy returns exact Markdown source",
+          "pass": true
+        },
+        {
+          "label": "Escape closes to launcher focus",
+          "pass": true
+        },
+        {
+          "label": "reopen preserves unsent draft",
+          "pass": true
+        },
+        {
+          "label": "ordinary external Markdown link has safe new-tab semantics",
+          "pass": true
+        },
+        {
+          "label": "external link opens exact isolated destination without replacing reader",
+          "pass": true
+        },
+        {
+          "label": "current-book Markdown reference closes chat and jumps to registered passage",
+          "pass": true
+        },
+        {
+          "label": "cross-book Markdown reference really navigates to matching book",
+          "pass": true
+        },
+        {
+          "label": "IME Enter and ShiftEnter do not submit a request",
+          "pass": true
+        },
+        {
+          "label": "Enter starts exactly1 isolated request and locks sending controls",
+          "pass": true
+        },
+        {
+          "label": "actual tool activity appears while POST is still unresolved",
+          "pass": true
+        },
+        {
+          "label": "activity poll updates row without replacing its DOM",
+          "pass": true
+        },
+        {
+          "label": "tool progress polls beyond12 during controlled85seconds",
+          "pass": true
+        },
+        {
+          "label": "collapse retains pending turn and reopens without a duplicate send",
+          "pass": true
+        },
+        {
+          "label": "new long answer reveals its opening inside message log",
+          "pass": true
+        },
+        {
+          "label": "terminal answer removes live activity and restores composer",
+          "pass": true
+        },
+        {
+          "label": "current page and companion do not overflow horizontally",
+          "pass": true
+        },
+        {
+          "label": "second turn retains the first completed answer",
+          "pass": true
+        },
+        {
+          "label": "stop sends exactly1 cancel and restores original second question",
+          "pass": true
+        },
+        {
+          "label": "late completed POST does not replace cancelled status or fresh draft",
+          "pass": true
+        },
+        {
+          "label": "cancelled live tool is historical interrupted status",
+          "pass": true
+        }
+      ],
+      "measurements": [
+        {
+          "name": "更多对话操作",
+          "tag": "SUMMARY",
+          "className": "",
+          "width": 44,
+          "height": 44
+        },
+        {
+          "name": "导出这段对话",
+          "tag": "BUTTON",
+          "className": "library-chat-text-button",
+          "width": 190,
+          "height": 44
+        },
+        {
+          "name": "收起阅读对话",
+          "tag": "BUTTON",
+          "className": "library-chat-close",
+          "width": 44,
+          "height": 44
+        },
+        {
+          "name": "复制这条 AI 回答",
+          "tag": "BUTTON",
+          "className": "library-chat-text-button",
+          "width": 44,
+          "height": 44
+        },
+        {
+          "name": "核对原文 · 2 处",
+          "tag": "SUMMARY",
+          "className": "",
+          "width": 318,
+          "height": 44
+        },
+        {
+          "name": "爱丽丝梦游仙境书房已有",
+          "tag": "A",
+          "className": "library-chat-recommendation",
+          "width": 332,
+          "height": 44
+        },
+        {
+          "name": "瓦尔登湖可直接阅读",
+          "tag": "A",
+          "className": "library-chat-recommendation",
+          "width": 332,
+          "height": 44
+        },
+        {
+          "name": "隔离外部书目外部书目",
+          "tag": "A",
+          "className": "library-chat-recommendation",
+          "width": 332,
+          "height": 44
+        },
+        {
+          "name": "查阅了 2 个章节",
+          "tag": "SUMMARY",
+          "className": "",
+          "width": 332,
+          "height": 44
+        },
+        {
+          "name": "掉进兔子洞查看原文与译文",
+          "tag": "SUMMARY",
+          "className": "",
+          "width": 332,
+          "height": 44
+        },
+        {
+          "name": "发送问题",
+          "tag": "BUTTON",
+          "className": "library-chat-send",
+          "width": 44,
+          "height": 44
+        }
+      ],
+      "keyboardScroll": [
+        {
+          "tag": "DIV",
+          "cls": "library-chat-table",
+          "before": 0,
+          "max": 119,
+          "after": 18
+        },
+        {
+          "tag": "PRE",
+          "cls": "",
+          "before": 0,
+          "max": 2859,
+          "after": 17
+        }
+      ],
+      "readerScroll": {
+        "before": 341,
+        "after": 581
+      },
+      "sourceJump": {
+        "passageId": "01b38ea4c710a84b-p00008"
+      },
+      "longRunning": {
+        "polls": 17,
+        "toolLabel": "正在检索外部书目"
+      },
+      "answerOpening": {
+        "top": 253.06349182128906,
+        "logTop": 252.5677490234375,
+        "logBottom": 580.1640014648438
+      }
+    }
+  ],
+  "mutations": [
+    {
+      "kind": "chat-send",
+      "path": "/api/library/books/gutenberg-alice/chat",
+      "payload": {
+        "id": "42cf2c67-2dde-4e5f-aeaf-c961b0f2c9d3",
+        "passageId": "01b38ea4c710a84b-p00008",
+        "text": "你最喜欢这一章的哪句话？",
+        "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e"
+      }
+    },
+    {
+      "kind": "chat-send",
+      "path": "/api/library/books/gutenberg-alice/chat",
+      "payload": {
+        "id": "d684b602-a3a3-41b6-9c16-9e617472c514",
+        "passageId": "01b38ea4c710a84b-p00008",
+        "text": "隔离追问：保留第一轮，并停止这次工具请求。",
+        "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e"
+      }
+    },
+    {
+      "kind": "chat-cancel",
+      "path": "/api/library/books/gutenberg-alice/chat/d684b602-a3a3-41b6-9c16-9e617472c514/cancel"
+    },
+    {
+      "kind": "chat-send",
+      "path": "/api/library/books/gutenberg-alice/chat",
+      "payload": {
+        "id": "8050ef2d-b4c8-42b4-89c9-41aa691534a5",
+        "passageId": "01b38ea4c710a84b-p00008",
+        "text": "你最喜欢这一章的哪句话？",
+        "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e"
+      }
+    },
+    {
+      "kind": "chat-send",
+      "path": "/api/library/books/gutenberg-alice/chat",
+      "payload": {
+        "id": "82df494f-6a17-47f0-906c-94f7c236e04f",
+        "passageId": "01b38ea4c710a84b-p00008",
+        "text": "隔离追问：保留第一轮，并停止这次工具请求。",
+        "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e"
+      }
+    },
+    {
+      "kind": "chat-cancel",
+      "path": "/api/library/books/gutenberg-alice/chat/82df494f-6a17-47f0-906c-94f7c236e04f/cancel"
+    }
+  ],
+  "externalNavigations": [
+    {
+      "url": "https://example.com/marginalia-agent-review",
+      "method": "GET"
+    },
+    {
+      "url": "https://example.com/marginalia-agent-review",
+      "method": "GET"
+    }
+  ],
+  "blocked": [
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-alice/experiences"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-alice/audio/capabilities"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-alice/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-meditations/experiences"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-meditations/audio/capabilities"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-alice/experiences"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-alice/audio/capabilities"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-alice/experiences"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-alice/audio/capabilities"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-alice/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-meditations/experiences"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-meditations/audio/capabilities"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-alice/experiences"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-alice/audio/capabilities"
+    }
+  ],
+  "allNonGetIntercepted": true,
+  "noRealModelOrSearch": true,
+  "evidenceCorrections": [
+    "The first pass used nonexistent data-passage-id; final source navigation observes the real reader:jump event instead.",
+    "Initial keyboard collection skipped PRE when className was empty; actual native Tab reaches both overflowing table and PRE, and both scroll with ArrowRight. These were assertion defects, not product defects."
+  ]
+}

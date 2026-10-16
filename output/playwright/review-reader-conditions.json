@@ -1,0 +1,668 @@
+[
+  {
+    "fixture": true,
+    "checks": [
+      {
+        "label": "R11 retry book loads readable page",
+        "pass": true
+      },
+      {
+        "label": "R11 retry success has valid page focus",
+        "pass": true
+      },
+      {
+        "label": "P06 editorial annotation attribution is visible",
+        "pass": true
+      },
+      {
+        "label": "P20 term expands with keyboard",
+        "pass": true
+      },
+      {
+        "label": "P22 failed retry preserves concrete recovery text",
+        "pass": true
+      },
+      {
+        "label": "P22 failure returns focus to new retry",
+        "pass": true
+      },
+      {
+        "label": "P22 recovered records focus conflict choice",
+        "pass": true
+      },
+      {
+        "label": "R25 use remote resolves conflict",
+        "pass": true
+      },
+      {
+        "label": "R25 completed choice returns valid reader focus",
+        "pass": true
+      },
+      {
+        "label": "T30 conflicting export gives a concrete alert",
+        "pass": true
+      },
+      {
+        "label": "R26 keep here resolves conflict",
+        "pass": true
+      },
+      {
+        "label": "R26 completed choice returns valid reader focus",
+        "pass": true
+      },
+      {
+        "label": "T30 export delivers local file with receipt",
+        "pass": true
+      },
+      {
+        "label": "T31 malformed JSON gives alert",
+        "pass": true
+      },
+      {
+        "label": "T31 failed import retries to explicit isolated merge receipt",
+        "pass": true
+      },
+      {
+        "label": "P27 private-source disclosure distinguishes automatic grouping",
+        "pass": true
+      },
+      {
+        "label": "P28 failed original download can retry",
+        "pass": true
+      },
+      {
+        "label": "P28 original delivers local fixture file",
+        "pass": true
+      },
+      {
+        "label": "P29 missing original offers exact library route",
+        "pass": true
+      },
+      {
+        "label": "P29 reason remains concrete",
+        "pass": true
+      },
+      {
+        "label": "390 conditional reader has no horizontal overflow",
+        "pass": true
+      }
+    ],
+    "startWidth": 1440,
+    "measurements": [
+      {
+        "state": "book load error",
+        "rows": [
+          {
+            "name": "重新打开",
+            "w": 52,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "editorial and glossary",
+        "rows": [
+          {
+            "name": "关闭段落旁注",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "回到正文：Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice s",
+            "w": 343,
+            "h": 211
+          },
+          {
+            "name": "注解",
+            "w": 114.328125,
+            "h": 44
+          },
+          {
+            "name": "我的想法",
+            "w": 114.3359375,
+            "h": 44
+          },
+          {
+            "name": "问题",
+            "w": 114.3359375,
+            "h": 44
+          },
+          {
+            "name": "关键英文",
+            "w": 48,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "records retry failure",
+        "rows": [
+          {
+            "name": "关闭段落旁注",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "回到正文：Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice s",
+            "w": 343,
+            "h": 211
+          },
+          {
+            "name": "注解",
+            "w": 114.328125,
+            "h": 44
+          },
+          {
+            "name": "我的想法",
+            "w": 114.3359375,
+            "h": 44
+          },
+          {
+            "name": "问题",
+            "w": 114.3359375,
+            "h": 44
+          },
+          {
+            "name": "重新读取记录",
+            "w": 108,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "position conflict",
+        "rows": [
+          {
+            "name": "回到书房的位置",
+            "w": 77,
+            "h": 44
+          },
+          {
+            "name": "继续读这里",
+            "w": 55,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "record transfer",
+        "rows": [
+          {
+            "name": "关闭阅读设置",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "阅读",
+            "w": 82.25,
+            "h": 44
+          },
+          {
+            "name": "声音",
+            "w": 82.25,
+            "h": 44
+          },
+          {
+            "name": "习惯",
+            "w": 82.25,
+            "h": 44
+          },
+          {
+            "name": "数据",
+            "w": 82.25,
+            "h": 44
+          },
+          {
+            "name": "查看想法与问题 按原文归档",
+            "w": 313,
+            "h": 48
+          },
+          {
+            "name": "导出阅读记录与外观",
+            "w": 313,
+            "h": 48
+          },
+          {
+            "name": "导入阅读记录",
+            "w": 313,
+            "h": 48
+          },
+          {
+            "name": "查看已保存的听读",
+            "w": 313,
+            "h": 48
+          },
+          {
+            "name": "导出听读记录",
+            "w": 313,
+            "h": 48
+          },
+          {
+            "name": "恢复听读记录",
+            "w": 313,
+            "h": 48
+          },
+          {
+            "name": "全书目录",
+            "w": 60,
+            "h": 44
+          },
+          {
+            "name": "返回书页",
+            "w": 60,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "original file failed download",
+        "rows": [
+          {
+            "name": "文字已导入 · 自动分段",
+            "w": 108.6484375,
+            "h": 44
+          },
+          {
+            "name": "下载原文件校对 ↗",
+            "w": 88.6328125,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "original file missing",
+        "rows": [
+          {
+            "name": "文字已导入 · 自动分段",
+            "w": 108.6484375,
+            "h": 44
+          },
+          {
+            "name": "去书房补回原文件 →",
+            "w": 101.1875,
+            "h": 44
+          }
+        ]
+      }
+    ],
+    "loadRetryFocus": {
+      "tag": "MAIN",
+      "id": "book-page"
+    },
+    "failedRecordsRetryFocus": {
+      "tag": "BUTTON",
+      "id": ""
+    },
+    "retryFocus": {
+      "tag": "BUTTON",
+      "id": "progress-use-remote"
+    },
+    "remoteChoiceFocus": {
+      "tag": "DIV",
+      "id": "01b38ea4c710a84b-p00007"
+    },
+    "exportConflictText": "隔离位置已在另一处更新。",
+    "keepChoiceFocus": {
+      "tag": "DIV",
+      "id": "01b38ea4c710a84b-p00007"
+    },
+    "mobileOverflow": 0,
+    "writes": [
+      {
+        "action": "progress",
+        "baseRevision": 4
+      },
+      {
+        "action": "progress",
+        "baseRevision": 4
+      },
+      {
+        "action": "progress",
+        "baseRevision": 5
+      },
+      {
+        "action": "records/import"
+      },
+      {
+        "action": "records/import"
+      }
+    ],
+    "downloads": [
+      "marginalia-records.json",
+      "isolated-source.txt"
+    ]
+  },
+  {
+    "fixture": true,
+    "checks": [
+      {
+        "label": "R11 retry book loads readable page",
+        "pass": true
+      },
+      {
+        "label": "R11 retry success has valid page focus",
+        "pass": true
+      },
+      {
+        "label": "P06 editorial annotation attribution is visible",
+        "pass": true
+      },
+      {
+        "label": "P20 term expands with keyboard",
+        "pass": true
+      },
+      {
+        "label": "P22 failed retry preserves concrete recovery text",
+        "pass": true
+      },
+      {
+        "label": "P22 failure returns focus to new retry",
+        "pass": true
+      },
+      {
+        "label": "P22 recovered records focus conflict choice",
+        "pass": true
+      },
+      {
+        "label": "R25 use remote resolves conflict",
+        "pass": true
+      },
+      {
+        "label": "R25 completed choice returns valid reader focus",
+        "pass": true
+      },
+      {
+        "label": "T30 conflicting export gives a concrete alert",
+        "pass": true
+      },
+      {
+        "label": "R26 keep here resolves conflict",
+        "pass": true
+      },
+      {
+        "label": "R26 completed choice returns valid reader focus",
+        "pass": true
+      },
+      {
+        "label": "T30 export delivers local file with receipt",
+        "pass": true
+      },
+      {
+        "label": "T31 malformed JSON gives alert",
+        "pass": true
+      },
+      {
+        "label": "T31 failed import retries to explicit isolated merge receipt",
+        "pass": true
+      },
+      {
+        "label": "P27 private-source disclosure distinguishes automatic grouping",
+        "pass": true
+      },
+      {
+        "label": "P28 failed original download can retry",
+        "pass": true
+      },
+      {
+        "label": "P28 original delivers local fixture file",
+        "pass": true
+      },
+      {
+        "label": "P29 missing original offers exact library route",
+        "pass": true
+      },
+      {
+        "label": "P29 reason remains concrete",
+        "pass": true
+      },
+      {
+        "label": "390 conditional reader has no horizontal overflow",
+        "pass": true
+      }
+    ],
+    "startWidth": 390,
+    "measurements": [
+      {
+        "state": "book load error",
+        "rows": [
+          {
+            "name": "重新打开",
+            "w": 52,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "editorial and glossary",
+        "rows": [
+          {
+            "name": "关闭段落旁注",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "回到正文：Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice s",
+            "w": 300,
+            "h": 184
+          },
+          {
+            "name": "注解",
+            "w": 100,
+            "h": 44
+          },
+          {
+            "name": "我的想法",
+            "w": 100,
+            "h": 44
+          },
+          {
+            "name": "问题",
+            "w": 100,
+            "h": 44
+          },
+          {
+            "name": "关键英文",
+            "w": 48,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "records retry failure",
+        "rows": [
+          {
+            "name": "关闭段落旁注",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "回到正文：Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice s",
+            "w": 300,
+            "h": 184
+          },
+          {
+            "name": "注解",
+            "w": 100,
+            "h": 44
+          },
+          {
+            "name": "我的想法",
+            "w": 100,
+            "h": 44
+          },
+          {
+            "name": "问题",
+            "w": 100,
+            "h": 44
+          },
+          {
+            "name": "重新读取记录",
+            "w": 108,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "position conflict",
+        "rows": [
+          {
+            "name": "回到书房的位置",
+            "w": 77,
+            "h": 44
+          },
+          {
+            "name": "继续读这里",
+            "w": 55,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "record transfer",
+        "rows": [
+          {
+            "name": "关闭阅读设置",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "阅读",
+            "w": 80.75,
+            "h": 44
+          },
+          {
+            "name": "声音",
+            "w": 80.75,
+            "h": 44
+          },
+          {
+            "name": "习惯",
+            "w": 80.75,
+            "h": 44
+          },
+          {
+            "name": "数据",
+            "w": 80.75,
+            "h": 44
+          },
+          {
+            "name": "查看想法与问题 按原文归档",
+            "w": 307,
+            "h": 48
+          },
+          {
+            "name": "导出阅读记录与外观",
+            "w": 307,
+            "h": 48
+          },
+          {
+            "name": "导入阅读记录",
+            "w": 307,
+            "h": 48
+          },
+          {
+            "name": "查看已保存的听读",
+            "w": 307,
+            "h": 48
+          },
+          {
+            "name": "导出听读记录",
+            "w": 307,
+            "h": 48
+          },
+          {
+            "name": "恢复听读记录",
+            "w": 307,
+            "h": 48
+          },
+          {
+            "name": "全书目录",
+            "w": 60,
+            "h": 44
+          },
+          {
+            "name": "返回书页",
+            "w": 60,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "original file failed download",
+        "rows": [
+          {
+            "name": "文字已导入 · 自动分段",
+            "w": 108.6484375,
+            "h": 44
+          },
+          {
+            "name": "下载原文件校对 ↗",
+            "w": 88.6328125,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "original file missing",
+        "rows": [
+          {
+            "name": "文字已导入 · 自动分段",
+            "w": 108.6484375,
+            "h": 44
+          },
+          {
+            "name": "去书房补回原文件 →",
+            "w": 101.1875,
+            "h": 44
+          }
+        ]
+      }
+    ],
+    "loadRetryFocus": {
+      "tag": "MAIN",
+      "id": "book-page"
+    },
+    "failedRecordsRetryFocus": {
+      "tag": "BUTTON",
+      "id": ""
+    },
+    "retryFocus": {
+      "tag": "BUTTON",
+      "id": "progress-use-remote"
+    },
+    "remoteChoiceFocus": {
+      "tag": "DIV",
+      "id": "01b38ea4c710a84b-p00007"
+    },
+    "exportConflictText": "隔离位置已在另一处更新。",
+    "keepChoiceFocus": {
+      "tag": "DIV",
+      "id": "01b38ea4c710a84b-p00007"
+    },
+    "mobileOverflow": 0,
+    "writes": [
+      {
+        "action": "progress",
+        "baseRevision": 4
+      },
+      {
+        "action": "progress",
+        "baseRevision": 4
+      },
+      {
+        "action": "progress",
+        "baseRevision": 5
+      },
+      {
+        "action": "records/import"
+      },
+      {
+        "action": "records/import"
+      }
+    ],
+    "downloads": [
+      "marginalia-records.json",
+      "isolated-source.txt"
+    ]
+  }
+]

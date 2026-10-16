@@ -1,0 +1,168 @@
+{
+  "date": "2026-10-16",
+  "scoreType": "independent design review, not user research or provider outcome",
+  "rubric": {
+    "visual": 20,
+    "discoverability": 15,
+    "clickFeedback": 20,
+    "keyboard": 15,
+    "mobile": 15,
+    "stateRecovery": 15
+  },
+  "historicalCoverage": {
+    "families": 311,
+    "operated": 133,
+    "observedOnly": 99,
+    "unverified": 79
+  },
+  "currentIndex": {
+    "sourceMain": "79b3025",
+    "canonicalCurrentOrConditional": 350,
+    "auditReferences": 411,
+    "legacyNotApplicable": 22,
+    "retired": 2,
+    "isCoverageRate": false,
+    "source": "inventory-79b3025-applicability.json"
+  },
+  "currentBrowserEvidence": {
+    "scorer": {
+      "readerSettingsNotes": {
+        "assertions": 42,
+        "files": [
+          "review-reader-conditions.json"
+        ]
+      },
+      "audio": {
+        "assertions": 36,
+        "files": [
+          "review-audio-conditions.json"
+        ]
+      },
+      "readingPending": {
+        "assertions": 40,
+        "files": [
+          "review-reading-pending-conditions.json"
+        ]
+      },
+      "auxiliaryPages": {
+        "assertions": 46,
+        "files": [
+          "review-auxiliary-result.json"
+        ]
+      },
+      "privacyAfterCspFix": {
+        "assertions": 24,
+        "files": [
+          "review-privacy-final-result.json"
+        ]
+      },
+      "chatBeforeToolsHistorical": {
+        "assertions": 35,
+        "files": [
+          "review-integrated-chat-result.json",
+          "review-current-chat-conditions.json"
+        ]
+      },
+      "chat": {
+        "assertions": 100,
+        "files": [
+          "review-agent-current-result.json",
+          "review-agent-cards-result.json",
+          "review-agent-layout-result.json",
+          "review-agent-recovery-result.json"
+        ],
+        "modelAndToolResults": "synthetic browser responses",
+        "allNonGetIntercepted": true,
+        "externalTargets": "intercepted local HTML only",
+        "status": "passed on current tool UI after confirmed refresh and stop focus repairs",
+        "additionalRecoveryChecks": {
+          "assertions": 20,
+          "failed": 0,
+          "beforeFailed": 4,
+          "file": "review-agent-recovery-result.json",
+          "beforeFile": "review-agent-recovery-before.json"
+        }
+      }
+    },
+    "rootIndependentlyReviewed": {
+      "calendar": {
+        "assertions": 42,
+        "files": [
+          "root-calendar-conditional-desktop.json",
+          "root-calendar-conditional-mobile.json"
+        ]
+      },
+      "publicTargets": {
+        "scenarios": 9,
+        "file": "root-public-targets-after.json"
+      }
+    },
+    "implementationUnchangedIndependentlyReviewed": {
+      "assertions": 86,
+      "files": [
+        "conditional-profile-final.json",
+        "conditional-books-final.json",
+        "conditional-shelf-final.json",
+        "conditional-library-final.json"
+      ],
+      "note": "Unchanged profile16, books33, shelf6, library31; old gift46 remains historical."
+    },
+    "giftAfter37IndependentlyReviewed": {
+      "assertions": 109,
+      "compose": 72,
+      "receiver": 37,
+      "files": [
+        "integrated-gift-compose-final.json",
+        "integrated-gift-page-final.json",
+        "integrated-gift-visual-final.json"
+      ],
+      "viewports": [
+        [
+          1440,
+          900
+        ],
+        [
+          390,
+          900
+        ]
+      ],
+      "scope": "synthetic browser API and share-adapter returns; no real gift, provider, or native share sheet"
+    }
+  },
+  "remainingBoundaries": [
+    "system share and OS permission denial paths",
+    "real touch, mobile software keyboard, tab/app background or lockscreen behavior",
+    "real account persistence and full account-switch races",
+    "real model, speech, email or gift creation/receipt/revocation",
+    "cross-instance restoration, system calendar import, deployed clean-URL rewrite",
+    "Email link target and copy were verified; no external mail app or email sending was activated."
+  ],
+  "notes": [
+    "Assertions are not control-family counts.",
+    "All non-GET browser mutations in conditional fixtures were intercepted.",
+    "Partial extra profile 844 smoke records two completed checks; hidden-menu timeout is retained and not classified as a product defect.",
+    "CLI background attempt did not produce a hidden page; no background pass or product failure is claimed.",
+    "All scorer browser sessions are closed.",
+    "Auxiliary export downloads bypassed page.route: they were parsed actual local public-book QA events, not the proposed empty fixture. Final public receipts state this correction."
+  ],
+  "localRuntimeDownloadsExcludedFromPublication": [
+    "review-pending-fixture-download.json",
+    "review-records-fixture-download.json",
+    "review-evals-1440-download.json",
+    "review-evals-390-download.json"
+  ],
+  "historicalIntegratedIndex": {
+    "sourceBaseline": "567a92e",
+    "canonicalCurrentOrConditional": 342,
+    "legacyNotApplicable": 22,
+    "retired": 2,
+    "isCoverageRate": false
+  },
+  "historicalImplementationBefore37": {
+    "assertions": 132,
+    "file": "conditional-execution-results.json",
+    "applicability": "132 assertions belong to the pre37 integrated UI; unchanged groups remain valid, gift current-layout evidence pending."
+  },
+  "currentScoredGroups": 19,
+  "scoresAreFamilyScopeDesignJudgmentNotPerIndexCoverage": true
+}

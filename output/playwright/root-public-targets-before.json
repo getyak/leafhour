@@ -1,0 +1,353 @@
+[
+  {
+    "width": 1440,
+    "path": "/",
+    "overflow": 0,
+    "small": [
+      {
+        "id": "",
+        "tag": "A",
+        "name": "书房",
+        "href": "/library",
+        "width": 26,
+        "height": 44
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "来源 ↗",
+        "href": "https://www.gutenberg.org/ebooks/11",
+        "width": 30.6953125,
+        "height": 44
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "来源 ↗",
+        "href": "https://www.gutenberg.org/ebooks/2680",
+        "width": 30.6953125,
+        "height": 44
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "来源 ↗",
+        "href": "https://www.gutenberg.org/ebooks/205",
+        "width": 30.6953125,
+        "height": 44
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "循页PAGE BY PAGE",
+        "href": "/",
+        "width": 129.3046875,
+        "height": 42.140625
+      }
+    ]
+  },
+  {
+    "width": 1440,
+    "path": "/library",
+    "overflow": 0,
+    "small": [
+      {
+        "id": "",
+        "tag": "A",
+        "name": "循页首页",
+        "href": "/",
+        "width": 93.1640625,
+        "height": 34
+      },
+      {
+        "id": "sidebar-toggle",
+        "tag": "BUTTON",
+        "name": "收起侧栏",
+        "href": null,
+        "width": 44,
+        "height": 38
+      },
+      {
+        "id": "sidebar-search-open",
+        "tag": "BUTTON",
+        "name": "搜索书籍",
+        "href": null,
+        "width": 44,
+        "height": 38
+      },
+      {
+        "id": "book-search",
+        "tag": "INPUT",
+        "name": "搜索书名或作者",
+        "href": null,
+        "width": 133,
+        "height": 40.3984375
+      }
+    ]
+  },
+  {
+    "width": 1440,
+    "path": "/privacy",
+    "overflow": 0,
+    "small": [
+      {
+        "id": "",
+        "tag": "A",
+        "name": "hi@cubxxw.com",
+        "href": "mailto:hi@cubxxw.com",
+        "width": 110.2734375,
+        "height": 17.5
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "回到书房 →",
+        "href": "/library",
+        "width": 77.34375,
+        "height": 17.5
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "循页PAGE BY PAGE",
+        "href": "/",
+        "width": 129.3046875,
+        "height": 42.140625
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "path": "/",
+    "overflow": 0,
+    "small": [
+      {
+        "id": "",
+        "tag": "A",
+        "name": "循页首页",
+        "href": "/",
+        "width": 109.8515625,
+        "height": 41.59375
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "来源 ↗",
+        "href": "https://www.gutenberg.org/ebooks/11",
+        "width": 27.75,
+        "height": 44
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "来源 ↗",
+        "href": "https://www.gutenberg.org/ebooks/2680",
+        "width": 27.75,
+        "height": 44
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "来源 ↗",
+        "href": "https://www.gutenberg.org/ebooks/205",
+        "width": 27.75,
+        "height": 44
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "循页PAGE BY PAGE",
+        "href": "/",
+        "width": 116.8515625,
+        "height": 40.4375
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "隐私说明",
+        "href": "/privacy",
+        "width": 40,
+        "height": 44
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "path": "/library",
+    "overflow": 0,
+    "small": [
+      {
+        "id": "",
+        "tag": "A",
+        "name": "循页首页",
+        "href": "/",
+        "width": 82.40625,
+        "height": 31
+      },
+      {
+        "id": "library-menu",
+        "tag": "BUTTON",
+        "name": "打开书房导航",
+        "href": null,
+        "width": 44,
+        "height": 38
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "path": "/privacy",
+    "overflow": 0,
+    "small": [
+      {
+        "id": "",
+        "tag": "A",
+        "name": "循页首页",
+        "href": "/",
+        "width": 109.8515625,
+        "height": 41.59375
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "hi@cubxxw.com",
+        "href": "mailto:hi@cubxxw.com",
+        "width": 116.8125,
+        "height": 19
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "回到书房 →",
+        "href": "/library",
+        "width": 82.3671875,
+        "height": 19
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "循页PAGE BY PAGE",
+        "href": "/",
+        "width": 116.8515625,
+        "height": 40.4375
+      }
+    ]
+  },
+  {
+    "width": 320,
+    "path": "/",
+    "overflow": 0,
+    "small": [
+      {
+        "id": "",
+        "tag": "A",
+        "name": "循页首页",
+        "href": "/",
+        "width": 109.8515625,
+        "height": 41.59375
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "来源 ↗",
+        "href": "https://www.gutenberg.org/ebooks/11",
+        "width": 27.75,
+        "height": 44
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "来源 ↗",
+        "href": "https://www.gutenberg.org/ebooks/2680",
+        "width": 27.75,
+        "height": 44
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "来源 ↗",
+        "href": "https://www.gutenberg.org/ebooks/205",
+        "width": 27.75,
+        "height": 44
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "循页PAGE BY PAGE",
+        "href": "/",
+        "width": 116.8515625,
+        "height": 40.4375
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "隐私说明",
+        "href": "/privacy",
+        "width": 40,
+        "height": 44
+      }
+    ]
+  },
+  {
+    "width": 320,
+    "path": "/library",
+    "overflow": 0,
+    "small": [
+      {
+        "id": "",
+        "tag": "A",
+        "name": "循页首页",
+        "href": "/",
+        "width": 82.40625,
+        "height": 31
+      },
+      {
+        "id": "library-menu",
+        "tag": "BUTTON",
+        "name": "打开书房导航",
+        "href": null,
+        "width": 44,
+        "height": 38
+      }
+    ]
+  },
+  {
+    "width": 320,
+    "path": "/privacy",
+    "overflow": 0,
+    "small": [
+      {
+        "id": "",
+        "tag": "A",
+        "name": "循页首页",
+        "href": "/",
+        "width": 109.8515625,
+        "height": 41.59375
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "hi@cubxxw.com",
+        "href": "mailto:hi@cubxxw.com",
+        "width": 116.8125,
+        "height": 19
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "回到书房 →",
+        "href": "/library",
+        "width": 82.3671875,
+        "height": 19
+      },
+      {
+        "id": "",
+        "tag": "A",
+        "name": "循页PAGE BY PAGE",
+        "href": "/",
+        "width": 116.8515625,
+        "height": 40.4375
+      }
+    ]
+  }
+]

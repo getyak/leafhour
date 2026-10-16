@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-16",
+  "mainBaseline": "79b3025725a3d0bd72e415c5a2a5b3c0970fb97f",
+  "mergeCommit": "a9927c8",
+  "tests": {
+    "total": 656,
+    "passed": 655,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 1,
+    "skipReason": "Linux-specific runtime guard on macOS",
+    "durationMs": 54520.07125,
+    "concurrency": 1,
+    "environment": "sanitized"
+  },
+  "releaseChecks": {
+    "readerRuntimeFiles": 928,
+    "readerRuntimeMB": 9,
+    "publicFiles": 138,
+    "registeredMedia": 9,
+    "softwareAllowlistFiles": 316,
+    "allPassed": true,
+    "modelRequests": 0
+  },
+  "changedSourceHashes": {
+    "app/book-gift.mjs": "a802990aaa4a79d5d9a89f34996204c1231e3627b21fdd0e572d38562b4005c0",
+    "app/gift-compose.css": "077dd8a7d62189d18ee8843f5a80576e4a0c52811fe35b8610fcfea83d246a52",
+    "app/gift-compose.mjs": "fe23e250243328550210b79c77991e5196bd47ef1853a2c997db809dbfc60efb",
+    "app/interaction-craft.css": "c6f872cc2731419434adc8a11c54557675782b54095626ec9c841e5deeb8bc4e",
+    "app/library-chat.mjs": "8c941d89385cafc75c5fe6e663bafeeb9a3ca7cd3678cf13565b0c28f3a0bac2",
+    "app/privacy.html": "9d550d3617028c1c2502904c556963ca93cd662236c6738edaa96e539b4397be",
+    "tests/gift-compose-ui.test.mjs": "8baaad06960210d8963081f32157c214010a0145de23721c8dfde18fa201a595",
+    "tests/library-chat-ui.test.mjs": "5a3b9b364d64c2b77bf822e0ee88b4c782455ca9c53c0710170ecb76456f09cf"
+  },
+  "priorIntegrationRun": {
+    "total": 653,
+    "passed": 652,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 1,
+    "skipReason": "Linux-specific runtime guard on macOS",
+    "durationMs": 39541.764167,
+    "concurrency": 1,
+    "environment": "sanitized"
+  },
+  "focusedRegressions": {
+    "red": {
+      "tests": 21,
+      "passed": 19,
+      "failed": 2,
+      "actualFailures": [
+        "explicit reload loses focus when retry disappears",
+        "explicit stop loses focus when stop disappears"
+      ]
+    },
+    "green": {
+      "tests": 24,
+      "passed": 24,
+      "failed": 0
+    },
+    "guard": "reader focus movement during asynchronous completion is preserved"
+  }
+}

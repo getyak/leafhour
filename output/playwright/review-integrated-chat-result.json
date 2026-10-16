@@ -1,0 +1,169 @@
+{
+  "fixture": true,
+  "blockedMutations": [
+    {
+      "path": "/api/library/books/gutenberg-meditations/progress",
+      "method": "POST"
+    }
+  ],
+  "checks": [
+    {
+      "label": "nonmodal semantics",
+      "pass": true
+    },
+    {
+      "label": "document is not scroll locked",
+      "pass": true
+    },
+    {
+      "label": "desktop independent control targets at least 44",
+      "pass": true
+    },
+    {
+      "label": "newline and IME do not submit chat",
+      "pass": true
+    },
+    {
+      "label": "Escape closes companion",
+      "pass": true
+    },
+    {
+      "label": "Escape returns to launcher",
+      "pass": true
+    },
+    {
+      "label": "draft survives collapse and reopen",
+      "pass": true
+    },
+    {
+      "label": "desktop normal two lines need no scroll",
+      "pass": true
+    },
+    {
+      "label": "Tab can leave nonmodal panel",
+      "pass": true
+    },
+    {
+      "label": "desktop exposed正文 scrolls with companion open",
+      "pass": true
+    },
+    {
+      "label": "390 independent control targets at least 44",
+      "pass": true
+    },
+    {
+      "label": "390 no horizontal overflow",
+      "pass": true
+    },
+    {
+      "label": "390 normal two lines need no scroll",
+      "pass": true
+    },
+    {
+      "label": "answer copy has usable receipt",
+      "pass": true
+    },
+    {
+      "label": "reference navigation closes companion",
+      "pass": true
+    },
+    {
+      "label": "no paid chat request dispatched",
+      "pass": true
+    }
+  ],
+  "desktopRects": [
+    {
+      "name": "更多对话操作",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "name": "导出这段对话",
+      "width": 190,
+      "height": 44
+    },
+    {
+      "name": "收起阅读对话",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "name": "复制这条 AI 解释",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "name": "核对原文 · 1 处",
+      "width": 354,
+      "height": 44
+    },
+    {
+      "name": "第 1 卷查看原文与译文",
+      "width": 370,
+      "height": 44
+    },
+    {
+      "name": "发送问题",
+      "width": 44,
+      "height": 44
+    }
+  ],
+  "retainedDraft": "隔离草稿：想再核对这一段。\n\n",
+  "desktopTwoLines": {
+    "clientHeight": 50,
+    "scrollHeight": 50,
+    "scrollTop": 0,
+    "lineHeight": "25.2px"
+  },
+  "desktopScroll": {
+    "before": 332,
+    "after": 632
+  },
+  "mobileRects": [
+    {
+      "name": "更多对话操作",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "name": "导出这段对话",
+      "width": 190,
+      "height": 44
+    },
+    {
+      "name": "收起阅读对话",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "name": "复制这条 AI 解释",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "name": "核对原文 · 1 处",
+      "width": 318,
+      "height": 44
+    },
+    {
+      "name": "第 1 卷查看原文与译文",
+      "width": 332,
+      "height": 44
+    },
+    {
+      "name": "发送问题",
+      "width": 44,
+      "height": 44
+    }
+  ],
+  "mobileOverflow": 0,
+  "mobileTwoLines": {
+    "clientHeight": 58,
+    "scrollHeight": 58,
+    "scrollTop": 0,
+    "lineHeight": "28.8px"
+  },
+  "copyReceipt": "已复制",
+  "referencePassage": "6977474f82a39dd8-p00055"
+}

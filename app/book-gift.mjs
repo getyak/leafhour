@@ -1,4 +1,5 @@
 import {paintBookCover} from './book-binding.mjs';
+import {trackActionFocus} from './action-focus.mjs';
 import {createGiftSpring} from './gift-ritual.mjs';
 import {readGiftPreview} from './gift-preview.mjs';
 
@@ -92,12 +93,12 @@ function present(data){
   $('gift-loading').hidden=true;$('gift-error').hidden=true;$('gift-scene').hidden=false;$('gift-arrival').hidden=false;resize();if(!preview)resumeReturn();
 }
 async function load(){
-  const ticket=++generation;$('gift-loading').hidden=false;$('gift-error').hidden=true;
-  try{if(!token)throw Object.assign(Error('链接不完整'),{status:404});const data=await request('/api/book-gifts/'+token);if(ticket===generation)present(data);}catch(error){if(ticket===generation)showError(error);}
+  const ticket=++generation,focus=trackActionFocus(document,$('gift-retry'));$('gift-loading').hidden=false;$('gift-error').hidden=true;
+  try{if(!token)throw Object.assign(Error('链接不完整'),{status:404});const data=await request('/api/book-gifts/'+token);if(ticket===generation)present(data);}catch(error){if(ticket===generation)showError(error);}finally{if(ticket===generation)focus.restore($('gift-scene').hidden?$('gift-retry').hidden?$('gift-error').querySelector('a'):$('gift-retry'):$('gift-scene').dataset.open==='true'?$('gift-title'):$('gift-open'));else focus.stop();}
 }
 async function accept(){
   if(preview){$('gift-action-status').textContent='这是收信预览，书籍不会加入书架。';return;}
-  if(receiving||!gift)return;receiving=true;$('gift-accept').disabled=true;$('gift-action-status').classList.remove('error');$('gift-action-status').textContent='正在放进你的书架…';
+  if(receiving||!gift)return;const focus=trackActionFocus(document,$('gift-accept'));receiving=true;$('gift-accept').disabled=true;$('gift-action-status').classList.remove('error');$('gift-action-status').textContent='正在放进你的书架…';
   try{
     const session=await request('/api/auth/session');
     if(!session.user?.id){rememberReturn();location.assign('/library?login=1&next='+encodeURIComponent('/gift/'+token));return;}
@@ -105,12 +106,11 @@ async function accept(){
     if(typeof saved.bookId!=='string'||!saved.bookId||saved.readUrl!=='/read?book='+encodeURIComponent(saved.bookId))throw Error('收书结果无法核验，请回到书房确认。');
     $('gift-accept').hidden=true;$('gift-saved-read').href=saved.readUrl;$('gift-saved-read').hidden=false;
     $('gift-action-status').textContent=saved.alreadyOwned?'这本书已在你的书架上，自己的译文和笔记都已保留。':'已放进你的书架。从第一页开始，写下自己的旁注。';
-    $('gift-saved-read').focus({preventScroll:true});
   }catch(error){
     if(error.status===401){rememberReturn();location.assign('/library?login=1&next='+encodeURIComponent('/gift/'+token));return;}
     if(error.status===404){showError(error);return;}
     $('gift-action-status').classList.add('error');$('gift-action-status').textContent=error.message;
-  }finally{receiving=false;$('gift-accept').disabled=false;}
+  }finally{receiving=false;$('gift-accept').disabled=false;focus.restore(!$('gift-error').hidden?$('gift-error').querySelector('a'):$('gift-accept').hidden?$('gift-saved-read'):$('gift-accept'));}
 }
 $('gift-open').addEventListener('click',()=>setOpen(true));$('gift-close').addEventListener('click',()=>setOpen(false));
 $('gift-accept').addEventListener('click',accept);$('gift-retry').addEventListener('click',load);

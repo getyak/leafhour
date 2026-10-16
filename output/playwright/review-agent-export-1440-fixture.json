@@ -1,0 +1,91 @@
+{
+  "kind": "marginalia-book-chat",
+  "schemaVersion": 1,
+  "exportedAt": "2026-10-16T01:59:50.199Z",
+  "bookId": "gutenberg-alice",
+  "title": {
+    "zh": "爱丽丝梦游仙境",
+    "en": "Alice’s Adventures in Wonderland"
+  },
+  "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+  "turns": [
+    {
+      "id": "isolated-agent-history",
+      "bookId": "gutenberg-alice",
+      "passageId": "01b38ea4c710a84b-p00008",
+      "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+      "text": "隔离提问：请对比章节并找下一本。",
+      "origin": "user",
+      "status": "completed",
+      "createdAt": "2026-10-16T01:59:48.896Z",
+      "activity": [
+        {
+          "tool": "reader_read_chapter",
+          "bookId": "gutenberg-alice",
+          "chapterId": "chapter-a",
+          "status": "completed",
+          "label": "查阅第一章"
+        },
+        {
+          "tool": "reader_read_chapter",
+          "bookId": "gutenberg-alice",
+          "chapterId": "chapter-b",
+          "status": "completed",
+          "label": "查阅第二章"
+        },
+        {
+          "tool": "web_search",
+          "status": "failed",
+          "label": "检索站外资料"
+        }
+      ],
+      "answer": {
+        "summary": "## 隔离回答：先核对原文\n\n这是一份**界面夹具**，不是模型结果。可以[回到当前原句](/read?book=gutenberg-alice&passage=01b38ea4c710a84b-p00008)、[核对另一本原句](/read?book=gutenberg-meditations&passage=6977474f82a39dd8-p00055)，或[查看普通外部资料](https://example.com/marginalia-agent-review)。\n\n- 第一条：保留出处与用户问题的区别。\n- 第二条：相关书目只是检索候选。\n\n| 第一列 | 第二列 | 第三列 | 第四列 | 第五列 |\n| --- | --- | --- | --- | --- |\n| 原文 | 译文 | 注解 | 用户笔记 | 书目结果 |\n\n```text\npublic-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-public-fixture-code-\n```\n\n> 仅观察条件界面的可读性。\n\n<img src=x onerror=alert(1)>\n\n[不安全协议](javascript:alert(1))",
+        "sourceRefs": [
+          {
+            "bookId": "gutenberg-alice",
+            "passageId": "01b38ea4c710a84b-p00008",
+            "quote": "Alice was beginning to get very tired of sitting by her sister on the bank, and ",
+            "layer": "original",
+            "url": "/read?book=gutenberg-alice&passage=01b38ea4c710a84b-p00008"
+          },
+          {
+            "bookId": "gutenberg-meditations",
+            "passageId": "6977474f82a39dd8-p00055",
+            "quote": "I. Of my grandfather Verus I have learned to be gentle and meek, and to refrain ",
+            "layer": "original",
+            "url": "/read?book=gutenberg-meditations&passage=6977474f82a39dd8-p00055"
+          }
+        ],
+        "recommendations": [
+          {
+            "title": "爱丽丝梦游仙境",
+            "bookId": "gutenberg-alice",
+            "owned": true,
+            "source": "library",
+            "url": "/read?book=gutenberg-alice"
+          },
+          {
+            "title": "瓦尔登湖",
+            "bookId": "gutenberg-walden",
+            "owned": false,
+            "source": "catalog",
+            "url": "/read?book=gutenberg-walden"
+          },
+          {
+            "title": "隔离外部书目",
+            "owned": false,
+            "source": "openlibrary",
+            "url": "https://example.com/marginalia-agent-review"
+          },
+          {
+            "title": "不得出现的第四候选",
+            "owned": false,
+            "source": "openlibrary",
+            "url": "https://example.com/fourth"
+          }
+        ]
+      }
+    }
+  ]
+}

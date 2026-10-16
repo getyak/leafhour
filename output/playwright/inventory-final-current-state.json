@@ -1,0 +1,21 @@
+{
+  "width": 1440,
+  "metrics": [
+    {
+      "name": "上一章",
+      "width": 70,
+      "height": 44,
+      "focusVisible": true,
+      "outline": "rgb(63, 89, 76) solid 2px"
+    },
+    {
+      "name": "下一章",
+      "width": 70,
+      "height": 44,
+      "focusVisible": true,
+      "outline": "rgb(63, 89, 76) solid 2px"
+    }
+  ],
+  "snapshot": "- dialog \"你的阅读方式\":\n  - banner:\n    - heading \"你的阅读方式\" [level=2]\n    - paragraph: 把这一页，调成喜欢的样子。\n    - button \"关闭阅读设置\": 关闭\n  - tablist \"阅读设置分类\":\n    - tab \"阅读\"\n    - tab \"声音\"\n    - tab \"习惯\"\n    - tab \"数据\" [selected]\n  - tabpanel \"数据\":\n    - heading \"我的记录\" [level=3]\n    - button \"查看想法与问题 按原文归档\"\n    - heading \"阅读备份\" [level=3]\n    - link \"导出阅读记录与外观\":\n      - /url: /api/records/export\n    - button \"导入阅读记录\"\n    - paragraph: 备份保留阅读位置和外观。声音记录请单独导出。\n    - heading \"听读备份\" [level=3]\n    - button \"查看已保存的听读\"\n    - button \"导出听读记录\"\n    - button \"恢复听读记录\"\n    - paragraph: 包含讲稿、声音与播放位置。氛围偏好仍保存在当前浏览器。\n    - heading \"阅读体验备份\" [level=3]\n    - button \"导入阅读体验\"\n    - paragraph: 保留站队选择、自己的复述与核对结果。\n    - paragraph\n  - contentinfo:\n    - button \"全书目录\"\n    - button \"返回书页\"",
+  "experienceState": "true"
+}

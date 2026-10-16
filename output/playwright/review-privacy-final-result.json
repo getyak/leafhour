@@ -1,0 +1,285 @@
+{
+  "widths": [
+    {
+      "width": 1440,
+      "checks": [
+        {
+          "label": "privacy external CSS restores bounded760 reading column with24 side padding",
+          "pass": true
+        },
+        {
+          "label": "privacy title is inset and fully inside viewport",
+          "pass": true
+        },
+        {
+          "label": "privacy CSP remains strict without unsafe-inline style permission",
+          "pass": true
+        },
+        {
+          "label": "privacy no horizontal overflow",
+          "pass": true
+        },
+        {
+          "label": "privacy skip is the actual first keyboard target",
+          "pass": true
+        },
+        {
+          "label": "privacy skip Enter reaches main anchor",
+          "pass": true
+        },
+        {
+          "label": "privacy email is reached through real Tab order",
+          "pass": true
+        },
+        {
+          "label": "privacy focused email settles into viewport with2px outline",
+          "pass": true
+        },
+        {
+          "label": "privacy email address copies without activating external mail",
+          "pass": true
+        },
+        {
+          "label": "privacy visible independent links44 except natural inline mail",
+          "pass": true
+        },
+        {
+          "label": "privacy keyboard return reaches actual library",
+          "pass": true
+        },
+        {
+          "label": "privacy browser Back restores readable privacy document",
+          "pass": true
+        }
+      ],
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data: https: blob:; media-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "geometry": {
+        "main": {
+          "left": 340,
+          "right": 1100,
+          "width": 760
+        },
+        "maxWidth": "760px",
+        "paddingLeft": "24px",
+        "paddingRight": "24px",
+        "fontSize": "17px",
+        "lineHeight": "31.45px",
+        "heading": {
+          "left": 364,
+          "right": 1076,
+          "fontSize": "46px"
+        },
+        "styleSheets": [
+          "http://127.0.0.1:8337/portal.css",
+          "http://127.0.0.1:8337/interaction-craft.css"
+        ]
+      },
+      "mailFocus": {
+        "top": 946.3125,
+        "bottom": 966.3125,
+        "scrollY": 808,
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "active": true,
+        "href": "mailto:hi@cubxxw.com"
+      },
+      "copied": "hi@cubxxw.com",
+      "targets": [
+        {
+          "name": "跳到正文",
+          "href": "#main",
+          "width": 84,
+          "height": 49.5
+        },
+        {
+          "name": "循页PAGE BY PAGE",
+          "href": "/",
+          "width": 129.3125,
+          "height": 46.734375
+        },
+        {
+          "name": "回到书房 ↗",
+          "href": "/library",
+          "width": 65.453125,
+          "height": 44
+        },
+        {
+          "name": "hi@cubxxw.com",
+          "href": "mailto:hi@cubxxw.com",
+          "width": 122.484375,
+          "height": 20
+        },
+        {
+          "name": "回到书房 →",
+          "href": "/library",
+          "width": 87.328125,
+          "height": 44
+        },
+        {
+          "name": "循页PAGE BY PAGE",
+          "href": "/",
+          "width": 129.3125,
+          "height": 44
+        },
+        {
+          "name": "我的书房 ↗",
+          "href": "/library",
+          "width": 60.546875,
+          "height": 44
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "checks": [
+        {
+          "label": "privacy external CSS restores bounded760 reading column with24 side padding",
+          "pass": true
+        },
+        {
+          "label": "privacy title is inset and fully inside viewport",
+          "pass": true
+        },
+        {
+          "label": "privacy CSP remains strict without unsafe-inline style permission",
+          "pass": true
+        },
+        {
+          "label": "privacy no horizontal overflow",
+          "pass": true
+        },
+        {
+          "label": "privacy skip is the actual first keyboard target",
+          "pass": true
+        },
+        {
+          "label": "privacy skip Enter reaches main anchor",
+          "pass": true
+        },
+        {
+          "label": "privacy email is reached through real Tab order",
+          "pass": true
+        },
+        {
+          "label": "privacy focused email settles into viewport with2px outline",
+          "pass": true
+        },
+        {
+          "label": "privacy email address copies without activating external mail",
+          "pass": true
+        },
+        {
+          "label": "privacy visible independent links44 except natural inline mail",
+          "pass": true
+        },
+        {
+          "label": "privacy keyboard return reaches actual library",
+          "pass": true
+        },
+        {
+          "label": "privacy browser Back restores readable privacy document",
+          "pass": true
+        }
+      ],
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data: https: blob:; media-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "geometry": {
+        "main": {
+          "left": 0,
+          "right": 390,
+          "width": 390
+        },
+        "maxWidth": "760px",
+        "paddingLeft": "24px",
+        "paddingRight": "24px",
+        "fontSize": "17px",
+        "lineHeight": "31.45px",
+        "heading": {
+          "left": 24,
+          "right": 366,
+          "fontSize": "32px"
+        },
+        "styleSheets": [
+          "http://127.0.0.1:8337/portal.css",
+          "http://127.0.0.1:8337/interaction-craft.css"
+        ]
+      },
+      "mailFocus": {
+        "top": 798.5625,
+        "bottom": 818.5625,
+        "scrollY": 1896,
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "active": true,
+        "href": "mailto:hi@cubxxw.com"
+      },
+      "copied": "hi@cubxxw.com",
+      "targets": [
+        {
+          "name": "跳到正文",
+          "href": "#main",
+          "width": 84,
+          "height": 49.5
+        },
+        {
+          "name": "循页PAGE BY PAGE",
+          "href": "/",
+          "width": 109.859375,
+          "height": 44
+        },
+        {
+          "name": "回到书房 ↗",
+          "href": "/library",
+          "width": 65.453125,
+          "height": 44
+        },
+        {
+          "name": "hi@cubxxw.com",
+          "href": "mailto:hi@cubxxw.com",
+          "width": 122.484375,
+          "height": 20
+        },
+        {
+          "name": "回到书房 →",
+          "href": "/library",
+          "width": 87.328125,
+          "height": 44
+        },
+        {
+          "name": "循页PAGE BY PAGE",
+          "href": "/",
+          "width": 116.859375,
+          "height": 44
+        },
+        {
+          "name": "我的书房 ↗",
+          "href": "/library",
+          "width": 50.703125,
+          "height": 44
+        }
+      ]
+    }
+  ],
+  "blockedMutations": [],
+  "cspErrors": [],
+  "mailApplicationOpened": false,
+  "noCspStyleViolation": true,
+  "nightDate": {
+    "width": 390,
+    "media": "prefers-color-scheme dark",
+    "foreground": [
+      166,
+      178,
+      164
+    ],
+    "background": [
+      25,
+      34,
+      28
+    ],
+    "cssVariable": "#a6b2a4",
+    "fontSize": 14,
+    "calculatedContrast": 7.402,
+    "screenshot": "review-privacy-390-night-final.png",
+    "visuallyReviewed": true
+  }
+}

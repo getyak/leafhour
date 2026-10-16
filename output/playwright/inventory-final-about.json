@@ -1,0 +1,84 @@
+[
+  {
+    "id": "C16",
+    "width": 1440,
+    "metric": {
+      "width": 91.4453125,
+      "height": 44,
+      "x": 531,
+      "y": 564.28125,
+      "focusVisible": true,
+      "outline": "rgb(56, 88, 68) solid 2px"
+    },
+    "url": "https://github.com/getyak/marginalia-reader",
+    "loaded": true
+  },
+  {
+    "id": "C17",
+    "width": 1440,
+    "metric": {
+      "width": 65.4453125,
+      "height": 44,
+      "x": 642.4453125,
+      "y": 564.28125,
+      "focusVisible": true,
+      "outline": "rgb(56, 88, 68) solid 2px"
+    },
+    "href": "/privacy",
+    "target": null,
+    "url": "http://127.0.0.1:8337/privacy",
+    "snapshot": "- link \"跳到正文\":\n  - /url: \"#main\"\n- banner:\n  - link \"循页首页\":\n    - /url: /\n    - text: 循页 PAGE BY PAGE\n  - navigation \"主导航\":\n    - link \"回到书房 ↗\":\n      - /url: /library\n- main:\n  - paragraph: YOUR DATA, YOUR CHOICE\n  - heading \"登录与个人数据\" [level=1]\n  - paragraph: 适用于 reader.cubxxw.com · 更新于 2026 年 10 月 15 日\n  - paragraph: 循页用登录身份确认书房的归属，保存你选择上传的书和阅读记录。公版样书可以匿名试读。本文说明这个线上实例如何处理数据；自行部署的实例由它的运营者负责。\n  - heading \"登录时会用到什么\" [level=2]\n  - paragraph: 邮箱登录使用你填写的邮箱地址，由 Supabase Auth 生成和校验验证码，Resend 投递邮件。选择 Google 或 Apple 登录时，由相应供应商验证身份，Supabase 接收账户标识、邮箱及供应商提供的基本资料，例如姓名和头像。循页用这些信息识别账户和维持登录，不申请邮箱正文、联系人、云盘或日历权限。\n  - paragraph: Apple 提供隐藏邮箱时，按这个身份保存账户。登录页显示某种方式可用后，才会发起对应的官方授权。你可以在 Google 或 Apple 的账号设置中撤回对循页"
+  },
+  {
+    "id": "C17-return",
+    "width": 1440,
+    "url": "http://127.0.0.1:8337/library?settings=about",
+    "dialogOpen": true
+  },
+  {
+    "width": 1440,
+    "aboutSnapshot": "- dialog \"设置\":\n  - heading \"设置\" [level=2]\n  - button \"关闭设置\": ×\n  - tablist \"设置分类\":\n    - tab \"账户\"\n    - tab \"外观\"\n    - tab \"关于循页\" [selected]\n  - tabpanel \"关于循页\":\n    - heading \"循页 · Page by Page\" [level=3]\n    - paragraph: 每天读一点，读完一本想读的书。原文、译文和自己的思考，各有自己的位置。\n    - paragraph: 开源 · 可本地运行 · 可自托管\n    - link \"查看开源项目 ↗\":\n      - /url: https://github.com/getyak/marginalia-reader\n    - link \"隐私说明 ↗\":\n      - /url: /privacy",
+    "overflow": false
+  },
+  {
+    "id": "C16",
+    "width": 390,
+    "metric": {
+      "width": 91.4453125,
+      "height": 44,
+      "x": 35,
+      "y": 523.78125,
+      "focusVisible": true,
+      "outline": "rgb(56, 88, 68) solid 2px"
+    },
+    "url": "https://github.com/getyak/marginalia-reader",
+    "loaded": true
+  },
+  {
+    "id": "C17",
+    "width": 390,
+    "metric": {
+      "width": 65.4453125,
+      "height": 44,
+      "x": 146.4453125,
+      "y": 523.78125,
+      "focusVisible": true,
+      "outline": "rgb(56, 88, 68) solid 2px"
+    },
+    "href": "/privacy",
+    "target": null,
+    "url": "http://127.0.0.1:8337/privacy",
+    "snapshot": "- link \"跳到正文\":\n  - /url: \"#main\"\n- banner:\n  - link \"循页首页\":\n    - /url: /\n    - text: 循页 PAGE BY PAGE\n- main:\n  - paragraph: YOUR DATA, YOUR CHOICE\n  - heading \"登录与个人数据\" [level=1]\n  - paragraph: 适用于 reader.cubxxw.com · 更新于 2026 年 10 月 15 日\n  - paragraph: 循页用登录身份确认书房的归属，保存你选择上传的书和阅读记录。公版样书可以匿名试读。本文说明这个线上实例如何处理数据；自行部署的实例由它的运营者负责。\n  - heading \"登录时会用到什么\" [level=2]\n  - paragraph: 邮箱登录使用你填写的邮箱地址，由 Supabase Auth 生成和校验验证码，Resend 投递邮件。选择 Google 或 Apple 登录时，由相应供应商验证身份，Supabase 接收账户标识、邮箱及供应商提供的基本资料，例如姓名和头像。循页用这些信息识别账户和维持登录，不申请邮箱正文、联系人、云盘或日历权限。\n  - paragraph: Apple 提供隐藏邮箱时，按这个身份保存账户。登录页显示某种方式可用后，才会发起对应的官方授权。你可以在 Google 或 Apple 的账号设置中撤回对循页的授权。\n  - paragraph: 供应商访问凭据与刷新凭据保存在服务端。浏览器使用仅供本站会话的 Cookie；普通登录会话最"
+  },
+  {
+    "id": "C17-return",
+    "width": 390,
+    "url": "http://127.0.0.1:8337/library?settings=about",
+    "dialogOpen": true
+  },
+  {
+    "width": 390,
+    "aboutSnapshot": "- dialog \"设置\":\n  - heading \"设置\" [level=2]\n  - button \"关闭设置\": ×\n  - tablist \"设置分类\":\n    - tab \"账户\"\n    - tab \"外观\"\n    - tab \"关于循页\" [selected]\n  - tabpanel \"关于循页\":\n    - heading \"循页 · Page by Page\" [level=3]\n    - paragraph: 每天读一点，读完一本想读的书。原文、译文和自己的思考，各有自己的位置。\n    - paragraph: 开源 · 可本地运行 · 可自托管\n    - link \"查看开源项目 ↗\":\n      - /url: https://github.com/getyak/marginalia-reader\n    - link \"隐私说明 ↗\":\n      - /url: /privacy",
+    "overflow": false
+  }
+]

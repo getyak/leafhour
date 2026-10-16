@@ -1,0 +1,146 @@
+{
+  "fixture": true,
+  "checks": [
+    {
+      "label": "Enter sends exactly one intercepted request",
+      "pass": true
+    },
+    {
+      "label": "pending input book chooser and send disabled",
+      "pass": true
+    },
+    {
+      "label": "collapse during pending is allowed",
+      "pass": true
+    },
+    {
+      "label": "collapsed launcher describes pending",
+      "pass": true
+    },
+    {
+      "label": "pending survives collapse and reopen",
+      "pass": true
+    },
+    {
+      "label": "bounded long-wait state appears after polling",
+      "pass": true
+    },
+    {
+      "label": "stop sends exactly one intercepted cancel",
+      "pass": true
+    },
+    {
+      "label": "stop restores original question",
+      "pass": true
+    },
+    {
+      "label": "stop has explicit receipt",
+      "pass": true
+    },
+    {
+      "label": "unavailable service preserves editable draft but disables send",
+      "pass": true
+    },
+    {
+      "label": "390 independent controls satisfy 44px",
+      "pass": true
+    },
+    {
+      "label": "390 has no horizontal overflow",
+      "pass": true
+    },
+    {
+      "label": "Escape returns focus to launcher",
+      "pass": true
+    },
+    {
+      "label": "keyboard reopen preserves unavailable draft",
+      "pass": true
+    },
+    {
+      "label": "Q14 suggestion fills editable draft without sending",
+      "pass": true
+    },
+    {
+      "label": "N92 more menu explains bounded context",
+      "pass": true
+    },
+    {
+      "label": "Q12 real local conversation export is delivered",
+      "pass": true
+    },
+    {
+      "label": "Q13 empty-book action closes companion to shelf",
+      "pass": true
+    },
+    {
+      "label": "Q15 anonymous login opens one auth modal without stacking",
+      "pass": true
+    }
+  ],
+  "writes": [
+    {
+      "path": "/api/library/books/gutenberg-alice/chat",
+      "method": "POST",
+      "kind": "send"
+    },
+    {
+      "path": "/api/library/books/gutenberg-alice/chat/56edc0a9-1ce6-4e1f-b113-c4e2d5c63191/cancel",
+      "method": "POST",
+      "kind": "cancel"
+    }
+  ],
+  "blocked": [],
+  "longWait": {
+    "text": "还在处理，可以点“查看进度”确认，也可以先收起窗口。",
+    "getCount": 14
+  },
+  "mobileRects": [
+    {
+      "name": "爱丽丝梦游仙境沉思录瓦尔登湖",
+      "w": 111,
+      "h": 44
+    },
+    {
+      "name": "更多对话操作",
+      "w": 44,
+      "h": 44
+    },
+    {
+      "name": "收起阅读对话",
+      "w": 44,
+      "h": 44
+    },
+    {
+      "name": "这段最容易被误读的地方是什么？",
+      "w": 300,
+      "h": 44
+    },
+    {
+      "name": "帮我把这段的论证拆开看看。",
+      "w": 300,
+      "h": 44
+    },
+    {
+      "name": "我想用自己的话复述这段。",
+      "w": 300,
+      "h": 44
+    },
+    {
+      "name": "重新载入",
+      "w": 44,
+      "h": 44
+    },
+    {
+      "name": "第 1 卷查看原文与译文",
+      "w": 332,
+      "h": 44
+    },
+    {
+      "name": "发送问题",
+      "w": 44,
+      "h": 44
+    }
+  ],
+  "requestsAreBrowserFixtures": true
+}

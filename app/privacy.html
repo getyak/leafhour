@@ -4,11 +4,8 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">
   <meta name="description" content="循页如何使用登录身份、保存阅读数据，以及如何导出、撤回授权和联系删除。">
   <title>登录与个人数据 · 循页 Page by Page</title><link rel="stylesheet" href="/portal.css"><link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml"><script type="module" src="/site-appearance.mjs"></script>
-  <style>
-    .privacy-document{max-width:760px;margin:64px auto 88px;padding:0 24px;font-size:17px;line-height:1.85}.privacy-document h1{font-size:clamp(32px,6vw,46px);line-height:1.3;margin:12px 0 22px}.privacy-document h2{font-size:23px;margin:38px 0 12px}.privacy-document p{margin:12px 0}.privacy-document a{text-decoration:underline;text-underline-offset:4px}.privacy-date{font-size:14px;color:#666}.privacy-document .eyebrow{font-size:12px}.privacy-document address{font-style:normal}@media(max-width:600px){.privacy-document{margin-top:36px}.site-header{gap:16px}.site-header nav{display:block}}
-  </style>
-</head>
-<body>
+<link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script></head>
+<body class="privacy-page">
 <a class="skip" href="#main">跳到正文</a>
 <header class="site-header"><a class="brand" href="/" aria-label="循页首页"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 8c8-4 15-3 21 1v32c-6-4-13-5-21-1V8Zm21 1 8-4v33l-8 3M11 16c3-1 6-1 9 1M11 23c3-1 6-1 9 1M11 30c3-1 6-1 9 1"/></svg></span><span class="brand-name">循页<small>PAGE BY PAGE</small></span></a><nav aria-label="主导航"><a href="/library">回到书房 ↗</a></nav></header>
 <main id="main" class="privacy-document">
@@ -20,7 +17,7 @@
   <p>供应商访问凭据与刷新凭据保存在服务端。浏览器使用仅供本站会话的 Cookie；普通登录会话最长七天，第三方登录的临时校验 Cookie 最长十分钟。退出会撤销本站会话；退出不会删除书房数据。</p>
   <h2>你的书和阅读记录</h2>
   <p>选择上传后，文件与提取出的原文会保存到你的私人书房。评论、问题、阅读位置、阅读时长、明确标记的读完状态和已保存的译文按账户管理。线上存储由 Supabase 提供，网站由 Vercel 托管。匿名公版书与私人上传分别处理，私人文件和记录不会因上传自动公开。</p>
-  <p>开始阅读后，页面只记录可见且处于前台的停留，后台暂停，浏览器挂起的长间隔也不累计；阅读时间不代表理解程度。日历按你的所在时区呈现，跨午夜的时间分别记录。浏览器会缓存阅读设置和部分阅读状态，方便继续阅读；断网时暂存本账户的待同步阅读时段、章节标记和待确认的提交，联网后可以重试。未主动保存的文字作为本机草稿保留。选择文字、切换译文和调整排版在本地完成；显式请求 AI 翻译或解释时，才会把对应功能所需的段落上下文发送到配置的模型服务。当前按段翻译使用 DeepSeek，只发送所选段落及理解所需的邻段。登录资料不作为翻译上下文。</p>
+  <p>开始阅读后，页面只记录可见且处于前台的停留，后台暂停，浏览器挂起的长间隔也不累计；阅读时间不代表理解程度。日历按你的所在时区呈现，跨午夜的时间分别记录。浏览器会缓存阅读设置和部分阅读状态，方便继续阅读；断网时暂存本账户的待同步阅读时段、章节标记和待确认的提交，联网后可以重试。未主动保存的文字作为本机草稿保留。选择文字、切换译文和调整排版在本地完成；显式请求 AI 翻译或解释时，才会把对应功能所需的段落上下文发送到配置的模型服务。当前按段翻译使用 DeepSeek，只发送所选段落及理解所需的邻段。阅读对话可按需查阅当前账号的书房、公版书及网络资料；这些工具只读，不读取私人笔记，不写入阅读进度，也不会自动购买或把推荐书加入书房。登录资料不作为翻译上下文。</p>
   <p>如果你给自己的 Agent 授权，它只能按授权读取指定书籍与数据类型；写入权限需要单独选择。旧版客户端建立的授权仍可使用；需要撤回时，可通过原有客户端或联系下方邮箱处理。撤回会停止后续访问，不能自动清除已经被对方复制的数据。</p>
   <h2>保存、导出与删除</h2>
   <p>书房数据会继续保存，供你恢复阅读和导出。阅读对话可以从对话窗口导出，AI 回答与用户原话分别标记。完整书房导出与备份恢复暂时没有网页入口；需要时可通过保留的兼容客户端或联系下方邮箱处理，无需订阅。未同步的阅读记录和未保存的草稿仍留在原浏览器，请先完成同步或保存。需要删除账户或私人数据时，请联系下方邮箱；我们会先核对账户归属，再处理相关数据。托管服务为运行、安全和故障排查产生的日志或备份，由相应服务按其保留机制处理。</p>

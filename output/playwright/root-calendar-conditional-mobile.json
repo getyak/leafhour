@@ -1,0 +1,235 @@
+{
+  "fixture": true,
+  "width": 390,
+  "checks": [
+    {
+      "name": "calendar error explains failure rather than empty records",
+      "pass": true
+    },
+    {
+      "name": "failed calendar dates do not claim there are no records",
+      "pass": true
+    },
+    {
+      "name": "retry disappears after successful isolated response",
+      "pass": true
+    },
+    {
+      "name": "successful retry restores the selected calendar date focus",
+      "pass": true
+    },
+    {
+      "name": "calendar preserves returned counts",
+      "pass": true
+    },
+    {
+      "name": "keyboard expands day records",
+      "pass": true
+    },
+    {
+      "name": "day links retain actual public book and passage",
+      "pass": true
+    },
+    {
+      "name": "question link retains note type",
+      "pass": true
+    },
+    {
+      "name": "actual keyboard day link reaches the matching public passage",
+      "pass": true
+    },
+    {
+      "name": "actual pointer day link reaches the matching public passage",
+      "pass": true
+    },
+    {
+      "name": "actual question record opens the matching question panel",
+      "pass": true
+    },
+    {
+      "name": "calendar close retains its expected right-side position",
+      "pass": true
+    },
+    {
+      "name": "calendar close remains a fully visible 44px target after details scrolling",
+      "pass": true
+    },
+    {
+      "name": "390 no horizontal overflow",
+      "pass": true
+    },
+    {
+      "name": "calendar close remains fully visible at the bottom of long records",
+      "pass": true
+    },
+    {
+      "name": "calendar close responds to a real pointer at the bottom without automatic scrolling",
+      "pass": true
+    },
+    {
+      "name": "logout failure restores retry control",
+      "pass": true
+    },
+    {
+      "name": "logout failure retains current account context",
+      "pass": true
+    },
+    {
+      "name": "logout error restores focus to the retryable logout button",
+      "pass": true
+    },
+    {
+      "name": "logout success removes synthetic identity",
+      "pass": true
+    },
+    {
+      "name": "completed logout focuses the login entry",
+      "pass": true
+    }
+  ],
+  "mutations": [
+    {
+      "path": "/api/auth/logout",
+      "method": "POST"
+    },
+    {
+      "path": "/api/auth/logout",
+      "method": "POST"
+    }
+  ],
+  "errorDateLabel": "2026-10-16，记录暂未载入",
+  "errorFocus": "<button type=\"button\" aria-label=\"关闭阅读日历\" class=\"dialog-close\">×</button>",
+  "afterRetryFocus": {
+    "tag": "BUTTON",
+    "id": "",
+    "date": "2026-10-16",
+    "text": "16"
+  },
+  "links": [
+    {
+      "name": "爱丽丝梦游仙境\n7 分钟 · 1 条笔记 · 1 个问题 · 1 次读完标记",
+      "href": "/read?book=gutenberg-alice&passage=01b38ea4c710a84b-p00008",
+      "width": 302,
+      "height": 68.59375
+    },
+    {
+      "name": "阅读停留\n爱丽丝梦游仙境\n10/16 17:00\n回到原页 ↗",
+      "href": "/read?book=gutenberg-alice&passage=01b38ea4c710a84b-p00008",
+      "width": 302,
+      "height": 125.78125
+    },
+    {
+      "name": "自己的笔记\n爱丽丝梦游仙境\n10/16 17:01\n\n隔离日历：我的理解。\n\n回到原页 ↗",
+      "href": "/read?book=gutenberg-alice&passage=01b38ea4c710a84b-p00008&note=comment",
+      "width": 302,
+      "height": 159.9765625
+    },
+    {
+      "name": "未解决的问题\n爱丽丝梦游仙境\n10/16 17:02\n\n隔离日历：还想核对原文。\n\n回到原页 ↗",
+      "href": "/read?book=gutenberg-alice&passage=01b38ea4c710a84b-p00008&note=question",
+      "width": 302,
+      "height": 159.9765625
+    },
+    {
+      "name": "标记读完这一章\n爱丽丝梦游仙境\n10/16 17:03\n回到原页 ↗",
+      "href": "/read?book=gutenberg-alice&passage=01b38ea4c710a84b-p00008",
+      "width": 302,
+      "height": 125.78125
+    }
+  ],
+  "navigations": [
+    {
+      "method": "keyboard",
+      "url": "http://127.0.0.1:8337/read?book=gutenberg-alice",
+      "ready": "true",
+      "targetTop": 159.7890625,
+      "targetBottom": 503.7578125,
+      "anchor": "01b38ea4c710a84b-p00007",
+      "selected": null,
+      "panelVisible": false
+    },
+    {
+      "method": "pointer",
+      "url": "http://127.0.0.1:8337/read?book=gutenberg-alice",
+      "ready": "true",
+      "targetTop": 109.4921875,
+      "targetBottom": 453.4609375,
+      "anchor": "01b38ea4c710a84b-p00007",
+      "selected": "01b38ea4c710a84b-p00008",
+      "panelVisible": true,
+      "tab": "question"
+    }
+  ],
+  "mobile": [
+    {
+      "name": "爱丽丝梦游仙境\n7 分钟 · 1 条笔记 · 1 个问题 · 1 次读完标记",
+      "width": 302,
+      "height": 68.59375
+    },
+    {
+      "name": "查看这一日的记录 · 4",
+      "width": 302,
+      "height": 44.3984375
+    },
+    {
+      "name": "阅读停留\n爱丽丝梦游仙境\n10/16 17:00\n回到原页 ↗",
+      "width": 302,
+      "height": 125.78125
+    },
+    {
+      "name": "自己的笔记\n爱丽丝梦游仙境\n10/16 17:01\n\n隔离日历：我的理解。\n\n回到原页 ↗",
+      "width": 302,
+      "height": 159.9765625
+    },
+    {
+      "name": "未解决的问题\n爱丽丝梦游仙境\n10/16 17:02\n\n隔离日历：还想核对原文。\n\n回到原页 ↗",
+      "width": 302,
+      "height": 159.9765625
+    },
+    {
+      "name": "标记读完这一章\n爱丽丝梦游仙境\n10/16 17:03\n回到原页 ↗",
+      "width": 302,
+      "height": 125.78125
+    }
+  ],
+  "closeGeometry": {
+    "dialog": {
+      "top": 12,
+      "bottom": 832,
+      "scrollTop": 170,
+      "overflow": "auto"
+    },
+    "close": {
+      "top": 45,
+      "bottom": 89,
+      "left": 319,
+      "right": 363,
+      "width": 44,
+      "height": 44
+    },
+    "visibleHeight": 44,
+    "visibleWidth": 44
+  },
+  "overflow": 0,
+  "closeGeometryEnd": {
+    "top": 45,
+    "bottom": 89,
+    "left": 319,
+    "right": 363,
+    "width": 44,
+    "height": 44,
+    "scrollTop": 749.5,
+    "visibleHeight": 44,
+    "visibleWidth": 44
+  },
+  "afterLogoutErrorFocus": {
+    "tag": "BUTTON",
+    "id": "",
+    "text": "退出登录"
+  },
+  "afterLogoutSuccessFocus": {
+    "tag": "BUTTON",
+    "id": "",
+    "text": "登录或注册"
+  }
+}

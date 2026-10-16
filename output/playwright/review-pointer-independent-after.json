@@ -1,0 +1,218 @@
+[
+  {
+    "id": "H17.gutenberg-alice",
+    "events": [
+      {
+        "type": "pointerdown",
+        "target": "A",
+        "href": "/read?book=gutenberg-alice&sample=zh",
+        "translate": "none",
+        "animations": [
+          {
+            "state": "running",
+            "time": 134.22099999352355,
+            "duration": 780
+          }
+        ]
+      },
+      {
+        "type": "pointerup",
+        "target": "A",
+        "href": "/read?book=gutenberg-alice&sample=zh",
+        "translate": "none",
+        "animations": []
+      },
+      {
+        "type": "click",
+        "target": "A",
+        "href": "/read?book=gutenberg-alice&sample=zh",
+        "translate": "none",
+        "animations": []
+      }
+    ],
+    "keyboardFallback": false,
+    "activeBefore": {
+      "translate": "none",
+      "animations": [
+        {
+          "state": "running",
+          "time": 84.3209999935236,
+          "duration": 780,
+          "keyframes": [
+            {
+              "opacity": "0.25"
+            },
+            {
+              "opacity": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-alice",
+    "mode": "zh",
+    "ok": true
+  },
+  {
+    "id": "H17.gutenberg-meditations",
+    "events": [
+      {
+        "type": "pointerdown",
+        "target": "A",
+        "href": "/read?book=gutenberg-meditations&sample=zh",
+        "translate": "none",
+        "animations": [
+          {
+            "state": "running",
+            "time": 0,
+            "duration": 780
+          }
+        ]
+      },
+      {
+        "type": "pointerup",
+        "target": "A",
+        "href": "/read?book=gutenberg-meditations&sample=zh",
+        "translate": "none",
+        "animations": []
+      },
+      {
+        "type": "click",
+        "target": "A",
+        "href": "/read?book=gutenberg-meditations&sample=zh",
+        "translate": "none",
+        "animations": []
+      }
+    ],
+    "keyboardFallback": false,
+    "activeBefore": {
+      "translate": "none",
+      "animations": [
+        {
+          "state": "running",
+          "time": 0,
+          "duration": 780,
+          "keyframes": [
+            {
+              "opacity": "0.25"
+            },
+            {
+              "opacity": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-meditations",
+    "mode": "zh",
+    "ok": true
+  },
+  {
+    "id": "H17.gutenberg-walden",
+    "events": [
+      {
+        "type": "pointerdown",
+        "target": "A",
+        "href": "/read?book=gutenberg-walden&sample=zh",
+        "translate": "none",
+        "animations": [
+          {
+            "state": "running",
+            "time": 65.97999999197202,
+            "duration": 780
+          }
+        ]
+      },
+      {
+        "type": "pointerup",
+        "target": "A",
+        "href": "/read?book=gutenberg-walden&sample=zh",
+        "translate": "none",
+        "animations": []
+      },
+      {
+        "type": "click",
+        "target": "A",
+        "href": "/read?book=gutenberg-walden&sample=zh",
+        "translate": "none",
+        "animations": []
+      }
+    ],
+    "keyboardFallback": false,
+    "activeBefore": {
+      "translate": "none",
+      "animations": [
+        {
+          "state": "running",
+          "time": 0,
+          "duration": 780,
+          "keyframes": [
+            {
+              "opacity": "0.25"
+            },
+            {
+              "opacity": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-walden",
+    "mode": "zh",
+    "ok": true
+  },
+  {
+    "id": "H18.gutenberg-meditations",
+    "events": [
+      {
+        "type": "pointerdown",
+        "target": "A",
+        "href": "http://127.0.0.1:8337/read?book=gutenberg-meditations&passage=6977474f82a39dd8-p00055",
+        "translate": "none",
+        "animations": [
+          {
+            "state": "running",
+            "time": 66.67200002712192,
+            "duration": 780
+          }
+        ]
+      },
+      {
+        "type": "pointerup",
+        "target": "A",
+        "href": "http://127.0.0.1:8337/read?book=gutenberg-meditations&passage=6977474f82a39dd8-p00055",
+        "translate": "none",
+        "animations": []
+      },
+      {
+        "type": "click",
+        "target": "A",
+        "href": "http://127.0.0.1:8337/read?book=gutenberg-meditations&passage=6977474f82a39dd8-p00055",
+        "translate": "none",
+        "animations": []
+      }
+    ],
+    "keyboardFallback": false,
+    "activeBefore": {
+      "translate": "none",
+      "animations": [
+        {
+          "state": "running",
+          "time": 15.972000027121958,
+          "duration": 780,
+          "keyframes": [
+            {
+              "opacity": "0.25"
+            },
+            {
+              "opacity": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-meditations",
+    "mode": "en",
+    "ok": true
+  }
+]

@@ -1,0 +1,108 @@
+[
+  {
+    "id": "R14",
+    "width": 390,
+    "metric": {
+      "x": 298,
+      "y": 673.15625,
+      "width": 70,
+      "height": 44,
+      "focusVisible": true,
+      "outline": "rgb(63, 89, 76) solid 2px"
+    },
+    "title": "泪水池",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-alice"
+  },
+  {
+    "id": "R13",
+    "width": 390,
+    "metric": {
+      "x": 22,
+      "y": 673.1640625,
+      "width": 70,
+      "height": 44,
+      "focusVisible": true,
+      "outline": "rgb(63, 89, 76) solid 2px"
+    },
+    "title": "掉进兔子洞",
+    "url": "http://127.0.0.1:8337/read?book=gutenberg-alice"
+  },
+  {
+    "id": "D11",
+    "width": 390,
+    "metric": {
+      "x": 214.1640625,
+      "y": 697.65625,
+      "width": 96.1796875,
+      "height": 13,
+      "focusVisible": true,
+      "outline": "rgb(63, 89, 76) solid 2px"
+    },
+    "url": "https://lsc.cornell.edu/how-to-study/reading-strategies/textbook-reading-systems/",
+    "loaded": true
+  },
+  {
+    "id": "D10",
+    "width": 390,
+    "metric": {
+      "x": 319,
+      "y": 30,
+      "width": 44,
+      "height": 44,
+      "focusVisible": true,
+      "outline": "rgb(63, 89, 76) solid 2px"
+    },
+    "closed": true,
+    "focus": "reading-guide-open"
+  },
+  {
+    "id": "D12",
+    "width": 390,
+    "metric": {
+      "x": 35,
+      "y": 757.953125,
+      "width": 90,
+      "height": 48.046875,
+      "focusVisible": true,
+      "outline": "rgb(63, 89, 76) solid 2px"
+    },
+    "closed": true,
+    "focus": "reading-guide-open"
+  },
+  {
+    "id": "M10",
+    "width": 390,
+    "metric": {
+      "x": 38,
+      "y": 754,
+      "width": 60,
+      "height": 11.5,
+      "focusVisible": true,
+      "outline": "rgb(63, 89, 76) solid 2px"
+    },
+    "url": "http://127.0.0.1:8337/assets/atmospheres/NOTICE.md",
+    "body": "# 阅读氛围素材\n\n这些资源随阅读器本地提供，运行时不连接第三方媒体服务。软件的 AGPL-3.0 不替代以下资源的许可。下载与加工后的文件哈希见 manifest.json。\n\n## 摄影\n\n依据各作品页面明确标注的 "
+  },
+  {
+    "id": "M10-return",
+    "width": 390,
+    "focus": "open-atmosphere"
+  },
+  {
+    "id": "P10",
+    "width": 390,
+    "metric": {
+      "x": 138,
+      "y": 148.9921875,
+      "width": 166,
+      "height": 44,
+      "focusVisible": true,
+      "outline": "rgb(63, 89, 76) solid 2px"
+    },
+    "audioSnapshot": "- dialog \"听这一段\":\n  - banner:\n    - heading \"听这一段\" [level=2]\n    - button \"关闭听读面板\": 关闭\n  - paragraph: 原文朗读\n  - status: 进入自己的书房后，即可准备声音和保存听读位置。\n  - button \"登录后回到这里\"",
+    "posts": [],
+    "overflow": false,
+    "closed": true,
+    "focus": "exit-focus"
+  }
+]

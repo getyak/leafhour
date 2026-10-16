@@ -88,6 +88,26 @@ test('unsafe URLs and same-origin absolute navigation cannot bypass the citation
  for(const value of ['javascript:alert(1)','data:text/html,x','https://name:password@example.org/','//example.org/','/read?book=secret','https://reader.example/read?book=secret&passage=p1','https://reader.example/library'])assert.equal(safeChatUrl(value,{origin:'https://reader.example'}),null,value);
  assert.equal(safeChatUrl('https://example.org/article',{origin:'https://reader.example'}),'https://example.org/article');
 });
+
+test('an explicit successful reload restores the composer when its retry disappears',async t=>{
+ let first=true;const next=deferred();const s=setup(t,{handler:async()=>{if(first){first=false;throw Error('503');}return next.promise;}});
+ s.chat.open();await flush();const retry=s.all().find(n=>n.textContent==='重新载入');retry.focus();retry.click();s.doc.activeElement=s.doc.body;
+ next.resolve(response([]));await flush();assert.equal(retry.hidden,true);assert.equal(s.doc.activeElement===s.input(),true);
+});
+
+test('a completed explicit stop restores the cancelled question and composer focus',async t=>{
+ const cancelled=deferred();let running;const s=setup(t,{handler:async(url,payload)=>{if(url.endsWith('/cancel'))return cancelled.promise;if(payload){running={...payload,status:'running',answer:null};return running;}return response(running?[running]:[]);}});
+ s.chat.open();await flush();type(s.input(),'保留的问题');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();
+ const stop=s.find('library-chat-stop');stop.focus();stop.click();s.doc.activeElement=s.doc.body;cancelled.resolve({...running,status:'cancelled'});await flush();
+ assert.equal(stop.hidden,true);assert.equal(s.input().value,'保留的问题');assert.equal(s.doc.activeElement===s.input(),true);
+});
+
+test('reload completion does not take focus after the reader chose another control',async t=>{
+ let first=true;const next=deferred();const s=setup(t,{handler:async()=>{if(first){first=false;throw Error('503');}return next.promise;}});
+ s.chat.open();await flush();const retry=s.all().find(n=>n.textContent==='重新载入');retry.focus();retry.click();s.external.focus();
+ const moved=new Event('focusin');Object.defineProperty(moved,'target',{value:s.external});s.doc.dispatchEvent(moved);s.doc.activeElement=s.doc.body;
+ next.resolve(response([]));await flush();assert.equal(s.doc.activeElement===s.doc.body,true);
+});
 test('completed POST survives a delayed pre-claim empty GET in the view and exported conversation',async t=>{
  const post=deferred(),earlyGet=deferred();let reads=0,receipt;
  const s=setup(t,{handler:async(url,payload)=>{if(payload){receipt={...payload,status:'running',answer:null};return post.promise;}reads++;return reads===1?response([]):earlyGet.promise;}});

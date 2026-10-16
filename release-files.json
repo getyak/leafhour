@@ -10,6 +10,7 @@
   "SECURITY.md",
   "api/[...path].js",
   "api/service.js",
+  "app/action-focus.mjs",
   "app/assets/atmospheres/NOTICE.md",
   "app/assets/atmospheres/birds.mp3",
   "app/assets/atmospheres/fire.mp3",
@@ -48,6 +49,8 @@
   "app/home-motion.css",
   "app/home-motion.mjs",
   "app/home.html",
+  "app/interaction-craft.css",
+  "app/interaction-craft.mjs",
   "app/home-atmosphere.css",
   "app/home-atmosphere.mjs",
   "app/icons-LICENSE.txt",
@@ -230,6 +233,7 @@
   "tests/library-room.test.mjs",
   "tests/library-workspace.test.mjs",
   "tests/account-profile.test.mjs",
+  "tests/action-focus.test.mjs",
   "tests/book-gifts.test.mjs",
   "tests/library-gift-receive.test.mjs",
   "tests/library-personal-http.test.mjs",
@@ -287,6 +291,7 @@
   "tests/translation-state.test.mjs",
   "tests/upload-state.test.mjs",
   "tests/vercel-route.test.mjs",
+  "tests/web-interaction-craft.test.mjs",
   "tools/build-experiences.mjs",
   "tools/build-reader-runtime.mjs",
   "tools/build-vercel.mjs",
@@ -308,5 +313,6 @@
   "tests/gift-ritual.test.mjs",
   "app/gift-identity.mjs",
   "app/gift-compose-state.mjs",
-  "tests/gift-compose-state.test.mjs"
+  "tests/gift-compose-state.test.mjs",
+  "tests/gift-compose-ui.test.mjs"
 ]

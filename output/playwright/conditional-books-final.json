@@ -1,0 +1,351 @@
+{
+  "group": "N44–65",
+  "checks": [
+    {
+      "label": "book menu End chooses last action",
+      "pass": true
+    },
+    {
+      "label": "book menu Home chooses first action",
+      "pass": true
+    },
+    {
+      "label": "menu Escape returns opener",
+      "pass": true
+    },
+    {
+      "label": "information retains exact public source",
+      "pass": true
+    },
+    {
+      "label": "book-info 1440 targets44",
+      "pass": true
+    },
+    {
+      "label": "book-info 1440 overflow0",
+      "pass": true
+    },
+    {
+      "label": "recurring schedule requires end date",
+      "pass": true
+    },
+    {
+      "label": "single schedule removes hidden required field",
+      "pass": true
+    },
+    {
+      "label": "schedule rejects end before start",
+      "pass": true
+    },
+    {
+      "label": "schedule 1440 targets44",
+      "pass": true
+    },
+    {
+      "label": "schedule 1440 overflow0",
+      "pass": true
+    },
+    {
+      "label": "schedule download explains actual reminder boundary",
+      "pass": true
+    },
+    {
+      "label": "information retains exact public source",
+      "pass": true
+    },
+    {
+      "label": "book-info 390 targets44",
+      "pass": true
+    },
+    {
+      "label": "book-info 390 overflow0",
+      "pass": true
+    },
+    {
+      "label": "recurring schedule requires end date",
+      "pass": true
+    },
+    {
+      "label": "single schedule removes hidden required field",
+      "pass": true
+    },
+    {
+      "label": "schedule rejects end before start",
+      "pass": true
+    },
+    {
+      "label": "schedule 390 targets44",
+      "pass": true
+    },
+    {
+      "label": "schedule 390 overflow0",
+      "pass": true
+    },
+    {
+      "label": "schedule download explains actual reminder boundary",
+      "pass": true
+    },
+    {
+      "label": "keyboard reorder is one explicit request",
+      "pass": true
+    },
+    {
+      "label": "successful keyboard reorder retains same book grip focus",
+      "pass": true
+    },
+    {
+      "label": "failed keyboard reorder retains retry focus",
+      "pass": true
+    },
+    {
+      "label": "failed reorder keeps last saved order",
+      "pass": true
+    },
+    {
+      "label": "archive cancel writes nothing",
+      "pass": true
+    },
+    {
+      "label": "archive request locks confirmation",
+      "pass": true
+    },
+    {
+      "label": "failed archive retains confirmation focus",
+      "pass": true
+    },
+    {
+      "label": "archive success moves fixture book with records preserved",
+      "pass": true
+    },
+    {
+      "label": "failed restore retains retry focus",
+      "pass": true
+    },
+    {
+      "label": "restore returns exact fixture book",
+      "pass": true
+    },
+    {
+      "label": "trash-empty 1440 targets44",
+      "pass": true
+    },
+    {
+      "label": "trash-empty 1440 overflow0",
+      "pass": true
+    }
+  ],
+  "targets": [
+    {
+      "label": "book-info",
+      "width": 1440,
+      "rects": [
+        {
+          "name": "关闭书籍操作",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "查看底本来源 ↗",
+          "w": 84.546875,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "label": "schedule",
+      "width": 1440,
+      "rects": [
+        {
+          "name": "关闭书籍操作",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "datetime-local",
+          "w": 287.5,
+          "h": 46.3984375
+        },
+        {
+          "name": "number",
+          "w": 287.5,
+          "h": 44.3984375
+        },
+        {
+          "name": "不重复每天每周这一天",
+          "w": 287.5,
+          "h": 44
+        },
+        {
+          "name": "提前 10 分钟开始时提前 5 分钟提前 30 分钟不提醒",
+          "w": 287.5,
+          "h": 44
+        },
+        {
+          "name": "date",
+          "w": 287.5,
+          "h": 46.3984375
+        },
+        {
+          "name": "下载日程文件",
+          "w": 128,
+          "h": 50.1953125
+        }
+      ]
+    },
+    {
+      "label": "book-info",
+      "width": 390,
+      "rects": [
+        {
+          "name": "关闭书籍操作",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "查看底本来源 ↗",
+          "w": 84.546875,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "label": "schedule",
+      "width": 390,
+      "rects": [
+        {
+          "name": "关闭书籍操作",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "datetime-local",
+          "w": 320,
+          "h": 49.59375
+        },
+        {
+          "name": "number",
+          "w": 320,
+          "h": 47.59375
+        },
+        {
+          "name": "不重复每天每周这一天",
+          "w": 320,
+          "h": 44
+        },
+        {
+          "name": "提前 10 分钟开始时提前 5 分钟提前 30 分钟不提醒",
+          "w": 320,
+          "h": 44
+        },
+        {
+          "name": "date",
+          "w": 320,
+          "h": 49.59375
+        },
+        {
+          "name": "下载日程文件",
+          "w": 128,
+          "h": 50.1953125
+        }
+      ]
+    },
+    {
+      "label": "trash-empty",
+      "width": 1440,
+      "rects": [
+        {
+          "name": "关闭书籍操作",
+          "w": 44,
+          "h": 44
+        }
+      ]
+    }
+  ],
+  "focus": [
+    {
+      "case": "failed-order",
+      "active": {
+        "tag": "BUTTON",
+        "label": "拖动《沉思录》调整位置"
+      }
+    },
+    {
+      "case": "failed-archive",
+      "active": {
+        "tag": "BUTTON",
+        "label": "移到回收站"
+      }
+    },
+    {
+      "case": "failed-restore",
+      "active": {
+        "tag": "BUTTON",
+        "label": "恢复到书架"
+      }
+    }
+  ],
+  "download1440": "沉思录·读书日程.ics",
+  "download390": "沉思录·读书日程.ics",
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/api/library/order",
+      "body": {
+        "bookIds": [
+          "gutenberg-alice",
+          "gutenberg-walden",
+          "gutenberg-meditations"
+        ],
+        "baseRevision": 4
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/order",
+      "body": {
+        "bookIds": [
+          "gutenberg-alice",
+          "gutenberg-meditations",
+          "gutenberg-walden"
+        ],
+        "baseRevision": 5
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-meditations/archive",
+      "body": {
+        "baseRevision": 5
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-meditations/archive",
+      "body": {
+        "baseRevision": 5
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-meditations/restore",
+      "body": {
+        "baseRevision": 6
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-meditations/restore",
+      "body": {
+        "baseRevision": 6
+      }
+    }
+  ],
+  "continuation": {
+    "scope": "native drag continuation stopped after the 33 listed passing checks",
+    "historicalFailure": "page.waitForFunction: Timeout 30000ms exceeded.",
+    "resolvedBy": "conditional-shelf-final.json",
+    "diagnostic": "conditional-native-before.log",
+    "fix": "native drag handoff pointercancel must not cancel a non-pointer drag"
+  },
+  "sourceLog": "conditional-book-result.log"
+}

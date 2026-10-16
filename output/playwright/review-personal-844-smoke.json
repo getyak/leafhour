@@ -1,0 +1,32 @@
+{
+  "fixture": true,
+  "width": 390,
+  "height": 844,
+  "checks": [
+    {
+      "label": "profile 844 close remains fully reachable",
+      "pass": true
+    },
+    {
+      "label": "profile 844 overflow0",
+      "pass": true
+    }
+  ],
+  "writes": [],
+  "profileClose": {
+    "rect": {
+      "x": 314,
+      "y": 80.859375,
+      "width": 44,
+      "height": 44,
+      "top": 80.859375,
+      "right": 358,
+      "bottom": 124.859375,
+      "left": 314
+    },
+    "visibleWidth": 44,
+    "visibleHeight": 44
+  },
+  "failure": "locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('menuitem', { name: '送出这本书', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" role=\"menuitem\" class=\"book-menu-item\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+  "classification": "Partial extra smoke: only the two profile checks completed. A later script attempted a hidden menu item and timed out; not a confirmed product defect or gift pass. Gift scoring uses the complete independent execution evidence."
+}

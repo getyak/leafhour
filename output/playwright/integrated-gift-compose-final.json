@@ -1,0 +1,636 @@
+{
+  "group": "integrated N48,N66–77,N93–97",
+  "isolated": true,
+  "baseline": "origin/main 79b3025 plus interaction integration",
+  "checks": [
+    {
+      "label": "1440 writing targets44",
+      "pass": true
+    },
+    {
+      "label": "1440 writing overflow0",
+      "pass": true
+    },
+    {
+      "label": "scope explains link access before publishing 1440",
+      "pass": true
+    },
+    {
+      "label": "preview does not write 1440",
+      "pass": true
+    },
+    {
+      "label": "preview enters back action 1440",
+      "pass": true
+    },
+    {
+      "label": "preview carries actual selected book 1440",
+      "pass": true
+    },
+    {
+      "label": "preview accept remains local 1440",
+      "pass": true
+    },
+    {
+      "label": "preview actions announce no published link 1440",
+      "pass": true
+    },
+    {
+      "label": "1440 preview targets44",
+      "pass": true
+    },
+    {
+      "label": "1440 preview overflow0",
+      "pass": true
+    },
+    {
+      "label": "iframe Esc folds and restores opener 1440",
+      "pass": true
+    },
+    {
+      "label": "iframe second Esc returns writing 1440",
+      "pass": true
+    },
+    {
+      "label": "return preserves draft 1440",
+      "pass": true
+    },
+    {
+      "label": "reopen keeps same-book draft 1440",
+      "pass": true
+    },
+    {
+      "label": "sealing locks duplicate and back 1440",
+      "pass": true
+    },
+    {
+      "label": "failed seal returns retry focus 1440",
+      "pass": true
+    },
+    {
+      "label": "busy Enter does not duplicate 1440",
+      "pass": true
+    },
+    {
+      "label": "sealed success enters copy action 1440",
+      "pass": true
+    },
+    {
+      "label": "existing-translation choice is sent 1440",
+      "pass": true
+    },
+    {
+      "label": "sealed readonly URL is own-origin exact token 1440",
+      "pass": true
+    },
+    {
+      "label": "copy invokes isolated clipboard 1440",
+      "pass": true
+    },
+    {
+      "label": "clipboard denial selects full link 1440",
+      "pass": true
+    },
+    {
+      "label": "system-share adapter isolated resolve 1440",
+      "pass": true
+    },
+    {
+      "label": "system-share cancel keeps valid receipt 1440",
+      "pass": true
+    },
+    {
+      "label": "system-share failure offers copy 1440",
+      "pass": true
+    },
+    {
+      "label": "revoke enters explicit confirmation 1440",
+      "pass": true
+    },
+    {
+      "label": "keep cancels with no request and restores opener 1440",
+      "pass": true
+    },
+    {
+      "label": "revoking locks keep until result 1440",
+      "pass": true
+    },
+    {
+      "label": "failed revoke retains confirmation focus 1440",
+      "pass": true
+    },
+    {
+      "label": "1440 sealed-and-confirmation targets44",
+      "pass": true
+    },
+    {
+      "label": "1440 sealed-and-confirmation overflow0",
+      "pass": true
+    },
+    {
+      "label": "revoke success focuses row receipt 1440",
+      "pass": true
+    },
+    {
+      "label": "revoking older letter preserves current sealed URL 1440",
+      "pass": true
+    },
+    {
+      "label": "rewrite after revoke enters recipient 1440",
+      "pass": true
+    },
+    {
+      "label": "rewrite after revoke preserves letter words 1440",
+      "pass": true
+    },
+    {
+      "label": "all mutation attempts intercepted 1440",
+      "pass": true
+    },
+    {
+      "label": "390 writing targets44",
+      "pass": true
+    },
+    {
+      "label": "390 writing overflow0",
+      "pass": true
+    },
+    {
+      "label": "scope explains link access before publishing 390",
+      "pass": true
+    },
+    {
+      "label": "preview does not write 390",
+      "pass": true
+    },
+    {
+      "label": "preview enters back action 390",
+      "pass": true
+    },
+    {
+      "label": "preview carries actual selected book 390",
+      "pass": true
+    },
+    {
+      "label": "preview accept remains local 390",
+      "pass": true
+    },
+    {
+      "label": "preview actions announce no published link 390",
+      "pass": true
+    },
+    {
+      "label": "390 preview targets44",
+      "pass": true
+    },
+    {
+      "label": "390 preview overflow0",
+      "pass": true
+    },
+    {
+      "label": "iframe Esc folds and restores opener 390",
+      "pass": true
+    },
+    {
+      "label": "iframe second Esc returns writing 390",
+      "pass": true
+    },
+    {
+      "label": "return preserves draft 390",
+      "pass": true
+    },
+    {
+      "label": "reopen keeps same-book draft 390",
+      "pass": true
+    },
+    {
+      "label": "sealing locks duplicate and back 390",
+      "pass": true
+    },
+    {
+      "label": "failed seal returns retry focus 390",
+      "pass": true
+    },
+    {
+      "label": "busy Enter does not duplicate 390",
+      "pass": true
+    },
+    {
+      "label": "sealed success enters copy action 390",
+      "pass": true
+    },
+    {
+      "label": "existing-translation choice is sent 390",
+      "pass": true
+    },
+    {
+      "label": "sealed readonly URL is own-origin exact token 390",
+      "pass": true
+    },
+    {
+      "label": "copy invokes isolated clipboard 390",
+      "pass": true
+    },
+    {
+      "label": "clipboard denial selects full link 390",
+      "pass": true
+    },
+    {
+      "label": "system-share adapter isolated resolve 390",
+      "pass": true
+    },
+    {
+      "label": "system-share cancel keeps valid receipt 390",
+      "pass": true
+    },
+    {
+      "label": "system-share failure offers copy 390",
+      "pass": true
+    },
+    {
+      "label": "revoke enters explicit confirmation 390",
+      "pass": true
+    },
+    {
+      "label": "keep cancels with no request and restores opener 390",
+      "pass": true
+    },
+    {
+      "label": "revoking locks keep until result 390",
+      "pass": true
+    },
+    {
+      "label": "failed revoke retains confirmation focus 390",
+      "pass": true
+    },
+    {
+      "label": "390 sealed-and-confirmation targets44",
+      "pass": true
+    },
+    {
+      "label": "390 sealed-and-confirmation overflow0",
+      "pass": true
+    },
+    {
+      "label": "revoke success focuses row receipt 390",
+      "pass": true
+    },
+    {
+      "label": "revoking older letter preserves current sealed URL 390",
+      "pass": true
+    },
+    {
+      "label": "rewrite after revoke enters recipient 390",
+      "pass": true
+    },
+    {
+      "label": "rewrite after revoke preserves letter words 390",
+      "pass": true
+    },
+    {
+      "label": "all mutation attempts intercepted 390",
+      "pass": true
+    }
+  ],
+  "targets": [
+    {
+      "width": 1440,
+      "stage": "writing",
+      "rects": [
+        {
+          "name": "关闭书籍操作",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "收信人的称呼",
+          "w": 370,
+          "h": 46.5
+        },
+        {
+          "name": "textarea",
+          "w": 714,
+          "h": 210
+        },
+        {
+          "name": "附上寄信时已有的译文",
+          "w": 786,
+          "h": 44
+        },
+        {
+          "name": "看看收信时的样子",
+          "w": 138,
+          "h": 48
+        },
+        {
+          "name": "已封好的信",
+          "w": 786,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "stage": "preview",
+      "rects": [
+        {
+          "name": "关闭书籍操作",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "返回修改",
+          "w": 48,
+          "h": 44
+        },
+        {
+          "name": "封好这封信，生成链接",
+          "w": 162,
+          "h": 48
+        },
+        {
+          "name": "已封好的信",
+          "w": 786,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "stage": "sealed-and-confirmation",
+      "rects": [
+        {
+          "name": "关闭书籍操作",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "链接已复制",
+          "w": 102,
+          "h": 48
+        },
+        {
+          "name": "打开这封信",
+          "w": 60,
+          "h": 44
+        },
+        {
+          "name": "分享给朋友",
+          "w": 60,
+          "h": 44
+        },
+        {
+          "name": "查看链接",
+          "w": 53.453125,
+          "h": 44
+        },
+        {
+          "name": "赠书信链接",
+          "w": 500,
+          "h": 44
+        },
+        {
+          "name": "再写一封",
+          "w": 56,
+          "h": 44
+        },
+        {
+          "name": "已封好的信",
+          "w": 786,
+          "h": 44
+        },
+        {
+          "name": "打开信笺",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "收回",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "打开信笺",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "收回",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "确认收回",
+          "w": 88,
+          "h": 46.6953125
+        },
+        {
+          "name": "保留",
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "stage": "writing",
+      "rects": [
+        {
+          "name": "关闭书籍操作",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "收信人的称呼",
+          "w": 260,
+          "h": 44
+        },
+        {
+          "name": "textarea",
+          "w": 290,
+          "h": 200
+        },
+        {
+          "name": "附上寄信时已有的译文",
+          "w": 334,
+          "h": 44
+        },
+        {
+          "name": "看看收信时的样子",
+          "w": 138,
+          "h": 48
+        },
+        {
+          "name": "已封好的信",
+          "w": 334,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "stage": "preview",
+      "rects": [
+        {
+          "name": "关闭书籍操作",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "返回修改",
+          "w": 48,
+          "h": 44
+        },
+        {
+          "name": "封好这封信，生成链接",
+          "w": 162,
+          "h": 48
+        },
+        {
+          "name": "已封好的信",
+          "w": 334,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "stage": "sealed-and-confirmation",
+      "rects": [
+        {
+          "name": "关闭书籍操作",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "链接已复制",
+          "w": 102,
+          "h": 48
+        },
+        {
+          "name": "打开这封信",
+          "w": 60,
+          "h": 44
+        },
+        {
+          "name": "分享给朋友",
+          "w": 60,
+          "h": 44
+        },
+        {
+          "name": "查看链接",
+          "w": 53.453125,
+          "h": 44
+        },
+        {
+          "name": "赠书信链接",
+          "w": 334,
+          "h": 44
+        },
+        {
+          "name": "再写一封",
+          "w": 56,
+          "h": 44
+        },
+        {
+          "name": "已封好的信",
+          "w": 334,
+          "h": 44
+        },
+        {
+          "name": "打开信笺",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "收回",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "打开信笺",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "收回",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "name": "确认收回",
+          "w": 80,
+          "h": 44
+        },
+        {
+          "name": "保留",
+          "w": 44,
+          "h": 44
+        }
+      ]
+    }
+  ],
+  "passed": 72,
+  "failed": 0,
+  "requests390": [
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-alice/gifts",
+      "body": {
+        "recipient": "隔离收信人",
+        "message": "这一页让我想起了你。\n这只是浏览器内的界面验证。",
+        "includeTranslations": false
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-alice/gifts",
+      "body": {
+        "recipient": "隔离收信人",
+        "message": "这一页让我想起了你。\n这只是浏览器内的界面验证。",
+        "includeTranslations": false
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/book-gifts/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB/revoke",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "path": "/api/book-gifts/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB/revoke",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "path": "/api/book-gifts/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/revoke",
+      "body": {}
+    }
+  ],
+  "unhandled390": [],
+  "systemShare": "Browser stubs only: resolve, AbortError, error. No entity share sheet submitted.",
+  "screenshots": {
+    "obtained": [
+      "output/playwright/integrated-gift-writing-390.png",
+      "output/playwright/integrated-gift-preview-390.png",
+      "output/playwright/integrated-gift-sealed-390.png"
+    ],
+    "errors": [
+      {
+        "path": "output/playwright/integrated-gift-sealed-1440.png",
+        "error": "page.screenshot: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n"
+      },
+      {
+        "path": "output/playwright/integrated-gift-sealed-390.png",
+        "error": "page.screenshot: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m    - disabled all CSS animations\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n"
+      }
+    ],
+    "note": "Initial normal screenshots timed out in a background headed page. Final actual pixels were obtained with the page foreground using CDP; see integrated-gift-visual-final.json."
+  },
+  "executionNotes": [
+    "1440 completed all 36 checks, then the following 390 entry was interrupted by a scroll-dismissed menu; those 390 steps are not counted.",
+    "390 was independently rerun after pre-scrolling the visible action button and waiting two animation frames before the first genuine pointer click; all 36 checks completed without fallback clicks.",
+    "Prior false preview-accept receipt assertion was corrected: the preview declares aria-disabled and has no published link; no POST is made.",
+    "All writes are fulfilled by the browser fixture; no real gift, account mutation, provider request or entity system share occurred."
+  ]
+}

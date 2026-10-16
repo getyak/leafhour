@@ -1,0 +1,11 @@
+### Result
+{"rects":{"source":{"x":511.59375,"y":557.484375,"width":185.6015625,"height":250},"target":{"x":290,"y":557.484375,"width":185.59375,"height":250},"draggable":true},"trace":[{"type":"pointerdown","target":"DIV","cls":"binding-type","id":"gutenberg-meditations","x":604.3900146484375,"y":682.47998046875,"defaultPrevented":false},{"type":"dragstart","target":"A","cls":"book-art meditations","id":"gutenberg-meditations","x":604,"y":682,"defaultPrevented":false},{"type":"dragover","target":"DIV","cls":"book-cover","id":"gutenberg-walden","x":310,"y":627,"defaultPrevented":false},{"type":"dragend","target":"A","cls":"book-art meditations","id":"gutenberg-meditations","x":310,"y":627,"defaultPrevented":false}],"status":"","requests":[]}
+### Ran Playwright code
+```js
+await (async page => {await page.setViewportSize({width:1440,height:1000});await page.goto("http://127.0.0.1:8337/library");const source=page.locator("#library-books [data-book-id=gutenberg-meditations] .book-art"),target=page.locator("#library-books [data-book-id=gutenberg-walden] .book-art");await source.waitFor();await source.scrollIntoViewIfNeeded();await page.evaluate(()=>{window.__conditionalDrag=[];for(const type of ["pointerdown","dragstart","dragover","drop","dragend","click"])document.addEventListener(type,e=>window.__conditionalDrag.push({type,target:e.target.tagName,cls:e.target.className,id:e.target.closest("[data-book-id]")?.dataset.bookId,x:e.clientX,y:e.clientY,defaultPrevented:e.defaultPrevented}),true);});const rects={source:await source.boundingBox(),target:await target.boundingBox(),draggable:await source.evaluate(n=>n.draggable)};await source.dragTo(target,{targetPosition:{x:20,y:70}});await page.waitForTimeout(1000);return {rects,trace:await page.evaluate(()=>window.__conditionalDrag),status:await page.locator("#library-status").innerText(),requests:(await page.evaluate(()=>window.__conditionalFixture())).requests.filter(r=>r.path.endsWith("/order"))};})(page);
+```
+### Page
+- Page URL: http://127.0.0.1:8337/library
+- Page Title: 我的书房 · 循页 Page by Page
+### Events
+- New console entries: .playwright-cli/console-2026-10-15T17-09-51-969Z.log#L34

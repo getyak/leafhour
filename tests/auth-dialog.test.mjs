@@ -8,6 +8,7 @@ async function fixture({api,session={passwordAvailable:true,emailAvailable:true,
   const html=await readFile(new URL('../app/home.html',import.meta.url),'utf8'),nodes=new Map(),doc={active:null};
   class Node extends EventTarget{
     constructor(id){super();this.id=id;this.value='';this.hidden=false;this.type='password';this.dataset={};this.classList={toggle(){}};this.attrs={};}
+    get validity(){return {valid:this.id!=='email'||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.value)};}
     set disabled(v){this._disabled=v;if(v&&doc.active===this)doc.active=null;}get disabled(){return this._disabled;}
     setAttribute(k,v){this.attrs[k]=v;}focus(){if(!this.disabled)doc.active=this;}
     querySelector(){return new Node('provider-state');}
@@ -40,4 +41,20 @@ test('pending verification is exposed until the receipt establishes matching pas
 test('SMTP-only local auth keeps password-specific registration hidden',async(t)=>{
   const f=await fixture({api:async()=>({}),session:{passwordAvailable:false,emailAvailable:true,providers:{}}});t.after(()=>f.controller.close());f.controller.open();
   assert.equal(f.nodes.get('auth-password-field').hidden,true);assert.equal(f.nodes.get('auth-signup').hidden,true);assert.equal(f.nodes.get('create-account').disabled,true);f.controller.close();
+});
+
+test('login availability follows native email validity and password input, including busy requests',async(t)=>{
+  let reject;const pending=new Promise((_,r)=>{reject=r;});
+  const f=await fixture({api:()=>pending});t.after(()=>f.controller.close());f.controller.open();
+  assert.equal(f.nodes.get('send-code').disabled,true);
+  await f.input('email','reader');await f.input('auth-password','fixture-password');assert.equal(f.nodes.get('send-code').disabled,true);
+  await f.input('email','reader@example.com');assert.equal(f.nodes.get('send-code').disabled,false);
+  await f.fire('email-form','submit');assert.equal(f.dialog.attrs['aria-busy'],'true');assert.equal(f.nodes.get('send-code').disabled,true);
+  reject(Error('网络暂时无法连接'));await new Promise(setImmediate);
+  assert.equal(f.dialog.attrs['aria-busy'],'false');assert.equal(f.nodes.get('send-code').disabled,false);assert.equal(f.nodes.get('auth-status').attrs.role,'alert');
+});
+test('a failed code send retains the verification step with visible focus and an announced error',async(t)=>{
+  const f=await fixture({api:async()=>{throw Error('验证码暂时无法发送');}});t.after(()=>f.controller.close());f.controller.open();
+  await f.fire('use-code');await f.input('email','reader@example.com');await f.fire('email-form','submit');
+  assert.equal(f.nodes.get('auth-code-step').hidden,false);assert.equal(f.doc.active?.id,'email-code');assert.equal(f.nodes.get('email-code').attrs['aria-invalid'],'true');assert.equal(f.nodes.get('auth-status').attrs.role,'alert');
 });

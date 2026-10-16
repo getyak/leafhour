@@ -1,0 +1,118 @@
+{
+  "fixture": true,
+  "widths": [
+    {
+      "width": 1440,
+      "checks": [
+        {
+          "label": "all3 recommendation types have actual44 targets",
+          "pass": true
+        },
+        {
+          "label": "owned card pointer reaches the actual existing public book",
+          "pass": true
+        },
+        {
+          "label": "catalog card Enter reaches exact readable catalog book",
+          "pass": true
+        },
+        {
+          "label": "external card opens its safe isolated destination in a new tab",
+          "pass": true
+        },
+        {
+          "label": "closing external destination keeps a valid visible card focus",
+          "pass": true
+        }
+      ],
+      "destinations": [
+        "http://127.0.0.1:8337/read?book=gutenberg-alice",
+        "http://127.0.0.1:8337/read?book=gutenberg-walden",
+        "https://example.com/marginalia-agent-review"
+      ],
+      "cardRects": [
+        {
+          "text": "爱丽丝梦游仙境书房已有",
+          "width": 368,
+          "height": 44,
+          "href": "/read?book=gutenberg-alice",
+          "target": null,
+          "rel": null
+        },
+        {
+          "text": "瓦尔登湖可直接阅读",
+          "width": 368,
+          "height": 44,
+          "href": "/read?book=gutenberg-walden",
+          "target": null,
+          "rel": null
+        },
+        {
+          "text": "隔离外部书目外部书目",
+          "width": 368,
+          "height": 44,
+          "href": "https://example.com/marginalia-agent-review",
+          "target": "_blank",
+          "rel": "noopener noreferrer"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "checks": [
+        {
+          "label": "all3 recommendation types have actual44 targets",
+          "pass": true
+        },
+        {
+          "label": "owned card pointer reaches the actual existing public book",
+          "pass": true
+        },
+        {
+          "label": "catalog card Enter reaches exact readable catalog book",
+          "pass": true
+        },
+        {
+          "label": "external card opens its safe isolated destination in a new tab",
+          "pass": true
+        },
+        {
+          "label": "closing external destination keeps a valid visible card focus",
+          "pass": true
+        }
+      ],
+      "destinations": [
+        "http://127.0.0.1:8337/read?book=gutenberg-alice",
+        "http://127.0.0.1:8337/read?book=gutenberg-walden",
+        "https://example.com/marginalia-agent-review"
+      ],
+      "cardRects": [
+        {
+          "text": "爱丽丝梦游仙境书房已有",
+          "width": 332,
+          "height": 44,
+          "href": "/read?book=gutenberg-alice",
+          "target": null,
+          "rel": null
+        },
+        {
+          "text": "瓦尔登湖可直接阅读",
+          "width": 332,
+          "height": 44,
+          "href": "/read?book=gutenberg-walden",
+          "target": null,
+          "rel": null
+        },
+        {
+          "text": "隔离外部书目外部书目",
+          "width": 332,
+          "height": 44,
+          "href": "https://example.com/marginalia-agent-review",
+          "target": "_blank",
+          "rel": "noopener noreferrer"
+        }
+      ]
+    }
+  ],
+  "externalDestinationsAreIntercepted": true
+}

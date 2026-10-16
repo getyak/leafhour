@@ -1,0 +1,408 @@
+[
+  {
+    "fixture": true,
+    "checks": [
+      {
+        "label": "keyboard starts actual reading UI",
+        "pass": true
+      },
+      {
+        "label": "guide X restores preceding active session",
+        "pass": true
+      },
+      {
+        "label": "guide return resumes only preceding active session",
+        "pass": true
+      },
+      {
+        "label": "guide Escape restores preceding active session",
+        "pass": true
+      },
+      {
+        "label": "guide close preserves preceding paused session",
+        "pass": true
+      },
+      {
+        "label": "failed session save distinguishes local retention",
+        "pass": true
+      },
+      {
+        "label": "failed understanding save retains text and pending state",
+        "pass": true
+      },
+      {
+        "label": "D08 failed retry retains pending queue and recovery",
+        "pass": true
+      },
+      {
+        "label": "D09 local pending backup has explicit receipt",
+        "pass": true
+      },
+      {
+        "label": "D07 draft list marks pending instead of saved",
+        "pass": true
+      },
+      {
+        "label": "D13 draft close restores opener",
+        "pass": true
+      },
+      {
+        "label": "D14 draft opens matching original understanding",
+        "pass": true
+      },
+      {
+        "label": "D14 original context remains visible",
+        "pass": true
+      },
+      {
+        "label": "D16 retry clears acknowledged pending queue",
+        "pass": true
+      },
+      {
+        "label": "D16 successful retry restores stable ending input focus",
+        "pass": true
+      },
+      {
+        "label": "D16 separate session receipt confirms save",
+        "pass": true
+      },
+      {
+        "label": "pending understanding retries to explicit save receipt",
+        "pass": true
+      },
+      {
+        "label": "390 ending controls have 44px targets",
+        "pass": true
+      },
+      {
+        "label": "390 pending UI has no horizontal overflow",
+        "pass": true
+      },
+      {
+        "label": "D08 successful toolbar retry restores stable reading control focus",
+        "pass": true
+      }
+    ],
+    "startWidth": 1440,
+    "measurements": [
+      {
+        "state": "pending ending",
+        "rows": [
+          {
+            "name": "关闭读后记录",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "重试保存",
+            "w": 76,
+            "h": 44.046875
+          },
+          {
+            "name": "停在这处原文 · CHAPTER I. Down the Rabbit-Hole",
+            "w": 498,
+            "h": 44
+          },
+          {
+            "name": "正在保存…",
+            "w": 57.65625,
+            "h": 44
+          },
+          {
+            "name": "保存问题",
+            "w": 48,
+            "h": 44
+          },
+          {
+            "name": "继续翻书",
+            "w": 60,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "pending draft list",
+        "rows": [
+          {
+            "name": "关闭草稿列表",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "自己的理解 · 待确认保存隔离待同步理解：这一句仍需要回原文核对。原文 · CH",
+            "w": 498,
+            "h": 111.5390625
+          }
+        ]
+      }
+    ],
+    "phase": "keyboard start",
+    "focusBeforeStart": {
+      "active": "reading-toggle",
+      "window": true,
+      "state": "今日阅读"
+    },
+    "guideCloseState": "阅读中",
+    "failedSessionReceipt": "本次时段已留本机，书房尚未确认。",
+    "draftCloseFocus": "reading-drafts-open",
+    "retryFocus": {
+      "tag": "TEXTAREA",
+      "id": "ending-comment"
+    },
+    "sessionReceipt": "本次时段已保存到书房。",
+    "positionReceipt": "书页位置已保存到书房。",
+    "mobileRects": [
+      {
+        "name": "关闭读后记录",
+        "w": 44,
+        "h": 44
+      },
+      {
+        "name": "停在这处原文 · CHAPTER I. Down the R",
+        "w": 320,
+        "h": 44
+      },
+      {
+        "name": "保存理解",
+        "w": 48,
+        "h": 44
+      },
+      {
+        "name": "保存问题",
+        "w": 48,
+        "h": 44
+      },
+      {
+        "name": "继续翻书",
+        "w": 60,
+        "h": 44
+      }
+    ],
+    "globalRetryFocus": "reading-toggle",
+    "writeActions": [
+      "reading-sessions",
+      "reading-sessions",
+      "reading-sessions",
+      "reading-sessions",
+      "reading-sessions",
+      "reading-sessions",
+      "reading-sessions",
+      "reading-sessions",
+      "reading-sessions",
+      "progress",
+      "comments",
+      "reading-sessions",
+      "reading-sessions",
+      "progress",
+      "comments",
+      "reading-sessions",
+      "reading-sessions",
+      "progress",
+      "reading-sessions"
+    ],
+    "backupFilename": "marginalia-pending-reading.json"
+  },
+  {
+    "fixture": true,
+    "checks": [
+      {
+        "label": "keyboard starts actual reading UI",
+        "pass": true
+      },
+      {
+        "label": "guide X restores preceding active session",
+        "pass": true
+      },
+      {
+        "label": "guide return resumes only preceding active session",
+        "pass": true
+      },
+      {
+        "label": "guide Escape restores preceding active session",
+        "pass": true
+      },
+      {
+        "label": "guide close preserves preceding paused session",
+        "pass": true
+      },
+      {
+        "label": "failed session save distinguishes local retention",
+        "pass": true
+      },
+      {
+        "label": "failed understanding save retains text and pending state",
+        "pass": true
+      },
+      {
+        "label": "D08 failed retry retains pending queue and recovery",
+        "pass": true
+      },
+      {
+        "label": "D09 local pending backup has explicit receipt",
+        "pass": true
+      },
+      {
+        "label": "D07 draft list marks pending instead of saved",
+        "pass": true
+      },
+      {
+        "label": "D13 draft close restores opener",
+        "pass": true
+      },
+      {
+        "label": "D14 draft opens matching original understanding",
+        "pass": true
+      },
+      {
+        "label": "D14 original context remains visible",
+        "pass": true
+      },
+      {
+        "label": "D16 retry clears acknowledged pending queue",
+        "pass": true
+      },
+      {
+        "label": "D16 successful retry restores stable ending input focus",
+        "pass": true
+      },
+      {
+        "label": "D16 separate session receipt confirms save",
+        "pass": true
+      },
+      {
+        "label": "pending understanding retries to explicit save receipt",
+        "pass": true
+      },
+      {
+        "label": "390 ending controls have 44px targets",
+        "pass": true
+      },
+      {
+        "label": "390 pending UI has no horizontal overflow",
+        "pass": true
+      },
+      {
+        "label": "D08 successful toolbar retry restores stable reading control focus",
+        "pass": true
+      }
+    ],
+    "startWidth": 390,
+    "measurements": [
+      {
+        "state": "pending ending",
+        "rows": [
+          {
+            "name": "关闭读后记录",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "重试保存",
+            "w": 68,
+            "h": 44.046875
+          },
+          {
+            "name": "停在这处原文 · CHAPTER I. Down the Rabbit-Hole",
+            "w": 320,
+            "h": 44
+          },
+          {
+            "name": "重试上次保存",
+            "w": 72,
+            "h": 44
+          },
+          {
+            "name": "保存问题",
+            "w": 48,
+            "h": 44
+          },
+          {
+            "name": "继续翻书",
+            "w": 60,
+            "h": 44
+          }
+        ]
+      },
+      {
+        "state": "pending draft list",
+        "rows": [
+          {
+            "name": "关闭草稿列表",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "name": "自己的理解 · 待确认保存隔离待同步理解：这一句仍需要回原文核对。原文 · CH",
+            "w": 320,
+            "h": 131.5390625
+          }
+        ]
+      }
+    ],
+    "phase": "keyboard start",
+    "focusBeforeStart": {
+      "active": "reading-toggle",
+      "window": true,
+      "state": "今日阅读"
+    },
+    "guideCloseState": "阅读中",
+    "failedSessionReceipt": "本次时段已留本机，书房尚未确认。",
+    "draftCloseFocus": "reading-drafts-open",
+    "retryFocus": {
+      "tag": "TEXTAREA",
+      "id": "ending-comment"
+    },
+    "sessionReceipt": "本次时段已保存到书房。",
+    "positionReceipt": "书页位置已保存到书房。",
+    "mobileRects": [
+      {
+        "name": "关闭读后记录",
+        "w": 44,
+        "h": 44
+      },
+      {
+        "name": "停在这处原文 · CHAPTER I. Down the R",
+        "w": 320,
+        "h": 44
+      },
+      {
+        "name": "保存理解",
+        "w": 48,
+        "h": 44
+      },
+      {
+        "name": "保存问题",
+        "w": 48,
+        "h": 44
+      },
+      {
+        "name": "继续翻书",
+        "w": 60,
+        "h": 44
+      }
+    ],
+    "globalRetryFocus": "reading-toggle",
+    "writeActions": [
+      "reading-sessions",
+      "reading-sessions",
+      "reading-sessions",
+      "reading-sessions",
+      "reading-sessions",
+      "reading-sessions",
+      "reading-sessions",
+      "reading-sessions",
+      "reading-sessions",
+      "progress",
+      "comments",
+      "reading-sessions",
+      "reading-sessions",
+      "progress",
+      "comments",
+      "reading-sessions",
+      "reading-sessions",
+      "progress",
+      "reading-sessions"
+    ],
+    "backupFilename": "marginalia-pending-reading.json"
+  }
+]

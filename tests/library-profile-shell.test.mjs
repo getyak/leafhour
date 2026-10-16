@@ -34,3 +34,17 @@ test('sidebar account shows the real identity beneath settings and opens editabl
   f.get('sidebar-toggle').dispatchEvent(new Event('click'));assert.equal(f.doc.body.dataset.sidebarCollapsed,'true');assert.match(button.dataset.hint,/林读者/);
   f.switch(null);shell.update();assert.match(button.getAttribute('aria-label'),/登录/);button.dispatchEvent(new Event('click'));assert.equal(f.counts().logins,1);
 });
+
+test('a failed logout restores its retry target without taking focus from another control',async()=>{
+  const f=fixture({id:'a',displayName:'Reader',email:'reader@example.invalid'}),{mountLibraryShell}=await import('../app/library-shell.mjs');
+  let reject;
+  mountLibraryShell({getSession:f.getSession,openAuth:f.openAuth,onLogout:()=>new Promise((_,no)=>{reject=no;}),onHistory(){},onOpenChat(){},api:async()=>({})});
+  f.get('library-account').dispatchEvent(new Event('click'));
+  const all=root=>[root,...root.children.flatMap(all)],logout=all(f.get('library-settings-dialog')).find(node=>node.textContent==='退出登录');
+  logout.focus();logout.dispatchEvent(new Event('click'));f.doc.activeElement=f.doc.body;
+  reject(Error('暂未退出'));await new Promise(setImmediate);
+  assert.equal(logout.disabled,false);assert.equal(f.doc.activeElement===logout,true);
+  logout.dispatchEvent(new Event('click'));const name=f.get('profile-display-name');name.focus();
+  reject(Error('仍未退出'));await new Promise(setImmediate);
+  assert.equal(f.doc.activeElement===name,true);
+});
