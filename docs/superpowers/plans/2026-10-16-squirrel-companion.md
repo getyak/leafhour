@@ -59,6 +59,10 @@
 - [ ] Implement controls and bubble using existing colors/type/squirrel. Validate HTML safe text, accessible controls, keyboard focus, reduced motion, 320px sizing and mobile keyboard behavior.
 - [ ] Run state/service/chat/adapter tests to PASS. Commit.
 
+### Task 3 motion extension (user steering, 2026-10-16)
+
+Add `app/squirrel-motion.mjs` using the existing body/eyes/head/tail and native Web Animations. Ambient blink/breath/tail stays local; thinking follows real jobs; message and pointer reactions are bounded. Hidden, unfocused and reduced-motion states cancel native animations and timers. Verify lifecycle with `tests/squirrel-motion.test.mjs` and live browser frame sampling.
+
 ## Task 4: Verification, release and delivery
 
 **Files:** update `release-files.json`, relevant `_briefs/` trigger boundaries, `README.md`; create `docs/verification/2026-10-16-squirrel-companion.md`.

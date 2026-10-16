@@ -61,7 +61,7 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
       const target=state.pending?.id||state.retry?.payload.id,recovered=target&&state.turns.find(t=>t.id===target);
       if(recovered&&state.pending?.status!=='stopping')finish(recovered);
       else if(!state.pending&&state.retry?.uncertain){const changed=state.retry.payload.contentVersion!==data.contentVersion,unavailable=data.available===false;state.retry={...state.retry,uncertain:!changed&&!unavailable,checked:true};if(changed||unavailable)clearPending(state.retry.payload);state.notice=unavailable?'阅读助手暂时不可用，问题已保留，可以继续修改。':changed?'原文版本已更新。问题已保留，再次发送会按当前原文提问。':'暂未收到回答。可以继续这次提问，已有结果会优先恢复。';}
-      if(!state.pending){const running=state.turns.find(t=>t.status==='running');if(running)finish(running);}
+      if(!state.pending){const running=state.turns.find(t=>t.status==='running'&&t.kind!=='companion');if(running)finish(running);}
       if(state.pending&&!state.turns.some(t=>t.id===state.pending.id)){const local=previous.find(t=>t.id===state.pending.id);if(local)state.turns.push(local);}
       return true;
     },
