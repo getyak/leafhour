@@ -95,7 +95,7 @@ dialog .status:empty { display: none; }
 .toc-title-original, .toc-current { opacity: 1; }
 .toc-current { font-size: 10px; }
 .book-info-footer a { min-height: 44px; }
-.paragraph-tools { padding: 5px; gap: 2px; border-color: transparent; box-shadow: 0 4px 12px #14271912, 0 16px 38px #14271910; }
+.paragraph-tools { padding: 6px; gap: 2px; border-color: transparent; border-radius: 12px; box-shadow: 0 3px 10px #14271908, 0 12px 28px #1427190a; }
 .paragraph-tools button { border-radius: 5px; padding: 8px 11px; }
 .paragraph-more { border-color: transparent; }
 .panel-tabs { gap: 0; }
