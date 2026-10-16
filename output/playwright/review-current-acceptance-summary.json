@@ -16,20 +16,16 @@
     "unverified": 79
   },
   "currentIndex": {
-    "canonicalCurrentOrConditional": 342,
+    "sourceMain": "79b3025",
+    "canonicalCurrentOrConditional": 350,
+    "auditReferences": 411,
     "legacyNotApplicable": 22,
     "retired": 2,
-    "isCoverageRate": false
+    "isCoverageRate": false,
+    "source": "inventory-79b3025-applicability.json"
   },
   "currentBrowserEvidence": {
     "scorer": {
-      "chat": {
-        "assertions": 35,
-        "files": [
-          "review-integrated-chat-result.json",
-          "review-current-chat-conditions.json"
-        ]
-      },
       "readerSettingsNotes": {
         "assertions": 42,
         "files": [
@@ -59,6 +55,33 @@
         "files": [
           "review-privacy-final-result.json"
         ]
+      },
+      "chatBeforeToolsHistorical": {
+        "assertions": 35,
+        "files": [
+          "review-integrated-chat-result.json",
+          "review-current-chat-conditions.json"
+        ]
+      },
+      "chat": {
+        "assertions": 100,
+        "files": [
+          "review-agent-current-result.json",
+          "review-agent-cards-result.json",
+          "review-agent-layout-result.json",
+          "review-agent-recovery-result.json"
+        ],
+        "modelAndToolResults": "synthetic browser responses",
+        "allNonGetIntercepted": true,
+        "externalTargets": "intercepted local HTML only",
+        "status": "passed on current tool UI after confirmed refresh and stop focus repairs",
+        "additionalRecoveryChecks": {
+          "assertions": 20,
+          "failed": 0,
+          "beforeFailed": 4,
+          "file": "review-agent-recovery-result.json",
+          "beforeFile": "review-agent-recovery-before.json"
+        }
       }
     },
     "rootIndependentlyReviewed": {
@@ -74,9 +97,36 @@
         "file": "root-public-targets-after.json"
       }
     },
-    "implementationIndependentlyReviewed": {
-      "assertions": 132,
-      "file": "conditional-execution-results.json"
+    "implementationUnchangedIndependentlyReviewed": {
+      "assertions": 86,
+      "files": [
+        "conditional-profile-final.json",
+        "conditional-books-final.json",
+        "conditional-shelf-final.json",
+        "conditional-library-final.json"
+      ],
+      "note": "Unchanged profile16, books33, shelf6, library31; old gift46 remains historical."
+    },
+    "giftAfter37IndependentlyReviewed": {
+      "assertions": 109,
+      "compose": 72,
+      "receiver": 37,
+      "files": [
+        "integrated-gift-compose-final.json",
+        "integrated-gift-page-final.json",
+        "integrated-gift-visual-final.json"
+      ],
+      "viewports": [
+        [
+          1440,
+          900
+        ],
+        [
+          390,
+          900
+        ]
+      ],
+      "scope": "synthetic browser API and share-adapter returns; no real gift, provider, or native share sheet"
     }
   },
   "remainingBoundaries": [
@@ -100,5 +150,19 @@
     "review-records-fixture-download.json",
     "review-evals-1440-download.json",
     "review-evals-390-download.json"
-  ]
+  ],
+  "historicalIntegratedIndex": {
+    "sourceBaseline": "567a92e",
+    "canonicalCurrentOrConditional": 342,
+    "legacyNotApplicable": 22,
+    "retired": 2,
+    "isCoverageRate": false
+  },
+  "historicalImplementationBefore37": {
+    "assertions": 132,
+    "file": "conditional-execution-results.json",
+    "applicability": "132 assertions belong to the pre37 integrated UI; unchanged groups remain valid, gift current-layout evidence pending."
+  },
+  "currentScoredGroups": 19,
+  "scoresAreFamilyScopeDesignJudgmentNotPerIndexCoverage": true
 }

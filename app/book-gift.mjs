@@ -106,7 +106,6 @@ async function accept(){
     if(typeof saved.bookId!=='string'||!saved.bookId||saved.readUrl!=='/read?book='+encodeURIComponent(saved.bookId))throw Error('收书结果无法核验，请回到书房确认。');
     $('gift-accept').hidden=true;$('gift-saved-read').href=saved.readUrl;$('gift-saved-read').hidden=false;
     $('gift-action-status').textContent=saved.alreadyOwned?'这本书已在你的书架上，自己的译文和笔记都已保留。':'已放进你的书架。从第一页开始，写下自己的旁注。';
-    $('gift-saved-read').focus({preventScroll:true});
   }catch(error){
     if(error.status===401){rememberReturn();location.assign('/library?login=1&next='+encodeURIComponent('/gift/'+token));return;}
     if(error.status===404){showError(error);return;}

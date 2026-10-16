@@ -1,0 +1,164 @@
+{
+  "fixture": true,
+  "baseline": "origin/main79b3025 integrated",
+  "widths": [
+    {
+      "width": 1440,
+      "checks": [
+        {
+          "label": "native Tab reaches tool summary",
+          "pass": true
+        },
+        {
+          "label": "native keyboard expansion preserves44 close inside panel",
+          "pass": true
+        }
+      ],
+      "open": {
+        "rootTop": 324,
+        "rootBottom": 914,
+        "rootScroll": 0,
+        "frameTop": 325,
+        "frameScroll": 0,
+        "headerTop": 325,
+        "headerBottom": 395,
+        "closeTop": 341,
+        "closeBottom": 385,
+        "closeHeight": 44,
+        "messagesTop": 395,
+        "messagesScroll": 591
+      },
+      "focused": {
+        "rootTop": 324,
+        "rootBottom": 914,
+        "rootScroll": 0,
+        "frameTop": 325,
+        "frameScroll": 0,
+        "headerTop": 325,
+        "headerBottom": 395,
+        "closeTop": 341,
+        "closeBottom": 385,
+        "closeHeight": 44,
+        "messagesTop": 395,
+        "messagesScroll": 591
+      },
+      "expanded": {
+        "rootTop": 324,
+        "rootBottom": 914,
+        "rootScroll": 0,
+        "frameTop": 325,
+        "frameScroll": 0,
+        "headerTop": 325,
+        "headerBottom": 395,
+        "closeTop": 341,
+        "closeBottom": 385,
+        "closeHeight": 44,
+        "messagesTop": 395,
+        "messagesScroll": 591
+      },
+      "helperScroll": {
+        "rootTop": 324,
+        "rootBottom": 914,
+        "rootScroll": 0,
+        "frameTop": 325,
+        "frameScroll": 0,
+        "headerTop": 325,
+        "headerBottom": 395,
+        "closeTop": 341,
+        "closeBottom": 385,
+        "closeHeight": 44,
+        "messagesTop": 395,
+        "messagesScroll": 637
+      }
+    },
+    {
+      "width": 390,
+      "checks": [
+        {
+          "label": "native Tab reaches tool summary",
+          "pass": true
+        },
+        {
+          "label": "native keyboard expansion preserves44 close inside panel",
+          "pass": true
+        }
+      ],
+      "open": {
+        "rootTop": 178,
+        "rootBottom": 768,
+        "rootScroll": 0,
+        "frameTop": 179,
+        "frameScroll": 0,
+        "headerTop": 179,
+        "headerBottom": 243,
+        "closeTop": 191,
+        "closeBottom": 235,
+        "closeHeight": 44,
+        "messagesTop": 243,
+        "messagesScroll": 582
+      },
+      "focused": {
+        "rootTop": 178,
+        "rootBottom": 768,
+        "rootScroll": 0,
+        "frameTop": 179,
+        "frameScroll": 0,
+        "headerTop": 179,
+        "headerBottom": 243,
+        "closeTop": 191,
+        "closeBottom": 235,
+        "closeHeight": 44,
+        "messagesTop": 243,
+        "messagesScroll": 561
+      },
+      "expanded": {
+        "rootTop": 178,
+        "rootBottom": 768,
+        "rootScroll": 0,
+        "frameTop": 179,
+        "frameScroll": 0,
+        "headerTop": 179,
+        "headerBottom": 243,
+        "closeTop": 191,
+        "closeBottom": 235,
+        "closeHeight": 44,
+        "messagesTop": 243,
+        "messagesScroll": 561
+      },
+      "helperScroll": {
+        "rootTop": 178,
+        "rootBottom": 768,
+        "rootScroll": 0,
+        "frameTop": 179,
+        "frameScroll": 0,
+        "headerTop": 179,
+        "headerBottom": 243,
+        "closeTop": 191,
+        "closeBottom": 235,
+        "closeHeight": 44,
+        "messagesTop": 243,
+        "messagesScroll": 630
+      }
+    }
+  ],
+  "mutations": [],
+  "externalNavigations": [],
+  "blocked": [
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-alice/experiences"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-alice/audio/capabilities"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-alice/experiences"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library/books/gutenberg-alice/audio/capabilities"
+    }
+  ]
+}

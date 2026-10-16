@@ -1,0 +1,21 @@
+{
+  "isolated": true,
+  "previewWrites": 0,
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/api/library/books/gutenberg-alice/gifts",
+      "body": {
+        "recipient": "隔离收信人",
+        "message": "这一页让我想起了你。\n这是浏览器内的界面验证。",
+        "includeTranslations": true
+      }
+    }
+  ],
+  "screenshots": [
+    "output/playwright/integrated-gift-writing-390.png",
+    "output/playwright/integrated-gift-preview-390.png",
+    "output/playwright/integrated-gift-sealed-390.png"
+  ],
+  "captureMethod": "Page.captureScreenshot of foreground headed page; no DOM/style changes for capture other than scrolling actual dialog to its top."
+}

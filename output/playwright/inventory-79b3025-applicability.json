@@ -1,0 +1,3432 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "comparison": {
+    "fromMain": "192a4e3",
+    "toMain": "79b3025",
+    "localMergedHeadAtRead": "a9927c8",
+    "workingTreeImplementationFixes": "subsequent integration fixes are not implicitly browser-verified here"
+  },
+  "historicalBaseline": {
+    "commit": "567a92e",
+    "canonicalFamilies": 342,
+    "mapping": "inventory-final-applicability.json",
+    "doNotInheritOperationCounts": [
+      132,
+      35
+    ]
+  },
+  "countingUnit": "control families aligned to the historical inventory granularity, not simultaneously visible buttons or business capabilities",
+  "counts": {
+    "originalReferences": 311,
+    "NReferences": 100,
+    "allAuditReferences": 411,
+    "aliasReferences": 37,
+    "legacyNotApplicable": 22,
+    "retired": 2,
+    "canonicalCurrentOrConditional": 350,
+    "newAt37": 5,
+    "newAt38": 3,
+    "newAt39": 0,
+    "retiredAtTheseThreePRs": 0,
+    "netCanonicalDelta": 8
+  },
+  "canonicalIDs": [
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05",
+    "A06",
+    "A07",
+    "A08",
+    "A09",
+    "A10",
+    "A11",
+    "A12",
+    "A13",
+    "A14",
+    "A15",
+    "A16",
+    "A17",
+    "A18",
+    "A19",
+    "A20",
+    "A21",
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C05",
+    "C06",
+    "C07",
+    "C08",
+    "C09",
+    "C10",
+    "C11",
+    "C12",
+    "C13",
+    "C14",
+    "C15",
+    "C16",
+    "C17",
+    "D01",
+    "D02",
+    "D03",
+    "D04",
+    "D05",
+    "D06",
+    "D07",
+    "D08",
+    "D09",
+    "D10",
+    "D11",
+    "D12",
+    "D13",
+    "D14",
+    "D15",
+    "D16",
+    "D17",
+    "D18",
+    "D19",
+    "D20",
+    "D21",
+    "D22",
+    "D23",
+    "E14",
+    "E15",
+    "E16",
+    "E17",
+    "E18",
+    "E19",
+    "E20",
+    "H01",
+    "H02",
+    "H03",
+    "H04",
+    "H05",
+    "H06",
+    "H07",
+    "H08",
+    "H09",
+    "H10",
+    "H11",
+    "H12",
+    "H13",
+    "H14",
+    "H15",
+    "H16",
+    "H17",
+    "H18",
+    "H19",
+    "H20",
+    "H21",
+    "H22",
+    "H23",
+    "H24",
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07",
+    "L08",
+    "L09",
+    "L10",
+    "L11",
+    "L12",
+    "L13",
+    "L14",
+    "L15",
+    "L16",
+    "L17",
+    "L18",
+    "L19",
+    "L20",
+    "L21",
+    "L22",
+    "L23",
+    "L24",
+    "L25",
+    "L26",
+    "L27",
+    "L28",
+    "L29",
+    "L30",
+    "L31",
+    "L32",
+    "L33",
+    "L34",
+    "L35",
+    "L36",
+    "L37",
+    "M01",
+    "M02",
+    "M03",
+    "M04",
+    "M05",
+    "M06",
+    "M07",
+    "M08",
+    "M09",
+    "M10",
+    "N01",
+    "N06",
+    "N100",
+    "N15",
+    "N22",
+    "N37",
+    "N39",
+    "N40",
+    "N41",
+    "N42",
+    "N43",
+    "N44",
+    "N45",
+    "N48",
+    "N49",
+    "N50",
+    "N51",
+    "N52",
+    "N53",
+    "N55",
+    "N56",
+    "N57",
+    "N58",
+    "N59",
+    "N60",
+    "N61",
+    "N62",
+    "N63",
+    "N64",
+    "N65",
+    "N66",
+    "N67",
+    "N68",
+    "N69",
+    "N70",
+    "N71",
+    "N72",
+    "N73",
+    "N74",
+    "N75",
+    "N76",
+    "N77",
+    "N78",
+    "N79",
+    "N80",
+    "N81",
+    "N82",
+    "N83",
+    "N84",
+    "N85",
+    "N86",
+    "N87",
+    "N88",
+    "N89",
+    "N90",
+    "N92",
+    "N93",
+    "N94",
+    "N95",
+    "N96",
+    "N97",
+    "N98",
+    "N99",
+    "O01",
+    "O02",
+    "O03",
+    "O04",
+    "O05",
+    "O06",
+    "O07",
+    "O08",
+    "O09",
+    "O10",
+    "O11",
+    "O12",
+    "O13",
+    "O14",
+    "O15",
+    "O16",
+    "O17",
+    "O18",
+    "O19",
+    "O20",
+    "O21",
+    "O22",
+    "O23",
+    "O24",
+    "O25",
+    "O26",
+    "O27",
+    "O28",
+    "O29",
+    "O30",
+    "O31",
+    "O32",
+    "O33",
+    "O34",
+    "O35",
+    "O36",
+    "O37",
+    "O38",
+    "O39",
+    "O40",
+    "O41",
+    "O42",
+    "O43",
+    "P01",
+    "P02",
+    "P04",
+    "P05",
+    "P06",
+    "P07",
+    "P08",
+    "P09",
+    "P10",
+    "P14",
+    "P15",
+    "P16",
+    "P17",
+    "P18",
+    "P19",
+    "P20",
+    "P21",
+    "P22",
+    "P23",
+    "P24",
+    "P25",
+    "P26",
+    "P27",
+    "P28",
+    "P29",
+    "Q01",
+    "Q02",
+    "Q03",
+    "Q04",
+    "Q05",
+    "Q06",
+    "Q07",
+    "Q08",
+    "Q09",
+    "Q10",
+    "Q11",
+    "Q12",
+    "Q13",
+    "Q14",
+    "Q15",
+    "R01",
+    "R02",
+    "R03",
+    "R04",
+    "R05",
+    "R06",
+    "R07",
+    "R08",
+    "R09",
+    "R10",
+    "R11",
+    "R12",
+    "R13",
+    "R14",
+    "R15",
+    "R16",
+    "R17",
+    "R19",
+    "R20",
+    "R21",
+    "R22",
+    "R25",
+    "R26",
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "S05",
+    "S06",
+    "S07",
+    "S08",
+    "S09",
+    "S10",
+    "S11",
+    "S12",
+    "S13",
+    "S14",
+    "T01",
+    "T02",
+    "T03",
+    "T04",
+    "T05",
+    "T06",
+    "T07",
+    "T08",
+    "T09",
+    "T10",
+    "T11",
+    "T12",
+    "T14",
+    "T15",
+    "T16",
+    "T17",
+    "T18",
+    "T19",
+    "T20",
+    "T21",
+    "T22",
+    "T23",
+    "T24",
+    "T25",
+    "T26",
+    "T30",
+    "T31",
+    "T32"
+  ],
+  "sourceBlobs": {
+    "app/gift-compose.mjs": "8202e7d04cc4d78f22bd278dab321a3ed050a465",
+    "app/gift-compose.css": "e00c50d8859fe82df8c9813c2c90c793b818cacf",
+    "app/gift-compose-state.mjs": "afe42204183bb7a3c89227d54809eceb848d6981",
+    "app/gift-preview.mjs": "8f3743f272e213addfb072cd1565025246ac09fb",
+    "app/book-gift.html": "70f4743fa12c156e1aea7c4599a780ecee27b8d1",
+    "app/book-gift.mjs": "a033c287b304a1daf1c5183081e3315a3496c187",
+    "app/book-gift.css": "043c5e3f8e491824da36363b7c5f2b1586304117",
+    "app/gift-ritual.mjs": "ba7660c1de973e0b690f07a94c25c603ba07ed59",
+    "app/library-chat.mjs": "65c364aa84e6abd840b06e3e88d95b38bd81e1ff",
+    "app/library-chat-markdown.mjs": "f5535a601ac2d30d6c29bb537d5aaa82f524fc0d",
+    "app/library-chat.css": "10b2f6924fc9864697d31c65e1245066538b8b0d",
+    "app/library-chat-state.mjs": "ed723055290d6232bcfaa48a0b586561820acd7b",
+    "server/server.mjs": "9d2122455f5d4ef59b78d8d3b858918000b1420c",
+    "server/reading-agent-tools.mjs": "81272a5199ac3c5f5d1eafcdf40ddcd17883d66f",
+    "vercel.json": "d1e4188a16b3737e55eafea297f5e86012a56cdd",
+    "tools/build-vercel.mjs": "af3106b2bd81447799e8b9a489bb21d668a2a815"
+  },
+  "entries": [
+    {
+      "reference": "H01",
+      "label": "跳到正文",
+      "canonical": "H01",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H02",
+      "label": "顶部品牌",
+      "canonical": "H02",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H03",
+      "label": "书房导航",
+      "canonical": "H03",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H04",
+      "label": "阅读的方法导航",
+      "canonical": "H04",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H05",
+      "label": "自己的书房导航",
+      "canonical": "H05",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H06",
+      "label": "页面外观",
+      "canonical": "H06",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H07",
+      "label": "登录/注册、我的书房",
+      "canonical": "H07",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H08",
+      "label": "光影开关",
+      "canonical": "H08",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H09",
+      "label": "首屏开始阅读",
+      "canonical": "H09",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H10",
+      "label": "先读几页",
+      "canonical": "H10",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H11",
+      "label": "阅读承诺区方法链接",
+      "canonical": "H11",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H12",
+      "label": "从这一句开始",
+      "canonical": "H12",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H13",
+      "label": "示例卡右下箭头",
+      "canonical": "H13",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H14",
+      "label": "打开我的阅读日历",
+      "canonical": "H14",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H15",
+      "label": "进入书房",
+      "canonical": "H15",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H16",
+      "label": "公版书封（每本1）",
+      "canonical": "H16",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H17",
+      "label": "中文试读（有样本每本1）",
+      "canonical": "H17",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H18",
+      "label": "书卡开始/继续阅读（每本1）",
+      "canonical": "H18",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H19",
+      "label": "来源（有URL每本1）",
+      "canonical": "H19",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H20",
+      "label": "打开我的书房",
+      "canonical": "H20",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H21",
+      "label": "页尾开始阅读",
+      "canonical": "H21",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H22",
+      "label": "页脚品牌",
+      "canonical": "H22",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H23",
+      "label": "页脚书房设置",
+      "canonical": "H23",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "H24",
+      "label": "页脚隐私说明",
+      "canonical": "H24",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L01",
+      "label": "侧栏收起/展开",
+      "canonical": "L01",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L02",
+      "label": "手机品牌",
+      "canonical": "L02",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L03",
+      "label": "手机书房导航",
+      "canonical": "L03",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L04",
+      "label": "搜索图标",
+      "canonical": "L04",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L05",
+      "label": "搜索书名/作者",
+      "canonical": "L05",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L06",
+      "label": "清空搜索",
+      "canonical": "L06",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L07",
+      "label": "我的书房筛选",
+      "canonical": "L07",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L08",
+      "label": "我上传的筛选",
+      "canonical": "L08",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L09",
+      "label": "阅读日历",
+      "canonical": "L09",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L10",
+      "label": "阅读对话",
+      "canonical": "L10",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L11",
+      "label": "带来一本书",
+      "canonical": "L11",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L12",
+      "label": "设置",
+      "canonical": "L12",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L13",
+      "label": "书房页账号入口",
+      "canonical": "L13",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L14",
+      "label": "重新打开书房",
+      "canonical": "L14",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L15",
+      "label": "当前书继续/打开",
+      "canonical": "L15",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L16",
+      "label": "当前段看原文/看中文",
+      "canonical": "L16",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L17",
+      "label": "重新读取这一段",
+      "canonical": "L17",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L18",
+      "label": "这本书的设置",
+      "canonical": "L18",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L19",
+      "label": "切换正在读的书",
+      "canonical": "L19",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L20",
+      "label": "每日阅读目标",
+      "canonical": "L20",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L21",
+      "label": "标记整本读完/重新开始",
+      "canonical": "L21",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L22",
+      "label": "上次问题回到原文",
+      "canonical": "L22",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L23",
+      "label": "书架书封（每本1）",
+      "canonical": "L23",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L24",
+      "label": "书卡开始/继续（每本1）",
+      "canonical": "L24",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L25",
+      "label": "书籍信息（每本1）",
+      "canonical": "L25",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L26",
+      "label": "卡内中文试读（有样本每本1）",
+      "canonical": "L26",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L27",
+      "label": "卡内来源与许可（有URL每本1）",
+      "canonical": "L27",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L28",
+      "label": "带来第一本书",
+      "canonical": "L28",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L29",
+      "label": "空态清空搜索",
+      "canonical": "L29",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L30",
+      "label": "阅读近况登录",
+      "canonical": "L30",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L31",
+      "label": "阅读近况重新载入",
+      "canonical": "L31",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L32",
+      "label": "最近阅读记录链接",
+      "canonical": "L32",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L33",
+      "label": "查看日历",
+      "canonical": "L33",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L34",
+      "label": "上传关闭",
+      "canonical": "L34",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L35",
+      "label": "选文件/拖放区域",
+      "canonical": "L35",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L36",
+      "label": "隐藏文件输入",
+      "canonical": "L36",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "L37",
+      "label": "放进我的书房/重试上传",
+      "canonical": "L37",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C01",
+      "label": "关闭日历",
+      "canonical": "C01",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C02",
+      "label": "上个月",
+      "canonical": "C02",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C03",
+      "label": "下个月",
+      "canonical": "C03",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C04",
+      "label": "本月",
+      "canonical": "C04",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C05",
+      "label": "日期（每月28–31个）",
+      "canonical": "C05",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C06",
+      "label": "日历重新载入",
+      "canonical": "C06",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C07",
+      "label": "登录后记录阅读",
+      "canonical": "C07",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C08",
+      "label": "当日书籍链接（每书1）",
+      "canonical": "C08",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C09",
+      "label": "查看这一日记录",
+      "canonical": "C09",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C10",
+      "label": "当日记录链接（每条1）",
+      "canonical": "C10",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C11",
+      "label": "设置关闭",
+      "canonical": "C11",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C12",
+      "label": "账户/外观/关于页签（3个）",
+      "canonical": "C12",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C13",
+      "label": "登录或注册",
+      "canonical": "C13",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C14",
+      "label": "退出登录",
+      "canonical": "C14",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C15",
+      "label": "站点外观（系统/纸白/夜色3个radio）",
+      "canonical": "C15",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C16",
+      "label": "查看开源项目",
+      "canonical": "C16",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "C17",
+      "label": "隐私说明",
+      "canonical": "C17",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A01",
+      "label": "关闭登录",
+      "canonical": "A01",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A02",
+      "label": "邮箱",
+      "canonical": "A02",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A03",
+      "label": "密码",
+      "canonical": "A03",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A04",
+      "label": "显示/隐藏登录密码",
+      "canonical": "A04",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A05",
+      "label": "进入书房",
+      "canonical": "A05",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A06",
+      "label": "验证码登录",
+      "canonical": "A06",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A07",
+      "label": "返回密码登录",
+      "canonical": "A07",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A08",
+      "label": "忘记密码",
+      "canonical": "A08",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A09",
+      "label": "创建书房",
+      "canonical": "A09",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A10",
+      "label": "发送验证码",
+      "canonical": "A10",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A11",
+      "label": "更换邮箱",
+      "canonical": "A11",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A12",
+      "label": "登录验证码",
+      "canonical": "A12",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A13",
+      "label": "进入书房/验证邮箱",
+      "canonical": "A13",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A14",
+      "label": "重新发送",
+      "canonical": "A14",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A15",
+      "label": "新密码",
+      "canonical": "A15",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A16",
+      "label": "显示/隐藏新密码",
+      "canonical": "A16",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A17",
+      "label": "保存并进入书房",
+      "canonical": "A17",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A18",
+      "label": "Google",
+      "canonical": "A18",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A19",
+      "label": "Apple",
+      "canonical": "A19",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A20",
+      "label": "进入本机书房",
+      "canonical": "A20",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "A21",
+      "label": "先试读几页",
+      "canonical": "A21",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "Q01",
+      "label": "收起阅读助手",
+      "canonical": "Q01",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "Q02",
+      "label": "正在读的书",
+      "canonical": "Q02",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "Q03",
+      "label": "查看原文与译文",
+      "canonical": "Q03",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "查看原文与译文",
+      "changeAt79b3025": "保留当前段核对入口；不再意味着Agent发送范围只有当前及邻段"
+    },
+    {
+      "reference": "Q04",
+      "label": "回当前段落",
+      "canonical": "Q04",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "Q05",
+      "label": "想问这本书什么？",
+      "canonical": "Q05",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "问题输入",
+      "changeAt79b3025": "2行/2000字与输入法规则保留；placeholder改为聊聊这本书或找下一本"
+    },
+    {
+      "reference": "Q06",
+      "label": "发送问题 / 再试一次 / 继续上次提问",
+      "canonical": "Q06",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "发送/再试一次/继续上次",
+      "changeAt79b3025": "同一发送控制；改走当前用户只读书房/公版/网络工具对话，旧有界解释业务不再适用"
+    },
+    {
+      "reference": "Q07",
+      "label": "停止",
+      "canonical": "Q07",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "Q08",
+      "label": "查看进度 / 重新载入",
+      "canonical": "Q08",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "查看进度/重新载入",
+      "changeAt79b3025": "立即GET并持续到运行lease边界；运行中工具活动为状态文字，不新增按钮"
+    },
+    {
+      "reference": "Q09",
+      "label": "复制这条 AI 回答",
+      "canonical": "Q09",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "复制AI解释（每条1）",
+      "changeAt79b3025": "复制原Markdown答复；失败选中渲染文本，归属仍AI"
+    },
+    {
+      "reference": "Q10",
+      "label": "核对原文",
+      "canonical": "Q10",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "核对原文（每答复1）",
+      "changeAt79b3025": "保留来源details；引用注明原文/直译/意译及草稿，支持跨书"
+    },
+    {
+      "reference": "Q11",
+      "label": "回到引用段落 / 正文注册引用链接",
+      "canonical": "Q11",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "回到引用段落（每引用1）",
+      "changeAt79b3025": "扩展到Markdown中已注册内部引用；同书原页定位，跨书正常导航；相同来源导航族不重加"
+    },
+    {
+      "reference": "Q12",
+      "label": "导出这段对话",
+      "canonical": "Q12",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "导出这段对话",
+      "changeAt79b3025": "仍在N92；导出turns现可含activity/recommendations，不新增导出入口"
+    },
+    {
+      "reference": "Q13",
+      "label": "空态回到书架",
+      "canonical": "Q13",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "Q14",
+      "label": "建议提问",
+      "canonical": "Q14",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "建议提问（3个）",
+      "changeAt79b3025": "三条换为喜欢哪句话/前后章节联系/推荐接着读；只填草稿，不自动发送"
+    },
+    {
+      "reference": "Q15",
+      "label": "登录后开始",
+      "canonical": "Q15",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R01",
+      "label": "跳到正文",
+      "canonical": "R01",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R02",
+      "label": "书房",
+      "canonical": "R02",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R03",
+      "label": "目录",
+      "canonical": "R03",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R04",
+      "label": "书名/当前章",
+      "canonical": "R04",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R05",
+      "label": "氛围",
+      "canonical": "R05",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R06",
+      "label": "暂停氛围声音",
+      "canonical": "R06",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R07",
+      "label": "阅读设置Aa",
+      "canonical": "R07",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R08",
+      "label": "顶栏全屏/退出全屏",
+      "canonical": "R08",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R09",
+      "label": "全屏阅读",
+      "canonical": "R09",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R10",
+      "label": "阅读工具浮动入口",
+      "canonical": "R10",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R11",
+      "label": "重新打开书籍",
+      "canonical": "R11",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R12",
+      "label": "听这一章",
+      "canonical": "R12",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R13",
+      "label": "上一章",
+      "canonical": "R13",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R14",
+      "label": "下一章",
+      "canonical": "R14",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R15",
+      "label": "这一章读完了",
+      "canonical": "R15",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R16",
+      "label": "连读章尾标记（每正文章1）",
+      "canonical": "R16",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R17",
+      "label": "正文段落（每段1）",
+      "canonical": "R17",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R19",
+      "label": "关于书籍关闭",
+      "canonical": "R19",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R20",
+      "label": "关于书籍原文出处",
+      "canonical": "R20",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R21",
+      "label": "目录关闭",
+      "canonical": "R21",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R22",
+      "label": "章节（每章1）",
+      "canonical": "R22",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R23",
+      "label": "本章小节（每适用章1）",
+      "canonical": "R23",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "R24",
+      "label": "小节（每节1）",
+      "canonical": "R24",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "R25",
+      "label": "回到书房的位置",
+      "canonical": "R25",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "R26",
+      "label": "继续读这里",
+      "canonical": "R26",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T01",
+      "label": "关闭阅读设置",
+      "canonical": "T01",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T02",
+      "label": "全书目录快捷入口",
+      "canonical": "T02",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T03",
+      "label": "我的记录",
+      "canonical": "T03",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T04",
+      "label": "沉浸阅读开关",
+      "canonical": "T04",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T05",
+      "label": "阅读语言",
+      "canonical": "T05",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T06",
+      "label": "连续阅读",
+      "canonical": "T06",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T07",
+      "label": "中文译法",
+      "canonical": "T07",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T08",
+      "label": "对照排列",
+      "canonical": "T08",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T09",
+      "label": "对照风格（5个）",
+      "canonical": "T09",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T10",
+      "label": "对照预览译文按钮",
+      "canonical": "T10",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T11",
+      "label": "译文颜色",
+      "canonical": "T11",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T12",
+      "label": "译文背景",
+      "canonical": "T12",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T13",
+      "label": "用这个样式对照阅读",
+      "canonical": "T13",
+      "applicability": "retired",
+      "isAlias": false
+    },
+    {
+      "reference": "T14",
+      "label": "声音与语速",
+      "canonical": "T14",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T15",
+      "label": "纸面主题（6个）",
+      "canonical": "T15",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T16",
+      "label": "选择阅读氛围",
+      "canonical": "T16",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T17",
+      "label": "正文字体（3个）",
+      "canonical": "T17",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T18",
+      "label": "字号",
+      "canonical": "T18",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T19",
+      "label": "精细排版",
+      "canonical": "T19",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T20",
+      "label": "行距±（2个）",
+      "canonical": "T20",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T21",
+      "label": "段间距±（2个）",
+      "canonical": "T21",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T22",
+      "label": "字间距±（2个）",
+      "canonical": "T22",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T23",
+      "label": "英文词距±（2个）",
+      "canonical": "T23",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T24",
+      "label": "字重±（2个）",
+      "canonical": "T24",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T25",
+      "label": "首行缩进",
+      "canonical": "T25",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T26",
+      "label": "恢复默认排版与纸面",
+      "canonical": "T26",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T27",
+      "label": "阅读与数据",
+      "canonical": "T27",
+      "applicability": "retired",
+      "isAlias": false
+    },
+    {
+      "reference": "T28",
+      "label": "每章一个小问题",
+      "canonical": "T28",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "T29",
+      "label": "体验验证",
+      "canonical": "T29",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "T30",
+      "label": "导出记录与设置",
+      "canonical": "T30",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T31",
+      "label": "导入记录与文件选择",
+      "canonical": "T31",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T32",
+      "label": "关于这份译文",
+      "canonical": "T32",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "T33",
+      "label": "导入阅读体验与文件选择",
+      "canonical": "T33",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "P01",
+      "label": "翻译这段/查看双译",
+      "canonical": "P01",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P02",
+      "label": "分享摘录",
+      "canonical": "P02",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P03",
+      "label": "透视",
+      "canonical": "P03",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "P04",
+      "label": "原文/译文",
+      "canonical": "P04",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P05",
+      "label": "朗读/朗读所选",
+      "canonical": "P05",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P06",
+      "label": "注解",
+      "canonical": "P06",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P07",
+      "label": "想法",
+      "canonical": "P07",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P08",
+      "label": "更多",
+      "canonical": "P08",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P09",
+      "label": "分享这一段",
+      "canonical": "P09",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P10",
+      "label": "从这里开始听",
+      "canonical": "P10",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P11",
+      "label": "站队看看",
+      "canonical": "P11",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "P12",
+      "label": "用自己的话",
+      "canonical": "P12",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "P13",
+      "label": "解释（对照）",
+      "canonical": "P13",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "P14",
+      "label": "这一段直译",
+      "canonical": "P14",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P15",
+      "label": "这一段意译",
+      "canonical": "P15",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P16",
+      "label": "留下问题",
+      "canonical": "P16",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P17",
+      "label": "关闭旁注",
+      "canonical": "P17",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P18",
+      "label": "旁栏原文卡回正文",
+      "canonical": "P18",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P19",
+      "label": "注解/我的想法/问题（3个）",
+      "canonical": "P19",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P20",
+      "label": "关键英文",
+      "canonical": "P20",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P21",
+      "label": "登录后回到这段",
+      "canonical": "P21",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P22",
+      "label": "重新读取记录",
+      "canonical": "P22",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P23",
+      "label": "想法/问题输入（按类型1个）",
+      "canonical": "P23",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P24",
+      "label": "保存想法/问题、重试上次",
+      "canonical": "P24",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P25",
+      "label": "全记录锚点（每条1）",
+      "canonical": "P25",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P26",
+      "label": "点按揭晓译文（每对照段1）",
+      "canonical": "P26",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P27",
+      "label": "原文件校对说明",
+      "canonical": "P27",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P28",
+      "label": "下载原文件校对",
+      "canonical": "P28",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "P29",
+      "label": "去书房补回原文件",
+      "canonical": "P29",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "S01",
+      "label": "返回阅读",
+      "canonical": "S01",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "S02",
+      "label": "语言",
+      "canonical": "S02",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "S03",
+      "label": "双语排版",
+      "canonical": "S03",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "S04",
+      "label": "中文译法",
+      "canonical": "S04",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "S05",
+      "label": "纸面",
+      "canonical": "S05",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "S06",
+      "label": "比例",
+      "canonical": "S06",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "S07",
+      "label": "上下文与细节",
+      "canonical": "S07",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "S08",
+      "label": "上文",
+      "canonical": "S08",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "S09",
+      "label": "下文",
+      "canonical": "S09",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "S10",
+      "label": "字号",
+      "canonical": "S10",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "S11",
+      "label": "书籍出处",
+      "canonical": "S11",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "S12",
+      "label": "保存图片",
+      "canonical": "S12",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "S13",
+      "label": "复制图片",
+      "canonical": "S13",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "S14",
+      "label": "系统分享",
+      "canonical": "S14",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "M01",
+      "label": "关闭阅读氛围",
+      "canonical": "M01",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "M02",
+      "label": "场景（4个）",
+      "canonical": "M02",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "M03",
+      "label": "只留纸面",
+      "canonical": "M03",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "M04",
+      "label": "轻音乐音量",
+      "canonical": "M04",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "M05",
+      "label": "环境声音量",
+      "canonical": "M05",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "M06",
+      "label": "场景动效",
+      "canonical": "M06",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "M07",
+      "label": "开启/暂停/取消准备/重试播放",
+      "canonical": "M07",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "M08",
+      "label": "回到书页",
+      "canonical": "M08",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "M09",
+      "label": "关于声音与素材",
+      "canonical": "M09",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "M10",
+      "label": "查看素材来源",
+      "canonical": "M10",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O01",
+      "label": "关闭听读面板",
+      "canonical": "O01",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O02",
+      "label": "正文朗读",
+      "canonical": "O02",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O03",
+      "label": "双人讲解",
+      "canonical": "O03",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O04",
+      "label": "已保存的听读",
+      "canonical": "O04",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O05",
+      "label": "进入我的书房",
+      "canonical": "O05",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O06",
+      "label": "开始朗读",
+      "canonical": "O06",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O07",
+      "label": "换个声音",
+      "canonical": "O07",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O08",
+      "label": "改听对应原文",
+      "canonical": "O08",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O09",
+      "label": "讲解范围",
+      "canonical": "O09",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O10",
+      "label": "生成双人讲稿",
+      "canonical": "O10",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O11",
+      "label": "讲解/提问台词（每轮1）",
+      "canonical": "O11",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O12",
+      "label": "讲稿原文出处（每引用1）",
+      "canonical": "O12",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O13",
+      "label": "保存修改",
+      "canonical": "O13",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O14",
+      "label": "听这段对话",
+      "canonical": "O14",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O15",
+      "label": "打开最新讲稿",
+      "canonical": "O15",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O16",
+      "label": "旁白声音（每供应商声音1个radio）",
+      "canonical": "O16",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O17",
+      "label": "试听（每声音1个）",
+      "canonical": "O17",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O18",
+      "label": "讲解者声音",
+      "canonical": "O18",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O19",
+      "label": "提问者声音",
+      "canonical": "O19",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O20",
+      "label": "偏好播放速度",
+      "canonical": "O20",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O21",
+      "label": "跟随朗读段落",
+      "canonical": "O21",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O22",
+      "label": "声音页已保存听读",
+      "canonical": "O22",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O23",
+      "label": "导出听读记录",
+      "canonical": "O23",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O24",
+      "label": "恢复听读记录",
+      "canonical": "O24",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O25",
+      "label": "导出讲稿与位置",
+      "canonical": "O25",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O26",
+      "label": "导出含声音的备份",
+      "canonical": "O26",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O27",
+      "label": "恢复备份及文件输入",
+      "canonical": "O27",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O28",
+      "label": "已保存声音（每session1）",
+      "canonical": "O28",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O29",
+      "label": "已保存讲稿（每稿1）",
+      "canonical": "O29",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O30",
+      "label": "播放/暂停/重播",
+      "canonical": "O30",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O31",
+      "label": "播放标题展开/收起",
+      "canonical": "O31",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O32",
+      "label": "上一段",
+      "canonical": "O32",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O33",
+      "label": "下一段",
+      "canonical": "O33",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O34",
+      "label": "停止并收起",
+      "canonical": "O34",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O35",
+      "label": "播放进度",
+      "canonical": "O35",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O36",
+      "label": "详细播放器声音",
+      "canonical": "O36",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O37",
+      "label": "播放器速度",
+      "canonical": "O37",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O38",
+      "label": "回到原文",
+      "canonical": "O38",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O39",
+      "label": "下载本段",
+      "canonical": "O39",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O40",
+      "label": "查看讲稿",
+      "canonical": "O40",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O41",
+      "label": "回到正在朗读处",
+      "canonical": "O41",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O42",
+      "label": "手机上一段",
+      "canonical": "O42",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "O43",
+      "label": "手机下一段",
+      "canonical": "O43",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D01",
+      "label": "底部阅读工具入口",
+      "canonical": "D01",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D02",
+      "label": "收起阅读工具",
+      "canonical": "D02",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D03",
+      "label": "开始/暂停/继续阅读",
+      "canonical": "D03",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D04",
+      "label": "结束",
+      "canonical": "D04",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D05",
+      "label": "登录后记录阅读",
+      "canonical": "D05",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D06",
+      "label": "深读提示",
+      "canonical": "D06",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D07",
+      "label": "草稿入口",
+      "canonical": "D07",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D08",
+      "label": "重试保存",
+      "canonical": "D08",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D09",
+      "label": "另存待同步时段",
+      "canonical": "D09",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D10",
+      "label": "关闭深读提示",
+      "canonical": "D10",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D11",
+      "label": "Cornell阅读策略",
+      "canonical": "D11",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D12",
+      "label": "回到阅读",
+      "canonical": "D12",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D13",
+      "label": "关闭草稿列表",
+      "canonical": "D13",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D14",
+      "label": "草稿（每份1）",
+      "canonical": "D14",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D15",
+      "label": "关闭读后记录",
+      "canonical": "D15",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D16",
+      "label": "读后重试保存",
+      "canonical": "D16",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D17",
+      "label": "这次停下的原文",
+      "canonical": "D17",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D18",
+      "label": "自己理解的一句话",
+      "canonical": "D18",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D19",
+      "label": "保存理解",
+      "canonical": "D19",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D20",
+      "label": "还有哪里没想通",
+      "canonical": "D20",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D21",
+      "label": "保存问题",
+      "canonical": "D21",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D22",
+      "label": "回到书房与日历",
+      "canonical": "D22",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "D23",
+      "label": "继续翻书",
+      "canonical": "D23",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "E01",
+      "label": "体验收起（每surface1）",
+      "canonical": "E01",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "E02",
+      "label": "透视片段/出处（每ref1）",
+      "canonical": "E02",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "E03",
+      "label": "返回刚才的位置",
+      "canonical": "E03",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "E04",
+      "label": "站队选项（每choice1）",
+      "canonical": "E04",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "E05",
+      "label": "跳过继续阅读",
+      "canonical": "E05",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "E06",
+      "label": "复制这段观察",
+      "canonical": "E06",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "E07",
+      "label": "回声输入",
+      "canonical": "E07",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "E08",
+      "label": "提交后核对",
+      "canonical": "E08",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "E09",
+      "label": "取消核对",
+      "canonical": "E09",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "E10",
+      "label": "先前留下的原话",
+      "canonical": "E10",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "E11",
+      "label": "回声原句标记（每ref1）",
+      "canonical": "E11",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "E12",
+      "label": "取消解释",
+      "canonical": "E12",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "E13",
+      "label": "体验导出/导入",
+      "canonical": "E13",
+      "applicability": "not_applicable_legacy",
+      "isAlias": false
+    },
+    {
+      "reference": "E14",
+      "label": "`/evals` 回到书页",
+      "canonical": "E14",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "deploymentApplicability": {
+        "localDeveloperInstance": "verified in earlier localhost browser round",
+        "nodeServerWithPublicOrigin": "legacy /evals and legacy API blocked by server/server.mjs",
+        "vercelStaticPage": "build-vercel copies evals/index.html; deployed reachability not checked in this inventory round",
+        "legacyApiOrExportOnHosted": "not established by static page reachability; verify separately after deploy",
+        "normalReaderEntry": false
+      }
+    },
+    {
+      "reference": "E15",
+      "label": "指标计算说明",
+      "canonical": "E15",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "deploymentApplicability": {
+        "localDeveloperInstance": "verified in earlier localhost browser round",
+        "nodeServerWithPublicOrigin": "legacy /evals and legacy API blocked by server/server.mjs",
+        "vercelStaticPage": "build-vercel copies evals/index.html; deployed reachability not checked in this inventory round",
+        "legacyApiOrExportOnHosted": "not established by static page reachability; verify separately after deploy",
+        "normalReaderEntry": false
+      }
+    },
+    {
+      "reference": "E16",
+      "label": "打开聊天解释对照",
+      "canonical": "E16",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "deploymentApplicability": {
+        "localDeveloperInstance": "verified in earlier localhost browser round",
+        "nodeServerWithPublicOrigin": "legacy /evals and legacy API blocked by server/server.mjs",
+        "vercelStaticPage": "build-vercel copies evals/index.html; deployed reachability not checked in this inventory round",
+        "legacyApiOrExportOnHosted": "not established by static page reachability; verify separately after deploy",
+        "normalReaderEntry": false
+      }
+    },
+    {
+      "reference": "E17",
+      "label": "导出自己的体验记录",
+      "canonical": "E17",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "deploymentApplicability": {
+        "localDeveloperInstance": "verified in earlier localhost browser round",
+        "nodeServerWithPublicOrigin": "legacy /evals and legacy API blocked by server/server.mjs",
+        "vercelStaticPage": "build-vercel copies evals/index.html; deployed reachability not checked in this inventory round",
+        "legacyApiOrExportOnHosted": "not established by static page reachability; verify separately after deploy",
+        "normalReaderEntry": false
+      }
+    },
+    {
+      "reference": "E18",
+      "label": "隐私跳正文/品牌（各页头页脚重复）",
+      "canonical": "E18",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "E19",
+      "label": "隐私回书房（页头/正文末/页脚3处）",
+      "canonical": "E19",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "E20",
+      "label": "隐私联系邮箱",
+      "canonical": "E20",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N01",
+      "label": "阅读/声音/习惯/数据页签（4个）",
+      "canonical": "N01",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N02",
+      "label": "阅读方式",
+      "canonical": "T05",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N03",
+      "label": "中文译法",
+      "canonical": "T07",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N04",
+      "label": "对照排列",
+      "canonical": "T08",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N05",
+      "label": "对照风格select",
+      "canonical": "T09",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N06",
+      "label": "配色与底色",
+      "canonical": "N06",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N07",
+      "label": "译文颜色",
+      "canonical": "T11",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N08",
+      "label": "译文背景",
+      "canonical": "T12",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N09",
+      "label": "恢复阅读外观",
+      "canonical": "T26",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N10",
+      "label": "关于这份译文",
+      "canonical": "T32",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N11",
+      "label": "设置内氛围播放/暂停",
+      "canonical": "M07",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N12",
+      "label": "选择场景",
+      "canonical": "T16",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N13",
+      "label": "设置内轻音乐音量",
+      "canonical": "M04",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N14",
+      "label": "设置内环境声音量",
+      "canonical": "M05",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N15",
+      "label": "场景细节",
+      "canonical": "N15",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N16",
+      "label": "设置内场景动效",
+      "canonical": "M06",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N17",
+      "label": "声音与语速",
+      "canonical": "T14",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N18",
+      "label": "正文声音select",
+      "canonical": "O16",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N19",
+      "label": "试听这一个声音",
+      "canonical": "O17",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N20",
+      "label": "播放速度",
+      "canonical": "O20",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N21",
+      "label": "跟随正在朗读段落",
+      "canonical": "O21",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N22",
+      "label": "双人讲解声音",
+      "canonical": "N22",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N23",
+      "label": "讲解者声音",
+      "canonical": "O18",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N24",
+      "label": "提问者声音",
+      "canonical": "O19",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N25",
+      "label": "沉浸阅读",
+      "canonical": "T04",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N26",
+      "label": "连续阅读",
+      "canonical": "T06",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N27",
+      "label": "每章一个小问题",
+      "canonical": "T28",
+      "applicability": "not_applicable_legacy",
+      "isAlias": true
+    },
+    {
+      "reference": "N28",
+      "label": "查看想法与问题",
+      "canonical": "T03",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N29",
+      "label": "导出阅读记录与外观",
+      "canonical": "T30",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N30",
+      "label": "导入阅读记录及文件输入",
+      "canonical": "T31",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N31",
+      "label": "查看已保存的听读",
+      "canonical": "O22",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N32",
+      "label": "导出听读记录",
+      "canonical": "O23",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N33",
+      "label": "恢复听读记录及文件输入",
+      "canonical": "O24",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N34",
+      "label": "导出阅读体验",
+      "canonical": "E13",
+      "applicability": "not_applicable_legacy",
+      "isAlias": true
+    },
+    {
+      "reference": "N35",
+      "label": "导入阅读体验及文件输入",
+      "canonical": "T33",
+      "applicability": "not_applicable_legacy",
+      "isAlias": true
+    },
+    {
+      "reference": "N36",
+      "label": "设置底部全书目录",
+      "canonical": "T02",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N37",
+      "label": "设置底部返回书页",
+      "canonical": "N37",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N38",
+      "label": "侧栏头像/称呼账户入口",
+      "canonical": "L13",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N39",
+      "label": "更换头像及文件输入",
+      "canonical": "N39",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N40",
+      "label": "恢复默认头像",
+      "canonical": "N40",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N41",
+      "label": "怎么称呼你",
+      "canonical": "N41",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N42",
+      "label": "登录邮箱只读字段",
+      "canonical": "N42",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N43",
+      "label": "保存个人资料",
+      "canonical": "N43",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N44",
+      "label": "侧栏回收站",
+      "canonical": "N44",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N45",
+      "label": "每书更多操作",
+      "canonical": "N45",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N46",
+      "label": "菜单书籍信息",
+      "canonical": "L25",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N47",
+      "label": "查看底本来源",
+      "canonical": "L27",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N48",
+      "label": "送出这本书",
+      "canonical": "N48",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "菜单送出这本书",
+      "changeAt79b3025": "入口保留；复用同一book-action-dialog，内容改为写赠言→看拆信→封好分享"
+    },
+    {
+      "reference": "N49",
+      "label": "菜单添加读书日程",
+      "canonical": "N49",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N50",
+      "label": "菜单向前移动",
+      "canonical": "N50",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N51",
+      "label": "菜单向后移动",
+      "canonical": "N51",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N52",
+      "label": "菜单移到回收站",
+      "canonical": "N52",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N53",
+      "label": "关闭书籍操作",
+      "canonical": "N53",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "关闭书籍操作",
+      "changeAt79b3025": "同一关闭按钮/ESC/遮罩；草稿/封好结果在同账号加载会话保留，换账号清"
+    },
+    {
+      "reference": "N54",
+      "label": "书卡中文试读",
+      "canonical": "L26",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N55",
+      "label": "书封原生拖拽（每书1）",
+      "canonical": "N55",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N56",
+      "label": "拖动手柄（每书1）",
+      "canonical": "N56",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N57",
+      "label": "继续留在书架",
+      "canonical": "N57",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N58",
+      "label": "确认移到回收站",
+      "canonical": "N58",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N59",
+      "label": "恢复到书架（每回收站书1）",
+      "canonical": "N59",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N60",
+      "label": "开始时间",
+      "canonical": "N60",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N61",
+      "label": "阅读时长",
+      "canonical": "N61",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N62",
+      "label": "重复",
+      "canonical": "N62",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N63",
+      "label": "日历提醒",
+      "canonical": "N63",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N64",
+      "label": "重复到",
+      "canonical": "N64",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N65",
+      "label": "下载日程文件",
+      "canonical": "N65",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N66",
+      "label": "致 / 收信人的称呼",
+      "canonical": "N66",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "收信人称呼",
+      "changeAt79b3025": "仍是同一80字输入；可见label为致，placeholder收信人的称呼；保留键盘与清楚可访问名"
+    },
+    {
+      "reference": "N67",
+      "label": "想留给对方的话",
+      "canonical": "N67",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "想留给对方的话",
+      "changeAt79b3025": "仍是同一500字textarea；信笺视觉、5行，可空；不自动写问候"
+    },
+    {
+      "reference": "N68",
+      "label": "附上寄信时已有的译文",
+      "canonical": "N68",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "一并送出已有译文",
+      "changeAt79b3025": "仍是已有译文checkbox；预览metadata不含正文/包/个人记录"
+    },
+    {
+      "reference": "N69",
+      "label": "封好这封信，生成链接",
+      "canonical": "N69",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "生成赠书信/再生成一封",
+      "changeAt79b3025": "从编写页直接生成迁移到预览后显式封信；POST副作用不变，忙碌锁定返回/封信"
+    },
+    {
+      "reference": "N70",
+      "label": "赠书信链接（只读）",
+      "canonical": "N70",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "赠书信链接只读输入",
+      "changeAt79b3025": "移入新N95查看链接details，不重复新增输入族"
+    },
+    {
+      "reference": "N71",
+      "label": "复制赠书链接",
+      "canonical": "N71",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "复制赠书链接",
+      "changeAt79b3025": "封好后可用；失败展开N95、选中N70；成功仅复制不代表送达"
+    },
+    {
+      "reference": "N72",
+      "label": "打开这封信",
+      "canonical": "N72",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "看看这封信",
+      "changeAt79b3025": "仍为实际已生成gift URL新标签；不是N93本机拆信预览"
+    },
+    {
+      "reference": "N73",
+      "label": "已封好的信",
+      "canonical": "N73",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "之前送出的信",
+      "changeAt79b3025": "原之前送出的信details改名；加载失败不抹掉新封结果"
+    },
+    {
+      "reference": "N74",
+      "label": "打开信笺",
+      "canonical": "N74",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "历史信打开（每信1）",
+      "changeAt79b3025": "原历史信外链改名；规范本地/gift/token，rel含noreferrer"
+    },
+    {
+      "reference": "N75",
+      "label": "收回",
+      "canonical": "N75",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "历史信收回（每信1）",
+      "changeAt79b3025": "历史信撤回入口与确认规则保留"
+    },
+    {
+      "reference": "N76",
+      "label": "确认收回",
+      "canonical": "N76",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "确认收回",
+      "changeAt79b3025": "撤回后仍保留已接收/已下载副本；当前结果提供N97重写分支"
+    },
+    {
+      "reference": "N77",
+      "label": "保留",
+      "canonical": "N77",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "保留",
+      "changeAt79b3025": "取消撤回仍无POST；需返回稳定动作焦点"
+    },
+    {
+      "reference": "N78",
+      "label": "跳到赠书信",
+      "canonical": "N78",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N79",
+      "label": "顶部循页首页",
+      "canonical": "N79",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N80",
+      "label": "赠书页外观",
+      "canonical": "N80",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N81",
+      "label": "顶部我的书房",
+      "canonical": "N81",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N82",
+      "label": "重新打开赠书信",
+      "canonical": "N82",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N83",
+      "label": "错误页回到书房",
+      "canonical": "N83",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N84",
+      "label": "拆开这封信",
+      "canonical": "N84",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "拆开这封信",
+      "changeAt79b3025": "同一封印button改连续可反向spring；进度阈值切inert与读屏层，焦点到书名"
+    },
+    {
+      "reference": "N85",
+      "label": "折起信笺",
+      "canonical": "N85",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "折起信笺",
+      "changeAt79b3025": "同一折起动作反向spring；Escape先折信，预览再次Escape回编写"
+    },
+    {
+      "reference": "N86",
+      "label": "放进我的书架",
+      "canonical": "N86",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "放进我的书架",
+      "changeAt79b3025": "真实信页原接收流程；登录返回自动恢复已展信但仍需显式接收；预览只提示、不写"
+    },
+    {
+      "reference": "N87",
+      "label": "打开这本书",
+      "canonical": "N87",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N88",
+      "label": "下载阅读包",
+      "canonical": "N88",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "下载阅读包",
+      "changeAt79b3025": "真实信仍校验分段下载；预览禁用且拦截，不下载"
+    },
+    {
+      "reference": "N89",
+      "label": "先读几页",
+      "canonical": "N89",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "先读几页",
+      "changeAt79b3025": "真实公共书仍可读；预览publicRead时只展示禁用副本并拦截"
+    },
+    {
+      "reference": "N90",
+      "label": "页脚循页",
+      "canonical": "N90",
+      "applicability": "current_or_conditional",
+      "isAlias": false
+    },
+    {
+      "reference": "N91",
+      "label": "浮动阅读对话入口",
+      "canonical": "L10",
+      "applicability": "current_or_conditional",
+      "isAlias": true
+    },
+    {
+      "reference": "N92",
+      "label": "更多对话操作",
+      "canonical": "N92",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "historicalLabel": "更多对话操作",
+      "changeAt79b3025": "入口保留；说明改为AI可按需查阅你的书房、公版书与网络资料，不能沿用旧有限上下文说明"
+    },
+    {
+      "reference": "N93",
+      "label": "看看收信时的样子",
+      "canonical": "N93",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "source": {
+        "revision": "79b3025",
+        "path": "app/gift-compose.mjs",
+        "line": 26
+      },
+      "condition": "编写阶段；本机iframe预览，不创建链接；转焦点到返回修改",
+      "evidence": "source_only_this_inventory_round"
+    },
+    {
+      "reference": "N94",
+      "label": "返回修改",
+      "canonical": "N94",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "source": {
+        "revision": "79b3025",
+        "path": "app/gift-compose.mjs",
+        "line": 27
+      },
+      "condition": "预览阶段；保留字段，返回编写并聚焦预览按钮；封信中禁用",
+      "evidence": "source_only_this_inventory_round"
+    },
+    {
+      "reference": "N95",
+      "label": "查看链接",
+      "canonical": "N95",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "source": {
+        "revision": "79b3025",
+        "path": "app/gift-compose.mjs",
+        "line": 57
+      },
+      "condition": "封好后details；N70只读链接移入其中；复制失败自动展开选中",
+      "evidence": "source_only_this_inventory_round"
+    },
+    {
+      "reference": "N96",
+      "label": "分享给朋友",
+      "canonical": "N96",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "source": {
+        "revision": "79b3025",
+        "path": "app/gift-compose.mjs",
+        "line": 59
+      },
+      "condition": "封好后且navigator.share存在、canShare缺省或接受URL；显式调用系统分享；取消不算送达",
+      "evidence": "source_only_this_inventory_round"
+    },
+    {
+      "reference": "N97",
+      "label": "再写一封 / 重新写一封",
+      "canonical": "N97",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "source": {
+        "revision": "79b3025",
+        "path": "app/gift-compose.mjs",
+        "line": 60
+      },
+      "condition": "封好后清草稿/结果并清字段聚焦收信人；收回后分支回编写保留字段，焦点需核对",
+      "evidence": "source_only_this_inventory_round"
+    },
+    {
+      "reference": "N98",
+      "label": "查阅了N个章节 / 查看工具记录",
+      "canonical": "N98",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "source": {
+        "revision": "79b3025",
+        "path": "app/library-chat.mjs",
+        "line": 57
+      },
+      "condition": "已完成、失败或取消轮次且存在activity时的details；默认折叠，未完成记录标已中断",
+      "evidence": "source_only_this_inventory_round"
+    },
+    {
+      "reference": "N99",
+      "label": "AI回答正文外部链接（每外链1）",
+      "canonical": "N99",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "source": {
+        "revision": "79b3025",
+        "path": "app/library-chat-markdown.mjs",
+        "line": 19
+      },
+      "condition": "Markdown中合法HTTP(S)外链；新标签noopener noreferrer；不是已核验引用的保证",
+      "evidence": "source_only_this_inventory_round"
+    },
+    {
+      "reference": "N100",
+      "label": "相关书目卡（每回答最多3个）",
+      "canonical": "N100",
+      "applicability": "current_or_conditional",
+      "isAlias": false,
+      "source": {
+        "revision": "79b3025",
+        "path": "app/library-chat.mjs",
+        "line": 74
+      },
+      "condition": "检索候选书房已有/可直接阅读/外部书目；内部同站读书，外部新标签；没有自动入架或购买",
+      "evidence": "source_only_this_inventory_round"
+    }
+  ],
+  "evidenceBoundary": {
+    "thisRoundInventoryBrowserOperations": 0,
+    "sourceReviewOnly": true,
+    "noRealWritesOrShare": true,
+    "priorPRVerificationIsSeparate": true,
+    "newFunctionsAreNotAssignedPriorScores": true
+  }
+}

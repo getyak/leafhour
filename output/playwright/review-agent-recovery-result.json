@@ -1,0 +1,157 @@
+{
+  "fixture": true,
+  "baseline": "origin/main79b3025 integrated",
+  "widths": [
+    {
+      "width": 1440,
+      "checks": [
+        {
+          "label": "failed current chat load offers an explicit retry",
+          "pass": true
+        },
+        {
+          "label": "successful retry retains a usable focus inside current chat",
+          "pass": true
+        },
+        {
+          "label": "new conversation exports through real browser Blob download",
+          "pass": true
+        },
+        {
+          "label": "export closes menu and returns focus to its summary",
+          "pass": true
+        },
+        {
+          "label": "stopped current tool turn returns focus to editable question",
+          "pass": true
+        },
+        {
+          "label": "new current unavailable state keeps editable draft and disabled send",
+          "pass": true
+        },
+        {
+          "label": "unavailable draft survives current close reopen",
+          "pass": true
+        },
+        {
+          "label": "all3 current suggestions fill focus without creating a turn",
+          "pass": true
+        },
+        {
+          "label": "current no-book state returns to actual shelf without generating",
+          "pass": true
+        },
+        {
+          "label": "current anonymous entry opens one real auth modal without stacking",
+          "pass": true
+        }
+      ],
+      "afterLoadRetry": {
+        "tag": "TEXTAREA",
+        "id": "library-chat-input",
+        "text": ""
+      },
+      "download": {
+        "name": "循页-对话-gutenberg-alice.json",
+        "file": "output/playwright/review-agent-export-1440-fixture.json"
+      },
+      "afterStop": {
+        "tag": "TEXTAREA",
+        "id": "library-chat-input",
+        "text": ""
+      }
+    },
+    {
+      "width": 390,
+      "checks": [
+        {
+          "label": "failed current chat load offers an explicit retry",
+          "pass": true
+        },
+        {
+          "label": "successful retry retains a usable focus inside current chat",
+          "pass": true
+        },
+        {
+          "label": "new conversation exports through real browser Blob download",
+          "pass": true
+        },
+        {
+          "label": "export closes menu and returns focus to its summary",
+          "pass": true
+        },
+        {
+          "label": "stopped current tool turn returns focus to editable question",
+          "pass": true
+        },
+        {
+          "label": "new current unavailable state keeps editable draft and disabled send",
+          "pass": true
+        },
+        {
+          "label": "unavailable draft survives current close reopen",
+          "pass": true
+        },
+        {
+          "label": "all3 current suggestions fill focus without creating a turn",
+          "pass": true
+        },
+        {
+          "label": "current no-book state returns to actual shelf without generating",
+          "pass": true
+        },
+        {
+          "label": "current anonymous entry opens one real auth modal without stacking",
+          "pass": true
+        }
+      ],
+      "afterLoadRetry": {
+        "tag": "TEXTAREA",
+        "id": "library-chat-input",
+        "text": ""
+      },
+      "download": {
+        "name": "循页-对话-gutenberg-alice.json",
+        "file": "output/playwright/review-agent-export-390-fixture.json"
+      },
+      "afterStop": {
+        "tag": "TEXTAREA",
+        "id": "library-chat-input",
+        "text": ""
+      }
+    }
+  ],
+  "mutations": [
+    {
+      "kind": "chat-send",
+      "path": "/api/library/books/gutenberg-alice/chat",
+      "payload": {
+        "id": "a208ae03-2a80-4db1-8625-0f4d5454b9e6",
+        "passageId": "01b38ea4c710a84b-p00008",
+        "text": "隔离停止焦点检查",
+        "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e"
+      }
+    },
+    {
+      "kind": "chat-cancel",
+      "path": "/api/library/books/gutenberg-alice/chat/a208ae03-2a80-4db1-8625-0f4d5454b9e6/cancel"
+    },
+    {
+      "kind": "chat-send",
+      "path": "/api/library/books/gutenberg-alice/chat",
+      "payload": {
+        "id": "78d33a8b-69d1-4128-9da9-aaaee2fde374",
+        "passageId": "01b38ea4c710a84b-p00008",
+        "text": "隔离停止焦点检查",
+        "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e"
+      }
+    },
+    {
+      "kind": "chat-cancel",
+      "path": "/api/library/books/gutenberg-alice/chat/78d33a8b-69d1-4128-9da9-aaaee2fde374/cancel"
+    }
+  ],
+  "externalNavigations": [],
+  "blocked": [],
+  "allNonGetIntercepted": true
+}

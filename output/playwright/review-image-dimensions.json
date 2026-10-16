@@ -1,5 +1,53 @@
 [
   {
+    "file": "review-agent-current-1440-answer.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 267242
+  },
+  {
+    "file": "review-agent-current-1440-running.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 245160
+  },
+  {
+    "file": "review-agent-current-1440-tools-cards.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 247915
+  },
+  {
+    "file": "review-agent-current-390-answer.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 86269
+  },
+  {
+    "file": "review-agent-current-390-running.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 65920
+  },
+  {
+    "file": "review-agent-current-390-tools-cards.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 66565
+  },
+  {
+    "file": "review-agent-layout-1440-native.png",
+    "width": 1440,
+    "height": 1000,
+    "bytes": 241807
+  },
+  {
+    "file": "review-agent-layout-390-native.png",
+    "width": 390,
+    "height": 844,
+    "bytes": 66162
+  },
+  {
     "file": "review-atmosphere-mobile-before.png",
     "width": 390,
     "height": 844,
