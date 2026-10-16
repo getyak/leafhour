@@ -1,7 +1,8 @@
+import {mountReaderCompanion} from './reader-companion.mjs';
 import {mountLibraryChat} from './library-chat.mjs';
 
 export function readerInteractionBlocked(document,target){
-  return !!document.querySelector('dialog[open]:not(.library-chat-dialog),[popover]:popover-open')||!!target?.closest?.('dialog,.library-chat-launcher');
+  return !!document.querySelector('dialog[open]:not(.library-chat-dialog),[popover]:popover-open')||!!target?.closest?.('dialog,.library-chat-launcher,.squirrel-companion-bubble,.squirrel-companion-pill');
 }
 
 export function readerConversationContext(reader,bookId){
@@ -12,15 +13,16 @@ export function readerConversationContext(reader,bookId){
   return {book,passages,passageId:passages.has(selected)?selected:passages.has(anchor)?anchor:null};
 }
 
-export function mountReaderConversation({bookId,session,getReader,root,request=fetch,navigate=url=>location.assign(url),replace=url=>location.replace(url),mountChat=mountLibraryChat}){
+export function mountReaderConversation({bookId,session,getReader,root,request=fetch,navigate=url=>location.assign(url),replace=url=>location.replace(url),mountChat=mountLibraryChat,mountCompanion=mountReaderCompanion}){
   if(!bookId||!root)return null;
-  let chat;
+  let chat,companion;
   const context=()=>readerConversationContext(getReader(),bookId);
-  const api=async(url,data)=>{
-    const response=await request(url,{...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json','X-Reader-Owner':session?.user?.id||'guest'}});
+  const api=async(url,data,options={})=>{
+    const response=await request(url,{...options,...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json','X-Reader-Owner':session?.user?.id||'guest'}});
     if(response.headers.get('X-Reader-Session-Changed')==='1'){
-      chat?.reset();replace('/library');throw Object.assign(Error('账户已切换，请重新进入书房。'),{status:409});
+      companion?.dispose();chat?.reset();replace('/library');throw Object.assign(Error('账户已切换，请重新进入书房。'),{status:409});
     }
+    if(url.endsWith('/companion/messages')&&response.ok){const identity=await request('/api/auth/session',{cache:'no-store'});const current=await identity.json();if(!identity.ok||(current.user?.id||'guest')!==(session?.user?.id||'guest')){companion?.dispose();chat?.reset();replace('/library');throw Object.assign(Error('账户已切换，请重新进入书房。'),{status:409});}}
     const value=await response.json();
     if(!response.ok)throw Object.assign(Error(value.error||'对话暂时无法载入，请重试。'),{status:response.status});
     return value;
@@ -35,6 +37,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
       const reader=getReader();reader.dismissTools?.();reader.goToPassage(passageId);return true;
     }
   });
+  if(typeof chat.surface==='function')companion=mountCompanion({bookId,getOwner:()=>session?.user?.id||null,getReader,api,chat,openAuth:()=>{const query=new URLSearchParams({book:bookId}),passage=context()?.passageId;if(passage)query.set('passage',passage);navigate('/library?login=1&next='+encodeURIComponent('/read?'+query));}});
   document.addEventListener('reader:ready',()=>chat.update());
   if(context())chat.update();
   return chat;

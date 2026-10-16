@@ -54,3 +54,9 @@ test('session-change responses clear private chat before returning to the librar
 test('HTTP errors preserve status for idempotent recovery and do not fabricate replies',async()=>{
   const f=mount({request:async()=>new Response(JSON.stringify({error:'稍后继续'}),{status:503})});await assert.rejects(f.hooks.api('/api/library/books/book-one/chat'),error=>error.status===503&&error.message==='稍后继续');assert.equal(f.counts().resets,0);
 });
+
+test('a companion result rechecks the current cookie identity before exposing old-account text',async()=>{
+  const f=mount({request:async url=>new Response(JSON.stringify(url==='/api/auth/session'?{user:{id:'different-reader'}}:{kind:'companion',answer:{summary:'原账号的私有消息'}}),{status:200})});
+  await assert.rejects(f.hooks.api('/api/library/books/book-one/companion/messages',{id:'one'}),e=>e.status===409);
+  assert.equal(f.counts().resets,1);assert.deepEqual(f.replacements,['/library']);
+});

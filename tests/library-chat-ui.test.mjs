@@ -35,7 +35,21 @@ function setup(t,{handler,navigate}={}){
 }
 function type(el,text){el.value=text;el.dispatchEvent(new Event('input'));}
 
+test('companion opens as an AI-only message, locates inside IM and preserves the existing draft',async t=>{
+  const s=setup(t);s.chat.open();await flush();type(s.input(),'尚未发出的原话');s.chat.close();
+  s.setTurns([{id:'squirrel-one',kind:'companion',origin:'ai',text:null,status:'completed',passageId:'p2',answer:{summary:'这里让我想到前面读到的一段。',sourceRefs:[]}}]);
+  s.chat.open({messageId:'squirrel-one',passageId:'p2'});await flush();
+  assert.equal(s.input().value,'尚未发出的原话');assert.equal(s.find('library-chat-question'),undefined);assert.equal(s.find('library-chat-attribution').textContent,'AI · 陪读');
+  assert.equal(s.find('library-chat-turn').getAttribute('data-message-id'),'squirrel-one');assert.equal(s.chat.surface().launcher,s.find('library-chat-launcher'));
+});
+
 test('opening is nonmodal and collapse preserves the draft and returns focus',async t=>{const s=setup(t);s.chat.open();await flush();assert.equal(s.root.mode,'nonmodal');assert.notEqual(s.doc.activeElement,s.input());type(s.input(),'留下的问题');s.chat.close();assert.equal(s.doc.activeElement,s.external);s.setPassage('p2');s.chat.open();await flush();assert.equal(s.input().value,'留下的问题');assert.ok(s.calls.at(-1).url.includes('p1'));assert.equal(s.calls.filter(c=>c.payload).length,0);});
+test('keyboard viewport shrink reveals the active composer by scrolling only its frame',async t=>{
+ const s=setup(t);s.chat.open();await flush();s.input().focus();const frame=s.find('library-chat-frame');frame.scrollTop=0;
+ frame.getBoundingClientRect=()=>({bottom:384});s.find('library-chat-composer').getBoundingClientRect=()=>({bottom:510});
+ s.viewport.height=400;s.viewport.dispatchEvent(new Event('resize'));assert.equal(frame.scrollTop,126);
+ s.external.focus();s.viewport.dispatchEvent(new Event('resize'));assert.equal(frame.scrollTop,126,'resizing must not move an unfocused conversation');
+});
 test('typing preserves messages, source content, and book options DOM',async t=>{const s=setup(t);s.chat.open();await flush();const log=s.find('library-chat-messages'),chooser=s.find('library-chat-book-choice'),context=s.find('library-chat-context-body');const counts=[log.replacements,chooser.replacements,context.replacements];type(s.input(),'新问题');assert.deepEqual([log.replacements,chooser.replacements,context.replacements],counts);});
 test('composition Enter never sends; collapsed running request resumes without a duplicate send',async t=>{const s=setup(t);s.chat.open();await flush();type(s.input(),'我的问题');s.input().dispatchEvent(new Event('compositionstart'));const enter=new Event('keydown',{cancelable:true});Object.assign(enter,{key:'Enter'});s.input().dispatchEvent(enter);await flush();assert.equal(s.calls.filter(c=>c.payload).length,0);s.input().dispatchEvent(new Event('compositionend'));s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();const sent=s.calls.find(c=>c.payload);assert.ok(sent.payload.id);s.chat.close();s.complete();s.chat.open();await flush();assert.equal(s.calls.filter(c=>c.payload).length,1);assert.equal(s.input().disabled,false);});
 test('account change clears visible private text; current passage refreshes only without a draft',async t=>{const s=setup(t);s.chat.open();await flush();s.chat.close();s.setPassage('p2');s.chat.open();await flush();assert.ok(s.calls.at(-1).url.includes('p2'));type(s.input(),'私人草稿');s.setOwner('bob');s.chat.update();await flush();assert.equal(s.input().value,'');});

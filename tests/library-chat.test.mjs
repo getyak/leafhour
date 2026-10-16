@@ -11,6 +11,14 @@ function durableSetup(){
   const state=create();state.resolveLoad(state.beginLoad(),content);return {state,create,drafts,requests};
 }
 
+test('AI companion messages never become pending user questions or overwrite drafts',()=>{
+  const {state}=setup();state.setDraft('我还没写完的想法');
+  const ai={id:'squirrel',kind:'companion',origin:'ai',text:null,passageId:'p1',status:'running',answer:null};
+  state.resolveLoad(state.beginLoad(),{...content,turns:[ai]});assert.equal(state.view().pending,null);assert.equal(state.view().draft,'我还没写完的想法');
+  state.resolveLoad(state.beginLoad(),{...content,turns:[{...ai,status:'completed',answer:{summary:'前面那段又有了新意思。'}}]});
+  assert.equal(state.view().draft,'我还没写完的想法');assert.equal(state.view().canSend,true);
+});
+
 test('switching books restores only each book draft and discards a late view',()=>{const {state}=setup();state.setDraft('第一本的问题');const old=state.beginLoad();state.setContext('alice','two');assert.equal(state.view().draft,'');assert.equal(state.resolveLoad(old,content),false);state.setDraft('第二本的问题');state.setContext('alice','one');assert.equal(state.view().draft,'第一本的问题');assert.deepEqual(state.view().turns,[]);});
 
 test('switching owners clears private text and rejects a previous owner answer',()=>{const {state}=setup();state.setDraft('这个词是什么意思？');const request=state.beginSend();state.setContext('bob','one');assert.equal(state.view().draft,'');assert.deepEqual(state.view().turns,[]);assert.equal(state.resolveSend(request.ticket,turn(request.payload.id)),false);assert.deepEqual(state.view().turns,[]);state.setContext('alice','one');assert.equal(state.view().draft,'这个词是什么意思？');});
