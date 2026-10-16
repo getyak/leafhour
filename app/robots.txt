@@ -1,0 +1,8 @@
+# Public product pages may be discovered by search and AI search crawlers.
+# Authentication, not this file, protects books and personal records.
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /exports/
+
+Sitemap: https://leafhour.com/sitemap.xml

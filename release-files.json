@@ -327,5 +327,11 @@
   "app/brand-assets/leafhour-mark.svg",
   "app/brand-assets/leafhour-social.svg",
   "app/brand-assets/leafhour-social.png",
-  ".github/workflows/production.yml"
+  ".github/workflows/production.yml",
+  "app/discovery.css",
+  "app/robots.txt",
+  "app/sitemap.xml",
+  "app/en.html",
+  "app/en/mcp.html",
+  "tests/search-discovery.test.mjs"
 ]
