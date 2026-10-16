@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-Hans" data-theme="paper">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>循页 · 阅读</title><link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><link rel="stylesheet" href="/reading-flow.css"><link rel="stylesheet" href="/library-chat.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script><link rel="stylesheet" href="/reading-arrival.css"><script type="module" src="/reading-arrival.mjs"></script><link rel="stylesheet" href="/reader-atmosphere.css"><link rel="stylesheet" href="/reader-navigation.css"><link rel="stylesheet" href="/parallel-reading.css"><link rel="stylesheet" href="/reader-audio.css"><link rel="stylesheet" href="/reader-settings.css"><link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>循页 · 阅读</title><link rel="icon" href="/brand-assets/page-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><link rel="stylesheet" href="/reading-flow.css"><link rel="stylesheet" href="/library-chat.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script><link rel="stylesheet" href="/reading-arrival.css"><script type="module" src="/reading-arrival.mjs"></script><link rel="stylesheet" href="/reader-atmosphere.css"><link rel="stylesheet" href="/reader-navigation.css"><link rel="stylesheet" href="/parallel-reading.css"><link rel="stylesheet" href="/reader-pagination.css"><link rel="stylesheet" href="/reader-audio.css"><link rel="stylesheet" href="/reader-settings.css"><link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script></head>
 <body class="is-focused" data-reading-tools="closed">
   <div class="atmosphere-backdrop" aria-hidden="true"><div class="atmosphere-elements"></div></div>
   <script type="module" src="/reader-atmosphere.js"></script>
@@ -19,7 +19,8 @@
     <div id="loading" class="loading-state reading-loading" data-reading-arrival="reader"><p role="status">正在展开书页…</p></div>
     <div id="load-error" class="load-error" hidden><p>暂时无法打开这本书。</p><button id="retry-load">重新打开</button></div>
     <header class="chapter-heading" id="chapter-heading" hidden><p id="chapter-number" class="chapter-number"></p><h1 id="chapter-title"></h1><p id="chapter-original-title" class="original-title"></p><button id="listen-chapter" class="listen-chapter" aria-haspopup="dialog"><span aria-hidden="true">◖</span> 听这一章 <span aria-hidden="true">↗</span></button></header>
-    <article id="chapter-text" aria-label="书籍正文"></article>
+    <div id="reading-pages" class="reading-pages"><article id="chapter-text" aria-label="书籍正文"></article><span id="page-end" class="page-end" aria-hidden="true" hidden></span></div>
+    <nav id="page-turner" class="page-turner" aria-label="阅读翻页" hidden><button id="page-previous" type="button" data-page-turn="previous" aria-label="上一页">← 上一页</button><output id="page-position" class="page-position" aria-live="polite"></output><button id="page-next" type="button" data-page-turn="next" aria-label="下一页">下一页 →</button></nav>
     <footer id="chapter-footer" class="chapter-footer" hidden><button id="previous-chapter">上一章</button><span id="chapter-fraction"></span><button id="next-chapter">下一章</button></footer>
     <div id="chapter-reading-actions" class="chapter-reading-actions" hidden><button id="mark-chapter-read" type="button">这一章读完了</button><p id="chapter-read-state"></p></div>
   </main>
@@ -81,6 +82,7 @@
       <div id="settings-reading" class="settings-panel" role="tabpanel" aria-labelledby="settings-tab-reading">
         <section class="settings-section" aria-labelledby="language-heading"><h3 id="language-heading">阅读内容</h3>
           <div class="setting-row"><label for="view-mode">阅读方式</label><select id="view-mode"><option value="en" selected>英文原文</option><option value="zh">中文译文</option><option value="parallel">中英对照</option></select></div>
+          <div id="page-layout-setting" class="setting-row"><label for="page-layout">书页布局</label><select id="page-layout" aria-describedby="page-layout-hint"><option value="scroll">滚动阅读</option><option value="spread">翻页阅读</option></select></div><p id="page-layout-hint" class="setting-hint">翻页阅读在宽窗口显示双页，窄窗口显示单页。用 ← → 或页底按钮翻页。</p>
           <div id="translation-settings" class="setting-row" hidden><label for="translation-variant">中文译法</label><select id="translation-variant"><option value="interpretive">意译</option><option value="literal">直译</option></select></div>
         </section>
         <section id="parallel-settings" class="settings-section" aria-labelledby="parallel-heading" hidden><h3 id="parallel-heading">对照方式</h3>
@@ -164,6 +166,6 @@
   <aside id="progress-notice" class="reading-progress-notice" role="status" hidden><p>书房里的阅读位置已就绪。可以回去，也可以继续读这里。</p><div><button id="progress-use-remote">回到书房的位置</button><button id="progress-keep-here">继续读这里</button></div></aside>
   <dialog id="reader-conversation" class="library-chat-dialog" aria-label="阅读对话"></dialog>
   <div id="announcement" class="visually-hidden" aria-live="polite"></div>
-  <p class="visually-hidden" id="reading-instructions">点击段落或聚焦段落后按回车，可以查看原文、注解和个人记录。Esc关闭浮层。F切换专注阅读。</p>
+  <p class="visually-hidden" id="reading-instructions">点击段落或聚焦段落后按回车，可以查看原文、注解和个人记录。翻页阅读时，用 ← → 或页底按钮翻页。Esc关闭浮层。F切换专注阅读。</p>
 <script type="module" src="/reader-translation.js"></script>
 </body></html>

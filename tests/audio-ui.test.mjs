@@ -11,6 +11,18 @@ test('browsing into a neighboring chapter keeps audio active and releases automa
  f.playback.setFollowing(true);f.context.autoScrollUntil=Date.now()+10000;listeners.get('reader:chapter')();assert.equal(f.playback.following,true);
 });
 
+test('turning a page suspends audio following while playback stays active',()=>{
+ const f=fixture(),listeners=new Map();f.context.document={addEventListener(name,handler){listeners.set(name,handler);}};f.context.window={addEventListener(){}};f.context.autoScrollUntil=0;
+ vm.runInContext(source.slice(source.indexOf("document.addEventListener('reader:selection'"),source.indexOf("window.addEventListener('pagehide'")),f.context);
+ assert.equal(typeof listeners.get('reader:page'),'function');const active=f.context.active;listeners.get('reader:page')();
+ assert.equal(f.context.active,active);assert.equal(f.playback.following,false);
+});
+
+test('audio follows an offscreen horizontal page even when its vertical bounds look visible',()=>{
+ let navigated=null;const context=vm.createContext({active:{clips:[{passageId:'p20'}]},index:0,prefs:{follow:true},playback:{following:true},autoScrollUntil:0,innerHeight:800,clearMark(){},document:{body:{dataset:{paginated:'true'}},getElementById:()=>({classList:{add(){}},getBoundingClientRect:()=>({top:150,bottom:250})})},reader:()=>({isPassageVisible:()=>false,goToPassage:id=>{navigated=id;}})});
+ vm.runInContext(source.slice(source.indexOf('function mark('),source.indexOf('\n',source.indexOf('function mark('))),context);context.mark();assert.equal(navigated,'p20');
+});
+
 test('seek feedback is disabled until media duration is known and describes the current position',()=>{
  const f=fixture();f.context.updateClock();assert.equal(f.elements.get('audio-seek').disabled,true);
  f.media.duration=120;f.media.currentTime=30;f.context.updateClock();

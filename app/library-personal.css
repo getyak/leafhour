@@ -142,7 +142,7 @@
   .book-action-trigger,.book-drag-handle { opacity: 1; pointer-events: auto; width: 40px; height: 40px; }
   .book-action-close { min-width: 44px; min-height: 44px; }
 }
-@media (max-width: 760px) {
+@media (max-width: 980px) {
   .library-page .site-header { padding: 24px 18px 18px; min-height: min(720px,100dvh); }
   .library-page .library-footer { grid-template-columns: 1fr 1fr; margin-top: 25px; padding-top: 16px; }
   .library-page[data-sidebar-collapsed=true] .library-footer { grid-template-columns: 1fr 1fr; }

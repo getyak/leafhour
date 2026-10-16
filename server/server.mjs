@@ -24,6 +24,7 @@ assets.set('/reader-immersion.mjs',['app/reader-immersion.mjs','text/javascript'
 assets.set('/reader-settings.mjs',['app/reader-settings.mjs','text/javascript']);
 assets.set('/reader-settings.css',['app/reader-settings.css','text/css']);
 assets.set('/reader-navigation.css',['app/reader-navigation.css','text/css']);
+for(const file of ['reader-pagination.mjs','reader-pagination.css'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/parallel-reading.mjs',['app/parallel-reading.mjs','text/javascript']);
 assets.set('/parallel-reading.css',['app/parallel-reading.css','text/css']);
 assets.set('/grant-result.mjs',['app/grant-result.mjs','text/javascript']);
