@@ -11,7 +11,11 @@
     "sourceLanguage": "en",
     "topics": [
       "literature"
-    ]
+    ],
+    "scopeNote": "本版保留英文文字及目录；插图请查看原文出处。",
+    "originalLanguage": "en",
+    "translation": null,
+    "edition": "Project Gutenberg 11 · plain-text reading edition"
   },
   {
     "id": "gutenberg-meditations",
@@ -25,7 +29,11 @@
     "sourceLanguage": "en",
     "topics": [
       "philosophy"
-    ]
+    ],
+    "scopeNote": "本版为 Meric Casaubon 英译的古登堡整理阅读本；底本自身删去译者注、括注及备选译法，并非 1634 年原刊影印。",
+    "originalLanguage": "grc",
+    "translation": "Meric Casaubon",
+    "edition": "Project Gutenberg 2680 · edited Casaubon reading text; not a facsimile of 1634"
   },
   {
     "id": "gutenberg-walden",
@@ -40,7 +48,11 @@
     "topics": [
       "philosophy",
       "literature"
-    ]
+    ],
+    "scopeNote": "本版包含《瓦尔登湖》18 章及《论公民的不服从义务》，保留底本文字。",
+    "originalLanguage": "en",
+    "translation": null,
+    "edition": "Project Gutenberg 205 · Walden and Civil Disobedience"
   },
   {
     "id": "gutenberg-flatland",
@@ -61,7 +73,8 @@
     ],
     "bodyChapters": 22,
     "opening": "I call our world Flatland, not because we call it so, b",
-    "ending": "ing of a diseased imagination, or the baseless fabric of a dream."
+    "ending": "ing of a diseased imagination, or the baseless fabric of a dream.",
+    "scopeNote": "本版收录 22 节正文；作者第二版序言、献辞及插图见原文出处。"
   },
   {
     "id": "gutenberg-frankenstein",
@@ -82,7 +95,8 @@
     ],
     "bodyChapters": 28,
     "opening": "To Mrs. Saville, England.",
-    "ending": "s soon borne away by the waves and lost in darkness and distance."
+    "ending": "s soon borne away by the waves and lost in darkness and distance.",
+    "scopeNote": "本版收录 4 封开篇书信、24 章小说及末尾续信；插图未纳入。"
   },
   {
     "id": "gutenberg-erewhon",
@@ -103,7 +117,8 @@
     ],
     "bodyChapters": 29,
     "opening": "If the reader will excuse me, I will say nothing of my ",
-    "ending": "whonian Professor’s theory, but from the interest of the subject."
+    "ending": "whonian Professor’s theory, but from the interest of the subject.",
+    "scopeNote": "本版收录 29 章正文及源版尾注；作者三篇序言见原文出处。"
   },
   {
     "id": "gutenberg-time-machine",
@@ -124,7 +139,8 @@
     ],
     "bodyChapters": 17,
     "opening": "The Time Traveller (for so it will be convenient to spe",
-    "ending": "itude and a mutual tenderness still lived on in the heart of man."
+    "ending": "itude and a mutual tenderness still lived on in the heart of man.",
+    "scopeNote": "本版收录 16 章及尾声；保留正文文字。"
   },
   {
     "id": "gutenberg-au-room-of-ones-own",
@@ -145,7 +161,9 @@
     ],
     "bodyChapters": 6,
     "opening": "But, you may say, we asked you to speak about women and",
-    "ending": "d that so to work, even in poverty and obscurity, is worth while."
+    "ending": "d that so to work, even in poverty and obscurity, is worth while.",
+    "scopeNote": "本版收录六章及作者开篇说明；采用 Col Choat 制作的电子阅读本，1929 为作品首版年份，非指定纸本版次。",
+    "credits": "Electronic text produced by Col Choat; work first published in 1929; no specific print edition asserted"
   },
   {
     "id": "gutenberg-on-liberty",
@@ -166,7 +184,8 @@
     ],
     "bodyChapters": 5,
     "opening": "The subject of this Essay is not the so-called Liberty ",
-    "ending": "the machine might work more smoothly, it has preferred to banish."
+    "ending": "the machine might work more smoothly, it has preferred to banish.",
+    "scopeNote": "本版收录五章正文及章内注释；书前导论和献辞见原文出处。"
   },
   {
     "id": "ccel-ivan-ilych",
@@ -187,7 +206,8 @@
     ],
     "bodyChapters": 12,
     "opening": "During an interval in the Melvinski trial in the large ",
-    "ending": " breath, stopped in the midst of a sigh, stretched out, and died."
+    "ending": " breath, stopped in the midst of a sigh, stretched out, and died.",
+    "scopeNote": "本版收录 Louise 与 Aylmer Maude 英译的全部十二章；未混入网站简介及自动索引。"
   },
   {
     "id": "gutenberg-awakening",
@@ -208,7 +228,8 @@
     ],
     "bodyChapters": 51,
     "opening": "A green and yellow parrot, which hung in a cage outside",
-    "ending": "Salve! ye dumb hearts. Let us be still and wait by the roadside."
+    "ending": "Salve! ye dumb hearts. Let us be still and wait by the roadside.",
+    "scopeNote": "本版收录《觉醒》39 节及八篇短篇，短篇内部小节单列导航。"
   },
   {
     "id": "gutenberg-home-and-world",
@@ -229,7 +250,8 @@
     ],
     "bodyChapters": 12,
     "opening": "Bimala's Story",
-    "ending": "\"He has a bullet through the heart. He is done for.\""
+    "ending": "\"He has a bullet through the heart. He is done for.\"",
+    "scopeNote": "本版收录十二章及底本中的说明、歌曲；为 Surendranath Tagore 英译。"
   },
   {
     "id": "gutenberg-brazilian-tales",
@@ -249,7 +271,8 @@
     ],
     "bodyChapters": 6,
     "opening": "The noted Brazilian critic, José Verissimo, in a short ",
-    "ending": " most beautiful homage that could be rendered to my poor verses.\""
+    "ending": " most beautiful homage that could be rendered to my poor verses.\"",
+    "scopeNote": "本版收录六篇小说及 Isaac Goldberg 的导言，导言与正文分开标注。"
   },
   {
     "id": "gutenberg-book-of-tea",
@@ -270,7 +293,8 @@
     ],
     "bodyChapters": 7,
     "opening": "Tea began as a medicine and grew into a beverage. In Ch",
-    "ending": "With a smile upon his face Rikiu passed forth into the unknown."
+    "ending": "With a smile upon his face Rikiu passed forth into the unknown.",
+    "scopeNote": "本版收录英文原作七章；插图未纳入。"
   },
   {
     "id": "gutenberg-prophet",
@@ -291,7 +315,8 @@
     ],
     "bodyChapters": 28,
     "opening": "Almustafa, the chosen and the beloved, who was a dawn u",
-    "ending": "a moment of rest upon the wind, and another woman shall bear me.”"
+    "ending": "a moment of rest upon the wind, and another woman shall bear me.”",
+    "scopeNote": "本版收录英文原作 28 节；作者插图请查看原文出处。"
   },
   {
     "id": "gutenberg-tao-te-ching",
@@ -311,7 +336,8 @@
     ],
     "bodyChapters": 81,
     "opening": "Ch. 1. 1. The Tao that can be trodden is not the enduri",
-    "ending": "ot; with all the doing in the way of the sage he does not strive."
+    "ending": "ot; with all the doing in the way of the sage he does not strive.",
+    "scopeNote": "本版收录 James Legge 英译 81 章，并保留原译的分节编号；非中文原典。"
   },
   {
     "id": "gutenberg-dhammapada",
@@ -331,7 +357,8 @@
     ],
     "bodyChapters": 26,
     "opening": "1. All that we are is the result of what we have though",
-    "ending": "fect in knowledge, a sage, and whose perfections are all perfect."
+    "ending": "fect in knowledge, a sage, and whose perfections are all perfect.",
+    "scopeNote": "本版收录 Müller 英译的全部 423 条偈颂；电子底本本身未收录原版导论、注释和索引。"
   },
   {
     "id": "gutenberg-bhagavad-gita",
@@ -352,7 +379,8 @@
     ],
     "bodyChapters": 18,
     "opening": "Dhritirashtra:",
-    "ending": " I omit the concluding shlokas, as of very doubtful authenticity."
+    "ending": " I omit the concluding shlokas, as of very doubtful authenticity.",
+    "scopeNote": "本版收录 Edwin Arnold 的十八章英诗译及尾注，译者前言见出处；译者明确省略了部分诗节，并非梵文全本直译。"
   },
   {
     "id": "gutenberg-rubaiyat",
@@ -373,7 +401,8 @@
     ],
     "bodyChapters": 2,
     "opening": "I.",
-    "ending": "agre, bent, and wan\nWith Age and Fast, is fainting from the Sky!\""
+    "ending": "agre, bent, and wan\nWith Age and Fast, is fainting from the Sky!\"",
+    "scopeNote": "本版分开收录 FitzGerald 英语译写的第一版和第五版及尾注；其导言见出处，非波斯语逐字直译。"
   },
   {
     "id": "gutenberg-notes-underground",
@@ -394,7 +423,8 @@
     ],
     "bodyChapters": 21,
     "opening": "I am a sick man.... I am a spiteful man. I am an unattr",
-    "ending": "om going on with them, but it seems to us that we may stop here.]"
+    "ending": "om going on with them, but it seems to us that we may stop here.]",
+    "scopeNote": "本版收录两部正文；书前说明见原文出处。"
   },
   {
     "id": "gutenberg-young-werther",
@@ -414,7 +444,8 @@
     ],
     "bodyChapters": 2,
     "opening": "MAY 4.",
-    "ending": "paired of. The body was carried by labourers. No priest attended."
+    "ending": "paired of. The body was carried by labourers. No priest attended.",
+    "scopeNote": "本版收录两卷正文；书前的编者序言见原文出处。"
   },
   {
     "id": "gutenberg-pride-prejudice",
@@ -434,7 +465,8 @@
     ],
     "bodyChapters": 61,
     "opening": "IT is a truth universally acknowledged, that a single m",
-    "ending": "bringing her into Derbyshire, had been the means of uniting them."
+    "ending": "bringing her into Derbyshire, had been the means of uniting them.",
+    "scopeNote": "本版收录小说 61 章；前言、出版页与插图见原文出处。"
   },
   {
     "id": "gutenberg-don-quixote",
@@ -454,7 +486,8 @@
     ],
     "bodyChapters": 126,
     "opening": "In a village of La Mancha, the name of which I have no ",
-    "ending": " now tottering, and doubtless doomed to fall for ever. Farewell.”"
+    "ending": " now tottering, and doubtless doomed to fall for ever. Farewell.”",
+    "scopeNote": "本版收录上下部全部 126 章及下部献辞、作者序；上部作者序、献辞、题诗和译者导言见原文出处。"
   },
   {
     "id": "gutenberg-candide",
@@ -475,7 +508,8 @@
     ],
     "bodyChapters": 30,
     "opening": "HOW CANDIDE WAS BROUGHT UP IN A MAGNIFICENT CASTLE, AND",
-    "ending": "[35] P. 149. François Leopold Ragotsky (1676-1735)."
+    "ending": "[35] P. 149. François Leopold Ragotsky (1676-1735).",
+    "scopeNote": "本版收录 30 章及尾注，采用 1918 年 Modern Library 未署名英译；Philip Littell 导言见出处。"
   },
   {
     "id": "gutenberg-arabian-nights",
@@ -483,19 +517,20 @@
     "format": "structured",
     "title": "一千零一夜选编",
     "originalTitle": "The Arabian Nights Entertainments",
-    "author": "Traditional stories · selected and edited by Andrew Lang · 英译 Andrew Lang · 英语选编",
+    "author": "Traditional stories · 选编 Andrew Lang · 英译者未逐一署名",
     "sourceUrl": "https://www.gutenberg.org/ebooks/128",
     "description": "在层层嵌套的故事里，遇见欲望、智慧与奇迹。",
     "cover": "alice",
     "sourceLanguage": "en",
     "originalLanguage": "ar",
-    "translation": "Andrew Lang · 英语选编",
+    "translation": "Unnamed Fairy Books contributors, via Antoine Galland’s French; selected and edited by Andrew Lang",
     "topics": [
       "literature"
     ],
     "bodyChapters": 34,
     "opening": "The stories in the Fairy Books have generally been such",
-    "ending": "And in this manner they came back to their father's palace."
+    "ending": "And in this manner they came back to their father's palace.",
+    "scopeNote": "本版为 Andrew Lang 选编集，英译由未逐一署名的 Fairy Books 撰稿者经 Galland 法文版转译，非阿拉伯语全集。"
   },
   {
     "id": "gutenberg-underdogs",
@@ -516,7 +551,8 @@
     ],
     "bodyChapters": 42,
     "opening": "\"That's no animal, I tell you! Listen to the dog barkin",
-    "ending": "d in an eternal glance, continues to point the barrel of his gun."
+    "ending": "d in an eternal glance, continues to point the barrel of his gun.",
+    "scopeNote": "本版收录 Munguía 英译的全部小说正文；未纳入 Carleton Beals 导言与 Orozco 插图。"
   },
   {
     "id": "gutenberg-equiano",
@@ -537,7 +573,8 @@
     ],
     "bodyChapters": 12,
     "opening": "The author's account of his country, and their manners ",
-    "ending": "to human nature, happy in themselves, and benefactors to mankind!"
+    "ending": "to human nature, happy in themselves, and benefactors to mankind!",
+    "scopeNote": "本版收录上下卷十二章及正文中的诗文、注释；献辞和出版页见原文出处。"
   },
   {
     "id": "gutenberg-african-farm",
@@ -558,7 +595,8 @@
     ],
     "bodyChapters": 27,
     "opening": "The Watch.",
-    "ending": "But the chickens were wiser."
+    "ending": "But the chickens were wiser.",
+    "scopeNote": "本版收录上下部正文；Olive Schreiner 的序言及词汇表见原文出处。"
   },
   {
     "id": "gutenberg-douglass",
@@ -579,7 +617,8 @@
     ],
     "bodyChapters": 11,
     "opening": "I was born in Tuckahoe, near Hillsborough, and about tw",
-    "ending": "THE END"
+    "ending": "THE END",
+    "scopeNote": "本版收录自传十一章与作者附记；Garrison 序言和 Phillips 书信见原文出处。"
   },
   {
     "id": "gutenberg-seacole",
@@ -600,6 +639,7 @@
     ],
     "bodyChapters": 20,
     "opening": "MY BIRTH AND PARENTAGE—EARLY TASTES AND TRAVELS—MARRIAG",
-    "ending": "THE END."
+    "ending": "THE END.",
+    "scopeNote": "本版收录十九章和结语；书前引言及致读者见原文出处。"
   }
 ]

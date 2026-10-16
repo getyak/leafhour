@@ -1,0 +1,1603 @@
+{
+  "gutenberg-alice": {
+    "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+    "passages": {
+      "01b38ea4c710a84b-p00041": {
+        "sha256": "fb6d87d83f0d637680cabfa56cb20496c11afcf16d258742016f20cc80ecc642",
+        "lineBreaks": [
+          26,
+          37,
+          54
+        ]
+      },
+      "01b38ea4c710a84b-p00099": {
+        "sha256": "83268edda41ffaf5d3a01fe9efd1ef9aca105b0ae2e73eb7c33be027c4dbce13",
+        "lineBreaks": [
+          15,
+          30,
+          41,
+          48,
+          56,
+          76,
+          90,
+          100,
+          113,
+          126,
+          146,
+          158,
+          169,
+          181,
+          194,
+          211,
+          219,
+          228,
+          241,
+          252,
+          261,
+          280,
+          285,
+          293,
+          303,
+          312,
+          320,
+          324,
+          333,
+          351,
+          363,
+          373,
+          378,
+          386,
+          396,
+          402,
+          419,
+          425,
+          432,
+          436,
+          444,
+          448,
+          451
+        ]
+      },
+      "01b38ea4c710a84b-p00272": {
+        "sha256": "5db9fa774d7e14f3b87dbd0780c5612efd7e9420109dad65c50454c98fe7795c",
+        "lineBreaks": [
+          34,
+          68,
+          94
+        ]
+      },
+      "01b38ea4c710a84b-p00273": {
+        "sha256": "39b59ccf191028a040313aae34598de9803dc3906c9652ba0cc1e93b224d26d7",
+        "lineBreaks": [
+          7
+        ]
+      },
+      "01b38ea4c710a84b-p00276": {
+        "sha256": "4d3f8a012bfe7fd03179dca6dd5526563cf315dcd5bdbe6f15644ed4dce0a40c",
+        "lineBreaks": [
+          28,
+          60,
+          88
+        ]
+      },
+      "01b38ea4c710a84b-p00366": {
+        "sha256": "f84c45c4f945b0c3ab7adcdb2372a761d0c7947f83841c5ed571a51caac5104f",
+        "lineBreaks": [
+          30
+        ]
+      },
+      "01b38ea4c710a84b-p00370": {
+        "sha256": "30bd7d8dadbfe30d0ef617f722644a7b3c198dc610ed9fae113f9aaa1b048744",
+        "lineBreaks": [
+          28,
+          56
+        ]
+      },
+      "01b38ea4c710a84b-p00669": {
+        "sha256": "f3cff7d207bc79d57c9baf6c7c17c058c1ed128cacea63e639d7ea85be95b2b7",
+        "lineBreaks": [
+          28
+        ]
+      },
+      "01b38ea4c710a84b-p00682": {
+        "sha256": "5e2774700051f95683b9881e4b21ab7e7e31395814675ee613b9e73d03ffb906",
+        "lineBreaks": [
+          42,
+          67,
+          110
+        ]
+      }
+    },
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/11/pg11-images.html",
+    "layoutSourceSha256": "7df9c19e9fccac5b3ae9b1f837b247db1c1da93845dfb9e1903dce85013c43d3",
+    "notices": "The Project Gutenberg eBook of Alice's Adventures in Wonderland\n    \nThis eBook is for the use of anyone anywhere in the United States and\nmost other parts of the world at no cost and with almost no restrictions\nwhatsoever. You may copy it, give it away or re-use it under the terms\nof the Project Gutenberg License included with this eBook or online\nat www.gutenberg.org. If you are not located in the United States,\nyou will have to check the laws of the country where you are located\nbefore using this eBook.\n\nTitle: Alice's Adventures in Wonderland\n\nAuthor: Lewis Carroll\n\n\n        \nRelease date: June 27, 2008 [eBook #11]\n                Most recently updated: June 26, 2025\n\nLanguage: English\n\nOther information and formats: www.gutenberg.org/ebooks/11\n\nCredits: Arthur DiBianca and David Widger\n\n\n*** START OF THE PROJECT GUTENBERG EBOOK ALICE'S ADVENTURES IN WONDERLAND ****** END OF THE PROJECT GUTENBERG EBOOK ALICE'S ADVENTURES IN WONDERLAND ***\n\n\n    \n\nUpdated editions will replace the previous one—the old editions will\nbe renamed.\n\nCreating the works from print editions not protected by U.S. copyright\nlaw means that no one owns a United States copyright in these works,\nso the Foundation (and you!) can copy and distribute it in the United\nStates without permission and without paying copyright\nroyalties. Special rules, set forth in the General Terms of Use part\nof this license, apply to copying and distributing Project\nGutenberg™ electronic works to protect the PROJECT GUTENBERG™\nconcept and trademark. Project Gutenberg is a registered trademark,\nand may not be used if you charge for an eBook, except by following\nthe terms of the trademark license, including paying royalties for use\nof the Project Gutenberg trademark. If you do not charge anything for\ncopies of this eBook, complying with the trademark license is very\neasy. You may use this eBook for nearly any purpose such as creation\nof derivative works, reports, performances and research. Project\nGutenberg eBooks may be modified and printed and given away—you may\ndo practically ANYTHING in the United States with eBooks not protected\nby U.S. copyright law. Redistribution is subject to the trademark\nlicense, especially commercial redistribution.\n\n\nSTART: FULL LICENSE\n\nTHE FULL PROJECT GUTENBERG™ LICENSE\n\nPLEASE READ THIS BEFORE YOU DISTRIBUTE OR USE THIS WORK\n\nTo protect the Project Gutenberg™ mission of promoting the free\ndistribution of electronic works, by using or distributing this work\n(or any other work associated in any way with the phrase “Project\nGutenberg”), you agree to comply with all the terms of the Full\nProject Gutenberg License available with this file or online at\nwww.gutenberg.org/license.\n\nSection 1. General Terms of Use and Redistributing Project Gutenberg\nelectronic works\n\n1.A. By reading or using any part of this Project Gutenberg\nelectronic work, you indicate that you have read, understand, agree to\nand accept all the terms of this license and intellectual property\n(trademark/copyright) agreement. If you do not agree to abide by all\nthe terms of this agreement, you must cease using and return or\ndestroy all copies of Project Gutenberg electronic works in your\npossession. If you paid a fee for obtaining a copy of or access to a\nProject Gutenberg electronic work and you do not agree to be bound\nby the terms of this agreement, you may obtain a refund from the person\nor entity to whom you paid the fee as set forth in paragraph 1.E.8.\n\n1.B. “Project Gutenberg” is a registered trademark. It may only be\nused on or associated in any way with an electronic work by people who\nagree to be bound by the terms of this agreement. There are a few\nthings that you can do with most Project Gutenberg electronic works\neven without complying with the full terms of this agreement. See\nparagraph 1.C below. There are a lot of things you can do with Project\nGutenberg electronic works if you follow the terms of this\nagreement and help preserve free future access to Project Gutenberg\nelectronic works. See paragraph 1.E below.\n\n1.C. The Project Gutenberg Literary Archive Foundation (“the\nFoundation” or PGLAF), owns a compilation copyright in the collection\nof Project Gutenberg electronic works. Nearly all the individual\nworks in the collection are in the public domain in the United\nStates. If an individual work is unprotected by copyright law in the\nUnited States and you are located in the United States, we do not\nclaim a right to prevent you from copying, distributing, performing,\ndisplaying or creating derivative works based on the work as long as\nall references to Project Gutenberg are removed. Of course, we hope\nthat you will support the Project Gutenberg mission of promoting\nfree access to electronic works by freely sharing Project Gutenberg\nworks in compliance with the terms of this agreement for keeping the\nProject Gutenberg name associated with the work. You can easily\ncomply with the terms of this agreement by keeping this work in the\nsame format with its attached full Project Gutenberg License when\nyou share it without charge with others.\n\n1.D. The copyright laws of the place where you are located also govern\nwhat you can do with this work. Copyright laws in most countries are\nin a constant state of change. If you are outside the United States,\ncheck the laws of your country in addition to the terms of this\nagreement before downloading, copying, displaying, performing,\ndistributing or creating derivative works based on this work or any\nother Project Gutenberg work. The Foundation makes no\nrepresentations concerning the copyright status of any work in any\ncountry other than the United States.\n\n1.E. Unless you have removed all references to Project Gutenberg:\n\n1.E.1. The following sentence, with active links to, or other\nimmediate access to, the full Project Gutenberg License must appear\nprominently whenever any copy of a Project Gutenberg work (any work\non which the phrase “Project Gutenberg” appears, or with which the\nphrase “Project Gutenberg” is associated) is accessed, displayed,\nperformed, viewed, copied or distributed:\n\n    This eBook is for the use of anyone anywhere in the United States and most\n    other parts of the world at no cost and with almost no restrictions\n    whatsoever. You may copy it, give it away or re-use it under the terms\n    of the Project Gutenberg™ License included with this eBook or online\n    at www.gutenberg.org. If you\n    are not located in the United States, you will have to check the laws\n    of the country where you are located before using this eBook.\n  \n1.E.2. If an individual Project Gutenberg electronic work is\nderived from texts not protected by U.S. copyright law (does not\ncontain a notice indicating that it is posted with permission of the\ncopyright holder), the work can be copied and distributed to anyone in\nthe United States without paying any fees or charges. If you are\nredistributing or providing access to a work with the phrase “Project\nGutenberg” associated with or appearing on the work, you must comply\neither with the requirements of paragraphs 1.E.1 through 1.E.7 or\nobtain permission for the use of the work and the Project Gutenberg\ntrademark as set forth in paragraphs 1.E.8 or 1.E.9.\n\n1.E.3. If an individual Project Gutenberg electronic work is posted\nwith the permission of the copyright holder, your use and distribution\nmust comply with both paragraphs 1.E.1 through 1.E.7 and any\nadditional terms imposed by the copyright holder. Additional terms\nwill be linked to the Project Gutenberg License for all works\nposted with the permission of the copyright holder found at the\nbeginning of this work.\n\n1.E.4. Do not unlink or detach or remove the full Project Gutenberg\nLicense terms from this work, or any files containing a part of this\nwork or any other work associated with Project Gutenberg.\n\n1.E.5. Do not copy, display, perform, distribute or redistribute this\nelectronic work, or any part of this electronic work, without\nprominently displaying the sentence set forth in paragraph 1.E.1 with\nactive links or immediate access to the full terms of the Project\nGutenberg License.\n\n1.E.6. You may convert to and distribute this work in any binary,\ncompressed, marked up, nonproprietary or proprietary form, including\nany word processing or hypertext form. However, if you provide access\nto or distribute copies of a Project Gutenberg work in a format\nother than “Plain Vanilla ASCII” or other format used in the official\nversion posted on the official Project Gutenberg website\n(www.gutenberg.org), you must, at no additional cost, fee or expense\nto the user, provide a copy, a means of exporting a copy, or a means\nof obtaining a copy upon request, of the work in its original “Plain\nVanilla ASCII” or other form. Any alternate format must include the\nfull Project Gutenberg License as specified in paragraph 1.E.1.\n\n1.E.7. Do not charge a fee for access to, viewing, displaying,\nperforming, copying or distributing any Project Gutenberg works\nunless you comply with paragraph 1.E.8 or 1.E.9.\n\n1.E.8. You may charge a reasonable fee for copies of or providing\naccess to or distributing Project Gutenberg electronic works\nprovided that:\n\n    • You pay a royalty fee of 20% of the gross profits you derive from\n        the use of Project Gutenberg works calculated using the method\n        you already use to calculate your applicable taxes. The fee is owed\n        to the owner of the Project Gutenberg trademark, but he has\n        agreed to donate royalties under this paragraph to the Project\n        Gutenberg Literary Archive Foundation. Royalty payments must be paid\n        within 60 days following each date on which you prepare (or are\n        legally required to prepare) your periodic tax returns. Royalty\n        payments should be clearly marked as such and sent to the Project\n        Gutenberg Literary Archive Foundation at the address specified in\n        Section 4, “Information about donations to the Project Gutenberg\n        Literary Archive Foundation.”\n    \n    • You provide a full refund of any money paid by a user who notifies\n        you in writing (or by e-mail) within 30 days of receipt that s/he\n        does not agree to the terms of the full Project Gutenberg™\n        License. You must require such a user to return or destroy all\n        copies of the works possessed in a physical medium and discontinue\n        all use of and all access to other copies of Project Gutenberg™\n        works.\n    \n    • You provide, in accordance with paragraph 1.F.3, a full refund of\n        any money paid for a work or a replacement copy, if a defect in the\n        electronic work is discovered and reported to you within 90 days of\n        receipt of the work.\n    \n    • You comply with all other terms of this agreement for free\n        distribution of Project Gutenberg™ works.\n    \n\n1.E.9. If you wish to charge a fee or distribute a Project\nGutenberg™ electronic work or group of works on different terms than\nare set forth in this agreement, you must obtain permission in writing\nfrom the Project Gutenberg Literary Archive Foundation, the manager of\nthe Project Gutenberg™ trademark. Contact the Foundation as set\nforth in Section 3 below.\n\n1.F.\n\n1.F.1. Project Gutenberg volunteers and employees expend considerable\neffort to identify, do copyright research on, transcribe and proofread\nworks not protected by U.S. copyright law in creating the Project\nGutenberg™ collection. Despite these efforts, Project Gutenberg™\nelectronic works, and the medium on which they may be stored, may\ncontain “Defects,” such as, but not limited to, incomplete, inaccurate\nor corrupt data, transcription errors, a copyright or other\nintellectual property infringement, a defective or damaged disk or\nother medium, a computer virus, or computer codes that damage or\ncannot be read by your equipment.\n\n1.F.2. LIMITED WARRANTY, DISCLAIMER OF DAMAGES - Except for the “Right\nof Replacement or Refund” described in paragraph 1.F.3, the Project\nGutenberg Literary Archive Foundation, the owner of the Project\nGutenberg™ trademark, and any other party distributing a Project\nGutenberg™ electronic work under this agreement, disclaim all\nliability to you for damages, costs and expenses, including legal\nfees. YOU AGREE THAT YOU HAVE NO REMEDIES FOR NEGLIGENCE, STRICT\nLIABILITY, BREACH OF WARRANTY OR BREACH OF CONTRACT EXCEPT THOSE\nPROVIDED IN PARAGRAPH 1.F.3. YOU AGREE THAT THE FOUNDATION, THE\nTRADEMARK OWNER, AND ANY DISTRIBUTOR UNDER THIS AGREEMENT WILL NOT BE\nLIABLE TO YOU FOR ACTUAL, DIRECT, INDIRECT, CONSEQUENTIAL, PUNITIVE OR\nINCIDENTAL DAMAGES EVEN IF YOU GIVE NOTICE OF THE POSSIBILITY OF SUCH\nDAMAGE.\n\n1.F.3. LIMITED RIGHT OF REPLACEMENT OR REFUND - If you discover a\ndefect in this electronic work within 90 days of receiving it, you can\nreceive a refund of the money (if any) you paid for it by sending a\nwritten explanation to the person you received the work from. If you\nreceived the work on a physical medium, you must return the medium\nwith your written explanation. The person or entity that provided you\nwith the defective work may elect to provide a replacement copy in\nlieu of a refund. If you received the work electronically, the person\nor entity providing it to you may choose to give you a second\nopportunity to receive the work electronically in lieu of a refund. If\nthe second copy is also defective, you may demand a refund in writing\nwithout further opportunities to fix the problem.\n\n1.F.4. Except for the limited right of replacement or refund set forth\nin paragraph 1.F.3, this work is provided to you ‘AS-IS’, WITH NO\nOTHER WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT\nLIMITED TO WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY PURPOSE.\n\n1.F.5. Some states do not allow disclaimers of certain implied\nwarranties or the exclusion or limitation of certain types of\ndamages. If any disclaimer or limitation set forth in this agreement\nviolates the law of the state applicable to this agreement, the\nagreement shall be interpreted to make the maximum disclaimer or\nlimitation permitted by the applicable state law. The invalidity or\nunenforceability of any provision of this agreement shall not void the\nremaining provisions.\n\n1.F.6. INDEMNITY - You agree to indemnify and hold the Foundation, the\ntrademark owner, any agent or employee of the Foundation, anyone\nproviding copies of Project Gutenberg™ electronic works in\naccordance with this agreement, and any volunteers associated with the\nproduction, promotion and distribution of Project Gutenberg™\nelectronic works, harmless from all liability, costs and expenses,\nincluding legal fees, that arise directly or indirectly from any of\nthe following which you do or cause to occur: (a) distribution of this\nor any Project Gutenberg work, (b) alteration, modification, or\nadditions or deletions to any Project Gutenberg work, and (c) any\nDefect you cause.\n\nSection 2. Information about the Mission of Project Gutenberg\n\nProject Gutenberg is synonymous with the free distribution of\nelectronic works in formats readable by the widest variety of\ncomputers including obsolete, old, middle-aged and new computers. It\nexists because of the efforts of hundreds of volunteers and donations\nfrom people in all walks of life.\n\nVolunteers and financial support to provide volunteers with the\nassistance they need are critical to reaching Project Gutenberg’s\ngoals and ensuring that the Project Gutenberg collection will\nremain freely available for generations to come. In 2001, the Project\nGutenberg Literary Archive Foundation was created to provide a secure\nand permanent future for Project Gutenberg and future\ngenerations. To learn more about the Project Gutenberg Literary\nArchive Foundation and how your efforts and donations can help, see\nSections 3 and 4 and the Foundation information page at www.gutenberg.org.\n\nSection 3. Information about the Project Gutenberg Literary Archive Foundation\n\nThe Project Gutenberg Literary Archive Foundation is a non-profit\n501(c)(3) educational corporation organized under the laws of the\nstate of Mississippi and granted tax exempt status by the Internal\nRevenue Service. The Foundation’s EIN or federal tax identification\nnumber is 64-6221541. Contributions to the Project Gutenberg Literary\nArchive Foundation are tax deductible to the full extent permitted by\nU.S. federal laws and your state’s laws.\n\nThe Foundation’s business office is located at 41 Watchung Plaza #516,\nMontclair NJ 07042, USA, +1 (862) 621-9288. Email contact links and up\nto date contact information can be found at the Foundation’s website\nand official page at www.gutenberg.org/contact\n\nSection 4. Information about Donations to the Project Gutenberg\nLiterary Archive Foundation\n\nProject Gutenberg™ depends upon and cannot survive without widespread\npublic support and donations to carry out its mission of\nincreasing the number of public domain and licensed works that can be\nfreely distributed in machine-readable form accessible by the widest\narray of equipment including outdated equipment. Many small donations\n($1 to $5,000) are particularly important to maintaining tax exempt\nstatus with the IRS.\n\nThe Foundation is committed to complying with the laws regulating\ncharities and charitable donations in all 50 states of the United\nStates. Compliance requirements are not uniform and it takes a\nconsiderable effort, much paperwork and many fees to meet and keep up\nwith these requirements. We do not solicit donations in locations\nwhere we have not received written confirmation of compliance. To SEND\nDONATIONS or determine the status of compliance for any particular state\nvisit www.gutenberg.org/donate.\n\nWhile we cannot and do not solicit contributions from states where we\nhave not met the solicitation requirements, we know of no prohibition\nagainst accepting unsolicited donations from donors in such states who\napproach us with offers to donate.\n\nInternational donations are gratefully accepted, but we cannot make\nany statements concerning tax treatment of donations received from\noutside the United States. U.S. laws alone swamp our small staff.\n\nPlease check the Project Gutenberg web pages for current donation\nmethods and addresses. Donations are accepted in a number of other\nways including checks, online payments and credit card donations. To\ndonate, please visit: www.gutenberg.org/donate.\n\nSection 5. General Information About Project Gutenberg electronic works\n\nProfessor Michael S. Hart was the originator of the Project\nGutenberg concept of a library of electronic works that could be\nfreely shared with anyone. For forty years, he produced and\ndistributed Project Gutenberg eBooks with only a loose network of\nvolunteer support.\n\nProject Gutenberg eBooks are often created from several printed\neditions, all of which are confirmed as not protected by copyright in\nthe U.S. unless a copyright notice is included. Thus, we do not\nnecessarily keep eBooks in compliance with any particular paper\nedition.\n\nMost people start at our website which has the main PG search\nfacility: www.gutenberg.org.\n\nThis website includes information about Project Gutenberg,\nincluding how to make donations to the Project Gutenberg Literary\nArchive Foundation, how to help produce our new eBooks, and how to\nsubscribe to our email newsletter to hear about new eBooks.\n\n\n"
+  },
+  "gutenberg-meditations": {
+    "contentVersion": "6977474f82a39dd88a4af31a59504821658174d33c177732c54357e4d680b96c",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/2680/pg2680-images.html",
+    "layoutSourceSha256": "35bee3908b29fee349c4e13465277a13d6dbce82aecb9fc8284aaff39c4b4294",
+    "notices": "The Project Gutenberg eBook of Meditations\n    \nThis eBook is for the use of anyone anywhere in the United States and\nmost other parts of the world at no cost and with almost no restrictions\nwhatsoever. You may copy it, give it away or re-use it under the terms\nof the Project Gutenberg License included with this eBook or online\nat www.gutenberg.org. If you are not located in the United States,\nyou will have to check the laws of the country where you are located\nbefore using this eBook.\n\nTitle: Meditations\n\nAuthor: Emperor of Rome Marcus Aurelius\n\n\n        \nRelease date: June 1, 2001 [eBook #2680]\n                Most recently updated: July 13, 2026\n\nLanguage: English\n\nOther information and formats: www.gutenberg.org/ebooks/2680\n\nCredits: J. Boulton and David Widger\n\n\n*** START OF THE PROJECT GUTENBERG EBOOK MEDITATIONS ****** END OF THE PROJECT GUTENBERG EBOOK MEDITATIONS ***\n\n\n    \n\nUpdated editions will replace the previous one—the old editions will\nbe renamed.\n\nCreating the works from print editions not protected by U.S. copyright\nlaw means that no one owns a United States copyright in these works,\nso the Foundation (and you!) can copy and distribute it in the United\nStates without permission and without paying copyright\nroyalties. Special rules, set forth in the General Terms of Use part\nof this license, apply to copying and distributing Project\nGutenberg™ electronic works to protect the PROJECT GUTENBERG™\nconcept and trademark. Project Gutenberg is a registered trademark,\nand may not be used if you charge for an eBook, except by following\nthe terms of the trademark license, including paying royalties for use\nof the Project Gutenberg trademark. If you do not charge anything for\ncopies of this eBook, complying with the trademark license is very\neasy. You may use this eBook for nearly any purpose such as creation\nof derivative works, reports, performances and research. Project\nGutenberg eBooks may be modified and printed and given away—you may\ndo practically ANYTHING in the United States with eBooks not protected\nby U.S. copyright law. Redistribution is subject to the trademark\nlicense, especially commercial redistribution.\n\n\nSTART: FULL LICENSE\n\nTHE FULL PROJECT GUTENBERG™ LICENSE\n\nPLEASE READ THIS BEFORE YOU DISTRIBUTE OR USE THIS WORK\n\nTo protect the Project Gutenberg™ mission of promoting the free\ndistribution of electronic works, by using or distributing this work\n(or any other work associated in any way with the phrase “Project\nGutenberg”), you agree to comply with all the terms of the Full\nProject Gutenberg License available with this file or online at\nwww.gutenberg.org/license.\n\nSection 1. General Terms of Use and Redistributing Project Gutenberg\nelectronic works\n\n1.A. By reading or using any part of this Project Gutenberg\nelectronic work, you indicate that you have read, understand, agree to\nand accept all the terms of this license and intellectual property\n(trademark/copyright) agreement. If you do not agree to abide by all\nthe terms of this agreement, you must cease using and return or\ndestroy all copies of Project Gutenberg electronic works in your\npossession. If you paid a fee for obtaining a copy of or access to a\nProject Gutenberg electronic work and you do not agree to be bound\nby the terms of this agreement, you may obtain a refund from the person\nor entity to whom you paid the fee as set forth in paragraph 1.E.8.\n\n1.B. “Project Gutenberg” is a registered trademark. It may only be\nused on or associated in any way with an electronic work by people who\nagree to be bound by the terms of this agreement. There are a few\nthings that you can do with most Project Gutenberg electronic works\neven without complying with the full terms of this agreement. See\nparagraph 1.C below. There are a lot of things you can do with Project\nGutenberg electronic works if you follow the terms of this\nagreement and help preserve free future access to Project Gutenberg\nelectronic works. See paragraph 1.E below.\n\n1.C. The Project Gutenberg Literary Archive Foundation (“the\nFoundation” or PGLAF), owns a compilation copyright in the collection\nof Project Gutenberg electronic works. Nearly all the individual\nworks in the collection are in the public domain in the United\nStates. If an individual work is unprotected by copyright law in the\nUnited States and you are located in the United States, we do not\nclaim a right to prevent you from copying, distributing, performing,\ndisplaying or creating derivative works based on the work as long as\nall references to Project Gutenberg are removed. Of course, we hope\nthat you will support the Project Gutenberg mission of promoting\nfree access to electronic works by freely sharing Project Gutenberg\nworks in compliance with the terms of this agreement for keeping the\nProject Gutenberg name associated with the work. You can easily\ncomply with the terms of this agreement by keeping this work in the\nsame format with its attached full Project Gutenberg License when\nyou share it without charge with others.\n\n1.D. The copyright laws of the place where you are located also govern\nwhat you can do with this work. Copyright laws in most countries are\nin a constant state of change. If you are outside the United States,\ncheck the laws of your country in addition to the terms of this\nagreement before downloading, copying, displaying, performing,\ndistributing or creating derivative works based on this work or any\nother Project Gutenberg work. The Foundation makes no\nrepresentations concerning the copyright status of any work in any\ncountry other than the United States.\n\n1.E. Unless you have removed all references to Project Gutenberg:\n\n1.E.1. The following sentence, with active links to, or other\nimmediate access to, the full Project Gutenberg License must appear\nprominently whenever any copy of a Project Gutenberg work (any work\non which the phrase “Project Gutenberg” appears, or with which the\nphrase “Project Gutenberg” is associated) is accessed, displayed,\nperformed, viewed, copied or distributed:\n\n    This eBook is for the use of anyone anywhere in the United States and most\n    other parts of the world at no cost and with almost no restrictions\n    whatsoever. You may copy it, give it away or re-use it under the terms\n    of the Project Gutenberg™ License included with this eBook or online\n    at www.gutenberg.org. If you\n    are not located in the United States, you will have to check the laws\n    of the country where you are located before using this eBook.\n  \n1.E.2. If an individual Project Gutenberg electronic work is\nderived from texts not protected by U.S. copyright law (does not\ncontain a notice indicating that it is posted with permission of the\ncopyright holder), the work can be copied and distributed to anyone in\nthe United States without paying any fees or charges. If you are\nredistributing or providing access to a work with the phrase “Project\nGutenberg” associated with or appearing on the work, you must comply\neither with the requirements of paragraphs 1.E.1 through 1.E.7 or\nobtain permission for the use of the work and the Project Gutenberg\ntrademark as set forth in paragraphs 1.E.8 or 1.E.9.\n\n1.E.3. If an individual Project Gutenberg electronic work is posted\nwith the permission of the copyright holder, your use and distribution\nmust comply with both paragraphs 1.E.1 through 1.E.7 and any\nadditional terms imposed by the copyright holder. Additional terms\nwill be linked to the Project Gutenberg License for all works\nposted with the permission of the copyright holder found at the\nbeginning of this work.\n\n1.E.4. Do not unlink or detach or remove the full Project Gutenberg\nLicense terms from this work, or any files containing a part of this\nwork or any other work associated with Project Gutenberg.\n\n1.E.5. Do not copy, display, perform, distribute or redistribute this\nelectronic work, or any part of this electronic work, without\nprominently displaying the sentence set forth in paragraph 1.E.1 with\nactive links or immediate access to the full terms of the Project\nGutenberg License.\n\n1.E.6. You may convert to and distribute this work in any binary,\ncompressed, marked up, nonproprietary or proprietary form, including\nany word processing or hypertext form. However, if you provide access\nto or distribute copies of a Project Gutenberg work in a format\nother than “Plain Vanilla ASCII” or other format used in the official\nversion posted on the official Project Gutenberg website\n(www.gutenberg.org), you must, at no additional cost, fee or expense\nto the user, provide a copy, a means of exporting a copy, or a means\nof obtaining a copy upon request, of the work in its original “Plain\nVanilla ASCII” or other form. Any alternate format must include the\nfull Project Gutenberg License as specified in paragraph 1.E.1.\n\n1.E.7. Do not charge a fee for access to, viewing, displaying,\nperforming, copying or distributing any Project Gutenberg works\nunless you comply with paragraph 1.E.8 or 1.E.9.\n\n1.E.8. You may charge a reasonable fee for copies of or providing\naccess to or distributing Project Gutenberg electronic works\nprovided that:\n\n    • You pay a royalty fee of 20% of the gross profits you derive from\n        the use of Project Gutenberg works calculated using the method\n        you already use to calculate your applicable taxes. The fee is owed\n        to the owner of the Project Gutenberg trademark, but he has\n        agreed to donate royalties under this paragraph to the Project\n        Gutenberg Literary Archive Foundation. Royalty payments must be paid\n        within 60 days following each date on which you prepare (or are\n        legally required to prepare) your periodic tax returns. Royalty\n        payments should be clearly marked as such and sent to the Project\n        Gutenberg Literary Archive Foundation at the address specified in\n        Section 4, “Information about donations to the Project Gutenberg\n        Literary Archive Foundation.”\n    \n    • You provide a full refund of any money paid by a user who notifies\n        you in writing (or by e-mail) within 30 days of receipt that s/he\n        does not agree to the terms of the full Project Gutenberg™\n        License. You must require such a user to return or destroy all\n        copies of the works possessed in a physical medium and discontinue\n        all use of and all access to other copies of Project Gutenberg™\n        works.\n    \n    • You provide, in accordance with paragraph 1.F.3, a full refund of\n        any money paid for a work or a replacement copy, if a defect in the\n        electronic work is discovered and reported to you within 90 days of\n        receipt of the work.\n    \n    • You comply with all other terms of this agreement for free\n        distribution of Project Gutenberg™ works.\n    \n\n1.E.9. If you wish to charge a fee or distribute a Project\nGutenberg™ electronic work or group of works on different terms than\nare set forth in this agreement, you must obtain permission in writing\nfrom the Project Gutenberg Literary Archive Foundation, the manager of\nthe Project Gutenberg™ trademark. Contact the Foundation as set\nforth in Section 3 below.\n\n1.F.\n\n1.F.1. Project Gutenberg volunteers and employees expend considerable\neffort to identify, do copyright research on, transcribe and proofread\nworks not protected by U.S. copyright law in creating the Project\nGutenberg™ collection. Despite these efforts, Project Gutenberg™\nelectronic works, and the medium on which they may be stored, may\ncontain “Defects,” such as, but not limited to, incomplete, inaccurate\nor corrupt data, transcription errors, a copyright or other\nintellectual property infringement, a defective or damaged disk or\nother medium, a computer virus, or computer codes that damage or\ncannot be read by your equipment.\n\n1.F.2. LIMITED WARRANTY, DISCLAIMER OF DAMAGES - Except for the “Right\nof Replacement or Refund” described in paragraph 1.F.3, the Project\nGutenberg Literary Archive Foundation, the owner of the Project\nGutenberg™ trademark, and any other party distributing a Project\nGutenberg™ electronic work under this agreement, disclaim all\nliability to you for damages, costs and expenses, including legal\nfees. YOU AGREE THAT YOU HAVE NO REMEDIES FOR NEGLIGENCE, STRICT\nLIABILITY, BREACH OF WARRANTY OR BREACH OF CONTRACT EXCEPT THOSE\nPROVIDED IN PARAGRAPH 1.F.3. YOU AGREE THAT THE FOUNDATION, THE\nTRADEMARK OWNER, AND ANY DISTRIBUTOR UNDER THIS AGREEMENT WILL NOT BE\nLIABLE TO YOU FOR ACTUAL, DIRECT, INDIRECT, CONSEQUENTIAL, PUNITIVE OR\nINCIDENTAL DAMAGES EVEN IF YOU GIVE NOTICE OF THE POSSIBILITY OF SUCH\nDAMAGE.\n\n1.F.3. LIMITED RIGHT OF REPLACEMENT OR REFUND - If you discover a\ndefect in this electronic work within 90 days of receiving it, you can\nreceive a refund of the money (if any) you paid for it by sending a\nwritten explanation to the person you received the work from. If you\nreceived the work on a physical medium, you must return the medium\nwith your written explanation. The person or entity that provided you\nwith the defective work may elect to provide a replacement copy in\nlieu of a refund. If you received the work electronically, the person\nor entity providing it to you may choose to give you a second\nopportunity to receive the work electronically in lieu of a refund. If\nthe second copy is also defective, you may demand a refund in writing\nwithout further opportunities to fix the problem.\n\n1.F.4. Except for the limited right of replacement or refund set forth\nin paragraph 1.F.3, this work is provided to you ‘AS-IS’, WITH NO\nOTHER WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT\nLIMITED TO WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY PURPOSE.\n\n1.F.5. Some states do not allow disclaimers of certain implied\nwarranties or the exclusion or limitation of certain types of\ndamages. If any disclaimer or limitation set forth in this agreement\nviolates the law of the state applicable to this agreement, the\nagreement shall be interpreted to make the maximum disclaimer or\nlimitation permitted by the applicable state law. The invalidity or\nunenforceability of any provision of this agreement shall not void the\nremaining provisions.\n\n1.F.6. INDEMNITY - You agree to indemnify and hold the Foundation, the\ntrademark owner, any agent or employee of the Foundation, anyone\nproviding copies of Project Gutenberg™ electronic works in\naccordance with this agreement, and any volunteers associated with the\nproduction, promotion and distribution of Project Gutenberg™\nelectronic works, harmless from all liability, costs and expenses,\nincluding legal fees, that arise directly or indirectly from any of\nthe following which you do or cause to occur: (a) distribution of this\nor any Project Gutenberg work, (b) alteration, modification, or\nadditions or deletions to any Project Gutenberg work, and (c) any\nDefect you cause.\n\nSection 2. Information about the Mission of Project Gutenberg\n\nProject Gutenberg is synonymous with the free distribution of\nelectronic works in formats readable by the widest variety of\ncomputers including obsolete, old, middle-aged and new computers. It\nexists because of the efforts of hundreds of volunteers and donations\nfrom people in all walks of life.\n\nVolunteers and financial support to provide volunteers with the\nassistance they need are critical to reaching Project Gutenberg’s\ngoals and ensuring that the Project Gutenberg collection will\nremain freely available for generations to come. In 2001, the Project\nGutenberg Literary Archive Foundation was created to provide a secure\nand permanent future for Project Gutenberg and future\ngenerations. To learn more about the Project Gutenberg Literary\nArchive Foundation and how your efforts and donations can help, see\nSections 3 and 4 and the Foundation information page at www.gutenberg.org.\n\nSection 3. Information about the Project Gutenberg Literary Archive Foundation\n\nThe Project Gutenberg Literary Archive Foundation is a non-profit\n501(c)(3) educational corporation organized under the laws of the\nstate of Mississippi and granted tax exempt status by the Internal\nRevenue Service. The Foundation’s EIN or federal tax identification\nnumber is 64-6221541. Contributions to the Project Gutenberg Literary\nArchive Foundation are tax deductible to the full extent permitted by\nU.S. federal laws and your state’s laws.\n\nThe Foundation’s business office is located at 41 Watchung Plaza #516,\nMontclair NJ 07042, USA, +1 (862) 621-9288. Email contact links and up\nto date contact information can be found at the Foundation’s website\nand official page at www.gutenberg.org/contact\n\nSection 4. Information about Donations to the Project Gutenberg\nLiterary Archive Foundation\n\nProject Gutenberg™ depends upon and cannot survive without widespread\npublic support and donations to carry out its mission of\nincreasing the number of public domain and licensed works that can be\nfreely distributed in machine-readable form accessible by the widest\narray of equipment including outdated equipment. Many small donations\n($1 to $5,000) are particularly important to maintaining tax exempt\nstatus with the IRS.\n\nThe Foundation is committed to complying with the laws regulating\ncharities and charitable donations in all 50 states of the United\nStates. Compliance requirements are not uniform and it takes a\nconsiderable effort, much paperwork and many fees to meet and keep up\nwith these requirements. We do not solicit donations in locations\nwhere we have not received written confirmation of compliance. To SEND\nDONATIONS or determine the status of compliance for any particular state\nvisit www.gutenberg.org/donate.\n\nWhile we cannot and do not solicit contributions from states where we\nhave not met the solicitation requirements, we know of no prohibition\nagainst accepting unsolicited donations from donors in such states who\napproach us with offers to donate.\n\nInternational donations are gratefully accepted, but we cannot make\nany statements concerning tax treatment of donations received from\noutside the United States. U.S. laws alone swamp our small staff.\n\nPlease check the Project Gutenberg web pages for current donation\nmethods and addresses. Donations are accepted in a number of other\nways including checks, online payments and credit card donations. To\ndonate, please visit: www.gutenberg.org/donate.\n\nSection 5. General Information About Project Gutenberg electronic works\n\nProfessor Michael S. Hart was the originator of the Project\nGutenberg concept of a library of electronic works that could be\nfreely shared with anyone. For forty years, he produced and\ndistributed Project Gutenberg eBooks with only a loose network of\nvolunteer support.\n\nProject Gutenberg eBooks are often created from several printed\neditions, all of which are confirmed as not protected by copyright in\nthe U.S. unless a copyright notice is included. Thus, we do not\nnecessarily keep eBooks in compliance with any particular paper\nedition.\n\nMost people start at our website which has the main PG search\nfacility: www.gutenberg.org.\n\nThis website includes information about Project Gutenberg,\nincluding how to make donations to the Project Gutenberg Literary\nArchive Foundation, how to help produce our new eBooks, and how to\nsubscribe to our email newsletter to hear about new eBooks.\n\n\n"
+  },
+  "gutenberg-walden": {
+    "contentVersion": "2d9a76a2e3e8195c69430516ebd33c4d0757a53ad432ff6186b7b794e6fe99f9",
+    "passages": {
+      "2d9a76a2e3e8195c-p00017": {
+        "sha256": "97f730766d27d2912bea14c9ceff23b77d16a7ddaf176e9d4efaca07b80308e3",
+        "lineBreaks": [
+          45
+        ]
+      },
+      "2d9a76a2e3e8195c-p00019": {
+        "sha256": "e3b6a44d998415ea0e41b979891d4f9ce04a4fa8cf6d19b59ecfed0ae935d187",
+        "lineBreaks": [
+          62
+        ]
+      },
+      "2d9a76a2e3e8195c-p00066": {
+        "sha256": "07a5e9b93aa908f7d033f1011858dc9a1ad969eadecdc93ed62ba8a7faf1a679",
+        "lineBreaks": [
+          26,
+          62
+        ]
+      },
+      "2d9a76a2e3e8195c-p00078": {
+        "sha256": "9ef747cd965cd3bf5b49ce8a0a43a37e27a8171167995126922acaf8ccf0a47c",
+        "lineBreaks": [
+          30,
+          67,
+          95,
+          127,
+          152
+        ]
+      },
+      "2d9a76a2e3e8195c-p00088": {
+        "sha256": "0eaa0a08aac11c169ab3d33927e82d2741a123e51b4dbb5a6a4025fd4aeb7765",
+        "lineBreaks": [
+          63,
+          107,
+          151,
+          179,
+          223,
+          267,
+          327,
+          392,
+          436,
+          480,
+          524,
+          568,
+          612,
+          679,
+          733
+        ]
+      },
+      "2d9a76a2e3e8195c-p00105": {
+        "sha256": "d90639418fc49f94100533b5dee00fb52fee5f483c2b049870513aabcba1577b",
+        "lineBreaks": [
+          6
+        ]
+      },
+      "2d9a76a2e3e8195c-p00107": {
+        "sha256": "f9f309cdf6c1088ca2026783c09779c70c5e105db53e7d360e640ac8ea5dc9a7",
+        "lineBreaks": [
+          47,
+          99,
+          150,
+          202,
+          253,
+          303
+        ]
+      },
+      "2d9a76a2e3e8195c-p00109": {
+        "sha256": "9cfc2e99dcdde17a5fe3e6e99d374bda1df78e95e80127ab69c6d1111d29c542",
+        "lineBreaks": [
+          6,
+          57,
+          107
+        ]
+      },
+      "2d9a76a2e3e8195c-p00116": {
+        "sha256": "d86fefb9d14899486350b9a6a24e9e387188e577e4bdc9bb6aced89ad7510451",
+        "lineBreaks": [
+          39
+        ]
+      },
+      "2d9a76a2e3e8195c-p00151": {
+        "sha256": "7220312bddba16645fcab6be90d34051b0282f3d7b6ade1bb8faf1aaa5c78b7b",
+        "lineBreaks": [
+          32
+        ]
+      },
+      "2d9a76a2e3e8195c-p00163": {
+        "sha256": "3de630f0892fa1e53c43c8b24c51e9b6417663b4ef74cb403fe0b563ea8dfce2",
+        "lineBreaks": [
+          36,
+          75,
+          118
+        ]
+      },
+      "2d9a76a2e3e8195c-p00194": {
+        "sha256": "c27aa236d029065b5b660009178d01079eff89f15f7704002184c7916bc74f5b",
+        "lineBreaks": [
+          40,
+          94
+        ]
+      },
+      "2d9a76a2e3e8195c-p00203": {
+        "sha256": "7dc69139222d6ccb770398346fc53db2705c97e19967e656bded6056c7509190",
+        "lineBreaks": [
+          15
+        ]
+      },
+      "2d9a76a2e3e8195c-p00205": {
+        "sha256": "1b73c63027d5d8e55098cb2c5ebc32f3de1524788520aecf53fc44ad8125ae42",
+        "lineBreaks": [
+          26,
+          49,
+          69,
+          98,
+          137,
+          170
+        ]
+      },
+      "2d9a76a2e3e8195c-p00221": {
+        "sha256": "83f6f2c33fe3dddb7b159a1c49fcc68ae11920d5325aba307a824432fe55cfb7",
+        "lineBreaks": [
+          36,
+          87
+        ]
+      },
+      "2d9a76a2e3e8195c-p00242": {
+        "sha256": "16ee16cab36216287fabd824c2fd20ba2a5919099f185c02b8e588f548f02bd6",
+        "lineBreaks": [
+          43,
+          95,
+          151
+        ]
+      },
+      "2d9a76a2e3e8195c-p00246": {
+        "sha256": "0825d81e9b0cb6996428c73eb74a5c969870359b9ce46fa0fd93b8ed35f63ad6",
+        "lineBreaks": [
+          47,
+          100,
+          158
+        ]
+      },
+      "2d9a76a2e3e8195c-p00259": {
+        "sha256": "11f4bd0d65071c27efd155026664322a41056f607ad947df7ad48bc1778cf263",
+        "lineBreaks": [
+          31
+        ]
+      },
+      "2d9a76a2e3e8195c-p00261": {
+        "sha256": "200daeb5a0794db397fec1efb611b24536159d395c9e38b66e3982bbc9a628e6",
+        "lineBreaks": [
+          38
+        ]
+      },
+      "2d9a76a2e3e8195c-p00277": {
+        "sha256": "a99b0c3949e868262dfbc7730e9ef4ce4e09fa8e5ec070db1a8cc0eb24642459",
+        "lineBreaks": [
+          51,
+          118,
+          175,
+          231,
+          287,
+          343,
+          399,
+          455,
+          511,
+          564
+        ]
+      },
+      "2d9a76a2e3e8195c-p00279": {
+        "sha256": "8b0f83dda716f0190a30919b895dc36e7e1983645b92fd03daabc56f4c6541aa",
+        "lineBreaks": [
+          53,
+          111,
+          169,
+          227,
+          285,
+          340,
+          398,
+          430
+        ]
+      },
+      "2d9a76a2e3e8195c-p00282": {
+        "sha256": "1eb6c39156e6d36b7d482444b08ee5d617c44ae13bc9cccda60df45e8193b0e9",
+        "lineBreaks": [
+          46
+        ]
+      },
+      "2d9a76a2e3e8195c-p00319": {
+        "sha256": "cb0f2a587cf3fbc314a4cdce3dd9a97bfb5a94d84280716cc5068e172ba67b87",
+        "lineBreaks": [
+          23,
+          48,
+          92,
+          125,
+          152,
+          190,
+          220,
+          253,
+          281
+        ]
+      },
+      "2d9a76a2e3e8195c-p00333": {
+        "sha256": "2ee5ba8c3adf6f0fc435397796b043d88c9b2ba4c09dbccebc5804ef65a4c490",
+        "lineBreaks": [
+          31,
+          71,
+          101,
+          137,
+          163
+        ]
+      },
+      "2d9a76a2e3e8195c-p00335": {
+        "sha256": "508a321b49cd9a081c358ef2b95e12462ce791da9eeb32327ed7000770fc80fe",
+        "lineBreaks": [
+          25,
+          58,
+          90
+        ]
+      },
+      "2d9a76a2e3e8195c-p00351": {
+        "sha256": "3420bf70f24514aa547b4c030d4cd6aeba284fbefb8902b26dd3a36e09447a3e",
+        "lineBreaks": [
+          34
+        ]
+      },
+      "2d9a76a2e3e8195c-p00361": {
+        "sha256": "7697487dee5282fc3b40ba12882572fb9f820fd79b342b513cbedc1582c8ddf7",
+        "lineBreaks": [
+          43,
+          90,
+          128,
+          182,
+          227,
+          272,
+          321
+        ]
+      },
+      "2d9a76a2e3e8195c-p00402": {
+        "sha256": "94200553adc2b85f09c158da66481c3e41f933d674a301cd9caaa598e16be5f4",
+        "lineBreaks": [
+          33,
+          80,
+          127,
+          172,
+          220,
+          270,
+          309,
+          360,
+          409
+        ]
+      },
+      "2d9a76a2e3e8195c-p00460": {
+        "sha256": "52ce023d04dcd6db89ea9e2b2a937ccaf2afa80b0595f2e56cddbfc6f0d63acf",
+        "lineBreaks": [
+          41,
+          88
+        ]
+      },
+      "2d9a76a2e3e8195c-p00502": {
+        "sha256": "8dd4d895b2af9b0aeb613cb5a0387e7adf628dcca31d6baf58b6df9614a68a9a",
+        "lineBreaks": [
+          60,
+          125,
+          192,
+          250,
+          315,
+          375,
+          435,
+          482,
+          511,
+          571
+        ]
+      },
+      "2d9a76a2e3e8195c-p00511": {
+        "sha256": "7883b7f1fdb423a007ce552dd552fb4da6d031f6820bb0ae641dda5ad092a4b1",
+        "lineBreaks": [
+          46,
+          83,
+          126
+        ]
+      },
+      "2d9a76a2e3e8195c-p00539": {
+        "sha256": "9a4d549d53dfff54647b7e0abe21e6d46aa1e4c9da7e4b5fea13a911fdb37216",
+        "lineBreaks": [
+          42,
+          93,
+          141
+        ]
+      },
+      "2d9a76a2e3e8195c-p00541": {
+        "sha256": "1c41d9dcb9ade5184c35e38e9e46a8488a0277ccce8e35a24c6c25c04dd24c17",
+        "lineBreaks": [
+          37,
+          72,
+          114
+        ]
+      },
+      "2d9a76a2e3e8195c-p00547": {
+        "sha256": "b61bfec35e6928d12cc27ece01bfb438bed44736b43fcc3bce0d60d6c871d6f9",
+        "lineBreaks": [
+          41
+        ]
+      },
+      "2d9a76a2e3e8195c-p00579": {
+        "sha256": "9be0b47b82a9d23658c512d20ca2506b4b72b07d65b1b9d0607496b35c443b1f",
+        "lineBreaks": [
+          43,
+          79,
+          126,
+          174,
+          214
+        ]
+      }
+    },
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/205/pg205-images.html",
+    "layoutSourceSha256": "e4ce1aceda201ea95d4c1717348435086d2a66e9b8f4a0c1f0249a8a823eab51",
+    "notices": "The Project Gutenberg eBook of Walden, and On The Duty Of Civil Disobedience\n    \nThis eBook is for the use of anyone anywhere in the United States and\nmost other parts of the world at no cost and with almost no restrictions\nwhatsoever. You may copy it, give it away or re-use it under the terms\nof the Project Gutenberg License included with this eBook or online\nat www.gutenberg.org. If you are not located in the United States,\nyou will have to check the laws of the country where you are located\nbefore using this eBook.\n\nTitle: Walden, and On The Duty Of Civil Disobedience\n\nAuthor: Henry David Thoreau\n\n\n        \nRelease date: January 1, 1995 [eBook #205]\n                Most recently updated: February 20, 2026\n\nLanguage: English\n\nOther information and formats: www.gutenberg.org/ebooks/205\n\nCredits: Judith Boss, and David Widger\n\n\n*** START OF THE PROJECT GUTENBERG EBOOK WALDEN, AND ON THE DUTY OF CIVIL DISOBEDIENCE ****** END OF THE PROJECT GUTENBERG EBOOK WALDEN, AND ON THE DUTY OF CIVIL DISOBEDIENCE ***\n\n\n    \n\nUpdated editions will replace the previous one—the old editions will\nbe renamed.\n\nCreating the works from print editions not protected by U.S. copyright\nlaw means that no one owns a United States copyright in these works,\nso the Foundation (and you!) can copy and distribute it in the United\nStates without permission and without paying copyright\nroyalties. Special rules, set forth in the General Terms of Use part\nof this license, apply to copying and distributing Project\nGutenberg™ electronic works to protect the PROJECT GUTENBERG™\nconcept and trademark. Project Gutenberg is a registered trademark,\nand may not be used if you charge for an eBook, except by following\nthe terms of the trademark license, including paying royalties for use\nof the Project Gutenberg trademark. If you do not charge anything for\ncopies of this eBook, complying with the trademark license is very\neasy. You may use this eBook for nearly any purpose such as creation\nof derivative works, reports, performances and research. Project\nGutenberg eBooks may be modified and printed and given away—you may\ndo practically ANYTHING in the United States with eBooks not protected\nby U.S. copyright law. Redistribution is subject to the trademark\nlicense, especially commercial redistribution.\n\n\nSTART: FULL LICENSE\n\nTHE FULL PROJECT GUTENBERG™ LICENSE\n\nPLEASE READ THIS BEFORE YOU DISTRIBUTE OR USE THIS WORK\n\nTo protect the Project Gutenberg™ mission of promoting the free\ndistribution of electronic works, by using or distributing this work\n(or any other work associated in any way with the phrase “Project\nGutenberg”), you agree to comply with all the terms of the Full\nProject Gutenberg License available with this file or online at\nwww.gutenberg.org/license.\n\nSection 1. General Terms of Use and Redistributing Project Gutenberg\nelectronic works\n\n1.A. By reading or using any part of this Project Gutenberg\nelectronic work, you indicate that you have read, understand, agree to\nand accept all the terms of this license and intellectual property\n(trademark/copyright) agreement. If you do not agree to abide by all\nthe terms of this agreement, you must cease using and return or\ndestroy all copies of Project Gutenberg electronic works in your\npossession. If you paid a fee for obtaining a copy of or access to a\nProject Gutenberg electronic work and you do not agree to be bound\nby the terms of this agreement, you may obtain a refund from the person\nor entity to whom you paid the fee as set forth in paragraph 1.E.8.\n\n1.B. “Project Gutenberg” is a registered trademark. It may only be\nused on or associated in any way with an electronic work by people who\nagree to be bound by the terms of this agreement. There are a few\nthings that you can do with most Project Gutenberg electronic works\neven without complying with the full terms of this agreement. See\nparagraph 1.C below. There are a lot of things you can do with Project\nGutenberg electronic works if you follow the terms of this\nagreement and help preserve free future access to Project Gutenberg\nelectronic works. See paragraph 1.E below.\n\n1.C. The Project Gutenberg Literary Archive Foundation (“the\nFoundation” or PGLAF), owns a compilation copyright in the collection\nof Project Gutenberg electronic works. Nearly all the individual\nworks in the collection are in the public domain in the United\nStates. If an individual work is unprotected by copyright law in the\nUnited States and you are located in the United States, we do not\nclaim a right to prevent you from copying, distributing, performing,\ndisplaying or creating derivative works based on the work as long as\nall references to Project Gutenberg are removed. Of course, we hope\nthat you will support the Project Gutenberg mission of promoting\nfree access to electronic works by freely sharing Project Gutenberg\nworks in compliance with the terms of this agreement for keeping the\nProject Gutenberg name associated with the work. You can easily\ncomply with the terms of this agreement by keeping this work in the\nsame format with its attached full Project Gutenberg License when\nyou share it without charge with others.\n\n1.D. The copyright laws of the place where you are located also govern\nwhat you can do with this work. Copyright laws in most countries are\nin a constant state of change. If you are outside the United States,\ncheck the laws of your country in addition to the terms of this\nagreement before downloading, copying, displaying, performing,\ndistributing or creating derivative works based on this work or any\nother Project Gutenberg work. The Foundation makes no\nrepresentations concerning the copyright status of any work in any\ncountry other than the United States.\n\n1.E. Unless you have removed all references to Project Gutenberg:\n\n1.E.1. The following sentence, with active links to, or other\nimmediate access to, the full Project Gutenberg License must appear\nprominently whenever any copy of a Project Gutenberg work (any work\non which the phrase “Project Gutenberg” appears, or with which the\nphrase “Project Gutenberg” is associated) is accessed, displayed,\nperformed, viewed, copied or distributed:\n\n    This eBook is for the use of anyone anywhere in the United States and most\n    other parts of the world at no cost and with almost no restrictions\n    whatsoever. You may copy it, give it away or re-use it under the terms\n    of the Project Gutenberg™ License included with this eBook or online\n    at www.gutenberg.org. If you\n    are not located in the United States, you will have to check the laws\n    of the country where you are located before using this eBook.\n  \n1.E.2. If an individual Project Gutenberg electronic work is\nderived from texts not protected by U.S. copyright law (does not\ncontain a notice indicating that it is posted with permission of the\ncopyright holder), the work can be copied and distributed to anyone in\nthe United States without paying any fees or charges. If you are\nredistributing or providing access to a work with the phrase “Project\nGutenberg” associated with or appearing on the work, you must comply\neither with the requirements of paragraphs 1.E.1 through 1.E.7 or\nobtain permission for the use of the work and the Project Gutenberg\ntrademark as set forth in paragraphs 1.E.8 or 1.E.9.\n\n1.E.3. If an individual Project Gutenberg electronic work is posted\nwith the permission of the copyright holder, your use and distribution\nmust comply with both paragraphs 1.E.1 through 1.E.7 and any\nadditional terms imposed by the copyright holder. Additional terms\nwill be linked to the Project Gutenberg License for all works\nposted with the permission of the copyright holder found at the\nbeginning of this work.\n\n1.E.4. Do not unlink or detach or remove the full Project Gutenberg\nLicense terms from this work, or any files containing a part of this\nwork or any other work associated with Project Gutenberg.\n\n1.E.5. Do not copy, display, perform, distribute or redistribute this\nelectronic work, or any part of this electronic work, without\nprominently displaying the sentence set forth in paragraph 1.E.1 with\nactive links or immediate access to the full terms of the Project\nGutenberg License.\n\n1.E.6. You may convert to and distribute this work in any binary,\ncompressed, marked up, nonproprietary or proprietary form, including\nany word processing or hypertext form. However, if you provide access\nto or distribute copies of a Project Gutenberg work in a format\nother than “Plain Vanilla ASCII” or other format used in the official\nversion posted on the official Project Gutenberg website\n(www.gutenberg.org), you must, at no additional cost, fee or expense\nto the user, provide a copy, a means of exporting a copy, or a means\nof obtaining a copy upon request, of the work in its original “Plain\nVanilla ASCII” or other form. Any alternate format must include the\nfull Project Gutenberg License as specified in paragraph 1.E.1.\n\n1.E.7. Do not charge a fee for access to, viewing, displaying,\nperforming, copying or distributing any Project Gutenberg works\nunless you comply with paragraph 1.E.8 or 1.E.9.\n\n1.E.8. You may charge a reasonable fee for copies of or providing\naccess to or distributing Project Gutenberg electronic works\nprovided that:\n\n    • You pay a royalty fee of 20% of the gross profits you derive from\n        the use of Project Gutenberg works calculated using the method\n        you already use to calculate your applicable taxes. The fee is owed\n        to the owner of the Project Gutenberg trademark, but he has\n        agreed to donate royalties under this paragraph to the Project\n        Gutenberg Literary Archive Foundation. Royalty payments must be paid\n        within 60 days following each date on which you prepare (or are\n        legally required to prepare) your periodic tax returns. Royalty\n        payments should be clearly marked as such and sent to the Project\n        Gutenberg Literary Archive Foundation at the address specified in\n        Section 4, “Information about donations to the Project Gutenberg\n        Literary Archive Foundation.”\n    \n    • You provide a full refund of any money paid by a user who notifies\n        you in writing (or by e-mail) within 30 days of receipt that s/he\n        does not agree to the terms of the full Project Gutenberg™\n        License. You must require such a user to return or destroy all\n        copies of the works possessed in a physical medium and discontinue\n        all use of and all access to other copies of Project Gutenberg™\n        works.\n    \n    • You provide, in accordance with paragraph 1.F.3, a full refund of\n        any money paid for a work or a replacement copy, if a defect in the\n        electronic work is discovered and reported to you within 90 days of\n        receipt of the work.\n    \n    • You comply with all other terms of this agreement for free\n        distribution of Project Gutenberg™ works.\n    \n\n1.E.9. If you wish to charge a fee or distribute a Project\nGutenberg™ electronic work or group of works on different terms than\nare set forth in this agreement, you must obtain permission in writing\nfrom the Project Gutenberg Literary Archive Foundation, the manager of\nthe Project Gutenberg™ trademark. Contact the Foundation as set\nforth in Section 3 below.\n\n1.F.\n\n1.F.1. Project Gutenberg volunteers and employees expend considerable\neffort to identify, do copyright research on, transcribe and proofread\nworks not protected by U.S. copyright law in creating the Project\nGutenberg™ collection. Despite these efforts, Project Gutenberg™\nelectronic works, and the medium on which they may be stored, may\ncontain “Defects,” such as, but not limited to, incomplete, inaccurate\nor corrupt data, transcription errors, a copyright or other\nintellectual property infringement, a defective or damaged disk or\nother medium, a computer virus, or computer codes that damage or\ncannot be read by your equipment.\n\n1.F.2. LIMITED WARRANTY, DISCLAIMER OF DAMAGES - Except for the “Right\nof Replacement or Refund” described in paragraph 1.F.3, the Project\nGutenberg Literary Archive Foundation, the owner of the Project\nGutenberg™ trademark, and any other party distributing a Project\nGutenberg™ electronic work under this agreement, disclaim all\nliability to you for damages, costs and expenses, including legal\nfees. YOU AGREE THAT YOU HAVE NO REMEDIES FOR NEGLIGENCE, STRICT\nLIABILITY, BREACH OF WARRANTY OR BREACH OF CONTRACT EXCEPT THOSE\nPROVIDED IN PARAGRAPH 1.F.3. YOU AGREE THAT THE FOUNDATION, THE\nTRADEMARK OWNER, AND ANY DISTRIBUTOR UNDER THIS AGREEMENT WILL NOT BE\nLIABLE TO YOU FOR ACTUAL, DIRECT, INDIRECT, CONSEQUENTIAL, PUNITIVE OR\nINCIDENTAL DAMAGES EVEN IF YOU GIVE NOTICE OF THE POSSIBILITY OF SUCH\nDAMAGE.\n\n1.F.3. LIMITED RIGHT OF REPLACEMENT OR REFUND - If you discover a\ndefect in this electronic work within 90 days of receiving it, you can\nreceive a refund of the money (if any) you paid for it by sending a\nwritten explanation to the person you received the work from. If you\nreceived the work on a physical medium, you must return the medium\nwith your written explanation. The person or entity that provided you\nwith the defective work may elect to provide a replacement copy in\nlieu of a refund. If you received the work electronically, the person\nor entity providing it to you may choose to give you a second\nopportunity to receive the work electronically in lieu of a refund. If\nthe second copy is also defective, you may demand a refund in writing\nwithout further opportunities to fix the problem.\n\n1.F.4. Except for the limited right of replacement or refund set forth\nin paragraph 1.F.3, this work is provided to you ‘AS-IS’, WITH NO\nOTHER WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT\nLIMITED TO WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY PURPOSE.\n\n1.F.5. Some states do not allow disclaimers of certain implied\nwarranties or the exclusion or limitation of certain types of\ndamages. If any disclaimer or limitation set forth in this agreement\nviolates the law of the state applicable to this agreement, the\nagreement shall be interpreted to make the maximum disclaimer or\nlimitation permitted by the applicable state law. The invalidity or\nunenforceability of any provision of this agreement shall not void the\nremaining provisions.\n\n1.F.6. INDEMNITY - You agree to indemnify and hold the Foundation, the\ntrademark owner, any agent or employee of the Foundation, anyone\nproviding copies of Project Gutenberg™ electronic works in\naccordance with this agreement, and any volunteers associated with the\nproduction, promotion and distribution of Project Gutenberg™\nelectronic works, harmless from all liability, costs and expenses,\nincluding legal fees, that arise directly or indirectly from any of\nthe following which you do or cause to occur: (a) distribution of this\nor any Project Gutenberg work, (b) alteration, modification, or\nadditions or deletions to any Project Gutenberg work, and (c) any\nDefect you cause.\n\nSection 2. Information about the Mission of Project Gutenberg\n\nProject Gutenberg is synonymous with the free distribution of\nelectronic works in formats readable by the widest variety of\ncomputers including obsolete, old, middle-aged and new computers. It\nexists because of the efforts of hundreds of volunteers and donations\nfrom people in all walks of life.\n\nVolunteers and financial support to provide volunteers with the\nassistance they need are critical to reaching Project Gutenberg’s\ngoals and ensuring that the Project Gutenberg collection will\nremain freely available for generations to come. In 2001, the Project\nGutenberg Literary Archive Foundation was created to provide a secure\nand permanent future for Project Gutenberg and future\ngenerations. To learn more about the Project Gutenberg Literary\nArchive Foundation and how your efforts and donations can help, see\nSections 3 and 4 and the Foundation information page at www.gutenberg.org.\n\nSection 3. Information about the Project Gutenberg Literary Archive Foundation\n\nThe Project Gutenberg Literary Archive Foundation is a non-profit\n501(c)(3) educational corporation organized under the laws of the\nstate of Mississippi and granted tax exempt status by the Internal\nRevenue Service. The Foundation’s EIN or federal tax identification\nnumber is 64-6221541. Contributions to the Project Gutenberg Literary\nArchive Foundation are tax deductible to the full extent permitted by\nU.S. federal laws and your state’s laws.\n\nThe Foundation’s business office is located at 41 Watchung Plaza #516,\nMontclair NJ 07042, USA, +1 (862) 621-9288. Email contact links and up\nto date contact information can be found at the Foundation’s website\nand official page at www.gutenberg.org/contact\n\nSection 4. Information about Donations to the Project Gutenberg\nLiterary Archive Foundation\n\nProject Gutenberg™ depends upon and cannot survive without widespread\npublic support and donations to carry out its mission of\nincreasing the number of public domain and licensed works that can be\nfreely distributed in machine-readable form accessible by the widest\narray of equipment including outdated equipment. Many small donations\n($1 to $5,000) are particularly important to maintaining tax exempt\nstatus with the IRS.\n\nThe Foundation is committed to complying with the laws regulating\ncharities and charitable donations in all 50 states of the United\nStates. Compliance requirements are not uniform and it takes a\nconsiderable effort, much paperwork and many fees to meet and keep up\nwith these requirements. We do not solicit donations in locations\nwhere we have not received written confirmation of compliance. To SEND\nDONATIONS or determine the status of compliance for any particular state\nvisit www.gutenberg.org/donate.\n\nWhile we cannot and do not solicit contributions from states where we\nhave not met the solicitation requirements, we know of no prohibition\nagainst accepting unsolicited donations from donors in such states who\napproach us with offers to donate.\n\nInternational donations are gratefully accepted, but we cannot make\nany statements concerning tax treatment of donations received from\noutside the United States. U.S. laws alone swamp our small staff.\n\nPlease check the Project Gutenberg web pages for current donation\nmethods and addresses. Donations are accepted in a number of other\nways including checks, online payments and credit card donations. To\ndonate, please visit: www.gutenberg.org/donate.\n\nSection 5. General Information About Project Gutenberg electronic works\n\nProfessor Michael S. Hart was the originator of the Project\nGutenberg concept of a library of electronic works that could be\nfreely shared with anyone. For forty years, he produced and\ndistributed Project Gutenberg eBooks with only a loose network of\nvolunteer support.\n\nProject Gutenberg eBooks are often created from several printed\neditions, all of which are confirmed as not protected by copyright in\nthe U.S. unless a copyright notice is included. Thus, we do not\nnecessarily keep eBooks in compliance with any particular paper\nedition.\n\nMost people start at our website which has the main PG search\nfacility: www.gutenberg.org.\n\nThis website includes information about Project Gutenberg,\nincluding how to make donations to the Project Gutenberg Literary\nArchive Foundation, how to help produce our new eBooks, and how to\nsubscribe to our email newsletter to hear about new eBooks.\n\n\n"
+  },
+  "gutenberg-flatland": {
+    "contentVersion": "036a5e8fd197c0371daef9f5816845b2109d17ba290d4c052b8809bcdcf61951",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/201/pg201-images.html",
+    "layoutSourceSha256": "3905815da44e5363cab17762b47c40b931f2ed68fb0eabb3f490df2644d990fb"
+  },
+  "gutenberg-frankenstein": {
+    "contentVersion": "50ff55785f190ba3d548930fa850f99f1aa9f2e98e5de2fc2f127173dc5dd5b6",
+    "passages": {
+      "50ff55785f190ba3-p00012": {
+        "sha256": "1cdd96acf020ffd0d95fa2b9433ae2d03b479b747cbbdfb4abfdc955989ae1e2",
+        "lineBreaks": [
+          26
+        ]
+      },
+      "50ff55785f190ba3-p00022": {
+        "sha256": "cff664425c2d8065f6373100f50714c007cb520f937293a5d3305bc28c90a5c9",
+        "lineBreaks": [
+          26
+        ]
+      },
+      "50ff55785f190ba3-p00194": {
+        "sha256": "f46af5d6ca34ee6da87ab167d7b367f67022bb4d3968e227c96b828aff0a35ec",
+        "lineBreaks": [
+          40
+        ]
+      }
+    },
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/84/pg84-images.html",
+    "layoutSourceSha256": "23403a6a3b1cace42a06d6c378a6f1acf8ec97c940c652d12fe3c0d30275e58f"
+  },
+  "gutenberg-erewhon": {
+    "contentVersion": "8bbcb3dbf3cdfcc9e87a67d214242e56f4bbc2eca4f6f46a880adb8fda63fa6e",
+    "passages": {
+      "8bbcb3dbf3cdfcc9-p00277": {
+        "sha256": "46ff1881515249ce92dd16c72a71f5dc155784124f2418a02733a09d78d9a182",
+        "lineBreaks": [
+          38
+        ]
+      },
+      "8bbcb3dbf3cdfcc9-p00548": {
+        "sha256": "521277745e336469549ae8dd5ed9d6dc9c0e21648622b07395ee704b08c4ef86",
+        "lineBreaks": [
+          18,
+          43,
+          66,
+          89,
+          108,
+          125,
+          144
+        ]
+      }
+    },
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/1906/pg1906-images.html",
+    "layoutSourceSha256": "f24880367fabea05b3ae2c799ce3184da5c0f80ea6eda7ddf7cd849a3f4a0ffd"
+  },
+  "gutenberg-time-machine": {
+    "contentVersion": "763848d045c41d8f3931f87f351f9b621098321127ec97a71fce194ef757cba1",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/35/pg35-images.html",
+    "layoutSourceSha256": "c2749206d5faf4213d6a0c204d5ae1419d8642f34ca0b32d10f793278b80b584"
+  },
+  "gutenberg-au-room-of-ones-own": {
+    "contentVersion": "90ed73bff38ddd2e01ddf69fa2302367931304675b45b941bc6caeb9600248d7",
+    "passages": {
+      "90ed73bff38ddd2e-p00009": {
+        "sha256": "78e5fe5f8ecfca3e3fa76fa1437e2323ffb3440c54da580c400a306cc3ad4712",
+        "lineBreaks": [
+          32,
+          69,
+          102,
+          135,
+          183,
+          224,
+          264
+        ]
+      },
+      "90ed73bff38ddd2e-p00011": {
+        "sha256": "d8ad01285be8f23217b51d8a2e199dcbfa26bd745d36ec63955fcf79cc60ec48",
+        "lineBreaks": [
+          31,
+          65,
+          96,
+          140,
+          173,
+          204,
+          239
+        ]
+      },
+      "90ed73bff38ddd2e-p00015": {
+        "sha256": "1f42718e1e351fdbb43a802775b523bf17c645f5ca135ddb09211d6d3899c84b",
+        "lineBreaks": [
+          32,
+          69
+        ]
+      },
+      "90ed73bff38ddd2e-p00017": {
+        "sha256": "b37a23bd0ce356cb4a0294bca82f9fcf97b621e9d1211180775f5e84ed08dcf4",
+        "lineBreaks": [
+          31,
+          65
+        ]
+      },
+      "90ed73bff38ddd2e-p00022": {
+        "sha256": "92d1a6dfcebd0d32db56de9c381acbc5ad9dab654a472f4b4032aa1b764aae99",
+        "lineBreaks": [
+          34
+        ]
+      },
+      "90ed73bff38ddd2e-p00025": {
+        "sha256": "8b31f3bdd93f7d6c50429672861f69edae29a8393a1aa3505bcd92b70c4f3e57",
+        "lineBreaks": [
+          31,
+          65,
+          96
+        ]
+      },
+      "90ed73bff38ddd2e-p00037": {
+        "sha256": "5a3f30a8efab5f3e23b096a6233e0460b9d9e2101bb9b1eb7efde526a46fd465",
+        "lineBreaks": [
+          28,
+          59,
+          87,
+          115,
+          128,
+          158,
+          201,
+          220,
+          245,
+          269,
+          302,
+          328,
+          371,
+          392,
+          419,
+          438,
+          465,
+          476,
+          497,
+          523,
+          553,
+          577,
+          602,
+          627
+        ]
+      },
+      "90ed73bff38ddd2e-p00069": {
+        "sha256": "2484cc294a70bdca5bb4a05b033b103bfdfe1e5333108fb3f1318df514142804",
+        "lineBreaks": [
+          44,
+          86,
+          130
+        ]
+      },
+      "90ed73bff38ddd2e-p00070": {
+        "sha256": "2e0c596f7595b6222fc2d9237d6abe454dac320927ec9113ef6ba89ed1309cb4",
+        "lineBreaks": [
+          41,
+          82,
+          128
+        ]
+      },
+      "90ed73bff38ddd2e-p00072": {
+        "sha256": "9281694cbba7f8e594cce1eb20382c1f7b3d461d74c0fc53a838ae630094d917",
+        "lineBreaks": [
+          36,
+          78,
+          118,
+          159,
+          208,
+          250,
+          294,
+          340,
+          382,
+          424
+        ]
+      },
+      "90ed73bff38ddd2e-p00074": {
+        "sha256": "782ab693947b5d3a75c80a2cffa76d8b640b73d3405e48ac03fac54519a62aed",
+        "lineBreaks": [
+          45,
+          89
+        ]
+      },
+      "90ed73bff38ddd2e-p00076": {
+        "sha256": "09bc4fabfdb75a269d0a3995f35d50d3e2813c00e338a3beec6538463f006426",
+        "lineBreaks": [
+          33
+        ]
+      },
+      "90ed73bff38ddd2e-p00078": {
+        "sha256": "eddfb992f87ac41c5179d482a44be126c9d7109efa7ad971db1e7aabd68aa6a6",
+        "lineBreaks": [
+          45
+        ]
+      },
+      "90ed73bff38ddd2e-p00080": {
+        "sha256": "35dfe24659ac79d88b18fa1e917948e727be24902916068ca522bbc3b9fae862",
+        "lineBreaks": [
+          43
+        ]
+      },
+      "90ed73bff38ddd2e-p00082": {
+        "sha256": "d957df9f2527868f97e8f5d1292bf09ae7f104662f4fef286c0128a8e2bc6860",
+        "lineBreaks": [
+          41,
+          85,
+          119
+        ]
+      }
+    },
+    "layoutSourceUrl": "https://gutenberg.net.au/ebooks02/0200791h.html",
+    "layoutSourceSha256": "0f19404c936ed0c92d1d5ccba44b4190efbfa4678bfb1a85b3e185e8dde9afc8",
+    "notices": "Electronic edition produced by Col Choat. Project Gutenberg Australia 0200791, Edition 1; updated April 2020. First publication of the work: 1929; the electronic header does not identify one print edition."
+  },
+  "gutenberg-on-liberty": {
+    "contentVersion": "81d4b1eb66e9c61548bea9554262950a451e5f70481c2c5e50e64e933f7b7582",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/34901/pg34901-images.html",
+    "layoutSourceSha256": "b0724525c3fc36678fc31d219310b8112ede904c5f75b5fbc46fbe798dd1e5ed"
+  },
+  "ccel-ivan-ilych": {
+    "contentVersion": "3199f09a4abfd5eba5d32df52a99d874092c6302fa6b9243284cbdfbbe64bc8c",
+    "passages": {},
+    "layoutSourceUrl": "https://ccel.org/ccel/t/tolstoy/ivan.xml",
+    "layoutSourceSha256": "04383749537cf36241fc1ced83ce5aff00cd1b07693249fde04b9b4a9f84b559"
+  },
+  "gutenberg-awakening": {
+    "contentVersion": "61a8ca66f7a58cd1b4744ba4d5149cf3c676e92f076fef83a53d33c0d1604a46",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/160/pg160-images.html",
+    "layoutSourceSha256": "8d1f14b4c368f4e1b211fd566320019cf84c1b0274d83b1534b76ddfef405ad2"
+  },
+  "gutenberg-home-and-world": {
+    "contentVersion": "d2d1ae6bce21a95d86121d60b7e32584da79efb309d2aed8cdd00971950ff63b",
+    "passages": {
+      "d2d1ae6bce21a95d-p00079": {
+        "sha256": "470bbfafe189ba6c29c3a0991a04bcd282b32a7af8b4c1f7bb281707d4dba313",
+        "lineBreaks": [
+          61
+        ]
+      },
+      "d2d1ae6bce21a95d-p00167": {
+        "sha256": "1e0da7681261c00cdd9b34d629fc4e2badbfce4b2b4519136f30389e84c922b0",
+        "lineBreaks": [
+          56
+        ]
+      },
+      "d2d1ae6bce21a95d-p00175": {
+        "sha256": "6837fd0dea89e5fe633384bf3192387ce7978d8e8b98f8211234fdcca359b412",
+        "lineBreaks": [
+          61,
+          127,
+          192
+        ]
+      },
+      "d2d1ae6bce21a95d-p00180": {
+        "sha256": "6e7f5961b24e61ad7a24d0ef9fab20365b9fbf805a53be4a3a7fe53b2e6469b8",
+        "lineBreaks": [
+          63,
+          124,
+          188
+        ]
+      },
+      "d2d1ae6bce21a95d-p00186": {
+        "sha256": "bbf9194d1e8ede15fe25ad1b3da015c76a0a42fc7695f501251cfe364fbfa301",
+        "lineBreaks": [
+          2,
+          30,
+          92,
+          99,
+          135,
+          199,
+          223,
+          277,
+          288
+        ]
+      },
+      "d2d1ae6bce21a95d-p00219": {
+        "sha256": "8d128b80dabb7c8997dbad7c54dbba4672665039aca440e29e0540d80d311ea8",
+        "lineBreaks": [
+          60,
+          125
+        ]
+      },
+      "d2d1ae6bce21a95d-p00282": {
+        "sha256": "857bcfb3d421a03c2fc8e99e786dda323ffc47b1d980aca0bb94607790acd834",
+        "lineBreaks": [
+          65
+        ]
+      },
+      "d2d1ae6bce21a95d-p00348": {
+        "sha256": "9c673fce06a4a23abb7b6d85cb5ccd5bed12b4fe8ba65c2c4cb71a09d948f38d",
+        "lineBreaks": [
+          59,
+          120,
+          185
+        ]
+      },
+      "d2d1ae6bce21a95d-p00349": {
+        "sha256": "1c4ceb97ebe2a6bb28739d0a89abda33f534511a256d7bff349d19e695578eac",
+        "lineBreaks": [
+          63
+        ]
+      },
+      "d2d1ae6bce21a95d-p00389": {
+        "sha256": "8aa392a9833f30b130a1fd89fc9326e3913e6a704f8c84743462fa6c69189dbe",
+        "lineBreaks": [
+          63
+        ]
+      },
+      "d2d1ae6bce21a95d-p00434": {
+        "sha256": "fcd6bdd6bbd2c735993c2b9f63e90f7c1a01a045f41435e0f9429f47dbdb5917",
+        "lineBreaks": [
+          63,
+          126,
+          188,
+          252
+        ]
+      },
+      "d2d1ae6bce21a95d-p00538": {
+        "sha256": "980828ebf531eceff829c3f6bfdc28a772767fcc5a22237d5d713c1060dba89b",
+        "lineBreaks": [
+          2,
+          55,
+          80
+        ]
+      },
+      "d2d1ae6bce21a95d-p00543": {
+        "sha256": "980828ebf531eceff829c3f6bfdc28a772767fcc5a22237d5d713c1060dba89b",
+        "lineBreaks": [
+          2,
+          55,
+          80
+        ]
+      },
+      "d2d1ae6bce21a95d-p00542": {
+        "sha256": "70f5381d42f4280bfbba7a409f6c00562f96987649a498e9d37bda0e20c922d8",
+        "lineBreaks": [
+          65,
+          129,
+          188
+        ]
+      },
+      "d2d1ae6bce21a95d-p00566": {
+        "sha256": "7440cb21ebbdcc77f8a6f6fd6af2fb46738ca3bca68e8f1c0f20144259cc52a4",
+        "lineBreaks": [
+          2,
+          66,
+          72,
+          97
+        ]
+      },
+      "d2d1ae6bce21a95d-p00586": {
+        "sha256": "abdf8d4ae285cbeddd1c1a642919bdc32af3e863f180f316c53371fc5a3b7b74",
+        "lineBreaks": [
+          2,
+          53,
+          101,
+          125
+        ]
+      },
+      "d2d1ae6bce21a95d-p00588": {
+        "sha256": "4f27ff4b8bc30aed4bb4354496820776de508ea1f36114e9a59621edbb55ebfa",
+        "lineBreaks": [
+          2,
+          54,
+          107,
+          171,
+          176,
+          222,
+          272
+        ]
+      },
+      "d2d1ae6bce21a95d-p00590": {
+        "sha256": "275e54b09711b65df9b61ad7ca7fa88bd8395aa3441769cc5e3494bf98ebb823",
+        "lineBreaks": [
+          2,
+          33,
+          80,
+          120,
+          154,
+          194,
+          227
+        ]
+      },
+      "d2d1ae6bce21a95d-p00624": {
+        "sha256": "cacc5b101323973fa643f557d9d0fb3f47654b1e24c33fbd0beb77cdfa0f8044",
+        "lineBreaks": [
+          2,
+          42,
+          84,
+          125,
+          146,
+          181,
+          209
+        ]
+      },
+      "d2d1ae6bce21a95d-p00632": {
+        "sha256": "84a0973a77e5a56c38050643ba7bc8a913daeb4e73b44f31a336d0159b680038",
+        "lineBreaks": [
+          63
+        ]
+      },
+      "d2d1ae6bce21a95d-p00710": {
+        "sha256": "9829fa9eac7164f954343a771f3cdb8b2c56e5da517db581de47894795f5f834",
+        "lineBreaks": [
+          65
+        ]
+      },
+      "d2d1ae6bce21a95d-p00733": {
+        "sha256": "1f36fa549cadfea994a56aca1fbaebba842f3fbe05b84cdf52f6d4311da3f679",
+        "lineBreaks": [
+          63
+        ]
+      },
+      "d2d1ae6bce21a95d-p00749": {
+        "sha256": "279f7e68977b87413a071bd0cdd7cd06bf71b89f4da5067a39af90f06079c3c1",
+        "lineBreaks": [
+          60
+        ]
+      },
+      "d2d1ae6bce21a95d-p00778": {
+        "sha256": "a1691fb0d2a3168afbb4a63b5f5cd0bc37cb7d465a33a0c98e91d16888abd04f",
+        "lineBreaks": [
+          65
+        ]
+      },
+      "d2d1ae6bce21a95d-p00782": {
+        "sha256": "f5d52bb531a630f4c2f92efc3697551325120e8344441404ab1274baea99ab9d",
+        "lineBreaks": [
+          63
+        ]
+      },
+      "d2d1ae6bce21a95d-p00810": {
+        "sha256": "f9ce4002c7247cd1b059956ebe99fcf4cda73680ab224d2f8efff9b8ef8adaa0",
+        "lineBreaks": [
+          62
+        ]
+      },
+      "d2d1ae6bce21a95d-p00814": {
+        "sha256": "cd0d023034a54f85457b2dc2450ab2c2a43b2dc140d90ad360750b0b9ea6bac9",
+        "lineBreaks": [
+          61
+        ]
+      },
+      "d2d1ae6bce21a95d-p00819": {
+        "sha256": "9e09c6e58f5040b4684ae4dcb29863819738e83961331bdf89883a54dcefe8bb",
+        "lineBreaks": [
+          64
+        ]
+      },
+      "d2d1ae6bce21a95d-p00854": {
+        "sha256": "75f97a4e0813c886e57240d54e4eacedce9d6e24589401ed3d6954d355d8061d",
+        "lineBreaks": [
+          2,
+          38,
+          89
+        ]
+      },
+      "d2d1ae6bce21a95d-p00944": {
+        "sha256": "a899749277f60fd738654088fe6b0a364bc1826097285a9e4c1277bc23752ceb",
+        "lineBreaks": [
+          63
+        ]
+      },
+      "d2d1ae6bce21a95d-p00966": {
+        "sha256": "4c1b4747d9e2dc087784ac75744faeb369d89ba0e47569bd2dbd6fe5569b9ae4",
+        "lineBreaks": [
+          59,
+          125,
+          190
+        ]
+      },
+      "d2d1ae6bce21a95d-p01012": {
+        "sha256": "2c30e583c57e605d97ff3b719bb5fa1d4cdfe407c9ff8955c3488e9651c581e1",
+        "lineBreaks": [
+          58
+        ]
+      },
+      "d2d1ae6bce21a95d-p01016": {
+        "sha256": "d6e536216106639d1d513ac168ec9fdaf651669f415906cb4bbf2a3d824c7e6f",
+        "lineBreaks": [
+          61
+        ]
+      },
+      "d2d1ae6bce21a95d-p01017": {
+        "sha256": "1cb500193283022137f85040cd617d3b53417ef97a864aa768eccdfdc6829d24",
+        "lineBreaks": [
+          62
+        ]
+      },
+      "d2d1ae6bce21a95d-p01078": {
+        "sha256": "85e22f6177d04c7c4100459b073b2979d09b31e005da8bcb3528c85db3e975c8",
+        "lineBreaks": [
+          61
+        ]
+      },
+      "d2d1ae6bce21a95d-p01102": {
+        "sha256": "ebe364100e2f65a2fda12b001a53824900f57ab17625cb33770f4a5888dfc23a",
+        "lineBreaks": [
+          2,
+          39,
+          75,
+          113,
+          142,
+          175,
+          213,
+          245,
+          285
+        ]
+      },
+      "d2d1ae6bce21a95d-p01115": {
+        "sha256": "021c3b1893f3f5e5266ebb6320536acf4c08252715f039836be842b9f7465253",
+        "lineBreaks": [
+          2,
+          48,
+          109,
+          119,
+          182,
+          193,
+          238,
+          277,
+          333,
+          397,
+          420,
+          480
+        ]
+      },
+      "d2d1ae6bce21a95d-p01136": {
+        "sha256": "dd78770e373c55acc14b4f3fb5afa265a8b67271196e9d7e6a26a4de6d79fd6f",
+        "lineBreaks": [
+          60,
+          125,
+          184
+        ]
+      },
+      "d2d1ae6bce21a95d-p01141": {
+        "sha256": "8183fc01c5394eda13ab1240fe470263739a7606d84a7c8c6dd1bcc88d64b348",
+        "lineBreaks": [
+          61
+        ]
+      },
+      "d2d1ae6bce21a95d-p01155": {
+        "sha256": "dc41c194fb2c6edd6b41f45cb1bb5b4d4b7b8883ebea8ece7058d39e2c8d5a0a",
+        "lineBreaks": [
+          61,
+          120
+        ]
+      },
+      "d2d1ae6bce21a95d-p01212": {
+        "sha256": "1cbc8a7b8c01e53381e019b7102e279f2b32f404e635091ab2399f1ddd52e039",
+        "lineBreaks": [
+          64
+        ]
+      },
+      "d2d1ae6bce21a95d-p01229": {
+        "sha256": "a62697464476c04a18f52c6eb240f13759031a93eb4aaa0877c5bcd951d483fa",
+        "lineBreaks": [
+          63,
+          126
+        ]
+      },
+      "d2d1ae6bce21a95d-p01240": {
+        "sha256": "f46bf002b9de95b0594c453f3423aaf5ac5817f1efc3f467dca091630fac5faf",
+        "lineBreaks": [
+          65
+        ]
+      },
+      "d2d1ae6bce21a95d-p01295": {
+        "sha256": "56ee48f574eee1da962df455be250e5830f6d93af36530e33d2a2e903625ddeb",
+        "lineBreaks": [
+          64
+        ]
+      },
+      "d2d1ae6bce21a95d-p01353": {
+        "sha256": "b285392b86615ec84a1e912f1ca0d1aa63e44ca6deb956c7254a7ab1b56fe16c",
+        "lineBreaks": [
+          62
+        ]
+      },
+      "d2d1ae6bce21a95d-p01451": {
+        "sha256": "89f591c3189eff9b2b2fc58d684e27571356eb6c2f7eff5133a88b7096197f28",
+        "lineBreaks": [
+          61,
+          123,
+          185
+        ]
+      }
+    },
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/7166/pg7166-images.html",
+    "layoutSourceSha256": "5d4fa78b481022e318d42dd290aa3c4dc21f702d56d31a501f466b8819b3cb84"
+  },
+  "gutenberg-brazilian-tales": {
+    "contentVersion": "ca69c2d6fbd88c5051bd9b804a340c69089ff04eee22ed69c4b666d4d18a2014",
+    "passages": {
+      "ca69c2d6fbd88c50-p00051": {
+        "sha256": "fc02da03fc7a05b0ba9cd2989f0133d5673473955205985cbe4a07e92825be2e",
+        "lineBreaks": [
+          10
+        ]
+      },
+      "ca69c2d6fbd88c50-p00052": {
+        "sha256": "457748710771521a422583cb37f30e5dca454431a76c2530217cc2fdd7a76e52",
+        "lineBreaks": [
+          10
+        ]
+      },
+      "ca69c2d6fbd88c50-p00053": {
+        "sha256": "eb398df54d5828b15566c6809cee72df606ea1e5c70bbd826ba12baa5ddc6a4b",
+        "lineBreaks": [
+          10
+        ]
+      },
+      "ca69c2d6fbd88c50-p00175": {
+        "sha256": "b3d3b05d8bf6b7f6695ebb9ba122b80c89f8dfe24f116fc5f252e62b6f4f6461",
+        "lineBreaks": [
+          10
+        ]
+      },
+      "ca69c2d6fbd88c50-p00176": {
+        "sha256": "52ae749b9795e821a158331f818e874a9e7958d7d83e9b791574a41a3152b814",
+        "lineBreaks": [
+          10
+        ]
+      },
+      "ca69c2d6fbd88c50-p00378": {
+        "sha256": "136adbb42f10b927d99e7d9d2b4b4678caceca6faedd019c13ab996a01d959ae",
+        "lineBreaks": [
+          10
+        ]
+      },
+      "ca69c2d6fbd88c50-p00379": {
+        "sha256": "c2d1c40a65b8250d2f0cbd0efff9b2675ce91b6150d8f889883256d62d8e3a20",
+        "lineBreaks": [
+          10
+        ]
+      }
+    },
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/21040/pg21040-images.html",
+    "layoutSourceSha256": "c2670c1e53615d6b7cef1707ae02df322a5ac17c00c572eaf821219d7d20f7bb"
+  },
+  "gutenberg-book-of-tea": {
+    "contentVersion": "cd52ebd15129098b9d478a20b7f8e36a5e9a5a1d53ecc4441b48da89b747099d",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/769/pg769-images.html",
+    "layoutSourceSha256": "37a3fca9acd2467cc2db46bc7a8277da96a7ec5517f9079886740ae005bd903b"
+  },
+  "gutenberg-prophet": {
+    "contentVersion": "c7a36cac406f525d23d5940bb6250be5f3fa565b6b047779b507486b7f232193",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/58585/pg58585-images.html",
+    "layoutSourceSha256": "1313dd9dfe53dd90356698aa6648d03adec7b9addba1c6a153e031d593975cb2"
+  },
+  "gutenberg-tao-te-ching": {
+    "contentVersion": "2645bca82104b6fa609fad484d1e7c085f0dc35fa4b5beed46e6a90a2122da84",
+    "passages": {
+      "2645bca82104b6fa-p00003": {
+        "sha256": "637e9fdf56b0ae5cb49390c548d748642523786e9f744e9f6d33dac6e4f9b9e0",
+        "labelBefore": "3."
+      },
+      "2645bca82104b6fa-p00019": {
+        "sha256": "4a54529f9f8be0f40f48b46c6f273ed6bd4994648af1f0bec53a9c0aed944646",
+        "labelBefore": "6."
+      },
+      "2645bca82104b6fa-p00031": {
+        "sha256": "c2242a62df98f3a58ebf19c8d6209f196ceef1703013e9f6721e14ddb8659495",
+        "labelBefore": "12. 1."
+      },
+      "2645bca82104b6fa-p00051": {
+        "sha256": "a5a3b2ba77ba8ea91b94d60e4fa84e132c6f38d87d191928725139c6afe82f29",
+        "labelBefore": "2."
+      },
+      "2645bca82104b6fa-p00052": {
+        "sha256": "17658d84da2a0e7d28a082e1385907946a326b7e416c5bfe4b879123925a327f",
+        "labelBefore": "20. 1."
+      },
+      "2645bca82104b6fa-p00056": {
+        "sha256": "adf8d6a96743b9f313a13690ddb9330ad2824ada4551f423b56fd0a5cc2476e1",
+        "labelBefore": "21."
+      },
+      "2645bca82104b6fa-p00073": {
+        "sha256": "92e05a69d208420f8b070490748d41a736fa3fe7a6ab04729a1fd1b304668d33",
+        "labelBefore": "28. 1."
+      },
+      "2645bca82104b6fa-p00076": {
+        "sha256": "7c0e3f980a6cf33687ea92ce5c4c4c6952ccd1552e068707fd8600abeccf6e66",
+        "labelBefore": "2."
+      },
+      "2645bca82104b6fa-p00114": {
+        "sha256": "e434345107f4b630c34707f27fe9f7da6e5a210d3e7ad4bf36c34375269f9cc4",
+        "labelBefore": "2."
+      },
+      "2645bca82104b6fa-p00116": {
+        "sha256": "0e37e740d2bc1ff3881d8be152f3d1e9c2f441904019cd9425ec743c525dfbcc",
+        "labelBefore": "40. 1."
+      },
+      "2645bca82104b6fa-p00127": {
+        "sha256": "863e5e3d1bfe45d06fcb815d825f07e1931c7ad822934cf7d526d09c14608556",
+        "labelBefore": "44. 1."
+      },
+      "2645bca82104b6fa-p00128": {
+        "sha256": "8b56fbee0334daa0e739bdf9ab4b1c92eef6384d2ed46a3556296c2a799816ed",
+        "labelBefore": "2."
+      },
+      "2645bca82104b6fa-p00129": {
+        "sha256": "3b6c5086b5147f3f64b63ac2d4979bc5cadd26db428dd98ede3f3ec36aeb4939",
+        "labelBefore": "3."
+      },
+      "2645bca82104b6fa-p00130": {
+        "sha256": "0467236876fc4dd26593164bb3f6c01fa742b9ef1b69fa9d5dd99b137e35a3f2",
+        "labelBefore": "45. 1."
+      },
+      "2645bca82104b6fa-p00154": {
+        "sha256": "cdfd21b0ff229b10eb57027c2ca796f9f053ca9f77868fad58b292711962c7e3",
+        "labelBefore": "5."
+      },
+      "2645bca82104b6fa-p00158": {
+        "sha256": "a50c5bd9c291c0b7fc1f94f93a268c382ce7ff5bf38e6270959c1ddd86e9b66b",
+        "labelBefore": "54. 1."
+      },
+      "2645bca82104b6fa-p00159": {
+        "sha256": "013e95f46a3db2de36827baa03180f8d9fca9e923a2148c6d1d605f9b47f6e44",
+        "labelBefore": "2."
+      },
+      "2645bca82104b6fa-p00164": {
+        "sha256": "7d62b989d95b7d246571be1063597e5bdd0ef69ff96ebcbac2896af7ee62d506",
+        "labelBefore": "3."
+      },
+      "2645bca82104b6fa-p00172": {
+        "sha256": "ad1aba1dcfc0a86f4b067a1b3ee61fd1dc67c553604fb0c2cf2c21fa6e78903a",
+        "labelBefore": "58. 1."
+      },
+      "2645bca82104b6fa-p00186": {
+        "sha256": "d6a5664a244aec5f1f4af4c2d0809ad4bd0c26899a2eef16bbcc8aca862e34a7",
+        "labelBefore": "62. 1."
+      },
+      "2645bca82104b6fa-p00207": {
+        "sha256": "50e2bab48796ac985e209fd2e0ee50ffdeb0b8ef83e4d7489873513667406f3d",
+        "labelBefore": "68."
+      },
+      "2645bca82104b6fa-p00238": {
+        "sha256": "0bc10fa9b156f79670cfd29e002e6c7588cfab929a104d6d0fe8f7523f8ac9ab",
+        "labelBefore": "3."
+      }
+    },
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/216/pg216-images.html",
+    "layoutSourceSha256": "2e90738a0501c5ff7253ef24b982edb9d5819e20365736e16160d1a424e072e9"
+  },
+  "gutenberg-dhammapada": {
+    "contentVersion": "9846ddf7b69fd6ace4ecab08eb69aef86c9d2aa84bfebfd48fe6f7c73c48e829",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/2017/pg2017-images.html",
+    "layoutSourceSha256": "cd355d553c1cc6c532968dbe823393f9e2000e53562528b06505839278953733"
+  },
+  "gutenberg-bhagavad-gita": {
+    "contentVersion": "b967902ff029c48f81d77b4669d3d2d419c1a04bf53544aed31f8639ba4dc30a",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/2388/pg2388-images.html",
+    "layoutSourceSha256": "98baf9b979363d3da697a468d9300818c2eedcffc3e36318d7a47739ffef3ea3"
+  },
+  "gutenberg-rubaiyat": {
+    "contentVersion": "518a6c37316408ff7040d821ae004a9bde9a8a093cd66b280f6a016fdc51b1e4",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/246/pg246-images.html",
+    "layoutSourceSha256": "346f7d7ec9330393fe10ce74ccb1afcb7e6f423488223bf5da1f30f849cd63db"
+  },
+  "gutenberg-notes-underground": {
+    "contentVersion": "7def971e8ffe8a58335b9567fb549ce4f6367b6e09ccace52a8e79db77c89f98",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/600/pg600-images.html",
+    "layoutSourceSha256": "9ae24991cd488e42c232b91fdf8b1b1db6717ddb1afe726e97e160c30d31ba79"
+  },
+  "gutenberg-young-werther": {
+    "contentVersion": "e74a117f3ba44a2e07a76329621692258c3be3fa43750f725fc1bb20f321cc3f",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/2527/pg2527-images.html",
+    "layoutSourceSha256": "304d5cd4dd666ee43758dd47a99768514cdd2e11aaa5de2efe679168f61de61e"
+  },
+  "gutenberg-pride-prejudice": {
+    "contentVersion": "2ab5b00b3feb86cbd7af22a0d6a2de2e8eb40f1e84e30dd8d942b8a8a22647f4",
+    "passages": {
+      "2ab5b00b3feb86cb-p01473": {
+        "sha256": "494d37249d2e34f86e66ee8de1341d1906457971cb569bf5fb2a62beb907e82b",
+        "lineBreaks": [
+          26
+        ]
+      },
+      "2ab5b00b3feb86cb-p01640": {
+        "sha256": "f64b46bec1449c12314605610f343bd729c40030e9106d5b50544594761f2ab8",
+        "lineBreaks": [
+          23
+        ]
+      }
+    },
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/1342/pg1342-images.html",
+    "layoutSourceSha256": "11a120c25838974d55bb542d424df322ee10a9058cd884e1166208d1c0fbfeaa"
+  },
+  "gutenberg-don-quixote": {
+    "contentVersion": "d47ad6492265b1243e8c52b11fd6b06e1a17700f2165fbca6cf05497bd631e6b",
+    "passages": {
+      "d47ad6492265b124-p00798": {
+        "sha256": "f2b23e4623a44d9c0872335e55dfcacad2eff28f834d5c09c8d05b0a9c4bd7ca",
+        "lineBreaks": [
+          676,
+          695
+        ]
+      },
+      "d47ad6492265b124-p01611": {
+        "sha256": "7ec22f874d9b38386c55413e4ecaad1ab29728b8baf059ad963aaa4108e1e1de",
+        "lineBreaks": [
+          32,
+          56,
+          107,
+          123,
+          162
+        ]
+      },
+      "d47ad6492265b124-p01613": {
+        "sha256": "8ee0da03ccc06dea0773487577c3944cdad3acad76927d0b2070beb007329825",
+        "lineBreaks": [
+          39
+        ]
+      },
+      "d47ad6492265b124-p01615": {
+        "sha256": "b41036dd7224bae957dc5165590113197d3a8e9666f5904d4c48bbc735edc653",
+        "lineBreaks": [
+          52
+        ]
+      },
+      "d47ad6492265b124-p01617": {
+        "sha256": "34631366e098f17e9ce8c3e96845044de400ac2e9b65f7fdfa06123e509d15eb",
+        "lineBreaks": [
+          37
+        ]
+      },
+      "d47ad6492265b124-p01619": {
+        "sha256": "15cd45b6c3567eeb57323c8c78d892a88d202c09984cd136e55b3b1762808f95",
+        "lineBreaks": [
+          40
+        ]
+      },
+      "d47ad6492265b124-p01621": {
+        "sha256": "fe41b3a4d4cab9723020ae22be86a27652d917169144519d9a8bd9898a4e5d0a",
+        "lineBreaks": [
+          37
+        ]
+      },
+      "d47ad6492265b124-p02710": {
+        "sha256": "c14daad4bb95efbdba40f4b474f33522469ce6683b52cf5e07c586762aa95834",
+        "lineBreaks": [
+          26
+        ]
+      },
+      "d47ad6492265b124-p02979": {
+        "sha256": "72b498aa7459185c7341ef8e4fbefdc70f14d6eca033e463359bc24dd1802e00",
+        "lineBreaks": [
+          12
+        ]
+      },
+      "d47ad6492265b124-p03101": {
+        "sha256": "bdd1066905d31adb4cba6aacd3eb3af1382b686fdcd16c22d18779395296c638",
+        "lineBreaks": [
+          16,
+          36
+        ]
+      },
+      "d47ad6492265b124-p03150": {
+        "sha256": "03ca3dc30857ed9f16ba1afb143e676328a541cf3a8f22a638a8a65fb176871b",
+        "lineBreaks": [
+          3319
+        ]
+      },
+      "d47ad6492265b124-p03151": {
+        "sha256": "0335a196acdcf39c99dab07f49862d9bd218054aab1023d1ccf28f82f719000b",
+        "lineBreaks": [
+          11
+        ]
+      },
+      "d47ad6492265b124-p03154": {
+        "sha256": "af542374b9a76f6cbf5e4017c420f15e1b08889444de3e2924aa0e2294e2fd7a",
+        "lineBreaks": [
+          403,
+          1028,
+          1389,
+          1743,
+          2170,
+          2832,
+          3480
+        ]
+      },
+      "d47ad6492265b124-p03155": {
+        "sha256": "d3cd0ea851f49b3d37619fbfb5e8d3466dd6c6e4ae48c291179c43a59356263b",
+        "lineBreaks": [
+          22
+        ]
+      },
+      "d47ad6492265b124-p03169": {
+        "sha256": "0f2c6c840d6f43367fe1118960c52544994382e63ef25c11704fdffa0a5c3397",
+        "lineBreaks": [
+          2192,
+          2441,
+          2500
+        ]
+      },
+      "d47ad6492265b124-p03170": {
+        "sha256": "acf7ec4a12a74de1afb78e293ed7b7005473b4c17ca7d13d479c905226a84767",
+        "lineBreaks": [
+          13
+        ]
+      },
+      "d47ad6492265b124-p03173": {
+        "sha256": "f82b4338b230cc81373fe9eb492cb422872d4e671bf619f107840efd0657d653",
+        "lineBreaks": [
+          1315
+        ]
+      },
+      "d47ad6492265b124-p03174": {
+        "sha256": "6f1e55d3489973ccc752ba4986e3763b8393ae45a4ba301e28b65be30380ef1a",
+        "lineBreaks": [
+          9
+        ]
+      }
+    },
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/996/pg996-images.html",
+    "layoutSourceSha256": "9d6e0f6b203a2f2d469725925ef4b9c0d8a73fed3675d820549f21d824a98209"
+  },
+  "gutenberg-candide": {
+    "contentVersion": "35a0415f40c38c2ca2358915ab8345df0f8b153402142e5e21e6103ef811807b",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/19942/pg19942-images.html",
+    "layoutSourceSha256": "75441b50c792ee9701f722df9c6660491e60717c618b0938e6fcaa5eaa2eac4e"
+  },
+  "gutenberg-arabian-nights": {
+    "contentVersion": "8ad53ad6c81129e51eef40624ed4a04a35fa1e61b205156c719a1433d16b64e2",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/128/pg128-images.html",
+    "layoutSourceSha256": "18021938b92701999bd482fe270554370ced6952e275b5ac5cd20259d4a3bedf"
+  },
+  "gutenberg-underdogs": {
+    "contentVersion": "5e79587102c63e3f0a47ef229d5785e063dd60e006dbc60fcb77a5d7d8560d5d",
+    "passages": {
+      "5e79587102c63e3f-p00476": {
+        "sha256": "2c1ca487999282071c9d88c5686f168fee052ae7b00cdbedd3258b7951f6b4c8",
+        "lineBreaks": [
+          55
+        ]
+      },
+      "5e79587102c63e3f-p01086": {
+        "sha256": "eabc6fcfe503170daf2932e42b266e7abceb3b0f325ad7f2daf6f226ed80cbe4",
+        "lineBreaks": [
+          25
+        ]
+      }
+    },
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/549/pg549-images.html",
+    "layoutSourceSha256": "a67e525b32470c4fb3993c986fcc3cf8f1ae7a8a535f9aa30e854da3fdc380fe"
+  },
+  "gutenberg-equiano": {
+    "contentVersion": "56acf0cdc09e6f54f347eb95f0883da8c71493e175fd3637f4f5c6cbd8cc1a89",
+    "passages": {
+      "56acf0cdc09e6f54-p00243": {
+        "sha256": "ab559e96accdfca3165ff9454c40781cb50b50ff7c2cce878c1d2533f20b04f9",
+        "lineBreaks": [
+          36,
+          67
+        ]
+      },
+      "56acf0cdc09e6f54-p00250": {
+        "sha256": "3a731b581259fddb79481582351053857640606089f902ccfaf244c08280de4a",
+        "lineBreaks": [
+          25,
+          45
+        ]
+      },
+      "56acf0cdc09e6f54-p00252": {
+        "sha256": "bb752fa6cdf656431d25b2539e3c9fc6ddb917575459d182bd10b33a20f09cc8",
+        "lineBreaks": [
+          24,
+          33,
+          49,
+          78
+        ]
+      },
+      "56acf0cdc09e6f54-p00258": {
+        "sha256": "b07bfda39e9e4c5280b782486d3216b0a4123196e203979cf302cb6efe143e3f",
+        "lineBreaks": [
+          5,
+          14,
+          30,
+          59
+        ]
+      },
+      "56acf0cdc09e6f54-p00273": {
+        "sha256": "2d5e825723163e9b56c4794a4c258fa5adde6681b25a129c703f6a5d9f936a17",
+        "lineBreaks": [
+          46
+        ]
+      },
+      "56acf0cdc09e6f54-p00275": {
+        "sha256": "71f9658f09d5bb5e20eb60816dab6af4aba350227e1b381445fcbd66197e159b",
+        "lineBreaks": [
+          11,
+          23
+        ]
+      },
+      "56acf0cdc09e6f54-p00276": {
+        "sha256": "376524398baf35e4e6c43cc283316d2365f7857c74a49f95b3ff0b179977b86d",
+        "lineBreaks": [
+          22,
+          51,
+          77
+        ]
+      },
+      "56acf0cdc09e6f54-p00283": {
+        "sha256": "cc4cf8f47129589c83a1492c32efda774b0249c1da91f608271906d0e12e4055",
+        "lineBreaks": [
+          50,
+          74,
+          131,
+          182
+        ]
+      },
+      "56acf0cdc09e6f54-p00301": {
+        "sha256": "78a75a724944c343c91002d8208133bde3030bddc1595c0ba2d62988e66c9aec",
+        "lineBreaks": [
+          15
+        ]
+      },
+      "56acf0cdc09e6f54-p00134": {
+        "sha256": "2b898aad5a8d1cd7c03dc24d54c7e281efdb2c0e6f2b3a56126ed0a1507f1ab0",
+        "labelBefore": "END OF THE FIRST VOLUME."
+      },
+      "56acf0cdc09e6f54-p00145": {
+        "sha256": "eecedf35301a8bbe54bdff4a56734e6275390750156ed2c55eac4e46dcd18677",
+        "labelBefore": "VOLUME II"
+      },
+      "56acf0cdc09e6f54-p00191": {
+        "sha256": "7be7532938709025d412fc798478c840d9a4e670ab122e456ecc213edee405b9",
+        "labelBefore": "MISCELLANEOUS VERSES, or"
+      },
+      "56acf0cdc09e6f54-p00315": {
+        "sha256": "55ef8349ad07203ec2cca0f3d97640f57c9e65b07c838ffd97e6bcdc1006aed5",
+        "labelBefore": "THE END."
+      }
+    },
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/15399/pg15399-images.html",
+    "layoutSourceSha256": "a99ebda9cf04977893c06e768c0dbd26ac1c8930ca3ac584081719a9ff368c8f"
+  },
+  "gutenberg-african-farm": {
+    "contentVersion": "c24e2b5f86aa46340fd891e7cc26217c692f418c6097044218267e235fde3905",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/1441/pg1441-images.html",
+    "layoutSourceSha256": "95c10d16c0a29e92ef8144b91719b8660ac55aaf6c1961ca31c346c7abd9519c"
+  },
+  "gutenberg-douglass": {
+    "contentVersion": "ca232c39e000830d259fa7bfbca39caa3bc0e75aa045f5fbaa489ed1a7721de5",
+    "passages": {
+      "ca232c39e000830d-p00113": {
+        "sha256": "391ea59c78ecf9fd45573bb6085102046aa217adb5cbf63e906b859e29c8d3c6",
+        "lineBreaks": [
+          18
+        ]
+      },
+      "ca232c39e000830d-p00139": {
+        "sha256": "c57da1b6ebf2c018f572a8d187e9df81e8e5e4ee69d9aaf49bd032c8bbfb6b34",
+        "lineBreaks": [
+          23
+        ]
+      }
+    },
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/23/pg23-images.html",
+    "layoutSourceSha256": "cabf2980336518ff2ef666f12b82a59fc7385872679cdf024948bb105d60f103"
+  },
+  "gutenberg-seacole": {
+    "contentVersion": "dd7438368201924ef27803132fffd17bb96bb449a3c25245955a3d1d93b621f1",
+    "passages": {
+      "dd7438368201924e-p00121": {
+        "sha256": "370684743b1bf35bdc0694d8ca6e627fff7e949a348070f538e82fe186c56d8f",
+        "lineBreaks": [
+          31
+        ]
+      },
+      "dd7438368201924e-p00155": {
+        "sha256": "920aed4235f4a53d85ee7435f2f936a1a4c564f8b8ae5f2303c75e8a8785662b",
+        "lineBreaks": [
+          19
+        ]
+      },
+      "dd7438368201924e-p00162": {
+        "sha256": "bd709ae3191e091badce932169a9970b11937397dde64dbe6cac5f84c91ab3fd",
+        "lineBreaks": [
+          15,
+          33
+        ]
+      },
+      "dd7438368201924e-p00163": {
+        "sha256": "d76a25d46da6f766fd18f85a8dab96637f7ec1215075c3f1e3e56ce1075c3ca0",
+        "lineBreaks": [
+          61
+        ]
+      },
+      "dd7438368201924e-p00291": {
+        "sha256": "49540d1b80861314a0d32dfeb87f755dc708742be76f3ec4cda07df3d5514af5",
+        "lineBreaks": [
+          27
+        ]
+      },
+      "dd7438368201924e-p00306": {
+        "sha256": "5d882b0a9be6f951f76a0e07180cbeffd23cf24d5f966c4d112cb4c558a3a87f",
+        "lineBreaks": [
+          11
+        ]
+      },
+      "dd7438368201924e-p00310": {
+        "sha256": "3fe0c12cdc305e24826abe2daf9860eaed41883b98e913b57c96cfead7df9d70",
+        "lineBreaks": [
+          12
+        ]
+      },
+      "dd7438368201924e-p00315": {
+        "sha256": "7963b9e9db892d147581b002ceb4e433136b7168049c16fa62f031ab56fb3401",
+        "lineBreaks": [
+          14
+        ]
+      },
+      "dd7438368201924e-p00326": {
+        "sha256": "8990ba9657903ec7f047af1f8fc8c405ae43f715a74c4ab54dd69667f0bf43bc",
+        "lineBreaks": [
+          9
+        ]
+      },
+      "dd7438368201924e-p00329": {
+        "sha256": "23e68e367d0ba9b852b8bcd87e753cc6f3b231921d1050b067faef26a98ce953",
+        "lineBreaks": [
+          11
+        ]
+      },
+      "dd7438368201924e-p00465": {
+        "sha256": "4335395aeb1524a7931310d52b678ef53c4c2cd003f03049b0884b6009b71b08",
+        "lineBreaks": [
+          33,
+          75,
+          109,
+          142,
+          168,
+          202,
+          242,
+          286,
+          308,
+          330,
+          362,
+          387,
+          430
+        ]
+      }
+    },
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/23031/pg23031-images.html",
+    "layoutSourceSha256": "fcf64e2039f8bd3dacdc4a21b54936992f78e8e31b201c618cdd09f6b1dc208f"
+  }
+}

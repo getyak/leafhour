@@ -1,0 +1,431 @@
+{
+  "kind": "catalog-source-sequence-audit",
+  "books": [
+    {
+      "id": "gutenberg-alice",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/11",
+      "sourceSha256": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+      "sourceChars": 143127,
+      "matchedChars": 143127,
+      "scopeNote": "本版保留英文文字及目录；插图请查看原文出处。",
+      "differences": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-meditations",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/2680",
+      "sourceSha256": "6977474f82a39dd88a4af31a59504821658174d33c177732c54357e4d680b96c",
+      "sourceChars": 397303,
+      "matchedChars": 397303,
+      "scopeNote": "本版为 Meric Casaubon 英译的古登堡整理阅读本；底本自身删去译者注、括注及备选译法，并非 1634 年原刊影印。",
+      "differences": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-walden",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/205",
+      "sourceSha256": "2d9a76a2e3e8195c69430516ebd33c4d0757a53ad432ff6186b7b794e6fe99f9",
+      "sourceChars": 632067,
+      "matchedChars": 632067,
+      "scopeNote": "本版包含《瓦尔登湖》18 章及《论公民的不服从义务》，保留底本文字。",
+      "differences": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-flatland",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/201/pg201-images.html",
+      "sourceSha256": "3905815da44e5363cab17762b47c40b931f2ed68fb0eabb3f490df2644d990fb",
+      "sourceChars": 182163,
+      "matchedChars": 181779,
+      "scopeNote": "本版收录 22 节正文；作者第二版序言、献辞及插图见原文出处。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-frankenstein",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/84/pg84-images.html",
+      "sourceSha256": "23403a6a3b1cace42a06d6c378a6f1acf8ec97c940c652d12fe3c0d30275e58f",
+      "sourceChars": 417530,
+      "matchedChars": 416771,
+      "scopeNote": "本版收录 4 封开篇书信、24 章小说及末尾续信；插图未纳入。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-erewhon",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/1906/pg1906-images.html",
+      "sourceSha256": "f24880367fabea05b3ae2c799ce3184da5c0f80ea6eda7ddf7cd849a3f4a0ffd",
+      "sourceChars": 447277,
+      "matchedChars": 446642,
+      "scopeNote": "本版收录 29 章正文及源版尾注；作者三篇序言见原文出处。",
+      "differences": [],
+      "excludedGaps": [
+        {
+          "text": "* * *",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "* * *",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "* * * * *",
+          "reason": "source decoration or duplicated contents, not prose"
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-time-machine",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/35/pg35-images.html",
+      "sourceSha256": "c2749206d5faf4213d6a0c204d5ae1419d8642f34ca0b32d10f793278b80b584",
+      "sourceChars": 178408,
+      "matchedChars": 178101,
+      "scopeNote": "本版收录 16 章及尾声；保留正文文字。",
+      "differences": [],
+      "excludedGaps": [
+        {
+          "text": ">",
+          "reason": "source decoration or duplicated contents, not prose"
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-au-room-of-ones-own",
+      "sourceUrl": "https://gutenberg.net.au/ebooks02/0200791h.html",
+      "sourceSha256": "0f19404c936ed0c92d1d5ccba44b4190efbfa4678bfb1a85b3e185e8dde9afc8",
+      "sourceChars": 209765,
+      "matchedChars": 209582,
+      "scopeNote": "本版收录六章及作者开篇说明；采用 Col Choat 制作的电子阅读本，1929 为作品首版年份，非指定纸本版次。",
+      "differences": [],
+      "excludedGaps": [
+        {
+          "text": "One Two. Three. Four. Five. Six.",
+          "reason": "source decoration or duplicated contents, not prose"
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-on-liberty",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/34901/pg34901-images.html",
+      "sourceSha256": "b0724525c3fc36678fc31d219310b8112ede904c5f75b5fbc46fbe798dd1e5ed",
+      "sourceChars": 280423,
+      "matchedChars": 280288,
+      "scopeNote": "本版收录五章正文及章内注释；书前导论和献辞见原文出处。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "ccel-ivan-ilych",
+      "sourceUrl": "https://ccel.org/ccel/t/tolstoy/ivan.xml",
+      "sourceSha256": "04383749537cf36241fc1ced83ce5aff00cd1b07693249fde04b9b4a9f84b559",
+      "sourceChars": 125540,
+      "matchedChars": 125178,
+      "scopeNote": "本版收录 Louise 与 Aylmer Maude 英译的全部十二章；未混入网站简介及自动索引。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-awakening",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/160/pg160-images.html",
+      "sourceSha256": "8d1f14b4c368f4e1b211fd566320019cf84c1b0274d83b1534b76ddfef405ad2",
+      "sourceChars": 356915,
+      "matchedChars": 355561,
+      "scopeNote": "本版收录《觉醒》39 节及八篇短篇，短篇内部小节单列导航。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-home-and-world",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/7166/pg7166-images.html",
+      "sourceSha256": "5d4fa78b481022e318d42dd290aa3c4dc21f702d56d31a501f466b8819b3cb84",
+      "sourceChars": 362052,
+      "matchedChars": 360446,
+      "scopeNote": "本版收录十二章及底本中的说明、歌曲；为 Surendranath Tagore 英译。",
+      "differences": [],
+      "excludedGaps": [
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        },
+        {
+          "text": "———",
+          "reason": "source decoration or duplicated contents, not prose"
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-brazilian-tales",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/21040/pg21040-images.html",
+      "sourceSha256": "c2670c1e53615d6b7cef1707ae02df322a5ac17c00c572eaf821219d7d20f7bb",
+      "sourceChars": 141080,
+      "matchedChars": 140657,
+      "scopeNote": "本版收录六篇小说及 Isaac Goldberg 的导言，导言与正文分开标注。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-book-of-tea",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/769/pg769-images.html",
+      "sourceSha256": "37a3fca9acd2467cc2db46bc7a8277da96a7ec5517f9079886740ae005bd903b",
+      "sourceChars": 104549,
+      "matchedChars": 104433,
+      "scopeNote": "本版收录英文原作七章；插图未纳入。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-prophet",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/58585/pg58585-images.html",
+      "sourceSha256": "1313dd9dfe53dd90356698aa6648d03adec7b9addba1c6a153e031d593975cb2",
+      "sourceChars": 63668,
+      "matchedChars": 62905,
+      "scopeNote": "本版收录英文原作 28 节；作者插图请查看原文出处。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-tao-te-ching",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/216/pg216-images.html",
+      "sourceSha256": "2e90738a0501c5ff7253ef24b982edb9d5819e20365736e16160d1a424e072e9",
+      "sourceChars": 57745,
+      "matchedChars": 57496,
+      "scopeNote": "本版收录 James Legge 英译 81 章，并保留原译的分节编号；非中文原典。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-dhammapada",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/2017/pg2017-images.html",
+      "sourceSha256": "cd355d553c1cc6c532968dbe823393f9e2000e53562528b06505839278953733",
+      "sourceChars": 64524,
+      "matchedChars": 64111,
+      "scopeNote": "本版收录 Müller 英译的全部 423 条偈颂；电子底本本身未收录原版导论、注释和索引。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-bhagavad-gita",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/2388/pg2388-images.html",
+      "sourceSha256": "98baf9b979363d3da697a468d9300818c2eedcffc3e36318d7a47739ffef3ea3",
+      "sourceChars": 112369,
+      "matchedChars": 112075,
+      "scopeNote": "本版收录 Edwin Arnold 的十八章英诗译及尾注，译者前言见出处；译者明确省略了部分诗节，并非梵文全本直译。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-rubaiyat",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/246/pg246-images.html",
+      "sourceSha256": "346f7d7ec9330393fe10ce74ccb1afcb7e6f423488223bf5da1f30f849cd63db",
+      "sourceChars": 41746,
+      "matchedChars": 41345,
+      "scopeNote": "本版分开收录 FitzGerald 英语译写的第一版和第五版及尾注；其导言见出处，非波斯语逐字直译。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-notes-underground",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/600/pg600-images.html",
+      "sourceSha256": "9ae24991cd488e42c232b91fdf8b1b1db6717ddb1afe726e97e160c30d31ba79",
+      "sourceChars": 237802,
+      "matchedChars": 237308,
+      "scopeNote": "本版收录两部正文；书前说明见原文出处。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-young-werther",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/2527/pg2527-images.html",
+      "sourceSha256": "304d5cd4dd666ee43758dd47a99768514cdd2e11aaa5de2efe679168f61de61e",
+      "sourceChars": 234135,
+      "matchedChars": 233701,
+      "scopeNote": "本版收录两卷正文；书前的编者序言见原文出处。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-pride-prejudice",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/1342/pg1342-images.html",
+      "sourceSha256": "11a120c25838974d55bb542d424df322ee10a9058cd884e1166208d1c0fbfeaa",
+      "sourceChars": 681459,
+      "matchedChars": 679401,
+      "scopeNote": "本版收录小说 61 章；前言、出版页与插图见原文出处。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-don-quixote",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/996/pg996-images.html",
+      "sourceSha256": "9d6e0f6b203a2f2d469725925ef4b9c0d8a73fed3675d820549f21d824a98209",
+      "sourceChars": 2137098,
+      "matchedChars": 2133381,
+      "scopeNote": "本版收录上下部全部 126 章及下部献辞、作者序；上部作者序、献辞、题诗和译者导言见原文出处。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-candide",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/19942/pg19942-images.html",
+      "sourceSha256": "75441b50c792ee9701f722df9c6660491e60717c618b0938e6fcaa5eaa2eac4e",
+      "sourceChars": 190393,
+      "matchedChars": 189618,
+      "scopeNote": "本版收录 30 章及尾注，采用 1918 年 Modern Library 未署名英译；Philip Littell 导言见出处。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-arabian-nights",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/128/pg128-images.html",
+      "sourceSha256": "18021938b92701999bd482fe270554370ced6952e275b5ac5cd20259d4a3bedf",
+      "sourceChars": 590430,
+      "matchedChars": 588605,
+      "scopeNote": "本版为 Andrew Lang 选编集，英译由未逐一署名的 Fairy Books 撰稿者经 Galland 法文版转译，非阿拉伯语全集。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-underdogs",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/549/pg549-images.html",
+      "sourceSha256": "a67e525b32470c4fb3993c986fcc3cf8f1ae7a8a535f9aa30e854da3fdc380fe",
+      "sourceChars": 208894,
+      "matchedChars": 207674,
+      "scopeNote": "本版收录 Munguía 英译的全部小说正文；未纳入 Carleton Beals 导言与 Orozco 插图。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-equiano",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/15399/pg15399-images.html",
+      "sourceSha256": "a99ebda9cf04977893c06e768c0dbd26ac1c8930ca3ac584081719a9ff368c8f",
+      "sourceChars": 433710,
+      "matchedChars": 433390,
+      "scopeNote": "本版收录上下卷十二章及正文中的诗文、注释；献辞和出版页见原文出处。",
+      "differences": [],
+      "excludedGaps": [
+        {
+          "text": ".",
+          "reason": "source decoration or duplicated contents, not prose"
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-african-farm",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/1441/pg1441-images.html",
+      "sourceSha256": "95c10d16c0a29e92ef8144b91719b8660ac55aaf6c1961ca31c346c7abd9519c",
+      "sourceChars": 531476,
+      "matchedChars": 529134,
+      "scopeNote": "本版收录上下部正文；Olive Schreiner 的序言及词汇表见原文出处。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-douglass",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/23/pg23-images.html",
+      "sourceSha256": "cabf2980336518ff2ef666f12b82a59fc7385872679cdf024948bb105d60f103",
+      "sourceChars": 196616,
+      "matchedChars": 196454,
+      "scopeNote": "本版收录自传十一章与作者附记；Garrison 序言和 Phillips 书信见原文出处。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-seacole",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/23031/pg23031-images.html",
+      "sourceSha256": "fcf64e2039f8bd3dacdc4a21b54936992f78e8e31b201c618cdd09f6b1dc208f",
+      "sourceChars": 327005,
+      "matchedChars": 326539,
+      "scopeNote": "本版收录十九章和结语；书前引言及致读者见原文出处。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    }
+  ],
+  "passed": 30,
+  "total": 30
+}

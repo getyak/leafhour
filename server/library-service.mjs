@@ -9,6 +9,7 @@ import {validateLibraryBackup} from '../app/library-backup.mjs';
 import {saveHighlight,findHighlight,mergeHighlights} from '../app/highlights.mjs';
 import {inferSourceLanguage} from '../app/source-language.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
+import {applyCatalogReadingMetadata} from './catalog-reading-metadata.mjs';
 import {structuredCatalogBook} from './structured-catalog.mjs';
 import {applyCatalogSample} from './catalog-sample.mjs';
 import {normalizeReadingSession,mergeReadingSession,normalizeReadingMilestone,normalizeReadingGoal,readingJourney,buildReadingCalendar} from './reading-activity.mjs';
@@ -67,6 +68,9 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       let prepared=applyCatalogChapters(book),sample;try{sample=JSON.parse(await readFile(path.join(catalogDir,'translations',entry.id+'.zh.json'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
       if(sample)prepared=applyCatalogSample(prepared,sample);publicBooks.set(book.bookId,prepared);
     }
+    let metadata={};try{metadata=JSON.parse(await readFile(path.join(catalogDir,'reading-metadata.json'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
+    for(const entry of entries){const book=publicBooks.get(entry.id);for(const key of ['scopeNote','scope','translation','originalLanguage','edition','credits'])if(entry[key]!==undefined)book.source[key]=entry[key];if(metadata[entry.id])applyCatalogReadingMetadata(book,metadata[entry.id]);}
+    for(const id of Object.keys(metadata))if(!publicBooks.has(id))throw Error('Unknown catalog reading metadata: '+id);
   }
   const bookFile=(user,id)=>path.join(userDir(user),'books',digest(id)+'.json');
   const recordFile=(user,id)=>path.join(userDir(user),'records',digest(id)+'.json');

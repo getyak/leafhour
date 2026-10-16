@@ -7,7 +7,7 @@ export function bookIntroduction(book,chapter){
   const grouped=book.source?.structure==='automatic_groups',chapters=book.chapters||[];
   const count=grouped?chapters.length:chapters.filter(c=>!c.kind||c.kind==='body').length;
   const label=!chapter?'':grouped?'阅读片段 '+chapter.number:chapter.kind&&chapter.kind!=='body'?'':'第 '+chapter.number+' 章';
-  return {title:book.title?.zh||'未命名书籍',originalTitle:book.title?.en&&book.title.en!==book.title.zh?book.title.en:'',author:book.author||'',description:book.description||'这本书还没有简介。',extent:count+(grouped?' 个阅读片段':' 章'),current:chapter?[label,chapter.title.zh].filter(Boolean).join(' · '):'',sourceUrl:sourceLink(book.source?.url),sample:chineseSampleNotice(book),cover:book.cover||'private'};
+  return {title:book.title?.zh||'未命名书籍',originalTitle:book.title?.en&&book.title.en!==book.title.zh?book.title.en:'',author:book.author||'',description:book.description||'这本书还没有简介。',extent:count+(grouped?' 个阅读片段':' 章'),current:chapter?[label,chapter.title.zh].filter(Boolean).join(' · '):'',sourceUrl:sourceLink(book.source?.url),sample:chineseSampleNotice(book),scopeNote:typeof book.source?.scopeNote==='string'?book.source.scopeNote:'',cover:book.cover||'private'};
 }
 
 export function renderBookContents({list,book,chapterId,onNavigate,document=list.ownerDocument}){
@@ -38,7 +38,7 @@ export function mountBookIntroduction({document,getBook,getChapter,onOpen=()=>{}
   const isOpen=()=>popover.matches(':popover-open');
   function render(){
     const book=getBook();if(!book)return;const info=bookIntroduction(book,getChapter());
-    for(const [id,value] of [['book-info-title',info.title],['book-info-cover-title',info.title],['book-info-original-title',info.originalTitle],['book-info-author',info.author],['book-info-description',info.description],['book-info-extent',info.extent],['book-info-current',info.current],['book-info-sample',info.sample]]){$(id).textContent=value;$(id).hidden=!value;}
+    for(const [id,value] of [['book-info-title',info.title],['book-info-cover-title',info.title],['book-info-original-title',info.originalTitle],['book-info-author',info.author],['book-info-description',info.description],['book-info-extent',info.extent],['book-info-current',info.current],['book-info-sample',info.sample],['book-info-scope',info.scopeNote]]){$(id).textContent=value;$(id).hidden=!value;}
     popover.dataset.cover=['alice','walden','meditations'].includes(info.cover)?info.cover:'private';
     const source=$('book-info-source');source.hidden=!info.sourceUrl;if(info.sourceUrl)source.href=info.sourceUrl;else source.removeAttribute('href');
     trigger.disabled=false;trigger.setAttribute('aria-label','关于《'+info.title+'》'+(info.current?'，'+info.current:''));

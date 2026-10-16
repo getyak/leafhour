@@ -11,7 +11,7 @@ if(expected){
   }
 }
 const giftProbe='A'.repeat(43);
-for(const route of ['/reader-companion.mjs','/reader-companion-state.mjs','/reader-companion.css','/squirrel-motion.mjs','/squirrel-position.mjs','/library-filter-controls.mjs','/library-filters.css']){
+for(const route of ['/reader-companion.mjs','/reader-companion-state.mjs','/reader-companion.css','/squirrel-motion.mjs','/squirrel-position.mjs','/library-filter-controls.mjs','/library-filters.css','/reader-highlights.mjs','/passage-layers.mjs','/reader-navigation.mjs']){
   const response=await get(route);if(response.headers.get('content-type')?.includes('text/html')||!(await response.text()).length)throw Error('Missing companion asset: '+route);
 }
 const companion=await fetch(new URL('/api/library/books/gutenberg-alice/companion',base),{signal:AbortSignal.timeout(15000)});if(companion.status!==401)throw Error('Anonymous companion access did not require authentication');
@@ -38,10 +38,16 @@ const session=await(await get('/api/auth/session')).json();if(session.user)throw
 const library=await(await get('/api/library')).json();if(library.books?.length!==30||library.books.some(book=>book.visibility!=='public'))throw Error('Anonymous catalog is not the thirty shared English editions');
 if(library.books.some(book=>book.sourceLanguage!=='en'||!Array.isArray(book.topics)||!book.topics.length))throw Error('Public catalog is missing original language or curated filter metadata');
 const catalog=JSON.parse(await readFile(new URL('../catalog/manifest.json',import.meta.url),'utf8'));
+const readingMetadata=JSON.parse(await readFile(new URL('../catalog/reading-metadata.json',import.meta.url),'utf8'));
 if(JSON.stringify(library.books.map(b=>b.bookId).sort())!==JSON.stringify(catalog.map(b=>b.id).sort()))throw Error('Production catalog IDs differ from the released manifest');
 for(const entry of catalog){
  const book=await(await get('/api/library/books/'+entry.id)).json(),paragraphs=book.sections.flatMap(s=>s.paragraphs);
  if(book.visibility!=='public'||!paragraphs.some(p=>p.id===book.readingStart?.passageId))throw Error('Missing readable body: '+entry.id);
+ if(book.source?.scopeNote!==entry.scopeNote||entry.translation!==undefined&&book.source.translation!==entry.translation)throw Error('Missing audited edition description: '+entry.id);
+ const metadata=readingMetadata[entry.id];if(book.contentVersion!==metadata.contentVersion)throw Error('Changed audited edition: '+entry.id);
+ const byId=new Map(paragraphs.map(p=>[p.id,p]));
+ for(const [id,layout]of Object.entries(metadata.passages))for(const key of ['lineBreaks','labelBefore'])if(layout[key]!==undefined&&JSON.stringify(byId.get(id)?.source?.[key])!==JSON.stringify(layout[key]))throw Error('Missing audited source layout: '+entry.id+' / '+id);
+ if(metadata.notices&&!book.licenseNotices?.includes(metadata.notices))throw Error('Missing source notices: '+entry.id);
  if(entry.format==='structured'){
   if(book.chapters.filter(c=>c.kind==='body').length!==entry.bodyChapters||!paragraphs.some(p=>p.original.includes(entry.opening))||!paragraphs.some(p=>p.original.includes(entry.ending)))throw Error('Truncated catalog edition: '+entry.id);
   if(paragraphs.some(p=>Object.keys(p.translations).length))throw Error('Unexpected published translation: '+entry.id);

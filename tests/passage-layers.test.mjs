@@ -25,3 +25,21 @@ test('an unavailable single translation falls back to a selectable original and 
 test('independent translations retain their texts and Chinese originals keep their language',()=>{
   const p={...passage,translations:{literal:{text:'直译。'},interpretive:{text:'意译。'}}};assert.equal(passagePresentation(p,{mode:'parallel',variant:'literal'}).layers[1].text,'直译。');assert.equal(passagePresentation(p,{mode:'parallel',variant:'interpretive'}).layers[1].text,'意译。');assert.equal(visibleQuoteLanguage(p,{mode:'zh',variant:'literal'}),'zh');assert.equal(passagePresentation({...passage,original:'中文原文。'},{mode:'en',sourceLanguage:'zh'}).layers[0].lang,'zh-Hans');
 });
+
+test('source lineation travels with originals and never changes translation text or source anchors',()=>{
+ const p={...passage,source:{lineBreaks:[3,12]},translations:{literal:{text:'现有直译。'}}};
+ assert.deepEqual(passagePresentation(p,{mode:'en'}).layers[0].lineBreaks,[3,12]);
+ assert.deepEqual(passagePresentation(p,{mode:'zh',variant:'interpretive'}).layers[0].lineBreaks,[3,12]);
+ assert.equal(passagePresentation(p,{mode:'zh',variant:'literal'}).layers[0].lineBreaks,undefined);
+ assert.equal(p.original,passage.original);
+});
+
+test('visual line breaks retain every source character and reject invalid offsets',async()=>{
+ const api=await import('../app/passage-layers.mjs');assert.equal(typeof api.applySourceLineation,'function');
+ const document={createTextNode:text=>({textContent:text}),createElement:tag=>({tagName:tag,textContent:''})};
+ const node={children:[],get textContent(){return this.children.map(c=>c.textContent).join('');},set textContent(text){this.children=[{textContent:text}];},replaceChildren(...children){this.children=children;},ownerDocument:document};
+ const original='First line. Second line.';node.textContent=original;api.applySourceLineation(node,[11]);
+ assert.equal(node.textContent,original);assert.equal(node.children.filter(c=>c.tagName==='br').length,1);
+ assert.equal(node.children[0].textContent,'First line.');assert.equal(node.children[2].textContent,' Second line.');
+ for(const offsets of [[0],[-1],[999],[4,3],[3,3],['3'],Array(1001).fill(1)]){node.textContent=original;api.applySourceLineation(node,offsets);assert.equal(node.textContent,original);assert.equal(node.children.length,1);}
+});
