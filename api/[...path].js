@@ -13,6 +13,7 @@ const json=(res,status,body)=>{let payload=JSON.stringify(body);if(Buffer.byteLe
 export function createHostedHandler({portalFactory=createPortal,storeFactory=createHostedStore,authFactory=createHostedAuth,env=process.env}={}){
 let portalPromise;
 return async function handler(req,res){
+  res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
   try{
     const route=routeOf(req);
     // Legacy single-owner APIs never read the private archive on this public surface.
