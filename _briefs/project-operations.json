@@ -1,11 +1,18 @@
 {
-  "version": 1,
+  "version": 2,
   "registeredOn": "2026-10-11",
   "github": {
-    "repository": "getyak/marginalia-reader",
-    "url": "https://github.com/getyak/marginalia-reader",
-    "repositoryId": 1414036624,
-    "visibilityAtRegistration": "private"
+    "repository": "getyak/leafhour",
+    "url": "https://github.com/getyak/leafhour",
+    "repositoryId": 1415706040,
+    "visibility": "public",
+    "registrationSnapshot": {
+      "repository": "getyak/marginalia-reader",
+      "repositoryId": 1414036624,
+      "visibility": "private",
+      "date": "2026-10-11",
+      "note": "Historical private registration; not an ancestor to publish to the public repository."
+    }
   },
   "notion": {
     "workspaceId": "3f6a444a-6c00-8155-8966-e38cc6880a86",
@@ -39,7 +46,9 @@
         "url": "https://app.notion.com/p/3f6a444a6c00816bb12ed846b9bec747",
         "title": "Decision Record & Outcome"
       }
-    }
+    },
+    "projectName": "Leafhour",
+    "documentsName": "Leafhour · Documents"
   },
   "linear": {
     "workspace": "GetYak",
@@ -47,7 +56,7 @@
     "teamKey": "GET",
     "projectId": "P-GET-8",
     "projectUuid": "df570618-2fbd-44d8-8619-47bbb1923aaa",
-    "projectUrl": "https://linear.app/getyak/project/marginalia-旁读-d51582413114",
+    "projectUrl": "https://linear.app/getyak/project/leafhour-d51582413114",
     "milestones": {
       "reading": {
         "id": "38ea5192-9b3f-4b05-bf5b-59ecb54fb085",
@@ -195,7 +204,8 @@
           "GET-143"
         ]
       }
-    }
+    },
+    "projectName": "Leafhour"
   },
   "ownership": {
     "notion": "Long-lived user stories, designs, research interpretations and decisions.",
@@ -203,9 +213,27 @@
     "github": "Implementation, versioned contracts, tests and PI runbook."
   },
   "boundaries": {
-    "implementationNotDispatched": true,
-    "fullBookTranslationNotStarted": true,
-    "realNotificationsNotScheduled": true,
-    "repositoryPublicReleaseRequiresSeparateDecision": true
+    "registrationSnapshotDate": "2026-10-11",
+    "registrationSnapshot": {
+      "implementationNotDispatched": true,
+      "fullBookTranslationNotStarted": true,
+      "realNotificationsNotScheduled": true,
+      "repositoryPublicReleaseRequiresSeparateDecision": true
+    },
+    "current": {
+      "publicRepositoryAuthorized": true,
+      "taskDelivery": "Pull request, checks, normal merge, existing production workflow, and source/runtime verification.",
+      "fullBookRetranslationNotAuthorizedByBrandSync": true,
+      "realNotificationsNotScheduledByBrandSync": true,
+      "preserveAccountDataAndCompatibilityIdentifiers": true
+    }
+  },
+  "brand": {
+    "name": "Leafhour",
+    "tagline": "Stay with a book.",
+    "description": "Your personal reading room, with AI by your side.",
+    "chineseLine": "留一点时间，读进一本书。",
+    "website": "https://leafhour.com",
+    "updatedOn": "2026-10-16"
   }
 }

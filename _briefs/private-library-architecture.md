@@ -1,5 +1,7 @@
 # 私人阅读书房的架构
 
+当前品牌为 Leafhour，正式网站 https://leafhour.com，唯一公开仓库为 `getyak/leafhour`。下方设计与交接保留各自日期及授权范围；当前发布与验收见 [品牌上线记录](../docs/verification/2026-10-16-leafhour-launch.md)。
+
 更新日期：2026-10-12。当前已有 Node + HTML/JS 的本机阅读服务、全书双译草稿与原子 JSON 私人记录。用户已指定官方 DeepSeek Harness 作为 Agent 内核；完整系统规格见 [DeepSeek Harness 系统设计](deepseek-harness-system-design.md)，执行拆分见 [交接](deepseek-harness-delivery-plan.md)。
 
 下文保留原有书房领域结构。React/TypeScript 与 SQLite 是后续候选，不是当前实现，也不是 Harness 首个体验的必要前提。新系统规格中的运行职责、接口与失败处理优先于旧阶段假设。
@@ -23,7 +25,7 @@ flowchart LR
 
 ## 模块边界
 
-Library 接收 PDF、EPUB、TXT/Markdown 与旁读阅读包，保存原件和来源版本，编排提取/OCR、去页眉、章节与段落对齐。扫描提取完成不等于校对通过。导入状态区分接收、提取中、待校对、可读与失败。
+Library 接收 PDF、EPUB、TXT/Markdown 与 Leafhour 阅读包，保存原件和来源版本，编排提取/OCR、去页眉、章节与段落对齐。扫描提取完成不等于校对通过。导入状态区分接收、提取中、待校对、可读与失败。
 
 Content 管理书、章、原作者小节、稳定段落 ID、资源与语言。Translation 生成并版本化直译、意译和注解，支持术语表、批次检查与断点恢复。切换既有译文只改变显示，不调用模型；用户明确发起新的翻译任务才进入生成队列。
 

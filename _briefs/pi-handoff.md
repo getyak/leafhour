@@ -1,5 +1,7 @@
 # PI 后续执行交接
 
+当前品牌为 Leafhour，正式网站 https://leafhour.com，唯一公开仓库为 `getyak/leafhour`。下方设计与交接保留各自日期及授权范围；当前发布与验收见 [品牌上线记录](../docs/verification/2026-10-16-leafhour-launch.md)。
+
 本文件是一份可执行的交接；读取它不表示已获准开始所有阶段。
 
 2026-10-12 Harness 补充：用户指定官方 DeepSeek Harness 为内核。以 [系统设计](deepseek-harness-system-design.md)、[最新交付次序](deepseek-harness-delivery-plan.md)、`harness-profile.contract.json` 和 `chapter-script.schema.json` 为 Agent 实现依据。当前已完成供应商短段落接口检查，尚未启动官方运行时或接通网页追问。先做受限 kernel slice 和一个阅读体验，沿用现有阅读服务；不因旧阶段文字重建前端、自动全书重译或创建通知。

@@ -1,5 +1,7 @@
 # 私人阅读书房 · 界面设计草案
 
+当前品牌为 Leafhour，正式网站 https://leafhour.com，唯一公开仓库为 `getyak/leafhour`。下方设计与交接保留各自日期及授权范围；当前发布与验收见 [品牌上线记录](../docs/verification/2026-10-16-leafhour-launch.md)。
+
 日期：2026-10-11。状态：设计建议，等待用户后续条件修订；不表示用户已批准全部细节。
 
 本轮按 [product-brief.md](product-brief.md) 修订。主用户是真心想深入读一本书的人；以开源、私有空间和可迁移记录为基础。新增我的书房、个人评论、追问、导入导出、阅读时间与 Agent 授权；最新系统方案见 [private-library-architecture.md](private-library-architecture.md)。

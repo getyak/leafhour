@@ -1,5 +1,7 @@
 # 原文、两种译文与注解的内容契约
 
+当前品牌为 Leafhour，正式网站 https://leafhour.com，唯一公开仓库为 `getyak/leafhour`。下方设计与交接保留各自日期及授权范围；当前发布与验收见 [品牌上线记录](../docs/verification/2026-10-16-leafhour-launch.md)。
+
 本样本的源语言为英文、目标语言为中文。正式私人书房需按 `product-brief.md` 支持独立的源语言与目标语言，以及多语言译法；直译/意译原则同样适用。个人评论与追问保存规范见 `personal-data-contract.md`，不混入作者或编辑注解。
 
 ## 英文底本
