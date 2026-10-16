@@ -1,3 +1,4 @@
+import {homeLocale,homeText} from './home-locale.mjs';
 import {positionStorageKey} from './reading-progress.mjs';
 import {createUploadState} from './upload-state.mjs';
 import {createOwnerScope,readOwnerResponse} from './owner-scope.mjs';
@@ -41,16 +42,18 @@ function clearPrivateUI({keepAuthDialog=false}={}){
   books=books.filter(b=>b.visibility==='public').map(b=>({...b,resume:null,journey:null}));chat?.reset();shell?.update();dashboard?.clear();renderBooks();$('featured-books').replaceChildren(...books.slice(0,3).map(landingBookCard));
 }
 function landingBookCard(book){
-  const card=make('article','book-card'),art=make('a','book-art '+(book.cover||'private'));art.href='/read?book='+encodeURIComponent(book.bookId);art.setAttribute('aria-label','阅读'+book.title.zh);
-  const cover=make('div','book-cover'),inner=make('div','cover-inner');inner.append(make('small','',book.visibility==='public'?'Leafhour':'MY READING ROOM'),make('strong','',isLibrary&&book.title.zh==='爱丽丝梦游仙境'?'爱丽丝\n梦游仙境':book.title.zh.slice(0,28)),make('span','cover-ornament',book.cover==='alice'?'❦':book.cover==='walden'?'⌁':'☼'),make('small','',book.visibility==='public'?'ORIGINAL TEXT':'A BOOK OF MY OWN'));cover.append(inner);art.append(cover);
-  const meta=make('div','book-meta'),label=make('div','book-label');label.append(make('span','',book.visibility==='public'?'公版 · 英文原文':'自己的书 · '+book.source.format.toUpperCase()),make('span','',book.chineseSample?'双译开篇 · '+book.chineseSample.paragraphs+' 段':book.visibility==='public'?'按需翻译':'已提取'));
-  meta.append(label,make('h3','',book.title.zh),make('p','book-author',book.author||book.source.filename),make('p','book-description',book.description||'原文已保留。译文和思考，从这一页开始。'));
+  const title=homeLocale(document)==='en'&&!isLibrary?(book.title.en||book.title.zh):book.title.zh;
+  const landingMake=(tag,cls,text)=>make(tag,cls,homeText(text,homeLocale(document)));
+  const card=landingMake('article','book-card'),art=landingMake('a','book-art '+(book.cover||'private'));art.href='/read?book='+encodeURIComponent(book.bookId);art.setAttribute('aria-label',homeText('阅读',homeLocale(document))+(homeLocale(document)==='en'?' ':'')+title);
+  const cover=landingMake('div','book-cover'),inner=landingMake('div','cover-inner');inner.append(landingMake('small','',book.visibility==='public'?'Leafhour':'MY READING ROOM'),landingMake('strong','',isLibrary&&book.title.zh==='爱丽丝梦游仙境'?'爱丽丝\n梦游仙境':title.slice(0,64)),landingMake('span','cover-ornament',book.cover==='alice'?'❦':book.cover==='walden'?'⌁':'☼'),landingMake('small','',book.visibility==='public'?'ORIGINAL TEXT':'A BOOK OF MY OWN'));cover.append(inner);art.append(cover);
+  const meta=landingMake('div','book-meta'),label=landingMake('div','book-label');label.append(landingMake('span','',book.visibility==='public'?'公版 · 英文原文':'自己的书 · '+book.source.format.toUpperCase()),landingMake('span','',book.chineseSample?'双译开篇 · '+book.chineseSample.paragraphs+' 段':book.visibility==='public'?'按需翻译':'已提取'));
+  meta.append(label,landingMake('h3','',title),landingMake('p','book-author',book.author||book.source.filename),landingMake('p','book-description',book.description||'原文已保留。译文和思考，从这一页开始。'));
   let resume=book.resume;if(!session?.user){try{const local=JSON.parse(localStorage.getItem(positionStorageKey(book.bookId))||'null');if(local?.passageId&&local.chapterLabel&&local.contentVersion===book.source.sha256)resume={label:local.chapterLabel,passageId:local.passageId};}catch{}}
   art.href=readingBookUrl(book,resume);
-  if(resume){meta.append(make('p','book-resume',resume.label));art.setAttribute('aria-label','继续阅读'+book.title.zh);}
-  const bottom=make('div','book-bottom'),read=make('a','book-read',resume?'继续阅读 →':'开始阅读 →');read.href=art.href;bottom.append(read);
-  if(book.chineseSample){const trial=make('a','source-link','中文试读 ↗');trial.href=chineseTrialUrl(book);meta.append(trial);}
-  if(book.source.url){const source=make('a','source-link','来源 ↗');source.href=book.source.url;source.target='_blank';source.rel='noopener noreferrer';bottom.append(source);}else bottom.append(make('span','',book.paragraphs+' 段'));
+  if(resume){meta.append(landingMake('p','book-resume',resume.label));art.setAttribute('aria-label',homeText('继续阅读',homeLocale(document))+(homeLocale(document)==='en'?' ':'')+title);}
+  const bottom=landingMake('div','book-bottom'),read=landingMake('a','book-read',resume?'继续阅读 →':'开始阅读 →');read.href=art.href;bottom.append(read);
+  if(book.chineseSample){const trial=landingMake('a','source-link','中文试读 ↗');trial.href=chineseTrialUrl(book);meta.append(trial);}
+  if(book.source.url){const source=landingMake('a','source-link','来源 ↗');source.href=book.source.url;source.target='_blank';source.rel='noopener noreferrer';bottom.append(source);}else bottom.append(landingMake('span','',book.paragraphs+' 段'));
   meta.append(bottom);card.append(art,meta);return card;
 }
 function bookCard(book){
@@ -82,7 +85,7 @@ async function refresh(knownSession){
   const next=knownSession||await api('/api/auth/session');if(generation!==refreshGeneration)return;
   const continueUpload=!session?.user&&next.user&&pendingUpload,continueChat=!session?.user&&next.user&&pendingChat,changed=ownerScope.adopt(next.user?.id||'guest');session=next;
   if(changed){clearPrivateUI({keepAuthDialog:authDialog.isSettingPasswordFor(next.user?.id)});pendingUpload=!!continueUpload;pendingChat=!!continueChat;}authDialog.updateCapabilities();shell?.update();
-  $('account-button').textContent=session.user?'我的书房 ↗':'登录 / 注册 ↗';$('library-description').textContent=session.user?'自己的书与阅读记录。':'先选一本书，读几页。';
+  $('account-button').textContent=homeText(session.user?'我的书房 ↗':'登录 / 注册 ↗',homeLocale(document));$('library-description').textContent=session.user?'自己的书与阅读记录。':'先选一本书，读几页。';
   const library=await api('/api/library');if(generation!==refreshGeneration)return;books=library.books;shelfRevision=library.shelfRevision||0;
   if(!session.user){try{const order=JSON.parse(localStorage.getItem('marginalia-shelf-order:guest')||'null');if(Array.isArray(order)&&order.length<=1000){const rank=new Map(order.filter(id=>typeof id==='string').map((id,index)=>[id,index]));if(rank.size)books=books.map((book,index)=>({...book,shelfPosition:rank.get(book.bookId)??order.length+index}));}}catch{}}
   if(!session.user)for(const book of books){try{const local=JSON.parse(localStorage.getItem(positionStorageKey(book.bookId))||'null');if(local?.passageId&&local.chapterLabel&&local.contentVersion===book.source.sha256)book.resume={label:local.chapterLabel,passageId:local.passageId,updatedAt:local.updatedAt,mode:local.mode,variant:local.variant};}catch{}}
@@ -129,7 +132,7 @@ document.querySelectorAll('[data-shelf]').forEach(button=>{button.setAttribute('
 $('book-search').addEventListener('input',renderBooks);
 for(const id of ['search-clear','empty-clear'])$(id).addEventListener('click',()=>{$('book-search').value='';renderBooks();$('book-search').focus();});
 $('library-retry').addEventListener('click',async event=>{const focus=trackActionFocus(document,event.currentTarget);status('library-status','正在重新打开书房…');try{await refresh();}catch(error){status('library-status',error.message,true);}finally{focus.restore($('library-retry').hidden?$('main'):$('library-retry'));}});
-refresh().then(()=>{if(isLibrary&&entryQuery.get('upload')==='1')openUpload();if(isLibrary&&entryQuery.get('login')==='1'){if(session?.user&&returnToReader)location.replace(returnToReader);else if(!session?.user){const messages={cancelled:'登录已取消，可以重新选择。',expired:'登录链接已过期，请重新开始。',unavailable:'登录服务暂时无法连接，请稍后重试。'};openAuth(messages[entryQuery.get('auth_error')]);}}}).catch(error=>{status('library-status',error.message,true);$('featured-books').replaceChildren(make('p','muted','书架暂时无法连接，请稍后重试。'));});
+refresh().then(()=>{if(isLibrary&&entryQuery.get('upload')==='1')openUpload();if(isLibrary&&entryQuery.get('login')==='1'){if(session?.user&&returnToReader)location.replace(returnToReader);else if(!session?.user){const messages={cancelled:'登录已取消，可以重新选择。',expired:'登录链接已过期，请重新开始。',unavailable:'登录服务暂时无法连接，请稍后重试。'};openAuth(messages[entryQuery.get('auth_error')]);}}}).catch(error=>{status('library-status',error.message,true);$('featured-books').replaceChildren(make('p','muted',homeText('书架暂时无法连接，请稍后重试。',homeLocale(document))));});
 
 const checkOwner=async()=>{if(document.hidden||authDialog.hasPendingSessionChange())return;try{const current=await api('/api/auth/session');if(authDialog.hasPendingSessionChange())return;if((current.user?.id||'guest')!==(session?.user?.id||'guest'))await refresh(current);}catch{}};
 window.addEventListener('focus',checkOwner);document.addEventListener('visibilitychange',checkOwner);

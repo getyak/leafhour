@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mountHomeAtmosphere} from '../app/home-atmosphere.mjs';
 
-function setup({reduced=false,fine=true,hidden=false,saved=null}={}){
-  const doc=new EventTarget();doc.hidden=false;
+function setup({reduced=false,fine=true,hidden=false,saved=null,locale='zh-Hans'}={}){
+  const doc=new EventTarget();doc.hidden=false;doc.documentElement={lang:locale};
   const motion=new EventTarget();motion.matches=reduced;
   const pointer=new EventTarget();pointer.matches=fine;
   const toggle=new EventTarget();toggle.attributes=new Map();toggle.setAttribute=(k,v)=>toggle.attributes.set(k,v);
@@ -33,6 +33,12 @@ test('pause cancels movement, saves the choice, and reduced motion cannot be ove
   s.toggle.dispatchEvent(new Event('click'));s.motion.matches=true;s.motion.dispatchEvent(new Event('change'));s.move();
   assert.equal(s.root.dataset.atmosphere,'still');assert.equal(s.frames.size,0);
   s.toggle.dispatchEvent(new Event('click'));assert.equal(s.root.dataset.atmosphere,'still');
+});
+test('English sunlight controls retain their language when paused and resumed',()=>{
+  const s=setup({locale:'en'});mountHomeAtmosphere(s.root);
+  assert.equal(s.toggle.attributes.get('aria-label'),'Pause sunlight');
+  s.toggle.dispatchEvent(new Event('click'));assert.equal(s.toggle.attributes.get('aria-label'),'Enable sunlight');assert.equal(s.root.dataset.atmosphere,'paused');
+  s.toggle.dispatchEvent(new Event('click'));assert.equal(s.toggle.attributes.get('aria-label'),'Pause sunlight');assert.equal(s.root.dataset.atmosphere,'running');
 });
 
 test('hidden pages stop, restore without a jump, and cleanup removes input handlers',()=>{
