@@ -81,8 +81,8 @@ export function createReaderCompanionService({bookFor,mutateBook,clock,generator
       if(data.turns.some(t=>t.status==='running'))throw invalid('这本书还有对话正在处理',409);
       if(data.turns.length>=100)throw invalid('请先导出保存这本书的对话',413);
       m.attempts++;m.lastAttemptMs=m.activeMs;m.lastAttemptCount=m.seenCount;
-      const turn={id:input.id,kind:'companion',origin:'ai',text:null,passageId:input.passageId,contentVersion:book.contentVersion,createdAt:new Date(now).toISOString(),status:'running',answer:null,activity:[],runId,expiresAt:now+90000,consentRevision:m.revision,sessionId:m.sessionId};
-      const payload=contextFor(book,m,input.passageId,conversationHistory(data.turns));data.turns.push(turn);return {created:true,turn:publicTurn(turn),...payload};
+      const turn={id:input.id,kind:'companion',scope:'book',origin:'ai',text:null,passageId:input.passageId,contentVersion:book.contentVersion,createdAt:new Date(now).toISOString(),status:'running',answer:null,activity:[],runId,expiresAt:now+90000,consentRevision:m.revision,sessionId:m.sessionId};
+      const payload=contextFor(book,m,input.passageId,conversationHistory(data.turns,{mode:'book'},book.contentVersion));data.turns.push(turn);return {created:true,turn:publicTurn(turn),...payload};
     });
     if(!claimed.created)return claimed.turn;
     const controller=new AbortController();active.set(runId,{controller,user,bookId,id:input.id,runId,companion:true});let ticket,timer,stopWatching=()=>{};

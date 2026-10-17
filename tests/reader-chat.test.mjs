@@ -354,7 +354,7 @@ test('a cross-book source is registered under its actual book',async t=>{
   const other=bookFixture();other.bookId='second-book';other.sections[1].paragraphs[0].original='A real second-book source.';
   const entered=deferred(),finish=deferred();let captured;
   const {service,seed}=await fixture(t,{generator:async job=>{captured=job;await job.tools.execute('reader_read_chapter',{bookId:'second-book',chapterId:'ch1'});await job.tools.execute('reader_cite',{bookId:'second-book',passageId:'p1',layer:'original',quote:'A real second-book source.'});entered.resolve();await finish.promise;return {kind:'conversation',summary:'跨书比较'};}});
-  await seed(alice,other);const pending=service.send(alice,'chat-book',input());await entered.promise;finish.resolve();const turn=await pending;
+  await seed(alice,other);await service.configureScope(alice,'chat-book',{mode:'library',baseRevision:0});const pending=service.send(alice,'chat-book',input({scopeRevision:1}));await entered.promise;finish.resolve();const turn=await pending;
   assert.equal(turn.status,'completed');assert.equal(turn.answer.sourceRefs[0].bookId,'second-book');assert.equal(turn.answer.sourceRefs[0].url,'/read?book=second-book&passage=p1');assert.ok(turn.activity.some(a=>a.bookId==='second-book'&&a.status==='completed'));assert.equal(captured.signal.aborted,true);
 });
 test('history byte limits discard only oldest complete pairs while preserving the current question',async t=>{
