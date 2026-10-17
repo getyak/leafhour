@@ -4,7 +4,7 @@ import {modelConfiguration} from './model-config.mjs';
 
 const refs=rows=>rows?.map(r=>({chapterId:r.chapterId,passageId:r.passageId,quote:r.quote}));
 const prompts={
- outline:'逐段阅读本批全部原文，只输出 JSON {"passageIds":["本批全部实际段落ID，按原顺序"],"summary":"最多180字的内容与限定","claims":[{"text":"有依据的要点，最多180字","sourceRefs":[{"chapterId":"实际章ID","passageId":"实际段ID","quote":"精确原文子串，最多180字"}]}]}。最多3个要点，每个1到2个出处；总 JSON 不超过1800字符。不要把标题、目录或零散摘句当成读过全书。',
+ outline:'逐段阅读本批全部原文，只输出 JSON {"passageIds":["本批全部实际段落ID，按原顺序"],"summary":"最多100个中文字符（含标点）的内容与限定","claims":[{"text":"有依据的要点，最多100个中文字符","sourceRefs":[{"chapterId":"实际章ID","passageId":"实际段ID","quote":"连续原文子串，最多120个字符，逐字保留大小写和标点"}]}]}。最多3个要点，每个1到2个出处；总 JSON 不超过1800字符。不要把标题、目录或零散摘句当成读过全书。',
  script:'依据已逐批阅读的原文要点，写普通话双人导听，只输出 JSON {"turns":[{"speaker":"guide|questioner","text":"台词","style":"calm|curious|reflective|emphatic","kind":"explanation|question|example|quote","sourceRefs":[{"chapterId":"实际章ID","passageId":"实际段ID","quote":"提供过的精确原文子串"}]}]}。最多24轮，每轮1到4个出处。开篇导听只使用开头，不预测后续情节；讲解只解释授权范围；全书导览必须使用所有批次，介绍主题、结构和阅读关注点，不透露转折、身份揭示、结局或具体后续情节。不能把听过、读过或完成时长推断为用户已经理解。直接进入内容，不寒暄、不互相吹捧。保留否定、条件、程度和不确定性，不补外部事实或作者生平。补充例子用 kind example，台词中明确是为理解而编的例子，不冒充作者观点。kind quote 台词必须与出处摘句完全相同。材料少时讲短一些。',
  verify:'逐轮核对讲稿的重要解释性主张与所附完整原文段落。只输出 JSON {"checks":[{"turnId":"实际轮次ID","supported":true,"reason":"简短核对理由"}]}，每轮必须有且只有一项。若引用虽逐字存在但不支持台词、遗漏关键条件否定、断言材料外事实或后续情节，supported 必须为 false。问题不能暗含无依据事实；例子须明确是 AI 编写的示例且不能冒充作者经历；原文摘录必须完全一致。不能因为讲稿自称有依据就判通过。'
 };
@@ -18,6 +18,38 @@ function guidePayload(input){
    ...(input.turns?{turns:input.turns.map(t=>({id:t.id,speaker:t.speaker,text:t.text,kind:t.kind,sourceRefs:refs(t.sourceRefs)}))}:{})};
 }
 export const guideInputSize=input=>JSON.stringify(guidePayload(input)).length;
+
+// Only repair presentation differences with a unique match in evidence that
+// this stage actually received. Never fuzzy-match words or search other books.
+function formattedQuotes(original,quote){
+ if(original.includes(quote))return [quote];
+ const value=quote.trim();if(!value||value.length>500)return [];
+ let pattern=value.split(/\s+/u).map(token=>token.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('\\s+');
+ if(/^[A-Za-z]/.test(value))pattern='['+value[0].toLowerCase()+value[0].toUpperCase()+']'+pattern.slice(1);
+ const matches=new Set();
+ for(const match of original.matchAll(new RegExp('(?=('+pattern+'))','gu'))){matches.add(match[1]);if(matches.size>1)break;}
+ return [...matches];
+}
+function normalizeGuideFormatting(input,result){
+ if(!result||typeof result!=='object'||input.stage==='verify')return result;
+ const sources=input.stage==='outline'?input.passages?.map(p=>({passageId:p.id,chapterId:p.chapterId,original:p.original})):input.outlines?.flatMap(o=>o.claims?.flatMap(c=>c.sourceRefs?.map(r=>({...r,original:r.quote}))||[])||[]);
+ const normalizeRef=ref=>{
+  if(typeof ref?.quote!=='string'||ref.quote.length>500)return ref;
+  const matches=new Set((sources||[]).filter(p=>p.passageId===ref.passageId&&(ref.chapterId===undefined||p.chapterId===ref.chapterId)).flatMap(p=>formattedQuotes(p.original,ref.quote)));
+  return matches.size===1?{...ref,quote:[...matches][0]}:ref;
+ };
+ const key=input.stage==='outline'?'claims':'turns';
+ if(!Array.isArray(result[key]))return result;
+ const normalized={...result,[key]:result[key].map(row=>{
+  if(!Array.isArray(row?.sourceRefs))return row;
+  const sourceRefs=row.sourceRefs.map(normalizeRef),text=input.stage==='script'&&row.kind==='quote'&&row.text===row.sourceRefs.map(r=>r?.quote).join(' ')?sourceRefs.map(r=>r?.quote).join(' '):row.text;
+  return {...row,sourceRefs,...(input.stage==='script'?{text}:{})};
+ })};
+ // A redundant overview may be verbose; retain every actual claim and its
+ // evidence, using the first complete claim as the short overview instead.
+ if(input.stage==='outline'&&typeof normalized.summary==='string'&&normalized.summary.length>180&&typeof normalized.claims[0]?.text==='string'&&normalized.claims[0].text.length<=180)normalized.summary=normalized.claims[0].text;
+ return normalized;
+}
 
 // Each invocation is exactly one request. Durable orchestration owns when a
 // stage may be submitted; this adapter never retries an uncertain paid call.
@@ -42,7 +74,7 @@ export function createGuideGenerator({env=process.env,fetcher=fetch}={}){
    const body=await response.text();if(body.length>100000)throw new Error('oversized response');
    const value=JSON.parse(body),text=value.choices?.[0]?.message?.content;
    if(typeof text!=='string')throw new Error('missing result');
-   return JSON.parse(text);
+   return normalizeGuideFormatting(input,JSON.parse(text));
   }catch{throw audioError('导听讲稿格式未通过检查，已有文字已保留。',502,'invalid_guide');}
  };
 }
