@@ -18,7 +18,7 @@ export async function exportLibraryInParts({api,assertCurrent=()=>{},onProgress=
   if(manifest?.kind!=='marginalia-export-manifest'||manifest.schemaVersion!==1||!Number.isFinite(Date.parse(manifest.exportedAt))||!Array.isArray(manifest.books)||manifest.books.length>100)throw invalid();
   const seen=new Set();for(const book of manifest.books){if(!/^[A-Za-z0-9_-]{1,128}$/.test(book?.bookId)||seen.has(book.bookId)||typeof book.contentVersion!=='string'||!book.contentVersion||book.contentVersion.length>256)throw invalid();seen.add(book.bookId);}
   let cumulativeBytes=0;
-  const backup={kind:'marginalia-library',schemaVersion:1,exportedAt:manifest.exportedAt,books:[],includesOriginalFiles:false};
+  const backup={kind:'marginalia-library',schemaVersion:1,exportedAt:manifest.exportedAt,books:[],includesOriginalFiles:false,...(manifest.readingPreferences!==undefined?{readingPreferences:manifest.readingPreferences}:{})};
   for(const [index,book]of manifest.books.entries()){
     let entry;
     for(let attempt=0;attempt<3;attempt++){

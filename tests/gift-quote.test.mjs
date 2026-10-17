@@ -26,7 +26,7 @@ const bookWith=(originals,bookId='reading-test')=>{
   return book;
 };
 const fixtureBook=()=>bookWith([['Read this first.','Keep your own question.'],['Continue from here.','This is the closing paragraph.']]);
-const selectFirstWord=payload=>{const entry=payload.pool[0],text=entry.text.slice(0,entry.text.indexOf(' '));return {bookId:payload.bookId,contentVersion:payload.contentVersion,passageId:entry.passageId,chapterId:entry.chapterId,start:0,end:codePointLength(text),text};};
+const selectFirstSentence=payload=>{const entry=payload.pool[0],text=entry.text.match(/^[\s\S]*?[。！？!?.](?:[”"’']*)/u)?.[0]||entry.text;return {bookId:payload.bookId,contentVersion:payload.contentVersion,passageId:entry.passageId,chapterId:entry.chapterId,start:0,end:codePointLength(text),text};};
 const select=(text,poolIndex=0,start=0)=>(payload)=>{const entry=payload.pool[poolIndex]||payload.pool[0];return {bookId:payload.bookId,contentVersion:payload.contentVersion,passageId:entry.passageId,chapterId:entry.chapterId,start,end:start+codePointLength(text),text};};
 
 test('the default quotation is a bounded source selection with honest attribution and no publication',async t=>{
@@ -74,14 +74,14 @@ test('markup cannot become a quotation, while clean excerpts survive Unicode sli
   let result=await h.quotes.prepare(owner,marked.bookId);
   assert.equal(result.quote.selection,'original-excerpt');assert.equal(result.quote.text,'Second sentence stays.','the fallback skips markup and stays plain source text');
   const unicode=bookWith([['澄澈的天空😀，继续读下去。这一句很长。','Tail.'],['Continue from here.','This is the closing paragraph.']]);
-  const cps=[...unicode.sections[0].paragraphs[0].original],text=cps.slice(3,7).join('');
-  assert.equal(text,'天空😀，');assert.equal(codePointLength(text),4);assert.equal(codePointLength('😀'),1);
-  h=await harness(t,{generator:async payload=>{const entry=payload.pool[0];return {bookId:payload.bookId,contentVersion:payload.contentVersion,passageId:entry.passageId,chapterId:entry.chapterId,start:3,end:7,text};}});h.register(owner,unicode);
+  const cps=[...unicode.sections[0].paragraphs[0].original],text=cps.slice(0,13).join('');
+  assert.equal(text,'澄澈的天空😀，继续读下去。');assert.equal(codePointLength(text),13);assert.equal(codePointLength('😀'),1);
+  h=await harness(t,{generator:async payload=>{const entry=payload.pool[0];return {bookId:payload.bookId,contentVersion:payload.contentVersion,passageId:entry.passageId,chapterId:entry.chapterId,start:0,end:13,text};}});h.register(owner,unicode);
   result=await h.quotes.prepare(owner,unicode.bookId);
-  assert.equal(result.quote.selection,'ai-selected');assert.equal(result.quote.text,'天空😀，');assert.equal(result.quote.codepoints,4);
+  assert.equal(result.quote.selection,'ai-selected');assert.equal(result.quote.text,'澄澈的天空😀，继续读下去。');assert.equal(result.quote.codepoints,13);
   // Offsets counted in UTF-16 units cannot claim the code point text: the
   // equality check slices by code points and fails closed.
-  h=await harness(t,{generator:async payload=>{const entry=payload.pool[0];return {bookId:payload.bookId,contentVersion:payload.contentVersion,passageId:entry.passageId,chapterId:entry.chapterId,start:3,end:8,text};}});h.register(owner,unicode);
+  h=await harness(t,{generator:async payload=>{const entry=payload.pool[0];return {bookId:payload.bookId,contentVersion:payload.contentVersion,passageId:entry.passageId,chapterId:entry.chapterId,start:0,end:14,text};}});h.register(owner,unicode);
   result=await h.quotes.prepare(owner,unicode.bookId);
   assert.equal(result.quote.selection,'original-excerpt');assert.ok(!result.quote.text.includes('😀')||result.quote.text.endsWith('。'));
   const long='字'.repeat(MAX_QUOTE_CODEPOINTS+1);
@@ -118,7 +118,7 @@ test('every book falls back to its own text and an empty source leaves no quotat
 
 test('duplicate in-flight and repeated prepares coalesce per owner and version without leaking across owners',async t=>{
   let calls=0,release;const gate=new Promise(resolve=>{release=resolve;});
-  const generator=async payload=>{calls++;await gate;return selectFirstWord(payload);};
+  const generator=async payload=>{calls++;await gate;return selectFirstSentence(payload);};
   const h=await harness(t,{generator}),mine=fixtureBook(),theirs=fixtureBook();theirs.sections[0].paragraphs[0].original='Their own opening line.';
   h.register(owner,mine);h.register(receiver,theirs);
   const pending=[h.quotes.prepare(owner,mine.bookId),h.quotes.prepare(owner,mine.bookId)];
@@ -126,13 +126,13 @@ test('duplicate in-flight and repeated prepares coalesce per owner and version w
   release();
   const [first,second]=await Promise.all(pending),other=await foreign;
   assert.equal(calls,2,'same owner/book/version shares one provider call; another owner never shares');
-  assert.equal(first.quote.receipt,second.quote.receipt);assert.equal(first.quote.text,'Read');
-  assert.equal(other.quote.text,'Their');
-  const cached=await h.quotes.prepare(owner,mine.bookId);assert.equal(calls,2,'a repeat prepare reuses the bounded cache');assert.equal(cached.quote.text,'Read');
+  assert.equal(first.quote.receipt,second.quote.receipt);assert.equal(first.quote.text,'Read this first.');
+  assert.equal(other.quote.text,'Their own opening line.');
+  const cached=await h.quotes.prepare(owner,mine.bookId);assert.equal(calls,2,'a repeat prepare reuses the bounded cache');assert.equal(cached.quote.text,'Read this first.');
 });
 
 test('the selection cache is bounded and re-reads a source it has evicted',async t=>{
-  let calls=0;const generator=async payload=>{calls++;return selectFirstWord(payload);};
+  let calls=0;const generator=async payload=>{calls++;return selectFirstSentence(payload);};
   const h=await harness(t,{generator,cacheLimit:2}),book=fixtureBook();
   for(let version=1;version<=3;version++){h.register(owner,{...fixtureBook(),contentVersion:'edition-'+version});await h.quotes.prepare(owner,book.bookId);}
   assert.equal(calls,3);
@@ -220,7 +220,7 @@ test('the DeepSeek selector sends one bounded request, thinks not at all and rej
 
 test('the quote route is owner scoped, prepares only a suggestion and never calls a provider to open a letter',async t=>{
   const {createPortal}=await import('../server/portal.mjs'),{createHostedAuth}=await import('../deploy/hosted-auth.mjs'),{authFixture}=await import('./auth-fixture.mjs');
-  let calls=0;const generator=async payload=>{calls++;return selectFirstWord(payload);};
+  let calls=0;const generator=async payload=>{calls++;return selectFirstSentence(payload);};
   const sender={id:'quote-http-sender',email:'sender@fixture.invalid',kind:'email'};
   const users=[sender];
   const fixture=authFixture({onProvider:({url,body,options})=>{
@@ -260,6 +260,61 @@ test('the quote route is owner scoped, prepares only a suggestion and never call
 
 const paragraph=id=>text=>({id,original:text,translations:{},annotationIds:[],termIds:[]});
 const singleSection=paragraphs=>{const book=structuredClone(readingBook);book.sections=[{number:1,chapterId:'ch01',paragraphs}];return book;};
+test('the quote pool starts at the actual reading body instead of filling with front matter or chapter headings',()=>{
+  const book=singleSection([paragraph('heading')('CHAPTER I. Down the Rabbit-Hole'),paragraph('body-start')('Alice stood quietly beside the river.'),paragraph('body-next')('Keep a question of your own.')]);
+  book.chapters[0].kind='body';book.chapters.unshift({id:'frontmatter',number:0,kind:'frontmatter',title:{zh:'出版说明'}});
+  book.sections.unshift({number:0,chapterId:'frontmatter',paragraphs:[paragraph('title')('Alice'),paragraph('byline')('by Lewis Carroll')]});
+  book.readingStart={chapterId:'ch01',passageId:'body-start'};
+  assert.deepEqual(buildQuotePool(book).map(row=>row.passageId),['body-start','body-next']);
+});
+test('a source-exact name is not a gift sentence and cannot carry an AI label',async t=>{
+  const book=singleSection([paragraph('p1')('Alice stood quietly beside the river.')]);
+  const h=await harness(t,{generator:async payload=>select('Alice')(payload)});h.register(owner,book);
+  const result=await h.quotes.prepare(owner,book.bookId);
+  assert.equal(result.quote.selection,'original-excerpt');assert.equal(result.quote.text,'Alice stood quietly beside the river.');
+  const headings=singleSection([paragraph('p1')('Alice'),paragraph('p2')('by Lewis Carroll')]);
+  h.register(owner,{...headings,contentVersion:'headings-only'});
+  assert.equal((await h.quotes.prepare(owner,book.bookId)).quote,null,'a title-only source does not invent a sentence');
+});
+test('a source-exact sentence tail is rejected while a whole later sentence keeps its real offsets',async t=>{
+  const original='Alice was beginning to get very tired. She looked up quietly.';
+  const book=singleSection([paragraph('p1')(original)]);
+  for(const fragment of ['get very tired.','was beginning to get very tired.']){
+    const h=await harness(t,{generator:async payload=>select(fragment,0,codePointLength(original.slice(0,original.indexOf(fragment))))(payload)});h.register(owner,book);
+    const result=await h.quotes.prepare(owner,book.bookId);
+    assert.equal(result.quote.selection,'original-excerpt');assert.equal(result.quote.text,'Alice was beginning to get very tired.');
+  }
+  const sentence='She looked up quietly.',start=codePointLength(original.slice(0,original.indexOf(sentence)));
+  const h=await harness(t,{generator:async payload=>select(sentence,0,start)(payload)});h.register(owner,book);
+  const result=await h.quotes.prepare(owner,book.bookId);
+  assert.equal(result.quote.selection,'ai-selected');assert.equal(result.quote.text,sentence);assert.equal(result.quote.start,start);
+});
+test('source headings never enter the pool across chapters or with missing reading start metadata',async t=>{
+  for(const readingStart of [{chapterId:'ch01',passageId:'p1'},null,{chapterId:'missing',passageId:'missing'}]){
+    const book=bookWith([['Unfinished body text'],['CHAPTER II.','The river carried her onward.']]);
+    book.readingStart=readingStart;book.sections[1].paragraphs[0].kind='source_heading';
+    const pool=buildQuotePool(book);
+    assert.ok(!pool.some(row=>row.text==='CHAPTER II.'));
+    const h=await harness(t,{generator:async payload=>({...select('CHAPTER II.')(payload),chapterId:book.sections[1].chapterId,passageId:book.sections[1].paragraphs[0].id})});h.register(owner,book);
+    const result=await h.quotes.prepare(owner,book.bookId);
+    assert.equal(result.quote.selection,'original-excerpt');assert.equal(result.quote.text,'The river carried her onward.');
+  }
+});
+test('new quotations reject unpaired double quotes without changing source text or legacy identity checks',async t=>{
+  for(const fragment of ['The Rabbit said, “Oh dear!','I shall be late!”','The Rabbit said, "Oh dear!','继续读下去，「别着急。']){
+    const book=singleSection([paragraph('p1')(fragment),paragraph('p2')('Keep reading quietly.')]);
+    const h=await harness(t,{generator:async payload=>select(fragment)(payload)});h.register(owner,book);
+    const result=await h.quotes.prepare(owner,book.bookId);
+    assert.equal(result.quote.selection,'original-excerpt');assert.equal(result.quote.text,'Keep reading quietly.');
+    assert.ok(validateGiftQuoteSelection({...select(fragment)({bookId:book.bookId,contentVersion:book.contentVersion,pool:buildQuotePool(book)}),selection:'original-excerpt'},book),'legacy exact-source identity validation remains compatible');
+    h.register(owner,{...singleSection([paragraph('p1')(fragment)]),contentVersion:'no-complete-sentence'});
+    assert.equal((await h.quotes.prepare(owner,book.bookId)).quote,null);
+  }
+  for(const text of ['“Keep going.”','"Keep going."',"I don't give up.",'😀 Keep going.','继续读下去，「别着急。」']){
+    const book=singleSection([paragraph('p1')(text)]),h=await harness(t,{generator:async payload=>select(text)(payload)});h.register(owner,book);
+    const result=await h.quotes.prepare(owner,book.bookId);assert.equal(result.quote.selection,'ai-selected');assert.equal(result.quote.text,text);
+  }
+});
 test('a selection outside the submitted pool or beyond its submitted prefix cannot claim the AI label',async t=>{
   const paragraphs=Array.from({length:9},(_,i)=>paragraph('p'+(i+1))('Passage number '+(i+1)+' for the pool.'));
   const book=singleSection(paragraphs),pool=buildQuotePool(book);
@@ -275,8 +330,8 @@ test('a selection outside the submitted pool or beyond its submitted prefix cann
   for(const [candidate,source]of [[ninth,book],[beyond,longBook]]){
     const h=await harness(t,{generator:async()=>candidate});h.register(owner,source);
     const result=await h.quotes.prepare(owner,candidate.bookId);
-    assert.equal(result.quote.selection,'original-excerpt','rejected pool escapes degrade to a source excerpt');
-    assert.ok(result.quote.text.startsWith(candidate===ninth?'Passage number 1':'x'.repeat(10)),'the fallback stays source bound');
+    if(candidate===beyond){assert.equal(result.quote,null,'a submitted prefix with no complete bounded sentence remains empty');}
+    else{assert.equal(result.quote.selection,'original-excerpt','rejected pool escapes degrade to a source excerpt');assert.ok(result.quote.text.startsWith('Passage number 1'),'the fallback stays source bound');}
   }
   assert.ok(Object.isFrozen(QUOTE_POOL_LIMITS),'pool limits are fixed, never provider values');
 });
@@ -329,7 +384,7 @@ test('an error status cancels its unconsumed body and degrades to the original e
 });
 test('a provider failure is never cached as success; only an explicit recovery asks again',async t=>{
   let calls=0,fail=true;
-  const generator=async payload=>{calls++;if(fail)throw Error('provider down');return selectFirstWord(payload);};
+  const generator=async payload=>{calls++;if(fail)throw Error('provider down');return selectFirstSentence(payload);};
   const h=await harness(t,{generator}),book=fixtureBook();h.register(owner,book);
   const [first,twin]=await Promise.all([h.quotes.prepare(owner,book.bookId),h.quotes.prepare(owner,book.bookId)]);
   assert.equal(calls,1,'one provider attempt per request and its concurrent duplicates, never an automatic retry');
@@ -337,10 +392,10 @@ test('a provider failure is never cached as success; only an explicit recovery a
   fail=false;
   const retried=await h.quotes.prepare(owner,book.bookId);
   assert.equal(calls,2,'an explicit recovery may ask the provider again after a failure');
-  assert.equal(retried.quote.selection,'ai-selected');assert.equal(retried.quote.text,'Read');
+  assert.equal(retried.quote.selection,'ai-selected');assert.equal(retried.quote.text,'Read this first.');
   const cached=await h.quotes.prepare(owner,book.bookId);
   assert.equal(calls,2,'a validated AI selection is reused exactly once');assert.equal(cached.quote.receipt,retried.quote.receipt);
   h.register(receiver,bookWith([['Their own opening line.','Keep.'],['Continue from here.','This is the closing paragraph.']]));
   const other=await h.quotes.prepare(receiver,'reading-test');
-  assert.equal(calls,3,'the cache never leaks across owners');assert.equal(other.quote.text,'Their');
+  assert.equal(calls,3,'the cache never leaks across owners');assert.equal(other.quote.text,'Their own opening line.');
 });
