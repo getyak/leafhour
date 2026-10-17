@@ -33,6 +33,7 @@ export function createBookIngestion({store,library,provider,batchPages=30,now=Da
   if(!acquired)return viewOf(await get(user,id));
   const current=async()=>{const j=await get(user,id);if(j.state==='cancelled'||j.lease?.token!==token)throw fail('解析已取消或由另一任务接管',409);return j;};
   const save=async fn=>store.mutate(base,null,j=>{if(j.state==='cancelled'||j.lease?.token!==token)throw fail('解析已取消或已过期',409);return fn(j);});
+  let stage='load_job';
   try{
    let job=await current();
    const sourceDocument=async()=>{if(cachedDocument?.base!==base){const bytes=await store.blob(base+'/source');if(digest(bytes)!==job.sourceHash)throw fail('原文件校验失败',409);cachedDocument={base,doc:await PDFDocument.load(bytes,{updateMetadata:false})};}return cachedDocument.doc;};
@@ -41,7 +42,8 @@ export function createBookIngestion({store,library,provider,batchPages=30,now=Da
     await save(j=>{j.state='running';j.prepared=true;});return viewOf(await get(user,id));
    }
    const active=job.batches.filter(b=>b.state==='submitted').length,newIndex=job.batches.findIndex(b=>b.state==='new');
-   const i=active<3&&newIndex>=0?newIndex:job.batches.findIndex(b=>b.state!=='done');
+   const uncertain=job.batches.findIndex(b=>b.state==='submitting');
+   const i=uncertain>=0?uncertain:active<3&&newIndex>=0?newIndex:job.batches.findIndex(b=>b.state!=='done');
    if(i<0){
     const pages=[];for(let n=0;n<job.batches.length;n++){const result=JSON.parse(await store.blob(base+'/result-'+n));pages.push(...result.normalized);}
     if(pages.length!==job.totalPages||pages.some((p,n)=>p.page!==n+1))throw fail('页码覆盖不完整，未加入书房',422);
@@ -54,10 +56,10 @@ export function createBookIngestion({store,library,provider,batchPages=30,now=Da
     await save(j=>{j.state='done';j.bookId=book.bookId;});return viewOf(await get(user,id));
    }
    const batch=job.batches[i];
-   if(batch.state==='submitting'){if(batch.requestId&&provider.recover){const handle=await provider.recover(batch.requestId);if(handle){await save(j=>{j.batches[i].handle=handle;j.batches[i].state='submitted';j.state='running';j.error=null;});return viewOf(await get(user,id));}}await save(j=>{j.state='needs_review';j.error='上次请求未确认是否提交成功，为避免重复计费已暂停，请保留任务并联系管理员。';});return viewOf(await get(user,id));}
+   if(batch.state==='submitting'){stage='provider_recover';if(batch.requestId&&provider.recover){const handle=await provider.recover(batch.requestId);if(handle){await save(j=>{j.batches[i].handle=handle;j.batches[i].state='submitted';j.state='running';j.error=null;});return viewOf(await get(user,id));}}await save(j=>{j.state='needs_review';j.error='上次请求未确认是否提交成功，为避免重复计费已暂停，请保留任务并联系管理员。';});return viewOf(await get(user,id));}
    if(!batch.handle){
     const doc=await sourceDocument(),part=await PDFDocument.create();const selected=await part.copyPages(doc,Array.from({length:batch.count},(_,n)=>batch.start-1+n));selected.forEach(p=>part.addPage(p));const bytes=Buffer.from(await part.save());await current();const requestId=randomUUID();await save(j=>{j.batches[i].state='submitting';j.batches[i].requestId=requestId;});
-    const handle=await provider.submit(bytes,{batchId:requestId});await save(j=>{j.batches[i].handle=handle;j.batches[i].state='submitted';});
+    stage='provider_submit';const handle=await provider.submit(bytes,{batchId:requestId});stage='save_provider_handle';await save(j=>{j.batches[i].handle=handle;j.batches[i].state='submitted';});
    }else{
     const state=await provider.status(batch.handle);if(state.state==='failed'){await save(j=>{j.batches[i].state='failed';j.batches[i].confirmedFailed=true;});throw fail('PaddleOCR 未能完成这一批页面，请保留任务后重试',502);}
     if(state.state==='done'){
@@ -67,7 +69,7 @@ export function createBookIngestion({store,library,provider,batchPages=30,now=Da
    }
    return viewOf(await get(user,id));
   }catch(error){
-   await save(j=>{if(j.state==='publishing'){j.error='入库结果正在核对，请继续处理任务。';return;}const pending=j.batches.some(b=>b.state==='submitting');j.state=pending?'needs_review':'failed';j.error=pending?'请求结果未确认，为避免重复提交已暂停。':'解析未完成，原文件和已完成页面已保留。';}).catch(()=>{});throw fail('解析暂未完成，已保存进度。可重新打开上传窗口查看。',error.status||503);
+   await save(j=>{j.failure={stage,name:/^[A-Za-z][A-Za-z0-9]{0,63}$/.test(error.name||'')?error.name:'Error',status:Number.isInteger(error.statusCode||error.status)?error.statusCode||error.status:null,code:/^[A-Z][A-Z0-9_]{0,63}$/.test(error.code||'')?error.code:null};if(j.state==='publishing'){j.error='入库结果正在核对，请继续处理任务。';return;}const pending=j.batches.some(b=>b.state==='submitting');j.state=pending?'needs_review':'failed';j.error=pending?'请求结果未确认，为避免重复提交已暂停。':'解析未完成，原文件和已完成页面已保留。';}).catch(()=>{});throw fail('解析暂未完成，已保存进度。可重新打开上传窗口查看。',error.status||503);
   }finally{await store.mutate(base,null,j=>{if(j?.lease?.token===token)j.lease=null;});}
  }
  async function resume(u,id){await store.mutate(key(u,id),null,j=>{if(!j)throw fail('找不到解析任务',404);if(j.state==='needs_review'&&j.batches.some(b=>b.state==='submitting'&&b.requestId)&&provider.recover){j.state='running';j.error=null;}else if(j.state==='failed'){for(const b of j.batches)if(b.confirmedFailed){delete b.handle;delete b.confirmedFailed;b.state='new';}j.state=j.prepared?'running':'preparing';j.error=null;}});return viewOf(await get(u,id));}
