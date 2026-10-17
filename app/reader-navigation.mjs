@@ -3,11 +3,18 @@ import {chineseSampleNotice} from './catalog-sample.mjs';
 function sourceLink(value){
   try{const url=new URL(value);return ['https:','http:'].includes(url.protocol)&&!url.username&&!url.password?url.href:null;}catch{return null;}
 }
+// One naming for "where am I" shared by the bookplate and the top chapter chooser.
+// Explicit chapters read 第 N 章; automatic reading fragments and front matter stay honest.
+export function currentChapterLabel(book,chapter){
+  if(!book||!chapter)return '';
+  const grouped=book.source?.structure==='automatic_groups';
+  const label=grouped?'阅读片段 '+chapter.number:chapter.kind&&chapter.kind!=='body'?'':'第 '+chapter.number+' 章';
+  return [label,chapter.title?.zh].filter(Boolean).join(' · ');
+}
 export function bookIntroduction(book,chapter){
   const grouped=book.source?.structure==='automatic_groups',chapters=book.chapters||[];
   const count=grouped?chapters.length:chapters.filter(c=>!c.kind||c.kind==='body').length;
-  const label=!chapter?'':grouped?'阅读片段 '+chapter.number:chapter.kind&&chapter.kind!=='body'?'':'第 '+chapter.number+' 章';
-  return {title:book.title?.zh||'未命名书籍',originalTitle:book.title?.en&&book.title.en!==book.title.zh?book.title.en:'',author:book.author||'',description:book.description||'这本书还没有简介。',extent:count+(grouped?' 个阅读片段':' 章'),current:chapter?[label,chapter.title.zh].filter(Boolean).join(' · '):'',sourceUrl:sourceLink(book.source?.url),sample:chineseSampleNotice(book),scopeNote:typeof book.source?.scopeNote==='string'?book.source.scopeNote:'',cover:book.cover||'private'};
+  return {title:book.title?.zh||'未命名书籍',originalTitle:book.title?.en&&book.title.en!==book.title.zh?book.title.en:'',author:book.author||'',description:book.description||'这本书还没有简介。',extent:count+(grouped?' 个阅读片段':' 章'),current:currentChapterLabel(book,chapter),sourceUrl:sourceLink(book.source?.url),sample:chineseSampleNotice(book),scopeNote:typeof book.source?.scopeNote==='string'?book.source.scopeNote:'',cover:book.cover||'private'};
 }
 
 export function renderBookContents({list,book,chapterId,onNavigate,document=list.ownerDocument}){
@@ -41,7 +48,8 @@ export function mountBookIntroduction({document,getBook,getChapter,onOpen=()=>{}
     for(const [id,value] of [['book-info-title',info.title],['book-info-cover-title',info.title],['book-info-original-title',info.originalTitle],['book-info-author',info.author],['book-info-description',info.description],['book-info-extent',info.extent],['book-info-current',info.current],['book-info-sample',info.sample],['book-info-scope',info.scopeNote]]){$(id).textContent=value;$(id).hidden=!value;}
     popover.dataset.cover=['alice','walden','meditations'].includes(info.cover)?info.cover:'private';
     const source=$('book-info-source');source.hidden=!info.sourceUrl;if(info.sourceUrl)source.href=info.sourceUrl;else source.removeAttribute('href');
-    trigger.disabled=false;trigger.setAttribute('aria-label','关于《'+info.title+'》'+(info.current?'，'+info.current:''));
+    // The current chapter lives on the chapter chooser; the metadata trigger only names the book.
+    trigger.disabled=false;trigger.setAttribute('aria-label','关于《'+info.title+'》');
   }
   function position(){
     const rect=trigger.getBoundingClientRect(),width=Math.min(380,win.innerWidth-32),top=Math.max(rect.bottom+12,$('reading-header').getBoundingClientRect().bottom+10);
@@ -54,4 +62,58 @@ export function mountBookIntroduction({document,getBook,getChapter,onOpen=()=>{}
   for(const event of ['reader:ready','reader:chapter'])document.addEventListener(event,render);
   document.addEventListener('reader:jump',()=>{if(isOpen())popover.hidePopover();});
   win.addEventListener('resize',()=>{if(isOpen())position();});
+}
+
+// The top current-chapter entry is a real chooser: it opens the shared contents dialog
+// and stays disabled until the book and its chapters are actually available.
+export function mountChapterEntry({document,getBook,getChapter,onOpen}){
+  const $=id=>document.getElementById(id),trigger=$('open-chapter'),label=$('running-chapter');
+  if(!trigger)return {refresh:()=>{}};
+  function refresh(){
+    const book=getBook(),chapter=getChapter?.(),ready=!!(book&&chapter&&book.chapters?.some(c=>c.id===chapter.id));
+    trigger.disabled=!ready;
+    if(label)label.textContent=ready?currentChapterLabel(book,chapter):'选择章节';
+  }
+  trigger.addEventListener('click',()=>{if(!trigger.disabled)onOpen(trigger);});
+  for(const event of ['reader:ready','reader:chapter'])document.addEventListener(event,refresh);
+  refresh();
+  return {refresh};
+}
+
+// One contents dialog serves the header directory entry, the settings entry and the
+// chapter chooser. The dialog never owns a second contents model, and closing it
+// (Escape included) returns focus to the control that actually opened it.
+export function mountContentsDialog({document,getBook,getChapterId,onNavigate,onBeforeOpen=()=>{}}){
+  const $=id=>document.getElementById(id),dialog=$('toc-dialog');
+  let opener=null;
+  const triggers=()=>[$('open-toc'),$('open-chapter')].filter(Boolean);
+  function render(){
+    const book=getBook();if(!book)return false;
+    renderBookContents({list:$('toc-list'),book,chapterId:getChapterId(),onNavigate,document});
+    return true;
+  }
+  function open(trigger){
+    onBeforeOpen();
+    if(!render())return false;
+    opener=trigger&&typeof trigger.focus==='function'?trigger:null;
+    if(!dialog.open)dialog.showModal();
+    for(const node of triggers())node.setAttribute('aria-expanded',String(node===opener));
+    return true;
+  }
+  dialog.addEventListener('close',()=>{
+    for(const node of triggers())node.setAttribute('aria-expanded','false');
+    const target=opener;opener=null;
+    const restorable=target&&target.isConnected!==false&&!(target.closest&&target.closest('dialog:not([open])'));
+    (restorable?target:$('open-toc'))?.focus?.({preventScroll:true});
+  });
+  return {open,close:()=>{if(dialog.open)dialog.close();},render,getOpener:()=>opener};
+}
+
+// The single listen entry in the side reading-tools panel. It only reacts to an
+// explicit activation; opening or changing chapters never routes through it.
+export function mountListenChapterEntry({document,onListenChapter}){
+  const entry=document.getElementById('listen-chapter');
+  if(!entry)return null;
+  entry.addEventListener('click',()=>onListenChapter());
+  return {entry};
 }

@@ -50,3 +50,11 @@ test('the edition scope is visible separately from an editorial description and 
  assert.equal(navigation.bookIntroduction({...book,source:{...book.source,scopeNote:'本版收录正文，作者序言见出处。'}}).scopeNote,'本版收录正文，作者序言见出处。');
  assert.equal(navigation.bookIntroduction(book).scopeNote,'');
 });
+
+test('current chapter naming covers explicit chapters, auto-grouped fragments and front matter',()=>{
+  assert.equal(navigation.currentChapterLabel(book,book.chapters[2]),'第 3 章 · 绕圈赛跑与长故事');
+  assert.equal(navigation.currentChapterLabel({...book,source:{structure:'automatic_groups'}},book.chapters[1]),'阅读片段 1 · 掉进兔子洞');
+  assert.equal(navigation.currentChapterLabel(book,book.chapters[0]),'出版说明');
+  assert.equal(navigation.currentChapterLabel(book,null),'');
+  assert.equal(navigation.bookIntroduction(book,book.chapters[0]).current,'出版说明','the bookplate and the chooser share one naming');
+});
