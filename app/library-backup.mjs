@@ -1,6 +1,7 @@
 import {normalizeAppearance} from './reading-preferences.mjs';
 import {validParagraphAnchor} from './paragraph-anchor.mjs';
 import {normalizeReadingSession,normalizeReadingMilestone,normalizeReadingGoal} from './reading-session-record.mjs';
+import {isReadingTimeSource} from './reading-time-policy.mjs';
 import {validateReadingDraftBackup} from './reading-draft-store.mjs';
 import {normalizeHighlight} from './highlights.mjs';
 import {validatePersonalRecordMetadata} from './personal-records.mjs';
@@ -52,7 +53,7 @@ export function validateLibraryBackup(backup){
     }
     const sessionIds=new Set();for(const s of r.readingSessions){
       if(!object(s)||!text(s.id,128)||sessionIds.has(s.id)||s.bookId!==b.bookId||!date(s.startedAt)||!date(s.endedAt)||Date.parse(s.endedAt)<Date.parse(s.startedAt)||!Number.isFinite(s.durationSeconds)||s.durationSeconds<0||s.durationSeconds>86400)invalid(where,'阅读时段的时间或来源不正确');
-      if(s.source==='reader_focus'){try{const normalized=normalizeReadingSession(s,b);if(normalized.durationSeconds!==s.durationSeconds)invalid(where,'阅读时段与实际区间不一致');}catch{invalid(where,'阅读时段无法对应当前原文或实际时间');}}
+      if(isReadingTimeSource(s.source)){try{const normalized=normalizeReadingSession(s,b);if(normalized.durationSeconds!==s.durationSeconds)invalid(where,'阅读时段与实际区间不一致');}catch{invalid(where,'阅读时段无法对应当前原文或实际时间');}}
       else if(s.source!=='design_preview_focus_timer')invalid(where,'阅读时段的来源不正确');sessionIds.add(s.id);
     }
     if(r.schemaVersion===3||r.readingMilestones!==undefined){if(!Array.isArray(r.readingMilestones)||r.readingMilestones.length>10000)invalid(where,'阅读标记不完整');const marks=new Set();for(const mark of r.readingMilestones){try{if(marks.has(mark?.id)||mark?.origin!=='user'||mark.bookId!==b.bookId||mark.contentVersion!==b.contentVersion)invalid(where,'阅读标记归属不正确');normalizeReadingMilestone(mark,b);marks.add(mark.id);}catch{invalid(where,'阅读标记无法对应原文');}}}

@@ -1,4 +1,5 @@
 // Shared by the live service and backup validation; no DOM or Node dependencies.
+import {isReadingTimeSource} from './reading-time-policy.mjs';
 const bad=(message,status=400)=>{throw Object.assign(Error(message),{status});};
 const object=v=>v&&typeof v==='object'&&!Array.isArray(v);
 const identifier=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(v);
@@ -22,18 +23,24 @@ const anchor=(value,ids)=>{if(!object(value)||ids.get(value.passageId)!==value.c
 const ownership=(input,book)=>{if(input.bookId!==undefined&&input.bookId!==book.bookId||input.contentVersion!==undefined&&input.contentVersion!==book.contentVersion)bad('阅读记录的原文版本或书籍不一致',409);};
 
 export function normalizeReadingSession(input,book,now=Date.now()){
-  if(!object(input)||!identifier(input.id)||input.source!==undefined&&input.source!=='reader_focus'||!Number.isInteger(input.sequence)||input.sequence<1||input.sequence>10000000||!['active','paused','finished'].includes(input.status))bad('阅读时段标识或状态不正确');
+  if(!object(input)||!identifier(input.id)||input.source!==undefined&&!isReadingTimeSource(input.source)||!Number.isInteger(input.sequence)||input.sequence<1||input.sequence>10000000||!['active','paused','finished'].includes(input.status))bad('阅读时段标识或状态不正确');
+  const source=input.source===undefined?'reader_focus':input.source;
   ownership(input,book);const started=readingTimestamp(input.startedAt),ended=readingTimestamp(input.endedAt);
   if(!Number.isFinite(started)||!Number.isFinite(ended)||ended<started||ended-started>86400000||ended>now+300000||started>now+300000)bad('阅读时段的时间不正确');
   if(!validReadingTimeZone(input.timeZone)||!Array.isArray(input.segments)||input.segments.length>120)bad('阅读时段的时区或区间不正确');
   const intervals=input.segments.map(segment=>{if(!object(segment))bad('阅读时段的区间不正确');const a=readingTimestamp(segment.startedAt),b=readingTimestamp(segment.endedAt);if(!Number.isFinite(a)||!Number.isFinite(b)||a<started||b>ended||b<a)bad('阅读时段的区间超出实际时间');return [a,b];});
   const merged=mergeReadingIntervals(intervals),ids=passages(book);
+  if(source==='manual'&&(input.status!=='finished'||input.sequence!==1||ended<=started||ended>now||intervals.length!==1||intervals[0][0]!==started||intervals[0][1]!==ended))bad('手动补记须为已经结束的单个时段，最长24小时');
   let recordedAt;if(input.recordedAt!==undefined){const saved=readingTimestamp(input.recordedAt);if(!Number.isFinite(saved)||saved>now+300000)bad('阅读记录保存时间不正确');recordedAt=new Date(saved).toISOString();}
-  return {id:input.id,bookId:book.bookId,contentVersion:book.contentVersion,source:'reader_focus',sequence:input.sequence,status:input.status,startedAt:new Date(started).toISOString(),endedAt:new Date(ended).toISOString(),timeZone:input.timeZone,start:anchor(input.start,ids),end:anchor(input.end,ids),segments:merged.map(([a,b])=>({startedAt:new Date(a).toISOString(),endedAt:new Date(b).toISOString()})),durationSeconds:readingIntervalSeconds(merged),...(recordedAt?{recordedAt}:{})};
+  return {id:input.id,bookId:book.bookId,contentVersion:book.contentVersion,source,sequence:input.sequence,status:input.status,startedAt:new Date(started).toISOString(),endedAt:new Date(ended).toISOString(),timeZone:input.timeZone,start:anchor(input.start,ids),end:anchor(input.end,ids),segments:merged.map(([a,b])=>({startedAt:new Date(a).toISOString(),endedAt:new Date(b).toISOString()})),durationSeconds:readingIntervalSeconds(merged),...(recordedAt?{recordedAt}:{})};
 }
 export function mergeReadingSession(previous,next){
   if(!previous)return next;
   if(previous.id!==next.id||previous.bookId!==next.bookId||previous.contentVersion!==next.contentVersion||previous.source!==next.source||previous.startedAt!==next.startedAt||previous.timeZone!==next.timeZone||previous.start?.chapterId!==next.start?.chapterId||previous.start?.passageId!==next.start?.passageId)bad('阅读时段标识冲突，原记录已保留',409);
+  if(previous.source==='manual'){
+    if(previous.endedAt!==next.endedAt||previous.end?.chapterId!==next.end?.chapterId||previous.end?.passageId!==next.end?.passageId||JSON.stringify(previous.segments)!==JSON.stringify(next.segments))bad('手动补记标识冲突，原记录已保留',409);
+    return previous;
+  }
   if(next.sequence<=previous.sequence)return previous;
   if(previous.status==='finished'&&next.status!=='finished')bad('这次阅读已经结束，请开始新的时段',409);
   const intervals=mergeReadingIntervals([...previous.segments,...next.segments].map(row=>[Date.parse(row.startedAt),Date.parse(row.endedAt)]));

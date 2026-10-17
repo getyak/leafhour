@@ -6,7 +6,7 @@ export function noteSaveReceipt({confirmed=false,durable=false,hasDraft=true}={}
   return confirmed?'上次提交已保存，新写的文字仍是草稿。'+retained:'保存尚未确认。'+retained+' 重试会先确认同一次提交。';
 }
 export function matchingSessionSnapshot(expected,received){
-  return !!expected&&!!received&&expected.bookId===received.bookId&&expected.contentVersion===received.contentVersion&&expected.id===received.id&&expected.sequence===received.sequence&&expected.status==='finished'&&received.status==='finished'&&expected.durationSeconds===received.durationSeconds&&expected.end?.chapterId===received.end?.chapterId&&expected.end?.passageId===received.end?.passageId;
+  return !!expected&&!!received&&expected.bookId===received.bookId&&expected.contentVersion===received.contentVersion&&expected.id===received.id&&expected.sequence===received.sequence&&expected.status==='finished'&&received.status==='finished'&&expected.durationSeconds===received.durationSeconds&&expected.end?.chapterId===received.end?.chapterId&&expected.end?.passageId===received.end?.passageId&&['source','startedAt','endedAt','timeZone'].every(key=>expected[key]===undefined||expected[key]===received[key])&&(expected.start===undefined||expected.start.chapterId===received.start?.chapterId&&expected.start.passageId===received.start?.passageId)&&(expected.segments===undefined||JSON.stringify(expected.segments)===JSON.stringify(received.segments));
 }
 export function readingSessionReceipt({confirmed=false,durable=false}={}){
   return confirmed?'本次时段已保存到书房。':durable?'本次时段已留本机，书房尚未确认。':'本次时段仅在当前页面，请重试保存或另存记录。';
