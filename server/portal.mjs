@@ -83,6 +83,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     files['/reading-arrival.css']='reading-arrival.css';files['/reading-arrival.mjs']='reading-arrival.mjs';files['/save-receipts.mjs']='save-receipts.mjs';
     files['/home-motion.css']='home-motion.css';files['/home-motion.mjs']='home-motion.mjs';
     for(const file of ['library-craft.css','book-binding.mjs','brand-assets/sage-paper.webp'])files['/'+file]=file;
+    files['/library-incremental.mjs']='library-incremental.mjs';
     for(const file of ['home-atmosphere.css','home-atmosphere.mjs','brand-assets/sunlit-room.webp','brand-assets/foliage-canopy.webp'])files['/'+file]=file;
     files['/reading-session-record.mjs']='reading-session-record.mjs';
     for(const file of ['reading-time-policy.mjs','reading-manual.mjs','reading-manual-ui.mjs'])files['/'+file]=file;
