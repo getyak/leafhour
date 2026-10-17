@@ -1,7 +1,7 @@
 import {randomUUID} from 'node:crypto';
 import {audioError,audioHash,audioPassages} from './audio-content.mjs';
 import {guideScope,guideBatches,validateGuide,guideLimits} from './listening-guide-content.mjs';
-import {createGuideGenerator} from './listening-guide-generator.mjs';
+import {createGuideGenerator,guideInputSize} from './listening-guide-generator.mjs';
 
 const leaseMs=90000;
 const identity=owner=>{if(!owner?.id)throw audioError('请先进入自己的书房。',401,'authentication_required');return owner.id;};
@@ -31,12 +31,12 @@ function verifiedOutline(batch,candidate){
 function verificationBatches(book,script){
  const index=new Map(audioPassages(book).map(p=>[p.id,p])),batches=[];
  let turnIds=[],passageIds=new Set();
- const fits=ids=>ids.size<=guideLimits.batchPassages&&[...ids].reduce((n,id)=>n+index.get(id).original.length,0)<=guideLimits.batchCharacters;
+ const fits=(ids,turns)=>ids.size<=guideLimits.batchPassages&&[...ids].reduce((n,id)=>n+index.get(id).original.length,0)<=guideLimits.verificationCharacters&&guideInputSize({stage:'verify',bookId:book.bookId,contentVersion:book.contentVersion,intent:script.intent,passages:[...ids].map(id=>index.get(id)),turns})<=guideLimits.requestCharacters;
  for(const turn of script.turns){
   const own=new Set(turn.sourceRefs.map(r=>r.passageId));
-  if(!fits(own))throw audioError('这一轮讲解的依据过长，尚无法完整核验，请缩小讲解范围。',502,'invalid_guide');
+  if(!fits(own,[turn]))throw audioError('这一轮讲稿引用了过多原文，未通过完整核验；候选文字已保留。',502,'invalid_guide');
   const next=new Set([...passageIds,...own]);
-  if(turnIds.length&&!fits(next)){batches.push({turnIds,passageIds:[...passageIds]});turnIds=[];passageIds=new Set();}
+  if(turnIds.length&&!fits(next,script.turns.filter(t=>turnIds.includes(t.id)||t.id===turn.id))){batches.push({turnIds,passageIds:[...passageIds]});turnIds=[];passageIds=new Set();}
   turnIds.push(turn.id);for(const id of own)passageIds.add(id);
  }
  if(turnIds.length)batches.push({turnIds,passageIds:[...passageIds]});

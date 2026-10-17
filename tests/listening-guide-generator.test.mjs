@@ -15,7 +15,7 @@ test('one bounded stage sends only whitelisted source fields to the configured t
 
 test('oversized input and unknown stages fail before any provider submission',async()=>{
  let calls=0;const generate=createGuideGenerator({env:{DEEPSEEK_API_KEY:'fixture-only'},fetcher:async()=>{calls++;return response({});}});
- await assert.rejects(generate({...input,passages:[{...input.passages[0],original:'x'.repeat(18001)}]}),{status:413});
+ await assert.rejects(generate({...input,passages:[{...input.passages[0],original:'x'.repeat(24001)}]}),{status:413});
  await assert.rejects(generate({...input,stage:'anything'}),{status:400});assert.equal(calls,0);
  assert.equal(createGuideGenerator({env:{}}),null);
 });
@@ -34,4 +34,17 @@ test('script and support verification carry structured claim evidence without pr
  assert.ok(sent.every(x=>!JSON.stringify(x).includes('PRIVATE')));
  assert.equal(JSON.parse(sent[1].messages[1].content).turns[0].id,'turn-1');
  assert.match(sent[1].messages[0].content,/supported/);
+});
+
+test('support verification sends complete long referenced paragraphs within its separate request budget',async()=>{
+ let payload;const generate=createGuideGenerator({env:{DEEPSEEK_API_KEY:'fixture-only'},fetcher:async(_url,options)=>{payload=JSON.parse(JSON.parse(options.body).messages[1].content);return response({checks:[{turnId:'turn-1',supported:true}]});}});
+ const passages=Array.from({length:4},(_,i)=>({id:'p'+i,chapterId:'ch1',original:'x'.repeat(19000)})),turns=[{id:'turn-1',speaker:'guide',text:'解释',kind:'explanation',sourceRefs:[{passageId:'p0',quote:'x'}]}];
+ await generate({...input,stage:'verify',passages,turns});assert.deepEqual(payload.passages,passages);
+ await assert.rejects(generate({...input,stage:'verify',passages:[{...passages[0],original:'x'.repeat(100001)}],turns}),{status:413});
+});
+
+test('one long paragraph stays complete without expanding normal multi-paragraph reading requests',async()=>{
+ const payloads=[],generate=createGuideGenerator({env:{DEEPSEEK_API_KEY:'fixture-only'},fetcher:async(_url,options)=>{payloads.push(JSON.parse(JSON.parse(options.body).messages[1].content));return response({});}});
+ const original='x'.repeat(19000);await generate({...input,passages:[{id:'p',chapterId:'ch1',original}]});assert.equal(payloads[0].passages[0].original,original);
+ await assert.rejects(generate({...input,passages:[{id:'p1',chapterId:'ch1',original:'x'.repeat(9500)},{id:'p2',chapterId:'ch1',original:'y'.repeat(9500)}]}),{status:413});assert.equal(payloads.length,1);
 });
