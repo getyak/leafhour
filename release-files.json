@@ -124,6 +124,7 @@
   "app/reader-return.mjs",
   "app/reader-settings.css",
   "app/reader-settings.mjs",
+  "app/original-download.mjs",
   "app/reader-translation.js",
   "app/reader.js",
   "app/reading-arrival.css",
