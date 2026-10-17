@@ -28,3 +28,5 @@ The release policy and actual release manifest now allow only the root `.env.exa
 Fresh `npm run verify:deploy` passed: 759 tests, 758 passed, one existing platform skip, zero failures. Isolated runtime initialization, hosted build, public asset checks and the 395-file release snapshot passed with no model requests.
 
 Four actual npm startup scenarios passed: directly copied unified template, one configured `.env`, legacy audio file/command, and a configuration without speech support. Each served 30 public books; session and speech capability endpoints agreed with startup status. Captured output contained no fixture keys. No real account data or cloud environment variables were changed, and no paid generation was attempted.
+
+Independent review found no merge blockers, passed 24 focused configuration/release/hosted/MCP tests, and separately copied the template and launched `npm start` in a temporary release snapshot, serving 30 public books with AI unconfigured. Its suggestion to put the existing-file warning before the copy command was applied.
