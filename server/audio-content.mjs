@@ -12,13 +12,28 @@ export function chunkAudio(prepared,version=2){
   const pieces=[];
   for(let at=0;at<clip.text.length;){
    let stop=Math.min(at+200,clip.text.length);
-   if(stop<clip.text.length){if(!boundary(clip.text,stop))stop--;const matches=[...clip.text.slice(at,stop).matchAll(/[。！？.!?；;\n]/g)];if(matches.length&&matches.at(-1).index>100)stop=at+matches.at(-1).index+1;}
-   const text=clip.text.slice(at,stop),start=(clip.start||0)+at;pieces.push({...clip,text,textHash:audioHash(text),start,end:start+text.length});at=stop;
+   if(stop<clip.text.length){
+    if(!boundary(clip.text,stop))stop--;
+    const window=clip.text.slice(at,stop),sentences=[...window.matchAll(/[。！？.!?；;\n]/g)],spaces=[...window.matchAll(/\s/g)];
+    const cut=sentences.at(-1)?.index>100?sentences.at(-1).index:spaces.at(-1)?.index>100?spaces.at(-1).index:null;
+    if(cut!==null)stop=at+cut+1;
+    if(!clip.text.slice(stop).trim()){
+     // Keep a final spoken word with its trailing whitespace. A blank-only
+     // remainder would otherwise fail after earlier clips had already billed.
+     const word=/\S+\s*$/.exec(clip.text.slice(at));let cutAt=at+(word?.index||0);
+     if(cutAt<=at||clip.text.length-cutAt>200){cutAt=clip.text.length-(clip.text.match(/\s*$/)?.[0].length||0)-1;if(!boundary(clip.text,cutAt))cutAt--;}
+     if(cutAt<=at||cutAt-at>200||clip.text.length-cutAt>200)throw audioError('选文中连续空白过长，请缩短朗读范围。',413);
+     stop=cutAt;
+    }
+   }
+   const text=clip.text.slice(at,stop),start=(clip.start||0)+at;
+   if(!text.trim())throw audioError('选文中连续空白过长，请缩短朗读范围。',413);
+   pieces.push({...clip,text,textHash:audioHash(text),start,end:start+text.length});at=stop;
   }
   return pieces;
  })};
 }
-export function prepareReading(book,input){
+export function prepareReading(book,input,{chunkingVersion=1}={}){
  if(!input||input.contentVersion!==book.contentVersion)throw audioError('正文版本已变化，请重新选择。',409,'stale_source');
  if(!book.chapters.some(c=>c.id===input.chapterId))throw audioError('找不到这一章。');
  const rows=audioPassages(book),variant=input.variant||'interpretive',language=input.language||'en';
@@ -36,7 +51,9 @@ export function prepareReading(book,input){
   if(!Number.isInteger(start)||!Number.isInteger(end)||start<0||end<=start||end>text.length||!boundary(text,start)||!boundary(text,end)||part.text!==undefined&&part.text!==text.slice(start,end))throw audioError('选文已变化，请重新选择。',409,'selection_changed');
   total+=end-start;if(total>30000)throw audioError('朗读范围过长，请选择较短小节。',413);
   // Exact source offsets survive chunking; no text is rewritten to improve pronunciation.
-  for(let at=start;at<end;){let stop=Math.min(at+1200,end);if(stop<end){if(!boundary(text,stop))stop--;const slice=text.slice(at,stop),matches=[...slice.matchAll(/[。！？.!?；;\n]/g)];if(matches.length&&matches.at(-1).index>600)stop=at+matches.at(-1).index+1;}
+  // Version 2 is segmented later from each complete selection, so an old
+  // 1,200-character cut cannot break a word before the shorter WAV cuts run.
+  for(let at=start;at<end;){let stop=Math.min(at+(chunkingVersion===2?30000:1200),end);if(stop<end){if(!boundary(text,stop))stop--;const slice=text.slice(at,stop),matches=[...slice.matchAll(/[。！？.!?；;\n]/g)];if(matches.length&&matches.at(-1).index>600)stop=at+matches.at(-1).index+1;}
    const value=text.slice(at,stop);clips.push({passageId:p.id,start:at,end:stop,text:value,textHash:audioHash(value),language:lang,variant,sourceHash:audioHash(text)});at=stop;}
  }
  return {bookId:book.bookId,contentVersion:book.contentVersion,chapterId:input.chapterId,language,variant,clips};

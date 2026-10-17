@@ -1,5 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {mkdtemp,rm} from 'node:fs/promises';import {tmpdir} from 'node:os';import path from 'node:path';
-import {createAudioStore} from '../server/audio-store.mjs';import {createAudioService} from '../server/audio-service.mjs';import {audioBook,audioSelection} from './audio-fixture.mjs';
+import {createAudioStore} from '../server/audio-store.mjs';import {createAudioService} from '../server/audio-service.mjs';import {audioBook,audioSelection,geminiSpeechResponse} from './audio-fixture.mjs';
+import {createSpeechProvider} from '../server/audio-provider.mjs';
 const owner={id:'a'},other={id:'b'};const pause=()=>new Promise(r=>setTimeout(r,15));
 async function fixture(t,provider){const dir=await mkdtemp(path.join(tmpdir(),'reader-audio-'));let book=audioBook();const store=await createAudioStore({dataDir:dir});const options={store,getBook:async()=>structuredClone(book),speechProvider:provider||{available:true,model:'test-model',synthesize:async()=>({bytes:Buffer.from('test-audio'),mimeType:'audio/mpeg'})},dialogueGenerator:async()=>({turns:[{speaker:'guide',text:'认真读。',sourceRefs:[{passageId:'p1',quote:'Read'}]}]})};const audio=await createAudioService(options);t.after(async()=>{await audio.close();await rm(dir,{recursive:true,force:true});});return {audio,store,options,book,request:{...audioSelection,idempotencyKey:'one'}};}
 async function settled(audio,id){for(let i=0;i<80;i++){const s=await audio.getSession(owner,'audio-book',id);if(s.status!=='generating')return s;await pause();}throw Error('never settled');}
@@ -19,4 +20,16 @@ test('official WAV generation splits long reading, dialogue and AI answers witho
  const pieces=reading.clips.filter(c=>c.passageId==='p1');assert.ok(pieces.length>1);assert.equal(pieces.map(c=>c.text).join(''),text);assert.ok(pieces.every(c=>c.text.length<=200));for(const clip of pieces)assert.equal(text.slice(clip.start,clip.end),clip.text);
  const answer=await audio.createSession(owner,'audio-book',{mode:'ai-response',text,idempotencyKey:'long-answer'});const ready=await settled(audio,answer.id);assert.equal(ready.chunkingVersion,2);assert.equal(ready.clips.map(c=>c.text).join(''),text);assert.ok(ready.clips.every(c=>c.text.length<=200));
  const d=await audio.createDialogue(owner,'audio-book',{chapterId:'ch1',contentVersion:'v1'});const updated=await audio.editDialogue(owner,'audio-book',d.id,{revision:1,turns:[{...d.turns[0],text}]});const prepared=await audio.prepare(owner,'audio-book',{mode:'dialogue',dialogueId:d.id,revision:updated.revision});assert.ok(prepared.clips.length>1);assert.equal(prepared.clips.map(c=>c.text).join(''),text);assert.ok(prepared.clips.every(c=>c.speaker==='guide'&&c.text.length<=200));
+});
+
+test('a trailing-space answer completes official synthesis and impossible blank-only chunks fail before payment',async t=>{
+ let calls=0;const provider=createSpeechProvider({env:{GEMINI_API_KEY:'fixture-google'},fetcher:async()=>{calls++;return Response.json(geminiSpeechResponse());}}),{audio}=await fixture(t,provider),text='A careful sentence. '.repeat(10)+' ';
+ const s=await audio.createSession(owner,'audio-book',{mode:'ai-response',text,idempotencyKey:'trailing-space'}),ready=await settled(audio,s.id);assert.equal(ready.status,'ready');assert.equal(ready.clips.map(c=>c.text).join(''),text);assert.ok(ready.clips.every(c=>c.text.trim()&&c.text.length<=200));assert.equal(calls,ready.clips.length);
+ const before=calls;for(const text of [' '.repeat(201)+'x','x'+' '.repeat(201)])await assert.rejects(audio.createSession(owner,'audio-book',{mode:'ai-response',text,idempotencyKey:'blank-'+text.length}),{status:413});assert.equal(calls,before);
+});
+
+test('long English sentences are chunked from their exact selection rather than legacy coarse boundaries',async t=>{
+ const {audio,book}=await fixture(t),text='Read '+'a thoughtful reader considers every word and keeps going without punctuation '.repeat(40);book.sections[0].paragraphs[0].original=text;
+ const prepared=await audio.prepare(owner,'audio-book',{contentVersion:'v1',chapterId:'ch1',parts:[{passageId:'p1'}]});assert.equal(prepared.clips.map(c=>c.text).join(''),text);
+ for(const clip of prepared.clips){assert.ok(clip.text.length<=200);assert.equal(text.slice(clip.start,clip.end),clip.text);if(clip.end<text.length)assert.ok(!(/[A-Za-z]/.test(text[clip.end-1])&&/[A-Za-z]/.test(text[clip.end])));}
 });

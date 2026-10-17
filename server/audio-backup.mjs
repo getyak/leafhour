@@ -10,7 +10,7 @@ export function validateAudioBackup(book,backup){
   const chunkingVersion=s.chunkingVersion??1;let expected,snapshot;
   if(s.input?.mode==='dialogue'){const d=s.dialogueSnapshot||dialogues.find(d=>d.id===s.input.dialogueId&&d.revision===s.input.revision);if(!d||d.id!==s.input.dialogueId||d.revision!==s.input.revision)throw audioError('声音无法对应讲稿版本。');snapshot={...validateDialogue(book,d,d),id:d.id,revision:d.revision,origin:d.origin==='user-edited-ai'?'user-edited-ai':'ai',createdAt:d.createdAt};expected=snapshot.turns.map((t,i)=>({passageId:t.sourceRefs[0].passageId,text:t.text,textHash:audioHash(t.text),sourceHash:audioHash(t.text),start:0,end:t.text.length,language:'zh',variant:'interpretive',speaker:t.speaker,turnIndex:i}));}
   else if(s.input?.mode==='ai-response'){const text=s.input.text;if(typeof text!=='string'||!text.trim()||text.length>4000)throw audioError('回答朗读无效。');expected=[{text,textHash:audioHash(text),sourceHash:audioHash(text),language:'zh',variant:'interpretive',start:0,end:text.length}];}
-  else expected=prepareReading(book,s.input).clips;
+  else expected=prepareReading(book,s.input,{chunkingVersion}).clips;
   expected=chunkAudio({clips:expected},chunkingVersion).clips;
   if(expected.length!==s.clips.length||audioHash(expected)!==s.contentHash)throw audioError('备份文字与当前原文不一致。');
   const clips=s.clips.map((c,i)=>{if(!validId(c.id)||!['Sulafat','Kore','Charon','Puck'].includes(c.voice)||c.text!==expected[i].text)throw audioError('声音片段无效。');const file=files.get(c.checksum);if(file&&file.mimeType!==c.mimeType)throw audioError('声音格式不一致。');return {...expected[i],id:c.id,voice:c.voice,status:file?'ready':'pending',...(file?{checksum:c.checksum,mimeType:file.mimeType,bytes:file.bytes.length}:{})};});
