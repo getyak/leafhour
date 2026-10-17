@@ -39,7 +39,7 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
   async function putBlob(file,bytes){if(bytes.length>MAX_FILE_BYTES)throw fail('文件超过 256 MB',413);const key=objectPath(file);if(bytes.length<=BLOB_CHUNK_BYTES){await writeObject(key,bytes);return;}const slices=[];for(let offset=0;offset<bytes.length;offset+=BLOB_CHUNK_BYTES)slices.push(bytes.subarray(offset,offset+BLOB_CHUNK_BYTES));const parts=await boundedMap(slices,async b=>{const partKey=key+'/parts/'+digest(b);await writeObject(partKey,b);return {key:partKey,size:b.length,sha256:digest(b)};});await writeManifest(file,{kind:'leafhour-blob-chunks-v1',size:bytes.length,sha256:digest(bytes),parts});}
   async function putSingleBlob(file,bytes){if(!Buffer.isBuffer(bytes)||bytes.length<1||bytes.length>20*1024*1024)throw fail('这一批扫描文件超过 20 MB，请减小页面图片后重试',413);await writeObject(objectPath(file),bytes);}
 
-  async function blobDownloads(file,expected={}){
+  async function downloadLayout(file,expected={}){
     const head=await request(objectRoute(objectPath(file)),{method:'HEAD'}),size=Number(head.headers.get('content-length'));
     const m=size<65536?manifestOf(await readObject(objectPath(file))):null;
     // Bind the trusted server-generated manifest to the authorized book before
@@ -51,8 +51,27 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
       const sourceMatches=(expected.size===undefined||m.size===expected.size)&&(expected.sha256===undefined||m.sha256===expected.sha256);
       if(!validParts||!validSize||typeof m.sha256!=='string'||!/^[a-f0-9]{64}$/.test(m.sha256)||m.parts.reduce((n,p)=>n+p.size,0)!==m.size||!sourceMatches)throw fail('原文件分块信息无法核验',409);
     }
-    else if(expected.size!==undefined&&size!==expected.size)throw fail('原文件大小无法核验',409);
-    return boundedMap(m?.parts||[{key:objectPath(file)}],async part=>{const signed=await json('/storage/v1/object/sign/reader-originals/'+part.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({expiresIn:3600})});const target=new URL(signed.signedURL.startsWith('/object/')?'/storage/v1'+signed.signedURL:signed.signedURL,base+'/storage/v1/');if(target.origin!==new URL(base).origin||!target.pathname.startsWith('/storage/v1/object/sign/'))throw fail('原文件地址无效',503);return {url:target.href,sha256:part.sha256||null,size:part.size||size};});
+    else if(!Number.isSafeInteger(size)||size<1||size>MAX_FILE_BYTES||expected.size!==undefined&&size!==expected.size)throw fail('原文件大小无法核验',409);
+    return {size:m?.size||size,parts:m?.parts||[{key:objectPath(file),size,sha256:null}]};
+  }
+  async function blobDownloads(file,expected={}){const layout=await downloadLayout(file,expected);
+    return boundedMap(layout.parts,async part=>{const signed=await json('/storage/v1/object/sign/reader-originals/'+part.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({expiresIn:3600})});const target=new URL(signed.signedURL.startsWith('/object/')?'/storage/v1'+signed.signedURL:signed.signedURL,base+'/storage/v1/');if(target.origin!==new URL(base).origin||!target.pathname.startsWith('/storage/v1/object/sign/'))throw fail('原文件地址无效',503);return {url:target.href,sha256:part.sha256||null,size:part.size};});
+  }
+  const rangeLayouts=new Map();
+  async function blobRange(file,{offset,length,sha256}){
+    if(!Number.isSafeInteger(offset)||offset<0||!Number.isSafeInteger(length)||length<1||length>1048576)throw fail('原文件分段位置无效');
+    const key=file+'|'+sha256;let cached=rangeLayouts.get(key);
+    if(!cached||cached.until<Date.now()){const layout=await downloadLayout(file,{sha256});cached={layout,until:Date.now()+300000};if(rangeLayouts.size>=64)rangeLayouts.delete(rangeLayouts.keys().next().value);rangeLayouts.set(key,cached);}
+    const {size,parts}=cached.layout;if(offset>=size||offset+length>size)throw fail('原文件分段超出范围');
+    const chunks=[];let base=0;
+    for(const part of parts){const start=Math.max(0,offset-base),end=Math.min(part.size,offset+length-base);base+=part.size;if(start>=end)continue;
+      const response=await request(objectRoute(part.key),{headers:{Range:'bytes='+start+'-'+(end-1)}}),expected=end-start;
+      if(response.status!==206||response.headers.get('content-range')!=='bytes '+start+'-'+(end-1)+'/'+part.size||Number(response.headers.get('content-length'))!==expected){await response.body?.cancel();throw fail('原文件分段响应无法核验',409);}
+      const buffer=Buffer.alloc(expected),reader=response.body.getReader();let received=0;
+      try{while(true){const {value,done}=await reader.read();if(done)break;if(received+value.length>expected)throw fail('原文件分段大小不正确',409);buffer.set(value,received);received+=value.length;}}finally{await reader.cancel().catch(()=>{});reader.releaseLock();}
+      if(received!==expected)throw fail('原文件分段未完整取回',503);chunks.push(buffer);
+    }
+    const bytes=Buffer.concat(chunks);if(bytes.length!==length)throw fail('原文件分段不完整',409);return {bytes,offset,total:size};
   }
   async function signedBlob(file,{expiresIn=60}={}){
     if(!Number.isInteger(expiresIn)||expiresIn<60||expiresIn>3600)throw fail('下载链接有效期无效',400);
@@ -100,5 +119,5 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
   }
   async function releaseTranslation(ticket){await mutate('limits/translation',{requests:[],active:{}},data=>{if(data.active[ticket.key]?.id===ticket.id)delete data.active[ticket.key];});}
   const configureIngestionWake=(origin,token)=>json('/rest/v1/rpc/reader_configure_ingestion_wake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({wake_origin:origin,derived_token:token})});
-  return {configureIngestionWake,read:async(file,fallback)=>(await snapshot(file,fallback)).data,mutate,putBlob,putSingleBlob,adoptBlob,blob,blobInfo,signedBlob,blobDownloads,beginUpload,completeUpload,reserveTranslation,releaseTranslation};
+  return {configureIngestionWake,read:async(file,fallback)=>(await snapshot(file,fallback)).data,mutate,putBlob,putSingleBlob,adoptBlob,blob,blobInfo,signedBlob,blobDownloads,blobRange,beginUpload,completeUpload,reserveTranslation,releaseTranslation};
 }
