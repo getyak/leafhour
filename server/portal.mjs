@@ -28,6 +28,7 @@ import {createBookIngestion} from './book-ingestion.mjs';
 import {createIngestionStorage} from './ingestion-storage.mjs';
 import {createIngestionUpload} from './ingestion-upload.mjs';
 import {createBookGifts} from './book-gifts.mjs';
+import {createGiftQuoteService} from './gift-quote.mjs';
 import {createLibraryPortability} from './library-portability.mjs';
 import {decodePersonalRecordId} from '../app/personal-records.mjs';
 import {agentReadArgs,scopedAgentRead} from './scoped-agent-reading.mjs';
@@ -35,7 +36,7 @@ import {agentReadArgs,scopedAgentRead} from './scoped-agent-reading.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
 const jsonBody=async(req,limit=29*1024*1024)=>{if(!req.headers['content-type']?.startsWith('application/json'))throw fail('请使用 JSON 请求',415);if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>limit)throw fail('这次导入内容过大，请分书恢复',413);return req.body;}let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('这次导入内容过大，请分书恢复',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('请求格式不正确');}};
-export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,schedule=()=>{},paddleProvider,env=process.env}={}){
+export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null}={}){
   const webOrigins=new Set(publicOrigin?[publicOrigin]:[]);
   if(!Array.isArray(additionalWebOrigins))throw fail('额外网页来源配置无效',503);
   for(const value of additionalWebOrigins){
@@ -52,6 +53,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const ingestionRunner=createIngestionRunner({store:ingestionStore,ingestion,schedule,env,publicOrigin:dataStore?publicOrigin:null});
   const profile=createAccountProfile({dataDir:path.join(dataDir,'library'),dataStore});
   const gifts=createBookGifts({library,dataDir:path.join(dataDir,'library'),dataStore,getProfile:profile.get});
+  const giftQuotes=createGiftQuoteService({library,gifts,generator:giftQuoteGenerator,env});
   const visibleUser=async user=>user?{id:user.id,email:user.email||null,kind:user.kind,...await profile.get(user)}:null;
   async function shelfView(user,rows){
     for(let attempt=0;attempt<3;attempt++){
@@ -93,7 +95,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     files['/reading-flow.css']='reading-flow.css';
     for(const file of ['library-filter-controls.mjs','library-filters.css','library-workspace.mjs','library-workspace.css','reading-calendar.mjs','reading-dashboard.mjs','library-restore.mjs','library-export.mjs','site-appearance.mjs','reading-clock.mjs','reading-outbox.mjs','reading-queue-store.mjs','reading-session-coordinator.mjs','reading-mark-actions.mjs','reading-mark-store.mjs','reading-draft-store.mjs','reading-retained-backup.mjs','reading-journey.mjs','reading-pending-backup.mjs','reading-ending-context.mjs','reading-session.js','reading-session.css','brand-assets/reading-window.webp','brand-assets/page-detail.webp','brand-assets/page-mark.svg','leafhour-brand.css','brand-assets/leafhour-mark.svg','brand-assets/leafhour-social.svg','brand-assets/leafhour-social.png'])files['/'+file]=file;
     for(const file of ['squirrel-motion.mjs','squirrel-position.mjs','library-shell.mjs','library-shell.css','library-reading-preferences.mjs','library-chat.mjs','library-chat-state.mjs','library-chat-markdown.mjs','library-chat.css','icons.svg','icons-LICENSE.txt'])files['/'+file]=file;
-    for(const file of ['library-profile.mjs','library-book-actions.mjs','reading-schedule.mjs','shelf-order.mjs','library-personal.css','book-gift.css','book-gift.mjs','gift-preview.mjs','gift-ritual.mjs','gift-compose.mjs','gift-compose.css','gift-identity.mjs','gift-compose-state.mjs','reader-return.mjs'])files['/'+file]=file;
+    for(const file of ['library-profile.mjs','library-book-actions.mjs','reading-schedule.mjs','shelf-order.mjs','library-personal.css','book-gift.css','book-gift.mjs','gift-preview.mjs','gift-ritual.mjs','gift-compose.mjs','gift-compose.css','gift-identity.mjs','gift-compose-state.mjs','gift-quote.mjs','gift-waves.mjs','reader-return.mjs'])files['/'+file]=file;
     files['/gift-preview']='book-gift.html';for(const file of ['brand-assets/letter-edge.svg','brand-assets/envelope-edge.svg'])files['/'+file]=file;
     if(safeGiftReturn(p)){files[p]='book-gift.html';res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Cache-Control','private, no-store');}
     Object.assign(files,{'/home-locale.mjs':'home-locale.mjs','/discovery.css':'discovery.css','/robots.txt':'robots.txt','/sitemap.xml':'sitemap.xml'});
@@ -210,6 +212,9 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='restore'&&req.method==='POST'){send(200,await library.restoreBook(user,id,body));return true;}
       if(action==='gifts'&&req.method==='POST'){send(201,await gifts.create(user,id,body));return true;}
       if(action==='gifts'&&req.method==='GET'){send(200,{gifts:await gifts.list(user,id)});return true;}
+      // Preparing a quotation only stages a private, owner-bound suggestion; it
+      // never publishes a link and the sealing endpoint alone creates a gift.
+      if(action==='gift-quote'&&req.method==='POST'){send(200,await giftQuotes.prepare(user,id));return true;}
       if(action?.startsWith('audio/'))return audioRoutes.handle({req,res,url,user,bookId:id,action:action.slice(6),body,send});
       if(action==='content-part'&&req.method==='GET'){send(200,await library.bookTransfer(user,id,Number(url.searchParams.get('offset')),url.searchParams.get('snapshot')));return true;}
       if(!action&&req.method==='GET'){const book=await library.getBook(user,id);if(req.headers['x-reader-book-transfer']==='1'&&Buffer.byteLength(JSON.stringify(book))>3000000&&(dataStore||Buffer.byteLength(JSON.stringify(book))<=32*1024*1024)){res.setHeader('X-Reader-Book-Transfer','parts');send(200,await library.bookTransfer(user,id));}else send(200,book);return true;}
@@ -272,5 +277,5 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     }
     throw fail('找不到这个操作',404);
   }
-  return {handle,library,portability,auth,profile,gifts,audio,audioRoutes,chat,ingestionRunner,setLegacyBook:book=>{legacyBook=book;}};
+  return {handle,library,portability,auth,profile,gifts,giftQuotes,audio,audioRoutes,chat,ingestionRunner,setLegacyBook:book=>{legacyBook=book;}};
 }
