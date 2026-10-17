@@ -18,7 +18,7 @@ test('every public structured book has a bounded excerpt from that exact source 
   const book=await library.getBook(null,entry.id),paragraph=book.sections.flatMap(section=>section.paragraphs).find(row=>row.id===quote.passageId);
   assert.ok(paragraph,entry.id);assert.equal(quote.contentVersion,book.contentVersion);
   if(entry.format==='structured'){
-   assert.ok(quote.original.length<=281);assert.ok(paragraph.original.trim().startsWith(quote.original.endsWith('…')?quote.original.slice(0,-1):quote.original));
+   assert.ok(quote.original.length<=161);assert.ok(paragraph.original.trim().startsWith(quote.original.endsWith('…')?quote.original.slice(0,-1):quote.original));
    assert.equal(quote.translation,null);assert.equal(quote.sourceLanguage,'en');
   }
  }

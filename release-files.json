@@ -18,6 +18,7 @@
   "api/service.js",
   "app/action-focus.mjs",
   "app/arrival-catalog.mjs",
+  "app/arrival-excerpt.mjs",
   "app/assets/atmospheres/NOTICE.md",
   "app/assets/atmospheres/birds.mp3",
   "app/assets/atmospheres/fire.mp3",

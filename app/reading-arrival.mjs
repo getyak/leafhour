@@ -1,3 +1,4 @@
+import {arrivalExcerpt} from './arrival-excerpt.mjs';
 import {arrivalCatalog} from './arrival-catalog.mjs';
 // Short, locally bundled excerpts. Translations retain the catalog's draft status.
 const quotes=[
@@ -24,7 +25,7 @@ export function arrivalBookQuote(book,{bookId,passageId}={}){
   const paragraph=[requested,start,...rows].find(row=>text(row?.original).length>=20);
   const original=paragraph?text(paragraph.original):null;
   const chapter=book.chapters?.find(row=>row.id===paragraph?.chapterId);
-  return {bookId:book.bookId,title,author:text(book.author),chapter:text(chapter?.title?.zh)||text(chapter?.title?.en)||text(chapter?.title),original:original?(original.length>280?original.slice(0,280).trimEnd()+'…':original):null,translation:null,sourceLanguage:text(book.sourceLanguage)||'und',context:'书中一段',passageId:paragraph?.id||null,contentVersion:book.contentVersion||null};
+  return {bookId:book.bookId,title,author:text(book.author),chapter:text(chapter?.title?.zh)||text(chapter?.title?.en)||text(chapter?.title),original:original?arrivalExcerpt(original):null,translation:null,sourceLanguage:text(book.sourceLanguage)||'und',context:'书中一段',passageId:paragraph?.id||null,contentVersion:book.contentVersion||null};
 }
 
 // Completion never waits for an animation. Tickets isolate retries from late work.

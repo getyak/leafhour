@@ -97,5 +97,15 @@ test('arrival content updates reject another book, a finished request and an ear
 test('arrival excerpt work is bounded and never labels untranslated original as an AI translation',()=>{
   const long='Source paragraph. '.repeat(100),book={bookId:'b',title:'Actual title',sections:[{chapterId:'c',paragraphs:[{id:'p',original:long}]}]};
   const quote=arrival.arrivalBookQuote(book,{bookId:'b'});
-  assert.equal(quote.original.length,281);assert.equal(quote.original.slice(0,-1),long.slice(0,280).trimEnd());assert.equal(quote.translation,null);
+  assert.equal(quote.original,'Source paragraph.');assert.equal(quote.translation,null);
+});
+
+
+test('long arrival text stops at a word boundary and remains an exact source prefix',async()=>{
+ const {arrivalExcerpt}=await import('../app/arrival-excerpt.mjs');
+ for(const original of ['Long source paragraph without terminal punctuation '.repeat(20),'字'.repeat(400),'😀'.repeat(200)]){
+  const excerpt=arrivalExcerpt(original);assert.ok([...excerpt].length<=161);assert.ok(excerpt.endsWith('…'));assert.ok(original.startsWith(excerpt.slice(0,-1)));assert.ok(!excerpt.includes('\ufffd'));
+ }
+ assert.equal(arrivalExcerpt('Mr. Brown opens a book. Then he reads on.'),'Mr. Brown opens a book.');
+ assert.equal(arrivalExcerpt('这是当前书籍的一句原文。接着是第二句原文。'),'这是当前书籍的一句原文。');
 });

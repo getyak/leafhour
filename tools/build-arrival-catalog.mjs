@@ -1,3 +1,4 @@
+import {arrivalExcerpt} from '../app/arrival-excerpt.mjs';
 // Public catalog artifacts only; never open an instance directory or credentials.
 import {readFile,writeFile} from 'node:fs/promises';
 import path from 'node:path';
@@ -11,7 +12,7 @@ export async function buildArrivalCatalog(root){
   const bytes=await readFile(path.join(root,'catalog',entry.file)),book=structuredCatalogBook(entry,bytes);
   const section=book.sections.find(row=>row.chapterId===book.readingStart.chapterId),paragraph=section.paragraphs.find(row=>row.id===book.readingStart.passageId),original=paragraph.original.trim();
   const chapter=book.chapters.find(row=>row.id===section.chapterId);
-  result[book.bookId]={bookId:book.bookId,title:entry.title,author:entry.author,chapter:chapter.title.zh,sourceUrl:entry.sourceUrl,original:original.length>280?original.slice(0,280).trimEnd()+'…':original,translation:null,sourceLanguage:'en',context:'书中一段',passageId:paragraph.id,contentVersion:book.contentVersion};
+  result[book.bookId]={bookId:book.bookId,title:entry.title,author:entry.author,chapter:chapter.title.zh,sourceUrl:entry.sourceUrl,original:arrivalExcerpt(original),translation:null,sourceLanguage:'en',context:'书中一段',passageId:paragraph.id,contentVersion:book.contentVersion};
  }
  return result;
 }
