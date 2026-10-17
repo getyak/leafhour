@@ -25,37 +25,122 @@
   },
   {
     "file": "wind.mp3",
-    "source": "https://raw.githubusercontent.com/remvze/moodist/main/public/sounds/nature/wind-in-trees.mp3",
-    "sourceSha256": "b29f775dda9789004aaceee392e124eaa35c0386d27f99b93a639185d98f6b4b",
-    "sha256": "273b64a9fd699ee4c9dfa10dd17ea4e0b800142d627915eded24e9c04819eb51",
-    "bytes": 384670
+    "title": "Wind in a Tree",
+    "creator": "Joseph SARDIN",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "sourcePage": "https://bigsoundbank.com/wind-in-a-tree-s0659.html",
+    "source": "https://bigsoundbank.com/UPLOAD/mp3/0659.mp3?v=d",
+    "sourceSha256": "e14873c3430334075ba3a5274fb92672dc85896089ac94f1ef12154412ed2630",
+    "sha256": "b3b24087dc7d4a128214563634a080e28056fe5a2f27a8bae929ed0d25e8b148",
+    "bytes": 384524,
+    "checkedAt": "2026-10-17T18:17:43.138628+00:00",
+    "licenseStatement": "CC0 (public domain): Free and royalty-free",
+    "sourcePageSha256": "eedbf631b8e892cf8f10032c4cd11ca3dded8feba06dcd51bf15a2fa87126875",
+    "processing": {
+      "offsetSeconds": 2,
+      "durationSeconds": 32,
+      "sampleRate": 48000,
+      "channels": 2,
+      "codec": "libmp3lame",
+      "bitRate": 96000,
+      "filter": "loudnorm=I=-24:TP=-3:LRA=7,afade=t=in:st=0:d=0.6,afade=t=out:st=31.4:d=0.6"
+    }
   },
   {
     "file": "birds.mp3",
-    "source": "https://raw.githubusercontent.com/remvze/moodist/main/public/sounds/animals/birds.mp3",
-    "sourceSha256": "f9b022ed2df9f727a8e84e614b25965112dfe2bbb30cdf8c3db0442ae1eed489",
-    "sha256": "0d93aa23d320990c23ecc7d80e68759fc71e2a200ac27f0c998d24a61c5122b4",
-    "bytes": 384670
+    "title": "Birds waking #2",
+    "creator": "Joseph SARDIN",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "sourcePage": "https://bigsoundbank.com/wake-birds-2-s0935.html",
+    "source": "https://bigsoundbank.com/UPLOAD/mp3/0935.mp3?v=d",
+    "sourceSha256": "86e889d90a0a7a310f065a36c90c75067176ec5aa2a7adc73cfc6985958f5518",
+    "sha256": "e40ca9830119ef373eed79a75d27ae896c07affa93c61e6bd1bacff46ef85ddb",
+    "bytes": 384524,
+    "checkedAt": "2026-10-17T18:17:46.383070+00:00",
+    "licenseStatement": "CC0 (public domain): Free and royalty-free",
+    "sourcePageSha256": "01ad73ef4749b725136704536dba9396de43d58a8d5622fa8ff693c76eed1d20",
+    "processing": {
+      "offsetSeconds": 2,
+      "durationSeconds": 32,
+      "sampleRate": 48000,
+      "channels": 2,
+      "codec": "libmp3lame",
+      "bitRate": 96000,
+      "filter": "loudnorm=I=-24:TP=-3:LRA=7,afade=t=in:st=0:d=0.6,afade=t=out:st=31.4:d=0.6"
+    }
   },
   {
     "file": "rain.mp3",
-    "source": "https://raw.githubusercontent.com/remvze/moodist/main/public/sounds/rain/light-rain.mp3",
-    "sourceSha256": "967eab5ddc2b84808a05fea757460d51461e9dc56e72a3d1490bbb58e7bc6578",
-    "sha256": "5eaa9144ece8b4ab1fa718e54b87a7d0de2d459dffe648240844a2ae57c49203",
-    "bytes": 384670
+    "title": "Rain on Puddle",
+    "creator": "Joseph SARDIN",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "sourcePage": "https://bigsoundbank.com/rain-on-puddle-s1290.html",
+    "source": "https://bigsoundbank.com/UPLOAD/mp3/1290.mp3?v=d",
+    "sourceSha256": "aa5a6824c92440431ec38b3de692a941b61fdfa3c29c69b14307651000269360",
+    "sha256": "f24bfaaa37b17828e405bf15e92b5414129a61a217662bfb21885d7d70ecb104",
+    "bytes": 384524,
+    "checkedAt": "2026-10-17T18:17:49.448677+00:00",
+    "licenseStatement": "CC0 (public domain): Free and royalty-free",
+    "sourcePageSha256": "619928d9996f9ddef039a0bc743fa0da9764ff90b5767d5621cff7271d178cdb",
+    "processing": {
+      "offsetSeconds": 2,
+      "durationSeconds": 32,
+      "sampleRate": 48000,
+      "channels": 2,
+      "codec": "libmp3lame",
+      "bitRate": 96000,
+      "filter": "loudnorm=I=-24:TP=-3:LRA=7,afade=t=in:st=0:d=0.6,afade=t=out:st=31.4:d=0.6"
+    }
   },
   {
     "file": "fire.mp3",
-    "source": "https://raw.githubusercontent.com/remvze/moodist/main/public/sounds/nature/campfire.mp3",
-    "sourceSha256": "9625b15c7f6a4a2d16db937f0e1042762421f9a3ab74f60235bd63654bba13db",
-    "sha256": "4449dc217eed71e782172db3376fe27d9c860394314fba845c16aad4ae973afb",
-    "bytes": 384670
+    "title": "Big branching fire #2",
+    "creator": "Joseph SARDIN",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "sourcePage": "https://bigsoundbank.com/big-branching-fire-2-s0988.html",
+    "source": "https://bigsoundbank.com/UPLOAD/mp3/0988.mp3?v=d",
+    "sourceSha256": "0ddb2cce78fe6010b6f98ac134313cea2a1f705ccfe2285a449df6e4b0ebca42",
+    "sha256": "b22ee95337ba0ce01c4a0be08ed833ee1f4da93b02eb4139e2e4ba3215842647",
+    "bytes": 384524,
+    "checkedAt": "2026-10-17T18:17:52.306558+00:00",
+    "licenseStatement": "CC0 (public domain): Free and royalty-free",
+    "sourcePageSha256": "50845d5951d147690586c673df1215328b55c176e2de31fa2b4131e9d27536fd",
+    "processing": {
+      "offsetSeconds": 2,
+      "durationSeconds": 32,
+      "sampleRate": 48000,
+      "channels": 2,
+      "codec": "libmp3lame",
+      "bitRate": 96000,
+      "filter": "loudnorm=I=-24:TP=-3:LRA=7,afade=t=in:st=0:d=0.6,afade=t=out:st=31.4:d=0.6"
+    }
   },
   {
     "file": "waves.mp3",
-    "source": "https://raw.githubusercontent.com/remvze/moodist/main/public/sounds/nature/waves.mp3",
-    "sourceSha256": "40c670e678b5ee19ff67a8c322490b1f7d2d53124cf9e8b07efd329138aaa8f8",
-    "sha256": "a72d6baaf0e16ad215e2dd926a7ea3f372597b6ffc9bafbd3c76f3c6b775f992",
-    "bytes": 384670
+    "title": "Cliff #1",
+    "creator": "Joseph SARDIN",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "sourcePage": "https://bigsoundbank.com/cliff-1-s2570.html",
+    "source": "https://bigsoundbank.com/UPLOAD/mp3/2570.mp3?v=d",
+    "sourceSha256": "0ba3b344070a7a8ab1169f9bfaf688e40983e167dbbb214e32b34377b48507b4",
+    "sha256": "9ebdae2688f33b531db131e0559be76a00db4e0a52b55ccd322383d6b2413202",
+    "bytes": 384524,
+    "checkedAt": "2026-10-17T18:17:56.816102+00:00",
+    "licenseStatement": "CC0 (public domain): Free and royalty-free",
+    "sourcePageSha256": "24815257266c0894b94e75c7640981bd97b87d055101ac5cb1b8e28736c53a0f",
+    "processing": {
+      "offsetSeconds": 2,
+      "durationSeconds": 32,
+      "sampleRate": 48000,
+      "channels": 2,
+      "codec": "libmp3lame",
+      "bitRate": 96000,
+      "filter": "loudnorm=I=-24:TP=-3:LRA=7,afade=t=in:st=0:d=0.6,afade=t=out:st=31.4:d=0.6"
+    }
   }
 ]

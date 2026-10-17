@@ -6,6 +6,10 @@ import {pathToFileURL} from 'node:url';
 const approvedAssets=new Set(['forest.jpg','rain.jpg','hearth.jpg','sea.jpg','wind.mp3','birds.mp3','rain.mp3','fire.mp3','waves.mp3']);
 const privateDirectories=new Set(['content','local','_briefs']);
 const limit=200*1024;
+const digest=/^[a-f0-9]{64}$/;
+function publicSource(value){
+  try{const url=new URL(value);return url.protocol==='https:'&&!url.username&&!url.password;}catch{return false;}
+}
 
 export async function checkPublicBuild(directory){
   const root=path.resolve(directory),assetRoot=path.join(root,'assets/atmospheres'),manifestPath=path.join(assetRoot,'manifest.json');
@@ -19,6 +23,10 @@ export async function checkPublicBuild(directory){
   for(const entry of entries){
     if(!entry||!approvedAssets.has(entry.file)||registered.has(entry.file))throw Error('不允许的氛围资源');
     if(!Number.isSafeInteger(entry.bytes)||entry.bytes<=0||!/^[a-f0-9]{64}$/.test(entry.sha256))throw Error('氛围资源清单格式不正确');
+    if(entry.file.endsWith('.mp3')){
+      if(entry.license!=='CC0-1.0')throw Error('录音许可须为已审阅的逐文件 CC0-1.0：'+entry.file);
+      if(typeof entry.creator!=='string'||!entry.creator.trim()||!publicSource(entry.source)||!publicSource(entry.sourcePage)||!digest.test(entry.sourceSha256||''))throw Error('录音来源缺少作者、HTTPS 原始资源/作品页面或来源哈希：'+entry.file);
+    }
     const file=path.join(assetRoot,entry.file),info=await lstat(file);
     if(!info.isFile())throw Error('氛围资源必须是普通文件：'+entry.file);
     const bytes=await readFile(file);
@@ -35,6 +43,7 @@ export async function checkPublicBuild(directory){
         await walk(file);
       }else{
         files++;const info=await lstat(file);
+        if(path.dirname(file)===assetRoot&&entry.name.endsWith('.mp3')&&!registered.has(file))throw Error('公开构建包含未登记的录音：'+relative);
         if(info.size>limit){const software=/^reader-web\/reader-([a-f0-9]{16})\.js$/.exec(relative);if(software&&info.size<=320*1024&&createHash('sha256').update(await readFile(file)).digest('hex').startsWith(software[1]))continue;if(!registered.has(file))throw Error('公开构建包含未登记的大文件：'+relative);largeAssets++;}
       }
     }
