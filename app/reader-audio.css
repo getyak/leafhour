@@ -16,3 +16,5 @@ body.has-audio .reading-tools-panel{max-height:calc(100dvh - var(--audio-player-
 body.has-audio .book-page{padding-bottom:max(240px,calc(var(--audio-player-clearance,160px) + 80px))}
 
 .audio-role-details{margin-top:20px;border-top:1px solid var(--line);padding-top:14px}.audio-role-details>summary{font-size:13px;color:var(--muted);cursor:pointer;min-height:40px;padding:10px 0}.audio-role-details>.audio-setting{margin-top:8px}
+
+.audio-guide-scope{font:13px/1.9 var(--interface);color:var(--accent);margin:22px 0 0}.audio-player-status:empty{display:none}.audio-choice:focus-visible,.audio-primary:focus-visible,.audio-secondary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}

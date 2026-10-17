@@ -5,6 +5,15 @@ import {readerConversationContext,mountReaderConversation,readerInteractionBlock
 const book={bookId:'book-one',sections:[{paragraphs:[{id:'p1'},{id:'p2'}]}]};
 const reader=(selected='p2',anchor='p1')=>({getBook:()=>book,isSelectionActive:()=>true,getSelectedId:()=>selected,getAnchor:()=>({passageId:anchor})});
 
+test('audio questions open a bounded source-linked draft only for the captured account and current book',()=>{
+ const opened=[];const f=mount({mountChat:()=>({update(){},open:value=>opened.push(value)})});
+ const event=detail=>{const e=new Event('reader:audio-question');e.detail=detail;return e;};
+ f.events.dispatchEvent(event({ownerId:'other',bookId:'book-one',passageId:'p1',draft:'Explain'}));
+ f.events.dispatchEvent(event({ownerId:'reader-one',bookId:'other',passageId:'p1',draft:'Explain'}));assert.equal(opened.length,0);
+ f.events.dispatchEvent(event({ownerId:'reader-one',bookId:'book-one',passageId:'p1',draft:'Explain this scene.'}));
+ assert.deepEqual(opened,[{bookId:'book-one',passageId:'p1',draft:'Explain this scene.'}]);
+});
+
 test('nonmodal conversation does not block reading keys while chat controls keep their own keys',()=>{
   const document={querySelector:selector=>selector.includes(':not(.library-chat-dialog)')?null:{open:true}};
   assert.equal(readerInteractionBlocked(document,{closest:()=>null}),false);

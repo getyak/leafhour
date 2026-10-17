@@ -39,6 +39,11 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
   });
   if(typeof chat.surface==='function')companion=mountCompanion({bookId,getOwner:()=>session?.user?.id||null,getReader,api,chat,openAuth:()=>{const query=new URLSearchParams({book:bookId}),passage=context()?.passageId;if(passage)query.set('passage',passage);navigate('/library?login=1&next='+encodeURIComponent('/read?'+query));}});
   document.addEventListener('reader:ready',()=>chat.update());
+  document.addEventListener('reader:audio-question',event=>{
+    const detail=event.detail,current=context();
+    if(!current||detail?.ownerId!==(session?.user?.id||null)||detail.bookId!==bookId||!current.passages.has(detail.passageId)||typeof detail.draft!=='string'||!detail.draft.trim()||detail.draft.length>2000)return;
+    chat.open?.({bookId,passageId:detail.passageId,draft:detail.draft});
+  });
   if(context())chat.update();
   return chat;
 }

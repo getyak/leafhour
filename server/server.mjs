@@ -33,6 +33,7 @@ assets.set('/grant-result.mjs',['app/grant-result.mjs','text/javascript']);
 assets.set('/mcp-config.mjs',['app/mcp-config.mjs','text/javascript']);
 const downloads=new Map([['/exports/bilingual.md','book-bilingual.md'],['/exports/literal.md','book-literal.md'],['/exports/interpretive.md','book-interpretive.md'],['/exports/reading-pack.zip','reading-pack.zip']]);
 for(const file of ['reader-audio.js','reader-audio.css','audio-state.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
+assets.set('/listening-guide-state.mjs',['app/listening-guide-state.mjs','text/javascript']);
 for(const file of ['reader-atmosphere.js','reader-atmosphere.css','atmosphere-state.mjs','atmosphere-audio.mjs','hearth-motion.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 for(const name of ['forest','rain','hearth','sea'])assets.set('/assets/atmospheres/'+name+'.jpg',['app/assets/atmospheres/'+name+'.jpg','image/jpeg']);
 for(const name of ['wind','birds','rain','fire','waves'])assets.set('/assets/atmospheres/'+name+'.mp3',['app/assets/atmospheres/'+name+'.mp3','audio/mpeg']);
@@ -41,8 +42,8 @@ for(const [url,file,type] of [['/share.js','app/share.js','text/javascript'],['/
 assets.set('/evals',['app/evals.html','text/html']);assets.set('/evals.js',['app/evals.js','text/javascript']);assets.set('/evals.css',['app/evals.css','text/css']);
 const fail=(message,status=400)=>Object.assign(new Error(message),{status});
 
-export async function createReaderServer({bookPath=path.join(root,'local/finite-infinite-games/book.json'),recordsPath=path.join(root,'local/service/records.json'),publicOrigin=null,experienceStorePath=path.join(path.dirname(recordsPath),'experience-records.json'),experiencePackPath=path.join(path.dirname(bookPath),'experience-pack.json'),generator=null,portalDataDir=path.join(path.dirname(recordsPath),'portal'),sendCode,translator,allowLocal=true,speechProvider,dialogueGenerator,chatGenerator,companionGenerator}={}){
-  const portal=await createPortal({dataDir:portalDataDir,publicOrigin,sendCode,translator,allowLocal,speechProvider,dialogueGenerator,chatGenerator,companionGenerator});
+export async function createReaderServer({bookPath=path.join(root,'local/finite-infinite-games/book.json'),recordsPath=path.join(root,'local/service/records.json'),publicOrigin=null,experienceStorePath=path.join(path.dirname(recordsPath),'experience-records.json'),experiencePackPath=path.join(path.dirname(bookPath),'experience-pack.json'),generator=null,portalDataDir=path.join(path.dirname(recordsPath),'portal'),sendCode,translator,allowLocal=true,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator}={}){
+  const portal=await createPortal({dataDir:portalDataDir,publicOrigin,sendCode,translator,allowLocal,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator});
   let book;try{book=JSON.parse(await readFile(bookPath,'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;book=await portal.library.getBook(null,'gutenberg-alice');}
   if(!Array.isArray(book.sections)||!Array.isArray(book.chapters))throw Error('Reading package is not ready');
   portal.setLegacyBook(book);

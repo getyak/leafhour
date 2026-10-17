@@ -10,7 +10,7 @@ New sessions use chunking version 2: at most 200 UTF-16 code units per clip, pre
 
 Price previews now reference [Google's published Gemini API rates](https://ai.google.dev/gemini-api/docs/pricing), checked on 2026-10-17. The default model's standard paid reference is $0.50 per million text input tokens and $9 per million audio output tokens through 2026-12-31, using 25 audio tokens per second. Unknown models and expired references have no dollar estimate. Duration and text-token estimates remain approximate, and a configured key does not verify quota or billing.
 
-Hosted speech still requires a persistent private queue and audio storage. This migration does not enable that backend; hosted capability metadata continues to report speech unavailable.
+The subsequent guided-listening update adds hosted private CAS/blob persistence and bounded request-attached workers. See [guided listening](guided-listening.md) for configuration, generation limits, recovery and operational boundaries. The verification below records the earlier provider migration, before hosted enablement.
 
 ## Verification
 
