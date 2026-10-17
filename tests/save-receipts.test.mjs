@@ -3,6 +3,11 @@ import assert from 'node:assert/strict';
 import {noteSaveReceipt,readingSessionReceipt,matchingSessionSnapshot} from '../app/save-receipts.mjs';
 import {createReadingOutbox} from '../app/reading-outbox.mjs';
 const final={id:'this-session',sequence:3,status:'finished',durationSeconds:15,end:{chapterId:'c1',passageId:'p1'}};
+test('JSONB key reordering does not reject exact interval receipts or accept changed intervals',()=>{
+ const expected={...final,segments:[{startedAt:'2026-10-17T01:00:00.000Z',endedAt:'2026-10-17T01:00:05.000Z'},{startedAt:'2026-10-17T01:00:10.000Z',endedAt:'2026-10-17T01:00:20.000Z'}]},received={...expected,segments:expected.segments.map(s=>({endedAt:s.endedAt,startedAt:s.startedAt}))};
+ assert.equal(matchingSessionSnapshot(expected,received),true);
+ for(const segments of [[...received.segments].reverse(),received.segments.slice(0,1),[null,received.segments[1]],[{},received.segments[1]],[[received.segments[0]],received.segments[1]],new Array(2),[{...received.segments[0],endedAt:'2026-10-17T01:00:06.000Z'},received.segments[1]]])assert.equal(matchingSessionSnapshot(expected,{...received,segments}),false);
+});
 test('note confirmation distinguishes a saved submission from a newer memory-only draft',()=>{
   assert.equal(noteSaveReceipt({confirmed:true,durable:true,hasDraft:false}),'已保存到自己的书房。');
   assert.match(noteSaveReceipt({confirmed:true,durable:false,hasDraft:true}),/上次提交已保存.*仅在当前页面/);

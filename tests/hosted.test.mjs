@@ -7,16 +7,19 @@ import {createLibraryService} from '../server/library-service.mjs';
 import {makeMcpConfiguration} from '../app/mcp-config.mjs';
 import {authFixture} from './auth-fixture.mjs';
 import {createHash} from 'node:crypto';
+import {createReadingOutbox} from '../app/reading-outbox.mjs';
 
 const env={SUPABASE_URL:'https://storage.example.com',SUPABASE_SECRET_KEY:'server-fixture',SUPABASE_PUBLISHABLE_KEY:'public-fixture',READER_PUBLIC_ORIGIN:'https://reader.example.com'};
-function database(){
+function database({jsonb=false}={}){
   const rows=new Map(),objects=new Map();
+  // JSONB round trips preserve array order and values, but never promise object key order.
+  const jsonbValue=value=>Array.isArray(value)?value.map(jsonbValue):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).sort(([a],[b])=>a.length-b.length||a.localeCompare(b)).map(([key,v])=>[key,jsonbValue(v)])):value;
   const fetcher=async(input,options={})=>{
     const url=new URL(input);let data;
     if(url.pathname==='/rest/v1/reader_documents'){const key=url.searchParams.get('key').slice(3);data=rows.has(key)?[structuredClone(rows.get(key))]:[];}
     else if(url.pathname==='/rest/v1/rpc/reader_document_cas'){
       const {document_key:key,expected_version:version,document_value:value}=JSON.parse(options.body),old=rows.get(key);
-      data=(old?.version||0)===version;if(data)rows.set(key,{version:version+1,value:structuredClone(value)});
+      data=(old?.version||0)===version;if(data)rows.set(key,{version:version+1,value:jsonb?jsonbValue(value):structuredClone(value)});
     }else if(url.pathname.startsWith('/storage/v1/object/reader-originals/')){
       const key=url.pathname.split('/reader-originals/')[1];
       if(options.method==='POST'){objects.set(key,Buffer.from(options.body));data={};}
@@ -26,6 +29,15 @@ function database(){
   };
   return {fetcher,rows};
 }
+test('hosted JSONB manual lost-ACK recovery and repeated restore keep one exact self-report across instances',async()=>{
+ const fixture=database({jsonb:true}),make=()=>createLibraryService({dataDir:'hosted-jsonb',catalogDir:null,dataStore:createHostedStore({env,fetcher:fixture.fetcher})}),a=await make(),b=await make(),owner={id:'get147-jsonb-owner'},book=await a.importDocument(owner,{filename:'jsonb-time.txt',bytes:Buffer.from('Synthetic JSONB recovery source.')}),anchor={chapterId:book.sections[0].chapterId,passageId:book.sections[0].paragraphs[0].id};
+ const startedAt='2026-10-14T12:00:00.000Z',endedAt='2026-10-14T12:10:00.000Z',submitted={id:'manual-lost-ack',source:'manual',bookId:book.bookId,contentVersion:book.contentVersion,status:'finished',sequence:1,timeZone:'UTC',start:anchor,end:anchor,startedAt,endedAt,segments:[{startedAt,endedAt}],durationSeconds:600};let disk=[];
+ const first=createReadingOutbox({load:()=>disk,save:rows=>disk=rows,send:async row=>{await a.saveReadingSession(owner,book.bookId,row);throw Error('lost ACK after successful JSONB commit');}});first.enqueue(submitted);assert.equal((await first.flush()).remaining,1);
+ const stored=(await b.records(owner,book.bookId)).readingSessions;assert.equal(stored.length,1);assert.deepEqual(Object.keys(stored[0].segments[0]),['endedAt','startedAt']);
+ const resumed=createReadingOutbox({load:()=>disk,save:rows=>disk=rows,send:row=>b.saveReadingSession(owner,book.bookId,row)}),retry=await resumed.flush();assert.equal(retry.error,null);assert.equal(retry.remaining,0);assert.equal(resumed.confirmed(submitted),true);assert.equal(disk.length,0);assert.deepEqual((await a.records(owner,book.bookId)).readingSessions,stored);
+ await assert.rejects(b.saveReadingSession(owner,book.bookId,{...submitted,endedAt:'2026-10-14T12:11:00.000Z',segments:[{startedAt,endedAt:'2026-10-14T12:11:00.000Z'}]}),{status:409});
+ const backup=await b.exportLibrary(owner);await a.restoreLibrary(owner,backup);await b.restoreLibrary(owner,backup);assert.deepEqual((await a.records(owner,book.bookId)).readingSessions,stored);assert.equal((await a.readingActivity(owner,{month:'2026-10',timeZone:'UTC'})).durationSeconds,600);
+});
 test('database compare-and-swap preserves simultaneous notes across independent server instances',async()=>{
   const fixture=database(),a=createHostedStore({env,fetcher:fixture.fetcher}),b=createHostedStore({env,fetcher:fixture.fetcher});
   await Promise.all([a.mutate('records',{notes:[]},r=>r.notes.push('first')),b.mutate('records',{notes:[]},r=>r.notes.push('second'))]);
