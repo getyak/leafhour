@@ -26,6 +26,8 @@ return async function handler(req,res){
     if(!origin?.startsWith('https://'))return sendJson(503,{error:'线上书房地址尚未配置'});
     if(!portalPromise){console.info(configurationSummary({env,speechSupported:true}));const store=storeFactory({env}),additionalWebOrigins=(env.READER_ADDITIONAL_WEB_ORIGINS||'').split(',').map(value=>value.trim()).filter(Boolean);portalPromise=portalFactory({dataDir:'hosted',publicOrigin:origin,additionalWebOrigins,allowLocal:false,dataStore:store,authService:authFactory({store,env}),hostedMcp:true,schedule:background,env}).catch(e=>{portalPromise=null;throw e;});}
     const portal=await portalPromise,url=new URL(req.url,origin);url.pathname=route;
+    // Vercel already consumed this framework route field; domain query keys stay strict.
+    if(req.query?.path)url.searchParams.delete('path');
     const handled=await portal.handle({req,res,url,send:(status,body)=>sendJson(status,body)});
     if(!handled)sendJson(404,{error:'找不到这个操作'});
   }catch(error){const retryAfter=Number.isInteger(error.retryAfter)&&error.retryAfter>0?Math.min(3600,error.retryAfter):null;if(retryAfter)res.setHeader('Retry-After',String(retryAfter));sendJson(error.status||500,{error:error.status?error.message:'服务暂时无法完成操作，请重试',...(retryAfter?{retryAfter}:{})});}
