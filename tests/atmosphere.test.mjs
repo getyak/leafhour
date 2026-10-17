@@ -54,7 +54,7 @@ test('volume or narration changes made while recordings load reach the accepted 
 // Run the real UI controller; only the DOM and the audio device are stand-ins.
 const controller=await readFile(new URL('../app/reader-atmosphere.js',import.meta.url),'utf8');
 function readerFixture({saved=null,reduced=false,delayed=false}={}){
-  const elements=new Map(),started=[],stopped=[],pending=[],hearthMotion=[];
+  const elements=new Map(),started=[],stopped=[],pending=[],hearthMotion=[],natureMotion=[];
   class Element extends EventTarget{
     constructor(){super();this.dataset={};this.attributes=new Map();this.children=[];this.firstElementChild={};}
     setAttribute(name,value){this.attributes.set(name,value);}
@@ -79,11 +79,12 @@ function readerFixture({saved=null,reduced=false,delayed=false}={}){
   vm.runInNewContext(controller.replace(/^import .*;\n/gm,''),{document:doc,window:win,location:{search:''},URLSearchParams,
     localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)},readerStorageKey:key=>key,
     atmospheres,normalizeAtmosphere,atmosphereMix,createAtmosphereSession,createAtmosphereAudio:()=>engine,
-    createHearthMotion:()=>{const layer={active:false,setActive(value){this.active=!!value;}};hearthMotion.push(layer);return layer;},requestAnimationFrame:fn=>fn()});
+    createHearthMotion:()=>{const layer={active:false,setActive(value){this.active=!!value;}};hearthMotion.push(layer);return layer;},
+    createNatureMotion:()=>{const layer={active:false,scene:null,setActive(value){this.active=!!value;},setScene(value){this.scene=value;}};natureMotion.push(layer);return layer;},requestAnimationFrame:fn=>fn()});
   const dialog=doc.body.children[0],root=doc.documentElement,$=id=>elements.get(id);
   const tick=()=>new Promise(resolve=>setImmediate(resolve));
   const choose=async id=>{(id==='none'?$('atmosphere-none'):dialog.querySelectorAll().find(button=>button.dataset.scene===id)).dispatchEvent(new Event('click'));await tick();};
-  return {doc,win,root,dialog,motion,$,started,stopped,pending,storage,tick,choose,hearthMotion};
+  return {doc,win,root,dialog,motion,$,started,stopped,pending,storage,tick,choose,hearthMotion,natureMotion};
 }
 
 test('selecting a scene starts its matching sound immediately, including after an explicit pause',async()=>{
@@ -165,4 +166,24 @@ test('the hearth controller starts only visible layers and stops them for motion
   await f.choose('hearth');assert.deepEqual(active(),[true,false]);
   f.win.dispatchEvent(new Event('pagehide'));assert.deepEqual(active(),[false,false]);
   f.win.dispatchEvent(new Event('pageshow'));assert.deepEqual(active(),[true,false]);
+});
+
+test('forest light and sea water follow scene, visibility and motion preferences without ever starting sound',async()=>{
+  const f=readerFixture({saved:{scene:'forest',motion:true}}),active=()=>f.natureMotion.map(layer=>layer.active);
+  assert.deepEqual(active(),[true,false]);assert.deepEqual(f.natureMotion.map(layer=>layer.scene),['forest','forest']);
+  assert.equal(f.started.length,0,'Enabling the visual renderer must never start sound.');
+  f.$('open-atmosphere').dispatchEvent(new Event('click'));assert.deepEqual(active(),[true,true]);
+  f.dialog.close();assert.deepEqual(active(),[true,false]);
+  f.doc.hidden=true;f.doc.dispatchEvent(new Event('visibilitychange'));assert.deepEqual(active(),[false,false]);
+  f.doc.hidden=false;f.doc.dispatchEvent(new Event('visibilitychange'));assert.deepEqual(active(),[true,false]);
+  f.motion.matches=true;f.motion.dispatchEvent(new Event('change'));assert.deepEqual(active(),[false,false]);
+  f.motion.matches=false;f.motion.dispatchEvent(new Event('change'));assert.deepEqual(active(),[true,false]);
+  f.$('atmosphere-motion').checked=false;f.$('atmosphere-motion').dispatchEvent(new Event('change'));assert.deepEqual(active(),[false,false]);
+  f.$('atmosphere-motion').checked=true;f.$('atmosphere-motion').dispatchEvent(new Event('change'));assert.deepEqual(active(),[true,false]);
+  await f.choose('rain');assert.deepEqual(active(),[false,false]);assert.deepEqual(f.natureMotion.map(layer=>layer.scene),['rain','rain']);
+  await f.choose('sea');assert.deepEqual(active(),[true,false]);assert.deepEqual(f.natureMotion.map(layer=>layer.scene),['sea','sea']);
+  assert.deepEqual(f.started.map(start=>start.scene),['rain','sea']);
+  await f.choose('none');assert.deepEqual(active(),[false,false]);
+  f.win.dispatchEvent(new Event('pagehide'));assert.deepEqual(active(),[false,false]);
+  f.win.dispatchEvent(new Event('pageshow'));assert.deepEqual(active(),[false,false]);
 });

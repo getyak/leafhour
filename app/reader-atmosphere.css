@@ -71,17 +71,24 @@ body{isolation:isolate}
 .atmosphere-about{font:10px/1.8 var(--interface);margin-top:13px;color:var(--muted)}
 .atmosphere-about summary{cursor:pointer;font-size:10px;min-height:24px}.atmosphere-about p{margin:10px 0}.atmosphere-about a{color:var(--accent)}
 /* Weather stays behind the fixed paper mask. The hearth adds a small flame field
-   anchored to its fuel; its photograph remains still. */
+   anchored to its fuel; its photograph remains still. Forest and sea keep still
+   photographs too: their motion is light and water on the elements layers (the
+   bounded nature-motion canvas when available, these CSS layers as fallback). */
 .atmosphere-elements{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:0}
 .atmosphere-elements::before,.atmosphere-elements::after{content:"";position:absolute;inset:var(--weather-inset,-12%);background-position:center;background-size:var(--weather-size,cover);mask-image:var(--weather-mask,none);opacity:var(--weather-opacity,.35)}
 .atmosphere-elements::before{background-image:var(--weather-near,none)}
 .atmosphere-elements::after{background-image:var(--weather-far,none);opacity:var(--weather-far-opacity,.2)}
+.nature-motion{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;pointer-events:none}
+.nature-motion[hidden]{display:none}
+.atmosphere-elements[data-nature-renderer=canvas]::before,.atmosphere-elements[data-nature-renderer=canvas]::after{display:none}
 :root[data-atmosphere=forest],.atmosphere-preview[data-scene=forest]{
-  --weather-near:radial-gradient(ellipse at 18% 10%,#f8e9a4a0 0%,transparent 43%),radial-gradient(ellipse at 82% 48%,#e8efc976 0%,transparent 32%);
-  --weather-far:radial-gradient(ellipse at 23% 28%,#0c261da6 0% 12%,transparent 30%),radial-gradient(ellipse at 78% 60%,#0c261d91 0% 10%,transparent 32%);
-  --weather-near-motion:atmosphere-canopy 13s ease-in-out infinite alternate;
-  --weather-far-motion:atmosphere-canopy 19s ease-in-out -6s infinite alternate-reverse;
-  --scene-drift:atmosphere-forest-drift 24s ease-in-out infinite alternate;
+  --weather-near:repeating-linear-gradient(108deg,transparent 0 52px,#f8e9a42e 74px,#f8e9a45c 88px,transparent 110px 158px);
+  --weather-far:repeating-linear-gradient(102deg,transparent 0 118px,#0c261d38 160px,#0c261d2b 206px,transparent 254px 332px);
+  --weather-mask:linear-gradient(90deg,#0004 0%,#000 24%,#000 76%,#0004 100%);
+  --weather-opacity:.5;--weather-far-opacity:.34;
+  --weather-near-motion:atmosphere-light-shafts 6.5s ease-in-out infinite alternate;
+  --weather-far-motion:atmosphere-canopy-shadow 13s ease-in-out -4s infinite alternate-reverse;
+  --scene-drift:none;
 }
 :root[data-atmosphere=rain],.atmosphere-preview[data-scene=rain]{
   --weather-near:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='173' height='212' fill='none' stroke='%23d9edf5' stroke-linecap='round'%3E%3Cpath d='M19 16l-4 23M77 83l-3 18M142 147l-4 24M48 174l-2 14M121 31l-3 19'/%3E%3C/svg%3E");
@@ -105,29 +112,27 @@ body{isolation:isolate}
 .atmosphere-preview[data-scene=hearth]::before{background-position:var(--hearth-position)}
 .atmosphere-preview[data-scene=hearth] .hearth-flames{object-position:var(--hearth-position)}
 :root[data-atmosphere=sea],.atmosphere-preview[data-scene=sea]{
-  --weather-near:var(--scene-image);
-  --weather-far:radial-gradient(ellipse at 18% 68%,#f5eac975 0%,transparent 44%),radial-gradient(ellipse at 82% 88%,#d2e8e04d 0%,transparent 36%);
-  --weather-mask:linear-gradient(transparent 28%,#000 56%);--weather-opacity:.27;--weather-far-opacity:.22;
-  --weather-near-motion:atmosphere-tide 8s ease-in-out infinite alternate;
-  --weather-far-motion:atmosphere-tide 11s ease-in-out -4s infinite alternate-reverse;
-  --scene-drift:atmosphere-sea-drift 20s ease-in-out infinite alternate;
+  --weather-near:repeating-linear-gradient(178deg,transparent 0 12px,#f5eac92e 14px,#d2e8e047 17px,transparent 19px 33px);
+  --weather-far:radial-gradient(ellipse at 18% 62%,#f5eac96b 0%,transparent 44%),radial-gradient(ellipse at 82% 78%,#d2e8e040 0%,transparent 36%);
+  --weather-mask:linear-gradient(180deg,transparent 26%,#000 46%);
+  --weather-opacity:.36;--weather-far-opacity:.24;
+  --weather-near-motion:atmosphere-ripples 5.2s ease-in-out infinite alternate;
+  --weather-far-motion:atmosphere-glints 9s ease-in-out -3s infinite alternate-reverse;
+  --scene-drift:none;
 }
-:root[data-atmosphere=sea] .atmosphere-backdrop .atmosphere-elements::before,.atmosphere-preview[data-scene=sea] .atmosphere-elements::before{inset:0;filter:saturate(.62) brightness(.72)}
-.atmosphere-preview[data-scene=sea] .atmosphere-elements::before{filter:saturate(.75) brightness(.82)}
-:root[data-theme=night][data-atmosphere=sea] .atmosphere-backdrop .atmosphere-elements::before{filter:saturate(.55) brightness(.4)}
 @media(prefers-reduced-motion:no-preference){
   :root[data-atmosphere-motion=true] :is(.atmosphere-backdrop,.atmosphere-preview)::before{animation:var(--scene-drift,none)}
   :root[data-atmosphere-motion=true] .atmosphere-elements{opacity:1}
   :root[data-atmosphere-motion=true] .atmosphere-elements::before{animation:var(--weather-near-motion,none)}
   :root[data-atmosphere-motion=true] .atmosphere-elements::after{animation:var(--weather-far-motion,none)}
 }
-@keyframes atmosphere-forest-drift{from{transform:scale(1.035) translate(-.5%,0)}to{transform:scale(1.065) translate(.5%,.4%)}}
+@keyframes atmosphere-light-shafts{from{transform:translateX(-1.4%);opacity:.32}to{transform:translateX(1.4%);opacity:.68}}
 @keyframes atmosphere-rain-drift{from{transform:scale(1.03) translate(0,-.3%)}to{transform:scale(1.045) translate(.4%,.3%)}}
-@keyframes atmosphere-sea-drift{from{transform:scale(1.045) translate(-.6%,-.2%)}to{transform:scale(1.065) translate(.6%,.3%)}}
-@keyframes atmosphere-canopy{from{transform:translate(-2%,-1%) rotate(-2deg);opacity:.2}to{transform:translate(2%,1%) rotate(2deg);opacity:.48}}
+@keyframes atmosphere-canopy-shadow{from{transform:translate(1%,-.6%);opacity:.5}to{transform:translate(-1%,.8%);opacity:.95}}
 @keyframes atmosphere-rain{from{transform:translateY(-212px)}to{transform:translateY(0)}}
 @keyframes atmosphere-fire{0%,100%{transform:scale(1);opacity:.13}37%{transform:scale(1.07,.98);opacity:.31}68%{transform:scale(1.02,1.05);opacity:.2}}
-@keyframes atmosphere-tide{from{transform:translate(-1.4%,-1%) scale(1.02,.99);opacity:.13}to{transform:translate(1.4%,1.4%) scale(1.05,1.04);opacity:.3}}
+@keyframes atmosphere-ripples{from{transform:translateX(-.8%);opacity:.28}55%{opacity:.62}to{transform:translateX(.8%);opacity:.44}}
+@keyframes atmosphere-glints{from{opacity:.4}to{opacity:1}}
 :root[data-atmosphere-active=false] :is(.atmosphere-backdrop,.atmosphere-preview)::before,
 :root[data-atmosphere-active=false] .atmosphere-elements::before,
 :root[data-atmosphere-active=false] .atmosphere-elements::after,
