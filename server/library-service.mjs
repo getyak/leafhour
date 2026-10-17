@@ -51,6 +51,10 @@ function validateShelfBackup(entry){
   if(shelf.archivedAt!==undefined&&(typeof shelf.archivedAt!=='string'||!Number.isFinite(Date.parse(shelf.archivedAt))))throw fail('备份中的移除时间不正确');
 }
 
+// A private base book and an account overlay are user data. Shared catalog
+// sample translations remain defaults, so a clean import can replace them.
+const restoreTranslationValue=(value,current,base,preserveExisting)=>preserveExisting?{contentVersion:value.contentVersion,translations:{...value.translations,...base,...(current?.contentVersion===value.contentVersion?current.translations:{})}}:value;
+
 export async function createLibraryService({dataDir,catalogDir=path.resolve('catalog'),translator=null,dataStore=null}={}){
   if(!dataStore)await mkdir(dataDir,{recursive:true,mode:0o700});
   const publicBooks=new Map(),queues=new Map(),translationsRunning=new Set();
@@ -89,6 +93,19 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(book.visibility==='private')book.sourceLanguage=inferSourceLanguage(book.sections.flatMap(s=>s.paragraphs).slice(0,10).map(p=>p.original).join('\n'));
     if(user){const overlay=await read(path.join(userDir(user),'translations',digest(id)+'.json'),{});for(const p of book.sections.flatMap(s=>s.paragraphs))if(overlay[p.id]?.contentVersion===book.contentVersion)p.translations=overlay[p.id].translations;}
     return book;
+  }
+  async function previewRestoreBooks(user,backup){
+    requireUser(user);const books=[];
+    for(const {book}of backup.books){
+      const privateBase=publicBooks.has(book.bookId)?null:await read(bookFile(user,book.bookId),null),result=structuredClone(publicBooks.get(book.bookId)||privateBase||{...book,visibility:'private'}),basePassages=new Map(privateBase?allPassages(privateBase).map(p=>[p.id,p]):[]),overlay=structuredClone(await read(path.join(userDir(user),'translations',digest(book.bookId)+'.json'),{}));
+      for(const p of allPassages(book))if(Object.keys(p.translations).length){const value={contentVersion:book.contentVersion,translations:p.translations},current=Object.hasOwn(overlay,p.id)?overlay[p.id]:null;Object.defineProperty(overlay,p.id,{value:restoreTranslationValue(value,current,basePassages.get(p.id)?.translations,true),enumerable:true,writable:true,configurable:true});}
+      delete result._giftReceive;if(result.visibility==='private')result.sourceLanguage=inferSourceLanguage(allPassages(result).slice(0,10).map(p=>p.original).join('\n'));
+      for(const p of result.sections.flatMap(s=>s.paragraphs))if(overlay[p.id]?.contentVersion===result.contentVersion)p.translations=overlay[p.id].translations;
+      books.push(result);
+    }
+    const byId=new Map(books.map(b=>[b.bookId,b])),projected={...backup,books:backup.books.map(entry=>{const book=byId.get(entry.book.bookId);return {...entry,book,records:{...entry.records,position:alignReadingPosition(book,entry.records.position)}};})};
+    try{validateLibraryBackup(projected);}catch(error){if([400,409].includes(error.status))throw fail('备份记录或锚点与目标保留的书籍结构冲突，未开始恢复',409);throw error;}
+    return books;
   }
   const shelfFile=user=>path.join(userDir(user),'shelf.json');
   async function allShelfRows(user){const index=user?await read(path.join(userDir(user),'index.json'),{books:[]}):{books:[]};return [...publicBooks.values()].map(brief).concat(index.books);}
@@ -312,9 +329,10 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   async function restoreLibrary(user,backup,{preserveExisting=false}={}){
     await validateRestore(user,backup);
     for(const {book,records:incoming}of backup.books){
+      const privateBase=preserveExisting&&!publicBooks.has(book.bookId)?await read(bookFile(user,book.bookId),null):null,basePassages=new Map(privateBase?allPassages(privateBase).map(p=>[p.id,p]):[]);
       if(!publicBooks.has(book.bookId)){const privateBook={...book,visibility:'private'};await mutate(bookFile(user,book.bookId),{},data=>{if(!preserveExisting||!data.bookId)Object.assign(data,privateBook);});await mutate(path.join(userDir(user),'index.json'),{books:[]},data=>{if(!preserveExisting)data.books=data.books.filter(b=>b.bookId!==book.bookId);if(!data.books.some(b=>b.bookId===book.bookId))data.books.push(brief(privateBook));});}
       const overlay=Object.create(null);for(const p of allPassages(book))if(Object.keys(p.translations).length)overlay[p.id]={contentVersion:book.contentVersion,translations:p.translations};
-      await mutate(path.join(userDir(user),'translations',digest(book.bookId)+'.json'),{},data=>{for(const [id,value]of Object.entries(overlay)){const current=Object.hasOwn(data,id)?data[id]:null,next=preserveExisting&&current?.contentVersion===book.contentVersion?{contentVersion:book.contentVersion,translations:{...value.translations,...current.translations}}:value;Object.defineProperty(data,id,{value:next,enumerable:true,writable:true,configurable:true});}});
+      await mutate(path.join(userDir(user),'translations',digest(book.bookId)+'.json'),{},data=>{for(const [id,value]of Object.entries(overlay)){const current=Object.hasOwn(data,id)?data[id]:null,next=restoreTranslationValue(value,current,basePassages.get(id)?.translations,preserveExisting);Object.defineProperty(data,id,{value:next,enumerable:true,writable:true,configurable:true});}});
       await mutate(recordFile(user,book.bookId),emptyRecords(book),raw=>{const data=mergedPersonalRecords(book,raw,incoming,{preserveExisting});guardRecordSize(data);Object.assign(raw,data);});
     }
     if(backup.books.some(entry=>entry.shelf))await mutate(shelfFile(user),emptyShelf(),shelf=>{
@@ -381,5 +399,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(claim.pending)await mutate(bookFile(user,incoming.bookId),{},current=>{if(current._giftReceive?.fingerprint===fingerprint)delete current._giftReceive;});
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }
