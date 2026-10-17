@@ -1,6 +1,9 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {passagePresentation,visibleQuoteLanguage} from '../app/passage-layers.mjs';
 const passage={id:'p1',original:'The original words stay unchanged.',translations:{}};
+test('source language metadata is retained instead of labelling every non-Chinese book English',()=>{
+  assert.equal(passagePresentation({...passage,original:'Un texte original.'},{mode:'en',sourceLanguage:'fr'}).layers[0].lang,'fr');
+});
 test('a source heading remains an original label rather than an untranslated prose warning',()=>{
   const view=passagePresentation({...passage,kind:'source_heading'},{mode:'zh'});assert.equal(view.layers[0].kind,'original');assert.equal(view.notice,null);
 });

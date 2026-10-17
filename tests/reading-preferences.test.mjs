@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,writeFile,rm} from 'node:fs/promises';
+import {mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
+import vm from 'node:vm';
 import {createReaderServer} from '../server/server.mjs';
 
 test('opening a saved translated view shows the original without losing typography or the chosen translation variant',async()=>{
@@ -31,14 +32,14 @@ test('reading appearance travels with exported records, rejects invalid imports 
   }
   const post=(base,url,data)=>fetch(base+url,{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body:JSON.stringify(data)});
   const legacy={chapterId:'ch01',passageId:'p1',offset:100,mode:'parallel',variant:'literal',font:23,theme:'night'};
-  const custom={...legacy,pageLayout:'spread',theme:'leaf',fontFamily:'kai',lineHeight:2.2,paragraphGap:32,letterSpacing:0.04,wordSpacing:0.12,fontWeight:600,indent:true,parallelLayout:'stack',parallelStyle:'reveal',parallelColor:'blue',parallelBackground:'soft'};
+  const custom={...legacy,readingPurpose:'deep',preferredLanguage:'zh',pageLayout:'spread',theme:'leaf',fontFamily:'kai',lineHeight:2.2,paragraphGap:32,letterSpacing:0.04,wordSpacing:0.12,fontWeight:600,indent:true,parallelLayout:'stack',parallelStyle:'reveal',parallelColor:'blue',parallelBackground:'soft'};
   assert.equal((await post(base,'/api/progress',custom)).status,200);
   const exported=await (await fetch(base+'/api/records/export')).json();
   for(const [key,value] of Object.entries(custom))assert.equal(exported.position[key],value,key);
   assert.equal((await post(other,'/api/records/import',exported)).status,200);
   const restored=await (await fetch(other+'/api/records')).json();
   for(const [key,value] of Object.entries(custom))assert.equal(restored.position[key],value,key);
-  for(const invalid of [{pageLayout:'injected'},{fontFamily:'injected'},{theme:'unknown'},{lineHeight:9},{paragraphGap:-4},{letterSpacing:1},{wordSpacing:-1},{fontWeight:900},{indent:'yes'},{parallelLayout:'injected'},{parallelStyle:'blur(9px)'},{parallelColor:'#fff'},{parallelBackground:'url(evil)'}]){
+  for(const invalid of [{readingPurpose:'injected'},{preferredLanguage:'injected'},{pageLayout:'injected'},{fontFamily:'injected'},{theme:'unknown'},{lineHeight:9},{paragraphGap:-4},{letterSpacing:1},{wordSpacing:-1},{fontWeight:900},{indent:'yes'},{parallelLayout:'injected'},{parallelStyle:'blur(9px)'},{parallelColor:'#fff'},{parallelBackground:'url(evil)'}]){
     const bad={...exported,position:{...custom,...invalid},comments:[{id:'bad-note',passageId:'p1',text:'should never be imported'}]};
     assert.equal((await post(other,'/api/records/import',bad)).status,400,JSON.stringify(invalid));
     const unchanged=await (await fetch(other+'/api/records')).json();
@@ -48,6 +49,26 @@ test('reading appearance travels with exported records, rejects invalid imports 
   const migrated=await (await fetch(other+'/api/records')).json();
   assert.equal(migrated.position.pageLayout,'scroll');assert.equal(migrated.position.fontFamily,'song');assert.equal(migrated.position.lineHeight,1.98);assert.equal(migrated.position.indent,false);
   assert.equal(migrated.position.parallelLayout,'columns');assert.equal(migrated.position.parallelStyle,'plain');
+  assert.equal(migrated.position.readingPurpose,'manual');assert.equal(migrated.position.preferredLanguage,'source');
+});
+
+test('explicit reading purposes choose a starting language without overwriting variants or manual views',async()=>{
+  const {preferredReadingMode,openingReadingPreferences,normalizeAppearance}=await import('../app/reading-preferences.mjs');
+  assert.equal(typeof preferredReadingMode,'function');
+  const saved={readingPurpose:'deep',preferredLanguage:'zh',mode:'parallel',variant:'literal',font:26,theme:'night'};
+  const before=structuredClone(saved);
+  assert.equal(preferredReadingMode(saved),'zh');
+  assert.equal(preferredReadingMode({...saved,readingPurpose:'language'}),'en');
+  assert.equal(preferredReadingMode({...saved,preferredLanguage:'source'}),'en');
+  assert.equal(preferredReadingMode({...saved,readingPurpose:'manual'}),'parallel');
+  assert.equal(preferredReadingMode(saved,{sourceOnly:true}),'en');
+  const reopened=openingReadingPreferences(saved);
+  for(const [key,value]of Object.entries(saved))assert.equal(reopened[key],value,key);
+  assert.equal(openingReadingPreferences({readingPurpose:'deep',preferredLanguage:'zh'}).mode,'zh');
+  assert.equal(openingReadingPreferences({readingPurpose:'language',preferredLanguage:'zh'}).mode,'en');
+  assert.equal(openingReadingPreferences({...saved,readingPurpose:'manual'}).mode,'en');
+  for(const invalid of [{readingPurpose:'injected'},{preferredLanguage:'fr'}])assert.throws(()=>normalizeAppearance(invalid,true));
+  assert.deepEqual(saved,before);
 });
 
 test('parallel settings restore independently of the opening language and safely normalize older preferences',async()=>{
@@ -59,4 +80,28 @@ test('parallel settings restore independently of the opening language and safely
   const old=normalizeAppearance({parallelLayout:'invalid',parallelStyle:17});
   assert.equal(old.parallelLayout,'columns');assert.equal(old.parallelStyle,'plain');assert.equal(old.parallelColor,'auto');assert.equal(old.parallelBackground,'auto');
   for(const style of ['plain','muted','quote','tint','reveal'])assert.equal(normalizeAppearance({parallelStyle:style},true).parallelStyle,style);
+});
+
+test('delayed and conflict restoration keep Chinese original-only books readable without losing preferences or anchors',async()=>{
+  const {openingReadingPreferences}=await import('../app/reading-preferences.mjs');
+  const {chineseOriginalOnly}=await import('../app/source-language.mjs');
+  const {resolveReadingPosition,chooseReadingPosition,resumeSummary,recoveredPositionNeedsChoice}=await import('../app/reading-progress.mjs');
+  const {mergeLoadedReadingRecords}=await import('../app/reading-load.mjs');
+  const reader=await readFile(new URL('../app/reader.js',import.meta.url),'utf8');
+  const delayed=reader.slice(reader.indexOf('async function adoptLoadedRecords('),reader.indexOf("for(const type of ['pointerdown'"));
+  const conflict=reader.slice(reader.indexOf('async function reconcileProgress('),reader.indexOf("$('progress-use-remote').addEventListener"));
+  for(const sourceLanguage of ['zh','en'])for(const restore of ['delayed','conflict']){
+    const book={bookId:'restore-book',contentVersion:'v1',sourceLanguage,chapters:[{id:'ch02'}],sections:[{chapterId:'ch02',paragraphs:[{id:'p22',original:'Synthetic source.',translations:{}}]}]};
+    const position={contentVersion:'v1',chapterId:'ch02',passageId:'p22',offset:-100,withinParagraph:.4,revision:2,mode:'parallel',variant:'literal',readingPurpose:'deep',preferredLanguage:'zh'};
+    const fresh={position,comments:[],questions:[]},state=openingReadingPreferences();let rendered,anchor;
+    const context={book,state,openingReadingPreferences,chineseOriginalOnly,resolveReadingPosition,chooseReadingPosition,resumeSummary,recoveredPositionNeedsChoice,mergeLoadedReadingRecords,loadGeneration:1,recordsPending:true,records:fresh,selectedBookId:book.bookId,readerSession:{user:{id:'synthetic-owner'}},entryInteracted:false,localStorage:{getItem:()=>null},progressKey:'synthetic',recordsPositionUnresolved:false,progressSync:{revision:1,adopt(){}},deferredProgress:false,document:{body:{dataset:{}},dispatchEvent(){},getElementById:()=>({})},CustomEvent:class{},$:()=>({hidden:true}),renderChapter:()=>{rendered={...state};},restoreAnchor:value=>{anchor=value;},cachePosition(){},queueReadingFlow(){},renderPanel(){},api:async()=>fresh,trackActionFocus:()=>({stop(){},restore(){}}),closePanel(){},dismissTools(){},announce(){},progressSequence:0,persistTimer:null,clearTimeout};
+    context.anchor=()=>anchor;
+    vm.createContext(context);
+    vm.runInContext(delayed+'\n'+conflict+';this.restoreDelayed=adoptLoadedRecords;this.restoreConflict=reconcileProgress;',context);
+    if(restore==='delayed')await context.restoreDelayed(fresh,{generation:1,explicitEntry:false});else await context.restoreConflict(true);
+    assert.equal(rendered?.mode,sourceLanguage==='zh'?'en':'parallel',sourceLanguage+' '+restore);
+    for(const key of ['readingPurpose','preferredLanguage','variant'])assert.equal(rendered[key],position[key],key);
+    assert.equal(anchor.passageId,'p22');assert.equal(anchor.withinParagraph,.4);
+    assert.equal(fresh.position.mode,'parallel','restoring must not rewrite the saved record');
+  }
 });

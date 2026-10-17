@@ -218,6 +218,7 @@
   "docs/guided-listening.md",
   "docs/local-instance.md",
   "docs/reading-journey.md",
+  "docs/reading-preferences.md",
   "docs/world-catalog.md",
   "harness/chat-generator.mjs",
   "harness/chat-plugin.mjs",

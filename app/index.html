@@ -82,6 +82,9 @@
     <div id="settings-content" class="settings-content">
       <div id="settings-reading" class="settings-panel" role="tabpanel" aria-labelledby="settings-tab-reading">
         <section class="settings-section" aria-labelledby="language-heading"><h3 id="language-heading">阅读内容</h3>
+          <div class="setting-row"><label for="reading-purpose">阅读目标</label><select id="reading-purpose" aria-describedby="reading-purpose-hint"><option value="manual">未设置 · 原文开场</option><option value="deep">深入理解</option><option value="language">语言学习</option></select></div>
+          <div class="setting-row"><label for="preferred-language">深读优先语言</label><select id="preferred-language" aria-describedby="reading-purpose-hint"><option value="source">原文</option><option value="zh">中文</option></select></div>
+          <p id="reading-purpose-hint" class="setting-hint">语言学习从原文开始，深读从偏好语言开始。仍可单独切换阅读方式与译法；只显示已有内容，不会自动翻译。</p>
           <div class="setting-row"><label for="view-mode">阅读方式</label><select id="view-mode"><option value="en" selected>英文原文</option><option value="zh">中文译文</option><option value="parallel">中英对照</option></select></div>
           <div id="page-layout-setting" class="setting-row"><label for="page-layout">书页布局</label><select id="page-layout" aria-describedby="page-layout-hint"><option value="scroll">滚动阅读</option><option value="spread">翻页阅读</option></select></div><p id="page-layout-hint" class="setting-hint">翻页阅读在宽窗口显示双页，窄窗口显示单页。用 ← → 或页底按钮翻页。</p>
           <div id="translation-settings" class="setting-row" hidden><label for="translation-variant">中文译法</label><select id="translation-variant"><option value="interpretive">意译</option><option value="literal">直译</option></select></div>
