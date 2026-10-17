@@ -12,6 +12,7 @@ import {saveHighlight,findHighlight,mergeHighlights} from '../app/highlights.mjs
 import {inferSourceLanguage} from '../app/source-language.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
 import {applyPersonalRecordEdit} from '../app/personal-records.mjs';
+import {isReadingTimeSource} from '../app/reading-time-policy.mjs';
 import {applyCatalogReadingMetadata} from './catalog-reading-metadata.mjs';
 import {structuredCatalogBook} from './structured-catalog.mjs';
 import {applyCatalogSample} from './catalog-sample.mjs';
@@ -26,7 +27,7 @@ function mergedPersonalRecords(book,current,incoming){
   data.highlights=mergeHighlights(data.highlights,incoming.highlights||[]);
   for(const key of ['comments','questions']){const map=new Map(data[key].map(r=>[r.id,r]));for(const row of incoming[key])if(!map.has(row.id))map.set(row.id,row);data[key]=[...map.values()];}
   const sessions=new Map(data.readingSessions.map(r=>[r.id,r]));
-  for(const session of incoming.readingSessions){const old=sessions.get(session.id);if(session.source==='reader_focus')sessions.set(session.id,mergeReadingSession(old,normalizeReadingSession(session,book)));else if(old&&old.source!==session.source)throw fail('备份中的阅读时段标识冲突，未覆盖记录',409);else if(!old)sessions.set(session.id,session);}
+  for(const session of incoming.readingSessions){const old=sessions.get(session.id);if(isReadingTimeSource(session.source))sessions.set(session.id,mergeReadingSession(old,normalizeReadingSession(session,book)));else if(old&&old.source!==session.source)throw fail('备份中的阅读时段标识冲突，未覆盖记录',409);else if(!old)sessions.set(session.id,session);}
   data.readingSessions=[...sessions.values()];
   const marks=new Map(data.readingMilestones.map(r=>[r.id,r]));
   for(const mark of incoming.readingMilestones||[]){const old=marks.get(mark.id);if(old&&(old.type!==mark.type||old.chapterId!==mark.chapterId||old.contentVersion!==mark.contentVersion))throw fail('备份中的阅读标记标识冲突，未覆盖记录',409);if(!old)marks.set(mark.id,normalizeReadingMilestone(mark,book));}

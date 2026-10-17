@@ -30,11 +30,25 @@
     <span id="reading-tools-notice" class="visually-hidden" role="status" aria-live="polite"></span>
     <div id="reading-tools-panel" class="reading-tools-panel" role="group" aria-labelledby="reading-tools-heading" aria-hidden="true" inert>
     <div class="reading-tools-heading"><span id="reading-tools-heading">留一点时间给书</span><button id="reading-tools-close" type="button" aria-label="收起阅读工具">收起 <span aria-hidden="true">↓</span></button></div>
-    <div id="reading-controls" class="reading-controls"><div class="reading-meter"><span id="reading-state">今日阅读</span><output id="reading-time" aria-label="本次前台阅读时间" aria-live="off">00:00</output></div><button id="reading-toggle" type="button">开始阅读</button><button id="reading-end" type="button" disabled>结束</button></div>
+    <div id="reading-time-options" class="reading-time-options"><label for="reading-time-source">计时口径</label><select id="reading-time-source" aria-describedby="reading-time-help"><option value="reader_focus">主动专注</option><option value="reader_estimate">前台估计</option></select></div>
+    <p id="reading-time-help" class="reading-time-help">主动专注允许停留思考，不要求滚动；隐藏、失焦或暂停时不计时。</p>
+    <div id="reading-controls" class="reading-controls"><div class="reading-meter"><span id="reading-state">今日阅读</span><output id="reading-time" aria-label="本次已记录时间" aria-live="off">00:00</output></div><button id="reading-toggle" type="button">开始专注</button><button id="reading-end" type="button" disabled>结束</button></div>
+    <button id="manual-reading-open" type="button" disabled>手动补记</button>
     <a id="reading-login" class="reading-login" href="/library?login=1">登录后记录阅读 →</a><button id="reading-guide-open" type="button">深读提示</button><button id="reading-drafts-open" type="button" hidden>草稿</button>
     <span id="reading-goal-hint" class="reading-goal-hint"></span><div class="reading-sync-row"><p id="reading-sync" role="status"></p><button id="reading-retry" type="button" hidden>重试保存</button><button id="reading-backup" type="button" hidden>另存待同步时段</button></div>
     </div>
   </section>
+  <dialog id="manual-reading" class="reading-dialog" aria-labelledby="manual-reading-title">
+    <header><div><p class="reading-dialog-kicker">Leafhour · 自己的阅读记录</p><h2 id="manual-reading-title">手动补记（自报）</h2></div><button data-manual-close type="button" aria-label="关闭手动补记">×</button></header>
+    <p id="manual-reading-zone" class="reading-guide-reference"></p>
+    <p class="reading-guide-reference">打开补记会暂停当前计时，关闭后可自行继续。填写已结束的一个时段，最长24小时。未提交输入不会保存；已提交但待确认的时段会用同一标识重试。总时长会合并重叠，补记不证明理解程度。</p>
+    <form novalidate>
+      <div class="manual-reading-fields"><label>开始时间<input id="manual-reading-start" type="datetime-local" step="60" required></label><label>结束时间<input id="manual-reading-end" type="datetime-local" step="60" required></label></div>
+      <p id="manual-reading-preview" class="reading-guide-reference"></p>
+      <p id="manual-reading-status" class="manual-reading-status" role="status" aria-live="polite"></p>
+      <button id="manual-reading-save" class="reading-primary" type="submit">保存补记</button>
+    </form>
+  </dialog>
   <dialog id="reading-guide" class="reading-dialog" aria-labelledby="reading-guide-title">
     <header><div><p class="reading-dialog-kicker">Leafhour · 深读提示</p><h2 id="reading-guide-title">从一个问题开始。</h2></div><button data-reading-close="reading-guide" aria-label="关闭深读提示">×</button></header>
     <p id="guide-session-state" class="reading-guide-reference" hidden>计时已暂停，回到阅读后继续。</p><div class="reading-source"><p id="guide-source-label"></p><blockquote id="guide-source"></blockquote></div>
