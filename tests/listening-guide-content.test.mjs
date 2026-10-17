@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {audioBook} from './audio-fixture.mjs';
-import {guideScope,validateGuide} from '../server/listening-guide-content.mjs';
+import {guideScope,guideBatches,validateGuide} from '../server/listening-guide-content.mjs';
 const explain = {intent:'explain', chapterId:'ch1', contentVersion:'v1', throughPassageId:'p1'};
 const script = () => ({turns:[{speaker:'guide',text:'先仔细读这句，再提出问题。',style:'calm',sourceRefs:[{chapterId:'ch1',passageId:'p1',quote:'Read'}]}]});
 const jsonb=value=>Array.isArray(value)?value.map(jsonb):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).sort(([a],[b])=>Buffer.byteLength(a)-Buffer.byteLength(b)||Buffer.compare(Buffer.from(a),Buffer.from(b))).map(([key,item])=>[key,jsonb(item)])):value;
@@ -38,9 +38,16 @@ test('book scope records every source paragraph and refuses an oversized book be
  assert.throws(()=>guideScope(book,{intent:'book',contentVersion:'v1'}),{status:413,code:'scope_too_large'});
 });
 
-test('a long through-current explanation fails explicitly instead of dropping the earliest material', () => {
- const book=audioBook();book.sections[0].paragraphs[0].original='x'.repeat(16000);book.sections[0].paragraphs[1].original='y'.repeat(16000);
- assert.throws(()=>guideScope(book,{...explain,throughPassageId:'p2'}),{status:413,code:'scope_too_large'});
+test('long chapter and through-current explanations read all selected originals in bounded batches', () => {
+ const book=audioBook();book.sections[0].paragraphs=Array.from({length:240},(_,i)=>({id:'long-'+i,original:'Original '+i+'. '+('x'.repeat(600))}));
+ for(const input of [{...explain,scopeMode:'chapter'},{...explain,throughPassageId:'long-220'}]){
+  const scope=guideScope(book,input),batches=guideBatches(book,scope),count=input.scopeMode==='chapter'?240:221;
+  assert.equal(scope.passageIds.length,count);assert.deepEqual(batches.flat().map(p=>p.id),Array.from({length:count},(_,i)=>'long-'+i));
+  assert.ok(batches.length>1);assert.ok(batches.every(b=>b.length<=48&&b.reduce((n,p)=>n+p.original.length,0)<=24000));
+  assert.equal(scope.coverage.complete,count===240);assert.ok(!scope.passageIds.includes('p3'));
+ }
+ book.sections[0].paragraphs[0].original='x'.repeat(900001);
+ assert.throws(()=>guideScope(book,{...explain,scopeMode:'chapter'}),{code:'scope_too_large'});
 });
 
 test('canonical guide validation keeps cross-chapter references and can validate a persisted guide again', () => {
@@ -86,4 +93,21 @@ test('spoken scripts stay within the chosen short introduction, explanation and 
   const candidate=script();candidate.turns[0].text='讲'.repeat(characters);
   assert.throws(()=>validateGuide(book,guideScope(book,input),candidate),{code:'invalid_dialogue'});
  }
+});
+
+test('every default catalog chapter can prepare a complete explanation without a manual smaller scope',async t=>{
+ const {createLibraryService}=await import('../server/library-service.mjs');
+ const {mkdtemp,rm}=await import('node:fs/promises'),{tmpdir}=await import('node:os');
+ const dir=await mkdtemp(tmpdir()+'/guide-catalog-');t.after(()=>rm(dir,{recursive:true,force:true}));
+ const library=await createLibraryService({dataDir:dir,translator:null});let chapters=0;
+ for(const row of await library.list(null)){
+  const book=await library.getBook(null,row.bookId);
+  for(const chapter of book.chapters){
+   const scope=guideScope(book,{intent:'explain',scopeMode:'chapter',chapterId:chapter.id,contentVersion:book.contentVersion}),batches=guideBatches(book,scope);
+   const originals=book.sections.filter(s=>s.chapterId===chapter.id).flatMap(s=>s.paragraphs);
+   assert.deepEqual(batches.flat().map(p=>p.original),originals.map(p=>p.original),book.bookId+':'+chapter.id);
+   assert.equal(scope.coverage.complete,true);assert.equal(scope.coverage.covered,originals.length);chapters++;
+  }
+ }
+ assert.ok(chapters>0);
 });

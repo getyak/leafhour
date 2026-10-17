@@ -1,7 +1,7 @@
 import {randomUUID} from 'node:crypto';
 import {audioError,audioHash,audioPassages} from './audio-content.mjs';
-import {guideScope,guideBatches,validateGuide,guideLimits} from './listening-guide-content.mjs';
-import {createGuideGenerator} from './listening-guide-generator.mjs';
+import {guideScope,guideBatches,validateGuide,guideLimits,guideTextLimits} from './listening-guide-content.mjs';
+import {createGuideGenerator,guideInputSize} from './listening-guide-generator.mjs';
 
 const leaseMs=90000;
 const identity=owner=>{if(!owner?.id)throw audioError('请先进入自己的书房。',401,'authentication_required');return owner.id;};
@@ -31,16 +31,35 @@ function verifiedOutline(batch,candidate){
 function verificationBatches(book,script){
  const index=new Map(audioPassages(book).map(p=>[p.id,p])),batches=[];
  let turnIds=[],passageIds=new Set();
- const fits=ids=>ids.size<=guideLimits.batchPassages&&[...ids].reduce((n,id)=>n+index.get(id).original.length,0)<=guideLimits.batchCharacters;
+ const fits=(ids,turns)=>ids.size<=guideLimits.batchPassages&&[...ids].reduce((n,id)=>n+index.get(id).original.length,0)<=guideLimits.verificationCharacters&&guideInputSize({stage:'verify',bookId:book.bookId,contentVersion:book.contentVersion,intent:script.intent,passages:[...ids].map(id=>index.get(id)),turns})<=guideLimits.requestCharacters;
  for(const turn of script.turns){
   const own=new Set(turn.sourceRefs.map(r=>r.passageId));
-  if(!fits(own))throw audioError('这一轮讲解的依据过长，尚无法完整核验，请缩小讲解范围。',502,'invalid_guide');
+  if(!fits(own,[turn]))throw audioError('这一轮讲稿引用了过多原文，未通过完整核验；候选文字已保留。',502,'invalid_guide');
   const next=new Set([...passageIds,...own]);
-  if(turnIds.length&&!fits(next)){batches.push({turnIds,passageIds:[...passageIds]});turnIds=[];passageIds=new Set();}
+  if(turnIds.length&&!fits(next,script.turns.filter(t=>turnIds.includes(t.id)||t.id===turn.id))){batches.push({turnIds,passageIds:[...passageIds]});turnIds=[];passageIds=new Set();}
   turnIds.push(turn.id);for(const id of own)passageIds.add(id);
  }
  if(turnIds.length)batches.push({turnIds,passageIds:[...passageIds]});
  return batches;
+}
+
+// Keep the three-call reservation for ordinary short sources. If exact quotes
+// contain heavy JSON escaping, a legal script can need multiple support calls
+// even though its original fits one reading batch. Size the worst legal script
+// with the adapter's own serializer before promising a one-call verification.
+function singleVerificationFits(book,scope,passages){
+ let ref=null,refSize=-1;
+ for(const p of passages){
+  let window=0,maximum=0;const widths=[];
+  for(let i=0;i<p.original.length;i++){
+   const width=JSON.stringify(p.original[i]).length-2;widths.push(width);window+=width;
+   if(i>=500)window-=widths[i-500];maximum=Math.max(maximum,window);
+  }
+  const candidate={chapterId:p.chapterId,passageId:p.id,quote:'x'.repeat(maximum)},size=JSON.stringify(candidate).length;
+  if(size>refSize){ref=candidate;refSize=size;}
+ }
+ const turns=Array.from({length:24},(_,i)=>({id:'turn-24',speaker:'questioner',kind:'explanation',text:'\0'.repeat(i===0?guideTextLimits[scope.intent]-23:1),sourceRefs:[ref,ref,ref,ref]}));
+ return guideInputSize({stage:'verify',bookId:book.bookId,contentVersion:book.contentVersion,intent:scope.intent,passages,turns})<=guideLimits.requestCharacters;
 }
 
 function checkSupport(batch,candidate){
@@ -61,9 +80,8 @@ export function createListeningGuideService({audio,library,generator=createGuide
  const publicJob=job=>({id:job.id,status:job.status,scope:structuredClone(job.scope),coverage:{...structuredClone(job.scope.coverage),covered:job.readPassageIds.length,complete:job.readPassageIds.length===job.scope.passageIds.length&&job.scope.coverage.complete},progress:{stage:job.stage,completedBatches:job.outlines.length,totalBatches:job.batchCount},...(job.sessionId?{sessionId:job.sessionId}:{}),...(job.dialogueId?{dialogueId:job.dialogueId}:{}),...(job.candidate?{transcript:{...structuredClone(job.candidate),verified:job.verification?.length===job.candidate.turns.length}}:{}),...(job.error?{error:structuredClone(job.error)}:{})});
  async function prepare(owner,bookId,input){
   identity(owner);const book=await library.getBook(owner,bookId),scope=guideScope(book,input),batches=guideBatches(book,scope),characters=batches.flat().reduce((n,p)=>n+p.original.length,0);
-  // A short scope's support checks fit one request. For larger sources a
-  // script can require one bounded check per turn, never more than 24.
-  const maxCalls=batches.length+1+(batches.length===1?1:24),target=scope.intent==='book'?180:scope.intent==='intro'?90:300,max=Math.min(target,Math.max(45,Math.round(characters/8)));
+  // A script can require one bounded check per turn, never more than 24.
+  const maxCalls=batches.length+1+(batches.length===1&&singleVerificationFits(book,scope,batches[0])?1:24),target=scope.intent==='book'?180:scope.intent==='intro'?90:300,max=Math.min(target,Math.max(45,Math.round(characters/8)));
   return {scope,sourceCount:scope.passageIds.length,coverage:scope.coverage,estimatedDurationSeconds:{min:Math.min(max,120,Math.max(20,Math.round(characters/15))),max},externalProcessing:{provider:'DeepSeek',stages:['outline','script','verify'],maxCalls,sourceBatches:batches.length,sourceCharacters:characters,privateNotes:false,available:typeof generator==='function'}};
  }
  async function snapshot(owner,bookId,id){

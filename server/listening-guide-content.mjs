@@ -1,6 +1,6 @@
 import {audioError, audioHash, audioPassages, audioValueEqual} from './audio-content.mjs';
 
-export const guideLimits=Object.freeze({chapterCharacters:30000,bookCharacters:900000,bookPassages:6000,batchCharacters:18000,batchPassages:48,batches:64,openingCharacters:6000,openingPassages:3});
+export const guideLimits=Object.freeze({bookCharacters:900000,bookPassages:6000,batchCharacters:18000,singlePassageCharacters:24000,verificationCharacters:100000,requestCharacters:125000,batchPassages:48,batches:64,openingCharacters:6000,openingPassages:3});
 export const guideTextLimits=Object.freeze({intro:300,explain:1200,book:900});
 const same=audioValueEqual;
 const tooLarge=()=>audioError('这次导听的原文范围太长，请缩小范围；尚未开始生成。',413,'scope_too_large');
@@ -17,7 +17,6 @@ export function guideScope(book,input){
  if(input.intent==='book'){
   if(input.scopeMode&&input.scopeMode!=='book')throw audioError('全书导览须包含整本书。');
   selected=all;scopeMode='book';total=all.length;
-  if(all.length>guideLimits.bookPassages||all.reduce((n,p)=>n+p.original.length,0)>guideLimits.bookCharacters)throw tooLarge();
  }else{
   chapterId=input.chapterId;
   const chapter=all.filter(p=>p.chapterId===chapterId);
@@ -39,9 +38,11 @@ export function guideScope(book,input){
     if(at<0)throw audioError('请选择本章当前读到的段落。');
     selected=chapter.slice(0,at+1);throughPassageId=chapter[at].id;
    }else selected=chapter;
-   if(selected.length>200||selected.reduce((n,p)=>n+p.original.length,0)>guideLimits.chapterCharacters)throw tooLarge();
   }
  }
+ // Chapter explanations use the same complete-source pipeline as book guides.
+ // Request-sized batches are an internal detail, not a smaller reader scope.
+ if(selected.length>guideLimits.bookPassages||selected.reduce((n,p)=>n+p.original.length,0)>guideLimits.bookCharacters)throw tooLarge();
  const scope={intent:input.intent,contentVersion:book.contentVersion,chapterId,scopeMode,throughPassageId,passageIds:selected.map(p=>p.id),sourceHashes:Object.fromEntries(selected.map(p=>[p.id,audioHash(p.original)])),coverage:{covered:selected.length,total,complete:selected.length===total,chapterIds:[...new Set(selected.map(p=>p.chapterId))]}};
  // A saved scope is a source snapshot, not permission to silently regenerate
  // against changed text, a different paragraph order or expanded coverage.
@@ -53,8 +54,10 @@ export function guideScope(book,input){
 export function guideBatches(book,scope){
  const ids=new Set(scope.passageIds),rows=audioPassages(book).filter(p=>ids.has(p.id)),batches=[];
  let batch=[],characters=0;
+ // Keep existing ordinary batch boundaries stable across worker restarts. A
+ // longer paragraph stays complete in its own bounded request.
  for(const p of rows){
-  if(p.original.length>guideLimits.batchCharacters)throw tooLarge();
+  if(p.original.length>guideLimits.singlePassageCharacters)throw tooLarge();
   if(batch.length&&(batch.length>=guideLimits.batchPassages||characters+p.original.length>guideLimits.batchCharacters)){batches.push(batch);batch=[];characters=0;}
   batch.push({id:p.id,chapterId:p.chapterId,original:p.original});characters+=p.original.length;
  }

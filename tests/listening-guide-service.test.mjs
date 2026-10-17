@@ -6,6 +6,7 @@ import path from 'node:path';
 import {createAudioStore} from '../server/audio-store.mjs';
 import {createAudioService} from '../server/audio-service.mjs';
 import {audioBook,pcmWav} from './audio-fixture.mjs';
+import {createGuideGenerator} from '../server/listening-guide-generator.mjs';
 import {createListeningGuideService} from '../server/listening-guide-service.mjs';
 const owner={id:'guide-owner'},other={id:'other-owner'};
 const request={intent:'explain',chapterId:'ch1',throughPassageId:'p1',contentVersion:'v1',idempotencyKey:'guide-1',confirmProcessing:true};
@@ -164,4 +165,47 @@ test('a configuration outage cannot hide an existing idempotent result or bypass
  assert.equal((await offline.create(owner,'audio-book',request)).id,ready.id);
  await f.service.cancelRequest(owner,'audio-book','offline-cancel');
  assert.equal((await offline.create(owner,'audio-book',{...request,idempotencyKey:'offline-cancel'})).status,'cancelled');
+});
+
+test('a durable long chapter reads every batch and verifies complete long evidence before making audio',async t=>{
+ const calls=[],f=await fixture(t,{durable:true,generator:async input=>{
+  calls.push(structuredClone({...input,signal:undefined}));
+  if(input.stage==='script')return {turns:[{speaker:'guide',text:'从本章开头的观察到末尾的限定，一起核对。',sourceRefs:input.outlines.flatMap(o=>o.claims[0].sourceRefs).slice(0,4)}]};
+  return generated(input);
+ }});
+ f.book.sections[0].paragraphs=Array.from({length:4},(_,i)=>({id:'long-'+i,original:('Original '+i+'. ').padEnd(19000,String(i)),privateNotes:'PRIVATE'}));
+ const input={...request,scopeMode:'chapter'},preview=await f.service.prepare(owner,'audio-book',input);
+ assert.equal(calls.length,0);assert.equal(preview.sourceCount,4);assert.equal(preview.externalProcessing.sourceCharacters,76000);assert.equal(preview.externalProcessing.sourceBatches,4);
+ const job=await f.service.create(owner,'audio-book',input),ready=await settle(f.service,job.id);
+ assert.equal(ready.status,'ready',JSON.stringify(ready.error));assert.ok(ready.sessionId);assert.equal(ready.coverage.complete,true);
+ assert.deepEqual(calls.filter(c=>c.stage==='outline').flatMap(c=>c.passages.map(p=>p.id)),['long-0','long-1','long-2','long-3']);
+ const verification=calls.find(c=>c.stage==='verify');assert.equal(verification.passages.reduce((n,p)=>n+p.original.length,0),76000);
+ assert.ok(!JSON.stringify(calls).includes('PRIVATE'));assert.equal(calls.at(-1).stage,'verify');
+});
+
+test('verification splits full evidence by the serialized provider request, including repeated citations',async t=>{
+ const requests=[],verify=createGuideGenerator({env:{DEEPSEEK_API_KEY:'fixture-only'},fetcher:async(_url,options)=>{
+  const payload=JSON.parse(JSON.parse(options.body).messages[1].content);requests.push(payload);
+  return Response.json({choices:[{message:{content:JSON.stringify({checks:payload.turns.map(t=>({turnId:t.id,supported:true}))})}}]});
+ }});
+ const paragraphs=Array.from({length:48},(_,i)=>({id:'evidence-'+i,original:('Original '+i+'. ').padEnd(2000,'x')}));
+ const f=await fixture(t,{durable:true,generator:async input=>input.stage==='verify'?verify(input):input.stage==='script'?{turns:Array.from({length:24},(_,i)=>({speaker:i%2?'questioner':'guide',text:'本章的观点需要结合这些原文及其限定来理解。',sourceRefs:Array.from({length:4},(_,j)=>{const p=paragraphs[(i*2+j)%48];return {chapterId:'ch1',passageId:p.id,quote:p.original.slice(0,500)};})}))}:generated(input)});
+ f.book.sections[0].paragraphs=paragraphs;
+ const job=await f.service.create(owner,'audio-book',{...request,scopeMode:'chapter'}),ready=await settle(f.service,job.id);
+ assert.equal(ready.status,'ready',JSON.stringify(ready.error));assert.ok(requests.length>1);
+ assert.deepEqual(requests.flatMap(p=>p.turns.map(t=>t.id)),Array.from({length:24},(_,i)=>'turn-'+(i+1)));
+ for(const payload of requests){assert.ok(JSON.stringify(payload).length<=125000);for(const p of payload.passages)assert.equal(p.original,paragraphs.find(original=>original.id===p.id).original);}
+});
+
+test('a one-batch source reserves enough verification calls when escaped citations require splitting',async t=>{
+ let reserved=0,spent=0,verified=0;
+ const original='"'.repeat(500)+'x'.repeat(23500),verify=createGuideGenerator({env:{DEEPSEEK_API_KEY:'fixture-only'},fetcher:async(_url,options)=>{
+  verified++;const payload=JSON.parse(JSON.parse(options.body).messages[1].content);return Response.json({choices:[{message:{content:JSON.stringify({checks:payload.turns.map(t=>({turnId:t.id,supported:true}))})}}]});
+ }});
+ const f=await fixture(t,{durable:true,generator:async input=>input.stage==='verify'?verify(input):input.stage==='script'?{turns:Array.from({length:24},()=>({speaker:'guide',text:'引用需要保留原文。',sourceRefs:Array.from({length:4},()=>({chapterId:'ch1',passageId:'p1',quote:original.slice(0,500)}))}))}:generated(input)});
+ f.book.sections[0].paragraphs=[{id:'p1',original}];
+ f.store.reserveGuideBudget=async(_owner,_job,max)=>{reserved=max;};f.store.reserveGeneration=async()=>{if(++spent>reserved)throw Object.assign(Error('budget exhausted'),{code:'rate_limited',status:429});};
+ const preview=await f.service.prepare(owner,'audio-book',request);assert.equal(preview.externalProcessing.sourceBatches,1);assert.ok(preview.externalProcessing.maxCalls>=4);
+ const created=await f.service.create(owner,'audio-book',request),ready=await settle(f.service,created.id);
+ assert.equal(ready.status,'ready',JSON.stringify(ready.error));assert.ok(verified>1);assert.equal(spent,2+verified);assert.ok(spent<=reserved);
 });
