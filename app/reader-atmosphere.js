@@ -2,6 +2,7 @@ import {readerStorageKey} from './reader-api.mjs';
 import {atmospheres,normalizeAtmosphere,atmosphereMix,createAtmosphereSession} from './atmosphere-state.mjs';
 import {createAtmosphereAudio} from './atmosphere-audio.mjs';
 import {createHearthMotion} from './hearth-motion.mjs';
+import {createNatureMotion} from './nature-motion.mjs';
 
 const $=id=>document.getElementById(id),key=readerStorageKey('marginalia-atmosphere-v1');
 let stored;try{stored=JSON.parse(localStorage.getItem(key)||'null');}catch{}
@@ -34,7 +35,7 @@ dialog.innerHTML=`
   </div>`;
 document.body.append(dialog);
 const hearthLayers=[...document.querySelectorAll('.atmosphere-backdrop,.atmosphere-preview')].map(host=>({
-  preview:host.classList.contains('atmosphere-preview'),motion:createHearthMotion(host.querySelector('.atmosphere-elements')),
+  preview:host.classList.contains('atmosphere-preview'),motion:createHearthMotion(host.querySelector('.atmosphere-elements')),nature:createNatureMotion(host.querySelector('.atmosphere-elements')),
 }));
 const session=createAtmosphereSession({start:scene=>engine.start(scene,()=>atmosphereMix(prefs,{narrating})),onState:()=>renderPlayback()});
 for(const scene of atmospheres){
@@ -46,9 +47,16 @@ for(const scene of atmospheres){
 }
 function save(){try{localStorage.setItem(key,JSON.stringify(prefs));}catch{notice='这个浏览器暂时无法保存氛围偏好。';}}
 function renderMotion(){
-  document.documentElement.dataset.atmosphereMotion=String(prefs.motion&&!reducedMotion.matches);
+  const still=reducedMotion.matches,running=prefs.motion&&!still&&!document.hidden;
+  document.documentElement.dataset.atmosphereMotion=String(prefs.motion&&!still);
   document.documentElement.dataset.atmosphereActive=String(!document.hidden);
-  for(const layer of hearthLayers)layer.motion.setActive(prefs.scene==='hearth'&&prefs.motion&&!reducedMotion.matches&&!document.hidden&&(!layer.preview||dialog.open));
+  for(const layer of hearthLayers){
+    const visible=!layer.preview||dialog.open;
+    layer.motion.setActive(prefs.scene==='hearth'&&running&&visible);
+    // Forest light and sea water move on their own layer; sound never follows it.
+    layer.nature.setScene(prefs.scene);
+    layer.nature.setActive((prefs.scene==='forest'||prefs.scene==='sea')&&running&&visible);
+  }
   for(const prefix of ['atmosphere-','settings-atmosphere-']){
     const control=$(prefix+'motion');if(!control)continue;
     control.checked=prefs.motion&&!reducedMotion.matches;
@@ -109,6 +117,6 @@ function syncNarration(){narrating=[...document.querySelectorAll('audio:not([dat
 for(const event of ['play','pause','ended','emptied'])document.addEventListener(event,syncNarration,true);
 // Visibility controls visual motion, never the listener's playback choice.
 document.addEventListener('visibilitychange',renderMotion);
-window.addEventListener('pagehide',()=>{session.stop();for(const layer of hearthLayers)layer.motion.setActive(false);});
+window.addEventListener('pagehide',()=>{session.stop();for(const layer of hearthLayers){layer.motion.setActive(false);layer.nature.setActive(false);}});
 window.addEventListener('pageshow',renderMotion);
 render();syncNarration();

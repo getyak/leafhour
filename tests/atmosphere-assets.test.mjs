@@ -23,6 +23,6 @@ test('the local reader serves its bundled atmosphere assets with correct types a
     assert.equal(response.status,200,sound);assert.equal(response.headers.get('content-type'),'audio/mpeg');
     assert.ok((await response.arrayBuffer()).byteLength>1000);
   }
-  for(const pathname of ['/reader-atmosphere.js','/reader-atmosphere.css','/atmosphere-audio.mjs','/atmosphere-state.mjs','/hearth-motion.mjs'])assert.equal((await fetch(base+pathname)).status,200,pathname);
+  for(const pathname of ['/reader-atmosphere.js','/reader-atmosphere.css','/atmosphere-audio.mjs','/atmosphere-state.mjs','/hearth-motion.mjs','/nature-motion.mjs'])assert.equal((await fetch(base+pathname)).status,200,pathname);
   for(const pathname of ['/assets/atmospheres/private.json','/assets/atmospheres/..%2f..%2f.env'])assert.equal((await fetch(base+pathname)).status,404);
 });
