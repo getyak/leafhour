@@ -3,6 +3,7 @@ import {validParagraphAnchor} from './paragraph-anchor.mjs';
 import {normalizeReadingSession,normalizeReadingMilestone,normalizeReadingGoal} from './reading-session-record.mjs';
 import {validateReadingDraftBackup} from './reading-draft-store.mjs';
 import {normalizeHighlight} from './highlights.mjs';
+import {validatePersonalRecordMetadata} from './personal-records.mjs';
 
 const object=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
 const text=(value,max=12000)=>typeof value==='string'&&value.trim().length>0&&value.length<=max;
@@ -41,6 +42,7 @@ export function validateLibraryBackup(backup){
     for(const key of ['comments','questions']){
       const ids=new Set();for(const n of r[key]){
         if(!object(n)||!text(n.id,128)||ids.has(n.id)||!passageIds.has(n.passageId)||n.origin!=='user'||!text(n.text,2000)||!date(n.createdAt)||n.bookId!==undefined&&n.bookId!==b.bookId||n.contentVersion!==undefined&&n.contentVersion!==b.contentVersion||n.quote!==undefined&&(typeof n.quote!=='string'||n.quote.length>4000))invalid(where,'个人笔记的标识、时间或归属不正确');
+        try{validatePersonalRecordMetadata(n);}catch{invalid(where,'个人笔记的修改时间或版本不正确');}
         ids.add(n.id);notes++;
       }
     }

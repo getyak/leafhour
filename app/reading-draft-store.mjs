@@ -13,6 +13,7 @@ export function validateReadingDraftBackup(value,book){
   for(const row of value.entries){
     draftAnchor(row?.key,book);
     if(typeof row.id!=='string'||!row.id||row.id.length>500||ids.has(row.id)||typeof row.text!=='string'||row.text.length>2000||!Number.isInteger(row.revision)||row.revision<1||!Number.isFinite(Date.parse(row.updatedAt)))throw Error('本机阅读草稿的标识、文字或时间不完整。');
+    if(row.editBaseRevision!==undefined&&(!Number.isSafeInteger(row.editBaseRevision)||row.editBaseRevision<0))throw Error('修改草稿的原始版本不正确。');
     const checked=createNoteDrafts({version:1,entries:{[row.key]:row}}).snapshot().entries[row.key];
     if(row.pending!==null&&(!checked?.pending||JSON.stringify(checked.pending)!==JSON.stringify(row.pending))||row.pending?.contentVersion!==undefined&&row.pending.contentVersion!==book.contentVersion)throw Error('草稿中的待确认提交无法对应原文。');
     ids.add(row.id);
@@ -42,7 +43,7 @@ export function createReadingDraftStore({storage,scope,book,newId=()=>crypto.ran
     const rows=read(),source=id?rows.find(r=>r.id===id&&r.key===key):rows.find(r=>r.key===key);
     if(id&&!source)throw Error('这份草稿已更新，请重新打开草稿列表。');
     if(source&&owned.has(source.id)){active.set(key,source.id);return;}
-    const row={id:newId(),key,text:source?.text||'',pending:source?.pending||null,revision:1,updatedAt:now()};
+    const row={id:newId(),key,text:source?.text||'',pending:source?.pending||null,revision:1,updatedAt:now(),...(source?.editBaseRevision!==undefined?{editBaseRevision:source.editBaseRevision}:{})};
     owned.set(row.id,{row,model:createNoteDrafts({version:1,entries:{[key]:row}}),dirty:!!source});active.set(key,row.id);
     if(source)retirements.set(row.id,source);
   }
@@ -61,7 +62,8 @@ export function createReadingDraftStore({storage,scope,book,newId=()=>crypto.ran
   return {
     activate,persist,list:()=>clone(read()),
     activeId:key=>active.get(key),text:key=>state(key).model.text(key),pending:key=>state(key).model.pending(key),busy:key=>state(key).model.busy(key),
-    edit:(key,text)=>change(key,m=>m.edit(key,text)),begin:(key,payload,id)=>change(key,m=>m.begin(key,payload,id)),
+    editBaseRevision:key=>state(key).model.editBaseRevision(key),setEditBaseRevision:(key,revision)=>change(key,m=>m.setEditBaseRevision(key,revision)),
+    edit:(key,text)=>change(key,m=>m.edit(key,text)),begin:(key,payload,id)=>change(key,m=>m.begin(key,payload,id)),discardPending:key=>change(key,m=>m.discardPending(key)),
     acknowledge:(key,record,id)=>{const item=id?owned.get(id):state(key);const result=item.model.acknowledge(key,record);if(result)item.dirty=true;return result;},finish:(key,id)=>(id?owned.get(id):state(key)).model.finish(key),
     reconcile:(key,records)=>{const item=state(key),result=item.model.reconcile(key,records);if(result)item.dirty=true;return result;},
     import(entries){

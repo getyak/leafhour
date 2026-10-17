@@ -1,6 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createReadingDraftStore} from '../app/reading-draft-store.mjs';
+import {readingBook} from './reading-fixtures.mjs';
 import {createNoteDrafts} from '../app/note-drafts.mjs';
+
+test('explicit conflict refresh may retire a frozen edit request while preserving newer words and durable drafts',()=>{
+  const drafts=createNoteDrafts();drafts.edit('comment:p1','First edit.');drafts.begin('comment:p1',{passageId:'p1',editId:'e1',baseRevision:0},()=> 'note');
+  assert.throws(()=>drafts.discardPending('comment:p1'),/保存/);drafts.edit('comment:p1','Newer local words.');drafts.finish('comment:p1');
+  drafts.discardPending('comment:p1');assert.equal(drafts.pending('comment:p1'),null);assert.equal(drafts.text('comment:p1'),'Newer local words.');
+  const data=new Map(),storage={get length(){return data.size;},key:i=>[...data.keys()][i],getItem:key=>data.get(key)??null,setItem:(key,value)=>data.set(key,value)};
+  let n=0;const open=()=>createReadingDraftStore({storage,scope:'edit-owner-book-note',book:readingBook,newId:()=> 'draft-'+(++n)});
+  const first=open();first.edit('comment:p1','Retained words.');const submitted=first.begin('comment:p1',{passageId:'p1',contentVersion:readingBook.contentVersion,baseRevision:0,editId:'frozen'},()=> 'note');first.persist();first.finish('comment:p1');
+  const second=open();assert.deepEqual(second.pending('comment:p1'),submitted);second.discardPending('comment:p1');second.persist();
+  assert.equal(open().pending('comment:p1'),null);assert.equal(open().text('comment:p1'),'Retained words.');
+});
 import {createLibraryService} from '../server/library-service.mjs';
 import {mkdtemp,rm} from 'node:fs/promises';import {tmpdir} from 'node:os';import path from 'node:path';
 const key='comment:p1',quote={passageId:'p1',quote:'Original quote.',quoteLanguage:'en',quoteOrigin:'original'};
