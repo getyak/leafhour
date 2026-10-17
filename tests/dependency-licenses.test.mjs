@@ -195,3 +195,15 @@ test('the checked-in evidence matches the frozen lockfile and records every thir
   const analysis=await analyze(root);
   assert.equal(analysis.rendered,await readFile(path.join(root,REPORT_FILE),'utf8'));
 });
+
+test('reserved tokens and nested placeholders remain invalid even when manually registered',async t=>{
+  for(const value of ['WITH','MIT WITH WITH','(LicenseRef-Custom)','MIT OR UNKNOWN','MIT AND LicenseRef-Custom','MIT WITH UNKNOWN']) {
+    assert.equal(validateExpression(value).ok,false,value);
+    const root=await fixture(t,{'node_modules/a':entry('1.0.0',value)},{review:{[value]:{status:'reviewed',note:'A mistaken register entry must not bypass syntax checks.'}}});
+    await assert.rejects(generateEvidence(root),/invalid expression/);
+  }
+});
+test('an unknown root license fails metadata validation',()=>{
+  const {problems}=buildInventory({packages:{'':{name:'fixture',license:'UNKNOWN'}}},{lockfileSha256:'a'.repeat(64)});
+  assert.ok(problems.some(problem=>problem.code==='unknown'&&/root/.test(problem.message)));
+});

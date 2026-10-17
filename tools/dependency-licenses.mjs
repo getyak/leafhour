@@ -55,7 +55,8 @@ export function validateExpression(expression){
   if(!tokens||tokens.join(' ').replace(/\s+\)/g,')').replace(/\(\s+/g,'(')!==value.replace(/\s+\)/g,')').replace(/\(\s+/g,'('))return {ok:false,reason:'syntax'};
   let position=0;
   const peek=()=>tokens[position];
-  const isOperator=token=>token==='AND'||token==='OR';
+  const isOperator=token=>token==='AND'||token==='OR'||token==='WITH';
+  const isIdentifier=token=>typeof token==='string'&&identifier.test(token)&&!isOperator(token)&&!placeholder.test(token)&&!customRef.test(token);
   function parseExpression(){
     if(!parseConjunction())return false;
     while(peek()==='OR'){position++;if(!parseConjunction())return false;}
@@ -77,12 +78,12 @@ export function validateExpression(expression){
       return true;
     }
     if(token===')'||isOperator(token))return false;
-    if(!identifier.test(token))return false;
+    if(!isIdentifier(token))return false;
     position++;
     if(peek()==='WITH'){
       position++;
       const exception=tokens[position];
-      if(exception===undefined||!identifier.test(exception)||isOperator(exception))return false;
+      if(!isIdentifier(exception))return false;
       position++;
     }
     return true;
@@ -132,7 +133,8 @@ export function buildInventory(lock,{lockfileSha256}={}){
   packages.sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:(a.version<b.version?-1:a.version>b.version?1:(a.path<b.path?-1:a.path>b.path?1:0)));
   const rootEntry=lock.packages['']&&typeof lock.packages['']==='object'?lock.packages['']:{};
   const root={name:typeof rootEntry.name==='string'?rootEntry.name:(typeof lock.name==='string'?lock.name:null),version:typeof rootEntry.version==='string'?rootEntry.version:(typeof lock.version==='string'?lock.version:null),license:typeof rootEntry.license==='string'?rootEntry.license:null};
-  if(!root.license)problems.push({code:'missing',message:'Missing root package license metadata in package-lock.json'});
+  const rootValidation=validateExpression(root.license);
+  if(!rootValidation.ok)problems.push({code:rootValidation.reason==='missing'?'missing':'unknown',message:(rootValidation.reason==='missing'?'Missing':'Unknown')+' root package license metadata in package-lock.json'});
   const sortedExpressions={};
   for(const key of Object.keys(licenseExpressions).sort())sortedExpressions[key]=licenseExpressions[key];
   const report={
