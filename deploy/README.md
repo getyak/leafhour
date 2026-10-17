@@ -2,6 +2,8 @@
 
 本机新增听读服务；当前托管配置不运行进程内语音队列，也不把音频写入函数临时目录。听读能力接口明确返回暂不可用，书籍和原有功能继续运行。启用前需要私人音频对象存储、数据库任务状态及持久 worker，另外验收取消与授权撤回。本轮不部署此功能。
 
+环境变量按必填与可选整理在 `.env.hosted.example`，与本机 `.env.example` 分开。模型使用统一默认值；新讲解稿覆盖名为 `READER_AUDIO_SCRIPT_MODEL`，旧名继续兼容。函数初始化只打印配置状态，不验证或输出密钥。详细用途和优先级见 [配置说明](../docs/configuration.md)。
+
 官网 `/`、书房 `/library` 和阅读页 `/read?book=ID` 使用同一套网页与领域服务。默认 30 本英文阅读版可匿名阅读；原有三本保留中文开篇试读，许可与出处见 `catalog/manifest.json`。私人样书不会迁移到公开入口；旧单书 `/api/book`、`/api/records` 等接口返回 404。
 
 应用先执行 `supabase/migrations/202610130001_hosted_library.sql`。它新增 `reader_documents` 与只供服务端调用的比较写入函数，并创建 20 MB 限制的私人 `reader-originals` 存储桶；不修改现有 `reader_books` 和 `reader_states`。RLS 开启，匿名和普通认证角色无数据表权限。

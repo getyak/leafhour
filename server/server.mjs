@@ -7,6 +7,8 @@ import {createPortal} from './portal.mjs';
 import {readFile,writeFile,rename,mkdir} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
+import {loadLocalEnvironment} from './local-env.mjs';
+import {configurationSummary} from './model-config.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 // The verification page reads the same private, local observations as the book page.
@@ -134,11 +136,12 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
 }
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href){
+  await loadLocalEnvironment();
   const port=Number(process.env.READER_PORT||8330),host=process.env.READER_HOST||'127.0.0.1';
   if(!['127.0.0.1','localhost'].includes(host))throw Error('This version is a private local service; external hosting requires authentication.');
   let generator=null;
   if(process.env.DEEPSEEK_API_KEY){const {createHarnessGenerator}=await import('../harness/generator.mjs');generator=await createHarnessGenerator();}
   const server=await createReaderServer({generator,bookPath:process.env.READER_BOOK_PATH?path.resolve(process.env.READER_BOOK_PATH):undefined,publicOrigin:process.env.READER_PUBLIC_ORIGIN||null});
-  server.listen(port,host,()=>console.log('Leafhour 已启动：http://'+host+':'+port));
+  server.listen(port,host,()=>{console.log(configurationSummary({speechSupported:!!server.portal.audio}));console.log('Leafhour 已启动：http://'+host+':'+server.address().port);});
   process.on('SIGTERM',()=>server.close());process.on('SIGINT',()=>server.close());
 }

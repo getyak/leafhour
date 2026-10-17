@@ -51,6 +51,8 @@ npm start
 
 默认访问 `http://127.0.0.1:8330/` 官网，`/library` 是书房。原有私人样书入口移到 `/read`；`/read?book=ID` 打开新书房中的指定书。没有本机私人样书时也能用默认公版库启动。本机上传与记录放在被 Git 忽略的 `local/service/portal/`，不会进入公开源码。
 
+AI 功能只需在根目录 `.env` 填写需要的 Key：`DEEPSEEK_API_KEY` 用于翻译、阅读对话和讲解稿，`OPENROUTER_API_KEY` 用于本机语音。模型默认选好，只阅读时两项都可以留空。`npm start` 自动读取配置，启动提示会说明是否已配置、是否仍待验证，以及当前部署是否支持语音。高级设置、托管配置和旧文件兼容见 [配置说明](docs/configuration.md)。
+
 PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF 和加密文件给出明确失败原因，当前不含 OCR。默认 30 本英文阅读版使用已核对边界的原书目录，首次从正文开始，前言和附录仍可打开。私人上传暂按每 30 段分成阅读片段，界面注明自动分段，不能当成作者的原章结构。目录调整保留段落 ID，已有笔记与位置继续对应原句。
 
 重新选择无效文件会清除旧选择，不能误传上一次的文件。上传失败后可以重试或换文件；关闭上传窗口会让当前请求继续，成功后更新书架。私人 PDF 阅读页可展开查看文件名与提取说明，明确标示尚未校对。
@@ -109,7 +111,7 @@ PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF �
 
 声音与两位讲解者的偏好在“阅读设置 → 听读 → 声音与语速”中调整。改变语速在本机完成，不再次生成。首次试听会生成固定短文，重复试听复用已有声音。未翻译的内容明确提示，可由用户选择改听对应原文。
 
-模型分工为文字使用 DeepSeek，语音使用 Gemini Flash TTS。独立的 `.env.audio` 可保存 `OPENROUTER_API_KEY`、`READER_SPEECH_MODEL=google/gemini-3.8-flash-tts` 和 `READER_IMAGE_MODEL=google/gemini-nano-banana-2.1`；`npm run start:configured` 先读取原有 `.env`，再读取可选的 `.env.audio`。图片仅保存模型选择，本版没有新增图片生成入口。两份环境文件都不进入 Git 或导出。
+模型分工为文字使用 DeepSeek，语音使用 Gemini Flash TTS。日常在 `.env` 填写 `DEEPSEEK_API_KEY` 和 `OPENROUTER_API_KEY`，模型参数使用统一默认值。需要覆盖时使用 `READER_TRANSLATION_MODEL`、`READER_AUDIO_SCRIPT_MODEL` 和 `READER_SPEECH_MODEL`。旧的 `.env.audio`、`READER_DIALOGUE_MODEL` 及 `npm run start:configured` 继续兼容；优先级见 [配置说明](docs/configuration.md)。图片尚无生成入口，默认模板不展示图片模型。环境文件都不进入 Git 或导出。
 
 生成声音需要有效额度，余额不足会显示真实错误，不重试扣费或自动更换供应商。取消会停止后续片段并拒绝迟到结果；已经发给供应商的请求仍可能计费。听读位置独立于阅读位置与时长，刷新恢复后等待用户点击播放。
 
