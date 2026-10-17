@@ -1,3 +1,4 @@
+import {uploadPdf,advancePdf} from './pdf-ingestion.mjs';
 import {homeLocale,homeText} from './home-locale.mjs';
 import {positionStorageKey} from './reading-progress.mjs';
 import {createUploadState} from './upload-state.mjs';
@@ -39,7 +40,7 @@ function clearPrivateUI({keepAuthDialog=false}={}){
   for(const id of ['upload-status','library-status','upload-filename'])status(id,'');
   for(const id of ['book-file','book-search'])$(id).value='';if(!keepAuthDialog){status('auth-status','');authDialog.reset();if($('auth-dialog').open)$('auth-dialog').close();}
   if($('upload-dialog').open)$('upload-dialog').close();$('upload-dialog').removeAttribute('aria-busy');$('confirm-upload').disabled=true;$('book-file').disabled=false;
-  if($('reading-history').open)$('reading-history').close();pendingUpload=false;pendingChat=false;selectedCurrent=null;upload=createUploadState();shelfControls?.reset();document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
+  if($('reading-history').open)$('reading-history').close();pendingUpload=false;pendingChat=false;selectedCurrent=null;upload=createUploadState();$('pdf-ocr-consent').checked=false;shelfControls?.reset();document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
   books=books.filter(b=>b.visibility==='public').map(b=>({...b,resume:null,journey:null}));chat?.reset();shell?.update();dashboard?.clear();renderBooks();$('featured-books').replaceChildren(...books.slice(0,3).map(landingBookCard));
 }
 function landingBookCard(book){
@@ -102,16 +103,32 @@ $('account-button').addEventListener('click',()=>{if(!session?.user){openAuth();
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
 for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();});
 document.addEventListener('click',event=>{for(const details of document.querySelectorAll('.book-details[open]'))if(!details.contains(event.target))details.open=false;});
-function openUpload(){shell?.closeNavigation();pendingUpload=true;if(!ensureUser())return;pendingUpload=false;if(!upload.file){$('book-file').value='';$('upload-filename').textContent='';status('upload-status','');$('confirm-upload').textContent='放进我的书房 →';}$('confirm-upload').disabled=upload.busy||!upload.file;if(!$('upload-dialog').open)$('upload-dialog').showModal();}
+function openUpload(){shell?.closeNavigation();pendingUpload=true;if(!ensureUser())return;pendingUpload=false;if(!upload.file){$('book-file').value='';$('upload-filename').textContent='';status('upload-status','');$('confirm-upload').textContent='放进我的书房 →';}$('confirm-upload').disabled=upload.busy||!upload.file;$('pdf-ocr-choice').hidden=!session.pdfOcrAvailable;$('pdf-ocr-privacy').hidden=!session.pdfOcrAvailable;loadPdfJobs();if(!$('upload-dialog').open)$('upload-dialog').showModal();}
 for(const id of ['upload-button','empty-upload'])$(id).addEventListener('click',openUpload);
-function selectFile(file){if(!file||upload.busy)return;$('upload-filename').textContent='';$('confirm-upload').disabled=true;$('book-file').value='';try{upload.select(file);$('upload-filename').textContent=file.name+' · '+(file.size>=1024*1024?(file.size/1024/1024).toFixed(2)+' MB':Math.max(1,Math.ceil(file.size/1024))+' KB');$('confirm-upload').textContent='放进我的书房 →';$('confirm-upload').disabled=false;status('upload-status','');}catch(error){status('upload-status',error.message,true);}}
+function selectFile(file){if(!file||upload.busy)return;$('pdf-ocr-consent').checked=false;$('upload-filename').textContent='';$('confirm-upload').disabled=true;$('book-file').value='';try{upload.select(file);$('upload-filename').textContent=file.name+' · '+(file.size>=1024*1024?(file.size/1024/1024).toFixed(2)+' MB':Math.max(1,Math.ceil(file.size/1024))+' KB');$('confirm-upload').textContent='放进我的书房 →';$('confirm-upload').disabled=false;status('upload-status','');}catch(error){status('upload-status',error.message,true);}}
+async function loadPdfJobs(){
+ const container=$('pdf-ingestion-jobs');container.replaceChildren();if(!session?.user)return;const ticket=ownerScope.capture();
+ try{const {jobs}=await api('/api/library/ingestion',undefined,ticket);if(!ownerScope.isCurrent(ticket))return;
+ for(const job of jobs.filter(j=>j.state!=='cancelled').reverse().slice(0,5)){
+ const row=make('div','pdf-job'),label=make('p','muted',job.filename+' · '+(job.state==='done'?'已可阅读':job.completedPages+' / '+job.totalPages+' 页'));row.append(label);
+ if(job.state==='done'){const link=make('a','','打开阅读');link.href='/read?book='+encodeURIComponent(job.bookId);row.append(link);}
+ else if(job.state!=='needs_review'){const resume=make('button','','继续识别'),cancel=make('button','','取消识别');resume.type=cancel.type='button';resume.addEventListener('click',async()=>{resume.disabled=true;try{if(job.state==='failed')await api('/api/library/ingestion/'+job.id+'/resume',{},ticket);const done=await advancePdf({id:job.id,api:(p,b)=>api(p,b,ticket),onProgress:m=>{label.textContent=job.filename+' · '+m;},shouldContinue:()=>ownerScope.isCurrent(ticket)});if(done.state==='done'&&ownerScope.isCurrent(ticket))location.href='/read?book='+encodeURIComponent(done.bookId);}catch(e){label.textContent=e.message;}finally{resume.disabled=false;}});cancel.addEventListener('click',async()=>{await api('/api/library/ingestion/'+job.id+'/cancel',{},ticket);if(ownerScope.isCurrent(ticket))loadPdfJobs();});row.append(resume,cancel);}
+ else {row.append(make('p','muted',job.error));const cancel=make('button','','取消识别');cancel.type='button';cancel.addEventListener('click',async()=>{await api('/api/library/ingestion/'+job.id+'/cancel',{},ticket);if(ownerScope.isCurrent(ticket))loadPdfJobs();});row.append(cancel);}container.append(row);
+ }
+ }catch(e){if(ownerScope.isCurrent(ticket))container.append(make('p','muted','解析进度暂时无法读取。'));}
+}
 $('book-file').addEventListener('change',e=>selectFile(e.target.files[0]));
 const drop=$('drop-zone');drop.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();if(!upload.busy)$('book-file').click();}});$('upload-dialog').addEventListener('close',()=>{if(upload.busy)status('library-status','正在导入 '+upload.file.name+'，完成后会更新书架。');});for(const event of ['dragenter','dragover'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.add('dragging');});for(const event of ['dragleave','drop'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.remove('dragging');if(event==='drop')selectFile(e.dataTransfer.files[0]);});
 $('confirm-upload').addEventListener('click',async()=>{
   if(!upload.file||upload.busy)return;const ticket=ownerScope.capture(),operation=upload,file=operation.begin(),b=$('confirm-upload'),focus=trackActionFocus(document,b);let succeeded=false;b.disabled=true;$('book-file').disabled=true;b.textContent='正在放进书房…';$('upload-dialog').setAttribute('aria-busy','true');status('upload-status',file.name.toLowerCase().endsWith('.pdf')?'正在提取 PDF 文字，请稍等…':'正在整理段落…');
   try{
     let book;
-    if(session.directUpload){
+    if(/\.pdf$/i.test(file.name)&&$('pdf-ocr-consent').checked){
+      const scopedApi=(path,body)=>api(path,body,ticket);
+      const job=await uploadPdf({file,api:scopedApi,onProgress:message=>status('upload-status',message),assertCurrent:()=>ownerScope.assertCurrent(ticket)});
+      const complete=await advancePdf({id:job.id,api:scopedApi,onProgress:message=>status('upload-status',message),shouldContinue:()=>ownerScope.isCurrent(ticket)});
+      ownerScope.assertCurrent(ticket);if(complete.state!=='done')throw Error('识别已暂停，可在上传窗口继续。');book={bookId:complete.bookId};
+    }else if(session.directUpload){
       status('upload-status','正在将原文件存入你的私人书房…');
       const target=await api('/api/library/upload/start',{filename:file.name,bytes:file.size},ticket);
       ownerScope.assertCurrent(ticket);

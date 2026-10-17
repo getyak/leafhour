@@ -1,5 +1,10 @@
 import {digest,fail,MAX_FILE_BYTES} from '../server/document-import.mjs';
 import {randomUUID} from 'node:crypto';
+import {gzipSync,gunzipSync} from 'node:zlib';
+
+export const BLOB_CHUNK_BYTES=8*1024*1024;
+const BLOB_MAGIC=Buffer.from('\0LEAFHOUR_CHUNKS_V1\n');
+async function boundedMap(rows,fn){const result=[];for(let n=0;n<rows.length;n+=6)result.push(...await Promise.all(rows.slice(n,n+6).map(fn)));return result;}
 
 export function createHostedStore({env=process.env,fetcher=fetch}={}){
   const base=env.SUPABASE_URL?.replace(/\/$/,''),secret=env.SUPABASE_SECRET_KEY;
@@ -12,20 +17,34 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
   }
   const json=async(route,options)=> (await request(route,options)).json();
   const keyOf=file=>String(file).replaceAll('\\','/');
-  async function snapshot(file,fallback){const rows=await json('/rest/v1/reader_documents?key=eq.'+encodeURIComponent(keyOf(file))+'&select=value,version');return rows[0]?{data:rows[0].value,version:rows[0].version}:{data:structuredClone(fallback),version:0};}
+  async function snapshot(file,fallback){const rows=await json('/rest/v1/reader_documents?key=eq.'+encodeURIComponent(keyOf(file))+'&select=value,version');if(!rows[0])return {data:structuredClone(fallback),version:0};let data=rows[0].value;if(data?.kind==='leafhour-json-blob-v1'){if(typeof data.file!=='string'||!data.file.startsWith('json/'+digest(keyOf(file))+'/'))throw fail('书籍内容引用无效',409);const bytes=await blob(data.file);if(digest(bytes)!==data.sha256)throw fail('书籍内容校验失败',409);data=JSON.parse(gunzipSync(bytes,{maxOutputLength:100*1024*1024}));}return {data,version:rows[0].version};}
   async function mutate(file,fallback,operation){
     for(let attempt=0;attempt<12;attempt++){
       const {data,version}=await snapshot(file,fallback),result=await operation(data);
-      const saved=await json('/rest/v1/rpc/reader_document_cas',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({document_key:keyOf(file),expected_version:version,document_value:data})});
+      let value=data;const encoded=Buffer.from(JSON.stringify(data));if(encoded.length>3500000){const packed=gzipSync(encoded),target='json/'+digest(keyOf(file))+'/'+randomUUID();await putBlob(target,packed);value={kind:'leafhour-json-blob-v1',file:target,sha256:digest(packed)};}
+      const saved=await json('/rest/v1/rpc/reader_document_cas',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({document_key:keyOf(file),expected_version:version,document_value:value})});
       if(saved)return result;
     }
     throw fail('书房正在另一处更新，请重试',409);
   }
   const objectPath=file=>'originals/'+digest(keyOf(file));
   const objectRoute=key=>'/storage/v1/object/reader-originals/'+key;
-  async function blob(file){return Buffer.from(await (await request(objectRoute(objectPath(file)))).arrayBuffer());}
-  async function blobInfo(file){try{const r=await request(objectRoute(objectPath(file)),{method:'HEAD'});const size=Number(r.headers.get('content-length'));if(!Number.isSafeInteger(size)||size<1||size>MAX_FILE_BYTES)throw fail('原文件信息无法核验',409);return {size};}catch(e){if(e.status===404)return null;throw e;}}
-  async function putBlob(file,bytes){if(bytes.length>MAX_FILE_BYTES)throw fail('文件超过 20 MB',413);await request(objectRoute(objectPath(file)),{method:'POST',headers:{'Content-Type':'application/octet-stream','x-upsert':'true'},body:bytes});}
+  const readObject=async key=>Buffer.from(await (await request(objectRoute(key))).arrayBuffer());
+  const writeObject=(key,bytes)=>request(objectRoute(key),{method:'POST',headers:{'Content-Type':'application/octet-stream','x-upsert':'true'},body:bytes});
+  const manifestOf=bytes=>{if(bytes.length>65536||!bytes.subarray(0,BLOB_MAGIC.length).equals(BLOB_MAGIC))return null;try{const m=JSON.parse(bytes.subarray(BLOB_MAGIC.length));return m.kind==='leafhour-blob-chunks-v1'?m:null;}catch{throw fail('原文件分块信息无效',409);}};
+  async function blob(file){const bytes=await readObject(objectPath(file)),m=manifestOf(bytes);if(!m)return bytes;if(!Number.isSafeInteger(m.size)||m.size>MAX_FILE_BYTES||!Array.isArray(m.parts)||m.parts.length>128)throw fail('原文件分块信息无效',409);const parts=await boundedMap(m.parts,async p=>{const b=await readObject(p.key);if(b.length!==p.size||digest(b)!==p.sha256)throw fail('原文件分块校验失败',409);return b;});const out=Buffer.concat(parts);if(out.length!==m.size||digest(out)!==m.sha256)throw fail('原文件校验失败',409);return out;}
+  async function blobInfo(file){try{const r=await request(objectRoute(objectPath(file)),{method:'HEAD'});let size=Number(r.headers.get('content-length'));if(size<65536){const m=manifestOf(await readObject(objectPath(file)));if(m)size=m.size;}if(!Number.isSafeInteger(size)||size<1||size>MAX_FILE_BYTES)throw fail('原文件信息无法核验',409);return {size};}catch(e){if(e.status===404)return null;throw e;}}
+  const writeManifest=(file,manifest)=>writeObject(objectPath(file),Buffer.concat([BLOB_MAGIC,Buffer.from(JSON.stringify(manifest))]));
+  async function adoptBlob(file,parts,{size,sha256}){if(!Number.isSafeInteger(size)||size<1||size>MAX_FILE_BYTES||parts.length>128)throw fail('原文件分块信息无效',409);await writeManifest(file,{kind:'leafhour-blob-chunks-v1',size,sha256,parts:parts.map(p=>({key:objectPath(p.target),size:p.size,sha256:p.sha256}))});}
+  async function putBlob(file,bytes){if(bytes.length>MAX_FILE_BYTES)throw fail('文件超过 256 MB',413);const key=objectPath(file);if(bytes.length<=BLOB_CHUNK_BYTES){await writeObject(key,bytes);return;}const slices=[];for(let offset=0;offset<bytes.length;offset+=BLOB_CHUNK_BYTES)slices.push(bytes.subarray(offset,offset+BLOB_CHUNK_BYTES));const parts=await boundedMap(slices,async b=>{const partKey=key+'/parts/'+digest(b);await writeObject(partKey,b);return {key:partKey,size:b.length,sha256:digest(b)};});await writeManifest(file,{kind:'leafhour-blob-chunks-v1',size:bytes.length,sha256:digest(bytes),parts});}
+
+  async function blobDownloads(file){
+    const head=await request(objectRoute(objectPath(file)),{method:'HEAD'}),size=Number(head.headers.get('content-length'));
+    const m=size<65536?manifestOf(await readObject(objectPath(file))):null;
+    const parts=m?.parts||[{key:objectPath(file)}],urls=[];
+    for(const part of parts){const signed=await json('/storage/v1/object/sign/reader-originals/'+part.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({expiresIn:600})});const target=new URL(signed.signedURL.startsWith('/object/')?'/storage/v1'+signed.signedURL:signed.signedURL,base+'/storage/v1/');if(target.origin!==new URL(base).origin||!target.pathname.startsWith('/storage/v1/object/sign/'))throw fail('原文件地址无效',503);urls.push({url:target.href,sha256:part.sha256||null});}
+    return urls;
+  }
   async function signedBlob(file){
     const signed=await json('/storage/v1/object/sign/reader-originals/'+objectPath(file),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({expiresIn:60})});
     if(typeof signed.signedURL!=='string')throw fail('原文件下载地址未准备好',503);
@@ -69,5 +88,5 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
     });return {key,id};
   }
   async function releaseTranslation(ticket){await mutate('limits/translation',{requests:[],active:{}},data=>{if(data.active[ticket.key]?.id===ticket.id)delete data.active[ticket.key];});}
-  return {read:async(file,fallback)=>(await snapshot(file,fallback)).data,mutate,putBlob,blob,blobInfo,signedBlob,beginUpload,completeUpload,reserveTranslation,releaseTranslation};
+  return {read:async(file,fallback)=>(await snapshot(file,fallback)).data,mutate,putBlob,adoptBlob,blob,blobInfo,signedBlob,blobDownloads,beginUpload,completeUpload,reserveTranslation,releaseTranslation};
 }

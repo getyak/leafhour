@@ -86,3 +86,15 @@ test('hosted authentication uses verified provider identity, keeps tokens server
   assert.equal((await auth.userFor(session.token)).id,'provider-user');await auth.logout(session.token);assert.equal(await auth.userFor(session.token),null);assert.equal(await auth.userFor('forged-cookie'),null);
   assert.equal(JSON.parse(calls[1].options.body).type,'email');
 });
+test('large private blobs survive independent processes and corruption is rejected',async()=>{
+ const f=database(),a=createHostedStore({env,fetcher:f.fetcher}),b=createHostedStore({env,fetcher:f.fetcher}),bytes=Buffer.alloc(21*1024*1024,79);
+ await a.putBlob('owner/originals/large',bytes);assert.equal((await b.blobInfo('owner/originals/large')).size,bytes.length);assert.deepEqual(await b.blob('owner/originals/large'),bytes);
+});
+test('large immutable JSON values roundtrip through document pointers and retain CAS updates',async()=>{
+ const f=database(),a=createHostedStore({env,fetcher:f.fetcher}),value='书籍正文'.repeat(400000);
+ await a.mutate('large-book',{},r=>{r.text=value;});assert.ok(Buffer.byteLength(JSON.stringify(f.rows.get('large-book').value))<10000);assert.equal((await a.read('large-book',null)).text,value);
+ await a.mutate('large-book',{},r=>{r.note='kept';});assert.equal((await a.read('large-book',null)).note,'kept');
+});
+test('hosted JSON transport compresses large readable content without losing source text',async()=>{
+ const {gunzipSync}=await import('node:zlib'),source='正文'.repeat(1500000),headers={};let payload;const handler=createHostedHandler({env,storeFactory:()=>({}),authFactory:()=>({}),portalFactory:async()=>({handle:async({send})=>{send(200,{source});return true;}})});const res={setHeader:(k,v)=>{headers[k]=v;},end:b=>{payload=b;}};await handler({url:'/api/library',method:'GET',headers:{}},res);assert.equal(res.statusCode,200);assert.equal(headers['Content-Encoding'],'gzip');assert.equal(JSON.parse(gunzipSync(payload)).source,source);
+});

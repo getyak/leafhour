@@ -3,11 +3,11 @@ import {createHash} from 'node:crypto';
 import {inferSourceLanguage} from '../app/source-language.mjs';
 export const fail=(message,status=400)=>Object.assign(new Error(message),{status});
 export const digest=value=>createHash('sha256').update(value).digest('hex');
-export const MAX_FILE_BYTES=20*1024*1024;
+export const MAX_FILE_BYTES=256*1024*1024;
 
 export async function extractDocument({filename,bytes}){
   if(typeof filename!=='string'||!filename.trim()||filename.length>240||!Buffer.isBuffer(bytes)||!bytes.length)throw fail('请选择有内容的书籍文件');
-  if(bytes.length>MAX_FILE_BYTES)throw fail('文件超过 20 MB，请拆分后上传',413);
+  if(bytes.length>MAX_FILE_BYTES||!filename.toLowerCase().endsWith('.pdf')&&bytes.length>20*1024*1024)throw fail('PDF 最多 256 MB，文本最多 20 MB',413);
   const ext=path.extname(filename).toLowerCase();
   if(!['.pdf','.txt','.md'].includes(ext))throw fail('目前支持 PDF、TXT 和 Markdown');
   if(ext!=='.pdf'){
@@ -43,16 +43,16 @@ export async function extractDocument({filename,bytes}){
 export function makeBook({bookId,filename,sourceHash,extracted,title,author='',visibility='private',sourceUrl=null,license=null}){
   const paragraphs=[];
   for(const page of extracted.pages){
-    const blocks=page.text.replace(/\r\n?/g,'\n').split(/\n\s*\n/).map(x=>x.replace(/([^\n])\n(?=[^\n])/g,'$1 ').trim()).filter(Boolean);
-    for(const block of blocks){
+    const blocks=page.blocks?.map(b=>b.text)||page.text.replace(/\r\n?/g,'\n').split(/\n\s*\n/).map(x=>x.replace(/([^\n])\n(?=[^\n])/g,'$1 ').trim()).filter(Boolean);
+    for(const [blockIndex,block] of blocks.entries()){
       // Bound a single translation context without throwing away any source text.
       const parts=block.match(/[\s\S]{1,5000}(?:\s|$)|[\s\S]{1,5000}/g)||[];
-      for(const original of parts)paragraphs.push({id:`${sourceHash.slice(0,16)}-p${String(paragraphs.length+1).padStart(5,'0')}`,original:original.trim(),translations:{},source:{pdfPage:page.page,printedPage:null,review:extracted.review},annotationIds:[],termIds:[]});
+      for(const [partIndex,original] of parts.entries())paragraphs.push({id:(page.blocks?.[blockIndex]?.id? page.blocks[blockIndex].id+(parts.length>1?'-'+partIndex:''):null)||`${sourceHash.slice(0,16)}-p${String(paragraphs.length+1).padStart(5,'0')}`,original:original.trim(),translations:{},source:{pdfPage:page.page,printedPage:null,review:extracted.review,...(page.blocks?.[blockIndex]?{bbox:page.blocks[blockIndex].bbox,type:page.blocks[blockIndex].type,processor:extracted.processor}: {})},annotationIds:[],termIds:[]});
     }
   }
   if(!paragraphs.length)throw fail('没有找到可阅读的段落');
   const chapters=[],sections=[];
   for(let i=0;i<paragraphs.length;i+=30){const number=chapters.length+1,id='ch'+String(number).padStart(2,'0');chapters.push({id,number,title:{zh:paragraphs.length<=30?'开始阅读':`阅读片段 ${number}`,en:''}});sections.push({number,chapterId:id,title:'自动分段 · 原文未逐段校对',paragraphs:paragraphs.slice(i,i+30)});}
   const text=paragraphs.slice(0,10).map(p=>p.original).join('');
-  return {bookId,contentVersion:sourceHash,title:{zh:title||path.basename(filename,path.extname(filename)),en:title||path.basename(filename,path.extname(filename))},author,visibility,sourceLanguage:inferSourceLanguage(text),targetLanguage:'zh',source:{filename:path.basename(filename),sha256:sourceHash,format:extracted.format,url:sourceUrl,license,review:extracted.review,structure:'automatic_groups'},chapters,sections,annotations:[],glossary:[],createdAt:new Date().toISOString()};
+  return {bookId,contentVersion:extracted.contentVersion||sourceHash,title:{zh:title||path.basename(filename,path.extname(filename)),en:title||path.basename(filename,path.extname(filename))},author,visibility,sourceLanguage:inferSourceLanguage(text),targetLanguage:'zh',source:{filename:path.basename(filename),sha256:sourceHash,format:extracted.format,url:sourceUrl,license,review:extracted.review,structure:'automatic_groups',...(extracted.processor?{processor:extracted.processor,pages:extracted.pages.length,quality:extracted.quality}: {})},chapters,sections,annotations:[],glossary:[],createdAt:new Date().toISOString()};
 }

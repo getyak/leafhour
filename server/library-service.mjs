@@ -131,12 +131,13 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       return {...row,sourceLanguage,topics:row.topics||book?.topics||[],...(positions?{shelfPosition:positions.get(row.bookId)}:{}),resume:book&&data.position?resumeSummary(book,data.position):null,journey:book?readingJourney(book,data):null};
     }));
   }
-  async function importDocument(user,input){
-    requireUser(user);const extracted=await extractDocument(input),hash=digest(input.bytes);let id='private-'+digest(user.id+hash).slice(0,24),existing=await read(bookFile(user,id),null);
+  async function importDocument(user,input){return importExtracted(user,{...input,extracted:await extractDocument(input)});}
+  async function importExtracted(user,input){
+    requireUser(user);const extracted=input.extracted,hash=digest(input.bytes);let id='private-'+digest(user.id+hash).slice(0,24),existing=await read(bookFile(user,id),null);
     if(!existing){const index=await read(path.join(userDir(user),'index.json'),{books:[]});for(const row of index.books.filter(b=>b.source?.sha256===hash)){const candidate=await read(bookFile(user,row.bookId),null);if(candidate?.contentVersion===hash&&candidate.source?.sha256===hash){existing=candidate;id=candidate.bookId;break;}}}
-    if(existing&&(existing.contentVersion!==hash||existing.source?.sha256!==hash))throw fail('已保存的原文版本与此文件不一致，未覆盖书籍或记录',409);
+    if(existing&&existing.source?.sha256!==hash)throw fail('已保存的原文版本与此文件不一致，未覆盖书籍或记录',409);
     const book=existing||makeBook({bookId:id,filename:input.filename,sourceHash:hash,extracted});
-    if(dataStore&&Buffer.byteLength(JSON.stringify(book))>3500000)throw fail('这本书提取后的文字过多，请按章节拆分后上传到云端；原文件尚未加入书房',413);
+    if(dataStore&&!extracted.processor&&Buffer.byteLength(JSON.stringify(book))>3500000)throw fail('这本书提取后的文字过多，请按章节拆分后上传到云端；原文件尚未加入书房',413);
     const originals=path.join(userDir(user),'originals');
     if(dataStore)await dataStore.putBlob(path.join(originals,hash),input.bytes);
     else {await mkdir(originals,{recursive:true,mode:0o700});const temporary=path.join(originals,hash+'.'+randomUUID()+'.pending');await writeFile(temporary,input.bytes,{mode:0o600});await rename(temporary,path.join(originals,hash));}
@@ -145,16 +146,17 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   }
   async function originalInfo(user,id){
     requireUser(user);const book=await getBook(user,id);if(book.visibility!=='private')throw fail('公版书请使用书籍出处查看底本',404);
-    const hash=book.source?.sha256;if(typeof hash!=='string'||!/^[a-f0-9]{64}$/.test(hash)||hash!==book.contentVersion)throw fail('原文件信息不完整，请保留提取原文并重新上传原文件',409);
+    const hash=book.source?.sha256;if(typeof hash!=='string'||!/^[a-f0-9]{64}$/.test(hash)||hash!==book.contentVersion&&book.source?.processor!=='PaddleOCR-VL-1.6')throw fail('原文件信息不完整，请保留提取原文并重新上传原文件',409);
     const filename=typeof book.source.filename==='string'?book.source.filename:'original.'+book.source.format;
-    try{const file=dataStore?await dataStore.blobInfo(path.join(userDir(user),'originals',hash)):await stat(path.join(userDir(user),'originals',hash));if(!file)throw Object.assign(new Error('Missing original'),{code:'ENOENT'});if((file.isFile&&!file.isFile())||file.size>MAX_FILE_BYTES)throw fail('原文件不完整，请重新上传',409);return {available:true,filename,format:book.source.format,bytes:file.size};}
+    try{const file=dataStore?await dataStore.blobInfo(path.join(userDir(user),'originals',hash)):await stat(path.join(userDir(user),'originals',hash));if(!file)throw Object.assign(new Error('Missing original'),{code:'ENOENT'});if((file.isFile&&!file.isFile())||file.size>MAX_FILE_BYTES)throw fail('原文件不完整，请重新上传',409);return {available:true,filename,format:book.source.format,bytes:file.size,sha256:hash};}
     catch(error){if(error.code!=='ENOENT')throw error;return {available:false,filename,format:book.source.format,reason:'此书房没有原文件。JSON 备份只包含提取文字与记录；重新上传同一原文件即可补回。'};}
   }
   async function getOriginal(user,id){
     const info=await originalInfo(user,id);if(!info.available)throw fail(info.reason,404);const book=await getBook(user,id),bytes=await (dataStore?dataStore.blob(path.join(userDir(user),'originals',book.source.sha256)):readFile(path.join(userDir(user),'originals',book.source.sha256)));
-    if(bytes.length>MAX_FILE_BYTES||digest(bytes)!==book.contentVersion)throw fail('原文件校验失败，未提供损坏的文件，请重新上传',409);
+    if(bytes.length>MAX_FILE_BYTES||digest(bytes)!==book.source.sha256)throw fail('原文件校验失败，未提供损坏的文件，请重新上传',409);
     return {...info,bytes};
   }
+  async function originalParts(user,id){const original=await getOriginal(user,id),book=await getBook(user,id);if(!dataStore?.blobDownloads)throw fail('本机原件使用直接下载',404);return {...original,bytes:original.bytes.length,parts:await dataStore.blobDownloads(path.join(userDir(user),'originals',book.source.sha256))};}
   async function originalDownload(user,id){
     const file=await getOriginal(user,id),book=await getBook(user,id);
     return {...file,bytes:undefined,url:await dataStore.signedBlob(path.join(userDir(user),'originals',book.source.sha256))};
@@ -343,5 +345,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(claim.pending)await mutate(bookFile(user,incoming.bookId),{},current=>{if(current._giftReceive?.fingerprint===fingerprint)delete current._giftReceive;});
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,originalInfo,getOriginal,originalDownload,records,addComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,validateRestore,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,records,addComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,validateRestore,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }
