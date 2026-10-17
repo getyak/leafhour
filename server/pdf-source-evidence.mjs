@@ -1,3 +1,5 @@
+// PDF.js loads Canvas with a dynamic createRequire that dependency tracers miss.
+// Keep an explicit literal import edge while deferring native loading until render.
 import {fileURLToPath} from 'node:url';
 import {digest,fail} from './document-import.mjs';
 let active=0;
@@ -8,8 +10,9 @@ export async function renderPdfEvidence(bytes,pageNumber){
  if(active>=2)throw fail('页面图像正在核对，请稍后重试',429);active++;
  let task,render,canvas,document,page,timedOut=false;const timer=setTimeout(()=>{timedOut=true;render?.cancel();task?.destroy().catch(()=>{});},20000);timer.unref?.();
  try{
+  await import('@napi-rs/canvas');
   await import('pdfjs-dist/legacy/build/pdf.worker.mjs');const {getDocument}=await import('pdfjs-dist/legacy/build/pdf.mjs');
-  task=getDocument({data:new Uint8Array(bytes),isEvalSupported:false,disableFontFace:true,useSystemFonts:true,stopAtErrors:true,wasmUrl:fileURLToPath(new URL('../node_modules/pdfjs-dist/wasm/',import.meta.url)),cMapPacked:true,cMapUrl:fileURLToPath(new URL('../node_modules/pdfjs-dist/cmaps/',import.meta.url)),standardFontDataUrl:fileURLToPath(new URL('../node_modules/pdfjs-dist/standard_fonts/',import.meta.url))});
+  task=getDocument({data:new Uint8Array(bytes),isEvalSupported:false,disableFontFace:true,useSystemFonts:false,stopAtErrors:true,wasmUrl:fileURLToPath(new URL('../node_modules/pdfjs-dist/wasm/',import.meta.url)),cMapPacked:true,cMapUrl:fileURLToPath(new URL('../node_modules/pdfjs-dist/cmaps/',import.meta.url)),standardFontDataUrl:fileURLToPath(new URL('../node_modules/pdfjs-dist/standard_fonts/',import.meta.url))});
   document=await task.promise;if(document.numPages>1200||pageNumber>document.numPages)throw fail('PDF 图像页码超出原件范围');page=await document.getPage(pageNumber);const base=page.getViewport({scale:1});if(!Number.isFinite(base.width*base.height)||base.width<=0||base.height<=0)throw fail('PDF 页面尺寸不正确',422);
   let scale=Math.min(2,1200/base.width,1200/base.height,Math.sqrt(990000/(base.width*base.height)));
   for(let attempt=0;attempt<3;attempt++){
