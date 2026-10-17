@@ -1,10 +1,29 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,writeFile,rm} from 'node:fs/promises';
+import {mkdtemp,writeFile,copyFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {createDialogueGenerator} from '../server/dialogue-generator.mjs';
 import {mediaConfiguration} from '../server/media-config.mjs';
+import {loadLocalEnvironment} from '../server/local-env.mjs';
+import {createTranslator} from '../server/translation.mjs';
+
+test('the shared example can be copied directly for local reading without enabling providers or hosted settings',async t=>{
+ const directory=await mkdtemp(path.join(tmpdir(),'leafhour-example-'));t.after(()=>rm(directory,{recursive:true,force:true}));
+ await copyFile(new URL('../.env.example',import.meta.url),path.join(directory,'.env'));
+ const env={};await loadLocalEnvironment({directory,env});
+ for(const key of ['SUPABASE_URL','SUPABASE_SECRET_KEY','SUPABASE_PUBLISHABLE_KEY','READER_PUBLIC_ORIGIN','READER_EMAIL_ENABLED','READER_ADDITIONAL_WEB_ORIGINS'])assert.equal(env[key],undefined,key);
+ assert.equal(createTranslator(env),null);assert.equal(createDialogueGenerator({env}),null);
+ assert.equal(mediaConfiguration(env).public.speechAvailable,false);assert.equal(mediaConfiguration(env).public.dialogueAvailable,false);
+});
+
+test('an explicitly empty canonical key disables the same credential from the legacy file',async t=>{
+ const directory=await mkdtemp(path.join(tmpdir(),'leafhour-empty-env-'));t.after(()=>rm(directory,{recursive:true,force:true}));
+ await writeFile(path.join(directory,'.env.audio'),'OPENROUTER_API_KEY=old-speech\n');
+ await writeFile(path.join(directory,'.env'),'OPENROUTER_API_KEY=\n');
+ const env={};await loadLocalEnvironment({directory,env});
+ assert.equal(env.OPENROUTER_API_KEY,'');assert.equal(mediaConfiguration(env).public.speechAvailable,false);
+});
 
 test('one local env file overrides legacy audio settings while shell variables remain authoritative',async t=>{
  const api=await import('../server/local-env.mjs').catch(()=>({}));assert.equal(typeof api.loadLocalEnvironment,'function');

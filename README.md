@@ -51,7 +51,7 @@ npm start
 
 默认访问 `http://127.0.0.1:8330/` 官网，`/library` 是书房。原有私人样书入口移到 `/read`；`/read?book=ID` 打开新书房中的指定书。没有本机私人样书时也能用默认公版库启动。本机上传与记录放在被 Git 忽略的 `local/service/portal/`，不会进入公开源码。
 
-AI 功能只需在根目录 `.env` 填写需要的 Key：`DEEPSEEK_API_KEY` 用于翻译、阅读对话和讲解稿，`OPENROUTER_API_KEY` 用于本机语音。模型默认选好，只阅读时两项都可以留空。`npm start` 自动读取配置，启动提示会说明是否已配置、是否仍待验证，以及当前部署是否支持语音。高级设置、托管配置和旧文件兼容见 [配置说明](docs/configuration.md)。
+需要 AI 时，将唯一模板 [`.env.example`](.env.example) 复制为 `.env`，填写需要的 Key：`DEEPSEEK_API_KEY` 用于翻译、阅读对话和讲解稿，`OPENROUTER_API_KEY` 用于本机语音。模型默认选好，只阅读时无需配置。`npm start` 自动读取配置，启动提示会说明是否已配置、是否仍待验证，以及当前部署是否支持语音。同一模板还包含默认注释的托管与高级选项，按需查看 [配置说明](docs/configuration.md)。
 
 PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF 和加密文件给出明确失败原因，当前不含 OCR。默认 30 本英文阅读版使用已核对边界的原书目录，首次从正文开始，前言和附录仍可打开。私人上传暂按每 30 段分成阅读片段，界面注明自动分段，不能当成作者的原章结构。目录调整保留段落 ID，已有笔记与位置继续对应原句。
 
@@ -85,7 +85,7 @@ PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF �
 
 ### 邮箱与翻译
 
-复制 `.env.example` 为 `.env`，配置 SMTP 后用 `npm run start:configured` 启动。验证码真实通过 SMTP 发送，十分钟过期、一次有效、五次失败后失效；注册与登录共用入口，会话保存在 HttpOnly Cookie 中。没有 SMTP 时不会假装发信；本机书房是独立的单人使用方式，不代表邮箱身份已核验。
+本机需要邮箱登录时，在同一个 `.env` 中配置 SMTP 后用 `npm start` 启动，变量见 [配置说明](docs/configuration.md)。验证码真实通过 SMTP 发送，十分钟过期、一次有效、五次失败后失效；注册与登录共用入口，会话保存在 HttpOnly Cookie 中。没有 SMTP 时不会假装发信；本机书房是独立的单人使用方式，不代表邮箱身份已核验。
 
 退出后清空页面的私人书名、授权列表、显示中的令牌和文件选择；书籍与已创建的 Agent 授权仍保存在服务端，授权需要在书房主动撤回。账户切换后，旧请求不能更新新账户页面，旧恢复任务不能继续向新账户写入；从其他标签页返回时会检查当前身份。
 
@@ -111,7 +111,7 @@ PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF �
 
 声音与两位讲解者的偏好在“阅读设置 → 听读 → 声音与语速”中调整。改变语速在本机完成，不再次生成。首次试听会生成固定短文，重复试听复用已有声音。未翻译的内容明确提示，可由用户选择改听对应原文。
 
-模型分工为文字使用 DeepSeek，语音使用 Gemini Flash TTS。日常在 `.env` 填写 `DEEPSEEK_API_KEY` 和 `OPENROUTER_API_KEY`，模型参数使用统一默认值。需要覆盖时使用 `READER_TRANSLATION_MODEL`、`READER_AUDIO_SCRIPT_MODEL` 和 `READER_SPEECH_MODEL`。旧的 `.env.audio`、`READER_DIALOGUE_MODEL` 及 `npm run start:configured` 继续兼容；优先级见 [配置说明](docs/configuration.md)。图片尚无生成入口，默认模板不展示图片模型。环境文件都不进入 Git 或导出。
+模型分工为文字使用 DeepSeek，语音使用 Gemini Flash TTS。日常在 `.env` 填写 `DEEPSEEK_API_KEY` 和 `OPENROUTER_API_KEY`，模型参数使用统一默认值。需要覆盖时使用 `READER_TRANSLATION_MODEL`、`READER_AUDIO_SCRIPT_MODEL` 和 `READER_SPEECH_MODEL`。旧的 `.env.audio`、`READER_DIALOGUE_MODEL` 及 `npm run start:configured` 继续兼容；优先级见 [配置说明](docs/configuration.md)。图片尚无生成入口，默认模板不展示图片模型。真实环境配置不进入 Git 或导出，公开模板只保留变量与占位值。
 
 生成声音需要有效额度，余额不足会显示真实错误，不重试扣费或自动更换供应商。取消会停止后续片段并拒绝迟到结果；已经发给供应商的请求仍可能计费。听读位置独立于阅读位置与时长，刷新恢复后等待用户点击播放。
 
@@ -159,7 +159,7 @@ PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF �
 
 建表迁移在 `supabase/migrations/`。新版使用独立的 `reader_documents` 表与私人 `reader-originals` 存储桶；RLS 开启，`anon` 和 `authenticated` 没有直接表权限。原有两张单书数据表保留，不作为公开入口。Vercel Function 使用服务端 secret 访问。完整部署步骤见 [deploy/README.md](deploy/README.md)，自动更新流程见 [docs/ci-cd.md](docs/ci-cd.md)。
 
-浏览器端不需要服务端 key。`.env.hosted.example` 只列变量名，真实值应放入 Vercel Environment Variables 或本机被忽略的 `.env`。
+浏览器端不需要服务端 key。唯一模板 [`.env.example`](.env.example) 的“托管部署”一节列出所需变量，真实值放入 Vercel Environment Variables；本机使用被 Git 忽略的 `.env`。
 
 当前数据库表结构、账号隔离、原件存储与默认测试数据归属见 [数据库与默认测试书房](docs/data-workspace.md)。
 

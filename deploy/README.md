@@ -2,7 +2,7 @@
 
 本机新增听读服务；当前托管配置不运行进程内语音队列，也不把音频写入函数临时目录。听读能力接口明确返回暂不可用，书籍和原有功能继续运行。启用前需要私人音频对象存储、数据库任务状态及持久 worker，另外验收取消与授权撤回。本轮不部署此功能。
 
-环境变量按必填与可选整理在 `.env.hosted.example`，与本机 `.env.example` 分开。模型使用统一默认值；新讲解稿覆盖名为 `READER_AUDIO_SCRIPT_MODEL`，旧名继续兼容。函数初始化只打印配置状态，不验证或输出密钥。详细用途和优先级见 [配置说明](../docs/configuration.md)。
+环境变量统一在 [`.env.example`](../.env.example) 的“托管部署”一节；旧的 `.env.hosted.example` 已合并并移除。在 Vercel 的 Environment Variables 逐项填写四个必填值，需要 AI 文字功能时再填 `DEEPSEEK_API_KEY`。模板中的托管项默认注释，不会被本机直接加载。函数只读取平台环境变量，不读取本机 `.env`；初始化只打印配置状态，不验证或输出密钥。高级选项与旧配置兼容见 [配置说明](../docs/configuration.md)。
 
 官网 `/`、书房 `/library` 和阅读页 `/read?book=ID` 使用同一套网页与领域服务。默认 30 本英文阅读版可匿名阅读；原有三本保留中文开篇试读，许可与出处见 `catalog/manifest.json`。私人样书不会迁移到公开入口；旧单书 `/api/book`、`/api/records` 等接口返回 404。
 

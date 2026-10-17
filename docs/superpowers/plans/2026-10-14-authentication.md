@@ -1,5 +1,7 @@
 # 旁读登录体验 Implementation Plan
 
+> 配置入口更新（2026-10-17）：本文保留当时的实施计划；其中 `.env.hosted.example` 已合并到唯一模板 `.env.example`，当前步骤见 [配置说明](../../configuration.md)。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans for implementation in the current chat, or superpowers:subagent-driven-development if the user explicitly selects delegated execution. Steps use checkbox syntax for tracking.
 
 **Goal:** 在 `reader.cubxxw.com` 完成 Resend 邮箱验证码、Google 和 Apple 登录，提供简洁且可恢复的登录体验。

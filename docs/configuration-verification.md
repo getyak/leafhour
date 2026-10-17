@@ -18,3 +18,13 @@ The actual npm commands were launched in the isolated checkout using temporary f
 No fixture Key appeared in captured startup logs. Temporary configuration files were removed after acceptance. Original account data was not used or modified. Real credentials, provider permissions, balances and paid speech results remain unverified. Hosted speech enablement and the existing Gemini PCM-format compatibility issue are outside this configuration change.
 
 Source: Node.js [environment parsing](https://nodejs.org/docs/latest-v22.x/api/util.html#utilparseenvcontent). The local loader applies the project's explicitly documented precedence.
+
+## Unified template follow-up · 2026-10-17
+
+The subsequent consolidation keeps `.env.example` as the sole template and removes `.env.hosted.example`. Local AI keys appear first. Hosted requirements and advanced overrides are commented, so a direct copy cannot enable a placeholder origin, Supabase project or email flag. Model versions are no longer duplicated in the template. Current setup documentation uses `npm start`; advanced and compatibility guidance is collapsed. The historical authentication plan retains its original file reference with a current configuration link.
+
+The release policy and actual release manifest now allow only the root `.env.example`. Two release-policy assertions failed before the change and passed afterward. Additional consumer tests verify that the copied template leaves AI providers and hosted settings disabled, and an explicitly empty canonical Key disables the same legacy credential.
+
+Fresh `npm run verify:deploy` passed: 759 tests, 758 passed, one existing platform skip, zero failures. Isolated runtime initialization, hosted build, public asset checks and the 395-file release snapshot passed with no model requests.
+
+Four actual npm startup scenarios passed: directly copied unified template, one configured `.env`, legacy audio file/command, and a configuration without speech support. Each served 30 public books; session and speech capability endpoints agreed with startup status. Captured output contained no fixture keys. No real account data or cloud environment variables were changed, and no paid generation was attempted.

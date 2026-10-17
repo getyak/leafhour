@@ -9,7 +9,7 @@ import {fileURLToPath} from 'node:url';
 const commit='a'.repeat(40);
 async function fixture(t,files){const root=await mkdtemp(path.join(tmpdir(),'release-test-'));t.after(()=>rm(root,{recursive:true,force:true}));await writeFile(path.join(root,'release-files.json'),JSON.stringify(files));return root;}
 test('publication rejects private paths, credentials, traversal and private document formats',()=>{
-  for(const file of ['local/note.json','content/book.json','_briefs/plan.md','docs/verification/proof.md','docs/superpowers/plan.md','.env','deploy/.env.production','original.pdf','signing.pem','../secret','/etc/passwd','app/../local/book','app\\secret'])assert.equal(validReleasePath(file),false,file);
+  for(const file of ['local/note.json','content/book.json','_briefs/plan.md','docs/verification/proof.md','docs/superpowers/plan.md','.env','.env.audio','.env.local','.env.hosted.example','deploy/.env.example','deploy/.env.production','original.pdf','signing.pem','../secret','/etc/passwd','app/../local/book','app\\secret'])assert.equal(validReleasePath(file),false,file);
   for(const file of ['app/reader.js','.github/workflows/ci.yml','.env.example','catalog/alice.txt'])assert.equal(validReleasePath(file),true,file);
 });
 test('publication copies only approved software files and removes private project links',async t=>{
@@ -38,6 +38,7 @@ test('hosted source metadata works without Git history and cannot fall back from
 });
 test('the release snapshot contains local module imports and reader page assets',async()=>{
   const root=fileURLToPath(new URL('..',import.meta.url)),files=await releaseFiles(root),allowed=new Set(files);
+  assert.deepEqual(files.filter(file=>file.split('/').some(part=>part.startsWith('.env'))),['.env.example']);
   for(const file of files){
     if(!/\.(?:mjs|js|html)$/.test(file))continue;
     const source=await readFile(path.join(root,file),'utf8');
