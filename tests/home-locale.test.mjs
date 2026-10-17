@@ -35,6 +35,11 @@ test('localization never rewrites book sample text and leaves no source text in 
   assert.match(traditional,/網站支援哪些語言？/);assert.match(traditional,/繁體中文/);
   assert.match(japanese,/対応言語は？/);assert.match(japanese,/本棚を開いています…/);
   assert.match(english,/Which languages does the site support\?/);
+  // Fragment rows bridge around inline links; edits must keep each language readable.
+  assert.match(english,/are optional\. Unsynced records and drafts remain/);
+  assert.match(traditional,/是否納入。未同步的記錄與草稿仍留在原瀏覽器/);
+  assert.match(japanese,/任意です。未同期の記録と未保存の下書きは元のブラウザに残ります。処理方法は/);
+  assert.doesNotMatch(japanese,/です まで|任意です まで/,'the Japanese FAQ kept a stale bridge across a removed link');
   const simplified='“一本书如果没有图画，也没有对话，那有什么用呢？”爱丽丝想。';
   const traditionalQuote='「一本書如果沒有圖畫，也沒有對話，那有什麼用呢？」愛麗絲想。';
   assert.ok(english.includes(simplified));
