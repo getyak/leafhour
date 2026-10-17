@@ -428,6 +428,7 @@
   "tests/reading-retained.test.mjs",
   "tests/reading-schedule.test.mjs",
   "tests/reading-session-coordinator.test.mjs",
+  "tests/reading-session-recovery.test.mjs",
   "tests/reading-shared-persistence.test.mjs",
   "tests/reading-time-service.test.mjs",
   "tests/reading-time-sources.test.mjs",
