@@ -1,5 +1,6 @@
 import {readFile,readdir,lstat} from 'node:fs/promises';
 import path from 'node:path';
+import {createHash} from 'node:crypto';
 import {releaseFiles} from './release-policy.mjs';
 
 const root=process.cwd(),app=path.join(root,'app'),dist=path.join(root,'dist');
@@ -8,7 +9,9 @@ async function list(dir,prefix=''){
 }
 const allowed=new Set([...(await releaseFiles(root)).filter(file=>file.startsWith('app/')).map(file=>file.slice(4)),'read.html','en.html','library.html','evals/index.html','404.html','release.json']);
 for(const file of await list(dist)){
-  if(!allowed.has(file))throw Error('Unexpected public build file: '+file);
+  const generated=/^reader-web\/(reader|style)-([a-f0-9]{16})\.(js|css)$/.exec(file);
+  if(generated&&!createHash('sha256').update(await readFile(path.join(dist,file))).digest('hex').startsWith(generated[2]))throw Error('Invalid reader bundle hash');
+  if(!allowed.has(file)&&!generated)throw Error('Unexpected public build file: '+file);
   if((await lstat(path.join(dist,file))).size>2_000_000)throw Error('Unexpected public asset size: '+file);
 }
 const release=JSON.parse(await readFile(path.join(dist,'release.json'),'utf8'));

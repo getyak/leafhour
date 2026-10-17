@@ -140,3 +140,19 @@ test('OAuth success and cancellation carry the exact gift path back through the 
     if(cancelled){assert.equal(destination.pathname,'/library');assert.equal(destination.searchParams.get('next'),next);}else assert.equal(destination.pathname,next);
   }
 });
+
+test('large reading HTTP views retain private anchors while chapter reads enforce owner and edition',async t=>{
+ const {get,portal,a,b}=await setup(t),book=structuredClone(readingBook);book.bookId='private-reading-view';book.visibility='private';
+ for(let n=0;n<12;n++)book.sections[0].paragraphs.push({id:'large-'+n,original:'甲'.repeat(10000),translations:{},annotationIds:[],termIds:[]});
+ await portal.library.restoreLibrary(sender,{kind:'marginalia-library',schemaVersion:1,books:[{book,records:{...readingRecords(),bookId:book.bookId}}]});const before=await portal.library.getBook(sender,book.bookId),base='/api/library/books/'+book.bookId;
+ const response=await get(base+'/reading?passageId=p3',a);assert.equal(response.status,200);const view=await response.json();assert.deepEqual(view.reading.loadedChapters,['ch02']);assert.deepEqual(view.sections[0].paragraphs[0],{id:'p1',unloaded:true});assert.equal(view.sections[1].paragraphs[0].original,'Continue from here.');assert.equal(view.sections.flatMap(s=>s.paragraphs).length,16);
+ assert.equal((await get(base+'/reading')).status,404);assert.equal((await get(base+'/reading',b)).status,404);const route=base+'/chapters/ch01?contentVersion=edition-1';assert.equal((await get(route)).status,404);assert.equal((await get(route,b)).status,404);assert.equal((await get(base+'/chapters/ch01?contentVersion=old',a)).status,409);assert.equal((await get(base+'/chapters/missing?contentVersion=edition-1',a)).status,404);const chapter=await (await get(route,a)).json();assert.equal(chapter.sections[0].paragraphs.at(-1).original.length,10000);assert.deepEqual(await portal.library.getBook(sender,book.bookId),before);
+});
+test('oversized reading views and later chapters retain snapshot-checked chunk transfer',async t=>{
+ const {assembleBookTransfer}=await import('../app/book-transfer.mjs');const {get,portal,a}=await setup(t),book=structuredClone(readingBook);book.bookId='private-large-chapter';book.visibility='private';
+ for(let i=0;i<315;i++)book.sections[0].paragraphs.push({id:'wide-'+i,original:'x'.repeat(10000),translations:{},annotationIds:[],termIds:[]});
+ await portal.library.restoreLibrary(sender,{kind:'marginalia-library',schemaVersion:1,books:[{book,records:{...readingRecords(),bookId:book.bookId}}]});
+ for(const action of ['/reading?chapterId=ch01','/chapters/ch01?contentVersion=edition-1']){
+  const route='/api/library/books/'+book.bookId+action,response=await get(route,a);assert.equal(response.status,200);assert.equal(response.headers.get('X-Reader-Book-Transfer'),'parts');const manifest=await response.json();const value=await assembleBookTransfer(manifest,async(offset,snapshot)=>{const part=await get(route+'&offset='+offset+'&snapshot='+snapshot,a);assert.equal(part.status,200);return part.json();});assert.equal(value.sections[0].paragraphs.at(-1).original.length,10000);assert.equal((await get(route+'&offset=0&snapshot=old',a)).status,409);
+ }
+});
