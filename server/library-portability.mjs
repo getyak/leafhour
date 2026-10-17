@@ -1,5 +1,6 @@
 import {randomUUID,createHash} from 'node:crypto';
 import {MAX_ARCHIVE_BYTES,PART_BYTES,readLibraryArchive,assertPortableContent,portableExportContent} from '../app/library-portability.mjs';
+import {hasOriginalSourceVersion} from '../app/source-revisions.mjs';
 const hash=b=>createHash('sha256').update(b).digest('hex');
 const fail=(m,status=400)=>{throw Object.assign(Error(m),{status});};
 const replace=(row,next)=>{for(const k of Object.keys(row))delete row[k];Object.assign(row,next);};
@@ -49,7 +50,7 @@ export function createLibraryPortability({library,chat,store,clock=Date.now}){
    await library.validateRestore(user,backup);
    const finalBooks=await library.previewRestoreBooks(user,backup),finalById=new Map(finalBooks.map(b=>[b.bookId,b]));
    for(const entry of backup.books)if(entry.chat)try{await chat.validateHistory(user,finalById.get(entry.book.bookId),entry.chat,finalBooks);}catch(error){if([400,409].includes(error.status))fail('备份对话引用与目标保留的原文或译文冲突，未开始恢复',409);throw error;}
-   for(const original of originals){const book=books.find(b=>b.bookId===original.bookId);if(book.visibility==='public'||book.source.sha256!==book.contentVersion&&!['PaddleOCR-VL-1.6','pdfjs-native','native+paddle-auto-v1'].includes(book.source.processor))fail('备份原文件无法对应自己的来源版本');let existing;try{existing=await library.getBook(user,book.bookId);}catch(error){if(error.status!==404)throw error;}if(existing&&(existing.visibility!=='private'||existing.source.sha256!==book.source.sha256))fail('备份原文件与目标书籍的来源冲突，未开始恢复',409);}
+   for(const original of originals){const book=books.find(b=>b.bookId===original.bookId);if(book.visibility==='public'||!hasOriginalSourceVersion(book))fail('备份原文件无法对应自己的来源版本');let existing;try{existing=await library.getBook(user,book.bookId);}catch(error){if(error.status!==404)throw error;}if(existing&&(existing.visibility!=='private'||existing.source.sha256!==book.source.sha256))fail('备份原文件与目标书籍的来源冲突，未开始恢复',409);}
    await store.mutate(metadata(user),{},row=>{check(row,id);if(row.lease!==nonce)fail('恢复操作已变化，请重新校验',409);row.state='applying';row.leaseUntil=clock()+LEASE;return null;});validated=true;
    await library.restoreLibrary(user,backup,{preserveExisting:true});
    // Another instance may have saved a translation after preflight. Read the

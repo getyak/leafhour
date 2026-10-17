@@ -1,7 +1,7 @@
 import {renderPdfEvidence} from './pdf-source-evidence.mjs';
 import {epubSourceEvidence} from './epub-import.mjs';
 import {buildSourceRevision,migrateSourceNotes} from './source-revisions.mjs';
-import {mergePendingAnchors,validatePendingAnchors} from '../app/source-revisions.mjs';
+import {hasOriginalSourceVersion,mergePendingAnchors,validatePendingAnchors} from '../app/source-revisions.mjs';
 import {bookCapacity,MAX_BOOK_BYTES,TRANSLATION_RESERVE_BYTES} from './book-capacity.mjs';
 import {bookTransfer as transferBook} from './book-transfer.mjs';
 import {mkdir,readFile,writeFile,rename,stat,open} from 'node:fs/promises';
@@ -213,7 +213,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   }
   async function originalInfo(user,id){
     requireUser(user);const book=await getBook(user,id);if(book.visibility!=='private')throw fail('公版书请使用书籍出处查看底本',404);
-    const hash=book.source?.sha256;if(typeof hash!=='string'||!/^[a-f0-9]{64}$/.test(hash)||hash!==book.contentVersion&&!['PaddleOCR-VL-1.6','pdfjs-native','native+paddle-auto-v1','epub-spine-v1','source-review-v1'].includes(book.source?.processor))throw fail('原文件信息不完整，请保留提取原文并重新上传原文件',409);
+    const hash=book.source?.sha256;if(!hasOriginalSourceVersion(book))throw fail('原文件信息不完整，请保留提取原文并重新上传原文件',409);
     const filename=typeof book.source.filename==='string'?book.source.filename:'original.'+book.source.format;
     try{const file=dataStore?await dataStore.blobInfo(path.join(userDir(user),'originals',hash)):await stat(path.join(userDir(user),'originals',hash));if(!file)throw Object.assign(new Error('Missing original'),{code:'ENOENT'});if((file.isFile&&!file.isFile())||file.size>MAX_FILE_BYTES)throw fail('原文件不完整，请重新上传',409);return {available:true,filename,format:book.source.format,bytes:file.size,sha256:hash};}
     catch(error){if(error.code!=='ENOENT')throw error;return {available:false,filename,format:book.source.format,reason:'此书房没有原文件。JSON 备份只包含提取文字与记录；重新上传同一原文件即可补回。'};}
