@@ -19,6 +19,8 @@ import {portalDocument} from './portal-document.mjs';
 import {roomExcerpt,latestRoomQuestion} from '../app/library-workspace.mjs';
 import {createReaderChatService} from './reader-chat.mjs';
 import {createReaderChatGenerator} from './reader-chat-generator.mjs';
+import {createBookIntroductionService} from './book-introduction.mjs';
+import {createIntroductionGenerator} from '../harness/introduction-generator.mjs';
 import {createCompanionGenerator} from '../harness/companion-generator.mjs';
 import {authPurpose} from './auth-policy.mjs';
 import {safeGiftReturn} from '../app/reader-return.mjs';
@@ -36,7 +38,7 @@ import {agentReadArgs,scopedAgentRead} from './scoped-agent-reading.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
 const jsonBody=async(req,limit=29*1024*1024)=>{if(!req.headers['content-type']?.startsWith('application/json'))throw fail('请使用 JSON 请求',415);if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>limit)throw fail('这次导入内容过大，请分书恢复',413);return req.body;}let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('这次导入内容过大，请分书恢复',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('请求格式不正确');}};
-export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null}={}){
+export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null}={}){
   const webOrigins=new Set(publicOrigin?[publicOrigin]:[]);
   if(!Array.isArray(additionalWebOrigins))throw fail('额外网页来源配置无效',503);
   for(const value of additionalWebOrigins){
@@ -63,6 +65,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     throw fail('书架正在另一处更新，请稍后刷新',409);
   }
   const readingGenerator=chatGenerator===undefined?createReaderChatGenerator():chatGenerator;
+  const bookIntroductions=createBookIntroductionService({library,generator:introductionGenerator===undefined?createReaderChatGenerator({env,makeGenerator:createIntroductionGenerator}):introductionGenerator});
   const proactiveGenerator=companionGenerator===undefined?createReaderChatGenerator({makeGenerator:createCompanionGenerator}):companionGenerator;
   const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context)});
   const portability=createLibraryPortability({library,chat,store:ingestionStore});
@@ -126,7 +129,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     const user=req.method==='GET'&&p.startsWith('/api/book-gifts/')?null:await auth.userFor(token);
     const ownerScoped=p.startsWith('/api/library')||req.method==='POST'&&(p==='/api/account/profile'||/^\/api\/book-gifts\/[^/]+\/(?:accept|revoke)$/.test(p));
     if(ownerScoped&&req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==(user?.id||'guest')){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房。原账户草稿仍留在原处。',409);}
-    const body=req.method==='POST'?await jsonBody(req,p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
+    const body=req.method==='POST'?await jsonBody(req,p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
     const localAllowed=allowLocal&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)&&!publicOrigin;
     const setSession=value=>res.setHeader('Set-Cookie',`marginalia_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${value?604800:0}${publicOrigin?.startsWith('https:')?'; Secure':''}`);
     if(p==='/api/auth/session'&&req.method==='GET'){
@@ -198,6 +201,16 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     }
     const match=p.match(/^\/api\/library\/books\/([^/]+)(?:\/(.+))?$/);
     if(match){const [,id,action]=match;
+      if(action==='introduction'){
+        res.setHeader('Cache-Control','private, no-store');
+        if(req.method==='GET')send(200,await bookIntroductions.view(user,id));
+        else if(req.method==='POST'){
+          const controller=new AbortController(),cancel=()=>{if(!res.writableEnded)controller.abort();};res.once('close',cancel);
+          try{send(200,await bookIntroductions.generate(user,id,body,{authorize:async()=>(await auth.userFor(token))?.id===user?.id,signal:controller.signal}));}finally{res.removeListener('close',cancel);}
+        }
+        else throw fail('不支持这个请求',405);
+        return true;
+      }
       if(action==='source-review'&&req.method==='GET'){send(200,await library.sourceReview(user,id));return true;}
       if(action==='source-evidence'&&req.method==='GET'){send(200,await library.sourceEvidence(user,id,{passageId:url.searchParams.get('passageId'),...(url.searchParams.has('page')?{page:Number(url.searchParams.get('page'))}:{})}));return true;}
       if(action==='source-revisions'&&req.method==='POST'){const result=await library.createSourceRevision(user,id,body);send(201,{...result,book:{bookId:result.book.bookId,contentVersion:result.book.contentVersion,title:result.book.title}});return true;}
@@ -271,5 +284,5 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     }
     throw fail('找不到这个操作',404);
   }
-  return {handle,library,portability,auth,profile,gifts,giftQuotes,audio,audioRoutes,chat,ingestionRunner,setLegacyBook:book=>{legacyBook=book;}};
+  return {handle,library,portability,auth,profile,gifts,giftQuotes,audio,audioRoutes,chat,bookIntroductions,ingestionRunner,setLegacyBook:book=>{legacyBook=book;}};
 }

@@ -1,4 +1,5 @@
 import {chineseSampleNotice} from './catalog-sample.mjs';
+import {introductionFor} from './book-introduction.mjs';
 
 function sourceLink(value){
   try{const url=new URL(value);return ['https:','http:'].includes(url.protocol)&&!url.username&&!url.password?url.href:null;}catch{return null;}
@@ -14,7 +15,7 @@ export function currentChapterLabel(book,chapter){
 export function bookIntroduction(book,chapter){
   const grouped=book.source?.structure==='automatic_groups',chapters=book.chapters||[];
   const count=grouped?chapters.length:chapters.filter(c=>!c.kind||c.kind==='body').length;
-  return {title:book.title?.zh||'未命名书籍',originalTitle:book.title?.en&&book.title.en!==book.title.zh?book.title.en:'',author:book.author||'',description:book.description||'这本书还没有简介。',extent:count+(grouped?' 个阅读片段':' 章'),current:currentChapterLabel(book,chapter),sourceUrl:sourceLink(book.source?.url),sample:chineseSampleNotice(book),scopeNote:typeof book.source?.scopeNote==='string'?book.source.scopeNote:'',cover:book.cover||'private'};
+  return {title:book.title?.zh||'未命名书籍',originalTitle:book.title?.en&&book.title.en!==book.title.zh?book.title.en:'',author:book.author||'',description:introductionFor(book).text||'这本书还没有简介。',extent:count+(grouped?' 个阅读片段':' 章'),current:currentChapterLabel(book,chapter),sourceUrl:sourceLink(book.source?.url),sample:chineseSampleNotice(book),scopeNote:typeof book.source?.scopeNote==='string'?book.source.scopeNote:'',cover:book.cover||'private'};
 }
 
 export function renderBookContents({list,book,chapterId,onNavigate,document=list.ownerDocument}){

@@ -1,0 +1,24 @@
+.book-intro-provenance,.book-intro-scope,.book-intro-status{font:11px/1.8 var(--interface);color:var(--muted);margin:10px 0;overflow-wrap:anywhere}
+.book-intro-provenance{color:var(--accent)}
+.book-intro-status[role=alert]{color:var(--ink)}
+.book-intro-status:empty{display:none}
+.book-info-actions{display:flex;flex-wrap:wrap;gap:8px 16px;margin:12px 0 15px;font:12px/1.7 var(--interface)}
+.book-info-actions :is(a,button){display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:var(--accent);text-underline-offset:4px}
+.book-info-actions button{background:none;border:0;padding:0;cursor:pointer}
+.book-info-actions :is(button:disabled){color:var(--muted);cursor:default}
+.reader-book-gift{--serif:var(--book);--sans:var(--interface);--paper:var(--panel);width:min(850px,calc(100vw - 36px));max-width:none;max-height:calc(100dvh - 36px);padding:0;border:1px solid var(--line);color:var(--ink);background:var(--paper);overflow:auto;font:14px/1.8 var(--interface)}
+.reader-book-gift .book-action-heading{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--paper)}
+.reader-book-gift .book-action-heading h2{font:400 25px/1.6 var(--book);margin:0}
+.reader-book-gift .book-action-close{display:grid;place-items:center;min-width:44px;min-height:44px;font:26px/1 var(--interface);color:var(--muted);background:none;border:0}
+.reader-book-gift .book-action-status{margin:0;color:var(--muted);line-height:1.9;overflow-wrap:anywhere}
+.reader-book-gift .action-book-cover{display:flex;align-items:center;justify-content:center;box-sizing:border-box;overflow:hidden;background:#6d7865;color:#fcf8e9;padding:8px;border-radius:2px 5px 5px 2px;box-shadow:inset 3px 0 #0002,2px 3px 6px #1523191a}
+.reader-book-gift .action-book-cover .binding-type{display:flex;flex-direction:column;position:static;min-width:0}
+.reader-book-gift .action-book-cover .binding-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;font:9px/1.6 var(--book);overflow-wrap:anywhere}
+.reader-book-gift .text-link{color:var(--accent);background:none;border:0;cursor:pointer;text-decoration:underline;text-underline-offset:4px;min-height:44px}
+.reader-book-gift .primary{background:var(--accent);color:var(--panel);border:1px solid var(--accent);cursor:pointer;font-family:var(--interface)}
+.reader-book-gift :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.reader-book-gift .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.reader-book-gift [hidden],.book-info [hidden]{display:none!important}
+:root[data-theme=night] .reader-book-gift .gift-writing-paper:before{background-image:linear-gradient(#2b372cf0,#2b372ce0),url('/brand-assets/sage-paper.webp')}
+:root[data-theme=night] .reader-book-gift .gift-sealed-envelope:before{background-image:linear-gradient(#34432df0,#34432de0),url('/brand-assets/sage-paper.webp')}
+@media(prefers-color-scheme:dark){:root:not([data-theme=night]) .reader-book-gift .gift-writing-paper:before{background-image:linear-gradient(100deg,#f5f2e3d9,#f5f2e3b3),url('/brand-assets/sage-paper.webp')}:root:not([data-theme=night]) .reader-book-gift .gift-sealed-envelope:before{background-image:linear-gradient(110deg,#e5e6d8d9,#e3e6d4b3),url('/brand-assets/sage-paper.webp')}}

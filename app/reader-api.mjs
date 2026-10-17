@@ -2,6 +2,7 @@ import {assembleBookTransfer} from './book-transfer.mjs';
 export const selectedBookId=new URLSearchParams(location.search).get('book');
 export const readerSession=selectedBookId?await fetch('/api/auth/session').then(r=>r.json()).catch(()=>({user:null})):null;
 export function readerApiUrl(url){
+  if(url.startsWith('/api/library/')||url.startsWith('/api/book-gifts/'))return url;
   if(!selectedBookId||!url.startsWith('/api/'))return url;
   const action=url.slice('/api/'.length);return '/api/library/books/'+encodeURIComponent(selectedBookId)+(action==='book'?'':'/'+action);
 }
