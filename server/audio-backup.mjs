@@ -1,4 +1,4 @@
-import {audioHash,audioError,prepareReading,validateDialogue,clipCacheKey,chunkAudio} from './audio-content.mjs';
+import {audioHash,audioError,prepareReading,validateDialogue,clipCacheKey,chunkAudio,audioValueEqual} from './audio-content.mjs';
 import {prepareDialogueScenes,sceneCacheKey} from './audio-scenes.mjs';
 import {validateGuide} from './listening-guide-content.mjs';
 const checkedScript=(book,d,candidate=d)=>d.kind==='guided-listening'?validateGuide(book,d.scope,{...d,...candidate}):validateDialogue(book,d,candidate);
@@ -29,7 +29,7 @@ export function validateAudioBackup(book,backup){
    let turns;if(chunkingVersion===3){
     if(!Array.isArray(c.turns)||c.turns.length!==expected[i].turns.length||c.turns.some(t=>!['Sulafat','Kore','Charon','Puck'].includes(t.voice))||new Set(c.turns.map(t=>t.voice)).size>2)throw audioError('声音场景声线无效。');
     const {id,voice,status,mimeType,bytes,checksum,generationId,cacheKey,...actual}=c;const withoutVoices={...actual,turns:c.turns.map(({voice,...t})=>t)};
-    if(audioHash(withoutVoices)!==audioHash(expected[i]))throw audioError('声音场景的语气或出处不一致。');turns=structuredClone(c.turns);
+    if(!audioValueEqual(withoutVoices,expected[i]))throw audioError('声音场景的语气或出处不一致。');turns=structuredClone(c.turns);
    }
    return {...expected[i],...(turns?{turns}:{}),id:c.id,voice:c.voice,status:file?'ready':'pending',...(file?{checksum:c.checksum,mimeType:file.mimeType,bytes:file.bytes.length}:{})};});
   const position=s.position;if(!position||!Number.isInteger(position.clipIndex)||position.clipIndex<0||position.clipIndex>=clips.length||!Number.isFinite(position.seconds)||position.seconds<0||position.seconds>86400)throw audioError('听读位置无效。');
@@ -48,7 +48,7 @@ export function createAudioBackup({audio,store,getBook}){
  },async restoreAudio({owner,bookId,backup}){
   const book=await getBook(owner,bookId),validated=validateAudioBackup(book,backup);await audio.getPreferences(owner); // Authentication precedes every write.
   const prefs=backup.preferences||{};if(['narrator','guide','questioner'].some(k=>prefs[k]!==undefined&&!['Sulafat','Kore','Charon','Puck'].includes(prefs[k]))||prefs.speed!==undefined&&(!Number.isFinite(prefs.speed)||prefs.speed<0.75||prefs.speed>1.5)||prefs.follow!==undefined&&typeof prefs.follow!=='boolean')throw audioError('备份声音偏好无效。');
-  const prior=await audio.readData(owner,bookId);for(const d of validated.dialogues){const old=prior.dialogues.find(x=>x.id===d.id);if(old&&audioHash(old.turns)!==audioHash(d.turns))throw audioError('现有修改稿与备份不同，未覆盖。',409);}
+  const prior=await audio.readData(owner,bookId);for(const d of validated.dialogues){const old=prior.dialogues.find(x=>x.id===d.id);if(old&&!audioValueEqual(old.turns,d.turns))throw audioError('现有修改稿与备份不同，未覆盖。',409);}
   const histories=validated.guideJobs.map(row=>({id:'imported-guide-'+audioHash([bookId,row.transcript,row.createdAt]).slice(0,40),status:row.status,createdAt:row.createdAt,stage:'history',scope:row.transcript.scope,candidate:row.transcript,verification:[],readPassageIds:row.transcript.passageIds,outlines:[],batchCount:0,error:{code:'restored_transcript',message:'这是从备份恢复的候选讲稿，尚未核验；恢复不会继续生成声音。'}}));
   if((prior.guideJobs?.length||0)+histories.filter(j=>!prior.guideJobs?.some(old=>old.id===j.id)).length>100)throw audioError('导听候选历史过多，请分开保留备份。',413);
   for(const s of validated.sessions)for(const c of s.clips){c.cacheKey=s.chunkingVersion===3?sceneCacheKey([owner.id,bookId],c,s.model):clipCacheKey([owner.id,bookId],c,c.voice,s.model,'');if(c.status==='ready')await store.putClip(c.cacheKey,validated.files.get(c.checksum).bytes);}
