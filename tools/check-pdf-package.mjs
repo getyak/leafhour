@@ -1,5 +1,5 @@
 import {nodeFileTrace} from '@vercel/nft';
-import {mkdtemp,mkdir,readFile,copyFile,writeFile,rm} from 'node:fs/promises';
+import {mkdtemp,mkdir,readFile,copyFile,writeFile,rm,realpath} from 'node:fs/promises';
 import {spawnSync} from 'node:child_process';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
@@ -9,7 +9,9 @@ import {pathToFileURL,fileURLToPath} from 'node:url';
 // complete node_modules. Only traced files are visible to the child renderer.
 export async function checkPdfPackage(root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..')){
  root=path.resolve(root);
- const trace=await nodeFileTrace([path.join(root,'api/service.js')],{base:root,processCwd:root}),directory=await mkdtemp(path.join(tmpdir(),'pdf-function-package-'));
+ const trace=await nodeFileTrace([path.join(root,'api/service.js')],{base:root,processCwd:root});
+ // Node's permission model compares real paths; macOS tmpdir() sits behind a /private symlink.
+ const directory=await realpath(await mkdtemp(path.join(tmpdir(),'pdf-function-package-')));
  try{
   for(const file of trace.fileList){if(path.isAbsolute(file)||file.split(path.sep).includes('..'))throw Error('Function dependency is outside the package root');const destination=path.join(directory,file);await mkdir(path.dirname(destination),{recursive:true});await copyFile(path.join(root,file),destination);}
   // This is software fixture data; no real book or credential enters the child.
