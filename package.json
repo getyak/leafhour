@@ -24,6 +24,7 @@
   "dependencies": {
     "@deepseek-ai/dsh-sdk-client": "0.2.1-alpha.2",
     "@modelcontextprotocol/sdk": "^1.32.1",
+    "@vercel/functions": "^3.10.1",
     "nodemailer": "^10.1.0",
     "pdfjs-dist": "^6.4.299",
     "zod": "^4.6.6"

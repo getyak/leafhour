@@ -1,3 +1,4 @@
+import {waitUntil} from '@vercel/functions';
 import {configurationSummary} from '../server/model-config.mjs';
 import {createPortal} from '../server/portal.mjs';
 import {createHostedStore} from '../deploy/hosted-store.mjs';
@@ -11,7 +12,7 @@ export function routeOf(req){
   return pathname.startsWith('/api/')?pathname:'/api/'+pathname.replace(/^\/+/, '');
 }
 const json=(res,status,body)=>{let payload=JSON.stringify(body);if(Buffer.byteLength(payload)>4000000){status=413;payload=JSON.stringify({error:'内容超过云端传输限制，请在本机阅读或导出较大的书房。原有资料仍保留。'});}res.statusCode=status;res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('Cache-Control','private, no-store');res.end(payload);};
-export function createHostedHandler({portalFactory=createPortal,storeFactory=createHostedStore,authFactory=createHostedAuth,env=process.env}={}){
+export function createHostedHandler({portalFactory=createPortal,storeFactory=createHostedStore,authFactory=createHostedAuth,background=waitUntil,env=process.env}={}){
 let portalPromise;
 return async function handler(req,res){
   res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
@@ -21,7 +22,7 @@ return async function handler(req,res){
     if(!/^\/api\/(auth\/|library(?:\/|$)|account\/profile$|book-gifts\/|agent\/)/.test(route))return json(res,404,{error:'请从书房选择一本书再开始阅读'});
     const origin=env.READER_PUBLIC_ORIGIN;
     if(!origin?.startsWith('https://'))return json(res,503,{error:'线上书房地址尚未配置'});
-    if(!portalPromise){console.info(configurationSummary({env,speechSupported:false}));const store=storeFactory({env}),additionalWebOrigins=(env.READER_ADDITIONAL_WEB_ORIGINS||'').split(',').map(value=>value.trim()).filter(Boolean);portalPromise=portalFactory({dataDir:'hosted',publicOrigin:origin,additionalWebOrigins,allowLocal:false,dataStore:store,authService:authFactory({store,env}),hostedMcp:true}).catch(e=>{portalPromise=null;throw e;});}
+    if(!portalPromise){console.info(configurationSummary({env,speechSupported:true}));const store=storeFactory({env}),additionalWebOrigins=(env.READER_ADDITIONAL_WEB_ORIGINS||'').split(',').map(value=>value.trim()).filter(Boolean);portalPromise=portalFactory({dataDir:'hosted',publicOrigin:origin,additionalWebOrigins,allowLocal:false,dataStore:store,authService:authFactory({store,env}),hostedMcp:true,schedule:background,env}).catch(e=>{portalPromise=null;throw e;});}
     const portal=await portalPromise,url=new URL(req.url,origin);url.pathname=route;
     const handled=await portal.handle({req,res,url,send:(status,body)=>json(res,status,body)});
     if(!handled)json(res,404,{error:'找不到这个操作'});
