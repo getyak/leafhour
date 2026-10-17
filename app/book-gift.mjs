@@ -107,7 +107,7 @@ function present(data){
   $('gift-package-scope').textContent=data.includeTranslations?'阅读包收录全书提取文字与寄信时已有的译文，不含原文件、个人笔记和阅读记录。':'阅读包收录全书提取文字，不含译文、原文件、个人笔记和阅读记录。';
   const quote=readGiftQuote(data.quote);
   $('gift-quote').hidden=!quote;
-  if(quote){$('gift-quote-text').textContent=quote.text;$('gift-quote-source').textContent=[quote.chapterTitle,quote.passageId].filter(Boolean).join(' · ');$('gift-quote-label').textContent=giftQuoteLabel(quote.selection);}
+  if(quote){$('gift-quote-text').textContent=quote.text;$('gift-quote-source').textContent=quote.chapterTitle||'本书原文';$('gift-quote-label').textContent=giftQuoteLabel(quote.selection);}
   else{$('gift-quote-text').textContent='';$('gift-quote-source').textContent='';$('gift-quote-label').textContent='';}
   $('gift-loading').hidden=true;$('gift-error').hidden=true;$('gift-scene').hidden=false;$('gift-arrival').hidden=false;
   // The DOM shows the scene before the renderer is rebuilt: it measures the

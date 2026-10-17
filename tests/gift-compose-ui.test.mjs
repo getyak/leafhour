@@ -63,7 +63,7 @@ test('opening the composer prepares one quotation, states its source and seals o
   assert.ok(f.find('引文会从这本书的原文中选出，不会用到你的笔记和阅读记录。'),'the source rule is stated before any result');
   assert.ok(f.find('正在从这本书的原文中选出引文…'));
   await opening;await tick();
-  assert.ok(f.find('Read this first.'));assert.ok(f.find('Opening · p1'),'chapter and passage travel with the quotation');
+  assert.ok(f.find('Read this first.'));assert.ok(f.find('Opening'),'readable chapter attribution stays visible');assert.equal(f.find('Opening · p1'),undefined,'opaque passage ids stay in source metadata rather than visible prose');
   assert.ok(f.find('从这本书的原文中由 AI 选出'),'the selection label is honest');
   f.id('gift-recipient').value='Draft reader';f.id('gift-message').value='Draft words';
   f.click(f.find('看看收信时的样子'));f.click(f.find('封好这封信，生成链接'));await tick();

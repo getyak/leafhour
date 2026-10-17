@@ -42,7 +42,7 @@ export function mountGiftComposer({api,dialog,body,getSession,getOwner,show,curr
     const currentQuote=()=>quotePhase==='ready'&&quote?quote:null;
     function renderQuote(){
       const showing=currentQuote();quoteFigure.hidden=!showing;
-      if(showing){quoteText.textContent=showing.text;quoteSource.textContent=[showing.chapterTitle,showing.passageId].filter(Boolean).join(' · ');quoteLabel.textContent=giftQuoteLabel(showing.selection);}
+      if(showing){quoteText.textContent=showing.text;quoteSource.textContent=showing.chapterTitle||'本书原文';quoteLabel.textContent=giftQuoteLabel(showing.selection);}
       else{quoteText.textContent='';quoteSource.textContent='';quoteLabel.textContent='';}
       quoteIntro.hidden=!!showing;
       quoteRemove.disabled=!showing;quoteRetry.disabled=quotePhase==='pending';
