@@ -23,6 +23,11 @@ test('audio follows an offscreen horizontal page even when its vertical bounds l
  vm.runInContext(source.slice(source.indexOf('function mark('),source.indexOf('\n',source.indexOf('function mark('))),context);context.mark();assert.equal(navigated,'p20');
 });
 
+test('a dialogue never forces the reader to turn pages while listening to an explanation',()=>{
+ let navigated=false;const context=vm.createContext({active:{mode:'dialogue',clips:[{passageId:'p20'}]},index:0,prefs:{follow:true},playback:{following:true},autoScrollUntil:0,innerHeight:800,clearMark(){},document:{body:{dataset:{paginated:'true'}},getElementById:()=>({classList:{add(){}},getBoundingClientRect:()=>({top:150,bottom:250})})},reader:()=>({isPassageVisible:()=>false,goToPassage:()=>navigated=true})});
+ vm.runInContext(source.slice(source.indexOf('function mark('),source.indexOf('\n',source.indexOf('function mark('))),context);context.mark();assert.equal(navigated,false);
+});
+
 test('seek feedback is disabled until media duration is known and describes the current position',()=>{
  const f=fixture();f.context.updateClock();assert.equal(f.elements.get('audio-seek').disabled,true);
  f.media.duration=120;f.media.currentTime=30;f.context.updateClock();

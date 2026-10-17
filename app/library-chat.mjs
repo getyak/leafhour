@@ -176,12 +176,13 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   input.addEventListener('input',()=>{state.setDraft(input.value);render();});input.addEventListener('compositionstart',()=>{composing=true;});input.addEventListener('compositionend',()=>{composing=false;});input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing&&!composing&&event.keyCode!==229){event.preventDefault();send();}});
   form.addEventListener('submit',event=>{event.preventDefault();if(!composing)send();});stopButton.addEventListener('click',stop);refreshButton.addEventListener('click',async()=>{const focus=trackActionFocus(document,refreshButton),captured=owner,bookId=selectedBook;pollCount=0;try{await load();}finally{if(root.open&&captured===owner&&bookId===selectedBook)focus.restore(!refreshButton.hidden&&!refreshButton.disabled?refreshButton:!input.disabled&&!form.hidden?input:closeButton);else focus.stop();}});exportButton.addEventListener('click',()=>{exportChat();menu.open=false;menuSummary.focus();});
   const controls={
-    open({bookId,passageId,messageId}={}){
+    open({bookId,passageId,messageId,draft}={}){
       targetMessageId=messageId||null;root.dispatchEvent(new Event('reading-chat-open'));
       syncOwner();const view=state.view(),canFollow=!view.draft&&!view.pending&&!view.retry?.uncertain;
       const candidate=bookId||(canFollow?currentBookId():null)||selectedBook||books()[0]?.bookId||null,valid=books().some(book=>book.bookId===candidate)?candidate:books()[0]?.bookId||null;
       const currentPassage=canFollow?(passageId||getCurrentPassage()||null):requestedPassage;
       if(!view.pending&&!view.retry?.uncertain&&(selectedBook!==valid||canFollow&&currentPassage!==requestedPassage))choose(valid,currentPassage);
+      if(typeof draft==='string'&&draft.length<=2000&&!state.view().draft&&!state.view().pending&&!state.view().retry?.uncertain)state.setDraft(draft);
       if(!root.open){opener=document.activeElement;root.show();closeButton.focus();}launcher.setAttribute('aria-expanded','true');focusComposer=!!messageId;render();pollCount=0;load();
     },
     surface:()=>({launcher,header,root,motion:characterMotion,position:characterPosition}),
