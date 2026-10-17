@@ -19,19 +19,19 @@ test('the shared example can be copied directly for local reading without enabli
 
 test('an explicitly empty canonical key disables the same credential from the legacy file',async t=>{
  const directory=await mkdtemp(path.join(tmpdir(),'leafhour-empty-env-'));t.after(()=>rm(directory,{recursive:true,force:true}));
- await writeFile(path.join(directory,'.env.audio'),'OPENROUTER_API_KEY=old-speech\n');
- await writeFile(path.join(directory,'.env'),'OPENROUTER_API_KEY=\n');
+ await writeFile(path.join(directory,'.env.audio'),'GEMINI_API_KEY=old-speech\n');
+ await writeFile(path.join(directory,'.env'),'GEMINI_API_KEY=\n');
  const env={};await loadLocalEnvironment({directory,env});
- assert.equal(env.OPENROUTER_API_KEY,'');assert.equal(mediaConfiguration(env).public.speechAvailable,false);
+ assert.equal(env.GEMINI_API_KEY,'');assert.equal(mediaConfiguration(env).public.speechAvailable,false);
 });
 
 test('one local env file overrides legacy audio settings while shell variables remain authoritative',async t=>{
  const api=await import('../server/local-env.mjs').catch(()=>({}));assert.equal(typeof api.loadLocalEnvironment,'function');
  const directory=await mkdtemp(path.join(tmpdir(),'leafhour-env-'));t.after(()=>rm(directory,{recursive:true,force:true}));
- await writeFile(path.join(directory,'.env.audio'),'OPENROUTER_API_KEY=old-speech\nREADER_DIALOGUE_MODEL=old-script\nSHARED=legacy\nMULTILINE="one\ntwo"\n');
- await writeFile(path.join(directory,'.env'),'DEEPSEEK_API_KEY=text-secret\nOPENROUTER_API_KEY=new-speech\nSHARED=main\nREADER_AUDIO_SCRIPT_MODEL=new-script\n');
+ await writeFile(path.join(directory,'.env.audio'),'GEMINI_API_KEY=old-speech\nREADER_DIALOGUE_MODEL=old-script\nSHARED=legacy\nMULTILINE="one\ntwo"\n');
+ await writeFile(path.join(directory,'.env'),'DEEPSEEK_API_KEY=text-secret\nGEMINI_API_KEY=new-speech\nSHARED=main\nREADER_AUDIO_SCRIPT_MODEL=new-script\n');
  const env={SHARED:'shell',DEEPSEEK_API_KEY:''},result=await api.loadLocalEnvironment({directory,env});
- assert.equal(env.SHARED,'shell');assert.equal(env.DEEPSEEK_API_KEY,'');assert.equal(env.OPENROUTER_API_KEY,'new-speech');assert.equal(env.READER_DIALOGUE_MODEL,'old-script');assert.equal(env.READER_AUDIO_SCRIPT_MODEL,'new-script');assert.equal(env.MULTILINE,'one\ntwo');
+ assert.equal(env.SHARED,'shell');assert.equal(env.DEEPSEEK_API_KEY,'');assert.equal(env.GEMINI_API_KEY,'new-speech');assert.equal(env.READER_DIALOGUE_MODEL,'old-script');assert.equal(env.READER_AUDIO_SCRIPT_MODEL,'new-script');assert.equal(env.MULTILINE,'one\ntwo');
  assert.equal(result.legacyAudio,true);assert.ok(!JSON.stringify(result).includes('speech'));
 });
 
@@ -51,8 +51,8 @@ test('audio script generation uses the clearer model name with a backward-compat
 
 test('startup distinguishes absent credentials, unverified configuration and unsupported hosted speech without revealing secrets',async()=>{
  const api=await import('../server/model-config.mjs').catch(()=>({}));assert.equal(typeof api.configurationSummary,'function');
- const absent=api.configurationSummary({env:{},speechSupported:true});assert.match(absent,/未配置/);assert.match(absent,/DEEPSEEK_API_KEY/);assert.match(absent,/OPENROUTER_API_KEY/);
- const env={DEEPSEEK_API_KEY:'text-secret-sentinel',OPENROUTER_API_KEY:'speech-secret-sentinel'};
+ const absent=api.configurationSummary({env:{},speechSupported:true});assert.match(absent,/未配置/);assert.match(absent,/DEEPSEEK_API_KEY/);assert.match(absent,/GEMINI_API_KEY/);
+ const env={DEEPSEEK_API_KEY:'text-secret-sentinel',GEMINI_API_KEY:'speech-secret-sentinel'};
  const local=api.configurationSummary({env,speechSupported:true}),hosted=api.configurationSummary({env,speechSupported:false});
  assert.match(local,/已配置.*待验证/);assert.match(hosted,/当前部署尚未支持/);assert.doesNotMatch(local+hosted,/secret-sentinel/);assert.doesNotMatch(local,/验证通过|余额充足/);
 });

@@ -212,6 +212,7 @@
   "docs/ci-cd.md",
   "docs/configuration-verification.md",
   "docs/configuration.md",
+  "docs/gemini-speech.md",
   "docs/reading-journey.md",
   "docs/world-catalog.md",
   "harness/chat-generator.mjs",

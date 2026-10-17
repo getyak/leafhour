@@ -15,7 +15,9 @@ cp .env.example .env
 | 想使用的功能 | 填写哪一项 |
 |---|---|
 | 翻译、阅读对话、双人讲解稿 | `DEEPSEEK_API_KEY`，填写 DeepSeek 的 Key |
-| Gemini 语音 | `OPENROUTER_API_KEY`，填写 OpenRouter 的 Key |
+| Gemini 语音 | `GEMINI_API_KEY`，填写 Google AI Studio 的 Key |
+
+语音直连 Google 官方 Gemini API，Key 从 [Google AI Studio](https://aistudio.google.com/api-keys) 获取；旧 OpenRouter Key 不能改名复用，也不会作为回退。默认模型为 `gemini-3.8-flash-tts`。
 
 模型已默认选好，不需要另建语音配置文件。模板后面的托管与高级选项均已注释，可以跳过。
 
@@ -34,7 +36,7 @@ cp .env.example .env
 
 需要 AI 文字功能时，再填写 `DEEPSEEK_API_KEY`。完成邮箱真实收信与登录验收后，才设置 `READER_EMAIL_ENABLED=true`。SMTP、Google 和 Apple 的供应商设置在 Supabase Auth 管理；完整步骤见 [部署说明](../deploy/README.md)。修改平台变量后重新部署。
 
-本机服务使用本机书房，填写 Supabase 变量不会自动切换到云端存储。托管函数使用平台环境变量，不读取本机 `.env`。当前托管版尚无持久语音任务后端，填写 `OPENROUTER_API_KEY` 也不会启用语音。
+本机服务使用本机书房，填写 Supabase 变量不会自动切换到云端存储。托管函数使用平台环境变量，不读取本机 `.env`。当前托管版尚无持久语音任务后端，填写 `GEMINI_API_KEY` 也不会启用语音。
 
 ## 按需展开
 
@@ -52,6 +54,8 @@ cp .env.example .env
 | `READER_HOST` | 本机监听地址，默认 127.0.0.1；只接受 127.0.0.1 或 localhost |
 | `READER_BOOK_PATH` | 明确选择已有的本机阅读包 |
 | `READER_ADDITIONAL_WEB_ORIGINS` | 仅托管：额外允许的精确 HTTPS 来源，以逗号分隔 |
+
+语音覆盖值使用 Google 官方模型 ID；已有 `google/` 路由前缀会移除，仍只请求 Google 官方接口。
 
 模型按功能分开配置，仍需符合现有接口与费用策略。阅读 Agent 与原文回声使用已有费用策略的 Harness 模型；讲解稿的覆盖值不会改变阅读 Agent。图片生成尚无产品入口，因此模板不展示图片模型。
 
