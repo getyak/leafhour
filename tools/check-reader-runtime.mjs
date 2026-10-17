@@ -9,11 +9,11 @@ const disabled=['persistent-bash','persistent-pwsh','tool-working-directory','ll
 
 // Perform only SDK initialization and shutdown. No session prompt is sent and
 // the child receives a fixed fake key rather than any deployment credentials.
-async function checkProfile(outputDir,kind){
+async function checkProfile(outputDir,kind,scope='library'){
   outputDir=path.resolve(outputDir);
   const run=await mkdtemp(path.join(tmpdir(),'reader-runtime-check-'));
   let harness,lifecycle;
-  const definitions=createReadingAgentTools({library:{},user:'offline',bookId:'fixture',passageId:'p1',env:{}}).definitions;
+  const definitions=createReadingAgentTools({library:{},user:'offline',bookId:'fixture',passageId:'p1',scope,env:{}}).definitions;
   try{
     await writeFile(path.join(run,'input.json'),JSON.stringify({kind:'explain',runId:'offline-runtime-check',bookId:'fixture',contentVersion:'v1',passageId:'p1',text:'Fixture question',passages:[{id:'p1',original:'Fixture source.'}],expiresAt:Date.now()+60000}),{mode:0o600});
     // A fixture plugin reports the actual runtime PID without depending on
@@ -40,9 +40,11 @@ async function checkProfile(outputDir,kind){
 }
 
 export async function checkReaderRuntime(outputDir=path.join(project,'.reader-runtime')){
- const echo=await checkProfile(outputDir,'echo'),chat=await checkProfile(outputDir,'chat');
+ const echo=await checkProfile(outputDir,'echo'),chat=await checkProfile(outputDir,'chat','library'),book=await checkProfile(outputDir,'chat','book');
  if(chat.registeredToolNames.length!==8)throw Error('Reading chat tools did not initialize');
- return {...chat,echo:{initialized:echo.initialized,reaped:echo.reaped}};
+ const bookTools=['reader_get_context','reader_list_books','reader_get_outline','reader_read_chapter','reader_search','reader_cite'];
+ if(JSON.stringify(book.registeredToolNames)!==JSON.stringify(bookTools))throw Error('Book-only reading chat tools did not initialize');
+ return {...chat,book,echo:{initialized:echo.initialized,reaped:echo.reaped}};
 }
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href){

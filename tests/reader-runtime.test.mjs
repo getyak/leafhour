@@ -36,6 +36,7 @@ test('the isolated hosted runtime initializes its actual SDK, profile, plugins a
   assert.equal(typeof checker.checkReaderRuntime,'function','The standalone runtime initialization check is missing');
   const checked=await checker.checkReaderRuntime(outputDir);
   assert.equal(checked.initialized,true);assert.equal(checked.closed,true);assert.equal(checked.reaped,true);assert.equal(checked.modelRequests,0);assert.deepEqual(checked.registeredToolNames,['reader_get_context','reader_list_books','reader_get_outline','reader_read_chapter','reader_search','reader_recommend_books','reader_search_web','reader_cite']);
+  assert.equal(checked.book.initialized,true);assert.equal(checked.book.closed,true);assert.equal(checked.book.reaped,true);assert.equal(checked.book.modelRequests,0);assert.deepEqual(checked.book.registeredToolNames,['reader_get_context','reader_list_books','reader_get_outline','reader_read_chapter','reader_search','reader_cite']);
   const fileSizes=await Promise.all(built.files.map(async file=>(await stat(path.join(outputDir,file))).size));
   assert.equal(built.bytes,fileSizes.reduce((total,size)=>total+size,0),'The manifest must count every packaged runtime file');
   if(linuxX64){
