@@ -56,6 +56,7 @@ export function mountReadingDashboard({root,overviewRoot,historyRoot,api,getSess
     if(!day){detail.append(node('p','muted',getSession()?.user?'选择一天，回看自己的阅读。':'登录后，这里会记下真实的阅读和思考。'));return;}
     detail.append(node('p','day-total',readingTimeLabel(day.durationSeconds)),node('p','day-counts',day.notes+' 条笔记 · '+day.questions+' 个问题 · '+day.chapterMarks+' 次读完标记'));
     detail.append(node('p','reading-time-breakdown',READING_TIME_SOURCES.map(source=>readingTimeSourceLabel(source)+' '+readingTimeLabel(day.sourceDurationSeconds?.[source]||0)).join(' · ')));
+    detail.append(node('p','day-overlap','各口径分别去重，彼此可能重叠，不能相加。'));
     if(!day.details.length){detail.append(node('p','day-empty',selectedDate===today()?'今天还没有记录。从几页开始就好。':'这一天没有阅读记录。'));return;}
     const href=item=>'/read?book='+encodeURIComponent(item.bookId)+(item.passageId?'&passage='+encodeURIComponent(item.passageId):'')+(['comment','question'].includes(item.type)?'&note='+item.type:'');
     const books=node('ul','day-books');books.setAttribute('aria-label','这一天的书与记录');
