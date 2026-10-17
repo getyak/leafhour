@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "kind": "leafhour-dependency-license-review-record",
+  "note": "Maintainer-controlled register for the exact declared expressions in package-lock.json. Prepared by the coding agent, with independent technical review required before merge; no human or legal sign-off is claimed. The tool never edits this register. A reviewed status records technical examination of declared terms and outstanding distribution obligations, not legal compatibility or proof of ownership.",
+  "expressions": {
+    "0BSD": {
+      "status": "reviewed",
+      "note": "Public-domain-equivalent terms; no attribution condition. Keep the license text with distributed source."
+    },
+    "Apache-2.0": {
+      "status": "reviewed",
+      "note": "Permissive with patent grant. Keep copyright and license texts, carry any NOTICE text, and state modifications in changed files."
+    },
+    "Apache-2.0 AND LGPL-3.0-or-later": {
+      "status": "reviewed",
+      "note": "Conjunctive expression: both sets of terms apply. The LGPL parts are prebuilt native code (see docs/dependency-licenses.md) and carry the LGPL notice, relinking and source obligations; Apache terms are not an alternative to them."
+    },
+    "Apache-2.0 AND LGPL-3.0-or-later AND MIT": {
+      "status": "reviewed",
+      "note": "Conjunctive expression: all three sets of terms apply. See docs/dependency-licenses.md for the bundled wasm/native parts and their LGPL obligations."
+    },
+    "BSD-2-Clause": {
+      "status": "reviewed",
+      "note": "Permissive; keep copyright and license text with distributions."
+    },
+    "BSD-3-Clause": {
+      "status": "reviewed",
+      "note": "Permissive; keep copyright and license text, and do not use contributor names for endorsement."
+    },
+    "BlueOak-1.0.0": {
+      "status": "reviewed",
+      "note": "Blue Oak Model License 1.0.0, permissive; keep the license text with distributions."
+    },
+    "ISC": {
+      "status": "reviewed",
+      "note": "Permissive; keep the copyright and permission notice."
+    },
+    "LGPL-3.0-or-later": {
+      "status": "reviewed",
+      "note": "Weak copyleft for libraries. Prebuilt binaries in this tree (sharp/libvips packages) require keeping notices, enabling user modification/relinking or providing corresponding source; unresolved bundled-binary obligations are listed in docs/dependency-licenses.md."
+    },
+    "MIT": {
+      "status": "reviewed",
+      "note": "Permissive; keep the copyright and permission notice in copies of the material."
+    },
+    "MIT-0": {
+      "status": "reviewed",
+      "note": "MIT-0 (MIT No Attribution), permissive without an attribution condition; keep the license text."
+    },
+    "MPL-2.0": {
+      "status": "reviewed",
+      "note": "Mozilla Public License 2.0: file-level copyleft. Covered source files must stay available, modifications stay under MPL-2.0, and license notices must be kept. See docs/dependency-licenses.md for the LibreOffice Kit packages and their source-availability questions."
+    },
+    "Python-2.0": {
+      "status": "reviewed",
+      "note": "Python Software Foundation License 2.0, permissive; keep the license text and any retained copyright."
+    },
+    "Unlicense": {
+      "status": "reviewed",
+      "note": "Public-domain dedication; no attribution condition."
+    },
+    "(MIT AND Zlib)": {
+      "status": "reviewed",
+      "note": "Conjunctive expression: both the MIT and Zlib terms apply to the pako copies under pdf-lib; keep both notices. Not a choice between the two."
+    },
+    "(MIT OR CC0-1.0)": {
+      "status": "reviewed",
+      "note": "Disjunctive expression: the licensee may choose MIT or CC0-1.0 for type-fest. Keep the exact expression; do not collapse it to one license or treat both as cumulative conditions."
+    }
+  }
+}

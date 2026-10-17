@@ -7,7 +7,7 @@ npm ci
 npm start
 ```
 
-`package-lock.json` 固定依赖版本与完整性校验，解析地址统一为 npm 官方 registry。npm 继续按原生规则使用用户配置的 registry，兼容 npm 12 的远程 URL 默认限制；不启用任意 URL 依赖、不关闭完整性验证、不改用户全局配置。
+`package-lock.json` 固定依赖版本与完整性校验，当前锁定树中，772 个条目解析到 npm 官方 registry，27 个 esbuild 系列条目解析到 registry.npmmirror.com；原始地址和完整性摘要见 `docs/dependency-licenses.json`。这些镜像地址是现有锁定记录，不表示额外验证了上游所有权。npm 继续按原生规则使用用户配置的 registry，兼容 npm 12 的远程 URL 默认限制；不启用任意 URL 依赖、不关闭完整性验证、不改用户全局配置。
 
 默认地址为 `http://127.0.0.1:8330`。先在网页明确进入“本机书房”，再上传自己的资料和保存记录。本机书房是本实例的单人身份，并不代表邮箱已经核验；邮箱与托管认证继续使用原有配置。
 
