@@ -82,7 +82,7 @@ const strings=[
   ['MCP 接入指南','MCP integration guide','MCP 串接指南','MCP 連携ガイド'],
   ['。站内阅读助手使用独立的只读边界，不读取私人笔记或写入阅读进度。','. The built-in reading assistant has separate read-only boundaries and does not read private notes or write reading progress.','。站內閱讀助手使用獨立的唯讀邊界，不讀取私人筆記或寫入閱讀進度。',' をご覧ください。組み込みの読書アシスタントは読み取り専用の境界を持ち、個人のメモを読んだり読書の進捗を書き込んだりしません。'],
   ['书籍与记录可以带走吗？','Can I take my books and records with me?','書籍與記錄可以帶走嗎？','本と記録は持ち出せますか？'],
-  ['服务支持整库导出和恢复，不要求订阅。当前网页尚无整库备份入口，可以使用兼容客户端或联系 ','Library export and restore do not require a subscription. Whole-library backup controls are not yet in the web interface; use a compatible client or contact ','服務支援整庫匯出和恢復，不要求訂閱。目前網頁尚無整庫備份入口，可以使用相容用戶端或聯絡 ','書庫全体の書き出しと復元に購読は不要です。バックアップ操作はまだウェブにありません。対応クライアントを使うか、'],
+  ["服务支持整库导出和恢复，不要求订阅。登录后在书房“设置 → 数据与迁移”下载 ZIP 备份、恢复书房或导出选定记录，原文件可自行选择是否纳入", "Library export and restore do not require a subscription. After signing in, open Library → Settings → Data and migration for a ZIP backup, restore, or selected record export. Original files are optional", "服務支援整庫匯出和恢復，不要求訂閱。登入後在書房「設定 → 資料與遷移」下載 ZIP 備份、恢復書房或匯出選定記錄，原始檔案可自行選擇是否納入", "書庫全体の書き出しと復元に購読は不要です。ログイン後、書斎の「設定 → データと移行」で ZIP バックアップ、復元、選択した記録の書き出しができます。元ファイルの同梱は任意です"],
   ['。未同步的记录与草稿仍留在原浏览器，处理方式见 ','. Unsynced records and drafts remain in the original browser. See the ','。未同步的記錄與草稿仍留在原瀏覽器，處理方式見 ',' までご連絡ください。未同期の記録と未保存の下書きは元のブラウザに残ります。処理方法は '],
   ['隐私与数据说明','privacy and data notice','隱私與資料說明','プライバシーとデータの取り扱い'],
   ['使用 AI 和朋友共读有哪些限制？','What are the limits of AI and reading together?','使用 AI 和朋友共讀有哪些限制？','AI や一緒に読むことには、どんな制限がありますか？'],

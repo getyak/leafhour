@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script>
 <link rel="stylesheet" href="/leafhour-brand.css"><link rel="stylesheet" href="/discovery.css"><link rel="stylesheet" href="/library-filters.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://leafhour.com/#organization","name":"Leafhour","url":"https://leafhour.com/","logo":"https://leafhour.com/brand-assets/leafhour-mark.svg","sameAs":["https://github.com/getyak/leafhour"]},{"@type":"WebSite","@id":"https://leafhour.com/#website","name":"Leafhour","url":"https://leafhour.com/","inLanguage":["en","zh-Hans","zh-Hant","ja"],"publisher":{"@id":"https://leafhour.com/#organization"}},{"@type":"SoftwareApplication","@id":"https://leafhour.com/#application","name":"Leafhour","url":"https://leafhour.com/","applicationCategory":"EducationalApplication","operatingSystem":"Web; Node.js for self-hosting","description":"开源的 AI 辅助私人阅读书房，支持 PDF、Markdown 与文本导入、原文与译文对照、笔记和按书授权的 MCP 接入。","license":"https://github.com/getyak/leafhour/blob/main/LICENSE","sameAs":"https://github.com/getyak/leafhour"},{"@type":"WebPage","@id":"https://leafhour.com/#page","url":"https://leafhour.com/","name":"Leafhour — AI 辅助的私人阅读书房","inLanguage":"zh-Hans","isPartOf":{"@id":"https://leafhour.com/#website"},"about":{"@id":"https://leafhour.com/#application"}}]}</script>
+<link rel="stylesheet" href="/library-data.css">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -52,7 +53,7 @@
     <h3>可以导入哪些格式？</h3><p>目前支持 PDF、Markdown（.md）和纯文本（.txt）。PDF 提取的文字需要与原稿核对；扫描页会在你确认后自动识别。当前不支持 EPUB。</p>
     <h3>原文、译文和自己的笔记怎样区分？</h3><p>三者分别保存和展示。AI 译文标为草稿，没有译文时保留原文。公版样书预存了开头部分的中文译文，不表示全书已经翻译。</p>
     <h3>自己的 AI Agent 可以读书房吗？</h3><p>外部 Agent 通过 MCP 按书籍和数据类型授权。原文、笔记、阅读记录与评论写入分别控制。当前是技术接入，网页尚无完整的授权管理入口，详见 <a href="/mcp">MCP 接入指南</a>。站内阅读助手使用独立的只读边界，不读取私人笔记或写入阅读进度。</p>
-    <h3>书籍与记录可以带走吗？</h3><p>服务支持整库导出和恢复，不要求订阅。当前网页尚无整库备份入口，可以使用兼容客户端或联系 <a href="mailto:support@leafhour.com">support@leafhour.com</a>。未同步的记录与草稿仍留在原浏览器，处理方式见 <a href="/privacy">隐私与数据说明</a>。</p>
+    <h3>书籍与记录可以带走吗？</h3><p>服务支持整库导出和恢复，不要求订阅。登录后在书房“设置 → 数据与迁移”下载 ZIP 备份、恢复书房或导出选定记录，原文件可自行选择是否纳入。未同步的记录与草稿仍留在原浏览器，处理方式见 <a href="/privacy">隐私与数据说明</a>。</p>
     <h3>网站支持哪些语言？</h3><p>官网提供英文、简体中文、繁体中文和日语版本，默认英文。书房和阅读界面目前主要为简体中文。</p>
     <h3>使用 AI 和朋友共读有哪些限制？</h3><p>直接阅读公版样书不需要调用模型。翻译与对话需要配置模型服务，自托管时由运营者承担供应商费用。赠书信可以分享所选阅读材料；在线好友的实时共读仍是后续设想。</p>
   </section>

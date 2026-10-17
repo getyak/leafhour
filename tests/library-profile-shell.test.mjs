@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 class Element extends EventTarget{
-  constructor(tag,id){super();this.tagName=tag;this.id=id;this.children=[];this.attributes={};this.dataset={};this.value='';this.textContent='';this.className='';this.classList={toggle(){},add(){},remove(){}};}
+  constructor(tag,id){super();this.tagName=tag;this.id=id;this.isConnected=true;this.children=[];this.attributes={};this.dataset={};this.value='';this.textContent='';this.className='';this.classList={toggle(){},add(){},remove(){}};}
   append(...nodes){for(const node of nodes){if(node.parentElement)node.parentElement.children=node.parentElement.children.filter(child=>child!==node);node.parentElement=this;this.children.push(node);}}
   replaceChildren(...nodes){this.children=[];this.append(...nodes);}
   insertBefore(node,before){this.append(node);this.children=this.children.filter(child=>child!==node);this.children.splice(this.children.indexOf(before),0,node);}
@@ -13,7 +13,7 @@ class Element extends EventTarget{
   showModal(){this.open=true;}close(){this.open=false;this.dispatchEvent(new Event('close'));}
 }
 function fixture(user){
-  const doc=new EventTarget(),body=new Element('body'),nodes=new Map();doc.body=body;doc.documentElement=new Element('html');doc.createElement=tag=>new Element(tag);doc.querySelectorAll=()=>[];
+  const doc=new EventTarget(),body=new Element('body'),nodes=new Map();doc.body=body;doc.documentElement=new Element('html');doc.createElement=tag=>new Element(tag);doc.createTextNode=text=>{const n=new Element('#text');n.textContent=text;return n;};doc.querySelectorAll=()=>[];
   const add=(id,parent=body)=>{const node=new Element('button',id);nodes.set(id,node);parent.append(node);return node;};
   const header=add('library-sidebar'),footer=new Element('div');header.append(footer);add('library-settings',footer);
   for(const id of ['sidebar-toggle','sidebar-search-open','library-calendar','library-chat-open','book-search'])add(id,header);
@@ -47,4 +47,9 @@ test('a failed logout restores its retry target without taking focus from anothe
   logout.dispatchEvent(new Event('click'));const name=f.get('profile-display-name');name.focus();
   reject(Error('仍未退出'));await new Promise(setImmediate);
   assert.equal(f.doc.activeElement===name,true);
+});
+
+test('direct data settings entry returns keyboard focus to settings instead of an unfocusable body',async()=>{
+ const f=fixture({id:'a',email:'reader@example.invalid'}),{mountLibraryShell}=await import('../app/library-shell.mjs');f.doc.activeElement=f.doc.body;
+ const shell=mountLibraryShell({getSession:f.getSession,openAuth:f.openAuth,onLogout:async()=>{},onHistory(){},onOpenChat(){},api:async()=>({})});shell.openSettings('data');f.get('library-settings-dialog').close();assert.equal(f.doc.activeElement,f.get('library-settings'));
 });

@@ -3,6 +3,7 @@ import path from 'node:path';
 import {randomUUID,createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {sourceIndex,invalid} from './experience-validation.mjs';
+import {portableChatTurns,valueEqual} from '../app/portable-chat.mjs';
 
 import {createReaderCompanionService} from './reader-companion.mjs';
 import {createReadingAgentTools} from './reading-agent-tools.mjs';
@@ -229,6 +230,25 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
     await Promise.all([...active.values()].map(async run=>{await finish(run.user,run.bookId,run.id,run.runId,{status:'cancelled',answer:null});run.controller.abort();}));
     await Promise.allSettled([...queues.values()]);
   }
+  async function exportHistory(user,bookId){
+    await bookFor(user,bookId);const data=await read(filename(user,bookId),empty(bookId));
+    return {...empty(bookId),turns:data.turns.filter(t=>t.kind!=='companion'||t.status==='completed'&&t.answer).map(publicTurn)};
+  }
+  function mergeHistory(data,turns,book,books){
+    for(const incoming of turns){const existing=data.turns.find(t=>t.id===incoming.id);
+      if(existing){if(existing.passageId!==incoming.passageId||existing.contentVersion!==incoming.contentVersion||existing.text!==incoming.text||(existing.kind==='companion')!==(incoming.kind==='companion')||incoming.status==='completed'&&(existing.status!=='completed'||!valueEqual(portableChatTurns({...empty(book.bookId),turns:[publicTurn(existing)]},book,books)[0].answer,incoming.answer)))throw invalid('备份对话标识与已有历史冲突，未覆盖记录',409);}
+    }
+    const missing=turns.filter(t=>!data.turns.some(old=>old.id===t.id));if(data.turns.length+missing.length>MAX_TURNS)throw invalid('恢复后对话超过 100 条，请在本机整理',413);
+    // Imported history cannot silently become context for the narrower book scope.
+    return missing.map(t=>({...t,scope:'library'}));
+  }
+  async function validateHistory(user,book,history,books){
+    identity(user);const turns=portableChatTurns(history,book,books),data=await read(filename(user,book.bookId),empty(book.bookId));mergeHistory(data,turns,book,books);return turns;
+  }
+  async function restoreHistory(user,book,history,books){
+    const turns=await validateHistory(user,book,history,books);await bookFor(user,book.bookId);
+    return mutateBook(user,book.bookId,data=>{const added=mergeHistory(data,turns,book,books);data.turns.push(...added);return {restored:added.length};});
+  }
   const companion=createReaderCompanionService({bookFor,mutateBook,clock,generator:companionGenerator,quota,reserveGlobal,releaseGlobal,watchRun,active,publicTurn,conversationHistory,cancel,getClosed:()=>closed});
-  return {get available(){return !closed&&typeof generator==='function';},view,configureScope,send,cancel,close,companion};
+  return {get available(){return !closed&&typeof generator==='function';},view,configureScope,send,cancel,close,companion,exportHistory,validateHistory,restoreHistory};
 }
