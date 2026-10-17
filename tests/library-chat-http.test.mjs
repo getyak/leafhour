@@ -21,3 +21,24 @@ test('the reading window uses authenticated chat routes, real source references 
   assert.equal(turn.answer.sourceRefs[0].bookId,'gutenberg-alice');
   const assets=await fetch(base+'/library-shell.mjs');assert.equal(assets.status,200);assert.match(assets.headers.get('content-type'),/javascript/);
 });
+
+test('scope selection is authenticated, persisted and checked before dispatching a model request',async t=>{
+  const dir=await mkdtemp(path.join(tmpdir(),'reader-chat-scope-http-'));let calls=0;
+  const server=await createReaderServer({bookPath:path.join(dir,'absent.json'),recordsPath:path.join(dir,'records.json'),translator:null,sendCode:null,chatGenerator:async()=>{calls++;return {kind:'conversation',summary:'Synthetic bounded answer.'};}});
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));t.after(async()=>{await new Promise(resolve=>server.close(resolve));await rm(dir,{recursive:true,force:true});});
+  const base='http://127.0.0.1:'+server.address().port,session=await server.portal.auth.localSession(),book=await server.portal.library.importDocument(session.user,{filename:'scope-http-synthetic.txt',bytes:Buffer.from('A synthetic current-book source.')}),url=base+'/api/library/books/'+book.bookId+'/chat',headers={Cookie:'marginalia_session='+session.token,'X-Reader-Owner':session.user.id,'Content-Type':'application/json',Origin:base};
+  const post=(suffix,body,extra=headers)=>fetch(url+suffix,{method:'POST',headers:extra,body:JSON.stringify(body)});
+  assert.deepEqual((await (await fetch(url,{headers})).json()).scope,{mode:'book',revision:0});
+  assert.equal((await post('/scope',{mode:'library',baseRevision:0},{'Content-Type':'application/json',Origin:base})).status,401);
+  assert.equal((await post('/scope',{mode:'library',baseRevision:0},{...headers,'X-Reader-Owner':'stale-account'})).status,409);
+  const saved=await post('/scope',{mode:'library',baseRevision:0});assert.equal(saved.status,200);assert.deepEqual(await saved.json(),{mode:'library',revision:1});assert.equal(calls,0);
+  assert.equal((await post('/scope',{mode:'book',baseRevision:0})).status,412);
+  for(const body of [{mode:'all',baseRevision:1},{mode:'book',baseRevision:-1},{mode:'book',baseRevision:1,userId:'other'}])assert.equal((await post('/scope',body)).status,400);
+  const question={id:'scope-http-question',passageId:book.sections[0].paragraphs[0].id,contentVersion:book.contentVersion,text:'A synthetic question.',scopeRevision:0};
+  assert.equal((await post('',question)).status,412);assert.equal(calls,0);assert.equal((await server.portal.library.records(session.user,book.bookId)).questions.length,0);
+  const answer=await post('',{...question,scopeRevision:1});assert.equal(answer.status,200);const turn=await answer.json();assert.equal(turn.scopeRevision,1);assert.equal(turn.status,'completed');assert.equal(calls,1);
+  const confirmed=await post('',{...question,scopeRevision:1});assert.equal(confirmed.status,200);assert.equal(calls,1);
+  assert.equal((await post('',{...question,scopeRevision:0})).status,409);
+  assert.deepEqual((await (await fetch(url,{headers})).json()).scope,{mode:'library',revision:1});
+  const module=await fetch(base+'/reading-chat-scope.mjs');assert.equal(module.status,200);assert.match(await module.text(),/checkChatScopeRevision/);
+});

@@ -82,7 +82,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['home-atmosphere.css','home-atmosphere.mjs','brand-assets/sunlit-room.webp','brand-assets/foliage-canopy.webp'])files['/'+file]=file;
     files['/reading-session-record.mjs']='reading-session-record.mjs';
     files['/reading-toolbar.mjs']='reading-toolbar.mjs';
-    files['/reading-flow.mjs']='reading-flow.mjs';files['/reading-load.mjs']='reading-load.mjs';files['/personal-records.mjs']='personal-records.mjs';files['/personal-record-editor.mjs']='personal-record-editor.mjs';
+    files['/reading-flow.mjs']='reading-flow.mjs';files['/reading-load.mjs']='reading-load.mjs';files['/personal-records.mjs']='personal-records.mjs';files['/reading-chat-scope.mjs']='reading-chat-scope.mjs';files['/personal-record-editor.mjs']='personal-record-editor.mjs';
     for(const file of ['highlights.mjs','reader-highlights.mjs'])files['/'+file]=file;
     files['/reading-flow.css']='reading-flow.css';
     for(const file of ['library-filter-controls.mjs','library-filters.css','library-workspace.mjs','library-workspace.css','reading-calendar.mjs','reading-dashboard.mjs','library-restore.mjs','library-export.mjs','site-appearance.mjs','reading-clock.mjs','reading-outbox.mjs','reading-queue-store.mjs','reading-session-coordinator.mjs','reading-mark-actions.mjs','reading-mark-store.mjs','reading-draft-store.mjs','reading-retained-backup.mjs','reading-journey.mjs','reading-pending-backup.mjs','reading-ending-context.mjs','reading-session.js','reading-session.css','brand-assets/reading-window.webp','brand-assets/page-detail.webp','brand-assets/page-mark.svg','leafhour-brand.css','brand-assets/leafhour-mark.svg','brand-assets/leafhour-social.svg','brand-assets/leafhour-social.png'])files['/'+file]=file;
@@ -204,6 +204,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='companion'&&req.method==='POST'){send(200,await chat.companion.configure(user,id,body));return true;}
       if(action==='companion/observe'&&req.method==='POST'){send(200,await chat.companion.observe(user,id,body));return true;}
       if(action==='companion/messages'&&req.method==='POST'){send(200,await chat.companion.generate(user,id,body,{authorize:async()=>(await auth.userFor(token))?.id===user?.id}));return true;}
+      if(action==='chat/scope'&&req.method==='POST'){send(200,await chat.configureScope(user,id,body));return true;}
       if(action==='chat'&&req.method==='GET'){send(200,await chat.view(user,id,{passageId:url.searchParams.get('passageId')||undefined}));return true;}
       if(action==='chat'&&req.method==='POST'){send(200,await chat.send(user,id,body));return true;}
       const cancelChat=action?.match(/^chat\/([^/]+)\/cancel$/);if(cancelChat&&req.method==='POST'){send(200,await chat.cancel(user,id,cancelChat[1]));return true;}
