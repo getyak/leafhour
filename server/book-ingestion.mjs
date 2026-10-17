@@ -44,7 +44,8 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
    }
    const active=job.batches.filter(b=>b.state==='submitted').length,newIndex=job.batches.findIndex(b=>b.state==='new');
    const uncertain=job.batches.findIndex(b=>b.state==='submitting');
-   const i=uncertain>=0?uncertain:active<3&&newIndex>=0?newIndex:job.batches.findIndex(b=>b.state!=='done');
+   const polling=job.batches.map((b,i)=>({b,i})).filter(x=>x.b.state==='submitted').sort((a,b)=>(a.b.pollOrder||0)-(b.b.pollOrder||0))[0]?.i;
+   const i=uncertain>=0?uncertain:active<3&&newIndex>=0?newIndex:polling??job.batches.findIndex(b=>b.state!=='done');
    if(i<0){
     const pages=[];for(let n=0;n<job.batches.length;n++){const result=JSON.parse(await store.blob(base+'/result-'+batchKey(job.batches[n],n)));pages.push(...result.normalized);}
     if(pages.length!==job.totalPages||pages.some((p,n)=>p.page!==n+1))throw fail('页码覆盖不完整，未加入书房',422);
@@ -65,6 +66,7 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
     await current();const requestId=randomUUID();await save(j=>{j.batches[i].state='submitting';j.batches[i].requestId=requestId;});
     stage='provider_submit';const handle=await provider.submit(bytes,{batchId:requestId,fileUrl});stage='save_provider_handle';await save(j=>{j.batches[i].handle=handle;j.batches[i].state='submitted';});
    }else{
+    await save(j=>{j.pollSequence=(j.pollSequence||0)+1;j.batches[i].pollOrder=j.pollSequence;});
     const state=await provider.status(batch.handle);if(state.state==='failed'){await save(j=>{j.batches[i].state='failed';j.batches[i].confirmedFailed=true;});throw fail('PaddleOCR 未能完成这一批页面，请保留任务后重试',502);}
     if(state.state==='done'){
      const raw=await provider.result(batch.handle);await store.putBlob(base+'/raw-'+batchKey(batch,i),Buffer.from(JSON.stringify(raw)));if(raw.pages?.length!==batch.count)throw fail('识别返回页数不完整，未加入书房',422);
