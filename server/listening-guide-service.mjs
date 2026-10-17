@@ -19,7 +19,7 @@ function verifiedOutline(batch,candidate){
   if(typeof claim.text!=='string'||!claim.text.trim()||claim.text.length>180||!Array.isArray(claim.sourceRefs)||!claim.sourceRefs.length||claim.sourceRefs.length>2)throw audioError('导听要点格式未通过检查。',502,'invalid_guide');
   return {text:claim.text,sourceRefs:claim.sourceRefs.map(ref=>{
    const p=index.get(ref?.passageId);
-   if(!p||ref.chapterId!==undefined&&ref.chapterId!==p.chapterId||typeof ref.quote!=='string'||!ref.quote.trim()||ref.quote.length>180||!p.original.includes(ref.quote))throw audioError('导听要点的出处不匹配。',502,'invalid_citation');
+   if(!p||ref.chapterId!==undefined&&ref.chapterId!==p.chapterId||typeof ref.quote!=='string'||!ref.quote.trim()||ref.quote.length>500||!p.original.includes(ref.quote))throw audioError('导听要点的出处不匹配。',502,'invalid_citation');
    return {chapterId:p.chapterId,passageId:p.id,quote:ref.quote};
   })};
  });
