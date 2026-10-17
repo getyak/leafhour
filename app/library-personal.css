@@ -192,3 +192,15 @@
 .library-page #library-books .book-drag-handle:focus-visible { width: auto; min-width: 44px; height: 44px; padding: 9px 12px; margin: 0; clip-path: none; overflow: visible; opacity: 1; pointer-events: auto; grid-auto-flow: column; gap: 7px; border-radius: 4px; outline: 2px solid var(--accent); outline-offset: 3px; font: 12px var(--sans); z-index: 5; }
 .library-page #library-books .book-drag-handle:focus-visible::after { content: '调整位置'; }
 @media (forced-colors: active) { .library-page #library-books .book-drag-handle:focus-visible { border-color: ButtonText; background: Canvas; color: CanvasText; outline-color: Highlight; } }
+
+/* 阅读习惯：账户级新书默认与首次邀请。小而安静，390px 内不溢出。 */
+.reading-setup-invite { display: grid; gap: 8px; width: min(100%,390px); margin: 14px 0 4px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 4px 9px 5px 7px; background: color-mix(in srgb,var(--paper) 78%,transparent); color: var(--ink); box-sizing: border-box; }
+.reading-setup-invite h2 { margin: 0; font-size: 15px; line-height: 1.5; color: var(--ink); }
+.reading-setup-invite p { margin: 0; font-size: 13px; line-height: 1.7; color: var(--muted); overflow-wrap: anywhere; }
+.reading-setup-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.reading-setup-actions button { min-height: 44px; min-width: 44px; padding: 8px 16px; }
+.reading-preferences-form { display: grid; gap: 6px; width: min(100%,390px); box-sizing: border-box; }
+.reading-preferences-form .profile-input { width: 100%; max-width: 390px; min-height: 44px; box-sizing: border-box; }
+.reading-preferences-form input[type=range] { min-height: 44px; padding: 0; accent-color: var(--accent); }
+.reading-preferences-form :is(.profile-save,.settings-status,.settings-description) { width: min(100%,390px); overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: reduce) { .reading-setup-invite, .reading-setup-invite *, .reading-preferences-form, .reading-preferences-form * { transition: none !important; animation: none !important; } }
