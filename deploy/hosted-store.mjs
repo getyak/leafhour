@@ -88,15 +88,17 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
     return book;
   }
   async function reserveTranslation(user,bookId,passageId){
-    const id=randomUUID(),key=digest(user.id+'|'+bookId+'|'+passageId),owner=digest(user.id),now=Date.now();
+    const id=randomUUID(),key=digest(user.id+'|'+bookId+'|'+passageId),owner=digest(user.id),book=digest(user.id+'|'+bookId),now=Date.now();
     await mutate('limits/translation',{requests:[],active:{}},data=>{
       data.requests=data.requests.filter(r=>now-r.time<86400000);for(const [key,row]of Object.entries(data.active))if(row.expiresAt<=now)delete data.active[key];
+      if(Object.values(data.active).some(row=>row.book===book))throw fail('这本书正在保存另一段译文，请稍后再试；当前段落尚未提交翻译。',409);
       if(data.active[key])throw fail('这一段正在翻译，请稍后查看',409);
       if(Object.keys(data.active).length>=2)throw fail('翻译服务正在处理其他段落，请稍后再试',429);
       const hour=data.requests.filter(r=>now-r.time<3600000);if(hour.filter(r=>r.owner===owner).length>=10||hour.length>=100||data.requests.filter(r=>r.owner===owner).length>=50||data.requests.length>=500)throw fail('今天的翻译请求较多，请稍后再试；原文仍可阅读',429);
-      data.requests.push({owner,time:now});data.active[key]={id,expiresAt:now+90000};
+      data.requests.push({owner,time:now});data.active[key]={id,book,expiresAt:now+180000};
     });return {key,id};
   }
   async function releaseTranslation(ticket){await mutate('limits/translation',{requests:[],active:{}},data=>{if(data.active[ticket.key]?.id===ticket.id)delete data.active[ticket.key];});}
-  return {read:async(file,fallback)=>(await snapshot(file,fallback)).data,mutate,putBlob,putSingleBlob,adoptBlob,blob,blobInfo,signedBlob,blobDownloads,beginUpload,completeUpload,reserveTranslation,releaseTranslation};
+  const configureIngestionWake=(origin,token)=>json('/rest/v1/rpc/reader_configure_ingestion_wake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({wake_origin:origin,derived_token:token})});
+  return {configureIngestionWake,read:async(file,fallback)=>(await snapshot(file,fallback)).data,mutate,putBlob,putSingleBlob,adoptBlob,blob,blobInfo,signedBlob,blobDownloads,beginUpload,completeUpload,reserveTranslation,releaseTranslation};
 }

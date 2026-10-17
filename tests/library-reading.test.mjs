@@ -7,6 +7,7 @@ import {createLibraryService} from '../server/library-service.mjs';
 import {createReaderServer} from '../server/server.mjs';
 import {createHostedStore} from '../deploy/hosted-store.mjs';
 import {digest} from '../server/document-import.mjs';
+import {MAX_BOOK_BYTES} from '../server/book-capacity.mjs';
 const owner={id:'reading-owner'},other={id:'other-reader'};
 const intervals=[{startedAt:'2026-10-14T12:00:00Z',endedAt:'2026-10-14T12:10:00Z'},{startedAt:'2026-10-14T12:20:00Z',endedAt:'2026-10-14T12:30:00Z'}];
 function sessionFor(book,patch={}){const p=book.sections[0].paragraphs;return {id:'session-1',bookId:book.bookId,contentVersion:book.contentVersion,source:'reader_focus',status:'paused',sequence:1,startedAt:'2026-10-14T12:00:00Z',endedAt:'2026-10-14T12:30:00Z',timeZone:'Asia/Singapore',start:{chapterId:book.sections[0].chapterId,passageId:p[0].id},end:{chapterId:book.sections[0].chapterId,passageId:p.at(-1).id},segments:intervals,...patch};}
@@ -72,16 +73,20 @@ test('cloud notes, questions and position updates preserve a history at its read
   }
 });
 
-test('concurrent translations cannot make an allowed cloud book unreadable',async()=>{
-  const fixture=hostedFixture(),store=createHostedStore(fixture),root='translation-budget',base=await createLibraryService({dataDir:root,catalogDir:null,translator:null,dataStore:store}),book=await base.importDocument(owner,{filename:'substantial-English.txt',bytes:Buffer.from(Array.from({length:500},()=>'A '.repeat(2500).trim()).join('\n\n'))}),projected=structuredClone(book),rows=projected.sections.flatMap(s=>s.paragraphs),overlay={};
-  const draft=(variant,text)=>({text,variant,status:'draft',origin:'ai',model:'synthetic-only',sourceVersion:book.contentVersion,createdAt:'2026-10-14T12:00:00Z'});
-  for(const p of rows){p.translations={literal:draft('literal','甲'.repeat(12000)),interpretive:draft('interpretive','乙'.repeat(12000))};if(Buffer.byteLength(JSON.stringify(projected))>3500000){p.translations={};break;}overlay[p.id]={contentVersion:book.contentVersion,translations:p.translations};}
-  let remaining=3500000-Buffer.byteLength(JSON.stringify(projected));if(remaining<2000){const last=rows.filter(p=>p.translations.literal).at(-1);last.translations.literal.text=last.translations.literal.text.slice(0,-1000);remaining+=3000;}
-  await store.mutate(path.join(root,'users',digest(owner.id),'translations',digest(book.bookId)+'.json'),{},data=>Object.assign(data,overlay));
-  const length=Math.floor(remaining/10),translate=async()=>({literal:'丙'.repeat(length),interpretive:'丁'.repeat(length),model:'synthetic-only'}),a=await createLibraryService({dataDir:root,catalogDir:null,translator:translate,dataStore:createHostedStore(fixture)}),b=await createLibraryService({dataDir:root,catalogDir:null,translator:translate,dataStore:createHostedStore(fixture)}),targets=rows.filter(p=>!p.translations.literal).slice(0,2);
-  const outcomes=await Promise.allSettled([a.translate(owner,book.bookId,targets[0].id),b.translate(owner,book.bookId,targets[1].id)]);
-  assert.equal(outcomes.filter(r=>r.status==='fulfilled').length,1,'one new translation fits, while both together exceed the existing cloud budget');
-  const refusal=outcomes.find(r=>r.status==='rejected');assert.equal(refusal.reason.status,413);assert.match(refusal.reason.message,/本次.*未保存/);
-  const actual=await base.getBook(owner,book.bookId);assert.ok(Buffer.byteLength(JSON.stringify(actual))<=3500000);const passages=actual.sections.flatMap(s=>s.paragraphs);
-  assert.deepEqual(passages.map(p=>[p.id,p.original]),rows.map(p=>[p.id,p.original]));for(const [id,value]of Object.entries(overlay))assert.deepEqual(passages.find(p=>p.id===id).translations,value.translations);
+test('concurrent near-capacity translations reserve the book before either provider request',async()=>{
+  const fixture=hostedFixture(),store=createHostedStore(fixture),root='translation-budget',base=await createLibraryService({dataDir:root,catalogDir:null,translator:null,dataStore:store}),book=await base.importDocument(owner,{filename:'English.txt',bytes:Buffer.from('A first original paragraph.\n\nA second original paragraph.')}),rows=book.sections.flatMap(s=>s.paragraphs);
+  const file=path.join(root,'users',digest(owner.id),'books',digest(book.bookId)+'.json');
+  await store.mutate(file,{},data=>{data.padding='';data.padding='x'.repeat(MAX_BOOK_BYTES-Buffer.byteLength(JSON.stringify(data))-180000);});
+  let calls=0,started,release;const entered=new Promise(r=>{started=r;}),hold=new Promise(r=>{release=r;});
+  const translate=async()=>{calls++;started();await hold;return {literal:'甲'+'\0'.repeat(11999),interpretive:'乙'+'\0'.repeat(11999),model:'synthetic-only'};};
+  const a=await createLibraryService({dataDir:root,catalogDir:null,translator:translate,dataStore:createHostedStore(fixture)}),b=await createLibraryService({dataDir:root,catalogDir:null,translator:translate,dataStore:createHostedStore(fixture)});
+  const first=a.translate(owner,book.bookId,rows[0].id);await entered;
+  await assert.rejects(b.translate(owner,book.bookId,rows[1].id),e=>e.status===409);assert.equal(calls,1);release();await first;
+  await assert.rejects(b.translate(owner,book.bookId,rows[1].id),e=>e.status===413);assert.equal(calls,1,'remaining capacity is rejected before a new paid request');
+  const actual=await base.getBook(owner,book.bookId);assert.ok(Buffer.byteLength(JSON.stringify(actual))<=MAX_BOOK_BYTES);const passages=actual.sections.flatMap(s=>s.paragraphs);
+  assert.deepEqual(passages.map(p=>[p.id,p.original]),rows.map(p=>[p.id,p.original]));assert.equal(passages.filter(p=>p.translations.literal).length,1);
+});
+
+test('local near-capacity translations claim the book before invoking a provider',async t=>{
+ const {dir,library,book}=await local(t),dataDir=path.join(dir,'source'),file=path.join(dataDir,'users',digest(owner.id),'books',digest(book.bookId)+'.json');book.padding='';book.padding='x'.repeat(MAX_BOOK_BYTES-Buffer.byteLength(JSON.stringify(book))-180000);await writeFile(file,JSON.stringify(book));let entered,release,calls=0;const ready=new Promise(r=>{entered=r;}),hold=new Promise(r=>{release=r;});const translator=async()=>{calls++;entered();await hold;return {literal:'甲'+'\0'.repeat(11999),interpretive:'乙'+'\0'.repeat(11999)};};const a=await createLibraryService({dataDir,catalogDir:null,translator}),b=await createLibraryService({dataDir,catalogDir:null,translator}),p=book.sections[0].paragraphs,first=a.translate(owner,book.bookId,p[0].id);await ready;await assert.rejects(b.translate(owner,book.bookId,p[1].id),e=>e.status===409);release();await first;await assert.rejects(b.translate(owner,book.bookId,p[1].id),e=>e.status===413);assert.equal(calls,1);assert.equal((await library.getBook(owner,book.bookId)).sections[0].paragraphs[0].original,p[0].original);
 });

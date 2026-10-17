@@ -25,13 +25,13 @@ export async function extractDocument({filename,bytes}){
   try{
     task=getDocument({data:new Uint8Array(bytes),useSystemFonts:true,isEvalSupported:false,disableFontFace:true});
     document=await task.promise;
-    if(document.numPages>500)throw fail('PDF 超过 500 页，请按章节拆分',413);
+    if(document.numPages>1200)throw fail('PDF 超过当前单本 1200 页的处理容量',413);
     const pages=[];let total=0;
     for(let i=1;i<=document.numPages;i++){
       const page=await document.getPage(i),content=await page.getTextContent();
       let text='',lastY=null;
       for(const item of content.items){if(!('str' in item))continue;const y=item.transform[5];if(lastY!==null&&Math.abs(y-lastY)>item.height*1.8)text+='\n\n';else if(lastY!==null&&Math.abs(y-lastY)>2)text+='\n';text+=item.str+(item.hasEOL?'\n':' ');lastY=y;}
-      total+=text.length;if(total>2_000_000)throw fail('PDF 文字量过大，请按章节拆分',413);
+      total+=text.length;if(total>8_000_000)throw fail('PDF 文字量过大，请按章节拆分',413);
       pages.push({page:i,text:text.trim()});page.cleanup();
     }
     if(pages.reduce((n,p)=>n+p.text.trim().length,0)<20)throw fail('这份 PDF 没有可提取文字，可能是扫描件。请先做文字识别（OCR），或上传文字版 PDF。',422);
@@ -51,8 +51,14 @@ export function makeBook({bookId,filename,sourceHash,extracted,title,author='',v
     }
   }
   if(!paragraphs.length)throw fail('没有找到可阅读的段落');
-  const chapters=[],sections=[];
-  for(let i=0;i<paragraphs.length;i+=30){const number=chapters.length+1,id='ch'+String(number).padStart(2,'0');chapters.push({id,number,title:{zh:paragraphs.length<=30?'开始阅读':`阅读片段 ${number}`,en:''}});sections.push({number,chapterId:id,title:'自动分段 · 原文未逐段校对',paragraphs:paragraphs.slice(i,i+30)});}
+  const chapters=[],sections=[];let structure='automatic_groups';
+  const outline=(extracted.outline||[]).filter((r,i,all)=>Number.isSafeInteger(r.page)&&r.page>=1&&typeof r.title==='string'&&r.title.trim()&&r.title.length<=120&&(!i||r.page>all[i-1].page));
+  let cuts=outline.length>=2?outline.map(r=>({at:paragraphs.findIndex(p=>p.source.pdfPage>=r.page),title:r.title.trim()})).filter(r=>r.at>=0):[];
+  if(cuts.length>=2)structure='pdf_outline';
+  else{cuts=paragraphs.flatMap((p,i)=>['doc_title','paragraph_title','section_title'].includes(p.source.type)&&p.original.length<=100&&/^(?:第.{1,8}[章节篇部]|(?:chapter|part|book)\s+[IVX\d]+)/iu.test(p.original)?[{at:i,title:p.original}]:[]);if(cuts.length>=2&&cuts.length<=200)structure='source_headings';else cuts=[];}
+  if(cuts.length){if(cuts[0].at>0)cuts.unshift({at:0,title:'卷首'});for(let i=0;i<cuts.length;i++){const row=cuts[i],number=i+1,id='ch'+String(number).padStart(2,'0');chapters.push({id,number,kind:'source-section',title:{zh:row.title,en:''}});sections.push({number,chapterId:id,title:row.title,paragraphs:paragraphs.slice(row.at,cuts[i+1]?.at??paragraphs.length)});}}
+
+  for(let i=0;!cuts.length&&i<paragraphs.length;i+=30){const number=chapters.length+1,id='ch'+String(number).padStart(2,'0');chapters.push({id,number,title:{zh:paragraphs.length<=30?'开始阅读':`阅读片段 ${number}`,en:''}});sections.push({number,chapterId:id,title:'自动分段 · 原文未逐段校对',paragraphs:paragraphs.slice(i,i+30)});}
   const text=paragraphs.slice(0,10).map(p=>p.original).join('');
-  return {bookId,contentVersion:extracted.contentVersion||sourceHash,title:{zh:title||path.basename(filename,path.extname(filename)),en:title||path.basename(filename,path.extname(filename))},author,visibility,sourceLanguage:inferSourceLanguage(text),targetLanguage:'zh',source:{filename:path.basename(filename),sha256:sourceHash,format:extracted.format,url:sourceUrl,license,review:extracted.review,structure:'automatic_groups',...(extracted.processor?{processor:extracted.processor,pages:extracted.pages.length,quality:extracted.quality}: {})},chapters,sections,annotations:[],glossary:[],createdAt:new Date().toISOString()};
+  return {bookId,contentVersion:extracted.contentVersion||sourceHash,title:{zh:title||path.basename(filename,path.extname(filename)),en:title||path.basename(filename,path.extname(filename))},author,visibility,sourceLanguage:inferSourceLanguage(text),targetLanguage:'zh',source:{filename:path.basename(filename),sha256:sourceHash,format:extracted.format,url:sourceUrl,license,review:extracted.review,structure,...(extracted.processor?{processor:extracted.processor,pages:extracted.pages.length,quality:extracted.quality}: {})},chapters,sections,annotations:[],glossary:[],createdAt:new Date().toISOString()};
 }

@@ -1,4 +1,5 @@
-import {uploadPdf,advancePdf} from './pdf-ingestion.mjs';
+import {uploadPdf} from './pdf-ingestion.mjs';
+import {mountPdfOnboarding} from './pdf-onboarding.mjs';
 import {homeLocale,homeText} from './home-locale.mjs';
 import {positionStorageKey} from './reading-progress.mjs';
 import {createUploadState} from './upload-state.mjs';
@@ -19,7 +20,7 @@ import {trackActionFocus} from './action-focus.mjs';
 const $=id=>document.getElementById(id);
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const ownerScope=createOwnerScope();
-let refreshGeneration=0;
+let refreshGeneration=0,pdfOnboarding=null,followedPdfId=null;
 let session=null,books=[],shelfControls=null,selectedCurrent=null,pendingUpload=false,pendingChat=false,upload=createUploadState(),shell=null,chat=null,dashboard=null,bookActions=null,shelfDrag=null,shelfRevision=0,orderOperation=null;
 const status=(id,text,error=false)=>{$(id).textContent=text;$(id).classList.toggle('error',error);};
 const api=(url,data,ticket=ownerScope.capture())=>readOwnerResponse(ownerScope,ticket,()=>fetch(url,{...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json',...((url.startsWith('/api/library')||url.startsWith('/api/account')||url.startsWith('/api/book-gifts'))?{'X-Reader-Owner':ticket.owner}:{})}}).catch(()=>{throw Error('网络暂时无法连接，请稍后重试。');}),()=>{ownerScope.adopt('guest');session={...session,user:null};clearPrivateUI();location.reload();});
@@ -35,12 +36,13 @@ const ensureUser=()=>{if(session?.user)return true;openAuth();return false;};
 const getOwner=()=>{const t=ownerScope.capture();return t.owner+':'+t.revision;};
 dashboard=mountReadingDashboard({root:$('reading-dashboard'),overviewRoot:$('reading-overview'),historyRoot:$('reading-history'),api,getSession:()=>session,getBooks:()=>books,getOwner,openAuth,refresh,onCurrentBook:book=>{selectedCurrent=book?.bookId||null;renderBooks();}});
 if(isLibrary){shelfControls=mountShelfFilters({root:$('library-filter-controls'),onChange:()=>{shelfDrag?.reset();renderBooks();}});chat=mountLibraryChat({root:$('library-chat'),api,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture().owner,openAuth:message=>{pendingChat=true;openAuth(message);},getCurrentBook:()=>dashboard.getCurrentBook()});shell=mountLibraryShell({getSession:()=>session,api,onProfileUpdated:(profile,userId)=>{if(session?.user?.id!==userId)return;Object.assign(session.user,profile);shell.update();},openAuth,onLogout:signOut,onHistory:()=>dashboard.openHistory(),onOpenChat:()=>chat.open()});bookActions=mountLibraryBookActions({api,getSession:()=>session,getBooks:()=>libraryShelf(books),getOwner,getRevision:()=>shelfRevision,setRevision:value=>{shelfRevision=value;},onReorder:saveShelfOrder,onChanged:()=>refresh(),openAuth});shelfDrag=mountShelfDrag({grid:$('library-books'),getBooks:()=>libraryShelf(books),getOwner,onReorder:saveShelfOrder,onError:error=>status('library-status',error.message,true)});$('library-trash').addEventListener('click',()=>{shell.closeNavigation();bookActions.trash();});}else roomIcons();
+pdfOnboarding=mountPdfOnboarding({document,root:$('pdf-ingestion-jobs'),api,getSession:()=>session,capture:()=>ownerScope.capture(),isCurrent:ticket=>ownerScope.isCurrent(ticket),onOpen:bookId=>{location.href='/read?book='+encodeURIComponent(bookId);},onDone:job=>{if(followedPdfId===job.id&&$('upload-dialog').open){location.href='/read?book='+encodeURIComponent(job.bookId);}else refresh().catch(error=>status('library-status',error.message,true));}});
 function clearPrivateUI({keepAuthDialog=false}={}){
   bookActions?.clear();shelfDrag?.reset();shelfRevision=0;orderOperation=null;
   for(const id of ['upload-status','library-status','upload-filename'])status(id,'');
   for(const id of ['book-file','book-search'])$(id).value='';if(!keepAuthDialog){status('auth-status','');authDialog.reset();if($('auth-dialog').open)$('auth-dialog').close();}
   if($('upload-dialog').open)$('upload-dialog').close();$('upload-dialog').removeAttribute('aria-busy');$('confirm-upload').disabled=true;$('book-file').disabled=false;
-  if($('reading-history').open)$('reading-history').close();pendingUpload=false;pendingChat=false;selectedCurrent=null;upload=createUploadState();$('pdf-ingestion-jobs').replaceChildren();$('pdf-ocr-consent').checked=false;shelfControls?.reset();document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
+  if($('reading-history').open)$('reading-history').close();pendingUpload=false;pendingChat=false;selectedCurrent=null;upload=createUploadState();pdfOnboarding?.reset();followedPdfId=null;shelfControls?.reset();document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
   books=books.filter(b=>b.visibility==='public').map(b=>({...b,resume:null,journey:null}));chat?.reset();shell?.update();dashboard?.clear();renderBooks();$('featured-books').replaceChildren(...books.slice(0,3).map(landingBookCard));
 }
 function landingBookCard(book){
@@ -92,7 +94,7 @@ async function refresh(knownSession){
   if(!session.user){try{const order=JSON.parse(localStorage.getItem('marginalia-shelf-order:guest')||'null');if(Array.isArray(order)&&order.length<=1000){const rank=new Map(order.filter(id=>typeof id==='string').map((id,index)=>[id,index]));if(rank.size)books=books.map((book,index)=>({...book,shelfPosition:rank.get(book.bookId)??order.length+index}));}}catch{}}
   if(!session.user)for(const book of books){try{const local=JSON.parse(localStorage.getItem(positionStorageKey(book.bookId))||'null');if(local?.passageId&&local.chapterLabel&&local.contentVersion===book.source.sha256)book.resume={label:local.chapterLabel,passageId:local.passageId,updatedAt:local.updatedAt,mode:local.mode,variant:local.variant};}catch{}}
   $('library-retry').hidden=true;status('library-status','');renderBooks();$('featured-books').replaceChildren(...books.filter(b=>b.visibility==='public').slice(0,3).map(landingBookCard));
-  if(isLibrary){dashboard.update(arrivalTicket);if(pendingCalendar){pendingCalendar=false;dashboard.openHistory();}if(pendingSettings){const tab=pendingSettings;pendingSettings=false;shell.openSettings(typeof tab==='string'?tab:'account');}}
+  pdfOnboarding.refresh();if(isLibrary){dashboard.update(arrivalTicket);if(pendingCalendar){pendingCalendar=false;dashboard.openHistory();}if(pendingSettings){const tab=pendingSettings;pendingSettings=false;shell.openSettings(typeof tab==='string'?tab:'account');}}
   }catch(error){if(generation!==refreshGeneration)return;if(isLibrary){dashboard.fail(error,arrivalTicket);$('library-retry').hidden=false;$('library-books').setAttribute('aria-busy','false');}throw error;}
 }
 async function signOut(){
@@ -103,31 +105,21 @@ $('account-button').addEventListener('click',()=>{if(!session?.user){openAuth();
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
 for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();});
 document.addEventListener('click',event=>{for(const details of document.querySelectorAll('.book-details[open]'))if(!details.contains(event.target))details.open=false;});
-function openUpload(){shell?.closeNavigation();pendingUpload=true;if(!ensureUser())return;pendingUpload=false;if(!upload.file){$('book-file').value='';$('upload-filename').textContent='';status('upload-status','');$('confirm-upload').textContent='放进我的书房 →';}$('confirm-upload').disabled=upload.busy||!upload.file;$('pdf-ocr-choice').hidden=!session.pdfOcrAvailable;$('pdf-ocr-privacy').hidden=!session.pdfOcrAvailable;loadPdfJobs();if(!$('upload-dialog').open)$('upload-dialog').showModal();}
+function openUpload(){shell?.closeNavigation();pendingUpload=true;if(!ensureUser())return;pendingUpload=false;if(!upload.file){$('book-file').value='';$('upload-filename').textContent='';status('upload-status','');$('confirm-upload').textContent='放进我的书房 →';}$('confirm-upload').disabled=upload.busy||!upload.file;$('upload-progress-slot').append($('pdf-ingestion-jobs'));pdfOnboarding.refresh();if(!$('upload-dialog').open)$('upload-dialog').showModal();}
 for(const id of ['upload-button','empty-upload'])$(id).addEventListener('click',openUpload);
-function selectFile(file){if(!file||upload.busy)return;$('pdf-ocr-consent').checked=false;$('upload-filename').textContent='';$('confirm-upload').disabled=true;$('book-file').value='';try{upload.select(file);$('upload-filename').textContent=file.name+' · '+(file.size>=1024*1024?(file.size/1024/1024).toFixed(2)+' MB':Math.max(1,Math.ceil(file.size/1024))+' KB');$('confirm-upload').textContent='放进我的书房 →';$('confirm-upload').disabled=false;status('upload-status','');}catch(error){status('upload-status',error.message,true);}}
-async function loadPdfJobs(){
- const container=$('pdf-ingestion-jobs');container.replaceChildren();if(!session?.user)return;const ticket=ownerScope.capture();
- try{const {jobs}=await api('/api/library/ingestion',undefined,ticket);if(!ownerScope.isCurrent(ticket))return;
- for(const job of jobs.filter(j=>j.state!=='cancelled').reverse().slice(0,5)){
- const row=make('div','pdf-job'),label=make('p','muted',job.filename+' · '+(job.state==='done'?'已可阅读':job.completedPages+' / '+job.totalPages+' 页'));row.append(label);
- if(job.state==='done'){const link=make('a','','打开阅读');link.href='/read?book='+encodeURIComponent(job.bookId);row.append(link);}
- else if(job.state!=='needs_review'){const resume=make('button','','继续识别'),cancel=make('button','','取消识别');resume.type=cancel.type='button';resume.addEventListener('click',async()=>{resume.disabled=true;try{await api('/api/library/ingestion/'+job.id+'/resume',{},ticket);const done=await advancePdf({id:job.id,api:(p,b)=>api(p,b,ticket),onProgress:m=>{label.textContent=job.filename+' · '+m;},shouldContinue:()=>ownerScope.isCurrent(ticket)});if(done.state==='done'&&ownerScope.isCurrent(ticket))location.href='/read?book='+encodeURIComponent(done.bookId);}catch(e){label.textContent=e.message;}finally{resume.disabled=false;}});cancel.addEventListener('click',async()=>{await api('/api/library/ingestion/'+job.id+'/cancel',{},ticket);if(ownerScope.isCurrent(ticket))loadPdfJobs();});row.append(resume,cancel);}
- else {row.append(make('p','muted',job.error));const recover=make('button','','核对提交状态');recover.type='button';recover.addEventListener('click',async()=>{recover.disabled=true;try{await api('/api/library/ingestion/'+job.id+'/resume',{},ticket);const result=await advancePdf({id:job.id,api:(p,b)=>api(p,b,ticket),onProgress:m=>{label.textContent=m;},shouldContinue:()=>ownerScope.isCurrent(ticket)});if(result.state==='done')location.href='/read?book='+encodeURIComponent(result.bookId);else await loadPdfJobs();}catch(e){label.textContent=e.message;}finally{recover.disabled=false;}});row.append(recover);const cancel=make('button','','取消识别');cancel.type='button';cancel.addEventListener('click',async()=>{await api('/api/library/ingestion/'+job.id+'/cancel',{},ticket);if(ownerScope.isCurrent(ticket))loadPdfJobs();});row.append(cancel);}container.append(row);
- }
- }catch(e){if(ownerScope.isCurrent(ticket))container.append(make('p','muted','解析进度暂时无法读取。'));}
-}
+function selectFile(file){if(!file||upload.busy)return;$('upload-filename').textContent='';$('confirm-upload').disabled=true;$('book-file').value='';try{upload.select(file);$('upload-filename').textContent=file.name+' · '+(file.size>=1024*1024?(file.size/1024/1024).toFixed(2)+' MB':Math.max(1,Math.ceil(file.size/1024))+' KB');$('confirm-upload').textContent='放进我的书房 →';$('confirm-upload').disabled=false;status('upload-status','');}catch(error){status('upload-status',error.message,true);}}
 $('book-file').addEventListener('change',e=>selectFile(e.target.files[0]));
-const drop=$('drop-zone');drop.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();if(!upload.busy)$('book-file').click();}});$('upload-dialog').addEventListener('close',()=>{if(upload.busy)status('library-status','正在导入 '+upload.file.name+'，完成后会更新书架。');});for(const event of ['dragenter','dragover'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.add('dragging');});for(const event of ['dragleave','drop'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.remove('dragging');if(event==='drop')selectFile(e.dataTransfer.files[0]);});
+const drop=$('drop-zone');drop.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();if(!upload.busy)$('book-file').click();}});$('upload-dialog').addEventListener('close',()=>{followedPdfId=null;$('library-import-slot').append($('pdf-ingestion-jobs'));if(upload.busy)status('library-status','正在导入 '+upload.file.name+'，完成后会更新书架。');});for(const event of ['dragenter','dragover'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.add('dragging');});for(const event of ['dragleave','drop'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.remove('dragging');if(event==='drop')selectFile(e.dataTransfer.files[0]);});
 $('confirm-upload').addEventListener('click',async()=>{
-  if(!upload.file||upload.busy)return;if(upload.file.size>20*1024*1024&&!$('pdf-ocr-consent').checked){status('upload-status','较大的扫描 PDF 请选择 PaddleOCR 识别；只提取文字时请拆分为 20 MB 内的文件。',true);return;}const ticket=ownerScope.capture(),operation=upload,file=operation.begin(),b=$('confirm-upload'),focus=trackActionFocus(document,b);let succeeded=false;b.disabled=true;$('book-file').disabled=true;b.textContent='正在放进书房…';$('upload-dialog').setAttribute('aria-busy','true');status('upload-status',file.name.toLowerCase().endsWith('.pdf')?'正在提取 PDF 文字，请稍等…':'正在整理段落…');
+  if(!upload.file||upload.busy)return;const ticket=ownerScope.capture(),operation=upload,file=operation.begin(),b=$('confirm-upload'),focus=trackActionFocus(document,b);let succeeded=false;b.disabled=true;$('book-file').disabled=true;b.textContent='正在放进书房…';$('upload-dialog').setAttribute('aria-busy','true');status('upload-status',file.name.toLowerCase().endsWith('.pdf')?'正在提取 PDF 文字，请稍等…':'正在整理段落…');
   try{
     let book;
-    if(/\.pdf$/i.test(file.name)&&$('pdf-ocr-consent').checked){
+    if(/\.pdf$/i.test(file.name)){
       const scopedApi=(path,body)=>api(path,body,ticket);
       const job=await uploadPdf({file,api:scopedApi,onProgress:message=>status('upload-status',message),assertCurrent:()=>ownerScope.assertCurrent(ticket)});
-      const complete=await advancePdf({id:job.id,api:scopedApi,onProgress:message=>status('upload-status',message),shouldContinue:()=>ownerScope.isCurrent(ticket)});
-      ownerScope.assertCurrent(ticket);if(complete.state!=='done')throw Error('识别已暂停，可在上传窗口继续。');book={bookId:complete.bookId};
+      ownerScope.assertCurrent(ticket);succeeded=true;
+      if(job.state==='done'){if($('upload-dialog').open)location.href='/read?book='+encodeURIComponent(job.bookId);else{await refresh();status('library-status',file.name+' 已在书房，可直接阅读。');}return;}
+      if($('upload-dialog').open)followedPdfId=job.id;pdfOnboarding.track(job);status('upload-status','原文件已保存，正在自动整理。可以离开页面。');b.textContent='放进我的书房 →';return;
     }else if(session.directUpload){
       status('upload-status','正在将原文件存入你的私人书房…');
       const target=await api('/api/library/upload/start',{filename:file.name,bytes:file.size},ticket);
@@ -144,7 +136,7 @@ $('confirm-upload').addEventListener('click',async()=>{
     succeeded=true;
     if($('upload-dialog').open){status('upload-status','已放进书房，正在打开第一段。');location.href='/read?book='+encodeURIComponent(book.bookId);}else{await refresh();if(ownerScope.isCurrent(ticket))status('library-status',file.name+' 已放进书房。');}
   }catch(error){if(!ownerScope.isCurrent(ticket))return;status('upload-status',error.message+' 你可以重试，或选择另一份文件。',true);b.textContent='重试上传 →';if(!$('upload-dialog').open)status('library-status',file.name+' 上传未完成。打开上传窗口可重试。',true);}
-  finally{operation.finish();if(succeeded)operation.reset();if(ownerScope.isCurrent(ticket)){b.disabled=!operation.file;$('book-file').disabled=false;$('upload-dialog').removeAttribute('aria-busy');if($('upload-dialog').open)focus.restore(b);else focus.stop();}else focus.stop();}
+  finally{operation.finish();if(succeeded)operation.reset();if(ownerScope.isCurrent(ticket)){b.disabled=!operation.file;$('book-file').disabled=false;$('upload-dialog').removeAttribute('aria-busy');if($('upload-dialog').open)focus.restore(succeeded?$('pdf-ingestion-jobs').querySelector('button')||$('upload-dialog').querySelector('.dialog-close'):b);else focus.stop();}else focus.stop();}
 });
 document.querySelectorAll('[data-shelf]').forEach(button=>{button.setAttribute('aria-label',button.dataset.shelf==='all'?'我的书房':'我上传的');button.addEventListener('click',()=>shelfControls?.set({scope:button.dataset.shelf}));});
 $('book-search').addEventListener('input',()=>{shelfDrag?.reset();renderBooks();});
