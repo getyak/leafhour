@@ -81,6 +81,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['library-craft.css','book-binding.mjs','brand-assets/sage-paper.webp'])files['/'+file]=file;
     for(const file of ['home-atmosphere.css','home-atmosphere.mjs','brand-assets/sunlit-room.webp','brand-assets/foliage-canopy.webp'])files['/'+file]=file;
     files['/reading-session-record.mjs']='reading-session-record.mjs';
+    for(const file of ['reading-time-policy.mjs','reading-manual.mjs','reading-manual-ui.mjs'])files['/'+file]=file;
     files['/reading-toolbar.mjs']='reading-toolbar.mjs';
     files['/reading-flow.mjs']='reading-flow.mjs';files['/reading-load.mjs']='reading-load.mjs';files['/personal-records.mjs']='personal-records.mjs';files['/reading-chat-scope.mjs']='reading-chat-scope.mjs';files['/personal-record-editor.mjs']='personal-record-editor.mjs';
     for(const file of ['highlights.mjs','reader-highlights.mjs'])files['/'+file]=file;
