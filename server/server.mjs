@@ -142,7 +142,8 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1]
   if(!['127.0.0.1','localhost'].includes(host))throw Error('This version is a private local service; external hosting requires authentication.');
   let generator=null;
   if(process.env.DEEPSEEK_API_KEY){const {createHarnessGenerator}=await import('../harness/generator.mjs');generator=await createHarnessGenerator();}
-  const server=await createReaderServer({generator,bookPath:process.env.READER_BOOK_PATH?path.resolve(process.env.READER_BOOK_PATH):undefined,publicOrigin:process.env.READER_PUBLIC_ORIGIN||null});
+  const recordsPath=process.env.READER_DATA_DIR?path.join(path.resolve(process.env.READER_DATA_DIR),'records.json'):undefined;
+  const server=await createReaderServer({generator,recordsPath,bookPath:process.env.READER_BOOK_PATH?path.resolve(process.env.READER_BOOK_PATH):undefined,publicOrigin:process.env.READER_PUBLIC_ORIGIN||null});
   server.listen(port,host,()=>{console.log(configurationSummary({speechSupported:!!server.portal.audio}));console.log('Leafhour 已启动：http://'+host+':'+server.address().port);});
   process.on('SIGTERM',()=>server.close());process.on('SIGINT',()=>server.close());
 }
