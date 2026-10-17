@@ -423,5 +423,6 @@
   "tools/smoke-release.mjs",
   "tools/verify-deploy.mjs",
   "tools/verify-release.mjs",
-  "vercel.json"
+  "vercel.json",
+  "app/book-transfer.mjs"
 ]

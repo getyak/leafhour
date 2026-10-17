@@ -1,3 +1,5 @@
+import {bookCapacity,MAX_BOOK_BYTES,TRANSLATION_RESERVE_BYTES} from './book-capacity.mjs';
+import {bookTransfer as transferBook} from './book-transfer.mjs';
 import {mkdir,readFile,writeFile,rename,stat} from 'node:fs/promises';
 import path from 'node:path';
 import {randomBytes,randomUUID} from 'node:crypto';
@@ -137,7 +139,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(!existing){const index=await read(path.join(userDir(user),'index.json'),{books:[]});for(const row of index.books.filter(b=>b.source?.sha256===hash)){const candidate=await read(bookFile(user,row.bookId),null);if(candidate?.contentVersion===hash&&candidate.source?.sha256===hash){existing=candidate;id=candidate.bookId;break;}}}
     if(existing&&existing.source?.sha256!==hash)throw fail('已保存的原文版本与此文件不一致，未覆盖书籍或记录',409);
     const book=existing||makeBook({bookId:id,filename:input.filename,sourceHash:hash,extracted});
-    if(dataStore&&!extracted.processor&&Buffer.byteLength(JSON.stringify(book))>3500000)throw fail('这本书提取后的文字过多，请按章节拆分后上传到云端；原文件尚未加入书房',413);
+    if(dataStore&&!existing)bookCapacity(book);
     const originals=path.join(userDir(user),'originals');
     if(dataStore)await dataStore.putBlob(path.join(originals,hash),input.bytes);
     else {await mkdir(originals,{recursive:true,mode:0o700});const temporary=path.join(originals,hash+'.'+randomUUID()+'.pending');await writeFile(temporary,input.bytes,{mode:0o600});await rename(temporary,path.join(originals,hash));}
@@ -213,13 +215,14 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     const key=user.id+'|'+id+'|'+passageId;if(translationsRunning.has(key))throw fail('这一段正在翻译，请稍后查看',409);if(translationsRunning.size>=2)throw fail('翻译服务正在处理其他段落，请稍后再试',429);
     translationsRunning.add(key);let ticket;
     try{
+      if(dataStore)bookCapacity(book,TRANSLATION_RESERVE_BYTES);
       if(dataStore?.reserveTranslation)ticket=await dataStore.reserveTranslation(user,id,passageId);
       const result=await translator({passageId,sourceLanguage:inferSourceLanguage(passages[i].original),targetLanguage:'zh',passages:passages.slice(Math.max(0,i-1),i+2).map(p=>({id:p.id,original:p.original})),sourceVersion:book.contentVersion});
       if(!result||!['literal','interpretive'].every(k=>typeof result[k]==='string'&&result[k].trim()&&result[k].length<=12000))throw fail('翻译结果不完整，请重试；原文已保留',502);
       const translations=Object.fromEntries(['literal','interpretive'].map(variant=>[variant,{text:result[variant],status:'draft',variant,origin:'ai',model:result.model||'configured-provider',sourceVersion:book.contentVersion,createdAt:new Date().toISOString()}]));
       await mutate(path.join(userDir(user),'translations',digest(id)+'.json'),{},data=>{
         const next={...data,[passageId]:{contentVersion:book.contentVersion,translations}};
-        if(dataStore){const projected={...book,sections:book.sections.map(s=>({...s,paragraphs:s.paragraphs.map(p=>next[p.id]?.contentVersion===book.contentVersion?{...p,translations:next[p.id].translations}:p)}))};if(Buffer.byteLength(JSON.stringify(projected))>3500000)throw fail('这本书的文字量已接近云端容量，请先导出备份并在本机继续。本次新译文未保存，已有原文与译文仍保留。',413);}
+        if(dataStore){const projected={...book,sections:book.sections.map(s=>({...s,paragraphs:s.paragraphs.map(p=>next[p.id]?.contentVersion===book.contentVersion?{...p,translations:next[p.id].translations}:p)}))};bookCapacity(projected);}
         data[passageId]=next[passageId];
       });return {...passages[i],translations};
     }finally{translationsRunning.delete(key);if(ticket)await dataStore.releaseTranslation(ticket).catch(()=>{});}
@@ -264,7 +267,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(new Set([...shelf.order,...incomingOrders]).size>shelfLimit||new Set([...Object.keys(shelf.archived),...incomingArchived]).size>shelfLimit)throw fail('备份中的书架超过 1000 本，请在本机整理后恢复',413);
     // Validate the entire package before changing any persisted data.
     for(const entry of backup.books){const b=entry?.book,r=entry?.records;if(!b||typeof b.bookId!=='string'||!b.bookId||b.bookId.length>128||typeof b.contentVersion!=='string'||!Array.isArray(b.chapters)||!b.chapters.length||!Array.isArray(b.sections)||b.sections.some(s=>!Array.isArray(s?.paragraphs))||!Array.isArray(b.annotations)||!Array.isArray(b.glossary)||!b.title||typeof b.title.zh!=='string'||!b.source||typeof b.source.format!=='string')throw fail('书籍格式不完整');
-      if(dataStore&&Buffer.byteLength(JSON.stringify(b))>3500000)throw fail('这本备份的文字量超过云端限制，请在本机恢复',413);
+      if(dataStore&&Buffer.byteLength(JSON.stringify(b))>MAX_BOOK_BYTES)throw fail('这本备份的文字量超过云端限制，请在本机恢复',413);
       const existing=publicBooks.get(b.bookId)||await read(bookFile(user,b.bookId),null);if(existing&&(existing.contentVersion!==b.contentVersion||JSON.stringify(allPassages(existing).map(p=>[p.id,p.original]))!==JSON.stringify(allPassages(b).map(p=>[p.id,p.original]))))throw fail('备份的原文版本与书房已有内容冲突，未覆盖原书或记录',409);
       const passages=allPassages(b),ids=new Set(passages.map(p=>p.id));if(!passages.length||ids.size!==passages.length||passages.some(p=>typeof p.id!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(p.id)||typeof p.original!=='string'||!p.translations||Array.isArray(p.translations)||!b.chapters.some(c=>c.id===p.chapterId)))throw fail('原文锚点不完整');
       if(!r||r.bookId!==b.bookId||!Array.isArray(r.comments)||!Array.isArray(r.questions)||!Array.isArray(r.readingSessions)||[...r.comments,...r.questions].some(n=>!ids.has(n.passageId)||n.origin!=='user'||typeof n.text!=='string'||n.text.length>2000))throw fail('个人记录无法对应原文');
@@ -345,5 +348,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(claim.pending)await mutate(bookFile(user,incoming.bookId),{},current=>{if(current._giftReceive?.fingerprint===fingerprint)delete current._giftReceive;});
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,records,addComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,validateRestore,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,records,addComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,validateRestore,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }
