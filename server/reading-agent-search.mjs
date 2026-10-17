@@ -1,10 +1,11 @@
+import {DEFAULT_MODELS} from './model-config.mjs';
 import {DeepSeekSearchProvider} from '@deepseek-ai/dsh-web-search-deepseek';
 
 export function createWebSearch({env=process.env}={}){
   return async(query,{signal,reserveRequest}={})=>{
     signal?.throwIfAborted();
     if(typeof reserveRequest!=='function')throw new Error('A synchronous request budget is required');
-    const provider=new DeepSeekSearchProvider(()=>({apiKey:env.DEEPSEEK_API_KEY,model:'deepseek-flash',baseURL:'https://api.deepseek.com/anthropic/v1',apiVersion:'2023-06-01',maxTokens:1024,maxUses:1,recordRequest:request=>{
+    const provider=new DeepSeekSearchProvider(()=>({apiKey:env.DEEPSEEK_API_KEY,model:DEFAULT_MODELS.reading,baseURL:'https://api.deepseek.com/anthropic/v1',apiVersion:'2023-06-01',maxTokens:1024,maxUses:1,recordRequest:request=>{
       const reserved=reserveRequest({inputBytes:Buffer.byteLength(JSON.stringify(request.body)),maxTokens:request.body.max_tokens,kind:'web'});
       if(reserved&&typeof reserved.then==='function'){Promise.resolve(reserved).catch(()=>{});throw new Error('Request budget must be synchronous');}
     }}));

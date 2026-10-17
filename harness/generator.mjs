@@ -1,3 +1,4 @@
+import {DEFAULT_MODELS} from '../server/model-config.mjs';
 import {readFile,writeFile,mkdir,rename} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import path from 'node:path';
@@ -22,7 +23,7 @@ export function normaliseEcho(value,text){
  }).sort((a,b)=>a.start-b.start);
  return {verdict:value.verdict,summary:value.summary,segments:value.verdict==='uncertain'?[]:segments,sourceRefs:value.sourceRefs};
 }
-export function createHarnessGenerator({runRoot=path.join(project,'local/harness/runs'),model='deepseek-flash',maxCostCny=.10,timeoutMs=60000,runtimeRoot=process.env.VERCEL?path.join(project,'.reader-runtime'):null}={}){
+export function createHarnessGenerator({runRoot=path.join(project,'local/harness/runs'),model=DEFAULT_MODELS.reading,maxCostCny=.10,timeoutMs=60000,runtimeRoot=process.env.VERCEL?path.join(project,'.reader-runtime'):null}={}){
  if(model!=='deepseek-flash')throw Error('未配置这个模型的费用与运行策略。');
  return async job=>{
   const snapshot=makeSnapshot(job),dir=path.join(runRoot,job.runId.replace(/[^a-zA-Z0-9_-]/g,''));
