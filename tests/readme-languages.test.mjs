@@ -46,3 +46,17 @@ test('the README variants describe the same supported formats and sections',asyn
   for(const [locale,sections]of Object.entries(headings))assert.deepEqual(sections,reference,locale+' README must keep the same section structure');
   for(const [locale,count]of Object.entries(formats))assert.ok(count>=4,locale+' README must mention each supported format');
 });
+
+test('the READMEs and the MCP guides document the same adapter tools',async()=>{
+  const toolsOf=text=>[...new Set([...text.matchAll(/reader_(?:get|add)_[a-z_]+|reader_search/g)].map(match=>match[0]))].sort();
+  const guideOf=locale=>({'en':'app/en/mcp.html','zh-CN':'app/zh-hans/mcp.html','zh-Hant':'app/zh-hant/mcp.html',ja:'app/ja/mcp.html'})[locale];
+  const readmeTools={},guideTools={};
+  for(const [locale,file]of Object.entries(readmes)){
+    readmeTools[locale]=toolsOf(await readFile(new URL('../'+file,import.meta.url),'utf8'));
+    guideTools[locale]=toolsOf(await readFile(new URL('../'+guideOf(locale),import.meta.url),'utf8'));
+    assert.deepEqual(guideTools[locale],readmeTools[locale],locale+' MCP guide must document the same tools as its README');
+  }
+  for(const [locale,tools]of Object.entries(readmeTools))assert.deepEqual(tools,readmeTools.en,locale+' README tool list drifted from English');
+  for(const [locale,tools]of Object.entries(guideTools))assert.deepEqual(tools,guideTools.en,locale+' MCP guide tool list drifted from English');
+  assert.ok(readmeTools.en.includes('reader_get_manifest'),'the documented tools must cover the manifest reader');
+});
