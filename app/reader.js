@@ -16,7 +16,7 @@ import {createChapterFlow,isReadingDivider} from './reading-flow.mjs';
 import {startReadingLoad,mergeLoadedReadingRecords} from './reading-load.mjs';
 import {noteSaveReceipt,positionSaveState,draftSaveReceipt} from './save-receipts.mjs';
 import {mountReadingArrival} from './reading-arrival.mjs';
-import {mountBookIntroduction,renderBookContents} from './reader-navigation.mjs';
+import {mountBookIntroduction,mountChapterEntry,mountContentsDialog} from './reader-navigation.mjs';
 import {mountParallelSettings,applyParallelAppearance,createParallelPair} from './parallel-reading.mjs';
 import {mountReaderPagination} from './reader-pagination.mjs';
 import {mountReaderImmersion} from './reader-immersion.mjs';
@@ -62,6 +62,8 @@ const progressSync=createProgressSync({
 const currentChapter=()=>book.chapters.find(c=>c.id===state.chapterId);
 const activeSections=()=>book.sections.filter(s=>s.chapterId===state.chapterId);
 const chapterLabel=chapter=>book.source?.structure==='automatic_groups'?'自动分段 · 阅读片段 '+chapter.number:chapter.kind&&chapter.kind!=='body'?chapter.title.zh:'第 '+chapter.number+' 章';
+const contents=mountContentsDialog({document,getBook:()=>book,getChapterId:()=>state.chapterId,onNavigate:changeChapter,onBeforeOpen:dismissTools});
+mountChapterEntry({document,getBook:()=>book,getChapter:()=>book&&currentChapter(),onOpen:openContents});
 mountBookIntroduction({document,getBook:()=>book,getChapter:()=>book&&currentChapter(),onOpen:dismissTools});
 function anchor(){
   if(pagination.active)return pagination.anchor();
@@ -141,7 +143,7 @@ function buildChapter(chapter){
 }
 function updateChapterNavigation(){
   const chapter=currentChapter(),index=book.chapters.findIndex(c=>c.id===chapter.id),bodyCount=book.chapters.filter(c=>c.kind==='body').length;
-  document.title=chapter.title.zh+' · Leafhour';$('running-chapter').textContent=book.source?.structure==='automatic_groups'?'片段 '+chapter.number:chapterLabel(chapter);
+  document.title=chapter.title.zh+' · Leafhour';
   $('chapter-fraction').textContent=chapter.kind==='body'?chapter.number+' / '+bodyCount:chapter.kind?chapter.title.zh:(index+1)+' / '+book.chapters.length;
   $('previous-chapter').disabled=index===0;$('next-chapter').disabled=index===book.chapters.length-1;
   renderToc();document.dispatchEvent(new CustomEvent('reader:chapter',{detail:{chapterId:state.chapterId}}));
@@ -172,10 +174,7 @@ function renderChapter(){
   $('chapter-number').textContent=chapterLabel(chapter);$('chapter-title').textContent=chapter.title.zh;$('chapter-original-title').textContent=chapter.title.en;
   $('chapter-heading').hidden=false;$('chapter-footer').hidden=false;applyAppearance();updateChapterNavigation();prepareFollowingChapter();
 }
-function renderToc(){
-  renderBookContents({list:$('toc-list'),book,chapterId:state.chapterId,onNavigate:changeChapter});
-  $('open-toc').disabled=false;$('settings-chapters').disabled=false;
-}
+function renderToc(){contents.render();$('open-toc').disabled=false;$('settings-chapters').disabled=false;}
 function changeChapter(id,target=null,options){if(!book?.chapters.some(c=>c.id===id))return Promise.resolve(false);return readingNavigation.navigate(id,target,options);}
 function commitChapter(id,target=null){
   if(!book.chapters.some(c=>c.id===id))return;persist();closePanel();dismissTools();state.chapterId=id;selectedId=null;
@@ -386,9 +385,8 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&e.target.matches('.passage')){e.preventDefault();choosePassage(e.target.dataset.id);$('paragraph-tools').querySelector('button:not([hidden])')?.focus();}
   if(e.key.toLowerCase()==='f'&&!e.metaKey&&!e.ctrlKey&&!e.altKey){e.preventDefault();immersion.toggleFullscreen();}
 });
-function openContents(){if(!book)return;dismissTools();renderToc();$('toc-dialog').showModal();$('open-toc').setAttribute('aria-expanded','true');const list=$('toc-list'),active=list.querySelector('[aria-current=location]');if(active){const top=active.offsetTop-list.offsetTop;if(top<list.scrollTop||top+active.offsetHeight>list.scrollTop+list.clientHeight)list.scrollTop=Math.max(0,top-list.clientHeight/3);}}
-$('toc-dialog').addEventListener('close',()=>$('open-toc').setAttribute('aria-expanded','false'));
-$('open-toc').addEventListener('click',openContents);$('open-settings').addEventListener('click',()=>{dismissTools();$('settings-dialog').showModal();});
+function openContents(trigger){if(!book)return;$('open-toc').disabled=false;$('settings-chapters').disabled=false;if(!contents.open(trigger))return;const list=$('toc-list'),active=list.querySelector('[aria-current=location]');if(active){const top=active.offsetTop-list.offsetTop;if(top<list.scrollTop||top+active.offsetHeight>list.scrollTop+list.clientHeight)list.scrollTop=Math.max(0,top-list.clientHeight/3);}}
+$('open-toc').addEventListener('click',event=>openContents(event.currentTarget));$('open-settings').addEventListener('click',()=>{dismissTools();$('settings-dialog').showModal();});
 for(const b of document.querySelectorAll('[data-close-dialog]'))b.addEventListener('click',()=>$(b.dataset.closeDialog).close());
 for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const rect=dialog.getBoundingClientRect();if(e.clientX<rect.left||e.clientX>rect.right||e.clientY<rect.top||e.clientY>rect.bottom)dialog.close();});
 $('page-layout').addEventListener('change',e=>{const a=anchor();state.chapterId=paragraphMap.get(a?.passageId)?.chapterId||state.chapterId;Object.assign(state,normalizeAppearance({...state,pageLayout:e.target.value}));dismissTools();closePanel();renderChapter();restoreAnchor(a);persist();document.dispatchEvent(new CustomEvent('reader:layout'));});
@@ -403,7 +401,7 @@ for(const b of document.querySelectorAll('[data-font-family]'))b.addEventListene
 $('font-size').addEventListener('input',e=>adjustAppearance({font:Number(e.target.value)}));
 $('first-line-indent').addEventListener('change',e=>adjustAppearance({indent:e.target.checked}));
 $('reset-appearance').addEventListener('click',()=>{adjustAppearance({...appearanceDefaults,readingPurpose:state.readingPurpose,preferredLanguage:state.preferredLanguage});announce('已恢复默认排版与纸面，阅读位置和记录已保留。');});
-$('settings-chapters').addEventListener('click',()=>{$('settings-dialog').close();openContents();});
+$('settings-chapters').addEventListener('click',()=>{$('settings-dialog').close();openContents($('settings-chapters'));});
 matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>applyAppearance());
 $('show-original').addEventListener('click',()=>{if(!selectedId)return;const a=anchor(),p=paragraphMap.get(selectedId),v=passageView(p);overrides[selectedId]={...overrides[selectedId],mode:v.mode==='en'?'zh':'en'};fillPassage($('chapter-text').querySelector('[data-id="'+selectedId+'"]'),p);if(!$('note-panel').hidden)renderPanel();restoreAnchor(a);$('show-original').textContent=v.mode==='en'?'原文':'译文';positionTools();});
 $('show-annotations').addEventListener('click',()=>openPanel('annotations'));$('show-comment').addEventListener('click',()=>openPanel('comment'));$('show-question').addEventListener('click',()=>openPanel('question'));
