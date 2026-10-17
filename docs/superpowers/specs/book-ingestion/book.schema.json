@@ -1,0 +1,748 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:leafhour:schema:book:1",
+  "title": "Leafhour canonical book, design candidate 2026-10-17",
+  "type": "object",
+  "properties": {
+    "kind": {
+      "const": "leafhour-book"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "bookId": {
+      "$ref": "#/$defs/id"
+    },
+    "editionId": {
+      "$ref": "#/$defs/id"
+    },
+    "revisionId": {
+      "$ref": "#/$defs/id"
+    },
+    "contentVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "contentVersionScheme": {
+      "enum": [
+        "legacy-source-sha256",
+        "canonical-sha256-v1"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0
+    },
+    "language": {
+      "type": "string",
+      "minLength": 2
+    },
+    "editionDescription": {
+      "type": "string"
+    },
+    "completeness": {
+      "enum": [
+        "full",
+        "partial"
+      ]
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      },
+      "minItems": 1
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/asset"
+      },
+      "minItems": 0
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/provenance"
+      },
+      "minItems": 1
+    },
+    "coverage": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/coverage"
+      },
+      "minItems": 1
+    },
+    "chapters": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/chapter"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "kind",
+    "schemaVersion",
+    "bookId",
+    "editionId",
+    "revisionId",
+    "contentVersion",
+    "contentVersionScheme",
+    "title",
+    "authors",
+    "language",
+    "editionDescription",
+    "completeness",
+    "sources",
+    "assets",
+    "provenance",
+    "coverage",
+    "chapters"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "range": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unit": {
+          "const": "utf16"
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "locator": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "epub",
+            "html",
+            "text"
+          ]
+        },
+        "resource": {
+          "type": "string"
+        },
+        "fragment": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "resource",
+        "fragment"
+      ],
+      "additionalProperties": false
+    },
+    "anchor": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "$ref": "#/$defs/id"
+        },
+        "pdfPage": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "printedPage": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "bbox": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "minItems": 4,
+              "maxItems": 4
+            }
+          ]
+        },
+        "coordinateFrame": {
+          "enum": [
+            "pdf-visible-top-left-v1",
+            null
+          ]
+        },
+        "locator": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/locator"
+            }
+          ]
+        },
+        "textRange": {
+          "$ref": "#/$defs/range"
+        },
+        "rawText": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "sourceId",
+        "pdfPage",
+        "printedPage",
+        "bbox",
+        "coordinateFrame",
+        "locator",
+        "textRange",
+        "rawText"
+      ],
+      "additionalProperties": false
+    },
+    "footnoteRef": {
+      "type": "object",
+      "properties": {
+        "targetId": {
+          "$ref": "#/$defs/id"
+        },
+        "marker": {
+          "type": "string",
+          "minLength": 1
+        },
+        "range": {
+          "$ref": "#/$defs/range"
+        }
+      },
+      "required": [
+        "targetId",
+        "marker",
+        "range"
+      ],
+      "additionalProperties": false
+    },
+    "payload": {
+      "type": "object",
+      "properties": {
+        "html": {
+          "type": "string"
+        },
+        "cells": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 0
+          },
+          "minItems": 0
+        },
+        "latex": {
+          "type": "string"
+        },
+        "assetId": {
+          "$ref": "#/$defs/id"
+        },
+        "captionBlockIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "block": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "enum": [
+            "paragraph",
+            "heading",
+            "footnote",
+            "list_item",
+            "quote",
+            "table",
+            "equation",
+            "figure",
+            "caption"
+          ]
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "text": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string",
+          "minLength": 2
+        },
+        "textDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "sourceAnchors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/anchor"
+          },
+          "minItems": 1
+        },
+        "footnoteRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/footnoteRef"
+          },
+          "minItems": 0
+        },
+        "review": {
+          "enum": [
+            "extracted_unreviewed",
+            "source_checked",
+            "visually_checked"
+          ]
+        },
+        "provenanceRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1
+        },
+        "payload": {
+          "$ref": "#/$defs/payload"
+        },
+        "attribution": {
+          "enum": [
+            "source",
+            "author",
+            "translator"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "text",
+        "language",
+        "textDigest",
+        "sourceAnchors",
+        "footnoteRefs",
+        "review",
+        "provenanceRefs",
+        "attribution"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "heading"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "level"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "figure"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "payload"
+            ],
+            "properties": {
+              "payload": {
+                "required": [
+                  "assetId"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "equation"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "payload"
+            ],
+            "properties": {
+              "payload": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "latex"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "assetId"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "table"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "payload"
+            ],
+            "properties": {
+              "payload": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "cells"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "html"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "assetId"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "chapter": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "frontmatter",
+            "body",
+            "appendix"
+          ]
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/block"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "kind",
+        "blocks"
+      ],
+      "additionalProperties": false
+    },
+    "rights": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "public_domain",
+            "authorized",
+            "user_provided",
+            "unknown"
+          ]
+        },
+        "license": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidenceRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "attribution": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "license",
+        "evidenceRef",
+        "attribution"
+      ],
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "format": {
+          "enum": [
+            "pdf",
+            "epub",
+            "html",
+            "txt",
+            "md",
+            "xml"
+          ]
+        },
+        "filename": {
+          "type": "string"
+        },
+        "sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "revision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pageCount": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "sourceProofreading": {
+          "enum": [
+            "unknown",
+            "unreviewed",
+            "source_claimed_proofread",
+            "source_claimed_validated"
+          ]
+        },
+        "rights": {
+          "$ref": "#/$defs/rights"
+        }
+      },
+      "required": [
+        "id",
+        "format",
+        "filename",
+        "sha256",
+        "url",
+        "revision",
+        "pageCount",
+        "sourceProofreading",
+        "rights"
+      ],
+      "additionalProperties": false
+    },
+    "asset": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mediaType": {
+          "type": "string"
+        },
+        "sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "sourceId": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "mediaType",
+        "sha256",
+        "sourceId"
+      ],
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "requestedModel": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resolvedModel": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "versionEvidence": {
+          "enum": [
+            "provider_reported",
+            "locally_pinned",
+            "unknown"
+          ]
+        },
+        "adapterVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "configDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "provider",
+        "requestedModel",
+        "resolvedModel",
+        "versionEvidence",
+        "adapterVersion",
+        "configDigest",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "$ref": "#/$defs/id"
+        },
+        "pdfPage": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "resource": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "enum": [
+            "complete",
+            "blank",
+            "illustration",
+            "pending",
+            "failed"
+          ]
+        },
+        "blockIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "sourceId",
+        "pdfPage",
+        "resource",
+        "state",
+        "blockIds"
+      ],
+      "additionalProperties": false
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}
