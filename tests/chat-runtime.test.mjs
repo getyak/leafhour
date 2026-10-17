@@ -75,7 +75,7 @@ for(const boundary of ['close','abort','expiry'])test(`auxiliary reservation cap
 });
 test('bridge revocation aborts already-dispatched provider through internal tool signal',async()=>{
  const {createReadingAgentTools}=await import('../server/reading-agent-tools.mjs');let ready,providerSignal;const started=new Promise(r=>ready=r),activities=[];
- const domain=createReadingAgentTools({library:{},user:{id:'me'},bookId:'one',onActivity:async a=>activities.push(a),searchWeb:async(q,{signal})=>{providerSignal=signal;ready();return new Promise((resolve,reject)=>signal?.addEventListener('abort',()=>reject(signal.reason),{once:true}));}});
+ const domain=createReadingAgentTools({library:{},user:{id:'me'},bookId:'one',scope:'library',onActivity:async a=>activities.push(a),searchWeb:async(q,{signal})=>{providerSignal=signal;ready();return new Promise((resolve,reject)=>signal?.addEventListener('abort',()=>reject(signal.reason),{once:true}));}});
  const bridge=await createChatBridge({budget:createChatBudget({pricing}),tools:domain});const pending=fetch(bridge.url+'/tool',{method:'POST',headers:{Authorization:'Bearer '+bridge.token},body:JSON.stringify({name:'reader_search_web',args:{query:'x'}})}).catch(()=>null);await started;await bridge.close();await pending;assert.equal(providerSignal?.aborted,true);await new Promise(r=>setTimeout(r,0));assert.deepEqual(activities.map(a=>a.status),['running']);
 });
 test('default budget permits eight bounded requests and receipts expose only per-request sizes',()=>{
@@ -83,7 +83,7 @@ test('default budget permits eight bounded requests and receipts expose only per
 });
 test('runtime internal timeout aborts parent provider and leaves no late completion activity',async t=>{
  const {createReadingAgentTools}=await import('../server/reading-agent-tools.mjs');let ready,providerSignal;const started=new Promise(r=>ready=r),activities=[];
- const domain=createReadingAgentTools({library:{},user:{id:'me'},bookId:'one',onActivity:async a=>activities.push(a),searchWeb:async(q,{signal})=>{providerSignal=signal;ready();return new Promise((resolve,reject)=>signal.addEventListener('abort',()=>reject(signal.reason),{once:true}));}});
+ const domain=createReadingAgentTools({library:{},user:{id:'me'},bookId:'one',scope:'library',onActivity:async a=>activities.push(a),searchWeb:async(q,{signal})=>{providerSignal=signal;ready();return new Promise((resolve,reject)=>signal.addEventListener('abort',()=>reject(signal.reason),{once:true}));}});
  const f=await fixture(t,good,()=>new Promise(()=>{}),{timeoutMs:500});const pending=f.generate({...job(),tools:domain});const result=assert.rejects(pending,/取消|超时/);await f.started;const patch=JSON.parse(await readFile(f.calls[0].patches[0],'utf8')),config=patch.at(-1).insert[0].config;
  const request=fetch(config.bridgeUrl+'/tool',{method:'POST',headers:{Authorization:'Bearer '+config.token},body:JSON.stringify({name:'reader_search_web',args:{query:'x'}})}).catch(()=>null);await started;await result;await request;assert.equal(providerSignal.aborted,true);assert.deepEqual(activities.map(a=>a.status),['running']);assert.deepEqual(await readdir(f.runRoot),[]);
 });

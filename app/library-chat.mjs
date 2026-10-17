@@ -1,4 +1,5 @@
 import {createLibraryChatState,CHAT_TEXT_LIMIT} from './library-chat-state.mjs';
+import {readChatScope} from './reading-chat-scope.mjs';
 import {renderChatMarkdown,safeChatUrl} from './library-chat-markdown.mjs';
 import {mountSquirrelPosition} from './squirrel-position.mjs';
 import {mountSquirrelMotion} from './squirrel-motion.mjs';
@@ -29,11 +30,13 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   const context=node('details','library-chat-context'),contextSummary=node('summary'),contextLabel=node('span'),contextHint=node('span','library-chat-context-hint','查看原文与译文');contextSummary.append(contextLabel,contextHint);const contextBody=node('div','library-chat-context-body');context.append(contextSummary,contextBody);
   const messages=node('div','library-chat-messages');messages.setAttribute('role','log');messages.setAttribute('aria-label','和这本书的对话');messages.setAttribute('aria-live','polite');messages.setAttribute('aria-relevant','additions text');
   const statusBar=node('div','library-chat-status-row'),status=node('p','library-chat-status');status.id='library-chat-status';status.setAttribute('role','status');const refreshButton=button('重新载入','library-chat-text-button');statusBar.append(status,refreshButton);
+  const scopeRow=node('div','library-chat-scope-row'),scopeLabel=node('label','','允许查阅'),scopeChoice=node('select','library-chat-scope-choice');scopeChoice.id='library-chat-scope';scopeLabel.htmlFor=scopeChoice.id;for(const [value,label]of [['book','仅当前书'],['library','书房、公版与网络']]){const option=node('option','',label);option.value=value;scopeChoice.append(option);}scopeRow.append(scopeLabel,scopeChoice);
   const form=node('form','library-chat-composer'),inputLabel=node('label','sr-only','想问这本书什么？'),input=node('textarea');input.id='library-chat-input';inputLabel.htmlFor=input.id;input.rows=2;input.placeholder='聊聊这本书，或找下一本。';input.setAttribute('aria-describedby','library-chat-status library-chat-hint library-chat-count');
-  const composerBottom=node('div','library-chat-composer-bottom'),count=node('span','library-chat-count');count.id='library-chat-count';const composerActions=node('div','library-chat-composer-actions'),stopButton=button('停止','library-chat-stop'),sendButton=node('button','library-chat-send','↑');sendButton.type='submit';composerActions.append(stopButton,sendButton);composerBottom.append(count,composerActions);form.append(inputLabel,input,composerBottom);
-  const footer=node('div','library-chat-footer'),hint=node('p','library-chat-hint sr-only','AI 可以按需查阅你的书房、公版书与网络资料。');hint.id='library-chat-hint';const exportButton=button('导出这段对话','library-chat-text-button'),menuHint=node('p','library-chat-menu-hint',hint.textContent);menuItems.append(exportButton,menuHint);footer.append(hint);frame.append(header,messages,statusBar,context,form,footer);root.replaceChildren(frame);
+  const composerBottom=node('div','library-chat-composer-bottom'),count=node('span','library-chat-count');count.id='library-chat-count';const composerActions=node('div','library-chat-composer-actions'),stopButton=button('停止','library-chat-stop'),sendButton=node('button','library-chat-send','↑');sendButton.type='submit';composerActions.append(stopButton,sendButton);composerBottom.append(count,composerActions);form.append(scopeRow,inputLabel,input,composerBottom);
+  const footer=node('div','library-chat-footer'),hint=node('p','library-chat-hint','查阅范围尚未确认，暂不发送问题。');hint.id='library-chat-hint';const exportButton=button('导出这段对话','library-chat-text-button'),menuHint=node('p','library-chat-menu-hint',hint.textContent);menuItems.append(exportButton,menuHint);form.append(hint);frame.append(header,messages,statusBar,context,form,footer);root.replaceChildren(frame);
 
   const signedIn=()=>!!getSession()?.user;
+  const confirmedScope=view=>{if(!view.data?.scope)return null;try{return readChatScope(view.data.scope);}catch{return null;}};
   const activeOwner=()=>signedIn()?String(getOwner()||getSession().user.id):null;
   const books=()=>Array.isArray(getBooks())?getBooks():[];
   const currentBookId=()=>{const current=getCurrentBook();return typeof current==='string'?current:current?.bookId;};
@@ -84,7 +87,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     }parent.append(section);
   }
   function renderMessages(view){
-    const signature=JSON.stringify([owner,selectedBook,view.data?'ready':view.phase,view.turns,view.pending?.status,view.retry,signedIn(),books().length]);
+    const signature=JSON.stringify([owner,selectedBook,view.data?'ready':view.phase,view.turns,view.pending?.status,view.retry,view.data?.scope?.mode,signedIn(),books().length]);
     if(signature===historySignature)return;historySignature=signature;const nearBottom=messages.scrollHeight-messages.scrollTop-messages.clientHeight<90,scrollTop=messages.scrollTop;
     if(!signedIn()){
       const empty=emptyState('和书多聊几句','登录后，可以围绕原文提问，也能回来接着看自己的问题。');const login=button('登录后开始','library-chat-send');login.addEventListener('click',()=>{close();openAuth();});empty.append(login);showEmpty(empty);return;
@@ -94,8 +97,8 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     if(view.phase==='error'&&!view.data){showEmpty(emptyState('这一页暂时没有打开','可以重新载入，已经写下的问题会保留。'));return;}
     const displayTurns=[...view.turns];if(view.retry?.uncertain&&!displayTurns.some(turn=>turn.id===view.retry.payload.id))displayTurns.push({...view.retry.payload,origin:'user',status:'running',answer:null});
     if(!displayTurns.length){
-      const empty=emptyState('聊聊这本书，或找下一本。','聊聊这一章，也可以比较章节，或找一本接着读的书。');
-      const suggestions=node('div','library-chat-suggestions');for(const text of ['你最喜欢这一章的哪句话？','前后章节怎样联系？','推荐一本接着读的书']){const suggestion=button(text,'library-chat-suggestion');suggestion.disabled=!!view.pending;suggestion.addEventListener('click',()=>{state.setDraft(text);render();input.focus();});suggestions.append(suggestion);}empty.append(suggestions);showEmpty(empty);return;
+      const wide=confirmedScope(view)?.mode==='library',empty=emptyState(wide?'聊聊这本书，或找下一本。':'从这一段继续追问。',wide?'聊聊这一章，也可以比较章节，或找一本接着读的书。':'可以核对当前段落、解释概念，或比较本书章节。');
+      const suggestions=node('div','library-chat-suggestions');for(const text of ['你最喜欢这一章的哪句话？','前后章节怎样联系？',wide?'推荐一本接着读的书':'这段话如何支持本章的论点？']){const suggestion=button(text,'library-chat-suggestion');suggestion.disabled=!!view.pending;suggestion.addEventListener('click',()=>{state.setDraft(text);render();input.focus();});suggestions.append(suggestion);}empty.append(suggestions);showEmpty(empty);return;
     }
     const desired=[],nextNodes=new Map();let completedAnswer=null;
     for(const turn of displayTurns){
@@ -123,13 +126,16 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   }
   function render(){
     const view=state.view();characterMotion.setState({thinking:!!view.pending,chatOpen:root.open});const list=books(),visibleDraft=view.pending?'':view.draft;if(input.value!==visibleDraft)input.value=visibleDraft;input.placeholder=view.pending?'正在思考…':'聊聊这本书，或找下一本。';
-    const listSignature=JSON.stringify(list.map(book=>[book.bookId,bookTitle(book)]));if(listSignature!==booksSignature){booksSignature=listSignature;chooser.replaceChildren(...list.map(book=>{const option=node('option','',bookTitle(book));option.value=book.bookId;return option;}));}chooser.value=selectedBook||'';chooser.hidden=list.length<2;singleBookTitle.hidden=list.length>1;singleBookTitle.textContent=bookTitle(list.find(book=>book.bookId===selectedBook));chooser.disabled=!!view.pending||!!view.retry?.uncertain;bookRow.hidden=!signedIn()||!selectedBook;
+    const listSignature=JSON.stringify(list.map(book=>[book.bookId,bookTitle(book)]));if(listSignature!==booksSignature){booksSignature=listSignature;chooser.replaceChildren(...list.map(book=>{const option=node('option','',bookTitle(book));option.value=book.bookId;return option;}));}chooser.value=selectedBook||'';chooser.hidden=list.length<2;singleBookTitle.hidden=list.length>1;singleBookTitle.textContent=bookTitle(list.find(book=>book.bookId===selectedBook));chooser.disabled=!!view.pending||!!view.retry?.uncertain||!!view.scopePending;bookRow.hidden=!signedIn()||!selectedBook;
     renderContext(view);renderMessages(view);if(targetMessageId){const target=[...messages.children].find(n=>n.getAttribute('data-message-id')===targetMessageId);if(target){messages.scrollTop+=target.getBoundingClientRect().top-messages.getBoundingClientRect().top-messages.clientTop;targetMessageId=null;}}form.hidden=!signedIn()||!selectedBook;footer.hidden=form.hidden;
     const length=view.draft.length;count.textContent=length>=1800?(length>CHAT_TEXT_LIMIT?'已超出 '+(length-CHAT_TEXT_LIMIT)+' 字':'还可写 '+(CHAT_TEXT_LIMIT-length)+' 字'):'';count.classList.toggle('is-over-limit',length>CHAT_TEXT_LIMIT);input.setAttribute('aria-invalid',String(length>CHAT_TEXT_LIMIT));
-    input.disabled=!!view.pending||!!view.retry?.uncertain;count.hidden=!!view.pending;sendButton.disabled=!view.canSend;const sendLabel=view.retry?.uncertain?'继续上次提问':view.retry?'再试一次':'发送问题';sendButton.textContent=view.retry?'↻':'↑';sendButton.setAttribute('aria-label',sendLabel);sendButton.title=sendLabel;launcher.classList.toggle('is-waiting',!!view.pending);launcher.setAttribute('aria-label',root.open?'收起阅读对话':view.pending?'打开阅读对话，提问正在处理':'打开阅读对话');stopButton.hidden=!view.pending;stopButton.disabled=view.pending?.status==='stopping';
-    if(!signedIn())status.textContent='';else if(!selectedBook)status.textContent='';else if(view.pending)status.textContent=view.pending.status==='stopping'?'正在停止。确认后可以重新提问。':'可以先收起窗口，回答会留在这里。';else if(view.loadError)status.textContent=view.loadError;else if(view.notice)status.textContent=view.notice;else if(view.data?.available===false)status.textContent='阅读助手暂时不可用。可以先写下问题，稍后再试。';else if(view.phase==='loading')status.textContent='正在载入原文和已有对话…';else status.textContent='';
-    statusBar.hidden=!status.textContent;status.classList.toggle('has-error',!!view.loadError);refreshButton.hidden=!signedIn()||!selectedBook||(!view.loadError&&!view.retry?.uncertain&&!view.pending&&view.data?.available!==false);refreshButton.disabled=!!loadInFlight||view.pending?.status==='stopping';refreshButton.textContent=view.pending||view.retry?.uncertain?'查看进度':'重新载入';exportButton.hidden=!view.turns.length;contextHint.textContent=context.open?'收起原文与译文':'查看原文与译文';
-    menuHint.textContent=hint.textContent=view.pending?'收起窗口不会停止提问。需要中断时，请点“停止”。':'AI 可以按需查阅你的书房、公版书与网络资料。';
+    input.disabled=!!view.pending||!!view.retry?.uncertain;count.hidden=!!view.pending;sendButton.disabled=!view.canSend||!confirmedScope(view);const sendLabel=view.retry?.uncertain?'继续上次提问':view.retry?'再试一次':'发送问题';sendButton.textContent=view.retry?'↻':'↑';sendButton.setAttribute('aria-label',sendLabel);sendButton.title=sendLabel;launcher.classList.toggle('is-waiting',!!view.pending);launcher.setAttribute('aria-label',root.open?'收起阅读对话':view.pending?'打开阅读对话，提问正在处理':'打开阅读对话');stopButton.hidden=!view.pending;stopButton.disabled=view.pending?.status==='stopping';
+    if(!signedIn())status.textContent='';else if(!selectedBook)status.textContent='';else if(view.pending)status.textContent=view.pending.status==='stopping'?'正在停止。确认后可以重新提问。':'可以先收起窗口，回答会留在这里。';else if(view.loadError)status.textContent=view.loadError;else if(view.notice)status.textContent=view.notice;else if(view.data?.available===false)status.textContent='阅读助手暂时不可用。可以先写下问题，稍后再试。';else if(view.phase==='loading')status.textContent='正在载入原文和已有对话…';else if(!confirmedScope(view))status.textContent='查阅范围尚未确认，请重新载入；问题仍保留。';else status.textContent='';
+    statusBar.hidden=!status.textContent;status.classList.toggle('has-error',!!view.loadError);refreshButton.hidden=!signedIn()||!selectedBook||(!view.loadError&&!view.retry?.uncertain&&!view.pending&&!view.scopeUnconfirmed&&!!confirmedScope(view)&&view.data?.available!==false);refreshButton.disabled=!!loadInFlight||view.pending?.status==='stopping';refreshButton.textContent=view.pending||view.retry?.uncertain?'查看进度':'重新载入';exportButton.hidden=!view.turns.length;contextHint.textContent=context.open?'收起原文与译文':'查看原文与译文';
+    const scope=confirmedScope(view);scopeChoice.value=view.scopePending?.mode||scope?.mode||'book';scopeChoice.disabled=!scope||view.phase!=='ready'||!!view.scopePending||view.scopeUnconfirmed||!!view.pending||!!view.retry?.uncertain;
+    input.placeholder=scope?.mode==='library'?'聊聊这本书，或找下一本。':'问问这本书，或比较其中的章节。';
+    hint.textContent=!scope||view.scopeUnconfirmed?'查阅范围尚未确认，暂不发送问题；草稿仍保留。':(scope.mode==='book'?'只按需读取本书原文与译文。':'可按需读取书房、公版与网络，检索词会交给检索服务。')+' 问题、当前位置及允许范围内最多六轮对话会发送给实例配置的云模型；私人评论不自动读取。'+(view.retry?.uncertain?' 上次提问仍按原范围确认。':'');
+    menuHint.textContent=hint.textContent+(view.pending?' 收起窗口不会停止提问，需要中断时请点“停止”。':' 修改范围不会发送问题；旧回答仍保留，缩小范围后不会自动送入新范围。');
     if(focusComposer&&root.open&&!input.disabled&&!form.hidden){focusComposer=false;input.focus();}
   }
   function schedulePoll(){
@@ -146,10 +152,17 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     })();loadInFlight=promise;render();return promise;
   }
   async function send(){
-    if(syncOwner()){render();return;}const request=state.beginSend();if(!request)return;root.dispatchEvent(new Event('reading-chat-send'));clearPoll();pollCount=0;pollStarted=Date.now();const captured=owner,bookId=selectedBook;render();messages.scrollTop=messages.scrollHeight;void load({poll:true});
+    if(syncOwner()||!confirmedScope(state.view())){render();return;}const request=state.beginSend();if(!request)return;root.dispatchEvent(new Event('reading-chat-send'));clearPoll();pollCount=0;pollStarted=Date.now();const captured=owner,bookId=selectedBook;render();messages.scrollTop=messages.scrollHeight;void load({poll:true});
     try{const turn=await api('/api/library/books/'+encodeURIComponent(bookId)+'/chat',request.payload);if(isCurrent(captured)&&state.resolveSend(request.ticket,turn)){render();schedulePoll();}}
-    catch(error){if(!isCurrent(captured))return;const uncertain=!error.status||error.status===409||error.status>=500;if(state.rejectSend(request.ticket,error,{uncertain})){render();if(uncertain)await load();}}
+    catch(error){if(!isCurrent(captured))return;const uncertain=!error.status||error.status===409||error.status>=500;if(state.rejectSend(request.ticket,error,{uncertain})){render();if(uncertain||error.status===412)await load();}}
     finally{if(isCurrent(captured)){render();schedulePoll();}}
+  }
+  async function saveScope(){
+    if(syncOwner()){render();return;}const request=state.beginScopeChange(scopeChoice.value);if(!request){render();return;}
+    const captured=owner,bookId=selectedBook,focus=trackActionFocus(document,scopeChoice);render();
+    try{const scope=await api('/api/library/books/'+encodeURIComponent(bookId)+'/chat/scope',request.payload);if(isCurrent(captured)&&bookId===selectedBook&&!state.resolveScopeChange(request.ticket,scope))await load();}
+    catch(error){if(isCurrent(captured)&&bookId===selectedBook&&state.rejectScopeChange(request.ticket,error))await load();}
+    finally{if(isCurrent(captured)&&bookId===selectedBook){render();if(root.open)focus.restore(!scopeChoice.disabled?scopeChoice:!input.disabled?input:closeButton);else focus.stop();}else focus.stop();}
   }
   async function stop(){
     const ticket=state.beginCancel();if(!ticket)return;const focus=trackActionFocus(document,stopButton);clearPoll();const captured=owner,bookId=selectedBook;render();
@@ -158,7 +171,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     finally{if(isCurrent(captured)){render();if(root.open)focus.restore(!input.disabled&&!form.hidden?input:stopButton.hidden?refreshButton.hidden?closeButton:refreshButton:stopButton);else focus.stop();}else focus.stop();}
   }
   function close(){characterMotion.setState({chatOpen:false});clearPoll();focusComposer=false;menu.open=false;if(root.open)root.close();launcher.setAttribute('aria-expanded','false');launcher.setAttribute('aria-label',state.view().pending?'打开阅读对话，提问正在处理':'打开阅读对话');if(opener?.isConnected&&!opener.hidden)opener.focus();else launcher.focus();}
-  function choose(bookId,passageId=null){if(state.view().pending||state.view().retry?.uncertain)return false;clearPoll();loadInFlight=null;pollCount=0;pollStarted=0;selectedBook=bookId;requestedPassage=passageId;historySignature='';context.open=false;state.setContext(owner,selectedBook);requestedPassage=state.view().retry?.payload.passageId||requestedPassage;return true;}
+  function choose(bookId,passageId=null){if(state.view().pending||state.view().retry?.uncertain||state.view().scopePending)return false;clearPoll();loadInFlight=null;pollCount=0;pollStarted=0;selectedBook=bookId;requestedPassage=passageId;historySignature='';context.open=false;state.setContext(owner,selectedBook);requestedPassage=state.view().retry?.payload.passageId||requestedPassage;return true;}
   async function copyAnswer(text,element,control){try{await navigator.clipboard.writeText(text);control.textContent='已复制';}catch{const range=document.createRange();range.selectNodeContents(element);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);control.textContent='已选中，可复制';}}
   function exportChat(){
     const view=state.view();if(!view.turns.length)return;const data={kind:'marginalia-book-chat',schemaVersion:1,exportedAt:new Date().toISOString(),bookId:selectedBook,title:view.data?.title,contentVersion:view.data?.contentVersion,turns:view.turns};
@@ -172,13 +185,14 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   window.visualViewport?.addEventListener('resize',fitViewport);window.visualViewport?.addEventListener('scroll',fitViewport);fitViewport();
   input.addEventListener('focus',fitViewport);
   closeButton.addEventListener('click',close);root.addEventListener('cancel',event=>{event.preventDefault();close();});root.addEventListener('close',()=>{clearPoll();if(opener?.isConnected)opener.focus();});
+  scopeChoice.addEventListener('change',saveScope);
   chooser.addEventListener('change',()=>{if(choose(chooser.value)){render();load();}});context.addEventListener('toggle',()=>{contextHint.textContent=context.open?'收起原文与译文':'查看原文与译文';});
   input.addEventListener('input',()=>{state.setDraft(input.value);render();});input.addEventListener('compositionstart',()=>{composing=true;});input.addEventListener('compositionend',()=>{composing=false;});input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing&&!composing&&event.keyCode!==229){event.preventDefault();send();}});
   form.addEventListener('submit',event=>{event.preventDefault();if(!composing)send();});stopButton.addEventListener('click',stop);refreshButton.addEventListener('click',async()=>{const focus=trackActionFocus(document,refreshButton),captured=owner,bookId=selectedBook;pollCount=0;try{await load();}finally{if(root.open&&captured===owner&&bookId===selectedBook)focus.restore(!refreshButton.hidden&&!refreshButton.disabled?refreshButton:!input.disabled&&!form.hidden?input:closeButton);else focus.stop();}});exportButton.addEventListener('click',()=>{exportChat();menu.open=false;menuSummary.focus();});
   const controls={
     open({bookId,passageId,messageId,draft}={}){
       targetMessageId=messageId||null;root.dispatchEvent(new Event('reading-chat-open'));
-      syncOwner();const view=state.view(),canFollow=!view.draft&&!view.pending&&!view.retry?.uncertain;
+      syncOwner();const view=state.view(),canFollow=!view.draft&&!view.pending&&!view.retry?.uncertain&&!view.scopePending;
       const candidate=bookId||(canFollow?currentBookId():null)||selectedBook||books()[0]?.bookId||null,valid=books().some(book=>book.bookId===candidate)?candidate:books()[0]?.bookId||null;
       const currentPassage=canFollow?(passageId||getCurrentPassage()||null):requestedPassage;
       if(!view.pending&&!view.retry?.uncertain&&(selectedBook!==valid||canFollow&&currentPassage!==requestedPassage))choose(valid,currentPassage);

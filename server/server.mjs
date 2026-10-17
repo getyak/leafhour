@@ -17,6 +17,7 @@ const assets=new Map([['/',['app/index.html','text/html']],['/styles.css',['app/
 for(const file of ['interaction-craft.css','interaction-craft.mjs','action-focus.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/reading-preferences.mjs',['app/reading-preferences.mjs','text/javascript']);
 assets.set('/personal-records.mjs',['app/personal-records.mjs','text/javascript']);
+assets.set('/reading-chat-scope.mjs',['app/reading-chat-scope.mjs','text/javascript']);
 assets.set('/personal-record-editor.mjs',['app/personal-record-editor.mjs','text/javascript']);
 assets.set('/toolbar-placement.mjs',['app/toolbar-placement.mjs','text/javascript']);
 assets.set('/note-drafts.mjs',['app/note-drafts.mjs','text/javascript']);
