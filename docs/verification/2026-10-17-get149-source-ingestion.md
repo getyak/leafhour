@@ -23,3 +23,9 @@ PDF evidence is a bounded PNG from the authenticated hash-verified original, wit
 Independent Codex reviewer `/root/get149_review` inspected the complete diff/new files against the original issue and frozen acceptance table. Two P1 findings were reproduced with failing tests: stale visual attestation after edits and numeric EPUB element IDs colliding with ordinal identities. Disjoint tagged identities and explicit input invalidation fix both. Re-review ran 16 relevant tests and extra PDF-input/focus probes; no unresolved P0/P1 remains. Reviewed code manifest: `d22a36b44b991f8b9e96af51a8e8e0b0c632a15f0dc50bd3dcbb41db11ffd5c2` (33 files before this evidence document).
 
 Private originals, content, cookies, credentials and screenshots stay outside Git. These sanitized structural receipts do not replace exact-head CI, merged deployment receipt/live SHA or production business acceptance.
+
+## Hosted packaging regression found during production acceptance
+
+After PR #93 merged as `1093db62`, actual source-evidence returned 422 while PDF ingestion succeeded. GET-149 remained In Progress. The actual API function trace contained PDF.js but zero Canvas files: PDF.js loads Canvas using a dynamic createRequire call that NFT did not follow. A newly materialized isolated function-package test reproduced the same 422 with “Cannot find module @napi-rs/canvas”; complete development dependencies had hidden this boundary.
+
+The repair adds a static dependency edge and explicit Canvas deployment assets. The new gate renders a real synthetic PDF using only traced files, checks a bounded PNG and the native binding, and also runs inside the existing pinned AWS Lambda Node24 image. Current repair CI, merge and live PDF/EPUB/backup workflows still must pass; this note is not production acceptance.
