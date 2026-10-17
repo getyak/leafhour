@@ -216,7 +216,6 @@
   "docs/gemini-speech.md",
   "docs/guided-listening.md",
   "docs/reading-journey.md",
-  "docs/verification/2026-10-17-guided-listening.md",
   "docs/world-catalog.md",
   "harness/chat-generator.mjs",
   "harness/chat-plugin.mjs",
