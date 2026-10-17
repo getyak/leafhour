@@ -131,7 +131,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       return {...row,sourceLanguage,topics:row.topics||book?.topics||[],...(positions?{shelfPosition:positions.get(row.bookId)}:{}),resume:book&&data.position?resumeSummary(book,data.position):null,journey:book?readingJourney(book,data):null};
     }));
   }
-  async function importDocument(user,input){return importExtracted(user,{...input,extracted:await extractDocument(input)});}
+  async function importDocument(user,input){requireUser(user);return importExtracted(user,{...input,extracted:await extractDocument(input)});}
   async function importExtracted(user,input){
     requireUser(user);const extracted=input.extracted,hash=digest(input.bytes);let id='private-'+digest(user.id+hash).slice(0,24),existing=await read(bookFile(user,id),null);
     if(!existing){const index=await read(path.join(userDir(user),'index.json'),{books:[]});for(const row of index.books.filter(b=>b.source?.sha256===hash)){const candidate=await read(bookFile(user,row.bookId),null);if(candidate?.contentVersion===hash&&candidate.source?.sha256===hash){existing=candidate;id=candidate.bookId;break;}}}
@@ -158,7 +158,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   }
   async function originalParts(user,id){const original=await getOriginal(user,id),book=await getBook(user,id);if(!dataStore?.blobDownloads)throw fail('本机原件使用直接下载',404);return {...original,bytes:original.bytes.length,parts:await dataStore.blobDownloads(path.join(userDir(user),'originals',book.source.sha256))};}
   async function originalDownload(user,id){
-    const file=await getOriginal(user,id),book=await getBook(user,id);
+    const file=await getOriginal(user,id),book=await getBook(user,id);if(file.bytes.length>8*1024*1024)throw fail('大原件请在阅读页使用“下载原文件校对”，分块校验后下载',413);
     return {...file,bytes:undefined,url:await dataStore.signedBlob(path.join(userDir(user),'originals',book.source.sha256))};
   }
   async function recordsForBook(user,book){if(!user)return emptyRecords(book);const data=readingDefaults(await read(recordFile(user,book.bookId),emptyRecords(book)));data.position=alignReadingPosition(book,data.position);return data;}
