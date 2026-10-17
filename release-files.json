@@ -101,6 +101,7 @@
   "app/library-export.mjs",
   "app/library-filter-controls.mjs",
   "app/library-filters.css",
+  "app/library-incremental.mjs",
   "app/library-personal.css",
   "app/library-portability.mjs",
   "app/library-profile.mjs",
