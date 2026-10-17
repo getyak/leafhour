@@ -6,7 +6,7 @@ export function createNoteDrafts(saved,legacy={}){
   for(const [key,value]of Object.entries(source||{})){
     if(!/^(comment|question):/.test(key))continue;
     const text=typeof value==='string'?value:value?.text;if(!validText(text,2000))continue;
-    entries.set(key,{text,pending:validPending(value?.pending,key)?boundedPayload(value.pending):null});
+    entries.set(key,{text,pending:validPending(value?.pending,key)?boundedPayload(value.pending):null,...(Number.isSafeInteger(value?.editBaseRevision)&&value.editBaseRevision>=0?{editBaseRevision:value.editBaseRevision}:{})});
   }
   const entry=key=>{if(!entries.has(key))entries.set(key,{text:'',pending:null});return entries.get(key);};
   const acknowledge=(key,record)=>{
@@ -18,6 +18,8 @@ export function createNoteDrafts(saved,legacy={}){
     text:key=>entries.get(key)?.text||'',
     pending:key=>entries.get(key)?.pending?structuredClone(entries.get(key).pending):null,
     busy:key=>saving.has(key),
+    editBaseRevision:key=>entries.get(key)?.editBaseRevision,
+    setEditBaseRevision(key,revision){if(!Number.isSafeInteger(revision)||revision<0)throw Error('修改版本不正确');entry(key).editBaseRevision=revision;},
     edit(key,text){if(!validText(text,2000))throw Error('文字过长');entry(key).text=text;},
     begin(key,payload,newId){
       if(saving.has(key))throw Error('这条记录正在保存');const draft=entry(key);
@@ -26,6 +28,8 @@ export function createNoteDrafts(saved,legacy={}){
     },
     acknowledge,
     finish:key=>saving.delete(key),
+    // Explicit cancel/conflict refresh only: never discard the user's newer text.
+    discardPending(key){if(saving.has(key))throw Error('这条记录正在保存');entry(key).pending=null;},
     reconcile(key,records){if(saving.has(key))return false;const pending=entries.get(key)?.pending;if(!pending)return false;const record=records.find(r=>r.id===pending.id&&r.text===pending.text&&r.passageId===pending.passageId);return !!record&&acknowledge(key,record);},
     snapshot:()=>({version:1,entries:Object.fromEntries([...entries].map(([key,value])=>[key,structuredClone(value)]))})
   };
