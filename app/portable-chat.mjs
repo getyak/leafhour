@@ -16,6 +16,18 @@ function recommendations(value,sources){
   return out;
  });
 }
+// Only trusted stored history uses this adapter. Incoming archives stay strict.
+export function exportChatTurn(turn,book){
+ const a=turn?.answer;
+ if(turn?.status!=='completed'||turn.kind==='companion'||!plain(a)||Object.keys(a).length!==3||!['origin','summary','sourceRefs'].every(k=>Object.hasOwn(a,k))||a.origin!=='ai'||!text(a.summary,12000)||!Array.isArray(a.sourceRefs)||a.sourceRefs.length>100||a.sourceRefs.some(r=>!plain(r)||Object.keys(r).length!==2||!['passageId','quote'].every(k=>Object.hasOwn(r,k))))return turn;
+ if(turn.contentVersion!==book.contentVersion)fail('历史回答版本无法对应当前原文');
+ const sourceRefs=a.sourceRefs.map(r=>{
+  const section=book.sections.find(s=>s.paragraphs.some(p=>p.id===r.passageId)),p=section?.paragraphs.find(p=>p.id===r.passageId);
+  if(!p||!text(r.quote,12000)||!p.original.includes(r.quote))fail('历史回答引用无法对应来源原文');
+  return {bookId:book.bookId,contentVersion:book.contentVersion,chapterId:section.chapterId,passageId:r.passageId,layer:'original',quote:r.quote,url:'/read?book='+encodeURIComponent(book.bookId)+'&passage='+encodeURIComponent(r.passageId)};
+ });
+ return {...turn,answer:{kind:'conversation',origin:'ai',summary:a.summary,sourceRefs,recommendations:[]}};
+}
 export function valueEqual(a,b){if(a===b)return true;if(!a||!b||typeof a!=='object'||typeof b!=='object'||Array.isArray(a)!==Array.isArray(b))return false;const ka=Object.keys(a),kb=Object.keys(b);return ka.length===kb.length&&ka.every(k=>Object.hasOwn(b,k)&&valueEqual(a[k],b[k]));}
 export function portableChatTurns(chat,book,books=[book]){
  if(!plain(chat)||chat.kind!=='marginalia-reader-chat'||chat.schemaVersion!==1||chat.bookId!==book.bookId||!Array.isArray(chat.turns)||chat.turns.length>100)fail('备份对话格式不正确');
