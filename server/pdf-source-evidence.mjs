@@ -12,7 +12,7 @@ export async function renderPdfEvidence(bytes,pageNumber){
  try{
   await import('@napi-rs/canvas');
   await import('pdfjs-dist/legacy/build/pdf.worker.mjs');const {getDocument}=await import('pdfjs-dist/legacy/build/pdf.mjs');
-  task=getDocument({data:new Uint8Array(bytes),isEvalSupported:false,disableFontFace:true,useSystemFonts:true,stopAtErrors:true,wasmUrl:fileURLToPath(new URL('../node_modules/pdfjs-dist/wasm/',import.meta.url)),cMapPacked:true,cMapUrl:fileURLToPath(new URL('../node_modules/pdfjs-dist/cmaps/',import.meta.url)),standardFontDataUrl:fileURLToPath(new URL('../node_modules/pdfjs-dist/standard_fonts/',import.meta.url))});
+  task=getDocument({data:new Uint8Array(bytes),isEvalSupported:false,disableFontFace:true,useSystemFonts:false,stopAtErrors:true,wasmUrl:fileURLToPath(new URL('../node_modules/pdfjs-dist/wasm/',import.meta.url)),cMapPacked:true,cMapUrl:fileURLToPath(new URL('../node_modules/pdfjs-dist/cmaps/',import.meta.url)),standardFontDataUrl:fileURLToPath(new URL('../node_modules/pdfjs-dist/standard_fonts/',import.meta.url))});
   document=await task.promise;if(document.numPages>1200||pageNumber>document.numPages)throw fail('PDF 图像页码超出原件范围');page=await document.getPage(pageNumber);const base=page.getViewport({scale:1});if(!Number.isFinite(base.width*base.height)||base.width<=0||base.height<=0)throw fail('PDF 页面尺寸不正确',422);
   let scale=Math.min(2,1200/base.width,1200/base.height,Math.sqrt(990000/(base.width*base.height)));
   for(let attempt=0;attempt<3;attempt++){
