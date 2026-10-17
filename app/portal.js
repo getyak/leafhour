@@ -105,7 +105,7 @@ $('account-button').addEventListener('click',()=>{if(!session?.user){openAuth();
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
 for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();});
 document.addEventListener('click',event=>{for(const details of document.querySelectorAll('.book-details[open]'))if(!details.contains(event.target))details.open=false;});
-function openUpload(){shell?.closeNavigation();pendingUpload=true;if(!ensureUser())return;pendingUpload=false;if(!upload.file){$('book-file').value='';$('upload-filename').textContent='';status('upload-status','');$('confirm-upload').textContent='放进我的书房 →';}$('confirm-upload').disabled=upload.busy||!upload.file;$('upload-progress-slot').append($('pdf-ingestion-jobs'));pdfOnboarding.refresh();if(!$('upload-dialog').open)$('upload-dialog').showModal();}
+function openUpload(){$('upload-dialog').classList.remove('pdf-saved');$('upload-title').textContent='这次，你想读什么？';shell?.closeNavigation();pendingUpload=true;if(!ensureUser())return;pendingUpload=false;if(!upload.file){$('book-file').value='';$('upload-filename').textContent='';status('upload-status','');$('confirm-upload').textContent='放进我的书房 →';}$('confirm-upload').disabled=upload.busy||!upload.file;$('upload-progress-slot').append($('pdf-ingestion-jobs'));pdfOnboarding.refresh();if(!$('upload-dialog').open)$('upload-dialog').showModal();}
 for(const id of ['upload-button','empty-upload'])$(id).addEventListener('click',openUpload);
 function selectFile(file){if(!file||upload.busy)return;$('upload-filename').textContent='';$('confirm-upload').disabled=true;$('book-file').value='';try{upload.select(file);$('upload-filename').textContent=file.name+' · '+(file.size>=1024*1024?(file.size/1024/1024).toFixed(2)+' MB':Math.max(1,Math.ceil(file.size/1024))+' KB');$('confirm-upload').textContent='放进我的书房 →';$('confirm-upload').disabled=false;status('upload-status','');}catch(error){status('upload-status',error.message,true);}}
 $('book-file').addEventListener('change',e=>selectFile(e.target.files[0]));
@@ -119,7 +119,7 @@ $('confirm-upload').addEventListener('click',async()=>{
       const job=await uploadPdf({file,api:scopedApi,onProgress:message=>status('upload-status',message),assertCurrent:()=>ownerScope.assertCurrent(ticket)});
       ownerScope.assertCurrent(ticket);succeeded=true;
       if(job.state==='done'){pdfOnboarding.opened(job);if($('upload-dialog').open)location.href='/read?book='+encodeURIComponent(job.bookId);else{await refresh();status('library-status',file.name+' 已在书房，可直接阅读。');}return;}
-      if($('upload-dialog').open)followedPdfId=job.id;pdfOnboarding.track(job);status('upload-status','原文件已保存，正在自动整理。可以离开页面。');b.textContent='放进我的书房 →';return;
+      if($('upload-dialog').open){followedPdfId=job.id;$('upload-dialog').classList.add('pdf-saved');$('upload-title').textContent='书已收到';}pdfOnboarding.track(job);status('upload-status','原文件已保存，正在自动整理。可以离开页面。');b.textContent='放进我的书房 →';return;
     }else if(session.directUpload){
       status('upload-status','正在将原文件存入你的私人书房…');
       const target=await api('/api/library/upload/start',{filename:file.name,bytes:file.size},ticket);
