@@ -35,3 +35,32 @@ test('private content directories remain forbidden even when every file is small
     await assert.rejects(checkPublicBuild(root),/私人内容目录/);
   }
 });
+
+async function audioFixture(t, patch={}) {
+  const {root,assets,entry:image}=await fixture(t);
+  const bytes=Buffer.from('synthetic audio fixture');
+  const entry={file:'wind.mp3',bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),license:'CC0-1.0',creator:'Fixture Author',source:'https://example.org/wind.mp3',sourcePage:'https://example.org/wind',sourceSha256:'a'.repeat(64),...patch};
+  await writeFile(path.join(assets,'wind.mp3'),bytes);
+  await writeFile(path.join(assets,'manifest.json'),JSON.stringify([image,entry]));
+  return {root,assets,entry};
+}
+test('public audio accepts explicit per-file CC0 provenance',async t=>{
+  const {root}=await audioFixture(t);await checkPublicBuild(root);
+});
+test('public audio rejects missing or unreviewed licenses even when bytes match',async t=>{
+  for(const license of [undefined,'UNKNOWN','Pixabay or CC0','MIT']) {
+    const {root}=await audioFixture(t,{license});
+    await assert.rejects(checkPublicBuild(root),/录音许可/);
+  }
+});
+test('public audio requires creator, source, source page and original digest',async t=>{
+  for(const patch of [{creator:''},{source:''},{sourcePage:undefined},{sourceSha256:undefined},{sourceSha256:'invalid'},{source:'file:///private/wind.mp3'},{sourcePage:'https://name:password@example.org/wind'},{source:'http://example.org/wind.mp3'}]) {
+    const {root}=await audioFixture(t,patch);
+    await assert.rejects(checkPublicBuild(root),/录音来源/);
+  }
+});
+test('small unregistered audio cannot bypass per-file provenance checks',async t=>{
+  const {root,assets}=await fixture(t);
+  await writeFile(path.join(assets,'wind.mp3'),'small audio');
+  await assert.rejects(checkPublicBuild(root),/未登记的录音/);
+});
