@@ -7,7 +7,7 @@ import {pathToFileURL} from 'node:url';
 const forbidden=/(^|\/)(?:local|content|_briefs|\.git|node_modules|verification|superpowers)(\/|$)|(?:^|\/)AGENTS\.md$|\.(?:pdf|epub|p12|pem|key)$/i;
 const secret=/(?:-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|\bghp_[A-Za-z0-9]{30,}|\bgithub_pat_[A-Za-z0-9_]{40,}|\bsb_secret_[A-Za-z0-9_-]{24,}|\bsk-[A-Za-z0-9_-]{32,})/;
 export function validReleasePath(file){
-  return typeof file==='string'&&file.length>0&&!file.includes('\\')&&!file.split('/').some(part=>!part||part==='.'||part==='..')&&!path.isAbsolute(file)&&!forbidden.test(file)&&(!file.split('/').some(part=>part.startsWith('.env'))||['.env.example','.env.hosted.example'].includes(file));
+  return typeof file==='string'&&file.length>0&&!file.includes('\\')&&!file.split('/').some(part=>!part||part==='.'||part==='..')&&!path.isAbsolute(file)&&!forbidden.test(file)&&(!file.split('/').some(part=>part.startsWith('.env'))||file==='.env.example');
 }
 export async function releaseFiles(root){
   const files=JSON.parse(await readFile(path.join(root,'release-files.json'),'utf8'));

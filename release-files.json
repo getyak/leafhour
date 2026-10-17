@@ -1,6 +1,5 @@
 [
   ".env.example",
-  ".env.hosted.example",
   ".gitattributes",
   ".github/workflows/ci.yml",
   ".github/workflows/production.yml",
