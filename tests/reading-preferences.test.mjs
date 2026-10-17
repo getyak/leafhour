@@ -6,16 +6,22 @@ import path from 'node:path';
 import vm from 'node:vm';
 import {createReaderServer} from '../server/server.mjs';
 
-test('opening a saved translated view shows the original without losing typography or the chosen translation variant',async()=>{
+test('opening a saved view restores its chosen manual mode and variant without losing typography',async()=>{
   const preferences=await import('../app/reading-preferences.mjs');
   const {passagePresentation}=await import('../app/passage-layers.mjs');
-  for(const previousMode of [undefined,'zh','parallel']){
+  const passage={original:'Original prose.',translations:{literal:{text:'已有直译。'}}};
+  for(const [previousMode,expected]of [[undefined,['original']],['en',['original']],['zh',['translation']],['parallel',['original','translation']]]){
     const saved={mode:previousMode,variant:'literal',font:26,theme:'night',chapterId:'ch02',passageId:'p2'};
     const opening=preferences.openingReadingPreferences?.(saved)||saved;
-    const view=passagePresentation({original:'Original prose.',translations:{literal:{text:'已有直译。'}}},opening);
-    assert.equal(view.layers.length,1);assert.equal(view.layers[0].kind,'original');assert.equal(view.layers[0].text,'Original prose.');
-    assert.equal(opening.variant,'literal');assert.equal(opening.font,26);assert.equal(opening.theme,'night');
+    const view=passagePresentation(passage,opening);
+    assert.deepEqual(view.layers.map(layer=>layer.kind),expected,previousMode);
+    assert.equal(view.layers.at(-1).text,expected.at(-1)==='translation'?'已有直译。':'Original prose.');
+    assert.equal(opening.mode,previousMode||'en');assert.equal(opening.variant,'literal');assert.equal(opening.font,26);assert.equal(opening.theme,'night');
   }
+  // A missing translation never borrows another variant: the original stays readable.
+  const fallback=passagePresentation({original:'Original prose.',translations:{interpretive:{text:'Only interpretive exists.'}}},preferences.openingReadingPreferences({mode:'zh',variant:'literal'}));
+  assert.deepEqual(fallback.layers.map(layer=>layer.kind),['original']);
+  assert.match(fallback.notice,/尚未翻译/);
 });
 
 test('reading appearance travels with exported records, rejects invalid imports atomically, and accepts old positions',async t=>{
@@ -66,7 +72,8 @@ test('explicit reading purposes choose a starting language without overwriting v
   for(const [key,value]of Object.entries(saved))assert.equal(reopened[key],value,key);
   assert.equal(openingReadingPreferences({readingPurpose:'deep',preferredLanguage:'zh'}).mode,'zh');
   assert.equal(openingReadingPreferences({readingPurpose:'language',preferredLanguage:'zh'}).mode,'en');
-  assert.equal(openingReadingPreferences({...saved,readingPurpose:'manual'}).mode,'en');
+  assert.equal(openingReadingPreferences({...saved,readingPurpose:'manual'}).mode,'parallel','a valid saved manual view is a deliberate choice and must survive reopening');
+  assert.equal(openingReadingPreferences({readingPurpose:'manual',variant:'literal'}).mode,'en','records without a saved mode keep the legacy original opening');
   for(const invalid of [{readingPurpose:'injected'},{preferredLanguage:'fr'}])assert.throws(()=>normalizeAppearance(invalid,true));
   assert.deepEqual(saved,before);
 });
@@ -75,8 +82,9 @@ test('parallel settings restore independently of the opening language and safely
   const {normalizeAppearance,openingReadingPreferences}=await import('../app/reading-preferences.mjs');
   const chosen={parallelLayout:'stack',parallelStyle:'quote',parallelColor:'green',parallelBackground:'none'};
   const reopened=openingReadingPreferences({...chosen,mode:'parallel'});
-  assert.equal(reopened.mode,'en');
+  assert.equal(reopened.mode,'parallel','a remembered manual parallel view opens again as parallel');
   for(const [key,value]of Object.entries(chosen))assert.equal(reopened[key],value);
+  assert.equal(openingReadingPreferences(chosen).mode,'en','older records without a saved mode still open in the original');
   const old=normalizeAppearance({parallelLayout:'invalid',parallelStyle:17});
   assert.equal(old.parallelLayout,'columns');assert.equal(old.parallelStyle,'plain');assert.equal(old.parallelColor,'auto');assert.equal(old.parallelBackground,'auto');
   for(const style of ['plain','muted','quote','tint','reveal'])assert.equal(normalizeAppearance({parallelStyle:style},true).parallelStyle,style);

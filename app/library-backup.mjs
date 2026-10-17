@@ -1,5 +1,5 @@
 import {validatePendingAnchors} from './source-revisions.mjs';
-import {normalizeAppearance} from './reading-preferences.mjs';
+import {normalizeAppearance,validateGlobalPreferencesMetadata} from './reading-preferences.mjs';
 import {validParagraphAnchor} from './paragraph-anchor.mjs';
 import {normalizeReadingSession,normalizeReadingMilestone,normalizeReadingGoal} from './reading-session-record.mjs';
 import {isReadingTimeSource} from './reading-time-policy.mjs';
@@ -16,6 +16,8 @@ const invalid=(where,message)=>{throw Object.assign(Error(where+'：'+message+'�
 // Used before browser batching and again at the server boundary. Never repairs source data silently.
 export function validateLibraryBackup(backup){
   if(!object(backup)||backup.kind!=='marginalia-library'||backup.schemaVersion!==1||!Array.isArray(backup.books)||backup.books.length>100)invalid('备份','请选择 Leafhour 书房备份，最多 100 本');
+  // Optional account-wide reading defaults: strict v1 metadata, nothing unknown or unbounded.
+  if(backup.readingPreferences!==undefined){try{validateGlobalPreferencesMetadata(backup.readingPreferences);}catch{invalid('备份','阅读习惯信息不完整');}}
   const bookIds=new Set();let paragraphs=0,notes=0;
   for(const [index,entry] of backup.books.entries()){
     const where='第 '+(index+1)+' 本书',b=entry?.book,r=entry?.records;

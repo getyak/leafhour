@@ -80,10 +80,10 @@ test('hosted origin CSV enables only configured HTTPS web clients through the re
 });
 test('hosted entry forwards profile and gift routes through the shared portal',async()=>{
   const routes=[],handler=createHostedHandler({env,storeFactory:()=>({}),authFactory:()=>({}),portalFactory:async()=>({handle:async({url,send})=>{routes.push(url.pathname);send(200,{ready:true});return true;}})});
-  for(const path of ['/api/account/profile','/api/book-gifts/'+ 'a'.repeat(43),'/api/book-gifts/'+ 'a'.repeat(43)+'/accept','/api/library/books/alice/gifts']){
+  for(const path of ['/api/account/profile','/api/account/reading-preferences','/api/book-gifts/'+ 'a'.repeat(43),'/api/book-gifts/'+ 'a'.repeat(43)+'/accept','/api/library/books/alice/gifts']){
     let result;const res={setHeader(){},end(value){result=JSON.parse(value);}};await handler({url:path,method:'GET',headers:{}},res);assert.equal(res.statusCode,200,path);assert.equal(result.ready,true);
   }
-  assert.equal(routes.length,4);
+  assert.equal(routes.length,5);
 });
 test('disabled hosted email never sends an OTP and hosted MCP uses only explicit HTTPS configuration',async()=>{
   const auth=createHostedAuth({env,store:{},fetcher:()=>{throw Error('must not send');}});assert.equal(auth.emailAvailable,false);await assert.rejects(auth.requestCode('reader@example.com'),e=>e.status===503);
