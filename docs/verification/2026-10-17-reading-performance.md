@@ -14,7 +14,7 @@ Original downloads use owner-authenticated same-origin ranges of at most 1 MiB. 
 
 The actual source-download button in the authenticated production reader completed in Chrome. The saved download was independently opened from disk, streamed through SHA-256, and compared with the user-supplied source. Both files contained 143,882,741 bytes and their hashes matched exactly. PDF inspection confirmed 779 pages, with no encryption. About 54 seconds elapsed between the real button click and the saved file modification time, including preparation and browser integrity verification. This is one observed transfer, not a throughput guarantee.
 
-Earlier direct-storage browser attempts stalled or failed after partial progress. Small command-line storage reads succeeded, so these did not prove missing source data. The final same-origin browser transfer succeeded. Browser-debugging connection timeouts also occurred in the in-app browser; the completed file acceptance is specifically the real Chrome run. Source bytes, filenames, hashes, screenshots, private identifiers and network evidence remain outside the public repository.
+Earlier direct-storage browser attempts stalled or failed after partial progress. Small command-line storage reads succeeded, so these did not prove missing source data. The final same-origin browser transfer succeeded. The in-app browser also had debugging connection timeouts and its later transfer ended with the visible network-interruption/retry state. That browser is not accepted for complete-file download in this run; the completed file acceptance is specifically real Chrome. Source bytes, filenames, hashes, screenshots, private identifiers and network evidence remain outside the public repository.
 
 ## Observed opening times
 
