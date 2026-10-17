@@ -39,12 +39,20 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
   async function putBlob(file,bytes){if(bytes.length>MAX_FILE_BYTES)throw fail('文件超过 256 MB',413);const key=objectPath(file);if(bytes.length<=BLOB_CHUNK_BYTES){await writeObject(key,bytes);return;}const slices=[];for(let offset=0;offset<bytes.length;offset+=BLOB_CHUNK_BYTES)slices.push(bytes.subarray(offset,offset+BLOB_CHUNK_BYTES));const parts=await boundedMap(slices,async b=>{const partKey=key+'/parts/'+digest(b);await writeObject(partKey,b);return {key:partKey,size:b.length,sha256:digest(b)};});await writeManifest(file,{kind:'leafhour-blob-chunks-v1',size:bytes.length,sha256:digest(bytes),parts});}
   async function putSingleBlob(file,bytes){if(!Buffer.isBuffer(bytes)||bytes.length<1||bytes.length>20*1024*1024)throw fail('这一批扫描文件超过 20 MB，请减小页面图片后重试',413);await writeObject(objectPath(file),bytes);}
 
-  async function blobDownloads(file){
+  async function blobDownloads(file,expected={}){
     const head=await request(objectRoute(objectPath(file)),{method:'HEAD'}),size=Number(head.headers.get('content-length'));
     const m=size<65536?manifestOf(await readObject(objectPath(file))):null;
-    const parts=m?.parts||[{key:objectPath(file)}],urls=[];
-    for(const part of parts){const signed=await json('/storage/v1/object/sign/reader-originals/'+part.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({expiresIn:600})});const target=new URL(signed.signedURL.startsWith('/object/')?'/storage/v1'+signed.signedURL:signed.signedURL,base+'/storage/v1/');if(target.origin!==new URL(base).origin||!target.pathname.startsWith('/storage/v1/object/sign/'))throw fail('原文件地址无效',503);urls.push({url:target.href,sha256:part.sha256||null});}
-    return urls;
+    // Bind the trusted server-generated manifest to the authorized book before
+    // signing any part. User file bytes that imitate a manifest cannot substitute
+    // another source. Full byte/hash verification remains in the downloader.
+    if(m){
+      const validParts=Array.isArray(m.parts)&&m.parts.length>0&&m.parts.length<=128&&m.parts.every(p=>p&&typeof p.key==='string'&&/^originals\/[a-f0-9]{64}(?:\/parts\/[a-f0-9]{64})?$/.test(p.key)&&Number.isSafeInteger(p.size)&&p.size>0&&typeof p.sha256==='string'&&/^[a-f0-9]{64}$/.test(p.sha256));
+      const validSize=Number.isSafeInteger(m.size)&&m.size>0&&m.size<=MAX_FILE_BYTES;
+      const sourceMatches=(expected.size===undefined||m.size===expected.size)&&(expected.sha256===undefined||m.sha256===expected.sha256);
+      if(!validParts||!validSize||typeof m.sha256!=='string'||!/^[a-f0-9]{64}$/.test(m.sha256)||m.parts.reduce((n,p)=>n+p.size,0)!==m.size||!sourceMatches)throw fail('原文件分块信息无法核验',409);
+    }
+    else if(expected.size!==undefined&&size!==expected.size)throw fail('原文件大小无法核验',409);
+    return boundedMap(m?.parts||[{key:objectPath(file)}],async part=>{const signed=await json('/storage/v1/object/sign/reader-originals/'+part.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({expiresIn:600})});const target=new URL(signed.signedURL.startsWith('/object/')?'/storage/v1'+signed.signedURL:signed.signedURL,base+'/storage/v1/');if(target.origin!==new URL(base).origin||!target.pathname.startsWith('/storage/v1/object/sign/'))throw fail('原文件地址无效',503);return {url:target.href,sha256:part.sha256||null};});
   }
   async function signedBlob(file,{expiresIn=60}={}){
     if(!Number.isInteger(expiresIn)||expiresIn<60||expiresIn>3600)throw fail('下载链接有效期无效',400);
