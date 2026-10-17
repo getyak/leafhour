@@ -119,7 +119,7 @@ $('confirm-upload').addEventListener('click',async()=>{
       const job=await uploadPdf({file,api:scopedApi,onProgress:message=>status('upload-status',message),assertCurrent:()=>ownerScope.assertCurrent(ticket)});
       ownerScope.assertCurrent(ticket);succeeded=true;
       if(job.state==='done'){pdfOnboarding.opened(job);if($('upload-dialog').open)location.href='/read?book='+encodeURIComponent(job.bookId);else{await refresh();status('library-status',file.name+' 已在书房，可直接阅读。');}return;}
-      if($('upload-dialog').open){followedPdfId=job.id;$('upload-dialog').classList.add('pdf-saved');$('upload-title').textContent='书已收到';}pdfOnboarding.track(job);status('upload-status','原文件已保存，正在自动整理。可以离开页面。');b.textContent='放进我的书房 →';return;
+      if($('upload-dialog').open){followedPdfId=job.id;$('upload-dialog').classList.add('pdf-saved');$('upload-title').textContent='书已收到';}pdfOnboarding.track(job);status('upload-status','原文件已保存在书房。进度会自动保存，可随时回来查看。');b.textContent='放进我的书房 →';return;
     }else if(session.directUpload){
       status('upload-status','正在将原文件存入你的私人书房…');
       const target=await api('/api/library/upload/start',{filename:file.name,bytes:file.size},ticket);
