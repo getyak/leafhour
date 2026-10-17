@@ -130,7 +130,7 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
     }catch(e){send(e.status||500,{error:e.status?e.message:'服务暂时无法完成操作'});}
   });
   const closeHttp=server.close.bind(server);
-  server.close=callback=>{const closing=Promise.all([experiences.close(),portal.audio?.close(),portal.chat.close()]);closeHttp(error=>{closing.then(()=>callback?.(error),failure=>callback?.(failure));});return server;};
+  server.close=callback=>{const closing=Promise.all([experiences.close(),portal.audio?.close(),portal.chat.close(),portal.ingestionRunner.close()]);closeHttp(error=>{closing.then(()=>callback?.(error),failure=>callback?.(failure));});return server;};
   server.experiences=experiences;
   server.portal=portal;
   return server;

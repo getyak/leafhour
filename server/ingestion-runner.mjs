@@ -4,7 +4,7 @@ const QUEUE='ingestion/queue/v1',runnable=new Set(['preparing','running','publis
 export const ingestionWakeToken=env=>env.SUPABASE_SECRET_KEY?createHmac('sha256',env.SUPABASE_SECRET_KEY).update('leafhour-ingestion-wake-v1').digest('hex'):null;
 export function createIngestionRunner({store,ingestion,schedule=()=>{},env=process.env,fetcher=fetch,publicOrigin=null,now=Date.now,sliceMs=20000,stepDelayMs=1500,maxSteps=8}={}){
  if(!store?.mutate||!ingestion?.advance||sliceMs<1||sliceMs>60000||maxSteps<1||maxSteps>16)throw new TypeError('Invalid ingestion runner configuration');
- let active=null,timer=null,closed=false;const secret=ingestionWakeToken(env),empty=()=>({jobs:[],lease:null});
+ let active=null,timer=null,closed=false,wakeConfigured=false;const secret=ingestionWakeToken(env),empty=()=>({jobs:[],lease:null});
  const authorized=header=>{const expected=secret&&'Bearer '+secret;if(typeof header!=='string'||!expected)return false;const a=Buffer.from(header),b=Buffer.from(expected);return a.length===b.length&&timingSafeEqual(a,b);};
  const remove=async(owner,id)=>store.mutate(QUEUE,empty(),q=>{q.jobs=q.jobs.filter(j=>j.ownerId!==owner||j.id!==id);});
  async function enqueue(owner,id,{start=true}={}){
@@ -31,7 +31,7 @@ export function createIngestionRunner({store,ingestion,schedule=()=>{},env=proce
   }finally{await store.mutate(QUEUE,empty(),q=>{if(q.lease?.token===token)q.lease=null;});}
  }
  async function continueLater(){
-  if(closed)return;const q=await store.read(QUEUE,empty());if(!q.jobs.length)return;
+  if(closed)return;const q=await store.read(QUEUE,empty());if(!q.jobs.length||q.lease?.until>now())return;
   const delay=Math.max(0,Math.min(...q.jobs.map(j=>j.nextAt))-now());
   if(publicOrigin&&secret){
    // Longer backoffs are resumed by the durable, idle-aware database wake.
@@ -41,7 +41,7 @@ export function createIngestionRunner({store,ingestion,schedule=()=>{},env=proce
  }
  function tick(){
   if(closed||active)return active;
-  const work=Promise.resolve().then(runSlice).catch(()=>{}).finally(async()=>{active=null;await continueLater().catch(()=>{});});active=work;
+  const work=Promise.resolve().then(async()=>{if(publicOrigin&&secret&&!wakeConfigured&&store.configureIngestionWake){try{await store.configureIngestionWake(publicOrigin,secret);wakeConfigured=true;}catch{}}await runSlice();}).catch(()=>{}).finally(async()=>{active=null;await continueLater().catch(()=>{});});active=work;
   try{schedule(work);}catch{closed=true;}return work;
  }
  async function close(){closed=true;clearTimeout(timer);await active;}

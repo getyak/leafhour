@@ -8,7 +8,7 @@ create or replace function public.reader_configure_ingestion_wake(wake_origin te
 returns boolean language plpgsql security definer set search_path = '' as $$
 declare saved_id uuid;
 begin
-  if wake_origin !~ '^https://[a-zA-Z0-9.-]+(:[0-9]+)?$' or derived_token !~ '^[a-f0-9]{64}$' then
+  if wake_origin is null or derived_token is null or wake_origin !~ '^https://[a-zA-Z0-9.-]+(:[0-9]+)?$' or derived_token !~ '^[a-f0-9]{64}$' then
     raise exception 'Invalid worker configuration';
   end if;
   select id into saved_id from vault.secrets where name = 'leafhour_ingestion_origin';

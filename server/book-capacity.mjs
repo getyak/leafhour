@@ -4,6 +4,6 @@ export const MAX_BOOK_BYTES=32*1024*1024;
 export const TRANSLATION_RESERVE_BYTES=160000;
 export function bookCapacity(book,reservedTranslationBytes=0){
  const bytes=Buffer.byteLength(JSON.stringify(book));
- if(bytes+reservedTranslationBytes>MAX_BOOK_BYTES)throw fail('这本书已达到单本内容容量，已有原文与译文仍保留；本次尚未提交新的翻译。',413);
+ if(bytes+reservedTranslationBytes>MAX_BOOK_BYTES)throw fail('这本书已达到单本内容容量，已有原文与译文仍保留；本次新增内容未保存。',413);
  return bytes;
 }

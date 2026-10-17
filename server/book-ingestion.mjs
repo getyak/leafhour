@@ -60,10 +60,10 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
   let stage='load_job',readIndex=null;
   try{
    let job=await current();
-   const sourceDocument=async()=>{if(cachedDocument?.base!==base){const bytes=await store.blob(base+'/source');if(digest(bytes)!==job.sourceHash)throw fail('原文件校验失败',409);cachedDocument={base,bytes,doc:await PDFDocument.load(bytes,{updateMetadata:false})};}return cachedDocument.doc;};
+   const sourceDocument=async()=>{if(cachedDocument?.base!==base){const bytes=await store.blob(base+'/source');if(digest(bytes)!==job.sourceHash)throw fail('原文件校验失败',409);cachedDocument={base,bytes,doc:await PDFDocument.load(bytes,{updateMetadata:false})};}return cachedDocument;};
    if(job.state==='preparing'){
-    const doc=await sourceDocument();if(doc.getPageCount()!==job.totalPages)throw fail('PDF 页数发生变化',409);
-    let outline=[];if(job.mode==='auto')outline=await nativePdfOutline(cachedDocument.bytes).catch(()=>[]);
+    const {doc,bytes}=await sourceDocument();if(doc.getPageCount()!==job.totalPages)throw fail('PDF 页数发生变化',409);
+    let outline=[];if(job.mode==='auto')outline=await nativePdfOutline(bytes).catch(()=>[]);
     await save(j=>{j.state='running';j.prepared=true;j.outline=outline;});return viewOf(await get(user,id));
    }
    const active=job.batches.filter(b=>b.state==='submitted').length,newIndex=job.batches.findIndex(b=>b.state==='new');
@@ -83,7 +83,7 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
    }
    const batch=job.batches[i];
    if(job.mode==='auto'&&!batch.inspected&&batch.state==='new'){
-    stage='inspect_native';const doc=await sourceDocument(),part=await PDFDocument.create();(await part.copyPages(doc,Array.from({length:batch.count},(_,n)=>batch.start-1+n))).forEach(p=>part.addPage(p));const bytes=Buffer.from(await part.save());
+    stage='inspect_native';const {doc}=await sourceDocument(),part=await PDFDocument.create();(await part.copyPages(doc,Array.from({length:batch.count},(_,n)=>batch.start-1+n))).forEach(p=>part.addPage(p));const bytes=Buffer.from(await part.save());
     if(bytes.length>maxBatchBytes&&batch.count>1){const left=Math.floor(batch.count/2);await save(j=>{j.batches.forEach((b,n)=>{b.storageKey??=String(n);});j.batches.splice(i,1,{start:batch.start,count:left,state:'new',storageKey:randomUUID()},{start:batch.start+left,count:batch.count-left,state:'new',storageKey:randomUUID()});});return viewOf(await get(user,id));}
     const inspected=await nativeInspector(bytes,{start:batch.start});if(inspected.pages?.length!==batch.count)throw fail('逐页检查未完整返回，原文件仍保留。',422);
     const native=inspected.pages.map((p,n)=>({...p,page:batch.start+n})).filter(p=>!p.needsRecognition).map(({needsRecognition,...p})=>p),pageMap=inspected.pages.flatMap((p,n)=>p.needsRecognition?[batch.start+n]:[]),target=base+'/native-'+batchKey(batch,i);
@@ -94,7 +94,7 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
    }
    if(batch.state==='submitting'){stage='provider_recover';if(batch.requestId&&provider.recover){const handle=await provider.recover(batch.requestId);if(handle){await save(j=>{j.batches[i].handle=handle;j.batches[i].state='submitted';j.state='running';j.error=null;});return viewOf(await get(user,id));}}await save(j=>{j.state='needs_review';j.error='上次请求未确认是否提交成功，为避免重复计费已暂停，请保留任务并联系管理员。';});return viewOf(await get(user,id));}
    if(!batch.handle){
-    stage='split_batch';const doc=await sourceDocument(),part=await PDFDocument.create();const selected=await part.copyPages(doc,(batch.pageMap||Array.from({length:batch.count},(_,n)=>batch.start+n)).map(n=>n-1));selected.forEach(p=>part.addPage(p));const bytes=Buffer.from(await part.save());let fileUrl;
+    stage='split_batch';const {doc}=await sourceDocument(),part=await PDFDocument.create();const selected=await part.copyPages(doc,(batch.pageMap||Array.from({length:batch.count},(_,n)=>batch.start+n)).map(n=>n-1));selected.forEach(p=>part.addPage(p));const bytes=Buffer.from(await part.save());let fileUrl;
     if(bytes.length>maxBatchBytes){if(batch.count===1)throw fail('单页扫描文件超过 20 MB，请减小页面图片后重试',413);const left=Math.floor(batch.count/2);await save(j=>{j.batches.forEach((b,n)=>{b.storageKey??=String(n);});j.batches.splice(i,1,{start:batch.start,count:left,state:'new',storageKey:randomUUID()},{start:batch.start+left,count:batch.count-left,state:'new',storageKey:randomUUID()});});return viewOf(await get(user,id));}
     if(store.putSingleBlob&&store.signedBlob){stage='stage_batch';const target=base+'/input-'+batchKey(batch,i);await store.putSingleBlob(target,bytes);fileUrl=await store.signedBlob(target,{expiresIn:3600});}
     await current();const requestId=randomUUID();await save(j=>{j.batches[i].state='submitting';j.batches[i].requestId=requestId;});
@@ -114,7 +114,7 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
    const readRetry=readIndex!==null&&['provider_status','provider_result'].includes(stage)&&['NetworkError','RequestTimeoutError','PollTimeoutError','ServiceUnavailableError'].includes(error.name);
    const connectionCode=typeof error.message==='string'?error.message.match(/^Connection failed: (PADDLE_TRANSPORT_(?:API|RESULT)_[A-Z][A-Z0-9_]{0,35})$/)?.[1]:null;
    const failureCode=error.code||connectionCode;
-   const retry=await save(j=>{j.failure={stage,name:/^[A-Za-z][A-Za-z0-9]{0,63}$/.test(error.name||'')?error.name:'Error',status:Number.isInteger(error.statusCode||error.status)?error.statusCode||error.status:null,code:/^[A-Z][A-Z0-9_]{0,63}$/.test(failureCode||'')?failureCode:null};if(readRetry){const b=j.batches[readIndex];b.readFailures=(b.readFailures||0)+1;if(b.readFailures<=3){j.state='running';j.error=null;return true;}}if(j.state==='publishing'){j.error='入库结果正在核对，请继续处理任务。';return false;}const pending=j.batches.some(b=>b.state==='submitting');j.state=pending?'needs_review':'failed';j.error=pending?'请求结果未确认，为避免重复提交已暂停。':'解析未完成，原文件和已完成页面已保留。';return false;}).catch(()=>false);if(retry)return viewOf(await get(user,id));throw fail('解析暂未完成，已保存进度。可重新打开上传窗口查看。',error.status||503);
+   const retry=await save(j=>{j.failure={stage,name:/^[A-Za-z][A-Za-z0-9]{0,63}$/.test(error.name||'')?error.name:'Error',status:Number.isInteger(error.statusCode||error.status)?error.statusCode||error.status:null,code:/^[A-Z][A-Z0-9_]{0,63}$/.test(failureCode||'')?failureCode:null};if(readRetry){const b=j.batches[readIndex];b.readFailures=(b.readFailures||0)+1;if(b.readFailures<=3){j.state='running';j.error=null;return true;}}if(j.state==='publishing'){if([400,413,422].includes(error.status)){j.state='failed';j.error=error.status===413?'已整理内容超过单本容量，原文件与识别结果保留，可取消或导出后继续。':'整理结果未通过正文校验，原文件与识别结果保留。';}else j.error='入库结果正在核对，请继续处理任务。';return false;}const pending=j.batches.some(b=>b.state==='submitting');j.state=pending?'needs_review':'failed';j.error=pending?'请求结果未确认，为避免重复提交已暂停。':'解析未完成，原文件和已完成页面已保留。';return false;}).catch(()=>false);if(retry)return viewOf(await get(user,id));throw fail('解析暂未完成，已保存进度。可重新打开上传窗口查看。',error.status||503);
   }finally{await store.mutate(base,null,j=>{if(j?.lease?.token===token)j.lease=null;});}
  }
  async function resume(u,id){await store.mutate(key(u,id),null,j=>{if(!j)throw fail('找不到解析任务',404);if(j.state==='needs_review'&&j.batches.some(b=>b.state==='submitting'&&b.requestId)&&provider.recover){j.state='running';j.error=null;}else if(j.state==='failed'){for(const b of j.batches){b.readFailures=0;if(b.confirmedFailed){delete b.handle;delete b.confirmedFailed;b.state='new';}}j.state=j.prepared?'running':'preparing';j.error=null;}});return viewOf(await get(u,id));}

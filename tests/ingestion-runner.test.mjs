@@ -23,3 +23,12 @@ test('internal wake credentials are purpose-separated, exact and never exposed i
  assert.ok(token&&token!=='server-fixture');assert.equal(r.authorized('Bearer '+token),true);for(const header of [undefined,'Bearer server-fixture','Bearer '+token+'x','bearer '+token])assert.equal(r.authorized(header),false);
  await r.enqueue(owner,id,{start:false});assert.ok(!JSON.stringify(await f.store.read('ingestion/queue/v1',null)).includes(token));await r.close();
 });
+test('a contending hosted worker does not self-wake while another lease is active',async()=>{
+ const f=fixture();let wakes=0;await f.store.mutate('ingestion/queue/v1',{jobs:[]},q=>{q.jobs=[{ownerId:owner.id,id,nextAt:0}];q.lease={token:'other-worker',until:Date.now()+60000};});
+ const r=createIngestionRunner({store:f.store,ingestion:f.ingestion,env:{SUPABASE_SECRET_KEY:'fixture'},publicOrigin:'https://reader.example.com',fetcher:async()=>{wakes++;return Response.json({});}});
+ await r.tick();assert.equal(f.steps,0);assert.equal(wakes,0);await r.close();
+});
+
+test('a hosted worker configures its private recovery secret from existing server configuration',async()=>{
+ const f=fixture();let configured=0;f.store.configureIngestionWake=async(origin,token)=>{assert.equal(origin,'https://reader.example.com');assert.equal(token,ingestionWakeToken({SUPABASE_SECRET_KEY:'fixture'}));configured++;return true;};const r=createIngestionRunner({store:f.store,ingestion:f.ingestion,env:{SUPABASE_SECRET_KEY:'fixture'},publicOrigin:'https://reader.example.com'});await r.tick();await r.tick();assert.equal(configured,1);await r.close();
+});
