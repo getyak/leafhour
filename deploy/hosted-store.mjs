@@ -52,7 +52,7 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
       if(!validParts||!validSize||typeof m.sha256!=='string'||!/^[a-f0-9]{64}$/.test(m.sha256)||m.parts.reduce((n,p)=>n+p.size,0)!==m.size||!sourceMatches)throw fail('原文件分块信息无法核验',409);
     }
     else if(expected.size!==undefined&&size!==expected.size)throw fail('原文件大小无法核验',409);
-    return boundedMap(m?.parts||[{key:objectPath(file)}],async part=>{const signed=await json('/storage/v1/object/sign/reader-originals/'+part.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({expiresIn:3600})});const target=new URL(signed.signedURL.startsWith('/object/')?'/storage/v1'+signed.signedURL:signed.signedURL,base+'/storage/v1/');if(target.origin!==new URL(base).origin||!target.pathname.startsWith('/storage/v1/object/sign/'))throw fail('原文件地址无效',503);return {url:target.href,sha256:part.sha256||null};});
+    return boundedMap(m?.parts||[{key:objectPath(file)}],async part=>{const signed=await json('/storage/v1/object/sign/reader-originals/'+part.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({expiresIn:3600})});const target=new URL(signed.signedURL.startsWith('/object/')?'/storage/v1'+signed.signedURL:signed.signedURL,base+'/storage/v1/');if(target.origin!==new URL(base).origin||!target.pathname.startsWith('/storage/v1/object/sign/'))throw fail('原文件地址无效',503);return {url:target.href,sha256:part.sha256||null,size:part.size||size};});
   }
   async function signedBlob(file,{expiresIn=60}={}){
     if(!Number.isInteger(expiresIn)||expiresIn<60||expiresIn>3600)throw fail('下载链接有效期无效',400);

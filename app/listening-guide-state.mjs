@@ -8,11 +8,16 @@ export function guideRequest(reader,intent,scopeMode='through'){
  if(intent==='explain'&&scopeMode==='through'&&!rows.some(p=>p.id===passageId))throw Error('请先选择讲到哪一段。');
  return {intent,contentVersion:book.contentVersion,chapterId,...(intent==='explain'?{throughPassageId:passageId,scopeMode}:{})};
 }
+export function sceneSourceIds({book,clip}){
+ if(!book||!clip)return [];
+ const known=new Set(book.sections.flatMap(s=>s.paragraphs.map(p=>p.id))),refs=(clip.turns||[clip]).flatMap(t=>t.sourceRefs||clip.sourceRefs||[]);
+ return [...new Set([clip.passageId,...refs.map(r=>r.passageId)].filter(id=>known.has(id)))].slice(0,4);
+}
 export function sceneQuestion({book,clip}){
  if(!book||!clip)return null;
  const rows=new Map(book.sections.flatMap(s=>s.paragraphs).map(p=>[p.id,p]));
- const turns=clip.turns||[clip],refs=turns.flatMap(t=>t.sourceRefs||clip.sourceRefs||[]).filter(r=>typeof r.quote==='string'&&rows.get(r.passageId)?.original.includes(r.quote));
- if(!refs.length&&clip.passageId&&rows.has(clip.passageId))refs.push({passageId:clip.passageId,quote:rows.get(clip.passageId).original.slice(clip.start||0,clip.end||500)});
+ const turns=clip.turns||[clip],refs=turns.flatMap(t=>t.sourceRefs||clip.sourceRefs||[]).filter(r=>typeof r.quote==='string'&&rows.get(r.passageId)?.original?.includes(r.quote));
+ if(!refs.length&&clip.passageId&&typeof rows.get(clip.passageId)?.original==='string')refs.push({passageId:clip.passageId,quote:rows.get(clip.passageId).original.slice(clip.start||0,clip.end||500)});
  if(!refs.length)return null;
  const unique=[...new Map(refs.map(r=>[r.passageId,r])).values()].slice(0,4);
  const transcript=turns.map(t=>t.text).filter(Boolean).join('\n').slice(0,900);

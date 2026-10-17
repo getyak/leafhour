@@ -1,6 +1,7 @@
 import { cp, mkdir, rm, writeFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {buildReaderWeb} from './build-reader-web.mjs';
 import {portalDocument} from '../server/portal-document.mjs';
 import {releaseCommit} from './release-policy.mjs';
 
@@ -12,7 +13,8 @@ await rm(outputDir, { recursive: true, force: true });
 await mkdir(outputDir, { recursive: true });
 
 await cp(appDir, outputDir, { recursive: true });
-await cp(path.join(appDir, 'index.html'), path.join(outputDir, 'read.html'));
+const readerWeb=await buildReaderWeb({root,outputDir,html:await readFile(path.join(appDir,'index.html'),'utf8')});
+await writeFile(path.join(outputDir,'read.html'),readerWeb.html);
 await cp(path.join(appDir, 'home.html'), path.join(outputDir, 'index.html'));
 await writeFile(path.join(outputDir,'en.html'),portalDocument(await readFile(path.join(appDir,'home.html'),'utf8'),'/en'));
 await writeFile(path.join(outputDir, 'library.html'),portalDocument(await readFile(path.join(appDir,'home.html'),'utf8'),'/library'));

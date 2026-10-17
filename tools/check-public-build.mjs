@@ -35,7 +35,7 @@ export async function checkPublicBuild(directory){
         await walk(file);
       }else{
         files++;const info=await lstat(file);
-        if(info.size>limit){if(!registered.has(file))throw Error('公开构建包含未登记的大文件：'+relative);largeAssets++;}
+        if(info.size>limit){const software=/^reader-web\/reader-([a-f0-9]{16})\.js$/.exec(relative);if(software&&info.size<=320*1024&&createHash('sha256').update(await readFile(file)).digest('hex').startsWith(software[1]))continue;if(!registered.has(file))throw Error('公开构建包含未登记的大文件：'+relative);largeAssets++;}
       }
     }
   }

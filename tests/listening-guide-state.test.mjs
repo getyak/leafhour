@@ -49,3 +49,6 @@ test('a slow older cancellation cannot erase the next uncertain request identity
  const calls=[];let release;const pending=new Promise(r=>release=r),runner=createGuideRunner({request:async(action,input)=>{calls.push({action,input});if(action.endsWith('/cancel'))return pending;if(action==='guides')throw Error('Lost response');}});
  await runner.start({idempotencyKey:'old'});const cancelled=runner.cancel();await runner.start({idempotencyKey:'new'});release({});await cancelled;await runner.retry();assert.equal(calls.filter(c=>c.action==='guides'&&c.input.idempotencyKey==='new').length,2);
 });
+test('unloaded chapter identities cannot be mistaken for verified audio source text',()=>{
+ const partial={...book,sections:[{chapterId:'c',paragraphs:[{id:'p1',unloaded:true},{id:'p2',original:'Second source.'}]}]};assert.equal(sceneQuestion({book:partial,clip:{passageId:'p1',text:'Kept audio'}}),null);const question=sceneQuestion({book:partial,clip:{sourceRefs:[{passageId:'p1',quote:'First'},{passageId:'p2',quote:'Second'}]}});assert.deepEqual(question.passageIds,['p2']);
+});
