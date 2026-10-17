@@ -59,3 +59,5 @@
 .ending-save-state{font-size:12px;color:var(--muted);line-height:1.8;margin:0 0 7px}
 .ending-save-state p{margin:3px 0}.ending-save-state p:empty{display:none}
 @media(max-width:400px){.reading-dialog .ending-heading{grid-template-columns:minmax(0,1fr) 56px 44px}.ending-companion{width:56px}.ending-companion .paper-companion{transform:scale(.36)}}
+
+.reading-arrival :is(.arrival-context,.arrival-source){overflow-wrap:anywhere}
