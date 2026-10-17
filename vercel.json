@@ -100,7 +100,7 @@
   ],
   "functions": {
     "api/*.js": {
-      "maxDuration": 120,
+      "maxDuration": 300,
       "includeFiles": "{catalog/**,server/**,deploy/**,app/*.mjs,harness/**,.reader-runtime/**}"
     }
   },
