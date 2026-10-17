@@ -31,7 +31,9 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
   let doc;try{doc=await PDFDocument.load(bytes,{updateMetadata:false});}catch{throw fail('PDF 无法读取，请检查是否加密或损坏',422);}
   const totalPages=doc.getPageCount();if(totalPages<1||totalPages>1200)throw fail('PDF 最多支持 1200 页',413);
   const id=randomUUID(),base=key(user,id),batches=[],reservation='ingestion/'+userId(user)+'/source-'+hash;
-  const claim=await store.mutate(reservation,{},r=>{if(r.id&&r.expiresAt>now())return {id:r.id};r.id=id;r.expiresAt=now()+120000;return {id,mine:true};});
+  const previous=await store.read(reservation,null),cancelled=previous?.id&&previous.expiresAt>now()?await store.read(key(user,previous.id),null):null;
+  const restartId=cancelled?.state==='cancelled'&&!cancelled.batches.some(b=>b.state==='submitting')?previous.id:null;
+  const claim=await store.mutate(reservation,{},r=>{if(r.id&&r.expiresAt>now()&&r.id!==restartId)return {id:r.id};r.id=id;r.expiresAt=now()+120000;return {id,mine:true};});
   if(!claim.mine){const old=await store.read(key(user,claim.id),null);if(old)return viewOf(old);throw fail('同一文件正在建立任务，请稍后重试',409);}
   const receipt=consent===true?{recipient:'PaddleOCR official',purpose:'document_parsing',scope:mode==='auto'?'unreadable_pages':'whole_pdf',sha256:hash,version:1,acceptedAt:now()}:null;
   const job={id,filename,sourceHash:hash,totalPages,batches,state:'preparing',mode,createdAt:new Date(now()).toISOString(),consent:receipt,lease:null};

@@ -8,7 +8,10 @@ export function createIngestionUpload({store,ingestion}){
   root(user);if(typeof input.filename!=='string'||!/^.+\.pdf$/i.test(input.filename)||input.filename.length>240||!Number.isSafeInteger(input.bytes)||input.bytes<1||input.bytes>MAX_FILE_BYTES||!/^[a-f0-9]{64}$/.test(input.sha256))throw fail('请选择 256 MB 内的 PDF');
   const sourceJob=await ingestion.findSource?.(user,input.sha256);if(sourceJob)return {job:sourceJob,duplicate:true};
   if(input.mode!=='auto'&&input.consent!==true)throw fail('请允许 PaddleOCR 官方服务识别本书',403);
-  const fingerprint=root(user)+'source-'+input.sha256,existing=await store.read(fingerprint,null);if(existing){const previous=await store.read(key(user,existing.id),null);if(previous&&previous.expiresAt>Date.now())return {id:previous.id,partBytes:UPLOAD_PART_BYTES,count:previous.count,received:Object.keys(previous.parts).map(Number)};}
+  const fingerprint=root(user)+'source-'+input.sha256,existing=await store.read(fingerprint,null);if(existing){const previous=await store.read(key(user,existing.id),null);if(previous&&previous.expiresAt>Date.now()){
+   if(previous.ingestionId&&(await ingestion.view(user,previous.ingestionId)).state==='cancelled')await store.mutate(key(user,previous.id),null,row=>{if(row.ingestionId===previous.ingestionId){delete row.ingestionId;row.mode=input.mode==='auto'?'auto':'ocr';row.consent=input.consent===true;row.filename=input.filename;}});
+   return {id:previous.id,partBytes:UPLOAD_PART_BYTES,count:previous.count,received:Object.keys(previous.parts).map(Number)};
+  }}
   const now=Date.now();await store.mutate(root(user)+'limits',{times:[]},r=>{r.times=r.times.filter(t=>now-t<86400000);if(r.times.length>=20||r.times.filter(t=>now-t<3600000).length>=6)throw fail('这段时间上传较多，请稍后再试',429);r.times.push(now);});
   const id=randomUUID(),count=Math.ceil(input.bytes/UPLOAD_PART_BYTES);await store.mutate(key(user,id),{},j=>Object.assign(j,{id,filename:input.filename,bytes:input.bytes,sha256:input.sha256,count,parts:{},mode:input.mode==='auto'?'auto':'ocr',consent:input.consent===true,expiresAt:Date.now()+86400000}));await store.mutate(fingerprint,{},r=>{r.id=id;});return {id,partBytes:UPLOAD_PART_BYTES,count,received:[]};
  }
