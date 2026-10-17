@@ -20,3 +20,11 @@ test('short WAV clips keep English words together and preserve trailing whitespa
   for(const clip of prepared.clips){assert.ok(clip.text.trim());assert.ok(clip.text.length<=200);assert.equal(text.slice(clip.start-37,clip.end-37),clip.text);const at=clip.end-37;if(at<text.length)assert.ok(!(/[A-Za-z]/.test(text[at-1])&&/[A-Za-z]/.test(text[at])));}
  }
 });
+test('chapter narration prepares exact bounded clips and a continuation without losing source characters',async()=>{
+ const {prepareNarrationBatch}=await import('../server/audio-content.mjs');const book={bookId:'batch',contentVersion:'v',chapters:[{id:'c'}],sections:[{chapterId:'c',paragraphs:[{id:'p',original:'A complete sentence. '.repeat(500)},{id:'q',original:'Last source.'}]}]};
+ let input={contentVersion:'v',chapterId:'c',language:'en',from:{passageId:'p',start:0}},text='',count=0;
+ do{const result=prepareNarrationBatch(book,input);assert.ok(result.clips.length>0&&result.clips.length<=10);assert.ok(chunkAudio(prepareReading(book,result.input,{chunkingVersion:2}),2).clips.length<=10);text+=result.clips.map(c=>c.text).join('');count++;input=result.continuation?{...input,from:result.continuation}:null;}while(input&&count<30);
+ assert.equal(input,null);assert.equal(text,book.sections[0].paragraphs.map(p=>p.original).join(''));
+ const tiny={...book,sections:[{chapterId:'c',paragraphs:Array.from({length:50},(_,i)=>({id:'p'+i,original:'Tiny.'}))}]};assert.equal(prepareNarrationBatch(tiny,{contentVersion:'v',chapterId:'c',from:{passageId:'p0',start:0}}).clips.length,10);
+ assert.throws(()=>prepareNarrationBatch(book,{contentVersion:'v',chapterId:'c',language:'zh',from:{passageId:'p',start:0}}),{code:'missing_translation'});
+});

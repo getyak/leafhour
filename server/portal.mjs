@@ -5,10 +5,12 @@ import {createLibraryService} from './library-service.mjs';
 import {createEmailAuth,smtpSender} from './email-auth.mjs';
 import {createTranslator} from './translation.mjs';
 import {fail} from './document-import.mjs';
+import {audioHash} from './audio-content.mjs';
 import {createAudioStore} from './audio-store.mjs';
 import {createAudioService} from './audio-service.mjs';
 import {createSpeechProvider} from './audio-provider.mjs';
 import {createDialogueGenerator} from './dialogue-generator.mjs';
+import {createGuideGenerator} from './listening-guide-generator.mjs';
 import {createAudioRoutes} from './audio-routes.mjs';
 import {portalDocument} from './portal-document.mjs';
 import {roomExcerpt,latestRoomQuestion} from '../app/library-workspace.mjs';
@@ -28,7 +30,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
 const jsonBody=async(req,limit=29*1024*1024)=>{if(!req.headers['content-type']?.startsWith('application/json'))throw fail('请使用 JSON 请求',415);if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>limit)throw fail('这次导入内容过大，请分书恢复',413);return req.body;}let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('这次导入内容过大，请分书恢复',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('请求格式不正确');}};
 const passageList=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
-export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,chatGenerator,companionGenerator,paddleProvider,env=process.env}={}){
+export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,schedule=()=>{},paddleProvider,env=process.env}={}){
   const webOrigins=new Set(publicOrigin?[publicOrigin]:[]);
   if(!Array.isArray(additionalWebOrigins))throw fail('额外网页来源配置无效',503);
   for(const value of additionalWebOrigins){
@@ -57,8 +59,9 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context)});
   let legacyBook=null;
   const audioLibrary={getBook:(owner,id)=>owner?.id==='legacy-local'&&legacyBook?.bookId===id?Promise.resolve(legacyBook):library.getBook(owner,id)};
-  const audio=allowLocal&&!publicOrigin&&!dataStore?await createAudioService({store:await createAudioStore({dataDir:path.join(dataDir,'audio')}),getBook:audioLibrary.getBook,speechProvider:speechProvider===undefined?createSpeechProvider():speechProvider,dialogueGenerator:dialogueGenerator===undefined?createDialogueGenerator():dialogueGenerator}):null;
-  const audioRoutes=createAudioRoutes({audio,library:audioLibrary});
+  const durableAudio=dataStore&&['read','mutate','putBlob','blob'].every(k=>typeof dataStore[k]==='function');
+  const audio=durableAudio||allowLocal&&!publicOrigin&&!dataStore?await createAudioService({store:await createAudioStore({dataDir:path.join(dataDir,'audio'),dataStore:durableAudio?dataStore:null}),getBook:audioLibrary.getBook,speechProvider:speechProvider===undefined?createSpeechProvider({env}):speechProvider,dialogueGenerator:dialogueGenerator===undefined?createDialogueGenerator({env}):dialogueGenerator,schedule,durable:!!durableAudio,env}):null;
+  const audioRoutes=createAudioRoutes({audio,library:audioLibrary,guideGenerator:guideGenerator===undefined?createGuideGenerator({env}):guideGenerator});
   async function handle({req,res,url,send}){
     const p=url.pathname,isAPI=p.startsWith('/api/auth/')||p.startsWith('/api/library')||p.startsWith('/api/agent/')||p.startsWith('/api/account/')||p.startsWith('/api/book-gifts/');
     const files={'/':'home.html','/library':'home.html','/privacy':'privacy.html','/auth.css':'auth.css','/auth-dialog.mjs':'auth-dialog.mjs','/auth-flow.mjs':'auth-flow.mjs','/auth-assets/google.png':'auth-assets/google.png','/auth-assets/apple.svg':'auth-assets/apple.svg','/portal.css':'portal.css','/portal.js':'portal.js','/owner-scope.mjs':'owner-scope.mjs','/paragraph-anchor.mjs':'paragraph-anchor.mjs','/source-language.mjs':'source-language.mjs','/upload-state.mjs':'upload-state.mjs','/library-backup.mjs':'library-backup.mjs','/reader-api.mjs':'reader-api.mjs','/reading-progress.mjs':'reading-progress.mjs','/progress-sync.mjs':'progress-sync.mjs','/reader-translation.js':'reader-translation.js'};
@@ -220,8 +223,8 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action.startsWith('audio-')){
         if(!audio)throw fail('此实例暂未开启听读，请在本机书房使用。',503);
         if(action==='audio-prepare'&&req.method==='POST'){send(200,await audio.prepare(owner,bookId,body));return true;}
-        if(action==='audio-generate'&&req.method==='POST'){send(202,await audio.createSession(owner,bookId,body,{authorize:()=>library.authorize(agentToken,bookId,'audio:generate')}));return true;}
-        if(action==='audio-status'&&req.method==='GET'){const s=await audio.getSession(owner,bookId,url.searchParams.get('sessionId'));send(200,{...s,clips:s.clips.map(c=>({...c,uri:`reader://books/${bookId}/audio/clips/${c.id}`}))});return true;}
+        if(action==='audio-generate'&&req.method==='POST'){send(202,await audio.createSession(owner,bookId,body,{key:audioHash(agentToken),authorize:()=>library.authorize(agentToken,bookId,'audio:generate')}));return true;}
+        if(action==='audio-status'&&req.method==='GET'){const resume=await library.authorize(agentToken,bookId,'audio:generate').then(()=>true).catch(()=>false),s=await audio.getSession(owner,bookId,url.searchParams.get('sessionId'),{key:audioHash(agentToken),resume,authorize:()=>library.authorize(agentToken,bookId,'audio:generate')});send(200,{...s,clips:s.clips.map(c=>({...c,uri:`reader://books/${bookId}/audio/clips/${c.id}`}))});return true;}
         if(action==='audio-cancel'&&req.method==='POST'){send(200,await audio.cancelSession(owner,bookId,body.sessionId));return true;}
         if(action==='audio-clip'&&req.method==='GET'){const {bytes,mimeType}=await audio.getClip(owner,bookId,url.searchParams.get('clipId'));res.statusCode=200;res.setHeader('Content-Type',mimeType);res.setHeader('Cache-Control','private, no-store');res.end(bytes);return true;}
         throw fail('不支持这个听读操作',405);

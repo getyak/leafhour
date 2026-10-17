@@ -58,6 +58,22 @@ export function prepareReading(book,input,{chunkingVersion=1}={}){
  }
  return {bookId:book.bookId,contentVersion:book.contentVersion,chapterId:input.chapterId,language,variant,clips};
 }
+export function prepareNarrationBatch(book,input){
+ const rows=audioPassages(book).filter(p=>p.chapterId===input?.chapterId),at=rows.findIndex(p=>p.id===input?.from?.passageId),language=input?.language||'en',variant=input?.variant||'interpretive';
+ if(at<0||!Number.isInteger(input.from.start)||input.from.start<0)throw audioError('请先选择从哪一段开始朗读。');
+ const clips=[];let continuation=null;
+ for(let i=at;i<rows.length&&clips.length<10;i++){
+  const p=rows[i],text=language==='en'?p.original:p.translations?.[variant]?.text,start=i===at?input.from.start:0;
+  if(typeof text!=='string'||!text.trim())throw audioError('这份译文尚未准备好，可以改听原文。',409,'missing_translation');
+  let end=Math.min(text.length,start+3000);if(!boundary(text,end))end--;
+  const prepared=chunkAudio(prepareReading(book,{contentVersion:input.contentVersion,chapterId:input.chapterId,language,variant,parts:[{passageId:p.id,start,end}]},{chunkingVersion:2}),2);
+  const selected=prepared.clips.slice(0,10-clips.length);clips.push(...selected);const stop=selected.at(-1).end;
+  continuation=stop<text.length?{passageId:p.id,start:stop}:rows[i+1]?{passageId:rows[i+1].id,start:0}:null;
+  if(stop<text.length)break;
+ }
+ const parts=[];for(const clip of clips){const prior=parts.at(-1);if(prior?.passageId===clip.passageId&&prior.end===clip.start)prior.end=clip.end;else parts.push({passageId:clip.passageId,start:clip.start,end:clip.end});}
+ return {clips,input:{contentVersion:input.contentVersion,chapterId:input.chapterId,language,variant,parts},continuation};
+}
 export function dialogueScope(book,scope){
  const rows=audioPassages(book).filter(p=>p.chapterId===scope?.chapterId),ids=scope?.passageIds;
  if(!rows.length||ids!==undefined&&(!Array.isArray(ids)||!ids.length||new Set(ids).size!==ids.length||ids.some(id=>!rows.some(p=>p.id===id))))throw audioError('章节范围无效。');
