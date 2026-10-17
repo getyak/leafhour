@@ -16,3 +16,5 @@ test('upload locks its filename and bytes to one file; a failed attempt can retr
 });
 
 test('accepts a real scan sized PDF while retaining the text file limit',()=>{const s=createUploadState();assert.equal(s.select({name:'scan.pdf',size:143882741}),true);assert.throws(()=>s.select({name:'big.txt',size:21*1024*1024}));});
+
+test('EPUB is selectable with an explicit 20 MB capacity and cannot bypass it',()=>{const state=createUploadState();assert.equal(state.select({name:'reading.EPUB',size:500}),true);assert.equal(state.begin().name,'reading.EPUB');state.finish();assert.throws(()=>state.select({name:'large.epub',size:20*1024*1024+1}),/20 MB/);assert.equal(state.file,null);});

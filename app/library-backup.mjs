@@ -1,3 +1,4 @@
+import {validatePendingAnchors} from './source-revisions.mjs';
 import {normalizeAppearance} from './reading-preferences.mjs';
 import {validParagraphAnchor} from './paragraph-anchor.mjs';
 import {normalizeReadingSession,normalizeReadingMilestone,normalizeReadingGoal} from './reading-session-record.mjs';
@@ -59,6 +60,7 @@ export function validateLibraryBackup(backup){
     if(r.schemaVersion===3||r.readingMilestones!==undefined){if(!Array.isArray(r.readingMilestones)||r.readingMilestones.length>10000)invalid(where,'阅读标记不完整');const marks=new Set();for(const mark of r.readingMilestones){try{if(marks.has(mark?.id)||mark?.origin!=='user'||mark.bookId!==b.bookId||mark.contentVersion!==b.contentVersion)invalid(where,'阅读标记归属不正确');normalizeReadingMilestone(mark,b);marks.add(mark.id);}catch{invalid(where,'阅读标记无法对应原文');}}}
     if(r.readingGoal!==undefined){try{if(!date(r.readingGoal?.updatedAt))invalid(where,'阅读目标时间不正确');normalizeReadingGoal(r.readingGoal);}catch{invalid(where,'阅读目标不正确');}}
     if(entry.localReadingDrafts!==undefined){try{validateReadingDraftBackup(entry.localReadingDrafts,b);}catch{invalid(where,'本机阅读草稿无法对应原文或待确认提交');}}
+    try{validatePendingAnchors(r,b);}catch{invalid(where,'待确认私人记录无法恢复');}
     if(r.position!==null&&r.position!==undefined){const p=r.position;if(!object(p)||passageIds.get(p.passageId)!==p.chapterId||!validParagraphAnchor(p)||!['zh','en','parallel'].includes(p.mode)||!['literal','interpretive'].includes(p.variant)||p.contentVersion!==undefined&&p.contentVersion!==b.contentVersion||p.revision!==undefined&&(!Number.isInteger(p.revision)||p.revision<0)||p.updatedAt!==undefined&&!date(p.updatedAt))invalid(where,'阅读位置不完整');try{normalizeAppearance(p,true);}catch{invalid(where,'阅读排版设置不正确');}}
   }
   return {books:backup.books.length,paragraphs,notes};

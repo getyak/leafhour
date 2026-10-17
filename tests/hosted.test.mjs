@@ -24,7 +24,7 @@ function database({jsonb=false}={}){
       const key=url.pathname.split('/reader-originals/')[1];
       if(options.method==='POST'){objects.set(key,Buffer.from(options.body));data={};}
       else {if(!objects.has(key))return new Response('{}',{status:404});const bytes=objects.get(key),range=options.headers?.Range?.match(/^bytes=(\d+)-(\d+)$/);if(range){const start=Number(range[1]),end=Number(range[2]);return new Response(bytes.subarray(start,end+1),{status:206,headers:{'content-length':String(end-start+1),'content-range':'bytes '+start+'-'+end+'/'+bytes.length}});}return new Response(options.method==='HEAD'?null:bytes,{headers:{'content-length':String(bytes.length)}});}
-    }else throw Error('Unexpected fixture route');
+    }else if(url.pathname.startsWith('/storage/v1/object/upload/sign/reader-originals/')){data={url:'/object/upload/sign/reader-originals/synthetic-upload?token=synthetic'};}else throw Error('Unexpected fixture route');
     return Response.json(data);
   };
   return {fetcher,rows};
@@ -143,3 +143,5 @@ test('bounded original ranges cross storage parts without fetching complete blob
  for(let n=0;n<2;n++){const bytes=source.subarray(n*4,n*4+4),target='slice-'+n;await store.putBlob(target,bytes);parts.push({target,size:4,sha256:sum(bytes)});}await store.adoptBlob('range-source',parts,{size:8,sha256:sum(source)});store.blob=()=>assert.fail('whole source must not be loaded');const slice=await store.blobRange('range-source',{offset:2,length:5,sha256:sum(source)});assert.equal(slice.bytes.toString(),'cdefg');assert.equal(slice.total,8);
  for(const [offset,length]of [[-1,1],[0,1048577],[7,2]])await assert.rejects(store.blobRange('range-source',{offset,length,sha256:sum(source)}));await assert.rejects(store.blobRange('range-source',{offset:0,length:1,sha256:sum('other')}),e=>e.status===409);corrupt=true;await assert.rejects(store.blobRange('range-source',{offset:2,length:2,sha256:sum(source)}),e=>e.status===409);
 });
+
+test('hosted signed-upload reservation accepts EPUB with the same bounded owner staging as text',async()=>{const f=database(),store=createHostedStore({env,fetcher:f.fetcher}),user={id:'epub-owner'};const target=await store.beginUpload(user,{filename:'reading.epub',bytes:512});assert.match(target.id,/^[a-f0-9-]{36}$/);assert.equal(new URL(target.url).origin,env.SUPABASE_URL);await assert.rejects(store.beginUpload(user,{filename:'too-large.epub',bytes:20*1024*1024+1}),{status:400});await assert.rejects(store.beginUpload(null,{filename:'reading.epub',bytes:512}),{status:401});});
