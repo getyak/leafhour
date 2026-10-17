@@ -38,7 +38,7 @@ assets.set('/mcp-config.mjs',['app/mcp-config.mjs','text/javascript']);
 const downloads=new Map([['/exports/bilingual.md','book-bilingual.md'],['/exports/literal.md','book-literal.md'],['/exports/interpretive.md','book-interpretive.md'],['/exports/reading-pack.zip','reading-pack.zip']]);
 for(const file of ['reader-audio.js','reader-audio.css','audio-state.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/listening-guide-state.mjs',['app/listening-guide-state.mjs','text/javascript']);
-for(const file of ['reader-atmosphere.js','reader-atmosphere.css','atmosphere-state.mjs','atmosphere-audio.mjs','hearth-motion.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
+for(const file of ['reader-atmosphere.js','reader-atmosphere.css','atmosphere-state.mjs','atmosphere-audio.mjs','hearth-motion.mjs','nature-motion.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 for(const name of ['forest','rain','hearth','sea'])assets.set('/assets/atmospheres/'+name+'.jpg',['app/assets/atmospheres/'+name+'.jpg','image/jpeg']);
 for(const name of ['wind','birds','rain','fire','waves'])assets.set('/assets/atmospheres/'+name+'.mp3',['app/assets/atmospheres/'+name+'.mp3','audio/mpeg']);
 assets.set('/assets/atmospheres/NOTICE.md',['app/assets/atmospheres/NOTICE.md','text/plain']);
