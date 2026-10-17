@@ -1,5 +1,5 @@
 import {randomUUID,createHash} from 'node:crypto';
-import {MAX_ARCHIVE_BYTES,PART_BYTES,readLibraryArchive,assertPortableContent} from '../app/library-portability.mjs';
+import {MAX_ARCHIVE_BYTES,PART_BYTES,readLibraryArchive,assertPortableContent,portableExportContent} from '../app/library-portability.mjs';
 const hash=b=>createHash('sha256').update(b).digest('hex');
 const fail=(m,status=400)=>{throw Object.assign(Error(m),{status});};
 const replace=(row,next)=>{for(const k of Object.keys(row))delete row[k];Object.assign(row,next);};
@@ -64,7 +64,7 @@ export function createLibraryPortability({library,chat,store,clock=Date.now}){
  }
  async function exportPart(user,id,{offset=0,snapshot=null}={}){
   key(user);if(!Number.isSafeInteger(offset)||offset<0||offset>MAX_ARCHIVE_BYTES||snapshot!==null&&!validHash(snapshot)||offset>0&&!snapshot)fail('备份分段范围不正确');
-  const entry={...await library.exportBookEntry(user,id),chat:await chat.exportHistory(user,id)};assertPortableContent(entry);
+  const entry=portableExportContent({...await library.exportBookEntry(user,id),chat:await chat.exportHistory(user,id)});assertPortableContent(entry);
   const bytes=Buffer.from(JSON.stringify(entry)),digest=hash(bytes);if(bytes.length>MAX_ARCHIVE_BYTES)fail('单书备份超过 512 MiB',413);if(snapshot&&snapshot!==digest)fail('记录正在更新，请重试备份',409);if(offset>=bytes.length)fail('备份分段超出范围');
   const next=Math.min(bytes.length,offset+PART_BYTES);return {kind:'marginalia-book-export-part',schemaVersion:1,bookId:entry.book.bookId,contentVersion:entry.book.contentVersion,offset,totalBytes:bytes.length,nextOffset:next<bytes.length?next:null,snapshot:digest,data:bytes.subarray(offset,next).toString('base64')};
  }

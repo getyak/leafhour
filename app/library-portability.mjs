@@ -6,12 +6,21 @@ export const MAX_ARCHIVE_BYTES=512*1024*1024,PART_BYTES=1048576;
 const fail=(m,status=400)=>{throw Object.assign(Error(m),{status});};
 export const portableHash=async bytes=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(n=>n.toString(16).padStart(2,'0')).join('');
 const privateKeys=new Set(['token','accesstoken','refreshtoken','apikey','secret','password','credentials','authorization','cookie','sessiontoken','tokenhash','runid','lease','authoritykey','ownerid','userid','mcpgrants','grants','agentgrants','privatekey','secretkey','clientsecret','mcpconfig','auth','sessionid','expiresat','requestbudgets','giftreceive']);
+const privateField=key=>privateKeys.has(key.toLowerCase().replaceAll(/[-_]/g,''));
+// Outbound reading archives may retain old runtime metadata. Copy content while
+// omitting authority; inbound packages still pass the strict rejection below.
+export function portableExportContent(value,depth=0){
+ if(depth>48)fail('备份内容嵌套过深');
+ if(!value||typeof value!=='object')return value;
+ if(Array.isArray(value))return value.map(child=>portableExportContent(child,depth+1));
+ return Object.fromEntries(Object.entries(value).filter(([key])=>!privateField(key)).map(([key,child])=>[key,portableExportContent(child,depth+1)]));
+}
 const credentialParameter=name=>{const key=name.toLowerCase().replace(/[^a-z0-9]/g,'');return ['key','sig','auth','code','pass','pwd'].includes(key)||/token|secret|signature|credential|password|passwd|passphrase|authorization|apikey|accesskey/.test(key);};
 export function assertPortableContent(value,depth=0){
  if(depth>48)fail('备份内容嵌套过深');
  if(!value||typeof value!=='object')return;
  for(const [key,child]of Object.entries(value)){
-  if(privateKeys.has(key.toLowerCase().replaceAll(/[-_]/g,'')))fail('内容包不能包含凭据或访问令牌');
+  if(privateField(key))fail('内容包不能包含凭据或访问令牌');
   if(/(?:url|uri|href)$/i.test(key)&&typeof child==='string'){let url;try{url=new URL(child,'https://relative.invalid');}catch{fail('备份来源链接无效');}const fragment=url.hash.includes('=')?new URLSearchParams(url.hash.slice(1)):new URLSearchParams();if(url.username||url.password||[...url.searchParams.keys(),...fragment.keys()].some(credentialParameter))fail('内容包不能包含带凭据的来源链接');}
   assertPortableContent(child,depth+1);
  }
