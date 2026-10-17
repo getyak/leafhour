@@ -1,3 +1,4 @@
+import {createIngestionRunner} from './ingestion-runner.mjs';
 import {readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -45,6 +46,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const ingestionStore=dataStore||createIngestionStorage({dataDir:path.join(dataDir,'ingestion')});
   const ingestion=createBookIngestion({store:ingestionStore,library,provider});
   const ingestionUpload=createIngestionUpload({store:ingestionStore,ingestion});
+  const ingestionRunner=createIngestionRunner({store:ingestionStore,ingestion,schedule,env,publicOrigin:dataStore?publicOrigin:null});
   const profile=createAccountProfile({dataDir:path.join(dataDir,'library'),dataStore});
   const gifts=createBookGifts({library,dataDir:path.join(dataDir,'library'),dataStore,getProfile:profile.get});
   const visibleUser=async user=>user?{id:user.id,email:user.email||null,kind:user.kind,...await profile.get(user)}:null;
@@ -64,9 +66,11 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const audio=durableAudio||allowLocal&&!publicOrigin&&!dataStore?await createAudioService({store:await createAudioStore({dataDir:path.join(dataDir,'audio'),dataStore:durableAudio?dataStore:null}),getBook:audioLibrary.getBook,speechProvider:speechProvider===undefined?createSpeechProvider({env}):speechProvider,dialogueGenerator:dialogueGenerator===undefined?createDialogueGenerator({env}):dialogueGenerator,schedule,durable:!!durableAudio,env}):null;
   const audioRoutes=createAudioRoutes({audio,library:audioLibrary,guideGenerator:guideGenerator===undefined?createGuideGenerator({env}):guideGenerator});
   async function handle({req,res,url,send}){
-    const p=url.pathname,isAPI=p.startsWith('/api/auth/')||p.startsWith('/api/library')||p.startsWith('/api/agent/')||p.startsWith('/api/account/')||p.startsWith('/api/book-gifts/');
+    const p=url.pathname;
+    if(p==='/api/internal/ingestion/wake'){if(req.method!=='POST'||!ingestionRunner.authorized(req.headers.authorization))throw fail('找不到这个操作',404);ingestionRunner.tick();send(202,{accepted:true});return true;}
+    const isAPI=p.startsWith('/api/auth/')||p.startsWith('/api/library')||p.startsWith('/api/agent/')||p.startsWith('/api/account/')||p.startsWith('/api/book-gifts/');
     const files={'/':'home.html','/library':'home.html','/privacy':'privacy.html','/auth.css':'auth.css','/auth-dialog.mjs':'auth-dialog.mjs','/auth-flow.mjs':'auth-flow.mjs','/auth-assets/google.png':'auth-assets/google.png','/auth-assets/apple.svg':'auth-assets/apple.svg','/portal.css':'portal.css','/portal.js':'portal.js','/owner-scope.mjs':'owner-scope.mjs','/paragraph-anchor.mjs':'paragraph-anchor.mjs','/source-language.mjs':'source-language.mjs','/upload-state.mjs':'upload-state.mjs','/library-backup.mjs':'library-backup.mjs','/reader-api.mjs':'reader-api.mjs','/reading-progress.mjs':'reading-progress.mjs','/progress-sync.mjs':'progress-sync.mjs','/reader-translation.js':'reader-translation.js'};
-    files['/pdf-ingestion.mjs']='pdf-ingestion.mjs';
+    files['/pdf-ingestion.mjs']='pdf-ingestion.mjs';files['/pdf-onboarding.mjs']='pdf-onboarding.mjs';files['/pdf-onboarding-state.mjs']='pdf-onboarding-state.mjs';files['/book-transfer.mjs']='book-transfer.mjs';
     files['/original-download.mjs']='original-download.mjs';
     files['/reader-conversation.mjs']='reader-conversation.mjs';
     for(const file of ['reader-companion.mjs','reader-companion-state.mjs','reader-companion.css'])files['/'+file]=file;
@@ -146,12 +150,12 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       const loopback=req.socket.localAddress==='::1'?'[::1]':'127.0.0.1';
       send(200,{command:process.execPath,args:[path.join(root,'server/mcp.mjs')],serviceUrl:'http://'+loopback+':'+req.socket.localPort});return true;
     }
-    if(p==='/api/library/pdf-upload/start'&&req.method==='POST'){if(!provider)throw fail('文字识别服务尚未配置',503);send(201,await ingestionUpload.start(user,body));return true;}
+    if(p==='/api/library/pdf-upload/start'&&req.method==='POST'){const result=await ingestionUpload.start(user,body);if(result.job)await ingestionRunner.enqueue(user,result.job.id);send(201,result);return true;}
     const partUpload=p.match(/^\/api\/library\/pdf-upload\/([-a-z0-9]{36})\/(part|complete)$/);
-    if(partUpload&&req.method==='POST'){send(200,partUpload[2]==='part'?await ingestionUpload.part(user,partUpload[1],body):await ingestionUpload.complete(user,partUpload[1]));return true;}
-    if(p==='/api/library/ingestion'&&req.method==='GET'){send(200,{jobs:await ingestion.list(user)});return true;}
-    const ingestRoute=p.match(/^\/api\/library\/ingestion\/([-a-z0-9]{36})(?:\/(advance|cancel|resume))?$/);
-    if(ingestRoute){const [,id,action]=ingestRoute;if(req.method==='GET'&&!action)send(200,await ingestion.view(user,id));else if(req.method==='POST'&&action)send(200,await ingestion[action](user,id));else throw fail('不支持这个请求',405);return true;}
+    if(partUpload&&req.method==='POST'){const result=partUpload[2]==='part'?await ingestionUpload.part(user,partUpload[1],body):await ingestionUpload.complete(user,partUpload[1]);if(partUpload[2]==='complete')await ingestionRunner.enqueue(user,result.id);send(200,result);return true;}
+    if(p==='/api/library/ingestion'&&req.method==='GET'){const jobs=await ingestion.list(user);for(const job of jobs)if(['preparing','running','publishing'].includes(job.state))await ingestionRunner.enqueue(user,job.id);send(200,{jobs});return true;}
+    const ingestRoute=p.match(/^\/api\/library\/ingestion\/([-a-z0-9]{36})(?:\/(advance|cancel|resume|consent|preview))?$/);
+    if(ingestRoute){const [,id,action]=ingestRoute;if(req.method==='GET'&&action==='preview')send(200,await ingestion.preview(user,id));else if(req.method==='GET'&&!action)send(200,await ingestion.view(user,id));else if(req.method==='POST'&&action&&action!=='preview'){const result=action==='consent'?await ingestion.consent(user,id,body):await ingestion[action](user,id);await ingestionRunner.enqueue(user,id);send(200,result);}else throw fail('不支持这个请求',405);return true;}
     if(p==='/api/library/upload/start'&&req.method==='POST'){
       if(!dataStore?.beginUpload)throw fail('此书房使用本机上传',404);
       send(201,await dataStore.beginUpload(user,body));return true;
@@ -186,7 +190,8 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='gifts'&&req.method==='POST'){send(201,await gifts.create(user,id,body));return true;}
       if(action==='gifts'&&req.method==='GET'){send(200,{gifts:await gifts.list(user,id)});return true;}
       if(action?.startsWith('audio/'))return audioRoutes.handle({req,res,url,user,bookId:id,action:action.slice(6),body,send});
-      if(!action&&req.method==='GET'){send(200,await library.getBook(user,id));return true;}
+      if(action==='content-part'&&req.method==='GET'){send(200,await library.bookTransfer(user,id,Number(url.searchParams.get('offset')),url.searchParams.get('snapshot')));return true;}
+      if(!action&&req.method==='GET'){const book=await library.getBook(user,id);if(req.headers['x-reader-book-transfer']==='1'&&Buffer.byteLength(JSON.stringify(book))>3000000&&(dataStore||Buffer.byteLength(JSON.stringify(book))<=32*1024*1024)){res.setHeader('X-Reader-Book-Transfer','parts');send(200,await library.bookTransfer(user,id));}else send(200,book);return true;}
       if(action==='preview'&&req.method==='GET'){
         const book=await library.getBook(user,id),excerpt=roomExcerpt(book,url.searchParams.get('passageId')||undefined);
         let question=null;
@@ -243,5 +248,5 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     }
     throw fail('找不到这个操作',404);
   }
-  return {handle,library,auth,profile,gifts,audio,audioRoutes,chat,setLegacyBook:book=>{legacyBook=book;}};
+  return {handle,library,auth,profile,gifts,audio,audioRoutes,chat,ingestionRunner,setLegacyBook:book=>{legacyBook=book;}};
 }

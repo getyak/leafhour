@@ -158,3 +158,13 @@ test('reattaching an original after cross-account restore returns the existing b
   await target.restoreLibrary(bob,await source.exportLibrary(alice));const attached=await target.importDocument(bob,{filename:'original.txt',bytes});
   assert.equal(attached.bookId,book.bookId);assert.equal((await target.list(bob)).length,1);assert.equal((await target.records(bob,attached.bookId)).comments[0].text,'A thought that must stay with this book.');assert.deepEqual((await target.getOriginal(bob,attached.bookId)).bytes,bytes);
 });
+
+test('automatic native and mixed PDF books retain source-checked original downloads',async t=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'reader-auto-original-'));t.after(()=>rm(dir,{recursive:true,force:true}));const library=await createLibraryService({dataDir:dir,catalogDir:null,translator:null}),user={id:'isolated-owner'},bytes=textPdf();
+ for(const processor of ['pdfjs-native','native+paddle-auto-v1']){const source=Buffer.concat([bytes,Buffer.from('\n%'+processor)]),book=await library.importExtracted(user,{filename:'book.pdf',bytes:source,extracted:{format:'pdf',processor,contentVersion:'c'.repeat(64),review:'extracted_unreviewed',pages:[{page:1,text:'A source paragraph.'}]}});assert.equal((await library.originalInfo(user,book.bookId)).available,true);assert.deepEqual((await library.getOriginal(user,book.bookId)).bytes,source);}
+});
+
+test('local imports enforce logical capacity before saving a shelf entry',async t=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'reader-local-capacity-'));t.after(()=>rm(dir,{recursive:true,force:true}));const library=await createLibraryService({dataDir:dir,catalogDir:null,translator:null}),user={id:'capacity-fixture'};
+ await assert.rejects(library.importExtracted(user,{filename:'large.pdf',bytes:Buffer.from('%PDF-synthetic'),extracted:{format:'pdf',review:'extracted_unreviewed',pages:[{page:1,text:'A'+'\0'.repeat(6000000)}]}}),e=>e.status===413);assert.deepEqual(await library.list(user),[]);
+});

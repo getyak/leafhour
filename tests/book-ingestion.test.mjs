@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {PDFDocument} from 'pdf-lib';
+import {PDFDocument,PDFName,PDFString} from 'pdf-lib';
+import {digest} from '../server/document-import.mjs';
 import {createBookIngestion} from '../server/book-ingestion.mjs';
 const user={id:'owner'},other={id:'other'};
 function memory(){const rows=new Map(),blobs=new Map();return {rows,blobs,read:async(k,d)=>structuredClone(rows.get(k)??d),mutate:async(k,d,fn)=>{const v=structuredClone(rows.get(k)??d),r=fn(v);rows.set(k,structuredClone(v));return r;},putBlob:async(k,b)=>{blobs.set(k,Buffer.from(b));},blob:async k=>Buffer.from(blobs.get(k))};}
@@ -9,6 +10,28 @@ test('requires explicit recipient consent and keeps every source page across bat
 test('cancellation prevents new requests and publication',async()=>{const f=await fixture();const job=await f.make().prepare(user,{filename:'x.pdf',bytes:f.bytes,consent:true});await f.make().cancel(user,job.id);assert.equal((await f.make().advance(user,job.id)).state,'cancelled');assert.equal(f.submissions,0);assert.equal(f.published,0);});
 test('missing pages never publish an incomplete book',async()=>{const f=await fixture();const svc=f.make();let job=await svc.prepare(user,{filename:'x.pdf',bytes:f.bytes,consent:true});for(let i=0;i<6;i++){await svc.advance(user,job.id);const found=[...f.store.rows.values()].find(x=>x.id===job.id&&x.batches);if(found?.batches[0].handle)break;}const row=[...f.store.rows.values()].find(x=>x.id===job.id&&x.batches);row.batches[0].handle.count=1;f.store.rows.set([...f.store.rows.entries()].find(([,x])=>x.id===job.id&&x.batches)[0],row);for(let i=0;i<4;i++){job=await svc.advance(user,job.id).catch(()=>svc.view(user,job.id));}assert.notEqual(job.state,'done');assert.equal(f.published,0);});
 test('same-source repeat resumes the same job without changing IDs',async()=>{const f=await fixture();const a=await f.make().prepare(user,{filename:'x.pdf',bytes:f.bytes,consent:true}),b=await f.make().prepare(user,{filename:'x.pdf',bytes:f.bytes,consent:true});assert.equal(a.id,b.id);});
+test('automatic native import needs no external provider or recognition consent',async()=>{
+ const f=await fixture(3);let published;
+ const nativeInspector=async bytes=>({pages:Array.from({length:(await PDFDocument.load(bytes)).getPageCount()},(_,n)=>({page:n+1,text:'A native source page.',needsRecognition:false}))});
+ const svc=createBookIngestion({store:f.store,provider:null,batchPages:2,nativeInspector,library:{importExtracted:async(_u,input)=>{published=input.extracted;return {bookId:'native-book'};}}});
+ let j=await svc.prepare(user,{filename:'native.pdf',bytes:f.bytes,mode:'auto',consent:false});
+ for(let n=0;n<10&&j.state!=='done';n++)j=await svc.advance(user,j.id);
+ assert.equal(j.state,'done');assert.equal(j.completedPages,3);assert.equal(f.submissions,0);assert.deepEqual(published.pages.map(p=>p.page),[1,2,3]);
+});
+test('mixed pages pause once for source-bound consent and recognize only their original page map',async()=>{
+ const f=await fixture(4);let published;
+ const nativeInspector=async(bytes,{start})=>({pages:Array.from({length:(await PDFDocument.load(bytes)).getPageCount()},(_,n)=>({page:n+1,text:(start+n)%2?'Native readable page.':'',needsRecognition:(start+n)%2===0}))});
+ const svc=createBookIngestion({store:f.store,provider:f.provider,batchPages:2,nativeInspector,library:{importExtracted:async(_u,input)=>{published=input.extracted;return {bookId:'mixed-book'};}}});
+ let j=await svc.prepare(user,{filename:'mixed.pdf',bytes:f.bytes,mode:'auto',consent:false});
+ for(let n=0;n<6&&j.state!=='awaiting_consent';n++)j=await svc.advance(user,j.id);
+ assert.equal(j.state,'awaiting_consent');assert.equal(f.submissions,0);assert.equal(j.completedPages,1);
+ const preview=await svc.preview(user,j.id);assert.equal(preview.complete,false);assert.equal(preview.pages[0].page,1);assert.ok(!JSON.stringify(preview).includes('jobId'));
+ await assert.rejects(svc.consent(user,j.id,{confirm:true,sourceHash:'wrong'}),e=>e.status===409);
+ await svc.consent(user,j.id,{confirm:true,sourceHash:j.sourceHash});
+ for(let n=0;n<20&&j.state!=='done';n++)j=await svc.advance(user,j.id);
+ assert.equal(j.state,'done');assert.equal(j.completedPages,4);assert.equal(f.submissions,2);assert.deepEqual(published.pages.map(p=>p.page),[1,2,3,4]);assert.match(published.pages[0].text,/Native/);assert.match(published.pages[1].text,/原文/);
+ const same=await svc.findSource(user,j.sourceHash);assert.equal(same.bookId,'mixed-book');assert.equal(await svc.findSource(other,j.sourceHash),null);
+});
 test('concurrent preparation has one durable source job',async()=>{const f=await fixture(),results=await Promise.allSettled([f.make().prepare(user,{filename:'x.pdf',bytes:f.bytes,consent:true}),f.make().prepare(user,{filename:'x.pdf',bytes:f.bytes,consent:true})]);const jobs=[...f.store.rows.values()].filter(r=>r.id&&r.batches);assert.equal(jobs.length,1);assert.ok(results.some(r=>r.status==='fulfilled'));});
 
 test('resume resubmits a confirmed failed provider batch without losing completed progress',async()=>{const f=await fixture(1);let failed=true;f.provider.status=async()=>{if(failed){failed=false;return {state:'failed'};}return {state:'done'};};const svc=f.make();let job=await svc.prepare(user,{filename:'x.pdf',bytes:f.bytes,consent:true});await svc.advance(user,job.id);await svc.advance(user,job.id);await assert.rejects(svc.advance(user,job.id));await svc.resume(user,job.id);for(let i=0;i<6;i++){job=await svc.advance(user,job.id);if(job.state==='done')break;}assert.equal(job.state,'done');assert.equal(f.submissions,2);});
@@ -23,3 +46,14 @@ test('a slow early batch cannot prevent collecting later results or submitting r
 for(const operation of ['status','result'])test('transient provider '+operation+' reads retry the saved handle without another submission',async()=>{const f=await fixture(1),original=f.provider[operation];let once=true;f.provider[operation]=async(...args)=>{if(once){once=false;const e=Error('offline');e.name='NetworkError';throw e;}return original(...args);};const svc=f.make();let j=await svc.prepare(user,{filename:'x.pdf',bytes:f.bytes,consent:true});for(let n=0;n<8&&j.state!=='done';n++)j=await svc.advance(user,j.id);assert.equal(j.state,'done');assert.equal(f.submissions,1);assert.equal(f.published,1);});
 test('persistent result read failures stop after bounded retries, and explicit resume gets a fresh read budget',async()=>{const f=await fixture(1),original=f.provider.result;let reads=0;f.provider.result=async()=>{reads++;const e=Error('offline');e.name='NetworkError';throw e;};const svc=f.make();let j=await svc.prepare(user,{filename:'x.pdf',bytes:f.bytes,consent:true});await svc.advance(user,j.id);await svc.advance(user,j.id);for(let n=0;n<3;n++)assert.equal((await svc.advance(user,j.id)).state,'running');await assert.rejects(svc.advance(user,j.id));assert.equal(reads,4);assert.equal((await svc.view(user,j.id)).state,'failed');assert.equal(f.submissions,1);f.provider.result=original;await svc.resume(user,j.id);for(let n=0;n<5&&j.state!=='done';n++)j=await svc.advance(user,j.id);assert.equal(j.state,'done');assert.equal(f.submissions,1);});
 test('controlled SDK connection tags are retained only in private job diagnostics',async()=>{const f=await fixture(1);f.provider.status=async()=>{throw Object.assign(Error('Connection failed: PADDLE_TRANSPORT_API_UND_ERR_CONNECT_TIMEOUT'),{name:'NetworkError'});};const svc=f.make(),j=await svc.prepare(user,{filename:'x.pdf',bytes:f.bytes,consent:true});for(let n=0;n<3;n++)await svc.advance(user,j.id);const raw=[...f.store.rows.values()].find(x=>x.id===j.id&&x.batches);assert.equal(raw.failure.code,'PADDLE_TRANSPORT_API_UND_ERR_CONNECT_TIMEOUT');assert.equal(raw.failure.stage,'provider_status');assert.ok(!JSON.stringify(await svc.view(user,j.id)).includes('TRANSPORT'));});
+test('known pre-publication validation failures pause and can cancel without an automatic publication loop',async()=>{
+ for(const status of [400,413,422]){const f=await fixture(1);let attempts=0;const svc=createBookIngestion({store:f.store,provider:f.provider,library:{importExtracted:async()=>{attempts++;throw Object.assign(Error('precommit validation'),{status});}}});let job=await svc.prepare(user,{filename:'blank.pdf',bytes:f.bytes,consent:true});for(let n=0;n<8&&job.state!=='failed';n++){await svc.advance(user,job.id).catch(()=>{});job=await svc.view(user,job.id);}assert.equal(job.state,'failed');await svc.advance(user,job.id);assert.equal(attempts,1);assert.equal((await svc.cancel(user,job.id)).state,'cancelled');}
+});
+
+test('concurrent owners retain only their own PDF outlines after source cache replacement',async()=>{
+ const f=await fixture(),docs=new Map();
+ async function source(label){const d=await PDFDocument.create();d.addPage();d.addPage();const c=d.context,root=c.obj({Type:'Outlines',Count:2}),rootRef=c.register(root),items=d.getPages().map((p,i)=>c.obj({Title:PDFString.of(label+' '+(i+1)),Parent:rootRef,Dest:[p.ref,PDFName.of('Fit')]})),refs=items.map(x=>c.register(x));items[0].set(PDFName.of('Next'),refs[1]);items[1].set(PDFName.of('Prev'),refs[0]);root.set(PDFName.of('First'),refs[0]);root.set(PDFName.of('Last'),refs[1]);d.catalog.set(PDFName.of('Outlines'),rootRef);const bytes=Buffer.from(await d.save());docs.set(digest(bytes),d);return bytes;}
+ const a=await source('OWNER A'),b=await source('OWNER B'),svc=createBookIngestion({store:f.store,provider:null,library:{}}),ja=await svc.prepare(user,{filename:'a.pdf',bytes:a,mode:'auto'}),jb=await svc.prepare(other,{filename:'b.pdf',bytes:b,mode:'auto'}),load=PDFDocument.load,pending=[];
+ try{PDFDocument.load=bytes=>new Promise(resolve=>{pending.push(()=>resolve(docs.get(digest(bytes))));if(pending.length===2){pending[0]();pending[1]();}});await Promise.all([svc.advance(user,ja.id),svc.advance(other,jb.id)]);}finally{PDFDocument.load=load;}
+ for(const [job,label]of [[ja,'OWNER A'],[jb,'OWNER B']]){const row=[...f.store.rows.values()].find(r=>r.id===job.id&&r.batches);assert.deepEqual(row.outline.map(x=>x.title),[label+' 1',label+' 2']);}
+});

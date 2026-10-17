@@ -28,13 +28,13 @@ Apple 使用网站 Services ID，与启用 Sign in with Apple 的主 App ID 关�
 
 验收分别记录“配置已保存”“邮件已发出”“邮箱实际收到”“登录已完成”。Google、Apple 必须各自经过官方授权页并返回本站，不能用测试响应或按钮可点击代替真实验证。维护凭据和验收记录时遵守实例拥有者指定的存储位置，勿进入发布镜像。
 
-PDF / TXT / Markdown 原文件通过短期签名直接上传私人存储，避免 Vercel 请求大小限制，处理完成后保存内容哈希验证的原件。原文件上限 20 MB，PDF 限 500 页和 200 万字；云端提取书籍 JSON 另限 350 万字节，超出时在加入书房前明确拒绝，需按章拆分。原件校验后使用一分钟有效的私人下载链接，避免函数响应体大小限制。扫描件需另做 OCR。每个账户每小时最多开始 6 次上传、每天 20 次；未完成的临时上传有一小时应用有效期，存储服务的签名本身有效期由 Supabase 控制，过期临时对象需运维清理。
+PDF统一入口支持256 MiB/1200页，自动区分文字层和扫描页；同一账号同源直接复用。TXT/Markdown仍为20 MiB。PDF原件以2 MiB分块传输，服务端校验SHA256，处理批次最多30页/20 MiB，扫描页在一次明确确认后交官方识别。完整书籍合计32 MiB，阅读通过1 MiB校验分段传输，私人记录仍有独立容量限制。详见[配置说明](../docs/configuration.md#pdf-扫描识别)。
 
 笔记、位置、译文与授权使用数据库版本比较写入，跨 Vercel 实例不会靠进程内队列猜顺序。按段翻译全服务最多同时两项；每个账户每小时最多 10 项、每天 50 项，全服务每小时 100 项、每天 500 项。失败请求也占用额度，以限制重复计费。限制不是订阅或购买。
 
 网页与 MCP 共用授权，云端接入配置从开源 `v0.3.0` 包启动 stdio 客户端，显式连接 HTTPS 书房。令牌按指定书与正文、笔记、阅读活动、写评论范围生效，七天过期，可撤回。
 
-Vercel 的 JSON 请求和响应仍受平台限制（当前 4.5 MB）；网页整库导出使用带SHA256校验的逐书分段传输，每份响应最多1MiB原始字节，浏览器合成普通JSON。旧整库导出接口供现有本机客户端兼容，仍受托管响应上限约束。单份备份最多100本；云端恢复仍受单书、单次请求与文档上限约束，特别大的单本备份应在本机恢复。原文件上传走直接存储通道，20 MB 上传不经过函数请求体。
+Vercel 的 JSON 请求和响应仍受平台限制（当前 4.5 MB）；网页整库导出使用带SHA256校验的逐书分段传输，每份响应最多1MiB原始字节，浏览器合成普通JSON。旧整库导出接口供现有本机客户端兼容，仍受托管响应上限约束。单份备份最多100本；云端恢复仍受单书、单次请求与文档上限约束，特别大的单本备份应在本机恢复。PDF分块请求及TXT/Markdown直接存储上传均避开大函数请求体。
 
 发布前运行 `npm run verify:deploy`，执行测试、构建与发布边界检查；`release-files.json` 和 `.vercelignore` 共同限定发布内容，排除私人资料、记录与凭据。源代码与开发文档统一在公开仓库维护，Vercel 直接连接该仓库的 `main`；不再同步源码或部署镜像。发布流程与回退方式见 [自动检查与发布](../docs/ci-cd.md)。正式域名更新后，自动检查源提交与匿名访问；账户隔离、原件校验、并发记录和授权撤回仍需另外验收。
 
@@ -51,3 +51,17 @@ Google's consent-screen branding has its own verification lifecycle. Verify owne
 Changing the origin requires a fresh sign-in; the account ID and stored library remain stable. Local browser drafts belong to each origin. Preserve access to the former host for recovering or exporting unsynced drafts. Do not configure a blanket redirect that forwards posted passwords or authorization codes. See `docs/superpowers/specs/2026-10-16-leafhour-brand-launch-design.md` for the design and launch gates.
 
 For the Leafhour transition, set `READER_ADDITIONAL_WEB_ORIGINS=https://reader.cubxxw.com` in the production environment. This is an explicit HTTPS-origin allowlist for legacy password/email login and draft recovery; it never changes the canonical OAuth callback. Extra origins with paths, wildcards, credentials, query/fragment, or plain HTTP are rejected. Third-party buttons are hidden on noncanonical hosts, and OAuth starts there are rejected before provider state is created. Neither the request Host nor forwarded-origin headers grant authorization.
+
+## PDF 后台处理
+
+本机进程使用持久队列和定时续作；退出服务后，下次进入书房会恢复未完成任务。托管运行使用 Vercel `waitUntil`、带认证的内部续作及每分钟一次的空闲感知恢复检查。
+
+在已有Supabase项目执行[ingestion-worker.sql](ingestion-worker.sql)，首次处理任务时服务器自动用现有配置写入专用Vault项；也可在有现有服务器配置的环境提前运行：
+
+```sh
+node tools/configure-ingestion-worker.mjs --env-directory /path/to/private/config
+```
+
+脚本从现有 `SUPABASE_SECRET_KEY` 派生专用唤醒凭据，通过仅服务角色可调用的设置函数存入Vault。无需新增用户配置变量。`READER_PUBLIC_ORIGIN`须为正式HTTPS站点，轮换服务器密钥或站点后重新运行。不要打印Vault解密值或将凭据放入SQL/日志。
+
+`leafhour-ingestion-recovery`仅在私人队列有到期工作且没有有效租约时发送内部请求；队列为空时不会请求应用。不确定的付费提交、未授权识别和失败任务均不自动重发。迁移存在与Cron启用不代表真实运行通过；部署后应以关闭网页仍完成一个有界新任务作验收。
