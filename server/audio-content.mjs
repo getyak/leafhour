@@ -1,6 +1,10 @@
 import {createHash} from 'node:crypto';
 export const audioError=(message,status=400,code='invalid_audio_request')=>Object.assign(new Error(message),{status,code});
 export const audioHash=value=>createHash('sha256').update(typeof value==='string'?value:JSON.stringify(value)).digest('hex');
+// JSONB preserves values and array order, but may reorder object fields.
+// Keep legacy audioHash/cache identities unchanged; compare JSON values separately.
+const orderedAudioValue=value=>Array.isArray(value)?value.map(orderedAudioValue):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,orderedAudioValue(value[key])])):value;
+export const audioValueEqual=(a,b)=>JSON.stringify(orderedAudioValue(a))===JSON.stringify(orderedAudioValue(b));
 export const audioPassages=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
 const boundary=(text,n)=>n===0||n===text.length||!(text.charCodeAt(n)>=0xDC00&&text.charCodeAt(n)<=0xDFFF&&text.charCodeAt(n-1)>=0xD800&&text.charCodeAt(n-1)<=0xDBFF);
 // WAV is larger than MP3. Version new sessions so legacy audio keeps its exact

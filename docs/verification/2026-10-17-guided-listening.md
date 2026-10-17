@@ -19,3 +19,7 @@ Dry-run complete-book scope checks covered all 136 paragraphs/5 chapters of On L
 Regression coverage includes shared CAS deduplication, owner isolation, expired in-flight interruption, conservative quota reservations, cancellation before and after provider submission, source conservation across narration batches, source verification, candidate history, and old/new backup recovery. Independent review findings were reproduced and corrected before delivery.
 
 The repository deployment gate and production acceptance are separate release steps. Real phone lock-screen/background playback, editorial review of full-book overviews, voice cloning and shared public prebuilt audio are outside the evidence above.
+
+## Hosted persistence correction
+
+The first production generation stopped at its budget stage before any model call: PostgreSQL JSONB had reordered object fields, and the original source guard compared order-sensitive object hashes. The correction compares JSON values structurally while retaining array/source order and legacy audio/cache hashes. Hosted-store fixtures now reorder objects at every CAS write, matching this storage behavior. Additional checks cover persisted dialogue sources, same-key request replay and native-scene backup validation. The original failed receipt remains in the designated account for diagnosis; it is not silently resubmitted.

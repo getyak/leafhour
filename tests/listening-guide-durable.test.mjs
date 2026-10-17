@@ -8,6 +8,7 @@ import {audioBook,pcmWav} from './audio-fixture.mjs';
 
 const owner={id:'guide-owner'},book=audioBook(),pause=()=>new Promise(resolve=>setTimeout(resolve,5));
 const request={intent:'explain',chapterId:'ch1',throughPassageId:'p1',contentVersion:'v1',idempotencyKey:'same-request',confirmProcessing:true};
+const jsonb=value=>Array.isArray(value)?value.map(jsonb):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).sort(([a],[b])=>a.localeCompare(b)).map(([key,item])=>[key,jsonb(item)])):value;
 function database(){
  const rows=new Map(),objects=new Map();
  const store=createHostedStore({env:{SUPABASE_URL:'https://fixture.example',SUPABASE_SECRET_KEY:'fixture'},fetcher:async(input,options={})=>{
@@ -15,7 +16,7 @@ function database(){
   if(url.pathname==='/rest/v1/reader_documents'){const row=rows.get(url.searchParams.get('key').slice(3));return Response.json(row?[structuredClone(row)]:[]);}
   if(url.pathname==='/rest/v1/rpc/reader_document_cas'){
    const body=JSON.parse(options.body),prior=rows.get(body.document_key),matches=(prior?.version||0)===body.expected_version;
-   if(matches)rows.set(body.document_key,{version:body.expected_version+1,value:structuredClone(body.document_value)});
+   if(matches)rows.set(body.document_key,{version:body.expected_version+1,value:jsonb(body.document_value)});
    return Response.json(matches);
   }
   if(options.method==='POST'){objects.set(url.pathname,Buffer.from(options.body));return Response.json({});}

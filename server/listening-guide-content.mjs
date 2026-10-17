@@ -1,8 +1,8 @@
-import {audioError, audioHash, audioPassages} from './audio-content.mjs';
+import {audioError, audioHash, audioPassages, audioValueEqual} from './audio-content.mjs';
 
 export const guideLimits=Object.freeze({chapterCharacters:30000,bookCharacters:900000,bookPassages:6000,batchCharacters:18000,batchPassages:48,batches:64,openingCharacters:6000,openingPassages:3});
 export const guideTextLimits=Object.freeze({intro:300,explain:1200,book:900});
-const same=(a,b)=>audioHash(a)===audioHash(b);
+const same=audioValueEqual;
 const tooLarge=()=>audioError('这次导听的原文范围太长，请缩小范围；尚未开始生成。',413,'scope_too_large');
 const stale=()=>audioError('导听依据的原文已变化，请重新选择范围。',409,'stale_source');
 
