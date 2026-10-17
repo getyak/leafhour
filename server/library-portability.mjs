@@ -47,11 +47,16 @@ export function createLibraryPortability({library,chat,store,clock=Date.now}){
    if(hash(archive)!==meta.sha256)fail('备份整体校验失败');
    const {backup,originals}=await readLibraryArchive(archive),books=backup.books.map(e=>e.book);
    await library.validateRestore(user,backup);
-   for(const entry of backup.books)if(entry.chat)await chat.validateHistory(user,entry.book,entry.chat,books);
+   const finalBooks=await library.previewRestoreBooks(user,backup),finalById=new Map(finalBooks.map(b=>[b.bookId,b]));
+   for(const entry of backup.books)if(entry.chat)try{await chat.validateHistory(user,finalById.get(entry.book.bookId),entry.chat,finalBooks);}catch(error){if([400,409].includes(error.status))fail('备份对话引用与目标保留的原文或译文冲突，未开始恢复',409);throw error;}
    for(const original of originals){const book=books.find(b=>b.bookId===original.bookId);if(book.visibility==='public'||book.source.sha256!==book.contentVersion&&!['PaddleOCR-VL-1.6','pdfjs-native','native+paddle-auto-v1'].includes(book.source.processor))fail('备份原文件无法对应自己的来源版本');let existing;try{existing=await library.getBook(user,book.bookId);}catch(error){if(error.status!==404)throw error;}if(existing&&(existing.visibility!=='private'||existing.source.sha256!==book.source.sha256))fail('备份原文件与目标书籍的来源冲突，未开始恢复',409);}
    await store.mutate(metadata(user),{},row=>{check(row,id);if(row.lease!==nonce)fail('恢复操作已变化，请重新校验',409);row.state='applying';row.leaseUntil=clock()+LEASE;return null;});validated=true;
    await library.restoreLibrary(user,backup,{preserveExisting:true});
-   for(const entry of backup.books)if(entry.chat)await chat.restoreHistory(user,entry.book,entry.chat,books);
+   // Another instance may have saved a translation after preflight. Read the
+   // applied state before writing any history; a changed target is incomplete.
+   const appliedBooks=[];for(const book of books)appliedBooks.push(await library.getBook(user,book.bookId));const appliedById=new Map(appliedBooks.map(b=>[b.bookId,b]));
+   for(const entry of backup.books)if(entry.chat)try{await chat.validateHistory(user,appliedById.get(entry.book.bookId),entry.chat,appliedBooks);}catch(error){if([400,409].includes(error.status))fail('目标内容在恢复期间发生变化，恢复未完成；书籍或记录可能已恢复，对话尚未写入。请核对后重新恢复。',409);throw error;}
+   for(const entry of backup.books)if(entry.chat)await chat.restoreHistory(user,appliedById.get(entry.book.bookId),entry.chat,appliedBooks);
    for(const original of originals)await library.restoreOriginal(user,original.bookId,Buffer.from(original.bytes.buffer,original.bytes.byteOffset,original.bytes.byteLength));
    const receipt={restored:backup.books.length,originals:originals.length,sha256:meta.sha256};
    await store.mutate(metadata(user),{},row=>{if(row.id!==id||row.lease!==nonce)fail('恢复回执尚未保存，请重试',503);row.state='done';row.receipt=receipt;delete row.lease;delete row.leaseUntil;return null;});
