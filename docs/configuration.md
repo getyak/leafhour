@@ -52,6 +52,7 @@ cp .env.example .env
 | `READER_SPEECH_MODEL` | 把文字合成为声音 |
 | `READER_PORT` | 本机端口，默认 8330 |
 | `READER_HOST` | 本机监听地址，默认 127.0.0.1；只接受 127.0.0.1 或 localhost |
+| `READER_DATA_DIR` | 本机私人实例目录；未配置时保留原有 `local/service/`，详见 [实例说明](local-instance.md) |
 | `READER_BOOK_PATH` | 明确选择已有的本机阅读包 |
 | `READER_ADDITIONAL_WEB_ORIGINS` | 仅托管：额外允许的精确 HTTPS 来源，以逗号分隔 |
 

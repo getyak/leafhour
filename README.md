@@ -44,12 +44,14 @@ Leafhour 帮助人一点一点读完一本想读的书：今天从上次停下�
 Node.js 22.13 及以上：
 
 ```bash
-npm install
+npm ci
 npm test
 npm start
 ```
 
 默认访问 `http://127.0.0.1:8330/` 官网，`/library` 是书房。原有私人样书入口移到 `/read`；`/read?book=ID` 打开新书房中的指定书。没有本机私人样书时也能用默认公版库启动。本机上传与记录放在被 Git 忽略的 `local/service/portal/`，不会进入公开源码。
+
+需要让个人数据独立于源码目录时，可设置 `READER_DATA_DIR` 后继续使用 `npm start`。目录布局、重启与更新方法见 [本机实例与数据](docs/local-instance.md)；未配置时继续使用原有 `local/service/`，不会自动搬迁已有书房。
 
 需要 AI 时，将唯一模板 [`.env.example`](.env.example) 复制为 `.env`，填写需要的 Key：`DEEPSEEK_API_KEY` 用于翻译、阅读对话和讲解稿，`GEMINI_API_KEY` 用于本机语音。模型默认选好，只阅读时无需配置。`npm start` 自动读取配置，启动提示会说明是否已配置、是否仍待验证，以及当前部署是否支持语音。同一模板还包含默认注释的托管与高级选项，按需查看 [配置说明](docs/configuration.md)。
 
