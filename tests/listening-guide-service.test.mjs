@@ -196,3 +196,16 @@ test('verification splits full evidence by the serialized provider request, incl
  assert.deepEqual(requests.flatMap(p=>p.turns.map(t=>t.id)),Array.from({length:24},(_,i)=>'turn-'+(i+1)));
  for(const payload of requests){assert.ok(JSON.stringify(payload).length<=125000);for(const p of payload.passages)assert.equal(p.original,paragraphs.find(original=>original.id===p.id).original);}
 });
+
+test('a one-batch source reserves enough verification calls when escaped citations require splitting',async t=>{
+ let reserved=0,spent=0,verified=0;
+ const original='"'.repeat(500)+'x'.repeat(23500),verify=createGuideGenerator({env:{DEEPSEEK_API_KEY:'fixture-only'},fetcher:async(_url,options)=>{
+  verified++;const payload=JSON.parse(JSON.parse(options.body).messages[1].content);return Response.json({choices:[{message:{content:JSON.stringify({checks:payload.turns.map(t=>({turnId:t.id,supported:true}))})}}]});
+ }});
+ const f=await fixture(t,{durable:true,generator:async input=>input.stage==='verify'?verify(input):input.stage==='script'?{turns:Array.from({length:24},()=>({speaker:'guide',text:'引用需要保留原文。',sourceRefs:Array.from({length:4},()=>({chapterId:'ch1',passageId:'p1',quote:original.slice(0,500)}))}))}:generated(input)});
+ f.book.sections[0].paragraphs=[{id:'p1',original}];
+ f.store.reserveGuideBudget=async(_owner,_job,max)=>{reserved=max;};f.store.reserveGeneration=async()=>{if(++spent>reserved)throw Object.assign(Error('budget exhausted'),{code:'rate_limited',status:429});};
+ const preview=await f.service.prepare(owner,'audio-book',request);assert.equal(preview.externalProcessing.sourceBatches,1);assert.ok(preview.externalProcessing.maxCalls>=4);
+ const created=await f.service.create(owner,'audio-book',request),ready=await settle(f.service,created.id);
+ assert.equal(ready.status,'ready',JSON.stringify(ready.error));assert.ok(verified>1);assert.equal(spent,2+verified);assert.ok(spent<=reserved);
+});
