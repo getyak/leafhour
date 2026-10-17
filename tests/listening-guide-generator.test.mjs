@@ -48,3 +48,36 @@ test('one long paragraph stays complete without expanding normal multi-paragraph
  const original='x'.repeat(19000);await generate({...input,passages:[{id:'p',chapterId:'ch1',original}]});assert.equal(payloads[0].passages[0].original,original);
  await assert.rejects(generate({...input,passages:[{id:'p1',chapterId:'ch1',original:'x'.repeat(9500)},{id:'p2',chapterId:'ch1',original:'y'.repeat(9500)}]}),{status:413});assert.equal(payloads.length,1);
 });
+
+test('outline formatting restores an unambiguous source quote and retains claims when the overview is verbose',async()=>{
+ const original='A second, and generally a later expedient, was the establishment of constitutional checks; by which consent was needed.';
+ const generate=createGuideGenerator({env:{DEEPSEEK_API_KEY:'fixture-only'},fetcher:async()=>response({passageIds:['p1'],summary:'概括'.repeat(106),claims:[{text:'权力也受到宪制约束。',sourceRefs:[{chapterId:'ch1',passageId:'p1',quote:'a second, and generally a later expedient,\nwas the establishment of constitutional checks'}]}]})});
+ const result=await generate({...input,intent:'explain',passages:[{id:'p1',chapterId:'ch1',original}]});
+ assert.equal(result.summary,'权力也受到宪制约束。');assert.equal(result.claims[0].text,'权力也受到宪制约束。');
+ assert.equal(result.claims[0].sourceRefs[0].quote,'A second, and generally a later expedient, was the establishment of constitutional checks');
+ assert.ok(original.includes(result.claims[0].sourceRefs[0].quote));
+});
+
+test('quote formatting never invents words, changes internal case, guesses another passage, or resolves an ambiguous match',async()=>{
+ const cases=[['It is not permitted.','It is permitted.'],['The symbol X differs.','The symbol x differs.'],['A rule.\nA  rule.','a rule.'],['A A  A','a A']];
+ for(const [original,quote]of cases){const generate=createGuideGenerator({env:{DEEPSEEK_API_KEY:'fixture-only'},fetcher:async()=>response({passageIds:['p1'],summary:'概括',claims:[{text:'观点',sourceRefs:[{passageId:'p1',quote}]}]})});const result=await generate({...input,passages:[{id:'p1',chapterId:'ch1',original}]});assert.equal(result.claims[0].sourceRefs[0].quote,quote);}
+ const generate=createGuideGenerator({env:{DEEPSEEK_API_KEY:'fixture-only'},fetcher:async()=>response({turns:[{speaker:'guide',text:'讲解',sourceRefs:[{passageId:'p2',quote:'a rule.'}]}]})});
+ const result=await generate({stage:'script',bookId:'b',contentVersion:'v',intent:'explain',outlines:[{summary:'概要',passageIds:['p1'],claims:[{text:'观点',sourceRefs:[{chapterId:'ch1',passageId:'p1',quote:'A rule.'}]}]}]});assert.equal(result.turns[0].sourceRefs[0].quote,'a rule.');
+});
+
+test('script citations restore exact provided evidence without changing spoken interpretation',async()=>{
+ const generate=createGuideGenerator({env:{DEEPSEEK_API_KEY:'fixture-only'},fetcher:async()=>response({turns:[{speaker:'guide',text:'这是解释。',sourceRefs:[{chapterId:'ch1',passageId:'p1',quote:'a rule.'}]}]})});
+ const result=await generate({stage:'script',bookId:'b',contentVersion:'v',intent:'explain',outlines:[{summary:'概要',passageIds:['p1'],claims:[{text:'观点',sourceRefs:[{chapterId:'ch1',passageId:'p1',quote:'A rule.'}]}]}]});assert.equal(result.turns[0].sourceRefs[0].quote,'A rule.');assert.equal(result.turns[0].text,'这是解释。');
+});
+
+test('an explicitly quoted spoken turn restores author formatting only when it repeats the model citation exactly',async()=>{
+ for(const [text,expected] of [['a rule.','A rule.'],['A different rule.','A different rule.']]){
+  const generate=createGuideGenerator({env:{DEEPSEEK_API_KEY:'fixture-only'},fetcher:async()=>response({turns:[{speaker:'guide',kind:'quote',text,sourceRefs:[{chapterId:'ch1',passageId:'p1',quote:'a rule.'}]}]})});
+  const result=await generate({stage:'script',bookId:'b',contentVersion:'v',intent:'explain',outlines:[{summary:'概要',passageIds:['p1'],claims:[{text:'观点',sourceRefs:[{chapterId:'ch1',passageId:'p1',quote:'A rule.'}]}]}]});assert.equal(result.turns[0].text,expected);
+ }
+});
+
+test('an ambiguous supplied excerpt cannot be hidden by another shorter excerpt for the same passage',async()=>{
+ const generate=createGuideGenerator({env:{DEEPSEEK_API_KEY:'fixture-only'},fetcher:async()=>response({turns:[{speaker:'guide',text:'讲解',sourceRefs:[{passageId:'p1',quote:'a rule.'}]}]})});
+ const result=await generate({stage:'script',bookId:'b',contentVersion:'v',intent:'explain',outlines:[{summary:'概要',passageIds:['p1'],claims:[{text:'观点',sourceRefs:[{chapterId:'ch1',passageId:'p1',quote:'A rule. A  rule.'},{chapterId:'ch1',passageId:'p1',quote:'A rule.'}]}]}]});assert.equal(result.turns[0].sourceRefs[0].quote,'a rule.');
+});

@@ -209,3 +209,11 @@ test('a one-batch source reserves enough verification calls when escaped citatio
  const created=await f.service.create(owner,'audio-book',request),ready=await settle(f.service,created.id);
  assert.equal(ready.status,'ready',JSON.stringify(ready.error));assert.ok(verified>1);assert.equal(spent,2+verified);assert.ok(spent<=reserved);
 });
+
+test('reading outlines retain complete English evidence using the same citation bound as the spoken script',async t=>{
+ let quoteLength=224;const f=await fixture(t,{generator:async input=>{const result=await generated(input);if(input.stage==='outline')result.claims[0].sourceRefs[0].quote=input.passages[0].original.slice(0,quoteLength);return result;}});
+ f.book.sections[0].paragraphs[0].original='English evidence. '.repeat(40);
+ const created=await f.service.create(owner,'audio-book',request),ready=await settle(f.service,created.id);
+ assert.equal(ready.status,'ready',JSON.stringify(ready.error));assert.equal(ready.transcript.turns[0].sourceRefs[0].quote.length,224);
+ quoteLength=501;const oversized=await f.service.create(owner,'audio-book',{...request,idempotencyKey:'oversized-quote'}),failed=await settle(f.service,oversized.id);assert.equal(failed.status,'failed');assert.equal(failed.error.code,'invalid_citation');
+});
