@@ -12,6 +12,7 @@ import {saveHighlight,findHighlight,mergeHighlights} from '../app/highlights.mjs
 import {inferSourceLanguage} from '../app/source-language.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
 import {applyPersonalRecordEdit} from '../app/personal-records.mjs';
+import {isReadingTimeSource} from '../app/reading-time-policy.mjs';
 import {applyCatalogReadingMetadata} from './catalog-reading-metadata.mjs';
 import {structuredCatalogBook} from './structured-catalog.mjs';
 import {applyCatalogSample} from './catalog-sample.mjs';
@@ -26,7 +27,7 @@ function mergedPersonalRecords(book,current,incoming){
   data.highlights=mergeHighlights(data.highlights,incoming.highlights||[]);
   for(const key of ['comments','questions']){const map=new Map(data[key].map(r=>[r.id,r]));for(const row of incoming[key])if(!map.has(row.id))map.set(row.id,row);data[key]=[...map.values()];}
   const sessions=new Map(data.readingSessions.map(r=>[r.id,r]));
-  for(const session of incoming.readingSessions){const old=sessions.get(session.id);if(session.source==='reader_focus')sessions.set(session.id,mergeReadingSession(old,normalizeReadingSession(session,book)));else if(old&&old.source!==session.source)throw fail('备份中的阅读时段标识冲突，未覆盖记录',409);else if(!old)sessions.set(session.id,session);}
+  for(const session of incoming.readingSessions){const old=sessions.get(session.id);if(isReadingTimeSource(session.source))sessions.set(session.id,mergeReadingSession(old,normalizeReadingSession(session,book)));else if(old&&old.source!==session.source)throw fail('备份中的阅读时段标识冲突，未覆盖记录',409);else if(!old)sessions.set(session.id,session);}
   data.readingSessions=[...sessions.values()];
   const marks=new Map(data.readingMilestones.map(r=>[r.id,r]));
   for(const mark of incoming.readingMilestones||[]){const old=marks.get(mark.id);if(old&&(old.type!==mark.type||old.chapterId!==mark.chapterId||old.contentVersion!==mark.contentVersion))throw fail('备份中的阅读标记标识冲突，未覆盖记录',409);if(!old)marks.set(mark.id,normalizeReadingMilestone(mark,book));}
@@ -161,6 +162,14 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     return {...info,bytes};
   }
   async function originalParts(user,id){const info=await originalInfo(user,id);if(!info.available)throw fail(info.reason,404);if(!dataStore?.blobDownloads)throw fail('本机原件使用直接下载',404);return {...info,parts:await dataStore.blobDownloads(path.join(userDir(user),'originals',info.sha256),{size:info.bytes,sha256:info.sha256})};}
+  async function originalRange(user,id,{offset,length,sha256}){
+    requireUser(user);if(typeof id!=='string'||id.length>128)throw fail('找不到这本书',404);if(!Number.isSafeInteger(offset)||offset<0||!Number.isSafeInteger(length)||length<1||length>1048576)throw fail('原文件分段位置无效');
+    const index=await read(path.join(userDir(user),'index.json'),{books:[]}),entry=index.books.find(row=>row.bookId===id&&row.visibility==='private');
+    if(!entry)throw fail('找不到这本书',404);const hash=entry.source?.sha256;
+    if(typeof hash!=='string'||!/^[a-f0-9]{64}$/.test(hash)||hash!==sha256)throw fail('原文件版本无法核对，请重新打开书籍',409);
+    if(!dataStore?.blobRange)throw fail('当前存储尚不支持分段取回',404);
+    return dataStore.blobRange(path.join(userDir(user),'originals',hash),{offset,length,sha256:hash});
+  }
   async function originalDownload(user,id){
     const file=await getOriginal(user,id),book=await getBook(user,id);if(file.bytes.length>8*1024*1024)throw fail('大原件请在阅读页使用“下载原文件校对”，分块校验后下载',413);
     return {...file,bytes:undefined,url:await dataStore.signedBlob(path.join(userDir(user),'originals',book.source.sha256))};
@@ -359,5 +368,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(claim.pending)await mutate(bookFile(user,incoming.bookId),{},current=>{if(current._giftReceive?.fingerprint===fingerprint)delete current._giftReceive;});
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,records,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,validateRestore,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,validateRestore,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }

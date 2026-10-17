@@ -183,3 +183,5 @@ Project home: [GitHub](https://github.com/getyak/leafhour)
 ## License
 
 [GNU Affero General Public License v3.0](LICENSE). If you offer a modified version over a network, you must offer its source to the service’s users.
+
+Reading time supports explicitly chosen active focus, foreground estimates and manual backfill (self-reported); totals merge overlapping intervals and each source stays auditable. See [Timing and recovery rules](docs/reading-time.md).

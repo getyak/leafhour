@@ -17,7 +17,7 @@ async function setup(t){
     const user=url.pathname.endsWith('/token')?users.find(user=>user.email===body.email):url.pathname.endsWith('/user')?users.find(user=>options.headers.Authorization==='Bearer access-'+user.id):null;
     if(user){const visible={...user,email_confirmed_at:'2026-10-15T00:00:00Z',user_metadata:{full_name:user.id},app_metadata:{provider:'email'}};return Response.json(url.pathname.endsWith('/user')?visible:{user:visible,access_token:'access-'+user.id,refresh_token:'refresh-'+user.id,expires_in:3600});}
   }}),dataDir=await mkdtemp(path.join(tmpdir(),'reader-personal-http-'));
-  const auth=createHostedAuth({...fixture,store:fixture.store()}),portal=await createPortal({dataDir,catalogDir:null,publicOrigin:fixture.env.READER_PUBLIC_ORIGIN,allowLocal:false,dataStore:fixture.store(),authService:auth,translator:null,chatGenerator:null});
+  const dataStore=fixture.store(),auth=createHostedAuth({...fixture,store:fixture.store()}),portal=await createPortal({dataDir,catalogDir:null,publicOrigin:fixture.env.READER_PUBLIC_ORIGIN,allowLocal:false,dataStore,authService:auth,translator:null,chatGenerator:null});
   const server=createServer(async(req,res)=>{
     const send=(status,body,type='application/json')=>{res.statusCode=status;res.setHeader('Content-Type',type+'; charset=utf-8');res.end(type==='application/json'?JSON.stringify(body):body);};
     try{if(!await portal.handle({req,res,url:new URL(req.url,fixture.env.READER_PUBLIC_ORIGIN),send}))send(404,{error:'missing'});}catch(error){send(error.status||500,{error:error.message});}
@@ -27,7 +27,7 @@ async function setup(t){
   const post=(route,body={},identity=null,owner=identity?.user.id)=>fetch(base+route,{method:'POST',headers:{Origin:fixture.env.READER_PUBLIC_ORIGIN,'Content-Type':'application/json',...(identity?{Cookie:identity.cookie}:{}),...(owner?{'X-Reader-Owner':owner}:{})},body:JSON.stringify(body)});
   const get=(route,identity=null)=>fetch(base+route,{headers:identity?{Cookie:identity.cookie,'X-Reader-Owner':identity.user.id}:{}});
   const login=async user=>{const response=await post('/api/auth/password',{email:user.email,password:'fixture-password'});assert.equal(response.status,200);return {user,cookie:response.headers.get('set-cookie').split(';')[0]};};
-  return {portal,fixture,post,get,base,a:await login(sender),b:await login(receiver)};
+  return {portal,fixture,dataStore,post,get,base,a:await login(sender),b:await login(receiver)};
 }
 async function seed(library,user,id='reading-test'){
   const book=structuredClone(readingBook);book.bookId=id;book.visibility='private';book.sections[0].paragraphs[0].translations={literal:{text:'Literal draft.',status:'draft',variant:'literal',origin:'ai'},interpretive:{text:'Interpretive draft.',status:'draft',variant:'interpretive',origin:'ai'}};
@@ -139,4 +139,24 @@ test('OAuth success and cancellation carry the exact gift path back through the 
     assert.equal(response.status,303);const destination=new URL(response.headers.get('location'));assert.equal(destination.origin,fixture.env.READER_PUBLIC_ORIGIN);
     if(cancelled){assert.equal(destination.pathname,'/library');assert.equal(destination.searchParams.get('next'),next);}else assert.equal(destination.pathname,next);
   }
+});
+
+test('large reading HTTP views retain private anchors while chapter reads enforce owner and edition',async t=>{
+ const {get,portal,a,b}=await setup(t),book=structuredClone(readingBook);book.bookId='private-reading-view';book.visibility='private';
+ for(let n=0;n<12;n++)book.sections[0].paragraphs.push({id:'large-'+n,original:'甲'.repeat(10000),translations:{},annotationIds:[],termIds:[]});
+ await portal.library.restoreLibrary(sender,{kind:'marginalia-library',schemaVersion:1,books:[{book,records:{...readingRecords(),bookId:book.bookId}}]});const before=await portal.library.getBook(sender,book.bookId),base='/api/library/books/'+book.bookId;
+ const response=await get(base+'/reading?passageId=p3',a);assert.equal(response.status,200);const view=await response.json();assert.deepEqual(view.reading.loadedChapters,['ch02']);assert.deepEqual(view.sections[0].paragraphs[0],{id:'p1',unloaded:true});assert.equal(view.sections[1].paragraphs[0].original,'Continue from here.');assert.equal(view.sections.flatMap(s=>s.paragraphs).length,16);
+ assert.equal((await get(base+'/reading')).status,404);assert.equal((await get(base+'/reading',b)).status,404);const route=base+'/chapters/ch01?contentVersion=edition-1';assert.equal((await get(route)).status,404);assert.equal((await get(route,b)).status,404);assert.equal((await get(base+'/chapters/ch01?contentVersion=old',a)).status,409);assert.equal((await get(base+'/chapters/missing?contentVersion=edition-1',a)).status,404);const chapter=await (await get(route,a)).json();assert.equal(chapter.sections[0].paragraphs.at(-1).original.length,10000);assert.deepEqual(await portal.library.getBook(sender,book.bookId),before);
+});
+test('oversized reading views and later chapters retain snapshot-checked chunk transfer',async t=>{
+ const {assembleBookTransfer}=await import('../app/book-transfer.mjs');const {get,portal,a}=await setup(t),book=structuredClone(readingBook);book.bookId='private-large-chapter';book.visibility='private';
+ for(let i=0;i<315;i++)book.sections[0].paragraphs.push({id:'wide-'+i,original:'x'.repeat(10000),translations:{},annotationIds:[],termIds:[]});
+ await portal.library.restoreLibrary(sender,{kind:'marginalia-library',schemaVersion:1,books:[{book,records:{...readingRecords(),bookId:book.bookId}}]});
+ for(const action of ['/reading?chapterId=ch01','/chapters/ch01?contentVersion=edition-1']){
+  const route='/api/library/books/'+book.bookId+action,response=await get(route,a);assert.equal(response.status,200);assert.equal(response.headers.get('X-Reader-Book-Transfer'),'parts');const manifest=await response.json();const value=await assembleBookTransfer(manifest,async(offset,snapshot)=>{const part=await get(route+'&offset='+offset+'&snapshot='+snapshot,a);assert.equal(part.status,200);return part.json();});assert.equal(value.sections[0].paragraphs.at(-1).original.length,10000);assert.equal((await get(route+'&offset=0&snapshot=old',a)).status,409);
+ }
+});
+test('same-origin original ranges return bounded binary data only for the owning account and source hash',async t=>{
+ const {get,portal,dataStore,a,b}=await setup(t),book=structuredClone(readingBook),sha='1'.repeat(64);book.bookId='private-original-range';book.visibility='private';book.source={...book.source,sha256:sha};await portal.library.restoreLibrary(sender,{kind:'marginalia-library',schemaVersion:1,books:[{book,records:{...readingRecords(),bookId:book.bookId}}]});let reads=0;dataStore.blobRange=async(file,{offset,length,sha256})=>{reads++;assert.ok(file.endsWith('/'+sha));assert.equal(sha256,sha);return {bytes:Buffer.from('abcdefgh').subarray(offset,offset+length),offset,total:8};};
+ const path='/api/library/books/'+book.bookId+'/original/range?sha256='+sha+'&offset=2&length=4';assert.equal((await get(path)).status,401);assert.equal((await get(path,b)).status,404);assert.equal((await get(path.replace(sha,'2'.repeat(64)),a)).status,409);assert.equal((await get(path.replace('length=4','length=1048577'),a)).status,400);assert.equal(reads,0);const r=await get(path,a);assert.equal(r.status,206);assert.equal(r.headers.get('content-range'),'bytes 2-5/8');assert.equal(r.headers.get('cache-control'),'private, no-store');assert.equal(await r.text(),'cdef');assert.equal(reads,1);
 });

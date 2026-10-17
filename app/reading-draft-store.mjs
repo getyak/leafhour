@@ -60,7 +60,7 @@ export function createReadingDraftStore({storage,scope,book,newId=()=>crypto.ran
   }
   read();
   return {
-    activate,persist,list:()=>clone(read()),
+    activate,persist,list:()=>clone(read()),memoryRecovery:()=>clone([...owned.values()].map(item=>({...item.row,...item.model.snapshot().entries[item.row.key]})).filter(row=>row.text.trim()||row.pending)),
     activeId:key=>active.get(key),text:key=>state(key).model.text(key),pending:key=>state(key).model.pending(key),busy:key=>state(key).model.busy(key),
     editBaseRevision:key=>state(key).model.editBaseRevision(key),setEditBaseRevision:(key,revision)=>change(key,m=>m.setEditBaseRevision(key,revision)),
     edit:(key,text)=>change(key,m=>m.edit(key,text)),begin:(key,payload,id)=>change(key,m=>m.begin(key,payload,id)),discardPending:key=>change(key,m=>m.discardPending(key)),

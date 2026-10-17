@@ -39,7 +39,8 @@
     "marginalia-mcp": "server/mcp.mjs"
   },
   "devDependencies": {
-    "@vercel/nft": "1.11.0"
+    "@vercel/nft": "1.11.0",
+    "esbuild": "0.28.2"
   },
   "optionalDependencies": {
     "node-linux-x64": "22.23.3"

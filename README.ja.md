@@ -183,3 +183,5 @@ Public repo: feature branch → PR → main → Vercel verification and deployme
 ## ライセンス
 
 [GNU Affero General Public License v3.0](LICENSE)。改変版をネットワーク経由で提供する場合、そのサービスのユーザーに対応するソースを提供する必要があります。
+
+読書時間は、明示的に選んだ能動的な集中、フォアグラウンドの推定、手動補記（自己申告）に対応します。合計は重複区間を統合し、出典ごとに検証できます。[計測と復元の定義](docs/reading-time.md) を参照。

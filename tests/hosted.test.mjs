@@ -7,25 +7,37 @@ import {createLibraryService} from '../server/library-service.mjs';
 import {makeMcpConfiguration} from '../app/mcp-config.mjs';
 import {authFixture} from './auth-fixture.mjs';
 import {createHash} from 'node:crypto';
+import {createReadingOutbox} from '../app/reading-outbox.mjs';
 
 const env={SUPABASE_URL:'https://storage.example.com',SUPABASE_SECRET_KEY:'server-fixture',SUPABASE_PUBLISHABLE_KEY:'public-fixture',READER_PUBLIC_ORIGIN:'https://reader.example.com'};
-function database(){
+function database({jsonb=false}={}){
   const rows=new Map(),objects=new Map();
+  // JSONB round trips preserve array order and values, but never promise object key order.
+  const jsonbValue=value=>Array.isArray(value)?value.map(jsonbValue):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).sort(([a],[b])=>a.length-b.length||a.localeCompare(b)).map(([key,v])=>[key,jsonbValue(v)])):value;
   const fetcher=async(input,options={})=>{
     const url=new URL(input);let data;
     if(url.pathname==='/rest/v1/reader_documents'){const key=url.searchParams.get('key').slice(3);data=rows.has(key)?[structuredClone(rows.get(key))]:[];}
     else if(url.pathname==='/rest/v1/rpc/reader_document_cas'){
       const {document_key:key,expected_version:version,document_value:value}=JSON.parse(options.body),old=rows.get(key);
-      data=(old?.version||0)===version;if(data)rows.set(key,{version:version+1,value:structuredClone(value)});
+      data=(old?.version||0)===version;if(data)rows.set(key,{version:version+1,value:jsonb?jsonbValue(value):structuredClone(value)});
     }else if(url.pathname.startsWith('/storage/v1/object/reader-originals/')){
       const key=url.pathname.split('/reader-originals/')[1];
       if(options.method==='POST'){objects.set(key,Buffer.from(options.body));data={};}
-      else {if(!objects.has(key))return new Response('{}',{status:404});const bytes=objects.get(key);return new Response(options.method==='HEAD'?null:bytes,{headers:{'content-length':String(bytes.length)}});}
+      else {if(!objects.has(key))return new Response('{}',{status:404});const bytes=objects.get(key),range=options.headers?.Range?.match(/^bytes=(\d+)-(\d+)$/);if(range){const start=Number(range[1]),end=Number(range[2]);return new Response(bytes.subarray(start,end+1),{status:206,headers:{'content-length':String(end-start+1),'content-range':'bytes '+start+'-'+end+'/'+bytes.length}});}return new Response(options.method==='HEAD'?null:bytes,{headers:{'content-length':String(bytes.length)}});}
     }else throw Error('Unexpected fixture route');
     return Response.json(data);
   };
   return {fetcher,rows};
 }
+test('hosted JSONB manual lost-ACK recovery and repeated restore keep one exact self-report across instances',async()=>{
+ const fixture=database({jsonb:true}),make=()=>createLibraryService({dataDir:'hosted-jsonb',catalogDir:null,dataStore:createHostedStore({env,fetcher:fixture.fetcher})}),a=await make(),b=await make(),owner={id:'get147-jsonb-owner'},book=await a.importDocument(owner,{filename:'jsonb-time.txt',bytes:Buffer.from('Synthetic JSONB recovery source.')}),anchor={chapterId:book.sections[0].chapterId,passageId:book.sections[0].paragraphs[0].id};
+ const startedAt='2026-10-14T12:00:00.000Z',endedAt='2026-10-14T12:10:00.000Z',submitted={id:'manual-lost-ack',source:'manual',bookId:book.bookId,contentVersion:book.contentVersion,status:'finished',sequence:1,timeZone:'UTC',start:anchor,end:anchor,startedAt,endedAt,segments:[{startedAt,endedAt}],durationSeconds:600};let disk=[];
+ const first=createReadingOutbox({load:()=>disk,save:rows=>disk=rows,send:async row=>{await a.saveReadingSession(owner,book.bookId,row);throw Error('lost ACK after successful JSONB commit');}});first.enqueue(submitted);assert.equal((await first.flush()).remaining,1);
+ const stored=(await b.records(owner,book.bookId)).readingSessions;assert.equal(stored.length,1);assert.deepEqual(Object.keys(stored[0].segments[0]),['endedAt','startedAt']);
+ const resumed=createReadingOutbox({load:()=>disk,save:rows=>disk=rows,send:row=>b.saveReadingSession(owner,book.bookId,row)}),retry=await resumed.flush();assert.equal(retry.error,null);assert.equal(retry.remaining,0);assert.equal(resumed.confirmed(submitted),true);assert.equal(disk.length,0);assert.deepEqual((await a.records(owner,book.bookId)).readingSessions,stored);
+ await assert.rejects(b.saveReadingSession(owner,book.bookId,{...submitted,endedAt:'2026-10-14T12:11:00.000Z',segments:[{startedAt,endedAt:'2026-10-14T12:11:00.000Z'}]}),{status:409});
+ const backup=await b.exportLibrary(owner);await a.restoreLibrary(owner,backup);await b.restoreLibrary(owner,backup);assert.deepEqual((await a.records(owner,book.bookId)).readingSessions,stored);assert.equal((await a.readingActivity(owner,{month:'2026-10',timeZone:'UTC'})).durationSeconds,600);
+});
 test('database compare-and-swap preserves simultaneous notes across independent server instances',async()=>{
   const fixture=database(),a=createHostedStore({env,fetcher:fixture.fetcher}),b=createHostedStore({env,fetcher:fixture.fetcher});
   await Promise.all([a.mutate('records',{notes:[]},r=>r.notes.push('first')),b.mutate('records',{notes:[]},r=>r.notes.push('second'))]);
@@ -121,3 +133,13 @@ test('hosted JSON transport compresses large readable content without losing sou
 });
 test('user JSON is never interpreted as a chunk manifest and JSON pointers are bound to their key',async()=>{const f=database(),s=createHostedStore({env,fetcher:f.fetcher}),bytes=Buffer.from(JSON.stringify({kind:'leafhour-blob-chunks-v1',size:10,parts:[{key:'private'}]}));await s.putBlob('text-source',bytes);assert.deepEqual(await s.blob('text-source'),bytes);await s.mutate('attacker',{},r=>Object.assign(r,{kind:'leafhour-json-blob-v1',file:'json/other-owner/secret',sha256:'a'.repeat(64)}));await assert.rejects(s.read('attacker',null),e=>e.status===409);});
 test('temporary OCR inputs stay single PDFs within the bucket limit and signed lifetimes are bounded',async()=>{const f=database(),calls=[],store=createHostedStore({env,fetcher:async(u,o)=>{if(u.includes('/object/sign/')){calls.push(JSON.parse(o.body));return Response.json({signedURL:'/object/sign/reader-originals/input?token=fixture'});}return f.fetcher(u,o);}}),bytes=Buffer.alloc(9*1024*1024,71);await store.putSingleBlob('owner/input',bytes);assert.deepEqual(await store.blob('owner/input'),bytes);await assert.rejects(store.putSingleBlob('owner/huge',Buffer.alloc(21*1024*1024)),e=>e.status===413);await store.signedBlob('owner/input',{expiresIn:3600});assert.equal(calls[0].expiresIn,3600);await assert.rejects(store.signedBlob('owner/input',{expiresIn:3601}),e=>e.status===400);});
+test('medium JSON is compressed for gzip clients and identity clients retain a plain response',async()=>{
+ const {gunzipSync}=await import('node:zlib'),payload={text:'中型正文。'.repeat(1200)};
+ const handler=createHostedHandler({env,storeFactory:()=>({}),authFactory:()=>({}),portalFactory:async()=>({handle:async({send})=>{send(200,payload);return true;}})});
+ for(const encoding of ['gzip, deflate, br','identity']){const headers={};let bytes;const res={setHeader:(k,v)=>headers[k.toLowerCase()]=v,removeHeader:k=>delete headers[k.toLowerCase()],end:value=>bytes=Buffer.from(value)};await handler({url:'/api/auth/session',method:'GET',headers:{'accept-encoding':encoding}},res);assert.equal(res.statusCode,200);if(encoding==='identity'){assert.equal(headers['content-encoding'],undefined);assert.deepEqual(JSON.parse(bytes),payload);}else{assert.equal(headers['content-encoding'],'gzip');assert.ok(bytes.length<1000);assert.deepEqual(JSON.parse(gunzipSync(bytes)),payload);}}
+});
+test('bounded original ranges cross storage parts without fetching complete blobs and reject mixed manifests',async()=>{
+ const fixture=database(),sum=b=>createHash('sha256').update(b).digest('hex');let corrupt=false;const store=createHostedStore({env,fetcher:async(url,options)=>{const r=await fixture.fetcher(url,options);return corrupt&&options.headers?.Range?new Response('bad',{status:206,headers:{'content-length':'3','content-range':'bytes 0-2/4'}}):r;}}),source=Buffer.from('abcdefgh'),parts=[];
+ for(let n=0;n<2;n++){const bytes=source.subarray(n*4,n*4+4),target='slice-'+n;await store.putBlob(target,bytes);parts.push({target,size:4,sha256:sum(bytes)});}await store.adoptBlob('range-source',parts,{size:8,sha256:sum(source)});store.blob=()=>assert.fail('whole source must not be loaded');const slice=await store.blobRange('range-source',{offset:2,length:5,sha256:sum(source)});assert.equal(slice.bytes.toString(),'cdefg');assert.equal(slice.total,8);
+ for(const [offset,length]of [[-1,1],[0,1048577],[7,2]])await assert.rejects(store.blobRange('range-source',{offset,length,sha256:sum(source)}));await assert.rejects(store.blobRange('range-source',{offset:0,length:1,sha256:sum('other')}),e=>e.status===409);corrupt=true;await assert.rejects(store.blobRange('range-source',{offset:2,length:2,sha256:sum(source)}),e=>e.status===409);
+});
