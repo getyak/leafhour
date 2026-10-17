@@ -25,3 +25,10 @@ test('authentication limits keep their server-provided retry time in the client 
   const scope=createOwnerScope();
   await assert.rejects(readOwnerResponse(scope,scope.capture(),async()=>Response.json({error:'Limited',retryAfter:120},{status:429}),()=>{}),e=>e.status===429&&e.retryAfter===120);
 });
+test('non-JSON upstream errors retain status and only safe transient failures are classified retryable',async()=>{
+ for(const status of [200,403,503]){const scope=createOwnerScope('alice');await assert.rejects(readOwnerResponse(scope,scope.capture(),async()=>new Response('<html>gateway</html>',{status}),()=>{}),e=>e.status===status&&e.retryable===(status===200||status===503));}
+});
+test('JSON null error bodies preserve HTTP status without a TypeError or unsafe message coercion',async()=>{
+ for(const status of [403,503]){const scope=createOwnerScope('alice');await assert.rejects(readOwnerResponse(scope,scope.capture(),async()=>Response.json(null,{status}),()=>{}),e=>e.status===status&&e.message==='暂时无法完成');}
+ const scope=createOwnerScope('alice');await assert.rejects(readOwnerResponse(scope,scope.capture(),async()=>Response.json({error:{sensitive:'untrusted object'}},{status:503}),()=>{}),e=>e.status===503&&e.message==='暂时无法完成');
+});
