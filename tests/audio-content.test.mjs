@@ -2,6 +2,9 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {prepareReading,validateDialogue,clipCacheKey,chunkAudio} from '../server/audio-content.mjs';
 import {mediaConfiguration} from '../server/media-config.mjs';
 import {audioBook,audioSelection as selection} from './audio-fixture.mjs';
+test('JSON value comparison tolerates object field order without changing legacy hashes or array identity',async()=>{
+ const {audioHash,audioValueEqual}=await import('../server/audio-content.mjs'),a={z:[{b:2,a:1}],a:3},b={a:3,z:[{a:1,b:2}]};assert.equal(audioValueEqual(a,b),true);assert.notEqual(audioHash(a),audioHash(b));assert.equal(audioValueEqual(['p1','p2'],['p2','p1']),false);assert.equal(audioValueEqual({a:1},{a:2}),false);
+});
 test('audio selections retain exact source ranges, independent translations and Unicode boundaries',()=>{
  const book=audioBook();assert.equal(prepareReading(book,selection).clips[0].text,'Read');
  for(const change of [{contentVersion:'old'},{chapterId:'ch2'},{parts:[{...selection.parts[0],text:'Fake'}]},{parts:[{passageId:'p1',start:6,end:8,language:'en'}]}])assert.throws(()=>prepareReading(book,{...selection,...change}));
