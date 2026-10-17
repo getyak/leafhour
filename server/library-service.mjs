@@ -1,3 +1,7 @@
+import {renderPdfEvidence} from './pdf-source-evidence.mjs';
+import {epubSourceEvidence} from './epub-import.mjs';
+import {buildSourceRevision,migrateSourceNotes} from './source-revisions.mjs';
+import {mergePendingAnchors,validatePendingAnchors} from '../app/source-revisions.mjs';
 import {bookCapacity,MAX_BOOK_BYTES,TRANSLATION_RESERVE_BYTES} from './book-capacity.mjs';
 import {bookTransfer as transferBook} from './book-transfer.mjs';
 import {mkdir,readFile,writeFile,rename,stat,open} from 'node:fs/promises';
@@ -24,6 +28,8 @@ const emptyRecords=book=>({kind:'marginalia-personal-records',schemaVersion:3,bo
 const readingDefaults=data=>Object.assign(data,{schemaVersion:3,readingMilestones:data.readingMilestones||[],readingSessions:data.readingSessions||[],highlights:data.highlights||[]});
 function mergedPersonalRecords(book,current,incoming,{preserveExisting=false}={}){
   const data=readingDefaults(structuredClone(current));
+  if(current.pendingAnchors!==undefined||incoming.pendingAnchors!==undefined)data.pendingAnchors=mergePendingAnchors(current.pendingAnchors,incoming.pendingAnchors);
+  if(incoming.sourceRevisionMigration){if(data.sourceRevisionMigration&&data.sourceRevisionMigration.contentVersion!==incoming.sourceRevisionMigration.contentVersion)throw fail('校对迁移回执版本冲突',409);data.sourceRevisionMigration??=structuredClone(incoming.sourceRevisionMigration);}
   data.highlights=mergeHighlights(data.highlights,incoming.highlights||[]);
   for(const key of ['comments','questions']){const map=new Map(data[key].map(r=>[r.id,r]));for(const row of incoming[key])if(!map.has(row.id))map.set(row.id,row);data[key]=[...map.values()];}
   const sessions=new Map(data.readingSessions.map(r=>[r.id,r]));
@@ -34,7 +40,7 @@ function mergedPersonalRecords(book,current,incoming,{preserveExisting=false}={}
   data.readingMilestones=[...marks.values()];
   if(incoming.readingGoal&&(!data.readingGoal||Date.parse(incoming.readingGoal.updatedAt)>Date.parse(data.readingGoal.updatedAt)))data.readingGoal=normalizeReadingGoal(incoming.readingGoal);
   if(incoming.position){if(preserveExisting){if(!data.position)data.position={...incoming.position,contentVersion:book.contentVersion};}else data.position={...incoming.position,contentVersion:book.contentVersion,revision:(data.position?.revision||0)+1,updatedAt:new Date().toISOString()};}
-  return data;
+  validatePendingAnchors(data,book);return data;
 }
 const allPassages=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
 const brief=book=>({bookId:book.bookId,contentVersion:book.contentVersion,title:book.title,author:book.author,visibility:book.visibility,sourceLanguage:book.sourceLanguage,topics:book.topics||[],source:book.source,cover:book.cover,description:book.description,chineseSample:book.chineseSample,paragraphs:allPassages(book).length,chapters:book.chapters.length,chapterIndex:book.chapters.map(c=>({id:c.id,kind:c.kind,number:c.number,title:c.title})),createdAt:book.createdAt});
@@ -166,9 +172,48 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(!existing)await mutate(bookFile(user,id),{},data=>Object.assign(data,book));
     await mutate(path.join(userDir(user),'index.json'),{books:[]},data=>{if(!data.books.some(b=>b.bookId===id))data.books.push(brief(book));});return getBook(user,id);
   }
+  async function sourceEvidence(user,id,input){
+    requireUser(user);const book=await getBook(user,id),passage=allPassages(book).find(p=>p.id===input?.passageId);if(!passage)throw fail('找不到来源段落',404);const original=await getOriginal(user,id);
+    if(book.source.format==='epub')return {format:'epub',sha256:original.sha256,...epubSourceEvidence(original.bytes,passage.source)};
+    if(book.source.format==='pdf'){const page=input?.page??passage.source?.pdfPage;return {format:'pdf',sha256:original.sha256,page,pages:passage.source?.pdfPages||[passage.source?.pdfPage].filter(Boolean),image:await renderPdfEvidence(original.bytes,page)};}
+    const text=new TextDecoder('utf-8',{fatal:true}).decode(original.bytes),offset=Math.max(0,text.indexOf(passage.original)-1000);return {format:book.source.format,sha256:original.sha256,sourceText:text.slice(offset,offset+50000),truncated:offset>0||offset+50000<text.length};
+  }
+  async function sourceReview(user,id){
+    requireUser(user);const book=await getBook(user,id);if(book.visibility!=='private')throw fail('请在自己的来源文件中校对，公版目录不会被修改',403);
+    const info=await originalInfo(user,id),personal=await recordsForBook(user,book);
+    return {bookId:id,contentVersion:book.contentVersion,contentManifest:transferBook(book),source:{...book.source,...(book.source.revision?{revision:{parentBookId:book.source.revision.parentBookId,parentContentVersion:book.source.revision.parentContentVersion,operation:book.source.revision.operation}}:{})},original:info,chapters:book.chapters.length,sections:book.sections.length,paragraphs:allPassages(book).length,reviewed:allPassages(book).filter(p=>p.source?.review==='visually_checked').length,pendingAnchors:personal.pendingAnchors||[],migration:personal.sourceRevisionMigration||null};
+  }
+  async function createSourceRevision(user,id,input){
+    requireUser(user);const before=await getBook(user,id);if(before.visibility!=='private')throw fail('共享目录不可校对，请使用自己的原件',403);
+    if(input?.baseContentVersion!==before.contentVersion)throw fail('原文版本已变化，请重新读取后校对',409);
+    const original=await getOriginal(user,id);let pdfPages=null,extracted=null;
+    if(before.source.format==='pdf'){const {PDFDocument}=await import('pdf-lib');try{const pdf=await PDFDocument.load(original.bytes,{updateMetadata:false});pdfPages=pdf.getPageCount();}catch{throw fail('PDF 原件无法核对，请检查是否损坏或加密',422);}}
+    if(input.operation==='reextract')extracted=await extractDocument({filename:original.filename,bytes:original.bytes});
+    const built=buildSourceRevision({book:before,input,userId:user.id,pdfPages,extracted}),book=built.book;bookCapacity(book);
+    const saved=await read(recordFile(user,book.bookId),null);
+    // A completed retry is read-only: never resnapshot or overwrite a later note.
+    if(!saved?.sourceRevisionMigration){
+      const incoming=migrateSourceNotes(before,book,await recordsForBook(user,before),built.anchorMap);incoming.sourceRevisionMigration={parentBookId:id,parentContentVersion:before.contentVersion,contentVersion:book.contentVersion,completedAt:new Date().toISOString()};
+      validateLibraryBackup({kind:'marginalia-library',schemaVersion:1,books:[{book,records:incoming}]});guardRecordSize(incoming);
+      await mutate(bookFile(user,book.bookId),{},data=>{if(data.bookId){if(data.contentVersion!==book.contentVersion||data.source?.revision?.parentBookId!==id)throw fail('修订版本标识冲突，原书已保留',409);}else Object.assign(data,book);});
+      await mutate(recordFile(user,book.bookId),emptyRecords(book),data=>{if(data.sourceRevisionMigration)return;const merged=mergedPersonalRecords(book,data,incoming,{preserveExisting:true});guardRecordSize(merged);Object.assign(data,merged);});
+    }
+    const actual=await getBook(user,book.bookId),personal=await recordsForBook(user,actual);validatePendingAnchors(personal,actual);
+    await mutate(path.join(userDir(user),'index.json'),{books:[]},data=>{if(!data.books.some(row=>row.bookId===actual.bookId))data.books.push(brief(actual));});
+    return {book:actual,migrated:personal.comments.length+personal.questions.length,pending:personal.pendingAnchors?.filter(row=>row.state==='pending').length||0,originalBookId:id,originalPreserved:true};
+  }
+  async function resolveSourceAnchor(user,id,input){
+    requireUser(user);const book=await getBook(user,id);if(!input||input.contentVersion!==book.contentVersion||!allPassages(book).some(p=>p.id===input.passageId))throw fail('请选择当前修订中的来源段落',409);
+    return mutate(recordFile(user,id),emptyRecords(book),data=>{const pending=data.pendingAnchors?.find(row=>row.id===input.pendingId);if(!pending)throw fail('找不到待确认的私人记录',404);
+      if(pending.state==='resolved'){if(pending.passageId!==input.passageId)throw fail('这条记录已确认到另一段，请重新读取',409);return structuredClone(pending);}
+      const note={...pending.record,bookId:id,contentVersion:book.contentVersion,passageId:input.passageId},same=data[pending.type].find(row=>row.id===note.id);
+      if(same)throw fail('此记录标识已在当前修订使用，原话和待确认记录均保留',409);
+      data[pending.type].push(note);Object.assign(pending,{state:'resolved',passageId:input.passageId,recordId:note.id,resolvedAt:new Date().toISOString()});validatePendingAnchors(data,book);guardRecordSize(data);return structuredClone(pending);
+    });
+  }
   async function originalInfo(user,id){
     requireUser(user);const book=await getBook(user,id);if(book.visibility!=='private')throw fail('公版书请使用书籍出处查看底本',404);
-    const hash=book.source?.sha256;if(typeof hash!=='string'||!/^[a-f0-9]{64}$/.test(hash)||hash!==book.contentVersion&&!['PaddleOCR-VL-1.6','pdfjs-native','native+paddle-auto-v1'].includes(book.source?.processor))throw fail('原文件信息不完整，请保留提取原文并重新上传原文件',409);
+    const hash=book.source?.sha256;if(typeof hash!=='string'||!/^[a-f0-9]{64}$/.test(hash)||hash!==book.contentVersion&&!['PaddleOCR-VL-1.6','pdfjs-native','native+paddle-auto-v1','epub-spine-v1','source-review-v1'].includes(book.source?.processor))throw fail('原文件信息不完整，请保留提取原文并重新上传原文件',409);
     const filename=typeof book.source.filename==='string'?book.source.filename:'original.'+book.source.format;
     try{const file=dataStore?await dataStore.blobInfo(path.join(userDir(user),'originals',hash)):await stat(path.join(userDir(user),'originals',hash));if(!file)throw Object.assign(new Error('Missing original'),{code:'ENOENT'});if((file.isFile&&!file.isFile())||file.size>MAX_FILE_BYTES)throw fail('原文件不完整，请重新上传',409);return {available:true,filename,format:book.source.format,bytes:file.size,sha256:hash};}
     catch(error){if(error.code!=='ENOENT')throw error;return {available:false,filename,format:book.source.format,reason:'此书房没有原文件。JSON 备份只包含提取文字与记录；重新上传同一原文件即可补回。'};}
@@ -399,5 +444,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(claim.pending)await mutate(bookFile(user,incoming.bookId),{},current=>{if(current._giftReceive?.fingerprint===fingerprint)delete current._giftReceive;});
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }

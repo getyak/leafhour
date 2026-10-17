@@ -5,8 +5,8 @@ export function createUploadState(){
     select(candidate){
       if(busy)return false;file=null;
       if(!candidate||!Number.isFinite(candidate.size)||candidate.size<=0)throw Error('文件中没有内容，请选择另一份文件。');
-      if(candidate.size>(/\.pdf$/i.test(candidate.name)?256:20)*1024*1024)throw Error('PDF 最多 256 MB，文本最多 20 MB，请按章节拆分。');
-      if(typeof candidate.name!=='string'||!candidate.name.trim()||candidate.name.length>240||!/\.(pdf|txt|md)$/i.test(candidate.name))throw Error('目前支持 PDF、TXT 和 Markdown。请重新选择文件。');
+      if(candidate.size>(/\.pdf$/i.test(candidate.name)?256:20)*1024*1024)throw Error('PDF 最多 256 MB，EPUB 与文本最多 20 MB，请按章节拆分。');
+      if(typeof candidate.name!=='string'||!candidate.name.trim()||candidate.name.length>240||!/\.(pdf|epub|txt|md)$/i.test(candidate.name))throw Error('目前支持 PDF、EPUB、TXT 和 Markdown。请重新选择文件。');
       file=candidate;return true;
     },
     begin(){if(busy)throw Error('文件正在处理，请稍等。');if(!file)throw Error('请先选择文件。');busy=true;return file;},

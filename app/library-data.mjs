@@ -11,7 +11,7 @@ export function mountLibraryData({root,api,getSession,getOwner=()=>getSession()?
  const title=node('h3','带走自己的书房'),intro=node('p','不需要订阅。备份包含已同步的原文、译文、评论、对话、位置与时段。未同步草稿请先保存；听读音频与听读历史仍使用单独的音频导出。');intro.className='settings-description';
  const status=node('p');status.className='settings-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
  const originalLabel=node('label'),originalCheck=node('input');originalCheck.type='checkbox';originalLabel.append(originalCheck,document.createTextNode('包含原文件（缺失时停止并说明原因）'));
- const backup=button('下载完整备份 ZIP'),backupHelp=node('p','未勾选时仍包含提取的原文与译文，可离线恢复阅读；不会附带原始 PDF/TXT 文件。每包最多 100 本、512 MiB。');backupHelp.className='settings-description';
+ const backup=button('下载完整备份 ZIP'),backupHelp=node('p','未勾选时仍包含提取的原文与译文，可离线恢复阅读；不会附带原始 PDF/EPUB/TXT 文件。每包最多 100 本、512 MiB。');backupHelp.className='settings-description';
  const restoreTitle=node('h3','恢复到这个书房'),file=node('input');file.type='file';file.accept='.zip,.json,application/zip,application/json';file.setAttribute('aria-label','选择书房备份');
  const restoreHelp=node('p','支持 ZIP 和兼容 JSON。先校验整个包；错误包不写书房。有效备份按稳定 ID 合并，保留现有记录、位置与译文，不恢复 AI 任务或 Agent 授权。网络中断可重新选择同一包重试。');restoreHelp.className='settings-description';
  const restore=button('校验并恢复'),cancel=button('取消当前操作');cancel.hidden=true;

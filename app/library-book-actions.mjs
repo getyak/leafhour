@@ -33,6 +33,7 @@ export function mountLibraryBookActions({api,getSession,getBooks,getOwner,getRev
   function bookInfo(book){
     show(book,'关于这本书');const info=node('div','action-book-information'),copy=node('div');copy.append(node('h3','',title(book)));if(book.author)copy.append(node('p','action-author',book.author));if(book.title?.en&&book.title.en!==book.title.zh)copy.append(node('p','action-original',book.title.en));copy.append(node('p','',book.description||'这本书还没有简介。'),node('p','action-scope',book.visibility==='public'?'公版原文 · 已有译文保留草稿标记':'自己的书 · 原文与阅读记录按账户保存'));
     if(book.source?.url){try{const url=new URL(book.source.url);if(['https:','http:'].includes(url.protocol)&&!url.username&&!url.password){const link=node('a','text-link','查看底本来源 ↗');link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';copy.append(link);}}catch{}}
+    if(book.visibility==='private'){const review=node('a','text-link','校对原文与来源');review.href='/source-review?book='+encodeURIComponent(book.bookId);copy.append(review);}
     info.append(cover(book),copy);body.append(info);
   }
   function calendar(book){
