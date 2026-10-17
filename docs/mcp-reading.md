@@ -61,3 +61,5 @@ Versioned citation URLs are checked before the reader commits a location. A diff
 The hosted launch supports npm12's default Git-dependency policy using command-scoped `--allow-git=root` for this explicit pinned package, plus `--ignore-scripts`. It does not change global npm configuration or permit arbitrary transitive Git dependencies. This follows the [official npm configuration contract](https://docs.npmjs.com/cli/using-npm/config/#allow-git). Missing deployment provenance still fails closed.
 
 The Vercel adapter removes its already-consumed `path` rewrite field before domain parsing. All other unknown query keys, duplicate keys and unauthorized book/record requests remain rejected, just as on local stdio/HTTP.
+
+The hosted client also uses `--omit=optional`: it only imports the MCP protocol modules and makes HTTP calls, so it does not need optional native office, PDF or server-runtime packages. Full application installs/builds keep their existing dependencies. A first source-archive download can still take minutes; a warm-cache check does not establish a universal cold-start time.
