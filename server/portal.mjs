@@ -20,13 +20,17 @@ import {createCompanionGenerator} from '../harness/companion-generator.mjs';
 import {authPurpose} from './auth-policy.mjs';
 import {safeGiftReturn} from '../app/reader-return.mjs';
 import {createAccountProfile} from './account-profile.mjs';
+import {createPaddleProvider} from './paddleocr.mjs';
+import {createBookIngestion} from './book-ingestion.mjs';
+import {createIngestionStorage} from './ingestion-storage.mjs';
+import {createIngestionUpload} from './ingestion-upload.mjs';
 import {createBookGifts} from './book-gifts.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
 const jsonBody=async(req,limit=29*1024*1024)=>{if(!req.headers['content-type']?.startsWith('application/json'))throw fail('请使用 JSON 请求',415);if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>limit)throw fail('这次导入内容过大，请分书恢复',413);return req.body;}let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('这次导入内容过大，请分书恢复',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('请求格式不正确');}};
 const passageList=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
-export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,schedule=()=>{},env=process.env}={}){
+export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,schedule=()=>{},paddleProvider,env=process.env}={}){
   const webOrigins=new Set(publicOrigin?[publicOrigin]:[]);
   if(!Array.isArray(additionalWebOrigins))throw fail('额外网页来源配置无效',503);
   for(const value of additionalWebOrigins){
@@ -36,6 +40,10 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   }
   const auth=authService||await createEmailAuth({dataDir:path.join(dataDir,'auth'),sendCode:sendCode===undefined?await smtpSender():sendCode});
   const library=await createLibraryService({dataDir:path.join(dataDir,'library'),catalogDir,translator:translator===undefined?createTranslator():translator,dataStore});
+  const provider=paddleProvider===undefined?createPaddleProvider({env}):paddleProvider;
+  const ingestionStore=dataStore||createIngestionStorage({dataDir:path.join(dataDir,'ingestion')});
+  const ingestion=createBookIngestion({store:ingestionStore,library,provider});
+  const ingestionUpload=createIngestionUpload({store:ingestionStore,ingestion});
   const profile=createAccountProfile({dataDir:path.join(dataDir,'library'),dataStore});
   const gifts=createBookGifts({library,dataDir:path.join(dataDir,'library'),dataStore,getProfile:profile.get});
   const visibleUser=async user=>user?{id:user.id,email:user.email||null,kind:user.kind,...await profile.get(user)}:null;
@@ -57,6 +65,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   async function handle({req,res,url,send}){
     const p=url.pathname,isAPI=p.startsWith('/api/auth/')||p.startsWith('/api/library')||p.startsWith('/api/agent/')||p.startsWith('/api/account/')||p.startsWith('/api/book-gifts/');
     const files={'/':'home.html','/library':'home.html','/privacy':'privacy.html','/auth.css':'auth.css','/auth-dialog.mjs':'auth-dialog.mjs','/auth-flow.mjs':'auth-flow.mjs','/auth-assets/google.png':'auth-assets/google.png','/auth-assets/apple.svg':'auth-assets/apple.svg','/portal.css':'portal.css','/portal.js':'portal.js','/owner-scope.mjs':'owner-scope.mjs','/paragraph-anchor.mjs':'paragraph-anchor.mjs','/source-language.mjs':'source-language.mjs','/upload-state.mjs':'upload-state.mjs','/library-backup.mjs':'library-backup.mjs','/reader-api.mjs':'reader-api.mjs','/reading-progress.mjs':'reading-progress.mjs','/progress-sync.mjs':'progress-sync.mjs','/reader-translation.js':'reader-translation.js'};
+    files['/pdf-ingestion.mjs']='pdf-ingestion.mjs';
     files['/reader-conversation.mjs']='reader-conversation.mjs';
     for(const file of ['reader-companion.mjs','reader-companion-state.mjs','reader-companion.css'])files['/'+file]=file;
     files['/reading-arrival.css']='reading-arrival.css';files['/reading-arrival.mjs']='reading-arrival.mjs';files['/save-receipts.mjs']='save-receipts.mjs';
@@ -108,7 +117,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       const capabilities=auth.capabilities?await auth.capabilities():{email:auth.emailAvailable,providers:{google:false,apple:false},otp:{digits:6,expiresIn:600,retryAfter:60}};
       // Host only hides unusable OAuth buttons; it never authorizes a web origin.
       const providers=publicOrigin&&req.headers.host!==new URL(publicOrigin).host?{google:false,apple:false}:capabilities.providers;
-      send(200,{user:await visibleUser(user),emailAvailable:capabilities.email,passwordAvailable:capabilities.password===true,providers,otp:capabilities.otp,localAvailable:localAllowed,translationAvailable:library.translationAvailable,directUpload:!!dataStore?.beginUpload});return true;
+      send(200,{user:await visibleUser(user),emailAvailable:capabilities.email,passwordAvailable:capabilities.password===true,providers,otp:capabilities.otp,localAvailable:localAllowed,translationAvailable:library.translationAvailable,directUpload:!!dataStore?.beginUpload,pdfOcrAvailable:!!provider});return true;
     }
     if(p==='/api/account/profile'&&req.method==='POST'){send(200,await profile.save(user,body));return true;}
     if(p==='/api/auth/oauth'&&req.method==='POST'){
@@ -135,6 +144,12 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       const loopback=req.socket.localAddress==='::1'?'[::1]':'127.0.0.1';
       send(200,{command:process.execPath,args:[path.join(root,'server/mcp.mjs')],serviceUrl:'http://'+loopback+':'+req.socket.localPort});return true;
     }
+    if(p==='/api/library/pdf-upload/start'&&req.method==='POST'){if(!provider)throw fail('文字识别服务尚未配置',503);send(201,await ingestionUpload.start(user,body));return true;}
+    const partUpload=p.match(/^\/api\/library\/pdf-upload\/([-a-z0-9]{36})\/(part|complete)$/);
+    if(partUpload&&req.method==='POST'){send(200,partUpload[2]==='part'?await ingestionUpload.part(user,partUpload[1],body):await ingestionUpload.complete(user,partUpload[1]));return true;}
+    if(p==='/api/library/ingestion'&&req.method==='GET'){send(200,{jobs:await ingestion.list(user)});return true;}
+    const ingestRoute=p.match(/^\/api\/library\/ingestion\/([-a-z0-9]{36})(?:\/(advance|cancel|resume))?$/);
+    if(ingestRoute){const [,id,action]=ingestRoute;if(req.method==='GET'&&!action)send(200,await ingestion.view(user,id));else if(req.method==='POST'&&action)send(200,await ingestion[action](user,id));else throw fail('不支持这个请求',405);return true;}
     if(p==='/api/library/upload/start'&&req.method==='POST'){
       if(!dataStore?.beginUpload)throw fail('此书房使用本机上传',404);
       send(201,await dataStore.beginUpload(user,body));return true;
@@ -184,6 +199,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='chat'&&req.method==='POST'){send(200,await chat.send(user,id,body));return true;}
       const cancelChat=action?.match(/^chat\/([^/]+)\/cancel$/);if(cancelChat&&req.method==='POST'){send(200,await chat.cancel(user,id,cancelChat[1]));return true;}
       if(action==='export-part'&&req.method==='GET'){send(200,await library.exportBookPart(user,id,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
+      if(action==='original/parts'&&req.method==='GET'){send(200,await library.originalParts(user,id));return true;}
       if(action==='original/info'&&req.method==='GET'){send(200,await library.originalInfo(user,id));return true;}
       if(action==='original'&&req.method==='GET'){if(dataStore?.signedBlob){const file=await library.originalDownload(user,id);res.statusCode=302;res.setHeader('Location',file.url+'&download=original.'+(['pdf','txt','md'].includes(file.format)?file.format:'bin'));res.setHeader('Cache-Control','private, no-store');res.end();return true;}const file=await library.getOriginal(user,id);res.statusCode=200;res.setHeader('Content-Type','application/octet-stream');res.setHeader('Content-Disposition','attachment; filename="original.'+(['pdf','txt','md'].includes(file.format)?file.format:'bin')+'"');res.setHeader('Cache-Control','private, no-store');res.setHeader('Content-Length',file.bytes.length);res.end(file.bytes);return true;}
       if(['records','records/export'].includes(action)&&req.method==='GET'){send(200,await library.records(user,id));return true;}

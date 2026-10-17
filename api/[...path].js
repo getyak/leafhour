@@ -1,3 +1,4 @@
+import {gzipSync} from 'node:zlib';
 import {waitUntil} from '@vercel/functions';
 import {configurationSummary} from '../server/model-config.mjs';
 import {createPortal} from '../server/portal.mjs';
@@ -11,7 +12,7 @@ export function routeOf(req){
   const pathname=new URL(req.url||'/','https://reader.invalid').pathname;
   return pathname.startsWith('/api/')?pathname:'/api/'+pathname.replace(/^\/+/, '');
 }
-const json=(res,status,body)=>{let payload=JSON.stringify(body);if(Buffer.byteLength(payload)>4000000){status=413;payload=JSON.stringify({error:'内容超过云端传输限制，请在本机阅读或导出较大的书房。原有资料仍保留。'});}res.statusCode=status;res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('Cache-Control','private, no-store');res.end(payload);};
+const json=(res,status,body)=>{let payload=Buffer.from(JSON.stringify(body));res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('Cache-Control','private, no-store');if(payload.length>1000000){payload=gzipSync(payload);res.setHeader('Content-Encoding','gzip');}if(payload.length>4000000){status=413;payload=Buffer.from(JSON.stringify({error:'内容超过云端传输限制，请分章节导出。原有资料仍保留。'}));res.removeHeader?.('Content-Encoding');}res.statusCode=status;res.end(payload);};
 export function createHostedHandler({portalFactory=createPortal,storeFactory=createHostedStore,authFactory=createHostedAuth,background=waitUntil,env=process.env}={}){
 let portalPromise;
 return async function handler(req,res){
