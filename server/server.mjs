@@ -1,6 +1,7 @@
 import http from 'node:http';
 import {normalizeAppearance} from '../app/reading-preferences.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
+import {applyPersonalRecordEdit,validatePersonalRecordMetadata,decodePersonalRecordId} from '../app/personal-records.mjs';
 import {normalizeHighlight,saveHighlight,findHighlight,mergeHighlights} from '../app/highlights.mjs';
 import {createExperienceService} from './experience-service.mjs';
 import {createPortal} from './portal.mjs';
@@ -15,6 +16,8 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const assets=new Map([['/',['app/index.html','text/html']],['/styles.css',['app/styles.css','text/css']],['/reader.js',['app/reader.js','text/javascript']],['/experiences.js',['app/experiences.js','text/javascript']],['/experiences.css',['app/experiences.css','text/css']]]);
 for(const file of ['interaction-craft.css','interaction-craft.mjs','action-focus.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/reading-preferences.mjs',['app/reading-preferences.mjs','text/javascript']);
+assets.set('/personal-records.mjs',['app/personal-records.mjs','text/javascript']);
+assets.set('/personal-record-editor.mjs',['app/personal-record-editor.mjs','text/javascript']);
 assets.set('/toolbar-placement.mjs',['app/toolbar-placement.mjs','text/javascript']);
 assets.set('/note-drafts.mjs',['app/note-drafts.mjs','text/javascript']);
 assets.set('/translation-state.mjs',['app/translation-state.mjs','text/javascript']);
@@ -68,8 +71,9 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
     const version=r.contentVersion||book.contentVersion;
     if(version!==book.contentVersion&&!(version==='design-sample-1'&&legacyIds.has(r.passageId)))throw fail('记录的来源版本不兼容');
     if(r.createdAt&&!Number.isFinite(Date.parse(r.createdAt)))throw fail('记录日期不正确');
-    const out={id:r.id,bookId:book.bookId,passageId:r.passageId,contentVersion:version,text:r.text,origin:'user',createdAt:r.createdAt||new Date().toISOString()};
-    if(typeof r.quote==='string'&&r.quote.length<=4000){out.quote=r.quote;out.quoteLanguage=['zh','en'].includes(r.quoteLanguage)?r.quoteLanguage:'zh';}
+    validatePersonalRecordMetadata(r);
+    const createdAt=r.createdAt||new Date().toISOString(),out={id:r.id,bookId:book.bookId,passageId:r.passageId,contentVersion:version,text:r.text,origin:'user',createdAt,updatedAt:r.updatedAt||createdAt,revision:r.revision||0,...(r.lastEditId?{lastEditId:r.lastEditId}:{})};
+    if(typeof r.quote==='string'&&r.quote.length<=4000){out.quote=r.quote;out.quoteLanguage=['zh','en'].includes(r.quoteLanguage)?r.quoteLanguage:'zh';if(['original','translation'].includes(r.quoteOrigin))out.quoteOrigin=r.quoteOrigin;}
     if(type==='question')out.status='open';return out;
   };
   const parseBody=async(req,limit=4*1024*1024)=>{
@@ -99,6 +103,8 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
           const saved=await mutate(records=>{records.highlights??=[];return saveHighlight(records.highlights,body,book);});send(201,saved);return;
         }
         const removeHighlight=url.pathname.match(/^\/api\/highlights\/([A-Za-z0-9_-]{1,128})\/remove$/);if(removeHighlight){const saved=await mutate(records=>{const row=findHighlight(records.highlights||[],removeHighlight[1]);if(!row)throw fail('找不到这条高亮',404);row.deletedAt??=new Date().toISOString();return row;});send(200,saved);return;}
+        const editRecord=url.pathname.match(/^\/api\/(comments|questions)\/([^/]+)\/edit$/);
+        if(editRecord){const key=editRecord[1],id=decodePersonalRecordId(editRecord[2]);const saved=await mutate(records=>{const record=records[key].find(row=>row.id===id);if(!record)throw fail('找不到自己的这条记录',404);return applyPersonalRecordEdit(record,body,book);});send(200,saved);return;}
         if(url.pathname==='/api/comments'||url.pathname==='/api/questions'){
           const type=url.pathname.endsWith('questions')?'question':'comment',key=type==='question'?'questions':'comments';const record=cleanRecord(body,type);
           const result=await mutate(records=>{const old=records[key].find(r=>r.id===record.id);if(old){if(old.passageId!==record.passageId||old.text!==record.text)throw fail('记录ID冲突',409);return {record:old,existing:true};}records[key].push(record);return {record,existing:false};});send(result.existing?200:201,result.record);return;

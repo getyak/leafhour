@@ -22,6 +22,8 @@ import {mountReaderImmersion} from './reader-immersion.mjs';
 import {mountReaderConversation,readerInteractionBlocked} from './reader-conversation.mjs';
 import {mountReaderSettings} from './reader-settings.mjs';
 import {trackActionFocus} from './action-focus.mjs';
+import {createPersonalRecordRenderer} from './personal-record-editor.mjs';
+import {personalRecordRevision} from './personal-records.mjs';
 import {activeHighlights,highlightKey} from './highlights.mjs';
 import {mountReaderHighlights,textRange} from './reader-highlights.mjs';
 const $=id=>document.getElementById(id);
@@ -42,6 +44,7 @@ const draftKey=readerStorageKey('marginalia-focus-drafts-v2');let savedDrafts=nu
 let noteDrafts=createNoteDrafts(savedDrafts,legacyDrafts),noteDraftError=null;
 const persistDrafts=()=>{try{if(noteDraftError)return false;if(noteDrafts.persist)noteDrafts.persist();else localStorage.setItem(draftKey,JSON.stringify(noteDrafts.snapshot()));document.dispatchEvent(new CustomEvent('reader:drafts-updated'));return true;}catch{return false;}};
 const api=async(url,data)=>{const response=await readerFetch(url,data===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const body=await response.json();if(!response.ok)throw Object.assign(Error(body.error||'暂时无法完成操作'),{status:response.status});return body;};
+const personalRecordsUI=createPersonalRecordRenderer({document,getBook:()=>book,scope:readerStorageKey('marginalia-record-edit-drafts-v1'),api,onUpdate:(record,type)=>{const key=type==='question'?'questions':'comments',index=records[key].findIndex(row=>row.id===record.id);if(index>=0&&personalRecordRevision(record)>=personalRecordRevision(records[key][index]))records[key][index]=record;document.dispatchEvent(new CustomEvent('reader:records-updated'));},onJump:(record,type,anchor)=>{closePanel();changeChapter(anchor.chapterId,record.passageId);choosePassage(record.passageId);openPanel(type);}});
 const highlights=mountReaderHighlights({document,getRecords:()=>records,signedIn:()=>!selectedBookId||!!readerSession?.user,available:()=>!recordsUnavailable,selectionMatches:snapshot=>{try{const native=captureDOMSelection(getSelection(),paragraphMap,book);return !!native&&highlightKey(native)===highlightKey(snapshot);}catch{return false;}},api,onSelect:selectHighlight,onNote:()=>openPanel('comment'),onChange:()=>{flow?.invalidatePrepared();if(!$('note-panel').hidden)renderPanel();document.dispatchEvent(new CustomEvent('reader:records-updated'));},announce,loginUrl:()=>readerLoginUrl({bookId:selectedBookId,passageId:selectedId})});
 const progressKey=readerStorageKey('marginalia-focus-position-v1'),localWriterId=crypto.randomUUID();let progressSequence=0,restoringProgress=true,allowScrollSave=false;
 let latestPositionAttempt=null,latestPositionDurable=false,confirmedPosition=null;
@@ -227,9 +230,7 @@ function closePanel(){queueReadingFlow();
   const a=anchor();$('note-panel').hidden=true;document.body.classList.remove('has-panel');clearPanelTextHighlight();for(const node of $('chapter-text').querySelectorAll('.is-selected,.is-panel-anchor'))node.classList.remove('is-selected','is-panel-anchor');if($('note-panel').parentNode!==document.body)document.body.append($('note-panel'));restoreAnchor(a);document.dispatchEvent(new CustomEvent('reader:selection-end'));
 }
 function recordNode(record,type,withAnchor=false){
-  const row=el('section','saved-record');
-  if(withAnchor){const p=paragraphMap.get(record.passageId);row.append(button((type==='question'?'问题':'想法')+' · §'+p.section,()=>{closePanel();changeChapter(p.chapterId,p.id);choosePassage(p.id);openPanel(type);}));}
-  row.append(el('p','',record.text));const date=el('time','',new Intl.DateTimeFormat('zh-CN',{month:'numeric',day:'numeric',timeZone:'Asia/Singapore'}).format(new Date(record.createdAt)));date.dateTime=record.createdAt;row.append(date);return row;
+  return personalRecordsUI.recordNode(record,type,withAnchor);
 }
 function clearPanelTextHighlight(){
   if(typeof CSS!=='undefined'&&CSS.highlights)CSS.highlights.delete('panel-reference');

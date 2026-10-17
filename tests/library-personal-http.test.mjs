@@ -46,6 +46,25 @@ test('HTTP highlights save through the account store and refuse guests, stale ow
   const removed=await post(route+'/highlight-1/remove',{},a);assert.equal(removed.status,200);assert.ok((await removed.json()).deletedAt);
 });
 
+test('HTTP personal edits preserve immutable sources, reject stale owners and versions, and safely confirm retries',async t=>{
+  const {post,get,portal,a,b}=await setup(t),book=await seed(portal.library,sender),base='/api/library/books/'+book.bookId;
+  const input={id:'edit-note',passageId:'p1',contentVersion:book.contentVersion,text:'My <img src=x> exact words.',quote:'Keep the source.',quoteLanguage:'en',quoteOrigin:'original'};
+  const created=await (await post(base+'/comments',input,a)).json();assert.equal(created.revision,0);
+  const route=base+'/comments/'+input.id+'/edit',edit={contentVersion:book.contentVersion,text:' My revised <script>words</script>. ',baseRevision:0,editId:'http-edit-one'};
+  assert.equal((await post(route,edit)).status,401);
+  assert.equal((await post(route,edit,b,sender.id)).status,409);
+  assert.equal((await post(route,edit,b)).status,404);
+  assert.equal((await post(route,{...edit,quote:'Forged source.'},a)).status,400);
+  assert.equal((await post(base+'/comments/%ZZ/edit',edit,a)).status,400);
+  const response=await post(route,edit,a);assert.equal(response.status,200);const saved=await response.json();
+  for(const key of ['id','passageId','bookId','contentVersion','createdAt','origin','quote','quoteOrigin'])assert.equal(saved[key],created[key],key);
+  assert.equal(saved.text,edit.text);assert.equal(saved.revision,1);
+  assert.deepEqual(await (await post(route,edit,a)).json(),saved);
+  assert.equal((await post(route,{...edit,text:'A stale overwrite.',editId:'another'},a)).status,409);
+  assert.deepEqual((await (await get(base+'/records',a)).json()).comments[0],saved);
+  assert.equal((await get('/personal-records.mjs')).status,200);
+});
+
 test('gift return paths accept only one exact token path and reject redirect material',()=>{
   const token='A'.repeat(43),target='/gift/'+token;assert.equal(typeof returns.safeGiftReturn,'function');assert.equal(returns.safeGiftReturn(target),target);assert.equal(safeAuthReturn(target),target);
   for(const value of [target+'?next=https://evil.invalid',target+'#fragment',target+'/',target+'/..','/gift/'+'A'.repeat(42),'/gift/'+'A'.repeat(44),'//evil.invalid/gift/'+token,'https://evil.invalid/gift/'+token,'/gift/%41'+token.slice(1),'/gift/../'+token,'/gift/\\'+token]){assert.equal(returns.safeGiftReturn(value),null);assert.equal(safeAuthReturn(value),null);}

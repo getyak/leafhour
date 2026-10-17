@@ -11,6 +11,7 @@ import {validateLibraryBackup} from '../app/library-backup.mjs';
 import {saveHighlight,findHighlight,mergeHighlights} from '../app/highlights.mjs';
 import {inferSourceLanguage} from '../app/source-language.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
+import {applyPersonalRecordEdit} from '../app/personal-records.mjs';
 import {applyCatalogReadingMetadata} from './catalog-reading-metadata.mjs';
 import {structuredCatalogBook} from './structured-catalog.mjs';
 import {applyCatalogSample} from './catalog-sample.mjs';
@@ -159,7 +160,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(bytes.length>MAX_FILE_BYTES||digest(bytes)!==book.source.sha256)throw fail('原文件校验失败，未提供损坏的文件，请重新上传',409);
     return {...info,bytes};
   }
-  async function originalParts(user,id){const original=await getOriginal(user,id),book=await getBook(user,id);if(!dataStore?.blobDownloads)throw fail('本机原件使用直接下载',404);return {...original,bytes:original.bytes.length,parts:await dataStore.blobDownloads(path.join(userDir(user),'originals',book.source.sha256))};}
+  async function originalParts(user,id){const info=await originalInfo(user,id);if(!info.available)throw fail(info.reason,404);if(!dataStore?.blobDownloads)throw fail('本机原件使用直接下载',404);return {...info,parts:await dataStore.blobDownloads(path.join(userDir(user),'originals',info.sha256),{size:info.bytes,sha256:info.sha256})};}
   async function originalDownload(user,id){
     const file=await getOriginal(user,id),book=await getBook(user,id);if(file.bytes.length>8*1024*1024)throw fail('大原件请在阅读页使用“下载原文件校对”，分块校验后下载',413);
     return {...file,bytes:undefined,url:await dataStore.signedBlob(path.join(userDir(user),'originals',book.source.sha256))};
@@ -195,9 +196,17 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   async function addComment(user,id,input,type='comments'){
     requireUser(user);const book=await getBook(user,id);
     if(!['comments','questions'].includes(type)||typeof input?.id!=='string'||!input.id||input.id.length>128||typeof input.text!=='string'||!input.text.trim()||input.text.length>2000||!allPassages(book).some(p=>p.id===input.passageId)||input.origin&&input.origin!=='user'||input.contentVersion&&input.contentVersion!==book.contentVersion)throw fail('记录无法对应当前原文');
-    const record={id:input.id,bookId:id,contentVersion:book.contentVersion,passageId:input.passageId,text:input.text,origin:'user',createdAt:new Date().toISOString(),...(type==='questions'?{status:'open'}:{})};
+    const createdAt=new Date().toISOString(),record={id:input.id,bookId:id,contentVersion:book.contentVersion,passageId:input.passageId,text:input.text,origin:'user',createdAt,updatedAt:createdAt,revision:0,...(type==='questions'?{status:'open'}:{})};
     if(typeof input.quote==='string'&&input.quote.length<=4000){record.quote=input.quote;record.quoteLanguage=input.quoteLanguage==='en'?'en':'zh';if(['original','translation'].includes(input.quoteOrigin))record.quoteOrigin=input.quoteOrigin;}
     return mutate(recordFile(user,id),emptyRecords(book),data=>{const old=data[type].find(r=>r.id===record.id);if(old){if(old.passageId!==record.passageId||old.text!==record.text)throw fail('记录标识冲突',409);return old;}if(data[type].length>=10000)throw fail('请先导出记录',413);data[type].push(record);guardRecordSize(data);return record;});
+  }
+  async function editComment(user,id,recordId,input,type='comments'){
+    requireUser(user);const book=await getBook(user,id);
+    if(!['comments','questions'].includes(type)||typeof recordId!=='string'||!recordId||recordId.length>128)throw fail('找不到自己的这条记录',404);
+    return mutate(recordFile(user,id),emptyRecords(book),data=>{
+      const record=data[type].find(row=>row.id===recordId);if(!record)throw fail('找不到自己的这条记录',404);
+      const saved=applyPersonalRecordEdit(record,input,book);guardRecordSize(data);return saved;
+    });
   }
   async function saveProgress(user,id,input){
     requireUser(user);const book=await getBook(user,id),passage=allPassages(book).find(p=>p.id===input.passageId);
@@ -350,5 +359,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(claim.pending)await mutate(bookFile(user,incoming.bookId),{},current=>{if(current._giftReceive?.fingerprint===fingerprint)delete current._giftReceive;});
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,records,addComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,validateRestore,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,records,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,validateRestore,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }

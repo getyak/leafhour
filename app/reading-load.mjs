@@ -1,4 +1,5 @@
 import {mergeHighlights} from './highlights.mjs';
+import {personalRecordRevision} from './personal-records.mjs';
 export function startReadingLoad({readBook,readRecords}) {
   let settled;
   const book=readBook();
@@ -12,7 +13,7 @@ export function mergeLoadedReadingRecords(fresh,current) {
   result.highlights=mergeHighlights(fresh.highlights||[],current?.highlights||[]);
   for(const field of ['comments','questions','readingSessions','readingMilestones']){
     const rows=new Map((fresh[field]||[]).map(row=>[row.id,row]));
-    for(const row of current?.[field]||[])if(!rows.has(row.id))rows.set(row.id,row);
+    for(const row of current?.[field]||[])if(!rows.has(row.id)||['comments','questions'].includes(field)&&personalRecordRevision(row)>personalRecordRevision(rows.get(row.id)))rows.set(row.id,row);
     result[field]=[...rows.values()];
   }
   return result;
