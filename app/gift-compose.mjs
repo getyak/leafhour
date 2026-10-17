@@ -1,6 +1,7 @@
 import {createGiftPreview} from './gift-preview.mjs';
 import {createGiftDrafts} from './gift-compose-state.mjs';
 import {publicGiftSender} from './gift-identity.mjs';
+import {readGiftQuote,giftQuoteLabel} from './gift-quote.mjs';
 import {trackActionFocus} from './action-focus.mjs';
 const node=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const button=(text,cls='')=>{const n=node('button',cls,text);n.type='button';return n;};
@@ -21,7 +22,13 @@ export function mountGiftComposer({api,dialog,body,getSession,getOwner,show,curr
     const address=node('label','gift-writing-address'),recipient=node('input');recipient.id='gift-recipient';recipient.maxLength=80;recipient.placeholder='收信人的称呼';recipient.setAttribute('aria-label','收信人的称呼');recipient.autocomplete='off';address.htmlFor=recipient.id;address.append(node('span','','致'),recipient);
     const wordsLabel=node('label','sr-only','想留给对方的话'),words=node('textarea','gift-writing-words');words.id='gift-message';words.maxLength=500;words.rows=5;words.placeholder='读到这本书的时候，想起了你。';wordsLabel.htmlFor=words.id;words.setAttribute('aria-describedby','gift-message-help');
     const sender=publicGiftSender(getSession().user),signature=node('div','gift-writing-signature');signature.append(node('span','',sender),node('small','',new Intl.DateTimeFormat('zh-CN',{year:'numeric',month:'long',day:'numeric'}).format(new Date())));
-    paper.append(bookSlip,address,wordsLabel,words,signature);
+    paper.append(bookSlip,address,wordsLabel,words);
+    // The optional quotation is prepared from this book's original only. The
+    // statement is visible before any result arrives; removing or retrying it
+    // never touches the handwritten message or recipient.
+    const quoteBox=node('div','gift-quote-block'),quoteIntro=node('p','gift-quote-intro','引文会从这本书的原文中选出，不会用到你的笔记和阅读记录。'),quoteStatus=node('p','gift-quote-status'),quoteFigure=node('figure','gift-quote-figure'),quoteText=node('blockquote','gift-quote-text'),quoteMeta=node('figcaption','gift-quote-meta'),quoteSource=node('span','gift-quote-source'),quoteLabel=node('small','gift-quote-label'),quoteActions=node('div','gift-quote-actions');
+    const quoteRemove=button('移除引文','text-link'),quoteRetry=button('重新获取引文','text-link'),quoteNote=node('p','gift-quote-note','重新获取只是恢复选句，不承诺换一句；已有引文可能保持不变。');
+    quoteStatus.setAttribute('aria-live','polite');quoteMeta.append(quoteSource,quoteLabel);quoteFigure.append(quoteText,quoteMeta);quoteActions.append(quoteRemove,quoteRetry);quoteBox.append(quoteIntro,quoteStatus,quoteFigure,quoteActions,quoteNote);paper.append(quoteBox,signature);
     const options=node('div','gift-writing-options'),included=node('label'),translations=node('input');translations.type='checkbox';translations.checked=true;included.append(translations,node('span','','附上寄信时已有的译文'));options.append(included,node('p','gift-writing-scope','整本原文会随信送出。持有链接的人可以打开和下载；你的笔记与阅读记录留在自己的书房。'));
     const help=node('p','gift-writing-help','称呼和赠言都可以留空。先看看收信的样子，喜欢了再封好。');help.id='gift-message-help';
     const previewButton=button('看看收信时的样子','primary'),writeActions=node('div','gift-writing-actions');writeActions.append(help,previewButton);writing.append(paper,options,writeActions);
@@ -30,13 +37,49 @@ export function mountGiftComposer({api,dialog,body,getSession,getOwner,show,curr
     const previewActions=node('div','gift-preview-actions'),seal=button('封好这封信，生成链接','primary');previewActions.append(node('p','','预览不会公开内容。封好后，你再把链接交给对方。'),seal);preview.append(previewBar,frame,previewActions);
     const history=node('details','gift-compose-history'),historyRows=node('div');history.append(node('summary','','已封好的信'),historyRows);history.hidden=true;
     body.append(intro,steps,writing,preview,result,history);
-    let stage='writing',ready=false,publishing=false;
+    let stage='writing',ready=false,publishing=false,quote=null,quotePhase='pending',quoteTicket=0,removedQuote=null;
     const values=()=>({recipient:recipient.value.trim(),message:words.value.trim(),includeTranslations:translations.checked});
+    const currentQuote=()=>quotePhase==='ready'&&quote?quote:null;
+    function renderQuote(){
+      const showing=currentQuote();quoteFigure.hidden=!showing;
+      if(showing){quoteText.textContent=showing.text;quoteSource.textContent=[showing.chapterTitle,showing.passageId].filter(Boolean).join(' · ');quoteLabel.textContent=giftQuoteLabel(showing.selection);}
+      else{quoteText.textContent='';quoteSource.textContent='';quoteLabel.textContent='';}
+      quoteIntro.hidden=!!showing;
+      quoteRemove.disabled=!showing;quoteRetry.disabled=quotePhase==='pending';
+      // Recovery wording: a retry restores a failed selection and may return
+      // the very same original excerpt. It is never a promise of new text.
+      quoteRetry.textContent=quotePhase==='removed'&&removedQuote?'恢复引文':'重新获取引文';
+      quoteStatus.textContent=showing?'':quotePhase==='pending'?'正在从这本书的原文中选出引文…':quotePhase==='none'?'这本书还没有可以选取的原文句子。':quotePhase==='removed'?'引文已移除，可以恢复或重新获取。':'引文暂时没有选出，可以重新获取。';
+    }
+    async function loadQuote(){
+      const attempt=++quoteTicket;quote=null;quotePhase='pending';renderQuote();
+      try{
+        const data=await api('/api/library/books/'+encodeURIComponent(book.bookId)+'/gift-quote',{});
+        // A slow answer for another dialog, account, book or revision must never
+        // replace this composer's state or feed a share.
+        if(!active()||attempt!==quoteTicket)return;
+        if(data?.bookId!==book.bookId||(book.contentVersion&&data?.contentVersion&&data.contentVersion!==book.contentVersion)){quotePhase='failed';renderQuote();return;}
+        if(data?.quote==null){quotePhase='none';renderQuote();return;}
+        const normalized=readGiftQuote(data.quote,{requireReceipt:true});
+        if(!normalized){quotePhase='failed';renderQuote();return;}
+        quote=normalized;quotePhase='ready';renderQuote();if(stage==='preview')sendPreview();
+      }catch{if(!active()||attempt!==quoteTicket)return;quotePhase='failed';renderQuote();}
+    }
     function remember(){if(active())state.remember(key,values());}
     const existing=state.draft(key);if(existing){recipient.value=existing.recipient;words.value=existing.message;translations.checked=existing.includeTranslations;}
     function setStage(next){stage=next;writing.hidden=next!=='writing';preview.hidden=next!=='preview';result.hidden=next!=='sealed';intro.hidden=next!=='writing';for(const [index,item]of [...steps.children].entries()){if(index===['writing','preview','sealed'].indexOf(next))item.setAttribute('aria-current','step');else item.removeAttribute('aria-current');}message('');}
-    function sendPreview(){if(active()&&ready)frame.contentWindow?.postMessage(createGiftPreview(book,getSession().user,values()),location.origin);}
+    function sendPreview(){if(active()&&ready)frame.contentWindow?.postMessage(createGiftPreview(book,getSession().user,{...values(),...(currentQuote()?{quote:currentQuote()}:{})}),location.origin);}
     for(const input of [recipient,words,translations])input.addEventListener('input',remember,{signal});
+    quoteRemove.addEventListener('click',()=>{if(!currentQuote())return;removedQuote=quote;quote=null;quotePhase='removed';renderQuote();if(stage==='preview')sendPreview();quoteRetry.focus({preventScroll:true});},{signal});
+    quoteRetry.addEventListener('click',()=>{
+      if(quotePhase==='pending')return;
+      // After an explicit removal the same prepared selection is restored with
+      // its receipt; any other state is an explicit recovery request that may
+      // ask the provider again and may return the same original excerpt.
+      if(quotePhase==='removed'&&removedQuote){quote=removedQuote;quotePhase='ready';renderQuote();if(stage==='preview')sendPreview();return;}
+      loadQuote();
+    },{signal});
+    loadQuote();
     frame.addEventListener('load',()=>{ready=true;sendPreview();},{signal});
     window.addEventListener('message',event=>{
       if(!active()||event.origin!==location.origin||event.source!==frame.contentWindow)return;
@@ -84,7 +127,7 @@ export function mountGiftComposer({api,dialog,body,getSession,getOwner,show,curr
     }
     seal.addEventListener('click',async()=>{
       if(publishing||!active()||stage!=='preview')return;const focus=trackActionFocus(document,seal);publishing=true;seal.disabled=back.disabled=true;preview.setAttribute('aria-busy','true');seal.textContent='正在封好这封信…';message('');const request=state.begin(key);let nextFocus=seal;
-      try{const gift=await api('/api/library/books/'+encodeURIComponent(book.bookId)+'/gifts',values());if(owner!==getOwner()||!state.commit(key,request,gift))return;if(!current(ticket))return;nextFocus=showSealed(gift,{focus:false});history.hidden=false;if(![...historyRows.children].some(row=>row.dataset.token===gift.token))historyRows.prepend(linkRow(gift));}
+      try{const gift=await api('/api/library/books/'+encodeURIComponent(book.bookId)+'/gifts',{...values(),quoteReceipt:currentQuote()?.receipt||null});if(owner!==getOwner()||!state.commit(key,request,gift))return;if(!current(ticket))return;nextFocus=showSealed(gift,{focus:false});history.hidden=false;if(![...historyRows.children].some(row=>row.dataset.token===gift.token))historyRows.prepend(linkRow(gift));}
       catch(error){if(active())message(error.message,true);}
       finally{publishing=false;if(active()){seal.disabled=back.disabled=false;preview.removeAttribute('aria-busy');seal.textContent='封好这封信，生成链接';focus.restore(nextFocus);}else focus.stop();}
     },{signal});

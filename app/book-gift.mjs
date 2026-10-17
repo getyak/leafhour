@@ -1,6 +1,8 @@
 import {paintBookCover} from './book-binding.mjs';
 import {trackActionFocus} from './action-focus.mjs';
 import {createGiftSpring} from './gift-ritual.mjs';
+import {createGiftWavesController,createGiftWaveScene} from './gift-waves.mjs';
+import {readGiftQuote,giftQuoteLabel} from './gift-quote.mjs';
 import {readGiftPreview} from './gift-preview.mjs';
 
 const MAX_PACKAGE_BYTES=20*1024*1024;
@@ -46,6 +48,12 @@ async function request(url,{body,owner}={}){
 }
 const scene=$('gift-scene'),envelope=$('gift-envelope-wrap'),letter=$('gift-letter-wrap'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const phase=(p,start,end)=>Math.max(0,Math.min(1,(p-start)/(end-start)));
+// The wave field is decorative and stationary behind the reading text. The
+// scene factory owns the real page wiring: one renderer at a time, rebuilt on
+// every presentation after the DOM shows the scene, restarted only while the
+// letter is open and visible and the page, scene and motion preferences allow.
+const waves=createGiftWavesController({canvas:$('gift-waves-canvas'),isReduced:()=>reduced.matches,isHidden:()=>document.hidden});
+const waveScene=createGiftWaveScene({waves,isSceneVisible:()=>!scene.hidden,onMode:mode=>{$('gift-waves').dataset.waves=mode;}});
 function paintRitual(p,target){
   progress=p;const envelopeHeight=envelope.querySelector('.gift-envelope').offsetHeight,letterHeight=$('gift-letter').offsetHeight,reveal=phase(p,.2,.7),visible=p>.6;
   scene.style.height=(envelopeHeight+(letterHeight-envelopeHeight)*phase(p,.16,1))+'px';
@@ -53,19 +61,26 @@ function paintRitual(p,target){
   scene.style.setProperty('--visible-height',String(letterHeight*reveal)+'px');scene.dataset.settled=String(p===target);
   letter.inert=!visible;letter.setAttribute('aria-hidden',String(!visible));letter.style.pointerEvents=visible?'':'none';
   envelope.inert=visible;envelope.setAttribute('aria-hidden',String(visible));
+  waveScene.letter(target&&visible);
   if(target&&visible&&!focusedLetter){focusedLetter=true;$('gift-title').focus({preventScroll:true});}
   if(!target&&!visible&&focusedLetter){focusedLetter=false;$('gift-open').focus({preventScroll:true});}
 }
 const ritual=createGiftSpring({onFrame:paintRitual,isReduced:()=>reduced.matches});
 function setOpen(open){openTarget=open;scene.dataset.open=String(open);$('gift-open').setAttribute('aria-expanded',String(open));ritual.setOpen(open);}
-const resize=()=>paintRitual(progress,openTarget?1:0);
+const resize=()=>{paintRitual(progress,openTarget?1:0);waveScene.relayout();};
 if(typeof ResizeObserver==='function'){const observer=new ResizeObserver(resize);observer.observe($('gift-letter'));observer.observe(envelope.querySelector('.gift-envelope'));}else window.addEventListener('resize',resize);
-reduced.addEventListener('change',()=>{if(reduced.matches)ritual.finish();});document.addEventListener('visibilitychange',()=>{if(document.hidden)ritual.finish();});window.addEventListener('pagehide',()=>ritual.finish());
+reduced.addEventListener('change',()=>{if(reduced.matches)ritual.finish();waveScene.reducedChanged();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)ritual.finish();waveScene.visibility(document.hidden);});
+window.addEventListener('pagehide',()=>{ritual.finish();waveScene.pageHide();});
+window.addEventListener('pageshow',()=>waveScene.pageShow());
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!scene.hidden){if(openTarget||progress>.01){event.preventDefault();setOpen(false);}else if(preview){event.preventDefault();parent.postMessage({kind:'marginalia-gift-preview-close'},location.origin);}}});
 function rememberReturn(){try{sessionStorage.setItem('marginalia-gift-return',token);}catch{}}
 function resumeReturn(){try{if(sessionStorage.getItem('marginalia-gift-return')===token){sessionStorage.removeItem('marginalia-gift-return');setOpen(true);ritual.finish();}}catch{}}
 function showError(error){
   $('gift-loading').hidden=true;$('gift-scene').hidden=true;$('gift-error').hidden=false;$('gift-arrival').hidden=true;
+  // The error scene is marked unavailable first, then its renderer detaches;
+  // visibility or pageshow can never restart waves behind a hidden scene.
+  waveScene.failed();
   $('gift-error-title').textContent=error.status===404?'这封赠书信已收回':'这封信暂时无法打开';
   $('gift-error-message').textContent=error.status===404?'链接可能不完整，也可能已被寄信人收回。可以请对方重新寄一封。':error.message;
   $('gift-retry').hidden=error.status===404;
@@ -90,7 +105,16 @@ function present(data){
   if(preview){$('gift-public-read').href='#gift-main';$('gift-public-read').setAttribute('aria-disabled','true');}
   else if(data.readUrl)$('gift-public-read').href='/read?book='+encodeURIComponent(data.bookId);
   $('gift-package-scope').textContent=data.includeTranslations?'阅读包收录全书提取文字与寄信时已有的译文，不含原文件、个人笔记和阅读记录。':'阅读包收录全书提取文字，不含译文、原文件、个人笔记和阅读记录。';
-  $('gift-loading').hidden=true;$('gift-error').hidden=true;$('gift-scene').hidden=false;$('gift-arrival').hidden=false;resize();if(!preview)resumeReturn();
+  const quote=readGiftQuote(data.quote);
+  $('gift-quote').hidden=!quote;
+  if(quote){$('gift-quote-text').textContent=quote.text;$('gift-quote-source').textContent=[quote.chapterTitle,quote.passageId].filter(Boolean).join(' · ');$('gift-quote-label').textContent=giftQuoteLabel(quote.selection);}
+  else{$('gift-quote-text').textContent='';$('gift-quote-source').textContent='';$('gift-quote-label').textContent='';}
+  $('gift-loading').hidden=true;$('gift-error').hidden=true;$('gift-scene').hidden=false;$('gift-arrival').hidden=false;
+  // The DOM shows the scene before the renderer is rebuilt: it measures the
+  // real visible surface instead of a hidden 1x1 placeholder.
+  resize();
+  waveScene.presented();
+  if(!preview)resumeReturn();
 }
 async function load(){
   const ticket=++generation,focus=trackActionFocus(document,$('gift-retry'));$('gift-loading').hidden=false;$('gift-error').hidden=true;
