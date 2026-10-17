@@ -1,0 +1,245 @@
+{
+  "kind": "leafhour-book",
+  "schemaVersion": 1,
+  "bookId": "fixture_book",
+  "editionId": "edition_design",
+  "revisionId": "revision_design_1",
+  "contentVersion": "7dfcd44ea5d413ce5e1a9868fe37d1deac3259c24bf5a9ec5347dd29afd03833",
+  "contentVersionScheme": "canonical-sha256-v1",
+  "title": "格式验收样本（人工构造）",
+  "authors": [
+    "Leafhour"
+  ],
+  "language": "zh",
+  "editionDescription": "仅供设计审阅的合成样例；没有对应真实 PDF，不是解析或内容校对成绩。",
+  "completeness": "full",
+  "sources": [
+    {
+      "id": "src_design",
+      "format": "pdf",
+      "filename": "synthetic-design-example.pdf",
+      "sha256": "fb6b760f4a0b59033ef00aae866a11467b38def134e7d6037c9dc820a3ce5ae7",
+      "url": null,
+      "revision": null,
+      "pageCount": 2,
+      "sourceProofreading": "unknown",
+      "rights": {
+        "status": "user_provided",
+        "license": null,
+        "evidenceRef": null,
+        "attribution": "Synthetic design fixture; no real uploaded book."
+      }
+    }
+  ],
+  "assets": [],
+  "provenance": [
+    {
+      "id": "run_design",
+      "provider": "synthetic_fixture",
+      "requestedModel": null,
+      "resolvedModel": null,
+      "versionEvidence": "unknown",
+      "adapterVersion": "design-fixture-1",
+      "configDigest": "e61506fc8e9d35d27ed6e3d90566e1f91ac264717221e8b069be7b0ea9b94245",
+      "createdAt": "2026-10-17T00:00:00Z"
+    }
+  ],
+  "coverage": [
+    {
+      "sourceId": "src_design",
+      "pdfPage": 1,
+      "resource": null,
+      "state": "complete",
+      "blockIds": [
+        "heading_design",
+        "paragraph_design"
+      ]
+    },
+    {
+      "sourceId": "src_design",
+      "pdfPage": 2,
+      "resource": null,
+      "state": "complete",
+      "blockIds": [
+        "paragraph_design",
+        "paragraph_emoji",
+        "footnote_design"
+      ]
+    }
+  ],
+  "chapters": [
+    {
+      "id": "chapter_design",
+      "title": "第一章",
+      "kind": "body",
+      "blocks": [
+        {
+          "id": "heading_design",
+          "type": "heading",
+          "text": "第一章",
+          "language": "zh",
+          "textDigest": "9134b008252f267ca0728ab30ffbe577efb573baa06e54cb3338e2d277860ce0",
+          "sourceAnchors": [
+            {
+              "sourceId": "src_design",
+              "pdfPage": 1,
+              "printedPage": null,
+              "bbox": [
+                0.1,
+                0.1,
+                0.6,
+                0.15
+              ],
+              "coordinateFrame": "pdf-visible-top-left-v1",
+              "locator": null,
+              "textRange": {
+                "start": 0,
+                "end": 3,
+                "unit": "utf16"
+              },
+              "rawText": "第一章"
+            }
+          ],
+          "footnoteRefs": [],
+          "review": "extracted_unreviewed",
+          "provenanceRefs": [
+            "run_design"
+          ],
+          "level": 1,
+          "attribution": "source"
+        },
+        {
+          "id": "paragraph_design",
+          "type": "paragraph",
+          "text": "树影落在书页上，读者继续读下一段。[1]",
+          "language": "zh",
+          "textDigest": "50dbe9727750c859ecc3ebb4a82b7e7893a5d6fe911e754315888ff0b36c6819",
+          "sourceAnchors": [
+            {
+              "sourceId": "src_design",
+              "pdfPage": 1,
+              "printedPage": null,
+              "bbox": [
+                0.1,
+                0.7,
+                0.9,
+                0.85
+              ],
+              "coordinateFrame": "pdf-visible-top-left-v1",
+              "locator": null,
+              "textRange": {
+                "start": 0,
+                "end": 9,
+                "unit": "utf16"
+              },
+              "rawText": "树影落在书页上，读"
+            },
+            {
+              "sourceId": "src_design",
+              "pdfPage": 2,
+              "printedPage": null,
+              "bbox": [
+                0.1,
+                0.1,
+                0.9,
+                0.3
+              ],
+              "coordinateFrame": "pdf-visible-top-left-v1",
+              "locator": null,
+              "textRange": {
+                "start": 9,
+                "end": 20,
+                "unit": "utf16"
+              },
+              "rawText": "者继续读下一段。[1]"
+            }
+          ],
+          "footnoteRefs": [
+            {
+              "targetId": "footnote_design",
+              "marker": "[1]",
+              "range": {
+                "start": 17,
+                "end": 20,
+                "unit": "utf16"
+              }
+            }
+          ],
+          "review": "extracted_unreviewed",
+          "provenanceRefs": [
+            "run_design"
+          ],
+          "attribution": "source"
+        },
+        {
+          "id": "paragraph_emoji",
+          "type": "paragraph",
+          "text": "风吹过🌿，书页仍然清楚。",
+          "language": "zh",
+          "textDigest": "f344ec30b1682dd75ea3fc2e58d574f9a33f7942434497f09673514d13770b43",
+          "sourceAnchors": [
+            {
+              "sourceId": "src_design",
+              "pdfPage": 2,
+              "printedPage": null,
+              "bbox": [
+                0.1,
+                0.4,
+                0.9,
+                0.5
+              ],
+              "coordinateFrame": "pdf-visible-top-left-v1",
+              "locator": null,
+              "textRange": {
+                "start": 0,
+                "end": 13,
+                "unit": "utf16"
+              },
+              "rawText": "风吹过🌿，书页仍然清楚。"
+            }
+          ],
+          "footnoteRefs": [],
+          "review": "extracted_unreviewed",
+          "provenanceRefs": [
+            "run_design"
+          ],
+          "attribution": "source"
+        },
+        {
+          "id": "footnote_design",
+          "type": "footnote",
+          "text": "[1] 这是一条人工构造的原书脚注，用于演示格式。",
+          "language": "zh",
+          "textDigest": "e157324cad05cacba626d7242948e94859c4ce159b0f9e08dc54e47b995203b2",
+          "sourceAnchors": [
+            {
+              "sourceId": "src_design",
+              "pdfPage": 2,
+              "printedPage": null,
+              "bbox": [
+                0.1,
+                0.85,
+                0.9,
+                0.95
+              ],
+              "coordinateFrame": "pdf-visible-top-left-v1",
+              "locator": null,
+              "textRange": {
+                "start": 0,
+                "end": 25,
+                "unit": "utf16"
+              },
+              "rawText": "[1] 这是一条人工构造的原书脚注，用于演示格式。"
+            }
+          ],
+          "footnoteRefs": [],
+          "review": "extracted_unreviewed",
+          "provenanceRefs": [
+            "run_design"
+          ],
+          "attribution": "author"
+        }
+      ]
+    }
+  ]
+}
