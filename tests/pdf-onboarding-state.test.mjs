@@ -22,3 +22,14 @@ test('only actual decisions appear as actions and incomplete content is never la
  const uncertain=pdfJobPresentation({...base,state:'needs_review'});assert.ok(uncertain.actions.includes('reconcile'));assert.ok(!uncertain.actions.includes('consent'));
  const done=pdfJobPresentation({...base,state:'done',completedPages:779,bookId:'b'});assert.deepEqual(done.actions,['open']);
 });
+test('a completed import remains discoverable after closing the tab until opened, scoped to its account',async()=>{
+ const {createPdfJobMemory,showPdfJob}=await import('../app/pdf-onboarding-state.mjs'),values=new Map(),storage={getItem:k=>values.get(k)??null,setItem:(k,v)=>values.set(k,v)},id='11111111-1111-4111-8111-111111111111',now=Date.now(),first=createPdfJobMemory({storage,now:()=>now});
+ first.watch('owner-a',id);const restored=createPdfJobMemory({storage,now:()=>now+1000}),old={id,state:'done',createdAt:new Date(now-2*3600000).toISOString()};
+ assert.equal(showPdfJob(old,{memory:restored,owner:'owner-a',now:now+1000}),true);assert.equal(showPdfJob(old,{memory:restored,owner:'owner-b',now:now+1000}),false);
+ restored.opened('owner-a',id);assert.equal(showPdfJob(old,{memory:restored,owner:'owner-a',now:now+1000}),false);
+ const recent={...old,createdAt:new Date(now-60000).toISOString()};assert.equal(showPdfJob(recent,{memory:restored,owner:'owner-b',now}),true);assert.equal(showPdfJob(recent,{memory:restored,owner:'owner-a',now}),false);
+});
+test('import notices expire and denied local storage cannot block reading',async()=>{
+ const {createPdfJobMemory}=await import('../app/pdf-onboarding-state.mjs'),values=new Map(),storage={getItem:k=>values.get(k)??null,setItem:(k,v)=>values.set(k,v)},id='11111111-1111-4111-8111-111111111111',a=createPdfJobMemory({storage,now:()=>1000000});a.watch('owner',id);const expired=createPdfJobMemory({storage,now:()=>1000000+8*86400000});assert.deepEqual(expired.pending('owner'),[]);
+ const denied=createPdfJobMemory({storage:{getItem(){throw Error('denied');},setItem(){throw Error('denied');}}});assert.doesNotThrow(()=>denied.watch('owner',id));assert.doesNotThrow(()=>denied.opened('owner',id));
+});

@@ -32,10 +32,10 @@
 
 **Interfaces:** `bookCapacity(book, reservedTranslationBytes=0)` enforces32 MiB; library exposes owner-checked `bookTransfer(user,id,offset,snapshot)` returning1 MiB base64 parts plus snapshot hash. A reader requests multipart support explicitly; ordinary API consumers retain their existing response contract.
 
-- [ ] Add failing regressions for >3.5 MB native imports/translations, pre-call headroom rejection, multipart integrity and owner isolation.
-- [ ] Run the new tests and confirm intended failures.
-- [ ] Implement the common policy, checked transfer and legacy-compatible browser assembly.
-- [ ] Run focused library/hosted/transfer tests; commit and record actual results.
+- [x] Add failing regressions for >3.5 MB native imports/translations, pre-call headroom rejection, multipart integrity and owner isolation.
+- [x] Run the new tests and confirm intended failures.
+- [x] Implement the common policy, checked transfer and legacy-compatible browser assembly.
+- [x] Run focused library/hosted/transfer tests; commit and record actual results.
 
 ### Task 2: Automatic page routing and source reuse
 
@@ -43,10 +43,10 @@
 
 **Interfaces:** native inspection returns complete page rows with readable/needs-recognition status. Auto jobs preserve native rows, `recognitionPages` and OCR `pageMap`; `consent(user,id)` authorizes only that source/job. `findSource(user,sha256)` returns a same-owner existing job. `preview(user,id)` returns at most3 completed pages/12,000 characters and explicit coverage.
 
-- [ ] Add failing cases for native-only imports without provider consent, mixed-page mapping, awaiting consent, duplicate complete import, stale upload URLs and no partial publication.
-- [ ] Run red tests, implement native inspection and routing while retaining legacy explicit-OCR behavior.
-- [ ] Add reliable embedded-outline/observed-heading grouping for new imports, keeping automatic-group labels when uncertain.
-- [ ] Run extraction/ingestion/upload tests; commit and record results.
+- [x] Add failing cases for native-only imports without provider consent, mixed-page mapping, awaiting consent, duplicate complete import, stale upload URLs and no partial publication.
+- [x] Run red tests, implement native inspection and routing while retaining legacy explicit-OCR behavior.
+- [x] Add reliable embedded-outline/observed-heading grouping for new imports, keeping automatic-group labels when uncertain.
+- [x] Run extraction/ingestion/upload tests; commit and record results.
 
 ### Task 3: Unattended durable runner
 
@@ -54,10 +54,10 @@
 
 **Interfaces:** `createIngestionRunner({store,ingestion,schedule,env,fetcher})` supplies enqueue, tick and close. Queue rows are server-only owner/job references; bounded slices call the existing CAS-fenced advance. A secret-authenticated internal wake processes only persisted queue entries. Cron wakes only when runnable work exists.
 
-- [ ] Test restart, concurrent slices, browser-independent progress, consent pauses, cancellation, failed/uncertain submission behavior and forbidden internal requests.
-- [ ] Run red tests; implement the bounded runner, internal wake and local continuation.
-- [ ] Prepare an idempotent Cron/pg_net migration and protected Vault setup using existing server secret derivation; no secret literal in SQL source or logs.
-- [ ] Run runner/route/ingestion tests; commit and record results.
+- [x] Test restart, concurrent slices, browser-independent progress, consent pauses, cancellation, failed/uncertain submission behavior and forbidden internal requests.
+- [x] Run red tests; implement the bounded runner, internal wake and local continuation.
+- [x] Prepare an idempotent Cron/pg_net migration and protected Vault setup using existing server secret derivation; no secret literal in SQL source or logs.
+- [x] Run runner/route/ingestion tests; commit and record results.
 
 ### Task 4: Minimal upload and bookshelf progress
 
@@ -65,9 +65,9 @@
 
 **Interfaces:** upload returns an existing job immediately or uploads missing chunks. Client status polling never submits provider work itself; contextual consent/resume are explicit mutations. Bookshelf progress survives refresh and offers a read-only preview without claiming whole-book completion.
 
-- [ ] Test source reuse without chunk upload, interrupted status recovery, consent routing, owner switch and read-only preview coverage.
-- [ ] Run red tests, implement the single entry and meaningful progress/recovery states; retain keyboard/focus support and quiet visual style.
-- [ ] Run UI-state/route tests and local browser checks; commit and record results.
+- [x] Test source reuse without chunk upload, interrupted status recovery, consent routing, owner switch and read-only preview coverage.
+- [x] Run red tests, implement the single entry and meaningful progress/recovery states; retain keyboard/focus support and quiet visual style.
+- [x] Run UI-state/route tests and local browser checks; commit and record results.
 
 ### Task 5: Full verification, review and real E2E
 
