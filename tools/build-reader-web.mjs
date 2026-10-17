@@ -12,7 +12,7 @@ export async function buildReaderWeb({root,outputDir,html}){
  if(!scripts.includes('/reader.js')||!scripts.includes('/reader-translation.js')||!styles.length)throw Error('Reader page entry points are incomplete');
  const allowed=new Set(await releaseFiles(root)),inputs=new Set(),files=[];
  const compile=async(contents,loader)=>{
-  const result=await build({stdin:{contents,resolveDir:path.join(root,'app'),sourcefile:'reader-entry.'+(loader==='css'?'css':'js'),loader},bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,charset:'utf8',legalComments:'none',external:loader==='css'?['/*']:[],write:false,metafile:true,logLevel:'silent'});
+  const result=await build({stdin:{contents,resolveDir:path.join(root,'app'),sourcefile:'reader-entry.'+(loader==='css'?'css':'js'),loader},bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,charset:'utf8',legalComments:'none',plugins:loader==='css'?[{name:'public-css-urls',setup(b){b.onResolve({filter:/^\//},args=>args.kind==='url-token'?{path:args.path,external:true}:undefined);}}]:[],write:false,metafile:true,logLevel:'silent'});
   for(const key of Object.keys(result.metafile.inputs)){if(key==='reader-entry.js'||key==='reader-entry.css')continue;const relative=path.relative(root,path.resolve(key)).replaceAll('\\','/');if(relative==='app/reader-entry.js'||relative==='app/reader-entry.css')continue;if(!relative.startsWith('app/')||!allowed.has(relative))throw Error('Non-public reader bundle input: '+relative);inputs.add(relative);}
   return result.outputFiles[0].contents;
  };
