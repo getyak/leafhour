@@ -2,6 +2,7 @@ import { cp, mkdir, rm, writeFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {portalDocument} from '../server/portal-document.mjs';
+import {homeDocument,homeLocales} from '../app/home-locale.mjs';
 import {releaseCommit} from './release-policy.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -13,9 +14,21 @@ await mkdir(outputDir, { recursive: true });
 
 await cp(appDir, outputDir, { recursive: true });
 await cp(path.join(appDir, 'index.html'), path.join(outputDir, 'read.html'));
-await cp(path.join(appDir, 'home.html'), path.join(outputDir, 'index.html'));
-await writeFile(path.join(outputDir,'en.html'),portalDocument(await readFile(path.join(appDir,'home.html'),'utf8'),'/en'));
-await writeFile(path.join(outputDir, 'library.html'),portalDocument(await readFile(path.join(appDir,'home.html'),'utf8'),'/library'));
+const home = await readFile(path.join(appDir, 'home.html'), 'utf8');
+// English is the default language at the root; every language also has its own URL.
+await writeFile(path.join(outputDir, 'index.html'), homeDocument(home, 'en'));
+await writeFile(path.join(outputDir, 'library.html'), portalDocument(home, '/library'));
+for (const locale of homeLocales) {
+  const directory = locale.route === '/' ? 'en' : locale.route.slice(1);
+  const rendered = homeDocument(home, locale.code);
+  await mkdir(path.join(outputDir, directory), { recursive: true });
+  await writeFile(path.join(outputDir, directory, 'index.html'), rendered);
+  // Static hosts may resolve either the flat file or the directory index.
+  await writeFile(path.join(outputDir, directory + '.html'), rendered);
+}
+// The default-language guides also serve the unprefixed URLs.
+await cp(path.join(appDir, 'en', 'mcp.html'), path.join(outputDir, 'mcp.html'));
+await cp(path.join(appDir, 'en', 'privacy.html'), path.join(outputDir, 'privacy.html'));
 
 const evalsPath = path.join(outputDir, 'evals.html');
 await mkdir(path.join(outputDir, 'evals'), { recursive: true });
@@ -23,7 +36,7 @@ await cp(evalsPath, path.join(outputDir, 'evals', 'index.html'));
 
 await writeFile(
   path.join(outputDir, '404.html'),
-  '<!doctype html><meta charset="utf-8"><title>Leafhour</title><p>这个页面不存在。</p>',
+  '<!doctype html><meta charset="utf-8"><title>Leafhour</title><p>This page does not exist.</p>',
 );
 
 const sourceCommit=await releaseCommit(root,{sourceCommit:process.env.VERCEL_GIT_COMMIT_SHA||process.env.GITHUB_SHA});

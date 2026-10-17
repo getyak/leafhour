@@ -56,3 +56,8 @@
   .discovery-page .public-brand img{filter:brightness(0) invert(1)}
   .discovery-page .public-article pre{background:#26392c}
 }
+
+/* Public language switcher: each endonym keeps its own script in every locale. */
+.home-languages{display:inline-flex;flex-wrap:wrap;align-items:center;gap:2px 0;font-size:13px}
+.home-languages a+a:before{content:"·";margin:0 .55em;opacity:.5}
+.home-languages a[aria-current]{text-decoration:underline;text-underline-offset:.25em}
