@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">
+  <meta name="description" content="Leafhour 如何使用登入身分、保存閱讀資料，以及如何匯出、撤回授權和聯絡刪除。">
+  <title>登入與個人資料 · Leafhour</title><link rel="canonical" href="https://leafhour.com/zh-hant/privacy">
+  <link rel="alternate" hreflang="en" href="https://leafhour.com/privacy">
+  <link rel="alternate" hreflang="zh-Hans" href="https://leafhour.com/zh-hans/privacy">
+  <link rel="alternate" hreflang="zh-Hant" href="https://leafhour.com/zh-hant/privacy">
+  <link rel="alternate" hreflang="ja" href="https://leafhour.com/ja/privacy">
+  <link rel="alternate" hreflang="x-default" href="https://leafhour.com/privacy">
+  <meta property="og:site_name" content="Leafhour"><meta property="og:title" content="登入與個人資料 · Leafhour"><meta property="og:description" content="Leafhour 如何保存你的書和閱讀記錄，以及如何匯出、撤回授權和聯絡刪除。"><meta property="og:url" content="https://leafhour.com/zh-hant/privacy"><meta property="og:type" content="website"><meta property="og:image" content="https://leafhour.com/brand-assets/leafhour-social.png"><link rel="stylesheet" href="/portal.css"><link rel="icon" href="/brand-assets/leafhour-mark.svg" type="image/svg+xml"><script type="module" src="/site-appearance.mjs"></script>
+<link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script><link rel="stylesheet" href="/leafhour-brand.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://leafhour.com/zh-hant/privacy#page","url":"https://leafhour.com/zh-hant/privacy","name":"登入與個人資料","inLanguage":"zh-Hant","isPartOf":{"@id":"https://leafhour.com/#website"},"about":{"@id":"https://leafhour.com/#application"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Leafhour","item":"https://leafhour.com/zh-hant"},{"@type":"ListItem","position":2,"name":"Leafhour 登入與個人資料","item":"https://leafhour.com/zh-hant/privacy"}]}]}</script>
+</head>
+<body class="privacy-page">
+<a class="skip" href="#main">跳到主要內容</a>
+<header class="site-header"><a class="brand" href="/zh-hant" aria-label="Leafhour 首頁"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="brand-name" lang="en">Leafhour</span></a><nav aria-label="主導覽"><a href="/library">回到書房 ↗</a><a href="https://github.com/getyak/leafhour">GitHub</a><div class="home-languages" role="group" aria-label="語言"><a href="/privacy" lang="en" hreflang="en">English</a><a href="/zh-hans/privacy" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a aria-current="true" href="/zh-hant/privacy" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/privacy" lang="ja" hreflang="ja">日本語</a></div></nav></header>
+<main id="main" class="privacy-document">
+  <h1>登入與個人資料</h1><p class="privacy-date">適用於 leafhour.com · 更新於 2026 年 10 月 16 日</p>
+  <p>Leafhour 用登入身分確認書房的歸屬，保存你選擇上傳的書和閱讀記錄。公版樣書可以匿名試讀。本文說明這個線上實例如何處理資料；自行部署的實例由它的營運者負責。</p>
+  <h2>登入時會用到什麼</h2>
+  <p>郵箱登入使用你填寫的郵箱地址，由 Supabase Auth 校驗密碼或驗證碼，Resend 投遞驗證郵件。註冊與找回密碼先驗證郵箱，再設定密碼。選擇 Google 或 Apple 登入時，由相應供應商驗證身分，Supabase 接收帳戶識別碼、郵箱及供應商提供的基本資料，例如姓名和頭像。Leafhour 用這些資訊識別帳戶和維持登入，不申請郵箱內文、聯絡人、雲碟或行事曆權限。</p>
+  <p>Apple 提供隱藏郵箱時，按這個身分保存帳戶。登入頁顯示某種方式可用後，才會發起對應的官方授權。你可以在 Google 或 Apple 的帳號設定中撤回對 Leafhour 的授權。</p>
+  <p>供應商存取憑證與重新整理憑證保存在伺服器。瀏覽器使用僅供本站工作階段的 Cookie；一般登入工作階段最長七天，第三方登入的臨時驗證 Cookie 最長十分鐘。登出會撤銷本站工作階段；登出不會刪除書房資料。</p>
+  <h2>你的書和閱讀記錄</h2>
+  <p>選擇上傳後，檔案與提取出的原文會保存到你的私人書房。評論、問題、閱讀位置、閱讀時數、明確標記的讀完狀態和已保存的譯文按帳戶管理。線上儲存由 Supabase 提供，網站由 Vercel 託管。匿名公版書與私人上傳分別處理，私人檔案和記錄不會因上傳自動公開。</p>
+  <p>開始閱讀後，頁面只記錄可見且處於前台的停留，暫停於背景，瀏覽器休眠的長間隔也不累計；閱讀時數不代表理解程度。日曆按你的所在時區呈現，跨午夜的時間分別記錄。瀏覽器會快取閱讀設定和部分閱讀狀態，方便繼續閱讀；離線時暫存本帳戶的待同步閱讀時段、章節標記和待確認的提交，恢復連線後可以重試。未主動保存的文字作為本機草稿保留。選取文字、切換譯文和調整排版在本地完成；明確請求 AI 翻譯或解釋時，才會把對應功能所需的段落上下文傳送到設定的模型服務。目前按段翻譯使用 DeepSeek，只傳送所選段落及理解所需的鄰段。閱讀對話可按需查閱目前帳號的書房、公版書及網路資料；這些工具唯讀，不讀取私人筆記，不寫入閱讀進度，也不會自動購買或把推薦書加入書房。登入資料不作為翻譯上下文。</p>
+  <p>如果你給自己的 Agent 授權，它只能按授權讀取指定書籍與資料類型；寫入權限需要單獨選擇。舊版用戶端建立的授權仍可使用；需要撤回時，可透過原有用戶端或聯絡下方郵箱處理。撤回會停止後續存取，不能自動清除已經被對方複製的資料。</p>
+  <h2>保存、匯出與刪除</h2>
+  <p>書房資料會繼續保存，供你恢復閱讀和匯出。閱讀對話可以從對話視窗匯出，AI 回答與使用者原話分別標記。完整書房匯出與備份還原暫時沒有網頁入口；需要時可透過保留的相容用戶端或聯絡下方郵箱處理，無需訂閱。未同步的閱讀記錄和未保存的草稿仍留在原瀏覽器，請先完成同步或保存。需要刪除帳戶或私人資料時，請聯絡下方郵箱；我們會先核對帳戶歸屬，再處理相關資料。託管服務為運行、安全和故障排查產生的日誌或備份，由相應服務按其保留機制處理。</p>
+  <p>登入資料用於身分驗證、工作階段、安全和你請求的閱讀功能，不用於廣告投放，也不會出售。Supabase、Resend、Vercel、身分供應商和你主動呼叫的模型服務，會為提供對應功能處理必要的資料，並適用各自的隱私政策。</p>
+  <h2>聯絡</h2><address>這個實例由 cubxxw 營運。關於登入、資料匯出、刪除或本說明，請聯絡 <a href="mailto:support@leafhour.com">support@leafhour.com</a>。</address>
+  <p><a href="/library">回到書房 →</a></p>
+</main>
+<footer class="site-footer"><a class="brand" href="/zh-hant"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="brand-name" lang="en">Leafhour</span></a><p>讀得慢一點，留下自己的思考。</p><a href="/library">我的書房 ↗</a><a href="https://github.com/getyak/leafhour">GitHub</a><div class="home-languages" role="group" aria-label="語言"><a href="/privacy" lang="en" hreflang="en">English</a><a href="/zh-hans/privacy" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a aria-current="true" href="/zh-hant/privacy" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/privacy" lang="ja" hreflang="ja">日本語</a></div></footer>
+</body>
+</html>

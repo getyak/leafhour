@@ -33,7 +33,10 @@ export async function exportRelease(root,destination,{commit}={}){
     if(!sourceStat.isFile())throw Error('Release entry is not a file: '+file);
     let bytes=await readFile(current);
     if(secret.test(bytes.toString('utf8')))throw Error('Credential pattern in release file: '+file);
-    if(file==='README.md')bytes=Buffer.from(bytes.toString('utf8').replace(/^项目主页：.*$/m,'项目主页：[GitHub](https://github.com/getyak/leafhour)'));
+    if(/^README(?:\.[a-z]{2}(?:-CN)?)?\.md$/i.test(file)){
+      const projectHome={'README.md':'Project home: [GitHub](https://github.com/getyak/leafhour)','README.zh-CN.md':'项目主页：[GitHub](https://github.com/getyak/leafhour)','README.zh-Hant.md':'專案主頁：[GitHub](https://github.com/getyak/leafhour)','README.ja.md':'プロジェクト：[GitHub](https://github.com/getyak/leafhour)'}[file];
+      if(projectHome)bytes=Buffer.from(bytes.toString('utf8').replace(/^(?:项目主页|專案主頁|Project home|プロジェクト)[：:].*$/m,projectHome));
+    }
     const target=path.join(destination,file);await mkdir(path.dirname(target),{recursive:true});
     await writeFile(target,bytes);
     await chmod(target,sourceStat.mode&0o111?0o755:0o644);

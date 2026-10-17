@@ -22,15 +22,17 @@ for(const route of ['/','/library','/gift/'+giftProbe,'/gift-preview','/book-gif
   if(/\.(?:mjs|js|css|svg)$/.test(route)&&response.headers.get('content-type')?.includes('text/html'))throw Error('Asset returned an HTML page: '+route);
 }
 // Verify the actual hosted static routes as well as the local HTTP contracts.
-for(const route of ['/','/en','/en/mcp']){
+// English is the default language; /en and /en/mcp stay as aliases of the defaults.
+const publicPages=[['/','https://leafhour.com/'],['/en','https://leafhour.com/'],['/zh-hans','https://leafhour.com/zh-hans'],['/zh-hant','https://leafhour.com/zh-hant'],['/ja','https://leafhour.com/ja'],['/mcp','https://leafhour.com/mcp'],['/en/mcp','https://leafhour.com/mcp'],['/zh-hans/mcp','https://leafhour.com/zh-hans/mcp'],['/zh-hant/mcp','https://leafhour.com/zh-hant/mcp'],['/ja/mcp','https://leafhour.com/ja/mcp'],['/privacy','https://leafhour.com/privacy'],['/zh-hans/privacy','https://leafhour.com/zh-hans/privacy'],['/zh-hant/privacy','https://leafhour.com/zh-hant/privacy'],['/ja/privacy','https://leafhour.com/ja/privacy']];
+for(const [route,canonical] of publicPages){
   const response=await get(route),html=await response.text();
   if(response.headers.get('x-robots-tag')?.includes('noindex')||/<meta name="robots" content="noindex/.test(html))throw Error('Public discovery page is excluded: '+route);
-  if(!html.includes('<link rel="canonical" href="https://leafhour.com'+route+'">')||!html.includes('application/ld+json'))throw Error('Missing discovery metadata: '+route);
+  if(!html.includes('<link rel="canonical" href="'+canonical+'">')||!html.includes('application/ld+json'))throw Error('Missing discovery metadata: '+route);
   for(const [,json]of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g))JSON.parse(json);
 }
 const robots=await get('/robots.txt');if(!robots.headers.get('content-type')?.startsWith('text/plain')||!(await robots.text()).includes('Sitemap: https://leafhour.com/sitemap.xml'))throw Error('Missing public crawler discovery');
 const sitemap=await get('/sitemap.xml'),xml=await sitemap.text();
-if(!sitemap.headers.get('content-type')?.includes('xml')||!xml.includes('<loc>https://leafhour.com/en/mcp</loc>')||/<loc>[^<]*(?:\/library|\/read|\/api\/|\/gift|\?)/.test(xml))throw Error('Invalid public sitemap');
+if(!sitemap.headers.get('content-type')?.includes('xml')||!xml.includes('<loc>https://leafhour.com/ja/mcp</loc>')||!xml.includes('<loc>https://leafhour.com/zh-hant/privacy</loc>')||/<loc>[^<]*(?:\/library|\/read|\/api\/|\/gift|\?)/.test(xml))throw Error('Invalid public sitemap');
 for(const route of ['/library?login=1','/read?book=gutenberg-alice','/gift-preview','/gift/'+giftProbe,'/evals','/api/auth/session']){
   const response=await get(route);if(!response.headers.get('x-robots-tag')?.includes('noindex'))throw Error('Missing private search exclusion: '+route);
 }

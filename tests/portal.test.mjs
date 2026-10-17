@@ -77,7 +77,9 @@ test('portal serves home, imports private text after explicit local entry, guard
   const base='http://127.0.0.1:'+server.address().port;
   const post=(url,data,cookie='',origin=base)=>fetch(base+url,{method:'POST',headers:{'Content-Type':'application/json',Origin:origin,Cookie:cookie},body:JSON.stringify(data)});
   assert.match(await (await fetch(base+'/')).text(),/home-hero/);
-  const privacy=await fetch(base+'/privacy');assert.equal(privacy.status,200);assert.match(privacy.headers.get('content-type'),/text\/html/);assert.match(await privacy.text(),/登录与个人数据/);
+  const privacy=await fetch(base+'/privacy');assert.equal(privacy.status,200);assert.match(privacy.headers.get('content-type'),/text\/html/);assert.match(await privacy.text(),/Sign-in and personal data/);
+  assert.match(await (await fetch(base+'/zh-hans/privacy')).text(),/登录与个人数据/);
+  assert.match(await (await fetch(base+'/ja/privacy')).text(),/ログインと個人データ/);
   assert.match(await (await fetch(base+'/')).text(),/href="\/privacy"/);
   const backupSchema=await fetch(base+'/reading-session-record.mjs');assert.equal(backupSchema.status,200);assert.match(backupSchema.headers.get('content-type'),/javascript/);
   assert.equal((await post('/api/library/upload',{filename:'test.txt',base64:Buffer.from('Private text.').toString('base64')})).status,401);

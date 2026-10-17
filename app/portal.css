@@ -54,4 +54,8 @@ dialog:not(.auth-dialog){background:var(--paper);color:var(--ink);border-color:v
 
 .upload-dialog.pdf-saved #drop-zone,.upload-dialog.pdf-saved #upload-filename,.upload-dialog.pdf-saved #upload-explanation,.upload-dialog.pdf-saved #confirm-upload,.upload-dialog.pdf-saved>p:first-of-type{display:none}.pdf-job-actions .primary{margin-top:0}
 
+/* Public language switcher: each endonym keeps its own script in every locale. */
+.home-languages{display:inline-flex;flex-wrap:wrap;align-items:center}
+.home-languages a+a:before{content:"·";margin:0 .55em;opacity:.5}
+.home-languages a[aria-current]{text-decoration:underline;text-underline-offset:.25em}
 .reading-time-breakdown{font-size:12px;line-height:1.85;color:var(--muted);overflow-wrap:anywhere}.reading-time-intervals{font-size:12px;line-height:1.85;color:var(--muted);margin:8px 0 20px;overflow-wrap:anywhere}.reading-time-intervals summary{min-height:44px;cursor:pointer;align-content:center}.reading-time-intervals ol{padding-left:18px}.reading-time-intervals li{margin-bottom:8px}

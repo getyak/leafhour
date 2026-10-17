@@ -8,14 +8,20 @@ Leafhour is an open-source AI reading room, with original text, translations and
 
 | Public page | Job |
 | --- | --- |
-| `/` | Chinese introduction, reading demonstration and visible questions about formats, translations, records and current limitations. |
-| `/en` | English homepage generated from the same template as `/`, including the same imagery, sections, live public shelf, appearance/sunlight controls and sign-in dialog. |
-| `/en/mcp` | Technical guide to the existing adapter, scopes, current setup path, revocation and hosted audio limitations. |
-| `/privacy` | Public account and data-handling notice, currently in Chinese. |
+| `/` | Default English introduction, reading demonstration and visible questions about formats, translations, records, languages and current limitations. |
+| `/zh-hans` | Simplified Chinese homepage generated from the same template as `/`. |
+| `/zh-hant` | Traditional Chinese homepage generated from the same template as `/`. |
+| `/ja` | Japanese homepage generated from the same template as `/`. |
+| `/mcp` | English technical guide to the existing adapter, scopes, current setup path, revocation and hosted audio limitations. |
+| `/zh-hans/mcp`, `/zh-hant/mcp`, `/ja/mcp` | The same adapter guide in each additional language. |
+| `/privacy` | English public account and data-handling notice. |
+| `/zh-hans/privacy`, `/zh-hant/privacy`, `/ja/privacy` | The same notice in each additional language. |
 
-The English homepage is generated from `app/home.html` through `portalDocument`, using authored presentation strings in `app/home-locale.mjs`. Both the local route and hosted build use this renderer; there is no separate English homepage layout to drift. The page uses the same styles, modules, section IDs, public shelf and sign-in controller as the Chinese homepage. Controls and public catalog labels respect the page language. The original Chinese translation example remains labeled Chinese content. These presentation changes do not translate stored books or user records, change authentication policy, or claim that the library/reader application is fully localized.
+`/en` and `/en/mcp` remain aliases of the default English pages and carry canonical URLs pointing at `/` and `/mcp`.
 
-Language links are available in navigation, the hero footnote and footer. In-page links stay on the current language's page. The Chinese and English homepages declare reciprocal `hreflang` references and separate canonical URLs. The MCP guide retains its own documentation layout, canonical URL and breadcrumbs.
+Every homepage is generated from `app/home.html` through `portalDocument`/`homeDocument`, using authored presentation strings in `app/home-locale.mjs` (English, Simplified Chinese, Traditional Chinese and Japanese in one row per source string). Both local routes and the hosted build use this renderer; there is no separate per-language homepage layout to drift. The pages use the same styles, modules, section IDs, public shelf and sign-in controller. Controls and public catalog labels respect the page language. The original Chinese translation example remains labeled Chinese content. These presentation changes do not translate stored books or user records, change authentication policy, or claim that the library/reader application is fully localized.
+
+Language links are available in navigation, the hero footnote and footer. In-page links stay on the current language's page. Every public page declares reciprocal `hreflang` references for all four languages plus `x-default` and its own canonical URL. The MCP guide keeps its own documentation layout and breadcrumbs in each language.
 
 Every discovery page is authored HTML available before JavaScript. People and crawlers receive the same facts. The new public pages reuse Leafhour's existing mark, illustration, paper and forest palette, with no third-party font, tracking script or additional model call.
 
@@ -25,7 +31,7 @@ Every discovery page is authored HTML available before JavaScript. People and cr
 
 Robots rules are crawler guidance, not access control. Existing service authentication, account isolation and grant scopes continue to protect personal data. Private reader/library/gift shells, evaluation pages and API responses additionally return `X-Robots-Tag: noindex, nofollow, noarchive`. HTML shells retain their robots metadata. The library renderer removes public JSON-LD and language-alternate metadata rather than inheriting the homepage's discovery identity. Both the local server and Vercel deployment apply the exclusion headers.
 
-The sitemap contains only the four curated public URLs above. It never enumerates uploaded books, personal accounts, notes, reading query strings, gift tokens or signed resources. It omits invented modification dates and low-value priority/change-frequency signals. Add public pages deliberately, with a useful visible purpose, canonical metadata and actual internal links.
+The sitemap contains only the twelve curated public URLs above (four homepages, four MCP guides, four privacy notices). It never enumerates uploaded books, personal accounts, notes, reading query strings, gift tokens or signed resources. It omits invented modification dates and low-value priority/change-frequency signals. Add public pages deliberately, with a useful visible purpose, canonical metadata and actual internal links.
 
 The Organization, WebSite, SoftwareApplication, WebPage, TechArticle and BreadcrumbList descriptions identify the real project and its pages. They contain no fabricated ratings, reviews, prices, awards or usage counts. SoftwareApplication markup without the additional required commercial/review fields is not a claim of eligibility for Google's software-app rich result. Visible questions are useful content; this release does not promise FAQ rich results.
 

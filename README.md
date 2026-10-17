@@ -1,47 +1,48 @@
 # Leafhour
 
+**English** | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-Hant.md) | [日本語](README.ja.md)
+
 **Stay with a book.** Your personal reading room, with AI by your side.
 
-Leafhour 帮助人一点一点读完一本想读的书：今天从上次停下的原句继续，读后留下一点自己的理解，明天再回来。正文保持安静；原文与双译、个人笔记和深读提示在需要时出现。
+Leafhour helps people finish one book they want to read, a little at a time: today continue from the source sentence where you stopped, leave a short note of your own understanding afterward, and come back tomorrow. The reading surface stays quiet; source text with two translations, personal notes and close-reading prompts appear only when you ask for them.
 
-项目在唯一公开仓库 [getyak/leafhour](https://github.com/getyak/leafhour) 开发，代码、设计文档、执行计划与验收记录均采用 AGPL-3.0 开源。默认公版英文原文及来源许可在 `catalog/`，私人书籍、个人译文、笔记、阅读记录和服务端密钥不随源码发布。
+Development happens in the single public repository [getyak/leafhour](https://github.com/getyak/leafhour). Code, design documents, execution plans and acceptance records are open source under AGPL-3.0. Default public-domain English originals and their source licenses live in `catalog/`; private books, personal translations, notes, reading records and server-side secrets are never published with the source.
 
-阅读页的松鼠在登录后默认陪读，手动关闭过的书会保留选择：首次先安静阅读约 90 秒，之后根据当前和最近前台浏览过的片段，至少间隔 5 分钟尝试留一句话；没有贴切内容时保持沉默。每次阅读最多三次主动生成。气泡可忽略、收起或点开现有阅读对话接着聊，个人草稿不会被覆盖；在阅读对话里可随时关闭。松鼠支持拖动和键盘 Alt + 方向键移动，位置保存在当前浏览器，气泡随角色移动；不再常驻“陪读中”标签。选字、笔记、聊天及后台期间不弹消息，不读取私人笔记，不向站外推送。
+The reading page’s squirrel keeps you company after you sign in and remembers books where you turned it off: it first reads quietly for about 90 seconds, then at least every 5 minutes may leave one thought based on the passages currently and recently in the foreground, and stays silent when nothing fits. It speaks at most three times per reading session. Bubbles can be ignored, collapsed, or opened in the existing reading conversation; your drafts are never overwritten, and the companion can be turned off at any time in the conversation. The squirrel can be dragged or moved with Alt + arrow keys, its position is saved in the current browser, and bubbles travel with it; the persistent “accompanying” badge is gone. No messages appear while you select text, write notes, chat, or while the page is in the background; private notes are never read and nothing is pushed outside the site.
 
-## 现在能做什么
+## What works today
 
-本机新增完整入口：官网 → 公版书库 → 本机书房或邮箱验证码 → 上传 PDF / TXT / Markdown → 按段双译 → 个人记录与阅读对话。默认提供《爱丽丝梦游仙境》《沉思录》和《瓦尔登湖》的完整英文原文，来源及许可保存在 `catalog/`；译文按需生成，不预先声称已译完。默认库不包含私人样书。
+A complete path is available locally: website → public catalog → local reading room or email code → upload PDF / TXT / Markdown → two translations per passage → personal records and reading conversation. The default catalog ships the complete English originals of *Alice’s Adventures in Wonderland*, *Meditations*, and *Walden*, with sources and licenses kept in `catalog/`; translations are generated on request and are never claimed to be complete up front. The default catalog contains no private sample books.
 
-新版书房同时支持本机服务与 Vercel + Supabase。云端使用独立的私人数据表、版本检查和私人原文件存储；默认公版书允许匿名试读。托管版默认使用邮箱与密码登录，验证码作为备用入口；新建书房和找回密码先验证邮箱，再设置密码。同时支持 Google 与 Apple 登录，自托管时按实际配置显示可用方式。
+The new reading room supports both the local service and Vercel + Supabase. The cloud uses separate private data tables, content-version checks and private original-file storage; the default public books can be read anonymously. The hosted version signs in with email and password by default, with an email code as a fallback; new rooms and password recovery verify the email first and then set a password. Google and Apple sign-in are also supported, and self-hosters see only the methods they configured.
 
-书房从上次停下的段落继续，其余书籍留在下层书架。搜索、上传、阅读日历和阅读对话统一放进可收起的左侧栏；左下角显示头像和称呼，点击可编辑个人资料；退出和页面外观放在“设置”。手机使用抽屉导航。原“数据与 Agent”操作面板已移除，原有数据与领域接口继续保留。阅读记录、计时口径、草稿与备份的具体行为见 [阅读与数据保留](docs/reading-journey.md)。
+Reading continues from the passage where you stopped; the other books stay on the lower shelf. Search, upload, the reading calendar and the reading conversation share one collapsible left sidebar; your avatar and name sit at the bottom left and open the profile editor; sign-out and page appearance live in “Settings”. Phones use a drawer navigation. The old “Data & Agent” panel is gone, while its data and domain APIs remain. Reading records, timing rules, drafts and backups are described in [Reading and data retention](docs/reading-journey.md).
 
-书架使用雾绿色纸纹、细搁板线和布面装帧，支持夜间外观与系统减少动态效果。同一本书的封面在书架、搜索与继续阅读中保持一致，文字来自真实书籍信息；纸纹素材的来源和提示词见 [品牌素材说明](app/brand-assets/README.md)。
+The bookshelf uses mist-green paper texture, thin shelf lines and cloth bindings, with a night appearance and support for the system reduced-motion setting. The same book keeps one cover across shelf, search and continue-reading, and its text comes from real book metadata; the paper texture’s provenance and prompt are documented in [Brand assets](app/brand-assets/README.md).
 
-悬停或聚焦书籍可打开更多操作，触屏直接显示按钮。封面与手柄可拖动排序，也可在菜单中前后移动或用手柄的左右方向键；登录后的顺序按账户保存。移到回收站会保留原文、译文和阅读记录，可恢复到书架，不提供永久删除。
+Hovering or focusing a book reveals more actions; touch devices show buttons directly. Covers and handles can be dragged to reorder, and the menu can move a book forward or backward while the handle’s arrow keys do the same; signed-in order is saved per account. Moving a book to the trash keeps its source text, translations and reading records and can be undone; there is no permanent delete.
 
-“添加读书日程”可设置本地时间、时长、重复周期和提醒，下载 `.ics` 文件；需自行打开并加入系统日历，提醒才会生效。应用不会直接创建系统日历事件。
+“Add a reading schedule” sets a local time, duration, repeat cycle and reminder, then downloads an `.ics` file; reminders work only after you open it and add it to your system calendar. The app never creates system calendar events directly.
 
-“送出这本书”可写收信人称呼和赠言，生成可拆开的纸质感赠书信。链接包含书籍介绍，收信人可下载完整阅读包，登录后加入自己的书架。原文与勾选的已有译文随信送出，个人笔记、问题、阅读位置和计时不包含在内；译文保留草稿等原有状态。收回链接会停止后续访问，已经下载的包和已领取的书不会被远程删除。托管领取要求原文与译文合计不超过 3.5 MB，较大的包可下载到本机接收。
+“Send this book” lets you write a recipient name and a note and produces a paper-feeling gift letter that can be opened. The link carries the book description; the recipient can download the full reading pack and add it to their own shelf after signing in. The source text and the translations you ticked travel with the letter, while personal notes, questions, reading position and timing do not; translations keep their draft status. Revoking the link stops future access; already downloaded packs and claimed books are not deleted remotely. Hosted claiming requires the source and translations to total no more than 3.5 MB; larger packs can be downloaded locally instead.
 
-赠书按“写赠言 → 看拆信 → 封好分享”进行。预览复用真实收信页面，仅在浏览器内传递可见介绍，不创建链接。明确封好后再自行复制或调用系统分享；同一账户关闭窗口再打开会保留本次草稿或已封好的链接。收信人可先拆信再登录，登录返回后保持信笺展开。信封与卡片采用原创不规则纸边、邮戳与柔和纸纹；动画可折回，并尊重系统减少动态效果设置。
+Gifts move through “write the note → watch it open → seal and share”. The preview reuses the real recipient page and passes only the visible description in the browser, creating no link until you explicitly seal it; then you copy the link or use the system share sheet yourself. Closing and reopening the window in the same account keeps this draft or sealed link. Recipients can open the letter before signing in and stay on the opened letter after returning. The envelope and card use original irregular paper edges, a postmark and soft paper texture; the animation folds back and respects reduced motion.
 
+- Chinese, English and bilingual reading modes, with literal and interpretive translations saved separately; a missing translation shows the source once and labels the missing version
+- During anonymous trial reading, requesting a translation returns the same source passage and generates only after an explicit second click; when the service is unconfigured the entry is honestly disabled
+- Passage source text, annotations, thoughts and questions align on stable IDs
+- X-ray argument transparency, stance-flipping pages, echo review and restrained chapter interactions
+- Selecting text saves a pale-yellow private highlight; click to remove it or write a thought, and return to the sentence from “My records”
+- Selecting a sentence generates a configurable monolingual or bilingual share image
+- Font, size, line height, paragraph spacing, tracking, first-line indent and paper themes
+- Reading calendar, daily goals, your understanding and questions, revisited at the source position
+- Actively started foreground reading time, with manual confirmation for finished chapters and books
+- Import and export of highlights, comments, questions, reading position, sessions and reading marks
+- Local JSON storage, or private hosting on Vercel + Supabase
 
-- 中文、英文、对照三种阅读方式，直译和意译独立保存；缺译对照只显示一次原文，明确标示缺失的版本
-- 试读时登录翻译会返回同一原文段落，再次明确点击才生成；服务未配置时如实禁用入口
-- 段落原文、注解、想法和问题按稳定 ID 对齐
-- X-ray 论证透视、站队翻页、回声批改和克制的章节互动
-- 选中文字保存淡黄色私人高亮，点击可取消或写想法，从“我的记录”回到原句
-- 选中句子后生成可配置的单语或双语分享图
-- 字体、字号、行高、段距、字距、首行缩进和纸面主题
-- 阅读日历、每日目标、自己的理解与问题，按原文位置回访
-- 主动开始的前台阅读计时，手动确认章节与整本读完
-- 高亮、评论、问题、阅读位置、时段和阅读标记导入导出
-- 本机 JSON 存储，或 Vercel + Supabase 私有托管
+## Running locally
 
-## 本机运行
-
-Node.js 22.13 及以上：
+Node.js 22.13 or newer:
 
 ```bash
 npm ci
@@ -49,91 +50,91 @@ npm test
 npm start
 ```
 
-默认访问 `http://127.0.0.1:8330/` 官网，`/library` 是书房。原有私人样书入口移到 `/read`；`/read?book=ID` 打开新书房中的指定书。没有本机私人样书时也能用默认公版库启动。本机上传与记录放在被 Git 忽略的 `local/service/portal/`，不会进入公开源码。
+Visit `http://127.0.0.1:8330/` for the website and `/library` for the reading room. The old private sample book entry moved to `/read`; `/read?book=ID` opens a specific book in the new room. The default public catalog starts even without local private books. Local uploads and records live in the Git-ignored `local/service/portal/` and never enter the public source.
 
-需要让个人数据独立于源码目录时，可设置 `READER_DATA_DIR` 后继续使用 `npm start`。目录布局、重启与更新方法见 [本机实例与数据](docs/local-instance.md)；未配置时继续使用原有 `local/service/`，不会自动搬迁已有书房。
+To keep personal data outside the source directory, set `READER_DATA_DIR` and keep using `npm start`. Directory layout, restart and update steps are in [Local instance and data](docs/local-instance.md); without it the existing `local/service/` is used and existing rooms are never moved automatically.
 
-阅读设置支持独立选择深读/语言学习目标、优先语言、展示方式与直译/意译，切换时保留段落位置；旧记录继续原文优先。用法见 [阅读目标与语言](docs/reading-preferences.md)。
+Reading settings independently choose a close-reading or language-learning goal, a preferred language, a display mode and literal/interpretive translations; switching keeps your passage position and old records stay source-first. See [Reading goals and language](docs/reading-preferences.md).
 
-已保存的想法与问题可单独修改，保留创建时间、引用与原文位置；另一处修改发生冲突时，先读取较新原话再明确保存。失败重试保留新草稿，来源不确定时不猜测跳转。具体行为与修改草稿的备份边界见 [修改自己的想法与问题](docs/personal-records.md)。
+Saved thoughts and questions can be edited individually while keeping their creation time, quote and source position; when another edit conflicts, the newer words are read before an explicit save. Failed retries keep the new draft, and uncertain sources never guess a jump target. Behavior and draft backup boundaries are in [Editing your thoughts and questions](docs/personal-records.md).
 
-需要 AI 时，将唯一模板 [`.env.example`](.env.example) 复制为 `.env`，填写需要的 Key：`DEEPSEEK_API_KEY` 用于翻译、阅读对话和讲解稿，`GEMINI_API_KEY` 用于本机语音。模型默认选好，只阅读时无需配置。`npm start` 自动读取配置，启动提示会说明是否已配置、是否仍待验证，以及当前部署是否支持语音。同一模板还包含默认注释的托管与高级选项，按需查看 [配置说明](docs/configuration.md)。
+When you want AI, copy the single template [`.env.example`](.env.example) to `.env` and fill in the keys you need: `DEEPSEEK_API_KEY` for translation, reading conversation and lecture scripts, `GEMINI_API_KEY` for local speech. Models are preselected and reading alone needs no configuration. `npm start` reads the configuration and its startup message states what is configured, what still needs verification, and whether speech works in the current deployment. The same template holds commented-out hosting and advanced options; see [Configuration](docs/configuration.md).
 
-PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF 和加密文件给出明确失败原因，当前不含 OCR。默认 30 本英文阅读版使用已核对边界的原书目录，首次从正文开始，前言和附录仍可打开。私人上传暂按每 30 段分成阅读片段，界面注明自动分段，不能当成作者的原章结构。目录调整保留段落 ID，已有笔记与位置继续对应原句。
+PDF text is extracted locally, limited to 20 MB, 500 pages and two million characters; scanned PDFs and encrypted files fail with a clear reason, and OCR is not included yet. The default 30 English reading editions use audited table-of-content boundaries and start at the body text, while prefaces and appendices remain reachable. Private uploads are currently split into reading segments every 30 passages, and the interface labels this automatic segmentation as not the author’s chapter structure. Catalog adjustments keep passage IDs so existing notes and positions still point at the same sentences.
 
-重新选择无效文件会清除旧选择，不能误传上一次的文件。上传失败后可以重试或换文件；关闭上传窗口会让当前请求继续，成功后更新书架。私人 PDF 阅读页可展开查看文件名与提取说明，明确标示尚未校对。
+Choosing another invalid file clears the old choice so the previous file can never be uploaded by mistake. After a failed upload you can retry or change files; closing the upload window lets the request continue and the shelf updates on success. A private PDF reading page can expand to show the filename and extraction notes, clearly marked as not yet proofread.
 
-来源说明中可下载自己上传的原文件校对；下载前校验文件内容，原件仅向所属书房账户提供。JSON 备份没有原件时会明确提示，再上传同一原件可补回并保留已有译文和记录，包括从其他账户迁移的书籍。原件下载不属于现有 MCP 正文授权。
+The source panel lets you download your own uploaded original for proofreading; the content is verified before download and originals are offered only to the owning room account. A JSON backup without its original says so explicitly; uploading the same original again restores it while keeping existing translations and records, including books migrated from other accounts. Original downloads are not part of the existing MCP content grant.
 
-书房显示上次阅读的章节，点击“继续阅读”回到原段落和排版。登录后的服务端位置优先，匿名试读只保存在本机浏览器。多个标签页同时阅读时，旧位置不会静默覆盖新位置；页面保留当前内容，让用户选择较新的位置或继续读这里。导出当前记录也遵守这项检查。
+The room shows the chapter you last read, and “Continue reading” returns to that passage and typography. Signed-in server positions win; anonymous trial reading is kept only in the local browser. When several tabs read at once, an old position never silently overwrites a newer one; the page keeps its content and lets you choose the newer position or continue here. Exports obey the same check.
 
-阅读设置中的“书页布局”可选滚动阅读或翻页阅读。原文与中文译文都可以像摊开的书一样左右双页阅读，用方向键 ← → 或页底按钮翻页；窄于 900px 的窗口显示单页。翻页到章末可继续下一章，向前可返回上一章。中英对照保留原有排列；切换回来会保留翻页偏好。书房在 980px 及以下改用抽屉导航，为正文和书架留出空间。
+“Page layout” in reading settings offers scrolling or page turning. Both the source and the Chinese translation can be read as a spread like an open book, turning with ← → or the buttons at the foot of the page; windows narrower than 900px show one page. Turning past a chapter end continues to the next chapter, and turning backward returns to the previous one. The bilingual layout keeps its arrangement and remembers the page-turn preference when you switch back. At 980px and below the room uses drawer navigation to leave space for text and shelves.
 
-长段落另外保存段内阅读比例，刷新、字号变化或不同窗口宽度下可恢复到段落中相近的位置。旧记录继续按原像素偏移恢复。比例定位不保证逐字相同；原文和段落标识保持不变。
+Long passages additionally store an in-paragraph reading ratio so refreshes, font-size changes and other window widths return to a similar place in the paragraph; old records still restore by pixel offset. Ratio positioning is not guaranteed word-identical; source text and passage IDs are unchanged.
 
-想法和问题保存期间可以继续写。保存确认只清除那次提交，后来写的文字仍作为草稿保留。草稿与待确认的提交按账户和书籍缓存在浏览器；确认丢失后可准确重试，刷新会先核对已保存记录。浏览器无法保留草稿时会提示复制文字。读后记录里的未完成内容可从“草稿”找回；多个标签页分别保留想法。书房导出合并本机待同步时段与章节标记，读后草稿单独保存在备份里；通过网页恢复后仍是本机草稿，只有主动保存才成为笔记。段落旁注面板与读后记录共用草稿入口，旧版段落草稿也可找回并导出。
+You can keep writing while a thought or question saves. The confirmation clears only that submission and later words stay a draft. Drafts and unconfirmed submissions are cached per account and book in the browser; lost confirmations retry exactly and refreshes reconcile with saved records first. When the browser cannot keep a draft you are asked to copy the text. Unfinished items in after-reading records return from “Drafts”, and each tab keeps its own thoughts. Room export merges local pending sessions and chapter marks, while after-reading drafts are backed up separately; restoring through the web leaves them as local drafts until you save them as notes. The margin panel and after-reading records share the draft entry, and old per-passage drafts can be found and exported too.
 
-匿名试读打开个人记录时，可以登录并回到同一原文段落和面板。返回意图只使用一次，后续刷新仍按正常续读位置。已登录但记录读取失败时可在当前页面重试；读取到更新的位置后，先选择从哪里继续，导出也遵守这项保护。超过引用上限的整段文字不写入记录引用，原文与段落关联保留，重试仍使用同一个提交标识。
+Opening personal records from anonymous trial reading lets you sign in and return to the same passage and panel. The return intent is used once, and later refreshes follow the normal resume position. If you are signed in but the record read fails, you can retry in place; once a newer position arrives you choose where to continue, and exports honor the same protection. Text over the quote limit is not written into the record quote, while the source and passage link are kept and retries reuse the same submission ID.
 
-### 书籍与目录
+### Books and catalog
 
-顶栏书名和当前章节可以点击，打开书籍介绍浮层，查看已有简介、作者、原文出处与当前章。浮层可用 Esc、关闭按钮或点击外部收起，正文位置保持不变。左侧“书房”和“目录”采用一致的图标、间距与触控高度；目录按章排列，标记当前章，点击整行即可进入。带编号小节的书仍可展开小节并返回对应段落。
+The top-bar book title and current chapter are clickable and open a book-info overlay with the existing description, author, source and current chapter. The overlay closes with Esc, its close button or an outside click while the reading position stays put. The left “Room” and “Contents” entries share icons, spacing and touch height; contents are grouped by chapter with the current chapter marked, and clicking the row enters it. Books with numbered sections can still expand sections and return to their passages.
 
-### 阅读氛围
+### Reading atmosphere
 
-阅读页右上角的“氛围”提供林间书页、雨窗夜读、木屋炉火和海边清晨，也可以选择“只留纸面”。风景保留在正文周围；打开旁注后，正文仍有自己的不透明纸面。窄屏优先保留文字，夜读与系统低动态偏好继续生效。
+The “Atmosphere” control at the top right of the reading page offers forest pages, rainy-window night reading, cabin hearth and seaside dawn, or “paper only”. Scenery stays around the text; when a side panel opens the text keeps its own opaque paper. Narrow screens favor text, and night mode plus the system reduced-motion preference keep working.
 
-选中场景会默认开启对应的轻音乐与环境声；切换场景时，声音一起更换。两路音量分别调整，调到零即可关闭其中一路，切换场景会保留这项静音选择。关闭面板后可继续读书，顶栏可以暂停声音。刷新保留场景但不自动播放，离开页面会暂停，开始朗读时背景声音会降低。配乐由本机合成琴音与和声，环境录音和图片随应用提供，运行时不连接第三方媒体服务。来源、加工与许可说明见 [素材说明](app/assets/atmospheres/NOTICE.md)。
+Choosing a scene enables its light music and ambient sound by default, and switching scenes swaps both. The two volume channels adjust independently and either can be muted by turning it to zero; scene switches remember the mute. Closing the panel keeps reading going and the top bar can pause sound. Refresh keeps the scene without autoplay, leaving the page pauses it, and background sound lowers while narration plays. Music is synthesized locally with piano tones and harmonies; ambient recordings and images ship with the app and nothing connects to third-party media services at runtime. Provenance, processing and licenses are in [Atmosphere assets](app/assets/atmospheres/NOTICE.md).
 
-“场景动效”控制正文背后的林间光影、雨丝、炉火暖光与海面缓移，面板中的预览也会跟随。夜间模式可用，正文保持稳定。动效与声音可以分别关闭；切到后台会停止运动，系统的低动态偏好优先生效。
+“Scene motion” controls the forest light, rain streaks, hearth glow and slow sea movement behind the text, and the panel preview follows along. Night mode is available and the text stays stable. Motion and sound switch off independently; backgrounding stops motion, and the system reduced-motion preference wins.
 
-主题、音量与动效偏好按账户和书籍保存在当前浏览器，暂不包含在书房导出与恢复包中。声音不是阅读或翻译的前提，也不会增加阅读时间或触发模型请求。
+Theme, volume and motion preferences are saved per account and book in the current browser and are not yet part of room export and restore. Sound is never required for reading or translation and never adds reading time or model requests.
 
-### 邮箱与翻译
+### Email and translation
 
-本机需要邮箱登录时，在同一个 `.env` 中配置 SMTP 后用 `npm start` 启动，变量见 [配置说明](docs/configuration.md)。验证码真实通过 SMTP 发送，十分钟过期、一次有效、五次失败后失效；注册与登录共用入口，会话保存在 HttpOnly Cookie 中。没有 SMTP 时不会假装发信；本机书房是独立的单人使用方式，不代表邮箱身份已核验。
+To use email sign-in locally, configure SMTP in the same `.env` and start with `npm start`; variables are in [Configuration](docs/configuration.md). Codes are genuinely sent over SMTP, expire after ten minutes, work once and die after five failures; sign-up and sign-in share one entry, and sessions live in HttpOnly cookies. Without SMTP nothing pretends to send mail; the local room is a single-user mode and does not imply a verified email identity.
 
-退出后清空页面的私人书名、授权列表、显示中的令牌和文件选择；书籍与已创建的 Agent 授权仍保存在服务端，授权需要在书房主动撤回。账户切换后，旧请求不能更新新账户页面，旧恢复任务不能继续向新账户写入；从其他标签页返回时会检查当前身份。
+Signing out clears private book titles, grant lists, displayed tokens and file choices from the page; books and created agent grants stay on the server and grants must be revoked in the room. After an account switch, old requests cannot update the new account’s page and old restore tasks cannot write into it; returning from another tab re-checks the current identity.
 
-配置 `DEEPSEEK_API_KEY` 后，点击段落再选择“翻译这段”。仅发送当前及前后各一段，直译和意译独立保留为 AI 草稿。字号、已有译文切换和阅读都不调用模型。该按段翻译使用 DeepSeek 接口；原样书回声继续使用官方 DSH。
+With `DEEPSEEK_API_KEY` configured, click a passage and choose “Translate this passage”. Only the current passage and one neighbor on each side are sent, and literal and interpretive translations are kept separately as AI drafts. Font size, switching to existing translations and plain reading never call a model. Per-paragraph translation uses the DeepSeek API; the book echo demo continues to use the official DSH.
 
-翻译进行中可以切到其他段落，结果仍归属原段落；回到仍在翻译的段落时不能重复提交。切走或取消选择后，迟到结果不会强制改变阅读语言。失败提示与重试也对应原段落。已有双译直接在本地打开；未配置服务时明确禁用生成入口，保留原文和已有译文。
+You can move to other passages while a translation runs and the result still lands on its original passage; returning to one still translating cannot resubmit it. Leaving or deselecting never forces a late result to change your reading language. Failures and retries also match the original passage. Existing dual translations open locally; when no service is configured the generation entry is honestly disabled while source text and existing translations remain.
 
-中文原文直接阅读，没有已有译文时只提供原文视图，不标成英文或缺译。中文段落不调用中文翻译服务；已有的双译记录仍可读取。摘录标示“中文原文”，笔记引用另外保存原文或译文的归属。中英文识别使用文本启发式，加载旧私人书时也会校正早期语言标记；这不代表能准确识别任意混合语言书籍。
+Chinese source text reads directly, and without an existing translation only the source view is offered, never labelled English or missing. Chinese passages do not call the Chinese translation service; existing dual-translation records remain readable. Excerpts are marked “Chinese source”, and note quotes record separately whether they point at the source or a translation. Chinese/English recognition uses text heuristics and also corrects early language marks when loading old private books; this does not claim accurate recognition of arbitrary mixed-language books.
 
-原有书房导出、恢复与授权领域接口继续兼容已有客户端；新版书房不再展示这组操作面板。备份包含提取原文、译文、笔记和位置，不包含源 PDF 或密钥；原文件独立保存。以下恢复说明适用于原有客户端与领域接口。
+The existing room export, restore and grant domain APIs stay compatible with older clients; the new room no longer shows that operations panel. Backups include extracted source text, translations, notes and positions, but never the source PDF or keys; originals are stored separately. The restore notes below apply to older clients and the domain APIs.
 
-恢复前先检查整个备份，再检查每本书与已有原文是否冲突。格式错误会标明第几本书，检查阶段不写入书房；检查通过后按书和数据批次恢复。网络中断或写入失败可能留下部分已恢复数据，页面会说明，可再次选择同一备份合并。恢复的位置使用本实例递增版本，旧阅读标签页仍须处理位置冲突。
+Restore first inspects the whole backup, then checks each book against existing source text. Format errors name the failing book and nothing is written during inspection; after passing, restore proceeds per book and data batch. Network drops or write failures can leave partially restored data, the page says so, and the same backup can be chosen again to merge. Restored positions use this instance’s incrementing versions, and old reading tabs must still handle position conflicts.
 
-### 阅读对话
+### Reading conversation
 
-侧栏“阅读对话”打开围绕当前书籍的窗口。可以先看原文、直译和意译，问题明确发送后才运行模型。回答标为 AI 解释候选，引用可以回到原文；用户问题另存到对应段落，能在阅读日历中回访。
+“Reading conversation” in the sidebar opens a window around the current book. You can read the source, literal and interpretive translations first, and a model runs only after a question is explicitly sent. Answers are marked AI explanation candidates whose quotes jump back to the source; your questions are saved to their passages and can be revisited in the reading calendar.
 
-对话沿用官方 DeepSeek Harness，默认仅按需分页查阅当前书；发送框旁可明确选择并保存「书房、公版与网络」。会发送问题、书名与当前章段位置、允许范围内最近最多六轮对话，以及按需读取的文字和检索词，不自动读取私人评论。范围、云处理说明和恢复规则见 [阅读对话的查阅范围](docs/reading-chat-scope.md)。每次生成有上下文、时间与费用上限。关闭窗口保留草稿，停止会向执行实例发送中断；刷新先找回原请求，不重复生成同一次问题。没有配置模型时可以保留草稿，发送按钮不可用。每本书最多保留 100 次提问，窗口可导出这段对话；这是有界版本，尚无无限历史。
+The conversation uses the official DeepSeek Harness and by default pages through only the current book on request; next to the send box you can explicitly choose and save “room, public catalog and web”. It sends the question, book title, current chapter and passage position, up to six recent conversation turns within the allowed scope, and the text and search terms it reads on request; private comments are never read automatically. Scopes, cloud processing and restore rules are in [Reading conversation scopes](docs/reading-chat-scope.md). Each generation has context, time and cost limits. Closing the window keeps the draft, stopping interrupts the running instance, and a refresh first recovers the original request instead of generating the same question twice. Without a model configured the draft is kept and send is disabled. Each book keeps up to 100 questions, and the window can export the conversation; this is a bounded release without unlimited history.
 
-### 朗读与章节讲解
+### Narration and chapter talks
 
-选中文字后点“朗读所选”，也可以在段落的更多菜单选择“从这里开始听”。章首“听这一章”提供开篇导听、从当前位置朗读和双人讲解，也可进入整书导览。DeepSeek 按原文分批整理并核对讲稿，Gemini 配音，讲稿可随时展开查看和修改。底部播放器提供暂停、语速、段落切换、出处回跳和下载；在手机上点内容标题展开更多操作。
+Select text and press “Read aloud”, or choose “Listen from here” in a passage’s more-menu. “Listen to this chapter” at the chapter head offers an opening guide, narration from the current position and a two-host talk, with a whole-book tour one step further. DeepSeek drafts and verifies the script in batches from the source text, Gemini voices it, and the script can be expanded and edited at any time. The bottom player offers pause, speed, passage steps, jump-to-source and download; on phones, tap the content title for more actions.
 
-声音与两位讲解者的偏好在“阅读设置 → 听读 → 声音与语速”中调整。改变语速在本机完成，不再次生成。首次试听会生成固定短文，重复试听复用已有声音。未翻译的内容明确提示，可由用户选择改听对应原文。
+Voice and the two hosts’ preferences live in “Reading settings → Listening → Voice and speed”. Speed changes happen locally and never regenerate. A first preview generates one fixed short text and repeats reuse the existing voice. Untranslated content is clearly flagged and you can choose to hear the corresponding source instead.
 
-模型分工为文字使用 DeepSeek，语音直连 Google 官方 Gemini 3.8 Flash TTS，返回 WAV 音频。日常在 `.env` 填写 `DEEPSEEK_API_KEY` 和 `GEMINI_API_KEY`，模型参数使用统一默认值。需要覆盖时使用 `READER_TRANSLATION_MODEL`、`READER_AUDIO_SCRIPT_MODEL` 和 `READER_SPEECH_MODEL`。旧的 `.env.audio`、`READER_DIALOGUE_MODEL` 及 `npm run start:configured` 继续兼容；优先级见 [配置说明](docs/configuration.md)。图片尚无生成入口，默认模板不展示图片模型。真实环境配置不进入 Git 或导出，公开模板只保留变量与占位值。
+Text work uses DeepSeek while speech talks to the official Google Gemini 3.8 Flash TTS and receives WAV audio. Day-to-day, fill `DEEPSEEK_API_KEY` and `GEMINI_API_KEY` in `.env` and keep the unified model defaults. Overrides use `READER_TRANSLATION_MODEL`, `READER_AUDIO_SCRIPT_MODEL` and `READER_SPEECH_MODEL`. The older `.env.audio`, `READER_DIALOGUE_MODEL` and `npm run start:configured` remain compatible; precedence is in [Configuration](docs/configuration.md). Images have no generation entry yet and the default template shows no image model. Real environment configuration never enters Git or exports, and the public template keeps only variables and placeholders.
 
-生成声音需要有效额度，余额不足会显示真实错误，不重试扣费或自动更换供应商。取消会停止后续片段并拒绝迟到结果；已经发给供应商的请求仍可能计费。听读位置独立于阅读位置与时长，刷新恢复后等待用户点击播放。
+Generating speech needs valid credits; insufficient balance shows the real error without retrying charges or switching providers. Cancel stops later segments and rejects late results; requests already sent to the provider may still bill. Listening position is independent of reading position and time, and playback waits for your tap after a restore.
 
-在声音设置中可导出与恢复听读备份，包含讲稿、声音、偏好和播放位置。恢复包限 32 MB；更大的记录可分别下载音频。导入会先核验全部来源和声音哈希，再写入，已有修改稿发生冲突时不覆盖。书籍本身通过原有书房备份迁移。章首和声音设置里的“已保存的听读”可打开音频与讲稿，恢复后等待点击播放；配音时的讲稿版本单独保留，之后编辑不会改掉旧音频的依据。听读列表也能仅导出讲稿与位置，较大的音频可分别下载。
+Sound settings export and restore a listening backup containing scripts, voices, preferences and playback position. Restore packs are limited to 32 MB and larger records download audio separately. Import verifies every source and voice hash before writing and never overwrites conflicting edited scripts. Books themselves migrate through the regular room backup. “Saved listening” at the chapter head and in sound settings opens audio and scripts and waits for playback after restore; the script version used for voicing is kept separately so later edits never rewrite the basis of old audio. The listening list can also export scripts and positions only.
 
-本机和托管共用听读领域逻辑。托管任务使用 Supabase 私有存储、并发租约与有界后台处理；离开后可通过已保存任务继续尚未提交的步骤。正文、讲解与阅读位置分别保存。“问这里”暂停声音并带出处打开现有对话草稿，不自动发送。完整范围、费用与恢复说明见 [随书听读](docs/guided-listening.md)。本人声音复刻尚未开放。
+Local and hosted deployments share the listening domain logic. Hosted jobs use Supabase private storage, concurrency leases and bounded background processing; leaving the page lets saved jobs finish unsubmitted steps. Text, talks and reading positions are stored separately. “Ask here” pauses the audio and opens an existing conversation draft with the source reference without sending. Full scopes, costs and recovery notes are in [Guided listening](docs/guided-listening.md). Voice cloning is not available.
 
-当前导听实现与验证见 [2026-10-17 验收记录](docs/verification/2026-10-17-guided-listening.md)：真实官方 Gemini 双人小样已生成，本机浏览器已验证播放、原文跳转、提问草稿和分段接续。
+The current guided-listening implementation and verification are in the [2026-10-17 acceptance record](docs/verification/2026-10-17-guided-listening.md): a real official Gemini two-host sample was generated and the local browser verified playback, source jumps, question drafts and segment continuation.
 
-验证证据在被 Git 忽略的 `local/verification/audio-reading/`。早期记录（2026-10-15）：真实 DeepSeek 合成材料讲稿为 8 轮，引用检查通过；Gemini 首次短文请求返回 402，未生成真实语音。播放器、编辑和迁移用隔离音频验证，不能据此宣称 Gemini 音质或播放延迟已通过。
+Verification evidence lives in the Git-ignored `local/verification/audio-reading/`. Earlier record (2026-10-15): a real DeepSeek synthesis produced an 8-round material script and passed quote checks; the first Gemini short-text request returned 402 and produced no real speech. Player, editing and migration were verified with isolated audio, which cannot claim Gemini audio quality or playback latency.
 
-### 连接 MCP
+### Connecting MCP
 
-新版书房已移除令牌和配置生成面板。已有 MCP 客户端、按书授权与撤回接口继续兼容；接入协议与范围见 [_briefs/mcp-contract.md](_briefs/mcp-contract.md)。网页内的阅读对话直接使用当前登录账户的单书权限，不需要另外创建 MCP 令牌。
+The new room removed the token and configuration panels. Existing MCP clients, per-book grants and revocation stay compatible; the protocol and scopes are in [_briefs/mcp-contract.md](_briefs/mcp-contract.md). The in-page reading conversation uses the signed-in account’s single-book permission directly and needs no separate MCP token.
 
-收起令牌只清本页显示；撤回会立即停止后续访问，并清除对应的页面令牌和配置预览。已经复制的内容不会自动从其他地方清除。使用官方 MCP SDK 的 stdio 入口，连接同一个本机阅读服务；下面为使用默认端口的手动示例：
+Collapsing a token clears only this page; revocation stops future access immediately and clears the page’s token and configuration preview. Content already copied elsewhere is not deleted automatically. The official MCP SDK stdio entry connects to the same local reading service; a manual example on the default port:
 
 ```json
 {
@@ -150,14 +151,14 @@ PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF �
 }
 ```
 
-工具包括 `reader_get_context`、`reader_get_chapter`、`reader_search`、`reader_get_notes`、`reader_get_reading_activity` 和 `reader_add_comment`。正文、笔记、活动与写评论分别授权；写入只接受明确提供的用户原话，幂等键防止重复保存。Agent 读取不增加阅读时间。本机配置连接环回地址；云端配置固定到发布标签 `v0.3.0` 对应的完整提交 `fb6141fc4ceea4a15131fb7abca8a2d6579d6eb1`，通过源码包启动同一 stdio 适配器，并显式允许配置中的 HTTPS 书房。完整提交固定了实际运行的版本，也让 npm 可以直接获取托管源码包。远程访问仍按书与数据类型授权，拒绝重定向；这不是远程 OAuth MCP 端点。配置生成不代表已在用户 Agent 中安装。
+Tools include `reader_get_context`, `reader_get_chapter`, `reader_search`, `reader_get_notes`, `reader_get_reading_activity` and `reader_add_comment`. Content, notes, activity and comment writing are authorized separately; writes accept only explicit user words and idempotency keys prevent double saves. Agent reads never add reading time. Local configuration connects to the loopback address; cloud configuration pins the release tag `v0.3.0` to the full commit `fb6141fc4ceea4a15131fb7abca8a2d6579d6eb1`, starts the same stdio adapter from the source package and explicitly allows the configured HTTPS room. Pinning the full commit fixes the version that actually runs and lets npm fetch the hosted source package directly. Remote access remains authorized per book and data type and rejects redirects; this is not a remote OAuth MCP endpoint. Generating configuration does not install anything into your agent.
 
-## 私有托管
+## Private hosting
 
-公开代码与私人数据分开：
+Public code and private data stay apart:
 
 ```text
-公开仓库：功能分支 → PR → main → Vercel 验证与部署
+Public repo: feature branch → PR → main → Vercel verification and deployment
                                  │ server-side secret
                                  ▼
                          Supabase private tables
@@ -165,22 +166,22 @@ PDF 在本机提取，限制为 20 MB、500 页和 200 万文字；扫描 PDF �
                          └─ notes + reading state
 ```
 
-建表迁移在 `supabase/migrations/`。新版使用独立的 `reader_documents` 表与私人 `reader-originals` 存储桶；RLS 开启，`anon` 和 `authenticated` 没有直接表权限。原有两张单书数据表保留，不作为公开入口。Vercel Function 使用服务端 secret 访问。完整部署步骤见 [deploy/README.md](deploy/README.md)，自动更新流程见 [docs/ci-cd.md](docs/ci-cd.md)。
+Schema migrations live in `supabase/migrations/`. The current version uses a dedicated `reader_documents` table and a private `reader-originals` bucket; RLS is on and `anon` and `authenticated` have no direct table rights. The two older single-book tables remain for compatibility and are not public entries. Vercel Functions reach them with a server-side secret. Full deployment steps are in [deploy/README.md](deploy/README.md) and the automation in [docs/ci-cd.md](docs/ci-cd.md).
 
-浏览器端不需要服务端 key。唯一模板 [`.env.example`](.env.example) 的“托管部署”一节列出所需变量，真实值放入 Vercel Environment Variables；本机使用被 Git 忽略的 `.env`。
+The browser needs no server key. The “Hosted deployment” section of the single template [`.env.example`](.env.example) lists the variables; real values go into Vercel Environment Variables, and local runs use the Git-ignored `.env`.
 
-当前数据库表结构、账号隔离、原件存储与默认测试数据归属见 [数据库与默认测试书房](docs/data-workspace.md)。
+Current database schema, account isolation, original storage and default test-data ownership are in [Database and default test room](docs/data-workspace.md).
 
-## 内容边界
+## Content boundaries
 
-阅读器、数据格式、迁移、导入导出与 Agent 适配可以开源。书籍内容是否可公开取决于书籍授权；软件许可证不会自动授予原书的传播权。个人记录默认只属于部署者自己的实例。
+The reader, data formats, migration, import/export and agent adapter can be open source. Whether book content may be public depends on each book’s license; the software license never grants the right to distribute the originals. Personal records belong by default to the operator’s own instance.
 
-在线阅读：[leafhour.com](https://leafhour.com)
+Read online: [leafhour.com](https://leafhour.com)
 
-项目主页：[GitHub](https://github.com/getyak/leafhour)
+Project home: [GitHub](https://github.com/getyak/leafhour)
 
-## 许可证
+## License
 
-[GNU Affero General Public License v3.0](LICENSE)。如果你通过网络提供修改后的版本，需要向该服务的用户提供对应源码。
+[GNU Affero General Public License v3.0](LICENSE). If you offer a modified version over a network, you must offer its source to the service’s users.
 
-阅读时间支持明确选择的主动专注、前台估计与手动补记（自报）；总数合并重叠区间，分来源可核对。见[计时与恢复口径](docs/reading-time.md)。
+Reading time supports explicitly chosen active focus, foreground estimates and manual backfill (self-reported); totals merge overlapping intervals and each source stays auditable. See [Timing and recovery rules](docs/reading-time.md).

@@ -5,33 +5,116 @@ import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {portalDocument} from '../server/portal-document.mjs';
 import {createReaderServer} from '../server/server.mjs';
+import {homeStringRows,homeAuthErrorRows,homeText,authErrorText,homeLocales,homeDocument} from '../app/home-locale.mjs';
 
 const ids=html=>[...html.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]);
 const styles=html=>[...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(match=>match[1]);
 const scripts=html=>[...html.matchAll(/<script type="module" src="([^"]+)"/g)].map(match=>match[1]);
-test('English rendering preserves the authored home structure and only localizes its presentation',async()=>{
-  const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8'),english=portalDocument(source,'/en');
-  assert.match(english,/<html lang="en">/);
-  assert.deepEqual(ids(english),ids(source));assert.deepEqual(styles(english),styles(source));assert.deepEqual(scripts(english),scripts(source));
-  assert.match(english,/<link rel="canonical" href="https:\/\/leafhour.com\/en">/);
-  assert.match(english,/href="\/" lang="zh-Hans" hreflang="zh-Hans">中文<\/a>/);
-  assert.match(english,/id="auth-dialog"/);assert.match(english,/id="featured-books"/);assert.match(english,/class="sunlight-overlay"/);
-  assert.doesNotMatch(english,/留一点时间，读进一本书。|正在载入书架|回到你的书房/);
-  assert.match(english,/your own/i);assert.match(english,/Chinese/);
-  const graph=JSON.parse(english.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1])['@graph'];
-  const page=graph.find(node=>node['@type']==='WebPage');assert.equal(page.url,'https://leafhour.com/en');assert.equal(page.inLanguage,'en');
-  assert.equal(portalDocument(source,'/'),source);
-  const privatePage=portalDocument(source,'/library');assert.match(privatePage,/<html lang="zh-Hans">/);assert.doesNotMatch(privatePage,/application\/ld\+json/);
+const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8');
+
+test('every catalog row carries each public language beside its authored source',()=>{
+  assert.deepEqual(homeLocales.map(row=>row.code),['en','zh-Hans','zh-Hant','ja']);
+  assert.deepEqual(homeLocales.map(row=>row.route),['/','/zh-hans','/zh-hant','/ja']);
+  for(const [rows,minimum] of [[homeStringRows,100],[homeAuthErrorRows,20]]){
+    const seen=new Set();
+    for(const row of rows){
+      assert.equal(row.length,4,'catalog row must be [source, en, zh-Hant, ja]: '+row[0]);
+      for(const value of row)assert.ok(typeof value==='string'&&value.length,'catalog row misses a language: '+row[0]);
+      assert.ok(!seen.has(row[0]),'duplicate catalog key: '+row[0]);seen.add(row[0]);
+    }
+    assert.ok(rows.length>minimum);
+  }
 });
 
-test('the English HTTP homepage mounts the same controls and sections as the Chinese homepage',async t=>{
+test('localization never rewrites book sample text and leaves no source text in the English page',()=>{
+  const english=homeDocument(source,'en');
+  const allowed=['“一本书如果没有图画，也没有对话，那有什么用呢？”爱丽丝想。','简体中文','繁體中文','日本語'];
+  const stripped=allowed.reduce((text,value)=>text.replaceAll(value,''),english);
+  assert.doesNotMatch(stripped,/\p{Script=Han}/u,'the English homepage leaked source-language text');
+  const traditional=homeDocument(source,'zh-Hant'),japanese=homeDocument(source,'ja');
+  assert.match(traditional,/網站支援哪些語言？/);assert.match(traditional,/繁體中文/);
+  assert.match(japanese,/対応言語は？/);assert.match(japanese,/本棚を開いています…/);
+  assert.match(english,/Which languages does the site support\?/);
+  const simplified='“一本书如果没有图画，也没有对话，那有什么用呢？”爱丽丝想。';
+  const traditionalQuote='「一本書如果沒有圖畫，也沒有對話，那有什麼用呢？」愛麗絲想。';
+  assert.ok(english.includes(simplified));
+  assert.ok(japanese.includes(simplified));
+  assert.ok(traditional.includes(traditionalQuote));
+});
+
+test('each public language renders the authored home structure and its own presentation',()=>{
+  for(const locale of homeLocales){
+    const html=homeDocument(source,locale.code);
+    assert.deepEqual(ids(html),ids(source));assert.deepEqual(styles(html),styles(source));assert.deepEqual(scripts(html),scripts(source));
+    assert.match(html,new RegExp('<html lang="'+locale.htmlLang+'">'));
+    const canonical='https://leafhour.com'+locale.route;
+    assert.match(html,new RegExp('<link rel="canonical" href="'+canonical.replace(/[/.]/g,'\\$&')+'">'));
+    for(const other of homeLocales)assert.match(html,new RegExp('hreflang="'+other.htmlLang+'" href="https://leafhour\\.com'+other.route.replace(/\//g,'\\/')+'"'));
+    assert.match(html,/hreflang="x-default" href="https:\/\/leafhour\.com\/">/);
+    const graph=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1])['@graph'];
+    const page=graph.find(node=>node['@type']==='WebPage');
+    assert.equal(page.url,canonical);assert.equal(page.inLanguage,locale.htmlLang);
+    assert.ok(graph.some(node=>node['@type']==='SoftwareApplication'&&node.name==='Leafhour'));
+  }
+});
+
+test('the language switcher appears on the home page with the current language marked',()=>{
+  for(const locale of homeLocales){
+    const html=homeDocument(source,locale.code);
+    const switchers=[...html.matchAll(/<(?:span|div) class="home-languages[^"]*"[^>]*>([\s\S]*?)<\/(?:span|div)>/g)];
+    assert.equal(switchers.length,3,'expected nav, hero and footer switchers');
+    for(const [whole,inner]of switchers){
+      assert.match(whole,/aria-label="/);
+      for(const row of homeLocales)assert.match(inner,new RegExp('href="'+row.route.replace(/\//g,'\\/')+'" lang="'+row.htmlLang+'"'));
+      assert.equal((inner.match(/aria-current="true"/g)||[]).length,1);
+      assert.match(inner,new RegExp('aria-current="true" href="'+locale.route.replace(/\//g,'\\/')+'"'));
+    }
+  }
+});
+
+test('dynamic sign-in counts and book labels localize per language',()=>{
+  assert.equal(homeText('10 秒后重发','en'),'Resend in 10s');
+  assert.equal(homeText('10 秒后重发','zh-Hant'),'10 秒後重發');
+  assert.equal(homeText('10 秒后重发','ja'),'10秒後に再送信');
+  assert.equal(homeText('双译开篇 · 12 段','ja'),'二つの訳 · 冒頭12段');
+  assert.equal(homeText('自己的书 · PDF','en'),'A book of my own · PDF');
+  assert.equal(homeText('共 3 段','en'),'共 3 passages');
+  assert.equal(homeText('任意文本','zh-Hans'),'任意文本');
+});
+
+test('unknown sign-in service messages keep a readable localized fallback',()=>{
+  assert.equal(authErrorText('请设置至少 8 个字符的密码','ja'),'8 文字以上のパスワードを設定してください。');
+  assert.equal(authErrorText('未来的服务端消息','en'),'Unable to complete sign-in. Please try again or choose another sign-in method.');
+  assert.equal(authErrorText('未来的服务端消息','ja'),'ログインを完了できませんでした。もう一度試すか、別のログイン方法をお選びください。');
+  assert.equal(authErrorText('未来的服务端消息','zh-Hant'),'未来的服务端消息');
+});
+
+test('every language serves the same homepage structure over HTTP',async t=>{
   const dir=await mkdtemp(path.join(tmpdir(),'leafhour-home-locale-'));
   const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),sendCode:null,translator:null,chatGenerator:null});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   t.after(async()=>{await new Promise(resolve=>server.close(resolve));await rm(dir,{recursive:true,force:true});});
-  const base='http://127.0.0.1:'+server.address().port,home=await(await fetch(base+'/')).text(),response=await fetch(base+'/en'),english=await response.text();assert.equal(response.status,200);
-  assert.deepEqual(ids(english),ids(home));assert.deepEqual(styles(english),styles(home));assert.deepEqual(scripts(english),scripts(home));
-  assert.match(english,/id="how"/);assert.match(english,/id="daily"/);assert.match(english,/id="books"/);assert.match(english,/id="ownership"/);assert.match(english,/id="questions"/);
-  assert.match(english,/href="\/library"/);assert.match(english,/href="\/read\?book=gutenberg-alice"/);
-  assert.match(english,/href="#how"/);assert.doesNotMatch(english,/href="\/#how"/,'English in-page navigation must not switch back to Chinese');
-  assert.doesNotMatch(english,/class="discovery-page"/);
+  const base='http://127.0.0.1:'+server.address().port;
+  const englishResponse=await fetch(base+'/'),english=await englishResponse.text();assert.equal(englishResponse.status,200);
+  assert.match(english,/<html lang="en">/);assert.doesNotMatch(english,/留一点时间，读进一本书。/);
+  for(const locale of homeLocales){
+    const route=locale.code==='en'?'/en':locale.route;
+    const response=await fetch(base+route),html=await response.text();assert.equal(response.status,200);
+    assert.deepEqual(ids(html),ids(english));assert.deepEqual(styles(html),styles(english));assert.deepEqual(scripts(html),scripts(english));
+    assert.match(html,new RegExp('<html lang="'+locale.htmlLang+'">'));
+    assert.match(html,/href="\/library"/);assert.match(html,/href="\/read\?book=gutenberg-alice"/);
+    assert.doesNotMatch(html,/href="\/#how"/,'in-page navigation must stay on the current page');
+    assert.doesNotMatch(html,/class="discovery-page"/);
+    for(const guide of ['mcp','privacy']){
+      const page=await fetch(base+(locale.route==='/'?'/'+guide:locale.route+'/'+guide)),text=await page.text();
+      assert.equal(page.status,200);assert.match(text,new RegExp('<html lang="'+locale.htmlLang+'">'));
+    }
+  }
+  const alias=await fetch(base+'/en');assert.equal(alias.status,200);assert.match(await alias.text(),/<link rel="canonical" href="https:\/\/leafhour.com\/">/);
+});
+
+test('the library shell keeps the source language and hides in-page home navigation',()=>{
+  const library=portalDocument(source,'/library');
+  assert.match(library,/<html lang="zh-Hans">/);assert.match(library,/<title>我的书房 · Leafhour<\/title>/);
+  assert.doesNotMatch(library,/class="home-nav" href=/);assert.equal(portalDocument(library,'/library'),library);
+  assert.equal(portalDocument(source,'/unknown-route'),source);
 });
