@@ -5,7 +5,7 @@ export function createUploadState(){
     select(candidate){
       if(busy)return false;file=null;
       if(!candidate||!Number.isFinite(candidate.size)||candidate.size<=0)throw Error('文件中没有内容，请选择另一份文件。');
-      if(candidate.size>20*1024*1024)throw Error('文件超过 20 MB，请按章节拆分。');
+      if(candidate.size>(/\.pdf$/i.test(candidate.name)?256:20)*1024*1024)throw Error('PDF 最多 256 MB，文本最多 20 MB，请按章节拆分。');
       if(typeof candidate.name!=='string'||!candidate.name.trim()||candidate.name.length>240||!/\.(pdf|txt|md)$/i.test(candidate.name))throw Error('目前支持 PDF、TXT 和 Markdown。请重新选择文件。');
       file=candidate;return true;
     },

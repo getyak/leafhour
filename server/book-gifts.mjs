@@ -1,7 +1,8 @@
 import {mkdir,readFile,writeFile,rename} from 'node:fs/promises';
 import path from 'node:path';
 import {randomBytes,randomUUID} from 'node:crypto';
-import {digest,fail,MAX_FILE_BYTES} from './document-import.mjs';
+import {digest,fail} from './document-import.mjs';
+const MAX_FILE_BYTES=20*1024*1024;
 import {validateLibraryBackup} from '../app/library-backup.mjs';
 import {publicGiftSender} from '../app/gift-identity.mjs';
 
