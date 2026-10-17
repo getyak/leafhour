@@ -156,7 +156,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(bytes.length>MAX_FILE_BYTES||digest(bytes)!==book.source.sha256)throw fail('原文件校验失败，未提供损坏的文件，请重新上传',409);
     return {...info,bytes};
   }
-  async function originalParts(user,id){const original=await getOriginal(user,id),book=await getBook(user,id);if(!dataStore?.blobDownloads)throw fail('本机原件使用直接下载',404);return {...original,bytes:original.bytes.length,parts:await dataStore.blobDownloads(path.join(userDir(user),'originals',book.source.sha256))};}
+  async function originalParts(user,id){const info=await originalInfo(user,id);if(!info.available)throw fail(info.reason,404);if(!dataStore?.blobDownloads)throw fail('本机原件使用直接下载',404);return {...info,parts:await dataStore.blobDownloads(path.join(userDir(user),'originals',info.sha256),{size:info.bytes,sha256:info.sha256})};}
   async function originalDownload(user,id){
     const file=await getOriginal(user,id),book=await getBook(user,id);if(file.bytes.length>8*1024*1024)throw fail('大原件请在阅读页使用“下载原文件校对”，分块校验后下载',413);
     return {...file,bytes:undefined,url:await dataStore.signedBlob(path.join(userDir(user),'originals',book.source.sha256))};
