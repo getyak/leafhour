@@ -30,11 +30,11 @@ import {createIngestionUpload} from './ingestion-upload.mjs';
 import {createBookGifts} from './book-gifts.mjs';
 import {createLibraryPortability} from './library-portability.mjs';
 import {decodePersonalRecordId} from '../app/personal-records.mjs';
+import {agentReadArgs,scopedAgentRead} from './scoped-agent-reading.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
 const jsonBody=async(req,limit=29*1024*1024)=>{if(!req.headers['content-type']?.startsWith('application/json'))throw fail('请使用 JSON 请求',415);if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>limit)throw fail('这次导入内容过大，请分书恢复',413);return req.body;}let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('这次导入内容过大，请分书恢复',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('请求格式不正确');}};
-const passageList=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
 export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,schedule=()=>{},paddleProvider,env=process.env}={}){
   const webOrigins=new Set(publicOrigin?[publicOrigin]:[]);
   if(!Array.isArray(additionalWebOrigins))throw fail('额外网页来源配置无效',503);
@@ -152,7 +152,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(p==='/api/library/activity'&&req.method==='GET'){send(200,await library.readingActivity(user,{month:url.searchParams.get('month'),timeZone:url.searchParams.get('timeZone')}));return true;}
     if(p==='/api/library/mcp-setup'&&req.method==='GET'){
       if(!user)throw fail('请先进入自己的书房',401);
-      if(hostedMcp){send(200,{hosted:true,serviceUrl:publicOrigin});return true;}
+      if(hostedMcp){const sourceCommit=env.VERCEL_GIT_COMMIT_SHA;if(typeof sourceCommit!=='string'||!/^[a-f0-9]{40}$/.test(sourceCommit))throw fail('线上版本尚未准备好，请稍后重新读取接入配置。',503);send(200,{hosted:true,serviceUrl:publicOrigin,sourceCommit});return true;}
       if(!localAllowed)throw fail('本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。',403);
       const loopback=req.socket.localAddress==='::1'?'[::1]':'127.0.0.1';
       send(200,{command:process.execPath,args:[path.join(root,'server/mcp.mjs')],serviceUrl:'http://'+loopback+':'+req.socket.localPort});return true;
@@ -248,8 +248,8 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     }
     if(p.startsWith('/api/agent/')){
       const action=p.slice('/api/agent/'.length),bookId=url.searchParams.get('bookId')||body?.bookId,agentToken=req.headers.authorization?.match(/^Bearer (.+)$/)?.[1];
-      const scopes={context:'content',chapter:'content',search:'content',notes:'notes',activity:'activity',comment:'comment:write','audio-prepare':'content','audio-generate':'audio:generate','audio-status':'audio:read','audio-cancel':'audio:generate','audio-clip':'audio:read'};if(!scopes[action])throw fail('找不到这个工具',404);
-      const owner=await library.authorize(agentToken,bookId,scopes[action]),book=await library.getBook(owner,bookId),passages=passageList(book),records=()=>library.records(owner,bookId);
+      const scopes={manifest:'content',passage:'content',context:'content',chapter:'content',search:'content',notes:'notes',activity:'activity',comment:'comment:write','audio-prepare':'content','audio-generate':'audio:generate','audio-status':'audio:read','audio-cancel':'audio:generate','audio-clip':'audio:read'};if(!scopes[action])throw fail('找不到这个工具',404);
+      const owner=await library.authorize(agentToken,bookId,scopes[action]),book=await library.getBook(owner,bookId),records=()=>library.records(owner,bookId);
       if(action.startsWith('audio-')){
         if(!audio)throw fail('此实例暂未开启听读，请在本机书房使用。',503);
         if(action==='audio-prepare'&&req.method==='POST'){send(200,await audio.prepare(owner,bookId,body));return true;}
@@ -259,11 +259,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
         if(action==='audio-clip'&&req.method==='GET'){const {bytes,mimeType}=await audio.getClip(owner,bookId,url.searchParams.get('clipId'));res.statusCode=200;res.setHeader('Content-Type',mimeType);res.setHeader('Cache-Control','private, no-store');res.end(bytes);return true;}
         throw fail('不支持这个听读操作',405);
       }
-      if(action==='context'&&req.method==='GET'){const activityAllowed=await library.authorize(agentToken,bookId,'activity').then(()=>true).catch(()=>false),saved=activityAllowed?await records():null,requested=url.searchParams.get('passageId');if(requested&&!passages.some(p=>p.id===requested))throw fail('找不到当前授权段落',404);const index=Math.max(0,passages.findIndex(p=>p.id===(requested||saved?.position?.passageId||book.readingStart?.passageId)));send(200,{bookId,contentVersion:book.contentVersion,title:book.title,chapters:book.chapters,position:saved?.position?{chapterId:saved.position.chapterId,passageId:saved.position.passageId}:null,passages:passages.slice(Math.max(0,index-1),index+2)});return true;}
-      if(action==='chapter'&&req.method==='GET'){const chapterId=url.searchParams.get('chapterId');if(!book.chapters.some(c=>c.id===chapterId))throw fail('找不到这一章',404);const start=Number(url.searchParams.get('offset')||0),limit=Number(url.searchParams.get('limit')||10);if(!Number.isInteger(start)||start<0||!Number.isInteger(limit)||limit<1||limit>20)throw fail('分页范围无效');const chapter=passages.filter(p=>p.chapterId===chapterId);send(200,{bookId,contentVersion:book.contentVersion,passages:chapter.slice(start,start+limit),nextOffset:start+limit<chapter.length?start+limit:null});return true;}
-      if(action==='search'&&req.method==='GET'){const query=url.searchParams.get('query');if(!query?.trim()||query.length>200)throw fail('请输入检索词');send(200,{bookId,results:passages.filter(p=>p.original.toLowerCase().includes(query.toLowerCase())).slice(0,20).map(p=>({id:p.id,chapterId:p.chapterId,excerpt:p.original.slice(0,800),source:p.source}))});return true;}
-      if(action==='notes'&&req.method==='GET'){const data=await records(),offset=Number(url.searchParams.get('offset')||0);if(!Number.isInteger(offset)||offset<0)throw fail('分页范围无效');const rows=[...data.comments.map(r=>({...r,type:'comment'})),...data.questions.map(r=>({...r,type:'question'}))];send(200,{bookId,records:rows.slice(offset,offset+20),nextOffset:offset+20<rows.length?offset+20:null});return true;}
-      if(action==='activity'&&req.method==='GET'){const data=await records();send(200,{bookId,position:data.position,readingSessions:data.readingSessions.slice(-20),readingMilestones:data.readingMilestones.slice(-20),readingGoal:data.readingGoal||null,meaning:'阅读记录只记录投入和用户自己的标记，Agent 访问不计入阅读时间，时长不证明理解'});return true;}
+      if(['manifest','context','chapter','passage','search','notes','activity'].includes(action)&&req.method==='GET'){const args=agentReadArgs(action,url.searchParams),activityAllowed=action==='context'&&await library.authorize(agentToken,bookId,'activity').then(()=>true).catch(()=>false);send(200,await scopedAgentRead({action,args,book,records,activityAllowed}));return true;}
       if(action==='comment'&&req.method==='POST'){if(body.origin!=='user')throw fail('只保存用户明确提供的原话');send(201,await library.addComment(owner,bookId,body));return true;}
       throw fail('不支持这个请求',405);
     }

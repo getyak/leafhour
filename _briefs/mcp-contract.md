@@ -6,6 +6,12 @@
 
 2026-10-12补充：内部 Chapter Agent 采用官方 DeepSeek Harness，MCP 继续作为外部 Personal Agent 的接口；两者共用 Leafhour 的领域数据、授权及 Run 管理。网页和 MCP 后续调用 prepare/act/cancel，模型不能声明自己的 grant。具体运行关联、取消与恢复见 [系统设计](deepseek-harness-system-design.md)，不能把 SDK close 与本产品的单次 cancel 直接混为一谈。
 
+## 2026-10-17 GET-152 实现更新
+
+已实现 manifest/chapter/passage 三类资源、来源与译文状态、有界续读和按数据类型检查授权。原文与译文游标携带原文版本及内容快照，记录分页也可携带快照，变化后拒绝混合页面。最大正文 JSON24KiB、MCP结果96KiB；全文通过显式分页读取。个人评论/问题与阅读活动仍分别授权，历史 AI 对话未新增为 MCP 输出；缺省不授予写权限。线上配置固定实际部署源码提交，不再固定旧版本。已安装 SDK1.32.1 对应协议2025-11-25；不声称支持未验证的新协议。
+
+具体输入、输出、兼容与安全边界见 [MCP 有界读取](../docs/mcp-reading.md)。真实 Inspector GUI 宿主、独立 review、当前提交 CI 及生产验收仍分别作为交付门禁；实际证据与状态见 [GET-152](https://linear.app/getyak/issue/GET-152)。本段不代表已连接用户的 Personal Agent。原先接口设计与历史验证记录保留如下。
+
 ## 2026-10-16 站内阅读对话补充
 
 用户本次明确授权的站内阅读 Agent 与外部 MCP 分开：网页每轮从当前身份捕获只读工具，可按需读取该账号书房与共享公版目录、章节和检索结果，另可检索网络及 Open Library 书目。模型不能传入或切换身份，不读私人笔记、不写进度、不购买或自动加入书房。外部 MCP 的指定书籍、数据类型与撤回授权规则保持不变。原文回声继续只处理当前及邻段，不复用自由对话流程。

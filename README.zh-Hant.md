@@ -151,7 +151,7 @@ PDF 在本機提取，限制為 20 MB、500 頁和 200 萬文字；掃描 PDF �
 }
 ```
 
-工具包括 `reader_get_context`、`reader_get_chapter`、`reader_search`、`reader_get_notes`、`reader_get_reading_activity` 和 `reader_add_comment`。正文、筆記、活動與寫評論分別授權；寫入只接受明確提供的使用者原話，冪等鍵防止重複保存。Agent 讀取不增加閱讀時間。本機設定連接環回位址；雲端設定固定到發布標籤 `v0.3.0` 對應的完整提交 `fb6141fc4ceea4a15131fb7abca8a2d6579d6eb1`，透過原始碼包啟動同一 stdio 轉接器，並明確允許設定中的 HTTPS 書房。完整提交固定了實際運行的版本，也讓 npm 可以直接取得託管原始碼包。遠端存取仍按書與資料類型授權，拒絕重新導向；這不是遠端 OAuth MCP 端點。設定生成不代表已在使用者 Agent 中安裝。
+工具包括 `reader_get_manifest`、`reader_get_context`、`reader_get_chapter`、`reader_search`、`reader_get_notes`、`reader_get_reading_activity` 和 `reader_add_comment`。正文、筆記、活動與寫評論分別授權；寫入只接受明確提供的使用者原話，冪等鍵防止重複保存。Agent 讀取不增加閱讀時間。本機設定連接環回位址；雲端設定固定到已登入接入端點回傳的實際部署原始碼提交，透過原始碼包啟動同一 stdio 轉接器，並明確允許設定中的 HTTPS 書房。完整提交固定了實際運行的版本，也讓 npm 可以直接取得託管原始碼包。遠端存取仍按書與資料類型授權，拒絕重新導向；這不是遠端 OAuth MCP 端點。設定生成不代表已在使用者 Agent 中安裝。
 
 ## 私有託管
 

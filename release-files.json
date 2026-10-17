@@ -322,6 +322,7 @@
   "server/reading-agent-search.mjs",
   "server/reading-agent-tools.mjs",
   "server/reading-view.mjs",
+  "server/scoped-agent-reading.mjs",
   "server/server.mjs",
   "server/source-revisions.mjs",
   "server/structured-catalog.mjs",
