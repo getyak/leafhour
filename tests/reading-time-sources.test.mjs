@@ -24,6 +24,12 @@ test('manual idempotency preserves one exact self-report and rejects a changed i
  const changed=normalizeReadingSession(session('manual',0,12),readingBook,now);assert.throws(()=>mergeReadingSession(old,changed),{status:409});
  const other=normalizeReadingSession({...session('reader_estimate'),id:old.id},readingBook,now);assert.throws(()=>mergeReadingSession(old,other),{status:409});
 });
+test('manual identity compares interval values after JSONB reorders object keys',()=>{
+ const submitted=normalizeReadingSession(session('manual'),readingBook,now),persisted={...submitted,segments:submitted.segments.map(s=>({endedAt:s.endedAt,startedAt:s.startedAt}))};
+ assert.notEqual(JSON.stringify(persisted.segments),JSON.stringify(submitted.segments));
+ assert.equal(mergeReadingSession(persisted,submitted),persisted);
+ const changed=normalizeReadingSession(session('manual',0,11),readingBook,now);assert.throws(()=>mergeReadingSession(persisted,changed),{status:409});
+});
 test('focus allows ten minutes thinking without interaction; estimate stops at two minutes and does not backfill',()=>{
  for(const source of ['reader_focus','reader_estimate']){
   let time=base;const clock=createReadingClock({now:()=>time,heartbeatGapMs:5000});clock.start(context(source));

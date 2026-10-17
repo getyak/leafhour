@@ -18,6 +18,15 @@ export function mergeReadingIntervals(intervals){
   for(const [start,end]of sorted){if(end<=start)continue;const previous=out.at(-1);if(previous&&start<=previous[1])previous[1]=Math.max(previous[1],end);else out.push([start,end]);}return out;
 }
 export const readingIntervalSeconds=intervals=>Math.floor(mergeReadingIntervals(intervals).reduce((sum,[a,b])=>sum+b-a,0)/1000);
+// JSONB may reorder object keys; interval order and actual bounds still matter.
+export function sameReadingSegments(left,right){
+  if(!Array.isArray(left)||!Array.isArray(right)||left.length!==right.length)return false;
+  for(let i=0;i<left.length;i++){
+    const a=left[i],b=right[i];
+    if(!object(a)||!object(b)||typeof a.startedAt!=='string'||typeof a.endedAt!=='string'||a.startedAt!==b.startedAt||a.endedAt!==b.endedAt)return false;
+  }
+  return true;
+}
 const passages=book=>new Map(book.sections.flatMap(section=>section.paragraphs.map(p=>[p.id,section.chapterId])));
 const anchor=(value,ids)=>{if(!object(value)||ids.get(value.passageId)!==value.chapterId)bad('阅读记录无法对应原文');return {chapterId:value.chapterId,passageId:value.passageId};};
 const ownership=(input,book)=>{if(input.bookId!==undefined&&input.bookId!==book.bookId||input.contentVersion!==undefined&&input.contentVersion!==book.contentVersion)bad('阅读记录的原文版本或书籍不一致',409);};
@@ -38,7 +47,7 @@ export function mergeReadingSession(previous,next){
   if(!previous)return next;
   if(previous.id!==next.id||previous.bookId!==next.bookId||previous.contentVersion!==next.contentVersion||previous.source!==next.source||previous.startedAt!==next.startedAt||previous.timeZone!==next.timeZone||previous.start?.chapterId!==next.start?.chapterId||previous.start?.passageId!==next.start?.passageId)bad('阅读时段标识冲突，原记录已保留',409);
   if(previous.source==='manual'){
-    if(previous.endedAt!==next.endedAt||previous.end?.chapterId!==next.end?.chapterId||previous.end?.passageId!==next.end?.passageId||JSON.stringify(previous.segments)!==JSON.stringify(next.segments))bad('手动补记标识冲突，原记录已保留',409);
+    if(previous.endedAt!==next.endedAt||previous.end?.chapterId!==next.end?.chapterId||previous.end?.passageId!==next.end?.passageId||!sameReadingSegments(previous.segments,next.segments))bad('手动补记标识冲突，原记录已保留',409);
     return previous;
   }
   if(next.sequence<=previous.sequence)return previous;
