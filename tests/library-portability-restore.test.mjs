@@ -67,3 +67,23 @@ test('an actual clean restore preserves independent translation states, editable
  const retry=await upload(s.portability,bytes);await s.portability.commit(owner,retry.id);
  assert.deepEqual((await s.target.library.records(owner,book.bookId)).position,advanced);assert.equal((await s.target.library.getBook(owner,book.bookId)).sections[0].paragraphs[0].translations.literal.text,'目标实例已确认的较新译文。');assert.ok((await s.target.library.records(owner,book.bookId)).comments.some(r=>r.id==='target-only'));
 });
+
+// Regression: retained migration archives may contain runtime session metadata.
+// The outbound projection must omit authority without dropping reading events.
+test('legacy event archives export without runtime authority and restore content without mutating the source',async t=>{
+ const s=await setup(t),book=structuredClone(readingBook),records=readingRecords();
+ book.legacyReadingResources={localExperienceRecords:{events:[{id:'event-one',sessionId:'SYNTHETIC-SESSION',text:'A password and token discussion stays verbatim.',createdAt:'2026-10-14T12:00:00Z',context:{access_token:'SYNTHETIC-TOKEN',passageId:'p1'}}]},hostedExperienceRecords:[{events:[{id:'event-two',session_id:'SYNTHETIC-SESSION-TWO',text:'Original reading event',durationSeconds:60}],authorization:'SYNTHETIC-AUTH'}]};
+ await s.source.library.restoreLibrary(owner,{kind:'marginalia-library',schemaVersion:1,books:[{book,records}]});
+ const sourceBefore=(await s.source.library.exportLibrary(owner)).books;
+ const exporter=createLibraryPortability({...s.source,store:store()}),part=await exporter.exportPart(owner,book.bookId,{}),entry=JSON.parse(Buffer.from(part.data,'base64'));
+ assert.equal(part.nextOffset,null);assert.deepEqual(entry.book.legacyReadingResources,{localExperienceRecords:{events:[{id:'event-one',text:'A password and token discussion stays verbatim.',createdAt:'2026-10-14T12:00:00Z',context:{passageId:'p1'}}]},hostedExperienceRecords:[{events:[{id:'event-two',text:'Original reading event',durationSeconds:60}]}]});
+ const bytes=await createLibraryArchive({kind:'marginalia-library',schemaVersion:1,books:[entry]}),op=await upload(s.portability,bytes);await s.portability.commit(owner,op.id);
+ const target=(await s.target.library.exportLibrary(owner)).books[0];assert.deepEqual(target.book,entry.book);assert.deepEqual(target.records,entry.records);assert.deepEqual((await s.source.library.exportLibrary(owner)).books,sourceBefore);assert.equal(s.calls(),0);
+ const files=unzipSync(bytes),manifest=JSON.parse(strFromU8(files['manifest.json']));entry.book.legacyReadingResources.localExperienceRecords.events[0].sessionId='FORGED';files['books/000.json']=strToU8(JSON.stringify(entry));manifest.files[0].bytes=files['books/000.json'].length;manifest.files[0].sha256=await portableHash(files['books/000.json']);files['manifest.json']=strToU8(JSON.stringify(manifest));
+ const empty=await s.create('reject-target'),reject=createLibraryPortability({...empty,store:store()}),bad=await upload(reject,zipSync(files));await assert.rejects(reject.commit(owner,bad.id),/凭据|令牌/);assert.equal((await empty.library.exportLibrary(owner)).books.length,0);
+});
+test('outbound projection still rejects credential-bearing source URLs',async t=>{
+ const s=await setup(t),book=structuredClone(readingBook);book.source.url='https://example.invalid/book?access_token=SYNTHETIC-TOKEN';
+ await s.source.library.restoreLibrary(owner,{kind:'marginalia-library',schemaVersion:1,books:[{book,records:readingRecords()}]});
+ const exporter=createLibraryPortability({...s.source,store:store()});await assert.rejects(exporter.exportPart(owner,book.bookId,{}),/凭据|令牌/);
+});

@@ -53,3 +53,5 @@ Restored chat is terminal history: running turns become interrupted failures, an
 The fixed acceptance table is in [the GET-148 plan](portability-get-148-plan.md). Validation must include an actual clean-instance restore, selected sharing bytes, keyboard/responsive browser checks, independent review, exact-head CI and production acceptance; downloading a ZIP alone is insufficient.
 
 Export GET reads retry a transient transport/gateway or truncated JSON response at most three times, with 200/600 ms pauses. Each attempt retains the same part URL and checksum, and rechecks the active owner and cancellation state. Permission/validation failures and corrupt inventory are never accepted; persistent errors stop with a reason. Restore POSTs and model requests are not automatically retried.
+
+Outbound ZIP book parts project out private/runtime fields recursively, including session identifiers retained in migrated reading-resource archives. Reading events, source anchors and prose remain intact; persisted source records are unchanged. Incoming packages still reject those fields before any domain write. Credential-bearing source URLs remain rejected.
