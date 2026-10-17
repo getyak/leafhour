@@ -29,7 +29,7 @@ export function validateAudioBackup(book,backup){
    let turns;if(chunkingVersion===3){
     if(!Array.isArray(c.turns)||c.turns.length!==expected[i].turns.length||c.turns.some(t=>!['Sulafat','Kore','Charon','Puck'].includes(t.voice))||new Set(c.turns.map(t=>t.voice)).size>2)throw audioError('声音场景声线无效。');
     const {id,voice,status,mimeType,bytes,checksum,generationId,cacheKey,...actual}=c;const withoutVoices={...actual,turns:c.turns.map(({voice,...t})=>t)};
-    if(!audioValueEqual(withoutVoices,expected[i]))throw audioError('声音场景的语气或出处不一致。');turns=structuredClone(c.turns);
+    if(!audioValueEqual(withoutVoices,expected[i]))throw audioError('声音场景的语气或出处不一致。');turns=expected[i].turns.map((turn,index)=>({...turn,voice:c.turns[index].voice}));
    }
    return {...expected[i],...(turns?{turns}:{}),id:c.id,voice:c.voice,status:file?'ready':'pending',...(file?{checksum:c.checksum,mimeType:file.mimeType,bytes:file.bytes.length}:{})};});
   const position=s.position;if(!position||!Number.isInteger(position.clipIndex)||position.clipIndex<0||position.clipIndex>=clips.length||!Number.isFinite(position.seconds)||position.seconds<0||position.seconds>86400)throw audioError('听读位置无效。');

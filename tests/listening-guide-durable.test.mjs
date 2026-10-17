@@ -8,7 +8,7 @@ import {audioBook,pcmWav} from './audio-fixture.mjs';
 
 const owner={id:'guide-owner'},book=audioBook(),pause=()=>new Promise(resolve=>setTimeout(resolve,5));
 const request={intent:'explain',chapterId:'ch1',throughPassageId:'p1',contentVersion:'v1',idempotencyKey:'same-request',confirmProcessing:true};
-const jsonb=value=>Array.isArray(value)?value.map(jsonb):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).sort(([a],[b])=>a.localeCompare(b)).map(([key,item])=>[key,jsonb(item)])):value;
+const jsonb=value=>Array.isArray(value)?value.map(jsonb):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).sort(([a],[b])=>Buffer.byteLength(a)-Buffer.byteLength(b)||Buffer.compare(Buffer.from(a),Buffer.from(b))).map(([key,item])=>[key,jsonb(item)])):value;
 function database(){
  const rows=new Map(),objects=new Map();
  const store=createHostedStore({env:{SUPABASE_URL:'https://fixture.example',SUPABASE_SECRET_KEY:'fixture'},fetcher:async(input,options={})=>{

@@ -4,7 +4,7 @@ import {audioBook} from './audio-fixture.mjs';
 import {guideScope,validateGuide} from '../server/listening-guide-content.mjs';
 const explain = {intent:'explain', chapterId:'ch1', contentVersion:'v1', throughPassageId:'p1'};
 const script = () => ({turns:[{speaker:'guide',text:'先仔细读这句，再提出问题。',style:'calm',sourceRefs:[{chapterId:'ch1',passageId:'p1',quote:'Read'}]}]});
-const jsonb=value=>Array.isArray(value)?value.map(jsonb):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).sort(([a],[b])=>a.localeCompare(b)).map(([key,item])=>[key,jsonb(item)])):value;
+const jsonb=value=>Array.isArray(value)?value.map(jsonb):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).sort(([a],[b])=>Buffer.byteLength(a)-Buffer.byteLength(b)||Buffer.compare(Buffer.from(a),Buffer.from(b))).map(([key,item])=>[key,jsonb(item)])):value;
 test('saved guide scopes and scripts survive JSONB object key reordering but preserve source order',()=>{
  const book=audioBook(),scope=guideScope(book,{intent:'book',contentVersion:'v1'}),valid=validateGuide(book,scope,script());
  assert.deepEqual(guideScope(book,jsonb(scope)),scope);assert.deepEqual(validateGuide(book,jsonb(scope),jsonb(valid)),valid);

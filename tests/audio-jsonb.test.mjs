@@ -11,7 +11,7 @@ import {createListeningGuideService} from '../server/listening-guide-service.mjs
 import {audioBook,pcmWav} from './audio-fixture.mjs';
 
 const owner={id:'jsonb-owner'},other={id:'jsonb-other'};
-const jsonb=value=>Array.isArray(value)?value.map(jsonb):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,jsonb(value[key])])):value;
+const jsonb=value=>Array.isArray(value)?value.map(jsonb):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort((a,b)=>Buffer.byteLength(a)-Buffer.byteLength(b)||Buffer.compare(Buffer.from(a),Buffer.from(b))).map(key=>[key,jsonb(value[key])])):value;
 const book=audioBook();
 book.sections[0].paragraphs[0].id='z-source';
 book.sections[0].paragraphs[1].id='a-source';
@@ -94,5 +94,6 @@ test('a complete hosted guide keeps native scene fingerprints and cache identiti
  assert.equal(restored.contentHash,ready.contentHash);assert.equal(restored.clips[0].cacheKey,ready.clips[0].cacheKey);assert.equal(b.calls(),0);
  assert.deepEqual((await b.audio.getClip(owner,book.bookId,restored.clips[0].id)).bytes,pcmWav());
  assert.equal((await b.audio.createSession(owner,book.bookId,input)).id,session.id);assert.equal(b.calls(),0);
+ const cached=await b.audio.createSession(owner,book.bookId,{...input,idempotencyKey:'restored-cache'});assert.equal(cached.status,'ready');assert.equal(b.calls(),0);
  await b.backup.restoreAudio({owner:other,bookId:book.bookId,backup});assert.notEqual((await b.audio.getSession(other,book.bookId,session.id)).clips[0].cacheKey,ready.clips[0].cacheKey);
 });
