@@ -27,9 +27,13 @@ export function normalizePaddlePage(page,number){
  }
  return {page:number,text:blocks.map(b=>b.text).join('\n\n'),blocks,discarded,blank:blocks.length===0};
 }
-export function createPaddleProvider({env=process.env,client:injected}={}){
+export function createPaddleProvider({env=process.env,client:injected,fetcher=fetch}={}){
  if(!injected&&!env.PADDLEOCR_ACCESS_TOKEN)return null;
- let promise;const client=()=>promise??=(injected?Promise.resolve(injected):import('@paddleocr/api-sdk').then(({PaddleOCRClient})=>new PaddleOCRClient({token:env.PADDLEOCR_ACCESS_TOKEN,baseUrl:'https://paddleocr.aistudio-app.com',requestTimeout:45000,pollTimeout:60000})));
+ const baseUrl='https://paddleocr.aistudio-app.com';
+ // The SDK otherwise drops fetch's nested connection code. Never retain the
+ // request URL, headers, provider message, or signed result URL in diagnostics.
+ const transport=async(input,init)=>{try{return await fetcher(input,init);}catch(error){const candidate=error?.cause?.code??error?.code,code=/^[A-Z][A-Z0-9_]{0,35}$/.test(candidate||'')?candidate:'UNKNOWN';let endpoint='RESULT';try{if(new URL(typeof input==='string'?input:input.url).origin===baseUrl)endpoint='API';}catch{}throw Error('PADDLE_TRANSPORT_'+endpoint+'_'+code);}};
+ let promise;const client=()=>promise??=(injected?Promise.resolve(injected):import('@paddleocr/api-sdk').then(({PaddleOCRClient})=>new PaddleOCRClient({token:env.PADDLEOCR_ACCESS_TOKEN,baseUrl,requestTimeout:45000,pollTimeout:60000,fetch:transport})));
  return {
   async submit(bytes,{batchId,fileUrl}={}){const options={useDocOrientationClassify:false,useDocUnwarping:false,markdownIgnoreLabels:['header','footer','number','header_image','footer_image']};if(fileUrl)return (await client()).submitDocumentParsing({fileUrl,model:PADDLE_MODEL,batchId,options});const dir=await mkdtemp(path.join(os.tmpdir(),'leafhour-ocr-'));try{const file=path.join(dir,'pages.pdf');await writeFile(file,bytes,{mode:0o600});return await (await client()).submitDocumentParsing({filePath:file,model:PADDLE_MODEL,batchId,options});}finally{await rm(dir,{recursive:true,force:true});}},
   async recover(batchId){const found=await (await client()).getBatchStatus(batchId);if(found.jobs.length!==1)return null;return {jobId:found.jobs[0].jobId,model:PADDLE_MODEL,task:'document_parsing',batchId};},
