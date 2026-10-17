@@ -6,8 +6,8 @@ import path from 'node:path';
 import {createReaderServer} from '../server/server.mjs';
 
 test('introduction HTTP uses the existing authenticated owner, CSRF, version and no-store boundaries',async t=>{
-  const dir=await mkdtemp(path.join(tmpdir(),'leafhour-intro-http-'));let calls=0;
-  const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),sendCode:null,translator:null,chatGenerator:null,companionGenerator:null,introductionGenerator:async()=>{calls++;return {text:'开头描绘了留意当下、保留问题的阅读方式。'};}});
+  const dir=await mkdtemp(path.join(tmpdir(),'leafhour-intro-http-'));let calls=0,quoteCalls=0;
+  const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),sendCode:null,translator:null,chatGenerator:null,companionGenerator:null,introductionGenerator:async()=>{calls++;return {text:'开头描绘了留意当下、保留问题的阅读方式。'};},giftQuoteGenerator:async job=>{quoteCalls++;const entry=job.pool[0],text='Read slowly';return {bookId:job.bookId,contentVersion:job.contentVersion,passageId:entry.passageId,chapterId:entry.chapterId,start:0,end:[...text].length,text};}});
   await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(async()=>{await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});});
   const base='http://127.0.0.1:'+server.address().port,session=await server.portal.auth.localSession(),book=await server.portal.library.importDocument(session.user,{filename:'Opening.txt',bytes:Buffer.from('Read slowly and keep a question.')}),url=base+'/api/library/books/'+book.bookId+'/introduction';
   const headers={Cookie:'marginalia_session='+session.token,'X-Reader-Owner':session.user.id,'Content-Type':'application/json',Origin:base};
@@ -18,6 +18,8 @@ test('introduction HTTP uses the existing authenticated owner, CSRF, version and
   const view=await fetch(url,{headers});assert.equal(view.status,200);assert.match(view.headers.get('cache-control'),/no-store/);assert.equal((await view.json()).source,'missing');assert.equal(calls,0);
   const generated=await fetch(url,{method:'POST',headers,body});assert.equal(generated.status,200);const saved=await generated.json();assert.equal(saved.source,'ai');assert.equal(saved.introduction.status,'draft');assert.equal(calls,1);
   assert.equal((await fetch(url,{method:'POST',headers,body})).status,200);assert.equal(calls,1);
+  const quoted=await fetch(base+'/api/library/books/'+book.bookId+'/gift-quote',{method:'POST',headers,body:'{}'});assert.equal(quoted.status,200);const quote=await quoted.json();
+  assert.equal(quote.quote.selection,'ai-selected');assert.equal(quote.quote.text,'Read slowly');assert.equal(quoteCalls,1);assert.equal(calls,1,'quote preparation does not regenerate the introduction');assert.deepEqual(await server.portal.gifts.list(session.user,book.bookId),[],'neither private preparation publishes a gift');
   await server.portal.auth.logout(session.token);assert.notEqual((await fetch(url,{headers})).status,200);
 });
 

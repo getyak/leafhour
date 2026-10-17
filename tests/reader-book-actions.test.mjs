@@ -44,10 +44,12 @@ test('reader gift close returns focus and keeps the unsent draft for this book',
   f.id('gift-recipient').value='An unsent reader';f.id('gift-recipient').dispatchEvent(new Event('input'));f.id('gift-message').value='An unsent letter';f.id('gift-message').dispatchEvent(new Event('input'));
   f.click(f.find('×'));assert.equal(f.document.activeElement.id,'open-book-info');
   f.click(f.id('book-info-share'));await new Promise(setImmediate);
-  assert.equal(f.id('gift-recipient').value,'An unsent reader');assert.equal(f.id('gift-message').value,'An unsent letter');assert.ok(f.calls.every(call=>call.data===undefined));
+  assert.equal(f.id('gift-recipient').value,'An unsent reader');assert.equal(f.id('gift-message').value,'An unsent letter');
+  assert.ok(f.calls.some(call=>call.url.endsWith('/gift-quote')),'existing quote preparation remains available');
+  assert.ok(f.calls.filter(call=>call.url.endsWith('/gifts')).every(call=>call.data===undefined),'opening and closing must never publish a gift');
 });
 
 test('a new source version closes the old gift and disables its captured seal action',async t=>{
   const f=mount(t);f.click(f.id('book-info-share'));await new Promise(setImmediate);f.click(f.find('看看收信时的样子'));const seal=f.find('封好这封信，生成链接');
-  f.changeBook();f.document.dispatchEvent(new Event('reader:ready'));assert.equal(f.id('reader-book-gift').open,false);f.click(seal);await new Promise(setImmediate);assert.ok(f.calls.every(call=>call.data===undefined));
+  f.changeBook();f.document.dispatchEvent(new Event('reader:ready'));assert.equal(f.id('reader-book-gift').open,false);f.click(seal);await new Promise(setImmediate);assert.ok(f.calls.filter(call=>call.url.endsWith('/gifts')).every(call=>call.data===undefined),'old captured seal must never publish after the source changes');
 });
