@@ -116,3 +116,10 @@
 @media(max-width:980px){.library-page .today-heading{grid-column:2}.library-page .today-label{margin:0 0 8px}.library-page .today-copy h2{margin:0 0 6px}.library-page .today-author{margin:0}.library-page .today-description{margin:15px 0 0}.library-page .continue-cover{grid-row:1}.library-page .room-excerpt,.library-page .today-actions{grid-column:1/-1;margin:0}}
 
 .library-page .library-grid .cover-inner strong{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}
+
+/* The shelf grows in small batches, with an accessible manual fallback. */
+.shelf-more{position:relative;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;padding:28px 0 20px}
+.shelf-more[hidden]{display:none}
+.shelf-more-summary{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.shelf-more .outline{min-height:44px}
+.shelf-more-sentinel{position:absolute;bottom:0;left:50%;width:1px;height:1px;pointer-events:none}
