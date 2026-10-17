@@ -51,3 +51,5 @@ Each account has one reusable staging slot and at most 512 fixed part keys. Rece
 Restored chat is terminal history: running turns become interrupted failures, and scope/grants/companion consent are not activated. Imported history does not silently become model context in the narrower current-book scope. Citation URLs are reconstructed from stable locators; embedded URL credentials or authentication query parameters are rejected.
 
 The fixed acceptance table is in [the GET-148 plan](portability-get-148-plan.md). Validation must include an actual clean-instance restore, selected sharing bytes, keyboard/responsive browser checks, independent review, exact-head CI and production acceptance; downloading a ZIP alone is insufficient.
+
+Export GET reads retry a transient transport/gateway or truncated JSON response at most three times, with 200/600 ms pauses. Each attempt retains the same part URL and checksum, and rechecks the active owner and cancellation state. Permission/validation failures and corrupt inventory are never accepted; persistent errors stop with a reason. Restore POSTs and model requests are not automatically retried.
