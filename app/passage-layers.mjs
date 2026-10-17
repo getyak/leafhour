@@ -7,7 +7,7 @@ export function visibleQuoteLanguage(passage,{mode,variant='interpretive',transl
   return mode==='en'||translationHidden||!translatedText(passage,variant)?'en':'zh';
 }
 export function passagePresentation(passage,{mode='zh',variant='interpretive',sourceLanguage='en'}={}){
-  const original={kind:'original',text:passage.original,lang:sourceLanguage==='zh'?'zh-Hans':'en',label:'原文',...(Array.isArray(passage.source?.lineBreaks)?{lineBreaks:passage.source.lineBreaks}:{})};
+  const original={kind:'original',text:passage.original,lang:sourceLanguage==='zh'?'zh-Hans':sourceLanguage||'und',label:'原文',...(Array.isArray(passage.source?.lineBreaks)?{lineBreaks:passage.source.lineBreaks}:{})};
   if(mode==='en'||passage.kind==='source_heading')return {layers:[original],notice:null};
   const text=translatedText(passage,variant),label=variantLabel(variant);
   const translation=text?{kind:'translation',text,lang:'zh-Hans',label}:{kind:'missing',text:null,lang:null,label:label+' · 尚未翻译',message:'这份'+label+'尚未准备好。可继续阅读原文。'};
