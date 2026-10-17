@@ -1,5 +1,6 @@
-import {pdfJobPresentation} from './pdf-onboarding-state.mjs';
+import {pdfJobPresentation,createPdfJobMemory,showPdfJob} from './pdf-onboarding-state.mjs';
 export function mountPdfOnboarding({document,root,api,getSession,capture,isCurrent,onOpen,onDone=()=>{}}){
+ let storage=null;try{storage=document.defaultView?.localStorage;}catch{}const memory=createPdfJobMemory({storage}),owner=()=>getSession()?.user?.id;
  const rows=new Map(),watched=new Set(),notified=new Set();let timer=null,generation=0,loading=false;
  const make=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;};
  const preview=document.createElement('dialog');preview.className='pdf-preview-dialog';preview.setAttribute('aria-label','已整理页面预览');document.body.append(preview);
@@ -13,7 +14,7 @@ export function mountPdfOnboarding({document,root,api,getSession,capture,isCurre
  async function act(job,action,row,trigger){
   const ticket=capture();row.busy=true;for(const b of row.actions.querySelectorAll('button'))b.disabled=true;
   try{
-   if(action==='open'){onOpen(job.bookId);return;}
+   if(action==='open'){opened(job);onOpen(job.bookId);return;}
    if(action==='preview'){await showPreview(job,trigger);return;}
    const path=action==='consent'?'consent':action==='cancel'?'cancel':'resume';
    const result=await api('/api/library/ingestion/'+job.id+'/'+path,action==='consent'?{confirm:true,sourceHash:job.sourceHash}:{},ticket);
@@ -24,7 +25,7 @@ export function mountPdfOnboarding({document,root,api,getSession,capture,isCurre
  function render(job){
   let row=rows.get(job.id);if(!row){const node=make('section','pdf-job'),title=make('h3','',job.filename),status=make('p','pdf-job-status'),bar=make('progress'),detail=make('div','pdf-job-detail'),actions=make('div','pdf-job-actions');status.setAttribute('role','status');bar.setAttribute('aria-label','原文整理进度');node.append(title,status,bar,detail,actions);row={node,status,bar,detail,actions,signature:null,busy:false};rows.set(job.id,row);root.append(node);}
   const model=pdfJobPresentation(job);if(row.status.textContent!==model.status)row.status.textContent=model.status;row.bar.max=job.totalPages||1;row.bar.value=job.completedPages||0;
-  if(job.state!=='done')watched.add(job.id);
+  if(job.state!=='done'&&!watched.has(job.id)){watched.add(job.id);memory.watch(owner(),job.id);}
   const signature=job.state+'|'+model.actions.join(',');
   if(signature!==row.signature&&!row.busy){row.signature=signature;row.actions.replaceChildren();row.detail.replaceChildren();
    if(job.state==='awaiting_consent'){
@@ -42,13 +43,14 @@ export function mountPdfOnboarding({document,root,api,getSession,capture,isCurre
   clearTimeout(timer);if(loading||!getSession()?.user)return;if(document.hidden){timer=setTimeout(refresh,10000);return;}
   loading=true;const revision=generation,ticket=capture();let delay=10000;
   try{const {jobs}=await api('/api/library/ingestion',undefined,ticket);if(revision!==generation||!isCurrent(ticket))return;error.remove();
-   const visible=jobs.filter(j=>!['done','cancelled'].includes(j.state)||rows.has(j.id));for(const job of visible)render(job);root.hidden=!visible.length;
+   for(const id of memory.pending(owner()))watched.add(id);const visible=jobs.filter(j=>showPdfJob(j,{known:rows.has(j.id),memory,owner:owner()}));for(const job of visible)render(job);root.hidden=!visible.length;
    delay=visible.some(j=>['preparing','running','publishing'].includes(j.state))?2500:visible.some(j=>!['done','cancelled'].includes(j.state))?10000:0;
   }catch{if(revision===generation&&isCurrent(ticket)){error.textContent='暂时无法读取最新进度，原任务仍保留；连接恢复后会继续显示。';if(rows.size)root.append(error);}}
   finally{loading=false;if(revision!==generation){if(getSession()?.user)timer=setTimeout(refresh,0);}else if(delay)timer=setTimeout(refresh,delay);}
  }
- function track(job){watched.add(job.id);render(job);refresh();}
+ function track(job){watched.add(job.id);memory.watch(owner(),job.id);render(job);refresh();}
+ function opened(job){memory.opened(owner(),job.id);watched.delete(job.id);}
  function reset(){generation++;clearTimeout(timer);rows.clear();watched.clear();notified.clear();root.replaceChildren();root.hidden=true;if(preview.open)preview.close();preview.replaceChildren();}
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});document.defaultView?.addEventListener('pagehide',()=>clearTimeout(timer));document.defaultView?.addEventListener('pageshow',()=>refresh());
- return {refresh,track,reset};
+ return {refresh,track,reset,opened};
 }
