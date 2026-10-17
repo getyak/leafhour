@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import {createReaderServer} from '../server/server.mjs';
+import {exportLibraryInParts} from '../app/library-export.mjs';
+import {createLibraryArchive,portableHash,PART_BYTES} from '../app/library-portability.mjs';
+
+test('real authenticated HTTP preserves bounded backups/originals and restores them on a clean server',async t=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'portable-http-')),servers=[];
+ const create=async name=>{const server=await createReaderServer({bookPath:path.join(dir,'absent.json'),recordsPath:path.join(dir,name,'records.json'),sendCode:null,translator:null,chatGenerator:null,companionGenerator:null,speechProvider:null,dialogueGenerator:null,guideGenerator:null,paddleProvider:null,env:{}});servers.push(server);await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port,session=await server.portal.auth.localSession(),headers={Cookie:'marginalia_session='+session.token,'X-Reader-Owner':session.user.id,Origin:base,'Content-Type':'application/json'};return {server,base,session,headers,call:async(url,body)=>{const response=await fetch(base+url,{headers,...(body===undefined?{}:{method:'POST',body:JSON.stringify(body)})}),data=await response.json();if(!response.ok)throw Object.assign(Error(data.error),{status:response.status});return data;}};};
+ t.after(async()=>{await Promise.all(servers.map(s=>new Promise(r=>s.close(r))));await rm(dir,{recursive:true,force:true});});
+ const source=await create('source'),target=await create('target'),original=Buffer.from(Array.from({length:30},()=>('HTTP synthetic original. '+ 'z'.repeat(70000))).join('\n\n')),book=await source.server.portal.library.importDocument(source.session.user,{filename:'synthetic-http.txt',bytes:original});await source.server.portal.library.addComment(source.session.user,book.bookId,{id:'http-note',passageId:book.sections[0].paragraphs[0].id,text:'HTTP comment'});
+ const backup=await exportLibraryInParts({api:source.call,partAction:'portability-part'}),entry=backup.books.find(e=>e.book.bookId===book.bookId);assert.ok(entry.chat);const chunks=[];let originalOffset=0;do{const originalPart=await source.call('/api/library/books/'+book.bookId+'/portability-original?sha256='+book.source.sha256+'&offset='+originalOffset);assert.ok(Buffer.byteLength(JSON.stringify(originalPart))<1500000);chunks.push(Buffer.from(originalPart.data,'base64'));originalOffset=originalPart.nextOffset;}while(originalOffset!==null);assert.equal(Buffer.concat(chunks).toString(),original.toString());
+ const bytes=await createLibraryArchive(backup,{originals:[{bookId:book.bookId,bytes:original}]}),op=await target.call('/api/library/restore/start',{bytes:bytes.length,sha256:await portableHash(bytes)});
+ for(let offset=0;offset<bytes.length;offset+=PART_BYTES)await target.call('/api/library/restore/'+op.id+'/part',{offset,data:Buffer.from(bytes.subarray(offset,offset+PART_BYTES)).toString('base64')});
+ const result=await target.call('/api/library/restore/'+op.id+'/commit',{});assert.equal(result.restored,backup.books.length);assert.deepEqual(await target.call('/api/library/restore/'+op.id+'/commit',{}),result);assert.equal((await target.server.portal.library.records(target.session.user,book.bookId)).comments[0].text,'HTTP comment');assert.equal((await target.server.portal.library.getOriginal(target.session.user,book.bookId)).bytes.toString(),original.toString());
+ assert.equal((await fetch(target.base+'/api/library/restore/start',{method:'POST',headers:{Origin:target.base,'Content-Type':'application/json'},body:'{}'})).status,401);assert.equal((await fetch(source.base+'/api/library/books/'+book.bookId+'/portability-part')).status,401);assert.equal((await fetch(source.base+'/api/library/books/'+book.bookId+'/portability-part',{headers:{...source.headers,'X-Reader-Owner':'different'}})).status,409);
+ for(const file of ['library-data.mjs','library-portability.mjs','portable-chat.mjs','library-data.css','fflate.mjs']){const response=await fetch(target.base+'/'+file);assert.equal(response.status,200,file);assert.ok(response.headers.get('content-type').includes(file.endsWith('.css')?'css':'javascript'));}
+});
