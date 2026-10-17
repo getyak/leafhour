@@ -58,8 +58,10 @@ export function createBookIngestion({store,library,provider,batchPages=30,now=Da
    const batch=job.batches[i];
    if(batch.state==='submitting'){stage='provider_recover';if(batch.requestId&&provider.recover){const handle=await provider.recover(batch.requestId);if(handle){await save(j=>{j.batches[i].handle=handle;j.batches[i].state='submitted';j.state='running';j.error=null;});return viewOf(await get(user,id));}}await save(j=>{j.state='needs_review';j.error='上次请求未确认是否提交成功，为避免重复计费已暂停，请保留任务并联系管理员。';});return viewOf(await get(user,id));}
    if(!batch.handle){
-    const doc=await sourceDocument(),part=await PDFDocument.create();const selected=await part.copyPages(doc,Array.from({length:batch.count},(_,n)=>batch.start-1+n));selected.forEach(p=>part.addPage(p));const bytes=Buffer.from(await part.save());await current();const requestId=randomUUID();await save(j=>{j.batches[i].state='submitting';j.batches[i].requestId=requestId;});
-    stage='provider_submit';const handle=await provider.submit(bytes,{batchId:requestId});stage='save_provider_handle';await save(j=>{j.batches[i].handle=handle;j.batches[i].state='submitted';});
+    stage='split_batch';const doc=await sourceDocument(),part=await PDFDocument.create();const selected=await part.copyPages(doc,Array.from({length:batch.count},(_,n)=>batch.start-1+n));selected.forEach(p=>part.addPage(p));const bytes=Buffer.from(await part.save());let fileUrl;
+    if(store.putSingleBlob&&store.signedBlob){stage='stage_batch';const target=base+'/input-'+i;await store.putSingleBlob(target,bytes);fileUrl=await store.signedBlob(target,{expiresIn:3600});}
+    await current();const requestId=randomUUID();await save(j=>{j.batches[i].state='submitting';j.batches[i].requestId=requestId;});
+    stage='provider_submit';const handle=await provider.submit(bytes,{batchId:requestId,fileUrl});stage='save_provider_handle';await save(j=>{j.batches[i].handle=handle;j.batches[i].state='submitted';});
    }else{
     const state=await provider.status(batch.handle);if(state.state==='failed'){await save(j=>{j.batches[i].state='failed';j.batches[i].confirmedFailed=true;});throw fail('PaddleOCR 未能完成这一批页面，请保留任务后重试',502);}
     if(state.state==='done'){
