@@ -20,7 +20,7 @@ function database(){
     }else if(url.pathname.startsWith('/storage/v1/object/reader-originals/')){
       const key=url.pathname.split('/reader-originals/')[1];
       if(options.method==='POST'){objects.set(key,Buffer.from(options.body));data={};}
-      else {if(!objects.has(key))return new Response('{}',{status:404});const bytes=objects.get(key);return new Response(options.method==='HEAD'?null:bytes,{headers:{'content-length':String(bytes.length)}});}
+      else {if(!objects.has(key))return new Response('{}',{status:404});const bytes=objects.get(key),range=options.headers?.Range?.match(/^bytes=(\d+)-(\d+)$/);if(range){const start=Number(range[1]),end=Number(range[2]);return new Response(bytes.subarray(start,end+1),{status:206,headers:{'content-length':String(end-start+1),'content-range':'bytes '+start+'-'+end+'/'+bytes.length}});}return new Response(options.method==='HEAD'?null:bytes,{headers:{'content-length':String(bytes.length)}});}
     }else throw Error('Unexpected fixture route');
     return Response.json(data);
   };
@@ -125,4 +125,9 @@ test('medium JSON is compressed for gzip clients and identity clients retain a p
  const {gunzipSync}=await import('node:zlib'),payload={text:'中型正文。'.repeat(1200)};
  const handler=createHostedHandler({env,storeFactory:()=>({}),authFactory:()=>({}),portalFactory:async()=>({handle:async({send})=>{send(200,payload);return true;}})});
  for(const encoding of ['gzip, deflate, br','identity']){const headers={};let bytes;const res={setHeader:(k,v)=>headers[k.toLowerCase()]=v,removeHeader:k=>delete headers[k.toLowerCase()],end:value=>bytes=Buffer.from(value)};await handler({url:'/api/auth/session',method:'GET',headers:{'accept-encoding':encoding}},res);assert.equal(res.statusCode,200);if(encoding==='identity'){assert.equal(headers['content-encoding'],undefined);assert.deepEqual(JSON.parse(bytes),payload);}else{assert.equal(headers['content-encoding'],'gzip');assert.ok(bytes.length<1000);assert.deepEqual(JSON.parse(gunzipSync(bytes)),payload);}}
+});
+test('bounded original ranges cross storage parts without fetching complete blobs and reject mixed manifests',async()=>{
+ const fixture=database(),sum=b=>createHash('sha256').update(b).digest('hex');let corrupt=false;const store=createHostedStore({env,fetcher:async(url,options)=>{const r=await fixture.fetcher(url,options);return corrupt&&options.headers?.Range?new Response('bad',{status:206,headers:{'content-length':'3','content-range':'bytes 0-2/4'}}):r;}}),source=Buffer.from('abcdefgh'),parts=[];
+ for(let n=0;n<2;n++){const bytes=source.subarray(n*4,n*4+4),target='slice-'+n;await store.putBlob(target,bytes);parts.push({target,size:4,sha256:sum(bytes)});}await store.adoptBlob('range-source',parts,{size:8,sha256:sum(source)});store.blob=()=>assert.fail('whole source must not be loaded');const slice=await store.blobRange('range-source',{offset:2,length:5,sha256:sum(source)});assert.equal(slice.bytes.toString(),'cdefg');assert.equal(slice.total,8);
+ for(const [offset,length]of [[-1,1],[0,1048577],[7,2]])await assert.rejects(store.blobRange('range-source',{offset,length,sha256:sum(source)}));await assert.rejects(store.blobRange('range-source',{offset:0,length:1,sha256:sum('other')}),e=>e.status===409);corrupt=true;await assert.rejects(store.blobRange('range-source',{offset:2,length:2,sha256:sum(source)}),e=>e.status===409);
 });

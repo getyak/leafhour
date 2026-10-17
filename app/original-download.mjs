@@ -2,11 +2,11 @@
 // Resume data lives only in this reader tab, scoped to the original hash.
 export async function downloadOriginalParts(options){
  if(!options.parts.every(p=>Number.isSafeInteger(p.size)&&p.size>0))return downloadLegacyParts(options);
- const {sha256,bytes,fetcher=fetch,onProgress=()=>{},onBytes=()=>{},refreshParts,refreshTimeoutMs=30000,resume={}}=options;let parts=options.parts;
+ const {sha256,bytes,fetcher=fetch,onProgress=()=>{},onBytes=()=>{},rangeFetcher,refreshParts,refreshTimeoutMs=30000,resume={}}=options;let parts=options.parts;
  if(parts.reduce((n,p)=>n+p.size,0)!==bytes)throw Error('原文件分块大小无法核验');
- const signature=sha256+':'+parts.map(p=>p.size).join(',');
+ const rangeBytes=rangeFetcher?1048576:256*1024,signature=sha256+':'+rangeBytes+':'+parts.map(p=>p.size).join(',');
  if(resume.signature!==signature){resume.signature=signature;resume.chunks=new Map();}
- const ranges=[],rangeBytes=256*1024;let globalOffset=0;
+ const ranges=[];let globalOffset=0;
  for(let part=0;part<parts.length;part++){for(let start=0;start<parts[part].size;start+=rangeBytes)ranges.push({part,start,end:Math.min(parts[part].size,start+rangeBytes)-1,offset:globalOffset+start});globalOffset+=parts[part].size;}
  const chunks=resume.chunks,inflight=new Map(),controller=new AbortController();let next=0,failure=null,refreshing=null;
  const report=()=>{onBytes([...chunks.values()].reduce((n,b)=>n+b.byteLength,0)+[...inflight.values()].reduce((n,b)=>n+b,0),bytes);onProgress(chunks.size,ranges.length);};
@@ -15,11 +15,11 @@ export async function downloadOriginalParts(options){
   for(let attempt=0;attempt<5;attempt++){
    const own=new AbortController(),abort=()=>own.abort();controller.signal.addEventListener('abort',abort,{once:true});let timer=setTimeout(()=>own.abort(),60000);
    try{
-    const response=await fetcher(parts[range.part].url,{headers:{Range:'bytes='+range.start+'-'+range.end},signal:own.signal});
-    if([401,403].includes(response.status)){await renew();throw Error('下载链接已更新，正在重试');}
+    const response=rangeFetcher?await rangeFetcher({offset:range.offset,length:range.end-range.start+1,signal:own.signal}):await fetcher(parts[range.part].url,{headers:{Range:'bytes='+range.start+'-'+range.end},signal:own.signal,cache:'no-store'});
+    if(!rangeFetcher&&[401,403].includes(response.status)){await renew();throw Error('下载链接已更新，正在重试');}
     if(response.status!==206)throw Error('原文件分段暂时无法读取，请重试');
     const expected=range.end-range.start+1,contentRange=response.headers.get('Content-Range');
-    if(contentRange&&contentRange!=='bytes '+range.start+'-'+range.end+'/'+parts[range.part].size)throw Error('原文件分段校验失败');
+    if(contentRange&&contentRange!==(rangeFetcher?'bytes '+range.offset+'-'+(range.offset+expected-1)+'/'+bytes:'bytes '+range.start+'-'+range.end+'/'+parts[range.part].size))throw Error('原文件分段校验失败');
     const buffer=new Uint8Array(expected);let length=0;
     if(response.body?.getReader){const reader=response.body.getReader();try{while(true){const item=await reader.read();if(item.done)break;if(length+item.value.length>expected)throw Error('原文件分段校验失败');buffer.set(item.value,length);length+=item.value.length;inflight.set(range.offset,length);report();clearTimeout(timer);timer=setTimeout(()=>own.abort(),30000);}}finally{await reader.cancel().catch(()=>{});reader.releaseLock();}}
     else{const raw=new Uint8Array(await response.arrayBuffer());if(raw.length!==expected)throw Error('原文件分段校验失败');buffer.set(raw);length=raw.length;}
