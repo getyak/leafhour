@@ -57,3 +57,12 @@ test('nonmodal reading chat leaves page tool dismissal usable without stealing c
   reader.toggleTools();const inside=new Event('pointerdown');Object.defineProperty(inside,'target',{value:{closest:()=>({tagName:'DIALOG'})}});document.dispatchEvent(inside);
   assert.equal(document.body.dataset.readingTools,'open');
 });
+
+test('immersive reading keeps the chapter heading and side tools quiet by default',async()=>{
+  const html=await readFile(new URL('../app/index.html',import.meta.url),'utf8');
+  assert.match(html,/<body[^>]*data-reading-tools="closed"/,'the side reading-tools panel starts collapsed');
+  assert.match(html,/id="reading-tools-panel"[^>]*aria-hidden="true"[^>]*inert/,'the panel is inert and hidden until opened');
+  const heading=/<header class="chapter-heading"[\s\S]*?<\/header>/.exec(html)?.[0];assert.ok(heading);assert.equal(heading.includes('<button'),false,'chapter content keeps no standalone tool control');
+  assert.equal(html.split('id="listen-chapter"').length-1,1,'the single listen entry stays in the collapsible panel');
+  assert.match(html,/id="open-chapter"[^>]*disabled/,'the chapter chooser is inert until the book is ready');
+});
