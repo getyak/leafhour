@@ -1,3 +1,5 @@
+import {arrivalExcerpt} from './arrival-excerpt.mjs';
+import {arrivalCatalog} from './arrival-catalog.mjs';
 // Short, locally bundled excerpts. Translations retain the catalog's draft status.
 const quotes=[
   {bookId:'gutenberg-alice',title:'爱丽丝梦游仙境',author:'刘易斯·卡罗尔',chapter:'第一章',sourceUrl:'https://www.gutenberg.org/ebooks/11',original:'“and what is the use of a book,” thought Alice “without pictures or conversations?”',translation:'书里连图画和对话都没有，读它有什么意思？',variant:'interpretive',status:'draft',passageId:'01b38ea4c710a84b-p00008',contentVersion:'01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e'},
@@ -6,8 +8,24 @@ const quotes=[
 ];
 
 export function arrivalQuote(bookId){
-  const match=quotes.find(quote=>quote.bookId===bookId);
-  return {...(match||quotes[0]),context:match?'书中一句':'书房拾句'};
+  const match=quotes.find(quote=>quote.bookId===bookId)||(Object.hasOwn(arrivalCatalog,bookId)?arrivalCatalog[bookId]:null);
+  return match?{...match,context:match.context||'书中一句',sourceLanguage:'en'}:null;
+}
+
+// Only the already-authorized reading response may supply private content.
+// No storage, extra request, generated translation or unrelated-book fallback.
+export function arrivalBookQuote(book,{bookId,passageId}={}){
+  if(!book||typeof book.bookId!=='string'||bookId&&book.bookId!==bookId)return null;
+  const text=value=>typeof value==='string'?value.trim():'';
+  const title=text(book.title?.zh)||text(book.title?.en)||text(book.title)||'当前书籍';
+  const rows=(book.sections||[]).flatMap(section=>(section.paragraphs||[]).map(paragraph=>({...paragraph,chapterId:section.chapterId})));
+  const prepared=arrivalQuote(book.bookId);
+  if(prepared&&prepared.contentVersion===book.contentVersion&&rows.some(row=>row.id===prepared.passageId&&row.original?.includes(prepared.original)))return prepared;
+  const requested=rows.find(row=>row.id===passageId),start=rows.find(row=>row.id===book.readingStart?.passageId);
+  const paragraph=[requested,start,...rows].find(row=>text(row?.original).length>=20);
+  const original=paragraph?text(paragraph.original):null;
+  const chapter=book.chapters?.find(row=>row.id===paragraph?.chapterId);
+  return {bookId:book.bookId,title,author:text(book.author),chapter:text(chapter?.title?.zh)||text(chapter?.title?.en)||text(chapter?.title),original:original?arrivalExcerpt(original):null,translation:null,sourceLanguage:text(book.sourceLanguage)||'und',context:'书中一段',passageId:paragraph?.id||null,contentVersion:book.contentVersion||null};
 }
 
 // Completion never waits for an animation. Tickets isolate retries from late work.
@@ -15,6 +33,7 @@ export function createArrivalLifecycle({render,schedule=setTimeout,cancel=clearT
   let sequence=0,pending=false,timer;
   const stopTimer=()=>{if(timer!==undefined)cancel(timer);timer=undefined;};
   return {
+    get pending(){return pending;},
     start(){
       stopTimer();const ticket=++sequence;pending=true;
       render({phase:'loading',slow:false});
@@ -45,15 +64,25 @@ export function mountReadingArrival(root){
   if(mounted.has(root))return mounted.get(root);
   const doc=root.ownerDocument,win=doc.defaultView,library=root.dataset.readingArrival==='library';
   const node=(tag,className,text)=>{const element=doc.createElement(tag);element.className=className;if(text!==undefined)element.textContent=text;return element;};
-  const quote=arrivalQuote(library?null:new URLSearchParams(win.location.search).get('book'));
+  const query=new URLSearchParams(win.location.search),selectedBookId=query.get('book');
+  const initialQuote=library?{...arrivalQuote('gutenberg-alice'),context:'书房拾句'}:arrivalQuote(selectedBookId);
   root.classList.add('reading-arrival');root.classList.toggle('arrival-library',library);
   root.removeAttribute('role');
   const scene=createPaperCompanion(doc);
   const greeting=node('p','arrival-greeting',library?'我来把书页摊开。':'等我翻到你那一页。');
-  const context=node('p','arrival-context',quote.context),text=node('blockquote','arrival-quote','“'+quote.translation+'”');
-  const original=node('p','arrival-original',quote.original);original.lang='en';
-  const source=node('p','arrival-source',quote.author+'《'+quote.title+'》 · '+quote.chapter);
-  const provenance=node('span','arrival-provenance','中文'+(quote.variant==='literal'?'直译':'意译')+'节选 · AI 草稿');source.append(provenance);
+  const context=node('p','arrival-context'),text=node('blockquote','arrival-quote');
+  const original=node('p','arrival-original'),source=node('p','arrival-source');
+  function showQuote(quote){
+    context.textContent=quote?.title&&!quote.original?'正在打开《'+quote.title+'》':quote?.context||'正在打开所选书籍';
+    text.hidden=!quote?.original;text.textContent=quote?.original?'“'+(quote.translation||quote.original)+'”':'';text.lang=quote?.translation?'zh':quote?.sourceLanguage||'und';
+    original.hidden=!quote?.translation;original.textContent=quote?.translation?quote.original:'';original.lang=quote?.sourceLanguage||'und';
+    source.hidden=!quote?.original;source.textContent=quote?.original?(quote.author?quote.author+' ':'')+'《'+quote.title+'》'+(quote.chapter?' · '+quote.chapter:''):'';
+    if(quote?.original){
+      const label=quote.translation?'中文'+(quote.variant==='literal'?'直译':'意译')+'节选 · AI 草稿':'原文节选';
+      source.append(node('span','arrival-provenance',label));
+    }
+  }
+  showQuote(initialQuote);
   const status=node('p','arrival-status');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
   const retry=node('button','arrival-retry','重新打开');retry.type='button';retry.hidden=true;retry.addEventListener('click',()=>win.location.reload());
   root.replaceChildren(scene,greeting,context,text,original,source,status,retry);
@@ -63,7 +92,7 @@ export function mountReadingArrival(root){
     retry.hidden=!view.slow||view.phase==='hidden';
   }});
   let current;
-  const controller={start(){current=lifecycle.start();return current;},finish(ticket=current){return lifecycle.finish(ticket);}};
+  const controller={start(){showQuote(initialQuote);current=lifecycle.start();return current;},setBook(book,ticket=current){if(library||ticket!==current||!lifecycle.pending)return false;const quote=arrivalBookQuote(book,{bookId:selectedBookId,passageId:query.get('passage')});if(!quote)return false;showQuote(quote);return true;},finish(ticket=current){return lifecycle.finish(ticket);}};
   mounted.set(root,controller);controller.start();return controller;
 }
 
