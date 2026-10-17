@@ -35,11 +35,10 @@ export function createBookIngestion({store,library,provider,batchPages=30,now=Da
   const save=async fn=>store.mutate(base,null,j=>{if(j.state==='cancelled'||j.lease?.token!==token)throw fail('解析已取消或已过期',409);return fn(j);});
   try{
    let job=await current();
+   const sourceDocument=async()=>{if(cachedDocument?.base!==base){const bytes=await store.blob(base+'/source');if(digest(bytes)!==job.sourceHash)throw fail('原文件校验失败',409);cachedDocument={base,doc:await PDFDocument.load(bytes,{updateMetadata:false})};}return cachedDocument.doc;};
    if(job.state==='preparing'){
-    if(cachedDocument?.base!==base){const bytes=await store.blob(base+'/source');if(digest(bytes)!==job.sourceHash)throw fail('原文件校验失败',409);cachedDocument={base,doc:await PDFDocument.load(bytes,{updateMetadata:false})};}
-    const doc=cachedDocument.doc,i=job.batches.findIndex(b=>!b.prepared);
-    if(i>=0){const b=job.batches[i];await current();const part=await PDFDocument.create();const pages=await part.copyPages(doc,Array.from({length:b.count},(_,n)=>b.start-1+n));pages.forEach(p=>part.addPage(p));await store.putBlob(base+'/batch-'+i,Buffer.from(await part.save()));await save(j=>{j.batches[i].prepared=true;});}
-    await save(j=>{if(j.batches.every(b=>b.prepared)){j.state='running';j.prepared=true;cachedDocument=null;}});return viewOf(await get(user,id));
+    const doc=await sourceDocument();if(doc.getPageCount()!==job.totalPages)throw fail('PDF 页数发生变化',409);
+    await save(j=>{j.state='running';j.prepared=true;});return viewOf(await get(user,id));
    }
    const active=job.batches.filter(b=>b.state==='submitted').length,newIndex=job.batches.findIndex(b=>b.state==='new');
    const i=active<3&&newIndex>=0?newIndex:job.batches.findIndex(b=>b.state!=='done');
@@ -57,7 +56,7 @@ export function createBookIngestion({store,library,provider,batchPages=30,now=Da
    const batch=job.batches[i];
    if(batch.state==='submitting'){await save(j=>{j.state='needs_review';j.error='上次请求未确认是否提交成功，为避免重复计费已暂停，请保留任务并联系管理员。';});return viewOf(await get(user,id));}
    if(!batch.handle){
-    const bytes=await store.blob(base+'/batch-'+i);await current();await save(j=>{j.batches[i].state='submitting';});
+    const doc=await sourceDocument(),part=await PDFDocument.create();const selected=await part.copyPages(doc,Array.from({length:batch.count},(_,n)=>batch.start-1+n));selected.forEach(p=>part.addPage(p));const bytes=Buffer.from(await part.save());await current();await save(j=>{j.batches[i].state='submitting';});
     const handle=await provider.submit(bytes);await save(j=>{j.batches[i].handle=handle;j.batches[i].state='submitted';});
    }else{
     const state=await provider.status(batch.handle);if(state.state==='failed'){await save(j=>{j.batches[i].state='failed';j.batches[i].confirmedFailed=true;});throw fail('PaddleOCR 未能完成这一批页面，请保留任务后重试',502);}
