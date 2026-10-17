@@ -41,3 +41,9 @@ git diff --check   # 无输出
 - 听读面板、声音设置、已有听读记录、朗读与授权行为未改动，也未做真实音频播放验证；「不隐式生成音频」由代码路径与聚焦测试证明，不等于真实浏览器播放验收。
 - `app/styles.css` 与 `app/reader-pagination.css` 之外的样式不在本轮范围：`styles.css` 中旧 `.running-title` 窄屏规则由 `app/reader-navigation.css` 的等优先级规则兜底（含 390px 工具展开时的 44px 高度）；`reader-pagination.css` 里 `body[data-paginated=true] .chapter-heading .listen-chapter` 规则因标题内不再有该按钮而自然失效，保留原文件不动，交由文件属主清理。
 - 实际浏览器的 390/768/1440px、夜读、键盘、焦点可见性与音频片段流程由交付方独立验收；本轮没有浏览器检查、没有全套测试、没有提交或发布。
+
+## Dynamic dialog integration
+
+The listening dialog is created after the side toolbar mounts. Its open lifetime must hold the toolbar without revealing a previously closed panel. A body-subtree observer covers later-added, opened, closed and removed native dialogs; the existing 5-second idle timer resumes only after the dialog hold is released.
+
+Parent browser acceptance exercises real chapter loading and native Escape at 390, 768 and 1440px in scroll and spread layouts. The initial implementation lost the listen opener after waiting 5.6 seconds in the dynamically created audio dialog; the mounted-toolbar regression first failed, then passed with the observer fix. All six real-browser cases now return to the listening entry after the same delay, with no audio generation requests, playback source, horizontal overflow or page errors. Current-head CI, production delivery and live verification remain required.
