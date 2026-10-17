@@ -1,5 +1,7 @@
 # Configuration verification · 2026-10-17
 
+Historical configuration audits below predate the official Gemini speech migration. Current speech configuration and acceptance boundaries are recorded in [Official Gemini speech](gemini-speech.md).
+
 The local configuration entry is `.env`, loaded by `npm start`. The loader preserves host variables, reads `.env.audio` as a fallback and gives `.env` priority. `npm run start:configured` remains an alias. `READER_AUDIO_SCRIPT_MODEL` supersedes the legacy dialogue name, with the old name retained as a fallback. Model defaults and existing pricing guards are unchanged.
 
 Four regressions were first observed failing before implementation, then passed. They cover environment precedence, explicit empty values, missing files, multiline values, actual script-generation payload selection, legacy fallback and secret-free startup summaries. Full `npm run verify:deploy` passed: 757 tests, 756 passed, one existing platform skip, zero failures; isolated runtime initialization, public build and release snapshot checks passed. Independent review approved the diff and separately passed 32 focused tests.

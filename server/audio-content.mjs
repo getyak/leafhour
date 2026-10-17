@@ -3,6 +3,21 @@ export const audioError=(message,status=400,code='invalid_audio_request')=>Objec
 export const audioHash=value=>createHash('sha256').update(typeof value==='string'?value:JSON.stringify(value)).digest('hex');
 export const audioPassages=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
 const boundary=(text,n)=>n===0||n===text.length||!(text.charCodeAt(n)>=0xDC00&&text.charCodeAt(n)<=0xDFFF&&text.charCodeAt(n-1)>=0xD800&&text.charCodeAt(n-1)<=0xDBFF);
+// WAV is larger than MP3. Version new sessions so legacy audio keeps its exact
+// source ranges, cache keys and listening positions after the provider change.
+export function chunkAudio(prepared,version=2){
+ if(version===1)return prepared;
+ if(version!==2)throw audioError('听读分段版本不受支持。');
+ return {...prepared,clips:prepared.clips.flatMap(clip=>{
+  const pieces=[];
+  for(let at=0;at<clip.text.length;){
+   let stop=Math.min(at+200,clip.text.length);
+   if(stop<clip.text.length){if(!boundary(clip.text,stop))stop--;const matches=[...clip.text.slice(at,stop).matchAll(/[。！？.!?；;\n]/g)];if(matches.length&&matches.at(-1).index>100)stop=at+matches.at(-1).index+1;}
+   const text=clip.text.slice(at,stop),start=(clip.start||0)+at;pieces.push({...clip,text,textHash:audioHash(text),start,end:start+text.length});at=stop;
+  }
+  return pieces;
+ })};
+}
 export function prepareReading(book,input){
  if(!input||input.contentVersion!==book.contentVersion)throw audioError('正文版本已变化，请重新选择。',409,'stale_source');
  if(!book.chapters.some(c=>c.id===input.chapterId))throw audioError('找不到这一章。');
