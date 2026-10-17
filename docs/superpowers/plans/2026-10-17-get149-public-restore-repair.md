@@ -1,0 +1,13 @@
+# GET-149 public ZIP restore repair (supplements frozen A7/A10)
+
+Observed on exact production source 2f3df86ad3c7b19d3f325fd484ba367fe95ad0dd: a four-edition PDF/EPUB backup passes archive parsing and low-level clean restore, but public restore commit rejects the source-review-v1 original association before application. Download accepts the same association. The preflight has a duplicated, obsolete processor list; revised contentVersion intentionally differs from the retained original SHA.
+
+Design: share the existing original-download association policy with public restore preflight, using one predicate for a valid SHA and either raw content identity or a supported derivative processor. Preserve existing OCR/native/EPUB compatibility and the source-review-v1 semantics already used for original downloads. Do not require a parent edition in a single-book backup: pending-note source snapshots are self-contained. Processor identity is not authorization or a signature; archive digest, original-byte SHA, private visibility, owner-scoped services, target source conflicts, and whole-package validation remain mandatory. No format bump, original replacement, model calls, or new public-book writes.
+
+Rejected alternative: append only one name to the duplicated list (retains drift). Broadly accept all unequal SHA/contentVersion pairs (removes a guard). Recompute revision hashes or require parent books (breaks existing single-edition backups and re-extraction compatibility).
+
+Fixed repair checks before implementation:
+1. Actual public staged restore of exported PDF/EPUB revisions and retained originals succeeds on a clean instance; exact source/revision metadata, old comments, migrated/pending/resolved notes and AI history are preserved. Both full and revision-only packages are covered; repeated commits and re-upload add nothing.
+2. A revision of a revision and re-extracted source remain eligible; source and owner isolation do not change. Unknown derivative processors with unequal contentVersion, public originals, source conflicts and damaged original bytes fail before any library writes. Existing recovery/expiry/auth and strict metadata tests remain green.
+3. Targeted RED must reproduce this exact preflight rejection; GREEN, full software checks and independent Codex review bind the final diff. Exact-head all CI and normal merge precede actual deployed restore.
+4. On the deployed repair, retry the already-exported four-edition ZIP in the authorized test account; check immutable receipt, exact entries and historical book unchanged. Only then cleanup own synthetic fixtures and close GET-149. No weakening of original A1-A10.

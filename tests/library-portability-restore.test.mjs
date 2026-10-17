@@ -22,6 +22,53 @@ async function seed(source,filename='one.txt'){
 async function archive(source){const backup=await source.library.exportLibrary(owner);for(const e of backup.books)e.chat=await source.chat.exportHistory(owner,e.book.bookId);const originals=[];for(const e of backup.books)originals.push({bookId:e.book.bookId,bytes:(await source.library.getOriginal(owner,e.book.bookId)).bytes});return {backup,bytes:await createLibraryArchive(backup,{originals})};}
 async function upload(p,bytes,user=owner){const operation=await p.start(user,{bytes:bytes.length,sha256:await portableHash(bytes)});for(let offset=0;offset<bytes.length;offset+=PART_BYTES)await p.part(user,operation.id,{offset,data:Buffer.from(bytes.subarray(offset,offset+PART_BYTES)).toString('base64')});return operation;}
 
+test('public ZIP restore preserves revised originals and pending/resolved notes, including a standalone re-extracted edition',async t=>{
+ const s=await setup(t),book=await seed(s.source),p=book.sections[0].paragraphs[0];
+ await s.source.library.addComment(owner,book.bookId,{id:'kept-note',passageId:book.sections[0].paragraphs[1].id,text:'Unchanged source thought'});
+ const revision=(await s.source.library.createSourceRevision(owner,book.bookId,{baseContentVersion:book.contentVersion,operation:'correct',changes:[{passageId:p.id,before:p.original,replacement:['Split first.','Split second.'],reason:'Compared with retained original',evidence:{sha256:book.source.sha256,href:book.source.filename}}]})).book;
+ const pending=await s.source.library.records(owner,revision.bookId);assert.equal(pending.pendingAnchors.length,2);assert.equal(pending.comments.length,1);
+ const {bytes}=await archive(s.source),op=await upload(s.portability,bytes),receipt=await s.portability.commit(owner,op.id);
+ assert.equal(receipt.restored,2);assert.equal(receipt.originals,2);assert.deepEqual(await s.portability.commit(owner,op.id),receipt);
+ assert.deepEqual(await s.target.library.records(owner,revision.bookId),pending);assert.deepEqual((await s.target.library.getOriginal(owner,revision.bookId)).bytes,(await s.source.library.getOriginal(owner,book.bookId)).bytes);
+ await s.source.library.resolveSourceAnchor(owner,revision.bookId,{pendingId:pending.pendingAnchors[0].id,passageId:revision.sections[0].paragraphs[0].id,contentVersion:revision.contentVersion});
+ const resolved=await archive(s.source),repeat=await upload(s.portability,resolved.bytes);await s.portability.commit(owner,repeat.id);
+ assert.deepEqual(await s.target.library.records(owner,revision.bookId),await s.source.library.records(owner,revision.bookId));
+ const content=history=>history.turns.map(({activity,...turn})=>turn);assert.deepEqual(content(await s.target.chat.exportHistory(owner,book.bookId)),content(await s.source.chat.exportHistory(owner,book.bookId)));assert.equal(s.calls(),1,'restoration must never generate');
+ const before=(await s.target.library.exportLibrary(owner)).books,retry=await upload(s.portability,resolved.bytes);await s.portability.commit(owner,retry.id);assert.deepEqual((await s.target.library.exportLibrary(owner)).books,before);
+ const extracted=(await s.source.library.createSourceRevision(owner,revision.bookId,{baseContentVersion:revision.contentVersion,operation:'reextract'})).book,entry=await s.source.library.exportBookEntry(owner,extracted.bookId),original=(await s.source.library.getOriginal(owner,extracted.bookId)).bytes;
+ const standalone=await createLibraryArchive({kind:'marginalia-library',schemaVersion:1,books:[entry]},{originals:[{bookId:extracted.bookId,bytes:original}]}),clean=await s.create('standalone'),portability=createLibraryPortability({...clean,store:store()}),single=await upload(portability,standalone);await portability.commit(owner,single.id);
+ assert.deepEqual((await clean.library.exportLibrary(owner)).books[0].book,entry.book);assert.deepEqual(await clean.library.records(owner,extracted.bookId),entry.records);assert.deepEqual((await clean.library.getOriginal(owner,extracted.bookId)).bytes,original);
+ await assert.rejects(clean.library.getOriginal(other,extracted.bookId),{status:404});
+});
+
+test('actual PDF and EPUB revisions restore through staged ZIP preflight with exact retained originals',async t=>{
+ const s=await setup(t),{PDFDocument,StandardFonts}=await import('pdf-lib'),pdf=await PDFDocument.create(),font=await pdf.embedFont(StandardFonts.Helvetica);pdf.addPage().drawText('Synthetic PDF source.',{x:20,y:700,font});
+ const epub=zipSync(Object.fromEntries(Object.entries({mimetype:'application/epub+zip','META-INF/container.xml':'<container xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="package.opf" media-type="application/oebps-package+xml"/></rootfiles></container>','package.opf':'<package xmlns="http://www.idpf.org/2007/opf" version="3.0"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>Synthetic EPUB</dc:title><dc:language>en</dc:language></metadata><manifest><item id="one" href="one.xhtml" media-type="application/xhtml+xml"/></manifest><spine><itemref idref="one"/></spine></package>','one.xhtml':'<html xmlns="http://www.w3.org/1999/xhtml"><body><p>Synthetic EPUB source.</p></body></html>'}).map(([name,text])=>[name,strToU8(text)])),{level:0});
+ for(const [filename,bytes]of [['source.pdf',Buffer.from(await pdf.save())],['source.epub',Buffer.from(epub)]]){
+  const book=await s.source.library.importDocument(owner,{filename,bytes}),p=book.sections[0].paragraphs[0];await s.source.library.addComment(owner,book.bookId,{id:'source-note',passageId:p.id,text:'My source thought'});
+  await s.source.library.createSourceRevision(owner,book.bookId,{baseContentVersion:book.contentVersion,operation:'correct',changes:[{passageId:p.id,before:p.original,replacement:[p.original+' Corrected.'],reason:'Retained source comparison',evidence:{sha256:book.source.sha256,...(book.source.format==='pdf'?{page:1}:{href:p.source.href})}}]});
+ }
+ const {backup,bytes}=await archive(s.source),op=await upload(s.portability,bytes),receipt=await s.portability.commit(owner,op.id);assert.equal(receipt.restored,4);assert.equal(receipt.originals,4);
+ for(const entry of backup.books){assert.deepEqual(await s.target.library.getBook(owner,entry.book.bookId),entry.book);assert.deepEqual(await s.target.library.records(owner,entry.book.bookId),entry.records);assert.deepEqual((await s.target.library.getOriginal(owner,entry.book.bookId)).bytes,(await s.source.library.getOriginal(owner,entry.book.bookId)).bytes);}
+ assert.equal(s.calls(),0);
+});
+
+test('unsupported derivative and public originals still reject the entire ZIP before writes',async t=>{
+ const s=await setup(t),book=await seed(s.source),{backup}=await archive(s.source),original=(await s.source.library.getOriginal(owner,book.bookId)).bytes;
+ for(const change of [b=>{b.contentVersion='unsupported-derivative';b.source.processor='unknown-source-processor';},b=>{b.visibility='public';}]){
+  const bad=structuredClone(backup);change(bad.books[0].book);bad.books[0].records.contentVersion=bad.books[0].book.contentVersion;bad.books[0].records.comments=[];bad.books[0].records.questions=[];delete bad.books[0].chat;
+  const bytes=await createLibraryArchive(bad,{originals:[{bookId:book.bookId,bytes:original}]}),op=await upload(s.portability,bytes);await assert.rejects(s.portability.commit(owner,op.id),/原文件无法对应/);assert.equal((await s.target.library.exportLibrary(owner)).books.length,0);
+ }
+ const {bytes}=await archive(s.source),files=unzipSync(bytes),manifest=JSON.parse(strFromU8(files['manifest.json'])),file=manifest.files.find(f=>f.path.startsWith('originals/'));files[file.path][0]^=1;file.sha256=await portableHash(files[file.path]);files['manifest.json']=strToU8(JSON.stringify(manifest));
+ const op=await upload(s.portability,zipSync(files));await assert.rejects(s.portability.commit(owner,op.id),/原文件校验/);assert.equal((await s.target.library.exportLibrary(owner)).books.length,0);
+});
+
+test('legacy backup without an explicit visibility still restores only into the authenticated private library',async t=>{
+ const s=await setup(t),book=await seed(s.source),{backup}=await archive(s.source),original=(await s.source.library.getOriginal(owner,book.bookId)).bytes;delete backup.books[0].book.visibility;
+ const bytes=await createLibraryArchive(backup,{originals:[{bookId:book.bookId,bytes:original}]}),op=await upload(s.portability,bytes);await s.portability.commit(owner,op.id);
+ assert.equal((await s.target.library.getBook(owner,book.bookId)).visibility,'private');assert.deepEqual((await s.target.library.getOriginal(owner,book.bookId)).bytes,original);await assert.rejects(s.target.library.getBook(other,book.bookId),{status:404});
+});
+
 test('fresh instance restores original, comments, exact cited AI history; retry across instances adds nothing and never generates',async t=>{
  const s=await setup(t),book=await seed(s.source),{bytes}=await archive(s.source),before=s.calls(),op=await upload(s.portability,bytes);
  const receipt=await s.portability.commit(owner,op.id);assert.deepEqual(await s.portability.commit(owner,op.id),receipt,'lost acknowledgement has an immutable receipt');

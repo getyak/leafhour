@@ -6,6 +6,14 @@ const text=(v,max=2000)=>typeof v==='string'&&v.trim().length>0&&v.length<=max;
 const id=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(v);
 const date=v=>typeof v==='string'&&Number.isFinite(Date.parse(v));
 const fields=new Set(['id','bookId','contentVersion','passageId','text','origin','createdAt','updatedAt','revision','lastEditId','status','quote','quoteLanguage','quoteOrigin']);
+const originalDerivatives=new Set(['PaddleOCR-VL-1.6','pdfjs-native','native+paddle-auto-v1','epub-spine-v1','source-review-v1']);
+// Derivative content has its own version while retaining the original SHA.
+// This association policy is shared by original downloads and ZIP preflight;
+// it never replaces original-byte hashing, private ownership or conflict checks.
+export function hasOriginalSourceVersion(book){
+ const hash=book?.source?.sha256;
+ return typeof hash==='string'&&/^[a-f0-9]{64}$/.test(hash)&&(hash===book.contentVersion||originalDerivatives.has(book.source.processor));
+}
 export function portableSourceNote(record){return Object.fromEntries(Object.entries(record).filter(([key])=>fields.has(key)));}
 
 // Pending records are private record-domain objects, never book/Agent content.
