@@ -30,7 +30,7 @@
   </tbody></table>
   <p>建议先只用 <code>content</code>。授权七天后过期，也可以提前撤回。撤回后，后续服务鉴权会失败；撤回不能清除已经复制到你的 AI 宿主里的内容。</p>
   <h2 id="setup">连接适配器。</h2>
-  <ol><li>按<a href="https://github.com/getyak/leafhour#readme">仓库说明</a>在本地运行 Leafhour，或使用托管阅读服务。在自己的<a href="/library">书房</a>导入一本书，或选择一本公版样书。</li><li>通过兼容客户端或已认证 API，用 <code>POST /api/library/grants</code> 创建带 <code>bookId</code> 和所选 <code>scopes</code> 的授权。令牌只返回一次，请保存在 AI 宿主的私密配置里。</li><li>读取 <code>GET /api/library/mcp-setup</code>，并用<a href="https://github.com/getyak/leafhour/blob/main/app/mcp-config.mjs">配置生成器</a>创建宿主配置。本地源码运行时，适配器以 <code>node server/mcp.mjs</code> 启动。托管生成器会固定已验证的适配器版本，并设置明确的 HTTPS 开关。</li><li>在兼容的 AI 宿主中启用 MCP 服务器，并在工具请求中带上授权的书籍 ID。用完后可用 <code>POST /api/library/grants/{id}/revoke</code> 撤回授权。</li></ol>
+  <ol><li>按<a href="https://github.com/getyak/leafhour#readme">仓库说明</a>在本地运行 Leafhour，或使用托管阅读服务。在自己的<a href="/library">书房</a>导入一本书，或选择一本公版样书。</li><li>通过兼容客户端或已认证 API，用 <code>POST /api/library/grants</code> 创建带 <code>bookId</code> 和所选 <code>scopes</code> 的授权。令牌只返回一次，请保存在 AI 宿主的私密配置里。</li><li>读取 <code>GET /api/library/mcp-setup</code>，并用<a href="https://github.com/getyak/leafhour/blob/main/app/mcp-config.mjs">配置生成器</a>创建宿主配置。本地源码运行时，适配器以 <code>node server/mcp.mjs</code> 启动。托管接入会返回实际部署的源码提交，生成的配置固定到这份不可变的源码包并显式允许 HTTPS 书房；缺少部署来源时直接拒绝。</li><li>在兼容的 AI 宿主中启用 MCP 服务器，并在工具请求中带上授权的书籍 ID。用完后可用 <code>POST /api/library/grants/{id}/revoke</code> 撤回授权。</li></ol>
   <p>适配器使用这些环境变量：</p>
   <pre><code>READER_SERVICE_URL=http://127.0.0.1:8330
 READER_AGENT_TOKEN=&lt;your book-scoped grant&gt;
@@ -40,13 +40,13 @@ READER_AGENT_TOKEN=&lt;your book-scoped grant&gt;
 # READER_ALLOW_REMOTE=true</code></pre>
   <p>不要把登录密码、会话 Cookie、Supabase 密钥或授权令牌写进公开文档或仓库。MCP 授权与网页登录相互独立。宿主提供密钥存储时，请使用它。</p>
   <h2 id="tools">先取一段，再往深处读。</h2>
-  <p><code>reader_get_context</code> 返回一个段落及其邻段和稳定锚点。<code>reader_get_chapter</code> 每次最多返回 20 段和继续偏移。<code>reader_search</code> 在授权书籍内搜索，最多返回 20 条带锚点的结果。</p>
+  <p><code>reader_get_manifest</code> 返回这本书的来源信息和章节标识。<code>reader_get_context</code> 返回一个段落及其邻段和稳定锚点。<code>reader_get_chapter</code> 每次最多返回 20 段和继续游标。<code>reader_search</code> 在授权书籍内搜索，最多返回 20 条带锚点的结果。</p>
   <p>配合其他权限，<code>reader_get_notes</code> 读取评论和问题，<code>reader_get_reading_activity</code> 读取位置和阅读时段，<code>reader_add_comment</code> 保存用户明确提供的文字。Agent 的访问不会计入阅读日历。</p>
   <p>例如：“在我授权的书里找出关于友谊的段落，显示来源章节和段落锚点，帮我比较作者的措辞。”Agent 需要书籍 ID；它无法推断出搜索整个私人书房的权限。</p>
   <h2 id="limits">了解当前的限制。</h2>
   <p>适配器也提供音频工具，但托管音频生成未开放。本地音频需要单独配置和权限；生成音频可能产生供应商费用。MCP 目前不能上传书籍、自动翻译整个书库，也不会自行安排通知。</p>
   <p>站内阅读助手有独立的只读边界，与这个外部 MCP 授权相互独立。托管处理细节见<a href="/zh-hans/privacy">隐私与数据说明</a>。</p>
-  <p>确切的工具定义和当前服务行为，请查看<a href="https://github.com/getyak/leafhour/blob/main/server/mcp.mjs">适配器源码</a>和<a href="https://github.com/getyak/leafhour/blob/main/server/portal.mjs">服务路由</a>。本文描述当前实现，不是计划中的能力。</p>
+  <p>确切的工具定义和当前服务行为，请查看<a href="https://github.com/getyak/leafhour/blob/main/server/mcp.mjs">适配器源码</a>、<a href="https://github.com/getyak/leafhour/blob/main/server/portal.mjs">服务路由</a>和<a href="https://github.com/getyak/leafhour/blob/main/docs/mcp-reading.md">按书授权的 MCP 阅读说明</a>。本文描述当前实现，不是计划中的能力。</p>
 </article></main>
 <footer class="public-footer"><a href="/zh-hans">Leafhour · Stay with a book.</a><a href="https://github.com/getyak/leafhour">源码</a><a href="/zh-hans/privacy">隐私说明</a><div class="home-languages" role="group" aria-label="切换界面语言"><a href="/mcp" lang="en" hreflang="en">English</a><a aria-current="true" href="/zh-hans/mcp" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a href="/zh-hant/mcp" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/mcp" lang="ja" hreflang="ja">日本語</a></div><a href="mailto:support@leafhour.com">联系</a></footer>
 </body>

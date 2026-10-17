@@ -30,7 +30,7 @@
   </tbody></table>
   <p>まずは <code>content</code> だけをお勧めします。許可は 7 日で失効し、それ以前にも取り消せます。取り消した後のサービス認証は失敗しますが、AI ホストにすでに複製された内容は消せません。</p>
   <h2 id="setup">アダプタをつなぎます。</h2>
-  <ol><li><a href="https://github.com/getyak/leafhour#readme">リポジトリの手順</a>で Leafhour をローカル実行するか、ホスティング済みの読書サービスを使います。自分の<a href="/library">書斎</a>で本を取り込むか、公開サンプルを選びます。</li><li>対応クライアントか認証済み API から、<code>POST /api/library/grants</code> で <code>bookId</code> と <code>scopes</code> を指定して許可を作成します。トークンは一度だけ返るので、AI ホストの秘密の設定に保管してください。</li><li><code>GET /api/library/mcp-setup</code> を読み、<a href="https://github.com/getyak/leafhour/blob/main/app/mcp-config.mjs">設定ビルダー</a>でホスト設定を作ります。ローカルのソースでは <code>node server/mcp.mjs</code> がアダプタです。ホスティング側のビルダーは検証済みのアダプタ版を固定し、HTTPS の明示的なオプトインを設定します。</li><li>対応 AI ホストで MCP サーバーを有効にし、ツールのリクエストに許可された本の ID を渡します。使い終えたら <code>POST /api/library/grants/{id}/revoke</code> で取り消します。</li></ol>
+  <ol><li><a href="https://github.com/getyak/leafhour#readme">リポジトリの手順</a>で Leafhour をローカル実行するか、ホスティング済みの読書サービスを使います。自分の<a href="/library">書斎</a>で本を取り込むか、公開サンプルを選びます。</li><li>対応クライアントか認証済み API から、<code>POST /api/library/grants</code> で <code>bookId</code> と <code>scopes</code> を指定して許可を作成します。トークンは一度だけ返るので、AI ホストの秘密の設定に保管してください。</li><li><code>GET /api/library/mcp-setup</code> を読み、<a href="https://github.com/getyak/leafhour/blob/main/app/mcp-config.mjs">設定ビルダー</a>でホスト設定を作ります。ローカルのソースでは <code>node server/mcp.mjs</code> がアダプタです。ホスティング側の接続では実際のデプロイ済みソースコミットが返り、生成される設定はその不変のソースパックに固定され、HTTPS の書斎を明示的に許可します。デプロイ由来が確認できない場合は遮断します。</li><li>対応 AI ホストで MCP サーバーを有効にし、ツールのリクエストに許可された本の ID を渡します。使い終えたら <code>POST /api/library/grants/{id}/revoke</code> で取り消します。</li></ol>
   <p>アダプタは次の環境変数を使います：</p>
   <pre><code>READER_SERVICE_URL=http://127.0.0.1:8330
 READER_AGENT_TOKEN=&lt;your book-scoped grant&gt;
@@ -40,13 +40,13 @@ READER_AGENT_TOKEN=&lt;your book-scoped grant&gt;
 # READER_ALLOW_REMOTE=true</code></pre>
   <p>ログインパスワード、セッション Cookie、Supabase キー、許可トークンを公開文書やリポジトリに書かないでください。MCP の許可はウェブのログインとは別物です。ホストに秘密情報の保管機能があれば使ってください。</p>
   <h2 id="tools">まず一節を取得して、そこから深めます。</h2>
-  <p><code>reader_get_context</code> は段落と前後の段落、安定したアンカーを返します。<code>reader_get_chapter</code> は一度に最大 20 段と続きのオフセットを返します。<code>reader_search</code> は許可された本を検索し、アンカー付きの結果を最大 20 件返します。</p>
+  <p><code>reader_get_manifest</code> は本の出典情報と章の識別子を返します。<code>reader_get_context</code> は段落と前後の段落、安定したアンカーを返します。<code>reader_get_chapter</code> は一度に最大 20 段と続きのカーソルを返します。<code>reader_search</code> は許可された本を検索し、アンカー付きの結果を最大 20 件返します。</p>
   <p>追加の権限では、<code>reader_get_notes</code> がコメントと質問を、<code>reader_get_reading_activity</code> が位置とセッションを、<code>reader_add_comment</code> がユーザーが明示的に渡した文を保存します。Agent のアクセスが読書カレンダーに時間として加算されることはありません。</p>
   <p>例：「許可された本から友情についての段落を探し、出典の章と段落アンカーを見せて、作者の言い回しを比較してほしい。」Agent には本の ID が必要です。プライベート書庫全体を検索する許可があるとは推測できません。</p>
   <h2 id="limits">現在の制限を知っておきます。</h2>
   <p>アダプタは音声ツールも公開していますが、ホスティング側の音声生成は有効になっていません。ローカルの音声は別途の設定と権限が必要で、生成にはプロバイダーの費用がかかる場合があります。MCP は現時点で本のアップロード、書庫全体の自動翻訳、通知の自動スケジュールは行いません。</p>
   <p>組み込みの読書アシスタントは読み取り専用の独自の境界を持ち、この外部 MCP の許可とは別物です。ホスティング側の処理詳細は<a href="/ja/privacy">プライバシーとデータの取り扱い</a>をご覧ください。</p>
-  <p>正確なツール定義と現在のサービスの挙動は、<a href="https://github.com/getyak/leafhour/blob/main/server/mcp.mjs">アダプタのソース</a>と<a href="https://github.com/getyak/leafhour/blob/main/server/portal.mjs">サービスのルート</a>をご確認ください。このガイドは現在の実装を説明するもので、将来の機能ではありません。</p>
+  <p>正確なツール定義と現在のサービスの挙動は、<a href="https://github.com/getyak/leafhour/blob/main/server/mcp.mjs">アダプタのソース</a>、<a href="https://github.com/getyak/leafhour/blob/main/server/portal.mjs">サービスのルート</a>、<a href="https://github.com/getyak/leafhour/blob/main/docs/mcp-reading.md">本ごと権限の MCP 読み取り仕様</a>をご確認ください。このガイドは現在の実装を説明するもので、将来の機能ではありません。</p>
 </article></main>
 <footer class="public-footer"><a href="/ja">Leafhour · Stay with a book.</a><a href="https://github.com/getyak/leafhour">ソースコード</a><a href="/ja/privacy">プライバシー</a><div class="home-languages" role="group" aria-label="表示言語"><a href="/mcp" lang="en" hreflang="en">English</a><a href="/zh-hans/mcp" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a href="/zh-hant/mcp" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a aria-current="true" href="/ja/mcp" lang="ja" hreflang="ja">日本語</a></div><a href="mailto:support@leafhour.com">お問い合わせ</a></footer>
 </body>
