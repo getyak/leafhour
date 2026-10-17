@@ -1,4 +1,4 @@
-import {mediaConfiguration} from './media-config.mjs';import {audioError} from './audio-content.mjs';
+import {mediaConfiguration} from './media-config.mjs';import {audioError,prepareNarrationBatch} from './audio-content.mjs';
 import {createAudioBackup} from './audio-backup.mjs';
 import {estimateAudio} from './audio-estimate.mjs';
 export function createAudioRoutes({audio,library,guides,guideGenerator}){
@@ -12,12 +12,15 @@ export function createAudioRoutes({audio,library,guides,guideGenerator}){
   const get=req.method==='GET',post=req.method==='POST';
   if(action==='guides/prepare'&&post){send(200,await(await guideService()).prepare(user,bookId,body));return true;}
   if(action==='guides'&&post){send(202,await(await guideService()).create(user,bookId,body));return true;}
+  const guideRequest=action.match(/^guides\/requests\/([A-Za-z0-9-]{1,128})\/cancel$/);
+  if(guideRequest&&post){send(200,await(await guideService()).cancelRequest(user,bookId,guideRequest[1]));return true;}
   const guide=action.match(/^guides\/([A-Za-z0-9-]+)(\/cancel)?$/);
   if(guide){if(guide[2]&&post)send(200,await(await guideService()).cancel(user,bookId,guide[1]));else if(!guide[2]&&get)send(200,await(await guideService()).get(user,bookId,guide[1]));else return false;return true;}
   if(action==='export'&&get){res.setHeader('Content-Disposition','attachment; filename="leafhour-audio-backup.json"');send(200,await backup.exportAudio({owner:user,bookId,includeAudio:new URL(req.url,'http://reader.local').searchParams.get('audio')!=='0'}));return true;}
   if(action==='import'&&post){send(200,await backup.restoreAudio({owner:user,bookId,backup:body}));return true;}
   if(action==='validate'&&post){const {validateAudioBackup}=await import('./audio-backup.mjs');const valid=validateAudioBackup(await library.getBook(user,bookId),body);send(200,{sessions:valid.sessions.length,dialogues:valid.dialogues.length});return true;}
   if(action==='prepare'&&post){const prepared=await audio.prepare(user,bookId,body);send(200,{...prepared,estimate:estimateAudio(prepared.clips,audio.capabilities().speechModel),externalProcessing:true});return true;}
+  if(action==='prepare/narration'&&post){const prepared=prepareNarrationBatch(await library.getBook(user,bookId),body);send(200,{...prepared,estimate:estimateAudio(prepared.clips,audio.capabilities().speechModel),externalProcessing:true});return true;}
   if(action==='preferences'){if(get)send(200,await audio.getPreferences(user));else if(post)send(200,await audio.savePreferences(user,body));else return false;return true;}
   if(action==='records'&&get){send(200,await audio.listRecords(user,bookId));return true;}
   if(action==='sessions'&&post){send(202,await audio.createSession(user,bookId,body));return true;}

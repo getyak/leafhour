@@ -5,3 +5,8 @@ test('guide routes use the authenticated owner for prepare, creation, polling an
  assert.deepEqual(f.calls.map(c=>c.method),['prepare','create','get','cancel']);assert.ok(f.calls.every(c=>c.args[0].id==='u'&&c.args[1]==='b'));
 });
 test('anonymous guide preparation never reaches generation',async()=>{const f=fixture();await assert.rejects(f.call('guides/prepare','POST',null),{status:401});assert.equal(f.calls.length,0);});
+test('bounded chapter narration is an authenticated read-only preview with exact next offsets',async()=>{
+ const book={bookId:'b',contentVersion:'v',chapters:[{id:'c'}],sections:[{chapterId:'c',paragraphs:[{id:'p',original:'A sentence. '.repeat(500)}]}]},routes=createAudioRoutes({audio:{store:{},capabilities:()=>({speechModel:'gemini-3.8-flash-tts'})},library:{getBook:async()=>book}});let response;
+ const request={req:{method:'POST'},res:{},user:{id:'u'},bookId:'b',action:'prepare/narration',body:{contentVersion:'v',chapterId:'c',from:{passageId:'p',start:0}},send:(status,body)=>response={status,body}};
+ assert.equal(await routes.handle(request),true);assert.equal(response.status,200);assert.equal(response.body.clips.length,10);assert.equal(response.body.continuation.start,response.body.input.parts.at(-1).end);assert.ok(response.body.estimate);await assert.rejects(routes.handle({...request,user:null}),{status:401});
+});
