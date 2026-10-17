@@ -196,7 +196,7 @@ const strings=[
   ['带来第一本书','Bring your first book','帶來第一本書','最初の本を持ち込む'],
   ['自己的书与阅读记录。','Your books and reading records.','自己的書與閱讀記錄。','自分の本と読書記録。'],
   ['先选一本书，读几页。','Choose a book and read a few pages.','先選一本書，讀幾頁。','一冊選んで、数頁読みます。'],
-  ['可拖动封面或拖动手柄调整位置。手柄也支持左右方向键；更多操作中可向前或向后移动。','Drag the cover or handle to reorder. The handle also supports the arrow keys; more actions can move a book forward or back.','可拖動封面或拖動手柄調整位置。手柄也支持左右方向鍵；更多操作中可向前或向後移動。','表紙かハンドルをドラッグして並べ替えられます。ハンドルは左右の矢印キーにも対応し、その他の操作で前後に移動できます。'],
+  ['拖动整本书调整位置，触屏可长按后移动。键盘聚焦调整位置按钮后使用左右方向键；更多操作中也可向前或向后移动。','Drag a book to reorder; on touchscreens, press and hold first. Focus the reorder button and use the arrow keys, or move a book forward or back in More actions.','拖動整本書調整位置，觸屏可長按後移動。鍵盤聚焦調整位置按鈕後使用左右方向鍵；更多操作中也可向前或向後移動。','本をドラッグして並べ替えます。タッチ操作では長押ししてから移動します。キーボードでは位置調整ボタンにフォーカスして左右の矢印キーを使うか、その他の操作から前後に移動できます。'],
   ['这次，你想读什么？','What would you like to read?','這次，你想讀什麼？','今回は、何を読みますか？'],
   ['原文件保存在自己的书房，提取后即可阅读。','The original file stays in your reading room; extracted text becomes readable.','原文件保存在自己的書房，提取後即可閱讀。','元のファイルは自分の書斎に保存され、抽出できたら読み進めます。'],
   ['拖放一本书，或点击选择','Drop a book here, or click to choose','拖放一本書，或點擊選擇','本をドロップするか、クリックして選択'],
