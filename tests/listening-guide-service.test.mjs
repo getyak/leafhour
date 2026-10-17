@@ -121,8 +121,9 @@ test('duration estimates stay ordered even when an opening contains a long first
 
 test('a request deadline releases scheduled work even if a provider ignores its abort signal',async t=>{
  let release,signal;const f=await fixture(t,{generator:input=>{signal=input.signal;return new Promise(resolve=>release=()=>resolve(generated(input)));}}),scheduled=[];
- const service=createListeningGuideService({...f.options,sliceDurationMs:25,schedule:p=>scheduled.push(p)}),job=await service.create(owner,'audio-book',request);
- while(!release)await pause();const bounded=await Promise.race([scheduled[0].then(()=>true),new Promise(resolve=>setTimeout(()=>resolve(false),150))]);
+ const service=createListeningGuideService({...f.options,sliceDurationMs:2000,schedule:p=>scheduled.push(p)}),job=await service.create(owner,'audio-book',request);
+ for(let n=0;n<500&&!release;n++)await pause();assert.ok(release,'controlled provider did not start before the slice deadline');
+ let fallback;const bounded=await Promise.race([scheduled[0].then(()=>true),new Promise(resolve=>{fallback=setTimeout(()=>resolve(false),5000);})]);clearTimeout(fallback);
  assert.equal(bounded,true);assert.equal(signal.aborted,true);release();await pause();
  assert.equal((await f.store.read(owner.id,'audio-book')).dialogues.length,0);
  await f.store.mutate(owner.id,'audio-book',data=>{data.guideJobs[0].lease.expiresAt=0;return null;});assert.equal((await service.get(owner,'audio-book',job.id)).status,'interrupted');

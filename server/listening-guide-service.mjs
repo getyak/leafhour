@@ -100,6 +100,7 @@ export function createListeningGuideService({audio,library,generator=createGuide
     if(store.durable&&submitted>=1)return;
     const job=await claim(owner,bookId,id);if(!job)return;token=job.lease.token;
     const book=await current(owner,bookId,job.scope),batches=guideBatches(book,job.scope);
+    if(controller.signal.aborted)return;
     if(job.stage==='budget'){
      if(store.durable&&typeof store.reserveGuideBudget!=='function')throw audioError('导听额度暂时无法核验。',503,'quota_unavailable');
      await store.reserveGuideBudget?.(owner.id,job.id,job.maxCalls);
@@ -108,6 +109,7 @@ export function createListeningGuideService({audio,library,generator=createGuide
     if(job.stage==='publish'){
      const candidate=validateGuide(book,job.scope,job.candidate);
      if(job.verification.length!==candidate.turns.length||job.readPassageIds.length!==job.scope.passageIds.length)throw audioError('导听的阅读与主张核验尚未完成。',502,'incomplete_coverage');
+     const live=await snapshot(owner,bookId,id);if(controller.signal.aborted||live.status!=='preparing'||live.lease?.token!==token)return;
      const dialogue=await audio.registerDialogue(owner,bookId,{...candidate,idempotencyKey:'guide:'+id});
      const next=await transition(owner,bookId,id,token,j=>{j.dialogueId=dialogue.id;j.dialogueRevision=dialogue.revision;j.stage='audio';j.lease=null;});if(!next)return;continue;
     }
@@ -117,7 +119,9 @@ export function createListeningGuideService({audio,library,generator=createGuide
     }
     if(job.stage==='audio'){
      validateGuide(book,job.scope,job.candidate);
-     const session=await audio.createSession(owner,bookId,{mode:'dialogue',dialogueId:job.dialogueId,revision:job.dialogueRevision,idempotencyKey:'guide:'+id});
+     const live=await snapshot(owner,bookId,id);if(controller.signal.aborted||live.status!=='preparing'||live.lease?.token!==token)return;
+     const authorize=async()=>{const guide=await snapshot(owner,bookId,id);if(!['preparing','ready'].includes(guide.status))throw audioError('这次导听已经停止。',409,'guide_inactive');};
+     const session=await audio.createSession(owner,bookId,{mode:'dialogue',guideJobId:id,dialogueId:job.dialogueId,revision:job.dialogueRevision,idempotencyKey:'guide:'+id},{authorize});
      if(controller.signal.aborted){await audio.cancelSession(owner,bookId,session.id);return;}
      const next=await transition(owner,bookId,id,token,j=>{j.sessionId=session.id;j.status='ready';j.stage='ready';j.lease=null;});
      if(!next)await audio.cancelSession(owner,bookId,session.id);return;
@@ -133,6 +137,8 @@ export function createListeningGuideService({audio,library,generator=createGuide
      const batch=job.verifyBatches[job.verifyIndex],index=new Map(audioPassages(book).map(p=>[p.id,p]));
      input={...input,turns:job.candidate.turns.filter(t=>batch.turnIds.includes(t.id)),passages:batch.passageIds.map(id=>{const p=index.get(id);return {id:p.id,chapterId:p.chapterId,original:p.original};})};
     }else throw audioError('导听阶段记录无效。',409,'invalid_guide');
+    const liveBeforeCall=await snapshot(owner,bookId,id);
+    if(controller.signal.aborted||liveBeforeCall.status!=='preparing'||liveBeforeCall.lease?.token!==token)return;
     const result=await generator(input);submitted++;
     if(controller.signal.aborted)return;
     const fresh=await current(owner,bookId,job.scope);
