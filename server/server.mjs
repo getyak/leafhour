@@ -26,6 +26,7 @@ assets.set('/reader-return.mjs',['app/reader-return.mjs','text/javascript']);
 assets.set('/passage-layers.mjs',['app/passage-layers.mjs','text/javascript']);
 assets.set('/catalog-sample.mjs',['app/catalog-sample.mjs','text/javascript']);
 assets.set('/reader-navigation.mjs',['app/reader-navigation.mjs','text/javascript']);
+for(const file of ['book-introduction.mjs','book-introduction-controller.mjs','reader-book-actions.mjs','reader-book-actions.css'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/reader-immersion.mjs',['app/reader-immersion.mjs','text/javascript']);
 assets.set('/reader-settings.mjs',['app/reader-settings.mjs','text/javascript']);
 assets.set('/reader-settings.css',['app/reader-settings.css','text/css']);
@@ -46,8 +47,8 @@ for(const [url,file,type] of [['/share.js','app/share.js','text/javascript'],['/
 assets.set('/evals',['app/evals.html','text/html']);assets.set('/evals.js',['app/evals.js','text/javascript']);assets.set('/evals.css',['app/evals.css','text/css']);
 const fail=(message,status=400)=>Object.assign(new Error(message),{status});
 
-export async function createReaderServer({bookPath=path.join(root,'local/finite-infinite-games/book.json'),recordsPath=path.join(root,'local/service/records.json'),publicOrigin=null,experienceStorePath=path.join(path.dirname(recordsPath),'experience-records.json'),experiencePackPath=path.join(path.dirname(bookPath),'experience-pack.json'),generator=null,portalDataDir=path.join(path.dirname(recordsPath),'portal'),sendCode,translator,allowLocal=true,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,dataStore=null,authService=null,paddleProvider,env=process.env}={}){
-  const portal=await createPortal({dataDir:portalDataDir,publicOrigin,sendCode,translator,allowLocal,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,dataStore,authService,paddleProvider,env});
+export async function createReaderServer({bookPath=path.join(root,'local/finite-infinite-games/book.json'),recordsPath=path.join(root,'local/service/records.json'),publicOrigin=null,experienceStorePath=path.join(path.dirname(recordsPath),'experience-records.json'),experiencePackPath=path.join(path.dirname(bookPath),'experience-pack.json'),generator=null,portalDataDir=path.join(path.dirname(recordsPath),'portal'),sendCode,translator,allowLocal=true,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,dataStore=null,authService=null,paddleProvider,env=process.env}={}){
+  const portal=await createPortal({dataDir:portalDataDir,publicOrigin,sendCode,translator,allowLocal,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,dataStore,authService,paddleProvider,env});
   let book;try{book=JSON.parse(await readFile(bookPath,'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;book=await portal.library.getBook(null,'gutenberg-alice');}
   if(!Array.isArray(book.sections)||!Array.isArray(book.chapters))throw Error('Reading package is not ready');
   portal.setLegacyBook(book);

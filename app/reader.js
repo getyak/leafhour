@@ -17,6 +17,7 @@ import {startReadingLoad,mergeLoadedReadingRecords} from './reading-load.mjs';
 import {noteSaveReceipt,positionSaveState,draftSaveReceipt} from './save-receipts.mjs';
 import {mountReadingArrival} from './reading-arrival.mjs';
 import {mountBookIntroduction,mountChapterEntry,mountContentsDialog} from './reader-navigation.mjs';
+import {mountReaderBookActions} from './reader-book-actions.mjs';
 import {mountParallelSettings,applyParallelAppearance,createParallelPair} from './parallel-reading.mjs';
 import {mountReaderPagination} from './reader-pagination.mjs';
 import {mountReaderImmersion} from './reader-immersion.mjs';
@@ -45,7 +46,7 @@ const immersion=mountReaderImmersion({document,announce,beforeLayout:()=>anchor(
 const draftKey=readerStorageKey('marginalia-focus-drafts-v2');let savedDrafts=null,legacyDrafts={};try{savedDrafts=JSON.parse(localStorage.getItem(draftKey)||'null');legacyDrafts=JSON.parse(localStorage.getItem(readerStorageKey('marginalia-focus-drafts-v1'))||'{}');}catch{}
 let noteDrafts=createNoteDrafts(savedDrafts,legacyDrafts),noteDraftError=null;
 const persistDrafts=()=>{try{if(noteDraftError)return false;if(noteDrafts.persist)noteDrafts.persist();else localStorage.setItem(draftKey,JSON.stringify(noteDrafts.snapshot()));document.dispatchEvent(new CustomEvent('reader:drafts-updated'));return true;}catch{return false;}};
-const api=async(url,data)=>{const response=await readerFetch(url,data===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const body=await response.json();if(!response.ok)throw Object.assign(Error(body.error||'暂时无法完成操作'),{status:response.status});return body;};
+const api=async(url,data,options={})=>{const response=await readerFetch(url,{...options,...(data===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})});const body=await response.json();if(!response.ok)throw Object.assign(Error(body.error||'暂时无法完成操作'),{status:response.status});return body;};
 const personalRecordsUI=createPersonalRecordRenderer({document,getBook:()=>book,scope:readerStorageKey('marginalia-record-edit-drafts-v1'),api,onUpdate:(record,type)=>{const key=type==='question'?'questions':'comments',index=records[key].findIndex(row=>row.id===record.id);if(index>=0&&personalRecordRevision(record)>=personalRecordRevision(records[key][index]))records[key][index]=record;document.dispatchEvent(new CustomEvent('reader:records-updated'));},onJump:async(record,type,anchor)=>{closePanel();if(await changeChapter(anchor.chapterId,record.passageId)){choosePassage(record.passageId);openPanel(type);}}});
 const highlights=mountReaderHighlights({document,getRecords:()=>records,signedIn:()=>!selectedBookId||!!readerSession?.user,available:()=>!recordsUnavailable,selectionMatches:snapshot=>{try{const native=captureDOMSelection(getSelection(),paragraphMap,book);return !!native&&highlightKey(native)===highlightKey(snapshot);}catch{return false;}},api,onSelect:selectHighlight,onNote:()=>openPanel('comment'),onChange:()=>{flow?.invalidatePrepared();if(!$('note-panel').hidden)renderPanel();document.dispatchEvent(new CustomEvent('reader:records-updated'));},announce,loginUrl:()=>readerLoginUrl({bookId:selectedBookId,passageId:selectedId})});
 const progressKey=readerStorageKey('marginalia-focus-position-v1'),localWriterId=crypto.randomUUID();let progressSequence=0,restoringProgress=true,allowScrollSave=false;
@@ -65,6 +66,7 @@ const chapterLabel=chapter=>book.source?.structure==='automatic_groups'?'自动�
 const contents=mountContentsDialog({document,getBook:()=>book,getChapterId:()=>state.chapterId,onNavigate:changeChapter,onBeforeOpen:dismissTools});
 mountChapterEntry({document,getBook:()=>book,getChapter:()=>book&&currentChapter(),onOpen:openContents});
 mountBookIntroduction({document,getBook:()=>book,getChapter:()=>book&&currentChapter(),onOpen:dismissTools});
+mountReaderBookActions({document,getBook:()=>book,api,session:readerSession,bookId:selectedBookId});
 function anchor(){
   if(pagination.active)return pagination.anchor();
   const threshold=document.body.classList.contains('is-focused')?24:80;

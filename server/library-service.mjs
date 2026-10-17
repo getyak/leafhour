@@ -20,6 +20,7 @@ import {isReadingTimeSource} from '../app/reading-time-policy.mjs';
 import {applyCatalogReadingMetadata} from './catalog-reading-metadata.mjs';
 import {structuredCatalogBook} from './structured-catalog.mjs';
 import {applyCatalogSample} from './catalog-sample.mjs';
+import {createBookIntroductionStore} from './book-introduction-store.mjs';
 import {normalizeReadingSession,mergeReadingSession,normalizeReadingMilestone,normalizeReadingGoal,readingJourney,buildReadingCalendar} from './reading-activity.mjs';
 
 const localTranslationsRunning=new Set();
@@ -43,7 +44,7 @@ function mergedPersonalRecords(book,current,incoming,{preserveExisting=false}={}
   validatePendingAnchors(data,book);return data;
 }
 const allPassages=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
-const brief=book=>({bookId:book.bookId,contentVersion:book.contentVersion,title:book.title,author:book.author,visibility:book.visibility,sourceLanguage:book.sourceLanguage,topics:book.topics||[],source:book.source,cover:book.cover,description:book.description,chineseSample:book.chineseSample,paragraphs:allPassages(book).length,chapters:book.chapters.length,chapterIndex:book.chapters.map(c=>({id:c.id,kind:c.kind,number:c.number,title:c.title})),createdAt:book.createdAt});
+const brief=book=>({bookId:book.bookId,contentVersion:book.contentVersion,title:book.title,author:book.author,visibility:book.visibility,sourceLanguage:book.sourceLanguage,topics:book.topics||[],source:book.source,cover:book.cover,description:book.description,...(book.introduction?{introduction:book.introduction}:{}),chineseSample:book.chineseSample,paragraphs:allPassages(book).length,chapters:book.chapters.length,chapterIndex:book.chapters.map(c=>({id:c.id,kind:c.kind,number:c.number,title:c.title})),createdAt:book.createdAt});
 const emptyShelf=()=>({revision:0,order:[],archived:{}});
 const shelfLimit=1000;
 const shelfId=id=>typeof id==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(id);
@@ -63,6 +64,7 @@ const restoreTranslationValue=(value,current,base,preserveExisting)=>preserveExi
 
 export async function createLibraryService({dataDir,catalogDir=path.resolve('catalog'),translator=null,dataStore=null}={}){
   if(!dataStore)await mkdir(dataDir,{recursive:true,mode:0o700});
+  const introductions=createBookIntroductionStore({dataDir:path.join(dataDir,'book-introductions'),dataStore});
   const publicBooks=new Map(),queues=new Map(),translationsRunning=new Set();
   const userDir=user=>path.join(dataDir,'users',digest(requireUser(user).id));
   const read=async(file,fallback)=>{if(dataStore)return dataStore.read(file,fallback);try{return JSON.parse(await readFile(file,'utf8'));}catch(e){if(e.code==='ENOENT')return structuredClone(fallback);throw e;}};
@@ -96,8 +98,10 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(!book)throw fail('找不到这本书',404);
     book=structuredClone(book);
     delete book._giftReceive;
+    delete book.introduction;
     if(book.visibility==='private')book.sourceLanguage=inferSourceLanguage(book.sections.flatMap(s=>s.paragraphs).slice(0,10).map(p=>p.original).join('\n'));
     if(user){const overlay=await read(path.join(userDir(user),'translations',digest(id)+'.json'),{});for(const p of book.sections.flatMap(s=>s.paragraphs))if(overlay[p.id]?.contentVersion===book.contentVersion)p.translations=overlay[p.id].translations;}
+    if(user){const introduction=await introductions.get(user,book);if(introduction)book.introduction=introduction;}
     return book;
   }
   async function previewRestoreBooks(user,backup){
@@ -375,7 +379,8 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     await validateRestore(user,backup);
     for(const {book,records:incoming}of backup.books){
       const privateBase=preserveExisting&&!publicBooks.has(book.bookId)?await read(bookFile(user,book.bookId),null):null,basePassages=new Map(privateBase?allPassages(privateBase).map(p=>[p.id,p]):[]);
-      if(!publicBooks.has(book.bookId)){const privateBook={...book,visibility:'private'};await mutate(bookFile(user,book.bookId),{},data=>{if(!preserveExisting||!data.bookId)Object.assign(data,privateBook);});await mutate(path.join(userDir(user),'index.json'),{books:[]},data=>{if(!preserveExisting)data.books=data.books.filter(b=>b.bookId!==book.bookId);if(!data.books.some(b=>b.bookId===book.bookId))data.books.push(brief(privateBook));});}
+      if(!publicBooks.has(book.bookId)){const privateBook={...book,visibility:'private'};delete privateBook.introduction;await mutate(bookFile(user,book.bookId),{},data=>{if(!preserveExisting||!data.bookId)Object.assign(data,privateBook);});await mutate(path.join(userDir(user),'index.json'),{books:[]},data=>{if(!preserveExisting)data.books=data.books.filter(b=>b.bookId!==book.bookId);if(!data.books.some(b=>b.bookId===book.bookId))data.books.push(brief(privateBook));});}
+      await introductions.restore(user,book,{preserveExisting});
       const overlay=Object.create(null);for(const p of allPassages(book))if(Object.keys(p.translations).length)overlay[p.id]={contentVersion:book.contentVersion,translations:p.translations};
       await mutate(path.join(userDir(user),'translations',digest(book.bookId)+'.json'),{},data=>{for(const [id,value]of Object.entries(overlay)){const current=Object.hasOwn(data,id)?data[id]:null,next=restoreTranslationValue(value,current,basePassages.get(id)?.translations,preserveExisting);Object.defineProperty(data,id,{value:next,enumerable:true,writable:true,configurable:true});}});
       await mutate(recordFile(user,book.bookId),emptyRecords(book),raw=>{const data=mergedPersonalRecords(book,raw,incoming,{preserveExisting});guardRecordSize(data);Object.assign(raw,data);});
@@ -444,5 +449,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(claim.pending)await mutate(bookFile(user,incoming.bookId),{},current=>{if(current._giftReceive?.fingerprint===fingerprint)delete current._giftReceive;});
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }

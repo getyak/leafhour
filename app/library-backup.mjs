@@ -6,6 +6,7 @@ import {isReadingTimeSource} from './reading-time-policy.mjs';
 import {validateReadingDraftBackup} from './reading-draft-store.mjs';
 import {normalizeHighlight} from './highlights.mjs';
 import {validatePersonalRecordMetadata} from './personal-records.mjs';
+import {validateBookIntroduction} from './book-introduction.mjs';
 
 const object=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
 const text=(value,max=12000)=>typeof value==='string'&&value.trim().length>0&&value.length<=max;
@@ -33,6 +34,7 @@ export function validateLibraryBackup(backup){
       }
     }
     if([...chapterIds].some(chapter=>!occupiedChapters.has(chapter)))invalid(where,'存在没有原文的章节');
+    if(b.introduction!==undefined)try{validateBookIntroduction(b.introduction,b);}catch{invalid(where,'AI 简介的来源、状态或原文版本不正确');}
     if(b.readingStart!==undefined&&(!object(b.readingStart)||!chapterIds.has(b.readingStart.chapterId)||passageIds.get(b.readingStart.passageId)!==b.readingStart.chapterId))invalid(where,'正文起点无法对应原文');
     for(const c of b.chapters)if(c.startPassageId!==undefined&&passageIds.get(c.startPassageId)!==c.id)invalid(where,'章节起点无法对应原文');
     const annotationIds=new Set(),termIds=new Set();
