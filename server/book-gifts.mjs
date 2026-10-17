@@ -5,6 +5,7 @@ import {digest,fail} from './document-import.mjs';
 const MAX_FILE_BYTES=20*1024*1024;
 import {validateLibraryBackup} from '../app/library-backup.mjs';
 import {publicGiftSender} from '../app/gift-identity.mjs';
+import {GIFT_QUOTE_RECEIPT,QUOTE_TTL_MS,validateGiftQuoteSelection,buildQuotePool} from './gift-quote.mjs';
 
 const TOKEN=/^[A-Za-z0-9_-]{43}$/;
 const CHUNK_BYTES=700*1024;
@@ -43,17 +44,19 @@ function snapshotBook(raw,includeTranslations){
 }
 function optionsOf(input){
   if(!object(input))throw fail('请检查赠书留言');
-  const {message='',recipient='',includeTranslations=true}=input;
+  const {message='',recipient='',includeTranslations=true,quoteReceipt=null}=input;
   if(typeof message!=='string'||message.length>500||typeof recipient!=='string'||recipient.length>80||typeof includeTranslations!=='boolean'||/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(message+recipient))throw fail('留言最多 500 字，收信人最多 80 字');
-  return {message:message.trim(),recipient:recipient.trim(),includeTranslations};
+  if(quoteReceipt!==null&&(typeof quoteReceipt!=='string'||!GIFT_QUOTE_RECEIPT.test(quoteReceipt)))throw fail('引文凭据格式不正确');
+  return {message:message.trim(),recipient:recipient.trim(),includeTranslations,quoteReceipt};
 }
 
-export function createBookGifts({library,dataDir,dataStore=null,getProfile=null}={}){
+export function createBookGifts({library,dataDir,dataStore=null,getProfile=null,now=()=>new Date()}={}){
   if(!library?.getBook||typeof dataDir!=='string')throw Error('Gift service requires a library and data directory');
   const queues=localQueues,acceptQueues=receivingQueues;
   const bucket=token=>path.join(dataDir,'book-gifts',digest(token));
   const metadataFile=token=>path.join(bucket(token),'gift.json');
   const ownerIndex=user=>path.join(dataDir,'book-gift-senders',digest(requireUser(user).id)+'.json');
+  const selectionFile=user=>path.join(dataDir,'gift-quote-selections',digest(requireUser(user).id)+'.json');
   const chunkFile=(token,index)=>path.join(bucket(token),'chunks',String(index).padStart(3,'0')+'.json');
   async function read(file,fallback){if(dataStore)return dataStore.read(file,fallback);try{return JSON.parse(await readFile(file,'utf8'));}catch(error){if(error.code==='ENOENT')return structuredClone(fallback);throw error;}}
   async function mutate(file,fallback,operation){
@@ -67,11 +70,44 @@ export function createBookGifts({library,dataDir,dataStore=null,getProfile=null}
     const row=await read(metadataFile(token),null);if(!row?.published||row.revokedAt)throw missing();return row;
   }
   function visible(row){
-    const {token,title,author,description,cover,bookId,sender,message,recipient,createdAt,includeTranslations}=row;
-    return {token,title,author,description,cover,bookId,sender,message,recipient,createdAt,includeTranslations,downloadUrl:'/api/book-gifts/'+token+'/download',...(row.publicBook?{readUrl:readUrl(bookId)}:{})};
+    const {token,title,author,description,cover,bookId,sender,message,recipient,createdAt,includeTranslations,quote}=row;
+    return {token,title,author,description,cover,bookId,sender,message,recipient,createdAt,includeTranslations,downloadUrl:'/api/book-gifts/'+token+'/download',...(row.publicBook?{readUrl:readUrl(bookId)}:{}),
+      // A received letter exposes only the chosen quotation and its locator;
+      // the private preparation receipt never leaves the sender's storage.
+      ...(quote?{quote:{text:quote.text,selection:quote.selection,chapterTitle:quote.chapterTitle||'',passageId:quote.passageId,start:quote.start,end:quote.end}}:{})};
+  }
+  // Prepared quote selections live beside the other gift data: owner-scoped,
+  // durable in the same data store, unguessable and short lived. They are
+  // private; a public letter carries only the validated excerpt it publishes.
+  async function prepareQuote(user,selection){
+    requireUser(user);if(!object(selection)||typeof selection.text!=='string'||!selection.text)throw fail('引文准备失败，请稍后重试',409);
+    const created=now(),expiresAt=new Date(created.getTime()+QUOTE_TTL_MS).toISOString();
+    return mutate(selectionFile(user),{kind:'marginalia-gift-quote-selections',schemaVersion:1,selections:[]},row=>{
+      const current=created.getTime();
+      row.selections=row.selections.filter(saved=>Number.isFinite(Date.parse(saved.expiresAt))&&Date.parse(saved.expiresAt)>current);
+      const identical=row.selections.find(saved=>saved.ownerId===user.id&&saved.bookId===selection.bookId&&saved.contentVersion===selection.contentVersion&&saved.chapterId===selection.chapterId&&saved.passageId===selection.passageId&&saved.start===selection.start&&saved.end===selection.end&&saved.text===selection.text&&saved.selection===selection.selection);
+      if(identical)return {...identical};
+      const receipt=randomBytes(24).toString('base64url'),saved={receipt,ownerId:user.id,...selection,createdAt:created.toISOString(),expiresAt};
+      row.selections.push(saved);
+      if(row.selections.length>20)row.selections=row.selections.slice(-20);
+      return saved;
+    });
+  }
+  async function redeemQuote(user,book,receipt){
+    if(receipt===null||receipt===undefined)return null;
+    if(typeof receipt!=='string'||!GIFT_QUOTE_RECEIPT.test(receipt))throw fail('引文凭据无效，未生成这封赠书信',409);
+    const row=await read(selectionFile(user),{selections:[]}),saved=row.selections.find(entry=>entry.receipt===receipt);
+    if(!saved||!Number.isFinite(Date.parse(saved.expiresAt))||Date.parse(saved.expiresAt)<=now().getTime())throw fail('引文凭据已失效，请重新选取引文或先移除它',409);
+    // Revalidated against the exact snapshot about to be published, including
+    // the submitted source pool bounds. The label and text come from this
+    // private record, never from the browser.
+    const selection=validateGiftQuoteSelection(saved,book,{pool:buildQuotePool(book)});
+    if(!selection)throw fail('引文与当前书籍版本无法对应，请重新选取引文或先移除它',409);
+    return selection;
   }
   async function create(user,bookId,input={}){
     requireUser(user);const options=optionsOf(input),book=snapshotBook(await library.getBook(user,bookId),options.includeTranslations),createdAt=new Date().toISOString();
+    const quote=await redeemQuote(user,book,options.quoteReceipt);
     const backup={kind:'marginalia-library',schemaVersion:1,exportedAt:createdAt,books:[{book,records:emptyRecords(book)}],includesOriginalFiles:false};
     const bytes=Buffer.from(JSON.stringify(backup));if(bytes.length>MAX_FILE_BYTES)throw fail('阅读包超过 20 MB，请按章节分享',413);validateLibraryBackup(backup);
     const previousGifts=await read(ownerIndex(user),{gifts:[]});
@@ -83,7 +119,9 @@ export function createBookGifts({library,dataDir,dataStore=null,getProfile=null}
       const part=bytes.subarray(index*CHUNK_BYTES,Math.min(bytes.length,(index+1)*CHUNK_BYTES));
       await mutate(chunkFile(token,index),{},row=>{if(Object.keys(row).length)throw fail('赠书信保存冲突，请重试',409);Object.assign(row,{data:part.toString('base64'),sha256:digest(part)});});
     }
-    const metadata={token,ownerId:user.id,published:true,revokedAt:null,bookId:book.bookId,title:book.title,author:book.author||'',description:typeof book.description==='string'?book.description.slice(0,2000):'',cover:book.cover||null,sender:publicGiftSender(profile),...options,createdAt,publicBook:book.visibility==='public',snapshot:{chunks,bytes:bytes.length,sha256:digest(bytes)}};
+    const metadata={token,ownerId:user.id,published:true,revokedAt:null,bookId:book.bookId,title:book.title,author:book.author||'',description:typeof book.description==='string'?book.description.slice(0,2000):'',cover:book.cover||null,sender:publicGiftSender(profile),message:options.message,recipient:options.recipient,includeTranslations:options.includeTranslations,createdAt,publicBook:book.visibility==='public',
+      ...(quote?{quote:{text:quote.text,selection:quote.selection,chapterId:quote.chapterId,chapterTitle:quote.chapterTitle,passageId:quote.passageId,start:quote.start,end:quote.end,codepoints:quote.codepoints}}:{}),
+      snapshot:{chunks,bytes:bytes.length,sha256:digest(bytes)}};
     const indexFile=ownerIndex(user);
     await mutate(indexFile,{gifts:[]},row=>{
       if(row.gifts.filter(gift=>!gift.revoked).length>=100)throw fail('已有 100 封仍可访问的赠书信，请先收回不用的链接',429);
@@ -169,5 +207,5 @@ export function createBookGifts({library,dataDir,dataStore=null,getProfile=null}
     await mutate(ownerIndex(user),{gifts:[]},row=>{const gift=row.gifts.find(gift=>gift.token===token);if(gift)gift.revoked=true;});
     return {revoked:true};
   }
-  return {create,list,view,download,downloadPart,accept,revoke};
+  return {create,list,view,download,downloadPart,accept,revoke,prepareQuote};
 }

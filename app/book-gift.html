@@ -29,6 +29,7 @@
     <p id="gift-arrival" class="gift-arrival" hidden><span id="arrival-sender"></span> 寄来了一封书信</p>
     <p id="gift-preview-label" class="gift-preview-label" hidden>收信预览 · 还没有生成分享链接</p>
     <div id="gift-scene" class="gift-scene" data-open="false" hidden>
+      <div id="gift-waves" class="gift-waves" aria-hidden="true" data-waves="static"><canvas id="gift-waves-canvas" class="gift-waves-canvas"></canvas></div>
       <div id="gift-envelope-wrap" class="envelope-reveal">
         <section class="gift-envelope" aria-labelledby="envelope-title">
           <div class="envelope-back" aria-hidden="true"></div>
@@ -48,6 +49,10 @@
           <div class="letter-topline"><span class="letter-mark" aria-hidden="true">Leafhour</span><button id="gift-close" type="button" aria-controls="gift-letter" aria-label="折起信笺">折起信笺 <span aria-hidden="true">⌃</span></button></div>
           <p id="letter-salutation" class="letter-salutation"></p>
           <p id="gift-message" class="gift-message"></p>
+          <figure id="gift-quote" class="letter-quote" hidden>
+            <blockquote id="gift-quote-text"></blockquote>
+            <figcaption><span id="gift-quote-source"></span><small id="gift-quote-label"></small></figcaption>
+          </figure>
           <div class="gift-book">
             <div id="gift-cover" class="gift-cover" aria-hidden="true"></div>
             <div class="gift-book-info"><p class="gift-eyebrow">送给你的这本书</p><h2 id="gift-title" tabindex="-1"></h2><p id="gift-original-title" class="gift-original-title"></p><p id="gift-author" class="gift-author"></p><p id="gift-description" class="gift-description"></p></div>

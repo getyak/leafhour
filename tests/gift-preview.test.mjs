@@ -27,3 +27,24 @@ test('only the public preview page can be framed by this reader, while letters a
   const base='http://127.0.0.1:'+server.address().port,response=await fetch(base+'/gift-preview');assert.equal(response.status,200);assert.match(response.headers.get('content-security-policy'),/frame-ancestors 'self'/);assert.ok((await response.text()).includes('id="gift-open"'));
   for(const route of ['/library','/gift/'+'A'.repeat(43)]){const other=await fetch(base+route);assert.equal(other.status,200);assert.match(other.headers.get('content-security-policy'),/frame-ancestors 'none'/);}
 });
+
+const quote={receipt:'R'.repeat(32),selection:'ai-selected',text:'Read this first.',chapterTitle:'Opening',passageId:'p1'};
+test('the preview carries a prepared quotation with its honest source label and drops forged ones',()=>{
+  assert.equal(typeof preview.createGiftPreview,'function');
+  const message=preview.createGiftPreview(book,{displayName:'林间读者'},{recipient:'小林',message:'这段话让我想起你。',includeTranslations:true,quote});
+  assert.deepEqual(message.gift.quote,quote);
+  for(const bad of [{...quote,receipt:'short'},{...quote,receipt:undefined},{...quote,receipt:42},{...quote,selection:'ai-picked'},{...quote,text:'FORGED <img src=x>'},{...quote,text:'x'.repeat(241)},{...quote,chapterTitle:'c'.repeat(201)},{...quote,passageId:'p'.repeat(129)},{selection:'original-excerpt',text:'No receipt at all.'},'not an object',null,[]]){
+    assert.equal(preview.createGiftPreview(book,{displayName:'x'},{quote:bad}).gift.quote,undefined,'an unknown receipt fails closed: '+JSON.stringify(bad));
+  }
+});
+test('the preview frame keeps only quotations bound to a prepared receipt',()=>{
+  assert.equal(typeof preview.readGiftPreview,'function');const source={},origin='https://reader.example.com';
+  const gift={bookId:'alice',title:{zh:'爱丽丝'},sender:'寄信人',recipient:'朋友',message:'见字如面',includeTranslations:true,createdAt:'2026-10-16T00:00:00Z',publicRead:false,quote};
+  const value=preview.readGiftPreview({origin,source,data:{kind:'marginalia-gift-preview',version:1,gift}},{origin,source});
+  assert.deepEqual(value.quote,quote);
+  for(const bad of [{...quote,receipt:'forged'},{...quote,selection:'ai-selected',text:'<script>evil()</script>'},{...quote,text:'x'.repeat(241)},null,'text',[]]){
+    const dropped=preview.readGiftPreview({origin,source,data:{kind:'marginalia-gift-preview',version:1,gift:{...gift,quote:bad}}},{origin,source});
+    assert.equal(dropped.quote,undefined,'forged quotation never reaches the recipient view: '+JSON.stringify(bad));
+    assert.equal(dropped.message,'见字如面','the rest of the letter still previews');
+  }
+});
