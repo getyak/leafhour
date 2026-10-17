@@ -21,7 +21,7 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
   const day=new Date(now()).toISOString().slice(0,10);
   await store.mutate('ingestion-budget/'+day,{pages:0,owners:{},jobs:{}},r=>{r.jobs??={};if(r.jobs[job.id])return;const owner=userId(user);if(r.pages+job.totalPages>15000||(r.owners[owner]||0)+job.totalPages>3000)throw fail('今日识别额度已用完，原文件与进度保留，明天可以继续。',429);r.pages+=job.totalPages;r.owners[owner]=(r.owners[owner]||0)+job.totalPages;r.jobs[job.id]=job.totalPages;});
  }
- async function prepare(user,{filename,bytes,consent,sourceParts,mode}){
+ async function prepare(user,{filename,bytes,consent,sourceParts,mode,assertCurrent=async()=>{}}){
   userId(user);
   if(typeof filename!=='string'||!/^.+\.pdf$/i.test(filename)||filename.length>240||!Buffer.isBuffer(bytes)||bytes.length>MAX_FILE_BYTES||bytes.subarray(0,5).toString()!=='%PDF-')throw fail('请选择 256 MB 内的有效 PDF',413);
   const hash=digest(bytes),existing=await findSource(user,hash);if(existing)return existing;
@@ -30,6 +30,7 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
   if(mode==='ocr'&&!provider)throw fail('文字识别服务尚未配置',503);
   let doc;try{doc=await PDFDocument.load(bytes,{updateMetadata:false});}catch{throw fail('PDF 无法读取，请检查是否加密或损坏',422);}
   const totalPages=doc.getPageCount();if(totalPages<1||totalPages>1200)throw fail('PDF 最多支持 1200 页',413);
+  await assertCurrent();
   const id=randomUUID(),base=key(user,id),batches=[],reservation='ingestion/'+userId(user)+'/source-'+hash;
   const previous=await store.read(reservation,null),cancelled=previous?.id&&previous.expiresAt>now()?await store.read(key(user,previous.id),null):null;
   const restartId=cancelled?.state==='cancelled'&&!cancelled.batches.some(b=>b.state==='submitting')?previous.id:null;
@@ -39,6 +40,7 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
   const job={id,filename,sourceHash:hash,totalPages,batches,state:'preparing',mode,createdAt:new Date(now()).toISOString(),consent:receipt,lease:null};
   if(receipt)await reservePages(user,job);
   if(sourceParts&&store.adoptBlob)await store.adoptBlob(base+'/source',sourceParts,{size:bytes.length,sha256:hash});else await store.putBlob(base+'/source',bytes);
+  await assertCurrent();
   for(let start=0;start<totalPages;start+=batchPages)batches.push({start:start+1,count:Math.min(batchPages,totalPages-start),state:'new'});
   await store.mutate(base,{},j=>Object.assign(j,job));await store.mutate(index(user),{jobs:[]},j=>{j.jobs.push(id);});return viewOf(job);
  }
