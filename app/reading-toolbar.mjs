@@ -50,7 +50,10 @@ export function mountReadingToolbar(root) {
   });
   // Native dialogs return focus to their opener. Keep it available throughout.
   const dialogHold=()=>toolbar.hold('dialog',!!document.querySelector('dialog[open]'));
-  for(const dialog of document.querySelectorAll('dialog'))new MutationObserver(dialogHold).observe(dialog,{attributes:true,attributeFilter:['open']});
+  // Audio creates its dialog after this toolbar mounts. Observe its lifetime as
+  // well as open changes, including removal of a still-open dialog.
+  new MutationObserver(dialogHold).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['open']});
+  dialogHold();
   updateLabel();
   return {update(values){
     if(values.status!==undefined)status=values.status;
