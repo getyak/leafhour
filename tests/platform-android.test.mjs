@@ -116,6 +116,7 @@ function happyRouter(file,args){
   if(joined.includes('dumpsys package'))return '    versionName=155.0.8059.39\n    versionCode=805903933\n';
   if(joined.includes('dumpsys activity'))return '  topResumedActivity=ActivityRecord{1 u0 com.android.chrome/com.google.android.apps.chrome.Main t12}\n';
   if(joined.includes('uiautomator'))return UIAUTOMATOR_CHROME_DUMP;
+  if(joined.includes('shell cat /data/local/tmp/get173-'))return UIAUTOMATOR_CHROME_XML;
   if(args.includes('exec-out'))return Buffer.from([0x89,0x50,0x4e,0x47]);
   return '';
 }
@@ -491,6 +492,32 @@ test('image, device, chrome and version facts are read back through the owned se
   assert.match(native.uiautomatorXml,/<hierarchy/);
   const png=await adapter.screencap();
   assert.ok(Buffer.isBuffer(png)&&png.length>0);
+});
+
+test('native hierarchy is read from an owned device file when non-PTY dump stdout contains no XML',async()=>{
+  const target='/data/local/tmp/get173-'+SERIAL+'-hierarchy.xml';
+  const router=(file,args)=>args.includes('uiautomator')?'UI hierchary dumped to: '+target+'\n':happyRouter(file,args);
+  const {record,exec,spawnProcess,killProcess,fsOps,sleep,now}=recRouter(router);
+  const adapter=createAndroidAdapter({env:baseEnv(),platform:'linux',exec,spawnProcess,killProcess,fsOps,sleep,now,fence:TEST_FENCE});
+  await adapter.boot();
+  const native=await adapter.nativeState();
+  assert.equal(native.uiautomatorXml,UIAUTOMATOR_CHROME_XML,'read the actual file, never a manufactured stdout hierarchy');
+  assert.equal(native.uiautomatorPath,target);
+  const calls=record.exec.map(call=>call.args.join(' '));
+  const remove='-s '+SERIAL+' shell rm -f '+target,dump='-s '+SERIAL+' shell uiautomator dump '+target,read='-s '+SERIAL+' shell cat '+target;
+  assert.ok(calls.indexOf(remove)<calls.indexOf(dump)&&calls.indexOf(dump)<calls.indexOf(read),'remove stale own file, dump then read');
+  await adapter.cleanup();
+  assert.equal(record.exec.filter(call=>call.args.join(' ')===remove).length,2,'cleanup removes exactly the owned capture file');
+});
+
+test('failed hierarchy dump still cleans only its registered device file',async()=>{
+  const target='/data/local/tmp/get173-'+SERIAL+'-hierarchy.xml';
+  const router=(file,args)=>{if(args.includes('uiautomator'))throw Error('dump failed');return happyRouter(file,args);};
+  const {record,exec,spawnProcess,killProcess,fsOps,sleep,now}=recRouter(router);
+  const adapter=createAndroidAdapter({env:baseEnv(),platform:'linux',exec,spawnProcess,killProcess,fsOps,sleep,now,fence:TEST_FENCE});
+  await adapter.boot();await assert.rejects(adapter.nativeState(),/dump failed/);await adapter.cleanup();
+  const deletes=record.exec.filter(call=>call.args.includes('rm'));
+  assert.equal(deletes.length,2);assert.ok(deletes.every(call=>call.args.join(' ')==='-s '+SERIAL+' shell rm -f '+target));
 });
 
 test('cold-font interception must precede product navigation on the owned origin',async()=>{

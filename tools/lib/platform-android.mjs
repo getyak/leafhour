@@ -531,7 +531,8 @@ export function createAndroidAdapter({env=process.env,platform=process.platform,
   const emulatorBin=path.join(env.ANDROID_HOME,'emulator','emulator');
   const avdPath=path.join(paths.androidAvdHome,AVD_NAME+'.avd');
   const flagFile=path.join(paths.stateDir,'chrome-command-line');
-  const state={pid:null,handle:null,forwardPort:null,reversePort:null,booted:false,cleanedUp:false};
+  const hierarchyFile='/data/local/tmp/get173-'+serial+'-hierarchy.xml';
+  const state={pid:null,handle:null,forwardPort:null,reversePort:null,booted:false,cleanedUp:false,hierarchyFileOwned:false};
   // Shared stopping fence through every await boundary plus tracked in-flight
   // acquisitions: cancellation can never spawn late owned resources, and state
   // is only deleted after owned work settles (bounded).
@@ -705,12 +706,19 @@ export function createAndroidAdapter({env=process.env,platform=process.platform,
         kvm:{devicePresent:await fsOps.exists('/dev/kvm')},
       };
     },
-    async nativeState(){
+    nativeState(){return acquire('native hierarchy capture',async()=>{
+      if(!state.booted)throw Error('Native capture requires the task-owned AVD boot');
       const dumpsys=adb('shell',['dumpsys','activity','activities']);
-      const raw=adb('shell',['uiautomator','dump','/dev/tty']);
-      const start=raw.indexOf('<hierarchy');
-      return {dumpsys,uiautomatorXml:start>=0?raw.slice(start):''};
-    },
+      // dump [file] writes XML to a file; non-PTY stdout only carries status.
+      // Register before any write so a partial dump still has exact cleanup.
+      state.hierarchyFileOwned=true;
+      fence.throwIfStopping('native hierarchy file');
+      adb('shell',['rm','-f',hierarchyFile]);
+      const status=adb('shell',['uiautomator','dump',hierarchyFile]);
+      fence.throwIfStopping('native hierarchy readback');
+      const raw=adb('shell',['cat',hierarchyFile]);
+      return {dumpsys,uiautomatorXml:raw,uiautomatorPath:hierarchyFile,uiautomatorStatus:status.slice(0,1024)};
+    });},
     async screencap(){return adbBinary('exec-out',['screencap','-p']);},
     // Cleanup touches only owned mappings, the owned serial/process and the
     // task-owned state directories. No global kill, wipe or delete. A kill
@@ -735,6 +743,7 @@ export function createAndroidAdapter({env=process.env,platform=process.platform,
       const step=async(label,operation)=>{try{await operation();}catch(error){errors.push(label+': '+error.message);}};
       if(state.reversePort)await step('owned reverse mapping',()=>adb('reverse',['--remove','tcp:'+state.reversePort]));
       if(state.forwardPort)await step('owned forward mapping',()=>adb('forward',['--remove','tcp:'+state.forwardPort]));
+      if(state.hierarchyFileOwned)await step('owned native hierarchy file',()=>adb('shell',['rm','-f',hierarchyFile]));
       if(state.pid){
         await step('owned serial shutdown',()=>adb('emu',['kill']));
         let exited=await awaitOwnedExit(EXIT_PROOF_WAIT_MS);

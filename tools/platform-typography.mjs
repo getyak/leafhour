@@ -176,12 +176,14 @@ try{
     await until(()=>cdp.evaluate(`!!document.querySelector('#command_line')`),'stock Chrome effective command line');
     receipt.android.effectiveCommandLine=await cdp.evaluate(`document.querySelector('#command_line').innerText`);
     receipt.android.effectiveFlags=validateEffectiveChromeCommandLine(receipt.android.effectiveCommandLine);
-    const nativeState=await adapter.nativeState();
+    // Preserve the actual native image even if hierarchy capture/validation fails.
+    await nativeCapture('android-native-version',await adapter.screencap());
+    const nativeState=await lifecycle.track(adapter.nativeState());
+    receipt.android.nativeHierarchyCapture={path:nativeState.uiautomatorPath,status:nativeState.uiautomatorStatus,xmlBytes:Buffer.byteLength(nativeState.uiautomatorXml),sha256:sha(nativeState.uiautomatorXml)};
     receipt.android.foreground=assessNativeForeground({dumpsysText:nativeState.dumpsys});
     assert.ok(receipt.android.foreground.ok,'Stock Chrome must be the native foreground app');
     receipt.android.firstRun=assessFirstRunOverlay(nativeState.uiautomatorXml);
     assert.ok(receipt.android.firstRun.ok,'No native FirstRun overlay may cover the browser');
-    await nativeCapture('android-native-version',await adapter.screencap());
     // The internal version viewport is recorded separately and never reused for
     // product decisions; every product route binds its own current viewport.
     receipt.android.versionViewport=await cdp.evaluate(VIEWPORT_EXPRESSION);
