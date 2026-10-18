@@ -340,3 +340,12 @@ test('discard retries recognized temporary network failures but never format, pe
     assert.equal(f.discardCalls(),1);assert.ok(await f.store.get(owner,readingBook));assert.equal(f.active(),0);
   }
 });
+
+test('real hosted storage 4xx errors are never retried by cancellation cleanup',async()=>{
+  for(const status of [401,403,422]){
+    const f=await hostedCancellation({status,failures:Infinity});
+    await assert.rejects(f.pending,e=>e.status===503);
+    assert.equal(f.discardCalls(),1,'upstream '+status+' must not become retryable through the public503 mapping');
+    assert.equal(f.active(),0,'a failed discard still releases the shared quota');
+  }
+});

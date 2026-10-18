@@ -7,6 +7,7 @@ const DISCARD_ATTEMPTS=3,DISCARD_RETRY_DELAY_MS=20;
 const temporaryNetworkCodes=new Set(['ECONNRESET','ECONNREFUSED','ETIMEDOUT','EHOSTUNREACH','ENETUNREACH','EPIPE','EAI_AGAIN','UND_ERR_CONNECT_TIMEOUT','UND_ERR_HEADERS_TIMEOUT','UND_ERR_BODY_TIMEOUT','UND_ERR_SOCKET']);
 const transientDiscardError=error=>{
   const codes=[error?.code,error?.cause?.code];
+  if(Number.isInteger(error?.upstreamStatus)&&error.upstreamStatus>=400&&error.upstreamStatus<500)return false;
   if(error?.name==='SyntaxError'||codes.some(code=>['EACCES','EPERM'].includes(code)))return false;
   return Number.isInteger(error?.status)?error.status>=500:error?.name==='TimeoutError'||codes.some(code=>temporaryNetworkCodes.has(code));
 };
