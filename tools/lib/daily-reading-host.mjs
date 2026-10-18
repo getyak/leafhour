@@ -23,7 +23,7 @@ export function validateHostOrigin(value){
 // Defend against accidental aliases and shared files. This is not an OS sandbox
 // against another process running with the same UID.
 export async function readPrivateHostJson(file){
- if(typeof file!=='string'||!path.isAbsolute(file))throw fail('private-file');
+ if(typeof file!=='string'||!path.isAbsolute(file)||file.split(path.sep).some(part=>part==='.'||part==='..'))throw fail('private-file');
  let handle;
  try{
   const absolute=path.resolve(file);let cursor=path.parse(absolute).root;
@@ -49,12 +49,15 @@ export async function callDailyMcp({config,toolName,args,serverEntry=entry,onChi
  if(typeof token!=='string'||!/^[A-Za-z0-9_-]{43}$/.test(token))throw fail('host-config');
  let serialized;try{serialized=JSON.stringify(args);}catch{throw fail('host-config');}
  if(!serialized||Buffer.byteLength(serialized)>MAX_FILE||serialized.includes(token))throw fail('host-config');
- const client=new Client({name:'leafhour-daily-host',version:'1.0.0'}),transport=new StdioClientTransport({command:process.execPath,args:[serverEntry],cwd:path.dirname(path.dirname(serverEntry)),env:{PATH:process.env.PATH||'',READER_SERVICE_URL:serviceUrl,READER_ALLOW_REMOTE:serviceUrl.startsWith('https:')?'true':'false',READER_AGENT_TOKEN:token},stderr:'pipe'});
+ let spawned=false,processClosed=false,resolveExit;const exited=new Promise(resolve=>{resolveExit=resolve;});
+ class ObservedTransport extends StdioClientTransport{async start(){await super.start();spawned=true;onChild(this.pid);}}
+ const client=new Client({name:'leafhour-daily-host',version:'1.0.0'}),transport=new ObservedTransport({command:process.execPath,args:[serverEntry],cwd:path.dirname(path.dirname(serverEntry)),env:{PATH:process.env.PATH||'',READER_SERVICE_URL:serviceUrl,READER_ALLOW_REMOTE:serviceUrl.startsWith('https:')?'true':'false',READER_AGENT_TOKEN:token},stderr:'pipe'});
  // Child diagnostics are consumed but never reflected or persisted: upstream
  // proxies and third-party SDK exceptions may contain credentials or source.
  transport.stderr?.on('data',()=>{});
+ transport.onclose=()=>{processClosed=true;resolveExit();};
  try{
-  await client.connect(transport,{timeout:20000});onChild(transport.pid);
+  await client.connect(transport,{timeout:20000});
   const result=await client.callTool({name:toolName,arguments:args},undefined,{timeout:20000});
   const raw=JSON.stringify(result);
   if(result.isError||Buffer.byteLength(raw)>MAX_REPLY||raw.includes(token))throw fail('host-response');
@@ -65,6 +68,9 @@ export async function callDailyMcp({config,toolName,args,serverEntry=entry,onChi
  finally{
   let clean=true;try{await client.close();}catch{clean=false;}
   try{await transport.close();}catch{clean=false;}
+  if(spawned&&!processClosed){
+   let timer;try{const stopped=await Promise.race([exited.then(()=>true),new Promise(resolve=>{timer=setTimeout(()=>resolve(false),2000);})]);if(!stopped)clean=false;}finally{clearTimeout(timer);}
+  }
   if(!clean)throw fail('host-response');
  }
 }

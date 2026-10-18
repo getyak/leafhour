@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,writeFile,rm,chmod,symlink,link,realpath} from 'node:fs/promises';
+import {mkdtemp,mkdir,writeFile,rm,chmod,symlink,link,realpath} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -34,4 +34,14 @@ test('tool errors, private-token echoes and oversized replies are masked and alw
 
 test('only canonical fixed-length daily grant tokens are accepted before creating a child',async()=>{
  await assert.rejects(callDailyMcp({config:{serviceUrl:'https://leafhour.com',token:'synthetic-quoted-"token'},toolName:'reader_daily_claim',args:{bookId:'synthetic'},serverEntry:entry}),{code:'host-config'});
+});
+
+test('dot segments cannot hide a symlink or silently select a different private config',async t=>{
+ const dir=await fixture(t);await mkdir(path.join(dir,'nested','target'),{recursive:true});
+ await writeFile(path.join(dir,'config.json'),'{}',{mode:0o600});await writeFile(path.join(dir,'nested','config.json'),'{}',{mode:0o600});await symlink(path.join(dir,'nested','target'),path.join(dir,'alias'));
+ await assert.rejects(readPrivateHostJson(dir+'/alias/../config.json'),{code:'private-file'});
+});
+test('the SDK child that ignores SIGTERM has actually exited before success is returned',async()=>{
+ let pid;await callDailyMcp({config:{serviceUrl:'https://leafhour.com',token},toolName:'reader_daily_claim',args:{bookId:'synthetic',mode:'stubborn'},serverEntry:entry,onChild:id=>{pid=id;}});
+ assert.throws(()=>process.kill(pid,0),e=>e.code==='ESRCH');
 });
