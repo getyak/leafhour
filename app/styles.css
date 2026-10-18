@@ -93,6 +93,13 @@ body.has-panel .passage.is-panel-anchor::before{border-color:color-mix(in srgb,v
 .reader-highlight{color:inherit;background:color-mix(in srgb,#e8c65b 38%,transparent);box-decoration-break:clone;-webkit-box-decoration-break:clone;cursor:pointer;padding:0;border-radius:2px}
 .reader-highlight:hover{background:color-mix(in srgb,#e8c65b 52%,transparent)}
 [data-theme=night] .reader-highlight{background:#79632385}
+/* GET-190 conservative source emphasis: the em content uses the real italic
+   face of the self-hosted reading family (font-style italic, never a
+   synthesized tilt). Hidden syntax markers stay in the raw DOM text for exact
+   selection and highlight offsets while visible rendering and native copy
+   omit them. */
+.source-emphasis{font-style:italic;font-synthesis:none}
+.source-syntax{display:none}
 #show-highlight{color:var(--accent);font-weight:600}
 .highlight-status{position:fixed;left:50%;bottom:max(80px,env(safe-area-inset-bottom));transform:translateX(-50%);max-width:calc(100vw - 32px);width:max-content;margin:0;padding:12px 18px;border:1px solid var(--line-hairline);border-radius:8px;background:var(--panel);color:var(--ink);box-shadow:var(--shadow-popover);font:13px/1.7 var(--interface);z-index:12}
 .highlight-status a{display:block;color:var(--accent);padding-top:7px;min-height:32px}
