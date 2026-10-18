@@ -1,6 +1,6 @@
 # GET-180 — shelf card verification
 
-2026-10-18, based on main `2f4fc0d5323e35295127759deb855d8f913cdae1`.
+2026-10-18 implementation; final native review continued 2026-10-19 Asia/Shanghai, based on main `2f4fc0d5323e35295127759deb855d8f913cdae1`.
 [Design](../superpowers/specs/2026-10-18-get-180-book-cards.md).
 Only three production files change: the library `bookCard` renderer and its two
 existing stylesheets. Landing cards, original book files, IDs, translations,
@@ -24,9 +24,9 @@ node tools/verify-release.mjs
 All commands exited 0.
 ```
 
-The 44-test run preceded the final two-rule compact current-menu CSS repair;
-its affected layout/menu was then retested natively. It changes no application
-logic. No new CSS-string tests were added for this reversible layout change.
+The final 44-test run, hosted build and release checks follow the compact
+menu-offset and trial-link color repairs. Both affected visual states were
+retested natively. These CSS repairs change no application logic. No new CSS-string tests were added for this reversible layout change.
 Current-head full CI, independent final code/visual review, merge and production
 verification remain separate delivery gates recorded on the PR/Linear issue.
 
@@ -72,6 +72,38 @@ Original native captures:
 - [390px night](assets/get180/mobile-night.png)
 - [Real long/short title pair](assets/get180/mobile-long-title.png)
 - [Fixed current-book menu](assets/get180/mobile-current-book-fixed.png)
+
+## Final contrast and operation follow-up
+
+Visual review identified the trial metadata link's inherited fixed `#868c81`
+as too pale. Its real computed size was12px and every ancestor opacity1;
+transparent card ancestors expose the existing textured library body.
+The scoped link now uses the same `--muted` text color as author metadata.
+
+A read-only calculation decoded the actual sage-paper WebP (768×768), bounded
+its pixel channels, multiplied them by the body color and composited the
+observed gradient endpoints. WCAG relative luminance against conservative
+componentwise background bounds gives **at least4.54:1 paper and7.74:1 night**
+after repair (previous fixed gray: at most2.96:1 paper and4.30:1 night).
+Fresh native computed styles confirm `rgb(88,101,83)` / `rgb(180,192,171)`
+with full opacity; this is a calculated bound, not a screenshot estimate.
+
+Fresh native captures after the final color rule:
+
+- [Desktop paper](assets/get180/desktop-contrast-fixed.png)
+- [Desktop night](assets/get180/desktop-night-contrast-fixed.png)
+- [390px paper](assets/get180/mobile-contrast-fixed.png)
+- [390px night](assets/get180/mobile-night-contrast-fixed.png)
+- [Opened complete-author information](assets/get180/full-author-info.png)
+- [Opened compact current-book menu](assets/get180/mobile-current-menu-open.png)
+
+The original eight captures above document the earlier layout/interaction
+checkpoints and precede this color improvement. Follow-up menu and information
+AX trees were saved in the same native observation calls that showed the open
+states; these close the earlier durable-evidence gaps. The menu was opened by
+keyboard from the real focused card trigger; its information action displayed
+the complete Machado author list. A native click on the repaired compact
+current-book trigger opened the actual book-operations menu.
 
 ## Limits
 
