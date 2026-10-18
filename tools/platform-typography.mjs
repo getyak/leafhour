@@ -1,0 +1,108 @@
+// Remote, anonymous acceptance only. Never drives a browser on the user's Mac.
+// CDP evidence: https://chromedevtools.github.io/devtools-protocol/tot/CSS/#method-getPlatformFontsForNode
+import assert from 'node:assert/strict';
+import {spawn,execFileSync} from 'node:child_process';
+import {readFile,writeFile,mkdir,access} from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
+import {createHash} from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+
+const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+async function until(operation,label,ms=30000){const deadline=Date.now()+ms;let last;while(Date.now()<deadline){try{const value=await operation();if(value)return value;}catch(error){last=error;}await delay(100);}throw Error('Timed out: '+label+(last?' ('+last.message+')':''));}
+
+// Node22 built-in WebSocket; no browser package or extra driver dependency.
+class CDP {
+  constructor(socket){this.socket=socket;this.next=0;this.pending=new Map();this.listeners=new Map();
+    socket.addEventListener('message',event=>{const message=JSON.parse(event.data);if(message.id){const pending=this.pending.get(message.id);if(!pending)return;this.pending.delete(message.id);clearTimeout(pending.timer);message.error?pending.reject(Error(JSON.stringify(message.error))):pending.resolve(message.result);}else for(const handler of this.listeners.get(message.method)||[])handler(message.params);});
+    socket.addEventListener('close',()=>{for(const item of this.pending.values()){clearTimeout(item.timer);item.reject(Error('CDP disconnected'));}this.pending.clear();});
+  }
+  static async connect(url){const socket=new WebSocket(url);await new Promise((resolve,reject)=>{const timer=setTimeout(()=>{socket.close();reject(Error('CDP open timeout'));},10000);socket.addEventListener('open',()=>{clearTimeout(timer);resolve();},{once:true});socket.addEventListener('error',()=>{clearTimeout(timer);reject(Error('CDP socket error'));},{once:true});});return new CDP(socket);}
+  send(method,params={}){return new Promise((resolve,reject)=>{const id=++this.next,timer=setTimeout(()=>{this.pending.delete(id);reject(Error('CDP timeout '+method));},30000);this.pending.set(id,{resolve,reject,timer});this.socket.send(JSON.stringify({id,method,params}));});}
+  on(method,handler){const set=this.listeners.get(method)||new Set();set.add(handler);this.listeners.set(method,set);return()=>set.delete(handler);}
+  async evaluate(expression){const result=await this.send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(result.exceptionDetails)throw Error(result.exceptionDetails.text+': '+JSON.stringify(result.exceptionDetails.exception));return result.result.value;}
+  async close(){if(this.socket.readyState===3)return;await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('CDP close timeout')),5000);this.socket.addEventListener('close',()=>{clearTimeout(timer);resolve();},{once:true});this.socket.close();});}
+}
+
+assert.equal(process.env.GITHUB_ACTIONS,'true','Run only on the task-owned GitHub hosted runner');
+assert.ok(['linux','win32'].includes(process.platform),'Local Mac browser automation is prohibited');
+const root=process.cwd(),out=path.resolve(process.argv[2]||''),runnerTemp=path.resolve(process.env.RUNNER_TEMP||'');
+assert.ok(process.argv[2]&&process.env.RUNNER_TEMP&&out.startsWith(runnerTemp+path.sep),'Evidence must live inside this job RUNNER_TEMP');
+await mkdir(out,{recursive:true});
+const receipt={source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),platform:process.platform,release:os.release(),arch:os.arch(),image:{os:process.env.ImageOS,version:process.env.ImageVersion},node:process.version,startedAt:new Date().toISOString(),scope:'anonymous actual pages; remote runner; screenshots require human review',screenshots:[],fonts:[],checks:[],errors:[]};
+const serverData=path.join(out,'isolated-data'),browserProfile=path.join(out,'browser-profile');
+let server,child,cdp,fetchEnabled=false,holdFonts=false;const paused=new Set(),background=new Set(),failures=[],evidenceListeners=[];
+function task(operation){const promise=Promise.resolve(operation).catch(error=>failures.push(error.message)).finally(()=>background.delete(promise));background.add(promise);}
+const observe=(method,handler)=>evidenceListeners.push(cdp.on(method,handler));
+async function capture(name){const {data}=await cdp.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});const bytes=Buffer.from(data,'base64');await writeFile(path.join(out,name+'.png'),bytes);receipt.screenshots.push({file:name+'.png',bytes:bytes.length,sha256:sha(bytes)});}
+async function fonts(selector,label){const {root:doc}=await cdp.send('DOM.getDocument');const {nodeId}=await cdp.send('DOM.querySelector',{nodeId:doc.nodeId,selector});assert.ok(nodeId,'Missing actual text node: '+selector);const usage=await cdp.send('CSS.getPlatformFontsForNode',{nodeId});const details=await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)}),s=getComputedStyle(n),r=n.getBoundingClientRect();return {text:n.textContent,font:s.font,fontFamily:s.fontFamily,style:s.fontStyle,rect:{x:r.x,y:r.y,width:r.width,height:r.height},visible:!!n.getClientRects().length&&s.visibility!=='hidden'&&r.width>0&&r.height>0&&r.right>0&&r.bottom>0&&r.left<innerWidth&&r.top<innerHeight};})()`);assert.ok(details.visible,label+' must actually render inside the viewport');const value={label,selector,...details,...usage};receipt.checks.push(value);return value;}
+function customNewsreader(value){assert.ok(value.fonts.some(font=>font.isCustomFont&&/Newsreader/i.test(font.postScriptName||font.familyName)&&font.glyphCount>0),value.label+' must render actual custom Newsreader glyphs');}
+
+try{
+  const {createReaderServer}=await import(pathToFileURL(path.join(root,'server/server.mjs')));
+  const disabled=async()=>{throw Error('Provider calls disabled during anonymous platform QA');};
+  server=await createReaderServer({bookPath:path.join(serverData,'missing.json'),recordsPath:path.join(serverData,'records.json'),portalDataDir:path.join(serverData,'portal'),allowLocal:false,env:{},sendCode:null,translator:null,speechProvider:null,dialogueGenerator:null,guideGenerator:null,chatGenerator:null,companionGenerator:null,introductionGenerator:null,giftQuoteGenerator:null,paddleProvider:null,generator:disabled});
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const port=server.address().port;
+  const origin='http://127.0.0.1:'+port;let endpoint;
+  {
+    const choices=process.platform==='win32'?[path.join(process.env.ProgramFiles||'C:/Program Files','Google/Chrome/Application/chrome.exe'),path.join(process.env['ProgramFiles(x86)']||'C:/Program Files (x86)','Google/Chrome/Application/chrome.exe')]:['/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium'];let executable;
+    for(const candidate of choices){try{await access(candidate);executable=candidate;break;}catch{}}
+    assert.ok(executable,'Installed runner Chrome required; no download fallback');receipt.browserExecutable=executable;
+    child=spawn(executable,['--headless=new','--no-first-run','--no-default-browser-check','--disable-background-networking','--disable-component-update','--remote-debugging-address=127.0.0.1','--remote-debugging-port=0','--user-data-dir='+browserProfile,'--window-size=1200,900','about:blank'],{stdio:['ignore','ignore','pipe']});
+    let stderr='';child.stderr.on('data',data=>{stderr=(stderr+data).slice(-20000);});child.on('error',error=>failures.push(error.message));
+    const active=await until(async()=>{if(child.exitCode!==null)throw Error('Owned Chrome exited: '+stderr);return(await readFile(path.join(browserProfile,'DevToolsActivePort'),'utf8')).split('\n')[0];},'owned Chrome debugger');endpoint='http://127.0.0.1:'+active;
+  }
+  const pages=await until(async()=>{const r=await fetch(endpoint+'/json/list',{signal:AbortSignal.timeout(3000)});const list=await r.json();return list.find(page=>page.type==='page'&&page.webSocketDebuggerUrl);},'task Chrome page');
+  cdp=await CDP.connect(pages.webSocketDebuggerUrl);receipt.browser=await cdp.send('Browser.getVersion');
+  await cdp.send('Emulation.setDeviceMetricsOverride',{width:1200,height:900,deviceScaleFactor:1,mobile:false});
+  for(const method of ['Page.enable','Runtime.enable','DOM.enable','CSS.enable','Network.enable'])await cdp.send(method);
+  await cdp.send('Network.setCacheDisabled',{cacheDisabled:true});await cdp.send('Network.clearBrowserCache');
+  const requestFonts=new Map();
+  observe('Network.responseReceived',event=>{if(event.type==='Font')requestFonts.set(event.requestId,{url:event.response.url,status:event.response.status,mime:event.response.mimeType,fromDiskCache:event.response.fromDiskCache,fromServiceWorker:event.response.fromServiceWorker});});
+  observe('Network.loadingFinished',event=>{const font=requestFonts.get(event.requestId);if(font)task((async()=>{const body=await cdp.send('Network.getResponseBody',{requestId:event.requestId});assert.ok(body.base64Encoded,'Binary WOFF2 response body expected');const bytes=Buffer.from(body.body,'base64'),source=await readFile(path.join(root,'app',new URL(font.url).pathname));assert.equal(sha(bytes),sha(source),'Browser font bytes must match checkout');receipt.fonts.push({...font,bytes:bytes.length,sha256:sha(bytes)});})());});
+  observe('Network.loadingFailed',event=>{if(!event.canceled)receipt.errors.push({type:'network',error:event.errorText,blockedReason:event.blockedReason});});
+  observe('Runtime.exceptionThrown',event=>receipt.errors.push({type:'runtime',message:event.exceptionDetails.text,exception:event.exceptionDetails.exception?.description}));
+  observe('Fetch.requestPaused',event=>{if(holdFonts){paused.add(event.requestId);return;}task(cdp.send('Fetch.continueRequest',{requestId:event.requestId}));});
+  await cdp.send('Fetch.enable',{patterns:[{urlPattern:'*/fonts/newsreader/*.woff2',requestStage:'Request'}]});fetchEnabled=true;holdFonts=true;
+  await cdp.send('Page.navigate',{url:origin+'/'});
+  await until(async()=>paused.size&&await cdp.evaluate(`!!document.querySelector('.hero-copy h1 .hero-line')`),'font-paused real hero');
+  await delay(500);const cold=await fonts('.hero-copy h1 .hero-line','cold font-withheld hero');assert.ok(cold.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Cold fallback must have visible actual glyphs');assert.ok(!cold.fonts.some(font=>font.isCustomFont&&font.glyphCount>0),'Cold run must not use warmed custom face');await capture('home-controlled-font-delay');
+  holdFonts=false;for(const requestId of paused)await cdp.send('Fetch.continueRequest',{requestId});paused.clear();
+  await cdp.evaluate('document.fonts.ready.then(()=>true)');await capture('home-loaded');customNewsreader(await fonts('.hero-copy h1 .hero-line','loaded hero'));
+  await cdp.send('Page.navigate',{url:origin+'/zh-hans'});await until(()=>cdp.evaluate(`document.documentElement.lang==='zh-Hans'&&!!document.querySelector('#how .section-copy h2')`),'actual authored Chinese home');await cdp.evaluate('document.fonts.ready.then(()=>true)');
+  await cdp.evaluate(`document.querySelector('#how .section-copy h2').scrollIntoView({block:'center',behavior:'instant'})`);const cjk=await fonts('#how .section-copy h2','actual Chinese heading stock fallback');assert.ok(cjk.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Actual CJK fallback glyphs required');receipt.cjkNeedsHumanReview=true;await capture('home-cjk-loaded');
+  await cdp.send('Page.navigate',{url:origin+'/library'});
+  await until(()=>cdp.evaluate(`!!document.querySelector('#library-books .binding-original')`),'actual public shelf');await cdp.evaluate('document.fonts.ready.then(()=>true)');
+  customNewsreader(await fonts('#library-books .binding-original','actual Alice cover original title'));
+  // Isolate a glyph in the actual text while preserving inherited typography.
+  const punctuation=await cdp.evaluate(`(()=>{const n=[...document.querySelectorAll('#library-books .binding-original')].find(n=>n.textContent.includes('Alice’s'));if(!n)throw Error('Actual Alice’s title missing');const raw=n.textContent,node=[...n.childNodes].find(n=>n.nodeType===3&&n.textContent.includes('’'));if(!node)throw Error('Actual apostrophe text missing');const i=node.textContent.indexOf('’'),r=document.createRange();r.setStart(node,i);r.setEnd(node,i+1);const before=r.getBoundingClientRect().width,span=document.createElement('span');span.id='platform-apostrophe-probe';r.surroundContents(span);const after=span.getBoundingClientRect().width;return {raw,before,after,em:parseFloat(getComputedStyle(span).fontSize)};})()`);
+  const apostrophe=await fonts('#platform-apostrophe-probe','actual inherited U+2019 glyph');customNewsreader(apostrophe);assert.equal(apostrophe.text,'’');assert.ok(punctuation.after<punctuation.em*.5,'Apostrophe must be proportional');assert.ok(Math.abs(punctuation.before-punctuation.after)<.1,'Probe must preserve actual glyph width');receipt.punctuation=punctuation;
+  await fonts('#library-books .binding-title','stock CJK book title fallback');await capture('library-loaded');
+  const bookResponse=await fetch('http://127.0.0.1:'+port+'/api/library/books/gutenberg-alice',{headers:{'X-Reader-Owner':'guest'}});assert.ok(bookResponse.ok,'Actual public source package required');const sourceBook=await bookResponse.json();
+  const {sourceEmphasisRanges}=await import(pathToFileURL(path.join(root,'app/source-emphasis.mjs')));
+  const sourcePassage=sourceBook.sections.flatMap(section=>section.paragraphs).find(p=>p.original.includes('_very_')&&sourceEmphasisRanges(p.original).length);assert.ok(sourcePassage,'Actual source emphasis passage required');
+  const citation=new URLSearchParams({book:sourceBook.bookId,passage:sourcePassage.id,contentVersion:sourceBook.contentVersion,layer:'original'}),italicSelector='#chapter-text [data-id='+JSON.stringify(sourcePassage.id)+'] em.source-emphasis';
+  receipt.citation={bookId:sourceBook.bookId,passageId:sourcePassage.id,contentVersion:sourceBook.contentVersion,layer:'original',originalSha256:sha(sourcePassage.original)};
+  await cdp.send('Page.navigate',{url:origin+'/read?'+citation});
+  await until(()=>cdp.evaluate(`!!document.querySelector(${JSON.stringify(italicSelector)})`),'cited actual reader italic');await cdp.evaluate('document.fonts.ready.then(()=>true)');
+  await cdp.evaluate(`document.querySelector(${JSON.stringify(italicSelector)}).scrollIntoView({block:'center',behavior:'instant'})`);
+  const actualUrl=await cdp.evaluate('location.href');assert.equal(actualUrl,origin+'/read?'+citation,'Citation must remain on the intended source');
+  const italic=await fonts(italicSelector,'cited visible source emphasis italic');customNewsreader(italic);assert.equal(italic.text,'very');assert.equal(italic.style,'italic');assert.ok(italic.fonts.some(font=>font.isCustomFont&&/Italic/i.test(font.postScriptName||'')&&font.glyphCount>0),'Actual italic font required');await capture('reader-loaded');
+  await until(()=>receipt.fonts.some(font=>font.url.endsWith('newsreader-var.woff2'))&&receipt.fonts.some(font=>font.url.endsWith('newsreader-italic-var.woff2')),'both actual font responses');
+  await Promise.all(background);assert.deepEqual(failures,[],'All evidence tasks must succeed');
+  assert.deepEqual(receipt.errors,[],'Unexpected page/runtime/network errors require review');receipt.result='machine assertions passed; screenshots pending human visual review';
+}catch(error){receipt.result='failed';receipt.failure=error.stack;process.exitCode=1;}
+finally{
+  if(cdp){
+    await cdp.send('Page.stopLoading').catch(error=>failures.push(error.message));
+    if(fetchEnabled){holdFonts=false;for(const requestId of paused)await cdp.send('Fetch.continueRequest',{requestId}).catch(error=>failures.push(error.message));await cdp.send('Fetch.disable').catch(error=>failures.push(error.message));}
+    // End observation before draining: a snapshot of a growing Set is insufficient.
+    for(const unsubscribe of evidenceListeners)unsubscribe();receipt.observationClosedAt=new Date().toISOString();
+    while(background.size)await Promise.all([...background]);
+    await cdp.close().catch(error=>failures.push(error.message));
+  }
+  if(child){if(process.platform==='win32'){try{execFileSync('taskkill',['/PID',String(child.pid),'/T','/F'],{stdio:'ignore'});}catch{}}else child.kill('SIGTERM');}
+  if(server){server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}
+  if(failures.length||receipt.errors.length){receipt.result='failed';process.exitCode=1;}receipt.finishedAt=new Date().toISOString();receipt.backgroundFailures=failures;await writeFile(path.join(out,'receipt.json'),JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify({result:receipt.result,source:receipt.source,platform:receipt.platform,failure:receipt.failure,output:out}));
+}
