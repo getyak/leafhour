@@ -1,0 +1,1244 @@
+{
+  "sourceFreeze": "1cbce2e0897a73d6e588e5a6c5de198b94a0910880b43fb09636bb5de772f033",
+  "browser": "Actual native Chrome Guest, desktop responsive viewport; not physical touch/Android",
+  "requiredStates": 40,
+  "keyboardScrolledRegions": {
+    "Permissions table, scroll horizontally": 120,
+    "Command example, scroll horizontally": 80
+  },
+  "limitation": "Shared privacy navigation already hidden at 700px; MCP nav remains flex; tracked for GET189. Transient intermediate dimension input observations excluded. Early system-night screenshots are not acceptance proof; explicit-night states replace them.",
+  "states": [
+    {
+      "path": "/mcp",
+      "viewport": {
+        "width": 1200,
+        "height": 918,
+        "dpr": 1
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 1200,
+        "scrollWidth": 1200
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 870.34375,
+          "height": 44
+        }
+      ],
+      "regions": [
+        {
+          "label": "Permissions table, scroll horizontally",
+          "clientWidth": 710,
+          "scrollWidth": 710
+        },
+        {
+          "label": "Command example, scroll horizontally",
+          "clientWidth": 710,
+          "scrollWidth": 710
+        }
+      ]
+    },
+    {
+      "path": "/mcp",
+      "viewport": {
+        "width": 700,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 700,
+        "scrollWidth": 700
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 630,
+          "height": 44
+        }
+      ],
+      "regions": [
+        {
+          "label": "Permissions table, scroll horizontally",
+          "clientWidth": 650,
+          "scrollWidth": 650
+        },
+        {
+          "label": "Command example, scroll horizontally",
+          "clientWidth": 650,
+          "scrollWidth": 650
+        }
+      ]
+    },
+    {
+      "path": "/mcp",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 351,
+          "height": 92
+        }
+      ],
+      "regions": [
+        {
+          "label": "Permissions table, scroll horizontally",
+          "clientWidth": 340,
+          "scrollWidth": 580
+        },
+        {
+          "label": "Command example, scroll horizontally",
+          "clientWidth": 340,
+          "scrollWidth": 428
+        }
+      ]
+    },
+    {
+      "path": "/zh-hans/mcp",
+      "viewport": {
+        "width": 1200,
+        "height": 918,
+        "dpr": 1
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 1200,
+        "scrollWidth": 1200
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 870.34375,
+          "height": 44
+        }
+      ],
+      "regions": [
+        {
+          "label": "权限表，可横向滚动",
+          "clientWidth": 710,
+          "scrollWidth": 710
+        },
+        {
+          "label": "命令示例，可横向滚动",
+          "clientWidth": 710,
+          "scrollWidth": 710
+        }
+      ]
+    },
+    {
+      "path": "/zh-hans/mcp",
+      "viewport": {
+        "width": 700,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 700,
+        "scrollWidth": 700
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 630,
+          "height": 44
+        }
+      ],
+      "regions": [
+        {
+          "label": "权限表，可横向滚动",
+          "clientWidth": 650,
+          "scrollWidth": 650
+        },
+        {
+          "label": "命令示例，可横向滚动",
+          "clientWidth": 650,
+          "scrollWidth": 650
+        }
+      ]
+    },
+    {
+      "path": "/zh-hans/mcp",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 351,
+          "height": 92
+        }
+      ],
+      "regions": [
+        {
+          "label": "权限表，可横向滚动",
+          "clientWidth": 340,
+          "scrollWidth": 580
+        },
+        {
+          "label": "命令示例，可横向滚动",
+          "clientWidth": 340,
+          "scrollWidth": 428
+        }
+      ]
+    },
+    {
+      "path": "/zh-hant/mcp",
+      "viewport": {
+        "width": 1200,
+        "height": 918,
+        "dpr": 1
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 1200,
+        "scrollWidth": 1200
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 870.34375,
+          "height": 44
+        }
+      ],
+      "regions": [
+        {
+          "label": "權限表，可橫向捲動",
+          "clientWidth": 710,
+          "scrollWidth": 710
+        },
+        {
+          "label": "命令範例，可橫向捲動",
+          "clientWidth": 710,
+          "scrollWidth": 710
+        }
+      ]
+    },
+    {
+      "path": "/zh-hant/mcp",
+      "viewport": {
+        "width": 700,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 700,
+        "scrollWidth": 700
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 630,
+          "height": 44
+        }
+      ],
+      "regions": [
+        {
+          "label": "權限表，可橫向捲動",
+          "clientWidth": 650,
+          "scrollWidth": 650
+        },
+        {
+          "label": "命令範例，可橫向捲動",
+          "clientWidth": 650,
+          "scrollWidth": 650
+        }
+      ]
+    },
+    {
+      "path": "/zh-hant/mcp",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 351,
+          "height": 92
+        }
+      ],
+      "regions": [
+        {
+          "label": "權限表，可橫向捲動",
+          "clientWidth": 340,
+          "scrollWidth": 580
+        },
+        {
+          "label": "命令範例，可橫向捲動",
+          "clientWidth": 340,
+          "scrollWidth": 428
+        }
+      ]
+    },
+    {
+      "path": "/ja/mcp",
+      "viewport": {
+        "width": 1200,
+        "height": 918,
+        "dpr": 1
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 1200,
+        "scrollWidth": 1200
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 870.34375,
+          "height": 44
+        }
+      ],
+      "regions": [
+        {
+          "label": "権限の表、横にスクロール",
+          "clientWidth": 710,
+          "scrollWidth": 710
+        },
+        {
+          "label": "コマンド例、横にスクロール",
+          "clientWidth": 710,
+          "scrollWidth": 710
+        }
+      ]
+    },
+    {
+      "path": "/ja/mcp",
+      "viewport": {
+        "width": 700,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 700,
+        "scrollWidth": 700
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 630,
+          "height": 44
+        }
+      ],
+      "regions": [
+        {
+          "label": "権限の表、横にスクロール",
+          "clientWidth": 650,
+          "scrollWidth": 650
+        },
+        {
+          "label": "コマンド例、横にスクロール",
+          "clientWidth": 650,
+          "scrollWidth": 650
+        }
+      ]
+    },
+    {
+      "path": "/ja/mcp",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 351,
+          "height": 92
+        }
+      ],
+      "regions": [
+        {
+          "label": "権限の表、横にスクロール",
+          "clientWidth": 340,
+          "scrollWidth": 580
+        },
+        {
+          "label": "コマンド例、横にスクロール",
+          "clientWidth": 340,
+          "scrollWidth": 363
+        }
+      ]
+    },
+    {
+      "path": "/privacy",
+      "viewport": {
+        "width": 1200,
+        "height": 918,
+        "dpr": 1
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 1200,
+        "scrollWidth": 1200
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 509.203125,
+          "height": 44
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/privacy",
+      "viewport": {
+        "width": 700,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 700,
+        "scrollWidth": 700
+      },
+      "nav": [
+        {
+          "display": "none",
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/privacy",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "block",
+          "width": 206.15625,
+          "height": 176
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/zh-hans/privacy",
+      "viewport": {
+        "width": 1200,
+        "height": 918,
+        "dpr": 1
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 1200,
+        "scrollWidth": 1200
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 408.765625,
+          "height": 44
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/zh-hans/privacy",
+      "viewport": {
+        "width": 700,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 700,
+        "scrollWidth": 700
+      },
+      "nav": [
+        {
+          "display": "none",
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/zh-hans/privacy",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "block",
+          "width": 206.15625,
+          "height": 176
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/zh-hant/privacy",
+      "viewport": {
+        "width": 1200,
+        "height": 918,
+        "dpr": 1
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 1200,
+        "scrollWidth": 1200
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 408.765625,
+          "height": 44
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/zh-hant/privacy",
+      "viewport": {
+        "width": 700,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 700,
+        "scrollWidth": 700
+      },
+      "nav": [
+        {
+          "display": "none",
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/zh-hant/privacy",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "block",
+          "width": 206.15625,
+          "height": 176
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/ja/privacy",
+      "viewport": {
+        "width": 1200,
+        "height": 918,
+        "dpr": 1
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 1200,
+        "scrollWidth": 1200
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 421.765625,
+          "height": 44
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/ja/privacy",
+      "viewport": {
+        "width": 700,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 700,
+        "scrollWidth": 700
+      },
+      "nav": [
+        {
+          "display": "none",
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/ja/privacy",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "system",
+      "darkMedia": false,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "block",
+          "width": 206.15625,
+          "height": 176
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/mcp",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "paper",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 351,
+          "height": 92
+        }
+      ],
+      "regions": [
+        {
+          "label": "Permissions table, scroll horizontally",
+          "clientWidth": 340,
+          "scrollWidth": 580
+        },
+        {
+          "label": "Command example, scroll horizontally",
+          "clientWidth": 340,
+          "scrollWidth": 428
+        }
+      ]
+    },
+    {
+      "path": "/mcp",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "night",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 351,
+          "height": 92
+        }
+      ],
+      "regions": [
+        {
+          "label": "Permissions table, scroll horizontally",
+          "clientWidth": 340,
+          "scrollWidth": 580
+        },
+        {
+          "label": "Command example, scroll horizontally",
+          "clientWidth": 340,
+          "scrollWidth": 428
+        }
+      ]
+    },
+    {
+      "path": "/zh-hans/mcp",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "paper",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 351,
+          "height": 92
+        }
+      ],
+      "regions": [
+        {
+          "label": "权限表，可横向滚动",
+          "clientWidth": 340,
+          "scrollWidth": 580
+        },
+        {
+          "label": "命令示例，可横向滚动",
+          "clientWidth": 340,
+          "scrollWidth": 428
+        }
+      ]
+    },
+    {
+      "path": "/zh-hans/mcp",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "night",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 351,
+          "height": 92
+        }
+      ],
+      "regions": [
+        {
+          "label": "权限表，可横向滚动",
+          "clientWidth": 340,
+          "scrollWidth": 580
+        },
+        {
+          "label": "命令示例，可横向滚动",
+          "clientWidth": 340,
+          "scrollWidth": 428
+        }
+      ]
+    },
+    {
+      "path": "/zh-hant/mcp",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "paper",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 351,
+          "height": 92
+        }
+      ],
+      "regions": [
+        {
+          "label": "權限表，可橫向捲動",
+          "clientWidth": 340,
+          "scrollWidth": 580
+        },
+        {
+          "label": "命令範例，可橫向捲動",
+          "clientWidth": 340,
+          "scrollWidth": 428
+        }
+      ]
+    },
+    {
+      "path": "/zh-hant/mcp",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "night",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 351,
+          "height": 92
+        }
+      ],
+      "regions": [
+        {
+          "label": "權限表，可橫向捲動",
+          "clientWidth": 340,
+          "scrollWidth": 580
+        },
+        {
+          "label": "命令範例，可橫向捲動",
+          "clientWidth": 340,
+          "scrollWidth": 428
+        }
+      ]
+    },
+    {
+      "path": "/ja/mcp",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "paper",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 351,
+          "height": 92
+        }
+      ],
+      "regions": [
+        {
+          "label": "権限の表、横にスクロール",
+          "clientWidth": 340,
+          "scrollWidth": 580
+        },
+        {
+          "label": "コマンド例、横にスクロール",
+          "clientWidth": 340,
+          "scrollWidth": 363
+        }
+      ]
+    },
+    {
+      "path": "/ja/mcp",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "night",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "flex",
+          "width": 351,
+          "height": 92
+        }
+      ],
+      "regions": [
+        {
+          "label": "権限の表、横にスクロール",
+          "clientWidth": 340,
+          "scrollWidth": 580
+        },
+        {
+          "label": "コマンド例、横にスクロール",
+          "clientWidth": 340,
+          "scrollWidth": 363
+        }
+      ]
+    },
+    {
+      "path": "/privacy",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "paper",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "block",
+          "width": 206.15625,
+          "height": 176
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/privacy",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "night",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "block",
+          "width": 206.15625,
+          "height": 176
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/zh-hans/privacy",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "paper",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "block",
+          "width": 206.15625,
+          "height": 176
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/zh-hans/privacy",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "night",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "block",
+          "width": 206.15625,
+          "height": 176
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/zh-hant/privacy",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "paper",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "block",
+          "width": 206.15625,
+          "height": 176
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/zh-hant/privacy",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "night",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "block",
+          "width": 206.15625,
+          "height": 176
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/ja/privacy",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "paper",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "block",
+          "width": 206.15625,
+          "height": 176
+        }
+      ],
+      "regions": []
+    },
+    {
+      "path": "/ja/privacy",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2
+      },
+      "theme": "night",
+      "darkMedia": true,
+      "document": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "nav": [
+        {
+          "display": "block",
+          "width": 206.15625,
+          "height": 176
+        }
+      ],
+      "regions": []
+    }
+  ],
+  "images": [
+    {
+      "file": "en-mcp-desktop-paper.jpg",
+      "sha256": "57ec9779220a5e558e35e5b01d935491f9f712520a0485fe37c719ce4b371993"
+    },
+    {
+      "file": "en-mcp-390-paper.jpg",
+      "sha256": "b74e29f88b3103ab5ed56a2335d50d9f793d2399850178088fb92a4235590875"
+    },
+    {
+      "file": "en-mcp-390-explicit-night.jpg",
+      "sha256": "9db45b0f28e48af1b2a67d6912dbef94efe3939630408889a657d95ba2ab4000"
+    },
+    {
+      "file": "zh-hans-mcp-desktop-paper.jpg",
+      "sha256": "65db9921249755251ada9527ad7286d45dc5a2d57894119a2e53b467948d8282"
+    },
+    {
+      "file": "zh-hans-mcp-390-paper.jpg",
+      "sha256": "652fc9016bdea69b5512316064fa50a870420dfd8413af4bf47e78f41b150293"
+    },
+    {
+      "file": "zh-hans-mcp-390-explicit-night.jpg",
+      "sha256": "b3b5126553781dad8f8be2b9a23313f79be64fbadd2ed3cce46f5c12db31a0e4"
+    },
+    {
+      "file": "zh-hant-mcp-desktop-paper.jpg",
+      "sha256": "4a3ab574ff0fb65a9678a6dda688ecea1a230841cd1ad80c32a9a43e72868079"
+    },
+    {
+      "file": "zh-hant-mcp-390-paper.jpg",
+      "sha256": "47d5ad2b2eada20073e385155938570dfb5ef3c3666121fc756609188d739edc"
+    },
+    {
+      "file": "zh-hant-mcp-390-explicit-night.jpg",
+      "sha256": "fb314b130614ac9c98b2937ea5679bc451058c55e3423184243b0ffe5f2276e0"
+    },
+    {
+      "file": "ja-mcp-desktop-paper.jpg",
+      "sha256": "4bd6366a57d8e1852d9135a47fd9aeb3f4bdb5a91edd47f67468b1052a1ecc0d"
+    },
+    {
+      "file": "ja-mcp-390-paper.jpg",
+      "sha256": "83f48b7dc7e0ce1aba7786c7ac1427ff750fcb76a7d32eaa3eba30304488b714"
+    },
+    {
+      "file": "ja-mcp-390-explicit-night.jpg",
+      "sha256": "0d8d3db80082e51a2bcd34e237f617deaf8837ca86faa5b0a2794d93eb2029e0"
+    },
+    {
+      "file": "en-mcp-700-paper.jpg",
+      "sha256": "c89c91c7f183a393928a4d5b78424688f5188e35d70d8d7a81b7ffab29f78b5f"
+    },
+    {
+      "file": "en-mcp-desktop-explicit-night.jpg",
+      "sha256": "3520c49d8bf6860801985381bbc050de68baa27f0980eb3d3c622717ea961bd4"
+    },
+    {
+      "file": "en-privacy-desktop-paper.jpg",
+      "sha256": "94fd8cc68cc07ba65b1e99aba8a74f4abf8a81bac0a7b94b3fa3c22b21fbfda4"
+    },
+    {
+      "file": "zh-hans-privacy-390-fixed-paper-dark.jpg",
+      "sha256": "7f74c8a72d8ec13843518d0c0b80ed9b61dc0aeae818c682cb7fa461cc43839e"
+    },
+    {
+      "file": "en-mcp-390-table-focus.jpg",
+      "sha256": "1517d4ec6b98f7a452a24442f7d8ac854b187e209af1bbedd2c68f6cd789f84b"
+    },
+    {
+      "file": "en-mcp-390-code-focus.jpg",
+      "sha256": "95e09fedb2ebd9c0c53913d4e65999c10105ef80f84c29e1f6e897ce0848f8dd"
+    }
+  ],
+  "contentIntegrity": [
+    {
+      "locale": "en",
+      "beforeSHA256": "cbe2ae849cb065b2bc55d558e17eeb7f7ca8ad1e1fd70458d5a8d61feb3308fa",
+      "afterSHA256": "35260a5de9f5d4bb9cafc6cf8d3b8e0f5c4a119eb2b112a3e5ec4414c127def8",
+      "orderedArticleEventCount": 239,
+      "orderedArticleSHA256": "d9314e9a5735099fa17f2069d4d84a803b7086528c7e2e2b0677542d5adb8e6c",
+      "orderedExistingLinks": 23,
+      "existingLinksSHA256": "300684756e25b03da01dc6eed4a950266125aa5f3f829757f420f5a9330c4048",
+      "preDecodedUTF8SHA256": [
+        "be50b28ef8b783a3da1a6ce366ea79ba0940a07c9eb085fcbc1b0b0f31ac394d"
+      ],
+      "allArticleTextHeadingsIDsLinksTableStructureScopesAndAttributesExact": true,
+      "JSONLDExact": true
+    },
+    {
+      "locale": "zh-hans",
+      "beforeSHA256": "37103b0b936535130e172f100f889f1e178997d6e9c27d005721c89dedb58138",
+      "afterSHA256": "4c75b0aa682754e34329181a7d011b1c77645ebfe62bfd2ce0162b7f5b3d8451",
+      "orderedArticleEventCount": 239,
+      "orderedArticleSHA256": "0e223ee83d61841c009eee4f16fdffee5b2ad18835a8f87b8317ef5c2498697a",
+      "orderedExistingLinks": 23,
+      "existingLinksSHA256": "e0c5764cf3c215aa246b59b03f421437db581cc4c8fff5490c090f85fbb6538f",
+      "preDecodedUTF8SHA256": [
+        "be50b28ef8b783a3da1a6ce366ea79ba0940a07c9eb085fcbc1b0b0f31ac394d"
+      ],
+      "allArticleTextHeadingsIDsLinksTableStructureScopesAndAttributesExact": true,
+      "JSONLDExact": true
+    },
+    {
+      "locale": "zh-hant",
+      "beforeSHA256": "303b3cd921253842220f3fc3e0d16075b15debe44e5346c65caa53de5a16da39",
+      "afterSHA256": "c412a6bc0549dcd4a6505901431ca79da41b35833ac9a4aa84ec24e3d3c69e85",
+      "orderedArticleEventCount": 239,
+      "orderedArticleSHA256": "66dacec48c760ea9296dcdc8034e32592a032c1538bd4b93d9b11539852e4d11",
+      "orderedExistingLinks": 23,
+      "existingLinksSHA256": "d69ca4f8f87cb9761b14117b4c3d07a8cae1f9e2f06d626be832441d335cfa16",
+      "preDecodedUTF8SHA256": [
+        "be50b28ef8b783a3da1a6ce366ea79ba0940a07c9eb085fcbc1b0b0f31ac394d"
+      ],
+      "allArticleTextHeadingsIDsLinksTableStructureScopesAndAttributesExact": true,
+      "JSONLDExact": true
+    },
+    {
+      "locale": "ja",
+      "beforeSHA256": "3943c483822a04ba84b420574ff159f90a709fe17ad70d23e98b7bbf5ace6cb4",
+      "afterSHA256": "f64eb7594f0567c58cf6e35823cd416acf4b277ca8410ad7131e3240de063030",
+      "orderedArticleEventCount": 237,
+      "orderedArticleSHA256": "d7086042b60e97945063ed4819375be4ff6a1e989879114a643499ded80b9d71",
+      "orderedExistingLinks": 23,
+      "existingLinksSHA256": "d0a5f84068518e174b3a446816bbb4086fd3a0b4de5bca010686915c28784187",
+      "preDecodedUTF8SHA256": [
+        "be50b28ef8b783a3da1a6ce366ea79ba0940a07c9eb085fcbc1b0b0f31ac394d"
+      ],
+      "allArticleTextHeadingsIDsLinksTableStructureScopesAndAttributesExact": true,
+      "JSONLDExact": true
+    }
+  ]
+}

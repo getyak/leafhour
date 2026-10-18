@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">
   <title>Connect an AI agent to your books with MCP · Leafhour</title>
   <meta name="description" content="How Leafhour’s MCP adapter connects an AI agent to authorized book passages, chapters, notes and reading activity with separate permissions and revocation.">
   <link rel="canonical" href="https://leafhour.com/mcp">
@@ -11,33 +11,34 @@
   <link rel="alternate" hreflang="ja" href="https://leafhour.com/ja/mcp">
   <link rel="alternate" hreflang="x-default" href="https://leafhour.com/mcp">
   <meta property="og:type" content="article"><meta property="og:site_name" content="Leafhour"><meta property="og:title" content="Connect an AI agent to your books with MCP · Leafhour"><meta property="og:description" content="Read authorized passages and chapters through the same service as the reading room, with book-scoped access and revocation."><meta property="og:url" content="https://leafhour.com/mcp"><meta property="og:image" content="https://leafhour.com/brand-assets/leafhour-social.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Leafhour — Stay with a book."><meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="/brand-assets/leafhour-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/typography.css"><link rel="stylesheet" href="/interface-tokens.css"><link rel="stylesheet" href="/discovery.css">
+  <link rel="icon" href="/brand-assets/leafhour-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/typography.css"><link rel="stylesheet" href="/interface-tokens.css"><link rel="stylesheet" href="/portal.css"><link rel="stylesheet" href="/interaction-craft.css"><link rel="stylesheet" href="/leafhour-brand.css"><link rel="stylesheet" href="/mcp-guide.css"><script type="module" src="/site-appearance.mjs"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://leafhour.com/mcp#article","url":"https://leafhour.com/mcp","headline":"Connect an AI agent to your books with MCP","description":"Book-scoped MCP access to Leafhour passages, chapters, notes and reading activity.","inLanguage":"en","dateModified":"2026-10-16","author":{"@type":"Organization","name":"Leafhour","url":"https://leafhour.com/"},"mainEntityOfPage":"https://leafhour.com/mcp","about":{"@id":"https://leafhour.com/#application"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Leafhour","item":"https://leafhour.com/"},{"@type":"ListItem","position":2,"name":"MCP guide","item":"https://leafhour.com/mcp"}]}]}</script>
 </head>
-<body class="discovery-page">
-<header class="public-header"><a class="public-brand" href="/"><img src="/brand-assets/leafhour-mark.svg" width="37" height="37" alt="">Leafhour</a><nav aria-label="Main navigation"><a href="/">About Leafhour</a><a href="/library">Open reading room →</a><div class="home-languages" role="group" aria-label="Language"><a aria-current="true" href="/mcp" lang="en" hreflang="en">English</a><a href="/zh-hans/mcp" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a href="/zh-hant/mcp" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/mcp" lang="ja" hreflang="ja">日本語</a></div></nav></header>
-<main class="public-main"><article class="public-article">
+<body class="privacy-page mcp-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><a class="brand" href="/" aria-label="Leafhour home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="brand-name" lang="en">Leafhour</span></a><nav aria-label="Main navigation"><a href="/">About Leafhour</a><a href="/library">Open reading room →</a><div class="home-languages" role="group" aria-label="Language"><a aria-current="true" href="/mcp" lang="en" hreflang="en">English</a><a href="/zh-hans/mcp" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a href="/zh-hant/mcp" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/mcp" lang="ja" hreflang="ja">日本語</a></div></nav></header>
+<main id="main" class="privacy-document"><article class="public-article">
   <h1>Connect an AI agent to your books with MCP.</h1>
   <p class="public-byline">Leafhour documentation · Updated October 16, 2026</p>
   <p>Leafhour’s Model Context Protocol (MCP) adapter lets a compatible AI host read a book you authorize. It uses the same reading service as the website. Access is limited to one book and the data types you select; installing the adapter alone grants no access.</p>
   <p>This is a technical integration. The current reading interface is primarily Chinese and does not yet provide a complete grant-management screen. Use an existing compatible client or the authenticated service API to create and revoke grants. Contact <a href="mailto:support@leafhour.com">support@leafhour.com</a> if you need help.</p>
   <h2 id="permissions">Choose what the agent may access.</h2>
-  <table><thead><tr><th scope="col">Permission</th><th scope="col">What it permits</th></tr></thead><tbody>
+  <div class="mcp-scroll" role="region" aria-label="Permissions table, scroll horizontally" tabindex="0"><table><thead><tr><th scope="col">Permission</th><th scope="col">What it permits</th></tr></thead><tbody>
     <tr><th scope="row"><code>content</code></th><td>Original text and saved translations, book metadata, paginated chapters and search within that book.</td></tr>
     <tr><th scope="row"><code>notes</code></th><td>Separately authorized personal comments and questions.</td></tr>
     <tr><th scope="row"><code>activity</code></th><td>Saved reading position and recent reading sessions.</td></tr>
     <tr><th scope="row"><code>comment:write</code></th><td>Save a comment explicitly supplied by the user, anchored to a passage. It does not authorize edits to the book.</td></tr>
-  </tbody></table>
+  </tbody></table></div>
   <p>Start with <code>content</code> only. A grant expires after seven days and can be revoked earlier. A revoked grant fails subsequent service authorization; revocation cannot erase content already copied into your AI host.</p>
   <h2 id="setup">Connect the adapter.</h2>
   <ol><li>Run Leafhour locally using the <a href="https://github.com/getyak/leafhour#readme">repository instructions</a>, or use the hosted reading service. Import a book or choose a public sample in your <a href="/library">reading room</a>.</li><li>Through a compatible client or the authenticated API, create a grant with a <code>bookId</code> and selected <code>scopes</code> using <code>POST /api/library/grants</code>. The token is returned once; keep it in your AI host’s private configuration.</li><li>Read <code>GET /api/library/mcp-setup</code> and use the <a href="https://github.com/getyak/leafhour/blob/main/app/mcp-config.mjs">configuration builder</a> to create the host configuration. For a local source checkout, the adapter runs as <code>node server/mcp.mjs</code>. The hosted setup returns the deployed source commit, and the generated configuration pins that immutable source package with explicit HTTPS access; missing deployment provenance fails closed.</li><li>Enable the MCP server in your compatible AI host, and pass the authorized book ID with tool requests. Revoke access with <code>POST /api/library/grants/{id}/revoke</code> when you are done.</li></ol>
   <p>The adapter uses these environment variables:</p>
-  <pre><code>READER_SERVICE_URL=http://127.0.0.1:8330
+  <div class="mcp-scroll" role="region" aria-label="Command example, scroll horizontally" tabindex="0"><pre><code>READER_SERVICE_URL=http://127.0.0.1:8330
 READER_AGENT_TOKEN=&lt;your book-scoped grant&gt;
 
 # For your configured HTTPS service only:
 # READER_SERVICE_URL=https://leafhour.com
-# READER_ALLOW_REMOTE=true</code></pre>
+# READER_ALLOW_REMOTE=true</code></pre></div>
   <p>Never put a login password, session cookie, Supabase key or grant token into a public document or repository. An MCP grant is separate from your website login. Use your host’s secret storage where available.</p>
   <h2 id="tools">Ask for a passage, then go deeper.</h2>
   <p><code>reader_get_manifest</code> lists the book’s source metadata and chapter identities. <code>reader_get_context</code> returns a passage with its adjacent passages and stable anchors. <code>reader_get_chapter</code> returns at most 20 passages at a time and a continuation cursor. <code>reader_search</code> searches the authorized book and returns up to 20 anchored matches.</p>
@@ -48,6 +49,6 @@ READER_AGENT_TOKEN=&lt;your book-scoped grant&gt;
   <p>The built-in reading assistant has its own read-only boundaries and is separate from this external MCP grant. See the <a href="/privacy">privacy notice</a> for hosted processing details.</p>
   <p>For exact tool definitions and current service behavior, inspect the <a href="https://github.com/getyak/leafhour/blob/main/server/mcp.mjs">adapter source</a>, the <a href="https://github.com/getyak/leafhour/blob/main/server/portal.mjs">service routes</a> and the <a href="https://github.com/getyak/leafhour/blob/main/docs/mcp-reading.md">scoped MCP reading notes</a>. This guide describes the current implementation, not planned capabilities.</p>
 </article></main>
-<footer class="public-footer"><a href="/">Leafhour · Stay with a book.</a><a href="https://github.com/getyak/leafhour">Source code</a><a href="/privacy">Privacy</a><div class="home-languages" role="group" aria-label="Language"><a aria-current="true" href="/mcp" lang="en" hreflang="en">English</a><a href="/zh-hans/mcp" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a href="/zh-hant/mcp" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/mcp" lang="ja" hreflang="ja">日本語</a></div><a href="mailto:support@leafhour.com">Contact</a></footer>
+<footer class="site-footer"><a href="/">Leafhour · Stay with a book.</a><a href="https://github.com/getyak/leafhour">Source code</a><a href="/privacy">Privacy</a><div class="home-languages" role="group" aria-label="Language"><a aria-current="true" href="/mcp" lang="en" hreflang="en">English</a><a href="/zh-hans/mcp" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a href="/zh-hant/mcp" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/mcp" lang="ja" hreflang="ja">日本語</a></div><a href="mailto:support@leafhour.com">Contact</a></footer>
 </body>
 </html>
