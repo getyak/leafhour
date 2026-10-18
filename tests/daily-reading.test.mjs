@@ -12,7 +12,9 @@ const storeModule=await import('../server/locked-json-store.mjs').catch(()=>({})
 const {createDailyReadingService,dailyEventId,dailyTestEventId,localCalendarDate,zonedDueAt,DAILY_GRANT_TTL_DAYS,DAILY_SCOPE,MAX_MESSAGE_CODEPOINTS,MAX_QUOTE_CODEPOINTS,PRESENCE_TTL_MS}=dailyModule;
 
 const owner={id:'daily-owner'},other={id:'daily-other'};
-const today=localCalendarDate?localCalendarDate('Asia/Shanghai',Date.now()):'2026-10-18';
+// Keep the simulated morning and its real-library sessions in the past even
+// when CI runs just after Shanghai midnight; the library rejects future time.
+const today=localCalendarDate?localCalendarDate('Asia/Shanghai',Date.now()-86400000):'2026-10-18';
 const dueAt=zonedDueAt?zonedDueAt(today,'09:00','Asia/Shanghai'):Date.now();
 const baseNow=dueAt+5*60000;
 const configureInput=(bookId,patch={})=>({baseRevision:0,bookId,time:'09:00',timeZone:'Asia/Shanghai',consent:{originalText:true,readingActivity:true},...patch});

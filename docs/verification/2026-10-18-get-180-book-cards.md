@@ -117,3 +117,14 @@ password-form accessibility advice; no all-console-clean claim is made.
 
 No original review-author score or new-user perception study is invented.
 The genuine reading trial and editorial feedback tasks remain independent.
+
+## CI fixture follow-up
+
+The first PR127 CI run failed three existing daily-reading tests after Shanghai
+midnight: their simulated09:00 local day was also used for real-library session
+fixtures at08:10–09:20, still in the future at execution. A separate local run
+reproduced all three failures. The fixture now chooses the previous Shanghai
+calendar day, keeping its morning sessions safely in the past throughout the
+day. The production future-time guard is unchanged; no test is skipped or
+assertion removed. The focused daily suite and latest-head CI are rerun after
+this test-only correction.
