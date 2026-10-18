@@ -6,6 +6,7 @@ import {createUploadState} from './upload-state.mjs';
 import {createOwnerScope,readOwnerResponse} from './owner-scope.mjs';
 import {mountAuthDialog} from './auth-dialog.mjs';
 import {safeReaderReturn,safeGiftReturn} from './reader-return.mjs';
+import {createLibraryViewHistory,safeLibraryReturn,writeLibraryView,authReturnTarget} from './library-view-state.mjs';
 import {chineseTrialUrl} from './catalog-sample.mjs';
 import {mountReadingDashboard} from './reading-dashboard.mjs';
 import {roomShelf,readingBookUrl,libraryShelf,hasShelfFilters} from './library-workspace.mjs';
@@ -24,28 +25,67 @@ const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.classNa
 const ownerScope=createOwnerScope();
 let refreshGeneration=0,pdfOnboarding=null,followedPdfId=null;
 let session=null,books=[],shelfControls=null,selectedCurrent=null,pendingUpload=false,pendingChat=false,upload=createUploadState(),shell=null,chat=null,dashboard=null,bookActions=null,shelfDrag=null,setupInvite=null,shelfRevision=0,orderOperation=null;
+// GET-179: one pure view codec plus one explicit lifecycle adapter own the
+// library URL; overlays open/close/tab only through these explicit hooks.
+let viewHistory=null,bootstrapped=false,syncingOverlay=false;
 const status=(id,text,error=false)=>{$(id).textContent=text;$(id).classList.toggle('error',error);};
 const api=(url,data,ticket=ownerScope.capture())=>readOwnerResponse(ownerScope,ticket,()=>fetch(url,{...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json',...((url.startsWith('/api/library')||url.startsWith('/api/account')||url.startsWith('/api/book-gifts'))?{'X-Reader-Owner':ticket.owner}:{})}}).catch(()=>{throw Object.assign(Error('网络暂时无法连接，请稍后重试。'),{retryable:true});}),()=>{ownerScope.adopt('guest');session={...session,user:null};clearPrivateUI();location.reload();});
 const isLibrary=location.pathname==='/library';$('home-view').hidden=isLibrary;$('library-view').hidden=!isLibrary;document.body.classList.toggle('library-page',isLibrary);
 const entryQuery=new URLSearchParams(location.search),returnToReader=safeGiftReturn(entryQuery.get('next'))||safeReaderReturn(entryQuery.get('next'));
-let pendingCalendar=isLibrary&&entryQuery.get('calendar')==='1',pendingSettings=isLibrary&&(entryQuery.get('settings')||location.hash==='#agent');
+let returnToLibrary=!returnToReader?safeLibraryReturn(entryQuery.get('next')):null;
+let pendingSettings=isLibrary&&location.hash==='#agent';
+const adoptPendingReturn=()=>{
+  if(!isLibrary||!returnToLibrary||pendingUpload)return;
+  const target=returnToLibrary;returnToLibrary=null;
+  const overlay=viewHistory?.adoptReturn(target);
+  if(overlay)syncOverlay(overlay);
+};
+const currentLibraryReturn=()=>viewHistory?safeLibraryReturn('/library'+writeLibraryView('',viewHistory.snapshot()))||'/library':'/library';
+// Auth returns adopt the validated safe next only after identity settles, so a
+// login handoff can never be erased by the owner change it triggers, and the
+// adoption never calls history.back().
 const returnAfterAuth=()=>{if(returnToReader&&!pendingUpload){location.replace(returnToReader);return true;}if(!isLibrary){location.href='/library';return true;}return false;};
+const overlayMatches=(a,b)=>!!a&&!!b&&a.kind===b.kind&&(a.tab||null)===(b.tab||null);
+const openOverlayFor=overlay=>{if(!viewHistory)return;if(overlayMatches(viewHistory.snapshot().overlay,overlay))return;viewHistory.openOverlay(overlay);};
+const closeOverlayFor=(kind,reason='user')=>{if(viewHistory?.snapshot().overlay?.kind===kind)viewHistory.closeOverlay(reason);};
+function syncOverlay(target){
+  if(syncingOverlay||!isLibrary)return;syncingOverlay=true;
+  try{
+    const kind=target?.kind||null;
+    if(kind!=='filter')shelfControls?.close();
+    if(kind!=='settings'&&$('library-settings-dialog').open)$('library-settings-dialog').close();
+    if(kind!=='calendar'&&$('reading-history').open)$('reading-history').close();
+    if(kind!=='upload'&&$('upload-dialog').open)$('upload-dialog').close();
+    if(kind!=='trash'&&bookActions?.getOverlayKind()==='trash')bookActions.closeDialog();
+    if(kind==='filter')shelfControls?.open();
+    else if(kind==='settings')shell?.openSettings(target.tab);
+    else if(kind==='calendar')dashboard?.openHistory();
+    else if(kind==='upload'&&!$('upload-dialog').open)openUpload();
+    else if(kind==='trash'&&bookActions?.getOverlayKind()!=='trash')bookActions?.trash();
+  }finally{syncingOverlay=false;}
+}
 if(isLibrary)document.title='我的书房 · Leafhour';
-const authDialog=mountAuthDialog({dialog:$('auth-dialog'),api,getSession:()=>session,getReturnTo:()=>pendingUpload?'/library?upload=1':returnToReader||'/library',onSessionSettled:()=>refresh().catch(error=>status('library-status',error.message,true)),onAuthenticated:async()=>{const returnToChat=pendingChat;pendingChat=false;if(returnAfterAuth())return;try{await refresh();status('library-status','');if(pendingUpload)openUpload();else if(returnToChat)chat?.open();}catch(error){status('library-status','已登录，书架暂时无法刷新。'+error.message,true);}}});
+const authDialog=mountAuthDialog({dialog:$('auth-dialog'),api,getSession:()=>session,getReturnTo:()=>authReturnTarget({pendingUpload,readerReturn:returnToReader,libraryReturn:returnToLibrary,current:currentLibraryReturn()}),onSessionSettled:()=>refresh().catch(error=>status('library-status',error.message,true)),onAuthenticated:async()=>{const returnToChat=pendingChat;pendingChat=false;if(returnAfterAuth())return;try{await refresh();adoptPendingReturn();status('library-status','');if(pendingUpload)openUpload();else if(returnToChat)chat?.open();}catch(error){status('library-status','已登录，书架暂时无法刷新。'+error.message,true);}}});
 const openAuth=message=>authDialog.open(typeof message==='string'?message:undefined);
 $('auth-dialog').addEventListener('close',()=>{pendingChat=false;});
 const ensureUser=()=>{if(session?.user)return true;openAuth();return false;};
 const getOwner=()=>{const t=ownerScope.capture();return t.owner+':'+t.revision;};
-dashboard=mountReadingDashboard({root:$('reading-dashboard'),overviewRoot:$('reading-overview'),historyRoot:$('reading-history'),api,getSession:()=>session,getBooks:()=>books,getOwner,openAuth,refresh,onCurrentBook:book=>{selectedCurrent=book?.bookId||null;renderBooks();}});
-if(isLibrary){shelfControls=mountShelfFilters({root:$('library-filter-controls'),onChange:()=>{shelfDrag?.reset();renderBooks();}});chat=mountLibraryChat({root:$('library-chat'),api,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture().owner,openAuth:message=>{pendingChat=true;openAuth(message);},getCurrentBook:()=>dashboard.getCurrentBook()});shell=mountLibraryShell({getSession:()=>session,api,getBooks:()=>books,getCurrentBook:()=>dashboard.getCurrentBook(),inboxRoot:$('daily-reading-inbox'),onRestored:()=>refresh(),onProfileUpdated:(profile,userId)=>{if(session?.user?.id!==userId)return;Object.assign(session.user,profile);shell.update();},onReadingPreferencesSaved:saved=>{if(session)session.readingPreferences=saved;setupInvite?.update();},openAuth,onLogout:signOut,onHistory:()=>dashboard.openHistory(),onOpenChat:()=>chat.open()});setupInvite=mountReadingSetupInvite({root:$('reading-setup-invite'),api,getSession:()=>session,openSettings:tab=>shell.openSettings(tab),onSaved:saved=>{if(session)session.readingPreferences=saved;setupInvite?.update();},onError:message=>status('library-status',message,true)});bookActions=mountLibraryBookActions({api,getSession:()=>session,getBooks:()=>libraryShelf(books),getOwner,getRevision:()=>shelfRevision,setRevision:value=>{shelfRevision=value;},onReorder:saveShelfOrder,onChanged:()=>refresh(),openAuth});shelfDrag=mountShelfDrag({grid:$('library-books'),getBooks:()=>libraryShelf(books),getOwner,onReorder:saveShelfOrder,onError:error=>status('library-status',error.message,true)});$('library-trash').addEventListener('click',()=>{shell.closeNavigation();bookActions.trash();});}else roomIcons();
+dashboard=mountReadingDashboard({root:$('reading-dashboard'),overviewRoot:$('reading-overview'),historyRoot:$('reading-history'),api,getSession:()=>session,getBooks:()=>books,getOwner,openAuth,refresh,onCurrentBook:book=>{selectedCurrent=book?.bookId||null;renderBooks();},onOverlay:overlay=>openOverlayFor(overlay),onClose:kind=>closeOverlayFor(kind,'user')});
+if(isLibrary){shelfControls=mountShelfFilters({root:$('library-filter-controls'),onOpenChange:open=>{if(open)openOverlayFor({kind:'filter'});else closeOverlayFor('filter','dismiss');},onChange:action=>{shelfDrag?.reset();if(!viewHistory){renderBooks();return;}if(action.patch)viewHistory.setView(action.patch);else if(action.clear)viewHistory.clearView(action.clear);else if(action.clearAll)viewHistory.clearAll();}});chat=mountLibraryChat({root:$('library-chat'),api,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture().owner,openAuth:message=>{pendingChat=true;openAuth(message);},getCurrentBook:()=>dashboard.getCurrentBook()});shell=mountLibraryShell({getSession:()=>session,api,getBooks:()=>books,getCurrentBook:()=>dashboard.getCurrentBook(),inboxRoot:$('daily-reading-inbox'),onRestored:()=>refresh(),onProfileUpdated:(profile,userId)=>{if(session?.user?.id!==userId)return;Object.assign(session.user,profile);shell.update();},onReadingPreferencesSaved:saved=>{if(session)session.readingPreferences=saved;setupInvite?.update();},openAuth,onLogout:signOut,onHistory:()=>dashboard.openHistory(),onOpenChat:()=>chat.open(),onSettingsOpen:tab=>openOverlayFor({kind:'settings',tab}),onSettingsClose:()=>closeOverlayFor('settings','user'),onSettingsTab:tab=>{const current=viewHistory?.snapshot().overlay;if(current?.kind==='settings'&&current.tab!==tab)openOverlayFor({kind:'settings',tab});}});setupInvite=mountReadingSetupInvite({root:$('reading-setup-invite'),api,getSession:()=>session,openSettings:tab=>shell.openSettings(tab),onSaved:saved=>{if(session)session.readingPreferences=saved;setupInvite?.update();},onError:message=>status('library-status',message,true)});bookActions=mountLibraryBookActions({api,getSession:()=>session,getBooks:()=>libraryShelf(books),getOwner,getRevision:()=>shelfRevision,setRevision:value=>{shelfRevision=value;},onReorder:saveShelfOrder,onChanged:()=>refresh(),openAuth,onOverlay:overlay=>openOverlayFor(overlay),onClose:(kind,reason)=>{if(kind==='trash')closeOverlayFor('trash',reason);}});shelfDrag=mountShelfDrag({grid:$('library-books'),getBooks:()=>libraryShelf(books),getOwner,onReorder:saveShelfOrder,onError:error=>status('library-status',error.message,true)});$('library-trash').addEventListener('click',()=>{shell.closeNavigation();bookActions.trash();});}else roomIcons();
+if(isLibrary)viewHistory=createLibraryViewHistory({window,onChange:(snapshot,meta)=>{
+  shelfControls?.apply(snapshot.view);
+  renderBooks();
+  if(meta.source!=='hydrate')syncOverlay(snapshot.overlay);
+}});
 const shelfList=isLibrary?mountIncrementalShelf({grid:$('library-books'),controls:$('shelf-more'),renderItem:bookCard}):null;
 pdfOnboarding=mountPdfOnboarding({document,root:$('pdf-ingestion-jobs'),api,getSession:()=>session,capture:()=>ownerScope.capture(),isCurrent:ticket=>ownerScope.isCurrent(ticket),onOpen:bookId=>{location.href='/read?book='+encodeURIComponent(bookId);},onDone:job=>{if(followedPdfId===job.id&&$('upload-dialog').open){pdfOnboarding.opened(job);location.href='/read?book='+encodeURIComponent(job.bookId);}else refresh().catch(error=>status('library-status',error.message,true));}});
-function clearPrivateUI({keepAuthDialog=false}={}){
+function clearPrivateUI({keepAuthDialog=false,preserveView=false}={}){
+  if(!preserveView)viewHistory?.adoptOwner();
   bookActions?.clear();shelfDrag?.reset();shelfRevision=0;orderOperation=null;
   for(const id of ['upload-status','library-status','upload-filename'])status(id,'');
-  for(const id of ['book-file','book-search'])$(id).value='';if(!keepAuthDialog){status('auth-status','');authDialog.reset();if($('auth-dialog').open)$('auth-dialog').close();}
+  for(const id of preserveView?['book-file']:['book-file','book-search'])$(id).value='';if(!keepAuthDialog){status('auth-status','');authDialog.reset();if($('auth-dialog').open)$('auth-dialog').close();}
   if($('upload-dialog').open)$('upload-dialog').close();$('upload-dialog').removeAttribute('aria-busy');$('confirm-upload').disabled=true;$('book-file').disabled=false;
-  if($('reading-history').open)$('reading-history').close();pendingUpload=false;pendingChat=false;selectedCurrent=null;upload=createUploadState();pdfOnboarding?.reset();followedPdfId=null;shelfControls?.reset();document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
+  if($('reading-history').open)$('reading-history').close();pendingUpload=false;pendingChat=false;selectedCurrent=null;upload=createUploadState();pdfOnboarding?.reset();followedPdfId=null;if(!preserveView)shelfControls?.reset();document.querySelectorAll('[data-shelf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shelf==='all')));
   books=books.filter(b=>b.visibility==='public').map(b=>({...b,resume:null,journey:null}));chat?.reset();shell?.update();setupInvite?.update();dashboard?.clear();renderBooks();$('featured-books').replaceChildren(...books.slice(0,3).map(landingBookCard));
 }
 function landingBookCard(book){
@@ -94,13 +134,14 @@ async function refresh(knownSession){
   try{
   const next=knownSession||await api('/api/auth/session');if(generation!==refreshGeneration)return;
   const continueUpload=!session?.user&&next.user&&pendingUpload,continueChat=!session?.user&&next.user&&pendingChat,changed=ownerScope.adopt(next.user?.id||'guest');session=next;
-  if(changed){clearPrivateUI({keepAuthDialog:authDialog.isSettingPasswordFor(next.user?.id)});pendingUpload=!!continueUpload;pendingChat=!!continueChat;}authDialog.updateCapabilities();shell?.update();setupInvite?.update();
+  if(changed){clearPrivateUI({keepAuthDialog:authDialog.isSettingPasswordFor(next.user?.id),preserveView:!bootstrapped});pendingUpload=!!continueUpload;pendingChat=!!continueChat;}authDialog.updateCapabilities();shell?.update();setupInvite?.update();
   $('account-button').textContent=homeText(session.user?'我的书房 ↗':'登录 / 注册 ↗',homeLocale(document));$('library-description').textContent=homeText(session.user?'自己的书与阅读记录。':'先选一本书，读几页。',homeLocale(document));
   const library=await api('/api/library');if(generation!==refreshGeneration)return;books=library.books;shelfRevision=library.shelfRevision||0;
   if(!session.user){try{const order=JSON.parse(localStorage.getItem('marginalia-shelf-order:guest')||'null');if(Array.isArray(order)&&order.length<=1000){const rank=new Map(order.filter(id=>typeof id==='string').map((id,index)=>[id,index]));if(rank.size)books=books.map((book,index)=>({...book,shelfPosition:rank.get(book.bookId)??order.length+index}));}}catch{}}
   if(!session.user)for(const book of books){try{const local=JSON.parse(localStorage.getItem(positionStorageKey(book.bookId))||'null');if(local?.passageId&&local.chapterLabel&&local.contentVersion===book.source.sha256)book.resume={label:local.chapterLabel,passageId:local.passageId,updatedAt:local.updatedAt,mode:local.mode,variant:local.variant};}catch{}}
   $('library-retry').hidden=true;status('library-status','');renderBooks();$('featured-books').replaceChildren(...books.filter(b=>b.visibility==='public').slice(0,3).map(landingBookCard));
-  pdfOnboarding.refresh();if(isLibrary){dashboard.update(arrivalTicket);shell.refreshDaily();if(pendingCalendar){pendingCalendar=false;dashboard.openHistory();}if(pendingSettings){const tab=pendingSettings;pendingSettings=false;shell.openSettings(typeof tab==='string'?tab:'account');}}
+  pdfOnboarding.refresh();if(isLibrary){dashboard.update(arrivalTicket);shell.refreshDaily();}
+  bootstrapped=true;
   }catch(error){if(generation!==refreshGeneration)return;if(isLibrary){dashboard.fail(error,arrivalTicket);$('library-retry').hidden=false;$('library-books').setAttribute('aria-busy','false');}throw error;}
 }
 async function signOut(){
@@ -111,11 +152,11 @@ $('account-button').addEventListener('click',()=>{if(!session?.user){openAuth();
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
 for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();});
 document.addEventListener('click',event=>{for(const details of document.querySelectorAll('.book-details[open]'))if(!details.contains(event.target))details.open=false;});
-function openUpload(){$('upload-dialog').classList.remove('pdf-saved');$('upload-title').textContent='这次，你想读什么？';shell?.closeNavigation();pendingUpload=true;if(!ensureUser())return;pendingUpload=false;if(!upload.file){$('book-file').value='';$('upload-filename').textContent='';status('upload-status','');$('confirm-upload').textContent='放进我的书房 →';}$('confirm-upload').disabled=upload.busy||!upload.file;$('upload-progress-slot').append($('pdf-ingestion-jobs'));pdfOnboarding.refresh();if(!$('upload-dialog').open)$('upload-dialog').showModal();}
+function openUpload(){$('upload-dialog').classList.remove('pdf-saved');$('upload-title').textContent='这次，你想读什么？';shell?.closeNavigation();pendingUpload=true;if(!ensureUser())return;pendingUpload=false;if(!upload.file){$('book-file').value='';$('upload-filename').textContent='';status('upload-status','');$('confirm-upload').textContent='放进我的书房 →';}$('confirm-upload').disabled=upload.busy||!upload.file;$('upload-progress-slot').append($('pdf-ingestion-jobs'));pdfOnboarding.refresh();if(!$('upload-dialog').open){openOverlayFor({kind:'upload'});$('upload-dialog').showModal();}}
 for(const id of ['upload-button','empty-upload'])$(id).addEventListener('click',openUpload);
 function selectFile(file){if(!file||upload.busy)return;$('upload-filename').textContent='';$('confirm-upload').disabled=true;$('book-file').value='';try{upload.select(file);$('upload-filename').textContent=file.name+' · '+(file.size>=1024*1024?(file.size/1024/1024).toFixed(2)+' MB':Math.max(1,Math.ceil(file.size/1024))+' KB');$('confirm-upload').textContent='放进我的书房 →';$('confirm-upload').disabled=false;status('upload-status','');}catch(error){status('upload-status',error.message,true);}}
 $('book-file').addEventListener('change',e=>selectFile(e.target.files[0]));
-const drop=$('drop-zone');drop.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();if(!upload.busy)$('book-file').click();}});$('upload-dialog').addEventListener('close',()=>{followedPdfId=null;$('library-import-slot').append($('pdf-ingestion-jobs'));if(upload.busy)status('library-status','正在导入 '+upload.file.name+'，完成后会更新书架。');});for(const event of ['dragenter','dragover'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.add('dragging');});for(const event of ['dragleave','drop'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.remove('dragging');if(event==='drop')selectFile(e.dataTransfer.files[0]);});
+const drop=$('drop-zone');drop.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();if(!upload.busy)$('book-file').click();}});$('upload-dialog').addEventListener('close',()=>{closeOverlayFor('upload','user');followedPdfId=null;$('library-import-slot').append($('pdf-ingestion-jobs'));if(upload.busy)status('library-status','正在导入 '+upload.file.name+'，完成后会更新书架。');});for(const event of ['dragenter','dragover'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.add('dragging');});for(const event of ['dragleave','drop'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.remove('dragging');if(event==='drop')selectFile(e.dataTransfer.files[0]);});
 $('confirm-upload').addEventListener('click',async()=>{
   if(!upload.file||upload.busy)return;const ticket=ownerScope.capture(),operation=upload,file=operation.begin(),b=$('confirm-upload'),focus=trackActionFocus(document,b);let succeeded=false;b.disabled=true;$('book-file').disabled=true;b.textContent='正在放进书房…';$('upload-dialog').setAttribute('aria-busy','true');status('upload-status',file.name.toLowerCase().endsWith('.pdf')?'正在提取 PDF 文字，请稍等…':'正在整理段落…');
   try{
@@ -145,11 +186,21 @@ $('confirm-upload').addEventListener('click',async()=>{
   finally{operation.finish();if(succeeded)operation.reset();if(ownerScope.isCurrent(ticket)){b.disabled=!operation.file;$('book-file').disabled=false;$('upload-dialog').removeAttribute('aria-busy');if($('upload-dialog').open)focus.restore(succeeded?$('pdf-ingestion-jobs').querySelector('button')||$('upload-dialog').querySelector('.dialog-close'):b);else focus.stop();}else focus.stop();}
 });
 document.querySelectorAll('[data-shelf]').forEach(button=>{button.setAttribute('aria-label',button.dataset.shelf==='all'?'我的书房':'我上传的');button.addEventListener('click',()=>shelfControls?.set({scope:button.dataset.shelf}));});
-$('book-search').addEventListener('input',()=>{shelfDrag?.reset();renderBooks();});
-$('search-clear').addEventListener('click',()=>{$('book-search').value='';shelfDrag?.reset();renderBooks();$('book-search').focus();});
-$('empty-clear').addEventListener('click',()=>{shelfControls?.reset();shelfDrag?.reset();renderBooks();$('book-search').focus();});
+$('book-search').addEventListener('input',()=>{shelfDrag?.reset();viewHistory?.setQuery($('book-search').value);renderBooks();});
+// Unfinished IME text never reaches the URL: composition suspends the search
+// commit and only the final composed query is scheduled.
+$('book-search').addEventListener('compositionstart',()=>viewHistory?.compositionStart());
+$('book-search').addEventListener('compositionend',()=>{if(viewHistory)viewHistory.compositionEnd($('book-search').value);renderBooks();});
+$('search-clear').addEventListener('click',()=>{$('book-search').value='';shelfDrag?.reset();viewHistory?.setQuery('');renderBooks();$('book-search').focus();});
+$('empty-clear').addEventListener('click',()=>{if(viewHistory)viewHistory.clearAll();else shelfControls?.reset();shelfDrag?.reset();renderBooks();$('book-search').focus();});
 $('library-retry').addEventListener('click',async event=>{const focus=trackActionFocus(document,event.currentTarget);status('library-status','正在重新打开书房…');try{await refresh();}catch(error){status('library-status',error.message,true);}finally{focus.restore($('library-retry').hidden?$('main'):$('library-retry'));}});
-refresh().then(()=>{if(isLibrary&&entryQuery.get('upload')==='1')openUpload();if(isLibrary&&entryQuery.get('login')==='1'){if(session?.user&&returnToReader)location.replace(returnToReader);else if(!session?.user){const messages={cancelled:'登录已取消，可以重新选择。',expired:'登录链接已过期，请重新开始。',unavailable:'登录服务暂时无法连接，请稍后重试。'};openAuth(messages[entryQuery.get('auth_error')]);}}}).catch(error=>{status('library-status',error.message,true);$('featured-books').replaceChildren(make('p','muted',homeText('书架暂时无法连接，请稍后重试。',homeLocale(document))));});
+if(isLibrary)viewHistory.hydrate();
+refresh().then(()=>{
+  // One bounded session-ready reconciliation from the CURRENT snapshot, so a
+  // stale hydrate target can never resurrect an overlay the user replaced.
+  if(isLibrary){const overlay=viewHistory?.takeSessionOverlay();if(overlay)syncOverlay(overlay);}
+  if(isLibrary&&pendingSettings){pendingSettings=false;shell.openSettings('account');}
+  if(isLibrary&&entryQuery.get('login')==='1'){if(session?.user){if(!returnAfterAuth())adoptPendingReturn();}else if(!session?.user){const messages={cancelled:'登录已取消，可以重新选择。',expired:'登录链接已过期，请重新开始。',unavailable:'登录服务暂时无法连接，请稍后重试。'};openAuth(messages[entryQuery.get('auth_error')]);}}}).catch(error=>{status('library-status',error.message,true);$('featured-books').replaceChildren(make('p','muted',homeText('书架暂时无法连接，请稍后重试。',homeLocale(document))));});
 
 const checkOwner=async()=>{if(document.hidden||authDialog.hasPendingSessionChange())return;try{const current=await api('/api/auth/session');if(authDialog.hasPendingSessionChange())return;if((current.user?.id||'guest')!==(session?.user?.id||'guest'))await refresh(current);}catch{}};
 window.addEventListener('focus',checkOwner);document.addEventListener('visibilitychange',checkOwner);

@@ -15,15 +15,16 @@
 .shelf-filter-toggle.is-filtered,.shelf-filter-toggle:hover{color:var(--accent)}
 .shelf-filter-toggle [data-icon] svg{width:16px;height:16px}
 .shelf-filter-count:empty{display:none}.shelf-filter-count{font-size:12px;font-variant-numeric:tabular-nums}
-.shelf-filter-selection{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-12px 0 27px;font-size:12px}
+.shelf-filter-selection{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-12px 0 27px;font-size:13px}
 .shelf-filter-chips{display:flex;gap:8px;flex-wrap:wrap}
-.shelf-filter-chip{padding:3px 10px;min-height:34px;background:var(--surface-soft);border:1px solid var(--line-control);border-radius:3px;color:var(--accent);font-size:12px}
-.shelf-filter-clear{min-height:36px;padding:4px 0;color:var(--muted);font-size:12px}
+.shelf-filter-chip{display:inline-flex;align-items:center;min-height:44px;padding:6px 14px;background:var(--surface-soft);border:1px solid var(--line-control);border-radius:var(--action-radius,999px);color:var(--accent);font-size:13px;line-height:1.5}
+.shelf-filter-chip:focus-visible{outline:var(--focus-ring-width,2px) solid var(--focus-ring);outline-offset:var(--focus-ring-offset,3px)}
+.shelf-filter-clear{min-height:44px;padding:4px 0;color:var(--muted);font-size:13px}
 .shelf-filter-panel{position:fixed;inset:auto;margin:0;width:min(320px,calc(100vw - 32px));overflow:auto;padding:21px 23px;background:var(--paper);color:var(--ink);border:1px solid var(--line-control);border-radius:5px;box-shadow:var(--shadow-popover)}
 .shelf-filter-panel h2{font:20px/1.6 var(--serif);margin:0 0 16px}
-.shelf-filter-panel label{display:block;margin:13px 0 0;font-size:12px;color:var(--muted)}
+.shelf-filter-field{display:block;margin:13px 0 0;font-size:13px;color:var(--muted)}
 .shelf-filter-panel select{display:block;width:100%;min-height:44px;margin-top:6px;padding:8px 10px;border:1px solid var(--line-control);border-radius:3px;background:var(--paper);color:var(--ink);font-size:14px}
-.shelf-filter-done{display:block;min-height:40px;margin:17px 0 0 auto;padding:6px 2px;color:var(--accent);font-size:13px}
+.shelf-filter-panel .choice-native{display:none}
 .library-page .sidebar-search-shortcut{display:flex;align-items:center;gap:11px;width:100%;min-height:44px;padding:10px 12px;margin-bottom:17px;border-radius:6px;text-align:left;font-size:13px;color:var(--muted)}
 .library-page .sidebar-search-shortcut:hover{background:var(--surface);color:var(--ink)}
 .library-page[data-sidebar-collapsed=true] .sidebar-search-shortcut{justify-content:center;padding-left:0;padding-right:0}

@@ -24,6 +24,7 @@ import {createIntroductionGenerator} from '../harness/introduction-generator.mjs
 import {createCompanionGenerator} from '../harness/companion-generator.mjs';
 import {authPurpose} from './auth-policy.mjs';
 import {safeGiftReturn} from '../app/reader-return.mjs';
+import {safeLibraryReturn} from '../app/library-view-state.mjs';
 import {createAccountProfile} from './account-profile.mjs';
 import {createPaddleProvider} from './paddleocr.mjs';
 import {createBookIngestion} from './book-ingestion.mjs';
@@ -104,7 +105,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     files['/reading-flow.mjs']='reading-flow.mjs';files['/reading-load.mjs']='reading-load.mjs';files['/personal-records.mjs']='personal-records.mjs';files['/reading-chat-scope.mjs']='reading-chat-scope.mjs';files['/personal-record-editor.mjs']='personal-record-editor.mjs';
     for(const file of ['highlights.mjs','reader-highlights.mjs'])files['/'+file]=file;
     files['/reading-flow.css']='reading-flow.css';
-    for(const file of ['library-filter-controls.mjs','library-filters.css','library-workspace.mjs','library-workspace.css','reading-calendar.mjs','reading-dashboard.mjs','library-restore.mjs','library-export.mjs','site-appearance.mjs','reading-clock.mjs','reading-outbox.mjs','reading-queue-store.mjs','reading-session-coordinator.mjs','reading-mark-actions.mjs','reading-mark-store.mjs','reading-draft-store.mjs','reading-retained-backup.mjs','reading-journey.mjs','reading-pending-backup.mjs','reading-ending-context.mjs','reading-session.js','reading-session.css','brand-assets/reading-window.webp','brand-assets/page-detail.webp','brand-assets/page-mark.svg','leafhour-brand.css','brand-assets/leafhour-mark.svg','brand-assets/leafhour-social.svg','brand-assets/leafhour-social.png'])files['/'+file]=file;
+    for(const file of ['library-filter-controls.mjs','library-filters.css','choice-control.mjs','choice-control.css','reader-settings-choices.mjs','library-view-state.mjs','library-workspace.mjs','library-workspace.css','reading-calendar.mjs','reading-dashboard.mjs','library-restore.mjs','library-export.mjs','site-appearance.mjs','reading-clock.mjs','reading-outbox.mjs','reading-queue-store.mjs','reading-session-coordinator.mjs','reading-mark-actions.mjs','reading-mark-store.mjs','reading-draft-store.mjs','reading-retained-backup.mjs','reading-journey.mjs','reading-pending-backup.mjs','reading-ending-context.mjs','reading-session.js','reading-session.css','brand-assets/reading-window.webp','brand-assets/page-detail.webp','brand-assets/page-mark.svg','leafhour-brand.css','brand-assets/leafhour-mark.svg','brand-assets/leafhour-social.svg','brand-assets/leafhour-social.png'])files['/'+file]=file;
     for(const file of ['squirrel-motion.mjs','squirrel-position.mjs','library-shell.mjs','library-shell.css','library-daily-reading.mjs','library-daily-reading.css','reader-presence.mjs','library-reading-preferences.mjs','library-chat.mjs','library-chat-state.mjs','library-chat-markdown.mjs','library-chat.css','icons.svg','icons-LICENSE.txt'])files['/'+file]=file;
     for(const file of ['library-profile.mjs','library-book-actions.mjs','reading-schedule.mjs','shelf-order.mjs','library-personal.css','book-gift.css','book-gift.mjs','gift-preview.mjs','gift-ritual.mjs','gift-compose.mjs','gift-compose.css','gift-identity.mjs','gift-compose-state.mjs','gift-quote.mjs','gift-waves.mjs','reader-return.mjs'])files['/'+file]=file;
     files['/gift-preview']='book-gift.html';for(const file of ['brand-assets/letter-edge.svg','brand-assets/envelope-edge.svg'])files['/'+file]=file;
@@ -134,7 +135,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
         if(url.searchParams.has('error')){returnTo=await auth.cancelOAuth(flowToken);errorCode='cancelled';}
         else{session=await auth.finishOAuth(flowToken,url.searchParams.get('code'));next=session.next;}
       }catch(error){errorCode=error.status>=500?'unavailable':'expired';returnTo=await auth.cancelOAuth(flowToken).catch(()=>null);}
-      if(!session){const query=new URLSearchParams({login:'1',auth_error:errorCode});if(returnTo?.startsWith('/read?')||safeGiftReturn(returnTo))query.set('next',returnTo);else if(returnTo==='/library?upload=1')query.set('upload','1');next='/library?'+query;}
+      if(!session){const query=new URLSearchParams({login:'1',auth_error:errorCode});if(returnTo?.startsWith('/read?')||safeGiftReturn(returnTo))query.set('next',returnTo);else if(returnTo==='/library?upload=1')query.set('upload','1');else{const libraryReturn=safeLibraryReturn(returnTo);if(libraryReturn&&libraryReturn!=='/library')query.set('next',libraryReturn);}next='/library?'+query;}
       const cookies=[setFlow('')];if(session)cookies.push(`marginalia_session=${session.token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=604800; Secure`);
       res.setHeader('Set-Cookie',cookies);res.setHeader('Cache-Control','private, no-store');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Location',new URL(next,publicOrigin).href);res.statusCode=303;res.end();return true;
     }

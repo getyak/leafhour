@@ -1,6 +1,9 @@
 // Each panel answers a different reading decision; hidden preferences retain their values.
 import {globalPreferencesDefaults,normalizeGlobalPreferences} from './reading-preferences.mjs';
-export function mountReaderSettings({document}){
+
+// The Aa choices load only on an explicit drawer open. Native selects remain
+// usable until that module mounts, including a network/module failure.
+export function mountReaderSettings({document,loadChoices=()=>import('./reader-settings-choices.mjs')}){
   const tabs=[...document.querySelectorAll('[data-settings-tab]')],content=document.getElementById('settings-content');
   function activate(index,{focus=false}={}){
     tabs.forEach((tab,i)=>{const selected=i===index;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;document.getElementById('settings-'+tab.dataset.settingsTab).hidden=!selected;});
@@ -14,11 +17,19 @@ export function mountReaderSettings({document}){
     });
   });
   activate(0);
-  return {update({mode}){
+  const choices={};let pending,syncChoices=()=>{};
+  const sync=()=>syncChoices();
+  const enhance=()=>pending??=(loadChoices().then(module=>{
+    const enhanced=module.mountReaderSettingsChoices({document});
+    Object.assign(choices,enhanced.choices);syncChoices=enhanced.sync;sync();
+    return Object.keys(choices).length>0;
+  }).catch(()=>false));
+  return {choices,sync,enhance,update({mode}){
     const translated=mode==='zh'||mode==='parallel';
     document.getElementById('translation-settings').hidden=!translated;
     document.getElementById('translation-details').hidden=!translated;
     document.getElementById('parallel-settings').hidden=mode!=='parallel';
+    sync();
   }};
 }
 

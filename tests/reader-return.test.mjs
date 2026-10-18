@@ -33,3 +33,9 @@ test('citation identity survives login return and malformed identity is never si
  const login=new URL(readerLoginUrl({bookId:'alice',passageId:'p2',contentVersion:'edition-1',layer:'interpretive'}),'http://local');assert.equal(login.searchParams.get('next'),target);
  for(const bad of [target+'&layer=original','/read?book=alice&passage=p2&layer=secret','/read?book=alice&passage=p2&contentVersion='])assert.equal(safeReaderReturn(bad),null);
 });
+test('the shared library return codec cannot approve reader citations, gift pages or external targets',async()=>{
+  const {safeLibraryReturn}=await import('../app/library-view-state.mjs');
+  for(const target of ['/read?book=alice&passage=p1','/gift/'+'A'.repeat(43),'https://evil.example/library?q=x','//evil.example/library'])assert.equal(safeLibraryReturn(target),null);
+  assert.equal(safeLibraryReturn('/library?settings=account&q=alice'),'/library?q=alice&settings=account');
+  assert.equal(safeReaderReturn('/read?book=alice&passage=p1&note=comment'),'/read?book=alice&passage=p1&note=comment');
+});

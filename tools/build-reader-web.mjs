@@ -13,9 +13,9 @@ export async function buildReaderWeb({root,outputDir,html}){
  const allowed=new Set(await releaseFiles(root)),inputs=new Set(),files=[];
  // Sharing is loaded on demand; the public arrival catalog keeps its stable
  // module URL and cache. Every other application import stays in the bundle.
- const publicModules={name:'public-reader-modules',setup(b){b.onResolve({filter:/^\.\/(?:gift-compose|book-binding|arrival-catalog)\.mjs$/},args=>{
-  const catalog=args.path==='./arrival-catalog.mjs';
-  if(args.kind!==(catalog?'import-statement':'dynamic-import')||path.resolve(args.importer)!==path.join(root,'app',catalog?'reading-arrival.mjs':'reader-book-actions.mjs'))return;
+ const publicModules={name:'public-reader-modules',setup(b){b.onResolve({filter:/^\.\/(?:gift-compose|book-binding|arrival-catalog|reader-settings-choices)\.mjs$/},args=>{
+  const catalog=args.path==='./arrival-catalog.mjs',settings=args.path==='./reader-settings-choices.mjs';
+  if(args.kind!==(catalog?'import-statement':'dynamic-import')||path.resolve(args.importer)!==path.join(root,'app',catalog?'reading-arrival.mjs':settings?'reader-settings.mjs':'reader-book-actions.mjs'))return;
   const file='app/'+args.path.slice(2);if(!allowed.has(file))throw Error('Non-public lazy reader module: '+file);
   return {path:'/'+args.path.slice(2),external:true};
  });}};

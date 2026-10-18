@@ -5,8 +5,25 @@ import {mountLibraryProfile,renderProfileAvatar} from './library-profile.mjs';
 import {mountReadingPreferencesForm} from './library-reading-preferences.mjs';
 const $=id=>document.getElementById(id);
 const node=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
+// P2 opener safety: the settings dialog captures its opener only on first open
+// and returns focus only to a connected, visible, non-inert control outside the
+// dialog; the sidebar settings entry is the explicit fallback.
+export function settingsOpenerCandidate(document,dialog){
+  const active=document.activeElement;
+  return active&&active!==document.body&&!(dialog&&dialog.contains(active))?active:null;
+}
+export function settingsFocusTarget(dialog,candidate,fallback){
+  for(const target of [candidate,fallback]){
+    if(!target||typeof target.focus!=='function'||target.isConnected===false||target.hidden)continue;
+    if(dialog&&dialog.contains(target))continue;
+    if(typeof target.closest==='function'&&target.closest('[inert]'))continue;
+    if(typeof target.getClientRects==='function'&&target.getClientRects().length===0)continue;
+    return target;
+  }
+  return null;
+}
 export function roomIcons(root=document){for(const holder of root.querySelectorAll('[data-icon]')){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'),use=document.createElementNS(svg.namespaceURI,'use');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('aria-hidden','true');use.setAttribute('href','/icons.svg#'+holder.dataset.icon);svg.append(use);holder.replaceChildren(svg);}}
-export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpenChat,api,onProfileUpdated,onRestored,onReadingPreferencesSaved=()=>{},getBooks=()=>[],getCurrentBook=()=>null,inboxRoot=null}){
+export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpenChat,api,onProfileUpdated,onRestored,onReadingPreferencesSaved=()=>{},getBooks=()=>[],getCurrentBook=()=>null,inboxRoot=null,onSettingsOpen=()=>{},onSettingsClose=()=>{},onSettingsTab=()=>{}}){
   const header=$('library-sidebar'),navigation=$('library-nav-dialog'),settings=$('library-settings-dialog'),media=matchMedia('(max-width:980px)'),key='marginalia-library-sidebar';let collapsed=false,opener=null,navigationReturn=null;
   for(const control of header.querySelectorAll('button[data-hint]'))if(!control.hasAttribute('aria-label'))control.setAttribute('aria-label',control.dataset.hint);
   const accountButton=node('button','sidebar-account');accountButton.id='library-account';accountButton.type='button';
@@ -17,7 +34,7 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   const heading=node('h2','','设置');heading.id='settings-title';const headingRow=node('div','settings-heading');headingRow.append(heading,close);
   const layout=node('div','settings-layout'),tabs=node('div','settings-tabs');tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','设置分类');
   const content=node('div','settings-content'),panels={},tabButtons=[];
-  function select(name,focus=false){for(const b of tabButtons){const selected=b.dataset.setting===name;b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;panels[b.dataset.setting].hidden=!selected;if(selected&&focus)b.focus();}}
+  function select(name,focus=false){for(const b of tabButtons){const selected=b.dataset.setting===name;b.setAttribute('aria-selected',String(selected));b.tabIndex=selected?0:-1;panels[b.dataset.setting].hidden=!selected;if(selected&&focus)b.focus();}if(settings.open)onSettingsTab(name);}
   for(const [name,label] of [['account','账户'],['reading-habits','阅读习惯'],['daily-reading','每日陪读'],['appearance','外观'],['data','数据与迁移'],['about','关于 Leafhour']]){const b=node('button','',label);b.type='button';b.dataset.setting=name;b.id='settings-tab-'+name;b.setAttribute('role','tab');b.setAttribute('aria-controls','settings-panel-'+name);b.addEventListener('click',()=>select(name));tabButtons.push(b);tabs.append(b);const p=node('section','settings-panel');p.id='settings-panel-'+name;p.setAttribute('role','tabpanel');p.setAttribute('aria-labelledby',b.id);panels[name]=p;content.append(p);}
   tabs.addEventListener('keydown',event=>{const current=tabButtons.indexOf(document.activeElement);if(current<0)return;let index;if(['ArrowRight','ArrowDown'].includes(event.key))index=(current+1)%tabButtons.length;else if(['ArrowLeft','ArrowUp'].includes(event.key))index=(current+tabButtons.length-1)%tabButtons.length;else if(event.key==='Home')index=0;else if(event.key==='End')index=tabButtons.length-1;else return;event.preventDefault();select(tabButtons[index].dataset.setting,true);});
   const accountTitle=node('h3'),accountDetail=node('p','settings-description'),login=node('button','primary','登录或注册'),logout=node('button','outline','退出登录'),accountStatus=node('p','settings-status');accountStatus.setAttribute('role','status');login.type=logout.type='button';
@@ -42,8 +59,8 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   $('library-menu').addEventListener('click',()=>{navigation.showModal();syncSidebar();$('sidebar-toggle').focus();});
   $('sidebar-search-open').addEventListener('click',()=>{if(navigation.open){navigationReturn=$('book-search');closeNavigation();}else $('book-search').focus();});
   navigation.addEventListener('close',()=>{syncSidebar();if(media.matches)(navigationReturn||$('library-menu')).focus();navigationReturn=null;});media.addEventListener('change',adapt);adapt();
-  function openSettings(name='account'){opener=media.matches?$('library-menu'):document.activeElement&&document.activeElement!==document.body?document.activeElement:$('library-settings');closeNavigation();update();select(panels[name]?name:'account');if(name==='daily-reading')daily.refresh();if(!settings.open)settings.showModal();tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.focus();}
-  settings.addEventListener('close',()=>{if(opener?.isConnected)opener.focus();});
+  function openSettings(name='account'){if(!settings.open)opener=settingsOpenerCandidate(document,settings)||$('library-settings');closeNavigation();update();select(panels[name]?name:'account');if(name==='daily-reading')daily.refresh();if(!settings.open){settings.showModal();onSettingsOpen(panels[name]?name:'account');}tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.focus();}
+  settings.addEventListener('close',()=>{const target=settingsFocusTarget(settings,opener,$('library-settings'));opener=null;target?.focus({preventScroll:true});onSettingsClose();});
   $('library-settings').addEventListener('click',()=>openSettings('account'));
   $('library-calendar').addEventListener('click',()=>{closeNavigation();onHistory();});
   $('library-chat-open').addEventListener('click',()=>{closeNavigation();onOpenChat();});
