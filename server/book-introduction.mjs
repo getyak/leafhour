@@ -1,10 +1,26 @@
 import {randomUUID} from 'node:crypto';
+import {setTimeout as delay} from 'node:timers/promises';
 import {fail} from './document-import.mjs';
 import {introductionFor,introductionContext,validateBookIntroduction} from '../app/book-introduction.mjs';
+
+const DISCARD_ATTEMPTS=3,DISCARD_RETRY_DELAY_MS=20;
+const temporaryNetworkCodes=new Set(['ECONNRESET','ECONNREFUSED','ETIMEDOUT','EHOSTUNREACH','ENETUNREACH','EPIPE','EAI_AGAIN','UND_ERR_CONNECT_TIMEOUT','UND_ERR_HEADERS_TIMEOUT','UND_ERR_BODY_TIMEOUT','UND_ERR_SOCKET']);
+const transientDiscardError=error=>{
+  const codes=[error?.code,error?.cause?.code];
+  if(Number.isInteger(error?.upstreamStatus)&&error.upstreamStatus>=400&&error.upstreamStatus<500)return false;
+  if(error?.name==='SyntaxError'||codes.some(code=>['EACCES','EPERM'].includes(code)))return false;
+  return Number.isInteger(error?.status)?error.status>=500:error?.name==='TimeoutError'||codes.some(code=>temporaryNetworkCodes.has(code));
+};
 
 export function createBookIntroductionService({library,store=library.introductions,generator=null,clock=Date.now,timeoutMs=60000}){
   const identity=user=>{if(!user?.id||user.is_anonymous)throw fail('请先进入自己的书房',401);};
   const result=book=>({...introductionFor(book),introduction:book.introduction||null,available:typeof generator==='function'});
+  async function discardCancelled(user,book,nonce){
+    for(let attempt=1;;attempt++)try{await store.discard(user,book,nonce);return;}catch(error){
+      if(attempt>=DISCARD_ATTEMPTS||!transientDiscardError(error))throw error;
+      await delay(DISCARD_RETRY_DELAY_MS);
+    }
+  }
   async function view(user,id){const book=await library.getBook(user,id);return result(book);}
   async function generate(user,id,input,{authorize=async()=>true,signal}={}){
     identity(user);
@@ -37,8 +53,15 @@ export function createBookIntroductionService({library,store=library.introductio
       if(book.contentVersion!==input.contentVersion)throw fail('原文已更新，未保存旧版本的简介',409);
       let value;
       try{value=validateBookIntroduction({kind:'leafhour-book-introduction',schemaVersion:1,origin:'ai',status:'draft',text:generated?.text,contentVersion:book.contentVersion,createdAt:new Date(clock()).toISOString(),model:'deepseek-flash',scope:'opening-sample',sourcePassageIds:context.passages.map(p=>p.id)},book);}catch{throw fail('AI 简介未通过格式核验，尚未保存。可以稍后重试',502);}
-      const saved=await store.complete(user,book,nonce,value,clock(),()=>!controller.signal.aborted);return result({...book,introduction:saved});
-    }finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);controller.abort();await store.release(user,book,nonce);if(reserved)await store.releaseQuota(nonce);}
+      const saved=await store.complete(user,book,nonce,value,clock(),()=>!controller.signal.aborted);check();return result({...book,introduction:saved});
+    }finally{
+      clearTimeout(timer);signal?.removeEventListener('abort',abort);let cleanupError;
+      try{if(controller.signal.aborted)await discardCancelled(user,book,nonce);}catch(error){cleanupError=error;}
+      controller.abort();
+      try{await store.release(user,book,nonce);}catch(error){cleanupError??=error;}
+      try{if(reserved)await store.releaseQuota(nonce);}catch(error){cleanupError??=error;}
+      if(cleanupError)throw cleanupError;
+    }
   }
   return {view,generate};
 }
