@@ -1,3 +1,4 @@
+@import url("/fonts/noto-serif-sc/font-faces.css");
 /* GET-167 shared typography foundation (GET-173/174/175).
    One module owns the font faces, family stacks, type scale and tracking rules
    for the homepage, library, reader and support pages. Pages load this file
@@ -24,11 +25,11 @@
 
 :where(html) {
   /* Family stacks. "Leafhour Serif" leads so Latin never reaches a CJK font. */
-  --font-serif: "Leafhour Serif", "Iowan Old Style", Georgia, "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", serif;
-  --font-latin: "Leafhour Serif", "Iowan Old Style", Georgia, "Songti SC", "Noto Serif CJK SC", serif;
-  --font-cjk-serif: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", serif;
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --font-hand: "Leafhour Serif", "Iowan Old Style", Georgia, "Kaiti SC", STKaiti, KaiTi, "Noto Serif CJK SC", "Songti SC", serif;
+  --font-serif: "Leafhour Serif", "Iowan Old Style", Georgia, "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "Leafhour CJK", serif;
+  --font-latin: "Leafhour Serif", "Iowan Old Style", Georgia, "Songti SC", "Noto Serif CJK SC", "Leafhour CJK", serif;
+  --font-cjk-serif: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "Leafhour CJK", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Leafhour CJK", sans-serif;
+  --font-hand: "Leafhour Serif", "Iowan Old Style", Georgia, "Kaiti SC", STKaiti, KaiTi, "Noto Serif CJK SC", "Songti SC", "Leafhour CJK", serif;
 
   /* Type scale. Functional labels/meta/help text stay >= 12px. */
   --type-hero: clamp(56px, 7vw, 104px);

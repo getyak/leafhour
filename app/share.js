@@ -1,4 +1,4 @@
-import {buildShareModel,normaliseShareOptions,paragraphSnapshot,layoutShareCard,shareThemes,shareFonts,shareFontFallbacks,ensureShareFonts,displayQuoteText} from './share-model.mjs';
+import {buildShareModel,normaliseShareOptions,paragraphSnapshot,layoutShareCard,shareThemes,shareFonts,shareFontFallbacks,displayQuoteText} from './share-model.mjs';
 import {chineseOriginalOnly} from './source-language.mjs';
 
 const $=id=>document.getElementById(id),bridge=()=>window.marginaliaReader;
@@ -37,11 +37,12 @@ async function render(){
   const opts=options();model=buildShareModel(bridge().getBook(),snapshot,opts);
   const part=snapshot.parts[0];$('share-layout-field').hidden=opts.language!=='bilingual';$('share-variant-field').hidden=opts.language==='en'||opts.language==='bilingual'&&part.language==='zh';$('share-size-label').value=String(opts.size);
   await document.fonts.ready;// Canvas text does not start face loads; load/check both faces before the first measure.
-  if(!fontState)fontState=await ensureShareFonts(document.fonts);
+  const {prepareShareFonts}=await import('./share-fonts.mjs');
+  const loaded=await prepareShareFonts(document.fonts,model,fontState);fontState=loaded.latin;const cjkState=loaded.cjk;
   if(version!==renderVersion||!dialog.open)return;
   layout=layoutShareCard(model,opts,(text,size,language,italic=false)=>{setFont(size,language,italic);return context.measureText(text).width;});draw();renderedVersion=version;controlsBusy(false);
   const counterpart=model.blocks.some(b=>b.primary.wholeCounterpart||b.secondary?.wholeCounterpart);
-  const fontNote=fontState?.fallback?'本机未加载 Leafhour Serif 字面，图片以系统衬线回退绘制。':'';
+  const fontNote=(fontState?.fallback?'本机未加载 Leafhour Serif 字面，图片以系统衬线回退绘制。':'')+(cjkState.failed?'中文字体未能加载，图片使用本机字体。':'');
   status(fontNote+(counterpart?'对照按整段显示，图片中已注明。':'预览与导出的图片一致，全部在本机生成。'));
   saved={...opts};try{localStorage.setItem(preferenceKey,JSON.stringify(saved));}catch{}
  }catch(error){renderedVersion=0;dialog.setAttribute('aria-busy','false');status(error.message||'图片暂时无法生成，请缩小摘录范围。',true);}

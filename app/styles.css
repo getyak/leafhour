@@ -56,7 +56,7 @@ dialog{color:var(--ink);background:var(--panel);border:1px solid var(--line-hair
 .font-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
 .font-choices button{border:1px solid var(--line-control);border-radius:7px;padding:10px 4px;font-size:13px}
 .font-choices button[aria-pressed=true]{border-color:var(--accent);background:var(--wash);box-shadow:inset 0 0 0 1px var(--accent)}
-.font-choices button[data-font-family=song]{font-family:"Songti SC","STSong",serif}.font-choices button[data-font-family=kai]{font-family:"Kaiti SC","STKaiti",serif}
+.font-choices button[data-font-family=song]{font-family:var(--font-cjk-serif)}.font-choices button[data-font-family=kai]{font-family:"Kaiti SC","STKaiti","Leafhour CJK",serif}
 .settings-dialog .size-row input{width:155px;max-width:55%}.settings-dialog output{font-variant-numeric:tabular-nums}
 .typography-details{margin:20px 0 18px}.typography-details summary,.reading-extras>summary{cursor:pointer;font-size:13px;list-style:none;padding:6px 0;display:flex;justify-content:space-between;align-items:center}
 .typography-details summary::after,.reading-extras>summary::after{content:'＋';color:var(--muted)}.typography-details[open] summary::after,.reading-extras[open]>summary::after{content:'−'}

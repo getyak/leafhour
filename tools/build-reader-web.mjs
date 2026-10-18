@@ -13,14 +13,14 @@ export async function buildReaderWeb({root,outputDir,html}){
  const allowed=new Set(await releaseFiles(root)),inputs=new Set(),files=[];
  // Sharing is loaded on demand; the public arrival catalog keeps its stable
  // module URL and cache. Every other application import stays in the bundle.
- const publicModules={name:'public-reader-modules',setup(b){b.onResolve({filter:/^\.\/(?:gift-compose|book-binding|arrival-catalog|reader-settings-choices)\.mjs$/},args=>{
-  const catalog=args.path==='./arrival-catalog.mjs',settings=args.path==='./reader-settings-choices.mjs';
-  if(args.kind!==(catalog?'import-statement':'dynamic-import')||path.resolve(args.importer)!==path.join(root,'app',catalog?'reading-arrival.mjs':settings?'reader-settings.mjs':'reader-book-actions.mjs'))return;
+ const publicModules={name:'public-reader-modules',setup(b){b.onResolve({filter:/^\.\/(?:gift-compose|book-binding|arrival-catalog|share-fonts|reader-settings-choices)\.mjs$/},args=>{
+  const catalog=args.path==='./arrival-catalog.mjs',cjk=args.path==='./share-fonts.mjs',settings=args.path==='./reader-settings-choices.mjs';
+  if(args.kind!==(catalog?'import-statement':'dynamic-import')||path.resolve(args.importer)!==path.join(root,'app',catalog?'reading-arrival.mjs':cjk?'share.js':settings?'reader-settings.mjs':'reader-book-actions.mjs'))return;
   const file='app/'+args.path.slice(2);if(!allowed.has(file))throw Error('Non-public lazy reader module: '+file);
   return {path:'/'+args.path.slice(2),external:true};
  });}};
  const compile=async(contents,loader)=>{
-  const result=await build({stdin:{contents,resolveDir:path.join(root,'app'),sourcefile:'reader-entry.'+(loader==='css'?'css':'js'),loader},bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,charset:'utf8',legalComments:'none',plugins:loader==='css'?[{name:'public-css-urls',setup(b){b.onResolve({filter:/^\//},args=>args.kind==='url-token'?{path:args.path,external:true}:undefined);}}]:[publicModules],write:false,metafile:true,logLevel:'silent'});
+  const result=await build({stdin:{contents,resolveDir:path.join(root,'app'),sourcefile:'reader-entry.'+(loader==='css'?'css':'js'),loader},bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,charset:'utf8',legalComments:'none',plugins:loader==='css'?[{name:'public-css-urls',setup(b){b.onResolve({filter:/^\//},args=>{if(args.kind==='url-token')return {path:args.path,external:true};if(args.kind==='import-rule'&&args.path==='/fonts/noto-serif-sc/font-faces.css'&&path.resolve(args.importer)===path.join(root,'app/typography.css')){if(!allowed.has('app/fonts/noto-serif-sc/font-faces.css'))throw Error('Non-public CJK stylesheet');return {path:args.path,external:true};}return undefined;});}}]:[publicModules],write:false,metafile:true,logLevel:'silent'});
   for(const key of Object.keys(result.metafile.inputs)){if(key==='reader-entry.js'||key==='reader-entry.css')continue;const relative=path.relative(root,path.resolve(key)).replaceAll('\\','/');if(relative==='app/reader-entry.js'||relative==='app/reader-entry.css')continue;if(!relative.startsWith('app/')||!allowed.has(relative))throw Error('Non-public reader bundle input: '+relative);inputs.add(relative);}
   return result.outputFiles[0].contents;
  };

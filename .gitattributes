@@ -1,3 +1,6 @@
 catalog/*.txt -text -diff
+# Structured originals also determine stable source hashes and passage IDs.
+catalog/world/*.json -text -diff
 # Preserve the upstream license text, including its original line-end spaces.
 app/fonts/newsreader/OFL.txt whitespace=-blank-at-eol
+app/fonts/noto-serif-sc/OFL.txt -text whitespace=-blank-at-eol

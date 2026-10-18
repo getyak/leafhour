@@ -1,4 +1,5 @@
 import {bookTransfer as transferReading} from './book-transfer.mjs';
+import {cjkFontAssets} from './cjk-font-assets.mjs';
 import {readingView,readingChapter} from './reading-view.mjs';
 import {createIngestionRunner} from './ingestion-runner.mjs';
 import {readFile} from 'node:fs/promises';
@@ -114,9 +115,10 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     // GET-167 typography foundation: shared tokens plus the self-hosted
     // Newsreader faces (OFL-1.1); the hosted build also ships its public manifest.
     for(const file of ['typography.css','fonts/newsreader/newsreader-var.woff2','fonts/newsreader/newsreader-italic-var.woff2','fonts/newsreader/OFL.txt'])files['/'+file]=file;
+    for(const asset of cjkFontAssets)files[asset.url]=asset.file;
     // GET-169 shared interface foundation: hairlines, shadows, focus rings,
     // action vocabulary and the appearance popover chrome.
-    files['/interface-tokens.css']='interface-tokens.css';
+    files['/interface-tokens.css']='interface-tokens.css';files['/share-fonts.mjs']='share-fonts.mjs';
     if(!isAPI&&!files[p])return false;
     if(isAPI||p==='/source-review'||p==='/library'||p==='/gift-preview'||safeGiftReturn(p))res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
     if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p==="/robots.txt"?"text/plain":p==="/sitemap.xml"?"application/xml":p.endsWith('.woff2')?'font/woff2':p.endsWith('.txt')?'text/plain':p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));if(type.startsWith('font/')){res.writeHead(200,{'Content-Type':type,'Content-Length':file.length});res.end(req.method==='HEAD'?undefined:file);return true;}send(200,files[p]==='home.html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
