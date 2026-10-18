@@ -1,13 +1,13 @@
-.squirrel-companion-toggle{font:12px/1.6 var(--chat-font,system-ui);color:var(--chat-accent,#56644e);background:transparent;border:1px solid var(--chat-line,#ddd);border-radius:18px;padding:5px 10px;min-height:34px;cursor:pointer;white-space:nowrap}
+.squirrel-companion-toggle{font:12px/1.6 var(--chat-font,system-ui);color:var(--chat-accent,#56644e);background:transparent;border:1px solid var(--line-control);border-radius:18px;padding:5px 10px;min-height:34px;cursor:pointer;white-space:nowrap}
 .squirrel-companion-toggle{margin-left:auto;margin-right:5px}.squirrel-companion-toggle[aria-pressed=true]{background:var(--chat-soft,#eff2eb)}.squirrel-companion-toggle:disabled{opacity:.55;cursor:default}
 .squirrel-companion-description{flex:none;padding:0 24px 10px;color:var(--chat-muted,#777);font:12px/1.8 var(--chat-font,system-ui)}
-.squirrel-companion-bubble{overflow:auto;overscroll-behavior:contain;position:fixed;z-index:101;right:24px;bottom:calc(max(22px,env(safe-area-inset-bottom)) + 60px);width:min(290px,calc(100vw - 32px));box-sizing:border-box;border:1px solid var(--chat-line,#deded6);border-radius:17px 17px 5px 17px;background:var(--chat-panel,#fff);color:var(--chat-ink,#292d26);box-shadow:0 5px 24px var(--chat-shadow,#0001);animation:squirrel-companion-appear .18s ease-out}
+.squirrel-companion-bubble{overflow:auto;overscroll-behavior:contain;position:fixed;z-index:101;right:24px;bottom:calc(max(22px,env(safe-area-inset-bottom)) + 60px);width:min(290px,calc(100vw - 32px));box-sizing:border-box;border:1px solid var(--line-hairline);border-radius:17px 17px 5px 17px;background:var(--chat-panel,#fff);color:var(--chat-ink,#292d26);box-shadow:var(--shadow-popover);animation:squirrel-companion-appear .18s ease-out}
 .squirrel-companion-message{display:block;width:100%;box-sizing:border-box;padding:18px 34px 18px 20px;border:0;background:transparent;text-align:left;color:inherit;font:14px/1.9 var(--chat-font,system-ui);cursor:pointer;overflow-wrap:anywhere;white-space:pre-wrap}
 .squirrel-companion-dismiss{position:absolute;right:3px;top:3px;width:30px;height:30px;display:grid;place-items:center;border:0;background:transparent;color:var(--chat-muted,#777);font-size:18px;cursor:pointer}
 .squirrel-companion-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 .library-chat-launcher.has-companion-message:after{content:'';position:absolute;top:0;right:0;width:8px;height:8px;border-radius:50%;background:var(--chat-accent,#56644e);border:2px solid var(--chat-panel,#fff)}
 .squirrel-companion-bubble[hidden],.squirrel-companion-description[hidden]{display:none}
-.squirrel-companion-toggle:focus-visible,.squirrel-companion-message:focus-visible,.squirrel-companion-dismiss:focus-visible{outline:2px solid var(--chat-accent,#56644e);outline-offset:3px}
+
 @keyframes squirrel-companion-appear{from{opacity:0}to{opacity:1}}
 @media(max-width:600px){.squirrel-companion-bubble{right:16px;bottom:calc(max(14px,env(safe-area-inset-bottom)) + 60px)}.squirrel-companion-toggle{padding:5px 8px;font-size:12px}.squirrel-companion-description{padding-right:20px;padding-left:20px}}
 @media(prefers-reduced-motion:reduce){.squirrel-companion-bubble{animation:none}}

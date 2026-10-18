@@ -1,4 +1,4 @@
-.daily-summary{position:relative;margin:24px 0 20px;padding:20px 0;border-block:1px solid var(--line)}
+.daily-summary{position:relative;margin:24px 0 20px;padding:20px 0;border-block:1px solid var(--line-hairline)}
 .daily-state{display:inline-block;color:var(--muted);font-size:12px;letter-spacing:var(--track-meta)}
 .daily-state[data-state=active]{color:var(--accent)}
 .daily-schedule{font:22px/1.5 var(--serif);margin:7px 0 2px;font-variant-numeric:tabular-nums}
@@ -17,10 +17,10 @@
 .daily-form .settings-status{margin:2px 0 0}
 .daily-inbox{margin:28px 0 40px;min-width:0}
 .daily-inbox h2{font:19px/1.6 var(--serif);margin:0 0 14px;color:var(--ink)}
-.daily-card{padding:21px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.9;overflow-wrap:anywhere}
+.daily-card{padding:21px 0;border-top:1px solid var(--line-hairline);font-size:14px;line-height:1.9;overflow-wrap:anywhere}
 .daily-card-meta{display:flex;align-items:baseline;flex-wrap:wrap;gap:9px;font-size:12px;color:var(--muted);line-height:1.8}
 .daily-card-meta time{margin-left:auto;font-variant-numeric:tabular-nums}
-.daily-card-label{border:1px solid var(--line);border-radius:3px;padding:0 5px}
+.daily-card-label{border:1px solid var(--line-hairline);border-radius:3px;padding:0 5px}
 .daily-card-message{white-space:pre-wrap;margin:10px 0;color:var(--ink)}
 .daily-card-source{margin:0 0 7px;color:var(--muted);font-size:12px}
 .daily-card-quote{font:15px/1.9 var(--serif);white-space:pre-wrap;border-left:2px solid var(--line);padding-left:14px;margin:14px 0;color:var(--muted)}

@@ -17,7 +17,7 @@ body{isolation:isolate}
 .atmosphere-header-control{display:flex;align-items:center;gap:0}
 #atmosphere-quick-pause{min-width:36px;min-height:44px;padding:8px 7px;color:var(--accent);font-size:13px}
 #open-atmosphere[data-playing=true]{color:var(--accent);box-shadow:inset 0 -1px var(--accent)}
-.atmosphere-dialog{padding:0;width:min(880px,calc(100vw - 48px));max-height:calc(100dvh - 64px);margin:auto;border:1px solid var(--line);border-radius:12px;overflow:auto;box-shadow:0 28px 120px #101c1538;scrollbar-width:thin;overscroll-behavior:contain}
+.atmosphere-dialog{padding:0;width:min(880px,calc(100vw - 48px));max-height:calc(100dvh - 64px);margin:auto;border:1px solid var(--line-hairline);border-radius:12px;overflow:auto;box-shadow:var(--shadow-modal);scrollbar-width:thin;overscroll-behavior:contain}
 .atmosphere-dialog::backdrop{background:#0b191768;backdrop-filter:blur(6px)}
 .atmosphere-shell{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:650px}
 .atmosphere-preview{position:sticky;top:0;align-self:start;height:100%;max-height:calc(100dvh - 66px);isolation:isolate;background:#26372d;overflow:hidden;color:#fffdf4}
@@ -37,18 +37,18 @@ body{isolation:isolate}
 .atmosphere-heading h2{font:400 23px/1.5 var(--book);margin:0;letter-spacing:var(--track-heading)}
 .atmosphere-heading>button{font:12px var(--interface);color:var(--muted);min-width:44px;min-height:44px;margin:-7px -8px 0 0}
 .atmosphere-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.atmosphere-choice{position:relative;padding:0;overflow:hidden;border:1px solid var(--line);border-radius:7px;text-align:left;background:var(--paper);transition:border-color .15s,box-shadow .15s;min-width:0}
+.atmosphere-choice{position:relative;padding:0;overflow:hidden;border:1px solid var(--line-control);border-radius:7px;text-align:left;background:var(--paper);transition:border-color .15s,box-shadow .15s;min-width:0}
 .atmosphere-choice img{display:block;width:100%;height:60px;object-fit:cover;filter:saturate(.68);transition:filter .2s}
 .atmosphere-choice-name{display:block;padding:11px 12px;font:12px/1.5 var(--interface)}
 .atmosphere-choice[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .atmosphere-choice:hover img,.atmosphere-choice[aria-pressed=true] img{filter:saturate(.95)}
 .atmosphere-choice-check{display:none;position:absolute;right:11px;bottom:12px;font:12px var(--interface);color:var(--accent)}
 [aria-pressed=true]>.atmosphere-choice-check{display:block}
-.atmosphere-none{display:flex;position:relative;align-items:center;width:100%;gap:12px;min-height:44px;margin:12px 0 0;padding:10px 12px;border:1px solid var(--line);border-radius:6px;text-align:left;font:12px/1.5 var(--interface)}
+.atmosphere-none{display:flex;position:relative;align-items:center;width:100%;gap:12px;min-height:44px;margin:12px 0 0;padding:10px 12px;border:1px solid var(--line-hairline);border-radius:6px;text-align:left;font:12px/1.5 var(--interface)}
 .atmosphere-none>span:not(.atmosphere-choice-check){font-size:12px;color:var(--muted)}
 .atmosphere-none[aria-pressed=true]{border-color:var(--accent)}
 .atmosphere-none .atmosphere-choice-check{top:15px;bottom:auto}
-.atmosphere-sound{border-top:1px solid var(--line);margin:16px 0 0;padding:14px 0 0}
+.atmosphere-sound{border-top:1px solid var(--line-hairline);margin:16px 0 0;padding:14px 0 0}
 .atmosphere-sound-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
 .atmosphere-sound-heading h3{font:400 14px/1.5 var(--book);margin:0}
 .atmosphere-sound-heading>span{font:12px/1.7 var(--interface);color:var(--muted)}
@@ -58,7 +58,7 @@ body{isolation:isolate}
 .atmosphere-volume output{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
 .atmosphere-motion{display:flex;align-items:center;justify-content:space-between;min-height:32px;font-size:12px;margin-top:4px}
 .atmosphere-motion label span{display:block;color:var(--muted);font-size:12px;line-height:1.8;margin-top:3px}
-.atmosphere-motion input{appearance:none;position:relative;flex:none;width:34px;height:20px;border:1px solid var(--line);border-radius:20px;background:var(--wash);cursor:pointer}
+.atmosphere-motion input{appearance:none;position:relative;flex:none;width:34px;height:20px;border:1px solid var(--line-control);border-radius:20px;background:var(--wash);cursor:pointer}
 .atmosphere-motion input::before{content:"";position:absolute;top:3px;left:3px;width:12px;height:12px;border-radius:50%;background:var(--muted)}
 .atmosphere-motion input:checked{background:var(--accent);border-color:var(--accent)}
 .atmosphere-motion input:checked::before{left:17px;background:var(--panel)}

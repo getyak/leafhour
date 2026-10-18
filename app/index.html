@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-Hans" data-theme="paper">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="robots" content="noindex,nofollow,noarchive"><title>Leafhour · 阅读</title><link rel="icon" href="/brand-assets/leafhour-mark.svg" type="image/svg+xml"><link rel="preload" href="/fonts/newsreader/newsreader-var.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/typography.css"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><link rel="stylesheet" href="/reading-flow.css"><link rel="stylesheet" href="/library-chat.css"><link rel="stylesheet" href="/reader-companion.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script><link rel="stylesheet" href="/reading-arrival.css"><script type="module" src="/reading-arrival.mjs"></script><link rel="stylesheet" href="/reader-atmosphere.css"><link rel="stylesheet" href="/reader-navigation.css"><link rel="stylesheet" href="/parallel-reading.css"><link rel="stylesheet" href="/reader-pagination.css"><link rel="stylesheet" href="/reader-audio.css"><link rel="stylesheet" href="/reader-settings.css"><link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script><link rel="stylesheet" href="/leafhour-brand.css">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="robots" content="noindex,nofollow,noarchive"><title>Leafhour · 阅读</title><link rel="icon" href="/brand-assets/leafhour-mark.svg" type="image/svg+xml"><link rel="preload" href="/fonts/newsreader/newsreader-var.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/typography.css"><link rel="stylesheet" href="/interface-tokens.css"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><link rel="stylesheet" href="/reading-flow.css"><link rel="stylesheet" href="/library-chat.css"><link rel="stylesheet" href="/reader-companion.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script><link rel="stylesheet" href="/reading-arrival.css"><script type="module" src="/reading-arrival.mjs"></script><link rel="stylesheet" href="/reader-atmosphere.css"><link rel="stylesheet" href="/reader-navigation.css"><link rel="stylesheet" href="/parallel-reading.css"><link rel="stylesheet" href="/reader-pagination.css"><link rel="stylesheet" href="/reader-audio.css"><link rel="stylesheet" href="/reader-settings.css"><link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script><link rel="stylesheet" href="/leafhour-brand.css">
 <link rel="stylesheet" href="/gift-compose.css"><link rel="stylesheet" href="/reader-book-actions.css">
 </head>
 <body class="is-focused" data-reading-tools="closed">
@@ -40,7 +40,7 @@
     <span id="reading-goal-hint" class="reading-goal-hint"></span><div class="reading-sync-row"><p id="reading-sync" role="status"></p><button id="reading-retry" type="button" hidden>重试保存</button><button id="reading-backup" type="button" hidden>另存待同步时段</button></div>
     </div>
   </section>
-  <dialog id="manual-reading" class="reading-dialog" aria-labelledby="manual-reading-title">
+  <dialog autofocus id="manual-reading" class="reading-dialog" aria-labelledby="manual-reading-title">
     <header><div><p class="reading-dialog-kicker">Leafhour · 自己的阅读记录</p><h2 id="manual-reading-title">手动补记（自报）</h2></div><button data-manual-close type="button" aria-label="关闭手动补记">×</button></header>
     <p id="manual-reading-zone" class="reading-guide-reference"></p>
     <p class="reading-guide-reference">打开补记会暂停当前计时，关闭后可自行继续。填写已结束的一个时段，最长24小时。未提交输入不会保存；已提交但待确认的时段会用同一标识重试。总时长会合并重叠，补记不证明理解程度。</p>
@@ -51,18 +51,18 @@
       <button id="manual-reading-save" class="reading-primary" type="submit">保存补记</button>
     </form>
   </dialog>
-  <dialog id="reading-guide" class="reading-dialog" aria-labelledby="reading-guide-title">
+  <dialog autofocus id="reading-guide" class="reading-dialog" aria-labelledby="reading-guide-title">
     <header><div><p class="reading-dialog-kicker">Leafhour · 深读提示</p><h2 id="reading-guide-title">从一个问题开始。</h2></div><button data-reading-close="reading-guide" aria-label="关闭深读提示">×</button></header>
     <p id="guide-session-state" class="reading-guide-reference" hidden>计时已暂停，回到阅读后继续。</p><div class="reading-source"><p id="guide-source-label"></p><blockquote id="guide-source"></blockquote></div>
     <div class="reading-guide-steps"><section><h3>带着问题读</h3><p>先想一想，这一节想回答什么。把自己的疑问带进接下来的几页。</p></section><section><h3>合上书，用自己的话说</h3><p>暂时移开目光，试着说清刚才读到的意思。一句话也可以。</p></section><section><h3>回到原文核对</h3><p>再看作者实际写了什么。哪些是原文，哪些是自己的推断？难句可以对照译文。</p></section><section><h3>留住还没想通的地方</h3><p>记下问题，下次从这里继续。读小说也可以只留住一个场景或一种感受。</p></section></div>
     <p class="reading-guide-reference">教材阅读的提问、复述与回顾，参考 <a href="https://lsc.cornell.edu/how-to-study/reading-strategies/textbook-reading-systems/" target="_blank" rel="noopener noreferrer">Cornell 阅读策略 ↗</a>。这些是可选提示，按书和自己的节奏选择。</p>
     <button id="reading-guide-return" class="reading-primary" type="button">回到阅读</button>
   </dialog>
-  <dialog id="reading-drafts" class="reading-dialog" aria-labelledby="reading-drafts-title">
+  <dialog autofocus id="reading-drafts" class="reading-dialog" aria-labelledby="reading-drafts-title">
     <header><div><p class="reading-dialog-kicker">只留在本机，等待你回来。</p><h2 id="reading-drafts-title">还没写完的想法</h2></div><button data-reading-close="reading-drafts" aria-label="关闭草稿列表">×</button></header>
     <p class="reading-guide-reference">每份草稿保留原文位置。多个阅读页里的文字分别保留，保存后才进入书房笔记。</p><div id="reading-drafts-list" class="reading-drafts-list"></div>
   </dialog>
-  <dialog id="reading-ending" class="reading-dialog" aria-labelledby="reading-ending-title">
+  <dialog autofocus id="reading-ending" class="reading-dialog" aria-labelledby="reading-ending-title">
     <header class="ending-heading"><p class="reading-dialog-kicker">一页，再一页。</p><div id="ending-companion" class="ending-companion" aria-hidden="true"></div><button data-reading-close="reading-ending" aria-label="关闭读后记录">×</button><h2 id="reading-ending-title">今天，就读到这里。</h2></header>
     <p id="ending-duration" class="ending-duration"></p><div class="ending-save-state" role="status" aria-live="polite"><p id="ending-session-status"></p><p id="ending-position-status"></p></div><button id="ending-retry" class="quiet-button" type="button" hidden>重试保存</button><details class="ending-source-details"><summary id="ending-source-summary">这次停下的原文</summary><div class="reading-source"><p id="ending-source-label"></p><blockquote id="ending-source"></blockquote></div></details>
     <div class="ending-field"><label for="ending-comment">自己理解的一句话 <span>可选</span></label><textarea id="ending-comment" maxlength="2000" rows="3" placeholder="不看原文，试着用自己的话说一说…"></textarea><p id="ending-comment-pending" class="ending-pending"></p><button id="save-ending-comment" type="button">保存理解</button><p id="ending-comment-status" role="status"></p></div>
@@ -88,8 +88,8 @@
     <div class="book-info-actions"><button id="book-intro-generate" type="button" hidden>生成 AI 简介</button><a id="book-intro-login" hidden>登录后生成 AI 简介</a><button id="book-info-share" type="button" aria-haspopup="dialog" aria-controls="reader-book-gift" disabled>分享这本书</button></div>
     <footer class="book-info-footer"><span id="book-info-extent"></span><a id="book-info-source" target="_blank" rel="noopener noreferrer" hidden>原文出处 <span aria-hidden="true">↗</span></a></footer>
   </section>
-  <dialog id="toc-dialog" class="toc-dialog" aria-labelledby="toc-heading-title"><header class="toc-heading"><div><p id="toc-book-title">Leafhour</p><h2 id="toc-heading-title">全书目录</h2></div><button data-close-dialog="toc-dialog" class="reader-surface-close" aria-label="关闭目录"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 6 8 8M14 6l-8 8"/></svg></button></header><nav id="toc-list" aria-label="全书目录"></nav></dialog>
-  <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title">
+  <dialog autofocus id="toc-dialog" class="toc-dialog" aria-labelledby="toc-heading-title"><header class="toc-heading"><div><p id="toc-book-title">Leafhour</p><h2 id="toc-heading-title">全书目录</h2></div><button data-close-dialog="toc-dialog" class="reader-surface-close" aria-label="关闭目录"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 6 8 8M14 6l-8 8"/></svg></button></header><nav id="toc-list" aria-label="全书目录"></nav></dialog>
+  <dialog autofocus id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title">
     <header class="dialog-heading"><div><h2 id="settings-title">你的阅读方式</h2><p>把这一页，调成喜欢的样子。</p></div><button data-close-dialog="settings-dialog" class="quiet-button" aria-label="关闭阅读设置">关闭</button></header>
     <nav class="settings-tabs" role="tablist" aria-label="阅读设置分类">
       <button id="settings-tab-reading" data-settings-tab="reading" role="tab" aria-selected="true" aria-controls="settings-reading">阅读</button>
@@ -160,7 +160,7 @@
     </div>
     <footer class="settings-footer"><button id="settings-chapters" disabled>全书目录</button><button data-close-dialog="settings-dialog">返回书页</button></footer>
   </dialog>
-  <dialog id="share-dialog" class="share-dialog" aria-labelledby="share-title">
+  <dialog autofocus id="share-dialog" class="share-dialog" aria-labelledby="share-title">
     <div class="share-shell">
       <header class="share-heading"><h2 id="share-title">留住这句话<span>Leafhour · 摘录</span></h2><button id="share-close" class="quiet-button">返回阅读</button></header>
       <div class="share-workspace">
@@ -187,7 +187,7 @@
     </div>
   </dialog>
   <aside id="progress-notice" class="reading-progress-notice" role="status" hidden><p>书房里的阅读位置已就绪。可以回去，也可以继续读这里。</p><div><button id="progress-use-remote">回到书房的位置</button><button id="progress-keep-here">继续读这里</button></div></aside>
-  <dialog id="reader-conversation" class="library-chat-dialog" aria-label="阅读对话"></dialog>
+  <dialog autofocus id="reader-conversation" class="library-chat-dialog" aria-label="阅读对话"></dialog>
   <div id="announcement" class="visually-hidden" aria-live="polite"></div>
   <p class="visually-hidden" id="reading-instructions">点击段落或聚焦段落后按回车，可以查看原文、注解和个人记录。翻页阅读时，用 ← → 或页底按钮翻页。Esc关闭浮层。F切换专注阅读。</p>
 <script type="module" src="/reader-translation.js"></script>
