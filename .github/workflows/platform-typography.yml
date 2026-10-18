@@ -82,6 +82,12 @@ jobs:
           echo "ANDROID_USER_HOME=$RUNNER_TEMP/get173-android/android-user-home" >> "$GITHUB_ENV"
           echo "ANDROID_AVD_HOME=$RUNNER_TEMP/get173-android/android-avd-home" >> "$GITHUB_ENV"
       - run: npm ci --no-audit --no-fund
+      - name: Install the emulator's missing host PulseAudio client library
+        run: |
+          # The official runner image lacks libpulse.so.0 required by emulator -version.
+          sudo -n apt-get update
+          sudo -n apt-get install --no-install-recommends -y libpulse0
+          dpkg-query -W -f='${Package} ${Version}\n' libpulse0
       - name: Configure and verify hosted KVM acceleration for the owned AVD
         shell: bash
         run: |
@@ -116,7 +122,8 @@ jobs:
           yes | "$SDKMANAGER" "platform-tools" "system-images;android-34;google_apis_playstore;x86_64" > /dev/null
           test -x "$EMULATOR"
           "$ADB" version
-          "$EMULATOR" -version | head -n 2
+          "$EMULATOR" -version > "$RUNNER_TEMP/get173-android/emulator-version.txt"
+          head -n 2 "$RUNNER_TEMP/get173-android/emulator-version.txt"
           "$EMULATOR" -accel-check
           "$SDKMANAGER" --list_installed | grep -E '^(  )?(emulator|platform-tools|system-images;android-34;google_apis_playstore;x86_64)'
       - name: Observe actual anonymous product typography in task-owned stock Chrome on the AVD
