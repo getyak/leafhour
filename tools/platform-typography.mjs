@@ -15,11 +15,11 @@ async function until(operation,label,ms=30000){const deadline=Date.now()+ms;let 
 // Node22 built-in WebSocket; no browser package or extra driver dependency.
 class CDP {
   constructor(socket){this.socket=socket;this.next=0;this.pending=new Map();this.listeners=new Map();
-    socket.addEventListener('message',event=>{const message=JSON.parse(event.data);if(message.id){const pending=this.pending.get(message.id);if(!pending)return;this.pending.delete(message.id);clearTimeout(pending.timer);message.error?pending.reject(Error(JSON.stringify(message.error))):pending.resolve(message.result);}else for(const handler of this.listeners.get(message.method)||[])handler(message.params);});
+    socket.addEventListener('message',event=>{const message=JSON.parse(event.data);if(message.id){const pending=this.pending.get(message.id);if(!pending)return;this.pending.delete(message.id);clearTimeout(pending.timer);message.error?pending.reject(Error(pending.method+': '+JSON.stringify(message.error))):pending.resolve(message.result);}else for(const handler of this.listeners.get(message.method)||[])handler(message.params);});
     socket.addEventListener('close',()=>{for(const item of this.pending.values()){clearTimeout(item.timer);item.reject(Error('CDP disconnected'));}this.pending.clear();});
   }
   static async connect(url){const socket=new WebSocket(url);await new Promise((resolve,reject)=>{const timer=setTimeout(()=>{socket.close();reject(Error('CDP open timeout'));},10000);socket.addEventListener('open',()=>{clearTimeout(timer);resolve();},{once:true});socket.addEventListener('error',()=>{clearTimeout(timer);reject(Error('CDP socket error'));},{once:true});});return new CDP(socket);}
-  send(method,params={}){return new Promise((resolve,reject)=>{const id=++this.next,timer=setTimeout(()=>{this.pending.delete(id);reject(Error('CDP timeout '+method));},30000);this.pending.set(id,{resolve,reject,timer});this.socket.send(JSON.stringify({id,method,params}));});}
+  send(method,params={}){return new Promise((resolve,reject)=>{const id=++this.next,timer=setTimeout(()=>{this.pending.delete(id);reject(Error('CDP timeout '+method));},30000);this.pending.set(id,{resolve,reject,timer,method});this.socket.send(JSON.stringify({id,method,params}));});}
   on(method,handler){const set=this.listeners.get(method)||new Set();set.add(handler);this.listeners.set(method,set);return()=>set.delete(handler);}
   async evaluate(expression){const result=await this.send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(result.exceptionDetails)throw Error(result.exceptionDetails.text+': '+JSON.stringify(result.exceptionDetails.exception));return result.result.value;}
   async close(){if(this.socket.readyState===3)return;await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('CDP close timeout')),5000);this.socket.addEventListener('close',()=>{clearTimeout(timer);resolve();},{once:true});this.socket.close();});}
@@ -36,7 +36,25 @@ let server,child,cdp,fetchEnabled=false,holdFonts=false;const paused=new Set(),b
 function task(operation){const promise=Promise.resolve(operation).catch(error=>failures.push(error.message)).finally(()=>background.delete(promise));background.add(promise);}
 const observe=(method,handler)=>evidenceListeners.push(cdp.on(method,handler));
 async function capture(name){const {data}=await cdp.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});const bytes=Buffer.from(data,'base64');await writeFile(path.join(out,name+'.png'),bytes);receipt.screenshots.push({file:name+'.png',bytes:bytes.length,sha256:sha(bytes)});}
-async function fonts(selector,label,{awaitFonts=true}={}){await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)});if(!n)throw Error('Missing target');n.scrollIntoView({block:'nearest',behavior:'instant'});return new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve(true))));})()`);if(awaitFonts)await cdp.evaluate('document.fonts.ready.then(()=>true)');const {root:doc}=await cdp.send('DOM.getDocument');const {nodeId}=await cdp.send('DOM.querySelector',{nodeId:doc.nodeId,selector});assert.ok(nodeId,'Missing actual text node: '+selector);const usage=await cdp.send('CSS.getPlatformFontsForNode',{nodeId});const details=await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)}),s=getComputedStyle(n),r=n.getBoundingClientRect();return {text:n.textContent,font:s.font,fontFamily:s.fontFamily,style:s.fontStyle,rect:{x:r.x,y:r.y,width:r.width,height:r.height},visible:!!n.getClientRects().length&&s.visibility!=='hidden'&&r.width>0&&r.height>0&&r.right>0&&r.bottom>0&&r.left<innerWidth&&r.top<innerHeight};})()`);assert.ok(details.visible,label+' must actually render inside the viewport');const value={label,selector,...details,...usage};receipt.checks.push(value);return value;}
+async function fonts(selector,label,{awaitFonts=true}={}){
+  receipt.activeProbe={selector,label,phase:'layout'};
+  await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)});if(!n)throw Error('Missing target');n.scrollIntoView({block:'nearest',behavior:'instant'});return new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve(true))));})()`);
+  if(awaitFonts)await cdp.evaluate('document.fonts.ready.then(()=>true)');
+  let usage;
+  // Navigation invalidates protocol node IDs. Re-resolve this exact selector
+  // once for that specific protocol error, recording it; assertions never retry.
+  for(let attempt=0;attempt<2;attempt++){
+    receipt.activeProbe={selector,label,phase:'platform-fonts',attempt};
+    try{
+      const {root:doc}=await cdp.send('DOM.getDocument');
+      const {nodeId}=await cdp.send('DOM.querySelector',{nodeId:doc.nodeId,selector});
+      assert.ok(nodeId,'Missing actual text node: '+selector);
+      usage=await cdp.send('CSS.getPlatformFontsForNode',{nodeId});break;
+    }catch(error){if(attempt||!error.message.includes('Could not find node with given id'))throw error;(receipt.nodeInvalidations??=[]).push({...receipt.activeProbe,error:error.message});}
+  }
+  const details=await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)}),s=getComputedStyle(n),r=n.getBoundingClientRect();return {text:n.textContent,font:s.font,fontFamily:s.fontFamily,style:s.fontStyle,rect:{x:r.x,y:r.y,width:r.width,height:r.height},visible:!!n.getClientRects().length&&s.visibility!=='hidden'&&r.width>0&&r.height>0&&r.right>0&&r.bottom>0&&r.left<innerWidth&&r.top<innerHeight};})()`);
+  assert.ok(details.visible,label+' must actually render inside the viewport');const value={label,selector,...details,...usage};receipt.checks.push(value);delete receipt.activeProbe;return value;
+}
 function customNewsreader(value){assert.ok(value.fonts.some(font=>font.isCustomFont&&/Newsreader/i.test(font.postScriptName||font.familyName)&&font.glyphCount>0),value.label+' must render actual custom Newsreader glyphs');}
 async function cjkGlyphs(selector,label,{serif=false}={}){
   // Platform font usage includes ::before: language links have a Latin middle
@@ -97,13 +115,13 @@ try{
   holdFonts=false;for(const requestId of paused)await cdp.send('Fetch.continueRequest',{requestId});paused.clear();
   await cdp.evaluate('document.fonts.ready.then(()=>true)');await capture('home-loaded');customNewsreader(await fonts('.hero-copy h1 .hero-line','loaded hero'));
   for(const [route,locale] of [['/zh-hans','zh-Hans'],['/zh-hant','zh-Hant'],['/ja','ja']]){
-    pageLabel='home-'+locale;await cdp.send('Page.navigate',{url:origin+route});await until(()=>cdp.evaluate(`document.documentElement.lang===${JSON.stringify(locale)}&&!!document.querySelector('#how .section-copy h2')`),'authored '+locale+' home');
+    pageLabel='home-'+locale;await cdp.send('Page.navigate',{url:origin+route});await until(()=>cdp.evaluate(`location.pathname===${JSON.stringify(route)}&&document.readyState==='complete'&&document.documentElement.lang===${JSON.stringify(locale)}&&!!document.querySelector('#how .section-copy h2')`),'authored '+locale+' home');
     await cjkGlyphs('.home-navigation a[hreflang="'+locale+'"]','actual '+locale+' language entrance');
     await cjkGlyphs('#how .section-copy h2','actual '+locale+' heading CJK fallback',{serif:true});
     receipt.cjkNeedsHumanReview=true;await capture('home-'+locale+'-cjk-loaded');
   }
   pageLabel='library';await cdp.send('Page.navigate',{url:origin+'/library'});
-  await until(()=>cdp.evaluate(`!!document.querySelector('#library-books .binding-original')`),'actual public shelf');await cdp.evaluate('document.fonts.ready.then(()=>true)');
+  await until(()=>cdp.evaluate(`location.pathname==='/library'&&document.readyState==='complete'&&!!document.querySelector('#library-books .binding-original')`),'actual public shelf');await cdp.evaluate('document.fonts.ready.then(()=>true)');
   customNewsreader(await fonts('#library-books .binding-original','actual Alice cover original title'));
   // Isolate a glyph in the actual text while preserving inherited typography.
   const punctuation=await cdp.evaluate(`(()=>{const n=[...document.querySelectorAll('#library-books .binding-original')].find(n=>n.textContent.includes('Alice’s'));if(!n)throw Error('Actual Alice’s title missing');const raw=n.textContent,node=[...n.childNodes].find(n=>n.nodeType===3&&n.textContent.includes('’'));if(!node)throw Error('Actual apostrophe text missing');const i=node.textContent.indexOf('’'),r=document.createRange();r.setStart(node,i);r.setEnd(node,i+1);const before=r.getBoundingClientRect().width,span=document.createElement('span');span.id='platform-apostrophe-probe';r.surroundContents(span);const after=span.getBoundingClientRect().width;return {raw,before,after,em:parseFloat(getComputedStyle(span).fontSize)};})()`);
@@ -115,9 +133,11 @@ try{
   const citation=new URLSearchParams({book:sourceBook.bookId,passage:sourcePassage.id,contentVersion:sourceBook.contentVersion,layer:'original'}),italicSelector='#chapter-text [data-id='+JSON.stringify(sourcePassage.id)+'] em.source-emphasis';
   receipt.citation={bookId:sourceBook.bookId,passageId:sourcePassage.id,contentVersion:sourceBook.contentVersion,layer:'original',originalSha256:sha(sourcePassage.original)};
   pageLabel='reader';await cdp.send('Page.navigate',{url:origin+'/read?'+citation});
-  await until(()=>cdp.evaluate(`!!document.querySelector(${JSON.stringify(italicSelector)})`),'cited actual reader italic');await cdp.evaluate('document.fonts.ready.then(()=>true)');
+  await until(()=>cdp.evaluate(`location.pathname==='/read'&&document.readyState==='complete'&&document.body.dataset.ready==='true'&&!!document.querySelector(${JSON.stringify(italicSelector)})`),'ready cited actual reader italic');await cdp.evaluate('document.fonts.ready.then(()=>true)');
+  const resolved=await cdp.evaluate(`(()=>{const reader=window.marginaliaReader,book=reader.getBook(),state=reader.getState(),n=document.querySelector(${JSON.stringify(italicSelector)}).closest('.passage'),r=n.getBoundingClientRect();return {url:location.href,bookId:book.bookId,contentVersion:book.contentVersion,mode:state.mode,passageId:n.dataset.id,visible:r.bottom>0&&r.top<innerHeight};})()`);
+  assert.equal(resolved.bookId,sourceBook.bookId);assert.equal(resolved.contentVersion,sourceBook.contentVersion);assert.equal(resolved.passageId,sourcePassage.id);assert.equal(resolved.mode,'en');assert.ok(resolved.visible,'Citation target must already be visible before the font probe scrolls');
+  assert.ok([origin+'/read?'+citation,origin+'/read?'+new URLSearchParams({book:sourceBook.bookId})].includes(resolved.url),'Only the application’s existing consumed-entry URL cleanup is permitted');receipt.citation.resolved=resolved;
   await cdp.evaluate(`document.querySelector(${JSON.stringify(italicSelector)}).scrollIntoView({block:'center',behavior:'instant'})`);
-  const actualUrl=await cdp.evaluate('location.href');assert.equal(actualUrl,origin+'/read?'+citation,'Citation must remain on the intended source');
   const italic=await fonts(italicSelector,'cited visible source emphasis italic');customNewsreader(italic);assert.equal(italic.text,'very');assert.equal(italic.style,'italic');assert.ok(italic.fonts.some(font=>font.isCustomFont&&/Italic/i.test(font.postScriptName||'')&&font.glyphCount>0),'Actual italic font required');await capture('reader-loaded');
   await until(()=>receipt.fonts.some(font=>font.url.endsWith('newsreader-var.woff2'))&&receipt.fonts.some(font=>font.url.endsWith('newsreader-italic-var.woff2')),'both actual font responses');
   await Promise.all(background);assert.deepEqual(failures,[],'All evidence tasks must succeed');
