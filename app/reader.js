@@ -1,18 +1,19 @@
 import {mountReaderPresence} from './reader-presence.mjs';
 import {createReadingBook,createReadingNavigation} from './reading-book.mjs';
-import {appearanceDefaults,appearanceBounds,normalizeAppearance,openingReadingPreferences,openingReadingView,entryViewPreferences,preferredReadingMode} from './reading-preferences.mjs';
+import {appearanceDefaults,appearanceBounds,normalizeAppearance,openingReadingPreferences,preferredReadingMode} from './reading-preferences.mjs';
 import {captureDOMSelection,paragraphSnapshot} from './share-model.mjs';
 import {placeFloatingToolbar,placeFloatingMenu} from './toolbar-placement.mjs';
 import {readerFetch,readerStorageKey,selectedBookId,readerSession} from './reader-api.mjs';
 import {chooseReadingPosition,resolveReadingPosition,resumeSummary,acknowledgePosition,recoveredPositionNeedsChoice} from './reading-progress.mjs';
+import {resolveReaderOpening} from './reader-entry.mjs';
 import {createProgressSync} from './progress-sync.mjs';
 import {chineseOriginalOnly} from './source-language.mjs';
 import {captureParagraphAnchor,paragraphScrollDelta} from './paragraph-anchor.mjs';
 import {createNoteDrafts} from './note-drafts.mjs';
 import {createReadingDraftStore} from './reading-draft-store.mjs';
-import {readerLoginUrl,resolveReaderEntry} from './reader-return.mjs';
-import {passagePresentation,visibleQuoteLanguage,applySourceLineation} from './passage-layers.mjs';
-import {chineseSampleEntry} from './catalog-sample.mjs';
+import {readerLoginUrl} from './reader-return.mjs';
+import {passagePresentation,visibleQuoteLanguage,applySourceLineation,quotePanelSourceNodes} from './passage-layers.mjs';
+import {sourceEmphasisEligible} from './source-emphasis.mjs';
 import {createChapterFlow,isReadingDivider} from './reading-flow.mjs';
 import {startReadingLoad,mergeLoadedReadingRecords} from './reading-load.mjs';
 import {noteSaveReceipt,positionSaveState,draftSaveReceipt} from './save-receipts.mjs';
@@ -123,10 +124,10 @@ for(const [key,label,unit] of typographyFields){
   controls.append(minus,value,plus);row.append(name,controls);$('typography-controls').append(row);
 }
 function passageView(p){return {mode:overrides[p.id]?.mode||(state.mode==='en'?'en':'zh'),variant:overrides[p.id]?.variant||state.variant};}
-function prose(layer,variant){if(layer.kind==='missing')return el('div','translation-placeholder',layer.message);const n=el('p',layer.fallback?'untranslated-original':'',layer.text);if(layer.kind==='original')applySourceLineation(n,layer.lineBreaks,document);n.lang=layer.lang;n.dataset.readingLayer=layer.kind;n.dataset.variant=variant;return n;}
+function prose(layer,variant){if(layer.kind==='missing')return el('div','translation-placeholder',layer.message);const n=el('p',layer.fallback?'untranslated-original':'',layer.text);if(layer.kind==='original')applySourceLineation(n,layer.lineBreaks,document,layer.emphasis);n.lang=layer.lang;n.dataset.readingLayer=layer.kind;n.dataset.variant=variant;return n;}
 function fillPassage(node,p){
   if(node.contains($('note-panel')))document.body.append($('note-panel'));
-  node.replaceChildren();const v=passageView(p),view=passagePresentation(p,{...v,mode:state.mode==='parallel'?'parallel':v.mode,sourceLanguage:book.sourceLanguage});
+  node.replaceChildren();const v=passageView(p),view=passagePresentation(p,{...v,mode:state.mode==='parallel'?'parallel':v.mode,sourceLanguage:book.sourceLanguage,sourceEmphasis:sourceEmphasisEligible(book)});
   if(state.mode==='parallel'){
     node.append(createParallelPair({document,layers:view.layers,variant:v.variant,prose,passageId:p.id,revealed:revealedTranslations,onReveal:change=>{const a=anchor();change();restoreAnchor(a);document.dispatchEvent(new CustomEvent('reader:layout'));}}));
   }else node.append(prose(view.layers[0],v.variant));
@@ -256,9 +257,16 @@ function syncPanelTextHighlight(){
 }
 function renderPanelSource(p){
   const excerpt=selectionKind==='excerpt'&&selectedExcerpt?.parts?.length?selectedExcerpt:null,v=passageView(p),language=excerpt?.parts[0]?.language||visibleQuoteLanguage(p,v,selectedQuoteLanguage),variant=excerpt?.parts[0]?.variant||v.variant;
-  const text=excerpt?excerpt.parts.map(part=>part.text).join('　'):language==='en'?p.original:p.translations[variant]?.text||'这段译文尚未准备好。';
   $('panel-source-label').textContent=(excerpt?'所选文字':'当前段落')+' · '+(language==='en'?(book.sourceLanguage==='zh'?'中文原文':'英文原文'):variant==='literal'?'中文直译':'中文意译');
-  $('panel-source-text').textContent=text;$('panel-source-text').lang=language==='en'?(book.sourceLanguage||'und'):'zh-Hans';$('panel-source').setAttribute('aria-label','回到正文：'+text.slice(0,120));
+  // GET-186/190 quote panel: one shared helper formats each raw slice from its
+  // full immutable source when the snapshot identity and slice still validate,
+  // and keeps historical excerpts literal. Raw part.text, joins and snapshot
+  // metadata stay exact; the accessible name describes what is presented.
+  const currentText=language==='en'?p.original:p.translations[variant]?.text||'这段译文尚未准备好。';
+  const parts=excerpt?excerpt.parts:[{passageId:p.id,language,variant,start:0,end:currentText.length,text:currentText}];
+  const {nodes,displayText}=quotePanelSourceNodes(document,{book,snapshot:excerpt,parts,originalFor:part=>paragraphMap.get(part.passageId)?.original});
+  const target=$('panel-source-text');target.replaceChildren(...nodes);
+  target.lang=language==='en'?(book.sourceLanguage||'und'):'zh-Hans';$('panel-source').setAttribute('aria-label','回到正文：'+displayText.slice(0,120));
 }
 function returnToPanelSource(){
   const id=selectionKind==='excerpt'?selectedExcerpt?.parts?.[0]?.passageId:selectedId,node=id&&$('chapter-text').querySelector('[data-id="'+id+'"]');if(!node)return;
@@ -337,16 +345,20 @@ async function boot(){
     readingBook=createReadingBook({book,readChapter:(id,version)=>api('/api/chapters/'+encodeURIComponent(id)+'?contentVersion='+encodeURIComponent(version)),onContent:()=>{indexBook();document.dispatchEvent(new CustomEvent('reader:content'));}});indexBook();
     readingNavigation=createReadingNavigation({isLoaded:readingBook.isLoaded,ensure:readingBook.ensure,commit:commitChapter,onPending:()=>announce('正在展开这一章，当前书页保留。'),onError:error=>announce(error.message||'这一章暂时无法读取，请重试。')});
     let localPosition=null;try{localPosition=JSON.parse(localStorage.getItem(progressKey)||'null');}catch{}
-    let position=chooseReadingPosition({book,remote:records.position,local:localPosition,remoteAvailable:!recordsUnavailable});
-    progressSync.adopt(recordsUnavailable?(position?.baseRevision??position?.revision??0):(records.position?.revision||0));
-    if(position&&Number.isFinite(position.offset)&&Math.abs(position.offset)<=4000&&paragraphMap.has(position.passageId)){position.chapterId=paragraphMap.get(position.passageId).chapterId;state.chapterId=position.chapterId;}else position=null;
+    // GET-186 entry policy: the real boot decision lives in reader-entry.mjs.
+    // Valid resumes and explicit entries keep their anchors; a genuinely fresh
+    // or invalid-position opening renders the chapter top (full chapter number
+    // and title) instead of clipping the generated heading.
+    const opening=resolveReaderOpening({book,query:new URLSearchParams(location.search),remote:records.position,local:localPosition,remoteAvailable:!recordsUnavailable,hasPassage:id=>paragraphMap.has(id),chapterOf:id=>paragraphMap.get(id)?.chapterId,state,account:readerSession?.user?readerSession.readingPreferences?.preferences:null,sourceOnly:chineseOriginalOnly(book)});
+    let position=opening.position;const requestedEntry=opening.requestedEntry,sampleEntry=opening.sampleEntry;
+    progressSync.adopt(recordsUnavailable?(opening.chosen?.baseRevision??opening.chosen?.revision??0):(records.position?.revision||0));
+    state.chapterId=opening.chapterId;
     // Opening precedence: valid per-book saved view over the account defaults, else safe guest defaults.
-    Object.assign(state,openingReadingView({saved:position,account:readerSession?.user?readerSession.readingPreferences?.preferences:null,sourceOnly:chineseOriginalOnly(book)}));
-    const requestedEntry=resolveReaderEntry(book,new URLSearchParams(location.search));if(requestedEntry){state.chapterId=requestedEntry.chapterId;Object.assign(state,entryViewPreferences(requestedEntry));position={...(position||{}),...state,chapterId:requestedEntry.chapterId,passageId:requestedEntry.passageId,offset:requestedEntry.offset,withinParagraph:undefined,contentVersion:book.contentVersion};}
-    const sampleEntry=!requestedEntry&&chineseSampleEntry(book,new URLSearchParams(location.search));if(sampleEntry){Object.assign(state,{chapterId:sampleEntry.chapterId,mode:sampleEntry.mode,variant:sampleEntry.variant});position={...(position||{}),...state,...sampleEntry,withinParagraph:undefined,contentVersion:book.contentVersion};const query=new URLSearchParams(location.search);query.delete('sample');history.replaceState(null,'',location.pathname+'?'+query);}
+    Object.assign(state,opening.preferences);
+    if(sampleEntry){const query=new URLSearchParams(location.search);query.delete('sample');history.replaceState(null,'',location.pathname+'?'+query);}
     if(selectedBookId){const onlyOriginal=chineseOriginalOnly(book)&&!['literal','interpretive'].includes(requestedEntry?.layer);for(const option of $('view-mode').options){option.disabled=onlyOriginal&&option.value!=='en';if(option.value==='en')option.textContent=book.sourceLanguage==='zh'?'中文原文':book.sourceLanguage==='en'?'英文原文':'原文';if(option.value==='zh')option.textContent='中文译文';if(option.value==='parallel')option.textContent=book.sourceLanguage==='en'?'中英对照':'原文与译文对照';}if(onlyOriginal)state.mode='en';}
     await readingBook.ensure(state.chapterId);if(generation!==loadGeneration)return;
-    renderChapter();arrival.finish(arrivalTicket);$('load-error').hidden=true;await document.fonts.ready;if(position){restoreAnchor(position);cachePosition({...position,contentVersion:book.contentVersion,chapterLabel:resumeSummary(book,position)?.label});}else if(selectedBookId&&book.readingStart)restoreAnchor({...book.readingStart,offset:160});restoringProgress=false;document.body.dataset.ready='true';readerPresenceReady=true;dailyPresence.refresh();document.body.dataset.readableMs=String(Math.round(performance.now()));document.body.dataset.recordsState=recordsPending?'pending':recordsUnavailable?'unavailable':'ready';document.dispatchEvent(new CustomEvent('reader:ready'));performance.mark('reader:readable');queueReadingFlow();if(recordsPending)loading.records.then(fresh=>adoptLoadedRecords(fresh,{generation,explicitEntry:!!requestedEntry||!!sampleEntry}));if(requestedEntry){const query=new URLSearchParams(location.search);query.delete('passage');query.delete('note');query.delete('action');query.delete('contentVersion');query.delete('layer');history.replaceState(null,'',location.pathname+'?'+query);if(requestedEntry.note){choosePassage(requestedEntry.passageId,null,paragraphMap.get(requestedEntry.passageId).original,'en');openPanel(requestedEntry.note==='question'?'question':'comment');if(requestedEntry.note==='records'){allRecords=true;renderPanel();}}else if(requestedEntry.action==='translate'){choosePassage(requestedEntry.passageId,null,'','en');}}
+    renderChapter();arrival.finish(arrivalTicket);$('load-error').hidden=true;await document.fonts.ready;if(position){restoreAnchor(position);cachePosition({...position,contentVersion:book.contentVersion,chapterLabel:resumeSummary(book,position)?.label});}else window.scrollTo(0,0);restoringProgress=false;document.body.dataset.ready='true';readerPresenceReady=true;dailyPresence.refresh();document.body.dataset.readableMs=String(Math.round(performance.now()));document.body.dataset.recordsState=recordsPending?'pending':recordsUnavailable?'unavailable':'ready';document.dispatchEvent(new CustomEvent('reader:ready'));performance.mark('reader:readable');queueReadingFlow();if(recordsPending)loading.records.then(fresh=>adoptLoadedRecords(fresh,{generation,explicitEntry:!!requestedEntry||!!sampleEntry}));if(requestedEntry){const query=new URLSearchParams(location.search);query.delete('passage');query.delete('note');query.delete('action');query.delete('contentVersion');query.delete('layer');history.replaceState(null,'',location.pathname+'?'+query);if(requestedEntry.note){choosePassage(requestedEntry.passageId,null,paragraphMap.get(requestedEntry.passageId).original,'en');openPanel(requestedEntry.note==='question'?'question':'comment');if(requestedEntry.note==='records'){allRecords=true;renderPanel();}}else if(requestedEntry.action==='translate'){choosePassage(requestedEntry.passageId,null,'','en');}}
   }catch(error){if(generation===loadGeneration){readerPresenceReady=false;dailyPresence.refresh();arrival.finish(arrivalTicket);const notice=$('load-error');notice.querySelector('p').textContent=error.code==='READER_CITATION_INVALID'?error.message:'暂时无法打开这本书。';let login=notice.querySelector('a');if(!readerSession?.user&&selectedBookId){if(!login){login=el('a','quiet-button','登录后打开这条引用 →');notice.append(login);}const query=new URLSearchParams(location.search);login.href=readerLoginUrl({bookId:selectedBookId,passageId:query.get('passage'),contentVersion:query.has('contentVersion')?query.get('contentVersion'):undefined,layer:query.has('layer')?query.get('layer'):undefined});}else login?.remove();notice.hidden=false;}}
 }
 async function adoptLoadedRecords(fresh,{generation,explicitEntry}){

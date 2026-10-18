@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-18",
+  "sourceBase": "d8d211baaf61bd393b1c61a1bcd8a4253929ee2f",
+  "reviewedSourceFreezeSha256": "95a3545568a9657b304a08433fb2c20def5461436bb55d62e13e149898a79b1f",
+  "environment": {
+    "os": "macOS26.4 (25E246)",
+    "browser": "Chrome155.0.8059.80 Guest",
+    "desktopWindowWidth": 1200,
+    "mobileEmulationCssViewport": [
+      390,
+      844
+    ],
+    "mobileScreenshotPixels": [
+      780,
+      1688
+    ],
+    "physicalTouch": false
+  },
+  "data": "Isolated loopback public Alice; all product providers disabled; no real account/library records",
+  "observed": [
+    "Fresh generated chapter number and title fully visible at1200 and390 CSS pixels",
+    "Native one-page scroll then reload at390 restored the same displayed paragraph and position",
+    "Explicit sample=zh opened six existing Chinese draft passages; later untranslated text kept original",
+    "Explicit passage/contentVersion/layer=original reached chapter2 and retained verse lineation",
+    "Native double-click plus keyboard selected Right Foot inside an existing emphasis range",
+    "Actual app Save Image exported1080x1350 PNG; accessible image name Right Foot, visible italic and context omit delimiters; no font fallback status",
+    "Native whole-paragraph Cmd+C/Cmd+V preserved very much and source word spacing; AX selected-text concatenation alone was not treated as clipboard content"
+  ],
+  "earlierCandidateObservations": [
+    "Actual rendered DOM em: Newsreader16pt / Newsreader16pt-Italic_wght_opsz150000, network resource51glyphs, on freeze1",
+    "Native saved very22:26 and overlapping raw range11:35; read back through isolated records service",
+    "Forced missing Highlight constructor exercised actual Chrome DOM Range fallback, panel close/reselect copied very22:26; cancelling both highlights read back deletedAt"
+  ],
+  "limits": [
+    "One macOS browser only;390 is emulation, not Android or physical touch",
+    "No real assistive-technology session; accessible-name observations use native AX",
+    "Earlier candidate observations retain their original source binding; unchanged interfaces were independently reviewed afterward",
+    "No claim that Canvas glyph identity was inspected by Rendered Fonts; explicit two-face loading is independently code-tested and the actual exported PNG is inspected",
+    "GET173 cross-platform acceptance remains open"
+  ],
+  "verification": {
+    "finalTests": 1534,
+    "pass": 1533,
+    "fail": 0,
+    "existingPlatformSkip": 1,
+    "pipeline": "verify-deploy stages/credential-free environment, test concurrency2",
+    "runtimeBuild": 0,
+    "hostedBuild": 0,
+    "publicBuild": 0,
+    "releasePolicy": 0,
+    "releaseVerification": 0
+  },
+  "files": [
+    {
+      "path": "fresh-1200.jpg",
+      "sha256": "012c345d8c055282c60c5e6b287991ac83ee0412ffcdf91a27e53c58d8b515e5"
+    },
+    {
+      "path": "fresh-390.png",
+      "sha256": "f2a21099ff27376374325b2dadd33506ac82bf85bd583e045b8eb482477b0c2b"
+    },
+    {
+      "path": "partial-share.png",
+      "sha256": "22ee14c75208c484d6bfa5d769813f3bfe79d236962e54d4d26f79e668ae90ad"
+    }
+  ]
+}

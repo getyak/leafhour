@@ -24,6 +24,8 @@ assets.set('/note-drafts.mjs',['app/note-drafts.mjs','text/javascript']);
 assets.set('/translation-state.mjs',['app/translation-state.mjs','text/javascript']);
 assets.set('/reader-return.mjs',['app/reader-return.mjs','text/javascript']);
 assets.set('/passage-layers.mjs',['app/passage-layers.mjs','text/javascript']);
+assets.set('/source-emphasis.mjs',['app/source-emphasis.mjs','text/javascript']);
+assets.set('/reader-entry.mjs',['app/reader-entry.mjs','text/javascript']);
 assets.set('/catalog-sample.mjs',['app/catalog-sample.mjs','text/javascript']);
 assets.set('/reader-navigation.mjs',['app/reader-navigation.mjs','text/javascript']);
 for(const file of ['book-introduction.mjs','book-introduction-controller.mjs','reader-book-actions.mjs','reader-book-actions.css'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);

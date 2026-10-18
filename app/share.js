@@ -1,26 +1,26 @@
-import {buildShareModel,normaliseShareOptions,paragraphSnapshot,layoutShareCard,shareThemes,shareFonts} from './share-model.mjs';
+import {buildShareModel,normaliseShareOptions,paragraphSnapshot,layoutShareCard,shareThemes,shareFonts,shareFontFallbacks,ensureShareFonts,displayQuoteText} from './share-model.mjs';
 import {chineseOriginalOnly} from './source-language.mjs';
 
 const $=id=>document.getElementById(id),bridge=()=>window.marginaliaReader;
 const dialog=$('share-dialog'),canvas=$('share-canvas'),context=canvas.getContext('2d');
-const preferenceKey='marginalia-share-preferences-v1';let saved={},snapshot=null,anchor=null,returnFocus=null,layout=null,model=null,renderVersion=0,renderedVersion=0,pending=false;
+const preferenceKey='marginalia-share-preferences-v1';let saved={},snapshot=null,anchor=null,returnFocus=null,layout=null,model=null,renderVersion=0,renderedVersion=0,pending=false,fontState=null;
 try{saved=JSON.parse(localStorage.getItem(preferenceKey)||'{}')||{};if(typeof saved!=='object'||Array.isArray(saved))saved={};}catch{}
 const fields={language:'share-language',variant:'share-variant',theme:'share-theme',ratio:'share-ratio',layout:'share-layout',above:'share-above',below:'share-below',size:'share-size',source:'share-source'};
 const options=()=>normaliseShareOptions(Object.fromEntries(Object.entries(fields).map(([key,id])=>[key,key==='source'?$(id).checked:$(id).value])));
 function status(message,error=false){$('share-status').textContent=message;$('share-status').setAttribute('role',error?'alert':'status');}
 function controlsBusy(busy){dialog.setAttribute('aria-busy',String(busy));for(const id of ['share-download','share-copy','share-system'])$(id).disabled=busy;}
 function hexAlpha(hex,alpha){const n=parseInt(hex.slice(1),16);return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+alpha+')';}
-function setFont(size,language,italic=false){context.font=(italic?'italic ':'')+size+'px '+shareFonts[language==='ui'?'ui':language==='en'?'en':'zh'];}
+function setFont(size,language,italic=false){const families=fontState?.fallback?shareFontFallbacks:shareFonts;context.font=(italic?'italic ':'')+size+'px '+families[language==='ui'?'ui':language==='en'?'en':'zh'];}
 function draw(){
  const colors=shareThemes[layout.options.theme];canvas.width=layout.width;canvas.height=layout.height;context.fillStyle=colors.paper;context.fillRect(0,0,canvas.width,canvas.height);context.textBaseline='top';
  for(const item of layout.items){
   if(item.kind==='rule'){context.fillStyle=colors.line;context.fillRect(item.x,item.y,item.width,1);continue;}
-  setFont(item.fontSize,item.language,item.kind==='translation'&&item.language==='en');context.fillStyle=item.kind==='translation'||item.kind==='label'?colors.muted:colors.ink;
+  setFont(item.fontSize,item.language);context.fillStyle=item.kind==='translation'||item.kind==='label'?colors.muted:colors.ink;
   if(item.kind==='context'){
    if(item.mode==='fade'){const fade=context.createLinearGradient(0,item.y,0,item.y+item.height);fade.addColorStop(0,hexAlpha(colors.ink,item.side==='above'?.015:.22));fade.addColorStop(1,hexAlpha(colors.ink,item.side==='above'?.22:.015));context.fillStyle=fade;}else context.fillStyle=hexAlpha(colors.ink,.5);
    context.save();context.beginPath();context.rect(item.x,item.y,item.width,item.height+5);context.clip();
   }
-  item.lines.forEach((line,i)=>context.fillText(line,item.x,item.y+i*item.lineHeight));if(item.kind==='context')context.restore();
+  item.lines.forEach((line,i)=>{if(item.runs){let x=item.x;for(const run of item.runs[i]){setFont(item.fontSize,item.language,run.italic);context.fillText(run.text,x,item.y+i*item.lineHeight);x+=context.measureText(run.text).width;}return;}context.fillText(line,item.x,item.y+i*item.lineHeight);});if(item.kind==='context')context.restore();
  }
  if(layout.options.source){
   setFont(27,'zh');context.fillStyle=colors.ink;context.fillText(model.title,104,layout.footerY);
@@ -29,17 +29,20 @@ function draw(){
   context.textAlign='right';setFont(19,'en');context.fillText('Leafhour',layout.width-104,layout.footerY+3);context.textAlign='left';
  }
  $('share-dimensions').textContent=layout.width+' × '+layout.height+' · PNG'+(layout.extended?' · 已延展以保留全文':'');
- $('share-preview-description').textContent=model.blocks.map(b=>b.primary.text+(b.secondary?'\n'+b.secondary.label+'：'+b.secondary.text:'')).join('\n\n');
+ $('share-preview-description').textContent=model.blocks.map(b=>displayQuoteText(b.primary.text,b.primary.emphasis)+(b.secondary?'\n'+b.secondary.label+'：'+displayQuoteText(b.secondary.text,b.secondary.emphasis):'')).join('\n\n');
 }
 async function render(){
  const version=++renderVersion;controlsBusy(true);
  try{
   const opts=options();model=buildShareModel(bridge().getBook(),snapshot,opts);
   const part=snapshot.parts[0];$('share-layout-field').hidden=opts.language!=='bilingual';$('share-variant-field').hidden=opts.language==='en'||opts.language==='bilingual'&&part.language==='zh';$('share-size-label').value=String(opts.size);
-  await document.fonts.ready;if(version!==renderVersion||!dialog.open)return;
-  layout=layoutShareCard(model,opts,(text,size,language)=>{setFont(size,language);return context.measureText(text).width;});draw();renderedVersion=version;controlsBusy(false);
+  await document.fonts.ready;// Canvas text does not start face loads; load/check both faces before the first measure.
+  if(!fontState)fontState=await ensureShareFonts(document.fonts);
+  if(version!==renderVersion||!dialog.open)return;
+  layout=layoutShareCard(model,opts,(text,size,language,italic=false)=>{setFont(size,language,italic);return context.measureText(text).width;});draw();renderedVersion=version;controlsBusy(false);
   const counterpart=model.blocks.some(b=>b.primary.wholeCounterpart||b.secondary?.wholeCounterpart);
-  status(counterpart?'对照按整段显示，图片中已注明。':'预览与导出的图片一致，全部在本机生成。');
+  const fontNote=fontState?.fallback?'本机未加载 Leafhour Serif 字面，图片以系统衬线回退绘制。':'';
+  status(fontNote+(counterpart?'对照按整段显示，图片中已注明。':'预览与导出的图片一致，全部在本机生成。'));
   saved={...opts};try{localStorage.setItem(preferenceKey,JSON.stringify(saved));}catch{}
  }catch(error){renderedVersion=0;dialog.setAttribute('aria-busy','false');status(error.message||'图片暂时无法生成，请缩小摘录范围。',true);}
 }

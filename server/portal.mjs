@@ -88,6 +88,9 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     files['/document-source.mjs']='document-source.mjs';files['/pdf-ingestion.mjs']='pdf-ingestion.mjs';files['/pdf-onboarding.mjs']='pdf-onboarding.mjs';files['/pdf-onboarding-state.mjs']='pdf-onboarding-state.mjs';files['/book-transfer.mjs']='book-transfer.mjs';
     files['/source-review']='source-review.html';for(const file of ['source-review.mjs','source-review.css','source-revisions.mjs'])files['/'+file]=file;
     files['/original-download.mjs']='original-download.mjs';files['/reading-book.mjs']='reading-book.mjs';
+    // GET-186/190 reader modules: shared entry policy and the conservative
+    // source-emphasis presentation module used by reader and share rendering.
+    files['/reader-entry.mjs']='reader-entry.mjs';files['/source-emphasis.mjs']='source-emphasis.mjs';
     files['/reader-conversation.mjs']='reader-conversation.mjs';
     for(const file of ['reader-companion.mjs','reader-companion-state.mjs','reader-companion.css'])files['/'+file]=file;
     files['/reading-arrival.css']='reading-arrival.css';files['/reading-arrival.mjs']='reading-arrival.mjs';files['/arrival-catalog.mjs']='arrival-catalog.mjs';files['/arrival-excerpt.mjs']='arrival-excerpt.mjs';files['/save-receipts.mjs']='save-receipts.mjs';
