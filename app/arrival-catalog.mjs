@@ -19,11 +19,11 @@ export const arrivalCatalog=Object.freeze({
     "author": "Olive Schreiner",
     "chapter": "Chapter 1.I. Shadows From Child-Life.",
     "sourceUrl": "https://www.gutenberg.org/ebooks/1441",
-    "original": "The Watch.",
+    "original": "The full African moon poured down its light from the blue sky into the wide, lonely plain.",
     "translation": null,
     "sourceLanguage": "en",
     "context": "书中一段",
-    "passageId": "c24e2b5f86aa4634-p00001",
+    "passageId": "c24e2b5f86aa4634-p00002",
     "contentVersion": "c24e2b5f86aa46340fd891e7cc26217c692f418c6097044218267e235fde3905"
   },
   "gutenberg-arabian-nights": {
@@ -97,11 +97,11 @@ export const arrivalCatalog=Object.freeze({
     "author": "Machado de Assis; Medeiros e Albuquerque; Henrique Coelho Netto; Carmen Dolores · 英译 Isaac Goldberg",
     "chapter": "THE ATTENDANT'S CONFESSION",
     "sourceUrl": "https://www.gutenberg.org/ebooks/21040",
-    "original": "By Joaquim Maria Machado de Assis",
+    "original": "So it really seems to you that what happened to me in 1860 is worth while writing down?",
     "translation": null,
     "sourceLanguage": "en",
     "context": "书中一段",
-    "passageId": "ca69c2d6fbd88c50-p00054",
+    "passageId": "ca69c2d6fbd88c50-p00056",
     "contentVersion": "ca69c2d6fbd88c5051bd9b804a340c69089ff04eee22ed69c4b666d4d18a2014"
   },
   "gutenberg-candide": {
@@ -110,11 +110,11 @@ export const arrivalCatalog=Object.freeze({
     "author": "Voltaire · 英译 The Modern Library · 1918 edition; translator unnamed",
     "chapter": "Chapter I",
     "sourceUrl": "https://www.gutenberg.org/ebooks/19942",
-    "original": "HOW CANDIDE WAS BROUGHT UP IN A MAGNIFICENT CASTLE, AND HOW HE WAS EXPELLED THENCE.",
+    "original": "In a castle of Westphalia, belonging to the Baron of Thunder-ten-Tronckh, lived a youth, whom nature had endowed with the most gentle manners.",
     "translation": null,
     "sourceLanguage": "en",
     "context": "书中一段",
-    "passageId": "35a0415f40c38c2c-p00001",
+    "passageId": "35a0415f40c38c2c-p00002",
     "contentVersion": "35a0415f40c38c2ca2358915ab8345df0f8b153402142e5e21e6103ef811807b"
   },
   "gutenberg-dhammapada": {
@@ -214,11 +214,11 @@ export const arrivalCatalog=Object.freeze({
     "author": "Rabindranath Tagore · 英译 Surendranath Tagore",
     "chapter": "Chapter One",
     "sourceUrl": "https://www.gutenberg.org/ebooks/7166",
-    "original": "Bimala's Story",
+    "original": "MOTHER, today there comes back to mind the vermilion mark [1] at the parting of your hair, the __sari__ [2] which you used to wear, with its wide red border,…",
     "translation": null,
     "sourceLanguage": "en",
     "context": "书中一段",
-    "passageId": "d2d1ae6bce21a95d-p00001",
+    "passageId": "d2d1ae6bce21a95d-p00003",
     "contentVersion": "d2d1ae6bce21a95d86121d60b7e32584da79efb309d2aed8cdd00971950ff63b"
   },
   "gutenberg-notes-underground": {
@@ -279,11 +279,11 @@ export const arrivalCatalog=Object.freeze({
     "author": "Omar Khayyam · 英译 Edward FitzGerald · 英语译写",
     "chapter": "First Edition",
     "sourceUrl": "https://www.gutenberg.org/ebooks/246",
-    "original": "I.",
+    "original": "Awake! for Morning in the Bowl of Night\nHas flung the Stone that puts the Stars to Flight:\nAnd Lo!",
     "translation": null,
     "sourceLanguage": "en",
     "context": "书中一段",
-    "passageId": "518a6c37316408ff-p00001",
+    "passageId": "518a6c37316408ff-p00002",
     "contentVersion": "518a6c37316408ff7040d821ae004a9bde9a8a093cd66b280f6a016fdc51b1e4"
   },
   "gutenberg-seacole": {
@@ -305,11 +305,11 @@ export const arrivalCatalog=Object.freeze({
     "author": "Laozi · 英译 James Legge",
     "chapter": "Chapter 1",
     "sourceUrl": "https://www.gutenberg.org/ebooks/216",
-    "original": "Ch. 1. 1.",
+    "original": "2. (Conceived of as) having no name, it is the Originator of heaven and earth; (conceived of as) having a name, it is the Mother of all things.",
     "translation": null,
     "sourceLanguage": "en",
     "context": "书中一段",
-    "passageId": "2645bca82104b6fa-p00001",
+    "passageId": "2645bca82104b6fa-p00002",
     "contentVersion": "2645bca82104b6fa609fad484d1e7c085f0dc35fa4b5beed46e6a90a2122da84"
   },
   "gutenberg-time-machine": {
@@ -344,11 +344,11 @@ export const arrivalCatalog=Object.freeze({
     "author": "Johann Wolfgang von Goethe · 英译 R. Dillon Boylan",
     "chapter": "BOOK I",
     "sourceUrl": "https://www.gutenberg.org/ebooks/2527",
-    "original": "MAY 4.",
+    "original": "How happy I am that I am gone!",
     "translation": null,
     "sourceLanguage": "en",
     "context": "书中一段",
-    "passageId": "e74a117f3ba44a2e-p00001",
+    "passageId": "e74a117f3ba44a2e-p00002",
     "contentVersion": "e74a117f3ba44a2e07a76329621692258c3be3fa43750f725fc1bb20f321cc3f"
   }
 });

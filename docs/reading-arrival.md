@@ -9,3 +9,5 @@ Updates are bound to the requested book and current arrival ticket; stale retrie
 Verification includes source-bound excerpt tests, unknown-book and stale-ticket checks, real browser delayed/error/fast loads, motion versus reduced-motion, mobile/night layouts, and current-head CI. Run `node --test tests/reading-arrival.test.mjs` for the focused contract; the task delivery record records what actually ran.
 
 Regenerate public source-bound excerpts with `node tools/build-arrival-catalog.mjs`, then verify `--check` and `node --test tests/arrival-catalog.test.mjs`. The check compares current source versions and passage IDs with the actual catalog service.
+
+The generator uses audited paragraph IDs for seven editions whose reading start contains a heading, byline, date or numbered prefix. These select actual reading text without changing the book's reading start; an edition change that removes the audited paragraph fails generation. Regression assertions cover those openings as well as source identity.

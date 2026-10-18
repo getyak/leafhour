@@ -28,3 +28,17 @@ test('checked-in public excerpts are deterministic and current, with no runtime 
  const generated=await buildArrivalCatalog(process.cwd());assert.deepEqual(generated,arrivalCatalog);
  assert.equal(await readFile('app/arrival-catalog.mjs','utf8'),renderArrivalCatalog(generated));
 });
+
+test('public arrival excerpts select reading text beyond headings, dates and bylines',async()=>{
+ const catalog=await buildArrivalCatalog(process.cwd());
+ const openings={
+  'gutenberg-rubaiyat':'Awake! for Morning',
+  'gutenberg-brazilian-tales':'So it really seems to you',
+  'gutenberg-home-and-world':'MOTHER, today there comes back',
+  'gutenberg-young-werther':'How happy I am that I am gone!',
+  'gutenberg-african-farm':'The full African moon',
+  'gutenberg-candide':'In a castle of Westphalia',
+  'gutenberg-tao-te-ching':'2. (Conceived of as) having no name',
+ };
+ for(const [id,opening]of Object.entries(openings))assert.ok(catalog[id].original.startsWith(opening),id+': '+catalog[id].original);
+});
