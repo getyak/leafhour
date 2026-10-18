@@ -1,10 +1,8 @@
 import {createIntroductionController} from './book-introduction-controller.mjs';
 import {introductionFor} from './book-introduction.mjs';
-import {mountGiftComposer} from './gift-compose.mjs';
-import {paintBookCover} from './book-binding.mjs';
 import {readerLoginUrl} from './reader-return.mjs';
 
-export function mountReaderBookActions({document,getBook,api,session,bookId}){
+export function mountReaderBookActions({document,getBook,api,session,bookId,loadGiftComposer=()=>Promise.all([import('./gift-compose.mjs'),import('./book-binding.mjs')]).then(modules=>Object.assign({},...modules))}){
   const $=id=>document.getElementById(id),popover=$('book-info'),trigger=$('open-book-info'),generate=$('book-intro-generate'),login=$('book-intro-login'),share=$('book-info-share'),status=$('book-intro-status'),note=$('book-intro-provenance'),scope=$('book-intro-scope');
   const make=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
   const signedIn=!!(bookId&&session?.user),loginUrl=()=>readerLoginUrl({bookId});
@@ -28,15 +26,23 @@ export function mountReaderBookActions({document,getBook,api,session,bookId}){
   const dialog=make('dialog','book-action-dialog reader-book-gift');dialog.id='reader-book-gift';dialog.setAttribute('aria-labelledby','reader-gift-title');
   const head=make('header','book-action-heading'),heading=make('h2'),close=make('button','book-action-close','×');heading.id='reader-gift-title';close.type='button';close.setAttribute('aria-label','关闭赠书');head.append(heading,close);
   const body=make('div','book-action-body'),messageNode=make('p','book-action-status');messageNode.setAttribute('role','status');dialog.append(head,body,messageNode);document.body.append(dialog);
-  let sequence=0,activeBookId=null,activeVersion=null;
+  let sequence=0,activeBookId=null,activeVersion=null,composer=null,composerLoad=null,openingTicket=null;
   const message=(text,error=false)=>{messageNode.textContent=text;messageNode.setAttribute('role',error?'alert':'status');};
   const current=ticket=>ticket===sequence&&dialog.open&&getBook()?.bookId===activeBookId&&getBook()?.contentVersion===activeVersion;
-  const composer=mountGiftComposer({api,dialog,body,getSession:()=>session,getOwner:()=>session?.user?.id||'guest',message,current,
+  const show=(book,title)=>{sequence++;activeBookId=book.bookId;activeVersion=book.contentVersion;heading.textContent=title;body.replaceChildren();message('');intro.close();if(popover.matches(':popover-open'))popover.hidePopover();if(!dialog.open)dialog.showModal();return sequence;};
+  const loadComposer=()=>composerLoad??=(Promise.resolve(loadGiftComposer()).then(({mountGiftComposer,paintBookCover})=>composer=mountGiftComposer({api,dialog,body,getSession:()=>session,getOwner:()=>session?.user?.id||'guest',message,current,
     cover:book=>{const node=make('div','action-book-cover');node.setAttribute('aria-hidden','true');paintBookCover(node,book);return node;},
-    show:(book,title)=>{sequence++;activeBookId=book.bookId;activeVersion=book.contentVersion;heading.textContent=title;body.replaceChildren();message('');intro.close();if(popover.matches(':popover-open'))popover.hidePopover();if(!dialog.open)dialog.showModal();return sequence;}});
+    show})).catch(error=>{composerLoad=null;throw error;}));
   close.addEventListener('click',()=>dialog.close());
   dialog.addEventListener('close',()=>{sequence++;body.replaceChildren();message('');dialog.classList.remove('gift-compose-dialog');trigger.focus({preventScroll:true});});
-  share.addEventListener('click',()=>{if(!bookId)return;if(!signedIn){document.defaultView.location.assign(loginUrl());return;}const book=getBook();if(book)void composer.open(book).catch(error=>message(error.message,true));});
+  share.addEventListener('click',async()=>{
+    if(!bookId)return;if(!signedIn){document.defaultView.location.assign(loginUrl());return;}
+    const book=getBook();if(!book||openingTicket!==null&&current(openingTicket))return;
+    const ticket=show(book,'写一封赠书信');openingTicket=ticket;message('正在打开赠书信…');
+    try{const ready=await loadComposer();if(current(ticket))await ready.open(book);}
+    catch{if(current(ticket))message('赠书信暂时无法打开，请关闭后重试。',true);}
+    finally{if(openingTicket===ticket)openingTicket=null;}
+  });
   document.addEventListener('reader:ready',()=>{if(dialog.open&&!current(sequence))dialog.close();});
-  return {render,clear:()=>{intro.close();if(dialog.open)dialog.close();composer.clear();}};
+  return {render,clear:()=>{sequence++;intro.close();if(dialog.open)dialog.close();composer?.clear();}};
 }

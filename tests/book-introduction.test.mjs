@@ -5,7 +5,9 @@ import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
+import {zipSync,strToU8} from 'fflate';
 import {createLibraryService} from '../server/library-service.mjs';
+import {makeBook} from '../server/document-import.mjs';
 import {readingBook,readingRecords} from './reading-fixtures.mjs';
 
 const shared=await import('../app/book-introduction.mjs').catch(()=>({}));
@@ -46,6 +48,8 @@ test('stored provenance must refer to the actual bounded opening, not later or e
   frontmatter.paragraphs=[{...frontmatter.paragraphs[0],id:'front-note'}];
   book.chapters.unshift({id:'front',kind:'frontmatter',title:{zh:'前言'}});book.sections.unshift(frontmatter);
   assert.throws(()=>shared.validateBookIntroduction({...draft(book),sourcePassageIds:['front-note']},book),e=>e.status===400);
+  book.chapters.push({id:'appendix',kind:'appendix',title:{zh:'附录'}});book.sections.unshift({...frontmatter,chapterId:'appendix',paragraphs:[{...frontmatter.paragraphs[0],id:'appendix-note'}]});
+  assert.throws(()=>shared.validateBookIntroduction({...draft(book),sourcePassageIds:['appendix-note']},book),e=>e.status===400);
 });
 
 test('trusted saved introduction remains readable while opening chapters are unloaded',()=>{
@@ -61,6 +65,35 @@ test('only bounded original opening and chapter metadata reach the model',()=>{
   const context=shared.introductionContext(book),encoded=JSON.stringify(context);
   assert.ok(context.passages.length<=6);assert.ok(context.passages.reduce((n,p)=>n+[...p.original].length,0)<=6000);assert.equal(context.chapters.length,24);
   for(const secret of ['PRIVATE NOTE','PRIVATE HISTORY','PRIVATE TRANSLATION'])assert.ok(!encoded.includes(secret));
+});
+
+test('PDF outlines and recognized source headings retain bounded introduction context',()=>{
+  const pages=[{page:1,text:'Opening source. '.repeat(180)},{page:2,text:'Second source. '.repeat(180)}];
+  for(const extracted of [
+    {format:'pdf',review:'extracted_unreviewed',pages,outline:[{page:1,title:'Opening'},{page:2,title:'Continuation'}]},
+    {format:'pdf',review:'extracted_unreviewed',pages:pages.map((page,i)=>({...page,blocks:[{text:'Chapter '+(i+1),type:'doc_title'},{text:page.text,type:'text'}]}))}
+  ]){
+    const book=makeBook({bookId:'source-heading-book',filename:'source.pdf',sourceHash:'source-version',extracted});
+    assert.ok(book.chapters.every(c=>c.kind==='source-section'));
+    const context=shared.introductionContext(book);
+    assert.ok(context.passages.length>0,book.source.structure+' must retain its actual original');
+    assert.ok(context.passages.length<=6);assert.ok(context.passages.reduce((n,p)=>n+[...p.original].length,0)<=6000);
+  }
+});
+
+test('a real EPUB import can generate and restore its introduction from source sections',async t=>{
+  const f=await fixture(t),files={
+    mimetype:'application/epub+zip',
+    'META-INF/container.xml':'<container xmlns="urn:oasis:names:tc:opendocument:xmlns:container" version="1.0"><rootfiles><rootfile full-path="OPS/package.opf" media-type="application/oebps-package+xml"/></rootfiles></container>',
+    'OPS/package.opf':'<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="uid"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="uid">urn:introduction-test</dc:identifier><dc:title>Opening source</dc:title></metadata><manifest><item id="one" href="one.xhtml" media-type="application/xhtml+xml"/></manifest><spine><itemref idref="one"/></spine></package>',
+    'OPS/one.xhtml':'<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Opening</title></head><body>'+Array.from({length:8},(_,i)=>'<p>Original opening paragraph '+i+'.</p>').join('')+'</body></html>'
+  };
+  const bytes=Buffer.from(zipSync(Object.fromEntries(Object.entries(files).map(([name,value])=>[name,strToU8(value)])),{level:0})),book=await f.library.importDocument(owner,{filename:'opening.epub',bytes});
+  assert.equal(book.source.structure,'epub_spine');assert.ok(book.chapters.every(c=>c.kind==='source-section'));
+  const generated=await f.service.generate(owner,book.bookId,{contentVersion:book.contentVersion});
+  assert.equal(generated.source,'ai');assert.deepEqual(generated.introduction.sourcePassageIds,book.sections.flatMap(s=>s.paragraphs).slice(0,6).map(p=>p.id));
+  const clean=await createLibraryService({dataDir:path.join(f.dir,'epub-restored'),catalogDir:null});await clean.restoreLibrary(owner,await f.library.exportLibrary(owner));
+  assert.deepEqual((await clean.getBook(owner,book.bookId)).introduction,generated.introduction);
 });
 
 test('generation persists an account draft, is idempotent, and does not mutate source/records',async t=>{

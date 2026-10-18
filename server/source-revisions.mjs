@@ -41,7 +41,7 @@ export function buildSourceRevision({book,input,userId,pdfPages=null,extracted=n
  for(const p of ps){p.translations={};p.annotationIds=[];p.termIds=[];}revised.annotations=[];revised.glossary=[];
  revised.bookId=revisionId;revised.contentVersion=identity;revised.visibility='private';revised.title=structuredClone(book.title);revised.author=book.author;revised.createdAt=now;
  revised.source={...revised.source,filename:book.source.filename,sha256:book.source.sha256,processor:'source-review-v1',review:ps.every(p=>p.source?.review==='visually_checked')?'visually_checked':'extracted_unreviewed',revision:{kind:'leafhour-source-revision',schemaVersion:1,parentBookId:book.bookId,parentContentVersion:book.contentVersion,operation:input.operation,changes,chapterTitles:titles,createdAt:now}};
- delete revised.legacyReadingResources;delete revised.readingStart;for(const chapter of revised.chapters)delete chapter.startPassageId;
+ delete revised.introduction;delete revised.legacyReadingResources;delete revised.readingStart;for(const chapter of revised.chapters)delete chapter.startPassageId;
  // Only unique exact text on BOTH sides is evidence for automatic migration.
  const counts=rows=>{const map=new Map();for(const p of rows){const entries=map.get(p.original)||[];entries.push(p);map.set(p.original,entries);}return map;},oldByText=counts(original),newByText=counts(ps),anchorMap=new Map();
  for(const p of original)if(oldByText.get(p.original).length===1&&newByText.get(p.original)?.length===1)anchorMap.set(p.id,newByText.get(p.original)[0].id);

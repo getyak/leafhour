@@ -148,6 +148,7 @@
         <section class="settings-habit"><div class="setting-row"><label for="immersive-reading">沉浸阅读</label><input id="immersive-reading" type="checkbox" role="switch" checked></div><p class="setting-hint">收起顶栏，工具随时可唤出。每次打开书页默认开启。</p></section>
         <section class="settings-habit"><div class="setting-row"><label for="continuous-reading">连续阅读</label><input id="continuous-reading" type="checkbox" role="switch" checked aria-describedby="continuous-reading-hint"></div><p id="continuous-reading-hint" class="setting-hint">下一章自然接上，读完仍由你确认。</p></section>
         <section class="settings-habit"><div class="setting-row"><label for="chapter-invitations">每章一个小问题</label><input id="chapter-invitations" type="checkbox" role="switch"></div><p class="setting-hint">普通阅读时提供思考入口；沉浸阅读时不主动弹出。</p></section>
+        <section class="settings-habit" id="reading-defaults-setting" hidden><h3>新书默认</h3><p class="setting-hint">把当前这本书的阅读方式与排版，作为以后打开新书时的默认。当前书的章节位置与记录保持不变；每本书自己的选择仍会保留。</p><button id="save-reading-defaults" class="settings-action" type="button">设为新书默认</button><p id="reading-defaults-status" class="setting-hint" role="status"></p></section>
       </div>
       <div id="settings-data" class="settings-panel" role="tabpanel" aria-labelledby="settings-tab-data" hidden>
         <section class="settings-section"><h3>我的记录</h3><button id="show-all-records" class="settings-action">查看高亮、想法与问题 <span>按原文归档</span></button></section>

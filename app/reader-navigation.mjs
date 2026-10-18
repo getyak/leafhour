@@ -60,6 +60,7 @@ export function mountBookIntroduction({document,getBook,getChapter,onOpen=()=>{}
   popover.addEventListener('beforetoggle',event=>{trigger.setAttribute('aria-expanded',String(event.newState==='open'));if(event.newState==='open'){render();position();onOpen();}});
   popover.addEventListener('toggle',()=>trigger.setAttribute('aria-expanded',String(isOpen())));
   $('close-book-info').addEventListener('click',()=>{if(isOpen())popover.hidePopover();trigger.focus({preventScroll:true});});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&isOpen()){event.preventDefault();popover.hidePopover();trigger.focus({preventScroll:true});}});
   for(const event of ['reader:ready','reader:chapter'])document.addEventListener(event,render);
   document.addEventListener('reader:jump',()=>{if(isOpen())popover.hidePopover();});
   win.addEventListener('resize',()=>{if(isOpen())position();});

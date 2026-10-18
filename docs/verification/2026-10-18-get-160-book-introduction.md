@@ -24,3 +24,19 @@ PR 创建期间主线合入 GET-164（`dd03e456b490fd000cd591afd29f91b7ca592f53`
 独立 Codex review、最终提交/PR 当前 head CI、平台部署、真实已配置模型生成，以及默认 `test@cubxxw.com` 的生产合成书籍/分享撤回验收，仍须分别记录。截图、构建或本机适配器不能替代这些结果。只有全部通过才合并、验收生产并将 GET-160 标为完成。
 
 本机永久证据位于当前任务的 GET-160 issue 记录目录；不将凭据、真实书籍、个人笔记或生产认证会话写入 Git。本记录将在交付时补充实际 PR/部署提交与验收结果。
+
+## 2026-10-18 maintainer review follow-up
+
+The maintainer subsequently requested a deep review, fixes and merge of the repository's open PRs. The earlier pending-review paragraph is a historical checkpoint. This review preserves the separate live-model and default-account acceptance gates; merging code does not mark GET-160 complete.
+
+Review reproduced and fixed these defects before merge:
+
+- EPUB spine sections and PDF outlines use `source-section`; the opening sampler now accepts that source type while retaining front-matter and appendix exclusions. Real EPUB import, generation with an isolated adapter, and clean-instance restore cover the regression.
+- Source correction inherited a version-bound introduction from the original book and failed validation. New revisions discard that overlay while preserving the old book, introduction and notes.
+- Restore validated introductions against incoming metadata rather than the final retained book. Both restore modes now project and validate the final state before writing, and store that same projection. Regressions cover public books, existing private books, older backups without introductions, and preservation of all prior records on rejection.
+- Integration exceeded the existing 320 KiB main-script budget. Gift composition and cover code now load only after explicit sharing; the public arrival registry retains its own allowlisted module URL. The main script is 316,395 bytes; with the 16,343-byte initial registry, initial JavaScript totals 332,738 bytes. CSS is 159,863 bytes. The budget was not increased.
+- Hiding the successful generation button could leave focus on the document body. Escape now returns to the book title, and the reader respects that handled event so it does not also close the immersion toolbar.
+
+Each defect was reproduced before its fix. Independent re-review covered restoration, event ordering, lazy loading, close/version fences, the release allowlist and the explicit sealing boundary. Browser checks use disposable local data and a deterministic model adapter; they do not prove live provider availability or production-account sharing.
+
+The final integrated local `npm run verify:deploy` passed: 1,313 tests passed, zero failed and one Linux-only test was skipped on macOS. The isolated runtime initialized without model requests; the hosted build, 212 public assets, nine registered media assets, 539-file release allowlist and source-provenance checks passed. Current-head Linux CI and deployment remain separately observable gates.

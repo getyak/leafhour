@@ -8,7 +8,7 @@ import {mkdir,readFile,writeFile,rename,stat,open} from 'node:fs/promises';
 import path from 'node:path';
 import {randomBytes,randomUUID} from 'node:crypto';
 import {extractDocument,makeBook,digest,fail,MAX_FILE_BYTES} from './document-import.mjs';
-import {normalizeAppearance} from '../app/reading-preferences.mjs';
+import {normalizeAppearance,normalizeGlobalPreferences,validateGlobalPreferences,validateGlobalPreferencesMetadata,globalPreferencesMetadata,MAX_PREFERENCE_TIMESTAMP} from '../app/reading-preferences.mjs';
 import {applyCatalogChapters,alignReadingPosition} from './catalog-chapters.mjs';
 import {resumeSummary} from '../app/reading-progress.mjs';
 import {validateLibraryBackup} from '../app/library-backup.mjs';
@@ -104,18 +104,57 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(user){const introduction=await introductions.get(user,book);if(introduction)book.introduction=introduction;}
     return book;
   }
-  async function previewRestoreBooks(user,backup){
+  async function previewRestoreBooks(user,backup,{preserveExisting=true}={}){
     requireUser(user);const books=[];
     for(const {book}of backup.books){
-      const privateBase=publicBooks.has(book.bookId)?null:await read(bookFile(user,book.bookId),null),result=structuredClone(publicBooks.get(book.bookId)||privateBase||{...book,visibility:'private'}),basePassages=new Map(privateBase?allPassages(privateBase).map(p=>[p.id,p]):[]),overlay=structuredClone(await read(path.join(userDir(user),'translations',digest(book.bookId)+'.json'),{}));
-      for(const p of allPassages(book))if(Object.keys(p.translations).length){const value={contentVersion:book.contentVersion,translations:p.translations},current=Object.hasOwn(overlay,p.id)?overlay[p.id]:null;Object.defineProperty(overlay,p.id,{value:restoreTranslationValue(value,current,basePassages.get(p.id)?.translations,true),enumerable:true,writable:true,configurable:true});}
+      const privateBase=publicBooks.has(book.bookId)?null:await read(bookFile(user,book.bookId),null),result=structuredClone(publicBooks.get(book.bookId)||preserveExisting&&privateBase||{...book,visibility:'private'}),basePassages=new Map(preserveExisting&&privateBase?allPassages(privateBase).map(p=>[p.id,p]):[]),overlay=structuredClone(await read(path.join(userDir(user),'translations',digest(book.bookId)+'.json'),{}));
+      for(const p of allPassages(book))if(Object.keys(p.translations).length){const value={contentVersion:book.contentVersion,translations:p.translations},current=Object.hasOwn(overlay,p.id)?overlay[p.id]:null;Object.defineProperty(overlay,p.id,{value:restoreTranslationValue(value,current,basePassages.get(p.id)?.translations,preserveExisting),enumerable:true,writable:true,configurable:true});}
       delete result._giftReceive;if(result.visibility==='private')result.sourceLanguage=inferSourceLanguage(allPassages(result).slice(0,10).map(p=>p.original).join('\n'));
+      let introduction;
+      try{introduction=!preserveExisting&&book.introduction?book.introduction:await introductions.get(user,result)||book.introduction;}catch(error){if([400,409].includes(error.status))throw fail('备份简介与目标保留的原文结构冲突，未开始恢复',409);throw error;}
+      delete result.introduction;if(introduction)result.introduction=introduction;
       for(const p of result.sections.flatMap(s=>s.paragraphs))if(overlay[p.id]?.contentVersion===result.contentVersion)p.translations=overlay[p.id].translations;
       books.push(result);
     }
     const byId=new Map(books.map(b=>[b.bookId,b])),projected={...backup,books:backup.books.map(entry=>{const book=byId.get(entry.book.bookId);return {...entry,book,records:{...entry.records,position:alignReadingPosition(book,entry.records.position)}};})};
     try{validateLibraryBackup(projected);}catch(error){if([400,409].includes(error.status))throw fail('备份记录或锚点与目标保留的书籍结构冲突，未开始恢复',409);throw error;}
     return books;
+  }
+  // Account-wide reading defaults live beside the account records, never in the
+  // avatar/auth identity. GET is read-only and creates no state; saves require
+  // the authenticated owner and CAS the persisted revision with strict v1 keys.
+  const readingPreferencesFile=user=>path.join(userDir(user),'reading-preferences.json');
+  async function getReadingPreferences(user){
+    requireUser(user);const stored=await read(readingPreferencesFile(user),{});
+    if(!stored?.preferences)return {revision:0,updatedAt:null,preferences:null};
+    return {revision:Number.isSafeInteger(stored.revision)?stored.revision:0,updatedAt:typeof stored.updatedAt==='string'&&stored.updatedAt.length<=MAX_PREFERENCE_TIMESTAMP?stored.updatedAt:null,preferences:normalizeGlobalPreferences(stored.preferences)};
+  }
+  async function saveReadingPreferences(user,input){
+    requireUser(user);if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(key=>!['baseRevision','preferences'].includes(key)))throw fail('阅读习惯请求包含未知字段，尚未保存');
+    if(!Number.isSafeInteger(input.baseRevision)||input.baseRevision<0)throw fail('请先读取当前阅读习惯，再保存修改');
+    let preferences;try{preferences=validateGlobalPreferences(input?.preferences);}catch{throw fail('阅读习惯格式不正确，尚未保存');}
+    return mutate(readingPreferencesFile(user),{},data=>{
+      const revision=data.revision||0;
+      if(revision!==input.baseRevision)throw fail('阅读习惯已在另一处更新，请刷新后重新保存',409);
+      if(revision>=Number.MAX_SAFE_INTEGER)throw fail('阅读习惯版本已超过可保存范围',409);
+      data.kind='marginalia-reading-preferences';data.schemaVersion=1;data.revision=revision+1;data.updatedAt=new Date().toISOString();data.preferences=preferences;
+      return {revision:data.revision,updatedAt:data.updatedAt,preferences:structuredClone(preferences)};
+    });
+  }
+  async function restoreReadingPreferences(user,metadata,{preserveExisting=false}={}){
+    requireUser(user);let incoming;try{incoming=validateGlobalPreferencesMetadata(metadata);}catch{throw fail('备份中的阅读习惯信息不完整，未开始恢复');}
+    return mutate(readingPreferencesFile(user),{},data=>{
+      // A configured target keeps its own preferences: an unchanged no-op.
+      if(preserveExisting&&data.preferences)return {revision:data.revision||0,updatedAt:data.updatedAt||null,preferences:structuredClone(data.preferences)};
+      // Replacing content must advance past every revision whose CAS write was
+      // valid before this restore, while never landing below the archive's own
+      // revision and never leaving the safe-integer range.
+      const current=data.revision||0;
+      if(current>=Number.MAX_SAFE_INTEGER)throw fail('阅读习惯版本已超过可保存范围',409);
+      const revision=Math.max(current+1,incoming.revision);
+      data.kind='marginalia-reading-preferences';data.schemaVersion=1;data.revision=revision;data.updatedAt=incoming.updatedAt;data.preferences=structuredClone(incoming.preferences);
+      return {revision,updatedAt:incoming.updatedAt,preferences:structuredClone(incoming.preferences)};
+    });
   }
   const shelfFile=user=>path.join(userDir(user),'shelf.json');
   async function allShelfRows(user){const index=user?await read(path.join(userDir(user),'index.json'),{books:[]}):{books:[]};return [...publicBooks.values()].map(brief).concat(index.books);}
@@ -329,10 +368,11 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     const available=new Set((await allShelfRows(user)).map(row=>row.bookId));
     return {shelf:{...(shelf.order.length?{order:shelf.order.filter(key=>available.has(key))}:{}),...(Object.hasOwn(shelf.archived,id)?{archivedAt:shelf.archived[id]}:{})}};
   }
-  async function exportLibrary(user){requireUser(user);const books=[];for(const row of await allShelfRows(user)){const book=await getBook(user,row.bookId);books.push({book,records:await records(user,row.bookId),...await shelfBackup(user,row.bookId)});}return {kind:'marginalia-library',schemaVersion:1,exportedAt:new Date().toISOString(),books,includesOriginalFiles:false};}
+  async function exportLibrary(user){requireUser(user);const books=[];for(const row of await allShelfRows(user)){const book=await getBook(user,row.bookId);books.push({book,records:await records(user,row.bookId),...await shelfBackup(user,row.bookId)});}const prefs=await getReadingPreferences(user);return {kind:'marginalia-library',schemaVersion:1,exportedAt:new Date().toISOString(),books,includesOriginalFiles:false,...(prefs.preferences?{readingPreferences:globalPreferencesMetadata(prefs)}:{})};}
   async function exportManifest(user){
     requireUser(user);const rows=await allShelfRows(user);if(rows.length>100)throw fail('单份备份最多容纳100本书，请在本机按书整理后导出。',413);
-    return {kind:'marginalia-export-manifest',schemaVersion:1,exportedAt:new Date().toISOString(),books:rows.map(({bookId,contentVersion})=>({bookId,contentVersion}))};
+    const prefs=await getReadingPreferences(user);
+    return {kind:'marginalia-export-manifest',schemaVersion:1,exportedAt:new Date().toISOString(),books:rows.map(({bookId,contentVersion})=>({bookId,contentVersion})),...(prefs.preferences?{readingPreferences:globalPreferencesMetadata(prefs)}:{})};
   }
   async function exportBookEntry(user,id){
     requireUser(user);const book=await getBook(user,id);if(book.visibility==='public')delete book.createdAt;
@@ -377,10 +417,11 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   }
   async function restoreLibrary(user,backup,{preserveExisting=false}={}){
     await validateRestore(user,backup);
+    const finalBooks=new Map((await previewRestoreBooks(user,backup,{preserveExisting})).map(book=>[book.bookId,book]));
     for(const {book,records:incoming}of backup.books){
       const privateBase=preserveExisting&&!publicBooks.has(book.bookId)?await read(bookFile(user,book.bookId),null):null,basePassages=new Map(privateBase?allPassages(privateBase).map(p=>[p.id,p]):[]);
       if(!publicBooks.has(book.bookId)){const privateBook={...book,visibility:'private'};delete privateBook.introduction;await mutate(bookFile(user,book.bookId),{},data=>{if(!preserveExisting||!data.bookId)Object.assign(data,privateBook);});await mutate(path.join(userDir(user),'index.json'),{books:[]},data=>{if(!preserveExisting)data.books=data.books.filter(b=>b.bookId!==book.bookId);if(!data.books.some(b=>b.bookId===book.bookId))data.books.push(brief(privateBook));});}
-      await introductions.restore(user,book,{preserveExisting});
+      await introductions.restore(user,finalBooks.get(book.bookId),{preserveExisting});
       const overlay=Object.create(null);for(const p of allPassages(book))if(Object.keys(p.translations).length)overlay[p.id]={contentVersion:book.contentVersion,translations:p.translations};
       await mutate(path.join(userDir(user),'translations',digest(book.bookId)+'.json'),{},data=>{for(const [id,value]of Object.entries(overlay)){const current=Object.hasOwn(data,id)?data[id]:null,next=restoreTranslationValue(value,current,basePassages.get(id)?.translations,preserveExisting);Object.defineProperty(data,id,{value:next,enumerable:true,writable:true,configurable:true});}});
       await mutate(recordFile(user,book.bookId),emptyRecords(book),raw=>{const data=mergedPersonalRecords(book,raw,incoming,{preserveExisting});guardRecordSize(data);Object.assign(raw,data);});
@@ -391,6 +432,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       if(order.length>shelfLimit||Object.keys(archived).length>shelfLimit)throw fail('书架正在另一处更新，请刷新后重新恢复',409);
       if(JSON.stringify(order)!==JSON.stringify(shelf.order)||JSON.stringify(archived)!==JSON.stringify(shelf.archived)){checkShelfRevision(shelf,shelf.revision);shelf.order=order;shelf.archived=archived;shelf.revision++;}
     });
+    if(backup.readingPreferences!==undefined)await restoreReadingPreferences(user,backup.readingPreferences,{preserveExisting});
     return {restored:backup.books.length};
   }
   async function receiveGift(user,backup){
@@ -398,6 +440,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(backup.books.length!==1||Buffer.byteLength(JSON.stringify(backup))>MAX_FILE_BYTES)throw fail('请选择一份 20 MB 以内的单书阅读包',413);
     const entry=backup.books[0],incoming=entry.book,personal=entry.records;
     if(entry.shelf!==undefined||entry.localReadingDrafts!==undefined||['comments','questions','readingSessions','readingMilestones','highlights'].some(key=>personal[key]?.length)||personal.position||personal.readingGoal)throw fail('赠书阅读包不能包含个人记录');
+    if(backup.readingPreferences!==undefined)throw fail('赠书阅读包不能包含账户阅读习惯');
     const unreadable=()=>fail('这份阅读包的原文与译文合计超过云端阅读容量，请下载后在本机接收',413);
     if(dataStore&&Buffer.byteLength(JSON.stringify(incoming))>3500000)throw unreadable();
     const original=structuredClone(incoming),overlay={},fingerprint=digest(JSON.stringify(incoming));original.visibility='private';delete original._giftReceive;
@@ -449,5 +492,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(claim.pending)await mutate(bookFile(user,incoming.bookId),{},current=>{if(current._giftReceive?.fingerprint===fingerprint)delete current._giftReceive;});
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,getReadingPreferences,saveReadingPreferences,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }

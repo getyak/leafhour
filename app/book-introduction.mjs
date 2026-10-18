@@ -17,7 +17,7 @@ export function introductionFor(book){
 export function introductionContext(book){
   const clip=(value,max)=>typeof value==='string'?[...value].slice(0,max).join(''):'';
   const chapters=(book.chapters||[]).slice(0,24).map(c=>({id:c.id,title:{zh:clip(c.title?.zh,200),en:clip(c.title?.en,200)}}));
-  const excluded=new Set((book.chapters||[]).filter(c=>c.kind&&c.kind!=='body').map(c=>c.id));
+  const excluded=new Set((book.chapters||[]).filter(c=>c.kind&&!['body','source-section'].includes(c.kind)).map(c=>c.id));
   const passages=[];let remaining=6000;
   for(const section of book.sections||[]){
     if(excluded.has(section.chapterId))continue;
