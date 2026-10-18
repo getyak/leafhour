@@ -368,15 +368,43 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     }finally{translationsRunning.delete(key);if(localKey)localTranslationsRunning.delete(localKey);if(ticket)await dataStore.releaseTranslation(ticket).catch(()=>{});}
   }
   const grantsFile=path.join(dataDir,'grants.json');
-  async function createGrant(user,{bookId,scopes}){
-    requireUser(user);await getBook(user,bookId);if(!Array.isArray(scopes)||!scopes.length||scopes.some(s=>!['content','notes','activity','comment:write','audio:read','audio:generate'].includes(s)))throw fail('请选择授权范围');
-    const token=randomBytes(32).toString('base64url'),grant={id:randomUUID(),ownerId:user.id,bookId,scopes:[...new Set(scopes)],tokenHash:digest(token),createdAt:new Date().toISOString(),expiresAt:new Date(Date.now()+7*86400000).toISOString(),revoked:false};
+  // The daily companion gets its own internal-only grant: fixed 30-day expiry
+  // and the single narrow daily:deliver scope. Generic grant creation can
+  // neither request that scope nor any other duration.
+  const DAILY_GRANT_SCOPE='daily:deliver',DAILY_GRANT_TTL_MS=30*86400000;
+  async function issueGrant(user,bookId,scopes,ttlMs){
+    const token=randomBytes(32).toString('base64url'),grant={id:randomUUID(),ownerId:user.id,bookId,scopes:[...new Set(scopes)],tokenHash:digest(token),createdAt:new Date().toISOString(),expiresAt:new Date(Date.now()+ttlMs).toISOString(),revoked:false};
     await mutate(grantsFile,{grants:[]},data=>{if(data.grants.filter(g=>g.ownerId===user.id&&!g.revoked).length>=50)throw fail('请先撤回不再使用的授权',413);data.grants.push(grant);});
     const {tokenHash,ownerId,...visible}=grant;return {...visible,token};
   }
-  async function authorize(token,id,scope){const data=await read(grantsFile,{grants:[]}),grant=typeof token==='string'&&data.grants.find(g=>g.tokenHash===digest(token));if(!grant||grant.revoked||Date.parse(grant.expiresAt)<=Date.now()||grant.bookId!==id||!grant.scopes.includes(scope))throw fail('Agent 授权无效或范围不足',403);return {id:grant.ownerId};}
+  async function createGrant(user,input){
+    requireUser(user);
+    if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(key=>!['bookId','scopes'].includes(key)))throw fail('请选择授权范围');
+    const {bookId,scopes}=input;await getBook(user,bookId);
+    if(!Array.isArray(scopes)||!scopes.length||scopes.some(s=>!['content','notes','activity','comment:write','audio:read','audio:generate'].includes(s)||s===DAILY_GRANT_SCOPE))throw fail('请选择授权范围');
+    return issueGrant(user,bookId,scopes,7*86400000);
+  }
+  async function createDailyGrant(user,{bookId}={}){
+    requireUser(user);await getBook(user,bookId);
+    return issueGrant(user,bookId,[DAILY_GRANT_SCOPE],DAILY_GRANT_TTL_MS);
+  }
+  async function authorize(token,id,scope){const data=await read(grantsFile,{grants:[]}),grant=typeof token==='string'&&data.grants.find(g=>g.tokenHash===digest(token));if(!grant||grant.revoked||Date.parse(grant.expiresAt)<=Date.now()||scope===DAILY_GRANT_SCOPE||grant.bookId!==id||!grant.scopes.includes(scope))throw fail('Agent 授权无效或范围不足',403);return {id:grant.ownerId};}
+  async function authorizeDaily(token){
+    const data=await read(grantsFile,{grants:[]}),grant=typeof token==='string'&&data.grants.find(g=>g.tokenHash===digest(token));
+    if(!grant||grant.revoked||Date.parse(grant.expiresAt)<=Date.now()||grant.scopes.length!==1||grant.scopes[0]!==DAILY_GRANT_SCOPE)throw fail('Agent 授权无效或范围不足',403);
+    return {id:grant.ownerId,grant:{id:grant.id,bookId:grant.bookId,scopes:[...grant.scopes],expiresAt:grant.expiresAt,ownerId:grant.ownerId}};
+  }
+  async function isGrantActive(id){const data=await read(grantsFile,{grants:[]}),grant=data.grants.find(g=>g.id===id);return !!grant&&!grant.revoked&&Date.parse(grant.expiresAt)>Date.now();}
+  const grantRevocationListeners=new Set();
   async function grants(user){requireUser(user);return (await read(grantsFile,{grants:[]})).grants.filter(g=>g.ownerId===user.id).map(({ownerId,tokenHash,...g})=>g);}
-  async function revokeGrant(user,id){requireUser(user);return mutate(grantsFile,{grants:[]},data=>{const grant=data.grants.find(g=>g.id===id&&g.ownerId===user.id);if(!grant)throw fail('找不到这条授权',404);grant.revoked=true;return {revoked:true};});}
+  async function revokeGrant(user,id){
+    requireUser(user);
+    const result=await mutate(grantsFile,{grants:[]},data=>{const grant=data.grants.find(g=>g.id===id&&g.ownerId===user.id);if(!grant)throw fail('找不到这条授权',404);grant.revoked=true;return {revoked:true};});
+    // Revocation is only acknowledged once every bound daily plan has been
+    // invalidated, so a late daily finish cannot publish after it.
+    for(const listener of grantRevocationListeners)await listener(user.id,id);
+    return result;
+  }
   async function shelfBackup(user,id){
     const shelf=await read(shelfFile(user),emptyShelf());if(!shelf.order.length&&!Object.hasOwn(shelf.archived,id))return {};
     const available=new Set((await allShelfRows(user)).map(row=>row.bookId));
@@ -506,5 +534,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(claim.pending)await mutate(bookFile(user,incoming.bookId),{},current=>{if(current._giftReceive?.fingerprint===fingerprint)delete current._giftReceive;});
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,getReadingPreferences,saveReadingPreferences,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,authorize,grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,getReadingPreferences,saveReadingPreferences,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }
