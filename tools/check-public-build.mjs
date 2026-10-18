@@ -12,6 +12,8 @@ const approvedFonts=new Map([
   ['newsreader-italic-var.woff2',{bytes:239360,sha256:'8920f06c4c116e91721a2cbbbb195d1ab6997a657cb3313dab5c99b6b202d899'}],
 ]);
 const fontLicense='OFL-1.1';
+const approvedCjkBundle='2e2ebd6fdb630a1188431bedebf2d90de4b5e50e8f5db440d46e40220f589fd6';
+const approvedCjkLicense='5e0da210fb04058a8c0087985d2d456b931c2579811a49655721d3cf0c36b6d6';
 const privateDirectories=new Set(['content','local','_briefs']);
 const limit=200*1024;
 const digest=/^[a-f0-9]{64}$/;
@@ -54,6 +56,17 @@ export async function checkPublicBuild(directory){
     }
     let licenseText;try{licenseText=await readFile(path.join(fontRoot,'OFL.txt'),'utf8');}catch{throw Error('字体许可文件缺失');}
     if(!licenseText.includes('SIL Open Font License'))throw Error('字体许可文件不正确');
+  }
+  const cjkRoot=path.join(root,'fonts/noto-serif-sc');let cjkManifest=null;
+  try{const info=await lstat(path.join(cjkRoot,'manifest.json'));if(!info.isFile())throw Error('CJK font manifest must be a regular file');cjkManifest=JSON.parse(await readFile(path.join(cjkRoot,'manifest.json'),'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
+  if(cjkManifest){
+    if(cjkManifest.license!==fontLicense||cjkManifest.upstreamCssSha256!=='8d3f0a860f044b99dab93ca4b5b356c22ff82da17ba09658d17426936d1f49b8'||cjkManifest.licenseSha256!==approvedCjkLicense)throw Error('CJK font provenance is not approved');
+    const fonts=cjkManifest.fonts;
+    if(!Array.isArray(fonts)||fonts.length!==88||new Set(fonts.map(font=>font?.file)).size!==88||fonts.some(font=>!font||!/^noto-serif-sc-\d{3}\.woff2$/.test(font.file)||font.format!=='woff2'||!Number.isSafeInteger(font.bytes)||font.bytes<=0||!digest.test(font.sha256||'')||typeof font.unicodeRange!=='string'))throw Error('Invalid CJK font manifest');
+    const pin=createHash('sha256').update(fonts.map(font=>font.file+' '+font.sha256+' '+font.unicodeRange).join('\n')).digest('hex');
+    if(pin!==approvedCjkBundle)throw Error('CJK fonts do not match the independently approved bundle');
+    for(const font of fonts){const file=path.join(cjkRoot,font.file),info=await lstat(file);if(!info.isFile()||info.size!==font.bytes)throw Error('CJK font must be the approved regular file: '+font.file);const bytes=await readFile(file);if(createHash('sha256').update(bytes).digest('hex')!==font.sha256||bytes.subarray(0,4).toString()!=='wOF2')throw Error('CJK font bytes do not match: '+font.file);registeredFonts.add(file);}
+    const license=await readFile(path.join(cjkRoot,'OFL.txt'));if(createHash('sha256').update(license).digest('hex')!==approvedCjkLicense)throw Error('CJK font license does not match');
   }
   const registered=new Map();
   for(const entry of entries){

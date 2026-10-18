@@ -1,0 +1,7 @@
+# Noto Serif SC CJK fallback
+
+OFL-1.1. Exact WOFF2 bytes supplied by the official Google Fonts CSS API on2026-10-18, versioned gstatic/v36 URLs in manifest.json. No font glyph, metric or internal name was modified. OFL.txt is preserved from google/fonts commit8b0a1d0f5983c89bc2b93f1b5fb55f9e252744b5; that is the license-source revision, not a claim that the CDN font binaries match that repository TTF.
+
+The CSS-only alias Leafhour CJK is a last fallback after local CJK serif faces. Its unicode ranges intersect upstream ranges, CJK blocks and each unchanged font's actual cmap. Unsupported compatibility aliases are omitted; Latin and proportional Latin punctuation never select these faces. The400–600 variable-weight range matches interface/body headings.88 subsets total5,891,588bytes; the browser requests only ranges needed by rendered text, without preloading the whole font. Actual per-page traffic must be measured, not inferred from visible characters. Source bytes and declared ranges are independently pinned in the integrity test.
+
+A Linux runner without any CJK fonts exposed blank glyphs before this addition. This fallback keeps that deployment readable and serif; sans UI on such a system uses CJK serif as a final fallback, not an identical cross-platform sans design. Runtime font requests are same-origin; manifest records upstream provenance only. Full Unicode/other languages are not claimed.
