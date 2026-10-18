@@ -17,6 +17,7 @@ import {inferSourceLanguage} from '../app/source-language.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
 import {applyPersonalRecordEdit} from '../app/personal-records.mjs';
 import {isReadingTimeSource} from '../app/reading-time-policy.mjs';
+import {translationRequestOptions,assertExpectedContentVersion,assertBatchPassage,assertGenerationSource,mergeGeneratedTranslations} from './translation-batch.mjs';
 import {applyCatalogReadingMetadata} from './catalog-reading-metadata.mjs';
 import {structuredCatalogBook} from './structured-catalog.mjs';
 import {applyCatalogSample} from './catalog-sample.mjs';
@@ -331,26 +332,39 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     const position={chapterId:input.chapterId,passageId:input.passageId,contentVersion:book.contentVersion,offset:input.offset,...(input.withinParagraph!==undefined?{withinParagraph:input.withinParagraph}:{}),mode:input.mode,variant:input.variant,...appearance};
     return mutate(recordFile(user,id),emptyRecords(book),data=>{const revision=data.position?.revision||0;if(input.baseRevision!==undefined&&input.baseRevision!==revision)throw fail('阅读位置已在另一处更新，请选择从哪里继续',409);data.position={...position,revision:revision+1,updatedAt:new Date().toISOString()};guardRecordSize(data);return data.position;});
   }
-  async function translate(user,id,passageId){
-    requireUser(user);const book=await getBook(user,id),passages=allPassages(book),i=passages.findIndex(p=>p.id===passageId);
+  async function translate(user,id,passageId,options={}){
+    requireUser(user);const {expectedContentVersion}=translationRequestOptions(options);
+    const book=await getBook(user,id),passages=allPassages(book),i=passages.findIndex(p=>p.id===passageId);
     if(i<0)throw fail('找不到当前段落',404);
+    // A stale expected version is refused before any charged provider request.
+    assertExpectedContentVersion(book,expectedContentVersion);
+    assertBatchPassage(passages[i],expectedContentVersion);
     if(passages[i].translations.literal&&passages[i].translations.interpretive)return passages[i];
     if(inferSourceLanguage(passages[i].original)==='zh')throw fail('这段原文为中文，无需生成中文译文；原文与个人记录仍可使用');
     if(!translator)throw fail('翻译服务尚未配置，原文仍可继续阅读',503);
     const localKey=!dataStore?path.resolve(dataDir)+'|'+user.id+'|'+id:null,key=user.id+'|'+id+'|'+passageId;if(localKey&&localTranslationsRunning.has(localKey))throw fail('这本书正在保存另一段译文，请稍后再试；当前段落尚未提交翻译。',409);if(translationsRunning.has(key))throw fail('这一段正在翻译，请稍后查看',409);if(translationsRunning.size>=2)throw fail('翻译服务正在处理其他段落，请稍后再试',429);
     translationsRunning.add(key);if(localKey)localTranslationsRunning.add(localKey);let ticket;
+    // Versions saved before this generation may only be replaced when they are
+    // unchanged drafts; reviewed and concurrent versions survive untouched.
+    const before={...(passages[i].translations||{})};
     try{
       bookCapacity(book,TRANSLATION_RESERVE_BYTES);
       if(dataStore?.reserveTranslation)ticket=await dataStore.reserveTranslation(user,id,passageId);
-      if(localKey||ticket){const latest=await getBook(user,id),saved=allPassages(latest).find(p=>p.id===passageId);if(saved?.translations.literal&&saved.translations.interpretive)return saved;bookCapacity(latest,TRANSLATION_RESERVE_BYTES);}
+      {const latest=await getBook(user,id),saved=allPassages(latest).find(p=>p.id===passageId);assertGenerationSource({book,fresh:latest,passage:passages[i],freshPassage:saved});assertExpectedContentVersion(latest,expectedContentVersion);assertBatchPassage(saved,expectedContentVersion);if(saved?.translations.literal&&saved.translations.interpretive)return saved;bookCapacity(latest,TRANSLATION_RESERVE_BYTES);}
       const result=await translator({passageId,sourceLanguage:inferSourceLanguage(passages[i].original),targetLanguage:'zh',passages:passages.slice(Math.max(0,i-1),i+2).map(p=>({id:p.id,original:p.original})),sourceVersion:book.contentVersion});
       if(!result||!['literal','interpretive'].every(k=>typeof result[k]==='string'&&result[k].trim()&&result[k].length<=12000))throw fail('翻译结果不完整，请重试；原文已保留',502);
       const translations=Object.fromEntries(['literal','interpretive'].map(variant=>[variant,{text:result[variant],status:'draft',variant,origin:'ai',model:result.model||'configured-provider',sourceVersion:book.contentVersion,createdAt:new Date().toISOString()}]));
+      // Re-read source and ownership before saving; an updated or deleted book
+      // is neither recreated nor given a stale translation overlay.
+      const fresh=await getBook(user,id),freshPassage=allPassages(fresh).find(p=>p.id===passageId);
+      assertGenerationSource({book,fresh,passage:passages[i],freshPassage});
+      let saved;
       await mutate(path.join(userDir(user),'translations',digest(id)+'.json'),{},data=>{
-        const next={...data,[passageId]:{contentVersion:book.contentVersion,translations}};
-        {const projected={...book,sections:book.sections.map(s=>({...s,paragraphs:s.paragraphs.map(p=>next[p.id]?.contentVersion===book.contentVersion?{...p,translations:next[p.id].translations}:p)}))};bookCapacity(projected);}
-        data[passageId]=next[passageId];
-      });return {...passages[i],translations};
+        const existing={...freshPassage.translations,...(data[passageId]?.contentVersion===fresh.contentVersion?data[passageId].translations:{})};
+        saved={contentVersion:fresh.contentVersion,translations:mergeGeneratedTranslations({existing,before,generated:translations})};
+        {const projected={...fresh,sections:fresh.sections.map(s=>({...s,paragraphs:s.paragraphs.map(p=>p.id===passageId?{...p,translations:saved.translations}:data[p.id]?.contentVersion===fresh.contentVersion?{...p,translations:data[p.id].translations}:p)}))};bookCapacity(projected);}
+        data[passageId]=saved;
+      });return {...freshPassage,translations:saved.translations};
     }finally{translationsRunning.delete(key);if(localKey)localTranslationsRunning.delete(localKey);if(ticket)await dataStore.releaseTranslation(ticket).catch(()=>{});}
   }
   const grantsFile=path.join(dataDir,'grants.json');

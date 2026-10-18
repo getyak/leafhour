@@ -193,7 +193,7 @@ test('prepared selections are pruned to a bound instead of growing in the owner 
 });
 
 test('the DeepSeek selector sends one bounded request, thinks not at all and rejects chatty output',async t=>{
-  const seen=[];const fetcher=async(url,options)=>{seen.push({url,options});return Response.json({choices:[{message:{content:JSON.stringify({bookId:'reading-test',contentVersion:'edition-1',passageId:'p1',chapterId:'ch01',start:0,end:16,text:'Read this first.'})}}]});};
+  const seen=[];const fetcher=async(url,options)=>{seen.push({url,options});return Response.json({choices:[{message:{content:JSON.stringify({candidateId:'q1'})}}]});};
   const generate=createDeepSeekGiftQuoteGenerator({env:{DEEPSEEK_API_KEY:'fixture-key'},fetcher,model:'deepseek-flash',timeoutMs:15000,maxTokens:400});
   const book=fixtureBook(),pool=buildQuotePool(book);
   const selection=await generate({bookId:book.bookId,contentVersion:book.contentVersion,pool});
@@ -209,7 +209,7 @@ test('the DeepSeek selector sends one bounded request, thinks not at all and rej
     await assert.rejects(broken({bookId:book.bookId,contentVersion:book.contentVersion,pool}),/unexpected|JSON|selection/i);
   }
   const down=createDeepSeekGiftQuoteGenerator({env:{DEEPSEEK_API_KEY:'fixture-key'},fetcher:async()=>{throw Error('socket hang up');}});
-  await assert.rejects(down({bookId:book.bookId,contentVersion:book.contentVersion,pool}),/socket hang up/);
+  await assert.rejects(down({bookId:book.bookId,contentVersion:book.contentVersion,pool}),/provider unavailable/);
   assert.equal(createDeepSeekGiftQuoteGenerator({env:{}}),null,'no key means no provider, and the fallback stays local');
   assert.equal(DEFAULT_MODELS.reading,'deepseek-flash');
   // Pure helpers stay deterministic for any caller.
