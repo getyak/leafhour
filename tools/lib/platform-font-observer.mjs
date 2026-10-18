@@ -55,7 +55,7 @@ export async function activateRemoteButton({cdp,trigger,panel=null,guard=()=>{}}
   const send=(method,params)=>{guard();return cdp.send(method,params);};
   const read=()=>evaluate('('+observePopoverState.toString()+')('+JSON.stringify(trigger)+','+JSON.stringify(panel)+')');
   const scroll=await evaluate('('+observeNativeScroll.toString()+')('+JSON.stringify(trigger)+')');
-  assert.ok(['settled','unchanged'].includes(scroll.status),'Real button must finish native scrolling');
+  assert.ok(['settled','unchanged'].includes(scroll.status),'Real button must finish native scrolling: '+JSON.stringify({trigger,...scroll}));
   const before=await read();
   assert.ok(before.trigger?.visible&&!before.trigger.disabled&&!before.trigger.inert,'Real usable popover trigger required');
   if(panel)assert.equal(before.panel?.visible,false,'Popover must start closed');
@@ -194,11 +194,28 @@ export function observeNativeScroll(selector){
     if(!scrollers.includes(parent)&&(parent.scrollHeight>parent.clientHeight&&/auto|scroll|hidden/.test(style.overflowY)||parent.scrollWidth>parent.clientWidth&&/auto|scroll|hidden/.test(style.overflowX)))scrollers.push(parent);
   }
   const pixels=value=>parseFloat(value)||0,margin=getComputedStyle(node);
+  // A viewport-fixed control occupies the physical viewport, including the
+  // header area that prose scroll-padding reserves. A transformed/contained
+  // ancestor can instead establish its fixed containing block: retain the
+  // strict root-padding path in that case. Start above the fixed box itself;
+  // its own backdrop-filter does not change its containing block.
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Display/Containing_block
+  const fixedToViewport=()=>{
+    let fixed=node;
+    while(fixed&&getComputedStyle(fixed).position!=='fixed')fixed=fixed.parentElement;
+    if(!fixed)return false;
+    for(let parent=fixed.parentElement;parent;parent=parent.parentElement){
+      const style=getComputedStyle(parent);
+      if(['transform','translate','rotate','scale','perspective','filter','backdropFilter'].some(key=>style[key]&&style[key]!=='none')||/\b(layout|paint|strict|content)\b/.test(style.contain||'')||/\b(transform|translate|rotate|scale|perspective|filter|backdrop-filter|contain|content-visibility)\b/.test(style.willChange||'')||['auto','hidden'].includes(style.contentVisibility))return false;
+    }
+    return true;
+  };
   const sample=()=>{
-    const r=node.getBoundingClientRect();
-    return {rect:{x:r.x,y:r.y,width:r.width,height:r.height},positions:scrollers.map(element=>({left:element.scrollLeft,top:element.scrollTop})),scrollports:scrollers.map((element,index)=>{
+    const r=node.getBoundingClientRect(),viewportFixed=fixedToViewport();
+    return {rect:{x:r.x,y:r.y,width:r.width,height:r.height},viewportFixed,positions:scrollers.map(element=>({left:element.scrollLeft,top:element.scrollTop})),scrollports:scrollers.map((element,index)=>{
       const style=getComputedStyle(element),rect=index?element.getBoundingClientRect():{x:0,y:0},left=rect.x+(index?element.clientLeft:0),top=rect.y+(index?element.clientTop:0);
-      return {left:left+pixels(style.scrollPaddingLeft),top:top+pixels(style.scrollPaddingTop),right:left+(index?element.clientWidth:innerWidth)-pixels(style.scrollPaddingRight),bottom:top+(index?element.clientHeight:innerHeight)-pixels(style.scrollPaddingBottom),maxLeft:Math.max(0,element.scrollWidth-element.clientWidth),maxTop:Math.max(0,element.scrollHeight-element.clientHeight),position:style.position,overflowX:style.overflowX,overflowY:style.overflowY,behavior:style.scrollBehavior};
+      const padding=side=>!index&&viewportFixed?0:pixels(style['scrollPadding'+side]);
+      return {left:left+padding('Left'),top:top+padding('Top'),right:left+(index?element.clientWidth:innerWidth)-padding('Right'),bottom:top+(index?element.clientHeight:innerHeight)-padding('Bottom'),maxLeft:Math.max(0,element.scrollWidth-element.clientWidth),maxTop:Math.max(0,element.scrollHeight-element.clientHeight),position:style.position,overflowX:style.overflowX,overflowY:style.overflowY,behavior:style.scrollBehavior};
     }),scrollX,scrollY};
   };
   const needs=value=>value.scrollports.flatMap((port,index)=>{

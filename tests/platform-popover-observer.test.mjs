@@ -31,7 +31,7 @@ function keyboardTransport(options={}){
   const commands=[],captures=[];
   const cdp={
     async evaluate(expression){
-      if(expression.startsWith('(function observeNativeScroll'))return {status:'unchanged'};
+      if(expression.startsWith('(function observeNativeScroll'))return options.scroll||{status:'unchanged'};
       assert.ok(expression.startsWith('(function observePopoverState'),'only the actual read-only observation is evaluated');
       return {url:options.changedUrl&&!open&&captures.length?'/library?broken=1':'/library',trigger:{visible:options.visible!==false,disabled:false,inert:false},panel:{visible:open},expanded:String(open),focusOnTrigger,focusInPanel};
     },
@@ -64,6 +64,17 @@ test('hidden trigger or failed actual focus refuses keyboard activation',async()
     const f=keyboardTransport(options);await assert.rejects(()=>exercisePopoverKeyboard(f),/usable popover trigger|actually receive focus/);
     assert.equal(f.commands.some(([method])=>method==='Input.dispatchKeyEvent'),false);assert.equal(f.captures.length,0);
   }
+});
+test('failed real scrolling retains the exact selector and observed geometry before any input',async()=>{
+  const scroll={status:'timeout',before:{rect:{x:450,y:14,width:120,height:44},scrollY:497},after:{rect:{x:450,y:14,width:120,height:44},scrollY:497},needsMovement:true};
+  const f=keyboardTransport({scroll});
+  await assert.rejects(()=>exercisePopoverKeyboard({...f,trigger:'#open-book-info',panel:'#book-info'}),error=>{
+    assert.match(error.message,/#open-book-info/);assert.match(error.message,/timeout/);
+    assert.ok(error.message.includes(JSON.stringify(scroll.before)),'failure evidence retains actual pre-scroll facts');
+    assert.ok(error.message.includes(JSON.stringify(scroll.after)),'failure evidence retains actual post-scroll facts');
+    return true;
+  });
+  assert.equal(f.commands.length,0);assert.equal(f.captures.length,0);
 });
 test('outside focus and changed URL are real failures, not accepted screenshots or repeated activations',async()=>{
   const outside=keyboardTransport({outsideFocus:true});await assert.rejects(()=>exercisePopoverKeyboard(outside),/inside the open popover/);assert.equal(outside.captures.length,0);
