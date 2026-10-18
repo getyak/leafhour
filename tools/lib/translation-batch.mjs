@@ -327,7 +327,7 @@ export async function runBatch({origin,bookId,session,execute=false,maxRequests=
       const current=await transport.getBook(bookId);
       if(current.contentVersion!==binding.contentVersion){summary.stopped='source-changed';break;}
       const freshSkip=new Map(planPassages(current).skipped.map(entry=>[entry.id,entry.reason]));
-      if(freshSkip.has(row.id)){summary.skipped.push({id:row.id,reason:freshSkip.get(row.id)});continue;}
+      if(freshSkip.has(row.id)){summary.skipped.push({id:row.id,reason:freshSkip.get(row.id)});done.add(row.id);continue;}
       if(signal?.aborted){summary.stopped='aborted';break;}
       summary.requests++;
       let outcome;

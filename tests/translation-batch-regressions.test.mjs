@@ -109,3 +109,15 @@ test('a spawned CLI never reflects unknown argument values, upstream error bodie
   try{result=await run(['--origin','http://127.0.0.1:'+server.address().port,'--book','b']);assert.equal(result.code,1);assert.ok(!result.output.includes(session));assert.ok(!result.output.includes(marker));}finally{await new Promise(r=>server.close(r));}
  }
 });
+
+test('a pair completed concurrently before preflight is skipped with zero remaining and zero POST',async t=>{
+ const dir=await fixture(t),b=book();let gets=0,posts=0;
+ const fetchImpl=async(url,o={})=>{
+  if(String(url).endsWith('/api/auth/session'))return Response.json({user:{id:'u'}});
+  if(o.method==='POST')posts++;
+  const current=structuredClone(b);if(++gets>=2)current.sections[0].paragraphs[0].translations={literal:{text:'saved literal'},interpretive:{text:'saved interpretive'}};
+  return Response.json(current);
+ };
+ const result=await runBatch({origin,bookId:'b',session,execute:true,maxRequests:1,checkpointFile:path.join(dir,'cp.json'),fetchImpl});
+ assert.equal(posts,0);assert.equal(result.requests,0);assert.equal(result.remaining,0);assert.equal(result.skipped.at(-1).reason,'complete');
+});
