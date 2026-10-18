@@ -681,5 +681,10 @@
   "app/fonts/noto-serif-sc/noto-serif-sc-042.woff2",
   "server/cjk-font-assets.mjs",
   "tests/cjk-fonts.test.mjs",
-  "app/share-fonts.mjs"
+  "app/share-fonts.mjs",
+  ".github/workflows/platform-typography.yml",
+  "tools/lib/platform-android.mjs",
+  "tools/lib/platform-cdp.mjs",
+  "tools/lib/platform-font-observer.mjs",
+  "tools/platform-typography.mjs"
 ]

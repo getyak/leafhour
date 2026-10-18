@@ -5,6 +5,10 @@ on:
     paths:
       - .github/workflows/platform-typography.yml
       - tools/platform-typography.mjs
+      - tools/lib/platform-android.mjs
+      - tools/lib/platform-cdp.mjs
+      - tools/lib/platform-font-observer.mjs
+      - tests/platform-android.test.mjs
       - app/typography.css
       - app/fonts/**
   workflow_dispatch:
@@ -58,5 +62,63 @@ jobs:
             ${{ runner.temp }}/typography/receipt.json
             ${{ runner.temp }}/typography/stock-fonts.txt
             ${{ runner.temp }}/typography/*.png
+          if-no-files-found: error
+          retention-days: 3
+
+  actual-android-api34:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      # Task-owned Android state only; HOME is never repurposed and nothing is
+      # written outside RUNNER_TEMP/get173-android.
+      ANDROID_USER_HOME: ${{ runner.temp }}/get173-android/android-user-home
+      ANDROID_AVD_HOME: ${{ runner.temp }}/get173-android/android-avd-home
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22.23.3
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Verify hosted KVM acceleration for the owned AVD
+        run: |
+          test -e /dev/kvm
+          test -r /dev/kvm
+          test -w /dev/kvm
+          ls -l /dev/kvm
+      - name: Verify the currently served official manifest against the pinned package facts
+        run: node tools/lib/platform-android.mjs verify-system-image-manifest
+      - name: Probe official SDK inventory and install only the missing emulator and one system image
+        run: |
+          mkdir -p "$ANDROID_USER_HOME" "$ANDROID_AVD_HOME"
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          ADB="$ANDROID_HOME/platform-tools/adb"
+          EMULATOR="$ANDROID_HOME/emulator/emulator"
+          test -x "$SDKMANAGER"
+          test -x "$ADB"
+          if [ -x "$EMULATOR" ]; then
+            echo "Official emulator package already installed"
+          else
+            echo "Official emulator package missing; installing it through the official SDK manager"
+            yes | "$SDKMANAGER" "emulator" > /dev/null
+          fi
+          yes | "$SDKMANAGER" "platform-tools" "system-images;android-34;google_apis_playstore;x86_64" > /dev/null
+          test -x "$EMULATOR"
+          "$ADB" version
+          "$EMULATOR" -version | head -n 2
+          "$SDKMANAGER" --list_installed | grep -E '^(  )?(emulator|platform-tools|system-images;android-34;google_apis_playstore;x86_64)'
+      - name: Observe actual anonymous product typography in task-owned stock Chrome on the AVD
+        run: node tools/platform-typography.mjs --android "$RUNNER_TEMP/typography-android"
+      - name: Preserve bounded anonymous Android evidence even after assertion failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: typography-android-api34-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/typography-android/receipt.json
+            ${{ runner.temp }}/typography-android/*.png
           if-no-files-found: error
           retention-days: 3
