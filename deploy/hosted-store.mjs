@@ -12,7 +12,14 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
   const headers={apikey:secret,...(secret.startsWith('eyJ')?{Authorization:'Bearer '+secret}:{})};
   async function request(route,options={}){
     const response=await fetcher(base+route,{...options,headers:{...headers,...options.headers},signal:AbortSignal.timeout(45000)});
-    if(!response.ok){await response.arrayBuffer();throw fail('云端书房暂时无法完成操作，请重试',response.status===404?404:503);}
+    if(!response.ok){
+      await response.arrayBuffer();
+      const error=fail('云端书房暂时无法完成操作，请重试',response.status===404?404:503);
+      // Preserve the upstream classification for internal retry decisions without
+      // changing the public status or exposing the storage response body.
+      Object.defineProperty(error,'upstreamStatus',{value:response.status});
+      throw error;
+    }
     return response;
   }
   const json=async(route,options)=> (await request(route,options)).json();
