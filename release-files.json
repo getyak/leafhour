@@ -682,6 +682,7 @@
   "server/cjk-font-assets.mjs",
   "tests/cjk-fonts.test.mjs",
   "app/share-fonts.mjs",
+  "app/mcp-guide.css",
   ".github/workflows/platform-typography.yml",
   "tools/lib/platform-android.mjs",
   "tools/lib/platform-cdp.mjs",

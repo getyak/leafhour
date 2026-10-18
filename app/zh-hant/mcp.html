@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark">
   <title>用 MCP 讓 AI Agent 連接你的書 · Leafhour</title>
   <meta name="description" content="Leafhour 的 MCP 轉接器如何讓 AI Agent 按獨立權限和可撤回的授權，讀取授權書籍的段落、章節、筆記與閱讀記錄。">
   <link rel="canonical" href="https://leafhour.com/zh-hant/mcp">
@@ -11,33 +11,34 @@
   <link rel="alternate" hreflang="ja" href="https://leafhour.com/ja/mcp">
   <link rel="alternate" hreflang="x-default" href="https://leafhour.com/mcp">
   <meta property="og:type" content="article"><meta property="og:site_name" content="Leafhour"><meta property="og:title" content="用 MCP 讓 AI Agent 連接你的書 · Leafhour"><meta property="og:description" content="與閱讀室同一個服務，按書籍範圍授權、可撤回地讀取授權段落與章節。"><meta property="og:url" content="https://leafhour.com/zh-hant/mcp"><meta property="og:image" content="https://leafhour.com/brand-assets/leafhour-social.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Leafhour — Stay with a book."><meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="/brand-assets/leafhour-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/typography.css"><link rel="stylesheet" href="/interface-tokens.css"><link rel="stylesheet" href="/discovery.css">
+  <link rel="icon" href="/brand-assets/leafhour-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/typography.css"><link rel="stylesheet" href="/interface-tokens.css"><link rel="stylesheet" href="/portal.css"><link rel="stylesheet" href="/interaction-craft.css"><link rel="stylesheet" href="/leafhour-brand.css"><link rel="stylesheet" href="/mcp-guide.css"><script type="module" src="/site-appearance.mjs"></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://leafhour.com/zh-hant/mcp#article","url":"https://leafhour.com/zh-hant/mcp","headline":"用 MCP 讓 AI Agent 連接你的書","description":"按書籍範圍授權讀取 Leafhour 的段落、章節、筆記與閱讀記錄。","inLanguage":"zh-Hant","dateModified":"2026-10-16","author":{"@type":"Organization","name":"Leafhour","url":"https://leafhour.com/"},"mainEntityOfPage":"https://leafhour.com/zh-hant/mcp","about":{"@id":"https://leafhour.com/#application"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Leafhour","item":"https://leafhour.com/zh-hant"},{"@type":"ListItem","position":2,"name":"MCP 串接指南","item":"https://leafhour.com/zh-hant/mcp"}]}]}</script>
 </head>
-<body class="discovery-page">
-<header class="public-header"><a class="public-brand" href="/zh-hant"><img src="/brand-assets/leafhour-mark.svg" width="37" height="37" alt="">Leafhour</a><nav aria-label="主導覽"><a href="/zh-hant">關於 Leafhour</a><a href="/library">進入書房 →</a><div class="home-languages" role="group" aria-label="語言"><a href="/mcp" lang="en" hreflang="en">English</a><a href="/zh-hans/mcp" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a aria-current="true" href="/zh-hant/mcp" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/mcp" lang="ja" hreflang="ja">日本語</a></div></nav></header>
-<main class="public-main"><article class="public-article">
+<body class="privacy-page mcp-page">
+<a class="skip" href="#main">跳至內文</a>
+<header class="site-header"><a class="brand" href="/zh-hant" aria-label="Leafhour 首頁"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="brand-name" lang="en">Leafhour</span></a><nav aria-label="主導覽"><a href="/zh-hant">關於 Leafhour</a><a href="/library">進入書房 →</a><div class="home-languages" role="group" aria-label="語言"><a href="/mcp" lang="en" hreflang="en">English</a><a href="/zh-hans/mcp" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a aria-current="true" href="/zh-hant/mcp" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/mcp" lang="ja" hreflang="ja">日本語</a></div></nav></header>
+<main id="main" class="privacy-document"><article class="public-article">
   <h1>用 MCP 讓 AI Agent 連接你的書。</h1>
   <p class="public-byline">Leafhour 文檔 · 更新於 2026 年 10 月 16 日</p>
   <p>Leafhour 的 Model Context Protocol（MCP）轉接器讓相容的 AI 宿主讀取你授權的一本書。它與網頁使用同一個閱讀服務。存取僅限於一本書和你選擇的資料類型；只安裝轉接器不會取得任何權限。</p>
   <p>這是技術接入。目前閱讀介面主要為簡體中文，尚無完整的授權管理頁面。建立和撤回授權，請使用現有相容用戶端或已認證的服務 API。需要協助時，請聯絡 <a href="mailto:support@leafhour.com">support@leafhour.com</a>。</p>
   <h2 id="permissions">選擇 Agent 可以存取的內容。</h2>
-  <table><thead><tr><th scope="col">權限</th><th scope="col">允許的操作</th></tr></thead><tbody>
+  <div class="mcp-scroll" role="region" aria-label="權限表，可橫向捲動" tabindex="0"><table><thead><tr><th scope="col">權限</th><th scope="col">允許的操作</th></tr></thead><tbody>
     <tr><th scope="row"><code>content</code></th><td>原文與已保存的譯文、書籍資訊、分頁章節以及該書內的搜尋。</td></tr>
     <tr><th scope="row"><code>notes</code></th><td>單獨授權的個人評論和問題。</td></tr>
     <tr><th scope="row"><code>activity</code></th><td>已保存的閱讀位置和最近的閱讀時段。</td></tr>
     <tr><th scope="row"><code>comment:write</code></th><td>保存使用者明確提供的評論，並錨定到段落。它不授權修改書籍。</td></tr>
-  </tbody></table>
+  </tbody></table></div>
   <p>建議先只用 <code>content</code>。授權七天後過期，也可以提前撤回。撤回後，後續服務鑑權會失敗；撤回不能清除已經複製到你的 AI 宿主裡的內容。</p>
   <h2 id="setup">連接轉接器。</h2>
   <ol><li>按<a href="https://github.com/getyak/leafhour#readme">倉庫說明</a>在本地運行 Leafhour，或使用託管閱讀服務。在自己的<a href="/library">書房</a>匯入一本書，或選擇一本公版樣書。</li><li>透過相容用戶端或已認證 API，用 <code>POST /api/library/grants</code> 建立帶 <code>bookId</code> 和所選 <code>scopes</code> 的授權。權杖只返回一次，請保存在 AI 宿主的私密設定裡。</li><li>讀取 <code>GET /api/library/mcp-setup</code>，並用<a href="https://github.com/getyak/leafhour/blob/main/app/mcp-config.mjs">設定產生器</a>建立宿主設定。本地原始碼運行時，轉接器以 <code>node server/mcp.mjs</code> 啟動。託管接入會返回實際部署的原始碼提交，產生的設定固定到這份不可變的原始碼包並明確允許 HTTPS 書房；缺少部署來源時直接拒絕。</li><li>在相容的 AI 宿主中啟用 MCP 伺服器，並在工具請求中帶上授權的書籍 ID。用完後可用 <code>POST /api/library/grants/{id}/revoke</code> 撤回授權。</li></ol>
   <p>轉接器使用這些環境變數：</p>
-  <pre><code>READER_SERVICE_URL=http://127.0.0.1:8330
+  <div class="mcp-scroll" role="region" aria-label="命令範例，可橫向捲動" tabindex="0"><pre><code>READER_SERVICE_URL=http://127.0.0.1:8330
 READER_AGENT_TOKEN=&lt;your book-scoped grant&gt;
 
 # For your configured HTTPS service only:
 # READER_SERVICE_URL=https://leafhour.com
-# READER_ALLOW_REMOTE=true</code></pre>
+# READER_ALLOW_REMOTE=true</code></pre></div>
   <p>不要把登入密碼、工作階段 Cookie、Supabase 金鑰或授權權杖寫進公開文檔或倉庫。MCP 授權與網頁登入相互獨立。宿主提供金鑰儲存時，請使用它。</p>
   <h2 id="tools">先取一段，再往深處讀。</h2>
   <p><code>reader_get_manifest</code> 返回這本書的來源資訊和章節標識。<code>reader_get_context</code> 返回一個段落及其鄰段和穩定錨點。<code>reader_get_chapter</code> 每次最多返回 20 段和繼續游標。<code>reader_search</code> 在授權書籍內搜尋，最多返回 20 條帶錨點的結果。</p>
@@ -48,6 +49,6 @@ READER_AGENT_TOKEN=&lt;your book-scoped grant&gt;
   <p>站內閱讀助手有獨立的唯讀邊界，與這個外部 MCP 授權相互獨立。託管處理細節見<a href="/zh-hant/privacy">隱私與資料說明</a>。</p>
   <p>確切的工具定義和目前服務行為，請查看<a href="https://github.com/getyak/leafhour/blob/main/server/mcp.mjs">轉接器原始碼</a>、<a href="https://github.com/getyak/leafhour/blob/main/server/portal.mjs">服務路由</a>和<a href="https://github.com/getyak/leafhour/blob/main/docs/mcp-reading.md">按書授權的 MCP 閱讀說明</a>。本文描述目前實作，不是計畫中的能力。</p>
 </article></main>
-<footer class="public-footer"><a href="/zh-hant">Leafhour · Stay with a book.</a><a href="https://github.com/getyak/leafhour">原始碼</a><a href="/zh-hant/privacy">隱私說明</a><div class="home-languages" role="group" aria-label="語言"><a href="/mcp" lang="en" hreflang="en">English</a><a href="/zh-hans/mcp" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a aria-current="true" href="/zh-hant/mcp" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/mcp" lang="ja" hreflang="ja">日本語</a></div><a href="mailto:support@leafhour.com">聯絡</a></footer>
+<footer class="site-footer"><a href="/zh-hant">Leafhour · Stay with a book.</a><a href="https://github.com/getyak/leafhour">原始碼</a><a href="/zh-hant/privacy">隱私說明</a><div class="home-languages" role="group" aria-label="語言"><a href="/mcp" lang="en" hreflang="en">English</a><a href="/zh-hans/mcp" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a aria-current="true" href="/zh-hant/mcp" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/mcp" lang="ja" hreflang="ja">日本語</a></div><a href="mailto:support@leafhour.com">聯絡</a></footer>
 </body>
 </html>
