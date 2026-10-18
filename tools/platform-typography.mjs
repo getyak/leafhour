@@ -23,6 +23,7 @@ import {
   resolveOriginalTitleProbe,
   assessNativeForeground,
   assessFirstRunOverlay,
+  verifyNativeStartup,
   verifyLaunchFacts,
   createRunLifecycle,
   finalizeRunReceipt,
@@ -177,13 +178,17 @@ try{
     receipt.android.effectiveCommandLine=await cdp.evaluate(`document.querySelector('#command_line').innerText`);
     receipt.android.effectiveFlags=validateEffectiveChromeCommandLine(receipt.android.effectiveCommandLine);
     // Preserve the actual native image even if hierarchy capture/validation fails.
-    await nativeCapture('android-native-version',await adapter.screencap());
-    const nativeState=await lifecycle.track(adapter.nativeState());
-    receipt.android.nativeHierarchyCapture={path:nativeState.uiautomatorPath,status:nativeState.uiautomatorStatus,xmlBytes:Buffer.byteLength(nativeState.uiautomatorXml),sha256:sha(nativeState.uiautomatorXml)};
-    receipt.android.foreground=assessNativeForeground({dumpsysText:nativeState.dumpsys});
-    assert.ok(receipt.android.foreground.ok,'Stock Chrome must be the native foreground app');
-    receipt.android.firstRun=assessFirstRunOverlay(nativeState.uiautomatorXml);
-    assert.ok(receipt.android.firstRun.ok,'No native FirstRun overlay may cover the browser');
+    const recordNative=(snapshot,stage)=>{
+      const bytes=Buffer.byteLength(snapshot.uiautomatorXml);
+      receipt.android.nativeHierarchyCapture={path:snapshot.uiautomatorPath,status:snapshot.uiautomatorStatus,xmlBytes:bytes,sha256:sha(snapshot.uiautomatorXml)};
+      const snapshots=receipt.android.nativeSnapshots??=[];
+      assert.ok(bytes<=65536&&snapshots.length<10,'Native evidence exceeds the complete bounded XML budget');
+      snapshots.push({stage,...receipt.android.nativeHierarchyCapture,xml:snapshot.uiautomatorXml});
+      receipt.android.foreground=assessNativeForeground({dumpsysText:snapshot.dumpsys});
+      receipt.android.firstRun=assessFirstRunOverlay(snapshot.uiautomatorXml);
+    };
+    await verifyNativeStartup({lifecycle,adapter,recordNative,capture:nativeCapture,readInternal:()=>cdp.evaluate('location.href'),waitForClear:check=>until(check,'known native notification rejection to clear',20000,failures),receipt:receipt.android});
+    assert.ok(receipt.android.firstRun.ok,'No native startup dialog or permission overlay may cover the browser');
     // The internal version viewport is recorded separately and never reused for
     // product decisions; every product route binds its own current viewport.
     receipt.android.versionViewport=await cdp.evaluate(VIEWPORT_EXPRESSION);
@@ -198,7 +203,6 @@ try{
   await delay(500);const cold=await session.fonts('.hero-copy h1 .hero-line','cold font-withheld hero',{awaitFonts:false});assert.ok(cold.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Cold fallback must have visible actual glyphs');assert.ok(!cold.fonts.some(font=>font.isCustomFont&&font.glyphCount>0),'Cold run must not use warmed custom face');await session.capture('home-controlled-font-delay');
   await session.releaseFontHold();
   await cdp.evaluate('document.fonts.ready.then(()=>true)');await session.capture('home-loaded');customNewsreader(await session.fonts('.hero-copy h1 .hero-line','loaded hero'));
-  if(args.mode==='android')await nativeCapture('android-native-home',await adapter.screencap());
   for(const [route,locale] of [['/zh-hans','zh-Hans'],['/zh-hant','zh-Hant'],['/ja','ja']]){
     session.setPageLabel('home-'+locale);
     await cdp.send('Page.navigate',{url:origin+route});

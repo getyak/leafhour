@@ -318,12 +318,14 @@ export function parseUiHierarchy(xml){
     }
     if(!rootSeen||!stack.length||stack[0].name!=='hierarchy')throw Error('Node outside the hierarchy root');
     if(token.name!=='node')throw Error('Unexpected element in uiautomator hierarchy: '+token.name);
+    token.parent=stack.at(-1)?.nodeIndex??null;
+    token.nodeIndex=nodes.length;
     nodes.push(token);
     if(token.type==='start')stack.push(token);
   }
   if(!rootSeen)throw Error('uiautomator hierarchy must contain exactly one hierarchy root');
   if(stack.length)throw Error('Unclosed element in uiautomator hierarchy: '+stack.map(open=>open.name).join(', '));
-  return {nodes:nodes.map(({attrs})=>({attrs}))};
+  return {nodes:nodes.map(({attrs,parent})=>({attrs,parent}))};
 }
 export function assessNativeForeground({dumpsysText='',expectedPackage=CHROME_PACKAGE}){
   const lines=String(dumpsysText).split('\n').filter(line=>/topResumedActivity|mResumedActivity|ResumedActivity/.test(line));
@@ -344,7 +346,63 @@ export function assessFirstRunOverlay(uiautomatorXml=''){
   if(!chromeNodes.length)return {ok:false,markers:[],xmlBytes:text.length,nodes:nodes.length,chromeNodes:0,reason:'no Chrome UI node observed in the hierarchy'};
   const decoded=nodes.flatMap(node=>Object.values(node.attrs)).join('\n');
   const markers=FIRST_RUN_MARKERS.filter(marker=>decoded.toLowerCase().includes(marker.toLowerCase()));
-  return {ok:markers.length===0,markers,xmlBytes:text.length,nodes:nodes.length,chromeNodes:chromeNodes.length,reason:markers.length?'first-run overlay markers observed':null};
+  if(decoded.includes('Chrome notifications make things easier')||decoded.includes('notification_permission_rationale'))markers.push('notification-rationale');
+  if(nodes.some(node=>/^(?:com\.(?:google\.android|android)\.permissioncontroller)$/.test(node.attrs.package||'')))markers.push('OS-permission-controller');
+  if(chromeNodes.some(node=>/dialog|bottom_sheet/i.test(node.attrs['resource-id']||'')||/Dialog/.test(node.attrs.class||'')))markers.push('native-dialog-or-sheet');
+  return {ok:markers.length===0,markers,xmlBytes:text.length,nodes:nodes.length,chromeNodes:chromeNodes.length,reason:markers.length?'native startup overlay markers observed':null};
+}
+
+// Only the known Chrome113 notification rationale's native No thanks action.
+// Unknown prompts/OS permissions/positive buttons are never automatically acted on.
+export function planStartupNotificationRejection({xml,foreground,size}={}){
+  if(!foreground?.ok)return null;
+  const parsed=parseUiHierarchy(xml).nodes,nodes=parsed.map(node=>node.attrs),own=nodes.filter(node=>node.package===CHROME_PACKAGE);
+  const prefix=CHROME_PACKAGE+':id/';
+  const decoded=nodes.flatMap(node=>Object.values(node)).join('\n').toLowerCase();
+  if(FIRST_RUN_MARKERS.some(marker=>decoded.includes(marker.toLowerCase()))||nodes.some(node=>/^(?:com\.(?:google\.android|android)\.permissioncontroller)$/.test(node.package||'')))return null;
+  // Only the exact Chromium113 modal layout is recognized. A bottom sheet or
+  // any additional modal requires inspection, never a guessed negative tap.
+  const containers=parsed.filter(({attrs})=>attrs.package===CHROME_PACKAGE&&attrs['resource-id']===prefix+'modal_dialog_view');
+  if(containers.length!==1)return null;
+  const container=containers[0],containerIndex=parsed.indexOf(container);
+  const within=index=>{for(let current=index;current!=null;current=parsed[current].parent)if(current===containerIndex)return true;return false;};
+  const knownModalIds=new Set(['modal_dialog_view','modal_dialog_scroll_view']);
+  if(parsed.some(({attrs},index)=>attrs.package===CHROME_PACKAGE&&(/dialog|bottom_sheet/i.test(attrs['resource-id']||'')||/Dialog/.test(attrs.class||''))&&(!within(index)||!knownModalIds.has((attrs['resource-id']||'').slice(prefix.length)))))return null;
+  const content=own.filter(node=>within(nodes.indexOf(node)));
+  if(content.filter(node=>node['resource-id']===prefix+'notification_permission_rationale_title'&&node.text==='Chrome notifications make things easier').length!==1||content.filter(node=>node['resource-id']===prefix+'notification_permission_rationale_message'&&node.text?.includes('manage media controls')).length!==1)return null;
+  const candidates=own.filter(node=>node['resource-id']===prefix+'negative_button'&&node.text==='No thanks'&&node.class==='android.widget.Button'&&node.enabled==='true'&&node.clickable==='true');
+  if(candidates.length!==1)return null;
+  const node=candidates[0];if(!content.includes(node))return null;
+  const bounds=/^\[(\d+),(\d+)\]\[(\d+),(\d+)\]$/.exec(node.bounds||''),screen=/^(\d+)x(\d+)$/.exec(size||'');
+  if(!bounds||!screen)return null;
+  const [left,top,right,bottom]=bounds.slice(1).map(Number),[width,height]=screen.slice(1).map(Number);
+  if(![left,top,right,bottom,width,height].every(Number.isSafeInteger)||width<=0||height<=0||left>=right||top>=bottom||right>width||bottom>height)return null;
+  return {resourceId:node['resource-id'],text:node.text,bounds:node.bounds,x:Math.floor((left+right)/2),y:Math.floor((top+bottom)/2)};
+}
+
+// Used by the actual runner: failed setup must retain a current system image,
+// while cancellation must never start new device operations.
+export async function verifyNativeStartup({lifecycle,adapter,recordNative,capture,readInternal,waitForClear,receipt}){
+  lifecycle.guard('native startup admission');
+  await capture('android-native-startup',await adapter.screencap());
+  try{
+    let snapshot=await lifecycle.track(adapter.nativeState());recordNative(snapshot,'startup');
+    if(!assessNativeForeground({dumpsysText:snapshot.dumpsys}).ok)throw Error('Stock Chrome must be the native foreground app');
+    if(!assessFirstRunOverlay(snapshot.uiautomatorXml).ok){
+      if(!['chrome://version','chrome://version/'].includes(await readInternal()))throw Error('Startup action is restricted to the internal version page');
+      const rejection=await lifecycle.track(adapter.rejectStartupNotification({recordBefore:before=>recordNative(before,'negative-action-verification')}));
+      receipt.startupNotificationRejection={performed:rejection.performed,action:rejection.action??null};
+      if(!rejection.performed)throw Error('Unrecognized native startup overlay; refusing any action');
+      await waitForClear(async()=>{
+        lifecycle.guard('native startup readiness');
+        snapshot=await lifecycle.track(adapter.nativeState());recordNative(snapshot,'after-negative-action');
+        return assessNativeForeground({dumpsysText:snapshot.dumpsys}).ok&&assessFirstRunOverlay(snapshot.uiautomatorXml).ok;
+      });
+    }
+  }finally{
+    if(lifecycle.cancelled||lifecycle.stopped)receipt.nativeAfterCaptureSkipped='run stopping: '+(lifecycle.cancelled||'finalizing');
+    else{lifecycle.guard('native startup after image');await capture('android-native-version',await adapter.screencap());}
+  }
 }
 
 // --- official SDK inventory -----------------------------------------------
@@ -572,6 +630,17 @@ export function createAndroidAdapter({env=process.env,platform=process.platform,
     }
     throw Error('Timed out: '+label+(last?' ('+last.message+')':''));
   };
+  const nativeState=()=>acquire('native hierarchy capture',async()=>{
+    if(!state.booted)throw Error('Native capture requires the task-owned AVD boot');
+    const dumpsys=adb('shell',['dumpsys','activity','activities']);
+    state.hierarchyFileOwned=true;
+    fence.throwIfStopping('native hierarchy file');
+    adb('shell',['rm','-f',hierarchyFile]);
+    const status=adb('shell',['uiautomator','dump',hierarchyFile]);
+    fence.throwIfStopping('native hierarchy readback');
+    const raw=adb('shell',['cat',hierarchyFile]);
+    return {dumpsys,uiautomatorXml:raw,uiautomatorPath:hierarchyFile,uiautomatorStatus:status.slice(0,1024)};
+  });
 
   return {
     statePaths:paths,
@@ -706,18 +775,20 @@ export function createAndroidAdapter({env=process.env,platform=process.platform,
         kvm:{devicePresent:await fsOps.exists('/dev/kvm')},
       };
     },
-    nativeState(){return acquire('native hierarchy capture',async()=>{
-      if(!state.booted)throw Error('Native capture requires the task-owned AVD boot');
-      const dumpsys=adb('shell',['dumpsys','activity','activities']);
-      // dump [file] writes XML to a file; non-PTY stdout only carries status.
-      // Register before any write so a partial dump still has exact cleanup.
-      state.hierarchyFileOwned=true;
-      fence.throwIfStopping('native hierarchy file');
-      adb('shell',['rm','-f',hierarchyFile]);
-      const status=adb('shell',['uiautomator','dump',hierarchyFile]);
-      fence.throwIfStopping('native hierarchy readback');
-      const raw=adb('shell',['cat',hierarchyFile]);
-      return {dumpsys,uiautomatorXml:raw,uiautomatorPath:hierarchyFile,uiautomatorStatus:status.slice(0,1024)};
+    nativeState,
+    rejectStartupNotification({recordBefore}={}){return acquire('native notification rejection',async()=>{
+      if(typeof recordBefore!=='function')throw Error('Complete native evidence must be recorded before a startup action');
+      const before=await nativeState();
+      fence.throwIfStopping('native notification decision');
+      if(Buffer.byteLength(before.uiautomatorXml)>65536)throw Error('Native evidence exceeds the complete bounded XML budget');
+      await recordBefore(before);
+      fence.throwIfStopping('native notification evidence');
+      const size=/Physical size:\s*(\d+x\d+)/.exec(adb('shell',['wm','size']))?.[1];
+      const action=planStartupNotificationRejection({xml:before.uiautomatorXml,foreground:assessNativeForeground({dumpsysText:before.dumpsys}),size});
+      if(!action)return {performed:false,before};
+      fence.throwIfStopping('native notification negative action');
+      adb('shell',['input','tap',String(action.x),String(action.y)]);
+      return {performed:true,action,before};
     });},
     async screencap(){return adbBinary('exec-out',['screencap','-p']);},
     // Cleanup touches only owned mappings, the owned serial/process and the

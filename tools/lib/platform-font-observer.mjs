@@ -42,8 +42,8 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
   }
   async function fonts(selector,label,{awaitFonts=true}={}){
     receipt.activeProbe={selector,label,phase:'layout'};
-    await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)});if(!n)throw Error('Missing target');n.scrollIntoView({block:'nearest',behavior:'instant'});return new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve(true))));})()`);
     if(awaitFonts)await cdp.evaluate('document.fonts.ready.then(()=>true)');
+    await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)});if(!n)throw Error('Missing target');n.scrollIntoView({block:'nearest',behavior:'instant'});return new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve(true))));})()`);
     let usage;
     // Navigation invalidates protocol node IDs. Re-resolve this exact selector
     // once for that specific protocol error, recording it; assertions never retry.
@@ -56,10 +56,10 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
         usage=await cdp.send('CSS.getPlatformFontsForNode',{nodeId});break;
       }catch(error){if(attempt||!error.message.includes('Could not find node with given id'))throw error;(receipt.nodeInvalidations??=[]).push({...receipt.activeProbe,error:error.message});}
     }
-    const details=await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)}),s=getComputedStyle(n),r=n.getBoundingClientRect();return {text:n.textContent,font:s.font,fontFamily:s.fontFamily,style:s.fontStyle,rect:{x:r.x,y:r.y,width:r.width,height:r.height},visible:!!n.getClientRects().length&&s.visibility!=='hidden'&&r.width>0&&r.height>0&&r.right>0&&r.bottom>0&&r.left<innerWidth&&r.top<innerHeight};})()`);
-    assert.ok(details.visible,label+' must actually render inside the viewport');
+    const details=await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)}),s=getComputedStyle(n),r=n.getBoundingClientRect();return {text:n.textContent,font:s.font,fontFamily:s.fontFamily,style:s.fontStyle,rect:{x:r.x,y:r.y,width:r.width,height:r.height},viewport:{width:innerWidth,height:innerHeight,scrollX,scrollY,fontStatus:document.fonts.status,visualViewport:visualViewport?{width:visualViewport.width,height:visualViewport.height,offsetTop:visualViewport.offsetTop,offsetLeft:visualViewport.offsetLeft}:null},visible:!!n.getClientRects().length&&s.visibility!=='hidden'&&r.width>0&&r.height>0&&r.right>0&&r.bottom>0&&r.left<innerWidth&&r.top<innerHeight};})()`);
     const value={label,selector,...details,...usage};
     receipt.checks.push(value);
+    assert.ok(details.visible,label+' must actually render inside the viewport');
     delete receipt.activeProbe;
     return value;
   }

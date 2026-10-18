@@ -40,6 +40,8 @@ import {
   resolveOriginalTitleProbe,
   assessNativeForeground,
   assessFirstRunOverlay,
+  planStartupNotificationRejection,
+  verifyNativeStartup,
   selectPhoneProfile,
   verifyLaunchFacts,
   verifySystemImageManifest,
@@ -89,6 +91,7 @@ const UIAUTOMATOR_CHROME_XML=`<?xml version='1.0' encoding='UTF-8' standalone='y
   </node>
 </hierarchy>`;
 const UIAUTOMATOR_CHROME_DUMP='UI hierchary dumped to: /dev/tty\n'+UIAUTOMATOR_CHROME_XML;
+const NOTIFICATION_XML=`<hierarchy><node package="com.android.chrome" resource-id="com.android.chrome:id/modal_dialog_view"><node package="com.android.chrome" resource-id="com.android.chrome:id/notification_permission_rationale_title" text="Chrome notifications make things easier"/><node package="com.android.chrome" resource-id="com.android.chrome:id/notification_permission_rationale_message" text="You’ll be able to easily manage media controls, Incognito sessions, downloads and more"/><node package="com.android.chrome" resource-id="com.android.chrome:id/negative_button" text="No thanks" class="android.widget.Button" enabled="true" clickable="true" bounds="[468,1700][690,1820]"/></node></hierarchy>`;
 function happyRouter(file,args){
   const base=file.split('/').pop(),joined=args.join(' ');
   if(base==='avdmanager'){
@@ -518,6 +521,92 @@ test('failed hierarchy dump still cleans only its registered device file',async(
   await adapter.boot();await assert.rejects(adapter.nativeState(),/dump failed/);await adapter.cleanup();
   const deletes=record.exec.filter(call=>call.args.includes('rm'));
   assert.equal(deletes.length,2);assert.ok(deletes.every(call=>call.args.join(' ')==='-s '+SERIAL+' shell rm -f '+target));
+});
+
+test('native startup gate rejects notification rationale, unknown native dialogs and OS permission UI',()=>{
+  assert.equal(assessFirstRunOverlay(NOTIFICATION_XML).ok,false);
+  assert.equal(assessFirstRunOverlay('<hierarchy><node package="com.android.chrome" resource-id="com.android.chrome:id/modal_dialog"/></hierarchy>').ok,false);
+  assert.equal(assessFirstRunOverlay('<hierarchy><node package="com.android.chrome"/><node package="com.google.android.permissioncontroller"/></hierarchy>').ok,false);
+});
+
+test('startup rejection is limited to the complete known native notification prompt and unique safe negative button',()=>{
+  const args={xml:NOTIFICATION_XML,foreground:{ok:true},size:'1080x2340'};
+  assert.deepEqual(planStartupNotificationRejection(args),{resourceId:'com.android.chrome:id/negative_button',text:'No thanks',bounds:'[468,1700][690,1820]',x:579,y:1760});
+  for(const xml of [NOTIFICATION_XML.replace('notification_permission_rationale_title','web_title'),NOTIFICATION_XML.replace('No thanks','Continue'),NOTIFICATION_XML.replace('enabled="true"','enabled="false"'),NOTIFICATION_XML.replace('[690,1820]','[1200,1820]'),NOTIFICATION_XML.replace('</hierarchy>',NOTIFICATION_XML.match(/<node[^>]+negative_button[^>]+\/>/)[0]+'</hierarchy>')])assert.equal(planStartupNotificationRejection({...args,xml}),null);
+  assert.equal(planStartupNotificationRejection({...args,foreground:{ok:false}}),null);
+});
+
+test('production startup rejection uses fresh native bounds on the owned serial and never the positive action',async()=>{
+  const router=(file,args)=>args.join(' ').includes('shell cat /data/local/tmp/get173-')?NOTIFICATION_XML:happyRouter(file,args);
+  const {record,exec,spawnProcess,killProcess,fsOps,sleep,now}=recRouter(router);
+  const adapter=createAndroidAdapter({env:baseEnv(),platform:'linux',exec,spawnProcess,killProcess,fsOps,sleep,now,fence:TEST_FENCE});
+  await adapter.boot();const result=await adapter.rejectStartupNotification({recordBefore:before=>{assert.equal(before.uiautomatorXml,NOTIFICATION_XML);assert.equal(record.exec.some(call=>call.args.includes("input")),false);}});assert.equal(result.performed,true);
+  assert.deepEqual(record.exec.filter(call=>call.args.includes('input')).map(call=>call.args),[['-s',SERIAL,'shell','input','tap','579','1760']]);
+  await adapter.cleanup();
+});
+
+test('known rationale never authorizes a tap through another native overlay or an unrelated button',()=>{
+  const args={foreground:{ok:true},size:'1080x2340'};
+  for(const extra of ['<node package="com.google.android.permissioncontroller"/>','<node package="com.android.chrome" resource-id="com.android.chrome:id/unknown_dialog"/>','<node package="com.android.chrome" resource-id="com.android.chrome:id/fre_welcome"/>']){
+    const xml=NOTIFICATION_XML.replace('</hierarchy>',extra+'</hierarchy>');
+    assert.equal(assessFirstRunOverlay(xml).ok,false);
+    assert.equal(planStartupNotificationRejection({...args,xml}),null);
+  }
+  const button=NOTIFICATION_XML.match(/<node[^>]+negative_button[^>]+\/>/)[0];
+  const xml=NOTIFICATION_XML.replace(button,'').replace('</hierarchy>',button+'</hierarchy>');
+  assert.equal(planStartupNotificationRejection({...args,xml}),null,'same label outside the rationale container is unrelated');
+});
+
+test('production negative action is forbidden until complete bounded evidence is recorded',async()=>{
+  for(const mode of ['oversize','receipt-full','missing-callback']){
+    const xml=mode==='oversize'?NOTIFICATION_XML.replace('</hierarchy>','<node package="com.android.chrome" text="'+'x'.repeat(65536)+'"/></hierarchy>'):NOTIFICATION_XML;
+    const h=recRouter((file,args)=>args.join(' ').includes('shell cat /data/local/tmp/get173-')?xml:happyRouter(file,args));
+    const adapter=createAndroidAdapter({env:baseEnv(),platform:'linux',...h,fence:TEST_FENCE});
+    await adapter.boot();
+    await assert.rejects(()=>adapter.rejectStartupNotification(mode==='missing-callback'?{}:{recordBefore:()=>{throw Error('complete bounded XML budget exhausted');}}),/evidence|budget/i);
+    assert.equal(h.record.exec.filter(call=>call.args.includes('input')).length,0,mode+' must not tap');
+    await adapter.cleanup();
+  }
+});
+
+test('actual startup orchestration retains an after system image on failure and stops capture on cancellation',async()=>{
+  for(const cancelled of [false,true]){
+    const screenshots=[],receipt={},lifecycle={cancelled:null,stopped:false,track:value=>value,guard(){if(this.stopped)throw Error('stopping');}};
+    const snapshot={uiautomatorXml:NOTIFICATION_XML,dumpsys:'topResumedActivity=com.android.chrome/Main'};
+    const adapter={nativeState:async()=>snapshot,screencap:async()=>Buffer.from('actual-injected-system-image'),rejectStartupNotification:async({recordBefore})=>{await recordBefore(snapshot);return {performed:true};}};
+    await assert.rejects(()=>verifyNativeStartup({lifecycle,adapter,receipt,recordNative(){},capture:async name=>screenshots.push(name),readInternal:async()=>'chrome://version',waitForClear:async check=>{await check();if(cancelled){lifecycle.cancelled='SIGTERM';lifecycle.stopped=true;}throw Error('strict-clear timeout');}}),/strict-clear timeout/);
+    assert.deepEqual(screenshots,cancelled?['android-native-startup']:['android-native-startup','android-native-version']);
+    if(cancelled)assert.match(receipt.nativeAfterCaptureSkipped,/SIGTERM/);
+  }
+});
+
+test('cancelled startup admission performs zero device or evidence operations',async()=>{
+  const calls=[],lifecycle={cancelled:'SIGTERM',stopped:true,guard(){throw Error('stopping: SIGTERM');}};
+  const forbidden=async()=>{calls.push('unexpected operation');};
+  await assert.rejects(()=>verifyNativeStartup({lifecycle,adapter:{screencap:forbidden,nativeState:forbidden,rejectStartupNotification:forbidden},capture:forbidden,recordNative:forbidden,readInternal:forbidden,waitForClear:forbidden,receipt:{}}),/SIGTERM/);
+  assert.deepEqual(calls,[]);
+});
+
+function fontLayoutScenario({alwaysInvisible=false,cold=false}={}){
+  let positioned=false,visible=false;
+  const receipt={checks:[]},calls=[];
+  const cdp={async evaluate(expression){
+    if(expression==='document.fonts.ready.then(()=>true)'){assert.equal(cold,false,'withheld-font probe must not wait on the held request');calls.push('ready');if(positioned)visible=false;return true;}
+    if(expression.includes('scrollIntoView')){calls.push('scroll');positioned=true;visible=true;return true;}
+    if(expression.includes('getComputedStyle'))return {text:'synthetic title',rect:{x:0,y:alwaysInvisible?1200:visible?100:1200,width:200,height:40},viewport:{width:393,height:722,scrollY:100,fontStatus:'loaded'},visible:visible&&!alwaysInvisible};
+    throw Error('Unexpected synthetic observation');
+  },async send(method){if(method==='DOM.getDocument')return {root:{nodeId:1}};if(method==='DOM.querySelector')return {nodeId:2};if(method==='CSS.getPlatformFontsForNode')return {fonts:[]};throw Error(method);}};
+  return {receipt,calls,session:createEvidenceSession({cdp,out:'/synthetic-unused',receipt,root:'/synthetic-unused',origin:'http://127.0.0.1',failures:[]})};
+}
+
+test('production font observation positions text after font layout completes and preserves the cold withheld path',async()=>{
+  const normal=fontLayoutScenario();assert.equal((await normal.session.fonts('#title','synthetic layout')).visible,true);assert.deepEqual(normal.calls,['ready','scroll']);
+  const cold=fontLayoutScenario({cold:true});assert.equal((await cold.session.fonts('#title','synthetic withheld',{awaitFonts:false})).visible,true);assert.deepEqual(cold.calls,['scroll']);
+});
+
+test('font visibility failure retains its actual rectangle and viewport in the receipt',async()=>{
+  const {session,receipt}=fontLayoutScenario({alwaysInvisible:true});await assert.rejects(session.fonts('#title','synthetic offscreen'),/inside the viewport/);
+  assert.equal(receipt.checks.length,1);assert.equal(receipt.checks[0].rect.y,1200);assert.equal(receipt.checks[0].viewport.height,722);assert.equal(receipt.checks[0].visible,false);
 });
 
 test('cold-font interception must precede product navigation on the owned origin',async()=>{
