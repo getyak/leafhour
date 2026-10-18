@@ -1,0 +1,63 @@
+/* GET-167 shared typography foundation (GET-173/174/175).
+   One module owns the font faces, family stacks, type scale and tracking rules
+   for the homepage, library, reader and support pages. Pages load this file
+   before their surface stylesheet; those stylesheets reference these tokens at
+   their source instead of adding override rules.
+   Newsreader is self-hosted with unchanged glyphs/metrics (OFL-1.1): see fonts/newsreader/.
+   "Leafhour Serif" resolves every Latin glyph (including the narrow U+2019
+   apostrophe) before any CJK face; Chinese glyphs fall through to Songti /
+   Noto Serif CJK. Italic stays lazy; only the upright face is preloaded. */
+@font-face {
+  font-family: "Leafhour Serif";
+  src: url("/fonts/newsreader/newsreader-var.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Leafhour Serif";
+  src: url("/fonts/newsreader/newsreader-italic-var.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+:where(html) {
+  /* Family stacks. "Leafhour Serif" leads so Latin never reaches a CJK font. */
+  --font-serif: "Leafhour Serif", "Iowan Old Style", Georgia, "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", serif;
+  --font-latin: "Leafhour Serif", "Iowan Old Style", Georgia, "Songti SC", "Noto Serif CJK SC", serif;
+  --font-cjk-serif: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-hand: "Leafhour Serif", "Iowan Old Style", Georgia, "Kaiti SC", STKaiti, KaiTi, "Noto Serif CJK SC", "Songti SC", serif;
+
+  /* Type scale. Functional labels/meta/help text stay >= 12px. */
+  --type-hero: clamp(56px, 7vw, 104px);
+  --type-page: clamp(32px, 4vw, 48px);
+  --type-section: clamp(28px, 3vw, 40px);
+  --type-h3: 20px;
+  --type-body: 16px;
+  --type-small: 14px;
+  --type-caption: 13px;
+  --type-label: 12px;
+
+  /* Tracking tokens. Long reading paragraphs keep normal spacing; the reader
+     body keeps its own --reading-tracking preference. */
+  --track-body: normal;
+  --track-label: .08em;
+  --track-meta: .02em;
+  --track-latin: -.015em;
+  --track-cjk: .01em;
+  --track-hero-latin: -.035em;
+  --track-hero: var(--track-hero-latin);
+  --track-heading: var(--track-cjk);
+}
+/* Tracking follows the real lang attribute, so mixed book labels marked
+   lang="en" inside a Chinese page stay Latin-tight and CJK text stays airy. */
+:where([lang|="en"]) {
+  --track-hero: var(--track-hero-latin);
+  --track-heading: var(--track-latin);
+}
+:where([lang|="zh"], [lang|="ja"]) {
+  --track-hero: var(--track-cjk);
+  --track-heading: var(--track-cjk);
+}

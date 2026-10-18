@@ -13,7 +13,7 @@ import {configurationSummary} from './model-config.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 // The verification page reads the same private, local observations as the book page.
-const assets=new Map([['/',['app/index.html','text/html']],['/styles.css',['app/styles.css','text/css']],['/reader.js',['app/reader.js','text/javascript']],['/experiences.js',['app/experiences.js','text/javascript']],['/experiences.css',['app/experiences.css','text/css']]]);
+const assets=new Map([['/',['app/index.html','text/html']],['/styles.css',['app/styles.css','text/css']],['/reader.js',['app/reader.js','text/javascript']],['/experiences.js',['app/experiences.js','text/javascript']],['/experiences.css',['app/experiences.css','text/css']],['/typography.css',['app/typography.css','text/css']],['/fonts/newsreader/newsreader-var.woff2',['app/fonts/newsreader/newsreader-var.woff2','font/woff2']],['/fonts/newsreader/newsreader-italic-var.woff2',['app/fonts/newsreader/newsreader-italic-var.woff2','font/woff2']],['/fonts/newsreader/OFL.txt',['app/fonts/newsreader/OFL.txt','text/plain']]]);
 for(const file of ['interaction-craft.css','interaction-craft.mjs','action-focus.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/reading-preferences.mjs',['app/reading-preferences.mjs','text/javascript']);
 assets.set('/personal-records.mjs',['app/personal-records.mjs','text/javascript']);
@@ -132,7 +132,7 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
       if(url.pathname==='/api/records'||url.pathname==='/api/records/export'){await writes.catch(()=>{});if(url.pathname.endsWith('export'))res.setHeader('Content-Disposition','attachment; filename="leafhour-my-records.json"');send(200,await readRecords());return;}
       if(url.pathname==='/favicon.ico'){res.writeHead(204);res.end();return;}
       if(url.pathname==='/read'){send(200,await readFile(path.join(root,'app/index.html')),'text/html');return;}
-      if(assets.has(url.pathname)){const [file,type]=assets.get(url.pathname);const data=await readFile(path.join(root,file));if(type.startsWith('image/')||type.startsWith('audio/')){res.writeHead(200,{'Content-Type':type,'Content-Length':data.length});res.end(req.method==='HEAD'?undefined:data);}else send(200,data,type);return;}
+      if(assets.has(url.pathname)){const [file,type]=assets.get(url.pathname);const data=await readFile(path.join(root,file));if(type.startsWith('image/')||type.startsWith('audio/')||type.startsWith('font/')){res.writeHead(200,{'Content-Type':type,'Content-Length':data.length});res.end(req.method==='HEAD'?undefined:data);}else send(200,data,type);return;}
       if(downloads.has(url.pathname)){const filename=downloads.get(url.pathname),file=path.join(path.dirname(bookPath),'exports',filename);res.setHeader('Content-Disposition','attachment; filename="'+filename+'"');send(200,await readFile(file),filename.endsWith('.zip')?'application/zip':'text/markdown');return;}
       throw fail('找不到这个页面',404);
     }catch(e){send(e.status||500,{error:e.status?e.message:'服务暂时无法完成操作'});}

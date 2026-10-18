@@ -14,7 +14,7 @@
 .shelf-filter-toggle{display:flex;align-items:center;gap:7px;min-height:44px;padding:7px 0 7px 5px;font-size:13px;color:var(--muted);white-space:nowrap}
 .shelf-filter-toggle.is-filtered,.shelf-filter-toggle:hover{color:var(--accent)}
 .shelf-filter-toggle [data-icon] svg{width:16px;height:16px}
-.shelf-filter-count:empty{display:none}.shelf-filter-count{font-size:11px;font-variant-numeric:tabular-nums}
+.shelf-filter-count:empty{display:none}.shelf-filter-count{font-size:12px;font-variant-numeric:tabular-nums}
 .shelf-filter-selection{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-12px 0 27px;font-size:12px}
 .shelf-filter-chips{display:flex;gap:8px;flex-wrap:wrap}
 .shelf-filter-chip{padding:3px 10px;min-height:34px;background:var(--surface-soft);border:1px solid var(--line);border-radius:3px;color:var(--accent);font-size:12px}

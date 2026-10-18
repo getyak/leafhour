@@ -107,9 +107,12 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     files['/gift-preview']='book-gift.html';for(const file of ['brand-assets/letter-edge.svg','brand-assets/envelope-edge.svg'])files['/'+file]=file;
     if(safeGiftReturn(p)){files[p]='book-gift.html';res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Cache-Control','private, no-store');}
     Object.assign(files,{'/home-locale.mjs':'home-locale.mjs','/discovery.css':'discovery.css','/robots.txt':'robots.txt','/sitemap.xml':'sitemap.xml'});
+    // GET-167 typography foundation: shared tokens plus the self-hosted
+    // Newsreader faces (OFL-1.1); the hosted build also ships its public manifest.
+    for(const file of ['typography.css','fonts/newsreader/newsreader-var.woff2','fonts/newsreader/newsreader-italic-var.woff2','fonts/newsreader/OFL.txt'])files['/'+file]=file;
     if(!isAPI&&!files[p])return false;
     if(isAPI||p==='/source-review'||p==='/library'||p==='/gift-preview'||safeGiftReturn(p))res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
-    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p==="/robots.txt"?"text/plain":p==="/sitemap.xml"?"application/xml":p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));send(200,files[p]==='home.html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
+    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p==="/robots.txt"?"text/plain":p==="/sitemap.xml"?"application/xml":p.endsWith('.woff2')?'font/woff2':p.endsWith('.txt')?'text/plain':p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));if(type.startsWith('font/')){res.writeHead(200,{'Content-Type':type,'Content-Length':file.length});res.end(req.method==='HEAD'?undefined:file);return true;}send(200,files[p]==='home.html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
     if(req.method!=='GET'&&req.method!=='POST')throw fail('不支持这个请求',405);
     // Hosted clients must be configured explicitly; Host only describes a local HTTP instance.
     const originAllowed=webOrigins.has(req.headers.origin)||!publicOrigin&&req.headers.origin==='http://'+req.headers.host;

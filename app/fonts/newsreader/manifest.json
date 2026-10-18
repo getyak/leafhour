@@ -1,0 +1,56 @@
+{
+  "sourceRepository": "https://github.com/google/fonts",
+  "sourceCommit": "8b0a1d0f5983c89bc2b93f1b5fb55f9e252744b5",
+  "sourcePath": "ofl/newsreader",
+  "designerRepository": "https://github.com/productiontype/Newsreader",
+  "license": "OFL-1.1",
+  "conversion": "fontTools 4.67.0 TTFont flavor=woff2, recalcTimestamp=False; all glyphs and metrics preserved",
+  "fonts": [
+    {
+      "name": "newsreader",
+      "format": "woff2",
+      "file": "newsreader-var.woff2",
+      "sha256": "52f54c34206c51e23e2907bfda4f04fb11ac6ba7f75f8021b2d0075b091d1308",
+      "bytes": 214960,
+      "ttfSha256": "8a08d13f8a6c0d51be379a60af84f945f65369a67e509ee3c3bdcc421254d7c1",
+      "axes": {
+        "wght": [
+          200.0,
+          400.0,
+          800.0
+        ],
+        "opsz": [
+          6.0,
+          18.0,
+          72.0
+        ]
+      },
+      "unitsPerEm": 2000,
+      "apostropheAdvance": 455,
+      "cjkGlyphs": false
+    },
+    {
+      "name": "newsreader-italic",
+      "format": "woff2",
+      "file": "newsreader-italic-var.woff2",
+      "sha256": "8920f06c4c116e91721a2cbbbb195d1ab6997a657cb3313dab5c99b6b202d899",
+      "bytes": 239360,
+      "ttfSha256": "796668611f80b64d5adf182fde3b6f29ed83b4e7cbec7b96937e84ac01364792",
+      "axes": {
+        "wght": [
+          200.0,
+          400.0,
+          800.0
+        ],
+        "opsz": [
+          6.0,
+          18.0,
+          72.0
+        ]
+      },
+      "unitsPerEm": 2000,
+      "apostropheAdvance": 458,
+      "cjkGlyphs": false
+    }
+  ]
+}

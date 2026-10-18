@@ -1,7 +1,7 @@
 /* Leafhour's wordmark and single-colour page/leaf/hour mark.
    Reader colours and reading preferences remain owned by their existing themes. */
 :root {
-  --leafhour-serif: "Iowan Old Style", "Baskerville", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --leafhour-serif: var(--font-serif);
 }
 .brand { gap: 8px; }
 .brand .brand-mark,
@@ -31,8 +31,8 @@
 .library-mobile-bar .brand .brand-name { font-size: 29px; }
 
 #home-view .hero-copy h1 {
-  font: 400 clamp(72px, 7.2vw, 106px)/1.02 var(--leafhour-serif);
-  letter-spacing: -.05em;
+  font: 400 var(--type-hero)/1.02 var(--leafhour-serif);
+  letter-spacing: var(--track-hero);
   color: var(--ink);
   margin: 8px 0 27px;
 }
@@ -82,7 +82,7 @@
   -webkit-mask: url('/brand-assets/leafhour-mark.svg') center / contain no-repeat;
 }
 .settings-brand-promise { font: 24px/1.4 var(--leafhour-serif); letter-spacing: -.02em; margin: 0 0 19px; }
-.book-info-cover > span { font-family: var(--leafhour-serif); font-size: 10px; letter-spacing: -.015em; }
+.book-info-cover > span { font-family: var(--leafhour-serif); font-size: 12px; letter-spacing: var(--track-heading); }
 
 .gift-brand { gap: 7px; }
 .gift-brand > svg { width: 34px; height: 34px; stroke-width: 2; }
@@ -114,7 +114,7 @@
   #home-view .hero-description { font-size: 21px; }
   #home-view .hero-detail { font-size: 14px; margin-top: 9px; }
   #home-view .hero-actions { margin-top: 24px; }
-  #home-view .hero-footnote { font-size: 11px; }
+  #home-view .hero-footnote { font-size: 12px; }
   #home-view .reading-promise { align-items: start; gap: 12px; }
   #home-view .reading-promise p { flex: 1 1 200px; margin: 8px 0; }
   #home-view .reading-promise a { flex: none; }

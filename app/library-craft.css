@@ -18,8 +18,8 @@
 }
 .library-page #library-view { max-width: 1200px; padding: 48px 64px 80px; }
 .library-page .room-heading { gap: 17px; margin-bottom: 25px; }
-.library-page .room-heading h1 { font-size: 32px; letter-spacing: .08em; }
-.library-page #room-count { font-size: 12px; letter-spacing: .06em; }
+.library-page .room-heading h1 { font-size: var(--type-page); letter-spacing: var(--track-heading); }
+.library-page #room-count { font-size: 12px; letter-spacing: var(--track-label); }
 .library-page .site-header {
   background-color: var(--surface-soft);
   background-image: linear-gradient(#dce4d3d4, #dce4d3d4), var(--room-texture);
@@ -45,9 +45,9 @@
 .library-page .library-settings { border-top-color: color-mix(in srgb, var(--line) 50%, transparent); }
 .library-page #reading-dashboard { margin-bottom: 36px; }
 .library-page .today-panel { grid-template-columns: 184px minmax(0, 1fr); gap: 20px 48px; padding: 16px 0 32px; }
-.library-page .today-label { letter-spacing: .12em; font-size: 12px; margin-bottom: 10px; }
-.library-page .today-copy h2 { font-size: clamp(27px, 2.7vw, 36px); line-height: 1.5; letter-spacing: .025em; }
-.library-page .today-author { font-size: 13px; letter-spacing: .02em; }
+.library-page .today-label { letter-spacing: var(--track-label); font-size: 12px; margin-bottom: 10px; }
+.library-page .today-copy h2 { font-size: var(--type-section); line-height: 1.5; letter-spacing: var(--track-heading); }
+.library-page .today-author { font-size: 13px; letter-spacing: var(--track-meta); }
 .library-page .today-description { margin-top: 15px; }
 .library-page .room-excerpt { max-width: 590px; }
 .library-page .room-excerpt-header { margin-bottom: 10px; }
@@ -62,7 +62,7 @@
   content: ''; position: absolute; inset: 0 0 auto; height: 7px;
   background: var(--line); opacity: .6; mask: var(--drawn-rule) center / 100% 100% no-repeat;
 }
-.library-page #shelf-title { font-size: 21px; letter-spacing: .06em; margin-bottom: 26px; }
+.library-page #shelf-title { font-size: var(--type-h3); letter-spacing: var(--track-heading); margin-bottom: 26px; }
 
 /* A book's binding belongs to its identity, so search and resume use the same colour. */
 .library-page :is(.book-cover, .continue-cover) {
@@ -106,7 +106,7 @@
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden;
 }
 .library-page .binding-original {
-  font: 10px/1.6 Georgia, serif; margin-top: auto;
+  font: 10px/1.6 var(--font-serif); margin-top: auto;
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere;
 }
 .library-page #reading-dashboard .continue-cover {
@@ -137,12 +137,12 @@
 .library-page #library-books .binding-type { inset: 25px 16px 23px 24px; gap: 11px; }
 .library-page #library-books .binding-title { font-size: 21px; }
 .library-page #library-books .book-meta { padding: 18px 3px 0; gap: 0; }
-.library-page #library-books .book-meta h3 { font: 18px/1.6 var(--serif); margin: 0 0 5px; letter-spacing: .015em; }
+.library-page #library-books .book-meta h3 { font: var(--type-h3)/1.6 var(--serif); margin: 0 0 5px; letter-spacing: var(--track-heading); }
 .library-page #library-books .book-author { font-size: 12px; line-height: 1.7; min-height: 0; margin: 0; }
-.library-page #library-books .book-label { margin: 9px 0 0; font-size: 11px; line-height: 1.8; }
+.library-page #library-books .book-label { margin: 9px 0 0; font-size: 12px; line-height: 1.8; }
 .library-page #library-books .book-bottom { margin-top: 10px; gap: 6px 12px; font-size: 12px; }
 .library-page #library-books .book-read { font-size: 12px; min-height: 40px; border-bottom: 0; }
-.library-page #library-books .book-details { font-size: 11px; }
+.library-page #library-books .book-details { font-size: 12px; }
 .library-page .book-details-body { background-image: var(--room-texture); background-size: 700px; background-blend-mode: multiply; border-radius: 2px 6px 3px 5px; }
 .library-page #library-books .book-card:focus-within { position: relative; z-index: 2; }
 .library-page #library-books .book-card:has(.book-details[open]) { position: relative; z-index: 3; }
@@ -187,7 +187,7 @@
   .library-page #reading-dashboard .continue-cover .binding-author { font-size: 9px; -webkit-line-clamp: 1; }
   .library-page #reading-dashboard .continue-cover .binding-original { display: none; }
   .library-page .today-copy h2 { font-size: 25px; }
-  .library-page .today-label { font-size: 11px; }
+  .library-page .today-label { font-size: 12px; }
   .library-page .room-excerpt-text { font-size: 20px; -webkit-line-clamp: 4; }
   .library-page #library-books { --shelf-gap: 27px; grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 30px; }
   .library-page #library-books .book-art { height: 220px; padding: 0 7px 14px; }
