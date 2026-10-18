@@ -265,7 +265,9 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='reading-sessions'&&req.method==='POST'){send(201,await library.saveReadingSession(user,id,body));return true;}
       if(action==='reading-milestones'&&req.method==='POST'){send(201,await library.recordReadingMilestone(user,id,body));return true;}
       if(action==='reading-goal'&&req.method==='POST'){send(200,await library.setReadingGoal(user,id,body));return true;}
-      if(action==='translate'&&req.method==='POST'){send(200,await library.translate(user,id,body.passageId));return true;}
+      // Legacy callers send only passageId and stay compatible; batch callers
+      // may pin the optional expected content version.
+      if(action==='translate'&&req.method==='POST'){send(200,await library.translate(user,id,body.passageId,body?.contentVersion!==undefined?{expectedContentVersion:body.contentVersion}:{}));return true;}
       if(action==='experiences'&&req.method==='GET'){const book=await library.getBook(user,id);send(200,{bookId:id,contentVersion:book.contentVersion,xrays:[],cards:[],invitations:[],states:{},echoes:[],echoAvailable:false});return true;}
       if(action==='experience-events'&&req.method==='POST'){await library.getBook(user,id);send(200,{accepted:0,reason:'本书尚未开启探索体验统计'});return true;}
       if(action==='records/import'&&req.method==='POST'){const book=await library.getBook(user,id);if(body?.bookId!==id||body.kind!=='marginalia-personal-records')throw fail('请选择这本书的记录包');send(200,await library.restoreLibrary(user,{kind:'marginalia-library',schemaVersion:1,books:[{book,records:body}]}));return true;}
