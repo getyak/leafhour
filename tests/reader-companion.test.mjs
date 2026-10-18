@@ -97,3 +97,102 @@ test('default-on migration preserves explicit closes across reloads and new cont
  delete data.companion.preference;data.companion.enabled=false;data.companion.revision=3;
  assert.equal((await service.view(user,'one')).enabled,false,'legacy explicit closes remain off');
 });
+
+// ---- GET-184 client companion adapter: injected anchor, unread and focus contracts ----
+import {mountReaderCompanion,mountCompanionAnchor} from '../app/reader-companion.mjs';
+
+class ClientElement extends EventTarget{
+  constructor(tag='#'){super();this.tagName=String(tag).toUpperCase();this.children=[];this.dataset={};this.attrs={};this.className='';this.style={setProperty(k,v){this[k]=v;},removeProperty(k){delete this[k];}};this.hidden=false;this.isConnected=true;this.textContent='';this.classList={add:c=>{if(!this.className.split(' ').includes(c))this.className+=(this.className?' ':'')+c;},remove:c=>{this.className=this.className.split(' ').filter(x=>x&&x!==c).join(' ');},toggle:(c,on)=>{on?this.classList.add(c):this.classList.remove(c);},contains:c=>this.className.split(' ').includes(c)};}
+  append(...nodes){for(const n of nodes){n.remove();n.parentElement=this;this.children.push(n);}}
+  appendChild(n){this.append(n);return n;}
+  insertBefore(n,before){n.remove();n.parentElement=this;const i=before?this.children.indexOf(before):-1;if(i>=0)this.children.splice(i,0,n);else this.children.push(n);}
+  after(...nodes){const p=this.parentElement;if(!p)return;const i=p.children.indexOf(this);for(const [k,n]of nodes.entries()){n.remove();n.parentElement=p;p.children.splice(i+1+k,0,n);}}
+  remove(){const p=this.parentElement;if(p)p.children=p.children.filter(c=>c!==this);this.parentElement=null;}
+  setAttribute(k,v){this.attrs[k]=String(v);}getAttribute(k){return this.attrs[k];}hasAttribute(k){return k in this.attrs;}
+  contains(n){return n===this||this.children.some(c=>c.contains(n));}
+  focus(){this.docOwner?.activeElement;globalThis.document.activeElement=this;this.focused=(this.focused||0)+1;}
+  getBoundingClientRect(){return {left:this.rectLeft??0,top:this.rectTop??0,right:(this.rectLeft??0)+(this.rectWidth??0),bottom:(this.rectTop??0)+(this.rectHeight??0),width:this.rectWidth??0,height:this.rectHeight??0};}
+  getClientRects(){return this.rects??[];}
+  querySelectorAll(){return [];}
+  closest(){return null;}
+  querySelector(){return null;}
+  get lastElementChild(){return this.children.at(-1)||null;}
+}
+function clientWindow(){
+  const win=new EventTarget();win.innerWidth=1200;win.innerHeight=800;win.visualViewport=null;return win;
+}
+function clientDocument(){
+  const doc=new EventTarget();doc.activeElement=doc.body=new ClientElement('body');doc.visibilityState='visible';doc.hasFocus=()=>true;doc.createElement=tag=>new ClientElement(tag);doc.createTextNode=text=>{const n=new ClientElement('#text');n.textContent=text;return n;};doc.querySelectorAll=()=>[];doc.querySelector=()=>null;doc.documentElement=new ClientElement('html');return doc;
+}
+
+test('the companion bubble anchor clamps to the viewport and never drags or retitles the shared pill',()=>{
+  const win=clientWindow(),anchor=new ClientElement('button');anchor.rectLeft=600;anchor.rectTop=700;anchor.rectWidth=64;anchor.rectHeight=40;
+  const holder=new ClientElement('body');holder.append(anchor);
+  const bubble=new ClientElement('aside');bubble.rectWidth=240;bubble.rectHeight=120;anchor.after(bubble);
+  const adapter=mountCompanionAnchor({anchor,window:win});
+  const detach=adapter.attach(bubble);adapter.layout();
+  const left=Number.parseFloat(bubble.style.left),top=Number.parseFloat(bubble.style.top);
+  assert.ok(Number.isFinite(left)&&Number.isFinite(top),'the anchor adapter positions attached bubbles');
+  assert.ok(left>=12&&left+240<=1200-12,'bubble stays inside horizontal viewport bounds');
+  assert.ok(top>=12&&top+120<=800-12,'bubble stays inside vertical viewport bounds');
+  assert.ok(top+120<=700-8||top>=740,'the bubble avoids overlapping the anchor when space allows');
+  assert.equal(anchor.getAttribute('aria-description'),undefined,'the shared pill keeps no drag description from the adapter');
+  assert.equal(anchor.style.left,undefined,'the anchor adapter never moves the shared pill');
+  bubble.rectTop=12;bubble.rectLeft=12;adapter.layout();detach();adapter.dispose();
+});
+
+test('injected reader companion anchors the bubble to the pill and never mutates pill ARIA or drag state',async t=>{
+  const previous={document:globalThis.document,window:globalThis.window,localStorage:globalThis.localStorage,innerWidth:globalThis.innerWidth,innerHeight:globalThis.innerHeight};
+  const doc=clientDocument(),win=clientWindow(),storage=new Map();
+  globalThis.document=doc;globalThis.window=win;globalThis.innerWidth=win.innerWidth;globalThis.innerHeight=win.innerHeight;globalThis.localStorage={getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)};
+  globalThis.getSelection=()=>null;
+  let cleanupCompanion=()=>{};
+  t.after(()=>{cleanupCompanion();Object.assign(globalThis,previous);});
+  const header=new ClientElement('header');header.append(new ClientElement('button'));
+  const root=new ClientElement('dialog');const pill=new ClientElement('button');doc.body.append(header,root,pill);
+  const anchor=mountCompanionAnchor({anchor:pill,window:win});
+  const requests=[],unreads=[],returns=[];
+  const api=async(url,data)=>{requests.push({url,data});return {enabled:true,revision:1,contentVersion:'v1',sessionId:'s1'};};
+  const chat={surface:()=>({launcher:null,header,root,motion:null,position:anchor})};
+  const book={bookId:'book-one',contentVersion:'v1',sections:[{chapterId:'ch1',paragraphs:[{id:'p1',kind:'body'}]}]};
+  const companion=mountReaderCompanion({bookId:'book-one',getOwner:()=> 'reader-one',getReader:()=>({getBook:()=>book}),api,chat,openAuth(){},integration:{anchor:pill,onUnread:v=>unreads.push(v),onFocusReturn:()=>returns.push('pill')}});
+  cleanupCompanion=()=>companion.dispose();
+  const all=n=>[n,...n.children.flatMap(all)],find=cls=>all(doc.body).find(n=>n.className===cls);
+  const bubble=find('squirrel-companion-bubble');
+  assert.ok(bubble,'the bubble exists beside the shared pill');
+  assert.equal(bubble.parentElement,doc.body,'the bubble anchors on the shared pill surface');
+  assert.equal(pill.getAttribute('aria-describedby'),undefined,'the tools coordinator keeps pill ARIA ownership');
+  assert.equal(pill.getAttribute('aria-description'),undefined,'no drag hooks attach to the shared pill');
+  assert.equal(pill.dataset.dragging,undefined);
+  root.dispatchEvent(new Event('reading-chat-open'));
+  assert.deepEqual(unreads,[false],'the explicit unread callback receives chat-open resets');
+  const dismiss=find('squirrel-companion-dismiss');
+  dismiss.dispatchEvent(new Event('click'));
+  assert.deepEqual(returns,['pill'],'bubble dismissal returns to the shared pill through the focus callback');
+});
+
+test('the default standalone companion API keeps working beside its generated launcher',async t=>{
+  const previous={document:globalThis.document,window:globalThis.window,localStorage:globalThis.localStorage,innerWidth:globalThis.innerWidth,innerHeight:globalThis.innerHeight};
+  const doc=clientDocument(),win=clientWindow(),storage=new Map();
+  globalThis.document=doc;globalThis.window=win;globalThis.innerWidth=win.innerWidth;globalThis.innerHeight=win.innerHeight;
+  globalThis.localStorage={getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)};
+  globalThis.getSelection=()=>null;
+  let cleanup=()=>{};
+  t.after(()=>{cleanup();Object.assign(globalThis,previous);});
+  const header=new ClientElement('header');header.append(new ClientElement('button'));
+  const root=new ClientElement('dialog');const launcher=new ClientElement('button');launcher.className='library-chat-launcher';doc.body.append(header,root,launcher);
+  const requests=[];
+  const api=async(url)=>{requests.push(url);return {enabled:true,revision:1,contentVersion:'v1',sessionId:'s1'};};
+  const chat={surface:()=>({launcher,header,root,motion:{setState(){}},position:{attach:()=>()=>{},layout(){},dispose(){}}})};
+  const book={bookId:'book-one',contentVersion:'v1',sections:[{chapterId:'ch1',paragraphs:[{id:'p1',kind:'body'}]}]};
+  const companion=mountReaderCompanion({bookId:'book-one',getOwner:()=> 'reader-one',getReader:()=>({getBook:()=>book}),api,chat,openAuth(){}});
+  cleanup=()=>companion.dispose();
+  const all=n=>[n,...n.children.flatMap(all)],find=cls=>all(doc.body).find(n=>n.className===cls);
+  assert.ok(find('squirrel-companion-bubble'),'the default API places the bubble beside its launcher');
+  assert.equal(launcher.getAttribute('aria-describedby'),'squirrel-companion-status','default mode keeps the historical described-by wiring');
+  const dismiss=find('squirrel-companion-dismiss');dismiss.dispatchEvent(new Event('click'));
+  assert.equal(launcher.focused>0,true,'dismiss returns to the launcher in default mode');
+  companion.dispose();
+  assert.equal(all(doc.body).some(n=>n.className==='squirrel-companion-bubble'),false,'dispose removes the default bubble');
+  assert.equal(launcher.className.includes('has-companion-message'),false);
+});

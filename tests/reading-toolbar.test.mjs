@@ -77,3 +77,35 @@ test('a dialog added after mounting keeps its sidebar opener available until it 
     dialogOpen=true;mutation();t.mock.timers.tick(6000);assert.equal(root.dataset.expanded,'false','a dialog never reveals a previously closed panel');
   }finally{globalThis.document=oldDocument;globalThis.MutationObserver=oldObserver;}
 });
+
+// GET-184: explicit coordinator hooks over the single toolbar state machine.
+test('mountReadingToolbar exposes explicit reveal, conceal, hold and control-mode hooks',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});
+  class Element extends EventTarget {
+    dataset={}; attributes=new Map(); inert=false; textContent=''; title='';
+    setAttribute(key,value){this.attributes.set(key,value);}
+    getAttribute(key){return this.attributes.get(key);}
+    contains(){return false;}
+    focus(){this.focused=true;}
+  }
+  const root=new Element(),elements=new Map(['reading-tools-trigger','reading-tools-panel','reading-tools-close','reading-tools-label','reading-tools-notice'].map(id=>['#'+id,new Element()]));root.querySelector=id=>elements.get(id);
+  const document=new Element();document.body=new Element();document.querySelector=()=>null;document.querySelectorAll=()=>[];
+  const previous={document:globalThis.document,observer:globalThis.MutationObserver};
+  globalThis.document=document;globalThis.MutationObserver=class{observe(){}};
+  const changes=[];
+  try{
+    const toolbar=mountReadingToolbar(root,{onExpandedChange:expanded=>changes.push(expanded)});
+    assert.equal(toolbar.expanded,false);
+    toolbar.reveal();assert.equal(toolbar.expanded,true);assert.equal(root.dataset.expanded,'true');
+    t.mock.timers.tick(6000);assert.equal(toolbar.expanded,false,'the single conceal timer still runs inside the state machine');
+    assert.deepEqual(changes,[true,false],'the coordinator sees one expand and one conceal');
+    toolbar.reveal();toolbar.hold('pointer',true);t.mock.timers.tick(10000);assert.equal(toolbar.expanded,true);
+    toolbar.conceal();assert.equal(toolbar.expanded,false);
+    assert.equal(elements.get('#reading-tools-trigger').getAttribute('aria-expanded'),'false');
+    toolbar.setControlMode('focused');
+    assert.match(elements.get('#reading-tools-trigger').getAttribute('aria-label'),/导航/,'focused control mode names the revealed navigation');
+    toolbar.setControlMode('unfocused');
+    assert.doesNotMatch(elements.get('#reading-tools-trigger').getAttribute('aria-label'),/导航/);
+    assert.deepEqual(changes,[true,false,true,false]);
+  }finally{Object.assign(globalThis,previous);}
+});

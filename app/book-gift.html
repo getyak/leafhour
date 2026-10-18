@@ -13,13 +13,13 @@
   <script type="module" src="/book-gift.mjs"></script>
   <link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script>
 <link rel="stylesheet" href="/leafhour-brand.css">
-</head>
-<body class="gift-page">
+<script type="module" src="/palette-bootstrap.mjs"></script></head>
+<body class="gift-page" data-palette-page="gift">
   <div class="gift-atmosphere" aria-hidden="true"></div>
   <a class="skip-link" href="#gift-main">跳到赠书信</a>
   <header class="gift-site-header">
     <a class="gift-brand" href="/" aria-label="Leafhour 首页"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg><span lang="en">Leafhour</span></a>
-    <div class="gift-header-actions"><button id="site-theme" type="button" aria-label="页面外观">◐</button><a href="/library">我的书房</a></div>
+    <div class="gift-header-actions"><button class="palette-entry" data-palette-open type="button">搜索与命令 <kbd data-palette-keycap></kbd></button><button id="site-theme" type="button" aria-label="页面外观">◐</button><a href="/library">我的书房</a></div>
   </header>
   <main id="gift-main" tabindex="-1">
     <div id="gift-loading" class="gift-loading" role="status"><span class="loading-fold" aria-hidden="true"></span><p>正在取出信笺…</p></div>

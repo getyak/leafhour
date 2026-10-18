@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readerConversationContext,mountReaderConversation,readerInteractionBlocked} from '../app/reader-conversation.mjs';
+import {mountLibraryChat} from '../app/library-chat.mjs';
+import {mountReaderCompanion} from '../app/reader-companion.mjs';
 
 const book={bookId:'book-one',sections:[{paragraphs:[{id:'p1'},{id:'p2'}]}]};
 const reader=(selected='p2',anchor='p1')=>({getBook:()=>book,isSelectionActive:()=>true,getSelectedId:()=>selected,getAnchor:()=>({passageId:anchor})});
@@ -57,7 +59,9 @@ test('reader chat requests keep owner guards without remapping library URLs',asy
 
 test('session-change responses clear private chat before returning to the library',async()=>{
   const f=mount({request:async()=>new Response(JSON.stringify({error:'changed'}),{status:409,headers:{'X-Reader-Session-Changed':'1'}})});
+  let notified=0;f.events.addEventListener('reader:session-changed',()=>notified++);
   await assert.rejects(f.hooks.api('/api/library/books/book-one/chat'),error=>error.status===409);assert.equal(f.counts().resets,1);assert.deepEqual(f.replacements,['/library']);
+  assert.equal(notified,1,'the reader session lifecycle notifies palette caches before leaving the page');
 });
 
 test('HTTP errors preserve status for idempotent recovery and do not fabricate replies',async()=>{
@@ -68,4 +72,111 @@ test('a companion result rechecks the current cookie identity before exposing ol
   const f=mount({request:async url=>new Response(JSON.stringify(url==='/api/auth/session'?{user:{id:'different-reader'}}:{kind:'companion',answer:{summary:'原账号的私有消息'}}),{status:200})});
   await assert.rejects(f.hooks.api('/api/library/books/book-one/companion/messages',{id:'one'}),e=>e.status===409);
   assert.equal(f.counts().resets,1);assert.deepEqual(f.replacements,['/library']);
+});
+
+// ---- GET-184 injected chat: real chat + companion controllers over one tools seam ----
+class Element extends EventTarget {
+  constructor(tag,doc){super();this.tagName=tag.toUpperCase();this.doc=doc;this.children=[];this.attrs={};this.style={setProperty(k,v){this[k]=v;},removeProperty(k){delete this[k];}};this.value='';this.open=false;this.isConnected=true;this.hidden=false;this.scrollHeight=1000;this.clientHeight=300;this.scrollTop=0;this.className='';this.dataset={};this.classList={add:c=>{if(!this.className.split(' ').includes(c))this.className+=(this.className?' ':'')+c;},remove:c=>{this.className=this.className.split(' ').filter(x=>x&&x!==c).join(' ');},toggle:(c,on)=>{on?this.classList.add(c):this.classList.remove(c);},contains:c=>this.className.split(' ').includes(c)};}
+  append(...nodes){for(const n of nodes){n.remove();n.parentElement=this;this.children.push(n);}}
+  appendChild(n){this.append(n);return n;}
+  replaceChildren(...nodes){this.children=[];this.append(...nodes);}
+  remove(){if(this.parentElement){const p=this.parentElement;p.children=p.children.filter(n=>n!==this);this.parentElement=null;}}
+  insertBefore(n,before){n.remove();const index=before?this.children.indexOf(before):this.children.length;this.children.splice(index,0,n);n.parentElement=this;}
+  after(...nodes){const p=this.parentElement;if(!p)return;const i=p.children.indexOf(this);for(const [k,n]of nodes.entries()){n.remove();n.parentElement=p;p.children.splice(i+1+k,0,n);}}
+  setAttribute(k,v){this.attrs[k]=String(v);}getAttribute(k){return this.attrs[k];}hasAttribute(k){return k in this.attrs;}
+  contains(n){return n===this||this.children.some(c=>c.contains(n));}
+  focus(){if(this.doc)this.doc.activeElement=this;}
+  show(){this.open=true;this.mode='nonmodal';this.focus();}
+  showModal(){this.open=true;this.mode='modal';}
+  close(){this.open=false;this.dispatchEvent(new Event('close'));}
+  click(){this.dispatchEvent(new Event('click',{cancelable:true}));}
+  getBoundingClientRect(){return {top:0,left:0,right:0,bottom:0,width:0,height:0};}
+  getClientRects(){return [{top:0,left:0,right:10,bottom:10,width:10,height:10}];}
+  get clientTop(){return this._clientTop||0;}
+  querySelector(){return null;}querySelectorAll(){return [];}
+  get lastElementChild(){return this.children.at(-1)||null;}
+}
+const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
+function realFixture(t){
+  const doc=new EventTarget();doc.createElement=tag=>new Element(tag,doc);doc.createTextNode=text=>{const n=new Element('#text',doc);n.textContent=text;return n;};doc.body=doc.createElement('body');
+  const all=n=>[n,...n.children.flatMap(all)];doc.getElementById=id=>all(doc.body).find(n=>n.id===id);doc.querySelectorAll=()=>[];doc.querySelector=()=>null;
+  doc.visibilityState='visible';doc.hasFocus=()=>true;
+  const previous={document:globalThis.document,window:globalThis.window,localStorage:globalThis.localStorage,innerWidth:globalThis.innerWidth,innerHeight:globalThis.innerHeight,getSelection:globalThis.getSelection,setInterval:globalThis.setInterval,clearInterval:globalThis.clearInterval,setTimeout:globalThis.setTimeout,clearTimeout:globalThis.clearTimeout};
+  const storage=new Map();globalThis.document=doc;globalThis.innerWidth=1200;globalThis.innerHeight=800;globalThis.getSelection=()=>null;
+  const timers=new Map();let timerId=0;globalThis.setInterval=(fn)=>{timers.set(++timerId,fn);return timerId;};globalThis.clearInterval=id=>timers.delete(id);globalThis.setTimeout=(fn)=>{timers.set(++timerId,fn);return timerId;};globalThis.clearTimeout=id=>timers.delete(id);
+  globalThis.window={matchMedia:()=>({matches:false,addEventListener(){}}),visualViewport:null,addEventListener(){},removeEventListener(){}};
+  globalThis.localStorage={getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)};
+  const dialog=doc.createElement('dialog');dialog.id='reader-conversation';doc.body.append(dialog);
+  const header=doc.createElement('header');const closeButton=doc.createElement('button');header.append(closeButton);
+  const pill=doc.createElement('button');pill.id='reading-tools-trigger';pill.className='reading-tools-trigger';
+  const triggerHost=doc.createElement('div');triggerHost.id='reading-tools-chat-slot';doc.body.append(header,pill,triggerHost);
+  let cleanup=()=>{};
+  t.after(()=>{cleanup();Object.assign(globalThis,previous);});
+  return {doc,dialog,header,pill,triggerHost,all,onCleanup:fn=>{cleanup=fn;}};
+}
+function realMount(t,{integration=null,requests=[]}={}){
+  const f=realFixture(t);
+  const api=async(url,data,options={})=>{requests.push({url,data,options});if(url==='/api/auth/session')return new Response(JSON.stringify({user:{id:'reader-one'}}),{status:200});if(url==='/api/library/books/book-one/companion')return {enabled:true,revision:1,contentVersion:'v1',sessionId:'s1'};if(url.endsWith('/chat'))return {bookId:'book-one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:'p1',chapterTitle:'章节',original:'Source'},turns:[]};return {};};
+  const book={bookId:'book-one',contentVersion:'v1',title:{zh:'一本书',en:'A book'},sections:[{chapterId:'ch1',paragraphs:[{id:'p1',kind:'body'},{id:'p2',kind:'body'}]}]};
+  const reader={getBook:()=>book,isSelectionActive:()=>false,getAnchor:()=>({passageId:'p1'})};
+  const opened=[];
+  const instance=mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,api:(url,data,options)=>Promise.resolve(api(url,data,options)),integration,mountCompanion:undefined});
+  f.onCleanup(()=>{});
+  return {...f,instance,requests,book,opened};
+}
+
+test('injected conversation creates one AI trigger in the tools surface and no generated launcher',async t=>{
+  const seams={triggerHost:null,companionAnchor:null,focusReturn:null,onUnread:null,onOpen:null};
+  const calls={unread:[],opened:0,returned:0};
+  const f=realFixture(t);
+  const triggerHost=f.triggerHost,pill=f.pill;
+  const api=async url=>{
+    const value=url==='/api/library/books/book-one/companion'?{enabled:true,revision:1,contentVersion:'v1',sessionId:'s1'}:{bookId:'book-one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:'p1',chapterTitle:'章节',original:'Source'},turns:[]};
+    return new Response(JSON.stringify(value),{status:200});
+  };
+  const book={bookId:'book-one',contentVersion:'v1',title:{zh:'一本书',en:'A book'},sections:[{chapterId:'ch1',paragraphs:[{id:'p1',kind:'body'}]}]};
+  const reader={getBook:()=>book,isSelectionActive:()=>false,getAnchor:()=>({passageId:'p1'})};
+  const integration={triggerHost,companionAnchor:pill,focusReturn:()=>{calls.returned++;pill.focus();},onUnread:value=>calls.unread.push(value),onOpen:()=>{calls.opened++;}};
+  Object.assign(seams,{triggerHost,companionAnchor:pill,focusReturn:integration.focusReturn,onUnread:integration.onUnread,onOpen:integration.onOpen});
+  mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,api,integration});
+  await flush();
+  const all=f.all;
+  assert.equal(all(f.doc.body).filter(n=>n.className==='library-chat-launcher').length,0,'injected mode generates no hidden launcher');
+  assert.equal(all(f.doc.body).filter(n=>n.className==='squirrel-companion-toggle').length,1,'exactly one companion toggle mounts');
+  const trigger=all(triggerHost).find(n=>n.tagName==='BUTTON');
+  assert.ok(trigger,'the AI trigger lives in the tools surface');
+  assert.match(trigger.getAttribute('aria-label')||trigger.textContent||'',/对话|Ask AI/);
+  trigger.click();await flush();
+  assert.equal(f.dialog.open,true,'the injected trigger opens the conversation');
+  assert.equal(calls.opened,1,'opening chat performs the focus handoff to close tools');
+  assert.deepEqual(calls.unread,[false],'chat open resets unread through the explicit callback');
+  assert.equal(pill.getAttribute('aria-expanded'),undefined,'shared pill ARIA stays with the tools coordinator');
+  assert.equal(pill.getAttribute('aria-label'),undefined);
+  assert.equal(pill.getAttribute('aria-description'),undefined);
+  const dismiss=all(f.doc.body).find(n=>n.className==='squirrel-companion-dismiss');
+  dismiss.click();assert.equal(calls.returned,1,'bubble dismissal returns focus through the explicit callback');
+  f.dialog.close();
+  assert.equal(calls.returned,2,'collapsing chat falls back to the shared pill');
+});
+
+test('tools reveals never re-mount chat or companion and keep one instance each',async t=>{
+  const f=realFixture(t);
+  const mounts={chat:0,companion:0};
+  const api=async url=>{
+    const value=url==='/api/library/books/book-one/companion'?{enabled:true,revision:1,contentVersion:'v1',sessionId:'s1'}:{bookId:'book-one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:'p1',chapterTitle:'章节',original:'Source'},turns:[]};
+    return new Response(JSON.stringify(value),{status:200});
+  };
+  const book={bookId:'book-one',contentVersion:'v1',title:{zh:'一本书',en:'A book'},sections:[{chapterId:'ch1',paragraphs:[{id:'p1',kind:'body'}]}]};
+  const reader={getBook:()=>book,isSelectionActive:()=>false,getAnchor:()=>({passageId:'p1'})};
+  const integration={triggerHost:f.triggerHost,companionAnchor:f.pill,focusReturn:()=>f.pill.focus(),onUnread(){},onOpen(){}};
+  mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,api,integration,
+    mountChat:options=>{mounts.chat++;return mountLibraryChat(options);},
+    mountCompanion:options=>{mounts.companion++;return mountReaderCompanion(options);}});
+  await flush();
+  assert.deepEqual(mounts,{chat:1,companion:1});
+  for(let i=0;i<3;i++){f.doc.dispatchEvent(new CustomEvent('reader:focus',{detail:{focused:i%2===0}}));f.doc.dispatchEvent(new Event('reader:ready'));}
+  await flush();
+  assert.deepEqual(mounts,{chat:1,companion:1},'tool and ready events never re-mount the shared instances');
+  assert.equal(f.all(f.doc.body).filter(n=>n.className==='squirrel-companion-bubble').length,1);
+  assert.equal(f.all(f.doc.body).filter(n=>n.className==='library-chat-book-choice').length,1);
 });

@@ -16,10 +16,12 @@ import {retainedLibraryBackup} from './reading-retained-backup.mjs';
 import {readingJourney} from './reading-journey.mjs';
 import {pendingReadingBackup,completeReadingBackupBook} from './reading-pending-backup.mjs';
 import {restoreReadingEnding,latestReadingEnding} from './reading-ending-context.mjs';
-import {mountReadingToolbar} from './reading-toolbar.mjs';
+import {readerTools} from './reader-tools.mjs';
 import {trackActionFocus} from './action-focus.mjs';
 document.getElementById('ending-companion').append(createPaperCompanion(document,{pose:'bookmark'}));
-const toolbar=mountReadingToolbar(document.getElementById('reading-session'));
+// GET-184: the coordinator owns the single pill, its timer and holds; this
+// script only reports timing status, attention and draft counts into it.
+const toolbar=readerTools().toolbar;
 const $=id=>document.getElementById(id),clock=createReadingClock({heartbeatGapMs:5000});
 const deviceTimeZone=()=>Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';
 const queueKey=readerStorageKey('marginalia-reading-outbox-v1'),markKey=readerStorageKey('marginalia-reading-marks-v1'),draftKey=readerStorageKey('marginalia-reading-ending-drafts-v1'),endingKey=readerStorageKey('marginalia-reading-ending-context-v1');

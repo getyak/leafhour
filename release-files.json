@@ -681,5 +681,10 @@
   "app/fonts/noto-serif-sc/noto-serif-sc-042.woff2",
   "server/cjk-font-assets.mjs",
   "tests/cjk-fonts.test.mjs",
-  "app/share-fonts.mjs"
+  "app/share-fonts.mjs",
+  "app/palette-bootstrap.mjs",
+  "app/command-palette.mjs",
+  "app/command-palette.css",
+  "app/palette-library.mjs",
+  "app/reader-tools.mjs"
 ]
