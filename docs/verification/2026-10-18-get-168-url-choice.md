@@ -1,174 +1,128 @@
-# GET-176/177/179/187 filter/URL/shared-choice batch — verification record
+# GET-176/177/179/187 — filters, view URLs and Aa choices
 
-Date: 2026-10-18 (initial round + consolidated native-review repair round).
-Worker: delegated coding worker, isolated frozen worktree at public main
-`aad2789e11758d460bbb6548bab56babc80e57ff`. Spec:
-[filter/URL/shared-choice batch](../superpowers/specs/2026-10-18-get-168-url-choice.md).
+Verified 2026-10-18. [Design](../superpowers/specs/2026-10-18-get-168-url-choice.md).
+The final candidate integrates main `eae0e9756a85d7d38d26b4c012b711d1d1cc6bc8`
+(PR125 fonts) through merge `d952ae381e9181ec932461dcd0db4e57e0310842`,
+then repairs the combobox selected-state issue described below. CI must bind
+its actual PR head; a local dirty-source check is not a green PR check.
 
-Scope of this worker: code + synthetic tests only. No browser automation, no
-credentials/real accounts/private books, no product model/translation/provider
-calls, no commits, pushes, PRs, deploys or Linear writes. Native Chrome QA,
-independent review, fresh-main integration and delivery are parent-owned.
-Synthetic tests below are NOT browser/touch/AT acceptance.
+## Result and boundaries
 
-## Commands actually run (registered TMPDIR, concurrency 2)
+- The library summarizes search, reading status, source, topic and original
+  language. Each condition can be removed independently; clear-all restores the
+  default view, which has no extra condition row.
+- The shared progressive choice control uses immediate chips for up to six
+  options and an editable combobox/listbox for larger groups. All nine Aa
+  selects use the same primitive, including conditionally shown parallel and
+  translation controls. Native values and normal change side effects remain
+  authoritative. Programmatic writes use explicit sync.
+- A bounded codec and history adapter own the five view keys and one supported
+  overlay. Search replaces after debounce; discrete choices flush it before
+  pushing. Back/forward, hydration, owner changes, IME, direct-modal closure and
+  safe auth returns have explicit lifecycle handling.
+- Fiction is curated on 17 unambiguous novels/stories. All 30 shipped editions
+  remain English originals, with unchanged source bytes, content versions and
+  paragraph IDs. Chinese-fiction selection honestly yields an empty shelf;
+  Chinese trial translations are not classified as Chinese originals.
+- No product model calls, paid translation generation, real private books,
+  credentials, account mutations or new schedules were used in this batch.
 
-Every invocation used
-`TMPDIR=/private/tmp/ai-test-get-168-url-choice.6em2Vj/unit` and
-`node --test --test-concurrency=2`. Exact final results:
+## Checks actually run
 
-1. Repair-round checkpoint set (fresh, final):
+All local tests used a registered temporary directory and concurrency 2.
+The test process received a small explicit environment allowlist, excluding
+production credentials. The final full check ran every `tests/*.test.mjs`:
 
-```
-node --test --test-concurrency=2 tests/choice-control.test.mjs \
-  tests/library-view-state.test.mjs tests/catalog-topics.test.mjs \
-  tests/library-filters.test.mjs tests/library-workspace.test.mjs \
-  tests/owner-scope.test.mjs tests/auth-policy.test.mjs \
-  tests/reader-return.test.mjs tests/reader-settings.test.mjs
-→ # tests 97 / pass 97 / fail 0
-```
-
-2. Same set plus the client-portal suite (fresh, final):
-
-```
-node --test --test-concurrency=2 …tests above… tests/portal.test.mjs
-→ # tests 106 / pass 106 / fail 0
-```
-
-Per-file counts in those runs: choice-control 17, library-view-state 23,
-catalog-topics 2, library-filters 11, library-workspace 8, owner-scope 8,
-auth-policy 16, reader-return 8, reader-settings 4, portal 9.
-
-3. Release policy and whitespace check (fresh, final):
-
-```
+```text
+node --test --test-concurrency=2 tests/*.test.mjs
+1604 tests: 1603 pass, 0 fail, 1 existing platform skip
+node tools/build-reader-runtime.mjs
+928 traced files, 9.0 MB; initialized without model requests
+node tools/build-vercel.mjs
+node tools/check-public-build.mjs
+321 public files, 11 registered media assets
 node tools/release-policy.mjs
-→ Release allowlist checked: 587 software files; private history and data excluded.
+683 allowed software files; private history/data excluded
+node tools/verify-release.mjs
 git diff --check
-→ clean (exit 0)
+All commands exited 0.
 ```
 
-4. Reader static build gate (fresh, final) — FAILS on the pre-existing bundle
-   budget, see "Remaining genuine limits" below:
+The existing skipped modified-Node-license test requires the packaged Linux
+binary; Linux CI remains the applicable runtime check. The 122-test targeted
+integration check also passed before the final selected-state repair; after
+that repair, its focused choice/settings/filter/profile suites passed 41/41.
 
-```
-node --test --test-concurrency=2 tests/reader-web-build.test.mjs
-→ # tests 3 / pass 1 / fail 2
-→ error: 'Reader bundle exceeds public asset budget: reader 333551'
-```
+Initial reader JS exceeded 320 KiB (333,551 bytes). The parent moved the Aa
+choice enhancement behind an explicit drawer-open import. The bundler permits
+it only from `reader-settings.mjs` and checks the release allowlist. The existing
+share-font import and exact same-origin CJK CSS exception remain independent.
+Final initial-reader JS is **327,532 bytes**, CSS **167,833 bytes**. The
+320/200 KiB limits were not increased. A lazy-loading failure leaves labelled,
+usable native selects visible. There is only 148 bytes of JS budget headroom;
+future features must retain deliberate loading boundaries.
 
-`tests/reader-web-build.test.mjs` gained only bundle-input assertions (the new
-`choice-control.mjs`/`choice-control.css` and `reader-settings.mjs` ship in the
-reader bundle); every original size-budget assertion is untouched and the
-duplicate 320KB gate in `tools/build-reader-web.mjs` (outside scope) was not
-modified. The bundler's budget check throws before those wiring assertions can
-run, so they validate once the parent resolves limit 1 below.
+## Independent reviews and repairs
 
-5. Adjacent suites touched by shared-module changes (fresh, final):
+Three independent native reviewers examined the implementation, then reviewed
+confirmed repairs. The integration reviewer matched all 42 freeze3 file hashes
+and checked the merged release list against both parents. The URL/choice/Aa
+implementations were unchanged by main integration, except the later small
+selected-state fix. No confirmed P0/P1 remains.
 
-```
-node --test --test-concurrency=2 tests/oauth.test.mjs tests/auth-dialog.test.mjs \
-  tests/library-personal-http.test.mjs tests/environment-config.test.mjs
-→ # tests 42 / pass 42 / fail 0
-```
+Confirmed issues repaired include modal-entry ownership, stale session overlay
+handoff, safe auth-next adoption/cleanup, owner epochs across refresh, pending
+query cancellation and valid UTF-16 truncation; disabled option updates,
+threshold remount/focus, IME/pointer state, native fallback naming and Aa async
+focus transfer. Real portal callbacks were exercised in isolated VM scenarios;
+this is separate from a real OAuth browser flow.
 
-## What the tests exercise (actual modules, not source strings)
+Native large-choice QA then exposed stale `aria-selected`/selected styling
+following an internal commit when the caller did not call sync. A regression
+failed first, then passed after internal commits synchronized their own state.
+Native Chrome subsequently showed Français selected, native value `fr`, and
+exactly one change. The reviewer independently checked pointer, keyboard,
+repeated sync and a 7→6 transition. An old profile-shell test fixture lacked
+`contains()`; it was reproduced independently and the fixture gained the DOM
+method without weakening production focus checks.
 
-- `tests/choice-control.test.mjs` (17): real event dispatch against the actual
-  primitive — one-change-event and same-value-no-change, explicit-sync-only
-  option/value mirroring, threshold remount, search vs committed value,
-  disabled-skip navigation, Escape revert, Tab freedom, IME composition
-  lifecycle (partial never filters/commits, cancelled composition never becomes
-  a query), pointer-press row stability, keyed chip focus survival across sync,
-  remount focus restoration, stale active-descendant reconciliation with aria
-  reset, closed-popup hiding at every close point, failed-mount cleanup with
-  usable named native fallback.
-- `tests/library-view-state.test.mjs` (23): codec validation (enums, query cap,
-  language syntax, overlay precedence, unknown/invalid handling, history.state
-  field retention), reducer, bounded return codec, auth-return precedence, and
-  the lifecycle adapter against a real history stack: hydration, refresh-like
-  re-hydrate, debounce replace vs flush-then-push, back/forward without
-  recursive pushes, stale-timer cancellation with real URL/emit assertions,
-  modal-ownership preservation through tab/overlay replacement and view
-  changes, filter owning no entry, direct-URL close removing keys+marker,
-  owner-epoch tagging and pop clearing, foreign entries/state untouched,
-  session-ready handoff from the current snapshot, adoptReturn without
-  push/back, IME query commit rules.
-- `tests/library-filters.test.mjs` (11): shelf filtering semantics, source/
-  topic/language/search intersection, Chinese-trial ≠ Chinese original, fixture
-  metadata non-rewrite, synthetic Chinese-fiction fixture (disposable) with the
-  shipped catalog truthfully empty for fiction+Chinese, summary chips for
-  query/status/source/topic/language with per-chip clear, sensible focus
-  (closed chooser → trigger), clear-all, fiction in summary/URL/read state,
-  zh/en shortcuts, primitive mounting + explicit sync.
-- `tests/catalog-topics.test.mjs` (2): whole-30 frozen regression — ids, source
-  files and SHA-256 (== contentVersion), original/source languages, curated
-  topic sets with fiction only on the 17 novels/stories, paragraph counts and
-  first/last stable IDs unchanged.
-- `tests/library-workspace.test.mjs` (8): existing shelf/workspace behavior plus
-  settings-opener capture and focus-return safety (dialog child can never take
-  the return focus; hidden/disconnected/inert/focusless targets rejected).
-- `tests/owner-scope.test.mjs` (8): existing fences plus the input→owner-switch
-  interleaving (stale response rejected, pending timer cancelled, previous
-  owner query never returns to the URL, no push/back).
-- `tests/auth-policy.test.mjs` (16): existing hosted-auth behavior plus OAuth
-  success/cancel/expiry returns keeping validated `q/topic/overlay` and dropping
-  unknown keys; safeAuthReturn keeps upload compat and rejects external paths.
-- `tests/reader-return.test.mjs` (8): reader/gift whitelists retained; shared
-  library return codec cannot approve reader citations, gift pages or external
-  targets.
-- `tests/reader-settings.test.mjs` (4): nine Aa selects upgraded, drawer-outside
-  timer select untouched, explicit sync only, exactly-one change semantics.
+## Actual native Chrome acceptance
 
-## Repair-round defects addressed (consolidated review)
+Native CUA gestures in macOS Chrome Guest, at 1200px desktop and a
+390×844 responsive viewport. A private, read-only observer measured rendered
+DOM and recorded local receipts; it did not drive product controls. These are
+browser observations, not physical-device, touch or screen-reader claims.
 
-P1 overlay history ownership (marker survives tab/overlay replacement and view
-changes; close consumes only the valid current app entry; non-owned close strips
-marker; filter owns no entry) · P1 stale initial pendingOverlay (session-ready
-handoff reads the current snapshot once) · P1 safe auth next (client
-`authReturnTarget` precedence incl. cancelled/expired OAuth retry; adoption runs
-after identity settles and opens its overlay) · P2 owner epoch tagging + pop
-clearing · P2 shared bounded query normalization + composition-gated search
-commit + `maxlength` + summary normalization + rewritten stale-timer assertions ·
-P2 settings opener capture/return safety · P1 choice popup hidden when closed ·
-P2 choice pointer/blur row stability · P2 keyed chips focus survival · P2 choice
-IME final-query semantics and closed Home/End native behavior · P2 choice sync
-active-descendant reconciliation · P2 native fallback naming (linked labels
-restored) + partial-chrome cleanup · GET-187 settings secondary text ≥13px
-(incl. the settings dialog heading paragraph).
+| Scenario | Observed result |
+| --- | --- |
+| Default shelf | 30 books; no condition or clear-all row |
+| Filter → fiction → Chinese | 3 clicks, 17/30 then honest 0/30; independent removable conditions |
+| Query `Alice` + unread + fiction | 1/30; all three conditions and URL agree |
+| Open settings, switch appearance tab, reload | Query/status/topic/tab restored; explicit close and browser Back/Forward restore their corresponding entries |
+| All nine Aa fields | Goal, preferred language, view, page layout, translation variant, parallel arrangement/style/color/background changed through actual UI; native values retained |
+| Enhanced Aa | All nine underlying selects hidden; conditional controls appear coherently; range and switch targets measured 44px |
+| Large-choice fixture | Clearly labelled disposable eight-option fixture; query does not commit, Enter changes once, disabled Deutsch skipped, Escape cancels, Tab exits; selected styling repaired and retested |
+| Failed Aa enhancement | Deliberate HTTP503 on only the lazy module; visible native selectors remain operable; native view selection changes to Chinese and reveals translation variant |
+| Width | Observed document widths exactly 1200 and 390 respectively; no horizontal document overflow |
 
-## Remaining genuine limits (not claimed as done)
+Normal-page observer receipts contained no runtime errors. The failure scenario
+intentionally produced a visible 503 network error, which is not reported as a
+clean network pass. DevTools also showed existing password-form accessibility
+advice and a short forced-reflow warning; neither is hidden as an all-console
+clean claim. No real login/OAuth, physical touch or assistive-technology session
+was run. Source/owner/auth boundaries also have deterministic automated tests.
 
-1. **Reader bundle budget (blocker, needs a parent scope decision).**
-   `tools/build-reader-web.mjs` caps the reader JS bundle at 320KB
-   (327,680 bytes). The frozen baseline bundle is **327,370 bytes — 310 bytes of
-   headroom**. The parent-mandated shared choice primitive plus its reader
-   wiring minifies to ≈6.2KB (choice-control ≈5.8KB + reader-settings wiring
-   ≈0.4KB), so the final bundle is **333,551 bytes (5,871 over)**. This is not
-   fixable inside scope: even a zero-byte primitive would leave the bundle
-   333,551−5,810=327,741, still 61 bytes over, because the mandated
-   reader-settings wiring alone exceeds the margin. `tools/build-reader-web.mjs`
-   is outside this task's scope and the budget is also asserted in
-   `tests/reader-web-build.test.mjs`, which I will not weaken. Parent options:
-   (a) raise the budget in `tools/build-reader-web.mjs` + the test to a real
-   value (e.g. 340KB) with the parent's own justification; (b) make
-   `choice-control.mjs` a permitted lazy public reader module (requires the
-   `publicModules` plugin in `tools/build-reader-web.mjs`); (c) trim unrelated
-   out-of-scope bundle inputs (largest: `app/reader-audio.js` ≈44KB,
-   `app/library-chat.mjs` ≈32KB, `app/reading-session.js` ≈27KB,
-   `app/experiences.js` ≈25KB). Consequence today: `tests/reader-web-build.test.mjs`
-   has 2 failures with the exact error above; all other suites pass.
-2. **Client portal lifecycle wiring** (refresh-then-adopt ordering,
-   `takeSessionOverlay` consumption, overlay open/close hooks) is verified
-   through the adapter/controller helpers above, not by booting `portal.js`
-   itself; the monolithic DOM bootstrap is only reachable in a browser.
-3. **Native QA is parent-owned and outstanding:** 1200/390 filter keyboard,
-   the real 3-click Chinese-fiction sequence, Notion comparison, URL
-   search+filter+settings reload+Back, all Aa modes and native fallback, touch
-   and AT passes. Synthetic tests are not substitutes.
-4. **Settings secondary text and 44px range/switch targets** are authored in CSS
-   (`app/styles.css`, `app/reader-settings.css`); contrast/measurements need the
-   parent's visual pass.
-5. Password-login adopt ordering and OAuth retry client flows were fixed in
-   `app/portal.js` but only their pure/adapter parts carry automated tests
-   (points 1–2 above).
+Original native screenshots (browser chrome retained, no image retouching):
+
+- [Desktop default](assets/get168/desktop-default.png)
+- [Desktop Aa](assets/get168/desktop-aa-clean.png)
+- [390px Aa](assets/get168/mobile-aa.png)
+- [390px filter](assets/get168/mobile-filter.png)
+- [Synthetic large-choice selected-state repair](assets/get168/mobile-large-choice-fixed.png)
+- [Deliberate 503 / native fallback](assets/get168/mobile-native-fallback.png)
+
+The existing long-author card CTA alignment and multiple reader-tool entries
+remain assigned to GET-180 and GET-184. This record does not close their epics,
+claim all cross-platform acceptance, or replace current-head CI, merge readback
+and production verification. Those delivery receipts are recorded on the linked
+Linear issues after their actual completion.

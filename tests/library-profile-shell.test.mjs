@@ -9,6 +9,7 @@ class Element extends EventTarget{
   insertAdjacentElement(position,node){assert.equal(position,'afterend');const siblings=this.parentElement.children;node.parentElement=this.parentElement;siblings.splice(siblings.indexOf(this)+1,0,node);}
   setAttribute(key,value){this.attributes[key]=String(value);}getAttribute(key){return this.attributes[key];}hasAttribute(key){return key in this.attributes;}
   querySelectorAll(selector){const all=this.children.flatMap(child=>[child,...child.querySelectorAll(selector)]);return all.filter(child=>selector==='input'?child.tagName==='input':selector==='[data-icon]'?!!child.dataset.icon:selector==='button[data-hint]'?child.tagName==='button'&&!!child.dataset.hint:false);}
+  contains(node){return node===this||this.children.some(child=>child.contains(node));}
   focus(){document.activeElement=this;}
   showModal(){this.open=true;}close(){this.open=false;this.dispatchEvent(new Event('close'));}
 }

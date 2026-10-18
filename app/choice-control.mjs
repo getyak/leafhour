@@ -41,6 +41,7 @@ export function mountChoiceControl({document,select,label='',onChange=()=>{}}={}
       select.value=value;
       select.dispatchEvent(new Event('change',{bubbles:true}));
       onChange(value);
+      sync(); // Internal commits update selected/pressed semantics immediately.
       return true;
     };
     const attach=root=>{

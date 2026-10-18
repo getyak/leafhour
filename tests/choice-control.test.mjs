@@ -314,3 +314,14 @@ test('combobox to chips to combobox resets expansion and hands focus across both
  assert.equal(control.input.getAttribute('aria-expanded'),'false');assert.equal(control.listbox.hidden,true);assert.equal(control.input.getAttribute('aria-activedescendant'),null);
  control.input.dispatchEvent(keyEvent('ArrowDown'));assert.equal(control.input.getAttribute('aria-expanded'),'true');assert.equal(control.listbox.hidden,false);
 });
+
+test('combobox commits refresh selected semantics without a caller sync for keyboard and pointer',()=>{
+ const {select,control}=mount([['a','apple'],['b','banana'],['c','cherry'],['d','date'],['e','elder'],['f','fig'],['g','grape']]);const count=changeEvents(select);
+ control.input.dispatchEvent(keyEvent('ArrowDown'));control.input.dispatchEvent(keyEvent('Enter'));
+ assert.equal(select.value,'b');assert.equal(count(),1);
+ assert.equal(control.options.find(o=>o.value==='b').node.getAttribute('aria-selected'),'true');assert.equal(control.options[0].node.getAttribute('aria-selected'),'false');
+ assert.equal(control.options.find(o=>o.value==='b').node.classList.contains('is-selected'),true);
+ control.input.dispatchEvent(keyEvent('ArrowDown'));control.options.find(o=>o.value==='c').node.dispatchEvent(click());
+ assert.equal(select.value,'c');assert.equal(count(),2);assert.deepEqual(control.options.filter(o=>o.node.getAttribute('aria-selected')==='true').map(o=>o.value),['c']);
+ control.options.find(o=>o.value==='c').node.dispatchEvent(click());assert.equal(count(),2);
+});
