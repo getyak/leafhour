@@ -9,7 +9,7 @@ function fixture(api=async()=>{}){
 }
 test('foreground owner heartbeats contain only per-tab identity and presence, never reading content/time',async()=>{
  const f=fixture();await f.presence.refresh();f.calls.length=0;await f.tick();
- assert.equal(f.calls.length,1);const [route,body,options]=f.calls[0];assert.equal(route,'/api/library/daily-reading/presence');assert.deepEqual(body,{tabId:'56c74eb3-d203-441e-a518-fdf210887f0e',active:true});assert.equal(options.headers['X-Reader-Owner'],'owner');assert.equal(options.keepalive,true);await f.presence.close();
+ assert.equal(f.calls.length,1);const [route,body,options]=f.calls[0];assert.equal(route,'/api/library/daily-reading/presence');assert.deepEqual(Object.keys(body).sort(),['active','sequence','tabId']);assert.equal(body.tabId,'56c74eb3-d203-441e-a518-fdf210887f0e');assert.equal(body.active,true);assert.ok(Number.isSafeInteger(body.sequence));assert.equal(options.headers['X-Reader-Owner'],'owner');assert.equal(options.keepalive,true);await f.presence.close();
 });
 test('hidden, blurred and pagehide states release presence; pageshow resumes it',async()=>{
  const f=fixture();await f.presence.refresh();f.calls.length=0;
@@ -36,4 +36,8 @@ test('close synchronously fences pageshow while an active request is in flight',
  const f=fixture(async()=>{if(first){first=false;entered();await held;}});await started;
  const closing=f.presence.close();f.window.dispatchEvent(new Event('pageshow'));release();await closing;
  assert.deepEqual(f.calls.map(row=>row[1].active),[true,false]);const count=f.calls.length;f.focus(true);await f.presence.refresh();assert.equal(f.calls.length,count);
+});
+test('every dispatched presence request advances sequence even after a lost response',async()=>{
+ let calls=0;const f=fixture(async()=>{if(++calls===2)throw Error('synthetic response lost while server keeps running');});await f.presence.refresh();f.focus(false);await f.presence.refresh();f.focus(true);await f.presence.refresh();await f.presence.close();
+ const sequences=f.calls.map(row=>row[1].sequence);assert.ok(sequences.every(n=>Number.isSafeInteger(n)&&n>0));assert.equal(new Set(sequences).size,sequences.length);assert.deepEqual([...sequences].sort((a,b)=>a-b),sequences);
 });

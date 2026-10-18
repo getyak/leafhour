@@ -79,6 +79,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const audio=durableAudio||allowLocal&&!publicOrigin&&!dataStore?await createAudioService({store:await createAudioStore({dataDir:path.join(dataDir,'audio'),dataStore:durableAudio?dataStore:null}),getBook:audioLibrary.getBook,speechProvider:speechProvider===undefined?createSpeechProvider({env}):speechProvider,dialogueGenerator:dialogueGenerator===undefined?createDialogueGenerator({env}):dialogueGenerator,schedule,durable:!!durableAudio,env}):null;
   const audioRoutes=createAudioRoutes({audio,library:audioLibrary,guideGenerator:guideGenerator===undefined?createGuideGenerator({env}):guideGenerator});
   async function handle({req,res,url,send}){
+    const presenceReceivedAt=url.pathname==='/api/library/daily-reading/presence'?Date.now():null;
     const p=url.pathname;
     if(p==='/api/internal/ingestion/wake'){if(req.method!=='POST'||!ingestionRunner.authorized(req.headers.authorization))throw fail('找不到这个操作',404);ingestionRunner.tick();send(202,{accepted:true});return true;}
     const isAPI=p.startsWith('/api/auth/')||p.startsWith('/api/library')||p.startsWith('/api/agent/')||p.startsWith('/api/account/')||p.startsWith('/api/book-gifts/');
@@ -207,7 +208,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(req.method!=='POST')throw fail('不支持这个请求',405);
       if(p==='/api/library/daily-reading'){send(200,await dailyReading.configure(user,body));return true;}
       {
-        if(p==='/api/library/daily-reading/presence'){send(200,await dailyReading.reportPresence(user,body));return true;}
+        if(p==='/api/library/daily-reading/presence'){send(200,await dailyReading.reportPresence(user,body,{receivedAt:presenceReceivedAt}));return true;}
         if(p==='/api/library/daily-reading/pause'){send(200,await dailyReading.pause(user,body));return true;}
         if(p==='/api/library/daily-reading/resume'){send(200,await dailyReading.resume(user,body));return true;}
         send(200,await dailyReading.requestTest(user,body));return true;

@@ -244,31 +244,31 @@ test('expired daily grants stay honest and quiet instead of claiming indefinite 
 
 test('an active reader anywhere suppresses the card and the host learns only the quiet reason',async t=>{
   const f=await buildFixture(t);await f.connect();
-  await f.daily.reportPresence(owner,{tabId:'tab-desktop',active:true});
+  await f.daily.reportPresence(owner,{tabId:'tab-desktop',active:true,sequence:1});
   const quiet=await f.claim();
   assert.equal(quiet.status,'quiet');
   assert.equal(quiet.quiet.reason,'reader-present');
   assert.ok(!JSON.stringify(quiet).includes(f.book.bookId),'the quiet reply must not reveal another book');
   assert.ok(!JSON.stringify(quiet).includes(f.book.title.zh||'Daily'));
-  await f.daily.reportPresence(owner,{tabId:'tab-desktop',active:false});
+  await f.daily.reportPresence(owner,{tabId:'tab-desktop',active:false,sequence:2});
   assert.equal((await f.claim()).status,'claimed');
 });
 
 test('presence leases expire after 90 seconds, work across devices and never count as reading time',async t=>{
   const f=await buildFixture(t);
   const before=await f.library.readingActivity(owner,{month:today.slice(0,7),timeZone:'Asia/Shanghai'});
-  await f.daily.reportPresence(owner,{tabId:'tab-a',active:true});
-  await f.daily.reportPresence(owner,{tabId:'tab-b',active:true});
+  await f.daily.reportPresence(owner,{tabId:'tab-a',active:true,sequence:1});
+  await f.daily.reportPresence(owner,{tabId:'tab-b',active:true,sequence:1});
   assert.equal(await f.daily.hasActivePresence(owner),true);
-  await f.daily.reportPresence(owner,{tabId:'tab-b',active:false});
+  await f.daily.reportPresence(owner,{tabId:'tab-b',active:false,sequence:2});
   assert.equal(await f.daily.hasActivePresence(owner),true,'one active device is enough to stay quiet');
   f.advance(PRESENCE_TTL_MS+1000);
   assert.equal(await f.daily.hasActivePresence(owner),false,'a lease covers at most 90 seconds of server-observed presence');
   const after=await f.library.readingActivity(owner,{month:today.slice(0,7),timeZone:'Asia/Shanghai'});
   assert.equal(after.durationSeconds,before.durationSeconds,'presence never contributes reading time');
-  await assert.rejects(f.daily.reportPresence(owner,{tabId:'tab-x',active:'yes'}),e=>e.status===400);
-  await assert.rejects(f.daily.reportPresence(owner,{tabId:'../evil',active:true}),e=>e.status===400);
-  await assert.rejects(f.daily.reportPresence(null,{tabId:'tab-x',active:true}),e=>e.status===401);
+  await assert.rejects(f.daily.reportPresence(owner,{tabId:'tab-x',active:'yes',sequence:1}),e=>e.status===400);
+  await assert.rejects(f.daily.reportPresence(owner,{tabId:'../evil',active:true,sequence:1}),e=>e.status===400);
+  await assert.rejects(f.daily.reportPresence(null,{tabId:'tab-x',active:true,sequence:1}),e=>e.status===401);
 });
 
 test('a user-marked finished book and a reached explicit daily goal keep the host quiet',async t=>{

@@ -191,12 +191,21 @@ export function createDailyReadingService({library,dataDir,dataStore=null,clock=
       const event={id,date,kind:'test',state:'pending',attempts:0,createdAt:iso(now),claimedAt:null,finishedAt:null,result:null,fingerprint:null,lease:null};doc.events.push(event);trim(doc);return {event:visibleEvent(event)};
     });
   }
-  async function reportPresence(user,input){
-    exactKeys(input,['tabId','active']);if(!tabId(input.tabId)||typeof input.active!=='boolean')throw fail('阅读状态格式不正确');
+  async function reportPresence(user,input,{receivedAt=clock()}={}){
+    exactKeys(input,['tabId','active','sequence']);if(!tabId(input.tabId)||typeof input.active!=='boolean'||!Number.isSafeInteger(input.sequence)||input.sequence<1||!Number.isFinite(receivedAt))throw fail('阅读状态格式不正确');
+    const acceptUntil=receivedAt+PRESENCE_TTL_MS;
     return store.mutate(key(user),empty(),doc=>{
-      const now=clock();doc.presence??={tabs:{}};for(const [id,lease]of Object.entries(doc.presence.tabs))if(lease.expiresAt<=now)delete doc.presence.tabs[id];
-      if(input.active){if(!doc.presence.tabs[input.tabId]&&Object.keys(doc.presence.tabs).length>=128)throw fail('打开的阅读窗口过多，请稍后重试',413);doc.presence.tabs[input.tabId]={expiresAt:now+PRESENCE_TTL_MS};}else delete doc.presence.tabs[input.tabId];
-      return {tabId:input.tabId,active:input.active,expiresAt:input.active?now+PRESENCE_TTL_MS:null};
+      const now=clock();if(now>=acceptUntil||receivedAt>now)throw fail('阅读状态请求已过期，请重新报告',408);
+      doc.presence??={tabs:{}};for(const [id,lease]of Object.entries(doc.presence.tabs))if((lease.retainedUntil??lease.expiresAt)<=now)delete doc.presence.tabs[id];
+      const previous=doc.presence.tabs[input.tabId];
+      if(previous&&input.sequence<=(previous.sequence||0))return {tabId:input.tabId,active:previous.expiresAt>now,sequence:previous.sequence,expiresAt:previous.expiresAt>now?previous.expiresAt:null,ignored:true};
+      if(!previous&&Object.keys(doc.presence.tabs).length>=128)throw fail('打开的阅读窗口过多，请稍后重试',413);
+      // Keep an inactive high-water mark for the complete request acceptance
+      // window. A timed-out handler may still finish after a newer request.
+      // Every CAS retry rechecks its fixed deadline; active TTL never renews
+      // from a delayed commit. This is ordering, not client-supplied time.
+      const expiresAt=input.active?acceptUntil:0;doc.presence.tabs[input.tabId]={sequence:input.sequence,expiresAt,retainedUntil:now+PRESENCE_TTL_MS};
+      return {tabId:input.tabId,active:input.active,sequence:input.sequence,expiresAt:input.active?expiresAt:null,ignored:false};
     });
   }
   const hasActivePresence=async user=>present(await store.read(key(user),empty()),clock());

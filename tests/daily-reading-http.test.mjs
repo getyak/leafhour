@@ -68,10 +68,10 @@ test('pause, resume, presence and the one-per-day owner test event stay direct a
   assert.equal(paused.plan.status,'paused');
   const resumed=await (await fetch(url+'/resume',{method:'POST',headers:f.headers,body:JSON.stringify({baseRevision:paused.plan.revision})})).json();
   assert.equal(resumed.plan.status,'awaiting-host');
-  const presence=await fetch(url+'/presence',{method:'POST',headers:f.headers,body:JSON.stringify({tabId:'tab-http',active:true})});
+  const presence=await fetch(url+'/presence',{method:'POST',headers:f.headers,body:JSON.stringify({tabId:'tab-http',active:true,sequence:1})});
   assert.equal(presence.status,200);assert.equal((await presence.json()).active,true);
-  assert.equal((await fetch(url+'/presence',{method:'POST',headers:f.headers,body:JSON.stringify({tabId:'tab-http',active:false})})).status,200);
-  assert.equal((await fetch(url+'/presence',{method:'POST',headers:f.headers,body:JSON.stringify({tabId:'../evil',active:true})})).status,400);
+  assert.equal((await fetch(url+'/presence',{method:'POST',headers:f.headers,body:JSON.stringify({tabId:'tab-http',active:false,sequence:2})})).status,200);
+  assert.equal((await fetch(url+'/presence',{method:'POST',headers:f.headers,body:JSON.stringify({tabId:'../evil',active:true,sequence:1})})).status,400);
   const testEvent=await fetch(url+'/test',{method:'POST',headers:f.headers,body:'{}'});
   assert.equal(testEvent.status,200);assert.equal((await testEvent.json()).event.kind,'test');
   assert.equal((await fetch(url+'/test',{method:'POST',headers:f.headers,body:'{}'})).status,409);

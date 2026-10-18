@@ -2,7 +2,7 @@
 // a position or content, and it never gives an Agent permission to write it.
 export function mountReaderPresence({api,getUserId,enabled=()=>true,document=globalThis.document,window=globalThis.window,crypto=globalThis.crypto,setInterval=globalThis.setInterval,clearInterval=globalThis.clearInterval}={}){
   if(!document||!window||typeof api!=='function'||typeof getUserId!=='function'||!crypto?.randomUUID)return {refresh:async()=>{},close:async()=>{}};
-  const tabId=crypto.randomUUID();let owner=null,pagePresent=true,closed=false,desired=null,running=null,last=null;
+  const tabId=crypto.randomUUID();let owner=null,pagePresent=true,closed=false,desired=null,running=null,last=null,sequence=0;
   const active=()=>!closed&&pagePresent&&!document.hidden&&document.hasFocus()&&enabled();
   async function drain(){
     while(desired){
@@ -10,7 +10,7 @@ export function mountReaderPresence({api,getUserId,enabled=()=>true,document=glo
       if(next.owner!==owner)continue;
       if(!next.owner||(!next.active&&last?.owner!==next.owner))continue;
       try{
-        await api('/api/library/daily-reading/presence',{tabId,active:next.active},{keepalive:true,signal:AbortSignal.timeout(8000),headers:{'X-Reader-Owner':next.owner}});
+        await api('/api/library/daily-reading/presence',{tabId,active:next.active,sequence:++sequence},{keepalive:true,signal:AbortSignal.timeout(8000),headers:{'X-Reader-Owner':next.owner}});
         // The response carries no UI state; owner changes never adopt it.
         if(owner===next.owner)last={owner:next.owner,active:next.active};
       }catch{/* Offline presence expires on the server; only a later tick retries. */}

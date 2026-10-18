@@ -78,3 +78,24 @@ test('IANA schedule conversion handles DST offsets, a repeated hour and a skippe
  assert.equal(new Date(zonedDueAt('2026-04-05','02:30','Australia/Sydney')).toISOString(),'2026-04-04T15:30:00.000Z');
  assert.equal(new Date(zonedDueAt('2026-10-18','20:00','Asia/Shanghai')).toISOString(),'2026-10-18T12:00:00.000Z');
 });
+for(const active of [true,false])test('presence ignores an older '+(active?'inactive release':'active heartbeat')+' even when its server handler resumes after the newer state',async()=>{
+ const f=fixture(),tabId='reordered-tab';
+ await f.daily.reportPresence(owner,{tabId,active,sequence:2});
+ await f.daily.reportPresence(owner,{tabId,active:!active,sequence:1});
+ assert.equal(await f.daily.hasActivePresence(owner),active);
+ const again=await f.daily.reportPresence(owner,{tabId,active:!active,sequence:2});assert.equal(again.ignored,true);assert.equal(await f.daily.hasActivePresence(owner),active);
+});
+test('presence requires an increasing safe sequence and bounded server tombstone retention',async()=>{
+ const f=fixture();for(const sequence of [undefined,0,-1,1.5,Number.MAX_SAFE_INTEGER+1])await assert.rejects(f.daily.reportPresence(owner,{tabId:'tab',active:true,sequence}),e=>e.status===400);
+ await f.daily.reportPresence(owner,{tabId:'tab',active:false,sequence:3});assert.equal(await f.daily.hasActivePresence(owner),false);
+ f.advance(90001);await f.daily.reportPresence(owner,{tabId:'new-tab',active:true,sequence:1});assert.equal(Object.hasOwn(f.doc.presence.tabs,'tab'),false);
+});
+
+test('a handler older than the tombstone retention cannot commit after CAS wait or retry',async()=>{
+ const f=fixture();await f.daily.reportPresence(owner,{tabId:'tab',active:false,sequence:3});
+ f.setBefore(()=>{f.advance(90000);delete f.doc.presence.tabs.tab;});
+ await assert.rejects(f.daily.reportPresence(owner,{tabId:'tab',active:true,sequence:1}),e=>e.status===408);assert.equal(await f.daily.hasActivePresence(owner),false);
+});
+test('presence lease expiry uses request reception rather than delayed mutation time',async()=>{
+ const f=fixture(),receivedAt=f.now();f.setBefore(()=>f.advance(30000));const result=await f.daily.reportPresence(owner,{tabId:'tab',active:true,sequence:1});assert.equal(result.expiresAt,receivedAt+90000);
+});
