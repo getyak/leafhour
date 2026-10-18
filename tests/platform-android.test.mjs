@@ -47,7 +47,7 @@ import {
   verifySystemImageManifest,
   createAndroidAdapter,
 } from '../tools/lib/platform-android.mjs';
-import {createEvidenceSession,observeNativeScroll,italicFontEvidence,observeDocumentFontFaces} from '../tools/lib/platform-font-observer.mjs';
+import {createEvidenceSession,observeNativeScroll,italicFontEvidence,observeDocumentFontFaces,observeViewportReadiness,captureFailurePage} from '../tools/lib/platform-font-observer.mjs';
 import vm from 'node:vm';
 
 const RUNNER_TEMP='/tmp/runner/get173-run';
@@ -1373,4 +1373,39 @@ test('the serialized main-document font observation reads its own CSS declaratio
     globalThis.document.fonts=[];
     assert.deepEqual(observeDocumentFontFaces().loaded,[],'an unrelated protocol event cannot invent a loaded main-document FontFace');
   }finally{for(const [key,value] of Object.entries(previous)){if(value===undefined)delete globalThis[key];else globalThis[key]=value;}}
+});
+
+
+async function viewportModel(mode){
+  let now=0,next=0,done=false;const frames=new Map(),timers=new Map();
+  const width=()=>mode==='late-css'&&now>=160?393:980;
+  const imported={get cssRules(){if(mode==='never-css'||mode==='late-css'&&now<100)throw Error('stylesheet still loading');return [];}};
+  const sheet={cssRules:[{type:3,styleSheet:imported}]},link={disabled:false,media:'',href:'http://localhost:43210/portal.css',sheet};
+  const document={get readyState(){return mode==='late-css'&&now<80?'loading':'interactive';},querySelectorAll:()=>[link],querySelector:()=>({content:'width=device-width, initial-scale=1'}),documentElement:{get clientWidth(){return width();},get scrollWidth(){return width();}}};
+  Object.defineProperty(document,'fonts',{get(){throw Error('the cold observer must never wait on fonts');}});
+  const sandbox={document,location:{href:'http://localhost:43210/'},navigator:{userAgent:'Mozilla/5.0 (Linux; Android 14) Chrome/113.0.0.0 Mobile Safari/537.36'},get innerWidth(){return width();},innerHeight:722,devicePixelRatio:2.75,visualViewport:{width:393,height:722,scale:1,offsetTop:0,offsetLeft:0},performance:{now:()=>now},matchMedia:()=>({matches:true}),requestAnimationFrame:fn=>{const id=++next;frames.set(id,fn);return id;},cancelAnimationFrame:id=>frames.delete(id),setTimeout:(fn,ms)=>{const id=++next;timers.set(id,{fn,at:now+ms});return id;},clearTimeout:id=>timers.delete(id)};
+  const pending=vm.runInNewContext('('+observeViewportReadiness.toString()+')()',sandbox);pending.then(()=>done=true);
+  for(now=16;now<=10032&&!done;now+=16){for(const [id,timer] of [...timers])if(now>=timer.at){timers.delete(id);timer.fn();}const batch=[...frames];frames.clear();for(const [,fn] of batch)fn();await Promise.resolve();await Promise.resolve();}
+  const proof=await pending;assert.equal(frames.size,0);assert.equal(timers.size,0);return proof;
+}
+
+test('viewport readiness waits for parsed imported CSS and stable dimensions without waiting on cold fonts',async()=>{
+  const proof=await viewportModel('late-css');assert.equal(proof.status,'ready');assert.equal(proof.before.viewport.width,980);assert.equal(proof.after.viewport.width,393);assert.ok(proof.elapsedMs>=260);assert.ok(proof.history.some(x=>!x.stylesReady));assert.ok(proof.history.length<=16);
+});
+
+test('stable wide viewport completes observation then fails exactly once with its raw value retained',async()=>{
+  const proof=await viewportModel('wide');assert.equal(proof.status,'ready');assert.equal(proof.after.viewport.width,980);const receipt={};let reads=0;
+  await assert.rejects(()=>bindAndroidProductViewport({receipt,label:'home-cold',read:async()=>{reads++;return proof.after.viewport;}}),/Actual Android CSS width/);
+  assert.equal(reads,1);assert.equal(receipt.android.productViewports['home-cold'].width,980);
+});
+
+test('unreadable imported CSS times out with bounded history and the final raw viewport intact',async()=>{
+  const proof=await viewportModel('never-css');assert.equal(proof.status,'timeout');assert.equal(proof.after.styles[0].ready,false);assert.equal(proof.after.viewport.width,980);assert.equal(proof.history.length,16);assert.ok(proof.elapsedMs>=10000);
+});
+
+test('failure screenshot obeys cancellation and the budget and retains secondary failures separately',async()=>{
+  for(const lifecycle of [{stopped:true},{stopping:true},{cancelled:'SIGTERM'}]){let calls=0;assert.equal(await captureFailurePage({session:{capture:async()=>calls++},receipt:{screenshots:[]},lifecycle}),false);assert.equal(calls,0);}
+  let calls=0;const session={capture:async()=>{calls++;}};assert.equal(await captureFailurePage({session,receipt:{screenshots:Array(9).fill({})},lifecycle:{}}),false);assert.equal(calls,0);
+  assert.equal(await captureFailurePage({session,receipt:{screenshots:[]},lifecycle:{}}),true);assert.equal(calls,1);
+  const receipt={screenshots:[],failure:'original viewport assertion'};assert.equal(await captureFailurePage({session:{capture:async()=>{throw Error('secondary capture');}},receipt,lifecycle:{}}),false);assert.equal(receipt.failure,'original viewport assertion');assert.deepEqual(receipt.secondaryEvidenceErrors,['secondary capture']);
 });

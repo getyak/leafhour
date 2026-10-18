@@ -27,6 +27,35 @@ const CJK_RUN=/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\u3000-\u303
 export function customNewsreader(value){
   assert.ok(value.fonts.some(font=>font.isCustomFont&&/Newsreader/i.test(font.postScriptName||font.familyName)&&font.glyphCount>0),value.label+' must render actual custom Newsreader glyphs');
 }
+// Serialized read-only readiness observation. Width never decides readiness:
+// a stable wide viewport completes here and fails the separate assertion once.
+export function observeViewportReadiness(){
+  const start=performance.now();let frame,timer,finished=false,previous=null,stable=0,lastChange=start,frames=0;
+  const history=[];
+  const sample=()=>{
+    const seen=new Set();
+    const readable=(sheet,depth=0)=>{if(!sheet||depth>8||seen.size>128)return false;if(seen.has(sheet))return true;seen.add(sheet);try{return [...sheet.cssRules].filter(rule=>rule.type===3).every(rule=>readable(rule.styleSheet,depth+1));}catch{return false;}};
+    const styles=[...document.querySelectorAll('link[rel~="stylesheet"]')].filter(link=>!link.disabled&&(!link.media||matchMedia(link.media).matches)).map(link=>({href:link.href,ready:readable(link.sheet)}));
+    return {url:location.href,readyState:document.readyState,meta:document.querySelector('meta[name="viewport"]')?.content??null,viewport:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio,ua:navigator.userAgent},root:{clientWidth:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth},visualViewport:globalThis.visualViewport?{width:visualViewport.width,height:visualViewport.height,scale:visualViewport.scale,offsetTop:visualViewport.offsetTop,offsetLeft:visualViewport.offsetLeft}:null,styles,ready:document.readyState!=='loading'&&styles.length>0&&styles.every(style=>style.ready)};
+  };
+  const before=sample();
+  return new Promise(resolve=>{
+    const finish=status=>{if(finished)return;finished=true;clearTimeout(timer);cancelAnimationFrame(frame);resolve({status,before,after:sample(),frames,history,elapsedMs:performance.now()-start});};
+    const tick=()=>{
+      const value=sample(),now=performance.now();frames++;
+      if(history.length<16)history.push({at:now-start,viewport:value.viewport,root:value.root,readyState:value.readyState,stylesReady:value.ready});
+      const signature=JSON.stringify([value.url,value.viewport,value.root.clientWidth,value.ready]);
+      if(signature===previous)stable++;else{stable=0;lastChange=now;}previous=signature;
+      if(value.ready&&stable>=3&&now-lastChange>=100)return finish('ready');
+      frame=requestAnimationFrame(tick);
+    };
+    timer=setTimeout(()=>finish('timeout'),10000);frame=requestAnimationFrame(tick);
+  });
+}
+export async function captureFailurePage({session,receipt,lifecycle}={}){
+  if(!session||lifecycle?.stopped||lifecycle?.stopping||lifecycle?.cancelled||(receipt.screenshots?.length||0)>=9)return false;
+  try{await session.capture('failure-page');return true;}catch(error){(receipt.secondaryEvidenceErrors??=[]).push(error.message);return false;}
+}
 // Read the actual current document, not a frame-less protocol event. The
 // source product has one public typography stylesheet; no DOM/style changes.
 export function observeDocumentFontFaces(){
@@ -171,6 +200,12 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     delete receipt.activeProbe;
     return value;
   }
+  async function viewport(label){
+    const proof=await cdp.evaluate('('+observeViewportReadiness.toString()+')()');
+    (receipt.viewportReadiness??=[]).push({label,...proof});
+    assert.equal(proof.status,'ready',label+' requires parsed styles and a stable native viewport');
+    return proof.after.viewport;
+  }
   async function cjkGlyphs(selector,label,{serif=false}={}){
     await fonts(selector,label+' including generated punctuation');
     const probes=await cdp.evaluate(String.raw`(()=>{
@@ -242,7 +277,7 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
   return {
     failures,background,observe,task,
     until:(operation,label,ms)=>until(operation,label,ms,failures),
-    capture,fonts,cjkGlyphs,customNewsreader,
+    capture,fonts,cjkGlyphs,customNewsreader,viewport,
     setPageLabel:label=>{pageLabel=label;},
     observeResponses,installFontHold,releaseFontHold,navigateProduct,close,
     paused,

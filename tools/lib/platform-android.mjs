@@ -179,11 +179,11 @@ export function assertAndroidViewport({label,viewport}={}){
 }
 export async function bindAndroidProductViewport({receipt,label,read}={}){
   if(typeof read!=='function')throw Error('Product viewport reader must be injected');
-  const value=assertAndroidViewport({label,viewport:await read()});
+  const value=await read();
   const android=receipt.android??(receipt.android={});
   const productViewports=android.productViewports??(android.productViewports={});
   productViewports[label]=value;
-  return value;
+  return assertAndroidViewport({label,viewport:value});
 }
 export function resolveOriginalTitleProbe({viewportWidth,titleText,nodes=[]}){
   if(!Number.isFinite(viewportWidth)||viewportWidth<=0)throw Error('Actual CSS viewport width is required');

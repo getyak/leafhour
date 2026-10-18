@@ -10,7 +10,7 @@ import path from 'node:path';
 import os from 'node:os';
 import {pathToFileURL} from 'node:url';
 import {CDP} from './lib/platform-cdp.mjs';
-import {delay,sha,until,customNewsreader,italicFontEvidence,createEvidenceSession} from './lib/platform-font-observer.mjs';
+import {delay,sha,until,customNewsreader,italicFontEvidence,captureFailurePage,createEvidenceSession} from './lib/platform-font-observer.mjs';
 import {
   parseScriptArgs,
   assertRunnerGuard,
@@ -200,7 +200,7 @@ try{
   await session.installFontHold();
   await session.navigateProduct(origin+'/');
   await session.until(async()=>session.paused.size&&await cdp.evaluate(`!!document.querySelector('.hero-copy h1 .hero-line')`),'font-paused real hero');
-  if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'home-cold',read:()=>cdp.evaluate(VIEWPORT_EXPRESSION)});
+  if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'home-cold',read:()=>session.viewport('home-cold')});
   await delay(500);const cold=await session.fonts('.hero-copy h1 .hero-line','cold font-withheld hero',{awaitFonts:false});assert.ok(cold.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Cold fallback must have visible actual glyphs');assert.ok(!cold.fonts.some(font=>font.isCustomFont&&font.glyphCount>0),'Cold run must not use warmed custom face');await session.capture('home-controlled-font-delay');
   await session.releaseFontHold();
   await cdp.evaluate('document.fonts.ready.then(()=>true)');await session.capture('home-loaded');customNewsreader(await session.fonts('.hero-copy h1 .hero-line','loaded hero'));
@@ -208,7 +208,7 @@ try{
     session.setPageLabel('home-'+locale);
     await cdp.send('Page.navigate',{url:origin+route});
     await session.until(()=>cdp.evaluate(`location.pathname===${JSON.stringify(route)}&&document.readyState==='complete'&&document.documentElement.lang===${JSON.stringify(locale)}&&!!document.querySelector('#how .section-copy h2')`),'authored '+locale+' home');
-    if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'home-'+locale,read:()=>cdp.evaluate(VIEWPORT_EXPRESSION)});
+    if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'home-'+locale,read:()=>session.viewport('home-'+locale)});
     const entrance=resolveLanguageEntrance({viewportWidth:viewport.width,locale});
     if(args.mode==='android')assert.ok(await cdp.evaluate(`[...document.querySelectorAll('.home-navigation .home-nav')].every(node=>!node.getClientRects().length)`),'Desktop navigation must stay hidden at the actual mobile width');
     await session.cjkGlyphs(entrance,'actual '+locale+' language entrance');
@@ -218,7 +218,7 @@ try{
   lifecycle.guard('library evidence');
   session.setPageLabel('library');await cdp.send('Page.navigate',{url:origin+'/library'});
   await session.until(()=>cdp.evaluate(`location.pathname==='/library'&&document.readyState==='complete'&&!!document.querySelector('#library-books .binding-original')`),'actual public shelf');await cdp.evaluate('document.fonts.ready.then(()=>true)');
-  if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'library',read:()=>cdp.evaluate(VIEWPORT_EXPRESSION)});
+  if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'library',read:()=>session.viewport('library')});
   let originalSelector='#library-books .binding-original';
   if(args.mode==='android'){
     // .binding-original is hidden at <=380 CSS px. Use a genuine visible
@@ -263,7 +263,7 @@ try{
   receipt.citation={bookId:sourceBook.bookId,passageId:sourcePassage.id,contentVersion:sourceBook.contentVersion,layer:'original',originalSha256:sha(sourcePassage.original)};
   session.setPageLabel('reader');await cdp.send('Page.navigate',{url:origin+'/read?'+citation});
   await session.until(()=>cdp.evaluate(`location.pathname==='/read'&&document.readyState==='complete'&&document.body.dataset.ready==='true'&&!!document.querySelector(${JSON.stringify(italicSelector)})`),'ready cited actual reader italic');await cdp.evaluate('document.fonts.ready.then(()=>true)');
-  if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'reader',read:()=>cdp.evaluate(VIEWPORT_EXPRESSION)});
+  if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'reader',read:()=>session.viewport('reader')});
   const resolved=await cdp.evaluate(`(()=>{const reader=window.marginaliaReader,book=reader.getBook(),state=reader.getState(),n=document.querySelector(${JSON.stringify(italicSelector)}).closest('.passage'),r=n.getBoundingClientRect();return {url:location.href,bookId:book.bookId,contentVersion:book.contentVersion,mode:state.mode,passageId:n.dataset.id,visible:r.bottom>0&&r.top<innerHeight};})()`);
   assert.equal(resolved.bookId,sourceBook.bookId);assert.equal(resolved.contentVersion,sourceBook.contentVersion);assert.equal(resolved.passageId,sourcePassage.id);assert.equal(resolved.mode,'en');assert.ok(resolved.visible,'Citation target must already be visible before the font probe scrolls');
   assert.ok([origin+'/read?'+citation,origin+'/read?'+new URLSearchParams({book:sourceBook.bookId})].includes(resolved.url),'Only the application’s existing consumed-entry URL cleanup is permitted');receipt.citation.resolved=resolved;
@@ -275,7 +275,7 @@ try{
   await Promise.all(session.background);assert.deepEqual(session.failures,[],'All evidence tasks must succeed');
   assert.deepEqual(receipt.errors,[],'Unexpected page/runtime/network errors require review');
   assert.ok(receipt.screenshots.length<=(args.mode==='android'?9:7),'Bounded screenshot budget must hold');
-}catch(error){receipt.result='failed';receipt.failure=error.stack;process.exitCode=1;}
+}catch(error){receipt.result='failed';receipt.failure=error.stack;process.exitCode=1;await captureFailurePage({session,receipt,lifecycle});}
 finally{
   // Single bounded idempotent finalizer: normal, error and cancelled paths all
   // release only owned resources and leave the status to the result gate.
