@@ -91,7 +91,9 @@ const UIAUTOMATOR_CHROME_XML=`<?xml version='1.0' encoding='UTF-8' standalone='y
   </node>
 </hierarchy>`;
 const UIAUTOMATOR_CHROME_DUMP='UI hierchary dumped to: /dev/tty\n'+UIAUTOMATOR_CHROME_XML;
-const NOTIFICATION_XML=`<hierarchy><node package="com.android.chrome" resource-id="com.android.chrome:id/modal_dialog_view"><node package="com.android.chrome" resource-id="com.android.chrome:id/notification_permission_rationale_title" text="Chrome notifications make things easier"/><node package="com.android.chrome" resource-id="com.android.chrome:id/notification_permission_rationale_message" text="You’ll be able to easily manage media controls, Incognito sessions, downloads and more"/><node package="com.android.chrome" resource-id="com.android.chrome:id/negative_button" text="No thanks" class="android.widget.Button" enabled="true" clickable="true" bounds="[468,1700][690,1820]"/></node></hierarchy>`;
+// Actual anonymous Chrome113 startup hierarchy, run39154653054; only UI setup data.
+// SHA256 ca4ae8e7a6560466664688c566edfd19cbc8aec235c42e3e3ecf3b0196f59ad8.
+const NOTIFICATION_XML="<?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation=\"0\"><node index=\"0\" text=\"\" resource-id=\"\" class=\"android.widget.FrameLayout\" package=\"com.android.chrome\" content-desc=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" scrollable=\"false\" long-clickable=\"false\" password=\"false\" selected=\"false\" bounds=\"[27,576][1053,1834]\"><node index=\"0\" text=\"\" resource-id=\"\" class=\"android.widget.LinearLayout\" package=\"com.android.chrome\" content-desc=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" scrollable=\"false\" long-clickable=\"false\" password=\"false\" selected=\"false\" bounds=\"[27,576][1053,1834]\"><node index=\"0\" text=\"\" resource-id=\"android:id/content\" class=\"android.widget.FrameLayout\" package=\"com.android.chrome\" content-desc=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" scrollable=\"false\" long-clickable=\"false\" password=\"false\" selected=\"false\" bounds=\"[27,576][1053,1834]\"><node index=\"0\" text=\"\" resource-id=\"\" class=\"android.widget.LinearLayout\" package=\"com.android.chrome\" content-desc=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" scrollable=\"false\" long-clickable=\"false\" password=\"false\" selected=\"false\" bounds=\"[27,576][1053,1834]\"><node index=\"0\" text=\"\" resource-id=\"com.android.chrome:id/custom\" class=\"android.widget.FrameLayout\" package=\"com.android.chrome\" content-desc=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" scrollable=\"false\" long-clickable=\"false\" password=\"false\" selected=\"false\" bounds=\"[27,576][1053,1646]\"><node index=\"0\" text=\"\" resource-id=\"\" class=\"android.widget.LinearLayout\" package=\"com.android.chrome\" content-desc=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" scrollable=\"false\" long-clickable=\"false\" password=\"false\" selected=\"false\" bounds=\"[27,576][1053,1646]\"><node index=\"0\" text=\"\" resource-id=\"\" class=\"android.widget.ImageView\" package=\"com.android.chrome\" content-desc=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" scrollable=\"false\" long-clickable=\"false\" password=\"false\" selected=\"false\" bounds=\"[232,631][848,1305]\" /><node index=\"1\" text=\"Chrome notifications make things easier\" resource-id=\"\" class=\"android.widget.TextView\" package=\"com.android.chrome\" content-desc=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" scrollable=\"false\" long-clickable=\"false\" password=\"false\" selected=\"false\" bounds=\"[71,1360][1009,1514]\" /><node index=\"2\" text=\"You’ll be able to easily manage media controls, Incognito sessions, downloads and more\" resource-id=\"\" class=\"android.widget.TextView\" package=\"com.android.chrome\" content-desc=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" scrollable=\"false\" long-clickable=\"false\" password=\"false\" selected=\"false\" bounds=\"[71,1547][1009,1646]\" /></node></node><node index=\"1\" text=\"\" resource-id=\"com.android.chrome:id/button_bar\" class=\"android.view.ViewGroup\" package=\"com.android.chrome\" content-desc=\"\" checkable=\"false\" checked=\"false\" clickable=\"false\" enabled=\"true\" focusable=\"false\" focused=\"false\" scrollable=\"false\" long-clickable=\"false\" password=\"false\" selected=\"false\" bounds=\"[27,1646][1053,1834]\"><node index=\"0\" text=\"No thanks\" resource-id=\"com.android.chrome:id/negative_button\" class=\"android.widget.Button\" package=\"com.android.chrome\" content-desc=\"\" checkable=\"false\" checked=\"false\" clickable=\"true\" enabled=\"true\" focusable=\"true\" focused=\"false\" scrollable=\"false\" long-clickable=\"false\" password=\"false\" selected=\"false\" bounds=\"[457,1674][699,1806]\" /><node index=\"1\" text=\"Continue\" resource-id=\"com.android.chrome:id/positive_button\" class=\"android.widget.Button\" package=\"com.android.chrome\" content-desc=\"\" checkable=\"false\" checked=\"false\" clickable=\"true\" enabled=\"true\" focusable=\"true\" focused=\"false\" scrollable=\"false\" long-clickable=\"false\" password=\"false\" selected=\"false\" bounds=\"[721,1674][1009,1806]\" /></node></node></node></node></node></hierarchy>";
 function happyRouter(file,args){
   const base=file.split('/').pop(),joined=args.join(' ');
   if(base==='avdmanager'){
@@ -531,8 +533,8 @@ test('native startup gate rejects notification rationale, unknown native dialogs
 
 test('startup rejection is limited to the complete known native notification prompt and unique safe negative button',()=>{
   const args={xml:NOTIFICATION_XML,foreground:{ok:true},size:'1080x2340'};
-  assert.deepEqual(planStartupNotificationRejection(args),{resourceId:'com.android.chrome:id/negative_button',text:'No thanks',bounds:'[468,1700][690,1820]',x:579,y:1760});
-  for(const xml of [NOTIFICATION_XML.replace('notification_permission_rationale_title','web_title'),NOTIFICATION_XML.replace('No thanks','Continue'),NOTIFICATION_XML.replace('enabled="true"','enabled="false"'),NOTIFICATION_XML.replace('[690,1820]','[1200,1820]'),NOTIFICATION_XML.replace('</hierarchy>',NOTIFICATION_XML.match(/<node[^>]+negative_button[^>]+\/>/)[0]+'</hierarchy>')])assert.equal(planStartupNotificationRejection({...args,xml}),null);
+  assert.deepEqual(planStartupNotificationRejection(args),{resourceId:'com.android.chrome:id/negative_button',text:'No thanks',bounds:'[457,1674][699,1806]',x:578,y:1740});
+  for(const xml of [NOTIFICATION_XML.replace('Chrome notifications make things easier','Unknown title'),NOTIFICATION_XML.replace('No thanks','Continue'),NOTIFICATION_XML.replace('clickable="true"','clickable="false"'),NOTIFICATION_XML.replace('[699,1806]','[1200,1806]'),NOTIFICATION_XML.replace('</hierarchy>',NOTIFICATION_XML.match(/<node[^>]+negative_button[^>]+\/>/)[0]+'</hierarchy>')])assert.equal(planStartupNotificationRejection({...args,xml}),null);
   assert.equal(planStartupNotificationRejection({...args,foreground:{ok:false}}),null);
 });
 
@@ -541,7 +543,7 @@ test('production startup rejection uses fresh native bounds on the owned serial 
   const {record,exec,spawnProcess,killProcess,fsOps,sleep,now}=recRouter(router);
   const adapter=createAndroidAdapter({env:baseEnv(),platform:'linux',exec,spawnProcess,killProcess,fsOps,sleep,now,fence:TEST_FENCE});
   await adapter.boot();const result=await adapter.rejectStartupNotification({recordBefore:before=>{assert.equal(before.uiautomatorXml,NOTIFICATION_XML);assert.equal(record.exec.some(call=>call.args.includes("input")),false);}});assert.equal(result.performed,true);
-  assert.deepEqual(record.exec.filter(call=>call.args.includes('input')).map(call=>call.args),[['-s',SERIAL,'shell','input','tap','579','1760']]);
+  assert.deepEqual(record.exec.filter(call=>call.args.includes('input')).map(call=>call.args),[['-s',SERIAL,'shell','input','tap','578','1740']]);
   await adapter.cleanup();
 });
 
@@ -555,6 +557,21 @@ test('known rationale never authorizes a tap through another native overlay or a
   const button=NOTIFICATION_XML.match(/<node[^>]+negative_button[^>]+\/>/)[0];
   const xml=NOTIFICATION_XML.replace(button,'').replace('</hierarchy>',button+'</hierarchy>');
   assert.equal(planStartupNotificationRejection({...args,xml}),null,'same label outside the rationale container is unrelated');
+});
+
+test('actual notification structure rejects extra overlapping controls and FRE markers before a production tap',async()=>{
+  const extra='<node package="com.android.chrome" resource-id="" class="android.widget.Button" text="Continue" clickable="true" enabled="true" bounds="[457,1674][699,1806]"/>';
+  const xmls=[NOTIFICATION_XML.replace(/(<node[^>]*class="android.widget.ImageView"[^>]*content-desc=")"/,'$1first_run_welcome"'),NOTIFICATION_XML.replace('</node></node></node></node></node></hierarchy>',extra+'</node></node></node></node></node></hierarchy>')];
+  assert.notEqual(xmls[0],NOTIFICATION_XML,'fixture must actually mutate the existing ImageView content-desc');
+  assert.notEqual(xmls[1],NOTIFICATION_XML,'fixture must actually add the unknown overlapping button');
+  xmls.push(NOTIFICATION_XML.replace('[721,1674][1009,1806]','[457,1674][699,1806]'));
+  for(const xml of xmls){
+    const h=recRouter((file,args)=>args.join(' ').includes('shell cat /data/local/tmp/get173-')?xml:happyRouter(file,args));
+    const adapter=createAndroidAdapter({env:baseEnv(),platform:'linux',...h,fence:TEST_FENCE});await adapter.boot();
+    const result=await adapter.rejectStartupNotification({recordBefore(){}});
+    assert.equal(result.performed,false);assert.equal(h.record.exec.filter(call=>call.args.includes('input')).length,0);
+    await adapter.cleanup();
+  }
 });
 
 test('production negative action is forbidden until complete bounded evidence is recorded',async()=>{

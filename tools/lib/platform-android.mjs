@@ -356,27 +356,46 @@ export function assessFirstRunOverlay(uiautomatorXml=''){
 // Unknown prompts/OS permissions/positive buttons are never automatically acted on.
 export function planStartupNotificationRejection({xml,foreground,size}={}){
   if(!foreground?.ok)return null;
-  const parsed=parseUiHierarchy(xml).nodes,nodes=parsed.map(node=>node.attrs),own=nodes.filter(node=>node.package===CHROME_PACKAGE);
+  const parsed=parseUiHierarchy(xml).nodes,nodes=parsed.map(node=>node.attrs);
+  if(assessFirstRunOverlay(xml).markers.some(marker=>marker!=='notification-rationale'))return null;
   const prefix=CHROME_PACKAGE+':id/';
-  const decoded=nodes.flatMap(node=>Object.values(node)).join('\n').toLowerCase();
-  if(FIRST_RUN_MARKERS.some(marker=>decoded.includes(marker.toLowerCase()))||nodes.some(node=>/^(?:com\.(?:google\.android|android)\.permissioncontroller)$/.test(node.package||'')))return null;
-  // Only the exact Chromium113 modal layout is recognized. A bottom sheet or
-  // any additional modal requires inspection, never a guessed negative tap.
-  const containers=parsed.filter(({attrs})=>attrs.package===CHROME_PACKAGE&&attrs['resource-id']===prefix+'modal_dialog_view');
-  if(containers.length!==1)return null;
-  const container=containers[0],containerIndex=parsed.indexOf(container);
-  const within=index=>{for(let current=index;current!=null;current=parsed[current].parent)if(current===containerIndex)return true;return false;};
-  const knownModalIds=new Set(['modal_dialog_view','modal_dialog_scroll_view']);
-  if(parsed.some(({attrs},index)=>attrs.package===CHROME_PACKAGE&&(/dialog|bottom_sheet/i.test(attrs['resource-id']||'')||/Dialog/.test(attrs.class||''))&&(!within(index)||!knownModalIds.has((attrs['resource-id']||'').slice(prefix.length)))))return null;
-  const content=own.filter(node=>within(nodes.indexOf(node)));
-  if(content.filter(node=>node['resource-id']===prefix+'notification_permission_rationale_title'&&node.text==='Chrome notifications make things easier').length!==1||content.filter(node=>node['resource-id']===prefix+'notification_permission_rationale_message'&&node.text?.includes('manage media controls')).length!==1)return null;
-  const candidates=own.filter(node=>node['resource-id']===prefix+'negative_button'&&node.text==='No thanks'&&node.class==='android.widget.Button'&&node.enabled==='true'&&node.clickable==='true');
-  if(candidates.length!==1)return null;
-  const node=candidates[0];if(!content.includes(node))return null;
-  const bounds=/^\[(\d+),(\d+)\]\[(\d+),(\d+)\]$/.exec(node.bounds||''),screen=/^(\d+)x(\d+)$/.exec(size||'');
-  if(!bounds||!screen)return null;
-  const [left,top,right,bottom]=bounds.slice(1).map(Number),[width,height]=screen.slice(1).map(Number);
-  if(![left,top,right,bottom,width,height].every(Number.isSafeInteger)||width<=0||height<=0||left>=right||top>=bottom||right>width||bottom>height)return null;
+  const title='Chrome notifications make things easier';
+  const message='You’ll be able to easily manage media controls, Incognito sessions, downloads and more';
+  // Exact semantic roles observed on pinned Chrome113/API34. Bounds remain
+  // fresh runtime data. Any additional node/window/control is unrecognized.
+  const roles=[
+    [null,'android.widget.FrameLayout','',''],
+    [0,'android.widget.LinearLayout','',''],
+    [1,'android.widget.FrameLayout','android:id/content',''],
+    [2,'android.widget.LinearLayout','',''],
+    [3,'android.widget.FrameLayout',prefix+'custom',''],
+    [4,'android.widget.LinearLayout','',''],
+    [5,'android.widget.ImageView','',''],
+    [5,'android.widget.TextView','',title],
+    [5,'android.widget.TextView','',message],
+    [3,'android.view.ViewGroup',prefix+'button_bar',''],
+    [9,'android.widget.Button',prefix+'negative_button','No thanks'],
+    [9,'android.widget.Button',prefix+'positive_button','Continue'],
+  ];
+  if(nodes.length!==roles.length)return null;
+  for(let i=0;i<roles.length;i++){
+    const [parent,kind,id,text]=roles[i],node=nodes[i];
+    if(parsed[i].parent!==parent||node.package!==CHROME_PACKAGE||node.class!==kind||node['resource-id']!==id||node.text!==text||node.enabled!=='true'||node.clickable!==(i>=10?'true':'false')||node['long-clickable']!=='false'||node.scrollable!=='false')return null;
+  }
+  const node=nodes[10];
+
+  const screen=/^(\d+)x(\d+)$/.exec(size||'');if(!screen)return null;
+  const [width,height]=screen.slice(1).map(Number);if(![width,height].every(Number.isSafeInteger)||width<=0||height<=0)return null;
+  const rectangle=value=>{
+    const match=/^\[(\d+),(\d+)\]\[(\d+),(\d+)\]$/.exec(value||'');if(!match)return null;
+    const [left,top,right,bottom]=match.slice(1).map(Number);
+    return [left,top,right,bottom].every(Number.isSafeInteger)&&left<right&&top<bottom&&right<=width&&bottom<=height?{left,top,right,bottom}:null;
+  };
+  const target=rectangle(node.bounds),positive=rectangle(nodes[11].bounds),bar=rectangle(nodes[9].bounds),content=rectangle(nodes[2].bounds);
+  if(!target||!positive||!bar||!content)return null;
+  const contains=(outer,inner)=>inner.left>=outer.left&&inner.top>=outer.top&&inner.right<=outer.right&&inner.bottom<=outer.bottom;
+  if(!contains(content,bar)||!contains(bar,target)||!contains(bar,positive)||Math.min(target.right,positive.right)>Math.max(target.left,positive.left)&&Math.min(target.bottom,positive.bottom)>Math.max(target.top,positive.top))return null;
+  const {left,top,right,bottom}=target;
   return {resourceId:node['resource-id'],text:node.text,bounds:node.bounds,x:Math.floor((left+right)/2),y:Math.floor((top+bottom)/2)};
 }
 
