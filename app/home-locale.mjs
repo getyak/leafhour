@@ -38,6 +38,7 @@ const strings=[
   ['读过的日子，<br>会留下痕迹。','The days you read<br>leave a trace.','讀過的日子，<br>會留下痕跡。','読んだ日々は、<br>痕跡を残します。'],
   ['今天读了哪里，写下什么，还有什么没想通，阅读日历都记下来。选择一天，就能回到那本书和那句话。','Your reading calendar keeps where you read, what you wrote and the questions still open. Choose a day to return to the book and the passage.','今天讀了哪裡，寫下什麼，還有什麼沒想通，閱讀日曆都記下來。選擇一天，就能回到那本書和那句話。','今日はどこを読み、何を書き、何がまだ腑に落ちないか。読書カレンダーが覚えていてくれます。日付を選ぶと、その本とその一節に戻れます。'],
   ['今天，读几页','Read a few pages today','今天，讀幾頁','今日は、数頁だけ'],
+  ['每日陪读纸条','Daily reading notes','每日陪讀紙條','毎日の読書メモ'],
   ['选一个适合自己的每日目标，从上次的位置继续。','Choose a daily goal that fits your life and continue where you left off.','選一個適合自己的每日目標，從上次的位置繼續。','自分に合う毎日の目標を選び、前回の続きから読み進めます。'],
   ['读完，留一笔','Leave a thought afterward','讀完，留一筆','読み終えたら、ひとこと残す'],
   ['记录自己的理解，或标记真正读完的章节。','Write down your understanding, or mark a chapter you have finished.','記錄自己的理解，或標記真正讀完的章節。','自分の理解を書き留めるか、読み終えた章を記録します。'],

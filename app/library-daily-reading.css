@@ -22,6 +22,7 @@
 .daily-card-meta time{margin-left:auto;font-variant-numeric:tabular-nums}
 .daily-card-label{border:1px solid var(--line);border-radius:3px;padding:0 5px}
 .daily-card-message{white-space:pre-wrap;margin:10px 0;color:var(--ink)}
+.daily-card-source{margin:0 0 7px;color:var(--muted);font-size:12px}
 .daily-card-quote{font:15px/1.9 var(--serif);white-space:pre-wrap;border-left:2px solid var(--line);padding-left:14px;margin:14px 0;color:var(--muted)}
 .daily-card a{display:inline-block;min-height:44px;line-height:44px;font-size:13px}
 @media(max-width:980px){.library-settings-dialog .settings-tabs{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}.library-settings-dialog .settings-tabs button{flex:0 0 auto;white-space:nowrap}.daily-inbox{margin:24px 0 30px}.daily-card{padding:18px 0}}

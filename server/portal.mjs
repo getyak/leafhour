@@ -34,6 +34,7 @@ import {createGiftQuoteService} from './gift-quote.mjs';
 import {createLibraryPortability} from './library-portability.mjs';
 import {decodePersonalRecordId} from '../app/personal-records.mjs';
 import {agentReadArgs,scopedAgentRead} from './scoped-agent-reading.mjs';
+import {createDailyReadingService} from './daily-reading.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
@@ -68,6 +69,9 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const bookIntroductions=createBookIntroductionService({library,generator:introductionGenerator===undefined?createReaderChatGenerator({env,makeGenerator:createIntroductionGenerator}):introductionGenerator});
   const proactiveGenerator=companionGenerator===undefined?createReaderChatGenerator({makeGenerator:createCompanionGenerator}):companionGenerator;
   const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context)});
+  // One quiet daily companion plan per account; no schedule, model job or
+  // generation happens in this process. The external host owns the heartbeat.
+  const dailyReading=createDailyReadingService({library,dataDir:path.join(dataDir,'library','daily'),dataStore});
   const portability=createLibraryPortability({library,chat,store:ingestionStore});
   let legacyBook=null;
   const audioLibrary={getBook:(owner,id)=>owner?.id==='legacy-local'&&legacyBook?.bookId===id?Promise.resolve(legacyBook):library.getBook(owner,id)};
@@ -129,7 +133,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     const user=req.method==='GET'&&p.startsWith('/api/book-gifts/')?null:await auth.userFor(token);
     const ownerScoped=p.startsWith('/api/library')||p==='/api/account/reading-preferences'||req.method==='POST'&&(p==='/api/account/profile'||/^\/api\/book-gifts\/[^/]+\/(?:accept|revoke)$/.test(p));
     if(ownerScoped&&req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==(user?.id||'guest')){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房。原账户草稿仍留在原处。',409);}
-    const body=req.method==='POST'?await jsonBody(req,p==='/api/account/reading-preferences'?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
+    const body=req.method==='POST'?await jsonBody(req,p==='/api/account/reading-preferences'?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
     const localAllowed=allowLocal&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)&&!publicOrigin;
     const setSession=value=>res.setHeader('Set-Cookie',`marginalia_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${value?604800:0}${publicOrigin?.startsWith('https:')?'; Secure':''}`);
     if(p==='/api/auth/session'&&req.method==='GET'){
@@ -196,6 +200,19 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(p==='/api/library/validate'&&req.method==='POST'){send(200,await library.validateRestore(user,body));return true;}
     if(p==='/api/library/grants'){if(req.method==='GET')send(200,{grants:await library.grants(user)});else send(201,await library.createGrant(user,body));return true;}
     const revoke=p.match(/^\/api\/library\/grants\/([^/]+)\/revoke$/);if(revoke&&req.method==='POST'){send(200,await library.revokeGrant(user,revoke[1]));return true;}
+    if(p==='/api/library/daily-reading'||p==='/api/library/daily-reading/presence'||p==='/api/library/daily-reading/pause'||p==='/api/library/daily-reading/resume'||p==='/api/library/daily-reading/test'){
+      res.setHeader('Cache-Control','private, no-store');
+      if(!user)throw fail('请先进入自己的书房',401);if(req.headers['x-reader-owner']!==user.id)throw fail('请重新核对当前书房账户',409);
+      if(req.method==='GET'&&p==='/api/library/daily-reading'){send(200,await dailyReading.view(user));return true;}
+      if(req.method!=='POST')throw fail('不支持这个请求',405);
+      if(p==='/api/library/daily-reading'){send(200,await dailyReading.configure(user,body));return true;}
+      {
+        if(p==='/api/library/daily-reading/presence'){send(200,await dailyReading.reportPresence(user,body));return true;}
+        if(p==='/api/library/daily-reading/pause'){send(200,await dailyReading.pause(user,body));return true;}
+        if(p==='/api/library/daily-reading/resume'){send(200,await dailyReading.resume(user,body));return true;}
+        send(200,await dailyReading.requestTest(user,body));return true;
+      }
+    }
     const gift=p.match(/^\/api\/book-gifts\/([A-Za-z0-9_-]{43})(?:\/(download|download-part|accept|revoke))?$/);
     if(gift){
       const [,giftToken,action]=gift;res.setHeader('Cache-Control','private, no-store');res.setHeader('Referrer-Policy','no-referrer');
@@ -275,6 +292,14 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     }
     if(p.startsWith('/api/agent/')){
       const action=p.slice('/api/agent/'.length),bookId=url.searchParams.get('bookId')||body?.bookId,agentToken=req.headers.authorization?.match(/^Bearer (.+)$/)?.[1];
+      // The daily companion token is deliberately narrow: it can only connect,
+      // claim and finish this account's plan, and never generic book routes.
+      if(['daily-connect','daily-claim','daily-finish'].includes(action)){
+        if(req.method!=='POST')throw fail('不支持这个请求',405);
+        const identity=await library.authorizeDaily(agentToken),owner={id:identity.id};
+        const result=action==='daily-connect'?await dailyReading.connect(owner,body,identity.grant):action==='daily-claim'?await dailyReading.claim(owner,body,identity.grant):await dailyReading.finish(owner,body,identity.grant);
+        send(200,result);return true;
+      }
       const scopes={manifest:'content',passage:'content',context:'content',chapter:'content',search:'content',notes:'notes',activity:'activity',comment:'comment:write','audio-prepare':'content','audio-generate':'audio:generate','audio-status':'audio:read','audio-cancel':'audio:generate','audio-clip':'audio:read'};if(!scopes[action])throw fail('找不到这个工具',404);
       const owner=await library.authorize(agentToken,bookId,scopes[action]),book=await library.getBook(owner,bookId),records=()=>library.records(owner,bookId);
       if(action.startsWith('audio-')){
@@ -292,5 +317,5 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     }
     throw fail('找不到这个操作',404);
   }
-  return {handle,library,portability,auth,profile,gifts,giftQuotes,audio,audioRoutes,chat,bookIntroductions,ingestionRunner,setLegacyBook:book=>{legacyBook=book;}};
+  return {handle,library,portability,auth,profile,gifts,giftQuotes,audio,audioRoutes,chat,bookIntroductions,dailyReading,ingestionRunner,setLegacyBook:book=>{legacyBook=book;}};
 }

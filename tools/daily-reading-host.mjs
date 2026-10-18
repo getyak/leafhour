@@ -28,7 +28,7 @@ export async function runDailyHost(argv,{read=readPrivateHostJson,call=callDaily
   const input=await read(inputFile);
   if(!object(input)||!keys(input,['eventId','claimNonce','kind','message','quote'])||!text(input.eventId,240)||!text(input.claimNonce)||input.claimNonce.length<16||!['message','silence','failed'].includes(input.kind))throw bad();
   if(input.kind==='message'){
-   if(!prose(input.message,600)||!object(input.quote)||!keys(input.quote,['text','start','end','passageId','contentVersion'])||!prose(input.quote.text,240)||!Number.isSafeInteger(input.quote.start)||input.quote.start<0||!Number.isSafeInteger(input.quote.end)||input.quote.end<=input.quote.start||!text(input.quote.passageId)||!text(input.quote.contentVersion))throw bad();
+   if(!prose(input.message,600)||!prose(input.quote,240))throw bad();
   }else if(input.message!==undefined||input.quote!==undefined)throw bad();
   args={...args,...input};
  }

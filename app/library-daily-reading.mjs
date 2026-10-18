@@ -36,12 +36,13 @@ export function mountLibraryDailyReading({root,inboxRoot=null,api,getSession,get
  const message=(text,error=false)=>{status.textContent=text;status.classList.toggle('error',error);status.setAttribute('role',error?'alert':'status');};
  const valid=(expected,sequence)=>currentOwner()===expected&&owner===expected&&generation===sequence;
  function renderInbox(){
-  if(!inboxRoot)return;inboxRoot.replaceChildren();const cards=owner?[...(view?.inbox||[])].sort((a,b)=>Date.parse(b.createdAt)-Date.parse(a.createdAt)).slice(0,3):[];inboxRoot.hidden=!cards.length;
+  if(!inboxRoot)return;inboxRoot.replaceChildren();const cards=owner?[...(view?.inbox||[])].sort((a,b)=>Date.parse(b.deliveredAt||b.createdAt)-Date.parse(a.deliveredAt||a.createdAt)).slice(0,3):[];inboxRoot.hidden=!cards.length;
   if(!cards.length)return;const h=node('h2','','留在书房的纸条');inboxRoot.append(h);
   for(const card of cards){
    const article=node('article','daily-card'),meta=node('div','daily-card-meta'),label=node('span','','AI · 每日陪读');meta.append(label);
-   if(card.label)meta.append(node('span','daily-card-label',card.label));
-   const date=new Date(card.createdAt);if(!Number.isNaN(date.getTime())){const stamp=node('time','',new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(date));stamp.dateTime=date.toISOString();meta.append(stamp);}
+   if(card.label&&card.label!=='每日陪读')meta.append(node('span','daily-card-label',card.label));
+   const date=new Date(card.deliveredAt||card.createdAt);if(!Number.isNaN(date.getTime())){const stamp=node('time','',new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(date));stamp.dateTime=date.toISOString();meta.append(stamp);}
+   const bookTitle=card.bookTitle||getBooks().find(b=>b.bookId===card.bookId)?.title?.zh;if(bookTitle)article.append(node('p','daily-card-source','《'+bookTitle+'》'+(card.chapterLabel?' · '+card.chapterLabel:'')));
    article.append(meta,node('p','daily-card-message',card.message||''));
    if(card.quote?.text)article.append(node('blockquote','daily-card-quote',card.quote.text));
    const link=sourceLink(card.link);if(link){const back=node('a','text-link','回到这一段原文 →');back.href=link;article.append(back);}inboxRoot.append(article);
@@ -50,10 +51,11 @@ export function mountLibraryDailyReading({root,inboxRoot=null,api,getSession,get
  function render(){
   const p=view?.plan,books=getBooks(),stateKey=p?.status==='active'&&!p.connectedAt?'awaiting-host':p?.status;state.textContent=p?(states[stateKey]||'待重新连接'):'尚未设置';state.dataset.state=stateKey||'unset';
   schedule.textContent='每天 '+(p?.time||'20:00')+' · '+((p?.timeZone||'Asia/Shanghai')==='Asia/Shanghai'?'北京时间':p.timeZone);
-  binding.textContent=p?'陪读《'+title(books.find(b=>b.bookId===p.bookId))+'》':'从你正在读的书开始。';
+  const boundBook=p&&books.find(b=>b.bookId===p.bookId),boundTitle=p?.bookTitle||(boundBook?title(boundBook):'已绑定的书');
+  binding.textContent=p?'陪读《'+boundTitle+'》'+(!boundBook?' · 此书已移出书架，陪读仍按已保存设置进行。':''):'从你正在读的书开始。';
   connection.textContent=p?.status==='active'&&p.connectedAt?'宿主：'+(p.hostLabel||'已连接')+' · 已完成连接':p?.status==='paused'?'已暂停，未完成的纸条不会送达。':p?'宿主尚未完成连接。准备配置后，还需由宿主确认日程。':'由你自己的 Agent 宿主按日程留纸条。';
   const end=new Date(p?.grantExpiresAt);expiry.textContent=p&&!Number.isNaN(end.getTime())?'授权到期：'+new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',year:'numeric',month:'long',day:'numeric'}).format(end):'';
-  if(!dirty){book.replaceChildren();for(const b of books){const option=node('option','',title(b));option.value=b.bookId;book.append(option);}book.value=p?.bookId||getCurrentBook()?.bookId||books[0]?.bookId||'';time.value=p?.time||'20:00';}
+  if(!dirty){book.replaceChildren();if(p&&!boundBook){const option=node('option','',boundTitle+'（已绑定）');option.value=p.bookId;book.append(option);}for(const b of books){const option=node('option','',title(b));option.value=b.bookId;book.append(option);}book.value=p?.bookId||getCurrentBook()?.bookId||books[0]?.bookId||'';time.value=p?.time||'20:00';}
   for(const field of [book,time,consent,save,reload])field.disabled=!owner||busy;save.disabled||=!book.value||!loaded;pause.disabled=resume.disabled=!owner||busy||!loaded;
   pause.hidden=!p||!['active','awaiting-host'].includes(p.status);resume.hidden=p?.status!=='paused';
   configButton.hidden=!credential;configHelp.hidden=!credential;configButton.disabled=busy||!owner;form.setAttribute('aria-busy',String(busy));renderInbox();

@@ -12,9 +12,9 @@ const all=root=>[root,...root.children.flatMap(all)],find=(root,id)=>all(root).f
 function fixture(api){
  globalThis.document=Object.assign(new EventTarget(),{createElement:tag=>new Element(tag),activeElement:null,body:new Element('body')});
  const root=new Element('section'),inboxRoot=new Element('section');let user={id:'a'};
- const book={bookId:'book-a',title:{zh:'一本书'}},downloads=[];
- const ui=mountLibraryDailyReading({root,inboxRoot,api,getSession:()=>({user}),getBooks:()=>[book],getCurrentBook:()=>book,origin:'https://leafhour.com',download:value=>downloads.push(value)});
- return {root,inboxRoot,ui,downloads,find:id=>find(root,id),switch:id=>{user=id?{id}:null;ui.update();}};
+ const book={bookId:'book-a',title:{zh:'一本书'}},downloads=[],books=[book];
+ const ui=mountLibraryDailyReading({root,inboxRoot,api,getSession:()=>({user}),getBooks:()=>books,getCurrentBook:()=>book,origin:'https://leafhour.com',download:value=>downloads.push(value)});
+ return {root,inboxRoot,ui,downloads,books,find:id=>find(root,id),switch:id=>{user=id?{id}:null;ui.update();}};
 }
 const plan=(patch={})=>({id:'plan-a',revision:2,bookId:'book-a',status:'awaiting-host',time:'20:00',timeZone:'Asia/Shanghai',channel:'library',grantExpiresAt:'2026-11-17T12:00:00Z',...patch});
 test('opening and refreshing the daily panel only reads, and guests never call owner routes',async()=>{
@@ -55,4 +55,13 @@ test('pausing preserves unsaved time edits and does not silently apply them',asy
  const calls=[],f=fixture(async(url,body)=>{calls.push({url,body});return {plan:plan({status:url.endsWith('/pause')?'paused':'active',connectedAt:'2026-10-18T12:00:00Z'}),inbox:[]};});
  await f.ui.refresh();f.find('daily-time').value='21:30';f.find('daily-time').dispatchEvent(new Event('input'));f.find('daily-consent').checked=true;f.find('daily-pause').dispatchEvent(new Event('click'));await tick();
  assert.equal(f.find('daily-time').value,'21:30');assert.equal(f.find('daily-consent').checked,true);assert.deepEqual(calls[1].body,{baseRevision:2});
+});
+test('actual delivery timestamps and book locators remain visible across later plan changes',async()=>{
+ const f=fixture(async()=>({plan:plan(),inbox:[{id:'old',bookTitle:'另一本书',chapterLabel:'第二章',deliveredAt:'2026-10-17T12:00:00Z',message:'old'},{id:'new',bookTitle:'一本书',deliveredAt:'2026-10-18T12:00:00Z',message:'new'}]}));await f.ui.refresh();
+ const nodes=all(f.inboxRoot);assert.ok(nodes.some(n=>n.textContent==='《另一本书》 · 第二章'));assert.equal(nodes.filter(n=>n.tagName==='time').length,2);assert.equal(nodes.filter(n=>n.tagName==='article')[0].children.some(n=>n.textContent==='new'),true);
+});
+
+test('a fixed book removed from the shelf stays visible and selected without a silent replacement',async()=>{
+ const f=fixture(async()=>({plan:plan({bookId:'archived',bookTitle:'原来那本书',status:'active',connectedAt:'2026-10-18T12:00:00Z'}),inbox:[]}));f.books.length=0;await f.ui.refresh();
+ assert.ok(all(f.root).some(n=>n.textContent.includes('陪读《原来那本书》')));assert.ok(all(f.root).some(n=>n.textContent.includes('已移出书架')));assert.equal(f.find('daily-book').value,'archived');assert.equal(f.find('daily-book').children[0].textContent,'原来那本书（已绑定）');
 });
