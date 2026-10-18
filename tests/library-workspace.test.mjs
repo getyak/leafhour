@@ -48,3 +48,39 @@ test('reading near the book surfaces the latest actual entry rather than inventi
   assert.equal(latestReadingEntry({days:[]}),null);
   assert.equal(latestReadingEntry(null),null);
 });
+
+// GET-179 settings opener safety: reentry through overlay sync must never steal
+// the external opener, and focus only returns to a connected, visible,
+// non-inert control outside the dialog with the sidebar entry as fallback.
+import {settingsOpenerCandidate,settingsFocusTarget} from '../app/library-shell.mjs';
+const fakeNode=({inside=false,visible=true,connected=true,inert=false,focusable=true}={})=>{
+  const node={
+    hidden:!visible,isConnected:connected,
+    focus(){node.focused=true;},
+    contains(other){return inside&&other&&other.insideDialog;},
+    closest(selector){return selector==='[inert]'&&inert?node:null;},
+    getClientRects(){return visible&&connected? [{}]:[];}
+  };
+  if(!focusable)delete node.focus;
+  return node;
+};
+test('the settings opener is captured only outside an open dialog',()=>{
+  const dialog={contains:node=>!!node?.insideDialog};
+  const external=fakeNode(),inside={...fakeNode(),insideDialog:true};
+  const document={activeElement:external};
+  assert.equal(settingsOpenerCandidate(document,dialog),external);
+  document.activeElement=inside;
+  assert.equal(settingsOpenerCandidate(document,dialog),null,'a dialog child never becomes the opener');
+  assert.equal(settingsOpenerCandidate({activeElement:{}},dialog)&&true,true,'capture stays raw; return-time safety rejects unusable targets');
+});
+test('settings focus return only targets a connected visible non-inert control outside the dialog',()=>{
+  const dialog={contains:node=>!!node?.insideDialog};
+  const fallback=fakeNode(),external=fakeNode();
+  assert.equal(settingsFocusTarget(dialog,external,fallback),external);
+  assert.equal(settingsFocusTarget(dialog,{...fakeNode(),insideDialog:true},fallback),fallback,'a dialog child can never take the return focus');
+  assert.equal(settingsFocusTarget(dialog,fakeNode({connected:false}),fallback),fallback);
+  assert.equal(settingsFocusTarget(dialog,fakeNode({visible:false}),fallback),fallback);
+  assert.equal(settingsFocusTarget(dialog,fakeNode({inert:true}),fallback),fallback);
+  assert.equal(settingsFocusTarget(dialog,fakeNode({focusable:false}),fallback),fallback);
+  assert.equal(settingsFocusTarget(dialog,fakeNode({connected:false}),fakeNode({visible:false})),null,'an unsafe fallback is not focused blindly');
+});

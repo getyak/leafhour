@@ -1,11 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {libraryShelf,roomShelf,hasShelfFilters} from '../app/library-workspace.mjs';
+import {createLibraryService} from '../server/library-service.mjs';
+import {digest} from '../server/document-import.mjs';
+import {mountShelfFilters} from '../app/library-filter-controls.mjs';
+import {mountChoiceControl} from '../app/choice-control.mjs';
 import {mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
-import {libraryShelf,roomShelf} from '../app/library-workspace.mjs';
-import {createLibraryService} from '../server/library-service.mjs';
-import {digest} from '../server/document-import.mjs';
 
 const books=[
   {bookId:'unread',visibility:'public',sourceLanguage:'en',topics:['literature'],title:{zh:'未开始的故事'},shelfPosition:0,journey:{status:'reading',lastReadAt:null,completedChapters:0}},
@@ -67,4 +69,156 @@ test('book listings expose original language and curated subjects, including old
   assert.equal(row.sourceLanguage,'zh');
   assert.deepEqual(row.topics,[]);
   assert.equal(await readFile(indexFile,'utf8'),before);
+});
+
+test('a synthetic Chinese fiction fixture filters honestly while the shipped catalog truthfully stays empty',async t=>{
+  const synthetic=[
+    {bookId:'fixture-novel',visibility:'private',sourceLanguage:'zh',topics:['fiction'],title:{zh:'合成小说'}},
+    {bookId:'fixture-story',visibility:'private',sourceLanguage:'zh',topics:['fiction','literature'],title:{zh:'合成短篇'}}
+  ];
+  assert.deepEqual(ids(libraryShelf(synthetic,{topic:'fiction',language:'zh'})),['fixture-novel','fixture-story']);
+  assert.deepEqual(ids(libraryShelf(synthetic,{topic:'fiction',language:'en'})),[]);
+  const dir=await mkdtemp(path.join(tmpdir(),'leafhour-fiction-catalog-'));
+  t.after(()=>rm(dir,{recursive:true,force:true}));
+  const library=await createLibraryService({dataDir:dir});
+  assert.deepEqual(libraryShelf(await library.list(null),{topic:'fiction',language:'zh'}),[]);
+  assert.ok(libraryShelf(await library.list(null),{topic:'fiction',language:'en'}).length>0,'unambiguous English novels carry the fiction topic');
+});
+
+// ---- controller fixture -----------------------------------------------------
+class FakeElement{
+  constructor(tag,doc){
+    this.tagName=String(tag).toUpperCase();this.ownerDocument=doc;this.children=[];this.parentElement=null;
+    this.attributes=new Map();this.dataset={};this.className='';this.id='';this.textContent='';this.value='';
+    this.disabled=false;this.hidden=false;this.open=false;this.type='';this.listeners=new Map();this.style={};
+  }
+  addEventListener(type,fn){this.listeners.set(type,[...(this.listeners.get(type)||[]),fn]);}
+  removeEventListener(type,fn){this.listeners.set(type,(this.listeners.get(type)||[]).filter(x=>x!==fn));}
+  dispatchEvent(event){
+    try{Object.defineProperty(event,'target',{value:this,configurable:true});}catch{}
+    for(const fn of this.listeners.get(event.type)||[])fn(event);
+    return true;
+  }
+  emit(type,props={}){this.dispatchEvent({type,preventDefault(){},stopPropagation(){},...props});}
+  setAttribute(key,value){this.attributes.set(key,String(value));}
+  getAttribute(key){return this.attributes.has(key)?this.attributes.get(key):null;}
+  removeAttribute(key){this.attributes.delete(key);}
+  get classList(){
+    const owner=this;
+    return {
+      add(...names){const set=new Set(owner.className.split(/\s+/).filter(Boolean));for(const name of names)set.add(name);owner.className=[...set].join(' ');},
+      remove(...names){const set=new Set(owner.className.split(/\s+/).filter(Boolean));for(const name of names)set.delete(name);owner.className=[...set].join(' ');},
+      toggle(name,force){const set=new Set(owner.className.split(/\s+/).filter(Boolean));const on=force===undefined?!set.has(name):!!force;if(on)set.add(name);else set.delete(name);owner.className=[...set].join(' ');return on;},
+      contains(name){return owner.className.split(/\s+/).includes(name);}
+    };
+  }
+  append(...nodes){for(const node of nodes){node.parentElement=this;this.children.push(node);}}
+  replaceChildren(...nodes){for(const node of this.children)node.parentElement=null;this.children=[];this.append(...nodes);}
+  after(node){const parent=this.parentElement;if(!parent)throw Error('detached');const index=parent.children.indexOf(this);parent.children.splice(index+1,0,node);node.parentElement=parent;}
+  remove(){const parent=this.parentElement;if(!parent)return;parent.children.splice(parent.children.indexOf(this),1);this.parentElement=null;}
+  contains(node){let current=node;while(current){if(current===this)return true;current=current.parentElement;}return false;}
+  matches(selector){return selector===':popover-open'?!!this.open:false;}
+  showPopover(){this.open=true;this.emit('toggle',{newState:'open'});}
+  hidePopover(){this.open=false;this.emit('toggle',{newState:'closed'});}
+  focus(){this.ownerDocument.activeElement=this;this.focused=true;}
+  getClientRects(){return this.open===false&&this.parentElement?.open===false?[]:[{}];}
+  querySelector(){return null;}
+  querySelectorAll(){return [];}
+}
+function filterFixture(){
+  const doc={activeElement:null,createElement:tag=>new FakeElement(tag,doc),querySelector:()=>null,querySelectorAll:()=>[]};
+  const byId=new Map(),shelfButtons=[];
+  const root=new FakeElement('section',doc);
+  root.querySelector=selector=>byId.get(selector.slice(1))||null;
+  const make=(tag,id)=>{const node=new FakeElement(tag,doc);node.id=id;if(tag==='select')Object.defineProperty(node,'options',{get:()=>node.children,configurable:true});byId.set(id,node);return node;};
+  const search=make('input','book-search'),panel=make('div','shelf-filter-panel'),trigger=make('button','shelf-filter-button');
+  const source=make('select','shelf-source'),topic=make('select','shelf-topic'),language=make('select','shelf-language');
+  const options=(select,rows)=>{select.replaceChildren(...rows.map(([value,text,disabled=false])=>{const option=new FakeElement('option',doc);option.value=value;option.textContent=text;option.disabled=disabled;select.append(option);return option;}));select.value=select.options[0]?.value||'';};
+  options(source,[['all','全部来源'],['public','内置书'],['private','我上传的']]);
+  options(topic,[['all','全部主题']]);
+  options(language,[['all','全部原文语言']]);
+  const chips=make('div','shelf-filter-chips'),clear=make('button','shelf-filter-clear'),selection=make('div','shelf-filter-selection'),count=make('span','shelf-filter-count');
+  const states=['all','reading','unread','finished'].map(name=>{const button=new FakeElement('button',doc);button.dataset.readingStatus=name;return button;});
+  const scopeButtons=['all','private'].map(name=>{const button=new FakeElement('button',doc);button.dataset.shelf=name;shelfButtons.push(button);return button;});
+  root.querySelectorAll=selector=>selector==='[data-reading-status]'?states:[];
+  doc.querySelectorAll=selector=>selector==='[data-shelf]'?shelfButtons:[];
+  root.append(trigger,search,panel,source,topic,language,chips,clear,selection,count);
+  panel.append(...states);
+  for(const node of [source,topic,language,search,panel,trigger,chips,clear,selection,count,...states])node.parentElement=root;
+  return {doc,root,byId,search,panel,trigger,source,topic,language,chips,clear,selection,count,states,scopeButtons};
+}
+
+test('the current view summary lists query, status, source, topic and language while the default view stays bare',()=>{
+  const f=filterFixture();const changes=[];
+  const controls=mountShelfFilters({root:f.root,onChange:action=>changes.push(action)});
+  controls.update(books);
+  assert.equal(f.selection.hidden,true,'no summary row in the default view');
+  assert.equal(f.clear.hidden,true,'no clear-all in the default view');
+  controls.set({topic:'fiction'});
+  controls.update(books);
+  assert.equal(f.selection.hidden,false);
+  assert.deepEqual(f.chips.children.map(chip=>chip.textContent),['小说与故事 ×']);
+  assert.equal(f.clear.hidden,false);
+  f.search.value='爱丽丝';
+  controls.set({query:'爱丽丝'});
+  controls.set({status:'reading'});
+  controls.update(books);
+  assert.deepEqual(f.chips.children.map(chip=>chip.textContent),['搜索：爱丽丝 ×','在读 ×','小说与故事 ×']);
+  assert.equal(f.count.textContent,'3');
+});
+
+test('each summary chip removes only its own filter and returns focus to a sensible visible control',()=>{
+  const f=filterFixture();
+  const controls=mountShelfFilters({root:f.root,onChange:()=>{}});
+  f.search.value='爱丽丝';controls.set({query:'爱丽丝'});controls.set({status:'reading'});controls.set({topic:'fiction'});controls.update(books);
+  f.chips.children[2].emit('click');
+  assert.deepEqual(controls.read(),{query:'爱丽丝',scope:'all',status:'reading',topic:'all',language:'all'});
+  assert.equal(f.doc.activeElement,f.trigger,'a chip inside the closed chooser cannot take focus; the connected trigger can');
+  f.panel.open=true;
+  controls.set({topic:'fiction'});controls.update(books);
+  f.chips.children[2].emit('click');
+  assert.equal(f.doc.activeElement,controls.choices.topic.chips[0],'with the chooser open the owning choice takes focus');
+  f.panel.open=false;
+  f.chips.children[0].emit('click');
+  assert.equal(f.doc.activeElement,f.search);
+  assert.equal(controls.read().query,'');
+});
+
+test('clear-all resets query and every filter and leaves the default view bare again',()=>{
+  const f=filterFixture();
+  const controls=mountShelfFilters({root:f.root,onChange:()=>{}});
+  f.search.value='思考';controls.set({query:'思考'});controls.set({status:'finished'});controls.set({scope:'private'});controls.set({language:'zh'});controls.update(books);
+  f.clear.emit('click');
+  assert.deepEqual(controls.read(),{query:'',scope:'all',status:'all',topic:'all',language:'all'});
+  assert.equal(f.selection.hidden,true);
+  assert.equal(f.clear.hidden,true);
+  assert.equal(f.doc.activeElement,f.search);
+});
+
+test('fiction is an explicit topic choice and the Chinese and English shortcuts stay selectable without matching books',()=>{
+  const f=filterFixture();
+  const controls=mountShelfFilters({root:f.root,onChange:()=>{}});
+  controls.update(books);
+  const topicValues=f.topic.options.map(option=>option.value);
+  assert.deepEqual(topicValues,['all','philosophy','science','literature','history','fiction']);
+  const languageValues=f.language.options.map(option=>option.value);
+  assert.deepEqual(languageValues.slice(0,3),['all','zh','en']);
+  assert.ok(languageValues.includes('unknown'));
+  controls.set({topic:'fiction',language:'zh'});
+  controls.update(books);
+  assert.deepEqual(controls.read(),{query:'',scope:'all',status:'all',topic:'fiction',language:'zh'});
+  assert.deepEqual(f.chips.children.map(chip=>chip.textContent),['小说与故事 ×','中文 ×']);
+});
+
+test('the three filter dropdowns are enhanced by the shared choice primitive and mirror options only through sync',()=>{
+  const f=filterFixture();
+  const controls=mountShelfFilters({root:f.root,onChange:()=>{}});
+  assert.ok(controls.choices.topic&&controls.choices.scope&&controls.choices.language);
+  assert.equal(controls.choices.topic.mode,'chips');
+  const topicChips=controls.choices.topic.chips.map(chip=>chip.textContent);
+  assert.ok(topicChips.includes('小说与故事'));
+  controls.update(books);
+  const languageChips=controls.choices.language.chips.map(chip=>chip.textContent);
+  assert.ok(languageChips.includes('中文')&&languageChips.includes('英文'));
+  assert.equal(f.topic.hidden,true,'a mounted enhancement hides its native fallback select');
 });

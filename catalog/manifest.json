@@ -10,7 +10,8 @@
     "cover": "alice",
     "sourceLanguage": "en",
     "topics": [
-      "literature"
+      "literature",
+      "fiction"
     ],
     "scopeNote": "本版保留英文文字及目录；插图请查看原文出处。",
     "originalLanguage": "en",
@@ -69,7 +70,8 @@
     "translation": null,
     "topics": [
       "science",
-      "literature"
+      "literature",
+      "fiction"
     ],
     "bodyChapters": 22,
     "opening": "I call our world Flatland, not because we call it so, b",
@@ -91,7 +93,8 @@
     "translation": null,
     "topics": [
       "science",
-      "literature"
+      "literature",
+      "fiction"
     ],
     "bodyChapters": 28,
     "opening": "To Mrs. Saville, England.",
@@ -113,7 +116,8 @@
     "translation": null,
     "topics": [
       "science",
-      "literature"
+      "literature",
+      "fiction"
     ],
     "bodyChapters": 29,
     "opening": "If the reader will excuse me, I will say nothing of my ",
@@ -135,7 +139,8 @@
     "translation": null,
     "topics": [
       "science",
-      "literature"
+      "literature",
+      "fiction"
     ],
     "bodyChapters": 17,
     "opening": "The Time Traveller (for so it will be convenient to spe",
@@ -202,7 +207,8 @@
     "translation": "Louise and Aylmer Maude",
     "topics": [
       "philosophy",
-      "literature"
+      "literature",
+      "fiction"
     ],
     "bodyChapters": 12,
     "opening": "During an interval in the Melvinski trial in the large ",
@@ -224,7 +230,8 @@
     "translation": null,
     "topics": [
       "literature",
-      "history"
+      "history",
+      "fiction"
     ],
     "bodyChapters": 51,
     "opening": "A green and yellow parrot, which hung in a cage outside",
@@ -246,7 +253,8 @@
     "translation": "Surendranath Tagore",
     "topics": [
       "literature",
-      "history"
+      "history",
+      "fiction"
     ],
     "bodyChapters": 12,
     "opening": "Bimala's Story",
@@ -267,7 +275,8 @@
     "originalLanguage": "pt",
     "translation": "Isaac Goldberg",
     "topics": [
-      "literature"
+      "literature",
+      "fiction"
     ],
     "bodyChapters": 6,
     "opening": "The noted Brazilian critic, José Verissimo, in a short ",
@@ -419,7 +428,8 @@
     "translation": "Constance Garnett",
     "topics": [
       "philosophy",
-      "literature"
+      "literature",
+      "fiction"
     ],
     "bodyChapters": 21,
     "opening": "I am a sick man.... I am a spiteful man. I am an unattr",
@@ -440,7 +450,8 @@
     "originalLanguage": "de",
     "translation": "R. Dillon Boylan",
     "topics": [
-      "literature"
+      "literature",
+      "fiction"
     ],
     "bodyChapters": 2,
     "opening": "MAY 4.",
@@ -461,7 +472,8 @@
     "originalLanguage": "en",
     "translation": null,
     "topics": [
-      "literature"
+      "literature",
+      "fiction"
     ],
     "bodyChapters": 61,
     "opening": "IT is a truth universally acknowledged, that a single m",
@@ -482,7 +494,8 @@
     "originalLanguage": "es",
     "translation": "John Ormsby",
     "topics": [
-      "literature"
+      "literature",
+      "fiction"
     ],
     "bodyChapters": 126,
     "opening": "In a village of La Mancha, the name of which I have no ",
@@ -504,7 +517,8 @@
     "translation": "The Modern Library · 1918 edition; translator unnamed",
     "topics": [
       "philosophy",
-      "literature"
+      "literature",
+      "fiction"
     ],
     "bodyChapters": 30,
     "opening": "HOW CANDIDE WAS BROUGHT UP IN A MAGNIFICENT CASTLE, AND",
@@ -525,7 +539,8 @@
     "originalLanguage": "ar",
     "translation": "Unnamed Fairy Books contributors, via Antoine Galland’s French; selected and edited by Andrew Lang",
     "topics": [
-      "literature"
+      "literature",
+      "fiction"
     ],
     "bodyChapters": 34,
     "opening": "The stories in the Fairy Books have generally been such",
@@ -547,7 +562,8 @@
     "translation": "Enrique Munguía (E. Munguia, Jr.)",
     "topics": [
       "literature",
-      "history"
+      "history",
+      "fiction"
     ],
     "bodyChapters": 42,
     "opening": "\"That's no animal, I tell you! Listen to the dog barkin",
@@ -591,7 +607,8 @@
     "translation": null,
     "topics": [
       "literature",
-      "history"
+      "history",
+      "fiction"
     ],
     "bodyChapters": 27,
     "opening": "The Watch.",

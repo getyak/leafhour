@@ -1,0 +1,49 @@
+/* GET-177/187 shared choice primitive chrome. One segmented-chip group and one
+   editable combobox/listbox pair replace the enhanced native selects; the
+   native select stays untouched as the progressive fallback and is hidden only
+   after a successful mount. Shared GET-169 line/shadow/focus tokens are used
+   through their source; functional targets stay >=44px and the popup stays
+   within a 390px column so the 390px viewport keeps its margins. */
+
+.choice-control{display:block;margin-top:6px}
+.choice-native{display:none}
+
+.choice-chips{display:flex;flex-wrap:wrap;gap:8px}
+.choice-chip{
+  min-height:var(--action-target,44px);min-width:44px;padding:8px 15px;
+  background:var(--surface-soft,#f3f1e9);color:var(--ink,#263b32);
+  border:1px solid var(--line-control,#c7ccbb);border-radius:var(--action-radius,999px);
+  font-size:13px;line-height:1.5;text-align:center;cursor:pointer;
+}
+.choice-chip:hover{border-color:var(--accent,#365b45)}
+.choice-chip[aria-pressed=true]{background:var(--accent,#365b45);color:var(--action-text,#f7f5ef);border-color:var(--accent,#365b45)}
+.choice-chip:disabled{opacity:.55;cursor:default}
+.choice-chip:focus-visible,.choice-input:focus-visible{outline:var(--focus-ring-width,2px) solid var(--focus-ring,#4a7160);outline-offset:var(--focus-ring-offset,3px)}
+
+.choice-combobox{position:relative;max-width:min(390px,100%)}
+.choice-input{
+  display:block;width:100%;min-height:var(--action-target,44px);padding:8px 12px;
+  background:var(--paper,#f7f5ef);color:var(--ink,#263b32);
+  border:1px solid var(--line-control,#c7ccbb);border-radius:3px;font-size:14px;
+}
+.choice-listbox{
+  position:absolute;z-index:5;left:0;right:0;top:calc(100% + 4px);
+  max-width:390px;max-height:min(280px,45vh);overflow:auto;
+  margin:0;padding:5px;list-style:none;
+  background:var(--paper,#f7f5ef);color:var(--ink,#263b32);
+  border:1px solid var(--line-control,#c7ccbb);border-radius:5px;box-shadow:var(--shadow-popover);
+}
+.choice-listbox:empty{display:none}
+.choice-option{min-height:var(--action-target,44px);padding:10px 13px;border-radius:3px;font-size:14px;line-height:1.5;cursor:pointer}
+.choice-option:hover,.choice-option.is-active{background:var(--surface-soft,#f3f1e9)}
+.choice-option.is-selected{color:var(--accent,#365b45);font-weight:600}
+.choice-option[aria-disabled=true]{opacity:.55;cursor:default}
+
+@media(max-width:600px){
+  .choice-chip{font-size:15px}
+  .choice-input,.choice-option{font-size:16px}
+}
+@media(forced-colors:active){
+  .choice-chip,.choice-input,.choice-listbox,.choice-option{background:Canvas;color:CanvasText;border-color:ButtonText}
+  .choice-chip[aria-pressed=true],.choice-option.is-selected{background:Highlight;color:HighlightText}
+}

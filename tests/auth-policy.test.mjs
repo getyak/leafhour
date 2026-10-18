@@ -97,3 +97,36 @@ test('a bounded delayed refresh-result write remains covered by its lease',async
   const a=first.userFor(session.token);await ready;const b=make().userFor(session.token);await new Promise(resolve=>setTimeout(resolve,20));release();
   assert.equal((await a)?.id,'user-a');assert.equal((await b)?.id,'user-a');assert.equal(f.calls.filter(x=>x.url.searchParams.get('grant_type')==='refresh_token').length,1);
 });
+
+// GET-179 auth return: owned safe library view keys survive OAuth success,
+// cancel and expiry through one bounded codec; unknown keys are never approved.
+const callbackLocation=async(portal,flowToken,query)=>{
+  const headers={};
+  await portal.handle({req:{method:'GET',headers:{host:'reader.example.com',cookie:'marginalia_auth_flow='+flowToken},socket:{remoteAddress:'127.0.0.1'}},res:{setHeader:(key,value)=>{headers[key]=value;},end(){}},url:new URL('/api/auth/callback'+query,'https://reader.example.com'),send:()=>{}});
+  return headers.Location;
+};
+test('auth return keeps owned library view and overlay keys and drops unknown parameters',async()=>{
+  const {safeAuthReturn}=await import('../server/auth-policy.mjs');
+  assert.equal(safeAuthReturn('/library?q=alice&topic=fiction&language=zh&other=x'),'/library?q=alice&topic=fiction&language=zh');
+  assert.equal(safeAuthReturn('/library?settings=data&upload=1&trash=1'),'/library?settings=data');
+  assert.equal(safeAuthReturn('/library?upload=1&secret=private'),'/library?upload=1');
+  assert.equal(safeAuthReturn('/library?scope=weird&status='),'/library');
+  assert.equal(safeAuthReturn('/library?filter=1&calendar=1'),'/library?calendar=1');
+  for(const bad of ['https://evil.example/library?q=x','//evil.example/library?q=x','/library/../evil'])assert.equal(safeAuthReturn(bad),null);
+});
+test('OAuth success, cancel and expiry keep the known safe library view without form contents or unknown keys',async()=>{
+  let now=100000;const f=authFixture(),auth=createHostedAuth({...f,store:f.store(),clock:()=>now});
+  const target='/library?q=alice&topic=fiction&upload=1&secret=x';
+  const flow=await auth.beginOAuth('google',target);
+  assert.equal((await auth.finishOAuth(flow.transactionToken,'provider-code')).next,'/library?q=alice&topic=fiction&upload=1');
+  const portal=await createPortal({dataDir:'hosted-fixture',publicOrigin:f.env.READER_PUBLIC_ORIGIN,allowLocal:false,dataStore:f.store(),authService:auth,catalogDir:null});
+  const cancelled=await auth.beginOAuth('google',target);
+  const cancelledLocation=await callbackLocation(portal,cancelled.transactionToken,'?error=access_denied');
+  const cancelledNext=new URL(cancelledLocation).searchParams.get('next');
+  assert.equal(cancelledNext,'/library?q=alice&topic=fiction&upload=1');
+  assert.ok(!cancelledLocation.includes('secret'));
+  const expired=await auth.beginOAuth('google',target);now+=600001;
+  const expiredLocation=await callbackLocation(portal,expired.transactionToken,'');
+  assert.equal(new URL(expiredLocation).searchParams.get('auth_error'),'expired');
+  assert.equal(new URL(expiredLocation).searchParams.get('next'),'/library?q=alice&topic=fiction&upload=1');
+});
