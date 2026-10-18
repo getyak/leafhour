@@ -40,3 +40,12 @@ Review reproduced and fixed these defects before merge:
 Each defect was reproduced before its fix. Independent re-review covered restoration, event ordering, lazy loading, close/version fences, the release allowlist and the explicit sealing boundary. Browser checks use disposable local data and a deterministic model adapter; they do not prove live provider availability or production-account sharing.
 
 The final integrated local `npm run verify:deploy` passed: 1,313 tests passed, zero failed and one Linux-only test was skipped on macOS. The isolated runtime initialized without model requests; the hosted build, 212 public assets, nine registered media assets, 539-file release allowlist and source-provenance checks passed. Current-head Linux CI and deployment remain separately observable gates.
+
+
+## 2026-10-18 cancellation commit race
+
+A second independent Codex review of4007ce0 found no P0/P1 and reproduced one P2: cancellation after the durable CAS was dispatched but before it committed still returned success and persisted the introduction. A regression with the actual HostedStore and a gated synthetic fetcher first failed with “Missing expected rejection”. The store now associates a successful publication with its generation nonce. Cancellation/timeout after completion is checked again, and a compensating mutation discards only that generation's late publication; restore clears the old publication nonce so later cancellation cannot erase a restored draft. Provider execution may already have incurred charges.
+
+Independent re-review closed the P2 and tested conflicts with a concurrent restore and a new-version generation: both retain the newer value after CAS retry. Focused introduction/HTTP/controller tests pass36/36. The subsequent complete verify:deploy passed1,315 tests, zero failures and one Linux-only skip on macOS; isolated runtime, hosted build,212 public assets,9 registered media assets and539-file release allowlist also pass. Production-provider behavior under a real storage outage is not established by the synthetic CAS tests.
+
+The project-only password keychain item is absent (exit44); no fallback credential source was read. Live default-account model/gift/restore acceptance remains open until that required credential is restored. Current-head CI/deployment and merged release are separate delivery gates.

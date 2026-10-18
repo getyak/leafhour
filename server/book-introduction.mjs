@@ -37,8 +37,8 @@ export function createBookIntroductionService({library,store=library.introductio
       if(book.contentVersion!==input.contentVersion)throw fail('原文已更新，未保存旧版本的简介',409);
       let value;
       try{value=validateBookIntroduction({kind:'leafhour-book-introduction',schemaVersion:1,origin:'ai',status:'draft',text:generated?.text,contentVersion:book.contentVersion,createdAt:new Date(clock()).toISOString(),model:'deepseek-flash',scope:'opening-sample',sourcePassageIds:context.passages.map(p=>p.id)},book);}catch{throw fail('AI 简介未通过格式核验，尚未保存。可以稍后重试',502);}
-      const saved=await store.complete(user,book,nonce,value,clock(),()=>!controller.signal.aborted);return result({...book,introduction:saved});
-    }finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);controller.abort();await store.release(user,book,nonce);if(reserved)await store.releaseQuota(nonce);}
+      const saved=await store.complete(user,book,nonce,value,clock(),()=>!controller.signal.aborted);check();return result({...book,introduction:saved});
+    }finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);try{if(controller.signal.aborted)await store.discard(user,book,nonce);}finally{controller.abort();await store.release(user,book,nonce);if(reserved)await store.releaseQuota(nonce);}}
   }
   return {view,generate};
 }
