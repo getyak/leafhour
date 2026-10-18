@@ -11,8 +11,10 @@ Global constraints: no real account/model calls in tests; existing drafts never 
 
 Review focus: source/account changes between requests; partial/manual translations; uncertain HTTP success; checkpoint symlink/lock races; credentials in error output.
 
-- [ ] Add behavior tests for the CLI runner and stale/partial/reviewed server safety; record meaningful RED.
-- [ ] Implement tools/translation-batch.mjs and a focused supporting module, with session validation, bounded transport, source fingerprint, atomic private checkpoint and serial resume.
-- [ ] Add optional contentVersion to server translation route and pre-save source/translation guards without breaking old callers.
-- [ ] Run focused tests, update release-files.json and document operator usage, evidence and the distinct missing real-content/human gates.
+- [x] Add behavior tests for the CLI runner and stale/partial/reviewed server safety; record meaningful RED.
+- [x] Implement tools/translation-batch.mjs and a focused supporting module, with session validation, bounded transport, source fingerprint, atomic private checkpoint and serial resume.
+- [x] Add optional contentVersion to server translation route and pre-save source/translation guards without breaking old callers.
+- [x] Run focused tests, update release-files.json and document operator usage, evidence and the distinct missing real-content/human gates.
 - [ ] Independent review, fix confirmed P0/P1, full verify:deploy, current-head CI, merge and exact release smoke; keep Linear open until remaining actual acceptance is achieved.
+
+Worker-side evidence for the first four items: [GET-151 验收记录](../../verification/2026-10-18-get-151-translation-batches.md). The last item is parent-owned and intentionally unchecked; real full-book content and human review remain open.
