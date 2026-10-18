@@ -160,6 +160,7 @@ const strings=[
   // Library shell and upload dialog shared with the public page
   ['收起侧栏','Collapse sidebar','收合側欄','サイドバーを折りたたむ'],
   ['搜索书籍','Search books','搜尋書籍','本を検索'],
+  ['搜索与命令','Search and commands','搜尋與命令','検索とコマンド'],
   ['我上传的','My uploads','我上傳的','自分のアップロード'],
   ['阅读日历','Reading calendar','閱讀日曆','読書カレンダー'],
   ['阅读对话','Reading chat','閱讀對話','読書の対話'],

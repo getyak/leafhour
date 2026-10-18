@@ -57,7 +57,10 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   function adapt(){closeNavigation();if(media.matches)navigation.append(header);else document.body.insertBefore(header,$('main'));syncSidebar();}
   $('sidebar-toggle').addEventListener('click',()=>{if(media.matches){closeNavigation();return;}collapsed=!collapsed;try{localStorage.setItem(key,collapsed?'collapsed':'expanded');}catch{}syncSidebar();if(!collapsed)$('sidebar-toggle').focus();});
   $('library-menu').addEventListener('click',()=>{navigation.showModal();syncSidebar();$('sidebar-toggle').focus();});
-  $('sidebar-search-open').addEventListener('click',()=>{if(navigation.open){navigationReturn=$('book-search');closeNavigation();}else $('book-search').focus();});
+  // GET-178: the sidebar entry is the single palette entry (the local
+  // #book-search input stays a filter). Closing the navigation sheet hands focus
+  // to the palette bootstrap without a stale restoration.
+  $('sidebar-search-open').addEventListener('click',()=>{if(navigation.open){navigationReturn=null;closeNavigation();}});
   navigation.addEventListener('close',()=>{syncSidebar();if(media.matches)(navigationReturn||$('library-menu')).focus();navigationReturn=null;});media.addEventListener('change',adapt);adapt();
   function openSettings(name='account'){if(!settings.open)opener=settingsOpenerCandidate(document,settings)||$('library-settings');closeNavigation();update();select(panels[name]?name:'account');if(name==='daily-reading')daily.refresh();if(!settings.open){settings.showModal();onSettingsOpen(panels[name]?name:'account');}tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.focus();}
   settings.addEventListener('close',()=>{const target=settingsFocusTarget(settings,opener,$('library-settings'));opener=null;target?.focus({preventScroll:true});onSettingsClose();});

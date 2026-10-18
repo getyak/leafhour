@@ -1,9 +1,11 @@
 import {createLibraryChatState,CHAT_TEXT_LIMIT} from './library-chat-state.mjs';
 import {readChatScope} from './reading-chat-scope.mjs';
 import {renderChatMarkdown,safeChatUrl} from './library-chat-markdown.mjs';
-import {mountSquirrelPosition} from './squirrel-position.mjs';
-import {mountSquirrelMotion} from './squirrel-motion.mjs';
 import {trackActionFocus} from './action-focus.mjs';
+
+// GET-184: explicit owning-component labels for the injected AI trigger.
+export const CHAT_TEXT={trigger:'Ask AI',triggerLabel:'打开阅读对话'};
+
 
 const node=(tag,className,text)=>{const element=document.createElement(tag);if(className)element.className=className;if(text!==undefined)element.textContent=text;return element;};
 const button=(text,className='library-chat-button')=>{const element=node('button',className,text);element.type='button';return element;};
@@ -13,7 +15,7 @@ const readUrl=(bookId,passageId)=>'/read?book='+encodeURIComponent(bookId)+(pass
 const draftKey=(owner,book)=>'marginalia:chat-draft:'+encodeURIComponent(owner)+':'+encodeURIComponent(book);
 const pendingKey=(owner,book)=>'marginalia:chat-pending:'+encodeURIComponent(owner)+':'+encodeURIComponent(book);
 
-export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth,getCurrentBook=()=>null,getCurrentPassage=()=>null,onNavigateToPassage=null}){
+export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth,getCurrentBook=()=>null,getCurrentPassage=()=>null,onNavigateToPassage=null,externalLauncher=null,positionLauncher=null}){
   const state=createLibraryChatState({readDraft:(owner,book)=>localStorage.getItem(draftKey(owner,book))||'',writeDraft:(owner,book,text)=>{if(text)localStorage.setItem(draftKey(owner,book),text);else localStorage.removeItem(draftKey(owner,book));},readPending:(owner,book)=>JSON.parse(localStorage.getItem(pendingKey(owner,book))||'null'),writePending:(owner,book,record)=>{if(record)localStorage.setItem(pendingKey(owner,book),JSON.stringify(record));else localStorage.removeItem(pendingKey(owner,book));}});
   let opener=null,owner=null,selectedBook=null,requestedPassage=null,pollTimer=null,pollCount=0,pollStarted=0,loadInFlight=null,composing=false,focusComposer=false,historySignature='',contextSignature='',booksSignature='',targetMessageId=null;
   root.classList.add('library-chat-dialog');root.setAttribute('aria-labelledby','library-chat-title');
@@ -23,9 +25,22 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   const bookRow=node('div','library-chat-book-row'),bookLabel=node('label','sr-only','正在读'),chooser=node('select','library-chat-book-choice');chooser.id='library-chat-book';bookLabel.htmlFor=chooser.id;const singleBookTitle=node('p','library-chat-book-title');bookRow.append(bookLabel,chooser,singleBookTitle);heading.append(title,bookRow);
   const menu=node('details','library-chat-menu'),menuSummary=node('summary','','···');menuSummary.setAttribute('aria-label','更多对话操作');const menuItems=node('div','library-chat-menu-items');menu.append(menuSummary,menuItems);
   const closeButton=button('−','library-chat-close');closeButton.setAttribute('aria-label','收起阅读对话');closeButton.title='收起阅读对话';header.append(heading,menu,closeButton);
-  const launcher=button('','library-chat-launcher');launcher.setAttribute('aria-label','打开阅读对话');launcher.setAttribute('aria-controls',root.id);launcher.setAttribute('aria-expanded','false');launcher.title='阅读对话';
-  const squirrel=node('span','library-chat-squirrel'),tail=node('span','library-chat-tail'),head=node('span','library-chat-head'),eyes=node('span','library-chat-eyes');eyes.append(node('i'),node('i'));head.append(eyes);squirrel.append(tail,head);squirrel.setAttribute('aria-hidden','true');launcher.append(squirrel);root.after(launcher);const characterMotion=mountSquirrelMotion({launcher,squirrel,head,tail,eyes:[...eyes.children]});
-  const characterPosition=mountSquirrelPosition({launcher});
+  // GET-184: the default launcher is the monochrome Leafhour mark — no cartoon
+  // character and therefore no character-motion hooks. An optional external
+  // launcher configuration skips generated launcher DOM, cartoon motion, drag
+  // positioning and launcher ARIA ownership entirely; the shared reading pill
+  // is never handed to this mutable launcher implementation.
+  let launcher=null,trigger=null,characterMotion=null,characterPosition=null;
+  if(externalLauncher){
+    trigger=node('button','library-chat-trigger');trigger.type='button';trigger.textContent=CHAT_TEXT.trigger;trigger.setAttribute('aria-label',CHAT_TEXT.triggerLabel);trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-controls',root.id);
+    externalLauncher.triggerHost?.append(trigger);
+    characterPosition=externalLauncher.position||null;
+  }else{
+    launcher=button('','library-chat-launcher');launcher.setAttribute('aria-label','打开阅读对话');launcher.setAttribute('aria-controls',root.id);launcher.setAttribute('aria-expanded','false');launcher.title='阅读对话';
+    root.after(launcher);
+    characterPosition=positionLauncher?positionLauncher(launcher):null;
+  }
+  const returnFocus=()=>{if(externalLauncher){externalLauncher.focusReturn?externalLauncher.focusReturn():trigger?.focus({preventScroll:true});return;}if(opener?.isConnected&&!opener.hidden)opener.focus();else launcher.focus();};
   const legacyOpener=document.getElementById('library-chat-open');if(legacyOpener)legacyOpener.hidden=true;
   const context=node('details','library-chat-context'),contextSummary=node('summary'),contextLabel=node('span'),contextHint=node('span','library-chat-context-hint','查看原文与译文');contextSummary.append(contextLabel,contextHint);const contextBody=node('div','library-chat-context-body');context.append(contextSummary,contextBody);
   const messages=node('div','library-chat-messages');messages.setAttribute('role','log');messages.setAttribute('aria-label','和这本书的对话');messages.setAttribute('aria-live','polite');messages.setAttribute('aria-relevant','additions text');
@@ -125,11 +140,11 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     }else messages.scrollTop=nearBottom?messages.scrollHeight:scrollTop;
   }
   function render(){
-    const view=state.view();characterMotion.setState({thinking:!!view.pending,chatOpen:root.open});const list=books(),visibleDraft=view.pending?'':view.draft;if(input.value!==visibleDraft)input.value=visibleDraft;input.placeholder=view.pending?'正在思考…':'聊聊这本书，或找下一本。';
+    const view=state.view();characterMotion?.setState({thinking:!!view.pending,chatOpen:root.open});const list=books(),visibleDraft=view.pending?'':view.draft;if(input.value!==visibleDraft)input.value=visibleDraft;input.placeholder=view.pending?'正在思考…':'聊聊这本书，或找下一本。';
     const listSignature=JSON.stringify(list.map(book=>[book.bookId,bookTitle(book)]));if(listSignature!==booksSignature){booksSignature=listSignature;chooser.replaceChildren(...list.map(book=>{const option=node('option','',bookTitle(book));option.value=book.bookId;return option;}));}chooser.value=selectedBook||'';chooser.hidden=list.length<2;singleBookTitle.hidden=list.length>1;singleBookTitle.textContent=bookTitle(list.find(book=>book.bookId===selectedBook));chooser.disabled=!!view.pending||!!view.retry?.uncertain||!!view.scopePending;bookRow.hidden=!signedIn()||!selectedBook;
     renderContext(view);renderMessages(view);if(targetMessageId){const target=[...messages.children].find(n=>n.getAttribute('data-message-id')===targetMessageId);if(target){messages.scrollTop+=target.getBoundingClientRect().top-messages.getBoundingClientRect().top-messages.clientTop;targetMessageId=null;}}form.hidden=!signedIn()||!selectedBook;footer.hidden=form.hidden;
     const length=view.draft.length;count.textContent=length>=1800?(length>CHAT_TEXT_LIMIT?'已超出 '+(length-CHAT_TEXT_LIMIT)+' 字':'还可写 '+(CHAT_TEXT_LIMIT-length)+' 字'):'';count.classList.toggle('is-over-limit',length>CHAT_TEXT_LIMIT);input.setAttribute('aria-invalid',String(length>CHAT_TEXT_LIMIT));
-    input.disabled=!!view.pending||!!view.retry?.uncertain;count.hidden=!!view.pending;sendButton.disabled=!view.canSend||!confirmedScope(view);const sendLabel=view.retry?.uncertain?'继续上次提问':view.retry?'再试一次':'发送问题';sendButton.textContent=view.retry?'↻':'↑';sendButton.setAttribute('aria-label',sendLabel);sendButton.title=sendLabel;launcher.classList.toggle('is-waiting',!!view.pending);launcher.setAttribute('aria-label',root.open?'收起阅读对话':view.pending?'打开阅读对话，提问正在处理':'打开阅读对话');stopButton.hidden=!view.pending;stopButton.disabled=view.pending?.status==='stopping';
+    input.disabled=!!view.pending||!!view.retry?.uncertain;count.hidden=!!view.pending;sendButton.disabled=!view.canSend||!confirmedScope(view);const sendLabel=view.retry?.uncertain?'继续上次提问':view.retry?'再试一次':'发送问题';sendButton.textContent=view.retry?'↻':'↑';sendButton.setAttribute('aria-label',sendLabel);sendButton.title=sendLabel;if(launcher){launcher.classList.toggle('is-waiting',!!view.pending);launcher.setAttribute('aria-label',root.open?'收起阅读对话':view.pending?'打开阅读对话，提问正在处理':'打开阅读对话');}stopButton.hidden=!view.pending;stopButton.disabled=view.pending?.status==='stopping';
     if(!signedIn())status.textContent='';else if(!selectedBook)status.textContent='';else if(view.pending)status.textContent=view.pending.status==='stopping'?'正在停止。确认后可以重新提问。':'可以先收起窗口，回答会留在这里。';else if(view.loadError)status.textContent=view.loadError;else if(view.notice)status.textContent=view.notice;else if(view.data?.available===false)status.textContent='阅读助手暂时不可用。可以先写下问题，稍后再试。';else if(view.phase==='loading')status.textContent='正在载入原文和已有对话…';else if(!confirmedScope(view))status.textContent='查阅范围尚未确认，请重新载入；问题仍保留。';else status.textContent='';
     statusBar.hidden=!status.textContent;status.classList.toggle('has-error',!!view.loadError);refreshButton.hidden=!signedIn()||!selectedBook||(!view.loadError&&!view.retry?.uncertain&&!view.pending&&!view.scopeUnconfirmed&&!!confirmedScope(view)&&view.data?.available!==false);refreshButton.disabled=!!loadInFlight||view.pending?.status==='stopping';refreshButton.textContent=view.pending||view.retry?.uncertain?'查看进度':'重新载入';exportButton.hidden=!view.turns.length;contextHint.textContent=context.open?'收起原文与译文':'查看原文与译文';
     const scope=confirmedScope(view);scopeChoice.value=view.scopePending?.mode||scope?.mode||'book';scopeChoice.disabled=!scope||view.phase!=='ready'||!!view.scopePending||view.scopeUnconfirmed||!!view.pending||!!view.retry?.uncertain;
@@ -170,36 +185,37 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     catch(error){if(isCurrent(captured)){state.rejectCancel(ticket,error);render();await load();}}
     finally{if(isCurrent(captured)){render();if(root.open)focus.restore(!input.disabled&&!form.hidden?input:stopButton.hidden?refreshButton.hidden?closeButton:refreshButton:stopButton);else focus.stop();}else focus.stop();}
   }
-  function close(){characterMotion.setState({chatOpen:false});clearPoll();focusComposer=false;menu.open=false;if(root.open)root.close();launcher.setAttribute('aria-expanded','false');launcher.setAttribute('aria-label',state.view().pending?'打开阅读对话，提问正在处理':'打开阅读对话');if(opener?.isConnected&&!opener.hidden)opener.focus();else launcher.focus();}
+  function close(){characterMotion?.setState({chatOpen:false});clearPoll();focusComposer=false;menu.open=false;if(root.open)root.close();if(launcher){launcher.setAttribute('aria-expanded','false');launcher.setAttribute('aria-label',state.view().pending?'打开阅读对话，提问正在处理':'打开阅读对话');}returnFocus();}
   function choose(bookId,passageId=null){if(state.view().pending||state.view().retry?.uncertain||state.view().scopePending)return false;clearPoll();loadInFlight=null;pollCount=0;pollStarted=0;selectedBook=bookId;requestedPassage=passageId;historySignature='';context.open=false;state.setContext(owner,selectedBook);requestedPassage=state.view().retry?.payload.passageId||requestedPassage;return true;}
   async function copyAnswer(text,element,control){try{await navigator.clipboard.writeText(text);control.textContent='已复制';}catch{const range=document.createRange();range.selectNodeContents(element);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);control.textContent='已选中，可复制';}}
   function exportChat(){
     const view=state.view();if(!view.turns.length)return;const data={kind:'marginalia-book-chat',schemaVersion:1,exportedAt:new Date().toISOString(),bookId:selectedBook,title:view.data?.title,contentVersion:view.data?.contentVersion,turns:view.turns};
     const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'})),link=node('a');link.href=url;link.download='Leafhour-对话-'+selectedBook+'.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   }
-  launcher.addEventListener('click',()=>root.open?close():controls.open());
+  (launcher||trigger).addEventListener('click',()=>root.open?close():controls.open());
   function escape(event){if(event.key==='Escape'&&root.open){event.preventDefault();event.stopPropagation();close();}}
-  root.addEventListener('keydown',escape);launcher.addEventListener('keydown',escape);
+  root.addEventListener('keydown',escape);(launcher||trigger).addEventListener('keydown',escape);
   // Match the visible viewport when a mobile keyboard reduces or pans it.
   function fitViewport(){const viewport=window.visualViewport;if(!viewport)return;root.style.setProperty('--chat-viewport-height',viewport.height+'px');root.style.setProperty('--chat-viewport-top',viewport.offsetTop+'px');root.classList.toggle('is-compact-viewport',viewport.height<=500);if(root.open&&viewport.height<=500&&document.activeElement===input)frame.scrollTop+=Math.max(0,form.getBoundingClientRect().bottom-Math.min(frame.getBoundingClientRect().bottom,viewport.offsetTop+viewport.height-8));}
   window.visualViewport?.addEventListener('resize',fitViewport);window.visualViewport?.addEventListener('scroll',fitViewport);fitViewport();
   input.addEventListener('focus',fitViewport);
-  closeButton.addEventListener('click',close);root.addEventListener('cancel',event=>{event.preventDefault();close();});root.addEventListener('close',()=>{clearPoll();if(opener?.isConnected)opener.focus();});
+  closeButton.addEventListener('click',close);root.addEventListener('cancel',event=>{event.preventDefault();close();});root.addEventListener('close',()=>{clearPoll();returnFocus();});
   scopeChoice.addEventListener('change',saveScope);
   chooser.addEventListener('change',()=>{if(choose(chooser.value)){render();load();}});context.addEventListener('toggle',()=>{contextHint.textContent=context.open?'收起原文与译文':'查看原文与译文';});
   input.addEventListener('input',()=>{state.setDraft(input.value);render();});input.addEventListener('compositionstart',()=>{composing=true;});input.addEventListener('compositionend',()=>{composing=false;});input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing&&!composing&&event.keyCode!==229){event.preventDefault();send();}});
   form.addEventListener('submit',event=>{event.preventDefault();if(!composing)send();});stopButton.addEventListener('click',stop);refreshButton.addEventListener('click',async()=>{const focus=trackActionFocus(document,refreshButton),captured=owner,bookId=selectedBook;pollCount=0;try{await load();}finally{if(root.open&&captured===owner&&bookId===selectedBook)focus.restore(!refreshButton.hidden&&!refreshButton.disabled?refreshButton:!input.disabled&&!form.hidden?input:closeButton);else focus.stop();}});exportButton.addEventListener('click',()=>{exportChat();menu.open=false;menuSummary.focus();});
   const controls={
     open({bookId,passageId,messageId,draft}={}){
+      externalLauncher?.onOpen?.();
       targetMessageId=messageId||null;root.dispatchEvent(new Event('reading-chat-open'));
       syncOwner();const view=state.view(),canFollow=!view.draft&&!view.pending&&!view.retry?.uncertain&&!view.scopePending;
       const candidate=bookId||(canFollow?currentBookId():null)||selectedBook||books()[0]?.bookId||null,valid=books().some(book=>book.bookId===candidate)?candidate:books()[0]?.bookId||null;
       const currentPassage=canFollow?(passageId||getCurrentPassage()||null):requestedPassage;
       if(!view.pending&&!view.retry?.uncertain&&(selectedBook!==valid||canFollow&&currentPassage!==requestedPassage))choose(valid,currentPassage);
       if(typeof draft==='string'&&draft.length<=2000&&!state.view().draft&&!state.view().pending&&!state.view().retry?.uncertain)state.setDraft(draft);
-      if(!root.open){opener=document.activeElement;root.show();closeButton.focus();}launcher.setAttribute('aria-expanded','true');focusComposer=!!messageId;render();pollCount=0;load();
+      if(!root.open){opener=document.activeElement;root.show();closeButton.focus();}if(launcher)launcher.setAttribute('aria-expanded','true');focusComposer=!!messageId;render();pollCount=0;load();
     },
-    surface:()=>({launcher,header,root,motion:characterMotion,position:characterPosition}),
+    surface:()=>({launcher,trigger,header,root,motion:characterMotion,position:characterPosition}),
     refresh:()=>root.open?load():Promise.resolve(),
     close,
     reset(){clearPoll();loadInFlight=null;pollCount=0;pollStarted=0;owner=null;selectedBook=null;requestedPassage=null;historySignature='';state.reset();input.value='';context.open=false;render();},

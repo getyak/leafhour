@@ -682,5 +682,10 @@
   "server/cjk-font-assets.mjs",
   "tests/cjk-fonts.test.mjs",
   "app/share-fonts.mjs",
-  "app/mcp-guide.css"
+  "app/mcp-guide.css",
+  "app/palette-bootstrap.mjs",
+  "app/command-palette.mjs",
+  "app/command-palette.css",
+  "app/palette-library.mjs",
+  "app/reader-tools.mjs"
 ]

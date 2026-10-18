@@ -3,20 +3,16 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="robots" content="noindex,nofollow,noarchive"><title>Leafhour · 阅读</title><link rel="icon" href="/brand-assets/leafhour-mark.svg" type="image/svg+xml"><link rel="preload" href="/fonts/newsreader/newsreader-var.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/typography.css"><link rel="stylesheet" href="/interface-tokens.css"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/experiences.css"><link rel="stylesheet" href="/share.css"><link rel="stylesheet" href="/reading-session.css"><link rel="stylesheet" href="/reading-flow.css"><link rel="stylesheet" href="/library-chat.css"><link rel="stylesheet" href="/reader-companion.css"><script type="module" src="/share.js"></script><script type="module" src="/reader.js"></script><script type="module" src="/experiences.js"></script><script type="module" src="/reading-session.js"></script><link rel="stylesheet" href="/reading-arrival.css"><script type="module" src="/reading-arrival.mjs"></script><link rel="stylesheet" href="/reader-atmosphere.css"><link rel="stylesheet" href="/reader-navigation.css"><link rel="stylesheet" href="/parallel-reading.css"><link rel="stylesheet" href="/reader-pagination.css"><link rel="stylesheet" href="/reader-audio.css"><link rel="stylesheet" href="/reader-settings.css"><link rel="stylesheet" href="/choice-control.css"><link rel="stylesheet" href="/interaction-craft.css"><script type="module" src="/interaction-craft.mjs"></script><link rel="stylesheet" href="/leafhour-brand.css">
 <link rel="stylesheet" href="/gift-compose.css"><link rel="stylesheet" href="/reader-book-actions.css">
 </head>
-<body class="is-focused" data-reading-tools="closed">
+<body class="is-focused" data-reading-tools="closed" data-palette-page="reader">
   <div class="atmosphere-backdrop" aria-hidden="true"><div class="atmosphere-elements"></div></div>
   <script type="module" src="/reader-atmosphere.js"></script>
   <a href="#book-page" class="skip-link">跳到正文</a>
   <header id="reading-header" class="reading-header" inert aria-hidden="true">
     <nav class="reader-navigation" aria-label="阅读导航"><a href="/library" class="reader-nav-item" aria-label="返回书房"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12 5l-5 5 5 5"/></svg><span class="reader-home-label">书房</span></a><span class="reader-nav-divider" aria-hidden="true"></span><button id="open-toc" class="reader-nav-item" disabled aria-controls="toc-dialog" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M4 10h8M4 15h12"/></svg><span>目录</span></button></nav>
     <div class="running-entries"><button id="open-book-info" class="running-title" type="button" popovertarget="book-info" aria-haspopup="dialog" aria-controls="book-info" aria-expanded="false" disabled><span id="running-book-title">Leafhour</span></button><button id="open-chapter" class="chapter-chooser" type="button" aria-haspopup="dialog" aria-controls="toc-dialog" aria-expanded="false" disabled><span id="running-chapter">选择章节</span><span class="visually-hidden">，打开目录选择章节</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5 6 3 3 3-3"/></svg></button></div>
-    <div class="header-actions"><div class="atmosphere-header-control"><button id="open-atmosphere" class="quiet-button" aria-haspopup="dialog" aria-controls="atmosphere-dialog" aria-label="阅读氛围">氛围</button><button id="atmosphere-quick-pause" class="quiet-button" aria-label="暂停氛围声音" hidden>Ⅱ</button></div><button id="open-settings" aria-controls="settings-dialog" aria-expanded="false" class="quiet-button typography-button" aria-label="阅读设置" aria-haspopup="dialog">Aa</button><button id="enter-focus" class="quiet-button">专注</button></div>
+    <div class="header-actions"><div class="atmosphere-header-control"><button id="open-atmosphere" class="quiet-button" aria-haspopup="dialog" aria-controls="atmosphere-dialog" aria-label="阅读氛围">氛围</button><button id="atmosphere-quick-pause" class="quiet-button" aria-label="暂停氛围声音" hidden>Ⅱ</button></div><button id="open-settings" aria-controls="settings-dialog" aria-expanded="false" class="quiet-button typography-button" aria-label="阅读设置" aria-haspopup="dialog">Aa</button><button id="enter-focus" class="quiet-button">专注</button><button class="quiet-button palette-entry" data-palette-open type="button">搜索与命令 <kbd data-palette-keycap></kbd></button></div>
   </header>
   <script type="module" src="/reader-audio.js"></script>
-  <div class="focus-actions" role="group" aria-label="沉浸阅读工具">
-    <button id="focus-fullscreen" type="button" class="focus-action" aria-label="全屏阅读" title="全屏阅读 · F"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 3H3v4m10-4h4v4M3 13v4h4m10-4v4h-4"/></svg></button>
-    <button id="exit-focus" type="button" class="focus-action" aria-label="阅读工具" aria-controls="reading-header" aria-expanded="false" title="阅读工具"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M4 10h12M4 15h12"/></svg></button>
-  </div>
   <main id="book-page" class="book-page" tabindex="-1">
     <div id="loading" class="loading-state reading-loading" data-reading-arrival="reader"><p role="status">正在展开书页…</p></div>
     <div id="load-error" class="load-error" hidden><p>暂时无法打开这本书。</p><button id="retry-load">重新打开</button></div>
@@ -36,6 +32,7 @@
     <div id="reading-controls" class="reading-controls"><div class="reading-meter"><span id="reading-state">今日阅读</span><output id="reading-time" aria-label="本次已记录时间" aria-live="off">00:00</output></div><button id="reading-toggle" type="button">开始专注</button><button id="reading-end" type="button" disabled>结束</button></div>
     <button id="manual-reading-open" type="button" disabled>手动补记</button>
     <button id="listen-chapter" class="listen-chapter" type="button" aria-haspopup="dialog">听当前章节</button>
+    <div id="reading-tools-chat-slot" class="reading-tools-chat-slot" data-tools-handoff></div>
     <a id="reading-login" class="reading-login" href="/library?login=1">登录后记录阅读 →</a><button id="reading-guide-open" type="button">深读提示</button><button id="reading-drafts-open" type="button" hidden>草稿</button>
     <span id="reading-goal-hint" class="reading-goal-hint"></span><div class="reading-sync-row"><p id="reading-sync" role="status"></p><button id="reading-retry" type="button" hidden>重试保存</button><button id="reading-backup" type="button" hidden>另存待同步时段</button></div>
     </div>
@@ -190,5 +187,5 @@
   <dialog autofocus id="reader-conversation" class="library-chat-dialog" aria-label="阅读对话"></dialog>
   <div id="announcement" class="visually-hidden" aria-live="polite"></div>
   <p class="visually-hidden" id="reading-instructions">点击段落或聚焦段落后按回车，可以查看原文、注解和个人记录。翻页阅读时，用 ← → 或页底按钮翻页。Esc关闭浮层。F切换专注阅读。</p>
-<script type="module" src="/reader-translation.js"></script>
+<script type="module" src="/palette-bootstrap.mjs"></script><script type="module" src="/reader-translation.js"></script>
 </body></html>

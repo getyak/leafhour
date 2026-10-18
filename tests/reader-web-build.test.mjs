@@ -10,6 +10,9 @@ test('the gift composer remains an allowed public module loaded outside the init
  try{
   const result=await buildReaderWeb({root,outputDir:out,html:await readFile(path.join(root,'app/index.html'),'utf8')}),js=await readFile(path.join(out,result.files.find(file=>file.endsWith('.js'))),'utf8');
   assert.match(js,/import\(["']\/gift-compose\.mjs["']\)/);
+  assert.match(js,/import\(["']\/command-palette\.mjs["']\)/,'the palette module waits for a real gesture');
+  assert.ok(result.inputs.includes('app/palette-bootstrap.mjs'),'the small shared trigger is bundled with the page');
+  for(const file of ['command-palette.mjs','palette-library.mjs'])assert.ok(!result.inputs.includes('app/'+file),file+' must wait for the palette trigger');
   assert.match(js,/import\(["']\/book-binding\.mjs["']\)/);assert.match(js,/import\(["']\/reader-settings-choices\.mjs["']\)/);
   for(const file of ['gift-compose.mjs','gift-compose-state.mjs','gift-preview.mjs','book-binding.mjs'])assert.ok(!result.inputs.includes('app/'+file),file+' must wait for explicit sharing');
   assert.match(js,/import\(["']\/share-fonts\.mjs["']\)/);assert.ok(!js.includes('normal 48px'),'on-demand font loader bodies must be tree-shaken from initial JS, even though the compatibility re-export is parsed');
@@ -23,23 +26,33 @@ test('the gift composer remains an allowed public module loaded outside the init
 
 test('external reader modules require the release allowlist and only resolve from their exact callers',async()=>{
  const {buildReaderWeb}=await import('../tools/build-reader-web.mjs'),root=await realpath(await mkdtemp(path.join(tmpdir(),'leafhour-reader-module-policy-')));
- const html='<head><script type="module" src="/reader.js"></script><script type="module" src="/reader-translation.js"></script><link rel="stylesheet" href="/styles.css"></head>';
+ const html='<head><script type="module" src="/reader.js"></script><script type="module" src="/reader-translation.js"></script><script type="module" src="/palette-bootstrap.mjs"></script><link rel="stylesheet" href="/styles.css"></head>';
  const modulePath=name=>JSON.stringify('./'+name);
- const files={'reader.js':`import ${modulePath('reader-book-actions.mjs')};import ${modulePath('reading-arrival.mjs')};import ${modulePath('reader-settings.mjs')};`,'reader-translation.js':'export {};','reader-book-actions.mjs':`export const share=()=>import(${modulePath('gift-compose.mjs')});console.log(share);`,'reading-arrival.mjs':`import {arrivalCatalog} from ${modulePath('arrival-catalog.mjs')};console.log(arrivalCatalog);`,'reader-settings.mjs':`export const enhance=()=>import(${modulePath('reader-settings-choices.mjs')});console.log(enhance);`,'reader-settings-choices.mjs':'export const onlyOnOpen=true;','gift-compose.mjs':'export const marker="public gift module";','arrival-catalog.mjs':'export const arrivalCatalog={public:true};','styles.css':'body{color:#123}'};
+ const files={'reader.js':`import ${modulePath('reader-book-actions.mjs')};import ${modulePath('reading-arrival.mjs')};import ${modulePath('reader-settings.mjs')};console.log('boot');`,'reader-translation.js':'export {};','reader-book-actions.mjs':`export const share=()=>import(${modulePath('gift-compose.mjs')});console.log(share);`,'reading-arrival.mjs':`import {arrivalCatalog} from ${modulePath('arrival-catalog.mjs')};console.log(arrivalCatalog);`,'reader-settings.mjs':`export const enhance=()=>import(${modulePath('reader-settings-choices.mjs')});console.log(enhance);`,'reader-settings-choices.mjs':'export const onlyOnOpen=true;','gift-compose.mjs':'export const marker="public gift module";','arrival-catalog.mjs':'export const arrivalCatalog={public:true};','palette-bootstrap.mjs':`export const open=()=>import(${modulePath('command-palette.mjs')});console.log(open);`,'command-palette.mjs':'export const palette={lazy:true};','styles.css':'body{color:#123}'};
  try{
   await mkdir(path.join(root,'app'));for(const [file,contents]of Object.entries(files))await writeFile(path.join(root,'app',file),contents);
   const allowed=Object.keys(files).map(file=>'app/'+file);
-  for(const excluded of ['app/gift-compose.mjs','app/arrival-catalog.mjs','app/reader-settings-choices.mjs']){
+  for(const excluded of ['app/gift-compose.mjs','app/arrival-catalog.mjs','app/reader-settings-choices.mjs','app/command-palette.mjs']){
    await writeFile(path.join(root,'release-files.json'),JSON.stringify(allowed.filter(file=>file!==excluded)));
    await assert.rejects(buildReaderWeb({root,outputDir:path.join(root,'out'),html}),/Non-public lazy reader module/);
   }
+  await writeFile(path.join(root,'release-files.json'),JSON.stringify(allowed.filter(file=>file!=='app/palette-bootstrap.mjs')));
+  await assert.rejects(buildReaderWeb({root,outputDir:path.join(root,'out'),html}),/Non-public reader bundle input/,'the bundled bootstrap is allowlist-gated like every bundle input');
   await writeFile(path.join(root,'release-files.json'),JSON.stringify(allowed));
-  const lazy=await buildReaderWeb({root,outputDir:path.join(root,'lazy'),html});assert.ok(!lazy.inputs.includes('app/reader-settings-choices.mjs'));assert.match(await readFile(path.join(root,'lazy',lazy.files.find(file=>file.endsWith('.js'))),'utf8'),/import\(["']\/reader-settings-choices\.mjs["']\)/);
+  const lazy=await buildReaderWeb({root,outputDir:path.join(root,'lazy'),html});assert.ok(!lazy.inputs.includes('app/reader-settings-choices.mjs'));
+  assert.ok(lazy.inputs.includes('app/palette-bootstrap.mjs'),'the small trigger is statically bundled');
+  assert.ok(!lazy.inputs.includes('app/command-palette.mjs'),'the palette module waits for a real gesture');
+  const lazyJs=await readFile(path.join(root,'lazy',lazy.files.find(file=>file.endsWith('.js'))),'utf8');
+  assert.match(lazyJs,/import\(["']\/reader-settings-choices\.mjs["']\)/);
+  assert.match(lazyJs,/import\(["']\/command-palette\.mjs["']\)/,'command-palette is only reachable through the bundled bootstrap on demand');
+  assert.equal(/import\(["']\/palette-bootstrap\.mjs["']\)/.test(lazyJs),false,'no reader-to-bootstrap lazy edge exists');
   await writeFile(path.join(root,'app/reader-book-actions.mjs'),`import {marker} from ${modulePath('gift-compose.mjs')};console.log(marker);`);
-  await writeFile(path.join(root,'app/reader.js'),`import ${modulePath('reader-book-actions.mjs')};import {arrivalCatalog} from ${modulePath('arrival-catalog.mjs')};import {onlyOnOpen} from ${modulePath('reader-settings-choices.mjs')};console.log(arrivalCatalog,onlyOnOpen);`);
+  await writeFile(path.join(root,'app/reader.js'),`import ${modulePath('reader-book-actions.mjs')};import {arrivalCatalog} from ${modulePath('arrival-catalog.mjs')};import {onlyOnOpen} from ${modulePath('reader-settings-choices.mjs')};import {palette} from ${modulePath('command-palette.mjs')};console.log(arrivalCatalog,onlyOnOpen,palette);`);
+  await writeFile(path.join(root,'app/palette-bootstrap.mjs'),`export const open=()=>import(${modulePath('command-palette.mjs')});console.log(open);`);
   const result=await buildReaderWeb({root,outputDir:path.join(root,'out'),html});
   assert.ok(result.inputs.includes('app/gift-compose.mjs'),'a static gift import must remain subject to normal bundle validation');
   assert.ok(result.inputs.includes('app/arrival-catalog.mjs'),'a catalog import from another caller must remain bundled');
   assert.ok(result.inputs.includes('app/reader-settings-choices.mjs'),'a static Aa import from another caller must remain bundled');
+  assert.ok(result.inputs.includes('app/command-palette.mjs'),'a palette import from another caller must remain bundled');
  }finally{await rm(root,{recursive:true,force:true});}
 });
