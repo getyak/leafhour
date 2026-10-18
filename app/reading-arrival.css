@@ -15,8 +15,8 @@
 .arrival-library{--book:"Songti SC","STSong",serif;--english:Georgia,serif;padding-top:0;min-height:510px;width:100%}
 .arrival-scene{position:relative;width:194px;height:160px;margin:0 auto 4px;user-select:none;pointer-events:none}
 .arrival-floor{position:absolute;width:145px;height:8px;bottom:17px;left:24px;background:color-mix(in srgb,var(--ink) 8%,transparent);border-radius:50%}
-.arrival-person{position:absolute;left:59px;top:16px;width:84px;height:124px;transform:rotate(-5deg);transform-origin:bottom center;animation:arrival-sway 3.2s ease-in-out infinite}
-.arrival-face{position:absolute;width:65px;height:69px;top:0;left:9px;border:1.5px solid var(--arrival-ink);border-radius:9px 17px 12px 12px;background:var(--arrival-cream);z-index:3;transform:rotate(7deg)}
+.arrival-person{position:absolute;left:59px;top:16px;width:84px;height:124px;transform:rotate(-5deg);transform-origin:bottom center;animation:arrival-sway 2.8s ease-in-out infinite}
+.arrival-face{position:absolute;width:65px;height:69px;top:0;left:9px;border:1.5px solid var(--arrival-ink);border-radius:9px 17px 12px 12px;background:var(--arrival-cream);z-index:3;transform:rotate(7deg);transform-origin:50% 85%;animation:arrival-look 3.8s ease-in-out infinite}
 .arrival-fold{position:absolute;right:-1px;top:-1px;width:17px;height:17px;background:var(--arrival-fold);border-left:1.5px solid var(--arrival-ink);border-bottom:1.5px solid var(--arrival-ink);border-radius:0 13px 0 4px}
 .arrival-eye{position:absolute;top:30px;width:4px;height:6px;background:var(--arrival-ink);border-radius:50%;animation:arrival-blink 4.3s linear infinite}
 .arrival-eye-left{left:19px}.arrival-eye-right{left:40px}
@@ -27,15 +27,16 @@
 .arrival-arm{position:absolute;width:28px;height:9px;top:78px;border:1.5px solid var(--arrival-ink);background:var(--arrival-cream);border-radius:20px;z-index:5}
 .arrival-arm-left{left:3px;transform:rotate(33deg)}.arrival-arm-right{right:2px;transform:rotate(-33deg)}
 .arrival-leg{position:absolute;width:10px;height:27px;top:99px;border:1.5px solid var(--arrival-ink);border-radius:0 0 7px 7px;background:var(--arrival-cream);transform-origin:top}
-.arrival-leg-left{left:22px;animation:arrival-leg 2.8s ease-in-out infinite}.arrival-leg-right{left:49px;animation:arrival-leg 2.8s .6s ease-in-out infinite reverse}
+.arrival-leg-left{left:22px;transform:rotate(6deg)}.arrival-leg-right{left:49px;transform:rotate(-4deg)}
 .arrival-book{position:absolute;width:71px;height:36px;left:6px;top:75px;z-index:4;perspective:180px;transform:rotate(-3deg)}
 .arrival-page{position:absolute;width:36px;height:33px;border:1.5px solid var(--arrival-ink);background:var(--arrival-paper);top:0}
 .arrival-page-left{left:0;transform:skewY(13deg);border-radius:3px 0 0 5px}.arrival-page-right{left:35px;transform:skewY(-13deg);border-radius:0 3px 5px 0}
-.arrival-page-turn{left:35px;transform-origin:left center;border-radius:0 3px 5px 0;animation:arrival-page 3.2s ease-in-out infinite;background:var(--arrival-cream)}
+.arrival-page-turn{left:35px;transform-origin:left center;border-radius:0 3px 5px 0;animation:arrival-page 3.8s ease-in-out infinite;background:var(--arrival-cream)}
 .arrival-leaf{position:absolute;width:15px;height:21px;border:1px solid color-mix(in srgb,var(--accent) 60%,transparent);background:var(--paper);border-radius:2px}
 .arrival-leaf-one{left:33px;top:65px;transform:rotate(-23deg);animation:arrival-leaf 4s ease-in-out infinite}.arrival-leaf-two{right:20px;top:35px;width:10px;height:14px;transform:rotate(24deg);animation:arrival-leaf 4s .6s ease-in-out infinite reverse}
 .reading-arrival[data-arrival-state="hidden"] *,.arrival-paused .reading-arrival *{animation-play-state:paused}
-@keyframes arrival-sway{0%,100%{transform:rotate(-5deg) translateY(0)}50%{transform:rotate(-2deg) translateY(-3px)}}
+@keyframes arrival-sway{0%,100%{transform:rotate(-5deg) translateY(0)}50%{transform:rotate(-2deg) translateY(-4px)}}
+@keyframes arrival-look{0%,20%,100%{transform:rotate(7deg)}48%,72%{transform:rotate(3deg) translateY(1px)}}
 @keyframes arrival-leg{0%,100%{transform:rotate(15deg)}50%{transform:rotate(-8deg)}}
 @keyframes arrival-blink{0%,43%,47%,100%{transform:scaleY(1)}45%{transform:scaleY(.1)}}
 @keyframes arrival-page{0%,37%{transform:skewY(-13deg) rotateY(0)}62%,100%{transform:skewY(-13deg) rotateY(-170deg)}}
@@ -58,3 +59,5 @@
 .ending-save-state{font-size:12px;color:var(--muted);line-height:1.8;margin:0 0 7px}
 .ending-save-state p{margin:3px 0}.ending-save-state p:empty{display:none}
 @media(max-width:400px){.reading-dialog .ending-heading{grid-template-columns:minmax(0,1fr) 56px 44px}.ending-companion{width:56px}.ending-companion .paper-companion{transform:scale(.36)}}
+
+.reading-arrival :is(.arrival-context,.arrival-source){overflow-wrap:anywhere}
