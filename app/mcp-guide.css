@@ -1,0 +1,33 @@
+/* Technical reading shares the privacy page's paper, typography and header. */
+.mcp-page .site-header { height: auto; min-height: 94px; padding-block: 20px; gap: 24px; flex-wrap: wrap; }
+.mcp-page .site-header nav { display: flex; flex: 1; min-width: 0; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 4px 20px; color: var(--muted); }
+.mcp-page :is(.site-header nav, .site-footer) a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; max-width: 100%; }
+.mcp-page .home-languages { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; min-width: 0; }
+.mcp-page .home-languages a { justify-content: center; padding-inline: 8px; border-radius: var(--action-radius); font-size: 13px; }
+.mcp-page .home-languages a[aria-current] { background: color-mix(in srgb, var(--accent) 8%, transparent); color: var(--ink); }
+.mcp-page :is(.site-header nav, .site-footer) a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+.mcp-page .privacy-document { min-width: 0; }
+.mcp-page .public-article { min-width: 0; }
+.mcp-page .public-byline { color: var(--muted); font-size: 14px; }
+.mcp-page .public-article :is(p, li) { overflow-wrap: anywhere; }
+.mcp-page .public-article :is(ul, ol) { padding-inline-start: 1.5em; }
+.mcp-page .public-article li { margin-block: 10px; }
+.mcp-page code { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; font-weight: 400; font-size: .88em; }
+.mcp-page :not(pre) > code { padding: .1em .3em; border-radius: 3px; background: color-mix(in srgb, var(--accent) 6%, transparent); overflow-wrap: anywhere; }
+.mcp-scroll { max-width: 100%; min-width: 0; overflow-x: auto; margin-block: 24px; border: 1px solid var(--line-hairline); border-radius: 4px; overscroll-behavior-x: contain; }
+.mcp-scroll pre { width: max-content; min-width: 100%; margin: 0; padding: 20px; white-space: pre; background: color-mix(in srgb, var(--accent) 6%, var(--paper)); font-size: 15px; line-height: 1.7; }
+.mcp-scroll pre code { font-size: inherit; }
+.mcp-scroll table { width: 100%; min-width: 580px; border-collapse: collapse; font-size: 15px; line-height: 1.75; }
+.mcp-scroll :is(th, td) { text-align: start; vertical-align: top; padding: 15px; border-bottom: 1px solid var(--line-hairline); overflow-wrap: anywhere; }
+.mcp-scroll th { font-weight: 600; }
+.mcp-scroll th:first-child { width: 30%; }
+.mcp-scroll tbody tr:last-child > * { border-bottom: 0; }
+.mcp-page .public-article a:hover { color: var(--accent); text-decoration-thickness: 2px; }
+@media (max-width: 760px) {
+  .mcp-page .site-header { flex-direction: column; align-items: stretch; gap: 12px; }
+  .mcp-page .site-header nav { justify-content: flex-start; width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mcp-page { scroll-behavior: auto; }
+  .mcp-page a { transition: none; }
+}
