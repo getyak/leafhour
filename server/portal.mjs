@@ -111,7 +111,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['library-profile.mjs','library-book-actions.mjs','reading-schedule.mjs','shelf-order.mjs','library-personal.css','book-gift.css','book-gift.mjs','gift-preview.mjs','gift-ritual.mjs','gift-compose.mjs','gift-compose.css','gift-identity.mjs','gift-compose-state.mjs','gift-quote.mjs','gift-waves.mjs','reader-return.mjs'])files['/'+file]=file;
     files['/gift-preview']='book-gift.html';for(const file of ['brand-assets/letter-edge.svg','brand-assets/envelope-edge.svg'])files['/'+file]=file;
     if(safeGiftReturn(p)){files[p]='book-gift.html';res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Cache-Control','private, no-store');}
-    Object.assign(files,{'/home-locale.mjs':'home-locale.mjs','/discovery.css':'discovery.css','/robots.txt':'robots.txt','/sitemap.xml':'sitemap.xml'});
+    Object.assign(files,{'/mcp-guide.css':'mcp-guide.css','/home-locale.mjs':'home-locale.mjs','/discovery.css':'discovery.css','/robots.txt':'robots.txt','/sitemap.xml':'sitemap.xml'});
     // GET-167 typography foundation: shared tokens plus the self-hosted
     // Newsreader faces (OFL-1.1); the hosted build also ships its public manifest.
     for(const file of ['typography.css','fonts/newsreader/newsreader-var.woff2','fonts/newsreader/newsreader-italic-var.woff2','fonts/newsreader/OFL.txt'])files['/'+file]=file;
