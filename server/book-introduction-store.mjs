@@ -56,9 +56,13 @@ export function createBookIntroductionStore({dataDir,dataStore=null}){
     return store.mutate(key(user,book),{},row=>{
       if(!isActive())throw fail('这次简介已取消，尚未保存',409);
       if(row.lease?.nonce!==nonce||row.lease.contentVersion!==book.contentVersion||row.lease.expiresAt<=now)throw fail('这次简介已过期，请重新打开后重试',409);
-      row.value=validateBookIntroduction(value,book);delete row.lease;return row.value;
+      row.value=validateBookIntroduction(value,book);row.completedBy=nonce;delete row.lease;return row.value;
     });
   }
+  // A CAS already dispatched to durable storage cannot be aborted locally.
+  // Compensate a late commit only when this exact generation still owns it;
+  // a subsequent restore or another generation must remain untouched.
+  async function discard(user,book,nonce){return store.mutate(key(user,book),{},row=>{if(row.completedBy===nonce){delete row.value;delete row.completedBy;}return null;});}
   async function release(user,book,nonce){return store.mutate(key(user,book),{},row=>{if(row.lease?.nonce===nonce)delete row.lease;return null;});}
   const quotaKey=path.join(dataDir,'limits','book-introductions');
   async function reserve(user,nonce,now,ttl){
@@ -75,7 +79,7 @@ export function createBookIntroductionStore({dataDir,dataStore=null}){
   async function restore(user,book,{preserveExisting=false}={}){
     if(!book.introduction)return;
     const value=validateBookIntroduction(book.introduction,book);
-    return store.mutate(key(user,book),{},row=>{if(!preserveExisting||!valid(row,book)){row.value=value;delete row.lease;}return null;});
+    return store.mutate(key(user,book),{},row=>{if(!preserveExisting||!valid(row,book)){row.value=value;delete row.completedBy;delete row.lease;}return null;});
   }
-  return {get,claim,complete,release,reserve,releaseQuota,restore};
+  return {get,claim,complete,discard,release,reserve,releaseQuota,restore};
 }

@@ -239,3 +239,38 @@ test('generator adapter pins one request, no tools/history and the frozen budget
   for(const [key,value]of Object.entries({maxRequests:1,maxToolCalls:0,maxTokens:600,maxCostCny:.1,timeoutMs:60000}))assert.equal(config[key],value);
   assert.deepEqual(job.tools.definitions,[]);assert.deepEqual(job.history,[]);assert.equal(job.text,'{"title":"source only"}');
 });
+
+
+test('cancelling before a hosted CAS commits removes its own late introduction and reports cancellation',async()=>{
+  const {createHostedStore}=await import('../deploy/hosted-store.mjs');
+  const {createBookIntroductionStore}=await import('../server/book-introduction-store.mjs');
+  const rows=new Map();let entered,resume;
+  const waiting=new Promise(r=>entered=r),gate=new Promise(r=>resume=r),json=x=>new Response(JSON.stringify(x));
+  let delayed=false;
+  const dataStore=createHostedStore({env:{SUPABASE_URL:'https://fixture.invalid',SUPABASE_SECRET_KEY:'fixture'},fetcher:async(raw,options={})=>{
+    const url=new URL(raw);
+    if(url.pathname.endsWith('/reader_documents')){const row=rows.get(url.searchParams.get('key').slice(3));return json(row?[row]:[]);}
+    const {document_key:key,document_value:value,expected_version:version}=JSON.parse(options.body);
+    if(value.value&&!value.lease&&!delayed){delayed=true;entered();await gate;}
+    if((rows.get(key)?.version||0)!==version)return json(false);
+    rows.set(key,{value,version:version+1});return json(true);
+  }});
+  const store=createBookIntroductionStore({dataDir:'/isolated-cancel-fixture',dataStore});
+  const service=services.createBookIntroductionService({library:{introductions:store,getBook:async()=>structuredClone(readingBook)},generator:async()=>({text:'A synthetic opening introduction.'})});
+  const controller=new AbortController(),pending=service.generate(owner,readingBook.bookId,{contentVersion:readingBook.contentVersion},{signal:controller.signal});
+  await waiting;controller.abort();resume();
+  await assert.rejects(pending,e=>e.status===409);
+  assert.equal(await store.get(owner,readingBook),null,'cancelled late CAS must not leave a published introduction');
+});
+
+
+test('late cancellation cleanup cannot discard a restored introduction',async t=>{
+  const f=await fixture(t),store=f.library.introductions,now=Date.parse('2026-10-18T00:00:00Z');
+  await store.claim(owner,f.book,'old-generation',now,60000);
+  await store.complete(owner,f.book,'old-generation',draft(f.book),now+1);
+  await store.discard(owner,f.book,'different-generation');
+  assert.ok(await store.get(owner,f.book));
+  await store.restore(owner,{...f.book,introduction:draft(f.book,'A separately restored draft.')});
+  await store.discard(owner,f.book,'old-generation');
+  assert.equal((await store.get(owner,f.book)).text,'A separately restored draft.');
+});
