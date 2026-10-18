@@ -105,8 +105,9 @@ export function parseForwardPort(stdout){
   return port;
 }
 // Host-side forward listings carry the device serial; device-side reverse
-// listings never do (adb_listeners.cpp format_listeners emits no serial for
-// reverse listeners: current placeholder (reverse), older versions UsbFfs).
+// listings use the daemon's transport label: (reverse), UsbFfs, or the
+// API34 TCP transport host-N. Ownership comes from the mandatory adb -s serial,
+// not this opaque daemon-side label (which is not the host emulator serial).
 export function parseForwardMappings(output){
   return String(output??'').split('\n').map(line=>line.trim()).filter(Boolean).map(line=>{
     const match=/^(\S+)\s+tcp:(\d{1,5})\s+(\S+)$/.exec(line);
@@ -115,7 +116,7 @@ export function parseForwardMappings(output){
 }
 export function parseReverseMappings(output){
   return String(output??'').split('\n').map(line=>line.trim()).filter(Boolean).map(line=>{
-    const match=/^(\(reverse\)|UsbFfs)\s+tcp:(\d{1,5})\s+tcp:(\d{1,5})$/.exec(line);
+    const match=/^(\(reverse\)|UsbFfs|host-\d{1,10})\s+tcp:(\d{1,5})\s+tcp:(\d{1,5})$/.exec(line);
     return match?{placeholder:match[1],localPort:Number(match[2]),remotePort:Number(match[3])}:null;
   }).filter(Boolean);
 }
@@ -650,8 +651,9 @@ export function createAndroidAdapter({env=process.env,platform=process.platform,
       const forwards=adbGlobal('forward',['--list']);
       const reverses=adb('reverse',['--list']);
       if(!findForwardMapping(forwards,{serial,forwardPort,socket:DEVTOOLS_SOCKET}))throw Error('Owned adb forward mapping readback mismatch');
-      if(!findReverseMapping(reverses,{serverPort}))throw Error('Owned adb reverse mapping readback mismatch: '+JSON.stringify({serverPort,listing:reverses.slice(0,2048)}));
-      return {serial,forwardPort,reversePort:serverPort,chromePid:Number(chromePid),debugApp:true,flags,flagFile:CHROME_COMMAND_LINE_PATH};
+      const reverseMapping=parseReverseMappings(reverses).find(entry=>entry.localPort===serverPort&&entry.remotePort===serverPort);
+      if(!reverseMapping)throw Error('Owned adb reverse mapping readback mismatch: '+JSON.stringify({serverPort,listing:reverses.slice(0,2048)}));
+      return {serial,forwardPort,reversePort:serverPort,reverseMapping,chromePid:Number(chromePid),debugApp:true,flags,flagFile:CHROME_COMMAND_LINE_PATH};
     });},
     async readbackLaunchFacts(){
       const devices=parseAttachedDevices(adbGlobal('devices')).map(device=>device.serial);

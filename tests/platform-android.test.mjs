@@ -100,8 +100,8 @@ function happyRouter(file,args){
   if(args[0]==='devices')return 'List of devices attached\n\n';
   if(args[0]==='version')return 'Android Debug Bridge version 1.0.41\nVersion 36.0.0\n';
   if(args[0]==='forward'&&args[1]==='--list')return SERIAL+' tcp:54321 localabstract:chrome_devtools_remote\n';
-  // adb reverse listings are device-side: adb_listeners.cpp format_listeners
-  // emits no serial for reverse listeners (placeholder (reverse), older UsbFfs).
+  // Device-side fixture uses the newer placeholder. A separate production
+  // regression covers API34's observed daemon transport label host-23.
   if(joined.includes('reverse --list'))return '(reverse) tcp:43210 tcp:43210\n';
   if(joined.includes('getprop sys.boot_completed'))return '1\n';
   if(joined.includes('ro.build.fingerprint'))return 'google/sdk_gphone64_x86_64/emu64x:14/UE1A.230829.036/11228894:user/release-keys\n';
@@ -954,6 +954,10 @@ test('Chromium command-line parsing treats the first token as the program name',
 test('device-side reverse listener listings carry a placeholder, never the host serial',()=>{
   assert.equal(findReverseMapping('(reverse) tcp:43210 tcp:43210\n',{serverPort:43210}),true);
   assert.equal(findReverseMapping('UsbFfs tcp:43210 tcp:43210\n',{serverPort:43210}),true,'the legacy legitimate placeholder stays accepted');
+  assert.equal(findReverseMapping('host-23 tcp:36589 tcp:36589\n\n',{serverPort:36589}),true,'actual API34 daemon TCP transport listing from run39150492073');
+  assert.deepEqual(parseReverseMappings('host-23 tcp:36589 tcp:36589\n\n'),[{placeholder:'host-23',localPort:36589,remotePort:36589}]);
+  assert.equal(findReverseMapping('host-other tcp:36589 tcp:36589\n',{serverPort:36589}),false);
+  assert.equal(findReverseMapping('host-23 tcp:36589 tcp:1\n',{serverPort:36589}),false);
   assert.equal(findReverseMapping(SERIAL+' tcp:43210 tcp:43210\n',{serverPort:43210}),false,'host-serial output is not a valid device-side reverse listing');
   assert.equal(findReverseMapping('(reverse) tcp:43210 tcp:9999\n',{serverPort:43210}),false);
   assert.equal(findReverseMapping('UI hierarchy dump failed\n',{serverPort:43210}),false);
@@ -963,6 +967,17 @@ test('device-side reverse listener listings carry a placeholder, never the host 
   assert.equal(findForwardMapping(SERIAL+' tcp:54321 localabstract:chrome_devtools_remote\n',{serial:SERIAL,forwardPort:54321}),true);
   assert.equal(findForwardMapping(SERIAL+' tcp:54321 localabstract:chrome_devtools_remote\n',{serial:SERIAL,forwardPort:9222}),false);
   assert.equal(findForwardMapping('emulator-5556 tcp:54321 localabstract:chrome_devtools_remote\n',{serial:SERIAL,forwardPort:54321}),false);
+});
+
+test('production adapter accepts the observed API34 daemon reverse label on the owned serial',async()=>{
+  const router=(file,args,options)=>args.join(' ').includes('reverse --list')?'host-23 tcp:43210 tcp:43210\n\n':happyRouter(file,args,options);
+  const {record,exec,spawnProcess,killProcess,fsOps,sleep,now}=recRouter(router);
+  const adapter=createAndroidAdapter({env:baseEnv(),platform:'linux',exec,spawnProcess,killProcess,fsOps,sleep,now,fence:TEST_FENCE});
+  await adapter.boot();
+  const setup=await adapter.setupChrome({serverPort:43210});
+  assert.deepEqual(setup.reverseMapping,{placeholder:'host-23',localPort:43210,remotePort:43210});
+  assert.ok(record.exec.some(call=>call.args.join(' ')==='-s '+SERIAL+' reverse --list'));
+  await adapter.cleanup();
 });
 
 test('a reverse mapping failure still removes the earlier owned forward mapping',async()=>{
