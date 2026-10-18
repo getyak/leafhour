@@ -69,7 +69,7 @@
 .library-page #library-books .book-card[data-drop-side=after]::before { left: auto; right: -14px; }
 .library-page #library-books .book-cover.shelf-drag-ghost { position: fixed; z-index: 100; pointer-events: none; margin: 0; transform: rotate(-3deg) scale(1.035); opacity: 1; box-shadow: 1px 1px 0 #f0efdb,4px 3px 0 #9aa58c,7px 4px 0 #e5e4d2,12px 25px 28px #20391e33; transition: none; }
 .library-page #library-books.is-sorting .book-art:hover .book-cover { transform: none; }
-.library-page #library-books .source-link { font-size: 12px; min-height: 40px; display: inline-flex; align-items: center; }
+.library-page #library-books .source-link { font-size: 12px; min-height: 44px; display: inline-flex; align-items: center; }
 
 .book-action-menu { position: fixed; inset: auto; margin: 0; width: 238px; max-width: calc(100vw - 24px); padding: 9px; background: var(--paper); color: var(--ink); border:1px solid var(--line-hairline); border-radius: 4px 8px 5px 6px; box-shadow: var(--shadow-popover); overflow: auto; max-height: calc(100dvh - 24px); }
 .book-menu-title { margin: 1px 6px 7px; padding: 7px 4px 10px; border-bottom:1px solid var(--line-hairline); font: 13px/1.7 var(--serif); color: var(--muted); overflow-wrap: anywhere; }
@@ -149,8 +149,8 @@
   .library-page[data-sidebar-collapsed=true] .sidebar-account { background: color-mix(in srgb,var(--paper) 42%,transparent); padding: 10px 9px; justify-content: flex-start; }
   .library-page[data-sidebar-collapsed=true] .sidebar-account-copy { display: grid; }
   .library-page[data-sidebar-collapsed=true] .sidebar-account::before { display: block; }
-  .library-page .today-heading { padding-right: 28px; }
-  .library-page .today-heading .book-action-trigger { top: -6px; right: -12px; }
+  .library-page .today-heading { padding-right: 50px; }
+  .library-page .today-heading .book-action-trigger { top: 0; right: 0; width: 44px; height: 44px; }
   .book-action-trigger,.book-drag-handle { opacity: 1; pointer-events: auto; width: 34px; height: 34px; top: 6px; }
   .book-action-trigger { right: -5px; }.book-drag-handle { left: -5px; }
   .library-page #library-books .book-card.is-drop-target::before { height: 205px; }
