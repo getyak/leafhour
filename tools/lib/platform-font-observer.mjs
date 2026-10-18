@@ -27,6 +27,52 @@ const CJK_RUN=/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\u3000-\u303
 export function customNewsreader(value){
   assert.ok(value.fonts.some(font=>font.isCustomFont&&/Newsreader/i.test(font.postScriptName||font.familyName)&&font.glyphCount>0),value.label+' must render actual custom Newsreader glyphs');
 }
+// Read the actual current document, not a frame-less protocol event. The
+// source product has one public typography stylesheet; no DOM/style changes.
+export function observeDocumentFontFaces(){
+  const clean=family=>family.replace(/^["']|["']$/g,'');
+  const sheets=[...document.styleSheets].filter(sheet=>sheet.href&&new URL(sheet.href).origin===location.origin&&new URL(sheet.href).pathname==='/typography.css');
+  const declared=sheets.flatMap(sheet=>[...sheet.cssRules].filter(rule=>rule.type===5).map(({style})=>({family:clean(style.getPropertyValue('font-family')),style:style.getPropertyValue('font-style')||'normal',weight:style.getPropertyValue('font-weight')||'normal',stretch:style.getPropertyValue('font-stretch')||'normal',src:style.getPropertyValue('src')}))).filter(face=>face.family==='Leafhour Serif');
+  const loaded=[...document.fonts].filter(face=>clean(face.family)==='Leafhour Serif'&&face.status==='loaded').map(face=>({family:clean(face.family),style:face.style,weight:face.weight,stretch:face.stretch,status:face.status}));
+  return {stylesheetCount:sheets.length,declared,loaded};
+}
+// Chrome 113's actual protocol has no per-node PostScript name. Keep that
+// capability limit explicit: a loaded CSS face is not a per-node identity.
+export function italicFontEvidence(value,{browserProduct,fontFaces=[],fontResponses=[],origin,expectedSha256}={}){
+  customNewsreader(value);assert.equal(value.text,'very');assert.equal(value.style,'italic');
+  const used=value.fonts.filter(font=>font.glyphCount>0);
+  assert.equal(used.length,1,'The actual four italic glyphs must use one custom face');
+  assert.equal(used[0].glyphCount,4);assert.equal(used[0].isCustomFont,true);
+  if(typeof used[0].postScriptName==='string'){
+    assert.match(used[0].postScriptName,/Italic/i,'Actual italic PostScript identity required');
+    return {method:'postscript-name',postScriptName:used[0].postScriptName,requiresVisualReview:true};
+  }
+  assert.equal(browserProduct,'Chrome/113.0.5672.136','Missing identity is supported only by the verified stock Chrome 113 schema');
+  const doc=value.document;
+  assert.ok(doc?.epoch>0&&doc.loaderId&&new URL(doc.url).origin===origin&&new URL(doc.url).pathname==='/read','Reader document identity required');
+  const expectedUrl=new URL('/fonts/newsreader/newsreader-italic-var.woff2',origin).href;
+  const sourceUrl=src=>{
+    if(typeof src!=='string')return null;
+    const match=/^url\(\s*(?:"([^"]+)"|'([^']+)'|([^\s)]+))\s*\)(?:\s+format\(\s*["']woff2["']\s*\))?\s*$/.exec(src);
+    try{return new URL(match?(match[1]||match[2]||match[3]):src,origin).href;}catch{return null;}
+  };
+  const current=value.documentFontFaces;
+  assert.equal(current?.stylesheetCount,1,'One actual main-document typography stylesheet required');
+  const declared=current.declared.filter(face=>face.family==='Leafhour Serif'&&face.style==='italic');
+  const loaded=current.loaded.filter(face=>face.family==='Leafhour Serif'&&face.style==='italic');
+  assert.equal(declared.length,1,'Unique main-document italic CSS declaration required');
+  assert.equal(loaded.length,1,'Unique loaded main-document italic FontFace required');
+  assert.equal(sourceUrl(declared[0].src),expectedUrl,'Main-document italic CSS source must match');
+  assert.ok(loaded[0].status==='loaded'&&loaded[0].weight===declared[0].weight&&loaded[0].stretch===declared[0].stretch,'Main-document FontFace descriptors must match its declaration');
+  // This event has no source-frame identity. Record it only as supplementary
+  // successful-load evidence received during this document, never stamp it as
+  // proof of the document that initiated the font load.
+  const face=fontFaces.find(face=>face.observedDuringDocument?.epoch===doc.epoch&&face.observedDuringDocument?.loaderId===doc.loaderId&&face.fontStyle==='italic'&&String(face.fontFamily||'').replace(/^["']|["']$/g,'')==='Leafhour Serif'&&face.platformFontFamily===used[0].familyName&&sourceUrl(face.src)===expectedUrl);
+  assert.ok(face,'Supplementary successful italic face load event required');
+  const response=fontResponses.find(font=>font.document?.epoch===doc.epoch&&font.document?.loaderId===doc.loaderId&&font.document?.frameId===doc.frameId&&font.url===expectedUrl&&font.type==='Font'&&font.status===200&&font.sha256===expectedSha256);
+  assert.ok(response,'Same-document byte-verified italic response required');
+  return {method:'css-matching-and-visual',requiresVisualReview:true,perNodePostScriptIdentity:false,document:doc,glyphs:used[0],documentFontFaces:current,supplementaryLoadEvent:face,response:{url:response.url,sha256:response.sha256,bytes:response.bytes},limitation:'Stock Chrome 113 does not expose a per-node PostScript identity. Main-document loaded-face and CSS matching evidence requires independent visual confirmation of the cited very; fontsUpdated does not identify its source document.'};
+}
 // Serialized into the remote page. Chrome113 maps scrollIntoView's "instant"
 // to auto, which respects the page's native smooth scrolling. Observe one real
 // request's completion; never change CSS or retry a visibility/font assertion.
@@ -89,6 +135,7 @@ export function observeNativeScroll(selector){
 export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]}){
   const background=new Set(),evidenceListeners=[],paused=new Set();
   let fetchEnabled=false,holdFonts=false,fontHoldInstalledAt=null,pageLabel='home-cold',closed=false;
+  let documentEpoch=0,currentDocument=null;
   const requestFonts=new Map();
   const observe=(method,handler)=>evidenceListeners.push(cdp.on(method,handler));
   function task(operation){const promise=Promise.resolve(operation).catch(error=>failures.push(error.message)).finally(()=>background.delete(promise));background.add(promise);}
@@ -118,7 +165,7 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
       }catch(error){if(attempt||!error.message.includes('Could not find node with given id'))throw error;(receipt.nodeInvalidations??=[]).push({...receipt.activeProbe,error:error.message});}
     }
     const details=await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)}),s=getComputedStyle(n),r=n.getBoundingClientRect();return {text:n.textContent,font:s.font,fontFamily:s.fontFamily,style:s.fontStyle,rect:{x:r.x,y:r.y,width:r.width,height:r.height},viewport:{width:innerWidth,height:innerHeight,scrollX,scrollY,fontStatus:document.fonts.status,visualViewport:visualViewport?{width:visualViewport.width,height:visualViewport.height,offsetTop:visualViewport.offsetTop,offsetLeft:visualViewport.offsetLeft}:null},visible:!!n.getClientRects().length&&s.visibility!=='hidden'&&r.width>0&&r.height>0&&r.right>0&&r.bottom>0&&r.left<innerWidth&&r.top<innerHeight};})()`);
-    const value={label,selector,...details,...usage};
+    const value={label,selector,...details,...usage,document:currentDocument,documentFontFaces:label==='cited visible source emphasis italic'?await cdp.evaluate('('+observeDocumentFontFaces.toString()+')()'):null};
     receipt.checks.push(value);
     assert.ok(details.visible,label+' must actually render inside the viewport');
     delete receipt.activeProbe;
@@ -152,7 +199,9 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     }
   }
   function observeResponses(){
-    observe('Network.responseReceived',event=>{if(event.type==='Font'||event.type==='Stylesheet'&&/\/(?:fonts\/|typography\.css)/.test(new URL(event.response.url).pathname))requestFonts.set(event.requestId,{page:pageLabel,type:event.type,url:event.response.url,status:event.response.status,mime:event.response.mimeType,fromDiskCache:event.response.fromDiskCache,fromServiceWorker:event.response.fromServiceWorker});});
+    observe('Page.frameNavigated',({frame})=>{if(!frame.parentId)currentDocument={epoch:++documentEpoch,frameId:frame.id,loaderId:frame.loaderId,url:frame.url};});
+    observe('CSS.fontsUpdated',({font})=>{if(!font||!/Newsreader/i.test(font.platformFontFamily||''))return;if((receipt.fontFaces?.length||0)>=32){failures.push('Bounded Newsreader face evidence exceeded');return;}(receipt.fontFaces??=[]).push({page:pageLabel,...font,observedDuringDocument:currentDocument});});
+    observe('Network.responseReceived',event=>{if(event.type==='Font'||event.type==='Stylesheet'&&/\/(?:fonts\/|typography\.css)/.test(new URL(event.response.url).pathname))requestFonts.set(event.requestId,{page:pageLabel,type:event.type,url:event.response.url,status:event.response.status,mime:event.response.mimeType,fromDiskCache:event.response.fromDiskCache,fromServiceWorker:event.response.fromServiceWorker,document:currentDocument&&event.frameId===currentDocument.frameId&&event.loaderId===currentDocument.loaderId?currentDocument:null});});
     observe('Network.loadingFinished',event=>{const font=requestFonts.get(event.requestId);if(font)task((async()=>{const body=await cdp.send('Network.getResponseBody',{requestId:event.requestId});assert.ok(font.type!=='Font'||body.base64Encoded,'Binary WOFF2 response body expected');const bytes=Buffer.from(body.body,body.base64Encoded?'base64':'utf8'),source=await readFile(path.join(root,'app',new URL(font.url).pathname));assert.equal(sha(bytes),sha(source),'Browser font bytes must match checkout');receipt.fonts.push({...font,bytes:bytes.length,encodedDataLength:event.encodedDataLength,sha256:sha(bytes)});})());});
     observe('Network.loadingFailed',event=>{if(!event.canceled)receipt.errors.push({type:'network',error:event.errorText,blockedReason:event.blockedReason});});
     observe('Runtime.exceptionThrown',event=>receipt.errors.push({type:'runtime',message:event.exceptionDetails.text,exception:event.exceptionDetails.exception?.description}));

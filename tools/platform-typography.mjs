@@ -10,7 +10,7 @@ import path from 'node:path';
 import os from 'node:os';
 import {pathToFileURL} from 'node:url';
 import {CDP} from './lib/platform-cdp.mjs';
-import {delay,sha,until,customNewsreader,createEvidenceSession} from './lib/platform-font-observer.mjs';
+import {delay,sha,until,customNewsreader,italicFontEvidence,createEvidenceSession} from './lib/platform-font-observer.mjs';
 import {
   parseScriptArgs,
   assertRunnerGuard,
@@ -267,8 +267,10 @@ try{
   const resolved=await cdp.evaluate(`(()=>{const reader=window.marginaliaReader,book=reader.getBook(),state=reader.getState(),n=document.querySelector(${JSON.stringify(italicSelector)}).closest('.passage'),r=n.getBoundingClientRect();return {url:location.href,bookId:book.bookId,contentVersion:book.contentVersion,mode:state.mode,passageId:n.dataset.id,visible:r.bottom>0&&r.top<innerHeight};})()`);
   assert.equal(resolved.bookId,sourceBook.bookId);assert.equal(resolved.contentVersion,sourceBook.contentVersion);assert.equal(resolved.passageId,sourcePassage.id);assert.equal(resolved.mode,'en');assert.ok(resolved.visible,'Citation target must already be visible before the font probe scrolls');
   assert.ok([origin+'/read?'+citation,origin+'/read?'+new URLSearchParams({book:sourceBook.bookId})].includes(resolved.url),'Only the application’s existing consumed-entry URL cleanup is permitted');receipt.citation.resolved=resolved;
-  const italic=await session.fonts(italicSelector,'cited visible source emphasis italic');customNewsreader(italic);assert.equal(italic.text,'very');assert.equal(italic.style,'italic');assert.ok(italic.fonts.some(font=>font.isCustomFont&&/Italic/i.test(font.postScriptName||'')&&font.glyphCount>0),'Actual italic font required');await session.capture('reader-loaded');
+  const italic=await session.fonts(italicSelector,'cited visible source emphasis italic');await session.capture('reader-loaded');
   await session.until(()=>receipt.fonts.some(font=>font.url.endsWith('newsreader-var.woff2'))&&receipt.fonts.some(font=>font.url.endsWith('newsreader-italic-var.woff2')),'both actual font responses');
+  receipt.italicFontEvidence=italicFontEvidence(italic,{browserProduct:receipt.browser.product,fontFaces:receipt.fontFaces,fontResponses:receipt.fonts,origin,expectedSha256:sha(await readFile(path.join(root,'app/fonts/newsreader/newsreader-italic-var.woff2')))});
+  if(receipt.italicFontEvidence.limitation)(receipt.capabilityLimitations??=[]).push(receipt.italicFontEvidence.limitation);
   if(args.mode==='android')receipt.android.wmCssConsistency={wm:receipt.android.wm,productViewports:receipt.android.productViewports};
   await Promise.all(session.background);assert.deepEqual(session.failures,[],'All evidence tasks must succeed');
   assert.deepEqual(receipt.errors,[],'Unexpected page/runtime/network errors require review');

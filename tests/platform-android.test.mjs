@@ -47,7 +47,7 @@ import {
   verifySystemImageManifest,
   createAndroidAdapter,
 } from '../tools/lib/platform-android.mjs';
-import {createEvidenceSession,observeNativeScroll} from '../tools/lib/platform-font-observer.mjs';
+import {createEvidenceSession,observeNativeScroll,italicFontEvidence,observeDocumentFontFaces} from '../tools/lib/platform-font-observer.mjs';
 import vm from 'node:vm';
 
 const RUNNER_TEMP='/tmp/runner/get173-run';
@@ -1305,4 +1305,72 @@ test('product viewport binding records each current product route and keeps the 
     ['enlarged',{width:1200,height:900,dpr:1,ua:ANDROID_UA}],
     ['missing-width',{height:892,dpr:2.625,ua:ANDROID_UA}],
   ])await assert.rejects(()=>bindAndroidProductViewport({receipt,label,read:async()=>viewport}),/user agent|width|viewport/i,label);
+});
+
+
+test('stock Chrome113 italic evidence retains a visual capability limit and requires same-document verified faces',()=>{
+  const origin='http://localhost:43210',document={epoch:5,frameId:'main',loaderId:'reader-loader',url:origin+'/read?book=gutenberg-alice'};
+  const value={label:'actual very',text:'very',style:'italic',fonts:[{familyName:'Newsreader 16pt',isCustomFont:true,glyphCount:4}],document,documentFontFaces:{stylesheetCount:1,declared:[{family:'Leafhour Serif',style:'italic',weight:'200 800',stretch:'normal',src:'url("/fonts/newsreader/newsreader-italic-var.woff2")'}],loaded:[{family:'Leafhour Serif',style:'italic',weight:'200 800',stretch:'normal',status:'loaded'}]}};
+  const face={observedDuringDocument:document,fontFamily:'"Leafhour Serif"',fontStyle:'italic',platformFontFamily:'Newsreader 16pt',src:'url("/fonts/newsreader/newsreader-italic-var.woff2") format("woff2")'};
+  const response={document,type:'Font',status:200,url:origin+'/fonts/newsreader/newsreader-italic-var.woff2',sha256:'verified-fixture-sha',bytes:239360};
+  const config={browserProduct:'Chrome/113.0.5672.136',fontFaces:[face],fontResponses:[response],origin,expectedSha256:response.sha256};
+  const actualProtocolProof=italicFontEvidence(value,{...config,fontFaces:[{...face,src:response.url}]});
+  assert.equal(actualProtocolProof.method,'css-matching-and-visual','Chrome113 reports a bare source URL');
+  const proof=italicFontEvidence(value,config);
+  assert.equal(proof.method,'css-matching-and-visual');assert.equal(proof.perNodePostScriptIdentity,false);assert.equal(proof.requiresVisualReview,true);
+  assert.equal(proof.document.loaderId,'reader-loader');assert.equal(proof.response.sha256,response.sha256);
+  for(const change of [
+    {browserProduct:'Chrome/153.0.0.0'},
+    {fontFaces:[]},
+    {fontFaces:[{...face,fontStyle:'normal'}]},
+    {fontFaces:[{...face,src:'url("/fonts/newsreader/newsreader-var.woff2")'}]},
+    {fontFaces:[{...face,src:'url("https://other.invalid/fonts/newsreader/newsreader-italic-var.woff2")'}]},
+    {fontFaces:[{...face,observedDuringDocument:{...document,epoch:4}}]},
+    {fontResponses:[{...response,document:{...document,loaderId:'previous-reader'}}]},
+    {fontResponses:[{...response,sha256:'different-bytes'}]},
+    {fontResponses:[{...response,status:404}]},
+  ])assert.throws(()=>italicFontEvidence(value,{...config,...change}));
+  for(const changed of [
+    {...value,style:'normal'},
+    {...value,documentFontFaces:{...value.documentFontFaces,loaded:[]}},
+    {...value,documentFontFaces:{...value.documentFontFaces,declared:[]}},
+    {...value,documentFontFaces:{...value.documentFontFaces,declared:[...value.documentFontFaces.declared,...value.documentFontFaces.declared]}},
+    {...value,fonts:[{...value.fonts[0],glyphCount:3}]},
+    {...value,fonts:[{...value.fonts[0],isCustomFont:false}]},
+    {...value,fonts:[{...value.fonts[0],postScriptName:'NewsreaderRoman-Regular'}]},
+  ])assert.throws(()=>italicFontEvidence(changed,config),'normal or ambiguous glyph evidence must fail');
+  const modern=italicFontEvidence({...value,fonts:[{...value.fonts[0],postScriptName:'NewsreaderItalic-Italic'}]},{browserProduct:'Chrome/153.0.0.0'});
+  assert.equal(modern.method,'postscript-name');assert.equal(modern.requiresVisualReview,true);
+});
+
+test('font observation binds actual frame and loader epochs rather than mutable page labels',async()=>{
+  const handlers=new Map(),receipt={fonts:[],checks:[],screenshots:[],errors:[]},failures=[];
+  const session=createEvidenceSession({cdp:{on:(event,handler)=>{handlers.set(event,handler);return ()=>handlers.delete(event);},send:async()=>({}),close:async()=>{}},receipt,failures});
+  session.observeResponses();session.setPageLabel('reader');
+  handlers.get('Page.frameNavigated')({frame:{id:'main',loaderId:'old-loader',url:'http://localhost:43210/read'}});
+  const font={fontFamily:'Leafhour Serif',fontStyle:'italic',platformFontFamily:'Newsreader 16pt',src:'url("/fonts/newsreader/newsreader-italic-var.woff2")'};
+  handlers.get('CSS.fontsUpdated')({font});
+  handlers.get('Page.frameNavigated')({frame:{id:'subframe',parentId:'main',loaderId:'sub-loader',url:'http://localhost:43210/other'}});
+  handlers.get('Page.frameNavigated')({frame:{id:'main',loaderId:'new-loader',url:'http://localhost:43210/read'}});
+  handlers.get('CSS.fontsUpdated')({font});
+  assert.deepEqual(receipt.fontFaces.map(f=>[f.observedDuringDocument.epoch,f.observedDuringDocument.loaderId]),[[1,'old-loader'],[2,'new-loader']]);
+  assert.equal(receipt.fontFaces[0].document,undefined,'the frame-less event must never claim its source document');
+  for(let i=0;i<40;i++)handlers.get('CSS.fontsUpdated')({font});
+  assert.equal(receipt.fontFaces.length,32);assert.ok(failures.some(x=>/Bounded/.test(x)));
+  await session.close();assert.equal(handlers.size,0,'frame/face observers also release on finalization');
+});
+
+
+test('the serialized main-document font observation reads its own CSS declarations and loaded FontFaceSet',()=>{
+  const previous={document:globalThis.document,location:globalThis.location};
+  try{
+    const style={getPropertyValue:name=>({'font-family':'"Leafhour Serif"','font-style':'italic','font-weight':'200 800',src:'url("/fonts/newsreader/newsreader-italic-var.woff2")'}[name]||'')};
+    globalThis.location={origin:'http://localhost:43210'};
+    globalThis.document={styleSheets:[{href:'http://localhost:43210/typography.css',cssRules:[{type:5,style}]}],fonts:[{family:'Leafhour Serif',style:'italic',weight:'200 800',stretch:'normal',status:'loaded'},{family:'Leafhour Serif',style:'normal',weight:'200 800',stretch:'normal',status:'loading'}]};
+    const evidence=vm.runInNewContext('('+observeDocumentFontFaces.toString()+')()',{document:globalThis.document,location:globalThis.location,URL});
+    assert.equal(evidence.stylesheetCount,1);assert.equal(evidence.declared.length,1);assert.equal(evidence.loaded.length,1);
+    assert.equal(evidence.declared[0].stretch,evidence.loaded[0].stretch);
+    globalThis.document.fonts=[];
+    assert.deepEqual(observeDocumentFontFaces().loaded,[],'an unrelated protocol event cannot invent a loaded main-document FontFace');
+  }finally{for(const [key,value] of Object.entries(previous)){if(value===undefined)delete globalThis[key];else globalThis[key]=value;}}
 });
