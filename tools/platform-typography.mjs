@@ -38,6 +38,31 @@ const observe=(method,handler)=>evidenceListeners.push(cdp.on(method,handler));
 async function capture(name){const {data}=await cdp.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});const bytes=Buffer.from(data,'base64');await writeFile(path.join(out,name+'.png'),bytes);receipt.screenshots.push({file:name+'.png',bytes:bytes.length,sha256:sha(bytes)});}
 async function fonts(selector,label,{awaitFonts=true}={}){await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)});if(!n)throw Error('Missing target');n.scrollIntoView({block:'nearest',behavior:'instant'});return new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve(true))));})()`);if(awaitFonts)await cdp.evaluate('document.fonts.ready.then(()=>true)');const {root:doc}=await cdp.send('DOM.getDocument');const {nodeId}=await cdp.send('DOM.querySelector',{nodeId:doc.nodeId,selector});assert.ok(nodeId,'Missing actual text node: '+selector);const usage=await cdp.send('CSS.getPlatformFontsForNode',{nodeId});const details=await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)}),s=getComputedStyle(n),r=n.getBoundingClientRect();return {text:n.textContent,font:s.font,fontFamily:s.fontFamily,style:s.fontStyle,rect:{x:r.x,y:r.y,width:r.width,height:r.height},visible:!!n.getClientRects().length&&s.visibility!=='hidden'&&r.width>0&&r.height>0&&r.right>0&&r.bottom>0&&r.left<innerWidth&&r.top<innerHeight};})()`);assert.ok(details.visible,label+' must actually render inside the viewport');const value={label,selector,...details,...usage};receipt.checks.push(value);return value;}
 function customNewsreader(value){assert.ok(value.fonts.some(font=>font.isCustomFont&&/Newsreader/i.test(font.postScriptName||font.familyName)&&font.glyphCount>0),value.label+' must render actual custom Newsreader glyphs');}
+async function cjkGlyphs(selector,label,{serif=false}={}){
+  // Platform font usage includes ::before: language links have a Latin middle
+  // dot separator. Keep that real parent record, then isolate every existing
+  // CJK text run without inventing text or accepting Latin .notdef as CJK.
+  await fonts(selector,label+' including generated punctuation');
+  const probes=await cdp.evaluate(String.raw`(()=>{
+    const target=document.querySelector(${JSON.stringify(selector)}),original=target.textContent,before=target.getBoundingClientRect();
+    const walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT),nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+    const probes=[];for(const node of nodes){
+      const matches=[...node.textContent.matchAll(/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\u3000-\u303f\uff00-\uffef]+/gu)];
+      for(const match of matches.reverse()){
+        const range=document.createRange();range.setStart(node,match.index);range.setEnd(node,match.index+match[0].length);
+        const width=range.getBoundingClientRect().width,span=document.createElement('span');span.id='platform-cjk-${receipt.checks.length}-'+probes.length;
+        range.surroundContents(span);const measured=span.getBoundingClientRect().width;
+        if(Math.abs(width-measured)>.1)throw Error('CJK probe changed original glyph width');
+        probes.push({selector:'#'+span.id,text:span.textContent,before:width,after:measured});
+      }
+    }
+    const after=target.getBoundingClientRect();if(target.textContent!==original||Math.abs(before.width-after.width)>.1||Math.abs(before.height-after.height)>.1)throw Error('CJK probes changed original text or layout');
+    return probes;
+  })()`);
+  assert.ok(probes.length,label+' must contain actual CJK text');
+  const allowed=serif?/Noto.*Serif.*(?:SC|CJK)|Source.*Han.*Serif|Songti|STSong|SimSun|NSimSun/i:/Noto.*Serif.*(?:SC|CJK)|Source.*Han.*Serif|Songti|STSong|SimSun|NSimSun|PingFang|YaHei|Yu.?Gothic|Meiryo/i;
+  for(const probe of probes){const value=await fonts(probe.selector,label+' direct CJK text');assert.equal(value.text,probe.text);assert.ok(value.fonts.length&&value.fonts.every(font=>font.glyphCount>0&&allowed.test(font.postScriptName||font.familyName)),label+' requires covered CJK glyphs, not Latin missing glyphs');value.probeWidths={before:probe.before,after:probe.after};}
+}
 
 try{
   receipt.catalogSources=[];for(const entry of JSON.parse(await readFile(path.join(root,'catalog/manifest.json'),'utf8'))){assert.match(entry.file,/^[a-z0-9/._-]+$/i);const relative='catalog/'+entry.file,bytes=await readFile(path.join(root,relative)),original=execFileSync('git',['show','HEAD:'+relative],{maxBuffer:16*1024*1024});assert.equal(sha(bytes),sha(original),'Checkout changed original source bytes: '+relative);receipt.catalogSources.push({bookId:entry.id,file:relative,sha256:sha(bytes)});}
@@ -73,10 +98,8 @@ try{
   await cdp.evaluate('document.fonts.ready.then(()=>true)');await capture('home-loaded');customNewsreader(await fonts('.hero-copy h1 .hero-line','loaded hero'));
   for(const [route,locale] of [['/zh-hans','zh-Hans'],['/zh-hant','zh-Hant'],['/ja','ja']]){
     pageLabel='home-'+locale;await cdp.send('Page.navigate',{url:origin+route});await until(()=>cdp.evaluate(`document.documentElement.lang===${JSON.stringify(locale)}&&!!document.querySelector('#how .section-copy h2')`),'authored '+locale+' home');
-    const language=await fonts('.home-navigation a[hreflang="'+locale+'"]','actual '+locale+' language entrance');
-    assert.ok(language.fonts.length&&language.fonts.every(font=>font.glyphCount>0&&/Noto.*Serif.*(?:SC|CJK)|Source.*Han.*Serif|Songti|STSong|SimSun|NSimSun|PingFang|YaHei|Yu.?Gothic|Meiryo/i.test(font.postScriptName||font.familyName)),'Language entrance must have covered CJK glyphs');
-    const cjk=await fonts('#how .section-copy h2','actual '+locale+' heading CJK fallback');
-    assert.ok(cjk.fonts.length&&cjk.fonts.every(font=>font.glyphCount>0&&/Noto.*Serif.*(?:SC|CJK)|Source.*Han.*Serif|Songti|STSong|SimSun|NSimSun/i.test(font.postScriptName||font.familyName)),'Actual covered CJK serif glyphs required; Newsreader notdef is not CJK');
+    await cjkGlyphs('.home-navigation a[hreflang="'+locale+'"]','actual '+locale+' language entrance');
+    await cjkGlyphs('#how .section-copy h2','actual '+locale+' heading CJK fallback',{serif:true});
     receipt.cjkNeedsHumanReview=true;await capture('home-'+locale+'-cjk-loaded');
   }
   pageLabel='library';await cdp.send('Page.navigate',{url:origin+'/library'});
