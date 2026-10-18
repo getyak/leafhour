@@ -51,7 +51,7 @@ export async function main({argv=process.argv.slice(2),env=process.env,write=con
     return summary.mode==='execute'&&summary.stopped&&summary.stopped!=='limit'?1:0;
   }catch(e){
     if(e instanceof BatchError&&e.usage){writeError(e.message);writeError(USAGE);return 2;}
-    writeError('批处理未完成：'+(e instanceof BatchError?e.message:'发生未预期的本机错误；未输出可能包含私密信息的异常详情')); 
+    writeError('批处理未完成：'+(e instanceof BatchError?e.message:'发生未预期的本机错误；未输出可能包含私密信息的异常详情'));
     return 1;
   }
 }
