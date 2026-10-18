@@ -1,6 +1,6 @@
 import {trackActionFocus} from './action-focus.mjs';
 const node=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
-const states={'awaiting-host':'待连接',active:'已开启',paused:'已暂停',expired:'连接已到期'};
+const states={'awaiting-host':'待连接',active:'已开启',paused:'已暂停',expired:'连接已到期',revoked:'授权已撤回'};
 const title=book=>book?.title?.zh||book?.title?.en||'未选择书籍';
 function sourceLink(value){
  if(typeof value!=='string'||!value.startsWith('/read?'))return null;
