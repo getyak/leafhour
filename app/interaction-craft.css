@@ -1,7 +1,7 @@
 /* Interaction comes last: shared behaviour, while each room keeps its own paper. */
 :root {
   --interaction-radius: 8px;
-  --interaction-focus: var(--accent, #385844);
+  --interaction-focus: var(--focus-ring);
   --interaction-fill: color-mix(in srgb, var(--accent, #385844) 8%, transparent);
   --interaction-pressed: color-mix(in srgb, var(--accent, #385844) 14%, transparent);
   --interaction-error: #923f30;
@@ -12,10 +12,6 @@ html:has(dialog:modal) { overflow: hidden; }
 button, a, summary, select, input, textarea { -webkit-tap-highlight-color: transparent; }
 button, summary, select { touch-action: manipulation; }
 button { transition: color 140ms, background-color 140ms, border-color 140ms, box-shadow 140ms, opacity 140ms; }
-:where(button, a, summary, select, input, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--interaction-focus);
-  outline-offset: 3px;
-}
 :where(button, input, select, textarea):disabled {
   cursor: not-allowed;
   opacity: .52;
@@ -46,7 +42,6 @@ button:not(:disabled):active { filter: brightness(.94); }
  .sidebar-icon-button, .sidebar-toggle, .site-theme) { min-width: 44px; justify-content: center; }
 dialog :is(select, input:not([type=radio]):not([type=checkbox]):not([type=range])) { min-height: 44px; }
 dialog :is(select, textarea, input) { accent-color: var(--accent, #385844); }
-dialog :is(input, textarea, select):focus-visible { border-color: var(--interaction-focus); }
 dialog :is(input, textarea)[aria-invalid=true] { border-color: var(--interaction-error); }
 dialog, [popover] { overscroll-behavior: contain; }
 dialog::backdrop { background: #15231942; backdrop-filter: blur(3px); }
@@ -63,15 +58,14 @@ dialog .status:empty { display: none; }
 .sample-sheet { border: 0; box-shadow: 0 2px 0 #304b2e12, 0 20px 55px #304b2e08; }
 .sample-footer a { border: 0; background: var(--interaction-fill); }
 .hero-actions .text-link, .closing .primary { text-decoration: none; }
-.site-header #account-button { border: 0; background: var(--interaction-fill); }
 .site-footer > a:not(.brand) { display: inline-flex; align-items: center; min-height: 44px; }
 .library-page .room-heading { align-items: baseline; }
 .library-page #library-books .book-read { min-height: 44px; font-size: 13px; }
 .library-page #library-books .book-details { font-size: 12px; }
 .library-page #library-books .book-details > summary { padding: 0 8px; border-radius: 6px; }
-.library-page .book-details-body { padding: 19px 21px; box-shadow: 0 12px 42px #172b221c; }
+.library-page .book-details-body { padding: 19px 21px; box-shadow: var(--shadow-popover); }
 .library-page .book-details-body a { min-height: 44px; display: flex; align-items: center; }
-.library-page .sidebar-search:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+.library-page .sidebar-search:focus-within { outline: var(--focus-ring-width) solid var(--focus-ring); outline-offset: 2px; }
 .library-page .sidebar-search:focus-within input { outline: none; }
 .library-page .empty-shelf { padding: 36px 0; border: 0; }
 .library-page .empty-shelf h2 { font-family: var(--serif); font-size: 25px; }
@@ -80,7 +74,7 @@ dialog .status:empty { display: none; }
 .sidebar-secondary button, .shelf-tabs button, .library-settings { border-radius: 7px; }
 
 /* Reader controls stay quiet until they are used. */
-.settings-dialog .dialog-heading { border-bottom-color: color-mix(in srgb, var(--line) 65%, transparent); }
+.settings-dialog .dialog-heading { border-bottom-color: var(--line-hairline); }
 .settings-dialog .theme-swatches { flex-wrap: wrap; gap: 9px; }
 .theme-swatches button { width: 44px; height: 44px; }
 .type-stepper { gap: 5px; }
@@ -95,7 +89,7 @@ dialog .status:empty { display: none; }
 .toc-title-original, .toc-current { opacity: 1; }
 .toc-current { font-size: 12px; }
 .book-info-footer a { min-height: 44px; }
-.paragraph-tools { padding: 6px; gap: 2px; border-color: transparent; border-radius: 12px; box-shadow: 0 3px 10px #14271908, 0 12px 28px #1427190a; }
+.paragraph-tools { padding: 6px; gap: 2px; border-color: transparent; border-radius: 12px; box-shadow: var(--shadow-popover); }
 .paragraph-tools button { border-radius: 5px; padding: 8px 11px; }
 .paragraph-more { border-color: transparent; }
 .panel-tabs { gap: 0; }
@@ -113,15 +107,14 @@ dialog .status:empty { display: none; }
 
 /* Listening and sharing are continuations of the same page. */
 .audio-dialog { border: 0; border-radius: 12px; }
-.audio-choice { border-color: color-mix(in srgb, var(--line) 65%, transparent); border-radius: 5px; padding-inline: 10px; }
+.audio-choice { border-color:var(--line-hairline); border-radius: 5px; padding-inline: 10px; }
 .audio-choice > span:last-child { transition: transform 140ms; }
-.audio-secondary { border-color: transparent; background: var(--wash); }
 .audio-setting:has(input[type=checkbox]), .audio-voice-option label { min-height: 44px; cursor: pointer; }
 .audio-voice-option label { align-items: center; }
 .audio-voice-option input { margin-top: 0; }
 .audio-player .audio-player-icon { flex-basis: 44px; min-width: 44px; }
 .audio-player input[type=range] { min-height: 44px; }
-.audio-turn textarea { border: 1px solid var(--line); padding: 12px; border-radius: 6px; }
+.audio-turn textarea { border: 1px solid var(--line-control); padding: 12px; border-radius: 6px; }
 .audio-turn textarea[readonly] { border-color: transparent; padding-inline: 0; }
 .share-dialog { border: 0; }
 .share-actions button { min-height: 44px; }
@@ -144,32 +137,28 @@ dialog .status:empty { display: none; }
  .audio-choice, .audio-secondary, .type-stepper > button):active:not(:disabled) {
   background-color: var(--interaction-pressed); transform: none;
 }
-.auth-dialog { --interaction-focus: var(--auth-green); }
 .auth-dialog .auth-provider { border-color: transparent; background: #f1f2eb; }
 .auth-dialog .auth-provider:disabled { opacity: 1; color: var(--auth-muted); background: #f3f3ed; }
 .auth-dialog .auth-provider:disabled img { opacity: .55; }
-.auth-dialog input:focus-visible { outline: 2px solid var(--auth-green); outline-offset: 2px; }
 .auth-dialog #auth-status { min-height: 0; }
 .auth-dialog[aria-busy=true] .primary { cursor: progress; }
 :root:is([data-theme=night], [data-site-theme=night]) { --interaction-error: #f0b8a8; }
 :root[data-site-theme=night] .auth-dialog {
-  --auth-paper: #253127; --auth-ink: #e6ebde; --auth-muted: #bbc7b3;
+  --auth-paper: #253127; --auth-field: #202b23; --auth-ink: #e6ebde; --auth-muted: #bbc7b3;
   --auth-line: #65745e; --auth-green: #c0d0ad; color-scheme: dark;
-  background: var(--auth-paper); color: var(--auth-ink); border-color: var(--auth-line);
+  background: var(--auth-paper); color: var(--auth-ink); border-color:var(--line-hairline);
 }
-:root[data-site-theme=night] .auth-dialog input { background: #202b23; color: var(--auth-ink); }
-:root[data-site-theme=night] .auth-dialog :is(.primary, .primary:hover:enabled) { background: var(--auth-green); border-color: var(--auth-green); color: #203321; }
+:root[data-site-theme=night] .auth-dialog input { background: var(--auth-field); color: var(--auth-ink); }
 :root[data-site-theme=night] .auth-dialog .auth-provider { background: #202b23; color: var(--auth-muted); }
 :root[data-site-theme=night] .auth-dialog .dialog-close:hover { background: #354332; }
 :root[data-site-theme=night] .auth-dialog #auth-status.error { color: var(--interaction-error); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-site-theme=paper]):not([data-theme]) .auth-dialog {
-    --auth-paper: #253127; --auth-ink: #e6ebde; --auth-muted: #bbc7b3;
+    --auth-paper: #253127; --auth-field: #202b23; --auth-ink: #e6ebde; --auth-muted: #bbc7b3;
     --auth-line: #65745e; --auth-green: #c0d0ad; --interaction-error: #f0b8a8;
-    color-scheme: dark; background: var(--auth-paper); color: var(--auth-ink); border-color: var(--auth-line);
+    color-scheme: dark; background: var(--auth-paper); color: var(--auth-ink); border-color:var(--line-hairline);
   }
-  :root:not([data-site-theme=paper]):not([data-theme]) .auth-dialog input { background: #202b23; color: var(--auth-ink); }
-  :root:not([data-site-theme=paper]):not([data-theme]) .auth-dialog :is(.primary, .primary:hover:enabled) { background: var(--auth-green); border-color: var(--auth-green); color: #203321; }
+  :root:not([data-site-theme=paper]):not([data-theme]) .auth-dialog input { background: var(--auth-field); color: var(--auth-ink); }
   :root:not([data-site-theme=paper]):not([data-theme]) .auth-dialog .auth-provider { background: #202b23; color: var(--auth-muted); }
 }
 @media (max-width: 760px) {
@@ -211,7 +200,6 @@ dialog .status:empty { display: none; }
 
 .settings-heading .dialog-close { width: 44px; height: 44px; min-height: 44px; }
 .settings-tabs button { min-height: 44px; }
-.composer textarea:focus-visible { outline: 2px solid var(--interaction-focus); outline-offset: 3px; }
 @media (max-width: 760px) {
   .library-settings-dialog .settings-layout { grid-template-rows: auto minmax(0, 1fr); }
   .library-settings-dialog .settings-tabs { align-items: center; }
@@ -236,7 +224,7 @@ dialog .status:empty { display: none; }
 .library-page :is(.book-action-trigger, .book-drag-handle) { width: 44px; height: 44px; min-width: 44px; min-height: 44px; }
 .book-action-dialog .book-action-close { width: 44px; height: 44px; min-height: 44px; }
 .book-action-menu .book-menu-item { min-height: 44px; }
-.book-action-menu .book-menu-item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.book-action-menu .book-menu-item:focus-visible { outline: var(--focus-ring-width) solid var(--focus-ring); outline-offset: -2px; }
 .profile-avatar-actions :is(.profile-avatar-upload, .profile-avatar-reset) { display: inline-flex; align-items: center; min-height: 44px; }
 .library-page #library-books .source-link, .trash-book-row button { min-height: 44px; }
 .settings-dialog .settings-sound-heading button { min-width: 44px; }

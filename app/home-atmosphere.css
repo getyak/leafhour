@@ -146,7 +146,7 @@
   animation: shadow-breeze 20s -8s ease-in-out infinite alternate;
   will-change: transform;
 }
-#home-view .reading-promise { position: relative; margin-top: 0; padding-top: 24px; border-color: color-mix(in srgb, var(--line) 65%, transparent); }
+#home-view .reading-promise { position: relative; margin-top: 0; padding-top: 24px; border-color:var(--line-hairline); }
 #home-view .home-section { position: relative; }
 #home-view .section-number { display: none; }
 #home-view .sample-sheet { background: color-mix(in srgb, var(--paper) 93%, transparent); box-shadow: 0 22px 60px #304b2010; }
@@ -165,7 +165,7 @@
   min-width: 82px;
   min-height: 44px;
   padding: 8px 14px;
-  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  border:1px solid var(--line-control);
   border-radius: 24px;
   background: color-mix(in srgb, var(--paper) 90%, transparent);
   backdrop-filter: blur(12px);

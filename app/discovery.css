@@ -1,8 +1,8 @@
 /* Public product documentation: the same paper, ink and leaf mark as the reader. */
-.discovery-page{margin:0;background:#f7f5ef;color:#263b32;font:17px/1.75 var(--font-sans);--discovery-muted:#56685b;--discovery-line:#d5ddd2;--discovery-accent:#365b45;color-scheme:light}
+.discovery-page{margin:0;background:#f7f5ef;color:#263b32;font:17px/1.75 var(--font-sans);--ink:#263b32;--line:#d5ddd2;--accent:#365b45;--paper:#f7f5ef;--discovery-muted:#56685b;--discovery-line:var(--line-hairline);--discovery-accent:#365b45;color-scheme:light}
 .discovery-page *{box-sizing:border-box}
 .discovery-page a{color:inherit;text-underline-offset:4px}
-.discovery-page a:focus-visible{outline:2px solid currentColor;outline-offset:6px}
+
 .public-header,.public-footer,.public-main{width:min(1100px,calc(100% - 64px));margin:auto}
 .public-header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:28px 0}
 .public-brand{display:flex;align-items:center;gap:7px;text-decoration:none;font:34px/1.2 var(--font-serif);letter-spacing:-.045em}
@@ -14,7 +14,9 @@
 .public-hero img{display:block;width:100%;height:auto;border-radius:3px}
 .public-hero .public-intro{font-size:21px;line-height:1.65}
 .public-actions{display:flex;gap:24px;align-items:center;flex-wrap:wrap;margin:28px 0 12px}
-.public-actions .public-primary{padding:11px 22px;background:var(--discovery-accent);color:#fff;text-decoration:none;border-radius:4px}
+.public-actions .public-primary{padding:11px 22px;background:var(--discovery-accent);color:#fff;text-decoration:none;border-radius:var(--action-radius)}
+.public-actions .public-primary:hover{filter:brightness(.92)}
+.public-actions .public-primary:active{filter:brightness(.86)}
 .public-note,.public-footer,.public-byline{color:var(--discovery-muted);font-size:14px}
 .public-section{padding:54px 0;border-top:1px solid var(--discovery-line);display:grid;grid-template-columns:1fr 2fr;gap:60px;scroll-margin-top:24px}
 .public-section h2{font:400 32px/1.3 var(--font-serif);letter-spacing:var(--track-heading);margin:0}
@@ -52,7 +54,7 @@
   .public-faq{padding:48px 24px}
 }
 @media(prefers-color-scheme:dark){
-  .discovery-page{background:#18251f;color:#e3eade;--discovery-muted:#b0bfae;--discovery-line:#405244;--discovery-accent:#365b45;color-scheme:dark}
+  .discovery-page{background:#18251f;color:#e3eade;--paper:#18251f;--ink:#e3eade;--line:#405244;--accent:#365b45;--discovery-muted:#b0bfae;--discovery-line:var(--line-hairline);--discovery-accent:#365b45;color-scheme:dark}
   .discovery-page .public-brand img{filter:brightness(0) invert(1)}
   .discovery-page .public-article pre{background:#26392c}
 }

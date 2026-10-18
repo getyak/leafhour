@@ -1,0 +1,154 @@
+/* GET-169 shared interface foundation (GET-181/182/183/185).
+   One module owns the interface hairlines, the green-toned popover/modal shadow
+   family, the single brand focus ring with its input variant, the action
+   vocabulary (solid primary pill / paper secondary pill / quiet text) and the
+   appearance popover. Pages load this file after typography.css and before their
+   surface stylesheet; those stylesheets consume these tokens at their source
+   instead of re-declaring competing rules.
+   Explicit stroke exceptions stay where they belong: focus/error/highlight/
+   selected semantic strokes, illustrated book-cover and ornamental strokes,
+   print rules and actual content marks (highlights, quotes). */
+
+:where(html) {
+  /* Static tokens live once on the document root. */
+  /* One green-toned shadow family: popovers first, modal surfaces deeper. */
+  --shadow-popover: 0 12px 32px rgba(31, 52, 38, .14), 0 2px 8px rgba(31, 52, 38, .07);
+  --shadow-modal: 0 28px 90px rgba(31, 52, 38, .2), 0 6px 18px rgba(31, 52, 38, .09);
+
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 3px;
+
+  /* Action vocabulary. */
+  --action-radius: 999px;
+  --action-target: 44px;
+  --action-text: var(--paper, #f7f5ef);
+}
+
+/* Derived tokens re-resolve on every element so a locally scoped palette
+   (support night, source review, evals, the chat dock's own dark palette)
+   supplies its own accent/ink/line/paper. One formula, local bindings. */
+:where(*) {
+  /* Two shared interface line tokens. Ordinary separators use 8% local ink;
+     this keeps the sage room as quiet as the paper room instead of amplifying
+     its darker decorative --line. Interactive edges keep the stronger tier. */
+  --line-hairline: color-mix(in srgb, var(--ink, #263b32) 8%, transparent);
+  --line-control: color-mix(in srgb, var(--line, #cfd2c6) 82%, var(--accent, #365b45));
+
+  /* One brand focus ring: a 72% accent mix toward the local ink. Measured
+     WCAG contrast against every adjacent surface in the product palettes is
+     recorded in docs/superpowers/specs/2026-10-18-get-169-components.md. The
+     input variant below joins the field border to the same ring. */
+  --focus-ring: color-mix(in srgb, var(--accent, #365b45) 72%, var(--ink, #263b32));
+  --focus-ring-halo: color-mix(in srgb, var(--focus-ring) 16%, transparent);
+
+}
+
+/* One rounded brand ring that follows every element's own corners. */
+:where(button, a, summary, select, input, textarea, [tabindex], .passage):focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* One coherent input variant: the field border joins the same ring. Type
+   exclusions stay inside :where() so aria-invalid rules keep their semantic
+   red border while the outer keyboard ring remains brand. */
+:where(input:not([type="radio"]):not([type="checkbox"]):not([type="range"]), textarea, select):focus-visible {
+  box-shadow: 0 0 0 3px var(--focus-ring-halo);
+}
+:where(input:not([type="radio"]):not([type="checkbox"]):not([type="range"]), textarea, select):not([aria-invalid="true"]):focus-visible {
+  border-color: var(--focus-ring);
+}
+
+/* Programmatic container focus (dialogs, headings marked for reading focus)
+   keeps no frame of its own; every keyboard stop above still shows the ring. */
+dialog:focus,
+dialog:focus-visible { outline: none; }
+
+/* The action vocabulary: one solid primary pill, one paper/hairline secondary
+   pill, and quiet text navigation. Layout and type stay with each surface. */
+:is(.primary, .gift-primary, .public-primary, .reading-primary, .share-primary, .echo-submit, .audio-primary, .audio-secondary, .outline), .composer button[type=submit], .share-actions button:not(.share-primary), .chapter-reading-actions button {
+  border-radius: var(--action-radius);
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, filter 160ms ease, transform 120ms ease;
+}
+:is(.primary, .gift-primary, .reading-primary, .share-primary, .echo-submit, .audio-primary), .composer button[type=submit] {
+  background: var(--accent, #365b45);
+  border: 1px solid var(--accent, #365b45);
+  color: var(--action-text, #fff);
+}
+:is(.primary, .gift-primary, .reading-primary, .share-primary, .echo-submit, .audio-primary):hover:not(:disabled), .composer button[type=submit]:hover:not(:disabled) { filter: brightness(.92); }
+:is(.primary, .gift-primary, .reading-primary, .share-primary, .echo-submit, .audio-primary):active:not(:disabled), .composer button[type=submit]:active:not(:disabled) { filter: brightness(.86); transform: translateY(1px); }
+
+.outline, .audio-secondary, .share-actions button:not(.share-primary), .chapter-reading-actions button, #upload-button {
+  background: var(--paper, #f7f5ef);
+  border: 1px solid var(--line-control);
+  color: var(--ink, #263b32);
+}
+#upload-button { border-radius: var(--action-radius); transition: background-color 160ms ease, border-color 160ms ease, transform 120ms ease; }
+.outline:hover:not(:disabled), .audio-secondary:hover:not(:disabled), .chapter-reading-actions button:hover:not(:disabled), .share-actions button:not(.share-primary):hover:not(:disabled), #upload-button:hover:not(:disabled) { background: var(--surface, var(--wash, #edf0e7)); border-color: var(--accent, #365b45); }
+.outline:active:not(:disabled), .audio-secondary:active:not(:disabled), .chapter-reading-actions button:active:not(:disabled), .share-actions button:not(.share-primary):active:not(:disabled), #upload-button:active:not(:disabled) { transform: translateY(1px); }
+
+.text-link { transition: color 140ms ease, background-color 140ms ease; }
+.text-link:hover:not(:disabled) { color: var(--accent, #365b45); }
+
+/* The header sign-in and appearance trigger answer hover, press and keyboard. */
+#account-button, .site-theme {
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+#account-button:hover:not(:disabled) { background: color-mix(in srgb, var(--accent, #365b45) 12%, transparent); border-color: var(--accent, #365b45); }
+#account-button:active:not(:disabled) { background: color-mix(in srgb, var(--accent, #365b45) 18%, transparent); }
+.site-theme:hover, .site-theme[aria-expanded="true"] { background: var(--surface, var(--wash, #edf0e7)); color: var(--ink, #263b32); }
+.site-theme:active { background: color-mix(in srgb, var(--accent, #365b45) 16%, transparent); }
+
+/* Appearance popover: a labelled, non-modal selection of native radios. */
+.appearance-menu {
+  position: fixed;
+  z-index: 30;
+  min-width: 196px;
+  padding: 6px;
+  background: var(--paper, #f7f5ef);
+  border: 1px solid var(--line-control);
+  border-radius: 12px;
+  box-shadow: var(--shadow-popover);
+}
+.appearance-menu[hidden] { display: none !important; }
+.appearance-options {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.appearance-legend {
+  padding: 8px 10px 6px;
+  font-size: 12px;
+  letter-spacing: var(--track-label, .08em);
+  color: var(--muted, #626c63);
+}
+.appearance-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--action-target);
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--ink, #263b32);
+  cursor: pointer;
+}
+.appearance-option:hover { background: var(--surface, var(--wash, #edf0e7)); }
+.appearance-option:has(input:checked) {
+  background: color-mix(in srgb, var(--accent, #365b45) 10%, transparent);
+  color: var(--ink, #263b32);
+}
+.appearance-option input { flex: none; margin: 0; accent-color: var(--accent, #365b45); }
+.appearance-option small { margin-left: auto; font-size: 12px; color: var(--muted, #626c63); }
+
+/* Theme colour changes fade quietly and stop under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  body { transition: background-color 220ms ease, color 220ms ease; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.primary, .outline, .gift-primary, .public-primary, .reading-primary, .share-primary, .echo-submit, .audio-primary, .audio-secondary, .composer button[type=submit], .share-actions button, .chapter-reading-actions button, .text-link, #account-button, #upload-button, .site-theme, body) { transition: none; }
+  .primary:active:not(:disabled), .outline:active:not(:disabled) { transform: none; }
+}

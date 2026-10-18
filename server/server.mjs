@@ -14,7 +14,7 @@ import {configurationSummary} from './model-config.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 // The verification page reads the same private, local observations as the book page.
 const assets=new Map([['/',['app/index.html','text/html']],['/styles.css',['app/styles.css','text/css']],['/reader.js',['app/reader.js','text/javascript']],['/experiences.js',['app/experiences.js','text/javascript']],['/experiences.css',['app/experiences.css','text/css']],['/typography.css',['app/typography.css','text/css']],['/fonts/newsreader/newsreader-var.woff2',['app/fonts/newsreader/newsreader-var.woff2','font/woff2']],['/fonts/newsreader/newsreader-italic-var.woff2',['app/fonts/newsreader/newsreader-italic-var.woff2','font/woff2']],['/fonts/newsreader/OFL.txt',['app/fonts/newsreader/OFL.txt','text/plain']]]);
-for(const file of ['interaction-craft.css','interaction-craft.mjs','action-focus.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
+for(const file of ['interaction-craft.css','interface-tokens.css','interaction-craft.mjs','action-focus.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/reading-preferences.mjs',['app/reading-preferences.mjs','text/javascript']);
 assets.set('/personal-records.mjs',['app/personal-records.mjs','text/javascript']);
 assets.set('/reading-chat-scope.mjs',['app/reading-chat-scope.mjs','text/javascript']);

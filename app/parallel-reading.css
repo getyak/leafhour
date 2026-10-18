@@ -20,7 +20,7 @@ body[data-parallel-background=auto][data-parallel-style=tint] .parallel-translat
 body[data-parallel-style=reveal] .parallel-reveal{display:block;font:12px/1.6 var(--interface);color:var(--parallel-tone);border:1px dashed color-mix(in srgb,var(--parallel-tone) 55%,var(--paper));padding:10px 16px;border-radius:4px;min-height:44px;text-align:start}
 body[data-parallel-style=reveal] .parallel-translation[data-revealed=false] .parallel-translation-text{display:none}
 body[data-parallel-style=reveal] .parallel-translation[data-revealed=true] .parallel-reveal{margin-bottom:12px}
-.parallel-preview{background:var(--paper);border:1px solid var(--line);padding:17px 14px;border-radius:5px;margin:0 0 18px}
+.parallel-preview{background:var(--paper);border:1px solid var(--line-hairline);padding:17px 14px;border-radius:5px;margin:0 0 18px}
 .parallel-preview>.parallel-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .parallel-preview p{font:15px/1.8 var(--book);margin:0;overflow-wrap:anywhere}
 .parallel-preview p[lang=en]{font-family:var(--english)}

@@ -68,18 +68,48 @@ scaled to fit the physical desktop; this is not a device or alternate-OS test.
 ![Night section titles](assets/2026-10-18-get167-home-night.jpg)
 ![Desktop library](assets/2026-10-18-get167-library-night.jpg)
 
+## Follow-up: actual Ambi comparison
+
+The user supplied [Ambi](http://ambi.ai/), which redirected to
+[its English homepage](https://www.ambi.ai/en). On 2026-10-18, the parent
+observed that live page and the Leafhour `b542cbec` implementation in adjacent
+Chrome Guest tabs: a 1200px desktop window and a 390×844 device-toolbar viewport.
+The Leafhour comparison used the isolated local server, public content and
+disabled model providers. Reference screenshots and observation receipts are
+retained as local review evidence; reference artwork is not bundled here.
+
+Ambi separates its sans hero and utility text from serif editorial passages,
+with quiet navigation and consistent pill actions. Leafhour's ordinary section
+headings now share `clamp(28px, 3vw, 40px)`, while reading examples, book titles
+and utility labels retain distinct roles. The desktop reading and calendar
+sections have the same heading level; the narrow reading section keeps a clear
+heading/body distinction. This supports the typography comparison required by
+GET-174. Leafhour keeps its own book, paper and serif treatment. Its rectangular
+buttons visible in this baseline remain GET-181 work, and the mobile navigation
+remains GET-188 work. No computed Ambi font measurements or original author's
+new score are claimed.
+
+[PR #122](https://github.com/getyak/leafhour/pull/122) was merged as
+`b542cbec701fb88e219b85895890a33c59c6e20e`. The current-head
+[PR CI](https://github.com/getyak/leafhour/actions/runs/39102757195),
+[main CI](https://github.com/getyak/leafhour/actions/runs/39103020267) and
+[production release](https://github.com/getyak/leafhour/actions/runs/39103115813)
+succeeded. The production revision and both WOFF2 response hashes were read
+back; production `typography.css` matched the landed source. These are later
+landing receipts, separate from the local implementation checks above.
+
 ## Acceptance still open
 
 - Windows, Android and Linux rendered acceptance has not been executed here.
   Self-hosted font delivery and decoded metrics do not establish those visual
   results. GET-173 retains this explicit acceptance gap.
 - The supplied A–H rubric starts at 11/16. No >=14/16 or original reviewer's
-  re-evaluation is claimed. A precise Ambi reference URL has not been supplied;
-  no side-by-side benchmark is claimed for GET-174 or the epic.
+  re-evaluation is claimed. The actual Ambi comparison above covers typography;
+  the epic's other acceptance requirements remain separate.
 - The pre-existing clipped first-entry chapter heading was reproduced and is
   tracked by GET-186. Literal underscore emphasis remains GET-190 work.
-- This document does not assert PR merge or production publication; those
-  must be verified from GitHub and the deployed revision after landing.
+- The real-browser comparison is macOS Chrome only; device-toolbar emulation
+  does not establish physical touch or alternate-OS acceptance.
 
-No paid model calls, real-account changes, book-data edits or preview deploys
-were part of this typography acceptance.
+No product model/provider calls, real-account changes, book-data edits or
+preview deploys were part of this typography acceptance.

@@ -11,7 +11,7 @@
 .reading-arrival .arrival-status{font:12px/1.8 var(--interface,system-ui,sans-serif);color:var(--muted);margin:28px 0 0;letter-spacing:var(--track-meta)}
 .reading-arrival .arrival-retry{display:inline-block;font:13px/1.6 var(--interface,system-ui,sans-serif);color:var(--accent);background:transparent;border:0;text-decoration:underline;text-underline-offset:4px;min-height:44px;padding:10px 16px;margin-top:4px;cursor:pointer}
 .reading-arrival .arrival-retry:hover{color:var(--ink)}
-.reading-arrival .arrival-retry:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
 .arrival-library{--book:var(--font-cjk-serif);--english:var(--font-latin);padding-top:0;min-height:510px;width:100%}
 .arrival-scene{position:relative;width:194px;height:160px;margin:0 auto 4px;user-select:none;pointer-events:none}
 .arrival-floor{position:absolute;width:145px;height:8px;bottom:17px;left:24px;background:color-mix(in srgb,var(--ink) 8%,transparent);border-radius:50%}
