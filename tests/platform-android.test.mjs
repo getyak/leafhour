@@ -1405,7 +1405,7 @@ test('unreadable imported CSS times out with bounded history and the final raw v
 
 test('failure screenshot obeys cancellation and the budget and retains secondary failures separately',async()=>{
   for(const lifecycle of [{stopped:true},{stopping:true},{cancelled:'SIGTERM'}]){let calls=0;assert.equal(await captureFailurePage({session:{capture:async()=>calls++},receipt:{screenshots:[]},lifecycle}),false);assert.equal(calls,0);}
-  let calls=0;const session={capture:async()=>{calls++;}};assert.equal(await captureFailurePage({session,receipt:{screenshots:Array(9).fill({})},lifecycle:{}}),false);assert.equal(calls,0);
+  let calls=0;const session={capture:async()=>{calls++;}};assert.equal(await captureFailurePage({session,receipt:{screenshots:Array(12).fill({})},lifecycle:{}}),false);assert.equal(calls,0);
   assert.equal(await captureFailurePage({session,receipt:{screenshots:[]},lifecycle:{}}),true);assert.equal(calls,1);
   const receipt={screenshots:[],failure:'original viewport assertion'};assert.equal(await captureFailurePage({session:{capture:async()=>{throw Error('secondary capture');}},receipt,lifecycle:{}}),false);assert.equal(receipt.failure,'original viewport assertion');assert.deepEqual(receipt.secondaryEvidenceErrors,['secondary capture']);
 });

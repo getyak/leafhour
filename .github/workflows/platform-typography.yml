@@ -9,6 +9,8 @@ on:
       - tools/lib/platform-cdp.mjs
       - tools/lib/platform-font-observer.mjs
       - tests/platform-android.test.mjs
+      - tests/platform-popover-observer.test.mjs
+      - tests/platform-popover-product.test.mjs
       - app/typography.css
       - app/fonts/**
   workflow_dispatch:

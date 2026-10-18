@@ -123,6 +123,9 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     // GET-178 command palette: the small shared trigger is bundled with each
     // scoped page; the palette module and its stylesheet load on demand.
     for(const file of ['palette-bootstrap.mjs','command-palette.mjs','command-palette.css','palette-library.mjs'])files['/'+file]=file;
+    // GET-173 shared popover controller and the reader's lazy bookplate
+    // bootstrap share the same fixed public URLs on every surface.
+    for(const file of ['popover-controls.mjs','reader-book-actions-bootstrap.mjs'])files['/'+file]=file;
     if(!isAPI&&!files[p])return false;
     if(isAPI||p==='/source-review'||p==='/library'||p==='/gift-preview'||safeGiftReturn(p))res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
     if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p==="/robots.txt"?"text/plain":p==="/sitemap.xml"?"application/xml":p.endsWith('.woff2')?'font/woff2':p.endsWith('.txt')?'text/plain':p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));if(type.startsWith('font/')){res.writeHead(200,{'Content-Type':type,'Content-Length':file.length});res.end(req.method==='HEAD'?undefined:file);return true;}send(200,files[p]==='home.html'?portalDocument(file.toString('utf8'),p):file,type);return true;}

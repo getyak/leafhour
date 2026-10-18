@@ -27,6 +27,87 @@ const CJK_RUN=/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\u3000-\u303
 export function customNewsreader(value){
   assert.ok(value.fonts.some(font=>font.isCustomFont&&/Newsreader/i.test(font.postScriptName||font.familyName)&&font.glyphCount>0),value.label+' must render actual custom Newsreader glyphs');
 }
+// Serialized read-only default-state observation. Chrome113 has no Popover API
+// or :popover-open selector, so never query that selector to inspect its fallback.
+// Font checks alone must not accept a painted, supposedly closed control.
+export function observeInitialPopovers(){
+  return [...document.querySelectorAll('[popover]')].map(node=>{
+    const style=getComputedStyle(node);
+    return {id:node.id,nativePopover:typeof node.showPopover==='function',rects:node.getClientRects().length,display:style.display,visibility:style.visibility};
+  });
+}
+export function assertInitialPopoversClosed(nodes,requiredIds){
+  assert.ok(Array.isArray(nodes),'Actual popover observations required');
+  for(const id of requiredIds)assert.ok(nodes.some(node=>node.id===id),id+' control required');
+  for(const node of nodes)assert.equal(node.rects,0,node.id+' must be closed before any user action');
+}
+// Remote hosted-runner keyboard acceptance only. This never executes on a Mac:
+// the admitting entry point creates the owned CDP transport after its guard.
+// DOM.focus focuses the observed real button; Enter/Escape go through Chrome's
+// input protocol, never element.click(), handler calls or application state edits.
+async function dispatchRemoteKey(cdp,guard,name,code){
+  // Enter needs its character phase; raw Tab/Escape have no text.
+  guard();await cdp.send('Input.dispatchKeyEvent',{type:name==='Enter'?'keyDown':'rawKeyDown',key:name,code:name,windowsVirtualKeyCode:code,...(name==='Enter'?{text:'\r',unmodifiedText:'\r'}:{})});
+  guard();await cdp.send('Input.dispatchKeyEvent',{type:'keyUp',key:name,code:name,windowsVirtualKeyCode:code});
+}
+export async function activateRemoteButton({cdp,trigger,panel=null,guard=()=>{}}){
+  const evaluate=expression=>{guard();return cdp.evaluate(expression);};
+  const send=(method,params)=>{guard();return cdp.send(method,params);};
+  const read=()=>evaluate('('+observePopoverState.toString()+')('+JSON.stringify(trigger)+','+JSON.stringify(panel)+')');
+  const scroll=await evaluate('('+observeNativeScroll.toString()+')('+JSON.stringify(trigger)+')');
+  assert.ok(['settled','unchanged'].includes(scroll.status),'Real button must finish native scrolling');
+  const before=await read();
+  assert.ok(before.trigger?.visible&&!before.trigger.disabled&&!before.trigger.inert,'Real usable popover trigger required');
+  if(panel)assert.equal(before.panel?.visible,false,'Popover must start closed');
+  const {root}=await send('DOM.getDocument');
+  const {nodeId}=await send('DOM.querySelector',{nodeId:root.nodeId,selector:trigger});
+  assert.ok(nodeId,'Real button node required');await send('DOM.focus',{nodeId});
+  const focused=await read();assert.equal(focused.focusOnTrigger,true,'Observed trigger must actually receive focus');
+  await dispatchRemoteKey(cdp,guard,'Enter',13);
+  return {scroll,before,input:'remote Chrome DOM.focus + trusted keyboard protocol; no physical touch claim'};
+}
+export async function exercisePopoverKeyboard({cdp,trigger,panel,capture,afterOpened,guard=()=>{}}){
+  const read=()=>{guard();return cdp.evaluate('('+observePopoverState.toString()+')('+JSON.stringify(trigger)+','+JSON.stringify(panel)+')');};
+  const activation=await activateRemoteButton({cdp,trigger,panel,guard});
+  await until(async()=>{const value=await read();return value.panel?.visible&&value.expanded==='true'?value:false;},'real popover to open',4000);
+  let opened=await read();
+  if(!opened.focusInPanel){await dispatchRemoteKey(cdp,guard,'Tab',9);opened=await read();}
+  assert.ok(opened.focusInPanel,'Keyboard must reach a real control inside the open popover');
+  if(afterOpened){
+    guard();await afterOpened();opened=await read();
+    assert.ok(opened.panel?.visible&&opened.expanded==='true'&&opened.focusInPanel,'Enhancement readiness must preserve the actual open chooser and focus');
+  }
+  guard();await capture();await dispatchRemoteKey(cdp,guard,'Escape',27);
+  const closed=await until(async()=>{const value=await read();return !value.panel?.visible&&value.expanded==='false'?value:false;},'real popover to close',4000);
+  assert.equal(closed.focusOnTrigger,true,'Escape must return focus to the actual visible opener');
+  assert.equal(closed.url,activation.before.url,'Opening/closing a chooser must preserve the entry URL');
+  return {trigger,panel,...activation,opened,closed};
+}
+// Serialized read-only facts for the owned remote input sequence above.
+export function observePopoverState(triggerSelector,panelSelector){
+  const trigger=document.querySelector(triggerSelector),panel=panelSelector?document.querySelector(panelSelector):null;
+  const describe=node=>{
+    if(!node)return null;
+    const r=node.getBoundingClientRect(),style=getComputedStyle(node);
+    return {id:node.id,visible:!!node.getClientRects().length&&style.visibility!=='hidden'&&style.display!=='none'&&r.width>0&&r.height>0&&r.bottom>0&&r.right>0&&r.top<innerHeight&&r.left<innerWidth,disabled:!!node.disabled,inert:!!node.closest('[inert]'),rect:{x:r.x,y:r.y,width:r.width,height:r.height}};
+  };
+  return {url:location.href,trigger:describe(trigger),panel:describe(panel),expanded:trigger?.getAttribute('aria-expanded'),focusOnTrigger:document.activeElement===trigger,focusInPanel:!!panel?.contains(document.activeElement)};
+}
+// Serialized read-only proof that the normal reading pill really exposed its
+// navigation before the remote sequence focuses book-info. No app state edits.
+export function observeReaderTools(){
+  const pill=document.getElementById('reading-tools-trigger'),header=document.getElementById('reading-header');
+  const r=header?.getBoundingClientRect(),style=header?getComputedStyle(header):null;
+  return {expanded:pill?.getAttribute('aria-expanded'),headerInert:!!header?.inert,headerVisible:!!header?.getClientRects().length&&style.display!=='none'&&style.visibility!=='hidden'&&r.width>0&&r.height>0&&r.bottom>0&&r.right>0&&r.top<innerHeight&&r.left<innerWidth,focusInHeader:!!header?.contains(document.activeElement)};
+}
+// The real enabled share control plus its closed native gift dialog prove that
+// the optional code mounted. The basic bookplate alone cannot satisfy this.
+export function observeReaderBookActions(){
+  const share=document.getElementById('book-info-share'),gift=document.getElementById('reader-book-gift'),style=share?getComputedStyle(share):null;
+  const rect=share?.getBoundingClientRect(),rendered=!!share?.getClientRects().length&&style.display!=='none'&&style.visibility!=='hidden'&&rect.width>0&&rect.height>0;
+  const shareEnabled=share?.tagName==='BUTTON'&&!share.disabled,giftDialogPresent=gift?.tagName==='DIALOG',giftDialogOpen=!!gift?.open;
+  return {ready:rendered&&shareEnabled&&giftDialogPresent&&!giftDialogOpen,shareRendered:rendered,shareEnabled,giftDialogPresent,giftDialogOpen};
+}
 // Serialized read-only readiness observation. Width never decides readiness:
 // a stable wide viewport completes here and fails the separate assertion once.
 export function observeViewportReadiness(){
@@ -53,7 +134,7 @@ export function observeViewportReadiness(){
   });
 }
 export async function captureFailurePage({session,receipt,lifecycle}={}){
-  if(!session||lifecycle?.stopped||lifecycle?.stopping||lifecycle?.cancelled||(receipt.screenshots?.length||0)>=9)return false;
+  if(!session||lifecycle?.stopped||lifecycle?.stopping||lifecycle?.cancelled||(receipt.screenshots?.length||0)>=12)return false;
   try{await session.capture('failure-page');return true;}catch(error){(receipt.secondaryEvidenceErrors??=[]).push(error.message);return false;}
 }
 // Read the actual current document, not a frame-less protocol event. The
@@ -169,9 +250,9 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
   const observe=(method,handler)=>evidenceListeners.push(cdp.on(method,handler));
   function task(operation){const promise=Promise.resolve(operation).catch(error=>failures.push(error.message)).finally(()=>background.delete(promise));background.add(promise);}
   async function capture(name){
+    assert.ok(receipt.screenshots.length<12,'Bounded screenshot budget exceeded');
     const {data}=await cdp.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
     const bytes=Buffer.from(data,'base64');
-    assert.ok(receipt.screenshots.length<9,'Bounded screenshot budget exceeded');
     await writeFile(path.join(out,name+'.png'),bytes);
     receipt.screenshots.push({file:name+'.png',bytes:bytes.length,sha256:sha(bytes)});
   }

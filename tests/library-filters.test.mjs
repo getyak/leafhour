@@ -86,6 +86,9 @@ test('a synthetic Chinese fiction fixture filters honestly while the shipped cat
 });
 
 // ---- controller fixture -----------------------------------------------------
+// Capability-absent fixture: stock Chrome 113 has no Popover API, so
+// ':popover-open' queries throw here exactly as they do there; open state is
+// owned by the shared popover controller through its marker and hidden state.
 class FakeElement{
   constructor(tag,doc){
     this.tagName=String(tag).toUpperCase();this.ownerDocument=doc;this.children=[];this.parentElement=null;
@@ -102,7 +105,9 @@ class FakeElement{
   emit(type,props={}){this.dispatchEvent({type,preventDefault(){},stopPropagation(){},...props});}
   setAttribute(key,value){this.attributes.set(key,String(value));}
   getAttribute(key){return this.attributes.has(key)?this.attributes.get(key):null;}
+  hasAttribute(key){return this.attributes.has(key);}
   removeAttribute(key){this.attributes.delete(key);}
+  toggleAttribute(key,force){const on=force===undefined?!this.attributes.has(key):!!force;if(on)this.attributes.set(key,'');else this.attributes.delete(key);return on;}
   get classList(){
     const owner=this;
     return {
@@ -117,16 +122,17 @@ class FakeElement{
   after(node){const parent=this.parentElement;if(!parent)throw Error('detached');const index=parent.children.indexOf(this);parent.children.splice(index+1,0,node);node.parentElement=parent;}
   remove(){const parent=this.parentElement;if(!parent)return;parent.children.splice(parent.children.indexOf(this),1);this.parentElement=null;}
   contains(node){let current=node;while(current){if(current===this)return true;current=current.parentElement;}return false;}
-  matches(selector){return selector===':popover-open'?!!this.open:false;}
-  showPopover(){this.open=true;this.emit('toggle',{newState:'open'});}
-  hidePopover(){this.open=false;this.emit('toggle',{newState:'closed'});}
+  matches(selector){if(String(selector).includes(':popover-open'))throw Error('unsupported selector: '+selector);return false;}
+  closest(){return null;}
   focus(){this.ownerDocument.activeElement=this;this.focused=true;}
   getClientRects(){return this.open===false&&this.parentElement?.open===false?[]:[{}];}
   querySelector(){return null;}
   querySelectorAll(){return [];}
 }
 function filterFixture(){
-  const doc={activeElement:null,createElement:tag=>new FakeElement(tag,doc),querySelector:()=>null,querySelectorAll:()=>[]};
+  const listeners=new Map();
+  const doc={activeElement:null,createElement:tag=>new FakeElement(tag,doc),querySelector:selector=>{if(String(selector).includes(':popover-open'))throw Error('unsupported selector: '+selector);return null;},querySelectorAll:()=>[],
+    addEventListener(type,fn){listeners.set(type,[...(listeners.get(type)||[]),fn]);},removeEventListener(){},dispatchEvent(event){for(const fn of listeners.get(event.type)||[])fn(event);return true;}};
   const byId=new Map(),shelfButtons=[];
   const root=new FakeElement('section',doc);
   root.querySelector=selector=>byId.get(selector.slice(1))||null;
@@ -174,11 +180,11 @@ test('each summary chip removes only its own filter and returns focus to a sensi
   f.chips.children[2].emit('click');
   assert.deepEqual(controls.read(),{query:'爱丽丝',scope:'all',status:'reading',topic:'all',language:'all'});
   assert.equal(f.doc.activeElement,f.trigger,'a chip inside the closed chooser cannot take focus; the connected trigger can');
-  f.panel.open=true;
+  f.trigger.emit('click');
   controls.set({topic:'fiction'});controls.update(books);
   f.chips.children[2].emit('click');
   assert.equal(f.doc.activeElement,controls.choices.topic.chips[0],'with the chooser open the owning choice takes focus');
-  f.panel.open=false;
+  f.trigger.emit('click');
   f.chips.children[0].emit('click');
   assert.equal(f.doc.activeElement,f.search);
   assert.equal(controls.read().query,'');

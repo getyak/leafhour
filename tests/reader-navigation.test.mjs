@@ -26,25 +26,34 @@ class Element extends EventTarget{
   constructor(tag){super();this.tagName=tag;this.children=[];this.attributes=new Map();}
   append(...children){this.children.push(...children);}
   replaceChildren(...children){this.children=[...children];}
-  setAttribute(name,value){this.attributes.set(name,value);}
-  getAttribute(name){return this.attributes.get(name);}
+  setAttribute(name,value){this.attributes.set(name,String(value));}
+  getAttribute(name){return this.attributes.has(name)?this.attributes.get(name):null;}
+  hasAttribute(name){return this.attributes.has(name);}
+  removeAttribute(name){this.attributes.delete(name);}
+  toggleAttribute(name,force){const on=force===undefined?!this.attributes.has(name):!!force;if(on)this.attributes.set(name,'');else this.attributes.delete(name);return on;}
+  contains(){return false;}
   set innerHTML(value){throw Error('book data must be inserted as text');}
 }
 const doc={createElement:tag=>new Element(tag)};
 const all=(node,tag)=>node.children.flatMap(child=>[...(child.tagName===tag?[child]:[]),...all(child,tag)]);
 
 test('Escape returns to the book title when generation removed the focused button',()=>{
-  const document=new EventTarget(),win=new EventTarget(),trigger=new Element('button'),popover=new Element('div'),close=new Element('button');let open=true;
+  const document=new EventTarget(),win=new EventTarget(),trigger=new Element('button'),popover=new Element('div'),close=new Element('button');
   const nodes={'open-book-info':trigger,'book-info':popover,'close-book-info':close};
   document.getElementById=id=>nodes[id];document.defaultView=win;document.activeElement=null;
-  trigger.focus=()=>{document.activeElement=trigger;};popover.matches=()=>open;popover.hidePopover=()=>{open=false;};
+  trigger.focus=()=>{document.activeElement=trigger;};
+  // Capability-absent fixture (stock Chrome 113): the popover was opened through
+  // the shared controller before this owner mounted, and the registry adopts it.
+  popover.setAttribute('data-popover-open','');
   navigation.mountBookIntroduction({document,getBook:()=>book,getChapter:()=>book.chapters[1]});
   const event=new Event('keydown',{cancelable:true});Object.defineProperty(event,'key',{value:'Escape'});document.dispatchEvent(event);
-  assert.equal(open,false);assert.equal(document.activeElement,trigger);assert.equal(event.defaultPrevented,true);
+  assert.equal(popover.hasAttribute('data-popover-open'),false);
+  assert.equal(popover.getAttribute('hidden'),'','the fallback closes through the native hidden state');
+  assert.equal(document.activeElement,trigger);assert.equal(event.defaultPrevented,true);
 });
 
 test('Escape from a completed introduction keeps immersive tools open and returns focus to the title',async()=>{
-  const document=new EventTarget(),nodes=new Map();let open=true;
+  const document=new EventTarget(),nodes=new Map();
   class Control extends Element{
     constructor(id){super('button');this.id=id;this.hidden=true;this.dataset={};this.classList={toggle(){}};}
     focus(){document.activeElement=this;}
@@ -52,8 +61,11 @@ test('Escape from a completed introduction keeps immersive tools open and return
     querySelector(){return nodes.get('open-book-info');}
   }
   for(const id of ['reading-header','exit-focus','focus-fullscreen','enter-focus','immersive-reading','open-book-info','book-info','close-book-info','book-intro-generate','paragraph-tools','note-panel'])nodes.set(id,new Control(id));
-  Object.assign(document,{body:new Control('body'),documentElement:new Control('html'),defaultView:new EventTarget(),getElementById:id=>nodes.get(id),querySelector:()=>open?nodes.get('book-info'):null,fullscreenElement:null});
-  const popover=nodes.get('book-info'),generate=nodes.get('book-intro-generate');popover.matches=()=>open;popover.hidePopover=()=>{open=false;};
+  nodes.get('open-book-info').hidden=false;
+  Object.assign(document,{body:new Control('body'),documentElement:new Control('html'),defaultView:new EventTarget(),getElementById:id=>nodes.get(id),
+    querySelector:selector=>{if(String(selector).includes(':popover-open'))throw Error('unsupported selector: '+selector);return nodes.get('book-info').hasAttribute('data-popover-open')?nodes.get('book-info'):null;},fullscreenElement:null});
+  const popover=nodes.get('book-info'),generate=nodes.get('book-intro-generate');
+  popover.setAttribute('data-popover-open','');
   const immersion=mountReaderImmersion({document});immersion.toggleTools();
   navigation.mountBookIntroduction({document,getBook:()=>book,getChapter:()=>book.chapters[1]});
   // Register the real page handler after the popover, preserving listener order.
@@ -62,7 +74,8 @@ test('Escape from a completed introduction keeps immersive tools open and return
   new Function('document','readerInteractionBlocked','immersion','$',reader.slice(start,end))(document,readerInteractionBlocked,immersion,id=>nodes.get(id));
   generate.hidden=false;document.activeElement=generate;generate.hidden=true;document.activeElement=document.body;
   const event=new Event('keydown',{cancelable:true});Object.defineProperties(event,{key:{value:'Escape'},target:{value:document.body}});document.dispatchEvent(event);
-  assert.equal(open,false);assert.equal(event.defaultPrevented,true);assert.equal(document.activeElement,nodes.get('open-book-info'));
+  assert.equal(popover.hasAttribute('data-popover-open'),false);
+  assert.equal(event.defaultPrevented,true);assert.equal(document.activeElement,nodes.get('open-book-info'));
   assert.equal(document.body.dataset.readingTools,'open');assert.equal(nodes.get('reading-header').inert,false);
 });
 

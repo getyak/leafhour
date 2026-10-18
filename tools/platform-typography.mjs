@@ -10,7 +10,7 @@ import path from 'node:path';
 import os from 'node:os';
 import {pathToFileURL} from 'node:url';
 import {CDP} from './lib/platform-cdp.mjs';
-import {delay,sha,until,customNewsreader,italicFontEvidence,captureFailurePage,createEvidenceSession} from './lib/platform-font-observer.mjs';
+import {delay,sha,until,customNewsreader,italicFontEvidence,captureFailurePage,createEvidenceSession,observeInitialPopovers,assertInitialPopoversClosed,exercisePopoverKeyboard,activateRemoteButton,observeReaderTools,observeReaderBookActions} from './lib/platform-font-observer.mjs';
 import {
   parseScriptArgs,
   assertRunnerGuard,
@@ -87,7 +87,7 @@ lifecycle.setCleanup(finalizeRun);
 lifecycle.attach();
 async function nativeCapture(name,bytes){
   assert.ok(Buffer.isBuffer(bytes)&&bytes.length,'Android system screenshot must be actual PNG bytes');
-  assert.ok(receipt.screenshots.length<9,'Bounded screenshot budget exceeded');
+  assert.ok(receipt.screenshots.length<12,'Bounded screenshot budget exceeded');
   await writeFile(path.join(out,name+'.png'),bytes);
   receipt.screenshots.push({file:name+'.png',bytes:bytes.length,sha256:sha(bytes)});
 }
@@ -255,6 +255,13 @@ try{
     const apostrophe=await session.fonts('#platform-apostrophe-probe','actual inherited U+2019 glyph');customNewsreader(apostrophe);assert.equal(apostrophe.text,'’');assert.ok(punctuation.after<punctuation.em*.5,'Apostrophe must be proportional');assert.ok(Math.abs(punctuation.before-punctuation.after)<.1,'Probe must preserve actual glyph width');receipt.punctuation=punctuation;
   }
   await session.fonts('#library-books .binding-title','stock CJK book title fallback');await session.capture('library-loaded');
+  const shelfPopovers=await cdp.evaluate('('+observeInitialPopovers.toString()+')()');
+  (receipt.initialPopovers??=[]).push({page:'library',nodes:shelfPopovers});
+  assertInitialPopoversClosed(shelfPopovers,['shelf-filter-panel','library-book-menu']);
+  receipt.popoverInteractions=[];
+  for(const [trigger,panel,name] of [['#shelf-filter-button','#shelf-filter-panel','library-filter-open'],['#library-books .book-action-trigger','#library-book-menu','library-book-menu-open']]){
+    receipt.popoverInteractions.push(await exercisePopoverKeyboard({cdp,trigger,panel,guard:()=>lifecycle.guard('owned remote popover input'),capture:()=>session.capture(name)}));
+  }
   lifecycle.guard('reader evidence');
   const bookResponse=await fetch('http://127.0.0.1:'+port+'/api/library/books/gutenberg-alice',{headers:{'X-Reader-Owner':'guest'}});assert.ok(bookResponse.ok,'Actual public source package required');const sourceBook=await bookResponse.json();
   const {sourceEmphasisRanges}=await import(pathToFileURL(path.join(root,'app/source-emphasis.mjs')));
@@ -268,13 +275,26 @@ try{
   assert.equal(resolved.bookId,sourceBook.bookId);assert.equal(resolved.contentVersion,sourceBook.contentVersion);assert.equal(resolved.passageId,sourcePassage.id);assert.equal(resolved.mode,'en');assert.ok(resolved.visible,'Citation target must already be visible before the font probe scrolls');
   assert.ok([origin+'/read?'+citation,origin+'/read?'+new URLSearchParams({book:sourceBook.bookId})].includes(resolved.url),'Only the application’s existing consumed-entry URL cleanup is permitted');receipt.citation.resolved=resolved;
   const italic=await session.fonts(italicSelector,'cited visible source emphasis italic');await session.capture('reader-loaded');
+  const readerPopovers=await cdp.evaluate('('+observeInitialPopovers.toString()+')()');
+  receipt.initialPopovers.push({page:'reader',nodes:readerPopovers});
+  assertInitialPopoversClosed(readerPopovers,['book-info']);
+  receipt.readerBookActions={before:await cdp.evaluate('('+observeReaderBookActions.toString()+')()')};
+  assert.equal(receipt.readerBookActions.before.giftDialogPresent,false,'Optional gift UI must not mount before opening book-info');
+  assert.equal(receipt.readerBookActions.before.shareEnabled,false,'Uninitialized optional actions must stay disabled');
+  const remoteGuard=()=>lifecycle.guard('owned remote reader keyboard input');
+  const activation=await activateRemoteButton({cdp,trigger:'#reading-tools-trigger',guard:remoteGuard});
+  const toolsOpened=await until(async()=>{remoteGuard();const value=await cdp.evaluate('('+observeReaderTools.toString()+')()');return value.expanded==='true'&&value.headerVisible&&!value.headerInert&&value.focusInHeader?value:false;},'actual reading pill to expose navigation',4000);
+  receipt.readerTools={...activation,opened:toolsOpened};
+  receipt.popoverInteractions.push(await exercisePopoverKeyboard({cdp,trigger:'#open-book-info',panel:'#book-info',guard:remoteGuard,capture:()=>session.capture('reader-book-info-open'),afterOpened:async()=>{
+    receipt.readerBookActions.opened=await until(async()=>{remoteGuard();const value=await cdp.evaluate('('+observeReaderBookActions.toString()+')()');return value.ready?value:false;},'actual optional book actions to initialize',4000);
+  }}));
   await session.until(()=>receipt.fonts.some(font=>font.url.endsWith('newsreader-var.woff2'))&&receipt.fonts.some(font=>font.url.endsWith('newsreader-italic-var.woff2')),'both actual font responses');
   receipt.italicFontEvidence=italicFontEvidence(italic,{browserProduct:receipt.browser.product,fontFaces:receipt.fontFaces,fontResponses:receipt.fonts,origin,expectedSha256:sha(await readFile(path.join(root,'app/fonts/newsreader/newsreader-italic-var.woff2')))});
   if(receipt.italicFontEvidence.limitation)(receipt.capabilityLimitations??=[]).push(receipt.italicFontEvidence.limitation);
   if(args.mode==='android')receipt.android.wmCssConsistency={wm:receipt.android.wm,productViewports:receipt.android.productViewports};
   await Promise.all(session.background);assert.deepEqual(session.failures,[],'All evidence tasks must succeed');
   assert.deepEqual(receipt.errors,[],'Unexpected page/runtime/network errors require review');
-  assert.ok(receipt.screenshots.length<=(args.mode==='android'?9:7),'Bounded screenshot budget must hold');
+  assert.ok(receipt.screenshots.length<=(args.mode==='android'?12:10),'Bounded screenshot budget must hold');
 }catch(error){receipt.result='failed';receipt.failure=error.stack;process.exitCode=1;await captureFailurePage({session,receipt,lifecycle});}
 finally{
   // Single bounded idempotent finalizer: normal, error and cancelled paths all
