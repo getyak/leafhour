@@ -2,8 +2,8 @@ import {assembleBookTransfer} from './book-transfer.mjs';
 export const selectedBookId=new URLSearchParams(location.search).get('book');
 export const readerSession=selectedBookId?await fetch('/api/auth/session').then(r=>r.json()).catch(()=>({user:null})):null;
 export function readerApiUrl(url){
-  // Account and auth endpoints are account-wide: never rewrite them through the per-book path.
-  if(!selectedBookId||!url.startsWith('/api/')||url.startsWith('/api/account/')||url.startsWith('/api/auth/'))return url;
+  // Explicit library, gift, account and auth routes keep their original scope.
+  if(!selectedBookId||!url.startsWith('/api/')||['/api/library/','/api/book-gifts/','/api/account/','/api/auth/'].some(prefix=>url.startsWith(prefix)))return url;
   const action=url.slice('/api/'.length);return '/api/library/books/'+encodeURIComponent(selectedBookId)+(action==='book'?'':'/'+action);
 }
 export const readerStorageKey=name=>name+(selectedBookId?'|'+(readerSession?.user?.id||'guest')+'|'+selectedBookId:'');

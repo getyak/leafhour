@@ -4,6 +4,7 @@ import {mkdtemp,rm} from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import {createLibraryService} from '../server/library-service.mjs';
+import {createBookIntroductionService} from '../server/book-introduction.mjs';
 import {validateLibraryBackup} from '../app/library-backup.mjs';
 
 const owner={id:'revision-owner'};
@@ -16,6 +17,24 @@ test('proofreading creates an immutable linked revision with stable paragraph ID
  assert.notEqual(revision.bookId,book.bookId);assert.notEqual(revision.contentVersion,book.contentVersion);assert.equal(revision.source.sha256,book.source.sha256);assert.equal(revision.source.revision.parentBookId,book.bookId);assert.equal(revision.sections[0].paragraphs[0].id,ps[0].id);assert.equal(revision.sections[0].paragraphs[0].original,'Corrected first source paragraph.');assert.equal(revision.source.review,'extracted_unreviewed');
  assert.deepEqual(await library.getBook(owner,book.bookId),before.books[0].book);assert.deepEqual((await library.getOriginal(owner,revision.bookId)).bytes,(await library.getOriginal(owner,book.bookId)).bytes);
  const duplicate=await library.createSourceRevision(owner,book.bookId,input);assert.equal(duplicate.book.bookId,revision.bookId);assert.equal((await library.list(owner)).length,2);
+});
+test('source revisions discard the old introduction while preserving its original book and notes',async t=>{
+ for(const operation of ['correct','reextract'])await t.test(operation,async t=>{
+  const {library,book,ps,dir}=await fixture(t);
+  await library.addComment(owner,book.bookId,{id:'intro-source-note',passageId:ps[1].id,text:'Keep this original thought.'});
+  await createBookIntroductionService({library,generator:async()=>({text:'根据旧版开头取样的 AI 简介初稿。'})}).generate(owner,book.bookId,{contentVersion:book.contentVersion});
+  const original=await library.getBook(owner,book.bookId),records=await library.records(owner,book.bookId);
+  const input=operation==='correct'?correction(book,ps[0],'Corrected introduction source.'):{baseContentVersion:book.contentVersion,operation};
+  const revision=(await library.createSourceRevision(owner,book.bookId,input)).book;
+  assert.equal(Object.hasOwn(revision,'introduction'),false);assert.notEqual(revision.contentVersion,original.introduction.contentVersion);
+  assert.deepEqual(await library.getBook(owner,book.bookId),original);assert.deepEqual(await library.records(owner,book.bookId),records);
+  assert.equal((await library.records(owner,revision.bookId)).comments[0].text,'Keep this original thought.');
+  const backup=await library.exportLibrary(owner);assert.doesNotThrow(()=>validateLibraryBackup(backup));
+  const restored=await createLibraryService({dataDir:path.join(dir,'introduction-restore'),catalogDir:null});await restored.restoreLibrary(owner,backup);
+  assert.deepEqual((await restored.getBook(owner,book.bookId)).introduction,original.introduction);
+  assert.equal(Object.hasOwn(await restored.getBook(owner,revision.bookId),'introduction'),false);
+  assert.deepEqual(await restored.records(owner,book.bookId),records);
+ });
 });
 test('only unique exact anchors migrate notes; changed and repeated source text stays pending and private',async t=>{
  const {library,book,ps}=await fixture(t);for(const [index,p]of ps.entries())await library.addComment(owner,book.bookId,{id:'note-'+index,passageId:p.id,text:'Private thought '+index});

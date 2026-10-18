@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
 import * as navigation from '../app/reader-navigation.mjs';
+import {mountReaderImmersion} from '../app/reader-immersion.mjs';
+import {readerInteractionBlocked} from '../app/reader-conversation.mjs';
 
 const book={title:{zh:'爱丽丝梦游仙境',en:'Alice’s Adventures in Wonderland'},author:'Lewis Carroll',description:'跟着白兔进入一个熟悉的陌生世界。',source:{structure:'source_chapters',url:'https://www.gutenberg.org/ebooks/11'},chapters:[{id:'front',kind:'frontmatter',number:0,title:{zh:'出版说明',en:'Front matter'}},{id:'ch01',kind:'body',number:1,title:{zh:'掉进兔子洞',en:'Down the Rabbit-Hole'}},{id:'ch03',kind:'body',number:3,title:{zh:'绕圈赛跑与长故事',en:'A Caucus-Race and a Long Tale'}}],sections:[{chapterId:'ch01',number:1,title:'开篇',paragraphs:[{id:'p1'}]},{chapterId:'ch03',number:3,title:'长故事',paragraphs:[{id:'p3'}]}]};
 
@@ -29,6 +32,39 @@ class Element extends EventTarget{
 }
 const doc={createElement:tag=>new Element(tag)};
 const all=(node,tag)=>node.children.flatMap(child=>[...(child.tagName===tag?[child]:[]),...all(child,tag)]);
+
+test('Escape returns to the book title when generation removed the focused button',()=>{
+  const document=new EventTarget(),win=new EventTarget(),trigger=new Element('button'),popover=new Element('div'),close=new Element('button');let open=true;
+  const nodes={'open-book-info':trigger,'book-info':popover,'close-book-info':close};
+  document.getElementById=id=>nodes[id];document.defaultView=win;document.activeElement=null;
+  trigger.focus=()=>{document.activeElement=trigger;};popover.matches=()=>open;popover.hidePopover=()=>{open=false;};
+  navigation.mountBookIntroduction({document,getBook:()=>book,getChapter:()=>book.chapters[1]});
+  const event=new Event('keydown',{cancelable:true});Object.defineProperty(event,'key',{value:'Escape'});document.dispatchEvent(event);
+  assert.equal(open,false);assert.equal(document.activeElement,trigger);assert.equal(event.defaultPrevented,true);
+});
+
+test('Escape from a completed introduction keeps immersive tools open and returns focus to the title',async()=>{
+  const document=new EventTarget(),nodes=new Map();let open=true;
+  class Control extends Element{
+    constructor(id){super('button');this.id=id;this.hidden=true;this.dataset={};this.classList={toggle(){}};}
+    focus(){document.activeElement=this;}
+    closest(){return null;}
+    querySelector(){return nodes.get('open-book-info');}
+  }
+  for(const id of ['reading-header','exit-focus','focus-fullscreen','enter-focus','immersive-reading','open-book-info','book-info','close-book-info','book-intro-generate','paragraph-tools','note-panel'])nodes.set(id,new Control(id));
+  Object.assign(document,{body:new Control('body'),documentElement:new Control('html'),defaultView:new EventTarget(),getElementById:id=>nodes.get(id),querySelector:()=>open?nodes.get('book-info'):null,fullscreenElement:null});
+  const popover=nodes.get('book-info'),generate=nodes.get('book-intro-generate');popover.matches=()=>open;popover.hidePopover=()=>{open=false;};
+  const immersion=mountReaderImmersion({document});immersion.toggleTools();
+  navigation.mountBookIntroduction({document,getBook:()=>book,getChapter:()=>book.chapters[1]});
+  // Register the real page handler after the popover, preserving listener order.
+  const reader=await readFile(new URL('../app/reader.js',import.meta.url),'utf8'),start=reader.indexOf("document.addEventListener('keydown',e=>{"),end=reader.indexOf('\n});',start)+4;
+  assert.ok(start>=0&&end>start,'the reader page keyboard handler must be exercised');
+  new Function('document','readerInteractionBlocked','immersion','$',reader.slice(start,end))(document,readerInteractionBlocked,immersion,id=>nodes.get(id));
+  generate.hidden=false;document.activeElement=generate;generate.hidden=true;document.activeElement=document.body;
+  const event=new Event('keydown',{cancelable:true});Object.defineProperties(event,{key:{value:'Escape'},target:{value:document.body}});document.dispatchEvent(event);
+  assert.equal(open,false);assert.equal(event.defaultPrevented,true);assert.equal(document.activeElement,nodes.get('open-book-info'));
+  assert.equal(document.body.dataset.readingTools,'open');assert.equal(nodes.get('reading-header').inert,false);
+});
 
 test('the contents list opens a source chapter in one click and marks only the current chapter',()=>{
   const list=new Element('nav'),calls=[];
