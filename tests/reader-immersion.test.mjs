@@ -32,13 +32,13 @@ test('tool visibility and browser fullscreen are independent, including a browse
   const {document,nodes,requests}=fixture(),reader=mountReaderImmersion({document});
   const firstControl=new Element();nodes.get('reading-header').firstControl=firstControl;
   assert.equal(document.body.classList.contains('is-focused'),true);assert.equal(nodes.get('reading-header').inert,true);assert.equal(requests(),0);
-  reader.toggleTools();assert.equal(nodes.get('reading-header').inert,false);assert.equal(nodes.get('exit-focus').getAttribute('aria-expanded'),'true');
+  reader.toggleTools();assert.equal(nodes.get('reading-header').inert,false);assert.equal(document.body.dataset.readingTools,'open');
   assert.equal(firstControl.focused,true,'expanded navigation must be reachable in forward tab order');
   await reader.toggleFullscreen();assert.equal(requests(),1);assert.equal(document.body.dataset.fullscreen,'true');assert.equal(nodes.get('reading-header').inert,true);
   reader.toggleTools();assert.equal(document.fullscreenElement,document.documentElement,'opening navigation must keep fullscreen');
   document.fullscreenElement=null;document.dispatchEvent(new Event('fullscreenchange'));
-  assert.equal(document.body.dataset.fullscreen,'false');assert.equal(document.body.classList.contains('is-focused'),true);assert.equal(nodes.get('focus-fullscreen').getAttribute('aria-label'),'全屏阅读');
-  reader.setFocused(false);assert.equal(nodes.get('reading-header').inert,false);assert.equal(nodes.get('exit-focus').hidden,true);
+  assert.equal(document.body.dataset.fullscreen,'false');assert.equal(document.body.classList.contains('is-focused'),true);assert.equal(nodes.get('enter-focus').getAttribute('aria-label'),'全屏阅读');
+  reader.setFocused(false);assert.equal(nodes.get('reading-header').inert,false);
 });
 
 test('a rejected fullscreen request keeps immersion and announces an honest fallback',async()=>{
@@ -65,4 +65,27 @@ test('immersive reading keeps the chapter heading and side tools quiet by defaul
   const heading=/<header class="chapter-heading"[\s\S]*?<\/header>/.exec(html)?.[0];assert.ok(heading);assert.equal(heading.includes('<button'),false,'chapter content keeps no standalone tool control');
   assert.equal(html.split('id="listen-chapter"').length-1,1,'the single listen entry stays in the collapsible panel');
   assert.match(html,/id="open-chapter"[^>]*disabled/,'the chapter chooser is inert until the book is ready');
+});
+
+// GET-184: the floating immersion/fullscreen pair is gone; explicit show/close
+// hooks drive the revealed header and fullscreen failure returns to the pill.
+test('immersion exposes show and close hooks and no floating control remains in the reader shell',async()=>{
+  const html=await readFile(new URL('../app/index.html',import.meta.url),'utf8');
+  assert.equal(html.includes('id="exit-focus"'),false,'the floating tools entry is removed');
+  assert.equal(html.includes('id="focus-fullscreen"'),false,'the floating fullscreen control is removed');
+  assert.equal(html.includes('class="focus-actions"'),false);
+  assert.match(html,/id="reading-tools-trigger"/,'the reading pill is the sole floating entry');
+  const {mountReaderImmersion}=await import('../app/reader-immersion.mjs');
+  const {document,nodes}=fixture(),reader=mountReaderImmersion({document});
+  reader.showTools();assert.equal(document.body.dataset.readingTools,'open');assert.equal(nodes.get('reading-header').inert,false);
+  reader.closeTools();assert.equal(document.body.dataset.readingTools,'closed');assert.equal(nodes.get('reading-header').inert,true);
+});
+
+test('a failed fullscreen request returns focus to the visible pill fallback',async()=>{
+  const {mountReaderImmersion}=await import('../app/reader-immersion.mjs');
+  const {document,nodes}=fixture();document.documentElement.requestFullscreen=async()=>{throw Error('Denied');};
+  const pill=new Element();nodes.set('reading-tools-trigger',pill);
+  const reader=mountReaderImmersion({document,announce(){},focusReturn:()=>pill});
+  nodes.get('enter-focus').focus();await reader.toggleFullscreen();
+  assert.equal(pill.focused,true,'fullscreen failure restores the visible pill, not a removed floating control');
 });

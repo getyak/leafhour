@@ -13,3 +13,7 @@
 @media(prefers-reduced-motion:reduce){.squirrel-companion-bubble{animation:none}}
 
 .squirrel-companion-bubble.is-below{border-radius:5px 17px 17px 17px}
+/* GET-184 injected companion: the shared pill is only the bubble/unread anchor;
+   its presentation dot is owned by the tools coordinator. */
+.reading-tools-trigger.has-companion-message:after{content:'';position:absolute;top:0;right:0;width:8px;height:8px;border-radius:50%;background:var(--chat-accent,#56644e);border:2px solid var(--chat-panel,#fff)}
+.reading-tools-trigger{position:relative}

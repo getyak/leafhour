@@ -13,9 +13,21 @@ export async function buildReaderWeb({root,outputDir,html}){
  const allowed=new Set(await releaseFiles(root)),inputs=new Set(),files=[];
  // Sharing is loaded on demand; the public arrival catalog keeps its stable
  // module URL and cache. Every other application import stays in the bundle.
- const publicModules={name:'public-reader-modules',setup(b){b.onResolve({filter:/^\.\/(?:gift-compose|book-binding|arrival-catalog|share-fonts|reader-settings-choices)\.mjs$/},args=>{
-  const catalog=args.path==='./arrival-catalog.mjs',cjk=args.path==='./share-fonts.mjs',settings=args.path==='./reader-settings-choices.mjs';
-  if(args.kind!==(catalog?'import-statement':'dynamic-import')||path.resolve(args.importer)!==path.join(root,'app',catalog?'reading-arrival.mjs':cjk?'share.js':settings?'reader-settings.mjs':'reader-book-actions.mjs'))return;
+ // Each external lazy module has one exact importer and one exact import kind;
+ // GET-178 adds only command-palette.mjs, dynamically imported on a real user
+ // gesture from the small statically bundled palette bootstrap. Prior five
+ // exceptions are unchanged.
+ const lazyModules={
+  'gift-compose.mjs':{kind:'dynamic-import',importer:'reader-book-actions.mjs'},
+  'book-binding.mjs':{kind:'dynamic-import',importer:'reader-book-actions.mjs'},
+  'arrival-catalog.mjs':{kind:'import-statement',importer:'reading-arrival.mjs'},
+  'share-fonts.mjs':{kind:'dynamic-import',importer:'share.js'},
+  'reader-settings-choices.mjs':{kind:'dynamic-import',importer:'reader-settings.mjs'},
+  'command-palette.mjs':{kind:'dynamic-import',importer:'palette-bootstrap.mjs'}
+ };
+ const publicModules={name:'public-reader-modules',setup(b){b.onResolve({filter:/^\.\/(?:gift-compose|book-binding|arrival-catalog|share-fonts|reader-settings-choices|command-palette)\.mjs$/},args=>{
+  const entry=lazyModules[args.path.slice(2)];
+  if(!entry||args.kind!==entry.kind||path.resolve(args.importer)!==path.join(root,'app',entry.importer))return;
   const file='app/'+args.path.slice(2);if(!allowed.has(file))throw Error('Non-public lazy reader module: '+file);
   return {path:'/'+args.path.slice(2),external:true};
  });}};

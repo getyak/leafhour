@@ -1,0 +1,46 @@
+/* GET-178 command palette: one native dialog surface, loaded on demand with the
+   palette module. Every colour comes from the owning page's own theme-aware
+   surface tokens (reader --panel/--wash, home/library --surface/--surface-soft,
+   support consoles --paper) with ink-mixed fallbacks, so paper and night stay
+   legible on every scoped entry. Hairlines, focus rings, shadows and action
+   sizing reuse the shared GET-169 interface tokens. */
+.command-palette{
+  --palette-surface:var(--panel,var(--surface,var(--paper,#fff)));
+  --palette-soft:var(--wash,var(--surface-soft,color-mix(in srgb,var(--ink,#22261f) 8%,transparent)));
+  --palette-ink:var(--ink,#22261f);
+  --palette-muted:var(--muted,color-mix(in srgb,var(--ink,#22261f) 62%,transparent));
+  width:min(560px,calc(100vw - 24px));max-height:min(70vh,560px);padding:0;
+  border:1px solid var(--line-control,#d8dbd4);border-radius:12px;
+  background:var(--palette-surface);color:var(--palette-ink);
+  box-shadow:var(--shadow-modal,0 28px 90px rgba(31,52,38,.2));overflow:hidden;
+}
+.command-palette::backdrop{background:color-mix(in srgb,var(--palette-ink,#22261f) 32%,transparent)}
+.command-palette-close{
+  position:absolute;top:8px;right:8px;
+  min-width:var(--action-target,44px);min-height:var(--action-target,44px);
+  display:grid;place-items:center;
+  border:0;border-radius:var(--action-radius,999px);
+  background:transparent;color:var(--palette-muted);
+  font:18px/1 var(--interface,system-ui);cursor:pointer;
+}
+.command-palette-close:hover{background:var(--palette-soft)}
+#command-palette-input{
+  display:block;width:calc(100% - 32px);min-height:var(--action-target,44px);
+  margin:14px 16px 6px;
+  /* Reserved trailing space keeps typed text and caret clear of the close control. */
+  padding:10px calc(var(--action-target,44px) + 8px) 10px 12px;
+  border:1px solid var(--line-control,#d8dbd4);border-radius:8px;
+  background:transparent;color:var(--palette-ink);
+  font:15px/1.6 var(--interface,system-ui);
+}
+#command-palette-input::placeholder{color:var(--palette-muted)}
+#command-palette-input:focus-visible{outline:var(--focus-ring-width,2px) solid var(--focus-ring,#35584d);outline-offset:var(--focus-ring-offset,1px)}
+#command-palette-status{min-height:20px;margin:0 16px;color:var(--palette-muted);font:12px/1.6 var(--interface,system-ui)}
+#command-palette-list{max-height:min(46vh,380px);margin:6px 8px 12px;padding:0;list-style:none;overflow:auto;overscroll-behavior:contain}
+#command-palette-list [role=option]{
+  min-height:var(--action-target,44px);padding:11px 12px;border-radius:8px;
+  color:var(--palette-ink);font:14px/1.6 var(--interface,system-ui);cursor:pointer;
+}
+#command-palette-list [role=option][aria-selected=true]{background:var(--palette-soft);outline:1px solid var(--line-hairline,#e4e7e0)}
+@media(prefers-reduced-motion:reduce){.command-palette{transition:none}}
+@media(forced-colors:active){.command-palette{border:1px solid CanvasText}#command-palette-list [role=option][aria-selected=true]{outline:1px solid Highlight}}
