@@ -650,7 +650,7 @@ export function createAndroidAdapter({env=process.env,platform=process.platform,
       const forwards=adbGlobal('forward',['--list']);
       const reverses=adb('reverse',['--list']);
       if(!findForwardMapping(forwards,{serial,forwardPort,socket:DEVTOOLS_SOCKET}))throw Error('Owned adb forward mapping readback mismatch');
-      if(!findReverseMapping(reverses,{serverPort}))throw Error('Owned adb reverse mapping readback mismatch');
+      if(!findReverseMapping(reverses,{serverPort}))throw Error('Owned adb reverse mapping readback mismatch: '+JSON.stringify({serverPort,listing:reverses.slice(0,2048)}));
       return {serial,forwardPort,reversePort:serverPort,chromePid:Number(chromePid),debugApp:true,flags,flagFile:CHROME_COMMAND_LINE_PATH};
     });},
     async readbackLaunchFacts(){
