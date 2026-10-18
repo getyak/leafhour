@@ -3,7 +3,7 @@
 唯一开发仓库是公开的 [getyak/leafhour](https://github.com/getyak/leafhour)。代码、Agent 规范、设计文档、开发计划和验收记录直接在这里维护，功能分支经过 PR 检查后合并到 `main`。不再通过私有主仓库、公开源码镜像或部署镜像中转。
 
 ```text
-公开仓库：功能分支 → PR 检查 → main → Vercel 验证、构建与部署
+公开仓库：功能分支 → GitHub 测试与构建 → main → Vercel 正式部署
                                   ↓
                          Production 等待同一源提交上线
                                   ↓
@@ -11,6 +11,10 @@
 ```
 
 `CI` 在 PR 与 `main` 执行 `npm run verify:deploy`：隔离环境中的完整测试、构建、媒体完整性与部署内容检查。用户已授权 Agent 在检查通过后直接合并 PR，无需重复确认；不得绕过失败的检查。
+
+2026-10-18 用户取消预览部署。Vercel 项目的 Preview 环境关闭；仓库的 `git.deploymentEnabled` 同时以 `**: false` 关闭所有分支，再用 `main: true` 明确保留主分支。双星覆盖 `codex/...` 等含斜杠的分支名。新增 PR、推送修复与同步主线都只运行 GitHub 检查，不创建预览部署。
+
+PR 合并门禁为当前提交的 GitHub `CI` 通过。历史 Vercel Preview 的失败状态不再要求重试，也不改写成成功；合并后仍须正式部署与线上验收通过。后续功能分支需继承上述配置；新增预览必须先得到用户新的明确授权。部署不会因文档变更而另开预览。
 
 Vercel 直接连接公开仓库的 `main`，执行 `npm run verify:hosted`。构建版本读取 Vercel 提供的 `VERCEL_GIT_COMMIT_SHA`，无需依赖平台未提供的 `.git` 目录；本机可回退到当前 Git 提交。生产数据库、邮箱、登录与模型凭据保存在 Vercel 环境变量中，GitHub 不需要镜像写入密钥。测试或构建失败时不会替换线上版本。
 
