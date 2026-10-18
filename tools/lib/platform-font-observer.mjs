@@ -42,39 +42,46 @@ export function observeNativeScroll(selector){
     const r=node.getBoundingClientRect();
     return {rect:{x:r.x,y:r.y,width:r.width,height:r.height},positions:scrollers.map(element=>({left:element.scrollLeft,top:element.scrollTop})),scrollports:scrollers.map((element,index)=>{
       const style=getComputedStyle(element),rect=index?element.getBoundingClientRect():{x:0,y:0},left=rect.x+(index?element.clientLeft:0),top=rect.y+(index?element.clientTop:0);
-      return {left:left+pixels(style.scrollPaddingLeft),top:top+pixels(style.scrollPaddingTop),right:left+(index?element.clientWidth:innerWidth)-pixels(style.scrollPaddingRight),bottom:top+(index?element.clientHeight:innerHeight)-pixels(style.scrollPaddingBottom)};
+      return {left:left+pixels(style.scrollPaddingLeft),top:top+pixels(style.scrollPaddingTop),right:left+(index?element.clientWidth:innerWidth)-pixels(style.scrollPaddingRight),bottom:top+(index?element.clientHeight:innerHeight)-pixels(style.scrollPaddingBottom),maxLeft:Math.max(0,element.scrollWidth-element.clientWidth),maxTop:Math.max(0,element.scrollHeight-element.clientHeight),position:style.position,overflowX:style.overflowX,overflowY:style.overflowY,behavior:style.scrollBehavior};
     }),scrollX,scrollY};
   };
   const needs=value=>value.scrollports.flatMap((port,index)=>{
     const r=value.rect,left=r.x-pixels(margin.scrollMarginLeft),right=r.x+r.width+pixels(margin.scrollMarginRight),top=r.y-pixels(margin.scrollMarginTop),bottom=r.y+r.height+pixels(margin.scrollMarginBottom);
-    const outside=(start,end,low,high)=>!(start<=low&&end>=high)&&(start<low||end>high);
-    return outside(left,right,port.left,port.right)||outside(top,bottom,port.top,port.bottom)?[index]:[];
+    const movable=(start,end,low,high,current,max)=>{
+      if(start>=low&&end<=high||start<=low&&end>=high)return false;
+      const small=end-start<=high-low,delta=start<low?(small?start-low:end-high):(small?end-high:start-low);
+      return Math.abs(Math.max(0,Math.min(max,current+delta))-current)>.1;
+    };
+    return movable(left,right,port.left,port.right,value.positions[index].left,port.maxLeft)||movable(top,bottom,port.top,port.bottom,value.positions[index].top,port.maxTop)?[index]:[];
   });
   const before=sample(),startedAt=performance.now(),required=needs(before),needsMovement=required.length>0;
   return new Promise(resolve=>{
     const startedScrollers=new Set();
-    let previous=before,started=false,scrollEvents=0,scrollEndEvents=0,frames=0,stableFrames=0,lastChange=startedAt,frame,timer,finished=false;
+    const frameTimes=[];
+    let previous=before,started=false,scrollEvents=0,scrollEndEvents=0,frames=0,stableFrames=0,positionStableFrames=0,lastChange=startedAt,frame,timer,finished=false;
     const onScroll=event=>{const index=scrollers.indexOf(event.target===document?document.scrollingElement:event.target);if(index<0)return;startedScrollers.add(index);scrollEvents++;started=true;lastChange=performance.now();};
     const onEnd=()=>{scrollEndEvents++;};
     const finish=(status,error=null)=>{
       if(finished)return;finished=true;clearTimeout(timer);cancelAnimationFrame(frame);
       document.removeEventListener('scroll',onScroll,true);document.removeEventListener('scrollend',onEnd,true);
-      resolve({status,error,before,after:sample(),needsMovement,started,startedScrollers:[...startedScrollers],scrollEvents,scrollEndEvents,frames,elapsedMs:performance.now()-startedAt});
+      resolve({status,error,before,after:sample(),needsMovement,started,startedScrollers:[...startedScrollers],scrollEvents,scrollEndEvents,frames,frameTimes,deadlineMs:10000,visibility:document.visibilityState??null,hasFocus:document.hasFocus?.()??null,elapsedMs:performance.now()-startedAt});
     };
     const tick=()=>{
       const current=sample(),now=performance.now();frames++;
+      if(frameTimes.length<16)frameTimes.push(now-startedAt);
       let moved=false;current.positions.forEach((position,index)=>{if(position.left!==previous.positions[index].left||position.top!==previous.positions[index].top){moved=true;startedScrollers.add(index);}});
       const changed=moved||Object.keys(current.rect).some(key=>Math.abs(current.rect[key]-previous.rect[key])>.1);
       if(moved)started=true;
+      positionStableFrames=moved?0:positionStableFrames+1;
       if(changed){lastChange=now;stableFrames=0;}else stableFrames++;
       previous=current;
       const currentNeeds=needs(current);
       if(started&&stableFrames>=4&&now-lastChange>=100&&!currentNeeds.some(index=>!startedScrollers.has(index)))return finish('settled');
-      if(!started&&!currentNeeds.length&&stableFrames>=2)return finish('unchanged');
+      if(!started&&!currentNeeds.length&&positionStableFrames>=2)return finish('unchanged');
       frame=requestAnimationFrame(tick);
     };
     document.addEventListener('scroll',onScroll,true);document.addEventListener('scrollend',onEnd,true);
-    timer=setTimeout(()=>finish('timeout'),3000);
+    timer=setTimeout(()=>finish('timeout'),10000);
     try{node.scrollIntoView({block:'nearest',behavior:'auto'});}catch(error){finish('error',error.message);return;}
     frame=requestAnimationFrame(tick);
   });

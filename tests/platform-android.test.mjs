@@ -617,20 +617,22 @@ function fontLayoutScenario({alwaysInvisible=false,cold=false}={}){
   return {receipt,calls,session:createEvidenceSession({cdp,out:'/synthetic-unused',receipt,root:'/synthetic-unused',origin:'http://127.0.0.1',failures:[]})};
 }
 
-async function nativeScrollModel({mode='delayed',padding=0}={}){
-  let now=0,offset=0,innerOffset=350,nextId=0,requests=0,done=false;
+async function nativeScrollModel({mode='delayed',padding=0,initialOffset=0}={}){
+  let now=0,offset=initialOffset,innerOffset=350,nextId=0,requests=0,done=false;
   const frames=new Map(),timers=new Map(),listeners=new Map();
   const root={parentElement:null,clientLeft:0,clientTop:0,clientWidth:393,clientHeight:722,scrollWidth:393,scrollHeight:3000,get scrollTop(){return offset;},scrollLeft:0};
   const inner={parentElement:root,clientLeft:0,clientTop:0,clientWidth:393,clientHeight:200,scrollWidth:393,scrollHeight:800,get scrollTop(){return innerOffset;},scrollLeft:0,getBoundingClientRect:()=>({x:0,y:1000-offset})};
-  const y=()=>mode==='unchanged'?116:mode==='nested'?1000-innerOffset-offset:mode==='layout-shift'&&now===0?116:padding?50-offset:1060-offset;
+  const y=()=>mode==='unchanged'?116:mode==='inside-animation'?now===0?138:116:mode==='nested'?1000-innerOffset-offset:mode==='layout-shift'&&now===0?116:padding?50+initialOffset-offset:1060-offset;
   const node={parentElement:mode==='nested'?inner:root,getBoundingClientRect:()=>({x:20,y:y(),width:350,height:mode==='nested'?40:84}),scrollIntoView(){requests++;assert.ok(listeners.has('scroll'),'observation must precede the only native scroll request');}};
   const document={querySelector:()=>node,scrollingElement:root,addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:(name,fn)=>{assert.equal(listeners.get(name),fn);listeners.delete(name);}};
   const sandbox={document,innerWidth:393,innerHeight:722,scrollX:0,get scrollY(){return offset;},performance:{now:()=>now},getComputedStyle:element=>element===root?{scrollPaddingTop:String(padding),overflowY:'auto'}:element===inner?{overflowY:'auto'}:{},requestAnimationFrame:fn=>{const id=++nextId;frames.set(id,fn);return id;},cancelAnimationFrame:id=>frames.delete(id),setTimeout:(fn,ms)=>{const id=++nextId;timers.set(id,{fn,at:now+ms});return id;},clearTimeout:id=>timers.delete(id)};
   const result=vm.runInNewContext('('+observeNativeScroll.toString()+')("#actual-target")',sandbox);result.then(()=>{done=true;});
-  for(now=16;now<=3104&&!done;now+=16){
+  const step=['inside-animation','slow-scroll'].includes(mode)?1100:16;
+  for(now=step;now<=10000+step+16&&!done;now+=step){
     if(mode==='delayed'&&now>=208&&now<=528){offset+=25;listeners.get('scroll')?.({target:document});}
     if(mode==='nested'&&now>=208&&now<=304){innerOffset-=50;listeners.get('scroll')?.({target:inner});}
     if(mode==='nested'&&now>=704&&now<=816){offset+=70;listeners.get('scroll')?.({target:document});}
+    if(mode==='slow-scroll'&&now===step){offset=600;listeners.get('scroll')?.({target:document});}
     for(const [id,timer] of [...timers])if(now>=timer.at){timers.delete(id);timer.fn();}
     const batch=[...frames];frames.clear();for(const [,fn] of batch)fn(now);
     await Promise.resolve();await Promise.resolve();
@@ -647,7 +649,14 @@ test('production scroll observer waits past pre-start still frames for one nativ
 test('native scroll no-motion and timeout are distinct, including the actual scroll-padding boundary',async()=>{
   const still=await nativeScrollModel({mode:'unchanged'});assert.equal(still.status,'unchanged');assert.equal(still.frames,2);
   const timeout=await nativeScrollModel({mode:'blocked'});assert.equal(timeout.status,'timeout');assert.equal(timeout.started,false);assert.equal(timeout.after.scrollY,0);
-  const padding=await nativeScrollModel({mode:'blocked',padding:90});assert.equal(padding.status,'timeout','a target above scroll-padding is not a no-motion success');assert.equal(padding.needsMovement,true);
+  const padding=await nativeScrollModel({mode:'blocked',padding:90,initialOffset:200});assert.equal(padding.status,'timeout','a target above scroll-padding must move when the required offset is attainable');assert.equal(padding.needsMovement,true);
+  const clamped=await nativeScrollModel({mode:'blocked',padding:90});assert.equal(clamped.status,'unchanged','at scrollTop0 a negative target offset is clamped to0');assert.equal(clamped.needsMovement,false);
+  const animation=await nativeScrollModel({mode:'inside-animation'});assert.equal(animation.status,'unchanged','on-screen CSS animation is not unfinished native scrolling');
+  assert.equal(animation.frames,2);assert.equal(animation.after.rect.y,116);
+});
+
+test('actual completion stays bounded while allowing four observed stable frames at a slow native RAF cadence',async()=>{
+  const proof=await nativeScrollModel({mode:'slow-scroll'});assert.equal(proof.status,'settled');assert.equal(proof.frames,5);assert.equal(proof.elapsedMs,5500);assert.equal(proof.deadlineMs,10000);assert.equal(proof.after.scrollY,600);
 });
 
 test('native completion accounts for newly required outer scrolling and pre-start layout shifts',async()=>{

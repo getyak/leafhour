@@ -165,6 +165,7 @@ try{
   let viewport={width:1200,height:900,dpr:1,ua:receipt.browser.userAgent||''};
   if(args.mode==='desktop')await cdp.send('Emulation.setDeviceMetricsOverride',{width:1200,height:900,deviceScaleFactor:1,mobile:false});
   for(const method of ['Page.enable','Runtime.enable','DOM.enable','CSS.enable','Network.enable'])await cdp.send(method);
+  await cdp.send('Page.bringToFront');
   await cdp.send('Network.setCacheDisabled',{cacheDisabled:true});
   await cdp.send('Network.clearBrowserCache');
   session.observeResponses();
@@ -266,7 +267,6 @@ try{
   const resolved=await cdp.evaluate(`(()=>{const reader=window.marginaliaReader,book=reader.getBook(),state=reader.getState(),n=document.querySelector(${JSON.stringify(italicSelector)}).closest('.passage'),r=n.getBoundingClientRect();return {url:location.href,bookId:book.bookId,contentVersion:book.contentVersion,mode:state.mode,passageId:n.dataset.id,visible:r.bottom>0&&r.top<innerHeight};})()`);
   assert.equal(resolved.bookId,sourceBook.bookId);assert.equal(resolved.contentVersion,sourceBook.contentVersion);assert.equal(resolved.passageId,sourcePassage.id);assert.equal(resolved.mode,'en');assert.ok(resolved.visible,'Citation target must already be visible before the font probe scrolls');
   assert.ok([origin+'/read?'+citation,origin+'/read?'+new URLSearchParams({book:sourceBook.bookId})].includes(resolved.url),'Only the application’s existing consumed-entry URL cleanup is permitted');receipt.citation.resolved=resolved;
-  await cdp.evaluate(`document.querySelector(${JSON.stringify(italicSelector)}).scrollIntoView({block:'center',behavior:'instant'})`);
   const italic=await session.fonts(italicSelector,'cited visible source emphasis italic');customNewsreader(italic);assert.equal(italic.text,'very');assert.equal(italic.style,'italic');assert.ok(italic.fonts.some(font=>font.isCustomFont&&/Italic/i.test(font.postScriptName||'')&&font.glyphCount>0),'Actual italic font required');await session.capture('reader-loaded');
   await session.until(()=>receipt.fonts.some(font=>font.url.endsWith('newsreader-var.woff2'))&&receipt.fonts.some(font=>font.url.endsWith('newsreader-italic-var.woff2')),'both actual font responses');
   if(args.mode==='android')receipt.android.wmCssConsistency={wm:receipt.android.wm,productViewports:receipt.android.productViewports};
