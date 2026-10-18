@@ -93,12 +93,14 @@ function persist(){
   clearTimeout(persistTimer);if(recordsUnavailable||recordsPositionUnresolved){deferredProgress=true;return;}deferredProgress=false;persistTimer=setTimeout(()=>progressSync.save(position).catch(()=>{}),450);
 }
 const typographyFields=[['lineHeight','行高',''],['paragraphGap','段落间距','px'],['letterSpacing','字距','em'],['wordSpacing','英文词距','em'],['fontWeight','字重','']];
-const fonts={song:'"Songti SC","STSong","Noto Serif CJK SC",serif',kai:'"Kaiti SC","STKaiti","KaiTi",serif',sans:'var(--interface)'};
+// Resolve per-book choices through the same self-hosted families as the page.
+// Keep the explicit sans choice; serif/Kai retain their CJK fallback glyphs.
+const fonts={song:'var(--font-serif)',kai:'var(--font-hand)',sans:'var(--interface)'};
 const prettyValue=(key,value)=>['letterSpacing','wordSpacing'].includes(key)?value.toFixed(2):key==='lineHeight'?Number(value.toFixed(2)).toString():String(value);
 function applyAppearance(){
   const night=state.theme==='night'||(state.theme==='system'&&matchMedia('(prefers-color-scheme:dark)').matches);
   document.documentElement.dataset.theme=state.theme==='system'?(night?'night':'paper'):state.theme;
-  const page=$('book-page');page.style.setProperty('--size',state.font+'px');page.style.setProperty('--book',fonts[state.fontFamily]);page.style.setProperty('--english',state.fontFamily==='sans'?'var(--interface)':'Georgia,"Times New Roman",serif');
+  const page=$('book-page');page.style.setProperty('--size',state.font+'px');page.style.setProperty('--book',fonts[state.fontFamily]);page.style.setProperty('--english',state.fontFamily==='sans'?'var(--interface)':'var(--font-latin)');
   for(const [key,property,unit] of [['lineHeight','--reading-line',''],['paragraphGap','--paragraph-gap','px'],['letterSpacing','--reading-tracking','em'],['wordSpacing','--word-spacing','em'],['fontWeight','--reading-weight','']])page.style.setProperty(property,state[key]+unit);
   page.style.setProperty('--reading-indent',state.indent?'2em':'0');document.body.dataset.mode=state.mode;
   $('reading-purpose').value=state.readingPurpose;$('preferred-language').value=state.preferredLanguage;
@@ -256,7 +258,7 @@ function renderPanelSource(p){
   const excerpt=selectionKind==='excerpt'&&selectedExcerpt?.parts?.length?selectedExcerpt:null,v=passageView(p),language=excerpt?.parts[0]?.language||visibleQuoteLanguage(p,v,selectedQuoteLanguage),variant=excerpt?.parts[0]?.variant||v.variant;
   const text=excerpt?excerpt.parts.map(part=>part.text).join('　'):language==='en'?p.original:p.translations[variant]?.text||'这段译文尚未准备好。';
   $('panel-source-label').textContent=(excerpt?'所选文字':'当前段落')+' · '+(language==='en'?(book.sourceLanguage==='zh'?'中文原文':'英文原文'):variant==='literal'?'中文直译':'中文意译');
-  $('panel-source-text').textContent=text;$('panel-source').setAttribute('aria-label','回到正文：'+text.slice(0,120));
+  $('panel-source-text').textContent=text;$('panel-source-text').lang=language==='en'?(book.sourceLanguage||'und'):'zh-Hans';$('panel-source').setAttribute('aria-label','回到正文：'+text.slice(0,120));
 }
 function returnToPanelSource(){
   const id=selectionKind==='excerpt'?selectedExcerpt?.parts?.[0]?.passageId:selectedId,node=id&&$('chapter-text').querySelector('[data-id="'+id+'"]');if(!node)return;

@@ -93,7 +93,7 @@ dialog .status:empty { display: none; }
 .toc-dialog .toc-section-disclosure > summary { min-height: 44px; padding-block: 11px; }
 .toc-dialog .toc-sections button { min-height: 44px; padding-block: 10px; }
 .toc-title-original, .toc-current { opacity: 1; }
-.toc-current { font-size: 10px; }
+.toc-current { font-size: 12px; }
 .book-info-footer a { min-height: 44px; }
 .paragraph-tools { padding: 6px; gap: 2px; border-color: transparent; border-radius: 12px; box-shadow: 0 3px 10px #14271908, 0 12px 28px #1427190a; }
 .paragraph-tools button { border-radius: 5px; padding: 8px 11px; }

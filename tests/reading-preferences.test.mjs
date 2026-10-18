@@ -114,3 +114,15 @@ test('delayed and conflict restoration keep Chinese original-only books readable
     assert.equal(fresh.position.mode,'parallel','restoring must not rewrite the saved record');
   }
 });
+
+test('new books use normal tracking while saved and account spacing choices survive reopening',async()=>{
+  const {openingReadingView,normalizeGlobalPreferences}=await import('../app/reading-preferences.mjs');
+  assert.equal(openingReadingView().letterSpacing,0,'unconfigured long prose uses normal tracking');
+  const account=normalizeGlobalPreferences({letterSpacing:0.01,fontFamily:'kai'});
+  assert.equal(openingReadingView({account}).letterSpacing,0.01,'an existing account choice remains deliberate');
+  const saved={mode:'en',variant:'literal',letterSpacing:0.04,fontFamily:'sans'};
+  const before=structuredClone(saved);
+  const restored=openingReadingView({account,saved});
+  assert.equal(restored.letterSpacing,0.04);assert.equal(restored.fontFamily,'sans');
+  assert.deepEqual(saved,before,'opening does not rewrite stored typography');
+});

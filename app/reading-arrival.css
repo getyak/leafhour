@@ -2,17 +2,17 @@
 .reading-arrival{--arrival-ink:var(--ink);--arrival-green:var(--accent);--arrival-paper:var(--paper);--arrival-cream:color-mix(in srgb,var(--paper) 88%,#d6b86a);--arrival-fold:color-mix(in srgb,var(--paper) 67%,#b69b54);--arrival-cheek:#d9a18c;box-sizing:border-box;max-width:600px;margin:0 auto;padding:8px 20px 40px;text-align:center;color:var(--ink);font-family:var(--interface,system-ui,sans-serif);min-height:520px}
 .reading-arrival[hidden],.reading-arrival [hidden]{display:none}
 .reading-arrival *{box-sizing:border-box}
-.reading-arrival .arrival-greeting{font:13px/1.7 var(--interface,system-ui,sans-serif);color:var(--accent);margin:0 0 28px;letter-spacing:.02em}
-.reading-arrival .arrival-context{font:11px/1.5 var(--interface,system-ui,sans-serif);color:var(--muted);letter-spacing:.12em;margin:0 0 12px}
+.reading-arrival .arrival-greeting{font:13px/1.7 var(--interface,system-ui,sans-serif);color:var(--accent);margin:0 0 28px;letter-spacing:var(--track-meta)}
+.reading-arrival .arrival-context{font:12px/1.5 var(--interface,system-ui,sans-serif);color:var(--muted);letter-spacing:var(--track-label);margin:0 0 12px}
 .reading-arrival .arrival-quote{font:400 clamp(22px,4.4vw,28px)/1.75 var(--book,"Songti SC",serif);max-width:480px;margin:0 auto 16px;padding:0;border:0;color:var(--ink);text-wrap:balance;overflow-wrap:anywhere}
 .reading-arrival .arrival-original{font:13px/1.7 var(--english,Georgia,serif);max-width:450px;color:var(--muted);margin:0 auto 20px;overflow-wrap:anywhere}
 .reading-arrival .arrival-source{font:12px/1.9 var(--interface,system-ui,sans-serif);color:var(--muted);margin:0}
 .arrival-provenance{display:block}
-.reading-arrival .arrival-status{font:12px/1.8 var(--interface,system-ui,sans-serif);color:var(--muted);margin:28px 0 0;letter-spacing:.04em}
+.reading-arrival .arrival-status{font:12px/1.8 var(--interface,system-ui,sans-serif);color:var(--muted);margin:28px 0 0;letter-spacing:var(--track-meta)}
 .reading-arrival .arrival-retry{display:inline-block;font:13px/1.6 var(--interface,system-ui,sans-serif);color:var(--accent);background:transparent;border:0;text-decoration:underline;text-underline-offset:4px;min-height:44px;padding:10px 16px;margin-top:4px;cursor:pointer}
 .reading-arrival .arrival-retry:hover{color:var(--ink)}
 .reading-arrival .arrival-retry:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
-.arrival-library{--book:"Songti SC","STSong",serif;--english:Georgia,serif;padding-top:0;min-height:510px;width:100%}
+.arrival-library{--book:var(--font-cjk-serif);--english:var(--font-latin);padding-top:0;min-height:510px;width:100%}
 .arrival-scene{position:relative;width:194px;height:160px;margin:0 auto 4px;user-select:none;pointer-events:none}
 .arrival-floor{position:absolute;width:145px;height:8px;bottom:17px;left:24px;background:color-mix(in srgb,var(--ink) 8%,transparent);border-radius:50%}
 .arrival-person{position:absolute;left:59px;top:16px;width:84px;height:124px;transform:rotate(-5deg);transform-origin:bottom center;animation:arrival-sway 2.8s ease-in-out infinite}

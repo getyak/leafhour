@@ -25,8 +25,8 @@ body[data-parallel-style=reveal] .parallel-translation[data-revealed=true] .para
 .parallel-preview p{font:15px/1.8 var(--book);margin:0;overflow-wrap:anywhere}
 .parallel-preview p[lang=en]{font-family:var(--english)}
 .parallel-preview .parallel-translation{padding:8px}
-.parallel-preview .parallel-reveal{font-size:11px;padding:8px;min-height:40px}
-.parallel-preview-label{font-size:10px;color:var(--muted);margin:0 0 9px}
+.parallel-preview .parallel-reveal{font-size:12px;padding:8px;min-height:40px}
+.parallel-preview-label{font-size:12px;color:var(--muted);margin:0 0 9px}
 @media(max-width:767px){.book-page .parallel-pair,.parallel-preview>.parallel-pair{grid-template-columns:minmax(0,1fr);gap:20px}}
 @media(forced-colors:active){.parallel-translation{color:CanvasText!important}.parallel-style-options>button[aria-pressed=true]{outline:2px solid Highlight}.parallel-reveal{border-color:ButtonText!important}}
 @media print{body[data-parallel-style=reveal] .parallel-translation-text{display:block!important}.parallel-reveal{display:none!important}}

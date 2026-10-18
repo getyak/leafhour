@@ -1,4 +1,4 @@
-.book-intro-provenance,.book-intro-scope,.book-intro-status{font:11px/1.8 var(--interface);color:var(--muted);margin:10px 0;overflow-wrap:anywhere}
+.book-intro-provenance,.book-intro-scope,.book-intro-status{font:12px/1.8 var(--interface);color:var(--muted);margin:10px 0;overflow-wrap:anywhere}
 .book-intro-provenance{color:var(--accent)}
 .book-intro-status[role=alert]{color:var(--ink)}
 .book-intro-status:empty{display:none}
