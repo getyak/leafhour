@@ -17,8 +17,9 @@ export const readerTools=()=>currentTools;
 
 export function mountReaderTools({sessionRoot,immersion=null,document=globalThis.document}={}){
   const pill=sessionRoot.querySelector('#reading-tools-trigger');
-  const restorePill=()=>{if(pill&&pill.isConnected!==false&&!pill.hidden){pill.focus({preventScroll:true});return true;}immersion?.restoreToolFocus?.();return false;};
+  const restorePill=()=>{if(pill&&pill.isConnected!==false&&!pill.hidden){pill.focus({preventScroll:true});return true;}immersion?.restoreToolFocus?.();};
   const header=document.getElementById('reading-header');
+  const handoffHost=sessionRoot.querySelector('#reading-tools-chat-slot');
   const toolbar=mountReadingToolbar(sessionRoot,{onExpandedChange(expanded,{focus}={}){
     if(expanded){immersion?.showTools?.({focus:!!focus});return;}
     const inside=!!header?.contains?.(document.activeElement);
@@ -33,7 +34,7 @@ export function mountReaderTools({sessionRoot,immersion=null,document=globalThis
     header.addEventListener('focusout',()=>queueMicrotask(()=>toolbar.hold('header-keyboard',!!header.contains?.(document.activeElement))));
   }
   const chatIntegration={
-    triggerHost:sessionRoot.querySelector('#reading-tools-chat-slot'),
+    triggerHost:handoffHost,
     companionAnchor:pill,
     focusReturn:restorePill,
     onUnread:value=>{if(!pill)return;pill.classList.toggle('has-companion-message',!!value);pill.setAttribute('aria-description',value?'有陪读消息':'');},
@@ -41,6 +42,6 @@ export function mountReaderTools({sessionRoot,immersion=null,document=globalThis
   };
   toolbar.setControlMode(document.body?.classList?.contains('is-focused')?'focused':'unfocused');
   document.addEventListener?.('reader:focus',event=>toolbar.setControlMode(event?.detail?.focused===false?'unfocused':'focused'));
-  currentTools={toolbar,chatIntegration};
+  currentTools={toolbar,chatIntegration,closeRequest:target=>{if(sessionRoot.contains(target)||header?.contains(target))return false;toolbar.conceal();return true;}};
   return currentTools;
 }

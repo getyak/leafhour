@@ -56,7 +56,7 @@ export function paletteCommands(page,adapter=null,navigate=url=>location.assign(
 }
 
 export function openCommandPalette({document=globalThis.document,page='home',adapter=null,navigate=url=>location.assign(url),request=fetch,getOwner=null,opener=null,library=null,fullscreen=null}={}){
-  const owner=getOwner||adapter?.getOwner||(()=>null);
+  const owner=getOwner??adapter?.getOwner??null;
   const books=library||createPaletteLibrary({request,getOwner:owner,subscribe:adapter?.subscribe});
   books.watch?.(()=>refresh());
   if(!document.getElementById('command-palette')&&document.head?.append){const link=document.createElement('link');link.rel='stylesheet';link.href='/command-palette.css';document.head.append(link);}
@@ -104,8 +104,7 @@ export function openCommandPalette({document=globalThis.document,page='home',ada
     });
     // The library state is announced even when page commands also matched.
     const view=books.view?books.view():{phase:'ready'},query=input.value.trim();
-    const bookHits=query?books.search?books.search(query).length:0:0;
-    const marker=view.phase==='loading'?PALETTE_TEXT.loading:view.phase==='error'?PALETTE_TEXT.error:query&&!bookHits?PALETTE_TEXT.empty:'';
+    const marker=view.phase==='loading'?PALETTE_TEXT.loading:view.phase==='error'?PALETTE_TEXT.error:query&&!results.length?PALETTE_TEXT.empty:'';
     if(results.length){const active=results[activeIndex];status.textContent=PALETTE_TEXT.count(active?.label||'',results.length)+(marker?' · '+marker:'');input.setAttribute('aria-activedescendant','command-palette-option-'+activeIndex);}
     else{status.textContent=marker||PALETTE_TEXT.empty;input.removeAttribute('aria-activedescendant');}
   }

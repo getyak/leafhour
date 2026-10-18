@@ -32,6 +32,7 @@ assets.set('/catalog-sample.mjs',['app/catalog-sample.mjs','text/javascript']);
 assets.set('/reader-navigation.mjs',['app/reader-navigation.mjs','text/javascript']);
 for(const file of ['book-introduction.mjs','book-introduction-controller.mjs','reader-book-actions.mjs','reader-book-actions.css'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/reader-immersion.mjs',['app/reader-immersion.mjs','text/javascript']);
+assets.set('/reader-tools.mjs',['app/reader-tools.mjs','text/javascript']);
 assets.set('/reader-settings.mjs',['app/reader-settings.mjs','text/javascript']);
 assets.set('/reader-settings-choices.mjs',['app/reader-settings-choices.mjs','text/javascript']);
 assets.set('/reader-settings.css',['app/reader-settings.css','text/css']);

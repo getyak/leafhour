@@ -4,7 +4,7 @@ import {renderChatMarkdown,safeChatUrl} from './library-chat-markdown.mjs';
 import {trackActionFocus} from './action-focus.mjs';
 
 // GET-184: explicit owning-component labels for the injected AI trigger.
-export const CHAT_TEXT=Object.freeze({trigger:'Ask AI',triggerLabel:'打开阅读对话'});
+export const CHAT_TEXT={trigger:'Ask AI',triggerLabel:'打开阅读对话'};
 
 
 const node=(tag,className,text)=>{const element=document.createElement(tag);if(className)element.className=className;if(text!==undefined)element.textContent=text;return element;};

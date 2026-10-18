@@ -20,9 +20,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
   // the chat-owned AI trigger host, the companion bubble anchor (shared pill),
   // the focus-return callback and the unread callback. No launcher DOM, drag or
   // ARIA is ever attached to the shared pill.
-  const bubblePosition=integration?mountCompanionAnchor({anchor:integration.companionAnchor}):null;
-  const externalLauncher=integration?{anchor:integration.companionAnchor,triggerHost:integration.triggerHost,focusReturn:integration.focusReturn,onOpen:integration.onOpen,position:bubblePosition}:null;
-  const companionIntegration=integration?{anchor:integration.companionAnchor,onUnread:integration.onUnread,onFocusReturn:integration.focusReturn}:null;
+  const externalLauncher=integration?{anchor:integration.companionAnchor,triggerHost:integration.triggerHost,focusReturn:integration.focusReturn,onOpen:integration.onOpen,position:mountCompanionAnchor({anchor:integration.companionAnchor})}:null;
 
   const context=()=>readerConversationContext(getReader(),bookId);
   const api=async(url,data,options={})=>{
@@ -45,7 +43,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
       const reader=getReader();reader.dismissTools?.();reader.goToPassage(passageId);return true;
     }
   });
-  if(typeof chat.surface==='function')companion=mountCompanion({bookId,getOwner:()=>session?.user?.id||null,getReader,api,chat,openAuth:()=>{const query=new URLSearchParams({book:bookId}),passage=context()?.passageId;if(passage)query.set('passage',passage);navigate('/library?login=1&next='+encodeURIComponent('/read?'+query));},integration:companionIntegration});
+  if(typeof chat.surface==='function')companion=mountCompanion({bookId,getOwner:()=>session?.user?.id||null,getReader,api,chat,openAuth:()=>{const query=new URLSearchParams({book:bookId}),passage=context()?.passageId;if(passage)query.set('passage',passage);navigate('/library?login=1&next='+encodeURIComponent('/read?'+query));},integration:integration?{anchor:integration.companionAnchor,onUnread:integration.onUnread,onFocusReturn:integration.focusReturn}:null});
   document.addEventListener('reader:ready',()=>chat.update());
   document.addEventListener('reader:audio-question',event=>{
     const detail=event.detail,current=context();

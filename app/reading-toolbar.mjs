@@ -14,7 +14,7 @@ export function createReadingToolbarState({onChange=()=>{}}={}) {
 }
 
 // GET-184: explicit owning-component labels for the focused control mode.
-export const TOOLBAR_TEXT=Object.freeze({collapsedFocused:'展开阅读工具与导航',expandedFocused:'阅读工具与导航已展开'});
+export const TOOLBAR_TEXT={focusedSuffix:'，含导航'};
 
 // mountReadingToolbar owns the single pill click handler and the single
 // five-second conceal timer. A tools coordinator drives both reader surfaces
@@ -29,7 +29,6 @@ export function mountReadingToolbar(root,{onExpandedChange=()=>{}}={}) {
     if(!expanded&&panel.contains(document.activeElement))trigger.focus({preventScroll:true});
     panel.inert=!expanded;
     panel.setAttribute('aria-hidden',String(!expanded));
-    trigger.setAttribute('aria-expanded',String(expanded));
     root.dataset.expanded=String(expanded);
     if(!expanded)hoverPreview=false;
     updateLabel();
@@ -42,7 +41,7 @@ export function mountReadingToolbar(root,{onExpandedChange=()=>{}}={}) {
     root.dataset.reading=status;
     trigger.setAttribute('aria-expanded',String(toolbar.expanded));
     const details=[status==='active'?'正在计时':status==='paused'?'计时已暂停':'',attention?'有记录等待保存':'',draftCount?draftCount+' 份本机草稿':''].filter(Boolean).join('，');
-    const named=controlMode==='focused'?(toolbar.expanded?TOOLBAR_TEXT.expandedFocused:TOOLBAR_TEXT.collapsedFocused):(toolbar.expanded?'阅读工具已展开':'展开阅读工具');
+    const named=(toolbar.expanded?'阅读工具已展开':'展开阅读工具')+(controlMode==='focused'?TOOLBAR_TEXT.focusedSuffix:'');
     trigger.setAttribute('aria-label',named+(details?'，'+details:''));
     trigger.title='阅读工具 · 靠近或轻触展开'+(details?' · '+details:'');
   }
@@ -51,7 +50,7 @@ export function mountReadingToolbar(root,{onExpandedChange=()=>{}}={}) {
   root.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse')toolbar.hold('pointer',true);});
   root.addEventListener('pointerleave',event=>{if(event.pointerType==='mouse')toolbar.hold('pointer',false);});
   trigger.addEventListener('click',()=>{if(toolbar.expanded&&!hoverPreview)toolbar.conceal();else{hoverPreview=false;reveal(true);}});
-  panel.addEventListener('click',event=>{if(!event.target.closest('#reading-tools-close'))toolbar.reveal();});
+  panel.addEventListener('click',event=>{if(!event.target.closest('#reading-tools-close,[data-tools-handoff]')&&!document.querySelector('dialog[open],[popover]:popover-open'))toolbar.reveal();});
   close.addEventListener('click',()=>toolbar.conceal());
   document.addEventListener('keydown',event=>{if(event.key==='Tab'){keyboard=true;focusHold();}},true);
   document.addEventListener('pointerdown',()=>{keyboard=false;focusHold();},true);
@@ -74,8 +73,8 @@ export function mountReadingToolbar(root,{onExpandedChange=()=>{}}={}) {
     updateLabel();
   },
   get expanded(){return toolbar.expanded;},
-  reveal:focus=>reveal(focus!==false),
-  conceal:()=>toolbar.conceal(),
-  hold:(reason,value)=>toolbar.hold(reason,value),
+  reveal,
+  conceal:toolbar.conceal,
+  hold:toolbar.hold,
   setControlMode:mode=>{controlMode=mode==='focused'?'focused':'unfocused';updateLabel();}};
 }

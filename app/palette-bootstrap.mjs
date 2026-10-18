@@ -7,7 +7,7 @@
 export const PALETTE_KEYCAP={mac:'⌘K',other:'Ctrl K'};
 export const PALETTE_POINTER_QUERIES=['(pointer: coarse)','(any-pointer: fine)'];
 // Explicit owning-component label for a failed on-demand import.
-export const PALETTE_BOOTSTRAP_TEXT={loadError:'命令面板暂时无法载入，请重试。'};
+export const PALETTE_BOOTSTRAP_TEXT={loadError:'命令面板暂时无法载入。'};
 
 // The keycap hint is only useful where a keyboard likely exists: hide it on a
 // coarse-only primary pointer, keep it for fine-primary devices even when a
@@ -37,22 +37,21 @@ export function mountPaletteBootstrap({document=globalThis.document,navigator=gl
     if(matchMedia&&!paletteKeycapHintAvailable(matchMedia))node.hidden=true;
   }
   let loading=null,notice=null;
-  const report=()=>{
-    if(notice)return;
-    notice=document.createElement('p');notice.setAttribute('role','status');notice.textContent=PALETTE_BOOTSTRAP_TEXT.loadError;
-    (document.body||document.documentElement)?.append?.(notice);
-  };
   // The controller is built once; every gesture opens it again (reopen after
   // close). A failed import resets the cached loader so the next gesture
   // retries, and reports visibly instead of leaving an unhandled rejection.
   const open=(opener=document.activeElement)=>{
-    if(!loading)loading=Promise.resolve().then(loadPalette).then(module=>module.openCommandPalette({document,page,adapter:globalThis.marginaliaPaletteAdapter||adapter,opener}),error=>{loading=null;report();throw error;});
-    return loading.then(controller=>{controller?.open?.(opener);return controller;});
+    if(!loading)loading=Promise.resolve().then(loadPalette).then(module=>module.openCommandPalette({document,page,adapter:globalThis.marginaliaPaletteAdapter||adapter,opener}),error=>{
+      loading=null;
+      if(!notice){notice=document.createElement('p');notice.setAttribute('role','status');notice.textContent=PALETTE_BOOTSTRAP_TEXT.loadError;(document.body||document.documentElement)?.append?.(notice);}
+      throw error;
+    });
+    return loading.then(controller=>(controller?.open?.(opener),controller));
   };
-  const gesture=opener=>{void open(opener).catch(()=>{});};
+  const gesture=opener=>void open(opener).catch(()=>{});
   for(const node of document.querySelectorAll('[data-palette-open]'))node.addEventListener?.('click',()=>gesture(node));
   const onKeydown=event=>{
-    const key=typeof event.key==='string'?event.key.toLowerCase():'',primary=event.metaKey===true||event.ctrlKey===true,target=event.target;
+    const key=event.key?.toLowerCase?.()||'',primary=!!event.metaKey||!!event.ctrlKey,target=event.target;
     const allowed=paletteShortcutAllowed(event,{editable:!!target&&(target.isContentEditable===true||!!target.closest?.('input,textarea,select,[contenteditable="true"]')),modalOpen:!!document.querySelector('dialog[open],[popover]:popover-open')});
     if(key==='k'&&primary&&!event.altKey&&!event.shiftKey&&allowed){event.preventDefault();gesture(target);}
     else if(key==='/'&&!primary&&!event.altKey&&!event.shiftKey&&allowed){

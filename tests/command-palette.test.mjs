@@ -94,6 +94,7 @@ test('reader appearance commands use the existing appearance adapter and preserv
   const f=openFixture({page:'reader',adapter,library});f.palette.open();
   f.input().value='夜';f.input().dispatchEvent(new Event('input'));
   const night=f.options().find(option=>option.textContent.includes('夜色'));
+  assert.equal(f.status().textContent,'夜色 · 1 项结果','a matching command must not also announce no matches');
   night.dispatchEvent(new Event('click',{bubbles:true}));
   assert.deepEqual(calls,[['theme','night']]);
   assert.equal(f.dialog.open,false);
@@ -290,7 +291,7 @@ test('the generated /library document keeps the exact body shell and resolves th
 test('page account lifecycles synchronously invalidate an open palette cache and DOM',async()=>{
   const {createPaletteLibrary,invalidatePaletteLibraries}=await import('../app/palette-library.mjs');
   const request=async url=>url==='/api/auth/session'?{ok:true,status:200,headers:{get:()=>null},json:async()=>({user:{id:'owner-a'}})}:{ok:true,status:200,headers:{get:()=>null},json:async()=>({books:[{bookId:'mine',title:{zh:'Owner A 私人书',en:'Private'},visibility:'private'}]})};
-  const library=createPaletteLibrary({request,getOwner:()=>null});
+  const library=createPaletteLibrary({request,getOwner:()=> 'owner-a'});
   const f=openFixture({library});f.palette.open();
   await flush();
   f.input().value='私人';f.input().dispatchEvent(new Event('input'));

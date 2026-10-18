@@ -46,7 +46,7 @@ const revealedTranslations=new Set();
 const pagination=mountReaderPagination({document,isBlocked:target=>readerInteractionBlocked(document,target)||!$('note-panel').hidden,hasBoundary:direction=>!!book&&!!book.chapters[book.chapters.findIndex(c=>c.id===state.chapterId)+direction],onTurn:()=>{dismissTools();persist();document.dispatchEvent(new CustomEvent('reader:page'));},onBoundary:direction=>{const chapter=book?.chapters[book.chapters.findIndex(c=>c.id===state.chapterId)+direction];if(!chapter)return false;changeChapter(chapter.id).then(changed=>{if(changed){if(direction<0)pagination.last();persist();}});return true;}});
 const settingsUI=mountReaderSettings({document});
 let readerToolsHandle=null;
-const immersion=mountReaderImmersion({document,announce,beforeLayout:()=>anchor(),afterLayout:a=>{restoreAnchor(a);if(!$('paragraph-tools').hidden)positionTools();document.dispatchEvent(new CustomEvent('reader:layout'));},focusReturn:()=>readerToolsHandle?.chatIntegration?.companionAnchor});
+const immersion=mountReaderImmersion({document,announce,beforeLayout:()=>anchor(),afterLayout:a=>{restoreAnchor(a);if(!$('paragraph-tools').hidden)positionTools();document.dispatchEvent(new CustomEvent('reader:layout'));},focusReturn:()=>readerToolsHandle?.chatIntegration?.companionAnchor,onToolsCloseRequest:target=>readerToolsHandle?.closeRequest?.(target)});
 const readerTools=readerToolsHandle=mountReaderTools({sessionRoot:$('reading-session'),immersion,document});
 // GET-178 page adapter: reader appearance actions run through the existing
 // appearance API so paragraph position and progress stay preserved.
@@ -408,7 +408,7 @@ document.addEventListener('keydown',e=>{
   if(e.target.closest('input,textarea,select')||e.target.isContentEditable)return;
   if(e.key==='Escape'){
     if(!$('paragraph-tools').hidden){dismissTools();return;}if(!$('note-panel').hidden){closePanel();$('chapter-text').querySelector('[data-id="'+selectedId+'"]')?.focus({preventScroll:true});return;}
-    if(!document.fullscreenElement){immersion.closeTools({restoreFocus:true});readerTools.toolbar.conceal();}return;
+    if(!document.fullscreenElement)readerTools.toolbar.conceal();return;
   }
   if(e.key==='Enter'&&e.target.matches('.passage')){e.preventDefault();choosePassage(e.target.dataset.id);$('paragraph-tools').querySelector('button:not([hidden])')?.focus();}
   if(e.key.toLowerCase()==='f'&&!e.metaKey&&!e.ctrlKey&&!e.altKey){e.preventDefault();immersion.toggleFullscreen();}

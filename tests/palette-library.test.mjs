@@ -63,10 +63,10 @@ test('guest catalog results stay available without login and states stay distinc
   await f.library.load();
   assert.equal(f.library.view().phase,'ready');
   assert.equal(f.library.view().books[0].bookId,'alice');
-  const failing=harness({handler:async url=>{if(url==='/api/auth/session')return json({user:null});throw Object.assign(Error('offline'),{status:0});}});
+  const failing=harness({owner:null,handler:async url=>{if(url==='/api/auth/session')return json({user:null});throw Object.assign(Error('offline'),{status:0});}});
   const loading=failing.library.load();assert.equal(failing.library.view().phase,'loading');
   await loading;assert.equal(failing.library.view().phase,'error');
-  const empty=harness({handler:async url=>url==='/api/auth/session'?json({user:null}):json({books:[]})});
+  const empty=harness({owner:null,handler:async url=>url==='/api/auth/session'?json({user:null}):json({books:[]})});
   await empty.library.load();assert.equal(empty.library.view().phase,'ready');
   assert.equal(empty.library.view().books.length,0,'empty is not an error');
 });
@@ -128,4 +128,89 @@ test('session bootstrap failures are errors and preserve the no-late-adoption fe
   await library.load();
   assert.equal(library.view().phase,'error');
   assert.deepEqual(library.view().books,[]);
+});
+
+// ---- repair batch 2: identity compatibility + stale ticket settlement ----
+test('a known owner A context never requests or adopts a session identity B',async()=>{
+  const calls=[];
+  const request=async(url)=>{calls.push(url);return url==='/api/auth/session'?json({user:{id:'owner-b'}}):json({books:[book('mine','Owner B 私人书',{visibility:'private'})]});};
+  const library=createPaletteLibrary({request,getOwner:()=> 'owner-a'});
+  await library.load();
+  assert.deepEqual(calls,['/api/auth/session'],'no /api/library request may carry identity B under an owner A context');
+  assert.deepEqual(library.view().books,[]);
+  assert.deepEqual(library.search('私人'),[]);
+});
+
+test('a known guest cannot adopt a newly authenticated different owner',async()=>{
+  const calls=[];
+  const request=async(url)=>{calls.push(url);return url==='/api/auth/session'?json({user:{id:'owner-b'}}):json({books:[book('mine','Owner B 私人书',{visibility:'private'})]});};
+  const library=createPaletteLibrary({request,getOwner:()=>null});
+  await library.load();
+  assert.deepEqual(calls,['/api/auth/session'],'known guest stays guest-only');
+  assert.deepEqual(library.view().books,[]);
+});
+
+test('unknown identity on support pages still adopts the current session owner',async()=>{
+  const calls=[];
+  const request=async(url)=>{calls.push(url);return url==='/api/auth/session'?json({user:{id:'owner-b'}}):json({books:[book('mine','Owner B 书',{visibility:'private'})]});};
+  const library=createPaletteLibrary({request});
+  await library.load();
+  assert.deepEqual(calls,['/api/auth/session','/api/library','/api/auth/session'],'private adoption rechecks the session identity');
+  assert.equal(library.view().books.length,1,'no owner source means the session identity is authoritative');
+});
+
+test('a stale ticket can never mutate current phase, data, error or generation',async()=>{
+  let releaseOld,releaseLib;const oldGate=new Promise(r=>releaseOld=r),libGate=new Promise(r=>releaseLib=r);let step=0;
+  const request=async url=>{
+    if(url==='/api/auth/session'){
+      step++;
+      if(step===1){await oldGate;return json({user:null});}
+      return json({user:null});
+    }
+    await libGate;return json({books:[book('alice','Alice')]});
+  };
+  const library=createPaletteLibrary({request,getOwner:()=>null});
+  const load1=library.load();          // old request, slow session
+  const load2=library.load();          // current request, still pending
+  await Promise.resolve();await Promise.resolve();
+  releaseOld();await load1;            // stale settlement while load2 is pending
+  assert.equal(library.view().phase,'loading','a stale session response must not flip the phase to idle mid-flight');
+  releaseLib();await load2;
+  assert.equal(library.view().phase,'ready');
+  assert.equal(library.view().books.length,1);
+});
+
+test('stale failures and stale changed responses leave the current generation untouched',async()=>{
+  let releaseOld,releaseLib;const oldGate=new Promise(r=>releaseOld=r),libGate=new Promise(r=>releaseLib=r);let step=0,mode='fail';
+  const request=async url=>{
+    if(url==='/api/auth/session'){
+      step++;
+      if(step===1){await oldGate;if(mode==='fail')throw Object.assign(Error('old failure'),{status:503});return json({user:null},{headers:{'X-Reader-Session-Changed':'1'}});}
+      return json({user:null});
+    }
+    await libGate;return json({books:[book('alice','Alice')]});
+  };
+  const library=createPaletteLibrary({request,getOwner:()=>null});
+  for(const expected of ['fail','changed']){
+    mode=expected;step=0;
+    const load1=library.load(),load2=library.load();
+    await Promise.resolve();await Promise.resolve();
+    releaseOld();await load1;
+    assert.equal(library.view().phase,'loading','stale '+expected+' settlement cannot change pending state');
+    releaseLib();await load2;
+    assert.equal(library.view().phase,'ready');
+    assert.equal(library.view().books.length,1);
+  }
+});
+
+test('the reader session-changed event synchronously clears DOM-visible data and fences pending generations',async()=>{
+  let release;const gate=new Promise(r=>release=r);let subscribers=[];
+  const request=async url=>{if(url==='/api/auth/session')return json({user:{id:'owner-a'}});await gate;return json({books:[book('mine','Owner A 私人书',{visibility:'private'})]});};
+  const library=createPaletteLibrary({request,getOwner:()=> 'owner-a',subscribe:fn=>{subscribers.push(fn);return ()=>{};}});
+  const loading=library.load();
+  for(const fn of subscribers)fn();
+  assert.deepEqual(library.view().books,[],'the session event clears synchronously');
+  assert.deepEqual(library.search('私人'),[]);
+  release();await loading;
+  assert.deepEqual(library.view().books,[],'pending generation fenced after the event');
 });

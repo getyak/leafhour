@@ -43,16 +43,22 @@ const instances=new Set();
 // library synchronously at the exact owner transition point.
 export function invalidatePaletteLibraries(){for(const library of instances)library.invalidate();}
 
-export function createPaletteLibrary({request=fetch,getOwner=()=>null,subscribe=null,onChange=()=>{}}={}){
-  let generation=0,phase='idle',books=[],error='',loadedOwner=getOwner();
+export function createPaletteLibrary({request=fetch,getOwner=null,subscribe=null,onChange=()=>{}}={}){
+  // getOwner=null means "unknown identity" (support pages with no owner source):
+  // the session identity is authoritative. A getter means a known owner —
+  // including known guest (getter returning null) — and any incompatible
+  // session identity is rejected before /api/library and again at adoption.
+  const ownerOf=typeof getOwner==='function'?getOwner:()=>null;
+  const identityKnown=typeof getOwner==='function';
+  let generation=0,phase='idle',books=[],error='',loadedOwner=ownerOf();
   const watchers=new Set();
   const notify=()=>{onChange();for(const watcher of watchers)watcher();};
   const clear=()=>{books=[];error='';phase='idle';notify();};
-  const invalidate=()=>{generation++;loadedOwner=getOwner();clear();};
-  const fence=()=>{if(loadedOwner!==getOwner()){invalidate();return false;}return true;};
+  const invalidate=()=>{generation++;loadedOwner=ownerOf();clear();};
+  const fence=()=>{if(loadedOwner!==ownerOf()){invalidate();return false;}return true;};
   const changed=response=>response?.headers?.get?.('X-Reader-Session-Changed')==='1';
   const requireOk=response=>{if(response?.ok===false)throw Object.assign(Error('服务暂时不可用'),{status:response.status});return response;};
-  const drop=()=>{if(phase==='loading')phase='idle';};
+  const compatible=identity=>!identityKnown||(ownerOf()||'guest')===(identity?.owner||'guest');
   async function sessionIdentity(){
     const response=requireOk(await request('/api/auth/session',{cache:'no-store'}));
     if(changed(response))return {changed:true};
@@ -67,25 +73,28 @@ export function createPaletteLibrary({request=fetch,getOwner=()=>null,subscribe=
     dispose(){instances.delete(library);release?.();},
     async load(){
       fence();
-      const captured=getOwner(),ticket=++generation;
+      const captured=ownerOf(),ticket=++generation,stale=()=>ticket!==generation;
       phase='loading';error='';
       try{
         const identity=await sessionIdentity();
-        if(ticket!==generation){drop();return library.view();}
-        if(identity.changed){invalidate();return library.view();}
+        if(stale())return library.view();
+        if(identity.changed||!compatible(identity)){invalidate();return library.view();}
         const response=requireOk(await request('/api/library',{cache:'no-store',headers:{'X-Reader-Owner':identity.owner||'guest'}}));
-        if(ticket!==generation||getOwner()!==captured){drop();return library.view();}
+        if(stale())return library.view();
+        if(ownerOf()!==captured||!compatible(identity)){invalidate();return library.view();}
         if(changed(response)){invalidate();return library.view();}
         const data=await response.json();
-        if(ticket!==generation||getOwner()!==captured){drop();return library.view();}
+        if(stale())return library.view();
+        if(ownerOf()!==captured||!compatible(identity)){invalidate();return library.view();}
         const list=Array.isArray(data?.books)?data.books:[];
         // Without an owner subscription the only safe adoption gate for private
         // results is a fresh session check against the captured identity.
         if(list.some(item=>item?.visibility!=='public')){
           const recheck=await sessionIdentity();
-          if(ticket!==generation||getOwner()!==captured||recheck.changed||recheck.owner!==(identity.owner||'guest')){if(ticket===generation&&recheck.changed)invalidate();else drop();return library.view();}
+          if(stale())return library.view();
+          if(recheck.changed||!compatible(recheck)||recheck.owner!==(identity.owner||'guest')){invalidate();return library.view();}
         }
-        if(ticket!==generation||getOwner()!==captured){drop();return library.view();}
+        if(stale()||ownerOf()!==captured||!compatible(identity))return library.view();
         books=list;loadedOwner=captured;phase='ready';notify();
       }catch(error_){if(ticket===generation){phase='error';error=error_?.message||'书目暂时无法载入';books=[];notify();}}
       return library.view();
