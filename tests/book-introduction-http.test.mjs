@@ -24,15 +24,15 @@ test('introduction HTTP uses the existing authenticated owner, CSRF, version and
 });
 
 test('disconnect cancels generation and never saves a late result',async t=>{
-  const dir=await mkdtemp(path.join(tmpdir(),'leafhour-intro-disconnect-'));let started,finish,settled;const began=new Promise(r=>started=r),drained=new Promise(r=>settled=r);
+  const dir=await mkdtemp(path.join(tmpdir(),'leafhour-intro-disconnect-'));let started,finish;const began=new Promise(r=>started=r);
   const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),sendCode:null,translator:null,chatGenerator:null,companionGenerator:null,introductionGenerator:async job=>{started(job.signal);return new Promise(r=>finish=r);}});
-  const store=server.portal.library.introductions,releaseQuota=store.releaseQuota;
-  store.releaseQuota=async(...args)=>{try{return await releaseQuota(...args);}finally{settled();}};
+  let settled;const completed=new Promise(resolve=>settled=resolve),generate=server.portal.bookIntroductions.generate;
+  server.portal.bookIntroductions.generate=async(...args)=>{try{return await generate(...args);}finally{settled();}};
   await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(async()=>{server.closeAllConnections();await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});});
   const base='http://127.0.0.1:'+server.address().port,session=await server.portal.auth.localSession(),book=await server.portal.library.importDocument(session.user,{filename:'Cancel.txt',bytes:Buffer.from('Cancel this opening.')}),url=base+'/api/library/books/'+book.bookId+'/introduction',controller=new AbortController();
   const pending=fetch(url,{method:'POST',signal:controller.signal,headers:{Cookie:'marginalia_session='+session.token,'X-Reader-Owner':session.user.id,'Content-Type':'application/json',Origin:base},body:JSON.stringify({contentVersion:book.contentVersion})});
   const signal=await Promise.race([began,new Promise((_,reject)=>setTimeout(()=>reject(Error('generator never started')),1000))]);controller.abort();await assert.rejects(pending);
-  if(!signal.aborted)await new Promise(r=>signal.addEventListener('abort',r,{once:true}));finish({text:'断开后不该保存的简介。'});await drained;
+  if(!signal.aborted)await new Promise(r=>signal.addEventListener('abort',r,{once:true}));finish({text:'断开后不该保存的简介。'});await completed;
   assert.equal((await server.portal.library.getBook(session.user,book.bookId)).introduction,undefined);
 });
 

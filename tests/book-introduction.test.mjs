@@ -24,6 +24,31 @@ async function fixture(t,{generator=async()=>({text:'开头呈现了阅读与提
   return {dir,library,book,service,advance:ms=>now+=ms};
 }
 
+async function hostedCancellation({failures=1,status=503,afterFailure=async()=>{},releaseError=null,discardError=null,timeout=false}={}){
+  const {createHostedStore}=await import('../deploy/hosted-store.mjs'),{createBookIntroductionStore}=await import('../server/book-introduction-store.mjs');
+  const rows=new Map(),controller=new AbortController();let completedKey,discardCalls=0,remaining=failures,store,generationSignal;
+  const json=value=>new Response(JSON.stringify(value));
+  const dataStore=createHostedStore({env:{SUPABASE_URL:'https://fixture.invalid',SUPABASE_SECRET_KEY:'fixture'},fetcher:async(raw,options={})=>{
+    const url=new URL(raw);
+    if(url.pathname.endsWith('/reader_documents')){const row=rows.get(url.searchParams.get('key').slice(3));return json(row?[row]:[]);}
+    const {document_key:key,document_value:value,expected_version:version}=JSON.parse(options.body);
+    if(key===completedKey&&!value.value&&!value.lease&&remaining>0){remaining--;await afterFailure(store);return new Response('{}',{status});}
+    if((rows.get(key)?.version||0)!==version)return json(false);
+    rows.set(key,{value,version:version+1});
+    if(value.value&&value.completedBy&&!completedKey){
+      completedKey=key;
+      if(timeout)await new Promise(resolve=>generationSignal.aborted?resolve():generationSignal.addEventListener('abort',resolve,{once:true}));else controller.abort();
+    }
+    return json(true);
+  }});
+  store=createBookIntroductionStore({dataDir:'/isolated-discard-retry-fixture',dataStore});
+  const discard=store.discard;store.discard=(...args)=>{discardCalls++;if(discardError&&remaining>0){remaining--;return Promise.reject(discardError);}return discard(...args);};
+  if(releaseError)store.release=async()=>{throw releaseError;};
+  const service=services.createBookIntroductionService({library:{introductions:store,getBook:async()=>structuredClone(readingBook)},timeoutMs:timeout?10:60000,generator:async job=>{generationSignal=job.signal;return {text:'A cancelled synthetic introduction.'};}});
+  const pending=service.generate(owner,readingBook.bookId,{contentVersion:readingBook.contentVersion},{signal:controller.signal});
+  return {store,pending,discardCalls:()=>discardCalls,active:()=>Object.keys([...rows.values()].find(row=>row.value.active)?.value.active||{}).length};
+}
+
 test('existing descriptions take precedence, and an ungenerated book has an honest empty state',()=>{
   assert.equal(typeof shared.introductionFor,'function');
   const book={...readingBook,description:'已存在的书目简介。',introduction:draft(readingBook)};
@@ -238,4 +263,89 @@ test('generator adapter pins one request, no tools/history and the frozen budget
   assert.deepEqual(await generate({book:readingBook,context:{title:'source only'},history:[{role:'user',content:'PRIVATE'}]}),{text:'根据正文取样的介绍。'});
   for(const [key,value]of Object.entries({maxRequests:1,maxToolCalls:0,maxTokens:600,maxCostCny:.1,timeoutMs:60000}))assert.equal(config[key],value);
   assert.deepEqual(job.tools.definitions,[]);assert.deepEqual(job.history,[]);assert.equal(job.text,'{"title":"source only"}');
+});
+
+
+test('cancelling before a hosted CAS commits removes its own late introduction and reports cancellation',async()=>{
+  const {createHostedStore}=await import('../deploy/hosted-store.mjs');
+  const {createBookIntroductionStore}=await import('../server/book-introduction-store.mjs');
+  const rows=new Map();let entered,resume;
+  const waiting=new Promise(r=>entered=r),gate=new Promise(r=>resume=r),json=x=>new Response(JSON.stringify(x));
+  let delayed=false;
+  const dataStore=createHostedStore({env:{SUPABASE_URL:'https://fixture.invalid',SUPABASE_SECRET_KEY:'fixture'},fetcher:async(raw,options={})=>{
+    const url=new URL(raw);
+    if(url.pathname.endsWith('/reader_documents')){const row=rows.get(url.searchParams.get('key').slice(3));return json(row?[row]:[]);}
+    const {document_key:key,document_value:value,expected_version:version}=JSON.parse(options.body);
+    if(value.value&&!value.lease&&!delayed){delayed=true;entered();await gate;}
+    if((rows.get(key)?.version||0)!==version)return json(false);
+    rows.set(key,{value,version:version+1});return json(true);
+  }});
+  const store=createBookIntroductionStore({dataDir:'/isolated-cancel-fixture',dataStore});
+  const service=services.createBookIntroductionService({library:{introductions:store,getBook:async()=>structuredClone(readingBook)},generator:async()=>({text:'A synthetic opening introduction.'})});
+  const controller=new AbortController(),pending=service.generate(owner,readingBook.bookId,{contentVersion:readingBook.contentVersion},{signal:controller.signal});
+  await waiting;controller.abort();resume();
+  await assert.rejects(pending,e=>e.status===409);
+  assert.equal(await store.get(owner,readingBook),null,'cancelled late CAS must not leave a published introduction');
+});
+
+
+test('late cancellation cleanup cannot discard a restored introduction',async t=>{
+  const f=await fixture(t),store=f.library.introductions,now=Date.parse('2026-10-18T00:00:00Z');
+  await store.claim(owner,f.book,'old-generation',now,60000);
+  await store.complete(owner,f.book,'old-generation',draft(f.book),now+1);
+  await store.discard(owner,f.book,'different-generation');
+  assert.ok(await store.get(owner,f.book));
+  await store.restore(owner,{...f.book,introduction:draft(f.book,'A separately restored draft.')});
+  await store.discard(owner,f.book,'old-generation');
+  assert.equal((await store.get(owner,f.book)).text,'A separately restored draft.');
+});
+
+test('a transient hosted discard failure retries cleanup and preserves the original cancellation',async()=>{
+  const f=await hostedCancellation();
+  await assert.rejects(f.pending,e=>e.status===409);
+  assert.equal(f.discardCalls(),2);assert.equal(await f.store.get(owner,readingBook),null);assert.equal(f.active(),0);
+});
+
+test('a restore during transient discard recovery survives the subsequent retry',async()=>{
+  const restored=draft(readingBook,'A restored draft must survive retry.'),f=await hostedCancellation({afterFailure:store=>store.restore(owner,{...readingBook,introduction:restored})});
+  await assert.rejects(f.pending,e=>e.status===409);
+  assert.equal(f.discardCalls(),2);assert.deepEqual(await f.store.get(owner,readingBook),restored);assert.equal(f.active(),0);
+});
+
+test('persistent discard failure is bounded, remains an error and still releases the shared quota',async()=>{
+  const f=await hostedCancellation({failures:Infinity});
+  await assert.rejects(f.pending,e=>e.status===503);
+  assert.equal(f.discardCalls(),3);assert.ok(await f.store.get(owner,readingBook));assert.equal(f.active(),0);
+});
+
+test('a failed lease release never skips releasing the shared quota',async()=>{
+  const releaseError=Object.assign(Error('lease cleanup unavailable'),{status:503}),f=await hostedCancellation({failures:0,releaseError});
+  await assert.rejects(f.pending,e=>e===releaseError);
+  assert.equal(await f.store.get(owner,readingBook),null);assert.equal(f.active(),0);
+});
+
+test('transient discard recovery preserves the original timeout after a dispatched hosted commit',async()=>{
+  const f=await hostedCancellation({timeout:true});
+  await assert.rejects(f.pending,e=>e.status===504);
+  assert.equal(f.discardCalls(),2);assert.equal(await f.store.get(owner,readingBook),null);assert.equal(f.active(),0);
+});
+
+test('discard retries recognized temporary network failures but never format, permission or other 4xx errors',async()=>{
+  for(const discardError of [Object.assign(Error('temporary reset'),{code:'ECONNRESET'}),Object.assign(Error('fetch failed'),{cause:{code:'UND_ERR_SOCKET'}}),Object.assign(Error('storage timed out'),{name:'TimeoutError'})]){
+    const f=await hostedCancellation({discardError});await assert.rejects(f.pending,e=>e.status===409);
+    assert.equal(f.discardCalls(),2);assert.equal(await f.store.get(owner,readingBook),null);assert.equal(f.active(),0);
+  }
+  for(const discardError of [Object.assign(Error('not authorized'),{status:401}),Object.assign(Error('forbidden'),{status:403,code:'ECONNRESET'}),Object.assign(Error('invalid input'),{status:422}),new SyntaxError('invalid stored JSON'),Object.assign(new SyntaxError('wrapped invalid JSON'),{status:503}),Object.assign(Error('file permission denied'),{status:503,code:'EACCES'}),new TypeError('invalid value')]){
+    const f=await hostedCancellation({discardError});await assert.rejects(f.pending,e=>e===discardError);
+    assert.equal(f.discardCalls(),1);assert.ok(await f.store.get(owner,readingBook));assert.equal(f.active(),0);
+  }
+});
+
+test('real hosted storage 4xx errors are never retried by cancellation cleanup',async()=>{
+  for(const status of [401,403,422]){
+    const f=await hostedCancellation({status,failures:Infinity});
+    await assert.rejects(f.pending,e=>e.status===503);
+    assert.equal(f.discardCalls(),1,'upstream '+status+' must not become retryable through the public503 mapping');
+    assert.equal(f.active(),0,'a failed discard still releases the shared quota');
+  }
 });
