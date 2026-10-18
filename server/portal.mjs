@@ -55,7 +55,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const ingestionRunner=createIngestionRunner({store:ingestionStore,ingestion,schedule,env,publicOrigin:dataStore?publicOrigin:null});
   const profile=createAccountProfile({dataDir:path.join(dataDir,'library'),dataStore});
   const gifts=createBookGifts({library,dataDir:path.join(dataDir,'library'),dataStore,getProfile:profile.get});
-  const giftQuotes=createGiftQuoteService({library,gifts,generator:giftQuoteGenerator,env});
+  const giftQuotes=createGiftQuoteService({library,gifts,generator:giftQuoteGenerator,env,onDiagnostic:env.VERCEL==='1'?event=>console.warn(JSON.stringify(event)):undefined});
   const visibleUser=async user=>user?{id:user.id,email:user.email||null,kind:user.kind,...await profile.get(user)}:null;
   async function shelfView(user,rows){
     for(let attempt=0;attempt<3;attempt++){
