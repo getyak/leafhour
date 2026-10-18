@@ -6,7 +6,7 @@ On 2026-10-18 the user explicitly selected Leafhour's own library, every day at 
 
 The actual host for this installation will be a Codex heartbeat in the current chat. It owns the schedule, wakes up, uses the official MCP client and composes one bounded AI card. Leafhour owns consent, quiet gates, stable events and atomic station delivery. No application cron or paid-model key is introduced. A future compatible MCP host may follow the same protocol.
 
-Keep existing scoped grants' seven-day expiry. Display the actual expiry and a reconnect state; never silently extend a grant or claim indefinite service. Prefer a new `daily:deliver`-only token: its tools return only the plan's consented bounded current context and activity summary. It cannot call generic content/activity/notes/comment/audio tools. The plan explicitly records original-text and reading-activity consent. No notes permission is requested.
+Ordinary scoped grants retain their seven-day expiry. Create the dedicated daily grant through an internal service method with a fixed 30-day expiry and only `daily:deliver`; generic grant creation cannot request this scope or a longer duration. Display the actual 30-day expiry and reconnect state; never silently extend it or claim indefinite service. This narrow token returns only the plan's consented bounded current context and activity summary. It cannot call generic content/activity/notes/comment/audio tools. The plan explicitly records original-text and reading-activity consent. No notes permission is requested. Pause, book/host changes and revocation invalidate its pending delivery capability immediately.
 
 ## State and storage
 
