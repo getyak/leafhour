@@ -27,6 +27,58 @@ const CJK_RUN=/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\u3000-\u303
 export function customNewsreader(value){
   assert.ok(value.fonts.some(font=>font.isCustomFont&&/Newsreader/i.test(font.postScriptName||font.familyName)&&font.glyphCount>0),value.label+' must render actual custom Newsreader glyphs');
 }
+// Serialized into the remote page. Chrome113 maps scrollIntoView's "instant"
+// to auto, which respects the page's native smooth scrolling. Observe one real
+// request's completion; never change CSS or retry a visibility/font assertion.
+export function observeNativeScroll(selector){
+  const node=document.querySelector(selector);if(!node)throw Error('Missing target');
+  const scrollers=[document.scrollingElement];
+  for(let parent=node.parentElement;parent;parent=parent.parentElement){
+    const style=getComputedStyle(parent);
+    if(!scrollers.includes(parent)&&(parent.scrollHeight>parent.clientHeight&&/auto|scroll|hidden/.test(style.overflowY)||parent.scrollWidth>parent.clientWidth&&/auto|scroll|hidden/.test(style.overflowX)))scrollers.push(parent);
+  }
+  const pixels=value=>parseFloat(value)||0,margin=getComputedStyle(node);
+  const sample=()=>{
+    const r=node.getBoundingClientRect();
+    return {rect:{x:r.x,y:r.y,width:r.width,height:r.height},positions:scrollers.map(element=>({left:element.scrollLeft,top:element.scrollTop})),scrollports:scrollers.map((element,index)=>{
+      const style=getComputedStyle(element),rect=index?element.getBoundingClientRect():{x:0,y:0},left=rect.x+(index?element.clientLeft:0),top=rect.y+(index?element.clientTop:0);
+      return {left:left+pixels(style.scrollPaddingLeft),top:top+pixels(style.scrollPaddingTop),right:left+(index?element.clientWidth:innerWidth)-pixels(style.scrollPaddingRight),bottom:top+(index?element.clientHeight:innerHeight)-pixels(style.scrollPaddingBottom)};
+    }),scrollX,scrollY};
+  };
+  const needs=value=>value.scrollports.flatMap((port,index)=>{
+    const r=value.rect,left=r.x-pixels(margin.scrollMarginLeft),right=r.x+r.width+pixels(margin.scrollMarginRight),top=r.y-pixels(margin.scrollMarginTop),bottom=r.y+r.height+pixels(margin.scrollMarginBottom);
+    const outside=(start,end,low,high)=>!(start<=low&&end>=high)&&(start<low||end>high);
+    return outside(left,right,port.left,port.right)||outside(top,bottom,port.top,port.bottom)?[index]:[];
+  });
+  const before=sample(),startedAt=performance.now(),required=needs(before),needsMovement=required.length>0;
+  return new Promise(resolve=>{
+    const startedScrollers=new Set();
+    let previous=before,started=false,scrollEvents=0,scrollEndEvents=0,frames=0,stableFrames=0,lastChange=startedAt,frame,timer,finished=false;
+    const onScroll=event=>{const index=scrollers.indexOf(event.target===document?document.scrollingElement:event.target);if(index<0)return;startedScrollers.add(index);scrollEvents++;started=true;lastChange=performance.now();};
+    const onEnd=()=>{scrollEndEvents++;};
+    const finish=(status,error=null)=>{
+      if(finished)return;finished=true;clearTimeout(timer);cancelAnimationFrame(frame);
+      document.removeEventListener('scroll',onScroll,true);document.removeEventListener('scrollend',onEnd,true);
+      resolve({status,error,before,after:sample(),needsMovement,started,startedScrollers:[...startedScrollers],scrollEvents,scrollEndEvents,frames,elapsedMs:performance.now()-startedAt});
+    };
+    const tick=()=>{
+      const current=sample(),now=performance.now();frames++;
+      let moved=false;current.positions.forEach((position,index)=>{if(position.left!==previous.positions[index].left||position.top!==previous.positions[index].top){moved=true;startedScrollers.add(index);}});
+      const changed=moved||Object.keys(current.rect).some(key=>Math.abs(current.rect[key]-previous.rect[key])>.1);
+      if(moved)started=true;
+      if(changed){lastChange=now;stableFrames=0;}else stableFrames++;
+      previous=current;
+      const currentNeeds=needs(current);
+      if(started&&stableFrames>=4&&now-lastChange>=100&&!currentNeeds.some(index=>!startedScrollers.has(index)))return finish('settled');
+      if(!started&&!currentNeeds.length&&stableFrames>=2)return finish('unchanged');
+      frame=requestAnimationFrame(tick);
+    };
+    document.addEventListener('scroll',onScroll,true);document.addEventListener('scrollend',onEnd,true);
+    timer=setTimeout(()=>finish('timeout'),3000);
+    try{node.scrollIntoView({block:'nearest',behavior:'auto'});}catch(error){finish('error',error.message);return;}
+    frame=requestAnimationFrame(tick);
+  });
+}
 export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]}){
   const background=new Set(),evidenceListeners=[],paused=new Set();
   let fetchEnabled=false,holdFonts=false,fontHoldInstalledAt=null,pageLabel='home-cold',closed=false;
@@ -43,7 +95,9 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
   async function fonts(selector,label,{awaitFonts=true}={}){
     receipt.activeProbe={selector,label,phase:'layout'};
     if(awaitFonts)await cdp.evaluate('document.fonts.ready.then(()=>true)');
-    await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)});if(!n)throw Error('Missing target');n.scrollIntoView({block:'nearest',behavior:'instant'});return new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve(true))));})()`);
+    const scroll=await cdp.evaluate('('+observeNativeScroll.toString()+')('+JSON.stringify(selector)+')');
+    (receipt.scrolls??=[]).push({label,selector,...scroll});
+    assert.ok(['settled','unchanged'].includes(scroll.status),label+' native scrolling must complete within the bounded observation');
     let usage;
     // Navigation invalidates protocol node IDs. Re-resolve this exact selector
     // once for that specific protocol error, recording it; assertions never retry.
