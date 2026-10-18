@@ -46,7 +46,7 @@ export async function readPrivateHostJson(file){
 export async function callDailyMcp({config,toolName,args,serverEntry=entry,onChild=()=>{}}){
  if(!['reader_daily_connect','reader_daily_claim','reader_daily_finish'].includes(toolName))throw fail('host-tool');
  const serviceUrl=validateHostOrigin(config?.serviceUrl),token=config?.token;
- if(typeof token!=='string'||!token.length||token.length>4096||/[\r\n]/.test(token))throw fail('host-config');
+ if(typeof token!=='string'||!/^[A-Za-z0-9_-]{43}$/.test(token))throw fail('host-config');
  let serialized;try{serialized=JSON.stringify(args);}catch{throw fail('host-config');}
  if(!serialized||Buffer.byteLength(serialized)>MAX_FILE||serialized.includes(token))throw fail('host-config');
  const client=new Client({name:'leafhour-daily-host',version:'1.0.0'}),transport=new StdioClientTransport({command:process.execPath,args:[serverEntry],cwd:path.dirname(path.dirname(serverEntry)),env:{PATH:process.env.PATH||'',READER_SERVICE_URL:serviceUrl,READER_ALLOW_REMOTE:serviceUrl.startsWith('https:')?'true':'false',READER_AGENT_TOKEN:token},stderr:'pipe'});
@@ -60,7 +60,7 @@ export async function callDailyMcp({config,toolName,args,serverEntry=entry,onChi
   if(result.isError||Buffer.byteLength(raw)>MAX_REPLY||raw.includes(token))throw fail('host-response');
   let data=result.structuredContent;
   if(!data){try{data=JSON.parse(result.content?.find(row=>row.type==='text')?.text);}catch{throw fail('host-response');}}
-  if(!data||typeof data!=='object'||Array.isArray(data))throw fail('host-response');return data;
+  if(!data||typeof data!=='object'||Array.isArray(data)||JSON.stringify(data).includes(token))throw fail('host-response');return data;
  }catch{throw fail('host-response');}
  finally{
   let clean=true;try{await client.close();}catch{clean=false;}

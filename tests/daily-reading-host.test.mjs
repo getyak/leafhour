@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {readPrivateHostJson,validateHostOrigin,callDailyMcp} from '../tools/lib/daily-reading-host.mjs';
-const token='synthetic-daily-private-token',entry=fileURLToPath(new URL('./daily-reading-host-fixture.mjs',import.meta.url));
+const token='fixture_token_'.padEnd(43,'x'),entry=fileURLToPath(new URL('./daily-reading-host-fixture.mjs',import.meta.url));
 async function fixture(t){const dir=await mkdtemp(path.join(await realpath(tmpdir()),'daily-host-'));t.after(()=>rm(dir,{recursive:true,force:true}));return dir;}
 test('host files require absolute private regular paths without aliases or hard links',async t=>{
  const dir=await fixture(t),file=path.join(dir,'config.json');await writeFile(file,JSON.stringify({token}),{mode:0o600});assert.deepEqual(await readPrivateHostJson(file),{token});
@@ -26,8 +26,12 @@ test('official SDK bridge calls only daily tools, injects token into child env a
  await assert.rejects(callDailyMcp({config:{serviceUrl:'https://leafhour.com',token},toolName:'reader_get_notes',args:{},serverEntry:entry}),{code:'host-tool'});
 });
 test('tool errors, private-token echoes and oversized replies are masked and always close the child',async()=>{
- for(const mode of ['error','echo','oversize']){
+ for(const mode of ['error','echo','escaped','oversize']){
   let pid;await assert.rejects(callDailyMcp({config:{serviceUrl:'https://leafhour.com',token},toolName:'reader_daily_claim',args:{bookId:'synthetic',mode},serverEntry:entry,onChild:id=>{pid=id;}}),e=>e.code==='host-response'&&!e.message.includes(token));
   assert.throws(()=>process.kill(pid,0),e=>e.code==='ESRCH');
  }
+});
+
+test('only canonical fixed-length daily grant tokens are accepted before creating a child',async()=>{
+ await assert.rejects(callDailyMcp({config:{serviceUrl:'https://leafhour.com',token:'synthetic-quoted-"token'},toolName:'reader_daily_claim',args:{bookId:'synthetic'},serverEntry:entry}),{code:'host-config'});
 });
