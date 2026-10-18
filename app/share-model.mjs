@@ -6,21 +6,12 @@ export const shareThemes={
  warm:{paper:'#f5efe4',ink:'#39352e',muted:'#867e70',line:'#dcd2c1',context:'#918878'},
  night:{paper:'#1e2521',ink:'#edf0e8',muted:'#a2afa3',line:'#3b463e',context:'#a8b5a7'}
 };
-export const shareFonts={zh:'"Songti SC", "STSong", "Noto Serif CJK SC", serif',en:'"Leafhour Serif", Georgia, "Times New Roman", serif',ui:'-apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif'};
+export const shareFonts={zh:'"Songti SC", "STSong", "Noto Serif CJK SC", "Leafhour CJK", serif',en:'"Leafhour Serif", Georgia, "Times New Roman", "Leafhour CJK", serif',ui:'-apple-system, BlinkMacSystemFont, "PingFang SC", "Leafhour CJK", sans-serif'};
 // Honest fallback boundary: when the self-hosted faces did not load, drawing
 // and measurement both use this plain serif stack instead of claiming real
 // italic rendering.
-export const shareFontFallbacks={zh:shareFonts.zh,en:'Georgia, "Times New Roman", serif',ui:shareFonts.ui};
-// Canvas text never triggers a font load by itself, so the upright AND italic
-// faces are loaded explicitly before the first measurement.
-export async function ensureShareFonts(fonts,{family='Leafhour Serif',size=48}={}){
-  const fallback={family,upright:false,italic:false,fallback:true};
-  if(!fonts||typeof fonts.load!=='function')return fallback;
-  try{
-    const [upright,italic]=await Promise.all([fonts.load('normal '+size+'px "'+family+'"'),fonts.load('italic '+size+'px "'+family+'"')]);
-    return {family,upright:!!upright?.length,italic:!!italic?.length,fallback:!(upright?.length&&italic?.length)};
-  }catch{return fallback;}
-}
+export const shareFontFallbacks={zh:shareFonts.zh,en:'Georgia, "Times New Roman", "Leafhour CJK", serif',ui:shareFonts.ui};
+export {ensureShareFonts,ensureShareCjkFonts} from './share-fonts.mjs';
 // Display representation shared by the canvas, its accessible description and
 // the quote panel: markers are omitted exactly where presentation formatting
 // is valid. Canonical model/snapshot text never uses this.

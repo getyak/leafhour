@@ -1,4 +1,5 @@
 import http from 'node:http';
+import {cjkFontAssets} from './cjk-font-assets.mjs';
 import {normalizeAppearance} from '../app/reading-preferences.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
 import {applyPersonalRecordEdit,validatePersonalRecordMetadata,decodePersonalRecordId} from '../app/personal-records.mjs';
@@ -25,6 +26,7 @@ assets.set('/translation-state.mjs',['app/translation-state.mjs','text/javascrip
 assets.set('/reader-return.mjs',['app/reader-return.mjs','text/javascript']);
 assets.set('/passage-layers.mjs',['app/passage-layers.mjs','text/javascript']);
 assets.set('/source-emphasis.mjs',['app/source-emphasis.mjs','text/javascript']);
+assets.set('/share-fonts.mjs',['app/share-fonts.mjs','text/javascript']);
 assets.set('/reader-entry.mjs',['app/reader-entry.mjs','text/javascript']);
 assets.set('/catalog-sample.mjs',['app/catalog-sample.mjs','text/javascript']);
 assets.set('/reader-navigation.mjs',['app/reader-navigation.mjs','text/javascript']);
@@ -39,6 +41,7 @@ assets.set('/parallel-reading.css',['app/parallel-reading.css','text/css']);
 assets.set('/grant-result.mjs',['app/grant-result.mjs','text/javascript']);
 assets.set('/mcp-config.mjs',['app/mcp-config.mjs','text/javascript']);
 const downloads=new Map([['/exports/bilingual.md','book-bilingual.md'],['/exports/literal.md','book-literal.md'],['/exports/interpretive.md','book-interpretive.md'],['/exports/reading-pack.zip','reading-pack.zip']]);
+for(const asset of cjkFontAssets)assets.set(asset.url,['app/'+asset.file,asset.mime]);
 for(const file of ['reader-audio.js','reader-audio.css','audio-state.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/listening-guide-state.mjs',['app/listening-guide-state.mjs','text/javascript']);
 for(const file of ['reader-atmosphere.js','reader-atmosphere.css','atmosphere-state.mjs','atmosphere-audio.mjs','hearth-motion.mjs','nature-motion.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);

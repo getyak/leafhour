@@ -10,7 +10,7 @@ import {pathToFileURL} from 'node:url';
 
 const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
-async function until(operation,label,ms=30000){const deadline=Date.now()+ms;let last;while(Date.now()<deadline){try{const value=await operation();if(value)return value;}catch(error){last=error;}await delay(100);}throw Error('Timed out: '+label+(last?' ('+last.message+')':''));}
+async function until(operation,label,ms=30000){const deadline=Date.now()+ms;let last;while(Date.now()<deadline){if(failures.length)throw Error('Evidence task failed: '+failures.join('; '));try{const value=await operation();if(value)return value;}catch(error){last=error;}await delay(100);}throw Error('Timed out: '+label+(last?' ('+last.message+')':''));}
 
 // Node22 built-in WebSocket; no browser package or extra driver dependency.
 class CDP {
@@ -36,10 +36,11 @@ let server,child,cdp,fetchEnabled=false,holdFonts=false;const paused=new Set(),b
 function task(operation){const promise=Promise.resolve(operation).catch(error=>failures.push(error.message)).finally(()=>background.delete(promise));background.add(promise);}
 const observe=(method,handler)=>evidenceListeners.push(cdp.on(method,handler));
 async function capture(name){const {data}=await cdp.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});const bytes=Buffer.from(data,'base64');await writeFile(path.join(out,name+'.png'),bytes);receipt.screenshots.push({file:name+'.png',bytes:bytes.length,sha256:sha(bytes)});}
-async function fonts(selector,label){const {root:doc}=await cdp.send('DOM.getDocument');const {nodeId}=await cdp.send('DOM.querySelector',{nodeId:doc.nodeId,selector});assert.ok(nodeId,'Missing actual text node: '+selector);const usage=await cdp.send('CSS.getPlatformFontsForNode',{nodeId});const details=await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)}),s=getComputedStyle(n),r=n.getBoundingClientRect();return {text:n.textContent,font:s.font,fontFamily:s.fontFamily,style:s.fontStyle,rect:{x:r.x,y:r.y,width:r.width,height:r.height},visible:!!n.getClientRects().length&&s.visibility!=='hidden'&&r.width>0&&r.height>0&&r.right>0&&r.bottom>0&&r.left<innerWidth&&r.top<innerHeight};})()`);assert.ok(details.visible,label+' must actually render inside the viewport');const value={label,selector,...details,...usage};receipt.checks.push(value);return value;}
+async function fonts(selector,label,{awaitFonts=true}={}){await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)});if(!n)throw Error('Missing target');n.scrollIntoView({block:'nearest',behavior:'instant'});return new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve(true))));})()`);if(awaitFonts)await cdp.evaluate('document.fonts.ready.then(()=>true)');const {root:doc}=await cdp.send('DOM.getDocument');const {nodeId}=await cdp.send('DOM.querySelector',{nodeId:doc.nodeId,selector});assert.ok(nodeId,'Missing actual text node: '+selector);const usage=await cdp.send('CSS.getPlatformFontsForNode',{nodeId});const details=await cdp.evaluate(`(()=>{const n=document.querySelector(${JSON.stringify(selector)}),s=getComputedStyle(n),r=n.getBoundingClientRect();return {text:n.textContent,font:s.font,fontFamily:s.fontFamily,style:s.fontStyle,rect:{x:r.x,y:r.y,width:r.width,height:r.height},visible:!!n.getClientRects().length&&s.visibility!=='hidden'&&r.width>0&&r.height>0&&r.right>0&&r.bottom>0&&r.left<innerWidth&&r.top<innerHeight};})()`);assert.ok(details.visible,label+' must actually render inside the viewport');const value={label,selector,...details,...usage};receipt.checks.push(value);return value;}
 function customNewsreader(value){assert.ok(value.fonts.some(font=>font.isCustomFont&&/Newsreader/i.test(font.postScriptName||font.familyName)&&font.glyphCount>0),value.label+' must render actual custom Newsreader glyphs');}
 
 try{
+  receipt.catalogSources=[];for(const entry of JSON.parse(await readFile(path.join(root,'catalog/manifest.json'),'utf8'))){assert.match(entry.file,/^[a-z0-9/._-]+$/i);const relative='catalog/'+entry.file,bytes=await readFile(path.join(root,relative)),original=execFileSync('git',['show','HEAD:'+relative],{maxBuffer:16*1024*1024});assert.equal(sha(bytes),sha(original),'Checkout changed original source bytes: '+relative);receipt.catalogSources.push({bookId:entry.id,file:relative,sha256:sha(bytes)});}
   const {createReaderServer}=await import(pathToFileURL(path.join(root,'server/server.mjs')));
   const disabled=async()=>{throw Error('Provider calls disabled during anonymous platform QA');};
   server=await createReaderServer({bookPath:path.join(serverData,'missing.json'),recordsPath:path.join(serverData,'records.json'),portalDataDir:path.join(serverData,'portal'),allowLocal:false,env:{},sendCode:null,translator:null,speechProvider:null,dialogueGenerator:null,guideGenerator:null,chatGenerator:null,companionGenerator:null,introductionGenerator:null,giftQuoteGenerator:null,paddleProvider:null,generator:disabled});
@@ -58,21 +59,27 @@ try{
   await cdp.send('Emulation.setDeviceMetricsOverride',{width:1200,height:900,deviceScaleFactor:1,mobile:false});
   for(const method of ['Page.enable','Runtime.enable','DOM.enable','CSS.enable','Network.enable'])await cdp.send(method);
   await cdp.send('Network.setCacheDisabled',{cacheDisabled:true});await cdp.send('Network.clearBrowserCache');
-  const requestFonts=new Map();
-  observe('Network.responseReceived',event=>{if(event.type==='Font')requestFonts.set(event.requestId,{url:event.response.url,status:event.response.status,mime:event.response.mimeType,fromDiskCache:event.response.fromDiskCache,fromServiceWorker:event.response.fromServiceWorker});});
-  observe('Network.loadingFinished',event=>{const font=requestFonts.get(event.requestId);if(font)task((async()=>{const body=await cdp.send('Network.getResponseBody',{requestId:event.requestId});assert.ok(body.base64Encoded,'Binary WOFF2 response body expected');const bytes=Buffer.from(body.body,'base64'),source=await readFile(path.join(root,'app',new URL(font.url).pathname));assert.equal(sha(bytes),sha(source),'Browser font bytes must match checkout');receipt.fonts.push({...font,bytes:bytes.length,sha256:sha(bytes)});})());});
+  let pageLabel='home-cold';const requestFonts=new Map();
+  observe('Network.responseReceived',event=>{if(event.type==='Font'||event.type==='Stylesheet'&&/\/(?:fonts\/|typography\.css)/.test(new URL(event.response.url).pathname))requestFonts.set(event.requestId,{page:pageLabel,type:event.type,url:event.response.url,status:event.response.status,mime:event.response.mimeType,fromDiskCache:event.response.fromDiskCache,fromServiceWorker:event.response.fromServiceWorker});});
+  observe('Network.loadingFinished',event=>{const font=requestFonts.get(event.requestId);if(font)task((async()=>{const body=await cdp.send('Network.getResponseBody',{requestId:event.requestId});assert.ok(font.type!=='Font'||body.base64Encoded,'Binary WOFF2 response body expected');const bytes=Buffer.from(body.body,body.base64Encoded?'base64':'utf8'),source=await readFile(path.join(root,'app',new URL(font.url).pathname));assert.equal(sha(bytes),sha(source),'Browser font bytes must match checkout');receipt.fonts.push({...font,bytes:bytes.length,encodedDataLength:event.encodedDataLength,sha256:sha(bytes)});})());});
   observe('Network.loadingFailed',event=>{if(!event.canceled)receipt.errors.push({type:'network',error:event.errorText,blockedReason:event.blockedReason});});
   observe('Runtime.exceptionThrown',event=>receipt.errors.push({type:'runtime',message:event.exceptionDetails.text,exception:event.exceptionDetails.exception?.description}));
   observe('Fetch.requestPaused',event=>{if(holdFonts){paused.add(event.requestId);return;}task(cdp.send('Fetch.continueRequest',{requestId:event.requestId}));});
   await cdp.send('Fetch.enable',{patterns:[{urlPattern:'*/fonts/newsreader/*.woff2',requestStage:'Request'}]});fetchEnabled=true;holdFonts=true;
   await cdp.send('Page.navigate',{url:origin+'/'});
   await until(async()=>paused.size&&await cdp.evaluate(`!!document.querySelector('.hero-copy h1 .hero-line')`),'font-paused real hero');
-  await delay(500);const cold=await fonts('.hero-copy h1 .hero-line','cold font-withheld hero');assert.ok(cold.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Cold fallback must have visible actual glyphs');assert.ok(!cold.fonts.some(font=>font.isCustomFont&&font.glyphCount>0),'Cold run must not use warmed custom face');await capture('home-controlled-font-delay');
+  await delay(500);const cold=await fonts('.hero-copy h1 .hero-line','cold font-withheld hero',{awaitFonts:false});assert.ok(cold.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Cold fallback must have visible actual glyphs');assert.ok(!cold.fonts.some(font=>font.isCustomFont&&font.glyphCount>0),'Cold run must not use warmed custom face');await capture('home-controlled-font-delay');
   holdFonts=false;for(const requestId of paused)await cdp.send('Fetch.continueRequest',{requestId});paused.clear();
   await cdp.evaluate('document.fonts.ready.then(()=>true)');await capture('home-loaded');customNewsreader(await fonts('.hero-copy h1 .hero-line','loaded hero'));
-  await cdp.send('Page.navigate',{url:origin+'/zh-hans'});await until(()=>cdp.evaluate(`document.documentElement.lang==='zh-Hans'&&!!document.querySelector('#how .section-copy h2')`),'actual authored Chinese home');await cdp.evaluate('document.fonts.ready.then(()=>true)');
-  await cdp.evaluate(`document.querySelector('#how .section-copy h2').scrollIntoView({block:'center',behavior:'instant'})`);const cjk=await fonts('#how .section-copy h2','actual Chinese heading stock fallback');assert.ok(cjk.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Actual CJK fallback glyphs required');receipt.cjkNeedsHumanReview=true;await capture('home-cjk-loaded');
-  await cdp.send('Page.navigate',{url:origin+'/library'});
+  for(const [route,locale] of [['/zh-hans','zh-Hans'],['/zh-hant','zh-Hant'],['/ja','ja']]){
+    pageLabel='home-'+locale;await cdp.send('Page.navigate',{url:origin+route});await until(()=>cdp.evaluate(`document.documentElement.lang===${JSON.stringify(locale)}&&!!document.querySelector('#how .section-copy h2')`),'authored '+locale+' home');
+    const language=await fonts('.home-navigation a[hreflang="'+locale+'"]','actual '+locale+' language entrance');
+    assert.ok(language.fonts.length&&language.fonts.every(font=>font.glyphCount>0&&/Noto.*Serif.*(?:SC|CJK)|Source.*Han.*Serif|Songti|STSong|SimSun|NSimSun|PingFang|YaHei|Yu.?Gothic|Meiryo/i.test(font.postScriptName||font.familyName)),'Language entrance must have covered CJK glyphs');
+    const cjk=await fonts('#how .section-copy h2','actual '+locale+' heading CJK fallback');
+    assert.ok(cjk.fonts.length&&cjk.fonts.every(font=>font.glyphCount>0&&/Noto.*Serif.*(?:SC|CJK)|Source.*Han.*Serif|Songti|STSong|SimSun|NSimSun/i.test(font.postScriptName||font.familyName)),'Actual covered CJK serif glyphs required; Newsreader notdef is not CJK');
+    receipt.cjkNeedsHumanReview=true;await capture('home-'+locale+'-cjk-loaded');
+  }
+  pageLabel='library';await cdp.send('Page.navigate',{url:origin+'/library'});
   await until(()=>cdp.evaluate(`!!document.querySelector('#library-books .binding-original')`),'actual public shelf');await cdp.evaluate('document.fonts.ready.then(()=>true)');
   customNewsreader(await fonts('#library-books .binding-original','actual Alice cover original title'));
   // Isolate a glyph in the actual text while preserving inherited typography.
@@ -84,7 +91,7 @@ try{
   const sourcePassage=sourceBook.sections.flatMap(section=>section.paragraphs).find(p=>p.original.includes('_very_')&&sourceEmphasisRanges(p.original).length);assert.ok(sourcePassage,'Actual source emphasis passage required');
   const citation=new URLSearchParams({book:sourceBook.bookId,passage:sourcePassage.id,contentVersion:sourceBook.contentVersion,layer:'original'}),italicSelector='#chapter-text [data-id='+JSON.stringify(sourcePassage.id)+'] em.source-emphasis';
   receipt.citation={bookId:sourceBook.bookId,passageId:sourcePassage.id,contentVersion:sourceBook.contentVersion,layer:'original',originalSha256:sha(sourcePassage.original)};
-  await cdp.send('Page.navigate',{url:origin+'/read?'+citation});
+  pageLabel='reader';await cdp.send('Page.navigate',{url:origin+'/read?'+citation});
   await until(()=>cdp.evaluate(`!!document.querySelector(${JSON.stringify(italicSelector)})`),'cited actual reader italic');await cdp.evaluate('document.fonts.ready.then(()=>true)');
   await cdp.evaluate(`document.querySelector(${JSON.stringify(italicSelector)}).scrollIntoView({block:'center',behavior:'instant'})`);
   const actualUrl=await cdp.evaluate('location.href');assert.equal(actualUrl,origin+'/read?'+citation,'Citation must remain on the intended source');
@@ -104,5 +111,6 @@ finally{
   }
   if(child){if(process.platform==='win32'){try{execFileSync('taskkill',['/PID',String(child.pid),'/T','/F'],{stdio:'ignore'});}catch{}}else child.kill('SIGTERM');}
   if(server){server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}
+  receipt.fontTraffic=[...new Set(receipt.fonts.map(font=>font.page))].map(page=>{const resources=receipt.fonts.filter(font=>font.page===page),fonts=resources.filter(font=>font.type==='Font');return {page,fontRequests:fonts.length,fontResponseBytes:fonts.reduce((sum,font)=>sum+font.bytes,0),stylesheetResponseBytes:resources.filter(font=>font.type==='Stylesheet').reduce((sum,font)=>sum+font.bytes,0),cacheDisabled:true};});
   if(failures.length||receipt.errors.length){receipt.result='failed';process.exitCode=1;}receipt.finishedAt=new Date().toISOString();receipt.backgroundFailures=failures;await writeFile(path.join(out,'receipt.json'),JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify({result:receipt.result,source:receipt.source,platform:receipt.platform,failure:receipt.failure,output:out}));
 }
