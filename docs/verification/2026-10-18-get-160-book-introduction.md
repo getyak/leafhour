@@ -49,3 +49,6 @@ A second independent Codex review of4007ce0 found no P0/P1 and reproduced one P2
 Independent re-review closed the P2 and tested conflicts with a concurrent restore and a new-version generation: both retain the newer value after CAS retry. Focused introduction/HTTP/controller tests pass36/36. The subsequent complete verify:deploy passed1,315 tests, zero failures and one Linux-only skip on macOS; isolated runtime, hosted build,212 public assets,9 registered media assets and539-file release allowlist also pass. Production-provider behavior under a real storage outage is not established by the synthetic CAS tests.
 
 The project-only password keychain item is absent (exit44); no fallback credential source was read. Live default-account model/gift/restore acceptance remains open until that required credential is restored. Current-head CI/deployment and merged release are separate delivery gates.
+
+
+The GET-150 docs PR's Linux CI exposed an existing disconnect-test teardown race: it removed the temporary directory after a fixed10ms while lease/quota cleanup was still writing, yielding ENOTEMPTY. The test now awaits the actual final quota-release completion before checking/removing its fixture. It does not retry, ignore teardown failures or increase a sleep.
