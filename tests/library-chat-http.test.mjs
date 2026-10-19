@@ -18,7 +18,11 @@ test('the reading window uses authenticated chat routes, real source references 
   const repeat=await fetch(url,{method:'POST',headers,body:JSON.stringify(input)});assert.equal(repeat.status,200);assert.equal(calls,1);
   const records=await server.portal.library.records(session.user,'gutenberg-alice');assert.equal(records.questions.at(-1).text,input.text);
   const markdown=await fetch(base+'/library-chat-markdown.mjs');assert.equal(markdown.status,200);assert.match(await markdown.text(),/renderChatMarkdown/);
+  for(const file of ['reading-chat-quote.mjs','reading-chat-input.mjs','reader-chat-workspace.mjs','reader-chat-workspace.css']){const response=await fetch(base+'/'+file);assert.equal(response.status,200,file);assert.match(response.headers.get('content-type'),file.endsWith('.css')?/css/:/javascript/);}
   assert.equal(turn.answer.sourceRefs[0].bookId,'gutenberg-alice');
+  const quote={kind:'leafhour-reading-quote',schemaVersion:1,bookId:'gutenberg-alice',contentVersion:view.contentVersion,chapterId:view.context.chapterId,parts:[{passageId:view.context.passageId,layer:'original',start:0,end:5,text:view.context.original.slice(0,5)}]};
+  const quoted=await fetch(url,{method:'POST',headers,body:JSON.stringify({...input,id:'window-quoted-2',quote})});assert.equal(quoted.status,200);assert.deepEqual((await quoted.json()).quote,quote);assert.equal(calls,2);
+
   const assets=await fetch(base+'/library-shell.mjs');assert.equal(assets.status,200);assert.match(assets.headers.get('content-type'),/javascript/);
 });
 

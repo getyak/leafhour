@@ -1,6 +1,20 @@
 // GET-192 immutable zh-Hans UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "chat.quote.localOnly": "浏览器保存失败，此引用仅保留在当前页面。",
+  "chat.quote.action": "引用到 AI",
+  "chat.quote.remove": "移除引用",
+  "chat.quote.snapshot": "选中文字 · 快照",
+  "chat.quote.stale": "所选文字已变化。请移除或重新选择后再发送。",
+  "chat.quote.busy": "请先完成或停止当前请求，再更换引用。",
+  "chat.quote.unavailable": "请先选择可见的原文或译文。",
+  "chat.quote.changed": "所选文字已变化或暂不可用，请重新选择。",
+  "chat.quote.tooLong": "引用最多 2,000 字，请缩小选择范围。",
+  "chat.quote.receiptMismatch": "回执与当前请求不一致，问题与引用均已保留。",
+
+  "chat.entry": "问 AI",
+  "chat.resize": "调整 AI 工作区宽度",
+
   "audio.voice.Sulafat.label": "温暖",
   "audio.voice.Sulafat.description": "平静地读，适合长一些的段落",
   "audio.voice.Charon.label": "清晰",

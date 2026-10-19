@@ -1,0 +1,78 @@
+{
+  "get194-c-en-night-desktop.png": {
+    "bytes": 199155,
+    "sha256": "5b92eabfb72b1757167bc8664281c89202acfbe274a37ec9de84b8dcbfe8c14c"
+  },
+  "get194-c-en-night-mobile.png": {
+    "bytes": 48651,
+    "sha256": "4d980cb3268e68acc0594f4a2af08baace58c6f9166f71b176c19b20c83cb553"
+  },
+  "get194-c-final-night-desktop.png": {
+    "bytes": 201302,
+    "sha256": "662b7df90107b5bb103b4857fc6b609f91c5c55cfac6c15f2af3f9c03e2dd949"
+  },
+  "get194-c-final-night-mobile.png": {
+    "bytes": 48606,
+    "sha256": "a7b797aa900c77d39ab743dbb867158fac6b6ac12800972d92328e1a41d00e6d"
+  },
+  "get194-c-final-night-short.png": {
+    "bytes": 28717,
+    "sha256": "ce5458a70c73ef901ff7db6f1183a9403847f498b692da64aa83d2d99378b1f4"
+  },
+  "get194-c-hidden-layer-rejected.png": {
+    "bytes": 157500,
+    "sha256": "b6f053578a3a152aa07336882693d649a47720166e2481eef2e28ec05bd5a19d"
+  },
+  "get194-c-ja-night-desktop.png": {
+    "bytes": 207985,
+    "sha256": "82cccaa8aec40c4f147479a2915d73eca90d25c4554c806de964d238af848ac5"
+  },
+  "get194-c-ja-night-mobile.png": {
+    "bytes": 50601,
+    "sha256": "2e749bf3ce9c27847caafde63bc6bd1b10161befeac02e0d9356ea272ca1c81a"
+  },
+  "get194-c-literal-desktop.png": {
+    "bytes": 185397,
+    "sha256": "ca6d19ba28975140effa9fafd5e0f82b02d391cce1180272afc4f5e119c8ea05"
+  },
+  "get194-c-literal-mobile.png": {
+    "bytes": 45981,
+    "sha256": "a32c74f7b1607206e6a06a4b1f1fc05bc3afa6cabc76906847371e1dc65fefb2"
+  },
+  "get194-c-new-context-race.png": {
+    "bytes": 193080,
+    "sha256": "52043ecc3f54cba4e684bdd290edef3cb1f1215cf0bfcb9976b62672571916df"
+  },
+  "get194-c-original-desktop.png": {
+    "bytes": 189215,
+    "sha256": "81b1108cc70a00791f5e5b9573585da301505528c3ecb352036b73e721d8779e"
+  },
+  "get194-c-original-history.png": {
+    "bytes": 190081,
+    "sha256": "9f27ed5594c24d813efaae481eddfe9ded8cd8edc2fe6215f0a97306b8c15a30"
+  },
+  "get194-c-original-mobile.png": {
+    "bytes": 44130,
+    "sha256": "2c3ce0abc6755f5df719cb50ca3f0fd826c4c8dbd671da7e98f3e91a3c8d7a83"
+  },
+  "get194-c-original-short.png": {
+    "bytes": 28644,
+    "sha256": "e6e8f2641bca1767e70460f9eb5b021172df996a9d0ae78c48466aced00ebace"
+  },
+  "get194-c-zh-Hans-night-desktop.png": {
+    "bytes": 195171,
+    "sha256": "951a5851a2fb8762c3939ba7249584bca97b7c759102fa573632aed660b82a8e"
+  },
+  "get194-c-zh-Hans-night-mobile.png": {
+    "bytes": 46770,
+    "sha256": "b336d3ad34a8b3d38ab6b9bcb70a97790ce54a73b0c88b6f15598b1552957544"
+  },
+  "get194-c-zh-Hant-night-desktop.png": {
+    "bytes": 198260,
+    "sha256": "165c6000afb92341f48f29586f3732e8aafb0592366e9d54552161b8ac37f300"
+  },
+  "get194-c-zh-Hant-night-mobile.png": {
+    "bytes": 47384,
+    "sha256": "3332cfe202578e9659ff727506d9ac92c04ef55c6d1e8daf2d21917a756ae173"
+  }
+}

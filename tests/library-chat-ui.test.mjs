@@ -27,15 +27,24 @@ class Element extends EventTarget {
   querySelectorAll(selector){const visit=n=>[...n.children.flatMap(visit),n];const all=visit(this).slice(0,-1);const keys=selector.split(',').map(part=>part.trim().replace(/^\[|\]$/g,''));return all.filter(n=>keys.some(key=>n.getAttribute&&n.getAttribute(key)!==undefined));}
 }
 const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
-function setup(t,{handler,navigate,books=[{bookId:'one',title:{zh:'书名'}}]}={}){
+function setup(t,{handler,navigate,onViewChange,books=[{bookId:'one',title:{zh:'书名'}}]}={}){
  const doc=new EventTarget();doc.createElement=tag=>new Element(tag,doc);doc.createTextNode=text=>{const n=new Element('#text',doc);n.textContent=text;return n;};doc.body=doc.createElement('body');const all=()=>{const visit=n=>[n,...n.children.flatMap(visit)];return visit(doc.body);};doc.getElementById=id=>all().find(n=>n.id===id);doc.querySelectorAll=()=>[];
  const previous={document:globalThis.document,localStorage:globalThis.localStorage,window:globalThis.window};const storage=new Map();globalThis.document=doc;globalThis.localStorage={getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)};const viewport=new EventTarget();viewport.height=800;viewport.offsetTop=0;globalThis.window={matchMedia:()=>({matches:false}),visualViewport:viewport};t.after(()=>Object.assign(globalThis,previous));
  const root=doc.createElement('dialog');root.id='chat';doc.body.append(root);const external=doc.createElement('button');doc.body.append(external);external.focus();let owner='alice',passage='p1',turns=[];const calls=[];
  const api=async(url,payload)=>{calls.push({url,payload});if(handler)return handler(url,payload,{turns,setTurns:v=>turns=v});if(payload){const turn={...payload,status:'running',answer:null};turns=[...turns,turn];return turn;}return {bookId:'one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:new URL(url,'http://local').searchParams.get('passageId')||'p1',chapterTitle:'章节',original:'Source'},turns};};
- const chat=mountLibraryChat({root,api,getSession:()=>owner?{user:{id:owner}}:null,getOwner:()=>owner,getBooks:()=>books,openAuth(){},getCurrentBook:()=> 'one',getCurrentPassage:()=>passage,onNavigateToPassage:navigate||(()=>true)});t.after(()=>chat.close());t.after(()=>chat.dispose?.());
+ const chat=mountLibraryChat({root,api,getSession:()=>owner?{user:{id:owner}}:null,getOwner:()=>owner,getBooks:()=>books,openAuth(){},getCurrentBook:()=> 'one',getCurrentPassage:()=>passage,onNavigateToPassage:navigate||(()=>true),onViewChange});t.after(()=>chat.close());t.after(()=>chat.dispose?.());
  return {root,chat,doc,calls,external,viewport,all,find:cls=>all().find(n=>n.className.split(' ').includes(cls)),input:()=>doc.getElementById('library-chat-input'),setTurns:v=>turns=v,setOwner:v=>owner=v,setPassage:v=>passage=v,complete:()=>{turns=turns.map(turn=>turn.status==='completed'?turn:({...turn,status:'completed',answer:{summary:'真实回答',sourceRefs:[]}}));}};
 }
 function type(el,text){el.value=text;el.dispatchEvent(new Event('input'));}
+
+test('workspace lifecycle reports each actual view transition once and preserves the draft',async t=>{
+ const changes=[],s=setup(t,{onViewChange:open=>changes.push(open)});s.chat.open();await flush();type(s.input(),'Keep this question.');s.chat.open();s.chat.close();s.chat.close();assert.deepEqual(changes,[true,false]);
+ s.chat.open();s.root.close();assert.deepEqual(changes,[true,false,true,false]);s.chat.open();s.chat.dispose();assert.deepEqual(changes,[true,false,true,false,true,false]);assert.equal(s.input().value,'Keep this question.');
+});
+test('scope stays adjustable in More without occupying the composer',async t=>{
+ const s=setup(t);s.chat.open();await flush();const menu=s.find('library-chat-menu-items'),scope=s.find('library-chat-scope-choice'),composer=s.find('library-chat-composer');
+ assert.equal(menu.contains(scope),true);assert.equal(composer.contains(scope),false);assert.equal(composer.contains(s.find('library-chat-hint')),false);assert.equal(scope.value,'book');assert.equal(scope.disabled,false);assert.equal(s.chat.surface().preferenceHost,menu);
+});
 
 test('companion opens as an AI-only message, locates inside IM and preserves the existing draft',async t=>{
   const s=setup(t);s.chat.open();await flush();type(s.input(),'尚未发出的原话');s.chat.close();
@@ -59,7 +68,7 @@ test('Escape outside the conversation does not collapse it and source navigation
 test('Escape inside the conversation collapses it and single book has a static title',async t=>{const s=setup(t);s.chat.open();await flush();assert.equal(s.find('library-chat-book-choice').hidden,true);assert.equal(s.find('library-chat-book-title').textContent,'书名');const key=new Event('keydown',{cancelable:true});Object.assign(key,{key:'Escape'});s.root.dispatchEvent(key);assert.equal(s.root.open,false);assert.equal(key.defaultPrevented,true);});
 test('new answer preserves a reader position near the top of message history',async t=>{const s=setup(t);s.chat.open();await flush();type(s.input(),'我的问题');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();const messages=s.find('library-chat-messages');messages.scrollTop=20;s.complete();s.find('library-chat-text-button');s.chat.close();s.chat.open();await flush();assert.equal(messages.scrollTop,20);});
 
-test('context disclosure stays visible beside send and available to assistive technology and the more menu',async t=>{const s=setup(t);s.chat.open();await flush();const hint=s.doc.getElementById('library-chat-hint');assert.ok(s.input().getAttribute('aria-describedby').split(' ').includes(hint.id));assert.equal(hint.className.split(' ').includes('sr-only'),false);assert.ok(s.find('library-chat-menu-hint').textContent.startsWith(hint.textContent));assert.ok(!hint.textContent.includes('相邻段'));});
+test('full context disclosure remains available in More without a duplicate composer description',async t=>{const s=setup(t);s.chat.open();await flush();const hint=s.doc.getElementById('library-chat-hint');assert.ok(s.input().getAttribute('aria-describedby').split(' ').includes('library-chat-status'));assert.equal(s.find('library-chat-menu-items').contains(hint),true);assert.equal(hint.className.split(' ').includes('sr-only'),false);assert.ok(hint.textContent.length>0);assert.ok(s.find('library-chat-menu-hint').textContent.length>0);assert.ok(!hint.textContent.includes('相邻段'));});
 
 test('visual viewport resize enables a scrollable compact layout independently of screen width',async t=>{const s=setup(t);s.chat.open();await flush();assert.equal(s.root.className.includes('is-compact-viewport'),false);s.viewport.height=300;s.viewport.offsetTop=45;s.viewport.dispatchEvent(new Event('resize'));assert.equal(s.root.style['--chat-viewport-height'],'300px');assert.equal(s.root.style['--chat-viewport-top'],'45px');assert.equal(s.root.className.includes('is-compact-viewport'),true);s.viewport.offsetTop=75;s.viewport.dispatchEvent(new Event('scroll'));assert.equal(s.root.style['--chat-viewport-top'],'75px');s.viewport.height=800;s.viewport.offsetTop=0;s.viewport.dispatchEvent(new Event('resize'));assert.equal(s.root.className.includes('is-compact-viewport'),false);assert.equal(s.root.open,true);assert.equal(s.calls.filter(c=>c.payload).length,0);});
 
@@ -271,4 +280,21 @@ test('review chat R3 missing context translation relabels in place while real pr
  assert.equal(missing.textContent,translated);assert.equal(actual.textContent,translated);
  for(const locale of ['ja','zh-Hant','zh-Hans','en']){await requestUiRoute(locale);assert.equal(missing.textContent,uiText('t.nr'));assert.equal(body.children[2].children[1],missing);assert.equal(body.replacements,replacements);assert.equal(original.textContent,context.original);assert.equal(actual.textContent,translated);assert.equal(actual.getAttribute('data-ui'),undefined);assert.equal(s.doc.activeElement,s.input());assert.equal(s.input().selectionStart,3);assert.equal(s.input().selectionEnd,8);assert.equal(s.input().value,'Unsent question');}
  assert.equal(s.calls.length,calls);
+});
+
+test('native queued close followed by disposal consumes the visible lifecycle exactly once',async t=>{
+ const changes=[],s=setup(t,{onViewChange:value=>changes.push(value)}),queued=[];s.chat.open();await flush();s.root.close=function(){this.open=false;queued.push(()=>this.dispatchEvent(new Event('close')));};s.root.close();s.chat.dispose();s.chat.dispose();queued.forEach(fn=>fn());assert.deepEqual(changes,[true,false]);
+});
+
+test('explicit quotation uses a removable chip, keeps the own question and never auto-sends',async t=>{
+ const s=setup(t);s.chat.open();await flush();type(s.input(),'My question');const quote={kind:'leafhour-reading-quote',schemaVersion:1,bookId:'one',contentVersion:'v1',chapterId:'ch1',parts:[{passageId:'p1',layer:'original',start:0,end:6,text:'Source'}]};
+ assert.equal(s.chat.quote(quote),true);await flush();assert.equal(s.input().value,'My question');assert.equal(plain(s.find('library-chat-quote-text')),'Source');assert.equal(s.calls.filter(c=>c.payload).length,0);s.chat.close();s.chat.open();await flush();assert.equal(plain(s.find('library-chat-quote-text')),'Source');s.find('library-chat-quote-remove').click();assert.equal(s.find('library-chat-quote-chip').hidden,true);assert.equal(s.input().value,'My question');
+});
+
+const uiQuote=(passageId='p1')=>({kind:'leafhour-reading-quote',schemaVersion:1,bookId:'one',contentVersion:'v1',chapterId:'ch1',parts:[{passageId,layer:'original',start:0,end:6,text:'Source'}]});
+test('explicit quote on a newer passage fences an older in-flight context read immediately',async t=>{
+ let release;const old=new Promise(resolve=>{release=resolve;});const s=setup(t,{handler:async url=>{const passageId=new URL(url,'http://local').searchParams.get('passageId');if(passageId==='p1')await old;return {bookId:'one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId,original:'Source'},turns:[]};}});s.chat.open();await flush();type(s.input(),'Question');assert.equal(s.chat.quote(uiQuote('p2')),true);await flush();assert.ok(s.calls.some(call=>call.url.includes('passageId=p2')));release();await flush();assert.equal(s.find('library-chat-send').disabled,false);assert.equal(s.find('library-chat-quote-stale').hidden,true);
+});
+test('a definite preclaim quote rejection preserves editable question and enables removal without uncertain recovery',async t=>{
+ const s=setup(t,{handler:async(url,payload)=>{if(payload)throw Object.assign(Error('Selection changed'),{status:422});return {bookId:'one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:'p1',original:'Source'},turns:[]};}});s.chat.open();await flush();s.chat.quote(uiQuote());type(s.input(),'Keep my question');await flush();s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();assert.equal(s.input().disabled,false);assert.equal(s.find('library-chat-quote-remove').disabled,false);assert.equal(s.find('library-chat-send').disabled,true);assert.equal(s.find('library-chat-quote-stale').hidden,false);assert.equal(s.input().value,'Keep my question');assert.doesNotMatch(plain(s.find('library-chat-status')),/c\.notice\./);s.find('library-chat-quote-remove').click();assert.equal(s.find('library-chat-send').disabled,false);
 });

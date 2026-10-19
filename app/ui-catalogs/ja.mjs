@@ -1,6 +1,20 @@
 // GET-192 immutable ja UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "chat.quote.localOnly": "ブラウザに保存できませんでした。この引用は現在のページだけに保持されています。",
+  "chat.quote.action": "AI に引用",
+  "chat.quote.remove": "引用を削除",
+  "chat.quote.snapshot": "選択した文章 · 保存時点",
+  "chat.quote.stale": "選択した文章が変わりました。削除するか、選び直してから送信してください。",
+  "chat.quote.busy": "現在のリクエストを完了または停止してから引用を変更してください。",
+  "chat.quote.unavailable": "表示中の原文か訳文を選択してください。",
+  "chat.quote.changed": "選択した文章が変わったか、利用できません。選び直してください。",
+  "chat.quote.tooLong": "引用は2,000文字までです。選択範囲を短くしてください。",
+  "chat.quote.receiptMismatch": "応答がこのリクエストと一致しません。質問と引用は保持されています。",
+
+  "chat.entry": "AI に聞く",
+  "chat.resize": "AI ワークスペースの幅を調整",
+
   "audio.voice.Sulafat.label": "温かい声",
   "audio.voice.Sulafat.description": "穏やかな読み方で、長めの文章に向いています",
   "audio.voice.Charon.label": "明瞭な声",

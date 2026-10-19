@@ -2,6 +2,20 @@
 // data, also the safe default for server/static English shells. Complete
 // default data: every other catalogue carries the same keys.
 export default Object.freeze({
+  "chat.quote.localOnly": "Browser saving failed. This quote is kept only on this page.",
+  "chat.quote.action": "Quote to AI",
+  "chat.quote.remove": "Remove quote",
+  "chat.quote.snapshot": "Selected text · snapshot",
+  "chat.quote.stale": "The selected text has changed. Remove it or select it again before sending.",
+  "chat.quote.busy": "Finish or stop the current request before changing its quote.",
+  "chat.quote.unavailable": "Select visible original text or a translation first.",
+  "chat.quote.changed": "This selection has changed or is unavailable. Please select it again.",
+  "chat.quote.tooLong": "Select up to 2,000 characters to quote.",
+  "chat.quote.receiptMismatch": "The reply does not match this request. Your question and quote are retained.",
+
+  "chat.entry": "Ask AI",
+  "chat.resize": "Resize AI workspace",
+
   "audio.voice.Sulafat.label": "Warm",
   "audio.voice.Sulafat.description": "Calm reading, suited to longer passages",
   "audio.voice.Charon.label": "Clear",

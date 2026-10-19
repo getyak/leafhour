@@ -26,9 +26,10 @@ export function mountReaderTools({sessionRoot,immersion=null,document=globalThis
   const header=document.getElementById('reading-header');
   const handoffHost=sessionRoot.querySelector('#reading-tools-chat-slot');
   let unread=false;
-  const updateUnreadLabel=()=>{if(!disposed)pill?.setAttribute('aria-description',unread?t('reader.tools.companion'):'');};
+  const restoreChat=()=>{if(disposed)return false;const trigger=handoffHost?.querySelector?.('.library-chat-trigger');if(trigger?.isConnected!==false&&trigger){trigger.focus({preventScroll:true});return true;}return restorePill();};
+  const updateUnreadLabel=()=>{if(!disposed){handoffHost?.setAttribute('aria-label',t('chat.entry'));handoffHost?.setAttribute('aria-description',unread?t('reader.tools.companion'):'');}};
   const offLocale=onUiLocaleChange(updateUnreadLabel);
-  pill?.classList.toggle('has-companion-message',false);updateUnreadLabel();
+  handoffHost?.setAttribute('role','group');handoffHost?.classList.toggle('has-companion-message',false);updateUnreadLabel();
   const toolbar=mountReadingToolbar(sessionRoot,{document,onExpandedChange(expanded,{focus}={}){
     if(expanded){immersion?.showTools?.({focus:!!focus});return;}
     const inside=!!header?.contains?.(document.activeElement);
@@ -44,13 +45,13 @@ export function mountReaderTools({sessionRoot,immersion=null,document=globalThis
   }
   const chatIntegration={
     triggerHost:handoffHost,
-    companionAnchor:pill,
-    focusReturn:restorePill,
-    onUnread:value=>{if(disposed)return;unread=!!value;if(!pill)return;pill.classList.toggle('has-companion-message',unread);updateUnreadLabel();},
+    companionAnchor:handoffHost||pill,
+    focusReturn:restoreChat,
+    onUnread:value=>{if(disposed)return;unread=!!value;handoffHost?.classList.toggle('has-companion-message',unread);updateUnreadLabel();},
     onOpen:()=>toolbar.conceal()
   };
   toolbar.setControlMode(document.body?.classList?.contains('is-focused')?'focused':'unfocused');
   listen(document,'reader:focus',event=>toolbar.setControlMode(event?.detail?.focused===false?'unfocused':'focused'));
-  const tools={toolbar,chatIntegration,closeRequest:target=>{if(disposed||sessionRoot.contains(target)||header?.contains(target))return false;toolbar.conceal();return true;},unmount(){if(disposed)return;disposed=true;offLocale();toolbar.unmount();for(const release of listeners)release();listeners.length=0;if(currentTools===tools)currentTools=null;}};
+  const tools={toolbar,chatIntegration,get toolFocusTarget(){return disposed?null:pill;},closeRequest:target=>{if(disposed||sessionRoot.contains(target)||header?.contains(target))return false;toolbar.conceal();return true;},unmount(){if(disposed)return;disposed=true;offLocale();toolbar.unmount();for(const release of listeners)release();listeners.length=0;if(currentTools===tools)currentTools=null;}};
   currentTools=tools;resolveTools(tools);return tools;
 }

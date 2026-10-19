@@ -21,6 +21,7 @@ for(const file of ['interaction-craft.css','interface-tokens.css','interaction-c
 assets.set('/reading-preferences.mjs',['app/reading-preferences.mjs','text/javascript']);
 assets.set('/personal-records.mjs',['app/personal-records.mjs','text/javascript']);
 assets.set('/reading-chat-scope.mjs',['app/reading-chat-scope.mjs','text/javascript']);
+for(const file of ['reading-chat-quote.mjs','reading-chat-input.mjs','reader-chat-workspace.mjs','reader-chat-workspace.css'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/personal-record-editor.mjs',['app/personal-record-editor.mjs','text/javascript']);
 assets.set('/toolbar-placement.mjs',['app/toolbar-placement.mjs','text/javascript']);
 assets.set('/note-drafts.mjs',['app/note-drafts.mjs','text/javascript']);

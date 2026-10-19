@@ -1,4 +1,6 @@
-import {t,getUiLocale,uiHref} from './ui-locale.mjs';
+import {readingChatQuoteFromExcerpt} from './reading-chat-quote.mjs';
+import {t,getUiLocale,uiHref,onUiLocaleChange} from './ui-locale.mjs';
+import {mountReaderChatWorkspace} from './reader-chat-workspace.mjs';
 import {readerLoginUrl} from './reader-return.mjs';
 import {mountReaderCompanion,mountCompanionAnchor} from './reader-companion.mjs';
 import {mountLibraryChat} from './library-chat.mjs';
@@ -16,21 +18,21 @@ export function readerConversationContext(reader,bookId){
   return {book,passages,passageId:passages.has(selected)?selected:passages.has(anchor)?anchor:null};
 }
 
-export function mountReaderConversation({bookId,session,getReader,root,request=fetch,navigate=url=>location.assign(url),replace=url=>location.replace(url),mountChat=mountLibraryChat,mountCompanion=mountReaderCompanion,integration=null}){
+export function mountReaderConversation({bookId,session,getReader,root,request=fetch,navigate=url=>location.assign(url),replace=url=>location.replace(url),mountChat=mountLibraryChat,mountCompanion=mountReaderCompanion,integration=null,announce=()=>{}}){
   if(!bookId||!root)return null;
-  let chat,companion,disposed=false;
+  let chat,companion,workspace,disposed=false;
   const events=globalThis.document,listeners=[];
   const on=(name,handler)=>{events.addEventListener(name,handler);listeners.push(()=>events.removeEventListener(name,handler));};
   const requireActive=()=>{if(disposed)throw Object.assign(Error('Conversation disposed'),{code:'READER_CONVERSATION_DISPOSED'});};
   const openAuth=()=>{if(disposed)return;const passageId=context()?.passageId;navigate(readerLoginUrl({bookId,passageId,ui:getUiLocale()}));};
   let disposeChat;
-  const dispose=()=>{if(disposed)return;disposed=true;for(const remove of listeners)remove();companion?.dispose();disposeChat?.();externalLauncher?.position?.dispose();};
+  const dispose=()=>{if(disposed)return;disposed=true;for(const remove of listeners)remove();companion?.dispose();disposeChat?.();workspace?.dispose();externalLauncher?.position?.dispose();};
   const sessionChanged=()=>{requireActive();companion?.dispose();chat?.reset();dispose();events.dispatchEvent(new CustomEvent('reader:session-changed'));replace(uiHref('/library'));throw Object.assign(Error(t('conversation.accountChanged')),{status:409});};
   // GET-184: one injected seam bundle is split into exactly four contracts —
   // the chat-owned AI trigger host, the companion bubble anchor (shared pill),
   // the focus-return callback and the unread callback. No launcher DOM, drag or
   // ARIA is ever attached to the shared pill.
-  const externalLauncher=integration?{anchor:integration.companionAnchor,triggerHost:integration.triggerHost,focusReturn:integration.focusReturn,onOpen:integration.onOpen,position:mountCompanionAnchor({anchor:integration.companionAnchor})}:null;
+  const externalLauncher=integration?{anchor:integration.companionAnchor,triggerHost:integration.triggerHost,focusReturn:integration.focusReturn,onOpen:()=>integration.onOpen?.(),position:mountCompanionAnchor({anchor:integration.companionAnchor})}:null;
 
   const context=()=>disposed?null:readerConversationContext(getReader(),bookId);
   const api=async(url,data,options={})=>{
@@ -44,12 +46,26 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
     return value;
   };
   chat=mountChat({root,api,getSession:()=>session,getOwner:()=>session?.user?.id||null,getBooks:()=>{const current=context();return current?[current.book]:[];},getCurrentBook:()=>bookId,getCurrentPassage:()=>context()?.passageId||null,externalLauncher,
-    openAuth,
+    openAuth,onViewChange:opened=>{if(opened)getReader()?.closeNotes?.();workspace?.setOpen(opened);},
     onNavigateToPassage:(targetBook,passageId)=>{
       const current=context();if(targetBook!==bookId||!current?.passages.has(passageId))return false;
-      const reader=getReader();reader.dismissTools?.();reader.goToPassage(passageId);return true;
+      const reader=getReader();if(workspace?.isMobile())chat.close();reader.dismissTools?.();reader.goToPassage(passageId);return true;
     }
   });
+  chat.quoteSelection=()=>{
+    if(disposed)return false;if(!session?.user){openAuth();return false;}
+    const reader=getReader(),book=reader?.getBook?.();let snapshot;
+    try{
+      if(!reader?.isSelectionActive?.())throw Error('missing');
+      snapshot=reader.getExcerpt?.()||reader.getAudioSelection?.();
+      if(!snapshot||reader.isQuoteVisible&&!reader.isQuoteVisible(snapshot)||snapshot.parts.some(part=>!reader.isPassageVisible?.(part.passageId)))throw Error('missing');
+      const quote=readingChatQuoteFromExcerpt(snapshot,book);
+      if(!chat.quote?.(quote)){announce(t('chat.quote.busy'));return false;}
+      reader.dismissTools?.();return true;
+    }catch{announce(t(snapshot?.parts?.reduce((n,part)=>n+(part.text?.length||0),0)>2000?'chat.quote.tooLong':snapshot?'chat.quote.changed':'chat.quote.unavailable'));return false;}
+  };
+  workspace=mountReaderChatWorkspace({root,getReader,labels:{resize:t('chat.resize')}});
+  listeners.push(onUiLocaleChange(()=>workspace.setLabels({resize:t('chat.resize')})));
   if(typeof chat.surface==='function')companion=mountCompanion({bookId,getOwner:()=>session?.user?.id||null,getReader,api,chat,openAuth,integration:integration?{anchor:integration.companionAnchor,onUnread:integration.onUnread,onFocusReturn:integration.focusReturn}:null});
   on('reader:ready',()=>{if(!disposed)chat.update();});
   on('reader:audio-question',event=>{

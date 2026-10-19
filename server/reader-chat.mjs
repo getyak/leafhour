@@ -1,3 +1,5 @@
+import {normalizeReadingChatQuote,validateCurrentReadingChatQuote} from '../app/reading-chat-quote.mjs';
+import {encodeReadingChatInput} from '../app/reading-chat-input.mjs';
 import {mkdir,readFile,writeFile,rename,stat,unlink,rmdir,readdir} from 'node:fs/promises';
 import path from 'node:path';
 import {randomUUID,createHash} from 'node:crypto';
@@ -17,7 +19,7 @@ const bytes=value=>Buffer.byteLength(JSON.stringify(value));
 const text=(value,max)=>typeof value==='string'&&value.trim().length>0&&value.length<=max&&value.isWellFormed();
 const safeId=value=>typeof value==='string'&&/^[A-Za-z0-9][A-Za-z0-9_-]{0,119}$/.test(value);
 const identity=user=>{if(!text(user?.id,256)||user.is_anonymous)throw invalid('请先进入自己的书房',401);return user;};
-const publicTurn=turn=>structuredClone({id:turn.id,passageId:turn.passageId,contentVersion:turn.contentVersion,...(turn.scopeRevision!==undefined?{scopeRevision:turn.scopeRevision}:{}),text:turn.text,origin:turn.kind==='companion'?'ai':'user',...(turn.kind==='companion'?{kind:'companion'}:{}),createdAt:turn.createdAt,status:turn.status,answer:turn.answer,activity:safeActivity(turn.activity),...(turn.error?{error:turn.error}:{})});
+const publicTurn=turn=>structuredClone({id:turn.id,passageId:turn.passageId,contentVersion:turn.contentVersion,...(turn.scopeRevision!==undefined?{scopeRevision:turn.scopeRevision}:{}),text:turn.text,...(turn.quote!==undefined?{quote:turn.quote}:{}),origin:turn.kind==='companion'?'ai':'user',...(turn.kind==='companion'?{kind:'companion'}:{}),createdAt:turn.createdAt,status:turn.status,answer:turn.answer,activity:safeActivity(turn.activity),...(turn.error?{error:turn.error}:{})});
 const safeActivity=value=>(Array.isArray(value)?value:[]).slice(-48).map(item=>Object.fromEntries(['tool','label','status','bookId','chapterId'].filter(key=>typeof item[key]==='string'&&item[key].length<=200).map(key=>[key,item[key]])));
 const empty=bookId=>({kind:'marginalia-reader-chat',schemaVersion:1,bookId,turns:[]});
 
@@ -35,7 +37,7 @@ function contextFor(book,index,passageId,position){
 }
 
 function conversationHistory(turns,scope={mode:'book'},contentVersion){
-  const pairs=turns.filter(t=>t.status==='completed'&&typeof t.answer?.summary==='string'&&(!contentVersion||t.contentVersion===contentVersion)&&(scope.mode==='library'||t.scope==='book')).slice(-6).map(t=>t.kind==='companion'?[{role:'assistant',content:t.answer.summary}]:[{role:'user',content:t.text},{role:'assistant',content:t.answer.summary}]);
+  const pairs=turns.filter(t=>t.status==='completed'&&typeof t.answer?.summary==='string'&&(!contentVersion||t.contentVersion===contentVersion)&&(scope.mode==='library'||t.scope==='book')).slice(-6).map(t=>t.kind==='companion'?[{role:'assistant',content:t.answer.summary}]:[{role:'user',content:t.text,...(t.quote?{quote:t.quote}:{})},{role:'assistant',content:t.answer.summary}]);
   while(pairs.length&&bytes(pairs.flat())>24576)pairs.shift();
   return pairs.flat();
 }
@@ -153,24 +155,32 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
   async function send(user,bookId,input){
     const book=await bookFor(user,bookId);
     if(!input||!safeId(input.id)||!text(input.text,2000)||!text(input.contentVersion,256)||!text(input.passageId,128))throw invalid('请提交当前段落中不超过 2,000 字的提问');
-    const index=sourceIndex(book);if(!index.byId.has(input.passageId))throw invalid('这段原文不存在');
-    if(input.contentVersion!==book.contentVersion)throw invalid('原文版本已变化，请重新打开这一段',409);
-    const initial=await read(filename(user,bookId),empty(bookId));
-    if(!initial.turns.some(turn=>turn.id===input.id))checkChatScopeRevision(readChatScope(initial.scope),input);
-    await companion.pause(user,bookId);
+    // Normalize without current-source validation: exact terminal retries are
+    // historical receipts and survive later account translation edits.
+    input={...input,...(input.quote!==undefined?{quote:normalizeReadingChatQuote(input.quote)}:{})};
+    const index=sourceIndex(book);
     const runId=randomUUID(),now=clock();
     const claimed=await mutateBook(user,bookId,data=>{
       const old=data.turns.find(t=>t.id===input.id);
-      if(old){if(old.passageId!==input.passageId||old.text!==input.text||old.contentVersion!==input.contentVersion||(old.scopeRevision??0)!==(input.scopeRevision??0))throw invalid('重复提交标识与原提问或查阅范围不一致',409);if(old.status==='running')throw invalid('这次提问正在回答，请稍后查看',409);return {created:false,turn:publicTurn(old)};}
+      if(old){if(old.passageId!==input.passageId||old.text!==input.text||old.contentVersion!==input.contentVersion||(old.scopeRevision??0)!==(input.scopeRevision??0)||!valueEqual(old.quote??null,input.quote??null))throw invalid('重复提交标识与原提问或查阅范围不一致',409);if(old.status==='running')throw invalid('这次提问正在回答，请稍后查看',409);return {created:false,turn:publicTurn(old)};}
+      if(!index.byId.has(input.passageId))throw invalid('这段原文不存在');
+      if(input.contentVersion!==book.contentVersion)throw invalid('原文版本已变化，请重新打开这一段',input.quote?422:409);
+      if(input.quote!==undefined){try{validateCurrentReadingChatQuote(input.quote,book);if(input.quote.parts[0].passageId!==input.passageId)throw Error('context');}catch{throw invalid('所选文字已变化，请移除或重新选择后再提问。',422);}}
       const scope=readChatScope(data.scope);checkChatScopeRevision(scope,input);
+      const selected=index.byId.get(input.passageId),location={book:{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title},passageId:input.passageId,chapterId:selected.chapterId,chapterTitle:book.chapters.find(c=>c.id===selected.chapterId)?.title||null,text:input.text,...(input.quote?{quote:input.quote}:{})};
+      // Preflight the actual shared encoder before claim/comment/quota/pause.
+      encodeReadingChatInput(location);
+
       if(closed||typeof generator!=='function')throw invalid('阅读对话服务尚未配置',503);
-      if(data.turns.some(t=>t.status==='running'))throw invalid('这本书还有一条提问正在回答',409);
+      if(data.turns.some(t=>t.status==='running'&&t.kind!=='companion'))throw invalid('这本书还有一条提问正在回答',409);
       if(data.turns.length>=MAX_TURNS)throw invalid('这本书的对话记录已达上限，请先保留导出备份',413);
-      const turn={id:input.id,passageId:input.passageId,contentVersion:input.contentVersion,text:input.text,origin:'user',createdAt:new Date(now).toISOString(),status:'running',answer:null,activity:[],runId,expiresAt:now+RUN_MS,scope:scope.mode,scopeRevision:scope.revision};
+      const turn={id:input.id,passageId:input.passageId,contentVersion:input.contentVersion,text:input.text,...(input.quote?{quote:input.quote}:{}),origin:'user',createdAt:new Date(now).toISOString(),status:'running',answer:null,activity:[],runId,expiresAt:now+RUN_MS,scope:scope.mode,scopeRevision:scope.revision};
       const history=conversationHistory(data.turns,scope,book.contentVersion);
-      data.turns.push(turn);return {created:true,turn:publicTurn(turn),history,scope};
+      const paused=data.turns.filter(t=>t.kind==='companion'&&t.status==='running').map(t=>{t.status='cancelled';t.answer=null;return t.id;});
+      data.turns.push(turn);return {created:true,turn:publicTurn(turn),history,scope,paused};
     });
     if(!claimed.created)return claimed.turn;
+    for(const run of active.values())if(run.user.id===user.id&&run.bookId===bookId&&claimed.paused.includes(run.id))run.controller.abort();
     const controller=new AbortController(),key=runId;
     const running={controller,user,bookId,id:input.id,runId};active.set(key,running);
     let timer,ticket=null,stopWatching=()=>{},phase='record-question';
@@ -202,7 +212,7 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
       };
       const tools=createReadingAgentTools({library,user,bookId,passageId:input.passageId,scope:claimed.scope.mode,signal:controller.signal,onActivity});
       const selected=index.byId.get(input.passageId);
-      phase='generation';const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'conversation',book:{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title},passageId:input.passageId,chapterId:selected.chapterId,chapterTitle:book.chapters.find(c=>c.id===selected.chapterId)?.title||null,text:input.text,history:claimed.history,runId,signal:controller.signal,tools})),abort]);
+      phase='generation';const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'conversation',book:{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title},passageId:input.passageId,chapterId:selected.chapterId,chapterTitle:book.chapters.find(c=>c.id===selected.chapterId)?.title||null,text:input.text,...(input.quote?{quote:input.quote}:{}),history:claimed.history,runId,signal:controller.signal,tools})),abort]);
       phase='verify-source';
       if(candidate?.kind!=='conversation'||!text(candidate.summary,12000))throw invalid('回答内容无效');
       await tools.verify();
@@ -210,6 +220,7 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
       if(bytes(answer)>96000||bytes(answer.sourceRefs)>32000)throw invalid('回答引用过长');
       phase='verify-version';const fresh=await bookFor(user,bookId);
       if(fresh.contentVersion!==book.contentVersion||sourceIndex(fresh).byId.get(input.passageId)?.original!==index.byId.get(input.passageId)?.original)throw invalid('原文版本已变化',409);
+      if(input.quote)validateCurrentReadingChatQuote(input.quote,fresh);
       if(controller.signal.aborted)throw invalid('回答已取消',408);
       phase='save-answer';return await finish(user,bookId,input.id,runId,{status:'completed',answer});
     }catch(error){
@@ -236,7 +247,7 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
   }
   function mergeHistory(data,turns,book,books,storedBook){
     for(const incoming of turns){const existing=data.turns.find(t=>t.id===incoming.id);
-      if(existing){if(existing.passageId!==incoming.passageId||existing.contentVersion!==incoming.contentVersion||existing.text!==incoming.text||(existing.kind==='companion')!==(incoming.kind==='companion')||incoming.status==='completed'&&(existing.status!=='completed'||!valueEqual(portableChatTurns({...empty(book.bookId),turns:[exportChatTurn(publicTurn(existing),storedBook)]},book,books)[0].answer,incoming.answer)))throw invalid('备份对话标识与已有历史冲突，未覆盖记录',409);}
+      if(existing){if(existing.passageId!==incoming.passageId||existing.contentVersion!==incoming.contentVersion||existing.text!==incoming.text||!valueEqual(existing.quote??null,incoming.quote??null)||(existing.kind==='companion')!==(incoming.kind==='companion')||incoming.status==='completed'&&(existing.status!=='completed'||!valueEqual(portableChatTurns({...empty(book.bookId),turns:[exportChatTurn(publicTurn(existing),storedBook)]},book,books)[0].answer,incoming.answer)))throw invalid('备份对话标识与已有历史冲突，未覆盖记录',409);}
     }
     const missing=turns.filter(t=>!data.turns.some(old=>old.id===t.id));if(data.turns.length+missing.length>MAX_TURNS)throw invalid('恢复后对话超过 100 条，请在本机整理',413);
     // Imported history cannot silently become context for the narrower book scope.
