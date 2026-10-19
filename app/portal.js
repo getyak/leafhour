@@ -22,11 +22,12 @@ import {mountShelfDrag,moveShelfBook} from './shelf-order.mjs';
 import {mountIncrementalShelf} from './library-incremental.mjs';
 import './site-appearance.mjs';
 import {trackActionFocus} from './action-focus.mjs';
+import {mountHomeNavigation,isHomeNavRoute} from './home-navigation.mjs';
 const $=id=>document.getElementById(id);
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const ownerScope=createOwnerScope();
 let refreshGeneration=0,pdfOnboarding=null,followedPdfId=null;
-let session=null,books=[],shelfControls=null,selectedCurrent=null,pendingUpload=false,pendingChat=false,upload=createUploadState(),shell=null,chat=null,dashboard=null,bookActions=null,shelfDrag=null,setupInvite=null,shelfRevision=0,orderOperation=null;
+let session=null,books=[],shelfControls=null,selectedCurrent=null,pendingUpload=false,pendingChat=false,upload=createUploadState(),shell=null,chat=null,dashboard=null,bookActions=null,shelfDrag=null,setupInvite=null,shelfRevision=0,orderOperation=null,homeMenu=null;
 // GET-179: one pure view codec plus one explicit lifecycle adapter own the
 // library URL; overlays open/close/tab only through these explicit hooks.
 let viewHistory=null,bootstrapped=false,syncingOverlay=false;
@@ -72,7 +73,11 @@ const openAuth=message=>authDialog.open(typeof message==='string'?message:undefi
 $('auth-dialog').addEventListener('close',()=>{pendingChat=false;});
 const ensureUser=()=>{if(session?.user)return true;openAuth();return false;};
 const getOwner=()=>{const t=ownerScope.capture();return t.owner+':'+t.revision;};
-window.marginaliaPaletteAdapter={getOwner:()=>session?.user?.id||null};
+window.marginaliaPaletteAdapter={getOwner:()=>session?.user?.id||null,getOwnerToken:()=>{const t=ownerScope.capture();return t.owner+':'+t.revision;}};
+// GET-188 one authored-home navigation controller on the five authored home
+// routes; the canonical library keeps its own shell. The palette handoff is the
+// explicit document port into the one existing bootstrap instance.
+if(isHomeNavRoute(location.pathname))homeMenu=mountHomeNavigation({document,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture(),openAuth,openPalette:opener=>{document.dispatchEvent(new CustomEvent('palette:open',{detail:opener}));}});
 dashboard=mountReadingDashboard({root:$('reading-dashboard'),overviewRoot:$('reading-overview'),historyRoot:$('reading-history'),api,getSession:()=>session,getBooks:()=>books,getOwner,openAuth,refresh,onCurrentBook:book=>{selectedCurrent=book?.bookId||null;renderBooks();},onOverlay:overlay=>openOverlayFor(overlay),onClose:kind=>closeOverlayFor(kind,'user')});
 if(isLibrary){shelfControls=mountShelfFilters({root:$('library-filter-controls'),onOpenChange:open=>{if(open)openOverlayFor({kind:'filter'});else closeOverlayFor('filter','dismiss');},onChange:action=>{shelfDrag?.reset();if(!viewHistory){renderBooks();return;}if(action.patch)viewHistory.setView(action.patch);else if(action.clear)viewHistory.clearView(action.clear);else if(action.clearAll)viewHistory.clearAll();}});chat=mountLibraryChat({root:$('library-chat'),api,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture().owner,openAuth:message=>{pendingChat=true;openAuth(message);},getCurrentBook:()=>dashboard.getCurrentBook(),positionLauncher:launcher=>mountSquirrelPosition({launcher})});shell=mountLibraryShell({getSession:()=>session,api,getBooks:()=>books,getCurrentBook:()=>dashboard.getCurrentBook(),inboxRoot:$('daily-reading-inbox'),onRestored:()=>refresh(),onProfileUpdated:(profile,userId)=>{if(session?.user?.id!==userId)return;Object.assign(session.user,profile);shell.update();},onReadingPreferencesSaved:saved=>{if(session)session.readingPreferences=saved;setupInvite?.update();},openAuth,onLogout:signOut,onHistory:()=>dashboard.openHistory(),onOpenChat:()=>chat.open(),onSettingsOpen:tab=>openOverlayFor({kind:'settings',tab}),onSettingsClose:()=>closeOverlayFor('settings','user'),onSettingsTab:tab=>{const current=viewHistory?.snapshot().overlay;if(current?.kind==='settings'&&current.tab!==tab)openOverlayFor({kind:'settings',tab});}});setupInvite=mountReadingSetupInvite({root:$('reading-setup-invite'),api,getSession:()=>session,openSettings:tab=>shell.openSettings(tab),onSaved:saved=>{if(session)session.readingPreferences=saved;setupInvite?.update();},onError:message=>status('library-status',message,true)});bookActions=mountLibraryBookActions({api,getSession:()=>session,getBooks:()=>libraryShelf(books),getOwner,getRevision:()=>shelfRevision,setRevision:value=>{shelfRevision=value;},onReorder:saveShelfOrder,onChanged:()=>refresh(),openAuth,onOverlay:overlay=>openOverlayFor(overlay),onClose:(kind,reason)=>{if(kind==='trash')closeOverlayFor('trash',reason);}});shelfDrag=mountShelfDrag({grid:$('library-books'),getBooks:()=>libraryShelf(books),getOwner,onReorder:saveShelfOrder,onError:error=>status('library-status',error.message,true)});$('library-trash').addEventListener('click',()=>{shell.closeNavigation();bookActions.trash();});}else roomIcons();
 if(isLibrary)viewHistory=createLibraryViewHistory({window,onChange:(snapshot,meta)=>{
@@ -83,6 +88,9 @@ if(isLibrary)viewHistory=createLibraryViewHistory({window,onChange:(snapshot,met
 const shelfList=isLibrary?mountIncrementalShelf({grid:$('library-books'),controls:$('shelf-more'),renderItem:bookCard}):null;
 pdfOnboarding=mountPdfOnboarding({document,root:$('pdf-ingestion-jobs'),api,getSession:()=>session,capture:()=>ownerScope.capture(),isCurrent:ticket=>ownerScope.isCurrent(ticket),onOpen:bookId=>{location.href='/read?book='+encodeURIComponent(bookId);},onDone:job=>{if(followedPdfId===job.id&&$('upload-dialog').open){pdfOnboarding.opened(job);location.href='/read?book='+encodeURIComponent(job.bookId);}else refresh().catch(error=>status('library-status',error.message,true));}});
 function clearPrivateUI({keepAuthDialog=false,preserveView=false}={}){
+  // GET-188: the optional home resume row is removed synchronously at the
+  // owner transition, before any slower reconciliation can repaint it.
+  homeMenu?.clear(ownerScope.capture());
   // GET-178 owner boundary: every real account transition clears any open
   // command-palette cache and rendered private results synchronously.
   invalidatePaletteLibraries();
@@ -138,14 +146,25 @@ function renderBooks(){
 }
 async function refresh(knownSession){
   const generation=++refreshGeneration,arrivalTicket=isLibrary?dashboard.begin():null;
+  // GET-188: every refresh generation clears the optional home resume rows
+  // synchronously at its start; they return only after this generation's books
+  // assignment and validated guest resume hydration, never from stale data.
+  homeMenu?.clear(ownerScope.capture());
   try{
   const next=knownSession||await api('/api/auth/session');if(generation!==refreshGeneration)return;
   const continueUpload=!session?.user&&next.user&&pendingUpload,continueChat=!session?.user&&next.user&&pendingChat,changed=ownerScope.adopt(next.user?.id||'guest');session=next;
+  // GET-188: identity rows follow the settled session immediately, independent
+  // of the optional library request below.
+  homeMenu?.updateIdentity(ownerScope.capture());
   if(changed){clearPrivateUI({keepAuthDialog:authDialog.isSettingPasswordFor(next.user?.id),preserveView:!bootstrapped});pendingUpload=!!continueUpload;pendingChat=!!continueChat;}authDialog.updateCapabilities();shell?.update();setupInvite?.update();
   $('account-button').textContent=homeText(session.user?'我的书房 ↗':'登录 / 注册 ↗',homeLocale(document));$('library-description').textContent=homeText(session.user?'自己的书与阅读记录。':'先选一本书，读几页。',homeLocale(document));
   const library=await api('/api/library');if(generation!==refreshGeneration)return;books=library.books;shelfRevision=library.shelfRevision||0;
   if(!session.user){try{const order=JSON.parse(localStorage.getItem('marginalia-shelf-order:guest')||'null');if(Array.isArray(order)&&order.length<=1000){const rank=new Map(order.filter(id=>typeof id==='string').map((id,index)=>[id,index]));if(rank.size)books=books.map((book,index)=>({...book,shelfPosition:rank.get(book.bookId)??order.length+index}));}}catch{}}
   if(!session.user)for(const book of books){try{const local=JSON.parse(localStorage.getItem(positionStorageKey(book.bookId))||'null');if(local?.passageId&&local.chapterLabel&&local.contentVersion===book.source.sha256)book.resume={label:local.chapterLabel,passageId:local.passageId,updatedAt:local.updatedAt,mode:local.mode,variant:local.variant};}catch{}}
+  // GET-188: the menu rows render only after the current refresh generation,
+  // books assignment and validated guest resume hydration, against the exact
+  // captured owner revision.
+  homeMenu?.update(ownerScope.capture());
   $('library-retry').hidden=true;status('library-status','');renderBooks();$('featured-books').replaceChildren(...books.filter(b=>b.visibility==='public').slice(0,3).map(landingBookCard));
   pdfOnboarding.refresh();if(isLibrary){dashboard.update(arrivalTicket);shell.refreshDaily();}
   bootstrapped=true;

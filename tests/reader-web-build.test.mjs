@@ -73,3 +73,43 @@ test('external reader modules require the release allowlist and only resolve fro
   assert.ok(result.inputs.includes('app/command-palette.mjs'),'a palette import from another caller must remain bundled');
  }finally{await rm(root,{recursive:true,force:true});}
 });
+
+test('the authored-home navigation stays outside the reader graph and the fixed budgets hold',async()=>{
+ const {buildReaderWeb}=await import('../tools/build-reader-web.mjs'),root=path.resolve(import.meta.dirname,'..'),out=await mkdtemp(path.join(tmpdir(),'leafhour-home-nav-web-'));
+ try{
+  const result=await buildReaderWeb({root,outputDir:out,html:await readFile(path.join(root,'app/index.html'),'utf8')});
+  for(const file of ['home-navigation.mjs','home-navigation.css','home-locale.mjs','home.html'])assert.ok(!result.inputs.includes('app/'+file),file+' stays outside the reader graph');
+  for(const file of result.files){const bytes=await readFile(path.join(out,file));assert.ok(bytes.length<=(file.endsWith('.js')?320:200)*1024,file+' exceeds the fixed public asset budget');}
+ }finally{await rm(out,{recursive:true,force:true});}
+});
+
+test('the exact palette retry edge is the one amended external import and stays fenced everywhere else',async()=>{
+ const {buildReaderWeb}=await import('../tools/build-reader-web.mjs'),root=await realpath(await mkdtemp(path.join(tmpdir(),'leafhour-palette-retry-')));
+ const html='<head><script type="module" src="/reader.js"></script><script type="module" src="/reader-translation.js"></script><script type="module" src="/palette-bootstrap.mjs"></script><link rel="stylesheet" href="/styles.css"></head>';
+ const base={'reader.js':'console.log("boot");','reader-translation.js':'export {};','styles.css':'body{color:#123}','command-palette.mjs':'export const palette={lazy:true};'};
+ const allow=[...Object.keys(base).map(file=>'app/'+file),'app/palette-bootstrap.mjs'];
+ try{
+  await mkdir(path.join(root,'app'));
+  const write=async(files,allowed)=>{await writeFile(path.join(root,'release-files.json'),JSON.stringify(allowed));for(const file of Object.keys(base))if(!(file in files))files[file]=base[file];for(const [file,contents]of Object.entries(files))await writeFile(path.join(root,'app',file),contents);};
+  // 1. the exact retry URL from the bundled bootstrap, dynamic-import kind: allowed, same release entry.
+  const lazyEdge=(name,specifier)=>'export const '+name+'=()=>import('+JSON.stringify(specifier)+');';
+  await write({'palette-bootstrap.mjs':lazyEdge('open','./command-palette.mjs')+lazyEdge('retry','./command-palette.mjs?retry=1')+'console.log(open,retry);'},allow);
+  const built=await buildReaderWeb({root,outputDir:path.join(root,'out'),html});
+  assert.ok(!built.inputs.includes('app/command-palette.mjs'),'the retry edge stays external like the original edge');
+  const js=await readFile(path.join(root,'out',built.files.find(file=>file.endsWith('.js'))),'utf8');
+  assert.match(js,/import\(["']\/command-palette\.mjs\?retry=1["']\)/,'the exact retry URL survives as its own external edge');
+  assert.match(js,/import\(["']\/command-palette\.mjs["']\)/,'the original lazy edge is unchanged');
+  // 2. no other query is resolvable.
+  await write({'palette-bootstrap.mjs':lazyEdge('retry','./command-palette.mjs?retry=2')+'console.log(retry);'},allow);
+  await assert.rejects(buildReaderWeb({root,outputDir:path.join(root,'out2'),html}),/Non-public lazy reader module/,'a different query stays rejected by policy');
+  // 3. no other caller may use the retry edge.
+  await write({'reader.js':lazyEdge('retry','./command-palette.mjs?retry=1')+'console.log(retry);','palette-bootstrap.mjs':'export const open=()=>null;'},allow);
+  await assert.rejects(buildReaderWeb({root,outputDir:path.join(root,'out3'),html}),/Non-public lazy reader module/,'the retry edge is exclusive to palette-bootstrap.mjs');
+  // 4. the retry edge exists only as a dynamic import.
+  await write({'palette-bootstrap.mjs':'import '+JSON.stringify('./command-palette.mjs?retry=1')+';export const open=()=>null;'},allow);
+  await assert.rejects(buildReaderWeb({root,outputDir:path.join(root,'out4'),html}),/Non-public lazy reader module/,'a static retry import stays rejected');
+  // 5. the same release entry backs the retry edge.
+  await write({'palette-bootstrap.mjs':lazyEdge('retry','./command-palette.mjs?retry=1')+'console.log(retry);'},allow.filter(file=>file!=='app/command-palette.mjs'));
+  await assert.rejects(buildReaderWeb({root,outputDir:path.join(root,'out5'),html}),/Non-public lazy reader module/,'without the shared release entry nothing is externalized');
+ }finally{await rm(root,{recursive:true,force:true});}
+});

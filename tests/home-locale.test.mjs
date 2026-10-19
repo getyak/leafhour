@@ -87,6 +87,29 @@ test('dynamic sign-in counts and book labels localize per language',()=>{
   assert.equal(homeText('任意文本','zh-Hans'),'任意文本');
 });
 
+test('every static menu sheet control keeps explicit four-language authored copy',()=>{
+  const menuLabels={
+    'en':{open:'Open navigation menu',close:'Close menu',signIn:'Sign in / Sign up',search:'Search and commands',resume:'Continue reading',title:'Main navigation'},
+    'zh-Hans':{open:'打开导航菜单',close:'关闭菜单',signIn:'登录 / 注册',search:'搜索与命令',resume:'继续阅读',title:'主导航'},
+    'zh-Hant':{open:'開啟導覽選單',close:'關閉選單',signIn:'登入 / 註冊',search:'搜尋與命令',resume:'繼續閱讀',title:'主導覽'},
+    'ja':{open:'ナビゲーションメニューを開く',close:'メニューを閉じる',signIn:'ログイン / 登録',search:'検索とコマンド',resume:'読み続ける',title:'メインナビゲーション'}
+  };
+  assert.deepEqual(Object.keys(menuLabels),homeLocales.map(row=>row.code),'the four authored languages each own the sheet copy');
+  for(const locale of homeLocales){
+    const html=homeDocument(source,locale.code),labels=menuLabels[locale.code];
+    const trigger=(html.match(/<button[^>]*id="home-menu-trigger"[^>]*>/)||[])[0]||'';
+    assert.ok(trigger.includes('aria-label="'+labels.open+'"'),locale.code+' menu trigger label');
+    const close=(html.match(/<button[^>]*data-close="home-menu"[^>]*>/)||[])[0]||'';
+    assert.ok(close.includes('aria-label="'+labels.close+'"'),locale.code+' menu close label');
+    const signIn=(html.match(/<button[^>]*id="home-menu-signin"[^>]*>[\s\S]*?<\/button>/)||[])[0]||'';
+    assert.ok(signIn.includes(labels.signIn),locale.code+' menu sign-in label');
+    const search=(html.match(/<button[^>]*id="home-menu-search"[^>]*>[^<]*/)||[])[0]||'';
+    assert.ok(search.includes(labels.search),locale.code+' menu search label');
+    assert.ok(html.includes('<span class="home-menu-resume-label">'+labels.resume+'</span>'),locale.code+' menu resume label');
+    assert.ok(html.includes('<h2 id="home-menu-title">'+labels.title+'</h2>'),locale.code+' menu serif title');
+  }
+});
+
 test('unknown sign-in service messages keep a readable localized fallback',()=>{
   assert.equal(authErrorText('请设置至少 8 个字符的密码','ja'),'8 文字以上のパスワードを設定してください。');
   assert.equal(authErrorText('未来的服务端消息','en'),'Unable to complete sign-in. Please try again or choose another sign-in method.');

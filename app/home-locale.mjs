@@ -15,6 +15,8 @@ const strings=[
   ['阅读的方法','How to read','閱讀的方法','読み方'],
   ['自己的书房','Your room','自己的書房','自分の書斎'],
   ['切换界面语言','Language','語言','表示言語'],
+  ['打开导航菜单','Open navigation menu','開啟導覽選單','ナビゲーションメニューを開く'],
+  ['关闭菜单','Close menu','關閉選單','メニューを閉じる'],
   // Hero and reading promise
   ['留一点时间，读进一本书。','Make a little time. Settle into a book.','留一點時間，讀進一本書。','少しの時間をとって、一冊の本に向き合う。'],
   ['原文、译文和自己的思考，<br>各有自己的位置。','The original, the translation, your thoughts.<br>Each has a place of its own.','原文、譯文和自己的思考，<br>各有自己的位置。','原文、訳文、そして自分の考え。<br>それぞれの居場所があります。'],

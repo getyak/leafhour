@@ -7,6 +7,14 @@ import {validReleasePath,exportRelease,releaseCommit,releaseFiles} from '../tool
 import {fileURLToPath} from 'node:url';
 
 const commit='a'.repeat(40);
+function assertLocalModuleRelease(file,source,allowed){
+  for(const match of source.matchAll(/\b(?:from\s*|import\s*(?:\(\s*)?)(['"`])(\.{1,2}\/[^'"`]+)\1/g)){
+    // A module URL's query/hash does not name another release file. Retain
+    // template-literal coverage too, so changing delimiters cannot evade it.
+    const dependency=path.posix.normalize(path.posix.join(path.posix.dirname(file),match[2].split(/[?#]/,1)[0]));
+    assert.ok(allowed.has(dependency),file+' imports missing release file '+dependency);
+  }
+}
 async function fixture(t,files){const root=await mkdtemp(path.join(tmpdir(),'release-test-'));t.after(()=>rm(root,{recursive:true,force:true}));await writeFile(path.join(root,'release-files.json'),JSON.stringify(files));return root;}
 test('publication rejects private paths, credentials, traversal and private document formats',()=>{
   for(const file of ['local/note.json','content/book.json','_briefs/plan.md','docs/verification/proof.md','docs/superpowers/plan.md','.env','.env.audio','.env.local','.env.hosted.example','deploy/.env.example','deploy/.env.production','original.pdf','signing.pem','../secret','/etc/passwd','app/../local/book','app\\secret'])assert.equal(validReleasePath(file),false,file);
@@ -36,16 +44,21 @@ test('hosted source metadata works without Git history and cannot fall back from
   assert.equal(await releaseCommit(root,{sourceCommit}),sourceCommit);
   await assert.rejects(releaseCommit(root,{sourceCommit:'invalid'}),/Invalid release source commit/);
 });
+test('release import coverage checks query-backed files and static template imports',()=>{
+  const source=(quote,specifier)=>'export const load=()=>import('+quote+specifier+quote+');';
+  for(const quote of ["'",'"','`']){
+    assert.doesNotThrow(()=>assertLocalModuleRelease('app/loader.mjs',source(quote,'./palette.mjs?retry=1'),new Set(['app/palette.mjs'])));
+    assert.doesNotThrow(()=>assertLocalModuleRelease('app/loader.mjs',source(quote,'../shared.mjs#entry'),new Set(['shared.mjs'])));
+    assert.throws(()=>assertLocalModuleRelease('app/loader.mjs',source(quote,'./missing.mjs?retry=1'),new Set(['app/palette.mjs'])),/missing release file/);
+  }
+});
 test('the release snapshot contains local module imports and reader page assets',async()=>{
   const root=fileURLToPath(new URL('..',import.meta.url)),files=await releaseFiles(root),allowed=new Set(files);
   assert.deepEqual(files.filter(file=>file.split('/').some(part=>part.startsWith('.env'))),['.env.example']);
   for(const file of files){
     if(!/\.(?:mjs|js|html)$/.test(file))continue;
     const source=await readFile(path.join(root,file),'utf8');
-    if(/\.(?:mjs|js)$/.test(file))for(const match of source.matchAll(/\b(?:from\s*|import\s*(?:\(\s*)?)['"](\.{1,2}\/[^'"]+)['"]/g)){
-      const dependency=path.posix.normalize(path.posix.join(path.posix.dirname(file),match[1]));
-      assert.ok(allowed.has(dependency),file+' imports missing release file '+dependency);
-    }
+    if(/\.(?:mjs|js)$/.test(file))assertLocalModuleRelease(file,source,allowed);
     if(file.startsWith('app/')&&file.endsWith('.html'))for(const match of source.matchAll(/(?:src|href)="(\/[^"#?]+\.(?:mjs|js|css|svg|png|webp|jpg|mp3))"/g)){
       assert.ok(allowed.has('app'+match[1]),file+' references missing release asset '+match[1]);
     }

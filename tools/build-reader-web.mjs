@@ -28,11 +28,22 @@ export async function buildReaderWeb({root,outputDir,html}){
   'reader-settings-choices.mjs':{kind:'dynamic-import',importer:'reader-settings.mjs'},
   'command-palette.mjs':{kind:'dynamic-import',importer:'palette-bootstrap.mjs'}
  };
- const publicModules={name:'public-reader-modules',setup(b){b.onResolve({filter:/^\.\/(?:reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|reader-settings-choices|command-palette)\.mjs$/},args=>{
-  const entry=lazyModules[args.path.slice(2)];
-  if(!entry||args.kind!==entry.kind||path.resolve(args.importer)!==path.join(root,'app',entry.importer))return;
-  const file='app/'+args.path.slice(2);if(!allowed.has(file))throw Error('Non-public lazy reader module: '+file);
-  return {path:'/'+args.path.slice(2),external:true};
+ // GET-188 scope amendment: exactly one additional external edge exists — the
+ // literal './command-palette.mjs?retry=1' from palette-bootstrap.mjs,
+ // dynamic-import kind only, backed by the same app/command-palette.mjs release
+ // entry. No other query, importer or import kind is resolvable; those stay
+ // rejected by policy instead of widening the fence.
+ const paletteRetry='./command-palette.mjs?retry=1';
+ const publicModules={name:'public-reader-modules',setup(b){b.onResolve({filter:/^\.\/(?:reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|reader-settings-choices|command-palette)\.mjs(?:\?.*)?$/},args=>{
+  const at=args.path.indexOf('?'),query=at<0?'':args.path.slice(at);
+  if(query&&args.path!==paletteRetry)throw Error('Non-public lazy reader module: '+args.path);
+  const entry=lazyModules[args.path.slice(2,query?at:undefined)];
+  if(entry&&args.kind===entry.kind&&path.resolve(args.importer)===path.join(root,'app',entry.importer)){
+   const file='app/'+args.path.slice(2,query?at:undefined);if(!allowed.has(file))throw Error('Non-public lazy reader module: '+file);
+   return {path:'/'+args.path.slice(2),external:true};
+  }
+  if(query)throw Error('Non-public lazy reader module: '+args.path);
+  return undefined;
  });}};
  const compile=async(contents,loader)=>{
   const result=await build({stdin:{contents,resolveDir:path.join(root,'app'),sourcefile:'reader-entry.'+(loader==='css'?'css':'js'),loader},bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,charset:'utf8',legalComments:'none',plugins:loader==='css'?[{name:'public-css-urls',setup(b){b.onResolve({filter:/^\//},args=>{if(args.kind==='url-token')return {path:args.path,external:true};if(args.kind==='import-rule'&&args.path==='/fonts/noto-serif-sc/font-faces.css'&&path.resolve(args.importer)===path.join(root,'app/typography.css')){if(!allowed.has('app/fonts/noto-serif-sc/font-faces.css'))throw Error('Non-public CJK stylesheet');return {path:args.path,external:true};}return undefined;});}}]:[publicModules],write:false,metafile:true,logLevel:'silent'});
