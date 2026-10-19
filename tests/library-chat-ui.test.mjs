@@ -281,3 +281,7 @@ test('review chat R3 missing context translation relabels in place while real pr
  for(const locale of ['ja','zh-Hant','zh-Hans','en']){await requestUiRoute(locale);assert.equal(missing.textContent,uiText('t.nr'));assert.equal(body.children[2].children[1],missing);assert.equal(body.replacements,replacements);assert.equal(original.textContent,context.original);assert.equal(actual.textContent,translated);assert.equal(actual.getAttribute('data-ui'),undefined);assert.equal(s.doc.activeElement,s.input());assert.equal(s.input().selectionStart,3);assert.equal(s.input().selectionEnd,8);assert.equal(s.input().value,'Unsent question');}
  assert.equal(s.calls.length,calls);
 });
+
+test('native queued close followed by disposal consumes the visible lifecycle exactly once',async t=>{
+ const changes=[],s=setup(t,{onViewChange:value=>changes.push(value)}),queued=[];s.chat.open();await flush();s.root.close=function(){this.open=false;queued.push(()=>this.dispatchEvent(new Event('close')));};s.root.close();s.chat.dispose();s.chat.dispose();queued.forEach(fn=>fn());assert.deepEqual(changes,[true,false]);
+});

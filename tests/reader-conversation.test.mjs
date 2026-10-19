@@ -199,3 +199,11 @@ test('disposed conversation removes owned event hooks and consumes late account-
  const operation=f.hooks.api('/api/library/books/book-one/chat');assert.equal(typeof f.instance.dispose,'function');f.instance.dispose();const counts=f.counts();f.events.dispatchEvent(new Event('reader:ready'));assert.deepEqual(f.counts(),counts);
  resolve(new Response(JSON.stringify({error:'old-owner'}),{status:409,headers:{'X-Reader-Session-Changed':'1'}}));await assert.rejects(operation,e=>e.code==='READER_CONVERSATION_DISPOSED');assert.deepEqual(f.counts(),counts);assert.deepEqual(f.replacements,[]);
 });
+
+test('notes to AI retains the selected passage before closing the notes owner',async t=>{
+ const f=realFixture(t),requests=[];let notesOpen=true;
+ const book={bookId:'book-one',contentVersion:'v1',title:{en:'A book'},sections:[{chapterId:'ch1',paragraphs:[{id:'p1'},{id:'p2'}]}]};
+ const reader={getBook:()=>book,isSelectionActive:()=>notesOpen,getSelectedId:()=> 'p2',getAnchor:()=>({passageId:'p1'}),closeNotes:()=>{notesOpen=false;}};
+ const chat=mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,mountCompanion:()=>({dispose(){}}),integration:{triggerHost:f.triggerHost,companionAnchor:f.pill,onOpen(){},focusReturn(){}},request:async url=>{requests.push(url);return new Response(JSON.stringify({bookId:'book-one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:new URL(url,'https://local').searchParams.get('passageId'),original:'Source'},turns:[]}));}});
+ f.onCleanup(()=>chat.dispose());chat.open();await flush();assert.equal(notesOpen,false);assert.ok(requests.some(url=>url.includes('/chat?passageId=p2')),JSON.stringify(requests));
+});

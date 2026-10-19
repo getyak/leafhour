@@ -31,7 +31,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
   // the chat-owned AI trigger host, the companion bubble anchor (shared pill),
   // the focus-return callback and the unread callback. No launcher DOM, drag or
   // ARIA is ever attached to the shared pill.
-  const externalLauncher=integration?{anchor:integration.companionAnchor,triggerHost:integration.triggerHost,focusReturn:integration.focusReturn,onOpen:()=>{getReader()?.closeNotes?.();integration.onOpen?.();},position:mountCompanionAnchor({anchor:integration.companionAnchor})}:null;
+  const externalLauncher=integration?{anchor:integration.companionAnchor,triggerHost:integration.triggerHost,focusReturn:integration.focusReturn,onOpen:()=>integration.onOpen?.(),position:mountCompanionAnchor({anchor:integration.companionAnchor})}:null;
 
   const context=()=>disposed?null:readerConversationContext(getReader(),bookId);
   const api=async(url,data,options={})=>{
@@ -45,7 +45,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
     return value;
   };
   chat=mountChat({root,api,getSession:()=>session,getOwner:()=>session?.user?.id||null,getBooks:()=>{const current=context();return current?[current.book]:[];},getCurrentBook:()=>bookId,getCurrentPassage:()=>context()?.passageId||null,externalLauncher,
-    openAuth,onViewChange:opened=>workspace?.setOpen(opened),
+    openAuth,onViewChange:opened=>{if(opened)getReader()?.closeNotes?.();workspace?.setOpen(opened);},
     onNavigateToPassage:(targetBook,passageId)=>{
       const current=context();if(targetBook!==bookId||!current?.passages.has(passageId))return false;
       const reader=getReader();if(workspace?.isMobile())chat.close();reader.dismissTools?.();reader.goToPassage(passageId);return true;

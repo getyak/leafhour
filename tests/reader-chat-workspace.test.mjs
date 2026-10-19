@@ -69,3 +69,9 @@ test('a newer chapter navigation defeats the queued layout restore without cance
  const f=fixture(),commits=[];let ready;const source=new Promise(resolve=>{ready=resolve;});const nav=createReadingNavigation({isLoaded:()=>false,ensure:()=>source,commit:id=>commits.push(id)});
  f.reader.captureLayout=()=>nav.capture();f.workspace.setOpen(true);const pending=nav.navigate('next');f.flush();assert.deepEqual(f.restored,[]);ready();assert.equal(await pending,true);assert.deepEqual(commits,['next']);f.workspace.dispose();
 });
+
+test('new page, touch or reading-key intent defeats a queued old layout restore',()=>{
+ for(const intent of ['reader:page','touchstart','keydown']){
+  const f=fixture();f.workspace.setOpen(true);const event=new Event(intent);if(intent==='keydown')Object.assign(event,{key:'PageDown'});Object.defineProperty(event,'target',{value:f.book});f.document.dispatchEvent(event);f.flush();assert.deepEqual(f.restored,[],intent);f.workspace.dispose();
+ }
+});

@@ -286,7 +286,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     update(){if(disposed)return;const changed=syncOwner();if(!books().some(book=>book.bookId===selectedBook)&&!state.view().pending)choose(books().find(book=>book.bookId===currentBookId())?.bookId||books()[0]?.bookId||null);render();if(root.open&&(changed||state.view().phase==='idle'))load();},
     updateLabels,
     dispose(){
-      if(disposed)return;disposed=true;offLocale();unbind();for(const off of listeners.splice(0))off();if(root.open){root.close();if(viewOpen)onViewChange(false);}viewOpen=false;launcher?.remove();trigger?.remove();characterMotion?.dispose?.();characterPosition?.dispose?.();clearPoll();loadInFlight=null;rowPaints.clear();links.clear();turnNodes.clear();
+      if(disposed)return;disposed=true;offLocale();unbind();for(const off of listeners.splice(0))off();if(viewOpen){viewOpen=false;onViewChange(false);}if(root.open)root.close();launcher?.remove();trigger?.remove();characterMotion?.dispose?.();characterPosition?.dispose?.();clearPoll();loadInFlight=null;rowPaints.clear();links.clear();turnNodes.clear();
     }
   };
   return controls;

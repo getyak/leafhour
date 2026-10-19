@@ -56,8 +56,14 @@ export function mountReaderChatWorkspace({root,getReader=()=>null,document=globa
   if(!nodes.length||!root.contains(document.activeElement)||event.shiftKey&&document.activeElement===first||!event.shiftKey&&document.activeElement===last||document.activeElement===root){event.preventDefault();(event.shiftKey?last:first).focus({preventScroll:true});}
  });
  listen(window,'resize',()=>{if(opened){endDrag(false);preserveLayout(paint);}});
- for(const event of ['reader:jump','reader:ready','reader:session-changed'])listen(document,event,cancelFrames);
+ for(const event of ['reader:jump','reader:ready','reader:session-changed','reader:page'])listen(document,event,cancelFrames);
  listen(document,'wheel',cancelFrames,{passive:true});
+ // A newer reading gesture owns the anchor; never rewind it after layout.
+ listen(document,'touchstart',event=>{if(!root.contains(event.target))cancelFrames();},{passive:true});
+ listen(document,'keydown',event=>{
+  if(root.contains(event.target)||event.target?.closest?.('input,textarea,select,[contenteditable]')||event.altKey||event.ctrlKey||event.metaKey)return;
+  if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(event.key))cancelFrames();
+ });
  function setLabels(next){labels=next||{};separator.setAttribute('aria-label',labels.resize||'Resize AI workspace');}
  setLabels(labels);
  return {setOpen(value){if(disposed||opened===!!value)return;endDrag(false);preserveLayout(()=>{opened=!!value;paint();});},setLabels,isMobile:()=>opened&&mobile(),dispose(){
