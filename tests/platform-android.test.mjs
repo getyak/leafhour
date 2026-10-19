@@ -5,6 +5,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import path from 'node:path';
+import {EventEmitter} from 'node:events';
+import * as desktopCleanup from '../tools/lib/platform-cdp.mjs';
 import {
   ANDROID_IMAGE_PACKAGE,
   ANDROID_IMAGE_PINNED,
@@ -1435,4 +1437,65 @@ test('failure screenshot obeys cancellation and the budget and retains secondary
   let calls=0;const session={capture:async()=>{calls++;}};assert.equal(await captureFailurePage({session,receipt:{screenshots:Array(12).fill({})},lifecycle:{}}),false);assert.equal(calls,0);
   assert.equal(await captureFailurePage({session,receipt:{screenshots:[]},lifecycle:{}}),true);assert.equal(calls,1);
   const receipt={screenshots:[],failure:'original viewport assertion'};assert.equal(await captureFailurePage({session:{capture:async()=>{throw Error('secondary capture');}},receipt,lifecycle:{}}),false);assert.equal(receipt.failure,'original viewport assertion');assert.deepEqual(receipt.secondaryEvidenceErrors,['secondary capture']);
+});
+
+
+// Real CDP transport + owned cleanup helper; no process or socket is started.
+function desktopCleanupFixture({ack=true,disconnect=true,exit=true,alreadyExited=false,refused=true}={}){
+  const child=new EventEmitter();Object.assign(child,{pid:10116,exitCode:alreadyExited?0:null,signalCode:null});
+  class Socket extends EventTarget{
+    readyState=1;sent=[];
+    send(raw){const message=JSON.parse(raw);this.sent.push(message.method);queueMicrotask(()=>{
+      this.dispatchEvent(new MessageEvent('message',{data:JSON.stringify(ack?{id:message.id,result:{}}:{id:message.id,error:{message:'close refused'}})}));
+      if(disconnect){this.readyState=3;this.dispatchEvent(new Event('close'));}
+      if(exit&&!alreadyExited){child.exitCode=0;child.emit('exit',0,null);}
+    });}
+    close(){this.readyState=3;this.dispatchEvent(new Event('close'));}
+  }
+  const socket=new Socket(),cdp=new desktopCleanup.CDP(socket),probes=[];
+  const probe=async endpoint=>{probes.push(endpoint);return {state:refused?'refused':'reachable'};};
+  return {child,socket,cdp,probes,run:()=>desktopCleanup.closeOwnedDesktopChrome({cdp,child,endpoint:'http://127.0.0.1:58474',probe,timeoutMs:15,sleep:async()=>{}})};
+}
+
+test('owned desktop cleanup closes the actual browser even when the Windows launcher already exited',async()=>{
+  const f=desktopCleanupFixture({alreadyExited:true}),r=await f.run();assert.equal(r.complete,true);assert.equal(r.closeAcknowledged,true);assert.equal(r.transportDisconnected,true);assert.equal(r.launcher.exitCode,0);assert.equal(r.debugServer.state,'refused');assert.deepEqual(f.socket.sent,['Browser.close']);assert.deepEqual(f.probes,['http://127.0.0.1:58474']);assert.equal(f.child.listenerCount('exit'),0);
+});
+
+test('owned desktop cleanup registers natural disconnect and process exit before the close acknowledgement',async()=>{
+  const f=desktopCleanupFixture(),r=await f.run();assert.equal(r.complete,true);assert.equal(r.launcher.pid,10116);assert.equal(f.child.listenerCount('exit'),0);assert.equal(f.cdp.pending.size,0);
+});
+
+test('every close failure remains failed even when another cleanup observation succeeds',async()=>{
+  for(const options of [{ack:false},{disconnect:false},{exit:false},{refused:false}]){
+    const f=desktopCleanupFixture(options),r=await f.run();assert.equal(r.complete,false,JSON.stringify(options));assert.ok(r.errors.length);assert.equal(f.child.listenerCount('exit'),0);assert.equal(f.cdp.pending.size,0);
+  }
+});
+
+test('page socket closure does not prove the owned debug server closed',async()=>{
+  const f=desktopCleanupFixture({refused:false}),r=await f.run();assert.equal(r.closeAcknowledged,true);assert.equal(r.transportDisconnected,true);assert.equal(r.complete,false);assert.equal(r.debugServer.state,'reachable');assert.ok(r.errors.some(x=>/debug server/.test(x)));
+});
+
+test('actual debug-server probe accepts connection refusal only, never timeout, reset or HTTP errors',async()=>{
+  const endpoint='http://127.0.0.1:58474';
+  for(const code of ['ECONNREFUSED','ECONNRESET','ETIMEDOUT',undefined]){
+    const result=await desktopCleanup.probeOwnedDebugServer(endpoint,{fetcher:async(url,options)=>{assert.equal(url,endpoint+'/json/version');assert.equal(options.redirect,'error');assert.ok(options.signal);throw Object.assign(Error('network outcome'),{cause:{code}});}});
+    assert.equal(result.state,code==='ECONNREFUSED'?'refused':'unconfirmed');
+  }
+  let cancelled=false;const response=await desktopCleanup.probeOwnedDebugServer(endpoint,{fetcher:async()=>({status:503,body:{cancel:async()=>{cancelled=true;}}})});assert.equal(response.state,'reachable');assert.equal(response.status,503);assert.equal(cancelled,true);
+});
+
+test('desktop cleanup rejects arbitrary endpoints before protocol or process work',async()=>{
+  for(const endpoint of ['https://127.0.0.1:58474','http://localhost:58474','http://127.0.0.1:58474/other','http://user@127.0.0.1:58474','http://127.0.0.1:58474?x=1']){
+    const f=desktopCleanupFixture();await assert.rejects(()=>desktopCleanup.closeOwnedDesktopChrome({cdp:f.cdp,child:f.child,endpoint,probe:async()=>{throw Error('must not probe');}}),/owned|endpoint/i);assert.deepEqual(f.socket.sent,[]);assert.equal(f.child.listenerCount('exit'),0);
+  }
+});
+
+test('evidence shutdown drains and detaches before browser shutdown and still disconnects when its hook fails',async()=>{
+  for(const failing of [false,true]){
+    const order=[],handlers=new Set(),failures=[],receipt={fonts:[],checks:[],screenshots:[],errors:[]};
+    const session=createEvidenceSession({cdp:{send:async method=>{order.push(method);return {};},on:(_event,handler)=>{handlers.add(handler);return ()=>handlers.delete(handler);},close:async()=>{order.push('transport close');}},receipt,failures});
+    session.observeResponses();await session.installFontHold();session.task(Promise.resolve().then(()=>order.push('background drained')));
+    await session.close({beforeDisconnect:async()=>{assert.equal(session.background.size,0);assert.equal(handlers.size,0);assert.ok(receipt.observationClosedAt);order.push('browser shutdown');if(failing)throw Error('actual browser close failed');}});
+    assert.ok(order.indexOf('Fetch.disable')<order.indexOf('browser shutdown'));assert.ok(order.indexOf('background drained')<order.indexOf('browser shutdown'));assert.ok(order.indexOf('browser shutdown')<order.indexOf('transport close'));assert.equal(failures.some(x=>/actual browser close failed/.test(x)),failing);await session.close({beforeDisconnect:()=>{throw Error('must not run twice');}});
+  }
 });

@@ -77,11 +77,53 @@ export async function exercisePopoverKeyboard({cdp,trigger,panel,capture,afterOp
     guard();await afterOpened();opened=await read();
     assert.ok(opened.panel?.visible&&opened.expanded==='true'&&opened.focusInPanel,'Enhancement readiness must preserve the actual open chooser and focus');
   }
+  const openedBeforePaint=opened;
+  guard();const paint=await cdp.evaluate('('+observePopoverPaint.toString()+')('+JSON.stringify(panel)+')');
+  assert.equal(paint.status,'settled','Open popover paint must settle before capture: '+JSON.stringify(paint));
+  opened=await read();
+  assert.ok(opened.panel?.visible&&opened.expanded==='true'&&opened.focusInPanel,'Settled paint must preserve the actual chooser and focus');
   guard();await capture();await dispatchRemoteKey(cdp,guard,'Escape',27);
   const closed=await until(async()=>{const value=await read();return !value.panel?.visible&&value.expanded==='false'?value:false;},'real popover to close',4000);
   assert.equal(closed.focusOnTrigger,true,'Escape must return focus to the actual visible opener');
   assert.equal(closed.url,activation.before.url,'Opening/closing a chooser must preserve the entry URL');
-  return {trigger,panel,...activation,opened,closed};
+  return {trigger,panel,...activation,openedBeforePaint,paint,opened,closed};
+}
+// Serialized, read-only paint evidence. getAnimations includes CSS transitions:
+// https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations
+// Observe the surface and ancestors, not unrelated descendants such as spinners.
+// Never disable motion, finish animations, move a node or substitute a sleep.
+export function observePopoverPaint(selector){
+  const target=document.querySelector(selector),started=performance.now();
+  let frame,timer,done=false,frames=0,stable=0,previous=null,lastChange=started,before=null,last=null;
+  const history=[];
+  const sample=()=>{
+    if(!target)throw Error('Popover surface missing');
+    const r=target.getBoundingClientRect(),nodes=[];
+    for(let node=target;node;node=node.parentElement){
+      if(nodes.length>=64||typeof node.getAnimations!=='function')throw Error('Bounded actual animation observation unavailable');
+      const s=getComputedStyle(node),animations=node.getAnimations();
+      if(animations.length>32)throw Error('Popover animation evidence exceeds its bound');
+      nodes.push({id:node.id||null,opacity:Number(s.opacity),display:s.display,visibility:s.visibility,transform:s.transform,translate:s.translate,scale:s.scale,rotate:s.rotate,activeAnimations:animations.filter(a=>a.pending||!['finished','idle'].includes(a.playState)).length});
+    }
+    const rect={x:r.x,y:r.y,width:r.width,height:r.height},connected=target.isConnected&&document.querySelector(selector)===target;
+    const ready=!!connected&&!!target.getClientRects().length&&r.width>0&&r.height>0&&r.x+r.width>0&&r.y+r.height>0&&r.x<innerWidth&&r.y<innerHeight&&nodes.every(n=>n.opacity===1&&n.activeAnimations===0&&n.display!=='none'&&!['hidden','collapse'].includes(n.visibility));
+    return {connected,rect,nodes,ready};
+  };
+  return new Promise(resolve=>{
+    const finish=(status,error=null)=>{if(done)return;done=true;clearTimeout(timer);cancelAnimationFrame(frame);resolve({status,error,before,after:last,frames,history,elapsedMs:performance.now()-started});};
+    const tick=()=>{
+      try{
+        last=sample();const now=performance.now();frames++;
+        if(history.length<16)history.push({at:now-started,...last});
+        const signature=JSON.stringify(last);
+        if(signature===previous)stable++;else{stable=0;lastChange=now;}previous=signature;
+        if(last.ready&&stable>=4&&now-lastChange>=100)return finish('settled');
+        frame=requestAnimationFrame(tick);
+      }catch(error){finish('unsupported',error.message);}
+    };
+    try{before=last=sample();}catch(error){finish('unsupported',error.message);return;}
+    timer=setTimeout(()=>{try{last=sample();finish('timeout');}catch(error){finish('timeout',error.message);}},4000);frame=requestAnimationFrame(tick);
+  });
 }
 // Serialized read-only facts for the owned remote input sequence above.
 export function observePopoverState(triggerSelector,panelSelector){
@@ -359,7 +401,7 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     if(origin&&typeof url==='string'&&url.startsWith(origin))await cdp.send('Page.navigate',{url});
     else throw Error('Product navigation must stay on the owned origin: '+String(url));
   }
-  async function close(){
+  async function close({beforeDisconnect}={}){
     if(closed)return {errors:failures};
     closed=true;
     if(!cdp)return {errors:failures};
@@ -369,6 +411,7 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     for(const unsubscribe of evidenceListeners)unsubscribe();
     receipt.observationClosedAt=new Date().toISOString();
     while(background.size)await Promise.all([...background]);
+    if(beforeDisconnect)await Promise.resolve().then(beforeDisconnect).catch(error=>failures.push('owned browser shutdown: '+error.message));
     await cdp.close().catch(error=>failures.push(error.message));
     return {errors:failures};
   }

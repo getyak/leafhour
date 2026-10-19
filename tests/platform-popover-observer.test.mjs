@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
+import * as paintObserver from '../tools/lib/platform-font-observer.mjs';
 import {observeInitialPopovers,assertInitialPopoversClosed,exercisePopoverKeyboard,observeReaderTools,observeReaderBookActions} from '../tools/lib/platform-font-observer.mjs';
 
 const observe=nodes=>JSON.parse(JSON.stringify(vm.runInNewContext('('+observeInitialPopovers.toString()+')()',{
@@ -32,6 +33,7 @@ function keyboardTransport(options={}){
   const cdp={
     async evaluate(expression){
       if(expression.startsWith('(function observeNativeScroll'))return options.scroll||{status:'unchanged'};
+      if(expression.startsWith('(function observePopoverPaint')){captures.push('paint observation');if(options.cancelAtPaint)stopped=true;return options.paint||{status:'settled'};}
       assert.ok(expression.startsWith('(function observePopoverState'),'only the actual read-only observation is evaluated');
       return {url:options.changedUrl&&!open&&captures.length?'/library?broken=1':'/library',trigger:{visible:options.visible!==false,disabled:false,inert:false},panel:{visible:open},expanded:String(open),focusOnTrigger,focusInPanel};
     },
@@ -57,7 +59,7 @@ test('remote keyboard sequence activates the real button once and observes focus
   const down=f.commands.filter(([method,args])=>method==='Input.dispatchKeyEvent'&&args.type!=='keyUp').map(([,args])=>args);
   assert.deepEqual(down.map(args=>args.key),['Enter','Tab','Escape']);
   assert.equal(down[0].type,'keyDown');assert.equal(down[0].text,'\r');assert.equal(down[0].unmodifiedText,'\r');
-  assert.equal(f.captures.length,1);
+  assert.deepEqual(f.captures,['paint observation','real open screenshot']);assert.equal(value.paint.status,'settled');
 });
 test('hidden trigger or failed actual focus refuses keyboard activation',async()=>{
   for(const options of [{visible:false},{failedFocus:true}]){
@@ -89,7 +91,7 @@ test('lifecycle cancellation after protocol focus permits no late input or scree
 test('remote enhancement readiness is awaited before accepting an open screenshot',async()=>{
   const f=keyboardTransport();let ready=false;
   await exercisePopoverKeyboard({...f,afterOpened:async()=>{ready=true;},capture:async()=>{assert.equal(ready,true,'actual optional controls must finish before capture');f.captures.push('ready screenshot');}});
-  assert.equal(ready,true);assert.equal(f.captures.length,1);
+  assert.equal(ready,true);assert.deepEqual(f.captures,['paint observation','ready screenshot']);
 });
 test('cancellation during remote enhancement readiness permits no late screenshot or Escape input',async()=>{
   const f=keyboardTransport();await assert.rejects(()=>exercisePopoverKeyboard({...f,afterOpened:async()=>f.stop()}),/cancelled/);
@@ -111,4 +113,34 @@ test('serialized optional-action observer requires actual enabled rendered butto
 test('serialized tools observer reports real expanded header, inert state and actual focus without changing them',()=>{
   const ready=runProbe(observeReaderTools,{});assert.deepEqual(ready,{expanded:'true',headerInert:false,headerVisible:true,focusInHeader:true});
   assert.equal(runProbe(observeReaderTools,{collapsed:true}).expanded,'false');assert.equal(runProbe(observeReaderTools,{inert:true}).headerInert,true);assert.equal(runProbe(observeReaderTools,{hiddenHeader:true}).headerVisible,false);assert.equal(runProbe(observeReaderTools,{outsideFocus:true}).focusInHeader,false);
+});
+
+
+async function paintScenario({animationUntil=0,parentUntil=0,permanentAnimation=false,permanentOpacity=false,unsupported=false,removed=false}={}){
+  let now=0,next=0,resolved=false,result;const frames=new Map(),timers=new Map();
+  const parent={id:'parent',parentElement:null,getAnimations:()=>[]};
+  const panel={id:'panel',parentElement:parent,isConnected:!removed,getClientRects:()=>[{}],getBoundingClientRect:()=>({x:12,y:now<animationUntil?100-now/100:98.6,width:320,height:438}),getAnimations:()=>permanentAnimation||now<animationUntil?[{playState:'running',pending:now<60,finish(){throw Error('must never finish animation');},cancel(){throw Error('must never cancel animation');}}]:[]};
+  if(unsupported)panel.getAnimations=undefined;
+  const promise=vm.runInNewContext('('+paintObserver.observePopoverPaint.toString()+')("#panel")',{
+    document:{querySelector:selector=>{assert.equal(selector,'#panel');return panel;}},innerWidth:393,innerHeight:722,
+    getComputedStyle:node=>({opacity:node===panel?(permanentOpacity?'.4':now<animationUntil?String(.2+.8*now/animationUntil):'1'):now<parentUntil?'.5':'1',display:'block',visibility:'visible',transform:'none',translate:node===panel&&now<animationUntil?'0 -3px':'none',scale:'none',rotate:'none'}),
+    performance:{now:()=>now},requestAnimationFrame:fn=>{const id=++next;frames.set(id,fn);return id;},cancelAnimationFrame:id=>frames.delete(id),setTimeout:(fn,ms)=>{const id=++next;timers.set(id,{at:now+ms,fn});return id;},clearTimeout:id=>timers.delete(id),
+  });
+  promise.then(value=>{resolved=true;result=JSON.parse(JSON.stringify(value));});
+  for(let i=0;i<250&&!resolved;i++){
+    now+=20;const pending=[...frames];frames.clear();for(const [,fn]of pending)fn();for(const [id,timer]of [...timers])if(timer.at<=now){timers.delete(id);timer.fn();}await Promise.resolve();
+  }
+  await promise;assert.equal(frames.size,0);assert.equal(timers.size,0);return result;
+}
+test('serialized paint observer waits for real opacity/translate animation then stable painted frames',async()=>{
+  const r=await paintScenario({animationUntil:140});assert.equal(r.status,'settled');assert.ok(r.elapsedMs>=240);assert.equal(r.before.ready,false);assert.equal(r.after.ready,true);assert.equal(r.after.nodes[0].opacity,1);assert.equal(r.after.nodes[0].activeAnimations,0);assert.equal(r.after.rect.y,98.6);
+});
+test('paint observation includes ancestor opacity and rejects ongoing, transparent, detached or unsupported surfaces',async()=>{
+  const parent=await paintScenario({parentUntil:240});assert.equal(parent.status,'settled');assert.ok(parent.elapsedMs>=340);
+  for(const options of [{permanentAnimation:true},{permanentOpacity:true},{removed:true}]){const r=await paintScenario(options);assert.equal(r.status,'timeout',JSON.stringify(options));assert.equal(r.after.ready,false);assert.ok(r.history.length<=16);}
+  assert.equal((await paintScenario({unsupported:true})).status,'unsupported');
+});
+test('paint failure or cancellation refuses a screenshot and does not issue Escape after rejection',async()=>{
+  const f=keyboardTransport({paint:{status:'timeout',after:{ready:false}}});await assert.rejects(()=>exercisePopoverKeyboard(f),/paint.*settle|settled.*paint/i);assert.deepEqual(f.captures,['paint observation']);assert.equal(f.commands.some(([,args])=>args?.key==='Escape'),false);
+  const cancelled=keyboardTransport({cancelAtPaint:true});await assert.rejects(()=>exercisePopoverKeyboard(cancelled),/cancelled/);assert.deepEqual(cancelled.captures,['paint observation']);assert.equal(cancelled.commands.some(([,args])=>args?.key==='Escape'),false);
 });

@@ -9,7 +9,7 @@ import {readFile,writeFile,mkdir,rm,access} from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import {pathToFileURL} from 'node:url';
-import {CDP} from './lib/platform-cdp.mjs';
+import {CDP,closeOwnedDesktopChrome} from './lib/platform-cdp.mjs';
 import {delay,sha,until,customNewsreader,italicFontEvidence,captureFailurePage,createEvidenceSession,observeInitialPopovers,assertInitialPopoversClosed,exercisePopoverKeyboard,activateRemoteButton,observeReaderTools,observeReaderBookActions} from './lib/platform-font-observer.mjs';
 import {
   parseScriptArgs,
@@ -39,7 +39,7 @@ await mkdir(out,{recursive:true});
 const receipt={source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),mode:args.mode,platform:process.platform,release:os.release(),arch:os.arch(),image:{os:process.env.ImageOS,version:process.env.ImageVersion},node:process.version,startedAt:new Date().toISOString(),scope:'anonymous actual pages; remote runner; screenshots require human review',screenshots:[],fonts:[],checks:[],errors:[]};
 const serverData=path.join(out,'isolated-data'),browserProfile=path.join(out,'browser-profile');
 const VIEWPORT_EXPRESSION='({width:innerWidth,height:innerHeight,dpr:devicePixelRatio,ua:navigator.userAgent})';
-let server,child,adapter,cdp,session;const failures=[];
+let server,child,adapter,cdp,session,ownedDesktopEndpoint;const failures=[];
 // One bounded, idempotent lifecycle finalizer covers normal completion, errors
 // and SIGINT/SIGTERM cancellation: stop future work, refuse late resource
 // creation, clean up owned resources exactly once, remove handlers, exit nonzero
@@ -50,10 +50,19 @@ const lifecycle=createRunLifecycle({
 });
 const releaseOwnedResources=async()=>{
   const cleanupErrors=[];
-  if(session)await session.close().catch(error=>cleanupErrors.push('evidence session close: '+error.message));
-  if(child){
+  let desktopClosed=false;
+  if(session)await session.close({beforeDisconnect:process.platform==='win32'&&child?async()=>{
+    receipt.desktopCleanup=await closeOwnedDesktopChrome({cdp,child,endpoint:ownedDesktopEndpoint});
+    if(!receipt.desktopCleanup.complete)throw Error(receipt.desktopCleanup.errors.join('; '));
+    desktopClosed=true;
+  }:undefined}).catch(error=>cleanupErrors.push('evidence session close: '+error.message));
+  if(child&&!desktopClosed){
     try{
-      if(process.platform==='win32')execFileSync('taskkill',['/PID',String(child.pid),'/T','/F'],{stdio:'ignore'});
+      if(process.platform==='win32'){
+        // A confirmed exited launcher PID may already have been reused. A failed
+        // graceful shutdown above remains a failure; never kill that stale PID.
+        if(child.exitCode==null&&child.signalCode==null&&Number.isInteger(child.pid))execFileSync('taskkill',['/PID',String(child.pid),'/T','/F'],{stdio:'ignore'});
+      }
       else child.kill('SIGTERM');
     }catch(error){cleanupErrors.push('owned desktop Chrome: '+error.message);}
   }
@@ -114,7 +123,7 @@ try{
     lifecycle.guard('desktop Chrome process creation');
     child=spawn(executable,['--headless=new','--no-first-run','--no-default-browser-check','--disable-background-networking','--disable-component-update','--remote-debugging-address=127.0.0.1','--remote-debugging-port=0','--user-data-dir='+browserProfile,'--window-size=1200,900','about:blank'],{stdio:['ignore','ignore','pipe']});
     let stderr='';child.stderr.on('data',data=>{stderr=(stderr+data).slice(-20000);});child.on('error',error=>failures.push(error.message));
-    const active=await until(async()=>{if(child.exitCode!==null)throw Error('Owned Chrome exited: '+stderr);return(await readFile(path.join(browserProfile,'DevToolsActivePort'),'utf8')).split('\n')[0];},'owned Chrome debugger',30000,failures);endpoint='http://127.0.0.1:'+active;
+    const active=await until(async()=>{if(child.exitCode!==null)throw Error('Owned Chrome exited: '+stderr);return(await readFile(path.join(browserProfile,'DevToolsActivePort'),'utf8')).split('\n')[0];},'owned Chrome debugger',30000,failures);endpoint='http://127.0.0.1:'+active;ownedDesktopEndpoint=endpoint;
   }else{
     // Internal adapter only: one task-owned AVD, exact serial, exact forward and
     // reverse mappings. No external endpoint, no unofficial APK, no device cloud.
