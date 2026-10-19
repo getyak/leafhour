@@ -1,0 +1,13 @@
+{
+  "runId": "build-1792450208828-a06d83f3-953c-4fbd-ad12-cdfb47e0f958",
+  "head": "8d8d731fe3ab367f4602eb32901091dec3e3170a",
+  "sourceBefore": "b4432e1c6462c72a680429afa91d175f2fadd955760ad56c50b841fd1a51d6a8",
+  "sourceAfter": "b4432e1c6462c72a680429afa91d175f2fadd955760ad56c50b841fd1a51d6a8",
+  "sourceUnchanged": true,
+  "compiledSHA": "552800072421813e385c2adaec140bc0afa196b7f958d5290aeef7f6d9cbc157",
+  "outcome": {
+    "code": 0,
+    "signal": null
+  },
+  "receiptSHA256": "551863009aba86bbaedd9190b195d1124b541117417b7c58bef6f1445dee552e"
+}
