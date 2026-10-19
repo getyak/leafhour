@@ -10,7 +10,7 @@ function record(value,keys){
 export function normalizeReadingChatQuote(value){
  record(value,['kind','schemaVersion','bookId','contentVersion','chapterId','parts']);
  if(value.kind!=='leafhour-reading-quote'||value.schemaVersion!==1||!id(value.bookId)||!id(value.chapterId)||!text(value.contentVersion,256)||!Array.isArray(value.parts)||Object.getPrototypeOf(value.parts)!==Array.prototype||value.parts.length<1||value.parts.length>8)fail();
- const keys=Reflect.ownKeys(value.parts);if(keys.length!==value.parts.length+1||keys.some(key=>key!=='length'&&(!/^\d+$/.test(String(key))||!Object.hasOwn(Object.getOwnPropertyDescriptor(value.parts,key),'value'))))fail();
+ const keys=Reflect.ownKeys(value.parts),expected=Array.from({length:value.parts.length},(_,i)=>String(i));if(keys.length!==expected.length+1||expected.some(key=>!Object.hasOwn(value.parts,key))||keys.some(key=>key!=='length'&&(!expected.includes(key)||!Object.hasOwn(Object.getOwnPropertyDescriptor(value.parts,key),'value'))))fail();
  let total=0,layer;const seen=new Set();
  const parts=value.parts.map(part=>{
   const descriptor=part&&Object.getOwnPropertyDescriptor(part,'layer');if(!descriptor||!Object.hasOwn(descriptor,'value'))fail();const original=descriptor.value==='original';
@@ -44,4 +44,9 @@ export function readingChatQuoteFromExcerpt(snapshot,book){
   return {passageId:part.passageId,layer,start:part.start,end:part.end,text:part.text,...(layer==='original'?{}:{translationStatus:paragraph?.translations?.[layer]?.status})};
  });
  return validateCurrentReadingChatQuote({kind:'leafhour-reading-quote',schemaVersion:1,bookId:snapshot.bookId,contentVersion:snapshot.contentVersion,chapterId:snapshot.chapterId,parts},book);
+}
+
+// The reader supplies a synchronous DOM observation; no hidden text is fetched.
+export function readingChatExcerptIsVisible(snapshot,readPart){
+ return !!snapshot&&Array.isArray(snapshot.parts)&&snapshot.parts.length>0&&snapshot.parts.length<=8&&snapshot.parts.every(part=>{const view=readPart(part);return view?.visible===true&&typeof view.text==='string'&&view.text.slice(part.start,part.end)===part.text;});
 }

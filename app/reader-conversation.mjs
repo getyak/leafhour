@@ -58,7 +58,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
     try{
       if(!reader?.isSelectionActive?.())throw Error('missing');
       snapshot=reader.getExcerpt?.()||reader.getAudioSelection?.();
-      if(!snapshot||snapshot.parts.some(part=>!reader.isPassageVisible?.(part.passageId)))throw Error('missing');
+      if(!snapshot||reader.isQuoteVisible&&!reader.isQuoteVisible(snapshot)||snapshot.parts.some(part=>!reader.isPassageVisible?.(part.passageId)))throw Error('missing');
       const quote=readingChatQuoteFromExcerpt(snapshot,book);
       if(!chat.quote?.(quote)){announce(t('chat.quote.busy'));return false;}
       reader.dismissTools?.();return true;

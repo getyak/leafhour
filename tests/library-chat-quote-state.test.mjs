@@ -56,3 +56,11 @@ test('write-only storage failure cannot resurrect an older readable quote on fai
 test('a stray quote revision on a no-quote pending record cannot acknowledge an unrelated head',()=>{
  const f=fixture(),s=f.create();s.setQuote(quote());const revision=s.view().quoteRevision;f.pending.set('alice/one',{schemaVersion:1,owner:'alice',bookId:'one',draftText:'Question',payload:{id:'stray',text:'Question',passageId:'p1',contentVersion:'v1'},quoteRevision:revision});const loaded=f.create();assert.equal(loaded.view().retry,null);assert.deepEqual(loaded.view().quote,quote());assert.equal(f.acks.size,0);
 });
+
+test('definite quote rejection marks only the rejected revision stale and never persists an uncertain retry',()=>{
+ const f=fixture(),s=f.create();s.setDraft('Question');s.setQuote(quote());const sent=s.beginSend();s.rejectSend(sent.ticket,{status:422,message:'changed'},{uncertain:false});assert.equal(s.view().retry.uncertain,false);assert.equal(s.view().canChangeQuote,true);assert.equal(s.view().quoteStale,true);assert.equal(s.beginSend(),null);assert.equal(f.pending.get('alice/one'),null);s.setQuote(quote('New'));assert.equal(s.view().quoteStale,false);assert.ok(s.beginSend());
+});
+
+test('reload can detect a changed first quoted slice or translation status from actual GET context',()=>{
+ const f=fixture(),s=f.create();s.setDraft('Question');s.setQuote(quote());const next=f.create();next.resolveLoad(next.beginLoad(),{...content,context:{passageId:'p1',original:'Changed source'}});assert.equal(next.view().quoteStale,true);assert.equal(next.beginSend(),null);assert.equal(next.view().canChangeQuote,true);
+});

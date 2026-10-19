@@ -374,7 +374,7 @@ test('selected source and both translations remain attributed data through real 
 test('invalid quotations do not claim a turn, save a question, cancel companion or invoke generator',async t=>{
  let calls=0;const f=await fixture(t,{generator:async()=>{calls++;return validAnswer();}});
  const file=path.join(f.dataDir,'users',hash(alice.id),'chat',hash('chat-book')+'.json');await f.service.view(alice,'chat-book');const data=JSON.parse(await readFile(file,'utf8'));data.turns.push({id:'active-companion',kind:'companion',origin:'ai',text:null,passageId:'p1',contentVersion:'edition-1',status:'running',expiresAt:Date.now()+60000,answer:null});await writeFile(file,JSON.stringify(data));
- for(const quote of [{...selectedQuote(),bookId:'foreign'},selectedQuote('literal','forged'),{...selectedQuote('literal'),parts:[{...selectedQuote('literal').parts[0],translationStatus:'reviewed'}]}])await assert.rejects(f.service.send(alice,'chat-book',input({quote})),error=>[400,409].includes(error.status));
+ for(const quote of [{...selectedQuote(),bookId:'foreign'},selectedQuote('literal','forged'),{...selectedQuote('literal'),parts:[{...selectedQuote('literal').parts[0],translationStatus:'reviewed'}]}])await assert.rejects(f.service.send(alice,'chat-book',input({quote})),error=>[400,409,422].includes(error.status));
  const after=JSON.parse(await readFile(file,'utf8'));assert.equal(after.turns.length,1);assert.equal(after.turns[0].status,'running');assert.equal((await f.library.records(alice,'chat-book')).questions.length,0);assert.equal(calls,0);
 });
 test('exact terminal quote replay survives edited translation while changed quote conflicts without generation',async t=>{
@@ -389,4 +389,8 @@ test('a quoted translation changed during generation fails truthfully and preser
 test('actual encoded current input rejects oversize metadata before turn, question or generator work',async t=>{
  let calls=0;const f=await fixture(t,{generator:async()=>{calls++;return validAnswer();}}),getBook=f.library.getBook.bind(f.library);f.library.getBook=async(...args)=>({...await getBook(...args),title:{en:'\u0001'.repeat(5000)}});
  await assert.rejects(f.service.send(alice,'chat-book',input({quote:selectedQuote()})),status(413));assert.equal((await f.service.view(alice,'chat-book')).turns.length,0);assert.equal((await f.library.records(alice,'chat-book')).questions.length,0);assert.equal(calls,0);
+});
+
+test('new stale quote is a definite 422 before claim, while exact historical retry and real conflicts keep their semantics',async t=>{
+ let calls=0;const f=await fixture(t,{generator:async()=>{calls++;return validAnswer();}}),payload=input({quote:selectedQuote('literal')});const first=await f.service.send(alice,'chat-book',payload),changed=bookFixture();changed.sections[1].paragraphs[0].translations.literal.text='新的翻译。';await f.seed(alice,changed);await assert.rejects(f.service.send(alice,'chat-book',{...payload,id:'new-stale'}),status(422));assert.deepEqual(await f.service.send(alice,'chat-book',payload),first);await assert.rejects(f.service.send(alice,'chat-book',{...payload,text:'Different question'}),status(409));assert.equal(calls,1);assert.equal((await f.library.records(alice,'chat-book')).questions.length,1);
 });

@@ -164,8 +164,8 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
       const old=data.turns.find(t=>t.id===input.id);
       if(old){if(old.passageId!==input.passageId||old.text!==input.text||old.contentVersion!==input.contentVersion||(old.scopeRevision??0)!==(input.scopeRevision??0)||!valueEqual(old.quote??null,input.quote??null))throw invalid('重复提交标识与原提问或查阅范围不一致',409);if(old.status==='running')throw invalid('这次提问正在回答，请稍后查看',409);return {created:false,turn:publicTurn(old)};}
       if(!index.byId.has(input.passageId))throw invalid('这段原文不存在');
-      if(input.contentVersion!==book.contentVersion)throw invalid('原文版本已变化，请重新打开这一段',409);
-      if(input.quote!==undefined){validateCurrentReadingChatQuote(input.quote,book);if(input.quote.parts[0].passageId!==input.passageId)throw invalid('摘录与当前段落不一致',409);}
+      if(input.contentVersion!==book.contentVersion)throw invalid('原文版本已变化，请重新打开这一段',input.quote?422:409);
+      if(input.quote!==undefined){try{validateCurrentReadingChatQuote(input.quote,book);if(input.quote.parts[0].passageId!==input.passageId)throw Error('context');}catch{throw invalid('所选文字已变化，请移除或重新选择后再提问。',422);}}
       const scope=readChatScope(data.scope);checkChatScopeRevision(scope,input);
       const selected=index.byId.get(input.passageId),location={book:{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title},passageId:input.passageId,chapterId:selected.chapterId,chapterTitle:book.chapters.find(c=>c.id===selected.chapterId)?.title||null,text:input.text,...(input.quote?{quote:input.quote}:{})};
       // Preflight the actual shared encoder before claim/comment/quota/pause.

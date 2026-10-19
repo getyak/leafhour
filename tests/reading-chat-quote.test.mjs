@@ -25,3 +25,11 @@ test('historical snapshots keep edited translations but still require version, c
 test('boundary selection accepts a complete astral character without splitting it',()=>{
  const q={...quote(),parts:[{passageId:'p1',layer:'original',start:2,end:4,text:'😀'}]};assert.deepEqual(validateCurrentReadingChatQuote(q,book()),q);for(const part of [{start:2,end:3,text:'\ud83d'},{start:3,end:4,text:'\ude00'}])assert.throws(()=>validateCurrentReadingChatQuote({...q,parts:[{...q.parts[0],...part}]},book()));
 });
+
+test('noncanonical array keys cannot disguise a missing selected part',()=>{
+ const q=quote();q.parts.length=2;q.parts['01']={...q.parts[0],passageId:'p2'};assert.throws(()=>normalizeReadingChatQuote(q),error=>error.status===400);
+});
+
+test('selected excerpt requires its exact current visible layer and never expands a hidden partial quote',async()=>{
+ const {readingChatExcerptIsVisible}=await import('../app/reading-chat-quote.mjs'),snapshot={parts:[{passageId:'p1',language:'en',start:2,end:8,text:'source'}]};assert.equal(typeof readingChatExcerptIsVisible,'function');assert.equal(readingChatExcerptIsVisible(snapshot,()=>({visible:true,text:'A source sentence.'})),true);assert.equal(readingChatExcerptIsVisible(snapshot,()=>({visible:false,text:'A source sentence.'})),false);assert.equal(readingChatExcerptIsVisible(snapshot,()=>null),false);assert.equal(readingChatExcerptIsVisible(snapshot,()=>({visible:true,text:'A changed sentence.'})),false);
+});

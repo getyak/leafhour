@@ -215,3 +215,9 @@ test('real mounted selection capture quotes exact source before opening and neve
  const chat=mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,mountCompanion:()=>({dispose(){}}),integration:{triggerHost:f.triggerHost,companionAnchor:f.pill,onOpen(){},focusReturn(){}},request:async(url,options)=>{requests.push({url,options});return new Response(JSON.stringify({bookId:'book-one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:'p1',original:'Visible source.'},turns:[]}));}});
  f.onCleanup(()=>chat.dispose());assert.equal(chat.quoteSelection(),true);await flush();assert.equal(f.dialog.open,true);assert.equal(selected,false);assert.equal(f.all(f.dialog).find(node=>node.className==='library-chat-quote-text').textContent,'Visible');assert.equal(requests.some(call=>call.options.method==='POST'),false);
 });
+
+test('a hidden old layer snapshot is rejected before opening and is never replaced by its whole paragraph',async t=>{
+ const f=realFixture(t),notices=[],book={bookId:'book-one',contentVersion:'v1',title:{en:'A book'},sections:[{chapterId:'ch1',paragraphs:[{id:'p1',original:'Visible source.'}]}]};let opens=0;
+ const reader={getBook:()=>book,isSelectionActive:()=>true,getExcerpt:()=>({bookId:'book-one',contentVersion:'v1',chapterId:'ch1',parts:[{passageId:'p1',language:'en',start:0,end:7,text:'Visible'}]}),isPassageVisible:()=>true,isQuoteVisible:()=>false,getAnchor:()=>({passageId:'p1'})};
+ const chat=mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,announce:value=>notices.push(value),mountChat:()=>({update(){},dispose(){},quote(){opens++;return true;}})});f.onCleanup(()=>chat.dispose());assert.equal(chat.quoteSelection(),false);assert.equal(opens,0);assert.equal(notices.length,1);
+});

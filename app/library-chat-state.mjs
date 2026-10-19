@@ -5,7 +5,7 @@ export const CHAT_TEXT_LIMIT=2000;
 // Async tickets are scoped to both the account and the selected book. Stopping a
 // run changes its operation ticket before a late send response can be applied.
 export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readPending=()=>null,writePending=()=>{},readQuoteHead=()=>null,writeQuoteHead=()=>{},readQuoteAck=()=>null,writeQuoteAck=()=>{},makeQuoteRevision=()=>crypto.randomUUID(),makeId=()=>crypto.randomUUID()}={}){
-  let epoch=0,loadSequence=0,operation=0,scopeOperation=0,unsavedQuote=null;
+  let epoch=0,loadSequence=0,operation=0,scopeOperation=0,unsavedQuote=null,quoteRejectedRevision=null;
   let state={owner:null,bookId:null,draft:'',quote:null,quoteRevision:null,data:null,turns:[],phase:'idle',loadError:null,pending:null,retry:null,notice:'',scopePending:null,scopeUnconfirmed:false};
   const current=ticket=>!!ticket&&ticket.epoch===epoch&&ticket.owner===state.owner&&ticket.bookId===state.bookId;
   const ticket=extra=>({epoch,owner:state.owner,bookId:state.bookId,...extra});
@@ -54,7 +54,15 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
     try{return !!turn&&turn.id===payload.id&&turn.text===payload.text&&turn.passageId===payload.passageId&&turn.contentVersion===payload.contentVersion&&(turn.scopeRevision??0)===(payload.scopeRevision??0)&&JSON.stringify(turn.quote===undefined?null:normalizeReadingChatQuote(turn.quote))===JSON.stringify(payload.quote??null);}catch{return false;}
   }
   const canChangeQuote=()=>!!state.owner&&!!state.bookId&&!state.pending&&!state.retry?.uncertain&&!state.scopePending;
-  const quoteReady=()=>!state.quote||(state.quote.bookId===state.bookId&&state.quote.contentVersion===state.data?.contentVersion&&state.quote.parts[0].passageId===state.data?.context?.passageId);
+  function quoteReady(){
+    if(!state.quote)return true;const part=state.quote.parts[0],context=state.data?.context;
+    if(state.quoteRevision===quoteRejectedRevision||state.quote.bookId!==state.bookId||state.quote.contentVersion!==state.data?.contentVersion||part.passageId!==context?.passageId)return false;
+    // Current GET includes the first source/translation; never certify unseen parts.
+    if(Object.hasOwn(context,part.layer)){
+      const source=context[part.layer];if(typeof source!=='string'||source.slice(part.start,part.end)!==part.text||part.layer!=='original'&&context.translationStatus?.[part.layer]!==part.translationStatus)return false;
+    }
+    return true;
+  }
   function clearExactDraft(snapshot){
     if(typeof snapshot!=='string')return true;
     // A different tab may have saved a later draft while this request ran.
@@ -78,7 +86,7 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
     }else{
       clearPending(payloadFor(turn));
       Object.assign(state,readQuote(state.owner,state.bookId,{quote:state.quote,quoteRevision:state.quoteRevision}));
-      restore(turn.text);state.retry={payload:payloadFor(turn),draftText:tracked?.draftText??turn.text,quoteRevision:tracked?.quoteRevision||null,uncertain:false,checked:true};state.notice={id:turn.status==='cancelled'?'c.notice.stopped':'c.notice.noAnswer'};
+      restore(turn.text);state.retry={payload:payloadFor(turn),draftText:tracked?.draftText??turn.text,quoteRevision:tracked?.quoteRevision||null,uncertain:false,checked:true};state.notice={id:turn.status==='cancelled'?'chat.stopped':'cs.noAnswer'};
     }
   }
   return {
@@ -86,16 +94,16 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
     setQuote(value){
       if(!canChangeQuote())return false;let quote;try{quote=value===null?null:normalizeReadingChatQuote(value);}catch{return false;}if(quote&&quote.bookId!==state.bookId)return false;
       let priorKnown=false,priorRevision=null;try{priorRevision=readQuoteHead(state.owner,state.bookId)?.revision||null;priorKnown=true;}catch{}
-      const revision=makeQuoteRevision();if(!validRevision(revision))return false;state.quote=quote;state.quoteRevision=revision;
+      const revision=makeQuoteRevision();if(!validRevision(revision))return false;quoteRejectedRevision=null;state.quote=quote;state.quoteRevision=revision;
       try{writeQuoteHead(state.owner,state.bookId,{schemaVersion:1,owner:state.owner,bookId:state.bookId,revision,quote});unsavedQuote=null;}catch{unsavedQuote={owner:state.owner,bookId:state.bookId,revision,priorKnown,priorRevision};}return true;
     },
     setContext(owner,bookId){
       owner=owner||null;bookId=bookId||null;if(owner===state.owner&&bookId===state.bookId)return false;
-      epoch++;operation++;unsavedQuote=null;let draft='';if(owner&&bookId)try{draft=String(readDraft(owner,bookId)||'');}catch{}
+      epoch++;operation++;unsavedQuote=null;quoteRejectedRevision=null;let draft='';if(owner&&bookId)try{draft=String(readDraft(owner,bookId)||'');}catch{}
       const retry=owner&&bookId?restoredPending(owner,bookId):null;
       state={owner,bookId,draft,...(owner&&bookId?readQuote(owner,bookId):{quote:null,quoteRevision:null}),data:null,turns:[],phase:'idle',loadError:null,pending:null,retry,notice:retry?{id:'c.notice.checking'}:null,scopePending:null,scopeUnconfirmed:false};return true;
     },
-    reset(){epoch++;operation++;unsavedQuote=null;state={owner:null,bookId:null,draft:'',quote:null,quoteRevision:null,data:null,turns:[],phase:'idle',loadError:null,pending:null,retry:null,notice:'',scopePending:null,scopeUnconfirmed:false};},
+    reset(){epoch++;operation++;unsavedQuote=null;quoteRejectedRevision=null;state={owner:null,bookId:null,draft:'',quote:null,quoteRevision:null,data:null,turns:[],phase:'idle',loadError:null,pending:null,retry:null,notice:'',scopePending:null,scopeUnconfirmed:false};},
     setDraft(text){state.draft=String(text);persist();},
     beginLoad({passageId}={}){if(!state.owner||!state.bookId)return null;loadSequence++;state.loadError='';if(passageId&&state.data?.context?.passageId!==passageId)state.data=null;state.phase='loading';return ticket({loadSequence});},
     resolveLoad(request,data){
@@ -152,12 +160,12 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
     rejectSend(request,error,{uncertain=false}={}){
       if(!current(request)||request.operation!==operation||request.id!==state.pending?.id)return false;
       if(error?.status===412)state.scopeUnconfirmed=true;
-      const pending=state.pending;state.pending=null;restore(pending.text);state.retry={payload:pending.payload,draftText:pending.draftText,quoteRevision:pending.quoteRevision,uncertain,checked:!uncertain};if(uncertain)persistPending(state.retry);else clearPending(pending.payload);
+      const pending=state.pending;if(error?.status===422&&pending.payload.quote&&state.quoteRevision===pending.quoteRevision)quoteRejectedRevision=pending.quoteRevision;state.pending=null;restore(pending.text);state.retry={payload:pending.payload,draftText:pending.draftText,quoteRevision:pending.quoteRevision,uncertain,checked:!uncertain};if(uncertain)persistPending(state.retry);else clearPending(pending.payload);
       putTurn({...state.turns.find(t=>t.id===pending.id),status:uncertain?'running':'failed',error:error?.message});
-      state.notice={id:uncertain?'cs.interrupted':'cs.noAnswer'};return true;
+      state.notice={id:uncertain?'cs.interrupted':error?.status===422?'chat.quote.changed':'cs.noAnswer'};return true;
     },
     beginCancel(){if(!state.pending||state.pending.status==='stopping')return null;loadSequence++;state.phase=state.data?'ready':'idle';const request=ticket({operation:++operation,id:state.pending.id});state.pending={...state.pending,status:'stopping'};return request;},
     resolveCancel(request,turn){if(!current(request)||request.operation!==operation||request.id!==state.pending?.id||!matches(turn,state.pending.payload)||!['completed','failed','cancelled'].includes(turn.status))return false;finish(turn);return true;},
-    rejectCancel(request,error){if(!current(request)||request.operation!==operation||request.id!==state.pending?.id)return false;const pending=state.pending;state.pending=null;restore(pending.text);state.retry={payload:pending.payload,draftText:pending.draftText,quoteRevision:pending.quoteRevision,uncertain:true,checked:false};persistPending(state.retry);state.notice={id:'cs.stopUncertain'};state.loadError=error?.message||'';return true;}
+    rejectCancel(request,error){if(!current(request)||request.operation!==operation||request.id!==state.pending?.id)return false;const pending=state.pending;if(error?.status===422&&pending.payload.quote&&state.quoteRevision===pending.quoteRevision)quoteRejectedRevision=pending.quoteRevision;state.pending=null;restore(pending.text);state.retry={payload:pending.payload,draftText:pending.draftText,quoteRevision:pending.quoteRevision,uncertain:true,checked:false};persistPending(state.retry);state.notice={id:'cs.stopUncertain'};state.loadError=error?.message||'';return true;}
   };
 }
