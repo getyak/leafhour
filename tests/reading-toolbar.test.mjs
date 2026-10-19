@@ -66,7 +66,7 @@ test('a dialog added after mounting keeps its sidebar opener available until it 
     focus(){}
   }
   const root=new Element(),body=new Element(),elements=new Map(['reading-tools-trigger','reading-tools-panel','reading-tools-close','reading-tools-label','reading-tools-notice'].map(id=>['#'+id,new Element()]));root.querySelector=id=>elements.get(id);
-  let dialogOpen=false;const document=new Element();document.body=body;document.querySelector=()=>dialogOpen?{}:null;document.querySelectorAll=()=>[];
+  let dialogOpen=false;const document=new Element();document.body=body;document.querySelector=selector=>{if(String(selector).includes(':popover-open'))throw Error('unsupported selector: '+selector);return dialogOpen?{}:null;};document.querySelectorAll=()=>[];
   const observers=[];class Observer {constructor(callback){this.callback=callback;}observe(target,options){observers.push({target,options,callback:this.callback});}}
   const oldDocument=globalThis.document,oldObserver=globalThis.MutationObserver;globalThis.document=document;globalThis.MutationObserver=Observer;
   const mutation=()=>{for(const observer of observers)if(observer.target===body&&observer.options.childList&&observer.options.subtree)observer.callback([{type:'childList'}]);};

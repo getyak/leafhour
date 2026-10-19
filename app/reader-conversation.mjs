@@ -1,8 +1,9 @@
 import {mountReaderCompanion,mountCompanionAnchor} from './reader-companion.mjs';
 import {mountLibraryChat} from './library-chat.mjs';
+import {overlayOpen} from './popover-controls.mjs';
 
 export function readerInteractionBlocked(document,target){
-  return !!document.querySelector('dialog[open]:not(.library-chat-dialog),[popover]:popover-open')||!!target?.closest?.('dialog,.library-chat-launcher,.squirrel-companion-bubble,.squirrel-companion-pill');
+  return overlayOpen(document,'dialog[open]:not(.library-chat-dialog)')||!!target?.closest?.('dialog,.library-chat-launcher,.squirrel-companion-bubble,.squirrel-companion-pill');
 }
 
 export function readerConversationContext(reader,bookId){

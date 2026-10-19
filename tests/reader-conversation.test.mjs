@@ -17,10 +17,11 @@ test('audio questions open a bounded source-linked draft only for the captured a
 });
 
 test('nonmodal conversation does not block reading keys while chat controls keep their own keys',()=>{
-  const document={querySelector:selector=>selector.includes(':not(.library-chat-dialog)')?null:{open:true}};
+  const safe=query=>{if(String(query).includes(':popover-open'))throw Error('unsupported selector: '+query);};
+  const document={querySelector:selector=>{safe(selector);return selector.includes(':not(.library-chat-dialog)')?null:{open:true};}};
   assert.equal(readerInteractionBlocked(document,{closest:()=>null}),false);
   assert.equal(readerInteractionBlocked(document,{closest:()=>({tagName:'DIALOG'})}),true);
-  assert.equal(readerInteractionBlocked({querySelector:()=>({open:true})},{closest:()=>null}),true);
+  assert.equal(readerInteractionBlocked({querySelector:selector=>{safe(selector);return {open:true};}},{closest:()=>null}),true);
 });
 
 test('reader chat uses a valid selection, then a valid visible paragraph, and rejects another book',()=>{

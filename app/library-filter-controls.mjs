@@ -1,6 +1,7 @@
 import {hasShelfFilters,shelfLanguage} from './library-workspace.mjs';
 import {mountChoiceControl} from './choice-control.mjs';
 import {LIBRARY_TOPICS,normalizeLibraryQuery} from './library-view-state.mjs';
+import {mountPopover} from './popover-controls.mjs';
 
 // GET-176 current-view summary + GET-177 fiction topic. All three filter
 // dropdowns are enhanced by the shared choice primitive: up to six choices are
@@ -26,8 +27,9 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
   const states=[...root.querySelectorAll('[data-reading-status]')],chips=find('shelf-filter-chips'),clearButton=find('shelf-filter-clear'),selection=find('shelf-filter-selection'),count=find('shelf-filter-count');
   let values=defaults(),optionsKey='',lastBooks=null;
   const read=()=>({...values,query:normalizeLibraryQuery(search.value)});
-  const close=()=>{if(panel.matches(':popover-open'))panel.hidePopover();};
-  const open=()=>{if(!panel.matches(':popover-open'))panel.showPopover();};
+  const popover=mountPopover({document:doc,element:panel,trigger,beforeOpen:position,onChange:onOpenChange});
+  const close=()=>popover.close();
+  const open=()=>popover.open();
   const set=patch=>{
     const changed={};
     for(const [key,value] of Object.entries(patch||{})){
@@ -68,7 +70,7 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
   for(const [key,field] of Object.entries(fields))choices[key]=mountChoiceControl({document:doc,select:field,label:choiceLabel[key]});
   const choiceFocusTarget=control=>!control?null:control.mode==='chips'?control.chips[0]:control.input;
   function focusAfterClear(key){
-    let target=key==='query'?search:key==='status'?states[0]:panel.matches(':popover-open')?choiceFocusTarget(choices[key]):null;
+    let target=key==='query'?search:key==='status'?states[0]:popover.isOpen()?choiceFocusTarget(choices[key]):null;
     if(!target||target.hidden===true)target=trigger;
     target?.focus?.();
   }
@@ -79,9 +81,7 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
     panel.style.left=Math.max(16,Math.min(bounds.right-width,window.innerWidth-width-16))+'px';
     panel.style.top=top+'px';panel.style.maxHeight=Math.max(150,window.innerHeight-top-16)+'px';
   }
-  panel.addEventListener('beforetoggle',event=>{if(event.newState==='open')position();});
-  panel.addEventListener('toggle',event=>{trigger.setAttribute('aria-expanded',String(event.newState==='open'));onOpenChange(event.newState==='open');});
-  const reposition=()=>{if(panel.matches(':popover-open'))position();};
+  const reposition=()=>{if(popover.isOpen())position();};
   if(typeof window!=='undefined'){window.addEventListener('resize',reposition);window.addEventListener('scroll',reposition,{passive:true});}
 
   const summaryEntries=()=>{

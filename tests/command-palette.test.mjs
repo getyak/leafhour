@@ -14,20 +14,20 @@ class Element extends EventTarget {
   addEventListener(name,fn,options){if(!this.listeners)this.listeners=new Map();if(!this.listeners.has(name))this.listeners.set(name,0);this.listeners.set(name,this.listeners.get(name)+1);super.addEventListener(name,fn,options);}
   contains(n){return n===this||this.children.some(c=>c.contains(n));}
   closest(selector){let node=this.parentElement;while(node){if(node.matches?.(selector))return node;node=node.parentElement;}return null;}
-  matches(){return false;}
+  matches(selector){if(String(selector).includes(':popover-open'))throw Error('unsupported selector: '+selector);return false;}
   focus(){this.doc.activeElement=this;}
   showModal(){this.open=true;this.doc.activeElement=this;}
   show(){this.open=true;}
   close(){this.open=false;this.dispatchEvent(new Event('close'));}
   click(){this.dispatchEvent(new Event('click',{cancelable:true}));}
-  querySelector(selector){return this.children.map(c=>c.querySelector?.(selector)).find(Boolean)||null;}
-  querySelectorAll(selector){return this.children.flatMap(c=>[...(c.querySelectorAll?.(selector)||[]),...(c.matches?.(selector)?[c]:[])]);}
+  querySelector(selector){if(String(selector).includes(':popover-open'))throw Error('unsupported selector: '+selector);return this.children.map(c=>c.querySelector?.(selector)).find(Boolean)||null;}
+  querySelectorAll(selector){if(String(selector).includes(':popover-open'))throw Error('unsupported selector: '+selector);return this.children.flatMap(c=>[...(c.querySelectorAll?.(selector)||[]),...(c.matches?.(selector)?[c]:[])]);}
 }
 function fixture(){
   const doc=new EventTarget();doc.createElement=tag=>new Element(tag,doc);doc.body=doc.createElement('body');doc.activeElement=doc.body;
   const all=n=>[n,...n.children.flatMap(all)];doc.getElementById=id=>all(doc.body).find(n=>n.id===id)||null;
   doc.querySelectorAll=selector=>all(doc.body).filter(n=>selector==='.command-palette'?n.className.split(' ').includes('command-palette'):selector==='[data-palette-keycap]'?n.dataset.paletteKeycap!==undefined:selector==='[data-palette-open]'?n.dataset.paletteOpen!==undefined:selector==='[role=option]'?n.getAttribute('role')==='option':selector==='[role="status"]'?n.getAttribute('role')==='status':selector==='[data-palette-open],[data-palette-keycap]'?(n.dataset.paletteOpen!==undefined||n.dataset.paletteKeycap!==undefined):false);
-  doc.querySelector=()=>null;
+  doc.querySelector=selector=>{if(String(selector).includes(':popover-open'))throw Error('unsupported selector: '+selector);return null;};
   return doc;
 }
 const key=(target,init={})=>{const event=new Event('keydown',{cancelable:true,bubbles:true});Object.assign(event,{key:'k',isComposing:false,keyCode:0,...init});Object.defineProperty(event,'target',{value:target});return event;};

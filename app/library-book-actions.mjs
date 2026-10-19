@@ -4,6 +4,7 @@ import {roomIcons} from './library-shell.mjs';
 import {buildReadingCalendar} from './reading-schedule.mjs';
 import {moveShelfBook} from './shelf-order.mjs';
 import {mountGiftComposer} from './gift-compose.mjs';
+import {mountPopover} from './popover-controls.mjs';
 const node=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const button=(text,cls='')=>{const n=node('button',cls,text);n.type='button';return n;};
 const icon=name=>{const n=node('span');n.dataset.icon=name;n.setAttribute('aria-hidden','true');return n;};
@@ -17,17 +18,17 @@ export function mountLibraryBookActions({api,getSession,getBooks,getOwner,getRev
   const dialog=node('dialog','book-action-dialog');dialog.id='library-book-dialog';dialog.setAttribute('aria-labelledby','book-action-title');
   const head=node('div','book-action-heading'),heading=node('h2');heading.id='book-action-title';const close=button('','book-action-close');close.setAttribute('aria-label','关闭书籍操作');close.append(icon('x'));head.append(heading,close);
   const body=node('div','book-action-body'),status=node('p','book-action-status');status.setAttribute('role','status');dialog.append(head,body,status);document.body.append(menu,dialog);roomIcons(dialog);
-  let opener=null,selected=null,sequence=0,menuTrigger=null,business=null;
+  const menuControl=mountPopover({document,element:menu});
+  let opener=null,selected=null,sequence=0,business=null;
   let giftComposer=null;
   const current=ticket=>ticket===sequence&&dialog.open;
   const message=(text,error=false)=>{status.textContent=text;status.classList.toggle('error',error);};
-  function closeMenu(){if(menu.matches(':popover-open'))menu.hidePopover();}
-  function clear(){giftComposer?.clear();sequence++;closeMenu();if(dialog.open)dialog.close();body.replaceChildren();menu.replaceChildren();selected=null;business=null;message('');}
-  function show(book,text,kind=null){opener=book&&menuTrigger?.isConnected?menuTrigger:document.activeElement;closeMenu();sequence++;selected=book;business=kind;heading.textContent=text;body.replaceChildren();message('');if(!dialog.open)dialog.showModal();return sequence;}
+  function closeMenu(){menuControl.close();}
+  function clear(){giftComposer?.clear();sequence++;menuControl.close({focus:false});menuControl.setTrigger(null);if(dialog.open)dialog.close();body.replaceChildren();menu.replaceChildren();selected=null;business=null;message('');}
+  function show(book,text,kind=null){opener=book&&menuControl.trigger?.isConnected?menuControl.trigger:document.activeElement;closeMenu();sequence++;selected=book;business=kind;heading.textContent=text;body.replaceChildren();message('');if(!dialog.open)dialog.showModal();return sequence;}
   close.addEventListener('click',()=>dialog.close());dialog.addEventListener('close',()=>{const closed=business;sequence++;body.replaceChildren();message('');business=null;if(opener?.isConnected)opener.focus();if(closed)onClose(closed,'user');});
   dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});
-  menu.addEventListener('beforetoggle',event=>{menuTrigger?.setAttribute('aria-expanded',String(event.newState==='open'));});
-  menu.addEventListener('keydown',event=>{const items=[...menu.querySelectorAll('[role=menuitem]:not(:disabled)')],index=items.indexOf(document.activeElement);let next;if(event.key==='ArrowDown')next=(index+1)%items.length;else if(event.key==='ArrowUp')next=(index+items.length-1)%items.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=items.length-1;else if(event.key==='Escape'){event.preventDefault();closeMenu();menuTrigger?.focus();return;}else return;event.preventDefault();items[next]?.focus();});
+  menu.addEventListener('keydown',event=>{const items=[...menu.querySelectorAll('[role=menuitem]:not(:disabled)')],index=items.indexOf(document.activeElement);let next;if(event.key==='ArrowDown')next=(index+1)%items.length;else if(event.key==='ArrowUp')next=(index+items.length-1)%items.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=items.length-1;else if(event.key==='Escape'){event.preventDefault();closeMenu();return;}else return;event.preventDefault();items[next]?.focus();});
   function authenticated(){if(getSession()?.user)return true;closeMenu();if(dialog.open)dialog.close();openAuth();return false;}
   function cover(book,cls='action-book-cover'){const c=node('div',cls);c.setAttribute('aria-hidden','true');paintBookCover(c,book);return c;}
   function bookInfo(book){
@@ -63,12 +64,12 @@ export function mountLibraryBookActions({api,getSession,getBooks,getOwner,getRev
   async function share(book){if(authenticated())return giftComposer.open(book);}
   dialog.addEventListener('close',()=>dialog.classList.remove('gift-compose-dialog'));
   function openMenu(book,trigger){
-    closeMenu();menuTrigger=trigger;selected=book;const ids=getBooks().map(b=>b.bookId),index=ids.indexOf(book.bookId);menu.replaceChildren(node('p','book-menu-title',title(book)));
-    const items=[['info','书籍信息',()=>bookInfo(book)],['mail','送出这本书',()=>share(book)],['calendar-plus','添加读书日程',()=>calendar(book)],['arrow-left','向前移动',()=>{menuTrigger?.focus({preventScroll:true});return onReorder(moveShelfBook(ids,book.bookId,ids[index-1],'before'));},index<1],['arrow-right','向后移动',()=>{menuTrigger?.focus({preventScroll:true});return onReorder(moveShelfBook(ids,book.bookId,ids[index+1],'after'));},index===ids.length-1],['trash-2','移到回收站',()=>archive(book)]];
-    for(const [name,label,run,disabled]of items){const item=button('','book-menu-item'+(name==='trash-2'?' is-destructive':''));item.setAttribute('role','menuitem');item.disabled=!!disabled;item.append(icon(name),node('span','',label));item.addEventListener('click',()=>{closeMenu();Promise.resolve(run()).catch(error=>{document.getElementById('library-status').textContent=error.message;});});menu.append(item);}roomIcons(menu);menu.showPopover();const r=trigger.getBoundingClientRect(),width=menu.offsetWidth;menu.style.left=Math.max(12,Math.min(innerWidth-width-12,r.right-width))+'px';menu.style.top=Math.max(12,Math.min(innerHeight-menu.offsetHeight-12,r.bottom+8))+'px';menu.querySelector('button:not(:disabled)')?.focus({preventScroll:true});
+    closeMenu();menuControl.setTrigger(trigger);selected=book;const ids=getBooks().map(b=>b.bookId),index=ids.indexOf(book.bookId);menu.replaceChildren(node('p','book-menu-title',title(book)));
+    const items=[['info','书籍信息',()=>bookInfo(book)],['mail','送出这本书',()=>share(book)],['calendar-plus','添加读书日程',()=>calendar(book)],['arrow-left','向前移动',()=>{menuControl.trigger?.focus({preventScroll:true});return onReorder(moveShelfBook(ids,book.bookId,ids[index-1],'before'));},index<1],['arrow-right','向后移动',()=>{menuControl.trigger?.focus({preventScroll:true});return onReorder(moveShelfBook(ids,book.bookId,ids[index+1],'after'));},index===ids.length-1],['trash-2','移到回收站',()=>archive(book)]];
+    for(const [name,label,run,disabled]of items){const item=button('','book-menu-item'+(name==='trash-2'?' is-destructive':''));item.setAttribute('role','menuitem');item.disabled=!!disabled;item.append(icon(name),node('span','',label));item.addEventListener('click',()=>{closeMenu();Promise.resolve(run()).catch(error=>{document.getElementById('library-status').textContent=error.message;});});menu.append(item);}roomIcons(menu);menuControl.open();const r=trigger.getBoundingClientRect(),width=menu.offsetWidth;menu.style.left=Math.max(12,Math.min(innerWidth-width-12,r.right-width))+'px';menu.style.top=Math.max(12,Math.min(innerHeight-menu.offsetHeight-12,r.bottom+8))+'px';menu.querySelector('button:not(:disabled)')?.focus({preventScroll:true});
   }
   function decorate(card,book){
-    card.querySelector(':scope > .book-action-trigger')?.remove();card.dataset.bookId=book.bookId;const trigger=button('','book-action-trigger');trigger.setAttribute('aria-label','《'+title(book)+'》更多操作');trigger.setAttribute('aria-haspopup','menu');trigger.setAttribute('aria-expanded','false');trigger.setAttribute('aria-controls',menu.id);trigger.append(icon('ellipsis'));trigger.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();if(menu.matches(':popover-open')&&menuTrigger===trigger)closeMenu();else openMenu(book,trigger);});card.append(trigger);roomIcons(trigger);return trigger;
+    card.querySelector(':scope > .book-action-trigger')?.remove();card.dataset.bookId=book.bookId;const trigger=button('','book-action-trigger');trigger.setAttribute('aria-label','《'+title(book)+'》更多操作');trigger.setAttribute('aria-haspopup','menu');trigger.setAttribute('aria-expanded','false');trigger.setAttribute('aria-controls',menu.id);trigger.append(icon('ellipsis'));trigger.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();if(menuControl.isOpen()&&menuControl.trigger===trigger)closeMenu();else openMenu(book,trigger);});card.append(trigger);roomIcons(trigger);return trigger;
   }
   window.addEventListener('resize',closeMenu);document.addEventListener('scroll',event=>{if(!menu.contains(event.target)&&!dialog.contains(event.target))closeMenu();},{capture:true,passive:true});
   return {decorate,trash,clear,closeMenu,getOverlayKind:()=>business,closeDialog:()=>{if(dialog.open)dialog.close();}};

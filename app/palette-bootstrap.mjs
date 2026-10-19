@@ -3,6 +3,7 @@
 // adapters arrive through the documented window.marginaliaPaletteAdapter
 // registry plus body[data-palette-page]; the palette module never imports an
 // unrelated page controller.
+import {overlayOpen} from './popover-controls.mjs';
 
 export const PALETTE_KEYCAP={mac:'⌘K',other:'Ctrl K'};
 export const PALETTE_POINTER_QUERIES=['(pointer: coarse)','(any-pointer: fine)'];
@@ -52,7 +53,7 @@ export function mountPaletteBootstrap({document=globalThis.document,navigator=gl
   for(const node of document.querySelectorAll('[data-palette-open]'))node.addEventListener?.('click',()=>gesture(node));
   const onKeydown=event=>{
     const key=event.key?.toLowerCase?.()||'',primary=!!event.metaKey||!!event.ctrlKey,target=event.target;
-    const allowed=paletteShortcutAllowed(event,{editable:!!target&&(target.isContentEditable===true||!!target.closest?.('input,textarea,select,[contenteditable="true"]')),modalOpen:!!document.querySelector('dialog[open],[popover]:popover-open')});
+    const allowed=paletteShortcutAllowed(event,{editable:!!target&&(target.isContentEditable===true||!!target.closest?.('input,textarea,select,[contenteditable="true"]')),modalOpen:overlayOpen(document)});
     if(key==='k'&&primary&&!event.altKey&&!event.shiftKey&&allowed){event.preventDefault();gesture(target);}
     else if(key==='/'&&!primary&&!event.altKey&&!event.shiftKey&&allowed){
       const input=document.getElementById?.('book-search');

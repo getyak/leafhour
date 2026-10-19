@@ -1,3 +1,4 @@
+import {overlayOpen} from './popover-controls.mjs';
 // Visibility is independent of the reading clock and never records activity.
 export function createReadingToolbarState({onChange=()=>{}}={}) {
   let expanded=false,timer;
@@ -50,7 +51,7 @@ export function mountReadingToolbar(root,{onExpandedChange=()=>{}}={}) {
   root.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse')toolbar.hold('pointer',true);});
   root.addEventListener('pointerleave',event=>{if(event.pointerType==='mouse')toolbar.hold('pointer',false);});
   trigger.addEventListener('click',()=>{if(toolbar.expanded&&!hoverPreview)toolbar.conceal();else{hoverPreview=false;reveal(true);}});
-  panel.addEventListener('click',event=>{if(!event.target.closest('#reading-tools-close,[data-tools-handoff]')&&!document.querySelector('dialog[open],[popover]:popover-open'))toolbar.reveal();});
+  panel.addEventListener('click',event=>{if(!event.target.closest('#reading-tools-close,[data-tools-handoff]')&&!overlayOpen(document))toolbar.reveal();});
   close.addEventListener('click',()=>toolbar.conceal());
   document.addEventListener('keydown',event=>{if(event.key==='Tab'){keyboard=true;focusHold();}},true);
   document.addEventListener('pointerdown',()=>{keyboard=false;focusHold();},true);
@@ -59,12 +60,13 @@ export function mountReadingToolbar(root,{onExpandedChange=()=>{}}={}) {
   root.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&toolbar.expanded){event.preventDefault();event.stopPropagation();toolbar.conceal();}
   });
-  // Native dialogs return focus to their opener. Keep it available throughout.
-  const dialogHold=()=>toolbar.hold('dialog',!!document.querySelector('dialog[open]'));
-  // Audio creates its dialog after this toolbar mounts. Observe its lifetime as
-  // well as open changes, including removal of a still-open dialog.
-  new MutationObserver(dialogHold).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['open']});
-  dialogHold();
+  // Dialogs and book info return focus to their opener. Keep that same tools
+  // surface available, including while an optional enhancement loads slowly.
+  const overlayHold=()=>toolbar.hold('overlay',overlayOpen(document));
+  // Audio creates its dialog later; the shared popover controller owns its
+  // marker in both native and fallback browsers. Closing releases this hold.
+  new MutationObserver(overlayHold).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['open','data-popover-open']});
+  overlayHold();
   updateLabel();
   return {update(values){
     if(values.status!==undefined)status=values.status;
