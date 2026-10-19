@@ -237,11 +237,18 @@ test('generic grant revocation invalidates the bound plan before it acknowledges
 
 test('expired daily grants stay honest and quiet instead of claiming indefinite service',async t=>{
   const f=await buildFixture(t);await f.connect();
-  f.advance((DAILY_GRANT_TTL_DAYS+1)*86400000);
-  const result=await f.claim();
-  assert.equal(result.status,'quiet');
-  assert.ok(['grant-invalid','expired'].includes(result.quiet.reason));
-  assert.match((await f.daily.view(owner)).plan.status,/expired|revoked/);
+  // The library issues grants with the real clock; the reading fixture starts
+  // yesterday at 09:05. Advancing that fixture by 31 days can still precede the
+  // grant's actual expiry when CI runs after 09:05. Use its authoritative date.
+  const expiresAt=Date.parse(f.grant.expiresAt);assert.ok(Number.isFinite(expiresAt));
+  f.setNow(expiresAt-1);assert.equal((await f.daily.view(owner)).plan.status,'active');
+  for(const offset of [0,1,86400000]){
+    f.setNow(expiresAt+offset);const result=await f.claim();
+    assert.equal(result.status,'quiet');assert.equal(result.quiet.reason,'expired');
+    assert.equal(result.context,null);assert.equal(result.activity,null);assert.equal(result.card,null);
+    assert.equal((await f.daily.view(owner)).plan.status,'expired');
+  }
+  const final=await f.daily.view(owner);assert.deepEqual(final.events,[]);assert.deepEqual(final.inbox,[]);
 });
 
 test('an active reader anywhere suppresses the card and the host learns only the quiet reason',async t=>{
