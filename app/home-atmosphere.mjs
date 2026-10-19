@@ -1,5 +1,5 @@
 // Decorative input only. No reading state, account data, timers, or model calls.
-import {homeLocale,homeText} from './home-locale.mjs';
+import {t,onUiLocaleChange,uiReady} from './ui-locale.mjs';
 export function mountHomeAtmosphere(root,win=root?.ownerDocument?.defaultView){
   if(!root||root.hidden||!win?.requestAnimationFrame||!win.matchMedia)return ()=>{};
   const doc=root.ownerDocument,toggle=root.querySelector('.light-toggle');
@@ -37,15 +37,17 @@ export function mountHomeAtmosphere(root,win=root?.ownerDocument?.defaultView){
     if(reduced.matches||!fine.matches)x=y=0;
     targetX=x;targetY=y;targetScroll=scroll;render();
     root.dataset.atmosphere=reduced.matches?'still':running()?'running':'paused';
-    if(toggle){const label=homeText(reduced.matches?'系统已减少动态效果':enabled?'暂停光影':'开启光影',homeLocale(doc));toggle.hidden=false;toggle.disabled=reduced.matches;toggle.setAttribute('aria-pressed',String(enabled&&!reduced.matches));toggle.setAttribute('aria-label',label);toggle.setAttribute('title',label);}
+    labelToggle();
   };
+  const labelToggle=()=>{if(toggle){const label=t(reduced.matches?'atmosphere.reduced':enabled?'atmosphere.pause':'atmosphere.enable');toggle.hidden=false;toggle.disabled=reduced.matches;toggle.setAttribute('aria-pressed',String(enabled&&!reduced.matches));toggle.setAttribute('aria-label',label);toggle.setAttribute('title',label);}};
   const click=()=>{if(reduced.matches)return;enabled=!enabled;try{win.localStorage.setItem(key,enabled?'on':'off');}catch{}sync();};
   const hide=()=>{suspended=true;sync();},show=()=>{suspended=false;sync();};
   win.addEventListener('pointermove',pointer,{passive:true});win.addEventListener('pointerout',leave,{passive:true});
   win.addEventListener('blur',leave);win.addEventListener('resize',sync);win.addEventListener('scroll',onScroll,{passive:true});
   win.addEventListener('pagehide',hide);win.addEventListener('pageshow',show);doc.addEventListener('visibilitychange',sync);
   reduced.addEventListener('change',sync);fine.addEventListener('change',sync);toggle?.addEventListener('click',click);sync();
-  return ()=>{
+  const offLocale=onUiLocaleChange(labelToggle);void uiReady.then(()=>labelToggle());
+  return ()=>{offLocale();
     disposed=true;cancel();root.dataset.atmosphere='still';
     win.removeEventListener('pointermove',pointer);win.removeEventListener('pointerout',leave);win.removeEventListener('blur',leave);
     win.removeEventListener('resize',sync);win.removeEventListener('scroll',onScroll);win.removeEventListener('pagehide',hide);win.removeEventListener('pageshow',show);

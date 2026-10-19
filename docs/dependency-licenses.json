@@ -3,7 +3,7 @@
   "kind": "leafhour-dependency-license-inventory",
   "lockfile": {
     "path": "package-lock.json",
-    "sha256": "c55ff5bc0aec182a97ccec878cb42b6e80b6709d841ada3339b5a4874490fdeb",
+    "sha256": "a323cafdc167a603782bf5a2da36e06978bf75a1c5128ab4f2b9a327c89afbb1",
     "lockfileVersion": 3,
     "name": "leafhour",
     "version": "0.3.0"

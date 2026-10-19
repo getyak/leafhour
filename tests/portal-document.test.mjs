@@ -2,9 +2,21 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {portalDocument} from '../server/portal-document.mjs';
-test('the library response presents the library before JavaScript loads',async()=>{
+test('the library response presents a complete safe English shell before JavaScript loads',async()=>{
   const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8'),library=portalDocument(source,'/library');
-  assert.match(library,/<title>我的书房 · Leafhour<\/title>/);assert.match(library,/<div id="home-view" hidden>/);assert.match(library,/<div id="library-view">/);assert.doesNotMatch(library,/class="home-nav" href=/);assert.equal(portalDocument(library,'/library'),library);
+  assert.match(library,/<title>My reading room · Leafhour<\/title>/);
+  assert.match(library,/<html lang="en">/,'the canonical shell starts in English');
+  assert.match(library,/<div id="home-view" hidden>/);assert.match(library,/<div id="library-view">/);assert.doesNotMatch(library,/class="home-nav" href=/);
+  // Title, lang, loading and return entries are complete safe English before
+  // any meaningful control exists.
+  assert.match(library,/Opening the reading room…/,'the static loading entry is English');
+  assert.match(library,/Reopen the reading room/,'the static retry/return entry is English');
+  assert.match(library,/Search title or author/);
+  assert.match(library,/Bring a book/);
+  assert.match(library,/Sign in \/ Sign up/);
+  assert.doesNotMatch(library,/正在打开书房/,'no source-language loading text remains in the canonical shell');
+  assert.doesNotMatch(library,/我的书房/,'no source-language title remains');
+  assert.equal(portalDocument(library,'/library'),library);
 });
 test('the default homepage renders in English and every language keeps its own URL',async()=>{
   const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8'),english=portalDocument(source,'/');

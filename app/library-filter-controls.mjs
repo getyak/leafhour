@@ -1,3 +1,4 @@
+import {t,getUiLocale,onUiLocaleChange,uiReady,bindUi} from './ui-locale.mjs';
 import {hasShelfFilters,shelfLanguage} from './library-workspace.mjs';
 import {mountChoiceControl} from './choice-control.mjs';
 import {LIBRARY_TOPICS,normalizeLibraryQuery} from './library-view-state.mjs';
@@ -9,15 +10,10 @@ import {mountPopover} from './popover-controls.mjs';
 // choice commits immediately (no Done step) and mirrors the native select so
 // existing change side effects stay identical; option/value writes go through
 // the explicit sync() call only.
-const topics=new Map([['philosophy','哲学与自我'],['science','科学与技术'],['literature','文学与想象'],['history','历史与社会'],['fiction','小说与故事']]);
-const sources=new Map([['all','全部来源'],['public','内置书'],['private','我上传的']]);
-const statuses=new Map([['all','全部'],['reading','在读'],['unread','未读'],['finished','读完']]);
 const defaults=()=>({scope:'all',status:'all',topic:'all',language:'all'});
 const languageName=value=>{
-  if(value==='unknown')return '未识别';
-  if(value==='en')return '英文';
-  if(value==='zh')return '中文';
-  try{return new Intl.DisplayNames(['zh-Hans'],{type:'language'}).of(value)||value;}catch{return value;}
+  if(['all','unknown','en','zh'].includes(value))return t('filter.language.'+value);
+  try{return new Intl.DisplayNames([getUiLocale()],{type:'language'}).of(value)||value;}catch{return value;}
 };
 
 export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
@@ -25,9 +21,10 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
   const find=id=>root.querySelector('#'+id),search=find('book-search'),panel=find('shelf-filter-panel'),trigger=find('shelf-filter-button');
   const fields={scope:find('shelf-source'),topic:find('shelf-topic'),language:find('shelf-language')};
   const states=[...root.querySelectorAll('[data-reading-status]')],chips=find('shelf-filter-chips'),clearButton=find('shelf-filter-clear'),selection=find('shelf-filter-selection'),count=find('shelf-filter-count');
-  let values=defaults(),optionsKey='',lastBooks=null;
+  let values=defaults(),optionsKey='',lastBooks=null,disposed=false,summaryRows=[];
+  const unbind=bindUi(root),listeners=[];const listen=(node,event,handler)=>{node.addEventListener(event,handler);listeners.push(()=>node.removeEventListener(event,handler));};
   const read=()=>({...values,query:normalizeLibraryQuery(search.value)});
-  const popover=mountPopover({document:doc,element:panel,trigger,beforeOpen:position,onChange:onOpenChange});
+  const popover=mountPopover({document:doc,element:panel,trigger}),offPopover=popover.subscribe({beforeOpen:position,onChange:onOpenChange});
   const close=()=>popover.close();
   const open=()=>popover.open();
   const set=patch=>{
@@ -53,21 +50,21 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
     onChange({clearAll:true});
     search.focus?.();
   };
-  for(const button of states)button.addEventListener('click',()=>set({status:button.dataset.readingStatus}));
-  for(const [key,field] of Object.entries(fields))field.addEventListener('change',()=>set({[key]:field.value}));
-  clearButton.addEventListener('click',()=>clearAll());
+  for(const button of states)listen(button,'click',()=>{if(!disposed)set({status:button.dataset.readingStatus});});
+  for(const [key,field] of Object.entries(fields))listen(field,'change',()=>{if(!disposed)set({[key]:field.value});});
+  listen(clearButton,'click',()=>{if(!disposed)clearAll();});
 
   // GET-177: the three dropdowns become the shared progressive choice
   // primitive; the native selects stay as fallback until a mount succeeds.
   const option=(value,label)=>{const node=doc.createElement('option');node.value=value;node.textContent=label;return node;};
   const writeOptions=(topicChoices,languageChoices)=>{
-    fields.topic.replaceChildren(option('all','全部主题'),...topicChoices.slice(1).map(id=>option(id,topics.get(id))));
-    fields.language.replaceChildren(option('all','全部原文语言'),...languageChoices.slice(1).map(id=>option(id,languageName(id))));
+    fields.topic.replaceChildren(option('all',t('filter.topic.all')),...topicChoices.slice(1).map(id=>option(id,t('filter.topic.'+id))));
+    fields.language.replaceChildren(option('all',t('filter.language.all')),...languageChoices.slice(1).map(id=>option(id,languageName(id))));
   };
   writeOptions([...LIBRARY_TOPICS],['all','zh','en']);
-  const choiceLabel={scope:'来源',topic:'主题',language:'原文语言'};
+  const choiceLabel=key=>t('filter.'+key);
   const choices={};
-  for(const [key,field] of Object.entries(fields))choices[key]=mountChoiceControl({document:doc,select:field,label:choiceLabel[key]});
+  for(const [key,field] of Object.entries(fields))choices[key]=mountChoiceControl({document:doc,select:field,label:choiceLabel(key)});
   const choiceFocusTarget=control=>!control?null:control.mode==='chips'?control.chips[0]:control.input;
   function focusAfterClear(key){
     let target=key==='query'?search:key==='status'?states[0]:popover.isOpen()?choiceFocusTarget(choices[key]):null;
@@ -86,11 +83,11 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
 
   const summaryEntries=()=>{
     const list=[],query=normalizeLibraryQuery(search.value);
-    if(query)list.push(['query','搜索：'+query]);
-    if(values.status!=='all')list.push(['status',statuses.get(values.status)]);
-    if(values.scope!=='all')list.push(['scope',sources.get(values.scope)]);
-    if(values.topic!=='all')list.push(['topic',topics.get(values.topic)]);
-    if(values.language!=='all')list.push(['language',languageName(values.language)]);
+    if(query)list.push(['query',query]);
+    if(values.status!=='all')list.push(['status',values.status]);
+    if(values.scope!=='all')list.push(['scope',values.scope]);
+    if(values.topic!=='all')list.push(['topic',values.topic]);
+    if(values.language!=='all')list.push(['language',values.language]);
     return list;
   };
 
@@ -113,21 +110,37 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
     for(const button of states)button.setAttribute('aria-pressed',String(button.dataset.readingStatus===values.status));
     for(const button of doc.querySelectorAll('[data-shelf]'))button.setAttribute('aria-pressed',String(button.dataset.shelf===values.scope));
     const entries=summaryEntries();
-    chips.replaceChildren(...entries.map(([key,label])=>{
-      const button=doc.createElement('button');button.type='button';button.className='shelf-filter-chip';button.textContent=label+' ×';
-      button.setAttribute('aria-label','取消筛选：'+label);
-      button.addEventListener('click',()=>clear(key));
-      return button;
-    }));
+    summaryRows=entries.map(([key,value])=>{
+      const button=doc.createElement('button');button.type='button';button.className='shelf-filter-chip';
+      button.addEventListener('click',()=>{if(!disposed)clear(key);});
+      return {key,value,button};
+    });
+    chips.replaceChildren(...summaryRows.map(row=>row.button));
     const active=hasShelfFilters(read());
     clearButton.hidden=!active;
     selection.hidden=!entries.length;
     count.textContent=entries.length?String(entries.length):'';
     trigger.classList.toggle('is-filtered',active);
-    trigger.setAttribute('aria-label',active?'筛选书籍，已选 '+entries.length+' 项':'筛选书籍');
+    updateLabels();
   }
+  function updateLabels(){
+    if(disposed)return;
+    root.setAttribute('lang',getUiLocale());
+    for(const [key,field] of Object.entries(fields)){
+      for(const option of field.options)option.textContent=key==='language'?languageName(option.value):t('filter.'+key+'.'+option.value);
+      choices[key]?.updateLabels({label:choiceLabel(key)});
+    }
+    for(const button of states)button.textContent=t('filter.status.'+button.dataset.readingStatus);
+    for(const {key,value,button} of summaryRows){
+      const label=key==='query'?t('filter.search.summary',{query:value}):key==='language'?languageName(value):t('filter.'+key+'.'+value);
+      button.textContent=label+' ×';button.setAttribute('aria-label',t('filter.clearOne',{label}));
+    }
+    trigger.setAttribute('aria-label',hasShelfFilters(read())?t('filter.active',{count:summaryRows.length}):t('filter.open'));
+  }
+  const offLocale=onUiLocaleChange(updateLabels);void uiReady.then(updateLabels);updateLabels();
   return {
-    read,set,clear,clearAll,update,close,open,choices,
+    read,set,clear,clearAll,update,updateLabels,close,open,choices,
+    dispose(){if(disposed)return;disposed=true;offLocale();unbind();for(const off of listeners)off();for(const choice of Object.values(choices))choice?.destroy();offPopover();popover.close({focus:false});if(typeof window!=='undefined'){window.removeEventListener('resize',reposition);window.removeEventListener('scroll',reposition);}},
     apply(view){
       values={scope:view.scope||'all',status:view.status||'all',topic:view.topic||'all',language:view.language||'all'};
       search.value=view.query||'';

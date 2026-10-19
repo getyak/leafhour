@@ -5,7 +5,7 @@ export const CHAT_TEXT_LIMIT=2000;
 // run changes its operation ticket before a late send response can be applied.
 export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readPending=()=>null,writePending=()=>{},makeId=()=>crypto.randomUUID()}={}){
   let epoch=0,loadSequence=0,operation=0,scopeOperation=0;
-  let state={owner:null,bookId:null,draft:'',data:null,turns:[],phase:'idle',loadError:'',pending:null,retry:null,notice:'',scopePending:null,scopeUnconfirmed:false};
+  let state={owner:null,bookId:null,draft:'',data:null,turns:[],phase:'idle',loadError:null,pending:null,retry:null,notice:'',scopePending:null,scopeUnconfirmed:false};
   const current=ticket=>!!ticket&&ticket.epoch===epoch&&ticket.owner===state.owner&&ticket.bookId===state.bookId;
   const ticket=extra=>({epoch,owner:state.owner,bookId:state.bookId,...extra});
   const persist=()=>{if(!state.owner||!state.bookId)return false;try{writeDraft(state.owner,state.bookId,state.draft);return true;}catch{return false;}};
@@ -40,7 +40,7 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
       if(clearExactDraft(tracked?.draftText))clearPending(payloadFor(turn));state.retry=null;state.notice='';
     }else{
       clearPending(payloadFor(turn));
-      restore(turn.text);state.retry={payload:payloadFor(turn),draftText:tracked?.draftText??turn.text,uncertain:false,checked:true};state.notice=turn.status==='cancelled'?'已停止。问题已放回输入框，可以修改后再问。':'这次没有得到回答。问题已保留，可以再试一次。';
+      restore(turn.text);state.retry={payload:payloadFor(turn),draftText:tracked?.draftText??turn.text,uncertain:false,checked:true};state.notice={id:turn.status==='cancelled'?'c.notice.stopped':'c.notice.noAnswer'};
     }
   }
   return {
@@ -49,42 +49,42 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
       owner=owner||null;bookId=bookId||null;if(owner===state.owner&&bookId===state.bookId)return false;
       epoch++;operation++;let draft='';if(owner&&bookId)try{draft=String(readDraft(owner,bookId)||'');}catch{}
       const retry=owner&&bookId?restoredPending(owner,bookId):null;
-      state={owner,bookId,draft,data:null,turns:[],phase:'idle',loadError:'',pending:null,retry,notice:retry?'正在确认上次提问的进度…':'',scopePending:null,scopeUnconfirmed:false};return true;
+      state={owner,bookId,draft,data:null,turns:[],phase:'idle',loadError:null,pending:null,retry,notice:retry?{id:'c.notice.checking'}:null,scopePending:null,scopeUnconfirmed:false};return true;
     },
-    reset(){epoch++;operation++;state={owner:null,bookId:null,draft:'',data:null,turns:[],phase:'idle',loadError:'',pending:null,retry:null,notice:'',scopePending:null,scopeUnconfirmed:false};},
+    reset(){epoch++;operation++;state={owner:null,bookId:null,draft:'',data:null,turns:[],phase:'idle',loadError:null,pending:null,retry:null,notice:'',scopePending:null,scopeUnconfirmed:false};},
     setDraft(text){state.draft=String(text);persist();},
     beginLoad({passageId}={}){if(!state.owner||!state.bookId)return null;loadSequence++;state.loadError='';if(passageId&&state.data?.context?.passageId!==passageId)state.data=null;state.phase='loading';return ticket({loadSequence});},
     resolveLoad(request,data){
       if(!current(request)||request.loadSequence!==loadSequence)return false;
-      if(!data||data.bookId!==state.bookId||!Array.isArray(data.turns)){state.phase=state.data?'ready':'error';state.loadError='这本书的对话暂时无法载入，请重试。';return false;}
-      if(data.scope!==undefined)try{readChatScope(data.scope);}catch{state.scopeUnconfirmed=true;state.phase='error';state.loadError='查阅范围尚未确认，请重新载入；问题仍保留。';return false;}
+      if(!data||data.bookId!==state.bookId||!Array.isArray(data.turns)){state.phase=state.data?'ready':'error';state.loadError={id:'c.error.loadFailed'};return false;}
+      if(data.scope!==undefined)try{readChatScope(data.scope);}catch{state.scopeUnconfirmed=true;state.phase='error';state.loadError={id:'c.error.scopeUnconfirmed'};return false;}
       const scopeWasUnconfirmed=state.scopeUnconfirmed;if(data.scope!==undefined&&!state.scopePending)state.scopeUnconfirmed=false;
       const previous=state.turns;state.data=data;state.phase='ready';state.loadError='';
-      if(scopeWasUnconfirmed&&!state.scopeUnconfirmed)state.notice='已重新读取当前范围，请核对后再发送；问题仍保留。';
+      if(scopeWasUnconfirmed&&!state.scopeUnconfirmed)state.notice={id:'cs.scopeReloaded'};
       state.turns=data.turns.map(turn=>{const local=previous.find(t=>t.id===turn.id);return turn.status==='running'&&local&&local.status!=='running'?local:turn;});
       const target=state.pending?.id||state.retry?.payload.id,recovered=target&&state.turns.find(t=>t.id===target);
       if(recovered&&state.pending?.status!=='stopping')finish(recovered);
-      else if(!state.pending&&state.retry?.uncertain){const changed=state.retry.payload.contentVersion!==data.contentVersion,unavailable=data.available===false;state.retry={...state.retry,uncertain:!changed&&!unavailable,checked:true};if(changed||unavailable)clearPending(state.retry.payload);state.notice=unavailable?'阅读助手暂时不可用，问题已保留，可以继续修改。':changed?'原文版本已更新。问题已保留，再次发送会按当前原文提问。':'暂未收到回答。可以继续这次提问，已有结果会优先恢复。';}
+      else if(!state.pending&&state.retry?.uncertain){const changed=state.retry.payload.contentVersion!==data.contentVersion,unavailable=data.available===false;state.retry={...state.retry,uncertain:!changed&&!unavailable,checked:true};if(changed||unavailable)clearPending(state.retry.payload);state.notice={id:unavailable?'cs.unavailable':changed?'cs.versionUpdated':'cs.noAnswerContinue'};}
       if(!state.pending){const running=state.turns.find(t=>t.status==='running'&&t.kind!=='companion');if(running)finish(running);}
       if(state.pending&&!state.turns.some(t=>t.id===state.pending.id)){const local=previous.find(t=>t.id===state.pending.id);if(local)state.turns.push(local);}
       return true;
     },
-    rejectLoad(request,error){if(!current(request)||request.loadSequence!==loadSequence)return false;state.phase=state.data?'ready':'error';state.loadError=error?.message||'对话暂时无法载入，请重试。';return true;},
+    rejectLoad(request,error){if(!current(request)||request.loadSequence!==loadSequence)return false;state.phase=state.data?'ready':'error';state.loadError={id:'cs.loadFailed'};return true;},
     beginScopeChange(mode){
       if(!READING_CHAT_SCOPES.includes(mode)||!state.data?.scope||state.phase!=='ready'||state.pending||state.retry?.uncertain||state.scopePending||state.scopeUnconfirmed)return null;
       const scope=readChatScope(state.data.scope),request=ticket({scopeOperation:++scopeOperation});
-      state.scopePending={...request,mode,baseRevision:scope.revision,previousMode:scope.mode};state.notice='正在保存查阅范围，问题尚未发送。';
+      state.scopePending={...request,mode,baseRevision:scope.revision,previousMode:scope.mode};state.notice={id:'cs.savingScope'};
       return {ticket:request,payload:{mode,baseRevision:scope.revision}};
     },
     resolveScopeChange(request,value){
       if(!current(request)||request.scopeOperation!==state.scopePending?.scopeOperation)return false;
       const pending=state.scopePending;state.scopePending=null;let scope;try{scope=readChatScope(value);}catch{}
-      if(!scope||scope.mode!==pending.mode||scope.revision!==pending.baseRevision+(pending.mode===pending.previousMode?0:1)){state.scopeUnconfirmed=true;state.notice='范围设置尚未确认，请重新载入；问题仍保留。';return false;}
-      loadSequence++;state.phase='ready';state.loadError='';state.scopeUnconfirmed=false;state.data={...state.data,scope};state.notice='查阅范围已保存，之后的问题按此范围发送。';return true;
+      if(!scope||scope.mode!==pending.mode||scope.revision!==pending.baseRevision+(pending.mode===pending.previousMode?0:1)){state.scopeUnconfirmed=true;state.notice={id:'cs.scopeUncertain'};return false;}
+      loadSequence++;state.phase='ready';state.loadError='';state.scopeUnconfirmed=false;state.data={...state.data,scope};state.notice={id:'cs.scopeSaved'};return true;
     },
     rejectScopeChange(request,error){
       if(!current(request)||request.scopeOperation!==state.scopePending?.scopeOperation)return false;
-      state.scopePending=null;state.scopeUnconfirmed=true;state.notice=(error?.message||'查阅范围暂未确认')+' 问题仍保留，请重新读取当前范围。';return true;
+      state.scopePending=null;state.scopeUnconfirmed=true;state.notice={id:'cs.scopeReread'};return true;
     },
     beginSend(){
       if(!canSend())return null;
@@ -107,10 +107,10 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
       if(error?.status===412)state.scopeUnconfirmed=true;
       const pending=state.pending;state.pending=null;restore(pending.text);state.retry={payload:pending.payload,draftText:pending.draftText,uncertain,checked:!uncertain};if(uncertain)persistPending(state.retry);else clearPending(pending.payload);
       putTurn({...state.turns.find(t=>t.id===pending.id),status:uncertain?'running':'failed',error:error?.message});
-      state.notice=uncertain?'连接中断，正在确认这次提问的进度。请先确认结果，避免重复提问。':error?.message||'这次没有得到回答，问题已保留。';return true;
+      state.notice={id:uncertain?'cs.interrupted':'cs.noAnswer'};return true;
     },
     beginCancel(){if(!state.pending||state.pending.status==='stopping')return null;loadSequence++;state.phase=state.data?'ready':'idle';const request=ticket({operation:++operation,id:state.pending.id});state.pending={...state.pending,status:'stopping'};return request;},
     resolveCancel(request,turn){if(!current(request)||request.operation!==operation||request.id!==state.pending?.id)return false;finish({...turn,status:['completed','failed','cancelled'].includes(turn?.status)?turn.status:'cancelled',id:request.id,text:turn?.text||state.pending.text,passageId:turn?.passageId||state.pending.payload.passageId,contentVersion:turn?.contentVersion||state.pending.payload.contentVersion,origin:'user'});return true;},
-    rejectCancel(request,error){if(!current(request)||request.operation!==operation||request.id!==state.pending?.id)return false;const pending=state.pending;state.pending=null;restore(pending.text);state.retry={payload:pending.payload,draftText:pending.draftText,uncertain:true,checked:false};persistPending(state.retry);state.notice='还不能确认是否已停止。请先查看进度，再决定是否重试。';state.loadError=error?.message||'';return true;}
+    rejectCancel(request,error){if(!current(request)||request.operation!==operation||request.id!==state.pending?.id)return false;const pending=state.pending;state.pending=null;restore(pending.text);state.retry={payload:pending.payload,draftText:pending.draftText,uncertain:true,checked:false};persistPending(state.retry);state.notice={id:'cs.stopUncertain'};state.loadError=error?.message||'';return true;}
   };
 }

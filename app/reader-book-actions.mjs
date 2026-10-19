@@ -1,3 +1,4 @@
+import {t,getUiLocale,uiReady,onUiLocaleChange,createUiLabels,createUiMessage} from './ui-locale.mjs';
 import {createIntroductionController} from './book-introduction-controller.mjs';
 import {introductionFor} from './book-introduction.mjs';
 import {readerLoginUrl} from './reader-return.mjs';
@@ -10,28 +11,37 @@ import {readerLoginUrl} from './reader-return.mjs';
 export function mountReaderBookActions({document,info,getBook,api,session,bookId,loadGiftComposer=()=>Promise.all([import('./gift-compose.mjs'),import('./book-binding.mjs')]).then(modules=>Object.assign({},...modules))}){
   const $=id=>document.getElementById(id),trigger=$('open-book-info'),generate=$('book-intro-generate'),login=$('book-intro-login'),share=$('book-info-share'),status=$('book-intro-status'),note=$('book-intro-provenance'),scope=$('book-intro-scope');
   const make=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
-  const signedIn=!!(bookId&&session?.user),loginUrl=()=>readerLoginUrl({bookId});
+  const signedIn=!!(bookId&&session?.user),loginUrl=()=>readerLoginUrl({bookId,ui:getUiLocale()});
   let disposed=false,unsubscribe=()=>{},sequence=0,activeBookId=null,activeVersion=null,composer=null,giftModule=null,openingTicket=null;
+  const labels=createUiLabels(),descriptionLabels=createUiLabels(),dialogLabels=createUiLabels();let descriptionFallback=false,loginPath=null;
+  const text=(n,key,params)=>labels.text(n,'bookActions.'+key,params);
+  const relabel=()=>{if(disposed)return;labels.refresh();descriptionLabels.refresh();dialogLabels.refresh();if(descriptionFallback)$('book-info-description').setAttribute('lang',getUiLocale());if(loginPath)login.href=readerLoginUrl({bookId:loginPath,ui:getUiLocale()});statusMessage.refresh();giftMessage.refresh();};
+  let offLocale=()=>{};
   // Terminal disposal makes every action, render and asynchronous handler
   // inert: a captured stale control can never call the API or re-enable a
   // control afterwards.
   function render(value){
     if(disposed)return;
     const book=getBook();if(!book)return;
+    labels.clear();
     const display=value||{...introductionFor(book),introduction:book.introduction||null,phase:'idle',available:true};
-    $('book-info-description').textContent=display.text||'这本书还没有简介。';
-    note.hidden=display.source!=='ai';note.textContent=display.source==='ai'?'AI 简介初稿 · 仅依据目录与正文开头取样，尚未人工核对。':'';
+    descriptionLabels.clear();descriptionFallback=!display.text;
+    const description=$('book-info-description');if(display.text){if(description.textContent!==display.text)description.textContent=display.text;description.setAttribute('lang','und');}else{descriptionLabels.text(description,'bookActions.missing');description.setAttribute('lang',getUiLocale());}
+    note.hidden=display.source!=='ai';if(display.source==='ai')text(note,'aiNote');else note.textContent='';
     const missing=display.source==='missing',working=['generating','loading'].includes(display.phase);
-    generate.hidden=!missing||!signedIn;generate.disabled=working||display.available===false;generate.textContent=display.phase==='generating'?'正在生成 AI 简介…':display.available===false?'AI 简介暂未配置':'生成 AI 简介';
-    login.hidden=!bookId||signedIn||!missing;login.href=loginUrl();
-    scope.hidden=!missing;scope.textContent=!bookId?'将书导入自己的书房后，可以生成简介和分享。':signedIn?'由已配置的 AI 读取书名、目录和开头最多 6 段（6000 字符），不含私人笔记。单次费用上限 ¥0.10。':'登录后可以生成并保存自己的 AI 简介初稿。';
-    status.textContent=display.error|| (display.phase==='generating'?'正在生成，关闭介绍会取消本次请求。':display.phase==='loading'?'正在读取已保存的简介…':'');status.setAttribute('role',display.error?'alert':'status');
-    share.disabled=!bookId;share.textContent=signedIn?'分享这本书':'登录后分享这本书';
+    generate.hidden=!missing||!signedIn;generate.disabled=working||display.available===false;text(generate,display.phase==='generating'?'generating':display.available===false?'unavailable':'generate');
+    login.hidden=!bookId||signedIn||!missing;loginPath=bookId;login.href=loginUrl();text(login,'signIn');
+    scope.hidden=!missing;text(scope,!bookId?'importScope':signedIn?'scope':'signInScope');
+    if(display.error)statusMessage.set('bookActions.introFailure',undefined,true);else if(display.phase==='generating'||display.phase==='loading')statusMessage.set('bookActions.'+(display.phase==='generating'?'generatingNote':'loading'));else statusMessage.clear();
+    share.disabled=!bookId;text(share,signedIn?'share':'signInShare');
   }
   const intro=createIntroductionController({getBook,request:(data,options)=>api('/api/introduction',data,options),onChange:render,onSaved:value=>{const book=getBook();if(book&&introductionFor({...book,introduction:value}).source==='ai')book.introduction=value;}});
-  const message=(text,error=false)=>{messageNode.textContent=text;messageNode.setAttribute('role',error?'alert':'status');};
-  const current=ticket=>ticket===sequence&&dialog.open&&getBook()?.bookId===activeBookId&&getBook()?.contentVersion===activeVersion;
-  const show=(book,title)=>{sequence++;activeBookId=book.bookId;activeVersion=book.contentVersion;heading.textContent=title;body.replaceChildren();message('');intro.close();info.close();if(!dialog.open)dialog.showModal();return sequence;};
+  const statusMessage=createUiMessage((text,error)=>{status.textContent=text;status.setAttribute('role',error?'alert':'status');});
+  const giftMessage=createUiMessage((text,error)=>{messageNode.textContent=text;messageNode.setAttribute('role',error?'alert':'status');});
+  const message=(text,error=false)=>{giftMessage.clear();messageNode.textContent=text;messageNode.setAttribute('role',error?'alert':'status');};
+  const notice=(id,error=false)=>giftMessage.set('bookActions.'+id,undefined,error);
+  const current=ticket=>!disposed&&ticket===sequence&&dialog.open&&getBook()?.bookId===activeBookId&&getBook()?.contentVersion===activeVersion;
+  const show=(book,title)=>{sequence++;activeBookId=book.bookId;activeVersion=book.contentVersion;dialogLabels.clear();if(title&&typeof title==='object')dialogLabels.text(heading,title.id,title.params);else heading.textContent=title;dialogLabels.attr(close,'aria-label','bookActions.closeGift');body.replaceChildren();message('');intro.close();info.close();if(!dialog.open)dialog.showModal();return sequence;};
   // The optional gift module loads once; its controller is constructed only
   // after the import settles for a request that is still current and alive, so
   // a late module is never more than cached code and ordinary close/reopen
@@ -44,7 +54,7 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
   const onShare=async()=>{
     if(disposed||!bookId)return;if(!signedIn){document.defaultView.location.assign(loginUrl());return;}
     const book=getBook();if(!book||openingTicket!==null&&current(openingTicket))return;
-    const ticket=show(book,'写一封赠书信');openingTicket=ticket;message('正在打开赠书信…');
+    const ticket=show(book,{id:'bookActions.writeGift'});openingTicket=ticket;notice('openingGift');
     try{
       const module=await loadGiftModule();
       // Recheck terminal disposal and the captured source/sequence before the
@@ -52,7 +62,7 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
       if(disposed||!current(ticket))return;
       await attachGift(module).open(book);
     }
-    catch{if(!disposed&&current(ticket))message('赠书信暂时无法打开，请关闭后重试。',true);}
+    catch{if(!disposed&&current(ticket))notice('giftFailure',true);}
     finally{if(openingTicket===ticket)openingTicket=null;}
   };
   const onClose=()=>dialog.close();
@@ -67,11 +77,11 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
   // clear() is ordinary owner reset; dispose() additionally unsubscribes,
   // detaches listeners and disables this enhancement's controls before an
   // owner/session leave so stale private UI cannot be touched afterwards.
-  const cancel=()=>{sequence++;intro.close();if(dialog.open)dialog.close();composer?.clear();};
+  const cancel=()=>{sequence++;intro.close();if(dialog.open)dialog.close();composer?.clear();labels.clear();descriptionLabels.clear();dialogLabels.clear();descriptionFallback=false;loginPath=null;statusMessage.clear();giftMessage.clear();$('book-info-description').textContent='';note.textContent='';};
   const dispose=()=>{
     if(disposed)return;
     disposed=true;
-    unsubscribe();
+    unsubscribe();offLocale();
     generate.removeEventListener('click',onGenerate);
     share.removeEventListener('click',onShare);
     close.removeEventListener('click',onClose);
@@ -79,13 +89,14 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
     for(const event of ['reader:ready','reader:chapter'])document.removeEventListener(event,refresh);
     document.removeEventListener('reader:ready',staleDialog);
     cancel();
-    generate.hidden=true;login.hidden=true;share.disabled=true;share.textContent='分享这本书';
+    generate.hidden=true;login.hidden=true;share.disabled=true;share.textContent=t('bookActions.share');
     dialog.remove?.();
   };
   const dialog=make('dialog','book-action-dialog reader-book-gift');dialog.id='reader-book-gift';dialog.setAttribute('aria-labelledby','reader-gift-title');
-  const head=make('header','book-action-heading'),heading=make('h2'),close=make('button','book-action-close','×');heading.id='reader-gift-title';close.type='button';close.setAttribute('aria-label','关闭赠书');head.append(heading,close);
+  const head=make('header','book-action-heading'),heading=make('h2'),close=make('button','book-action-close','×');heading.id='reader-gift-title';close.type='button';close.setAttribute('aria-label',t('bookActions.closeGift'));head.append(heading,close);
   const body=make('div','book-action-body'),messageNode=make('p','book-action-status');messageNode.setAttribute('role','status');dialog.append(head,body,messageNode);
   try{
+    offLocale=onUiLocaleChange(relabel);void uiReady.then(relabel);
     document.body.append(dialog);
     generate.addEventListener('click',onGenerate);
     share.addEventListener('click',onShare);

@@ -1,5 +1,6 @@
 import {publicGiftSender} from './gift-identity.mjs';
 import {readGiftQuote} from './gift-quote.mjs';
+import {isUiLocale} from './ui-locale-codec.mjs';
 // The local preview carries stationery metadata, never a reading package or token.
 const object=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
 const text=(value,max)=>typeof value==='string'?value.slice(0,max).replace(/[\uD800-\uDBFF]$/u,''):'';
@@ -16,4 +17,12 @@ export function readGiftPreview(event,{origin,source}){
   if(!gift.title.zh&&!gift.title.en)return null;
   const quote=readGiftQuote(gift.quote,{requireReceipt:true});
   return {bookId:gift.bookId,title:{zh:text(gift.title.zh,300),en:text(gift.title.en,300)},author:text(gift.author,300),description:text(gift.description,2000),sender:text(gift.sender,80)||'一位读者',recipient:text(gift.recipient,80),message:text(gift.message,500),includeTranslations:gift.includeTranslations===true,createdAt:gift.createdAt,publicRead:gift.publicRead===true,...(quote?{quote}:{})};
+}
+
+// A separate UI-only envelope never carries or regenerates letter content.
+export const giftUiLocaleMessage=locale=>isUiLocale(locale)?{kind:'leafhour-gift-ui-locale',version:1,locale}:null;
+export function readGiftUiLocale(event,{origin,source}){
+  const data=event?.data;
+  if(!source||!origin||origin==='null'||event?.origin!==origin||event?.source!==source||!object(data)||Object.keys(data).sort().join(',')!=='kind,locale,version'||data.kind!=='leafhour-gift-ui-locale'||data.version!==1||!isUiLocale(data.locale))return null;
+  return data.locale;
 }

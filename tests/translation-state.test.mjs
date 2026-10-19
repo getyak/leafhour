@@ -28,3 +28,9 @@ test('dismissed selection invalidates reveal while keeping the submitted paragra
   assert.equal(tasks.view(null,capabilities).disabled,true);assert.match(tasks.view(null,capabilities).notice,/之前选择/);
 });
 test('anonymous readers are not promised translation when the service is unavailable',()=>{const tasks=createTranslationState(),view=tasks.view(first,{authenticated:false,available:false});assert.equal(view.label,'翻译未配置');assert.equal(view.disabled,true);assert.doesNotMatch(view.notice,/登录.*翻译/);assert.equal(tasks.view(first,{authenticated:false,available:true}).label,'登录后翻译');});
+
+test('an optional presentation formatter receives stable messages without changing pending jobs or source identity',()=>{
+ let descriptions=0;const tasks=createTranslationState({present:view=>{descriptions++;return view;}});tasks.select('p1');tasks.begin('p1');
+ const running=tasks.view(first,capabilities);assert.equal(running.label.id,'translation.translating');assert.equal(running.disabled,true);assert.equal(running.notice[0].id,'translation.translatingNotice');assert.equal(tasks.selectedId(),'p1');assert.throws(()=>tasks.begin('p1'));
+ tasks.select('p2');assert.equal(tasks.complete('p1'),false);const background=tasks.view(second,capabilities);assert.equal(background.label.id,'translation.translate');assert.deepEqual(background.notice.map(m=>m.id),['translation.backgroundSaved','translation.untranslated']);assert.equal(tasks.selectedId(),'p2');assert.equal(descriptions,2);assert.equal(first.original,'First paragraph.');
+});

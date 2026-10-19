@@ -1,5 +1,6 @@
 // Each panel answers a different reading decision; hidden preferences retain their values.
 import {globalPreferencesDefaults,normalizeGlobalPreferences} from './reading-preferences.mjs';
+import {t,onUiLocaleChange} from './ui-locale.mjs';
 
 // The Aa choices load only on an explicit drawer open. Native selects remain
 // usable until that module mounts, including a network/module failure.
@@ -17,14 +18,16 @@ export function mountReaderSettings({document,loadChoices=()=>import('./reader-s
     });
   });
   activate(0);
-  const choices={};let pending,syncChoices=()=>{};
+  const choices={};let pending,syncChoices=()=>{},disposeChoices=()=>{},disposed=false;
   const sync=()=>syncChoices();
   const enhance=()=>pending??=(loadChoices().then(module=>{
-    const enhanced=module.mountReaderSettingsChoices({document});
-    Object.assign(choices,enhanced.choices);syncChoices=enhanced.sync;sync();
+    if(disposed)return false;
+    const enhanced=module.mountReaderSettingsChoices({document,choices});
+    Object.assign(choices,enhanced.choices);syncChoices=enhanced.sync;disposeChoices=()=>enhanced.unmount?.();sync();
     return Object.keys(choices).length>0;
   }).catch(()=>false));
-  return {choices,sync,enhance,update({mode}){
+  return {choices,sync,enhance,unmount(){disposed=true;disposeChoices();syncChoices=()=>{};},update({mode}){
+    if(disposed)return;
     const translated=mode==='zh'||mode==='parallel';
     document.getElementById('translation-settings').hidden=!translated;
     document.getElementById('translation-details').hidden=!translated;
@@ -38,24 +41,37 @@ export function mountReaderSettings({document,loadChoices=()=>import('./reader-s
 // records, and a failed or 409 save keeps the visible values with an honest error.
 export function mountReadingDefaults({document,api,getState,getSession,onSaved=()=>{},onAnnounce=()=>{}}){
   const button=document.getElementById('save-reading-defaults'),status=document.getElementById('reading-defaults-status'),section=document.getElementById('reading-defaults-setting');
-  if(!button||!status)return {update(){}};
-  let busy=false;
-  const message=(text,error=false)=>{status.textContent=text;status.classList.toggle('error',error);status.setAttribute('role',error?'alert':'status');if(error)onAnnounce(text);};
-  const update=()=>{const user=getSession()?.user;if(section)section.hidden=!user;button.disabled=busy||!user;};
-  button.addEventListener('click',async()=>{
-    const session=getSession(),user=session?.user;if(!user||busy)return;
-    const owner=user.id,baseRevision=session?.readingPreferences?.revision||0,onboarding=session?.readingPreferences?.preferences?.onboarding||globalPreferencesDefaults.onboarding;
-    let snapshot;try{snapshot=normalizeGlobalPreferences({...getState(),onboarding});}catch{message('当前阅读方式无法保存，请重新调整后再试。',true);return;}
-    busy=true;update();button.textContent='正在保存…';message('');
+  if(!button||!status)return {update(){},unmount(){}};
+  let owner=null,epoch=0,pending=null,notice=null,disposed=false;
+  const updateLabels=()=>{
+    if(disposed)return;
+    button.textContent=t(pending?'reader.defaults.saving':'reader.defaults.save');
+    status.textContent=notice?t(notice):'';
+  };
+  const offLocale=onUiLocaleChange(updateLabels);
+  const message=(id,error=false)=>{notice=id;updateLabels();status.classList.toggle('error',error);status.setAttribute('role',error?'alert':'status');if(error)onAnnounce(t(id));};
+  const update=()=>{
+    if(disposed)return;
+    const user=getSession()?.user||null;
+    if(user!==owner){owner=user;epoch++;pending=null;notice=null;status.classList.toggle('error',false);status.setAttribute('role','status');}
+    if(section)section.hidden=!user;button.disabled=!!pending||!user;updateLabels();
+  };
+  const current=(ticket,user,stamp)=>!disposed&&pending===ticket&&epoch===stamp&&getSession()?.user===user;
+  async function save(){
+    if(disposed)return;update();
+    const session=getSession(),user=session?.user;if(!user||pending)return;
+    const baseRevision=session?.readingPreferences?.revision||0,onboarding=session?.readingPreferences?.preferences?.onboarding||globalPreferencesDefaults.onboarding;
+    let snapshot;try{snapshot=normalizeGlobalPreferences({...getState(),onboarding});}catch{message('reader.defaults.invalid',true);return;}
+    const ticket=Symbol(),stamp=epoch;pending=ticket;update();message(null);
     try{
       const saved=await api('/api/account/reading-preferences',{baseRevision,preferences:snapshot});
-      if(getSession()?.user?.id!==owner)return;
-      onSaved(saved);message('已设为新书默认。当前书的章节位置与记录保持不变。');
+      if(!current(ticket,user,stamp))return;
+      onSaved(saved);message('reader.defaults.saved');
     }catch(error){
-      if(getSession()?.user?.id!==owner)return;
-      message('新书默认暂未保存。'+(error?.message||'服务暂时无法连接，请稍后重试'),true);
-    }finally{busy=false;update();button.textContent='设为新书默认';}
-  });
-  update();
-  return {update};
+      if(!current(ticket,user,stamp))return;
+      message(error?.status===409?'reader.defaults.conflict':'reader.defaults.failed',true);
+    }finally{if(!disposed&&pending===ticket){pending=null;update();}}
+  }
+  button.addEventListener('click',save);update();
+  return {update,unmount(){if(disposed)return;disposed=true;epoch++;pending=null;offLocale();button.removeEventListener('click',save);}};
 }

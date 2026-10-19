@@ -1,4 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
+import {requestUiRoute} from '../app/ui-locale.mjs';
+test.beforeEach(async()=>{await requestUiRoute('zh-Hans');});
 const settings=()=>import('../app/reader-settings.mjs').catch(()=>({}));
 class Element extends EventTarget{
   constructor(tab){super();this.dataset=tab?{settingsTab:tab}:{};this.attributes=new Map();this.hidden=false;this.scrollTop=80;}
@@ -106,4 +108,49 @@ test('an Aa module arriving while a native select has focus transfers focus to i
  const ui=mountReaderSettings({document:f.document,loadChoices:()=>new Promise(r=>resolve=r)}),ready=ui.enhance();
  f.rows['view-mode'].value='zh';f.rows['view-mode'].focus();resolve(await import('../app/reader-settings-choices.mjs'));await ready;
  assert.equal(f.rows['view-mode'].hidden,true);assert.equal(f.doc.activeElement,ui.choices['view-mode'].chips[1]);assert.equal(f.doc.activeElement.parentElement,ui.choices['view-mode'].root);
+});
+
+test('locale relabels existing Aa choices without touching native values, open query or composition',async()=>{
+  const {mountReaderSettings}=await settings(),f=richFixture();
+  const mode=f.rows['view-mode'];
+  const keys=['prefs.mode.original','prefs.mode.translation','prefs.mode.parallel'];
+  mode.options.forEach((option,i)=>option.getAttribute=name=>name==='data-ui'?keys[i]:null);
+  const longer=f.rows.parallelStyle;longer.options.forEach((option,i)=>option.getAttribute=name=>name==='data-ui'?keys[i%3]:null);
+  const ui=mountReaderSettings({document:f.document});await ui.enhance();
+  const choice=ui.choices.parallelStyle,chip=ui.choices['view-mode'].chips[0],input=choice.input;
+  input.focus();input.value='原文';input.dispatchEvent(new Event('input'));
+  const active=choice.activeValue,activeDescendant=input.getAttribute('aria-activedescendant'),options=choice.options.map(row=>row.node),hidden=options.map(node=>node.hidden),values=Object.fromEntries(CHOICE_SELECTS.map(id=>[id,f.rows[id].value]));
+  let inputWrites=0,nativeWrites=0,changes=0;const rawInput=input.value;
+  Object.defineProperty(input,'value',{configurable:true,get:()=>rawInput,set(){inputWrites++;}});
+  for(const id of CHOICE_SELECTS){const select=f.rows[id],value=select.value;Object.defineProperty(select,'value',{configurable:true,get:()=>value,set(){nativeWrites++;}});select.addEventListener('change',()=>changes++);}
+  input.dispatchEvent(new Event('compositionstart'));f.elements.get('settings-content').scrollTop=123;
+  await requestUiRoute('en');assert.equal(chip.textContent,'Original');assert.equal(ui.choices['view-mode'].chips[0],chip);
+  assert.deepEqual(choice.options.map(row=>row.node),options);assert.deepEqual(options.map(node=>node.hidden),hidden);
+  assert.equal(input.getAttribute('aria-expanded'),'true');assert.equal(input.getAttribute('aria-activedescendant'),activeDescendant);assert.equal(choice.activeValue,active);
+  await requestUiRoute('ja');assert.equal(chip.textContent,'原文');assert.equal(input.value,'原文');assert.equal(f.doc.activeElement,input);
+  assert.equal(inputWrites,0);assert.equal(nativeWrites,0);assert.equal(changes,0);assert.equal(f.elements.get('settings-content').scrollTop,123);
+  assert.deepEqual(Object.fromEntries(CHOICE_SELECTS.map(id=>[id,f.rows[id].value])),values);
+  ui.unmount();const detached=chip.textContent;await requestUiRoute('en');assert.equal(chip.textContent,detached);
+});
+
+test('locale changes preserve a pending new-book default snapshot and only reformat its receipt',async()=>{
+  const {mountReadingDefaults}=await settings(),nodes=new Map(['save-reading-defaults','reading-defaults-status','reading-defaults-setting'].map(id=>[id,new Element()]));
+  const status=nodes.get('reading-defaults-status');status.classList={toggle(){}};
+  const session={user:{id:'reader-a'},readingPreferences:{revision:4,preferences:{onboarding:'completed'}}},state={mode:'parallel',font:24};let reads=0,stateReads=0,release;const sent=[],saved=[];
+  const ui=mountReadingDefaults({document:{getElementById:id=>nodes.get(id)},getSession:()=>{reads++;return session;},getState:()=>{stateReads++;return state;},api:(url,body)=>{sent.push(structuredClone({url,body}));return new Promise(resolve=>release=resolve);},onSaved:value=>saved.push(value)});
+  const button=nodes.get('save-reading-defaults');button.dispatchEvent(new Event('click'));const counts={reads,stateReads},payload=structuredClone(sent[0]);
+  for(const [code,label]of [['en','Saving…'],['ja','保存中…'],['zh-Hant','正在儲存…'],['zh-Hans','正在保存…']]){
+    await requestUiRoute(code);assert.equal(button.textContent,label);assert.equal(button.disabled,true);assert.equal(sent.length,1);assert.deepEqual(sent[0],payload);assert.deepEqual({reads,stateReads},counts);
+  }
+  state.mode='en';release({revision:5,preferences:payload.body.preferences});await new Promise(setImmediate);assert.equal(saved.length,1);assert.equal(sent[0].body.baseRevision,4);assert.equal(sent[0].body.preferences.mode,'parallel');assert.equal(state.mode,'en');
+  await requestUiRoute('en');assert.match(status.textContent,/New books/);assert.equal(button.textContent,'Use for new books');
+  ui.unmount();const detached=status.textContent;await requestUiRoute('ja');assert.equal(status.textContent,detached);
+});
+
+test('an A to B to A account transition fences a late default save while the current owner remains usable',async()=>{
+  const {mountReadingDefaults}=await settings(),nodes=new Map(['save-reading-defaults','reading-defaults-status','reading-defaults-setting'].map(id=>[id,new Element()]));nodes.get('reading-defaults-status').classList={toggle(){}};
+  const a={user:{id:'reader-a'},readingPreferences:{revision:4,preferences:{onboarding:'completed'}}},b={user:{id:'reader-b'},readingPreferences:{revision:8,preferences:{onboarding:'completed'}}};let session=a,release;const saved=[];
+  const ui=mountReadingDefaults({document:{getElementById:id=>nodes.get(id)},getSession:()=>session,getState:()=>({mode:'parallel'}),api:()=>new Promise(resolve=>release=resolve),onSaved:value=>saved.push(value)});
+  nodes.get('save-reading-defaults').dispatchEvent(new Event('click'));session=b;ui.update();session=a;ui.update();release({revision:5});await new Promise(setImmediate);
+  assert.equal(saved.length,0);assert.equal(nodes.get('save-reading-defaults').disabled,false);assert.equal(nodes.get('reading-defaults-status').textContent,'');ui.unmount();
 });

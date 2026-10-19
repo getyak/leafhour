@@ -1,0 +1,38 @@
+[
+  {
+    "name": "reviewed-head-red",
+    "head": "1718b199da6fd736b58d74a80b3ce3f29198f3dc",
+    "command": [
+      "node",
+      "--test",
+      "--test-concurrency=2",
+      "--test-name-pattern=after-reading|palette owner|replaced reader",
+      "tests/ui-locale-reader-foundation.test.mjs"
+    ],
+    "exit": 1,
+    "pass": 1,
+    "fail": 5
+  },
+  {
+    "name": "fixround1-related",
+    "command": [
+      "node",
+      "--test",
+      "--test-concurrency=2",
+      "tests/ui-locale-reader-foundation.test.mjs",
+      "tests/reading-session-recovery.test.mjs",
+      "tests/reading-view.test.mjs",
+      "tests/reading-manual-ui.test.mjs",
+      "tests/reading-shared-persistence.test.mjs",
+      "tests/reader-controls.test.mjs",
+      "tests/reader-navigation.test.mjs",
+      "tests/reader-tools.test.mjs",
+      "tests/reading-toolbar.test.mjs",
+      "tests/personal-record-editor.test.mjs",
+      "tests/palette-library.test.mjs"
+    ],
+    "exit": 0,
+    "pass": 107,
+    "fail": 0
+  }
+]

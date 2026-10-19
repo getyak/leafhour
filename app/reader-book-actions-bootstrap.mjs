@@ -1,3 +1,4 @@
+import {uiReady,t,onUiLocaleChange} from './ui-locale.mjs';
 import {otherOverlayOpen,focusableTrigger} from './popover-controls.mjs';
 
 // GET-173 real user-open lazy bookplate enhancement. The common popover
@@ -12,16 +13,18 @@ import {otherOverlayOpen,focusableTrigger} from './popover-controls.mjs';
 // introduction/quote/history APIs, move focus or attach stale listeners.
 export function mountReaderBookActionsBootstrap({document,info,getBook,api,session,bookId,getOwner=()=>session?.user?.id||'guest',loadEnhancement=()=>import('./reader-book-actions.mjs')}){
   const status=document.getElementById('book-intro-status'),retry=document.getElementById('book-intro-retry'),view=document.defaultView||globalThis;
-  let generation=0,pending=null,shared=null,mounted=null,disposed=false,unsubscribe=()=>{};
+  let generation=0,pending=null,shared=null,mounted=null,disposed=false,unsubscribe=()=>{},statusId=null,enhancementOwnsStatus=false;
+  const updateLabels=()=>{if(disposed)return;if(retry)retry.textContent=t('bookActions.retry');if(statusId&&!enhancementOwnsStatus&&status)status.textContent=t(statusId);};
+  const offLocale=onUiLocaleChange(updateLabels);void uiReady.then(updateLabels);updateLabels();
   // Resetting the loading/retry state on every close or reset keeps the next
   // open coherent; a mounted enhancement owns its own status text.
-  const reset=()=>{if(mounted)return;pending=null;if(status)status.textContent='';if(retry)retry.hidden=true;};
+  const reset=()=>{if(mounted||enhancementOwnsStatus)return;pending=null;statusId=null;if(status)status.textContent='';if(retry)retry.hidden=true;};
   const invalidate=()=>{generation++;pending=null;reset();};
   const current=stamp=>!disposed&&stamp.generation===generation&&stamp.bookId===(getBook()?.bookId??null)&&stamp.version===(getBook()?.contentVersion??null)&&stamp.owner===getOwner();
   const fail=()=>{
     pending=null;
     if(retry)retry.hidden=false;
-    if(status){status.setAttribute('role','alert');status.textContent='简介与分享暂时无法载入，可以重试。';}
+    if(status){status.setAttribute('role','alert');enhancementOwnsStatus=false;statusId='bookActions.loadFailure';status.textContent=t(statusId);}
   };
   function request(){
     if(disposed||mounted||pending)return;
@@ -30,7 +33,7 @@ export function mountReaderBookActionsBootstrap({document,info,getBook,api,sessi
     const stamp={generation:++generation,bookId:book.bookId,version:book.contentVersion,owner:getOwner()};
     pending=stamp;
     if(retry)retry.hidden=true;
-    if(status){status.setAttribute('role','status');status.textContent='正在准备简介与分享…';}
+    if(status){status.setAttribute('role','status');statusId='bookActions.preparing';status.textContent=t(statusId);}
     // One shared import promise started on the first real request; a failed
     // load or setup is consumed and cleared so the next explicit retry or
     // close/reopen imports once again.
@@ -39,7 +42,8 @@ export function mountReaderBookActionsBootstrap({document,info,getBook,api,sessi
     // setup throw is never an unhandled rejection and rolls back to honest
     // retry feedback with every partial listener already detached by the
     // enhancement's own setup rollback.
-    promise.then(module=>{
+    promise.then(async module=>{
+      await uiReady;
       if(!current(stamp))return;
       if(!info.isOpen()||!focusableTrigger(info.trigger))return;
       // A newer overlay keeps this request honest: retry feedback without
@@ -47,6 +51,7 @@ export function mountReaderBookActionsBootstrap({document,info,getBook,api,sessi
       if(otherOverlayOpen(document,info.element)){fail();return;}
       // Hand status ownership over before mounting: the enhancement may
       // synchronously announce a pending introduction read during subscribe.
+      enhancementOwnsStatus=true;statusId=null;
       if(status){status.textContent='';status.setAttribute('role','status');}
       const handle=module.mountReaderBookActions({document,info,getBook,api,session,bookId});
       // A mount that completed after its stamp went stale is rolled back
@@ -59,7 +64,7 @@ export function mountReaderBookActionsBootstrap({document,info,getBook,api,sessi
       if(current(stamp))fail();
     });
   }
-  retry?.addEventListener('click',()=>request());
+  const onRetry=()=>request();retry?.addEventListener('click',onRetry);
   unsubscribe=info.subscribe({onChange:open=>{if(open)request();else invalidate();}});
   const onReady=()=>invalidate();
   const onLeave=()=>dispose();
@@ -75,8 +80,8 @@ export function mountReaderBookActionsBootstrap({document,info,getBook,api,sessi
     document.removeEventListener('reader:ready',onReady);
     document.removeEventListener('reader:session-changed',onLeave);
     view.removeEventListener?.('pagehide',onLeave);
-    unsubscribe();
-    if(mounted){mounted.dispose();mounted=null;}
+    unsubscribe();offLocale();retry?.removeEventListener('click',onRetry);
+    if(mounted){mounted.dispose();mounted=null;}enhancementOwnsStatus=false;
     reset();
   }
   return {

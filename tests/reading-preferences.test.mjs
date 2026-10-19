@@ -1,3 +1,6 @@
+import {t as uiText,requestUiRoute} from '../app/ui-locale.mjs';
+test.beforeEach(async()=>{await requestUiRoute('zh-Hans');});
+test.afterEach(async()=>{await requestUiRoute('en');});
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';
@@ -97,13 +100,13 @@ test('delayed and conflict restoration keep Chinese original-only books readable
   const {mergeLoadedReadingRecords}=await import('../app/reading-load.mjs');
   const reader=await readFile(new URL('../app/reader.js',import.meta.url),'utf8');
   const delayed=reader.slice(reader.indexOf('async function adoptLoadedRecords('),reader.indexOf("for(const type of ['pointerdown'"));
-  const conflict=reader.slice(reader.indexOf('async function reconcileProgress('),reader.indexOf("$('progress-use-remote').addEventListener"));
+  const conflict=reader.slice(reader.indexOf('async function reconcileProgress('),reader.indexOf("listen($('progress-use-remote'),"));
   for(const sourceLanguage of ['zh','en'])for(const restore of ['delayed','conflict']){
     const book={bookId:'restore-book',contentVersion:'v1',sourceLanguage,chapters:[{id:'ch02'}],sections:[{chapterId:'ch02',paragraphs:[{id:'p22',original:'Synthetic source.',translations:{}}]}]};
     const position={contentVersion:'v1',chapterId:'ch02',passageId:'p22',offset:-100,withinParagraph:.4,revision:2,mode:'parallel',variant:'literal',readingPurpose:'deep',preferredLanguage:'zh'};
     const fresh={position,comments:[],questions:[]},state=openingReadingPreferences();let rendered,anchor;
     const {createReadingBook,createReadingNavigation}=await import('../app/reading-book.mjs');
-    const context={readingNavigation:createReadingNavigation({isLoaded:()=>true,ensure:async()=>{},commit(){}}),readingBook:createReadingBook({book,readChapter:()=>assert.fail('complete books need no chapter read')}),book,state,openingReadingPreferences,chineseOriginalOnly,resolveReadingPosition,chooseReadingPosition,resumeSummary,recoveredPositionNeedsChoice,mergeLoadedReadingRecords,loadGeneration:1,recordsPending:true,records:fresh,selectedBookId:book.bookId,readerSession:{user:{id:'synthetic-owner'}},entryInteracted:false,localStorage:{getItem:()=>null},progressKey:'synthetic',recordsPositionUnresolved:false,progressSync:{revision:1,adopt(){}},deferredProgress:false,document:{body:{dataset:{}},dispatchEvent(){},getElementById:()=>({})},CustomEvent:class{},$:()=>({hidden:true}),renderChapter:()=>{rendered={...state};},restoreAnchor:value=>{anchor=value;},cachePosition(){},queueReadingFlow(){},renderPanel(){},api:async()=>fresh,trackActionFocus:()=>({stop(){},restore(){}}),closePanel(){},dismissTools(){},announce(){},progressSequence:0,persistTimer:null,clearTimeout};
+    const context={listen:(node,type,handler,options)=>node.addEventListener(type,handler,options),readingNavigation:createReadingNavigation({isLoaded:()=>true,ensure:async()=>{},commit(){}}),readingBook:createReadingBook({book,readChapter:()=>assert.fail('complete books need no chapter read')}),book,state,openingReadingPreferences,chineseOriginalOnly,resolveReadingPosition,chooseReadingPosition,resumeSummary,recoveredPositionNeedsChoice,mergeLoadedReadingRecords,loadGeneration:1,recordsPending:true,records:fresh,selectedBookId:book.bookId,readerSession:{user:{id:'synthetic-owner'}},entryInteracted:false,localStorage:{getItem:()=>null},progressKey:'synthetic',recordsPositionUnresolved:false,progressSync:{revision:1,adopt(){}},deferredProgress:false,document:{body:{dataset:{}},dispatchEvent(){},getElementById:()=>({})},CustomEvent:class{},$:()=>({hidden:true}),renderChapter:()=>{rendered={...state};},restoreAnchor:value=>{anchor=value;},cachePosition(){},queueReadingFlow(){},renderPanel(){},api:async()=>fresh,trackActionFocus:()=>({stop(){},restore(){}}),closePanel(){},dismissTools(){},announce(){},announceUi(){},READER_UI:'reader.b1.',progressSequence:0,persistTimer:null,clearTimeout};
     context.anchor=()=>anchor;
     vm.createContext(context);
     vm.runInContext(delayed+'\n'+conflict+';this.restoreDelayed=adoptLoadedRecords;this.restoreConflict=reconcileProgress;',context);

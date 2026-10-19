@@ -1,0 +1,300 @@
+{
+  "issue": "GET-192",
+  "stage": "pre-merge implementation evidence; exact-head CI, merge and Production remain separate receipts",
+  "baseline": "e44e83ef79f2470e87027689f1098e22774e9c51",
+  "testedSourceSnapshot": "c86c86575101bcb501e0d4d212088103824ca0335fba19d89b5ad6574656e276",
+  "nativeCompiledSHA256": "30f885d9e3b0354eaf3da8371c6dee81453be3c0956deaecd0d19c6a10d88737",
+  "localVerification": {
+    "tests": 2295,
+    "passed": 2294,
+    "failed": 0,
+    "skipped": 1,
+    "skipReason": "Linux-only Node-license permission probe on macOS; Linux/AWS CI remains required",
+    "stages": [
+      {
+        "name": "full-tests",
+        "exitCode": 0
+      },
+      {
+        "name": "reader-runtime",
+        "exitCode": 0
+      },
+      {
+        "name": "vercel-build",
+        "exitCode": 0
+      },
+      {
+        "name": "public-build",
+        "exitCode": 0
+      },
+      {
+        "name": "release-policy",
+        "exitCode": 0
+      },
+      {
+        "name": "verify-release",
+        "exitCode": 0
+      }
+    ],
+    "frozenSourceUnchangedDuringRun": true
+  },
+  "independentReview": {
+    "spec": "PASS",
+    "quality": "PASS",
+    "remainingConfirmedP0": 0,
+    "remainingConfirmedP1": 0,
+    "remainingConfirmedP2": 0,
+    "independentFocusedTests": 109,
+    "reportSHA256": "a6ffb0ea1f7ee02924e8a48b449191ac27e4f676c10a5739866d911ed23f2876"
+  },
+  "catalogueEntriesPerLanguage": 1956,
+  "budgets": [
+    {
+      "file": "/reader-web/style-95879a14522a4a3e.css",
+      "bytes": 170243,
+      "sha256": "95879a14522a4a3e4fffbe00b55a7376104ee11acf46c005c09f69379ffdd109",
+      "cap": 204800
+    },
+    {
+      "file": "/reader-web/reader-b399c14959e80597.js",
+      "bytes": 311260,
+      "sha256": "b399c14959e80597aba4dc0fae588974dace291439fdf5c23acdcd363b4491c1",
+      "cap": 327680
+    }
+  ],
+  "moduleBytes": {
+    "initialEnglishStaticClosure": 492065,
+    "optionalAudioAdditional": 61029,
+    "initialFiles": 5,
+    "audioClosureFiles": 10,
+    "meaning": "uncompressed compiled static module bytes, including initial English catalogue; fonts/images/HTTP/other optional modules excluded"
+  },
+  "native": {
+    "languages": [
+      {
+        "code": "en",
+        "library": {
+          "lang": "en",
+          "title": "My reading room",
+          "rawIds": 0,
+          "overflows": false
+        },
+        "reader": {
+          "lang": "en",
+          "ui": "en",
+          "choice": "en",
+          "originalNodes": 31,
+          "sourceSHA": "c318ada55121504ab95e5829cc77f80f76f5dc6325f337bc439e4826593b0e36",
+          "settingsLabel": "Reading settings",
+          "overflows": false
+        }
+      },
+      {
+        "code": "zh-Hans",
+        "library": {
+          "lang": "zh-Hans",
+          "title": "我的书房",
+          "rawIds": 0,
+          "overflows": false
+        },
+        "reader": {
+          "lang": "zh-Hans",
+          "ui": "zh-Hans",
+          "choice": "zh-Hans",
+          "originalNodes": 31,
+          "sourceSHA": "c318ada55121504ab95e5829cc77f80f76f5dc6325f337bc439e4826593b0e36",
+          "settingsLabel": "阅读设置",
+          "overflows": false
+        }
+      },
+      {
+        "code": "zh-Hant",
+        "library": {
+          "lang": "zh-Hant",
+          "title": "我的書房",
+          "rawIds": 0,
+          "overflows": false
+        },
+        "reader": {
+          "lang": "zh-Hant",
+          "ui": "zh-Hant",
+          "choice": "zh-Hant",
+          "originalNodes": 31,
+          "sourceSHA": "c318ada55121504ab95e5829cc77f80f76f5dc6325f337bc439e4826593b0e36",
+          "settingsLabel": "閱讀設定",
+          "overflows": false
+        }
+      },
+      {
+        "code": "ja",
+        "library": {
+          "lang": "ja",
+          "title": "自分の書斎",
+          "rawIds": 0,
+          "overflows": false
+        },
+        "reader": {
+          "lang": "ja",
+          "ui": "ja",
+          "choice": "ja",
+          "originalNodes": 31,
+          "sourceSHA": "c318ada55121504ab95e5829cc77f80f76f5dc6325f337bc439e4826593b0e36",
+          "settingsLabel": "読書設定",
+          "overflows": false
+        }
+      }
+    ],
+    "history": {
+      "closeLocale": "ja",
+      "nativeBackLocale": "en",
+      "nativeForwardLocale": "ja",
+      "backDoesNotPersistPreference": true,
+      "protocol": "explicit synchronous onBeforeUiPopstate, no Window capture-order assumption"
+    },
+    "library": {
+      "locales": [
+        "ja",
+        "zh-Hans",
+        "zh-Hant",
+        "en"
+      ],
+      "staticLeafErrors": 0,
+      "retainedNodes": true,
+      "brandAccountPrivacyLinks": "passed; native phase also includes expected GETs during subsequent navigation, not a zero-network claim"
+    },
+    "deniedStorage": {
+      "browserLocale": "ja-JP",
+      "denialExercised": {
+        "lang": "ja",
+        "persistence": "session-only"
+      },
+      "EnglishHero": "/library?ui=en",
+      "readerLocale": "en",
+      "fault": "Storage prototype SecurityError for UI key only; not a real browser privacy-setting test"
+    },
+    "editor": {
+      "sameNodeDraftRangeAndFocusAllFour": true,
+      "selection": [
+        20,
+        22
+      ],
+      "recordOrConversationSubmitted": false,
+      "ime": "Chromium Input.imeSetComposition/native keyboard, not physical macOS IME"
+    },
+    "audio": {
+      "controllerLoadsBeforeIntent": 0,
+      "controllerLoadsAfterIntent": [
+        "/reader-audio.js"
+      ],
+      "sessionPosts": 1,
+      "voice": "Kore",
+      "rate": 1.25,
+      "clockBefore": 0.246343,
+      "clockAfter": [
+        1.003163,
+        1.138794,
+        1.245465,
+        1.292847
+      ],
+      "sameMediaAndNoNewSessionDuringLocale": true,
+      "provider": "in-memory synthetic silence WAV, not production synthesis/audible-quality acceptance"
+    },
+    "supportFallback": {
+      "authoredLanguage": "ja",
+      "effectiveBeforeRetry": "en",
+      "effectiveAfterRetry": "ja",
+      "requests": [
+        {
+          "path": "/ui-catalogs/ja.mjs",
+          "status": 503
+        },
+        {
+          "path": "/ui-catalogs/ja.mjs?retry=1",
+          "status": 200
+        }
+      ],
+      "authoredProseSHA256": "69551b3618710bfa08e7a25402799364b14185daa7bb0173a4630646630edfbd",
+      "authoredProseAndSEORetained": true,
+      "freshDocumentWithPersistentlyFailedBase": "explicit JA destination remains JA in URL; new document honestly falls back to EN with notice"
+    },
+    "mobile": {
+      "viewport": [
+        390,
+        844
+      ],
+      "allFourChoicesVisible": true,
+      "choiceHeight": 44,
+      "headerTop": 0,
+      "dialogScroll": 0,
+      "actualPointerWheel": true,
+      "nightContrastRatios": [
+        9.506695581515157,
+        11.399588217554731,
+        11.399588217554731,
+        11.399588217554731
+      ]
+    },
+    "evidenceSHA256": {
+      "journeys": "a18f737b7df355d04cf6c8a94888a6b4de5785379d3d7d33004138eca21ce6d6",
+      "history": "4e1b616d5972ad404efefa483fe3516134e04732f6470dfcf404e4366e29e83b",
+      "library": "a2cc3e35c27a8777b0547b3b0a12ba7d9674e049fec8b04cb95b47961611c964",
+      "deniedStorage": "5000575fce3a791ec3a357dafac643d1f991657e60ec6202561056fdfa2c3cc9",
+      "editor": "7a7abf65698ff98f36734a51fee58b4b194e1b147cce601c7636d9341e6fc90a",
+      "audio": "5e0440ada43cfae49551b65fb84a5cb958b1650c91dd735c2b812c7d316c9703",
+      "audioClock": "94dfb8172cb2c4de307ecbaa22f63d813b83b562d25f6e7ba31283bd4a20353c",
+      "mobile": "504a3c625d8dea3557a6b53fcf6186ab16bb06b4d38e296594e94f54187c8afe",
+      "contrast": "8a516c61662cf05edbf69a283e03a106e6c4b685d48ab29759917293669d7b9d",
+      "support": "ef4ed38b6d23c5031cc75a275231c9c2363901aec0a078113e92e3875afdaa29"
+    }
+  },
+  "supplementaryPriorNativeAudio": {
+    "scope": "first native file chooser/import, session and pending-guide reload, lost completion response replay and both bounded loader-fault matrices were recorded before the final chrome/history corrections; not described as the final whole-source run",
+    "unchangedComparedWithPriorFixedAudioCandidate": [
+      "app/audio-errors.mjs",
+      "app/index.html",
+      "app/listening-guide-state.mjs",
+      "app/reader-audio-bootstrap.mjs",
+      "app/reader-audio-metadata.mjs",
+      "app/reader-audio.css",
+      "app/reader-audio.js",
+      "app/reader.js",
+      "server/audio-backup.mjs",
+      "server/audio-content.mjs",
+      "server/audio-estimate.mjs",
+      "server/audio-provider.mjs",
+      "server/audio-routes.mjs",
+      "server/audio-scenes.mjs",
+      "server/audio-service.mjs",
+      "server/audio-store.mjs",
+      "server/server.mjs"
+    ],
+    "fileImport": "actual native file chooser; one validate and one import HTTP200; input cleared and real preferences retained",
+    "guideReplay": "same original payload/key, two POSTs returned same actual job, paused on restore",
+    "limitations": "native empty file-picker cancellation not proved by CLI; unit cancellation/owner fences are separate evidence"
+  },
+  "screenshots": {
+    "settings-en-mobile-paper.png": {
+      "bytes": 60901,
+      "sha256": "455ec00cba2d4c3c829ba7a717a8323073b8f2d188bf98f797379acfccb07aac"
+    },
+    "settings-en-mobile-night.png": {
+      "bytes": 59324,
+      "sha256": "0b4b70fd28f352ee125746157402e8413d657534161e4e0f30e9f45413bfa858"
+    },
+    "settings-ja-desktop.png": {
+      "bytes": 288295,
+      "sha256": "ab9bab4b79aba70f923c88c9f171d76264c5e880da36f1d576425a9c4748b4fa"
+    },
+    "library-ja-desktop.png": {
+      "bytes": 1175116,
+      "sha256": "d343951593e230abd58e7f059d2d1a8f9f8aee906cd8634a62475c1ea3a01314"
+    }
+  },
+  "limits": [
+    "No real user account, private book or paid provider used in QA.",
+    "No physical device, assistive technology, physical macOS input method or human reading-comprehension/payment claim.",
+    "Native source Range disappeared when opening modal before locale change; textarea range and original-node content hash are distinct verified evidence.",
+    "Executed older scripts retain their stale capture annotation; current native history data and reviewed source use the explicit pre-pop protocol.",
+    "Final documentation/screenshots are added after the frozen run; app/server/build sources remain unchanged and the final Git commit must pass CI."
+  ]
+}

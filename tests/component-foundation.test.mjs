@@ -278,3 +278,22 @@ test('share feedback styling targets its actual sibling status element', async (
   assert.match(source, /(?:^|})\.share-status\{[^}]*font-size:12px/);
   assert.doesNotMatch(source, /\.share-actions \.share-status/);
 });
+
+
+test('reader language chips keep normal text contrast on paper and night surfaces', async () => {
+  const reader = await cssFile('styles.css');
+  const settings = await cssFile('reader-settings.css');
+  const choices = stripComments(await cssFile('choice-control.css'));
+  const block = /\.choice-chip\s*\{([^}]*)\}/.exec(choices)[1];
+  const paint = Object.fromEntries([...block.matchAll(/(?:^|;)\s*(background|color):([^;]+)/g)].map(m => [m[1], m[2].trim()]));
+  const resolveColor = (value, tokens) => {
+    if (value.startsWith('#')) return hex(value);
+    const variable = /^var\((--[a-z-]+)(?:,\s*(#[0-9a-f]+))?\)$/.exec(value);
+    assert.ok(variable, 'expected a local colour token');
+    return resolveColor(tokens[variable[1]] || variable[2], tokens);
+  };
+  for (const theme of ['paper', 'night']) {
+    const tokens = {...palette(reader, ':root'), ...(theme === 'night' ? palette(reader, ':root[data-theme=night]') : {}), ...palette(settings, '#reader-ui-language')};
+    assert.ok(contrast(resolveColor(paint.color, tokens), resolveColor(paint.background, tokens)) >= 4.5, theme + ' language labels must remain readable');
+  }
+});

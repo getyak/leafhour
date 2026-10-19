@@ -1,3 +1,4 @@
+import {authMessageId} from './auth-errors.mjs';
 // The clock owns cooldowns; request tickets keep delayed responses out of a new flow.
 export function createAuthRequestGuard(){
   let pending=null;
@@ -32,11 +33,11 @@ export function createAuthFlow({clock=Date.now,digits=6,requestGuard=createAuthR
       busy=true;action=kind;error='';return ticket;
     },
     sent(ticket,result){if(!current(ticket)||ticket.action!=='send')return false;deadline(result.retryAfter??60);expiresAt=clock()+wait(result.expiresIn??600)*1000;busy=false;action=null;delivered=true;return true;},
-    failed(ticket,cause){if(!current(ticket))return false;if(cause.retryAfter)deadline(cause.retryAfter,ticket.action==='password'?passwordCooldowns:cooldowns);busy=false;action=null;error=cause.message||'暂时无法完成，请稍后重试。';return true;},
+    failed(ticket,cause){if(!current(ticket))return false;if(cause.retryAfter)deadline(cause.retryAfter,ticket.action==='password'?passwordCooldowns:cooldowns);busy=false;action=null;error={id:authMessageId(cause?.messageId)||'auth.error.generic'};return true;},
     verified(ticket,result={}){if(!current(ticket))return false;serial++;busy=false;action=null;step=ticket.action==='verify'&&result.passwordSetup&&purpose!=='login'?'set-password':'success';code='';error='';return true;},
     changeEmail(){if(requestGuard.current())return false;serial++;busy=false;action=null;step='email';code='';error='';delivered=false;expiresAt=0;return true;},
     close(){serial++;busy=false;action=null;code='';step='email';method='password';purpose='login';error='';delivered=false;expiresAt=0;},
     open(){},
-    notice(message){error=message;}
+    notice(message){error={id:authMessageId(message?.messageId)||'auth.error.generic'};}
   };
 }

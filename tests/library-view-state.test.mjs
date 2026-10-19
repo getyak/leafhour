@@ -1,5 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createUiLocale} from '../app/ui-locale.mjs';
+import en from '../app/ui-catalogs/en.mjs';
+import ja from '../app/ui-catalogs/ja.mjs';
 import {parseLibraryView,writeLibraryView,libraryViewReducer,normalizeOverlay,normalizeLibraryQuery,safeLibraryReturn,authReturnTarget,createLibraryViewHistory} from '../app/library-view-state.mjs';
 
 const view=patch=>({query:'',scope:'all',status:'all',topic:'all',language:'all',...patch});
@@ -358,4 +361,179 @@ test('only a successfully adopted auth handoff consumes its one-time keys and mo
  for(const key of ['login','auth_error','next'])assert.equal(p.has(key),false,key+' is consumed once');
  assert.equal(p.get('other'),'kept');assert.equal(p.get('q'),'alice');adapter.closeOverlay();assert.equal(h.index,index,'closing an adopted direct return never consumes a prior modal entry');
  assert.equal(new URLSearchParams(h.search()).has('settings'),false);
+});
+
+// Traversal is queued. Window popstate runs at target in registration order,
+// matching the native failure; capture does not outrun the earlier runtime.
+function queuedHistoryWindow(href='/library?ui=en',initialState={foreign:{kept:true}}){
+  const entries=[{url:new URL(href,'https://leafhour.invalid'),state:structuredClone(initialState)}],listeners=[],tasks=[],writes=[];
+  let index=0,backs=0;
+  const current=()=>entries[index];
+  const win={location:{get href(){return current().url.href;},get pathname(){return current().url.pathname;},get search(){return current().url.search;},get hash(){return current().url.hash;}},history:{
+    get state(){return current().state;},
+    replaceState(state,title,url){const next={url:url==null?current().url:new URL(url,current().url),state:structuredClone(state)};entries[index]=next;writes.push({mode:'replace',href:next.url.href});},
+    pushState(state,title,url){const next={url:new URL(url,current().url),state:structuredClone(state)};entries.splice(index+1);entries.push(next);index++;writes.push({mode:'push',href:next.url.href});},
+    back(){backs++;tasks.push(()=>{assert.ok(index>0);index--;dispatch();});},
+    forward(){tasks.push(()=>{assert.ok(index+1<entries.length);index++;dispatch();});}
+  },addEventListener(type,fn,options){if(type==='popstate')listeners.push({fn,capture:options===true||!!options?.capture});},removeEventListener(type,fn,options){const capture=options===true||!!options?.capture;const i=listeners.findIndex(x=>x.fn===fn&&x.capture===capture);if(i>=0)listeners.splice(i,1);}};
+  function dispatch(){const event={state:structuredClone(current().state)};for(const row of [...listeners])row.fn(event);}
+  return {win,entries,writes,get index(){return index;},get backs(){return backs;},get listeners(){return listeners.length;},flush(){assert.ok(tasks.length);tasks.shift()();}};
+}
+async function historyWithRuntime(href,options={}){
+  const h=queuedHistoryWindow(href),popPromises=[],preferenceWrites=[];
+  const runtime=createUiLocale({history:h.win.history,getLocation:()=>h.win.location,storage:{getItem:()=>options.saved??null,setItem:(key,value)=>preferenceWrites.push({key,value})},loadCatalogue:options.loadCatalogue|| (async code=>({en,ja}[code]))});
+  await runtime.initializeOnce();
+  h.win.addEventListener('popstate',()=>popPromises.push(runtime.handlePopstate()));
+  const adapter=createLibraryViewHistory({window:h.win,timers:manualTimers(),getUiLocale:runtime.getUiLocale,onBeforeUiPopstate:runtime.onBeforeUiPopstate});
+  return {h,runtime,adapter,preferenceWrites,async flush(){h.flush();await Promise.all(popPromises.splice(0));}};
+}
+
+test('explicit modal close normalizes its exact predecessor inside the earlier runtime pop handler',async()=>{
+  const {h,runtime,adapter,flush,preferenceWrites}=await historyWithRuntime('/library?other=kept&ui=en#shelf');
+  adapter.hydrate();const predecessor=structuredClone(h.win.history.state);
+  adapter.openOverlay({kind:'settings',tab:'account'});adapter.openOverlay({kind:'settings',tab:'data'});
+  await runtime.setUiLocale('ja');adapter.setView({topic:'fiction'});
+  const writes=preferenceWrites.length;adapter.closeOverlay();
+  assert.equal(h.backs,1);assert.equal(runtime.getUiLocale(),'ja','queued traversal has not run');
+  await flush();
+  assert.equal(runtime.getUiLocale(),'ja','the runtime protocol normalizes only the consumed entry before reading the route');
+  assert.equal(new URL(h.win.location.href).searchParams.get('ui'),'ja');
+  assert.equal(h.win.location.hash,'#shelf');assert.equal(h.win.location.search.includes('topic='),false,'the predecessor view is restored');
+  assert.equal(new URL(h.win.location.href).searchParams.get('other'),'kept');
+  assert.deepEqual(h.win.history.state,predecessor,'foreign and exact predecessor history metadata stay unchanged');
+  assert.equal(h.entries.length,2);assert.equal(preferenceWrites.length,writes,'close is not another picker preference write');
+  adapter.destroy();assert.equal(h.listeners,1,'the business pop listener is removed on destroy');
+});
+
+test('ordinary native Back remains an explicit old-route locale override, including after one carried close',async()=>{
+  const {h,runtime,adapter,flush}=await historyWithRuntime('/library?ui=en');adapter.hydrate();
+  adapter.setView({topic:'fiction'});adapter.openOverlay({kind:'settings',tab:'account'});
+  await runtime.setUiLocale('ja');adapter.closeOverlay();await flush();assert.equal(runtime.getUiLocale(),'ja');
+  h.win.history.back();await flush();assert.equal(runtime.getUiLocale(),'en','the one-shot carry cannot rewrite a later ordinary Back');
+  assert.equal(new URL(h.win.location.href).searchParams.get('ui'),'en');adapter.destroy();
+});
+
+test('ordinary Back with an open modal does not carry the picker locale',async()=>{
+  const {h,runtime,adapter,flush}=await historyWithRuntime('/library?ui=en');adapter.hydrate();adapter.openOverlay({kind:'calendar'});
+  await runtime.setUiLocale('ja');h.win.history.back();await flush();assert.equal(runtime.getUiLocale(),'en');assert.equal(h.backs,1);adapter.destroy();
+});
+
+test('adapter writes inherit current validated ui while the pure codec keeps explicit return ui precedence',()=>{
+  assert.equal(writeLibraryView('?ui=en',{view:view(),overlay:null,ui:'ja'}),'?ui=ja');
+  const h=queuedHistoryWindow('/library?ui=en#anchor'),adapter=createLibraryViewHistory({window:h.win,timers:manualTimers()});
+  h.win.history.replaceState(h.win.history.state,'','/library?ui=ja#anchor');adapter.hydrate();adapter.setView({status:'reading'});adapter.openOverlay({kind:'settings',tab:'account'});adapter.openOverlay({kind:'settings',tab:'data'});
+  assert.equal(new URL(h.win.location.href).searchParams.get('ui'),'ja');assert.equal(h.win.location.hash,'#anchor');adapter.destroy();
+});
+
+test('explicit close cannot carry a requested but uncommitted locale',async()=>{
+  let resolveJa;
+  const {h,runtime,adapter,flush}=await historyWithRuntime('/library?ui=en',{loadCatalogue:code=>code==='ja'?new Promise(resolve=>{resolveJa=resolve;}):Promise.resolve(en)});
+  adapter.hydrate();adapter.openOverlay({kind:'settings',tab:'account'});const pending=runtime.setUiLocale('ja');
+  assert.equal(runtime.getRequestedUiLocale(),'ja');assert.equal(new URL(h.win.location.href).searchParams.get('ui'),'en');
+  adapter.closeOverlay();await flush();assert.equal(runtime.getUiLocale(),'en');resolveJa(ja);await pending;assert.equal(runtime.getUiLocale(),'en');adapter.destroy();
+});
+
+test('close carry is cancelled by new lifecycle or business ownership before queued traversal',async()=>{
+  for(const action of ['owner','hydrate','return','view','query','overlay','composition','destroy']){
+    const {h,runtime,adapter,flush}=await historyWithRuntime('/library?ui=en');adapter.hydrate();adapter.openOverlay({kind:'settings',tab:'account'});await runtime.setUiLocale('ja');adapter.closeOverlay();
+    if(action==='owner')adapter.adoptOwner();else if(action==='hydrate')adapter.hydrate();else if(action==='return')adapter.adoptReturn('/library?settings=data');else if(action==='view')adapter.setView({status:'reading'});else if(action==='query')adapter.setQuery('new query');else if(action==='overlay')adapter.openOverlay({kind:'calendar'});else if(action==='composition')adapter.compositionStart();else adapter.destroy();
+    await flush();assert.equal(runtime.getUiLocale(),'en',action+' invalidates the carry');assert.equal(new URL(h.win.location.href).searchParams.get('ui'),'en');adapter.destroy();
+  }
+});
+
+test('unmatched predecessor entry or owner epoch consumes no carry and cannot affect a later pop',async()=>{
+  for(const field of ['entry','epoch','pathname']){
+    const {h,runtime,adapter,flush}=await historyWithRuntime('/library?ui=en');adapter.hydrate();adapter.openOverlay({kind:'settings',tab:'account'});await runtime.setUiLocale('ja');adapter.closeOverlay();
+    if(field==='pathname')h.entries[0].url.pathname='/read';else h.entries[0].state.libraryState[field]=field==='entry'?'different-entry':99;
+    const writes=h.writes.length;await flush();assert.equal(runtime.getUiLocale(),'en',field+' mismatch must not normalize');
+    if(field!=='epoch')assert.equal(h.writes.length,writes,'no unrelated URL write');adapter.destroy();
+  }
+});
+
+test('direct URL modal close replaces in place with live locale, and a remounted owned modal keeps its predecessor',async()=>{
+  const direct=await historyWithRuntime('/library?ui=en&settings=data#anchor');direct.adapter.hydrate();await direct.runtime.setUiLocale('ja');direct.adapter.closeOverlay();
+  assert.equal(direct.h.backs,0);assert.equal(direct.h.win.location.hash,'#anchor');assert.equal(new URL(direct.h.win.location.href).searchParams.get('ui'),'ja');assert.equal(new URL(direct.h.win.location.href).searchParams.has('settings'),false);direct.adapter.destroy();
+  const {h,runtime,adapter,flush}=await historyWithRuntime('/library?ui=en');adapter.hydrate();adapter.openOverlay({kind:'calendar'});adapter.destroy();
+  const remount=createLibraryViewHistory({window:h.win,timers:manualTimers(),getUiLocale:runtime.getUiLocale,onBeforeUiPopstate:runtime.onBeforeUiPopstate});remount.hydrate();remount.openOverlay({kind:'settings',tab:'data'});await runtime.setUiLocale('ja');remount.closeOverlay();await flush();assert.equal(runtime.getUiLocale(),'ja');assert.equal(h.backs,1);remount.destroy();
+});
+
+
+test('initial or route catalogue fallback does not carry an unsuccessful URL locale',async()=>{
+  for(const phase of ['initial','route']){
+    const h=queuedHistoryWindow('/library?ui=en');let runtime,pops=[];
+    let adapter=createLibraryViewHistory({window:h.win,timers:manualTimers(),getUiLocale:()=>runtime?.getUiLocale()});
+    adapter.hydrate();adapter.openOverlay({kind:'settings',tab:'account'});adapter.destroy();
+    if(phase==='initial')h.win.history.replaceState(h.win.history.state,'','/library?settings=account&ui=ja');
+    runtime=createUiLocale({history:h.win.history,getLocation:()=>h.win.location,loadCatalogue:async code=>{if(code==='ja')throw Error('synthetic catalogue unavailable');return en;}});
+    await runtime.initializeOnce();
+    if(phase==='route'){h.win.history.replaceState(h.win.history.state,'','/library?settings=account&ui=ja');await runtime.handlePopstate();}
+    assert.equal(runtime.getUiLocale(),'en');assert.equal(runtime.getRequestedUiLocale(),'ja');
+    h.win.addEventListener('popstate',()=>pops.push(runtime.handlePopstate()));
+    adapter=createLibraryViewHistory({window:h.win,timers:manualTimers(),getUiLocale:runtime.getUiLocale,onBeforeUiPopstate:runtime.onBeforeUiPopstate});adapter.hydrate();
+    const writes=h.writes.length;adapter.closeOverlay();h.flush();await Promise.all(pops);
+    assert.equal(h.writes.length,writes,phase+' fallback causes no target normalization');
+    assert.equal(new URL(h.win.location.href).searchParams.get('ui'),'en');assert.equal(runtime.getUiLocale(),'en');adapter.destroy();
+  }
+});
+
+test('missing or invalid URL ui remains absent on explicit close despite a saved effective locale',async()=>{
+  for(const query of ['', '?ui=bad', '?ui=ja&ui=en']){
+    const {h,runtime,adapter,flush}=await historyWithRuntime('/library'+query,{saved:'ja'});adapter.hydrate();adapter.openOverlay({kind:'settings',tab:'account'});
+    assert.equal(runtime.getUiLocale(),'ja');const writes=h.writes.length;adapter.closeOverlay();await flush();assert.equal(h.writes.length,writes);
+    assert.equal(new URL(h.win.location.href).searchParams.has('ui'),false);assert.equal(runtime.getUiLocale(),'ja');adapter.destroy();
+  }
+});
+
+
+test('adoptReturn uses its validated explicit ui over the old current URL, then future writes follow the live URL',()=>{
+  const h=queuedHistoryWindow('/library?ui=en&foreign=kept&login=1&next=old#anchor'),adapter=createLibraryViewHistory({window:h.win,timers:manualTimers()});
+  adapter.hydrate();adapter.openOverlay({kind:'calendar'});const entries=h.entries.length;
+  assert.deepEqual(adapter.adoptReturn('/library?q=returned&settings=data&ui=ja'),{kind:'settings',tab:'data'});
+  let params=new URL(h.win.location.href).searchParams;
+  assert.equal(params.get('ui'),'ja');assert.equal(params.get('q'),'returned');assert.equal(params.get('foreign'),'kept');
+  assert.equal(params.has('login'),false);assert.equal(params.has('next'),false);assert.equal(h.entries.length,entries);assert.equal(h.backs,0);
+  h.win.history.replaceState(h.win.history.state,'','/library?q=returned&settings=data&ui=en#anchor');adapter.setView({status:'reading'});
+  params=new URL(h.win.location.href).searchParams;assert.equal(params.get('ui'),'en','later business writes do not retain the adopted old ui');assert.equal(h.win.location.hash,'#anchor');adapter.destroy();
+});
+
+
+test('a newer successful picker choice before queued traversal invalidates the old close locale',async()=>{
+  const {h,runtime,adapter,flush}=await historyWithRuntime('/library?ui=en');adapter.hydrate();adapter.openOverlay({kind:'settings',tab:'account'});
+  await runtime.setUiLocale('ja');adapter.closeOverlay();await runtime.setUiLocale('en');
+  const writes=h.writes.length;await flush();assert.equal(runtime.getUiLocale(),'en');assert.equal(h.writes.length,writes,'an old carry cannot overwrite a newer effective choice');adapter.destroy();
+});
+
+
+test('first modal open before hydrate tags only predecessor metadata and preserves its exact URL and foreign state',async()=>{
+  const {h,runtime,adapter,flush}=await historyWithRuntime('/library?foreign=kept&ui=en#anchor');const href=h.win.location.href;
+  adapter.openOverlay({kind:'settings',tab:'account'});assert.equal(h.entries[0].url.href,href);assert.deepEqual(h.entries[0].state.foreign,{kept:true});
+  await runtime.setUiLocale('ja');adapter.closeOverlay();await flush();assert.equal(runtime.getUiLocale(),'ja');assert.equal(h.backs,1);assert.equal(h.entries.length,2);assert.equal(h.win.location.hash,'#anchor');adapter.destroy();
+});
+
+
+test('non-secure self-hosted history works without crypto.randomUUID and keeps bounded distinct entry identities',async()=>{
+  const descriptor=Object.getOwnPropertyDescriptor(globalThis,'crypto');
+  Object.defineProperty(globalThis,'crypto',{configurable:true,value:undefined});
+  try{
+    const {h,runtime,adapter,flush}=await historyWithRuntime('/library?ui=en');adapter.hydrate();const first=h.win.history.state.libraryState.entry;
+    adapter.openOverlay({kind:'settings',tab:'account'});const second=h.win.history.state.libraryState.entry;
+    assert.notEqual(first,second);for(const id of [first,second])assert.match(id,/^[a-z0-9-]{1,80}$/);
+    assert.equal(h.win.history.state.libraryOverlay.parentEntry,first);
+    await runtime.setUiLocale('ja');adapter.closeOverlay();await flush();assert.equal(runtime.getUiLocale(),'ja');assert.equal(h.backs,1);adapter.destroy();
+  }finally{if(descriptor)Object.defineProperty(globalThis,'crypto',descriptor);else delete globalThis.crypto;}
+});
+
+
+test('history owner releases its before-pop subscription on destroy and a fresh owner subscribes once',async()=>{
+  const h=queuedHistoryWindow('/library?ui=en'),active=new Set(),pops=[];
+  const runtime=createUiLocale({history:h.win.history,getLocation:()=>h.win.location,loadCatalogue:async code=>({en,ja}[code])});await runtime.initializeOnce();
+  h.win.addEventListener('popstate',()=>pops.push(runtime.handlePopstate()));
+  const subscribe=fn=>{active.add(fn);const off=runtime.onBeforeUiPopstate(fn);return()=>{active.delete(fn);off();};};
+  const mount=()=>createLibraryViewHistory({window:h.win,timers:manualTimers(),getUiLocale:runtime.getUiLocale,onBeforeUiPopstate:subscribe});
+  const adapter=mount();assert.equal(active.size,1);assert.equal(h.listeners,2,'one runtime and one business pop listener, no capture listener');
+  adapter.hydrate();adapter.openOverlay({kind:'settings',tab:'account'});await runtime.setUiLocale('ja');adapter.closeOverlay();adapter.destroy();adapter.destroy();
+  assert.equal(active.size,0);assert.equal(h.listeners,1);const writes=h.writes.length;h.flush();await Promise.all(pops.splice(0));
+  assert.equal(h.writes.length,writes);assert.equal(runtime.getUiLocale(),'en','destroyed close intent cannot normalize a later traversal');
+  const fresh=mount();assert.equal(active.size,1);fresh.hydrate();fresh.openOverlay({kind:'calendar'});await runtime.setUiLocale('ja');fresh.closeOverlay();h.flush();await Promise.all(pops.splice(0));
+  assert.equal(runtime.getUiLocale(),'ja');fresh.destroy();assert.equal(active.size,0);assert.equal(h.listeners,1);
 });

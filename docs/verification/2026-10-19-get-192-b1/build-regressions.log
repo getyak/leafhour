@@ -1,0 +1,67 @@
+TAP version 13
+# Subtest: hosted reader starts from one bundled script and one stylesheet without retaining old script execution
+not ok 1 - hosted reader starts from one bundled script and one stylesheet without retaining old script execution
+  ---
+  duration_ms: 334.213959
+  type: 'test'
+  location: '/Users/cubxxw/.codex/worktrees/get192-reader-integration/leafhour/tests/reader-web-build.test.mjs:2:1'
+  failureType: 'testCodeFailure'
+  error: 'Reader bundle exceeds public asset budget: reader 335994'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    buildReaderWeb (file:///Users/cubxxw/.codex/worktrees/get192-reader-integration/leafhour/tools/build-reader-web.mjs:325:135)
+    async TestContext.<anonymous> (file:///Users/cubxxw/.codex/worktrees/get192-reader-integration/leafhour/tests/reader-web-build.test.mjs:4:82)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: the bookplate enhancement and gift composer remain allowed public modules loaded outside the initial reader bundle
+not ok 2 - the bookplate enhancement and gift composer remain allowed public modules loaded outside the initial reader bundle
+  ---
+  duration_ms: 227.132583
+  type: 'test'
+  location: '/Users/cubxxw/.codex/worktrees/get192-reader-integration/leafhour/tests/reader-web-build.test.mjs:8:1'
+  failureType: 'testCodeFailure'
+  error: 'Reader bundle exceeds public asset budget: reader 335994'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    buildReaderWeb (file:///Users/cubxxw/.codex/worktrees/get192-reader-integration/leafhour/tools/build-reader-web.mjs:325:135)
+    async TestContext.<anonymous> (file:///Users/cubxxw/.codex/worktrees/get192-reader-integration/leafhour/tests/reader-web-build.test.mjs:11:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: external reader modules require the release allowlist and only resolve from their exact callers
+ok 3 - external reader modules require the release allowlist and only resolve from their exact callers
+  ---
+  duration_ms: 118.705542
+  type: 'test'
+  ...
+# Subtest: the authored-home navigation stays outside the reader graph and the fixed budgets hold
+not ok 4 - the authored-home navigation stays outside the reader graph and the fixed budgets hold
+  ---
+  duration_ms: 318.335708
+  type: 'test'
+  location: '/Users/cubxxw/.codex/worktrees/get192-reader-integration/leafhour/tests/reader-web-build.test.mjs:77:1'
+  failureType: 'testCodeFailure'
+  error: 'Reader bundle exceeds public asset budget: reader 335994'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    buildReaderWeb (file:///Users/cubxxw/.codex/worktrees/get192-reader-integration/leafhour/tools/build-reader-web.mjs:325:135)
+    async TestContext.<anonymous> (file:///Users/cubxxw/.codex/worktrees/get192-reader-integration/leafhour/tests/reader-web-build.test.mjs:80:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the exact palette retry edge is the one amended external import and stays fenced everywhere else
+ok 5 - the exact palette retry edge is the one amended external import and stays fenced everywhere else
+  ---
+  duration_ms: 24.523667
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 2
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1059.689375

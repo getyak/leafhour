@@ -1,10 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mountReaderTools,readerTools} from '../app/reader-tools.mjs';
+import {requestUiRoute} from '../app/ui-locale.mjs';
 import {mkdtemp,readFile,rm} from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import {createReaderServer} from '../server/server.mjs';
+test.beforeEach(async()=>{await requestUiRoute('zh-Hans');});
 
 test('source self-host serves the new tools module and its complete direct dependencies as JavaScript',async t=>{
   const base=await mkdtemp(path.join(os.tmpdir(),'get184-source-assets-'));
@@ -25,6 +27,7 @@ test('source self-host serves the new tools module and its complete direct depen
 class Element extends EventTarget {
   constructor(id=''){super();this.id=id;this.dataset={};this.attributes=new Map();this.classList={_s:new Set(),add(c){this._s.add(c);},remove(c){this._s.delete(c);},toggle(c,on){on?this._s.add(c):this._s.delete(c);},contains(c){return this._s.has(c);}};this.inert=false;this.hidden=false;this.textContent='';this.title='';this.children=[];this.listeners=new Map();}
   addEventListener(name,handler,options){if(!this.listeners.has(name))this.listeners.set(name,0);this.listeners.set(name,this.listeners.get(name)+1);super.addEventListener(name,handler,options);}
+  removeEventListener(name,handler,options){this.listeners.set(name,Math.max(0,(this.listeners.get(name)||0)-1));super.removeEventListener(name,handler,options);}
   setAttribute(key,value){this.attributes.set(key,value);}
   getAttribute(key){return this.attributes.get(key);}
   append(...nodes){this.children.push(...nodes);}
@@ -48,6 +51,41 @@ function withTools(run){
   const f=fixture();
   try{return run(f);}finally{f.cleanup();}
 }
+
+test('locale preserves the sole conceal deadline, unread state, focus and held tools',async t=>{
+  t.mock.timers.enable({apis:['setTimeout']});
+  const f=fixture();let tools;
+  try{
+    tools=mountReaderTools({sessionRoot:f.sessionRoot,immersion:f.immersion,document:f.document});
+    const pill=f.elements.get('#reading-tools-trigger'),label=f.elements.get('#reading-tools-label'),notice=f.elements.get('#reading-tools-notice');
+    tools.toolbar.update({status:'paused',attention:true,draftCount:2});tools.chatIntegration.onUnread(true);tools.toolbar.reveal(false);
+    t.mock.timers.tick(4000);const focus=f.document.activeElement;
+    await requestUiRoute('en');assert.equal(label.textContent,'Unsaved');assert.match(notice.textContent,/reading records/);
+    assert.equal(pill.getAttribute('aria-description'),'A reading companion message');assert.match(pill.getAttribute('aria-label'),/2 local drafts/);
+    assert.equal(f.document.activeElement,focus);assert.equal(tools.toolbar.expanded,true);assert.equal(f.immersion.shown,1);
+    t.mock.timers.tick(999);assert.equal(tools.toolbar.expanded,true);t.mock.timers.tick(1);assert.equal(tools.toolbar.expanded,false,'changing language cannot restart concealment');
+    tools.toolbar.reveal(false);tools.toolbar.hold('pointer',true);
+    await requestUiRoute('ja');assert.equal(label.textContent,'未保存');assert.equal(pill.getAttribute('aria-description'),'読書の伴走メッセージがあります');
+    t.mock.timers.tick(10000);assert.equal(tools.toolbar.expanded,true,'changing language cannot release pointer hold');
+    tools.toolbar.hold('pointer',false);t.mock.timers.tick(5000);assert.equal(tools.toolbar.expanded,false);
+    await requestUiRoute('zh-Hant');assert.equal(label.textContent,'待儲存');
+    tools.unmount();const detached=label.textContent;await requestUiRoute('en');assert.equal(label.textContent,detached);
+  }finally{tools?.toolbar.conceal();f.cleanup();}
+});
+
+test('unmount releases tools listeners and stale unread callbacks cannot change a replacement pill',()=>{
+  const f=fixture();let next;
+  try{
+    const old=mountReaderTools({sessionRoot:f.sessionRoot,document:f.document,immersion:f.immersion});old.chatIntegration.onUnread(true);old.unmount();
+    for(const event of ['keydown','pointerdown','reader:focus'])assert.equal(f.document.listeners.get(event)||0,0,event+' listener must be released');
+    assert.equal(f.elements.get('#reading-tools-trigger').listeners.get('click')||0,0);
+    next=mountReaderTools({sessionRoot:f.sessionRoot,document:f.document,immersion:f.immersion});
+    assert.equal(f.elements.get('#reading-tools-trigger').classList.contains('has-companion-message'),false,'the new owner initializes its own unread presentation');
+    assert.equal(f.elements.get('#reading-tools-trigger').getAttribute('aria-description'),'');
+    old.chatIntegration.onUnread(true);assert.equal(f.elements.get('#reading-tools-trigger').classList.contains('has-companion-message'),false);
+    assert.equal(f.elements.get('#reading-tools-trigger').getAttribute('aria-description'),'');
+  }finally{next?.unmount();f.cleanup();}
+});
 
 test('the single pill interaction drives both tools surfaces through one conceal timer',t=>{
   t.mock.timers.enable({apis:['setTimeout']});

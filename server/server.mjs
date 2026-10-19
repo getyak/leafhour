@@ -1,3 +1,5 @@
+import {authMessageId} from '../app/auth-errors.mjs';
+import {audioFailureCode} from '../app/audio-errors.mjs';
 import http from 'node:http';
 import {cjkFontAssets} from './cjk-font-assets.mjs';
 import {normalizeAppearance} from '../app/reading-preferences.mjs';
@@ -47,7 +49,7 @@ assets.set('/grant-result.mjs',['app/grant-result.mjs','text/javascript']);
 assets.set('/mcp-config.mjs',['app/mcp-config.mjs','text/javascript']);
 const downloads=new Map([['/exports/bilingual.md','book-bilingual.md'],['/exports/literal.md','book-literal.md'],['/exports/interpretive.md','book-interpretive.md'],['/exports/reading-pack.zip','reading-pack.zip']]);
 for(const asset of cjkFontAssets)assets.set(asset.url,['app/'+asset.file,asset.mime]);
-for(const file of ['reader-audio.js','reader-audio.css','audio-state.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
+for(const file of ['reader-audio.js','reader-audio-bootstrap.mjs','reader-audio-metadata.mjs','reader-audio.css','audio-state.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/listening-guide-state.mjs',['app/listening-guide-state.mjs','text/javascript']);
 for(const file of ['reader-atmosphere.js','reader-atmosphere.css','atmosphere-state.mjs','atmosphere-audio.mjs','hearth-motion.mjs','nature-motion.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 for(const name of ['forest','rain','hearth','sea'])assets.set('/assets/atmospheres/'+name+'.jpg',['app/assets/atmospheres/'+name+'.jpg','image/jpeg']);
@@ -145,7 +147,7 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
       if(assets.has(url.pathname)){const [file,type]=assets.get(url.pathname);const data=await readFile(path.join(root,file));if(type.startsWith('image/')||type.startsWith('audio/')||type.startsWith('font/')){res.writeHead(200,{'Content-Type':type,'Content-Length':data.length});res.end(req.method==='HEAD'?undefined:data);}else send(200,data,type);return;}
       if(downloads.has(url.pathname)){const filename=downloads.get(url.pathname),file=path.join(path.dirname(bookPath),'exports',filename);res.setHeader('Content-Disposition','attachment; filename="'+filename+'"');send(200,await readFile(file),filename.endsWith('.zip')?'application/zip':'text/markdown');return;}
       throw fail('找不到这个页面',404);
-    }catch(e){send(e.status||500,{error:e.status?e.message:'服务暂时无法完成操作'});}
+    }catch(e){send(e.status||500,{error:e.status?e.message:'服务暂时无法完成操作',...(e.status&&authMessageId(e.messageId)?{messageId:e.messageId}:{}),...(audioFailureCode(e.status,e.code)?{code:e.code}:{})});}
   });
   const closeHttp=server.close.bind(server);
   server.close=callback=>{const closing=Promise.all([experiences.close(),portal.audio?.close(),portal.chat.close(),portal.ingestionRunner.close()]);closeHttp(error=>{closing.then(()=>callback?.(error),failure=>callback?.(failure));});return server;};

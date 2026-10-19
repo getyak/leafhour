@@ -1,3 +1,4 @@
+import {t,onUiLocaleChange,uiReady} from './ui-locale.mjs';
 // Keep the complete metadata catalog for search/order; create cards only as needed.
 export function mountIncrementalShelf({grid,controls,renderItem}){
   const doc=grid.ownerDocument,view=doc.defaultView,batch=12;
@@ -8,14 +9,15 @@ export function mountIncrementalShelf({grid,controls,renderItem}){
   controls.replaceChildren(summary,button,sentinel);
   let items=[],count=0,scope,observer=null,frame=null,version=0,destroyed=false;
   const more=()=>count<items.length;
+  const offLocale=onUiLocaleChange(()=>{if(!destroyed)sync();});void uiReady.then(()=>{if(!destroyed)sync();});
   function disconnect(){
     version++;observer?.disconnect();observer=null;
     if(frame!==null)view.cancelAnimationFrame(frame);frame=null;
   }
   function sync(){
     controls.hidden=items.length===0;button.hidden=!more();sentinel.hidden=!more();
-    summary.textContent=more()?`书架已显示 ${count} / ${items.length} 本`:`已显示全部 ${items.length} 本`;
-    button.textContent=`继续显示 ${Math.min(batch,items.length-count)} 本`;
+    summary.textContent=more()?t('ix.shown',{count,total:items.length}):t('ix.all',{total:items.length});
+    button.textContent=t('ix.more',{count:Math.min(batch,items.length-count)});
     if(!more())observer?.disconnect();
   }
   function append(manual=false){
@@ -54,6 +56,6 @@ export function mountIncrementalShelf({grid,controls,renderItem}){
       count=Math.min(wanted,items.length);
       grid.replaceChildren(...items.slice(0,count).map(renderItem));sync();observe();
     },
-    destroy(){destroyed=true;disconnect();button.removeEventListener('click',onClick);}
+    destroy(){destroyed=true;offLocale();disconnect();button.removeEventListener('click',onClick);}
   };
 }

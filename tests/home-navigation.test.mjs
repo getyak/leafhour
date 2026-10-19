@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
+import {requestUiRoute,t,getUiLocale} from '../app/ui-locale.mjs';
+import {parse} from 'acorn';
+const mounted=[];test.afterEach(async()=>{for(const menu of mounted.splice(0))menu.dispose();await requestUiRoute('en');});
 import {mountHomeNavigation,isHomeNavRoute,HOME_NAV_ROUTES,HOME_MENU_CLOSE_REASONS} from '../app/home-navigation.mjs';
 
 // Realistic DOM fixture: real dialog open/close lifecycle, computed-style
@@ -113,7 +116,7 @@ class Doc{
     return node;
   }
 }
-function menuFixture({user=null,books=[],owner={owner:'guest',revision:0},getOwner=null}={}){
+function menuFixture({user=null,books=[],owner={owner:'guest',revision:0},getOwner=null,extraLinks=[]}={}){
   const document=new Doc(),raf=[];
   const header=document.createElement('header');header.className='site-header';document.body.append(header);
   const brand=document.createElement('a');brand.className='brand';brand.setAttribute('href','/');header.append(brand);
@@ -125,6 +128,7 @@ function menuFixture({user=null,books=[],owner={owner:'guest',revision:0},getOwn
   const languages=document.createElement('span');languages.className='home-languages';
   for(const route of ['/','/zh-hans','/zh-hant','/ja']){const link=document.createElement('a');link.setAttribute('href',route);languages.append(link);}
   nav.append(languages);
+  const bodyLinks=extraLinks.map(href=>{const a=document.createElement('a');a.setAttribute('href',href);a.textContent='Literal body link';document.body.append(a);return a;});
   const trigger=document.make('button','home-menu-trigger');
   const dialog=document.make('dialog','home-menu');
   dialog.className='home-menu-sheet';
@@ -143,19 +147,20 @@ function menuFixture({user=null,books=[],owner={owner:'guest',revision:0},getOwn
   const ownership=document.createElement('section');
   ownership.className='home-section';ownership.id='ownership';document.body.append(ownership);
   const desktop={matches:false,listeners:new Set(),addEventListener(type,fn){if(type==='change')this.listeners.add(fn);},fire(){for(const fn of [...this.listeners])fn({matches:this.matches});}};
-  const calls={auth:0,palette:[]};
+  const calls={auth:0,palette:[],books:0,identity:0};
   let session={user},current={...owner};
   const menu=mountHomeNavigation({
     document,
-    getSession:()=>session,
-    getBooks:()=>books,
+    getSession:()=>{calls.identity++;return session;},
+    getBooks:()=>{calls.books++;return books;},
     getOwner:getOwner||(()=>({...current})),
     openAuth:()=>{calls.auth++;},
     openPalette:opener=>{calls.palette.push(opener);},
     matchMedia:query=>query==='(min-width:1101px)'?desktop:null,
     requestAnimationFrame:fn=>{raf.push(fn);},
   });
-  return {document,menu,trigger,dialog,nav,links,languageSlot,signIn,account,resume,resumeTitle,resumeAuthor,search,brand,destination,ownership,desktop,raf,calls,
+  mounted.push(menu);
+  return {document,bodyLinks,menu,trigger,dialog,nav,links,languageSlot,signIn,account,resume,resumeTitle,resumeAuthor,search,brand,destination,ownership,desktop,raf,calls,
     flushRaf(){while(raf.length)raf.shift()({timeStamp:0});},
     setUser(next){session={user:next};},
     setBooks(next){books=next;},
@@ -216,7 +221,7 @@ test('opening refuses another open modal and the open appearance popover',()=>{
 test('the sheet reuses the real navigation anchors and localized language links',()=>{
   const f=menuFixture();
   const cloned=[...f.links.querySelectorAll('a')];
-  assert.deepEqual(cloned.map(a=>a.getAttribute('href')),['/library','#how','#ownership'],'all three destinations stay real anchors');
+  assert.deepEqual(cloned.map(a=>a.getAttribute('href')),['/library?ui=en','#how','#ownership'],'all three destinations stay real anchors');
   assert.equal(cloned.some(a=>a.hasAttribute('data-palette-open')),false,'the unwired cloned palette launcher is never copied');
   const languages=[...f.languageSlot.querySelectorAll('a')];
   assert.deepEqual(languages.map(a=>a.getAttribute('href')),['/','/zh-hans','/zh-hant','/ja'],'language links reuse the actual localized hrefs');
@@ -279,7 +284,7 @@ test('modified clicks keep native anchor behaviour and leave the sheet alone',()
 test('non-fragment destinations close without any later focus steal',()=>{
   const f=menuFixture();
   f.trigger.focus();f.trigger.click();
-  const library=[...f.links.querySelectorAll('a')].find(a=>a.getAttribute('href')==='/library');
+  const library=[...f.links.querySelectorAll('a')].find(a=>a.getAttribute('href')==='/library?ui=en');
   library.click();
   assert.equal(f.dialog.open,false);
   assert.equal(f.menu.lastCloseReason(),'navigation');
@@ -334,7 +339,7 @@ test('owner clear and same-owner retry remove stale resume rows and stale update
   f.setBooks([currentBook()]);
   assert.equal(f.menu.update({owner:'reader',revision:3}),true);
   assert.equal(f.resume.hidden,false);
-  assert.equal(f.resume.getAttribute('href'),'/read?book=walden','the resume link is the book-only protocol');
+  assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui=en','the resume link is the book-only protocol');
   assert.equal(f.resumeTitle.textContent,'瓦尔登湖','the dynamic title is exact textContent, never translated');
   assert.equal(f.resumeAuthor.textContent,'Thoreau');
   assert.equal(f.menu.update({owner:'reader',revision:2}),false,'a stale captured revision is rejected');
@@ -349,7 +354,7 @@ test('owner clear and same-owner retry remove stale resume rows and stale update
   f.menu.clear({owner:'reader',revision:3});
   f.setBooks([currentBook()]);
   f.menu.update({owner:'reader',revision:3});
-  assert.equal(f.resume.getAttribute('href'),'/read?book=walden');
+  assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui=en');
 });
 
 test('resume eligibility comes only from real current progress; guests without progress see no continue row',()=>{
@@ -365,7 +370,7 @@ test('resume eligibility comes only from real current progress; guests without p
   f.setBooks([{bookId:'mine',title:{zh:'我的书'},author:'我',journey:{lastReadAt:'2026-10-19T00:00:00Z'}}]);
   f.menu.update({owner:'reader',revision:2});
   assert.equal(f.resume.hidden,false,'real current authorized progress gets the optional row');
-  assert.equal(f.resume.getAttribute('href'),'/read?book=mine','readingBookUrl(book,null) only: the reader restores the full resume');
+  assert.equal(f.resume.getAttribute('href'),'/read?book=mine&ui=en','readingBookUrl(book,null) only: the reader restores the full resume');
 });
 
 test('the account row follows the signed-in session with the validated account destination',()=>{
@@ -377,7 +382,7 @@ test('the account row follows the signed-in session with the validated account d
   f.menu.update({owner:'reader',revision:1});
   assert.equal(f.signIn.hidden,true);
   assert.equal(f.account.hidden,false);
-  assert.equal(f.account.getAttribute('href'),'/library?settings=account');
+  assert.equal(f.account.getAttribute('href'),'/library?settings=account&ui=en');
 });
 
 test('dispose detaches the sheet from the shared focus registry and the page listeners',()=>{
@@ -393,6 +398,8 @@ test('dispose detaches the sheet from the shared focus registry and the page lis
 // ---- GET-188 review batch: actual production refresh wiring regressions ----
 import {createOwnerScope} from '../app/owner-scope.mjs';
 const portalSource=await readFile(new URL('../app/portal.js',import.meta.url),'utf8');
+const portalAst=parse(portalSource,{ecmaVersion:'latest',sourceType:'module'});
+const refreshLabelDeclarations=['chromeLabels','specText','applySpec','own'].map(name=>{const node=portalAst.body.find(n=>n.declarations?.some(d=>d.id.name===name));assert.ok(node);return portalSource.slice(node.start,node.end);}).join('\n');
 const refreshBody=portalSource.slice(portalSource.indexOf('async function refresh(knownSession)'),portalSource.indexOf('async function signOut('));
 // The integration fixture executes the actual portal refresh function body
 // against the actual home-navigation controller; only DOM, api and incidental
@@ -400,12 +407,13 @@ const refreshBody=portalSource.slice(portalSource.indexOf('async function refres
 function productionRefresh({api,homeMenu,ownerScope,document:doc,observations={},session={user:{id:'reader'}}}={}){
   const nodes=new Map();
   const $=id=>{if(!nodes.has(id))nodes.set(id,doc.createElement('div'));return nodes.get(id);};
-  return new Function('api','homeMenu','ownerScope','$','doc','observations',`
+  return new Function('api','homeMenu','ownerScope','$','doc','observations','t','getUiLocale',`
     let refreshGeneration=0,session=${JSON.stringify(session)},books=[],shelfRevision=0,pendingUpload=false,pendingChat=false,bootstrapped=false;
     const document=doc,isLibrary=false,dashboard=null,shell=null,setupInvite=null,authDialog={updateCapabilities(){},isSettingPasswordFor(){return false;}},pdfOnboarding={refresh(){}},homeText=x=>x,homeLocale=()=>'en',status=()=>{},renderBooks=()=>{},landingBookCard=()=>doc.createElement('article');
     function clearPrivateUI(){observations.clearCalls=(observations.clearCalls||0)+1;homeMenu.clear(ownerScope.capture());}
+    ${refreshLabelDeclarations}
     ${refreshBody}
-    return refresh;`)(api,homeMenu,ownerScope,$,doc,observations);
+    return refresh;`)(api,homeMenu,ownerScope,$,doc,observations,t,getUiLocale);
 }
 
 test('the actual refresh wiring clears the optional resume at every generation start through pending and failure',async()=>{
@@ -418,7 +426,7 @@ test('the actual refresh wiring clears the optional resume at every generation s
   const refresh=productionRefresh({api,homeMenu:f.menu,ownerScope:scope,document:f.document});
   await refresh({user:{id:'reader'}});
   assert.equal(f.resume.hidden,false,'the first successful refresh renders the real resume row');
-  assert.equal(f.resume.getAttribute('href'),'/read?book=private-synthetic');
+  assert.equal(f.resume.getAttribute('href'),'/read?book=private-synthetic&ui=en');
   assert.equal(f.resumeTitle.textContent,'Synthetic title');
   const retry=refresh({user:{id:'reader'}});
   assert.equal(f.resume.hidden,true,'the same-owner refresh generation clears the stale row synchronously at its start');
@@ -442,7 +450,7 @@ test('the actual refresh wiring syncs identity rows when the session settles eve
   await refresh({user:{id:'reader'}}).catch(()=>{});
   assert.equal(f.signIn.hidden,true,'signed-in identity rows sync without waiting for optional book data');
   assert.equal(f.account.hidden,false);
-  assert.equal(f.account.getAttribute('href'),'/library?settings=account');
+  assert.equal(f.account.getAttribute('href'),'/library?settings=account&ui=en');
   assert.equal(f.resume.hidden,true,'resume stays cleared without current valid books');
 });
 
@@ -476,4 +484,30 @@ test('owner transitions keep identity and resume rows in step with the adopted s
 test('portal wires the owner settlement token beside the real user id getter',()=>{
   assert.match(portalSource,/getOwnerToken:/,'the bootstrap fence needs the monotonic settlement token on the adapter');
   assert.match(portalSource,/getOwner:\(\)=>session\?\.user\?\.id\|\|null/,'the palette library keeps the real user id getter');
+});
+
+test('home locale labels and existing owned links change without querying identity or books or replacing the active sheet',async()=>{
+  const f=menuFixture({user:{id:'a'},books:[currentBook()]});f.menu.update({owner:'guest',revision:0});f.trigger.click();f.search.focus();
+  const children=[...f.dialog.children],booksBefore=f.calls.books,identityBefore=f.calls.identity,title=f.resumeTitle.textContent,author=f.resumeAuthor.textContent;
+  await requestUiRoute('ja');
+  assert.equal(f.dialog.open,true);assert.equal(f.document.activeElement,f.search);assert.deepEqual(f.dialog.children,children);assert.equal(f.calls.books,booksBefore);assert.equal(f.calls.identity,identityBefore);assert.equal(f.resumeTitle.textContent,title);assert.equal(f.resumeAuthor.textContent,author);
+  assert.equal(f.account.getAttribute('href'),'/library?settings=account&ui=ja');assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui=ja');assert.equal(f.links.querySelector('a').getAttribute('href'),'/library?ui=ja');assert.equal(f.dialog.getAttribute('lang'),'ja');
+  f.menu.clear();await requestUiRoute('zh-Hant');assert.equal(f.resume.hidden,true);assert.equal(f.resume.getAttribute('href'),null);assert.equal(f.calls.books,booksBefore);
+  f.menu.dispose();await requestUiRoute('en');assert.equal(f.account.getAttribute('href'),'/library?settings=account&ui=zh-Hant');
+});
+
+
+test('owned hero, sample and footer links retain locale without rebuilding body content or rewriting unowned targets',async()=>{
+  const targets=['/library','/library?settings=about','/read?book=literal%2Fid&passage=p1#source','/read#sample','#how','/privacy','https://example.test/read?book=literal','/api/books/export?signature=literal','/library-extra'];
+  const f=menuFixture({extraLinks:targets});
+  const nodes=[...f.bodyLinks],calls={...f.calls};
+  for(const code of ['en','ja','zh-Hant','zh-Hans']){
+    await requestUiRoute(code);
+    for(let i=0;i<targets.length;i++){
+      const expected=i<4?targets[i].replace(/#.*$/,'')+(targets[i].includes('?')?'&':'?')+'ui='+code+(targets[i].includes('#')?targets[i].slice(targets[i].indexOf('#')):''):targets[i];
+      assert.equal(f.bodyLinks[i].getAttribute('href'),expected);
+      assert.equal(f.bodyLinks[i],nodes[i]);assert.equal(nodes[i].textContent,'Literal body link');
+    }
+    assert.deepEqual(f.calls,calls,'language commits do not read identity/books or open other features');
+  }
 });

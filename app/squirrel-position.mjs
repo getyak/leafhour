@@ -10,8 +10,8 @@ const placeNear=(node,r,b)=>{
  Object.assign(node.style,{left:left+'px',top:top+'px',right:'auto',bottom:'auto'});node.classList.toggle('is-below',under);
 };
 
-export function mountSquirrelPosition({launcher,window=globalThis.window,storage=globalThis.localStorage}){
- if(!window?.addEventListener||typeof launcher?.setPointerCapture!=='function')return {attach:()=>()=>{},layout(){},dispose(){}};
+export function mountSquirrelPosition({launcher,window=globalThis.window,storage=globalThis.localStorage,labels}={}){
+ if(!window?.addEventListener||typeof launcher?.setPointerCapture!=='function')return {attach:()=>()=>{},layout(){},updateLabels(){},dispose(){}};
  let position=null,drag=null,suppressClick=false;const held=listeners(),floating=new Set();
  try{const value=JSON.parse(storage?.getItem(KEY)||'null');if(value&&[value.x,value.y].every(n=>Number.isFinite(n)&&n>=0&&n<=1))position=value;}catch{}
  const listen=held.on;
@@ -47,6 +47,10 @@ export function mountSquirrelPosition({launcher,window=globalThis.window,storage
  });
  const resized=()=>{if(drag)end(true);layout();};listen(window,'resize',resized);listen(window,'blur',()=>end(true));
  if(window.visualViewport)for(const name of ['resize','scroll'])listen(window.visualViewport,name,resized);
- launcher.setAttribute('aria-description','可拖动调整位置，也可按住 Alt 并使用方向键移动。');launcher.setAttribute('title','阅读对话 · 可拖动调整位置');layout();
- return {attach(node){floating.add(node);layout();return ()=>floating.delete(node);},layout,dispose(){end(true);held.release();floating.clear();}};
+ // Caller-supplied UI labels keep this helper pure; the legacy defaults stay
+ // device-placement-only and never restart timers or change drag state.
+ const textLabels={ariaDescription:'可拖动调整位置，也可按住 Alt 并使用方向键移动。',title:'阅读对话 · 可拖动调整位置',...(labels||{})};
+ const updateLabels=next=>{Object.assign(textLabels,next||{});launcher.setAttribute('aria-description',textLabels.ariaDescription);launcher.setAttribute('title',textLabels.title);};
+ updateLabels();layout();
+ return {attach(node){floating.add(node);layout();return ()=>floating.delete(node);},layout,updateLabels,dispose(){end(true);held.release();floating.clear();}};
 }

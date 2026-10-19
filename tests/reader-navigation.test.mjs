@@ -69,9 +69,9 @@ test('Escape from a completed introduction keeps immersive tools open and return
   const immersion=mountReaderImmersion({document});immersion.toggleTools();
   navigation.mountBookIntroduction({document,getBook:()=>book,getChapter:()=>book.chapters[1]});
   // Register the real page handler after the popover, preserving listener order.
-  const reader=await readFile(new URL('../app/reader.js',import.meta.url),'utf8'),start=reader.indexOf("document.addEventListener('keydown',e=>{"),end=reader.indexOf('\n});',start)+4;
+  const reader=await readFile(new URL('../app/reader.js',import.meta.url),'utf8'),start=reader.indexOf("listen(document,'keydown',e=>{"),end=reader.indexOf('\n});',start)+4;
   assert.ok(start>=0&&end>start,'the reader page keyboard handler must be exercised');
-  new Function('document','readerInteractionBlocked','immersion','$',reader.slice(start,end))(document,readerInteractionBlocked,immersion,id=>nodes.get(id));
+  new Function('document','readerInteractionBlocked','immersion','$','listen',reader.slice(start,end))(document,readerInteractionBlocked,immersion,id=>nodes.get(id),(node,type,handler)=>node.addEventListener(type,handler));
   generate.hidden=false;document.activeElement=generate;generate.hidden=true;document.activeElement=document.body;
   const event=new Event('keydown',{cancelable:true});Object.defineProperties(event,{key:{value:'Escape'},target:{value:document.body}});document.dispatchEvent(event);
   assert.equal(popover.hasAttribute('data-popover-open'),false);

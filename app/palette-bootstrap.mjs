@@ -4,6 +4,7 @@
 // registry plus body[data-palette-page]; the palette module never imports an
 // unrelated page controller.
 import {overlayOpen,focusableTrigger} from './popover-controls.mjs';
+import {t,onUiLocaleChange,uiReady,mountUiLocaleNotice,bindUi} from './ui-locale.mjs';
 
 export const PALETTE_KEYCAP={mac:'⌘K',other:'Ctrl K'};
 export const PALETTE_POINTER_QUERIES=['(pointer: coarse)','(any-pointer: fine)'];
@@ -12,7 +13,12 @@ export const PALETTE_POINTER_QUERIES=['(pointer: coarse)','(any-pointer: fine)']
 // and disappears as soon as a request succeeds again. After the one finite
 // import retry is spent, the only honest fallback is a manually activated page
 // reload: it is never invoked automatically and never relabelled as a retry.
+// Labels read the shared stable-ID runtime and relabel in place; the legacy
+// export stays for non-localized callers and tests that assert the raw values.
 export const PALETTE_BOOTSTRAP_TEXT={loadError:'命令面板暂时无法载入。',retry:'重试',reload:'重新加载页面'};
+const paletteText=()=>({loadError:t('pn.loadError'),retry:t('pn.retry'),reload:t('pn.reload')});
+// Owned data-ui markers let the shared runtime relabel this notice in place,
+// even before the palette import succeeds, without any synthetic gesture.
 
 // The keycap hint is only useful where a keyboard likely exists: hide it on a
 // coarse-only primary pointer, keep it for fine-primary devices even when a
@@ -76,14 +82,16 @@ export function mountPaletteBootstrap({document=globalThis.document,navigator=gl
     control.addEventListener('click',onClick);
     return control;
   };
+  const relabelPaletteNotice=()=>{if(!notice)return;bindUi(notice);};
   const showFailure=()=>{
     if(!notice){
       notice=document.createElement('div');notice.className='palette-notice';notice.setAttribute('role','status');
-      retryControl=button('palette-retry',PALETTE_BOOTSTRAP_TEXT.retry,()=>gesture(lastOpener||document.activeElement));
-      reloadControl=button('palette-reload',PALETTE_BOOTSTRAP_TEXT.reload,()=>globalThis.location?.reload?.());
-      notice.textContent=PALETTE_BOOTSTRAP_TEXT.loadError;
-      notice.append(retryControl,reloadControl);
+      const message=document.createElement('span');message.dataset.ui='pn.loadError';message.textContent=paletteText().loadError;
+      retryControl=button('palette-retry',paletteText().retry,()=>gesture(lastOpener||document.activeElement));retryControl.dataset.ui='pn.retry';
+      reloadControl=button('palette-reload',paletteText().reload,()=>globalThis.location?.reload?.());reloadControl.dataset.ui='pn.reload';
+      notice.append(message,retryControl,reloadControl);
       (document.body||document.documentElement)?.append?.(notice);
+      bindUi(notice);
     }
     const exhausted=!modulePromise&&importStage>1;
     retryControl.hidden=exhausted;
@@ -112,6 +120,11 @@ export function mountPaletteBootstrap({document=globalThis.document,navigator=gl
     }
   };
   const gesture=opener=>void open(opener).catch(()=>{});
+  // Shared explicit locale fallback/retry notices live in the external runtime
+  // (same /ui-locale.mjs identity) and stay separate from the palette's own
+  // retry budget; this bootstrap merely hosts them on every actual page.
+  const localeNotice=mountUiLocaleNotice({document});
+  void uiReady.then(()=>{localeNotice.update();});
   for(const node of document.querySelectorAll('[data-palette-open]'))node.addEventListener?.('click',()=>gesture(node));
   // The explicit handoff port: one listener per mount, routed through the same
   // gesture/open path with the caller's actual visible opener.

@@ -2,13 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {createParallelPair} from '../app/parallel-reading.mjs';
+import {requestUiRoute,bindUi} from '../app/ui-locale.mjs';
+
+test.beforeEach(async()=>{await requestUiRoute('zh-Hans');});
 
 class Element extends EventTarget{
   constructor(){super();this.children=[];this.attributes=new Map();this.dataset={};this.hidden=false;this.inert=false;this.classes=new Set();this.classList={contains:name=>this.classes.has(name),toggle:(name,active)=>active?this.classes.add(name):this.classes.delete(name)};}
   append(...nodes){this.children.push(...nodes);}
+  contains(node){return node===this||this.children.some(child=>child===node||child.contains?.(node));}
   setAttribute(name,value){this.attributes.set(name,String(value));}
   getAttribute(name){return this.attributes.get(name);}
   querySelector(){return this.firstControl||null;}
+  querySelectorAll(selector){const attrs=selector.split(',').map(part=>part.slice(1,-1));const walk=node=>node.children.flatMap(child=>[...(attrs.some(attr=>child.attributes.has(attr))?[child]:[]),...walk(child)]);return walk(this);}
   focus(){this.focused=true;}
 }
 function fixture(){
@@ -88,4 +93,46 @@ test('a failed fullscreen request returns focus to the visible pill fallback',as
   const reader=mountReaderImmersion({document,announce(){},focusReturn:()=>pill});
   nodes.get('enter-focus').focus();await reader.toggleFullscreen();
   assert.equal(pill.focused,true,'fullscreen failure restores the visible pill, not a removed floating control');
+});
+
+test('locale changes update fullscreen labels without changing tools, focus or layout',async()=>{
+  const {mountReaderImmersion}=await import('../app/reader-immersion.mjs');
+  const {document,nodes,requests}=fixture();let layouts=0;
+  const reader=mountReaderImmersion({document,beforeLayout(){layouts++;},afterLayout(){layouts++;}});
+  reader.showTools({focus:false});
+  const control=nodes.get('enter-focus'),opener=new Element();document.activeElement=opener;
+  const before={inert:nodes.get('reading-header').inert,tools:document.body.dataset.readingTools,focused:document.body.classList.contains('is-focused')};
+  await requestUiRoute('en');
+  assert.equal(control.textContent,'Full screen');assert.equal(control.getAttribute('aria-label'),'Full-screen reading');
+  assert.deepEqual({inert:nodes.get('reading-header').inert,tools:document.body.dataset.readingTools,focused:document.body.classList.contains('is-focused')},before);
+  assert.equal(document.activeElement,opener);assert.equal(layouts,0);assert.equal(requests(),0);
+  await reader.toggleFullscreen();const completedLayouts=layouts;
+  await requestUiRoute('ja');assert.equal(control.textContent,'全画面を終了');assert.equal(control.getAttribute('aria-label'),'全画面を終了');
+  assert.equal(requests(),1);assert.equal(layouts,completedLayouts);assert.equal(document.fullscreenElement,document.documentElement);
+  await requestUiRoute('zh-Hant');assert.equal(control.textContent,'結束全螢幕');
+  reader.unmount();const detached=control.textContent;await requestUiRoute('en');assert.equal(control.textContent,detached);
+});
+
+test('unmount fences a pending fullscreen result from a replacement owner',async()=>{
+  const {mountReaderImmersion}=await import('../app/reader-immersion.mjs'),{document}=fixture();
+  let reject,layouts=0;const notices=[];document.documentElement.requestFullscreen=()=>new Promise((_,r)=>reject=r);
+  const old=mountReaderImmersion({document,afterLayout(){layouts++;},announce:text=>notices.push(text)}),pending=old.toggleFullscreen();
+  old.unmount();const next=mountReaderImmersion({document});next.setFocused(false);
+  reject(Error('Late browser denial'));assert.equal(await pending,false);
+  assert.equal(document.body.classList.contains('is-focused'),false);assert.equal(layouts,0);assert.deepEqual(notices,[]);
+  document.fullscreenElement=document.documentElement;document.dispatchEvent(new Event('fullscreenchange'));
+  assert.equal(document.body.classList.contains('is-focused'),false,'removed event handlers cannot restore old layout');
+  next.unmount();
+});
+
+test('parallel reveal labels change in place without revealing text again or replacing source nodes',async()=>{
+  const {document}=fixture(),revealed=new Set();let changes=0;
+  const pair=createParallelPair({document,passageId:'parallel-locale',variant:'literal',revealed,onReveal:change=>{changes++;change();},layers:[{kind:'original',label:'原文',lang:'en',text:'The original stays literal.'},{kind:'translation',label:'直译',lang:'zh-Hans',text:'已有译文保持原样。'}],prose:layer=>Object.assign(new Element(),{textContent:layer.text,lang:layer.lang})});
+  const off=bindUi(pair),original=pair.children[0].children[0],column=pair.children[1],toggle=column.children[0],translation=column.children[1].children[0];
+  const event=new Event('click');toggle.dispatchEvent(event);assert.equal(changes,1);assert.equal(revealed.has('parallel-locale:literal'),true);
+  for(const [code,label] of [['en','Hide translation'],['ja','訳文を隠す'],['zh-Hant','收起譯文'],['zh-Hans','收起译文']]){
+    await requestUiRoute(code);assert.equal(toggle.textContent,label);assert.equal(column.dataset.revealed,'true');assert.equal(toggle.getAttribute('aria-expanded'),'true');
+    assert.equal(pair.children[0].children[0],original);assert.equal(column.children[1].children[0],translation);assert.equal(original.textContent,'The original stays literal.');assert.equal(original.lang,'en');assert.equal(translation.textContent,'已有译文保持原样。');assert.equal(changes,1);
+  }
+  off();
 });

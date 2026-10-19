@@ -1,3 +1,4 @@
+import {withUiParam} from './ui-locale-codec.mjs';
 // Both public homepages use home.html. These are authored presentation strings,
 // never book contents, account data, HTML from an API, or model translations.
 // The authored source language is Simplified Chinese; every row below carries the
@@ -91,7 +92,7 @@ const strings=[
   ['使用 AI 和朋友共读有哪些限制？','What are the limits of AI and reading together?','使用 AI 和朋友共讀有哪些限制？','AI や一緒に読むことには、どんな制限がありますか？'],
   ['直接阅读公版样书不需要调用模型。翻译与对话需要配置模型服务，自托管时由运营者承担供应商费用。赠书信可以分享所选阅读材料；在线好友的实时共读仍是后续设想。','Reading public samples needs no model request. Translation and conversation need a configured model service; self-hosters bear provider charges. Gift letters can share selected reading material. Live reading together with online presence is a future idea.','直接閱讀公版樣書不需要調用模型。翻譯與對話需要配置模型服務，自託管時由營運者承擔供應商費用。贈書信可以分享所選閱讀材料；在線好友的實時共讀仍是後續設想。','公開サンプルを読むだけならモデルは呼び出しません。翻訳と対話にはモデルサービスの設定が必要で、セルフホストでは運営者が費用を負担します。贈り物の手紙で選んだ読書資料を共有できます。オンラインの友人とのリアルタイムな共読は、これからの構想です。'],
   ['网站支持哪些语言？','Which languages does the site support?','網站支援哪些語言？','対応言語は？'],
-  ['官网提供英文、简体中文、繁体中文和日语版本，默认英文。书房和阅读界面目前主要为简体中文。','The website is available in English, Simplified Chinese, Traditional Chinese and Japanese, and defaults to English. The reading room and reader interface are currently primarily in Simplified Chinese.','官網提供英文、簡體中文、繁體中文和日語版本，預設英文。書房和閱讀介面目前主要為簡體中文。','公式サイトは英語・簡体字中国語・繁体字中国語・日本語に対応し、既定は英語です。書斎とリーダーの画面は現在、主に簡体字中国語です。'],
+  ['官网、书房和阅读界面支持英文、简体中文、繁体中文和日语。界面语言可以在外观设置中切换，不会改变书籍原文或已有译文。','The website, reading room and reader support English, Simplified Chinese, Traditional Chinese and Japanese. Change the interface language in appearance settings; the book’s original text and existing translations stay unchanged.','官網、書房和閱讀介面支援英文、簡體中文、繁體中文和日語。介面語言可以在外觀設定中切換，不會改變書籍原文或既有譯文。','公式サイト、書斎、リーダーは英語・簡体字中国語・繁体字中国語・日本語に対応しています。外観設定で表示言語を変更できます。本の原文や保存済みの訳文は変わりません。'],
   // Closing and footer
   ['今天，就从几页开始。','Begin with a few pages today.','今天，就從幾頁開始。','今日は数頁から始めましょう。'],
   ['一本想读的书，一点留给自己的时间。','A book you want to read. A little time to yourself.','一本想讀的書，一點留給自己的時間。','読みたい一冊と、自分にあける少しの時間。'],
@@ -322,6 +323,10 @@ export function homeLocaleMeta(locale){
 export function homeDocument(source,locale){
   const meta=homeLocaleMeta(locale);
   return homeText(source,locale)
+    // Only trusted, authored navigation anchors are owned here. Include the
+    // first paint so denied storage or an early click cannot lose the route's
+    // language; source prose, external links and resource URLs stay literal.
+    .replace(/(<a\b[^>]*\bhref=")(\/(?:library|read)(?:[?#][^"]*)?)(")/g,(_,before,href,after)=>before+withUiParam(href.replaceAll('&amp;','&'),meta.code).replaceAll('&','&amp;')+after)
     .replace('<html lang="zh-Hans">','<html lang="'+meta.htmlLang+'">')
     .replace('<link rel="canonical" href="https://leafhour.com/">','<link rel="canonical" href="'+meta.canonical+'">')
     .replace('<meta property="og:url" content="https://leafhour.com/">','<meta property="og:url" content="'+meta.canonical+'">')

@@ -23,9 +23,9 @@ import {createReaderChatGenerator} from './reader-chat-generator.mjs';
 import {createBookIntroductionService} from './book-introduction.mjs';
 import {createIntroductionGenerator} from '../harness/introduction-generator.mjs';
 import {createCompanionGenerator} from '../harness/companion-generator.mjs';
-import {authPurpose} from './auth-policy.mjs';
+import {authPurpose,authFailure} from './auth-policy.mjs';
 import {safeGiftReturn} from '../app/reader-return.mjs';
-import {safeLibraryReturn} from '../app/library-view-state.mjs';
+import {authFailureReturn} from '../app/auth-return.mjs';
 import {createAccountProfile} from './account-profile.mjs';
 import {createPaddleProvider} from './paddleocr.mjs';
 import {createBookIngestion} from './book-ingestion.mjs';
@@ -85,7 +85,12 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     const p=url.pathname;
     if(p==='/api/internal/ingestion/wake'){if(req.method!=='POST'||!ingestionRunner.authorized(req.headers.authorization))throw fail('找不到这个操作',404);ingestionRunner.tick();send(202,{accepted:true});return true;}
     const isAPI=p.startsWith('/api/auth/')||p.startsWith('/api/library')||p.startsWith('/api/agent/')||p.startsWith('/api/account/')||p.startsWith('/api/book-gifts/');
-    const files={'/':'home.html','/library':'home.html','/en':'home.html','/zh-hans':'home.html','/zh-hant':'home.html','/ja':'home.html','/privacy':'en/privacy.html','/en/privacy':'en/privacy.html','/zh-hans/privacy':'zh-hans/privacy.html','/zh-hant/privacy':'zh-hant/privacy.html','/ja/privacy':'ja/privacy.html','/mcp':'en/mcp.html','/en/mcp':'en/mcp.html','/zh-hans/mcp':'zh-hans/mcp.html','/zh-hant/mcp':'zh-hant/mcp.html','/ja/mcp':'ja/mcp.html','/auth.css':'auth.css','/auth-dialog.mjs':'auth-dialog.mjs','/auth-flow.mjs':'auth-flow.mjs','/auth-assets/google.png':'auth-assets/google.png','/auth-assets/apple.svg':'auth-assets/apple.svg','/portal.css':'portal.css','/portal.js':'portal.js','/owner-scope.mjs':'owner-scope.mjs','/paragraph-anchor.mjs':'paragraph-anchor.mjs','/source-language.mjs':'source-language.mjs','/upload-state.mjs':'upload-state.mjs','/library-backup.mjs':'library-backup.mjs','/reader-api.mjs':'reader-api.mjs','/reading-progress.mjs':'reading-progress.mjs','/progress-sync.mjs':'progress-sync.mjs','/reader-translation.js':'reader-translation.js'};
+    const files={'/':'home.html','/library':'home.html','/en':'home.html','/zh-hans':'home.html','/zh-hant':'home.html','/ja':'home.html','/privacy':'en/privacy.html','/en/privacy':'en/privacy.html','/zh-hans/privacy':'zh-hans/privacy.html','/zh-hant/privacy':'zh-hant/privacy.html','/ja/privacy':'ja/privacy.html','/mcp':'en/mcp.html','/en/mcp':'en/mcp.html','/zh-hans/mcp':'zh-hans/mcp.html','/zh-hant/mcp':'zh-hant/mcp.html','/ja/mcp':'ja/mcp.html','/auth.css':'auth.css','/auth-dialog.mjs':'auth-dialog.mjs','/auth-flow.mjs':'auth-flow.mjs','/auth-errors.mjs':'auth-errors.mjs','/audio-errors.mjs':'audio-errors.mjs','/auth-return.mjs':'auth-return.mjs','/auth-assets/google.png':'auth-assets/google.png','/auth-assets/apple.svg':'auth-assets/apple.svg','/portal.css':'portal.css','/portal.js':'portal.js','/owner-scope.mjs':'owner-scope.mjs','/paragraph-anchor.mjs':'paragraph-anchor.mjs','/source-language.mjs':'source-language.mjs','/upload-state.mjs':'upload-state.mjs','/library-backup.mjs':'library-backup.mjs','/reader-api.mjs':'reader-api.mjs','/reading-progress.mjs':'reading-progress.mjs','/progress-sync.mjs':'progress-sync.mjs','/reader-translation.js':'reader-translation.js'};
+    // The local library and reader share these exact public module URLs.
+    // Query variants reuse the same backing catalogue; the browser runtime
+    // owns its fixed base/retry import policy.
+    for(const file of ['reader-audio.js','reader-audio-bootstrap.mjs','reader-audio-metadata.mjs','audio-state.mjs','listening-guide-state.mjs','action-focus.mjs'])files['/'+file]=file;
+    for(const file of ['ui-locale.mjs','ui-locale-codec.mjs','ui-locale-controls.mjs','ui-catalogs/en.mjs','ui-catalogs/zh-Hans.mjs','ui-catalogs/zh-Hant.mjs','ui-catalogs/ja.mjs'])files['/'+file]=file;
     for(const file of ['library-portability.mjs','portable-chat.mjs','library-data.mjs','library-data.css','fflate.mjs','fflate-LICENSE.txt'])files['/'+file]=file;
     files['/document-source.mjs']='document-source.mjs';files['/pdf-ingestion.mjs']='pdf-ingestion.mjs';files['/pdf-onboarding.mjs']='pdf-onboarding.mjs';files['/pdf-onboarding-state.mjs']='pdf-onboarding-state.mjs';files['/book-transfer.mjs']='book-transfer.mjs';
     files['/source-review']='source-review.html';for(const file of ['source-review.mjs','source-review.css','source-revisions.mjs'])files['/'+file]=file;
@@ -147,7 +152,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
         if(url.searchParams.has('error')){returnTo=await auth.cancelOAuth(flowToken);errorCode='cancelled';}
         else{session=await auth.finishOAuth(flowToken,url.searchParams.get('code'));next=session.next;}
       }catch(error){errorCode=error.status>=500?'unavailable':'expired';returnTo=await auth.cancelOAuth(flowToken).catch(()=>null);}
-      if(!session){const query=new URLSearchParams({login:'1',auth_error:errorCode});if(returnTo?.startsWith('/read?')||safeGiftReturn(returnTo))query.set('next',returnTo);else if(returnTo==='/library?upload=1')query.set('upload','1');else{const libraryReturn=safeLibraryReturn(returnTo);if(libraryReturn&&libraryReturn!=='/library')query.set('next',libraryReturn);}next='/library?'+query;}
+      if(!session)next=authFailureReturn(returnTo,errorCode);
       const cookies=[setFlow('')];if(session)cookies.push(`marginalia_session=${session.token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=604800; Secure`);
       res.setHeader('Set-Cookie',cookies);res.setHeader('Cache-Control','private, no-store');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Location',new URL(next,publicOrigin).href);res.statusCode=303;res.end();return true;
     }
@@ -173,14 +178,14 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     }
     if(p==='/api/account/profile'&&req.method==='POST'){send(200,await profile.save(user,body));return true;}
     if(p==='/api/auth/oauth'&&req.method==='POST'){
-      if(typeof auth.beginOAuth!=='function')throw fail('这个登录方式正在准备中',503);
+      if(typeof auth.beginOAuth!=='function')throw authFailure("auth.error.providerPreparing",'这个登录方式正在准备中',503);
       if(flowToken)await auth.cancelOAuth(flowToken);
       const flow=await auth.beginOAuth(body.provider,body.next);res.setHeader('Set-Cookie',setFlow(flow.transactionToken));send(200,{url:flow.authorizeUrl});return true;
     }
-    if(p==='/api/auth/password'&&req.method==='POST'){if(typeof auth.signInPassword!=='function')throw fail('此书房尚未开启密码登录，可以使用验证码或本机书房',503);const session=await auth.signInPassword(body.email,body.password);setSession(session.token);send(200,{user:session.user});return true;}
-    if(p==='/api/auth/password/setup'&&req.method==='POST'){if(typeof auth.setPassword!=='function')throw fail('此书房尚未开启密码设置',503);send(200,await auth.setPassword(token,body.password,body.setupToken));return true;}
+    if(p==='/api/auth/password'&&req.method==='POST'){if(typeof auth.signInPassword!=='function')throw authFailure("auth.error.passwordDisabled",'此书房尚未开启密码登录，可以使用验证码或本机书房',503);const session=await auth.signInPassword(body.email,body.password);setSession(session.token);send(200,{user:session.user});return true;}
+    if(p==='/api/auth/password/setup'&&req.method==='POST'){if(typeof auth.setPassword!=='function')throw authFailure("auth.error.setupDisabled",'此书房尚未开启密码设置',503);send(200,await auth.setPassword(token,body.password,body.setupToken));return true;}
     if(['/api/auth/code','/api/auth/verify'].includes(p)&&req.method==='POST'){
-      const purpose=authPurpose(body.purpose);if(purpose!=='login'&&typeof auth.setPassword!=='function')throw fail('此书房尚未开启密码设置',503);
+      const purpose=authPurpose(body.purpose);if(purpose!=='login'&&typeof auth.setPassword!=='function')throw authFailure("auth.error.setupDisabled",'此书房尚未开启密码设置',503);
       if(p==='/api/auth/code'){send(200,await auth.requestCode(body.email,purpose));return true;}
       const session=await auth.verifyCode(body.email,body.code,purpose);setSession(session.token);send(200,{user:session.user,...(session.passwordSetup?{passwordSetup:true,passwordSetupToken:session.passwordSetupToken}:{})});return true;
     }

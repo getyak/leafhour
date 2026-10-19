@@ -94,3 +94,13 @@ test('the local production server serves the imported shelf module as JavaScript
   assert.equal(response.status,200);assert.match(response.headers.get('content-type'),/javascript/);
   assert.equal(await response.text(),await readFile(moduleUrl,'utf8'));
 });
+
+
+test('destroy releases locale and deferred-ready updates without touching retained card nodes',async()=>{
+  const {requestUiRoute}=await import('../app/ui-locale.mjs');await requestUiRoute('en');
+  const f=fixture();f.list.setItems(books,{key:'a'});await new Promise(setImmediate);
+  const nodes=[...f.controls.children,...f.grid.children],labels=nodes.map(x=>x.textContent);
+  f.list.destroy();await requestUiRoute('ja');
+  try{assert.deepEqual([...f.controls.children,...f.grid.children],nodes);assert.deepEqual(nodes.map(x=>x.textContent),labels);assert.equal(f.button().listeners.has('click'),false);}
+  finally{await requestUiRoute('en');}
+});

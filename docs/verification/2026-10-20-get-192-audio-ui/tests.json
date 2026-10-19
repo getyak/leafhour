@@ -1,0 +1,17 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=2",
+    "tests/ui-locale-reader-audio.test.mjs",
+    "tests/audio-ui.test.mjs",
+    "tests/ui-locale-audio-transport.test.mjs",
+    "tests/listening-guide-state.test.mjs",
+    "tests/audio-state.test.mjs",
+    "tests/ui-locale.test.mjs",
+    "tests/ui-locale-graph.test.mjs"
+  ],
+  "TMPDIR": "/private/tmp/ai-test-get-192-ui-locale.8Rd8dj/unit/audio-native",
+  "exitCode": 0,
+  "summary": "1..83\n# tests 83\n# suites 0\n# pass 83\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1351.269042\n"
+}

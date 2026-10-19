@@ -1,0 +1,322 @@
+TAP version 13
+# Subtest: scene callbacks ask first wait consumes success after panel
+ok 1 - scene callbacks ask first wait consumes success after panel
+  ---
+  duration_ms: 87.926625
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after panel
+ok 2 - scene callbacks ask first wait consumes failure after panel
+  ---
+  duration_ms: 18.345208
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after stop
+ok 3 - scene callbacks ask first wait consumes success after stop
+  ---
+  duration_ms: 20.654583
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after stop
+ok 4 - scene callbacks ask first wait consumes failure after stop
+  ---
+  duration_ms: 18.367
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after session
+ok 5 - scene callbacks ask first wait consumes success after session
+  ---
+  duration_ms: 17.883416
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after session
+ok 6 - scene callbacks ask first wait consumes failure after session
+  ---
+  duration_ms: 17.184083
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after clipABA
+ok 7 - scene callbacks ask first wait consumes success after clipABA
+  ---
+  duration_ms: 22.738125
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after clipABA
+ok 8 - scene callbacks ask first wait consumes failure after clipABA
+  ---
+  duration_ms: 21.386458
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after ownerABA
+ok 9 - scene callbacks ask first wait consumes success after ownerABA
+  ---
+  duration_ms: 15.414875
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after ownerABA
+ok 10 - scene callbacks ask first wait consumes failure after ownerABA
+  ---
+  duration_ms: 15.988084
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after bookABA
+ok 11 - scene callbacks ask first wait consumes success after bookABA
+  ---
+  duration_ms: 15.145875
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after bookABA
+ok 12 - scene callbacks ask first wait consumes failure after bookABA
+  ---
+  duration_ms: 15.98875
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after book
+ok 13 - scene callbacks ask first wait consumes success after book
+  ---
+  duration_ms: 15.607292
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after book
+ok 14 - scene callbacks ask first wait consumes failure after book
+  ---
+  duration_ms: 15.148541
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after disposed
+ok 15 - scene callbacks ask first wait consumes success after disposed
+  ---
+  duration_ms: 15.1575
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after disposed
+ok 16 - scene callbacks ask first wait consumes failure after disposed
+  ---
+  duration_ms: 15.830208
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after panel
+ok 17 - scene callbacks sources first wait consumes success after panel
+  ---
+  duration_ms: 16.466208
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after panel
+ok 18 - scene callbacks sources first wait consumes failure after panel
+  ---
+  duration_ms: 15.724333
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after stop
+ok 19 - scene callbacks sources first wait consumes success after stop
+  ---
+  duration_ms: 16.843
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after stop
+ok 20 - scene callbacks sources first wait consumes failure after stop
+  ---
+  duration_ms: 19.166042
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after session
+ok 21 - scene callbacks sources first wait consumes success after session
+  ---
+  duration_ms: 24.289583
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after session
+ok 22 - scene callbacks sources first wait consumes failure after session
+  ---
+  duration_ms: 16.732791
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after clipABA
+ok 23 - scene callbacks sources first wait consumes success after clipABA
+  ---
+  duration_ms: 19.93875
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after clipABA
+ok 24 - scene callbacks sources first wait consumes failure after clipABA
+  ---
+  duration_ms: 20.483542
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after ownerABA
+ok 25 - scene callbacks sources first wait consumes success after ownerABA
+  ---
+  duration_ms: 17.088542
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after ownerABA
+ok 26 - scene callbacks sources first wait consumes failure after ownerABA
+  ---
+  duration_ms: 17.543834
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after bookABA
+ok 27 - scene callbacks sources first wait consumes success after bookABA
+  ---
+  duration_ms: 14.9675
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after bookABA
+ok 28 - scene callbacks sources first wait consumes failure after bookABA
+  ---
+  duration_ms: 15.346167
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after book
+ok 29 - scene callbacks sources first wait consumes success after book
+  ---
+  duration_ms: 14.006083
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after book
+ok 30 - scene callbacks sources first wait consumes failure after book
+  ---
+  duration_ms: 13.379666
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after disposed
+ok 31 - scene callbacks sources first wait consumes success after disposed
+  ---
+  duration_ms: 13.593167
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after disposed
+ok 32 - scene callbacks sources first wait consumes failure after disposed
+  ---
+  duration_ms: 13.826542
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after panel
+ok 33 - scene callbacks sources second wait consumes success after panel
+  ---
+  duration_ms: 13.948333
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after panel
+ok 34 - scene callbacks sources second wait consumes failure after panel
+  ---
+  duration_ms: 13.812041
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after stop
+ok 35 - scene callbacks sources second wait consumes success after stop
+  ---
+  duration_ms: 14.556708
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after stop
+ok 36 - scene callbacks sources second wait consumes failure after stop
+  ---
+  duration_ms: 14.208209
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after session
+ok 37 - scene callbacks sources second wait consumes success after session
+  ---
+  duration_ms: 15.149792
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after session
+ok 38 - scene callbacks sources second wait consumes failure after session
+  ---
+  duration_ms: 15.693209
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after clipABA
+ok 39 - scene callbacks sources second wait consumes success after clipABA
+  ---
+  duration_ms: 19.723917
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after clipABA
+ok 40 - scene callbacks sources second wait consumes failure after clipABA
+  ---
+  duration_ms: 19.601
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after ownerABA
+ok 41 - scene callbacks sources second wait consumes success after ownerABA
+  ---
+  duration_ms: 13.370166
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after ownerABA
+ok 42 - scene callbacks sources second wait consumes failure after ownerABA
+  ---
+  duration_ms: 13.618209
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after bookABA
+ok 43 - scene callbacks sources second wait consumes success after bookABA
+  ---
+  duration_ms: 13.682667
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after bookABA
+ok 44 - scene callbacks sources second wait consumes failure after bookABA
+  ---
+  duration_ms: 14.313583
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after book
+ok 45 - scene callbacks sources second wait consumes success after book
+  ---
+  duration_ms: 15.686584
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after book
+ok 46 - scene callbacks sources second wait consumes failure after book
+  ---
+  duration_ms: 15.3315
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after disposed
+ok 47 - scene callbacks sources second wait consumes success after disposed
+  ---
+  duration_ms: 15.724792
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after disposed
+ok 48 - scene callbacks sources second wait consumes failure after disposed
+  ---
+  duration_ms: 15.474417
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask accepts pending success through locale commits
+ok 49 - scene callbacks ask accepts pending success through locale commits
+  ---
+  duration_ms: 33.018083
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask accepts pending failure through locale commits
+ok 50 - scene callbacks ask accepts pending failure through locale commits
+  ---
+  duration_ms: 20.591291
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources accepts pending success through locale commits
+ok 51 - scene callbacks sources accepts pending success through locale commits
+  ---
+  duration_ms: 23.507542
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources accepts pending failure through locale commits
+ok 52 - scene callbacks sources accepts pending failure through locale commits
+  ---
+  duration_ms: 23.588833
+  type: 'test'
+  ...
+1..52
+# tests 52
+# suites 0
+# pass 52
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1066.373375

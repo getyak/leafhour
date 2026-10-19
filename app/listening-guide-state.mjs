@@ -13,7 +13,7 @@ export function sceneSourceIds({book,clip}){
  const known=new Set(book.sections.flatMap(s=>s.paragraphs.map(p=>p.id))),refs=(clip.turns||[clip]).flatMap(t=>t.sourceRefs||clip.sourceRefs||[]);
  return [...new Set([clip.passageId,...refs.map(r=>r.passageId)].filter(id=>known.has(id)))].slice(0,4);
 }
-export function sceneQuestion({book,clip}){
+export function sceneQuestion({book,clip,formatter}){
  if(!book||!clip)return null;
  const rows=new Map(book.sections.flatMap(s=>s.paragraphs).map(p=>[p.id,p]));
  const turns=clip.turns||[clip],refs=turns.flatMap(t=>t.sourceRefs||clip.sourceRefs||[]).filter(r=>typeof r.quote==='string'&&rows.get(r.passageId)?.original?.includes(r.quote));
@@ -22,7 +22,9 @@ export function sceneQuestion({book,clip}){
  const unique=[...new Map(refs.map(r=>[r.passageId,r])).values()].slice(0,4);
  const transcript=turns.map(t=>t.text).filter(Boolean).join('\n').slice(0,900);
  const sources=unique.map(r=>r.passageId+'：'+r.quote.slice(0,150)).join('\n');
- return {passageId:unique[0].passageId,passageIds:unique.map(r=>r.passageId),draft:('请结合原文解释我刚听到的这一小段，保留作者的重要限定。\n\n听读内容（AI 讲解或朗读）：\n'+transcript+'\n\n原文定位：\n'+sources).slice(0,2000)};
+ const fallback='请结合原文解释我刚听到的这一小段，保留作者的重要限定。\n\n听读内容（AI 讲解或朗读）：\n'+transcript+'\n\n原文定位：\n'+sources;
+ const draft=formatter?formatter('audio.question',{transcript,sources},fallback):fallback;
+ return {passageId:unique[0].passageId,passageIds:unique.map(r=>r.passageId),draft:draft.slice(0,2000)};
 }
 export function createGuideRunner({request,onProgress=()=>{},onReady=()=>{},onError=()=>{},setTimer=setTimeout,clearTimer=clearTimeout}){
  let epoch=0,timer=null,job=null,active=false,pendingInput=null;

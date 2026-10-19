@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import * as navigation from '../app/reader-navigation.mjs';
+import {requestUiRoute} from '../app/ui-locale.mjs';
+test.beforeEach(async()=>{await requestUiRoute('zh-Hans');});
 
 const book={title:{zh:'爱丽丝梦游仙境',en:'Alice’s Adventures in Wonderland'},source:{structure:'source_chapters'},chapters:[{id:'front',kind:'frontmatter',number:0,title:{zh:'出版说明',en:'Front matter'}},{id:'ch01',kind:'body',number:1,title:{zh:'掉进兔子洞',en:'Down the Rabbit-Hole'}},{id:'ch03',kind:'body',number:3,title:{zh:'绕圈赛跑与长故事',en:'A Caucus-Race and a Long Tale'}}],sections:[{chapterId:'ch01',number:1,title:'开篇',paragraphs:[{id:'p1'}]},{chapterId:'ch03',number:3,title:'长故事',paragraphs:[{id:'p3'}]}]};
 const grouped={...book,source:{structure:'automatic_groups'},chapters:[{id:'g1',number:1,title:{zh:'第一片段'}},{id:'g2',number:2,title:{zh:'第二片段'}}],sections:[]};
@@ -45,7 +47,7 @@ test('the chapter heading stays quiet and the single listen entry is a 44px side
   assert.equal(html.split('id="listen-chapter"').length-1,1,'exactly one listen entry, one ID');
   const at=html.indexOf('id="listen-chapter"'),panel=html.indexOf('id="reading-tools-panel"'),end=html.indexOf('</section>',panel);
   assert.ok(panel<at&&at<end,'the listen entry lives inside the collapsible reading-tools panel');
-  assert.match(html,/id="listen-chapter"[^>]*aria-haspopup="dialog"[^>]*>听当前章节</,'the row is labelled 听当前章节');
+  assert.match(html,/id="listen-chapter"[^>]*aria-haspopup="dialog"[^>]*>Listen to this chapter</,'the raw English shell labels the listen entry');
 });
 
 test('the top chapter entry stays disabled until readiness and names the current chapter',()=>{
@@ -119,6 +121,18 @@ test('the reader shell keeps audio generation out of navigation and the listen h
   const reader=await readFile(new URL('../app/reader.js',import.meta.url),'utf8');
   for(const token of ['/api/audio','/api/guides','/api/dialogues','new Audio','.play('])assert.equal(reader.includes(token),false,'reader.js must not reach '+token+' from navigation code');
   const audio=await readFile(new URL('../app/reader-audio.js',import.meta.url),'utf8');
-  assert.match(audio,/mountListenChapterEntry\(\{document,onListenChapter:showChapter\}\)/,'the sidebar row is the single entry to the current-chapter panel');
-  assert.equal([...audio.matchAll(/showChapter\s*\(/g)].length,1,'showChapter is only defined, never invoked from code paths other than its click handler');
+  const bootstrap=await readFile(new URL('../app/reader-audio-bootstrap.mjs',import.meta.url),'utf8');assert.match(bootstrap,/mountChapter\(\{document,onListenChapter:\(\)=>activate\('listen-chapter'\)\}\)/,'the sidebar row dispatches the first explicit action');
+  assert.equal([...audio.matchAll(/showChapter\s*\(/g)].length,2,'showChapter is only defined and invoked by the explicit dispatcher');
+});
+
+test('locale preserves an open contents dialog, opener, row identity and scroll without reading the book again',async()=>{
+  const {document,nodes,add,focused}=fixture();const dialog=add('toc-dialog','dialog'),list=add('toc-list','nav');add('open-toc');const opener=add('open-chapter');add('running-chapter','span');
+  let bookReads=0,chapterReads=0,navigations=0;const getBook=()=>{bookReads++;return book;};
+  const contents=navigation.mountContentsDialog({document,getBook,getChapterId:()=>book.chapters[1].id,onNavigate:()=>navigations++});
+  const entry=navigation.mountChapterEntry({document,getBook,getChapter:()=>{chapterReads++;return book.chapters[1];},onOpen:target=>contents.open(target)});
+  contents.open(opener);list.scrollTop=190;const rows=[...list.children],buttons=all(list,'button'),current=buttons.find(row=>row.getAttribute('aria-current')==='location'),reads={bookReads,chapterReads},focuses=focused.length;
+  for(const [code,label]of [['en','Chapter 1 · 掉进兔子洞'],['ja','第1章 · 掉进兔子洞'],['zh-Hant','第 1 章 · 掉进兔子洞']]){
+    await requestUiRoute(code);assert.equal(nodes.get('running-chapter').textContent,label);assert.deepEqual(list.children,rows);assert.deepEqual(all(list,'button'),buttons);assert.equal(current.getAttribute('aria-current'),'location');assert.equal(list.scrollTop,190);assert.equal(dialog.open,true);assert.equal(contents.getOpener(),opener);assert.equal(focused.length,focuses);assert.deepEqual({bookReads,chapterReads},reads);assert.equal(navigations,0);
+  }
+  contents.unmount();entry.unmount();const detached=nodes.get('running-chapter').textContent;await requestUiRoute('en');assert.equal(nodes.get('running-chapter').textContent,detached);
 });

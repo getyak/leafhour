@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {createPersonalRecordRenderer} from '../app/personal-record-editor.mjs';
 import {applyPersonalRecordEdit} from '../app/personal-records.mjs';
 import {readingBook} from './reading-fixtures.mjs';
+import {requestUiRoute} from '../app/ui-locale.mjs';
+test.beforeEach(async()=>{await requestUiRoute('zh-Hans');});
 
 class Node{
   constructor(tag,document){this.tag=tag;this.document=document;this.children=[];this.events=new Map();this.dataset={};this.attributes={};this.value='';this.disabled=false;this.connected=false;}
@@ -27,7 +29,7 @@ function fixture(options={}){
   const renderer=createPersonalRecordRenderer({document,getBook:()=>book,scope:'owner-book',storage,newId:()=> 'edit-'+(++serial),api:options.api?((url,input)=>options.api(url,input,{defaultApi,get:()=>stored,set:value=>{stored=value;}})):defaultApi,onUpdate:value=>updates.push(value),onJump:()=>{throw Error('Unexpected source navigation');},...options.renderer});
   const mount=(value=record)=>{const row=renderer.recordNode(value,'comment',true);row.connected=true;return row;};
   const find=(row,text)=>{const node=row.all().find(n=>n.tag==='button'&&n.textContent===text);assert.ok(node,'button '+text);return node;};
-  return {book,record,document,storage,mount,find,calls,updates,renderer,get:()=>stored};
+  return {book,record,document,storage,mount,find,calls,updates,renderer,get:()=>stored,ids:()=>serial};
 }
 const write=async(row,value)=>{const area=row.querySelector('textarea');area.value=value;await area.fire('input');};
 const submit=row=>row.querySelector('form').fire('submit');
@@ -57,7 +59,7 @@ test('a pre-metadata local edit is retained but cannot adopt the current server 
 test('lost edit responses freeze the retry while newer typed words survive and then save at the next revision',async()=>{
   let first=true;const f=fixture({api:async(url,input,{defaultApi})=>{const result=await defaultApi(url,input);if(input&&first){first=false;throw Object.assign(Error('Response lost.'),{status:503});}return result;}}),row=f.mount();
   assert.ok(row.textContent.includes(f.record.text));await f.find(row,'修改原话').fire('click');await write(row,'First changed words.');await submit(row);
-  assert.equal(f.get().revision,1);assert.ok(row.textContent.includes('Response lost.'));
+  assert.equal(f.get().revision,1);assert.match(row.textContent,/修改尚未确认/);assert.equal(row.textContent.includes('Response lost.'),false,'unknown remote prose is replaced by an honest local notice');
   await write(row,'Newer <img> words.');await submit(row);
   assert.equal(f.get().revision,1);assert.equal(row.querySelector('textarea').value,'Newer <img> words.');
   assert.deepEqual(f.calls[0].input,f.calls[1].input,'retry sends the frozen command');
@@ -121,4 +123,42 @@ test('reopening after a confirmed save or cancel starts from current saved words
   const f=fixture(),row=f.mount();await f.find(row,'修改原话').fire('click');await write(row,'Confirmed current words.');await submit(row);
   await f.find(row,'修改原话').fire('click');assert.equal(row.querySelector('textarea').value,'Confirmed current words.');
   await write(row,'Discard this unsaved change.');await f.find(row,'取消修改').fire('click');await f.find(row,'修改原话').fire('click');assert.equal(row.querySelector('textarea').value,'Confirmed current words.');assert.equal(f.get().revision,1);
+});
+
+test('locale relabels an in-flight edit without replacing composition, draft, UUID, source or frozen request',async()=>{
+  let release;const gate=new Promise(resolve=>release=resolve),sent=[];
+  const f=fixture({api:async(url,input,{defaultApi})=>{sent.push(structuredClone(input));await gate;return defaultApi(url,input);}}),row=f.mount();
+  await f.find(row,'修改原话').fire('click');await write(row,'My revised words.');const saving=submit(row);
+  const area=row.querySelector('textarea');area.focus();area.selectionStart=3;area.selectionEnd=7;await area.fire('compositionstart');
+  const value=area.value,id=area.id,serial=f.ids(),storage=Array.from({length:f.storage.length},(_,i)=>{const k=f.storage.key(i);return [k,f.storage.getItem(k)];});let writes=0;
+  Object.defineProperty(area,'value',{configurable:true,get:()=>value,set(){writes++;}});
+  for(const [code,label] of [['en','Saving…'],['ja','保存中…'],['zh-Hant','正在儲存…'],['zh-Hans','正在保存…']]){
+    await requestUiRoute(code);assert.ok(row.all().some(n=>n.tag==='button'&&n.textContent===label),code+' must update the actual saving button');
+    assert.equal(row.querySelector('textarea'),area);assert.equal(area.id,id);assert.equal(f.document.activeElement,area);assert.equal(area.selectionStart,3);assert.equal(area.selectionEnd,7);
+    assert.ok(row.textContent.includes(f.record.text));assert.ok(row.textContent.includes(f.record.quote));assert.equal(f.ids(),serial);assert.equal(sent.length,1);
+    assert.deepEqual(Array.from({length:f.storage.length},(_,i)=>{const k=f.storage.key(i);return [k,f.storage.getItem(k)];}),storage);
+  }
+  assert.equal(writes,0);release();await saving;assert.equal(f.get().text,'My revised words.');assert.equal(f.get().revision,1);assert.equal(f.updates.length,1);assert.equal(sent[0].baseRevision,0);
+  f.renderer.unmount();const detached=row.textContent;await requestUiRoute('en');assert.equal(row.textContent,detached);
+});
+
+test('a disposed record renderer consumes late saving results without reviving UI or publishing a stale update',async()=>{
+  let release;const gate=new Promise(resolve=>release=resolve);
+  const f=fixture({api:async(url,input,{defaultApi})=>{await gate;return defaultApi(url,input);}}),row=f.mount();
+  await f.find(row,'修改原话').fire('click');await write(row,'A pending edit.');const saving=submit(row),before=row.textContent;
+  f.renderer.unmount();release();await saving;
+  assert.equal(f.updates.length,0);assert.equal(row.textContent,before);assert.equal(f.get().revision,1,'the remote save may complete even after local disposal');
+});
+
+test('a late result after book A to B to A releases busy controls without adopting the result or replacing a new editor',async()=>{
+  let release,current;const gate=new Promise(resolve=>release=resolve);
+  const f=fixture({renderer:{getBook:()=>current},api:async(url,input,{defaultApi})=>{await gate;return defaultApi(url,input);}});current=f.book;
+  const first=f.mount();await f.find(first,'修改原话').fire('click');await write(first,'An uncertain edit.');const saving=submit(first);first.connected=false;
+  current={...f.book,bookId:'other-book'};const other=f.renderer.recordNode({...f.record,id:'other-record',bookId:'other-book'},'comment');other.connected=true;
+  current=f.book;other.connected=false;const row=f.mount(),area=row.querySelector('textarea');area.focus();area.selectionStart=2;area.selectionEnd=4;const ids=f.ids();
+  release();await saving;
+  assert.equal(f.updates.length,0);assert.equal(row.querySelector('textarea'),area);assert.equal(f.document.activeElement,area);assert.equal(area.selectionStart,2);assert.equal(area.selectionEnd,4);assert.equal(f.ids(),ids);
+  assert.equal(f.find(row,'重试上次修改').disabled,false);assert.equal(f.find(row,'暂存并关闭').disabled,false);assert.match(row.textContent,/修改尚未确认/);
+  await submit(row);assert.equal(f.updates.length,1);assert.equal(f.get().revision,1);assert.deepEqual(f.calls[0].input,f.calls[1].input,'an explicit retry confirms the same frozen edit');
+  f.renderer.unmount();
 });

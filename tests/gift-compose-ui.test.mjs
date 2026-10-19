@@ -1,3 +1,5 @@
+import {requestUiRoute as initializeLegacyUi} from '../app/ui-locale.mjs';
+await initializeLegacyUi('zh-Hans');
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mountGiftComposer} from '../app/gift-compose.mjs';
@@ -9,9 +11,10 @@ const sealPosts=calls=>calls.filter(call=>call.path.endsWith('/gifts')&&call.dat
 const quotePosts=calls=>calls.filter(call=>call.path.endsWith('/gift-quote'));
 function mount(t,{seal=async()=>({token,recipient:'Reader'}),revoke=async()=>({}),quote=()=>quoteReply(prepared()),getOwner=()=> 'owner'}={}){
   const saved=Object.fromEntries(['document','window','location'].map(key=>[key,globalThis[key]]));
-  const document=Object.assign(new EventTarget(),{activeElement:null});
+  const document=Object.assign(new EventTarget(),{activeElement:null}),posts=[];
   class Element extends EventTarget{
-    constructor(tag){super();this.tagName=tag.toUpperCase();this.children=[];this.dataset={};this.attributes={};this.className='';this.textContent='';this.value='';this.classList={add(){}};this.contentWindow={postMessage(){}};}
+    constructor(tag){super();this.tagName=tag.toUpperCase();this.children=[];this.dataset={};this.attributes={};this.className='';this.textContent='';this.value='';this.classList={add(){}};this.contentWindow={postMessage:(data,origin)=>posts.push({frame:this,data,origin})};}
+    get isConnected(){return document.body.contains(this);}
     contains(target){return this===target||this.children.some(child=>child.contains(target));}
     append(...children){for(const child of children){child.parentElement=this;this.children.push(child);}}
     prepend(child){child.parentElement=this;this.children.unshift(child);}
@@ -28,12 +31,13 @@ function mount(t,{seal=async()=>({token,recipient:'Reader'}),revoke=async()=>({}
   document.body=new Element('body');document.activeElement=document.body;document.createElement=tag=>new Element(tag);
   globalThis.document=document;globalThis.window=new EventTarget();globalThis.location={origin:'https://example.invalid'};
   t.after(()=>{for(const [key,value]of Object.entries(saved))if(value===undefined)delete globalThis[key];else globalThis[key]=value;});
-  const dialog=new Element('dialog'),body=new Element('div'),messages=[],calls=[];dialog.open=true;dialog.append(body);
-  let sequence=0;
-  const controller=mountGiftComposer({dialog,body,getSession:()=>({user:{id:'owner',displayName:'Reader'}}),getOwner,show:()=>{body.replaceChildren();sequence++;return sequence;},current:ticket=>ticket===sequence&&dialog.open,message:text=>messages.push(text),cover:()=>new Element('div'),api:async(path,data)=>{calls.push({path,data});if(path.endsWith('/gift-quote'))return quote();if(data===undefined)return {gifts:[{token:'B'.repeat(43),recipient:'Old'}]};return path.endsWith('/revoke')?revoke():seal();}});
+  const dialog=new Element('dialog'),body=new Element('div'),messages=[],calls=[];dialog.open=true;dialog.append(body);document.body.append(dialog);
+  let sequence=0,sessionReads=0;
+  const controller=mountGiftComposer({dialog,body,getSession:()=>{sessionReads++;return {user:{id:'owner',displayName:'Reader'}};},getOwner,show:()=>{body.replaceChildren();sequence++;return sequence;},current:ticket=>ticket===sequence&&dialog.open,message:text=>messages.push(text),cover:()=>new Element('div'),api:async(path,data)=>{calls.push({path,data});if(path.endsWith('/gift-quote'))return quote();if(data===undefined)return {gifts:[{token:'B'.repeat(43),recipient:'Old'}]};return path.endsWith('/revoke')?revoke():seal();}});
+  t.after(()=>controller.clear());
   const all=node=>[node,...node.children.flatMap(all)],find=text=>all(body).find(node=>node.textContent===text),id=value=>all(body).find(node=>node.id===value);
   const click=element=>{element.focus();if(!element.disabled)element.dispatchEvent(new Event('click'));};
-  return {document,dialog,body,messages,calls,controller,find,id,click,all:()=>all(body)};
+  return {document,dialog,body,messages,calls,controller,find,id,click,all:()=>all(body),posts,window:globalThis.window,sessionReads:()=>sessionReads};
 }
 
 test('local preview does not publish; a failed seal preserves the draft and returns retry focus once',async t=>{
@@ -114,4 +118,29 @@ test('an unusable quotation payload fails closed instead of forging an AI label'
   assert.ok(f.find('引文暂时没有选出，可以重新获取。'));
   f.click(f.find('看看收信时的样子'));f.click(f.find('封好这封信，生成链接'));await tick();
   assert.equal(sealPosts(f.calls)[0].data.quoteReceipt,null);
+});
+
+import {requestUiRoute} from '../app/ui-locale.mjs';
+test('interface changes send only UI envelopes to the same preview frame and preserve the created letter and quotation',async t=>{
+ await requestUiRoute('en');const f=mount(t);t.after(()=>requestUiRoute('en'));await f.controller.open({bookId:'book',contentVersion:'edition-1',visibility:'public',title:{zh:'来源 / 阅读'}});await tick();
+ f.id('gift-recipient').value='来源 recipient';f.id('gift-message').value='阅读 words';const frame=f.all().find(n=>n.tagName==='IFRAME');assert.equal(frame.src,'/gift-preview?ui=en');frame.dispatchEvent(new Event('load'));
+ const content=f.posts.filter(p=>p.data.kind==='marginalia-gift-preview');assert.equal(content.length,1);const bytes=JSON.stringify(content[0].data),sessionReads=f.sessionReads(),count=f.calls.length,source=frame.src;
+ Object.defineProperty(frame,'src',{get:()=>source,set:()=>assert.fail('Locale must not reload the iframe')});const recipient=f.id('gift-recipient'),words=f.id('gift-message');Object.defineProperty(recipient,'value',{get:()=> '来源 recipient',set:()=>assert.fail('Locale wrote recipient')});Object.defineProperty(words,'value',{get:()=> '阅读 words',set:()=>assert.fail('Locale wrote message')});f.document.activeElement=words;
+ for(const code of ['ja','zh-Hant','zh-Hans','en']){await requestUiRoute(code);assert.equal(f.posts.at(-1).frame,frame);assert.deepEqual(f.posts.at(-1).data,{kind:'leafhour-gift-ui-locale',version:1,locale:code});assert.equal(f.posts.at(-1).origin,'https://example.invalid');assert.equal(f.posts.filter(p=>p.data.kind==='marginalia-gift-preview').length,1);assert.equal(JSON.stringify(content[0].data),bytes);assert.equal(f.sessionReads(),sessionReads);assert.equal(f.calls.length,count);assert.equal(f.document.activeElement,words);assert.equal(frame.src,source);}
+ f.controller.clear();const messages=f.posts.length;await requestUiRoute('ja');assert.equal(f.posts.length,messages,'Aborted owners cannot address retained frames');
+});
+test('observing another owner permanently fences the retained preview frame across owner ABA',async t=>{
+ await requestUiRoute('en');let owner='owner';const f=mount(t,{getOwner:()=>owner});t.after(()=>requestUiRoute('en'));await f.controller.open({bookId:'book',title:{zh:'Book'}});await tick();const frame=f.all().find(n=>n.tagName==='IFRAME');frame.dispatchEvent(new Event('load'));const before=f.posts.length;
+ owner='different';frame.dispatchEvent(new Event('load'));await requestUiRoute('ja');assert.equal(f.posts.length,before);owner='owner';await requestUiRoute('zh-Hant');assert.equal(f.posts.length,before,'An observed owner transition cannot revive the old composer');
+});
+test('composer UI commits retain native editing, quote/history nodes and iframe with zero owner/session reads',async t=>{
+ await requestUiRoute('en');const faults=[],offFault=(await import('../app/ui-locale.mjs')).onUiLocaleFault(e=>faults.push(e));t.after(offFault);let trap=false,owners=0;const f=mount(t,{getOwner:()=>{assert.equal(trap,false,'locale cannot read the owner');owners++;return 'owner';}});t.after(()=>requestUiRoute('en'));await f.controller.open({bookId:'book',title:{zh:'来源 / 阅读'},author:'原作者'});await tick();const recipient=f.id('gift-recipient'),words=f.id('gift-message'),frame=f.all().find(n=>n.tagName==='IFRAME'),row=f.all().find(n=>n.className==='gift-history-row'),quote=f.find('Read this first.');recipient.value='私人 recipient';words.value='未发送 draft';words.selectionStart=1;words.selectionEnd=5;words.composing=true;words.focus();const checkbox=f.all().find(n=>n.type==='checkbox');checkbox.checked=false;const source=frame.src;frame.dispatchEvent(new Event('load'));const reads=f.sessionReads(),ownerReads=owners,requests=f.calls.length,contents=f.posts.filter(p=>p.data.kind==='marginalia-gift-preview').length;
+ for(const code of ['ja','zh-Hant','zh-Hans','en']){trap=true;try{await requestUiRoute(code);}finally{trap=false;}assert.deepEqual(faults,[]);assert.equal(f.sessionReads(),reads);assert.equal(owners,ownerReads);assert.equal(f.calls.length,requests);assert.equal(f.posts.filter(p=>p.data.kind==='marginalia-gift-preview').length,contents);assert.equal(checkbox.checked,false);assert.equal(f.id('gift-recipient'),recipient);assert.equal(f.id('gift-message'),words);assert.equal(words.value,'未发送 draft');assert.equal(words.selectionStart,1);assert.equal(words.selectionEnd,5);assert.equal(words.composing,true);assert.equal(f.document.activeElement,words);assert.equal(f.find('Read this first.'),quote);assert.equal(f.all().find(n=>n.className==='gift-history-row'),row);assert.equal(frame.src,source);assert.equal(recipient.attributes['aria-label'],(await import('../app/ui-locale.mjs')).t('giftCompose.recipient'));}
+ assert.ok(f.find('See how it arrives'));assert.ok(f.find('Old'));assert.equal(quote.attributes.lang,'und');
+});
+test('pending quotation and sealing settle current UI; errors never expose remote prose and clear fences retained labels',async t=>{
+ await requestUiRoute('en');let done;const f=mount(t,{seal:()=>new Promise(ok=>done=ok)});t.after(()=>requestUiRoute('en'));await f.controller.open({bookId:'book',title:{zh:'Book'}});await tick();f.click(f.find('See how it arrives'));const seal=f.find('Seal this letter and create a link');f.click(seal);const count=f.calls.length;await requestUiRoute('ja');assert.equal(f.calls.length,count);assert.equal(seal.textContent,'封をしています…');done({token,recipient:'用户 recipient'});await tick();assert.ok(f.find('この手紙に封をしました。'));const row=f.all().find(n=>n.className==='gift-history-row'&&n.dataset.token===token);const old=[...row.children];await requestUiRoute('zh-Hant');assert.deepEqual(row.children,old);assert.ok(f.find('這封信已封好。'));f.controller.clear();const before=f.all().map(n=>n.textContent);await requestUiRoute('en');assert.deepEqual(f.all().map(n=>n.textContent),before,'aborted owner releases every cached label');
+});
+test('remote seal failures and quote failure notices localize in place without exposing raw prose',async t=>{
+ await requestUiRoute('en');const f=mount(t,{seal:async()=>{throw Error('PRIVATE SERVICE ERROR');},quote:async()=>{throw Error('PRIVATE QUOTE ERROR');}});t.after(()=>requestUiRoute('en'));await f.controller.open({bookId:'book',title:{zh:'Book'}});await tick();assert.ok(f.find('A quotation could not be selected. You can try again.'));f.click(f.find('See how it arrives'));f.click(f.find('Seal this letter and create a link'));await tick();assert.equal(f.messages.at(-1),'This action could not finish. Your draft is kept.');const calls=f.calls.length;await requestUiRoute('ja');assert.equal(f.messages.at(-1),'操作を完了できません。下書きは保持しています。');assert.equal(f.calls.length,calls);assert.ok(f.messages.every(text=>!text.includes('PRIVATE')));assert.ok(f.find('引用を選べませんでした。再取得できます。'));
 });

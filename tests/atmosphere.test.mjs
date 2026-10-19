@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import {atmospheres,normalizeAtmosphere,atmosphereMix,createAtmosphereSession} from '../app/atmosphere-state.mjs';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
+import * as uiLocale from '../app/ui-locale.mjs';
+
+await uiLocale.requestUiRoute('zh-Hans');
 
 test('atmospheres restore only supported preferences, never playback intent',()=>{
   assert.deepEqual(normalizeAtmosphere({scene:'forest',music:0,nature:63,motion:false,playing:true}),{scene:'forest',music:0,nature:63,motion:false});
@@ -53,7 +56,7 @@ test('volume or narration changes made while recordings load reach the accepted 
 
 // Run the real UI controller; only the DOM and the audio device are stand-ins.
 const controller=await readFile(new URL('../app/reader-atmosphere.js',import.meta.url),'utf8');
-function readerFixture({saved=null,reduced=false,delayed=false}={}){
+async function readerFixture({saved=null,reduced=false,delayed=false}={}){
   const elements=new Map(),started=[],stopped=[],pending=[],hearthMotion=[],natureMotion=[];
   class Element extends EventTarget{
     constructor(){super();this.dataset={};this.attributes=new Map();this.children=[];this.firstElementChild={};}
@@ -76,7 +79,8 @@ function readerFixture({saved=null,reduced=false,delayed=false}={}){
     started.push({scene,mix:getMix()});if(delayed)await new Promise(resolve=>pending.push(resolve));
     return {stop:()=>stopped.push(scene),setMix(){}};
   }};
-  vm.runInNewContext(controller.replace(/^import .*;\n/gm,''),{document:doc,window:win,location:{search:''},URLSearchParams,
+  await vm.runInNewContext('(async()=>{'+controller.replace(/^import .*;\n/gm,'')+'\n})()',{document:doc,window:win,location:{search:''},URLSearchParams,
+    t:uiLocale.t,uiReady:uiLocale.uiReady,bindUi:uiLocale.bindUi,onUiLocaleChange:uiLocale.onUiLocaleChange,
     localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)},readerStorageKey:key=>key,
     atmospheres,normalizeAtmosphere,atmosphereMix,createAtmosphereSession,createAtmosphereAudio:()=>engine,
     createHearthMotion:()=>{const layer={active:false,setActive(value){this.active=!!value;}};hearthMotion.push(layer);return layer;},
@@ -88,7 +92,7 @@ function readerFixture({saved=null,reduced=false,delayed=false}={}){
 }
 
 test('selecting a scene starts its matching sound immediately, including after an explicit pause',async()=>{
-  const f=readerFixture();assert.equal(f.started.length,0);
+  const f=await readerFixture();assert.equal(f.started.length,0);
   await f.choose('forest');assert.equal(f.dialog.dataset.playback,'playing');assert.equal(f.started[0].scene,'forest');
   f.$('atmosphere-quick-pause').dispatchEvent(new Event('click'));assert.equal(f.dialog.dataset.playback,'paused');
   await f.choose('sea');assert.equal(f.dialog.dataset.playback,'playing');assert.equal(f.started.at(-1).scene,'sea');
@@ -97,7 +101,7 @@ test('selecting a scene starts its matching sound immediately, including after a
 });
 
 test('restoring a scene stays silent and selecting another scene respects an individually muted channel',async()=>{
-  const f=readerFixture({saved:{scene:'sea',music:0,nature:50,motion:false}});
+  const f=await readerFixture({saved:{scene:'sea',music:0,nature:50,motion:false}});
   assert.equal(f.root.dataset.atmosphere,'sea');assert.equal(f.started.length,0);
   await f.choose('rain');assert.deepEqual(f.started.at(-1),{scene:'rain',mix:{music:0,nature:0.5}});
   f.$('atmosphere-play').dispatchEvent(new Event('click'));
@@ -106,7 +110,7 @@ test('restoring a scene stays silent and selecting another scene respects an ind
 });
 
 test('settings and scene controls share volume, motion and manual playback without restarting sound',async()=>{
-  const f=readerFixture();assert.equal(f.$('settings-atmosphere-levels').hidden,true);
+  const f=await readerFixture();assert.equal(f.$('settings-atmosphere-levels').hidden,true);
   await f.choose('rain');assert.equal(f.$('settings-atmosphere-levels').hidden,false);
   assert.equal(f.$('settings-atmosphere-scene').textContent,atmospheres.find(s=>s.id==='rain').name);
   f.$('settings-atmosphere-music').value='0';f.$('settings-atmosphere-music').dispatchEvent(new Event('input'));
@@ -122,13 +126,13 @@ test('settings and scene controls share volume, motion and manual playback witho
 });
 
 test('quick pause cancels a scene selected while its recording is still loading',async()=>{
-  const f=readerFixture({delayed:true});await f.choose('rain');assert.equal(f.dialog.dataset.playback,'loading');
+  const f=await readerFixture({delayed:true});await f.choose('rain');assert.equal(f.dialog.dataset.playback,'loading');
   f.$('atmosphere-quick-pause').dispatchEvent(new Event('click'));f.pending[0]();await f.tick();
   assert.equal(f.dialog.dataset.playback,'paused');assert.deepEqual(f.stopped,['rain']);
 });
 
 test('switching tabs pauses visual motion but keeps the selected sound playing without restarting it',async()=>{
-  const f=readerFixture();await f.choose('sea');
+  const f=await readerFixture();await f.choose('sea');
   assert.equal(f.root.dataset.atmosphereActive,'true');
   f.doc.hidden=true;f.doc.dispatchEvent(new Event('visibilitychange'));
   assert.equal(f.root.dataset.atmosphereActive,'false');assert.equal(f.dialog.dataset.playback,'playing');assert.equal(f.stopped.length,0);
@@ -142,7 +146,7 @@ test('switching tabs pauses visual motion but keeps the selected sound playing w
 });
 
 test('a background load may finish playing; an explicit pause stays paused on return and leaving the document stops it',async()=>{
-  const f=readerFixture({delayed:true});await f.choose('rain');
+  const f=await readerFixture({delayed:true});await f.choose('rain');
   f.doc.hidden=true;f.doc.dispatchEvent(new Event('visibilitychange'));f.pending[0]();await f.tick();
   assert.equal(f.dialog.dataset.playback,'playing');assert.equal(f.stopped.length,0);
   f.$('atmosphere-quick-pause').dispatchEvent(new Event('click'));
@@ -152,7 +156,7 @@ test('a background load may finish playing; an explicit pause stays paused on re
 });
 
 test('the hearth controller starts only visible layers and stops them for motion preferences, other scenes and page exit',async()=>{
-  const f=readerFixture({saved:{scene:'hearth',motion:true}}),active=()=>f.hearthMotion?.map(layer=>layer.active);
+  const f=await readerFixture({saved:{scene:'hearth',motion:true}}),active=()=>f.hearthMotion?.map(layer=>layer.active);
   assert.deepEqual(active(),[true,false]);
   f.$('open-atmosphere').dispatchEvent(new Event('click'));assert.deepEqual(active(),[true,true]);
   f.dialog.close();assert.deepEqual(active(),[true,false]);
@@ -164,12 +168,14 @@ test('the hearth controller starts only visible layers and stops them for motion
   f.$('atmosphere-motion').checked=true;f.$('atmosphere-motion').dispatchEvent(new Event('change'));assert.deepEqual(active(),[true,false]);
   await f.choose('rain');assert.deepEqual(active(),[false,false]);
   await f.choose('hearth');assert.deepEqual(active(),[true,false]);
-  f.win.dispatchEvent(new Event('pagehide'));assert.deepEqual(active(),[false,false]);
-  f.win.dispatchEvent(new Event('pageshow'));assert.deepEqual(active(),[true,false]);
+  f.win.dispatchEvent(Object.assign(new Event('pagehide'),{persisted:true}));assert.deepEqual(active(),[false,false]);
+  f.win.dispatchEvent(Object.assign(new Event('pageshow'),{persisted:true}));assert.deepEqual(active(),[true,false]);
+  f.win.dispatchEvent(Object.assign(new Event('pagehide'),{persisted:false}));assert.deepEqual(active(),[false,false]);
+  f.win.dispatchEvent(new Event('pageshow'));assert.deepEqual(active(),[false,false],'a disposed document cannot resume its visual controllers');
 });
 
 test('forest light and sea water follow scene, visibility and motion preferences without ever starting sound',async()=>{
-  const f=readerFixture({saved:{scene:'forest',motion:true}}),active=()=>f.natureMotion.map(layer=>layer.active);
+  const f=await readerFixture({saved:{scene:'forest',motion:true}}),active=()=>f.natureMotion.map(layer=>layer.active);
   assert.deepEqual(active(),[true,false]);assert.deepEqual(f.natureMotion.map(layer=>layer.scene),['forest','forest']);
   assert.equal(f.started.length,0,'Enabling the visual renderer must never start sound.');
   f.$('open-atmosphere').dispatchEvent(new Event('click'));assert.deepEqual(active(),[true,true]);

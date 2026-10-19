@@ -78,7 +78,7 @@ test('a loaded book excerpt uses only the requested book and preserves original 
 function mountFixture(bookId){
   class Element {
     constructor(){this.children=[];this.dataset={};this.hidden=false;this.classList={add(){},toggle(){}};}
-    setAttribute(){} removeAttribute(){} addEventListener(){} append(...nodes){this.children.push(...nodes);} replaceChildren(...nodes){this.children=nodes;}
+    setAttribute(){} removeAttribute(){} addEventListener(){} removeEventListener(){} append(...nodes){this.children.push(...nodes);} replaceChildren(...nodes){this.children=nodes;}
   }
   const doc={defaultView:{location:{search:'?book='+bookId,reload(){}}},createElement:()=>new Element()};
   const root=new Element();root.ownerDocument=doc;root.dataset.readingArrival='reader';
@@ -108,4 +108,10 @@ test('long arrival text stops at a word boundary and remains an exact source pre
  }
  assert.equal(arrivalExcerpt('Mr. Brown opens a book. Then he reads on.'),'Mr. Brown opens a book.');
  assert.equal(arrivalExcerpt('这是当前书籍的一句原文。接着是第二句原文。'),'这是当前书籍的一句原文。');
+});
+
+test('arrival context has an explicit localized descriptor while source and ticket stay stable',async()=>{
+ const {requestUiRoute,t}=await import('../app/ui-locale.mjs');await requestUiRoute('en');
+ const {root,controller}=mountFixture('gutenberg-alice');const find=name=>root.children.find(n=>n.className===name),quote=find('arrival-quote'),source=find('arrival-source'),literal=quote.textContent;
+ try{assert.equal(find('arrival-context').textContent,t('arrival.context.sentence'));for(const code of ['ja','zh-Hant','zh-Hans','en']){await requestUiRoute(code);assert.ok(find('arrival-quote')===quote);assert.ok(find('arrival-source')===source);assert.equal(quote.textContent,literal);assert.equal(find('arrival-context').textContent,t('arrival.context.sentence'));}assert.equal(controller.finish(),true);}finally{controller.dispose();}
 });

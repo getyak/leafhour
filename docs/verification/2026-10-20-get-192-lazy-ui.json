@@ -1,0 +1,221 @@
+{
+  "scope": "GET-192 Task1 remaining lazy UI; local implementation evidence, independent review and integrated delivery pending",
+  "baseline": "88270593d79ab54285a2db51e79b947d556494ae",
+  "tests": {
+    "command": "TMPDIR=/private/tmp/ai-test-get-192-ui-locale.8Rd8dj/unit/lazy-native node --test --test-concurrency=1 tests/source-review-ui.test.mjs tests/source-review-routes.test.mjs tests/source-revisions.test.mjs tests/source-revision-restore.test.mjs tests/reader-book-actions-bootstrap.test.mjs tests/reader-book-actions.test.mjs tests/book-introduction.test.mjs tests/book-introduction-controller.test.mjs tests/book-introduction-http.test.mjs tests/reader-return.test.mjs tests/gift-compose-state.test.mjs tests/gift-compose-ui.test.mjs tests/ui-locale-lazy-ui.test.mjs tests/ui-locale-book-actions.test.mjs tests/ui-locale-book-gift.test.mjs tests/ui-locale-gift-preview.test.mjs tests/gift-preview.test.mjs tests/gift-quote.test.mjs tests/ui-locale-graph.test.mjs tests/ui-locale.test.mjs",
+    "files": 20,
+    "topLevel": 211,
+    "total": 213,
+    "passed": 213,
+    "failed": 0,
+    "logSha256": "6714e2f558b81b8af1168b2bb9b2300c8131df320f7f7269bc80ce478ea99da0",
+    "fullSuiteRun": false
+  },
+  "build": {
+    "scope": "GET-192 Task1 remaining lazy UI",
+    "baseline": "88270593d79ab54285a2db51e79b947d556494ae",
+    "baselineJs": 340599,
+    "jsCap": 327680,
+    "cssCap": 204800,
+    "command": "buildReaderWeb({root:process.cwd(),outputDir:TMPDIR+\"/reader-web-final\",html:app/index.html})",
+    "outputDir": "/private/tmp/ai-test-get-192-ui-locale.8Rd8dj/unit/lazy-native/reader-web-final",
+    "gate": "failed",
+    "nativeAcceptance": false,
+    "productionAcceptance": false,
+    "error": "Reader bundle exceeds public asset budget: reader 340871",
+    "actualJs": 340871,
+    "deltaFromBaseline": 272,
+    "overJsBudget": 13191,
+    "cssBytes": null,
+    "cssNote": "The builder compiled CSS but rejects the oversized JS before returning asset metadata. CSS size was not independently measured."
+  },
+  "finalSourceGraph": {
+    "baseline": "88270593d79ab54285a2db51e79b947d556494ae",
+    "graph": "passed",
+    "graphResult": {
+      "owners": [
+        "app/auth-dialog.mjs",
+        "app/book-gift.mjs",
+        "app/command-palette.mjs",
+        "app/evals.js",
+        "app/experiences.js",
+        "app/gift-compose.mjs",
+        "app/home-atmosphere.mjs",
+        "app/home-navigation.mjs",
+        "app/library-book-actions.mjs",
+        "app/library-chat.mjs",
+        "app/library-daily-reading.mjs",
+        "app/library-data.mjs",
+        "app/library-filter-controls.mjs",
+        "app/library-incremental.mjs",
+        "app/library-profile.mjs",
+        "app/library-reading-preferences.mjs",
+        "app/library-shell.mjs",
+        "app/palette-bootstrap.mjs",
+        "app/palette-library.mjs",
+        "app/parallel-reading.mjs",
+        "app/pdf-onboarding.mjs",
+        "app/personal-record-editor.mjs",
+        "app/portal.js",
+        "app/reader-atmosphere.js",
+        "app/reader-audio.js",
+        "app/reader-book-actions-bootstrap.mjs",
+        "app/reader-book-actions.mjs",
+        "app/reader-companion.mjs",
+        "app/reader-conversation.mjs",
+        "app/reader-highlights.mjs",
+        "app/reader-immersion.mjs",
+        "app/reader-navigation.mjs",
+        "app/reader-pagination.mjs",
+        "app/reader-settings-choices.mjs",
+        "app/reader-settings.mjs",
+        "app/reader-tools.mjs",
+        "app/reader-translation.js",
+        "app/reader.js",
+        "app/reading-arrival.mjs",
+        "app/reading-dashboard.mjs",
+        "app/reading-manual-ui.mjs",
+        "app/reading-session.js",
+        "app/reading-toolbar.mjs",
+        "app/share.js",
+        "app/site-appearance.mjs",
+        "app/source-review.mjs"
+      ],
+      "catalogueEdges": [
+        "ja",
+        "ja?retry=1",
+        "zh-Hans",
+        "zh-Hans?retry=1",
+        "zh-Hant",
+        "zh-Hant?retry=1"
+      ]
+    },
+    "newOwners": [
+      "app/source-review.mjs",
+      "app/reader-book-actions-bootstrap.mjs",
+      "app/reader-book-actions.mjs"
+    ],
+    "ownerCount": 46,
+    "catalogues": {
+      "en": {
+        "before": 1780,
+        "after": 1935,
+        "added": 155,
+        "oldValuesChanged": 0
+      },
+      "zh-Hans": {
+        "before": 1780,
+        "after": 1935,
+        "added": 155,
+        "oldValuesChanged": 0
+      },
+      "zh-Hant": {
+        "before": 1780,
+        "after": 1935,
+        "added": 155,
+        "oldValuesChanged": 0
+      },
+      "ja": {
+        "before": 1780,
+        "after": 1935,
+        "added": 155,
+        "oldValuesChanged": 0
+      }
+    },
+    "validators": {
+      "evidenceImageBlob": {
+        "byteIdentical": true,
+        "sha256": "f7d1261db882b289b4891459ef9adba49dbc50b3a8870df348ee14279196239f"
+      },
+      "correctionCommand": {
+        "byteIdentical": true,
+        "sha256": "18d223b54df7c4cfe2b33706b601429f1ea3dc0c635b0a1c2475a853d5158e92"
+      }
+    },
+    "sourceReviewSha256": "0dc340fc9bc05777188ce9dacf91eedf11ded75ac13aafeff6d42e7ca6b9d208",
+    "buildBoundary": "At the original 5fb56e9 review snapshot, the single actual build preceded only the unbundled sourceReview.* marker filter fix and test. Fix round 1 subsequently changes the unbundled gift composer ownership fence and related tests, as recorded below. Imports/owner rows are unchanged; both final-source graph audits passed. Parent final integrated build is still required."
+  },
+  "nativeAcceptance": false,
+  "productionAcceptance": false,
+  "fixRound1": {
+    "reviewHead": "5fb56e93946891622315d5f32085c6eeb3b8d9f1",
+    "finding": "P2 shared library dialog handoff: stale gift notice overwrote trash status",
+    "productionChanged": [
+      "app/gift-compose.mjs"
+    ],
+    "fix": "Before locale leaf refresh or UI-envelope send, require the retained intro to belong to the connected body inside the open dialog. Ownership loss permanently aborts the instance; non-locale active() owner/current fencing remains unchanged.",
+    "tests": {
+      "command": "TMPDIR=/private/tmp/ai-test-get-192-ui-locale.8Rd8dj/unit/lazy-native node --test --test-concurrency=1 tests/ui-locale-book-actions.test.mjs tests/gift-compose-ui.test.mjs tests/reader-book-actions.test.mjs tests/reader-book-actions-bootstrap.test.mjs tests/ui-locale-lazy-ui.test.mjs tests/ui-locale-gift-preview.test.mjs tests/gift-preview.test.mjs",
+      "total": 74,
+      "passed": 74,
+      "failed": 0,
+      "logSha256": "241322e2d6ca9472d3e496fb6f4bf2c0ef6840d1fc0bc32d32f5a8c025bcdf37",
+      "full213Rerun": false
+    },
+    "actualFinalGraph": {
+      "status": "passed",
+      "result": {
+        "owners": [
+          "app/auth-dialog.mjs",
+          "app/book-gift.mjs",
+          "app/command-palette.mjs",
+          "app/evals.js",
+          "app/experiences.js",
+          "app/gift-compose.mjs",
+          "app/home-atmosphere.mjs",
+          "app/home-navigation.mjs",
+          "app/library-book-actions.mjs",
+          "app/library-chat.mjs",
+          "app/library-daily-reading.mjs",
+          "app/library-data.mjs",
+          "app/library-filter-controls.mjs",
+          "app/library-incremental.mjs",
+          "app/library-profile.mjs",
+          "app/library-reading-preferences.mjs",
+          "app/library-shell.mjs",
+          "app/palette-bootstrap.mjs",
+          "app/palette-library.mjs",
+          "app/parallel-reading.mjs",
+          "app/pdf-onboarding.mjs",
+          "app/personal-record-editor.mjs",
+          "app/portal.js",
+          "app/reader-atmosphere.js",
+          "app/reader-audio.js",
+          "app/reader-book-actions-bootstrap.mjs",
+          "app/reader-book-actions.mjs",
+          "app/reader-companion.mjs",
+          "app/reader-conversation.mjs",
+          "app/reader-highlights.mjs",
+          "app/reader-immersion.mjs",
+          "app/reader-navigation.mjs",
+          "app/reader-pagination.mjs",
+          "app/reader-settings-choices.mjs",
+          "app/reader-settings.mjs",
+          "app/reader-tools.mjs",
+          "app/reader-translation.js",
+          "app/reader.js",
+          "app/reading-arrival.mjs",
+          "app/reading-dashboard.mjs",
+          "app/reading-manual-ui.mjs",
+          "app/reading-session.js",
+          "app/reading-toolbar.mjs",
+          "app/share.js",
+          "app/site-appearance.mjs",
+          "app/source-review.mjs"
+        ],
+        "catalogueEdges": [
+          "ja",
+          "ja?retry=1",
+          "zh-Hans",
+          "zh-Hans?retry=1",
+          "zh-Hant",
+          "zh-Hant?retry=1"
+        ]
+      }
+    },
+    "giftComposeSha256": "ce3bf7651ee599a2431ce6d2a679ffe243bd079d34981660f45eac3740c87e12",
+    "buildRerun": false,
+    "buildBoundary": "No new aggregate build for this unbundled lazy composer fix, per parent scope. The existing oversized build remains failed and precedes the review fix. Parent final integration must build the complete current source.",
+    "independentReReview": "pending"
+  }
+}

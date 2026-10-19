@@ -39,3 +39,11 @@
 .settings-panel .book-details{margin-top:0;padding-bottom:20px}
 .settings-habit{padding:23px 0;border-bottom:1px solid var(--line-hairline)}.settings-habit .setting-row{margin-bottom:0}.settings-habit label{color:var(--ink)}
 @media(max-width:390px){.settings-tabs{padding:0 14px}.settings-footer{padding-left:22px;padding-right:22px}.settings-panel .theme-swatches{gap:6px}.settings-panel .theme-swatches button{width:32px;height:32px}.settings-volume{grid-template-columns:1fr 96px 32px}}
+/* The language field shares Aa's choice enhancement and stays readable as a
+   native control while that optional module is unavailable. */
+#reader-ui-language>select{width:100%;min-height:44px;padding:9px 12px;font:13px var(--interface);color:var(--ink);background:var(--panel);border:1px solid var(--line-control);border-radius:6px}
+#reader-ui-language>select:focus-visible{outline:var(--focus-ring-width,2px) solid var(--focus-ring);outline-offset:var(--focus-ring-offset,3px)}
+#reader-ui-language>.ui-locale-current,#reader-ui-language>.ui-locale-notice{font:13px/1.7 var(--interface);color:var(--muted);margin:10px 0 0}
+
+/* Shared chips inherit the reader’s own paper/night surface palette. */
+#reader-ui-language{--surface-soft:var(--wash)}

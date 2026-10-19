@@ -82,7 +82,7 @@ class Element extends EventTarget{
   append(...nodes){for(const node of nodes){if(node.parentElement)node.parentElement.children=node.parentElement.children.filter(child=>child!==node);node.parentElement=this;this.children.push(node);}}
   setAttribute(key,value){this.attributes[key]=String(value);}getAttribute(key){return this.attributes[key];}hasAttribute(key){return key in this.attributes;}
   focus(){}
-  querySelector(selector){const id=selector.startsWith('#')?selector.slice(1):null;const walk=root=>root.id===id?root:root.children.map(walk).find(Boolean);return id?walk(this):null;}
+  querySelector(selector){const id=selector.startsWith('#')?selector.slice(1):null;const matches=node=>id?node.id===id:selector==='h2'?node.tagName==='h2':selector==='p:not([id])'?node.tagName==='p'&&!node.id:false;const walk=root=>matches(root)?root:root.children.map(walk).find(Boolean);return walk(this);}
 }
 const find=(root,id)=>root.querySelector('#'+id);
 const dom=()=>{globalThis.document={createElement:tag=>new Element(tag),addEventListener(){},dispatchEvent(){}};return new Element('root');};
@@ -120,13 +120,13 @@ test('the compact form saves one full snapshot, keeps hidden fields and reports 
   assert.equal(posted.mode,'parallel');assert.equal(posted.font,25);assert.equal(posted.onboarding,'completed','completing the setup hides the invitation');
   for(const [key,value]of [['pageLayout','spread'],['parallelStyle','reveal'],['lineHeight',2.2],['theme','leaf'],['variant','literal']])assert.equal(posted[key],value,key+' is retained although the compact form hides it');
   validateGlobalPreferences(posted);
-  assert.equal(saved.length,1);assert.equal(find(root,'habits-status').textContent.includes('已保存'),true);
+  assert.equal(saved.length,1);assert.equal(find(root,'habits-status').textContent.includes('saved'),true);
   assert.equal(view.value,'parallel');assert.equal(session.readingPreferences.revision,3);
   // a failed or 409 save keeps the visible values and never claims cloud success
   responder=async()=>{throw Object.assign(Error('阅读习惯已在另一处更新，请刷新后重新保存'),{status:409});};
   await form.dispatchEvent(new Event('submit',{cancelable:true}));await new Promise(setImmediate);
   assert.equal(saved.length,1);assert.equal(view.value,'parallel');assert.equal(font.value,'25');
-  assert.match(find(root,'habits-status').textContent,/另一处更新/);assert.equal(find(root,'habits-status').getAttribute('role'),'alert');
+  assert.match(find(root,'habits-status').textContent,/updated elsewhere/i);assert.equal(find(root,'habits-status').getAttribute('role'),'alert');
 });
 
 test('a late save from a previous account never adopts into the next account',async()=>{
@@ -159,7 +159,8 @@ test('the first-reading invitation is quiet, skippable durably and reopens with 
 });
 
 // ---- reader "设为新书默认" action ----
-test('the reader action saves the current view as new-book defaults without moving the book',async()=>{
+test('the reader action saves the current view as new-book defaults without moving the book',async t=>{
+  const {requestUiRoute}=await import('../app/ui-locale.mjs');await requestUiRoute('zh-Hans');t.after(()=>requestUiRoute('en'));
   const root=dom();
   root.append(new Element('section','reading-defaults-setting'),new Element('button','save-reading-defaults'),new Element('p','reading-defaults-status'));
   const {mountReadingDefaults}=await import('../app/reader-settings.mjs');
@@ -174,7 +175,7 @@ test('the reader action saves the current view as new-book defaults without movi
   assert.equal(posted.mode,'parallel');assert.equal(posted.variant,'literal');assert.equal(posted.font,26);assert.equal(posted.theme,'night');assert.equal(posted.parallelStyle,'quote');assert.equal(posted.pageLayout,'spread');
   assert.equal(posted.onboarding,'completed','the setup state is carried over, never silently invented');
   validateGlobalPreferences(posted);assert.deepEqual(state,before,'the chapter, anchor and records of this book stay untouched');
-  assert.match(status.textContent,/新书默认/);assert.equal(saved.length,1);assert.equal(session.readingPreferences.revision,5);
+  assert.match(status.textContent,/新书默认|saved/i);assert.equal(saved.length,1);assert.equal(session.readingPreferences.revision,5);
   responder=async()=>{throw Object.assign(Error('阅读习惯已在另一处更新，请刷新后重新保存'),{status:409});};
   await button.dispatchEvent(new Event('click'));await new Promise(setImmediate);
   assert.equal(saved.length,1);assert.deepEqual(state,before);assert.match(status.textContent,/暂未保存/);assert.equal(status.getAttribute('role'),'alert');
@@ -300,12 +301,12 @@ test('conflict recovery reads the latest version, keeps explicit edits and waits
   view.value='parallel';view.dispatchEvent(new Event('change'));font.value='25';font.dispatchEvent(new Event('input'));
   await form.dispatchEvent(new Event('submit',{cancelable:true}));await new Promise(setImmediate);
   assert.equal(calls.length,1);assert.equal(calls[0].body.baseRevision,1);
-  assert.equal(recover.hidden,false,'a conflict offers the read-only recovery action');assert.match(find(root,'habits-status').textContent,/读取最新版本/);
+  assert.equal(recover.hidden,false,'a conflict offers the read-only recovery action');assert.match(find(root,'habits-status').textContent,/Load the latest version/i);
   await recover.dispatchEvent(new Event('click'));await new Promise(setImmediate);
   assert.equal(calls.length,2,'reading the latest version is read-only: nothing resubmits automatically');assert.equal(calls[1].body,undefined);assert.equal(calls[1].url,'/api/account/reading-preferences');
   assert.equal(view.value,'parallel');assert.equal(font.value,'25','explicit edits survive the recovery');
   assert.equal(theme.value,'night','untouched fields follow the latest server snapshot');
-  assert.match(find(root,'habits-status').textContent,/手动保存/);assert.equal(recover.hidden,true);
+  assert.match(find(root,'habits-status').textContent,/save again/i);assert.equal(recover.hidden,true);
   postResult={revision:8,updatedAt:'2026-10-18T03:00:00.000Z',preferences:snapshot({mode:'parallel',font:25,theme:'night',pageLayout:'scroll',parallelStyle:'tint'})};
   await form.dispatchEvent(new Event('submit',{cancelable:true}));await new Promise(setImmediate);
   assert.equal(calls.length,3,'confirmation stays a manual action');
@@ -331,13 +332,13 @@ test('a failed latest-version read keeps the draft and can retry',async()=>{
   await form.dispatchEvent(new Event('submit',{cancelable:true}));await new Promise(setImmediate);
   assert.equal(recover.hidden,false);
   await recover.dispatchEvent(new Event('click'));await new Promise(setImmediate);
-  assert.match(find(root,'habits-status').textContent,/暂时无法读取/);
+  assert.match(find(root,'habits-status').textContent,/could not load/i);
   assert.equal(view.value,'zh');assert.equal(theme.value,'paper','a failed read keeps the existing draft');
   assert.equal(recover.hidden,false,'the read-only recovery stays available to retry');
   failGet=false;
   await recover.dispatchEvent(new Event('click'));await new Promise(setImmediate);
   assert.equal(view.value,'en');assert.equal(theme.value,'leaf');
-  assert.match(find(root,'habits-status').textContent,/手动保存/);assert.equal(recover.hidden,true);
+  assert.match(find(root,'habits-status').textContent,/save again/i);assert.equal(recover.hidden,true);
   assert.equal(calls.filter(call=>call.body!==undefined).length,1,'a conflict never resubmits automatically');
 });
 
@@ -468,7 +469,7 @@ test("a refresh during this owner's request reconciles safely after it",async()=
   assert.equal(font.value,'25','a mid-flight refresh is deferred over the in-flight request');
   release();await new Promise(setImmediate);
   assert.equal(font.value,'25','a stale refresh never overwrites the newer saved result');assert.equal(calls[0].body.baseRevision,1);
-  assert.match(find(root,'habits-status').textContent,/已保存/);
+  assert.match(find(root,'habits-status').textContent,/saved/i);
   // a newer refresh during a conflicting request reconciles after it, keeping edits
   view.value='zh';view.dispatchEvent(new Event('change'));
   responder=async()=>{await new Promise(resolve=>{release=resolve;});throw Object.assign(Error('阅读习惯已在另一处更新，请刷新后重新保存'),{status:409});};
@@ -506,7 +507,7 @@ test('a superseded completion never releases the current account pending save',a
     pending[1]();await new Promise(setImmediate); // B completes
     assert.equal(save.disabled,false);assert.equal(form.getAttribute('aria-busy'),'false');
     assert.equal(saved.length,1,'B adopts exactly once');assert.equal(calls.length,2);
-    assert.match(find(root,'habits-status').textContent,/已保存/);
+    assert.match(find(root,'habits-status').textContent,/saved/i);
   }
 });
 
@@ -532,6 +533,56 @@ test('a superseded skip completion never releases the next account pending dismi
     assert.equal(saved.length,0);assert.equal(calls.length,2);
     pending[1]();await new Promise(setImmediate); // B completes
     assert.equal(saved.length,1,'the dismissal is adopted exactly once');
-    assert.equal(root.hidden,true);assert.match(find(root,'reading-setup-status').textContent,/暂不设置/);
+    assert.equal(root.hidden,true);assert.match(find(root,'reading-setup-status').textContent,/Set up later/i);
   }
+});
+
+
+test('locale refresh keeps the reading-preferences request, dirty fields and native option nodes intact',async()=>{
+  const {requestUiRoute,t}=await import('../app/ui-locale.mjs');await requestUiRoute('en');
+  const root=dom(),session={user:{id:'locale-owner'},readingPreferences:{revision:2,preferences:snapshot({theme:'paper'})}};
+  let finish,calls=0,saved=0;const ui=mountReadingPreferencesForm({root,getSession:()=>session,api:()=>{calls++;return new Promise(resolve=>{finish=resolve;});},onSaved:()=>saved++});
+  const view=find(root,'habits-view'),font=find(root,'habits-font'),save=find(root,'habits-save'),form=find(root,'habits-status').parentElement;
+  view.value='zh';view.dispatchEvent(new Event('change'));font.value='27';font.dispatchEvent(new Event('input'));const options=[...view.children];
+  form.dispatchEvent(new Event('submit',{cancelable:true}));
+  try{
+    await requestUiRoute('ja');assert.equal(calls,1);assert.equal(save.textContent,t('prefs.saving'));assert.equal(save.disabled,true);
+    assert.equal(view.value,'zh');assert.equal(font.value,'27');assert.deepEqual(view.children,options);assert.equal(options[0].textContent,t('prefs.mode.original'));
+    assert.equal(form.children.find(x=>x.className==='settings-description').textContent,t('prefs.help'));
+    ui.dispose();const label=save.textContent;await requestUiRoute('zh-Hant');assert.equal(save.textContent,label);
+    finish({revision:3,preferences:snapshot({font:20})});await new Promise(setImmediate);assert.equal(saved,0);assert.equal(font.value,'27');
+    form.dispatchEvent(new Event('submit',{cancelable:true}));assert.equal(calls,1);
+  }finally{ui.dispose();await requestUiRoute('en');}
+});
+
+test('a second preferences mount cannot refresh a disposed first mount',async()=>{
+  const {requestUiRoute,t}=await import('../app/ui-locale.mjs');await requestUiRoute('en');
+  const a=dom(),b=dom(),session={user:{id:'same-owner'}};
+  const first=mountReadingPreferencesForm({root:a,getSession:()=>session,api:async()=>{}}),second=mountReadingPreferencesForm({root:b,getSession:()=>session,api:async()=>{}});
+  first.dispose();const before=find(a,'habits-save').textContent;
+  try{await requestUiRoute('ja');second.updateLabels();assert.equal(find(a,'habits-save').textContent,before);assert.equal(find(b,'habits-save').textContent,t('prefs.save'));}
+  finally{second.dispose();await requestUiRoute('en');}
+});
+
+test('reformatting an invitation failure never replays its business error and owner changes discard the cached status',async()=>{
+  const {requestUiRoute,t}=await import('../app/ui-locale.mjs');await requestUiRoute('en');
+  const root=dom(),open=new Element('button','reading-setup-open'),skip=new Element('button','reading-setup-skip'),status=new Element('p','reading-setup-status');root.append(open,skip,status);
+  let session={user:{id:'invite-a'}},calls=0;const errors=[];
+  const ui=mountReadingSetupInvite({root,getSession:()=>session,api:async()=>{calls++;throw Error('unknown server prose');},onError:text=>errors.push(text)});
+  try{
+    skip.dispatchEvent(new Event('click'));await new Promise(setImmediate);assert.equal(errors.length,1);assert.equal(calls,1);
+    await requestUiRoute('ja');assert.equal(status.textContent,t('prefs.skipFailed'));assert.equal(errors.length,1);assert.equal(skip.textContent,t('prefs.setup.skip'));
+    session={user:{id:'invite-b'}};ui.update();assert.equal(status.textContent,'');
+    await requestUiRoute('zh-Hant');assert.equal(status.textContent,'');assert.equal(errors.length,1);
+    ui.dispose();const before=skip.textContent;await requestUiRoute('en');assert.equal(skip.textContent,before);
+    skip.dispatchEvent(new Event('click'));assert.equal(calls,1);
+  }finally{ui.dispose();await requestUiRoute('en');}
+});
+
+test('the complete reading invitation relabels existing heading, description and accessible name without replaying pending dismissal',async()=>{
+ const {requestUiRoute,t}=await import('../app/ui-locale.mjs');await requestUiRoute('en');const root=dom(),heading=new Element('h2'),description=new Element('p'),open=new Element('button','reading-setup-open'),skip=new Element('button','reading-setup-skip'),status=new Element('p','reading-setup-status');heading.textContent='Set up reading habits';description.textContent='Initial English invitation';root.append(heading,description,open,skip,status);
+ let reads=0,calls=0,resolve;const session={user:{id:'invite-owner'}},ui=mountReadingSetupInvite({root,getSession(){reads++;return session;},api:()=>{calls++;return new Promise(done=>{resolve=done;});}});skip.dispatchEvent(new Event('click'));const children=[...root.children],before=reads;
+ try{for(const code of ['ja','zh-Hant','zh-Hans','en']){await requestUiRoute(code);assert.equal(root.getAttribute('aria-label'),t('shell.settings.tab.reading-habits'));assert.equal(heading.textContent,t('prefs.setup.open'));assert.equal(description.textContent,t('prefs.setup.description'));assert.notEqual(description.textContent,'prefs.setup.description');assert.equal(open.textContent,t('prefs.setup.open'));assert.equal(skip.textContent,t('prefs.setup.skip'));assert.deepEqual(root.children,children);assert.equal(open.disabled,true);assert.equal(skip.disabled,true);assert.equal(root.hidden,false);assert.equal(reads,before);assert.equal(calls,1);}
+  ui.dispose();const text=description.textContent;await requestUiRoute('ja');assert.equal(description.textContent,text);resolve({revision:1,preferences:snapshot({onboarding:'dismissed'})});await new Promise(setImmediate);assert.equal(calls,1);
+ }finally{ui.dispose();await requestUiRoute('en');}
 });

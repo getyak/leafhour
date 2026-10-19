@@ -1,3 +1,5 @@
+import {authMessageId} from '../app/auth-errors.mjs';
+import {audioFailureCode} from '../app/audio-errors.mjs';
 import {gzipSync} from 'node:zlib';
 import {waitUntil} from '@vercel/functions';
 import {configurationSummary} from '../server/model-config.mjs';
@@ -30,7 +32,7 @@ return async function handler(req,res){
     if(req.query?.path)url.searchParams.delete('path');
     const handled=await portal.handle({req,res,url,send:(status,body)=>sendJson(status,body)});
     if(!handled)sendJson(404,{error:'找不到这个操作'});
-  }catch(error){const retryAfter=Number.isInteger(error.retryAfter)&&error.retryAfter>0?Math.min(3600,error.retryAfter):null;if(retryAfter)res.setHeader('Retry-After',String(retryAfter));sendJson(error.status||500,{error:error.status?error.message:'服务暂时无法完成操作，请重试',...(retryAfter?{retryAfter}:{})});}
+  }catch(error){const retryAfter=Number.isInteger(error.retryAfter)&&error.retryAfter>0?Math.min(3600,error.retryAfter):null;if(retryAfter)res.setHeader('Retry-After',String(retryAfter));sendJson(error.status||500,{error:error.status?error.message:'服务暂时无法完成操作，请重试',...(retryAfter?{retryAfter}:{}),...(error.status&&authMessageId(error.messageId)?{messageId:error.messageId}:{}),...(audioFailureCode(error.status,error.code)?{code:error.code}:{})});}
 }
 }
 export default createHostedHandler();

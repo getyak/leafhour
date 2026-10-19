@@ -1,4 +1,7 @@
-import test from 'node:test';
+import test,{before,after} from 'node:test';
+import {requestUiRoute} from '../app/ui-locale.mjs';
+before(()=>requestUiRoute('zh-Hans'));
+after(()=>requestUiRoute('en'));
 import assert from 'node:assert/strict';
 import {readerConversationContext,mountReaderConversation,readerInteractionBlocked} from '../app/reader-conversation.mjs';
 import {mountLibraryChat} from '../app/library-chat.mjs';
@@ -61,7 +64,7 @@ test('reader chat requests keep owner guards without remapping library URLs',asy
 test('session-change responses clear private chat before returning to the library',async()=>{
   const f=mount({request:async()=>new Response(JSON.stringify({error:'changed'}),{status:409,headers:{'X-Reader-Session-Changed':'1'}})});
   let notified=0;f.events.addEventListener('reader:session-changed',()=>notified++);
-  await assert.rejects(f.hooks.api('/api/library/books/book-one/chat'),error=>error.status===409);assert.equal(f.counts().resets,1);assert.deepEqual(f.replacements,['/library']);
+  await assert.rejects(f.hooks.api('/api/library/books/book-one/chat'),error=>error.status===409);assert.equal(f.counts().resets,1);assert.deepEqual(f.replacements,['/library?ui=zh-Hans']);
   assert.equal(notified,1,'the reader session lifecycle notifies palette caches before leaving the page');
 });
 
@@ -72,7 +75,7 @@ test('HTTP errors preserve status for idempotent recovery and do not fabricate r
 test('a companion result rechecks the current cookie identity before exposing old-account text',async()=>{
   const f=mount({request:async url=>new Response(JSON.stringify(url==='/api/auth/session'?{user:{id:'different-reader'}}:{kind:'companion',answer:{summary:'原账号的私有消息'}}),{status:200})});
   await assert.rejects(f.hooks.api('/api/library/books/book-one/companion/messages',{id:'one'}),e=>e.status===409);
-  assert.equal(f.counts().resets,1);assert.deepEqual(f.replacements,['/library']);
+  assert.equal(f.counts().resets,1);assert.deepEqual(f.replacements,['/library?ui=zh-Hans']);
 });
 
 // ---- GET-184 injected chat: real chat + companion controllers over one tools seam ----
@@ -180,4 +183,16 @@ test('tools reveals never re-mount chat or companion and keep one instance each'
   assert.deepEqual(mounts,{chat:1,companion:1},'tool and ready events never re-mount the shared instances');
   assert.equal(f.all(f.doc.body).filter(n=>n.className==='squirrel-companion-bubble').length,1);
   assert.equal(f.all(f.doc.body).filter(n=>n.className==='library-chat-book-choice').length,1);
+});
+
+test('conversation auth uses the current UI on both safe returns without reopening or reloading on locale',async()=>{
+ const f=mount(),before=f.counts();await requestUiRoute('ja');assert.deepEqual(f.counts(),before);f.hooks.openAuth();
+ const outer=new URL(f.navigations[0],'http://reader.test'),inner=new URL(outer.searchParams.get('next'),'http://reader.test');
+ assert.equal(outer.pathname,'/library');assert.deepEqual(outer.searchParams.getAll('ui'),['ja']);assert.equal(inner.pathname,'/read');assert.equal(inner.searchParams.get('book'),'book-one');assert.equal(inner.searchParams.get('passage'),'p2');assert.deepEqual(inner.searchParams.getAll('ui'),['ja']);f.instance.dispose?.();await requestUiRoute('zh-Hans');
+});
+
+test('disposed conversation removes owned event hooks and consumes late account-change responses without navigation',async()=>{
+ let resolve;const pending=new Promise(r=>resolve=r),f=mount({request:()=>pending});
+ const operation=f.hooks.api('/api/library/books/book-one/chat');assert.equal(typeof f.instance.dispose,'function');f.instance.dispose();const counts=f.counts();f.events.dispatchEvent(new Event('reader:ready'));assert.deepEqual(f.counts(),counts);
+ resolve(new Response(JSON.stringify({error:'old-owner'}),{status:409,headers:{'X-Reader-Session-Changed':'1'}}));await assert.rejects(operation,e=>e.code==='READER_CONVERSATION_DISPOSED');assert.deepEqual(f.counts(),counts);assert.deepEqual(f.replacements,[]);
 });

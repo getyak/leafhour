@@ -21,6 +21,14 @@ test('single selected personal record and sharing preview never carry hidden que
  const quoted=selectedRecordExport([note],{format:'json',sharing:true,includeQuotes:true});assert.equal(JSON.parse(quoted).items[0].quote,'Read this first.');assert.throws(()=>selectedRecordExport(items.filter(i=>i.category==='time'),{sharing:true}),/分享/);
  assert.throws(()=>selectedRecordExport([]),/选择/);
 });
+test('new Markdown formatting is explicit and cannot change JSON, source identities or literal content',()=>{
+ const items=personalExportItems(fixture()),note=items.find(i=>i.id==='note');
+ const labels={personal:'Personal records',type:'Type: ',origin:'Origin: ',user:'User',id:'ID: ',version:'Source version: ',anchor:'Anchor: ',created:'Created: ',quote:'Original quote:'};
+ const json=selectedRecordExport([note],{includeQuotes:true});assert.equal(selectedRecordExport([note],{includeQuotes:true,labels}),json);
+ const markdown=selectedRecordExport([note],{format:'markdown',includeQuotes:true,labels});
+ assert.match(markdown,/^# Personal records/);for(const literal of [note.id,note.bookId,note.contentVersion,note.text,note.quote])assert.ok(markdown.includes(literal));assert.ok(markdown.includes('Type: comment · Origin: User'));
+ assert.match(selectedRecordExport([note],{format:'markdown'}),/^# 个人记录/);
+});
 test('forged ZIP expansion sizes are rejected before accepting data beyond the declared bound',async()=>{
  const bytes=zipSync({'books/000.json':strToU8('A'.repeat(3*1024*1024))},{level:9});
  for(const size of [1,513*1024*1024]){const forged=bytes.slice(),view=new DataView(forged.buffer);view.setUint32(22,size,true);for(let n=0;n<forged.length-46;n++)if(view.getUint32(n,true)===0x02014b50){view.setUint32(n+24,size,true);break;}await assert.rejects(readLibraryArchive(forged),/容量|清单|解压/);}

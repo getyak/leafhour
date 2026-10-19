@@ -1,0 +1,48 @@
+[
+  {
+    "probe": "session-late-hydration",
+    "exit": 0,
+    "result": {
+      "before": {
+        "writes": 9,
+        "events": 0,
+        "uuid": 3,
+        "postRequests": 0,
+        "status": "This text is an unsent draft, kept on this device."
+      },
+      "after": {
+        "writes": 9,
+        "events": 0,
+        "uuid": 3,
+        "postRequests": 0,
+        "status": "This text is an unsent draft, kept on this device."
+      },
+      "postDisposeWriteKeys": []
+    }
+  },
+  {
+    "probe": "session-late-save",
+    "exit": 0,
+    "result": {
+      "before": {
+        "writes": 10,
+        "events": 0,
+        "status": "Saving\u2026"
+      },
+      "after": {
+        "writes": 10,
+        "events": 0,
+        "status": "Saving\u2026"
+      },
+      "postDisposeWriteKeys": []
+    }
+  },
+  {
+    "probe": "palette-owner",
+    "exit": 0,
+    "result": {
+      "ownerNotifications": 1,
+      "expected": 1
+    }
+  }
+]

@@ -1,0 +1,512 @@
+TAP version 13
+# Subtest: late fetches and ended events cannot change a replacement listening session
+ok 1 - late fetches and ended events cannot change a replacement listening session
+  ---
+  duration_ms: 0.734417
+  type: 'test'
+  ...
+# Subtest: manual scrolling pauses following and explicit return enables it
+ok 2 - manual scrolling pauses following and explicit return enables it
+  ---
+  duration_ms: 0.143917
+  type: 'test'
+  ...
+# Subtest: manual following choice survives clip changes and resets only for a new session
+ok 3 - manual following choice survives clip changes and resets only for a new session
+  ---
+  duration_ms: 0.117333
+  type: 'test'
+  ...
+# Subtest: stop clears local playback immediately even while remote guide cancellation stalls
+ok 4 - stop clears local playback immediately even while remote guide cancellation stalls
+  ---
+  duration_ms: 1.203792
+  type: 'test'
+  ...
+# Subtest: waiting for a pending clip invalidates previous audio and continues with the ready clip
+ok 5 - waiting for a pending clip invalidates previous audio and continues with the ready clip
+  ---
+  duration_ms: 0.560875
+  type: 'test'
+  ...
+# Subtest: interrupted clip never advertises an ongoing generation
+ok 6 - interrupted clip never advertises an ongoing generation
+  ---
+  duration_ms: 0.376667
+  type: 'test'
+  ...
+# Subtest: browsing into a neighboring chapter keeps audio active and releases automatic following
+ok 7 - browsing into a neighboring chapter keeps audio active and releases automatic following
+  ---
+  duration_ms: 0.315208
+  type: 'test'
+  ...
+# Subtest: turning a page suspends audio following while playback stays active
+ok 8 - turning a page suspends audio following while playback stays active
+  ---
+  duration_ms: 0.533458
+  type: 'test'
+  ...
+# Subtest: audio follows an offscreen horizontal page even when its vertical bounds look visible
+ok 9 - audio follows an offscreen horizontal page even when its vertical bounds look visible
+  ---
+  duration_ms: 0.288292
+  type: 'test'
+  ...
+# Subtest: a dialogue never forces the reader to turn pages while listening to an explanation
+ok 10 - a dialogue never forces the reader to turn pages while listening to an explanation
+  ---
+  duration_ms: 0.269375
+  type: 'test'
+  ...
+# Subtest: seek feedback is disabled until media duration is known and describes the current position
+ok 11 - seek feedback is disabled until media duration is known and describes the current position
+  ---
+  duration_ms: 0.252459
+  type: 'test'
+  ...
+# Subtest: preparing audio exposes busy state and restores available controls after failure
+ok 12 - preparing audio exposes busy state and restores available controls after failure
+  ---
+  duration_ms: 3.690334
+  type: 'test'
+  ...
+# Subtest: audio action clicks do not become record-list messages, while restore receipts remain visible
+ok 13 - audio action clicks do not become record-list messages, while restore receipts remain visible
+  ---
+  duration_ms: 1.477125
+  type: 'test'
+  ...
+# Subtest: switching an open audio panel preserves a stable focus target without taking focus from outside
+ok 14 - switching an open audio panel preserves a stable focus target without taking focus from outside
+  ---
+  duration_ms: 0.358583
+  type: 'test'
+  ...
+# Subtest: an unverified guide candidate is inspectable without paid synthesis or editable publication controls
+ok 15 - an unverified guide candidate is inspectable without paid synthesis or editable publication controls
+  ---
+  duration_ms: 0.567417
+  type: 'test'
+  ...
+# Subtest: narration continuation resumes the exact source offset and ends at the chapter boundary
+ok 16 - narration continuation resumes the exact source offset and ends at the chapter boundary
+  ---
+  duration_ms: 0.389791
+  type: 'test'
+  ...
+# Subtest: guide explanation defaults to a real current passage and explicit whole chapter changes only its scope
+ok 17 - guide explanation defaults to a real current passage and explicit whole chapter changes only its scope
+  ---
+  duration_ms: 1.241334
+  type: 'test'
+  ...
+# Subtest: a dismissed old selection cannot widen or move the current explanation scope
+ok 18 - a dismissed old selection cannot widen or move the current explanation scope
+  ---
+  duration_ms: 0.988
+  type: 'test'
+  ...
+# Subtest: ask-here draft contains bounded actual scene sources and keeps their source identity
+ok 19 - ask-here draft contains bounded actual scene sources and keeps their source identity
+  ---
+  duration_ms: 0.320542
+  type: 'test'
+  ...
+# Subtest: cancelled guide polling cannot start stale audio or schedule more work
+ok 20 - cancelled guide polling cannot start stale audio or schedule more work
+  ---
+  duration_ms: 0.338459
+  type: 'test'
+  ...
+# Subtest: guide text job is polled without submitting another generation and failure remains actionable
+ok 21 - guide text job is polled without submitting another generation and failure remains actionable
+  ---
+  duration_ms: 0.144958
+  type: 'test'
+  ...
+# Subtest: restoring a guide only retrieves its saved job without another generation request
+ok 22 - restoring a guide only retrieves its saved job without another generation request
+  ---
+  duration_ms: 0.121291
+  type: 'test'
+  ...
+# Subtest: a terminal guide error identifies an explicit retry while a network error keeps its saved job recoverable
+ok 23 - a terminal guide error identifies an explicit retry while a network error keeps its saved job recoverable
+  ---
+  duration_ms: 0.223
+  type: 'test'
+  ...
+# Subtest: an uncertain POST retries the same idempotency key and can be cancelled before a job ID arrives
+ok 24 - an uncertain POST retries the same idempotency key and can be cancelled before a job ID arrives
+  ---
+  duration_ms: 0.127375
+  type: 'test'
+  ...
+# Subtest: stopping an already delivered guide does not cancel its saved reusable audio history
+ok 25 - stopping an already delivered guide does not cancel its saved reusable audio history
+  ---
+  duration_ms: 0.324583
+  type: 'test'
+  ...
+# Subtest: a slow older cancellation cannot erase the next uncertain request identity
+ok 26 - a slow older cancellation cannot erase the next uncertain request identity
+  ---
+  duration_ms: 0.337583
+  type: 'test'
+  ...
+# Subtest: unloaded chapter identities cannot be mistaken for verified audio source text
+ok 27 - unloaded chapter identities cannot be mistaken for verified audio source text
+  ---
+  duration_ms: 0.138208
+  type: 'test'
+  ...
+# Subtest: local actual audio routes transport a missing-translation cause for selection and narration
+ok 28 - local actual audio routes transport a missing-translation cause for selection and narration
+  ---
+  duration_ms: 134.578917
+  type: 'test'
+  ...
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Subtest: hosted actual audio routes transport a missing-translation cause for selection and narration
+ok 29 - hosted actual audio routes transport a missing-translation cause for selection and narration
+  ---
+  duration_ms: 86.119333
+  type: 'test'
+  ...
+# Subtest: only the exact 409 domain code offers an original; prose and unknown/status-mismatched codes do not
+ok 30 - only the exact 409 domain code offers an original; prose and unknown/status-mismatched codes do not
+  ---
+  duration_ms: 3.002667
+  type: 'test'
+  ...
+# Subtest: opaque module syntax distinguishes executable loaders from text, keys and lexical bindings
+ok 31 - opaque module syntax distinguishes executable loaders from text, keys and lexical bindings
+  ---
+  duration_ms: 7.481208
+  type: 'test'
+  ...
+# Subtest: actual source audit and esbuild retain harmless text, lexical require and development-tool controls
+ok 32 - actual source audit and esbuild retain harmless text, lexical require and development-tool controls
+  ---
+  duration_ms: 237.120334
+  type: 'test'
+  ...
+# Subtest: actual builds reject computed import forms including quoted prefixes before esbuild can fold them
+ok 33 - actual builds reject computed import forms including quoted prefixes before esbuild can fold them
+  ---
+  duration_ms: 26.642167
+  type: 'test'
+  ...
+# Subtest: catalogue permission compares full decoded specifiers including fragments and retry query
+ok 34 - catalogue permission compares full decoded specifiers including fragments and retry query
+  ---
+  duration_ms: 50.141834
+  type: 'test'
+  ...
+# Subtest: unauthorized backend edges fail in every actual product runtime root and extension
+ok 35 - unauthorized backend edges fail in every actual product runtime root and extension
+  ---
+  duration_ms: 81.467042
+  type: 'test'
+  ...
+# Subtest: actual audits and builds reject browser-normalized path and deployment-origin aliases
+ok 36 - actual audits and builds reject browser-normalized path and deployment-origin aliases
+  ---
+  duration_ms: 180.331459
+  type: 'test'
+  ...
+# Subtest: actual audio owner preserves playing media, cached business state and accessible labels through four commits
+ok 37 - actual audio owner preserves playing media, cached business state and accessible labels through four commits
+  ---
+  duration_ms: 86.212084
+  type: 'test'
+  ...
+# Subtest: pending preparation success settles in effective language without automatic fallback
+ok 38 - pending preparation success settles in effective language without automatic fallback
+  ---
+  duration_ms: 37.06125
+  type: 'test'
+  ...
+# Subtest: pending preparation unknown settles in effective language without automatic fallback
+ok 39 - pending preparation unknown settles in effective language without automatic fallback
+  ---
+  duration_ms: 29.9845
+  type: 'test'
+  ...
+# Subtest: pending preparation typed settles in effective language without automatic fallback
+ok 40 - pending preparation typed settles in effective language without automatic fallback
+  ---
+  duration_ms: 23.400917
+  type: 'test'
+  ...
+# Subtest: pending preparation wrongStatus settles in effective language without automatic fallback
+ok 41 - pending preparation wrongStatus settles in effective language without automatic fallback
+  ---
+  duration_ms: 21.966084
+  type: 'test'
+  ...
+# Subtest: manual script dirty textarea and pending estimate success keep native editing identity
+ok 42 - manual script dirty textarea and pending estimate success keep native editing identity
+  ---
+  duration_ms: 22.419959
+  type: 'test'
+  ...
+# Subtest: manual script dirty textarea and pending estimate failure keep native editing identity
+ok 43 - manual script dirty textarea and pending estimate failure keep native editing identity
+  ---
+  duration_ms: 23.197666
+  type: 'test'
+  ...
+# Subtest: voice, speed and guide native selects retain dirty values and focus without media or preference changes
+ok 44 - voice, speed and guide native selects retain dirty values and focus without media or preference changes
+  ---
+  duration_ms: 25.23375
+  type: 'test'
+  ...
+# Subtest: pending guide job success keeps UUID payload, timer and session through locale
+ok 45 - pending guide job success keeps UUID payload, timer and session through locale
+  ---
+  duration_ms: 33.861917
+  type: 'test'
+  ...
+# Subtest: pending guide job failure keeps UUID payload, timer and session through locale
+ok 46 - pending guide job failure keeps UUID payload, timer and session through locale
+  ---
+  duration_ms: 30.924958
+  type: 'test'
+  ...
+# Subtest: new explicit Ask uses locale framework while transcript, IDs, citations and existing draft stay literal
+ok 47 - new explicit Ask uses locale framework while transcript, IDs, citations and existing draft stay literal
+  ---
+  duration_ms: 23.803875
+  type: 'test'
+  ...
+# Subtest: closed old view and disposed owner consume late prepare/estimate completions and failures
+ok 48 - closed old view and disposed owner consume late prepare/estimate completions and failures
+  ---
+  duration_ms: 65.28975
+  type: 'test'
+  ...
+# Subtest: first meaningful audio controls await the physical ready promise, including English fallback
+ok 49 - first meaningful audio controls await the physical ready promise, including English fallback
+  ---
+  duration_ms: 17.109291
+  type: 'test'
+  ...
+# Subtest: pending guide scope success keeps scope input and settles once in the effective locale
+ok 50 - pending guide scope success keeps scope input and settles once in the effective locale
+  ---
+  duration_ms: 17.388875
+  type: 'test'
+  ...
+# Subtest: pending guide scope failure keeps scope input and settles once in the effective locale
+ok 51 - pending guide scope failure keeps scope input and settles once in the effective locale
+  ---
+  duration_ms: 19.992
+  type: 'test'
+  ...
+# Subtest: historical errors, retained scripts, source leaves and view registry remain literal and bounded
+ok 52 - historical errors, retained scripts, source leaves and view registry remain literal and bounded
+  ---
+  duration_ms: 32.993583
+  type: 'test'
+  ...
+# Subtest: saved records and resume entry format cached chapter/count descriptors without refetching
+ok 53 - saved records and resume entry format cached chapter/count descriptors without refetching
+  ---
+  duration_ms: 22.136417
+  type: 'test'
+  ...
+# Subtest: pending estimate from a replaced or disposed script cannot write its retained old leaf
+ok 54 - pending estimate from a replaced or disposed script cannot write its retained old leaf
+  ---
+  duration_ms: 65.394208
+  type: 'test'
+  ...
+# Subtest: actual runtime initial rejection resolves audio to coherent English without language-triggered reinitialization
+ok 55 - actual runtime initial rejection resolves audio to coherent English without language-triggered reinitialization
+  ---
+  duration_ms: 12.794042
+  type: 'test'
+  ...
+# Subtest: disposed media and guide owners consume late blobs/jobs without playback or scheduling
+ok 56 - disposed media and guide owners consume late blobs/jobs without playback or scheduling
+  ---
+  duration_ms: 28.149625
+  type: 'test'
+  ...
+# Subtest: persisted pagehide pauses audio but retains cached UI ownership for Back restoration
+ok 57 - persisted pagehide pauses audio but retains cached UI ownership for Back restoration
+  ---
+  duration_ms: 12.357959
+  type: 'test'
+  ...
+# Subtest: typed fallback activates corresponding original only on an explicit click
+ok 58 - typed fallback activates corresponding original only on an explicit click
+  ---
+  duration_ms: 13.755542
+  type: 'test'
+  ...
+# Subtest: disposed bootstrap ignores late preferences without writing native controls
+ok 59 - disposed bootstrap ignores late preferences without writing native controls
+  ---
+  duration_ms: 15.644584
+  type: 'test'
+  ...
+# Subtest: codec accepts only exact canonical codes in owned URLs and keeps bounded navigator mapping separate
+ok 60 - codec accepts only exact canonical codes in owned URLs and keeps bounded navigator mapping separate
+  ---
+  duration_ms: 1.3745
+  type: 'test'
+  ...
+# Subtest: route classification keeps authored path authority and canonical precedence
+ok 61 - route classification keeps authored path authority and canonical precedence
+  ---
+  duration_ms: 0.179583
+  type: 'test'
+  ...
+# Subtest: four catalogues are frozen data with equal keys and matching interpolation parameters
+ok 62 - four catalogues are frozen data with equal keys and matching interpolation parameters
+  ---
+  duration_ms: 9.44025
+  type: 'test'
+  ...
+# Subtest: runtime catalogue validation enforces full coherence, not just required labels
+ok 63 - runtime catalogue validation enforces full coherence, not just required labels
+  ---
+  duration_ms: 5.865667
+  type: 'test'
+  ...
+# Subtest: initial catalogue failure resolves uiReady once to usable English and keeps a retry target
+ok 64 - initial catalogue failure resolves uiReady once to usable English and keeps a retry target
+  ---
+  duration_ms: 2.141334
+  type: 'test'
+  ...
+# Subtest: switch timeout keeps old UI/query/preference and offers the fixed retry variant only once
+ok 65 - switch timeout keeps old UI/query/preference and offers the fixed retry variant only once
+  ---
+  duration_ms: 1.857084
+  type: 'test'
+  ...
+# Subtest: F1: history rejection settles an explicit history error in the old language before any write
+ok 66 - F1: history rejection settles an explicit history error in the old language before any write
+  ---
+  duration_ms: 6.736292
+  type: 'test'
+  ...
+# Subtest: F2: retry keeps the originating actor semantics for picker, route and authored activation
+ok 67 - F2: retry keeps the originating actor semantics for picker, route and authored activation
+  ---
+  duration_ms: 7.9885
+  type: 'test'
+  ...
+# Subtest: F3: a changed navigation context makes the pending request stale with zero side effects
+ok 68 - F3: a changed navigation context makes the pending request stale with zero side effects
+  ---
+  duration_ms: 2.819958
+  type: 'test'
+  ...
+# Subtest: F3: same-context view writers change search/filter/overlay while waiting and only ui changes after success
+ok 69 - F3: same-context view writers change search/filter/overlay while waiting and only ui changes after success
+  ---
+  duration_ms: 5.745625
+  type: 'test'
+  ...
+# Subtest: F6: falsy history.state values survive the owned ui merge exactly
+ok 70 - F6: falsy history.state values survive the owned ui merge exactly
+  ---
+  duration_ms: 13.048125
+  type: 'test'
+  ...
+# Subtest: late success and late failure after supersede only consume; timers settle stale
+ok 71 - late success and late failure after supersede only consume; timers settle stale
+  ---
+  duration_ms: 3.671917
+  type: 'test'
+  ...
+# Subtest: storage failure after successful history commits session-only and keeps other keys
+ok 72 - storage failure after successful history commits session-only and keeps other keys
+  ---
+  duration_ms: 2.459708
+  type: 'test'
+  ...
+# Subtest: route overrides never write URL or preference; priority and invalid ui fall through
+ok 73 - route overrides never write URL or preference; priority and invalid ui fall through
+  ---
+  duration_ms: 8.062416
+  type: 'test'
+  ...
+# Subtest: F4: authored route language is authoritative over a conflicting ui query
+ok 74 - F4: authored route language is authoritative over a conflicting ui query
+  ---
+  duration_ms: 2.155042
+  type: 'test'
+  ...
+# Subtest: same-effective Back cancels a pending picker attempt and never republishes labels
+ok 75 - same-effective Back cancels a pending picker attempt and never republishes labels
+  ---
+  duration_ms: 2.320459
+  type: 'test'
+  ...
+# Subtest: subscriber exceptions are isolated and reported as separate UI-update faults
+ok 76 - subscriber exceptions are isolated and reported as separate UI-update faults
+  ---
+  duration_ms: 3.917666
+  type: 'test'
+  ...
+# Subtest: the real browser catalogue loader uses exactly six literal base/retry edges
+ok 77 - the real browser catalogue loader uses exactly six literal base/retry edges
+  ---
+  duration_ms: 2.306
+  type: 'test'
+  ...
+# Subtest: production singleton bootstrap runs once and classifies actual routes
+ok 78 - production singleton bootstrap runs once and classifies actual routes
+  ---
+  duration_ms: 22.672417
+  type: 'test'
+  ...
+# Subtest: the source graph allows only reviewed owners and the exact six real catalogue edges
+ok 79 - the source graph allows only reviewed owners and the exact six real catalogue edges
+  ---
+  duration_ms: 340.453958
+  type: 'test'
+  ...
+# Subtest: G2: comment-only catalogue imports never count and real six plus same-name comments pass
+ok 80 - G2: comment-only catalogue imports never count and real six plus same-name comments pass
+  ---
+  duration_ms: 11.410709
+  type: 'test'
+  ...
+# Subtest: G1: root-absolute, require, hash, alias and wrong-caller edges fail in audit AND actual build
+ok 81 - G1: root-absolute, require, hash, alias and wrong-caller edges fail in audit AND actual build
+  ---
+  duration_ms: 63.864375
+  type: 'test'
+  ...
+# Subtest: graph negatives: missing backing, wrong caller, unused permission and a fully authorized owner pass
+ok 82 - graph negatives: missing backing, wrong caller, unused permission and a fully authorized owner pass
+  ---
+  duration_ms: 21.203333
+  type: 'test'
+  ...
+# Subtest: targetFileOf maps relative, root-absolute and rejects bare specifiers
+ok 83 - targetFileOf maps relative, root-absolute and rejects bare specifiers
+  ---
+  duration_ms: 0.108542
+  type: 'test'
+  ...
+1..83
+# tests 83
+# suites 0
+# pass 83
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1351.269042
