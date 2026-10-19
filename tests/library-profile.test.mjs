@@ -27,7 +27,7 @@ test('avatar initials support Chinese names, email-only accounts and the guest s
   assert.equal(profileModule.profileInitials({displayName:'熊新伟'}),'熊');
   assert.equal(profileModule.profileInitials({displayName:'Lin Reader'}),'LR');
   assert.equal(profileModule.profileInitials({email:'reader@example.com'}),'R');
-  assert.equal(profileModule.profileInitials(null),'访');
+  assert.equal(profileModule.profileInitials(null),'R');
 });
 test('avatars use no-referrer images and return to initials when loading fails',()=>{
   assert.equal(typeof profileModule.renderProfileAvatar,'function');globalThis.document=documentFixture;
@@ -41,7 +41,7 @@ test('the account editor keeps identity read-only and only saves after explicit 
   assert.equal(f.get('profile-email').value,'reader@example.com');assert.equal(f.get('profile-email').readOnly,true);
   f.get('profile-display-name').value='新的称呼';f.get('profile-display-name').dispatchEvent(new Event('input'));assert.equal(calls.length,0);
   f.get('account-profile-form').dispatchEvent(new Event('submit',{cancelable:true}));await tick();
-  assert.deepEqual(calls,[{path:'/api/account/profile',body:{displayName:'新的称呼'}}]);assert.equal(saved.displayName,'新的称呼');assert.match(f.get('profile-status').textContent,/已保存/);
+  assert.deepEqual(calls,[{path:'/api/account/profile',body:{displayName:'新的称呼'}}]);assert.equal(saved.displayName,'新的称呼');assert.match(f.get('profile-status').textContent,/saved/i);
 });
 test('a pending profile save cannot update a different owner or render a stale failure',async()=>{
   let resolve,reject,updates=0;const promise=new Promise((ok,no)=>{resolve=ok;reject=no;}),f=mount({api:()=>promise,onProfileUpdated:()=>updates++});
@@ -58,7 +58,7 @@ test('a replaced session for the same owner also invalidates an in-flight profil
 test('save errors are visible, preserve the draft and allow retry without sending twice while busy',async()=>{
   let reject,calls=0;const f=mount({api:()=>{calls++;return new Promise((ok,no)=>{reject=no;});}});f.get('profile-display-name').value='My Draft';
   f.get('account-profile-form').dispatchEvent(new Event('submit',{cancelable:true}));f.get('account-profile-form').dispatchEvent(new Event('submit',{cancelable:true}));assert.equal(calls,1);
-  reject(Error('暂时无法保存'));await tick();assert.equal(f.get('profile-display-name').value,'My Draft');assert.equal(f.get('profile-save').disabled,false);assert.match(f.get('profile-status').textContent,/暂时无法保存/);
+  reject(Error('暂时无法保存'));await tick();assert.equal(f.get('profile-display-name').value,'My Draft');assert.equal(f.get('profile-save').disabled,false);assert.match(f.get('profile-status').textContent,/not saved yet/i,'unknown remote error prose maps to the honest generic fallback');
 });
 
 test('selected avatars are cropped into a bounded local preview and temporary image URLs are released',async(t)=>{
@@ -75,4 +75,19 @@ test('selected avatars are cropped into a bounded local preview and temporary im
 test('updating an owner inside the existing session object clears the previous owner draft',()=>{
   const f=mount();f.get('profile-display-name').value='Private Draft';f.session().user={id:'b',displayName:'Next Reader',email:'next@example.com'};f.controller.update();
   assert.equal(f.get('profile-display-name').value,'Next Reader');assert.equal(f.get('profile-email').value,'next@example.com');
+});
+
+
+test('locale changes preserve a pending save and drafts, and disposal releases this mount alone',async()=>{
+  const {requestUiRoute,t}=await import('../app/ui-locale.mjs');await requestUiRoute('en');
+  let finish,updates=0;const f=mount({api:()=>new Promise(resolve=>{finish=resolve;}),onProfileUpdated:()=>updates++}),g=mount();
+  try{
+    f.get('profile-display-name').value='Draft 阅读';f.get('account-profile-form').dispatchEvent(new Event('submit',{cancelable:true}));
+    await requestUiRoute('ja');assert.equal(f.get('profile-save').textContent,t('profile.saving'));assert.equal(f.get('profile-save').disabled,true);
+    assert.equal(f.get('profile-display-name').value,'Draft 阅读');assert.equal(f.get('profile-display-name').getAttribute('placeholder'),t('profile.name.placeholder'));
+    f.controller.dispose();const oldLabel=f.get('profile-save').textContent;
+    await requestUiRoute('zh-Hant');assert.equal(f.get('profile-save').textContent,oldLabel);assert.equal(g.get('profile-save').textContent,t('profile.save'));
+    finish({displayName:'Late'});await tick();assert.equal(updates,0);assert.equal(f.get('profile-display-name').value,'Draft 阅读');
+    f.get('profile-avatar-reset').dispatchEvent(new Event('click'));assert.equal(f.get('profile-status').textContent,'');
+  }finally{f.controller.dispose();g.controller.dispose();await requestUiRoute('en');}
 });

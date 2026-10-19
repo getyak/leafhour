@@ -1,3 +1,5 @@
+import {requestUiRoute as initializeLegacyUi} from '../app/ui-locale.mjs';
+await initializeLegacyUi('zh-Hans');
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';

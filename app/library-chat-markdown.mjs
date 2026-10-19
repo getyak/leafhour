@@ -8,7 +8,7 @@ export function safeChatUrl(value,{sourceRefs=[],recommendations=[],allowRecomme
   }
   try{const url=new URL(value);if(url.username||url.password)return null;if(origin&&url.origin===origin)return safeChatUrl(url.pathname+url.search+url.hash,{sourceRefs,recommendations,allowRecommendations,origin});return ['http:','https:'].includes(url.protocol)&&!url.username&&!url.password?url.href:null;}catch{return null;}
 }
-export function renderChatMarkdown(document,text,{sourceRefs=[],onInternalLink}={}){
+export function renderChatMarkdown(document,text,{sourceRefs=[],onInternalLink,onInternalLinkCreated}={}){
   const root=document.createElement('div');root.className='library-chat-text library-chat-markdown';
   const literal=(parent,value)=>parent.append(document.createTextNode(value));
   function inline(parent,value,depth=0){
@@ -16,7 +16,7 @@ export function renderChatMarkdown(document,text,{sourceRefs=[],onInternalLink}=
     const token=/(`+)([^`\n]+)\1|\[([^\]\n]+)\]\(([^\s)]+)\)|\*\*([^*\n]+)\*\*|__([^_\n]+)__|\*([^*\n]+)\*|_([^_\n]+)_/g;let start=0,match;
     while((match=token.exec(value))){literal(parent,value.slice(start,match.index));
       if(match[1]){const code=document.createElement('code');code.textContent=match[2];parent.append(code);}
-      else if(match[3]){const url=safeChatUrl(match[4],{sourceRefs});if(url){const link=document.createElement('a');link.href=url;if(url.startsWith('/'))link.addEventListener('click',event=>onInternalLink?.(event,sourceRefs.find(ref=>ref.url===url)));else{link.target='_blank';link.rel='noopener noreferrer';}inline(link,match[3],depth+1);parent.append(link);}else literal(parent,match[0]);}
+      else if(match[3]){const url=safeChatUrl(match[4],{sourceRefs});if(url){const link=document.createElement('a');link.href=url;if(url.startsWith('/')){onInternalLinkCreated?.(link,url);link.addEventListener('click',event=>onInternalLink?.(event,sourceRefs.find(ref=>ref.url===url)));}else{link.target='_blank';link.rel='noopener noreferrer';}inline(link,match[3],depth+1);parent.append(link);}else literal(parent,match[0]);}
       else{const el=document.createElement(match[5]||match[6]?'strong':'em');inline(el,match[5]||match[6]||match[7]||match[8],depth+1);parent.append(el);}start=token.lastIndex;
     }literal(parent,value.slice(start));
   }

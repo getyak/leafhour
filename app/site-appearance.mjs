@@ -1,4 +1,4 @@
-import {homeLocale} from './home-locale.mjs';
+import {t,onUiLocaleChange,uiReady,uiHref} from './ui-locale.mjs';
 
 // GET-185 explicit appearance selection. The header trigger opens a labelled
 // popover of native radio choices (System / Paper / Night); the current mode is
@@ -10,29 +10,12 @@ import {homeLocale} from './home-locale.mjs';
 export const appearanceModes = ['system', 'paper', 'night'];
 export const appearanceStorageKey = 'marginalia-portal-appearance';
 
-const copy = {
-  en: {
-    names: {system: 'System', paper: 'Paper', night: 'Night'},
-    legend: 'Appearance',
-    trigger: name => 'Appearance: ' + name + ' (change)'
-  },
-  'zh-Hans': {
-    names: {system: '跟随系统', paper: '纸白', night: '夜色'},
-    legend: '页面外观',
-    trigger: name => '页面外观：' + name + '（更改）'
-  },
-  'zh-Hant': {
-    names: {system: '跟隨系統', paper: '紙白', night: '夜色'},
-    legend: '頁面外觀',
-    trigger: name => '頁面外觀：' + name + '（更改）'
-  },
-  ja: {
-    names: {system: 'システム', paper: '紙', night: '夜'},
-    legend: '外観',
-    trigger: name => '外観：' + name + '（変更）'
-  }
-};
-
+// GET-192: presentation labels read the shared stable-ID runtime; the trigger,
+// legend and choice names relabel in place on a language commit without any
+// business update or preference write.
+const legendText=(translate=t)=>translate('shell.appearance.title');
+const nameText=(value,translate=t)=>translate('shell.appearance.'+value);
+const triggerLabel=(name,translate=t)=>translate('appearance.trigger',{name});
 const icons = {system: '◐', paper: '☀', night: '☾'};
 let mode = 'system';
 let active = null; // {doc, win, storage, control, menu, options, strings}
@@ -70,17 +53,29 @@ function emit(name, detail) {
   active.doc.dispatchEvent(new Event(name, {detail}));
 }
 
-function apply() {
+function renderTrigger() {
   if (!active) return;
-  const {doc, control, options, strings} = active;
+  const {doc, control, options, ui} = active;
   doc.documentElement.dataset.siteTheme = mode;
   if (control) {
-    const label = strings.trigger(strings.names[mode]);
+    const label = triggerLabel(nameText(mode,ui.t),ui.t);
     control.setAttribute('aria-label', label);
-    control.title = strings.names[mode];
+    control.title = nameText(mode,ui.t);
     control.textContent = icons[mode];
   }
   for (const [value, input] of options) input.checked = value === mode;
+}
+function relabel() {
+  if (!active) return;
+  const {legend,ui,supportLinks} = active;
+  if (legend) legend.textContent = legendText(ui.t);
+  for (const [value, span] of active.nameSpans || []) span.textContent = nameText(value,ui.t);
+  for(const [link,target] of supportLinks)link.href=ui.uiHref(target);
+  renderTrigger();
+}
+function apply() {
+  if (!active) return;
+  renderTrigger();
   emit('site:appearance', mode);
 }
 
@@ -111,10 +106,28 @@ function closeMenu({restoreFocus = false} = {}) {
   emit('site:appearance-menu', 'close');
 }
 
+// Only the authored support documents delegate their canonical navigation here.
+// Keep raw targets, prose and language/home links intact. These supported query
+// keys cover the owned anchors; unknown (including signed) URLs stay untouched.
+function supportLinks(doc) {
+  if(doc.body?.dataset?.palettePage!=='support')return [];
+  const links=[];
+  for(const link of doc.body.querySelectorAll?.('a[href]')||[]){
+    const target=link.getAttribute('href');
+    if(!/^\/(library|read)(?:[?#]|$)/.test(target)||/[\u0000-\u0020\u007f\\]/.test(target)||link.getAttribute('download')!==null||link.getAttribute('hreflang')!==null)continue;
+    const url=new URL(target,'https://leafhour.invalid');
+    if([...url.searchParams.keys()].some(key=>!['ui','book','passage','source','layer','version'].includes(key)))continue;
+    links.push([link,target]);
+  }
+  return links;
+}
+
 export function mountSiteAppearance(doc, options = {}) {
+  const ui=options.ui||{t,onUiLocaleChange,uiReady,uiHref};
+  active?.offLocale?.();
   const win = options.win || doc.defaultView || globalThis;
   const storage = options.storage || (function () { try { return win.localStorage; } catch { return null; } })();
-  const strings = copy[homeLocale(doc)] || copy.en;
+  const nameSpans=new Map();let legend=null;
   const control = doc.getElementById?.('site-theme') || null;
   mode = readStored(storage);
   const menu = control ? doc.createElement('div') : null;
@@ -125,9 +138,9 @@ export function mountSiteAppearance(doc, options = {}) {
     menu.hidden = true;
     const group = doc.createElement('fieldset');
     group.className = 'appearance-options';
-    const legend = doc.createElement('legend');
+    legend = doc.createElement('legend');
     legend.className = 'appearance-legend';
-    legend.textContent = strings.legend;
+    legend.textContent = legendText(ui.t);
     group.append(legend);
     for (const value of appearanceModes) {
       const label = doc.createElement('label');
@@ -138,7 +151,8 @@ export function mountSiteAppearance(doc, options = {}) {
       input.setAttribute('value', value);
       input.checked = value === mode;
       const name = doc.createElement('span');
-      name.textContent = strings.names[value];
+      name.textContent = nameText(value,ui.t);
+      nameSpans.set(value, name);
       label.append(input, name);
       input.addEventListener('change', () => { if (input.checked) setSiteAppearance(value); });
       radios.set(value, input);
@@ -148,7 +162,7 @@ export function mountSiteAppearance(doc, options = {}) {
     if (typeof control.after === 'function') control.after(menu);
     else control.parentElement?.appendChild(menu);
   }
-  active = {doc, win, storage, control, menu, options: radios, strings};
+  active = {doc, win, storage, control, menu, options: radios, legend, nameSpans, ui, supportLinks:supportLinks(doc)};
   if (control) {
     control.setAttribute('aria-haspopup', 'true');
     control.setAttribute('aria-controls', 'site-appearance-menu');
@@ -195,7 +209,9 @@ export function mountSiteAppearance(doc, options = {}) {
     apply();
   });
   apply();
-  return {get: getSiteAppearance, set: setSiteAppearance, open: () => control && openMenu(), close: closeMenu};
+  const mounted=active,refresh=()=>{if(active===mounted)relabel();};
+  mounted.offLocale=ui.onUiLocaleChange(refresh);void ui.uiReady.then(refresh);
+  return {get: getSiteAppearance, set: setSiteAppearance, open: () => control && openMenu(), close: closeMenu, updateLabels: relabel};
 }
 
 if (typeof document !== 'undefined') mountSiteAppearance(document);

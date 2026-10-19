@@ -19,11 +19,14 @@ export function chooseReadingPosition({book,remote,local,remoteAvailable=true}){
   if(remoteAvailable&&cached?.pending&&(cached.baseRevision||0)!==(remote?.revision||0))return saved;
   return cached||saved;
 }
-export function resumeSummary(book,position){
+export function resumeSummary(book,position,labels={}){
   const saved=resolveReadingPosition(book,position);if(!saved)return null;
   const chapter=book.chapters.find(c=>c.id===saved.chapterId);if(!chapter)return null;
-  const title=chapter.title?.zh||chapter.title?.en||'上次的位置';
-  const label=chapter.kind==='body'&&!/^第 .+ [章卷]$/.test(title)?'第 '+chapter.number+' 章 · '+title:title;
+  // Optional caller-supplied label formatting keeps this helper pure; the
+  // legacy default stays exactly the stored source-language label.
+  const fallbackTitle=labels.fallbackTitle||'上次的位置',chapterLabel=labels.chapterLabel||((number,title)=>'第 '+number+' 章 · '+title);
+  const title=chapter.title?.zh||chapter.title?.en||fallbackTitle;
+  const label=chapter.kind==='body'&&!/^第 .+ [章卷]$/.test(title)?chapterLabel(chapter.number,title):title;
   return {chapterId:chapter.id,passageId:saved.passageId,chapterTitle:title,label,mode:saved.mode,variant:saved.variant,updatedAt:saved.updatedAt||null,revision:saved.revision||0};
 }
 export const recoveredPositionNeedsChoice=(knownRevision,remote)=>!!remote&&(remote.revision||0)!==knownRevision;

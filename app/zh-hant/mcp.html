@@ -17,12 +17,12 @@
 </head>
 <body class="privacy-page mcp-page" data-palette-page="support">
 <a class="skip" href="#main">跳至內文</a>
-<header class="site-header"><a class="brand" href="/zh-hant" aria-label="Leafhour 首頁"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="brand-name" lang="en">Leafhour</span></a><nav aria-label="主導覽"><a href="/zh-hant">關於 Leafhour</a><a href="/library">進入書房 →</a><button class="palette-entry" data-palette-open type="button">搜尋與命令 <kbd data-palette-keycap></kbd></button><div class="home-languages" role="group" aria-label="語言"><a href="/mcp" lang="en" hreflang="en">English</a><a href="/zh-hans/mcp" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a aria-current="true" href="/zh-hant/mcp" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/mcp" lang="ja" hreflang="ja">日本語</a></div></nav></header>
+<header class="site-header"><a class="brand" href="/zh-hant" aria-label="Leafhour 首頁"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="brand-name" lang="en">Leafhour</span></a><nav aria-label="主導覽"><a href="/zh-hant">關於 Leafhour</a><a href="/library?ui=zh-Hant">進入書房 →</a><button class="palette-entry" data-palette-open type="button">搜尋與命令 <kbd data-palette-keycap></kbd></button><div class="home-languages" role="group" aria-label="語言"><a href="/mcp" lang="en" hreflang="en">English</a><a href="/zh-hans/mcp" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a aria-current="true" href="/zh-hant/mcp" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/mcp" lang="ja" hreflang="ja">日本語</a></div></nav></header>
 <main id="main" class="privacy-document"><article class="public-article">
   <h1>用 MCP 讓 AI Agent 連接你的書。</h1>
   <p class="public-byline">Leafhour 文檔 · 更新於 2026 年 10 月 16 日</p>
   <p>Leafhour 的 Model Context Protocol（MCP）轉接器讓相容的 AI 宿主讀取你授權的一本書。它與網頁使用同一個閱讀服務。存取僅限於一本書和你選擇的資料類型；只安裝轉接器不會取得任何權限。</p>
-  <p>這是技術接入。目前閱讀介面主要為簡體中文，尚無完整的授權管理頁面。建立和撤回授權，請使用現有相容用戶端或已認證的服務 API。需要協助時，請聯絡 <a href="mailto:support@leafhour.com">support@leafhour.com</a>。</p>
+  <p>這是技術接入。閱讀介面支援英文、簡體中文、繁體中文和日語，尚無完整的授權管理頁面。建立和撤回授權，請使用現有相容用戶端或已認證的服務 API。需要協助時，請聯絡 <a href="mailto:support@leafhour.com">support@leafhour.com</a>。</p>
   <h2 id="permissions">選擇 Agent 可以存取的內容。</h2>
   <div class="mcp-scroll" role="region" aria-label="權限表，可橫向捲動" tabindex="0"><table><thead><tr><th scope="col">權限</th><th scope="col">允許的操作</th></tr></thead><tbody>
     <tr><th scope="row"><code>content</code></th><td>原文與已保存的譯文、書籍資訊、分頁章節以及該書內的搜尋。</td></tr>
@@ -32,7 +32,7 @@
   </tbody></table></div>
   <p>建議先只用 <code>content</code>。授權七天後過期，也可以提前撤回。撤回後，後續服務鑑權會失敗；撤回不能清除已經複製到你的 AI 宿主裡的內容。</p>
   <h2 id="setup">連接轉接器。</h2>
-  <ol><li>按<a href="https://github.com/getyak/leafhour#readme">倉庫說明</a>在本地運行 Leafhour，或使用託管閱讀服務。在自己的<a href="/library">書房</a>匯入一本書，或選擇一本公版樣書。</li><li>透過相容用戶端或已認證 API，用 <code>POST /api/library/grants</code> 建立帶 <code>bookId</code> 和所選 <code>scopes</code> 的授權。權杖只返回一次，請保存在 AI 宿主的私密設定裡。</li><li>讀取 <code>GET /api/library/mcp-setup</code>，並用<a href="https://github.com/getyak/leafhour/blob/main/app/mcp-config.mjs">設定產生器</a>建立宿主設定。本地原始碼運行時，轉接器以 <code>node server/mcp.mjs</code> 啟動。託管接入會返回實際部署的原始碼提交，產生的設定固定到這份不可變的原始碼包並明確允許 HTTPS 書房；缺少部署來源時直接拒絕。</li><li>在相容的 AI 宿主中啟用 MCP 伺服器，並在工具請求中帶上授權的書籍 ID。用完後可用 <code>POST /api/library/grants/{id}/revoke</code> 撤回授權。</li></ol>
+  <ol><li>按<a href="https://github.com/getyak/leafhour#readme">倉庫說明</a>在本地運行 Leafhour，或使用託管閱讀服務。在自己的<a href="/library?ui=zh-Hant">書房</a>匯入一本書，或選擇一本公版樣書。</li><li>透過相容用戶端或已認證 API，用 <code>POST /api/library/grants</code> 建立帶 <code>bookId</code> 和所選 <code>scopes</code> 的授權。權杖只返回一次，請保存在 AI 宿主的私密設定裡。</li><li>讀取 <code>GET /api/library/mcp-setup</code>，並用<a href="https://github.com/getyak/leafhour/blob/main/app/mcp-config.mjs">設定產生器</a>建立宿主設定。本地原始碼運行時，轉接器以 <code>node server/mcp.mjs</code> 啟動。託管接入會返回實際部署的原始碼提交，產生的設定固定到這份不可變的原始碼包並明確允許 HTTPS 書房；缺少部署來源時直接拒絕。</li><li>在相容的 AI 宿主中啟用 MCP 伺服器，並在工具請求中帶上授權的書籍 ID。用完後可用 <code>POST /api/library/grants/{id}/revoke</code> 撤回授權。</li></ol>
   <p>轉接器使用這些環境變數：</p>
   <div class="mcp-scroll" role="region" aria-label="命令範例，可橫向捲動" tabindex="0"><pre><code>READER_SERVICE_URL=http://127.0.0.1:8330
 READER_AGENT_TOKEN=&lt;your book-scoped grant&gt;

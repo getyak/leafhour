@@ -1,3 +1,4 @@
+import {t} from './ui-locale.mjs';
 // GET-178 full-library palette data. One exact call to /api/library (never the
 // readerFetch path remap) with a captured owner, request-generation fence and
 // session bootstrap/invalidation. Private book names are never persisted to a
@@ -50,14 +51,14 @@ export function createPaletteLibrary({request=fetch,getOwner=null,subscribe=null
   // session identity is rejected before /api/library and again at adoption.
   const ownerOf=typeof getOwner==='function'?getOwner:()=>null;
   const identityKnown=typeof getOwner==='function';
-  let generation=0,phase='idle',books=[],error='',loadedOwner=ownerOf();
+  let generation=0,phase='idle',books=[],error=null,loadedOwner=ownerOf();
   const watchers=new Set();
   const notify=()=>{onChange();for(const watcher of watchers)watcher();};
-  const clear=()=>{books=[];error='';phase='idle';notify();};
+  const clear=()=>{books=[];error=null;phase='idle';notify();};
   const invalidate=()=>{generation++;loadedOwner=ownerOf();clear();};
   const fence=()=>{if(loadedOwner!==ownerOf()){invalidate();return false;}return true;};
   const changed=response=>response?.headers?.get?.('X-Reader-Session-Changed')==='1';
-  const requireOk=response=>{if(response?.ok===false)throw Object.assign(Error('服务暂时不可用'),{status:response.status});return response;};
+  const requireOk=response=>{if(response?.ok===false)throw Object.assign(Error(t('palette.library.unavailable')),{status:response.status,messageId:'palette.library.unavailable'});return response;};
   const compatible=identity=>!identityKnown||(ownerOf()||'guest')===(identity?.owner||'guest');
   async function sessionIdentity(){
     const response=requireOk(await request('/api/auth/session',{cache:'no-store'}));
@@ -74,7 +75,7 @@ export function createPaletteLibrary({request=fetch,getOwner=null,subscribe=null
     async load(){
       fence();
       const captured=ownerOf(),ticket=++generation,stale=()=>ticket!==generation;
-      phase='loading';error='';
+      phase='loading';error=null;
       try{
         const identity=await sessionIdentity();
         if(stale())return library.view();
@@ -96,7 +97,7 @@ export function createPaletteLibrary({request=fetch,getOwner=null,subscribe=null
         }
         if(stale()||ownerOf()!==captured||!compatible(identity))return library.view();
         books=list;loadedOwner=captured;phase='ready';notify();
-      }catch(error_){if(ticket===generation){phase='error';error=error_?.message||'书目暂时无法载入';books=[];notify();}}
+      }catch(error_){if(ticket===generation){phase='error';error=error_?.messageId?{id:error_.messageId}:{id:'palette.library.failed'};books=[];notify();}}
       return library.view();
     }
   };

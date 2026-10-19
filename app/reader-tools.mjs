@@ -1,4 +1,5 @@
 import {mountReadingToolbar} from './reading-toolbar.mjs';
+import {t,onUiLocaleChange} from './ui-locale.mjs';
 
 // GET-184 tools coordinator: the single owner of the reader pill's expanded
 // state, its five-second concealment and the pointer/keyboard/dialog holds
@@ -9,18 +10,26 @@ import {mountReadingToolbar} from './reading-toolbar.mjs';
 // callback). Shared pill ARIA and presentation stay here, never in chat or the
 // companion.
 
-let currentTools=null;
+let currentTools=null,resolveTools;
+export const readerToolsReady=new Promise(resolve=>{resolveTools=resolve;});
 
 // Sibling reader scripts (reading-session.js) reach the mounted coordinator
 // through this handle instead of mounting a second toolbar.
 export const readerTools=()=>currentTools;
 
 export function mountReaderTools({sessionRoot,immersion=null,document=globalThis.document}={}){
+  let disposed=false;
+  const listeners=[];
+  const listen=(target,name,fn)=>{const owned=event=>{if(!disposed)fn(event);};target.addEventListener(name,owned);listeners.push(()=>target.removeEventListener(name,owned));};
   const pill=sessionRoot.querySelector('#reading-tools-trigger');
-  const restorePill=()=>{if(pill&&pill.isConnected!==false&&!pill.hidden){pill.focus({preventScroll:true});return true;}immersion?.restoreToolFocus?.();};
+  const restorePill=()=>{if(disposed)return false;if(pill&&pill.isConnected!==false&&!pill.hidden){pill.focus({preventScroll:true});return true;}immersion?.restoreToolFocus?.();};
   const header=document.getElementById('reading-header');
   const handoffHost=sessionRoot.querySelector('#reading-tools-chat-slot');
-  const toolbar=mountReadingToolbar(sessionRoot,{onExpandedChange(expanded,{focus}={}){
+  let unread=false;
+  const updateUnreadLabel=()=>{if(!disposed)pill?.setAttribute('aria-description',unread?t('reader.tools.companion'):'');};
+  const offLocale=onUiLocaleChange(updateUnreadLabel);
+  pill?.classList.toggle('has-companion-message',false);updateUnreadLabel();
+  const toolbar=mountReadingToolbar(sessionRoot,{document,onExpandedChange(expanded,{focus}={}){
     if(expanded){immersion?.showTools?.({focus:!!focus});return;}
     const inside=!!header?.contains?.(document.activeElement);
     immersion?.closeTools?.();
@@ -28,20 +37,20 @@ export function mountReaderTools({sessionRoot,immersion=null,document=globalThis
   }});
   // The single conceal timer is held while either tools surface is used.
   if(header?.addEventListener){
-    header.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse')toolbar.hold('header-pointer',true);});
-    header.addEventListener('pointerleave',event=>{if(event.pointerType==='mouse')toolbar.hold('header-pointer',false);});
-    header.addEventListener('focusin',()=>toolbar.hold('header-keyboard',true));
-    header.addEventListener('focusout',()=>queueMicrotask(()=>toolbar.hold('header-keyboard',!!header.contains?.(document.activeElement))));
+    listen(header,'pointerenter',event=>{if(event.pointerType==='mouse')toolbar.hold('header-pointer',true);});
+    listen(header,'pointerleave',event=>{if(event.pointerType==='mouse')toolbar.hold('header-pointer',false);});
+    listen(header,'focusin',()=>toolbar.hold('header-keyboard',true));
+    listen(header,'focusout',()=>queueMicrotask(()=>{if(!disposed)toolbar.hold('header-keyboard',!!header.contains?.(document.activeElement));}));
   }
   const chatIntegration={
     triggerHost:handoffHost,
     companionAnchor:pill,
     focusReturn:restorePill,
-    onUnread:value=>{if(!pill)return;pill.classList.toggle('has-companion-message',!!value);pill.setAttribute('aria-description',value?'有陪读消息':'');},
+    onUnread:value=>{if(disposed)return;unread=!!value;if(!pill)return;pill.classList.toggle('has-companion-message',unread);updateUnreadLabel();},
     onOpen:()=>toolbar.conceal()
   };
   toolbar.setControlMode(document.body?.classList?.contains('is-focused')?'focused':'unfocused');
-  document.addEventListener?.('reader:focus',event=>toolbar.setControlMode(event?.detail?.focused===false?'unfocused':'focused'));
-  currentTools={toolbar,chatIntegration,closeRequest:target=>{if(sessionRoot.contains(target)||header?.contains(target))return false;toolbar.conceal();return true;}};
-  return currentTools;
+  listen(document,'reader:focus',event=>toolbar.setControlMode(event?.detail?.focused===false?'unfocused':'focused'));
+  const tools={toolbar,chatIntegration,closeRequest:target=>{if(disposed||sessionRoot.contains(target)||header?.contains(target))return false;toolbar.conceal();return true;},unmount(){if(disposed)return;disposed=true;offLocale();toolbar.unmount();for(const release of listeners)release();listeners.length=0;if(currentTools===tools)currentTools=null;}};
+  currentTools=tools;resolveTools(tools);return tools;
 }

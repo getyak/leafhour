@@ -104,6 +104,7 @@ class Doc{
   }
   createElement(tag){const node=new Node(tag,this);if(this.native)nativePopover(node);return node;}
   createElementNS(_ns,tag){return new Node(tag,this);}
+  createTextNode(text){const node=new Node('#text',this);node.nodeType=3;node.textContent=String(text);Object.defineProperty(node,'parentNode',{get:()=>node.parentElement});return node;}
   getElementById(id){return this._byId.get(id)||query(this.body,'#'+id)[0]||null;}
   querySelector(selector){return query(this.body,selector)[0]||null;}
   querySelectorAll(selector){return query(this.body,selector);}

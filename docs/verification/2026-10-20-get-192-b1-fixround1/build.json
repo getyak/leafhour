@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-19T16:11:36.679Z",
+  "base": "b2e2e6c2ed7ac2c83fdeca8c2ec68e6e1b715c96",
+  "original": {
+    "status": "failed",
+    "error": "Reader bundle exceeds public asset budget: reader 336969"
+  },
+  "diagnostic": {
+    "js": 336969,
+    "css": 169008,
+    "error": "Reader bundle exceeds public asset budget: reader 336969"
+  },
+  "caps": {
+    "js": 327680,
+    "css": 204800
+  },
+  "reviewedHead": "1718b199da6fd736b58d74a80b3ce3f29198f3dc",
+  "checkpoint": "fixround1"
+}

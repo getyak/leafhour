@@ -1,3 +1,4 @@
+import {t,getUiLocale,onUiLocaleChange,uiReady} from './ui-locale.mjs';
 import {arrivalExcerpt} from './arrival-excerpt.mjs';
 import {arrivalCatalog} from './arrival-catalog.mjs';
 // Short, locally bundled excerpts. Translations retain the catalog's draft status.
@@ -9,7 +10,7 @@ const quotes=[
 
 export function arrivalQuote(bookId){
   const match=quotes.find(quote=>quote.bookId===bookId)||(Object.hasOwn(arrivalCatalog,bookId)?arrivalCatalog[bookId]:null);
-  return match?{...match,context:match.context||'书中一句',sourceLanguage:'en'}:null;
+  return match?{...match,context:match.context||'书中一句',contextId:quotes.includes(match)?'arrival.context.sentence':'arrival.context.paragraph',sourceLanguage:'en'}:null;
 }
 
 // Only the already-authorized reading response may supply private content.
@@ -25,7 +26,7 @@ export function arrivalBookQuote(book,{bookId,passageId}={}){
   const paragraph=[requested,start,...rows].find(row=>text(row?.original).length>=20);
   const original=paragraph?text(paragraph.original):null;
   const chapter=book.chapters?.find(row=>row.id===paragraph?.chapterId);
-  return {bookId:book.bookId,title,author:text(book.author),chapter:text(chapter?.title?.zh)||text(chapter?.title?.en)||text(chapter?.title),original:original?arrivalExcerpt(original):null,translation:null,sourceLanguage:text(book.sourceLanguage)||'und',context:'书中一段',passageId:paragraph?.id||null,contentVersion:book.contentVersion||null};
+  return {bookId:book.bookId,title,author:text(book.author),chapter:text(chapter?.title?.zh)||text(chapter?.title?.en)||text(chapter?.title),original:original?arrivalExcerpt(original):null,translation:null,sourceLanguage:text(book.sourceLanguage)||'und',context:'书中一段',contextId:'arrival.context.paragraph',passageId:paragraph?.id||null,contentVersion:book.contentVersion||null};
 }
 
 // Completion never waits for an animation. Tickets isolate retries from late work.
@@ -43,7 +44,8 @@ export function createArrivalLifecycle({render,schedule=setTimeout,cancel=clearT
     finish(ticket){
       if(ticket!==sequence||!pending)return false;
       pending=false;stopTimer();render({phase:'hidden',slow:false});return true;
-    }
+    },
+    dispose(){pending=false;stopTimer();}
   };
 }
 
@@ -65,34 +67,55 @@ export function mountReadingArrival(root){
   const doc=root.ownerDocument,win=doc.defaultView,library=root.dataset.readingArrival==='library';
   const node=(tag,className,text)=>{const element=doc.createElement(tag);element.className=className;if(text!==undefined)element.textContent=text;return element;};
   const query=new URLSearchParams(win.location.search),selectedBookId=query.get('book');
-  const initialQuote=library?{...arrivalQuote('gutenberg-alice'),context:'书房拾句'}:arrivalQuote(selectedBookId);
+  const initialQuote=library?{...arrivalQuote('gutenberg-alice'),context:'书房拾句',contextId:'arrival.context.library'}:arrivalQuote(selectedBookId);
   root.classList.add('reading-arrival');root.classList.toggle('arrival-library',library);
   root.removeAttribute('role');
   const scene=createPaperCompanion(doc);
-  const greeting=node('p','arrival-greeting',library?'我来把书页摊开。':'等我翻到你那一页。');
-  const context=node('p','arrival-context'),text=node('blockquote','arrival-quote');
+  const greeting=node('p','arrival-greeting'),context=node('p','arrival-context'),text=node('blockquote','arrival-quote');
   const original=node('p','arrival-original'),source=node('p','arrival-source');
+  // Semantic UI state: language commits relabel only the owned chrome from
+  // these caches. They never call showQuote, never touch the literal source
+  // descendants and never restart or reset the arrival lifecycle or timers.
+  const model={quote:initialQuote,view:{phase:'loading',slow:false},disposed:false};
+  let provenanceNode=null;
+  function paintChrome(){
+    root.setAttribute('lang',getUiLocale());
+    greeting.textContent=t('arrival.greeting.'+(library?'library':'reader'));
+    retry.textContent=t('arrival.retry');
+    const view=model.view;
+    status.textContent=view.phase==='hidden'?'':view.slow?t('arrival.slow',{target:t('arrival.target.'+(library?'library':'reader'))}):t('arrival.status.'+(library?'library':'reader'));
+    const quote=model.quote,opening=quote?.title&&!quote.original;
+    if(opening)context.textContent=t('arrival.context.opening',{title:quote.title});
+    else context.textContent=t(quote?.contextId||'arrival.context.book');
+    if(provenanceNode)provenanceNode.textContent=quote.translation?t('arrival.provenance.'+(quote.variant==='literal'?'literal':'interpretive')):t('arrival.provenance.original');
+  }
   function showQuote(quote){
-    context.textContent=quote?.title&&!quote.original?'正在打开《'+quote.title+'》':quote?.context||'正在打开所选书籍';
+    model.quote=quote||null;provenanceNode=null;
     text.hidden=!quote?.original;text.textContent=quote?.original?'“'+(quote.translation||quote.original)+'”':'';text.lang=quote?.translation?'zh':quote?.sourceLanguage||'und';
     original.hidden=!quote?.translation;original.textContent=quote?.translation?quote.original:'';original.lang=quote?.sourceLanguage||'und';
     source.hidden=!quote?.original;source.textContent=quote?.original?(quote.author?quote.author+' ':'')+'《'+quote.title+'》'+(quote.chapter?' · '+quote.chapter:''):'';
-    if(quote?.original){
-      const label=quote.translation?'中文'+(quote.variant==='literal'?'直译':'意译')+'节选 · AI 草稿':'原文节选';
-      source.append(node('span','arrival-provenance',label));
-    }
+    if(quote?.original){const provenance=node('span','arrival-provenance');provenanceNode=provenance;source.append(provenance);}
+    paintChrome();
   }
-  showQuote(initialQuote);
   const status=node('p','arrival-status');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
-  const retry=node('button','arrival-retry','重新打开');retry.type='button';retry.hidden=true;retry.addEventListener('click',()=>win.location.reload());
-  root.replaceChildren(scene,greeting,context,text,original,source,status,retry);
+  const retry=node('button','arrival-retry');retry.type='button';retry.hidden=true;const onRetry=()=>win.location.reload();retry.addEventListener('click',onRetry);
+  root.replaceChildren(scene,greeting,context,text,original,source,status,retry);showQuote(initialQuote);
   const lifecycle=createArrivalLifecycle({render:view=>{
-    root.hidden=view.phase==='hidden';root.dataset.arrivalState=view.phase;
-    status.textContent=view.slow?'这次打开得稍慢，仍在等待'+(library?'书房':'书页')+'。':library?'正在打开书房…':'正在展开书页…';
+    model.view=view;root.hidden=view.phase==='hidden';root.dataset.arrivalState=view.phase;
     retry.hidden=!view.slow||view.phase==='hidden';
+    if(!model.disposed)paintChrome();
   }});
+  function updateLabels(){if(!model.disposed)paintChrome();}
+  const offLocale=onUiLocaleChange(updateLabels);void uiReady.then(updateLabels);
+  paintChrome();
   let current;
-  const controller={start(){showQuote(initialQuote);current=lifecycle.start();return current;},setBook(book,ticket=current){if(library||ticket!==current||!lifecycle.pending)return false;const quote=arrivalBookQuote(book,{bookId:selectedBookId,passageId:query.get('passage')});if(!quote)return false;showQuote(quote);return true;},finish(ticket=current){return lifecycle.finish(ticket);}};
+  const controller={
+    start(){showQuote(initialQuote);current=lifecycle.start();return current;},
+    setBook(book,ticket=current){if(library||ticket!==current||!lifecycle.pending)return false;const quote=arrivalBookQuote(book,{bookId:selectedBookId,passageId:query.get('passage')});if(!quote)return false;showQuote(quote);return true;},
+    finish(ticket=current){return lifecycle.finish(ticket);},
+    updateLabels,
+    dispose(){if(model.disposed)return;model.disposed=true;offLocale();lifecycle.dispose();retry.removeEventListener('click',onRetry);mounted.delete(root);}
+  };
   mounted.set(root,controller);controller.start();return controller;
 }
 

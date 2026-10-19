@@ -25,7 +25,7 @@ export function normaliseShareOptions(raw={}){
 }
 export function textFor(p,language,variant='interpretive'){return language==='en'?p.original:p.translations?.[variant]?.text;}
 const validBoundary=(s,n)=>n===0||n===s.length||!(s.charCodeAt(n-1)>=0xD800&&s.charCodeAt(n-1)<=0xDBFF&&s.charCodeAt(n)>=0xDC00&&s.charCodeAt(n)<=0xDFFF);
-export function buildShareModel(book,snapshot,rawOptions={}){
+export function buildShareModel(book,snapshot,rawOptions={},format=(_id,_params,fallback)=>fallback){
  const options=normaliseShareOptions(rawOptions);
  if(!snapshot||snapshot.bookId!==book.bookId||snapshot.contentVersion!==book.contentVersion)throw Error('摘录的书籍或版本已改变，请重新选择。');
  if(!Array.isArray(snapshot.parts)||!snapshot.parts.length||snapshot.parts.length>8)throw Error('请选择一到八段正文。');
@@ -39,12 +39,12 @@ export function buildShareModel(book,snapshot,rawOptions={}){
   if(typeof source!=='string'||!Number.isInteger(part.start)||!Number.isInteger(part.end)||part.start<0||part.end<=part.start||part.end>source.length||!validBoundary(source,part.start)||!validBoundary(source,part.end)||source.slice(part.start,part.end)!==part.text)throw Error('摘录无法对应当前原文或译文，请重新选择。');
   characters+=part.text.length;if(characters>4000)throw Error('摘录较长，请将选择控制在4000字以内。');
   const full=part.start===0&&part.end===source.length;
-  const originalLabel=book.sourceLanguage==='zh'?'中文原文':'英文原文';
+  const originalLabel=book.sourceLanguage==='zh'?format('share.artifact.originalZh',null,'中文原文'):format('share.artifact.originalEn',null,'英文原文'),variantLabel=value=>value==='literal'?format('share.artifact.literal',null,'直译'):format('share.artifact.interpretive',null,'意译'),draftLabel=format('share.artifact.draftSuffix',null,' · 草稿');
   // Presentation only: full immutable source ranges for eligible originals.
   // The saved text fields above keep their raw UTF-16 characters and offsets.
   const emphasisOf=(language,text,start,end)=>language==='en'&&sourceEmphasisEligible(book)?{emphasis:sliceEmphasisRanges(sourceEmphasisRanges(text),start,end)}:{};
-  const selected={text:part.text,language:part.language,label:part.language==='en'?originalLabel:(part.variant==='literal'?'直译':'意译')+' · 草稿',wholeCounterpart:false,...emphasisOf(part.language,source,part.start,part.end)};
-  const counterpart=(language,variant)=>{const text=textFor(p,language,variant);if(typeof text!=='string'||!text.trim())throw Error('这段对应译文尚未准备好。');const name=language==='en'?originalLabel:variant==='literal'?'直译':'意译';return {text,language,label:name+(full?'':' · 对应整段')+(language==='zh'?' · 草稿':''),wholeCounterpart:!full,...emphasisOf(language,text,0,text.length)};};
+  const selected={text:part.text,language:part.language,label:part.language==='en'?originalLabel:variantLabel(part.variant)+draftLabel,wholeCounterpart:false,...emphasisOf(part.language,source,part.start,part.end)};
+  const counterpart=(language,variant)=>{const text=textFor(p,language,variant);if(typeof text!=='string'||!text.trim())throw Error('这段对应译文尚未准备好。');const name=language==='en'?originalLabel:variantLabel(variant);return {text,language,label:name+(full?'':format('share.artifact.wholeSuffix',null,' · 对应整段'))+(language==='zh'?draftLabel:''),wholeCounterpart:!full,...emphasisOf(language,text,0,text.length)};};
   const desired=options.language==='bilingual'?part.language:options.language;
   const unchanged=desired===part.language&&(desired==='en'||options.variant===part.variant);
   const primary=unchanged?selected:counterpart(desired,options.variant);
@@ -64,7 +64,7 @@ export function buildShareModel(book,snapshot,rawOptions={}){
  const before=beforePick?beforePick.text:'',after=afterPick?afterPick.text:'';
  const contextEmphasis=(pick,language)=>pick&&language==='en'&&sourceEmphasisEligible(book)?sliceEmphasisRanges(sourceEmphasisRanges(pick.full),pick.start,pick.end):undefined;
  const chapter=book.chapters.find(c=>c.id===snapshot.chapterId);
- return {bookId:book.bookId,contentVersion:book.contentVersion,title:book.title?.zh||book.title?.en||'书籍摘录',author:typeof book.author==='string'?book.author:'',location:(book.source?.structure==='automatic_groups'?'阅读片段 '+(chapter?.number||''):'第 '+(chapter?.number||'')+' 章')+' · §'+first.section+(last.section!==first.section?'–'+last.section:'')+(first.page?' · 原书 '+first.page+' 页':''),blocks,before,after,beforeEmphasis:contextEmphasis(beforePick,first.primary.language),afterEmphasis:contextEmphasis(afterPick,last.primary.language),contextLanguage:first.primary.language,attribution:first.primary.label,selectedCharacters:characters};
+ return {bookId:book.bookId,contentVersion:book.contentVersion,title:book.title?.zh||book.title?.en||format('share.artifact.title',null,'书籍摘录'),author:typeof book.author==='string'?book.author:'',location:(book.source?.structure==='automatic_groups'?format('share.artifact.segment',{number:chapter?.number||''},'阅读片段 '+(chapter?.number||'')):format('share.artifact.chapter',{number:chapter?.number||''},'第 '+(chapter?.number||'')+' 章'))+' · §'+first.section+(last.section!==first.section?'–'+last.section:'')+(first.page?format('share.artifact.pageSuffix',{page:first.page},' · 原书 '+first.page+' 页'):''),blocks,before,after,beforeEmphasis:contextEmphasis(beforePick,first.primary.language),afterEmphasis:contextEmphasis(afterPick,last.primary.language),contextLanguage:first.primary.language,attribution:first.primary.label,selectedCharacters:characters};
 }
 export function paragraphSnapshot(book,p,chapterId,language='zh',variant='interpretive'){
  const text=textFor(p,language,variant);if(!text?.trim())throw Error('这段文字尚未准备好。');

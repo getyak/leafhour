@@ -33,7 +33,7 @@ export function mountChoiceControl({document,select,label='',onChange=()=>{}}={}
   let composing=false,query='',open=false,compositionBase=null;
   try{
     const labelElement=select.id?document.querySelector('label[for="'+select.id+'"]'):null;
-    const labelText=(typeof label==='string'&&label)||labelElement?.textContent?.trim()||select.getAttribute('aria-label')||'选择';
+    let labelText=(typeof label==='string'&&label)||labelElement?.textContent?.trim()||select.getAttribute('aria-label')||'选择';
     const describedBy=select.getAttribute('aria-describedby');
     const commit=value=>{
       const option=[...select.options].find(row=>String(row.value)===value);
@@ -113,7 +113,10 @@ export function mountChoiceControl({document,select,label='',onChange=()=>{}}={}
       root.append(input,listbox);
       control.mode='combobox';control.input=input;control.listbox=listbox;
 
-      const visible=()=>control.options.filter(option=>!query||option.label.toLowerCase().includes(query));
+      // Keyboard navigation follows the rows actually shown. A label-only
+      // locale commit preserves the current result set until the user edits
+      // the query; matching new labels must not invalidate its active option.
+      const visible=()=>control.options.filter(option=>!open||!option.node?.hidden);
       const enabled=()=>visible().filter(option=>!option.disabled&&!select.disabled);
       const byValue=value=>control.options.find(option=>option.value===value)||null;
       const setActive=(option,{focusText=true}={})=>{
@@ -129,6 +132,12 @@ export function mountChoiceControl({document,select,label='',onChange=()=>{}}={}
           const node=optionNodes.get(option.value);
           if(node&&!node.hidden)input.setAttribute('aria-activedescendant',node.id);
         }
+      };
+      control.syncDisplay=()=>syncDisplay();
+      control.updateClosedLabel=()=>{
+        if(open||composing)return;
+        const committed=byValue(select.value),text=committed?committed.label:select.value;
+        if(input.value!==text)input.value=text;
       };
       const setOpen=next=>{
         open=next;
@@ -196,7 +205,7 @@ export function mountChoiceControl({document,select,label='',onChange=()=>{}}={}
       // Only the final composed text is a search: a cancelled composition that
       // leaves the committed display label untouched must not become a query.
       input.addEventListener('compositionstart',()=>{composing=true;compositionBase=input.value;});
-      input.addEventListener(COMPOSITION_END,()=>{composing=false;const final=input.value,base=compositionBase;compositionBase=null;if(final!==base)applyQuery(final);});
+      input.addEventListener(COMPOSITION_END,()=>{composing=false;const final=input.value,base=compositionBase;compositionBase=null;if(final!==base)applyQuery(final);else control.updateClosedLabel?.();});
       input.addEventListener('blur',()=>{if(open){setOpen(false);query='';}});
       input.addEventListener('keydown',event=>{
         if(composing||event.isComposing||event.keyCode===229)return;
@@ -266,6 +275,29 @@ export function mountChoiceControl({document,select,label='',onChange=()=>{}}={}
         control.reconcileActive?.();
       }
       if(control.mode==='combobox')control.input.disabled=select.disabled;
+    };
+    control.updateLabels=({label}={})=>{
+      // GET-192 label-only refresh: the owner updates its native options first,
+      // then this refreshes owned root/input/listbox names and keyed option
+      // labels. No change event, callback, remount or preference write; input
+      // display writes that would disrupt IME composition are deferred.
+      if(typeof label==='string'&&label){
+        labelText=label;
+        control.root?.setAttribute('aria-label',label);
+        control.input?.setAttribute('aria-label',label);
+        control.listbox?.setAttribute('aria-label',label);
+      }
+      const next=readOptions(select);
+      if(next.length!==control.options.length||next.some((row,index)=>row.value!==control.options[index].value))return false;
+      // Label updates cannot detach a focused chip or reset combobox search,
+      // visible rows, selection, scroll or active descendant. Structure/value
+      // changes still require the separate explicit business sync() path.
+      for(let index=0;index<next.length;index++){
+        const option=control.options[index];option.label=next[index].label;
+        if(option.node)option.node.textContent=option.label;
+      }
+      control.updateClosedLabel?.();
+      return true;
     };
     control.sync=sync;
     control.destroy=()=>{

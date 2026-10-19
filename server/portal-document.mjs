@@ -7,10 +7,16 @@ export function portalDocument(source,pathname){
   const locale=homeRoutes.get(pathname);
   return locale?homeDocument(source,locale):source;
 }
+// GET-192 canonical library shell: the complete safe English initial
+// document, title, lang, loading and return entries render through the SAME
+// shared server/static renderer as the English static shell, before any
+// JavaScript meaningful control exists. No body hiding and no JS-only Chinese
+// replacement after first paint.
 function libraryDocument(source){
-  source=source.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g,'').replace(/<link rel="alternate" hreflang="[^"]+" href="[^"]+">/g,'');
-  const privateMetadata=source.includes('<meta name="robots"')?source.replace(/<meta name="robots"[^>]*>/,'<meta name="robots" content="noindex,nofollow">'):source.replace('</head>','<meta name="robots" content="noindex,nofollow"></head>');
-  return privateMetadata.replace(/<title>[^<]*<\/title>/,'<title>我的书房 · Leafhour</title>')
+  const english=homeDocument(source,'en');
+  const privateMetadata=english.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g,'').replace(/<link rel="alternate" hreflang="[^"]+" href="[^"]+">/g,'').replaceAll(' aria-current="true"','');
+  const withRobots=privateMetadata.includes('<meta name="robots"')?privateMetadata.replace(/<meta name="robots"[^>]*>/,'<meta name="robots" content="noindex,nofollow">'):privateMetadata.replace('</head>','<meta name="robots" content="noindex,nofollow"></head>');
+  return withRobots.replace(/<title>[^<]*<\/title>/,'<title>My reading room · Leafhour</title>')
     .replace('<link rel="canonical" href="https://leafhour.com/">','<link rel="canonical" href="https://leafhour.com/library">')
     .replace('<meta property="og:url" content="https://leafhour.com/">','<meta property="og:url" content="https://leafhour.com/library">')
     .replace('<body>','<body class="library-page">')

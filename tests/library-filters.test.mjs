@@ -3,7 +3,11 @@ import assert from 'node:assert/strict';
 import {libraryShelf,roomShelf,hasShelfFilters} from '../app/library-workspace.mjs';
 import {createLibraryService} from '../server/library-service.mjs';
 import {digest} from '../server/document-import.mjs';
-import {mountShelfFilters} from '../app/library-filter-controls.mjs';
+import {mountShelfFilters as mountShelfFiltersActual} from '../app/library-filter-controls.mjs';
+import {requestUiRoute} from '../app/ui-locale.mjs';
+await requestUiRoute('zh-Hans');
+const mounted=[];const mountShelfFilters=options=>{const value=mountShelfFiltersActual(options);mounted.push(value);return value;};
+test.afterEach(async()=>{for(const value of mounted.splice(0))value.dispose();await requestUiRoute('zh-Hans');});
 import {mountChoiceControl} from '../app/choice-control.mjs';
 import {mkdtemp,readFile,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
@@ -227,4 +231,19 @@ test('the three filter dropdowns are enhanced by the shared choice primitive and
   const languageChips=controls.choices.language.chips.map(chip=>chip.textContent);
   assert.ok(languageChips.includes('中文')&&languageChips.includes('英文'));
   assert.equal(f.topic.hidden,true,'a mounted enhancement hides its native fallback select');
+});
+
+test('actual locale commit changes filter labels in place without applying filters, replacing nodes or writing the search draft',async()=>{
+  const f=filterFixture(),changes=[],controls=mountShelfFilters({root:f.root,onChange:action=>changes.push(action)});
+  controls.set({topic:'fiction',language:'zh'});controls.update(books);
+  const native=[...f.topic.options],buttons=[...f.chips.children],choice=controls.choices.topic,choiceNodes=[...choice.chips];
+  f.search.value='日本語 composing';f.search.selectionStart=2;f.search.selectionEnd=5;f.search.focus();
+  f.chips.replaceChildren=()=>assert.fail('locale change must not rebuild summary');choice.root.replaceChildren=()=>assert.fail('locale change must not rebuild choice');
+  f.topic.replaceChildren=()=>assert.fail('locale change must not rebuild native options');
+  let draft=f.search.value,writes=0;Object.defineProperty(f.search,'value',{get:()=>draft,set:value=>{writes++;draft=value;},configurable:true});
+  const before=changes.length;await requestUiRoute('ja');
+  assert.equal(writes,0);assert.equal(f.doc.activeElement,f.search);assert.equal(f.search.selectionStart,2);assert.equal(f.search.selectionEnd,5);assert.equal(changes.length,before);
+  assert.deepEqual([...f.topic.options],native);assert.deepEqual(f.chips.children,buttons);assert.deepEqual(choice.chips,choiceNodes);assert.equal(f.topic.value,'fiction');assert.equal(f.language.value,'zh');
+  assert.equal(buttons[0].textContent,'小説と物語 ×');assert.equal(buttons[1].textContent,'中国語 ×');assert.equal(choice.root.getAttribute('aria-label'),'テーマ');assert.equal(f.root.getAttribute('lang'),'ja');
+  controls.dispose();await requestUiRoute('en');assert.equal(buttons[0].textContent,'小説と物語 ×');
 });

@@ -101,3 +101,23 @@ test('an unconfirmed final remains durable and a later exact receipt really retr
   }
   let disk=[];const q=createReadingOutbox({load:()=>disk,save:rows=>disk=rows,send:async()=>structuredClone(submitted)});q.enqueue(submitted);await q.flush();assert.equal(q.confirmed(submitted),true);
 });
+
+test('receipt descriptors carry the exact confirmed and durable state without changing the payload or inventing a current ending',async()=>{
+  const {draftSaveReceipt,currentSessionReceipt}=await import('../app/save-receipts.mjs');
+  const descriptor=(id,params)=>({id,params});
+  for(const [state,id]of [
+    [{confirmed:true,hasDraft:false},'receipt.note.saved'],
+    [{confirmed:true,hasDraft:true,durable:true},'receipt.note.savedDraftLocal'],
+    [{confirmed:true,hasDraft:true,durable:false},'receipt.note.savedDraftMemory'],
+    [{confirmed:false,durable:true},'receipt.note.pendingLocal'],
+    [{confirmed:false,durable:false},'receipt.note.pendingMemory']
+  ]){const frozen=Object.freeze({...state});assert.deepEqual(noteSaveReceipt(frozen,descriptor),{id,params:{}});assert.deepEqual(frozen,state);}
+  assert.deepEqual(readingSessionReceipt({confirmed:true,durable:false},descriptor),{id:'receipt.session.saved',params:{}});
+  assert.deepEqual(readingSessionReceipt({confirmed:false,durable:true},descriptor),{id:'receipt.session.pendingLocal',params:{}});
+  assert.deepEqual(readingSessionReceipt({confirmed:false,durable:false},descriptor),{id:'receipt.session.pendingMemory',params:{}});
+  assert.deepEqual(draftSaveReceipt({durable:true},descriptor),{id:'receipt.draft.local',params:{}});
+  assert.deepEqual(draftSaveReceipt({durable:false},descriptor),{id:'receipt.draft.memory',params:{}});
+  let formats=0;const format=(...args)=>{formats++;return descriptor(...args);};
+  assert.equal(currentSessionReceipt({status:'active',id:final.id},final,{confirmed:true},format),'');assert.equal(formats,0);
+  assert.deepEqual(currentSessionReceipt({status:'finished',id:final.id},final,{confirmed:true},format),{id:'receipt.session.saved',params:{}});assert.equal(formats,1);
+});

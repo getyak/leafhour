@@ -196,3 +196,26 @@ test('the default standalone companion API keeps working beside its generated la
   assert.equal(all(doc.body).some(n=>n.className==='squirrel-companion-bubble'),false,'dispose removes the default bubble');
   assert.equal(launcher.className.includes('has-companion-message'),false);
 });
+
+import {requestUiRoute} from '../app/ui-locale.mjs';
+test('companion locale labels preserve pending configuration, editing focus and the existing timer',async t=>{
+ const keys=['document','window','localStorage','innerWidth','innerHeight','getSelection','setInterval','clearInterval'],previous=Object.fromEntries(keys.map(k=>[k,globalThis[k]]));
+ const doc=clientDocument(),win=clientWindow(),intervals=[],cleared=[],requests=[],storageWrites=[];let ownerReads=0,readerReads=0,release,rejectDisable,postNumber=0;
+ Object.assign(globalThis,{document:doc,window:win,innerWidth:1200,innerHeight:800,getSelection:()=>null,localStorage:{getItem:()=>null,setItem:(...args)=>storageWrites.push(args),removeItem:(...args)=>storageWrites.push(args)},setInterval:(fn,ms)=>{const handle={fn,ms};intervals.push(handle);return handle;},clearInterval:handle=>cleared.push(handle)});
+ let companion;t.after(async()=>{companion?.dispose();Object.assign(globalThis,previous);await requestUiRoute('en');});
+ await requestUiRoute('en');
+ const header=new ClientElement('header');header.append(new ClientElement('button'));const root=new ClientElement('dialog'),pill=new ClientElement('button');doc.body.append(header,root,pill);
+ const waiting=new Promise(r=>release=r),disabling=new Promise((_,reject)=>rejectDisable=reject),book={bookId:'book-one',contentVersion:'v1',sections:[{chapterId:'ch1',paragraphs:[{id:'p1',original:'Original source stays literal.'}]}]};
+ companion=mountReaderCompanion({bookId:'book-one',getOwner:()=>{ownerReads++;return 'reader-one';},getReader:()=>{readerReads++;return {getBook:()=>book};},api:async(url,data)=>{requests.push({url,data});return data?(postNumber++===0?waiting:disabling):{enabled:false,revision:1,contentVersion:'v1',sessionId:'s1'};},chat:{surface:()=>({launcher:null,header,root,motion:null,position:{attach:()=>()=>{}}})},openAuth:()=>assert.fail('Locale must not start auth'),integration:{anchor:pill}});
+ await new Promise(setImmediate);
+ const all=n=>[n,...n.children.flatMap(all)],find=cls=>all(doc.body).find(n=>n.className===cls),toggle=find('squirrel-companion-toggle'),description=find('squirrel-companion-description');
+ assert.equal(toggle.textContent,'Enable companion');toggle.dispatchEvent(new Event('click'));await new Promise(setImmediate);assert.equal(toggle.disabled,true);
+ const input=new ClientElement('textarea');Object.defineProperty(input,'value',{get:()=> '来源 / 阅读 — draft',set:()=>assert.fail('Locale must not write an editing value')});input.selectionStart=2;input.selectionEnd=5;doc.activeElement=input;
+ const before={requests:requests.length,ownerReads,readerReads,writes:storageWrites.length},handle=intervals[0];assert.equal(intervals.length,1);assert.equal(handle.ms,1000);
+ for(const [locale,label]of [['ja','オンにしています…'],['zh-Hant','正在開啟…'],['zh-Hans','正在开启…'],['en','Enabling…']]){
+  await requestUiRoute(locale);assert.equal(toggle.textContent,label);assert.equal(toggle.disabled,true);assert.equal(toggle.getAttribute('aria-pressed'),'false');assert.equal(doc.activeElement,input);assert.equal(input.value,'来源 / 阅读 — draft');assert.equal(input.selectionStart,2);assert.equal(input.selectionEnd,5);assert.deepEqual({requests:requests.length,ownerReads,readerReads,writes:storageWrites.length},before);assert.equal(intervals.length,1);assert.equal(intervals[0],handle);assert.equal(cleared.length,0);
+ }
+ release({enabled:true,revision:2,contentVersion:'v1',sessionId:'s1'});await new Promise(setImmediate);assert.equal(toggle.textContent,'Turn off companion');assert.equal(toggle.disabled,false);assert.equal(toggle.getAttribute('aria-pressed'),'true');assert.equal(doc.activeElement,input);
+ toggle.dispatchEvent(new Event('click'));await new Promise(setImmediate);assert.equal(toggle.textContent,'Turning off…');assert.equal(toggle.disabled,true);rejectDisable(Error('Untrusted remote prose'));await new Promise(setImmediate);assert.equal(toggle.textContent,'Retry turning off');assert.equal(description.textContent,'Stopped on this device. The setting has not synced yet; retry turning it off.');await requestUiRoute('ja');assert.equal(toggle.textContent,'もう一度オフにする');assert.ok(!description.textContent.includes('Untrusted remote prose'));
+ companion.dispose();const last=description.textContent;await requestUiRoute('ja');assert.equal(description.textContent,last,'Disposed subscriptions cannot mutate detached controls');assert.deepEqual(cleared,[handle]);
+});

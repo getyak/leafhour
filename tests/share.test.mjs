@@ -252,3 +252,8 @@ test('styled wrapping preserves consecutive, leading and trailing hard breaks',a
   assert.deepEqual(wrapEmphasisRuns(runs,t=>t.length,100).map(line=>line.map(run=>run.text).join('')),wrapText(text,t=>t.length,100),JSON.stringify(text));
  }
 });
+
+
+test('share artifact chrome is formatted only when explicitly building a new source-bound model',async()=>{
+ const {buildShareModel}=await model();const before=structuredClone(book),raw=structuredClone(snapshot),calls=[];const format=(id,params)=>{calls.push([id,params]);return id+JSON.stringify(params||{});};const first=buildShareModel(book,snapshot,{language:'bilingual'},format);assert.match(first.blocks[0].primary.label,/share.artifact.interpretive/);assert.match(first.location,/share.artifact.chapter/);assert.equal(first.blocks[0].primary.text,snapshot.parts[0].text);assert.equal(first.blocks[0].secondary.text,book.sections[0].paragraphs[0].original);assert.deepEqual(book,before);assert.deepEqual(snapshot,raw);const frozen=JSON.stringify(first);buildShareModel(book,snapshot,{language:'bilingual'},()=> 'Different UI');assert.equal(JSON.stringify(first),frozen);assert.ok(calls.length>0);
+});

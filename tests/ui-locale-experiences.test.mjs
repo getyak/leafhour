@@ -1,0 +1,50 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFile} from 'node:fs/promises';
+import {t,onUiLocaleChange,getUiLocale,uiReady,requestUiRoute} from '../app/ui-locale.mjs';
+class Element{
+ constructor(tag='div'){this.tagName=tag.toUpperCase();this.children=[];this.events={};this.dataset={};this.attrs={};this.value='';this.isConnected=true;this.classList={contains:()=>false,toggle(){},remove(){},add(){}};this.writes=0;}
+ set textContent(v){this.replaceChildren();this.text=String(v);this.writes++;}get textContent(){return this.text||'';}
+ replaceChildren(...items){for(const n of this.children){if(n&&typeof n==='object')n.isConnected=false;}this.children=[];this.append(...items);}
+ append(...items){this.children.push(...items);for(const n of items)if(n&&typeof n==='object')n.parent=this;}
+ after(n){this.parent?.append(n);}insertBefore(n){this.append(n);}remove(){this.isConnected=false;if(this.parent)this.parent.children=this.parent.children.filter(n=>n!==this);}
+ closest(){return this.section||=(new Element('section'));}setAttribute(k,v){this.attrs[k]=v;}getAttribute(k){return this.attrs[k];}
+ dispatchEvent(e){for(const fn of this.events[e.type]||[])fn(e);return true;}
+ addEventListener(k,fn){(this.events[k]||=[]).push(fn);}removeEventListener(k,fn){this.events[k]=(this.events[k]||[]).filter(f=>f!==fn);}
+ querySelectorAll(sel){const all=this.children.flatMap(n=>n instanceof Element?[n,...n.querySelectorAll('*')]:[]);return sel==='*'?all:all.filter(n=>sel.startsWith('.')?n.className?.split(' ').includes(sel.slice(1)):sel==='button'?n.tagName==='BUTTON':false);}
+ querySelector(s){return this.querySelectorAll(s)[0]||null;}focus(){}select(){}getBoundingClientRect(){return {top:100,bottom:200,height:100};}
+}
+async function fixture(request=null,clipboard=null){
+ const nodes=new Map(),$=id=>{if(!nodes.has(id))nodes.set(id,new Element());return nodes.get(id);},doc=new Element();doc.getElementById=$;doc.createElement=tag=>new Element(tag);doc.createTextNode=text=>({textContent:text});doc.querySelectorAll=()=>[];doc.body=new Element();doc.body.dataset={};
+ const stats={uuid:0,fetch:0,storage:0,bridge:0,timer:0,observer:0,clipboard:[]},window=new Element(),p={id:'p1',original:'SOURCE 来源 阅读',translations:{},source:{printedPage:3}},book={bookId:'book',contentVersion:'v1',sections:[{number:1,chapterId:'c1',paragraphs:[p]}]};
+ const bridge=new Proxy({getBook:()=>book,getChapterId:()=> 'c1',getSelectedId:()=> 'p1',getAnchor:()=>({passageId:'p1'}),restoreAnchor(){},dismissTools(){}},{get(target,key){const f=target[key];return typeof f==='function'?(...args)=>{stats.bridge++;return f(...args);}:f;}});window.marginaliaReader=bridge;
+ const context=vm.createContext({document:doc,window,location:{search:''},URLSearchParams,crypto:{randomUUID(){stats.uuid++;return 'id'+stats.uuid;}},localStorage:{getItem(){stats.storage++;return '';},setItem(){stats.storage++;}},performance:{now:()=>10},setTimeout(){stats.timer++;return stats.timer;},clearTimeout(){},requestAnimationFrame(){},innerHeight:900,IntersectionObserver:class{constructor(){stats.observer++;}observe(){}disconnect(){}},navigator:{clipboard:{async writeText(s){stats.clipboard.push(s);if(clipboard)return clipboard(s);}}},readerFetch(...args){stats.fetch++;if(request)return request(...args);throw Error('Unexpected request');},selectedBookId:'book',t,onUiLocaleChange,getUiLocale,uiReady,CustomEvent:class{constructor(type,options={}){this.type=type;this.detail=options.detail;}}});
+ const code=(await readFile(new URL('../app/experiences.js',import.meta.url),'utf8')).replace(/^import[^\n]+\n/gm,'');await vm.runInContext('(async()=>{'+code+'\n globalThis.probe={showEcho,showXray,showStance,renderEcho,sourceLink,copyObservation,setPack(value){pack=value;},setParagraphs(value){paragraphs=new Map(value);}};})()',context);await Promise.resolve();
+ doc.append($('p1'));context.probe.setParagraphs([['p1',{...p,chapterId:'c1',section:1,order:1}]]);return {context,probe:context.probe,nodes,$,doc,window,stats};
+}
+const textTree=n=>[n.textContent,...(n.children||[]).flatMap(textTree)].join('|');
+const fire=(n,type,event={})=>Promise.all((n.events[type]||[]).map(fn=>fn(event)));
+test('actual experience UI commits preserve draft, source literals, nodes, and all business effects',async()=>{
+ await requestUiRoute('en');const f=await fixture();f.probe.showEcho();const surface=f.$('p1').parent?.children.find(n=>n.className==='experience-surface');assert.ok(surface);const area=surface.querySelectorAll('*').find(n=>n.tagName==='TEXTAREA');area.value='我的理解 来源 阅读';const snapshot={...f.stats,clipboard:[]},children=surface.querySelectorAll('*');
+ for(const locale of ['ja','zh-Hant','zh-Hans','en']){await requestUiRoute(locale);assert.ok(textTree(surface).includes(t('experience.echo.title')));assert.ok(textTree(surface).includes(t('experience.echo.submit')));assert.equal(area.value,'我的理解 来源 阅读');assert.deepEqual(surface.querySelectorAll('*'),children);assert.deepEqual(f.stats,snapshot);}
+ await fire(f.window,'pagehide',{persisted:false});const old=textTree(surface);await requestUiRoute('ja');assert.equal(textTree(surface),old);await requestUiRoute('en');
+});
+test('actual experience source and editorial content remain literal while their UI framework changes',async()=>{
+ await requestUiRoute('en');const f=await fixture();f.probe.setPack({xrays:{p1:{basis:'CUSTOM 来源 阅读',roles:[{label:'ROLE 原文',summary:'AI 解读 日本語',sourceRef:{passageId:'p1',quote:'SOURCE'}}]}},states:{},echoes:[]});f.probe.showXray();const s=f.$('p1').parent?.children.find(n=>n.className==='experience-surface');assert.ok(s);const literal=s.querySelectorAll('*').filter(n=>['CUSTOM 来源 阅读','ROLE 原文','AI 解读 日本語'].includes(n.textContent));assert.equal(literal.length,3);assert.ok(literal.every(n=>n.getAttribute('lang')==='und'));const writes=literal.map(n=>n.writes),snapshot={...f.stats,clipboard:[]};
+ for(const locale of ['ja','zh-Hant','zh-Hans']){await requestUiRoute(locale);assert.ok(textTree(s).includes(t('experience.xray.title')));assert.deepEqual(literal.map(n=>n.writes),writes);assert.deepEqual(f.stats,snapshot);}
+ await fire(f.window,'pagehide',{persisted:false});await requestUiRoute('en');
+});
+
+test('actual echo pending run survives UI commits and settles using current UI without translating model prose',async()=>{
+ await requestUiRoute('en');let finish;const pending=new Promise(resolve=>{finish=resolve;});let payload;const f=await fixture((url,options)=>{if(url==='/api/echo'){payload=JSON.parse(options.body);return pending;}assert.equal(url,'/poll');return Promise.resolve({ok:true,json:async()=>({runId:'run-1',status:'completed',result:{validated:true,verdict:'consistent',summary:'AI 日本語 原文',segments:[],sourceRefs:[{passageId:'p1',quote:'SOURCE'}]}})});});f.probe.showEcho();const s=f.$('p1').parent.children.find(n=>n.className==='experience-surface'),form=s.querySelectorAll('*').find(n=>n.tagName==='FORM'),area=form.querySelectorAll('*').find(n=>n.tagName==='TEXTAREA'),submit=form.querySelectorAll('*').find(n=>n.className==='echo-submit');area.value='我的理解 阅读';const submission=fire(form,'submit',{preventDefault(){}});assert.equal(f.stats.fetch,1);const snapshot={...f.stats,clipboard:[]},key=payload.idempotencyKey;
+ for(const locale of ['ja','zh-Hant','zh-Hans','ja']){await requestUiRoute(locale);assert.equal(payload.idempotencyKey,key);assert.equal(payload.text,'我的理解 阅读');assert.equal(submit.disabled,true);assert.equal(area.readOnly,true);assert.ok(textTree(s).includes(t('experience.echo.pending')));assert.deepEqual(f.stats,snapshot);}
+ finish({ok:true,json:async()=>({runId:'run-1',pollUrl:'/poll'})});await submission;await new Promise(setImmediate);assert.ok(textTree(s).includes(t('experience.echo.saved')));const prose=s.querySelectorAll('*').find(n=>n.textContent==='AI 日本語 原文');assert.ok(prose);const writes=prose.writes;await requestUiRoute('en');assert.equal(prose.writes,writes);assert.equal(area.value,'我的理解 阅读');await fire(f.window,'pagehide',{persisted:false});
+});
+
+test('stance skip failure relinquishes a shared announcement after another owner writes',async()=>{
+ await requestUiRoute('en');const f=await fixture(()=>Promise.reject(Error('save failed')));f.probe.setPack({cards:[{id:'card',chapterId:'c1',prompt:'EDITOR 問い',choices:[]}],states:{}});f.probe.showStance();const s=f.$('p1').parent.children.find(n=>n.className==='experience-surface'),skip=s.querySelector('.invitation-skip');await fire(skip,'click');assert.ok(textTree(f.$('announcement')).includes(t('experience.stance.skipped')));f.$('announcement').textContent='NEW OWNER message';for(const locale of ['ja','zh-Hant']){await requestUiRoute(locale);assert.equal(textTree(f.$('announcement')),'NEW OWNER message');}await fire(f.window,'pagehide',{persisted:false});await requestUiRoute('en');
+});
+test('stance and clipboard late failures cannot write a newer experience surface',async()=>{
+ for(const scenario of ['stance','clipboard']){await requestUiRoute('en');let reject;const pending=new Promise((_,no)=>{reject=no;});const f=await fixture(()=>pending,()=>pending);f.probe.setPack({cards:[{id:'card',chapterId:'c1',prompt:'EDITOR 問い',choices:[{id:'yes',label:'LITERAL yes'}],responses:{yes:{sourceRefs:[{passageId:'p1',quote:'SOURCE'}]}}}],states:{}});f.probe.showStance();const s=f.$('p1').parent.children.find(n=>n.className==='experience-surface');const job=scenario==='stance'?fire(s.querySelectorAll('button').find(n=>n.dataset.choice==='yes'),'click'):f.probe.copyObservation('copy literal',{});f.probe.showEcho();const newer=f.$('p1').parent.children.find(n=>n.className==='experience-surface');const before=textTree(newer),controls=newer.querySelectorAll('*');reject(Error('late private failure'));await job;assert.equal(textTree(newer),before);assert.deepEqual(newer.querySelectorAll('*'),controls);await requestUiRoute('ja');assert.equal(newer.querySelector('.experience-status').textContent,'');await fire(f.window,'pagehide',{persisted:false});}await requestUiRoute('en');
+});

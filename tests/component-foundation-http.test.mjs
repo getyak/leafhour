@@ -54,7 +54,13 @@ test('served dialog markup declares autofocus intent without tabindex', async ()
 test('the appearance compatibility key and localized labels survive the served module', async () => {
   const source = await (await fetch(base + '/site-appearance.mjs')).text();
   assert.ok(source.includes('marginalia-portal-appearance'), 'the stored compatibility key must stay');
-  for (const label of ['页面外观', '頁面外觀', 'Appearance', '外観']) assert.ok(source.includes(label), 'missing localized appearance label ' + label);
+  assert.match(source, /translate\('shell\.appearance\.title'\)/, 'the served owner uses its explicit UI message');
+  for (const [locale, label] of [['zh-Hans', '页面外观'], ['zh-Hant', '頁面外觀'], ['en', 'Appearance'], ['ja', '外観']]) {
+    const response = await fetch(base + '/ui-catalogs/' + locale + '.mjs');
+    assert.equal(response.status, 200, 'the actual localized catalogue is served for ' + locale);
+    assert.match(response.headers.get('content-type'), /^text\/javascript/);
+    assert.ok((await response.text()).includes(label), 'missing localized appearance label ' + label);
+  }
   const html = await (await fetch(base + '/')).text();
   assert.ok(html.includes('id="site-theme"'), 'the homepage keeps its appearance trigger');
 });

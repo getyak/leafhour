@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {createReadingToolbarState,mountReadingToolbar} from '../app/reading-toolbar.mjs';
+import {requestUiRoute} from '../app/ui-locale.mjs';
+test.beforeEach(async()=>{await requestUiRoute('zh-Hans');});
 
 test('reading tools start tucked away and return there after leaving them idle', t => {
   t.mock.timers.enable({apis:['setTimeout']});

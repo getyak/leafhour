@@ -325,3 +325,36 @@ test('combobox commits refresh selected semantics without a caller sync for keyb
  assert.equal(select.value,'c');assert.equal(count(),2);assert.deepEqual(control.options.filter(o=>o.node.getAttribute('aria-selected')==='true').map(o=>o.value),['c']);
  control.options.find(o=>o.value==='c').node.dispatchEvent(click());assert.equal(count(),2);
 });
+
+test('label refresh never detaches a focused chip or dispatches a native change',()=>{
+  const {doc,select,control}=mount();const count=changeEvents(select),nodes=[...control.chips];nodes[1].focus();
+  control.root.replaceChildren=()=>assert.fail('label refresh must not detach controls');
+  select.options[1].textContent='Second';
+  assert.equal(control.updateLabels({label:'Language'}),true);
+  assert.equal(control.chips[1],nodes[1]);assert.equal(doc.activeElement,nodes[1]);assert.equal(nodes[1].textContent,'Second');assert.equal(select.value,'a');assert.equal(count(),0);
+});
+
+test('combobox label refresh preserves open query, active option, composition and scroll',()=>{
+  const {doc,select,control}=mount(['a','b','c','d','e','f','g'].map(value=>[value,'old '+value]));
+  const input=control.input;input.focus();input.value='old';input.dispatchEvent({type:'input'});input.dispatchEvent(keyEvent('ArrowDown'));
+  input.selectionStart=1;input.selectionEnd=2;control.listbox.scrollTop=44;
+  const active=control.activeValue,descendant=input.getAttribute('aria-activedescendant'),nodes=control.options.map(row=>row.node),visibility=nodes.map(node=>node.hidden),count=changeEvents(select);
+  control.listbox.replaceChildren=()=>assert.fail('label refresh must not replace rows');
+  for(const row of select.options)row.textContent='new '+row.value;
+  input.dispatchEvent({type:'compositionstart'});input.value='日本';control.updateLabels({label:'原文の言語'});
+  assert.equal(input.value,'日本');assert.equal(input.selectionStart,1);assert.equal(input.selectionEnd,2);assert.equal(doc.activeElement,input);assert.equal(control.activeValue,active);assert.equal(input.getAttribute('aria-activedescendant'),descendant);assert.equal(input.getAttribute('aria-expanded'),'true');assert.equal(control.listbox.scrollTop,44);assert.deepEqual(control.options.map(row=>row.node),nodes);assert.deepEqual(nodes.map(node=>node.hidden),visibility);assert.equal(count(),0);assert.equal(select.value,'a');
+  assert.equal(nodes[0].textContent,'new a');input.dispatchEvent({type:'compositionend'});
+});
+
+test('keyboard navigation uses the preserved visible result set after a locale relabel',()=>{
+  const {select,control}=mount(['a','b','c','d','e','f','g'].map(value=>[value,'old '+value]));
+  const input=control.input;input.focus();input.value='old';input.dispatchEvent({type:'input'});input.dispatchEvent(keyEvent('ArrowDown'));assert.equal(control.activeValue,'b');
+  for(const row of select.options)row.textContent='新 '+row.value;control.updateLabels({label:'選択'});
+  input.dispatchEvent(keyEvent('ArrowDown'));assert.equal(control.activeValue,'c');input.dispatchEvent(keyEvent('Enter'));assert.equal(select.value,'c');assert.equal(input.value,'新 c');
+});
+
+test('cancelled closed IME composition flushes a deferred selected label without a change event',()=>{
+  const {select,control}=mount(['a','b','c','d','e','f','g'].map(value=>[value,'old '+value]));const count=changeEvents(select),input=control.input;
+  input.focus();input.dispatchEvent({type:'compositionstart'});for(const row of select.options)row.textContent='新 '+row.value;control.updateLabels({label:'選択'});
+  assert.equal(input.value,'old a');input.dispatchEvent({type:'compositionend'});assert.equal(input.value,'新 a');assert.equal(input.getAttribute('aria-expanded'),'false');assert.equal(select.value,'a');assert.equal(count(),0);
+});

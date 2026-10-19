@@ -15,6 +15,7 @@ import {readingBookUrl} from './library-workspace.mjs';
 import {safeLibraryReturn} from './library-view-state.mjs';
 import {otherOverlayOpen,focusableTrigger} from './popover-controls.mjs';
 import {registerDialogFocusOwner} from './interaction-craft.mjs';
+import {t,uiHref,getUiLocale,onUiLocaleChange,uiReady,bindUi} from './ui-locale.mjs';
 
 export const HOME_NAV_ROUTES=Object.freeze(['/','/en','/zh-hans','/zh-hant','/ja']);
 export const HOME_MENU_CLOSE_REASONS=Object.freeze(['user','navigation','auth-handoff','palette-handoff','breakpoint']);
@@ -48,7 +49,17 @@ export function mountHomeNavigation({
   const linksSlot=document.getElementById('home-menu-links');
   const languageSlot=document.getElementById('home-menu-languages');
   const nav=document.querySelector('.home-navigation');
-  let opener=null,pendingReason=null,lastReason=null,destinationGeneration=0,disposed=false;
+  let opener=null,pendingReason=null,lastReason=null,destinationGeneration=0,disposed=false,resumeHref=null;
+  const created=[],rowListeners=[];
+  const unbind=bindUi(dialog),unbindNav=nav?bindUi(nav):()=>{};
+  const documentLinks=[...(document.querySelectorAll?.('a[href]')||[])].map(node=>({node,href:node.getAttribute('href')})).filter(row=>/^\/(?:library|read)(?:[?#]|$)/.test(row.href));
+  function updateLabels(){
+    if(disposed)return;
+    dialog.setAttribute('lang',getUiLocale());trigger.setAttribute('lang',getUiLocale());trigger.setAttribute('aria-label',t('nav.open'));
+    if(accountRow)accountRow.setAttribute('href',uiHref(HOME_ACCOUNT_URL));
+    if(resumeHref&&resumeRow&&!resumeRow.hidden)resumeRow.setAttribute('href',uiHref(resumeHref));
+    for(const {node,href} of documentLinks)node.setAttribute('href',uiHref(href));
+  }
 
   const brandNode=()=>document.querySelector('.site-header')?.querySelector('.brand')||document.querySelector('a.brand')||null;
   const focusNode=node=>{if(node&&typeof node.focus==='function')node.focus({preventScroll:true});};
@@ -69,7 +80,7 @@ export function mountHomeNavigation({
   // launcher is never copied; the sheet's own search row is the explicit port.
   const wireRow=row=>{
     if(!row||typeof row.addEventListener!=='function')return;
-    row.addEventListener('click',event=>{
+    const onClick=event=>{
       if(disposed||event.defaultPrevented)return;
       if(typeof event.button==='number'&&event.button!==0)return;
       if(event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
@@ -87,16 +98,20 @@ export function mountHomeNavigation({
         if(typeof target.hasAttribute==='function'&&!target.hasAttribute('tabindex')&&typeof target.setAttribute==='function')target.setAttribute('tabindex','-1');
         focusNode(target);
       });
-    });
+    };
+    row.addEventListener('click',onClick);rowListeners.push(()=>row.removeEventListener('click',onClick));
   };
   if(nav&&linksSlot){
     for(const child of [...nav.children]){
       if(child.tagName==='A'&&child.getAttribute('href')&&typeof child.cloneNode==='function'){
         const copy=child.cloneNode(true);
+        created.push(copy);
         linksSlot.append(copy);
+        const href=copy.getAttribute('href');if(/^\/(?:library|read)(?:[?#]|$)/.test(href))documentLinks.push({node:copy,href});
         wireRow(copy);
       }else if(child.classList?.contains('home-languages')&&languageSlot&&typeof child.cloneNode==='function'){
         const copy=child.cloneNode(true);
+        created.push(copy);
         languageSlot.append(copy);
         for(const link of copy.querySelectorAll?.('a')||[])wireRow(link);
       }
@@ -104,6 +119,7 @@ export function mountHomeNavigation({
   }
 
   const clear=()=>{
+    resumeHref=null;
     if(!resumeRow)return;
     resumeRow.hidden=true;
     resumeRow.removeAttribute('href');
@@ -116,11 +132,12 @@ export function mountHomeNavigation({
   // rows sync on their own hook the moment a session settles; the optional
   // resume row needs current valid books and is never rebuilt from stale ones.
   const updateIdentity=ticket=>{
+    if(disposed)return false;
     const current=typeof getOwner==='function'?getOwner():null;
     if(ticket&&current&&(ticket.owner!==current.owner||ticket.revision!==current.revision))return false;
     const user=(typeof getSession==='function'?getSession():null)?.user||null;
     if(signInRow)signInRow.hidden=!!user;
-    if(accountRow){accountRow.hidden=!user;if(user)accountRow.setAttribute('href',HOME_ACCOUNT_URL);}
+    if(accountRow){accountRow.hidden=!user;if(user)accountRow.setAttribute('href',uiHref(HOME_ACCOUNT_URL));}
     return true;
   };
   const update=ticket=>{
@@ -130,7 +147,7 @@ export function mountHomeNavigation({
     const book=chooseCurrentBook(Array.isArray(list)?list:[]);
     if(book&&resumeRow){
       resumeRow.hidden=false;
-      resumeRow.setAttribute('href',readingBookUrl(book,null));
+      resumeHref=readingBookUrl(book,null);resumeRow.setAttribute('href',uiHref(resumeHref));
       if(resumeTitle)resumeTitle.textContent=book.title?.zh||book.title?.en||'';
       if(resumeAuthor)resumeAuthor.textContent=book.author||book.source?.filename||'';
     }
@@ -188,16 +205,20 @@ export function mountHomeNavigation({
   const onBreakpoint=()=>{if(desktop?.matches&&dialog.open)closeMenu('breakpoint');};
   if(desktop?.addEventListener)desktop.addEventListener('change',onBreakpoint);
   else desktop?.addListener?.(onBreakpoint);
+  const offLocale=onUiLocaleChange(updateLabels);void uiReady.then(updateLabels);updateLabels();
 
   return {
     clear,
     update,
     updateIdentity,
+    updateLabels,
     close:closeMenu,
     lastCloseReason:()=>lastReason,
     dispose(){
       if(disposed)return;
       disposed=true;
+      offLocale();unbind();unbindNav();
+      for(const off of rowListeners)off();for(const node of created)node.remove();
       if(dialog.open)dialog.close();
       trigger.removeEventListener('click',onTrigger);
       dialog.removeEventListener('close',onClose);

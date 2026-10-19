@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import {readFile,mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
+import {createUiLocale} from '../app/ui-locale.mjs';
+import englishUi from '../app/ui-catalogs/en.mjs';
+import japaneseUi from '../app/ui-catalogs/ja.mjs';
 import {portalDocument} from '../server/portal-document.mjs';
 import {createReaderServer} from '../server/server.mjs';
 import {homeStringRows,homeAuthErrorRows,homeText,authErrorText,homeLocales,homeDocument} from '../app/home-locale.mjs';
@@ -105,8 +108,8 @@ test('every static menu sheet control keeps explicit four-language authored copy
     assert.ok(signIn.includes(labels.signIn),locale.code+' menu sign-in label');
     const search=(html.match(/<button[^>]*id="home-menu-search"[^>]*>[^<]*/)||[])[0]||'';
     assert.ok(search.includes(labels.search),locale.code+' menu search label');
-    assert.ok(html.includes('<span class="home-menu-resume-label">'+labels.resume+'</span>'),locale.code+' menu resume label');
-    assert.ok(html.includes('<h2 id="home-menu-title">'+labels.title+'</h2>'),locale.code+' menu serif title');
+    assert.ok(html.includes('<span class="home-menu-resume-label" data-ui="nav.resume">'+labels.resume+'</span>'),locale.code+' menu resume label');
+    assert.ok(html.includes('<h2 id="home-menu-title" data-ui="nav.main">'+labels.title+'</h2>'),locale.code+' menu serif title');
   }
 });
 
@@ -129,7 +132,7 @@ test('every language serves the same homepage structure over HTTP',async t=>{
     const response=await fetch(base+route),html=await response.text();assert.equal(response.status,200);
     assert.deepEqual(ids(html),ids(english));assert.deepEqual(styles(html),styles(english));assert.deepEqual(scripts(html),scripts(english));
     assert.match(html,new RegExp('<html lang="'+locale.htmlLang+'">'));
-    assert.match(html,/href="\/library"/);assert.match(html,/href="\/read\?book=gutenberg-alice"/);
+    assert.ok(html.includes('href="/library?ui='+locale.code+'"'));assert.ok(html.includes('href="/read?book=gutenberg-alice&amp;ui='+locale.code+'"'));
     assert.doesNotMatch(html,/href="\/#how"/,'in-page navigation must stay on the current page');
     assert.doesNotMatch(html,/class="discovery-page"/);
     for(const guide of ['mcp','privacy']){
@@ -140,9 +143,29 @@ test('every language serves the same homepage structure over HTTP',async t=>{
   const alias=await fetch(base+'/en');assert.equal(alias.status,200);assert.match(await alias.text(),/<link rel="canonical" href="https:\/\/leafhour.com\/">/);
 });
 
-test('the library shell keeps the source language and hides in-page home navigation',()=>{
+test('the library shell renders the complete safe English shell and hides in-page home navigation',()=>{
   const library=portalDocument(source,'/library');
-  assert.match(library,/<html lang="zh-Hans">/);assert.match(library,/<title>我的书房 · Leafhour<\/title>/);
+  assert.match(library,/<html lang="en">/);assert.match(library,/<title>My reading room · Leafhour<\/title>/);
+  assert.match(library,/Opening the reading room…/);
   assert.doesNotMatch(library,/class="home-nav" href=/);assert.equal(portalDocument(library,'/library'),library);
   assert.equal(portalDocument(source,'/unknown-route'),source);
+});
+
+
+test('first-paint owned home anchors carry the authored language even with denied storage and another browser language',async()=>{
+ const denied={getItem(){throw Error('denied');},setItem(){throw Error('denied');}};
+ for(const code of ['en','zh-Hans','zh-Hant','ja']){
+  const html=homeDocument(source,code),anchors=[...html.matchAll(/<a\b[^>]*\bhref="([^"\n]+)"/g)].map(m=>m[1].replaceAll('&amp;','&'));
+  const owned=anchors.filter(href=>/^\/(?:library|read)(?:[?#]|$)/.test(href));
+  assert.ok(owned.length>=6);
+  for(const href of owned)assert.equal(new URL(href,'https://leafhour.com').searchParams.get('ui'),code,href);
+ }
+ const html=homeDocument(source,'en'),hero=/<a class="primary" href="([^"\n]+)"/.exec(html)?.[1];
+ assert.ok(hero,'actual authored hero CTA exists');
+ const runtime=createUiLocale({storage:denied,languages:['ja-JP'],getLocation:()=>({href:'https://leafhour.com'+hero}),loadCatalogue:async code=>({en:englishUi,ja:japaneseUi}[code])});
+ await runtime.initialize();assert.equal(runtime.getUiLocale(),'en');
+ const literal='<body><a href="/read?book=literal%2Fid&amp;passage=p1#source">Literal source</a><a href="https://other.test/read?book=x">External</a><a href="/api/export?signature=x">Export</a><a href="/read-more">Other</a></body>';
+ const rendered=homeDocument(literal,'ja');
+ assert.match(rendered,/href="\/read\?book=literal%2Fid&amp;passage=p1&amp;ui=ja#source"/);
+ assert.match(rendered,/href="https:\/\/other.test\/read\?book=x"/);assert.match(rendered,/href="\/api\/export\?signature=x"/);assert.match(rendered,/href="\/read-more"/);
 });

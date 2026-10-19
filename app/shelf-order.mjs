@@ -1,10 +1,14 @@
 // Whole-shelf ordering shared by pointer, touch and keyboard controls.
+// Pure shared ordering helper: labels arrive as explicit injected parameters
+// from the portal caller (never a mutable UI API import) and the caller decides
+// how to reformat them after a locale change. Reorder actions and drag state are
+// untouched by locale changes.
 export function moveShelfBook(ids,source,target,side='before'){
-  if(!Array.isArray(ids)||new Set(ids).size!==ids.length||!ids.includes(source)||!ids.includes(target)||!['before','after'].includes(side))throw Error('书架刚刚有变化，请重新拖动。');
+  if(!Array.isArray(ids)||new Set(ids).size!==ids.length||!ids.includes(source)||!ids.includes(target)||!['before','after'].includes(side))throw Object.assign(Error('书架刚刚有变化，请重新拖动。'),{code:'SHELF_ORDER_CONFLICT'});
   if(source===target)return [...ids];const next=ids.filter(id=>id!==source),index=next.indexOf(target);next.splice(index+(side==='after'?1:0),0,source);return next;
 }
 
-export function mountShelfDrag({grid,getBooks,getOwner,onReorder,onError=()=>{}}){
+export function mountShelfDrag({grid,getBooks,getOwner,onReorder,onError=()=>{},labels={}}){
   let drag=null,pending=null,blockedClick=null;
   const cards=()=>[...grid.querySelectorAll('.book-card[data-book-id]')];
   function clearHold(){if(pending)clearTimeout(pending.timer);pending=null;}
@@ -78,6 +82,6 @@ export function mountShelfDrag({grid,getBooks,getOwner,onReorder,onError=()=>{}}
   grid.addEventListener('keydown',event=>{if(event.key==='Escape'&&(drag||pending)){event.preventDefault();reset();}});window.addEventListener('blur',reset);
   // The second finger can land outside this grid (sidebar or page margin).
   document.addEventListener('pointerdown',event=>{if(event.isPrimary===false&&(drag||pending))reset();},true);
-  function decorate(card){card.draggable=true;const art=card.querySelector('.book-art');if(art){art.draggable=false;art.setAttribute('aria-describedby','shelf-order-help');}}
+  function decorate(card){card.draggable=true;const art=card.querySelector('.book-art');if(art){art.draggable=false;art.setAttribute('aria-describedby','shelf-order-help');}const handle=card.querySelector('.book-drag-handle');if(handle&&labels.dragHint){handle.setAttribute('aria-label',labels.dragHint);handle.setAttribute('title',labels.dragHint);}}
   return {decorate,reset};
 }

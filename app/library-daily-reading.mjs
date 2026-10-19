@@ -1,7 +1,11 @@
+import {t,getUiLocale,uiHref,onUiLocaleChange,uiReady} from './ui-locale.mjs';
 import {trackActionFocus} from './action-focus.mjs';
 const node=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
-const states={'awaiting-host':'待连接',active:'已开启',paused:'已暂停',expired:'连接已到期',revoked:'授权已撤回'};
-const title=book=>book?.title?.zh||book?.title?.en||'未选择书籍';
+// Literal server-default card label: custom labels stay literal data, this
+// default is filtered as data, never matched against UI text for translation.
+const DEFAULT_INBOX_LABEL='每日陪读';
+const KNOWN_STATES=new Set(['awaiting-host','active','paused','expired','revoked']);
+const title=book=>book?.title?.zh||book?.title?.en||t('book.fallback');
 function sourceLink(value){
  if(typeof value!=='string'||!value.startsWith('/read?'))return null;
  try{const url=new URL(value,'https://leafhour.invalid');if(url.pathname!=='/read'||url.origin!=='https://leafhour.invalid'||!url.searchParams.get('book')||!url.searchParams.get('passage')||!url.searchParams.get('contentVersion')||url.searchParams.get('layer')!=='original')return null;return url.pathname+url.search;}catch{return null;}
@@ -10,69 +14,108 @@ function downloadConfig(config){
  const url=URL.createObjectURL(new Blob([JSON.stringify(config,null,2)+'\n'],{type:'application/json'})),link=node('a');link.href=url;link.download='leafhour-daily-private.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),0);
 }
 // Owner reads and explicit writes only. A downloaded credential is not evidence
-// of a running scheduler; server connection state is authoritative.
+// of a running scheduler; server connection state is authoritative. Language
+// commits relabel owned nodes from cached public state only: no API call, no
+// option or inbox rebuild, no session/book read and no plan/grant write.
 export function mountLibraryDailyReading({root,inboxRoot=null,api,getSession,getBooks=()=>[],getCurrentBook=()=>null,origin=globalThis.location?.origin,download=downloadConfig}){
- const heading=node('h3','','每日陪读'),intro=node('p','settings-description','每天留一张纸条，在书房等你。读书时不打扰，随时可以暂停。');
- const summary=node('div','daily-summary'),state=node('span','daily-state','尚未设置');state.id='daily-state';
- const schedule=node('p','daily-schedule','每天 20:00 · 北京时间'),channel=node('p','daily-channel','送到 Leafhour 书房');summary.append(state,schedule,channel);
+ const labels=new Map(),links=new Set();
+ const text=spec=>spec.render?spec.render():t(spec.id,spec.params);
+ const own=(n,spec)=>{labels.set(n,spec);n.textContent=text(spec);return n;};
+ const ui=(tag,cls,id,params)=>own(node(tag,cls),{id,params});
+ const heading=ui('h3','','daily.title'),intro=ui('p','settings-description','daily.intro');
+ const summary=node('div','daily-summary'),state=node('span','daily-state');state.id='daily-state';
+ const schedule=node('p','daily-schedule'),channel=ui('p','daily-channel','daily.channel');summary.append(state,schedule,channel);
  const binding=node('p','daily-binding'),connection=node('p','daily-connection'),expiry=node('p','daily-expiry');
  const form=node('form','daily-form');form.id='daily-form';
- const bookLabel=node('label','profile-field-label','陪读这本书');bookLabel.htmlFor='daily-book';const book=node('select','profile-input');book.id='daily-book';
- const timeLabel=node('label','profile-field-label','每天几点');timeLabel.htmlFor='daily-time';const time=node('input','profile-input');time.id='daily-time';time.type='time';time.required=true;time.value='20:00';
- const zone=node('p','daily-field-help','北京时间 · Asia/Shanghai。换书或改时间后，需要宿主重新确认连接。');
+ const bookLabel=ui('label','profile-field-label','daily.field.book');bookLabel.htmlFor='daily-book';const book=node('select','profile-input');book.id='daily-book';
+ const timeLabel=ui('label','profile-field-label','daily.field.time');timeLabel.htmlFor='daily-time';const time=node('input','profile-input');time.id='daily-time';time.type='time';time.required=true;time.value='20:00';
+ const zone=ui('p','daily-field-help','daily.field.zone');
  const consentLabel=node('label','daily-consent'),consent=node('input');consent.id='daily-consent';consent.type='checkbox';consent.checked=false;
- consentLabel.append(consent,node('span','','允许陪读宿主读取这本书当前一段原文、阅读位置及当日阅读时长，用于续读纸条。私人笔记不在授权内。'));
- const save=node('button','primary','保存并准备连接');save.id='daily-save';save.type='submit';
- const pause=node('button','outline','暂停陪读');pause.id='daily-pause';pause.type='button';const resume=node('button','outline','恢复陪读');resume.id='daily-resume';resume.type='button';
+ consentLabel.append(consent,ui('span','','daily.consent'));
+ const save=ui('button','primary','daily.save');save.id='daily-save';save.type='submit';
+ const pause=ui('button','outline','daily.pause');pause.id='daily-pause';pause.type='button';const resume=ui('button','outline','daily.resume');resume.id='daily-resume';resume.type='button';
  const actions=node('div','daily-actions');actions.append(save,pause,resume);
- const configButton=node('button','text-link','下载私有连接配置');configButton.id='daily-download';configButton.type='button';configButton.hidden=true;
- const configHelp=node('p','daily-field-help','连接配置含临时密钥，只交给自己的宿主，并将文件设为仅自己可读。授权 30 天，到期后需重新连接。');configHelp.hidden=true;
+ const configButton=ui('button','text-link','daily.download');configButton.id='daily-download';configButton.type='button';configButton.hidden=true;
+ const configHelp=ui('p','daily-field-help','daily.download.help');configHelp.hidden=true;
  const status=node('p','settings-status');status.id='daily-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
- const reload=node('button','text-link','刷新连接状态');reload.id='daily-refresh';reload.type='button';
+ const reload=ui('button','text-link','daily.refresh');reload.id='daily-refresh';reload.type='button';
  form.append(bookLabel,book,timeLabel,time,zone,consentLabel,actions,configButton,configHelp,status,reload);root.append(heading,intro,summary,binding,connection,expiry,form);
- let owner=null,generation=0,view=null,busy=false,credential=null,credentialBinding=null,dirty=false,loaded=false;
+ let owner=null,generation=0,view=null,busy=false,credential=null,credentialBinding=null,dirty=false,loaded=false,disposed=false,noticeEdited=false;
+ // Cached public presentation for label-only language updates: it never reads
+ // sessions, books or the server and never rebuilds options or the inbox.
+ let model={stateKey:'unset',time:'20:00',zoneId:'Asia/Shanghai',boundTitle:null,bookBound:false,hostLabel:null,connected:false,paused:false,hasPlan:false,expiryDate:null};
  const bindingKey=p=>p?JSON.stringify([p.id,p.revision,p.grantId,p.bookId,p.time,p.timeZone]):null;
  const currentOwner=()=>getSession()?.user?.id||null;
- const message=(text,error=false)=>{status.textContent=text;status.classList.toggle('error',error);status.setAttribute('role',error?'alert':'status');};
- const valid=(expected,sequence)=>currentOwner()===expected&&owner===expected&&generation===sequence;
+ const localeDate=(date,options)=>new Intl.DateTimeFormat(getUiLocale(),{timeZone:'Asia/Shanghai',...options}).format(date);
+ const paintStatus=(textValue,error)=>{status.textContent=textValue;status.classList.toggle('error',!!error);status.setAttribute('role',error?'alert':'status');};
+ let lastNotice=null;
+ const notice=(id,params=null,error=false,{edited=false}={})=>{lastNotice={id,params,error};noticeEdited=edited;paintStatus(t(id,params)+(edited?' '+t('daily.status.edited'):''),error);};
+ const message=(textValue,error=false)=>{lastNotice=null;noticeEdited=false;paintStatus(textValue,error);};
+ const valid=(expected,sequence)=>!disposed&&currentOwner()===expected&&owner===expected&&generation===sequence;
  function renderInbox(){
   if(!inboxRoot)return;inboxRoot.replaceChildren();const cards=owner?[...(view?.inbox||[])].sort((a,b)=>Date.parse(b.deliveredAt||b.createdAt)-Date.parse(a.deliveredAt||a.createdAt)).slice(0,3):[];inboxRoot.hidden=!cards.length;
-  if(!cards.length)return;const h=node('h2','','留在书房的纸条');inboxRoot.append(h);
+  if(!cards.length)return;inboxRoot.append(own(node('h2',''),{id:'daily.inbox.title'}));
   for(const card of cards){
-   const article=node('article','daily-card'),meta=node('div','daily-card-meta'),label=node('span','','AI · 每日陪读');meta.append(label);
-   if(card.label&&card.label!=='每日陪读')meta.append(node('span','daily-card-label',card.label));
-   const date=new Date(card.deliveredAt||card.createdAt);if(!Number.isNaN(date.getTime())){const stamp=node('time','',new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(date));stamp.dateTime=date.toISOString();meta.append(stamp);}
-   const bookTitle=card.bookTitle||getBooks().find(b=>b.bookId===card.bookId)?.title?.zh;if(bookTitle)article.append(node('p','daily-card-source','《'+bookTitle+'》'+(card.chapterLabel?' · '+card.chapterLabel:'')));
+   const article=node('article','daily-card'),meta=node('div','daily-card-meta');meta.append(own(node('span',''),{id:'daily.inbox.label'}));
+   if(card.label&&card.label!==DEFAULT_INBOX_LABEL)meta.append(node('span','daily-card-label',card.label));
+   const date=new Date(card.deliveredAt||card.createdAt);if(!Number.isNaN(date.getTime())){const stamp=node('time','',localeDate(date,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}));stamp.dateTime=date.toISOString();own(stamp,{render:()=>localeDate(date,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})});meta.append(stamp);}
+   const bookTitle=card.bookTitle||getBooks().find(b=>b.bookId===card.bookId)?.title?.zh;if(bookTitle)article.append(own(node('p','daily-card-source'),{render:()=>t('daily.inbox.source',{title:bookTitle})+(card.chapterLabel?' · '+card.chapterLabel:'')}));
    article.append(meta,node('p','daily-card-message',card.message||''));
    if(card.quote?.text)article.append(node('blockquote','daily-card-quote',card.quote.text));
-   const link=sourceLink(card.link);if(link){const back=node('a','text-link','回到这一段原文 →');back.href=link;article.append(back);}inboxRoot.append(article);
+   const link=sourceLink(card.link);if(link){const back=own(node('a','text-link'),{id:'daily.inbox.back'});back.href=uiHref(link);back.setAttribute('data-ui-owned-href',link);links.add(back);article.append(back);}inboxRoot.append(article);
   }
  }
+ function renderChrome(){
+  state.textContent=t('daily.state.'+model.stateKey);state.dataset.state=model.stateKey;
+  schedule.textContent=t('daily.schedule',{time:model.time,zone:model.zoneId==='Asia/Shanghai'?t('daily.zone.beijing'):model.zoneId});
+  binding.textContent=model.hasPlan?t('daily.binding.book',{title:model.boundTitle})+(model.bookBound?'':t('daily.binding.removed')):t('daily.binding.none');
+  connection.textContent=model.connected?t('daily.connection.active',{host:model.hostLabel||t('daily.host.default')}):model.paused?t('daily.connection.paused'):model.hasPlan?t('daily.connection.pending'):t('daily.connection.none');
+  expiry.textContent=model.expiryDate?t('daily.expiry',{date:localeDate(model.expiryDate,{year:'numeric',month:'long',day:'numeric'})}):'';
+ }
  function render(){
-  const p=view?.plan,books=getBooks(),stateKey=p?.status==='active'&&!p.connectedAt?'awaiting-host':p?.status;state.textContent=p?(states[stateKey]||'待重新连接'):'尚未设置';state.dataset.state=stateKey||'unset';
-  schedule.textContent='每天 '+(p?.time||'20:00')+' · '+((p?.timeZone||'Asia/Shanghai')==='Asia/Shanghai'?'北京时间':p.timeZone);
-  const boundBook=p&&books.find(b=>b.bookId===p.bookId),boundTitle=p?.bookTitle||(boundBook?title(boundBook):'已绑定的书');
-  binding.textContent=p?'陪读《'+boundTitle+'》'+(!boundBook?' · 此书已移出书架，陪读仍按已保存设置进行。':''):'从你正在读的书开始。';
-  connection.textContent=p?.status==='active'&&p.connectedAt?'宿主：'+(p.hostLabel||'已连接')+' · 已完成连接':p?.status==='paused'?'已暂停，未完成的纸条不会送达。':p?'宿主尚未完成连接。准备配置后，还需由宿主确认日程。':'由你自己的 Agent 宿主按日程留纸条。';
-  const end=new Date(p?.grantExpiresAt);expiry.textContent=p&&!Number.isNaN(end.getTime())?'授权到期：'+new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',year:'numeric',month:'long',day:'numeric'}).format(end):'';
-  if(!dirty){book.replaceChildren();if(p&&!boundBook){const option=node('option','',boundTitle+'（已绑定）');option.value=p.bookId;book.append(option);}for(const b of books){const option=node('option','',title(b));option.value=b.bookId;book.append(option);}book.value=p?.bookId||getCurrentBook()?.bookId||books[0]?.bookId||'';time.value=p?.time||'20:00';}
+  const p=view?.plan,books=getBooks(),rawState=p?.status==='active'&&!p.connectedAt?'awaiting-host':p?.status;
+  model.stateKey=p?(KNOWN_STATES.has(rawState)?rawState:'reconnect'):'unset';model.hasPlan=!!p;model.time=p?.time||'20:00';
+  model.zoneId=p?.timeZone||'Asia/Shanghai';
+  const boundBook=p&&books.find(b=>b.bookId===p.bookId);model.bookBound=!!boundBook;
+  model.boundTitle=p?.bookTitle||(boundBook?title(boundBook):p?t('daily.binding.boundBook'):'');
+  model.connected=p?.status==='active'&&!!p.connectedAt;model.paused=p?.status==='paused';model.hostLabel=p?.hostLabel||null;
+  const end=new Date(p?.grantExpiresAt);model.expiryDate=p&&!Number.isNaN(end.getTime())?end:null;
+  renderChrome();
+  if(!dirty){book.replaceChildren();if(p&&!boundBook){const option=node('option','',model.boundTitle+t('daily.boundSuffix'));option.value=p.bookId;book.append(option);}for(const b of books){const option=node('option','',title(b));option.value=b.bookId;book.append(option);}book.value=p?.bookId||getCurrentBook()?.bookId||books[0]?.bookId||'';time.value=p?.time||'20:00';}
   for(const field of [book,time,consent,save,reload])field.disabled=!owner||busy;save.disabled||=!book.value||!loaded;pause.disabled=resume.disabled=!owner||busy||!loaded;
   pause.hidden=!p||!['active','awaiting-host'].includes(p.status);resume.hidden=p?.status!=='paused';
   configButton.hidden=!credential;configHelp.hidden=!credential;configButton.disabled=busy||!owner;form.setAttribute('aria-busy',String(busy));renderInbox();
  }
  function update(){const next=currentOwner();if(owner!==next){owner=next;generation++;view=null;credential=null;credentialBinding=null;busy=false;dirty=false;loaded=false;consent.checked=false;message('');}render();}
- async function refresh(){update();if(!owner||busy||typeof api!=='function')return;const expected=owner,sequence=++generation;busy=true;render();try{const result=await api('/api/library/daily-reading');if(!valid(expected,sequence))return;view=result;if(credentialBinding!==bindingKey(view?.plan))credential=null;loaded=true;message('');}catch(error){if(valid(expected,sequence))message('陪读状态暂时无法读取。'+(error.message||''),true);}finally{if(valid(expected,sequence)){busy=false;render();}}}
+ async function refresh(){update();if(disposed||!owner||busy||typeof api!=='function')return;const expected=owner,sequence=++generation;busy=true;render();try{const result=await api('/api/library/daily-reading');if(!valid(expected,sequence))return;view=result;if(credentialBinding!==bindingKey(view?.plan))credential=null;loaded=true;message('');}catch(error){if(valid(expected,sequence))notice('daily.status.error',null,true);}finally{if(valid(expected,sequence)){busy=false;render();}}}
  async function write(path,body){
-  update();if(!owner||busy||!loaded)return;const expected=owner,sequence=++generation,trigger=document.activeElement,focus=trackActionFocus(document,trigger);busy=true;if(path==='')credential=null;message('');render();
+  update();if(disposed||!owner||busy||!loaded)return;const expected=owner,sequence=++generation,trigger=document.activeElement,focus=trackActionFocus(document,trigger);busy=true;if(path==='')credential=null;message('');render();
   try{const result=await api('/api/library/daily-reading'+path,body);if(!valid(expected,sequence))return;const {token,...publicResult}=result;view={...view,...publicResult};if(path==='')dirty=false;
    if(token){credential={version:1,serviceUrl:origin,token,hostInstallId:globalThis.crypto.randomUUID(),hostLabel:'我的陪读宿主',schedulerId:''};credentialBinding=bindingKey(view.plan);consent.checked=false;}
-   if(path==='/pause'||credentialBinding!==bindingKey(view.plan))credential=null;message(path==='/pause'?'已暂停。'+(dirty?'未保存的编辑仍保留。':''):path==='/resume'?'已恢复，请核对宿主连接状态。'+(dirty?'未保存的编辑仍保留。':''):'已保存，等待宿主连接。');
-  }catch(error){if(valid(expected,sequence))message(error.status===409?'设置已在另一处更新，请先刷新状态，再确认保存。':'设置暂未保存。'+(error.message||''),true);}
+   if(path==='/pause'||credentialBinding!==bindingKey(view.plan))credential=null;
+   notice(path==='/pause'?'daily.status.paused':path==='/resume'?'daily.status.resumed':'daily.status.saved',null,false,{edited:dirty});
+  }catch(error){if(valid(expected,sequence))notice(error.status===409?'daily.status.conflict':'daily.status.saveFailed',null,true);}
   finally{if(valid(expected,sequence)){busy=false;render();focus.restore(trigger?.hidden?reload:trigger);}else focus.stop();}
  }
- book.addEventListener('change',()=>{dirty=true;});time.addEventListener('input',()=>{dirty=true;});
- form.addEventListener('submit',event=>{event.preventDefault();if(!consent.checked){message('请先确认本次陪读授权。',true);return;}write('',{baseRevision:view?.plan?.revision||0,bookId:book.value,time:time.value,timeZone:'Asia/Shanghai',consent:{originalText:true,readingActivity:true}});});
- pause.addEventListener('click',()=>write('/pause',{baseRevision:view?.plan?.revision||0}));resume.addEventListener('click',()=>write('/resume',{baseRevision:view?.plan?.revision||0}));reload.addEventListener('click',()=>refresh());
- configButton.addEventListener('click',()=>{update();if(owner&&credential)download({...credential});});update();
- return {update,refresh,clear(){owner=null;generation++;view=null;credential=null;credentialBinding=null;busy=false;dirty=false;loaded=false;consent.checked=false;message('');render();}};
+ const onBookChange=()=>{dirty=true;},onTimeInput=()=>{dirty=true;};
+ book.addEventListener('change',onBookChange);time.addEventListener('input',onTimeInput);
+ const onSubmit=event=>{event.preventDefault();if(!consent.checked){notice('daily.status.consentRequired',null,true);return;}write('',{baseRevision:view?.plan?.revision||0,bookId:book.value,time:time.value,timeZone:'Asia/Shanghai',consent:{originalText:true,readingActivity:true}});};
+ form.addEventListener('submit',onSubmit);
+ const onPause=()=>write('/pause',{baseRevision:view?.plan?.revision||0}),onResume=()=>write('/resume',{baseRevision:view?.plan?.revision||0}),onReload=()=>refresh();
+ pause.addEventListener('click',onPause);resume.addEventListener('click',onResume);reload.addEventListener('click',onReload);
+ const onDownload=()=>{update();if(owner&&credential)download({...credential});};
+ configButton.addEventListener('click',onDownload);update();
+ function updateLabels(){
+  if(disposed)return;
+  for(const [n,spec] of labels){if(!n.isConnected){labels.delete(n);links.delete(n);continue;}n.textContent=text(spec);}
+  renderChrome();
+  for(const link of [...links]){if(!link.isConnected){links.delete(link);continue;}link.href=uiHref(link.getAttribute('data-ui-owned-href')||'');}
+  if(lastNotice)paintStatus(t(lastNotice.id,lastNotice.params)+(noticeEdited?' '+t('daily.status.edited'):''),lastNotice.error);
+ }
+ const offLocale=onUiLocaleChange(updateLabels);void uiReady.then(updateLabels);
+ return {update,refresh,updateLabels,dispose(){
+   if(disposed)return;disposed=true;generation++;offLocale();labels.clear();links.clear();lastNotice=null;view=null;credential=null;credentialBinding=null;busy=false;loaded=false;dirty=false;
+   book.removeEventListener('change',onBookChange);time.removeEventListener('input',onTimeInput);form.removeEventListener('submit',onSubmit);
+   pause.removeEventListener('click',onPause);resume.removeEventListener('click',onResume);reload.removeEventListener('click',onReload);configButton.removeEventListener('click',onDownload);
+ },clear(){owner=null;generation++;view=null;credential=null;credentialBinding=null;busy=false;dirty=false;loaded=false;consent.checked=false;message('');render();}};
 }

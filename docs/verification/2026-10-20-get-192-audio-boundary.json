@@ -1,0 +1,494 @@
+{
+  "base": "df45f6ffb5d14c903b2feaca2742e7ec0fcb3be2",
+  "status": "voice-ui-followup-awaiting-independent-review",
+  "buildAppliesToFinalSource": false,
+  "buildSourceHashes": {
+    "app/reader-audio.js": "ad612968e52825e6c268d70ce6fcc51b250575e4f38e01e4df3ca335c7830116",
+    "app/reader-audio-bootstrap.mjs": "6d3b878ff2056c639ba94228c6ffb83ae8a2d84a6e1c1d97712babed6c014108",
+    "app/reader-audio-metadata.mjs": "fef59ba4582bca879d0114410aefcb16e1b466d0a54bac4e042d52820cc42e47",
+    "app/reader-audio.css": "ae355e084ffe452d9f34306ce4b068206b80ed9ee66b6f0863adefbacba705cb",
+    "app/index.html": "c420c6b41eb2756cd5d116bb8d9db5f1e7da611cd78c3000936f04ae01b81533",
+    "app/reader-navigation.mjs": "b6815ddd9ee44fa9a0e705202f98c3e4b49eff8ac42be1eec75469a678b7fecd",
+    "tools/build-reader-web.mjs": "32e1ec5f0294a94a577cccc62d8e061e638c706d1ea738970e528342a66675d7",
+    "app/ui-catalogs/en.mjs": "408b5338d67dedd4393597159266d655267a12cf95140b8a2abf8ea4716fe005",
+    "app/ui-catalogs/ja.mjs": "73d4619b8d3fa73945a6210da70023a8743b9aac7f5b18d47c5b2d33a616d27f",
+    "app/ui-catalogs/zh-Hans.mjs": "45dbffed11560ec3ef5d37eedf1e8f014e58e5fef395b9f4e9a40ccbdc0e4b6d",
+    "app/ui-catalogs/zh-Hant.mjs": "a3f18bf53c4bf1a22bd7aff7b9fff58df7d984922fe4f2d473756a882daa6f77"
+  },
+  "finalProductionSourceHashes": {
+    "app/reader-audio.js": "590c70cd3581efc6c8816d8c209ae6e79af42d3de888176e884635ebe25d61f4",
+    "app/reader-audio-bootstrap.mjs": "d999fc345d9ac894f56d6d5df78c675ad4553f54b491aeae83bc575e19da8d58",
+    "app/reader-audio-metadata.mjs": "6b38b2417bac6fd33f82e51ab41b01d2618ef48bd8879535f7deb1559326e49a",
+    "app/reader-audio.css": "2d53e508c9e785e0a7ec0c414f2e5105b025ddeefdc6a0fa53540be956f7026b",
+    "app/index.html": "c420c6b41eb2756cd5d116bb8d9db5f1e7da611cd78c3000936f04ae01b81533",
+    "app/reader-navigation.mjs": "b6815ddd9ee44fa9a0e705202f98c3e4b49eff8ac42be1eec75469a678b7fecd",
+    "tools/build-reader-web.mjs": "47d8c4f18a241b4fd6ee09b878ca1156479868d211d73e313d5f0fdfdf2c5a4b",
+    "app/ui-catalogs/en.mjs": "42b4fa127de34fd8a1d2a95981e5c3d131c831855d084fb4c6267d174be6cd7f",
+    "app/ui-catalogs/ja.mjs": "8bf0176256e3072a2ccec4675a471f8b347046629ec86da31bf1f76cb2a76659",
+    "app/ui-catalogs/zh-Hans.mjs": "93da1597fe6d150dd5a498ce0235895bb76ff4e979079538e1a550bdb9fb3ac8",
+    "app/ui-catalogs/zh-Hant.mjs": "2115f7d5a7dcdc687c9af509e0870115c7c9db663e7b789578963d219839ab70",
+    "app/reader.js": "114adee683c672ba9ba1eab56a33712621bedc47bd73e8a439f78dd7c52ac119"
+  },
+  "build": {
+    "status": "PASS",
+    "elapsedMs": 773,
+    "baselineInitialJsBytes": 338400,
+    "initial": [
+      {
+        "file": "reader-web/reader-99add78d2d57d12b.js",
+        "bytes": 309259
+      },
+      {
+        "file": "reader-web/style-cd9fb9bc0dd46fb4.css",
+        "bytes": 170141
+      }
+    ],
+    "jsSavedFromBaseline": 29141,
+    "jsCap": 327680,
+    "cssCap": 204800,
+    "rawWholeTransitive": [
+      {
+        "file": "app/reader-audio.js",
+        "bytes": 48112
+      },
+      {
+        "file": "app/audio-state.mjs",
+        "bytes": 534
+      },
+      {
+        "file": "app/audio-errors.mjs",
+        "bytes": 272
+      },
+      {
+        "file": "app/action-focus.mjs",
+        "bytes": 656
+      },
+      {
+        "file": "app/listening-guide-state.mjs",
+        "bytes": 4234
+      },
+      {
+        "file": "app/reader-return.mjs",
+        "bytes": 4711
+      },
+      {
+        "file": "app/ui-locale.mjs",
+        "bytes": 25007
+      },
+      {
+        "file": "app/ui-locale-codec.mjs",
+        "bytes": 6607
+      },
+      {
+        "file": "app/ui-catalogs/en.mjs",
+        "bytes": 131315
+      },
+      {
+        "file": "app/ui-catalogs/zh-Hans.mjs",
+        "bytes": 121687
+      },
+      {
+        "file": "app/ui-catalogs/zh-Hant.mjs",
+        "bytes": 121644
+      },
+      {
+        "file": "app/ui-catalogs/ja.mjs",
+        "bytes": 151434
+      }
+    ],
+    "rawWholeTransitiveBytes": 616213,
+    "rawWholeTransitiveRequestCount": 12,
+    "firstAudioUncachedAfterUiInitialization": [
+      {
+        "file": "app/reader-audio.js",
+        "bytes": 48112
+      },
+      {
+        "file": "app/audio-state.mjs",
+        "bytes": 534
+      },
+      {
+        "file": "app/audio-errors.mjs",
+        "bytes": 272
+      },
+      {
+        "file": "app/action-focus.mjs",
+        "bytes": 656
+      },
+      {
+        "file": "app/listening-guide-state.mjs",
+        "bytes": 4234
+      },
+      {
+        "file": "app/reader-return.mjs",
+        "bytes": 4711
+      }
+    ],
+    "firstAudioAdditionalBytes": 58519,
+    "firstAudioAdditionalRequestCount": 6,
+    "rawNotes": "Uncompressed source bytes and graph request counts, not measured transfer/timing. Runtime, codec, English and any active translated catalogue are existing UI requests. Whole closure includes all possible locale catalogues; unused translated catalogues are not fetched by audio.",
+    "bundledInputs": [
+      "app/action-focus.mjs",
+      "app/arrival-excerpt.mjs",
+      "app/atmosphere-audio.mjs",
+      "app/atmosphere-state.mjs",
+      "app/book-introduction.mjs",
+      "app/book-transfer.mjs",
+      "app/catalog-sample.mjs",
+      "app/choice-control.css",
+      "app/document-source.mjs",
+      "app/experiences.css",
+      "app/experiences.js",
+      "app/gift-compose.css",
+      "app/hearth-motion.mjs",
+      "app/highlights.mjs",
+      "app/interaction-craft.css",
+      "app/interaction-craft.mjs",
+      "app/interface-tokens.css",
+      "app/leafhour-brand.css",
+      "app/library-backup.mjs",
+      "app/library-chat-markdown.mjs",
+      "app/library-chat-state.mjs",
+      "app/library-chat.css",
+      "app/library-chat.mjs",
+      "app/nature-motion.mjs",
+      "app/note-drafts.mjs",
+      "app/original-download.mjs",
+      "app/palette-bootstrap.mjs",
+      "app/paragraph-anchor.mjs",
+      "app/parallel-reading.css",
+      "app/parallel-reading.mjs",
+      "app/passage-layers.mjs",
+      "app/personal-record-editor.mjs",
+      "app/personal-records.mjs",
+      "app/popover-controls.mjs",
+      "app/portable-chat.mjs",
+      "app/progress-sync.mjs",
+      "app/reader-api.mjs",
+      "app/reader-atmosphere.css",
+      "app/reader-atmosphere.js",
+      "app/reader-audio-bootstrap.mjs",
+      "app/reader-audio-metadata.mjs",
+      "app/reader-audio.css",
+      "app/reader-book-actions-bootstrap.mjs",
+      "app/reader-book-actions.css",
+      "app/reader-companion-state.mjs",
+      "app/reader-companion.css",
+      "app/reader-companion.mjs",
+      "app/reader-conversation.mjs",
+      "app/reader-entry.mjs",
+      "app/reader-highlights.mjs",
+      "app/reader-immersion.mjs",
+      "app/reader-navigation.css",
+      "app/reader-navigation.mjs",
+      "app/reader-pagination.css",
+      "app/reader-pagination.mjs",
+      "app/reader-presence.mjs",
+      "app/reader-return.mjs",
+      "app/reader-settings.css",
+      "app/reader-settings.mjs",
+      "app/reader-tools.mjs",
+      "app/reader-translation.js",
+      "app/reader.js",
+      "app/reading-arrival.css",
+      "app/reading-arrival.mjs",
+      "app/reading-book.mjs",
+      "app/reading-chat-scope.mjs",
+      "app/reading-clock.mjs",
+      "app/reading-draft-store.mjs",
+      "app/reading-ending-context.mjs",
+      "app/reading-flow.css",
+      "app/reading-flow.mjs",
+      "app/reading-journey.mjs",
+      "app/reading-load.mjs",
+      "app/reading-manual-ui.mjs",
+      "app/reading-manual.mjs",
+      "app/reading-mark-actions.mjs",
+      "app/reading-mark-store.mjs",
+      "app/reading-outbox.mjs",
+      "app/reading-pending-backup.mjs",
+      "app/reading-preferences.mjs",
+      "app/reading-progress.mjs",
+      "app/reading-queue-store.mjs",
+      "app/reading-retained-backup.mjs",
+      "app/reading-session-coordinator.mjs",
+      "app/reading-session-record.mjs",
+      "app/reading-session.css",
+      "app/reading-session.js",
+      "app/reading-time-policy.mjs",
+      "app/reading-toolbar.mjs",
+      "app/save-receipts.mjs",
+      "app/share-fonts.mjs",
+      "app/share-model.mjs",
+      "app/share.css",
+      "app/share.js",
+      "app/source-emphasis.mjs",
+      "app/source-language.mjs",
+      "app/source-revisions.mjs",
+      "app/styles.css",
+      "app/toolbar-placement.mjs",
+      "app/translation-state.mjs",
+      "app/typography.css",
+      "app/ui-locale-codec.mjs",
+      "app/ui-locale-controls.mjs"
+    ],
+    "initialStaticJsClosure": [
+      {
+        "file": "reader-web/reader-99add78d2d57d12b.js",
+        "bytes": 309259
+      },
+      {
+        "file": "app/ui-locale.mjs",
+        "bytes": 25007
+      },
+      {
+        "file": "app/ui-locale-codec.mjs",
+        "bytes": 6607
+      },
+      {
+        "file": "app/ui-catalogs/en.mjs",
+        "bytes": 131315
+      },
+      {
+        "file": "app/arrival-catalog.mjs",
+        "bytes": 16343
+      }
+    ],
+    "initialStaticJsBytes": 488531,
+    "initialStaticJsRequestCount": 5,
+    "initialStaticCssClosure": [
+      {
+        "file": "reader-web/style-cd9fb9bc0dd46fb4.css",
+        "bytes": 170141
+      },
+      {
+        "file": "app/fonts/noto-serif-sc/font-faces.css",
+        "bytes": 93219
+      }
+    ],
+    "initialStaticCssBytes": 263360,
+    "initialStaticNotes": "Static import graph source bytes, not browser measurements; a non-English UI additionally imports its selected catalogue. Fonts/media bodies and optional user-action imports are excluded."
+  },
+  "tests": {
+    "relatedScopeBeforeSelfReview": {
+      "pass": 261,
+      "fail": 0,
+      "cancelled": 0
+    },
+    "postSelfReviewIntentLifecycle": {
+      "pass": 19,
+      "fail": 0,
+      "cancelled": 0
+    },
+    "postSelfReviewFocused": {
+      "pass": 5,
+      "fail": 0,
+      "cancelled": 0
+    },
+    "existingKeysPreservedPerLocale": 1935,
+    "newKeysPerLocale": 7,
+    "approvedSceneFunctionsByteIdentical": 5
+  },
+  "limitations": [
+    "No native browser/network latency measurement",
+    "No final-source build after self-review changes",
+    "Parent owns independent review, full verification and all delivery gates"
+  ],
+  "repairRound1": {
+    "base": "1b314b9e2818c6ccc6c5fcc8a8dbecc4df7ff401",
+    "findingsAddressed": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6"
+    ],
+    "counterexamplesRed": {
+      "pass": 0,
+      "fail": 5
+    },
+    "releaseRed": {
+      "pass": 5,
+      "fail": 1
+    },
+    "originalCounterexamplesAndReleaseGreen": {
+      "pass": 11,
+      "fail": 0
+    },
+    "stackedModalAndViewportBeforeOverlayFix": {
+      "pass": 1,
+      "fail": 1
+    },
+    "lifecycleSubsetGreen": {
+      "pass": 72,
+      "fail": 0
+    },
+    "legacyAudioGraphReleaseGreen": {
+      "pass": 44,
+      "fail": 0
+    },
+    "finalAdditionalRemountGreen": {
+      "pass": 1,
+      "fail": 0
+    },
+    "newRegressionCases": 19,
+    "buildRun": false,
+    "nativeModalTestRun": false
+  },
+  "repairRound2": {
+    "base": "f351e7bc40182e119650ab5da25ecd0070cf5053",
+    "findingAddressed": "R7",
+    "authorizedScope": "Only #audio-bootstrap-status exclusions in reader document click, pointerup, keyup and keydown",
+    "independentRed": {
+      "pass": 0,
+      "fail": 1
+    },
+    "regressionsContractRed": {
+      "pass": 1,
+      "fail": 7
+    },
+    "independentGreen": {
+      "pass": 1,
+      "fail": 0
+    },
+    "selectionRecoveryGreen": {
+      "pass": 13,
+      "fail": 0
+    },
+    "readerControlsGreen": {
+      "pass": 9,
+      "fail": 0
+    },
+    "newRegressionCases": 8,
+    "buildRun": false,
+    "nativeEventTestRun": false
+  },
+  "repairRound3": {
+    "base": "7ef9f08d8aecaa460cf416461900cf10df52193f",
+    "findingAddressed": "Competing local focus outline on audio recovery buttons",
+    "componentFoundationRed": {
+      "pass": 12,
+      "fail": 1
+    },
+    "componentFoundationAndAudioGraphGreen": {
+      "pass": 38,
+      "fail": 0
+    },
+    "productionChange": "Remove only the duplicate local focus-visible outline; preserve shared interface-token focus ring",
+    "testsModified": false,
+    "buildRun": false,
+    "nativeTestRun": false
+  },
+  "canonicalVoiceUiFollowup": {
+    "base": "7e8e9edc40456876d91fadadf1bab87032ce4a83",
+    "ownerHelperRed": {
+      "pass": 2,
+      "fail": 3
+    },
+    "ownerHelperGreen": {
+      "pass": 5,
+      "fail": 0
+    },
+    "graphLegacyGreen": {
+      "pass": 38,
+      "fail": 0
+    },
+    "existingOwnerGreen": {
+      "pass": 4,
+      "fail": 0
+    },
+    "oldKeysPreservedPerLocale": 1942,
+    "newKeysPerLocale": 8,
+    "build": {
+      "status": "PASS",
+      "appliesToChildPatchSource": true,
+      "elapsedMs": 681,
+      "files": [
+        {
+          "file": "reader-web/reader-5f97e96ee4051615.js",
+          "bytes": 310984
+        },
+        {
+          "file": "reader-web/style-528dcaf71043c53e.css",
+          "bytes": 170196
+        }
+      ],
+      "caps": {
+        "js": 327680,
+        "css": 204800
+      },
+      "rawClosure": [
+        {
+          "file": "app/reader-audio.js",
+          "bytes": 48624,
+          "sha256": "590c70cd3581efc6c8816d8c209ae6e79af42d3de888176e884635ebe25d61f4"
+        },
+        {
+          "file": "app/reader-audio-metadata.mjs",
+          "bytes": 1998,
+          "sha256": "6b38b2417bac6fd33f82e51ab41b01d2618ef48bd8879535f7deb1559326e49a"
+        },
+        {
+          "file": "app/audio-state.mjs",
+          "bytes": 534,
+          "sha256": "c19b6f22a7d2242bf996daca61abc28b516a8fe184872c16a48c118c07c3b527"
+        },
+        {
+          "file": "app/audio-errors.mjs",
+          "bytes": 272,
+          "sha256": "0c57371d7ff13e86497511815c158f0bc2d244e0d955d417544c443212e5e10a"
+        },
+        {
+          "file": "app/action-focus.mjs",
+          "bytes": 656,
+          "sha256": "c21ae9bea3965fe99a29b6349f46636574bbd58d560c07982c0515fc41a01586"
+        },
+        {
+          "file": "app/listening-guide-state.mjs",
+          "bytes": 4234,
+          "sha256": "3d4a4c04c75b5f20001952106c84238012c8c438cc191d2001b6bdd12ba07b10"
+        },
+        {
+          "file": "app/reader-return.mjs",
+          "bytes": 4711,
+          "sha256": "a5e6e97f5d7f06ef40fe4c2cf5ff8e133687d78cda3229154e88aadbf8f91c68"
+        },
+        {
+          "file": "app/ui-locale.mjs",
+          "bytes": 25007,
+          "sha256": "6477645ab9a974fba9502f1a03399ddc008bb5611194464c6438c8b85aa32a3a"
+        },
+        {
+          "file": "app/ui-locale-codec.mjs",
+          "bytes": 6607,
+          "sha256": "ad2740b18752005a10c432fbe87b6febd5f3a1fe95711c2fdca7ed090b1bcc83"
+        },
+        {
+          "file": "app/ui-catalogs/en.mjs",
+          "bytes": 131785,
+          "sha256": "42b4fa127de34fd8a1d2a95981e5c3d131c831855d084fb4c6267d174be6cd7f"
+        },
+        {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "bytes": 122121,
+          "sha256": "93da1597fe6d150dd5a498ce0235895bb76ff4e979079538e1a550bdb9fb3ac8"
+        },
+        {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "bytes": 122078,
+          "sha256": "2115f7d5a7dcdc687c9af509e0870115c7c9db663e7b789578963d219839ab70"
+        },
+        {
+          "file": "app/ui-catalogs/ja.mjs",
+          "bytes": 152000,
+          "sha256": "8bf0176256e3072a2ccec4675a471f8b347046629ec86da31bf1f76cb2a76659"
+        }
+      ],
+      "rawBytes": 620627,
+      "rawSourceFileCount": 13,
+      "measurement": "Uncompressed source graph bytes, not native network transfer or latency"
+    },
+    "parentIntegratedBuildStillRequired": true
+  }
+}

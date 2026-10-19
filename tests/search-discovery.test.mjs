@@ -45,7 +45,7 @@ test('every language discovery page exposes usable content and metadata before J
     const response=await fetch(base+route),html=await response.text();assert.equal(response.status,200);
     assert.match(html,new RegExp('<html lang="'+lang+'">'));assert.equal(new RegExp('<link rel="canonical" href="'+canonical.replace(/[/.]/g,'\\$&')+'">').test(html),true);
     assert.match(html,/<h1[^>]*>[^<]+<\/h1>/);assert.match(html,/<meta name="description" content="[^"]{24,}"/);
-    assert.match(html,/href="\/library"/);assert.match(html,/href="https:\/\/github.com\/getyak\/leafhour/);
+    assert.ok(html.includes('href="/library?ui='+lang+'"'),route+' preserves its authored locale in canonical navigation');assert.match(html,/href="https:\/\/github.com\/getyak\/leafhour/);
     assert.ok(schemas(html).some(s=>s['@type']==='WebPage'||s['@type']==='TechArticle'));
     assert.doesNotMatch(html,/aggregateRating|reviewCount|"offers"/);
   }

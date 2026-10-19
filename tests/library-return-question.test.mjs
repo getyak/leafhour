@@ -51,10 +51,10 @@ test('dashboard hides stale questions while switching, ignores late previews, an
   const data=(id,wording)=>({bookId:id,original:'Source excerpt.',translationStatus:{},question:{id:'q',passageId:id+'2',text:wording}});
   assert.deepEqual(root.querySelector('.today-copy').children.map(child=>child.className),['today-heading','room-excerpt','today-actions','room-question']);
   assert.equal(slip.hidden,true);pending[0].resolve(data('a','Actual A question'));await new Promise(resolve=>setImmediate(resolve));
-  assert.equal(slip.hidden,false);assert.equal(text.textContent,'Actual A question');assert.equal(link.href,'/read?book=a&passage=a2&note=question');assert.equal(historyRoot.open,false);
+  assert.equal(slip.hidden,false);assert.equal(text.textContent,'Actual A question');assert.equal(link.href,'/read?book=a&passage=a2&note=question&ui=en');assert.equal(historyRoot.open,false);
   choice.value='b';choice.events.change();assert.equal(slip.hidden,true);assert.equal(text.textContent,'');assert.equal(link.href,undefined);
   choice.value='a';choice.events.change();pending[2].resolve(data('a','Current A question'));await new Promise(resolve=>setImmediate(resolve));
   pending[1].resolve(data('b','Stale B question'));await new Promise(resolve=>setImmediate(resolve));
-  assert.equal(text.textContent,'Current A question');assert.equal(link.href,'/read?book=a&passage=a2&note=question');
+  assert.equal(text.textContent,'Current A question');assert.equal(link.href,'/read?book=a&passage=a2&note=question&ui=en');
   owner='guest';session=null;books=[];dashboard.clear();assert.equal(slip.hidden,true);assert.equal(text.textContent,'');assert.equal(link.href,undefined);
 });

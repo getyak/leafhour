@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: actual reader boot, source Range, note IME and deferred save survive singleton commits
+ok 1 - actual reader boot, source Range, note IME and deferred save survive singleton commits
+  ---
+  duration_ms: 110.756375
+  type: 'test'
+  ...
+# Subtest: actual reader pending failure retains the same submission and in-place retry after locale
+ok 2 - actual reader pending failure retains the same submission and in-place retry after locale
+  ---
+  duration_ms: 53.7825
+  type: 'test'
+  ...
+# Subtest: actual atmosphere commits only cached labels without audio, mix, input or motion calls
+ok 3 - actual atmosphere commits only cached labels without audio, mix, input or motion calls
+  ---
+  duration_ms: 45.804958
+  type: 'test'
+  ...
+# Subtest: actual timer owner uses cached labels without observing or finishing its running clock
+ok 4 - actual timer owner uses cached labels without observing or finishing its running clock
+  ---
+  duration_ms: 39.500125
+  type: 'test'
+  ...
+# Subtest: contents owns its open lifecycle and an old close task cannot steal replacement focus
+ok 5 - contents owns its open lifecycle and an old close task cannot steal replacement focus
+  ---
+  duration_ms: 4.499125
+  type: 'test'
+  ...
+# Subtest: book-info keeps its popover identity and transfers ownership of a generated introduction
+ok 6 - book-info keeps its popover identity and transfers ownership of a generated introduction
+  ---
+  duration_ms: 8.02375
+  type: 'test'
+  ...
+# Subtest: reader owner ABA and disposal consume late saves without updating a new owner or detached composer
+ok 7 - reader owner ABA and disposal consume late saves without updating a new owner or detached composer
+  ---
+  duration_ms: 100.512458
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 400.429792

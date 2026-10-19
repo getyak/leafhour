@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createUiLocale} from '../app/ui-locale.mjs';
+import en from '../app/ui-catalogs/en.mjs';
+import ja from '../app/ui-catalogs/ja.mjs';
+const element=(connected=true)=>({isConnected:connected,textContent:'',attrs:{},setAttribute(k,v){this.attrs[k]=v;}});
+test('one owner cache retains independent text and attribute slots and explicitly relinquishes only the requested slot',async()=>{
+ const runtime=createUiLocale({loadCatalogue:async()=>ja}),labels=runtime.createUiLabels(),node=element();labels.text(node,'ui.language.label');labels.attr(node,'aria-label','ui.locale.retry');labels.attr(node,'title','ui.locale.reload');labels.forget(node,'aria-label');node.attrs['aria-label']='LITERAL source';await runtime.requestUiRoute('ja');labels.refresh();assert.equal(node.textContent,ja['ui.language.label']);assert.equal(node.attrs.title,ja['ui.locale.reload']);assert.equal(node.attrs['aria-label'],'LITERAL source');labels.forget(node);node.textContent='SOURCE 原文';await runtime.requestUiRoute('en');labels.refresh();assert.equal(node.textContent,'SOURCE 原文');labels.clear();
+});
+test('cache pruning is explicit, bounded and preserves the existing detached-node refresh default',async()=>{
+ const runtime=createUiLocale({loadCatalogue:async()=>ja}),labels=runtime.createUiLabels(),retained=element(),removed=element(false),notYetMounted=element(false);labels.text(retained,'ui.language.label');labels.text(removed,'ui.locale.retry');labels.text(notYetMounted,'ui.locale.reload');await runtime.requestUiRoute('ja');labels.refresh();assert.equal(notYetMounted.textContent,ja['ui.locale.reload'],'legacy default retains not-yet-mounted slots');notYetMounted.isConnected=true;labels.prune();removed.textContent='SOURCE 脱离';await runtime.requestUiRoute('en');labels.refresh({pruneDetached:true});assert.equal(retained.textContent,en['ui.language.label']);assert.equal(notYetMounted.textContent,en['ui.locale.reload']);assert.equal(removed.textContent,'SOURCE 脱离');notYetMounted.isConnected=false;const {refresh}=labels;refresh({pruneDetached:true});notYetMounted.textContent='LITERAL later';notYetMounted.isConnected=true;await runtime.requestUiRoute('ja');labels.refresh();assert.equal(notYetMounted.textContent,'LITERAL later','pruned nodes cannot revive cached UI');labels.clear();retained.textContent='STOP';labels.refresh();assert.equal(retained.textContent,'STOP');
+});

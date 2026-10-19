@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createUiLocale} from '../app/ui-locale.mjs';
+import ja from '../app/ui-catalogs/ja.mjs';
 import {mountSiteAppearance, getSiteAppearance, setSiteAppearance, appearanceModes, appearanceStorageKey} from '../app/site-appearance.mjs';
 
 // A small synthetic DOM: the appearance module only touches element creation,
@@ -22,6 +24,13 @@ class FakeElement {
   }
   setAttribute(name, value) { this.attributes.set(name, String(value)); }
   getAttribute(name) { return this.attributes.has(name) ? this.attributes.get(name) : null; }
+  get href() { return this.getAttribute('href'); }
+  set href(value) { this.setAttribute('href',value); }
+  querySelectorAll(selector) {
+    const visit=node=>node.children.flatMap(child=>[child,...visit(child)]);
+    assert.equal(selector,'a[href]');
+    return visit(this).filter(node=>node.tagName==='A'&&node.getAttribute('href')!==null);
+  }
   addEventListener(type, handler) {
     const list = this.listeners.get(type) || [];
     list.push(handler);
@@ -111,14 +120,17 @@ function fakeStorage(initial = {}) {
   };
 }
 
-function fixture({lang = 'zh-Hans', stored = null} = {}) {
+function fixture({lang = 'zh-Hans', stored = null, ui, page, anchors=[]} = {}) {
   const doc = new FakeDocument(lang), win = new FakeWindow(), storage = fakeStorage(stored === null ? {} : {[appearanceStorageKey]: stored});
   const trigger = new FakeElement('button', doc);
   trigger.setAttribute('id', 'site-theme');
   trigger.parentElement = doc.body;
   doc.trigger = trigger;
   doc.body.append(trigger);
-  mountSiteAppearance(doc, {win, storage});
+  if(page)doc.body.dataset.palettePage=page;
+  const links=anchors.map(({href,...attrs})=>{const link=doc.createElement('a');link.href=href;link.textContent='著者の文章';for(const [key,value] of Object.entries(attrs))link.setAttribute(key,value);doc.body.append(link);return link;});
+  const writes=[];const write=storage.setItem;storage.setItem=(...args)=>{writes.push(args);write(...args);};
+  const owner=mountSiteAppearance(doc, {win, storage,ui});
   const menu = trigger.parentElement.children.find(node => node.id === 'site-appearance-menu');
   const radios = {};
   const walk = node => {
@@ -126,7 +138,7 @@ function fixture({lang = 'zh-Hans', stored = null} = {}) {
     for (const child of node.children || []) walk(child);
   };
   walk(menu);
-  return {doc, win, storage, trigger, menu, radios};
+  return {doc, win, storage, trigger, menu, radios, links, owner, writes};
 }
 
 test('the header trigger opens a labelled popover of native radios with the current mode visible', () => {
@@ -139,11 +151,11 @@ test('the header trigger opens a labelled popover of native radios with the curr
   assert.equal(menu.hidden, false);
   assert.equal(trigger.getAttribute('aria-expanded'), 'true');
   const legend = menu.children[0].children[0];
-  assert.equal(legend.textContent, '页面外观');
+  assert.equal(legend.textContent, 'Page appearance');
   assert.deepEqual(Object.keys(radios).sort(), [...appearanceModes].sort());
   for (const value of appearanceModes) assert.equal(radios[value].getAttribute('type'), 'radio');
   assert.equal(radios['night'].checked, true, 'the current mode stays visible in the checked choice');
-  assert.match(trigger.getAttribute('aria-label'), /页面外观：夜色/);
+  assert.match(trigger.getAttribute('aria-label'), /Appearance: Night/);
   assert.equal(doc.documentElement.dataset.siteTheme, 'night');
 });
 
@@ -256,23 +268,63 @@ test('the popover is not a modal focus trap and lets Tab move on', () => {
   assert.equal(menu.hidden, false, 'leaving by keyboard does not lock the popover open');
 });
 
-test('every public language labels the appearance selection', () => {
+test('every public language labels the appearance selection', async () => {
+  const {requestUiRoute} = await import('../app/ui-locale.mjs');
   const expectations = [
-    ['en', 'Appearance', /Appearance: Paper/],
+    ['en', 'Page appearance', /Appearance: Paper/],
     ['zh-Hans', '页面外观', /页面外观：纸白/],
     ['zh-Hant', '頁面外觀', /頁面外觀：紙白/],
-    ['ja', '外観', /外観：紙/]
+    ['ja', 'ページの外観', /外観：紙の白/]
   ];
-  for (const [lang, legend, label] of expectations) {
-    const {doc, trigger, menu, radios} = fixture({lang});
-    assert.equal(menu.children[0].children[0].textContent, legend, lang);
+  for (const [code, legend, label] of expectations) {
+    await requestUiRoute(code);
+    const {doc, trigger, menu, radios} = fixture({lang: code});
+    assert.equal(menu.children[0].children[0].textContent, legend, code);
     trigger.dispatch('click');
     radios['paper'].checked = true;
     radios['paper'].dispatch('change');
-    assert.match(trigger.getAttribute('aria-label'), label, lang);
-    assert.equal(doc.documentElement.dataset.siteTheme, 'paper', lang);
+    assert.match(trigger.getAttribute('aria-label'), label, code);
+    assert.equal(doc.documentElement.dataset.siteTheme, 'paper', code);
     for (const value of appearanceModes) {
-      assert.equal(radios[value].parentElement.children[1].textContent.length > 0, true, lang + ' misses ' + value);
+      assert.equal(radios[value].parentElement.children[1].textContent.length > 0, true, code + ' misses ' + value);
     }
   }
+});
+
+
+const supportRuntime=loader=>createUiLocale({loadCatalogue:loader,getLocation:()=>({href:'https://leafhour.com/ja/privacy'}),languages:['en']});
+const deferred=()=>{let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});return {promise,resolve,reject};};
+
+test('R6 support initial catalogue failure follows actual uiReady English fallback and explicit retry',async()=>{
+ const first=deferred(),retry=deferred(),attempts=[];
+ const ui=supportRuntime((code,options)=>{attempts.push({code,retry:options.retry});return options.retry?retry.promise:first.promise;});
+ const f=fixture({lang:'ja',page:'support',ui,anchors:[{href:'/library?ui=ja'},{href:'/read?book=a%2Fb&passage=p%207&source=literal%2Bvalue&ui=ja#note'}]});
+ const retained=[...f.links],literal=f.links.map(n=>n.textContent);f.trigger.dispatch('keydown',{key:'ArrowDown'});const focus=f.doc.activeElement;
+ const initial=ui.initializeOnce();assert.equal(ui.getUiLocaleState().phase,'pending');assert.equal(f.links[0].href,'/library?ui=ja');
+ first.reject(Error('synthetic catalogue failure'));await initial;await ui.uiReady;await Promise.resolve();
+ assert.equal(ui.getUiLocaleState().initialFallback,true);assert.equal(ui.getUiLocale(),'en');assert.equal(f.links[0].href,'/library?ui=en');assert.equal(f.links[1].href,'/read?book=a%2Fb&passage=p+7&source=literal%2Bvalue&ui=en#note');assert.equal(f.menu.children[0].children[0].textContent,ui.t('shell.appearance.title'));
+ const recovering=ui.retryUiLocale();assert.equal(ui.getUiLocaleState().phase,'pending');assert.equal(f.links[0].href,'/library?ui=en');retry.resolve(ja);await recovering;
+ assert.equal(ui.getUiLocale(),'ja');assert.equal(f.links[0].href,'/library?ui=ja');assert.equal(f.links[1].href,'/read?book=a%2Fb&passage=p+7&source=literal%2Bvalue&ui=ja#note');assert.equal(f.menu.children[0].children[0].textContent,ja['shell.appearance.title']);
+ await ui.requestUiRoute('en');assert.equal(f.links[0].href,'/library?ui=en');f.owner.updateLabels();assert.equal(f.links[0].href,'/library?ui=en');
+ assert.equal(new URL(f.links[1].href,'https://leafhour.com').searchParams.get('passage'),'p 7');assert.equal(new URL(f.links[1].href,'https://leafhour.com').searchParams.get('source'),'literal+value');
+ assert.deepEqual(attempts,[{code:'ja',retry:false},{code:'ja',retry:true}]);assert.deepEqual(f.links,retained);assert.deepEqual(f.links.map(n=>n.textContent),literal);assert.equal(f.doc.documentElement.lang,'ja','authored document language remains literal');assert.equal(f.doc.activeElement,focus);assert.equal(f.menu.hidden,false);assert.deepEqual(f.writes,[]);
+});
+
+test('R6 support ready and later failed request preserve effective links without touching excluded targets',async()=>{
+ const failed=deferred(),ui=supportRuntime(code=>code==='ja'?Promise.resolve(ja):failed.promise);
+ const excluded=[{href:'/ja'},{href:'/ja/privacy'},{href:'/library?ui=ja',hreflang:'ja'},{href:'/read?book=one&ui=ja',download:''},{href:'https://example.org/read?book=one&signature=literal'},{href:'//example.org/library'},{href:'/api/library?ui=ja'},{href:'/library?signature=literal&ui=ja'},{href:'/read?book=one&token=literal&ui=ja'},{href:'/library/extra?ui=ja'},{href:'/read?book=one&redirect=/api'},{href:'/read?book=one\\evil'}];
+ const f=fixture({lang:'ja',page:'support',ui,anchors:[{href:'/library?ui=ja'},...excluded]});await ui.initializeOnce();await ui.uiReady;
+ assert.equal(f.links[0].href,'/library?ui=ja');assert.equal(f.trigger.title,ja['shell.appearance.system']);
+ await ui.requestUiRoute('en');assert.equal(f.links[0].href,'/library?ui=en');
+ const pending=ui.requestUiRoute('zh-Hant');assert.equal(f.links[0].href,'/library?ui=en');failed.reject(Error('synthetic failure'));await pending;f.owner.updateLabels();
+ assert.equal(ui.getUiLocaleState().phase,'error');assert.equal(f.links[0].href,'/library?ui=en');assert.equal(f.trigger.title,ui.t('shell.appearance.system'));assert.deepEqual(f.links.slice(1).map(n=>n.href),excluded.map(n=>n.href));assert.deepEqual(f.writes,[]);
+});
+
+test('R6 support ownership never rewrites home library reader or an older singleton mount',async()=>{
+ for(const page of ['home','library','reader',undefined]){
+  const ui=supportRuntime(async()=>ja),f=fixture({ui,page,anchors:[{href:'/library?ui=ja'}]});await ui.initializeOnce();await ui.requestUiRoute('en');f.owner.updateLabels();assert.equal(f.links[0].href,'/library?ui=ja',String(page));assert.deepEqual(f.writes,[]);
+ }
+ const waiting=deferred(),oldUi=supportRuntime(()=>waiting.promise),old=fixture({ui:oldUi,page:'support',anchors:[{href:'/library?ui=ja'}]});const initial=oldUi.initializeOnce();
+ const currentUi=supportRuntime(async()=>ja),current=fixture({ui:currentUi,page:'support',anchors:[{href:'/library?ui=ja'}]});await currentUi.initializeOnce();await currentUi.requestUiRoute('en');
+ waiting.resolve(ja);await initial;await oldUi.uiReady;assert.equal(current.links[0].href,'/library?ui=en');assert.equal(current.trigger.title,currentUi.t('shell.appearance.system'));assert.equal(old.links[0].href,'/library?ui=ja');
 });

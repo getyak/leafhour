@@ -1,0 +1,350 @@
+TAP version 13
+# Subtest: scene callbacks ask first wait consumes success after clip
+not ok 1 - scene callbacks ask first wait consumes success after clip
+  ---
+  duration_ms: 45.463208
+  type: 'test'
+  location: '/Users/cubxxw/.codex/worktrees/get192-audio-ui/leafhour/tests/ui-locale-reader-audio.test.mjs:139:127'
+  failureType: 'testCodeFailure'
+  error: |-
+    stale completion has no media/storage/event/view effects
+    + actual - expected
+
+      {
+    +   calls: 3,
+    -   calls: 2,
+        children: [],
+        clear: 0,
+    +   media: 1,
+    +   player: 'Paused. Press play after your question to continue listening.',
+    +   storage: 5,
+    -   media: 0,
+    -   player: '',
+    -   storage: 4,
+        text: 'Close',
+        timer: 0,
+        uuid: 0
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    media: 0
+    storage: 4
+    calls: 2
+    uuid: 0
+    timer: 0
+    clear: 0
+    text: 'Close'
+    player: ''
+    children:
+  actual:
+    media: 1
+    storage: 5
+    calls: 3
+    uuid: 0
+    timer: 0
+    clear: 0
+    text: 'Close'
+    player: 'Paused. Press play after your question to continue listening.'
+    children:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/.codex/worktrees/get192-audio-ui/leafhour/tests/ui-locale-reader-audio.test.mjs:140:679)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after clip
+not ok 2 - scene callbacks ask first wait consumes failure after clip
+  ---
+  duration_ms: 16.909917
+  type: 'test'
+  location: '/Users/cubxxw/.codex/worktrees/get192-audio-ui/leafhour/tests/ui-locale-reader-audio.test.mjs:139:127'
+  failureType: 'testCodeFailure'
+  error: |-
+    stale completion has no media/storage/event/view effects
+    + actual - expected
+
+      {
+        calls: 2,
+        children: [],
+        clear: 0,
+        media: 0,
+    +   player: 'Listening could not be completed. You can still read the text.',
+    -   player: '',
+        storage: 4,
+        text: 'Close',
+        timer: 0,
+        uuid: 0
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    media: 0
+    storage: 4
+    calls: 2
+    uuid: 0
+    timer: 0
+    clear: 0
+    text: 'Close'
+    player: ''
+    children:
+  actual:
+    media: 0
+    storage: 4
+    calls: 2
+    uuid: 0
+    timer: 0
+    clear: 0
+    text: 'Close'
+    player: 'Listening could not be completed. You can still read the text.'
+    children:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/.codex/worktrees/get192-audio-ui/leafhour/tests/ui-locale-reader-audio.test.mjs:140:679)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: scene callbacks sources first wait consumes success after clip
+not ok 3 - scene callbacks sources first wait consumes success after clip
+  ---
+  duration_ms: 21.114167
+  type: 'test'
+  location: '/Users/cubxxw/.codex/worktrees/get192-audio-ui/leafhour/tests/ui-locale-reader-audio.test.mjs:139:127'
+  failureType: 'testCodeFailure'
+  error: |-
+    stale completion has no media/storage/event/view effects
+    + actual - expected
+
+      {
+    +   calls: 3,
+    +   children: [
+    +     1,
+    +     2
+    +   ],
+    -   calls: 2,
+    -   children: [],
+        clear: 0,
+    +   media: 1,
+    -   media: 0,
+        player: '',
+    +   storage: 5,
+    +   text: 'Source passagesCloseChoose a passage to return to the text. Audio stays at this position.Literal **source** {ui.language.label}.Open passage↗',
+    -   storage: 4,
+    -   text: 'Close',
+        timer: 0,
+        uuid: 0
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    media: 0
+    storage: 4
+    calls: 2
+    uuid: 0
+    timer: 0
+    clear: 0
+    text: 'Close'
+    player: ''
+    children:
+  actual:
+    media: 1
+    storage: 5
+    calls: 3
+    uuid: 0
+    timer: 0
+    clear: 0
+    text: 'Source passagesCloseChoose a passage to return to the text. Audio stays at this position.Literal **source** {ui.language.label}.Open passage↗'
+    player: ''
+    children:
+      0: 1
+      1: 2
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/.codex/worktrees/get192-audio-ui/leafhour/tests/ui-locale-reader-audio.test.mjs:140:679)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after clip
+not ok 4 - scene callbacks sources first wait consumes failure after clip
+  ---
+  duration_ms: 59.2075
+  type: 'test'
+  location: '/Users/cubxxw/.codex/worktrees/get192-audio-ui/leafhour/tests/ui-locale-reader-audio.test.mjs:139:127'
+  failureType: 'testCodeFailure'
+  error: |-
+    stale completion has no media/storage/event/view effects
+    + actual - expected
+
+      {
+        calls: 2,
+        children: [],
+        clear: 0,
+        media: 0,
+    +   player: 'Listening could not be completed. You can still read the text.',
+    -   player: '',
+        storage: 4,
+        text: 'Close',
+        timer: 0,
+        uuid: 0
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    media: 0
+    storage: 4
+    calls: 2
+    uuid: 0
+    timer: 0
+    clear: 0
+    text: 'Close'
+    player: ''
+    children:
+  actual:
+    media: 0
+    storage: 4
+    calls: 2
+    uuid: 0
+    timer: 0
+    clear: 0
+    text: 'Close'
+    player: 'Listening could not be completed. You can still read the text.'
+    children:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/.codex/worktrees/get192-audio-ui/leafhour/tests/ui-locale-reader-audio.test.mjs:140:679)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: scene callbacks sources second wait consumes success after clip
+not ok 5 - scene callbacks sources second wait consumes success after clip
+  ---
+  duration_ms: 33.927666
+  type: 'test'
+  location: '/Users/cubxxw/.codex/worktrees/get192-audio-ui/leafhour/tests/ui-locale-reader-audio.test.mjs:142:89'
+  failureType: 'testCodeFailure'
+  error: |-
+    second stale completion has no media/storage/view effects
+    + actual - expected
+
+      {
+    +   calls: 3,
+    +   children: [
+    +     3,
+    +     4
+    +   ],
+    -   calls: 2,
+    -   children: [],
+        clear: 0,
+    +   media: 1,
+    -   media: 0,
+        player: '',
+    +   storage: 5,
+    +   text: 'Source passagesCloseChoose a passage to return to the text. Audio stays at this position.Literal **source** {ui.language.label}.Open passage↗',
+    -   storage: 4,
+    -   text: 'Close',
+        timer: 0,
+        uuid: 0
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    media: 0
+    storage: 4
+    calls: 2
+    uuid: 0
+    timer: 0
+    clear: 0
+    text: 'Close'
+    player: ''
+    children:
+  actual:
+    media: 1
+    storage: 5
+    calls: 3
+    uuid: 0
+    timer: 0
+    clear: 0
+    text: 'Source passagesCloseChoose a passage to return to the text. Audio stays at this position.Literal **source** {ui.language.label}.Open passage↗'
+    player: ''
+    children:
+      0: 3
+      1: 4
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/.codex/worktrees/get192-audio-ui/leafhour/tests/ui-locale-reader-audio.test.mjs:143:550)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after clip
+not ok 6 - scene callbacks sources second wait consumes failure after clip
+  ---
+  duration_ms: 23.854375
+  type: 'test'
+  location: '/Users/cubxxw/.codex/worktrees/get192-audio-ui/leafhour/tests/ui-locale-reader-audio.test.mjs:142:89'
+  failureType: 'testCodeFailure'
+  error: |-
+    second stale completion has no media/storage/view effects
+    + actual - expected
+
+      {
+    +   calls: 3,
+    +   children: [
+    +     5
+    +   ],
+    -   calls: 2,
+    -   children: [],
+        clear: 0,
+    +   media: 1,
+    -   media: 0,
+        player: '',
+    +   storage: 5,
+    +   text: 'Source passagesCloseListening could not be completed. You can still read the text.',
+    -   storage: 4,
+    -   text: 'Close',
+        timer: 0,
+        uuid: 0
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    media: 0
+    storage: 4
+    calls: 2
+    uuid: 0
+    timer: 0
+    clear: 0
+    text: 'Close'
+    player: ''
+    children:
+  actual:
+    media: 1
+    storage: 5
+    calls: 3
+    uuid: 0
+    timer: 0
+    clear: 0
+    text: 'Source passagesCloseListening could not be completed. You can still read the text.'
+    player: ''
+    children:
+      0: 5
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/.codex/worktrees/get192-audio-ui/leafhour/tests/ui-locale-reader-audio.test.mjs:143:550)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 0
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 284.022375

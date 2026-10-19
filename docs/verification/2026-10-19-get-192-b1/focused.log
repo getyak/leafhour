@@ -1,0 +1,908 @@
+TAP version 13
+# Subtest: a restored unsent edit retains its original base until explicit conflict resolution
+ok 1 - a restored unsent edit retains its original base until explicit conflict resolution
+  ---
+  duration_ms: 14.865458
+  type: 'test'
+  ...
+# Subtest: an explicit 413 rejection permits correcting the text instead of replaying it forever
+ok 2 - an explicit 413 rejection permits correcting the text instead of replaying it forever
+  ---
+  duration_ms: 0.703292
+  type: 'test'
+  ...
+# Subtest: a pre-metadata local edit is retained but cannot adopt the current server revision silently
+ok 3 - a pre-metadata local edit is retained but cannot adopt the current server revision silently
+  ---
+  duration_ms: 0.389584
+  type: 'test'
+  ...
+# Subtest: lost edit responses freeze the retry while newer typed words survive and then save at the next revision
+ok 4 - lost edit responses freeze the retry while newer typed words survive and then save at the next revision
+  ---
+  duration_ms: 0.763375
+  type: 'test'
+  ...
+# Subtest: record buttons stop outside-click propagation even when drawing detaches their original DOM ancestors
+ok 5 - record buttons stop outside-click propagation even when drawing detaches their original DOM ancestors
+  ---
+  duration_ms: 0.457625
+  type: 'test'
+  ...
+# Subtest: an explicit conflict refresh shows new server words but preserves the draft until another save
+ok 6 - an explicit conflict refresh shows new server words but preserves the draft until another save
+  ---
+  duration_ms: 0.472416
+  type: 'test'
+  ...
+# Subtest: closing an unconfirmed edit keeps its frozen request instead of claiming the server change was cancelled
+ok 7 - closing an unconfirmed edit keeps its frozen request instead of claiming the server change was cancelled
+  ---
+  duration_ms: 0.53925
+  type: 'test'
+  ...
+# Subtest: a reader rerender during saving updates the current row when the response arrives
+ok 8 - a reader rerender during saving updates the current row when the response arrives
+  ---
+  duration_ms: 0.294625
+  type: 'test'
+  ...
+# Subtest: retained per-record drafts reopen safely, and quota failures preserve current words with an honest warning
+ok 9 - retained per-record drafts reopen safely, and quota failures preserve current words with an honest warning
+  ---
+  duration_ms: 0.557416
+  type: 'test'
+  ...
+# Subtest: stale source records remain text-safe and readable without speculative links or edit access
+ok 10 - stale source records remain text-safe and readable without speculative links or edit access
+  ---
+  duration_ms: 0.210458
+  type: 'test'
+  ...
+# Subtest: blocked local storage does not prevent reading saved words or replace the unavailable draft
+ok 11 - blocked local storage does not prevent reading saved words or replace the unavailable draft
+  ---
+  duration_ms: 0.134875
+  type: 'test'
+  ...
+# Subtest: an older owner-scoped record without a per-row bookId can confirm its edit without changing its source
+ok 12 - an older owner-scoped record without a per-row bookId can confirm its edit without changing its source
+  ---
+  duration_ms: 0.314542
+  type: 'test'
+  ...
+# Subtest: reopening after a confirmed save or cancel starts from current saved words rather than an empty editor
+ok 13 - reopening after a confirmed save or cancel starts from current saved words rather than an empty editor
+  ---
+  duration_ms: 0.3155
+  type: 'test'
+  ...
+# Subtest: locale relabels an in-flight edit without replacing composition, draft, UUID, source or frozen request
+ok 14 - locale relabels an in-flight edit without replacing composition, draft, UUID, source or frozen request
+  ---
+  duration_ms: 7.697792
+  type: 'test'
+  ...
+# Subtest: a disposed record renderer consumes late saving results without reviving UI or publishing a stale update
+ok 15 - a disposed record renderer consumes late saving results without reviving UI or publishing a stale update
+  ---
+  duration_ms: 0.367708
+  type: 'test'
+  ...
+# Subtest: a late result after book A to B to A releases busy controls without adopting the result or replacing a new editor
+ok 16 - a late result after book A to B to A releases busy controls without adopting the result or replacing a new editor
+  ---
+  duration_ms: 0.418417
+  type: 'test'
+  ...
+# Subtest: the top entry splits the book metadata trigger from a real current-chapter chooser
+ok 17 - the top entry splits the book metadata trigger from a real current-chapter chooser
+  ---
+  duration_ms: 5.521333
+  type: 'test'
+  ...
+# Subtest: the chapter heading stays quiet and the single listen entry is a 44px side-panel row
+ok 18 - the chapter heading stays quiet and the single listen entry is a 44px side-panel row
+  ---
+  duration_ms: 0.463209
+  type: 'test'
+  ...
+# Subtest: the top chapter entry stays disabled until readiness and names the current chapter
+ok 19 - the top chapter entry stays disabled until readiness and names the current chapter
+  ---
+  duration_ms: 0.436333
+  type: 'test'
+  ...
+# Subtest: choosing a chapter closes the chooser and lands in the selected chapter in false pagination mode
+ok 20 - choosing a chapter closes the chooser and lands in the selected chapter in false pagination mode
+  ---
+  duration_ms: 0.530042
+  type: 'test'
+  ...
+# Subtest: choosing a chapter closes the chooser and lands in the selected chapter in true pagination mode
+ok 21 - choosing a chapter closes the chooser and lands in the selected chapter in true pagination mode
+  ---
+  duration_ms: 0.268875
+  type: 'test'
+  ...
+# Subtest: Escape returns focus to the actual opener and stale openers fall back to the directory entry
+ok 22 - Escape returns focus to the actual opener and stale openers fall back to the directory entry
+  ---
+  duration_ms: 0.208959
+  type: 'test'
+  ...
+# Subtest: the sidebar listen entry needs explicit activation and navigation requests no audio or providers
+ok 23 - the sidebar listen entry needs explicit activation and navigation requests no audio or providers
+  ---
+  duration_ms: 0.230083
+  type: 'test'
+  ...
+# Subtest: the reader shell keeps audio generation out of navigation and the listen handler implicit-free
+ok 24 - the reader shell keeps audio generation out of navigation and the listen handler implicit-free
+  ---
+  duration_ms: 1.448167
+  type: 'test'
+  ...
+# Subtest: locale preserves an open contents dialog, opener, row identity and scroll without reading the book again
+ok 25 - locale preserves an open contents dialog, opener, row identity and scroll without reading the book again
+  ---
+  duration_ms: 5.1235
+  type: 'test'
+  ...
+# Subtest: initial paint, overlapping highlights across verse lines, and removal preserve source lineation and quote offsets
+ok 26 - initial paint, overlapping highlights across verse lines, and removal preserve source lineation and quote offsets
+  ---
+  duration_ms: 1.093583
+  type: 'test'
+  ...
+# Subtest: highlights may split syntax markers and italic words while raw text and verse breaks survive
+ok 27 - highlights may split syntax markers and italic words while raw text and verse breaks survive
+  ---
+  duration_ms: 0.627209
+  type: 'test'
+  ...
+# Subtest: book introduction uses the loaded book and current chapter without counting front matter as a chapter
+ok 28 - book introduction uses the loaded book and current chapter without counting front matter as a chapter
+  ---
+  duration_ms: 0.527333
+  type: 'test'
+  ...
+# Subtest: an uploaded book with missing metadata has an honest fallback and cannot turn its source into an executable link
+ok 29 - an uploaded book with missing metadata has an honest fallback and cannot turn its source into an executable link
+  ---
+  duration_ms: 0.144125
+  type: 'test'
+  ...
+# Subtest: Escape returns to the book title when generation removed the focused button
+ok 30 - Escape returns to the book title when generation removed the focused button
+  ---
+  duration_ms: 0.416792
+  type: 'test'
+  ...
+# Subtest: Escape from a completed introduction keeps immersive tools open and returns focus to the title
+ok 31 - Escape from a completed introduction keeps immersive tools open and returns focus to the title
+  ---
+  duration_ms: 2.775334
+  type: 'test'
+  ...
+# Subtest: the contents list opens a source chapter in one click and marks only the current chapter
+ok 32 - the contents list opens a source chapter in one click and marks only the current chapter
+  ---
+  duration_ms: 0.551375
+  type: 'test'
+  ...
+# Subtest: books with numbered sections retain direct paragraph anchors in their expandable contents
+ok 33 - books with numbered sections retain direct paragraph anchors in their expandable contents
+  ---
+  duration_ms: 0.308875
+  type: 'test'
+  ...
+# Subtest: the edition scope is visible separately from an editorial description and is absent for unmarked books
+ok 34 - the edition scope is visible separately from an editorial description and is absent for unmarked books
+  ---
+  duration_ms: 0.128125
+  type: 'test'
+  ...
+# Subtest: current chapter naming covers explicit chapters, auto-grouped fragments and front matter
+ok 35 - current chapter naming covers explicit chapters, auto-grouped fragments and front matter
+  ---
+  duration_ms: 0.061875
+  type: 'test'
+  ...
+# Subtest: settings only expose the translation controls relevant to the active reading mode
+ok 36 - settings only expose the translation controls relevant to the active reading mode
+  ---
+  duration_ms: 4.875458
+  type: 'test'
+  ...
+# Subtest: four settings tabs expose one panel at a time and keep keyboard focus in the selected tab
+ok 37 - four settings tabs expose one panel at a time and keep keyboard focus in the selected tab
+  ---
+  duration_ms: 0.293958
+  type: 'test'
+  ...
+# Subtest: all nine Aa drawer selects upgrade to the shared choice primitive while the drawer-outside timer select stays native
+ok 38 - all nine Aa drawer selects upgrade to the shared choice primitive while the drawer-outside timer select stays native
+  ---
+  duration_ms: 2.969459
+  type: 'test'
+  ...
+# Subtest: Aa option and value writes need the explicit sync call and never fabricate change events
+ok 39 - Aa option and value writes need the explicit sync call and never fabricate change events
+  ---
+  duration_ms: 0.7385
+  type: 'test'
+  ...
+# Subtest: Aa controls load once on explicit opening and read the latest native values after the load
+ok 40 - Aa controls load once on explicit opening and read the latest native values after the load
+  ---
+  duration_ms: 1.013875
+  type: 'test'
+  ...
+# Subtest: a rejected Aa module keeps every native fallback available
+ok 41 - a rejected Aa module keeps every native fallback available
+  ---
+  duration_ms: 0.162791
+  type: 'test'
+  ...
+# Subtest: an Aa module arriving while a native select has focus transfers focus to its selected enhancement
+ok 42 - an Aa module arriving while a native select has focus transfers focus to its selected enhancement
+  ---
+  duration_ms: 0.404208
+  type: 'test'
+  ...
+# Subtest: locale relabels existing Aa choices without touching native values, open query or composition
+ok 43 - locale relabels existing Aa choices without touching native values, open query or composition
+  ---
+  duration_ms: 4.090291
+  type: 'test'
+  ...
+# Subtest: locale changes preserve a pending new-book default snapshot and only reformat its receipt
+ok 44 - locale changes preserve a pending new-book default snapshot and only reformat its receipt
+  ---
+  duration_ms: 5.862625
+  type: 'test'
+  ...
+# Subtest: an A to B to A account transition fences a late default save while the current owner remains usable
+ok 45 - an A to B to A account transition fences a late default save while the current owner remains usable
+  ---
+  duration_ms: 0.669792
+  type: 'test'
+  ...
+# (node:67207) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: source self-host serves the new tools module and its complete direct dependencies as JavaScript
+ok 46 - source self-host serves the new tools module and its complete direct dependencies as JavaScript
+  ---
+  duration_ms: 113.197417
+  type: 'test'
+  ...
+# Subtest: locale preserves the sole conceal deadline, unread state, focus and held tools
+ok 47 - locale preserves the sole conceal deadline, unread state, focus and held tools
+  ---
+  duration_ms: 5.076292
+  type: 'test'
+  ...
+# Subtest: unmount releases tools listeners and stale unread callbacks cannot change a replacement pill
+ok 48 - unmount releases tools listeners and stale unread callbacks cannot change a replacement pill
+  ---
+  duration_ms: 0.277792
+  type: 'test'
+  ...
+# Subtest: the single pill interaction drives both tools surfaces through one conceal timer
+ok 49 - the single pill interaction drives both tools surfaces through one conceal timer
+  ---
+  duration_ms: 0.250041
+  type: 'test'
+  ...
+# Subtest: concealing tools returns focus from the revealed header to the visible pill
+ok 50 - concealing tools returns focus from the revealed header to the visible pill
+  ---
+  duration_ms: 0.304083
+  type: 'test'
+  ...
+# Subtest: fullscreen failure restoration targets the visible pill through the reader wiring seam
+ok 51 - fullscreen failure restoration targets the visible pill through the reader wiring seam
+  ---
+  duration_ms: 0.354708
+  type: 'test'
+  ...
+# Subtest: injected chat integration keeps trigger, anchor, focus and unread seams separate
+ok 52 - injected chat integration keeps trigger, anchor, focus and unread seams separate
+  ---
+  duration_ms: 0.197417
+  type: 'test'
+  ...
+# Subtest: control mode follows the reader focus layout for the pill label
+ok 53 - control mode follows the reader focus layout for the pill label
+  ---
+  duration_ms: 0.224959
+  type: 'test'
+  ...
+# Subtest: composed tools keep hover reveals from stealing focus while explicit clicks may focus
+ok 54 - composed tools keep hover reveals from stealing focus while explicit clicks may focus
+  ---
+  duration_ms: 0.338792
+  type: 'test'
+  ...
+# Subtest: composed tools hold concealment while the focused header is hovered or focused
+ok 55 - composed tools hold concealment while the focused header is hovered or focused
+  ---
+  duration_ms: 0.328541
+  type: 'test'
+  ...
+# Subtest: outside pointerdown and pill click keep one tools state across both surfaces
+ok 56 - outside pointerdown and pill click keep one tools state across both surfaces
+  ---
+  duration_ms: 0.550875
+  type: 'test'
+  ...
+# Subtest: setFocused and fullscreen transitions cannot strand the toolbar state
+ok 57 - setFocused and fullscreen transitions cannot strand the toolbar state
+  ---
+  duration_ms: 0.305834
+  type: 'test'
+  ...
+# Subtest: the Ask AI handoff closes tools without bubbling re-reveal or focus theft
+ok 58 - the Ask AI handoff closes tools without bubbling re-reveal or focus theft
+  ---
+  duration_ms: 0.123584
+  type: 'test'
+  ...
+# Subtest: manual form pauses on open and retains frozen inputs through a real action failure and explicit retry
+ok 59 - manual form pauses on open and retains frozen inputs through a real action failure and explicit retry
+  ---
+  duration_ms: 23.929375
+  type: 'test'
+  ...
+# Subtest: invalid manual dates stay editable and never create or queue a record
+ok 60 - invalid manual dates stay editable and never create or queue a record
+  ---
+  duration_ms: 0.845625
+  type: 'test'
+  ...
+# Subtest: manual close fences pending results before a queued native close event and old events cannot cancel a new open
+ok 61 - manual close fences pending results before a queued native close event and old events cannot cancel a new open
+  ---
+  duration_ms: 1.985666
+  type: 'test'
+  ...
+# Subtest: manual context A to B to A requires an explicit reopen and cannot adopt the old request
+ok 62 - manual context A to B to A requires an explicit reopen and cannot adopt the old request
+  ---
+  duration_ms: 1.308125
+  type: 'test'
+  ...
+# Subtest: a replaced manual action cannot receive the old form input before a refresh
+ok 63 - a replaced manual action cannot receive the old form input before a refresh
+  ---
+  duration_ms: 0.736208
+  type: 'test'
+  ...
+# Subtest: a background confirmation cannot publish through a replaced manual action
+ok 64 - a background confirmation cannot publish through a replaced manual action
+  ---
+  duration_ms: 0.226542
+  type: 'test'
+  ...
+# Subtest: a pending-only export can be imported normally and retains the latest terminal snapshot
+ok 65 - a pending-only export can be imported normally and retains the latest terminal snapshot
+  ---
+  duration_ms: 13.876
+  type: 'test'
+  ...
+# Subtest: pending records from another book cannot be exported under this source
+ok 66 - pending records from another book cannot be exported under this source
+  ---
+  duration_ms: 0.294042
+  type: 'test'
+  ...
+# Subtest: pending exports hydrate a partial reading view and refuse a different or incomplete full source
+ok 67 - pending exports hydrate a partial reading view and refuse a different or incomplete full source
+  ---
+  duration_ms: 0.826542
+  type: 'test'
+  ...
+# Subtest: offline full-source recovery exports a memory-only session and draft alongside old disk stores
+ok 68 - offline full-source recovery exports a memory-only session and draft alongside old disk stores
+  ---
+  duration_ms: 3.272792
+  type: 'test'
+  ...
+# Subtest: opening a saved view restores its chosen manual mode and variant without losing typography
+ok 69 - opening a saved view restores its chosen manual mode and variant without losing typography
+  ---
+  duration_ms: 5.535542
+  type: 'test'
+  ...
+# Subtest: reading appearance travels with exported records, rejects invalid imports atomically, and accepts old positions
+ok 70 - reading appearance travels with exported records, rejects invalid imports atomically, and accepts old positions
+  ---
+  duration_ms: 239.9455
+  type: 'test'
+  ...
+# Subtest: explicit reading purposes choose a starting language without overwriting variants or manual views
+ok 71 - explicit reading purposes choose a starting language without overwriting variants or manual views
+  ---
+  duration_ms: 1.056583
+  type: 'test'
+  ...
+# Subtest: parallel settings restore independently of the opening language and safely normalize older preferences
+ok 72 - parallel settings restore independently of the opening language and safely normalize older preferences
+  ---
+  duration_ms: 0.206291
+  type: 'test'
+  ...
+# Subtest: delayed and conflict restoration keep Chinese original-only books readable without losing preferences or anchors
+ok 73 - delayed and conflict restoration keep Chinese original-only books readable without losing preferences or anchors
+  ---
+  duration_ms: 3.762209
+  type: 'test'
+  ...
+# Subtest: new books use normal tracking while saved and account spacing choices survive reopening
+ok 74 - new books use normal tracking while saved and account spacing choices survive reopening
+  ---
+  duration_ms: 0.276917
+  type: 'test'
+  ...
+# Subtest: retrying partially failed initialization preserves and later saves the only memory manual snapshot
+ok 75 - retrying partially failed initialization preserves and later saves the only memory manual snapshot
+  ---
+  duration_ms: 17.605709
+  type: 'test'
+  ...
+# Subtest: actual capture and click order resumes an idle estimate on its first continue click
+ok 76 - actual capture and click order resumes an idle estimate on its first continue click
+  ---
+  duration_ms: 1.198833
+  type: 'test'
+  ...
+# Subtest: the page context uses the device timezone when opening each new manual record after a timezone change
+ok 77 - the page context uses the device timezone when opening each new manual record after a timezone change
+  ---
+  duration_ms: 2.300416
+  type: 'test'
+  ...
+# Subtest: two reading tabs preserve both unsent sessions in the same owner/book store
+ok 78 - two reading tabs preserve both unsent sessions in the same owner/book store
+  ---
+  duration_ms: 11.973958
+  type: 'test'
+  ...
+# Subtest: a foreign stale acknowledgement never erases the original tab’s newer snapshot
+ok 79 - a foreign stale acknowledgement never erases the original tab’s newer snapshot
+  ---
+  duration_ms: 1.280209
+  type: 'test'
+  ...
+# Subtest: confirmed finished records are cleaned and active records wait for their next sequence
+ok 80 - confirmed finished records are cleaned and active records wait for their next sequence
+  ---
+  duration_ms: 2.03925
+  type: 'test'
+  ...
+# Subtest: old pending arrays are recovered without silently rewriting their original namespace
+ok 81 - old pending arrays are recovered without silently rewriting their original namespace
+  ---
+  duration_ms: 0.242709
+  type: 'test'
+  ...
+# Subtest: another owner’s pending source is never loaded or acknowledged
+ok 82 - another owner’s pending source is never loaded or acknowledged
+  ---
+  duration_ms: 0.236125
+  type: 'test'
+  ...
+# Subtest: a recovery batch stays bounded while retaining additional durable sessions
+ok 83 - a recovery batch stays bounded while retaining additional durable sessions
+  ---
+  duration_ms: 23.520708
+  type: 'test'
+  ...
+# Subtest: an unowned new payload cannot be acknowledged as locally durable
+ok 84 - an unowned new payload cannot be acknowledged as locally durable
+  ---
+  duration_ms: 0.410167
+  type: 'test'
+  ...
+# Subtest: a recovering tab cannot claim a foreign sequence update was persisted
+ok 85 - a recovering tab cannot claim a foreign sequence update was persisted
+  ---
+  duration_ms: 0.326584
+  type: 'test'
+  ...
+# (node:67213) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: reading tools start tucked away and return there after leaving them idle
+ok 86 - reading tools start tucked away and return there after leaving them idle
+  ---
+  duration_ms: 3.944875
+  type: 'test'
+  ...
+# Subtest: pointer and keyboard holds independently protect controls from disappearing
+ok 87 - pointer and keyboard holds independently protect controls from disappearing
+  ---
+  duration_ms: 0.131
+  type: 'test'
+  ...
+# Subtest: closing and reopening cancels the earlier disappearance timer
+ok 88 - closing and reopening cancels the earlier disappearance timer
+  ---
+  duration_ms: 0.142333
+  type: 'test'
+  ...
+# Subtest: a dialog holds the open tools but never opens tucked-away controls on its own
+ok 89 - a dialog holds the open tools but never opens tucked-away controls on its own
+  ---
+  duration_ms: 0.095792
+  type: 'test'
+  ...
+# Subtest: a dialog added after mounting keeps its sidebar opener available until it closes
+ok 90 - a dialog added after mounting keeps its sidebar opener available until it closes
+  ---
+  duration_ms: 0.923209
+  type: 'test'
+  ...
+# Subtest: mountReadingToolbar exposes explicit reveal, conceal, hold and control-mode hooks
+ok 91 - mountReadingToolbar exposes explicit reveal, conceal, hold and control-mode hooks
+  ---
+  duration_ms: 0.682959
+  type: 'test'
+  ...
+# Subtest: large reading view keeps all anchors but sends only the requested real chapter
+ok 92 - large reading view keeps all anchors but sends only the requested real chapter
+  ---
+  duration_ms: 18.382666
+  type: 'test'
+  ...
+# Subtest: small reading views stay complete and invalid preferred positions fall back safely
+ok 93 - small reading views stay complete and invalid preferred positions fall back safely
+  ---
+  duration_ms: 1.068625
+  type: 'test'
+  ...
+# Subtest: chapter hydration deduplicates reads, keeps identities and source records, and retries failed reads
+ok 94 - chapter hydration deduplicates reads, keeps identities and source records, and retries failed reads
+  ---
+  duration_ms: 1.132583
+  type: 'test'
+  ...
+# Subtest: chapter hydration rejects a mixed book/version or missing/replaced paragraph before mutation
+ok 95 - chapter hydration rejects a mixed book/version or missing/replaced paragraph before mutation
+  ---
+  duration_ms: 3.122875
+  type: 'test'
+  ...
+# Subtest: a late chapter read cannot replace a newer navigation and a failed read remains retryable
+ok 96 - a late chapter read cannot replace a newer navigation and a failed read remains retryable
+  ---
+  duration_ms: 0.44025
+  type: 'test'
+  ...
+# Subtest: a highlight ticket reserved before hydration loses to newer TOC and same-chapter jumps
+ok 97 - a highlight ticket reserved before hydration loses to newer TOC and same-chapter jumps
+  ---
+  duration_ms: 0.194042
+  type: 'test'
+  ...
+# Subtest: cross-chapter ending drafts load their actual source before showing or submitting and survive a failed read
+ok 98 - cross-chapter ending drafts load their actual source before showing or submitting and survive a failed read
+  ---
+  duration_ms: 3.50825
+  type: 'test'
+  ...
+# Subtest: restoring a remote position cannot overwrite a newer chapter navigation or resolve its notice
+ok 99 - restoring a remote position cannot overwrite a newer chapter navigation or resolve its notice
+  ---
+  duration_ms: 1.222958
+  type: 'test'
+  ...
+# Subtest: JSONB key reordering does not reject exact interval receipts or accept changed intervals
+ok 100 - JSONB key reordering does not reject exact interval receipts or accept changed intervals
+  ---
+  duration_ms: 0.506375
+  type: 'test'
+  ...
+# Subtest: note confirmation distinguishes a saved submission from a newer memory-only draft
+ok 101 - note confirmation distinguishes a saved submission from a newer memory-only draft
+  ---
+  duration_ms: 0.179084
+  type: 'test'
+  ...
+# Subtest: failed note submission only claims a local draft when the current text was persisted
+ok 102 - failed note submission only claims a local draft when the current text was persisted
+  ---
+  duration_ms: 0.077959
+  type: 'test'
+  ...
+# Subtest: session receipts distinguish memory, durable pending and this exact final confirmation
+ok 103 - session receipts distinguish memory, durable pending and this exact final confirmation
+  ---
+  duration_ms: 0.146042
+  type: 'test'
+  ...
+# Subtest: an earlier checkpoint acknowledgment cannot confirm the final snapshot, even if another batch succeeded
+ok 104 - an earlier checkpoint acknowledgment cannot confirm the final snapshot, even if another batch succeeded
+  ---
+  duration_ms: 0.333916
+  type: 'test'
+  ...
+# Subtest: a real server acknowledgment remains confirmed if removing the local queue then fails
+ok 105 - a real server acknowledgment remains confirmed if removing the local queue then fails
+  ---
+  duration_ms: 0.0945
+  type: 'test'
+  ...
+# Subtest: the same session id in a different book or source version cannot confirm this ending
+ok 106 - the same session id in a different book or source version cannot confirm this ending
+  ---
+  duration_ms: 0.041666
+  type: 'test'
+  ...
+# Subtest: position confirmation remains separate from local persistence and delayed older saves
+ok 107 - position confirmation remains separate from local persistence and delayed older saves
+  ---
+  duration_ms: 0.340792
+  type: 'test'
+  ...
+# Subtest: editing after a saved note replaces its old success receipt with the new draft state
+ok 108 - editing after a saved note replaces its old success receipt with the new draft state
+  ---
+  duration_ms: 0.2845
+  type: 'test'
+  ...
+# Subtest: real draft persistence failure preserves the retry identity and new memory text without claiming durability
+ok 109 - real draft persistence failure preserves the retry identity and new memory text without claiming durability
+  ---
+  duration_ms: 3.503709
+  type: 'test'
+  ...
+# Subtest: toolbar cannot reuse an old ending receipt during initial empty sync or a newly active session
+ok 110 - toolbar cannot reuse an old ending receipt during initial empty sync or a newly active session
+  ---
+  duration_ms: 0.12825
+  type: 'test'
+  ...
+# Subtest: an unconfirmed final remains durable and a later exact receipt really retries it
+ok 111 - an unconfirmed final remains durable and a later exact receipt really retries it
+  ---
+  duration_ms: 0.566375
+  type: 'test'
+  ...
+# Subtest: receipt descriptors carry the exact confirmed and durable state without changing the payload or inventing a current ending
+ok 112 - receipt descriptors carry the exact confirmed and durable state without changing the payload or inventing a current ending
+  ---
+  duration_ms: 0.183
+  type: 'test'
+  ...
+# Subtest: opaque module syntax distinguishes executable loaders from text, keys and lexical bindings
+ok 113 - opaque module syntax distinguishes executable loaders from text, keys and lexical bindings
+  ---
+  duration_ms: 8.190042
+  type: 'test'
+  ...
+# Subtest: actual source audit and esbuild retain harmless text, lexical require and development-tool controls
+ok 114 - actual source audit and esbuild retain harmless text, lexical require and development-tool controls
+  ---
+  duration_ms: 222.246875
+  type: 'test'
+  ...
+# Subtest: actual builds reject computed import forms including quoted prefixes before esbuild can fold them
+ok 115 - actual builds reject computed import forms including quoted prefixes before esbuild can fold them
+  ---
+  duration_ms: 16.790833
+  type: 'test'
+  ...
+# Subtest: catalogue permission compares full decoded specifiers including fragments and retry query
+ok 116 - catalogue permission compares full decoded specifiers including fragments and retry query
+  ---
+  duration_ms: 52.42375
+  type: 'test'
+  ...
+# Subtest: unauthorized backend edges fail in every actual product runtime root and extension
+ok 117 - unauthorized backend edges fail in every actual product runtime root and extension
+  ---
+  duration_ms: 53.130459
+  type: 'test'
+  ...
+# Subtest: actual audits and builds reject browser-normalized path and deployment-origin aliases
+ok 118 - actual audits and builds reject browser-normalized path and deployment-origin aliases
+  ---
+  duration_ms: 218.737541
+  type: 'test'
+  ...
+# Subtest: actual reader boot, source Range, note IME and deferred save survive singleton commits
+ok 119 - actual reader boot, source Range, note IME and deferred save survive singleton commits
+  ---
+  duration_ms: 177.1365
+  type: 'test'
+  ...
+# Subtest: actual reader pending failure retains the same submission and in-place retry after locale
+ok 120 - actual reader pending failure retains the same submission and in-place retry after locale
+  ---
+  duration_ms: 80.173167
+  type: 'test'
+  ...
+# Subtest: actual atmosphere commits only cached labels without audio, mix, input or motion calls
+ok 121 - actual atmosphere commits only cached labels without audio, mix, input or motion calls
+  ---
+  duration_ms: 52.980916
+  type: 'test'
+  ...
+# Subtest: actual timer owner uses cached labels without observing or finishing its running clock
+ok 122 - actual timer owner uses cached labels without observing or finishing its running clock
+  ---
+  duration_ms: 70.024
+  type: 'test'
+  ...
+# Subtest: contents owns its open lifecycle and an old close task cannot steal replacement focus
+ok 123 - contents owns its open lifecycle and an old close task cannot steal replacement focus
+  ---
+  duration_ms: 6.367667
+  type: 'test'
+  ...
+# Subtest: book-info keeps its popover identity and transfers ownership of a generated introduction
+ok 124 - book-info keeps its popover identity and transfers ownership of a generated introduction
+  ---
+  duration_ms: 9.000417
+  type: 'test'
+  ...
+# Subtest: reader owner ABA and disposal consume late saves without updating a new owner or detached composer
+ok 125 - reader owner ABA and disposal consume late saves without updating a new owner or detached composer
+  ---
+  duration_ms: 127.679375
+  type: 'test'
+  ...
+# Subtest: codec accepts only exact canonical codes in owned URLs and keeps bounded navigator mapping separate
+ok 126 - codec accepts only exact canonical codes in owned URLs and keeps bounded navigator mapping separate
+  ---
+  duration_ms: 0.9455
+  type: 'test'
+  ...
+# Subtest: route classification keeps authored path authority and canonical precedence
+ok 127 - route classification keeps authored path authority and canonical precedence
+  ---
+  duration_ms: 0.128042
+  type: 'test'
+  ...
+# Subtest: four catalogues are frozen data with equal keys and matching interpolation parameters
+ok 128 - four catalogues are frozen data with equal keys and matching interpolation parameters
+  ---
+  duration_ms: 4.906792
+  type: 'test'
+  ...
+# Subtest: runtime catalogue validation enforces full coherence, not just required labels
+ok 129 - runtime catalogue validation enforces full coherence, not just required labels
+  ---
+  duration_ms: 2.588875
+  type: 'test'
+  ...
+# Subtest: initial catalogue failure resolves uiReady once to usable English and keeps a retry target
+ok 130 - initial catalogue failure resolves uiReady once to usable English and keeps a retry target
+  ---
+  duration_ms: 1.181209
+  type: 'test'
+  ...
+# Subtest: switch timeout keeps old UI/query/preference and offers the fixed retry variant only once
+ok 131 - switch timeout keeps old UI/query/preference and offers the fixed retry variant only once
+  ---
+  duration_ms: 1.115625
+  type: 'test'
+  ...
+# Subtest: F1: history rejection settles an explicit history error in the old language before any write
+ok 132 - F1: history rejection settles an explicit history error in the old language before any write
+  ---
+  duration_ms: 3.600583
+  type: 'test'
+  ...
+# Subtest: F2: retry keeps the originating actor semantics for picker, route and authored activation
+ok 133 - F2: retry keeps the originating actor semantics for picker, route and authored activation
+  ---
+  duration_ms: 5.061125
+  type: 'test'
+  ...
+# Subtest: F3: a changed navigation context makes the pending request stale with zero side effects
+ok 134 - F3: a changed navigation context makes the pending request stale with zero side effects
+  ---
+  duration_ms: 1.741
+  type: 'test'
+  ...
+# Subtest: F3: same-context view writers change search/filter/overlay while waiting and only ui changes after success
+ok 135 - F3: same-context view writers change search/filter/overlay while waiting and only ui changes after success
+  ---
+  duration_ms: 4.14675
+  type: 'test'
+  ...
+# Subtest: F6: falsy history.state values survive the owned ui merge exactly
+ok 136 - F6: falsy history.state values survive the owned ui merge exactly
+  ---
+  duration_ms: 7.386667
+  type: 'test'
+  ...
+# Subtest: late success and late failure after supersede only consume; timers settle stale
+ok 137 - late success and late failure after supersede only consume; timers settle stale
+  ---
+  duration_ms: 2.568458
+  type: 'test'
+  ...
+# Subtest: storage failure after successful history commits session-only and keeps other keys
+ok 138 - storage failure after successful history commits session-only and keeps other keys
+  ---
+  duration_ms: 1.674458
+  type: 'test'
+  ...
+# Subtest: route overrides never write URL or preference; priority and invalid ui fall through
+ok 139 - route overrides never write URL or preference; priority and invalid ui fall through
+  ---
+  duration_ms: 4.451833
+  type: 'test'
+  ...
+# Subtest: F4: authored route language is authoritative over a conflicting ui query
+ok 140 - F4: authored route language is authoritative over a conflicting ui query
+  ---
+  duration_ms: 1.538875
+  type: 'test'
+  ...
+# Subtest: same-effective Back cancels a pending picker attempt and never republishes labels
+ok 141 - same-effective Back cancels a pending picker attempt and never republishes labels
+  ---
+  duration_ms: 0.819166
+  type: 'test'
+  ...
+# Subtest: subscriber exceptions are isolated and reported as separate UI-update faults
+ok 142 - subscriber exceptions are isolated and reported as separate UI-update faults
+  ---
+  duration_ms: 1.716167
+  type: 'test'
+  ...
+# Subtest: the real browser catalogue loader uses exactly six literal base/retry edges
+ok 143 - the real browser catalogue loader uses exactly six literal base/retry edges
+  ---
+  duration_ms: 1.5225
+  type: 'test'
+  ...
+# Subtest: production singleton bootstrap runs once and classifies actual routes
+ok 144 - production singleton bootstrap runs once and classifies actual routes
+  ---
+  duration_ms: 11.043542
+  type: 'test'
+  ...
+# Subtest: the source graph allows only reviewed owners and the exact six real catalogue edges
+ok 145 - the source graph allows only reviewed owners and the exact six real catalogue edges
+  ---
+  duration_ms: 272.714542
+  type: 'test'
+  ...
+# Subtest: G2: comment-only catalogue imports never count and real six plus same-name comments pass
+ok 146 - G2: comment-only catalogue imports never count and real six plus same-name comments pass
+  ---
+  duration_ms: 10.541167
+  type: 'test'
+  ...
+# Subtest: G1: root-absolute, require, hash, alias and wrong-caller edges fail in audit AND actual build
+ok 147 - G1: root-absolute, require, hash, alias and wrong-caller edges fail in audit AND actual build
+  ---
+  duration_ms: 51.428625
+  type: 'test'
+  ...
+# Subtest: graph negatives: missing backing, wrong caller, unused permission and a fully authorized owner pass
+ok 148 - graph negatives: missing backing, wrong caller, unused permission and a fully authorized owner pass
+  ---
+  duration_ms: 17.604334
+  type: 'test'
+  ...
+# Subtest: targetFileOf maps relative, root-absolute and rejects bare specifiers
+ok 149 - targetFileOf maps relative, root-absolute and rejects bare specifiers
+  ---
+  duration_ms: 0.114958
+  type: 'test'
+  ...
+1..149
+# tests 149
+# suites 0
+# pass 149
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1748.225875

@@ -14,8 +14,10 @@ export const LIBRARY_STATUSES=Object.freeze(['all','reading','unread','finished'
 export const LIBRARY_TOPICS=Object.freeze(['all','philosophy','science','literature','history','fiction']);
 export const LIBRARY_SETTINGS_TABS=Object.freeze(['account','reading-habits','daily-reading','appearance','data','about']);
 export const LIBRARY_OVERLAYS=Object.freeze(['settings','calendar','upload','trash','filter']);
-export const LIBRARY_VIEW_KEYS=Object.freeze(['q','scope','status','topic','language']);
+export const LIBRARY_VIEW_KEYS=Object.freeze(['q','scope','status','topic','language','ui']);
 export const LIBRARY_OVERLAY_KEYS=Object.freeze(['filter','calendar','settings','upload','trash']);
+
+import {parseUiParam,isUiLocale,withUiParam} from './ui-locale-codec.mjs';
 
 export const LIBRARY_QUERY_LIMIT=120;
 const CONTROL_CHARS=/[\u0000-\u001f\u007f]/;
@@ -68,7 +70,7 @@ export function parseLibraryView(search){
   else if(upload==='1')overlay={kind:'upload'};
   else if(trash==='1')overlay={kind:'trash'};
   else if(filter==='1')overlay={kind:'filter'};
-  return {view,overlay};
+  return {view,overlay,ui:parseUiParam(params).code||null};
 }
 
 export function libraryViewParams({view,overlay}){
@@ -83,8 +85,14 @@ export function libraryViewParams({view,overlay}){
 // their order stay untouched.
 export function writeLibraryView(search,state){
   const params=new URLSearchParams(typeof search==='string'?search:'');
+  // GET-192: the view codec preserves exactly one validated ui alongside
+  // shelf/q/topic/source-language/overlay writes. Invalid, duplicate or
+  // conflicting values are dropped here; they never broaden the URL.
+  const parsedUi=parseUiParam(params);
   for(const key of [...LIBRARY_VIEW_KEYS,...LIBRARY_OVERLAY_KEYS])params.delete(key);
   for(const [key,value] of libraryViewParams(state))params.append(key,value);
+  const ui=isUiLocale(state?.ui)?state.ui:parsedUi.code;
+  if(ui)params.append('ui',ui);
   const text=params.toString();
   return text?'?'+text:'';
 }
@@ -133,11 +141,9 @@ export function safeLibraryReturn(value){
 // retry, then the reader/gift whitelist, then the parsed safe library return,
 // then the live library view. Callers only pass already-validated targets; form
 // contents, owner IDs and external destinations are never inputs.
-export function authReturnTarget({pendingUpload=false,readerReturn=null,libraryReturn=null,current='/library'}={}){
-  if(pendingUpload)return '/library?upload=1';
-  if(readerReturn)return readerReturn;
-  if(libraryReturn&&libraryReturn!=='/library')return libraryReturn;
-  return typeof current==='string'&&current.startsWith('/library')?current:'/library';
+export function authReturnTarget({pendingUpload=false,readerReturn=null,libraryReturn=null,current='/library',ui}={}){
+  const next=pendingUpload?'/library?upload=1':readerReturn||libraryReturn&&libraryReturn!=='/library'&&libraryReturn||(typeof current==='string'&&current.startsWith('/library')?current:'/library');
+  return isUiLocale(ui)?withUiParam(next,ui):next;
 }
 
 // UI lifecycle adapter: explicit open/close/tab calls only. A modal overlay
@@ -146,34 +152,57 @@ export function authReturnTarget({pendingUpload=false,readerReturn=null,libraryR
 // direct-URL overlay only replaces/removes its own keys and never leaves the
 // site. Every app-written entry carries a bounded owner-generation tag so pops
 // into an older owner generation clear their stale owned state in place.
-export function createLibraryViewHistory({window,onChange=()=>{},debounceMs=250,timers=globalThis}){
+export function createLibraryViewHistory({window,onChange=()=>{},debounceMs=250,timers=globalThis,getUiLocale=()=>null,onBeforeUiPopstate=()=>()=>{}}){
   const history=window.history;
   const savedEpoch=history.state?.libraryState?.epoch;
-  let state=parseLibraryView(window.location.search),epoch=Number.isSafeInteger(savedEpoch)&&savedEpoch>=0?savedEpoch:0,generation=0,pending=null,destroyed=false,composing=false,sessionHandedOff=false;
+  let state=parseLibraryView(window.location.search),epoch=Number.isSafeInteger(savedEpoch)&&savedEpoch>=0?savedEpoch:0,generation=0,pending=null,closing=null,destroyed=false,composing=false,sessionHandedOff=false;
   const emit=meta=>{if(!destroyed)onChange({view:{...state.view},overlay:state.overlay?{...state.overlay}:null},meta);};
   const marker=()=>{const value=history.state?.libraryOverlay;return value&&typeof value==='object'?value:null;};
   const ownsModalEntry=()=>{const own=marker();return !!own&&own.owned===true&&own.consumable===true&&own.epoch===epoch;};
+  // Opaque, bounded entry identity is local history metadata, never account or
+  // view data. A consumed close must match its exact predecessor, not any pop
+  // in the same owner epoch. Replacements keep identity; pushes get a new one.
+  const validEntry=value=>typeof value==='string'&&/^[a-z0-9-]{1,80}$/.test(value);
+  let entrySequence=0;
+  // This is correlation, not authentication. Plain HTTP self-hosting need not
+  // expose secure-context randomUUID; a local sequence plus fresh nonce works.
+  const newEntry=()=>globalThis.crypto?.randomUUID?.()||`lh-${Date.now().toString(36)}-${(++entrySequence).toString(36)}-${Math.random().toString(36).slice(2)}`;
+  const predecessorEntry=()=>{
+    const base=history.state&&typeof history.state==='object'?history.state:{};
+    const tag=base.libraryState;
+    if(tag?.epoch===epoch&&validEntry(tag.entry))return tag.entry;
+    const entry=newEntry();
+    // Tag only our namespace, retaining the predecessor's exact URL and all
+    // foreign state even when open is called before initial hydration.
+    history.replaceState({...base,libraryState:{epoch,entry}},'');
+    return entry;
+  };
   // overlayEntry: true writes this entry's modal marker, false removes it and
   // undefined preserves whatever marker the entry already carries. Ownership of
   // an app-created modal entry survives tab/overlay replacement and view
   // changes that extend the same entry.
-  const commit=(mode,{overlayEntry,consumeAuth=false}={})=>{
+  const commit=(mode,{overlayEntry,parentEntry,uiOverride,consumeAuth=false}={})=>{
     const search=new URLSearchParams(window.location.search);
     if(consumeAuth)for(const key of ['login','auth_error','next'])search.delete(key);
-    const url=window.location.pathname+writeLibraryView(search.toString(),state);
+    // The runtime commits picker UI to the current URL independently. Captured
+    // hydration state must never overwrite that successful route choice.
+    const ui=isUiLocale(uiOverride)?uiOverride:parseUiParam(search).code||null;
+    const url=window.location.pathname+writeLibraryView(search.toString(),{...state,ui})+(window.location.hash||'');
     const base={...(history.state&&typeof history.state==='object'?history.state:{})};
-    const existing=base.libraryOverlay;
+    const existing=base.libraryOverlay,tag=base.libraryState;
+    const entry=mode==='replace'&&tag?.epoch===epoch&&validEntry(tag.entry)?tag.entry:newEntry();
     delete base.libraryOverlay;
     delete base.libraryState;
     if(overlayEntry===true&&state.overlay){
       const carried=existing&&typeof existing==='object'&&existing.owned===true&&existing.consumable===true&&existing.epoch===epoch;
-      base.libraryOverlay={kind:state.overlay.kind,...(state.overlay.tab?{tab:state.overlay.tab}:{}),owned:true,consumable:mode==='push'?true:!!carried,epoch};
+      const parent=mode==='push'?parentEntry:carried?existing.parentEntry:null;
+      base.libraryOverlay={kind:state.overlay.kind,...(state.overlay.tab?{tab:state.overlay.tab}:{}),owned:true,consumable:mode==='push'?true:!!carried,epoch,...(validEntry(parent)?{parentEntry:parent}:{})};
     }else if(overlayEntry===undefined&&existing&&typeof existing==='object')base.libraryOverlay=existing;
-    base.libraryState={epoch};
+    base.libraryState={epoch,entry};
     if(mode==='push')history.pushState(base,'',url);else history.replaceState(base,'',url);
   };
   const cancelPending=()=>{if(pending!==null){timers.clearTimeout(pending);pending=null;}};
-  const bump=()=>{generation++;cancelPending();};
+  const bump=()=>{generation++;closing=null;cancelPending();};
   const replace=meta=>{commit('replace');emit(meta);};
   // A discrete commit first flushes the pending query into the current entry,
   // then writes the new view. While an app-owned modal entry is current the new
@@ -210,6 +239,7 @@ export function createLibraryViewHistory({window,onChange=()=>{},debounceMs=250,
     push({source:'user',action:'clear-all'});
   }
   function setQuery(value){
+    closing=null;
     const next=normalizeLibraryQuery(value);
     state=libraryViewReducer(state,{type:'set-query',query:next});
     if(composing)return next;
@@ -224,6 +254,7 @@ export function createLibraryViewHistory({window,onChange=()=>{},debounceMs=250,
     return next;
   }
   function compositionStart(){
+    closing=null;
     composing=true;
     cancelPending();
   }
@@ -237,15 +268,21 @@ export function createLibraryViewHistory({window,onChange=()=>{},debounceMs=250,
     state=libraryViewReducer(state,{type:'open-overlay',overlay:normalized});
     if(state.overlay.kind==='filter')commit('replace',{overlayEntry:false});
     else if(ownsModalEntry())commit('replace',{overlayEntry:true});
-    else commit('push',{overlayEntry:true});
+    else commit('push',{overlayEntry:true,parentEntry:predecessorEntry()});
     emit({source:'user',action:'open-overlay'});
   }
   function closeOverlay(reason='user'){
     if(!state.overlay)return;
-    if(reason==='replaced'||reason==='owner'){state=libraryViewReducer(state,{type:'close-overlay'});return;}
+    if(reason==='replaced'||reason==='owner'){closing=null;state=libraryViewReducer(state,{type:'close-overlay'});return;}
     bump();
     state=libraryViewReducer(state,{type:'close-overlay'});
-    if(ownsModalEntry()){history.back();return;}
+    if(ownsModalEntry()){
+      const own=marker(),ui=parseUiParam(window.location.search).code;
+      // Only a successful, canonical URL choice crosses this one explicit
+      // close. Requested/pending locale and unowned/legacy entries do not.
+      if(ui&&ui===getUiLocale()&&validEntry(own.parentEntry))closing={ui,parentEntry:own.parentEntry,epoch,generation,pathname:window.location.pathname};
+      history.back();return;
+    }
     commit('replace',{overlayEntry:false});
     emit({source:'user',action:'close-overlay'});
   }
@@ -256,6 +293,16 @@ export function createLibraryViewHistory({window,onChange=()=>{},debounceMs=250,
     state=libraryViewReducer(state,{type:'close-overlay'});
     commit('replace',{overlayEntry:false});
     emit({source:'owner',action:'reset'});
+  }
+  function normalizeClosePop(){
+    const close=closing;closing=null;
+    const target=history.state?.libraryState;
+    if(!destroyed&&close&&close.ui===getUiLocale()&&close.generation===generation&&close.epoch===epoch&&close.pathname===window.location.pathname&&target?.epoch===epoch&&target.entry===close.parentEntry){
+      // The runtime invokes this synchronously before reading its pop target.
+      // Change only target ui; retain restored view/hash and exact history state.
+      const href=window.location.pathname+window.location.search+(window.location.hash||'');
+      history.replaceState(history.state,'',withUiParam(href,close.ui));
+    }
   }
   function onPopState(){
     bump();
@@ -273,6 +320,7 @@ export function createLibraryViewHistory({window,onChange=()=>{},debounceMs=250,
     state=parseLibraryView(window.location.search);
     emit({source:'pop'});
   }
+  const offBeforePop=onBeforeUiPopstate(normalizeClosePop);
   window.addEventListener('popstate',onPopState);
   return {
     snapshot:()=>({view:{...state.view},overlay:state.overlay?{...state.overlay}:null}),
@@ -291,11 +339,12 @@ export function createLibraryViewHistory({window,onChange=()=>{},debounceMs=250,
       const safe=safeLibraryReturn(target);
       if(!safe)return null;
       bump();
-      state=libraryViewReducer({view:libraryViewDefaults(),overlay:null},{type:'hydrate',search:safe.slice('/library'.length)});
-      commit('replace',{overlayEntry:false,consumeAuth:true});
+      const parsed=parseLibraryView(safe.slice('/library'.length));
+      state=libraryViewReducer({view:libraryViewDefaults(),overlay:null},{type:'hydrate',parsed});
+      commit('replace',{overlayEntry:false,uiOverride:parsed.ui,consumeAuth:true});
       emit({source:'return',action:'adopt-return'});
       return state.overlay?{...state.overlay}:null;
     },
-    destroy(){destroyed=true;bump();window.removeEventListener('popstate',onPopState);}
+    destroy(){destroyed=true;bump();offBeforePop();window.removeEventListener('popstate',onPopState);}
   };
 }

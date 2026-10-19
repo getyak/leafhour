@@ -1,3 +1,4 @@
+import {t,onUiLocaleChange} from './ui-locale.mjs';
 import {createReaderCompanionState,COMPANION_TIMING} from './reader-companion-state.mjs';
 import {overlayOpen} from './popover-controls.mjs';
 
@@ -34,45 +35,49 @@ export function mountReaderCompanion({bookId,getOwner,getReader,api,chat,openAut
   // to the reading-tools coordinator. Default (generated launcher) callers keep
   // the historical described-by and message-dot wiring.
   const anchor=integration?.anchor||launcher,onUnread=integration?.onUnread||(()=>{}),onFocusReturn=integration?.onFocusReturn||null;
-  const toggle=button('squirrel-companion-toggle','开启陪读'),description=element('p','squirrel-companion-description','开启后，根据当前和最近阅读的内容，约每 5 分钟聊一句。使用当前 AI 服务，可随时关闭。');
+  const toggle=button('squirrel-companion-toggle',t('companion.enable')),description=element('p','squirrel-companion-description',t('companion.description'));
   description.id='squirrel-companion-description';toggle.setAttribute('aria-describedby',description.id);toggle.setAttribute('aria-pressed','false');
   header.insertBefore(toggle,header.lastElementChild);header.after(description);
   const bubble=element('aside','squirrel-companion-bubble'),body=button('squirrel-companion-message',''),dismiss=button('squirrel-companion-dismiss','×'),status=element('span','sr-only squirrel-companion-status');
-  status.id='squirrel-companion-status';status.setAttribute('role','status');bubble.setAttribute('aria-label','松鼠的陪读消息');dismiss.setAttribute('aria-label','收起这条消息');bubble.append(body,dismiss);bubble.hidden=true;const detachBubble=surface.position?.attach(bubble);anchor?.after(bubble);anchor?.after(status);
+  status.id='squirrel-companion-status';status.setAttribute('role','status');bubble.setAttribute('aria-label',t('companion.bubble'));dismiss.setAttribute('aria-label',t('companion.dismiss'));bubble.append(body,dismiss);bubble.hidden=true;const detachBubble=surface.position?.attach(bubble);anchor?.after(bubble);anchor?.after(status);
   if(!integration&&launcher&&status.id)launcher.setAttribute('aria-describedby',status.id);
   let meta=null,epoch=0,configuring=false,localStopped=false,disposed=false,observing=false,settingsInFlight=false,lastObserve=0,lastSettings=0,lastIntent=-Infinity,pending=null,running=null,bubbleTimer=null,hovering=false,unread=false;
+  let configuringTarget=null,toggleId='companion.enable',descriptionId='companion.description',bubbleSummary=null;
+  const describe=id=>{descriptionId=id;description.textContent=t(id);};
+  const refreshLabels=()=>{if(disposed)return;toggle.textContent=t(toggleId);description.textContent=t(descriptionId);bubble.setAttribute('aria-label',t('companion.bubble'));dismiss.setAttribute('aria-label',t('companion.dismiss'));status.textContent=unread?t('companion.unread'):'';if(bubbleSummary!==null)body.setAttribute('aria-label',t('companion.continue',{summary:bubbleSummary}));};
+  const unsubscribe=onUiLocaleChange(refreshLabels);
   const owner=getOwner(),route='/api/library/books/'+encodeURIComponent(bookId)+'/companion',signalKey='marginalia:companion-signal:'+encodeURIComponent(owner||'guest')+':'+encodeURIComponent(bookId);
   const current=()=>!disposed&&getOwner()===owner;
   const context=()=>{const reader=getReader(),book=reader?.getBook?.();return book?.bookId===bookId?{reader,book}:null;};
   const visible=()=>document.visibilityState==='visible'&&document.hasFocus();
   function blocked(){return root.open||!!getSelection()?.toString().trim()||overlayOpen(document)||!!document.querySelector('#note-panel:not([hidden]),#paragraph-tools:not([hidden])')||!!document.activeElement?.closest('input,textarea,select,[contenteditable="true"]');}
   function paint(){
-    const on=!!meta?.enabled&&!localStopped;toggle.textContent=configuring?(on?'正在关闭…':'正在开启…'):localStopped?'重试关闭':on?'关闭陪读':'开启陪读';toggle.disabled=configuring||!!owner&&meta?.available===false&&!on;toggle.setAttribute('aria-pressed',String(on));description.hidden=on&&!localStopped;
+    const on=!!meta?.enabled&&!localStopped;toggleId=configuring?(configuringTarget?'companion.enabling':'companion.disabling'):localStopped?'companion.retryDisable':on?'companion.disable':'companion.enable';toggle.textContent=t(toggleId);toggle.disabled=configuring||!!owner&&meta?.available===false&&!on;toggle.setAttribute('aria-pressed',String(on));description.hidden=on&&!localStopped;
   }
   function accept(value){
     meta=value;state.configure({enabled:!!value.enabled&&!localStopped,revision:value.revision,scope:[owner,bookId,value.contentVersion,value.sessionId].join('/')});paint();
   }
   function hideBubble(){clearTimeout(bubbleTimer);bubbleTimer=null;bubble.hidden=true;}
-  function markUnread(value){unread=value;surface.motion?.setState({hasMessage:value});status.textContent=value?'松鼠留了一句话，可以打开阅读对话查看。':'';onUnread(value);if(!integration&&launcher)launcher.classList.toggle('has-companion-message',value);paint();}
+  function markUnread(value){unread=value;surface.motion?.setState({hasMessage:value});status.textContent=value?t('companion.unread'):'';onUnread(value);if(!integration&&launcher)launcher.classList.toggle('has-companion-message',value);paint();}
   function collapse(){hideBubble();pending=null;}
   function cancelRunning(){
     surface.motion?.setState({companionThinking:false});const job=running;if(!job)return;running=null;job.controller.abort();void api('/api/library/books/'+encodeURIComponent(bookId)+'/chat/'+encodeURIComponent(job.id)+'/cancel',{}, {keepalive:true}).catch(()=>{});
   }
   async function configure(enabled){
     if(!owner){openAuth();return;}const c=context();if(!c||configuring)return;
-    const ticket=++epoch;configuring=true;collapse();cancelRunning();state.suspend();
+    const ticket=++epoch;configuring=true;configuringTarget=enabled;collapse();cancelRunning();state.suspend();
     if(!enabled){localStopped=true;state.configure({enabled:false,revision:meta?.revision,scope:'stopped'});markUnread(false);}paint();
     try{
       const value=await api(route,{enabled,contentVersion:c.book.contentVersion});if(!current()||ticket!==epoch)return;
-      localStopped=false;accept(value);description.textContent='开启后，根据当前和最近阅读的内容，约每 5 分钟聊一句。使用当前 AI 服务，可随时关闭。';
+      localStopped=false;accept(value);describe('companion.description');
       try{localStorage.setItem(signalKey,JSON.stringify({enabled:value.enabled,revision:value.revision,at:Date.now()}));}catch{}
-    }catch(error){if(!current()||ticket!==epoch)return;description.textContent=enabled?(error.message||'陪读暂时无法开启，请稍后重试。'):'本机已停止，关闭设置尚未同步。请重试关闭。';description.hidden=false;}
+    }catch(error){if(!current()||ticket!==epoch)return;describe(enabled?'companion.enableFailed':'companion.stopUnconfirmed');description.hidden=false;}
     finally{if(current()&&ticket===epoch){configuring=false;paint();if(localStopped)description.hidden=false;}}
   }
   async function settings(){
     if(!owner||!current()||configuring||settingsInFlight||!context())return;settingsInFlight=true;lastSettings=Date.now();const ticket=epoch;
     try{const value=await api(route);if(current()&&ticket===epoch&&!configuring){if(localStopped&&!value.enabled)localStopped=false;if(meta&&(!value.enabled||value.revision!==meta.revision)){collapse();cancelRunning();}accept(value);}}
-    catch{if(current()&&!meta){description.textContent='陪读设置暂时无法读取，可以稍后重试开启。';}}
+    catch{if(current()&&!meta){describe('companion.settingsFailed');}}
     finally{settingsInFlight=false;}
   }
   function observedPassage(c){
@@ -99,7 +104,7 @@ export function mountReaderCompanion({bookId,getOwner,getReader,api,chat,openAut
     if(!pending)return;const c=context(),view=state.view();
     if(!c||pending.chapterId!==c.reader.getChapterId()||view.foregroundMs-pending.readyAt>=COMPANION_TIMING.presentationMs){pending=null;return;}
     if(!view.safeToPresent||blocked()||!visible())return;
-    body.textContent=pending.turn.answer.summary;body.setAttribute('aria-label','和松鼠接着聊：'+pending.turn.answer.summary);body.onclick=()=>{const message=pending?.turn||shown;markUnread(false);collapse();if(message)chat.open({bookId,passageId:message.passageId,messageId:message.id});};
+    bubbleSummary=pending.turn.answer.summary;body.textContent=bubbleSummary;body.setAttribute('aria-label',t('companion.continue',{summary:bubbleSummary}));body.onclick=()=>{const message=pending?.turn||shown;markUnread(false);collapse();if(message)chat.open({bookId,passageId:message.passageId,messageId:message.id});};
     shown=pending.turn;pending=null;bubble.hidden=false;surface.position?.layout();scheduleCollapse();
   }
   let shown=null;
@@ -138,5 +143,5 @@ export function mountReaderCompanion({bookId,getOwner,getReader,api,chat,openAut
   on(document,'reader:ready',()=>void settings());on(document,'reader:jump',()=>{collapse();state.suspend();});
   on(window,'storage',event=>{if(event.key!==signalKey)return;try{if(JSON.parse(event.newValue)?.enabled===false){epoch++;localStopped=true;configuring=false;collapse();cancelRunning();state.configure({enabled:false,revision:meta?.revision,scope:'stopped'});markUnread(false);}void settings();}catch{}});
   const timer=setInterval(()=>void tick(),1000);paint();void settings();
-  return {dispose(){if(disposed)return;epoch++;suspend();disposed=true;clearInterval(timer);clearTimeout(bubbleTimer);for(const remove of listeners)remove();detachBubble?.();for(const node of [toggle,description,bubble,status])node.remove();launcher?.classList.remove('has-companion-message');}};
+  return {dispose(){if(disposed)return;unsubscribe();epoch++;suspend();disposed=true;clearInterval(timer);clearTimeout(bubbleTimer);for(const remove of listeners)remove();detachBubble?.();for(const node of [toggle,description,bubble,status])node.remove();launcher?.classList.remove('has-companion-message');}};
 }

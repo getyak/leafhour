@@ -65,10 +65,13 @@ export function personalExportItems(backup){
  }
  return items;
 }
-export function selectedRecordExport(items,{format='json',sharing=false,includeQuotes=false}={}){
+export function selectedRecordExport(items,{format='json',sharing=false,includeQuotes=false,labels=null}={}){
  if(!Array.isArray(items)||!items.length)fail('请先选择要导出的记录');if(sharing&&items.some(i=>i.category==='time'))fail('分享包不能包含阅读时间');
  const rows=items.map(i=>{const keys=['id','category','bookId','contentVersion','title','chapterId','passageId','text','origin','createdAt','updatedAt','revision',...(i.category==='time'?['source','startedAt','endedAt','durationSeconds','recordedAt','timeZone','segments','status','start','end']:[]),...(includeQuotes?['quote']:[])],row=Object.fromEntries(keys.filter(k=>i[k]!==undefined).map(k=>[k,structuredClone(i[k])]));if(i.sourceRefs)row.sourceRefs=i.sourceRefs.map(r=>Object.fromEntries(['bookId','contentVersion','chapterId','passageId','layer',...(includeQuotes?['quote']:[])].filter(k=>r[k]!==undefined).map(k=>[k,r[k]])));return row;});assertPortableContent(rows);
  if(format==='json')return JSON.stringify({kind:sharing?'leafhour-selected-share':'leafhour-selected-records',schemaVersion:1,items:rows},null,2)+'\n';
  if(format!=='markdown')fail('导出格式不正确');
- return '# '+(sharing?'选定分享':'个人记录')+'\n\n'+rows.map(i=>['## '+i.title, '类型：'+i.category+' · 归属：'+(i.origin==='ai'?'AI':'用户'),'ID：'+i.id+' · 来源版本：'+i.contentVersion,'锚点：'+i.bookId+(i.passageId?' / '+i.chapterId+' / '+i.passageId:''),'创建：'+(i.createdAt||i.startedAt||'')+(i.updatedAt?' · 修改：'+i.updatedAt:''),i.text||('时间来源：'+i.source+' · '+i.startedAt+' → '+i.endedAt+' · '+i.durationSeconds+' 秒（不能证明掌握）'),...(i.quote?['原文引用：\n'+i.quote]:[]),...(i.sourceRefs?.map(r=>'AI 引用：'+r.bookId+' / '+r.passageId+' @ '+r.contentVersion+(r.quote?'\n'+r.quote:''))||[])].join('\n\n')).join('\n\n---\n\n')+'\n';
+ // Callers may format newly requested Markdown chrome. JSON and archive bytes,
+ // stable categories, source identities and user/AI content never use labels.
+ const text=(id,fallback)=>typeof labels?.[id]==='string'?labels[id]:fallback;
+ return '# '+(sharing?text('share','选定分享'):text('personal','个人记录'))+'\n\n'+rows.map(i=>['## '+i.title, text('type','类型：')+i.category+' · '+text('origin','归属：')+(i.origin==='ai'?'AI':text('user','用户')),text('id','ID：')+i.id+' · '+text('version','来源版本：')+i.contentVersion,text('anchor','锚点：')+i.bookId+(i.passageId?' / '+i.chapterId+' / '+i.passageId:''),text('created','创建：')+(i.createdAt||i.startedAt||'')+(i.updatedAt?' · '+text('updated','修改：')+i.updatedAt:''),i.text||(text('timeSource','时间来源：')+i.source+' · '+i.startedAt+' → '+i.endedAt+' · '+i.durationSeconds+' '+text('seconds','秒（不能证明掌握）')),...(i.quote?[text('quote','原文引用：')+'\n'+i.quote]:[]),...(i.sourceRefs?.map(r=>text('aiQuote','AI 引用：')+r.bookId+' / '+r.passageId+' @ '+r.contentVersion+(r.quote?'\n'+r.quote:''))||[])].join('\n\n')).join('\n\n---\n\n')+'\n';
 }

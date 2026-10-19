@@ -1,0 +1,13 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=2",
+    "tests/ui-locale-reader-audio.test.mjs",
+    "tests/audio-ui.test.mjs",
+    "tests/ui-locale-audio-transport.test.mjs"
+  ],
+  "exitCode": 0,
+  "summary": "1..97\n# tests 97\n# suites 0\n# pass 97\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 2557.311791\n",
+  "logNormalization": "Trailing whitespace removed from TAP lines; content and outcomes unchanged."
+}

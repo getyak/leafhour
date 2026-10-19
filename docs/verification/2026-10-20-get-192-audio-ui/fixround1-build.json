@@ -1,0 +1,14 @@
+{
+  "checkpoint": "fixround1 on 3296355d962ee5bd585136a998b5b2355900fe0d",
+  "invocation": "await buildReaderWeb({root:process.cwd(),outputDir:'/private/tmp/ai-test-get-192-ui-locale.8Rd8dj/audio-build',html:await readFile('app/index.html','utf8')})",
+  "limits": {
+    "js": 327680,
+    "css": 204800
+  },
+  "priorJs": 342012,
+  "exitCode": 1,
+  "error": "Reader bundle exceeds public asset budget: reader 342780",
+  "bytes": 342780,
+  "overCap": 15100,
+  "changeFromPrior": 768
+}

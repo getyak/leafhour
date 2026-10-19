@@ -1,4 +1,6 @@
-import test from 'node:test';
+import test,{before} from 'node:test';
+import {requestUiRoute} from '../app/ui-locale.mjs';
+before(()=>requestUiRoute('zh-Hans'));
 import assert from 'node:assert/strict';
 import {mountLibraryDailyReading} from '../app/library-daily-reading.mjs';
 class Element extends EventTarget{

@@ -1,0 +1,18 @@
+[
+  {
+    "name": "focused",
+    "command": "node --test --test-concurrency=2 tests/ui-locale-reader-foundation.test.mjs tests/reader-controls.test.mjs tests/reader-settings.test.mjs tests/reader-navigation.test.mjs tests/reader-highlights-lineation.test.mjs tests/reading-manual-ui.test.mjs tests/reader-tools.test.mjs tests/reading-toolbar.test.mjs tests/save-receipts.test.mjs tests/reading-session-recovery.test.mjs tests/reading-view.test.mjs tests/reading-pending-backup.test.mjs tests/reading-preferences.test.mjs tests/personal-record-editor.test.mjs tests/reading-shared-persistence.test.mjs tests/ui-locale-graph.test.mjs tests/ui-locale.test.mjs",
+    "exit": 0,
+    "tests": 149,
+    "pass": 149,
+    "fail": 0
+  },
+  {
+    "name": "build-regressions",
+    "command": "node --test --test-concurrency=2 tests/reader-web-build.test.mjs",
+    "exit": 1,
+    "tests": 5,
+    "pass": 2,
+    "fail": 3
+  }
+]

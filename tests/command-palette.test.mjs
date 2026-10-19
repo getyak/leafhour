@@ -96,11 +96,11 @@ test('palette keyboard keeps one active result coherent across arrows, Home/End 
   assert.equal(input.getAttribute('aria-activedescendant'),options[0].id);
   const enter=key(input,{key:'Enter'});input.dispatchEvent(enter);
   assert.equal(enter.defaultPrevented,true);
-  assert.deepEqual(f.nav,['/read?book=one&passage=p7'],'Enter runs the active result with its real resume id');
+  assert.deepEqual(f.nav,['/read?book=one&passage=p7&ui=en'],'Enter runs the active result with its real resume id');
 });
 
 test('the dialog announces loading, empty and error states and Escape restores the opener',()=>{
-  for(const [phase,expected] of [['loading',/载入/],['ready',/没有/],['error',/无法|失败/]]){
+  for(const [phase,expected] of [['loading',/Loading/],['ready',/No matching/],['error',/could not|unavailable|failed/]]){
     const library={view:()=>({phase,count:0}),load:async()=>{},search:()=>[]};
     const f=openFixture({library});f.palette.open();
     f.input().value='nothing';f.input().dispatchEvent(new Event('input'));
@@ -114,30 +114,30 @@ test('the dialog announces loading, empty and error states and Escape restores t
 test('modal handoff closes the palette without stale focus restoration',()=>{
   const library={view:()=>({phase:'ready',count:0}),load:async()=>{},search:()=>[]};
   const f=openFixture({library});f.palette.open();
-  f.input().value='设置';f.input().dispatchEvent(new Event('input'));
+  f.input().value='settings';f.input().dispatchEvent(new Event('input'));
   const options=f.options();
   assert.ok(options.length>0);
-  const settings=options.find(option=>option.textContent.includes('设置'));
+  const settings=options.find(option=>option.textContent.includes('Open settings'));
   settings.dispatchEvent(new Event('click',{bubbles:true}));
   assert.equal(f.dialog.open,false);
   assert.notEqual(f.doc.activeElement,f.opener,'a settings handoff must not restore stale focus');
-  assert.equal(f.nav[0],'/library?settings=appearance','the destination uses the exact GET-179 codec output');
+  assert.equal(f.nav[0],'/library?settings=appearance&ui=en','the destination uses the exact GET-179 codec output');
 });
 
 test('reader appearance commands use the existing appearance adapter and preserve the launch point',()=>{
   const calls=[];const adapter={appearance:{setTheme:value=>calls.push(['theme',value]),adjustFont:delta=>calls.push(['font',delta])}};
   const library={view:()=>({phase:'ready',count:0}),load:async()=>{},search:()=>[]};
   const f=openFixture({page:'reader',adapter,library});f.palette.open();
-  f.input().value='夜';f.input().dispatchEvent(new Event('input'));
-  const night=f.options().find(option=>option.textContent.includes('夜色'));
-  assert.equal(f.status().textContent,'夜色 · 1 项结果','a matching command must not also announce no matches');
+  f.input().value='night';f.input().dispatchEvent(new Event('input'));
+  const night=f.options().find(option=>option.textContent.includes('Night'));
+  assert.equal(f.status().textContent,'Night · 1 results','a matching command must not also announce no matches');
   night.dispatchEvent(new Event('click',{bubbles:true}));
   assert.deepEqual(calls,[['theme','night']]);
   assert.equal(f.dialog.open,false);
   assert.equal(f.doc.activeElement,f.opener,'theme actions return to the launch point');
   const fixed=openFixture({library});fixed.palette.open();
-  fixed.input().value='夜';fixed.input().dispatchEvent(new Event('input'));
-  assert.equal(fixed.options().some(option=>option.textContent.includes('夜色')),false,'a console without an appearance adapter offers no dead theme actions');
+  fixed.input().value='night';fixed.input().dispatchEvent(new Event('input'));
+  assert.equal(fixed.options().some(option=>option.textContent.includes('Night')),false,'a console without an appearance adapter offers no dead theme actions');
 });
 
 test('palette commands are explicit per page and never claim search-in-book',()=>{
@@ -225,7 +225,7 @@ test('a failed palette import is visible, safe and retried on the next gesture',
   const tools=mountPaletteBootstrap({document:doc,navigator:{userAgentData:{platform:'macOS'}},matchMedia:()=>({matches:true}),loadPalette:load,loadRetry:load});
   opener.click();await flush();
   assert.deepEqual(opens,[],'a failed import cannot open the dialog');
-  const notice=doc.querySelectorAll('[role="status"]').find(node=>node.textContent.includes('命令面板'));
+  const notice=noticeOf(doc);
   assert.ok(notice,'the failure is reported visibly, not as an unhandled rejection');
   opener.click();await flush();
   assert.equal(attempts,2,'the failed import is retried');
@@ -255,8 +255,8 @@ test('reader fullscreen runs through the production palette adapter path',async(
     const tools=mountPaletteBootstrap({document:doc,navigator:{userAgentData:{platform:'macOS'}},matchMedia:()=>({matches:true}),loadPalette:async()=>({openCommandPalette:options=>openCommandPalette({...options,library,navigate:()=>{}})})});
     opener.click();await flush();
     const input=doc.getElementById('command-palette-input');
-    input.value='全屏';input.dispatchEvent(new Event('input'));
-    const option=doc.querySelectorAll('[role=option]').find(node=>node.textContent.includes('全屏'));
+    input.value='full';input.dispatchEvent(new Event('input'));
+    const option=doc.querySelectorAll('[role=option]').find(node=>node.textContent.includes('Full-screen'));
     assert.ok(option,'the reader adapter exposes a fullscreen command');
     option.dispatchEvent(new Event('click',{bubbles:true}));
     assert.deepEqual(calls,[['fullscreen']],'fullscreen must run through the production adapter, not a default no-op');
@@ -290,15 +290,15 @@ test('load settlement refreshes the typed query and errors offer a real retry',a
   };
   const f=openFixture({library});f.palette.open();
   f.input().value='爱丽';f.input().dispatchEvent(new Event('input'));
-  assert.match(f.status().textContent,/载入/,'loading is visible while the typed query waits');
+  assert.match(f.status().textContent,/Loading/,'loading is visible while the typed query waits');
   resolveLoad();await flush();
   assert.ok(f.options().some(option=>option.textContent.includes('爱丽丝梦游仙境')),'settlement refreshes the already-typed query');
   assert.match(f.status().textContent,/1/);
   const failing=openFixture({library:{view:()=>({phase:'error',count:0}),search:()=>[],load:async()=>{throw Error('503');}}});
   failing.palette.open();await flush();
   failing.input().value='x';failing.input().dispatchEvent(new Event('input'));
-  assert.match(failing.status().textContent,/无法|失败/,'an error is not an empty result');
-  const retry=failing.options().find(option=>option.textContent.includes('重新载入'));
+  assert.match(failing.status().textContent,/could not|unavailable|failed/,'an error is not an empty result');
+  const retry=failing.options().find(option=>option.textContent.includes('Reload the catalogue'));
   assert.ok(retry,'an error offers a meaningful retry');
 });
 
@@ -363,7 +363,7 @@ const bootstrapFixture=({loadPalette,loadRetry=loadPalette,adapter=undefined}={}
   const tools=mountPaletteBootstrap({document:doc,adapter,navigator:{userAgentData:{platform:'macOS'}},matchMedia:()=>({matches:true}),loadPalette,loadRetry});
   return {doc,opener,tools};
 };
-const noticeOf=doc=>doc.querySelectorAll('[role="status"]').find(node=>node.textContent.includes('\u547d\u4ee4\u9762\u677f'))||null;
+const noticeOf=doc=>doc.querySelectorAll('[role="status"]').find(node=>node.textContent.includes('command palette')||node.children.some(child=>String(child.textContent||'').includes('command palette')))||null;
 const noticeParts=doc=>{
   const notice=doc.body.children.find(node=>String(node.className).includes('palette-notice'))||null;
   const child=name=>notice?notice.children.find(node=>String(node.className).includes(name))||null:null;
@@ -638,4 +638,56 @@ test('a failed setup disposes only its internally created palette library',async
   assert.equal(disposed,false,'an externally injected library is never disposed by this factory');
   assert.deepEqual(external.view().phase,'idle','the external library stays usable');
   external.dispose();
+});
+
+
+test('language refresh preserves palette result identity, query, active choice and focus without searching again',async()=>{
+  const {requestUiRoute,t}=await import('../app/ui-locale.mjs');
+  await requestUiRoute('en');let searches=0;
+  const f=openFixture({library:{view:()=>({phase:'ready'}),search:()=>{searches++;return [{bookId:'one',title:{en:'Open a real book'}}];}}});
+  try{
+    f.palette.open();const input=f.input();input.value='open';input.dispatchEvent(new Event('input'));
+    input.dispatchEvent(key(input,{key:'ArrowDown'}));
+    const before=f.options(),active=input.getAttribute('aria-activedescendant'),count=searches;
+    f.dialog.scrollTop=39;
+    await requestUiRoute('ja');
+    assert.equal(input.value,'open');assert.equal(f.doc.activeElement,input);assert.equal(f.dialog.scrollTop,39);
+    assert.equal(searches,count);assert.equal(input.getAttribute('aria-activedescendant'),active);
+    assert.deepEqual(f.options(),before);assert.equal(before[1].textContent,t('palette.settings'));
+    input.dispatchEvent(key(input,{key:'Enter'}));assert.equal(f.nav[0],'/library?settings=appearance&ui=ja');
+  }finally{f.palette.dispose();await requestUiRoute('en');}
+});
+
+test('palette destinations carry Japanese through authored home and canonical pages, including without a saved preference',async()=>{
+  const {requestUiRoute,createUiLocale}=await import('../app/ui-locale.mjs');
+  const ja=(await import('../app/ui-catalogs/ja.mjs')).default;
+  await requestUiRoute('ja');
+  try{
+    const nav=[];const commands=paletteCommands('home',null,url=>nav.push(url));
+    for(const id of ['home','library','settings','calendar'])commands.find(x=>x.id===id).run();
+    assert.deepEqual(nav,['/ja','/library?ui=ja','/library?settings=appearance&ui=ja','/library?calendar=1&ui=ja']);
+    for(const saved of [null,'ja'])for(const target of nav){
+      const location={href:'https://leafhour.com'+target};
+      const runtime=createUiLocale({getLocation:()=>location,storage:{getItem:()=>saved,setItem(){}},languages:['en'],loadCatalogue:async()=>ja,history:{replaceState(){}},eventTarget:null});
+      await runtime.initialize();assert.equal(runtime.getUiLocale(),'ja',target+' keeps UI locale independently of storage');
+    }
+  }finally{await requestUiRoute('en');}
+});
+
+test('disposing a palette fences late catalogue completion and future opens',async()=>{
+  let finish,view={phase:'idle'},searches=0,unwatched=0;
+  const f=openFixture({adapter:{getOwner:()=>null},library:{view:()=>view,watch:()=>()=>unwatched++,search:()=>{searches++;return [];},load:()=>new Promise(resolve=>{finish=()=>{view={phase:'ready'};resolve();};})}});
+  f.palette.open();f.input().value='query';const list=f.doc.getElementById('command-palette-list'),before=[...list.children],count=searches;
+  f.palette.dispose();finish();await new Promise(setImmediate);f.palette.open();f.palette.refresh();
+  assert.deepEqual(list.children,before);assert.equal(f.doc.getElementById('command-palette'),null);assert.equal(searches,count);assert.equal(f.dialog.open,false);assert.equal(unwatched,1);
+});
+
+
+test('dispose followed by a fresh mount on the same document binds working search and Enter once',()=>{
+  const doc=fixture(),nav=[],library={view:()=>({phase:'ready'}),search:()=>[{bookId:'again',title:{en:'Again'}}]};
+  const first=openCommandPalette({document:doc,library,navigate:url=>nav.push(url)});first.open();const old=first.dialog;first.dispose();
+  assert.equal(doc.getElementById('command-palette'),null);
+  const second=openCommandPalette({document:doc,library,navigate:url=>nav.push(url)});
+  try{second.open();assert.notEqual(second.dialog,old);const input=doc.getElementById('command-palette-input');input.value='Again';input.dispatchEvent(new Event('input'));input.dispatchEvent(key(input,{key:'Enter'}));assert.deepEqual(nav,['/read?book=again&ui=en']);}
+  finally{second.dispose();}
 });

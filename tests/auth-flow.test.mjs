@@ -41,3 +41,12 @@ test('cookie-changing requests remain serialized across close, reset, and a diff
   const second=make({requestGuard});assert.equal(second.view().busy,true);assert.equal(second.begin('local'),null);assert.equal(second.begin('oauth'),null);second.setEmail('two@example.com');assert.equal(second.begin('send'),null);
   first.settled(pending);second.setEmail('two@example.com');sent=second.begin('send');assert.ok(sent);second.sent(sent,{retryAfter:60,expiresIn:600});second.setCode('123456');assert.ok(second.begin('verify'));assert.equal(first.verified(pending),false);
 });
+
+
+test('auth flow retains only a validated message descriptor, never remote prose as a catalogue key',()=>{
+  for(const messageId of ['auth.error.badCredentials','source sentence','profile.saved',null]){
+    const flow=make();flow.setEmail('reader@example.test');const ticket=flow.begin('password');flow.failed(ticket,{message:'Private remote prose',messageId});
+    assert.deepEqual(flow.view().error,{id:messageId==='auth.error.badCredentials'?messageId:'auth.error.generic'});
+    assert.equal(JSON.stringify(flow.view()).includes('Private remote prose'),false);
+  }
+});

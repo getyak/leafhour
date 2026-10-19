@@ -19,3 +19,7 @@ body.has-audio .book-page{padding-bottom:max(240px,calc(var(--audio-player-clear
 .audio-role-details{margin-top:20px;border-top:1px solid var(--line-control);padding-top:14px}.audio-role-details>summary{font-size:13px;color:var(--muted);cursor:pointer;min-height:40px;padding:10px 0}.audio-role-details>.audio-setting{margin-top:8px}
 
 .audio-guide-scope{font:13px/1.9 var(--interface);color:var(--accent);margin:22px 0 0}.audio-player-status:empty{display:none}
+
+.audio-bootstrap-status{position:fixed;z-index:60;bottom:20px;left:50%;transform:translateX(-50%);width:min(430px,calc(100vw - 32px));padding:16px;background:var(--paper,#fffdf7);color:var(--ink,#292922);border:1px solid currentColor;border-radius:12px;box-shadow:0 4px 18px #0002}.audio-bootstrap-status[hidden]{display:none}.audio-bootstrap-status p{margin:0 0 8px}.audio-bootstrap-status button{min-height:44px;min-width:44px;margin-right:8px;padding:8px 12px;color:inherit;background:transparent;border:1px solid currentColor;border-radius:6px}
+
+dialog>.audio-bootstrap-status{position:sticky;flex:none;left:auto;bottom:0;transform:none;width:auto;margin:12px;max-height:calc(100dvh - 48px);overflow:auto}

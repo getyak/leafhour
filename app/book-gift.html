@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="zh-Hans">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <title>一封赠书信 · Leafhour</title>
+  <title>A book, with a letter · Leafhour</title>
   <link rel="icon" href="/brand-assets/leafhour-mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/typography.css"><link rel="stylesheet" href="/interface-tokens.css">
   <link rel="stylesheet" href="/book-gift.css">
@@ -16,38 +16,38 @@
 <script type="module" src="/palette-bootstrap.mjs"></script></head>
 <body class="gift-page" data-palette-page="gift">
   <div class="gift-atmosphere" aria-hidden="true"></div>
-  <a class="skip-link" href="#gift-main">跳到赠书信</a>
+  <a class="skip-link" href="#gift-main" data-ui="gift.skip">Open the book letter</a>
   <header class="gift-site-header">
-    <a class="gift-brand" href="/" aria-label="Leafhour 首页"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg><span lang="en">Leafhour</span></a>
-    <div class="gift-header-actions"><button class="palette-entry" data-palette-open type="button">搜索与命令 <kbd data-palette-keycap></kbd></button><button id="site-theme" type="button" aria-label="页面外观">◐</button><a href="/library">我的书房</a></div>
+    <a class="gift-brand" href="/" aria-label="Leafhour home" data-ui-aria-label="gift.homeAria"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg><span lang="en">Leafhour</span></a>
+    <div class="gift-header-actions"><button class="palette-entry" data-palette-open type="button"> <span data-ui="palette.title">Search and commands</span> <kbd data-palette-keycap></kbd></button><button id="site-theme" type="button" aria-label="Page appearance" data-ui-aria-label="gift.appearanceAria">◐</button><a href="/library" data-ui="gift.library">My reading room</a></div>
   </header>
   <main id="gift-main" tabindex="-1">
-    <div id="gift-loading" class="gift-loading" role="status"><span class="loading-fold" aria-hidden="true"></span><p>正在取出信笺…</p></div>
+    <div id="gift-loading" class="gift-loading" role="status"><span class="loading-fold" aria-hidden="true"></span><p data-ui="gift.loading">Opening your letter…</p></div>
     <section id="gift-error" class="gift-error paper-frame" aria-labelledby="gift-error-title" hidden>
-      <p class="gift-eyebrow">一封赠书信</p><h1 id="gift-error-title">这封信暂时无法打开</h1>
-      <p id="gift-error-message" role="alert"></p><button id="gift-retry" class="gift-secondary" type="button">重新打开</button><a href="/library">回到书房</a>
+      <p class="gift-eyebrow" data-ui="gift.eyebrow">A book, with a letter</p><h1 id="gift-error-title" data-ui="gift.errorTitle">This letter cannot be opened right now</h1>
+      <p id="gift-error-message" role="alert"></p><button id="gift-retry" class="gift-secondary" type="button" data-ui="gift.retry">Try again</button><a href="/library" data-ui="gift.backLibrary">Back to the reading room</a>
     </section>
-    <p id="gift-arrival" class="gift-arrival" hidden><span id="arrival-sender"></span> 寄来了一封书信</p>
-    <p id="gift-preview-label" class="gift-preview-label" hidden>收信预览 · 还没有生成分享链接</p>
+    <p id="gift-arrival" class="gift-arrival" hidden><span id="arrival-sender"></span> <span data-ui="gift.arrivalSuffix">sent you a letter</span></p>
+    <p id="gift-preview-label" class="gift-preview-label" hidden data-ui="gift.previewLabel">Recipient preview · No sharing link yet</p>
     <div id="gift-scene" class="gift-scene" data-open="false" hidden>
       <div id="gift-waves" class="gift-waves" aria-hidden="true" data-waves="static"><canvas id="gift-waves-canvas" class="gift-waves-canvas"></canvas></div>
       <div id="gift-envelope-wrap" class="envelope-reveal">
         <section class="gift-envelope" aria-labelledby="envelope-title">
           <div class="envelope-back" aria-hidden="true"></div>
-          <div class="envelope-peek" aria-hidden="true"><span>见字如面</span></div>
+          <div class="envelope-peek" aria-hidden="true"><span data-ui="gift.peek">A note, just for you</span></div>
           <div class="envelope-flap" aria-hidden="true"></div>
           <div class="envelope-front" aria-hidden="true"></div>
           <svg class="envelope-folds" viewBox="0 0 720 425" preserveAspectRatio="none" aria-hidden="true"><path d="M3 2Q180 130 358 210Q540 131 717 3M3 422Q145 324 254 262M717 422Q578 324 465 263"/></svg>
           <div class="envelope-postmark" aria-hidden="true"><svg viewBox="0 0 190 100"><path d="M72 8C111 5 120 49 101 70C81 94 40 87 31 60C20 33 39 8 72 8ZM44 18C22 41 38 75 65 77C97 83 114 52 97 28M106 31Q128 21 146 31T184 30M108 44Q128 35 147 44T185 43M108 57Q130 47 148 57T187 56"/></svg><span lang="en">Leafhour</span><time id="envelope-date"></time></div>
           <div class="envelope-stamp" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg><small lang="en">Leafhour</small></div>
-          <div class="envelope-address"><p class="gift-eyebrow">致</p><h1 id="envelope-title"><span id="envelope-recipient">你</span></h1><p class="envelope-from"><span id="envelope-sender"></span> 寄</p></div>
-          <button id="gift-open" class="gift-open" type="button" aria-controls="gift-letter" aria-expanded="false"><span class="gift-seal" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="gift-open-label">拆开这封信</span></button>
-          <span class="envelope-colophon" aria-hidden="true">书与书之间</span>
+          <div class="envelope-address"><p class="gift-eyebrow" data-ui="gift.to">To</p><h1 id="envelope-title"><span id="envelope-recipient" data-ui="gift.you">You</span></h1><p class="envelope-from"><span data-ui="gift.from">From</span> <span id="envelope-sender"></span></p></div>
+          <button id="gift-open" class="gift-open" type="button" aria-controls="gift-letter" aria-expanded="false"><span class="gift-seal" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="gift-open-label" data-ui="gift.open">Open this letter</span></button>
+          <span class="envelope-colophon" aria-hidden="true" data-ui="gift.colophon">Between books</span>
         </section>
       </div>
       <div id="gift-letter-wrap" class="letter-reveal" aria-hidden="true" inert>
         <article id="gift-letter" class="gift-letter paper-frame" aria-labelledby="gift-title">
-          <div class="letter-topline"><span class="letter-mark" aria-hidden="true">Leafhour</span><button id="gift-close" type="button" aria-controls="gift-letter" aria-label="折起信笺">折起信笺 <span aria-hidden="true">⌃</span></button></div>
+          <div class="letter-topline"><span class="letter-mark" aria-hidden="true">Leafhour</span><button id="gift-close" type="button" aria-controls="gift-letter" aria-label="Fold the letter" data-ui-aria-label="gift.close"><span data-ui="gift.close">Fold the letter</span> <span aria-hidden="true">⌃</span></button></div>
           <p id="letter-salutation" class="letter-salutation"></p>
           <p id="gift-message" class="gift-message"></p>
           <figure id="gift-quote" class="letter-quote" hidden>
@@ -56,19 +56,19 @@
           </figure>
           <div class="gift-book">
             <div id="gift-cover" class="gift-cover" aria-hidden="true"></div>
-            <div class="gift-book-info"><p class="gift-eyebrow">送给你的这本书</p><h2 id="gift-title" tabindex="-1"></h2><p id="gift-original-title" class="gift-original-title"></p><p id="gift-author" class="gift-author"></p><p id="gift-description" class="gift-description"></p></div>
+            <div class="gift-book-info"><p class="gift-eyebrow" data-ui="gift.forYou">This book is for you</p><h2 id="gift-title" tabindex="-1"></h2><p id="gift-original-title" class="gift-original-title"></p><p id="gift-author" class="gift-author"></p><p id="gift-description" class="gift-description"></p></div>
           </div>
           <div class="letter-signature"><p id="letter-sender"></p><time id="gift-date"></time></div>
           <footer class="letter-footer">
             <span class="letter-fold-line" aria-hidden="true"></span>
-            <div class="gift-actions"><button id="gift-accept" class="gift-primary" type="button">放进我的书架 <span aria-hidden="true">↗</span></button><a id="gift-saved-read" class="gift-primary" hidden>打开这本书 <span aria-hidden="true">↗</span></a><a id="gift-download" class="gift-secondary" download="leafhour-reading-package.json">下载阅读包 <span aria-hidden="true">↓</span></a><a id="gift-public-read" class="gift-text-link" hidden>先读几页</a></div>
+            <div class="gift-actions"><button id="gift-accept" class="gift-primary" type="button"> <span data-ui="gift.accept">Add to my shelf</span> <span aria-hidden="true">↗</span></button><a id="gift-saved-read" class="gift-primary" hidden><span data-ui="gift.read">Open this book</span> <span aria-hidden="true">↗</span></a><a id="gift-download" class="gift-secondary" download="leafhour-reading-package.json"> <span data-ui="gift.download">Download reading package</span> <span aria-hidden="true">↓</span></a><a id="gift-public-read" class="gift-text-link" hidden data-ui="gift.readSample">Read a few pages</a></div>
             <p id="gift-action-status" class="gift-action-status" role="status" aria-live="polite"></p><p id="gift-download-status" class="gift-action-status" role="status" aria-live="polite"></p><p id="gift-package-scope" class="gift-package-scope"></p>
           </footer>
         </article>
       </div>
     </div>
-    <noscript><p class="gift-loading">请开启 JavaScript 以打开赠书信。</p></noscript>
+    <noscript><p class="gift-loading" data-ui="gift.noScript">Enable JavaScript to open the book letter.</p></noscript>
   </main>
-  <footer class="gift-site-footer"><a href="/" lang="en">Leafhour</a><span>书从一人，去往另一人。</span></footer>
+  <footer class="gift-site-footer"><a href="/" lang="en">Leafhour</a><span data-ui="gift.footer">A book, from one reader to another.</span></footer>
 </body>
 </html>

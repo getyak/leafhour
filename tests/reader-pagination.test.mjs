@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {normalizeAppearance,openingReadingPreferences} from '../app/reading-preferences.mjs';
+import {requestUiRoute} from '../app/ui-locale.mjs';
 const pagination=()=>import('../app/reader-pagination.mjs').catch(()=>({}));
+test.beforeEach(async()=>{await requestUiRoute('zh-Hans');});
 
 test('turning spreads includes the gutter and never creates a blank final spread',async()=>{
   const {pageGeometry}=await pagination();assert.equal(typeof pageGeometry,'function');
@@ -40,9 +42,9 @@ test('restoring a later page moves the viewport and retains only the reading anc
   const ids=['reading-pages','chapter-text','page-end','page-turner','page-previous','page-next','page-position','page-layout','page-layout-setting','page-layout-hint','book-page'];
   const nodes=new Map(ids.map(id=>[id,new Element()])),viewport=nodes.get('reading-pages'),text=nodes.get('chapter-text');
   viewport.getBoundingClientRect=()=>({left:0,right:viewport.clientWidth,top:100,bottom:600});text.scrollWidth=5160;
-  let gap=40,pitch=1040;const passages=Array.from({length:5},(_,i)=>{const node=new Element();node.dataset.id='p'+i;node.getClientRects=()=>[{left:i*pitch-viewport.scrollLeft,right:i*pitch-viewport.scrollLeft+450,top:100,bottom:400,height:300}];nodes.set('p'+i,node);return node;});
+  let gap=40,pitch=1040,geometryReads=0;const passages=Array.from({length:5},(_,i)=>{const node=new Element();node.dataset.id='p'+i;node.getClientRects=()=>[{left:i*pitch-viewport.scrollLeft,right:i*pitch-viewport.scrollLeft+450,top:100,bottom:400,height:300}];nodes.set('p'+i,node);return node;});
   text.querySelectorAll=()=>passages;text.contains=node=>passages.includes(node);
-  let resized,frame;const document=Object.assign(new EventTarget(),{body:{dataset:{}},activeElement:null,getElementById:id=>nodes.get(id),defaultView:{getComputedStyle:()=>({columnGap:String(gap),columnCount:'2'}),getSelection:()=>'',scrollTo(){},cancelAnimationFrame(){},requestAnimationFrame:callback=>{frame=callback;},ResizeObserver:class{constructor(callback){resized=callback;}observe(){}}}});
+  let resized,frame;const document=Object.assign(new EventTarget(),{body:{dataset:{}},activeElement:null,getElementById:id=>nodes.get(id),defaultView:{getComputedStyle:()=>{geometryReads++;return {columnGap:String(gap),columnCount:'2'};},getSelection:()=>'',scrollTo(){},cancelAnimationFrame(){},requestAnimationFrame:callback=>{frame=callback;},ResizeObserver:class{constructor(callback){resized=callback;}observe(){}}}});
   let turns=0;const pages=mountReaderPagination({document,onTurn:()=>turns++});pages.update({pageLayout:'spread',mode:'en'});
   pages.restore({passageId:'p2',offset:100,font:18,mode:'zh'});
   assert.equal(viewport.scrollLeft,2080);assert.equal(nodes.get('page-position').textContent,'双页 · 3 / 5');
@@ -60,4 +62,15 @@ test('restoring a later page moves the viewport and retains only the reading anc
   assert.equal(viewport.scrollLeft,540);assert.equal(pages.anchor().withinParagraph,1/3);
   assert.equal(typeof pages.revealRect,'function');pages.revealRect({left:550,top:150},'p1');
   assert.equal(viewport.scrollLeft,1080);assert.equal(pages.anchor().withinParagraph,2/3);
+  const anchor=pages.anchor(),reads=geometryReads,turnCount=turns,layout=nodes.get('page-layout').value;
+  await requestUiRoute('en');assert.equal(nodes.get('page-position').textContent,'Two pages · 3 / 5');
+  await requestUiRoute('ja');assert.equal(nodes.get('page-position').textContent,'見開き · 3 / 5');
+  await requestUiRoute('zh-Hant');assert.equal(nodes.get('page-position').textContent,'雙頁 · 3 / 5');
+  assert.equal(geometryReads,reads,'locale must not measure or reflow the chapter');assert.equal(turns,turnCount);
+  assert.deepEqual(pages.anchor(),anchor);assert.equal(viewport.scrollLeft,1080);assert.equal(nodes.get('page-layout').value,layout);
+  pages.unmount();const label=nodes.get('page-position').textContent;await requestUiRoute('en');assert.equal(nodes.get('page-position').textContent,label);
+  const beforeRemount=turns;let replacementTurns=0;
+  const replacement=mountReaderPagination({document,onTurn:()=>replacementTurns++});replacement.update({pageLayout:'spread',mode:'en'});
+  nodes.get('page-next').dispatchEvent(new Event('click'));assert.equal(replacementTurns,1);assert.equal(turns,beforeRemount,'the unmounted owner cannot turn or save progress again');
+  replacement.unmount();
 });

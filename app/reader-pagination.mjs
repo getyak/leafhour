@@ -1,3 +1,4 @@
+import {t,onUiLocaleChange} from './ui-locale.mjs';
 // Columns fragment the existing, selectable text. Paragraph IDs and content stay intact.
 export function pageGeometry({width,scrollWidth,gap,columns}){
   const step=width+gap;
@@ -19,13 +20,19 @@ export function pageKeyDirection(event,{blocked=false,selection=''}={}){
 
 export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{},onBoundary=()=>false,hasBoundary=()=>false}){
   const view=document.defaultView,viewport=document.getElementById('reading-pages'),text=document.getElementById('chapter-text'),end=document.getElementById('page-end'),controls=document.getElementById('page-turner'),previous=document.getElementById('page-previous'),next=document.getElementById('page-next'),label=document.getElementById('page-position');
-  let active=false,page=0,lastAnchor=null,resizeFrame,pointerFocus=false;
+  let active=false,page=0,lastAnchor=null,resizeFrame,pointerFocus=false,pageLabel=null,disposed=false;
+  const listeners=[];
+  const listen=(target,name,fn,options)=>{const owned=event=>{if(!disposed)fn(event);};target.addEventListener(name,owned,options);listeners.push(()=>target.removeEventListener(name,owned,options));};
+  // Locale publication reads only the last measured UI descriptor. Measuring
+  // columns or restoring anchors here would disturb an active text selection.
+  function updateLabels(){if(!disposed&&pageLabel)label.textContent=t(pageLabel.id,pageLabel.params);}
+  const offLocale=onUiLocaleChange(updateLabels);
   function geometry(){const style=view.getComputedStyle(text);return pageGeometry({width:viewport.clientWidth,scrollWidth:text.scrollWidth,gap:parseFloat(style.columnGap)||0,columns:Number(style.columnCount)||1});}
   function sync(){
     if(!active)return;const {step,count}=geometry();end.style.left=((count-1)*step+viewport.clientWidth-1)+'px';page=Math.max(0,Math.min(count-1,Math.round(viewport.scrollLeft/step)));
     previous.disabled=page===0&&!hasBoundary(-1);next.disabled=page===count-1&&!hasBoundary(1);
     const columns=Number(view.getComputedStyle(text).columnCount)||1;
-    label.textContent=(columns===2?'双页':'单页')+' · '+(page+1)+' / '+count;
+    pageLabel={id:columns===2?'reader.pages.spread':'reader.pages.single',params:{page:page+1,count}};updateLabels();
   }
   function visibleAnchor(){
     if(!active)return null;const bounds=viewport.getBoundingClientRect();
@@ -57,14 +64,14 @@ export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{
     if(text.contains(document.activeElement))document.getElementById('book-page').focus({preventScroll:true});
     onTurn();return true;
   }
-  previous.addEventListener('click',()=>turn(-1));next.addEventListener('click',()=>turn(1));
-  document.addEventListener('keydown',event=>{
+  listen(previous,'click',()=>turn(-1));listen(next,'click',()=>turn(1));
+  listen(document,'keydown',event=>{
     if(!active)return;const direction=pageKeyDirection(event,{blocked:isBlocked(event.target),selection:view.getSelection()?.toString()});
     if(direction){event.preventDefault();turn(direction);}
   });
-  viewport.addEventListener('scroll',()=>{if(active)sync();},{passive:true});
-  text.addEventListener('pointerdown',event=>{if(active){pointerFocus=true;try{event.target.closest('.passage')?.focus({preventScroll:true});}finally{pointerFocus=false;}}});
-  text.addEventListener('focusin',event=>{
+  listen(viewport,'scroll',()=>{if(active)sync();},{passive:true});
+  listen(text,'pointerdown',event=>{if(active){pointerFocus=true;try{event.target.closest('.passage')?.focus({preventScroll:true});}finally{pointerFocus=false;}}});
+  listen(text,'focusin',event=>{
     if(!active||pointerFocus||!event.target.matches('.passage'))return;
     const rects=[...event.target.getClientRects()],visible=visibleRect(event.target),index=visible?rects.findIndex(r=>r.left===visible.left&&r.top===visible.top):0;
     restore({passageId:event.target.dataset.id,...(visible?{offset:visible.top,withinParagraph:fragmentProgress(rects,index)}:{})});onTurn();
@@ -76,11 +83,13 @@ export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{
   return {
     get active(){return active;},anchor,restore,sync,visibleRect,revealRect,
     update(state){
+      if(disposed)return;
       const enabled=state.pageLayout==='spread'&&state.mode!=='parallel';
       if(enabled!==active){active=enabled;document.body.dataset.paginated=String(active);controls.hidden=!active;end.hidden=!active;viewport.scrollLeft=0;page=0;lastAnchor=null;if(active)view.scrollTo(0,0);}
       document.getElementById('page-layout').value=state.pageLayout;
       document.getElementById('page-layout-setting').hidden=state.mode==='parallel';document.getElementById('page-layout-hint').hidden=state.mode==='parallel';sync();
     },
-    last(){if(!active)return;sync();viewport.scrollLeft=(geometry().count-1)*geometry().step;sync();lastAnchor=visibleAnchor();}
+    last(){if(!active)return;sync();viewport.scrollLeft=(geometry().count-1)*geometry().step;sync();lastAnchor=visibleAnchor();},
+    unmount(){if(disposed)return;disposed=true;active=false;offLocale();observer.disconnect?.();view.cancelAnimationFrame(resizeFrame);for(const release of listeners)release();listeners.length=0;}
   };
 }
