@@ -16,6 +16,7 @@ import {safeLibraryReturn} from './library-view-state.mjs';
 import {otherOverlayOpen,focusableTrigger} from './popover-controls.mjs';
 import {registerDialogFocusOwner} from './interaction-craft.mjs';
 import {t,uiHref,getUiLocale,onUiLocaleChange,uiReady,bindUi} from './ui-locale.mjs';
+const defaultUi={t,uiHref,getUiLocale,onUiLocaleChange,uiReady,bindUi};
 
 export const HOME_NAV_ROUTES=Object.freeze(['/','/en','/zh-hans','/zh-hant','/ja']);
 export const HOME_MENU_CLOSE_REASONS=Object.freeze(['user','navigation','auth-handoff','palette-handoff','breakpoint']);
@@ -29,6 +30,7 @@ const appearanceMenuOpen=document=>{const menu=document?.getElementById?.('site-
 
 export function mountHomeNavigation({
   document=globalThis.document,
+  ui=defaultUi,
   getSession=()=>null,
   getBooks=()=>[],
   getOwner=()=>null,
@@ -37,6 +39,7 @@ export function mountHomeNavigation({
   matchMedia=globalThis.matchMedia?.bind?.(globalThis),
   requestAnimationFrame=fn=>globalThis.requestAnimationFrame(fn),
 }={}){
+  const {t,uiHref,getUiLocale,onUiLocaleChange,uiReady,bindUi}=ui;
   const dialog=document?.getElementById?.('home-menu');
   const trigger=document?.getElementById?.('home-menu-trigger');
   if(!dialog||!trigger)return null;

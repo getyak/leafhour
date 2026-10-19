@@ -187,7 +187,18 @@ export function createUiLocale({
     const template=catalogue[id]??englishData[id];
     return formatUiMessage(template==null?id:template,params);
   };
-  const uiHref=url=>withUiParam(url,state.effective);
+  // Authored pages already display their route language before the first
+  // catalogue settles. Keep early navigation in that language without treating
+  // temporary English data as a committed choice. Once settled (including
+  // fallback), later pending requests always retain the effective language.
+  const getUiNavigationLocale=()=>{
+    if(!firstSettled&&(generation===0||state.phase==='pending')){
+      const route=classifyUiRoute(uiNavigationContext(String(getLocation().href||'')).pathname);
+      if(route.kind!=='canonical')return route.code;
+    }
+    return state.effective;
+  };
+  const uiHref=url=>withUiParam(url,getUiNavigationLocale());
   const readPreference=()=>{
     try{return isUiLocale(storage?.getItem?.(UI_PREFERENCE_KEY))?storage.getItem(UI_PREFERENCE_KEY):null;}catch{return null;}
   };
@@ -358,6 +369,7 @@ export function createUiLocale({
     bindUi,
     uiHref,
     getUiLocale:()=>state.effective,
+    getUiNavigationLocale,
     getRequestedUiLocale:()=>state.requested,
     getUiLocaleState:snapshot,
     readUiParam,
@@ -461,6 +473,7 @@ export const uiLocale=createUiLocale({
 export const t=(id,params)=>uiLocale.t(id,params);
 export const createUiLabels=(translate=t)=>uiLocale.createUiLabels(translate);
 export const getUiLocale=()=>uiLocale.getUiLocale();
+export const getUiNavigationLocale=()=>uiLocale.getUiNavigationLocale();
 export const getUiLocaleState=()=>uiLocale.getUiLocaleState();
 export const setUiLocale=code=>uiLocale.setUiLocale(code);
 export const onUiLocaleChange=fn=>uiLocale.onUiLocaleChange(fn);
