@@ -2,6 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {requestUiRoute,t,getUiLocale,createUiLocale} from '../app/ui-locale.mjs';
+import jaCatalogue from '../app/ui-catalogs/ja.mjs';
+import hansCatalogue from '../app/ui-catalogs/zh-Hans.mjs';
+import hantCatalogue from '../app/ui-catalogs/zh-Hant.mjs';
+const catalogues={ja:jaCatalogue,'zh-Hans':hansCatalogue,'zh-Hant':hantCatalogue};
 import {parse} from 'acorn';
 import vm from 'node:vm';
 import {authReturnTarget} from '../app/library-view-state.mjs';
@@ -516,7 +520,7 @@ test('owned hero, sample and footer links retain locale without rebuilding body 
 
 for(const code of ['ja','zh-Hans','zh-Hant'])for(const outcome of ['success','failure'])test(`authored ${code} links survive the initial pending catalogue, then follow ${outcome} settlement and retry`,async()=>{
  let resolve,reject;const pending=new Promise((a,b)=>{resolve=a;reject=b;});let retry=false;
- const catalogue=(await import('../app/ui-catalogs/'+code+'.mjs')).default;
+ const catalogue=catalogues[code];
  const runtime=createUiLocale({getLocation:()=>({href:'https://leafhour.com/'+({ja:'ja','zh-Hans':'zh-hans','zh-Hant':'zh-hant'}[code])}),loadCatalogue:()=>retry?Promise.resolve(catalogue):pending});
  const initial=runtime.initializeOnce(),targets=['/library?ui='+code,'/read?book=literal%2Fid&ui='+code+'#source','https://example.test/read?ui=literal','/api/export?signature=literal'];
  const f=menuFixture({user:{id:'a'},books:[currentBook()],authoredLang:code,extraLinks:targets,ui:runtime});f.menu.update({owner:'guest',revision:0});
@@ -535,7 +539,7 @@ for(const code of ['ja','zh-Hans','zh-Hant'])for(const outcome of ['success','fa
 });
 
 test('disposing an authored home during first load fences late successful settlement',async()=>{
- let resolve;const pending=new Promise(r=>resolve=r),catalogue=(await import('../app/ui-catalogs/ja.mjs')).default;
+ let resolve;const pending=new Promise(r=>resolve=r),catalogue=jaCatalogue;
  const runtime=createUiLocale({getLocation:()=>({href:'https://leafhour.com/ja'}),loadCatalogue:()=>pending});const initial=runtime.initializeOnce();
  const f=menuFixture({authoredLang:'ja',extraLinks:['/library?ui=ja'],ui:runtime});const href=f.bodyLinks[0].getAttribute('href'),label=f.trigger.getAttribute('aria-label');f.menu.dispose();resolve(catalogue);await initial;await runtime.uiReady;await Promise.resolve();assert.equal(f.bodyLinks[0].getAttribute('href'),href);assert.equal(f.trigger.getAttribute('aria-label'),label);
 });
