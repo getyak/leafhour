@@ -1,4 +1,4 @@
-import {t,onUiLocaleChange,uiReady,uiHref,getUiLocale} from './ui-locale.mjs';
+import {t,onUiLocaleChange,uiReady,uiHref,getUiNavigationLocale} from './ui-locale.mjs';
 import {uiAuthoredPath} from './ui-locale-codec.mjs';
 import {createPaletteLibrary} from './palette-library.mjs';
 import {readingBookUrl} from './library-workspace.mjs';
@@ -35,7 +35,7 @@ const matches=(label,query)=>!query||fold(label).includes(fold(query));
 // Settings and calendar destinations are produced by the exact GET-179 owned
 // view codec and validated by its safe return codec; unknown keys never ride.
 export function paletteLibraryUrl(overlay){
-  const target='/library'+writeLibraryView('',{view:libraryViewDefaults(),overlay:overlay||null,ui:getUiLocale()});
+  const target='/library'+writeLibraryView('',{view:libraryViewDefaults(),overlay:overlay||null,ui:getUiNavigationLocale()});
   return safeLibraryReturn(target)||'/library';
 }
 
@@ -48,7 +48,7 @@ export function paletteCommands(page,adapter=null,navigate=url=>location.assign(
     {id:'library',label:PALETTE_LABELS.library,handoff:true,run:()=>navigate(uiHref('/library'))},
     {id:'settings',label:PALETTE_LABELS.settings,handoff:true,run:()=>navigate(paletteLibraryUrl({kind:'settings',tab:'appearance'}))},
     {id:'calendar',label:PALETTE_LABELS.calendar,handoff:true,run:()=>navigate(paletteLibraryUrl({kind:'calendar'}))},
-    {id:'home',label:PALETTE_LABELS.home,handoff:true,run:()=>navigate(uiAuthoredPath('/',getUiLocale()))}
+    {id:'home',label:PALETTE_LABELS.home,handoff:true,run:()=>navigate(uiAuthoredPath('/',getUiNavigationLocale()))}
   ];
   const appearance=adapter?.appearance;
   if(page==='reader'){

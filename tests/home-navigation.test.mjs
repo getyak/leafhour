@@ -1,8 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {requestUiRoute,t,getUiLocale} from '../app/ui-locale.mjs';
+import {requestUiRoute,t,getUiLocale,createUiLocale} from '../app/ui-locale.mjs';
 import {parse} from 'acorn';
+import vm from 'node:vm';
+import {authReturnTarget} from '../app/library-view-state.mjs';
 const mounted=[];test.afterEach(async()=>{for(const menu of mounted.splice(0))menu.dispose();await requestUiRoute('en');});
 import {mountHomeNavigation,isHomeNavRoute,HOME_NAV_ROUTES,HOME_MENU_CLOSE_REASONS} from '../app/home-navigation.mjs';
 
@@ -116,8 +118,8 @@ class Doc{
     return node;
   }
 }
-function menuFixture({user=null,books=[],owner={owner:'guest',revision:0},getOwner=null,extraLinks=[]}={}){
-  const document=new Doc(),raf=[];
+function menuFixture({user=null,books=[],owner={owner:'guest',revision:0},getOwner=null,extraLinks=[],ui,authoredLang}={}){
+  const document=new Doc(),raf=[];if(authoredLang)document.documentElement.lang=authoredLang;
   const header=document.createElement('header');header.className='site-header';document.body.append(header);
   const brand=document.createElement('a');brand.className='brand';brand.setAttribute('href','/');header.append(brand);
   const nav=document.createElement('nav');nav.className='home-navigation';header.append(nav);
@@ -150,7 +152,7 @@ function menuFixture({user=null,books=[],owner={owner:'guest',revision:0},getOwn
   const calls={auth:0,palette:[],books:0,identity:0};
   let session={user},current={...owner};
   const menu=mountHomeNavigation({
-    document,
+    document,ui,
     getSession:()=>{calls.identity++;return session;},
     getBooks:()=>{calls.books++;return books;},
     getOwner:getOwner||(()=>({...current})),
@@ -510,4 +512,30 @@ test('owned hero, sample and footer links retain locale without rebuilding body 
     }
     assert.deepEqual(f.calls,calls,'language commits do not read identity/books or open other features');
   }
+});
+
+for(const code of ['ja','zh-Hans','zh-Hant'])for(const outcome of ['success','failure'])test(`authored ${code} links survive the initial pending catalogue, then follow ${outcome} settlement and retry`,async()=>{
+ let resolve,reject;const pending=new Promise((a,b)=>{resolve=a;reject=b;});let retry=false;
+ const catalogue=(await import('../app/ui-catalogs/'+code+'.mjs')).default;
+ const runtime=createUiLocale({getLocation:()=>({href:'https://leafhour.com/'+({ja:'ja','zh-Hans':'zh-hans','zh-Hant':'zh-hant'}[code])}),loadCatalogue:()=>retry?Promise.resolve(catalogue):pending});
+ const initial=runtime.initializeOnce(),targets=['/library?ui='+code,'/read?book=literal%2Fid&ui='+code+'#source','https://example.test/read?ui=literal','/api/export?signature=literal'];
+ const f=menuFixture({user:{id:'a'},books:[currentBook()],authoredLang:code,extraLinks:targets,ui:runtime});f.menu.update({owner:'guest',revision:0});
+ const context={uiHref:runtime.uiHref,ownedLinks:new Set()};vm.createContext(context);const owned=portalAst.body.find(n=>n.type==='FunctionDeclaration'&&n.id.name==='ownedHref');vm.runInContext(portalSource.slice(owned.start,owned.end)+';this.link=ownedHref;',context);const generated=f.document.createElement('a');context.link(generated,'/read?book=literal%2Fid');assert.equal(generated.href,'/read?book=literal%2Fid&ui='+code);
+ const auth=portalAst.body.find(n=>n.declarations?.some(d=>d.id.name==='authDialog')).declarations[0].init.arguments[0].properties.find(p=>p.key.name==='getReturnTo').value;const login=vm.runInNewContext('('+portalSource.slice(auth.start,auth.end)+')',{authReturnTarget,pendingUpload:false,returnToReader:null,returnToLibrary:null,currentLibraryReturn:()=>'/library',getUiNavigationLocale:runtime.getUiNavigationLocale});assert.equal(login(),'/library?ui='+code);
+ assert.equal(runtime.getUiLocaleState().phase,'pending');assert.equal(runtime.getUiLocale(),'en');
+ assert.equal(f.bodyLinks[0].getAttribute('href'),targets[0]);assert.equal(f.bodyLinks[1].getAttribute('href'),targets[1]);
+ assert.equal(f.account.getAttribute('href'),'/library?settings=account&ui='+code);assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui='+code);assert.equal(f.links.querySelector('a').getAttribute('href'),'/library?ui='+code);
+ const calls={...f.calls},nodes=[...f.bodyLinks];f.trigger.click();f.search.focus();
+ if(outcome==='failure')reject(Error('synthetic catalogue failure'));else resolve(catalogue);
+ await initial;await runtime.uiReady;await Promise.resolve();
+ const effective=outcome==='success'?code:'en';context.link(generated,'/read?book=literal%2Fid');assert.equal(generated.href,'/read?book=literal%2Fid&ui='+effective);assert.equal(login(),'/library?ui='+effective);assert.equal(runtime.getUiLocale(),effective);assert.equal(f.bodyLinks[0].getAttribute('href'),'/library?ui='+effective);assert.equal(f.account.getAttribute('href'),'/library?settings=account&ui='+effective);
+ assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui='+effective);assert.equal(f.links.querySelector('a').getAttribute('href'),'/library?ui='+effective);
+ if(outcome==='failure'){retry=true;await runtime.retryUiLocale();assert.equal(f.bodyLinks[0].getAttribute('href'),targets[0]);assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui='+code);}
+ assert.equal(f.bodyLinks[2].getAttribute('href'),targets[2]);assert.equal(f.bodyLinks[3].getAttribute('href'),targets[3]);assert.deepEqual(f.bodyLinks,nodes);assert.equal(f.document.activeElement,f.search);assert.equal(f.dialog.open,true);assert.deepEqual(f.calls,calls);
+});
+
+test('disposing an authored home during first load fences late successful settlement',async()=>{
+ let resolve;const pending=new Promise(r=>resolve=r),catalogue=(await import('../app/ui-catalogs/ja.mjs')).default;
+ const runtime=createUiLocale({getLocation:()=>({href:'https://leafhour.com/ja'}),loadCatalogue:()=>pending});const initial=runtime.initializeOnce();
+ const f=menuFixture({authoredLang:'ja',extraLinks:['/library?ui=ja'],ui:runtime});const href=f.bodyLinks[0].getAttribute('href'),label=f.trigger.getAttribute('aria-label');f.menu.dispose();resolve(catalogue);await initial;await runtime.uiReady;await Promise.resolve();assert.equal(f.bodyLinks[0].getAttribute('href'),href);assert.equal(f.trigger.getAttribute('aria-label'),label);
 });
