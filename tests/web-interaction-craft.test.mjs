@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {pointOutside,tabDestination,mountInteractionCraft} from '../app/interaction-craft.mjs';
+import {pointOutside,tabDestination,mountInteractionCraft,registerDialogFocusOwner,dialogFocusOwner} from '../app/interaction-craft.mjs';
 
 const rect={left:30,right:330,top:40,bottom:440};
 test('modal backdrop accepts all four sides while retaining the boundary',()=>{
@@ -50,4 +50,28 @@ test('a nonmodal companion does not block another closed dialog from restoring f
 test('an actual remaining modal retains focus rather than restoring focus behind it',()=>{
  const opener={id:'library-account',isConnected:true,closest:()=>null,getClientRects:()=>[rect],focus(){this.focused=true;}};
  const {dialog,dispatch}=fixture({fallback:[opener],openDialogs:[{modal:true}]});dispatch('close',dialog);assert.notEqual(opener.focused,true);
+});
+
+test('an explicit per-dialog focus owner keeps its own return and the generic close RAF never competes',()=>{
+ const opener={id:'library-account',isConnected:true,closest:()=>null,getClientRects:()=>[rect],focus(){this.focused=true;}};
+ const {dialog,dispatch}=fixture({fallback:[opener]});
+ assert.equal(dialogFocusOwner(dialog),null,'an unowned dialog starts with the shared behavior');
+ const release=registerDialogFocusOwner(dialog,'home-menu');
+ assert.equal(dialogFocusOwner(dialog),'home-menu');
+ dispatch('close',dialog);
+ assert.equal(opener.focused,undefined,'the generic close RAF must not restore focus for a registered owner');
+ release();
+ assert.equal(dialogFocusOwner(dialog),null,'release returns the dialog to the shared behavior');
+ dispatch('close',dialog);
+ assert.equal(opener.focused,true,'unregistered dialogs keep the original shared focus return');
+});
+
+test('focus-owner release only clears its own registration',()=>{
+ const {dialog,dispatch}=fixture({fallback:[]});
+ const stale=registerDialogFocusOwner(dialog,'first');
+ registerDialogFocusOwner(dialog,'second');
+ stale();
+ assert.equal(dialogFocusOwner(dialog),'second','an older release cannot unregister a newer owner');
+ dispatch('close',dialog);
+ assert.equal(dialogFocusOwner(dialog),'second');
 });

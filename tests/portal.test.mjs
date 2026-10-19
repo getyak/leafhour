@@ -77,6 +77,13 @@ test('portal serves home, imports private text after explicit local entry, guard
   const base='http://127.0.0.1:'+server.address().port;
   const post=(url,data,cookie='',origin=base)=>fetch(base+url,{method:'POST',headers:{'Content-Type':'application/json',Origin:origin,Cookie:cookie},body:JSON.stringify(data)});
   assert.match(await (await fetch(base+'/')).text(),/home-hero/);
+  const home=await (await fetch(base+'/')).text();
+  assert.match(home,/id="home-menu"/,'the authored home ships the one menu sheet');
+  assert.match(home,/id="home-menu-trigger"/);
+  for(const asset of ['/home-navigation.mjs','/home-navigation.css']){
+    const response=await fetch(base+asset);assert.equal(response.status,200,asset+' is registered in the self-hosted static map');
+    assert.match(response.headers.get('content-type'),asset.endsWith('.css')?/text\/css/:/javascript/);
+  }
   const privacy=await fetch(base+'/privacy');assert.equal(privacy.status,200);assert.match(privacy.headers.get('content-type'),/text\/html/);assert.match(await privacy.text(),/Sign-in and personal data/);
   assert.match(await (await fetch(base+'/zh-hans/privacy')).text(),/登录与个人数据/);
   assert.match(await (await fetch(base+'/ja/privacy')).text(),/ログインと個人データ/);

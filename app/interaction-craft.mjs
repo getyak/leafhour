@@ -10,10 +10,22 @@ export function tabDestination(key, index, length) {
   if (key === 'ArrowLeft' || key === 'ArrowUp') return (index + length - 1) % length;
   return null;
 }
+// GET-188 explicit per-dialog focus ownership. A dialog that owns its own focus
+// return (the authored-home menu sheet) registers its owner token here, so this
+// module's generic close RAF never competes with the registered return path.
+// Unregistered dialogs keep the original shared behaviour exactly.
+const dialogFocusOwners = new WeakMap();
+export function registerDialogFocusOwner(dialog, owner) {
+  if (!dialog) return () => {};
+  const token = owner === undefined ? true : owner;
+  dialogFocusOwners.set(dialog, token);
+  return () => { if (dialogFocusOwners.get(dialog) === token) dialogFocusOwners.delete(dialog); };
+}
+export const dialogFocusOwner = dialog => (dialog ? dialogFocusOwners.get(dialog) ?? null : null);
 export function mountInteractionCraft(document) {
   const win = document.defaultView, openers = new WeakMap(), gestures = new WeakMap(), mounted = new WeakSet();
-  const visible = node => node?.isConnected && !node.closest('[hidden], [inert]') && node.getClientRects().length;
-  const fallback = () => [...document.querySelectorAll('#library-menu, #exit-focus, #library-account, #library-settings, #account-button, #book-page')].find(visible);
+  const visible = node => node?.isConnected && !node.closest('[hidden],[inert]') && node.getClientRects().length;
+  const fallback = () => [...document.querySelectorAll('#library-menu,#exit-focus,#library-account,#library-settings,#account-button,#book-page')].find(visible);
   function syncDialog(dialog, open = dialog.open) {
     if (!dialog.id) return;
     for (const trigger of document.querySelectorAll('[aria-controls="' + dialog.id + '"]')) if (trigger.hasAttribute('aria-expanded')) trigger.setAttribute('aria-expanded', String(open));
@@ -38,6 +50,8 @@ export function mountInteractionCraft(document) {
     dialog.addEventListener('close', () => {
       syncDialog(dialog, false);
       const opener = openers.get(dialog); gestures.delete(dialog);
+      // A registered focus owner owns this dialog's return path outright.
+      if (dialogFocusOwners.has(dialog)) return;
       win.requestAnimationFrame(() => {
         if (document.querySelector('dialog:modal') || visible(document.activeElement) && document.activeElement !== document.body && !dialog.contains(document.activeElement)) return;
         const target = visible(opener) && !opener.disabled ? opener : fallback();

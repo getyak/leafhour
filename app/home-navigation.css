@@ -1,0 +1,28 @@
+/* GET-188 authored-home mobile navigation (GET-189 keeps the final touch-target
+   and fixed-pill audit). At <=1100px the authored home header keeps the brand,
+   the existing appearance button and one quiet 44px pill menu trigger; the
+   original single-line navigation returns at 1101px. The menu itself is one
+   full-height native dialog sheet: existing paper/night tokens, a serif title,
+   hairline rows at least 48px tall, the shared focus ring and reduced motion.
+   The sheet restores display of its cloned .home-nav anchors, so the old 700px
+   home-nav hiding rule can never hide the sheet's own links. */
+.home-menu-trigger{display:none}
+.home-menu-sheet{position:fixed;inset:0;width:100%;max-width:none;height:100dvh;max-height:100dvh;margin:0;padding:0;border:0;border-radius:0;background:var(--paper);color:var(--ink);box-shadow:none;overflow:auto;overscroll-behavior:contain}
+.home-menu-sheet::backdrop{background:color-mix(in srgb,var(--ink,#263b32) 34%,transparent)}
+.home-menu-sheet h2{font:400 26px/1.4 var(--serif);letter-spacing:var(--track-heading);margin:0;padding:28px 24px 12px}
+.home-menu-rows,.home-menu-links{display:flex;flex-direction:column}
+.home-menu-row,.home-menu-links a,.home-menu-sheet .home-nav{display:flex;align-items:center;gap:14px;width:100%;min-height:48px;padding:14px 24px;border:0;border-bottom:1px solid var(--line-hairline);background:none;color:var(--ink);font-size:16px;line-height:1.5;text-align:left}
+.home-menu-resume{flex-wrap:wrap}
+.home-menu-resume-label{width:100%;font-size:12px;color:var(--muted);letter-spacing:var(--track-label)}
+.home-menu-resume-title{font:400 18px/1.5 var(--serif)}
+.home-menu-resume-author{font-size:12px;color:var(--muted)}
+.home-menu-languages{display:flex;flex-direction:column;padding:12px 24px 32px}
+.home-menu-languages .home-languages{display:flex;flex-direction:column;gap:0;font-size:15px}
+.home-menu-languages .home-languages a{min-height:48px;display:flex;align-items:center;border-bottom:1px solid var(--line-hairline)}
+.home-menu-languages .home-languages a+a:before{content:none}
+@media(max-width:1100px){
+  body:not(.library-page)>.site-header .home-navigation,
+  body:not(.library-page)>.site-header>#account-button{display:none}
+  body:not(.library-page)>.site-header .home-menu-trigger{display:inline-flex;align-items:center;justify-content:center;min-height:44px;flex:none;margin-left:0;padding:0 16px;border:1px solid var(--line-hairline);border-radius:var(--action-radius);background:transparent;color:var(--ink);font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){.home-menu-sheet,.home-menu-sheet *,.home-menu-trigger{transition:none;animation:none}}

@@ -254,3 +254,19 @@ dialog .status:empty { display: none; }
 
 /* Keep the privacy document in the external stylesheet allowed by the site policy. */
 .privacy-document{max-width:760px;margin:64px auto 88px;padding:0 24px;font-size:17px;line-height:1.85}.privacy-document h1{font-size:clamp(32px,6vw,46px);line-height:1.3;margin:12px 0 22px}.privacy-document h2{font-size:23px;margin:38px 0 12px}.privacy-document p{margin:12px 0}.privacy-document a{text-decoration:underline;text-underline-offset:4px}.privacy-date{font-size:14px;color:var(--muted)}.privacy-document .eyebrow{font-size:12px}.privacy-document address{font-style:normal}@media(max-width:600px){.privacy-document{margin-top:36px}.privacy-page .site-header{gap:16px}.privacy-page .site-header nav{display:block}}
+
+/* GET-188 shared palette failure feedback (scope amendment). The palette
+   bootstrap's notice, its retry control and the final manually activated page
+   reload fallback stay in the open viewport with the existing paper/night
+   tokens: readable at 390px and desktop widths, never focused programmatically,
+   never a new modal, and never above one. Shared here because home, library and
+   reader pages all load this stylesheet — including while the lazy palette
+   module itself failed to load. */
+.palette-notice{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:var(--popover-layer,120);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 14px;max-width:calc(100vw - 32px);margin:0;padding:12px 16px;border:1px solid var(--line-hairline);border-radius:var(--action-radius,999px);background:var(--paper,#faf9f4);color:var(--ink,#263b32);box-shadow:var(--shadow-popover);font-size:13px;line-height:1.6}
+.palette-notice[hidden]{display:none}
+.palette-notice button{min-height:44px;padding:8px 16px;border:1px solid var(--line-control,#cfd2c6);border-radius:var(--action-radius,999px);background:transparent;color:var(--ink,#263b32);font-size:13px;line-height:1.4;cursor:pointer}
+.palette-notice button[hidden]{display:none}
+.palette-notice button:hover{background:var(--surface,#edf0e7)}
+.palette-notice .palette-retry{font-weight:600}
+@media(max-width:480px){.palette-notice{left:16px;right:16px;bottom:16px;transform:none;justify-content:flex-start}}
+@media(prefers-reduced-motion:reduce){.palette-notice{transition:none;animation:none}}

@@ -57,9 +57,26 @@ export function paletteCommands(page,adapter=null,navigate=url=>location.assign(
 
 export function openCommandPalette({document=globalThis.document,page='home',adapter=null,navigate=url=>location.assign(url),request=fetch,getOwner=null,opener=null,library=null,fullscreen=null}={}){
   const owner=getOwner??adapter?.getOwner??null;
-  const books=library||createPaletteLibrary({request,getOwner:owner,subscribe:adapter?.subscribe});
-  books.watch?.(()=>refresh());
-  if(!document.getElementById('command-palette')&&document.head?.append){const link=document.createElement('link');link.rel='stylesheet';link.href='/command-palette.css';document.head.append(link);}
+  // GET-188 one real transaction boundary: a setup that throws anywhere rolls
+  // back only this call's own partial DOM and listeners, so a retried open can
+  // never inherit a poisoned half-built palette or stack a second controller.
+  const created=[];let unwatch=null,ownedLibrary=null;
+  try{
+    return build();
+  }catch(error){
+    // Owned cleanup stays secondary to the original failure: DOM, listeners and
+    // the watcher roll back, and a library this factory created itself is
+    // disposed (subscription released, global instance removed). An externally
+    // injected library keeps its own ownership and is never disposed here.
+    for(const node of created)node.remove?.();
+    try{unwatch?.();}catch{}
+    try{ownedLibrary?.dispose?.();}catch{}
+    throw error;
+  }
+  function build(){
+  const books=library||(ownedLibrary=createPaletteLibrary({request,getOwner:owner,subscribe:adapter?.subscribe}));
+  unwatch=books.watch?.(()=>refresh())??null;
+  if(!document.getElementById('command-palette')&&document.head?.append){const link=document.createElement('link');link.rel='stylesheet';link.href='/command-palette.css';created.push(link);document.head.append(link);}
   let dialog=document.getElementById('command-palette');
   if(!dialog){
     dialog=document.createElement('dialog');dialog.id='command-palette';dialog.className='command-palette';dialog.setAttribute('aria-label',PALETTE_TEXT.title);
@@ -68,6 +85,7 @@ export function openCommandPalette({document=globalThis.document,page='home',ada
     const list=document.createElement('ul');list.id='command-palette-list';list.setAttribute('role','listbox');list.setAttribute('aria-label',PALETTE_TEXT.title);
     const close=document.createElement('button');close.type='button';close.className='command-palette-close';close.setAttribute('aria-label',PALETTE_TEXT.close);close.textContent='×';
     dialog.append(close,input,status,list);
+    created.push(dialog);
     document.body?.append?.(dialog);
     dialog.addEventListener('cancel',event=>{event.preventDefault();closePalette({restoreFocus:true});});
     close.addEventListener('click',()=>closePalette({restoreFocus:true}));
@@ -130,4 +148,5 @@ export function openCommandPalette({document=globalThis.document,page='home',ada
   }
   refresh();
   return {dialog,open,close:closePalette,refresh};
+  }
 }

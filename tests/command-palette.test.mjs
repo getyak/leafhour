@@ -27,7 +27,43 @@ function fixture(){
   const doc=new EventTarget();doc.createElement=tag=>new Element(tag,doc);doc.body=doc.createElement('body');doc.activeElement=doc.body;
   const all=n=>[n,...n.children.flatMap(all)];doc.getElementById=id=>all(doc.body).find(n=>n.id===id)||null;
   doc.querySelectorAll=selector=>all(doc.body).filter(n=>selector==='.command-palette'?n.className.split(' ').includes('command-palette'):selector==='[data-palette-keycap]'?n.dataset.paletteKeycap!==undefined:selector==='[data-palette-open]'?n.dataset.paletteOpen!==undefined:selector==='[role=option]'?n.getAttribute('role')==='option':selector==='[role="status"]'?n.getAttribute('role')==='status':selector==='[data-palette-open],[data-palette-keycap]'?(n.dataset.paletteOpen!==undefined||n.dataset.paletteKeycap!==undefined):false);
-  doc.querySelector=selector=>{if(String(selector).includes(':popover-open'))throw Error('unsupported selector: '+selector);return null;};
+  // Minimal truthful compound/descendant matching so production selectors like
+  // overlayOpen's safe marker query and the brand fallback resolve real nodes.
+  const matchToken=(node,token)=>{
+    if(String(token).includes(':popover-open'))throw Error('unsupported selector: '+token);
+    const parsed=/^([a-zA-Z][\w-]*)?((?:[#.][\w-]+|\[[^\]]+\])*)$/.exec(token);
+    if(!parsed)return false;
+    const [,tag,rest]=parsed;
+    if(tag&&node.tagName!==tag.toUpperCase())return false;
+    for(const piece of rest.match(/[#.][\w-]+|\[[^\]]+\]/g)||[]){
+      if(piece.startsWith('#')){if(node.id!==piece.slice(1))return false;}
+      else if(piece.startsWith('.')){if(!node.className.split(/\s+/).includes(piece.slice(1)))return false;}
+      else{
+        const [,key,value]=/^\[([\w-]+)(?:=([^\]]*))?\]$/.exec(piece)||[];
+        if(key==='open'&&value===undefined){if(!(node.open===true||node.hasAttribute('open')))return false;continue;}
+        if(value===undefined){if(!node.hasAttribute(key))return false;}
+        else if(node.getAttribute(key)!==value.replace(/^["']|["']$/g,''))return false;
+      }
+    }
+    return true;
+  };
+  doc.querySelector=selector=>{
+    if(String(selector).includes(':popover-open'))throw Error('unsupported selector: '+selector);
+    for(const part of String(selector).split(',')){
+      const chain=part.trim().split(/\s+/);
+      for(const node of all(doc.body)){
+        if(!matchToken(node,chain[chain.length-1]))continue;
+        let ancestor=node.parentElement,matched=true;
+        for(let index=chain.length-2;index>=0;index--){
+          let found=false;
+          while(ancestor){if(matchToken(ancestor,chain[index])){found=true;ancestor=ancestor.parentElement;break;}ancestor=ancestor.parentElement;}
+          if(!found){matched=false;break;}
+        }
+        if(matched)return node;
+      }
+    }
+    return null;
+  };
   return doc;
 }
 const key=(target,init={})=>{const event=new Event('keydown',{cancelable:true,bubbles:true});Object.assign(event,{key:'k',isComposing:false,keyCode:0,...init});Object.defineProperty(event,'target',{value:target});return event;};
@@ -185,7 +221,8 @@ test('a failed palette import is visible, safe and retried on the next gesture',
   const doc=fixture();doc.body.dataset.palettePage='home';
   const opener=doc.createElement('button');opener.dataset.paletteOpen='';doc.body.append(opener);
   let attempts=0;const opens=[];
-  const tools=mountPaletteBootstrap({document:doc,navigator:{userAgentData:{platform:'macOS'}},matchMedia:()=>({matches:true}),loadPalette:async()=>{attempts++;if(attempts===1)throw Error('module unavailable');return {openCommandPalette:()=>({open:at=>opens.push(at)})};}});
+  const load=async()=>{attempts++;if(attempts===1)throw Error('module unavailable');return {openCommandPalette:()=>({open:at=>opens.push(at)})};};
+  const tools=mountPaletteBootstrap({document:doc,navigator:{userAgentData:{platform:'macOS'}},matchMedia:()=>({matches:true}),loadPalette:load,loadRetry:load});
   opener.click();await flush();
   assert.deepEqual(opens,[],'a failed import cannot open the dialog');
   const notice=doc.querySelectorAll('[role="status"]').find(node=>node.textContent.includes('命令面板'));
@@ -317,4 +354,288 @@ test('generated home and library shells carry palette hosts for the self-mount g
   const home=fixture();const homeButton=entry(home);homeButton.dataset.paletteOpen='';home.body.append(homeButton);
   assert.equal(palettePageFor(home),'home');
   const bare=fixture();assert.equal(paletteHasHost(bare),false,'a page without a palette host does not self-mount');
+});
+
+// ---- GET-188: explicit palette:open port, delayed-import fences, corrected setup-retry regression ----
+const bootstrapFixture=({loadPalette,loadRetry=loadPalette,adapter=undefined}={})=>{
+  const doc=fixture();doc.body.dataset.palettePage='home';
+  const opener=doc.createElement('button');opener.dataset.paletteOpen='';doc.body.append(opener);
+  const tools=mountPaletteBootstrap({document:doc,adapter,navigator:{userAgentData:{platform:'macOS'}},matchMedia:()=>({matches:true}),loadPalette,loadRetry});
+  return {doc,opener,tools};
+};
+const noticeOf=doc=>doc.querySelectorAll('[role="status"]').find(node=>node.textContent.includes('\u547d\u4ee4\u9762\u677f'))||null;
+const noticeParts=doc=>{
+  const notice=doc.body.children.find(node=>String(node.className).includes('palette-notice'))||null;
+  const child=name=>notice?notice.children.find(node=>String(node.className).includes(name))||null:null;
+  return {notice,retry:child('palette-retry'),reload:child('palette-reload')};
+};
+// A loadPalette whose module builds a controller, counting every stage.
+const countingModule=(counters,{failImport=false,failSetup=false,failOpen=false}={})=>async()=>{
+  counters.imports++;
+  if(failImport&&counters.imports===1)throw Error('import unavailable');
+  let openAttempts=0;
+  return {
+    openCommandPalette(){
+      counters.setups++;
+      if(failSetup&&counters.setups===1)throw Error('setup unavailable');
+      return {
+        open(){
+          openAttempts++;
+          if(failOpen&&openAttempts===1)throw Error('open unavailable');
+          counters.opens++;
+        },
+        close(){}
+      };
+    }
+  };
+};
+
+test('the document palette:open request routes through the one existing gesture path with its actual opener',async()=>{
+  const opens=[];
+  const f=bootstrapFixture({loadPalette:async()=>({openCommandPalette:()=>({open:at=>opens.push(at),close(){}})})});
+  const request=f.doc.createElement('button');f.doc.body.append(request);
+  f.doc.dispatchEvent(new CustomEvent('palette:open',{detail:request}));
+  await flush();
+  assert.deepEqual(opens,[request],'the event detail opener goes through the existing open path');
+  f.opener.click();await flush();
+  assert.deepEqual(opens,[request,f.opener],'the old static launchers keep their behaviour beside the event port');
+  const shortcut=key(f.opener,{key:'k',metaKey:true});f.doc.dispatchEvent(shortcut);await flush();
+  assert.deepEqual(opens,[request,f.opener,f.opener],'Ctrl K still opens the same single controller');
+});
+
+test('a stale late import only caches code and never mounts or focuses',async()=>{
+  let release;const pending=new Promise(resolve=>{release=resolve;});
+  const counters={imports:0,setups:0,opens:0};const opened=[];
+  const f=bootstrapFixture({loadPalette:async()=>{
+    counters.imports++;
+    await pending;
+    return {openCommandPalette:()=>{counters.setups++;return {open:at=>opened.push(at),close(){}};}};
+  }});
+  const late=f.tools.open(f.opener);
+  const newer=f.doc.createElement('button');f.doc.body.append(newer);
+  const current=f.tools.open(newer);
+  release();await Promise.all([late,current]);
+  assert.deepEqual(counters,{imports:1,setups:1,opens:0},'the stale request only consumes the shared cached code');
+  assert.deepEqual(opened,[newer],'only the current request mounts and focuses the palette');
+});
+
+test('a modal opened during the import wait wins; the stale request mounts and focuses nothing',async()=>{
+  let release;const pending=new Promise(resolve=>{release=resolve;});
+  const counters={imports:0,setups:0,opens:0};
+  const f=bootstrapFixture({loadPalette:async()=>{
+    counters.imports++;
+    await pending;
+    return {openCommandPalette:()=>{counters.setups++;return {open:()=>{counters.opens++;},close(){}};}};
+  }});
+  const focused=f.doc.activeElement;
+  const late=f.tools.open(f.opener);
+  const other=f.doc.createElement('dialog');f.doc.body.append(other);other.open=true;other.setAttribute('open','');
+  release();await late;
+  assert.deepEqual(counters,{imports:1,setups:0,opens:0},'a newer modal cancels the request instead of stacking');
+  assert.equal(f.doc.activeElement,focused,'the cancelled request never moves focus');
+});
+
+test('an owner change during the import wait makes the request stale without mounting or focusing',async()=>{
+  let release;const pending=new Promise(resolve=>{release=resolve;});
+  const counters={imports:0,setups:0,opens:0};
+  let owner='reader-one';
+  globalThis.marginaliaPaletteAdapter={getOwner:()=>owner};
+  try{
+    const f=bootstrapFixture({loadPalette:async()=>{
+      counters.imports++;
+      await pending;
+      return {openCommandPalette:()=>{counters.setups++;return {open:()=>{counters.opens++;},close(){}};}};
+    }});
+    const late=f.tools.open(f.opener);
+    owner='reader-two';
+    release();await late;
+    assert.deepEqual(counters,{imports:1,setups:0,opens:0},'an owner transition invalidates the captured request');
+  }finally{delete globalThis.marginaliaPaletteAdapter;}
+});
+
+test('a breakpoint-hidden opener hands the palette a visible brand fallback, never a closed-sheet child',async()=>{
+  const doc=fixture();doc.body.dataset.palettePage='home';
+  const header=doc.createElement('header');header.className='site-theme-header site-header';doc.body.append(header);
+  const brand=doc.createElement('a');brand.className='brand';header.append(brand);
+  const opener=doc.createElement('button');opener.dataset.paletteOpen='';opener.getClientRects=()=>[];doc.body.append(opener);
+  const opens=[];
+  const tools=mountPaletteBootstrap({document:doc,navigator:{userAgentData:{platform:'macOS'}},matchMedia:()=>({matches:true}),loadPalette:async()=>({openCommandPalette:()=>({open:at=>opens.push(at),close(){}})})});
+  await tools.open(opener);
+  assert.deepEqual(opens,[brand],'the visible brand is the eventual focus-return target');
+});
+
+test('the corrected regression consumes the whole import+setup+open failure and retries visibly',async()=>{
+  let imports=0,setups=0,opens=0;
+  const f=bootstrapFixture({loadPalette:async()=>{
+    imports++;
+    return {openCommandPalette(){
+      setups++;
+      if(setups===1)throw Error('synthetic setup failure');
+      return {open(){opens++;},close(){}};
+    }};
+  }});
+  await assert.rejects(f.tools.open(f.opener),/synthetic setup failure/,'the first explicit open surfaces one consumed failure');
+  assert.deepEqual({imports,setups,opens},{imports:1,setups:1,opens:0});
+  assert.ok(noticeOf(f.doc),'the failure is visible, not silent');
+  const {notice,retry}=noticeParts(f.doc);
+  assert.ok(retry,'a current retry control accompanies the notice');
+  assert.equal(retry.hidden,false);
+  const second=await f.tools.open(f.opener);
+  assert.ok(second,'the second explicit open re-runs the cleared chain and succeeds');
+  assert.deepEqual({imports,setups,opens},{imports:1,setups:2,opens:1},'a setup failure retries with the already loaded module identity, never a second import');
+  assert.equal(notice.hidden,true,'the notice reflects the current state after success');
+});
+
+for(const stage of ['import','setup','open'])test('the '+stage+' failure is consumed with one visible retry and no duplicate open',async()=>{
+  const counters={imports:0,setups:0,opens:0};
+  const f=bootstrapFixture({loadPalette:countingModule(counters,{failImport:stage==='import',failSetup:stage==='setup',failOpen:stage==='open'})});
+  await assert.rejects(f.tools.open(f.opener),new RegExp(stage+' unavailable'),'the '+stage+' failure reaches the explicit caller once');
+  assert.ok(noticeOf(f.doc),'the '+stage+' failure is visible');
+  const {notice,retry}=noticeParts(f.doc);
+  assert.ok(retry,'the '+stage+' failure offers one visible retry control');
+  retry.click();await flush();
+  assert.equal(counters.opens,1,'the visible retry control opens exactly once');
+  assert.equal(notice.hidden,true,'the notice is no longer current after success');
+});
+
+test('a failing real setup rolls back only its own partial DOM and retry keeps one controller and one listener set',async()=>{
+  const doc=fixture();doc.body.dataset.palettePage='home';
+  const opener=doc.createElement('button');opener.dataset.paletteOpen='';doc.body.append(opener);
+  let broken=true,imports=0;
+  // The library reads the sabotage flag lazily: the settled contract reuses the
+  // loaded module identity across setup retries, so the namespace must not bake
+  // the failure in.
+  const library={view(){if(broken)throw Error('late setup failure');return {phase:'ready',count:0};},load:async()=>{},search:()=>[]};
+  const loadPalette=async()=>{imports++;return {openCommandPalette:options=>openCommandPalette({...options,library,navigate:()=>{}})};};
+  const tools=mountPaletteBootstrap({document:doc,navigator:{userAgentData:{platform:'macOS'}},matchMedia:()=>({matches:true}),loadPalette});
+  await assert.rejects(tools.open(opener),/late setup failure/);
+  assert.equal(doc.getElementById('command-palette'),null,'the failed transaction removes its own dialog instead of leaving a poisoned reuse');
+  broken=false;
+  const controller=await tools.open(opener);
+  assert.ok(controller);
+  assert.equal(doc.body.children.filter(node=>String(node.className).includes('command-palette')).length,1,'exactly one palette overlay after retry');
+  const dialog=doc.getElementById('command-palette'),input=doc.getElementById('command-palette-input');
+  const counts=()=>({dialog:[...dialog.listeners].filter(([name])=>name==='cancel').reduce((n,[,c])=>n+c,0),input:[...input.listeners].filter(([name])=>name==='keydown').reduce((n,[,c])=>n+c,0)});
+  const before=counts();
+  controller.open(opener);controller.close({restoreFocus:false});controller.open(opener);
+  assert.deepEqual(counts(),before,'reopening after the rolled-back setup never stacks listeners');
+  assert.equal(imports,1,'the loaded module identity is reused across setup retries');
+});
+
+// ---- GET-188 review batch: finite import recovery, settlement fence, owned library rollback ----
+test('the import stage recovers once through the exact retry URL and then falls back to manual page reload',async()=>{
+  let initial=0,retry=0,opens=0;
+  const f=bootstrapFixture({
+    loadPalette:async()=>{initial++;throw Error('import unavailable');},
+    loadRetry:async()=>{retry++;throw Error('retry unavailable');}
+  });
+  await assert.rejects(f.tools.open(f.opener),/import unavailable/);
+  assert.deepEqual({initial,retry},{initial:1,retry:0},'the first failure is the initial module URL only');
+  assert.ok(noticeOf(f.doc));
+  let parts=noticeParts(f.doc);
+  assert.equal(parts.retry.hidden,false,'an import failure offers the explicit retry');
+  assert.equal(parts.reload.hidden,true,'no page-reload fallback before the finite retry is spent');
+  parts.retry.click();await flush();
+  assert.deepEqual({initial,retry},{initial:1,retry:1},'the one explicit retry uses the exact second URL once');
+  parts=noticeParts(f.doc);
+  assert.equal(parts.retry.hidden,true,'the spent retry is no longer offered as a module retry');
+  assert.equal(parts.reload.hidden,false,'the honest final fallback is manual page reload');
+  assert.equal(f.doc.body.children.filter(node=>String(node.className).includes('palette-notice')).length,1,'one notice only');
+  await assert.rejects(f.tools.open(f.opener),/命令面板/,'later opens stay honest without new imports');
+  assert.deepEqual({initial,retry},{initial:1,retry:1},'no unbounded import attempts after the finite retry');
+  assert.equal(f.doc.body.children.filter(node=>String(node.className).includes('palette-notice')).length,1,'one notice only');
+});
+
+test('the exact retry URL recovers the palette and hides the failure notice',async()=>{
+  let retry=0,opens=0;
+  const f=bootstrapFixture({
+    loadPalette:async()=>{throw Error('import unavailable');},
+    loadRetry:async()=>{retry++;return {openCommandPalette:()=>({open:()=>{opens++;},close(){}})};}
+  });
+  await assert.rejects(f.tools.open(f.opener),/import unavailable/);
+  noticeParts(f.doc).retry.click();await flush();
+  assert.equal(retry,1);assert.equal(opens,1,'the recovered palette opens exactly once');
+  assert.equal(noticeParts(f.doc).notice.hidden,true,'the notice reflects the current state after recovery');
+});
+
+test('the manual reload fallback reloads only when the user activates it',async()=>{
+  let reloads=0;
+  const previous=globalThis.location;
+  globalThis.location={reload(){reloads++;}};
+  try{
+    const f=bootstrapFixture({loadPalette:async()=>{throw Error('import unavailable');},loadRetry:async()=>{throw Error('retry unavailable');}});
+    await assert.rejects(f.tools.open(f.opener),/import unavailable/);
+    noticeParts(f.doc).retry.click();await flush();
+    assert.equal(reloads,0,'nothing reloads automatically');
+    noticeParts(f.doc).reload.click();
+    assert.equal(reloads,1,'the final fallback reloads only on manual activation');
+  }finally{if(previous===undefined)delete globalThis.location;else globalThis.location=previous;}
+});
+
+test('a stale rejected request never closes newer state or paints a notice for the new owner',async()=>{
+  let owner='A',rejectLoad;
+  const f=bootstrapFixture({adapter:{getOwner:()=>owner},loadPalette:()=>new Promise((resolve,reject)=>{rejectLoad=reject;})});
+  const pending=f.tools.open(f.opener);
+  await Promise.resolve();
+  owner='B';
+  rejectLoad(Error('old owner network failure'));
+  await assert.rejects(pending,/old owner network failure/,'the explicit caller still sees one consumed failure');
+  assert.equal(noticeOf(f.doc),null,'a stale catch creates no visible notice');
+  assert.deepEqual(noticeParts(f.doc),{notice:null,retry:null,reload:null});
+});
+
+test('the owner settlement token cancels an A->B->A stale request and a later request still opens',async()=>{
+  let token='A:0',resolveLoad;
+  const counters={setups:0,opens:0};
+  const f=bootstrapFixture({adapter:{getOwner:()=>'reader',getOwnerToken:()=>token},loadPalette:()=>new Promise(resolve=>{resolveLoad=resolve;})});
+  const stale=f.tools.open(f.opener);
+  await Promise.resolve();
+  token='B:1';token='A:2';
+  resolveLoad({openCommandPalette:()=>{counters.setups++;return {open:()=>{counters.opens++;},close(){}};}});
+  assert.equal(await stale,null,'the settled owner revision makes the old request stale');
+  assert.deepEqual(counters,{setups:0,opens:0},'a stale module result never mounts or focuses');
+  const later=await f.tools.open(f.opener);
+  assert.ok(later,'a later valid request reuses the cached code and opens');
+  assert.deepEqual(counters,{setups:1,opens:1});
+  assert.equal(noticeOf(f.doc),null,'the cancelled request leaves no failure notice');
+});
+
+test('setup and open failures retry with the loaded module identity and never re-import',async()=>{
+  for(const stage of ['setup','open']){
+    let imports=0,setups=0,opens=0;
+    const moduleFactory=async()=>{
+      imports++;
+      let openCalls=0;
+      return {openCommandPalette(){
+        setups++;
+        if(stage==='setup'&&setups===1)throw Error('setup unavailable');
+        return {open(){openCalls++;if(stage==='open'&&openCalls===1)throw Error('open unavailable');opens++;},close(){}};
+      }};
+    };
+    const f=bootstrapFixture({loadPalette:moduleFactory,loadRetry:moduleFactory});
+    await assert.rejects(f.tools.open(f.opener),new RegExp(stage+' unavailable'));
+    noticeParts(f.doc).retry.click();await flush();
+    assert.deepEqual({imports,setups,opens},stage==='setup'?{imports:1,setups:2,opens:1}:{imports:1,setups:1,opens:1},stage+' failure retries without a second module identity');
+    assert.equal(noticeParts(f.doc).notice.hidden,true);
+  }
+});
+
+test('a failed setup disposes only its internally created palette library',async()=>{
+  const {createPaletteLibrary,invalidatePaletteLibraries}=await import('../app/palette-library.mjs');
+  invalidatePaletteLibraries();
+  let ownerReads=0,subscribes=0,releases=0;
+  const adapter={getOwner:()=>{ownerReads++;return 'reader-a';},subscribe:()=>{subscribes++;return ()=>{releases++;};}};
+  const failingDoc={querySelectorAll:()=>[],getElementById:()=>null,head:{append(){}},createElement(){throw Error('synthetic DOM setup failure');}};
+  for(let attempt=0;attempt<3;attempt++)assert.throws(()=>openCommandPalette({document:failingDoc,adapter,request:()=>{throw Error('no API request permitted');}}),/synthetic DOM setup failure/);
+  assert.deepEqual({subscribes,releases},{subscribes:3,releases:3},'every internally created library is disposed with its subscription');
+  const before=ownerReads;
+  invalidatePaletteLibraries();
+  assert.equal(ownerReads,before,'failed setups leave no retained library behind the global invalidation');
+  // An externally injected library keeps its own ownership across setup failure.
+  const external=createPaletteLibrary({request:async()=>({ok:true,status:200,headers:{get:()=>null},json:async()=>({books:[]})}),getOwner:()=> 'reader-a'});
+  let disposed=false;const realDispose=external.dispose;external.dispose=()=>{disposed=true;realDispose();};
+  assert.throws(()=>openCommandPalette({document:failingDoc,library:external,adapter,request:()=>{throw Error('no API request permitted');}}),/synthetic DOM setup failure/);
+  assert.equal(disposed,false,'an externally injected library is never disposed by this factory');
+  assert.deepEqual(external.view().phase,'idle','the external library stays usable');
+  external.dispose();
 });
