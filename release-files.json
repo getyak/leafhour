@@ -719,5 +719,7 @@
   "tools/verify-release.mjs",
   "vercel.json",
   "app/reader-chat-workspace.mjs",
-  "app/reader-chat-workspace.css"
+  "app/reader-chat-workspace.css",
+  "app/reading-chat-quote.mjs",
+  "app/reading-chat-input.mjs"
 ]

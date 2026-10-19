@@ -207,3 +207,11 @@ test('notes to AI retains the selected passage before closing the notes owner',a
  const chat=mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,mountCompanion:()=>({dispose(){}}),integration:{triggerHost:f.triggerHost,companionAnchor:f.pill,onOpen(){},focusReturn(){}},request:async url=>{requests.push(url);return new Response(JSON.stringify({bookId:'book-one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:new URL(url,'https://local').searchParams.get('passageId'),original:'Source'},turns:[]}));}});
  f.onCleanup(()=>chat.dispose());chat.open();await flush();assert.equal(notesOpen,false);assert.ok(requests.some(url=>url.includes('/chat?passageId=p2')),JSON.stringify(requests));
 });
+
+test('real mounted selection capture quotes exact source before opening and never posts a question',async t=>{
+ const f=realFixture(t),requests=[];let selected=true;
+ const book={bookId:'book-one',contentVersion:'v1',title:{en:'A book'},sections:[{chapterId:'ch1',paragraphs:[{id:'p1',original:'Visible source.'}]}]};
+ const reader={getBook:()=>book,isSelectionActive:()=>selected,getExcerpt:()=>({bookId:'book-one',contentVersion:'v1',chapterId:'ch1',parts:[{passageId:'p1',language:'en',variant:'literal',start:0,end:7,text:'Visible'}]}),isPassageVisible:()=>true,getAnchor:()=>({passageId:'p1'}),dismissTools:()=>{selected=false;}};
+ const chat=mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,mountCompanion:()=>({dispose(){}}),integration:{triggerHost:f.triggerHost,companionAnchor:f.pill,onOpen(){},focusReturn(){}},request:async(url,options)=>{requests.push({url,options});return new Response(JSON.stringify({bookId:'book-one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:'p1',original:'Visible source.'},turns:[]}));}});
+ f.onCleanup(()=>chat.dispose());assert.equal(chat.quoteSelection(),true);await flush();assert.equal(f.dialog.open,true);assert.equal(selected,false);assert.equal(f.all(f.dialog).find(node=>node.className==='library-chat-quote-text').textContent,'Visible');assert.equal(requests.some(call=>call.options.method==='POST'),false);
+});

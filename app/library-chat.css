@@ -71,3 +71,11 @@ body:has(#reader-conversation + .library-chat-launcher) .reading-tools-panel{rig
 .library-chat-recommendations{margin-top:18px}
 .library-chat-recommendation{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:7px;padding:9px 0;border-bottom:1px solid var(--line-hairline);color:inherit;text-decoration:none;font:12px/1.7 var(--chat-font)}
 .library-chat-recommendation small{flex-shrink:0;color:var(--chat-muted);font-size:12px}
+
+/* Selected text stays separate from the reader's own question. */
+.library-chat-quote-chip{position:relative;border-left:2px solid var(--line-control);padding:7px 48px 7px 12px;margin:0 0 10px;background:var(--wash)}
+.library-chat-quote-meta{font:11px/1.5 var(--interface);color:var(--muted);margin:0 0 3px}
+.library-chat-quote-text{margin:0;max-height:72px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.6 var(--font-serif)}
+.library-chat-quote-remove{position:absolute;right:0;top:0;min-width:44px;min-height:44px;padding:6px;font:20px/1 var(--interface);max-width:48px;color:var(--muted)}
+.library-chat-quote-stale{font:11px/1.5 var(--interface);color:var(--muted);margin:6px 0 0}
+.library-chat-selected-snapshot{border-left:2px solid var(--line-hairline);margin:8px 0;padding-left:12px;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted)}

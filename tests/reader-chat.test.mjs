@@ -362,3 +362,31 @@ test('history byte limits discard only oldest complete pairs while preserving th
  for(let i=0;i<4;i++)await service.send(alice,'chat-book',input({id:'large-'+i,text:'提问 '+i}));
  assert.ok(Buffer.byteLength(JSON.stringify(jobs[3].history))<=24576);assert.equal(jobs[3].history[0].role,'user');assert.equal(jobs[3].history.at(-1).role,'assistant');assert.equal(jobs[3].text,'提问 3');assert.ok(jobs[3].history.length<6);
 });
+
+const selectedQuote=(layer='original',text=layer==='original'?'First':layer==='literal'?'第一句。':'开头提出这个意思。')=>({kind:'leafhour-reading-quote',schemaVersion:1,bookId:'chat-book',contentVersion:'edition-1',chapterId:'ch1',parts:[{passageId:'p1',layer,start:0,end:text.length,text,...(layer==='original'?{}:{translationStatus:layer==='literal'?'draft':'reviewed'})}]});
+test('selected source and both translations remain attributed data through real chat history and archive',async t=>{
+ const jobs=[],f=await fixture(t,{generator:async job=>{jobs.push(job);return validAnswer();}});
+ for(const [i,layer]of ['original','literal','interpretive'].entries()){
+  const quote=selectedQuote(layer),turn=await f.service.send(alice,'chat-book',input({id:'quote-'+i,quote}));assert.equal(turn.status,'completed');assert.deepEqual(turn.quote,quote);assert.deepEqual(jobs[i].quote,quote);assert.deepEqual(turn.answer.sourceRefs,[]);
+ }
+ assert.deepEqual(jobs[1].history[0].quote,selectedQuote());const archive=await f.service.exportHistory(alice,'chat-book');assert.deepEqual(archive.turns.map(t=>t.quote),['original','literal','interpretive'].map(layer=>selectedQuote(layer)));
+});
+test('invalid quotations do not claim a turn, save a question, cancel companion or invoke generator',async t=>{
+ let calls=0;const f=await fixture(t,{generator:async()=>{calls++;return validAnswer();}});
+ const file=path.join(f.dataDir,'users',hash(alice.id),'chat',hash('chat-book')+'.json');await f.service.view(alice,'chat-book');const data=JSON.parse(await readFile(file,'utf8'));data.turns.push({id:'active-companion',kind:'companion',origin:'ai',text:null,passageId:'p1',contentVersion:'edition-1',status:'running',expiresAt:Date.now()+60000,answer:null});await writeFile(file,JSON.stringify(data));
+ for(const quote of [{...selectedQuote(),bookId:'foreign'},selectedQuote('literal','forged'),{...selectedQuote('literal'),parts:[{...selectedQuote('literal').parts[0],translationStatus:'reviewed'}]}])await assert.rejects(f.service.send(alice,'chat-book',input({quote})),error=>[400,409].includes(error.status));
+ const after=JSON.parse(await readFile(file,'utf8'));assert.equal(after.turns.length,1);assert.equal(after.turns[0].status,'running');assert.equal((await f.library.records(alice,'chat-book')).questions.length,0);assert.equal(calls,0);
+});
+test('exact terminal quote replay survives edited translation while changed quote conflicts without generation',async t=>{
+ let calls=0;const f=await fixture(t,{generator:async()=>{calls++;return validAnswer();}}),payload=input({quote:selectedQuote('literal')});const first=await f.service.send(alice,'chat-book',payload);const changed=bookFixture();changed.sections[1].paragraphs[0].translations.literal.text='后来的翻译。';await f.seed(alice,changed);
+ assert.deepEqual(await f.service.send(alice,'chat-book',payload),first);await assert.rejects(f.service.send(alice,'chat-book',{...payload,quote:selectedQuote()}),status(409));assert.equal(calls,1);
+ const archive=await f.service.exportHistory(alice,'chat-book');assert.deepEqual((await f.service.validateHistory(alice,changed,archive,[changed]))[0].quote,payload.quote);
+ const conflicting=structuredClone(archive);conflicting.turns[0].quote.parts[0].text='不同的。';conflicting.turns[0].quote.parts[0].end=4;await assert.rejects(f.service.validateHistory(alice,changed,conflicting,[changed]),status(409));
+});
+test('a quoted translation changed during generation fails truthfully and preserves the stored question snapshot',async t=>{
+ let f;f=await fixture(t,{generator:async()=>{const changed=bookFixture();changed.sections[1].paragraphs[0].translations.literal.status='reviewed';await f.seed(alice,changed);return validAnswer();}});const payload=input({quote:selectedQuote('literal')}),turn=await f.service.send(alice,'chat-book',payload);assert.equal(turn.status,'failed');assert.equal(turn.answer,null);assert.deepEqual(turn.quote,payload.quote);assert.equal(turn.text,payload.text);
+});
+test('actual encoded current input rejects oversize metadata before turn, question or generator work',async t=>{
+ let calls=0;const f=await fixture(t,{generator:async()=>{calls++;return validAnswer();}}),getBook=f.library.getBook.bind(f.library);f.library.getBook=async(...args)=>({...await getBook(...args),title:{en:'\u0001'.repeat(5000)}});
+ await assert.rejects(f.service.send(alice,'chat-book',input({quote:selectedQuote()})),status(413));assert.equal((await f.service.view(alice,'chat-book')).turns.length,0);assert.equal((await f.library.records(alice,'chat-book')).questions.length,0);assert.equal(calls,0);
+});

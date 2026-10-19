@@ -1,3 +1,4 @@
+import {readingChatQuoteFromExcerpt} from './reading-chat-quote.mjs';
 import {t,getUiLocale,uiHref,onUiLocaleChange} from './ui-locale.mjs';
 import {mountReaderChatWorkspace} from './reader-chat-workspace.mjs';
 import {readerLoginUrl} from './reader-return.mjs';
@@ -17,7 +18,7 @@ export function readerConversationContext(reader,bookId){
   return {book,passages,passageId:passages.has(selected)?selected:passages.has(anchor)?anchor:null};
 }
 
-export function mountReaderConversation({bookId,session,getReader,root,request=fetch,navigate=url=>location.assign(url),replace=url=>location.replace(url),mountChat=mountLibraryChat,mountCompanion=mountReaderCompanion,integration=null}){
+export function mountReaderConversation({bookId,session,getReader,root,request=fetch,navigate=url=>location.assign(url),replace=url=>location.replace(url),mountChat=mountLibraryChat,mountCompanion=mountReaderCompanion,integration=null,announce=()=>{}}){
   if(!bookId||!root)return null;
   let chat,companion,workspace,disposed=false;
   const events=globalThis.document,listeners=[];
@@ -51,6 +52,18 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
       const reader=getReader();if(workspace?.isMobile())chat.close();reader.dismissTools?.();reader.goToPassage(passageId);return true;
     }
   });
+  chat.quoteSelection=()=>{
+    if(disposed)return false;if(!session?.user){openAuth();return false;}
+    const reader=getReader(),book=reader?.getBook?.();let snapshot;
+    try{
+      if(!reader?.isSelectionActive?.())throw Error('missing');
+      snapshot=reader.getExcerpt?.()||reader.getAudioSelection?.();
+      if(!snapshot||snapshot.parts.some(part=>!reader.isPassageVisible?.(part.passageId)))throw Error('missing');
+      const quote=readingChatQuoteFromExcerpt(snapshot,book);
+      if(!chat.quote?.(quote)){announce(t('chat.quote.busy'));return false;}
+      reader.dismissTools?.();return true;
+    }catch{announce(t(snapshot?.parts?.reduce((n,part)=>n+(part.text?.length||0),0)>2000?'chat.quote.tooLong':snapshot?'chat.quote.changed':'chat.quote.unavailable'));return false;}
+  };
   workspace=mountReaderChatWorkspace({root,getReader,labels:{resize:t('chat.resize')}});
   listeners.push(onUiLocaleChange(()=>workspace.setLabels({resize:t('chat.resize')})));
   if(typeof chat.surface==='function')companion=mountCompanion({bookId,getOwner:()=>session?.user?.id||null,getReader,api,chat,openAuth,integration:integration?{anchor:integration.companionAnchor,onUnread:integration.onUnread,onFocusReturn:integration.focusReturn}:null});

@@ -285,3 +285,8 @@ test('review chat R3 missing context translation relabels in place while real pr
 test('native queued close followed by disposal consumes the visible lifecycle exactly once',async t=>{
  const changes=[],s=setup(t,{onViewChange:value=>changes.push(value)}),queued=[];s.chat.open();await flush();s.root.close=function(){this.open=false;queued.push(()=>this.dispatchEvent(new Event('close')));};s.root.close();s.chat.dispose();s.chat.dispose();queued.forEach(fn=>fn());assert.deepEqual(changes,[true,false]);
 });
+
+test('explicit quotation uses a removable chip, keeps the own question and never auto-sends',async t=>{
+ const s=setup(t);s.chat.open();await flush();type(s.input(),'My question');const quote={kind:'leafhour-reading-quote',schemaVersion:1,bookId:'one',contentVersion:'v1',chapterId:'ch1',parts:[{passageId:'p1',layer:'original',start:0,end:6,text:'Source'}]};
+ assert.equal(s.chat.quote(quote),true);await flush();assert.equal(s.input().value,'My question');assert.equal(plain(s.find('library-chat-quote-text')),'Source');assert.equal(s.calls.filter(c=>c.payload).length,0);s.chat.close();s.chat.open();await flush();assert.equal(plain(s.find('library-chat-quote-text')),'Source');s.find('library-chat-quote-remove').click();assert.equal(s.find('library-chat-quote-chip').hidden,true);assert.equal(s.input().value,'My question');
+});

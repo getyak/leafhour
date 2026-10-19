@@ -1,3 +1,4 @@
+import {validateHistoricalReadingChatQuote} from './reading-chat-quote.mjs';
 const fail=(message,status=400)=>{throw Object.assign(Error(message),{status});};
 const id=v=>typeof v==='string'&&/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(v);
 const text=(v,n)=>typeof v==='string'&&v.trim()&&v.length<=n&&v.isWellFormed();
@@ -35,6 +36,7 @@ export function portableChatTurns(chat,book,books=[book]){
  return chat.turns.map(t=>{
   const companion=t?.kind==='companion';
   if(!plain(t)||!id(t.id)||ids.has(t.id)||!passages.has(t.passageId)||t.contentVersion!==book.contentVersion||!date(t.createdAt)||t.origin!==(companion?'ai':'user')||!companion&&!text(t.text,2000)||companion&&t.text!==null||!['running','completed','failed','cancelled'].includes(t.status))fail('备份对话的归属、版本或锚点不正确');
+  const quote=t.quote===undefined?undefined:validateHistoricalReadingChatQuote(t.quote,book);if(quote&&(companion||quote.parts[0].passageId!==t.passageId))fail('备份摘录的提问归属不正确');
   if(t.scopeRevision!==undefined&&(!Number.isSafeInteger(t.scopeRevision)||t.scopeRevision<0))fail('备份对话范围版本不正确');ids.add(t.id);let answer=null;
   if(t.status==='completed'){
    const a=t.answer;if(!plain(a)||a.kind!==(companion?'companion':'conversation')||a.origin!=='ai'||!text(a.summary,12000)||!Array.isArray(a.sourceRefs)||a.sourceRefs.length>100||!Array.isArray(a.recommendations)||a.recommendations.length>20)fail('备份 AI 回答不完整');
@@ -45,6 +47,6 @@ export function portableChatTurns(chat,book,books=[book]){
    });
    if(new TextEncoder().encode(JSON.stringify(a)).length>96000)fail('备份 AI 回答超过容量限制');answer={kind:a.kind,summary:a.summary,origin:'ai',sourceRefs:refs,recommendations:recommendations(a.recommendations,sources)};
   }else if(t.answer!==null&&t.answer!==undefined)fail('未完成对话不能携带回答');
-  return {id:t.id,passageId:t.passageId,contentVersion:t.contentVersion,...(t.scopeRevision!==undefined?{scopeRevision:t.scopeRevision}:{}),text:companion?null:t.text,origin:companion?'ai':'user',...(companion?{kind:'companion'}:{}),createdAt:t.createdAt,status:t.status==='running'?'failed':t.status,answer,activity:[],...(t.status==='running'?{error:'导入前的回答已中断，未恢复生成。'}:t.error?{error:String(t.error).slice(0,2000)}:{})};
+  return {id:t.id,passageId:t.passageId,contentVersion:t.contentVersion,...(t.scopeRevision!==undefined?{scopeRevision:t.scopeRevision}:{}),text:companion?null:t.text,...(quote?{quote}:{}),origin:companion?'ai':'user',...(companion?{kind:'companion'}:{}),createdAt:t.createdAt,status:t.status==='running'?'failed':t.status,answer,activity:[],...(t.status==='running'?{error:'导入前的回答已中断，未恢复生成。'}:t.error?{error:String(t.error).slice(0,2000)}:{})};
  });
 }

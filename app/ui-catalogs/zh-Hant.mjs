@@ -1,6 +1,17 @@
 // GET-192 immutable zh-Hant UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "chat.quote.localOnly": "瀏覽器儲存失敗，此引用僅保留於目前頁面。",
+  "chat.quote.action": "引用到 AI",
+  "chat.quote.remove": "移除引用",
+  "chat.quote.snapshot": "選取文字 · 快照",
+  "chat.quote.stale": "所選文字已變更。請移除或重新選取後再傳送。",
+  "chat.quote.busy": "請先完成或停止目前請求，再更換引用。",
+  "chat.quote.unavailable": "請先選取可見的原文或譯文。",
+  "chat.quote.changed": "所選文字已變更或暫時無法使用，請重新選取。",
+  "chat.quote.tooLong": "引用最多 2,000 字，請縮小選取範圍。",
+  "chat.quote.receiptMismatch": "回覆與目前請求不一致，問題與引用皆已保留。",
+
   "chat.entry": "問 AI",
   "chat.resize": "調整 AI 工作區寬度",
 
