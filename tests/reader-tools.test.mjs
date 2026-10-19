@@ -61,11 +61,11 @@ test('locale preserves the sole conceal deadline, unread state, focus and held t
     tools.toolbar.update({status:'paused',attention:true,draftCount:2});tools.chatIntegration.onUnread(true);tools.toolbar.reveal(false);
     t.mock.timers.tick(4000);const focus=f.document.activeElement;
     await requestUiRoute('en');assert.equal(label.textContent,'Unsaved');assert.match(notice.textContent,/reading records/);
-    assert.equal(pill.getAttribute('aria-description'),'A reading companion message');assert.match(pill.getAttribute('aria-label'),/2 local drafts/);
+    assert.equal(f.elements.get('#reading-tools-chat-slot').getAttribute('aria-description'),'A reading companion message');assert.match(pill.getAttribute('aria-label'),/2 local drafts/);
     assert.equal(f.document.activeElement,focus);assert.equal(tools.toolbar.expanded,true);assert.equal(f.immersion.shown,1);
     t.mock.timers.tick(999);assert.equal(tools.toolbar.expanded,true);t.mock.timers.tick(1);assert.equal(tools.toolbar.expanded,false,'changing language cannot restart concealment');
     tools.toolbar.reveal(false);tools.toolbar.hold('pointer',true);
-    await requestUiRoute('ja');assert.equal(label.textContent,'未保存');assert.equal(pill.getAttribute('aria-description'),'読書の伴走メッセージがあります');
+    await requestUiRoute('ja');assert.equal(label.textContent,'未保存');assert.equal(f.elements.get('#reading-tools-chat-slot').getAttribute('aria-description'),'読書の伴走メッセージがあります');
     t.mock.timers.tick(10000);assert.equal(tools.toolbar.expanded,true,'changing language cannot release pointer hold');
     tools.toolbar.hold('pointer',false);t.mock.timers.tick(5000);assert.equal(tools.toolbar.expanded,false);
     await requestUiRoute('zh-Hant');assert.equal(label.textContent,'待儲存');
@@ -80,10 +80,10 @@ test('unmount releases tools listeners and stale unread callbacks cannot change 
     for(const event of ['keydown','pointerdown','reader:focus'])assert.equal(f.document.listeners.get(event)||0,0,event+' listener must be released');
     assert.equal(f.elements.get('#reading-tools-trigger').listeners.get('click')||0,0);
     next=mountReaderTools({sessionRoot:f.sessionRoot,document:f.document,immersion:f.immersion});
-    assert.equal(f.elements.get('#reading-tools-trigger').classList.contains('has-companion-message'),false,'the new owner initializes its own unread presentation');
-    assert.equal(f.elements.get('#reading-tools-trigger').getAttribute('aria-description'),'');
-    old.chatIntegration.onUnread(true);assert.equal(f.elements.get('#reading-tools-trigger').classList.contains('has-companion-message'),false);
-    assert.equal(f.elements.get('#reading-tools-trigger').getAttribute('aria-description'),'');
+    assert.equal(f.elements.get('#reading-tools-chat-slot').classList.contains('has-companion-message'),false,'the new owner initializes its own unread presentation');
+    assert.equal(f.elements.get('#reading-tools-chat-slot').getAttribute('aria-description'),'');
+    old.chatIntegration.onUnread(true);assert.equal(f.elements.get('#reading-tools-chat-slot').classList.contains('has-companion-message'),false);
+    assert.equal(f.elements.get('#reading-tools-chat-slot').getAttribute('aria-description'),'');
   }finally{next?.unmount();f.cleanup();}
 });
 
@@ -119,7 +119,7 @@ test('fullscreen failure restoration targets the visible pill through the reader
     // The exact production wiring app/reader.js uses: immersion resolves its
     // focus fallback through the coordinator's shared pill seam.
     let tools=null;
-    const immersion=mountReaderImmersion({document:f.document,focusReturn:()=>tools?.chatIntegration?.companionAnchor});
+    const immersion=mountReaderImmersion({document:f.document,focusReturn:()=>tools?.toolFocusTarget});
     tools=mountReaderTools({sessionRoot:f.sessionRoot,immersion,document:f.document});
     f.document.documentElement.requestFullscreen=async()=>{throw Error('Denied');};
     await immersion.toggleFullscreen();
@@ -133,13 +133,13 @@ test('injected chat integration keeps trigger, anchor, focus and unread seams se
     const tools=mountReaderTools({sessionRoot,immersion});
     const chat=tools.chatIntegration;
     assert.equal(chat.triggerHost,elements.get('#reading-tools-chat-slot'));
-    assert.equal(chat.companionAnchor,elements.get('#reading-tools-trigger'));
-    assert.equal(chat.companionAnchor.getAttribute('aria-expanded'),'false','pill ARIA stays coordinator-owned');
+    assert.equal(chat.companionAnchor,elements.get('#reading-tools-chat-slot'));
+    assert.equal(elements.get('#reading-tools-trigger').getAttribute('aria-expanded'),'false','timer ARIA stays coordinator-owned');
     chat.onUnread(true);
     const pill=elements.get('#reading-tools-trigger');
-    assert.equal(pill.classList.contains('has-companion-message'),true,'unread presentation is owned by the coordinator');
-    assert.match(pill.getAttribute('aria-description')||'',/陪读/);
-    chat.onUnread(false);assert.equal(pill.classList.contains('has-companion-message'),false);
+    assert.equal(elements.get('#reading-tools-chat-slot').classList.contains('has-companion-message'),true,'unread presentation belongs to the visible AI entry');
+    assert.match(elements.get('#reading-tools-chat-slot').getAttribute('aria-description')||'',/陪读/);
+    chat.onUnread(false);assert.equal(elements.get('#reading-tools-chat-slot').classList.contains('has-companion-message'),false);
     tools.toolbar.reveal();chat.focusReturn();
     assert.equal(pill.focused,true,'the focus callback returns to the visible pill');
     tools.toolbar.reveal();chat.onOpen();
@@ -330,7 +330,7 @@ test('setFocused and fullscreen transitions cannot strand the toolbar state',asy
   const f=bubbleFixture();
   try{
     let tools=null;
-    const immersion=mountReaderImmersion({document:f.document,focusReturn:()=>tools?.chatIntegration?.companionAnchor,onToolsCloseRequest:target=>tools?.closeRequest?.(target)});
+    const immersion=mountReaderImmersion({document:f.document,focusReturn:()=>tools?.toolFocusTarget,onToolsCloseRequest:target=>tools?.closeRequest?.(target)});
     tools=mountReaderTools({sessionRoot:f.sessionRoot,immersion,document:f.document});
     f.fire(f.trigger,'click',{detail:1});
     assert.equal(tools.toolbar.expanded,true);

@@ -1,6 +1,9 @@
 // GET-192 immutable zh-Hant UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "chat.entry": "問 AI",
+  "chat.resize": "調整 AI 工作區寬度",
+
   "audio.voice.Sulafat.label": "溫暖",
   "audio.voice.Sulafat.description": "平靜地讀，適合長一些的段落",
   "audio.voice.Charon.label": "清晰",

@@ -1,6 +1,9 @@
 // GET-192 immutable ja UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "chat.entry": "AI に聞く",
+  "chat.resize": "AI ワークスペースの幅を調整",
+
   "audio.voice.Sulafat.label": "温かい声",
   "audio.voice.Sulafat.description": "穏やかな読み方で、長めの文章に向いています",
   "audio.voice.Charon.label": "明瞭な声",

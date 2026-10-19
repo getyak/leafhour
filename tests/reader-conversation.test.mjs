@@ -80,9 +80,10 @@ test('a companion result rechecks the current cookie identity before exposing ol
 
 // ---- GET-184 injected chat: real chat + companion controllers over one tools seam ----
 class Element extends EventTarget {
-  constructor(tag,doc){super();this.tagName=tag.toUpperCase();this.doc=doc;this.children=[];this.attrs={};this.style={setProperty(k,v){this[k]=v;},removeProperty(k){delete this[k];}};this.value='';this.open=false;this.isConnected=true;this.hidden=false;this.scrollHeight=1000;this.clientHeight=300;this.scrollTop=0;this.className='';this.dataset={};this.classList={add:c=>{if(!this.className.split(' ').includes(c))this.className+=(this.className?' ':'')+c;},remove:c=>{this.className=this.className.split(' ').filter(x=>x&&x!==c).join(' ');},toggle:(c,on)=>{on?this.classList.add(c):this.classList.remove(c);},contains:c=>this.className.split(' ').includes(c)};}
+  constructor(tag,doc){super();this.tagName=tag.toUpperCase();this.doc=doc;this.children=[];this.attrs={};this.style={setProperty(k,v){this[k]=v;},getPropertyValue(k){return this[k]||'';},removeProperty(k){delete this[k];}};this.value='';this.open=false;this.isConnected=true;this.hidden=false;this.scrollHeight=1000;this.clientHeight=300;this.scrollTop=0;this.className='';this.dataset={};this.classList={add:c=>{if(!this.className.split(' ').includes(c))this.className+=(this.className?' ':'')+c;},remove:c=>{this.className=this.className.split(' ').filter(x=>x&&x!==c).join(' ');},toggle:(c,on)=>{on?this.classList.add(c):this.classList.remove(c);},contains:c=>this.className.split(' ').includes(c)};}
   append(...nodes){for(const n of nodes){n.remove();n.parentElement=this;this.children.push(n);}}
   appendChild(n){this.append(n);return n;}
+  prepend(n){n.remove();n.parentElement=this;this.children.unshift(n);}
   replaceChildren(...nodes){this.children=[];this.append(...nodes);}
   remove(){if(this.parentElement){const p=this.parentElement;p.children=p.children.filter(n=>n!==this);this.parentElement=null;}}
   insertBefore(n,before){n.remove();const index=before?this.children.indexOf(before):this.children.length;this.children.splice(index,0,n);n.parentElement=this;}
@@ -108,7 +109,7 @@ function realFixture(t){
   const previous={document:globalThis.document,window:globalThis.window,localStorage:globalThis.localStorage,innerWidth:globalThis.innerWidth,innerHeight:globalThis.innerHeight,getSelection:globalThis.getSelection,setInterval:globalThis.setInterval,clearInterval:globalThis.clearInterval,setTimeout:globalThis.setTimeout,clearTimeout:globalThis.clearTimeout};
   const storage=new Map();globalThis.document=doc;globalThis.innerWidth=1200;globalThis.innerHeight=800;globalThis.getSelection=()=>null;
   const timers=new Map();let timerId=0;globalThis.setInterval=(fn)=>{timers.set(++timerId,fn);return timerId;};globalThis.clearInterval=id=>timers.delete(id);globalThis.setTimeout=(fn)=>{timers.set(++timerId,fn);return timerId;};globalThis.clearTimeout=id=>timers.delete(id);
-  globalThis.window={matchMedia:()=>({matches:false,addEventListener(){}}),visualViewport:null,addEventListener(){},removeEventListener(){}};
+  globalThis.window={innerWidth:1200,requestAnimationFrame:fn=>setTimeout(fn),cancelAnimationFrame:id=>clearTimeout(id),matchMedia:()=>({matches:false,addEventListener(){}}),visualViewport:null,addEventListener(){},removeEventListener(){}};
   globalThis.localStorage={getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)};
   const dialog=doc.createElement('dialog');dialog.id='reader-conversation';doc.body.append(dialog);
   const header=doc.createElement('header');const closeButton=doc.createElement('button');header.append(closeButton);
@@ -150,6 +151,8 @@ test('injected conversation creates one AI trigger in the tools surface and no g
   const trigger=all(triggerHost).find(n=>n.tagName==='BUTTON');
   assert.ok(trigger,'the AI trigger lives in the tools surface');
   assert.match(trigger.getAttribute('aria-label')||trigger.textContent||'',/对话|Ask AI/);
+  await requestUiRoute('en');assert.equal(trigger.textContent,'Ask AI');
+  await requestUiRoute('zh-Hans');assert.equal(trigger.textContent,'问 AI');
   trigger.click();await flush();
   assert.equal(f.dialog.open,true,'the injected trigger opens the conversation');
   assert.equal(calls.opened,1,'opening chat performs the focus handoff to close tools');

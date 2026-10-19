@@ -2,6 +2,9 @@
 // data, also the safe default for server/static English shells. Complete
 // default data: every other catalogue carries the same keys.
 export default Object.freeze({
+  "chat.entry": "Ask AI",
+  "chat.resize": "Resize AI workspace",
+
   "audio.voice.Sulafat.label": "Warm",
   "audio.voice.Sulafat.description": "Calm reading, suited to longer passages",
   "audio.voice.Charon.label": "Clear",

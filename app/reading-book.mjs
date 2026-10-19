@@ -21,7 +21,7 @@ export function createReadingBook({book,readChapter,onContent=()=>{}}){
 export function createReadingNavigation({isLoaded,ensure,commit,onPending=()=>{},onError=()=>{}}){
  let generation=0;
  function begin(){const ticket=++generation;return ()=>ticket===generation;}
- return {begin,navigate(id,target,{current=begin(),validate=()=>true}={}){
+ return {begin,capture(){const ticket=generation;return ()=>ticket===generation;},navigate(id,target,{current=begin(),validate=()=>true}={}){
   if(!current())return Promise.resolve(false);
   const finish=()=>{if(!current()||!validate())return false;commit(id,target);return true;};
   if(isLoaded(id))return Promise.resolve(finish());
