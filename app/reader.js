@@ -19,7 +19,7 @@ import {startReadingLoad,mergeLoadedReadingRecords} from './reading-load.mjs';
 import {noteSaveReceipt,positionSaveState,draftSaveReceipt} from './save-receipts.mjs';
 import {mountReadingArrival} from './reading-arrival.mjs';
 import {mountBookIntroduction,mountChapterEntry,mountContentsDialog} from './reader-navigation.mjs';
-import {mountReaderBookActions} from './reader-book-actions.mjs';
+import {mountReaderBookActionsBootstrap} from './reader-book-actions-bootstrap.mjs';
 import {mountParallelSettings,applyParallelAppearance,createParallelPair} from './parallel-reading.mjs';
 import {mountReaderPagination} from './reader-pagination.mjs';
 import {mountReaderImmersion} from './reader-immersion.mjs';
@@ -76,8 +76,10 @@ const activeSections=()=>book.sections.filter(s=>s.chapterId===state.chapterId);
 const chapterLabel=chapter=>book.source?.structure==='automatic_groups'?'自动分段 · 阅读片段 '+chapter.number:chapter.kind&&chapter.kind!=='body'?chapter.title.zh:'第 '+chapter.number+' 章';
 const contents=mountContentsDialog({document,getBook:()=>book,getChapterId:()=>state.chapterId,onNavigate:changeChapter,onBeforeOpen:dismissTools});
 mountChapterEntry({document,getBook:()=>book,getChapter:()=>book&&currentChapter(),onOpen:openContents});
-mountBookIntroduction({document,getBook:()=>book,getChapter:()=>book&&currentChapter(),onOpen:dismissTools});
-mountReaderBookActions({document,getBook:()=>book,api,session:readerSession,bookId:selectedBookId});
+// GET-173: the bookplate's one shared popover handle is injected into the
+// real user-open lazy enhancement; the optional AI introduction and gifting
+// code loads only when the reader actually opens book-info.
+mountReaderBookActionsBootstrap({document,info:mountBookIntroduction({document,getBook:()=>book,getChapter:()=>book&&currentChapter(),onOpen:dismissTools}),getBook:()=>book,api,session:readerSession,bookId:selectedBookId,getOwner:()=>readerSession?.user?.id||'guest'});
 function anchor(){
   if(pagination.active)return pagination.anchor();
   const threshold=document.body.classList.contains('is-focused')?24:80;

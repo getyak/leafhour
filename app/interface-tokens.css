@@ -22,6 +22,24 @@
   --action-radius: 999px;
   --action-target: 44px;
   --action-text: var(--paper, #f7f5ef);
+
+  /* GET-173 fallback popover layer: above page content and the floating chat
+     launcher, while real modal dialogs keep painting above it from the top
+     layer. Only browsers without the Popover API ever use it. */
+  --popover-layer: 120;
+}
+
+/* GET-173 popover fallback boundary (pre-JS closed state). Stock Chrome 113
+   has no Popover API, so the three real popovers (the home shelf filter panel,
+   the reader bookplate and the dynamically created book menu) would paint over
+   the page until script runs. Unsupported browsers must already show that
+   closed markup hidden; the shared popover-controls controller then opens each
+   one through the native hidden attribute plus the owned data-popover-open
+   marker and the safe z-index above. Supporting browsers keep the real
+   popover top layer and never see these rules. */
+@supports not selector(:popover-open) {
+  [popover]:not([data-popover-open]), [popover][hidden] { display: none !important; }
+  [popover][data-popover-open] { z-index: var(--popover-layer); }
 }
 
 /* Derived tokens re-resolve on every element so a locally scoped palette

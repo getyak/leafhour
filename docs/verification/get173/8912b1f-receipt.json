@@ -1,0 +1,225 @@
+{
+  "source": "8912b1f18f80f8f565b433a48cf20084f6a23467",
+  "run": 39162519203,
+  "status": "machine checks passed, Android visual review FAILED P1; not delivery acceptance",
+  "scope": "anonymous actual isolated product pages; API34 x86_64 AVD/stock Chrome113 plus hosted Linux/Windows desktop Chrome. Not physical ARM/OEM, touch or AT acceptance.",
+  "platforms": [
+    {
+      "platform": "android",
+      "browserProduct": "Chrome/113.0.5672.136",
+      "fontChecks": 21,
+      "machineErrors": [],
+      "cleanupErrors": [],
+      "screenshots": [
+        "android-native-startup.png",
+        "android-native-version.png",
+        "home-controlled-font-delay.png",
+        "home-ja-cjk-loaded.png",
+        "home-loaded.png",
+        "home-zh-Hans-cjk-loaded.png",
+        "home-zh-Hant-cjk-loaded.png",
+        "library-loaded.png",
+        "reader-loaded.png"
+      ],
+      "visual": "blocked: default closed filter panel painted over cards",
+      "italicEvidenceMethod": "css-matching-and-visual",
+      "perNodePostScriptIdentity": false
+    },
+    {
+      "platform": "ubuntu",
+      "browserProduct": "Chrome/155.0.8059.39",
+      "fontChecks": 21,
+      "machineErrors": [],
+      "cleanupErrors": [],
+      "screenshots": [
+        "home-controlled-font-delay.png",
+        "home-ja-cjk-loaded.png",
+        "home-loaded.png",
+        "home-zh-Hans-cjk-loaded.png",
+        "home-zh-Hant-cjk-loaded.png",
+        "library-loaded.png",
+        "reader-loaded.png"
+      ],
+      "visual": "independent original screenshot review passed",
+      "italicEvidenceMethod": "postscript-name",
+      "perNodePostScriptIdentity": true
+    },
+    {
+      "platform": "windows",
+      "browserProduct": "Chrome/155.0.8059.40",
+      "fontChecks": 21,
+      "machineErrors": [],
+      "cleanupErrors": [],
+      "screenshots": [
+        "home-controlled-font-delay.png",
+        "home-ja-cjk-loaded.png",
+        "home-loaded.png",
+        "home-zh-Hans-cjk-loaded.png",
+        "home-zh-Hant-cjk-loaded.png",
+        "library-loaded.png",
+        "reader-loaded.png"
+      ],
+      "visual": "independent original screenshot review passed",
+      "italicEvidenceMethod": "postscript-name",
+      "perNodePostScriptIdentity": true
+    }
+  ],
+  "screenshots": [
+    {
+      "platform": "android",
+      "file": "android-native-startup.png",
+      "bytes": 110970,
+      "sha256": "11d0d61a7dd8eec0c0c4d090dd6c344509904c9deb31353ceaad0fa664c9851b"
+    },
+    {
+      "platform": "android",
+      "file": "android-native-version.png",
+      "bytes": 381484,
+      "sha256": "54020875f1926f35bf2d5c831d900d7787dd2f7dcc2c7bf5e0ec464c0bf17897"
+    },
+    {
+      "platform": "android",
+      "file": "home-controlled-font-delay.png",
+      "bytes": 1854657,
+      "sha256": "4a4d67ddf6265bc82ac830c4421d6c54b233c939b1c9929838bc63829367ed4b"
+    },
+    {
+      "platform": "android",
+      "file": "home-ja-cjk-loaded.png",
+      "bytes": 1863805,
+      "sha256": "04d599c387725ec7eb53fbd52c81e6eefadaf7141f120324d48481d8a87c3632"
+    },
+    {
+      "platform": "android",
+      "file": "home-loaded.png",
+      "bytes": 1902528,
+      "sha256": "cfdcaaec1cacac7b3439517e8c258414f633d759fa5c80f15d2c5698ca1ea5b3"
+    },
+    {
+      "platform": "android",
+      "file": "home-zh-Hans-cjk-loaded.png",
+      "bytes": 1787138,
+      "sha256": "4a439b53b7e8395b982639656baff83528f5662cdaf6c16185bff0205ccb88c6"
+    },
+    {
+      "platform": "android",
+      "file": "home-zh-Hant-cjk-loaded.png",
+      "bytes": 1796357,
+      "sha256": "3b1745d780f7892bd729c644b073dc8cc288d2555a7ae06cdb2f02e15fa397ec"
+    },
+    {
+      "platform": "android",
+      "file": "library-loaded.png",
+      "bytes": 1168413,
+      "sha256": "3b280cb3aa98e2735e8f2e834ffe75282ad1f357c9dd6a56dfc3516729f59820"
+    },
+    {
+      "platform": "android",
+      "file": "reader-loaded.png",
+      "bytes": 370630,
+      "sha256": "f66107e0227e0064897d1bd3b8ebcd553a9794488a93817915d53c0f4dd3436d"
+    },
+    {
+      "platform": "ubuntu",
+      "file": "home-controlled-font-delay.png",
+      "bytes": 1155916,
+      "sha256": "4168583c2a751677e0851b2edf47b1087bad505b8226d95e1f11ab6aa604dee8"
+    },
+    {
+      "platform": "ubuntu",
+      "file": "home-ja-cjk-loaded.png",
+      "bytes": 970657,
+      "sha256": "17cef8b7907654f950527f5a27974cdb2b969882728c6c580015aa7b817a511e"
+    },
+    {
+      "platform": "ubuntu",
+      "file": "home-loaded.png",
+      "bytes": 1203837,
+      "sha256": "c9d10468a4e84c1a762bc69cc9afed2f5614e118f88e0bfb149085c31e5bb90e"
+    },
+    {
+      "platform": "ubuntu",
+      "file": "home-zh-Hans-cjk-loaded.png",
+      "bytes": 948225,
+      "sha256": "c66f1cb8edf797f70d3debf4fe2b17fd37a2f4cf84830f3f591e87225c4e2de3"
+    },
+    {
+      "platform": "ubuntu",
+      "file": "home-zh-Hant-cjk-loaded.png",
+      "bytes": 954957,
+      "sha256": "3cef8103d08b2a55d6e39f945ef06bc01e7badc855b315a349efc0e217f7122f"
+    },
+    {
+      "platform": "ubuntu",
+      "file": "library-loaded.png",
+      "bytes": 914553,
+      "sha256": "e97f4bea3bd1c64c92eab9e114b148b9ab8fd41b0a0f7426018c83e3a518de65"
+    },
+    {
+      "platform": "ubuntu",
+      "file": "reader-loaded.png",
+      "bytes": 165326,
+      "sha256": "3fe87f6630b3f348769a226a67317cf5ed5b3a5c8866fca2c0e2ba58c465f9ad"
+    },
+    {
+      "platform": "windows",
+      "file": "home-controlled-font-delay.png",
+      "bytes": 1221550,
+      "sha256": "8146f37318fbd3b2ccaffd7b779cd46ee1f42632063752ba12bd63c70a115f4f"
+    },
+    {
+      "platform": "windows",
+      "file": "home-ja-cjk-loaded.png",
+      "bytes": 972016,
+      "sha256": "b0c85f15fbe96ba99d913daeaf5ef8d014863b542900fa74f63977bc6f9fcde3"
+    },
+    {
+      "platform": "windows",
+      "file": "home-loaded.png",
+      "bytes": 1221932,
+      "sha256": "faef9336de29966c2925a7c8a41857c413d4e50786fc7b8a418ea283a02e79d2"
+    },
+    {
+      "platform": "windows",
+      "file": "home-zh-Hans-cjk-loaded.png",
+      "bytes": 952448,
+      "sha256": "9664a444c636769bae072b92fbebf5096cbdd210ef093e275e762cd331d15c37"
+    },
+    {
+      "platform": "windows",
+      "file": "home-zh-Hant-cjk-loaded.png",
+      "bytes": 955313,
+      "sha256": "cd106c57a7f30f4edacd66f2d4f417a28765fdea36232fb2df3958fd7ec6fc22"
+    },
+    {
+      "platform": "windows",
+      "file": "library-loaded.png",
+      "bytes": 884841,
+      "sha256": "ae6832d10c71596b69726e8d7d53d7432c9181a9e3fd276f0fd47d8c90a5a6c0"
+    },
+    {
+      "platform": "windows",
+      "file": "reader-loaded.png",
+      "bytes": 153022,
+      "sha256": "0628af535e7d89d85742f46420ae73756731faffd85ae6fb0af6465105aee347"
+    }
+  ],
+  "preservation": "All original23PNG and raw3receipts/2stock-font inventories retained permanently in task evidence. Two representative Android originalPNG are published beside this receipt. CI artifacts alone expire after3days.",
+  "findings": [
+    {
+      "priority": 1,
+      "file": "library-loaded.png",
+      "problem": "closed shelf filter paints over actual cards on unsupported native Popover browser",
+      "state": "fix and new actual acceptance pending"
+    },
+    {
+      "priority": 2,
+      "files": [
+        "home-ja-cjk-loaded.png",
+        "reader-loaded.png"
+      ],
+      "problem": "fixed ambient/reading pills overlap text at393CSSpx",
+      "tracking": "GET-189"
+    }
+  ]
+}

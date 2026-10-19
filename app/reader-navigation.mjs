@@ -1,5 +1,6 @@
 import {chineseSampleNotice} from './catalog-sample.mjs';
 import {introductionFor} from './book-introduction.mjs';
+import {mountPopover} from './popover-controls.mjs';
 
 function sourceLink(value){
   try{const url=new URL(value);return ['https:','http:'].includes(url.protocol)&&!url.username&&!url.password?url.href:null;}catch{return null;}
@@ -40,10 +41,10 @@ export function renderBookContents({list,book,chapterId,onNavigate,document=list
   }
 }
 
-// Native popovers provide light dismissal, Escape and focus return without a modal scrim.
+// One shared popover controller (see popover-controls.mjs) provides light
+// dismissal, Escape and focus return without a modal scrim in every browser.
 export function mountBookIntroduction({document,getBook,getChapter,onOpen=()=>{}}){
   const $=id=>document.getElementById(id),trigger=$('open-book-info'),popover=$('book-info'),win=document.defaultView;
-  const isOpen=()=>popover.matches(':popover-open');
   function render(){
     const book=getBook();if(!book)return;const info=bookIntroduction(book,getChapter());
     for(const [id,value] of [['book-info-title',info.title],['book-info-cover-title',info.title],['book-info-original-title',info.originalTitle],['book-info-author',info.author],['book-info-description',info.description],['book-info-extent',info.extent],['book-info-current',info.current],['book-info-sample',info.sample],['book-info-scope',info.scopeNote]]){$(id).textContent=value;$(id).hidden=!value;}
@@ -57,13 +58,14 @@ export function mountBookIntroduction({document,getBook,getChapter,onOpen=()=>{}
     popover.style.left=Math.max(16,Math.min(rect.left+rect.width/2-width/2,win.innerWidth-width-16))+'px';
     popover.style.top=top+'px';popover.style.setProperty('--book-info-top',top+'px');
   }
-  popover.addEventListener('beforetoggle',event=>{trigger.setAttribute('aria-expanded',String(event.newState==='open'));if(event.newState==='open'){render();position();onOpen();}});
-  popover.addEventListener('toggle',()=>trigger.setAttribute('aria-expanded',String(isOpen())));
-  $('close-book-info').addEventListener('click',()=>{if(isOpen())popover.hidePopover();trigger.focus({preventScroll:true});});
-  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&isOpen()){event.preventDefault();popover.hidePopover();trigger.focus({preventScroll:true});}});
+  const info=mountPopover({document,element:popover,trigger,beforeOpen:()=>{render();position();onOpen();}});
+  $('close-book-info').addEventListener('click',()=>info.close());
   for(const event of ['reader:ready','reader:chapter'])document.addEventListener(event,render);
-  document.addEventListener('reader:jump',()=>{if(isOpen())popover.hidePopover();});
-  win.addEventListener('resize',()=>{if(isOpen())position();});
+  document.addEventListener('reader:jump',()=>info.close());
+  win.addEventListener('resize',()=>{if(info.isOpen())position();});
+  // The one common popover handle: the reader page injects this exact instance
+  // into every enhancement so no second registry copy can ever exist.
+  return info;
 }
 
 // The top current-chapter entry is a real chooser: it opens the shared contents dialog

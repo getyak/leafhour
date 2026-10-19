@@ -122,7 +122,7 @@ function clientWindow(){
   const win=new EventTarget();win.innerWidth=1200;win.innerHeight=800;win.visualViewport=null;return win;
 }
 function clientDocument(){
-  const doc=new EventTarget();doc.activeElement=doc.body=new ClientElement('body');doc.visibilityState='visible';doc.hasFocus=()=>true;doc.createElement=tag=>new ClientElement(tag);doc.createTextNode=text=>{const n=new ClientElement('#text');n.textContent=text;return n;};doc.querySelectorAll=()=>[];doc.querySelector=()=>null;doc.documentElement=new ClientElement('html');return doc;
+  const doc=new EventTarget();doc.activeElement=doc.body=new ClientElement('body');doc.visibilityState='visible';doc.hasFocus=()=>true;doc.createElement=tag=>new ClientElement(tag);doc.createTextNode=text=>{const n=new ClientElement('#text');n.textContent=text;return n;};doc.querySelectorAll=()=>[];doc.querySelector=selector=>{if(String(selector).includes(':popover-open'))throw Error('unsupported selector: '+selector);return null;};doc.documentElement=new ClientElement('html');return doc;
 }
 
 test('the companion bubble anchor clamps to the viewport and never drags or retitles the shared pill',()=>{

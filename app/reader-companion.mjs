@@ -1,4 +1,5 @@
 import {createReaderCompanionState,COMPANION_TIMING} from './reader-companion-state.mjs';
+import {overlayOpen} from './popover-controls.mjs';
 
 // GET-184 injected companion anchor: a non-draggable, viewport-clamped
 // positioner for the companion bubble around a caller-owned anchor element
@@ -44,7 +45,7 @@ export function mountReaderCompanion({bookId,getOwner,getReader,api,chat,openAut
   const current=()=>!disposed&&getOwner()===owner;
   const context=()=>{const reader=getReader(),book=reader?.getBook?.();return book?.bookId===bookId?{reader,book}:null;};
   const visible=()=>document.visibilityState==='visible'&&document.hasFocus();
-  function blocked(){return root.open||!!getSelection()?.toString().trim()||!!document.querySelector('dialog[open],[popover]:popover-open,#note-panel:not([hidden]),#paragraph-tools:not([hidden])')||!!document.activeElement?.closest('input,textarea,select,[contenteditable="true"]');}
+  function blocked(){return root.open||!!getSelection()?.toString().trim()||overlayOpen(document)||!!document.querySelector('#note-panel:not([hidden]),#paragraph-tools:not([hidden])')||!!document.activeElement?.closest('input,textarea,select,[contenteditable="true"]');}
   function paint(){
     const on=!!meta?.enabled&&!localStopped;toggle.textContent=configuring?(on?'正在关闭…':'正在开启…'):localStopped?'重试关闭':on?'关闭陪读':'开启陪读';toggle.disabled=configuring||!!owner&&meta?.available===false&&!on;toggle.setAttribute('aria-pressed',String(on));description.hidden=on&&!localStopped;
   }
