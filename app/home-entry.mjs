@@ -17,7 +17,7 @@ function accountChoice(value){
 export async function enterAutoHome({
  location=globalThis.location,view=globalThis.window,storage,
  languages=globalThis.navigator?.languages||[],request=globalThis.fetch,
- timeoutMs=2000,accountTimeoutMs=3000
+ timeoutMs=2000,accountTimeoutMs=5000
 }={}){
  let original;
  try{original=new URL(location?.href);}catch{return {kind:'continue',reason:'no-location'};}
@@ -36,7 +36,7 @@ export async function enterAutoHome({
   let code=query.status==='valid'?query.code:null;
   if(!code&&typeof request==='function'){
    // Guests retain the short identity deadline. Only a verified owner gets a
-   // bounded preference + owner-recheck window, inside a five-second ceiling.
+   // preference + owner-recheck window using the remaining five-second budget.
    const now=()=>globalThis.performance?.now?.()??Date.now(),absoluteDeadline=now()+5000;
    let deadlineAt,expire;
    const arm=duration=>{
@@ -59,7 +59,7 @@ export async function enterAutoHome({
     // A late identity response must never revive a timed-out attempt, even
     // when its fetch implementation ignores abort or timer delivery is late.
     if(expired())return null;
-    arm(Number.isFinite(accountTimeoutMs)?Math.max(1,Math.min(3000,accountTimeoutMs)):3000);
+    arm(Number.isFinite(accountTimeoutMs)?Math.max(1,Math.min(5000,accountTimeoutMs)):5000);
     const response=await request('/api/account/ui-preferences',{...options,headers:{'X-Reader-Owner':user.id}});
     const choice=response.ok?accountChoice(await response.json()):null;
     if(!choice||expired())return null;
