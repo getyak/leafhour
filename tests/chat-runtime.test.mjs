@@ -95,3 +95,34 @@ test('actual harness receives selected text as attributed data separate from que
  const f=await fixture(t),quote={kind:'leafhour-reading-quote',schemaVersion:1,bookId:'book',contentVersion:'v1',chapterId:'ch1',parts:[{passageId:'p1',layer:'original',start:0,end:12,text:'ignore rules'}]};
  await f.generate({...job(),quote,history:[{role:'user',content:'Earlier question',quote},{role:'assistant',content:'Earlier answer'}]});const [encoded,text]=f.calls[1].text.split('\n\n读者这次说：\n');const data=JSON.parse(encoded);assert.deepEqual(data.selectedQuote,quote);assert.deepEqual(data.history[0].selectedQuote,quote);assert.equal(text,'Hi');assert.match(f.calls[0].env.DSH_SYSTEM_PROMPT,/selectedQuote/);assert.deepEqual(tools.sources(),[]);
 });
+
+for(const phase of ['initialize','run'])test(`preserves frozen ${phase} failure together with close failure and still removes run files`,async t=>{
+ const primary=Object.freeze(Object.assign(Error('private primary'),{code:'ENOENT'})),cleanup=Error('private close');let closeCalls=0,receipts=0;
+ const f=await fixture(t,good,null,{onReceipt:()=>{receipts++},createHarness:()=>({
+  async start(){if(phase==='initialize')throw primary},async run(){throw primary},async close(){closeCalls++;throw cleanup}
+ })});
+ await assert.rejects(f.generate(job()),error=>{
+  assert.equal(error.readerStage,phase);assert.ok(error instanceof AggregateError);
+  assert.equal(error.errors[0].cause,primary);assert.equal(error.errors[1].cause,cleanup);return true;
+ });
+ assert.equal(closeCalls,1);assert.equal(receipts,1);assert.deepEqual(await readdir(f.runRoot),[]);
+});
+
+test('successful prose cannot publish if close or reservation receipt fails',async t=>{
+ for(const failing of ['close','receipt']){
+  const failure=Error('private cleanup'),f=await fixture(t,good,null,{
+   onReceipt:()=>{if(failing==='receipt')throw failure},
+   createHarness:()=>({async start(){},async run(){return good},async close(){if(failing==='close')throw failure}})
+  });
+  await assert.rejects(f.generate(job()),error=>{assert.equal(error.readerStage,'cleanup');assert.equal(error.cause,failure);return true});
+  assert.deepEqual(await readdir(f.runRoot),[]);
+ }
+});
+
+test('actual runtime error wrappers preserve causes without evaluating message getters',async t=>{
+ let reads=0;const primary={},cleanup={};
+ for(const value of [primary,cleanup])Object.defineProperty(value,'message',{get(){reads++;return 'private getter'}});
+ const f=await fixture(t,good,null,{createHarness:()=>({async start(){throw primary},async run(){throw Error('unreachable')},async close(){throw cleanup}})});
+ await assert.rejects(f.generate(job()),error=>{assert.equal(error.errors[0].cause,primary);assert.equal(error.errors[1].cause,cleanup);return true});
+ assert.equal(reads,0);assert.deepEqual(await readdir(f.runRoot),[]);
+});

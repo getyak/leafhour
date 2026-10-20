@@ -36,3 +36,29 @@ test('annotation generator keeps the existing official factory and explicit attr
  assert.equal(options.inputLabel,ANNOTATION_INPUT_LABEL);assert.equal(options.systemPrompt,ANNOTATION_SYSTEM_PROMPT);
  assert.match(options.systemPrompt,/translationStatus/);assert.match(options.systemPrompt,/reader_cite/);
 });
+
+test('SDK aggregate causes retain safe system and protocol diagnostics without private text',async()=>{
+ const secret='PRIVATE-QUESTION-AND-CREDENTIAL',diagnostics=[];
+ const primary=Object.assign(Error('Cannot find module '+secret),{code:'ENOENT'});
+ const rpc=Object.assign(Error(secret),{name:'JsonRpcResponseError',code:-32603,data:{secret}});
+ const error=new AggregateError([primary,rpc],secret);
+ const generate=createReaderAnnotationGenerator({env:{DEEPSEEK_API_KEY:secret},logger:d=>diagnostics.push(d),makeGenerator:()=>async()=>{throw error;}});
+ await assert.rejects(generate({text:secret}));
+ assert.equal(diagnostics[0].code,'ENOENT');
+ assert.equal(diagnostics[0].rpcCode,-32603);
+ assert.deepEqual(diagnostics[0].errorTypes,['AggregateError','Error','JsonRpcResponseError']);
+ assert.doesNotMatch(JSON.stringify(diagnostics),new RegExp(secret));
+});
+
+test('diagnostics bound cyclic, deep and wide causes and never evaluate error accessors',async()=>{
+ const diagnostics=[],root=new AggregateError([],'private');root.errors.push(root,Object.assign(Error('denied'),{code:'EACCES'}));root.cause=root;
+ Object.defineProperty(root,'stack',{get(){throw Error('stack must not be read')}});
+ const getter={};for(const key of ['message','cause','errors','name','code'])Object.defineProperty(getter,key,{get(){throw Error('accessor must not run')}});
+ const revoked=Proxy.revocable([],{});revoked.revoke();const invalidAggregate={errors:revoked.proxy};
+ let deep=Error('bottom');for(let i=0;i<100;i++)deep=new AggregateError([deep,...Array(50).fill(root)],'private');
+ const generate=createReaderChatGenerator({env:{DEEPSEEK_API_KEY:'fixture'},logger:d=>diagnostics.push(d),makeGenerator:()=>async job=>{throw job.failure;}});
+ for(const failure of [root,deep,getter,invalidAggregate])await assert.rejects(generate({failure}),error=>error===failure);
+ assert.equal(diagnostics.length,4);assert.equal(diagnostics[0].code,'EACCES');
+ assert.ok(JSON.stringify(diagnostics).length<8000);
+ assert.doesNotMatch(JSON.stringify(diagnostics),/private|accessor|stack must/);
+});
