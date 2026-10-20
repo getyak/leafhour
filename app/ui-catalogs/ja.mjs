@@ -1,6 +1,16 @@
 // GET-192 immutable ja UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+
+  "bookUpload.ready": "読書の準備ができました",
+  "bookUpload.permission": "元のファイルを保存しました",
+  "bookUpload.review": "前のリクエストを確認中…",
+  "bookUpload.interrupted": "アップロードが中断しました。進捗は保持されています。",
+  "bookUpload.cancelled": "キャンセル済み",
+  "bookUpload.error": "操作を完了できませんでした。もう一度お試しください。",
+  "bookUpload.action.select": "この会話で選ぶ",
+  "bookUpload.action.consent": "PaddleOCR によるこのファイルの認識を許可",
+
   "ui.accountLocale.reading": "アカウントの表示言語を確認しています…",
   "ui.accountLocale.saving": "表示言語を保存しています…",
   "ui.accountLocale.saved": "アカウントに保存しました。他の端末にも引き継がれます。",

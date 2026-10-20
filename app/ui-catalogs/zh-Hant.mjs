@@ -1,6 +1,16 @@
 // GET-192 immutable zh-Hant UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+
+  "bookUpload.ready": "可以開始閱讀了",
+  "bookUpload.permission": "原始檔案已儲存",
+  "bookUpload.review": "正在核對上次請求…",
+  "bookUpload.interrupted": "上傳暫時中斷，已保留進度",
+  "bookUpload.cancelled": "已取消",
+  "bookUpload.error": "操作暫未完成，請重試",
+  "bookUpload.action.select": "在此對話中選用",
+  "bookUpload.action.consent": "允許 PaddleOCR 辨識這份檔案",
+
   "ui.accountLocale.reading": "正在讀取帳號的語言選擇…",
   "ui.accountLocale.saving": "正在儲存語言選擇…",
   "ui.accountLocale.saved": "已儲存到帳號，其他裝置也會沿用。",

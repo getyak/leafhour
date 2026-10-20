@@ -1,6 +1,5 @@
 import {bookTransfer as transferReading} from './book-transfer.mjs';
 import {cjkFontAssets} from './cjk-font-assets.mjs';
-import {readingView,readingChapter} from './reading-view.mjs';
 import {createIngestionRunner} from './ingestion-runner.mjs';
 import {readFile} from 'node:fs/promises';
 import path from 'node:path';
@@ -97,7 +96,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['reader-audio.js','reader-audio-bootstrap.mjs','reader-audio-metadata.mjs','audio-state.mjs','listening-guide-state.mjs','action-focus.mjs'])files['/'+file]=file;
     for(const file of ['ui-locale.mjs','ui-locale-codec.mjs','ui-locale-controls.mjs','ui-catalogs/en.mjs','ui-catalogs/zh-Hans.mjs','ui-catalogs/zh-Hant.mjs','ui-catalogs/ja.mjs'])files['/'+file]=file;
     for(const file of ['library-portability.mjs','portable-chat.mjs','library-data.mjs','library-data.css','fflate.mjs','fflate-LICENSE.txt'])files['/'+file]=file;
-    files['/document-source.mjs']='document-source.mjs';files['/pdf-ingestion.mjs']='pdf-ingestion.mjs';files['/pdf-onboarding.mjs']='pdf-onboarding.mjs';files['/pdf-onboarding-state.mjs']='pdf-onboarding-state.mjs';files['/book-transfer.mjs']='book-transfer.mjs';
+    files['/document-source.mjs']='document-source.mjs';files['/pdf-ingestion.mjs']='pdf-ingestion.mjs';files['/pdf-onboarding.mjs']='pdf-onboarding.mjs';files['/pdf-onboarding-state.mjs']='pdf-onboarding-state.mjs';files['/book-transfer.mjs']='book-transfer.mjs';files['/book-upload-controller.mjs']='book-upload-controller.mjs';files['/chat-book-upload.mjs']='chat-book-upload.mjs';
     files['/source-review']='source-review.html';for(const file of ['source-review.mjs','source-review.css','source-revisions.mjs'])files['/'+file]=file;
     files['/original-download.mjs']='original-download.mjs';files['/reading-book.mjs']='reading-book.mjs';
     // GET-186/190 reader modules: shared entry policy and the conservative
@@ -221,8 +220,8 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       send(200,{command:process.execPath,args:[path.join(root,'server/mcp.mjs')],serviceUrl:'http://'+loopback+':'+req.socket.localPort});return true;
     }
     if(p==='/api/library/pdf-upload/start'&&req.method==='POST'){const result=await ingestionUpload.start(user,body);if(result.job)await ingestionRunner.enqueue(user,result.job.id);send(201,result);return true;}
-    const partUpload=p.match(/^\/api\/library\/pdf-upload\/([-a-z0-9]{36})\/(part|complete)$/);
-    if(partUpload&&req.method==='POST'){const result=partUpload[2]==='part'?await ingestionUpload.part(user,partUpload[1],body):await ingestionUpload.complete(user,partUpload[1]);if(partUpload[2]==='complete')await ingestionRunner.enqueue(user,result.id);send(200,result);return true;}
+    const partUpload=p.match(/^\/api\/library\/pdf-upload\/([-a-z0-9]{36})\/(part|target|commit|complete)$/);
+    if(partUpload&&req.method==='POST'){const result=partUpload[2]==='complete'?await ingestionUpload.complete(user,partUpload[1]):await ingestionUpload[partUpload[2]](user,partUpload[1],body);if(partUpload[2]==='complete')await ingestionRunner.enqueue(user,result.id);send(200,result);return true;}
     if(p==='/api/library/ingestion'&&req.method==='GET'){const jobs=await ingestion.list(user);for(const job of jobs)if(['preparing','running','publishing'].includes(job.state))await ingestionRunner.enqueue(user,job.id);send(200,{jobs});return true;}
     const ingestRoute=p.match(/^\/api\/library\/ingestion\/([-a-z0-9]{36})(?:\/(advance|cancel|resume|consent|preview))?$/);
     if(ingestRoute){const [,id,action]=ingestRoute;if(req.method==='GET'&&action==='preview')send(200,await ingestion.preview(user,id));else if(req.method==='GET'&&!action)send(200,await ingestion.view(user,id));else if(req.method==='POST'&&action&&action!=='preview'){const result=action==='consent'?await ingestion.consent(user,id,body):await ingestion[action](user,id);await ingestionRunner.enqueue(user,id);send(200,result);}else throw fail('不支持这个请求',405);return true;}
@@ -326,9 +325,9 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='portability-original'&&req.method==='GET'){send(200,await portability.originalPart(user,id,{offset:Number(url.searchParams.get('offset')||0),sha256:url.searchParams.get('sha256')}));return true;}
       if(action==='export-part'&&req.method==='GET'){send(200,await portability.exportPart(user,id,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
       const sendReading=payload=>{if(url.searchParams.has('offset'))send(200,transferReading(payload,Number(url.searchParams.get('offset')),url.searchParams.get('snapshot')));else if(Buffer.byteLength(JSON.stringify(payload))>3000000){res.setHeader('X-Reader-Book-Transfer','parts');send(200,transferReading(payload));}else send(200,payload);};
-      if(action==='reading'&&req.method==='GET'){sendReading(readingView(await library.getBook(user,id),{chapterId:url.searchParams.get('chapterId'),passageId:url.searchParams.get('passageId')}));return true;}
+      if(action==='reading'&&req.method==='GET'){sendReading(await library.readingView(user,id,{chapterId:url.searchParams.get('chapterId'),passageId:url.searchParams.get('passageId')}));return true;}
       const chapterRead=action?.match(/^chapters\/([A-Za-z0-9_.:-]{1,128})$/);
-      if(chapterRead&&req.method==='GET'){sendReading(readingChapter(await library.getBook(user,id),chapterRead[1],url.searchParams.get('contentVersion')));return true;}
+      if(chapterRead&&req.method==='GET'){sendReading(await library.readingChapter(user,id,chapterRead[1],url.searchParams.get('contentVersion')));return true;}
       if(action==='original/range'&&req.method==='GET'){const part=await library.originalRange(user,id,{offset:Number(url.searchParams.get('offset')),length:Number(url.searchParams.get('length')),sha256:url.searchParams.get('sha256')});res.statusCode=206;res.setHeader('Content-Type','application/octet-stream');res.setHeader('Cache-Control','private, no-store');res.setHeader('Content-Length',part.bytes.length);res.setHeader('Content-Range','bytes '+part.offset+'-'+(part.offset+part.bytes.length-1)+'/'+part.total);res.end(part.bytes);return true;}
       if(action==='original/parts'&&req.method==='GET'){send(200,await library.originalParts(user,id));return true;}
       if(action==='original/info'&&req.method==='GET'){send(200,await library.originalInfo(user,id));return true;}

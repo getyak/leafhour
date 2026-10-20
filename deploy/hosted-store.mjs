@@ -42,8 +42,8 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
   async function blob(file){const bytes=await readObject(objectPath(file)),m=manifestOf(bytes);if(!m)return bytes;if(!Number.isSafeInteger(m.size)||m.size>MAX_FILE_BYTES||!Array.isArray(m.parts)||m.parts.length>128)throw fail('原文件分块信息无效',409);const parts=await boundedMap(m.parts,async p=>{const b=await readObject(p.key);if(b.length!==p.size||digest(b)!==p.sha256)throw fail('原文件分块校验失败',409);return b;});const out=Buffer.concat(parts);if(out.length!==m.size||digest(out)!==m.sha256)throw fail('原文件校验失败',409);return out;}
   async function blobInfo(file){try{const r=await request(objectRoute(objectPath(file)),{method:'HEAD'});let size=Number(r.headers.get('content-length'));if(size<65536){const m=manifestOf(await readObject(objectPath(file)));if(m)size=m.size;}if(!Number.isSafeInteger(size)||size<1||size>MAX_FILE_BYTES)throw fail('原文件信息无法核验',409);return {size};}catch(e){if(e.status===404)return null;throw e;}}
   const writeManifest=(file,manifest)=>writeObject(objectPath(file),Buffer.concat([BLOB_MAGIC,Buffer.from(JSON.stringify(manifest))]));
-  async function adoptBlob(file,parts,{size,sha256}){if(!Number.isSafeInteger(size)||size<1||size>MAX_FILE_BYTES||parts.length>128)throw fail('原文件分块信息无效',409);await writeManifest(file,{kind:'leafhour-blob-chunks-v1',size,sha256,parts:parts.map(p=>({key:objectPath(p.target),size:p.size,sha256:p.sha256}))});}
-  async function putBlob(file,bytes){if(bytes.length>MAX_FILE_BYTES)throw fail('文件超过 256 MB',413);const key=objectPath(file);if(bytes.length<=BLOB_CHUNK_BYTES){await writeObject(key,bytes);return;}const slices=[];for(let offset=0;offset<bytes.length;offset+=BLOB_CHUNK_BYTES)slices.push(bytes.subarray(offset,offset+BLOB_CHUNK_BYTES));const parts=await boundedMap(slices,async b=>{const partKey=key+'/parts/'+digest(b);await writeObject(partKey,b);return {key:partKey,size:b.length,sha256:digest(b)};});await writeManifest(file,{kind:'leafhour-blob-chunks-v1',size:bytes.length,sha256:digest(bytes),parts});}
+  async function adoptBlob(file,parts,{size,sha256}){if(!Number.isSafeInteger(size)||size<1||size>MAX_FILE_BYTES||parts.length>128)throw fail('原文件分块信息无效',409);await writeManifest(file,{kind:'leafhour-blob-chunks-v1',size,sha256,parts:parts.map(p=>({key:p.key??objectPath(p.target),size:p.size,sha256:p.sha256}))});}
+  async function putBlob(file,bytes){if(bytes.length>MAX_FILE_BYTES)throw fail('文件超过 256 MB',413);const key=objectPath(file);if(bytes.length<=BLOB_CHUNK_BYTES){await writeObject(key,bytes);return {parts:[{target:file,size:bytes.length,sha256:digest(bytes)}]};}const slices=[];for(let offset=0;offset<bytes.length;offset+=BLOB_CHUNK_BYTES)slices.push(bytes.subarray(offset,offset+BLOB_CHUNK_BYTES));const parts=await boundedMap(slices,async b=>{const partKey=key+'/parts/'+digest(b);await writeObject(partKey,b);return {key:partKey,size:b.length,sha256:digest(b)};});await writeManifest(file,{kind:'leafhour-blob-chunks-v1',size:bytes.length,sha256:digest(bytes),parts});return {parts};}
   async function putSingleBlob(file,bytes){if(!Buffer.isBuffer(bytes)||bytes.length<1||bytes.length>20*1024*1024)throw fail('这一批扫描文件超过 20 MB，请减小页面图片后重试',413);await writeObject(objectPath(file),bytes);}
 
   async function downloadLayout(file,expected={}){
@@ -61,6 +61,7 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
     else if(!Number.isSafeInteger(size)||size<1||size>MAX_FILE_BYTES||expected.size!==undefined&&size!==expected.size)throw fail('原文件大小无法核验',409);
     return {size:m?.size||size,parts:m?.parts||[{key:objectPath(file),size,sha256:null}]};
   }
+  async function blobReferences(file,expected={}){const {parts}=await downloadLayout(file,expected);return parts.map(p=>{const sha256=p.sha256??expected.sha256;if(typeof sha256!=='string'||!/^[a-f0-9]{64}$/.test(sha256))throw fail('原文件引用无法核验',409);return {...p,sha256};});}
   async function blobDownloads(file,expected={}){const layout=await downloadLayout(file,expected);
     return boundedMap(layout.parts,async part=>{const signed=await json('/storage/v1/object/sign/reader-originals/'+part.key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({expiresIn:3600})});const target=new URL(signed.signedURL.startsWith('/object/')?'/storage/v1'+signed.signedURL:signed.signedURL,base+'/storage/v1/');if(target.origin!==new URL(base).origin||!target.pathname.startsWith('/storage/v1/object/sign/'))throw fail('原文件地址无效',503);return {url:target.href,sha256:part.sha256||null,size:part.size};});
   }
@@ -87,6 +88,15 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
     const target=new URL(signed.signedURL.startsWith('/object/')?'/storage/v1'+signed.signedURL:signed.signedURL,base+'/storage/v1/');
     if(target.origin!==new URL(base).origin||!target.pathname.startsWith('/storage/v1/object/sign/'))throw fail('原文件下载地址无效',503);
     return target.href;
+  }
+  const uploadedBlob=file=>readObject(objectPath(file));
+  async function uploadedBlobInfo(file){try{const response=await request(objectRoute(objectPath(file)),{method:'HEAD'});const size=Number(response.headers.get('content-length'));if(!Number.isSafeInteger(size)||size<1||size>MAX_FILE_BYTES)throw fail('上传分块信息无法核验',409);return {size};}catch(error){if(error.status===404)return null;throw error;}}
+  async function signedUpload(file){
+    const key=objectPath(file),signed=await json('/storage/v1/object/upload/sign/reader-originals/'+key,{method:'POST',headers:{'Content-Type':'application/json','x-upsert':'false'},body:'{}'});
+    if(typeof signed.url!=='string')throw fail('上传地址未准备好',503);
+    const target=new URL(signed.url.startsWith('/object/')?'/storage/v1'+signed.url:signed.url,base+'/storage/v1/');
+    if(target.origin!==new URL(base).origin||target.pathname!=='/storage/v1/object/upload/sign/reader-originals/'+key)throw fail('上传地址无效',503);
+    return {url:target.href,method:'PUT',headers:{'Content-Type':'application/octet-stream','x-upsert':'false'}};
   }
   async function beginUpload(user,input){
     if(!user?.id)throw fail('请先进入自己的书房',401);
@@ -126,5 +136,5 @@ export function createHostedStore({env=process.env,fetcher=fetch}={}){
   }
   async function releaseTranslation(ticket){await mutate('limits/translation',{requests:[],active:{}},data=>{if(data.active[ticket.key]?.id===ticket.id)delete data.active[ticket.key];});}
   const configureIngestionWake=(origin,token)=>json('/rest/v1/rpc/reader_configure_ingestion_wake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({wake_origin:origin,derived_token:token})});
-  return {configureIngestionWake,read:async(file,fallback)=>(await snapshot(file,fallback)).data,mutate,putBlob,putSingleBlob,adoptBlob,blob,blobInfo,signedBlob,blobDownloads,blobRange,beginUpload,completeUpload,reserveTranslation,releaseTranslation};
+  return {configureIngestionWake,read:async(file,fallback)=>(await snapshot(file,fallback)).data,mutate,putBlob,putSingleBlob,adoptBlob,blob,blobInfo,signedBlob,blobDownloads,blobReferences,blobRange,uploadedBlob,uploadedBlobInfo,signedUpload,beginUpload,completeUpload,reserveTranslation,releaseTranslation};
 }

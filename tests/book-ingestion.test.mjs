@@ -32,7 +32,7 @@ test('mixed pages pause once for source-bound consent and recognize only their o
  const svc=createBookIngestion({store:f.store,provider:f.provider,batchPages:2,nativeInspector,library:{importExtracted:async(_u,input)=>{published=input.extracted;return {bookId:'mixed-book'};}}});
  let j=await svc.prepare(user,{filename:'mixed.pdf',bytes:f.bytes,mode:'auto',consent:false});
  for(let n=0;n<6&&j.state!=='awaiting_consent';n++)j=await svc.advance(user,j.id);
- assert.equal(j.state,'awaiting_consent');assert.equal(f.submissions,0);assert.equal(j.completedPages,1);
+ assert.equal(j.state,'awaiting_consent');assert.equal(f.submissions,0);assert.equal(j.completedPages,2);
  const preview=await svc.preview(user,j.id);assert.equal(preview.complete,false);assert.equal(preview.pages[0].page,1);assert.ok(!JSON.stringify(preview).includes('jobId'));
  await assert.rejects(svc.consent(user,j.id,{confirm:true,sourceHash:'wrong'}),e=>e.status===409);
  await svc.consent(user,j.id,{confirm:true,sourceHash:j.sourceHash});

@@ -2,6 +2,16 @@
 // data, also the safe default for server/static English shells. Complete
 // default data: every other catalogue carries the same keys.
 export default Object.freeze({
+
+  "bookUpload.ready": "Ready to read",
+  "bookUpload.permission": "Original saved",
+  "bookUpload.review": "Checking the previous request…",
+  "bookUpload.interrupted": "Upload interrupted. Your progress is kept.",
+  "bookUpload.cancelled": "Cancelled",
+  "bookUpload.error": "The action could not complete. Try again.",
+  "bookUpload.action.select": "Use in this chat",
+  "bookUpload.action.consent": "Allow PaddleOCR to recognize this file",
+
   "ui.accountLocale.reading": "Reading your account language preference…",
   "ui.accountLocale.saving": "Saving your language preference…",
   "ui.accountLocale.saved": "Saved to your account for your other devices.",

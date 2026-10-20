@@ -1,3 +1,4 @@
+import {createVerifiedSource} from './verified-source.mjs';
 import {inspectNativePdf,nativePdfOutline} from './pdf-native.mjs';
 import {randomUUID} from 'node:crypto';
 import {PDFDocument} from 'pdf-lib';
@@ -18,8 +19,9 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
   return null;
  }
  async function reservePages(user,job){
+  const pages=job.mode==='auto'?job.batches.reduce((n,b)=>n+(b.pageMap?.length||0),0):job.totalPages;
   const day=new Date(now()).toISOString().slice(0,10);
-  await store.mutate('ingestion-budget/'+day,{pages:0,owners:{},jobs:{}},r=>{r.jobs??={};if(r.jobs[job.id])return;const owner=userId(user);if(r.pages+job.totalPages>15000||(r.owners[owner]||0)+job.totalPages>3000)throw fail('今日识别额度已用完，原文件与进度保留，明天可以继续。',429);r.pages+=job.totalPages;r.owners[owner]=(r.owners[owner]||0)+job.totalPages;r.jobs[job.id]=job.totalPages;});
+  await store.mutate('ingestion-budget/'+day,{pages:0,owners:{},jobs:{}},r=>{r.jobs??={};if(Object.hasOwn(r.jobs,job.id))return;const owner=userId(user);if(r.pages+pages>15000||(r.owners[owner]||0)+pages>3000)throw fail('今日识别额度已用完，原文件与进度保留，明天可以继续。',429);r.pages+=pages;r.owners[owner]=(r.owners[owner]||0)+pages;r.jobs[job.id]=pages;});
  }
  async function prepare(user,{filename,bytes,consent,sourceParts,mode,assertCurrent=async()=>{}}){
   userId(user);
@@ -38,8 +40,8 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
   if(!claim.mine){const old=await store.read(key(user,claim.id),null);if(old)return viewOf(old);throw fail('同一文件正在建立任务，请稍后重试',409);}
   const receipt=consent===true?{recipient:'PaddleOCR official',purpose:'document_parsing',scope:mode==='auto'?'unreadable_pages':'whole_pdf',sha256:hash,version:1,acceptedAt:now()}:null;
   const job={id,filename,sourceHash:hash,totalPages,batches,state:'preparing',mode,createdAt:new Date(now()).toISOString(),consent:receipt,lease:null};
-  if(receipt)await reservePages(user,job);
-  if(sourceParts&&store.adoptBlob)await store.adoptBlob(base+'/source',sourceParts,{size:bytes.length,sha256:hash});else await store.putBlob(base+'/source',bytes);
+  if(sourceParts&&store.adoptBlob){await store.adoptBlob(base+'/source',sourceParts,{size:bytes.length,sha256:hash});job.sourceParts=sourceParts;}else{const saved=await store.putBlob(base+'/source',bytes);if(saved?.parts)job.sourceParts=saved.parts;}
+  job.sourceBytes=bytes.length;
   await assertCurrent();
   for(let start=0;start<totalPages;start+=batchPages)batches.push({start:start+1,count:Math.min(batchPages,totalPages-start),state:'new'});
   await store.mutate(base,{},j=>Object.assign(j,job));await store.mutate(index(user),{jobs:[]},j=>{j.jobs.push(id);});return viewOf(job);
@@ -48,7 +50,7 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
   const j=await get(user,id);if(input?.confirm!==true)throw fail('请确认允许识别本书需要识别的页面。',403);if(input.sourceHash!==j.sourceHash)throw fail('原文件已变化，请重新核对。',409);
   if(!provider)throw fail('当前文字识别服务尚未配置，原文件与进度保留。',503);
   if(j.state!=='awaiting_consent')return viewOf(j);
-  await reservePages(user,j);await store.mutate(key(user,id),null,r=>{if(r.state==='awaiting_consent'){r.consent={recipient:'PaddleOCR official',purpose:'document_parsing',scope:'unreadable_pages',sha256:r.sourceHash,version:1,acceptedAt:now()};r.state='running';r.error=null;}});return viewOf(await get(user,id));
+  if(j.mode!=='auto'||j.batches.every(b=>b.inspected))await reservePages(user,j);await store.mutate(key(user,id),null,r=>{if(r.state==='awaiting_consent'){r.consent={recipient:'PaddleOCR official',purpose:'document_parsing',scope:'unreadable_pages',sha256:r.sourceHash,version:1,acceptedAt:now()};r.state='running';r.error=null;}});return viewOf(await get(user,id));
  }
  async function preview(user,id){
   const j=await get(user,id),base=key(user,id),pages=[];let characters=0,truncated=false;
@@ -70,19 +72,26 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
     let outline=[];if(job.mode==='auto')outline=await nativePdfOutline(bytes).catch(()=>[]);
     await save(j=>{j.state='running';j.prepared=true;j.outline=outline;});return viewOf(await get(user,id));
    }
+   const preflightIndex=job.mode==='auto'?job.batches.findIndex(b=>!b.inspected&&b.state==='new'):-1;
    const active=job.batches.filter(b=>b.state==='submitted').length,newIndex=job.batches.findIndex(b=>b.state==='new');
    const uncertain=job.batches.findIndex(b=>b.state==='submitting');
    const polling=job.batches.map((b,i)=>({b,i})).filter(x=>x.b.state==='submitted').sort((a,b)=>(a.b.pollOrder||0)-(b.b.pollOrder||0))[0]?.i;
-   const i=uncertain>=0?uncertain:active<3&&newIndex>=0?newIndex:polling??job.batches.findIndex(b=>b.state!=='done');
+   const i=uncertain>=0?uncertain:preflightIndex>=0?preflightIndex:active<3&&newIndex>=0?newIndex:polling??job.batches.findIndex(b=>b.state!=='done');
    if(i<0){
     const pages=[];for(let n=0;n<job.batches.length;n++){const result=JSON.parse(await store.blob(base+'/result-'+batchKey(job.batches[n],n)));pages.push(...result.normalized);}
     if(pages.length!==job.totalPages||pages.some((p,n)=>p.page!==n+1))throw fail('页码覆盖不完整，未加入书房',422);
     const extracted={format:'pdf',review:'extracted_unreviewed',processor:job.mode==='auto'&&!job.batches.some(b=>b.pageMap?.length)?'pdfjs-native':job.mode==='auto'?'native+paddle-auto-v1':PADDLE_MODEL,pages,outline:job.outline||[],contentVersion:digest(JSON.stringify(pages.map(p=>p.blocks?p.blocks.map(b=>[b.id,b.text,b.type]):p.text))),quality:{totalPages:pages.length,blankPages:pages.filter(p=>p.blank).map(p=>p.page),review:'extracted_unreviewed'}};
-    const bytes=await store.blob(base+'/source');await current();
+    await current();
+    const sourceSize=job.sourceBytes??(await sourceDocument()).bytes.length;
+    const verifiedSource=createVerifiedSource(user,{sha256:job.sourceHash,size:sourceSize,adopt:async(target,dataStore)=>{
+     if(dataStore){if(dataStore!==store||!store.adoptBlob)throw fail('原文件引用无法核验',403);const parts=job.sourceParts??await store.blobReferences?.(base+'/source',{size:sourceSize,sha256:job.sourceHash});if(!parts)throw fail('原文件引用无法核验',403);await store.adoptBlob(target,parts,{size:sourceSize,sha256:job.sourceHash});}
+     else if(store.adoptToFile)await store.adoptToFile(base+'/source',target);
+     else throw fail('原文件引用存储尚未配置',503);
+    }});
     // The publication fence is held across the library commit; cancel is refused
     // during this short phase, so it cannot report cancellation after publishing.
     await save(j=>{j.state='publishing';});
-    const book=await library.importExtracted(user,{filename:job.filename,bytes,extracted});
+    const book=await library.importExtracted(user,{filename:job.filename,verifiedSource,extracted});
     await save(j=>{j.state='done';j.bookId=book.bookId;});return viewOf(await get(user,id));
    }
    const batch=job.batches[i];
@@ -94,14 +103,16 @@ export function createBookIngestion({store,library,provider,batchPages=30,maxBat
     const nativeCharacters=job.batches.reduce((n,b)=>n+(b.nativeCharacters||0),0)+native.reduce((n,p)=>n+p.text.length,0);if(nativeCharacters>8000000)throw fail('这本书超过当前文字处理容量，原文件与已完成页保留。',413);
     await store.putBlob(target,Buffer.from(JSON.stringify({normalized:native})));
     if(!pageMap.length)await store.putBlob(base+'/result-'+batchKey(batch,i),Buffer.from(JSON.stringify({normalized:native})));
-    await save(j=>{Object.assign(j.batches[i],{inspected:true,pageMap,nativeCount:native.length,nativeCharacters:native.reduce((n,p)=>n+p.text.length,0),nativeResult:target,...(!pageMap.length?{state:'done'}:{})});if(pageMap.length&&!j.consent)j.state='awaiting_consent';});return viewOf(await get(user,id));
+    await save(j=>{Object.assign(j.batches[i],{inspected:true,pageMap,nativeCount:native.length,nativeCharacters:native.reduce((n,p)=>n+p.text.length,0),nativeResult:target,...(!pageMap.length?{state:'done'}:{})});if(j.batches.every(b=>b.inspected)&&j.batches.some(b=>b.pageMap?.length)&&!j.consent)j.state='awaiting_consent';});return viewOf(await get(user,id));
    }
    if(batch.state==='submitting'){stage='provider_recover';if(batch.requestId&&provider.recover){const handle=await provider.recover(batch.requestId);if(handle){await save(j=>{j.batches[i].handle=handle;j.batches[i].state='submitted';j.state='running';j.error=null;});return viewOf(await get(user,id));}}await save(j=>{j.state='needs_review';j.error='上次请求未确认是否提交成功，为避免重复计费已暂停，请保留任务并联系管理员。';});return viewOf(await get(user,id));}
    if(!batch.handle){
+    if(job.mode==='auto'&&job.batches.some(b=>!b.inspected))throw fail('原文件仍在检查',409);
+    if(!job.consent)throw fail('请先允许识别本书',403);
     stage='split_batch';const {doc}=await sourceDocument(),part=await PDFDocument.create();const selected=await part.copyPages(doc,(batch.pageMap||Array.from({length:batch.count},(_,n)=>batch.start+n)).map(n=>n-1));selected.forEach(p=>part.addPage(p));const bytes=Buffer.from(await part.save());let fileUrl;
     if(bytes.length>maxBatchBytes){if(batch.count===1)throw fail('单页扫描文件超过 20 MB，请减小页面图片后重试',413);const left=Math.floor(batch.count/2);await save(j=>{j.batches.forEach((b,n)=>{b.storageKey??=String(n);});j.batches.splice(i,1,{start:batch.start,count:left,state:'new',storageKey:randomUUID()},{start:batch.start+left,count:batch.count-left,state:'new',storageKey:randomUUID()});});return viewOf(await get(user,id));}
     if(store.putSingleBlob&&store.signedBlob){stage='stage_batch';const target=base+'/input-'+batchKey(batch,i);await store.putSingleBlob(target,bytes);fileUrl=await store.signedBlob(target,{expiresIn:3600});}
-    await current();const requestId=randomUUID();await save(j=>{j.batches[i].state='submitting';j.batches[i].requestId=requestId;});
+    await reservePages(user,await current());const requestId=randomUUID();await save(j=>{j.batches[i].state='submitting';j.batches[i].requestId=requestId;});
     stage='provider_submit';const handle=await provider.submit(bytes,{batchId:requestId,fileUrl});stage='save_provider_handle';await save(j=>{j.batches[i].handle=handle;j.batches[i].state='submitted';});
    }else{
     readIndex=i;stage='provider_status';

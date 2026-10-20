@@ -20,6 +20,7 @@ export const UI_LOCALE_OWNERS=Object.freeze([
  'app/home-navigation.mjs',
  'app/library-book-actions.mjs',
  'app/library-chat.mjs',
+ 'app/chat-book-upload.mjs',
  'app/library-daily-reading.mjs',
  'app/library-data.mjs',
  'app/library-filter-controls.mjs',
@@ -360,6 +361,8 @@ export async function buildReaderWeb({root,outputDir,html}){
  // open from the statically bundled reader-book-actions-bootstrap.mjs. The
  // prior six exceptions are unchanged.
  const lazyModules={
+  'chat-book-upload.mjs':{kind:'dynamic-import',importer:'library-chat.mjs'},
+  'library-chat-markdown.mjs':{kind:'dynamic-import',importer:'library-chat.mjs'},
   'reader-book-actions.mjs':{kind:'dynamic-import',importer:'reader-book-actions-bootstrap.mjs'},
   'gift-compose.mjs':{kind:'dynamic-import',importer:'reader-book-actions.mjs'},
   'book-binding.mjs':{kind:'dynamic-import',importer:'reader-book-actions.mjs'},
@@ -419,7 +422,7 @@ export async function buildReaderWeb({root,outputDir,html}){
    if(!candidates.some(file=>file&&file.startsWith('app/ui-catalogs/')))return undefined;
    throw Error('Non-public ui-catalogue bundle edge: '+args.path);
   });
-  b.onResolve({filter:/^\.\/(?:reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|reader-settings-choices|command-palette)\.mjs(?:\?.*)?$/},args=>{
+  b.onResolve({filter:/^\.\/(?:chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|reader-settings-choices|command-palette)\.mjs(?:\?.*)?$/},args=>{
   const at=args.path.indexOf('?'),query=at<0?'':args.path.slice(at);
   if(query&&args.path!==paletteRetry)throw Error('Non-public lazy reader module: '+args.path);
   const entry=lazyModules[args.path.slice(2,query?at:undefined)];

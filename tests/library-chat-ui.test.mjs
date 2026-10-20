@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mountLibraryChat} from '../app/library-chat.mjs';
+import {mountChatBookUpload} from '../app/chat-book-upload.mjs';
+import {createBookUploadController} from '../app/book-upload-controller.mjs';
 import {requestUiRoute,t as uiText} from '../app/ui-locale.mjs';
 import {renderChatMarkdown,safeChatUrl} from '../app/library-chat-markdown.mjs';
 
@@ -27,12 +29,12 @@ class Element extends EventTarget {
   querySelectorAll(selector){const visit=n=>[...n.children.flatMap(visit),n];const all=visit(this).slice(0,-1);const keys=selector.split(',').map(part=>part.trim().replace(/^\[|\]$/g,''));return all.filter(n=>keys.some(key=>n.getAttribute&&n.getAttribute(key)!==undefined));}
 }
 const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
-function setup(t,{handler,navigate,onViewChange,books=[{bookId:'one',title:{zh:'书名'}}]}={}){
+function setup(t,{handler,navigate,onViewChange,uploadController,uploadOptions,loadUpload,renderMarkdown=renderChatMarkdown,loadMarkdown,books=[{bookId:'one',title:{zh:'书名'}}]}={}){
  const doc=new EventTarget();doc.createElement=tag=>new Element(tag,doc);doc.createTextNode=text=>{const n=new Element('#text',doc);n.textContent=text;return n;};doc.body=doc.createElement('body');const all=()=>{const visit=n=>[n,...n.children.flatMap(visit)];return visit(doc.body);};doc.getElementById=id=>all().find(n=>n.id===id);doc.querySelectorAll=()=>[];
  const previous={document:globalThis.document,localStorage:globalThis.localStorage,window:globalThis.window};const storage=new Map();globalThis.document=doc;globalThis.localStorage={getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)};const viewport=new EventTarget();viewport.height=800;viewport.offsetTop=0;globalThis.window={matchMedia:()=>({matches:false}),visualViewport:viewport};t.after(()=>Object.assign(globalThis,previous));
  const root=doc.createElement('dialog');root.id='chat';doc.body.append(root);const external=doc.createElement('button');doc.body.append(external);external.focus();let owner='alice',passage='p1',turns=[];const calls=[];
  const api=async(url,payload)=>{calls.push({url,payload});if(handler)return handler(url,payload,{turns,setTurns:v=>turns=v});if(payload){const turn={...payload,status:'running',answer:null};turns=[...turns,turn];return turn;}return {bookId:'one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:new URL(url,'http://local').searchParams.get('passageId')||'p1',chapterTitle:'章节',original:'Source'},turns};};
- const chat=mountLibraryChat({root,api,getSession:()=>owner?{user:{id:owner}}:null,getOwner:()=>owner,getBooks:()=>books,openAuth(){},getCurrentBook:()=> 'one',getCurrentPassage:()=>passage,onNavigateToPassage:navigate||(()=>true),onViewChange});t.after(()=>chat.close());t.after(()=>chat.dispose?.());
+ const chat=mountLibraryChat({root,api,uploadController,mountUpload:uploadController?mountChatBookUpload:null,uploadOptions,loadUpload,renderMarkdown,loadMarkdown,getSession:()=>owner?{user:{id:owner}}:null,getOwner:()=>owner,getBooks:()=>books,openAuth(){},getCurrentBook:()=> 'one',getCurrentPassage:()=>passage,onNavigateToPassage:navigate||(()=>true),onViewChange});t.after(()=>chat.close());t.after(()=>chat.dispose?.());
  return {root,chat,doc,calls,external,viewport,all,find:cls=>all().find(n=>n.className.split(' ').includes(cls)),input:()=>doc.getElementById('library-chat-input'),setTurns:v=>turns=v,setOwner:v=>owner=v,setPassage:v=>passage=v,complete:()=>{turns=turns.map(turn=>turn.status==='completed'?turn:({...turn,status:'completed',answer:{summary:'真实回答',sourceRefs:[]}}));}};
 }
 function type(el,text){el.value=text;el.dispatchEvent(new Event('input'));}
@@ -230,7 +232,7 @@ test('disposal before a queued chat load prevents the request and retained contr
 test('queued close from disposed dialog cannot affect a fresh open or unopened controller',async t=>{
  await requestUiRoute('en');const s=setup(t),queued=[],oldSet=globalThis.setTimeout,oldClear=globalThis.clearTimeout,timers=new Map();let serial=0;
  globalThis.setTimeout=fn=>{timers.set(++serial,fn);return serial;};globalThis.clearTimeout=id=>timers.delete(id);s.root.close=function(){this.open=false;queued.push(()=>this.dispatchEvent(new Event('close')));};let fresh;
- try{s.chat.open();await flush();s.chat.dispose();let returned=0;const host=s.doc.createElement('div');s.doc.body.append(host);fresh=mountLibraryChat({root:s.root,api:async()=>response([{id:'pending',text:'Literal pending',status:'running'}]),getSession:()=>({user:{id:'alice'}}),getOwner:()=> 'alice',getBooks:()=>[{bookId:'one',title:{en:'Book'}}],openAuth(){},externalLauncher:{triggerHost:host,onOpen(){},focusReturn(){returned++;}}});
+ try{s.chat.open();await flush();s.chat.dispose();let returned=0;const host=s.doc.createElement('div');s.doc.body.append(host);fresh=mountLibraryChat({root:s.root,renderMarkdown:renderChatMarkdown,api:async()=>response([{id:'pending',text:'Literal pending',status:'running'}]),getSession:()=>({user:{id:'alice'}}),getOwner:()=> 'alice',getBooks:()=>[{bookId:'one',title:{en:'Book'}}],openAuth(){},externalLauncher:{triggerHost:host,onOpen(){},focusReturn(){returned++;}}});
  const focus=s.doc.createElement('button');s.doc.body.append(focus);focus.focus();queued.shift()();assert.equal(returned,0);assert.ok(s.doc.activeElement===focus);
  fresh.open();await flush();const polls=timers.size,focused=s.doc.activeElement;assert.ok(polls>0);s.root.dispatchEvent(new Event('close'));assert.equal(timers.size,polls);assert.ok(s.doc.activeElement===focused);assert.equal(returned,0);
  fresh.close();assert.equal(returned,1);queued.shift()();assert.equal(returned,1);
@@ -297,4 +299,29 @@ test('explicit quote on a newer passage fences an older in-flight context read i
 });
 test('a definite preclaim quote rejection preserves editable question and enables removal without uncertain recovery',async t=>{
  const s=setup(t,{handler:async(url,payload)=>{if(payload)throw Object.assign(Error('Selection changed'),{status:422});return {bookId:'one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:'p1',original:'Source'},turns:[]};}});s.chat.open();await flush();s.chat.quote(uiQuote());type(s.input(),'Keep my question');await flush();s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();assert.equal(s.input().disabled,false);assert.equal(s.find('library-chat-quote-remove').disabled,false);assert.equal(s.find('library-chat-send').disabled,true);assert.equal(s.find('library-chat-quote-stale').hidden,false);assert.equal(s.input().value,'Keep my question');assert.doesNotMatch(plain(s.find('library-chat-status')),/c\.notice\./);s.find('library-chat-quote-remove').click();assert.equal(s.find('library-chat-send').disabled,false);
+});
+
+
+test('upload cards retain draft, composing input, focus and card identity across progress and locale changes',async t=>{
+ let complete,progress;const controller=createBookUploadController({getOwner:()=> 'alice',getSession:()=>({user:{id:'alice'}}),api:async()=>({jobs:[]}),uploadPdf:o=>{progress=o.onProgress;return new Promise(r=>complete=r);}});t.after(()=>controller.dispose());
+ const s=setup(t,{uploadController:controller});s.chat.open();await flush();type(s.input(),'Keep this draft.');s.input().focus();s.input().dispatchEvent(new Event('compositionstart'));s.chat.upload({name:'私有书.pdf',size:20});const card=s.find('chat-book-task');assert.ok(card);assert.equal(s.doc.activeElement,s.input());
+ progress({id:'pdf.upload.saved',params:{percent:50}});assert.equal(s.find('chat-book-task'),card);assert.equal(s.input().value,'Keep this draft.');assert.equal(s.doc.activeElement,s.input());await requestUiRoute('ja');assert.equal(s.find('chat-book-task'),card);assert.equal(s.input().value,'Keep this draft.');await requestUiRoute('en');complete({id:'job',state:'done',bookId:'new'});await flush();assert.equal(s.find('chat-book-task'),card);assert.equal(s.input().value,'Keep this draft.');assert.equal(s.calls.filter(c=>c.payload).length,0);
+});
+test('empty-library chat accepts an attachment and file drop without a book or model request',async t=>{
+ const files=[],controller=createBookUploadController({getOwner:()=> 'alice',getSession:()=>({user:{id:'alice'}}),api:async()=>({jobs:[]}),uploadPdf:async o=>{files.push(o.file);return {id:'j',state:'awaiting_consent',sourceHash:'h',ocrAvailable:true,totalPages:123,recognitionPages:44};}});t.after(()=>controller.dispose());const s=setup(t,{books:[],uploadController:controller});s.chat.open();await flush();assert.equal(s.find('library-chat-composer').hidden,false);assert.equal(s.find('chat-book-attach').disabled,false);const event=new Event('drop',{cancelable:true});event.dataTransfer={files:[{name:'first.pdf',size:20}],types:['Files']};s.root.dispatchEvent(event);await flush();assert.equal(files.length,1);assert.ok(s.find('chat-book-task'));assert.ok(s.find('chat-book-consent'));const text=plain(s.find('chat-book-task'));assert.ok(!/123|44|quota/i.test(text));assert.equal(s.calls.length,0);
+});
+
+test('closing while upload code loads retains the chosen file and draft without reopening or focusing chat',async t=>{
+ let resolve,mounts=0,adds=0,refreshes=0;const loading=new Promise(r=>resolve=r),s=setup(t,{uploadOptions:{},loadUpload:()=>loading});s.chat.open();await flush();type(s.input(),'Retain this draft.');s.input().focus();const input=s.input(),pending=s.chat.upload({name:'later.pdf',size:20});s.chat.close();const focus=s.doc.activeElement;resolve({mountChatBookUpload:()=>{mounts++;return {add:file=>{if(file)adds++;return file?'id':null;},controller:{tasks:()=>[],refresh:()=>{refreshes++;}},dispose(){}};}});await pending;await flush();assert.equal(mounts,1);assert.equal(adds,1);assert.equal(refreshes,0);assert.equal(s.root.open,false);assert.equal(input.value,'Retain this draft.');assert.equal(s.doc.activeElement,focus);
+});
+test('owner switch while upload code loads discards the old file without mounting or starting work',async t=>{
+ let resolve,mounts=0;const loading=new Promise(r=>resolve=r),s=setup(t,{uploadOptions:{},loadUpload:()=>loading});s.chat.open();await flush();const pending=s.chat.upload({name:'private.pdf',size:20});s.setOwner('bob');s.chat.update();type(s.input(),'Bob draft.');resolve({mountChatBookUpload:()=>{mounts++;return {add:()=>assert.fail('old file'),controller:{tasks:()=>[]},dispose(){}};}});await pending;await flush();assert.equal(mounts,0);assert.equal(s.input().value,'Bob draft.');
+});
+test('disposing while upload code loads prevents its UI, requests and selected file work',async t=>{
+ let resolve;const loading=new Promise(r=>resolve=r),s=setup(t,{uploadOptions:{},loadUpload:()=>loading});s.chat.open();const pending=s.chat.upload({name:'private.pdf',size:20});s.chat.dispose();resolve({mountChatBookUpload:()=>assert.fail('disposed lazy upload cannot mount')});await pending;await flush();assert.equal(s.find('chat-book-task'),undefined);
+});
+
+test('chat history waits for its on-demand renderer while data loads in parallel and disposal fences late rendering',async t=>{
+ let resolve;const loading=new Promise(r=>resolve=r),s=setup(t,{renderMarkdown:null,loadMarkdown:()=>loading});s.setTurns([{id:'answer',status:'completed',text:'Question',answer:{summary:'## Answer',sourceRefs:[]}}]);s.chat.open();await flush();assert.ok(s.calls.some(call=>call.url.includes('/chat')),'history request starts before renderer settles');assert.equal(s.find('library-chat-answer'),undefined);type(s.input(),'Retain draft.');s.chat.close();resolve({renderChatMarkdown});await flush();assert.equal(s.input().value,'Retain draft.');assert.equal(s.root.open,false);assert.ok(s.find('library-chat-answer'));
+ let later;const stopped=setup(t,{renderMarkdown:null,loadMarkdown:()=>new Promise(r=>later=r)});stopped.chat.open();await flush();stopped.chat.dispose();later({renderChatMarkdown:()=>assert.fail('late disposed answer render')});await flush();assert.equal(stopped.root.open,false);
 });
