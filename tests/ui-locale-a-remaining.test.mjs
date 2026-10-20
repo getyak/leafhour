@@ -17,7 +17,9 @@ class Element extends EventTarget{
  get isConnected(){return this===this.ownerDocument.body||!!this.parentElement?.isConnected;}
  append(...nodes){for(const n of nodes){n.parentElement?.children.splice(n.parentElement.children.indexOf(n),1);n.parentElement=this;this.children.push(n);}}
  replaceChildren(...nodes){this.replacements++;for(const n of this.children)n.parentElement=null;this.children=[];this.append(...nodes);}
- setAttribute(k,v){this.attrs[k]=String(v);}getAttribute(k){return this.attrs[k];}removeAttribute(k){delete this.attrs[k];}
+ setAttribute(k,v){this.attrs[k]=String(v);}getAttribute(k){return this.attrs[k];}hasAttribute(k){return Object.hasOwn(this.attrs,k);}removeAttribute(k){delete this.attrs[k];}
+ toggleAttribute(k,force){const next=force===undefined?!this.hasAttribute(k):!!force;if(next)this.setAttribute(k,'');else this.removeAttribute(k);return next;}
+ contains(node){return node===this||this.children.some(child=>child.contains(node));}
  querySelectorAll(s){return all(this).slice(1).filter(n=>s.startsWith('.')?n.className.split(' ').includes(s.slice(1)):s==='[data-reading-arrival]'?!!n.dataset.readingArrival:s.startsWith('[data-date=')?n.dataset.date===s.slice(12,-2):false);}
  querySelector(s){return this.querySelectorAll(s)[0]||null;}focus(){this.ownerDocument.activeElement=this;}showModal(){this.open=true;}close(){this.open=false;this.dispatchEvent(new Event('close'));}
 }

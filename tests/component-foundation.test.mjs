@@ -24,7 +24,6 @@ const mix = (a, b, weight) => a.map((value, index) => Math.round(value * weight 
 // Declarations of one selector; when a file repeats the selector in a dark
 // media block, only that block's text is parsed so day/night stay separate.
 function palette(source, selector, {media = false} = {}) {
-  const escaped = selector.replace(/[[\]=]/g, '\\$&');
   const darkBlocks = [];
   const spans = [];
   for (const match of source.matchAll(/@media[^{]*prefers-color-scheme:\s*dark[^{]*\{/g)) {
@@ -37,8 +36,11 @@ function palette(source, selector, {media = false} = {}) {
   let text = media ? darkBlocks.join('\n') : spans.reduceRight((acc, [start, end]) => acc.slice(0, start) + acc.slice(end), source);
   if (!text.trim()) return null;
   const values = {};
-  for (const block of text.matchAll(new RegExp(escaped + '\\s*\\{([^}]*)\\}', 'g'))) {
-    for (const match of block[1].matchAll(/(--[a-z-]+):\s*(#[0-9a-f]{3}(?:[0-9a-f]{3})?|var\(--[a-z-]+\))/g)) values[match[1]] = match[2];
+  // Read declarations for an exact member of a shared selector list; this
+  // extracts palette constants, it does not simulate the browser cascade.
+  for (const block of stripComments(text).matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    if (!block[1].split(',').some(member => member.trim() === selector)) continue;
+    for (const match of block[2].matchAll(/(--[a-z-]+):\s*(#[0-9a-f]{3}(?:[0-9a-f]{3})?|var\(--[a-z-]+\))/g)) values[match[1]] = match[2];
   }
   return Object.keys(values).length ? values : null;
 }
@@ -49,6 +51,15 @@ const resolve = (values, name) => {
   const alias = /^var\((--[a-z-]+)\)$/.exec(value);
   return alias ? hex(values[alias[1]] || '#000000') : hex(value);
 };
+
+test('palette extraction accepts shared selectors without confusing day and night', () => {
+  const source = ':root,.preview{--paper:#fff;--ink:#222;--accent:#345} :root[data-site-theme=night],.preview-night{--paper:#111;--ink:#eee;--accent:#abc} @media(prefers-color-scheme:dark){:root{--paper:#123;--ink:#fed;--accent:#456}}';
+  assert.deepEqual(palette(source, ':root'), {'--paper':'#fff','--ink':'#222','--accent':'#345'});
+  assert.deepEqual(palette(source, '.preview'), palette(source, ':root'));
+  assert.equal(palette(source, ':root[data-site-theme=night]')['--paper'], '#111');
+  assert.equal(palette(source, ':root', {media:true})['--paper'], '#123');
+  assert.equal(palette(source, '.missing'), null);
+});
 
 test('every product stylesheet parses cleanly through esbuild', async () => {
   const files = (await readdir(path.join(root, 'app'))).filter(name => name.endsWith('.css'));
