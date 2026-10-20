@@ -257,6 +257,8 @@ dialog .status:empty { display: none; }
 
 /* Mobile links occupy their own space: no invisible hit areas over nearby text. */
 @media (max-width:760px) {
+  /* Leave the fixed sunlight control clear of the last row of footer links. */
+  .site-footer { padding-bottom:calc(76px + env(safe-area-inset-bottom, 0px)); }
   .home-languages a,
   .public-faq a,
   .privacy-document a,

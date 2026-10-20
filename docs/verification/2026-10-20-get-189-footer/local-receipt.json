@@ -1,0 +1,1302 @@
+{
+  "baseCommit": "cae3f61f37570000bdedfcaf43eb5d2e2dc034f1",
+  "cssSHA": "519ad2b07836e69134aa26c96cf3b53f54699c54ab5051a660fc3afa2b4fc0e5",
+  "scope": "Local source, not Production or a physical phone. Fonts and finite animations settled. Center and four edge midpoints are tested; rounded-pill bounding-box corners are not hit regions.",
+  "rows": [
+    {
+      "path": "/",
+      "width": 390,
+      "paddingBottom": "76px",
+      "pill": {
+        "x": 273.609375,
+        "y": 785,
+        "width": 101.390625,
+        "height": 44
+      },
+      "links": [
+        {
+          "label": "Leafhour",
+          "href": "/",
+          "x": 19.5,
+          "y": 555.5,
+          "width": 130.21875,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "About Leafhour ↗",
+          "href": "/library?settings=about&ui=en",
+          "x": 19.5,
+          "y": 723.890625,
+          "width": 107,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Privacy",
+          "href": "/privacy",
+          "x": 146.5,
+          "y": 723.890625,
+          "width": 44.1875,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "English",
+          "href": "/",
+          "x": 19.5,
+          "y": 619.5,
+          "width": 44,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "简体中文",
+          "href": "/zh-hans",
+          "x": 63.5,
+          "y": 619.5,
+          "width": 70.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "繁體中文",
+          "href": "/zh-hant",
+          "x": 133.578125,
+          "y": 619.5,
+          "width": 70.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "日本語",
+          "href": "/ja",
+          "x": 203.65625,
+          "y": 619.5,
+          "width": 57.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "GitHub",
+          "href": "https://github.com/getyak/leafhour",
+          "x": 210.6875,
+          "y": 723.890625,
+          "width": 44,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "overflow": false,
+      "locale": {
+        "state": {
+          "requested": "en",
+          "effective": "en",
+          "fallbackReason": "none",
+          "retryTarget": null,
+          "retryActor": null,
+          "attempt": 0,
+          "persistence": "saved",
+          "phase": "ready",
+          "offerReload": false,
+          "initialFallback": false
+        },
+        "lang": "en"
+      }
+    },
+    {
+      "path": "/zh-hans",
+      "width": 390,
+      "paddingBottom": "76px",
+      "pill": {
+        "x": 296,
+        "y": 785,
+        "width": 79,
+        "height": 44
+      },
+      "links": [
+        {
+          "label": "Leafhour",
+          "href": "/zh-hans",
+          "x": 19.5,
+          "y": 556.03125,
+          "width": 130.21875,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "关于 Leafhour ↗",
+          "href": "/library?settings=about&ui=zh-Hans",
+          "x": 19.5,
+          "y": 724.421875,
+          "width": 96.65625,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "隐私说明",
+          "href": "/zh-hans/privacy",
+          "x": 136.15625,
+          "y": 724.421875,
+          "width": 52,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "English",
+          "href": "/",
+          "x": 19.5,
+          "y": 620.03125,
+          "width": 44,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "简体中文",
+          "href": "/zh-hans",
+          "x": 63.5,
+          "y": 620.03125,
+          "width": 70.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "繁體中文",
+          "href": "/zh-hant",
+          "x": 133.578125,
+          "y": 620.03125,
+          "width": 70.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "日本語",
+          "href": "/ja",
+          "x": 203.65625,
+          "y": 620.03125,
+          "width": 57.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "GitHub",
+          "href": "https://github.com/getyak/leafhour",
+          "x": 208.15625,
+          "y": 724.421875,
+          "width": 44,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "overflow": false,
+      "locale": {
+        "state": {
+          "requested": "zh-Hans",
+          "effective": "zh-Hans",
+          "fallbackReason": "none",
+          "retryTarget": null,
+          "retryActor": null,
+          "attempt": 0,
+          "persistence": "saved",
+          "phase": "ready",
+          "offerReload": false,
+          "initialFallback": false
+        },
+        "lang": "zh-Hans"
+      }
+    },
+    {
+      "path": "/zh-hant",
+      "width": 390,
+      "paddingBottom": "76px",
+      "pill": {
+        "x": 296,
+        "y": 785,
+        "width": 79,
+        "height": 44
+      },
+      "links": [
+        {
+          "label": "Leafhour",
+          "href": "/zh-hant",
+          "x": 19.5,
+          "y": 556.03125,
+          "width": 130.21875,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "關於 Leafhour ↗",
+          "href": "/library?settings=about&ui=zh-Hant",
+          "x": 19.5,
+          "y": 724.421875,
+          "width": 96.65625,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "隱私說明",
+          "href": "/zh-hant/privacy",
+          "x": 136.15625,
+          "y": 724.421875,
+          "width": 52,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "English",
+          "href": "/",
+          "x": 19.5,
+          "y": 620.03125,
+          "width": 44,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "简体中文",
+          "href": "/zh-hans",
+          "x": 63.5,
+          "y": 620.03125,
+          "width": 70.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "繁體中文",
+          "href": "/zh-hant",
+          "x": 133.578125,
+          "y": 620.03125,
+          "width": 70.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "日本語",
+          "href": "/ja",
+          "x": 203.65625,
+          "y": 620.03125,
+          "width": 57.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "GitHub",
+          "href": "https://github.com/getyak/leafhour",
+          "x": 208.15625,
+          "y": 724.421875,
+          "width": 44,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "overflow": false,
+      "locale": {
+        "state": {
+          "requested": "zh-Hant",
+          "effective": "zh-Hant",
+          "fallbackReason": "none",
+          "retryTarget": null,
+          "retryActor": null,
+          "attempt": 0,
+          "persistence": "saved",
+          "phase": "ready",
+          "offerReload": false,
+          "initialFallback": false
+        },
+        "lang": "zh-Hant"
+      }
+    },
+    {
+      "path": "/ja",
+      "width": 390,
+      "paddingBottom": "76px",
+      "pill": {
+        "x": 296,
+        "y": 785,
+        "width": 79,
+        "height": 44
+      },
+      "links": [
+        {
+          "label": "Leafhour",
+          "href": "/ja",
+          "x": 19.5,
+          "y": 555.53125,
+          "width": 130.21875,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Leafhour について ↗",
+          "href": "/library?settings=about&ui=ja",
+          "x": 19.5,
+          "y": 723.921875,
+          "width": 122.65625,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "プライバシー",
+          "href": "/ja/privacy",
+          "x": 162.15625,
+          "y": 723.921875,
+          "width": 78,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "English",
+          "href": "/",
+          "x": 19.5,
+          "y": 619.53125,
+          "width": 44,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "简体中文",
+          "href": "/zh-hans",
+          "x": 63.5,
+          "y": 619.53125,
+          "width": 70.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "繁體中文",
+          "href": "/zh-hant",
+          "x": 133.578125,
+          "y": 619.53125,
+          "width": 70.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "日本語",
+          "href": "/ja",
+          "x": 203.65625,
+          "y": 619.53125,
+          "width": 57.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "GitHub",
+          "href": "https://github.com/getyak/leafhour",
+          "x": 260.15625,
+          "y": 723.921875,
+          "width": 44,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "overflow": false,
+      "locale": {
+        "state": {
+          "requested": "ja",
+          "effective": "ja",
+          "fallbackReason": "none",
+          "retryTarget": null,
+          "retryActor": null,
+          "attempt": 0,
+          "persistence": "saved",
+          "phase": "ready",
+          "offerReload": false,
+          "initialFallback": false
+        },
+        "lang": "ja"
+      }
+    },
+    {
+      "path": "/ja",
+      "width": 320,
+      "paddingBottom": "76px",
+      "pill": {
+        "x": 226,
+        "y": 785,
+        "width": 79,
+        "height": 44
+      },
+      "links": [
+        {
+          "label": "Leafhour",
+          "href": "/ja",
+          "x": 16,
+          "y": 555.296875,
+          "width": 130.21875,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Leafhour について ↗",
+          "href": "/library?settings=about&ui=ja",
+          "x": 16,
+          "y": 723.6875,
+          "width": 122.65625,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "プライバシー",
+          "href": "/ja/privacy",
+          "x": 158.65625,
+          "y": 723.6875,
+          "width": 78,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "English",
+          "href": "/",
+          "x": 16,
+          "y": 619.296875,
+          "width": 44,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "简体中文",
+          "href": "/zh-hans",
+          "x": 60,
+          "y": 619.296875,
+          "width": 70.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "繁體中文",
+          "href": "/zh-hant",
+          "x": 130.078125,
+          "y": 619.296875,
+          "width": 70.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "日本語",
+          "href": "/ja",
+          "x": 200.15625,
+          "y": 619.296875,
+          "width": 57.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "GitHub",
+          "href": "https://github.com/getyak/leafhour",
+          "x": 256.65625,
+          "y": 723.6875,
+          "width": 44,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "overflow": false,
+      "locale": {
+        "state": {
+          "requested": "ja",
+          "effective": "ja",
+          "fallbackReason": "none",
+          "retryTarget": null,
+          "retryActor": null,
+          "attempt": 0,
+          "persistence": "saved",
+          "phase": "ready",
+          "offerReload": false,
+          "initialFallback": false
+        },
+        "lang": "ja"
+      }
+    },
+    {
+      "path": "/ja",
+      "width": 760,
+      "paddingBottom": "76px",
+      "pill": {
+        "x": 666,
+        "y": 785,
+        "width": 79,
+        "height": 44
+      },
+      "links": [
+        {
+          "label": "Leafhour",
+          "href": "/ja",
+          "x": 38,
+          "y": 618.046875,
+          "width": 130.21875,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Leafhour について ↗",
+          "href": "/library?settings=about&ui=ja",
+          "x": 38,
+          "y": 724.140625,
+          "width": 122.65625,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "プライバシー",
+          "href": "/ja/privacy",
+          "x": 180.65625,
+          "y": 724.140625,
+          "width": 78,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "English",
+          "href": "/",
+          "x": 188.21875,
+          "y": 618.046875,
+          "width": 44,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "简体中文",
+          "href": "/zh-hans",
+          "x": 232.21875,
+          "y": 618.046875,
+          "width": 70.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "繁體中文",
+          "href": "/zh-hant",
+          "x": 302.296875,
+          "y": 618.046875,
+          "width": 70.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "日本語",
+          "href": "/ja",
+          "x": 372.375,
+          "y": 618.046875,
+          "width": 57.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "GitHub",
+          "href": "https://github.com/getyak/leafhour",
+          "x": 278.65625,
+          "y": 724.140625,
+          "width": 44,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "overflow": false,
+      "locale": {
+        "state": {
+          "requested": "ja",
+          "effective": "ja",
+          "fallbackReason": "none",
+          "retryTarget": null,
+          "retryActor": null,
+          "attempt": 0,
+          "persistence": "saved",
+          "phase": "ready",
+          "offerReload": false,
+          "initialFallback": false
+        },
+        "lang": "ja"
+      }
+    },
+    {
+      "path": "/ja/mcp",
+      "width": 390,
+      "paddingBottom": "76px",
+      "pill": null,
+      "links": [
+        {
+          "label": "Leafhour · Stay with a book.",
+          "href": "/ja",
+          "x": 19.5,
+          "y": 659.515625,
+          "width": 168.328125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "ソースコード",
+          "href": "https://github.com/getyak/leafhour",
+          "x": 207.828125,
+          "y": 659.515625,
+          "width": 78,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "プライバシー",
+          "href": "/ja/privacy",
+          "x": 19.5,
+          "y": 723.515625,
+          "width": 78,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "English",
+          "href": "/mcp",
+          "x": 19.5,
+          "y": 595.515625,
+          "width": 59.671875,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "简体中文",
+          "href": "/zh-hans/mcp",
+          "x": 83.171875,
+          "y": 595.515625,
+          "width": 86.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "繁體中文",
+          "href": "/zh-hant/mcp",
+          "x": 173.25,
+          "y": 595.515625,
+          "width": 86.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "日本語",
+          "href": "/ja/mcp",
+          "x": 263.328125,
+          "y": 595.515625,
+          "width": 73.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "お問い合わせ",
+          "href": "mailto:support@leafhour.com",
+          "x": 117.5,
+          "y": 723.515625,
+          "width": 72,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "overflow": false,
+      "locale": {
+        "state": {
+          "requested": "ja",
+          "effective": "ja",
+          "fallbackReason": "none",
+          "retryTarget": null,
+          "retryActor": null,
+          "attempt": 0,
+          "persistence": "saved",
+          "phase": "ready",
+          "offerReload": false,
+          "initialFallback": false
+        },
+        "lang": "ja"
+      }
+    },
+    {
+      "path": "/ja/privacy",
+      "width": 390,
+      "paddingBottom": "76px",
+      "pill": null,
+      "links": [
+        {
+          "label": "Leafhour",
+          "href": "/ja",
+          "x": 19.5,
+          "y": 555.359375,
+          "width": 130.21875,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "自分の書斎 ↗",
+          "href": "/library?ui=ja",
+          "x": 19.5,
+          "y": 723.75,
+          "width": 78.453125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "GitHub",
+          "href": "https://github.com/getyak/leafhour",
+          "x": 117.953125,
+          "y": 723.75,
+          "width": 44,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "English",
+          "href": "/privacy",
+          "x": 19.5,
+          "y": 619.359375,
+          "width": 44,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "简体中文",
+          "href": "/zh-hans/privacy",
+          "x": 63.5,
+          "y": 619.359375,
+          "width": 70.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "繁體中文",
+          "href": "/zh-hant/privacy",
+          "x": 133.578125,
+          "y": 619.359375,
+          "width": 70.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "日本語",
+          "href": "/ja/privacy",
+          "x": 203.65625,
+          "y": 619.359375,
+          "width": 57.078125,
+          "height": 44,
+          "visible": true,
+          "overlap": false,
+          "hits": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "overflow": false,
+      "locale": {
+        "state": {
+          "requested": "ja",
+          "effective": "ja",
+          "fallbackReason": "none",
+          "retryTarget": null,
+          "retryActor": null,
+          "attempt": 0,
+          "persistence": "saved",
+          "phase": "ready",
+          "offerReload": false,
+          "initialFallback": false
+        },
+        "lang": "ja"
+      }
+    }
+  ],
+  "pass": true,
+  "browserClosed": true
+}
