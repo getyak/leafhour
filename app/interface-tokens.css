@@ -18,6 +18,14 @@
   --focus-ring-width: 2px;
   --focus-ring-offset: 3px;
 
+  /* GET-201 semantic surface and radius aliases. One dialog surface formula:
+     a lifted paper window over the room (brighter in Paper, clearly layered in
+     Night) and the three radius tiers already used across the product. */
+  --surface-raised: color-mix(in srgb, var(--paper, #f7f5ef) 88%, #fffdf7);
+  --radius-control: 6px;
+  --radius-dialog: 10px;
+  --settings-section-gap: 28px;
+
   /* Action vocabulary. */
   --action-radius: 999px;
   --action-target: 44px;

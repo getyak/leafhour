@@ -3,9 +3,16 @@ import assert from 'node:assert/strict';
 import {createUiLocale} from '../app/ui-locale.mjs';
 import en from '../app/ui-catalogs/en.mjs';
 import ja from '../app/ui-catalogs/ja.mjs';
-import {parseLibraryView,writeLibraryView,libraryViewReducer,normalizeOverlay,normalizeLibraryQuery,safeLibraryReturn,authReturnTarget,createLibraryViewHistory} from '../app/library-view-state.mjs';
+import {parseLibraryView,writeLibraryView,libraryViewReducer,normalizeOverlay,normalizeLibraryQuery,safeLibraryReturn,authReturnTarget,createLibraryViewHistory,LIBRARY_SETTINGS_TABS} from '../app/library-view-state.mjs';
 
 const view=patch=>({query:'',scope:'all',status:'all',topic:'all',language:'all',...patch});
+
+test('settings links reject inherited property names and preserve only the explicit reading alias',()=>{
+  for(const value of ['constructor','toString','__proto__','hasOwnProperty','valueOf']){
+    assert.equal(parseLibraryView('?settings='+value).overlay,null,value+' is not a settings tab');
+  }
+  assert.deepEqual(parseLibraryView('?settings=reading').overlay,{kind:'settings',tab:'reading-habits'});
+});
 
 // A small real-history harness: an entry stack with push/replace/back/forward and
 // popstate dispatch, so lifecycle behavior is exercised against actual events.
@@ -63,6 +70,23 @@ test('conflicting overlay keys normalize to exactly one known overlay in a fixed
   assert.equal(parseLibraryView('?settings=../../etc&filter=1').overlay.kind,'filter');
   assert.equal(parseLibraryView('?settings=nonsense').overlay,null);
   assert.equal(parseLibraryView('?upload=yes').overlay,null);
+});
+
+test('GET-201: ?settings=reading aliases to canonical reading-habits without widening the owned tab set',()=>{
+  assert.deepEqual(parseLibraryView('?settings=reading').overlay,{kind:'settings',tab:'reading-habits'},'the old URL slug opens the reading preferences tab');
+  assert.deepEqual(parseLibraryView('?settings=reading&topic=fiction&q=alice').view,view({query:'alice',topic:'fiction'}),'the alias never touches book, filter or query state');
+  assert.deepEqual(parseLibraryView('?settings=reading-habits').overlay,{kind:'settings',tab:'reading-habits'},'the canonical slug keeps working');
+  assert.equal(LIBRARY_SETTINGS_TABS.includes('reading'),false,'the alias is a parse-only mapping, not a new owned tab');
+  assert.deepEqual(normalizeOverlay({kind:'settings',tab:'reading'}),null,'app actions still open only canonical tabs');
+  assert.equal(parseLibraryView('?settings=READING').overlay,null,'the alias is exact, not case-folded');
+  // Serialization always writes the canonical slug so history entries converge.
+  const written=writeLibraryView('?settings=reading&topic=fiction',parseLibraryView('?settings=reading&topic=fiction'));
+  const params=new URLSearchParams(written);
+  assert.equal(params.get('settings'),'reading-habits');assert.equal(params.get('topic'),'fiction');
+  assert.equal(writeLibraryView('?settings=reading',parseLibraryView('?settings=reading')), '?settings=reading-habits');
+  // Auth returns normalize the alias through the same bounded codec.
+  assert.equal(safeLibraryReturn('/library?settings=reading&filter=x'),'/library?settings=reading-habits');
+  assert.equal(safeLibraryReturn('/library?settings=reading'),'/library?settings=reading-habits');
 });
 
 test('serializing a default view removes only owned keys and keeps unrelated query and history fields',()=>{

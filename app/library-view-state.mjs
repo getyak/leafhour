@@ -13,6 +13,11 @@ export const LIBRARY_SCOPES=Object.freeze(['all','public','private']);
 export const LIBRARY_STATUSES=Object.freeze(['all','reading','unread','finished']);
 export const LIBRARY_TOPICS=Object.freeze(['all','philosophy','science','literature','history','fiction']);
 export const LIBRARY_SETTINGS_TABS=Object.freeze(['account','reading-habits','daily-reading','appearance','data','about']);
+// GET-201: one parse-only slug alias. Old links say settings=reading while the
+// tab is named reading-habits. The alias is never a tab of its own: app actions
+// and serialized URLs stay on the canonical set above.
+const SETTINGS_TAB_ALIASES=Object.freeze({reading:'reading-habits'});
+const settingsTab=value=>typeof value==='string'?(LIBRARY_SETTINGS_TABS.includes(value)?value:Object.hasOwn(SETTINGS_TAB_ALIASES,value)?SETTINGS_TAB_ALIASES[value]:null):null;
 export const LIBRARY_OVERLAYS=Object.freeze(['settings','calendar','upload','trash','filter']);
 export const LIBRARY_VIEW_KEYS=Object.freeze(['q','scope','status','topic','language','ui']);
 export const LIBRARY_OVERLAY_KEYS=Object.freeze(['filter','calendar','settings','upload','trash']);
@@ -63,9 +68,9 @@ export function parseLibraryView(search){
   const status=raw('status');if(LIBRARY_STATUSES.includes(status))view.status=status;
   const topic=raw('topic');if(LIBRARY_TOPICS.includes(topic))view.topic=topic;
   const language=languageValue(raw('language'));if(language)view.language=language;
-  const settings=raw('settings'),calendar=raw('calendar'),upload=raw('upload'),trash=raw('trash'),filter=raw('filter');
+  const settings=settingsTab(raw('settings')),calendar=raw('calendar'),upload=raw('upload'),trash=raw('trash'),filter=raw('filter');
   let overlay=null;
-  if(settings!==null&&LIBRARY_SETTINGS_TABS.includes(settings))overlay={kind:'settings',tab:settings};
+  if(settings!==null)overlay={kind:'settings',tab:settings};
   else if(calendar==='1')overlay={kind:'calendar'};
   else if(upload==='1')overlay={kind:'upload'};
   else if(trash==='1')overlay={kind:'trash'};

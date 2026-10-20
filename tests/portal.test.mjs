@@ -1,11 +1,26 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,rm} from 'node:fs/promises';
+import {mkdtemp,rm,readFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {createReaderServer} from '../server/server.mjs';
 import {createEmailAuth} from '../server/email-auth.mjs';
 import {textPdf} from './pdf-fixture.mjs';
+
+test('self-hosted settings modules are served as exact public JavaScript assets',async t=>{
+  const dir=await mkdtemp(path.join(tmpdir(),'leafhour-settings-assets-'));
+  const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),env:{},translator:null,sendCode:null});
+  await new Promise(r=>server.listen(0,'127.0.0.1',r));
+  t.after(async()=>{server.closeAllConnections();await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});});
+  const base='http://127.0.0.1:'+server.address().port;
+  for(const file of ['settings-controls.mjs','settings-appearance.mjs']){
+    const response=await fetch(base+'/'+file);
+    assert.equal(response.status,200,file+' must load without authentication');
+    assert.match(response.headers.get('content-type'),/javascript/);
+    assert.equal(await response.text(),await readFile(new URL('../app/'+file,import.meta.url),'utf8'));
+  }
+  for(const file of ['/settings-private.mjs','/server/portal.mjs'])assert.equal((await fetch(base+file)).status,404,'the fixed asset map must remain closed');
+});
 
 test('MCP setup remains reachable when localhost resolves to an IPv6 listener',async t=>{
   const dir=await mkdtemp(path.join(tmpdir(),'marginalia-localhost-setup-'));
