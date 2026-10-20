@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "kind": "justified-exceptions",
+  "policy": "Narrow contextual exceptions only. Every entry binds exactly one item id, one locale, one rule and the value SHA256 the exception was reviewed against, plus a concrete reason naming the reader need and where it was reviewed. No page-wide, namespace-wide or rule-wide bypasses exist. If the wording changes (new value hash), the entry stops matching and the lint fails so the exception is re-reviewed; if the entry matches nothing, the lint fails until it is pruned. Existing wording debt is NOT recorded here: it lives only in tools/copy-lint-debt.json as explicitly unreviewed debt. Batch A has reviewed no items yet, so this list is intentionally empty.",
+  "entries": []
+}

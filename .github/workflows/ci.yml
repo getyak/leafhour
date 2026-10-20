@@ -15,7 +15,10 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    env:
+      LEAFHOUR_VALE_BIN: ${{ github.workspace }}/.copy-tools/vale
+      LEAFHOUR_TEXTLINT_BIN: ${{ github.workspace }}/tools/copy-tooling/node_modules/.bin/textlint
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,7 +26,39 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci --no-audit --no-fund
+      - name: Install the pinned copy lint toolchain without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund --prefix tools/copy-tooling
+      - name: Install the checksum-pinned official Vale release
+        run: node tools/copy-install-vale.mjs --dest .copy-tools --platform linux --arch x64
+      - name: Fetch and verify the fixed source object used by existing copy debt
+        run: |
+          git fetch --depth=1 origin 43187d0ecaa63aa6575700677744c7cf4b3d099e
+          git cat-file -e 43187d0ecaa63aa6575700677744c7cf4b3d099e^{commit}
+      - name: Export and lint product copy with the real pinned CLIs
+        run: |
+          node scripts/export-copy.mjs --root . --out build/copy
+          git ls-files --error-unmatch docs/copy/copy-inventory.json docs/copy/copy-inventory.csv docs/copy/copy-candidates.csv
+          git diff --exit-code -- docs/copy
+          node --input-type=module <<'JS'
+          import {execFileSync} from 'node:child_process';
+          const untracked = execFileSync('git', ['ls-files', '--others', '--exclude-standard', '--', 'docs/copy'], {encoding:'utf8'});
+          if (untracked.trim()) throw Error('Untracked copy outputs: ' + untracked);
+          JS
+          node tools/copy-lint.mjs --manifest build/copy/manifest.json
+      - name: Verify that planted copy violations fail and clean copy passes
+        run: node tools/copy-canaries.mjs
       - run: npm run verify:deploy
+      - name: Verify that copy tooling is absent from the traced function runtime
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile} from 'node:fs/promises';
+          const manifest = JSON.parse(await readFile('.reader-runtime/manifest.json', 'utf8'));
+          if (!Array.isArray(manifest.files) || !manifest.files.length) throw Error('Runtime trace is missing');
+          if (manifest.files.some(file => typeof file !== 'string' || !file.length)) throw Error('Runtime trace contains invalid paths');
+          const unexpected = manifest.files.filter(file => /(?:^|\/)(?:@textlint|textlint[^/]*|prh|vale|copy-tooling)(?:\/|$)/.test(file));
+          if (unexpected.length) throw Error('Copy tooling entered the runtime: ' + unexpected.join(', '));
+          console.log('Checked ' + manifest.files.length + ' traced runtime files: copy tooling absent.');
+          JS
       - name: Check the packaged reader in the AWS function runtime without network or model requests
         run: >-
           docker run --rm --network none --platform linux/amd64
@@ -40,3 +75,16 @@ jobs:
           --mount type=bind,source="$PWD",target=/workspace,readonly
           public.ecr.aws/lambda/nodejs:24@sha256:9a096eb2cb6fa96419b5742e1b4a64b6bf7d3aa954beb92461a2a3e072061497
           /workspace/tools/check-pdf-package.mjs /workspace
+      - name: Preserve copy warnings, existing debt and source mappings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: copy-guardrails-evidence
+          path: |
+            build/copy/lint-report.json
+            build/copy/manifest.json
+            .reader-runtime/manifest.json
+            docs/copy/copy-inventory.csv
+            docs/copy/copy-candidates.csv
+          if-no-files-found: warn
+          include-hidden-files: true

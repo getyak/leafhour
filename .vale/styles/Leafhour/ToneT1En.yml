@@ -1,0 +1,30 @@
+# GET-202 T1 wording (en): AI-flavoured diction and template sentences from the
+# issue's ban list. Word stems match inflections; nonword keeps them raw so CJK
+# text in English values is not silently skipped either.
+extends: existence
+message: "T1 wording (GET-202): '%s' — delete first, make it concrete second"
+level: error
+nonword: true
+ignorecase: true
+scope: raw
+tokens:
+  - '\bdelv'
+  - '\bseamless'
+  - '\bunlock'
+  - '\belevat'
+  - '\bempower'
+  - '\bembark'
+  - '\bjourney'
+  - '\btapestr'
+  - '\brealm'
+  - '\beffortless'
+  - 'immerse yourself'
+  - 'at your own pace'
+  - 'belongs to you'
+  - "it's not [^.,!?]{1,24}, it's"
+  - "It's not [^.,!?]{1,24}, it's"
+  - "whether you're [^.,!?]{1,24} or"
+  - "Whether you're [^.,!?]{1,24} or"
+  - '\boops\b'
+  - 'something went wrong'
+  - 'please note'

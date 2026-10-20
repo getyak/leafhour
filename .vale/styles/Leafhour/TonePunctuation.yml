@@ -1,0 +1,14 @@
+# GET-202 punctuation review (T2, all locales). The issue flags these only in
+# non-loading contexts ("…" is right for loading states), which a token rule
+# cannot judge — so they stay visible warnings for human review and never fail
+# CI by themselves.
+extends: existence
+message: "T2 punctuation (GET-202): '%s' — review context and repetition"
+level: warning
+nonword: true
+ignorecase: true
+scope: raw
+tokens:
+  - '——'
+  - '…'
+  - '！'

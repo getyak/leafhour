@@ -1,0 +1,49 @@
+# GET-202 T1 wording patterns (zh-Hans + zh-Hant): formulaic AI tone and
+# marketing diction from the issue's ban list. Delete first; concrete wording
+# second. A genuinely needed occurrence gets one exact reviewed allowance.
+extends: existence
+message: "T1 wording (GET-202): '%s' — delete first, make it concrete second"
+level: error
+nonword: true
+ignorecase: true
+scope: raw
+tokens:
+  # formulaic sentence patterns
+  - '先[^。！？!?]{1,12}再'
+  - '不是[^。！？!?]{1,16}而是'
+  - '不仅[^。！？!?]{1,16}更'
+  - '不[僅仅][^。！？!?]{1,16}更'
+  - '与其[^。！？!?]{1,16}不如'
+  - '與其[^。！？!?]{1,16}不如'
+  - '让[^。！？!?]{1,8}轻轻'
+  - '讓[^。！？!?]{1,8}輕輕'
+  - '让[^。！？!?]{1,8}慢慢'
+  - '把这一刻，留给'
+  - '把這一刻，留給'
+  - '，也很好。'
+  - '随时可以'
+  - '隨時可以'
+  - '一处安静的地方'
+  - '一處安靜的地方'
+  - '在书房等你'
+  - '在書房等你'
+  # marketing / lyrical words
+  - '值得'
+  - '赋能'
+  - '賦能'
+  - '无缝'
+  - '無縫'
+  - '沉浸式'
+  - '开启[^。！？!?]{0,8}之旅'
+  - '開啟[^。！？!?]{0,8}之旅'
+  - '屬於你的'
+  - '属于你的'
+  - '温柔地'
+  - '溫柔地'
+  - '静静地'
+  - '靜靜地'
+  - '细细'
+  - '細細'
+  - '从容'
+  - '從容'
+  - '此刻'

@@ -1,0 +1,49 @@
+# GET-202 JA T1 wording (error level through textlint-rule-prh).
+#
+# Internal words and formulaic phrasing from the issue's JA ban list. The
+# issue's own repair order is "delete first"; `expected: ''` therefore encodes
+# deletion, and the few replacements below with a clear reader word (and the
+# preparation receipt's proven リクエスト → 操作) are provisional guidance for
+# batch B. Native Japanese review is still pending and recorded as a gap in
+# docs/writing.md — these suggestions are guardrail evidence, not final copy.
+#
+# Frequency-dependent JA items (そっと/静かに when repeated) cannot be judged by
+# a token rule and stay documented manual review, same as the ZH/EN T2 lists.
+version: 1
+rules:
+  # T1 developer words
+  - expected: 操作
+    pattern: リクエスト
+  - expected: ''
+    pattern: レシート
+  - expected: ''
+    pattern: キュー
+  - expected: ''
+    pattern: セッション
+  - expected: ''
+    pattern: 同期処理
+  - expected: ''
+    pattern: インスタンス
+  - expected: ''
+    pattern: ホスト
+  - expected: ''
+    pattern: 付与
+  - expected: ''
+    pattern: バイト
+  - expected: ''
+    pattern: MiB
+  # T1 formulaic phrasing
+  - expected: できます
+    pattern: することができます
+  - expected: です
+    pattern: となっております
+  - expected: ''
+    pattern: ぜひ
+  - expected: ''
+    pattern: シームレス
+  - expected: ''
+    pattern: 没入型
+  - expected: ''
+    pattern: の旅
+  - expected: ''
+    pattern: ではなく

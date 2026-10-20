@@ -1,0 +1,17 @@
+# GET-202 T2 wording (en). Frequency-dependent softeners stay visible warnings
+# for human review (the issue wants ≥2 per passage before any rewrite).
+extends: existence
+message: "T2 wording (GET-202): '%s' — review density and repetition"
+level: warning
+nonword: true
+ignorecase: true
+scope: raw
+tokens:
+  - '\bquiet\b'
+  - '\bquietly\b'
+  - '\bgently\b'
+  - '\bmoment\b'
+  - '\bmoments\b'
+  - '\bsimply\b'
+  - '\bjust\b'
+  - '\beasily\b'

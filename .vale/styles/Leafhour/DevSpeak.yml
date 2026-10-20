@@ -1,0 +1,58 @@
+# GET-202 T1 developer wording in reader-visible copy (EN + zh-Hans + zh-Hant).
+# Contextual items from the issue ("sync" as a UI verb, "已同步" status wording)
+# are still flagged here: a necessary occurrence gets one exact reviewed
+# allowance in tools/copy-lint-allowances.json, never a rule or page exemption.
+extends: existence
+message: "T1 developer wording: '%s' must not appear in reader copy (GET-202)"
+level: error
+nonword: true
+ignorecase: true
+scope: raw
+tokens:
+  # zh-Hans
+  - '回执'
+  - '请求'
+  - '队列'
+  - '同步'
+  - '会话'
+  - '提交'
+  - '校验'
+  - '版本'
+  - '稳定 ?ID'
+  - '宿主'
+  - '授权上下文'
+  - '实例'
+  - '已配置的'
+  - '云模型'
+  - '双译'
+  - 'AI ?草稿'
+  - '本机待同步'
+  - '字节'
+  # zh-Hant
+  - '回執'
+  - '請求'
+  - '隊列'
+  - '會話'
+  - '校驗'
+  - '穩定 ?ID'
+  - '授權上下文'
+  - '實例'
+  - '雲模型'
+  - '雙譯'
+  - '本機待同步'
+  - '字節'
+  # shared / EN
+  - 'MiB'
+  - '\breceipt\b'
+  - '\brequest\b'
+  - '\bpayload\b'
+  - '\bqueue\b'
+  - '\bsync\b'
+  - '\bsession\b'
+  - '\bcommit\b'
+  - '\binstance\b'
+  - 'configured model'
+  - 'stable ID'
+  - '\bhost\b'
+  - '\bgrant\b'
+  - '\bbytes\b'

@@ -8,7 +8,13 @@ const tests=(await readdir('tests')).filter(file=>file.endsWith('.test.mjs')).so
 // Full deployment snapshot validation runs in Actions before production verification.
 const stages=[['--test',...tests],['tools/build-reader-runtime.mjs'],['tools/build-vercel.mjs'],['tools/check-public-build.mjs','dist'],...(process.argv.includes('--hosted')?[]:[['tools/release-policy.mjs']]),['tools/verify-release.mjs']];
 for(const args of stages){
-  const stageEnvironment=args[0]==='tools/build-reader-runtime.mjs'&&process.env.VERCEL==='1'?{...environment,VERCEL:'1'}:environment;
+  const stageEnvironment={...environment};
+  // These are executable paths, not credentials. Only the test stage needs
+  // them; runtime builders retain the original restricted environment.
+  if(args[0]==='--test')for(const key of ['LEAFHOUR_VALE_BIN','LEAFHOUR_TEXTLINT_BIN']){
+    if(process.env[key]!==undefined)stageEnvironment[key]=process.env[key];
+  }
+  if(args[0]==='tools/build-reader-runtime.mjs'&&process.env.VERCEL==='1')stageEnvironment.VERCEL='1';
   const result=spawnSync(process.execPath,args,{env:stageEnvironment,stdio:'inherit'});
   if(result.error)throw result.error;if(result.status!==0)process.exit(result.status||1);
 }
