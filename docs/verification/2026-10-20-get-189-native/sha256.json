@@ -1,0 +1,65 @@
+[
+  {
+    "file": "home-footer-ja.png",
+    "sha256": "569a89ce62cbf2b35d0a0df2b11e04583b58ac81e80628a0de860765bf5baa9f",
+    "width": 390,
+    "height": 844,
+    "sourceCssSHA": "98e50df61c7d1c6da4ed346150db536fed5dae8e10d53a4c3c884a03714f59f7"
+  },
+  {
+    "file": "home-languages-ja.png",
+    "sha256": "dfba050c11043506ccc308fb02b10dec695975d513cd98f8e38be608875935f5",
+    "width": 390,
+    "height": 844,
+    "sourceCssSHA": "98e50df61c7d1c6da4ed346150db536fed5dae8e10d53a4c3c884a03714f59f7"
+  },
+  {
+    "file": "home-menu-ja.png",
+    "sha256": "87236713bde074dd295c4f3cea8d1781f9079c10ca4fba1c28654b67e2e4c1d8",
+    "width": 390,
+    "height": 844,
+    "sourceCssSHA": "98e50df61c7d1c6da4ed346150db536fed5dae8e10d53a4c3c884a03714f59f7"
+  },
+  {
+    "file": "library-filters-en.png",
+    "sha256": "e404c688ee3a144835f812da56c2ad2fd620f2c1dd6dcca584c8244b54385e91",
+    "width": 390,
+    "height": 844,
+    "sourceCssSHA": "98e50df61c7d1c6da4ed346150db536fed5dae8e10d53a4c3c884a03714f59f7"
+  },
+  {
+    "file": "library-login-en.png",
+    "sha256": "625c8dcbee04f37dec115b5fced3d3f896de29d76890d3d799c08996a6d5a979",
+    "width": 390,
+    "height": 844,
+    "sourceCssSHA": "98e50df61c7d1c6da4ed346150db536fed5dae8e10d53a4c3c884a03714f59f7"
+  },
+  {
+    "file": "mcp-header-en.png",
+    "sha256": "5088951618e83f998a9b495944006770bd6473cf6b7ad03697bf6471f7113b4f",
+    "width": 390,
+    "height": 844,
+    "sourceCssSHA": "e4541a16ecec82d88015653e93d2d0e87603bda426bb619d02c82a874d6ba445"
+  },
+  {
+    "file": "mcp-header-night-en.png",
+    "sha256": "f592008ce4a9d4d5a65e21976273d8fddf547fe61df71a9dc3d3f538b0c13642",
+    "width": 390,
+    "height": 844,
+    "sourceCssSHA": "e4541a16ecec82d88015653e93d2d0e87603bda426bb619d02c82a874d6ba445"
+  },
+  {
+    "file": "mcp-links-en.png",
+    "sha256": "5c0be9e6a0b08660d3c184a2b41e071cb9e74a0f92ea92f4633eec8eb91f8732",
+    "width": 390,
+    "height": 844,
+    "sourceCssSHA": "98e50df61c7d1c6da4ed346150db536fed5dae8e10d53a4c3c884a03714f59f7"
+  },
+  {
+    "file": "privacy-links-en.png",
+    "sha256": "1ce65ce64154202e32d967199bc93fb1c6aeb931ac7f08213474cda5ae18a2ef",
+    "width": 390,
+    "height": 844,
+    "sourceCssSHA": "98e50df61c7d1c6da4ed346150db536fed5dae8e10d53a4c3c884a03714f59f7"
+  }
+]

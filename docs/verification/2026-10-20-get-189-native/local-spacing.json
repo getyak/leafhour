@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-20T01:49:03.878Z",
+  "scope": "Actual final CSS server UI; 390px Chromium with fine pointer and system paper/night emulation, no physical phone claim",
+  "cssSHA": "e4541a16ecec82d88015653e93d2d0e87603bda426bb619d02c82a874d6ba445",
+  "box": {
+    "x": 19.5,
+    "y": 124,
+    "width": 159.609375,
+    "height": 44
+  },
+  "gap": "7px",
+  "nativePaletteOpenClose": true,
+  "themes": {
+    "paper": "rgb(247, 245, 239)",
+    "night": "rgb(25, 34, 28)"
+  },
+  "pass": true,
+  "browserClosed": true
+}

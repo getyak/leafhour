@@ -1,0 +1,475 @@
+{
+  "at": "2026-10-19T23:20:41.432Z",
+  "scope": "Actual Production Chromium 390px guest hitboxes, baseline only",
+  "rows": [
+    {
+      "path": "/",
+      "status": 200,
+      "language": "en",
+      "count": 40,
+      "below32": [
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "English",
+          "width": 43.671875,
+          "height": 23.390625,
+          "href": "/"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "简体中文",
+          "width": 70.078125,
+          "height": 23.390625,
+          "href": "/zh-hans"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "繁體中文",
+          "width": 70.078125,
+          "height": 23.390625,
+          "href": "/zh-hant"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "日本語",
+          "width": 57.078125,
+          "height": 23.390625,
+          "href": "/ja"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "MCP integration guide",
+          "width": 161.40625,
+          "height": 18,
+          "href": "/mcp"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "privacy and data notice",
+          "width": 168.890625,
+          "height": 18,
+          "href": "/privacy"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "English",
+          "width": 43.671875,
+          "height": 22.09375,
+          "href": "/"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "简体中文",
+          "width": 70.078125,
+          "height": 22.09375,
+          "href": "/zh-hans"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "繁體中文",
+          "width": 70.078125,
+          "height": 22.09375,
+          "href": "/zh-hant"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "日本語",
+          "width": 57.078125,
+          "height": 22.09375,
+          "href": "/ja"
+        }
+      ],
+      "below44": [
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "English",
+          "width": 43.671875,
+          "height": 23.390625,
+          "href": "/"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "简体中文",
+          "width": 70.078125,
+          "height": 23.390625,
+          "href": "/zh-hans"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "繁體中文",
+          "width": 70.078125,
+          "height": 23.390625,
+          "href": "/zh-hant"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "日本語",
+          "width": 57.078125,
+          "height": 23.390625,
+          "href": "/ja"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "MCP integration guide",
+          "width": 161.40625,
+          "height": 18,
+          "href": "/mcp"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "privacy and data notice",
+          "width": 168.890625,
+          "height": 18,
+          "href": "/privacy"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "English",
+          "width": 43.671875,
+          "height": 22.09375,
+          "href": "/"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "简体中文",
+          "width": 70.078125,
+          "height": 22.09375,
+          "href": "/zh-hans"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "繁體中文",
+          "width": 70.078125,
+          "height": 22.09375,
+          "href": "/zh-hant"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "日本語",
+          "width": 57.078125,
+          "height": 22.09375,
+          "href": "/ja"
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "path": "/mcp",
+      "status": 200,
+      "language": "en",
+      "count": 27,
+      "below32": [
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "palette-entry",
+          "label": "Search & commands ⌘K",
+          "width": 156.1875,
+          "height": 25.09375,
+          "href": null
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "support@leafhour.com",
+          "width": 173.375,
+          "height": 20,
+          "href": "mailto:support@leafhour.com"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "reading room",
+          "width": 100.953125,
+          "height": 20,
+          "href": "/library?ui=en"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "configuration builder",
+          "width": 157.515625,
+          "height": 20,
+          "href": "https://github.com/getyak/leafhour/blob/main/app/mcp-config.mjs"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "adapter source",
+          "width": 114.875,
+          "height": 20,
+          "href": "https://github.com/getyak/leafhour/blob/main/server/mcp.mjs"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "service routes",
+          "width": 107.40625,
+          "height": 20,
+          "href": "https://github.com/getyak/leafhour/blob/main/server/portal.mjs"
+        }
+      ],
+      "below44": [
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "palette-entry",
+          "label": "Search & commands ⌘K",
+          "width": 156.1875,
+          "height": 25.09375,
+          "href": null
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "support@leafhour.com",
+          "width": 173.375,
+          "height": 20,
+          "href": "mailto:support@leafhour.com"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "reading room",
+          "width": 100.953125,
+          "height": 20,
+          "href": "/library?ui=en"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "configuration builder",
+          "width": 157.515625,
+          "height": 20,
+          "href": "https://github.com/getyak/leafhour/blob/main/app/mcp-config.mjs"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "adapter source",
+          "width": 114.875,
+          "height": 20,
+          "href": "https://github.com/getyak/leafhour/blob/main/server/mcp.mjs"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "service routes",
+          "width": 107.40625,
+          "height": 20,
+          "href": "https://github.com/getyak/leafhour/blob/main/server/portal.mjs"
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "path": "/privacy",
+      "status": 200,
+      "language": "en",
+      "count": 18,
+      "below32": [
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "support@leafhour.com",
+          "width": 173.375,
+          "height": 20,
+          "href": "mailto:support@leafhour.com"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "Back to the reading room →",
+          "width": 210.71875,
+          "height": 20,
+          "href": "/library?ui=en"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "English",
+          "width": 43.671875,
+          "height": 22.09375,
+          "href": "/privacy"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "简体中文",
+          "width": 70.078125,
+          "height": 22.09375,
+          "href": "/zh-hans/privacy"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "繁體中文",
+          "width": 70.078125,
+          "height": 22.09375,
+          "href": "/zh-hant/privacy"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "日本語",
+          "width": 57.078125,
+          "height": 22.09375,
+          "href": "/ja/privacy"
+        }
+      ],
+      "below44": [
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "English",
+          "width": 43.671875,
+          "height": 44,
+          "href": "/privacy"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "support@leafhour.com",
+          "width": 173.375,
+          "height": 20,
+          "href": "mailto:support@leafhour.com"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "Back to the reading room →",
+          "width": 210.71875,
+          "height": 20,
+          "href": "/library?ui=en"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "English",
+          "width": 43.671875,
+          "height": 22.09375,
+          "href": "/privacy"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "简体中文",
+          "width": 70.078125,
+          "height": 22.09375,
+          "href": "/zh-hans/privacy"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "繁體中文",
+          "width": 70.078125,
+          "height": 22.09375,
+          "href": "/zh-hant/privacy"
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "class": "",
+          "label": "日本語",
+          "width": 57.078125,
+          "height": 22.09375,
+          "href": "/ja/privacy"
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "path": "/library?ui=en",
+      "status": 200,
+      "language": "en",
+      "count": 62,
+      "below32": [
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "",
+          "label": "All",
+          "width": 15.109375,
+          "height": 44,
+          "href": null
+        }
+      ],
+      "below44": [
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "class": "",
+          "label": "All",
+          "width": 15.109375,
+          "height": 44,
+          "href": null
+        }
+      ],
+      "overflow": false
+    }
+  ],
+  "completed": true,
+  "browserClosed": true
+}
