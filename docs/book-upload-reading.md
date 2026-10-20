@@ -1,0 +1,19 @@
+# Book upload and chapter storage
+
+The library picker and both chat surfaces share one page-owned upload controller. Attachment selection and file drop create a stable task card; progress does not create a model turn or change a draft, focus, reading book or paragraph. Completion offers explicit reading and conversation selection. Interface language changes relabel existing nodes.
+
+PDF uploads calculate the source SHA-256, reuse existing tasks, and resume committed parts. Hosted parts receive account-scoped, non-overwriting signed targets and upload binary data directly to private Storage. An uploaded-object HEAD confirms a receipt; completion alone reads and validates each part and the full source hash. Invalid receipts are removed for a later retry. At most two signed part transfers run together. Local/older clients retain the encoded-part fallback.
+
+The original upload must finish before browser-independent organization can continue. Closing the chat does not cancel a persistent ingestion task. Leaving the page during file transfer still requires reselecting that file to resume. Owner changes invalidate pending callbacks. No external recognition is submitted before the source-bound permission action; scan counts and quota details stay internal. All batches are inspected first, and the quota reservation counts only necessary recognition pages, including the provider submission day.
+
+Publication adopts an opaque, account-bound verified-source capability. Hosted originals reference the existing verified parts; local originals use clone/copy without routing bytes back through the application. Full byte import remains compatible. Client JSON cannot create the capability or choose its source path.
+
+The canonical book remains the export and agent format. Reading uses independently stored immutable chapters behind a versioned manifest. Mutating canonical content or translations invalidates the projection before and after the operation, including partial failures. The next snapshot publishes only after all required writes succeed, at most six concurrently. Unchanged chapters are reused. Small reading views use one independent complete document instead of a request per chapter. Chapter routes still retrieve only their chapter; opening views retain the previous payload and paragraph IDs. Legacy books build a projection on first access.
+
+Remaining implementation boundaries: source fingerprinting and final PDF verification still require a full in-memory source; this is not a fully streaming parser. Obsolete chapter snapshots and cancelled upload parts do not yet have automatic reference-aware collection. A crashed writer may keep its five-minute lease until expiry. Recognition output remains unreviewed, and full-book translation is not part of upload.
+
+## Reproducing controlled measurements
+
+`tools/benchmark-book-pipeline.mjs` accepts a source checkout, a private fixture JSON, a run label and a loopback port. The fixture contains `ownerId`, `email`, `bookFile` and `originalFile`; obtain the current account identity through authentication and keep the fixture, original, extracted book and output outside Git. It starts the real local application with the supplied book and counted isolated storage, with all model providers disabled. The loopback storage path permits actual browser binary upload under the normal local content policy.
+
+Compare the same original and book against a fixed baseline source snapshot and the changed checkout. The private output records per-chapter response/store bytes and timings. The `/metrics` endpoint records source transfer counts. The optional `/publish` replay uses the same book's previously verified extraction to isolate final publication reads/writes and verify the original hash; it is not a second OCR run. Local timing and in-memory storage are not production latency measurements. Record live browser and deployed commit evidence separately.

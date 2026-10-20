@@ -1,8 +1,8 @@
-import {uploadPdf} from './pdf-ingestion.mjs';
+import {mountChatBookUpload} from './chat-book-upload.mjs';
+import {createBookUploadController} from './book-upload-controller.mjs';
 import {t,onUiLocaleChange,onBeforeUiPopstate,getUiLocale,getUiNavigationLocale,uiHref,uiReady,requestUiRoute,adoptUiOwner} from './ui-locale.mjs';
 import {uiAuthoredPath} from './ui-locale-codec.mjs';
 import {authEntryReturn} from './auth-return.mjs';
-import {mountPdfOnboarding} from './pdf-onboarding.mjs';
 import {homeLocale,homeText} from './home-locale.mjs';
 import {positionStorageKey} from './reading-progress.mjs';
 import {createUploadState} from './upload-state.mjs';
@@ -122,14 +122,18 @@ window.marginaliaPaletteAdapter={getOwner:()=>session?.user?.id||null,getOwnerTo
 // explicit document port into the one existing bootstrap instance.
 if(isHomeNavRoute(location.pathname))homeMenu=mountHomeNavigation({document,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture(),openAuth,openPalette:opener=>{document.dispatchEvent(new CustomEvent('palette:open',{detail:opener}));}});
 dashboard=mountReadingDashboard({root:$('reading-dashboard'),overviewRoot:$('reading-overview'),historyRoot:$('reading-history'),api,getSession:()=>session,getBooks:()=>books,getOwner,openAuth,refresh,onCurrentBook:book=>{selectedCurrent=book?.bookId||null;renderBooks();},onOverlay:overlay=>openOverlayFor(overlay),onClose:kind=>closeOverlayFor(kind,'user')});
-if(isLibrary){shelfControls=mountShelfFilters({root:$('library-filter-controls'),onOpenChange:open=>{if(open)openOverlayFor({kind:'filter'});else closeOverlayFor('filter','dismiss');},onChange:action=>{shelfDrag?.reset();if(!viewHistory){renderBooks();return;}if(action.patch)viewHistory.setView(action.patch);else if(action.clear)viewHistory.clearView(action.clear);else if(action.clearAll)viewHistory.clearAll();}});chat=mountLibraryChat({root:$('library-chat'),api,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture().owner,openAuth:message=>{pendingChat=true;openAuth(message);},getCurrentBook:()=>dashboard.getCurrentBook(),positionLauncher:launcher=>{squirrelPosition=mountSquirrelPosition({launcher,labels:{ariaDescription:t('squirrel.drag.description'),title:t('squirrel.title')}});return squirrelPosition;}});shell=mountLibraryShell({getSession:()=>session,api,getBooks:()=>books,getCurrentBook:()=>dashboard.getCurrentBook(),inboxRoot:$('daily-reading-inbox'),onRestored:()=>refresh(),onProfileUpdated:(profile,userId)=>{if(session?.user?.id!==userId)return;Object.assign(session.user,profile);shell.update();},onReadingPreferencesSaved:saved=>{if(session)session.readingPreferences=saved;setupInvite?.update();},openAuth,onLogout:signOut,onHistory:()=>dashboard.openHistory(),onOpenChat:()=>chat.open(),onSettingsOpen:tab=>openOverlayFor({kind:'settings',tab}),onSettingsClose:()=>closeOverlayFor('settings','user'),onSettingsTab:tab=>{const current=viewHistory?.snapshot().overlay;if(current?.kind==='settings'&&current.tab!==tab)openOverlayFor({kind:'settings',tab});}});setupInvite=mountReadingSetupInvite({root:$('reading-setup-invite'),api,getSession:()=>session,openSettings:tab=>shell.openSettings(tab),onSaved:saved=>{if(session)session.readingPreferences=saved;setupInvite?.update();},onError:()=>status('library-status',{id:'ui.generic.error'},true)});bookActions=mountLibraryBookActions({api,getSession:()=>session,getBooks:()=>libraryShelf(books),getOwner,getRevision:()=>shelfRevision,setRevision:value=>{shelfRevision=value;},onReorder:saveShelfOrder,onChanged:()=>refresh(),openAuth,onOverlay:overlay=>openOverlayFor(overlay),onClose:(kind,reason)=>{if(kind==='trash')closeOverlayFor('trash',reason);}});shelfDrag=mountShelfDrag({grid:$('library-books'),getBooks:()=>libraryShelf(books),getOwner,onReorder:saveShelfOrder,onError:error=>status('library-status',{id:'ui.generic.error'},true)});$('library-trash').addEventListener('click',()=>{shell.closeNavigation();bookActions.trash();});}else roomIcons();
+let taskStorage=null;try{taskStorage=localStorage;}catch{}
+const bookUploads=createBookUploadController({api,getOwner:()=>session?.user?.id||null,getSession:()=>session,storage:taskStorage,onReady:()=>{void refresh().catch(()=>status('library-status',{id:'ui.generic.error'},true));}});
+if(isLibrary){shelfControls=mountShelfFilters({root:$('library-filter-controls'),onOpenChange:open=>{if(open)openOverlayFor({kind:'filter'});else closeOverlayFor('filter','dismiss');},onChange:action=>{shelfDrag?.reset();if(!viewHistory){renderBooks();return;}if(action.patch)viewHistory.setView(action.patch);else if(action.clear)viewHistory.clearView(action.clear);else if(action.clearAll)viewHistory.clearAll();}});chat=mountLibraryChat({root:$('library-chat'),api,uploadController:bookUploads,mountUpload:mountChatBookUpload,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture().owner,openAuth:message=>{pendingChat=true;openAuth(message);},getCurrentBook:()=>dashboard.getCurrentBook(),positionLauncher:launcher=>{squirrelPosition=mountSquirrelPosition({launcher,labels:{ariaDescription:t('squirrel.drag.description'),title:t('squirrel.title')}});return squirrelPosition;}});shell=mountLibraryShell({getSession:()=>session,api,getBooks:()=>books,getCurrentBook:()=>dashboard.getCurrentBook(),inboxRoot:$('daily-reading-inbox'),onRestored:()=>refresh(),onProfileUpdated:(profile,userId)=>{if(session?.user?.id!==userId)return;Object.assign(session.user,profile);shell.update();},onReadingPreferencesSaved:saved=>{if(session)session.readingPreferences=saved;setupInvite?.update();},openAuth,onLogout:signOut,onHistory:()=>dashboard.openHistory(),onOpenChat:()=>chat.open(),onSettingsOpen:tab=>openOverlayFor({kind:'settings',tab}),onSettingsClose:()=>closeOverlayFor('settings','user'),onSettingsTab:tab=>{const current=viewHistory?.snapshot().overlay;if(current?.kind==='settings'&&current.tab!==tab)openOverlayFor({kind:'settings',tab});}});setupInvite=mountReadingSetupInvite({root:$('reading-setup-invite'),api,getSession:()=>session,openSettings:tab=>shell.openSettings(tab),onSaved:saved=>{if(session)session.readingPreferences=saved;setupInvite?.update();},onError:()=>status('library-status',{id:'ui.generic.error'},true)});bookActions=mountLibraryBookActions({api,getSession:()=>session,getBooks:()=>libraryShelf(books),getOwner,getRevision:()=>shelfRevision,setRevision:value=>{shelfRevision=value;},onReorder:saveShelfOrder,onChanged:()=>refresh(),openAuth,onOverlay:overlay=>openOverlayFor(overlay),onClose:(kind,reason)=>{if(kind==='trash')closeOverlayFor('trash',reason);}});shelfDrag=mountShelfDrag({grid:$('library-books'),getBooks:()=>libraryShelf(books),getOwner,onReorder:saveShelfOrder,onError:error=>status('library-status',{id:'ui.generic.error'},true)});$('library-trash').addEventListener('click',()=>{shell.closeNavigation();bookActions.trash();});}else roomIcons();
 if(isLibrary)viewHistory=createLibraryViewHistory({window,getUiLocale,onBeforeUiPopstate,onChange:(snapshot,meta)=>{
   shelfControls?.apply(snapshot.view);
   renderBooks();
   if(meta.source!=='hydrate')syncOverlay(snapshot.overlay);
 }});
 const shelfList=isLibrary?mountIncrementalShelf({grid:$('library-books'),controls:$('shelf-more'),renderItem:bookCard}):null;
-pdfOnboarding=mountPdfOnboarding({document,root:$('pdf-ingestion-jobs'),api,getSession:()=>session,capture:()=>ownerScope.capture(),isCurrent:ticket=>ownerScope.isCurrent(ticket),onOpen:bookId=>{location.href=uiHref('/read?book='+encodeURIComponent(bookId));},onDone:job=>{if(followedPdfId===job.id&&$('upload-dialog').open){pdfOnboarding.opened(job);location.href=uiHref('/read?book='+encodeURIComponent(job.bookId));}else refresh().catch(error=>status('library-status',{id:'ui.generic.error'},true));}});
+// Legacy lifecycle name keeps the page's owner/reset seams on one controller.
+pdfOnboarding={refresh:()=>bookUploads.refresh(),reset:()=>bookUploads.syncOwner()};
+window.addEventListener('pagehide',event=>{if(!event.persisted)bookUploads.dispose();});
 function clearPrivateUI({keepAuthDialog=false,preserveView=false}={}){
   // GET-188: the optional home resume row is removed synchronously at the
   // owner transition, before any slower reconciliation can repaint it.
@@ -225,39 +229,24 @@ for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener(
 document.addEventListener('click',event=>{for(const details of document.querySelectorAll('.book-details[open]'))if(!details.contains(event.target))details.open=false;});
 function openUpload(){$('upload-dialog').classList.remove('pdf-saved');uploadTitleId='portal.upload.title';$('upload-title').textContent=t(uploadTitleId);shell?.closeNavigation();pendingUpload=true;if(!ensureUser())return;pendingUpload=false;if(!upload.file){$('book-file').value='';$('upload-filename').textContent='';status('upload-status','');own($('confirm-upload'),{id:'portal.upload.save'});}$('confirm-upload').disabled=upload.busy||!upload.file;$('upload-progress-slot').append($('pdf-ingestion-jobs'));pdfOnboarding.refresh();if(!$('upload-dialog').open){openOverlayFor({kind:'upload'});$('upload-dialog').showModal();}}
 for(const id of ['upload-button','empty-upload'])$(id).addEventListener('click',openUpload);
-function selectFile(file){if(!file||upload.busy)return;$('upload-filename').textContent='';$('confirm-upload').disabled=true;$('book-file').value='';try{upload.select(file);$('upload-filename').textContent=file.name+' · '+(file.size>=1024*1024?(file.size/1024/1024).toFixed(2)+' MB':Math.max(1,Math.ceil(file.size/1024))+' KB');own($('confirm-upload'),{id:'portal.upload.save'});$('confirm-upload').disabled=false;status('upload-status','');}catch(error){status('upload-status',{id:'portal.upload.invalid'},true);}}
-$('book-file').addEventListener('change',e=>selectFile(e.target.files[0]));
-// Reformat only this operation's current progress slot; never revive a replaced status.
-onUiLocaleChange(updateUploadProgressLabel);
-const drop=$('drop-zone');drop.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();if(!upload.busy)$('book-file').click();}});$('upload-dialog').addEventListener('close',()=>{closeOverlayFor('upload','user');followedPdfId=null;$('library-import-slot').append($('pdf-ingestion-jobs'));if(upload.busy)status('library-status',{id:'portal.status.importing',params:{filename:upload.file.name}});});for(const event of ['dragenter','dragover'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.add('dragging');});for(const event of ['dragleave','drop'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.remove('dragging');if(event==='drop')selectFile(e.dataTransfer.files[0]);});
-$('confirm-upload').addEventListener('click',async()=>{
-  if(!upload.file||upload.busy)return;const ticket=ownerScope.capture(),operation=upload,file=operation.begin(),b=$('confirm-upload'),focus=trackActionFocus(document,b);let succeeded=false;b.disabled=true;$('book-file').disabled=true;own(b,{id:'portal.upload.busy'});$('upload-dialog').setAttribute('aria-busy','true');status('upload-status',{id:file.name.toLowerCase().endsWith('.pdf')?'portal.upload.pdfExtract':'portal.upload.organizing'});
+function selectFile(file){
+  if(!file)return;
   try{
-    let book;
-    if(/\.pdf$/i.test(file.name)){
-      const scopedApi=(path,body)=>api(path,body,ticket);
-      const job=await uploadPdf({file,api:scopedApi,onProgress:update=>showUploadProgress(update,ticket,operation),assertCurrent:()=>ownerScope.assertCurrent(ticket)});
-      ownerScope.assertCurrent(ticket);succeeded=true;
-      if(job.state==='done'){pdfOnboarding.opened(job);if($('upload-dialog').open)location.href=uiHref('/read?book='+encodeURIComponent(job.bookId));else{await refresh();status('library-status',{id:'portal.status.ingested',params:{filename:file.name}});}return;}
-      if($('upload-dialog').open){followedPdfId=job.id;$('upload-dialog').classList.add('pdf-saved');uploadTitleId='portal.upload.done';$('upload-title').textContent=t(uploadTitleId);}pdfOnboarding.track(job);status('upload-status',{id:'portal.upload.saved'});own(b,{id:'portal.upload.save'});return;
-    }else if(session.directUpload){
-      status('upload-status',{id:'portal.upload.storing'});
-      const target=await api('/api/library/upload/start',{filename:file.name,bytes:file.size},ticket);
-      ownerScope.assertCurrent(ticket);
-      const sent=await fetch(target.url,{method:'PUT',headers:{'Content-Type':'application/octet-stream'},body:file});
-      if(!sent.ok)throw Error('原文件上传未完成。');
-      ownerScope.assertCurrent(ticket);
-      status('upload-status',{id:'portal.upload.received'});
-      book=await api('/api/library/upload/complete',{id:target.id},ticket);
-    }else{
-      const base64=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result.split(',')[1]);reader.onerror=()=>reject(Error('文件无法读取，请重新选择。'));reader.readAsDataURL(file);});
-      book=await api('/api/library/upload',{filename:file.name,base64},ticket);
-    }
-    succeeded=true;
-    if($('upload-dialog').open){status('upload-status',{id:'portal.upload.opening'});location.href=uiHref('/read?book='+encodeURIComponent(book.bookId));}else{await refresh();if(ownerScope.isCurrent(ticket))status('library-status',{id:'portal.status.uploaded',params:{filename:file.name}});}
-  }catch(error){if(!ownerScope.isCurrent(ticket))return;const detailId=error.messageId;status('upload-status',{render:()=>(detailId?t(detailId)+' ':'')+t('portal.upload.failed')},true);own(b,{id:'portal.upload.retry'});if(!$('upload-dialog').open)status('library-status',{id:'portal.status.uploadIncomplete',params:{filename:file.name}},true);}
-  finally{if(uploadProgressMessage?.operation===operation)uploadProgressMessage=null;operation.finish();if(succeeded)operation.reset();if(ownerScope.isCurrent(ticket)){b.disabled=!operation.file;$('book-file').disabled=false;$('upload-dialog').removeAttribute('aria-busy');if($('upload-dialog').open)focus.restore(succeeded?$('pdf-ingestion-jobs').querySelector('button')||$('upload-dialog').querySelector('.dialog-close'):b);else focus.stop();}else focus.stop();}
-});
+    upload.select(file);
+    if(!chat){location.href=uiHref('/library');return;}
+    // Picking from the shelf and attaching in chat enter the same operation.
+    const id=chat.upload(file);if(!id)return;
+    upload.reset();$('book-file').value='';if($('upload-dialog').open)$('upload-dialog').close();chat.open();
+  }catch{status('upload-status',{id:'portal.upload.invalid'},true);}
+}
+$('book-file').addEventListener('change',e=>selectFile(e.target.files[0]));
+onUiLocaleChange(updateUploadProgressLabel);
+const drop=$('drop-zone');drop.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();$('book-file').click();}});
+$('upload-dialog').addEventListener('close',()=>closeOverlayFor('upload','user'));
+for(const event of ['dragenter','dragover'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.add('dragging');});
+for(const event of ['dragleave','drop'])drop.addEventListener(event,e=>{e.preventDefault();drop.classList.remove('dragging');if(event==='drop')selectFile(e.dataTransfer.files[0]);});
+$('confirm-upload').hidden=true;
+$('confirm-upload').addEventListener('click',()=>selectFile(upload.file));
 document.querySelectorAll('[data-shelf]').forEach(button=>{button.setAttribute('aria-label',button.dataset.shelf==='all'?t('portal.room.library'):t('portal.room.private'));button.addEventListener('click',()=>shelfControls?.set({scope:button.dataset.shelf}));});
 $('book-search').addEventListener('input',()=>{shelfDrag?.reset();viewHistory?.setQuery($('book-search').value);renderBooks();});
 // Unfinished IME text never reaches the URL: composition suspends the search

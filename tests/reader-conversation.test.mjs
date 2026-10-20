@@ -4,6 +4,9 @@ before(()=>requestUiRoute('zh-Hans'));
 after(()=>requestUiRoute('en'));
 import assert from 'node:assert/strict';
 import {readerConversationContext,mountReaderConversation,readerInteractionBlocked} from '../app/reader-conversation.mjs';
+import {renderChatMarkdown} from '../app/library-chat-markdown.mjs';
+import {mountChatBookUpload} from '../app/chat-book-upload.mjs';
+import {createBookUploadController} from '../app/book-upload-controller.mjs';
 import {mountLibraryChat} from '../app/library-chat.mjs';
 import {mountReaderCompanion} from '../app/reader-companion.mjs';
 
@@ -39,7 +42,7 @@ test('reader chat uses a valid selection, then a valid visible paragraph, and re
 function mount(options={}){
   const events=new EventTarget();globalThis.document=events;
   let hooks,updates=0,resets=0;const navigations=[],replacements=[];
-  const instance=mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader(),root:{},mountChat:value=>{hooks=value;return {update(){updates++;},reset(){resets++;}};},navigate:url=>navigations.push(url),replace:url=>replacements.push(url),...options});
+  const instance=mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader(),root:{},mountChat:value=>{hooks=value;return {update(){updates++;},reset(){resets++;}};},navigate:url=>navigations.push(url),replace:url=>replacements.push(url),...options});
   return {instance,hooks,events,navigations,replacements,counts:()=>({updates,resets})};
 }
 
@@ -125,7 +128,7 @@ function realMount(t,{integration=null,requests=[]}={}){
   const book={bookId:'book-one',contentVersion:'v1',title:{zh:'一本书',en:'A book'},sections:[{chapterId:'ch1',paragraphs:[{id:'p1',kind:'body'},{id:'p2',kind:'body'}]}]};
   const reader={getBook:()=>book,isSelectionActive:()=>false,getAnchor:()=>({passageId:'p1'})};
   const opened=[];
-  const instance=mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,api:(url,data,options)=>Promise.resolve(api(url,data,options)),integration,mountCompanion:undefined});
+  const instance=mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,api:(url,data,options)=>Promise.resolve(api(url,data,options)),integration,mountCompanion:undefined});
   f.onCleanup(()=>{});
   return {...f,instance,requests,book,opened};
 }
@@ -143,7 +146,7 @@ test('injected conversation creates one AI trigger in the tools surface and no g
   const reader={getBook:()=>book,isSelectionActive:()=>false,getAnchor:()=>({passageId:'p1'})};
   const integration={triggerHost,companionAnchor:pill,focusReturn:()=>{calls.returned++;pill.focus();},onUnread:value=>calls.unread.push(value),onOpen:()=>{calls.opened++;}};
   Object.assign(seams,{triggerHost,companionAnchor:pill,focusReturn:integration.focusReturn,onUnread:integration.onUnread,onOpen:integration.onOpen});
-  mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,api,integration});
+  mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,api,integration});
   await flush();
   const all=f.all;
   assert.equal(all(f.doc.body).filter(n=>n.className==='library-chat-launcher').length,0,'injected mode generates no hidden launcher');
@@ -176,7 +179,7 @@ test('tools reveals never re-mount chat or companion and keep one instance each'
   const book={bookId:'book-one',contentVersion:'v1',title:{zh:'一本书',en:'A book'},sections:[{chapterId:'ch1',paragraphs:[{id:'p1',kind:'body'}]}]};
   const reader={getBook:()=>book,isSelectionActive:()=>false,getAnchor:()=>({passageId:'p1'})};
   const integration={triggerHost:f.triggerHost,companionAnchor:f.pill,focusReturn:()=>f.pill.focus(),onUnread(){},onOpen(){}};
-  mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,api,integration,
+  mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,api,integration,
     mountChat:options=>{mounts.chat++;return mountLibraryChat(options);},
     mountCompanion:options=>{mounts.companion++;return mountReaderCompanion(options);}});
   await flush();
@@ -204,7 +207,7 @@ test('notes to AI retains the selected passage before closing the notes owner',a
  const f=realFixture(t),requests=[];let notesOpen=true;
  const book={bookId:'book-one',contentVersion:'v1',title:{en:'A book'},sections:[{chapterId:'ch1',paragraphs:[{id:'p1'},{id:'p2'}]}]};
  const reader={getBook:()=>book,isSelectionActive:()=>notesOpen,getSelectedId:()=> 'p2',getAnchor:()=>({passageId:'p1'}),closeNotes:()=>{notesOpen=false;}};
- const chat=mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,mountCompanion:()=>({dispose(){}}),integration:{triggerHost:f.triggerHost,companionAnchor:f.pill,onOpen(){},focusReturn(){}},request:async url=>{requests.push(url);return new Response(JSON.stringify({bookId:'book-one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:new URL(url,'https://local').searchParams.get('passageId'),original:'Source'},turns:[]}));}});
+ const chat=mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,mountCompanion:()=>({dispose(){}}),integration:{triggerHost:f.triggerHost,companionAnchor:f.pill,onOpen(){},focusReturn(){}},request:async url=>{requests.push(url);return new Response(JSON.stringify({bookId:'book-one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:new URL(url,'https://local').searchParams.get('passageId'),original:'Source'},turns:[]}));}});
  f.onCleanup(()=>chat.dispose());chat.open();await flush();assert.equal(notesOpen,false);assert.ok(requests.some(url=>url.includes('/chat?passageId=p2')),JSON.stringify(requests));
 });
 
@@ -212,12 +215,21 @@ test('real mounted selection capture quotes exact source before opening and neve
  const f=realFixture(t),requests=[];let selected=true;
  const book={bookId:'book-one',contentVersion:'v1',title:{en:'A book'},sections:[{chapterId:'ch1',paragraphs:[{id:'p1',original:'Visible source.'}]}]};
  const reader={getBook:()=>book,isSelectionActive:()=>selected,getExcerpt:()=>({bookId:'book-one',contentVersion:'v1',chapterId:'ch1',parts:[{passageId:'p1',language:'en',variant:'literal',start:0,end:7,text:'Visible'}]}),isPassageVisible:()=>true,getAnchor:()=>({passageId:'p1'}),dismissTools:()=>{selected=false;}};
- const chat=mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,mountCompanion:()=>({dispose(){}}),integration:{triggerHost:f.triggerHost,companionAnchor:f.pill,onOpen(){},focusReturn(){}},request:async(url,options)=>{requests.push({url,options});return new Response(JSON.stringify({bookId:'book-one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:'p1',original:'Visible source.'},turns:[]}));}});
+ const chat=mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,mountCompanion:()=>({dispose(){}}),integration:{triggerHost:f.triggerHost,companionAnchor:f.pill,onOpen(){},focusReturn(){}},request:async(url,options)=>{requests.push({url,options});return new Response(JSON.stringify({bookId:'book-one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:'p1',original:'Visible source.'},turns:[]}));}});
  f.onCleanup(()=>chat.dispose());assert.equal(chat.quoteSelection(),true);await flush();assert.equal(f.dialog.open,true);assert.equal(selected,false);assert.equal(f.all(f.dialog).find(node=>node.className==='library-chat-quote-text').textContent,'Visible');assert.equal(requests.some(call=>call.options.method==='POST'),false);
 });
 
 test('a hidden old layer snapshot is rejected before opening and is never replaced by its whole paragraph',async t=>{
  const f=realFixture(t),notices=[],book={bookId:'book-one',contentVersion:'v1',title:{en:'A book'},sections:[{chapterId:'ch1',paragraphs:[{id:'p1',original:'Visible source.'}]}]};let opens=0;
  const reader={getBook:()=>book,isSelectionActive:()=>true,getExcerpt:()=>({bookId:'book-one',contentVersion:'v1',chapterId:'ch1',parts:[{passageId:'p1',language:'en',start:0,end:7,text:'Visible'}]}),isPassageVisible:()=>true,isQuoteVisible:()=>false,getAnchor:()=>({passageId:'p1'})};
- const chat=mountReaderConversation({bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,announce:value=>notices.push(value),mountChat:()=>({update(){},dispose(){},quote(){opens++;return true;}})});f.onCleanup(()=>chat.dispose());assert.equal(chat.quoteSelection(),false);assert.equal(opens,0);assert.equal(notices.length,1);
+ const chat=mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,announce:value=>notices.push(value),mountChat:()=>({update(){},dispose(){},quote(){opens++;return true;}})});f.onCleanup(()=>chat.dispose());assert.equal(chat.quoteSelection(),false);assert.equal(opens,0);assert.equal(notices.length,1);
+});
+
+test('reader attachment completes and can select the new chat book while retaining the reader, anchor and original draft',async t=>{
+ const f=realFixture(t),requests=[],navigation=[],current={bookId:'book-one',title:{en:'Current'},sections:[{paragraphs:[{id:'p1'}]}]},reader={getBook:()=>current,isSelectionActive:()=>false,getAnchor:()=>({passageId:'p1'}),goToPassage:()=>assert.fail('upload must not move the reader')};
+ const previous=globalThis.FileReader;globalThis.FileReader=class{readAsDataURL(){this.result='data:text/plain;base64,Ym9vaw==';this.onload();}};t.after(()=>{globalThis.FileReader=previous;});
+ const uploadController=createBookUploadController({getOwner:()=> 'reader-one',getSession:()=>({user:{id:'reader-one'}}),readBase64:async()=> 'Ym9vaw==',api:async()=>({bookId:'new-book',title:{en:'New book'}})});
+ const chat=mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,uploadController,mountUpload:mountChatBookUpload,navigate:url=>navigation.push(url),mountCompanion:()=>({dispose(){}}),request:async(url,options)=>{requests.push({url,options});return new Response(JSON.stringify(url==='/api/library/upload'?{bookId:'new-book',title:{en:'New book'}}:url==='/api/library/ingestion'?{jobs:[]}:{bookId:url.includes('new-book')?'new-book':'book-one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:'p1',original:'Source'},turns:[]}));}});f.onCleanup(()=>chat.dispose());chat.open();await flush();const input=f.doc.getElementById('library-chat-input');input.value='Keep my question about the current book.';input.dispatchEvent(new Event('input'));input.focus();chat.upload({name:'new.md',size:4});await flush();await flush();
+ assert.equal(input.value,'Keep my question about the current book.');assert.equal(f.doc.activeElement,input);assert.equal(reader.getBook(),current);assert.deepEqual(reader.getAnchor(),{passageId:'p1'});assert.deepEqual(navigation,[]);
+ const all=()=>f.all(f.doc.body),select=all().find(n=>n.className.split(' ').includes('chat-book-select'));assert.ok(select);select.click();await flush();assert.ok(requests.some(r=>r.url==='/api/library/books/new-book/chat'));assert.equal(reader.getBook(),current);assert.deepEqual(reader.getAnchor(),{passageId:'p1'});const choice=all().find(n=>n.className==='library-chat-book-choice');choice.value='book-one';choice.dispatchEvent(new Event('change'));await flush();assert.equal(input.value,'Keep my question about the current book.');assert.equal(requests.filter(r=>r.options?.method==='POST'&&r.url.includes('/chat')).length,0);
 });

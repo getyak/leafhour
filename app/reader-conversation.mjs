@@ -18,7 +18,7 @@ export function readerConversationContext(reader,bookId){
   return {book,passages,passageId:passages.has(selected)?selected:passages.has(anchor)?anchor:null};
 }
 
-export function mountReaderConversation({bookId,session,getReader,root,request=fetch,navigate=url=>location.assign(url),replace=url=>location.replace(url),mountChat=mountLibraryChat,mountCompanion=mountReaderCompanion,integration=null,announce=()=>{}}){
+export function mountReaderConversation({bookId,session,getReader,root,request=fetch,navigate=url=>location.assign(url),replace=url=>location.replace(url),mountChat=mountLibraryChat,mountCompanion=mountReaderCompanion,integration=null,uploadController=null,mountUpload=null,renderMarkdown=null,announce=()=>{}}){
   if(!bookId||!root)return null;
   let chat,companion,workspace,disposed=false;
   const events=globalThis.document,listeners=[];
@@ -26,7 +26,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
   const requireActive=()=>{if(disposed)throw Object.assign(Error('Conversation disposed'),{code:'READER_CONVERSATION_DISPOSED'});};
   const openAuth=()=>{if(disposed)return;const passageId=context()?.passageId;navigate(readerLoginUrl({bookId,passageId,ui:getUiLocale()}));};
   let disposeChat;
-  const dispose=()=>{if(disposed)return;disposed=true;for(const remove of listeners)remove();companion?.dispose();disposeChat?.();workspace?.dispose();externalLauncher?.position?.dispose();};
+  const dispose=()=>{if(disposed)return;disposed=true;for(const remove of listeners)remove();companion?.dispose();uploadController?.dispose();disposeChat?.();workspace?.dispose();externalLauncher?.position?.dispose();};
   const sessionChanged=()=>{requireActive();companion?.dispose();chat?.reset();dispose();events.dispatchEvent(new CustomEvent('reader:session-changed'));replace(uiHref('/library'));throw Object.assign(Error(t('conversation.accountChanged')),{status:409});};
   // GET-184: one injected seam bundle is split into exactly four contracts —
   // the chat-owned AI trigger host, the companion bubble anchor (shared pill),
@@ -45,7 +45,8 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
     if(!response.ok)throw Object.assign(Error(value.error||'对话暂时无法载入，请重试。'),{status:response.status});
     return value;
   };
-  chat=mountChat({root,api,getSession:()=>session,getOwner:()=>session?.user?.id||null,getBooks:()=>{const current=context();return current?[current.book]:[];},getCurrentBook:()=>bookId,getCurrentPassage:()=>context()?.passageId||null,externalLauncher,
+  let taskStorage=null;try{taskStorage=globalThis.localStorage;}catch{}
+  chat=mountChat({root,api,uploadController,mountUpload,renderMarkdown,uploadOptions:{request,storage:taskStorage},getSession:()=>session,getOwner:()=>session?.user?.id||null,getBooks:()=>{const current=context();return current?[current.book]:[];},getCurrentBook:()=>bookId,getCurrentPassage:()=>context()?.passageId||null,externalLauncher,
     openAuth,onViewChange:opened=>{if(opened)getReader()?.closeNotes?.();workspace?.setOpen(opened);},
     onNavigateToPassage:(targetBook,passageId)=>{
       const current=context();if(targetBook!==bookId||!current?.passages.has(passageId))return false;

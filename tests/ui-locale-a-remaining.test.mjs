@@ -73,6 +73,6 @@ test('actual portal statuses and initial failure keep semantic labels through lo
  context.setStatus('library-status','');await locale.requestUiRoute('en');context.labels();assert.equal(status.textContent,'');
 });
 
-test('actual PDF-open callback keeps the current route UI and exact encoded book ID',async()=>{
- await locale.requestUiRoute('ja');let call;const walk=n=>{if(!n||typeof n!=='object')return;if(n.type==='CallExpression'&&n.callee.name==='mountPdfOnboarding')call=n;for(const v of Object.values(n))if(Array.isArray(v))v.forEach(walk);else if(v&&typeof v==='object')walk(v);};walk(portalAst);const onOpen=call.arguments[0].properties.find(p=>p.key.name==='onOpen').value,context={location:{href:''},uiHref:locale.uiHref,encodeURIComponent};vm.createContext(context);vm.runInContext('this.open='+portalSource.slice(onOpen.start,onOpen.end)+';',context);context.open('来源/a?b');const target=new URL(context.location.href,'https://example.invalid');assert.equal(target.pathname,'/read');assert.equal(target.searchParams.get('book'),'来源/a?b');assert.deepEqual(target.searchParams.getAll('ui'),['ja']);await locale.requestUiRoute('en');
+test('uploaded book reading action keeps the current route UI and exact encoded book ID',async()=>{
+ const {uploadedBookHref}=await import('../app/chat-book-upload.mjs');await locale.requestUiRoute('ja');const target=new URL(uploadedBookHref('来源/a?b'),'https://example.invalid');assert.equal(target.pathname,'/read');assert.equal(target.searchParams.get('book'),'来源/a?b');assert.deepEqual(target.searchParams.getAll('ui'),['ja']);await locale.requestUiRoute('en');
 });

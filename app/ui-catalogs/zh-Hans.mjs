@@ -1,6 +1,16 @@
 // GET-192 immutable zh-Hans UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+
+  "bookUpload.ready": "可以开始阅读了",
+  "bookUpload.permission": "原文件已保存",
+  "bookUpload.review": "正在核对上次请求…",
+  "bookUpload.interrupted": "上传暂时中断，已保留进度",
+  "bookUpload.cancelled": "已取消",
+  "bookUpload.error": "操作暂未完成，请重试",
+  "bookUpload.action.select": "在此对话中选用",
+  "bookUpload.action.consent": "允许 PaddleOCR 识别这份文件",
+
   "ui.accountLocale.reading": "正在读取账号的语言选择…",
   "ui.accountLocale.saving": "正在保存语言选择…",
   "ui.accountLocale.saved": "已保存到账号，其他设备也会沿用。",

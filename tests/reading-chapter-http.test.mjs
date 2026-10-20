@@ -1,0 +1,31 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,rm} from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {createReaderServer} from '../server/server.mjs';
+
+test('fresh HTTP reading routes retrieve independently stored chapters and keep ownership/version fences',async t=>{
+ const dir=await mkdtemp(path.join(os.tmpdir(),'leafhour-chapter-http-'));
+ t.after(()=>rm(dir,{recursive:true,force:true}));
+ const rows=new Map(),blobs=new Map(),reads=[],owner={id:'chapter-http-owner',email:'isolated@example.invalid'};
+ let user=owner;
+ const store={read:async(k,f)=>{reads.push(k);return structuredClone(rows.get(k)??f);},mutate:async(k,f,fn)=>{const d=structuredClone(rows.get(k)??f),r=await fn(d);rows.set(k,structuredClone(d));return r;},putBlob:async(k,b)=>blobs.set(k,Buffer.from(b)),blob:async k=>Buffer.from(blobs.get(k))};
+ const make=()=>createReaderServer({recordsPath:path.join(dir,'legacy.json'),portalDataDir:path.join(dir,'portal'),dataStore:store,authService:{userFor:async()=>user},translator:null,chatGenerator:null,companionGenerator:null,introductionGenerator:null,speechProvider:null,paddleProvider:null,env:{}});
+ const seed=await make(),text=Array.from({length:90},(_,n)=>'Paragraph '+n+' contains '+('a complete source sentence. '.repeat(130))).join('\n\n');
+ const book=await seed.portal.library.importDocument(owner,{filename:'chapters.txt',bytes:Buffer.from(text)});
+ await new Promise(resolve=>seed.close(resolve));
+ const server=await make();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));t.after(()=>new Promise(resolve=>server.close(resolve)));
+ const base='http://127.0.0.1:'+server.address().port+'/api/library/books/'+book.bookId;
+ reads.length=0;
+ const chapter=book.chapters[1],response=await fetch(base+'/chapters/'+chapter.id+'?contentVersion='+book.contentVersion);
+ assert.equal(response.status,200);const result=await response.json();assert.equal(result.chapterId,chapter.id);assert.equal(result.sections[0].paragraphs[0].original,book.sections[1].paragraphs[0].original);
+ assert.equal(reads.filter(k=>/\/books\/[^/]+\.json$/.test(k)).length,0,'chapter requests must not read the entire canonical book');
+ assert.equal(reads.filter(k=>/\/translations\/[^/]+\.json$/.test(k)).length,0,'chapter requests must not read the entire translation overlay');
+ reads.length=0;
+ const opening=await fetch(base+'/reading?chapterId='+chapter.id).then(r=>r.json());assert.deepEqual(opening.reading.loadedChapters,[chapter.id]);
+ assert.equal(reads.filter(k=>/\/books\/[^/]+\.json$/.test(k)).length,0,'opening requests must use the manifest and selected chapter');
+ assert.equal((await fetch(base+'/chapters/'+chapter.id+'?contentVersion=stale')).status,409);
+ user={id:'another-isolated-owner'};assert.equal((await fetch(base+'/chapters/'+chapter.id+'?contentVersion='+book.contentVersion)).status,404);
+ user=null;assert.equal((await fetch(base+'/reading')).status,404);
+});
