@@ -763,5 +763,6 @@
   "tests/ui-locale-account.test.mjs",
   "app/account-ui-preferences-browser.mjs",
   "tests/account-ui-preferences-browser.test.mjs",
-  "tests/production-smoke-boundary.test.mjs"
+  "tests/production-smoke-boundary.test.mjs",
+  "docs/design/2026-10-20-get-201-settings.md"
 ]
