@@ -1,0 +1,154 @@
+{
+  "at": "2026-10-19T23:30:08.994Z",
+  "scope": "Actual local server UI 390px guest hitboxes, source CSS SHA in local-url receipt; no native physical phone claim",
+  "rows": [
+    {
+      "path": "/",
+      "status": 200,
+      "language": "en",
+      "count": 40,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/zh-hans",
+      "status": 200,
+      "language": "zh-Hans",
+      "count": 40,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/zh-hant",
+      "status": 200,
+      "language": "zh-Hant",
+      "count": 40,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/ja",
+      "status": 200,
+      "language": "ja",
+      "count": 40,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/mcp",
+      "status": 200,
+      "language": "en",
+      "count": 27,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/zh-hans/mcp",
+      "status": 200,
+      "language": "zh-Hans",
+      "count": 27,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/zh-hant/mcp",
+      "status": 200,
+      "language": "zh-Hant",
+      "count": 27,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/ja/mcp",
+      "status": 200,
+      "language": "ja",
+      "count": 27,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/privacy",
+      "status": 200,
+      "language": "en",
+      "count": 18,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/zh-hans/privacy",
+      "status": 200,
+      "language": "zh-Hans",
+      "count": 18,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/zh-hant/privacy",
+      "status": 200,
+      "language": "zh-Hant",
+      "count": 18,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/ja/privacy",
+      "status": 200,
+      "language": "ja",
+      "count": 18,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/library?ui=en",
+      "status": 200,
+      "language": "en",
+      "count": 62,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/library?ui=zh-Hans",
+      "status": 200,
+      "language": "zh-Hans",
+      "count": 62,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/library?ui=zh-Hant",
+      "status": 200,
+      "language": "zh-Hant",
+      "count": 62,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    },
+    {
+      "path": "/library?ui=ja",
+      "status": 200,
+      "language": "ja",
+      "count": 62,
+      "below32": [],
+      "below44": [],
+      "overflow": false
+    }
+  ],
+  "completed": true,
+  "browserClosed": true,
+  "sourceCssSHA": "98e50df61c7d1c6da4ed346150db536fed5dae8e10d53a4c3c884a03714f59f7",
+  "targetCount": 588
+}

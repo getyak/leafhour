@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-19T23:29:41.250Z",
+  "scope": "actual 390px Chromium pointer/keyboard UI; no physical phone/model claim",
+  "checks": [
+    "native bottom-right language target → en",
+    "native bottom-right language target → zh-Hans",
+    "native bottom-right language target → zh-Hant",
+    "native bottom-right language target → ja",
+    "home localized footer",
+    "home mobile menu",
+    "MCP article links",
+    "privacy links",
+    "library populated search",
+    "library filters open",
+    "library login dialog"
+  ],
+  "defects": [],
+  "pass": true,
+  "browserClosed": true
+}
