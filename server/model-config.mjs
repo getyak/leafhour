@@ -1,6 +1,6 @@
-// Defaults belong to their actual API paths: Harness and chat-completions use
-// different model identifiers. Existing pricing guards remain authoritative.
-export const DEFAULT_MODELS=Object.freeze({reading:'deepseek-flash',translation:'deepseek-chat',audioScript:'deepseek-chat',speech:'gemini-3.8-flash-tts',image:'google/gemini-nano-banana-2.1'});
+// All DeepSeek text paths share one default. Existing pricing guards remain
+// authoritative; speech and image keep their provider-specific model IDs.
+export const DEFAULT_MODELS=Object.freeze({reading:'deepseek-flash',translation:'deepseek-flash',audioScript:'deepseek-flash',speech:'gemini-3.8-flash-tts',image:'google/gemini-nano-banana-2.1'});
 
 export function modelConfiguration(env=process.env){
  return {translation:env.READER_TRANSLATION_MODEL||DEFAULT_MODELS.translation,audioScript:env.READER_AUDIO_SCRIPT_MODEL||env.READER_DIALOGUE_MODEL||DEFAULT_MODELS.audioScript,speech:(env.READER_SPEECH_MODEL||DEFAULT_MODELS.speech).replace(/^google\//,''),image:env.READER_IMAGE_MODEL||DEFAULT_MODELS.image};

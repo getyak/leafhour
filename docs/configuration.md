@@ -43,7 +43,7 @@ cp .env.example .env
 <details>
 <summary>调整模型、端口和其他高级选项</summary>
 
-通常无需填写。默认模型由 [server/model-config.mjs](../server/model-config.mjs) 统一维护，模板不重复固定模型版本。
+所有 DeepSeek 文字功能默认使用 `deepseek-flash`；阅读 Agent、回声、翻译与讲稿生成均关闭思考模式。通常无需填写模型覆盖值。默认模型由 [server/model-config.mjs](../server/model-config.mjs) 统一维护，模板不重复固定模型版本。
 
 | 可选变量 | 用途 |
 |---|---|
