@@ -10,23 +10,27 @@ export function textRange(document,prose,start,end){
   return null;
 }
 
-export function mountReaderHighlights({document,getRecords,signedIn,available,selectionMatches,api,onSelect,onNote,onChange,announce,loginUrl}){
+export function mountReaderHighlights({document,getRecords,signedIn,available,selectionMatches,api,onSelect,onNote,onChange,announce,loginUrl,loadAnnotationModule=()=>import('./reader-annotations.mjs')}){
   const root=document.getElementById('chapter-text'),save=document.getElementById('show-highlight'),status=document.getElementById('highlight-status');
   let selected=null,busy=false,timer=null,indexed=null,index=new Map(),pending=new Map(),disposed=false;
+  const annotate=document.getElementById('annotate-selection');let annotation,annotationEpoch=0;
+  const loadAnnotations=()=>annotation??=loadAnnotationModule().then(module=>disposed?null:module.mountReaderAnnotations({document,api,getRecords,getSelection:()=>selected,signedIn,available,accept,notify,isCurrent:()=>!disposed}));
   const labels=createUiLabels(),listeners=[];
   const pruneLabels=()=>labels.prune();
   const write=(node,id,params,attribute)=>{if(attribute)labels.attr(node,attribute,id,params);else labels.text(node,id,params);};
   const listen=(node,event,fn)=>{node.addEventListener(event,fn);listeners.push(()=>node.removeEventListener(event,fn));};
   const offLocale=onUiLocaleChange(()=>{labels.refresh({pruneDetached:true});});
   const rows=()=>activeHighlights(getRecords());
-  function notify(message,{error=false,login=false,id=HIGHLIGHT_UI+'error'}={}){
+  function notify(message,{error=false,login=false,reload=false,id=HIGHLIGHT_UI+'error'}={}){
     if(disposed)return;pruneLabels();
     clearTimeout(timer);status.replaceChildren();const text=document.createElement('span');write(text,id);status.append(text);status.hidden=false;status.dataset.error=String(error);announce(t(id));
     if(login){const link=document.createElement('a');link.href=loginUrl(link);write(link,HIGHLIGHT_UI+'login');status.append(link);}
+    if(reload){const action=document.createElement('button');action.type='button';write(action,'reader.annotation.reload');action.addEventListener('click',()=>document.defaultView.location.reload());status.append(action);}
     if(!error)timer=setTimeout(()=>{status.hidden=true;},3500);
   }
   function updateTools(snapshot){if(disposed)return;
     selected=snapshot?structuredClone(snapshot):null;save.hidden=!selected;
+    if(annotate)annotate.hidden=!selected;
     save.disabled=busy;write(save,busy?'record.saving':selected&&rows().some(row=>highlightKey(row)===highlightKey(selected))?HIGHLIGHT_UI+'remove':'reader.shell.highlight');
   }
   function paint(prose,passageId){if(disposed)return;
@@ -62,6 +66,7 @@ export function mountReaderHighlights({document,getRecords,signedIn,available,se
     catch(error){notify('',{id:HIGHLIGHT_UI+'saveFailed',error:true});}
     finally{busy=false;updateTools(selected);}
   });
+  if(annotate){listen(document,'reader:session-changed',()=>{annotationEpoch++;updateTools(null);});listen(annotate,'click',()=>{const snapshot=selected,ticket=annotationEpoch;return loadAnnotations().then(controller=>{if(!disposed&&snapshot&&snapshot===selected&&ticket===annotationEpoch)return controller?.annotate(annotate);}).catch(()=>notify('',{error:true,reload:true,id:'reader.annotation.loadFailed'}));});listen(document,'reader:ready',()=>{annotationEpoch++;if(signedIn())loadAnnotations().catch(()=>{});});}
   listen(root,'click',event=>{
     const mark=event.target.closest('.reader-highlight');if(!mark||document.getSelection()?.toString().trim())return;
     const ids=mark.dataset.highlightIds.split(' '),row=rows().findLast(row=>ids.includes(row.id));if(!row)return;
@@ -77,5 +82,5 @@ export function mountReaderHighlights({document,getRecords,signedIn,available,se
     for(const [text,action]of [[HIGHLIGHT_UI+'return',()=>onSelect(row)],['reader.b1.writeThought',()=>{onSelect(row);onNote();}],[HIGHLIGHT_UI+'remove',()=>remove(row)]]){const button=document.createElement('button');button.type='button';write(button,text);button.addEventListener('click',event=>{event.stopPropagation();action();});actions.append(button);}
     section.append(label,quote,actions);return section;
   }
-  return {paint,paintAll,updateTools,recordNode,notify,unmount(){if(disposed)return;disposed=true;offLocale();clearTimeout(timer);labels.clear();for(const off of listeners)off();listeners.length=0;}};
+  return {paint,paintAll,updateTools,recordNode,notify,unmount(){if(disposed)return;disposed=true;annotation?.then(controller=>controller?.dispose()).catch(()=>{});offLocale();clearTimeout(timer);labels.clear();for(const off of listeners)off();listeners.length=0;}};
 }

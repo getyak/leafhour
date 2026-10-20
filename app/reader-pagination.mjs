@@ -20,7 +20,8 @@ export function pageKeyDirection(event,{blocked=false,selection=''}={}){
 
 export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{},onBoundary=()=>false,hasBoundary=()=>false}){
   const view=document.defaultView,viewport=document.getElementById('reading-pages'),text=document.getElementById('chapter-text'),end=document.getElementById('page-end'),controls=document.getElementById('page-turner'),previous=document.getElementById('page-previous'),next=document.getElementById('page-next'),label=document.getElementById('page-position');
-  let active=false,page=0,lastAnchor=null,resizeFrame,pointerFocus=false,pageLabel=null,disposed=false;
+  let active=false,page=0,lastAnchor=null,resizeFrame,resizeEpoch=0,pointerFocus=false,pageLabel=null,disposed=false;
+  const cancelResize=()=>{resizeEpoch++;view.cancelAnimationFrame(resizeFrame);};
   const listeners=[];
   const listen=(target,name,fn,options)=>{const owned=event=>{if(!disposed)fn(event);};target.addEventListener(name,owned,options);listeners.push(()=>target.removeEventListener(name,owned,options));};
   // Locale publication reads only the last measured UI descriptor. Measuring
@@ -51,6 +52,7 @@ export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{
     restore({passageId,offset:rect.top,withinParagraph:fragmentProgress(rects,index)});return true;
   }
   function restore(position){
+    cancelResize();
     if(!active||!position)return;const node=document.getElementById(position.passageId);if(!node||!text.contains(node))return;
     const rects=[...node.getClientRects()],rect=rects[fragmentIndex(rects,position.withinParagraph)];if(!rect)return;
     const {step,count}=geometry(),left=rect.left-viewport.getBoundingClientRect().left+viewport.scrollLeft;
@@ -58,6 +60,7 @@ export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{
   }
   function turn(direction){
     if(!active||isBlocked()||view.getSelection()?.toString())return false;
+    cancelResize();
     const {count,step}=geometry(),target=page+direction;
     if(target<0||target>=count){if(!onBoundary(direction))return false;sync();return true;}
     page=target;viewport.scrollLeft=page*step;sync();lastAnchor=visibleAnchor();
@@ -77,19 +80,21 @@ export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{
     restore({passageId:event.target.dataset.id,...(visible?{offset:visible.top,withinParagraph:fragmentProgress(rects,index)}:{})});onTurn();
   });
   const observer=new view.ResizeObserver(()=>{
-    if(!active)return;view.cancelAnimationFrame(resizeFrame);const position=lastAnchor;
-    resizeFrame=view.requestAnimationFrame(()=>{restore(position);sync();});
+    if(!active||disposed)return;cancelResize();const position=lastAnchor,epoch=resizeEpoch;
+    resizeFrame=view.requestAnimationFrame(()=>{if(disposed||!active||epoch!==resizeEpoch)return;restore(position);sync();});
   });observer.observe(viewport);
+  for(const event of ['reader:jump','reader:chapter','reader:ready','reader:session-changed','reader:page'])listen(document,event,cancelResize);
   return {
     get active(){return active;},anchor,restore,sync,visibleRect,revealRect,
     update(state){
       if(disposed)return;
+      cancelResize();
       const enabled=state.pageLayout==='spread'&&state.mode!=='parallel';
       if(enabled!==active){active=enabled;document.body.dataset.paginated=String(active);controls.hidden=!active;end.hidden=!active;viewport.scrollLeft=0;page=0;lastAnchor=null;if(active)view.scrollTo(0,0);}
       document.getElementById('page-layout').value=state.pageLayout;
       document.getElementById('page-layout-setting').hidden=state.mode==='parallel';document.getElementById('page-layout-hint').hidden=state.mode==='parallel';sync();
     },
-    last(){if(!active)return;sync();viewport.scrollLeft=(geometry().count-1)*geometry().step;sync();lastAnchor=visibleAnchor();},
+    last(){if(!active)return;cancelResize();sync();viewport.scrollLeft=(geometry().count-1)*geometry().step;sync();lastAnchor=visibleAnchor();},
     unmount(){if(disposed)return;disposed=true;active=false;offLocale();observer.disconnect?.();view.cancelAnimationFrame(resizeFrame);for(const release of listeners)release();listeners.length=0;}
   };
 }

@@ -41,6 +41,7 @@ export const UI_LOCALE_OWNERS=Object.freeze([
  'app/reader-companion.mjs',
  'app/reader-conversation.mjs',
  'app/reader-highlights.mjs',
+ 'app/reader-annotations.mjs',
  'app/reader-immersion.mjs',
  'app/reader-navigation.mjs',
  'app/reader-pagination.mjs',
@@ -90,7 +91,7 @@ export function targetFileOf(importerRelative,specifier){
         targets.push('app'+url.pathname,url.pathname.slice(1));
       }catch{}
   }
-  const protectedFile=file=>file==='app/reader-audio'||file==='app/reader-audio.js'||file==='app/reader-audio.mjs'||file==='app/ui-locale'||file==='app/ui-locale.mjs'||file==='app/ui-locale.js'||file.startsWith('app/ui-catalogs/');
+  const protectedFile=file=>/^app\/(reader-annotations|reading-retained-backup)(?:\.mjs|\.js)?$/.test(file)||file==='app/reader-audio'||file==='app/reader-audio.js'||file==='app/reader-audio.mjs'||file==='app/ui-locale'||file==='app/ui-locale.mjs'||file==='app/ui-locale.js'||file.startsWith('app/ui-catalogs/');
   const protectedTarget=targets.find(protectedFile);if(protectedTarget)return protectedTarget;
   // Ordinary bare package names still have no local release backing. URL
   // parsing above is conservative only for the protected runtime/catalogues.
@@ -224,6 +225,46 @@ export function assertAudioBoundaryEdges({edges,release,sources=[]}){
  return [...visited].sort();
 }
 
+export const ANNOTATION_PUBLIC_FILES=Object.freeze([
+ 'app/reader-annotations.mjs','app/reader-annotation-pending.mjs',
+ 'app/reading-chat-quote.mjs','app/highlights.mjs','app/library-chat-markdown.mjs',
+ 'app/reader-annotations.css',...UI_LOCALE_RELEASE_ENTRIES
+]);
+const annotationTarget=target=>['app/reader-annotations','app/reader-annotations.js','app/reader-annotations.mjs'].includes(target);
+export function assertAnnotationBoundaryEdges({edges,release,sources=[]}){
+ const incoming=edges.filter(edge=>annotationTarget(targetFileOf(edge.importer,edge.specifier)));
+ for(const edge of incoming)if(edge.importer!=='app/reader-highlights.mjs'||edge.kind!=='dynamic-import'||edge.specifier!=='./reader-annotations.mjs')throw Error('Unauthorized annotation boundary edge: '+edge.importer+' '+edge.specifier);
+ if(!incoming.length&&!sources.includes('app/reader-annotations.mjs'))return [];
+ if(incoming.length!==1)throw Error('Annotation boundary requires exactly one deferred import');
+ for(const file of ANNOTATION_PUBLIC_FILES)if(!release.has(file))throw Error('Non-public annotation dependency: '+file);
+ const visited=new Set(),visit=file=>{
+  if(visited.has(file))return;visited.add(file);
+  if(!ANNOTATION_PUBLIC_FILES.includes(file))throw Error('Non-public annotation dependency: '+file);
+  for(const edge of edges.filter(edge=>edge.importer===file)){
+   const target=targetFileOf(file,edge.specifier);
+   if(!target||!edge.specifier.startsWith('./')||file!=='app/ui-locale.mjs'&&(edge.kind!=='import-statement'||/[?#]/.test(edge.specifier)))throw Error('Unauthorized raw annotation dependency: '+edge.specifier);
+   visit(target);
+  }
+ };visit('app/reader-annotations.mjs');return [...visited].sort();
+}
+
+export const RETAINED_BACKUP_PUBLIC_FILES=Object.freeze([
+ 'app/book-introduction.mjs','app/highlights.mjs','app/library-backup.mjs','app/note-drafts.mjs',
+ 'app/paragraph-anchor.mjs','app/personal-records.mjs','app/portable-chat.mjs',
+ 'app/reader-annotation-records.mjs','app/reading-chat-quote.mjs','app/reading-draft-store.mjs',
+ 'app/reading-mark-store.mjs','app/reading-preferences.mjs','app/reading-queue-store.mjs',
+ 'app/reading-retained-backup.mjs','app/reading-session-record.mjs','app/reading-time-policy.mjs','app/source-revisions.mjs'
+]);
+const retainedTarget=file=>/^app\/reading-retained-backup(?:\.mjs|\.js)?$/.test(file);
+export function assertRetainedBackupBoundaryEdges({edges,release,sources=[]}){
+ const incoming=edges.filter(edge=>retainedTarget(targetFileOf(edge.importer,edge.specifier)));
+ for(const edge of incoming)if(edge.importer!=='app/reading-session.js'||edge.kind!=='dynamic-import'||edge.specifier!=='./reading-retained-backup.mjs')throw Error('Unauthorized retained backup edge: '+edge.importer+' '+edge.specifier);
+ if(!incoming.length&&!sources.includes('app/reading-retained-backup.mjs'))return [];
+ if(incoming.length!==1)throw Error('Retained backup requires exactly one gesture import');
+ const visited=new Set(),visit=file=>{if(visited.has(file))return;visited.add(file);if(!release.has(file)||!RETAINED_BACKUP_PUBLIC_FILES.includes(file))throw Error('Non-public retained backup dependency: '+file);for(const edge of edges.filter(edge=>edge.importer===file)){if(edge.kind!=='import-statement'||!edge.specifier.startsWith('./')||/[?#]/.test(edge.specifier))throw Error('Unauthorized raw retained backup edge: '+edge.specifier);visit(targetFileOf(file,edge.specifier));}};
+ visit('app/reading-retained-backup.mjs');return [...visited].sort();
+}
+
 export async function auditUiLocaleGraph({root,allowed=null}={}){
   root=await realpath(root);
   const release=allowed||new Set(await releaseFiles(root));
@@ -251,6 +292,9 @@ export async function auditUiLocaleGraph({root,allowed=null}={}){
   for(const {relative,source}of audited)await assertNoOpaqueModuleCalls(root,relative,source);
   const edges=await syntacticImportEdgesMany(root,audited.map(file=>file.relative));
   assertAudioBoundaryEdges({edges,release,sources:audited.map(file=>file.relative)});
+  const annotationFiles=assertAnnotationBoundaryEdges({edges,release,sources:audited.map(file=>file.relative)});
+  assertRetainedBackupBoundaryEdges({edges,release,sources:audited.map(file=>file.relative)});
+  if(annotationFiles.length)for(const [file,cap]of [['app/reader-annotations.mjs',24576],['app/reader-annotation-pending.mjs',8192]])if((await readFile(path.join(root,file))).length>cap)throw Error('Annotation module exceeds public asset budget: '+file);
   for(const edge of edges){
     const base=targetFileOf(edge.importer,edge.specifier);
     const targets=new Set([base,base&&base+'.mjs',base&&base+'.js'].filter(Boolean));
@@ -328,6 +372,16 @@ export async function buildReaderWeb({root,outputDir,html}){
  const publicModules={name:'public-reader-modules',setup(b){
   b.onResolve({filter:/.*/},args=>{
    const relative=path.relative(root,args.importer).replaceAll('\\','/'),target=targetFileOf(relative,args.path);
+   if(retainedTarget(target)){
+    if(relative!=='app/reading-session.js'||args.kind!=='dynamic-import'||args.path!=='./reading-retained-backup.mjs')throw Error('Unauthorized retained backup edge: '+relative+' '+args.path);
+    for(const file of RETAINED_BACKUP_PUBLIC_FILES)if(!allowed.has(file))throw Error('Non-public retained backup dependency: '+file);
+    return {path:'/reading-retained-backup.mjs',external:true};
+   }
+   if(annotationTarget(target)){
+    if(relative!=='app/reader-highlights.mjs'||args.kind!=='dynamic-import'||args.path!=='./reader-annotations.mjs')throw Error('Unauthorized annotation boundary edge: '+relative+' '+args.path);
+    for(const file of ANNOTATION_PUBLIC_FILES)if(!allowed.has(file))throw Error('Non-public annotation dependency: '+file);
+    return {path:'/reader-annotations.mjs',external:true};
+   }
    if(!['app/reader-audio','app/reader-audio.js','app/reader-audio.mjs'].includes(target))return undefined;
    if(relative!=='app/reader-audio-bootstrap.mjs'||args.kind!=='dynamic-import'||!['./reader-audio.js','./reader-audio.js?retry=1'].includes(args.path))throw Error('Unauthorized audio boundary edge: '+relative+' '+args.path);
    if(!allowed.has('app/reader-audio.js'))throw Error('Non-public audio boundary');

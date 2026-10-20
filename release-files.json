@@ -731,5 +731,13 @@
   "app/reader-chat-workspace.mjs",
   "app/reader-chat-workspace.css",
   "app/reading-chat-quote.mjs",
-  "app/reading-chat-input.mjs"
+  "app/reading-chat-input.mjs",
+  "app/reader-annotations.mjs",
+  "app/reader-annotation-pending.mjs",
+  "app/reader-annotations.css",
+  "tests/reader-annotation-pending.test.mjs",
+  "tests/reader-annotation-boundary.test.mjs",
+  "tests/annotation-dom-fixture.mjs",
+  "tests/reader-annotations-ui.test.mjs",
+  "tests/reader-annotation-assets.test.mjs"
 ]
