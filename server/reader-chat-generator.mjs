@@ -2,7 +2,7 @@ import path from 'node:path';
 import {tmpdir} from 'node:os';
 import {existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
-import {createChatGenerator} from '../harness/chat-generator.mjs';
+import {createChatGenerator,CHAT_TERMINAL_CODES,CHAT_TERMINAL_KINDS,CHAT_VALIDATION_FAILURES} from '../harness/chat-generator.mjs';
 const project=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 // Inspect data properties only. SDK failures can contain AggregateError.errors,
 // cyclic causes or private stderr; none of their arbitrary values leave this module.
@@ -28,10 +28,23 @@ function failure(error){
   const allowedTypes=['Error','TypeError','RangeError','AggregateError','TransportClosedError','RequestTimeoutError','SdkProtocolError','JsonRpcResponseError'];
   const errorTypes=[...new Set(causes.map(e=>{const name=field(e,'name');if(allowedTypes.includes(name))return name;try{if(e instanceof AggregateError)return 'AggregateError';if(e instanceof TypeError)return 'TypeError';if(e instanceof RangeError)return 'RangeError';if(e instanceof Error)return 'Error';}catch{}return null;}).filter(Boolean))];
   const rpcCode=causes.map(e=>field(e,'code')).find(code=>[-32700,-32600,-32601,-32602,-32603].includes(code));
+  let terminal;
+  for(const cause of causes){
+    const value=field(cause,'readerTerminal'),validation=field(value,'validation');if(!CHAT_VALIDATION_FAILURES.includes(validation))continue;
+    terminal={validation};const kind=field(value,'kind');
+    if(CHAT_TERMINAL_KINDS.includes(kind)){
+      terminal.kind=kind;
+      if(kind==='error'){
+        const code=field(value,'code'),status=field(value,'status');terminal.code=CHAT_TERMINAL_CODES.includes(code)?code:'UNKNOWN';
+        if(Number.isInteger(status)&&status>=100&&status<=599)terminal.status=status;
+      }
+    }
+    break;
+  }
   const patterns=[['host-preparation',/host preparation/i],['native-binding',/native binding|prebuilt binary|ERR_DLOPEN_FAILED/i],['native-probe',/Unsupported\/no-getter|this->field accessor|PrincipalRealm/i],['node-internals',/node-addon-(?:require-builtin|native-custom-loader)|unsupported Node module loader|internal\/modules/i],['shared-library',/GLIBC|undefined symbol|shared (?:object|libraries)|dlopen/i],['module-resolution',/profile resolution|registerHooks|resolveSync/i],['read-only-filesystem',/\bEROFS\b|read-only file system/i],['missing-file',/\bENOENT\b/],['missing-package',/Cannot find (?:package|module)|ERR_MODULE_NOT_FOUND/],['permission',/\b(?:EACCES|EPERM)\b/],['invalid-argument',/ERR_INVALID_ARG_TYPE|must be of type/],['sandbox-host',/bwrap|bubblewrap|landlock/i]];
   const signals=patterns.filter(([,pattern])=>pattern.test(message)).map(([name])=>name);
   const reason=signals.includes('missing-package')?'missing-runtime-package':signals.some(s=>['native-binding','native-probe','node-internals','shared-library'].includes(s))?'native-runtime':signals.includes('sandbox-host')?'sandbox-preparation':signals.includes('host-preparation')?'host-preparation':signals.includes('read-only-filesystem')?'read-only-filesystem':/initializ(?:e|ation)|handshake|transport closed/i.test(message)?'runtime-initialization':/pricing|费用参照/i.test(message)?'pricing-reference':/budget|额度/i.test(message)?'generation-budget':errorTypes.includes('TransportClosedError')?'transport-closed':errorTypes.includes('RequestTimeoutError')?'runtime-timeout':'runtime-failure';
-  return {code,reason,signals,errorTypes,...(rpcCode===undefined?{}:{rpcCode}),...(causeLimitReached?{causeLimitReached:true}:{})};
+  return {code,reason:terminal?'response-validation':reason,signals,errorTypes,...(rpcCode===undefined?{}:{rpcCode}),...(causeLimitReached?{causeLimitReached:true}:{}),...(terminal?{terminal}:{})};
 }
 export function createReaderChatGenerator({env=process.env,makeGenerator=createChatGenerator,logger=diagnostic=>console.error(JSON.stringify(diagnostic)),inputLabel,systemPrompt}={}){
   if(!env.DEEPSEEK_API_KEY)return null;

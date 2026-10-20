@@ -56,12 +56,40 @@ export async function createChatBridge({tools,budget,signal,expiresAt=Date.now()
  return {url,token,close:async()=>{signal?.removeEventListener('abort',abort);await close();}};
 }
 
+// Pinned SDK SessionEventMap.turn/end carries LlmFailure {code,status,message}.
+// Keep fixed machine facts only; never retain provider prose or request IDs.
+export const CHAT_TERMINAL_CODES=Object.freeze(['AUTH','QUOTA','ACCOUNT_QUOTA','RATE_LIMIT','SERVER','NETWORK','TIMEOUT','EMPTY_RESPONSE','INVALID_CREDENTIAL','MISSING_CREDENTIAL','NO_ADAPTER','CONTEXT_WINDOW_EXCEEDED','UNKNOWN']);
+export const CHAT_TERMINAL_KINDS=Object.freeze(['completed','aborted','blocked','error','max-tokens','interrupted','forked']);
+export const CHAT_VALIDATION_FAILURES=Object.freeze(['empty-response','failed-tool','incomplete-turn']);
+const dataField=(value,key)=>{try{const d=Object.getOwnPropertyDescriptor(value,key);return d&&Object.hasOwn(d,'value')?d.value:undefined;}catch{return undefined;}};
+function terminalFailure(result,validation,message){
+ const facts={validation},events=dataField(result,'events');let isArray=false;try{isArray=Array.isArray(events);}catch{}
+ if(isArray){
+  const length=dataField(events,'length');let reason,found=false;
+  for(let i=length-1;i>=Math.max(0,length-2048);i--){
+   const event=dataField(events,String(i));if(dataField(event,'type')!=='turn/end')continue;
+   const candidate=dataField(dataField(event,'data'),'reason');
+   if(!found){reason=candidate;found=true;}
+   if(dataField(candidate,'kind')!=='completed'){reason=candidate;break;}
+  }
+  const kind=dataField(reason,'kind');
+  if(CHAT_TERMINAL_KINDS.includes(kind)){
+   facts.kind=kind;
+   if(kind==='error'){
+    const error=dataField(reason,'error'),code=dataField(error,'code'),status=dataField(error,'status');
+    facts.code=CHAT_TERMINAL_CODES.includes(code)?code:'UNKNOWN';
+    if(Number.isInteger(status)&&status>=100&&status<=599)facts.status=status;
+   }
+  }
+ }
+ return Object.assign(Error(message),{readerTerminal:Object.freeze(facts)});
+}
 function completed(result){
- if(typeof result?.finalResponse!=='string'||!result.finalResponse.trim()||!Array.isArray(result.events))throw Error('No complete response');
+ if(typeof result?.finalResponse!=='string'||!result.finalResponse.trim()||!Array.isArray(result.events))throw terminalFailure(result,'empty-response','No complete response');
  const lastAssistant=result.events.findLastIndex(e=>e.type==='assistant/message');
- if(lastAssistant<0||result.events.slice(lastAssistant+1).some(e=>e.type==='tool/result'&&e.data?.message?.isError))throw Error('Incomplete tool result');
+ if(lastAssistant<0||result.events.slice(lastAssistant+1).some(e=>e.type==='tool/result'&&e.data?.message?.isError))throw terminalFailure(result,'failed-tool','Incomplete tool result');
  const ends=result.events.filter(e=>e.type==='turn/end');
- if(!ends.length||ends.some(e=>e.data?.reason?.kind!=='completed')||result.events.some(e=>e.type==='error'||e.type==='tool/error'))throw Error('Incomplete runtime turn');
+ if(!ends.length||ends.some(e=>e.data?.reason?.kind!=='completed')||result.events.some(e=>e.type==='error'||e.type==='tool/error'))throw terminalFailure(result,'incomplete-turn','Incomplete runtime turn');
  return result.finalResponse;
 }
 function stageFailure(error,stage){
