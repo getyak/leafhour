@@ -7,3 +7,7 @@ These are actual local-server Chromium screenshots, not Production or physical-p
 Earlier pilot scripts stalled on a CSS separator in accessible link names and a hidden legacy header button; the accepted scripts target the actual hreflang links and the supported login entry route. A first blanket animation wait also included a scroll timeline; the accepted capture waits only finite document-timeline motion. These failed attempts are retained privately and do not count as passed checks.
 
 Current-head CI, merge and exact Production acceptance remain separate delivery gates.
+
+## Recovery follow-up
+
+`recovery-retry.png`, `recovery-reload.png` and `recovery-recovered.png` are actual 390×844 local Chromium screenshots at CSS `d37caeaeac3c4da23521ab13c8591cf7d5281de048904d8821f3bd00fbdee02c`. Actual catalog requests were aborted, native Retry exhausted the real attempt budget, then native Reload restored the real Traditional Chinese page after the fault was removed. A separate fresh document recovered through the fixed Retry URL. No forced clicks, synthetic app state or model calls. Retry measured 44×44, Reload 98.28125×44; both fit above the light control. The parent visually inspected all three images. These are not Production receipts; `recovery-native.json` and `recovery-sha256.json` preserve that distinction.

@@ -1,0 +1,76 @@
+{
+  "at": "2026-10-20T02:29:07.345Z",
+  "base": "local actual server, external model providers disabled",
+  "scope": "Actual catalog request fault, native pointer retry/reload, no generation calls",
+  "rows": [
+    {
+      "kind": "retry",
+      "box": {
+        "x": 33,
+        "y": 711,
+        "width": 44,
+        "height": 44
+      },
+      "state": {
+        "requested": "zh-Hant",
+        "effective": "en",
+        "fallbackReason": "load-failed",
+        "retryTarget": "zh-Hant",
+        "retryActor": "explicit-route",
+        "attempt": 0,
+        "persistence": "initial",
+        "phase": "error",
+        "offerReload": false,
+        "initialFallback": true
+      }
+    },
+    {
+      "kind": "reload",
+      "box": {
+        "x": 33,
+        "y": 711,
+        "width": 98.28125,
+        "height": 44
+      },
+      "state": {
+        "requested": "zh-Hant",
+        "effective": "en",
+        "fallbackReason": "load-failed",
+        "retryTarget": "zh-Hant",
+        "retryActor": "explicit-route",
+        "attempt": 0,
+        "persistence": "initial",
+        "phase": "error",
+        "offerReload": true,
+        "initialFallback": true
+      }
+    }
+  ],
+  "reloadedState": {
+    "requested": "zh-Hant",
+    "effective": "zh-Hant",
+    "fallbackReason": "none",
+    "retryTarget": null,
+    "retryActor": null,
+    "attempt": 0,
+    "persistence": "saved",
+    "phase": "ready",
+    "offerReload": false,
+    "initialFallback": false
+  },
+  "retryState": {
+    "requested": "zh-Hant",
+    "effective": "zh-Hant",
+    "fallbackReason": "none",
+    "retryTarget": null,
+    "retryActor": null,
+    "attempt": 0,
+    "persistence": "route",
+    "phase": "ready",
+    "offerReload": false,
+    "initialFallback": false
+  },
+  "pass": true,
+  "browserClosed": true,
+  "cssSHA": "d37caeaeac3c4da23521ab13c8591cf7d5281de048904d8821f3bd00fbdee02c"
+}
