@@ -22,7 +22,7 @@
 .reader-annotation-card[data-placement=pane]{flex:none;height:var(--annotation-pane-height,160px);margin:8px 0;max-width:100%;width:100%}
 body[data-annotation-pane=true][data-paginated=true] .book-page{height:var(--annotation-visible-height,100dvh)}
 .reader-annotation-indicator{display:block;margin:-8px 0 16px auto;color:var(--accent);letter-spacing:.04em;font-size:12px}
-@media(max-width:767px){.reader-annotation-card:not([data-placement=pane]) .reader-annotation-scroll{padding-bottom:calc(80px + env(safe-area-inset-bottom))}.reader-annotation-card .library-chat-markdown,.reader-annotation-card .library-chat-markdown p,.reader-annotation-message>p{font-size:14px}.reader-annotation-form textarea{font-size:16px}.reader-annotation-card[data-placement=inline]{height:min(440px,72dvh)}}
+@media(max-width:767px){.reader-annotation-card:not([data-placement=pane]) .reader-annotation-scroll{padding-bottom:calc(80px + env(safe-area-inset-bottom));scroll-padding-bottom:calc(80px + env(safe-area-inset-bottom))}.reader-annotation-card .library-chat-markdown,.reader-annotation-card .library-chat-markdown p,.reader-annotation-message>p{font-size:14px}.reader-annotation-form textarea{font-size:16px}.reader-annotation-card[data-placement=inline]{height:min(440px,72dvh)}}
 @media print{.reader-annotation-card,.reader-annotation-indicator{display:none!important}}
 
 body[data-annotation-pane=true][data-annotation-compact=true] .book-page{padding-top:50px;padding-bottom:14px}
