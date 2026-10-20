@@ -415,6 +415,7 @@ function productionRefresh({api,homeMenu,ownerScope,document:doc,observations={}
   const $=id=>{if(!nodes.has(id))nodes.set(id,doc.createElement('div'));return nodes.get(id);};
   return new Function('api','homeMenu','ownerScope','$','doc','observations','t','getUiLocale',`
     let refreshGeneration=0,session=${JSON.stringify(session)},books=[],shelfRevision=0,pendingUpload=false,pendingChat=false,bootstrapped=false;
+    const adoptUiOwner=id=>{(observations.uiOwners??=[]).push(id);return Promise.resolve({adopted:true});};
     const document=doc,isLibrary=false,dashboard=null,shell=null,setupInvite=null,authDialog={updateCapabilities(){},isSettingPasswordFor(){return false;}},pdfOnboarding={refresh(){}},homeText=x=>x,homeLocale=()=>'en',status=()=>{},renderBooks=()=>{},landingBookCard=()=>doc.createElement('article');
     function clearPrivateUI(){observations.clearCalls=(observations.clearCalls||0)+1;homeMenu.clear(ownerScope.capture());}
     ${refreshLabelDeclarations}
@@ -479,6 +480,7 @@ test('owner transitions keep identity and resume rows in step with the adopted s
   mode='guest';f.setUser(null);f.setBooks([]);
   await refresh();
   assert.equal(observations.clearCalls,2);
+  assert.deepEqual(observations.uiOwners,[null,'reader',null],'the locale bridge receives only the independently settled session owner');
   assert.equal(f.signIn.hidden,false,'signing out returns the sign-in row');
   assert.equal(f.account.hidden,true);
   assert.equal(f.resume.hidden,true);

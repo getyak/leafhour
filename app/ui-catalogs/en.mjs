@@ -2,6 +2,11 @@
 // data, also the safe default for server/static English shells. Complete
 // default data: every other catalogue carries the same keys.
 export default Object.freeze({
+  "ui.accountLocale.reading": "Reading your account language preference…",
+  "ui.accountLocale.saving": "Saving your language preference…",
+  "ui.accountLocale.saved": "Saved to your account for your other devices.",
+  "ui.accountLocale.error": "Your account language could not be synchronized. You can still choose a language on this device.",
+  "ui.accountLocale.conflict": "Another device changed your language preference. Your current interface stays as it is; retry to save this choice.",
   "reader.annotation.draft": "Draft",
   "reader.annotation.reviewed": "Reviewed",
   "reader.annotation.savedSelection": "Saved selection; the current source has changed.",

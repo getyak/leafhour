@@ -322,7 +322,10 @@ export function homeLocaleMeta(locale){
 }
 export function homeDocument(source,locale){
   const meta=homeLocaleMeta(locale);
+  const choiceRoute=meta.code==='en'?'/en':meta.route;
   return homeText(source,locale)
+    // The root is automatic; an explicit English language choice uses /en.
+    .replaceAll('href="/" lang="en"','href="/en" lang="en"')
     // Only trusted, authored navigation anchors are owned here. Include the
     // first paint so denied storage or an early click cannot lose the route's
     // language; source prose, external links and resource URLs stay literal.
@@ -330,10 +333,10 @@ export function homeDocument(source,locale){
     .replace('<html lang="zh-Hans">','<html lang="'+meta.htmlLang+'">')
     .replace('<link rel="canonical" href="https://leafhour.com/">','<link rel="canonical" href="'+meta.canonical+'">')
     .replace('<meta property="og:url" content="https://leafhour.com/">','<meta property="og:url" content="'+meta.canonical+'">')
-    .replaceAll('class="brand" href="/"','class="brand" href="'+meta.route+'"')
+    .replaceAll('class="brand" href="/"','class="brand" href="'+choiceRoute+'"')
     .replaceAll('href="/mcp"','href="'+(meta.route==='/'?'/mcp':meta.route+'/mcp')+'"')
     .replaceAll('href="/privacy"','href="'+(meta.route==='/'?'/privacy':meta.route+'/privacy')+'"')
-    .replaceAll('href="'+meta.route+'" lang="'+meta.htmlLang+'"','aria-current="true" href="'+meta.route+'" lang="'+meta.htmlLang+'"')
+    .replaceAll('href="'+choiceRoute+'" lang="'+meta.htmlLang+'"','aria-current="true" href="'+choiceRoute+'" lang="'+meta.htmlLang+'"')
     .replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g,(_,json)=>{
       const data=JSON.parse(json);
       for(const node of data['@graph']||[])if(node['@type']==='WebPage'){node['@id']=meta.url+'#page';node.url=meta.url;node.inLanguage=meta.htmlLang;}

@@ -45,7 +45,9 @@ test('every language discovery page exposes usable content and metadata before J
     const response=await fetch(base+route),html=await response.text();assert.equal(response.status,200);
     assert.match(html,new RegExp('<html lang="'+lang+'">'));assert.equal(new RegExp('<link rel="canonical" href="'+canonical.replace(/[/.]/g,'\\$&')+'">').test(html),true);
     assert.match(html,/<h1[^>]*>[^<]+<\/h1>/);assert.match(html,/<meta name="description" content="[^"]{24,}"/);
-    assert.ok(html.includes('href="/library?ui='+lang+'"'),route+' preserves its authored locale in canonical navigation');assert.match(html,/href="https:\/\/github.com\/getyak\/leafhour/);
+    if(route==='/'){assert.ok(html.includes('href="/library"'),'automatic root preserves browser/account choice before JavaScript');assert.ok(!html.includes('href="/library?ui=en"'),'root does not force its English fallback on early navigation');}
+    else assert.ok(html.includes('href="/library?ui='+lang+'"'),route+' preserves its authored locale in canonical navigation');
+    assert.match(html,/href="https:\/\/github.com\/getyak\/leafhour/);
     assert.ok(schemas(html).some(s=>s['@type']==='WebPage'||s['@type']==='TechArticle'));
     assert.doesNotMatch(html,/aggregateRating|reviewCount|"offers"/);
   }
@@ -58,7 +60,7 @@ test('homepages link every public language and declare hreflang alternates',asyn
     for(const [other,lang]of [['/','en'],['/zh-hans','zh-Hans'],['/zh-hant','zh-Hant'],['/ja','ja']])assert.ok(html.includes('hreflang="'+lang+'" href="https://leafhour.com'+other+'"'),route+' must alternate '+other);
     assert.ok(html.includes('hreflang="x-default" href="https://leafhour.com/"'));
     assert.ok(schemas(html).some(s=>s['@type']==='SoftwareApplication'&&s.name==='Leafhour'));
-    for(const other of ['/','/zh-hans','/zh-hant','/ja'])assert.ok(html.includes('href="'+other+'"'),route+' must link '+other);
+    for(const other of ['/en','/zh-hans','/zh-hant','/ja'])assert.ok(html.includes('href="'+other+'"'),route+' must link '+other);
     const prefix=route==='/'?'':route;
     assert.ok(html.includes('href="'+prefix+'/mcp"'),route+' must link its MCP guide');
     assert.ok(html.includes('href="'+prefix+'/privacy"'),route+' must link its privacy notice');

@@ -49,6 +49,7 @@ export const UI_LOCALE_OWNERS=Object.freeze([
  'app/reader-settings.mjs',
  'app/reader-tools.mjs',
  'app/reader-translation.js',
+ 'app/reader-api.mjs',
  'app/reader.js',
  'app/reading-arrival.mjs',
  'app/reading-dashboard.mjs',
@@ -62,6 +63,10 @@ export const UI_LOCALE_OWNERS=Object.freeze([
 export const UI_CATALOGUES=Object.freeze(['en','zh-Hans','zh-Hant','ja']);
 export const UI_LOCALE_RELEASE_ENTRIES=Object.freeze([
  'app/ui-locale.mjs','app/ui-locale-codec.mjs',
+ // GET-198 explicit account factories: closed raw dependencies of the one
+ // runtime, no additional mutable locale and no new catalogue import forms.
+ 'app/account-ui-preferences-browser.mjs','app/account-ui-preferences.mjs',
+ 'app/account-ui-preferences-transport.mjs','app/authored-ui-choice.mjs',
  ...UI_CATALOGUES.map(code=>'app/ui-catalogs/'+code+'.mjs')
 ]);
 

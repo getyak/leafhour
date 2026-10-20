@@ -1,4 +1,4 @@
-import {uiReady,uiHref,getUiLocale,createUiLabels,onUiLocaleChange} from './ui-locale.mjs';
+import {uiReady,uiHref,getUiLocale,createUiLabels,onUiLocaleChange,adoptUiOwner} from './ui-locale.mjs';
 import {createOwnerScope,readOwnerResponse} from './owner-scope.mjs';
 import {assembleBookTransfer} from './book-transfer.mjs';
 
@@ -82,9 +82,9 @@ export async function bootSourceReview({document:doc=globalThis.document,view=do
  const fail=id=>{if(!alive)return;root.setAttribute('aria-busy','false');doc.getElementById('review-error').hidden=false;text('review-error',id);};
  const onLeave=event=>{alive=false;offLocale();labels.clear();uiNodes.clear();panel?.dispose();view.removeEventListener?.('focus',checkOwner);doc.removeEventListener('visibilitychange',onVisibility);view.removeEventListener?.('pagehide',onLeave);if(event?.type!=='pagehide')view.removeEventListener?.('pageshow',onShow);};
  const scope=createOwnerScope();
- const raw=async(url,options={})=>{if(!alive)throw Error('Page closed');const ticket=scope.capture();scope.assertCurrent(ticket);const response=await request(url,{cache:'no-store',...options,headers:{...options.headers,'X-Reader-Owner':ticket.owner}});if(!alive)throw Error('Page closed');scope.assertCurrent(ticket);if(response.headers.get('X-Reader-Session-Changed')==='1'){scope.adopt('guest');panel?.clear();throw Error('Owner changed');}return response;};
- const api=(url,data)=>{const ticket=scope.capture();return readOwnerResponse(scope,ticket,()=>raw(url,data===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}),()=>{scope.adopt('guest');panel?.clear();});};
- const checkOwner=async()=>{if(!alive)return;try{const response=await request('/api/auth/session',{cache:'no-store'});if(!alive)return;const current=await response.json();if(!alive)return;if(current.user?.id!==user){scope.adopt('guest');panel?.clear();}}catch{}};
+ const raw=async(url,options={})=>{if(!alive)throw Error('Page closed');const ticket=scope.capture();scope.assertCurrent(ticket);const response=await request(url,{cache:'no-store',...options,headers:{...options.headers,'X-Reader-Owner':ticket.owner}});if(!alive)throw Error('Page closed');scope.assertCurrent(ticket);if(response.headers.get('X-Reader-Session-Changed')==='1'){scope.adopt('guest');void adoptUiOwner(null);panel?.clear();throw Error('Owner changed');}return response;};
+ const api=(url,data)=>{const ticket=scope.capture();return readOwnerResponse(scope,ticket,()=>raw(url,data===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}),()=>{scope.adopt('guest');void adoptUiOwner(null);panel?.clear();});};
+ const checkOwner=async()=>{if(!alive)return;try{const response=await request('/api/auth/session',{cache:'no-store'});if(!alive)return;const current=await response.json();if(!alive)return;if(current.user?.id!==user){scope.adopt('guest');void adoptUiOwner(null);panel?.clear();}else void adoptUiOwner(user);}catch{}};
  const onVisibility=()=>{if(!doc.hidden)void checkOwner();},onShow=event=>{if(event.persisted)loc.reload();};
  view.addEventListener?.('pagehide',onLeave);view.addEventListener?.('pageshow',onShow);
  text('book-title','opening');text('source-status','checking');
@@ -92,8 +92,8 @@ export async function bootSourceReview({document:doc=globalThis.document,view=do
   await uiReady;if(!alive)return {dispose:onLeave};
   if(!id){fail('noBook');return {dispose:onLeave};}
   const response=await request('/api/auth/session',{cache:'no-store'});if(!alive)return {dispose:onLeave};const session=await response.json();if(!alive)return {dispose:onLeave};
-  if(!session.user){root.setAttribute('aria-busy','false');text('book-title','signIn');text('source-status','signInNote');return {dispose:onLeave};}
-  user=session.user.id;scope.adopt(user);const ticket=scope.capture();offLocale();labels.clear();uiNodes.clear();
+  if(!session.user){void adoptUiOwner(null);root.setAttribute('aria-busy','false');text('book-title','signIn');text('source-status','signInNote');return {dispose:onLeave};}
+  user=session.user.id;scope.adopt(user);void adoptUiOwner(user);const ticket=scope.capture();offLocale();labels.clear();uiNodes.clear();
   panel=mountSourceReview({document:doc,bookId:id,api,assertCurrent:()=>{if(!alive)throw Error('Page closed');scope.assertCurrent(ticket);}});
   view.addEventListener?.('focus',checkOwner);doc.addEventListener('visibilitychange',onVisibility);await panel.load();
  }catch{fail('loadFailure');}

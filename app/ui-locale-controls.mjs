@@ -3,12 +3,11 @@
 function renderLocaleStatus({state,text,current,notice,retryButton,reloadButton}){
  const languageName=code=>text('ui.language.option.'+code);
     current.textContent=text('ui.language.current').replace(/\{language\}/g,languageName(state.effective||'en'));
+    notice.hidden=false;
     if(state.phase==='pending'){
-      notice.hidden=false;
       notice.textContent=text('ui.locale.loading');
       retryButton.hidden=true;reloadButton.hidden=true;
     }else if(state.phase==='error'){
-      notice.hidden=false;
       const target=languageName(state.retryTarget||state.requested||'en');
       const effective=languageName(state.effective||'en');
       if(state.fallbackReason==='history')notice.textContent=text('ui.locale.historyError');
@@ -17,10 +16,13 @@ function renderLocaleStatus({state,text,current,notice,retryButton,reloadButton}
       retryButton.hidden=!!state.offerReload;
       reloadButton.hidden=!state.offerReload;
     }else if(state.persistence==='session-only'){
-      notice.hidden=false;notice.textContent=text('ui.locale.sessionOnly');
+      notice.textContent=text('ui.locale.sessionOnly');
       retryButton.hidden=true;reloadButton.hidden=true;
     }else{
-      notice.hidden=true;retryButton.hidden=true;reloadButton.hidden=true;
+      const account=state.account?.phase;
+      notice.hidden=!['reading','saving','saved','error','conflict'].includes(account);
+      notice.textContent=notice.hidden?'':text('ui.accountLocale.'+account);
+      retryButton.hidden=account!=='error'&&account!=='conflict';reloadButton.hidden=true;
     }
 }
 

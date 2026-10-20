@@ -1,6 +1,11 @@
 // GET-192 immutable zh-Hans UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "ui.accountLocale.reading": "正在读取账号的语言选择…",
+  "ui.accountLocale.saving": "正在保存语言选择…",
+  "ui.accountLocale.saved": "已保存到账号，其他设备也会沿用。",
+  "ui.accountLocale.error": "暂时无法同步账号语言。你仍可在当前设备选择语言。",
+  "ui.accountLocale.conflict": "另一台设备更新了语言选择。当前界面保持不变；重试可保存本次选择。",
   "reader.annotation.draft": "草稿",
   "reader.annotation.reviewed": "已审校",
   "reader.annotation.savedSelection": "这是已保存的选文，当前来源已变化。",
