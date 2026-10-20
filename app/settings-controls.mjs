@@ -119,12 +119,12 @@ export function mountDropzone({document,input,title='',action='',hint=''}={}){
     if(!file){setState({state:'empty'});return;}
     setState({state:'selected',name:file.name,size:file.size});
   };
-  const onDragOver=event=>{if(input.disabled)return;event.preventDefault?.();root.dataset.dragover='true';};
+  const onDragOver=event=>{event.preventDefault?.();event.stopPropagation?.();if(input.disabled)return;root.dataset.dragover='true';};
   const onDragLeave=()=>{root.dataset.dragover='false';};
   const onDrop=event=>{
     root.dataset.dragover='false';
+    event.preventDefault?.();event.stopPropagation?.();
     if(input.disabled)return; // a locked file field refuses the drop entirely
-    event.preventDefault?.();
     const files=event.dataTransfer&&event.dataTransfer.files;
     if(!files||!files.length)return;
     // The change event announces a NEW selection, so it may only follow a real

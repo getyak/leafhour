@@ -7,6 +7,13 @@ import {parseLibraryView,writeLibraryView,libraryViewReducer,normalizeOverlay,no
 
 const view=patch=>({query:'',scope:'all',status:'all',topic:'all',language:'all',...patch});
 
+test('settings links reject inherited property names and preserve only the explicit reading alias',()=>{
+  for(const value of ['constructor','toString','__proto__','hasOwnProperty','valueOf']){
+    assert.equal(parseLibraryView('?settings='+value).overlay,null,value+' is not a settings tab');
+  }
+  assert.deepEqual(parseLibraryView('?settings=reading').overlay,{kind:'settings',tab:'reading-habits'});
+});
+
 // A small real-history harness: an entry stack with push/replace/back/forward and
 // popstate dispatch, so lifecycle behavior is exercised against actual events.
 function historyWindow(search='',{state=null,historyState=null}={}){

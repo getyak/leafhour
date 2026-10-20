@@ -92,6 +92,9 @@ test('the daily tab opens with one plain sentence carrying the book and a 24-hou
  assert.ok(token,'the first thing shown is an editable sentence, not a status log');
  assert.equal(token.textContent,'20:00','the sentence states one 24-hour time');
  assert.equal(f.find('daily-time').type,'time');assert.equal(f.find('daily-time').value,'20:00');
+ assert.equal(f.find('daily-time').tabIndex,-1,'the invisible backing input is excluded from keyboard navigation');
+ assert.equal(f.find('daily-time').getAttribute('aria-hidden'),'true');
+ assert.equal(f.find('daily-form').hasAttribute('novalidate'),true,'the visible editor owns validation before an explicit submit');
  const sentence=all(f.root).find(n=>String(n.className).includes('daily-sentence'));
  assert.ok(sentence.children.includes(f.find('daily-book-token')),'the sentence keeps one book trigger');
  assert.ok(all(f.root).find(n=>n.id==='daily-book-editor').children.includes(f.find('daily-book')),'the book is edited through the existing choice enhancement');

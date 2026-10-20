@@ -773,12 +773,16 @@ test('the pending dispatch re-checks the live session owner before any write lea
   f.timers.run();await tick();
   assert.equal(f.calls.length,0,'a queued draft from A is never sent while B owns the session');
   assert.equal(f.find('habits-font').value,'19','the component re-adopts the live account instead of sending');
+  f.edit('habits-font','23','input');f.timers.run();await tick();
+  assert.equal(f.calls.length,1,'the newly adopted account can save its next explicit edit without host update');
+  assert.equal(f.calls[0].body.baseRevision,2);assert.equal(f.calls[0].body.preferences.font,23);
 });
 
 test('the explicit recovery read also re-checks ownership before it reads',async()=>{
-  let reads=0;const f=richFixture({responder:async(url,body)=>{
+  let reads=0,fail=true;const f=richFixture({responder:async(url,body)=>{
     if(body===undefined){reads++;return {revision:7,preferences:snapshot({mode:'en'})};}
-    throw Object.assign(Error('conflict'),{status:409});
+    if(fail)throw Object.assign(Error('conflict'),{status:409});
+    return {revision:body.baseRevision+1,preferences:body.preferences};
   }});
   f.edit('habits-font','25','input');f.timers.run();await tick();
   assert.equal(f.find('habits-recover').hidden,false);
@@ -786,6 +790,10 @@ test('the explicit recovery read also re-checks ownership before it reads',async
   f.find('habits-recover').dispatchEvent(new Event('click'));await tick();
   assert.equal(reads,0,'a stale owner never triggers the recovery read');
   assert.equal(f.find('habits-font').value,'19');
+  assert.equal(f.find('habits-recover').hidden,true,'the previous account conflict is dismissed');
+  fail=false;f.edit('habits-font','22','input');f.timers.run();await tick();
+  assert.equal(f.calls.length,2,'the current account saves its next explicit edit after owner adoption');
+  assert.equal(f.calls[1].body.baseRevision,7);assert.equal(f.calls[1].body.preferences.font,22);
 });
 
 test('the real choice chrome follows the native disabled state through save, failure, guest and owner change',async()=>{

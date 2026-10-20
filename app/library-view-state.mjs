@@ -17,7 +17,7 @@ export const LIBRARY_SETTINGS_TABS=Object.freeze(['account','reading-habits','da
 // tab is named reading-habits. The alias is never a tab of its own: app actions
 // and serialized URLs stay on the canonical set above.
 const SETTINGS_TAB_ALIASES=Object.freeze({reading:'reading-habits'});
-const settingsTab=value=>typeof value==='string'&&LIBRARY_SETTINGS_TABS.includes(value)?value:SETTINGS_TAB_ALIASES[value]||null;
+const settingsTab=value=>typeof value==='string'?(LIBRARY_SETTINGS_TABS.includes(value)?value:Object.hasOwn(SETTINGS_TAB_ALIASES,value)?SETTINGS_TAB_ALIASES[value]:null):null;
 export const LIBRARY_OVERLAYS=Object.freeze(['settings','calendar','upload','trash','filter']);
 export const LIBRARY_VIEW_KEYS=Object.freeze(['q','scope','status','topic','language','ui']);
 export const LIBRARY_OVERLAY_KEYS=Object.freeze(['filter','calendar','settings','upload','trash']);

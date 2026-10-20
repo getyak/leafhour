@@ -126,7 +126,11 @@ test('a disabled dropzone refuses drops and a failed file adoption never emits c
   const zone=mountDropzone({document:doc,input,title:'Drop',action:'Choose',hint:'ZIP'});
   input.files=[{name:'old.zip',size:1}];
   input.disabled=true;
+  const over=new Event('dragover',{cancelable:true});zone.root.dispatchEvent(over);
+  assert.equal(over.defaultPrevented,true,'a locked dropzone still cancels browser file-drop handling');
+  assert.notEqual(zone.root.dataset.dragover,'true','a locked dropzone never advertises acceptance');
   const drop=new Event('drop',{cancelable:true});drop.dataTransfer={files:[{name:'new.zip',size:2}]};zone.root.dispatchEvent(drop);
+  assert.equal(drop.defaultPrevented,true,'a refused file cannot trigger browser navigation');
   assert.deepEqual(changes,[],'a disabled input refuses the drop entirely');
   assert.equal(zone.root.dataset.dragover,'false');
   assert.equal(input.files[0].name,'old.zip','the staged file is untouched');

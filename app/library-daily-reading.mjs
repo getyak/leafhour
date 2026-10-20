@@ -44,11 +44,11 @@ export function mountLibraryDailyReading({root,inboxRoot=null,api,getSession,get
  badge.append(state);
  const binding=ui('p','daily-binding','daily.binding.none'),connection=ui('p','daily-connection','daily.connection.none'),expiry=node('p','daily-expiry'),channel=ui('p','daily-channel','daily.channel'),zone=ui('p','daily-field-help','daily.field.zone');
  binding.id='daily-binding';connection.id='daily-connection';expiry.id='daily-expiry';channel.id='daily-channel';zone.id='daily-zone';
- const form=node('form','daily-form');form.id='daily-form';
+ const form=node('form','daily-form');form.id='daily-form';form.setAttribute('novalidate','');
  hero.append(heroTime,timeToken,heroBook,bookToken,heroEnd);
  // One 24-hour trigger in the sentence opens a compact editor; the native time
  // and select nodes stay the value owners and keep their single real change.
- const time=node('input','daily-time-native');time.id='daily-time';time.type='time';time.required=true;time.value='20:00';
+ const time=node('input','daily-time-native');time.id='daily-time';time.type='time';time.required=true;time.value='20:00';time.tabIndex=-1;time.setAttribute('aria-hidden','true');
  const timeText=node('input','profile-input daily-time-text');timeText.id='daily-time-text';timeText.type='text';
  const timePanel=node('div','daily-editor-panel');timePanel.id='daily-time-editor';
  const timeEditor=mountTimeEditor({document,input:time,editor:timeText,panel:timePanel,times:['07:00','12:30','20:00','22:30'],customLabel:t('daily.time.custom'),label:t('daily.field.time')});

@@ -153,8 +153,7 @@ export function mountReadingPreferencesForm({root,api,getSession,onSaved=()=>{},
     // from a previous account is never written under the current one, even if
     // the host has not called update() yet.
     if(user.id!==owner){
-      cancelScheduled();queued=false;dirty=new Set();retryNeeded=false;
-      adopt(session.readingPreferences||null,{reset:true});paint();controls();return;
+      update();return;
     }
     cancelScheduled();queued=false;retryNeeded=false;
     const expectedOwner=owner,token=++generation,sent=normalizeGlobalPreferences({...draft,onboarding:'completed'}),baseRevision=revision;
@@ -192,7 +191,7 @@ export function mountReadingPreferencesForm({root,api,getSession,onSaved=()=>{},
     const session=getSession(),user=session?.user;if(disposed||!user||busy)return;
     // The read is explicit and read-only; it also re-checks the live owner so a
     // stale account can never trigger it.
-    if(user.id!==owner){dirty=new Set();retryNeeded=false;adopt(session.readingPreferences||null,{reset:true});paint();controls();return;}
+    if(user.id!==owner){update();return;}
     const expectedOwner=owner,token=++generation;
     busy=true;busyToken=token;controls();message.clear();
     try{
