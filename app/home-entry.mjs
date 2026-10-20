@@ -17,7 +17,7 @@ function accountChoice(value){
 export async function enterAutoHome({
  location=globalThis.location,view=globalThis.window,storage,
  languages=globalThis.navigator?.languages||[],request=globalThis.fetch,
- timeoutMs=2000
+ timeoutMs=2000,accountTimeoutMs=3000
 }={}){
  let original;
  try{original=new URL(location?.href);}catch{return {kind:'continue',reason:'no-location'};}
@@ -35,24 +35,43 @@ export async function enterAutoHome({
   try{const value=(storage===undefined?globalThis.localStorage:storage)?.getItem?.(UI_PREFERENCE_KEY);if(isUiLocale(value))device=value;}catch{}
   let code=query.status==='valid'?query.code:null;
   if(!code&&typeof request==='function'){
+   // Guests retain the short identity deadline. Only a verified owner gets a
+   // bounded preference + owner-recheck window, inside a five-second ceiling.
+   const now=()=>globalThis.performance?.now?.()??Date.now(),absoluteDeadline=now()+5000;
+   let deadlineAt,expire;
+   const arm=duration=>{
+    if(timer!==null)clearTimeout(timer);
+    deadlineAt=Math.min(absoluteDeadline,now()+duration);
+    timer=setTimeout(expire,Math.max(0,deadlineAt-now()));
+   };
+   const deadline=new Promise(resolve=>{expire=()=>{controller.abort();resolve(null);};arm(Number.isFinite(timeoutMs)?Math.max(1,Math.min(5000,timeoutMs)):2000);});
+   const expired=()=>{
+    if(controller.signal.aborted)return true;
+    if(now()>=deadlineAt){expire();return true;}
+    return false;
+   };
    const read=async()=>{
     const options={method:'GET',credentials:'same-origin',cache:'no-store',signal:controller.signal};
     const identity=await request('/api/auth/session',options);
     if(!identity.ok)return null;
     const user=(await identity.json())?.user;
     if(typeof user?.id!=='string'||!user.id||user.id.length>512||/[\u0000-\u001f\u007f]/.test(user.id))return null;
-    if(controller.signal.aborted)return null;
+    // A late identity response must never revive a timed-out attempt, even
+    // when its fetch implementation ignores abort or timer delivery is late.
+    if(expired())return null;
+    arm(Number.isFinite(accountTimeoutMs)?Math.max(1,Math.min(3000,accountTimeoutMs)):3000);
     const response=await request('/api/account/ui-preferences',{...options,headers:{'X-Reader-Owner':user.id}});
     const choice=response.ok?accountChoice(await response.json()):null;
-    if(!choice||controller.signal.aborted)return null;
+    if(!choice||expired())return null;
     // The cookie may have changed while the preference response was in flight.
     // Recheck the captured owner inside the same deadline, before navigation.
     const current=await request('/api/auth/session',options);
     if(!current.ok)return null;
-    return (await current.json())?.user?.id===user.id&&!controller.signal.aborted?choice:null;
+    const currentOwner=(await current.json())?.user?.id;
+    return !expired()&&currentOwner===user.id?choice:null;
    };
-   const deadline=new Promise(resolve=>{timer=setTimeout(()=>{controller.abort();resolve(null);},Number.isFinite(timeoutMs)?Math.max(1,Math.min(5000,timeoutMs)):2000);});
    code=await Promise.race([Promise.resolve().then(read).catch(()=>null),deadline,interaction]);
+   if(expired())code=null;
   }
   code=code||device||browserUiLocale(languages);
   if(interacted||location.href!==original.href)return {kind:'continue',reason:interacted?'interacted':'navigated'};
