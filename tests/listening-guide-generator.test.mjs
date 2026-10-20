@@ -9,6 +9,7 @@ test('one bounded stage sends only whitelisted source fields to the configured t
  assert.equal((await generate(input)).summary,'开头');
  assert.equal(sent.url,'https://api.deepseek.com/chat/completions');
  const body=JSON.parse(sent.options.body),data=JSON.parse(body.messages[1].content);
+ assert.equal(body.model,'deepseek-flash');assert.deepEqual(body.thinking,{type:'disabled'});
  assert.deepEqual(data.passages,[{id:'p1',chapterId:'ch1',original:'Read this.'}]);
  assert.ok(!sent.options.body.includes('PRIVATE'));assert.equal(sent.options.redirect,'error');
 });

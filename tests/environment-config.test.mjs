@@ -42,10 +42,23 @@ test('reading starts without either optional env file and the loader does not in
 });
 
 test('audio script generation uses the clearer model name with a backward-compatible legacy fallback',async()=>{
- for(const [configuration,expected]of [[{READER_AUDIO_SCRIPT_MODEL:'new-script',READER_DIALOGUE_MODEL:'old-script'},'new-script'],[{READER_DIALOGUE_MODEL:'old-script'},'old-script'],[{},'deepseek-chat']]){
+ for(const [configuration,expected]of [[{READER_AUDIO_SCRIPT_MODEL:'new-script',READER_DIALOGUE_MODEL:'old-script'},'new-script'],[{READER_DIALOGUE_MODEL:'old-script'},'old-script'],[{},'deepseek-flash']]){
   const env={DEEPSEEK_API_KEY:'fixture-secret',...configuration};let payload;
   const generate=createDialogueGenerator({env,fetcher:async(_url,options)=>{payload=JSON.parse(options.body);return Response.json({choices:[{message:{content:'{"turns":[]}'}}]});}});
-  await generate({bookId:'b',contentVersion:'v',passages:[{id:'p',original:'Read this.'}]});assert.equal(payload.model,expected);assert.equal(mediaConfiguration(env).public.textModel,expected);
+  await generate({bookId:'b',contentVersion:'v',passages:[{id:'p',original:'Read this.'}]});assert.equal(payload.model,expected);assert.deepEqual(payload.thinking,{type:'disabled'});assert.equal(mediaConfiguration(env).public.textModel,expected);
+ }
+});
+
+test('translation requests use Flash without thinking by default and preserve explicit model attribution',async t=>{
+ let payload;
+ t.mock.method(globalThis,'fetch',async(url,options)=>{
+  assert.equal(url,'https://api.deepseek.com/chat/completions');payload=JSON.parse(options.body);
+  return Response.json({choices:[{message:{content:JSON.stringify({literal:'直译',interpretive:'意译'})}}]});
+ });
+ for(const [configuration,expected]of [[{},'deepseek-flash'],[{READER_TRANSLATION_MODEL:'custom-translation'},'custom-translation']]){
+  const generate=createTranslator({DEEPSEEK_API_KEY:'fixture-only',...configuration});
+  const result=await generate({passageId:'p',passages:[{id:'p',original:'Read this.'}]});
+  assert.equal(payload.model,expected);assert.deepEqual(payload.thinking,{type:'disabled'});assert.equal(result.model,expected);
  }
 });
 
