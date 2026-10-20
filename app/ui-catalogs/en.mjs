@@ -539,6 +539,8 @@ export default Object.freeze({
   "data.comment": "Comment",
   "data.question": "Question",
   "data.answer": "Answer",
+  "data.annotation": "AI annotation",
+  "data.annotationReply": "My follow-up",
   "data.time": "Reading session",
   "data.user": "User",
   "data.seconds": "{seconds} seconds",

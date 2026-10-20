@@ -538,6 +538,8 @@ export default Object.freeze({
   "data.comment": "評論",
   "data.question": "問題",
   "data.answer": "回答",
+  "data.annotation": "AI 批註",
+  "data.annotationReply": "我的追問",
   "data.time": "閱讀時段",
   "data.user": "使用者",
   "data.seconds": "{seconds} 秒",

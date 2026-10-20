@@ -222,10 +222,10 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(p==='/api/library/restore/start'&&req.method==='POST'){send(201,await portability.start(user,body));return true;}
     const restoreOperation=p.match(/^\/api\/library\/restore\/([a-f0-9-]{36})\/(part|commit|cancel)$/);
     if(restoreOperation&&req.method==='POST'){const [,id,action]=restoreOperation;send(200,await portability[action](user,id,body));return true;}
-    if(p==='/api/library/export'&&req.method==='GET'){res.setHeader('Content-Disposition','attachment; filename="leafhour-library.json"');send(200,await library.exportLibrary(user));return true;}
+    if(p==='/api/library/export'&&req.method==='GET'){res.setHeader('Content-Disposition','attachment; filename="leafhour-library.json"');send(200,await portability.exportLibrary(user));return true;}
     if(p==='/api/library/export/manifest'&&req.method==='GET'){send(200,await library.exportManifest(user));return true;}
-    if(p==='/api/library/import'&&req.method==='POST'){send(200,await library.restoreLibrary(user,body));return true;}
-    if(p==='/api/library/validate'&&req.method==='POST'){send(200,await library.validateRestore(user,body));return true;}
+    if(p==='/api/library/import'&&req.method==='POST'){send(200,await portability.restoreLibrary(user,body));return true;}
+    if(p==='/api/library/validate'&&req.method==='POST'){send(200,await portability.validateRestore(user,body));return true;}
     if(p==='/api/library/grants'){if(req.method==='GET')send(200,{grants:await library.grants(user)});else send(201,await library.createGrant(user,body));return true;}
     const revoke=p.match(/^\/api\/library\/grants\/([^/]+)\/revoke$/);if(revoke&&req.method==='POST'){send(200,await library.revokeGrant(user,revoke[1]));return true;}
     if(p==='/api/library/daily-reading'||p==='/api/library/daily-reading/presence'||p==='/api/library/daily-reading/pause'||p==='/api/library/daily-reading/resume'||p==='/api/library/daily-reading/test'){
@@ -305,7 +305,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       const removeAnnotation=action?.match(/^annotations\/threads\/([A-Za-z0-9_-]{1,128})\/remove$/);if(removeAnnotation&&req.method==='POST'){res.setHeader('Cache-Control','private, no-store');send(200,await chat.annotations.remove(user,id,removeAnnotation[1]));return true;}
       if(action==='portability-part'&&req.method==='GET'){send(200,await portability.exportPart(user,id,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
       if(action==='portability-original'&&req.method==='GET'){send(200,await portability.originalPart(user,id,{offset:Number(url.searchParams.get('offset')||0),sha256:url.searchParams.get('sha256')}));return true;}
-      if(action==='export-part'&&req.method==='GET'){send(200,await library.exportBookPart(user,id,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
+      if(action==='export-part'&&req.method==='GET'){send(200,await portability.exportPart(user,id,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
       const sendReading=payload=>{if(url.searchParams.has('offset'))send(200,transferReading(payload,Number(url.searchParams.get('offset')),url.searchParams.get('snapshot')));else if(Buffer.byteLength(JSON.stringify(payload))>3000000){res.setHeader('X-Reader-Book-Transfer','parts');send(200,transferReading(payload));}else send(200,payload);};
       if(action==='reading'&&req.method==='GET'){sendReading(readingView(await library.getBook(user,id),{chapterId:url.searchParams.get('chapterId'),passageId:url.searchParams.get('passageId')}));return true;}
       const chapterRead=action?.match(/^chapters\/([A-Za-z0-9_.:-]{1,128})$/);

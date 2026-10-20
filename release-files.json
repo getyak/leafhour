@@ -632,6 +632,8 @@
   "tests/reader-annotation-tools.test.mjs",
   "tests/reader-annotation-records.test.mjs",
   "tests/reader-annotations-http.test.mjs",
+  "tests/reader-annotations-portability.test.mjs",
+  "tests/reader-annotations-portability-cas.test.mjs",
   "tests/reader-annotations-races.test.mjs",
   "tests/reader-annotations.test.mjs",
   "tests/reader-companion-http.test.mjs",
