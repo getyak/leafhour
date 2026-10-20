@@ -7,6 +7,7 @@ import {validateReadingDraftBackup} from './reading-draft-store.mjs';
 import {normalizeHighlight} from './highlights.mjs';
 import {validatePersonalRecordMetadata} from './personal-records.mjs';
 import {validateBookIntroduction} from './book-introduction.mjs';
+import {validateAnnotationArchive} from './reader-annotation-records.mjs';
 
 const object=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
 const text=(value,max=12000)=>typeof value==='string'&&value.trim().length>0&&value.length<=max;
@@ -65,6 +66,7 @@ export function validateLibraryBackup(backup){
     if(r.readingGoal!==undefined){try{if(!date(r.readingGoal?.updatedAt))invalid(where,'阅读目标时间不正确');normalizeReadingGoal(r.readingGoal);}catch{invalid(where,'阅读目标不正确');}}
     if(entry.localReadingDrafts!==undefined){try{validateReadingDraftBackup(entry.localReadingDrafts,b);}catch{invalid(where,'本机阅读草稿无法对应原文或待确认提交');}}
     try{validatePendingAnchors(r,b);}catch{invalid(where,'待确认私人记录无法恢复');}
+    if(Object.hasOwn(entry,'readerAnnotations'))validateAnnotationArchive(entry.readerAnnotations,b,{historical:true});
     if(r.position!==null&&r.position!==undefined){const p=r.position;if(!object(p)||passageIds.get(p.passageId)!==p.chapterId||!validParagraphAnchor(p)||!['zh','en','parallel'].includes(p.mode)||!['literal','interpretive'].includes(p.variant)||p.contentVersion!==undefined&&p.contentVersion!==b.contentVersion||p.revision!==undefined&&(!Number.isInteger(p.revision)||p.revision<0)||p.updatedAt!==undefined&&!date(p.updatedAt))invalid(where,'阅读位置不完整');try{normalizeAppearance(p,true);}catch{invalid(where,'阅读排版设置不正确');}}
   }
   return {books:backup.books.length,paragraphs,notes};

@@ -51,8 +51,11 @@ test('restoring a later page moves the viewport and retains only the reading anc
   assert.deepEqual(pages.anchor(),{passageId:'p2',offset:100});
   viewport.clientWidth=500;pitch=540;text.scrollWidth=2660;resized();frame();
   assert.equal(viewport.scrollLeft,1080);assert.equal(pages.anchor().passageId,'p2');
+  resized();const staleResize=frame;
   nodes.get('page-next').dispatchEvent(new Event('click'));
+  staleResize();
   assert.equal(viewport.scrollLeft,1620);assert.equal(pages.anchor().passageId,'p3');
+  resized();const oldNavigationResize=frame;document.dispatchEvent(new Event('reader:jump'));viewport.scrollLeft=0;oldNavigationResize();assert.equal(viewport.scrollLeft,0,'an older resize cannot rewind a new navigation');
   pages.restore({passageId:'p4'});assert.equal(pages.anchor().offset,100);
   viewport.scrollLeft=540;passages[1].matches=()=>true;
   const focus=new Event('focusin');Object.defineProperty(focus,'target',{value:passages[1]});text.dispatchEvent(focus);

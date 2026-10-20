@@ -63,3 +63,7 @@ The hosted launch supports npm12's default Git-dependency policy using command-s
 The Vercel adapter removes its already-consumed `path` rewrite field before domain parsing. All other unknown query keys, duplicate keys and unauthorized book/record requests remain rejected, just as on local stdio/HTTP.
 
 The hosted client also uses `--omit=optional`: it only imports the MCP protocol modules and makes HTTP calls, so it does not need optional native office, PDF or server-runtime packages. Full application installs/builds keep their existing dependencies. A first source-archive download can still take minutes; a warm-cache check does not establish a universal cold-start time.
+
+## Reading annotations
+
+GET-195 adds explicitly scoped `reader_get_annotations` (`annotations`) and `reader_add_annotation` (`annotation:write`). They share the current-book annotation service; neither reads other threads' user replies or writes reading progress. External writes store caller-supplied AI prose without calling the site's paid generator. Existing grants/defaults are unchanged. See [Reading annotations](reading-annotations.md) for typed selections, exact retries, provenance, JSON portability and bounded batch limits. This stdio extension does not establish a remote OAuth MCP connection.

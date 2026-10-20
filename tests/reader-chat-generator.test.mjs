@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createReaderChatGenerator} from '../server/reader-chat-generator.mjs';
+import {createReaderChatGenerator,createReaderAnnotationGenerator,ANNOTATION_INPUT_LABEL,ANNOTATION_SYSTEM_PROMPT} from '../server/reader-chat-generator.mjs';
 test('runtime failures are classified for operators without logging credentials, source or question text',async()=>{
   const diagnostics=[],privateText='do-not-log-this-secret-or-question';
   const generator=createReaderChatGenerator({env:{DEEPSEEK_API_KEY:privateText,VERCEL:'1'},logger:d=>diagnostics.push(d),makeGenerator:()=>async()=>{throw Object.assign(Error('Cannot find package '+privateText),{code:'ERR_MODULE_NOT_FOUND'});}});
@@ -26,3 +26,13 @@ test('an unsupported native getter probe is distinct from sandbox policy',async(
 });
 
 test('injected environment reaches the independent chat generator',async()=>{const env={DEEPSEEK_API_KEY:'fixture',VERCEL:'1'};let options;createReaderChatGenerator({env,makeGenerator:value=>{options=value;return async()=>({});}});assert.equal(options.env,env);assert.equal(options.timeoutMs,75000);});
+
+test('annotation generator keeps the existing official factory and explicit attribution prompt',async()=>{
+ assert.equal(createReaderAnnotationGenerator({env:{}}),null);
+ const env={DEEPSEEK_API_KEY:'synthetic-not-a-secret'};let options,received;
+ const generate=createReaderAnnotationGenerator({env,makeGenerator:value=>{options=value;return async job=>{received=job;return {kind:'annotation',text:'Synthetic'};};}});
+ const job={text:'Synthetic selected words'};assert.deepEqual(await generate(job),{kind:'annotation',text:'Synthetic'});
+ assert.equal(received,job);assert.equal(options.env,env);assert.equal(options.timeoutMs,75000);
+ assert.equal(options.inputLabel,ANNOTATION_INPUT_LABEL);assert.equal(options.systemPrompt,ANNOTATION_SYSTEM_PROMPT);
+ assert.match(options.systemPrompt,/translationStatus/);assert.match(options.systemPrompt,/reader_cite/);
+});

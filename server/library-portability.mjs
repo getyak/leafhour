@@ -1,5 +1,6 @@
 import {randomUUID,createHash} from 'node:crypto';
 import {MAX_ARCHIVE_BYTES,PART_BYTES,readLibraryArchive,assertPortableContent,portableExportContent} from '../app/library-portability.mjs';
+import {validateAnnotationArchive} from '../app/reader-annotation-records.mjs';
 import {hasOriginalSourceVersion} from '../app/source-revisions.mjs';
 const hash=b=>createHash('sha256').update(b).digest('hex');
 const fail=(m,status=400)=>{throw Object.assign(Error(m),{status});};
@@ -38,6 +39,45 @@ export function createLibraryPortability({library,chat,store,clock=Date.now}){
   const previous=await store.mutate(metadata(user),{},row=>{if(row.id!==id)fail('找不到恢复操作',404);if(['validating','applying','receiving'].includes(row.state)&&row.leaseUntil>clock())fail('恢复请求尚在处理，请等待结果后取消',409);const previous={...row};row.state='cancelled';delete row.lease;return previous;});
   await purge(user,id,previous.parts);return {cancelled:true};
  }
+ // ZIP and legacy JSON share exactly the same projected preflight and
+ // applied-target recheck. An optional annotation field is never silently lost.
+ async function preflight(user,backup,originals=[]){
+  const summary=await library.validateRestore(user,backup),books=backup.books.map(entry=>entry.book);
+  const finalBooks=await library.previewRestoreBooks(user,backup),finalById=new Map(finalBooks.map(book=>[book.bookId,book]));
+  for(const entry of backup.books){
+   const target=finalById.get(entry.book.bookId);
+   if(entry.chat)try{await chat.validateHistory(user,target,entry.chat,finalBooks);}catch(error){if([400,409].includes(error.status))fail('备份对话引用与目标保留的原文或译文冲突，未开始恢复',409);throw error;}
+   if(Object.hasOwn(entry,'readerAnnotations'))await chat.annotations.validateArchive(user,target,entry.readerAnnotations);
+  }
+  for(const original of originals){const book=books.find(book=>book.bookId===original.bookId);if(book.visibility==='public'||!hasOriginalSourceVersion(book))fail('备份原文件无法对应自己的来源版本');let existing;try{existing=await library.getBook(user,book.bookId);}catch(error){if(error.status!==404)throw error;}if(existing&&(existing.visibility!=='private'||existing.source.sha256!==book.source.sha256))fail('备份原文件与目标书籍的来源冲突，未开始恢复',409);}
+  return summary;
+ }
+ async function apply(user,backup,originals=[]){
+  await library.restoreLibrary(user,backup,{preserveExisting:true});
+  const appliedBooks=[];for(const entry of backup.books)appliedBooks.push(await library.getBook(user,entry.book.bookId));
+  const appliedById=new Map(appliedBooks.map(book=>[book.bookId,book]));
+  // All archives/history are checked again before any of them is restored.
+  // Concurrent later mutations still recheck in each domain CAS; this is not
+  // a transaction across books or records and never claims a global rollback.
+  try{for(const entry of backup.books){const target=appliedById.get(entry.book.bookId);if(entry.chat)await chat.validateHistory(user,target,entry.chat,appliedBooks);if(Object.hasOwn(entry,'readerAnnotations'))await chat.annotations.validateArchive(user,target,entry.readerAnnotations);}}
+  catch(error){if([400,409,413].includes(error.status))fail('目标内容在恢复期间发生变化，恢复未完成；书籍或记录可能已恢复，对话和批注尚未写入。请核对后重新恢复。',409);throw error;}
+  for(const entry of backup.books){const target=appliedById.get(entry.book.bookId);if(entry.chat)await chat.restoreHistory(user,target,entry.chat,appliedBooks);if(Object.hasOwn(entry,'readerAnnotations'))await chat.annotations.restoreArchive(user,target,entry.readerAnnotations);}
+  for(const original of originals)await library.restoreOriginal(user,original.bookId,Buffer.from(original.bytes.buffer,original.bytes.byteOffset,original.bytes.byteLength));
+  return {restored:backup.books.length,originals:originals.length};
+ }
+ async function validateRestore(user,backup){return preflight(user,backup);}
+ async function restoreLibrary(user,backup){await preflight(user,backup);return apply(user,backup);}
+ async function enrichedEntry(user,id){
+  const entry=await library.exportBookEntry(user,id),archive=await chat.annotations.exportArchive(user,id);
+  // Fail if source changed between reads instead of emitting an invalid backup.
+  const readerAnnotations=validateAnnotationArchive(archive,entry.book,{historical:true});
+  const value=portableExportContent({...entry,chat:await chat.exportHistory(user,id),readerAnnotations});assertPortableContent(value);return value;
+ }
+ async function exportLibrary(user){
+  const backup=await library.exportLibrary(user);
+  const books=[];for(const entry of backup.books)books.push(await enrichedEntry(user,entry.book.bookId));
+  const value=portableExportContent({...backup,books});assertPortableContent(value);return value;
+ }
  async function commit(user,id){
   const nonce=randomUUID(),meta=await store.mutate(metadata(user),{},row=>{check(row,id);if(row.state==='done')return {...row};if(row.state!=='uploading'&&!(row.leaseUntil<clock()&&['receiving','validating','applying'].includes(row.state)))fail('恢复仍在处理，请稍后查看',409);row.state='validating';row.lease=nonce;row.leaseUntil=clock()+LEASE;return {...row};});
   if(meta.state==='done'){await purge(user,id,meta.parts);return meta.receipt;}
@@ -46,19 +86,10 @@ export function createLibraryPortability({library,chat,store,clock=Date.now}){
    const archive=Buffer.alloc(meta.bytes);
    for(let base=0;base<meta.parts;base+=8)await Promise.all(Array.from({length:Math.min(8,meta.parts-base)},async(_,i)=>{const n=base+i,row=await store.read(partKey(user,n),{});if(row.operationId!==id||typeof row.data!=='string')fail('备份尚未上传完整，请重试');const part=Buffer.from(row.data,'base64'),expected=Math.min(PART_BYTES,meta.bytes-n*PART_BYTES);if(part.length!==expected)fail('恢复分段校验失败');part.copy(archive,n*PART_BYTES);}));
    if(hash(archive)!==meta.sha256)fail('备份整体校验失败');
-   const {backup,originals}=await readLibraryArchive(archive),books=backup.books.map(e=>e.book);
-   await library.validateRestore(user,backup);
-   const finalBooks=await library.previewRestoreBooks(user,backup),finalById=new Map(finalBooks.map(b=>[b.bookId,b]));
-   for(const entry of backup.books)if(entry.chat)try{await chat.validateHistory(user,finalById.get(entry.book.bookId),entry.chat,finalBooks);}catch(error){if([400,409].includes(error.status))fail('备份对话引用与目标保留的原文或译文冲突，未开始恢复',409);throw error;}
-   for(const original of originals){const book=books.find(b=>b.bookId===original.bookId);if(book.visibility==='public'||!hasOriginalSourceVersion(book))fail('备份原文件无法对应自己的来源版本');let existing;try{existing=await library.getBook(user,book.bookId);}catch(error){if(error.status!==404)throw error;}if(existing&&(existing.visibility!=='private'||existing.source.sha256!==book.source.sha256))fail('备份原文件与目标书籍的来源冲突，未开始恢复',409);}
+   const {backup,originals}=await readLibraryArchive(archive);
+   await preflight(user,backup,originals);
    await store.mutate(metadata(user),{},row=>{check(row,id);if(row.lease!==nonce)fail('恢复操作已变化，请重新校验',409);row.state='applying';row.leaseUntil=clock()+LEASE;return null;});validated=true;
-   await library.restoreLibrary(user,backup,{preserveExisting:true});
-   // Another instance may have saved a translation after preflight. Read the
-   // applied state before writing any history; a changed target is incomplete.
-   const appliedBooks=[];for(const book of books)appliedBooks.push(await library.getBook(user,book.bookId));const appliedById=new Map(appliedBooks.map(b=>[b.bookId,b]));
-   for(const entry of backup.books)if(entry.chat)try{await chat.validateHistory(user,appliedById.get(entry.book.bookId),entry.chat,appliedBooks);}catch(error){if([400,409].includes(error.status))fail('目标内容在恢复期间发生变化，恢复未完成；书籍或记录可能已恢复，对话尚未写入。请核对后重新恢复。',409);throw error;}
-   for(const entry of backup.books)if(entry.chat)await chat.restoreHistory(user,appliedById.get(entry.book.bookId),entry.chat,appliedBooks);
-   for(const original of originals)await library.restoreOriginal(user,original.bookId,Buffer.from(original.bytes.buffer,original.bytes.byteOffset,original.bytes.byteLength));
+   await apply(user,backup,originals);
    const receipt={restored:backup.books.length,originals:originals.length,sha256:meta.sha256};
    await store.mutate(metadata(user),{},row=>{if(row.id!==id||row.lease!==nonce)fail('恢复回执尚未保存，请重试',503);row.state='done';row.receipt=receipt;delete row.lease;delete row.leaseUntil;return null;});
    await purge(user,id,meta.parts);return receipt;
@@ -70,12 +101,12 @@ export function createLibraryPortability({library,chat,store,clock=Date.now}){
  }
  async function exportPart(user,id,{offset=0,snapshot=null}={}){
   key(user);if(!Number.isSafeInteger(offset)||offset<0||offset>MAX_ARCHIVE_BYTES||snapshot!==null&&!validHash(snapshot)||offset>0&&!snapshot)fail('备份分段范围不正确');
-  const entry=portableExportContent({...await library.exportBookEntry(user,id),chat:await chat.exportHistory(user,id)});assertPortableContent(entry);
+  const entry=await enrichedEntry(user,id);
   const bytes=Buffer.from(JSON.stringify(entry)),digest=hash(bytes);if(bytes.length>MAX_ARCHIVE_BYTES)fail('单书备份超过 512 MiB',413);if(snapshot&&snapshot!==digest)fail('记录正在更新，请重试备份',409);if(offset>=bytes.length)fail('备份分段超出范围');
   const next=Math.min(bytes.length,offset+PART_BYTES);return {kind:'marginalia-book-export-part',schemaVersion:1,bookId:entry.book.bookId,contentVersion:entry.book.contentVersion,offset,totalBytes:bytes.length,nextOffset:next<bytes.length?next:null,snapshot:digest,data:bytes.subarray(offset,next).toString('base64')};
  }
  async function originalPart(user,id,{offset=0,sha256}={}){
   key(user);const info=await library.originalInfo(user,id);if(!info.available)fail(info.reason,404);if(!Number.isSafeInteger(offset)||offset<0||offset>=info.bytes||sha256!==info.sha256)fail('原文件分段或版本不正确');const length=Math.min(PART_BYTES,info.bytes-offset),range=await library.originalRange(user,id,{offset,length,sha256});return {offset,totalBytes:info.bytes,sha256:info.sha256,nextOffset:offset+length<info.bytes?offset+length:null,data:range.bytes.toString('base64')};
  }
- return {start,part,commit,cancel,exportPart,originalPart};
+ return {start,part,commit,cancel,exportPart,originalPart,exportLibrary,validateRestore,restoreLibrary};
 }

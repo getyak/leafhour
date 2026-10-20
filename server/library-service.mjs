@@ -307,7 +307,13 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   }
   async function removeHighlight(user,id,highlightId){
     requireUser(user);const book=await getBook(user,id);
-    return mutate(recordFile(user,id),emptyRecords(book),raw=>{const data=readingDefaults(raw),row=findHighlight(data.highlights,highlightId);if(!row)throw fail('找不到这条高亮',404);row.deletedAt??=new Date().toISOString();guardRecordSize(data);return row;});
+    const row=await mutate(recordFile(user,id),emptyRecords(book),raw=>{const data=readingDefaults(raw),row=findHighlight(data.highlights,highlightId);if(!row)throw fail('找不到这条高亮',404);row.deletedAt??=new Date().toISOString();guardRecordSize(data);return row;});
+    // The deletion is only acknowledged once every bound annotation run has
+    // been fenced, so a late answer cannot publish after this ACK. An exact
+    // retry of an already-deleted highlight re-runs the listener; it must not
+    // silently ACK a failed invalidation.
+    await notifySourceMutation(user,id,{type:'highlight-deleted',highlightId:row.id,ids:[row.id,...(row.requestIds||[])]});
+    return row;
   }
   async function addComment(user,id,input,type='comments'){
     requireUser(user);const book=await getBook(user,id);
@@ -339,7 +345,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     // A stale expected version is refused before any charged provider request.
     assertExpectedContentVersion(book,expectedContentVersion);
     assertBatchPassage(passages[i],expectedContentVersion);
-    if(passages[i].translations.literal&&passages[i].translations.interpretive)return passages[i];
+    if(passages[i].translations.literal&&passages[i].translations.interpretive){await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});return passages[i];}
     if(inferSourceLanguage(passages[i].original)==='zh')throw fail('这段原文为中文，无需生成中文译文；原文与个人记录仍可使用');
     if(!translator)throw fail('翻译服务尚未配置，原文仍可继续阅读',503);
     const localKey=!dataStore?path.resolve(dataDir)+'|'+user.id+'|'+id:null,key=user.id+'|'+id+'|'+passageId;if(localKey&&localTranslationsRunning.has(localKey))throw fail('这本书正在保存另一段译文，请稍后再试；当前段落尚未提交翻译。',409);if(translationsRunning.has(key))throw fail('这一段正在翻译，请稍后查看',409);if(translationsRunning.size>=2)throw fail('翻译服务正在处理其他段落，请稍后再试',429);
@@ -350,7 +356,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     try{
       bookCapacity(book,TRANSLATION_RESERVE_BYTES);
       if(dataStore?.reserveTranslation)ticket=await dataStore.reserveTranslation(user,id,passageId);
-      {const latest=await getBook(user,id),saved=allPassages(latest).find(p=>p.id===passageId);assertGenerationSource({book,fresh:latest,passage:passages[i],freshPassage:saved});assertExpectedContentVersion(latest,expectedContentVersion);assertBatchPassage(saved,expectedContentVersion);if(saved?.translations.literal&&saved.translations.interpretive)return saved;bookCapacity(latest,TRANSLATION_RESERVE_BYTES);}
+      {const latest=await getBook(user,id),saved=allPassages(latest).find(p=>p.id===passageId);assertGenerationSource({book,fresh:latest,passage:passages[i],freshPassage:saved});assertExpectedContentVersion(latest,expectedContentVersion);assertBatchPassage(saved,expectedContentVersion);if(saved?.translations.literal&&saved.translations.interpretive){await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});return saved;}bookCapacity(latest,TRANSLATION_RESERVE_BYTES);}
       const result=await translator({passageId,sourceLanguage:inferSourceLanguage(passages[i].original),targetLanguage:'zh',passages:passages.slice(Math.max(0,i-1),i+2).map(p=>({id:p.id,original:p.original})),sourceVersion:book.contentVersion});
       if(!result||!['literal','interpretive'].every(k=>typeof result[k]==='string'&&result[k].trim()&&result[k].length<=12000))throw fail('翻译结果不完整，请重试；原文已保留',502);
       const translations=Object.fromEntries(['literal','interpretive'].map(variant=>[variant,{text:result[variant],status:'draft',variant,origin:'ai',model:result.model||'configured-provider',sourceVersion:book.contentVersion,createdAt:new Date().toISOString()}]));
@@ -364,7 +370,9 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
         saved={contentVersion:fresh.contentVersion,translations:mergeGeneratedTranslations({existing,before,generated:translations})};
         {const projected={...fresh,sections:fresh.sections.map(s=>({...s,paragraphs:s.paragraphs.map(p=>p.id===passageId?{...p,translations:saved.translations}:data[p.id]?.contentVersion===fresh.contentVersion?{...p,translations:data[p.id].translations}:p)}))};bookCapacity(projected);}
         data[passageId]=saved;
-      });return {...freshPassage,translations:saved.translations};
+      });
+      await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});
+      return {...freshPassage,translations:saved.translations};
     }finally{translationsRunning.delete(key);if(localKey)localTranslationsRunning.delete(localKey);if(ticket)await dataStore.releaseTranslation(ticket).catch(()=>{});}
   }
   const grantsFile=path.join(dataDir,'grants.json');
@@ -381,7 +389,9 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     requireUser(user);
     if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(key=>!['bookId','scopes'].includes(key)))throw fail('请选择授权范围');
     const {bookId,scopes}=input;await getBook(user,bookId);
-    if(!Array.isArray(scopes)||!scopes.length||scopes.some(s=>!['content','notes','activity','comment:write','audio:read','audio:generate'].includes(s)||s===DAILY_GRANT_SCOPE))throw fail('请选择授权范围');
+    // GET-195 adds only the two explicit annotation scopes to this allowlist:
+    // existing grants, defaults and the daily/audio/content scopes never expand.
+    if(!Array.isArray(scopes)||!scopes.length||scopes.some(s=>!['content','notes','activity','comment:write','audio:read','audio:generate','annotations','annotation:write'].includes(s)||s===DAILY_GRANT_SCOPE))throw fail('请选择授权范围');
     return issueGrant(user,bookId,scopes,7*86400000);
   }
   async function createDailyGrant(user,{bookId}={}){
@@ -396,6 +406,11 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   }
   async function isGrantActive(id){const data=await read(grantsFile,{grants:[]}),grant=data.grants.find(g=>g.id===id);return !!grant&&!grant.revoked&&Date.parse(grant.expiresAt)>Date.now();}
   const grantRevocationListeners=new Set();
+  // Narrow source-mutation hook in the grant-revocation style: a successful
+  // source/highlight deletion, restore or translation ACK awaits every bound
+  // listener first. A listener failure fails the API response honestly.
+  const sourceMutationListeners=new Set();
+  async function notifySourceMutation(user,bookId,event){for(const listener of sourceMutationListeners)await listener(user,bookId,event);}
   async function grants(user){requireUser(user);return (await read(grantsFile,{grants:[]})).grants.filter(g=>g.ownerId===user.id).map(({ownerId,tokenHash,...g})=>g);}
   async function revokeGrant(user,id){
     requireUser(user);
@@ -475,6 +490,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       if(JSON.stringify(order)!==JSON.stringify(shelf.order)||JSON.stringify(archived)!==JSON.stringify(shelf.archived)){checkShelfRevision(shelf,shelf.revision);shelf.order=order;shelf.archived=archived;shelf.revision++;}
     });
     if(backup.readingPreferences!==undefined)await restoreReadingPreferences(user,backup.readingPreferences,{preserveExisting});
+    for(const entry of backup.books)await notifySourceMutation(user,entry.book.bookId,{type:'restore',bookId:entry.book.bookId});
     return {restored:backup.books.length};
   }
   async function receiveGift(user,backup){
@@ -534,5 +550,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(claim.pending)await mutate(bookFile(user,incoming.bookId),{},current=>{if(current._giftReceive?.fingerprint===fingerprint)delete current._giftReceive;});
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,getReadingPreferences,saveReadingPreferences,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,getReadingPreferences,saveReadingPreferences,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }

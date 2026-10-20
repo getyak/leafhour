@@ -19,7 +19,7 @@ import {createAudioRoutes} from './audio-routes.mjs';
 import {portalDocument} from './portal-document.mjs';
 import {roomExcerpt,latestRoomQuestion} from '../app/library-workspace.mjs';
 import {createReaderChatService} from './reader-chat.mjs';
-import {createReaderChatGenerator} from './reader-chat-generator.mjs';
+import {createReaderChatGenerator,createReaderAnnotationGenerator} from './reader-chat-generator.mjs';
 import {createBookIntroductionService} from './book-introduction.mjs';
 import {createIntroductionGenerator} from '../harness/introduction-generator.mjs';
 import {createCompanionGenerator} from '../harness/companion-generator.mjs';
@@ -36,12 +36,13 @@ import {createGiftQuoteService} from './gift-quote.mjs';
 import {createLibraryPortability} from './library-portability.mjs';
 import {decodePersonalRecordId} from '../app/personal-records.mjs';
 import {agentReadArgs,scopedAgentRead} from './scoped-agent-reading.mjs';
+import {annotationReadArgs} from './reader-annotation-tools.mjs';
 import {createDailyReadingService} from './daily-reading.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
 const jsonBody=async(req,limit=29*1024*1024)=>{if(!req.headers['content-type']?.startsWith('application/json'))throw fail('请使用 JSON 请求',415);if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>limit)throw fail('这次导入内容过大，请分书恢复',413);return req.body;}let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('这次导入内容过大，请分书恢复',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('请求格式不正确');}};
-export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null}={}){
+export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null,annotationGenerator}={}){
   const webOrigins=new Set(publicOrigin?[publicOrigin]:[]);
   if(!Array.isArray(additionalWebOrigins))throw fail('额外网页来源配置无效',503);
   for(const value of additionalWebOrigins){
@@ -70,7 +71,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const readingGenerator=chatGenerator===undefined?createReaderChatGenerator():chatGenerator;
   const bookIntroductions=createBookIntroductionService({library,generator:introductionGenerator===undefined?createReaderChatGenerator({env,makeGenerator:createIntroductionGenerator}):introductionGenerator});
   const proactiveGenerator=companionGenerator===undefined?createReaderChatGenerator({makeGenerator:createCompanionGenerator}):companionGenerator;
-  const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context)});
+  const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,annotationGenerator:annotationGenerator===undefined?createReaderAnnotationGenerator({env}):annotationGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context)});
   // One quiet daily companion plan per account; no schedule, model job or
   // generation happens in this process. The external host owns the heartbeat.
   const dailyReading=createDailyReadingService({library,dataDir:path.join(dataDir,'library','daily'),dataStore});
@@ -113,7 +114,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     files['/reading-toolbar.mjs']='reading-toolbar.mjs';
     files['/reader-tools.mjs']='reader-tools.mjs';
     files['/reading-flow.mjs']='reading-flow.mjs';files['/reading-load.mjs']='reading-load.mjs';files['/personal-records.mjs']='personal-records.mjs';files['/reading-chat-scope.mjs']='reading-chat-scope.mjs';files['/personal-record-editor.mjs']='personal-record-editor.mjs';
-    for(const file of ['highlights.mjs','reader-highlights.mjs'])files['/'+file]=file;
+    for(const file of ['highlights.mjs','reader-highlights.mjs','reader-annotations.mjs','reader-annotation-pending.mjs','reader-annotation-records.mjs','reader-annotations.css','book-introduction.mjs','note-drafts.mjs','reading-preferences.mjs'])files['/'+file]=file;
     files['/reading-flow.css']='reading-flow.css';
     for(const file of ['library-filter-controls.mjs','library-filters.css','choice-control.mjs','choice-control.css','reader-settings-choices.mjs','library-view-state.mjs','library-workspace.mjs','library-workspace.css','reading-calendar.mjs','reading-dashboard.mjs','library-restore.mjs','library-export.mjs','site-appearance.mjs','reading-clock.mjs','reading-outbox.mjs','reading-queue-store.mjs','reading-session-coordinator.mjs','reading-mark-actions.mjs','reading-mark-store.mjs','reading-draft-store.mjs','reading-retained-backup.mjs','reading-journey.mjs','reading-pending-backup.mjs','reading-ending-context.mjs','reading-session.js','reading-session.css','brand-assets/reading-window.webp','brand-assets/page-detail.webp','brand-assets/page-mark.svg','leafhour-brand.css','brand-assets/leafhour-mark.svg','brand-assets/leafhour-social.svg','brand-assets/leafhour-social.png'])files['/'+file]=file;
     for(const file of ['squirrel-motion.mjs','squirrel-position.mjs','library-shell.mjs','library-shell.css','library-daily-reading.mjs','library-daily-reading.css','reader-presence.mjs','library-reading-preferences.mjs','library-chat.mjs','library-chat-state.mjs','reading-chat-quote.mjs','reading-chat-input.mjs','reader-chat-workspace.mjs','reader-chat-workspace.css','library-chat-markdown.mjs','library-chat.css','icons.svg','icons-LICENSE.txt'])files['/'+file]=file;
@@ -222,10 +223,10 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     if(p==='/api/library/restore/start'&&req.method==='POST'){send(201,await portability.start(user,body));return true;}
     const restoreOperation=p.match(/^\/api\/library\/restore\/([a-f0-9-]{36})\/(part|commit|cancel)$/);
     if(restoreOperation&&req.method==='POST'){const [,id,action]=restoreOperation;send(200,await portability[action](user,id,body));return true;}
-    if(p==='/api/library/export'&&req.method==='GET'){res.setHeader('Content-Disposition','attachment; filename="leafhour-library.json"');send(200,await library.exportLibrary(user));return true;}
+    if(p==='/api/library/export'&&req.method==='GET'){res.setHeader('Content-Disposition','attachment; filename="leafhour-library.json"');send(200,await portability.exportLibrary(user));return true;}
     if(p==='/api/library/export/manifest'&&req.method==='GET'){send(200,await library.exportManifest(user));return true;}
-    if(p==='/api/library/import'&&req.method==='POST'){send(200,await library.restoreLibrary(user,body));return true;}
-    if(p==='/api/library/validate'&&req.method==='POST'){send(200,await library.validateRestore(user,body));return true;}
+    if(p==='/api/library/import'&&req.method==='POST'){send(200,await portability.restoreLibrary(user,body));return true;}
+    if(p==='/api/library/validate'&&req.method==='POST'){send(200,await portability.validateRestore(user,body));return true;}
     if(p==='/api/library/grants'){if(req.method==='GET')send(200,{grants:await library.grants(user)});else send(201,await library.createGrant(user,body));return true;}
     const revoke=p.match(/^\/api\/library\/grants\/([^/]+)\/revoke$/);if(revoke&&req.method==='POST'){send(200,await library.revokeGrant(user,revoke[1]));return true;}
     if(p==='/api/library/daily-reading'||p==='/api/library/daily-reading/presence'||p==='/api/library/daily-reading/pause'||p==='/api/library/daily-reading/resume'||p==='/api/library/daily-reading/test'){
@@ -290,9 +291,22 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='chat'&&req.method==='GET'){send(200,await chat.view(user,id,{passageId:url.searchParams.get('passageId')||undefined}));return true;}
       if(action==='chat'&&req.method==='POST'){send(200,await chat.send(user,id,body));return true;}
       const cancelChat=action?.match(/^chat\/([^/]+)\/cancel$/);if(cancelChat&&req.method==='POST'){send(200,await chat.cancel(user,id,cancelChat[1]));return true;}
+      // GET-195 web API: same owner/session/CSRF gates as the other library
+      // routes. The authorize delegate re-reads the actual auth user for the
+      // captured session token; request bodies never carry owner identity.
+      if(action==='annotations'&&req.method==='GET'){res.setHeader('Cache-Control','private, no-store');send(200,await chat.annotations.view(user,id));return true;}
+      if(action==='annotations/explain'&&req.method==='POST'){
+        res.setHeader('Cache-Control','private, no-store');
+        const controller=new AbortController(),stop=()=>{if(!res.writableEnded)controller.abort();};res.once('close',stop);
+        if(req.aborted||res.destroyed)controller.abort();
+        try{send(200,await chat.annotations.explain(user,id,body,{authorize:async()=>(await auth.userFor(token))?.id===user?.id,signal:controller.signal}));}finally{res.removeListener('close',stop);}
+        return true;
+      }
+      const cancelAnnotation=action?.match(/^annotations\/requests\/([A-Za-z0-9_-]{1,128})\/cancel$/);if(cancelAnnotation&&req.method==='POST'){res.setHeader('Cache-Control','private, no-store');send(200,await chat.annotations.cancel(user,id,cancelAnnotation[1]));return true;}
+      const removeAnnotation=action?.match(/^annotations\/threads\/([A-Za-z0-9_-]{1,128})\/remove$/);if(removeAnnotation&&req.method==='POST'){res.setHeader('Cache-Control','private, no-store');send(200,await chat.annotations.remove(user,id,removeAnnotation[1]));return true;}
       if(action==='portability-part'&&req.method==='GET'){send(200,await portability.exportPart(user,id,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
       if(action==='portability-original'&&req.method==='GET'){send(200,await portability.originalPart(user,id,{offset:Number(url.searchParams.get('offset')||0),sha256:url.searchParams.get('sha256')}));return true;}
-      if(action==='export-part'&&req.method==='GET'){send(200,await library.exportBookPart(user,id,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
+      if(action==='export-part'&&req.method==='GET'){send(200,await portability.exportPart(user,id,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
       const sendReading=payload=>{if(url.searchParams.has('offset'))send(200,transferReading(payload,Number(url.searchParams.get('offset')),url.searchParams.get('snapshot')));else if(Buffer.byteLength(JSON.stringify(payload))>3000000){res.setHeader('X-Reader-Book-Transfer','parts');send(200,transferReading(payload));}else send(200,payload);};
       if(action==='reading'&&req.method==='GET'){sendReading(readingView(await library.getBook(user,id),{chapterId:url.searchParams.get('chapterId'),passageId:url.searchParams.get('passageId')}));return true;}
       const chapterRead=action?.match(/^chapters\/([A-Za-z0-9_.:-]{1,128})$/);
@@ -328,7 +342,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
         const result=action==='daily-connect'?await dailyReading.connect(owner,body,identity.grant):action==='daily-claim'?await dailyReading.claim(owner,body,identity.grant):await dailyReading.finish(owner,body,identity.grant);
         send(200,result);return true;
       }
-      const scopes={manifest:'content',passage:'content',context:'content',chapter:'content',search:'content',notes:'notes',activity:'activity',comment:'comment:write','audio-prepare':'content','audio-generate':'audio:generate','audio-status':'audio:read','audio-cancel':'audio:generate','audio-clip':'audio:read'};if(!scopes[action])throw fail('找不到这个工具',404);
+      const scopes={manifest:'content',passage:'content',context:'content',chapter:'content',search:'content',notes:'notes',activity:'activity',comment:'comment:write',annotations:'annotations',annotation:'annotation:write','audio-prepare':'content','audio-generate':'audio:generate','audio-status':'audio:read','audio-cancel':'audio:generate','audio-clip':'audio:read'};if(!scopes[action])throw fail('找不到这个工具',404);
       const owner=await library.authorize(agentToken,bookId,scopes[action]),book=await library.getBook(owner,bookId),records=()=>library.records(owner,bookId);
       if(action.startsWith('audio-')){
         if(!audio)throw fail('此实例暂未开启听读，请在本机书房使用。',503);
@@ -340,6 +354,11 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
         throw fail('不支持这个听读操作',405);
       }
       if(['manifest','context','chapter','passage','search','notes','activity'].includes(action)&&req.method==='GET'){const args=agentReadArgs(action,url.searchParams),activityAllowed=action==='context'&&await library.authorize(agentToken,bookId,'activity').then(()=>true).catch(()=>false);send(200,await scopedAgentRead({action,args,book,records,activityAllowed}));return true;}
+      // GET-195 external annotation actions: exact method + own scope each,
+      // never the content/notes dispatcher and never the owner's Web view. The
+      // captured bearer is re-authorized again inside the domain transaction.
+      if(action==='annotations'&&req.method==='GET'){res.setHeader('Cache-Control','private, no-store');send(200,await chat.annotations.readExternal(owner,bookId,annotationReadArgs(url.searchParams),{authorize:()=>library.authorize(agentToken,bookId,'annotations')}));return true;}
+      if(action==='annotation'&&req.method==='POST'){res.setHeader('Cache-Control','private, no-store');send(200,await chat.annotations.putExternal(owner,bookId,body,{authorize:()=>library.authorize(agentToken,bookId,'annotation:write')}));return true;}
       if(action==='comment'&&req.method==='POST'){if(body.origin!=='user')throw fail('只保存用户明确提供的原话');send(201,await library.addComment(owner,bookId,body));return true;}
       throw fail('不支持这个请求',405);
     }
