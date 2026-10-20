@@ -80,10 +80,10 @@ test('hosted origin CSV enables only configured HTTPS web clients through the re
 });
 test('hosted entry forwards profile and gift routes through the shared portal',async()=>{
   const routes=[],handler=createHostedHandler({env,storeFactory:()=>({}),authFactory:()=>({}),portalFactory:async()=>({handle:async({url,send})=>{routes.push(url.pathname);send(200,{ready:true});return true;}})});
-  for(const path of ['/api/account/profile','/api/account/reading-preferences','/api/book-gifts/'+ 'a'.repeat(43),'/api/book-gifts/'+ 'a'.repeat(43)+'/accept','/api/library/books/alice/gifts']){
+  for(const path of ['/api/account/profile','/api/account/reading-preferences','/api/account/ui-preferences','/api/book-gifts/'+ 'a'.repeat(43),'/api/book-gifts/'+ 'a'.repeat(43)+'/accept','/api/library/books/alice/gifts']){
     let result;const res={setHeader(){},end(value){result=JSON.parse(value);}};await handler({url:path,method:'GET',headers:{}},res);assert.equal(res.statusCode,200,path);assert.equal(result.ready,true);
   }
-  assert.equal(routes.length,5);
+  assert.equal(routes.length,6);
 });
 test('disabled hosted email never sends an OTP and hosted MCP uses only explicit HTTPS configuration',async()=>{
   const auth=createHostedAuth({env,store:{},fetcher:()=>{throw Error('must not send');}});assert.equal(auth.emailAvailable,false);await assert.rejects(auth.requestCode('reader@example.com'),e=>e.status===503);
@@ -145,3 +145,33 @@ test('bounded original ranges cross storage parts without fetching complete blob
 });
 
 test('hosted signed-upload reservation accepts EPUB with the same bounded owner staging as text',async()=>{const f=database(),store=createHostedStore({env,fetcher:f.fetcher}),user={id:'epub-owner'};const target=await store.beginUpload(user,{filename:'reading.epub',bytes:512});assert.match(target.id,/^[a-f0-9-]{36}$/);assert.equal(new URL(target.url).origin,env.SUPABASE_URL);await assert.rejects(store.beginUpload(user,{filename:'too-large.epub',bytes:20*1024*1024+1}),{status:400});await assert.rejects(store.beginUpload(null,{filename:'reading.epub',bytes:512}),{status:401});});
+
+// GET-198: exercise the deployed catch-all entry, not just the local server.
+test('hosted UI preference route reaches real authentication, owner fences and durable CAS',async t=>{
+ const fixture=authFixture(),portals=[];
+ const {createPortal}=await import('../server/portal.mjs');
+ const make=()=>createHostedHandler({env:fixture.env,storeFactory:()=>fixture.store(),authFactory:({store,env})=>createHostedAuth({...fixture,store,env}),portalFactory:async options=>{const portal=await createPortal({...options,translator:null,chatGenerator:null,companionGenerator:null,annotationGenerator:null,introductionGenerator:null,dialogueGenerator:null,guideGenerator:null});portals.push(portal);return portal;}});
+ t.after(async()=>{for(const portal of portals)await Promise.all([portal.chat.close(),portal.ingestionRunner.close(),portal.audio?.close()]);});
+ let cookie;const handler=make();
+ const call=async(method='GET',body,extra={},target=handler,query)=>{let value;const headers={},res={setHeader:(key,v)=>{headers[key]=v;},end:bytes=>{value=JSON.parse(bytes);}};await target({url:'/api/account/ui-preferences',method,query,headers:{host:'reader.example.com',origin:fixture.env.READER_PUBLIC_ORIGIN,'content-type':'application/json',...(cookie?{cookie}:{}),...extra},...(body===undefined?{}:{body}),socket:{remoteAddress:'127.0.0.1'}},res);return {status:res.statusCode,body:value,headers};};
+ const anonymous=await call();assert.equal(anonymous.status,401,'the real hosted route must reach authentication rather than return a routing 404');assert.match(anonymous.headers['Cache-Control'],/private.*no-store/);
+ const loginHeaders={},loginResponse={setHeader:(key,v)=>{loginHeaders[key]=v;},end(){}};await handler({url:'/api/auth/password',method:'POST',headers:{host:'reader.example.com',origin:fixture.env.READER_PUBLIC_ORIGIN,'content-type':'application/json'},body:{email:'reader@example.com',password:'fixture-password'},socket:{remoteAddress:'127.0.0.1'}},loginResponse);assert.equal(loginResponse.statusCode,200);cookie=loginHeaders['Set-Cookie'].split(';')[0];
+ const owned={'x-reader-owner':fixture.user.id},empty={revision:0,updatedAt:null,uiLocale:null};
+ const before=await call('GET',undefined,owned);assert.equal(before.status,200);assert.deepEqual(before.body,empty);assert.equal([...fixture.rows.keys()].filter(key=>key.endsWith('/ui-preferences.json')).length,0,'GET does not create preference state');
+ const saved=await call('POST',{baseRevision:0,uiLocale:'ja'},owned);assert.equal(saved.status,200);assert.equal(saved.body.uiLocale,'ja');assert.equal(saved.body.revision,1);assert.ok(Number.isFinite(Date.parse(saved.body.updatedAt)));
+ assert.deepEqual((await call('GET')).body,saved.body,'same-session GET may omit the optional owner header');
+ assert.equal((await call('POST',{baseRevision:0,uiLocale:'en'},owned)).status,409,'stale CAS is preserved through the hosted edge');
+ assert.equal((await call('POST',{baseRevision:1,uiLocale:'en'})).status,409,'writes require the captured owner header');
+ const changed=await call('POST',{baseRevision:1,uiLocale:'en'},{'x-reader-owner':'synthetic-other'});assert.equal(changed.status,409);assert.equal(changed.headers['X-Reader-Session-Changed'],'1');
+ assert.equal((await call('POST',{baseRevision:1,uiLocale:'en'},{...owned,origin:'https://unrelated.example'})).status,403);
+ assert.equal((await call('POST',{baseRevision:1,uiLocale:'x'.repeat(5000)},owned)).status,413,'the 4 KiB boundary is not bypassed by framework-parsed bodies');
+ assert.deepEqual((await call('GET',undefined,owned,make(),{path:['account','ui-preferences']})).body,saved.body,'another hosted instance and the actual catch-all query restore the same account record');
+ assert.deepEqual((await call('GET',undefined,owned)).body,saved.body,'every rejected write leaves the account choice intact');
+ assert.equal([...fixture.rows.keys()].filter(key=>key.endsWith('/ui-preferences.json')).length,1);
+});
+
+test('hosted UI preference admission is exact and never admits adjacent or legacy private routes',async()=>{
+ let created=0;const handler=createHostedHandler({env,storeFactory:()=>{created++;throw Error('must not create a service for a rejected route');}});
+ for(const url of ['/api/account/ui-preferences/','/api/account/ui-preferences-extra','/api/account/ui-preferences/notes','/api/book','/api/records']){const res={setHeader(){},end(){}};await handler({url,method:'GET',headers:{}},res);assert.equal(res.statusCode,404,url);}
+ assert.equal(created,0);
+});

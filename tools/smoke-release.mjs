@@ -15,6 +15,9 @@ for(const route of ['/reader-companion.mjs','/reader-companion-state.mjs','/read
   const response=await get(route);if(response.headers.get('content-type')?.includes('text/html')||!(await response.text()).length)throw Error('Missing companion asset: '+route);
 }
 const companion=await fetch(new URL('/api/library/books/gutenberg-alice/companion',base),{signal:AbortSignal.timeout(15000)});if(companion.status!==401)throw Error('Anonymous companion access did not require authentication');
+const uiPreferences=await fetch(new URL('/api/account/ui-preferences',base),{signal:AbortSignal.timeout(15000),headers:{'Cache-Control':'no-cache'}});
+if(uiPreferences.status!==401)throw Error('Anonymous UI preference access did not require authentication');
+if(!uiPreferences.headers.get('cache-control')?.split(',').some(value=>value.trim().toLowerCase()==='no-store'))throw Error('UI preference response must not be cached');
 for(const route of ['/','/library','/gift/'+giftProbe,'/gift-preview','/book-gift.mjs','/book-gift.css','/gift-compose.mjs','/gift-compose.css','/gift-identity.mjs','/gift-compose-state.mjs','/gift-preview.mjs','/gift-ritual.mjs','/brand-assets/envelope-edge.svg','/brand-assets/letter-edge.svg','/library-profile.mjs','/library-book-actions.mjs','/library-personal.css','/reading-schedule.mjs','/shelf-order.mjs','/read?book=gutenberg-alice','/portal.js','/library-workspace.css','/library-workspace.mjs','/reading-flow.mjs','/reading-load.mjs','/reading-arrival.mjs','/reading-arrival.css','/save-receipts.mjs']){
   const response=await get(route);const body=await response.text();if(!body.length)throw Error('Empty response: '+route);
   if((route==='/gift/'+giftProbe||route==='/gift-preview')&&!['src="/book-gift.mjs"','id="gift-open"','id="gift-error"'].every(marker=>body.includes(marker)))throw Error('Gift entry did not serve the gift letter page');
@@ -58,4 +61,4 @@ for(const entry of catalog){
 for(const route of ['/api/book','/api/records']){const response=await fetch(new URL(route,base),{signal:AbortSignal.timeout(15000)});if(response.status!==404)throw Error('Retired route is accessible: '+route);}
 const gift=await fetch(new URL('/api/book-gifts/'+giftProbe,base),{signal:AbortSignal.timeout(15000)});if(gift.status!==404||!String((await gift.json()).error).includes('赠书信'))throw Error('Public gift endpoint did not reach its missing-letter response');
 const profile=await fetch(new URL('/api/account/profile',base),{method:'POST',headers:{Origin:new URL(base).origin,'Content-Type':'application/json','X-Reader-Owner':'guest'},body:'{}',signal:AbortSignal.timeout(15000)});if(profile.status!==401)throw Error('Anonymous profile write did not fail with authentication required');
-console.log('Production smoke passed: source, pages, assets, search discovery, private indexing exclusions, anonymous session, public catalog and gift/profile access boundaries.');
+console.log('Production smoke passed: source, pages, assets, search discovery, private indexing exclusions, anonymous session, public catalog and gift/profile/UI preference access boundaries.');
