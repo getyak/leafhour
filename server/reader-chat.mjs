@@ -8,6 +8,7 @@ import {sourceIndex,invalid} from './experience-validation.mjs';
 import {portableChatTurns,valueEqual,exportChatTurn} from '../app/portable-chat.mjs';
 
 import {createReaderCompanionService} from './reader-companion.mjs';
+import {createReaderAnnotationsService} from './reader-annotations.mjs';
 import {createReadingAgentTools} from './reading-agent-tools.mjs';
 import {readChatScope,changeChatScope,checkChatScopeRevision} from '../app/reading-chat-scope.mjs';
 
@@ -42,7 +43,7 @@ function conversationHistory(turns,scope={mode:'book'},contentVersion){
   return pairs.flat();
 }
 
-export async function createReaderChatService({library,dataDir,dataStore=null,generator=null,clock=Date.now,onError=()=>{},companionGenerator=null}){
+export async function createReaderChatService({library,dataDir,dataStore=null,generator=null,clock=Date.now,onError=()=>{},companionGenerator=null,annotationGenerator=null}){
   if(!library?.getBook||!library?.records||!library?.addComment||!dataDir)throw new TypeError('Reader chat requires a library and data directory');
   let closed=false;const queues=new Map(),active=new Map();
   const ownerDir=user=>path.join(dataDir,'users',digest(identity(user).id),'chat');
@@ -238,6 +239,10 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
   }
   async function close(){
     closed=true;
+    // The annotation child closes first with its own active map; parent close
+    // then finishes conversation runs and queues as before.
+    await annotations.close().catch(()=>{});
+    unregisterSourceMutation?.();
     await Promise.all([...active.values()].map(async run=>{await finish(run.user,run.bookId,run.id,run.runId,{status:'cancelled',answer:null});run.controller.abort();}));
     await Promise.allSettled([...queues.values()]);
   }
@@ -261,5 +266,9 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
     return mutateBook(user,book.bookId,data=>{const added=mergeHistory(data,turns,book,books,storedBook);data.turns.push(...added);return {restored:added.length};});
   }
   const companion=createReaderCompanionService({bookFor,mutateBook,clock,generator:companionGenerator,quota,reserveGlobal,releaseGlobal,watchRun,active,publicTurn,conversationHistory,cancel,getClosed:()=>closed});
-  return {get available(){return !closed&&typeof generator==='function';},view,configureScope,send,cancel,close,companion,exportHistory,validateHistory,restoreHistory};
+  // GET-195: the child chat.annotations service reuses these exact closures for
+  // identity, paths, transactions and quotas; it keeps its own active map.
+  const annotations=createReaderAnnotationsService({library,bookFor,identity,dataDir,read,mutate,quota,reserveGlobal,releaseGlobal,clock,generator:annotationGenerator,onError,getClosed:()=>closed});
+  const unregisterSourceMutation=typeof library.registerSourceMutation==='function'?library.registerSourceMutation((user,bookId,event)=>annotations.fence(user,bookId,event)):null;
+  return {get available(){return !closed&&typeof generator==='function';},view,configureScope,send,cancel,close,companion,annotations,exportHistory,validateHistory,restoreHistory};
 }

@@ -19,7 +19,7 @@ import {createAudioRoutes} from './audio-routes.mjs';
 import {portalDocument} from './portal-document.mjs';
 import {roomExcerpt,latestRoomQuestion} from '../app/library-workspace.mjs';
 import {createReaderChatService} from './reader-chat.mjs';
-import {createReaderChatGenerator} from './reader-chat-generator.mjs';
+import {createReaderChatGenerator,createReaderAnnotationGenerator} from './reader-chat-generator.mjs';
 import {createBookIntroductionService} from './book-introduction.mjs';
 import {createIntroductionGenerator} from '../harness/introduction-generator.mjs';
 import {createCompanionGenerator} from '../harness/companion-generator.mjs';
@@ -41,7 +41,7 @@ import {createDailyReadingService} from './daily-reading.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
 const jsonBody=async(req,limit=29*1024*1024)=>{if(!req.headers['content-type']?.startsWith('application/json'))throw fail('请使用 JSON 请求',415);if(req.body&&typeof req.body==='object'){if(Buffer.byteLength(JSON.stringify(req.body))>limit)throw fail('这次导入内容过大，请分书恢复',413);return req.body;}let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>limit)throw fail('这次导入内容过大，请分书恢复',413);chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw fail('请求格式不正确');}};
-export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null}={}){
+export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigins=[],sendCode,translator,catalogDir=path.join(root,'catalog'),allowLocal=true,dataStore=null,authService=null,hostedMcp=false,speechProvider,dialogueGenerator,guideGenerator,chatGenerator,companionGenerator,introductionGenerator,schedule=()=>{},paddleProvider,env=process.env,giftQuoteGenerator=null,annotationGenerator}={}){
   const webOrigins=new Set(publicOrigin?[publicOrigin]:[]);
   if(!Array.isArray(additionalWebOrigins))throw fail('额外网页来源配置无效',503);
   for(const value of additionalWebOrigins){
@@ -70,7 +70,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const readingGenerator=chatGenerator===undefined?createReaderChatGenerator():chatGenerator;
   const bookIntroductions=createBookIntroductionService({library,generator:introductionGenerator===undefined?createReaderChatGenerator({env,makeGenerator:createIntroductionGenerator}):introductionGenerator});
   const proactiveGenerator=companionGenerator===undefined?createReaderChatGenerator({makeGenerator:createCompanionGenerator}):companionGenerator;
-  const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context)});
+  const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,annotationGenerator:annotationGenerator===undefined?createReaderAnnotationGenerator({env}):annotationGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context)});
   // One quiet daily companion plan per account; no schedule, model job or
   // generation happens in this process. The external host owns the heartbeat.
   const dailyReading=createDailyReadingService({library,dataDir:path.join(dataDir,'library','daily'),dataStore});
@@ -290,6 +290,19 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='chat'&&req.method==='GET'){send(200,await chat.view(user,id,{passageId:url.searchParams.get('passageId')||undefined}));return true;}
       if(action==='chat'&&req.method==='POST'){send(200,await chat.send(user,id,body));return true;}
       const cancelChat=action?.match(/^chat\/([^/]+)\/cancel$/);if(cancelChat&&req.method==='POST'){send(200,await chat.cancel(user,id,cancelChat[1]));return true;}
+      // GET-195 web API: same owner/session/CSRF gates as the other library
+      // routes. The authorize delegate re-reads the actual auth user for the
+      // captured session token; request bodies never carry owner identity.
+      if(action==='annotations'&&req.method==='GET'){res.setHeader('Cache-Control','private, no-store');send(200,await chat.annotations.view(user,id));return true;}
+      if(action==='annotations/explain'&&req.method==='POST'){
+        res.setHeader('Cache-Control','private, no-store');
+        const controller=new AbortController(),stop=()=>{if(!res.writableEnded)controller.abort();};res.once('close',stop);
+        if(req.aborted||res.destroyed)controller.abort();
+        try{send(200,await chat.annotations.explain(user,id,body,{authorize:async()=>(await auth.userFor(token))?.id===user?.id,signal:controller.signal}));}finally{res.removeListener('close',stop);}
+        return true;
+      }
+      const cancelAnnotation=action?.match(/^annotations\/requests\/([A-Za-z0-9_-]{1,128})\/cancel$/);if(cancelAnnotation&&req.method==='POST'){res.setHeader('Cache-Control','private, no-store');send(200,await chat.annotations.cancel(user,id,cancelAnnotation[1]));return true;}
+      const removeAnnotation=action?.match(/^annotations\/threads\/([A-Za-z0-9_-]{1,128})\/remove$/);if(removeAnnotation&&req.method==='POST'){res.setHeader('Cache-Control','private, no-store');send(200,await chat.annotations.remove(user,id,removeAnnotation[1]));return true;}
       if(action==='portability-part'&&req.method==='GET'){send(200,await portability.exportPart(user,id,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
       if(action==='portability-original'&&req.method==='GET'){send(200,await portability.originalPart(user,id,{offset:Number(url.searchParams.get('offset')||0),sha256:url.searchParams.get('sha256')}));return true;}
       if(action==='export-part'&&req.method==='GET'){send(200,await library.exportBookPart(user,id,{offset:Number(url.searchParams.get('offset')||0),snapshot:url.searchParams.get('snapshot')}));return true;}
