@@ -20,14 +20,14 @@
 
 ## 原生 Chromium
 
-2026-10-20T06:38:57.927Z，实际编译入口、真实 annotation HTTP/领域服务，隔离合成账号、合成原文与确定性生成器。仅一次解释调用，未调用真实模型或其他账号。源码前后哈希一致，浏览器与服务已关闭，无 pageerror。
+2026-10-20T07:18:06.442Z，实际编译入口、真实 annotation HTTP/领域服务，隔离合成账号、合成原文与确定性生成器。仅一次解释调用，未调用真实模型或其他账号。源码前后哈希一致，浏览器与服务已关闭，无 pageerror。
 
 - 原生选词 → 高亮 → AI 解释；首次无用户消息。
 - 四语切换保留同一个物理 textarea、焦点、文字选区与未发送草稿。composition 事件检查为程序事件，不是真实系统 IME 验收。
 - 连续阅读 390×844、390×400、320×640；分页桌面、390×844、390×400。短屏 input 可视行至少 44px，close/send/delete 中心命中；打开批注后立即翻页没有被旧 resize 回调拉回。
 - 纸张、夜间、并排阅读截图复核。窗口尺寸是 Chromium viewport，未声称物理手机或 VoiceOver 验收。
 
-初始 JS **327517 B / 327680 B**，CSS **183386 B / 204800 B**；未提高预算。annotation controller/pending 为闭合的公开延迟模块图；原待同步备份模块改为仅显式导出手势导入，原因是原加入 UI 后初始 JS 327912 B 超预算。签入后还会为发现预生成批注加载 23589 B 的 controller、4738 B 的 pending store 及其纯依赖；320 KiB 是编译入口预算，不是首屏总下载体积。两条新边界均拒绝别名、query、错误 owner 和非公开依赖；保留原六条语言目录边界。不是零成本或性能 SLO 结论。
+初始 JS **327517 B / 327680 B**，CSS **183431 B / 204800 B**；未提高预算。annotation controller/pending 为闭合的公开延迟模块图；原待同步备份模块改为仅显式导出手势导入，原因是原加入 UI 后初始 JS 327912 B 超预算。签入后还会为发现预生成批注加载 23589 B 的 controller、4738 B 的 pending store 及其纯依赖；320 KiB 是编译入口预算，不是首屏总下载体积。两条新边界均拒绝别名、query、错误 owner 和非公开依赖；保留原六条语言目录边界。不是零成本或性能 SLO 结论。
 
 冷加载反例额外验收（2026-10-20T06:54:11Z）：实际暂停 `/reader-annotations.mjs` 的首次浏览器响应，在 p1 点击后改选 p2，再放行模块，没有错发请求；之后显式点击 p2 仅生成一次且引用 p2。同类 bootstrap+controller 回归同时覆盖账号 ABA、dispose 和未改选的正向路径。模块加载失败提供明确整页重载按钮，不尝试新 query/alias。
 
@@ -40,9 +40,9 @@
 ![夜间批注](assets/get-195/desktop-night.png)
 ![并排阅读批注](assets/get-195/desktop-parallel.png)
 
-图片均为合成资料，不含真实书房运行数据。最终无遮挡截图来自 2026-10-20T06:46:31.652Z；其后 bootstrap 重载及冷导入 guard 使用独立原生检查与确定性回归。SHA-256：
+图片均为合成资料，不含真实书房运行数据。最终无遮挡截图来自 2026-10-20T07:18:06.442Z；本轮同时核对共享焦点 token（2px solid）与功能文字至少 12px；冷导入 guard 另有独立原生检查与确定性回归。SHA-256：
 
-- desktop-paper.png `ee105061185fae78c19322d39e98d8a1b8b08a7790367df7b56cc54881dfb257`
-- paged-400.png `16eb6332f004792fef0c7c2e00ee097a10c63a226bfd6e55318f368b0e37ea8d`
-- desktop-night.png `b6d1d06932e54212a2ec55c91f928e0173a322661c64556624e881d35014ed07`
-- desktop-parallel.png `45ddc7e120617037b020d28430de034b1ba7e84952b51012cd6b8c5bb6c2271f`
+- desktop-paper.png `796b52a195871a0e8cb023985659ea54ccea4877482701f514f79e05539693c5`
+- paged-400.png `bc9240a34012dc20049e4721e988266adf0a8881ad506279cfb03654f35991b8`
+- desktop-night.png `0de9d9ca9ef9437af8371b19088a646fa0b4415ce5624a49a85b2b77973c5c4e`
+- desktop-parallel.png `e5709fbdd5c27c786e6021a996b21ad1491f4584445b1e50d287fb925df6a08b`

@@ -389,7 +389,9 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     requireUser(user);
     if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(key=>!['bookId','scopes'].includes(key)))throw fail('请选择授权范围');
     const {bookId,scopes}=input;await getBook(user,bookId);
-    if(!Array.isArray(scopes)||!scopes.length||scopes.some(s=>!['content','notes','activity','comment:write','audio:read','audio:generate'].includes(s)||s===DAILY_GRANT_SCOPE))throw fail('请选择授权范围');
+    // GET-195 adds only the two explicit annotation scopes to this allowlist:
+    // existing grants, defaults and the daily/audio/content scopes never expand.
+    if(!Array.isArray(scopes)||!scopes.length||scopes.some(s=>!['content','notes','activity','comment:write','audio:read','audio:generate','annotations','annotation:write'].includes(s)||s===DAILY_GRANT_SCOPE))throw fail('请选择授权范围');
     return issueGrant(user,bookId,scopes,7*86400000);
   }
   async function createDailyGrant(user,{bookId}={}){

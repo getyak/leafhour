@@ -242,6 +242,7 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
     // The annotation child closes first with its own active map; parent close
     // then finishes conversation runs and queues as before.
     await annotations.close().catch(()=>{});
+    unregisterGrantRevocation?.();
     unregisterSourceMutation?.();
     await Promise.all([...active.values()].map(async run=>{await finish(run.user,run.bookId,run.id,run.runId,{status:'cancelled',answer:null});run.controller.abort();}));
     await Promise.allSettled([...queues.values()]);
@@ -270,5 +271,9 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
   // identity, paths, transactions and quotas; it keeps its own active map.
   const annotations=createReaderAnnotationsService({library,bookFor,identity,dataDir,read,mutate,quota,reserveGlobal,releaseGlobal,clock,generator:annotationGenerator,onError,getClosed:()=>closed});
   const unregisterSourceMutation=typeof library.registerSourceMutation==='function'?library.registerSourceMutation((user,bookId,event)=>annotations.fence(user,bookId,event)):null;
+  // GET-195: a revoked external grant must touch the same annotations wrapper
+  // before the revocation is acknowledged, so a held external put CAS retries,
+  // re-authorizes and fails instead of writing after the ACK.
+  const unregisterGrantRevocation=typeof library.registerGrantRevocation==='function'?library.registerGrantRevocation((ownerId,grantId)=>annotations.grantRevoked(ownerId,grantId)):null;
   return {get available(){return !closed&&typeof generator==='function';},view,configureScope,send,cancel,close,companion,annotations,exportHistory,validateHistory,restoreHistory};
 }

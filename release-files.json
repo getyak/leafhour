@@ -739,5 +739,8 @@
   "tests/reader-annotation-boundary.test.mjs",
   "tests/annotation-dom-fixture.mjs",
   "tests/reader-annotations-ui.test.mjs",
-  "tests/reader-annotation-assets.test.mjs"
+  "tests/reader-annotation-assets.test.mjs",
+  "tests/reader-annotations-external.test.mjs",
+  "tests/reader-annotations-mcp.test.mjs",
+  "tests/reader-annotations-external-cas.test.mjs"
 ]

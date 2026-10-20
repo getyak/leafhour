@@ -36,6 +36,7 @@ import {createGiftQuoteService} from './gift-quote.mjs';
 import {createLibraryPortability} from './library-portability.mjs';
 import {decodePersonalRecordId} from '../app/personal-records.mjs';
 import {agentReadArgs,scopedAgentRead} from './scoped-agent-reading.mjs';
+import {annotationReadArgs} from './reader-annotation-tools.mjs';
 import {createDailyReadingService} from './daily-reading.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -341,7 +342,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
         const result=action==='daily-connect'?await dailyReading.connect(owner,body,identity.grant):action==='daily-claim'?await dailyReading.claim(owner,body,identity.grant):await dailyReading.finish(owner,body,identity.grant);
         send(200,result);return true;
       }
-      const scopes={manifest:'content',passage:'content',context:'content',chapter:'content',search:'content',notes:'notes',activity:'activity',comment:'comment:write','audio-prepare':'content','audio-generate':'audio:generate','audio-status':'audio:read','audio-cancel':'audio:generate','audio-clip':'audio:read'};if(!scopes[action])throw fail('找不到这个工具',404);
+      const scopes={manifest:'content',passage:'content',context:'content',chapter:'content',search:'content',notes:'notes',activity:'activity',comment:'comment:write',annotations:'annotations',annotation:'annotation:write','audio-prepare':'content','audio-generate':'audio:generate','audio-status':'audio:read','audio-cancel':'audio:generate','audio-clip':'audio:read'};if(!scopes[action])throw fail('找不到这个工具',404);
       const owner=await library.authorize(agentToken,bookId,scopes[action]),book=await library.getBook(owner,bookId),records=()=>library.records(owner,bookId);
       if(action.startsWith('audio-')){
         if(!audio)throw fail('此实例暂未开启听读，请在本机书房使用。',503);
@@ -353,6 +354,11 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
         throw fail('不支持这个听读操作',405);
       }
       if(['manifest','context','chapter','passage','search','notes','activity'].includes(action)&&req.method==='GET'){const args=agentReadArgs(action,url.searchParams),activityAllowed=action==='context'&&await library.authorize(agentToken,bookId,'activity').then(()=>true).catch(()=>false);send(200,await scopedAgentRead({action,args,book,records,activityAllowed}));return true;}
+      // GET-195 external annotation actions: exact method + own scope each,
+      // never the content/notes dispatcher and never the owner's Web view. The
+      // captured bearer is re-authorized again inside the domain transaction.
+      if(action==='annotations'&&req.method==='GET'){res.setHeader('Cache-Control','private, no-store');send(200,await chat.annotations.readExternal(owner,bookId,annotationReadArgs(url.searchParams),{authorize:()=>library.authorize(agentToken,bookId,'annotations')}));return true;}
+      if(action==='annotation'&&req.method==='POST'){res.setHeader('Cache-Control','private, no-store');send(200,await chat.annotations.putExternal(owner,bookId,body,{authorize:()=>library.authorize(agentToken,bookId,'annotation:write')}));return true;}
       if(action==='comment'&&req.method==='POST'){if(body.origin!=='user')throw fail('只保存用户明确提供的原话');send(201,await library.addComment(owner,bookId,body));return true;}
       throw fail('不支持这个请求',405);
     }

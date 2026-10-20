@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createReadingAgentTools} from '../server/reading-agent-tools.mjs';
-import {createAnnotationReadTools} from '../server/reader-annotation-tools.mjs';
+import {createAnnotationReadTools,annotationReadArgs,validateAnnotationReadArgs} from '../server/reader-annotation-tools.mjs';
 import {createAnnotationArchive,createAnnotationThread,appendAnnotationMessage} from '../app/reader-annotation-records.mjs';
 
 const user={id:'tools-reader'};
@@ -137,4 +137,17 @@ test('the annotation tool cannot select another book or owner and verify stays s
   // A forged read view cannot widen identity: the wrapper is constructed per owner.
   const forged=createAnnotationReadTools({tools,readView:async()=>{throw Error('cross owner read');}});
   assert.ok((await forged.execute('reader_get_annotations',{})).error);
+});
+
+test('the shared strict parser accepts only the exact external read pagination identities',()=>{
+  assert.deepEqual(annotationReadArgs(new URLSearchParams('bookId=ann-book&threadId=thread-1&messageId=msg-ai-1&charOffset=12&limit=3&snapshot='+ 'f'.repeat(64))),{bookId:'ann-book',threadId:'thread-1',messageId:'msg-ai-1',charOffset:12,limit:3,snapshot:'f'.repeat(64)});
+  for(const query of [
+    'bookId=ann-book&__proto__=ignored&__proto__=duplicate','bookId=ann-book&constructor=x','bookId=ann-book&junk=1','bookId=ann-book&limit=1&limit=2','bookId=ann-book&charOffset=x','bookId=ann-book&charOffset=-1',
+    'bookId=ann-book&charOffset=1.5','bookId=ann-book&limit=0','bookId=ann-book&limit=21','bookId=ann-book&snapshot=',
+    'threadId=thread-1','bookId=ann-book&messageId=msg-ai-1','bookId=ann-book&charOffset=1',
+    'bookId=ann-book&threadId=thread-1&charOffset=1','bookId=ann-book&threadId=thread-1&messageId=msg-ai-1&charOffset=1'
+  ])assert.throws(()=>annotationReadArgs(new URLSearchParams(query)),error=>error.status===400,query);
+  assert.throws(()=>validateAnnotationReadArgs({bookId:'ann-book'}),error=>error.status===400,'the in-job tool never accepts a bookId');
+  assert.deepEqual(validateAnnotationReadArgs({}),{});
+  assert.deepEqual(validateAnnotationReadArgs({threadId:'thread-1',messageId:'msg-ai-1',charOffset:0,limit:20,snapshot:'f'.repeat(64)}).limit,20);
 });

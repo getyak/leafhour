@@ -7,6 +7,7 @@
 // close assumes chat.finish. Only the pure archive leaves through export;
 // runtime requests, run authority, leases and identity never do.
 import path from 'node:path';
+import {isDeepStrictEqual} from 'node:util';
 import {randomUUID,createHash} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {createAnnotationArchive,validateAnnotationArchive,createAnnotationThread,appendAnnotationMessage,removeAnnotationThread,mergeAnnotationArchives} from '../app/reader-annotation-records.mjs';
@@ -14,18 +15,28 @@ import {normalizeReadingChatQuote,validateCurrentReadingChatQuote} from '../app/
 import {encodeReadingChatInput} from '../app/reading-chat-input.mjs';
 import {findHighlight} from '../app/highlights.mjs';
 import {createReadingAgentTools} from './reading-agent-tools.mjs';
-import {createAnnotationReadTools} from './reader-annotation-tools.mjs';
+import {createAnnotationReadTools,readAnnotationPage,validateAnnotationReadArgs} from './reader-annotation-tools.mjs';
 
 const RUN_MS=90000,CANCEL_POLL_MS=500,MAX_RUNS=100;
 const FAILED='这次解释未通过生成或来源核验，你的输入已保留。';
 const EXPIRED='上次解释已中断或超时，你的输入已保留。';
 const EXPLAIN_REQUESTS={en:'Please explain the selected words in English.', 'zh-Hans':'请用简体中文解释这段选中的文字。', 'zh-Hant':'請用繁體中文解釋這段選取的文字。', ja:'選択した文章を日本語で説明してください。'};
 const PROVENANCE={source:'site-agent',label:'Leafhour reading agent'};
+const EXTERNAL_PROVENANCE={source:'external-agent',label:'External Agent'};
+const READ_STATUS={INVALID_ARGUMENTS:400,SNAPSHOT_CHANGED:409,UNAVAILABLE:503};
 const digest=value=>createHash('sha256').update(value).digest('hex');
 const fail=(message,status=400)=>{throw Object.assign(Error(message),{status});};
 const text=(value,max)=>typeof value==='string'&&value.trim().length>0&&value.length<=max&&value.isWellFormed();
 const recordId=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(value);
-const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+// JSONB object key order is not part of immutable request or quote identity.
+const equal=isDeepStrictEqual;
+// JSON storage canonicalizes signed zero. Normalize valid offset zeros before
+// recording or comparing immutable requests, without weakening other values.
+const normalizeQuote=value=>{
+ const quote=normalizeReadingChatQuote(value);
+ for(const part of quote.parts){if(part.start===0)part.start=0;if(part.end===0)part.end=0;}
+ return quote;
+};
 const safeActivity=value=>(Array.isArray(value)?value:[]).slice(-48).map(item=>Object.fromEntries(['tool','label','status','bookId','chapterId'].filter(key=>typeof item[key]==='string'&&item[key].length<=200).map(key=>[key,item[key]])));
 const safeRequest=run=>({id:run.id,threadId:run.threadId,status:run.status,createdAt:run.createdAt,...(run.error?{error:run.error}:{}),...(Array.isArray(run.activity)&&run.activity.length?{activity:safeActivity(run.activity)}:{})});
 const emptyState=bookId=>({archive:createAnnotationArchive(bookId),runs:[]});
@@ -38,6 +49,9 @@ export function createReaderAnnotationsService({library,bookFor,identity,dataDir
  const stateFile=(user,bookId)=>path.join(dataDir,'users',digest(identity(user).id),'annotations',digest(bookId)+'.json');
  const mutateState=(user,bookId,operation)=>mutate(stateFile(user,bookId),emptyState(bookId),operation);
  const readState=(user,bookId)=>read(stateFile(user,bookId),emptyState(bookId));
+ // An external grant closure may answer with the canonical grant owner or just
+ // true; any other identity is a wrong-owner authorization and must fail closed.
+ const allowedBy=async(authorize,user)=>{const result=await Promise.resolve(authorize());return result===true||!!result&&typeof result==='object'&&result.id===user.id;};
  const expire=(data,now)=>{for(const run of data.runs)if(run.status==='running'&&(!Number.isFinite(run.expiresAt)||run.expiresAt<=now))Object.assign(run,{status:'failed',error:EXPIRED});};
  const threadOf=(data,book,threadId)=>{
   const archive=validateAnnotationArchive(data.archive,book,{historical:true});
@@ -61,9 +75,9 @@ export function createReaderAnnotationsService({library,bookFor,identity,dataDir
   const allowed=['id','threadId','quote','highlightId','text','responseLocale'];
   if(!Object.keys(input).every(key=>allowed.includes(key))||!['id','threadId','quote'].every(key=>Object.hasOwn(input,key)))fail('注解请求格式不正确');
   if(!recordId(input.id)||!recordId(input.threadId))fail('注解请求标识不正确');
-  const quote=normalizeReadingChatQuote(input.quote);
+  const quote=normalizeQuote(input.quote);
   if(quote.bookId!==book.bookId)fail('所选文字不属于这本书',409);
-  // Fixed key order so immutable payload comparison is exact.
+  // Project only immutable fields; persistence may reorder object keys.
   const responseLocale=input.responseLocale??'zh-Hans';
   if(!Object.hasOwn(EXPLAIN_REQUESTS,responseLocale))fail('回答语言不正确');
   const payload={id:input.id,threadId:input.threadId,quote,responseLocale};
@@ -342,6 +356,87 @@ export function createReaderAnnotationsService({library,bookFor,identity,dataDir
   const book=await bookFor(user,bookId),data=await readState(user,bookId);
   return validateAnnotationArchive(data.archive,book,{historical:true});
  }
+ // GET-195 external write: an explicitly granted agent stores one free AI
+ // explanation through the same owner/book wrapper, parent lock and CAS as the
+ // site service. No model call, quota or reservation ticket is involved; the
+ // server forces the attribution and the first timestamp and answers with a
+ // narrow receipt only, never the Web thread or anyone's private words.
+ async function putExternal(user,bookId,input,{authorize=async()=>true}={}){
+  identity(user);
+  if(!text(bookId,128))fail('找不到这本书',404);
+  if(!input||typeof input!=='object'||Array.isArray(input))fail('注解请求格式不正确');
+  const allowed=['bookId','threadId','messageId','quote','body','highlightId'];
+  if(!Object.keys(input).every(key=>allowed.includes(key))||!['bookId','threadId','messageId','quote','body'].every(key=>Object.hasOwn(input,key)))fail('注解请求格式不正确');
+  if(input.bookId!==bookId)fail('所选文字不属于这本书',409);
+  if(!recordId(input.threadId)||!recordId(input.messageId))fail('注解请求标识不正确');
+  if(!text(input.body,12000))fail('注解内容请提交不超过 12,000 字的实际内容');
+  const quote=normalizeQuote(input.quote);
+  if(quote.bookId!==bookId)fail('所选文字不属于这本书',409);
+  if(input.highlightId!==undefined&&!recordId(input.highlightId))fail('高亮标识不正确');
+  const payload={quote,body:input.body,...(input.highlightId!==undefined?{highlightId:input.highlightId}:{})};
+  // Strict current grant before any lookup or history; the same closure is
+  // re-checked inside the shared-key transaction after every CAS retry.
+  if(!(await allowedBy(authorize,user)))fail('Agent 授权无效或范围不足',403);
+  // The first timestamp is generated once and reused across CAS retries, so an
+  // exact retry can never look like a conflicting second message.
+  const stamp=new Date(clock()).toISOString();
+  return mutateState(user,bookId,async data=>{
+   expire(data,clock());
+   if(!(await allowedBy(authorize,user)))fail('Agent 授权无效或范围不足',403);
+   const thread=data.archive.threads.find(row=>row.id===input.threadId);
+   // Canonicalize only the highlight identity, without current-source checks.
+   // Historical exact receipts also accept an originally supplied request alias.
+   const highlightIdentity=payload.highlightId===undefined||thread?.highlightId===payload.highlightId?payload.highlightId:findHighlight((await library.records(user,bookId))?.highlights||[],payload.highlightId)?.id||payload.highlightId;
+   const stored=thread?.messages.find(row=>row.id===input.messageId);
+   if(stored){
+    // An exact immutable receipt survives later source edits as history while
+    // the current grant is still required; any other payload conflicts.
+    if(stored.origin==='ai'&&equal(stored.provenance,EXTERNAL_PROVENANCE)&&stored.body===payload.body&&equal(thread.quote,payload.quote)&&thread.highlightId===highlightIdentity)return {threadId:thread.id,messageId:stored.id,status:'stored',createdAt:stored.createdAt};
+    fail('重复提交标识与原注解不一致',409);
+   }
+   if(thread?.deletedAt)fail('这条注解线程已删除',409);
+   if(thread&&(!equal(thread.quote,payload.quote)||thread.highlightId!==highlightIdentity))fail('注解锚点创建后不可更改',409);
+   if(data.runs.some(run=>run.aiMessageId===input.messageId||run.userMessageId===input.messageId))fail('这条消息标识已属于正在生成的回答',409);
+   // Read-only current checks for a NEW message only, repeated after retries.
+   const live=await bookFor(user,bookId);
+   try{validateCurrentReadingChatQuote(payload.quote,live);}catch{fail('所选文字已变化，注解未保存',422);}
+   const highlightRow=payload.highlightId!==undefined?await resolveHighlight(user,live,{...payload,highlightId:highlightIdentity},thread):null;
+   const message={id:input.messageId,origin:'ai',body:payload.body,createdAt:stamp,provenance:EXTERNAL_PROVENANCE};
+   let archive=data.archive;
+   if(!thread)archive=createAnnotationThread(archive,live,{id:input.threadId,quote:payload.quote,...(highlightRow?{highlightId:highlightRow.id}:{})},{now:stamp});
+   archive=appendAnnotationMessage(archive,live,input.threadId,message);
+   // Pending paid answers keep their message slots and worst-case bytes before
+   // this external message may commit; the projected clone is discarded.
+   reservePendingCapacity(archive,data.runs,stamp);
+   data.archive=archive;
+   return {threadId:input.threadId,messageId:input.messageId,status:'stored',createdAt:stamp};
+  });
+ }
+ // GET-195 external read: the same bounded AI-only pagination the reading job
+ // tool serves, projected for a fresh current grant. It never serializes the
+ // owner's Web archive view and never reaches other books, notes or activity.
+ async function readExternal(user,bookId,args,{authorize=async()=>true}={}){
+  identity(user);
+  if(!text(bookId,128))fail('找不到这本书',404);
+  const query=validateAnnotationReadArgs(args,{withBookId:true});
+  if(query.bookId!==bookId)fail('注解读取参数无效');
+  if(!(await allowedBy(authorize,user)))fail('Agent 授权无效或范围不足',403);
+  const book=await bookFor(user,bookId);
+  const page=await readAnnotationPage(query,async()=>{const data=await readState(user,bookId);return {bookId,contentVersion:book.contentVersion,archive:data.archive};});
+  if(page?.error)fail(page.error.message,READ_STATUS[page.error.code]||400);
+  return page;
+ }
+ // Grant-revocation ACK fence: a revoked grant's book gets one real same-key
+ // commit even with empty runs and unchanged JSON, so an external put whose CAS
+ // is still in flight must retry, re-authorize and fail. A failed touch fails
+ // the revocation ACK honestly; an exact retry touches again.
+ async function grantRevoked(ownerId,grantId){
+  if(typeof ownerId!=='string'||!ownerId||typeof grantId!=='string'||!grantId)fail('撤回授权标识不正确');
+  const rows=await library.grants({id:ownerId});
+  const grant=rows.find(row=>row.id===grantId);
+  if(!grant||!text(grant.bookId,128))fail('找不到这条授权',404);
+  return mutateState({id:ownerId},grant.bookId,()=>null);
+ }
  async function validateArchive(user,book,archive){
   identity(user);if(!book?.bookId)fail('找不到这本书',404);
   const incoming=validateAnnotationArchive(archive,book,{historical:true});
@@ -400,5 +495,5 @@ export function createReaderAnnotationsService({library,bookFor,identity,dataDir
   }));
   await delay(0);
  }
- return {get available(){return !isClosed()&&typeof generator==='function';},view,explain,cancel,remove,exportArchive,validateArchive,restoreArchive,fence,close};
+ return {get available(){return !isClosed()&&typeof generator==='function';},view,explain,cancel,remove,exportArchive,validateArchive,restoreArchive,putExternal,readExternal,grantRevoked,fence,close};
 }

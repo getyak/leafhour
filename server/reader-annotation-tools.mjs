@@ -10,25 +10,46 @@ const hash=value=>createHash('sha256').update(value).digest('hex');
 const str=(max=128)=>({type:'string',minLength:1,maxLength:max});
 const integer=(max,min=0)=>({type:'integer',minimum:min,maximum:max});
 const failure=(code='UNAVAILABLE',message='无法读取这项资料')=>({error:{code,message}});
+const reject=(message,status=400)=>{throw Object.assign(Error(message),{status});};
+const recordId=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(value);
 export const READER_GET_ANNOTATIONS='reader_get_annotations';
 const ANNOTATION_TOOL={
  name:READER_GET_ANNOTATIONS,
  description:'分页读取本书已有的 AI 注解消息。只返回 AI 内容，不含用户原话、私人笔记或其他对话。body 为自由 Markdown；charOffset 为 UTF-16 偏移。续读使用上次返回的 nextCursor 全部参数与 snapshot，snapshot 表示读取时的确切视图。',
  parameters:{type:'object',properties:{threadId:str(),messageId:str(),charOffset:integer(12000),limit:{type:'integer',minimum:1,maximum:20},snapshot:str(128)},required:[],additionalProperties:false}
 };
-function validArgs(args){
- if(!args||typeof args!=='object'||Array.isArray(args))return false;
- const allowed=['threadId','messageId','charOffset','limit','snapshot'];
- if(!Object.keys(args).every(key=>allowed.includes(key)))return false;
+const READ_KEYS=['bookId','threadId','messageId','charOffset','limit','snapshot'];
+// One shared strict parser for the bounded annotation read: the in-job tool and
+// the external HTTP query accept exactly these pagination identities, reject
+// unknown or duplicate parameters and never repair a malformed cursor.
+export function validateAnnotationReadArgs(args,{withBookId=false}={}){
+ if(!args||typeof args!=='object'||Array.isArray(args))reject('注解读取参数无效');
+ const allowed=withBookId?READ_KEYS:READ_KEYS.filter(key=>key!=='bookId');
+ if(!Object.keys(args).every(key=>allowed.includes(key)))reject('注解读取参数无效');
+ if(withBookId&&!recordId(args.bookId))reject('注解读取参数无效');
  const {threadId,messageId,charOffset,limit,snapshot}=args;
- if(threadId!==undefined&&(typeof threadId!=='string'||!threadId))return false;
- if(messageId!==undefined&&(typeof messageId!=='string'||!messageId))return false;
- if(charOffset!==undefined&&(!Number.isSafeInteger(charOffset)||charOffset<0||charOffset>12000))return false;
- if(limit!==undefined&&(!Number.isSafeInteger(limit)||limit<1||limit>20))return false;
- if(snapshot!==undefined&&(typeof snapshot!=='string'||!snapshot||snapshot.length>128))return false;
- if(charOffset!==undefined&&charOffset>0&&(!threadId||!messageId||!snapshot))return false;
- if(messageId!==undefined&&!threadId)return false;
- return true;
+ if(threadId!==undefined&&(typeof threadId!=='string'||!threadId))reject('注解读取参数无效');
+ if(messageId!==undefined&&(typeof messageId!=='string'||!messageId))reject('注解读取参数无效');
+ if(charOffset!==undefined&&(!Number.isSafeInteger(charOffset)||charOffset<0||charOffset>12000))reject('注解读取参数无效');
+ if(limit!==undefined&&(!Number.isSafeInteger(limit)||limit<1||limit>20))reject('注解读取参数无效');
+ if(snapshot!==undefined&&(typeof snapshot!=='string'||!snapshot||snapshot.length>128))reject('注解读取参数无效');
+ if(charOffset!==undefined&&charOffset>0&&(!threadId||!messageId||!snapshot))reject('续读游标不完整');
+ if(messageId!==undefined&&!threadId)reject('续读游标不完整');
+ return args;
+}
+// HTTP query parser: values arrive as strings, duplicates and unknown names are
+// rejected before any read, and numeric cursors never accept NaN or fractions.
+export function annotationReadArgs(params){
+ const args={};
+ for(const [key,value]of params){
+  if(!READ_KEYS.includes(key))reject('注解读取参数无效');
+  if(Object.hasOwn(args,key))reject('注解读取参数重复');
+  args[key]=['charOffset','limit'].includes(key)?(/^\d+$/.test(value)?Number(value):NaN):value;
+ }
+ return validateAnnotationReadArgs(args,{withBookId:true});
+}
+function validArgs(args){
+ try{validateAnnotationReadArgs(args);return true;}catch{return false;}
 }
 const clip400=value=>[...String(value)].slice(0,400).join('');
 // Read-only projection of the stored archive: AI messages only. User words,
@@ -46,7 +67,7 @@ function rowsFor(archive,bookId,contentVersion){
  return {rows,snapshot:hash(JSON.stringify([bookId,contentVersion,rows.map(row=>[row.threadId,row.messageId,row.anchor,row.body])]))};
 }
 const boundary=(value,n)=>n===0||n===value.length||!(value.charCodeAt(n-1)>=0xd800&&value.charCodeAt(n-1)<=0xdbff&&value.charCodeAt(n)>=0xdc00&&value.charCodeAt(n)<=0xdfff);
-async function readAnnotations(args,readView){
+export async function readAnnotationPage(args,readView){
  let view;try{view=await readView();}catch{return failure('UNAVAILABLE','无法读取注解内容');}
  if(!view||!view.archive)return failure('UNAVAILABLE','这本书还没有注解内容');
  const {rows,snapshot}=rowsFor(view.archive,view.bookId,view.contentVersion);
@@ -107,7 +128,7 @@ export function createAnnotationReadTools({tools,readView}){
  if(tools.definitions.some(definition=>definition?.name===READER_GET_ANNOTATIONS))throw TypeError('Source tools already define reader_get_annotations');
  return {
   definitions:[...structuredClone(tools.definitions),structuredClone(ANNOTATION_TOOL)],
-  execute(name,args={},internal={}){if(name!==READER_GET_ANNOTATIONS)return tools.execute(name,args,internal);if(!validArgs(args))return Promise.resolve(failure('INVALID_ARGUMENTS','工具参数无效'));return readAnnotations(args,readView);},
+  execute(name,args={},internal={}){if(name!==READER_GET_ANNOTATIONS)return tools.execute(name,args,internal);if(!validArgs(args))return Promise.resolve(failure('INVALID_ARGUMENTS','工具参数无效'));return readAnnotationPage(args,readView);},
   verify:tools.verify,
   sources:tools.sources,
   recommendations:tools.recommendations
