@@ -742,5 +742,7 @@
   "tests/reader-annotation-assets.test.mjs",
   "tests/reader-annotations-external.test.mjs",
   "tests/reader-annotations-mcp.test.mjs",
-  "tests/reader-annotations-external-cas.test.mjs"
+  "tests/reader-annotations-external-cas.test.mjs",
+  "server/account-ui-preferences.mjs",
+  "tests/account-ui-preferences.test.mjs"
 ]
