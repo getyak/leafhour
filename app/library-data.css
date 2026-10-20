@@ -1,1 +1,20 @@
-.library-data{min-width:0}.library-data h3:not(:first-child){margin-top:2rem}.library-data p{overflow-wrap:anywhere}.library-data label{display:flex;gap:.65rem;align-items:flex-start;margin:.8rem 0}.library-data input[type=checkbox]{flex:0 0 auto;margin-top:.2rem;accent-color:var(--accent,#536a4e)}.library-data input[type=file],.library-data select{max-width:100%;font:inherit}.library-data input[type=file]{width:100%;margin:.5rem 0 1rem}.library-data button{margin:.3rem .4rem .3rem 0;white-space:normal}.data-export-controls{margin-top:1rem}.data-export-controls select{margin:0 .5rem .5rem 0;padding:.5rem;border:1px solid var(--line-control);border-radius:.4rem;color:inherit;background:var(--surface,#fff)}.library-data fieldset{min-width:0;border:1px solid var(--line-control);border-radius:.5rem;padding:.8rem;margin:1rem 0}.library-data fieldset>div{max-height:18rem;overflow:auto}.library-data fieldset label{overflow-wrap:anywhere;line-height:1.55;font-size:.88rem}.data-pager{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem;font-size:.8rem}.library-data textarea{display:block;box-sizing:border-box;width:100%;max-width:100%;padding:.8rem;margin:.7rem 0;font: .8rem/1.6 ui-monospace,monospace;resize:vertical;color:inherit;background:var(--surface,#fff);border:1px solid var(--line-control);border-radius:.5rem}.library-data [hidden]{display:none!important}.library-data .settings-status{white-space:pre-line}@media(max-width:600px){.library-data select{width:100%;margin-right:0}.library-data button{max-width:100%}}
+/* GET-201 data tab: three short groups (back up, restore, export), the
+   selectable dropzone and one advanced disclosure. Group/row/switch/dropzone
+   presentation comes from library-shell.css; this file only styles the record
+   list, the pager and the preview output. */
+.library-data{min-width:0}
+.library-data fieldset{min-width:0;border:1px solid var(--line-hairline);border-radius:var(--radius-control);padding:12px 14px;margin:12px 0}
+.library-data fieldset>div{max-height:18rem;overflow:auto}
+.library-data fieldset label{display:grid;grid-template-columns:18px minmax(0,1fr);gap:2px 10px;align-items:start;overflow-wrap:anywhere;line-height:1.6;font-size:var(--type-caption);margin:.55rem 0}
+.library-data fieldset label>input{grid-row:1/3;width:16px;height:16px;margin:3px 0 0;appearance:none;-webkit-appearance:none;border:1px solid var(--line-control);border-radius:3px;background:var(--paper);cursor:pointer}
+.data-export-controls{display:grid;gap:10px;margin-top:4px}
+.data-export-controls select{width:min(100%,320px);min-height:44px;padding:9px 12px;border:1px solid var(--line-control);border-radius:var(--radius-control);color:inherit;background:var(--surface)}
+.data-pager{display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:var(--type-caption)}
+.data-pager button{min-height:44px;padding:8px 14px}
+.library-data textarea{display:block;box-sizing:border-box;width:100%;max-width:100%;padding:14px;margin:10px 0;font:var(--type-caption)/1.7 ui-monospace,monospace;resize:vertical;color:inherit;background:var(--surface);border:1px solid var(--line-control);border-radius:var(--radius-control)}
+.library-data [hidden]{display:none!important}
+.library-data .settings-status{white-space:pre-line}
+@media(max-width:600px){.data-export-controls select{width:100%}}
+
+.library-data fieldset label>input:checked{background-color:var(--accent);border-color:var(--accent);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m3 8 3 3 7-7' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E")}
+.library-data fieldset label>input:focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}

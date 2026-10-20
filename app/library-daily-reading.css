@@ -1,22 +1,30 @@
-.daily-summary{position:relative;margin:24px 0 20px;padding:20px 0;border-block:1px solid var(--line-hairline)}
-.daily-state{display:inline-block;color:var(--muted);font-size:12px;letter-spacing:var(--track-meta)}
-.daily-state[data-state=active]{color:var(--accent)}
-.daily-schedule{font:22px/1.5 var(--serif);margin:7px 0 2px;font-variant-numeric:tabular-nums}
-.daily-channel,.daily-binding,.daily-connection,.daily-expiry{font-size:13px;line-height:1.8;color:var(--muted);margin:4px 0;overflow-wrap:anywhere}
+/* GET-201 daily reading tab: one plain sentence first, then the editors, the
+   pause switch, the permission card and one connection-details disclosure.
+   The inbox cards below are the existing library page surface. */
+.daily-sentence{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 8px;margin:6px 0 18px;font:20px/1.8 var(--font-serif);color:var(--ink)}
+.daily-time-token{min-height:44px;padding:2px 14px;border:1px solid var(--line-control);border-radius:var(--action-radius);background:var(--paper);font:16px/1.6 var(--font-serif);font-variant-numeric:tabular-nums;color:var(--ink)}
+.daily-time-token:hover{border-color:var(--accent);color:var(--ink)}
+.daily-time-native{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.daily-inline-editor,.daily-editor-panel{display:grid;gap:10px;min-width:min(280px,72vw);padding:14px 16px;border:1px solid var(--line-hairline);border-radius:var(--radius-control);background:var(--surface-raised);box-shadow:var(--shadow-popover)}
+.daily-inline-editor[hidden],.daily-editor-panel[hidden]{display:none!important}
+.daily-time-text{width:9ch;min-height:44px;box-sizing:border-box}
+.daily-book-token{appearance:none;-webkit-appearance:none;max-width:min(22ch,100%);min-height:44px;padding:2px 26px 2px 10px;border:0;border-bottom:1px solid var(--line-control);border-radius:0;background-color:transparent;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5 6 8.5 10 4.5' fill='none' stroke='%23586553' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;font:16px/1.6 var(--font-serif);color:var(--ink)}
+.daily-summary{display:flex;align-items:center;gap:10px;margin:0 0 18px}
+.daily-state{display:inline-flex;align-items:center;gap:7px;padding:4px 12px;border:1px solid var(--line-hairline);border-radius:var(--action-radius);color:var(--muted);font-size:var(--type-caption);letter-spacing:var(--track-meta)}
+.daily-state[data-state=active]{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.daily-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.daily-actions button{min-height:44px;padding:11px 18px;font-size:var(--type-small)}
+.daily-connection-details{margin:2px 0 0;padding:12px 0 0;border-top:1px solid var(--line-hairline)}
+.daily-connection-details summary{cursor:pointer;display:flex;align-items:center;min-height:44px;font-size:var(--type-caption);color:var(--muted)}
+.daily-connection-details summary:hover{color:var(--ink)}
+.daily-binding,.daily-connection,.daily-expiry,.daily-channel,.daily-field-help{font-size:var(--type-caption);line-height:1.8;color:var(--muted);margin:6px 0;overflow-wrap:anywhere}
 .daily-binding{color:var(--ink)}
-.daily-form{display:grid;gap:10px;margin-top:25px;min-width:0}
-.daily-form .profile-input{width:100%;min-width:0;box-sizing:border-box}
-.daily-form input[type=time]{max-width:180px;font-variant-numeric:tabular-nums}
-.daily-form .profile-field-label{margin-top:8px}
-.daily-field-help{font-size:12px;line-height:1.85;color:var(--muted);margin:0}
-.daily-consent{display:grid;grid-template-columns:18px minmax(0,1fr);gap:11px;align-items:start;font-size:13px;line-height:1.9;margin:12px 0}
-.daily-consent input{width:17px;height:17px;margin:4px 0 0;accent-color:var(--accent)}
-.daily-actions{display:flex;flex-wrap:wrap;gap:10px}
-.daily-actions button{min-height:44px;padding:11px 16px;font-size:13px}
-.daily-form>.text-link{justify-self:start;min-height:44px;text-align:left;font-size:13px}
-.daily-form .settings-status{margin:2px 0 0}
+.daily-form{margin-top:22px;min-width:0}
+.daily-form .settings-row-control{max-width:none;justify-content:flex-start}
+.daily-form .settings-status{margin-top:16px}
+.daily-form>.text-link{justify-self:start;min-height:44px;text-align:left;font-size:var(--type-caption)}
 .daily-inbox{margin:28px 0 40px;min-width:0}
-.daily-inbox h2{font:19px/1.6 var(--serif);margin:0 0 14px;color:var(--ink)}
+.daily-inbox h2{font:20px/1.6 var(--font-serif);margin:0 0 14px;color:var(--ink)}
 .daily-card{padding:21px 0;border-top:1px solid var(--line-hairline);font-size:14px;line-height:1.9;overflow-wrap:anywhere}
 .daily-card-meta{display:flex;align-items:baseline;flex-wrap:wrap;gap:9px;font-size:12px;color:var(--muted);line-height:1.8}
 .daily-card-meta time{margin-left:auto;font-variant-numeric:tabular-nums}
@@ -25,5 +33,9 @@
 .daily-card-source{margin:0 0 7px;color:var(--muted);font-size:12px}
 .daily-card-quote{font:15px/1.9 var(--serif);white-space:pre-wrap;border-left:2px solid var(--line);padding-left:14px;margin:14px 0;color:var(--muted)}
 .daily-card a{display:inline-block;min-height:44px;line-height:44px;font-size:13px}
-@media(max-width:980px){.library-settings-dialog .settings-tabs{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}.library-settings-dialog .settings-tabs button{flex:0 0 auto;white-space:nowrap}.daily-inbox{margin:24px 0 30px}.daily-card{padding:18px 0}}
+@media(max-width:980px){.daily-sentence{font-size:16px}.daily-inbox{margin:24px 0 30px}.daily-card{padding:18px 0}}
 @media(prefers-reduced-motion:reduce){.daily-form *{scroll-behavior:auto}}
+
+.daily-inline-editor[popover],.daily-editor-panel[popover]{position:fixed;inset:0;margin:auto;width:min(360px,calc(100vw - 32px));max-width:calc(100vw - 32px);max-height:calc(100dvh - 48px);overflow:auto;z-index:10}
+.daily-inline-editor[popover]:not([data-popover-open]),.daily-editor-panel[popover]:not([data-popover-open]){display:none}
+.daily-time-text[aria-invalid=true]{border-color:var(--error,#a23838)}

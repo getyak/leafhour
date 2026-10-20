@@ -587,3 +587,274 @@ test('the complete reading invitation relabels existing heading, description and
   ui.dispose();const text=description.textContent;await requestUiRoute('ja');assert.equal(description.textContent,text);resolve({revision:1,preferences:snapshot({onboarding:'dismissed'})});await new Promise(setImmediate);assert.equal(calls,1);
  }finally{ui.dispose();await requestUiRoute('en');}
 });
+
+// ---- GET-201 meaningful reading autosave ----
+// Autosave fires only for explicit visible edits, coalesces a burst into one
+// full snapshot write, serializes a follow-up, cancels on owner change and
+// never retries a failure or conflict by itself. Retry stays explicit.
+function manualTimers(){let next=1;const pending=new Map();return{setTimeout(fn){const id=next++;pending.set(id,fn);return id;},clearTimeout(id){pending.delete(id);},run(){const batch=[...pending.values()];pending.clear();for(const fn of batch)fn();},count:()=>pending.size};}
+const tick=()=>new Promise(setImmediate);
+const autosaveFixture=({responder,timers=manualTimers(),session}={})=>{
+  const root=dom(),calls=[],saved=[];
+  const state=session||{user:{id:'account-a'},readingPreferences:{revision:2,updatedAt:'2026-10-18T00:00:00.000Z',preferences:snapshot({font:20})}};
+  const ui=mountReadingPreferencesForm({root,api:async(url,body)=>{calls.push({url,body});return responder(url,body);},getSession:()=>state,onSaved:value=>{saved.push(value);state.readingPreferences=value;},timers});
+  return {root,timers,calls,saved,state,ui,find:id=>find(root,id),edit:(id,value,type='change')=>{const field=find(root,id);field.value=value;field.dispatchEvent(new Event(type));}};
+};
+
+test('autosave coalesces one deliberate burst into a single full snapshot write',async()=>{
+  const f=autosaveFixture({responder:async(url,body)=>({revision:body.baseRevision+1,updatedAt:'2026-10-18T01:00:00.000Z',preferences:body.preferences})});
+  f.edit('habits-view','zh');f.edit('habits-font','25','input');
+  assert.equal(f.calls.length,0,'nothing writes before the deliberate debounce');
+  assert.equal(f.timers.count(),1,'a burst of edits coalesces into one pending write');
+  f.timers.run();await tick();
+  assert.equal(f.calls.length,1);assert.equal(f.calls[0].url,'/api/account/reading-preferences');assert.equal(f.calls[0].body.baseRevision,2);
+  assert.equal(f.calls[0].body.preferences.mode,'zh');assert.equal(f.calls[0].body.preferences.font,25);
+  assert.equal(f.calls[0].body.preferences.onboarding,'completed');
+  validateGlobalPreferences(f.calls[0].body.preferences);
+  assert.equal(f.saved.length,1);assert.match(f.find('habits-status').textContent,/saved/i);
+  f.timers.run();await tick();assert.equal(f.calls.length,1,'a finished burst is never repeated');
+  // programmatic updates and hydration never schedule a write
+  f.ui.update();assert.equal(f.timers.count(),0);f.timers.run();await tick();assert.equal(f.calls.length,1);
+});
+
+test('a deliberate edit during a pending save queues exactly one serialized follow-up',async()=>{
+  let release;const f=autosaveFixture({responder:async(url,body)=>{await new Promise(resolve=>{release=resolve;});return {revision:body.baseRevision+1,updatedAt:'2026-10-18T01:00:00.000Z',preferences:body.preferences};}});
+  f.edit('habits-font','25','input');f.timers.run();await tick();
+  assert.equal(f.calls.length,1,'the first write is in flight');
+  f.edit('habits-view','zh');f.edit('habits-theme','night');
+  assert.equal(f.calls.length,1,'edits never start a second parallel write');
+  release();await tick();await tick();
+  assert.equal(f.calls.length,2,'one follow-up write carries the queued edits');
+  assert.equal(f.calls[1].body.baseRevision,3,'the follow-up uses the revision the first write returned');
+  assert.equal(f.calls[1].body.preferences.mode,'zh');assert.equal(f.calls[1].body.preferences.theme,'night');assert.equal(f.calls[1].body.preferences.font,25);
+  release();await tick();await tick();
+  assert.equal(f.calls.length,2,'the queue drains to exactly one follow-up');
+});
+
+test('an owner change before dispatch cancels the pending autosave and a guest edit never writes',async()=>{
+  const f=autosaveFixture({responder:async(url,body)=>({revision:body.baseRevision+1,preferences:body.preferences})});
+  f.edit('habits-font','25','input');
+  assert.equal(f.timers.count(),1);
+  f.state.user={id:'account-b'};f.state.readingPreferences=null;f.ui.update();
+  f.timers.run();await tick();
+  assert.equal(f.calls.length,0,'the pending dispatch is cancelled before it can leave');
+  assert.equal(f.find('habits-font').value,String(globalPreferencesDefaults.font),'the next account starts from its own defaults');
+  f.state.user=null;f.ui.update();
+  f.edit('habits-font','27','input');f.timers.run();await tick();
+  assert.equal(f.calls.length,0,'guests never write');
+});
+
+test('an owner change during a pending autosave drops its result and keeps the next account clean',async()=>{
+  let release;const f=autosaveFixture({responder:async(url,body)=>{await new Promise(resolve=>{release=resolve;});return {revision:9,updatedAt:'2026-10-18T02:00:00.000Z',preferences:snapshot({font:27})};}});
+  f.edit('habits-font','25','input');f.timers.run();await tick();
+  assert.equal(f.calls.length,1);
+  f.state.user={id:'account-b'};f.state.readingPreferences=null;f.ui.update();
+  release();await tick();
+  assert.equal(f.saved.length,0,'a late autosave never adopts into the next account');
+  assert.equal(f.find('habits-status').textContent,'');
+  assert.equal(f.find('habits-font').value,String(globalPreferencesDefaults.font));
+});
+
+test('a failed autosave keeps the draft, stops retrying and only the explicit action writes again',async()=>{
+  let attempt=0;const f=autosaveFixture({responder:async(url,body)=>{attempt++;if(attempt===1)throw Object.assign(Error('服务暂时无法连接，请稍后重试'),{status:503});return {revision:body.baseRevision+1,updatedAt:'2026-10-18T01:00:00.000Z',preferences:body.preferences};}});
+  f.edit('habits-view','zh');f.timers.run();await tick();
+  assert.equal(f.calls.length,1);
+  assert.match(f.find('habits-status').textContent,/not saved|未能/i);
+  assert.equal(f.find('habits-status').getAttribute('role'),'alert');
+  assert.equal(f.find('habits-view').value,'zh','the draft survives the failure');
+  f.timers.run();await tick();assert.equal(f.calls.length,1,'a failure never retries on its own');
+  const save=f.find('habits-save');assert.equal(save.hidden,false,'the failure offers one explicit retry');
+  save.dispatchEvent(new Event('click'));await tick();
+  assert.equal(f.calls.length,2,'the retry is exactly one explicit write');
+  assert.equal(f.calls[1].body.baseRevision,2);assert.equal(f.calls[1].body.preferences.mode,'zh');
+  assert.equal(save.hidden,true);assert.match(f.find('habits-status').textContent,/saved/i);
+});
+
+test('a conflicting autosave never overwrites the draft and recovery stays read-only',async()=>{
+  let attempt=0;const f=autosaveFixture({responder:async(url,body)=>{
+    if(body===undefined){attempt++;return {revision:7,updatedAt:'2026-10-18T02:00:00.000Z',preferences:snapshot({mode:'en',theme:'night'})};}
+    throw Object.assign(Error('阅读习惯已在另一处更新，请刷新后重新保存'),{status:409});
+  }});
+  f.edit('habits-view','zh');f.timers.run();await tick();
+  assert.equal(f.calls.length,1);
+  assert.match(f.find('habits-status').textContent,/updated elsewhere/i);
+  assert.equal(f.find('habits-recover').hidden,false);
+  assert.equal(f.find('habits-view').value,'zh','a conflict never overwrites what the user chose');
+  f.timers.run();await tick();assert.equal(f.calls.length,1,'a conflict is never retried automatically');
+  f.find('habits-recover').dispatchEvent(new Event('click'));await tick();
+  assert.equal(f.calls.length,2,'loading the latest version is one read-only request');
+  assert.equal(f.calls[1].body,undefined);
+  assert.equal(f.find('habits-view').value,'zh','explicit edits survive the read-only recovery');
+  assert.equal(f.find('habits-theme').value,'night','untouched fields follow the latest server snapshot');
+});
+
+test('a locale refresh never saves, resets or focuses while an autosave is pending',async()=>{
+  const {requestUiRoute,t}=await import('../app/ui-locale.mjs');await requestUiRoute('en');
+  const f=autosaveFixture({responder:async(url,body)=>({revision:body.baseRevision+1,updatedAt:'2026-10-18T01:00:00.000Z',preferences:body.preferences})});
+  try{
+    f.edit('habits-view','zh');f.edit('habits-font','27','input');
+    await requestUiRoute('ja');
+    assert.equal(f.calls.length,0,'a label-only refresh writes nothing');
+    assert.equal(f.timers.count(),1,'the pending autosave is untouched');
+    assert.equal(f.find('habits-view').value,'zh');assert.equal(f.find('habits-font').value,'27');
+    assert.equal(f.find('habits-font').value,'27');
+    f.timers.run();await tick();
+    assert.equal(f.calls.length,1);assert.equal(f.calls[0].body.preferences.mode,'zh');assert.equal(f.calls[0].body.preferences.font,27);
+  }finally{f.ui.dispose();await requestUiRoute('en');}
+});
+
+test('the reading form keeps its grouped rows, real size preview and guest explanation',()=>{
+  const f=autosaveFixture({responder:async(url,body)=>({revision:body.baseRevision+1,preferences:body.preferences})});
+  const form=f.find('habits-status').parentElement;
+  const groups=form.children.filter(node=>String(node.className).includes('settings-group'));
+  assert.ok(groups.length>=3,'view, typography and page stay separate groups');
+  const preview=f.find('habits-preview');
+  assert.ok(preview,'the typography group shows a real preview line');
+  assert.match(preview.textContent,/20/);
+  assert.equal(f.find('habits-font-value').textContent,'20','the slider keeps a real numeric output');
+  f.edit('habits-font','27','input');
+  assert.match(preview.textContent,/27/,'the preview follows the slider output');
+  assert.equal(f.find('habits-font-value').textContent,'27','the slider keeps a real numeric output');
+  f.state.user=null;f.ui.update();
+  const hint=f.find('habits-guest');
+  assert.equal(hint.hidden,false,'guests are told why the controls are read-only');
+  f.state.user={id:'account-a'};f.ui.update();
+  assert.equal(hint.hidden,true);
+});
+
+// ---- component review 01 repairs: dispatch ownership, real choice chrome,
+// same-field late edits and the explicit retry pause ----
+class RichElement extends EventTarget{
+  constructor(tag,id){super();this.tagName=String(tag).toUpperCase();this.id=id||'';this.children=[];this.parentElement=null;this.attributes={};this.dataset={};this.value='';this.textContent='';this.className='';this.hidden=false;this.disabled=false;this.checked=false;this.type='';this.classList=new RichClassList(this);}
+  get options(){return this.children;}
+  append(...nodes){for(const node of nodes){if(node.parentElement)node.parentElement.children=node.parentElement.children.filter(child=>child!==node);node.parentElement=this;this.children.push(node);}}
+  appendChild(node){this.append(node);return node;}
+  replaceChildren(...nodes){this.children=[];this.append(...nodes);}
+  after(...nodes){const siblings=this.parentElement?this.parentElement.children:[];const at=siblings.indexOf(this);for(const node of nodes){node.parentElement=this.parentElement;siblings.splice(at+1,0,node);}}
+  remove(){if(this.parentElement)this.parentElement.children=this.parentElement.children.filter(child=>child!==this);this.parentElement=null;}
+  setAttribute(key,value){this.attributes[key]=String(value);}getAttribute(key){return this.attributes[key];}hasAttribute(key){return key in this.attributes;}removeAttribute(key){delete this.attributes[key];}
+  focus(){globalThis.document.activeElement=this;}
+  contains(node){return node===this||this.children.some(child=>child.contains&&child.contains(node));}
+  getClientRects(){return [1];}
+  querySelector(selector){return this.querySelectorAll(selector)[0]||null;}
+  querySelectorAll(selector){const matches=node=>selector.startsWith('.')?String(node.className).split(' ').includes(selector.slice(1)):selector.startsWith('#')?node.id===selector.slice(1):node.tagName===selector.toUpperCase();const out=[];const walk=node=>{for(const child of node.children){if(matches(child))out.push(child);walk(child);}};walk(this);return out;}
+}
+class RichClassList{
+  constructor(node){this.node=node;this.set=new Set();}
+  add(...names){for(const name of names)this.set.add(name);this.sync();}remove(...names){for(const name of names)this.set.delete(name);this.sync();}
+  toggle(name,force){if(force===undefined)force=!this.set.has(name);if(force)this.set.add(name);else this.set.delete(name);this.sync();return force;}
+  contains(name){return this.set.has(name);}
+  sync(){this.node.className=[...this.set].join(' ');}
+}
+const richDom=()=>{
+  const document={createElement:tag=>new RichElement(tag),addEventListener(){},dispatchEvent(){},activeElement:null,querySelector(selector){const all=[document.body,...document.body.querySelectorAll('*')];return selector.startsWith('label[for=')?all.find(node=>node.tagName==='LABEL'&&node.attributes.for===selector.slice(10,-2))||null:all.find(node=>selector.startsWith('#')&&node.id===selector.slice(1))||null;},querySelectorAll(selector){return document.body.querySelectorAll(selector);}};
+  document.body=new RichElement('body');
+  globalThis.document=document;
+  return new RichElement('root');
+};
+const richFixture=({responder,session}={})=>{
+  const root=richDom(),calls=[],saved=[];
+  const state=session||{user:{id:'account-a'},readingPreferences:{revision:2,updatedAt:'2026-10-18T00:00:00.000Z',preferences:snapshot({font:20})}};
+  const timers=manualTimers();
+  const ui=mountReadingPreferencesForm({root,api:async(url,body)=>{calls.push({url,body});return responder(url,body);},getSession:()=>state,onSaved:value=>{saved.push(value);state.readingPreferences=value;},timers});
+  const find=id=>root.querySelector('#'+id);
+  return {root,timers,calls,saved,state,ui,find,chips:()=>root.querySelectorAll('.choice-chip'),edit:(id,value,type='change')=>{const field=find(id);field.value=value;field.dispatchEvent(new Event(type));}};
+};
+
+test('the pending dispatch re-checks the live session owner before any write leaves',async()=>{
+  const f=richFixture({responder:async(url,body)=>({revision:body.baseRevision+1,preferences:body.preferences})});
+  assert.ok(f.chips().length>=3,'the real choice enhancement is mounted, not the native fallback');
+  f.edit('habits-font','25','input');
+  assert.equal(f.timers.count(),1);
+  // The host session already serves account B (same CAS revision); ui.update
+  // has not run, so the timer itself must refuse A's draft.
+  f.state.user={id:'account-b'};
+  f.state.readingPreferences={revision:2,preferences:snapshot({font:19})};
+  f.timers.run();await tick();
+  assert.equal(f.calls.length,0,'a queued draft from A is never sent while B owns the session');
+  assert.equal(f.find('habits-font').value,'19','the component re-adopts the live account instead of sending');
+});
+
+test('the explicit recovery read also re-checks ownership before it reads',async()=>{
+  let reads=0;const f=richFixture({responder:async(url,body)=>{
+    if(body===undefined){reads++;return {revision:7,preferences:snapshot({mode:'en'})};}
+    throw Object.assign(Error('conflict'),{status:409});
+  }});
+  f.edit('habits-font','25','input');f.timers.run();await tick();
+  assert.equal(f.find('habits-recover').hidden,false);
+  f.state.user={id:'account-b'};f.state.readingPreferences={revision:7,preferences:snapshot({font:19})};
+  f.find('habits-recover').dispatchEvent(new Event('click'));await tick();
+  assert.equal(reads,0,'a stale owner never triggers the recovery read');
+  assert.equal(f.find('habits-font').value,'19');
+});
+
+test('the real choice chrome follows the native disabled state through save, failure, guest and owner change',async()=>{
+  let mode='ok';const f=richFixture({responder:async(url,body)=>{
+    if(mode==='busy'){await new Promise(()=>{});}
+    if(mode==='fail')throw Object.assign(Error('down'),{status:503});
+    return {revision:body.baseRevision+1,preferences:body.preferences};
+  }});
+  const chips=f.chips();
+  assert.ok(chips.length>=3,'mountChoiceControl produced real chips');
+  assert.equal(chips.every(chip=>chip.disabled===false),true);
+  f.edit('habits-font','25','input');f.timers.run();await tick();
+  assert.equal(f.find('habits-view').disabled,false);
+  assert.equal(chips.every(chip=>chip.disabled===false),true,'the chips unlock together with the native selects after a save');
+  mode='fail';f.edit('habits-theme','night');f.find('habits-save').dispatchEvent(new Event('click'));await tick();
+  assert.equal(chips.every(chip=>chip.disabled===false),true,'a failed save leaves the choice chrome usable');
+  f.state.user=null;f.ui.update();
+  assert.equal(f.find('habits-view').disabled,true);
+  assert.equal(chips.every(chip=>chip.disabled===true),true,'guests see one consistent read-only state');
+  f.state.user={id:'account-b'};f.state.readingPreferences=null;f.ui.update();
+  assert.equal(f.find('habits-view').disabled,false);
+  assert.equal(chips.every(chip=>chip.disabled===false),true,'the next account starts usable');
+});
+
+test('a later edit to the same field survives the in-flight save and queues one follow-up',async()=>{
+  let release;const f=richFixture({responder:async(url,body)=>{await new Promise(resolve=>{release=resolve;});return {revision:body.baseRevision+1,updatedAt:'2026-10-18T01:00:00.000Z',preferences:body.preferences};}});
+  assert.equal(f.find('habits-font').disabled,false,'the slider stays operable while a save is pending');
+  f.edit('habits-font','25','input');f.timers.run();await tick();
+  assert.equal(f.calls.length,1);assert.equal(f.find('habits-font').disabled,false);
+  f.edit('habits-font','27','input');
+  release();await tick();await tick();
+  assert.equal(f.calls.length,2,'the same-field edit becomes exactly one serialized follow-up');
+  assert.equal(f.calls[1].body.preferences.font,27);assert.equal(f.find('habits-font').value,'27');
+  release();await tick();await tick();
+  assert.equal(f.calls.length,2);
+  // reverting to an older value is a real edit, not a stale echo
+  f.edit('habits-font','25','input');f.timers.run();await tick();
+  assert.equal(f.calls.length,3);assert.equal(f.calls[2].body.preferences.font,25);
+});
+
+test('after a failure only an explicit retry resumes writes and the draft survives',async()=>{
+  let mode='fail';const f=richFixture({responder:async(url,body)=>{
+    if(mode==='fail')throw Object.assign(Error('down'),{status:503});
+    return {revision:body.baseRevision+1,updatedAt:'2026-10-18T01:00:00.000Z',preferences:body.preferences};
+  }});
+  f.edit('habits-font','25','input');f.timers.run();await tick();
+  assert.equal(f.calls.length,1);
+  f.edit('habits-theme','night');f.timers.run();await tick();
+  assert.equal(f.calls.length,1,'a plain edit after a failure never restarts the queue');
+  assert.equal(f.find('habits-theme').value,'night');
+  mode='ok';f.find('habits-save').dispatchEvent(new Event('click'));await tick();
+  assert.equal(f.calls.length,2,'only the explicit retry writes again');
+  assert.equal(f.calls[1].body.preferences.theme,'night');assert.equal(f.calls[1].body.preferences.font,25);
+});
+
+test('after a conflict edits stay drafts and recovery never silently submits them',async()=>{
+  let attempt=0;const f=richFixture({responder:async(url,body)=>{
+    attempt++;
+    if(body===undefined)return {revision:7,updatedAt:'2026-10-18T02:00:00.000Z',preferences:snapshot({mode:'en',theme:'night'})};
+    throw Object.assign(Error('conflict'),{status:409});
+  }});
+  f.edit('habits-view','zh');f.timers.run();await tick();
+  assert.equal(f.calls.length,1);assert.equal(f.find('habits-recover').hidden,false);
+  f.edit('habits-theme','leaf');f.timers.run();await tick();
+  assert.equal(f.calls.length,1,'an edit after a conflict stays a draft');
+  f.find('habits-recover').dispatchEvent(new Event('click'));await tick();
+  assert.equal(f.calls.length,2,'the recovery is one read-only request');
+  assert.equal(f.calls[1].body,undefined);
+  assert.equal(f.find('habits-view').value,'zh');assert.equal(f.find('habits-theme').value,'leaf','the draft survives recovery');
+  f.timers.run();await tick();
+  assert.equal(f.calls.length,2,'editing after recovery never silently submits the conflict draft');
+});

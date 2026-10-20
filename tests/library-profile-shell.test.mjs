@@ -42,10 +42,12 @@ test('a failed logout restores its retry target without taking focus from anothe
   mountLibraryShell({getSession:f.getSession,openAuth:f.openAuth,onLogout:()=>new Promise((_,no)=>{reject=no;}),onHistory(){},onOpenChat(){},api:async()=>({})});
   f.get('library-account').dispatchEvent(new Event('click'));
   const all=root=>[root,...root.children.flatMap(all)],logout=all(f.get('library-settings-dialog')).find(node=>node.textContent==='Sign out');
-  logout.focus();logout.dispatchEvent(new Event('click'));f.doc.activeElement=f.doc.body;
+  logout.focus();logout.dispatchEvent(new Event('click'));
+  const confirmAction=f.get('settings-confirm-action');assert.ok(confirmAction,'signing out asks for one clear confirmation first');assert.ok(!logout.disabled,'nothing runs before the confirmation');
+  confirmAction.dispatchEvent(new Event('click'));f.doc.activeElement=f.doc.body;
   reject(Error('暂未退出'));await new Promise(setImmediate);
   assert.equal(logout.disabled,false);assert.equal(f.doc.activeElement===logout,true);
-  logout.dispatchEvent(new Event('click'));const name=f.get('profile-display-name');name.focus();
+  logout.dispatchEvent(new Event('click'));f.get('settings-confirm-action').dispatchEvent(new Event('click'));const name=f.get('profile-display-name');name.focus();
   reject(Error('仍未退出'));await new Promise(setImmediate);
   assert.equal(f.doc.activeElement===name,true);
 });
@@ -88,9 +90,74 @@ test('settings privacy link follows the authored locale at creation and in place
 for(const outcome of ['failure','success'])test('retained logout '+outcome+' relabels in place without replaying logout or account updates',async()=>{
  const {requestUiRoute,t}=await import('../app/ui-locale.mjs');await requestUiRoute('en');const f=fixture({id:'logout-locale',email:'literal@example.invalid'}),{mountLibraryShell}=await import('../app/library-shell.mjs');let finish,logouts=0,reads=0,calls=0;
  const shell=mountLibraryShell({getSession(){reads++;return f.getSession();},openAuth:f.openAuth,onLogout:()=>{logouts++;return new Promise((resolve,reject)=>{finish=()=>{if(outcome==='success'){f.switch(null);resolve();}else reject(Error('opaque remote failure'));};});},onHistory(){},onOpenChat(){},api:async()=>{calls++;return {};}});shell.openSettings('account');await new Promise(setImmediate);
- const all=root=>[root,...root.children.flatMap(all)],logout=all(f.get('library-settings-dialog')).find(n=>n.textContent===t('shell.account.logout')),status=all(f.get('library-settings-dialog')).find(n=>n.className==='settings-status');logout.focus();logout.dispatchEvent(new Event('click'));
+ const all=root=>[root,...root.children.flatMap(all)],logout=all(f.get('library-settings-dialog')).find(n=>n.textContent===t('shell.account.logout')),status=all(f.get('library-settings-dialog')).find(n=>n.className==='settings-status');logout.focus();logout.dispatchEvent(new Event('click'));f.get('settings-confirm-action').dispatchEvent(new Event('click'));
  try{const pending={reads,calls};await requestUiRoute('ja');assert.equal(logout.disabled,true);assert.equal(logout.textContent,t('shell.account.loggingOut'));assert.equal(f.doc.activeElement,logout);assert.deepEqual({reads,calls},pending);assert.equal(logouts,1);finish();await new Promise(setImmediate);assert.equal(status.textContent,t(outcome==='success'?'shell.account.loggedOut':'ui.generic.error'));
   const before={reads,calls},focus=f.doc.activeElement;for(const code of ['zh-Hant','zh-Hans','en','ja']){await requestUiRoute(code);assert.equal(status.textContent,t(outcome==='success'?'shell.account.loggedOut':'ui.generic.error'));assert.equal(all(f.get('library-settings-dialog')).includes(status),true);assert.equal(f.doc.activeElement,focus);assert.equal(logout.disabled,false);assert.equal(logouts,1);assert.deepEqual({reads,calls},before);}
   f.switch({id:'next-owner'});shell.update();assert.equal(status.textContent,'');await requestUiRoute('en');assert.equal(status.textContent,'');
  }finally{await requestUiRoute('en');}
+});
+
+// ---- GET-201 settings shell ----
+test('the settings header states the selected tab in one contextual line',async()=>{
+ const {t}=await import('../app/ui-locale.mjs');const f=fixture({id:'a',email:'reader@example.invalid'}),{mountLibraryShell}=await import('../app/library-shell.mjs');
+ const shell=mountLibraryShell({getSession:f.getSession,openAuth:f.openAuth,onLogout:async()=>{},onHistory(){},onOpenChat(){},api:async()=>({})});
+ shell.openSettings('data');
+ const description=f.get('settings-description');
+ assert.ok(description,'the header carries exactly one description line');assert.equal(description.textContent,t('shell.settings.tabDescription.data'));
+ shell.openSettings('daily-reading');assert.equal(description.textContent,t('shell.settings.tabDescription.daily-reading'));
+ assert.equal(f.get('settings-panel-data').hidden,true);
+ assert.equal(f.get('settings-panel-daily-reading').hidden,false);
+});
+
+test('appearance keeps native theme radios as value owners and one labelled language group',async()=>{
+ const {getSiteAppearance}=await import('../app/site-appearance.mjs');const f=fixture({id:'a',email:'reader@example.invalid'}),{mountLibraryShell}=await import('../app/library-shell.mjs');
+ const shell=mountLibraryShell({getSession:f.getSession,openAuth:f.openAuth,onLogout:async()=>{},onHistory(){},onOpenChat(){},api:async()=>({})});shell.openSettings('appearance');
+ const all=root=>[root,...root.children.flatMap(all)],dialog=f.get('library-settings-dialog');
+ const radios=all(dialog).filter(n=>n.tagName==='input'&&n.type==='radio'&&n.name==='site-appearance');
+ assert.deepEqual(radios.map(r=>r.value),['system','paper','night']);
+ assert.equal(all(dialog).filter(n=>n.tagName==='input'&&n.type==='radio'&&!String(n.name||'').startsWith('site-appearance')).length>=4,true,'the language choices keep their own radio group');
+ assert.equal(radios.some(r=>r.checked),true,'the current device preference is visible');
+ const cards=all(dialog).filter(n=>String(n.className).split(' ').includes('appearance-card'));
+ assert.equal(cards.length,3);
+ assert.equal(cards.every(card=>all(card).some(n=>String(n.className).includes('theme-preview'))),true,'each choice shows a real page preview');
+ assert.equal(all(dialog).filter(n=>String(n.className).includes('settings-group')).length>=2,true,'theme and language are separate groups');
+ assert.equal(all(dialog).some(n=>String(n.className).includes('ui-locale-choices')),true,'the shared language group mounts once');
+ const night=radios.find(r=>r.value==='night');night.checked=true;night.dispatchEvent(new Event('change'));
+ assert.equal(getSiteAppearance(),'night','one native change event moves the device preference');
+ // preview headings are readable copy: they relabel in place on a language commit
+ const {requestUiRoute,t}=await import('../app/ui-locale.mjs');
+ await requestUiRoute('en');
+ const headings=()=>all(dialog).filter(n=>String(n.className).split(' ').includes('preview-heading'));
+ assert.equal(headings().length,2,'single-tone previews carry a heading; the system split stays decorative');
+ for(const node of headings())assert.equal(node.textContent,t('shell.appearance.'+(node.textContent===t('shell.appearance.paper')?'paper':'night')));
+ const before=headings().map(node=>node.textContent);
+ await requestUiRoute('ja');
+ const after=headings().map(node=>node.textContent);
+ assert.notDeepEqual(after,before,'preview headings follow the language commit');
+ await requestUiRoute('en');
+});
+
+test('the logout confirmation is bound to the account it was opened for',async()=>{
+ const f=fixture({id:'account-a',email:'a@example.invalid'}),{mountLibraryShell}=await import('../app/library-shell.mjs');let logouts=0;
+ const shell=mountLibraryShell({getSession:f.getSession,openAuth:f.openAuth,onLogout:async()=>{logouts++;},onHistory(){},onOpenChat(){},api:async()=>({})});
+ shell.openSettings('account');
+ const all=root=>[root,...root.children.flatMap(all)],logout=all(f.get('library-settings-dialog')).find(node=>node.textContent==='Sign out');
+ logout.dispatchEvent(new Event('click'));
+ f.switch({id:'account-b'}); // session changed while the confirmation waits
+ f.get('settings-confirm-action').dispatchEvent(new Event('click'));
+ assert.equal(logouts,0,'an old confirmation never signs the new account out');
+ logout.dispatchEvent(new Event('click'));
+ f.get('settings-confirm-action').dispatchEvent(new Event('click'));
+ assert.equal(logouts,1,'the matching confirmation still signs out exactly once');
+});
+
+
+for(const change of ['ABA','clear','parent-close'])test('logout confirmation is withdrawn after '+change,async()=>{
+ const {requestUiRoute,t}=await import('../app/ui-locale.mjs');await requestUiRoute('en');const f=fixture({id:'A'}),{mountLibraryShell}=await import('../app/library-shell.mjs');let logouts=0;
+ const shell=mountLibraryShell({getSession:f.getSession,openAuth:f.openAuth,onLogout:async()=>logouts++,onHistory(){},onOpenChat(){},api:async()=>({})});shell.openSettings('account');
+ const all=root=>[root,...root.children.flatMap(all)],logout=all(f.get('library-settings-dialog')).find(n=>n.textContent===t('shell.account.logout'));logout.dispatchEvent(new Event('click'));
+ const action=f.get('settings-confirm-action');
+ if(change==='ABA'){f.switch({id:'B'});shell.update();f.switch({id:'A'});shell.update();}
+ if(change==='clear')shell.clear();if(change==='parent-close')f.get('library-settings-dialog').close();
+ action.dispatchEvent(new Event('click'));assert.equal(logouts,0);
 });
