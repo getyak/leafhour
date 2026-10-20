@@ -126,3 +126,34 @@ test('actual runtime error wrappers preserve causes without evaluating message g
  await assert.rejects(f.generate(job()),error=>{assert.equal(error.errors[0].cause,primary);assert.equal(error.errors[1].cause,cleanup);return true});
  assert.equal(reads,0);assert.deepEqual(await readdir(f.runRoot),[]);
 });
+
+test('an empty provider failure retains only official terminal code and HTTP status',async t=>{
+ const {createReaderChatGenerator}=await import('../server/reader-chat-generator.mjs');const diagnostics=[],secret='PRIVATE-PROVIDER-AND-BOOK-TEXT';
+ const result={finalResponse:'',events:[{type:'turn/end',data:{reason:{kind:'error',error:{code:'QUOTA',status:402,message:secret,requestId:secret,extra:secret}}}}]};
+ const f=await fixture(t,result),generate=createReaderChatGenerator({env:{DEEPSEEK_API_KEY:secret},makeGenerator:()=>f.generate,logger:d=>diagnostics.push(d)});
+ await assert.rejects(generate(job()));
+ assert.equal(diagnostics[0].stage,'publish');
+ assert.deepEqual(diagnostics[0].terminal,{validation:'empty-response',kind:'error',code:'QUOTA',status:402});
+ assert.doesNotMatch(JSON.stringify(diagnostics),new RegExp(secret));
+ assert.deepEqual(await readdir(f.runRoot),[]);
+});
+
+test('unknown terminal codes, statuses and extra fields cannot become diagnostic text',async t=>{
+ const {createReaderChatGenerator}=await import('../server/reader-chat-generator.mjs');
+ for(const result of [
+  {finalResponse:'',events:[{type:'turn/end',data:{reason:{kind:'error',error:{code:'PRIVATE',status:'PRIVATE',message:'PRIVATE'}}}}]},
+  {finalResponse:'',events:[{type:'turn/end',data:{reason:{kind:'PRIVATE',error:{code:'QUOTA',status:402}}}}]},
+  {finalResponse:'',events:[]}
+ ]){
+  const diagnostics=[],f=await fixture(t,result),generate=createReaderChatGenerator({env:{DEEPSEEK_API_KEY:'fixture'},makeGenerator:()=>f.generate,logger:d=>diagnostics.push(d)});
+  await assert.rejects(generate(job()));assert.equal(diagnostics[0].terminal.validation,'empty-response');
+  assert.doesNotMatch(JSON.stringify(diagnostics),/PRIVATE/);
+  if(result.events[0]?.data.reason.kind==='error')assert.deepEqual(diagnostics[0].terminal,{validation:'empty-response',kind:'error',code:'UNKNOWN'});
+  else assert.deepEqual(diagnostics[0].terminal,{validation:'empty-response'});
+ }
+});
+
+test('a later completed marker cannot conceal the failed terminal that prevents publication',async t=>{
+ const f=await fixture(t,{...good,events:[good.events[0],{type:'turn/end',data:{reason:{kind:'error',error:{code:'AUTH',status:401,message:'PRIVATE'}}}},good.events[1]]});
+ await assert.rejects(f.generate(job()),error=>{assert.deepEqual(error.cause.readerTerminal,{validation:'incomplete-turn',kind:'error',code:'AUTH',status:401});return true});
+});
