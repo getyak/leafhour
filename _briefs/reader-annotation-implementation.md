@@ -20,6 +20,8 @@ Each owner/book has a private JSON annotation archive, separate from personal co
 
 The pure model uses `leafhour-reader-annotations` schemaVersion1. Its bounded limits are100 threads,20 messages per thread,12000UTF-16 units per message and1MiB per archive, including deletion tombstones. Exceeding capacity returns an error instead of trimming words. Exact retries are idempotent; conflicting identities fail. Restore merges words and preserves tombstones so an old backup cannot resurrect a deleted thread.
 
+Stored message source references are historical excerpt snapshots: preserve their words after a translation edit or removal, without claiming they still match the current text. Historical reads retain structural limits and passage ownership. New messages must still match the current source and successful tool registry. An unrelated thread remains usable after an old citation changes; a stale selected-text anchor cannot authorize new generation.
+
 Persist runtime claims separately from exported content, in an atomic per-book state wrapper. Never export controllers, run authority, leases, credentials or grants. Reuse the existing chat service's local locks/hosted CAS, owner request quota and global reservations; do not create a second locking or billing subsystem.
 
 ## Agent and permission boundary

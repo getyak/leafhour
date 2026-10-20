@@ -152,7 +152,51 @@ test('sourceRefs must be proven against the supplied book without URL or verific
   const refArchive=appendAnnotationMessage(createAnnotationThread(createAnnotationArchive('ann-book'),b,{id:'thread-1',quote:originalQuote()},{now:'2026-01-01T00:00:00.000Z'}),b,'thread-1',aiMessage({sourceRefs:[{passageId:'p1',layer:'literal',quote:'A literal translation.'}]}));
   const changed=book();
   changed.sections[0].paragraphs[0].translations.literal={text:'Rewritten translation.',status:'draft'};
-  status(()=>validateAnnotationArchive(refArchive,changed,{historical:true}),409);
+  status(()=>validateAnnotationArchive(refArchive,changed),409);
+  assert.deepEqual(validateAnnotationArchive(refArchive,changed,{historical:true}),refArchive);
+});
+
+for(const layer of ['literal','interpretive','original'])test(`historical ${layer} references survive edits without blocking unrelated archive work`,()=>{
+  const b=book(),quote=layer==='original'?'原文':b.sections[0].paragraphs[0].translations[layer].text;
+  const ref={passageId:'p1',layer,quote};
+  const archive=appendAnnotationMessage(started(),b,'thread-1',aiMessage({sourceRefs:[ref]}));
+  const before=JSON.stringify(archive),changed=book();
+  if(layer==='original')changed.sections[0].paragraphs[0].original='Changed author text';
+  else changed.sections[0].paragraphs[0].translations[layer]={text:'Edited words.',status:'reviewed'};
+  const p2={...originalQuote(),parts:[{passageId:'p2',layer:'original',start:0,end:6,text:'Second'}]};
+  const check=current=>{
+    assert.deepEqual(validateAnnotationArchive(archive,current,{historical:true}),archive);
+    status(()=>validateAnnotationArchive(archive,current),409);
+    const created=createAnnotationThread(archive,current,{id:'thread-unrelated',quote:p2});
+    const grown=appendAnnotationMessage(created,current,'thread-unrelated',userMessage());
+    assert.equal(grown.threads[1].messages[0].body,'我自己的话');
+    assert.deepEqual(grown.threads[0].messages,archive.threads[0].messages);
+    const removed=removeAnnotationThread(grown,current,'thread-1',{now:'2026-02-01'});
+    assert.equal(removed.threads[0].deletedAt,'2026-02-01');
+    assert.deepEqual(mergeAnnotationArchives(removed,archive,current),removed);
+    assert.deepEqual(mergeAnnotationArchives(createAnnotationArchive('ann-book'),archive,current).threads,archive.threads);
+    status(()=>appendAnnotationMessage(grown,current,'thread-unrelated',aiMessage({id:'new-ai',sourceRefs:[ref]})),409);
+    if(layer==='original')status(()=>appendAnnotationMessage(archive,current,'thread-1',userMessage()),409);
+  };
+  check(changed);
+  if(layer!=='original'){
+    delete changed.sections[0].paragraphs[0].translations[layer];
+    check(changed);
+  }
+  assert.equal(JSON.stringify(archive),before);
+});
+
+test('historical reference snapshots retain structural, passage, Unicode and field boundaries',()=>{
+  const archive=appendAnnotationMessage(started(),book(),'thread-1',aiMessage());
+  for(const [patch,want] of [
+    [{passageId:'unknown'},409],[{layer:'private'},400],[{quote:''},400],
+    [{quote:'x'.repeat(2001)},400],[{quote:'\ud83d'},400],
+    [{url:'https://example.test'},400],[{toolVerified:true},400]
+  ]){
+    const forged=structuredClone(archive);
+    Object.assign(forged.threads[0].messages[0].sourceRefs[0],patch);
+    status(()=>validateAnnotationArchive(forged,book(),{historical:true}),want);
+  }
 });
 
 test('deletion keeps the tombstone and old backups cannot resurrect the thread',()=>{

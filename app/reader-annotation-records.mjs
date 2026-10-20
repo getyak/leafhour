@@ -60,16 +60,18 @@ const equal=(a,b)=>{
 const bound=archive=>{if(new TextEncoder().encode(JSON.stringify(archive)).length>1048576)capacity('Annotation archive is too large.');return archive;};
 const byTime=(a,b)=>(Date.parse(a.createdAt)-Date.parse(b.createdAt))||(a.id<b.id?-1:a.id>b.id?1:0);
 
-function sourceRef(value,book){
+function sourceRef(value,book,historical){
  shape(value,['passageId','layer','quote']);
  if(!recordId(value.passageId)||!['original','literal','interpretive'].includes(value.layer)||!text(value.quote,2000))malformed();
  const passage=Array.isArray(book?.sections)?book.sections.flatMap(section=>section.paragraphs).find(row=>row.id===value.passageId):undefined;
  const source=value.layer==='original'?passage?.original:passage?.translations?.[value.layer]?.text;
- if(typeof source!=='string'||!source.includes(value.quote))conflict('Annotation source reference cannot be proven against the supplied book.');
+ // Stored excerpts are historical data, not a claim of current source verification.
+ // Keep their passage ownership/shape even after edits; new messages remain strict.
+ if(!passage||!historical&&(typeof source!=='string'||!source.includes(value.quote)))conflict('Annotation source reference cannot be proven against the supplied book.');
  return {passageId:value.passageId,layer:value.layer,quote:value.quote};
 }
 
-function message(value,book){
+function message(value,book,historical=false){
  const optional=[...(data(value,'provenance')!==undefined?['provenance']:[]),...(data(value,'sourceRefs')!==undefined?['sourceRefs']:[])];
  shape(value,['id','origin','body','createdAt',...optional]);
  if(!recordId(value.id)||!['ai','user'].includes(value.origin)||!text(value.body,12000)||!date(value.createdAt))malformed();
@@ -80,7 +82,7 @@ function message(value,book){
   if(!['site-agent','external-agent'].includes(provenance.source)||!text(provenance.label,200))malformed();
  }else if(provenance!==undefined)fail('User annotation message cannot carry provenance.');
  let sourceRefs;
- if(data(value,'sourceRefs')!==undefined){const refs=data(value,'sourceRefs');list(refs,20,()=>malformed());sourceRefs=refs.map(ref=>sourceRef(ref,book));}
+ if(data(value,'sourceRefs')!==undefined){const refs=data(value,'sourceRefs');list(refs,20,()=>malformed());sourceRefs=refs.map(ref=>sourceRef(ref,book,historical));}
  return {id:value.id,origin:value.origin,body:value.body,createdAt:value.createdAt,...(provenance!==undefined?{provenance:{source:provenance.source,label:provenance.label}}:{}),...(sourceRefs!==undefined?{sourceRefs}:{})};
 }
 
@@ -91,7 +93,7 @@ function thread(value,book,historical){
  // Stored quotes stay typed snapshots: current validation for live data, historical only on request.
  const quote=historical?validateHistoricalReadingChatQuote(value.quote,book):validateCurrentReadingChatQuote(value.quote,book);
  list(value.messages,20,()=>capacity('Annotation thread holds too many messages.'));
- const messages=value.messages.map(row=>message(row,book)),seen=new Set();
+ const messages=value.messages.map(row=>message(row,book,historical)),seen=new Set();
  for(const row of messages){if(seen.has(row.id))fail('Annotation message IDs must be unique.');seen.add(row.id);}
  return {id:value.id,quote,createdAt:value.createdAt,updatedAt:value.updatedAt,messages,...(data(value,'highlightId')!==undefined?{highlightId:value.highlightId}:{}),...(data(value,'deletedAt')!==undefined?{deletedAt:value.deletedAt}:{})};
 }
