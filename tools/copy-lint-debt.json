@@ -1,0 +1,3141 @@
+{
+  "schemaVersion": 1,
+  "frozenCommit": "43187d0ecaa63aa6575700677744c7cf4b3d099e",
+  "binding": "frozen-source",
+  "kind": "existing-debt",
+  "policy": "Frozen pre-rewrite wording debt found by GET-202 foundation batch A against the accepted GET-201 source. Every entry binds one item, locale, rule and the exact value SHA256 that existed at the frozen revision, and stays explicitly unreviewed until individually reviewed. This is NOT a justified exception (see tools/copy-lint-allowances.json). Maintenance is manual: prune an entry only after its wording is reviewed and changed; never re-record new wording here, the frozen-revision binding rejects it. There is deliberately no regeneration command.",
+  "entries": [
+    {
+      "itemId": "audio.receiptSetup",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "967d3f11f0a8550048bbc0f502cc0ec51d5dc8189916019d55036947202e00a9",
+      "match": "receipt",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "audio.unavailable",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "fe3a93b85380cb0b6b81dda5a82e74bf9e0c2341c34f98c7f7d3417694e52c1a",
+      "match": "instance",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "auth.code.expiredHelp",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "720f033ea7bfa19a13022c2430c45ce21a7e8090ec35d1f58d197f572cf89a7b",
+      "match": "Request",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "auth.error.codeInvalid",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "9cf5898391592a109ffcc0d9eb33e6d0b497f69fe8cb3d0d15ed32ec1962e7d1",
+      "match": "Request",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "auth.error.sessionExpired",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "b529fce2bfae76bd25659b950276acf773c7b239264fde9c8489a5b320e5efe9",
+      "match": "session",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "bookActions.generatingNote",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "e0a3717392c739d42b8ddfd9f678e0f49dbf9613efbe729b0cc77b9285b9e855",
+      "match": "request",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "bookActions.scope",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "91b0181f967a5e4e0f04a0416f3c47bdc8059ed59bb0c9eb85d4c3652089c739",
+      "match": "request",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "bookUpload.review",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "88fdab8199a5bdb50f3748370e0ed668f514b9e295b29bcefc0468faf342e758",
+      "match": "request",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "chat.hint.book",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "5356bf8724af33539f733765d9fe1625be7570a77b59192f1072015ddc425343",
+      "match": "request",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "chat.quote.busy",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "ebdea3df2fc5be5f6d8e5c304e6cca33db0d7ef8521621d0c8f24e5eaef4bb77",
+      "match": "request",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "chat.quote.receiptMismatch",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "7c8fbf4a53492eff46bde63922c8e5efd0a4622ad8714391352e444e63a158f1",
+      "match": "request",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.connection.active",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "a1825f86b725005b75d211c3e39ce45937cb4f6c9ae92a482d91e7ce253c92a7",
+      "match": "Host",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.connection.none",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "87238928ae28e0af719eac5c1db3611a246d4fd7a79e7f12e6f4c8664ffcb902",
+      "match": "host",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.connection.pending",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "82c21889b1e13f2058070183cfd22dcf9507aafcbf58327b167cacc9bd87f049",
+      "match": "host",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.consent",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "69789d4a775f2e6fda7f70a0d0c7f7aa6d0859627ccdb49183bfc9ff201216d2",
+      "match": "host",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.download.help",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "15389c443ee0f53c333ff2c9ef227703c37f85ab30a95a0b755f178dbe93cd50",
+      "match": "host",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.field.zone",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "ddbb9c6de861c9193436cd82bdd328ee195fe04e2dfdb7ff95d8985368eb4cdb",
+      "match": "host",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.state.awaiting-host",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "6b0a989f2dee5fa45472a155f4ba124ed34c70710a75bbc06404cb1b1ee2c8e5",
+      "match": "host",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.status.resumed",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "24956dd76532dc677a6ecb6383d6afcbf8381d2886a66e116f81e1e43ede2b47",
+      "match": "host",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.status.saved",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "dd2320e00d0538832e103f00bb5653004813e8d9ea8f84c34d37e008b0cd63bd",
+      "match": "host",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.advanced.limits",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "631ab67237726c964b495f9dc5852c98696ac7f251ac1dc8615efe25937d94f0",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.advanced.merge",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "740d4e4d3500f81e6410877137206ad86a31d8ef6492238e4d2d31836b1988fd",
+      "match": "stable ID",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.backupHelp",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "16dd474215ee7480bb336281f5ae43e91b0d2d1e94482c9ed5e7424e4c602cc7",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.backupReady",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "6d2f7e725090881c10d13e8db284b6d40246fb233a3e1e47537a0beb19e34d5f",
+      "match": "instance",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.confirm.restoreConsequence",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "84ec61bf09ad35969ef774b6691aedc2d7a83a9eb716384d9d2f988e358cd1b4",
+      "match": "stable ID",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.drop.hint",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "e0c12523caacaa3e2af4599dc2d820e03689e0005d598da4c64980bb49612f57",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.guest",
+      "locale": "en",
+      "rule": "Leafhour.ToneT1En",
+      "valueSha256": "e7177690b2bd62b28f770124879389e687a0a42fd5907b57e847497cc6afa645",
+      "match": "unlock",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.originalProgress",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "b674f6175ca4f2b2ca4242c038a891eca14a329c542763a2a993a346e36f2ffc",
+      "match": "bytes",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.progress",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "24ff9a9adf52fd607ca01c5eb577ba928438cf4588b6858810d135d07475cd3b",
+      "match": "bytes",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.restoreHelp",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "d1ebd519e03b273cf2292edb07cc92565deea08e936dc6854f2a2b5e7fabbaeb",
+      "match": "stable ID",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.time",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "1d70e0029cf294827f8f0bf866864e5aaf1b3288f44fa35a50f14e47d76620fd",
+      "match": "session",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.tooLarge",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "628d5cfd3d10dadaee032f02c6d2f64253a750241530dbafc8f72a1a937e68cf",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.upload",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "cc9acfaf76be6782ee44ffd9aef8662d27418225f5d11c4076b7e3ae353da607",
+      "match": "bytes",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "evals.intro",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "c56161207b219c16ccf61f3861f73c3bdbbb1afe96be9de6ae293e679a606744",
+      "match": "instance",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "evals.sessions",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "fbe62c8d64a03c92afca33f1c50bd0b31109c2c82f171460166ba3f26c246e71",
+      "match": "instance",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "pdf.job.needs_review",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "7e9b8128ca14247f6f6335d47c1315899d0132832144a07e9a1737a1decb83ce",
+      "match": "request",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "portal.card.translate",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "3788e6f43b2df41143ff801fa75a27939cfa8b84200873c0458242333fe856f6",
+      "match": "request",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.annotation.requestStorage",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "3a32841396b01fa9ba8dae505e3887a8328ae60181de2ed0acb65c5b76b7df40",
+      "match": "request",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.annotation.unconfirmed",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "0693f4b56712da5267a559c8c85955f2499b088d2ed2b13dbb125ae6dda2f3cb",
+      "match": "request",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.exportFailed",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "57bf52d8e4e6493fffd2d13605e69bf58e759ba1776a5551e3d1565f61ed0777",
+      "match": "sync",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.focusHelp",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "c20b777038e79c4bd8e8a4b0baff2b44264df3c1a4f17bd5969be7a8067564b5",
+      "match": "session",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.queueCleanup",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "491784bcbf83c06a66ba27f0c06a5b5e2e0d293a8987d5533924656196971280",
+      "match": "session",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.state.idle",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "f1dbc65db94aaff09bc9fc4f776178c314a882b71e494950fdce87a5d1ec9e7f",
+      "match": "session",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.storageFailed",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "cb29edf05b94d81e73dfe685d7a09b7a18f93137eba06c6df4cbd9376e812cac",
+      "match": "session",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.shell.recordedTime",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "d8eaad25ed4c37e318ce9759b446f9bb9cd678f7064795597b57b9fbcafdaba1",
+      "match": "session",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.session.pendingLocal",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "172073b24efee6f39455c2330717bc6ec73d5fa8a5b876ac28ad01b08f541bf6",
+      "match": "session",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.session.pendingMemory",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "7cde4025e053f516bec2a4e9e78c4f788506140d88cf377ab1ea7b2365e8ac4b",
+      "match": "session",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.session.saved",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "5341b2161ddc23b7ab767dc71382238518e881c9f1b36280a58750af37ee2e8a",
+      "match": "session",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sc.mod",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "938ee07c8d7cbc2af9d2a6081ccad436c8b8f82a9e0f37766c5fdc4249707c6a",
+      "match": "instance",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sc.p",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "3464a271fe3b19ec2e465228c5ec76e195cf01bb847e4d1b63b576d41a8c82fa",
+      "match": "request",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sc.w",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "d0794a3594d8bf7a1a6fdf9cda4edee99309c7bcad495f82e5603e0bc96f7667",
+      "match": "request",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sourceReview.originalInfo",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "b6a66bf4c20776ff1246fcec9383730dd182ef3cfa909e6d875b704ab398f72f",
+      "match": "bytes",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "translation.onDemand",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "112d2cf97f6610385d23f07bd118b81ed8f4d2b57d8b7f9024cd704070c88647",
+      "match": "configured model",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "ui.locale.sessionOnly",
+      "locale": "en",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "bfcbf9110cd07b4c9e7890fd7eeab2ac1162ba8d5771d13a9a6cd912dea15a12",
+      "match": "session",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "auth.error.codeLimited",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "c879e26c93a147897e6db927bfe731b0a782e6fe1b288d4776d20bc0745521cd",
+      "match": "リクエスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "auth.error.mailLimited",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "71d5e19ca2f991619c5de7367c9b744238036f7123e433c7bc1f3c2846129088",
+      "match": "リクエスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "auth.error.rateLimited",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "e5ed86262c2f986c01a646f7cc37f90adcaae3a7df3398a561df189b0b99b71b",
+      "match": "リクエスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "auth.error.sessionExpired",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "5462ccfec5afc332eab6a7c925452a1e76157725a03221ac6f6b50c9eeba12b4",
+      "match": "セッション",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "bookActions.generatingNote",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "ca36d79343a009d5688f569a91a1a3057e5c51302af9afaf2af46aa9481f1d4d",
+      "match": "リクエスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "bookUpload.review",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "b49b0736bcfe360ddf66cb790b0b0a5aa122ff954177f79955504345508ff7d2",
+      "match": "リクエスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "chat.quote.busy",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "b8de4b024a474467c56b165a9153e16b9f979279eb8a067b36f27d898bc90599",
+      "match": "リクエスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "chat.quote.receiptMismatch",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "50c61580cdfc8a8fbd76d3832550b7f0664ec133bba4feb90b5bae4aec0ff8ca",
+      "match": "リクエスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.connection.active",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "0773f22f6e01d53e04ea4bc1f57b4ce38881ef7b2de6d6c70c169110b9a6e069",
+      "match": "ホスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.connection.none",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "859e16c62d5d69973c7f0d0d686d5a3fac5bffa9d14f2af9071647ae48360e67",
+      "match": "ホスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.connection.pending",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "95e3ed57d5b0713dcb8687608e1d98d5e0f3617d0af363e32bf66b88b4fd3d56",
+      "match": "ホスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.consent",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "6757630f75f16fb0a99ec03142a527609bcfaf8cc18271d48bafb62c71c1d015",
+      "match": "ホスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.download.help",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "05c198e3259bd3c1db13b0bb94532976094032ee3015f3a56b1dc04bc19be3ab",
+      "match": "ホスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.field.zone",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "b8a96ff80983046331c80024550bacc287d8318e36f1e9e7d20109766913b38b",
+      "match": "ホスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.state.awaiting-host",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "742ab37069f4642f08431f43ca0de33ee9c25b2cd0d614490ebd07a9c8425885",
+      "match": "ホスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.status.resumed",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "8354d45c166bc88e7924c2d0257451ab65a09a63981117030fa092dd0643a4b6",
+      "match": "ホスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.status.saved",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "0f69f85fd0ed04c37764515cdb56155b4013cdb800a5058f35980bfb3b27dba6",
+      "match": "ホスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.advanced.limits",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "e43e67d2706306b4da18de00d9c0840d759233395771d592d221e8cd2ac6ef1c",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.backupHelp",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "af8eceb6cbf0444f4eb406794f48c2c960bc4a81b538852d35e97ac9a81a69be",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.backupReady",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "55cef998cae37620af86d71713a7ec2eecc15f8056409b6aeb51f7f61e5cfb36",
+      "match": "インスタンス",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.drop.hint",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "d9a02d864adf08debe0385951eb54589ea98b2eae684550c688f468a4d66f0ba",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.originalProgress",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "b0c534d06d1445bd78ff566da069d4e7fcf3d7c89e10a11b313d2c47b803a725",
+      "match": "バイト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.progress",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "d03d47183190b1450a45178359c7eb1fee1a7a7b8575292175ebb54e2479fd3f",
+      "match": "バイト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.tooLarge",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "5e33267406d0fe7849978d0cbd344b8a8399fa1ef25d4029825416ca83a6dd74",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.upload",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "fa6d97189b53501760761d8bb3c687fcd9cee7103fb68f4300de69b50d1d0fbe",
+      "match": "バイト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "evals.intro",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "4320ee4db8a79ce0598e7c3a46502a89e6aff738e4f77d10183876710f56b304",
+      "match": "インスタンス",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "evals.sessions",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "90c85b9e9fbcb2691c5550580c3026d9f9ba687d300265dbc897da5b75f3f0a9",
+      "match": "インスタンス",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "pdf.job.needs_review",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "a59a4a098616c7e7c8c66d90b8b6ecced6260c153c37d8e4a041932fc8211c2a",
+      "match": "リクエスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "portal.card.translate",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "4be1c3b11001d26b45f9e875fe1c2a619c5c6992fc6a2f7b3288241cea0c3e63",
+      "match": "リクエスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.annotation.limit",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "2d5b6b77c656365583bfde068be9e1afeba519eaacaad9a1bcd024e75a35be26",
+      "match": "リクエスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.annotation.requestStorage",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "24c3e4d857bac999076d022193d46a744ca70064a45085a53109d392049eed61",
+      "match": "リクエスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.annotation.unconfirmed",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "1d00513b206a6439d83e8a0264632c9ec396f98ec0ff8e2197a36bfbca38cd31",
+      "match": "リクエスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.queueCleanup",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "6acc0829b52d9ec766b8ebd67babaedce38d00469027c04e85c91b3ad251d565",
+      "match": "キュー",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sc.mod",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "d06af42c46efd807e01b7c93e5bbf5c024750707c40e5ceeb3def5fa5c149232",
+      "match": "インスタンス",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "shell.about.license",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "69144faa0f6b2a5192041b3d983ffbc1ca8235c50501a3836e1e28c4f780c6d6",
+      "match": "ホスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "shell.settings.tabDescription.about",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "436490e56fd3a3f8df0adcb9169192b9bce13a84308af03df8294ddb2565cc77",
+      "match": "ホスト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sourceReview.originalInfo",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "a4f1dd436c65c593dbbfc918c4d4b515f7433e789af1960d934aa940cf2ea150",
+      "match": "バイト",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "ui.locale.sessionOnly",
+      "locale": "ja",
+      "rule": "prh",
+      "valueSha256": "ca4829783f5a2f6ca2ffc0f0d97be0b32a3b588efd3481e6fbb8f381659df9ac",
+      "match": "セッション",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "arrival.provenance.interpretive",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "d2d2b360aea159e7bd1eda04348cbc96712e2c526a127ca1cd445657289f7393",
+      "match": "AI 草稿",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "arrival.provenance.literal",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "eba8e9bb9a3cf4fbc0bb6372d221f2dfa52b7f71ee07f1736b46a472277e9b9b",
+      "match": "AI 草稿",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "audio.bookPolicy",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "f797c183d85222fce423dfe00a33c5b3aaf202a356253e0cab780f0e8302701d",
+      "match": "随时可以",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "audio.receiptSetup",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "967d3f11f0a8550048bbc0f502cc0ec51d5dc8189916019d55036947202e00a9",
+      "match": "receipt",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "audio.saveFirst",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "0422efe290c6d530f7bec575c6ff99df8d3f1a46d263394289b3583b54874b3f",
+      "match": "先保存，再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "audio.savedVersion",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "8716966e52ae516b14e62321ee973907a7adeff5addad76caddcfc3495c51cd1",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "audio.unavailable",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "4639cc3c2c150aa4190a3602919f19fa81747a50eea3fb0f8d83b7b413a6c896",
+      "match": "实例",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "audio.voice.Kore.description",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "ec1a497fc7eb96a9ff453b7e9ad4ee6b1e682096244e9ce03b6f05285289444e",
+      "match": "从容",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "auth.error.codeLimited",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "d51b1cc492e4586bbaea15b58777d9b8542b011d4f693136405a72e66e052aee",
+      "match": "请求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "auth.error.mailLimited",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "f686453bdd0b6ed8d110c7957448ba73c858f9fd8a9f458294502924f6d09c7f",
+      "match": "请求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "auth.error.rateLimited",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "e51fdb6b70516f634cd1fd5a6e281169ffc6cd22bbc91be9f51b28192443a7ea",
+      "match": "请求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "bookActions.generatingNote",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "6d8fe4a4895f8ea6db08b87db9ff133359faae8945a0fd64a3a2136b3fad5055",
+      "match": "请求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "bookActions.scope",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "3f8e70b4fc4b7a9cfd37ed4f0bc6c17a061ee86ada58e97fd8d1d8321349885d",
+      "match": "已配置的",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "bookUpload.review",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "e3973d61e2909bbf6078e40135632578f967e43d54adbf163bf9a791ba52eaaf",
+      "match": "请求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "chat.quote.busy",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "40d2b8ba530d6e2911a8e36d8a4d303043b4e33b66108538043afbe0f4f2431c",
+      "match": "请求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "chat.quote.busy",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "40d2b8ba530d6e2911a8e36d8a4d303043b4e33b66108538043afbe0f4f2431c",
+      "match": "先完成或停止当前请求，再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "chat.quote.receiptMismatch",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "55218db5c25fb48e21c0eb1c0ae4bc5a3e6e397a71fbf89c3df06f8a2b853193",
+      "match": "回执",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "companion.stopUnconfirmed",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "7133aa57633f838aee86c4b62f30271fca65029da9d4a061234afb4367cff0c3",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "cs.stopUncertain",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "deaf5d55260bbfca8e3b075d399c1b9e72edd5356951d38a51afb4bec7e92d20",
+      "match": "先查看进度，再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "cs.versionUpdated",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "82a4f531acf23f8e7e7478f43ea4a66461e9add40374af4dd6ccc7ad30fa17dc",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.connection.active",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "76af6fe36043a0f4a7ea22a69426244bcbb0f620614b2f66110a67f61953e3e3",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.connection.none",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "9ac1326e2b9f88513363242c4f75cf1d7797c0dfe050475ebdae0fbceea0b919",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.connection.pending",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "2e1cc7490ebc2026c380d243aa6c3df630af0bd0500c8c93b8b728fdd4f87da8",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.consent",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "df83d5c2156f7acc7e988ed779427d4de4743a9d88032fb5e2ec681f11bdcde1",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.download.help",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "8ae07b42a4d5d2fc791543202f14e6390243ce2df2d3b71e824c9dc4cc3a0b3d",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.field.zone",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "2a0db62077ce3562b080128202c3e9b025f04c13ae4638421df8894b26860dbe",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.intro",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "8ffc53a9867f1e4189b0b63339bed4b398ddc96e7d8149b18a7f1c4e2a66fe5a",
+      "match": "在书房等你",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.status.conflict",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "7e91247369e67f3f8010496b7552959793bf14922b98d9ad0f6ca6381deb90ed",
+      "match": "先刷新状态，再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.status.resumed",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "93edc8c8dd9c928f20998c81dc93fb366c4fe7ee8726f9b7aa9b1cf381b3b1fe",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.status.saved",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "f8cc4b452d148fb0ef40941e2844c66c82f6b2a09583a38171b7ddf3e421468c",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "dash.draftSuffix",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "680b41e6efebad7508016fb5eaedf256e480a8e0dc5490e6817a64cdd6e2251a",
+      "match": "AI 草稿",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.advanced.limits",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "96e330ce2ca54355ec756e6ad8e0762907049d2d1e34d55b938a2e12341289af",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.advanced.merge",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "a8868523005b0359a856d8f2c55a92b0821e43c5cde31398cc1f7e3c9d4a7090",
+      "match": "稳定 ID",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.backupHelp",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "a2e9f61ad1dccea8741d80c9fadb32040667354e9d57a9590ac1650eca63a9cd",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.backupReady",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "18d7a437268f6597d515418a6adbe84283f8cc5c526b8f17e2559aea80d0e830",
+      "match": "实例",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.committing",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "deec2a17c01b2ab2d936e120723421f92bbed9e7b3b17e791d18befbb245e256",
+      "match": "回执",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.confirm.restoreConsequence",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "304b86b82bc6199a5ca7576a9a4ca1160b90f8cbb4ab780ef9cd31e3f3bfba95",
+      "match": "校验",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.drop.hint",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "d7f2a2f4ba2e2d51ea81a008d78490238e48e6f326c76529b7f8704d91dbf669",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.empty",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "05e8f330e9076907f861f2d92f07919b7b3eb595f3f069e21d6f5b316f3ad8ed",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.intro",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "29393d61323ab58c5209a2e701e5a75cf09ee1354479c1b4a8467b71e178e2bc",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.md.version",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "36b6d503dd760bfe1b2816379b84bb281a2d9fb91a4f0394d32a89e451e65d07",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.originalProgress",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "3993b65e100dc33a654ebc1db5fb18e1cf4a4bdb04dfaef9d18ef3b8a34c8b32",
+      "match": "bytes",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.progress",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "d4cd78aafc5e644d49e9bf4d32b13b926f0a783bcc41680575ce1d6f8485872d",
+      "match": "bytes",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.restore",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "b4a8dda3f7203975818518a841d2e32f45395545a6d64540f365b1f8af8f09b1",
+      "match": "校验",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.restoreHelp",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "aaee2a1bea1ab70b8b68d9dfe8e8cd69be183f388985637f1b7c6645e0c943f7",
+      "match": "校验",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.settings.restoreHelp",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "a253f3bef97ed5befb72e417e16fbb84b282f75c8719130e564a81c4c473adc7",
+      "match": "校验",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.tooLarge",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "c3b6730ebf740af1942700d12525cbeff5cab7ed52ae865cb8254cdc86d18cc3",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.upload",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "53cad06a77ac6eef58800f4b5ae9dde379fa271279ee8bcd9513bbad9a262472",
+      "match": "bytes",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.verified",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "f9556330702d0ee82fdd1ebb990d243bed41adbc7bb67d318f09060d1c3f5d52",
+      "match": "校验",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "evals.definition.echo",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "3c5e37e9220f15ee88693c22ac3aee1711ba680a3737430a302439409a7b1031",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "evals.definition.rates",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "988a1438d455d5b4cf560801f86f27e0d029f73e4b6c2e25035e798680daef84",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "evals.echoReread.title",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "c1aa6506079344e4190736c4466d43f13a1f9356db91432aca3a4dd79dd352e5",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "evals.intro",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "02fce28e248d862b057479aa369894d09ed061c6c2ddb8d7d84f946913fd2eaa",
+      "match": "实例",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "evals.sessions",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "d73d9050a009285f7c83c7b8fa1ce1589468174fe26c2fd3823c936a1c1d2dba",
+      "match": "实例",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "experience.echo.disclosure",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "ac3b336f5dc9ac95d2134ba2f2986db3be77fcc19ecf480f65ae9ea95b2c0e31",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "experience.echo.disclosure",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "ac3b336f5dc9ac95d2134ba2f2986db3be77fcc19ecf480f65ae9ea95b2c0e31",
+      "match": "先提交再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "experience.echo.submit",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "6e3086aa84187da83aac77ce424283359a9f2c42aa17781826b22c38c6732b7e",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "gift.download.saved",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "3b505a4d92c6580e3f9a25293905e33bc4f49343d655835acacbc8f7e5041b97",
+      "match": "校验",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "giftCompose.help",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "4732715117660662f59dc4e3cda934e7dc6aef42bd8841fa8f6f047624005555",
+      "match": "先看看收信的样子，喜欢了再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "manual.preview",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "f41fb523bf7139b72566f8ef6692dee780e7aac8a5b29491bd0e277b3689b0f9",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "manual.unconfirmedLocal",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "94ae537a348cbeed1a0af1eec456842ab7e77b8923bbce8d9bcb02a4aa44ba1f",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "manual.unconfirmedMemory",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "1bfcf346b87fa641ae90cd913c299b3077d7752ffeef0ab021022b45844263c9",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "parallel.style.reveal.description",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "b66cc5a4cfb83a35feba842c9104eca9c257ec839e09bf2bb8e9dabdcf9348be",
+      "match": "先试着读原文，再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "pdf.job.needs_review",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "a52d557edfffa660a7e0e248092ea9c31ca736331d2b8c06a8917e8b0e78f05e",
+      "match": "请求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "portal.card.sample",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "21e4b6951c4bfd14f7728726968be8bb06b3f94a3fa2713b9e574ea22bf1e0ed",
+      "match": "双译",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "prefs.conflict",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "f7fe15aec8cd697357bb44b0b9527a9a570781837026e3524771d18f1c0f04c2",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "prefs.reload",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "000eba8dd3df128d94d0e44dbbef75a8ca9a4759f43383c73b63eff63df306fb",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "prefs.reloadFailed",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "081592c69e9001f3da880eee953b7f666febaa324d594731b840afa831fbf2e0",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "prefs.reloaded",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "754a9ceced9c44eb5d382f33601248006319daf009278edc0882b0d054582e9c",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "prefs.skipRecorded",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "0f82dedb4c94b624e022601da080d04af122196d3b2aa4f8fa2c313aee01be63",
+      "match": "随时可以",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.annotation.limit",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "de54f9c2eb23419fffcae59119e8a4de23477d25ebc7d1de13466659ff5c5f88",
+      "match": "请求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.annotation.requestStorage",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "75557fa84858d7c88f7896db097e1d428378074a2bd2bc5fee578d12349f2025",
+      "match": "请求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.annotation.unconfirmed",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "c9f46722cc0371796c64e8c0d15897d6dfe7454fbe7b2a3495a153839a787fba",
+      "match": "请求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.atmosphere.brand",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "bf6feb240ad935963b48453f21ef3e373bc040538d11b3194de11204c3a1f025",
+      "match": "一处安静的地方",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.atmosphere.heading",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "b0b82bd095969e4291b7d77de974a04b6b7b26d5d2ab41172a2e52df57ea52b2",
+      "match": "此刻",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.atmosphere.motionHint",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "091e7a40646f99da896f73b74db77c46916191a78f37fa03035bf3ae11103155",
+      "match": "让风、雨与潮汐轻轻",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.atmosphere.noneCaption",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "38bf1505321f41800865a4dfbdf36bb18d85178cdabdec739325b66685443e88",
+      "match": "把这一刻，留给",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.atmosphere.quiet",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "6f91a2cbd90681df1818f3cd8c79083b5471be233a25f23c1a2de3d4736ab891",
+      "match": "，也很好。",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.draftUnavailable",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "6b0be0fac6e696a0693dc5212cfcf8fa052f23c7fe39ddc35f10b353fe238a95",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.exportFailed",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "ade00c251c9bf07f6ee8941586a8450ba028d6303e31a4e301d6ee6005fd5a4d",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.pendingNote",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "aa7178d1e632fccb128048e4e739cf5f41487a06cab8d9a30d3d9bb311dcbcc4",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.previousTranslationSaved",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "20b9eb8a1e0632621af290a0e0da6b424e88a550b9504df55a8fc3809dbc9e11",
+      "match": "双译",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.progressLocal",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "ec24c44b2629b3dd0e162f826170834badaada03fbf710033814a7efe729272e",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.progressMemory",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "f3d204fa4f6bc236802289985941161a737919d8414a4a7f2e5f41f8552275c7",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.questionLabel",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "e472164adcce648566d4c4005e1d90e4d7d4b1e78dbfbd65f6a85301ec07d6c7",
+      "match": "值得",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.questionPlaceholder",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "009a2ffeea0772a3182f23eb52c19ea49388d08cfbb99e2a157da2fa82f908fe",
+      "match": "此刻",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.recordsLoading",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "d8e4e1dda68f43268ca49244a4a12d8694500c499e5a81c9632f7dc8dd7912fc",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.sampleNotice",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "29a8d6a65d882bf4ca26c354fc162b3f2aefefa401cae040b9f783ec6c238c30",
+      "match": "AI 草稿",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.translationSaved",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "4bb780f5ff58743041276cb79a38a1351a14ba832c4192115d775dc284e082ad",
+      "match": "双译",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.highlight.saveFailed",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "1c511964dabaa65b19e6e7f9ff1cc286830e3ae5b6e5296940a6c42c4760723d",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.backedUp",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "f1276a54820ee5ee6a06b3c87221b5ef9455e80c9cf108d1c8b4f0b091baef69",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.draftDate",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "6c283f1aba47326ca707a17a4a021f8d7ec3095158537abd5776a076f8b24f5c",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.markFailed",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "72a03301fc5b1183c7f364b45317752e8b327a307a0ad8aedfb53c6bb4256405",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.noDrafts",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "a44f1931a0294beb54a13bcfde6648a6abb584660ede56b8b69782c573ca4195",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.oldDraft",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "61b82a2333292c87869addf048d1fc5c00497826bd82acd2ed66a1dd4e06b94f",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.pendingCount",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "0f48401e5977d0d8e26f28ec6eab6b0001c2ae6a9cfc7b913cddbccc8d4b8d8f",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.queueCleanup",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "b633788f87efc1607b30b77dc85c76c79dc3f2cce6631d262e0d190059cb5c5d",
+      "match": "队列",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.rawBackup",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "56b279915e76aeb44effd59572fe8cf8d2344b62b9fa47734a536fd538f1f4ab",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.shell.backupPending",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "120f3205f1a2638a42f825ae59b8953d51a0a13e34c4b29aac15836e6575f7b2",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.shell.endingHelp",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "2f683ddaf69d3d94ab1f2fb9c4839c342169d641a0768c8b85e40a6ef7541d85",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.shell.manualHelp",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "981017103b80c7bb502d39401977c77e0ee679e576477ba8038f8df3a5fc8e46",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.shell.questionPlaceholder",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "ddc61a3b7129d21dd1032d07f146f7e0166e2857c3e4adafc5e93b111ec5bf7c",
+      "match": "值得",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.draft.local",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "bee3b2bb317bfa972ab475ab03558390c41ac224ddf74509b28ae7e111cb0f99",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.draft.memory",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "1efa1950871ac56f2b566e04cb994c8485cf90ff4acd216d9b2c28346d19c897",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.note.pendingLocal",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "b1e7713f81637e130bdda4ce40d1f1c5569464a4d633b0f6d84a88422b1485ae",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.note.pendingMemory",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "0db9c4f23a63e69228e59a3d1ea762794097d1c6f466899df557276eeb485db4",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.note.savedDraftLocal",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "fe8f848af19178fbc62870a67c77b658f554290cff1c197a2b623b7f3360df16",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.note.savedDraftMemory",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "e4dfe1990f524f27218356b65ff156572eccb28c26f9ab80d6bce0e63487ab03",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "record.closedPending",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "6a9c9f6613e09c0c6c35ec1f5aabda9f53970f625836b07063dfb667b44af069",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "record.conflict",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "81e477af00154bdf1923894717df2c90733a9e3f782ed9e4c8a07fa5c5aee4c7",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "record.draftUnavailable",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "c3bf1bbafc173dc611c01a3b5096bc9a0e0dba35c798288203d7975fe1bf45df",
+      "match": "本机待同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "record.olderDraft",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "e5dee860606be81460e5323e48ea945f61317d381ba3366baa1c26150cdb9c1d",
+      "match": "先读取较新原话，核对后再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "record.unconfirmed",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "59e5860669d8629bcd152b14788618bfeeaf058cec1d2035d35da17b24589709",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "s.un",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "272c7b72bfd16e38068e837c504d15baf0ac0d90b51b2e4d8b27f91807a60746",
+      "match": "先写下问题，稍后再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sample.disclosure",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "a7e3bd2800f685a1e8aff58d949f20132d57abd718b60bc26a05950ff6bfa67f",
+      "match": "AI 草稿",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sample.notice",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "29a8d6a65d882bf4ca26c354fc162b3f2aefefa401cae040b9f783ec6c238c30",
+      "match": "AI 草稿",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sc.mod",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "43b957eef8b5592c25d0485a683749658dce147e2d792ec72ff4ef9404e13267",
+      "match": "实例",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "shell.about.license.agpl",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "e663b2e3cc2d2d16017ad6d1c264652b7aaf62de54a83a510f00892144660633",
+      "match": "随时可以",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "shell.appearance.description",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "680978923a35eab490d3bf9e340331830e3fe3af458a582d528bbec9554e25cb",
+      "match": "此刻",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sourceReview.checking",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "b24be5ee0637e1eeac0365c7cd3abc1f61c979250f8a6fe9ef4a555fc7e50e47",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sourceReview.extracting",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "33349b1465a745e4f01c502a9b143aab50fc42c9ee5b4e4f7cb9cc2a2c2583d6",
+      "match": "请求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sourceReview.originalInfo",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "9062275868d5a2622777767eaaac2f0979043be4df6c0e2850e23d15c27a4d0c",
+      "match": "bytes",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sourceReview.pagesRequired",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "cf08f93fb66b574b8cf8e98cfff59dd5cc16079f3ab3a49bc3b23e97b9a4eeb6",
+      "match": "先打开这段的全部来源页面，再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "translation.backgroundSaved",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "5feac707f27402eda578c341fd2002e0a84a2db266004278d2534400407a2bfe",
+      "match": "双译",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "translation.incomplete",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "7bb49e006d74d9457dffedb2b499553787e4cf21cbd722e665cf3b8b15c1d50c",
+      "match": "双译",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "translation.loginNotice",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "6dbdd9856e382c61020e086a5b9760bbec70e3f1515bd18dcdbf0a3ba7b5bb32",
+      "match": "授权上下文",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "translation.onDemand",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "3b388103d725e13a0486bc878223120ee4f404241c58dd8b9f7ef31ec833c356",
+      "match": "已配置的",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "translation.viewDrafts",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "ff7819ad46229144b5d54a6ee6229b391cdf4bf69f86cb0415a42a252d52428a",
+      "match": "双译",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "ui.accountLocale.error",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "5ab879fc8d81b11692642b0c73dd464d9c0d9be705a90c6dd093b76af8f3d8bc",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "ui.locale.sessionOnly",
+      "locale": "zh-Hans",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "68f6efcaecb19195dd7169247c6ae869e776dcf31a305be5534ecf45bd8196b9",
+      "match": "会话",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "arrival.provenance.interpretive",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "477e35f4f702ee8f795d97fe4193c49ff534cde6982d8923406d3f8e607591fb",
+      "match": "AI 草稿",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "arrival.provenance.literal",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "71468fa045ba3acb25f52ed0ea17c3e4a0a225d656627375fe48897d7dab6db3",
+      "match": "AI 草稿",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "audio.bookPolicy",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "557bbf10b4265f1c40aa64a2657f44b246491d93aeda149a878443745a5ee759",
+      "match": "隨時可以",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "audio.receiptSetup",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "967d3f11f0a8550048bbc0f502cc0ec51d5dc8189916019d55036947202e00a9",
+      "match": "receipt",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "audio.saveFirst",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "c0df812684d99404263eb3a456e1e6360c5aa6d24d78dce74da905cc562fdd54",
+      "match": "先儲存，再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "audio.savedVersion",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "7b42489548df37b9e009e46a8036ca519c5388411ef5b75f6355315ab514c0b7",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "audio.unavailable",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "4fa041af1d26c23e2a7d54bbfe938ae0e3bf6cc5711bdebd5c67cddd6fe8bcd9",
+      "match": "實例",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "audio.voice.Kore.description",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "ab7e178fc8023e369174aa6e1873c5ba605931202f056f0ce2d5c8dc94ec389d",
+      "match": "從容",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "auth.error.codeLimited",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "fed14fc258677c424aa259240724da1f0061c69e6886a3f4699411df4e53e35b",
+      "match": "請求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "auth.error.mailLimited",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "2ea9b659d2b6753fc9106a4b74b30b7814eefe56db77313ad9ba99440f918a5e",
+      "match": "請求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "auth.error.rateLimited",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "a36a70d7cade0c3671cbe9a13280816365e329604c66305a20b5df59b455dc76",
+      "match": "請求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "bookActions.generatingNote",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "8bed2ca68631da824f2cb24c72501427c644b01c0c12766fe75de1571af96b58",
+      "match": "請求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "bookUpload.review",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "ee0d35419146489d9f31c2cb5d68e551e0c5ac0cf07461243d72d5416e349d08",
+      "match": "請求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "chat.quote.busy",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "8364a032d0ae5efcacd6c0875308edc2e279049510b7cd7971069855acb62847",
+      "match": "請求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "chat.quote.busy",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "8364a032d0ae5efcacd6c0875308edc2e279049510b7cd7971069855acb62847",
+      "match": "先完成或停止目前請求，再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "chat.quote.receiptMismatch",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "e9a3f1715d37ceeaefcedddc75a60a8cf186159b40bfce8f8b4400311352e469",
+      "match": "請求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "companion.stopUnconfirmed",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "0fe617ddf65e0a16cfe3e6f3c733c9bd99f20edadfe25920b2f6bb61791fc4bc",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "cs.stopUncertain",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "f32df737147c66bdecae150a194f137d4b15f705a7e2cce4004b299a1113cfea",
+      "match": "先查看進度，再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "cs.versionUpdated",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "cfb3392822d15baa1544a7e9efc4b28d5f785bfecd4dcaa4f832f56c50208142",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.connection.active",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "c3b1efe597f7307420259888c1a09588580cdfce78ba3b156f0d7edf40536b7d",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.connection.none",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "253658e0fb0524d25b67fc4e696b224ef7f5bac35ddf1075de302747b78d75e0",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.connection.pending",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "537ea57222295a414513f21473110689bb6c196112164f3a5123a9694499f624",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.consent",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "d064174bcf522ae9b150d391df9048cad8a9c3cc6bd54c029b03a04902c66fdd",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.download.help",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "65664b5cea65f0ee4ede2e07fe0077fe1c0a39062978f9597e04782c8d1952b7",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.field.zone",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "327bac97fff29f552e90a6c72d732148271291f64de3d69e628b40726515bc56",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.intro",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "d1fcc6dbc30297292e31dd4fe684aed67cc4a7b46f137ae6c24310f518abd527",
+      "match": "在書房等你",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.status.conflict",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "f01678a08d77c56fc249596e364ce1b4d5c05c699818e9911563e883febe9d84",
+      "match": "先刷新狀態，再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.status.resumed",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "e7e10dfefbeec2cd41aff22c26c86f7fb79e091acfbfdbd5c8032b527d02dcda",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "daily.status.saved",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "729f37d9d9a48cef52245f51ab755bf9dc4f892af17477af0f0500f6d7f3d5e3",
+      "match": "宿主",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "dash.draftSuffix",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "680b41e6efebad7508016fb5eaedf256e480a8e0dc5490e6817a64cdd6e2251a",
+      "match": "AI 草稿",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.advanced.limits",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "bef86e91613dd18135b0c2cbc5e8b135a606f2ddd6f5825f37cd3ca4874cae5d",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.advanced.merge",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "fa2e9c9aa040cb1bdd275d4f38868bfdb02bcdf8bc888be36a13fe9c1d397e34",
+      "match": "穩定 ID",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.backupHelp",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "353c0be1295908a127f320f868f82fbf1be6076c67fde57d14ec1f8d13e24ba7",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.backupReady",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "296e04339370a11e3c5fbe62792e6b6f745540c9cf235d74581cc1850312a562",
+      "match": "實例",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.committing",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "f0f42315303d78879082774ba59c491e2e4f33f24a7a4cc82218ea5be755c667",
+      "match": "回執",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.confirm.restoreConsequence",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "a05beeb37158092aba2fd017b3bf38cdc241f40a8f43053c98f00d3ce18f609b",
+      "match": "校驗",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.drop.hint",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "2c892c180adc1339b37144b155dc7fb8f346895cdf8253f3791616c431b6e848",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.empty",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "4c32021b49177a52376b409f351009f5a795294496bb364eef0e1b4198cbfe0e",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.intro",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "5c06ee77e9d118849272e058b82af5f9da4d445763c6eabdb7f31a92c9809075",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.md.version",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "8126ae97750560fa1079cc524b9425921255914e2021d70dca1f6a632f953a46",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.originalProgress",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "846f7999d2ba1aeb0906f2507550d66fbadcf78750f2f3cd565d9468b69ab40c",
+      "match": "bytes",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.progress",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "78f9f40b576e03d4ca5d028b61927320582e66a2b4166264ad120cdd9232605a",
+      "match": "bytes",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.restore",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "952a48ac05ab436f7e1f61669ac8a7d2f4e1cc526f9a5fdb31ce745323ecc68f",
+      "match": "校驗",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.restoreHelp",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "b3c3ffe66260a8a9c84226e489abeca588ca76f0344bbacfcd6e209061d43a4c",
+      "match": "校驗",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.settings.restoreHelp",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "fe4a8e76d37bb8a1f581a345eec077ac08d4e4f3f39c1085207d41417de001b5",
+      "match": "校驗",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.tooLarge",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "1994995bced3b3627292cc8269124592f1ea887d131ca051a7258b570054acb8",
+      "match": "MiB",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.upload",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "4fd705d1ac5306c8361421589608a9b0ffab99e2ce6db0202c07fa52d80d601c",
+      "match": "bytes",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "data.verified",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "e6defc4b47534df7f570fa9f346e44a15efa84973cee2a3deb06a35ac930620a",
+      "match": "校驗",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "evals.definition.echo",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "987583afd418d45c5c8fb0511096bf96f70d33209ba96809e37d6f27c4ba1840",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "evals.definition.rates",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "c7ff7294ff90eb9c8c3ea6e8db1706afc8bb47ba6a9b7adf652d843bfe1a35e2",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "evals.echoReread.title",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "90b5d6c95cf5101bf24ae8c574b70ef993fbc97c5cd9eb018c672078719a1f52",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "evals.intro",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "d195501e98c4c3955098be778809773a55f2e193b71d2d8aadd541404df0cb76",
+      "match": "實例",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "evals.sessions",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "b5cc236c3dfdb095398f8d342b34aff31b19466268fab82de0ecb27ca3c2ef05",
+      "match": "實例",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "experience.echo.disclosure",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "4198f47dbcb048c36bf8eaa93e4aceb38f77ebb776bb425ed789b4ccc2fe28fe",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "experience.echo.disclosure",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "4198f47dbcb048c36bf8eaa93e4aceb38f77ebb776bb425ed789b4ccc2fe28fe",
+      "match": "先提交再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "experience.echo.submit",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "1bc03f3ee94aad68f0775e4855422142f0fd29568521c0d1e40db18214d17add",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "gift.download.saved",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "517948f29be582ce3112c7286d2387a54c24a08bf4311fc677f8727a7435f456",
+      "match": "校驗",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "giftCompose.help",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "9992748b536ffa09099e83e9290bc3df4d3d38988bf310a976b606e6959d7d35",
+      "match": "先看看收信的樣子，喜歡了再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "manual.preview",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "6a623587ac4612520da7ff16b3fe3f5bc272b85c387dbc99733a31c5bdcdf5c5",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "manual.unconfirmedLocal",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "f0111a775037012cb71ad8335d803c430894dc4c630f3098f75f47f9863709d7",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "manual.unconfirmedMemory",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "5db07ae4719bd66148d84bfadafa325b3468dd0873e7c3c820996787f4531d37",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "parallel.style.reveal.description",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "e4f1f361a06624e93e293890fc8c79282468ee466e1ea30231e23a3df89c4cea",
+      "match": "先試著讀原文，再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "pdf.job.needs_review",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "19bfb8a78cd8e4a96fc6eba9ef4b929445c03b6642dfddf63e25ea8724f4b9dd",
+      "match": "請求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "portal.card.sample",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "ffe680837b15c5f7af0ad41af57b5ea439b686d157598f45a0154822ac960d97",
+      "match": "雙譯",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "prefs.conflict",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "dfeb7e0eb2a01626fd81c36278d41e5cc04bb908e437ad33e828fb95765fb33c",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "prefs.reload",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "1da22cb4c7cd6baa71dae4899400f4e1a510deacffc564222de2c772f6075ff4",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "prefs.reloadFailed",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "07d3b8d29229f8aa765604a137081c8cae5356c86981ac2a0898199eb1ab5861",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "prefs.reloaded",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "6be1502f6f74d1797330e30e365c249af1ceec208a0a1aed5b958389e7d73d67",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "prefs.skipRecorded",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "1374a22b27871666033101811e8485c9f32d319edaba5861badf99ef93b8fd2b",
+      "match": "隨時可以",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.annotation.limit",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "70d399a5c00347b3fc5e7e7eb4c367e615be5aa126538189c5181bb9fda56d44",
+      "match": "請求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.annotation.requestStorage",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "6e143fde4c65e5c3b1d83dedb7319904c786f6a9397e4f94347891ce7ed92879",
+      "match": "請求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.annotation.unconfirmed",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "6a809400b3be73c0f00a279f0329ed94174d461498fb8b9c59de4917e0f56869",
+      "match": "請求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.atmosphere.brand",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "5b4a11d4993b3a8aad3b9e15fc511f041ff887580ae2c0f094552fae331c3954",
+      "match": "一處安靜的地方",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.atmosphere.heading",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "7559a21fc61e71497bac5a2004757a38a04c8bec21d1040a3e840fe43d8f26fc",
+      "match": "此刻",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.atmosphere.motionHint",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "5d77878e9409b57515bc87796110857ea09df1cbcd21be5463d842d156db556a",
+      "match": "讓風、雨與潮汐輕輕",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.atmosphere.noneCaption",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "bebbb5ab022942b8e68f2d8a777b8bef4d3626d53532c8beda62710954cd6a26",
+      "match": "把這一刻，留給",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.atmosphere.quiet",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "82dff24efb0ed8f93f0f9a8850adfd0eebc7d110181ce90aa455dca658acf023",
+      "match": "，也很好。",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.draftUnavailable",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "9e73d86618911aab35bf0a52d28c8e48fe490b6acde0f37fc2d71c2b730d9ee7",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.exportFailed",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "33bdf46abb8bba0472dcbaf05a74fb05a8d760874c26b3c28e744f7e1b9dd6f9",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.pendingNote",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "ee5e1588c911182bf74c43936659a28abe6220530f095bac264939cf269d8593",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.previousTranslationSaved",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "5236fe4aabe552cde49516ef5ac13d74909f2230c16090df51ebb3110871a71a",
+      "match": "雙譯",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.progressLocal",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "84850e5d21bed7d926a11a1023d6eea8cc537d8597c3d66bb89699636a7a6bb0",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.progressMemory",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "f699089f44990b55a46a05e7b98028db0cbb3f6be7f5e2f50183a0d4c76eab6d",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.questionLabel",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "63bfae4eebaabc540085d540b45b6050f3b0c3ce3314433f6b781d27ebeec3e7",
+      "match": "值得",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.questionPlaceholder",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "c74748056687f8bbbc4f3ef5efff78ecd1874a5f96ddf0ecc879c10b5feaf64a",
+      "match": "此刻",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.recordsLoading",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "34ddb874b0196ad1f03ca4ca6cd8408913b8f434542db4df4a5547a9c998a6a2",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.sampleNotice",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "629b0f75014690fbfb69c18a9c06faa7fb8ae05281acac357dee2ce3b80c663f",
+      "match": "AI 草稿",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.b1.translationSaved",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "761930ef67f1ab5d25e60af6b007c66c55c956f59ba6f016382ff33bb6a317c2",
+      "match": "雙譯",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.highlight.saveFailed",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "a9ba0b3fb5cfceca69307b6c3dda48c557ee373fe88ec2fa871d5543500378dc",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.backedUp",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "7e356e3d535f381275bad29a1be9a5d7e7b6b2abc73787cce34bc60b66fd97fa",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.draftDate",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "6c283f1aba47326ca707a17a4a021f8d7ec3095158537abd5776a076f8b24f5c",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.markFailed",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "63cd9417e31ef3ab2e3f96e8aa440d9ab948aff9f2a977ff171db658a25ae83a",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.noDrafts",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "66637a5a420fe60751096438a49001b642a0cb349cadbc33928a7ef5aaabdad9",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.oldDraft",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "fa09521ee9d8d362500735b34ca3e4da59a040b0968a072bca115e73d20761c3",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.pendingCount",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "a2590c2c2a3667a72272ee0c9e333a818a111286ae3a5833c7ddba6c450c8010",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.session.rawBackup",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "af281884b13db81a933b9d230826d20f253094c8c8d88dd79d1b89fee4e35649",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.shell.backupPending",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "7cf1058b2c2613cb3e162d63e1219680320b2bff942e7694e4e1f77885f94ae9",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.shell.endingHelp",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "0580580432f766a3af2562fd67a7e1aef14a79e090b1c6c2aadf638c7627ca71",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.shell.manualHelp",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "1501862b742794d5a35ba44d32db191d500f62de5e24fb8a48c6987923a575f6",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "reader.shell.questionPlaceholder",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "ae781829ff4b7c2c0b2d7bdaf0edbe53d17a609b8e3f5cf95ceef4f8589114f0",
+      "match": "值得",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.draft.local",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "04672bd9e4e231def5aa22563878283856bed54bd74144e77f3c48cb9a9593ed",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.draft.memory",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "d9f7a9b38e3ef0b95ee4e2137d92da337ab3dbaff13645dae3bdc74963b01507",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.note.pendingLocal",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "083a4c936b99982409084b95f0512feac21de9c43de4ebef9e756cb58e1a519e",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.note.pendingMemory",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "8721098fced6bee19bd8089e33d3ccfb9036683a222cf26cf380a089af5d22c7",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.note.savedDraftLocal",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "d0417f9b928ce9b969ffa840dbc1bb4985157d7465885ea96dae21291dbe1f69",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "receipt.note.savedDraftMemory",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "1be31b30945dcd884714b86a1dc7b72d785a3d0c7c0b5b85f9332ab0c89b52fb",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "record.closedPending",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "12ee23d7a9c7c5c2703c90ad4cfb4b04d86deac2894f91b8bad4c48dee390a2f",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "record.conflict",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "e2096816a31b4a70d82255b1100e1aa6b29da0cfd76e30fc9004fc93424673ec",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "record.draftUnavailable",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "b631e92f70a23bb92fb91c6736bcbd6d3735df98ec9f3047fd424a7ed6adff10",
+      "match": "本機待同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "record.olderDraft",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "456181cdf293f5b901155483e437a2d536d415f5c1861263871be5db5c009d12",
+      "match": "先讀取較新原話，核對後再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "record.unconfirmed",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "f5c30960c1ff967060e4e189eae7271c9141da7ee44e9a846378169ad48a8552",
+      "match": "提交",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "s.un",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "cc334878fd8995aa6a2ab28e8243ba7853b3343543455ad0f25a888533f8c5ca",
+      "match": "先寫下問題，稍後再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sample.disclosure",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "4296a348d158fc2c710f0b40658037dde75a779439262b29fa2dea7577dadd2f",
+      "match": "AI 草稿",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sample.notice",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "629b0f75014690fbfb69c18a9c06faa7fb8ae05281acac357dee2ce3b80c663f",
+      "match": "AI 草稿",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sc.mod",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "d8d4ae5c19af63a062aeda9df7e9fed9eb4e944e27c848d6254d05bd89f3cfb6",
+      "match": "實例",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "shell.about.license.agpl",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "954a832359797450c9b4b25b4d2ca2c99e8396c7869af25a568735ecd2c2b04b",
+      "match": "隨時可以",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "shell.appearance.description",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "bd864aef73967481d5f19133ae5b96c82455c6c7a01e90bb42485c8bd73def95",
+      "match": "此刻",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sourceReview.checking",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "f19120f999c1266546fdb38033d8b43e869c3c90b98d048289e9e029f4658f56",
+      "match": "版本",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sourceReview.extracting",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "730de7b7324fc4bd5921ccd9c45bf5ce4af20bd8a591edd6d42553683ea5a0f5",
+      "match": "請求",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sourceReview.originalInfo",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "62f3e1042d1a8f3a67cd1845ba046c9f0c11f660740bc3fc300a0a52998baf5c",
+      "match": "bytes",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "sourceReview.pagesRequired",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.ToneT1Zh",
+      "valueSha256": "895e7260ffa51320e98b555db969f39ec31778341078b603a7b426e29b43156b",
+      "match": "先開啟這段的全部來源頁面，再",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "translation.backgroundSaved",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "9282fb2ba52c0123695d88dba9e6ae9e7100829a86668c1ccd7a6a63b07dc31b",
+      "match": "雙譯",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "translation.incomplete",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "2f82c179854bcb1a884821297d1508b1fdf74bae0d0ed866d9d56dd3ee48f7ca",
+      "match": "雙譯",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "translation.onDemand",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "90c14269b192e02a297fff687382d9743c2dd113c3b8c6bde5f8eb547a6c3955",
+      "match": "雙譯",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "translation.viewDrafts",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "b3c4d159be51c50e63c6561329884df615190f5cfc834757d87d1a02ce35e49d",
+      "match": "雙譯",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    },
+    {
+      "itemId": "ui.accountLocale.error",
+      "locale": "zh-Hant",
+      "rule": "Leafhour.DevSpeak",
+      "valueSha256": "54e0edf78df882db924c95711d6d835cdc3b82a2a6d35650552138daa01a026e",
+      "match": "同步",
+      "kind": "existing-debt",
+      "state": "unreviewed"
+    }
+  ]
+}

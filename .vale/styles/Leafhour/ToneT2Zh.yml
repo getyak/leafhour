@@ -1,0 +1,26 @@
+# GET-202 T2 wording (zh-Hans + zh-Hant). T2 only blocks when the same passage
+# repeats the pattern (issue: 同一段 ≥2 个才改), which a token rule cannot
+# judge — so these stay visible warnings for human review and never fail CI by
+# themselves. Punctuation lives in TonePunctuation.yml.
+extends: existence
+message: "T2 wording (GET-202): '%s' — review density and repetition"
+level: warning
+nonword: true
+ignorecase: true
+scope: raw
+tokens:
+  - '安静'
+  - '安靜'
+  - '慢慢'
+  - '轻轻'
+  - '輕輕'
+  - '陪你'
+  - '留下一张'
+  - '留下一張'
+  - '纸条'
+  - '紙條'
+  - '仍保留'
+  - '可以重试'
+  - '可以重試'
+  - '暂时无法'
+  - '暫時無法'

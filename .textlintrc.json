@@ -1,0 +1,90 @@
+{
+  "rules": {
+    "prh": {
+      "rulePaths": [
+        ".textlint/prh.yml"
+      ]
+    },
+    "preset-ja-technical-writing": {
+      "sentence-length": {
+        "severity": "warning",
+        "max": 100
+      },
+      "max-comma": {
+        "severity": "warning",
+        "max": 3
+      },
+      "max-ten": {
+        "severity": "warning",
+        "max": 3
+      },
+      "max-kanji-continuous-len": {
+        "severity": "warning",
+        "max": 6
+      },
+      "no-mix-dearu-desumasu": {
+        "severity": "warning",
+        "preferInHeader": "",
+        "preferInBody": "ですます",
+        "preferInList": "である",
+        "strict": false
+      },
+      "ja-no-mixed-period": {
+        "severity": "warning",
+        "periodMark": "。"
+      },
+      "arabic-kanji-numbers": {
+        "severity": "warning"
+      },
+      "no-doubled-conjunction": {
+        "severity": "warning"
+      },
+      "no-doubled-conjunctive-particle-ga": {
+        "severity": "warning"
+      },
+      "no-double-negative-ja": {
+        "severity": "warning"
+      },
+      "no-doubled-joshi": {
+        "severity": "warning",
+        "min_interval": 1
+      },
+      "no-dropping-the-ra": {
+        "severity": "warning"
+      },
+      "no-nfd": {
+        "severity": "warning"
+      },
+      "no-exclamation-question-mark": {
+        "severity": "warning"
+      },
+      "no-hankaku-kana": {
+        "severity": "warning"
+      },
+      "no-invalid-control-character": {
+        "severity": "warning"
+      },
+      "ja-no-weak-phrase": {
+        "severity": "warning"
+      },
+      "ja-no-successive-word": {
+        "severity": "warning"
+      },
+      "ja-no-abusage": {
+        "severity": "warning"
+      },
+      "ja-no-redundant-expression": {
+        "severity": "warning"
+      },
+      "ja-unnatural-alphabet": {
+        "severity": "warning"
+      },
+      "no-unmatched-pair": {
+        "severity": "warning"
+      },
+      "no-zero-width-spaces": {
+        "severity": "warning"
+      }
+    }
+  }
+}

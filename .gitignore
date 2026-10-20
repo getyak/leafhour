@@ -1,6 +1,8 @@
 .DS_Store
 node_modules/
 dist/
+build/
+.superpowers/
 .env
 .env.*
 !.env.example
@@ -17,3 +19,4 @@ __pycache__/
 
 
 .reader-runtime/
+.copy-tools/

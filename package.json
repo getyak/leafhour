@@ -19,6 +19,9 @@
     "verify:deploy": "node tools/verify-deploy.mjs",
     "verify:hosted": "node tools/verify-deploy.mjs --hosted",
     "smoke:production": "node tools/smoke-release.mjs",
+    "copy:export": "node scripts/export-copy.mjs --root . --out build/copy",
+    "copy:lint": "node tools/copy-lint.mjs --manifest build/copy/manifest.json",
+    "copy:canaries": "node tools/copy-canaries.mjs",
     "build:reader-runtime": "node tools/build-reader-runtime.mjs"
   },
   "dependencies": {

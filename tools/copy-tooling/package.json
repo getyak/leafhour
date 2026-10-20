@@ -1,0 +1,12 @@
+{
+  "name": "leafhour-copy-tooling",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pinned GET-202 copy lint toolchain: textlint with the official JA technical-writing preset and prh. CI installs it deterministically with `npm ci --ignore-scripts` inside this directory; local runs point LEAFHOUR_TEXTLINT_BIN at an already verified install. It never enters the production function trace and never touches the primary shared node_modules.",
+  "license": "AGPL-3.0-only",
+  "dependencies": {
+    "textlint": "15.8.0",
+    "textlint-rule-preset-ja-technical-writing": "12.0.2",
+    "textlint-rule-prh": "6.1.1"
+  }
+}
