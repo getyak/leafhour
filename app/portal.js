@@ -1,5 +1,5 @@
 import {uploadPdf} from './pdf-ingestion.mjs';
-import {t,onUiLocaleChange,onBeforeUiPopstate,getUiLocale,getUiNavigationLocale,uiHref,uiReady} from './ui-locale.mjs';
+import {t,onUiLocaleChange,onBeforeUiPopstate,getUiLocale,getUiNavigationLocale,uiHref,uiReady,requestUiRoute,adoptUiOwner} from './ui-locale.mjs';
 import {uiAuthoredPath} from './ui-locale-codec.mjs';
 import {authEntryReturn} from './auth-return.mjs';
 import {mountPdfOnboarding} from './pdf-onboarding.mjs';
@@ -26,6 +26,12 @@ import {mountIncrementalShelf} from './library-incremental.mjs';
 import './site-appearance.mjs';
 import {trackActionFocus} from './action-focus.mjs';
 import {mountHomeNavigation,isHomeNavRoute} from './home-navigation.mjs';
+import {homeEntryReady} from './home-entry-bootstrap.mjs';
+await homeEntryReady;
+// If the replacement is cancelled or interaction keeps this document open,
+// retain its English prose and usable controllers. This route activation
+// never records an explicit device or account preference.
+if(location.pathname==='/')await requestUiRoute('en');
 const $=id=>document.getElementById(id);
 const make=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 // Owned UI label registry (page chrome) and per-physical-node book-card label
@@ -69,7 +75,7 @@ function updateUploadProgressLabel(){
   paintStatus('upload-status',t(progress.id,progress.params));
   $('upload-status').setAttribute('lang',getUiLocale());
 }
-const api=(url,data,ticket=ownerScope.capture())=>readOwnerResponse(ownerScope,ticket,()=>fetch(url,{...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json',...((url.startsWith('/api/library')||url.startsWith('/api/account')||url.startsWith('/api/book-gifts'))?{'X-Reader-Owner':ticket.owner}:{})}}).catch(()=>{throw Object.assign(Error('网络暂时无法连接，请稍后重试。'),{retryable:true});}),()=>{ownerScope.adopt('guest');session={...session,user:null};clearPrivateUI();location.reload();});
+const api=(url,data,ticket=ownerScope.capture())=>readOwnerResponse(ownerScope,ticket,()=>fetch(url,{...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json',...((url.startsWith('/api/library')||url.startsWith('/api/account')||url.startsWith('/api/book-gifts'))?{'X-Reader-Owner':ticket.owner}:{})}}).catch(()=>{throw Object.assign(Error('网络暂时无法连接，请稍后重试。'),{retryable:true});}),()=>{ownerScope.adopt('guest');void adoptUiOwner(null);session={...session,user:null};clearPrivateUI();location.reload();});
 const isLibrary=location.pathname==='/library';$('home-view').hidden=isLibrary;$('library-view').hidden=!isLibrary;document.body.classList.toggle('library-page',isLibrary);
 const entryQuery=new URLSearchParams(location.search),entryReturn=authEntryReturn(entryQuery),returnToReader=safeGiftReturn(entryReturn)||safeReaderReturn(entryReturn);
 let returnToLibrary=!returnToReader?safeLibraryReturn(entryReturn):null;
@@ -191,7 +197,7 @@ async function refresh(knownSession){
   homeMenu?.clear(ownerScope.capture());
   try{
   const next=knownSession||await api('/api/auth/session');if(generation!==refreshGeneration)return;
-  const continueUpload=!session?.user&&next.user&&pendingUpload,continueChat=!session?.user&&next.user&&pendingChat,changed=ownerScope.adopt(next.user?.id||'guest');session=next;
+  const continueUpload=!session?.user&&next.user&&pendingUpload,continueChat=!session?.user&&next.user&&pendingChat,changed=ownerScope.adopt(next.user?.id||'guest');session=next;void adoptUiOwner(next.user?.id||null);
   // GET-188: identity rows follow the settled session immediately, independent
   // of the optional library request below.
   homeMenu?.updateIdentity(ownerScope.capture());
@@ -210,7 +216,7 @@ async function refresh(knownSession){
   }catch(error){if(generation!==refreshGeneration)return;if(isLibrary){dashboard.fail(error,arrivalTicket);$('library-retry').hidden=false;$('library-books').setAttribute('aria-busy','false');}throw error;}
 }
 async function signOut(){
-  const ticket=ownerScope.capture();await api('/api/auth/logout',{},ticket);session={...session,user:null};ownerScope.adopt('guest');clearPrivateUI();
+  const ticket=ownerScope.capture();await api('/api/auth/logout',{},ticket);session={...session,user:null};ownerScope.adopt('guest');void adoptUiOwner(null);clearPrivateUI();
   try{await refresh();}catch{status('library-status',{id:'portal.status.signedOut'},true);$('library-retry').hidden=false;}
 }
 $('account-button').addEventListener('click',()=>{if(!session?.user){openAuth();return;}if(isLibrary)shell.openSettings('account');else location.href=uiHref('/library?settings=account');});
@@ -312,5 +318,5 @@ function updatePortalLabels(){
   updateUploadProgressLabel();
 }
 onUiLocaleChange(updatePortalLabels);void uiReady.then(updatePortalLabels);
-const checkOwner=async()=>{if(document.hidden||authDialog.hasPendingSessionChange())return;try{const current=await api('/api/auth/session');if(authDialog.hasPendingSessionChange())return;if((current.user?.id||'guest')!==(session?.user?.id||'guest'))await refresh(current);}catch{}};
-window.addEventListener('focus',checkOwner);document.addEventListener('visibilitychange',checkOwner);
+const checkOwner=async()=>{if(document.hidden||authDialog.hasPendingSessionChange())return;try{const current=await api('/api/auth/session');if(authDialog.hasPendingSessionChange())return;if((current.user?.id||'guest')!==(session?.user?.id||'guest'))await refresh(current);else void adoptUiOwner(current.user?.id||null);}catch{}};
+window.addEventListener('focus',checkOwner);window.addEventListener('pageshow',checkOwner);document.addEventListener('visibilitychange',checkOwner);

@@ -1,6 +1,11 @@
 // GET-192 immutable ja UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "ui.accountLocale.reading": "アカウントの表示言語を確認しています…",
+  "ui.accountLocale.saving": "表示言語を保存しています…",
+  "ui.accountLocale.saved": "アカウントに保存しました。他の端末にも引き継がれます。",
+  "ui.accountLocale.error": "アカウントの表示言語を同期できませんでした。この端末では引き続き言語を選べます。",
+  "ui.accountLocale.conflict": "他の端末で表示言語が変更されました。現在の表示は維持されます。再試行すると今回の選択を保存します。",
   "reader.annotation.draft": "下書き",
   "reader.annotation.reviewed": "確認済み",
   "reader.annotation.savedSelection": "保存時の選択文です。現在の原文や訳文は変更されています。",

@@ -9,3 +9,16 @@
 本机 `npm run verify:deploy` 退出0：2526 tests，2525 pass，0 fail，1个既有Linux可选平台skip；隔离运行时初始化、正式构建、公开内容及发布allowlist检查通过，无模型请求。当前提交Linux CI另行运行，不能将本机skip算作通过。
 
 本次没有修改界面、语言、引用、阅读记录、账号授权、供应商、模型或预算。合成 QUOTA/402 不是线上根因证据。本补丁仍须当前提交CI、正常合并及同提交Production，随后使用一次有界真实请求核对结果；GET-195在站内生成、持久化及页面恢复验收完成前保持进行中。
+
+## 额度恢复后的正式验收
+
+2026-10-20，用户确认额度恢复后，先通过 DeepSeek 官方只读余额接口确认当前配置可用，再对已有失败线程进行一次有界站内重试。Production 仍为 `0d2ebb310d8af3fc4b94885b37fa089ae929f01b`，原 QUOTA/402 回执保留。该次真实生成约10.5秒完成，读回1条单独标识为站内 Agent 的 AI 消息；没有补写用户问题或运行全书翻译。
+
+真实 Chrome 使用默认协议协商直连，确认批注显示、刷新后正文一致、390×844 手机批注卡与追问框可见、关闭与输入中心可命中，无横向溢出和 pageerror。只读浏览器复核封锁额外模型、陪读与阅读进度写入；账号验收上下文和浏览器均已关闭。此结果独立于早前 HTTP/1 诊断。运行内容、身份、密钥及截图私密保留，不作为公开源码数据。
+
+- 最新 PR [#142](https://github.com/getyak/leafhour/pull/142) 已读回 MERGED；同提交 main [CI](https://github.com/getyak/leafhour/actions/runs/39404262957) 与 [Production](https://github.com/getyak/leafhour/actions/runs/39404618359) 均成功，最终线上 `release.json` 读回该提交。
+- 正式生成与持久化回执 SHA-256：`91da0d815bc3151b868701ab5661d5b29de3ce58ef8443f7d64afddb552a312c`。
+- 最终手机浏览器回执 SHA-256：`b6c513bf840512b26c713b2bd2f8bd507819331c4f76026e3bf4433dae997e81`。
+- 此前 Production 正式 MCP SDK 已验证外部 AI 写入与精确重放、来源区分、JSON 导出、撤销按书授权后拒绝访问；后续诊断提交未改变该权限与领域服务。
+
+GET-195 已在全部必要验收后改为 Done，并读回完成状态。该结论不代表 GET-198 或其他尚在开发的功能已发布。

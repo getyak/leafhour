@@ -3,7 +3,7 @@
 // the public lazy owners resolve the same /ui-locale.mjs URL and API identity.
 //
 // Boundaries:
-// - static imports are only the pure codec and the immutable English catalogue;
+// - static imports are the codec, English data and explicit account factories;
 // - the three selected non-English catalogues load through exactly six literal
 //   dynamic imports (three base URLs + three fixed ?retry=1 URLs) below;
 // - no component imports and no cycle into any owner.
@@ -16,8 +16,19 @@
 // advances the generation and cancels pending work without republishing labels;
 // the owned canonical navigation context captured at request start is rechecked
 // immediately before the first commit side effect.
+//
+// GET-198 manual/account split: every legal picker intent starts with a
+// strictly increasing intent token and only the picker commit that truly
+// activated and completed BOTH the history and device steps emits the matching
+// manual success event. initial/route/popstate/account recovery never emit one.
+// The account-actor recovery activates only catalogues in this same singleton:
+// no device preference, no history write, no remount. Its caller-captured
+// isCurrent guard is rechecked after the async catalogue settles and before
+// any active state/document/subscription side effect; a stale guard settles
+// only its own pending request and can never tear down a newer picker.
 import {UI_LOCALES,DEFAULT_UI_LOCALE,UI_PREFERENCE_KEY,isUiLocale,browserUiLocale,parseUiParam,withUiParam,readUiParam,mergeOwnedUi,classifyUiRoute,uiNavigationContext,sameUiNavigationContext} from './ui-locale-codec.mjs';
 import englishCatalogue from './ui-catalogs/en.mjs';
+import {createBrowserAccountUiPreferences} from './account-ui-preferences-browser.mjs';
 
 export const UI_LOCALE_ATTEMPT_MS=3000;
 export const UI_LOCALE_RETRY_QUERY='?retry=1';
@@ -128,8 +139,9 @@ export function createUiLocale({
   const englishData=validateUiCatalogue(english,'en',english);
   const catalogues=new Map([['en',englishData]]);
   const attempts=new Map(); // code -> {base,retry}
-  const languageListeners=new Set(),stateListeners=new Set(),faultListeners=new Set(),beforePopListeners=new Set(),roots=new Set();
+  const languageListeners=new Set(),stateListeners=new Set(),faultListeners=new Set(),beforePopListeners=new Set(),manualIntentListeners=new Set(),manualCommitListeners=new Set(),roots=new Set();
   let generation=0,currentRequest=null,firstSettled=false,uiReadyResolve=null,started=false,startPromise=null;
+  let intentToken=0,retryIntentToken=null;
   const uiReady=new Promise(resolve=>{uiReadyResolve=resolve;});
   const state={
     requested:DEFAULT_UI_LOCALE,
@@ -150,6 +162,10 @@ export function createUiLocale({
     initialFallback:state.initialFallback
   });
   const emitState=()=>{for(const listener of [...stateListeners]){try{listener(snapshot());}catch(error){reportSubscriberFault('state',error);}}};
+  const emitManualIntent=payload=>{for(const listener of [...manualIntentListeners]){try{listener(payload);}catch(error){reportSubscriberFault('manual-intent',error);}}};
+  const emitManualCommit=payload=>{for(const listener of [...manualCommitListeners]){try{listener(payload);}catch(error){reportSubscriberFault('manual-commit',error);}}};
+  // A caller guard may throw; a throwing guard is a stale guard.
+  const guardHolds=isCurrent=>{if(typeof isCurrent!=='function')return true;try{return !!isCurrent();}catch{return false;}};
   const reportSubscriberFault=(kind,error)=>{
     try{reportFault({kind,error});}catch{}
     for(const listener of [...faultListeners]){try{listener({kind,error});}catch{}}
@@ -237,23 +253,32 @@ export function createUiLocale({
     firstSettled=true;
     uiReadyResolve(snapshot());
   };
-  let currentContext=null,retryContext=null;
+  let currentContext=null,retryContext=null,retryGuard=null;
+  // A stale request cleans up ONLY its own pending bookkeeping; a newer
+  // request owns the state and is never touched here.
+  const clearOwnPending=()=>{
+    state.requested=state.effective;state.phase='ready';state.fallbackReason='none';
+    state.retryTarget=null;state.retryActor=null;retryIntentToken=null;retryGuard=null;retryContext=null;
+    state.attempt=0;state.offerReload=false;state.initialFallback=false;
+  };
   const isAuthoredActor=()=>{
     const route=classifyUiRoute(uiNavigationContext(String(getLocation().href||'')).pathname);
     return route.kind!=='canonical';
   };
-  const failRequest=(code,actor,reason,{error}={})=>{
+  const failRequest=(code,actor,reason,{error,intentToken:token=null,guard=null}={})=>{
     // Failure keeps every old active value: effective language, URL and the
     // device preference. The state discloses requested-vs-effective, the
     // retry target and the originating actor. After the one fixed retry
     // variant has also failed/timed out, no further module URL exists and the
-    // only honest fallback is a manually activated reload.
+    // only honest fallback is a manually activated reload. GET-198: a stored
+    // account request keeps its captured guard so the one explicit retry can
+    // never act unguarded.
     const record=attempts.get(code);
     const exhausted=reason==='exhausted'||(!catalogues.has(code)&&!!record&&record.base&&record.retry);
     state.phase='error';
     state.fallbackReason=reason;
     state.retryTarget=code;
-    state.retryActor=actor;retryContext=currentContext;
+    state.retryActor=actor;retryContext=currentContext;retryIntentToken=token;retryGuard=guard;
     state.offerReload=exhausted;
     if(!firstSettled){
       state.initialFallback=true;
@@ -266,10 +291,14 @@ export function createUiLocale({
     // started an attempt at all.
     return {kind:'rejected',reason,error};
   };
-  const commitHistoryFirst=(code,actor)=>{
+  const commitHistoryFirst=(code,actor,{intentToken:token=null,isCurrent=null}={})=>{
     // Synchronous commit block: no await between the final navigation-context
     // check / location read and the history write, and history failure rejects
-    // before any preference or active-language side effect.
+    // before any preference or active-language side effect. The GET-198 caller
+    // guard (account recovery) is rechecked here, before the first active
+    // state/document/subscription side effect: a stale guard never activates
+    // and never rolls back, because nothing has changed yet.
+    if(!guardHolds(isCurrent))return {kind:'stale',reason:'guard'};
     const href=String(getLocation().href||'');
     if(!sameUiNavigationContext(currentContext,uiNavigationContext(href)))return {kind:'stale',reason:'navigated'};
     let sessionOnly=false;
@@ -278,28 +307,28 @@ export function createUiLocale({
       try{target=withUiParam(href,code);}catch{return {kind:'rejected',reason:'invalid-target'};}
       // Falsy history state (0, false, '') is preserved exactly.
       try{history.replaceState(getHistoryState()??null,'',target);}
-      catch(error){return failRequest(code,actor,'history',{error});}
+      catch(error){return failRequest(code,actor,'history',{error,intentToken:token,guard:isCurrent});}
     }
     if(actor==='picker'||actor==='explicit-route'){
       if(!storage||typeof storage.setItem!=='function')sessionOnly=true;
       else{try{storage.setItem(UI_PREFERENCE_KEY,code);}catch{sessionOnly=true;}}
     }
     const previous=state.effective;
-    state.requested=code;state.effective=code;state.fallbackReason='none';state.retryTarget=null;state.retryActor=null;retryContext=null;
+    state.requested=code;state.effective=code;state.fallbackReason='none';state.retryTarget=null;state.retryActor=null;retryIntentToken=null;retryGuard=null;retryContext=null;
     state.attempt=0;state.phase='ready';state.offerReload=false;state.initialFallback=false;
-    state.persistence=actor==='picker'||actor==='explicit-route'?sessionOnly?'session-only':'saved':actor==='initial'?'initial':'route';
+    state.persistence=actor==='picker'||actor==='explicit-route'?sessionOnly?'session-only':'saved':actor==='initial'?'initial':actor==='account'?'account':'route';
     if(setDocumentLang&&!isAuthoredActor()){try{setDocumentLang(code);}catch(error){reportSubscriberFault('document-lang',error);}}
     if(previous!==code||actor==='picker')publish();
     emitState();
-    return {kind:sessionOnly?'committed+session-only':actor==='route'||actor==='initial'?'committed+route':'committed+saved',locale:code};
+    return {kind:sessionOnly?'committed+session-only':actor==='route'||actor==='initial'?'committed+route':actor==='account'?'committed+account':'committed+saved',locale:code};
   };
-  const run=async(code,actor,{useRetryVariant=false}={})=>{
+  const run=async(code,actor,{useRetryVariant=false,intentToken:token=null,isCurrent=null}={})=>{
     if(!isUiLocale(code))return {kind:'rejected',reason:'invalid'};
     const stamp=++generation;
     // A superseding request replaces the retry identity and settles the older
     // attempt as stale instead of leaving its caller promise hanging.
     cancelPending('superseded');
-    state.retryTarget=null;state.retryActor=null;retryContext=null;
+    state.retryTarget=null;state.retryActor=null;retryIntentToken=null;retryGuard=null;retryContext=null;
     if(code===state.effective&&(actor==='route'||actor==='initial')&&catalogues.has(code)){
       // Same-effective transitions skip formatting only: pending work was
       // already cancelled above and obsolete pending/error state clears.
@@ -313,7 +342,7 @@ export function createUiLocale({
     state.requested=code;state.phase='pending';state.fallbackReason='none';state.offerReload=false;
     emitState();
     const result=await new Promise(resolve=>{
-      const request={timer:null,settle:null,settled:false};
+      const request={timer:null,settle:null,settled:false,actor,intentToken:token};
       const settle=outcome=>{
         if(request.settled)return;
         request.settled=true;
@@ -338,16 +367,30 @@ export function createUiLocale({
     if(!sameUiNavigationContext(currentContext,uiNavigationContext(String(getLocation().href||'')))){
       // Every same-generation outcome from an obsolete canonical context is
       // consumed, including rejection/deadline: no obsolete retry can act.
-      state.requested=state.effective;state.phase='ready';state.fallbackReason='none';
-      state.retryTarget=null;state.retryActor=null;retryContext=null;state.attempt=0;state.offerReload=false;state.initialFallback=false;
+      clearOwnPending();
       settleFirst();emitState();return {kind:'stale',reason:'navigated'};
+    }
+    // GET-198: every async completion branch (success, reject, timeout)
+    // rechecks the captured caller guard before any outcome side effect. A
+    // stale guard settles only its own request, leaves no retryable request
+    // behind and never rolls back anything it never changed.
+    if(!guardHolds(isCurrent)){
+      clearOwnPending();
+      settleFirst();emitState();return {kind:'stale',reason:'guard'};
     }
     if(result.kind==='timeout'||result.kind==='failed'){
       const exhausted=result.error?.code==='UI_CATALOGUE_EXHAUSTED';
-      return failRequest(code,actor,result.kind==='timeout'?'timeout':exhausted?'exhausted':'load-failed',{error:result.error});
+      return failRequest(code,actor,result.kind==='timeout'?'timeout':exhausted?'exhausted':'load-failed',{error:result.error,intentToken:token,guard:isCurrent});
     }
-    const outcome=commitHistoryFirst(code,actor);
+    const outcome=commitHistoryFirst(code,actor,{intentToken:token,isCurrent});
     settleFirst();
+    if(outcome.kind==='stale'&&outcome.reason==='guard'&&stamp===generation){
+      // A stale account guard cleans up ONLY its own pending bookkeeping; a
+      // newer request owns the state and is never touched here.
+      clearOwnPending();
+      emitState();
+    }
+    if(actor==='picker'&&outcome.kind==='committed+saved'&&token)emitManualCommit({token,code});
     return outcome;
   };
   const routeTarget=()=>{
@@ -378,9 +421,28 @@ export function createUiLocale({
     onUiLocaleStateChange(fn){if(typeof fn==='function')stateListeners.add(fn);return()=>{stateListeners.delete(fn);};},
     onUiLocaleFault(fn){if(typeof fn==='function')faultListeners.add(fn);return()=>{faultListeners.delete(fn);};},
     onBeforeUiPopstate(fn){if(typeof fn==='function')beforePopListeners.add(fn);return()=>{beforePopListeners.delete(fn);};},
-    setUiLocale(code){return isUiLocale(code)?run(code,'picker'):Promise.resolve({kind:'rejected',reason:'invalid'});},
+    onUiLocaleManualIntent(fn){if(typeof fn==='function')manualIntentListeners.add(fn);return()=>{manualIntentListeners.delete(fn);};},
+    onUiLocaleManualCommit(fn){if(typeof fn==='function')manualCommitListeners.add(fn);return()=>{manualCommitListeners.delete(fn);};},
+    setUiLocale(code){
+      // Every legal picker intent starts with its strictly increasing token,
+      // emitted synchronously so owners can bind owner+intent at start.
+      if(!isUiLocale(code))return Promise.resolve({kind:'rejected',reason:'invalid'});
+      const token=++intentToken;
+      emitManualIntent({token,code});
+      return run(code,'picker',{intentToken:token});
+    },
     requestUiRoute(code){return isUiLocale(code)?run(code,'route'):Promise.resolve({kind:'rejected',reason:'invalid'});},
     requestExplicitRoute(code){return isUiLocale(code)?run(code,'explicit-route'):Promise.resolve({kind:'rejected',reason:'invalid'});},
+    requestAccountUiLocale(code,{isCurrent=null}={}){
+      // GET-198 account-actor recovery: activate only catalogues here, with no
+      // device preference, no history write and no remount. `code:null` means
+      // "no account choice" and resolves the write-free device/browser/route
+      // path. A pending manual picker owns the request until it settles: an
+      // account recovery must never tear it down.
+      if(currentRequest&&currentRequest.actor==='picker')return Promise.resolve({kind:'stale',reason:'manual-pending'});
+      if(code==null)return run(routeTarget().code,'account',{isCurrent});
+      return isUiLocale(code)?run(code,'account',{isCurrent}):Promise.resolve({kind:'rejected',reason:'invalid'});
+    },
     handlePopstate(){
       // Trusted document owners may normalize an explicitly consumed history
       // entry before route lookup. Window at-target listener order cannot give
@@ -392,12 +454,11 @@ export function createUiLocale({
       return run(target.code,'route');
     },
     initialize(){
-      // An authored route records its explicit route choice only after
-      // successful catalogue activation; canonical surfaces never persist an
-      // implicit choice.
+      // Opening a document is read-only. Only a successful manual picker
+      // (including a verified authored-link handoff) records a preference.
       const href=String(getLocation().href||'');
       const route=classifyUiRoute(uiNavigationContext(href).pathname);
-      if(route.kind!=='canonical')return run(route.code,'explicit-route');
+      if(route.kind!=='canonical')return run(route.code,'route');
       const query=readUiParam(href);
       if(query.status==='valid')return run(query.code,'route');
       const saved=readPreference();
@@ -409,15 +470,20 @@ export function createUiLocale({
       return startPromise;
     },
     retryUiLocale(){
+      // GET-198: a retry must never tear down a manual picker that is still
+      // operating, whichever request stored the retry identity (the picker's
+      // own run already replaced it).
+      if(currentRequest&&currentRequest.actor==='picker')return Promise.resolve({kind:'stale',reason:'manual-pending'});
       if(state.retryTarget&&retryContext&&!sameUiNavigationContext(retryContext,uiNavigationContext(String(getLocation().href||'')))){
-        state.requested=state.effective;state.phase='ready';state.fallbackReason='none';
-        state.retryTarget=null;state.retryActor=null;retryContext=null;state.attempt=0;state.offerReload=false;state.initialFallback=false;
+        clearOwnPending();
         settleFirst();emitState();return Promise.resolve({kind:'stale',reason:'navigated'});
       }
       const target=state.retryTarget||state.requested;
       const actor=state.retryActor||'route';
       if(!isUiLocale(target))return Promise.resolve({kind:'rejected',reason:'invalid'});
-      return run(target,actor,{useRetryVariant:true});
+      // A picker retry continues the same manual intent token; an account
+      // retry reuses its captured guard so it can never act unguarded.
+      return run(target,actor,{useRetryVariant:true,intentToken:retryIntentToken,isCurrent:retryGuard});
     }
   };
 }
@@ -426,7 +492,7 @@ export function createUiLocale({
 // mounted by the palette bootstrap (which covers all actual pages) with the
 // runtime's own resources and stays completely separate from the palette's
 // load-failure retry budget. Exhaustion offers only the honest manual reload.
-export function mountUiLocaleNotice({document:doc=globalThis.document,runtime=uiLocale}={}){
+export function mountUiLocaleNotice({document:doc=globalThis.document,runtime={...uiLocale,getUiLocaleState,onUiLocaleStateChange,retryUiLocale}}={}){
   if(!doc?.createElement)return {update(){},unmount(){}};
   const notice=doc.createElement('div');notice.className='locale-notice';notice.setAttribute('role','status');
   const retry=doc.createElement('button');retry.type='button';retry.className='text-link locale-retry';
@@ -445,6 +511,9 @@ export function mountUiLocaleNotice({document:doc=globalThis.document,runtime=ui
       notice.textContent=state.fallbackReason==='history'?runtime.t('ui.locale.historyError'):state.initialFallback?runtime.t('ui.locale.fallback.notice',{language:target}):runtime.t('ui.locale.loadFailed',{language:target,effective});
       notice.append(retry,reload);
       retry.hidden=!!state.offerReload;reload.hidden=!state.offerReload;
+    }else if(['error','conflict'].includes(state.account?.phase)){
+      notice.hidden=false;notice.textContent=runtime.t('ui.accountLocale.'+state.account.phase);notice.append(retry,reload);
+      retry.hidden=false;reload.hidden=true;
     }else notice.hidden=true;
   };
   update();
@@ -467,22 +536,28 @@ export const uiLocale=createUiLocale({
   history:globalThis.history||null,
   getLocation:()=>({href:globalThis.location?.href||''}),
   getHistoryState:()=>globalThis.history?.state,
-  setDocumentLang:code=>{if(globalThis.document)globalThis.document.documentElement.lang=code;}
+  setDocumentLang:code=>{if(globalThis.document?.documentElement)globalThis.document.documentElement.lang=code;}
 });
+
+const browserAccountUi=createBrowserAccountUiPreferences({runtime:uiLocale});
+export const adoptUiOwner=owner=>browserAccountUi.adoptOwner(owner);
 
 export const t=(id,params)=>uiLocale.t(id,params);
 export const createUiLabels=(translate=t)=>uiLocale.createUiLabels(translate);
 export const getUiLocale=()=>uiLocale.getUiLocale();
 export const getUiNavigationLocale=()=>uiLocale.getUiNavigationLocale();
-export const getUiLocaleState=()=>uiLocale.getUiLocaleState();
+export const getUiLocaleState=()=>browserAccountUi.getUiLocaleState();
 export const setUiLocale=code=>uiLocale.setUiLocale(code);
 export const onUiLocaleChange=fn=>uiLocale.onUiLocaleChange(fn);
-export const onUiLocaleStateChange=fn=>uiLocale.onUiLocaleStateChange(fn);
+export const onUiLocaleStateChange=fn=>browserAccountUi.onUiLocaleStateChange(fn);
 export const onUiLocaleFault=fn=>uiLocale.onUiLocaleFault(fn);
 export const onBeforeUiPopstate=fn=>uiLocale.onBeforeUiPopstate(fn);
 export const uiHref=url=>uiLocale.uiHref(url);
 export const bindUi=root=>uiLocale.bindUi(root);
-export const retryUiLocale=()=>uiLocale.retryUiLocale();
+export const retryUiLocale=()=>browserAccountUi.retryUiLocale();
+export const requestAccountUiLocale=(code,options)=>uiLocale.requestAccountUiLocale(code,options);
+export const onUiLocaleManualIntent=fn=>uiLocale.onUiLocaleManualIntent(fn);
+export const onUiLocaleManualCommit=fn=>uiLocale.onUiLocaleManualCommit(fn);
 export const uiReady=uiLocale.uiReady;
 export const requestUiRoute=code=>uiLocale.requestUiRoute(code);
 
@@ -491,5 +566,6 @@ export const requestUiRoute=code=>uiLocale.requestUiRoute(code);
 // and the initial transaction runs exactly once per document.
 if(globalThis.document&&globalThis.location){
   uiLocale.initializeOnce();
+  if(classifyUiRoute(globalThis.location.pathname||uiNavigationContext(String(globalThis.location.href||'')).pathname).kind==='support')void browserAccountUi.verifySupportOwner();
   globalThis.addEventListener?.('popstate',()=>{void uiLocale.handlePopstate();});
 }

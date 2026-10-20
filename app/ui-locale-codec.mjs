@@ -102,11 +102,11 @@ export function validateUiParam(code){
 // a canonical surface (library/read/gift/evals/source-review/...) that resolves
 // ui by query -> saved preference -> navigator with no implicit persistence.
 export const UI_AUTHORED_ROUTES=/* @__PURE__ */Object.freeze({
-  '/':'en', '/en':'en', '/zh-hans':'zh-Hans', '/zh-hant':'zh-Hant', '/ja':'ja',
+  '/en':'en', '/zh-hans':'zh-Hans', '/zh-hant':'zh-Hant', '/ja':'ja',
   '/mcp':'en', '/en/mcp':'en', '/zh-hans/mcp':'zh-Hans', '/zh-hant/mcp':'zh-Hant', '/ja/mcp':'ja',
   '/privacy':'en', '/en/privacy':'en', '/zh-hans/privacy':'zh-Hans', '/zh-hant/privacy':'zh-Hant', '/ja/privacy':'ja'
 });
-const UI_HOME_ROUTES=/* @__PURE__ */Object.freeze(['/', '/en', '/zh-hans', '/zh-hant', '/ja']);
+const UI_HOME_ROUTES=/* @__PURE__ */Object.freeze(['/en', '/zh-hans', '/zh-hant', '/ja']);
 export function classifyUiRoute(pathname){
   const path=String(pathname||'/')||'/';
   const code=Object.hasOwn(UI_AUTHORED_ROUTES,path)?UI_AUTHORED_ROUTES[path]:null;
@@ -131,5 +131,5 @@ export function sameUiNavigationContext(a,b){
 export function uiAuthoredPath(route,code){
   if(!isUiLocale(code)||!['/','/privacy','/mcp'].includes(route))throw Error('Invalid authored UI destination');
   const prefix={en:'','zh-Hans':'/zh-hans','zh-Hant':'/zh-hant',ja:'/ja'}[code];
-  return route==='/'?prefix||'/':prefix+route;
+  return route==='/'?prefix||'/en':prefix+route;
 }

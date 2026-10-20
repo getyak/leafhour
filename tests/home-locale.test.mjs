@@ -73,9 +73,9 @@ test('the language switcher appears on the home page with the current language m
     assert.equal(switchers.length,3,'expected nav, hero and footer switchers');
     for(const [whole,inner]of switchers){
       assert.match(whole,/aria-label="/);
-      for(const row of homeLocales)assert.match(inner,new RegExp('href="'+row.route.replace(/\//g,'\\/')+'" lang="'+row.htmlLang+'"'));
+      for(const row of homeLocales)assert.match(inner,new RegExp('href="'+(row.code==='en'?'/en':row.route).replace(/\//g,'\\/')+'" lang="'+row.htmlLang+'"'));
       assert.equal((inner.match(/aria-current="true"/g)||[]).length,1);
-      assert.match(inner,new RegExp('aria-current="true" href="'+locale.route.replace(/\//g,'\\/')+'"'));
+      assert.match(inner,new RegExp('aria-current="true" href="'+(locale.code==='en'?'/en':locale.route).replace(/\//g,'\\/')+'"'));
     }
   }
 });
@@ -141,6 +141,10 @@ test('every language serves the same homepage structure over HTTP',async t=>{
     }
   }
   const alias=await fetch(base+'/en');assert.equal(alias.status,200);assert.match(await alias.text(),/<link rel="canonical" href="https:\/\/leafhour.com\/">/);
+  for(const asset of ['home-entry.mjs','home-entry-bootstrap.mjs']){
+    const response=await fetch(base+'/'+asset);assert.equal(response.status,200);assert.match(response.headers.get('content-type'),/javascript/);
+    assert.equal(await response.text(),await readFile(new URL('../app/'+asset,import.meta.url),'utf8'),'the exact public module is served without an HTML fallback');
+  }
 });
 
 test('the library shell renders the complete safe English shell and hides in-page home navigation',()=>{

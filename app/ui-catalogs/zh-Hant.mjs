@@ -1,6 +1,11 @@
 // GET-192 immutable zh-Hant UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "ui.accountLocale.reading": "正在讀取帳號的語言選擇…",
+  "ui.accountLocale.saving": "正在儲存語言選擇…",
+  "ui.accountLocale.saved": "已儲存到帳號，其他裝置也會沿用。",
+  "ui.accountLocale.error": "暫時無法同步帳號語言。你仍可在目前裝置選擇語言。",
+  "ui.accountLocale.conflict": "另一台裝置更新了語言選擇。目前介面保持不變；重試可儲存本次選擇。",
   "reader.annotation.draft": "草稿",
   "reader.annotation.reviewed": "已審校",
   "reader.annotation.savedSelection": "這是已儲存的選文，目前來源已變更。",

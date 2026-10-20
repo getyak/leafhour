@@ -3,6 +3,7 @@ import {homeDocument,homeLocales} from '../app/home-locale.mjs';
 const homeRoutes=new Map(homeLocales.map(row=>[row.route,row.code]));
 export function portalDocument(source,pathname){
   if(pathname==='/library')return libraryDocument(source);
+  if(pathname==='/')return homeDocument(source,'en').replace(/(<a\b[^>]*\bhref=")(\/(?:library|read)(?:[?#][^"]*)?)(")/g,(_,before,href,after)=>before+href.replace(/(?:\?|&amp;)ui=en(?=#|$)/,'')+after);
   if(pathname==='/en')return homeDocument(source,'en');
   const locale=homeRoutes.get(pathname);
   return locale?homeDocument(source,locale):source;

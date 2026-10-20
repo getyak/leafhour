@@ -58,7 +58,8 @@ test('codec accepts only exact canonical codes in owned URLs and keeps bounded n
 });
 
 test('route classification keeps authored path authority and canonical precedence',()=>{
-  assert.deepEqual(classifyUiRoute('/'),{kind:'home',code:'en'});
+  assert.deepEqual(classifyUiRoute('/'),{kind:'canonical',code:null});
+  assert.deepEqual(classifyUiRoute('/en'),{kind:'home',code:'en'});
   assert.deepEqual(classifyUiRoute('/zh-hans'),{kind:'home',code:'zh-Hans'});
   assert.deepEqual(classifyUiRoute('/ja'),{kind:'home',code:'ja'});
   assert.deepEqual(classifyUiRoute('/zh-hant/privacy'),{kind:'support',code:'zh-Hant'});
@@ -192,18 +193,18 @@ test('F2: retry keeps the originating actor semantics for picker, route and auth
     assert.equal(storage.get(UI_PREFERENCE_KEY),'en','the device choice is not overwritten');
     assert.equal(f.location.href,before,'the route retry writes no URL');
   }
-  // authored activation retry persists its explicit choice after activation.
+  // Opening and retrying an authored document remain read-only.
   {
     const pending=new Map();const storage=new Map();
     const f=fixture({loader:(code,{retry=false}={})=>new Promise((resolve,reject)=>pending.set(code+(retry?'?retry=1':''),{resolve,reject})),storage:storeFrom(storage),href:'https://leafhour.com/ja'});
     const first=f.runtime.initialize();
     pending.get('ja').reject(Error('base down'));
     assert.equal((await first).kind,'rejected');
-    assert.equal(f.runtime.getUiLocaleState().retryActor,'explicit-route');
+    assert.equal(f.runtime.getUiLocaleState().retryActor,'route');
     const retry=f.runtime.retryUiLocale();
     pending.get('ja?retry=1').resolve(okCatalogue('ja'));
-    assert.equal((await retry).kind,'committed+saved','the authored choice persists only after activation');
-    assert.equal(storage.get(UI_PREFERENCE_KEY),'ja');
+    assert.equal((await retry).kind,'committed+route','document activation is not a manual choice');
+    assert.equal(storage.get(UI_PREFERENCE_KEY),undefined);
   }
 });
 
@@ -307,8 +308,8 @@ test('F4: authored route language is authoritative over a conflicting ui query',
   const f=fixture({loader:async code=>okCatalogue(code),storage:storeFrom(storage),href:'https://leafhour.com/zh-hans?ui=ja'});
   const result=await f.runtime.initialize();
   assert.equal(f.runtime.getUiLocale(),'zh-Hans','the authored path wins over the conflicting query');
-  assert.equal(result.kind,'committed+saved','an authored route records its explicit choice after activation');
-  assert.equal(storage.get(UI_PREFERENCE_KEY),'zh-Hans');
+  assert.equal(result.kind,'committed+route','opening an authored route cannot create a manual preference');
+  assert.equal(storage.get(UI_PREFERENCE_KEY),'en','the existing manual device choice is preserved');
 });
 
 test('same-effective Back cancels a pending picker attempt and never republishes labels',async()=>{
@@ -388,7 +389,7 @@ test('production singleton bootstrap runs once and classifies actual routes',asy
     const {mod,storage}=await productionSingleton({href:'https://leafhour.com/zh-hans?ui=ja'});
     await mod.uiReady;
     assert.equal(mod.getUiLocale(),'zh-Hans','authored home routes are path-authoritative');
-    assert.equal(storage.get(UI_PREFERENCE_KEY),'zh-Hans','an authored route records its explicit choice after activation');
+    assert.equal(storage.get(UI_PREFERENCE_KEY),undefined,'an authored opening does not record a manual choice');
   }
   restoreGlobals();
   {
@@ -420,7 +421,7 @@ const runtimeStub=[
  " return null;};"
 ].join('\n');
 const catalogueFiles={'app/ui-catalogs/en.mjs':'export default {};','app/ui-catalogs/zh-Hans.mjs':'export default {};','app/ui-catalogs/zh-Hant.mjs':'export default {};','app/ui-catalogs/ja.mjs':'export default {};'};
-const backing=['app/ui-locale.mjs','app/ui-locale-codec.mjs','app/ui-catalogs/en.mjs','app/ui-catalogs/zh-Hans.mjs','app/ui-catalogs/zh-Hant.mjs','app/ui-catalogs/ja.mjs'];
+const backing=['app/ui-locale.mjs','app/ui-locale-codec.mjs','app/account-ui-preferences-browser.mjs','app/account-ui-preferences.mjs','app/account-ui-preferences-transport.mjs','app/authored-ui-choice.mjs','app/ui-catalogs/en.mjs','app/ui-catalogs/zh-Hans.mjs','app/ui-catalogs/zh-Hant.mjs','app/ui-catalogs/ja.mjs'];
 const readerHtml='<head><script type="module" src="/reader.js"></script><script type="module" src="/reader-translation.js"></script><script type="module" src="/palette-bootstrap.mjs"></script><link rel="stylesheet" href="/styles.css"></head>';
 async function graphFixture(t,files,release){
   const root=await mkdtemp(path.join(tmpdir(),'ui-locale-graph-'));

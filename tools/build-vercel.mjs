@@ -17,8 +17,8 @@ await cp(appDir, outputDir, { recursive: true });
 const readerWeb=await buildReaderWeb({root,outputDir,html:await readFile(path.join(appDir,'index.html'),'utf8')});
 await writeFile(path.join(outputDir,'read.html'),readerWeb.html);
 const home = await readFile(path.join(appDir, 'home.html'), 'utf8');
-// English is the default language at the root; every language also has its own URL.
-await writeFile(path.join(outputDir, 'index.html'), homeDocument(home, 'en'));
+// The root is a safe automatic entry; authored language pages have stable URLs.
+await writeFile(path.join(outputDir, 'index.html'), portalDocument(home, '/'));
 await writeFile(path.join(outputDir, 'library.html'), portalDocument(home, '/library'));
 for (const locale of homeLocales) {
   const directory = locale.route === '/' ? 'en' : locale.route.slice(1);

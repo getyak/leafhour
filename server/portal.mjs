@@ -27,6 +27,7 @@ import {authPurpose,authFailure} from './auth-policy.mjs';
 import {safeGiftReturn} from '../app/reader-return.mjs';
 import {authFailureReturn} from '../app/auth-return.mjs';
 import {createAccountProfile} from './account-profile.mjs';
+import {createAccountUiPreferences} from './account-ui-preferences.mjs';
 import {createPaddleProvider} from './paddleocr.mjs';
 import {createBookIngestion} from './book-ingestion.mjs';
 import {createIngestionStorage} from './ingestion-storage.mjs';
@@ -58,6 +59,9 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const ingestionUpload=createIngestionUpload({store:ingestionStore,ingestion});
   const ingestionRunner=createIngestionRunner({store:ingestionStore,ingestion,schedule,env,publicOrigin:dataStore?publicOrigin:null});
   const profile=createAccountProfile({dataDir:path.join(dataDir,'library'),dataStore});
+  // GET-198 bounded batch: the account UI-language choice lives in its own
+  // owner record beside the profile; it never touches reading language/mode.
+  const uiPreferences=createAccountUiPreferences({dataDir:path.join(dataDir,'library'),dataStore});
   const gifts=createBookGifts({library,dataDir:path.join(dataDir,'library'),dataStore,getProfile:profile.get});
   const giftQuotes=createGiftQuoteService({library,gifts,generator:giftQuoteGenerator,env,onDiagnostic:env.VERCEL==='1'?event=>console.warn(JSON.stringify(event)):undefined});
   const visibleUser=async user=>user?{id:user.id,email:user.email||null,kind:user.kind,...await profile.get(user)}:null;
@@ -121,7 +125,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['library-profile.mjs','library-book-actions.mjs','reading-schedule.mjs','shelf-order.mjs','library-personal.css','book-gift.css','book-gift.mjs','gift-preview.mjs','gift-ritual.mjs','gift-compose.mjs','gift-compose.css','gift-identity.mjs','gift-compose-state.mjs','gift-quote.mjs','gift-waves.mjs','reader-return.mjs'])files['/'+file]=file;
     files['/gift-preview']='book-gift.html';for(const file of ['brand-assets/letter-edge.svg','brand-assets/envelope-edge.svg'])files['/'+file]=file;
     if(safeGiftReturn(p)){files[p]='book-gift.html';res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Cache-Control','private, no-store');}
-    Object.assign(files,{'/mcp-guide.css':'mcp-guide.css','/home-locale.mjs':'home-locale.mjs','/discovery.css':'discovery.css','/robots.txt':'robots.txt','/sitemap.xml':'sitemap.xml'});
+    Object.assign(files,{'/mcp-guide.css':'mcp-guide.css','/home-locale.mjs':'home-locale.mjs','/home-entry.mjs':'home-entry.mjs','/home-entry-bootstrap.mjs':'home-entry-bootstrap.mjs','/account-ui-preferences-transport.mjs':'account-ui-preferences-transport.mjs','/account-ui-preferences-browser.mjs':'account-ui-preferences-browser.mjs','/account-ui-preferences.mjs':'account-ui-preferences.mjs','/authored-ui-choice.mjs':'authored-ui-choice.mjs','/discovery.css':'discovery.css','/robots.txt':'robots.txt','/sitemap.xml':'sitemap.xml'});
     // GET-167 typography foundation: shared tokens plus the self-hosted
     // Newsreader faces (OFL-1.1); the hosted build also ships its public manifest.
     for(const file of ['typography.css','fonts/newsreader/newsreader-var.woff2','fonts/newsreader/newsreader-italic-var.woff2','fonts/newsreader/OFL.txt'])files['/'+file]=file;
@@ -160,9 +164,9 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     const token=cookieToken(req);
     if(p==='/api/auth/logout'&&req.method==='POST'){await jsonBody(req,4096);await auth.logout(token);res.setHeader('Set-Cookie',`marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${publicOrigin?.startsWith('https:')?'; Secure':''}`);send(200,{signedOut:true});return true;}
     const user=req.method==='GET'&&p.startsWith('/api/book-gifts/')?null:await auth.userFor(token);
-    const ownerScoped=p.startsWith('/api/library')||p==='/api/account/reading-preferences'||req.method==='POST'&&(p==='/api/account/profile'||/^\/api\/book-gifts\/[^/]+\/(?:accept|revoke)$/.test(p));
+    const ownerScoped=p.startsWith('/api/library')||p==='/api/account/reading-preferences'||p==='/api/account/ui-preferences'||req.method==='POST'&&(p==='/api/account/profile'||/^\/api\/book-gifts\/[^/]+\/(?:accept|revoke)$/.test(p));
     if(ownerScoped&&req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==(user?.id||'guest')){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房。原账户草稿仍留在原处。',409);}
-    const body=req.method==='POST'?await jsonBody(req,p==='/api/account/reading-preferences'?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
+    const body=req.method==='POST'?await jsonBody(req,p==='/api/account/ui-preferences'?4*1024:p==='/api/account/reading-preferences'?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
     const localAllowed=allowLocal&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)&&!publicOrigin;
     const setSession=value=>res.setHeader('Set-Cookie',`marginalia_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${value?604800:0}${publicOrigin?.startsWith('https:')?'; Secure':''}`);
     if(p==='/api/auth/session'&&req.method==='GET'){
@@ -176,6 +180,20 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       // GET is read-only and creates no state; guests only ever see an empty view.
       if(req.method==='GET'){send(200,user?await library.getReadingPreferences(user):{revision:0,updatedAt:null,preferences:null});return true;}
       send(200,await library.saveReadingPreferences(user,body));return true;
+    }
+    if(p==='/api/account/ui-preferences'){
+      res.setHeader('Cache-Control','private, no-store');
+      // Both methods need the signed-in account. GET is read-only, may omit the
+      // owner header and creates no state; a present header must still match.
+      // POST is a strict owner-scoped write under the shared Origin/CSRF bound.
+      if(!user)throw fail('请先进入自己的书房',401);
+      if(req.method==='GET'){
+        if(req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==user.id)throw fail('请重新核对当前书房账户',409);
+        send(200,await uiPreferences.get(user));return true;
+      }
+      if(req.method!=='POST')throw fail('不支持这个请求',405);
+      if(req.headers['x-reader-owner']!==user.id)throw fail('请重新核对当前书房账户',409);
+      send(200,await uiPreferences.save(user,body));return true;
     }
     if(p==='/api/account/profile'&&req.method==='POST'){send(200,await profile.save(user,body));return true;}
     if(p==='/api/auth/oauth'&&req.method==='POST'){
@@ -364,5 +382,5 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     }
     throw fail('找不到这个操作',404);
   }
-  return {handle,library,portability,auth,profile,gifts,giftQuotes,audio,audioRoutes,chat,bookIntroductions,dailyReading,ingestionRunner,setLegacyBook:book=>{legacyBook=book;}};
+  return {handle,library,portability,auth,profile,uiPreferences,gifts,giftQuotes,audio,audioRoutes,chat,bookIntroductions,dailyReading,ingestionRunner,setLegacyBook:book=>{legacyBook=book;}};
 }

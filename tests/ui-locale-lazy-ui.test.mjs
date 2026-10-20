@@ -60,7 +60,7 @@ test('bootstrap failed import and synchronous setup failure retain retry in curr
 
 async function sourceOwnerWithRuntime(runtime){
  const source=await readFile(new URL('../app/source-review.mjs',import.meta.url),'utf8'),ast=parse(source,{ecmaVersion:'latest',sourceType:'module'}),bindings={},edits=[];
- for(const entry of ast.body){if(entry.type==='ImportDeclaration'){const dependency=entry.source.value==='./ui-locale.mjs'?runtime:await import(new URL('../app/'+entry.source.value.slice(2),import.meta.url));for(const spec of entry.specifiers)bindings[spec.local.name]=dependency[spec.imported?.name||'default'];edits.push([entry.start,entry.end,'']);}else if(entry.type==='ExportNamedDeclaration')edits.push([entry.start,entry.declaration.start,'']);}
+ for(const entry of ast.body){if(entry.type==='ImportDeclaration'){const dependency=entry.source.value==='./ui-locale.mjs'?{adoptUiOwner:async()=>({adopted:false}),...runtime}:await import(new URL('../app/'+entry.source.value.slice(2),import.meta.url));for(const spec of entry.specifiers)bindings[spec.local.name]=dependency[spec.imported?.name||'default'];edits.push([entry.start,entry.end,'']);}else if(entry.type==='ExportNamedDeclaration')edits.push([entry.start,entry.declaration.start,'']);}
  let body=source;for(const [start,end,replacement]of edits.sort((a,b)=>b[0]-a[0]))body=body.slice(0,start)+replacement+body.slice(end);
  return vm.runInNewContext('(function(){'+body+'\nreturn {bootSourceReview,mountSourceReview};})()',{...bindings,URL,URLSearchParams,Blob,Uint8Array,DataView,crypto,atob});
 }

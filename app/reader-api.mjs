@@ -1,16 +1,21 @@
+import {adoptUiOwner} from './ui-locale.mjs';
 import {assembleBookTransfer} from './book-transfer.mjs';
 export const selectedBookId=new URLSearchParams(location.search).get('book');
 export const readerSession=selectedBookId?await fetch('/api/auth/session').then(r=>r.json()).catch(()=>({user:null})):null;
+// This document leaves on identity change; every account consumer shares
+// the same captured ID instead of reinterpreting a mutable session object.
+export const readerOwner=readerSession?.user?.id||null;
+void adoptUiOwner(readerOwner);
 export function readerApiUrl(url){
   // Explicit library, gift, account and auth routes keep their original scope.
   if(!selectedBookId||!url.startsWith('/api/')||['/api/library/','/api/book-gifts/','/api/account/','/api/auth/'].some(prefix=>url.startsWith(prefix)))return url;
   const action=url.slice('/api/'.length);return '/api/library/books/'+encodeURIComponent(selectedBookId)+(action==='book'?'':'/'+action);
 }
-export const readerStorageKey=name=>name+(selectedBookId?'|'+(readerSession?.user?.id||'guest')+'|'+selectedBookId:'');
+export const readerStorageKey=name=>name+(selectedBookId?'|'+(readerOwner||'guest')+'|'+selectedBookId:'');
 const leaveChangedSession=()=>{document.dispatchEvent(new Event('reader:session-changed'));location.replace('/library');};
 export async function readerFetch(url,options={}){
-  const response=await fetch(readerApiUrl(url),{...options,headers:{...(options.headers||{}),...(url==='/api/book'?{'X-Reader-Book-Transfer':'1'}:{}),...(selectedBookId?{'X-Reader-Owner':readerSession?.user?.id||'guest'}:{})}});
+  const response=await fetch(readerApiUrl(url),{...options,headers:{...(options.headers||{}),...(url==='/api/book'?{'X-Reader-Book-Transfer':'1'}:{}),...(selectedBookId?{'X-Reader-Owner':readerOwner||'guest'}:{})}});
   if(response.headers.get('X-Reader-Session-Changed')==='1'){leaveChangedSession();throw Error('账户已切换，请重新进入书房。');}
   if(response.ok&&response.headers.get('X-Reader-Book-Transfer')==='parts'){const manifest=await response.json(),book=await assembleBookTransfer(manifest,async(offset,snapshot)=>{const partUrl=new URL(url,location.origin);partUrl.searchParams.set('offset',offset);partUrl.searchParams.set('snapshot',snapshot);const r=await readerFetch(url==='/api/book'?'/api/content-part?offset='+offset+'&snapshot='+snapshot:partUrl.pathname+partUrl.search);if(!r.ok)throw Error('正文已更新或传输中断，请重新载入。');return r.json();});return new Response(JSON.stringify(book),{headers:{'Content-Type':'application/json'}});}return response;
 }
-if(selectedBookId){const checkIdentity=async()=>{if(document.hidden)return;try{const current=await fetch('/api/auth/session').then(r=>r.json());if((current.user?.id||'guest')!==(readerSession?.user?.id||'guest'))leaveChangedSession();}catch{}};window.addEventListener('focus',checkIdentity);document.addEventListener('visibilitychange',checkIdentity);}
+if(selectedBookId){const checkIdentity=async()=>{if(document.hidden)return;try{const current=await fetch('/api/auth/session').then(r=>r.json());if((current.user?.id||null)!==readerOwner)leaveChangedSession();else void adoptUiOwner(readerOwner);}catch{}};window.addEventListener('focus',checkIdentity);window.addEventListener('pageshow',checkIdentity);document.addEventListener('visibilitychange',checkIdentity);}

@@ -742,5 +742,21 @@
   "tests/reader-annotation-assets.test.mjs",
   "tests/reader-annotations-external.test.mjs",
   "tests/reader-annotations-mcp.test.mjs",
-  "tests/reader-annotations-external-cas.test.mjs"
+  "tests/reader-annotations-external-cas.test.mjs",
+  "server/account-ui-preferences.mjs",
+  "tests/account-ui-preferences.test.mjs",
+  "app/home-entry.mjs",
+  "app/home-entry-bootstrap.mjs",
+  "tests/home-auto-entry.test.mjs",
+  "tests/home-auto-route.test.mjs",
+  "app/account-ui-preferences-transport.mjs",
+  "app/authored-ui-choice.mjs",
+  "tests/account-ui-preferences-transport.test.mjs",
+  "tests/account-ui-preferences-presentation.test.mjs",
+  "tests/authored-ui-choice.test.mjs",
+  "app/account-ui-preferences.mjs",
+  "tests/account-ui-preferences-client.test.mjs",
+  "tests/ui-locale-account.test.mjs",
+  "app/account-ui-preferences-browser.mjs",
+  "tests/account-ui-preferences-browser.test.mjs"
 ]
