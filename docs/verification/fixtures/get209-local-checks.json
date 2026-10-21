@@ -1,0 +1,114 @@
+{
+  "evidenceKind": "local-validation-no-provider-calls",
+  "baseCommit": "bd0cf52e432f036c59228570c805a821cf294f85",
+  "testConcurrency": 2,
+  "tests": {
+    "total": 2872,
+    "passed": 2871,
+    "failed": 0,
+    "skipped": 1
+  },
+  "copy": {
+    "vale": "3.24.0",
+    "textlint": "15.8.0",
+    "newT1Errors": 0,
+    "documentedDebt": 394,
+    "retainedWarnings": 1922
+  },
+  "stages": [
+    {
+      "stage": "full-tests",
+      "exitCode": 0
+    },
+    {
+      "stage": "copy-export",
+      "exitCode": 0
+    },
+    {
+      "stage": "copy-lint",
+      "exitCode": 0
+    },
+    {
+      "stage": "copy-canaries",
+      "exitCode": 0
+    },
+    {
+      "stage": "reader-runtime",
+      "exitCode": 0
+    },
+    {
+      "stage": "vercel-build",
+      "exitCode": 0
+    },
+    {
+      "stage": "public-build",
+      "exitCode": 0
+    },
+    {
+      "stage": "release-policy",
+      "exitCode": 0
+    },
+    {
+      "stage": "release-verification",
+      "exitCode": 0
+    },
+    {
+      "stage": "packaged-pdf",
+      "exitCode": 0
+    }
+  ],
+  "logs": [
+    {
+      "name": "copy-canaries.log",
+      "sha256": "0141fdd6ff619bde33e395b474e62de2925a82c6afc8e0cd868e349fcffa70eb"
+    },
+    {
+      "name": "copy-export.log",
+      "sha256": "0a739e5905e0a771c1c2c361d8417a8cf390759c466a423524c9f5608222d93d"
+    },
+    {
+      "name": "copy-lint.log",
+      "sha256": "3371c46c5742b326ed25ee380995777c52fe5246476733f50dcfdb5b990dd620"
+    },
+    {
+      "name": "full-tests.log",
+      "sha256": "83a7e038b1fb27c8a307964d2d9f017f00b4e841e056bbb3d9d095515d468d55"
+    },
+    {
+      "name": "initial-copy-lint.log",
+      "sha256": "3ea3f29e0a4aa4810795e859afa31cf3229c4345e74f993d64cdb58c77ef86a8"
+    },
+    {
+      "name": "initial-full-tests.log",
+      "sha256": "bff2ae3429f90792365d5756b3bb5b14cee3a09e9c2b56ed2540c9df10a63767"
+    },
+    {
+      "name": "packaged-pdf.log",
+      "sha256": "c46f1535456c79d99d56f9315180ef044e8e15e1e367cb3dc804c7d34ebb8cbb"
+    },
+    {
+      "name": "packaging-recheck.log",
+      "sha256": "7529a719de400a12249e262a50a897c29c6346cae6f3525ed24d19955df38d3f"
+    },
+    {
+      "name": "public-build.log",
+      "sha256": "58e097214fa0878a5615f3e32f460a5fd88e14dfec706b34ac586318111a2ed1"
+    },
+    {
+      "name": "reader-runtime.log",
+      "sha256": "c1012651a39fb225ff07a7f208888ae2f3b5fc21d2a3ba550698117075a11778"
+    },
+    {
+      "name": "release-policy.log",
+      "sha256": "c26c8810224a5a060763e95c2381bf2ade5e534b959a0249ff28026670ca0299"
+    },
+    {
+      "name": "release-verification.log",
+      "sha256": "2387f0dd103784033c92bf57b5bdb543c8943b27c295f8b15c30be6056d17348"
+    },
+    {
+      "name": "vercel-build.log",
+      "sha256": "505b5c7764af6ef7f591850ee452361706baed3e3f293d24cb0bd724aadb0a0d"
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "offline-routing-with-mock-provider",
+  "generatedAt": "2026-10-21T10:49:06.620Z",
+  "environment": {
+    "node": "v22.23.2",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "realAbStatus": "blocked-quota-and-cost-unverified",
+  "realOcrPages": 0,
+  "liveLibraryWrites": 0,
+  "qualityMetrics": null,
+  "providerElapsedMs": null,
+  "accountQuota": null,
+  "providerBilling": null,
+  "limitations": [
+    "Only native PDF extraction and local routing are measured.",
+    "Mock output is not OCR quality evidence. Local duration is not provider latency.",
+    "No private source, provider credentials, network request, or live library is used.",
+    "Synthetic English pages do not establish real-book or Chinese OCR quality."
+  ],
+  "samples": [
+    {
+      "id": "single-column",
+      "sha256": "76e1cdc64b90b06f09a7016dc374e07be8438239c50b5627b7c415b7c0249ae3",
+      "bytes": 950,
+      "totalPages": 1,
+      "rights": {
+        "kind": "synthetic",
+        "license": "CC0-1.0",
+        "source": "generated-by-this-tool",
+        "privateInputs": false
+      },
+      "nativeNeedsRecognition": false,
+      "nativeObservedText": [
+        "S1 A reader opens a quiet book.\n\n\nS2 A second paragraph follows the first."
+      ],
+      "expectedReadingMarkers": [],
+      "nativeObservedMarkers": [],
+      "nativeOrderMatchesReference": null,
+      "runs": [
+        {
+          "mode": "auto",
+          "state": "done",
+          "sourceHash": "76e1cdc64b90b06f09a7016dc374e07be8438239c50b5627b7c415b7c0249ae3",
+          "localOrchestrationMs": 16.757,
+          "mockRecognitionPages": 0,
+          "mockSubmissions": 0,
+          "rawMockResults": 0,
+          "sourceBytesVerified": true,
+          "pageCoverageComplete": true,
+          "review": "extracted_unreviewed",
+          "quality": null
+        },
+        {
+          "mode": "ocr",
+          "state": "done",
+          "sourceHash": "76e1cdc64b90b06f09a7016dc374e07be8438239c50b5627b7c415b7c0249ae3",
+          "localOrchestrationMs": 9.309,
+          "mockRecognitionPages": 1,
+          "mockSubmissions": 1,
+          "rawMockResults": 1,
+          "sourceBytesVerified": true,
+          "pageCoverageComplete": true,
+          "review": "extracted_unreviewed",
+          "quality": null
+        }
+      ]
+    },
+    {
+      "id": "scan",
+      "sha256": "e4fd73642f9d84d39c39ed31d9a79580a90e5a131d0b7270fc4b56bc9f9589ad",
+      "bytes": 8958,
+      "totalPages": 1,
+      "rights": {
+        "kind": "synthetic",
+        "license": "CC0-1.0",
+        "source": "generated-by-this-tool",
+        "privateInputs": false
+      },
+      "nativeNeedsRecognition": true,
+      "nativeObservedText": [
+        ""
+      ],
+      "expectedReadingMarkers": [],
+      "nativeObservedMarkers": [],
+      "nativeOrderMatchesReference": null,
+      "runs": [
+        {
+          "mode": "auto",
+          "state": "done",
+          "sourceHash": "e4fd73642f9d84d39c39ed31d9a79580a90e5a131d0b7270fc4b56bc9f9589ad",
+          "localOrchestrationMs": 15.843,
+          "mockRecognitionPages": 1,
+          "mockSubmissions": 1,
+          "rawMockResults": 1,
+          "sourceBytesVerified": true,
+          "pageCoverageComplete": true,
+          "review": "extracted_unreviewed",
+          "quality": null
+        },
+        {
+          "mode": "ocr",
+          "state": "done",
+          "sourceHash": "e4fd73642f9d84d39c39ed31d9a79580a90e5a131d0b7270fc4b56bc9f9589ad",
+          "localOrchestrationMs": 4.861,
+          "mockRecognitionPages": 1,
+          "mockSubmissions": 1,
+          "rawMockResults": 1,
+          "sourceBytesVerified": true,
+          "pageCoverageComplete": true,
+          "review": "extracted_unreviewed",
+          "quality": null
+        }
+      ]
+    },
+    {
+      "id": "columns-footnote",
+      "sha256": "fa002c432204b686c62486a4bf51dd5758a042ddf9b99712e41a96875afbfe33",
+      "bytes": 1038,
+      "totalPages": 1,
+      "rights": {
+        "kind": "synthetic",
+        "license": "CC0-1.0",
+        "source": "generated-by-this-tool",
+        "privateInputs": false
+      },
+      "nativeNeedsRecognition": false,
+      "nativeObservedText": [
+        "L1 Left column begins here.   R1 Right column begins here. \n\n\nF1 Footnote belongs after both columns. \n\n\nL2 Left column continues here.   R2 Right column continues here."
+      ],
+      "expectedReadingMarkers": [
+        "L1",
+        "L2",
+        "R1",
+        "R2",
+        "F1"
+      ],
+      "nativeObservedMarkers": [
+        "L1",
+        "R1",
+        "F1",
+        "L2",
+        "R2"
+      ],
+      "nativeOrderMatchesReference": false,
+      "runs": [
+        {
+          "mode": "auto",
+          "state": "done",
+          "sourceHash": "fa002c432204b686c62486a4bf51dd5758a042ddf9b99712e41a96875afbfe33",
+          "localOrchestrationMs": 7.053,
+          "mockRecognitionPages": 0,
+          "mockSubmissions": 0,
+          "rawMockResults": 0,
+          "sourceBytesVerified": true,
+          "pageCoverageComplete": true,
+          "review": "extracted_unreviewed",
+          "quality": null
+        },
+        {
+          "mode": "ocr",
+          "state": "done",
+          "sourceHash": "fa002c432204b686c62486a4bf51dd5758a042ddf9b99712e41a96875afbfe33",
+          "localOrchestrationMs": 2.176,
+          "mockRecognitionPages": 1,
+          "mockSubmissions": 1,
+          "rawMockResults": 1,
+          "sourceBytesVerified": true,
+          "pageCoverageComplete": true,
+          "review": "extracted_unreviewed",
+          "quality": null
+        }
+      ]
+    }
+  ]
+}
