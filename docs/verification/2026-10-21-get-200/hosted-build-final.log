@@ -1,0 +1,7 @@
+npm notice run leafhour@0.3.0 build:vercel
+npm notice run node tools/build-vercel.mjs
+Built hosted library and reader at /Users/cubxxw/ops/symphony/runtime/workspaces/GET-200/dist; private content stays in Supabase.
+npm notice run leafhour@0.3.0 check:release
+npm notice run node tools/release-policy.mjs && node tools/verify-release.mjs
+Release allowlist checked: 801 software files; private history and data excluded.
+Public build checked: expected assets and source provenance only.

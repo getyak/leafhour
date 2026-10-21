@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: a newly introduced T1 fails the lint while its alerts stay visible
+ok 1 - a newly introduced T1 fails the lint while its alerts stay visible
+  ---
+  duration_ms: 1002.410708
+  type: 'test'
+  ...
+# Subtest: warning-only copy still succeeds and keeps every warning visible
+ok 2 - warning-only copy still succeeds and keeps every warning visible
+  ---
+  duration_ms: 670.577125
+  type: 'test'
+  ...
+# Subtest: unchanged documented debt passes but stays separately visible
+ok 3 - unchanged documented debt passes but stays separately visible
+  ---
+  duration_ms: 588.686792
+  type: 'test'
+  ...
+# Subtest: a changed value or another locale loses its debt binding and fails
+ok 4 - a changed value or another locale loses its debt binding and fails
+  ---
+  duration_ms: 543.155416
+  type: 'test'
+  ...
+# Subtest: a narrow exception binds exactly one item, locale, rule and value
+ok 5 - a narrow exception binds exactly one item, locale, rule and value
+  ---
+  duration_ms: 1095.0045
+  type: 'test'
+  ...
+# Subtest: a stale exception fails the run instead of covering silently
+ok 6 - a stale exception fails the run instead of covering silently
+  ---
+  duration_ms: 536.374917
+  type: 'test'
+  ...
+# Subtest: a missing tool fails closed
+ok 7 - a missing tool fails closed
+  ---
+  duration_ms: 549.164625
+  type: 'test'
+  ...
+# Subtest: malformed and empty tool output fails closed
+ok 8 - malformed and empty tool output fails closed
+  ---
+  duration_ms: 2754.11925
+  type: 'test'
+  ...
+# Subtest: an empty corpus and an unsupported locale fail closed
+ok 9 - an empty corpus and an unsupported locale fail closed
+  ---
+  duration_ms: 3.499084
+  type: 'test'
+  ...
+# Subtest: a baseline entry must bind a value that existed at the frozen revision
+ok 10 - a baseline entry must bind a value that existed at the frozen revision
+  ---
+  duration_ms: 0.255916
+  type: 'test'
+  ...
+# Subtest: the JA textlint config freezes every preset rule at explicit warning severity
+ok 11 - the JA textlint config freezes every preset rule at explicit warning severity
+  ---
+  duration_ms: 0.308417
+  type: 'test'
+  ...
+# Subtest: the copy-lint CLI reports warnings on success and fails on new T1
+ok 12 - the copy-lint CLI reports warnings on success and fails on new T1
+  ---
+  duration_ms: 1234.564292
+  type: 'test'
+  ...
+# Subtest: changed export bytes with an old manifest fail as inventory, never as documented debt
+ok 13 - changed export bytes with an old manifest fail as inventory, never as documented debt
+  ---
+  duration_ms: 526.329708
+  type: 'test'
+  ...
+# Subtest: a second locale-matching file cannot borrow the first item exception
+ok 14 - a second locale-matching file cannot borrow the first item exception
+  ---
+  duration_ms: 534.055834
+  type: 'test'
+  ...
+# Subtest: structured but empty tool results fail closed
+ok 15 - structured but empty tool results fail closed
+  ---
+  duration_ms: 1114.27375
+  type: 'test'
+  ...
+# Subtest: textlint must report every requested file exactly once with a valid severity
+ok 16 - textlint must report every requested file exactly once with a valid severity
+  ---
+  duration_ms: 852.829584
+  type: 'test'
+  ...
+# Subtest: the JA prh T1 severity cannot be downgraded by configuration
+ok 17 - the JA prh T1 severity cannot be downgraded by configuration
+  ---
+  duration_ms: 0.119375
+  type: 'test'
+  ...
+# Subtest: a downgraded prh configuration fails even when the real JA corpus still has T1
+ok 18 - a downgraded prh configuration fails even when the real JA corpus still has T1
+  ---
+  duration_ms: 527.04475
+  type: 'test'
+  ...
+# Subtest: only explicitly reviewed static literals join the lint corpus
+ok 19 - only explicitly reviewed static literals join the lint corpus
+  ---
+  duration_ms: 536.29
+  type: 'test'
+  ...
+# Subtest: lexical aliases cannot map the same physical line twice or borrow its exception
+ok 20 - lexical aliases cannot map the same physical line twice or borrow its exception
+  ---
+  duration_ms: 1098.856375
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14226.269

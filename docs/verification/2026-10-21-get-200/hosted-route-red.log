@@ -1,0 +1,224 @@
+TAP version 13
+# Subtest: hosted JSONB manual lost-ACK recovery and repeated restore keep one exact self-report across instances
+ok 1 - hosted JSONB manual lost-ACK recovery and repeated restore keep one exact self-report across instances
+  ---
+  duration_ms: 27.0355
+  type: 'test'
+  ...
+# Subtest: database compare-and-swap preserves simultaneous notes across independent server instances
+ok 2 - database compare-and-swap preserves simultaneous notes across independent server instances
+  ---
+  duration_ms: 0.368875
+  type: 'test'
+  ...
+# Subtest: hosted library persists originals and records without a writable local directory, with owner isolation
+ok 3 - hosted library persists originals and records without a writable local directory, with owner isolation
+  ---
+  duration_ms: 3.163667
+  type: 'test'
+  ...
+# Subtest: an authorized original download plan uses trusted metadata without reading the whole source
+ok 4 - an authorized original download plan uses trusted metadata without reading the whole source
+  ---
+  duration_ms: 1.605416
+  type: 'test'
+  ...
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Subtest: download plans bind manifests to the source hash before bounded parallel signing
+ok 5 - download plans bind manifests to the source hash before bounded parallel signing
+  ---
+  duration_ms: 12.948667
+  type: 'test'
+  ...
+# Subtest: public function refuses every legacy private-book route before creating a service
+ok 6 - public function refuses every legacy private-book route before creating a service
+  ---
+  duration_ms: 0.331042
+  type: 'test'
+  ...
+# Subtest: hosting adapter selects shared portal with durable store and no local owner entry
+ok 7 - hosting adapter selects shared portal with durable store and no local owner entry
+  ---
+  duration_ms: 0.2045
+  type: 'test'
+  ...
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Subtest: hosted origin CSV enables only configured HTTPS web clients through the real portal
+ok 8 - hosted origin CSV enables only configured HTTPS web clients through the real portal
+  ---
+  duration_ms: 87.444
+  type: 'test'
+  ...
+# Subtest: hosted entry forwards profile and gift routes through the shared portal
+not ok 9 - hosted entry forwards profile and gift routes through the shared portal
+  ---
+  duration_ms: 0.649958
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-200/tests/hosted.test.mjs:81:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    /api/account/preference-memory
+
+    404 !== 200
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 404
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-200/tests/hosted.test.mjs:84:141)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: disabled hosted email never sends an OTP and hosted MCP uses only explicit HTTPS configuration
+ok 10 - disabled hosted email never sends an OTP and hosted MCP uses only explicit HTTPS configuration
+  ---
+  duration_ms: 0.366833
+  type: 'test'
+  ...
+# Subtest: oversized extracted cloud books are rejected before originals or shelf entries are saved
+ok 11 - oversized extracted cloud books are rejected before originals or shelf entries are saved
+  ---
+  duration_ms: 126.394208
+  type: 'test'
+  ...
+# Subtest: a native book above the former small-document ceiling imports and saves real separate translation variants
+ok 12 - a native book above the former small-document ceiling imports and saves real separate translation variants
+  ---
+  duration_ms: 164.610042
+  type: 'test'
+  ...
+# Subtest: translation capacity is checked before a provider call or reservation is spent
+ok 13 - translation capacity is checked before a provider call or reservation is spent
+  ---
+  duration_ms: 234.702625
+  type: 'test'
+  ...
+# Subtest: hosted authentication uses verified provider identity, keeps tokens server-side and observes logout
+ok 14 - hosted authentication uses verified provider identity, keeps tokens server-side and observes logout
+  ---
+  duration_ms: 0.955
+  type: 'test'
+  ...
+# Subtest: large private blobs survive independent processes and corruption is rejected
+ok 15 - large private blobs survive independent processes and corruption is rejected
+  ---
+  duration_ms: 46.775166
+  type: 'test'
+  ...
+# Subtest: large immutable JSON values roundtrip through document pointers and retain CAS updates
+ok 16 - large immutable JSON values roundtrip through document pointers and retain CAS updates
+  ---
+  duration_ms: 60.168958
+  type: 'test'
+  ...
+# Subtest: hosted JSON transport compresses large readable content without losing source text
+ok 17 - hosted JSON transport compresses large readable content without losing source text
+  ---
+  duration_ms: 45.824292
+  type: 'test'
+  ...
+# Subtest: user JSON is never interpreted as a chunk manifest and JSON pointers are bound to their key
+ok 18 - user JSON is never interpreted as a chunk manifest and JSON pointers are bound to their key
+  ---
+  duration_ms: 1.244875
+  type: 'test'
+  ...
+# Subtest: temporary OCR inputs stay single PDFs within the bucket limit and signed lifetimes are bounded
+ok 19 - temporary OCR inputs stay single PDFs within the bucket limit and signed lifetimes are bounded
+  ---
+  duration_ms: 5.048208
+  type: 'test'
+  ...
+# Subtest: medium JSON is compressed for gzip clients and identity clients retain a plain response
+ok 20 - medium JSON is compressed for gzip clients and identity clients retain a plain response
+  ---
+  duration_ms: 0.54175
+  type: 'test'
+  ...
+# Subtest: bounded original ranges cross storage parts without fetching complete blobs and reject mixed manifests
+ok 21 - bounded original ranges cross storage parts without fetching complete blobs and reject mixed manifests
+  ---
+  duration_ms: 1.387667
+  type: 'test'
+  ...
+# Subtest: hosted signed-upload reservation accepts EPUB with the same bounded owner staging as text
+ok 22 - hosted signed-upload reservation accepts EPUB with the same bounded owner staging as text
+  ---
+  duration_ms: 0.32075
+  type: 'test'
+  ...
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Subtest: hosted UI preference route reaches real authentication, owner fences and durable CAS
+ok 23 - hosted UI preference route reaches real authentication, owner fences and durable CAS
+  ---
+  duration_ms: 112.027209
+  type: 'test'
+  ...
+# Subtest: hosted UI preference admission is exact and never admits adjacent or legacy private routes
+ok 24 - hosted UI preference admission is exact and never admits adjacent or legacy private routes
+  ---
+  duration_ms: 0.1125
+  type: 'test'
+  ...
+# Subtest: hosted preference memory forwards the catch-all route but rejects suffix and nested lookalikes
+not ok 25 - hosted preference memory forwards the catch-all route but rejects suffix and nested lookalikes
+  ---
+  duration_ms: 0.211
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-200/tests/hosted.test.mjs:180:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    404 !== 401
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 401
+  actual: 404
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-200/tests/hosted.test.mjs:182:239)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 23
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1162.244042

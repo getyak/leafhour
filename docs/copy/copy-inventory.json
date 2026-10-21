@@ -6,7 +6,7 @@
     "inputs": [
       {
         "file": "api/[...path].js",
-        "sha256": "236604754ca311b2816fb282a24fc3a3612c3597cc733c28d7cbeea860e44659"
+        "sha256": "a1f3d72ed8939375a1d290049322ced957b08ee321f0dc5d65395529cf2cb75d"
       },
       {
         "file": "api/service.js",
@@ -989,7 +989,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "79cb370f4ee9c0d932f7b49f24d6ac14b8733427584071455d896960a899b289"
+    "inputDigest": "6ea52b8c87abe0c05d95caeff39b96d1d0691395655e54497a4d48624591046d"
   },
   "locales": [
     "en",
@@ -117123,10 +117123,10 @@
       }
     },
     {
-      "id": "candidate:api/[...path].js:26:201",
+      "id": "candidate:api/[...path].js:26:219",
       "file": "api/[...path].js",
       "line": 26,
-      "column": 201,
+      "column": 219,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "请从书房选择一本书再开始阅读",

@@ -1,0 +1,360 @@
+TAP version 13
+# Subtest: hosted JSONB manual lost-ACK recovery and repeated restore keep one exact self-report across instances
+ok 1 - hosted JSONB manual lost-ACK recovery and repeated restore keep one exact self-report across instances
+  ---
+  duration_ms: 37.821709
+  type: 'test'
+  ...
+# Subtest: database compare-and-swap preserves simultaneous notes across independent server instances
+ok 2 - database compare-and-swap preserves simultaneous notes across independent server instances
+  ---
+  duration_ms: 0.4245
+  type: 'test'
+  ...
+# Subtest: hosted library persists originals and records without a writable local directory, with owner isolation
+ok 3 - hosted library persists originals and records without a writable local directory, with owner isolation
+  ---
+  duration_ms: 3.879333
+  type: 'test'
+  ...
+# Subtest: an authorized original download plan uses trusted metadata without reading the whole source
+ok 4 - an authorized original download plan uses trusted metadata without reading the whole source
+  ---
+  duration_ms: 1.84875
+  type: 'test'
+  ...
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Subtest: download plans bind manifests to the source hash before bounded parallel signing
+ok 5 - download plans bind manifests to the source hash before bounded parallel signing
+  ---
+  duration_ms: 15.450667
+  type: 'test'
+  ...
+# Subtest: public function refuses every legacy private-book route before creating a service
+ok 6 - public function refuses every legacy private-book route before creating a service
+  ---
+  duration_ms: 0.3785
+  type: 'test'
+  ...
+# Subtest: hosting adapter selects shared portal with durable store and no local owner entry
+ok 7 - hosting adapter selects shared portal with durable store and no local owner entry
+  ---
+  duration_ms: 0.224833
+  type: 'test'
+  ...
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Subtest: hosted origin CSV enables only configured HTTPS web clients through the real portal
+ok 8 - hosted origin CSV enables only configured HTTPS web clients through the real portal
+  ---
+  duration_ms: 67.406708
+  type: 'test'
+  ...
+# Subtest: hosted entry forwards profile and gift routes through the shared portal
+ok 9 - hosted entry forwards profile and gift routes through the shared portal
+  ---
+  duration_ms: 0.602709
+  type: 'test'
+  ...
+# Subtest: disabled hosted email never sends an OTP and hosted MCP uses only explicit HTTPS configuration
+ok 10 - disabled hosted email never sends an OTP and hosted MCP uses only explicit HTTPS configuration
+  ---
+  duration_ms: 1.110209
+  type: 'test'
+  ...
+# Subtest: oversized extracted cloud books are rejected before originals or shelf entries are saved
+ok 11 - oversized extracted cloud books are rejected before originals or shelf entries are saved
+  ---
+  duration_ms: 158.952
+  type: 'test'
+  ...
+# Subtest: a native book above the former small-document ceiling imports and saves real separate translation variants
+ok 12 - a native book above the former small-document ceiling imports and saves real separate translation variants
+  ---
+  duration_ms: 222.904708
+  type: 'test'
+  ...
+# Subtest: translation capacity is checked before a provider call or reservation is spent
+ok 13 - translation capacity is checked before a provider call or reservation is spent
+  ---
+  duration_ms: 232.359625
+  type: 'test'
+  ...
+# Subtest: hosted authentication uses verified provider identity, keeps tokens server-side and observes logout
+ok 14 - hosted authentication uses verified provider identity, keeps tokens server-side and observes logout
+  ---
+  duration_ms: 0.894375
+  type: 'test'
+  ...
+# Subtest: large private blobs survive independent processes and corruption is rejected
+ok 15 - large private blobs survive independent processes and corruption is rejected
+  ---
+  duration_ms: 44.794875
+  type: 'test'
+  ...
+# Subtest: large immutable JSON values roundtrip through document pointers and retain CAS updates
+ok 16 - large immutable JSON values roundtrip through document pointers and retain CAS updates
+  ---
+  duration_ms: 61.452708
+  type: 'test'
+  ...
+# Subtest: hosted JSON transport compresses large readable content without losing source text
+ok 17 - hosted JSON transport compresses large readable content without losing source text
+  ---
+  duration_ms: 46.276959
+  type: 'test'
+  ...
+# Subtest: user JSON is never interpreted as a chunk manifest and JSON pointers are bound to their key
+ok 18 - user JSON is never interpreted as a chunk manifest and JSON pointers are bound to their key
+  ---
+  duration_ms: 1.102791
+  type: 'test'
+  ...
+# Subtest: temporary OCR inputs stay single PDFs within the bucket limit and signed lifetimes are bounded
+ok 19 - temporary OCR inputs stay single PDFs within the bucket limit and signed lifetimes are bounded
+  ---
+  duration_ms: 6.157666
+  type: 'test'
+  ...
+# Subtest: medium JSON is compressed for gzip clients and identity clients retain a plain response
+ok 20 - medium JSON is compressed for gzip clients and identity clients retain a plain response
+  ---
+  duration_ms: 0.48325
+  type: 'test'
+  ...
+# Subtest: bounded original ranges cross storage parts without fetching complete blobs and reject mixed manifests
+ok 21 - bounded original ranges cross storage parts without fetching complete blobs and reject mixed manifests
+  ---
+  duration_ms: 1.46125
+  type: 'test'
+  ...
+# Subtest: hosted signed-upload reservation accepts EPUB with the same bounded owner staging as text
+ok 22 - hosted signed-upload reservation accepts EPUB with the same bounded owner staging as text
+  ---
+  duration_ms: 0.33825
+  type: 'test'
+  ...
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Subtest: hosted UI preference route reaches real authentication, owner fences and durable CAS
+ok 23 - hosted UI preference route reaches real authentication, owner fences and durable CAS
+  ---
+  duration_ms: 113.670417
+  type: 'test'
+  ...
+# Subtest: hosted UI preference admission is exact and never admits adjacent or legacy private routes
+ok 24 - hosted UI preference admission is exact and never admits adjacent or legacy private routes
+  ---
+  duration_ms: 0.114958
+  type: 'test'
+  ...
+# Subtest: hosted preference memory forwards the catch-all route but rejects suffix and nested lookalikes
+ok 25 - hosted preference memory forwards the catch-all route but rejects suffix and nested lookalikes
+  ---
+  duration_ms: 0.225209
+  type: 'test'
+  ...
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Subtest: hosted preference memory reaches real owner authentication and persists CAS across catch-all instances
+ok 26 - hosted preference memory reaches real owner authentication and persists CAS across catch-all instances
+  ---
+  duration_ms: 92.895375
+  type: 'test'
+  ...
+# Subtest: onboarding recommends a real book before three choices and does not repeat a started write
+ok 27 - onboarding recommends a real book before three choices and does not repeat a started write
+  ---
+  duration_ms: 2.683416
+  type: 'test'
+  ...
+# Subtest: failed writes show an error and late owner responses never adopt another account preferences
+ok 28 - failed writes show an error and late owner responses never adopt another account preferences
+  ---
+  duration_ms: 1.139292
+  type: 'test'
+  ...
+# Subtest: a late read cannot roll back a newer same-account preference save
+ok 29 - a late read cannot roll back a newer same-account preference save
+  ---
+  duration_ms: 0.582666
+  type: 'test'
+  ...
+# Subtest: a read adoption callback cannot recursively start another read while refreshing
+ok 30 - a read adoption callback cannot recursively start another read while refreshing
+  ---
+  duration_ms: 0.570625
+  type: 'test'
+  ...
+# Subtest: settings selection restores focus after its asynchronous save replaces controls
+ok 31 - settings selection restores focus after its asynchronous save replaces controls
+  ---
+  duration_ms: 1.182583
+  type: 'test'
+  ...
+# Subtest: locale commits update recommendation URLs and labels without replacing editing controls
+ok 32 - locale commits update recommendation URLs and labels without replacing editing controls
+  ---
+  duration_ms: 11.947041
+  type: 'test'
+  ...
+# Subtest: a confirmed settings save queues one required read behind an older pending read
+ok 33 - a confirmed settings save queues one required read behind an older pending read
+  ---
+  duration_ms: 1.281167
+  type: 'test'
+  ...
+# Subtest: explicit preferences persist by owner, inferred values wait for confirmation, delete resets defaults
+ok 34 - explicit preferences persist by owner, inferred values wait for confirmation, delete resets defaults
+  ---
+  duration_ms: 14.411542
+  type: 'test'
+  ...
+# Subtest: onboarding is at most three questions, records assigned order and skips once, and is portable
+ok 35 - onboarding is at most three questions, records assigned order and skips once, and is portable
+  ---
+  duration_ms: 9.484917
+  type: 'test'
+  ...
+# Subtest: Agent tools capture account and require trusted per-turn permission for effective writes
+ok 36 - Agent tools capture account and require trusted per-turn permission for effective writes
+  ---
+  duration_ms: 4.770583
+  type: 'test'
+  ...
+# Subtest: hosted CAS backend persists choices and provenance without sharing another owner row
+ok 37 - hosted CAS backend persists choices and provenance without sharing another owner row
+  ---
+  duration_ms: 1.614708
+  type: 'test'
+  ...
+# Subtest: answered onboarding immediately changes the existing reader defaults and records completion once
+ok 38 - answered onboarding immediately changes the existing reader defaults and records completion once
+  ---
+  duration_ms: 4.313542
+  type: 'test'
+  ...
+# Subtest: HTTP memory endpoint requires the current owner and rejects identity injection and oversized bodies
+ok 39 - HTTP memory endpoint requires the current owner and rejects identity injection and oversized bodies
+  ---
+  duration_ms: 240.551208
+  type: 'test'
+  ...
+# Subtest: restore refuses onboarding state that would hide chat with no question or exit
+ok 40 - restore refuses onboarding state that would hide chat with no question or exit
+  ---
+  duration_ms: 0.351666
+  type: 'test'
+  ...
+# Subtest: deleting mode clears its language/form filter and unrelated preference changes leave filters alone
+ok 41 - deleting mode clears its language/form filter and unrelated preference changes leave filters alone
+  ---
+  duration_ms: 6.313833
+  type: 'test'
+  ...
+# Subtest: publication rejects private paths, credentials, traversal and private document formats
+ok 42 - publication rejects private paths, credentials, traversal and private document formats
+  ---
+  duration_ms: 2.180834
+  type: 'test'
+  ...
+# Subtest: publication copies only approved software files and removes private project links
+ok 43 - publication copies only approved software files and removes private project links
+  ---
+  duration_ms: 14.9375
+  type: 'test'
+  ...
+# Subtest: publication fails closed on missing files, symlinks and credential content
+ok 44 - publication fails closed on missing files, symlinks and credential content
+  ---
+  duration_ms: 6.733334
+  type: 'test'
+  ...
+# Subtest: hosted source metadata works without Git history and cannot fall back from an invalid ID
+ok 45 - hosted source metadata works without Git history and cannot fall back from an invalid ID
+  ---
+  duration_ms: 2.237667
+  type: 'test'
+  ...
+# Subtest: release import coverage checks query-backed files and static template imports
+ok 46 - release import coverage checks query-backed files and static template imports
+  ---
+  duration_ms: 0.714167
+  type: 'test'
+  ...
+# Subtest: the release snapshot contains local module imports and reader page assets
+ok 47 - the release snapshot contains local module imports and reader page assets
+  ---
+  duration_ms: 178.151
+  type: 'test'
+  ...
+# Subtest: Vercel route uses catch-all query when available
+ok 48 - Vercel route uses catch-all query when available
+  ---
+  duration_ms: 0.731458
+  type: 'test'
+  ...
+# Subtest: Vercel route falls back to the request URL
+ok 49 - Vercel route falls back to the request URL
+  ---
+  duration_ms: 0.127375
+  type: 'test'
+  ...
+# Subtest: gift and local-preview rewrites resolve the letter page with Vercel clean URLs
+ok 50 - gift and local-preview rewrites resolve the letter page with Vercel clean URLs
+  ---
+  duration_ms: 4.471917
+  type: 'test'
+  ...
+# Subtest: hosted function outlives the conversation lease with room for cleanup and durable save
+ok 51 - hosted function outlives the conversation lease with room for cleanup and durable save
+  ---
+  duration_ms: 0.675625
+  type: 'test'
+  ...
+1..51
+# tests 51
+# suites 0
+# pass 51
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1347.641166
