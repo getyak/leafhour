@@ -1,3 +1,4 @@
+import {mountPreferenceMemory} from './preference-memory-ui.mjs';
 import {t,onUiLocaleChange,onUiLocaleStateChange,getUiLocale,getUiLocaleState,setUiLocale,retryUiLocale,uiReady,createUiMessage} from './ui-locale.mjs';
 import {UI_LOCALES,uiAuthoredPath} from './ui-locale-codec.mjs';
 import {mountLibraryDailyReading} from './library-daily-reading.mjs';
@@ -34,7 +35,7 @@ export function roomIcons(root=document){for(const holder of root.querySelectorA
 // narrow viewports the same tabs become a horizontally scrollable strip with
 // edge fades, and the selected tab scrolls itself into view. URL/history
 // semantics stay with library-view-state and the caller callbacks.
-export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpenChat,api,onProfileUpdated,onRestored,onReadingPreferencesSaved=()=>{},getBooks=()=>[],getCurrentBook=()=>null,inboxRoot=null,onSettingsOpen=()=>{},onSettingsClose=()=>{},onSettingsTab=()=>{}}){
+export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpenChat,api,onProfileUpdated,onRestored,onReadingPreferencesSaved=()=>{},onPreferenceMemorySaved=()=>{},getBooks=()=>[],getCurrentBook=()=>null,inboxRoot=null,onSettingsOpen=()=>{},onSettingsClose=()=>{},onSettingsTab=()=>{}}){
   const header=$('library-sidebar'),navigation=$('library-nav-dialog'),settings=$('library-settings-dialog'),media=matchMedia('(max-width:980px)'),key='marginalia-library-sidebar';let collapsed=false,opener=null,navigationReturn=null;
   for(const control of header.querySelectorAll('button[data-hint]'))if(!control.hasAttribute('aria-label'))control.setAttribute('aria-label',control.dataset.hint);
   const accountButton=node('button','sidebar-account');accountButton.id='library-account';accountButton.type='button';
@@ -82,6 +83,8 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   });
   const accountActions=node('div','settings-actions'),profileRoot=node('div','account-profile-root');accountActions.append(login,logout);panels.account.append(accountTitle,accountDetail,profileRoot,accountActions,accountStatus);
   const profile=mountLibraryProfile({root:profileRoot,getSession,api,onProfileUpdated,onRestored});
+  const memoryRoot=node('section','settings-preference-memory');panels['reading-habits'].append(memoryRoot);
+  const memory=mountPreferenceMemory({root:memoryRoot,api,getSession,onSaved:onPreferenceMemorySaved});
   const habits=mountReadingPreferencesForm({root:panels['reading-habits'],api,getSession,onSaved:onReadingPreferencesSaved});
   const daily=mountLibraryDailyReading({root:panels['daily-reading'],inboxRoot,api,getSession,getBooks,getCurrentBook});
   const data=mountLibraryData({root:panels.data,getSession,api,onRestored});
@@ -98,7 +101,7 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   // operations and never triggers a business update.
   let accountUser=null;
   function accountLabels(){const user=accountUser;accountTitle.textContent=user?t('shell.account.title.signedIn'):t('shell.account.title.guest');accountDetail.textContent=user?(user.kind==='local'?t('shell.account.detail.local'):t('shell.account.detail.email')):t('shell.account.detail.guest');accountName.textContent=user?.displayName||user?.email?.split('@')[0]||(user?t('shell.account.name.local'):t('shell.account.title.guest'));accountEmail.textContent=user?.email||(user?t('shell.account.email.local'):t('shell.account.login'));const accountLabel=user?t('shell.account.settingsLabel',{name:accountName.textContent}):t('shell.account.guestLabel');accountButton.setAttribute('aria-label',accountLabel);accountButton.dataset.hint=accountLabel;if(!logoutBusy)logout.textContent=t('shell.account.logout');}
-  function update(){const user=accountUser=getSession()?.user;const nextOwner=user?.id||null;if(logoutOwner!==nextOwner){logoutOwner=nextOwner;withdrawLogout();}login.hidden=!!user;logout.hidden=!user;accountMessage.clear();renderProfileAvatar(accountAvatar,user);accountLabels();profile.update();habits.update();daily.update();data.update();appearanceSync();}
+  function update(){const user=accountUser=getSession()?.user;const nextOwner=user?.id||null;if(logoutOwner!==nextOwner){logoutOwner=nextOwner;withdrawLogout();}login.hidden=!!user;logout.hidden=!user;accountMessage.clear();renderProfileAvatar(accountAvatar,user);accountLabels();profile.update();habits.update();memory.update();daily.update();data.update();appearanceSync();}
   const sidebarToggle=$('sidebar-toggle');let sidebarLabelId=null,sidebarHintId=null;
   function sidebarLabels(){if(sidebarLabelId)sidebarToggle.setAttribute('aria-label',t(sidebarLabelId));if(sidebarHintId)sidebarToggle.dataset.hint=t(sidebarHintId);}
   function syncSidebar(){$('library-menu').setAttribute('aria-expanded',String(navigation.open));document.body.dataset.sidebarCollapsed=String(collapsed);sidebarToggle.setAttribute('aria-expanded',String(media.matches?navigation.open:!collapsed));sidebarLabelId=media.matches?'shell.sidebar.closeNav':collapsed?'shell.sidebar.expand':'shell.sidebar.collapse';sidebarHintId=collapsed?'shell.sidebar.expand':'shell.sidebar.collapse';sidebarLabels();}
@@ -111,7 +114,7 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   // to the palette bootstrap without a stale restoration.
   $('sidebar-search-open').addEventListener('click',()=>{if(navigation.open){navigationReturn=null;closeNavigation();}});
   navigation.addEventListener('close',()=>{syncSidebar();if(media.matches)(navigationReturn||$('library-menu')).focus();navigationReturn=null;});media.addEventListener('change',adapt);adapt();
-  function openSettings(name='account'){if(!settings.open)opener=settingsOpenerCandidate(document,settings)||$('library-settings');closeNavigation();update();select(panels[name]?name:'account');if(name==='daily-reading')daily.refresh();if(!settings.open){settings.showModal();onSettingsOpen(panels[name]?name:'account');}tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.focus();}
+  function openSettings(name='account'){const opening=!settings.open,changing=tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.dataset.setting!==name;if(opening)opener=settingsOpenerCandidate(document,settings)||$('library-settings');closeNavigation();update();select(panels[name]?name:'account');if(name==='daily-reading')daily.refresh();if(name==='reading-habits'&&(opening||changing))void memory.refresh();if(opening){settings.showModal();onSettingsOpen(panels[name]?name:'account');}if(opening||changing)tabButtons.find(b=>b.getAttribute('aria-selected')==='true')?.focus();}
   settings.addEventListener('close',()=>{if(settings.open)return;withdrawLogout();daily.closeTransient?.();data.closeTransient?.();const target=settingsFocusTarget(settings,opener,$('library-settings'));opener=null;target?.focus({preventScroll:true});onSettingsClose();});
   $('library-settings').addEventListener('click',()=>openSettings('account'));
   $('library-calendar').addEventListener('click',()=>{closeNavigation();onHistory();});
@@ -127,7 +130,7 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
     license.textContent=t('shell.about.license');licenseLine.textContent=t('shell.about.license.agpl');
     about.textContent=t('shell.about.tagline');source.textContent=t('shell.about.source');privacy.textContent=t('shell.about.privacy');privacy.href=uiAuthoredPath('/privacy',getUiLocale());
     appearance.updateLabels();
-    profile.updateLabels?.();habits.updateLabels?.();daily.updateLabels?.();data.updateLabels?.();
+    profile.updateLabels?.();habits.updateLabels?.();memory.updateLabels();daily.updateLabels?.();data.updateLabels?.();
     accountLabels();sidebarLabels();accountMessage.refresh();
   }
   onUiLocaleChange(updateLabels);void uiReady.then(()=>updateLabels());

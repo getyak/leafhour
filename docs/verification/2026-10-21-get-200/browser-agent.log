@@ -1,0 +1,11 @@
+### Result
+{"checks":["Agent inference remains inactive","inference leaves current shelf unchanged","per-turn consent resets","Agent changes record provenance"],"revision":7,"topic":"science","source":"agent"}
+### Ran Playwright code
+```js
+await (async page => {const checks=[];const verify=(ok,name)=>{if(!ok)throw Error(name);checks.push(name)};await page.goto('http://127.0.0.1:52997/library?ui=zh-Hans');await page.setViewportSize({width:1280,height:900});await page.locator('.library-chat-launcher').click();await page.waitForSelector('#library-chat-input:not([disabled])');await page.locator('#library-chat-input').fill('推测我的阅读主题为科学');await page.locator('.library-chat-send').click();await page.waitForFunction(()=>document.querySelector('.library-chat-messages').textContent.includes('已记录本次阅读偏好'));let memory=await page.evaluate(async()=>(await fetch('/api/account/preference-memory')).json());verify(memory.memory.topic==='fiction'&&memory.memory.suggestions.topic.value==='science','Agent inference remains inactive');verify(await page.locator('#shelf-topic').inputValue()==='fiction','inference leaves current shelf unchanged');await page.locator('.library-chat-menu summary').click();await page.locator('#chat-preference-consent').check();await page.locator('#library-chat-input').fill('请把阅读主题设置为科学');await page.locator('.library-chat-send').click();await page.waitForFunction(()=>document.querySelector('#shelf-topic').value==='science');verify(!await page.locator('#chat-preference-consent').isChecked(),'per-turn consent resets');memory=await page.evaluate(async()=>(await fetch('/api/account/preference-memory')).json());verify(memory.memory.sources.topic.source==='agent','Agent changes record provenance');await page.screenshot({path:'/private/tmp/ai-test-get-200.e3MrvP/agent-preferences-desktop.png'});return {checks,revision:memory.revision,topic:memory.memory.topic,source:memory.memory.sources.topic.source};})(page);
+```
+### Page
+- Page URL: http://127.0.0.1:52997/library?topic=science&form=bilingual&ui=zh-Hans
+- Page Title: 我的书房 · Leafhour
+### Events
+- New console entries: .playwright-cli/console-2026-10-21T09-27-36-214Z.log#L9

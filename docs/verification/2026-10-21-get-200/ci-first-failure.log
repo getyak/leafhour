@@ -1,0 +1,43 @@
+test	Export and lint product copy with the real pinned CLIs	﻿2026-10-21T09:47:39.5695423Z ##[group]Run node scripts/export-copy.mjs --root . --out build/copy
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:39.5696290Z ^[[36;1mnode scripts/export-copy.mjs --root . --out build/copy^[[0m
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:39.5697015Z ^[[36;1mgit ls-files --error-unmatch docs/copy/copy-inventory.json docs/copy/copy-inventory.csv docs/copy/copy-candidates.csv^[[0m
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:39.5697628Z ^[[36;1mgit diff --exit-code -- docs/copy^[[0m
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:39.5698032Z ^[[36;1mnode --input-type=module <<'JS'^[[0m
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:39.5698471Z ^[[36;1mimport {execFileSync} from 'node:child_process';^[[0m
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:39.5699128Z ^[[36;1mconst untracked = execFileSync('git', ['ls-files', '--others', '--exclude-standard', '--', 'docs/copy'], {encoding:'utf8'});^[[0m
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:39.5699842Z ^[[36;1mif (untracked.trim()) throw Error('Untracked copy outputs: ' + untracked);^[[0m
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:39.5700284Z ^[[36;1mJS^[[0m
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:39.5700648Z ^[[36;1mnode tools/copy-lint.mjs --manifest build/copy/manifest.json^[[0m
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:39.5732805Z shell: /usr/bin/bash -e {0}
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:39.5733383Z env:
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:39.5733814Z   LEAFHOUR_VALE_BIN: /home/runner/work/leafhour/leafhour/.copy-tools/vale
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:39.5734444Z   LEAFHOUR_TEXTLINT_BIN: /home/runner/work/leafhour/leafhour/tools/copy-tooling/node_modules/.bin/textlint
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:39.5734986Z ##[endgroup]
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.5638287Z Copy inventory: 2111 catalogue keys, 8444 locale values, 3779 unreviewed literal candidates (90 protected source), 2667 unresolved dynamic references.
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.5640725Z Copy export: en=2122 lines, zh-Hans=2122 lines, zh-Hant=2122 lines, ja=2122 lines in build/copy/; 0 explicitly reviewed static literal(s); manifest maps every line to its item.
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.5744455Z docs/copy/copy-candidates.csv
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.5745272Z docs/copy/copy-inventory.csv
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.5746123Z docs/copy/copy-inventory.json
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6377704Z diff --git a/docs/copy/copy-inventory.json b/docs/copy/copy-inventory.json
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6378565Z index 7cf6022..d369b69 100644
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6379213Z --- a/docs/copy/copy-inventory.json
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6379765Z +++ b/docs/copy/copy-inventory.json
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6380258Z @@ -922,7 +922,7 @@
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6380641Z        },
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6381028Z        {
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6381495Z          "file": "server/preference-memory.mjs",
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6382282Z -        "sha256": "59d4d0a403906a83640ee1336f30cc7c6b13c10d738fbc6e1ac2d1c64bfd5a85"
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6383240Z +        "sha256": "0c477d84119e0e6a0d2332ac20394ba7ba1e597191aa5b5628a6b99f40af7161"
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6383903Z        },
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6384283Z        {
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6384729Z          "file": "server/reader-annotation-tools.mjs",
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6385285Z @@ -989,7 +989,7 @@
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6385977Z          "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6386465Z        }
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6386787Z      ],
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6387248Z -    "inputDigest": "334b09a9a6bb81a80fc5b021051c51ae372c3136a71f6c7c819634b596d3fa1a"
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6387885Z +    "inputDigest": "79cb370f4ee9c0d932f7b49f24d6ac14b8733427584071455d896960a899b289"
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6388409Z    },
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6388663Z    "locales": [
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.6388935Z      "en",
+test	Export and lint product copy with the real pinned CLIs	2026-10-21T09:47:40.8269401Z ##[error]Process completed with exit code 1.

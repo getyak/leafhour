@@ -1,0 +1,11 @@
+### Result
+{"filter":"fiction","focus":"memory-setting-topic","disabled":false,"overflow":false}
+### Ran Playwright code
+```js
+await (async page => {await page.goto('http://127.0.0.1:49735/library?ui=zh-Hans');await page.setViewportSize({width:1280,height:900});await page.locator('#library-settings').click();await page.getByRole('tab',{name:'阅读习惯',exact:true}).click();await page.waitForSelector('#memory-setting-topic:not([disabled])');await page.locator('#memory-setting-topic').focus();await page.locator('#memory-setting-topic').selectOption('fiction');await page.waitForFunction(()=>document.querySelector('#shelf-topic').value==='fiction');await page.waitForSelector('#memory-setting-topic:not([disabled])');const focus=await page.evaluate(()=>document.activeElement.id);await page.setViewportSize({width:390,height:844});await page.screenshot({path:'/private/tmp/ai-test-get-200.e3MrvP/settings-mobile.png'});return {filter:await page.locator('#shelf-topic').inputValue(),focus,disabled:await page.locator('#memory-setting-topic').isDisabled(),overflow:await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)};})(page);
+```
+### Page
+- Page URL: http://127.0.0.1:49735/library?topic=fiction&settings=reading-habits&ui=zh-Hans
+- Page Title: 我的书房 · Leafhour
+### Events
+- New console entries: .playwright-cli/console-2026-10-21T09-27-36-214Z.log#L5-L8

@@ -17,6 +17,13 @@ const languageName=value=>{
   try{return new Intl.DisplayNames([getUiLocale()],{type:'language'}).of(value)||value;}catch{return value;}
 };
 
+export function preferenceShelfPatch(view,{keys=null}={}){
+  if(!view?.memory)return {};const patch={},wants=key=>!keys||keys.includes(key);
+  if(wants('topic'))patch.topic=view.memory.topic||'all';
+  if(wants('mode')){if(view.memory.sources.mode){patch.form=({en:'original',zh:'translated',parallel:'bilingual'})[view.preferences?.mode]||'all';patch.language=view.preferences?.mode==='zh'?'zh':'all';}else if(keys){patch.form='all';patch.language='all';}}
+  return patch;
+}
+
 export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
   const doc=root.ownerDocument;
   const find=id=>root.querySelector('#'+id),search=find('book-search'),panel=find('shelf-filter-panel'),trigger=find('shelf-filter-button');
@@ -145,6 +152,11 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
   const offLocale=onUiLocaleChange(updateLabels);void uiReady.then(updateLabels);updateLabels();
   return {
     read,set,clear,clearAll,touch(){userTouched=true;},
+    applyMemoryPreferences(view,{force=false,keys=null}={}){
+      if(!view?.memory||!force&&userTouched)return false;
+      const patch=preferenceShelfPatch(view,{keys}),before=read();if(!Object.entries(patch).some(([key,value])=>before[key]!==value))return false;
+      set(patch,{source:'preference'});return true;
+    },
     applyReadingPreferences(preferences){
       if(preferencesApplied||userTouched||hasShelfFilters(read())||!preferences)return false;
       preferencesApplied=true;

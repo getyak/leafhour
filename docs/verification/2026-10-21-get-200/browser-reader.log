@@ -1,0 +1,12 @@
+### Result
+{"checks":[{"width":390,"theme":"night","overflow":false},{"width":768,"theme":"night","overflow":false},{"width":1440,"theme":"night","overflow":false}],"mode":"parallel"}
+### Ran Playwright code
+```js
+await (async page => {await page.goto('http://127.0.0.1:52997/read?book=gutenberg-walden&ui=zh-Hans');await page.waitForFunction(()=>document.documentElement.dataset.theme==='night');const checks=[];for(const width of [390,768,1440]){await page.setViewportSize({width,height:900});checks.push({width,theme:await page.evaluate(()=>document.documentElement.dataset.theme),overflow:await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)});}return {checks,mode:await page.evaluate(()=>document.querySelector('[data-mode][aria-pressed=true]')?.dataset.mode||document.body.dataset.mode)};})(page);
+```
+### Page
+- Page URL: http://127.0.0.1:52997/read?book=gutenberg-walden&ui=zh-Hans
+- Page Title: 经济 · Leafhour
+- Console: 22 errors, 0 warnings
+### Events
+- New console entries: .playwright-cli/console-2026-10-21T09-27-36-214Z.log#L10-L31
