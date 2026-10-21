@@ -216,9 +216,11 @@ candidate:app/en/mcp.html:27:6,html-text,app/en/mcp.html,27,,unknown,reviewable,
 candidate:app/en/mcp.html:27:47,html-text,app/en/mcp.html,27,,unknown,reviewable,,ChatGPT Plugins
 candidate:app/en/mcp.html:27:66,html-text,app/en/mcp.html,27,,unknown,reviewable,,", add a custom MCP server with URL"
 candidate:app/en/mcp.html:27:107,html-text,app/en/mcp.html,27,,unknown,protected,url,https://leafhour.com/api/mcp
-candidate:app/en/mcp.html:27:143,html-text,app/en/mcp.html,27,,unknown,reviewable,,"and OAuth using dynamic client registration. Sign in on Leafhour, check the account and select one book. Access is read-only for one hour; private notes and reading activity are excluded. Call"
-candidate:app/en/mcp.html:27:342,html-text,app/en/mcp.html,27,,unknown,protected,identifier,reader_get_connection
-candidate:app/en/mcp.html:27:371,html-text,app/en/mcp.html,27,,unknown,reviewable,,to identify the selected book. Withdraw access in your bookroom’s Agent settings.
+candidate:app/en/mcp.html:27:143,html-text,app/en/mcp.html,27,,unknown,reviewable,,and OAuth. The
+candidate:app/en/mcp.html:27:231,html-text,app/en/mcp.html,27,,unknown,reviewable,,connection instructions
+candidate:app/en/mcp.html:27:259,html-text,app/en/mcp.html,27,,unknown,reviewable,,"include the pre-registered public-client path when ChatGPT rejects dynamic registration. Sign in on Leafhour, check the account and select one book. Access is read-only for one hour; private notes and reading activity are excluded. Call"
+candidate:app/en/mcp.html:27:502,html-text,app/en/mcp.html,27,,unknown,protected,identifier,reader_get_connection
+candidate:app/en/mcp.html:27:531,html-text,app/en/mcp.html,27,,unknown,reviewable,,to identify the selected book. Withdraw access in your bookroom’s Agent settings.
 candidate:app/en/mcp.html:28:6,html-text,app/en/mcp.html,28,,unknown,reviewable,,"For a reading skill, install"
 candidate:app/en/mcp.html:28:41,html-text,app/en/mcp.html,28,,unknown,protected,identifier,leafhour-reading
 candidate:app/en/mcp.html:28:65,html-text,app/en/mcp.html,28,,unknown,reviewable,,from
@@ -1746,9 +1748,11 @@ candidate:app/ja/mcp.html:26:19,html-text,app/ja/mcp.html,26,,unknown,reviewable
 candidate:app/ja/mcp.html:27:44,html-text,app/ja/mcp.html,27,,unknown,reviewable,,ChatGPT Plugins
 candidate:app/ja/mcp.html:27:64,html-text,app/ja/mcp.html,27,,unknown,reviewable,,でカスタム MCP サーバーを追加し、URL に
 candidate:app/ja/mcp.html:27:95,html-text,app/ja/mcp.html,27,,unknown,protected,url,https://leafhour.com/api/mcp
-candidate:app/ja/mcp.html:27:131,html-text,app/ja/mcp.html,27,,unknown,reviewable,,を入力して OAuth と動的クライアント登録を選びます。Leafhour でログインし、アカウントを確認して一冊を選びます。権限は一時間の読み取り専用で、個人メモや読書記録は含みません。
-candidate:app/ja/mcp.html:27:231,html-text,app/ja/mcp.html,27,,unknown,protected,identifier,reader_get_connection
-candidate:app/ja/mcp.html:27:260,html-text,app/ja/mcp.html,27,,unknown,reviewable,,で対象の本を確認でき、書斎の Agent 設定で取り消せます。
+candidate:app/ja/mcp.html:27:131,html-text,app/ja/mcp.html,27,,unknown,reviewable,,を入力して OAuth を選びます。ChatGPT が動的登録を拒否する場合は、
+candidate:app/ja/mcp.html:27:244,html-text,app/ja/mcp.html,27,,unknown,reviewable,,接続の説明
+candidate:app/ja/mcp.html:27:253,html-text,app/ja/mcp.html,27,,unknown,reviewable,,に従って事前登録済みの公開クライアントを使います。Leafhour でログインし、アカウントを確認して一冊を選びます。権限は一時間の読み取り専用で、個人メモや読書記録は含みません。
+candidate:app/ja/mcp.html:27:349,html-text,app/ja/mcp.html,27,,unknown,protected,identifier,reader_get_connection
+candidate:app/ja/mcp.html:27:378,html-text,app/ja/mcp.html,27,,unknown,reviewable,,で対象の本を確認でき、書斎の Agent 設定で取り消せます。
 candidate:app/ja/mcp.html:28:6,html-text,app/ja/mcp.html,28,,unknown,reviewable,,skills 対応ホストでは
 candidate:app/ja/mcp.html:28:27,html-text,app/ja/mcp.html,28,,unknown,protected,path,getyak/leafhour
 candidate:app/ja/mcp.html:28:50,html-text,app/ja/mcp.html,28,,unknown,reviewable,,から
@@ -2538,9 +2542,11 @@ candidate:app/zh-hans/mcp.html:27:6,html-text,app/zh-hans/mcp.html,27,,unknown,r
 candidate:app/zh-hans/mcp.html:27:46,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,ChatGPT Plugins
 candidate:app/zh-hans/mcp.html:27:66,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,添加自定义 MCP 服务器，地址填写
 candidate:app/zh-hans/mcp.html:27:91,html-text,app/zh-hans/mcp.html,27,,unknown,protected,url,https://leafhour.com/api/mcp
-candidate:app/zh-hans/mcp.html:27:126,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,，选择 OAuth 和动态客户端注册。在 Leafhour 登录，核对账号并选一本书。授权仅只读一小时，不含私人笔记与阅读记录。调用
-candidate:app/zh-hans/mcp.html:27:199,html-text,app/zh-hans/mcp.html,27,,unknown,protected,identifier,reader_get_connection
-candidate:app/zh-hans/mcp.html:27:228,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,核对已授权的书；在书房的 Agent 设置中可撤回。
+candidate:app/zh-hans/mcp.html:27:126,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,，选择 OAuth。若 ChatGPT 拒绝动态注册，按
+candidate:app/zh-hans/mcp.html:27:227,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,接入说明
+candidate:app/zh-hans/mcp.html:27:235,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,使用预注册公共客户端。在 Leafhour 登录，核对账号并选一本书。授权仅只读一小时，不含私人笔记与阅读记录。调用
+candidate:app/zh-hans/mcp.html:27:300,html-text,app/zh-hans/mcp.html,27,,unknown,protected,identifier,reader_get_connection
+candidate:app/zh-hans/mcp.html:27:329,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,核对已授权的书；在书房的 Agent 设置中可撤回。
 candidate:app/zh-hans/mcp.html:28:6,html-text,app/zh-hans/mcp.html,28,,unknown,reviewable,,兼容 skills 的宿主也可从
 candidate:app/zh-hans/mcp.html:28:29,html-text,app/zh-hans/mcp.html,28,,unknown,protected,path,getyak/leafhour
 candidate:app/zh-hans/mcp.html:28:52,html-text,app/zh-hans/mcp.html,28,,unknown,reviewable,,安装
@@ -2698,9 +2704,11 @@ candidate:app/zh-hant/mcp.html:27:6,html-text,app/zh-hant/mcp.html,27,,unknown,r
 candidate:app/zh-hant/mcp.html:27:46,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,ChatGPT Plugins
 candidate:app/zh-hant/mcp.html:27:66,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,新增自訂 MCP 伺服器，地址填入
 candidate:app/zh-hant/mcp.html:27:90,html-text,app/zh-hant/mcp.html,27,,unknown,protected,url,https://leafhour.com/api/mcp
-candidate:app/zh-hant/mcp.html:27:125,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,，選擇 OAuth 與動態用戶端註冊。在 Leafhour 登入，核對帳戶並選一本書。授權僅唯讀一小時，不含私人筆記與閱讀紀錄。呼叫
-candidate:app/zh-hant/mcp.html:27:198,html-text,app/zh-hant/mcp.html,27,,unknown,protected,identifier,reader_get_connection
-candidate:app/zh-hant/mcp.html:27:227,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,核對已授權的書；可在書房的 Agent 設定中撤回。
+candidate:app/zh-hant/mcp.html:27:125,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,，選擇 OAuth。若 ChatGPT 拒絕動態註冊，按
+candidate:app/zh-hant/mcp.html:27:226,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,接入說明
+candidate:app/zh-hant/mcp.html:27:234,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,使用預先註冊的公共用戶端。在 Leafhour 登入，核對帳戶並選一本書。授權僅唯讀一小時，不含私人筆記與閱讀紀錄。呼叫
+candidate:app/zh-hant/mcp.html:27:301,html-text,app/zh-hant/mcp.html,27,,unknown,protected,identifier,reader_get_connection
+candidate:app/zh-hant/mcp.html:27:330,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,核對已授權的書；可在書房的 Agent 設定中撤回。
 candidate:app/zh-hant/mcp.html:28:6,html-text,app/zh-hant/mcp.html,28,,unknown,reviewable,,相容 skills 的宿主也可從
 candidate:app/zh-hant/mcp.html:28:29,html-text,app/zh-hant/mcp.html,28,,unknown,protected,path,getyak/leafhour
 candidate:app/zh-hant/mcp.html:28:52,html-text,app/zh-hant/mcp.html,28,,unknown,reviewable,,安裝

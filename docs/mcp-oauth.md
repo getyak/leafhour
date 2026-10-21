@@ -18,13 +18,25 @@ The [Tencent/WeChatReading reference](https://github.com/Tencent/WeChatReading),
 
 Use a ChatGPT account/workspace that permits custom MCP connections. The current [OpenAI connection guide](https://developers.openai.com/plugins/deploy/connect-chatgpt) and [authentication guide](https://developers.openai.com/plugins/build/auth) are the authority for the host UI and OAuth contract. The exact menu and availability depend on the account; missing access requires the account/workspace owner.
 
-1. In ChatGPT's custom MCP connection management, add **Leafhour** with server URL `https://leafhour.com/api/mcp` and OAuth authentication. Choose dynamic client registration (DCR); no client secret is required. Do not paste a Leafhour password or browser cookie into ChatGPT.
+1. In ChatGPT's custom MCP connection management, add **Leafhour** with server URL `https://leafhour.com/api/mcp` and OAuth authentication. The server advertises DCR with public-client authentication. In the 2026-10-21 real-host test, ChatGPT rejected DCR creation; the pre-registered public-client path below created the private plugin successfully. No client secret is required. Do not paste a Leafhour password or browser cookie into ChatGPT.
 2. Start the connection's authorization flow. Sign in on `https://leafhour.com` with the existing account. The sign-in return keeps only an opaque authorization request ID, never credentials.
 3. On **Connect one book**, verify the signed-in account, client callback origin and selected book. Choose **Allow this book** or **Cancel**. Client names are unverified client-supplied labels. Each approval permits only `content` for one book for one hour.
 4. After the host returns from OAuth, ask: “Use Leafhour to identify my connected book, read its directory, and quote the first passage with a source link.” The host should call `reader_get_connection`, `reader_get_manifest` and `reader_get_chapter` or `reader_get_context`.
 5. Withdraw the grant in Leafhour's **Agent settings**, then repeat a tool call. It must return 401 and require a fresh authorization. Removing the host connection does not prove a remote copy of previously read text was deleted.
 
 The remote tools are `reader_get_connection`, `reader_get_manifest`, `reader_get_context`, `reader_get_chapter` and `reader_search`. They reuse the same bounded domain projections as stdio (24 KiB data, at most 20 records, version/snapshot continuation). They expose no notes, conversations, activity, writes, model generation or audio. A shared public book is still bound to the approving account's grant. No tool takes an owner/workspace selector; the server captures identity from the authenticated session and grant.
+
+### Pre-registered public client
+
+In ChatGPT's advanced OAuth settings, select **User-Defined OAuth Client**. Copy the exact callback URL shown there. Register that callback at your Leafhour instance using the public registration endpoint; this request contains no password or secret:
+
+```sh
+curl -fsS https://leafhour.com/api/mcp/oauth/register \
+  -H 'Content-Type: application/json' \
+  --data '{"client_name":"ChatGPT Leafhour","redirect_uris":["REPLACE_WITH_EXACT_CHATGPT_CALLBACK_URL"],"token_endpoint_auth_method":"none","grant_types":["authorization_code"],"response_types":["code"],"scope":"content"}'
+```
+
+Enter the returned public `client_id` in ChatGPT, leave the client secret empty, and select token endpoint authentication **none**. Retain the discovered authorization/token URLs, resource `https://leafhour.com/api/mcp` and `content` scope. Continue through **Create as a plugin** and **Connect Leafhour**. Do not repeat registration or creation after an uncertain response; inspect the existing result first. Self-hosted instances use their own configured origin. `ui_locales` from the host is accepted only as a bounded language hint and discarded before grant state is stored.
 
 No refresh token is issued: access expires after an hour and the host must reauthorize. The AS advertises only the authorization-code grant. Clients requiring refresh tokens or CIMD must select the supported DCR/code path or report incompatibility; those methods are not advertised. DCR registrations persist so an installed connection can reuse its client ID, with a fail-closed cap of 1000 clients. Unknown client metadata and unsupported grant types are rejected.
 

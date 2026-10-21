@@ -32,7 +32,11 @@ export function createMcpOAuth({origin,store,library,clock=Date.now}){
  }
  async function begin(params){
   await rate('authorization',60);
-  const p=parameters(params,['client_id','redirect_uri','response_type','scope','resource','state','code_challenge','code_challenge_method']);
+  const p=parameters(params,['client_id','redirect_uri','response_type','scope','resource','state','code_challenge','code_challenge_method','ui_locales']);
+  // ChatGPT sends the standard OIDC language hint even for a non-OIDC
+  // authorization server. It is presentation metadata, never authority.
+  if(p.ui_locales!==undefined&&!/^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*(?: [A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*){0,7}$/.test(p.ui_locales))throw failure();
+  delete p.ui_locales;
   const data=await store.read(stateKey,empty()),client=data.clients.find(c=>c.client_id===p.client_id);
   if(!client||!client.redirect_uris.includes(p.redirect_uri))throw failure('invalid_client');
   if(p.response_type!=='code'||p.resource!==resource||p.scope!==undefined&&p.scope!=='content'||p.code_challenge_method!=='S256'||!/^[A-Za-z0-9_-]{43}$/.test(p.code_challenge||'')||p.state!==undefined&&!field(p.state,1024))throw failure();

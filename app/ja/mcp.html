@@ -24,7 +24,7 @@
   <p>Leafhour の Model Context Protocol（MCP）アダプタを使うと、対応する AI ホストがあなたが許可した一冊の本を読めます。ウェブと同じ読書サービスを使うため、アクセスは一冊の本と選んだデータ種別に限られます。アダプタを導入しただけでは何も許可されません。</p>
   <p>これは技術的な連携です。リーダー画面は英語・簡体字中国語・繁体字中国語・日本語に対応しています。許可管理の画面はまだありません。許可の作成と取り消しは、対応クライアントか認証済みのサービス API から行ってください。ご不明な点は <a href="mailto:support@leafhour.com">support@leafhour.com</a> までご連絡ください。</p>
   <h2 id="remote">OAuth で ChatGPT に接続する。</h2>
-  <p><a href="https://chatgpt.com/plugins">ChatGPT Plugins</a> でカスタム MCP サーバーを追加し、URL に <code>https://leafhour.com/api/mcp</code> を入力して OAuth と動的クライアント登録を選びます。Leafhour でログインし、アカウントを確認して一冊を選びます。権限は一時間の読み取り専用で、個人メモや読書記録は含みません。<code>reader_get_connection</code> で対象の本を確認でき、書斎の Agent 設定で取り消せます。</p>
+  <p><a href="https://chatgpt.com/plugins">ChatGPT Plugins</a> でカスタム MCP サーバーを追加し、URL に <code>https://leafhour.com/api/mcp</code> を入力して OAuth を選びます。ChatGPT が動的登録を拒否する場合は、<a href="https://github.com/getyak/leafhour/blob/main/docs/mcp-oauth.md">接続の説明</a>に従って事前登録済みの公開クライアントを使います。Leafhour でログインし、アカウントを確認して一冊を選びます。権限は一時間の読み取り専用で、個人メモや読書記録は含みません。<code>reader_get_connection</code> で対象の本を確認でき、書斎の Agent 設定で取り消せます。</p>
   <p>skills 対応ホストでは <code>getyak/leafhour</code> から <code>leafhour-reading</code> をインストールできます。skill のインストールだけでは MCP への接続や認可は行われません。<a href="https://github.com/getyak/leafhour/blob/main/docs/mcp-oauth.md">インストールと OAuth の説明</a>を参照してください。カスタムサーバーの追加は ChatGPT のアカウントとワークスペースのポリシーに従います。下記のコマンド設定は stdio ホストで引き続き利用できます。</p>
   <h2 id="permissions">Agent に読ませる範囲を選びます。</h2>
   <div class="mcp-scroll" role="region" aria-label="権限の表、横にスクロール" tabindex="0"><table><thead><tr><th scope="col">権限</th><th scope="col">許可されること</th></tr></thead><tbody>
