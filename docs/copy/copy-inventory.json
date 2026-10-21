@@ -922,7 +922,7 @@
       },
       {
         "file": "server/preference-memory.mjs",
-        "sha256": "59d4d0a403906a83640ee1336f30cc7c6b13c10d738fbc6e1ac2d1c64bfd5a85"
+        "sha256": "0c477d84119e0e6a0d2332ac20394ba7ba1e597191aa5b5628a6b99f40af7161"
       },
       {
         "file": "server/reader-annotation-tools.mjs",
@@ -989,7 +989,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "334b09a9a6bb81a80fc5b021051c51ae372c3136a71f6c7c819634b596d3fa1a"
+    "inputDigest": "79cb370f4ee9c0d932f7b49f24d6ac14b8733427584071455d896960a899b289"
   },
   "locales": [
     "en",
