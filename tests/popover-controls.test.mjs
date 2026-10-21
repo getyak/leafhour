@@ -316,9 +316,9 @@ function filterFixture({native}={}){
   const selection=make('div','shelf-filter-selection'),count=make('span','shelf-filter-count');
   const states=['all','reading','unread','finished'].map(name=>make('button','status-'+name,{'data-reading-status':name}));
   const fields={};
-  for(const id of ['shelf-source','shelf-topic','shelf-language']){
+  for(const id of ['shelf-source','shelf-topic','shelf-language','shelf-form']){
     const select=make('select',id,{},panel);Object.defineProperty(select,'options',{get:()=>select.children,configurable:true});
-    for(const value of id==='shelf-source'?['all','public','private']:['all']){const option=document.createElement('option');option.value=value;option.textContent=value;select.append(option);}
+    for(const value of id==='shelf-source'?['all','public','private']:id==='shelf-form'?['all','original','translated','bilingual']:['all']){const option=document.createElement('option');option.value=value;option.textContent=value;select.append(option);}
     fields[id]=select;
   }
   if(native)trigger.addEventListener('click',()=>panel._nativeOpen?panel.hidePopover():panel.showPopover());

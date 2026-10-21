@@ -1,0 +1,8 @@
+{
+  "run": "https://github.com/getyak/leafhour/actions/runs/39571435833",
+  "head": "a5b91f13aec6121888018f9150fb02ca0d2bd03e",
+  "pass": 2844,
+  "fail": 1,
+  "failure": "tests/popover-controls.test.mjs:329 legacy fixture omitted shelf-form; controller mount read null addEventListener",
+  "fix": "Added real fourth select/options to the test fixture; production logic unchanged; await latest head full CI."
+}
