@@ -1,0 +1,10 @@
+file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-199/tools/copy-install-vale.mjs:85
+  if(actual!==expected)throw Error('Checksum mismatch for '+asset.file+': expected '+expected+' got '+actual);
+                             ^
+
+Error: Checksum mismatch for vale_3.24.0_macOS_arm64.tar.gz: expected 87b513f26499f6657c15cf7175ba5b058a7c1ff2bb2d4e07265db2dd43451e44 got eb154ca3f93c276387da7024b88e75fb5ee8e185a91153ba721a41ee82145509
+    at installVale (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-199/tools/copy-install-vale.mjs:85:30)
+    at async main (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-199/tools/copy-install-vale.mjs:110:16)
+    at async file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-199/tools/copy-install-vale.mjs:115:3
+
+Node.js v22.23.2

@@ -1,0 +1,472 @@
+TAP version 13
+# Subtest: missing language stays unknown and blank or stale translation text cannot advertise a bilingual book
+ok 1 - missing language stays unknown and blank or stale translation text cannot advertise a bilingual book
+  ---
+  duration_ms: 0.894708
+  type: 'test'
+  ...
+# Subtest: reading language and form intersect using saved translations without changing the original language
+ok 2 - reading language and form intersect using saved translations without changing the original language
+  ---
+  duration_ms: 5.405167
+  type: 'test'
+  ...
+# Subtest: list metadata reflects actual account translations and ignores stale overlays without rewriting indexes
+ok 3 - list metadata reflects actual account translations and ignores stale overlays without rewriting indexes
+  ---
+  duration_ms: 126.435959
+  type: 'test'
+  ...
+# Subtest: reading filters use real activity rather than the default reading journey or a saved position on a finished book
+ok 4 - reading filters use real activity rather than the default reading journey or a saved position on a finished book
+  ---
+  duration_ms: 0.326542
+  type: 'test'
+  ...
+# Subtest: source, topic, original language and search intersect while retaining the whole shelf order
+ok 5 - source, topic, original language and search intersect while retaining the whole shelf order
+  ---
+  duration_ms: 0.322584
+  type: 'test'
+  ...
+# Subtest: a Chinese trial does not turn an English original into a Chinese-language book
+ok 6 - a Chinese trial does not turn an English original into a Chinese-language book
+  ---
+  duration_ms: 0.108208
+  type: 'test'
+  ...
+# Subtest: filtering collapses the featured card and includes the current book once; clearing restores it
+ok 7 - filtering collapses the featured card and includes the current book once; clearing restores it
+  ---
+  duration_ms: 0.174334
+  type: 'test'
+  ...
+# Subtest: book listings expose original language and curated subjects, including older private index entries, without rewriting them
+ok 8 - book listings expose original language and curated subjects, including older private index entries, without rewriting them
+  ---
+  duration_ms: 62.504375
+  type: 'test'
+  ...
+# Subtest: Chinese originals stay separate from translated English fiction
+ok 9 - Chinese originals stay separate from translated English fiction
+  ---
+  duration_ms: 52.245708
+  type: 'test'
+  ...
+# Subtest: the current view summary lists query, status, source, topic and language while the default view stays bare
+ok 10 - the current view summary lists query, status, source, topic and language while the default view stays bare
+  ---
+  duration_ms: 1.925541
+  type: 'test'
+  ...
+# Subtest: each summary chip removes only its own filter and returns focus to a sensible visible control
+ok 11 - each summary chip removes only its own filter and returns focus to a sensible visible control
+  ---
+  duration_ms: 0.506542
+  type: 'test'
+  ...
+# Subtest: clear-all resets query and every filter and leaves the default view bare again
+ok 12 - clear-all resets query and every filter and leaves the default view bare again
+  ---
+  duration_ms: 0.308334
+  type: 'test'
+  ...
+# Subtest: form choices, translation language choices and removable chips stay in sync
+ok 13 - form choices, translation language choices and removable chips stay in sync
+  ---
+  duration_ms: 13.28475
+  type: 'test'
+  ...
+# Subtest: account language defaults apply once, respect deliberate views and reset on owner change
+ok 14 - account language defaults apply once, respect deliberate views and reset on owner change
+  ---
+  duration_ms: 0.524375
+  type: 'test'
+  ...
+# Subtest: fiction is an explicit topic choice and the Chinese and English shortcuts stay selectable without matching books
+ok 15 - fiction is an explicit topic choice and the Chinese and English shortcuts stay selectable without matching books
+  ---
+  duration_ms: 0.271333
+  type: 'test'
+  ...
+# Subtest: the three filter dropdowns are enhanced by the shared choice primitive and mirror options only through sync
+ok 16 - the three filter dropdowns are enhanced by the shared choice primitive and mirror options only through sync
+  ---
+  duration_ms: 0.137958
+  type: 'test'
+  ...
+# Subtest: actual locale commit changes filter labels in place without applying filters, replacing nodes or writing the search draft
+ok 17 - actual locale commit changes filter labels in place without applying filters, replacing nodes or writing the search draft
+  ---
+  duration_ms: 3.544458
+  type: 'test'
+  ...
+# Subtest: reading form survives URL, auth return and clearing without accepting arbitrary values
+ok 18 - reading form survives URL, auth return and clearing without accepting arbitrary values
+  ---
+  duration_ms: 0.814958
+  type: 'test'
+  ...
+# Subtest: settings links reject inherited property names and preserve only the explicit reading alias
+ok 19 - settings links reject inherited property names and preserve only the explicit reading alias
+  ---
+  duration_ms: 0.469334
+  type: 'test'
+  ...
+# Subtest: owned view keys parse with validated enums and language syntax while unknown parameters stay unowned
+ok 20 - owned view keys parse with validated enums and language syntax while unknown parameters stay unowned
+  ---
+  duration_ms: 0.22825
+  type: 'test'
+  ...
+# Subtest: conflicting overlay keys normalize to exactly one known overlay in a fixed precedence
+ok 21 - conflicting overlay keys normalize to exactly one known overlay in a fixed precedence
+  ---
+  duration_ms: 0.124959
+  type: 'test'
+  ...
+# Subtest: GET-201: ?settings=reading aliases to canonical reading-habits without widening the owned tab set
+ok 22 - GET-201: ?settings=reading aliases to canonical reading-habits without widening the owned tab set
+  ---
+  duration_ms: 0.188208
+  type: 'test'
+  ...
+# Subtest: serializing a default view removes only owned keys and keeps unrelated query and history fields
+ok 23 - serializing a default view removes only owned keys and keeps unrelated query and history fields
+  ---
+  duration_ms: 0.1195
+  type: 'test'
+  ...
+# Subtest: the pure reducer clears one key, clears all and keeps the chooser while routed modals replace it
+ok 24 - the pure reducer clears one key, clears all and keeps the chooser while routed modals replace it
+  ---
+  duration_ms: 0.222875
+  type: 'test'
+  ...
+# Subtest: a bounded library return codec keeps owned view keys and never approves reader, gift or external targets
+ok 25 - a bounded library return codec keeps owned view keys and never approves reader, gift or external targets
+  ---
+  duration_ms: 0.195917
+  type: 'test'
+  ...
+# Subtest: hydration reads the parsed URL once without history writes and keeps unrelated entries intact
+ok 26 - hydration reads the parsed URL once without history writes and keeps unrelated entries intact
+  ---
+  duration_ms: 1.1525
+  type: 'test'
+  ...
+# Subtest: a debounced search replaces the current entry while a discrete filter push first flushes the query
+ok 27 - a debounced search replaces the current entry while a discrete filter push first flushes the query
+  ---
+  duration_ms: 0.480416
+  type: 'test'
+  ...
+# Subtest: popstate, owner switches and resets cancel pending search timers with real URL and emit assertions
+ok 28 - popstate, owner switches and resets cancel pending search timers with real URL and emit assertions
+  ---
+  duration_ms: 0.268083
+  type: 'test'
+  ...
+# Subtest: back and forward restore the view without recursive pushes
+ok 29 - back and forward restore the view without recursive pushes
+  ---
+  duration_ms: 0.124416
+  type: 'test'
+  ...
+# Subtest: an app-opened overlay close consumes only its own entry
+ok 30 - an app-opened overlay close consumes only its own entry
+  ---
+  duration_ms: 0.127958
+  type: 'test'
+  ...
+# Subtest: closing an overlay opened from a direct URL removes its own keys and any stale marker instead of leaving the site
+ok 31 - closing an overlay opened from a direct URL removes its own keys and any stale marker instead of leaving the site
+  ---
+  duration_ms: 0.074417
+  type: 'test'
+  ...
+# Subtest: a routed modal over a direct-URL chooser keeps its own entry and its close never leaves the site
+ok 32 - a routed modal over a direct-URL chooser keeps its own entry and its close never leaves the site
+  ---
+  duration_ms: 0.190084
+  type: 'test'
+  ...
+# Subtest: overlay tab changes replace their own entry instead of stacking history
+ok 33 - overlay tab changes replace their own entry instead of stacking history
+  ---
+  duration_ms: 0.085458
+  type: 'test'
+  ...
+# Subtest: owner switch drops stale owner filters and pending queries without pushing or backing
+ok 34 - owner switch drops stale owner filters and pending queries without pushing or backing
+  ---
+  duration_ms: 0.111708
+  type: 'test'
+  ...
+# Subtest: ownership of the one app-created modal entry survives tab and overlay replacement
+ok 35 - ownership of the one app-created modal entry survives tab and overlay replacement
+  ---
+  duration_ms: 0.095292
+  type: 'test'
+  ...
+# Subtest: the non-modal filter owns no entry while a modal over it pushes and consumes its own
+ok 36 - the non-modal filter owns no entry while a modal over it pushes and consumes its own
+  ---
+  duration_ms: 0.061375
+  type: 'test'
+  ...
+# Subtest: a discrete view change while an app-owned modal is open keeps one owned entry for the close
+ok 37 - a discrete view change while an app-owned modal is open keeps one owned entry for the close
+  ---
+  duration_ms: 0.309959
+  type: 'test'
+  ...
+# Subtest: owner epochs tag app entries and a pop to an old owner epoch clears only its stale owned state
+ok 38 - owner epochs tag app entries and a pop to an old owner epoch clears only its stale owned state
+  ---
+  duration_ms: 0.126791
+  type: 'test'
+  ...
+# Subtest: foreign history entries and foreign state fields survive pops untouched
+ok 39 - foreign history entries and foreign state fields survive pops untouched
+  ---
+  duration_ms: 0.096333
+  type: 'test'
+  ...
+# Subtest: the session-ready overlay reconciliation follows the current snapshot instead of a stale hydrate capture
+ok 40 - the session-ready overlay reconciliation follows the current snapshot instead of a stale hydrate capture
+  ---
+  duration_ms: 0.070334
+  type: 'test'
+  ...
+# Subtest: adopting a validated safe return applies its view and overlay without pushing or backing
+ok 41 - adopting a validated safe return applies its view and overlay without pushing or backing
+  ---
+  duration_ms: 0.2275
+  type: 'test'
+  ...
+# Subtest: live queries share one bounded normalizer with URL parsing and never commit unfinished IME text
+ok 42 - live queries share one bounded normalizer with URL parsing and never commit unfinished IME text
+  ---
+  duration_ms: 0.083541
+  type: 'test'
+  ...
+# Subtest: auth return targets prefer upload and reader returns, then the parsed library return, then the live view
+ok 43 - auth return targets prefer upload and reader returns, then the parsed library return, then the live view
+  ---
+  duration_ms: 0.047708
+  type: 'test'
+  ...
+# Subtest: an owner epoch survives adapter reload before Back reaches an old owner entry
+ok 44 - an owner epoch survives adapter reload before Back reaches an old owner entry
+  ---
+  duration_ms: 0.10725
+  type: 'test'
+  ...
+# Subtest: bounded query truncation keeps well-formed UTF-16 and an identical URL round trip
+ok 45 - bounded query truncation keeps well-formed UTF-16 and an identical URL round trip
+  ---
+  duration_ms: 0.041834
+  type: 'test'
+  ...
+# Subtest: only a successfully adopted auth handoff consumes its one-time keys and modal ownership
+ok 46 - only a successfully adopted auth handoff consumes its one-time keys and modal ownership
+  ---
+  duration_ms: 0.119167
+  type: 'test'
+  ...
+# Subtest: explicit modal close normalizes its exact predecessor inside the earlier runtime pop handler
+ok 47 - explicit modal close normalizes its exact predecessor inside the earlier runtime pop handler
+  ---
+  duration_ms: 5.718292
+  type: 'test'
+  ...
+# Subtest: ordinary native Back remains an explicit old-route locale override, including after one carried close
+ok 48 - ordinary native Back remains an explicit old-route locale override, including after one carried close
+  ---
+  duration_ms: 4.722
+  type: 'test'
+  ...
+# Subtest: ordinary Back with an open modal does not carry the picker locale
+ok 49 - ordinary Back with an open modal does not carry the picker locale
+  ---
+  duration_ms: 3.22625
+  type: 'test'
+  ...
+# Subtest: adapter writes inherit current validated ui while the pure codec keeps explicit return ui precedence
+ok 50 - adapter writes inherit current validated ui while the pure codec keeps explicit return ui precedence
+  ---
+  duration_ms: 0.147334
+  type: 'test'
+  ...
+# Subtest: explicit close cannot carry a requested but uncommitted locale
+ok 51 - explicit close cannot carry a requested but uncommitted locale
+  ---
+  duration_ms: 3.194416
+  type: 'test'
+  ...
+# Subtest: close carry is cancelled by new lifecycle or business ownership before queued traversal
+ok 52 - close carry is cancelled by new lifecycle or business ownership before queued traversal
+  ---
+  duration_ms: 27.65875
+  type: 'test'
+  ...
+# Subtest: unmatched predecessor entry or owner epoch consumes no carry and cannot affect a later pop
+ok 53 - unmatched predecessor entry or owner epoch consumes no carry and cannot affect a later pop
+  ---
+  duration_ms: 10.808958
+  type: 'test'
+  ...
+# Subtest: direct URL modal close replaces in place with live locale, and a remounted owned modal keeps its predecessor
+ok 54 - direct URL modal close replaces in place with live locale, and a remounted owned modal keeps its predecessor
+  ---
+  duration_ms: 6.287041
+  type: 'test'
+  ...
+# Subtest: initial or route catalogue fallback does not carry an unsuccessful URL locale
+ok 55 - initial or route catalogue fallback does not carry an unsuccessful URL locale
+  ---
+  duration_ms: 3.811083
+  type: 'test'
+  ...
+# Subtest: missing or invalid URL ui remains absent on explicit close despite a saved effective locale
+ok 56 - missing or invalid URL ui remains absent on explicit close despite a saved effective locale
+  ---
+  duration_ms: 10.383167
+  type: 'test'
+  ...
+# Subtest: adoptReturn uses its validated explicit ui over the old current URL, then future writes follow the live URL
+ok 57 - adoptReturn uses its validated explicit ui over the old current URL, then future writes follow the live URL
+  ---
+  duration_ms: 0.205583
+  type: 'test'
+  ...
+# Subtest: a newer successful picker choice before queued traversal invalidates the old close locale
+ok 58 - a newer successful picker choice before queued traversal invalidates the old close locale
+  ---
+  duration_ms: 3.179416
+  type: 'test'
+  ...
+# Subtest: first modal open before hydrate tags only predecessor metadata and preserves its exact URL and foreign state
+ok 59 - first modal open before hydrate tags only predecessor metadata and preserves its exact URL and foreign state
+  ---
+  duration_ms: 3.377375
+  type: 'test'
+  ...
+# Subtest: non-secure self-hosted history works without crypto.randomUUID and keeps bounded distinct entry identities
+ok 60 - non-secure self-hosted history works without crypto.randomUUID and keeps bounded distinct entry identities
+  ---
+  duration_ms: 3.513083
+  type: 'test'
+  ...
+# Subtest: history owner releases its before-pop subscription on destroy and a fresh owner subscribes once
+ok 61 - history owner releases its before-pop subscription on destroy and a fresh owner subscribes once
+  ---
+  duration_ms: 4.159042
+  type: 'test'
+  ...
+# Subtest: both capability fixtures reject the unsafe :popover-open selector the way stock Chrome 113 does
+ok 62 - both capability fixtures reject the unsafe :popover-open selector the way stock Chrome 113 does
+  ---
+  duration_ms: 0.716875
+  type: 'test'
+  ...
+# Subtest: the shared registry returns one owning instance per element in both capability branches
+ok 63 - the shared registry returns one owning instance per element in both capability branches
+  ---
+  duration_ms: 1.131459
+  type: 'test'
+  ...
+# Subtest: every beforeOpen subscription survives a later owner and runs exactly once per open in both mount orders
+ok 64 - every beforeOpen subscription survives a later owner and runs exactly once per open in both mount orders
+  ---
+  duration_ms: 0.628959
+  type: 'test'
+  ...
+# Subtest: the subscription API delivers one already-open transition and unsubscribes for good
+ok 65 - the subscription API delivers one already-open transition and unsubscribes for good
+  ---
+  duration_ms: 0.286375
+  type: 'test'
+  ...
+# Subtest: fallback trigger clicks toggle open marker, hidden state, aria and first-control focus
+ok 66 - fallback trigger clicks toggle open marker, hidden state, aria and first-control focus
+  ---
+  duration_ms: 0.108375
+  type: 'test'
+  ...
+# Subtest: supporting browsers keep declarative triggers and truthful state even when toggle arrives on a task
+ok 67 - supporting browsers keep declarative triggers and truthful state even when toggle arrives on a task
+  ---
+  duration_ms: 0.100166
+  type: 'test'
+  ...
+# Subtest: Escape closes the fallback with focus return and stays the page keyboard gate
+ok 68 - Escape closes the fallback with focus return and stays the page keyboard gate
+  ---
+  duration_ms: 0.081833
+  type: 'test'
+  ...
+# Subtest: outside pointer and outside focus dismiss the fallback without stealing the intentional target
+ok 69 - outside pointer and outside focus dismiss the fallback without stealing the intentional target
+  ---
+  duration_ms: 0.077625
+  type: 'test'
+  ...
+# Subtest: dismissal never closes on its own trigger or popover interior and an old close cannot steal a newer modal
+ok 70 - dismissal never closes on its own trigger or popover interior and an old close cannot steal a newer modal
+  ---
+  duration_ms: 0.21875
+  type: 'test'
+  ...
+# Subtest: a detached, hidden, display:none or visibility:hidden trigger never takes return focus
+ok 71 - a detached, hidden, display:none or visibility:hidden trigger never takes return focus
+  ---
+  duration_ms: 0.348833
+  type: 'test'
+  ...
+# Subtest: a fallback popover replaces an older one without letting the old close steal focus
+ok 72 - a fallback popover replaces an older one without letting the old close steal focus
+  ---
+  duration_ms: 0.105375
+  type: 'test'
+  ...
+# Subtest: the filter panel reports open/close once to the URL history owner and clears a choice onto its own control
+ok 73 - the filter panel reports open/close once to the URL history owner and clears a choice onto its own control
+  ---
+  duration_ms: 2.779083
+  type: 'test'
+  ...
+# Subtest: the dynamic book menu keeps its actual current trigger and clears it on owner reset
+ok 74 - the dynamic book menu keeps its actual current trigger and clears it on owner reset
+  ---
+  duration_ms: 1.323208
+  type: 'test'
+  ...
+# Subtest: navigation and book actions share one book-info owner and the lifecycle runs once per transition in both mount orders
+ok 75 - navigation and book actions share one book-info owner and the lifecycle runs once per transition in both mount orders
+  ---
+  duration_ms: 2.659333
+  type: 'test'
+  ...
+# Subtest: the palette shortcut defers while a fallback popover is open and recovers after close
+ok 76 - the palette shortcut defers while a fallback popover is open and recovers after close
+  ---
+  duration_ms: 0.608792
+  type: 'test'
+  ...
+# Subtest: the shared safe overlay query covers popovers without evaluating :popover-open
+ok 77 - the shared safe overlay query covers popovers without evaluating :popover-open
+  ---
+  duration_ms: 0.076458
+  type: 'test'
+  ...
+1..77
+# tests 77
+# suites 0
+# pass 77
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 351.580125

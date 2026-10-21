@@ -1,0 +1,3 @@
+npm notice run leafhour@0.3.0 build:vercel
+npm notice run node tools/build-vercel.mjs
+Built hosted library and reader at /Users/cubxxw/ops/symphony/runtime/workspaces/GET-199/dist; private content stays in Supabase.

@@ -229,6 +229,7 @@
   "app/library-shell.mjs",
   "app/library-view-state.mjs",
   "app/library-workspace.css",
+  "app/book-reading-languages.mjs",
   "app/library-workspace.mjs",
   "app/listening-guide-state.mjs",
   "app/mcp-config.mjs",

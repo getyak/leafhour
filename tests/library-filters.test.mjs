@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {libraryShelf,roomShelf,hasShelfFilters} from '../app/library-workspace.mjs';
+import {bookReadingLanguages} from '../app/book-reading-languages.mjs';
 import {createLibraryService} from '../server/library-service.mjs';
 import {digest} from '../server/document-import.mjs';
 import {mountShelfFilters as mountShelfFiltersActual} from '../app/library-filter-controls.mjs';
@@ -21,6 +22,52 @@ const books=[
   {bookId:'unknown',visibility:'private',title:{zh:'尚未分类'},shelfPosition:4}
 ];
 const ids=rows=>rows.map(book=>book.bookId);
+
+test('missing language stays unknown and blank or stale translation text cannot advertise a bilingual book',()=>{
+  const book={contentVersion:'v1',sections:[{paragraphs:[{id:'p1',original:'Source text',translations:{literal:{text:' ',sourceVersion:'v1'},interpretive:{text:'旧译',sourceVersion:'v0'}}}]}]};
+  assert.deepEqual(bookReadingLanguages(book),{sourceLanguage:'unknown',translationLanguages:[],supportsParallel:false,translatedParagraphs:0,translationCoverage:'none'});
+  book.sourceLanguage='EN-GB';book.sections[0].paragraphs[0].translations.literal={text:'译文',sourceVersion:'v1'};
+  assert.deepEqual(bookReadingLanguages(book),{sourceLanguage:'en',translationLanguages:['zh'],supportsParallel:true,translatedParagraphs:1,translationCoverage:'complete'});
+});
+
+test('reading language and form intersect using saved translations without changing the original language',()=>{
+  const shelf=[
+    {bookId:'english',sourceLanguage:'en'},
+    {bookId:'chinese',sourceLanguage:'zh'},
+    {bookId:'parallel',sourceLanguage:'en',translationLanguages:['zh'],supportsParallel:true},
+    {bookId:'french',sourceLanguage:'fr',translationLanguages:['ja'],supportsParallel:true}
+  ];
+  assert.deepEqual(ids(libraryShelf(shelf,{language:'zh'})),['chinese','parallel']);
+  assert.deepEqual(ids(libraryShelf(shelf,{language:'zh',form:'original'})),['chinese']);
+  assert.deepEqual(ids(libraryShelf(shelf,{language:'zh',form:'translated'})),['parallel']);
+  assert.deepEqual(ids(libraryShelf(shelf,{language:'en',form:'translated'})),[]);
+  assert.deepEqual(ids(libraryShelf(shelf,{language:'ja',form:'bilingual'})),['french']);
+  assert.deepEqual(ids(libraryShelf(shelf,{form:'bilingual'})),['parallel','french']);
+  assert.equal(hasShelfFilters({form:'translated'}),true);
+});
+
+test('list metadata reflects actual account translations and ignores stale overlays without rewriting indexes',async t=>{
+  const dir=await mkdtemp(path.join(tmpdir(),'leafhour-reading-languages-'));
+  t.after(()=>rm(dir,{recursive:true,force:true}));
+  const library=await createLibraryService({dataDir:dir,translator:async()=>({literal:'直译草稿',interpretive:'意译草稿',model:'fixture'})});
+  const owner={id:'language-owner'},other={id:'language-other'};
+  const imported=await library.importDocument(owner,{filename:'original.txt',bytes:Buffer.from('An English original with no translation.\n\nAnother paragraph remains untranslated.')});
+  const indexFile=path.join(dir,'users',digest(owner.id),'index.json'),before=await readFile(indexFile,'utf8');
+  let row=(await library.list(owner)).find(b=>b.bookId===imported.bookId);
+  assert.equal(row.sourceLanguage,'en');assert.deepEqual(row.translationLanguages,[]);assert.equal(row.supportsParallel,false);
+  const book=await library.getBook(owner,imported.bookId),passage=book.sections[0].paragraphs[0];
+  await library.translate(owner,imported.bookId,passage.id);
+  row=(await library.list(owner)).find(b=>b.bookId===imported.bookId);
+  assert.deepEqual(row.translationLanguages,['zh']);assert.equal(row.supportsParallel,true);assert.equal(row.translationCoverage,'partial');
+  assert.equal((await library.list(other)).some(b=>b.bookId===imported.bookId),false);
+  const overlayFile=path.join(dir,'users',digest(owner.id),'translations',digest(imported.bookId)+'.json');
+  const overlay=JSON.parse(await readFile(overlayFile,'utf8'));overlay[passage.id].contentVersion='stale';await writeFile(overlayFile,JSON.stringify(overlay));
+  assert.deepEqual((await library.list(owner)).find(b=>b.bookId===imported.bookId).translationLanguages,[]);
+  assert.equal(await readFile(indexFile,'utf8'),before,'listing and translation metadata do not rewrite the index');
+  const publicRows=await library.list(null),alice=publicRows.find(b=>b.bookId==='gutenberg-alice');
+  assert.deepEqual(alice.translationLanguages,['zh']);assert.equal(alice.translationCoverage,'partial');assert.equal(alice.supportsParallel,true);
+  assert.ok(publicRows.every(b=>typeof b.sourceLanguage==='string'&&b.sourceLanguage.length>0));
+});
 
 test('reading filters use real activity rather than the default reading journey or a saved position on a finished book',()=>{
   assert.deepEqual(ids(libraryShelf(books,{status:'reading'})),['current','session']);
@@ -75,7 +122,7 @@ test('book listings expose original language and curated subjects, including old
   assert.equal(await readFile(indexFile,'utf8'),before);
 });
 
-test('a synthetic Chinese fiction fixture filters honestly while the shipped catalog truthfully stays empty',async t=>{
+test('Chinese originals stay separate from translated English fiction',async t=>{
   const synthetic=[
     {bookId:'fixture-novel',visibility:'private',sourceLanguage:'zh',topics:['fiction'],title:{zh:'合成小说'}},
     {bookId:'fixture-story',visibility:'private',sourceLanguage:'zh',topics:['fiction','literature'],title:{zh:'合成短篇'}}
@@ -85,7 +132,7 @@ test('a synthetic Chinese fiction fixture filters honestly while the shipped cat
   const dir=await mkdtemp(path.join(tmpdir(),'leafhour-fiction-catalog-'));
   t.after(()=>rm(dir,{recursive:true,force:true}));
   const library=await createLibraryService({dataDir:dir});
-  assert.deepEqual(libraryShelf(await library.list(null),{topic:'fiction',language:'zh'}),[]);
+  assert.deepEqual(libraryShelf(await library.list(null),{topic:'fiction',language:'zh',form:'original'}),[]);
   assert.ok(libraryShelf(await library.list(null),{topic:'fiction',language:'en'}).length>0,'unambiguous English novels carry the fiction topic');
 });
 
@@ -142,20 +189,21 @@ function filterFixture(){
   root.querySelector=selector=>byId.get(selector.slice(1))||null;
   const make=(tag,id)=>{const node=new FakeElement(tag,doc);node.id=id;if(tag==='select')Object.defineProperty(node,'options',{get:()=>node.children,configurable:true});byId.set(id,node);return node;};
   const search=make('input','book-search'),panel=make('div','shelf-filter-panel'),trigger=make('button','shelf-filter-button');
-  const source=make('select','shelf-source'),topic=make('select','shelf-topic'),language=make('select','shelf-language');
+  const source=make('select','shelf-source'),topic=make('select','shelf-topic'),language=make('select','shelf-language'),form=make('select','shelf-form');
   const options=(select,rows)=>{select.replaceChildren(...rows.map(([value,text,disabled=false])=>{const option=new FakeElement('option',doc);option.value=value;option.textContent=text;option.disabled=disabled;select.append(option);return option;}));select.value=select.options[0]?.value||'';};
   options(source,[['all','全部来源'],['public','内置书'],['private','我上传的']]);
   options(topic,[['all','全部主题']]);
-  options(language,[['all','全部原文语言']]);
+  options(language,[['all','全部阅读语言']]);
+  options(form,[['all','全部形态'],['original','原版'],['translated','有译本'],['bilingual','双语对照']]);
   const chips=make('div','shelf-filter-chips'),clear=make('button','shelf-filter-clear'),selection=make('div','shelf-filter-selection'),count=make('span','shelf-filter-count');
   const states=['all','reading','unread','finished'].map(name=>{const button=new FakeElement('button',doc);button.dataset.readingStatus=name;return button;});
   const scopeButtons=['all','private'].map(name=>{const button=new FakeElement('button',doc);button.dataset.shelf=name;shelfButtons.push(button);return button;});
   root.querySelectorAll=selector=>selector==='[data-reading-status]'?states:[];
   doc.querySelectorAll=selector=>selector==='[data-shelf]'?shelfButtons:[];
-  root.append(trigger,search,panel,source,topic,language,chips,clear,selection,count);
+  root.append(trigger,search,panel,source,topic,language,form,chips,clear,selection,count);
   panel.append(...states);
-  for(const node of [source,topic,language,search,panel,trigger,chips,clear,selection,count,...states])node.parentElement=root;
-  return {doc,root,byId,search,panel,trigger,source,topic,language,chips,clear,selection,count,states,scopeButtons};
+  for(const node of [source,topic,language,form,search,panel,trigger,chips,clear,selection,count,...states])node.parentElement=root;
+  return {doc,root,byId,search,panel,trigger,source,topic,language,form,chips,clear,selection,count,states,scopeButtons};
 }
 
 test('the current view summary lists query, status, source, topic and language while the default view stays bare',()=>{
@@ -182,7 +230,7 @@ test('each summary chip removes only its own filter and returns focus to a sensi
   const controls=mountShelfFilters({root:f.root,onChange:()=>{}});
   f.search.value='爱丽丝';controls.set({query:'爱丽丝'});controls.set({status:'reading'});controls.set({topic:'fiction'});controls.update(books);
   f.chips.children[2].emit('click');
-  assert.deepEqual(controls.read(),{query:'爱丽丝',scope:'all',status:'reading',topic:'all',language:'all'});
+  assert.deepEqual(controls.read(),{query:'爱丽丝',scope:'all',status:'reading',topic:'all',language:'all',form:'all'});
   assert.equal(f.doc.activeElement,f.trigger,'a chip inside the closed chooser cannot take focus; the connected trigger can');
   f.trigger.emit('click');
   controls.set({topic:'fiction'});controls.update(books);
@@ -197,12 +245,37 @@ test('each summary chip removes only its own filter and returns focus to a sensi
 test('clear-all resets query and every filter and leaves the default view bare again',()=>{
   const f=filterFixture();
   const controls=mountShelfFilters({root:f.root,onChange:()=>{}});
-  f.search.value='思考';controls.set({query:'思考'});controls.set({status:'finished'});controls.set({scope:'private'});controls.set({language:'zh'});controls.update(books);
+  f.search.value='思考';controls.set({query:'思考'});controls.set({status:'finished'});controls.set({scope:'private'});controls.set({language:'zh',form:'all'});controls.update(books);
   f.clear.emit('click');
-  assert.deepEqual(controls.read(),{query:'',scope:'all',status:'all',topic:'all',language:'all'});
+  assert.deepEqual(controls.read(),{query:'',scope:'all',status:'all',topic:'all',language:'all',form:'all'});
   assert.equal(f.selection.hidden,true);
   assert.equal(f.clear.hidden,true);
   assert.equal(f.doc.activeElement,f.search);
+});
+
+test('form choices, translation language choices and removable chips stay in sync',()=>{
+  const f=filterFixture(),controls=mountShelfFilters({root:f.root,onChange:()=>{}});
+  controls.update([{bookId:'translated',sourceLanguage:'en',translationLanguages:['ja'],supportsParallel:true}]);
+  assert.ok(f.language.options.some(option=>option.value==='ja'));
+  controls.set({language:'ja',form:'bilingual'});
+  assert.equal(f.form.value,'bilingual');assert.equal(f.chips.children.length,2);
+  f.chips.children[1].emit('click');
+  assert.equal(controls.read().form,'all');assert.equal(controls.read().language,'ja');
+});
+
+test('account language defaults apply once, respect deliberate views and reset on owner change',()=>{
+  const saved={preferredLanguage:'zh',onboarding:'completed'},f=filterFixture(),controls=mountShelfFilters({root:f.root,onChange:()=>{}});
+  controls.update(books);
+  assert.equal(controls.applyReadingPreferences(saved),true);assert.equal(controls.read().language,'zh');
+  controls.clearAll();
+  assert.equal(controls.applyReadingPreferences(saved),false);assert.equal(controls.read().language,'all','refresh cannot undo clear');
+  controls.reset();controls.set({form:'original'});
+  assert.equal(controls.applyReadingPreferences(saved),false,'explicit choices win');
+  controls.reset();controls.apply({language:'en',form:'translated'});
+  assert.equal(controls.applyReadingPreferences(saved),false,'deep links win');
+  controls.reset();assert.equal(controls.applyReadingPreferences(null),false);
+  assert.equal(controls.applyReadingPreferences({preferredLanguage:'source'}),false,'source is not the English language');
+  controls.reset();assert.equal(controls.applyReadingPreferences(saved),true,'next owner can adopt its own default');
 });
 
 test('fiction is an explicit topic choice and the Chinese and English shortcuts stay selectable without matching books',()=>{
@@ -214,9 +287,9 @@ test('fiction is an explicit topic choice and the Chinese and English shortcuts 
   const languageValues=f.language.options.map(option=>option.value);
   assert.deepEqual(languageValues.slice(0,3),['all','zh','en']);
   assert.ok(languageValues.includes('unknown'));
-  controls.set({topic:'fiction',language:'zh'});
+  controls.set({topic:'fiction',language:'zh',form:'all'});
   controls.update(books);
-  assert.deepEqual(controls.read(),{query:'',scope:'all',status:'all',topic:'fiction',language:'zh'});
+  assert.deepEqual(controls.read(),{query:'',scope:'all',status:'all',topic:'fiction',language:'zh',form:'all'});
   assert.deepEqual(f.chips.children.map(chip=>chip.textContent),['小说与故事 ×','中文 ×']);
 });
 
@@ -235,7 +308,7 @@ test('the three filter dropdowns are enhanced by the shared choice primitive and
 
 test('actual locale commit changes filter labels in place without applying filters, replacing nodes or writing the search draft',async()=>{
   const f=filterFixture(),changes=[],controls=mountShelfFilters({root:f.root,onChange:action=>changes.push(action)});
-  controls.set({topic:'fiction',language:'zh'});controls.update(books);
+  controls.set({topic:'fiction',language:'zh',form:'all'});controls.update(books);
   const native=[...f.topic.options],buttons=[...f.chips.children],choice=controls.choices.topic,choiceNodes=[...choice.chips];
   f.search.value='日本語 composing';f.search.selectionStart=2;f.search.selectionEnd=5;f.search.focus();
   f.chips.replaceChildren=()=>assert.fail('locale change must not rebuild summary');choice.root.replaceChildren=()=>assert.fail('locale change must not rebuild choice');

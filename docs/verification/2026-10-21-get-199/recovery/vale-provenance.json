@@ -1,0 +1,11 @@
+{
+  "installed_at": "2026-10-21T08:35:35.272931+00:00",
+  "source": "official GitHub release asset API",
+  "asset_id": 603879362,
+  "archive_bytes": 12711562,
+  "archive_sha256": "87b513f26499f6657c15cf7175ba5b058a7c1ff2bb2d4e07265db2dd43451e44",
+  "installer_git_unchanged": true,
+  "binary": "/Users/cubxxw/ops/symphony/runtime/tools/vale/3.24.0/darwin-arm64/vale",
+  "binary_sha256": "c790563403d9b8cd874c57b605b63c9ca932a3f6ce0ad85b9abe5cb0e5cc2f34",
+  "version": "vale version 3.24.0"
+}

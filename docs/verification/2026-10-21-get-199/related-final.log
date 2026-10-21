@@ -1,0 +1,1102 @@
+TAP version 13
+# Subtest: every catalog row carries each public language beside its authored source
+ok 1 - every catalog row carries each public language beside its authored source
+  ---
+  duration_ms: 1.279417
+  type: 'test'
+  ...
+# Subtest: localization never rewrites book sample text and leaves no source text in the English page
+ok 2 - localization never rewrites book sample text and leaves no source text in the English page
+  ---
+  duration_ms: 5.03725
+  type: 'test'
+  ...
+# Subtest: each public language renders the authored home structure and its own presentation
+ok 3 - each public language renders the authored home structure and its own presentation
+  ---
+  duration_ms: 4.782916
+  type: 'test'
+  ...
+# Subtest: the language switcher appears on the home page with the current language marked
+ok 4 - the language switcher appears on the home page with the current language marked
+  ---
+  duration_ms: 2.311291
+  type: 'test'
+  ...
+# Subtest: dynamic sign-in counts and book labels localize per language
+ok 5 - dynamic sign-in counts and book labels localize per language
+  ---
+  duration_ms: 0.100833
+  type: 'test'
+  ...
+# Subtest: every static menu sheet control keeps explicit four-language authored copy
+ok 6 - every static menu sheet control keeps explicit four-language authored copy
+  ---
+  duration_ms: 2.371417
+  type: 'test'
+  ...
+# Subtest: unknown sign-in service messages keep a readable localized fallback
+ok 7 - unknown sign-in service messages keep a readable localized fallback
+  ---
+  duration_ms: 0.157833
+  type: 'test'
+  ...
+# Subtest: every language serves the same homepage structure over HTTP
+ok 8 - every language serves the same homepage structure over HTTP
+  ---
+  duration_ms: 218.265459
+  type: 'test'
+  ...
+# Subtest: the library shell renders the complete safe English shell and hides in-page home navigation
+ok 9 - the library shell renders the complete safe English shell and hides in-page home navigation
+  ---
+  duration_ms: 1.760334
+  type: 'test'
+  ...
+# Subtest: first-paint owned home anchors carry the authored language even with denied storage and another browser language
+ok 10 - first-paint owned home anchors carry the authored language even with denied storage and another browser language
+  ---
+  duration_ms: 6.165916
+  type: 'test'
+  ...
+# Subtest: the menu mounts on the five authored home routes and never on the canonical library
+ok 11 - the menu mounts on the five authored home routes and never on the canonical library
+  ---
+  duration_ms: 1.977791
+  type: 'test'
+  ...
+# Subtest: the authored home markup ships one trigger and one native sheet with the exact ids the controller needs
+ok 12 - the authored home markup ships one trigger and one native sheet with the exact ids the controller needs
+  ---
+  duration_ms: 5.571833
+  type: 'test'
+  ...
+# Subtest: the sheet opens and closes like a native dialog and Escape returns the visible opener
+ok 13 - the sheet opens and closes like a native dialog and Escape returns the visible opener
+  ---
+  duration_ms: 5.133833
+  type: 'test'
+  ...
+# Subtest: opening refuses another open modal and the open appearance popover
+ok 14 - opening refuses another open modal and the open appearance popover
+  ---
+  duration_ms: 0.832334
+  type: 'test'
+  ...
+# Subtest: the sheet reuses the real navigation anchors and localized language links
+ok 15 - the sheet reuses the real navigation anchors and localized language links
+  ---
+  duration_ms: 1.614542
+  type: 'test'
+  ...
+# Subtest: a normal destination anchor keeps default scrolling and focuses the real target in one guarded RAF
+ok 16 - a normal destination anchor keeps default scrolling and focuses the real target in one guarded RAF
+  ---
+  duration_ms: 2.662333
+  type: 'test'
+  ...
+# Subtest: the guarded destination focus adds the focus affordance only when the target has none
+ok 17 - the guarded destination focus adds the focus affordance only when the target has none
+  ---
+  duration_ms: 1.181417
+  type: 'test'
+  ...
+# Subtest: a newer modal or a superseded destination request never steals the destination focus
+ok 18 - a newer modal or a superseded destination request never steals the destination focus
+  ---
+  duration_ms: 2.126667
+  type: 'test'
+  ...
+# Subtest: modified clicks keep native anchor behaviour and leave the sheet alone
+ok 19 - modified clicks keep native anchor behaviour and leave the sheet alone
+  ---
+  duration_ms: 1.078542
+  type: 'test'
+  ...
+# Subtest: non-fragment destinations close without any later focus steal
+ok 20 - non-fragment destinations close without any later focus steal
+  ---
+  duration_ms: 0.473708
+  type: 'test'
+  ...
+# Subtest: the sign-in handoff closes the sheet, focuses the visible trigger and opens auth immediately
+ok 21 - the sign-in handoff closes the sheet, focuses the visible trigger and opens auth immediately
+  ---
+  duration_ms: 0.346
+  type: 'test'
+  ...
+# Subtest: the palette entry closes the sheet, focuses the visible trigger and hands that same opener over
+ok 22 - the palette entry closes the sheet, focuses the visible trigger and hands that same opener over
+  ---
+  duration_ms: 0.300375
+  type: 'test'
+  ...
+# Subtest: crossing the desktop breakpoint closes the sheet and returns the visible brand
+ok 23 - crossing the desktop breakpoint closes the sheet and returns the visible brand
+  ---
+  duration_ms: 0.593125
+  type: 'test'
+  ...
+# Subtest: owner clear and same-owner retry remove stale resume rows and stale updates are rejected
+ok 24 - owner clear and same-owner retry remove stale resume rows and stale updates are rejected
+  ---
+  duration_ms: 0.358667
+  type: 'test'
+  ...
+# Subtest: resume eligibility comes only from real current progress; guests without progress see no continue row
+ok 25 - resume eligibility comes only from real current progress; guests without progress see no continue row
+  ---
+  duration_ms: 0.726791
+  type: 'test'
+  ...
+# Subtest: the account row follows the signed-in session with the validated account destination
+ok 26 - the account row follows the signed-in session with the validated account destination
+  ---
+  duration_ms: 0.3005
+  type: 'test'
+  ...
+# Subtest: dispose detaches the sheet from the shared focus registry and the page listeners
+ok 27 - dispose detaches the sheet from the shared focus registry and the page listeners
+  ---
+  duration_ms: 0.28925
+  type: 'test'
+  ...
+# Subtest: the actual refresh wiring clears the optional resume at every generation start through pending and failure
+ok 28 - the actual refresh wiring clears the optional resume at every generation start through pending and failure
+  ---
+  duration_ms: 4.030333
+  type: 'test'
+  ...
+# Subtest: the actual refresh wiring syncs identity rows when the session settles even if the library request fails
+ok 29 - the actual refresh wiring syncs identity rows when the session settles even if the library request fails
+  ---
+  duration_ms: 4.02875
+  type: 'test'
+  ...
+# Subtest: owner transitions keep identity and resume rows in step with the adopted session
+ok 30 - owner transitions keep identity and resume rows in step with the adopted session
+  ---
+  duration_ms: 4.723417
+  type: 'test'
+  ...
+# Subtest: a failed first library request cannot preserve one account view when the next account arrives
+ok 31 - a failed first library request cannot preserve one account view when the next account arrives
+  ---
+  duration_ms: 2.010083
+  type: 'test'
+  ...
+# Subtest: portal wires the owner settlement token beside the real user id getter
+ok 32 - portal wires the owner settlement token beside the real user id getter
+  ---
+  duration_ms: 0.340584
+  type: 'test'
+  ...
+# Subtest: home locale labels and existing owned links change without querying identity or books or replacing the active sheet
+ok 33 - home locale labels and existing owned links change without querying identity or books or replacing the active sheet
+  ---
+  duration_ms: 12.7625
+  type: 'test'
+  ...
+# Subtest: owned hero, sample and footer links retain locale without rebuilding body content or rewriting unowned targets
+ok 34 - owned hero, sample and footer links retain locale without rebuilding body content or rewriting unowned targets
+  ---
+  duration_ms: 6.246709
+  type: 'test'
+  ...
+# Subtest: authored ja links survive the initial pending catalogue, then follow success settlement and retry
+ok 35 - authored ja links survive the initial pending catalogue, then follow success settlement and retry
+  ---
+  duration_ms: 12.755875
+  type: 'test'
+  ...
+# Subtest: authored ja links survive the initial pending catalogue, then follow failure settlement and retry
+ok 36 - authored ja links survive the initial pending catalogue, then follow failure settlement and retry
+  ---
+  duration_ms: 11.68275
+  type: 'test'
+  ...
+# Subtest: authored zh-Hans links survive the initial pending catalogue, then follow success settlement and retry
+ok 37 - authored zh-Hans links survive the initial pending catalogue, then follow success settlement and retry
+  ---
+  duration_ms: 6.730083
+  type: 'test'
+  ...
+# Subtest: authored zh-Hans links survive the initial pending catalogue, then follow failure settlement and retry
+ok 38 - authored zh-Hans links survive the initial pending catalogue, then follow failure settlement and retry
+  ---
+  duration_ms: 8.426834
+  type: 'test'
+  ...
+# Subtest: authored zh-Hant links survive the initial pending catalogue, then follow success settlement and retry
+ok 39 - authored zh-Hant links survive the initial pending catalogue, then follow success settlement and retry
+  ---
+  duration_ms: 8.432125
+  type: 'test'
+  ...
+# Subtest: authored zh-Hant links survive the initial pending catalogue, then follow failure settlement and retry
+ok 40 - authored zh-Hant links survive the initial pending catalogue, then follow failure settlement and retry
+  ---
+  duration_ms: 7.172291
+  type: 'test'
+  ...
+# Subtest: disposing an authored home during first load fences late successful settlement
+ok 41 - disposing an authored home during first load fences late successful settlement
+  ---
+  duration_ms: 7.019333
+  type: 'test'
+  ...
+# Subtest: missing language stays unknown and blank or stale translation text cannot advertise a bilingual book
+ok 42 - missing language stays unknown and blank or stale translation text cannot advertise a bilingual book
+  ---
+  duration_ms: 2.175708
+  type: 'test'
+  ...
+# Subtest: reading language and form intersect using saved translations without changing the original language
+ok 43 - reading language and form intersect using saved translations without changing the original language
+  ---
+  duration_ms: 5.901084
+  type: 'test'
+  ...
+# Subtest: list metadata reflects actual account translations and ignores stale overlays without rewriting indexes
+ok 44 - list metadata reflects actual account translations and ignores stale overlays without rewriting indexes
+  ---
+  duration_ms: 234.628417
+  type: 'test'
+  ...
+# Subtest: reading filters use real activity rather than the default reading journey or a saved position on a finished book
+ok 45 - reading filters use real activity rather than the default reading journey or a saved position on a finished book
+  ---
+  duration_ms: 0.39475
+  type: 'test'
+  ...
+# Subtest: source, topic, original language and search intersect while retaining the whole shelf order
+ok 46 - source, topic, original language and search intersect while retaining the whole shelf order
+  ---
+  duration_ms: 0.362458
+  type: 'test'
+  ...
+# Subtest: a Chinese trial does not turn an English original into a Chinese-language book
+ok 47 - a Chinese trial does not turn an English original into a Chinese-language book
+  ---
+  duration_ms: 0.1325
+  type: 'test'
+  ...
+# Subtest: filtering collapses the featured card and includes the current book once; clearing restores it
+ok 48 - filtering collapses the featured card and includes the current book once; clearing restores it
+  ---
+  duration_ms: 0.204791
+  type: 'test'
+  ...
+# Subtest: book listings expose original language and curated subjects, including older private index entries, without rewriting them
+ok 49 - book listings expose original language and curated subjects, including older private index entries, without rewriting them
+  ---
+  duration_ms: 164.349542
+  type: 'test'
+  ...
+# Subtest: Chinese originals stay separate from translated English fiction
+ok 50 - Chinese originals stay separate from translated English fiction
+  ---
+  duration_ms: 113.766958
+  type: 'test'
+  ...
+# Subtest: the current view summary lists query, status, source, topic and language while the default view stays bare
+ok 51 - the current view summary lists query, status, source, topic and language while the default view stays bare
+  ---
+  duration_ms: 5.496667
+  type: 'test'
+  ...
+# Subtest: each summary chip removes only its own filter and returns focus to a sensible visible control
+ok 52 - each summary chip removes only its own filter and returns focus to a sensible visible control
+  ---
+  duration_ms: 0.844667
+  type: 'test'
+  ...
+# Subtest: clear-all resets query and every filter and leaves the default view bare again
+ok 53 - clear-all resets query and every filter and leaves the default view bare again
+  ---
+  duration_ms: 0.507667
+  type: 'test'
+  ...
+# Subtest: form choices, translation language choices and removable chips stay in sync
+ok 54 - form choices, translation language choices and removable chips stay in sync
+  ---
+  duration_ms: 9.451875
+  type: 'test'
+  ...
+# Subtest: account language defaults apply once, respect deliberate views and reset on owner change
+ok 55 - account language defaults apply once, respect deliberate views and reset on owner change
+  ---
+  duration_ms: 1.979542
+  type: 'test'
+  ...
+# Subtest: fiction is an explicit topic choice and the Chinese and English shortcuts stay selectable without matching books
+ok 56 - fiction is an explicit topic choice and the Chinese and English shortcuts stay selectable without matching books
+  ---
+  duration_ms: 1.094542
+  type: 'test'
+  ...
+# Subtest: the three filter dropdowns are enhanced by the shared choice primitive and mirror options only through sync
+ok 57 - the three filter dropdowns are enhanced by the shared choice primitive and mirror options only through sync
+  ---
+  duration_ms: 0.756292
+  type: 'test'
+  ...
+# Subtest: actual locale commit changes filter labels in place without applying filters, replacing nodes or writing the search draft
+ok 58 - actual locale commit changes filter labels in place without applying filters, replacing nodes or writing the search draft
+  ---
+  duration_ms: 10.569291
+  type: 'test'
+  ...
+# Subtest: a returning reader sees the active book once, while filtering searches every book
+ok 59 - a returning reader sees the active book once, while filtering searches every book
+  ---
+  duration_ms: 7.681167
+  type: 'test'
+  ...
+# Subtest: an explicit current book can be changed without losing books or inventing reading history
+ok 60 - an explicit current book can be changed without losing books or inventing reading history
+  ---
+  duration_ms: 0.509459
+  type: 'test'
+  ...
+# Subtest: the room preview uses the stable requested paragraph and never fills in missing translations
+ok 61 - the room preview uses the stable requested paragraph and never fills in missing translations
+  ---
+  duration_ms: 0.266667
+  type: 'test'
+  ...
+# Subtest: long preview text remains a bounded exact prefix without splitting Unicode characters
+ok 62 - long preview text remains a bounded exact prefix without splitting Unicode characters
+  ---
+  duration_ms: 0.085542
+  type: 'test'
+  ...
+# Subtest: an expected content version is rejected before any provider request while unversioned callers stay compatible
+ok 63 - an expected content version is rejected before any provider request while unversioned callers stay compatible
+  ---
+  duration_ms: 63.002375
+  type: 'test'
+  ...
+# Subtest: a source update during generation cannot recreate the old book or publish the old overlay
+ok 64 - a source update during generation cannot recreate the old book or publish the old overlay
+  ---
+  duration_ms: 33.292292
+  type: 'test'
+  ...
+# Subtest: a book deleted during generation is not recreated and keeps its overlay unwritten
+ok 65 - a book deleted during generation is not recreated and keeps its overlay unwritten
+  ---
+  duration_ms: 20.4535
+  type: 'test'
+  ...
+# Subtest: reviewed translations and concurrently added versions are preserved at save time
+ok 66 - reviewed translations and concurrently added versions are preserved at save time
+  ---
+  duration_ms: 30.705167
+  type: 'test'
+  ...
+# Subtest: saving translations keeps account ownership and never touches personal records
+ok 67 - saving translations keeps account ownership and never touches personal records
+  ---
+  duration_ms: 7.374917
+  type: 'test'
+  ...
+# Subtest: reading form survives URL, auth return and clearing without accepting arbitrary values
+ok 68 - reading form survives URL, auth return and clearing without accepting arbitrary values
+  ---
+  duration_ms: 0.957916
+  type: 'test'
+  ...
+# Subtest: settings links reject inherited property names and preserve only the explicit reading alias
+ok 69 - settings links reject inherited property names and preserve only the explicit reading alias
+  ---
+  duration_ms: 0.475875
+  type: 'test'
+  ...
+# Subtest: owned view keys parse with validated enums and language syntax while unknown parameters stay unowned
+ok 70 - owned view keys parse with validated enums and language syntax while unknown parameters stay unowned
+  ---
+  duration_ms: 0.235542
+  type: 'test'
+  ...
+# Subtest: conflicting overlay keys normalize to exactly one known overlay in a fixed precedence
+ok 71 - conflicting overlay keys normalize to exactly one known overlay in a fixed precedence
+  ---
+  duration_ms: 0.128375
+  type: 'test'
+  ...
+# Subtest: GET-201: ?settings=reading aliases to canonical reading-habits without widening the owned tab set
+ok 72 - GET-201: ?settings=reading aliases to canonical reading-habits without widening the owned tab set
+  ---
+  duration_ms: 0.197542
+  type: 'test'
+  ...
+# Subtest: serializing a default view removes only owned keys and keeps unrelated query and history fields
+ok 73 - serializing a default view removes only owned keys and keeps unrelated query and history fields
+  ---
+  duration_ms: 0.1235
+  type: 'test'
+  ...
+# Subtest: the pure reducer clears one key, clears all and keeps the chooser while routed modals replace it
+ok 74 - the pure reducer clears one key, clears all and keeps the chooser while routed modals replace it
+  ---
+  duration_ms: 0.230792
+  type: 'test'
+  ...
+# Subtest: a bounded library return codec keeps owned view keys and never approves reader, gift or external targets
+ok 75 - a bounded library return codec keeps owned view keys and never approves reader, gift or external targets
+  ---
+  duration_ms: 0.209125
+  type: 'test'
+  ...
+# Subtest: hydration reads the parsed URL once without history writes and keeps unrelated entries intact
+ok 76 - hydration reads the parsed URL once without history writes and keeps unrelated entries intact
+  ---
+  duration_ms: 1.236041
+  type: 'test'
+  ...
+# Subtest: a debounced search replaces the current entry while a discrete filter push first flushes the query
+ok 77 - a debounced search replaces the current entry while a discrete filter push first flushes the query
+  ---
+  duration_ms: 0.488416
+  type: 'test'
+  ...
+# Subtest: popstate, owner switches and resets cancel pending search timers with real URL and emit assertions
+ok 78 - popstate, owner switches and resets cancel pending search timers with real URL and emit assertions
+  ---
+  duration_ms: 0.296417
+  type: 'test'
+  ...
+# Subtest: back and forward restore the view without recursive pushes
+ok 79 - back and forward restore the view without recursive pushes
+  ---
+  duration_ms: 0.15675
+  type: 'test'
+  ...
+# Subtest: an app-opened overlay close consumes only its own entry
+ok 80 - an app-opened overlay close consumes only its own entry
+  ---
+  duration_ms: 0.152875
+  type: 'test'
+  ...
+# Subtest: closing an overlay opened from a direct URL removes its own keys and any stale marker instead of leaving the site
+ok 81 - closing an overlay opened from a direct URL removes its own keys and any stale marker instead of leaving the site
+  ---
+  duration_ms: 0.087
+  type: 'test'
+  ...
+# Subtest: a routed modal over a direct-URL chooser keeps its own entry and its close never leaves the site
+ok 82 - a routed modal over a direct-URL chooser keeps its own entry and its close never leaves the site
+  ---
+  duration_ms: 0.192791
+  type: 'test'
+  ...
+# Subtest: overlay tab changes replace their own entry instead of stacking history
+ok 83 - overlay tab changes replace their own entry instead of stacking history
+  ---
+  duration_ms: 0.093917
+  type: 'test'
+  ...
+# Subtest: owner switch drops stale owner filters and pending queries without pushing or backing
+ok 84 - owner switch drops stale owner filters and pending queries without pushing or backing
+  ---
+  duration_ms: 0.116125
+  type: 'test'
+  ...
+# Subtest: ownership of the one app-created modal entry survives tab and overlay replacement
+ok 85 - ownership of the one app-created modal entry survives tab and overlay replacement
+  ---
+  duration_ms: 0.0945
+  type: 'test'
+  ...
+# Subtest: the non-modal filter owns no entry while a modal over it pushes and consumes its own
+ok 86 - the non-modal filter owns no entry while a modal over it pushes and consumes its own
+  ---
+  duration_ms: 0.060959
+  type: 'test'
+  ...
+# Subtest: a discrete view change while an app-owned modal is open keeps one owned entry for the close
+ok 87 - a discrete view change while an app-owned modal is open keeps one owned entry for the close
+  ---
+  duration_ms: 0.377333
+  type: 'test'
+  ...
+# Subtest: owner epochs tag app entries and a pop to an old owner epoch clears only its stale owned state
+ok 88 - owner epochs tag app entries and a pop to an old owner epoch clears only its stale owned state
+  ---
+  duration_ms: 0.08075
+  type: 'test'
+  ...
+# Subtest: foreign history entries and foreign state fields survive pops untouched
+ok 89 - foreign history entries and foreign state fields survive pops untouched
+  ---
+  duration_ms: 0.084459
+  type: 'test'
+  ...
+# Subtest: the session-ready overlay reconciliation follows the current snapshot instead of a stale hydrate capture
+ok 90 - the session-ready overlay reconciliation follows the current snapshot instead of a stale hydrate capture
+  ---
+  duration_ms: 0.063625
+  type: 'test'
+  ...
+# Subtest: adopting a validated safe return applies its view and overlay without pushing or backing
+ok 91 - adopting a validated safe return applies its view and overlay without pushing or backing
+  ---
+  duration_ms: 0.206458
+  type: 'test'
+  ...
+# Subtest: live queries share one bounded normalizer with URL parsing and never commit unfinished IME text
+ok 92 - live queries share one bounded normalizer with URL parsing and never commit unfinished IME text
+  ---
+  duration_ms: 0.079459
+  type: 'test'
+  ...
+# Subtest: auth return targets prefer upload and reader returns, then the parsed library return, then the live view
+ok 93 - auth return targets prefer upload and reader returns, then the parsed library return, then the live view
+  ---
+  duration_ms: 0.04575
+  type: 'test'
+  ...
+# Subtest: an owner epoch survives adapter reload before Back reaches an old owner entry
+ok 94 - an owner epoch survives adapter reload before Back reaches an old owner entry
+  ---
+  duration_ms: 0.101208
+  type: 'test'
+  ...
+# Subtest: bounded query truncation keeps well-formed UTF-16 and an identical URL round trip
+ok 95 - bounded query truncation keeps well-formed UTF-16 and an identical URL round trip
+  ---
+  duration_ms: 0.043708
+  type: 'test'
+  ...
+# Subtest: only a successfully adopted auth handoff consumes its one-time keys and modal ownership
+ok 96 - only a successfully adopted auth handoff consumes its one-time keys and modal ownership
+  ---
+  duration_ms: 0.121208
+  type: 'test'
+  ...
+# Subtest: explicit modal close normalizes its exact predecessor inside the earlier runtime pop handler
+ok 97 - explicit modal close normalizes its exact predecessor inside the earlier runtime pop handler
+  ---
+  duration_ms: 6.901
+  type: 'test'
+  ...
+# Subtest: ordinary native Back remains an explicit old-route locale override, including after one carried close
+ok 98 - ordinary native Back remains an explicit old-route locale override, including after one carried close
+  ---
+  duration_ms: 5.226542
+  type: 'test'
+  ...
+# Subtest: ordinary Back with an open modal does not carry the picker locale
+ok 99 - ordinary Back with an open modal does not carry the picker locale
+  ---
+  duration_ms: 4.054958
+  type: 'test'
+  ...
+# Subtest: adapter writes inherit current validated ui while the pure codec keeps explicit return ui precedence
+ok 100 - adapter writes inherit current validated ui while the pure codec keeps explicit return ui precedence
+  ---
+  duration_ms: 0.171042
+  type: 'test'
+  ...
+# Subtest: explicit close cannot carry a requested but uncommitted locale
+ok 101 - explicit close cannot carry a requested but uncommitted locale
+  ---
+  duration_ms: 4.031125
+  type: 'test'
+  ...
+# Subtest: close carry is cancelled by new lifecycle or business ownership before queued traversal
+ok 102 - close carry is cancelled by new lifecycle or business ownership before queued traversal
+  ---
+  duration_ms: 46.724125
+  type: 'test'
+  ...
+# Subtest: unmatched predecessor entry or owner epoch consumes no carry and cannot affect a later pop
+ok 103 - unmatched predecessor entry or owner epoch consumes no carry and cannot affect a later pop
+  ---
+  duration_ms: 20.19325
+  type: 'test'
+  ...
+# Subtest: direct URL modal close replaces in place with live locale, and a remounted owned modal keeps its predecessor
+ok 104 - direct URL modal close replaces in place with live locale, and a remounted owned modal keeps its predecessor
+  ---
+  duration_ms: 8.312042
+  type: 'test'
+  ...
+# Subtest: initial or route catalogue fallback does not carry an unsuccessful URL locale
+ok 105 - initial or route catalogue fallback does not carry an unsuccessful URL locale
+  ---
+  duration_ms: 4.615959
+  type: 'test'
+  ...
+# Subtest: missing or invalid URL ui remains absent on explicit close despite a saved effective locale
+ok 106 - missing or invalid URL ui remains absent on explicit close despite a saved effective locale
+  ---
+  duration_ms: 11.020292
+  type: 'test'
+  ...
+# Subtest: adoptReturn uses its validated explicit ui over the old current URL, then future writes follow the live URL
+ok 107 - adoptReturn uses its validated explicit ui over the old current URL, then future writes follow the live URL
+  ---
+  duration_ms: 0.1935
+  type: 'test'
+  ...
+# Subtest: a newer successful picker choice before queued traversal invalidates the old close locale
+ok 108 - a newer successful picker choice before queued traversal invalidates the old close locale
+  ---
+  duration_ms: 4.139334
+  type: 'test'
+  ...
+# Subtest: first modal open before hydrate tags only predecessor metadata and preserves its exact URL and foreign state
+ok 109 - first modal open before hydrate tags only predecessor metadata and preserves its exact URL and foreign state
+  ---
+  duration_ms: 9.004125
+  type: 'test'
+  ...
+# Subtest: non-secure self-hosted history works without crypto.randomUUID and keeps bounded distinct entry identities
+ok 110 - non-secure self-hosted history works without crypto.randomUUID and keeps bounded distinct entry identities
+  ---
+  duration_ms: 6.897166
+  type: 'test'
+  ...
+# Subtest: history owner releases its before-pop subscription on destroy and a fresh owner subscribes once
+ok 111 - history owner releases its before-pop subscription on destroy and a fresh owner subscribes once
+  ---
+  duration_ms: 7.293083
+  type: 'test'
+  ...
+# Subtest: finished books remain available to reopen after refreshing, including books without a saved position
+ok 112 - finished books remain available to reopen after refreshing, including books without a saved position
+  ---
+  duration_ms: 0.476166
+  type: 'test'
+  ...
+# Subtest: a cross-month overview fetches the real adjacent days and keeps the monthly calendar separate
+ok 113 - a cross-month overview fetches the real adjacent days and keeps the monthly calendar separate
+  ---
+  duration_ms: 1.520625
+  type: 'test'
+  ...
+# Subtest: the shelf puts owned books first and searches titles and authors without changing the catalog
+ok 114 - the shelf puts owned books first and searches titles and authors without changing the catalog
+  ---
+  duration_ms: 5.968791
+  type: 'test'
+  ...
+# Subtest: every continue entry retains its paragraph anchor while new entries open the original text
+ok 115 - every continue entry retains its paragraph anchor while new entries open the original text
+  ---
+  duration_ms: 0.184125
+  type: 'test'
+  ...
+# Subtest: the compact week crosses month and year boundaries on a real Monday-to-Sunday calendar
+ok 116 - the compact week crosses month and year boundaries on a real Monday-to-Sunday calendar
+  ---
+  duration_ms: 0.2495
+  type: 'test'
+  ...
+# Subtest: reading near the book surfaces the latest actual entry rather than inventing an empty-today achievement
+ok 117 - reading near the book surfaces the latest actual entry rather than inventing an empty-today achievement
+  ---
+  duration_ms: 0.115292
+  type: 'test'
+  ...
+# Subtest: the settings opener is captured only outside an open dialog
+ok 118 - the settings opener is captured only outside an open dialog
+  ---
+  duration_ms: 0.094916
+  type: 'test'
+  ...
+# Subtest: settings focus return only targets a connected visible non-inert control outside the dialog
+ok 119 - settings focus return only targets a connected visible non-inert control outside the dialog
+  ---
+  duration_ms: 0.200292
+  type: 'test'
+  ...
+# Warning: Cannot load "@napi-rs/canvas" package: "Error: Cannot find native binding. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.".
+# Warning: Cannot polyfill `DOMMatrix`, rendering may be broken.
+# Warning: Cannot polyfill `Path2D`, rendering may be broken.
+# Subtest: extracts an actual PDF and preserves its page source; refuses a page without readable text
+ok 120 - extracts an actual PDF and preserves its page source; refuses a page without readable text
+  ---
+  duration_ms: 107.685875
+  type: 'test'
+  ...
+# Subtest: invalid restored private book and conflicting source versions cannot erase existing comments
+ok 121 - invalid restored private book and conflicting source versions cannot erase existing comments
+  ---
+  duration_ms: 56.310541
+  type: 'test'
+  ...
+# Subtest: malformed backup metadata and records are rejected before any book is written
+ok 122 - malformed backup metadata and records are rejected before any book is written
+  ---
+  duration_ms: 61.697958
+  type: 'test'
+  ...
+# Subtest: actual default catalog exports including front matter and appendices restore successfully
+ok 123 - actual default catalog exports including front matter and appendices restore successfully
+  ---
+  duration_ms: 2406.026791
+  type: 'test'
+  ...
+# Subtest: restoring an old position advances the local revision so stale tabs cannot overwrite it
+ok 124 - restoring an old position advances the local revision so stale tabs cannot overwrite it
+  ---
+  duration_ms: 31.87525
+  type: 'test'
+  ...
+# Subtest: imports real text, isolates private books and records, supports scoped revocable grants and restore
+ok 125 - imports real text, isolates private books and records, supports scoped revocable grants and restore
+  ---
+  duration_ms: 37.309875
+  type: 'test'
+  ...
+# Subtest: rejects disguised PDFs, binary text, empty and oversized files
+ok 126 - rejects disguised PDFs, binary text, empty and oversized files
+  ---
+  duration_ms: 0.404083
+  type: 'test'
+  ...
+# Subtest: translation only uses adjacent passages, saves independent draft versions and never pretends failure is translation
+ok 127 - translation only uses adjacent passages, saves independent draft versions and never pretends failure is translation
+  ---
+  duration_ms: 23.96
+  type: 'test'
+  ...
+# Subtest: an incomplete model answer cannot publish one translation as a complete bilingual result
+ok 128 - an incomplete model answer cannot publish one translation as a complete bilingual result
+  ---
+  duration_ms: 14.167958
+  type: 'test'
+  ...
+# Subtest: Chinese originals remain originals and never invoke Chinese-to-Chinese translation
+ok 129 - Chinese originals remain originals and never invoke Chinese-to-Chinese translation
+  ---
+  duration_ms: 13.040333
+  type: 'test'
+  ...
+# Subtest: an English source mentioning a Chinese term is still classified by its main text
+ok 130 - an English source mentioning a Chinese term is still classified by its main text
+  ---
+  duration_ms: 21.67375
+  type: 'test'
+  ...
+# Subtest: reattaching an original after cross-account restore returns the existing book and notes
+ok 131 - reattaching an original after cross-account restore returns the existing book and notes
+  ---
+  duration_ms: 65.484708
+  type: 'test'
+  ...
+# Subtest: automatic native and mixed PDF books retain source-checked original downloads
+ok 132 - automatic native and mixed PDF books retain source-checked original downloads
+  ---
+  duration_ms: 37.405959
+  type: 'test'
+  ...
+# Subtest: local imports enforce logical capacity before saving a shelf entry
+ok 133 - local imports enforce logical capacity before saving a shelf entry
+  ---
+  duration_ms: 201.042375
+  type: 'test'
+  ...
+# Subtest: the library response presents a complete safe English shell before JavaScript loads
+ok 134 - the library response presents a complete safe English shell before JavaScript loads
+  ---
+  duration_ms: 7.096875
+  type: 'test'
+  ...
+# Subtest: the default homepage renders in English and every language keeps its own URL
+ok 135 - the default homepage renders in English and every language keeps its own URL
+  ---
+  duration_ms: 6.20825
+  type: 'test'
+  ...
+# Subtest: private library metadata is idempotently excluded from indexing and uses its own canonical URL
+ok 136 - private library metadata is idempotently excluded from indexing and uses its own canonical URL
+  ---
+  duration_ms: 0.977083
+  type: 'test'
+  ...
+# Subtest: self-hosted settings modules are served as exact public JavaScript assets
+ok 137 - self-hosted settings modules are served as exact public JavaScript assets
+  ---
+  duration_ms: 161.404916
+  type: 'test'
+  ...
+# Subtest: MCP setup remains reachable when localhost resolves to an IPv6 listener
+ok 138 - MCP setup remains reachable when localhost resolves to an IPv6 listener
+  ---
+  duration_ms: 199.203041
+  type: 'test'
+  ...
+# Subtest: local MCP setup is authenticated, uses the actual runtime and port, and is absent from hosted mode
+ok 139 - local MCP setup is authenticated, uses the actual runtime and port, and is absent from hosted mode
+  ---
+  duration_ms: 394.881708
+  type: 'test'
+  ...
+# Subtest: email codes must be delivered, expire, cannot be replayed and sessions revoke
+ok 140 - email codes must be delivered, expire, cannot be replayed and sessions revoke
+  ---
+  duration_ms: 9.109542
+  type: 'test'
+  ...
+# Subtest: SMTP-only hosting rejects password setup purposes before sending or verifying mail
+ok 141 - SMTP-only hosting rejects password setup purposes before sending or verifying mail
+  ---
+  duration_ms: 113.880916
+  type: 'test'
+  ...
+# Warning: Cannot load "@napi-rs/canvas" package: "Error: Cannot find native binding. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.".
+# Warning: Cannot polyfill `DOMMatrix`, rendering may be broken.
+# Warning: Cannot polyfill `Path2D`, rendering may be broken.
+# Subtest: original downloads keep exact bytes private and restored books can reattach their original
+ok 142 - original downloads keep exact bytes private and restored books can reattach their original
+  ---
+  duration_ms: 3716.989708
+  type: 'test'
+  ...
+# Subtest: portal serves home, imports private text after explicit local entry, guards origin and scoped Agent API
+ok 143 - portal serves home, imports private text after explicit local entry, guards origin and scoped Agent API
+  ---
+  duration_ms: 242.701708
+  type: 'test'
+  ...
+# Subtest: restores a backup larger than 29 MB through the real HTTP endpoint
+ok 144 - restores a backup larger than 29 MB through the real HTTP endpoint
+  ---
+  duration_ms: 5022.432
+  type: 'test'
+  ...
+# Subtest: an old reader tab cannot write its private draft into the new email account
+ok 145 - an old reader tab cannot write its private draft into the new email account
+  ---
+  duration_ms: 66.596
+  type: 'test'
+  ...
+# Subtest: pre-existing oversized local books keep their ordinary readable response
+ok 146 - pre-existing oversized local books keep their ordinary readable response
+  ---
+  duration_ms: 751.341
+  type: 'test'
+  ...
+# Subtest: actual public and private shelf cards use complete message IDs and preserve their source titles
+ok 147 - actual public and private shelf cards use complete message IDs and preserve their source titles
+  ---
+  duration_ms: 525.147833
+  type: 'test'
+  ...
+# Subtest: upload progress relabels only its current operation and never revives a replaced status
+ok 148 - upload progress relabels only its current operation and never revives a replaced status
+  ---
+  duration_ms: 3.507834
+  type: 'test'
+  ...
+# Subtest: owner reset, owner ABA and a finished upload fence cached and late progress
+ok 149 - owner reset, owner ABA and a finished upload fence cached and late progress
+  ---
+  duration_ms: 3.239084
+  type: 'test'
+  ...
+# Subtest: owner reset drops account translation availability even for shared public books
+ok 150 - owner reset drops account translation availability even for shared public books
+  ---
+  duration_ms: 13.792542
+  type: 'test'
+  ...
+# Subtest: home cover title and stored resume label remain content even when equal to a UI phrase
+ok 151 - home cover title and stored resume label remain content even when equal to a UI phrase
+  ---
+  duration_ms: 8.853084
+  type: 'test'
+  ...
+# Subtest: actual dedicated upload progress replaces a semantic notice and keeps its language truthful without reviving finished work
+ok 152 - actual dedicated upload progress replaces a semantic notice and keeps its language truthful without reviving finished work
+  ---
+  duration_ms: 3.983459
+  type: 'test'
+  ...
+# Subtest: actual portal relabels static library chrome in place, including visible names, hints and authored home destinations
+ok 153 - actual portal relabels static library chrome in place, including visible names, hints and authored home destinations
+  ---
+  duration_ms: 78.094625
+  type: 'test'
+  ...
+# Subtest: signed-in desktop home account handoff carries the current UI language
+ok 154 - signed-in desktop home account handoff carries the current UI language
+  ---
+  duration_ms: 2.187792
+  type: 'test'
+  ...
+# Subtest: codec accepts only exact canonical codes in owned URLs and keeps bounded navigator mapping separate
+ok 155 - codec accepts only exact canonical codes in owned URLs and keeps bounded navigator mapping separate
+  ---
+  duration_ms: 22.457375
+  type: 'test'
+  ...
+# Subtest: route classification keeps authored path authority and canonical precedence
+ok 156 - route classification keeps authored path authority and canonical precedence
+  ---
+  duration_ms: 0.47775
+  type: 'test'
+  ...
+# Subtest: four catalogues are frozen data with equal keys and matching interpolation parameters
+ok 157 - four catalogues are frozen data with equal keys and matching interpolation parameters
+  ---
+  duration_ms: 35.030375
+  type: 'test'
+  ...
+# Subtest: runtime catalogue validation enforces full coherence, not just required labels
+ok 158 - runtime catalogue validation enforces full coherence, not just required labels
+  ---
+  duration_ms: 17.604
+  type: 'test'
+  ...
+# Subtest: initial catalogue failure resolves uiReady once to usable English and keeps a retry target
+ok 159 - initial catalogue failure resolves uiReady once to usable English and keeps a retry target
+  ---
+  duration_ms: 8.764709
+  type: 'test'
+  ...
+# Subtest: switch timeout keeps old UI/query/preference and offers the fixed retry variant only once
+ok 160 - switch timeout keeps old UI/query/preference and offers the fixed retry variant only once
+  ---
+  duration_ms: 6.36825
+  type: 'test'
+  ...
+# Subtest: F1: history rejection settles an explicit history error in the old language before any write
+ok 161 - F1: history rejection settles an explicit history error in the old language before any write
+  ---
+  duration_ms: 24.977041
+  type: 'test'
+  ...
+# Subtest: F2: retry keeps the originating actor semantics for picker, route and authored activation
+ok 162 - F2: retry keeps the originating actor semantics for picker, route and authored activation
+  ---
+  duration_ms: 40.076291
+  type: 'test'
+  ...
+# Subtest: F3: a changed navigation context makes the pending request stale with zero side effects
+ok 163 - F3: a changed navigation context makes the pending request stale with zero side effects
+  ---
+  duration_ms: 10.118958
+  type: 'test'
+  ...
+# Subtest: F3: same-context view writers change search/filter/overlay while waiting and only ui changes after success
+ok 164 - F3: same-context view writers change search/filter/overlay while waiting and only ui changes after success
+  ---
+  duration_ms: 69.755708
+  type: 'test'
+  ...
+# Subtest: F6: falsy history.state values survive the owned ui merge exactly
+ok 165 - F6: falsy history.state values survive the owned ui merge exactly
+  ---
+  duration_ms: 54.955375
+  type: 'test'
+  ...
+# Subtest: late success and late failure after supersede only consume; timers settle stale
+ok 166 - late success and late failure after supersede only consume; timers settle stale
+  ---
+  duration_ms: 25.525125
+  type: 'test'
+  ...
+# Subtest: storage failure after successful history commits session-only and keeps other keys
+ok 167 - storage failure after successful history commits session-only and keeps other keys
+  ---
+  duration_ms: 9.541916
+  type: 'test'
+  ...
+# Subtest: route overrides never write URL or preference; priority and invalid ui fall through
+ok 168 - route overrides never write URL or preference; priority and invalid ui fall through
+  ---
+  duration_ms: 30.265583
+  type: 'test'
+  ...
+# Subtest: F4: authored route language is authoritative over a conflicting ui query
+ok 169 - F4: authored route language is authoritative over a conflicting ui query
+  ---
+  duration_ms: 12.358625
+  type: 'test'
+  ...
+# Subtest: same-effective Back cancels a pending picker attempt and never republishes labels
+ok 170 - same-effective Back cancels a pending picker attempt and never republishes labels
+  ---
+  duration_ms: 5.3185
+  type: 'test'
+  ...
+# Subtest: subscriber exceptions are isolated and reported as separate UI-update faults
+ok 171 - subscriber exceptions are isolated and reported as separate UI-update faults
+  ---
+  duration_ms: 12.871084
+  type: 'test'
+  ...
+# Subtest: the real browser catalogue loader uses exactly six literal base/retry edges
+ok 172 - the real browser catalogue loader uses exactly six literal base/retry edges
+  ---
+  duration_ms: 6.248541
+  type: 'test'
+  ...
+# Subtest: production singleton bootstrap runs once and classifies actual routes
+ok 173 - production singleton bootstrap runs once and classifies actual routes
+  ---
+  duration_ms: 79.508458
+  type: 'test'
+  ...
+# Subtest: the source graph allows only reviewed owners and the exact six real catalogue edges
+ok 174 - the source graph allows only reviewed owners and the exact six real catalogue edges
+  ---
+  duration_ms: 648.941875
+  type: 'test'
+  ...
+# Subtest: G2: comment-only catalogue imports never count and real six plus same-name comments pass
+ok 175 - G2: comment-only catalogue imports never count and real six plus same-name comments pass
+  ---
+  duration_ms: 27.513709
+  type: 'test'
+  ...
+# Subtest: G1: root-absolute, require, hash, alias and wrong-caller edges fail in audit AND actual build
+ok 176 - G1: root-absolute, require, hash, alias and wrong-caller edges fail in audit AND actual build
+  ---
+  duration_ms: 189.4055
+  type: 'test'
+  ...
+# Subtest: graph negatives: missing backing, wrong caller, unused permission and a fully authorized owner pass
+ok 177 - graph negatives: missing backing, wrong caller, unused permission and a fully authorized owner pass
+  ---
+  duration_ms: 63.991959
+  type: 'test'
+  ...
+# Subtest: targetFileOf maps relative, root-absolute and rejects bare specifiers
+ok 178 - targetFileOf maps relative, root-absolute and rejects bare specifiers
+  ---
+  duration_ms: 0.150458
+  type: 'test'
+  ...
+# Subtest: before-pop normalizers run synchronously before route lookup with no extra preference or history write
+ok 179 - before-pop normalizers run synchronously before route lookup with no extra preference or history write
+  ---
+  duration_ms: 13.357416
+  type: 'test'
+  ...
+# Subtest: before-pop subscriptions release idempotently, deduplicate, and never run during picker or ordinary initialization
+ok 180 - before-pop subscriptions release idempotently, deduplicate, and never run during picker or ordinary initialization
+  ---
+  duration_ms: 13.261291
+  type: 'test'
+  ...
+# Subtest: before-pop normalizer faults are isolated and reported without changing route settlement
+ok 181 - before-pop normalizer faults are isolated and reported without changing route settlement
+  ---
+  duration_ms: 15.109375
+  type: 'test'
+  ...
+1..181
+# tests 181
+# suites 0
+# pass 181
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12301.393334

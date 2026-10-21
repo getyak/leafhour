@@ -16,6 +16,7 @@ import {resumeSummary} from '../app/reading-progress.mjs';
 import {validateLibraryBackup} from '../app/library-backup.mjs';
 import {saveHighlight,findHighlight,mergeHighlights} from '../app/highlights.mjs';
 import {inferSourceLanguage} from '../app/source-language.mjs';
+import {bookReadingLanguages} from '../app/book-reading-languages.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
 import {applyPersonalRecordEdit} from '../app/personal-records.mjs';
 import {isReadingTimeSource} from '../app/reading-time-policy.mjs';
@@ -47,7 +48,7 @@ function mergedPersonalRecords(book,current,incoming,{preserveExisting=false}={}
   validatePendingAnchors(data,book);return data;
 }
 const allPassages=book=>book.sections.flatMap(s=>s.paragraphs.map(p=>({...p,chapterId:s.chapterId})));
-const brief=book=>({bookId:book.bookId,contentVersion:book.contentVersion,title:book.title,author:book.author,visibility:book.visibility,sourceLanguage:book.sourceLanguage,topics:book.topics||[],source:book.source,cover:book.cover,description:book.description,...(book.introduction?{introduction:book.introduction}:{}),chineseSample:book.chineseSample,paragraphs:allPassages(book).length,chapters:book.chapters.length,chapterIndex:book.chapters.map(c=>({id:c.id,kind:c.kind,number:c.number,title:c.title})),createdAt:book.createdAt});
+const brief=book=>({bookId:book.bookId,contentVersion:book.contentVersion,title:book.title,author:book.author,visibility:book.visibility,...bookReadingLanguages(book),topics:book.topics||[],source:book.source,cover:book.cover,description:book.description,...(book.introduction?{introduction:book.introduction}:{}),chineseSample:book.chineseSample,paragraphs:allPassages(book).length,chapters:book.chapters.length,chapterIndex:book.chapters.map(c=>({id:c.id,kind:c.kind,number:c.number,title:c.title})),createdAt:book.createdAt});
 const emptyShelf=()=>({revision:0,order:[],archived:{}});
 const shelfLimit=1000;
 const shelfId=id=>typeof id==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(id);
@@ -220,9 +221,10 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       if(!user)return {...row,resume:null,journey:null};
       const data=await read(recordFile(user,row.bookId),{position:null});
       // Older indexes lack language metadata. Derive it without rewriting the account's files.
-      const book=publicBooks.get(row.bookId)||(!data.position&&row.chapterIndex&&row.contentVersion&&row.sourceLanguage?{bookId:row.bookId,contentVersion:row.contentVersion,chapters:row.chapterIndex}:await read(bookFile(user,row.bookId),null));
+      const book=publicBooks.get(row.bookId)||await read(bookFile(user,row.bookId),null);
       const sourceLanguage=row.sourceLanguage||book?.sourceLanguage||(book?.sections?inferSourceLanguage(book.sections.flatMap(s=>s.paragraphs).slice(0,10).map(p=>p.original).join('\n')):null);
-      return {...row,sourceLanguage,topics:row.topics||book?.topics||[],...(positions?{shelfPosition:positions.get(row.bookId)}:{}),resume:book&&data.position?resumeSummary(book,data.position):null,journey:book?readingJourney(book,data):null};
+      const overlay=await read(path.join(userDir(user),'translations',digest(row.bookId)+'.json'),{});
+      return {...row,...bookReadingLanguages({...book,sourceLanguage},overlay),topics:row.topics||book?.topics||[],...(positions?{shelfPosition:positions.get(row.bookId)}:{}),resume:book&&data.position?resumeSummary(book,data.position):null,journey:book?readingJourney(book,data):null};
     }));
   }
   async function importDocument(user,input){requireUser(user);return importExtracted(user,{...input,extracted:await extractDocument(input)});}

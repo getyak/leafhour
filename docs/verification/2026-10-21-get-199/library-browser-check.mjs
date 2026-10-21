@@ -1,0 +1,35 @@
+async page => {
+ const checks=[];
+ await page.goto('http://127.0.0.1:50115/library?ui=zh-Hans');
+ const state=()=>page.evaluate(()=>({language:document.querySelector('#shelf-language').value,form:document.querySelector('#shelf-form').value,count:document.querySelector('#room-count').textContent,ids:[...document.querySelectorAll('#library-books [data-book-id]')].map(n=>n.dataset.bookId)}));
+ const verify=(ok,label)=>{if(!ok)throw Error(label);checks.push(label);};
+ await page.waitForFunction(()=>document.querySelector('#room-count').textContent==='4 / 31 本书');
+ verify((await state()).language==='zh','account reading language defaults to Chinese');
+ await page.getByRole('button',{name:'筛选书籍，已选 1 项',exact:true}).click();
+ await page.getByRole('group',{name:'阅读形态',exact:true}).getByRole('button',{name:'原版',exact:true}).click();
+ verify((await state()).ids.length===1,'Chinese original excludes English books with translations');
+ await page.getByRole('group',{name:'阅读形态',exact:true}).getByRole('button',{name:'有译本',exact:true}).click();
+ verify((await state()).ids.length===3,'Chinese translation lists only the three saved sample translations');
+ await page.getByRole('group',{name:'阅读形态',exact:true}).getByRole('button',{name:'双语对照',exact:true}).click();
+ verify((await state()).ids.length===3,'bilingual format retains aligned sample translations');
+ await page.screenshot({path:'/private/tmp/ai-test-GET-199.tdrcYD/library-desktop.png'});
+ await page.keyboard.press('Escape');
+ verify(new URL(page.url()).searchParams.get('form')==='bilingual','format is retained in URL after closing chooser');
+ await page.goto('http://127.0.0.1:50115/library?language=ja&form=bilingual&ui=zh-Hans');
+ await page.getByText('试试其他阅读语言，或将阅读形态改为全部。',{exact:true}).waitFor({state:'visible'});
+ verify(await page.getByText('试试其他阅读语言，或将阅读形态改为全部。',{exact:true}).isVisible(),'zero results provide a concrete way to broaden filters');
+ await page.screenshot({path:'/private/tmp/ai-test-GET-199.tdrcYD/library-empty.png'});
+ await page.locator('#empty-clear').click();
+ verify((await state()).language==='all'&&(await state()).form==='all','one clear removes language and format');
+ await page.evaluate(()=>window.dispatchEvent(new Event('focus')));
+ verify((await state()).language==='all','owner recheck does not reapply a cleared default');
+ await page.goto('http://127.0.0.1:50115/library?language=zh&form=bilingual&ui=zh-Hans');
+ await page.waitForFunction(()=>document.querySelector('#room-count').textContent==='3 / 31 本书');
+ await page.setViewportSize({width:390,height:844});
+ await page.getByRole('button',{name:'筛选书籍，已选 2 项',exact:true}).click();
+ const bounds=await page.locator('#shelf-filter-panel').boundingBox();
+ verify(bounds.x>=0&&bounds.x+bounds.width<=390,'mobile chooser fits the viewport');
+ verify(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'mobile shelf has no horizontal overflow');
+ await page.screenshot({path:'/private/tmp/ai-test-GET-199.tdrcYD/library-mobile.png'});
+ return {checks,state:await state()};
+}

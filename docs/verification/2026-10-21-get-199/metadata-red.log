@@ -1,0 +1,31 @@
+TAP version 13
+# Subtest: list metadata reflects actual account translations and ignores stale overlays without rewriting indexes
+not ok 1 - list metadata reflects actual account translations and ignores stale overlays without rewriting indexes
+  ---
+  duration_ms: 108.097709
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-199/tests/library-filters.test.mjs:41:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+
+    undefined !== []
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-199/tests/library-filters.test.mjs:49:48)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 186.1415

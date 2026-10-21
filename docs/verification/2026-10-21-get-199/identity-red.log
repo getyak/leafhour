@@ -1,0 +1,32 @@
+TAP version 13
+# Subtest: a failed first library request cannot preserve one account view when the next account arrives
+not ok 1 - a failed first library request cannot preserve one account view when the next account arrives
+  ---
+  duration_ms: 3.242667
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-199/tests/home-navigation.test.mjs:492:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    a real owner change clears the previous view even before the first successful library load
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-199/tests/home-navigation.test.mjs:498:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 68.211791

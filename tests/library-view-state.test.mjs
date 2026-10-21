@@ -5,7 +5,17 @@ import en from '../app/ui-catalogs/en.mjs';
 import ja from '../app/ui-catalogs/ja.mjs';
 import {parseLibraryView,writeLibraryView,libraryViewReducer,normalizeOverlay,normalizeLibraryQuery,safeLibraryReturn,authReturnTarget,createLibraryViewHistory,LIBRARY_SETTINGS_TABS} from '../app/library-view-state.mjs';
 
-const view=patch=>({query:'',scope:'all',status:'all',topic:'all',language:'all',...patch});
+const view=patch=>({query:'',scope:'all',status:'all',topic:'all',language:'all',form:'all',...patch});
+
+test('reading form survives URL, auth return and clearing without accepting arbitrary values',()=>{
+  const state=parseLibraryView('?language=zh&form=bilingual');
+  assert.equal(state.view.form,'bilingual');
+  assert.equal(safeLibraryReturn('/library?language=zh&form=bilingual'),'/library?language=zh&form=bilingual');
+  assert.equal(parseLibraryView('?form=anything').view.form,'all');
+  assert.equal(parseLibraryView('?form=original&form=translated').view.form,'all');
+  assert.equal(libraryViewReducer(state,{type:'clear',key:'form'}).view.form,'all');
+  assert.equal(writeLibraryView('?form=bilingual',{view:view(),overlay:null}),'');
+});
 
 test('settings links reject inherited property names and preserve only the explicit reading alias',()=>{
   for(const value of ['constructor','toString','__proto__','hasOwnProperty','valueOf']){

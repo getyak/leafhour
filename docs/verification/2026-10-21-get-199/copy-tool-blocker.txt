@@ -1,0 +1,4 @@
+The original Node installer stalled while fetching the pinned Vale v3.24.0 archive and was gracefully stopped.
+Repair 1: bounded curl download reached 2,883,386 / 12.1 MiB before its 45-second deadline. SHA256 verification rejected the incomplete archive.
+Repair 2: resume from that byte offset, with a 240-second ceiling, failed with curl 35: LibreSSL SSL_connect: SSL_ERROR_SYSCALL in connection to github.com:443.
+Local copy-lint was not run. No checksum, toolchain, or repository gate was bypassed.

@@ -1,0 +1,24 @@
+{
+  "checks": [
+    "account reading language defaults to Chinese",
+    "Chinese original excludes English books with translations",
+    "Chinese translation lists only the three saved sample translations",
+    "bilingual format retains aligned sample translations",
+    "format is retained in URL after closing chooser",
+    "zero results provide a concrete way to broaden filters",
+    "one clear removes language and format",
+    "owner recheck does not reapply a cleared default",
+    "mobile chooser fits the viewport",
+    "mobile shelf has no horizontal overflow"
+  ],
+  "state": {
+    "language": "zh",
+    "form": "bilingual",
+    "count": "3 / 31 本书",
+    "ids": [
+      "gutenberg-alice",
+      "gutenberg-meditations",
+      "gutenberg-walden"
+    ]
+  }
+}
