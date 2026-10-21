@@ -126,7 +126,7 @@
       },
       {
         "file": "app/en/mcp.html",
-        "sha256": "8f9e3565f2cc018b3e017ae49d4867938a2ecebcaee445b42a7c91e4eb0729f5"
+        "sha256": "7d56a9935ab28811294befc9a084e0dc4a1c4c6012281920f1a3e2500f7ca7f6"
       },
       {
         "file": "app/en/privacy.html",
@@ -226,7 +226,7 @@
       },
       {
         "file": "app/ja/mcp.html",
-        "sha256": "7e7abee2653702de06427ce4762bdad279bb49320892c58f1ade6aafab7cb217"
+        "sha256": "f0ec983d02d1d51bce810884e84e7c204a32a8c7aacf1a18cf711147fe22288a"
       },
       {
         "file": "app/ja/privacy.html",
@@ -710,7 +710,7 @@
       },
       {
         "file": "app/zh-hans/mcp.html",
-        "sha256": "dd1ebacb442ceb8438a270fe09489797d752c175dadd1a6ac8f85a1b1136be7b"
+        "sha256": "1ebe68122d2b62d1b6fcc78fdb8964a2be8bc79f2439e86c2546d4e6f31c5f9b"
       },
       {
         "file": "app/zh-hans/privacy.html",
@@ -718,7 +718,7 @@
       },
       {
         "file": "app/zh-hant/mcp.html",
-        "sha256": "08f1d97b30fa36ed66e90c290945eb4d8cfdc60b953986de865abb710963a020"
+        "sha256": "e6262869bbd12d6f4b1b06159744fd9e27098410c7138ec92e0456da4795fc86"
       },
       {
         "file": "app/zh-hant/privacy.html",
@@ -894,7 +894,7 @@
       },
       {
         "file": "server/mcp-oauth.mjs",
-        "sha256": "07af73263d26f9ce65a853b2e5704d2a8889a5ea2fbe234f09d5510bf494d139"
+        "sha256": "efc381f4938d6fc1f057fe2b05d707ff36c092a2e5586e24971d999e0a8be00f"
       },
       {
         "file": "server/mcp.mjs",
@@ -997,7 +997,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "c18f0da1e0312f62875fd2812ce2c679d484da18b0d543eb7841f1ba56010306"
+    "inputDigest": "37863493227de21e4d3a47247e1a89306b18abbcf9518e0faccb8318430d5f17"
   },
   "locales": [
     "en",
@@ -121852,8 +121852,8 @@
       "column": 143,
       "kind": "html-text",
       "property": null,
-      "value": "and OAuth using dynamic client registration. Sign in on Leafhour, check the account and select one book. Access is read-only for one hour; private notes and reading activity are excluded. Call",
-      "sha256": "a722907c3e503e7e2f72e51a5eb0f50eb59e7aaa1a029f750248d30a5e64efb6",
+      "value": "and OAuth. The",
+      "sha256": "10389e55224c0fda6e859f51efe1477184fbd843079159abe8492a365530b6de",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -121872,10 +121872,62 @@
       }
     },
     {
-      "id": "candidate:app/en/mcp.html:27:342",
+      "id": "candidate:app/en/mcp.html:27:231",
       "file": "app/en/mcp.html",
       "line": 27,
-      "column": 342,
+      "column": 231,
+      "kind": "html-text",
+      "property": null,
+      "value": "connection instructions",
+      "sha256": "d5dec2ecc3a858348163cfac5c5fec6c37150f588605000da167f0f4228064df",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/en/mcp.html:27:259",
+      "file": "app/en/mcp.html",
+      "line": 27,
+      "column": 259,
+      "kind": "html-text",
+      "property": null,
+      "value": "include the pre-registered public-client path when ChatGPT rejects dynamic registration. Sign in on Leafhour, check the account and select one book. Access is read-only for one hour; private notes and reading activity are excluded. Call",
+      "sha256": "0064bc42f75607ffcb7510870fad526a9ef5493937a429942cb8475693ae6061",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/en/mcp.html:27:502",
+      "file": "app/en/mcp.html",
+      "line": 27,
+      "column": 502,
       "kind": "html-text",
       "property": null,
       "value": "reader_get_connection",
@@ -121898,10 +121950,10 @@
       }
     },
     {
-      "id": "candidate:app/en/mcp.html:27:371",
+      "id": "candidate:app/en/mcp.html:27:531",
       "file": "app/en/mcp.html",
       "line": 27,
-      "column": 371,
+      "column": 531,
       "kind": "html-text",
       "property": null,
       "value": "to identify the selected book. Withdraw access in your bookroom’s Agent settings.",
@@ -156720,8 +156772,8 @@
       "column": 131,
       "kind": "html-text",
       "property": null,
-      "value": "を入力して OAuth と動的クライアント登録を選びます。Leafhour でログインし、アカウントを確認して一冊を選びます。権限は一時間の読み取り専用で、個人メモや読書記録は含みません。",
-      "sha256": "b325a8ee5222db933a4f4e8e1446ce8e09b1ba3367a025499516ce18fdcab9a9",
+      "value": "を入力して OAuth を選びます。ChatGPT が動的登録を拒否する場合は、",
+      "sha256": "7fbe61537d9b81c36e881cc39d6c10a77dbdf3676631b13c16402b37f8a98f33",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -156740,10 +156792,62 @@
       }
     },
     {
-      "id": "candidate:app/ja/mcp.html:27:231",
+      "id": "candidate:app/ja/mcp.html:27:244",
       "file": "app/ja/mcp.html",
       "line": 27,
-      "column": 231,
+      "column": 244,
+      "kind": "html-text",
+      "property": null,
+      "value": "接続の説明",
+      "sha256": "28b2b9cf522ccfb69c0143ec1d6b32941b6ebe56dd93222a3fb41818218dcff2",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/ja/mcp.html:27:253",
+      "file": "app/ja/mcp.html",
+      "line": 27,
+      "column": 253,
+      "kind": "html-text",
+      "property": null,
+      "value": "に従って事前登録済みの公開クライアントを使います。Leafhour でログインし、アカウントを確認して一冊を選びます。権限は一時間の読み取り専用で、個人メモや読書記録は含みません。",
+      "sha256": "bfea4cf9240225b0f208933411820d656d9d3a3777eda799d00fd502d1b8284f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/ja/mcp.html:27:349",
+      "file": "app/ja/mcp.html",
+      "line": 27,
+      "column": 349,
       "kind": "html-text",
       "property": null,
       "value": "reader_get_connection",
@@ -156766,10 +156870,10 @@
       }
     },
     {
-      "id": "candidate:app/ja/mcp.html:27:260",
+      "id": "candidate:app/ja/mcp.html:27:378",
       "file": "app/ja/mcp.html",
       "line": 27,
-      "column": 260,
+      "column": 378,
       "kind": "html-text",
       "property": null,
       "value": "で対象の本を確認でき、書斎の Agent 設定で取り消せます。",
@@ -173042,8 +173146,8 @@
       "column": 126,
       "kind": "html-text",
       "property": null,
-      "value": "，选择 OAuth 和动态客户端注册。在 Leafhour 登录，核对账号并选一本书。授权仅只读一小时，不含私人笔记与阅读记录。调用",
-      "sha256": "d1931570dcd520cb62680479761ea957e940f0205ce1742b2df08734733d5648",
+      "value": "，选择 OAuth。若 ChatGPT 拒绝动态注册，按",
+      "sha256": "ebf89ab52383e93193fac6448919c4bb0212366e1b34e2078a21aec2d4d04dc4",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -173062,10 +173166,62 @@
       }
     },
     {
-      "id": "candidate:app/zh-hans/mcp.html:27:199",
+      "id": "candidate:app/zh-hans/mcp.html:27:227",
       "file": "app/zh-hans/mcp.html",
       "line": 27,
-      "column": 199,
+      "column": 227,
+      "kind": "html-text",
+      "property": null,
+      "value": "接入说明",
+      "sha256": "6620ed97d0685ae0c353ab8b269b7a05b4075232dab1a482311e9a7971064aff",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/zh-hans/mcp.html:27:235",
+      "file": "app/zh-hans/mcp.html",
+      "line": 27,
+      "column": 235,
+      "kind": "html-text",
+      "property": null,
+      "value": "使用预注册公共客户端。在 Leafhour 登录，核对账号并选一本书。授权仅只读一小时，不含私人笔记与阅读记录。调用",
+      "sha256": "d0a51cb31ba1e08af43220a232d673c8e54ad78db8ab9fd934df218d8067be2d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/zh-hans/mcp.html:27:300",
+      "file": "app/zh-hans/mcp.html",
+      "line": 27,
+      "column": 300,
       "kind": "html-text",
       "property": null,
       "value": "reader_get_connection",
@@ -173088,10 +173244,10 @@
       }
     },
     {
-      "id": "candidate:app/zh-hans/mcp.html:27:228",
+      "id": "candidate:app/zh-hans/mcp.html:27:329",
       "file": "app/zh-hans/mcp.html",
       "line": 27,
-      "column": 228,
+      "column": 329,
       "kind": "html-text",
       "property": null,
       "value": "核对已授权的书；在书房的 Agent 设置中可撤回。",
@@ -177072,8 +177228,8 @@
       "column": 125,
       "kind": "html-text",
       "property": null,
-      "value": "，選擇 OAuth 與動態用戶端註冊。在 Leafhour 登入，核對帳戶並選一本書。授權僅唯讀一小時，不含私人筆記與閱讀紀錄。呼叫",
-      "sha256": "c75bef5ff9bf0459f217928bb51d2e0e93745c535516ba1f5a46227cdf2a5eff",
+      "value": "，選擇 OAuth。若 ChatGPT 拒絕動態註冊，按",
+      "sha256": "2e318e83e242d35d51b60690d8abfd3692d729ff4bfe8cad37fec48402e513da",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -177092,10 +177248,62 @@
       }
     },
     {
-      "id": "candidate:app/zh-hant/mcp.html:27:198",
+      "id": "candidate:app/zh-hant/mcp.html:27:226",
       "file": "app/zh-hant/mcp.html",
       "line": 27,
-      "column": 198,
+      "column": 226,
+      "kind": "html-text",
+      "property": null,
+      "value": "接入說明",
+      "sha256": "3f2d51b2aaefd8e0e4c02a3f4b3491b112b5d0dad0fc7b0ba6b1a533da013909",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/zh-hant/mcp.html:27:234",
+      "file": "app/zh-hant/mcp.html",
+      "line": 27,
+      "column": 234,
+      "kind": "html-text",
+      "property": null,
+      "value": "使用預先註冊的公共用戶端。在 Leafhour 登入，核對帳戶並選一本書。授權僅唯讀一小時，不含私人筆記與閱讀紀錄。呼叫",
+      "sha256": "d753a2c02f911600151d94de43cc9892c10494f1080a9f454252cb29a29de575",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/zh-hant/mcp.html:27:301",
+      "file": "app/zh-hant/mcp.html",
+      "line": 27,
+      "column": 301,
       "kind": "html-text",
       "property": null,
       "value": "reader_get_connection",
@@ -177118,10 +177326,10 @@
       }
     },
     {
-      "id": "candidate:app/zh-hant/mcp.html:27:227",
+      "id": "candidate:app/zh-hant/mcp.html:27:330",
       "file": "app/zh-hant/mcp.html",
       "line": 27,
-      "column": 227,
+      "column": 330,
       "kind": "html-text",
       "property": null,
       "value": "核對已授權的書；可在書房的 Agent 設定中撤回。",
@@ -225812,8 +226020,8 @@
     "duplicateKeys": 0,
     "reviewedItems": 0,
     "unreviewedItems": 2111,
-    "candidates": 3838,
-    "candidatesUnreviewed": 3838,
+    "candidates": 3846,
+    "candidatesUnreviewed": 3846,
     "candidatesProtected": 106,
     "itemsProtected": 9,
     "dynamicConsumers": 2692,
