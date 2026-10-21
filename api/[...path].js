@@ -23,7 +23,7 @@ return async function handler(req,res){
   try{
     const route=routeOf(req);
     // Legacy single-owner APIs never read the private archive on this public surface.
-    if(route!=='/api/internal/ingestion/wake'&&!/^\/api\/(auth\/|library(?:\/|$)|account\/(?:profile|reading-preferences|preference-memory|ui-preferences)$|book-gifts\/|agent\/)/.test(route))return sendJson(404,{error:'请从书房选择一本书再开始阅读'});
+    if(route!=='/api/internal/ingestion/wake'&&!/^\/api\/(mcp(?:\/|$)|auth\/|library(?:\/|$)|account\/(?:profile|reading-preferences|preference-memory|ui-preferences)$|book-gifts\/|agent\/)/.test(route))return sendJson(404,{error:'请从书房选择一本书再开始阅读'});
     const origin=env.READER_PUBLIC_ORIGIN;
     if(!origin?.startsWith('https://'))return sendJson(503,{error:'线上书房地址尚未配置'});
     if(!portalPromise){console.info(configurationSummary({env,speechSupported:true}));const store=storeFactory({env}),additionalWebOrigins=(env.READER_ADDITIONAL_WEB_ORIGINS||'').split(',').map(value=>value.trim()).filter(Boolean);portalPromise=portalFactory({dataDir:'hosted',publicOrigin:origin,additionalWebOrigins,allowLocal:false,dataStore:store,authService:authFactory({store,env}),hostedMcp:true,schedule:background,env}).catch(e=>{portalPromise=null;throw e;});}

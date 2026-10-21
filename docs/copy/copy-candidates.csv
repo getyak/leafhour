@@ -1,6 +1,6 @@
 id,kind,file,line,property,review,protected,protectionReason,value
 candidate:api/[...path].js:17:684,js-cjk-literal,api/[...path].js,17,,unknown,reviewable,,内容超过云端传输限制，请分章节导出。原有资料仍保留。
-candidate:api/[...path].js:26:219,js-cjk-literal,api/[...path].js,26,,unknown,reviewable,,请从书房选择一本书再开始阅读
+candidate:api/[...path].js:26:231,js-cjk-literal,api/[...path].js,26,,unknown,reviewable,,请从书房选择一本书再开始阅读
 candidate:api/[...path].js:28:67,js-cjk-literal,api/[...path].js,28,,unknown,reviewable,,线上书房地址尚未配置
 candidate:api/[...path].js:34:37,js-cjk-literal,api/[...path].js,34,,unknown,reviewable,,找不到这个操作
 candidate:api/[...path].js:35:249,js-cjk-literal,api/[...path].js,35,,unknown,reviewable,,服务暂时无法完成操作，请重试
@@ -192,9 +192,9 @@ candidate:app/document-source.mjs:13:31,js-cjk-literal,app/document-source.mjs,1
 candidate:app/en/mcp.html:20:67,html-attribute,app/en/mcp.html,20,aria-label,unknown,reviewable,,Leafhour home
 candidate:app/en/mcp.html:20:439,html-attribute,app/en/mcp.html,20,aria-label,unknown,reviewable,,Main navigation
 candidate:app/en/mcp.html:20:711,html-attribute,app/en/mcp.html,20,aria-label,unknown,reviewable,,Language
-candidate:app/en/mcp.html:27:53,html-attribute,app/en/mcp.html,27,aria-label,unknown,reviewable,,"Permissions table, scroll horizontally"
-candidate:app/en/mcp.html:37:53,html-attribute,app/en/mcp.html,37,aria-label,unknown,reviewable,,"Command example, scroll horizontally"
-candidate:app/en/mcp.html:53:216,html-attribute,app/en/mcp.html,53,aria-label,unknown,reviewable,,Language
+candidate:app/en/mcp.html:30:53,html-attribute,app/en/mcp.html,30,aria-label,unknown,reviewable,,"Permissions table, scroll horizontally"
+candidate:app/en/mcp.html:40:53,html-attribute,app/en/mcp.html,40,aria-label,unknown,reviewable,,"Command example, scroll horizontally"
+candidate:app/en/mcp.html:56:216,html-attribute,app/en/mcp.html,56,aria-label,unknown,reviewable,,Language
 candidate:app/en/mcp.html:5:10,html-text,app/en/mcp.html,5,,unknown,reviewable,,Connect an AI agent to your books with MCP · Leafhour
 candidate:app/en/mcp.html:19:30,html-text,app/en/mcp.html,19,,unknown,reviewable,,Skip to content
 candidate:app/en/mcp.html:20:403,html-text,app/en/mcp.html,20,,unknown,reviewable,,Leafhour
@@ -211,88 +211,103 @@ candidate:app/en/mcp.html:24:6,html-text,app/en/mcp.html,24,,unknown,reviewable,
 candidate:app/en/mcp.html:25:6,html-text,app/en/mcp.html,25,,unknown,reviewable,,"This is a technical integration. The reading interface supports English, Simplified Chinese, Traditional Chinese and Japanese. A complete grant-management screen is not yet available; use an existing compatible client or the authenticated service API to create and revoke grants. Contact"
 candidate:app/en/mcp.html:25:332,html-text,app/en/mcp.html,25,,unknown,reviewable,,support@leafhour.com
 candidate:app/en/mcp.html:25:357,html-text,app/en/mcp.html,25,,unknown,reviewable,,if you need help.
-candidate:app/en/mcp.html:26:24,html-text,app/en/mcp.html,26,,unknown,reviewable,,Choose what the agent may access.
-candidate:app/en/mcp.html:27:140,html-text,app/en/mcp.html,27,,unknown,reviewable,,Permission
-candidate:app/en/mcp.html:27:171,html-text,app/en/mcp.html,27,,unknown,reviewable,,What it permits
-candidate:app/en/mcp.html:28:31,html-text,app/en/mcp.html,28,,unknown,reviewable,,content
-candidate:app/en/mcp.html:28:54,html-text,app/en/mcp.html,28,,unknown,reviewable,,"Original text and saved translations, book metadata, paginated chapters and search within that book."
-candidate:app/en/mcp.html:29:31,html-text,app/en/mcp.html,29,,unknown,reviewable,,notes
-candidate:app/en/mcp.html:29:52,html-text,app/en/mcp.html,29,,unknown,reviewable,,Separately authorized personal comments and questions.
-candidate:app/en/mcp.html:30:31,html-text,app/en/mcp.html,30,,unknown,reviewable,,activity
-candidate:app/en/mcp.html:30:55,html-text,app/en/mcp.html,30,,unknown,reviewable,,Saved reading position and recent reading sessions.
-candidate:app/en/mcp.html:31:31,html-text,app/en/mcp.html,31,,unknown,reviewable,,comment:write
-candidate:app/en/mcp.html:31:60,html-text,app/en/mcp.html,31,,unknown,reviewable,,"Save a comment explicitly supplied by the user, anchored to a passage. It does not authorize edits to the book."
-candidate:app/en/mcp.html:33:6,html-text,app/en/mcp.html,33,,unknown,reviewable,,Start with
-candidate:app/en/mcp.html:33:23,html-text,app/en/mcp.html,33,,unknown,reviewable,,content
-candidate:app/en/mcp.html:33:38,html-text,app/en/mcp.html,33,,unknown,reviewable,,only. A grant expires after seven days and can be revoked earlier. A revoked grant fails subsequent service authorization; revocation cannot erase content already copied into your AI host.
-candidate:app/en/mcp.html:34:18,html-text,app/en/mcp.html,34,,unknown,reviewable,,Connect the adapter.
-candidate:app/en/mcp.html:35:11,html-text,app/en/mcp.html,35,,unknown,reviewable,,Run Leafhour locally using the
-candidate:app/en/mcp.html:35:94,html-text,app/en/mcp.html,35,,unknown,reviewable,,repository instructions
-candidate:app/en/mcp.html:35:121,html-text,app/en/mcp.html,35,,unknown,reviewable,,", or use the hosted reading service. Import a book or choose a public sample in your"
-candidate:app/en/mcp.html:35:231,html-text,app/en/mcp.html,35,,unknown,reviewable,,reading room
-candidate:app/en/mcp.html:35:247,html-text,app/en/mcp.html,35,,unknown,reviewable,,.
-candidate:app/en/mcp.html:35:257,html-text,app/en/mcp.html,35,,unknown,reviewable,,"Through a compatible client or the authenticated API, create a grant with a"
-candidate:app/en/mcp.html:35:339,html-text,app/en/mcp.html,35,,unknown,reviewable,,bookId
-candidate:app/en/mcp.html:35:353,html-text,app/en/mcp.html,35,,unknown,reviewable,,and selected
-candidate:app/en/mcp.html:35:372,html-text,app/en/mcp.html,35,,unknown,reviewable,,scopes
-candidate:app/en/mcp.html:35:386,html-text,app/en/mcp.html,35,,unknown,reviewable,,using
-candidate:app/en/mcp.html:35:398,html-text,app/en/mcp.html,35,,unknown,protected,path,POST /api/library/grants
-candidate:app/en/mcp.html:35:429,html-text,app/en/mcp.html,35,,unknown,reviewable,,. The token is returned once; keep it in your AI host’s private configuration.
-candidate:app/en/mcp.html:35:516,html-text,app/en/mcp.html,35,,unknown,reviewable,,Read
-candidate:app/en/mcp.html:35:527,html-text,app/en/mcp.html,35,,unknown,protected,path,GET /api/library/mcp-setup
-candidate:app/en/mcp.html:35:561,html-text,app/en/mcp.html,35,,unknown,reviewable,,and use the
-candidate:app/en/mcp.html:35:647,html-text,app/en/mcp.html,35,,unknown,reviewable,,configuration builder
-candidate:app/en/mcp.html:35:673,html-text,app/en/mcp.html,35,,unknown,reviewable,,"to create the host configuration. For a local source checkout, the adapter runs as"
-candidate:app/en/mcp.html:35:762,html-text,app/en/mcp.html,35,,unknown,protected,path,node server/mcp.mjs
-candidate:app/en/mcp.html:35:788,html-text,app/en/mcp.html,35,,unknown,reviewable,,". The hosted setup returns the deployed source commit, and the generated configuration pins that immutable source package with explicit HTTPS access; missing deployment provenance fails closed."
-candidate:app/en/mcp.html:35:990,html-text,app/en/mcp.html,35,,unknown,reviewable,,"Enable the MCP server in your compatible AI host, and pass the authorized book ID with tool requests. Revoke access with"
-candidate:app/en/mcp.html:35:1117,html-text,app/en/mcp.html,35,,unknown,protected,path,POST /api/library/grants/{id}/revoke
-candidate:app/en/mcp.html:35:1161,html-text,app/en/mcp.html,35,,unknown,reviewable,,when you are done.
-candidate:app/en/mcp.html:36:6,html-text,app/en/mcp.html,36,,unknown,reviewable,,The adapter uses these environment variables:
-candidate:app/en/mcp.html:37:115,html-text,app/en/mcp.html,37,,unknown,protected,url,"READER_SERVICE_URL=http://127.0.0.1:8330
+candidate:app/en/mcp.html:26:19,html-text,app/en/mcp.html,26,,unknown,reviewable,,Connect ChatGPT with OAuth.
+candidate:app/en/mcp.html:27:6,html-text,app/en/mcp.html,27,,unknown,reviewable,,In
+candidate:app/en/mcp.html:27:47,html-text,app/en/mcp.html,27,,unknown,reviewable,,ChatGPT Plugins
+candidate:app/en/mcp.html:27:66,html-text,app/en/mcp.html,27,,unknown,reviewable,,", add a custom MCP server with URL"
+candidate:app/en/mcp.html:27:107,html-text,app/en/mcp.html,27,,unknown,protected,url,https://leafhour.com/api/mcp
+candidate:app/en/mcp.html:27:143,html-text,app/en/mcp.html,27,,unknown,reviewable,,"and OAuth using dynamic client registration. Sign in on Leafhour, check the account and select one book. Access is read-only for one hour; private notes and reading activity are excluded. Call"
+candidate:app/en/mcp.html:27:342,html-text,app/en/mcp.html,27,,unknown,protected,identifier,reader_get_connection
+candidate:app/en/mcp.html:27:371,html-text,app/en/mcp.html,27,,unknown,reviewable,,to identify the selected book. Withdraw access in your bookroom’s Agent settings.
+candidate:app/en/mcp.html:28:6,html-text,app/en/mcp.html,28,,unknown,reviewable,,"For a reading skill, install"
+candidate:app/en/mcp.html:28:41,html-text,app/en/mcp.html,28,,unknown,protected,identifier,leafhour-reading
+candidate:app/en/mcp.html:28:65,html-text,app/en/mcp.html,28,,unknown,reviewable,,from
+candidate:app/en/mcp.html:28:76,html-text,app/en/mcp.html,28,,unknown,protected,path,getyak/leafhour
+candidate:app/en/mcp.html:28:99,html-text,app/en/mcp.html,28,,unknown,reviewable,,using your skills-compatible host. A skill alone does not connect or authorize MCP. Follow the
+candidate:app/en/mcp.html:28:267,html-text,app/en/mcp.html,28,,unknown,reviewable,,installation and OAuth instructions
+candidate:app/en/mcp.html:28:306,html-text,app/en/mcp.html,28,,unknown,reviewable,,. Account and workspace policies determine whether ChatGPT permits custom servers. The command configuration below remains available for stdio hosts.
+candidate:app/en/mcp.html:29:24,html-text,app/en/mcp.html,29,,unknown,reviewable,,Choose what the agent may access.
+candidate:app/en/mcp.html:30:140,html-text,app/en/mcp.html,30,,unknown,reviewable,,Permission
+candidate:app/en/mcp.html:30:171,html-text,app/en/mcp.html,30,,unknown,reviewable,,What it permits
+candidate:app/en/mcp.html:31:31,html-text,app/en/mcp.html,31,,unknown,reviewable,,content
+candidate:app/en/mcp.html:31:54,html-text,app/en/mcp.html,31,,unknown,reviewable,,"Original text and saved translations, book metadata, paginated chapters and search within that book."
+candidate:app/en/mcp.html:32:31,html-text,app/en/mcp.html,32,,unknown,reviewable,,notes
+candidate:app/en/mcp.html:32:52,html-text,app/en/mcp.html,32,,unknown,reviewable,,Separately authorized personal comments and questions.
+candidate:app/en/mcp.html:33:31,html-text,app/en/mcp.html,33,,unknown,reviewable,,activity
+candidate:app/en/mcp.html:33:55,html-text,app/en/mcp.html,33,,unknown,reviewable,,Saved reading position and recent reading sessions.
+candidate:app/en/mcp.html:34:31,html-text,app/en/mcp.html,34,,unknown,reviewable,,comment:write
+candidate:app/en/mcp.html:34:60,html-text,app/en/mcp.html,34,,unknown,reviewable,,"Save a comment explicitly supplied by the user, anchored to a passage. It does not authorize edits to the book."
+candidate:app/en/mcp.html:36:6,html-text,app/en/mcp.html,36,,unknown,reviewable,,Start with
+candidate:app/en/mcp.html:36:23,html-text,app/en/mcp.html,36,,unknown,reviewable,,content
+candidate:app/en/mcp.html:36:38,html-text,app/en/mcp.html,36,,unknown,reviewable,,only. A grant expires after seven days and can be revoked earlier. A revoked grant fails subsequent service authorization; revocation cannot erase content already copied into your AI host.
+candidate:app/en/mcp.html:37:18,html-text,app/en/mcp.html,37,,unknown,reviewable,,Connect the adapter.
+candidate:app/en/mcp.html:38:11,html-text,app/en/mcp.html,38,,unknown,reviewable,,Run Leafhour locally using the
+candidate:app/en/mcp.html:38:94,html-text,app/en/mcp.html,38,,unknown,reviewable,,repository instructions
+candidate:app/en/mcp.html:38:121,html-text,app/en/mcp.html,38,,unknown,reviewable,,", or use the hosted reading service. Import a book or choose a public sample in your"
+candidate:app/en/mcp.html:38:231,html-text,app/en/mcp.html,38,,unknown,reviewable,,reading room
+candidate:app/en/mcp.html:38:247,html-text,app/en/mcp.html,38,,unknown,reviewable,,.
+candidate:app/en/mcp.html:38:257,html-text,app/en/mcp.html,38,,unknown,reviewable,,"Through a compatible client or the authenticated API, create a grant with a"
+candidate:app/en/mcp.html:38:339,html-text,app/en/mcp.html,38,,unknown,reviewable,,bookId
+candidate:app/en/mcp.html:38:353,html-text,app/en/mcp.html,38,,unknown,reviewable,,and selected
+candidate:app/en/mcp.html:38:372,html-text,app/en/mcp.html,38,,unknown,reviewable,,scopes
+candidate:app/en/mcp.html:38:386,html-text,app/en/mcp.html,38,,unknown,reviewable,,using
+candidate:app/en/mcp.html:38:398,html-text,app/en/mcp.html,38,,unknown,protected,path,POST /api/library/grants
+candidate:app/en/mcp.html:38:429,html-text,app/en/mcp.html,38,,unknown,reviewable,,. The token is returned once; keep it in your AI host’s private configuration.
+candidate:app/en/mcp.html:38:516,html-text,app/en/mcp.html,38,,unknown,reviewable,,Read
+candidate:app/en/mcp.html:38:527,html-text,app/en/mcp.html,38,,unknown,protected,path,GET /api/library/mcp-setup
+candidate:app/en/mcp.html:38:561,html-text,app/en/mcp.html,38,,unknown,reviewable,,and use the
+candidate:app/en/mcp.html:38:647,html-text,app/en/mcp.html,38,,unknown,reviewable,,configuration builder
+candidate:app/en/mcp.html:38:673,html-text,app/en/mcp.html,38,,unknown,reviewable,,"to create the host configuration. For a local source checkout, the adapter runs as"
+candidate:app/en/mcp.html:38:762,html-text,app/en/mcp.html,38,,unknown,protected,path,node server/mcp.mjs
+candidate:app/en/mcp.html:38:788,html-text,app/en/mcp.html,38,,unknown,reviewable,,". The hosted setup returns the deployed source commit, and the generated configuration pins that immutable source package with explicit HTTPS access; missing deployment provenance fails closed."
+candidate:app/en/mcp.html:38:990,html-text,app/en/mcp.html,38,,unknown,reviewable,,"Enable the MCP server in your compatible AI host, and pass the authorized book ID with tool requests. Revoke access with"
+candidate:app/en/mcp.html:38:1117,html-text,app/en/mcp.html,38,,unknown,protected,path,POST /api/library/grants/{id}/revoke
+candidate:app/en/mcp.html:38:1161,html-text,app/en/mcp.html,38,,unknown,reviewable,,when you are done.
+candidate:app/en/mcp.html:39:6,html-text,app/en/mcp.html,39,,unknown,reviewable,,The adapter uses these environment variables:
+candidate:app/en/mcp.html:40:115,html-text,app/en/mcp.html,40,,unknown,protected,url,"READER_SERVICE_URL=http://127.0.0.1:8330
 READER_AGENT_TOKEN=&lt;your book-scoped grant&gt;
 
 # For your configured HTTPS service only:
 # READER_SERVICE_URL=https://leafhour.com
 # READER_ALLOW_REMOTE=true"
-candidate:app/en/mcp.html:43:6,html-text,app/en/mcp.html,43,,unknown,reviewable,,"Never put a login password, session cookie, Supabase key or grant token into a public document or repository. An MCP grant is separate from your website login. Use your host’s secret storage where available."
-candidate:app/en/mcp.html:44:18,html-text,app/en/mcp.html,44,,unknown,reviewable,,"Ask for a passage, then go deeper."
-candidate:app/en/mcp.html:45:12,html-text,app/en/mcp.html,45,,unknown,protected,identifier,reader_get_manifest
-candidate:app/en/mcp.html:45:39,html-text,app/en/mcp.html,45,,unknown,reviewable,,lists the book’s source metadata and chapter identities.
-candidate:app/en/mcp.html:45:102,html-text,app/en/mcp.html,45,,unknown,protected,identifier,reader_get_context
-candidate:app/en/mcp.html:45:128,html-text,app/en/mcp.html,45,,unknown,reviewable,,returns a passage with its adjacent passages and stable anchors.
-candidate:app/en/mcp.html:45:199,html-text,app/en/mcp.html,45,,unknown,protected,identifier,reader_get_chapter
-candidate:app/en/mcp.html:45:225,html-text,app/en/mcp.html,45,,unknown,reviewable,,returns at most 20 passages at a time and a continuation cursor.
-candidate:app/en/mcp.html:45:296,html-text,app/en/mcp.html,45,,unknown,protected,identifier,reader_search
-candidate:app/en/mcp.html:45:317,html-text,app/en/mcp.html,45,,unknown,reviewable,,searches the authorized book and returns up to 20 anchored matches.
-candidate:app/en/mcp.html:46:6,html-text,app/en/mcp.html,46,,unknown,reviewable,,"With additional scopes,"
-candidate:app/en/mcp.html:46:36,html-text,app/en/mcp.html,46,,unknown,protected,identifier,reader_get_notes
-candidate:app/en/mcp.html:46:60,html-text,app/en/mcp.html,46,,unknown,reviewable,,"reads comments and questions,"
-candidate:app/en/mcp.html:46:96,html-text,app/en/mcp.html,46,,unknown,protected,identifier,reader_get_reading_activity
-candidate:app/en/mcp.html:46:131,html-text,app/en/mcp.html,46,,unknown,reviewable,,"reads position and sessions, and"
-candidate:app/en/mcp.html:46:170,html-text,app/en/mcp.html,46,,unknown,protected,identifier,reader_add_comment
-candidate:app/en/mcp.html:46:196,html-text,app/en/mcp.html,46,,unknown,reviewable,,saves explicitly supplied user text. Agent access does not add time to your reading calendar.
-candidate:app/en/mcp.html:47:6,html-text,app/en/mcp.html,47,,unknown,protected,quotation,"For example: “In my authorized book, find passages about friendship, show the source chapter and paragraph anchors, and help me compare the author’s wording.” The agent needs the book ID; it cannot infer permission to search your entire private library."
-candidate:app/en/mcp.html:48:19,html-text,app/en/mcp.html,48,,unknown,reviewable,,Know the current limits.
-candidate:app/en/mcp.html:49:6,html-text,app/en/mcp.html,49,,unknown,reviewable,,"The adapter also exposes audio tools, but hosted audio generation is not enabled. Local audio needs separate configuration and permissions; generating audio can incur provider charges. MCP does not currently upload books, automatically translate a whole library, or schedule notifications by itself."
-candidate:app/en/mcp.html:50:6,html-text,app/en/mcp.html,50,,unknown,reviewable,,The built-in reading assistant has its own read-only boundaries and is separate from this external MCP grant. See the
-candidate:app/en/mcp.html:50:143,html-text,app/en/mcp.html,50,,unknown,reviewable,,privacy notice
-candidate:app/en/mcp.html:50:162,html-text,app/en/mcp.html,50,,unknown,reviewable,,for hosted processing details.
-candidate:app/en/mcp.html:51:6,html-text,app/en/mcp.html,51,,unknown,reviewable,,"For exact tool definitions and current service behavior, inspect the"
-candidate:app/en/mcp.html:51:145,html-text,app/en/mcp.html,51,,unknown,reviewable,,adapter source
-candidate:app/en/mcp.html:51:163,html-text,app/en/mcp.html,51,,unknown,reviewable,,", the"
-candidate:app/en/mcp.html:51:242,html-text,app/en/mcp.html,51,,unknown,reviewable,,service routes
-candidate:app/en/mcp.html:51:261,html-text,app/en/mcp.html,51,,unknown,reviewable,,and the
-candidate:app/en/mcp.html:51:344,html-text,app/en/mcp.html,51,,unknown,reviewable,,scoped MCP reading notes
-candidate:app/en/mcp.html:51:372,html-text,app/en/mcp.html,51,,unknown,reviewable,,". This guide describes the current implementation, not planned capabilities."
-candidate:app/en/mcp.html:53:41,html-text,app/en/mcp.html,53,,unknown,reviewable,,Leafhour · Stay with a book.
-candidate:app/en/mcp.html:53:118,html-text,app/en/mcp.html,53,,unknown,reviewable,,Source code
-candidate:app/en/mcp.html:53:152,html-text,app/en/mcp.html,53,,unknown,reviewable,,Privacy
-candidate:app/en/mcp.html:53:285,html-text,app/en/mcp.html,53,,unknown,reviewable,,English
-candidate:app/en/mcp.html:53:353,html-text,app/en/mcp.html,53,,unknown,reviewable,,简体中文
-candidate:app/en/mcp.html:53:418,html-text,app/en/mcp.html,53,,unknown,reviewable,,繁體中文
-candidate:app/en/mcp.html:53:468,html-text,app/en/mcp.html,53,,unknown,reviewable,,日本語
-candidate:app/en/mcp.html:53:519,html-text,app/en/mcp.html,53,,unknown,reviewable,,Contact
+candidate:app/en/mcp.html:46:6,html-text,app/en/mcp.html,46,,unknown,reviewable,,"Never put a login password, session cookie, Supabase key or grant token into a public document or repository. An MCP grant is separate from your website login. Use your host’s secret storage where available."
+candidate:app/en/mcp.html:47:18,html-text,app/en/mcp.html,47,,unknown,reviewable,,"Ask for a passage, then go deeper."
+candidate:app/en/mcp.html:48:12,html-text,app/en/mcp.html,48,,unknown,protected,identifier,reader_get_manifest
+candidate:app/en/mcp.html:48:39,html-text,app/en/mcp.html,48,,unknown,reviewable,,lists the book’s source metadata and chapter identities.
+candidate:app/en/mcp.html:48:102,html-text,app/en/mcp.html,48,,unknown,protected,identifier,reader_get_context
+candidate:app/en/mcp.html:48:128,html-text,app/en/mcp.html,48,,unknown,reviewable,,returns a passage with its adjacent passages and stable anchors.
+candidate:app/en/mcp.html:48:199,html-text,app/en/mcp.html,48,,unknown,protected,identifier,reader_get_chapter
+candidate:app/en/mcp.html:48:225,html-text,app/en/mcp.html,48,,unknown,reviewable,,returns at most 20 passages at a time and a continuation cursor.
+candidate:app/en/mcp.html:48:296,html-text,app/en/mcp.html,48,,unknown,protected,identifier,reader_search
+candidate:app/en/mcp.html:48:317,html-text,app/en/mcp.html,48,,unknown,reviewable,,searches the authorized book and returns up to 20 anchored matches.
+candidate:app/en/mcp.html:49:6,html-text,app/en/mcp.html,49,,unknown,reviewable,,"With additional scopes,"
+candidate:app/en/mcp.html:49:36,html-text,app/en/mcp.html,49,,unknown,protected,identifier,reader_get_notes
+candidate:app/en/mcp.html:49:60,html-text,app/en/mcp.html,49,,unknown,reviewable,,"reads comments and questions,"
+candidate:app/en/mcp.html:49:96,html-text,app/en/mcp.html,49,,unknown,protected,identifier,reader_get_reading_activity
+candidate:app/en/mcp.html:49:131,html-text,app/en/mcp.html,49,,unknown,reviewable,,"reads position and sessions, and"
+candidate:app/en/mcp.html:49:170,html-text,app/en/mcp.html,49,,unknown,protected,identifier,reader_add_comment
+candidate:app/en/mcp.html:49:196,html-text,app/en/mcp.html,49,,unknown,reviewable,,saves explicitly supplied user text. Agent access does not add time to your reading calendar.
+candidate:app/en/mcp.html:50:6,html-text,app/en/mcp.html,50,,unknown,protected,quotation,"For example: “In my authorized book, find passages about friendship, show the source chapter and paragraph anchors, and help me compare the author’s wording.” The agent needs the book ID; it cannot infer permission to search your entire private library."
+candidate:app/en/mcp.html:51:19,html-text,app/en/mcp.html,51,,unknown,reviewable,,Know the current limits.
+candidate:app/en/mcp.html:52:6,html-text,app/en/mcp.html,52,,unknown,reviewable,,"The adapter also exposes audio tools, but hosted audio generation is not enabled. Local audio needs separate configuration and permissions; generating audio can incur provider charges. MCP does not currently upload books, automatically translate a whole library, or schedule notifications by itself."
+candidate:app/en/mcp.html:53:6,html-text,app/en/mcp.html,53,,unknown,reviewable,,The built-in reading assistant has its own read-only boundaries and is separate from this external MCP grant. See the
+candidate:app/en/mcp.html:53:143,html-text,app/en/mcp.html,53,,unknown,reviewable,,privacy notice
+candidate:app/en/mcp.html:53:162,html-text,app/en/mcp.html,53,,unknown,reviewable,,for hosted processing details.
+candidate:app/en/mcp.html:54:6,html-text,app/en/mcp.html,54,,unknown,reviewable,,"For exact tool definitions and current service behavior, inspect the"
+candidate:app/en/mcp.html:54:145,html-text,app/en/mcp.html,54,,unknown,reviewable,,adapter source
+candidate:app/en/mcp.html:54:163,html-text,app/en/mcp.html,54,,unknown,reviewable,,", the"
+candidate:app/en/mcp.html:54:242,html-text,app/en/mcp.html,54,,unknown,reviewable,,service routes
+candidate:app/en/mcp.html:54:261,html-text,app/en/mcp.html,54,,unknown,reviewable,,and the
+candidate:app/en/mcp.html:54:344,html-text,app/en/mcp.html,54,,unknown,reviewable,,scoped MCP reading notes
+candidate:app/en/mcp.html:54:372,html-text,app/en/mcp.html,54,,unknown,reviewable,,". This guide describes the current implementation, not planned capabilities."
+candidate:app/en/mcp.html:56:41,html-text,app/en/mcp.html,56,,unknown,reviewable,,Leafhour · Stay with a book.
+candidate:app/en/mcp.html:56:118,html-text,app/en/mcp.html,56,,unknown,reviewable,,Source code
+candidate:app/en/mcp.html:56:152,html-text,app/en/mcp.html,56,,unknown,reviewable,,Privacy
+candidate:app/en/mcp.html:56:285,html-text,app/en/mcp.html,56,,unknown,reviewable,,English
+candidate:app/en/mcp.html:56:353,html-text,app/en/mcp.html,56,,unknown,reviewable,,简体中文
+candidate:app/en/mcp.html:56:418,html-text,app/en/mcp.html,56,,unknown,reviewable,,繁體中文
+candidate:app/en/mcp.html:56:468,html-text,app/en/mcp.html,56,,unknown,reviewable,,日本語
+candidate:app/en/mcp.html:56:519,html-text,app/en/mcp.html,56,,unknown,reviewable,,Contact
 candidate:app/en/privacy.html:19:191,html-attribute,app/en/privacy.html,19,aria-label,unknown,reviewable,,Leafhour home
 candidate:app/en/privacy.html:19:563,html-attribute,app/en/privacy.html,19,aria-label,unknown,reviewable,,Main navigation
 candidate:app/en/privacy.html:19:743,html-attribute,app/en/privacy.html,19,aria-label,unknown,reviewable,,Language
@@ -1708,9 +1723,9 @@ candidate:app/index.html:194:328,html-text,app/index.html,194,,unknown,reviewabl
 candidate:app/ja/mcp.html:20:69,html-attribute,app/ja/mcp.html,20,aria-label,unknown,reviewable,,Leafhour ホーム
 candidate:app/ja/mcp.html:20:440,html-attribute,app/ja/mcp.html,20,aria-label,unknown,reviewable,,メインナビゲーション
 candidate:app/ja/mcp.html:20:680,html-attribute,app/ja/mcp.html,20,aria-label,unknown,reviewable,,表示言語
-candidate:app/ja/mcp.html:27:53,html-attribute,app/ja/mcp.html,27,aria-label,unknown,reviewable,,権限の表、横にスクロール
-candidate:app/ja/mcp.html:37:53,html-attribute,app/ja/mcp.html,37,aria-label,unknown,reviewable,,コマンド例、横にスクロール
-candidate:app/ja/mcp.html:53:215,html-attribute,app/ja/mcp.html,53,aria-label,unknown,reviewable,,表示言語
+candidate:app/ja/mcp.html:30:53,html-attribute,app/ja/mcp.html,30,aria-label,unknown,reviewable,,権限の表、横にスクロール
+candidate:app/ja/mcp.html:40:53,html-attribute,app/ja/mcp.html,40,aria-label,unknown,reviewable,,コマンド例、横にスクロール
+candidate:app/ja/mcp.html:56:215,html-attribute,app/ja/mcp.html,56,aria-label,unknown,reviewable,,表示言語
 candidate:app/ja/mcp.html:5:10,html-text,app/ja/mcp.html,5,,unknown,reviewable,,MCP で AI Agent を自分の本につなぐ · Leafhour
 candidate:app/ja/mcp.html:19:30,html-text,app/ja/mcp.html,19,,unknown,reviewable,,本文へ移動
 candidate:app/ja/mcp.html:20:404,html-text,app/ja/mcp.html,20,,unknown,reviewable,,Leafhour
@@ -1727,86 +1742,100 @@ candidate:app/ja/mcp.html:24:6,html-text,app/ja/mcp.html,24,,unknown,reviewable,
 candidate:app/ja/mcp.html:25:6,html-text,app/ja/mcp.html,25,,unknown,reviewable,,これは技術的な連携です。リーダー画面は英語・簡体字中国語・繁体字中国語・日本語に対応しています。許可管理の画面はまだありません。許可の作成と取り消しは、対応クライアントか認証済みのサービス API から行ってください。ご不明な点は
 candidate:app/ja/mcp.html:25:160,html-text,app/ja/mcp.html,25,,unknown,reviewable,,support@leafhour.com
 candidate:app/ja/mcp.html:25:185,html-text,app/ja/mcp.html,25,,unknown,reviewable,,までご連絡ください。
-candidate:app/ja/mcp.html:26:24,html-text,app/ja/mcp.html,26,,unknown,reviewable,,Agent に読ませる範囲を選びます。
-candidate:app/ja/mcp.html:27:114,html-text,app/ja/mcp.html,27,,unknown,reviewable,,権限
-candidate:app/ja/mcp.html:27:137,html-text,app/ja/mcp.html,27,,unknown,reviewable,,許可されること
-candidate:app/ja/mcp.html:28:31,html-text,app/ja/mcp.html,28,,unknown,reviewable,,content
-candidate:app/ja/mcp.html:28:54,html-text,app/ja/mcp.html,28,,unknown,reviewable,,原文と保存済みの訳文、書籍情報、ページ分けされた章、その本内の検索。
-candidate:app/ja/mcp.html:29:31,html-text,app/ja/mcp.html,29,,unknown,reviewable,,notes
-candidate:app/ja/mcp.html:29:52,html-text,app/ja/mcp.html,29,,unknown,reviewable,,個別に許可した個人のコメントと質問。
-candidate:app/ja/mcp.html:30:31,html-text,app/ja/mcp.html,30,,unknown,reviewable,,activity
-candidate:app/ja/mcp.html:30:55,html-text,app/ja/mcp.html,30,,unknown,reviewable,,保存済みの読書位置と最近の読書セッション。
-candidate:app/ja/mcp.html:31:31,html-text,app/ja/mcp.html,31,,unknown,reviewable,,comment:write
-candidate:app/ja/mcp.html:31:60,html-text,app/ja/mcp.html,31,,unknown,reviewable,,ユーザーが明示的に渡したコメントを、段落に紐づけて保存します。本の編集は許可されません。
-candidate:app/ja/mcp.html:33:6,html-text,app/ja/mcp.html,33,,unknown,reviewable,,まずは
-candidate:app/ja/mcp.html:33:16,html-text,app/ja/mcp.html,33,,unknown,reviewable,,content
-candidate:app/ja/mcp.html:33:31,html-text,app/ja/mcp.html,33,,unknown,reviewable,,だけをお勧めします。許可は 7 日で失効し、それ以前にも取り消せます。取り消した後のサービス認証は失敗しますが、AI ホストにすでに複製された内容は消せません。
-candidate:app/ja/mcp.html:34:18,html-text,app/ja/mcp.html,34,,unknown,reviewable,,アダプタをつなぎます。
-candidate:app/ja/mcp.html:35:63,html-text,app/ja/mcp.html,35,,unknown,reviewable,,リポジトリの手順
-candidate:app/ja/mcp.html:35:75,html-text,app/ja/mcp.html,35,,unknown,reviewable,,で Leafhour をローカル実行するか、ホスティング済みの読書サービスを使います。自分の
-candidate:app/ja/mcp.html:35:146,html-text,app/ja/mcp.html,35,,unknown,reviewable,,書斎
-candidate:app/ja/mcp.html:35:152,html-text,app/ja/mcp.html,35,,unknown,reviewable,,で本を取り込むか、公開サンプルを選びます。
-candidate:app/ja/mcp.html:35:182,html-text,app/ja/mcp.html,35,,unknown,reviewable,,対応クライアントか認証済み API から、
-candidate:app/ja/mcp.html:35:209,html-text,app/ja/mcp.html,35,,unknown,protected,path,POST /api/library/grants
-candidate:app/ja/mcp.html:35:241,html-text,app/ja/mcp.html,35,,unknown,reviewable,,で
-candidate:app/ja/mcp.html:35:249,html-text,app/ja/mcp.html,35,,unknown,reviewable,,bookId
-candidate:app/ja/mcp.html:35:263,html-text,app/ja/mcp.html,35,,unknown,reviewable,,と
-candidate:app/ja/mcp.html:35:271,html-text,app/ja/mcp.html,35,,unknown,reviewable,,scopes
-candidate:app/ja/mcp.html:35:285,html-text,app/ja/mcp.html,35,,unknown,reviewable,,を指定して許可を作成します。トークンは一度だけ返るので、AI ホストの秘密の設定に保管してください。
-candidate:app/ja/mcp.html:35:350,html-text,app/ja/mcp.html,35,,unknown,protected,path,GET /api/library/mcp-setup
-candidate:app/ja/mcp.html:35:384,html-text,app/ja/mcp.html,35,,unknown,reviewable,,を読み、
-candidate:app/ja/mcp.html:35:462,html-text,app/ja/mcp.html,35,,unknown,reviewable,,設定ビルダー
-candidate:app/ja/mcp.html:35:472,html-text,app/ja/mcp.html,35,,unknown,reviewable,,でホスト設定を作ります。ローカルのソースでは
-candidate:app/ja/mcp.html:35:501,html-text,app/ja/mcp.html,35,,unknown,protected,path,node server/mcp.mjs
-candidate:app/ja/mcp.html:35:528,html-text,app/ja/mcp.html,35,,unknown,reviewable,,がアダプタです。ホスティング側の接続では実際のデプロイ済みソースコミットが返り、生成される設定はその不変のソースパックに固定され、HTTPS の書斎を明示的に許可します。デプロイ由来が確認できない場合は遮断します。
-candidate:app/ja/mcp.html:35:644,html-text,app/ja/mcp.html,35,,unknown,reviewable,,対応 AI ホストで MCP サーバーを有効にし、ツールのリクエストに許可された本の ID を渡します。使い終えたら
-candidate:app/ja/mcp.html:35:709,html-text,app/ja/mcp.html,35,,unknown,protected,path,POST /api/library/grants/{id}/revoke
-candidate:app/ja/mcp.html:35:753,html-text,app/ja/mcp.html,35,,unknown,reviewable,,で取り消します。
-candidate:app/ja/mcp.html:36:6,html-text,app/ja/mcp.html,36,,unknown,reviewable,,アダプタは次の環境変数を使います：
-candidate:app/ja/mcp.html:37:92,html-text,app/ja/mcp.html,37,,unknown,protected,url,"READER_SERVICE_URL=http://127.0.0.1:8330
+candidate:app/ja/mcp.html:26:19,html-text,app/ja/mcp.html,26,,unknown,reviewable,,OAuth で ChatGPT に接続する。
+candidate:app/ja/mcp.html:27:44,html-text,app/ja/mcp.html,27,,unknown,reviewable,,ChatGPT Plugins
+candidate:app/ja/mcp.html:27:64,html-text,app/ja/mcp.html,27,,unknown,reviewable,,でカスタム MCP サーバーを追加し、URL に
+candidate:app/ja/mcp.html:27:95,html-text,app/ja/mcp.html,27,,unknown,protected,url,https://leafhour.com/api/mcp
+candidate:app/ja/mcp.html:27:131,html-text,app/ja/mcp.html,27,,unknown,reviewable,,を入力して OAuth と動的クライアント登録を選びます。Leafhour でログインし、アカウントを確認して一冊を選びます。権限は一時間の読み取り専用で、個人メモや読書記録は含みません。
+candidate:app/ja/mcp.html:27:231,html-text,app/ja/mcp.html,27,,unknown,protected,identifier,reader_get_connection
+candidate:app/ja/mcp.html:27:260,html-text,app/ja/mcp.html,27,,unknown,reviewable,,で対象の本を確認でき、書斎の Agent 設定で取り消せます。
+candidate:app/ja/mcp.html:28:6,html-text,app/ja/mcp.html,28,,unknown,reviewable,,skills 対応ホストでは
+candidate:app/ja/mcp.html:28:27,html-text,app/ja/mcp.html,28,,unknown,protected,path,getyak/leafhour
+candidate:app/ja/mcp.html:28:50,html-text,app/ja/mcp.html,28,,unknown,reviewable,,から
+candidate:app/ja/mcp.html:28:59,html-text,app/ja/mcp.html,28,,unknown,protected,identifier,leafhour-reading
+candidate:app/ja/mcp.html:28:83,html-text,app/ja/mcp.html,28,,unknown,reviewable,,をインストールできます。skill のインストールだけでは MCP への接続や認可は行われません。
+candidate:app/ja/mcp.html:28:205,html-text,app/ja/mcp.html,28,,unknown,reviewable,,インストールと OAuth の説明
+candidate:app/ja/mcp.html:28:226,html-text,app/ja/mcp.html,28,,unknown,reviewable,,を参照してください。カスタムサーバーの追加は ChatGPT のアカウントとワークスペースのポリシーに従います。下記のコマンド設定は stdio ホストで引き続き利用できます。
+candidate:app/ja/mcp.html:29:24,html-text,app/ja/mcp.html,29,,unknown,reviewable,,Agent に読ませる範囲を選びます。
+candidate:app/ja/mcp.html:30:114,html-text,app/ja/mcp.html,30,,unknown,reviewable,,権限
+candidate:app/ja/mcp.html:30:137,html-text,app/ja/mcp.html,30,,unknown,reviewable,,許可されること
+candidate:app/ja/mcp.html:31:31,html-text,app/ja/mcp.html,31,,unknown,reviewable,,content
+candidate:app/ja/mcp.html:31:54,html-text,app/ja/mcp.html,31,,unknown,reviewable,,原文と保存済みの訳文、書籍情報、ページ分けされた章、その本内の検索。
+candidate:app/ja/mcp.html:32:31,html-text,app/ja/mcp.html,32,,unknown,reviewable,,notes
+candidate:app/ja/mcp.html:32:52,html-text,app/ja/mcp.html,32,,unknown,reviewable,,個別に許可した個人のコメントと質問。
+candidate:app/ja/mcp.html:33:31,html-text,app/ja/mcp.html,33,,unknown,reviewable,,activity
+candidate:app/ja/mcp.html:33:55,html-text,app/ja/mcp.html,33,,unknown,reviewable,,保存済みの読書位置と最近の読書セッション。
+candidate:app/ja/mcp.html:34:31,html-text,app/ja/mcp.html,34,,unknown,reviewable,,comment:write
+candidate:app/ja/mcp.html:34:60,html-text,app/ja/mcp.html,34,,unknown,reviewable,,ユーザーが明示的に渡したコメントを、段落に紐づけて保存します。本の編集は許可されません。
+candidate:app/ja/mcp.html:36:6,html-text,app/ja/mcp.html,36,,unknown,reviewable,,まずは
+candidate:app/ja/mcp.html:36:16,html-text,app/ja/mcp.html,36,,unknown,reviewable,,content
+candidate:app/ja/mcp.html:36:31,html-text,app/ja/mcp.html,36,,unknown,reviewable,,だけをお勧めします。許可は 7 日で失効し、それ以前にも取り消せます。取り消した後のサービス認証は失敗しますが、AI ホストにすでに複製された内容は消せません。
+candidate:app/ja/mcp.html:37:18,html-text,app/ja/mcp.html,37,,unknown,reviewable,,アダプタをつなぎます。
+candidate:app/ja/mcp.html:38:63,html-text,app/ja/mcp.html,38,,unknown,reviewable,,リポジトリの手順
+candidate:app/ja/mcp.html:38:75,html-text,app/ja/mcp.html,38,,unknown,reviewable,,で Leafhour をローカル実行するか、ホスティング済みの読書サービスを使います。自分の
+candidate:app/ja/mcp.html:38:146,html-text,app/ja/mcp.html,38,,unknown,reviewable,,書斎
+candidate:app/ja/mcp.html:38:152,html-text,app/ja/mcp.html,38,,unknown,reviewable,,で本を取り込むか、公開サンプルを選びます。
+candidate:app/ja/mcp.html:38:182,html-text,app/ja/mcp.html,38,,unknown,reviewable,,対応クライアントか認証済み API から、
+candidate:app/ja/mcp.html:38:209,html-text,app/ja/mcp.html,38,,unknown,protected,path,POST /api/library/grants
+candidate:app/ja/mcp.html:38:241,html-text,app/ja/mcp.html,38,,unknown,reviewable,,で
+candidate:app/ja/mcp.html:38:249,html-text,app/ja/mcp.html,38,,unknown,reviewable,,bookId
+candidate:app/ja/mcp.html:38:263,html-text,app/ja/mcp.html,38,,unknown,reviewable,,と
+candidate:app/ja/mcp.html:38:271,html-text,app/ja/mcp.html,38,,unknown,reviewable,,scopes
+candidate:app/ja/mcp.html:38:285,html-text,app/ja/mcp.html,38,,unknown,reviewable,,を指定して許可を作成します。トークンは一度だけ返るので、AI ホストの秘密の設定に保管してください。
+candidate:app/ja/mcp.html:38:350,html-text,app/ja/mcp.html,38,,unknown,protected,path,GET /api/library/mcp-setup
+candidate:app/ja/mcp.html:38:384,html-text,app/ja/mcp.html,38,,unknown,reviewable,,を読み、
+candidate:app/ja/mcp.html:38:462,html-text,app/ja/mcp.html,38,,unknown,reviewable,,設定ビルダー
+candidate:app/ja/mcp.html:38:472,html-text,app/ja/mcp.html,38,,unknown,reviewable,,でホスト設定を作ります。ローカルのソースでは
+candidate:app/ja/mcp.html:38:501,html-text,app/ja/mcp.html,38,,unknown,protected,path,node server/mcp.mjs
+candidate:app/ja/mcp.html:38:528,html-text,app/ja/mcp.html,38,,unknown,reviewable,,がアダプタです。ホスティング側の接続では実際のデプロイ済みソースコミットが返り、生成される設定はその不変のソースパックに固定され、HTTPS の書斎を明示的に許可します。デプロイ由来が確認できない場合は遮断します。
+candidate:app/ja/mcp.html:38:644,html-text,app/ja/mcp.html,38,,unknown,reviewable,,対応 AI ホストで MCP サーバーを有効にし、ツールのリクエストに許可された本の ID を渡します。使い終えたら
+candidate:app/ja/mcp.html:38:709,html-text,app/ja/mcp.html,38,,unknown,protected,path,POST /api/library/grants/{id}/revoke
+candidate:app/ja/mcp.html:38:753,html-text,app/ja/mcp.html,38,,unknown,reviewable,,で取り消します。
+candidate:app/ja/mcp.html:39:6,html-text,app/ja/mcp.html,39,,unknown,reviewable,,アダプタは次の環境変数を使います：
+candidate:app/ja/mcp.html:40:92,html-text,app/ja/mcp.html,40,,unknown,protected,url,"READER_SERVICE_URL=http://127.0.0.1:8330
 READER_AGENT_TOKEN=&lt;your book-scoped grant&gt;
 
 # For your configured HTTPS service only:
 # READER_SERVICE_URL=https://leafhour.com
 # READER_ALLOW_REMOTE=true"
-candidate:app/ja/mcp.html:43:6,html-text,app/ja/mcp.html,43,,unknown,reviewable,,ログインパスワード、セッション Cookie、Supabase キー、許可トークンを公開文書やリポジトリに書かないでください。MCP の許可はウェブのログインとは別物です。ホストに秘密情報の保管機能があれば使ってください。
-candidate:app/ja/mcp.html:44:18,html-text,app/ja/mcp.html,44,,unknown,reviewable,,まず一節を取得して、そこから深めます。
-candidate:app/ja/mcp.html:45:12,html-text,app/ja/mcp.html,45,,unknown,protected,identifier,reader_get_manifest
-candidate:app/ja/mcp.html:45:39,html-text,app/ja/mcp.html,45,,unknown,reviewable,,は本の出典情報と章の識別子を返します。
-candidate:app/ja/mcp.html:45:64,html-text,app/ja/mcp.html,45,,unknown,protected,identifier,reader_get_context
-candidate:app/ja/mcp.html:45:90,html-text,app/ja/mcp.html,45,,unknown,reviewable,,は段落と前後の段落、安定したアンカーを返します。
-candidate:app/ja/mcp.html:45:120,html-text,app/ja/mcp.html,45,,unknown,protected,identifier,reader_get_chapter
-candidate:app/ja/mcp.html:45:146,html-text,app/ja/mcp.html,45,,unknown,reviewable,,は一度に最大 20 段と続きのカーソルを返します。
-candidate:app/ja/mcp.html:45:177,html-text,app/ja/mcp.html,45,,unknown,protected,identifier,reader_search
-candidate:app/ja/mcp.html:45:198,html-text,app/ja/mcp.html,45,,unknown,reviewable,,は許可された本を検索し、アンカー付きの結果を最大 20 件返します。
-candidate:app/ja/mcp.html:46:6,html-text,app/ja/mcp.html,46,,unknown,reviewable,,追加の権限では、
-candidate:app/ja/mcp.html:46:20,html-text,app/ja/mcp.html,46,,unknown,protected,identifier,reader_get_notes
-candidate:app/ja/mcp.html:46:44,html-text,app/ja/mcp.html,46,,unknown,reviewable,,がコメントと質問を、
-candidate:app/ja/mcp.html:46:60,html-text,app/ja/mcp.html,46,,unknown,protected,identifier,reader_get_reading_activity
-candidate:app/ja/mcp.html:46:95,html-text,app/ja/mcp.html,46,,unknown,reviewable,,が位置とセッションを、
-candidate:app/ja/mcp.html:46:112,html-text,app/ja/mcp.html,46,,unknown,protected,identifier,reader_add_comment
-candidate:app/ja/mcp.html:46:138,html-text,app/ja/mcp.html,46,,unknown,reviewable,,がユーザーが明示的に渡した文を保存します。Agent のアクセスが読書カレンダーに時間として加算されることはありません。
-candidate:app/ja/mcp.html:47:6,html-text,app/ja/mcp.html,47,,unknown,protected,quotation,例：「許可された本から友情についての段落を探し、出典の章と段落アンカーを見せて、作者の言い回しを比較してほしい。」Agent には本の ID が必要です。プライベート書庫全体を検索する許可があるとは推測できません。
-candidate:app/ja/mcp.html:48:19,html-text,app/ja/mcp.html,48,,unknown,reviewable,,現在の制限を知っておきます。
-candidate:app/ja/mcp.html:49:6,html-text,app/ja/mcp.html,49,,unknown,reviewable,,アダプタは音声ツールも公開していますが、ホスティング側の音声生成は有効になっていません。ローカルの音声は別途の設定と権限が必要で、生成にはプロバイダーの費用がかかる場合があります。MCP は現時点で本のアップロード、書庫全体の自動翻訳、通知の自動スケジュールは行いません。
-candidate:app/ja/mcp.html:50:6,html-text,app/ja/mcp.html,50,,unknown,reviewable,,組み込みの読書アシスタントは読み取り専用の独自の境界を持ち、この外部 MCP の許可とは別物です。ホスティング側の処理詳細は
-candidate:app/ja/mcp.html:50:90,html-text,app/ja/mcp.html,50,,unknown,reviewable,,プライバシーとデータの取り扱い
-candidate:app/ja/mcp.html:50:109,html-text,app/ja/mcp.html,50,,unknown,reviewable,,をご覧ください。
-candidate:app/ja/mcp.html:51:6,html-text,app/ja/mcp.html,51,,unknown,reviewable,,正確なツール定義と現在のサービスの挙動は、
-candidate:app/ja/mcp.html:51:97,html-text,app/ja/mcp.html,51,,unknown,reviewable,,アダプタのソース
-candidate:app/ja/mcp.html:51:109,html-text,app/ja/mcp.html,51,,unknown,reviewable,,、
-candidate:app/ja/mcp.html:51:183,html-text,app/ja/mcp.html,51,,unknown,reviewable,,サービスのルート
-candidate:app/ja/mcp.html:51:195,html-text,app/ja/mcp.html,51,,unknown,reviewable,,、
-candidate:app/ja/mcp.html:51:271,html-text,app/ja/mcp.html,51,,unknown,reviewable,,本ごと権限の MCP 読み取り仕様
-candidate:app/ja/mcp.html:51:292,html-text,app/ja/mcp.html,51,,unknown,reviewable,,をご確認ください。このガイドは現在の実装を説明するもので、将来の機能ではありません。
-candidate:app/ja/mcp.html:53:43,html-text,app/ja/mcp.html,53,,unknown,reviewable,,Leafhour · Stay with a book.
-candidate:app/ja/mcp.html:53:120,html-text,app/ja/mcp.html,53,,unknown,reviewable,,ソースコード
-candidate:app/ja/mcp.html:53:152,html-text,app/ja/mcp.html,53,,unknown,reviewable,,プライバシー
-candidate:app/ja/mcp.html:53:260,html-text,app/ja/mcp.html,53,,unknown,reviewable,,English
-candidate:app/ja/mcp.html:53:328,html-text,app/ja/mcp.html,53,,unknown,reviewable,,简体中文
-candidate:app/ja/mcp.html:53:393,html-text,app/ja/mcp.html,53,,unknown,reviewable,,繁體中文
-candidate:app/ja/mcp.html:53:463,html-text,app/ja/mcp.html,53,,unknown,reviewable,,日本語
-candidate:app/ja/mcp.html:53:514,html-text,app/ja/mcp.html,53,,unknown,reviewable,,お問い合わせ
+candidate:app/ja/mcp.html:46:6,html-text,app/ja/mcp.html,46,,unknown,reviewable,,ログインパスワード、セッション Cookie、Supabase キー、許可トークンを公開文書やリポジトリに書かないでください。MCP の許可はウェブのログインとは別物です。ホストに秘密情報の保管機能があれば使ってください。
+candidate:app/ja/mcp.html:47:18,html-text,app/ja/mcp.html,47,,unknown,reviewable,,まず一節を取得して、そこから深めます。
+candidate:app/ja/mcp.html:48:12,html-text,app/ja/mcp.html,48,,unknown,protected,identifier,reader_get_manifest
+candidate:app/ja/mcp.html:48:39,html-text,app/ja/mcp.html,48,,unknown,reviewable,,は本の出典情報と章の識別子を返します。
+candidate:app/ja/mcp.html:48:64,html-text,app/ja/mcp.html,48,,unknown,protected,identifier,reader_get_context
+candidate:app/ja/mcp.html:48:90,html-text,app/ja/mcp.html,48,,unknown,reviewable,,は段落と前後の段落、安定したアンカーを返します。
+candidate:app/ja/mcp.html:48:120,html-text,app/ja/mcp.html,48,,unknown,protected,identifier,reader_get_chapter
+candidate:app/ja/mcp.html:48:146,html-text,app/ja/mcp.html,48,,unknown,reviewable,,は一度に最大 20 段と続きのカーソルを返します。
+candidate:app/ja/mcp.html:48:177,html-text,app/ja/mcp.html,48,,unknown,protected,identifier,reader_search
+candidate:app/ja/mcp.html:48:198,html-text,app/ja/mcp.html,48,,unknown,reviewable,,は許可された本を検索し、アンカー付きの結果を最大 20 件返します。
+candidate:app/ja/mcp.html:49:6,html-text,app/ja/mcp.html,49,,unknown,reviewable,,追加の権限では、
+candidate:app/ja/mcp.html:49:20,html-text,app/ja/mcp.html,49,,unknown,protected,identifier,reader_get_notes
+candidate:app/ja/mcp.html:49:44,html-text,app/ja/mcp.html,49,,unknown,reviewable,,がコメントと質問を、
+candidate:app/ja/mcp.html:49:60,html-text,app/ja/mcp.html,49,,unknown,protected,identifier,reader_get_reading_activity
+candidate:app/ja/mcp.html:49:95,html-text,app/ja/mcp.html,49,,unknown,reviewable,,が位置とセッションを、
+candidate:app/ja/mcp.html:49:112,html-text,app/ja/mcp.html,49,,unknown,protected,identifier,reader_add_comment
+candidate:app/ja/mcp.html:49:138,html-text,app/ja/mcp.html,49,,unknown,reviewable,,がユーザーが明示的に渡した文を保存します。Agent のアクセスが読書カレンダーに時間として加算されることはありません。
+candidate:app/ja/mcp.html:50:6,html-text,app/ja/mcp.html,50,,unknown,protected,quotation,例：「許可された本から友情についての段落を探し、出典の章と段落アンカーを見せて、作者の言い回しを比較してほしい。」Agent には本の ID が必要です。プライベート書庫全体を検索する許可があるとは推測できません。
+candidate:app/ja/mcp.html:51:19,html-text,app/ja/mcp.html,51,,unknown,reviewable,,現在の制限を知っておきます。
+candidate:app/ja/mcp.html:52:6,html-text,app/ja/mcp.html,52,,unknown,reviewable,,アダプタは音声ツールも公開していますが、ホスティング側の音声生成は有効になっていません。ローカルの音声は別途の設定と権限が必要で、生成にはプロバイダーの費用がかかる場合があります。MCP は現時点で本のアップロード、書庫全体の自動翻訳、通知の自動スケジュールは行いません。
+candidate:app/ja/mcp.html:53:6,html-text,app/ja/mcp.html,53,,unknown,reviewable,,組み込みの読書アシスタントは読み取り専用の独自の境界を持ち、この外部 MCP の許可とは別物です。ホスティング側の処理詳細は
+candidate:app/ja/mcp.html:53:90,html-text,app/ja/mcp.html,53,,unknown,reviewable,,プライバシーとデータの取り扱い
+candidate:app/ja/mcp.html:53:109,html-text,app/ja/mcp.html,53,,unknown,reviewable,,をご覧ください。
+candidate:app/ja/mcp.html:54:6,html-text,app/ja/mcp.html,54,,unknown,reviewable,,正確なツール定義と現在のサービスの挙動は、
+candidate:app/ja/mcp.html:54:97,html-text,app/ja/mcp.html,54,,unknown,reviewable,,アダプタのソース
+candidate:app/ja/mcp.html:54:109,html-text,app/ja/mcp.html,54,,unknown,reviewable,,、
+candidate:app/ja/mcp.html:54:183,html-text,app/ja/mcp.html,54,,unknown,reviewable,,サービスのルート
+candidate:app/ja/mcp.html:54:195,html-text,app/ja/mcp.html,54,,unknown,reviewable,,、
+candidate:app/ja/mcp.html:54:271,html-text,app/ja/mcp.html,54,,unknown,reviewable,,本ごと権限の MCP 読み取り仕様
+candidate:app/ja/mcp.html:54:292,html-text,app/ja/mcp.html,54,,unknown,reviewable,,をご確認ください。このガイドは現在の実装を説明するもので、将来の機能ではありません。
+candidate:app/ja/mcp.html:56:43,html-text,app/ja/mcp.html,56,,unknown,reviewable,,Leafhour · Stay with a book.
+candidate:app/ja/mcp.html:56:120,html-text,app/ja/mcp.html,56,,unknown,reviewable,,ソースコード
+candidate:app/ja/mcp.html:56:152,html-text,app/ja/mcp.html,56,,unknown,reviewable,,プライバシー
+candidate:app/ja/mcp.html:56:260,html-text,app/ja/mcp.html,56,,unknown,reviewable,,English
+candidate:app/ja/mcp.html:56:328,html-text,app/ja/mcp.html,56,,unknown,reviewable,,简体中文
+candidate:app/ja/mcp.html:56:393,html-text,app/ja/mcp.html,56,,unknown,reviewable,,繁體中文
+candidate:app/ja/mcp.html:56:463,html-text,app/ja/mcp.html,56,,unknown,reviewable,,日本語
+candidate:app/ja/mcp.html:56:514,html-text,app/ja/mcp.html,56,,unknown,reviewable,,お問い合わせ
 candidate:app/ja/privacy.html:19:179,html-attribute,app/ja/privacy.html,19,aria-label,unknown,reviewable,,Leafhour ホーム
 candidate:app/ja/privacy.html:19:550,html-attribute,app/ja/privacy.html,19,aria-label,unknown,reviewable,,メインナビゲーション
 candidate:app/ja/privacy.html:19:706,html-attribute,app/ja/privacy.html,19,aria-label,unknown,reviewable,,表示言語
@@ -2485,9 +2514,9 @@ candidate:app/upload-state.mjs:12:69,js-cjk-literal,app/upload-state.mjs,12,,unk
 candidate:app/zh-hans/mcp.html:20:74,html-attribute,app/zh-hans/mcp.html,20,aria-label,unknown,reviewable,,Leafhour 首页
 candidate:app/zh-hans/mcp.html:20:444,html-attribute,app/zh-hans/mcp.html,20,aria-label,unknown,reviewable,,主导航
 candidate:app/zh-hans/mcp.html:20:684,html-attribute,app/zh-hans/mcp.html,20,aria-label,unknown,reviewable,,切换界面语言
-candidate:app/zh-hans/mcp.html:27:53,html-attribute,app/zh-hans/mcp.html,27,aria-label,unknown,reviewable,,权限表，可横向滚动
-candidate:app/zh-hans/mcp.html:37:53,html-attribute,app/zh-hans/mcp.html,37,aria-label,unknown,reviewable,,命令示例，可横向滚动
-candidate:app/zh-hans/mcp.html:53:219,html-attribute,app/zh-hans/mcp.html,53,aria-label,unknown,reviewable,,切换界面语言
+candidate:app/zh-hans/mcp.html:30:53,html-attribute,app/zh-hans/mcp.html,30,aria-label,unknown,reviewable,,权限表，可横向滚动
+candidate:app/zh-hans/mcp.html:40:53,html-attribute,app/zh-hans/mcp.html,40,aria-label,unknown,reviewable,,命令示例，可横向滚动
+candidate:app/zh-hans/mcp.html:56:219,html-attribute,app/zh-hans/mcp.html,56,aria-label,unknown,reviewable,,切换界面语言
 candidate:app/zh-hans/mcp.html:5:10,html-text,app/zh-hans/mcp.html,5,,unknown,reviewable,,用 MCP 让 AI Agent 连接你的书 · Leafhour
 candidate:app/zh-hans/mcp.html:19:30,html-text,app/zh-hans/mcp.html,19,,unknown,reviewable,,跳到正文
 candidate:app/zh-hans/mcp.html:20:408,html-text,app/zh-hans/mcp.html,20,,unknown,reviewable,,Leafhour
@@ -2504,88 +2533,103 @@ candidate:app/zh-hans/mcp.html:24:6,html-text,app/zh-hans/mcp.html,24,,unknown,r
 candidate:app/zh-hans/mcp.html:25:6,html-text,app/zh-hans/mcp.html,25,,unknown,reviewable,,这是技术接入。阅读界面支持英文、简体中文、繁体中文和日语，尚无完整的授权管理页面。创建和撤回授权，请使用现有兼容客户端或已认证的服务 API。需要帮助时，请联系
 candidate:app/zh-hans/mcp.html:25:125,html-text,app/zh-hans/mcp.html,25,,unknown,reviewable,,support@leafhour.com
 candidate:app/zh-hans/mcp.html:25:149,html-text,app/zh-hans/mcp.html,25,,unknown,reviewable,,。
-candidate:app/zh-hans/mcp.html:26:24,html-text,app/zh-hans/mcp.html,26,,unknown,reviewable,,选择 Agent 可以访问的内容。
-candidate:app/zh-hans/mcp.html:27:111,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,权限
-candidate:app/zh-hans/mcp.html:27:134,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,允许的操作
-candidate:app/zh-hans/mcp.html:28:31,html-text,app/zh-hans/mcp.html,28,,unknown,reviewable,,content
-candidate:app/zh-hans/mcp.html:28:54,html-text,app/zh-hans/mcp.html,28,,unknown,reviewable,,原文与已保存的译文、书籍信息、分页章节以及该书内的搜索。
-candidate:app/zh-hans/mcp.html:29:31,html-text,app/zh-hans/mcp.html,29,,unknown,reviewable,,notes
-candidate:app/zh-hans/mcp.html:29:52,html-text,app/zh-hans/mcp.html,29,,unknown,reviewable,,单独授权的个人评论和问题。
-candidate:app/zh-hans/mcp.html:30:31,html-text,app/zh-hans/mcp.html,30,,unknown,reviewable,,activity
-candidate:app/zh-hans/mcp.html:30:55,html-text,app/zh-hans/mcp.html,30,,unknown,reviewable,,已保存的阅读位置和最近的阅读时段。
-candidate:app/zh-hans/mcp.html:31:31,html-text,app/zh-hans/mcp.html,31,,unknown,reviewable,,comment:write
-candidate:app/zh-hans/mcp.html:31:60,html-text,app/zh-hans/mcp.html,31,,unknown,reviewable,,保存用户明确提供的评论，并锚定到段落。它不授权修改书籍。
-candidate:app/zh-hans/mcp.html:33:6,html-text,app/zh-hans/mcp.html,33,,unknown,reviewable,,建议先只用
-candidate:app/zh-hans/mcp.html:33:18,html-text,app/zh-hans/mcp.html,33,,unknown,reviewable,,content
-candidate:app/zh-hans/mcp.html:33:32,html-text,app/zh-hans/mcp.html,33,,unknown,reviewable,,。授权七天后过期，也可以提前撤回。撤回后，后续服务鉴权会失败；撤回不能清除已经复制到你的 AI 宿主里的内容。
-candidate:app/zh-hans/mcp.html:34:18,html-text,app/zh-hans/mcp.html,34,,unknown,reviewable,,连接适配器。
-candidate:app/zh-hans/mcp.html:35:11,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,按
-candidate:app/zh-hans/mcp.html:35:64,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,仓库说明
-candidate:app/zh-hans/mcp.html:35:72,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,在本地运行 Leafhour，或使用托管阅读服务。在自己的
-candidate:app/zh-hans/mcp.html:35:131,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,书房
-candidate:app/zh-hans/mcp.html:35:137,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,导入一本书，或选择一本公版样书。
-candidate:app/zh-hans/mcp.html:35:162,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,通过兼容客户端或已认证 API，用
-candidate:app/zh-hans/mcp.html:35:186,html-text,app/zh-hans/mcp.html,35,,unknown,protected,path,POST /api/library/grants
-candidate:app/zh-hans/mcp.html:35:218,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,创建带
-candidate:app/zh-hans/mcp.html:35:228,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,bookId
-candidate:app/zh-hans/mcp.html:35:242,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,和所选
-candidate:app/zh-hans/mcp.html:35:252,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,scopes
-candidate:app/zh-hans/mcp.html:35:266,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,的授权。令牌只返回一次，请保存在 AI 宿主的私密配置里。
-candidate:app/zh-hans/mcp.html:35:304,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,读取
-candidate:app/zh-hans/mcp.html:35:313,html-text,app/zh-hans/mcp.html,35,,unknown,protected,path,GET /api/library/mcp-setup
-candidate:app/zh-hans/mcp.html:35:346,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,，并用
-candidate:app/zh-hans/mcp.html:35:423,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,配置生成器
-candidate:app/zh-hans/mcp.html:35:432,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,创建宿主配置。本地源码运行时，适配器以
-candidate:app/zh-hans/mcp.html:35:458,html-text,app/zh-hans/mcp.html,35,,unknown,protected,path,node server/mcp.mjs
-candidate:app/zh-hans/mcp.html:35:485,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,启动。托管接入会返回实际部署的源码提交，生成的配置固定到这份不可变的源码包并显式允许 HTTPS 书房；缺少部署来源时直接拒绝。
-candidate:app/zh-hans/mcp.html:35:558,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,在兼容的 AI 宿主中启用 MCP 服务器，并在工具请求中带上授权的书籍 ID。用完后可用
-candidate:app/zh-hans/mcp.html:35:610,html-text,app/zh-hans/mcp.html,35,,unknown,protected,path,POST /api/library/grants/{id}/revoke
-candidate:app/zh-hans/mcp.html:35:654,html-text,app/zh-hans/mcp.html,35,,unknown,reviewable,,撤回授权。
-candidate:app/zh-hans/mcp.html:36:6,html-text,app/zh-hans/mcp.html,36,,unknown,reviewable,,适配器使用这些环境变量：
-candidate:app/zh-hans/mcp.html:37:89,html-text,app/zh-hans/mcp.html,37,,unknown,protected,url,"READER_SERVICE_URL=http://127.0.0.1:8330
+candidate:app/zh-hans/mcp.html:26:19,html-text,app/zh-hans/mcp.html,26,,unknown,reviewable,,通过 OAuth 连接 ChatGPT。
+candidate:app/zh-hans/mcp.html:27:6,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,在
+candidate:app/zh-hans/mcp.html:27:46,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,ChatGPT Plugins
+candidate:app/zh-hans/mcp.html:27:66,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,添加自定义 MCP 服务器，地址填写
+candidate:app/zh-hans/mcp.html:27:91,html-text,app/zh-hans/mcp.html,27,,unknown,protected,url,https://leafhour.com/api/mcp
+candidate:app/zh-hans/mcp.html:27:126,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,，选择 OAuth 和动态客户端注册。在 Leafhour 登录，核对账号并选一本书。授权仅只读一小时，不含私人笔记与阅读记录。调用
+candidate:app/zh-hans/mcp.html:27:199,html-text,app/zh-hans/mcp.html,27,,unknown,protected,identifier,reader_get_connection
+candidate:app/zh-hans/mcp.html:27:228,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,核对已授权的书；在书房的 Agent 设置中可撤回。
+candidate:app/zh-hans/mcp.html:28:6,html-text,app/zh-hans/mcp.html,28,,unknown,reviewable,,兼容 skills 的宿主也可从
+candidate:app/zh-hans/mcp.html:28:29,html-text,app/zh-hans/mcp.html,28,,unknown,protected,path,getyak/leafhour
+candidate:app/zh-hans/mcp.html:28:52,html-text,app/zh-hans/mcp.html,28,,unknown,reviewable,,安装
+candidate:app/zh-hans/mcp.html:28:61,html-text,app/zh-hans/mcp.html,28,,unknown,protected,identifier,leafhour-reading
+candidate:app/zh-hans/mcp.html:28:84,html-text,app/zh-hans/mcp.html,28,,unknown,reviewable,,。只安装 skill 不会连接或授权 MCP。详见
+candidate:app/zh-hans/mcp.html:28:182,html-text,app/zh-hans/mcp.html,28,,unknown,reviewable,,安装与 OAuth 说明
+candidate:app/zh-hans/mcp.html:28:198,html-text,app/zh-hans/mcp.html,28,,unknown,reviewable,,。ChatGPT 账号和工作空间策略决定能否添加自定义服务器；下方命令配置继续适用于 stdio 宿主。
+candidate:app/zh-hans/mcp.html:29:24,html-text,app/zh-hans/mcp.html,29,,unknown,reviewable,,选择 Agent 可以访问的内容。
+candidate:app/zh-hans/mcp.html:30:111,html-text,app/zh-hans/mcp.html,30,,unknown,reviewable,,权限
+candidate:app/zh-hans/mcp.html:30:134,html-text,app/zh-hans/mcp.html,30,,unknown,reviewable,,允许的操作
+candidate:app/zh-hans/mcp.html:31:31,html-text,app/zh-hans/mcp.html,31,,unknown,reviewable,,content
+candidate:app/zh-hans/mcp.html:31:54,html-text,app/zh-hans/mcp.html,31,,unknown,reviewable,,原文与已保存的译文、书籍信息、分页章节以及该书内的搜索。
+candidate:app/zh-hans/mcp.html:32:31,html-text,app/zh-hans/mcp.html,32,,unknown,reviewable,,notes
+candidate:app/zh-hans/mcp.html:32:52,html-text,app/zh-hans/mcp.html,32,,unknown,reviewable,,单独授权的个人评论和问题。
+candidate:app/zh-hans/mcp.html:33:31,html-text,app/zh-hans/mcp.html,33,,unknown,reviewable,,activity
+candidate:app/zh-hans/mcp.html:33:55,html-text,app/zh-hans/mcp.html,33,,unknown,reviewable,,已保存的阅读位置和最近的阅读时段。
+candidate:app/zh-hans/mcp.html:34:31,html-text,app/zh-hans/mcp.html,34,,unknown,reviewable,,comment:write
+candidate:app/zh-hans/mcp.html:34:60,html-text,app/zh-hans/mcp.html,34,,unknown,reviewable,,保存用户明确提供的评论，并锚定到段落。它不授权修改书籍。
+candidate:app/zh-hans/mcp.html:36:6,html-text,app/zh-hans/mcp.html,36,,unknown,reviewable,,建议先只用
+candidate:app/zh-hans/mcp.html:36:18,html-text,app/zh-hans/mcp.html,36,,unknown,reviewable,,content
+candidate:app/zh-hans/mcp.html:36:32,html-text,app/zh-hans/mcp.html,36,,unknown,reviewable,,。授权七天后过期，也可以提前撤回。撤回后，后续服务鉴权会失败；撤回不能清除已经复制到你的 AI 宿主里的内容。
+candidate:app/zh-hans/mcp.html:37:18,html-text,app/zh-hans/mcp.html,37,,unknown,reviewable,,连接适配器。
+candidate:app/zh-hans/mcp.html:38:11,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,按
+candidate:app/zh-hans/mcp.html:38:64,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,仓库说明
+candidate:app/zh-hans/mcp.html:38:72,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,在本地运行 Leafhour，或使用托管阅读服务。在自己的
+candidate:app/zh-hans/mcp.html:38:131,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,书房
+candidate:app/zh-hans/mcp.html:38:137,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,导入一本书，或选择一本公版样书。
+candidate:app/zh-hans/mcp.html:38:162,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,通过兼容客户端或已认证 API，用
+candidate:app/zh-hans/mcp.html:38:186,html-text,app/zh-hans/mcp.html,38,,unknown,protected,path,POST /api/library/grants
+candidate:app/zh-hans/mcp.html:38:218,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,创建带
+candidate:app/zh-hans/mcp.html:38:228,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,bookId
+candidate:app/zh-hans/mcp.html:38:242,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,和所选
+candidate:app/zh-hans/mcp.html:38:252,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,scopes
+candidate:app/zh-hans/mcp.html:38:266,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,的授权。令牌只返回一次，请保存在 AI 宿主的私密配置里。
+candidate:app/zh-hans/mcp.html:38:304,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,读取
+candidate:app/zh-hans/mcp.html:38:313,html-text,app/zh-hans/mcp.html,38,,unknown,protected,path,GET /api/library/mcp-setup
+candidate:app/zh-hans/mcp.html:38:346,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,，并用
+candidate:app/zh-hans/mcp.html:38:423,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,配置生成器
+candidate:app/zh-hans/mcp.html:38:432,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,创建宿主配置。本地源码运行时，适配器以
+candidate:app/zh-hans/mcp.html:38:458,html-text,app/zh-hans/mcp.html,38,,unknown,protected,path,node server/mcp.mjs
+candidate:app/zh-hans/mcp.html:38:485,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,启动。托管接入会返回实际部署的源码提交，生成的配置固定到这份不可变的源码包并显式允许 HTTPS 书房；缺少部署来源时直接拒绝。
+candidate:app/zh-hans/mcp.html:38:558,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,在兼容的 AI 宿主中启用 MCP 服务器，并在工具请求中带上授权的书籍 ID。用完后可用
+candidate:app/zh-hans/mcp.html:38:610,html-text,app/zh-hans/mcp.html,38,,unknown,protected,path,POST /api/library/grants/{id}/revoke
+candidate:app/zh-hans/mcp.html:38:654,html-text,app/zh-hans/mcp.html,38,,unknown,reviewable,,撤回授权。
+candidate:app/zh-hans/mcp.html:39:6,html-text,app/zh-hans/mcp.html,39,,unknown,reviewable,,适配器使用这些环境变量：
+candidate:app/zh-hans/mcp.html:40:89,html-text,app/zh-hans/mcp.html,40,,unknown,protected,url,"READER_SERVICE_URL=http://127.0.0.1:8330
 READER_AGENT_TOKEN=&lt;your book-scoped grant&gt;
 
 # For your configured HTTPS service only:
 # READER_SERVICE_URL=https://leafhour.com
 # READER_ALLOW_REMOTE=true"
-candidate:app/zh-hans/mcp.html:43:6,html-text,app/zh-hans/mcp.html,43,,unknown,reviewable,,不要把登录密码、会话 Cookie、Supabase 密钥或授权令牌写进公开文档或仓库。MCP 授权与网页登录相互独立。宿主提供密钥存储时，请使用它。
-candidate:app/zh-hans/mcp.html:44:18,html-text,app/zh-hans/mcp.html,44,,unknown,reviewable,,先取一段，再往深处读。
-candidate:app/zh-hans/mcp.html:45:12,html-text,app/zh-hans/mcp.html,45,,unknown,protected,identifier,reader_get_manifest
-candidate:app/zh-hans/mcp.html:45:39,html-text,app/zh-hans/mcp.html,45,,unknown,reviewable,,返回这本书的来源信息和章节标识。
-candidate:app/zh-hans/mcp.html:45:61,html-text,app/zh-hans/mcp.html,45,,unknown,protected,identifier,reader_get_context
-candidate:app/zh-hans/mcp.html:45:87,html-text,app/zh-hans/mcp.html,45,,unknown,reviewable,,返回一个段落及其邻段和稳定锚点。
-candidate:app/zh-hans/mcp.html:45:109,html-text,app/zh-hans/mcp.html,45,,unknown,protected,identifier,reader_get_chapter
-candidate:app/zh-hans/mcp.html:45:135,html-text,app/zh-hans/mcp.html,45,,unknown,reviewable,,每次最多返回 20 段和继续游标。
-candidate:app/zh-hans/mcp.html:45:158,html-text,app/zh-hans/mcp.html,45,,unknown,protected,identifier,reader_search
-candidate:app/zh-hans/mcp.html:45:179,html-text,app/zh-hans/mcp.html,45,,unknown,reviewable,,在授权书籍内搜索，最多返回 20 条带锚点的结果。
-candidate:app/zh-hans/mcp.html:46:6,html-text,app/zh-hans/mcp.html,46,,unknown,reviewable,,配合其他权限，
-candidate:app/zh-hans/mcp.html:46:19,html-text,app/zh-hans/mcp.html,46,,unknown,protected,identifier,reader_get_notes
-candidate:app/zh-hans/mcp.html:46:43,html-text,app/zh-hans/mcp.html,46,,unknown,reviewable,,读取评论和问题，
-candidate:app/zh-hans/mcp.html:46:57,html-text,app/zh-hans/mcp.html,46,,unknown,protected,identifier,reader_get_reading_activity
-candidate:app/zh-hans/mcp.html:46:92,html-text,app/zh-hans/mcp.html,46,,unknown,reviewable,,读取位置和阅读时段，
-candidate:app/zh-hans/mcp.html:46:108,html-text,app/zh-hans/mcp.html,46,,unknown,protected,identifier,reader_add_comment
-candidate:app/zh-hans/mcp.html:46:134,html-text,app/zh-hans/mcp.html,46,,unknown,reviewable,,保存用户明确提供的文字。Agent 的访问不会计入阅读日历。
-candidate:app/zh-hans/mcp.html:47:6,html-text,app/zh-hans/mcp.html,47,,unknown,protected,quotation,例如：“在我授权的书里找出关于友谊的段落，显示来源章节和段落锚点，帮我比较作者的措辞。”Agent 需要书籍 ID；它无法推断出搜索整个私人书房的权限。
-candidate:app/zh-hans/mcp.html:48:19,html-text,app/zh-hans/mcp.html,48,,unknown,reviewable,,了解当前的限制。
-candidate:app/zh-hans/mcp.html:49:6,html-text,app/zh-hans/mcp.html,49,,unknown,reviewable,,适配器也提供音频工具，但托管音频生成未开放。本地音频需要单独配置和权限；生成音频可能产生供应商费用。MCP 目前不能上传书籍、自动翻译整个书库，也不会自行安排通知。
-candidate:app/zh-hans/mcp.html:50:6,html-text,app/zh-hans/mcp.html,50,,unknown,reviewable,,站内阅读助手有独立的只读边界，与这个外部 MCP 授权相互独立。托管处理细节见
-candidate:app/zh-hans/mcp.html:50:72,html-text,app/zh-hans/mcp.html,50,,unknown,reviewable,,隐私与数据说明
-candidate:app/zh-hans/mcp.html:50:83,html-text,app/zh-hans/mcp.html,50,,unknown,reviewable,,。
-candidate:app/zh-hans/mcp.html:51:6,html-text,app/zh-hans/mcp.html,51,,unknown,reviewable,,确切的工具定义和当前服务行为，请查看
-candidate:app/zh-hans/mcp.html:51:94,html-text,app/zh-hans/mcp.html,51,,unknown,reviewable,,适配器源码
-candidate:app/zh-hans/mcp.html:51:103,html-text,app/zh-hans/mcp.html,51,,unknown,reviewable,,、
-candidate:app/zh-hans/mcp.html:51:177,html-text,app/zh-hans/mcp.html,51,,unknown,reviewable,,服务路由
-candidate:app/zh-hans/mcp.html:51:185,html-text,app/zh-hans/mcp.html,51,,unknown,reviewable,,和
-candidate:app/zh-hans/mcp.html:51:261,html-text,app/zh-hans/mcp.html,51,,unknown,reviewable,,按书授权的 MCP 阅读说明
-candidate:app/zh-hans/mcp.html:51:279,html-text,app/zh-hans/mcp.html,51,,unknown,reviewable,,。本文描述当前实现，不是计划中的能力。
-candidate:app/zh-hans/mcp.html:53:48,html-text,app/zh-hans/mcp.html,53,,unknown,reviewable,,Leafhour · Stay with a book.
-candidate:app/zh-hans/mcp.html:53:125,html-text,app/zh-hans/mcp.html,53,,unknown,reviewable,,源码
-candidate:app/zh-hans/mcp.html:53:158,html-text,app/zh-hans/mcp.html,53,,unknown,reviewable,,隐私说明
-candidate:app/zh-hans/mcp.html:53:266,html-text,app/zh-hans/mcp.html,53,,unknown,reviewable,,English
-candidate:app/zh-hans/mcp.html:53:354,html-text,app/zh-hans/mcp.html,53,,unknown,reviewable,,简体中文
-candidate:app/zh-hans/mcp.html:53:419,html-text,app/zh-hans/mcp.html,53,,unknown,reviewable,,繁體中文
-candidate:app/zh-hans/mcp.html:53:469,html-text,app/zh-hans/mcp.html,53,,unknown,reviewable,,日本語
-candidate:app/zh-hans/mcp.html:53:520,html-text,app/zh-hans/mcp.html,53,,unknown,reviewable,,联系
+candidate:app/zh-hans/mcp.html:46:6,html-text,app/zh-hans/mcp.html,46,,unknown,reviewable,,不要把登录密码、会话 Cookie、Supabase 密钥或授权令牌写进公开文档或仓库。MCP 授权与网页登录相互独立。宿主提供密钥存储时，请使用它。
+candidate:app/zh-hans/mcp.html:47:18,html-text,app/zh-hans/mcp.html,47,,unknown,reviewable,,先取一段，再往深处读。
+candidate:app/zh-hans/mcp.html:48:12,html-text,app/zh-hans/mcp.html,48,,unknown,protected,identifier,reader_get_manifest
+candidate:app/zh-hans/mcp.html:48:39,html-text,app/zh-hans/mcp.html,48,,unknown,reviewable,,返回这本书的来源信息和章节标识。
+candidate:app/zh-hans/mcp.html:48:61,html-text,app/zh-hans/mcp.html,48,,unknown,protected,identifier,reader_get_context
+candidate:app/zh-hans/mcp.html:48:87,html-text,app/zh-hans/mcp.html,48,,unknown,reviewable,,返回一个段落及其邻段和稳定锚点。
+candidate:app/zh-hans/mcp.html:48:109,html-text,app/zh-hans/mcp.html,48,,unknown,protected,identifier,reader_get_chapter
+candidate:app/zh-hans/mcp.html:48:135,html-text,app/zh-hans/mcp.html,48,,unknown,reviewable,,每次最多返回 20 段和继续游标。
+candidate:app/zh-hans/mcp.html:48:158,html-text,app/zh-hans/mcp.html,48,,unknown,protected,identifier,reader_search
+candidate:app/zh-hans/mcp.html:48:179,html-text,app/zh-hans/mcp.html,48,,unknown,reviewable,,在授权书籍内搜索，最多返回 20 条带锚点的结果。
+candidate:app/zh-hans/mcp.html:49:6,html-text,app/zh-hans/mcp.html,49,,unknown,reviewable,,配合其他权限，
+candidate:app/zh-hans/mcp.html:49:19,html-text,app/zh-hans/mcp.html,49,,unknown,protected,identifier,reader_get_notes
+candidate:app/zh-hans/mcp.html:49:43,html-text,app/zh-hans/mcp.html,49,,unknown,reviewable,,读取评论和问题，
+candidate:app/zh-hans/mcp.html:49:57,html-text,app/zh-hans/mcp.html,49,,unknown,protected,identifier,reader_get_reading_activity
+candidate:app/zh-hans/mcp.html:49:92,html-text,app/zh-hans/mcp.html,49,,unknown,reviewable,,读取位置和阅读时段，
+candidate:app/zh-hans/mcp.html:49:108,html-text,app/zh-hans/mcp.html,49,,unknown,protected,identifier,reader_add_comment
+candidate:app/zh-hans/mcp.html:49:134,html-text,app/zh-hans/mcp.html,49,,unknown,reviewable,,保存用户明确提供的文字。Agent 的访问不会计入阅读日历。
+candidate:app/zh-hans/mcp.html:50:6,html-text,app/zh-hans/mcp.html,50,,unknown,protected,quotation,例如：“在我授权的书里找出关于友谊的段落，显示来源章节和段落锚点，帮我比较作者的措辞。”Agent 需要书籍 ID；它无法推断出搜索整个私人书房的权限。
+candidate:app/zh-hans/mcp.html:51:19,html-text,app/zh-hans/mcp.html,51,,unknown,reviewable,,了解当前的限制。
+candidate:app/zh-hans/mcp.html:52:6,html-text,app/zh-hans/mcp.html,52,,unknown,reviewable,,适配器也提供音频工具，但托管音频生成未开放。本地音频需要单独配置和权限；生成音频可能产生供应商费用。MCP 目前不能上传书籍、自动翻译整个书库，也不会自行安排通知。
+candidate:app/zh-hans/mcp.html:53:6,html-text,app/zh-hans/mcp.html,53,,unknown,reviewable,,站内阅读助手有独立的只读边界，与这个外部 MCP 授权相互独立。托管处理细节见
+candidate:app/zh-hans/mcp.html:53:72,html-text,app/zh-hans/mcp.html,53,,unknown,reviewable,,隐私与数据说明
+candidate:app/zh-hans/mcp.html:53:83,html-text,app/zh-hans/mcp.html,53,,unknown,reviewable,,。
+candidate:app/zh-hans/mcp.html:54:6,html-text,app/zh-hans/mcp.html,54,,unknown,reviewable,,确切的工具定义和当前服务行为，请查看
+candidate:app/zh-hans/mcp.html:54:94,html-text,app/zh-hans/mcp.html,54,,unknown,reviewable,,适配器源码
+candidate:app/zh-hans/mcp.html:54:103,html-text,app/zh-hans/mcp.html,54,,unknown,reviewable,,、
+candidate:app/zh-hans/mcp.html:54:177,html-text,app/zh-hans/mcp.html,54,,unknown,reviewable,,服务路由
+candidate:app/zh-hans/mcp.html:54:185,html-text,app/zh-hans/mcp.html,54,,unknown,reviewable,,和
+candidate:app/zh-hans/mcp.html:54:261,html-text,app/zh-hans/mcp.html,54,,unknown,reviewable,,按书授权的 MCP 阅读说明
+candidate:app/zh-hans/mcp.html:54:279,html-text,app/zh-hans/mcp.html,54,,unknown,reviewable,,。本文描述当前实现，不是计划中的能力。
+candidate:app/zh-hans/mcp.html:56:48,html-text,app/zh-hans/mcp.html,56,,unknown,reviewable,,Leafhour · Stay with a book.
+candidate:app/zh-hans/mcp.html:56:125,html-text,app/zh-hans/mcp.html,56,,unknown,reviewable,,源码
+candidate:app/zh-hans/mcp.html:56:158,html-text,app/zh-hans/mcp.html,56,,unknown,reviewable,,隐私说明
+candidate:app/zh-hans/mcp.html:56:266,html-text,app/zh-hans/mcp.html,56,,unknown,reviewable,,English
+candidate:app/zh-hans/mcp.html:56:354,html-text,app/zh-hans/mcp.html,56,,unknown,reviewable,,简体中文
+candidate:app/zh-hans/mcp.html:56:419,html-text,app/zh-hans/mcp.html,56,,unknown,reviewable,,繁體中文
+candidate:app/zh-hans/mcp.html:56:469,html-text,app/zh-hans/mcp.html,56,,unknown,reviewable,,日本語
+candidate:app/zh-hans/mcp.html:56:520,html-text,app/zh-hans/mcp.html,56,,unknown,reviewable,,联系
 candidate:app/zh-hans/privacy.html:19:182,html-attribute,app/zh-hans/privacy.html,19,aria-label,unknown,reviewable,,Leafhour 首页
 candidate:app/zh-hans/privacy.html:19:552,html-attribute,app/zh-hans/privacy.html,19,aria-label,unknown,reviewable,,主导航
 candidate:app/zh-hans/privacy.html:19:705,html-attribute,app/zh-hans/privacy.html,19,aria-label,unknown,reviewable,,切换界面语言
@@ -2630,9 +2674,9 @@ candidate:app/zh-hans/privacy.html:37:837,html-text,app/zh-hans/privacy.html,37,
 candidate:app/zh-hant/mcp.html:20:74,html-attribute,app/zh-hant/mcp.html,20,aria-label,unknown,reviewable,,Leafhour 首頁
 candidate:app/zh-hant/mcp.html:20:444,html-attribute,app/zh-hant/mcp.html,20,aria-label,unknown,reviewable,,主導覽
 candidate:app/zh-hant/mcp.html:20:684,html-attribute,app/zh-hant/mcp.html,20,aria-label,unknown,reviewable,,語言
-candidate:app/zh-hant/mcp.html:27:53,html-attribute,app/zh-hant/mcp.html,27,aria-label,unknown,reviewable,,權限表，可橫向捲動
-candidate:app/zh-hant/mcp.html:37:53,html-attribute,app/zh-hant/mcp.html,37,aria-label,unknown,reviewable,,命令範例，可橫向捲動
-candidate:app/zh-hant/mcp.html:53:220,html-attribute,app/zh-hant/mcp.html,53,aria-label,unknown,reviewable,,語言
+candidate:app/zh-hant/mcp.html:30:53,html-attribute,app/zh-hant/mcp.html,30,aria-label,unknown,reviewable,,權限表，可橫向捲動
+candidate:app/zh-hant/mcp.html:40:53,html-attribute,app/zh-hant/mcp.html,40,aria-label,unknown,reviewable,,命令範例，可橫向捲動
+candidate:app/zh-hant/mcp.html:56:220,html-attribute,app/zh-hant/mcp.html,56,aria-label,unknown,reviewable,,語言
 candidate:app/zh-hant/mcp.html:5:10,html-text,app/zh-hant/mcp.html,5,,unknown,reviewable,,用 MCP 讓 AI Agent 連接你的書 · Leafhour
 candidate:app/zh-hant/mcp.html:19:30,html-text,app/zh-hant/mcp.html,19,,unknown,reviewable,,跳至內文
 candidate:app/zh-hant/mcp.html:20:408,html-text,app/zh-hant/mcp.html,20,,unknown,reviewable,,Leafhour
@@ -2649,88 +2693,103 @@ candidate:app/zh-hant/mcp.html:24:6,html-text,app/zh-hant/mcp.html,24,,unknown,r
 candidate:app/zh-hant/mcp.html:25:6,html-text,app/zh-hant/mcp.html,25,,unknown,reviewable,,這是技術接入。閱讀介面支援英文、簡體中文、繁體中文和日語，尚無完整的授權管理頁面。建立和撤回授權，請使用現有相容用戶端或已認證的服務 API。需要協助時，請聯絡
 candidate:app/zh-hant/mcp.html:25:125,html-text,app/zh-hant/mcp.html,25,,unknown,reviewable,,support@leafhour.com
 candidate:app/zh-hant/mcp.html:25:149,html-text,app/zh-hant/mcp.html,25,,unknown,reviewable,,。
-candidate:app/zh-hant/mcp.html:26:24,html-text,app/zh-hant/mcp.html,26,,unknown,reviewable,,選擇 Agent 可以存取的內容。
-candidate:app/zh-hant/mcp.html:27:111,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,權限
-candidate:app/zh-hant/mcp.html:27:134,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,允許的操作
-candidate:app/zh-hant/mcp.html:28:31,html-text,app/zh-hant/mcp.html,28,,unknown,reviewable,,content
-candidate:app/zh-hant/mcp.html:28:54,html-text,app/zh-hant/mcp.html,28,,unknown,reviewable,,原文與已保存的譯文、書籍資訊、分頁章節以及該書內的搜尋。
-candidate:app/zh-hant/mcp.html:29:31,html-text,app/zh-hant/mcp.html,29,,unknown,reviewable,,notes
-candidate:app/zh-hant/mcp.html:29:52,html-text,app/zh-hant/mcp.html,29,,unknown,reviewable,,單獨授權的個人評論和問題。
-candidate:app/zh-hant/mcp.html:30:31,html-text,app/zh-hant/mcp.html,30,,unknown,reviewable,,activity
-candidate:app/zh-hant/mcp.html:30:55,html-text,app/zh-hant/mcp.html,30,,unknown,reviewable,,已保存的閱讀位置和最近的閱讀時段。
-candidate:app/zh-hant/mcp.html:31:31,html-text,app/zh-hant/mcp.html,31,,unknown,reviewable,,comment:write
-candidate:app/zh-hant/mcp.html:31:60,html-text,app/zh-hant/mcp.html,31,,unknown,reviewable,,保存使用者明確提供的評論，並錨定到段落。它不授權修改書籍。
-candidate:app/zh-hant/mcp.html:33:6,html-text,app/zh-hant/mcp.html,33,,unknown,reviewable,,建議先只用
-candidate:app/zh-hant/mcp.html:33:18,html-text,app/zh-hant/mcp.html,33,,unknown,reviewable,,content
-candidate:app/zh-hant/mcp.html:33:32,html-text,app/zh-hant/mcp.html,33,,unknown,reviewable,,。授權七天後過期，也可以提前撤回。撤回後，後續服務鑑權會失敗；撤回不能清除已經複製到你的 AI 宿主裡的內容。
-candidate:app/zh-hant/mcp.html:34:18,html-text,app/zh-hant/mcp.html,34,,unknown,reviewable,,連接轉接器。
-candidate:app/zh-hant/mcp.html:35:11,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,按
-candidate:app/zh-hant/mcp.html:35:64,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,倉庫說明
-candidate:app/zh-hant/mcp.html:35:72,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,在本地運行 Leafhour，或使用託管閱讀服務。在自己的
-candidate:app/zh-hant/mcp.html:35:131,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,書房
-candidate:app/zh-hant/mcp.html:35:137,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,匯入一本書，或選擇一本公版樣書。
-candidate:app/zh-hant/mcp.html:35:162,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,透過相容用戶端或已認證 API，用
-candidate:app/zh-hant/mcp.html:35:186,html-text,app/zh-hant/mcp.html,35,,unknown,protected,path,POST /api/library/grants
-candidate:app/zh-hant/mcp.html:35:218,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,建立帶
-candidate:app/zh-hant/mcp.html:35:228,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,bookId
-candidate:app/zh-hant/mcp.html:35:242,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,和所選
-candidate:app/zh-hant/mcp.html:35:252,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,scopes
-candidate:app/zh-hant/mcp.html:35:266,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,的授權。權杖只返回一次，請保存在 AI 宿主的私密設定裡。
-candidate:app/zh-hant/mcp.html:35:304,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,讀取
-candidate:app/zh-hant/mcp.html:35:313,html-text,app/zh-hant/mcp.html,35,,unknown,protected,path,GET /api/library/mcp-setup
-candidate:app/zh-hant/mcp.html:35:346,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,，並用
-candidate:app/zh-hant/mcp.html:35:423,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,設定產生器
-candidate:app/zh-hant/mcp.html:35:432,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,建立宿主設定。本地原始碼運行時，轉接器以
-candidate:app/zh-hant/mcp.html:35:459,html-text,app/zh-hant/mcp.html,35,,unknown,protected,path,node server/mcp.mjs
-candidate:app/zh-hant/mcp.html:35:486,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,啟動。託管接入會返回實際部署的原始碼提交，產生的設定固定到這份不可變的原始碼包並明確允許 HTTPS 書房；缺少部署來源時直接拒絕。
-candidate:app/zh-hant/mcp.html:35:561,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,在相容的 AI 宿主中啟用 MCP 伺服器，並在工具請求中帶上授權的書籍 ID。用完後可用
-candidate:app/zh-hant/mcp.html:35:613,html-text,app/zh-hant/mcp.html,35,,unknown,protected,path,POST /api/library/grants/{id}/revoke
-candidate:app/zh-hant/mcp.html:35:657,html-text,app/zh-hant/mcp.html,35,,unknown,reviewable,,撤回授權。
-candidate:app/zh-hant/mcp.html:36:6,html-text,app/zh-hant/mcp.html,36,,unknown,reviewable,,轉接器使用這些環境變數：
-candidate:app/zh-hant/mcp.html:37:89,html-text,app/zh-hant/mcp.html,37,,unknown,protected,url,"READER_SERVICE_URL=http://127.0.0.1:8330
+candidate:app/zh-hant/mcp.html:26:19,html-text,app/zh-hant/mcp.html,26,,unknown,reviewable,,透過 OAuth 連接 ChatGPT。
+candidate:app/zh-hant/mcp.html:27:6,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,在
+candidate:app/zh-hant/mcp.html:27:46,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,ChatGPT Plugins
+candidate:app/zh-hant/mcp.html:27:66,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,新增自訂 MCP 伺服器，地址填入
+candidate:app/zh-hant/mcp.html:27:90,html-text,app/zh-hant/mcp.html,27,,unknown,protected,url,https://leafhour.com/api/mcp
+candidate:app/zh-hant/mcp.html:27:125,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,，選擇 OAuth 與動態用戶端註冊。在 Leafhour 登入，核對帳戶並選一本書。授權僅唯讀一小時，不含私人筆記與閱讀紀錄。呼叫
+candidate:app/zh-hant/mcp.html:27:198,html-text,app/zh-hant/mcp.html,27,,unknown,protected,identifier,reader_get_connection
+candidate:app/zh-hant/mcp.html:27:227,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,核對已授權的書；可在書房的 Agent 設定中撤回。
+candidate:app/zh-hant/mcp.html:28:6,html-text,app/zh-hant/mcp.html,28,,unknown,reviewable,,相容 skills 的宿主也可從
+candidate:app/zh-hant/mcp.html:28:29,html-text,app/zh-hant/mcp.html,28,,unknown,protected,path,getyak/leafhour
+candidate:app/zh-hant/mcp.html:28:52,html-text,app/zh-hant/mcp.html,28,,unknown,reviewable,,安裝
+candidate:app/zh-hant/mcp.html:28:61,html-text,app/zh-hant/mcp.html,28,,unknown,protected,identifier,leafhour-reading
+candidate:app/zh-hant/mcp.html:28:84,html-text,app/zh-hant/mcp.html,28,,unknown,reviewable,,。只安裝 skill 不會連接或授權 MCP。詳見
+candidate:app/zh-hant/mcp.html:28:182,html-text,app/zh-hant/mcp.html,28,,unknown,reviewable,,安裝與 OAuth 說明
+candidate:app/zh-hant/mcp.html:28:198,html-text,app/zh-hant/mcp.html,28,,unknown,reviewable,,。ChatGPT 帳戶和工作空間政策決定能否新增自訂伺服器；下方命令設定仍適用於 stdio 宿主。
+candidate:app/zh-hant/mcp.html:29:24,html-text,app/zh-hant/mcp.html,29,,unknown,reviewable,,選擇 Agent 可以存取的內容。
+candidate:app/zh-hant/mcp.html:30:111,html-text,app/zh-hant/mcp.html,30,,unknown,reviewable,,權限
+candidate:app/zh-hant/mcp.html:30:134,html-text,app/zh-hant/mcp.html,30,,unknown,reviewable,,允許的操作
+candidate:app/zh-hant/mcp.html:31:31,html-text,app/zh-hant/mcp.html,31,,unknown,reviewable,,content
+candidate:app/zh-hant/mcp.html:31:54,html-text,app/zh-hant/mcp.html,31,,unknown,reviewable,,原文與已保存的譯文、書籍資訊、分頁章節以及該書內的搜尋。
+candidate:app/zh-hant/mcp.html:32:31,html-text,app/zh-hant/mcp.html,32,,unknown,reviewable,,notes
+candidate:app/zh-hant/mcp.html:32:52,html-text,app/zh-hant/mcp.html,32,,unknown,reviewable,,單獨授權的個人評論和問題。
+candidate:app/zh-hant/mcp.html:33:31,html-text,app/zh-hant/mcp.html,33,,unknown,reviewable,,activity
+candidate:app/zh-hant/mcp.html:33:55,html-text,app/zh-hant/mcp.html,33,,unknown,reviewable,,已保存的閱讀位置和最近的閱讀時段。
+candidate:app/zh-hant/mcp.html:34:31,html-text,app/zh-hant/mcp.html,34,,unknown,reviewable,,comment:write
+candidate:app/zh-hant/mcp.html:34:60,html-text,app/zh-hant/mcp.html,34,,unknown,reviewable,,保存使用者明確提供的評論，並錨定到段落。它不授權修改書籍。
+candidate:app/zh-hant/mcp.html:36:6,html-text,app/zh-hant/mcp.html,36,,unknown,reviewable,,建議先只用
+candidate:app/zh-hant/mcp.html:36:18,html-text,app/zh-hant/mcp.html,36,,unknown,reviewable,,content
+candidate:app/zh-hant/mcp.html:36:32,html-text,app/zh-hant/mcp.html,36,,unknown,reviewable,,。授權七天後過期，也可以提前撤回。撤回後，後續服務鑑權會失敗；撤回不能清除已經複製到你的 AI 宿主裡的內容。
+candidate:app/zh-hant/mcp.html:37:18,html-text,app/zh-hant/mcp.html,37,,unknown,reviewable,,連接轉接器。
+candidate:app/zh-hant/mcp.html:38:11,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,按
+candidate:app/zh-hant/mcp.html:38:64,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,倉庫說明
+candidate:app/zh-hant/mcp.html:38:72,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,在本地運行 Leafhour，或使用託管閱讀服務。在自己的
+candidate:app/zh-hant/mcp.html:38:131,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,書房
+candidate:app/zh-hant/mcp.html:38:137,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,匯入一本書，或選擇一本公版樣書。
+candidate:app/zh-hant/mcp.html:38:162,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,透過相容用戶端或已認證 API，用
+candidate:app/zh-hant/mcp.html:38:186,html-text,app/zh-hant/mcp.html,38,,unknown,protected,path,POST /api/library/grants
+candidate:app/zh-hant/mcp.html:38:218,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,建立帶
+candidate:app/zh-hant/mcp.html:38:228,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,bookId
+candidate:app/zh-hant/mcp.html:38:242,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,和所選
+candidate:app/zh-hant/mcp.html:38:252,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,scopes
+candidate:app/zh-hant/mcp.html:38:266,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,的授權。權杖只返回一次，請保存在 AI 宿主的私密設定裡。
+candidate:app/zh-hant/mcp.html:38:304,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,讀取
+candidate:app/zh-hant/mcp.html:38:313,html-text,app/zh-hant/mcp.html,38,,unknown,protected,path,GET /api/library/mcp-setup
+candidate:app/zh-hant/mcp.html:38:346,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,，並用
+candidate:app/zh-hant/mcp.html:38:423,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,設定產生器
+candidate:app/zh-hant/mcp.html:38:432,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,建立宿主設定。本地原始碼運行時，轉接器以
+candidate:app/zh-hant/mcp.html:38:459,html-text,app/zh-hant/mcp.html,38,,unknown,protected,path,node server/mcp.mjs
+candidate:app/zh-hant/mcp.html:38:486,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,啟動。託管接入會返回實際部署的原始碼提交，產生的設定固定到這份不可變的原始碼包並明確允許 HTTPS 書房；缺少部署來源時直接拒絕。
+candidate:app/zh-hant/mcp.html:38:561,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,在相容的 AI 宿主中啟用 MCP 伺服器，並在工具請求中帶上授權的書籍 ID。用完後可用
+candidate:app/zh-hant/mcp.html:38:613,html-text,app/zh-hant/mcp.html,38,,unknown,protected,path,POST /api/library/grants/{id}/revoke
+candidate:app/zh-hant/mcp.html:38:657,html-text,app/zh-hant/mcp.html,38,,unknown,reviewable,,撤回授權。
+candidate:app/zh-hant/mcp.html:39:6,html-text,app/zh-hant/mcp.html,39,,unknown,reviewable,,轉接器使用這些環境變數：
+candidate:app/zh-hant/mcp.html:40:89,html-text,app/zh-hant/mcp.html,40,,unknown,protected,url,"READER_SERVICE_URL=http://127.0.0.1:8330
 READER_AGENT_TOKEN=&lt;your book-scoped grant&gt;
 
 # For your configured HTTPS service only:
 # READER_SERVICE_URL=https://leafhour.com
 # READER_ALLOW_REMOTE=true"
-candidate:app/zh-hant/mcp.html:43:6,html-text,app/zh-hant/mcp.html,43,,unknown,reviewable,,不要把登入密碼、工作階段 Cookie、Supabase 金鑰或授權權杖寫進公開文檔或倉庫。MCP 授權與網頁登入相互獨立。宿主提供金鑰儲存時，請使用它。
-candidate:app/zh-hant/mcp.html:44:18,html-text,app/zh-hant/mcp.html,44,,unknown,reviewable,,先取一段，再往深處讀。
-candidate:app/zh-hant/mcp.html:45:12,html-text,app/zh-hant/mcp.html,45,,unknown,protected,identifier,reader_get_manifest
-candidate:app/zh-hant/mcp.html:45:39,html-text,app/zh-hant/mcp.html,45,,unknown,reviewable,,返回這本書的來源資訊和章節標識。
-candidate:app/zh-hant/mcp.html:45:61,html-text,app/zh-hant/mcp.html,45,,unknown,protected,identifier,reader_get_context
-candidate:app/zh-hant/mcp.html:45:87,html-text,app/zh-hant/mcp.html,45,,unknown,reviewable,,返回一個段落及其鄰段和穩定錨點。
-candidate:app/zh-hant/mcp.html:45:109,html-text,app/zh-hant/mcp.html,45,,unknown,protected,identifier,reader_get_chapter
-candidate:app/zh-hant/mcp.html:45:135,html-text,app/zh-hant/mcp.html,45,,unknown,reviewable,,每次最多返回 20 段和繼續游標。
-candidate:app/zh-hant/mcp.html:45:158,html-text,app/zh-hant/mcp.html,45,,unknown,protected,identifier,reader_search
-candidate:app/zh-hant/mcp.html:45:179,html-text,app/zh-hant/mcp.html,45,,unknown,reviewable,,在授權書籍內搜尋，最多返回 20 條帶錨點的結果。
-candidate:app/zh-hant/mcp.html:46:6,html-text,app/zh-hant/mcp.html,46,,unknown,reviewable,,配合其他權限，
-candidate:app/zh-hant/mcp.html:46:19,html-text,app/zh-hant/mcp.html,46,,unknown,protected,identifier,reader_get_notes
-candidate:app/zh-hant/mcp.html:46:43,html-text,app/zh-hant/mcp.html,46,,unknown,reviewable,,讀取評論和問題，
-candidate:app/zh-hant/mcp.html:46:57,html-text,app/zh-hant/mcp.html,46,,unknown,protected,identifier,reader_get_reading_activity
-candidate:app/zh-hant/mcp.html:46:92,html-text,app/zh-hant/mcp.html,46,,unknown,reviewable,,讀取位置和閱讀時段，
-candidate:app/zh-hant/mcp.html:46:108,html-text,app/zh-hant/mcp.html,46,,unknown,protected,identifier,reader_add_comment
-candidate:app/zh-hant/mcp.html:46:134,html-text,app/zh-hant/mcp.html,46,,unknown,reviewable,,保存使用者明確提供的文字。Agent 的存取不會計入閱讀日曆。
-candidate:app/zh-hant/mcp.html:47:6,html-text,app/zh-hant/mcp.html,47,,unknown,protected,quotation,例如：「在我授權的書裡找出關於友誼的段落，顯示來源章節和段落錨點，幫我比較作者的措辭。」Agent 需要書籍 ID；它無法推斷出搜尋整個私人書房的權限。
-candidate:app/zh-hant/mcp.html:48:19,html-text,app/zh-hant/mcp.html,48,,unknown,reviewable,,了解目前的限制。
-candidate:app/zh-hant/mcp.html:49:6,html-text,app/zh-hant/mcp.html,49,,unknown,reviewable,,轉接器也提供音訊工具，但託管音訊生成未開放。本地音訊需要單獨設定和權限；生成音訊可能產生供應商費用。MCP 目前不能上傳書籍、自動翻譯整個書庫，也不會自行安排通知。
-candidate:app/zh-hant/mcp.html:50:6,html-text,app/zh-hant/mcp.html,50,,unknown,reviewable,,站內閱讀助手有獨立的唯讀邊界，與這個外部 MCP 授權相互獨立。託管處理細節見
-candidate:app/zh-hant/mcp.html:50:72,html-text,app/zh-hant/mcp.html,50,,unknown,reviewable,,隱私與資料說明
-candidate:app/zh-hant/mcp.html:50:83,html-text,app/zh-hant/mcp.html,50,,unknown,reviewable,,。
-candidate:app/zh-hant/mcp.html:51:6,html-text,app/zh-hant/mcp.html,51,,unknown,reviewable,,確切的工具定義和目前服務行為，請查看
-candidate:app/zh-hant/mcp.html:51:94,html-text,app/zh-hant/mcp.html,51,,unknown,reviewable,,轉接器原始碼
-candidate:app/zh-hant/mcp.html:51:104,html-text,app/zh-hant/mcp.html,51,,unknown,reviewable,,、
-candidate:app/zh-hant/mcp.html:51:178,html-text,app/zh-hant/mcp.html,51,,unknown,reviewable,,服務路由
-candidate:app/zh-hant/mcp.html:51:186,html-text,app/zh-hant/mcp.html,51,,unknown,reviewable,,和
-candidate:app/zh-hant/mcp.html:51:262,html-text,app/zh-hant/mcp.html,51,,unknown,reviewable,,按書授權的 MCP 閱讀說明
-candidate:app/zh-hant/mcp.html:51:280,html-text,app/zh-hant/mcp.html,51,,unknown,reviewable,,。本文描述目前實作，不是計畫中的能力。
-candidate:app/zh-hant/mcp.html:53:48,html-text,app/zh-hant/mcp.html,53,,unknown,reviewable,,Leafhour · Stay with a book.
-candidate:app/zh-hant/mcp.html:53:125,html-text,app/zh-hant/mcp.html,53,,unknown,reviewable,,原始碼
-candidate:app/zh-hant/mcp.html:53:159,html-text,app/zh-hant/mcp.html,53,,unknown,reviewable,,隱私說明
-candidate:app/zh-hant/mcp.html:53:263,html-text,app/zh-hant/mcp.html,53,,unknown,reviewable,,English
-candidate:app/zh-hant/mcp.html:53:331,html-text,app/zh-hant/mcp.html,53,,unknown,reviewable,,简体中文
-candidate:app/zh-hant/mcp.html:53:416,html-text,app/zh-hant/mcp.html,53,,unknown,reviewable,,繁體中文
-candidate:app/zh-hant/mcp.html:53:466,html-text,app/zh-hant/mcp.html,53,,unknown,reviewable,,日本語
-candidate:app/zh-hant/mcp.html:53:517,html-text,app/zh-hant/mcp.html,53,,unknown,reviewable,,聯絡
+candidate:app/zh-hant/mcp.html:46:6,html-text,app/zh-hant/mcp.html,46,,unknown,reviewable,,不要把登入密碼、工作階段 Cookie、Supabase 金鑰或授權權杖寫進公開文檔或倉庫。MCP 授權與網頁登入相互獨立。宿主提供金鑰儲存時，請使用它。
+candidate:app/zh-hant/mcp.html:47:18,html-text,app/zh-hant/mcp.html,47,,unknown,reviewable,,先取一段，再往深處讀。
+candidate:app/zh-hant/mcp.html:48:12,html-text,app/zh-hant/mcp.html,48,,unknown,protected,identifier,reader_get_manifest
+candidate:app/zh-hant/mcp.html:48:39,html-text,app/zh-hant/mcp.html,48,,unknown,reviewable,,返回這本書的來源資訊和章節標識。
+candidate:app/zh-hant/mcp.html:48:61,html-text,app/zh-hant/mcp.html,48,,unknown,protected,identifier,reader_get_context
+candidate:app/zh-hant/mcp.html:48:87,html-text,app/zh-hant/mcp.html,48,,unknown,reviewable,,返回一個段落及其鄰段和穩定錨點。
+candidate:app/zh-hant/mcp.html:48:109,html-text,app/zh-hant/mcp.html,48,,unknown,protected,identifier,reader_get_chapter
+candidate:app/zh-hant/mcp.html:48:135,html-text,app/zh-hant/mcp.html,48,,unknown,reviewable,,每次最多返回 20 段和繼續游標。
+candidate:app/zh-hant/mcp.html:48:158,html-text,app/zh-hant/mcp.html,48,,unknown,protected,identifier,reader_search
+candidate:app/zh-hant/mcp.html:48:179,html-text,app/zh-hant/mcp.html,48,,unknown,reviewable,,在授權書籍內搜尋，最多返回 20 條帶錨點的結果。
+candidate:app/zh-hant/mcp.html:49:6,html-text,app/zh-hant/mcp.html,49,,unknown,reviewable,,配合其他權限，
+candidate:app/zh-hant/mcp.html:49:19,html-text,app/zh-hant/mcp.html,49,,unknown,protected,identifier,reader_get_notes
+candidate:app/zh-hant/mcp.html:49:43,html-text,app/zh-hant/mcp.html,49,,unknown,reviewable,,讀取評論和問題，
+candidate:app/zh-hant/mcp.html:49:57,html-text,app/zh-hant/mcp.html,49,,unknown,protected,identifier,reader_get_reading_activity
+candidate:app/zh-hant/mcp.html:49:92,html-text,app/zh-hant/mcp.html,49,,unknown,reviewable,,讀取位置和閱讀時段，
+candidate:app/zh-hant/mcp.html:49:108,html-text,app/zh-hant/mcp.html,49,,unknown,protected,identifier,reader_add_comment
+candidate:app/zh-hant/mcp.html:49:134,html-text,app/zh-hant/mcp.html,49,,unknown,reviewable,,保存使用者明確提供的文字。Agent 的存取不會計入閱讀日曆。
+candidate:app/zh-hant/mcp.html:50:6,html-text,app/zh-hant/mcp.html,50,,unknown,protected,quotation,例如：「在我授權的書裡找出關於友誼的段落，顯示來源章節和段落錨點，幫我比較作者的措辭。」Agent 需要書籍 ID；它無法推斷出搜尋整個私人書房的權限。
+candidate:app/zh-hant/mcp.html:51:19,html-text,app/zh-hant/mcp.html,51,,unknown,reviewable,,了解目前的限制。
+candidate:app/zh-hant/mcp.html:52:6,html-text,app/zh-hant/mcp.html,52,,unknown,reviewable,,轉接器也提供音訊工具，但託管音訊生成未開放。本地音訊需要單獨設定和權限；生成音訊可能產生供應商費用。MCP 目前不能上傳書籍、自動翻譯整個書庫，也不會自行安排通知。
+candidate:app/zh-hant/mcp.html:53:6,html-text,app/zh-hant/mcp.html,53,,unknown,reviewable,,站內閱讀助手有獨立的唯讀邊界，與這個外部 MCP 授權相互獨立。託管處理細節見
+candidate:app/zh-hant/mcp.html:53:72,html-text,app/zh-hant/mcp.html,53,,unknown,reviewable,,隱私與資料說明
+candidate:app/zh-hant/mcp.html:53:83,html-text,app/zh-hant/mcp.html,53,,unknown,reviewable,,。
+candidate:app/zh-hant/mcp.html:54:6,html-text,app/zh-hant/mcp.html,54,,unknown,reviewable,,確切的工具定義和目前服務行為，請查看
+candidate:app/zh-hant/mcp.html:54:94,html-text,app/zh-hant/mcp.html,54,,unknown,reviewable,,轉接器原始碼
+candidate:app/zh-hant/mcp.html:54:104,html-text,app/zh-hant/mcp.html,54,,unknown,reviewable,,、
+candidate:app/zh-hant/mcp.html:54:178,html-text,app/zh-hant/mcp.html,54,,unknown,reviewable,,服務路由
+candidate:app/zh-hant/mcp.html:54:186,html-text,app/zh-hant/mcp.html,54,,unknown,reviewable,,和
+candidate:app/zh-hant/mcp.html:54:262,html-text,app/zh-hant/mcp.html,54,,unknown,reviewable,,按書授權的 MCP 閱讀說明
+candidate:app/zh-hant/mcp.html:54:280,html-text,app/zh-hant/mcp.html,54,,unknown,reviewable,,。本文描述目前實作，不是計畫中的能力。
+candidate:app/zh-hant/mcp.html:56:48,html-text,app/zh-hant/mcp.html,56,,unknown,reviewable,,Leafhour · Stay with a book.
+candidate:app/zh-hant/mcp.html:56:125,html-text,app/zh-hant/mcp.html,56,,unknown,reviewable,,原始碼
+candidate:app/zh-hant/mcp.html:56:159,html-text,app/zh-hant/mcp.html,56,,unknown,reviewable,,隱私說明
+candidate:app/zh-hant/mcp.html:56:263,html-text,app/zh-hant/mcp.html,56,,unknown,reviewable,,English
+candidate:app/zh-hant/mcp.html:56:331,html-text,app/zh-hant/mcp.html,56,,unknown,reviewable,,简体中文
+candidate:app/zh-hant/mcp.html:56:416,html-text,app/zh-hant/mcp.html,56,,unknown,reviewable,,繁體中文
+candidate:app/zh-hant/mcp.html:56:466,html-text,app/zh-hant/mcp.html,56,,unknown,reviewable,,日本語
+candidate:app/zh-hant/mcp.html:56:517,html-text,app/zh-hant/mcp.html,56,,unknown,reviewable,,聯絡
 candidate:app/zh-hant/privacy.html:19:182,html-attribute,app/zh-hant/privacy.html,19,aria-label,unknown,reviewable,,Leafhour 首頁
 candidate:app/zh-hant/privacy.html:19:552,html-attribute,app/zh-hant/privacy.html,19,aria-label,unknown,reviewable,,主導覽
 candidate:app/zh-hant/privacy.html:19:705,html-attribute,app/zh-hant/privacy.html,19,aria-label,unknown,reviewable,,語言
@@ -3339,37 +3398,37 @@ candidate:server/library-service.mjs:383:173,js-cjk-literal,server/library-servi
 candidate:server/library-service.mjs:383:254,js-cjk-literal,server/library-service.mjs,383,,unknown,reviewable,,这一段正在翻译，请稍后查看
 candidate:server/library-service.mjs:383:317,js-cjk-literal,server/library-service.mjs,383,,unknown,reviewable,,翻译服务正在处理其他段落，请稍后再试
 candidate:server/library-service.mjs:393:139,js-cjk-literal,server/library-service.mjs,393,,unknown,reviewable,,翻译结果不完整，请重试；原文已保留
-candidate:server/library-service.mjs:418:128,js-cjk-literal,server/library-service.mjs,418,,unknown,reviewable,,请先撤回不再使用的授权
+candidate:server/library-service.mjs:418:164,js-cjk-literal,server/library-service.mjs,418,,unknown,reviewable,,请先撤回不再使用的授权
 candidate:server/library-service.mjs:423:139,js-cjk-literal,server/library-service.mjs,423,,unknown,reviewable,,请选择授权范围
 candidate:server/library-service.mjs:427:221,js-cjk-literal,server/library-service.mjs,427,,unknown,reviewable,,请选择授权范围
-candidate:server/library-service.mjs:434:324,js-cjk-literal,server/library-service.mjs,434,,unknown,reviewable,,Agent 授权无效或范围不足
-candidate:server/library-service.mjs:437:144,js-cjk-literal,server/library-service.mjs,437,,unknown,reviewable,,Agent 授权无效或范围不足
-candidate:server/library-service.mjs:450:146,js-cjk-literal,server/library-service.mjs,450,,unknown,reviewable,,找不到这条授权
-candidate:server/library-service.mjs:463:89,js-cjk-literal,server/library-service.mjs,463,,unknown,reviewable,,单份备份最多容纳100本书，请在本机按书整理后导出。
-candidate:server/library-service.mjs:473:139,js-cjk-literal,server/library-service.mjs,473,,unknown,reviewable,,原文件与恢复的书籍版本不符
-candidate:server/library-service.mjs:481:183,js-cjk-literal,server/library-service.mjs,481,,unknown,reviewable,,备份分段范围不正确。
-candidate:server/library-service.mjs:486:46,js-cjk-literal,server/library-service.mjs,486,,unknown,reviewable,,这本书的备份过大，请在本机导出。
-candidate:server/library-service.mjs:487:45,js-cjk-literal,server/library-service.mjs,487,,unknown,reviewable,,这本书刚刚有新记录，请重试导出。
-candidate:server/library-service.mjs:488:40,js-cjk-literal,server/library-service.mjs,488,,unknown,reviewable,,备份分段范围不正确。
-candidate:server/library-service.mjs:496:158,js-cjk-literal,server/library-service.mjs,496,,unknown,reviewable,,备份中的书架超过 1000 本，请在本机整理后恢复
-candidate:server/library-service.mjs:498:460,js-cjk-literal,server/library-service.mjs,498,,unknown,reviewable,,书籍格式不完整
-candidate:server/library-service.mjs:499:84,js-cjk-literal,server/library-service.mjs,499,,unknown,reviewable,,这本备份的文字量超过云端限制，请在本机恢复
-candidate:server/library-service.mjs:500:283,js-cjk-literal,server/library-service.mjs,500,,unknown,reviewable,,备份的原文版本与书房已有内容冲突，未覆盖原书或记录
-candidate:server/library-service.mjs:501:330,js-cjk-literal,server/library-service.mjs,501,,unknown,reviewable,,原文锚点不完整
-candidate:server/library-service.mjs:502:265,js-cjk-literal,server/library-service.mjs,502,,unknown,reviewable,,个人记录无法对应原文
-candidate:server/library-service.mjs:503:116,js-cjk-literal,server/library-service.mjs,503,,unknown,reviewable,,阅读位置无法恢复
-candidate:server/library-service.mjs:522:86,js-cjk-literal,server/library-service.mjs,522,,unknown,reviewable,,书架正在另一处更新，请刷新后重新恢复
-candidate:server/library-service.mjs:531:101,js-cjk-literal,server/library-service.mjs,531,,unknown,reviewable,,请选择一份 20 MB 以内的单书阅读包
-candidate:server/library-service.mjs:533:232,js-cjk-literal,server/library-service.mjs,533,,unknown,reviewable,,赠书阅读包不能包含个人记录
-candidate:server/library-service.mjs:534:57,js-cjk-literal,server/library-service.mjs,534,,unknown,reviewable,,赠书阅读包不能包含账户阅读习惯
-candidate:server/library-service.mjs:535:31,js-cjk-literal,server/library-service.mjs,535,,unknown,reviewable,,这份阅读包的原文与译文合计超过云端阅读容量，请下载后在本机接收
-candidate:server/library-service.mjs:541:124,js-cjk-literal,server/library-service.mjs,541,,unknown,reviewable,,阅读包的原文或译文超过云端单份容量，请在本机接收
-candidate:server/library-service.mjs:544:69,js-cjk-literal,server/library-service.mjs,544,,unknown,reviewable,,译文已超过云端单份容量，已有记录已保留
-candidate:server/library-service.mjs:551:91,js-cjk-literal,server/library-service.mjs,551,,unknown,reviewable,,书架已有同标识的另一版本，原书和记录已保留
-candidate:server/library-service.mjs:556:104,js-cjk-literal,server/library-service.mjs,556,,unknown,reviewable,,译文来源版本已变化，已有译文已保留
-candidate:server/library-service.mjs:570:46,js-cjk-literal,server/library-service.mjs,570,,unknown,reviewable,,书架已有同标识的另一版本，原书和记录已保留
-candidate:server/library-service.mjs:571:92,js-cjk-literal,server/library-service.mjs,571,,unknown,reviewable,,另一封赠书尚未收好，请先重试原来的赠书链接
-candidate:server/library-service.mjs:578:89,js-cjk-literal,server/library-service.mjs,578,,unknown,reviewable,,译文来源版本已变化，已有译文已保留
+candidate:server/library-service.mjs:435:324,js-cjk-literal,server/library-service.mjs,435,,unknown,reviewable,,Agent 授权无效或范围不足
+candidate:server/library-service.mjs:438:144,js-cjk-literal,server/library-service.mjs,438,,unknown,reviewable,,Agent 授权无效或范围不足
+candidate:server/library-service.mjs:451:146,js-cjk-literal,server/library-service.mjs,451,,unknown,reviewable,,找不到这条授权
+candidate:server/library-service.mjs:464:89,js-cjk-literal,server/library-service.mjs,464,,unknown,reviewable,,单份备份最多容纳100本书，请在本机按书整理后导出。
+candidate:server/library-service.mjs:474:139,js-cjk-literal,server/library-service.mjs,474,,unknown,reviewable,,原文件与恢复的书籍版本不符
+candidate:server/library-service.mjs:482:183,js-cjk-literal,server/library-service.mjs,482,,unknown,reviewable,,备份分段范围不正确。
+candidate:server/library-service.mjs:487:46,js-cjk-literal,server/library-service.mjs,487,,unknown,reviewable,,这本书的备份过大，请在本机导出。
+candidate:server/library-service.mjs:488:45,js-cjk-literal,server/library-service.mjs,488,,unknown,reviewable,,这本书刚刚有新记录，请重试导出。
+candidate:server/library-service.mjs:489:40,js-cjk-literal,server/library-service.mjs,489,,unknown,reviewable,,备份分段范围不正确。
+candidate:server/library-service.mjs:497:158,js-cjk-literal,server/library-service.mjs,497,,unknown,reviewable,,备份中的书架超过 1000 本，请在本机整理后恢复
+candidate:server/library-service.mjs:499:460,js-cjk-literal,server/library-service.mjs,499,,unknown,reviewable,,书籍格式不完整
+candidate:server/library-service.mjs:500:84,js-cjk-literal,server/library-service.mjs,500,,unknown,reviewable,,这本备份的文字量超过云端限制，请在本机恢复
+candidate:server/library-service.mjs:501:283,js-cjk-literal,server/library-service.mjs,501,,unknown,reviewable,,备份的原文版本与书房已有内容冲突，未覆盖原书或记录
+candidate:server/library-service.mjs:502:330,js-cjk-literal,server/library-service.mjs,502,,unknown,reviewable,,原文锚点不完整
+candidate:server/library-service.mjs:503:265,js-cjk-literal,server/library-service.mjs,503,,unknown,reviewable,,个人记录无法对应原文
+candidate:server/library-service.mjs:504:116,js-cjk-literal,server/library-service.mjs,504,,unknown,reviewable,,阅读位置无法恢复
+candidate:server/library-service.mjs:523:86,js-cjk-literal,server/library-service.mjs,523,,unknown,reviewable,,书架正在另一处更新，请刷新后重新恢复
+candidate:server/library-service.mjs:532:101,js-cjk-literal,server/library-service.mjs,532,,unknown,reviewable,,请选择一份 20 MB 以内的单书阅读包
+candidate:server/library-service.mjs:534:232,js-cjk-literal,server/library-service.mjs,534,,unknown,reviewable,,赠书阅读包不能包含个人记录
+candidate:server/library-service.mjs:535:57,js-cjk-literal,server/library-service.mjs,535,,unknown,reviewable,,赠书阅读包不能包含账户阅读习惯
+candidate:server/library-service.mjs:536:31,js-cjk-literal,server/library-service.mjs,536,,unknown,reviewable,,这份阅读包的原文与译文合计超过云端阅读容量，请下载后在本机接收
+candidate:server/library-service.mjs:542:124,js-cjk-literal,server/library-service.mjs,542,,unknown,reviewable,,阅读包的原文或译文超过云端单份容量，请在本机接收
+candidate:server/library-service.mjs:545:69,js-cjk-literal,server/library-service.mjs,545,,unknown,reviewable,,译文已超过云端单份容量，已有记录已保留
+candidate:server/library-service.mjs:552:91,js-cjk-literal,server/library-service.mjs,552,,unknown,reviewable,,书架已有同标识的另一版本，原书和记录已保留
+candidate:server/library-service.mjs:557:104,js-cjk-literal,server/library-service.mjs,557,,unknown,reviewable,,译文来源版本已变化，已有译文已保留
+candidate:server/library-service.mjs:571:46,js-cjk-literal,server/library-service.mjs,571,,unknown,reviewable,,书架已有同标识的另一版本，原书和记录已保留
+candidate:server/library-service.mjs:572:92,js-cjk-literal,server/library-service.mjs,572,,unknown,reviewable,,另一封赠书尚未收好，请先重试原来的赠书链接
+candidate:server/library-service.mjs:579:89,js-cjk-literal,server/library-service.mjs,579,,unknown,reviewable,,译文来源版本已变化，已有译文已保留
 candidate:server/listening-guide-content.mjs:6:31,js-cjk-literal,server/listening-guide-content.mjs,6,,unknown,reviewable,,这次导听的原文范围太长，请缩小范围；尚未开始生成。
 candidate:server/listening-guide-content.mjs:7:28,js-cjk-literal,server/listening-guide-content.mjs,7,,unknown,reviewable,,导听依据的原文已变化，请重新选择范围。
 candidate:server/listening-guide-content.mjs:13:73,js-cjk-literal,server/listening-guide-content.mjs,13,,unknown,reviewable,,请选择开篇导听、讲解或全书导览。
@@ -3495,58 +3554,58 @@ candidate:server/pdf-source-evidence.mjs:20:219,js-cjk-literal,server/pdf-source
 candidate:server/pdf-source-evidence.mjs:24:14,js-cjk-literal,server/pdf-source-evidence.mjs,24,,unknown,reviewable,,页面图像超过显示容量，请下载原件对照
 candidate:server/pdf-source-evidence.mjs:25:64,js-cjk-literal,server/pdf-source-evidence.mjs,25,,unknown,reviewable,,页面图像核对超时，原件与文字仍保留
 candidate:server/pdf-source-evidence.mjs:25:84,js-cjk-literal,server/pdf-source-evidence.mjs,25,,unknown,reviewable,,页面图像无法呈现，原件与提取文字仍保留，请下载原件对照
-candidate:server/portal.mjs:44:123,js-cjk-literal,server/portal.mjs,44,,unknown,reviewable,,请使用 JSON 请求
-candidate:server/portal.mjs:44:247,js-cjk-literal,server/portal.mjs,44,,unknown,reviewable,,这次导入内容过大，请分书恢复
-candidate:server/portal.mjs:44:387,js-cjk-literal,server/portal.mjs,44,,unknown,reviewable,,这次导入内容过大，请分书恢复
-candidate:server/portal.mjs:44:509,js-cjk-literal,server/portal.mjs,44,,unknown,reviewable,,请求格式不正确
-candidate:server/portal.mjs:47:54,js-cjk-literal,server/portal.mjs,47,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:49:116,js-cjk-literal,server/portal.mjs,49,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:50:91,js-cjk-literal,server/portal.mjs,50,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:72:16,js-cjk-literal,server/portal.mjs,72,,unknown,reviewable,,书架正在另一处更新，请稍后刷新
-candidate:server/portal.mjs:90:134,js-cjk-literal,server/portal.mjs,90,,unknown,reviewable,,找不到这个操作
-candidate:server/portal.mjs:144:70,js-cjk-literal,server/portal.mjs,144,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:145:59,js-cjk-literal,server/portal.mjs,145,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:148:54,js-cjk-literal,server/portal.mjs,148,,unknown,reviewable,,请求来源未授权
-candidate:server/portal.mjs:149:85,js-cjk-literal,server/portal.mjs,149,,unknown,reviewable,,请求来源未授权
-candidate:server/portal.mjs:150:111,js-cjk-literal,server/portal.mjs,150,,unknown,reviewable,,"请在 "
-candidate:server/portal.mjs:150:130,js-cjk-literal,server/portal.mjs,150,,unknown,reviewable,," 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。"
-candidate:server/portal.mjs:154:79,js-cjk-literal,server/portal.mjs,154,,unknown,reviewable,,这个登录入口尚未开放
-candidate:server/portal.mjs:168:162,js-cjk-literal,server/portal.mjs,168,,unknown,reviewable,,账户已切换，请重新进入书房。原账户草稿仍留在原处。
-candidate:server/portal.mjs:180:27,js-cjk-literal,server/portal.mjs,180,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:182:41,js-cjk-literal,server/portal.mjs,182,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:183:61,js-cjk-literal,server/portal.mjs,183,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:197:27,js-cjk-literal,server/portal.mjs,197,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:199:94,js-cjk-literal,server/portal.mjs,199,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:202:41,js-cjk-literal,server/portal.mjs,202,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:203:61,js-cjk-literal,server/portal.mjs,203,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:208:95,js-cjk-literal,server/portal.mjs,208,,unknown,reviewable,,这个登录方式正在准备中
-candidate:server/portal.mjs:212:146,js-cjk-literal,server/portal.mjs,212,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
-candidate:server/portal.mjs:213:146,js-cjk-literal,server/portal.mjs,213,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:server/portal.mjs:215:151,js-cjk-literal,server/portal.mjs,215,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:server/portal.mjs:219:80,js-cjk-literal,server/portal.mjs,219,,unknown,reviewable,,本机书房只在本机模式可用
-candidate:server/portal.mjs:225:27,js-cjk-literal,server/portal.mjs,225,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:226:149,js-cjk-literal,server/portal.mjs,226,,unknown,reviewable,,线上版本尚未准备好，请稍后重新读取接入配置。
-candidate:server/portal.mjs:227:35,js-cjk-literal,server/portal.mjs,227,,unknown,reviewable,,本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。
-candidate:server/portal.mjs:236:446,js-cjk-literal,server/portal.mjs,236,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:238:45,js-cjk-literal,server/portal.mjs,238,,unknown,reviewable,,此书房使用本机上传
-candidate:server/portal.mjs:242:48,js-cjk-literal,server/portal.mjs,242,,unknown,reviewable,,此书房使用本机上传
-candidate:server/portal.mjs:246:27,js-cjk-literal,server/portal.mjs,246,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:246:187,js-cjk-literal,server/portal.mjs,246,,unknown,reviewable,,文件编码不正确
-candidate:server/portal.mjs:260:27,js-cjk-literal,server/portal.mjs,260,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:260:98,js-cjk-literal,server/portal.mjs,260,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:262:41,js-cjk-literal,server/portal.mjs,262,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:275:164,js-cjk-literal,server/portal.mjs,275,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
-candidate:server/portal.mjs:289:25,js-cjk-literal,server/portal.mjs,289,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:357:120,js-cjk-literal,server/portal.mjs,357,,unknown,reviewable,,本书尚未开启探索体验统计
-candidate:server/portal.mjs:358:175,js-cjk-literal,server/portal.mjs,358,,unknown,reviewable,,请选择这本书的记录包
-candidate:server/portal.mjs:359:99,js-cjk-literal,server/portal.mjs,359,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
-candidate:server/portal.mjs:366:43,js-cjk-literal,server/portal.mjs,366,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:371:402,js-cjk-literal,server/portal.mjs,371,,unknown,reviewable,,找不到这个工具
-candidate:server/portal.mjs:374:30,js-cjk-literal,server/portal.mjs,374,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
-candidate:server/portal.mjs:380:20,js-cjk-literal,server/portal.mjs,380,,unknown,reviewable,,不支持这个听读操作
-candidate:server/portal.mjs:388:86,js-cjk-literal,server/portal.mjs,388,,unknown,reviewable,,只保存用户明确提供的原话
-candidate:server/portal.mjs:389:18,js-cjk-literal,server/portal.mjs,389,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:391:16,js-cjk-literal,server/portal.mjs,391,,unknown,reviewable,,找不到这个操作
+candidate:server/portal.mjs:45:123,js-cjk-literal,server/portal.mjs,45,,unknown,reviewable,,请使用 JSON 请求
+candidate:server/portal.mjs:45:247,js-cjk-literal,server/portal.mjs,45,,unknown,reviewable,,这次导入内容过大，请分书恢复
+candidate:server/portal.mjs:45:387,js-cjk-literal,server/portal.mjs,45,,unknown,reviewable,,这次导入内容过大，请分书恢复
+candidate:server/portal.mjs:45:509,js-cjk-literal,server/portal.mjs,45,,unknown,reviewable,,请求格式不正确
+candidate:server/portal.mjs:48:54,js-cjk-literal,server/portal.mjs,48,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:50:116,js-cjk-literal,server/portal.mjs,50,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:51:91,js-cjk-literal,server/portal.mjs,51,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:73:16,js-cjk-literal,server/portal.mjs,73,,unknown,reviewable,,书架正在另一处更新，请稍后刷新
+candidate:server/portal.mjs:93:134,js-cjk-literal,server/portal.mjs,93,,unknown,reviewable,,找不到这个操作
+candidate:server/portal.mjs:147:70,js-cjk-literal,server/portal.mjs,147,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:148:59,js-cjk-literal,server/portal.mjs,148,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:151:54,js-cjk-literal,server/portal.mjs,151,,unknown,reviewable,,请求来源未授权
+candidate:server/portal.mjs:152:85,js-cjk-literal,server/portal.mjs,152,,unknown,reviewable,,请求来源未授权
+candidate:server/portal.mjs:153:111,js-cjk-literal,server/portal.mjs,153,,unknown,reviewable,,"请在 "
+candidate:server/portal.mjs:153:130,js-cjk-literal,server/portal.mjs,153,,unknown,reviewable,," 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。"
+candidate:server/portal.mjs:157:79,js-cjk-literal,server/portal.mjs,157,,unknown,reviewable,,这个登录入口尚未开放
+candidate:server/portal.mjs:171:162,js-cjk-literal,server/portal.mjs,171,,unknown,reviewable,,账户已切换，请重新进入书房。原账户草稿仍留在原处。
+candidate:server/portal.mjs:183:27,js-cjk-literal,server/portal.mjs,183,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:185:41,js-cjk-literal,server/portal.mjs,185,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:186:61,js-cjk-literal,server/portal.mjs,186,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:200:27,js-cjk-literal,server/portal.mjs,200,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:202:94,js-cjk-literal,server/portal.mjs,202,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:205:41,js-cjk-literal,server/portal.mjs,205,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:206:61,js-cjk-literal,server/portal.mjs,206,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:211:95,js-cjk-literal,server/portal.mjs,211,,unknown,reviewable,,这个登录方式正在准备中
+candidate:server/portal.mjs:215:146,js-cjk-literal,server/portal.mjs,215,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
+candidate:server/portal.mjs:216:146,js-cjk-literal,server/portal.mjs,216,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:server/portal.mjs:218:151,js-cjk-literal,server/portal.mjs,218,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:server/portal.mjs:222:80,js-cjk-literal,server/portal.mjs,222,,unknown,reviewable,,本机书房只在本机模式可用
+candidate:server/portal.mjs:228:27,js-cjk-literal,server/portal.mjs,228,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:229:149,js-cjk-literal,server/portal.mjs,229,,unknown,reviewable,,线上版本尚未准备好，请稍后重新读取接入配置。
+candidate:server/portal.mjs:230:35,js-cjk-literal,server/portal.mjs,230,,unknown,reviewable,,本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。
+candidate:server/portal.mjs:239:446,js-cjk-literal,server/portal.mjs,239,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:241:45,js-cjk-literal,server/portal.mjs,241,,unknown,reviewable,,此书房使用本机上传
+candidate:server/portal.mjs:245:48,js-cjk-literal,server/portal.mjs,245,,unknown,reviewable,,此书房使用本机上传
+candidate:server/portal.mjs:249:27,js-cjk-literal,server/portal.mjs,249,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:249:187,js-cjk-literal,server/portal.mjs,249,,unknown,reviewable,,文件编码不正确
+candidate:server/portal.mjs:263:27,js-cjk-literal,server/portal.mjs,263,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:263:98,js-cjk-literal,server/portal.mjs,263,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:265:41,js-cjk-literal,server/portal.mjs,265,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:278:164,js-cjk-literal,server/portal.mjs,278,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
+candidate:server/portal.mjs:292:25,js-cjk-literal,server/portal.mjs,292,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:360:120,js-cjk-literal,server/portal.mjs,360,,unknown,reviewable,,本书尚未开启探索体验统计
+candidate:server/portal.mjs:361:175,js-cjk-literal,server/portal.mjs,361,,unknown,reviewable,,请选择这本书的记录包
+candidate:server/portal.mjs:362:99,js-cjk-literal,server/portal.mjs,362,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
+candidate:server/portal.mjs:369:43,js-cjk-literal,server/portal.mjs,369,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:374:402,js-cjk-literal,server/portal.mjs,374,,unknown,reviewable,,找不到这个工具
+candidate:server/portal.mjs:377:30,js-cjk-literal,server/portal.mjs,377,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
+candidate:server/portal.mjs:383:20,js-cjk-literal,server/portal.mjs,383,,unknown,reviewable,,不支持这个听读操作
+candidate:server/portal.mjs:391:86,js-cjk-literal,server/portal.mjs,391,,unknown,reviewable,,只保存用户明确提供的原话
+candidate:server/portal.mjs:392:18,js-cjk-literal,server/portal.mjs,392,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:394:16,js-cjk-literal,server/portal.mjs,394,,unknown,reviewable,,找不到这个操作
 candidate:server/preference-memory.mjs:5:97,js-cjk-literal,server/preference-memory.mjs,5,,unknown,reviewable,,阅读偏好记录无法识别，已保持原样
 candidate:server/preference-memory.mjs:15:245,js-cjk-literal,server/preference-memory.mjs,15,,unknown,reviewable,,阅读偏好请求格式不正确
 candidate:server/preference-memory.mjs:16:56,js-cjk-literal,server/preference-memory.mjs,16,,unknown,reviewable,,阅读偏好已在另一处更新，请读取最新版本

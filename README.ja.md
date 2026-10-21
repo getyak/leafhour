@@ -185,3 +185,7 @@ Public repo: feature branch → PR → main → Vercel verification and deployme
 [GNU Affero General Public License v3.0](LICENSE)。改変版をネットワーク経由で提供する場合、そのサービスのユーザーに対応するソースを提供する必要があります。
 
 読書時間は、明示的に選んだ能動的な集中、フォアグラウンドの推定、手動補記（自己申告）に対応します。合計は重複区間を統合し、出典ごとに検証できます。[計測と復元の定義](docs/reading-time.md) を参照。
+
+## 読書 skill とリモート MCP
+
+skills 対応ホストに `skills/leafhour-reading` をインストールできます。ChatGPT に `https://leafhour.com/api/mcp` を追加し、OAuth/DCR で Leafhour にログインして、一冊に一時間の読み取り専用権限を与えます。`reader_get_connection` で対象の本を確認します。[インストール、権限と実ホストの検証](docs/mcp-oauth.md)を参照してください。既存の stdio 設定も引き続き利用できます。
