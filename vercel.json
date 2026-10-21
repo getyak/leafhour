@@ -125,6 +125,18 @@
   },
   "rewrites": [
     {
+      "source": "/.well-known/oauth-protected-resource",
+      "destination": "/api/service?path=mcp/metadata"
+    },
+    {
+      "source": "/.well-known/oauth-protected-resource/api/mcp",
+      "destination": "/api/service?path=mcp/metadata"
+    },
+    {
+      "source": "/.well-known/oauth-authorization-server",
+      "destination": "/api/service?path=mcp/authorization-server"
+    },
+    {
       "source": "/gift-preview",
       "destination": "/book-gift"
     },

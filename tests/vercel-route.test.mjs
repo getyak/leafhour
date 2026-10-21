@@ -30,3 +30,12 @@ test('hosted function outlives the conversation lease with room for cleanup and 
  const config=JSON.parse(await readFile(new URL('../vercel.json',import.meta.url),'utf8'));
  assert.ok(config.functions['api/*.js'].maxDuration>=120,'90 second conversation lease requires cleanup and save time');
 });
+
+test('public OAuth discovery paths route to the remote MCP metadata handler',async()=>{
+ const config=JSON.parse(await readFile(new URL('../vercel.json',import.meta.url),'utf8'));
+ for(const [source,route]of [['/.well-known/oauth-protected-resource','mcp/metadata'],['/.well-known/oauth-protected-resource/api/mcp','mcp/metadata'],['/.well-known/oauth-authorization-server','mcp/authorization-server']]){
+  const rewrite=config.rewrites.find(row=>row.source===source);assert.ok(rewrite,'Missing OAuth discovery rewrite: '+source);
+  assert.equal(rewrite.destination,'/api/service?path='+route);
+  assert.equal(routeOf({query:{path:route},url:source}),'/api/'+route);
+ }
+});
