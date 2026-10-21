@@ -1,0 +1,26 @@
+{
+  "task": "GET-199",
+  "source_workspace": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-199",
+  "source_preserved": true,
+  "uncommitted_code_preserved": true,
+  "removed_registered_artifact": "/private/tmp/ai-test-GET-199.tdrcYD",
+  "allocated_KiB_before_removal": {
+    "primary_dependencies": 441992,
+    "copy_tool_dependencies": 135048,
+    "hosted_build": 15016,
+    "registered_test_artifact": 9148
+  },
+  "accounted_removed_bytes": 615632896,
+  "accounted_removed_GiB": 0.57,
+  "measurement": "Allocated blocks of exact task-owned directories before verified removal; not a df delta.",
+  "gracefully_terminated_root_pids": [
+    30512,
+    38962,
+    37123,
+    37532
+  ],
+  "process_readback": "All four recorded root PIDs absent. Browser used supported session close; other task processes received SIGTERM.",
+  "evidence": "Permanent tests/review/screenshots retained in docs/verification/2026-10-21-get-199. No worktree archived, no branch deleted, no pause marker cleared.",
+  "symphony_state": "blocked",
+  "reason_code": "COPY_TOOL_DOWNLOAD_FAILED"
+}

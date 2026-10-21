@@ -1,0 +1,2 @@
+Copy inventory: 2074 catalogue keys, 8296 locale values, 3750 unreviewed literal candidates (90 protected source), 2613 unresolved dynamic references.
+Copy export: en=2085 lines, zh-Hans=2085 lines, zh-Hant=2085 lines, ja=2085 lines in build/copy/; 0 explicitly reviewed static literal(s); manifest maps every line to its item.

@@ -1,16 +1,17 @@
 import {t,getUiLocale,onUiLocaleChange,uiReady,bindUi} from './ui-locale.mjs';
-import {hasShelfFilters,shelfLanguage} from './library-workspace.mjs';
+import {hasShelfFilters} from './library-workspace.mjs';
+import {shelfReadingLanguages} from './book-reading-languages.mjs';
 import {mountChoiceControl} from './choice-control.mjs';
 import {LIBRARY_TOPICS,normalizeLibraryQuery} from './library-view-state.mjs';
 import {mountPopover} from './popover-controls.mjs';
 
-// GET-176 current-view summary + GET-177 fiction topic. All three filter
+// GET-176 current-view summary + GET-177 fiction topic. All four filter
 // dropdowns are enhanced by the shared choice primitive: up to six choices are
 // immediate segmented chips, larger groups get the searchable combobox. Every
 // choice commits immediately (no Done step) and mirrors the native select so
 // existing change side effects stay identical; option/value writes go through
 // the explicit sync() call only.
-const defaults=()=>({scope:'all',status:'all',topic:'all',language:'all'});
+const defaults=()=>({scope:'all',status:'all',topic:'all',language:'all',form:'all'});
 const languageName=value=>{
   if(['all','unknown','en','zh'].includes(value))return t('filter.language.'+value);
   try{return new Intl.DisplayNames([getUiLocale()],{type:'language'}).of(value)||value;}catch{return value;}
@@ -19,32 +20,35 @@ const languageName=value=>{
 export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
   const doc=root.ownerDocument;
   const find=id=>root.querySelector('#'+id),search=find('book-search'),panel=find('shelf-filter-panel'),trigger=find('shelf-filter-button');
-  const fields={scope:find('shelf-source'),topic:find('shelf-topic'),language:find('shelf-language')};
+  const fields={scope:find('shelf-source'),topic:find('shelf-topic'),language:find('shelf-language'),form:find('shelf-form')};
   const states=[...root.querySelectorAll('[data-reading-status]')],chips=find('shelf-filter-chips'),clearButton=find('shelf-filter-clear'),selection=find('shelf-filter-selection'),count=find('shelf-filter-count');
-  let values=defaults(),optionsKey='',lastBooks=null,disposed=false,summaryRows=[];
+  let values=defaults(),optionsKey='',lastBooks=null,disposed=false,summaryRows=[],preferencesApplied=false,userTouched=false;
   const unbind=bindUi(root),listeners=[];const listen=(node,event,handler)=>{node.addEventListener(event,handler);listeners.push(()=>node.removeEventListener(event,handler));};
   const read=()=>({...values,query:normalizeLibraryQuery(search.value)});
   const popover=mountPopover({document:doc,element:panel,trigger}),offPopover=popover.subscribe({beforeOpen:position,onChange:onOpenChange});
   const close=()=>popover.close();
   const open=()=>popover.open();
-  const set=patch=>{
+  const set=(patch,{source='user'}={})=>{
+    if(source==='user')userTouched=true;
     const changed={};
     for(const [key,value] of Object.entries(patch||{})){
       if(key==='query'){search.value=String(value||'');values={...values};changed.query=String(value||'');continue;}
-      if(!['scope','status','topic','language'].includes(key))continue;
+      if(!['scope','status','topic','language','form'].includes(key))continue;
       values={...values,[key]:value};changed[key]=value;
     }
     if(lastBooks)update(lastBooks);
-    onChange({patch:changed});
+    onChange({patch:changed,source});
   };
   const clear=key=>{
+    userTouched=true;
     if(key==='query'){search.value='';values={...values};}
-    else if(['scope','status','topic','language'].includes(key))values={...values,[key]:'all'};
+    else if(['scope','status','topic','language','form'].includes(key))values={...values,[key]:'all'};
     if(lastBooks)update(lastBooks);
     onChange({clear:key});
     focusAfterClear(key);
   };
   const clearAll=()=>{
+    userTouched=true;
     values=defaults();search.value='';
     if(lastBooks)update(lastBooks);
     onChange({clearAll:true});
@@ -54,7 +58,7 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
   for(const [key,field] of Object.entries(fields))listen(field,'change',()=>{if(!disposed)set({[key]:field.value});});
   listen(clearButton,'click',()=>{if(!disposed)clearAll();});
 
-  // GET-177: the three dropdowns become the shared progressive choice
+  // GET-177: the four dropdowns become the shared progressive choice
   // primitive; the native selects stay as fallback until a mount succeeds.
   const option=(value,label)=>{const node=doc.createElement('option');node.value=value;node.textContent=label;return node;};
   const writeOptions=(topicChoices,languageChoices)=>{
@@ -88,14 +92,15 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
     if(values.scope!=='all')list.push(['scope',values.scope]);
     if(values.topic!=='all')list.push(['topic',values.topic]);
     if(values.language!=='all')list.push(['language',values.language]);
+    if(values.form!=='all')list.push(['form',values.form]);
     return list;
   };
 
   function update(books){
     lastBooks=books;
     // Chinese and English shortcuts stay selectable even without matching books;
-    // every remaining loaded source language stays reachable and searchable.
-    const availableLanguages=[...new Set(books.map(shelfLanguage))];
+    // every remaining loaded content language stays reachable and searchable.
+    const availableLanguages=[...new Set(books.flatMap(shelfReadingLanguages))];
     const extras=[...new Set([...availableLanguages,...(values.language==='all'?[]:[values.language])])].filter(id=>!['zh','en'].includes(id)).sort();
     const languageChoices=['all','zh','en',...extras];
     const topicChoices=[...LIBRARY_TOPICS];
@@ -139,13 +144,20 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
   }
   const offLocale=onUiLocaleChange(updateLabels);void uiReady.then(updateLabels);updateLabels();
   return {
-    read,set,clear,clearAll,update,updateLabels,close,open,choices,
+    read,set,clear,clearAll,touch(){userTouched=true;},
+    applyReadingPreferences(preferences){
+      if(preferencesApplied||userTouched||hasShelfFilters(read())||!preferences)return false;
+      preferencesApplied=true;
+      if(preferences.preferredLanguage!=='zh')return false;
+      set({language:'zh'},{source:'preference'});return true;
+    },update,updateLabels,close,open,choices,
     dispose(){if(disposed)return;disposed=true;offLocale();unbind();for(const off of listeners)off();for(const choice of Object.values(choices))choice?.destroy();offPopover();popover.close({focus:false});if(typeof window!=='undefined'){window.removeEventListener('resize',reposition);window.removeEventListener('scroll',reposition);}},
     apply(view){
-      values={scope:view.scope||'all',status:view.status||'all',topic:view.topic||'all',language:view.language||'all'};
+      values={scope:view.scope||'all',status:view.status||'all',topic:view.topic||'all',language:view.language||'all',form:view.form||'all'};
+      if(hasShelfFilters(view))userTouched=true;
       search.value=view.query||'';
       if(lastBooks)update(lastBooks);
     },
-    reset(){values=defaults();search.value='';optionsKey='';close();if(lastBooks)update(lastBooks);}
+    reset(){preferencesApplied=false;userTouched=false;values=defaults();search.value='';optionsKey='';close();if(lastBooks)update(lastBooks);}
   };
 }

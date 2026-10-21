@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "counts": {
+    "alerts": 2281,
+    "rawAlerts": 2281,
+    "newErrors": 0,
+    "warnings": 1887,
+    "existingDebt": 394,
+    "appliedExceptions": 0,
+    "staleDebt": 0,
+    "staleAllowances": 0,
+    "problems": 0
+  },
+  "toolStatus": {
+    "vale": {
+      "bin": "/Users/cubxxw/ops/symphony/runtime/tools/vale/3.24.0/darwin-arm64/vale",
+      "ok": true,
+      "exit": 1,
+      "version": "vale version 3.24.0"
+    },
+    "textlint": {
+      "bin": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-199/tools/copy-tooling/node_modules/.bin/textlint",
+      "ok": true,
+      "exit": 1,
+      "version": "v15.8.0"
+    }
+  },
+  "problems": []
+}

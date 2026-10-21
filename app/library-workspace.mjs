@@ -1,4 +1,5 @@
 import {chooseCurrentBook} from './reading-calendar.mjs';
+import {contentLanguage,matchesReadingLanguage} from './book-reading-languages.mjs';
 const activityAt=book=>String(book.journey?.lastReadAt||book.resume?.updatedAt||'');
 
 export function workspaceCurrentBook(books){
@@ -16,12 +17,12 @@ export function shelfReadingStatus(book){
   return book.resume?.passageId||book.journey?.lastReadAt||book.journey?.completedChapters>0?'reading':'unread';
 }
 
-export const shelfLanguage=book=>typeof book.sourceLanguage==='string'&&book.sourceLanguage?book.sourceLanguage.toLowerCase().split(/[-_]/)[0]:'unknown';
-export const hasShelfFilters=({scope='all',status='all',topic='all',language='all',query=''}={})=>scope!=='all'||status!=='all'||topic!=='all'||language!=='all'||!!query.trim();
+export const shelfLanguage=book=>contentLanguage(book.sourceLanguage);
+export const hasShelfFilters=({scope='all',status='all',topic='all',language='all',form='all',query=''}={})=>scope!=='all'||status!=='all'||topic!=='all'||language!=='all'||form!=='all'||!!query.trim();
 
-export function libraryShelf(books,{scope='all',query='',status='all',topic='all',language='all'}={}){
+export function libraryShelf(books,{scope='all',query='',status='all',topic='all',language='all',form='all'}={}){
   const needle=query.trim().toLocaleLowerCase();
-  return books.filter(book=>(scope==='all'||book.visibility===scope)&&(status==='all'||shelfReadingStatus(book)===status)&&(topic==='all'||Array.isArray(book.topics)&&book.topics.includes(topic))&&(language==='all'||shelfLanguage(book)===language)&&(!needle||[book.title?.zh,book.title?.en,book.author].filter(Boolean).join(' ').toLocaleLowerCase().includes(needle)))
+  return books.filter(book=>(scope==='all'||book.visibility===scope)&&(status==='all'||shelfReadingStatus(book)===status)&&(topic==='all'||Array.isArray(book.topics)&&book.topics.includes(topic))&&matchesReadingLanguage(book,{language,form})&&(!needle||[book.title?.zh,book.title?.en,book.author].filter(Boolean).join(' ').toLocaleLowerCase().includes(needle)))
     .sort((a,b)=>(Number.isFinite(a.shelfPosition)||Number.isFinite(b.shelfPosition)?(a.shelfPosition??Number.MAX_SAFE_INTEGER)-(b.shelfPosition??Number.MAX_SAFE_INTEGER):0)||Number(b.visibility==='private')-Number(a.visibility==='private')||activityAt(b).localeCompare(activityAt(a)));
 }
 

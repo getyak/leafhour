@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "home shelf exposes the same reading filters",
+    "home Chinese originals have a useful zero state",
+    "home bilingual returns exactly the saved samples",
+    "home explicitly discloses partial translation coverage",
+    "home clear removes the account default and format",
+    "home has no horizontal overflow"
+  ],
+  "visibleCards": 3
+}

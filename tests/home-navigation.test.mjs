@@ -414,10 +414,10 @@ function productionRefresh({api,homeMenu,ownerScope,document:doc,observations={}
   const nodes=new Map();
   const $=id=>{if(!nodes.has(id))nodes.set(id,doc.createElement('div'));return nodes.get(id);};
   return new Function('api','homeMenu','ownerScope','$','doc','observations','t','getUiLocale',`
-    let refreshGeneration=0,session=${JSON.stringify(session)},books=[],shelfRevision=0,pendingUpload=false,pendingChat=false,bootstrapped=false;
+    let refreshGeneration=0,session=${JSON.stringify(session)},books=[],shelfRevision=0,pendingUpload=false,pendingChat=false,bootstrapped=false,identityResolved=false;
     const adoptUiOwner=id=>{(observations.uiOwners??=[]).push(id);return Promise.resolve({adopted:true});};
-    const document=doc,isLibrary=false,dashboard=null,shell=null,setupInvite=null,authDialog={updateCapabilities(){},isSettingPasswordFor(){return false;}},pdfOnboarding={refresh(){}},homeText=x=>x,homeLocale=()=>'en',status=()=>{},renderBooks=()=>{},landingBookCard=()=>doc.createElement('article');
-    function clearPrivateUI(){observations.clearCalls=(observations.clearCalls||0)+1;homeMenu.clear(ownerScope.capture());}
+    const document=doc,isLibrary=false,dashboard=null,shell=null,setupInvite=null,shelfControls=null,authDialog={updateCapabilities(){},isSettingPasswordFor(){return false;}},pdfOnboarding={refresh(){}},homeText=x=>x,homeLocale=()=>'en',status=()=>{},renderBooks=()=>{},landingBookCard=()=>doc.createElement('article');
+    function clearPrivateUI(options){(observations.resetOptions??=[]).push(options);observations.clearCalls=(observations.clearCalls||0)+1;homeMenu.clear(ownerScope.capture());}
     ${refreshLabelDeclarations}
     ${refreshBody}
     return refresh;`)(api,homeMenu,ownerScope,$,doc,observations,t,getUiLocale);
@@ -487,6 +487,15 @@ test('owner transitions keep identity and resume rows in step with the adopted s
   assert.equal(f.resume.getAttribute('href'),null);
   assert.equal(f.menu.updateIdentity({owner:'reader',revision:99}),false,'a stale captured revision can never repaint identity rows');
   assert.equal(f.signIn.hidden,false);
+});
+
+test('a failed first library request cannot preserve one account view when the next account arrives',async()=>{
+  const scope=createOwnerScope('guest'),observations={},f=menuFixture({user:null,getOwner:()=>scope.capture()});
+  const refresh=productionRefresh({api:async()=>{throw Error('synthetic library unavailable');},homeMenu:f.menu,ownerScope:scope,document:f.document,observations,session:null});
+  await refresh({user:{id:'reader-a'}}).catch(()=>{});
+  await refresh({user:{id:'reader-b'}}).catch(()=>{});
+  assert.equal(observations.resetOptions[0].preserveView,true,'the first identity can preserve the entry URL');
+  assert.equal(observations.resetOptions[1].preserveView,false,'a real owner change clears the previous view even before the first successful library load');
 });
 
 test('portal wires the owner settlement token beside the real user id getter',()=>{

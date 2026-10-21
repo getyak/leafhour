@@ -71,6 +71,14 @@ test('owner reset, owner ABA and a finished upload fence cached and late progres
   }
 });
 
+test('owner reset drops account translation availability even for shared public books',()=>{
+  const f=uploadFixture({books:[{bookId:'public',visibility:'public',sourceLanguage:'en',translationLanguages:['zh'],supportsParallel:true,translatedParagraphs:2,translationCoverage:'partial'},{bookId:'private',visibility:'private'}]});
+  f.context.clear();
+  assert.equal(f.context.books.length,1);
+  const row=f.context.books[0];
+  assert.deepEqual([...row.translationLanguages],[]);assert.equal(row.supportsParallel,false);assert.equal(row.translatedParagraphs,0);assert.equal(row.translationCoverage,'none');
+});
+
 test('home cover title and stored resume label remain content even when equal to a UI phrase',()=>{
   const make=(tag,className='',text)=>({tag,className,textContent:text??'',children:[],setAttribute(){},append(...children){this.children.push(...children);}});
   const context={document:{},getUiLocale,homeLocale:()=> 'en',homeText,isLibrary:false,make,session:{user:{id:'synthetic'}},readingBookUrl:()=>'/read?book=synthetic',t:formatter,chineseTrialUrl:()=>'/read',positionStorageKey:()=>'',localStorage:{getItem:()=>null}};

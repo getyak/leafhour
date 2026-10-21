@@ -1,5 +1,5 @@
 // GET-176/179 library view URL state: one pure codec/reducer plus one explicit
-// UI lifecycle adapter. Owned keys are q/scope/status/topic/language and exactly
+// UI lifecycle adapter. Owned keys are q/scope/status/topic/language/form and exactly
 // one overlay among filter/calendar/settings/upload/trash. Unknown parameters are
 // never owned, validated or approved; form contents and owner IDs are never
 // serialized. The adapter cancels stale search timers on popstate, hydration,
@@ -11,6 +11,7 @@
 
 export const LIBRARY_SCOPES=Object.freeze(['all','public','private']);
 export const LIBRARY_STATUSES=Object.freeze(['all','reading','unread','finished']);
+export const LIBRARY_FORMS=Object.freeze(['all','original','translated','bilingual']);
 export const LIBRARY_TOPICS=Object.freeze(['all','philosophy','science','literature','history','fiction']);
 export const LIBRARY_SETTINGS_TABS=Object.freeze(['account','reading-habits','daily-reading','appearance','data','about']);
 // GET-201: one parse-only slug alias. Old links say settings=reading while the
@@ -19,7 +20,7 @@ export const LIBRARY_SETTINGS_TABS=Object.freeze(['account','reading-habits','da
 const SETTINGS_TAB_ALIASES=Object.freeze({reading:'reading-habits'});
 const settingsTab=value=>typeof value==='string'?(LIBRARY_SETTINGS_TABS.includes(value)?value:Object.hasOwn(SETTINGS_TAB_ALIASES,value)?SETTINGS_TAB_ALIASES[value]:null):null;
 export const LIBRARY_OVERLAYS=Object.freeze(['settings','calendar','upload','trash','filter']);
-export const LIBRARY_VIEW_KEYS=Object.freeze(['q','scope','status','topic','language','ui']);
+export const LIBRARY_VIEW_KEYS=Object.freeze(['q','scope','status','topic','language','form','ui']);
 export const LIBRARY_OVERLAY_KEYS=Object.freeze(['filter','calendar','settings','upload','trash']);
 
 import {parseUiParam,isUiLocale,withUiParam} from './ui-locale-codec.mjs';
@@ -43,7 +44,7 @@ const languageValue=value=>{
   return value.toLowerCase().split('-')[0];
 };
 
-export const libraryViewDefaults=()=>({query:'',scope:'all',status:'all',topic:'all',language:'all'});
+export const libraryViewDefaults=()=>({query:'',scope:'all',status:'all',topic:'all',language:'all',form:'all'});
 
 // Overlay normalization keeps business kind and tab apart and refuses any kind
 // outside the routed set. Conflicting keys resolve in one fixed precedence.
@@ -68,6 +69,7 @@ export function parseLibraryView(search){
   const status=raw('status');if(LIBRARY_STATUSES.includes(status))view.status=status;
   const topic=raw('topic');if(LIBRARY_TOPICS.includes(topic))view.topic=topic;
   const language=languageValue(raw('language'));if(language)view.language=language;
+  const form=raw('form');if(LIBRARY_FORMS.includes(form))view.form=form;
   const settings=settingsTab(raw('settings')),calendar=raw('calendar'),upload=raw('upload'),trash=raw('trash'),filter=raw('filter');
   let overlay=null;
   if(settings!==null)overlay={kind:'settings',tab:settings};
@@ -81,7 +83,7 @@ export function parseLibraryView(search){
 export function libraryViewParams({view,overlay}){
   const params=[];
   if(view.query)params.push(['q',view.query]);
-  for(const key of ['scope','status','topic','language'])if(view[key]&&view[key]!=='all')params.push([key,view[key]]);
+  for(const key of ['scope','status','topic','language','form'])if(view[key]&&view[key]!=='all')params.push([key,view[key]]);
   if(overlay)params.push(overlay.kind==='settings'?['settings',overlay.tab]:[overlay.kind,'1']);
   return params;
 }
@@ -112,7 +114,7 @@ export function libraryViewReducer(state,action){
     case 'set-view':{
       const patch=action.patch||{};
       for(const key of Object.keys(patch)){
-        if(!['query','scope','status','topic','language'].includes(key))continue;
+        if(!['query','scope','status','topic','language','form'].includes(key))continue;
         current.view[key]=key==='query'?normalizeLibraryQuery(patch[key]):patch[key];
       }
       return current;
@@ -121,7 +123,7 @@ export function libraryViewReducer(state,action){
     case 'clear':{
       const key=action.key;
       if(key==='query')current.view.query='';
-      else if(['scope','status','topic','language'].includes(key))current.view[key]='all';
+      else if(['scope','status','topic','language','form'].includes(key))current.view[key]='all';
       return current;
     }
     case 'clear-all':current.view=libraryViewDefaults();return current;

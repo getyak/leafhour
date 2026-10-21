@@ -35,3 +35,12 @@
   .shelf-search input,.shelf-filter-panel select{font-size:16px}.shelf-filter-toggle{padding-right:1px}.shelf-filter-selection{margin-top:-8px}
 }
 @media(forced-colors:active){.shelf-filter-panel,.shelf-filter-chip{background:Canvas;color:CanvasText;border-color:ButtonText}.shelf-reading-states button[aria-pressed=true]{border-bottom:2px solid ButtonText}}
+
+/* Reading language and form are shared by the public home shelf and library. */
+.shelf-language-help{font-size:12px;line-height:1.6;color:var(--muted);margin:8px 0 0}
+.home-shelf-filters{margin-bottom:28px}
+.home-shelf-filters .shelf-reading-states{display:none}
+.home-shelf-filters .shelf-filter-field:has(#shelf-source),.home-shelf-filters .shelf-filter-field:has(#shelf-topic){display:none}
+.home-shelf-filters .shelf-tools{margin-left:0;width:100%}
+.home-shelf-filters .shelf-search{flex:1}
+.home-shelf-empty{grid-column:1/-1;padding:36px 0;display:grid;gap:14px;justify-items:start}
