@@ -394,3 +394,15 @@ test('actual encoded current input rejects oversize metadata before turn, questi
 test('new stale quote is a definite 422 before claim, while exact historical retry and real conflicts keep their semantics',async t=>{
  let calls=0;const f=await fixture(t,{generator:async()=>{calls++;return validAnswer();}}),payload=input({quote:selectedQuote('literal')});const first=await f.service.send(alice,'chat-book',payload),changed=bookFixture();changed.sections[1].paragraphs[0].translations.literal.text='新的翻译。';await f.seed(alice,changed);await assert.rejects(f.service.send(alice,'chat-book',{...payload,id:'new-stale'}),status(422));assert.deepEqual(await f.service.send(alice,'chat-book',payload),first);await assert.rejects(f.service.send(alice,'chat-book',{...payload,text:'Different question'}),status(409));assert.equal(calls,1);assert.equal((await f.library.records(alice,'chat-book')).questions.length,1);
 });
+
+test('only per-turn preference authorization reaches the actual Agent tools and retries cannot escalate it',async t=>{
+ const outcomes=[];
+ const {service,library}=await fixture(t,{generator:async job=>{
+  const view=await job.tools.execute('get_preferences');
+  outcomes.push(await job.tools.execute('update_preference',{baseRevision:view.revision,key:'theme',value:'night',inferred:false}));
+  return validAnswer();
+ }});
+ await service.send(alice,'chat-book',input({id:'memory-no-consent'}));assert.ok(outcomes[0].error);assert.equal((await library.getPreferenceMemory(alice)).revision,0);
+ await service.send(alice,'chat-book',input({id:'memory-with-consent',preferenceWrites:true}));assert.equal(outcomes[1].preferences.theme,'night');
+ await assert.rejects(service.send(alice,'chat-book',input({id:'memory-no-consent',preferenceWrites:true})),e=>e.status===409);
+});

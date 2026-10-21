@@ -1,0 +1,42 @@
+# 对话引导与我的阅读偏好
+
+首次登录书房后，侧边阅读对话自动打开：先展示当前书房内真实可读的书，再询问阅读主题、原文与译文显示、纸面。每题 3–5 个按钮，最多三题，可跳过单题或全部。引导不调用模型；译文选项只显示已有译文。完成或跳过会保存到账号，不会每次刷新都再问。
+
+设置 → 阅读习惯 → **我的阅读偏好** 可以直接改主题、原文与译文显示、优先语言和纸面。选择立即保存。主题与语言形态用于首页/书架筛选；阅读方式与纸面作为新书默认值，每本书已经保存的设置仍优先。其他排版项继续使用原来的阅读习惯表单。
+
+Agent 的行为推测保存在单独的候选区，标明“推测”，不会改变有效设置。用户可以在设置里确认或忽略；确认才生效。删除偏好恢复该字段的安全默认，删除主题恢复不按主题筛选。操作失败或结果不确定时，界面保留当前状态并提供只读的“查看当前偏好”，不会自动重复写入。
+
+## 数据和接口
+
+沿用账户目录 `reading-preferences.json`；托管实例通过既有数据库文档表的 `mutate`/CAS 保存，不新增按邮箱或客户端 owner 参数选择的存储位置。有效阅读参数仍放在既有 `preferences`，新增的 `memory` 元数据包含有限主题枚举、当前字段来源、未生效候选、最近 100 条修改来源记录及三题引导事件。没有自由文本人物画像、书籍内容、私人笔记或凭据。
+
+`GET /api/account/preference-memory` 只读当前登录账号，未登录为 401。`POST` 限 8 KiB，要求当前 `X-Reader-Owner` 与来源校验，通过 `baseRevision` 做原子版本检查；冲突为 409，不覆盖另一个页面的选择。响应禁止缓存。接口不接受任意字段、用户 ID 或任意文本偏好。
+
+支持的操作为 `update`、`delete`、`confirm`、`reject`、`onboarding`。偏好键限 `topic`、`mode`、`preferredLanguage`、`theme`。网页设置、引导与站内 Agent 使用同一个领域服务，来源由可信调用入口确定，工具参数不能自授来源或身份。
+
+完整书房及分段/ZIP 备份在既有 `readingPreferences` 包装中带可选 `memory`，恢复前严格校验；旧备份仍可导入。赠书与选定记录导出不带账号偏好。恢复继续推进 CAS 版本；`preserveExisting` 保留已有目标设置。
+
+## Agent 工具
+
+| 工具 | 参数与边界 |
+| --- | --- |
+| `get_preferences` | 无身份参数，读取当前账号有效值、来源和候选 |
+| `update_preference` | `baseRevision`、有限 `key/value`、`inferred`；推测只入候选 |
+| `delete_preference` | `baseRevision`、有限 `key`；删除有效值并恢复默认 |
+
+用户在聊天更多菜单里开启“允许本次提问修改我的阅读偏好”后，**本次提问**的工具才可设置有效值或删除。勾选发送后复位；请求授权随幂等请求保存，重复请求不能升级权限。没有勾选时，Agent 仍可读取和记录待确认推测。书籍、引用、历史回答和检索结果不是授权。AI 注解的工具集合排除全部偏好能力；陪读不新增偏好权限。
+
+本轮不新增收费模型调用、不批量回读行为、不自动生成推测、不修改书籍/私人笔记/阅读进度。
+
+## 引导埋点
+
+两种固定顺序由服务端按账户摘要分配：`topic → language → style` 或 `language → topic → style`。每个事件含同一份 `order`、服务端时间及题目键，不含书名、邮箱或正文。`started`、每题 `answered/skipped`、`completed` 或整体 `dismissed` 与偏好写入在同一个 CAS 事务里保存；重复原请求无法重复添加事件。
+
+按 `order` 分组后，以有 `started` 的账号数为分母，有 `completed` 的账号数为完成数；有 `dismissed` 的账号数为整体跳过数。每题跳过率应以到达该题（`answered` 或 `skipped`）的账号数为分母，不能把尚未到达的题算跳过。事件可随用户备份导出；本轮未收集或虚构真实用户完成率，也未建立跨账号个人数据查询接口。
+
+## 研究参考
+
+- [StoryGraph 偏好编辑入口](https://roadmap.thestorygraph.com/changelog/disliked-topics-and-content-types-in-recommendations)：推荐页与资料页可重开偏好调查，本实现保留独立设置入口。
+- [Readwise Reader 入门](https://docs.readwise.io/reader/docs/faqs)：资料库中先提供入门阅读内容，本实现先给真实书目再提问。
+- [Kindle 阅读显示设置](https://digprjsurvey.amazon.com/csad/help/node/TABlJ4ot69emTO8jJG)：原有阅读设置中可调纸面与主题，本实现将其作为第三道可跳过问题。
+- 微信读书与 Blinkist 列为参考对象；公开检索未取得可验证的当前完整注册引导流程，因此不宣称已复现其问卷或完成率。

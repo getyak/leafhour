@@ -2117,3 +2117,40 @@ prefs.setup.description,catalogue,app/ui-catalogs/en.mjs,2080,unknown,unknown,un
 data.settings.intro,catalogue,app/ui-catalogs/en.mjs,2081,unknown,unknown,unknown,unknown,unreviewed,"Back up your reading room, or take just your own records. No subscription needed.",备份书房，或只带走自己的记录。无需订阅。,備份書房，或只帶走自己的記錄。無需訂閱。,書斎全体のバックアップも、自分の記録だけの保存も。購読は不要です。
 data.settings.backupHelp,catalogue,app/ui-catalogs/en.mjs,2082,unknown,unknown,unknown,unknown,unreviewed,Your reading texts and translations are included. Source files are optional.,阅读文本与译文都会备份；原文件可选。,閱讀文字與譯文都會備份；原始檔案可選。,読書用の原文と訳文を保存します。元ファイルは任意です。
 data.settings.restoreHelp,catalogue,app/ui-catalogs/en.mjs,2083,unknown,unknown,unknown,unknown,unreviewed,The file is checked locally. Restoring starts only after you confirm.,先在本机校验，确认后才开始恢复。,先在本機校驗，確認後才開始還原。,ファイルを手元で確認し、同意してから復元を始めます。
+memory.allowTurn,catalogue,app/ui-catalogs/en.mjs,2084,unknown,unknown,unknown,unknown,unreviewed,Allow this question to change my reading preferences,允许本次提问修改我的阅读偏好,允許本次提問修改我的閱讀偏好,この質問で読書設定の変更を許可する
+memory.welcome,catalogue,app/ui-catalogs/en.mjs,2085,unknown,unknown,unknown,unknown,unreviewed,A book to begin with,先从一本书开始,先從一本書開始,まずは一冊から
+memory.title,catalogue,app/ui-catalogs/en.mjs,2086,unknown,unknown,unknown,unknown,unreviewed,My reading preferences,我的阅读偏好,我的閱讀偏好,読書の好み
+memory.tryBook,catalogue,app/ui-catalogs/en.mjs,2087,unknown,unknown,unknown,unknown,unreviewed,You can start reading this book now.,这本书现在就可以读。,這本書現在就可以讀。,この本はすぐに読めます。
+memory.noBook,catalogue,app/ui-catalogs/en.mjs,2088,unknown,unknown,unknown,unknown,unreviewed,Bring a book to your library whenever you are ready.,准备好后，随时把一本书带进书房。,準備好後，隨時把一本書帶進書房。,準備ができたら本を追加してください。
+memory.noGeneration,catalogue,app/ui-catalogs/en.mjs,2089,unknown,unknown,unknown,unknown,unreviewed,Translation choices display saved translations; they never generate new ones.,译文选项只显示已有译文，不会自动生成。,譯文選項只顯示已有譯文，不會自動生成。,翻訳の選択は保存済みの訳を表示し、新たな翻訳は生成しません。
+memory.progress,catalogue,app/ui-catalogs/en.mjs,2090,unknown,unknown,unknown,unknown,unreviewed,Question {step} of 3 · all optional,第 {step} / 3 题 · 都可跳过,第 {step} / 3 題 · 都可略過,質問 {step} / 3 ・すべて任意
+memory.question.topic,catalogue,app/ui-catalogs/en.mjs,2091,unknown,unknown,unknown,unknown,unreviewed,What would you like to read about?,你想读哪类内容？,你想讀哪類內容？,どんな内容を読みたいですか？
+memory.question.language,catalogue,app/ui-catalogs/en.mjs,2092,unknown,unknown,unknown,unknown,unreviewed,How would you like to read?,你习惯怎样阅读原文与译文？,你習慣怎樣閱讀原文與譯文？,原文と訳文をどう表示しますか？
+memory.question.style,catalogue,app/ui-catalogs/en.mjs,2093,unknown,unknown,unknown,unknown,unreviewed,Which page feels comfortable?,哪种纸面看着舒服？,哪種紙面看著舒服？,どの背景が読みやすいですか？
+memory.skipQuestion,catalogue,app/ui-catalogs/en.mjs,2094,unknown,unknown,unknown,unknown,unreviewed,Skip this question,跳过这题,略過這題,この質問をスキップ
+memory.skipAll,catalogue,app/ui-catalogs/en.mjs,2095,unknown,unknown,unknown,unknown,unreviewed,Skip setup and start reading,跳过设置，直接阅读,略過設定，直接閱讀,設定をスキップして読む
+memory.explanation,catalogue,app/ui-catalogs/en.mjs,2096,unknown,unknown,unknown,unknown,unreviewed,Your choices apply immediately to the shelf and new books. Saved settings for each book take priority.,你的选择会立即用于书架筛选和新书默认值；每本书已有的阅读设置优先。,你的選擇會立即用於書架篩選和新書預設值；每本書已有的閱讀設定優先。,選択は本棚の絞り込みと新しい本に適用されます。本ごとの設定が優先されます。
+memory.key.topic,catalogue,app/ui-catalogs/en.mjs,2097,unknown,unknown,unknown,unknown,unreviewed,Reading topic,阅读主题,閱讀主題,テーマ
+memory.key.mode,catalogue,app/ui-catalogs/en.mjs,2098,unknown,unknown,unknown,unknown,unreviewed,Text display,原文与译文,原文與譯文,本文の表示
+memory.key.preferredLanguage,catalogue,app/ui-catalogs/en.mjs,2099,unknown,unknown,unknown,unknown,unreviewed,Preferred reading language,优先阅读语言,優先閱讀語言,優先する言語
+memory.key.theme,catalogue,app/ui-catalogs/en.mjs,2100,unknown,unknown,unknown,unknown,unreviewed,Page style,阅读纸面,閱讀紙面,ページの背景
+memory.value.en,catalogue,app/ui-catalogs/en.mjs,2101,unknown,unknown,unknown,unknown,unreviewed,Original text,原文，不默认显示译文,原文，不預設顯示譯文,原文のみ
+memory.value.zh,catalogue,app/ui-catalogs/en.mjs,2102,unknown,unknown,unknown,unknown,unreviewed,Simplified Chinese translation,简体中文译文,簡體中文譯文,簡体字中国語訳
+memory.value.parallel,catalogue,app/ui-catalogs/en.mjs,2103,unknown,unknown,unknown,unknown,unreviewed,Original and translation,原文与译文对照,原文與譯文對照,原文と訳文
+memory.value.source,catalogue,app/ui-catalogs/en.mjs,2104,unknown,unknown,unknown,unknown,unreviewed,Original language,原文语言,原文語言,原文の言語
+memory.value.system,catalogue,app/ui-catalogs/en.mjs,2105,unknown,unknown,unknown,unknown,unreviewed,Follow system,跟随系统,跟隨系統,システム設定
+memory.value.paper,catalogue,app/ui-catalogs/en.mjs,2106,unknown,unknown,unknown,unknown,unreviewed,White paper,白纸,白紙,白い紙
+memory.value.warm,catalogue,app/ui-catalogs/en.mjs,2107,unknown,unknown,unknown,unknown,unreviewed,Warm paper,暖纸,暖紙,暖かい紙
+memory.value.mist,catalogue,app/ui-catalogs/en.mjs,2108,unknown,unknown,unknown,unknown,unreviewed,Mist,雾白,霧白,霧
+memory.value.leaf,catalogue,app/ui-catalogs/en.mjs,2109,unknown,unknown,unknown,unknown,unreviewed,Leaf,叶色,葉色,葉
+memory.value.night,catalogue,app/ui-catalogs/en.mjs,2110,unknown,unknown,unknown,unknown,unreviewed,Dark page,深色,深色,ダーク
+memory.source.settings,catalogue,app/ui-catalogs/en.mjs,2111,unknown,unknown,unknown,unknown,unreviewed,Chosen in settings,设置页选择,設定頁選擇,設定で選択
+memory.source.onboarding,catalogue,app/ui-catalogs/en.mjs,2112,unknown,unknown,unknown,unknown,unreviewed,Chosen during setup,引导中选择,引導中選擇,初期設定で選択
+memory.source.agent,catalogue,app/ui-catalogs/en.mjs,2113,unknown,unknown,unknown,unknown,unreviewed,Changed by Agent,Agent 修改,Agent 修改,Agent による変更
+memory.inferred,catalogue,app/ui-catalogs/en.mjs,2114,unknown,unknown,unknown,unknown,unreviewed,Inferred: {value}. Not active until you confirm.,推测：{value}。确认后才生效。,推測：{value}。確認後才生效。,推測：{value}。確認するまで適用されません。
+memory.confirm,catalogue,app/ui-catalogs/en.mjs,2115,unknown,unknown,unknown,unknown,unreviewed,Confirm preference,确认偏好,確認偏好,確認して適用
+memory.reject,catalogue,app/ui-catalogs/en.mjs,2116,unknown,unknown,unknown,unknown,unreviewed,Dismiss suggestion,忽略推测,忽略推測,推測を破棄
+memory.delete,catalogue,app/ui-catalogs/en.mjs,2117,unknown,unknown,unknown,unknown,unreviewed,Delete preference,删除偏好,刪除偏好,好みを削除
+memory.failed,catalogue,app/ui-catalogs/en.mjs,2118,unknown,unknown,unknown,unknown,unreviewed,Save not confirmed. Read the latest version before trying again.,尚未确认是否保存成功。可查看当前偏好后继续修改。,尚未確認是否儲存成功。可查看目前偏好後繼續修改。,保存を確認できません。最新の設定を読み込んでから変更してください。
+memory.saving,catalogue,app/ui-catalogs/en.mjs,2119,unknown,unknown,unknown,unknown,unreviewed,Saving…,正在保存…,正在儲存…,保存中…
+memory.readLatest,catalogue,app/ui-catalogs/en.mjs,2120,unknown,unknown,unknown,unknown,unreviewed,Read latest version,查看当前偏好,查看目前偏好,最新の設定を読む

@@ -10,6 +10,7 @@ import {releaseFiles} from './release-policy.mjs';
 // removed at checkpoint A; every other caller/path/kind combination for this
 // resolved mutable file FAILS and is never silently bundled.
 export const UI_LOCALE_OWNERS=Object.freeze([
+ 'app/preference-memory-ui.mjs',
  'app/auth-dialog.mjs',
  'app/book-gift.mjs',
  'app/command-palette.mjs',
@@ -255,6 +256,7 @@ export function assertAnnotationBoundaryEdges({edges,release,sources=[]}){
 }
 
 export const RETAINED_BACKUP_PUBLIC_FILES=Object.freeze([
+ 'app/preference-memory-codec.mjs',
  'app/book-introduction.mjs','app/highlights.mjs','app/library-backup.mjs','app/note-drafts.mjs',
  'app/paragraph-anchor.mjs','app/personal-records.mjs','app/portable-chat.mjs',
  'app/reader-annotation-records.mjs','app/reading-chat-quote.mjs','app/reading-draft-store.mjs',

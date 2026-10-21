@@ -263,7 +263,7 @@ export function createReaderAnnotationsService({library,bookFor,identity,dataDir
      run.activity=safeActivity(items);return null;
     });
    };
-   const sourceTools=createReadingAgentTools({library,user,bookId,passageId:payload.quote.parts[0].passageId,scope:'book',signal:controller.signal,onActivity});
+   const sourceTools=createReadingAgentTools({library,user,preferenceAccess:false,bookId,passageId:payload.quote.parts[0].passageId,scope:'book',signal:controller.signal,onActivity});
    const tools=createAnnotationReadTools({tools:sourceTools,readView:async()=>{const data=await readState(user,bookId);return {bookId,contentVersion:book.contentVersion,archive:data.archive};}});
    // Authorization is checked again immediately before provider dispatch.
    if(!(await authorize()))return await finishRun(user,bookId,payload.id,nonce,{status:'cancelled'},book);

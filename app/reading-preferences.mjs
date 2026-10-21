@@ -1,3 +1,4 @@
+import {validatePreferenceMemory} from './preference-memory-codec.mjs';
 // Shared by local rendering and record validation. No generated CSS or remote fonts.
 export const appearanceDefaults=Object.freeze({readingPurpose:'manual',preferredLanguage:'source',pageLayout:'scroll',font:22,theme:'system',fontFamily:'song',lineHeight:1.98,paragraphGap:24,letterSpacing:0,wordSpacing:0,fontWeight:400,indent:false,parallelLayout:'columns',parallelStyle:'plain',parallelColor:'auto',parallelBackground:'auto'});
 export const appearanceChoices=Object.freeze({readingPurpose:['manual','deep','language'],preferredLanguage:['source','zh'],pageLayout:['scroll','spread'],theme:['system','paper','warm','mist','leaf','night'],fontFamily:['song','kai','sans'],parallelLayout:['columns','stack'],parallelStyle:['plain','muted','quote','tint','reveal'],parallelColor:['auto','green','blue','amber'],parallelBackground:['auto','none','soft']});
@@ -57,13 +58,13 @@ export function normalizeGlobalPreferences(source={},strict=false){
 export const validateGlobalPreferences=value=>normalizeGlobalPreferences(value,true);
 // The portable/persisted wrapper keeps the CAS revision with the snapshot.
 export function globalPreferencesMetadata(view){
-  return {kind:globalPreferencesKind,schemaVersion:1,revision:Number.isSafeInteger(view?.revision)&&view.revision>=0?view.revision:0,updatedAt:typeof view?.updatedAt==='string'&&view.updatedAt.length<=MAX_PREFERENCE_TIMESTAMP?view.updatedAt:new Date().toISOString(),preferences:normalizeGlobalPreferences(view?.preferences)};
+  return {kind:globalPreferencesKind,schemaVersion:1,revision:Number.isSafeInteger(view?.revision)&&view.revision>=0?view.revision:0,updatedAt:typeof view?.updatedAt==='string'&&view.updatedAt.length<=MAX_PREFERENCE_TIMESTAMP?view.updatedAt:new Date().toISOString(),preferences:normalizeGlobalPreferences(view?.preferences),...(view?.memory!==undefined?{memory:validatePreferenceMemory(view.memory)}:{})};
 }
 export function validateGlobalPreferencesMetadata(value){
   if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('阅读习惯备份信息不完整');
-  for(const key of Object.keys(value))if(!['kind','schemaVersion','revision','updatedAt','preferences'].includes(key))throw new Error('阅读习惯备份包含未知字段');
+  for(const key of Object.keys(value))if(!['kind','schemaVersion','revision','updatedAt','preferences','memory'].includes(key))throw new Error('阅读习惯备份包含未知字段');
   if(value.kind!==globalPreferencesKind||value.schemaVersion!==1||!Number.isSafeInteger(value.revision)||value.revision<0||typeof value.updatedAt!=='string'||value.updatedAt.length>MAX_PREFERENCE_TIMESTAMP||!Number.isFinite(Date.parse(value.updatedAt)))throw new Error('阅读习惯备份版本不正确');
-  return {kind:globalPreferencesKind,schemaVersion:1,revision:value.revision,updatedAt:value.updatedAt,preferences:validateGlobalPreferences(value.preferences)};
+  return {kind:globalPreferencesKind,schemaVersion:1,revision:value.revision,updatedAt:value.updatedAt,preferences:validateGlobalPreferences(value.preferences),...(value.memory!==undefined?{memory:validatePreferenceMemory(value.memory)}:{})};
 }
 
 // Opening precedence: explicit entry intent is applied afterwards through

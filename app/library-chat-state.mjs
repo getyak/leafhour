@@ -10,13 +10,13 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
   const current=ticket=>!!ticket&&ticket.epoch===epoch&&ticket.owner===state.owner&&ticket.bookId===state.bookId;
   const ticket=extra=>({epoch,owner:state.owner,bookId:state.bookId,...extra});
   const persist=()=>{if(!state.owner||!state.bookId)return false;try{writeDraft(state.owner,state.bookId,state.draft);return true;}catch{return false;}};
-  const payloadFor=turn=>({id:turn.id,passageId:turn.passageId,text:turn.text,...(turn.quote!==undefined?{quote:normalizeReadingChatQuote(turn.quote)}:{}),contentVersion:turn.contentVersion,...(turn.scopeRevision!==undefined?{scopeRevision:turn.scopeRevision}:{})});
+  const payloadFor=turn=>({id:turn.id,passageId:turn.passageId,text:turn.text,...(turn.preferenceWrites===true?{preferenceWrites:true}:{}),...(turn.quote!==undefined?{quote:normalizeReadingChatQuote(turn.quote)}:{}),contentVersion:turn.contentVersion,...(turn.scopeRevision!==undefined?{scopeRevision:turn.scopeRevision}:{})});
   const persistPending=record=>{if(state.owner&&state.bookId&&typeof record?.draftText==='string')try{writePending(state.owner,state.bookId,{schemaVersion:1,owner:state.owner,bookId:state.bookId,payload:payloadFor(record.payload),draftText:record.draftText,...(record.quoteRevision?{quoteRevision:record.quoteRevision}:{})});}catch{}};
   const clearPending=payload=>{if(state.owner&&state.bookId)try{const saved=readPending(state.owner,state.bookId);if(!saved||saved.payload?.id===payload.id)writePending(state.owner,state.bookId,null);}catch{}};
   function restoredPending(owner,bookId){
     let saved;try{saved=readPending(owner,bookId);}catch{return null;}
     const p=saved?.payload;
-    if(saved?.schemaVersion!==1||saved.owner!==owner||saved.bookId!==bookId||typeof saved.draftText!=='string'||saved.draftText.length>CHAT_TEXT_LIMIT||!saved.draftText.isWellFormed()||typeof p?.id!=='string'||!/^[A-Za-z0-9][A-Za-z0-9_-]{0,119}$/.test(p.id)||typeof p.text!=='string'||!p.text.trim()||p.text.length>CHAT_TEXT_LIMIT||!p.text.isWellFormed()||saved.draftText.trim()!==p.text||typeof p.passageId!=='string'||!p.passageId||p.passageId.length>128||typeof p.contentVersion!=='string'||!p.contentVersion||p.contentVersion.length>256||p.scopeRevision!==undefined&&(!Number.isSafeInteger(p.scopeRevision)||p.scopeRevision<0))return null;
+    if(saved?.schemaVersion!==1||saved.owner!==owner||saved.bookId!==bookId||typeof saved.draftText!=='string'||saved.draftText.length>CHAT_TEXT_LIMIT||!saved.draftText.isWellFormed()||typeof p?.id!=='string'||!/^[A-Za-z0-9][A-Za-z0-9_-]{0,119}$/.test(p.id)||typeof p.text!=='string'||!p.text.trim()||p.text.length>CHAT_TEXT_LIMIT||!p.text.isWellFormed()||saved.draftText.trim()!==p.text||typeof p.passageId!=='string'||!p.passageId||p.passageId.length>128||typeof p.contentVersion!=='string'||!p.contentVersion||p.contentVersion.length>256||p.preferenceWrites!==undefined&&typeof p.preferenceWrites!=='boolean'||p.scopeRevision!==undefined&&(!Number.isSafeInteger(p.scopeRevision)||p.scopeRevision<0))return null;
     try{
       if(p.quote===undefined&&saved.quoteRevision!==undefined)return null;
       if(p.quote!==undefined&&(!validRevision(saved.quoteRevision)||p.quote.bookId!==bookId||p.quote.parts?.[0]?.passageId!==p.passageId||p.quote.contentVersion!==p.contentVersion))return null;
@@ -51,7 +51,7 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
     Object.assign(state,readQuote(owner,bookId,fallback));return saved;
   }
   function matches(turn,payload){
-    try{return !!turn&&turn.id===payload.id&&turn.text===payload.text&&turn.passageId===payload.passageId&&turn.contentVersion===payload.contentVersion&&(turn.scopeRevision??0)===(payload.scopeRevision??0)&&JSON.stringify(turn.quote===undefined?null:normalizeReadingChatQuote(turn.quote))===JSON.stringify(payload.quote??null);}catch{return false;}
+    try{return !!turn&&!!turn.preferenceWrites===!!payload.preferenceWrites&&turn.id===payload.id&&turn.text===payload.text&&turn.passageId===payload.passageId&&turn.contentVersion===payload.contentVersion&&(turn.scopeRevision??0)===(payload.scopeRevision??0)&&JSON.stringify(turn.quote===undefined?null:normalizeReadingChatQuote(turn.quote))===JSON.stringify(payload.quote??null);}catch{return false;}
   }
   const canChangeQuote=()=>!!state.owner&&!!state.bookId&&!state.pending&&!state.retry?.uncertain&&!state.scopePending;
   function quoteReady(){
@@ -141,10 +141,10 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
       if(!current(request)||request.scopeOperation!==state.scopePending?.scopeOperation)return false;
       state.scopePending=null;state.scopeUnconfirmed=true;state.notice={id:'cs.scopeReread'};return true;
     },
-    beginSend(){
+    beginSend({preferenceWrites=false}={}){
       if(!canSend())return null;
       const text=state.draft.trim(),old=state.retry;
-      const payload=old?.uncertain&&old.checked?{...old.payload}:{id:makeId(),passageId:state.data.context.passageId,text,...(state.quote?{quote:structuredClone(state.quote)}:{}),contentVersion:state.data.contentVersion,...(state.data.scope?{scopeRevision:state.data.scope.revision}:{})};
+      const payload=old?.uncertain&&old.checked?{...old.payload}:{...(preferenceWrites?{preferenceWrites:true}:{}),id:makeId(),passageId:state.data.context.passageId,text,...(state.quote?{quote:structuredClone(state.quote)}:{}),contentVersion:state.data.contentVersion,...(state.data.scope?{scopeRevision:state.data.scope.revision}:{})};
       const request=ticket({operation:++operation,id:payload.id});state.pending={id:payload.id,text:payload.text,payload,draftText:old?.uncertain?old.draftText:state.draft,quoteRevision:old?.uncertain?old.quoteRevision:state.quote?state.quoteRevision:null,status:'running'};state.retry=null;state.notice='';persistPending(state.pending);
       putTurn({id:payload.id,passageId:payload.passageId,contentVersion:payload.contentVersion,text:payload.text,...(payload.quote?{quote:payload.quote}:{}),origin:'user',createdAt:new Date().toISOString(),status:'running',answer:null});
       // Save the original id before dispatch so reloading cannot create a paid duplicate.

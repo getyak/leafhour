@@ -1,0 +1,1278 @@
+TAP version 13
+# Subtest: the reading window uses authenticated chat routes, real source references and account guarded requests
+ok 1 - the reading window uses authenticated chat routes, real source references and account guarded requests
+  ---
+  duration_ms: 236.529083
+  type: 'test'
+  ...
+# Subtest: scope selection is authenticated, persisted and checked before dispatching a model request
+ok 2 - scope selection is authenticated, persisted and checked before dispatching a model request
+  ---
+  duration_ms: 90.450833
+  type: 'test'
+  ...
+# Subtest: selected quote and own question survive close-equivalent reload without auto-send
+ok 3 - selected quote and own question survive close-equivalent reload without auto-send
+  ---
+  duration_ms: 7.989375
+  type: 'test'
+  ...
+# Subtest: uncertain recovery freezes quote, revision and request identity through reload
+ok 4 - uncertain recovery freezes quote, revision and request identity through reload
+  ---
+  duration_ms: 0.577875
+  type: 'test'
+  ...
+# Subtest: completion acknowledges submitted revision without deleting a newer cross-tab head
+ok 5 - completion acknowledges submitted revision without deleting a newer cross-tab head
+  ---
+  duration_ms: 0.456333
+  type: 'test'
+  ...
+# Subtest: a tombstone and same-text fresh revision remain explicit intent after old completion
+ok 6 - a tombstone and same-text fresh revision remain explicit intent after old completion
+  ---
+  duration_ms: 0.537375
+  type: 'test'
+  ...
+# Subtest: POST, GET recovery and cancellation cannot acknowledge changed question or quote
+ok 7 - POST, GET recovery and cancellation cannot acknowledge changed question or quote
+  ---
+  duration_ms: 2.831667
+  type: 'test'
+  ...
+# Subtest: failed or cancelled callbacks never overwrite a later shared quote head
+ok 8 - failed or cancelled callbacks never overwrite a later shared quote head
+  ---
+  duration_ms: 0.20325
+  type: 'test'
+  ...
+# Subtest: stale and foreign quotes cannot be submitted; corrupt head and pending are unusable
+ok 9 - stale and foreign quotes cannot be submitted; corrupt head and pending are unusable
+  ---
+  duration_ms: 0.144375
+  type: 'test'
+  ...
+# Subtest: denied storage preserves a usable in-memory quotation and exact terminal clear
+ok 10 - denied storage preserves a usable in-memory quotation and exact terminal clear
+  ---
+  duration_ms: 0.097875
+  type: 'test'
+  ...
+# Subtest: an uncertain original request can recover while preserving a newer quote on another passage
+ok 11 - an uncertain original request can recover while preserving a newer quote on another passage
+  ---
+  duration_ms: 0.363625
+  type: 'test'
+  ...
+# Subtest: write-only storage failure cannot resurrect an older readable quote on failure, cancel or completion
+ok 12 - write-only storage failure cannot resurrect an older readable quote on failure, cancel or completion
+  ---
+  duration_ms: 1.690209
+  type: 'test'
+  ...
+# Subtest: a stray quote revision on a no-quote pending record cannot acknowledge an unrelated head
+ok 13 - a stray quote revision on a no-quote pending record cannot acknowledge an unrelated head
+  ---
+  duration_ms: 0.347791
+  type: 'test'
+  ...
+# Subtest: definite quote rejection marks only the rejected revision stale and never persists an uncertain retry
+ok 14 - definite quote rejection marks only the rejected revision stale and never persists an uncertain retry
+  ---
+  duration_ms: 0.25425
+  type: 'test'
+  ...
+# Subtest: reload can detect a changed first quoted slice or translation status from actual GET context
+ok 15 - reload can detect a changed first quoted slice or translation status from actual GET context
+  ---
+  duration_ms: 0.147834
+  type: 'test'
+  ...
+# (node:72358) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: workspace lifecycle reports each actual view transition once and preserves the draft
+ok 16 - workspace lifecycle reports each actual view transition once and preserves the draft
+  ---
+  duration_ms: 7.422875
+  type: 'test'
+  ...
+# Subtest: scope stays adjustable in More without occupying the composer
+ok 17 - scope stays adjustable in More without occupying the composer
+  ---
+  duration_ms: 1.776708
+  type: 'test'
+  ...
+# Subtest: companion opens as an AI-only message, locates inside IM and preserves the existing draft
+ok 18 - companion opens as an AI-only message, locates inside IM and preserves the existing draft
+  ---
+  duration_ms: 2.1015
+  type: 'test'
+  ...
+# Subtest: opening is nonmodal and collapse preserves the draft and returns focus
+ok 19 - opening is nonmodal and collapse preserves the draft and returns focus
+  ---
+  duration_ms: 1.402125
+  type: 'test'
+  ...
+# Subtest: keyboard viewport shrink reveals the active composer by scrolling only its frame
+ok 20 - keyboard viewport shrink reveals the active composer by scrolling only its frame
+  ---
+  duration_ms: 1.824667
+  type: 'test'
+  ...
+# Subtest: typing preserves messages, source content, and book options DOM
+ok 21 - typing preserves messages, source content, and book options DOM
+  ---
+  duration_ms: 1.374041
+  type: 'test'
+  ...
+# Subtest: composition Enter never sends; collapsed running request resumes without a duplicate send
+ok 22 - composition Enter never sends; collapsed running request resumes without a duplicate send
+  ---
+  duration_ms: 5.879125
+  type: 'test'
+  ...
+# Subtest: account change clears visible private text; current passage refreshes only without a draft
+ok 23 - account change clears visible private text; current passage refreshes only without a draft
+  ---
+  duration_ms: 2.1215
+  type: 'test'
+  ...
+# Subtest: Escape outside the conversation does not collapse it and source navigation can stay in page
+ok 24 - Escape outside the conversation does not collapse it and source navigation can stay in page
+  ---
+  duration_ms: 1.08925
+  type: 'test'
+  ...
+# Subtest: Escape inside the conversation collapses it and single book has a static title
+ok 25 - Escape inside the conversation collapses it and single book has a static title
+  ---
+  duration_ms: 0.477625
+  type: 'test'
+  ...
+# Subtest: new answer preserves a reader position near the top of message history
+ok 26 - new answer preserves a reader position near the top of message history
+  ---
+  duration_ms: 2.412292
+  type: 'test'
+  ...
+# Subtest: full context disclosure remains available in More without a duplicate composer description
+ok 27 - full context disclosure remains available in More without a duplicate composer description
+  ---
+  duration_ms: 0.986
+  type: 'test'
+  ...
+# Subtest: visual viewport resize enables a scrollable compact layout independently of screen width
+ok 28 - visual viewport resize enables a scrollable compact layout independently of screen width
+  ---
+  duration_ms: 0.734958
+  type: 'test'
+  ...
+# Subtest: completed turn nodes and expanded citations survive refresh and another answer
+ok 29 - completed turn nodes and expanded citations survive refresh and another answer
+  ---
+  duration_ms: 2.488416
+  type: 'test'
+  ...
+# Subtest: scope is visible near send and saving it preserves newer typing without dispatching generation
+ok 30 - scope is visible near send and saving it preserves newer typing without dispatching generation
+  ---
+  duration_ms: 1.450333
+  type: 'test'
+  ...
+# Subtest: a stale permission rejection refreshes scope but requires an explicit new send
+ok 31 - a stale permission rejection refreshes scope but requires an explicit new send
+  ---
+  duration_ms: 1.468042
+  type: 'test'
+  ...
+# Subtest: a late scope acknowledgement cannot change another account draft or selection
+ok 32 - a late scope acknowledgement cannot change another account draft or selection
+  ---
+  duration_ms: 1.260542
+  type: 'test'
+  ...
+# Subtest: missing server scope metadata cannot be presented as an enforced default or dispatched by keyboard
+ok 33 - missing server scope metadata cannot be presented as an enforced default or dispatched by keyboard
+  ---
+  duration_ms: 3.743
+  type: 'test'
+  ...
+# Subtest: pending POST is polled immediately, early empty GET retains local question, terminal GET wins over late POST
+ok 34 - pending POST is polled immediately, early empty GET retains local question, terminal GET wins over late POST
+  ---
+  duration_ms: 1.270916
+  type: 'test'
+  ...
+# Subtest: cancel receipt defeats a delayed POST and pending tool activity updates preserve row DOM
+ok 35 - cancel receipt defeats a delayed POST and pending tool activity updates preserve row DOM
+  ---
+  duration_ms: 0.830542
+  type: 'test'
+  ...
+# Subtest: Markdown renders real headings tables quotes and code safely with only registered internal links
+ok 36 - Markdown renders real headings tables quotes and code safely with only registered internal links
+  ---
+  duration_ms: 7.566041
+  type: 'test'
+  ...
+# Subtest: automatic progress reads continue beyond twelve polls throughout the run lease
+ok 37 - automatic progress reads continue beyond twelve polls throughout the run lease
+  ---
+  duration_ms: 2.084583
+  type: 'test'
+  ...
+# Subtest: unsafe URLs and same-origin absolute navigation cannot bypass the citation allowlist
+ok 38 - unsafe URLs and same-origin absolute navigation cannot bypass the citation allowlist
+  ---
+  duration_ms: 0.122875
+  type: 'test'
+  ...
+# Subtest: an explicit successful reload restores the composer when its retry disappears
+ok 39 - an explicit successful reload restores the composer when its retry disappears
+  ---
+  duration_ms: 0.409
+  type: 'test'
+  ...
+# Subtest: a completed explicit stop restores the cancelled question and composer focus
+ok 40 - a completed explicit stop restores the cancelled question and composer focus
+  ---
+  duration_ms: 0.650583
+  type: 'test'
+  ...
+# Subtest: reload completion does not take focus after the reader chose another control
+ok 41 - reload completion does not take focus after the reader chose another control
+  ---
+  duration_ms: 0.356875
+  type: 'test'
+  ...
+# Subtest: completed POST survives a delayed pre-claim empty GET in the view and exported conversation
+ok 42 - completed POST survives a delayed pre-claim empty GET in the view and exported conversation
+  ---
+  duration_ms: 0.785291
+  type: 'test'
+  ...
+# Subtest: a newly completed long answer opens at its beginning without moving the page or resetting reopened history
+ok 43 - a newly completed long answer opens at its beginning without moving the page or resetting reopened history
+  ---
+  duration_ms: 0.682083
+  type: 'test'
+  ...
+# Subtest: pending turn has one stable status for neutral thinking and real tool activity
+ok 44 - pending turn has one stable status for neutral thinking and real tool activity
+  ---
+  duration_ms: 1.794792
+  type: 'test'
+  ...
+# Subtest: the scope selector narrows library back to this book with the domain enum and an acknowledged receipt
+ok 45 - the scope selector narrows library back to this book with the domain enum and an acknowledged receipt
+  ---
+  duration_ms: 0.437458
+  type: 'test'
+  ...
+# Subtest: completed chapter activity and companion attribution relabel on retained turns
+ok 46 - completed chapter activity and companion attribution relabel on retained turns
+  ---
+  duration_ms: 10.7795
+  type: 'test'
+  ...
+# Subtest: disposing a chat removes owned root and viewport listeners before remount
+ok 47 - disposing a chat removes owned root and viewport listeners before remount
+  ---
+  duration_ms: 0.695709
+  type: 'test'
+  ...
+# Subtest: disposal before a queued chat load prevents the request and retained controls are inert
+ok 48 - disposal before a queued chat load prevents the request and retained controls are inert
+  ---
+  duration_ms: 0.232416
+  type: 'test'
+  ...
+# Subtest: queued close from disposed dialog cannot affect a fresh open or unopened controller
+ok 49 - queued close from disposed dialog cannot affect a fresh open or unopened controller
+  ---
+  duration_ms: 1.66775
+  type: 'test'
+  ...
+# Subtest: review chat R2 no-book return uses effective route locale with unavailable storage
+ok 50 - review chat R2 no-book return uses effective route locale with unavailable storage
+  ---
+  duration_ms: 0.958958
+  type: 'test'
+  ...
+# Subtest: review chat R2 registered inline citations and recommendations retain locale and click semantics
+ok 51 - review chat R2 registered inline citations and recommendations retain locale and click semantics
+  ---
+  duration_ms: 2.284333
+  type: 'test'
+  ...
+# Subtest: review chat R2 pure Markdown registers only validated internal links before owner formatting
+ok 52 - review chat R2 pure Markdown registers only validated internal links before owner formatting
+  ---
+  duration_ms: 0.360167
+  type: 'test'
+  ...
+# Subtest: review chat R3 missing context translation relabels in place while real prose stays literal
+ok 53 - review chat R3 missing context translation relabels in place while real prose stays literal
+  ---
+  duration_ms: 2.347583
+  type: 'test'
+  ...
+# Subtest: native queued close followed by disposal consumes the visible lifecycle exactly once
+ok 54 - native queued close followed by disposal consumes the visible lifecycle exactly once
+  ---
+  duration_ms: 0.499875
+  type: 'test'
+  ...
+# Subtest: explicit quotation uses a removable chip, keeps the own question and never auto-sends
+ok 55 - explicit quotation uses a removable chip, keeps the own question and never auto-sends
+  ---
+  duration_ms: 3.364875
+  type: 'test'
+  ...
+# Subtest: explicit quote on a newer passage fences an older in-flight context read immediately
+ok 56 - explicit quote on a newer passage fences an older in-flight context read immediately
+  ---
+  duration_ms: 0.571292
+  type: 'test'
+  ...
+# Subtest: a definite preclaim quote rejection preserves editable question and enables removal without uncertain recovery
+ok 57 - a definite preclaim quote rejection preserves editable question and enables removal without uncertain recovery
+  ---
+  duration_ms: 1.247458
+  type: 'test'
+  ...
+# Subtest: upload cards retain draft, composing input, focus and card identity across progress and locale changes
+ok 58 - upload cards retain draft, composing input, focus and card identity across progress and locale changes
+  ---
+  duration_ms: 2.744
+  type: 'test'
+  ...
+# Subtest: empty-library chat accepts an attachment and file drop without a book or model request
+ok 59 - empty-library chat accepts an attachment and file drop without a book or model request
+  ---
+  duration_ms: 1.230708
+  type: 'test'
+  ...
+# Subtest: closing while upload code loads retains the chosen file and draft without reopening or focusing chat
+ok 60 - closing while upload code loads retains the chosen file and draft without reopening or focusing chat
+  ---
+  duration_ms: 0.427917
+  type: 'test'
+  ...
+# Subtest: owner switch while upload code loads discards the old file without mounting or starting work
+ok 61 - owner switch while upload code loads discards the old file without mounting or starting work
+  ---
+  duration_ms: 0.323334
+  type: 'test'
+  ...
+# Subtest: disposing while upload code loads prevents its UI, requests and selected file work
+ok 62 - disposing while upload code loads prevents its UI, requests and selected file work
+  ---
+  duration_ms: 0.957333
+  type: 'test'
+  ...
+# Subtest: chat history waits for its on-demand renderer while data loads in parallel and disposal fences late rendering
+ok 63 - chat history waits for its on-demand renderer while data loads in parallel and disposal fences late rendering
+  ---
+  duration_ms: 0.551166
+  type: 'test'
+  ...
+# Subtest: AI companion messages never become pending user questions or overwrite drafts
+ok 64 - AI companion messages never become pending user questions or overwrite drafts
+  ---
+  duration_ms: 2.696459
+  type: 'test'
+  ...
+# Subtest: switching books restores only each book draft and discards a late view
+ok 65 - switching books restores only each book draft and discards a late view
+  ---
+  duration_ms: 0.384125
+  type: 'test'
+  ...
+# Subtest: switching owners clears private text and rejects a previous owner answer
+ok 66 - switching owners clears private text and rejects a previous owner answer
+  ---
+  duration_ms: 3.606375
+  type: 'test'
+  ...
+# Subtest: empty and oversized questions cannot send, but the limit itself can
+ok 67 - empty and oversized questions cannot send, but the limit itself can
+  ---
+  duration_ms: 0.116167
+  type: 'test'
+  ...
+# Subtest: unavailable service still keeps a draft without allowing submission
+ok 68 - unavailable service still keeps a draft without allowing submission
+  ---
+  duration_ms: 0.188375
+  type: 'test'
+  ...
+# Subtest: cancel invalidates a late completion and restores the question for a fresh run
+ok 69 - cancel invalidates a late completion and restores the question for a fresh run
+  ---
+  duration_ms: 0.607208
+  type: 'test'
+  ...
+# Subtest: uncertain network failure requires readback before retrying the same id
+ok 70 - uncertain network failure requires readback before retrying the same id
+  ---
+  duration_ms: 0.4665
+  type: 'test'
+  ...
+# Subtest: readback recovers a completed request without resending or losing a newer draft
+ok 71 - readback recovers a completed request without resending or losing a newer draft
+  ---
+  duration_ms: 1.28025
+  type: 'test'
+  ...
+# Subtest: readback of a running request blocks a second send and recovers its result
+ok 72 - readback of a running request blocks a second send and recovers its result
+  ---
+  duration_ms: 0.446417
+  type: 'test'
+  ...
+# Subtest: a definite failed run gets a new id while preserving text
+ok 73 - a definite failed run gets a new id while preserving text
+  ---
+  duration_ms: 0.418875
+  type: 'test'
+  ...
+# Subtest: draft persistence failure never prevents composing or sending
+ok 74 - draft persistence failure never prevents composing or sending
+  ---
+  duration_ms: 0.124084
+  type: 'test'
+  ...
+# Subtest: changing passage cannot send a question against the previous context while loading
+ok 75 - changing passage cannot send a question against the previous context while loading
+  ---
+  duration_ms: 0.052
+  type: 'test'
+  ...
+# Subtest: a changed source version after uncertain failure requires a fresh request
+ok 76 - a changed source version after uncertain failure requires a fresh request
+  ---
+  duration_ms: 0.057125
+  type: 'test'
+  ...
+# Subtest: a view requested before stopping cannot reveal a late completion
+ok 77 - a view requested before stopping cannot reveal a late completion
+  ---
+  duration_ms: 0.051333
+  type: 'test'
+  ...
+# Subtest: a mismatched send receipt cannot acknowledge the submitted question
+ok 78 - a mismatched send receipt cannot acknowledge the submitted question
+  ---
+  duration_ms: 0.036834
+  type: 'test'
+  ...
+# Subtest: stopping an already failed run preserves its actual terminal status
+ok 79 - stopping an already failed run preserves its actual terminal status
+  ---
+  duration_ms: 0.037459
+  type: 'test'
+  ...
+# Subtest: unavailable readback releases an unstarted question so its draft stays editable
+ok 80 - unavailable readback releases an unstarted question so its draft stays editable
+  ---
+  duration_ms: 0.041417
+  type: 'test'
+  ...
+# Subtest: a failed replacement passage read cannot send against the old passage
+ok 81 - a failed replacement passage read cannot send against the old passage
+  ---
+  duration_ms: 0.044
+  type: 'test'
+  ...
+# Subtest: reload after server completion acknowledges the original request and clears its exact draft
+ok 82 - reload after server completion acknowledges the original request and clears its exact draft
+  ---
+  duration_ms: 0.211292
+  type: 'test'
+  ...
+# Subtest: reload during generation restores one running request and later acknowledges its answer
+ok 83 - reload during generation restores one running request and later acknowledges its answer
+  ---
+  duration_ms: 0.148875
+  type: 'test'
+  ...
+# Subtest: reload without a server receipt retries the persisted payload with the same id after readback
+ok 84 - reload without a server receipt retries the persisted payload with the same id after readback
+  ---
+  duration_ms: 0.058792
+  type: 'test'
+  ...
+# Subtest: persisted pending questions belong only to their original owner and book
+ok 85 - persisted pending questions belong only to their original owner and book
+  ---
+  duration_ms: 0.058
+  type: 'test'
+  ...
+# Subtest: reload completion preserves a draft edited after the original question was sent
+ok 86 - reload completion preserves a draft edited after the original question was sent
+  ---
+  duration_ms: 0.053917
+  type: 'test'
+  ...
+# Subtest: a completed answer does not clear a newer draft saved by another tab
+ok 87 - a completed answer does not clear a newer draft saved by another tab
+  ---
+  duration_ms: 0.043541
+  type: 'test'
+  ...
+# Subtest: completion clears only the exact submitted draft snapshot, including whitespace edits
+ok 88 - completion clears only the exact submitted draft snapshot, including whitespace edits
+  ---
+  duration_ms: 0.037083
+  type: 'test'
+  ...
+# Subtest: draft cleanup failure retains the original id for the next reload
+ok 89 - draft cleanup failure retains the original id for the next reload
+  ---
+  duration_ms: 0.119333
+  type: 'test'
+  ...
+# Subtest: an uncertain retry cannot silently use a different passage than the one shown
+ok 90 - an uncertain retry cannot silently use a different passage than the one shown
+  ---
+  duration_ms: 0.200375
+  type: 'test'
+  ...
+# Subtest: recovery can retry the old id while preserving a different new draft
+ok 91 - recovery can retry the old id while preserving a different new draft
+  ---
+  duration_ms: 0.262167
+  type: 'test'
+  ...
+# Subtest: failed persistence of a later edit cannot erase the last recoverable request id
+ok 92 - failed persistence of a later edit cannot erase the last recoverable request id
+  ---
+  duration_ms: 0.259
+  type: 'test'
+  ...
+# Subtest: a terminal completed send receipt invalidates earlier empty reads and remains ready
+ok 93 - a terminal completed send receipt invalidates earlier empty reads and remains ready
+  ---
+  duration_ms: 0.1375
+  type: 'test'
+  ...
+# Subtest: a terminal failed send receipt invalidates earlier empty reads and remains ready
+ok 94 - a terminal failed send receipt invalidates earlier empty reads and remains ready
+  ---
+  duration_ms: 0.080917
+  type: 'test'
+  ...
+# Subtest: a terminal cancelled send receipt invalidates earlier empty reads and remains ready
+ok 95 - a terminal cancelled send receipt invalidates earlier empty reads and remains ready
+  ---
+  duration_ms: 0.071583
+  type: 'test'
+  ...
+# Subtest: preference write consent belongs only to the selected turn and survives exact pending recovery
+ok 96 - preference write consent belongs only to the selected turn and survives exact pending recovery
+  ---
+  duration_ms: 0.803125
+  type: 'test'
+  ...
+# Subtest: reader opening precedence honors entry intent, remembered views, account defaults and guest defaults
+ok 97 - reader opening precedence honors entry intent, remembered views, account defaults and guest defaults
+  ---
+  duration_ms: 2.044667
+  type: 'test'
+  ...
+# Subtest: reader integration remembers a manual parallel view and keeps source-only books on the original
+ok 98 - reader integration remembers a manual parallel view and keeps source-only books on the original
+  ---
+  duration_ms: 8.559916
+  type: 'test'
+  ...
+# Subtest: logout clears account defaults even when the portal retains the old preference snapshot
+ok 99 - logout clears account defaults even when the portal retains the old preference snapshot
+  ---
+  duration_ms: 2.545959
+  type: 'test'
+  ...
+# Subtest: the compact form saves one full snapshot, keeps hidden fields and reports honest errors
+ok 100 - the compact form saves one full snapshot, keeps hidden fields and reports honest errors
+  ---
+  duration_ms: 1.848167
+  type: 'test'
+  ...
+# Subtest: a late save from a previous account never adopts into the next account
+ok 101 - a late save from a previous account never adopts into the next account
+  ---
+  duration_ms: 2.197792
+  type: 'test'
+  ...
+# Subtest: the first-reading invitation is quiet, skippable durably and reopens with the same form
+ok 102 - the first-reading invitation is quiet, skippable durably and reopens with the same form
+  ---
+  duration_ms: 0.912667
+  type: 'test'
+  ...
+# Subtest: the reader action saves the current view as new-book defaults without moving the book
+ok 103 - the reader action saves the current view as new-book defaults without moving the book
+  ---
+  duration_ms: 8.7745
+  type: 'test'
+  ...
+# Subtest: account defaults travel through manifest, parts and ZIP and recover on a fresh instance
+ok 104 - account defaults travel through manifest, parts and ZIP and recover on a fresh instance
+  ---
+  duration_ms: 102.543583
+  type: 'test'
+  ...
+# Subtest: a configured target keeps its own defaults and revision while legacy backups leave them untouched
+ok 105 - a configured target keeps its own defaults and revision while legacy backups leave them untouched
+  ---
+  duration_ms: 87.532666
+  type: 'test'
+  ...
+# Subtest: unknown or unbounded preference metadata rejects the package before any restore write
+ok 106 - unknown or unbounded preference metadata rejects the package before any restore write
+  ---
+  duration_ms: 20.659542
+  type: 'test'
+  ...
+# Subtest: gifts and selected personal exports never carry account reading defaults
+ok 107 - gifts and selected personal exports never carry account reading defaults
+  ---
+  duration_ms: 18.963792
+  type: 'test'
+  ...
+# Subtest: existing book settings only move the current book and never overwrite the account defaults
+ok 108 - existing book settings only move the current book and never overwrite the account defaults
+  ---
+  duration_ms: 18.813
+  type: 'test'
+  ...
+# Subtest: conflict recovery reads the latest version, keeps explicit edits and waits for a manual save
+ok 109 - conflict recovery reads the latest version, keeps explicit edits and waits for a manual save
+  ---
+  duration_ms: 1.921875
+  type: 'test'
+  ...
+# Subtest: a failed latest-version read keeps the draft and can retry
+ok 110 - a failed latest-version read keeps the draft and can retry
+  ---
+  duration_ms: 1.512708
+  type: 'test'
+  ...
+# Subtest: a late latest-version read never adopts into another account
+ok 111 - a late latest-version read never adopts into another account
+  ---
+  duration_ms: 1.225375
+  type: 'test'
+  ...
+# Subtest: same-owner session refreshes adopt new versions without losing explicit edits
+ok 112 - same-owner session refreshes adopt new versions without losing explicit edits
+  ---
+  duration_ms: 0.845791
+  type: 'test'
+  ...
+# Subtest: a pending save releases the next account and never adopts old results
+ok 113 - a pending save releases the next account and never adopts old results
+  ---
+  duration_ms: 3.72
+  type: 'test'
+  ...
+# Subtest: oversized timestamps are rejected before parsing and before any restore writes
+ok 114 - oversized timestamps are rejected before parsing and before any restore writes
+  ---
+  duration_ms: 54.9815
+  type: 'test'
+  ...
+# Subtest: same-owner authoritative updates arrive through the portal in-place session mutation
+ok 115 - same-owner authoritative updates arrive through the portal in-place session mutation
+  ---
+  duration_ms: 0.991375
+  type: 'test'
+  ...
+# Subtest: a refresh during this owner's request reconciles safely after it
+ok 116 - a refresh during this owner's request reconciles safely after it
+  ---
+  duration_ms: 0.973042
+  type: 'test'
+  ...
+# Subtest: a superseded completion never releases the current account pending save
+ok 117 - a superseded completion never releases the current account pending save
+  ---
+  duration_ms: 1.347417
+  type: 'test'
+  ...
+# Subtest: a superseded skip completion never releases the next account pending dismissal
+ok 118 - a superseded skip completion never releases the next account pending dismissal
+  ---
+  duration_ms: 1.791458
+  type: 'test'
+  ...
+# Subtest: locale refresh keeps the reading-preferences request, dirty fields and native option nodes intact
+ok 119 - locale refresh keeps the reading-preferences request, dirty fields and native option nodes intact
+  ---
+  duration_ms: 8.700292
+  type: 'test'
+  ...
+# Subtest: a second preferences mount cannot refresh a disposed first mount
+ok 120 - a second preferences mount cannot refresh a disposed first mount
+  ---
+  duration_ms: 1.126708
+  type: 'test'
+  ...
+# Subtest: reformatting an invitation failure never replays its business error and owner changes discard the cached status
+ok 121 - reformatting an invitation failure never replays its business error and owner changes discard the cached status
+  ---
+  duration_ms: 1.088667
+  type: 'test'
+  ...
+# Subtest: the complete reading invitation relabels existing heading, description and accessible name without replaying pending dismissal
+ok 122 - the complete reading invitation relabels existing heading, description and accessible name without replaying pending dismissal
+  ---
+  duration_ms: 0.824125
+  type: 'test'
+  ...
+# Subtest: autosave coalesces one deliberate burst into a single full snapshot write
+ok 123 - autosave coalesces one deliberate burst into a single full snapshot write
+  ---
+  duration_ms: 0.828125
+  type: 'test'
+  ...
+# Subtest: a deliberate edit during a pending save queues exactly one serialized follow-up
+ok 124 - a deliberate edit during a pending save queues exactly one serialized follow-up
+  ---
+  duration_ms: 0.707625
+  type: 'test'
+  ...
+# Subtest: an owner change before dispatch cancels the pending autosave and a guest edit never writes
+ok 125 - an owner change before dispatch cancels the pending autosave and a guest edit never writes
+  ---
+  duration_ms: 0.742791
+  type: 'test'
+  ...
+# Subtest: an owner change during a pending autosave drops its result and keeps the next account clean
+ok 126 - an owner change during a pending autosave drops its result and keeps the next account clean
+  ---
+  duration_ms: 0.722
+  type: 'test'
+  ...
+# Subtest: a failed autosave keeps the draft, stops retrying and only the explicit action writes again
+ok 127 - a failed autosave keeps the draft, stops retrying and only the explicit action writes again
+  ---
+  duration_ms: 0.702708
+  type: 'test'
+  ...
+# Subtest: a conflicting autosave never overwrites the draft and recovery stays read-only
+ok 128 - a conflicting autosave never overwrites the draft and recovery stays read-only
+  ---
+  duration_ms: 0.815417
+  type: 'test'
+  ...
+# Subtest: a locale refresh never saves, resets or focuses while an autosave is pending
+ok 129 - a locale refresh never saves, resets or focuses while an autosave is pending
+  ---
+  duration_ms: 1.315917
+  type: 'test'
+  ...
+# Subtest: the reading form keeps its grouped rows, real size preview and guest explanation
+ok 130 - the reading form keeps its grouped rows, real size preview and guest explanation
+  ---
+  duration_ms: 0.574667
+  type: 'test'
+  ...
+# Subtest: the pending dispatch re-checks the live session owner before any write leaves
+ok 131 - the pending dispatch re-checks the live session owner before any write leaves
+  ---
+  duration_ms: 1.363292
+  type: 'test'
+  ...
+# Subtest: the explicit recovery read also re-checks ownership before it reads
+ok 132 - the explicit recovery read also re-checks ownership before it reads
+  ---
+  duration_ms: 1.173959
+  type: 'test'
+  ...
+# Subtest: the real choice chrome follows the native disabled state through save, failure, guest and owner change
+ok 133 - the real choice chrome follows the native disabled state through save, failure, guest and owner change
+  ---
+  duration_ms: 0.581542
+  type: 'test'
+  ...
+# Subtest: a later edit to the same field survives the in-flight save and queues one follow-up
+ok 134 - a later edit to the same field survives the in-flight save and queues one follow-up
+  ---
+  duration_ms: 0.573958
+  type: 'test'
+  ...
+# Subtest: after a failure only an explicit retry resumes writes and the draft survives
+ok 135 - after a failure only an explicit retry resumes writes and the draft survives
+  ---
+  duration_ms: 0.438041
+  type: 'test'
+  ...
+# Subtest: after a conflict edits stay drafts and recovery never silently submits them
+ok 136 - after a conflict edits stay drafts and recovery never silently submits them
+  ---
+  duration_ms: 0.495375
+  type: 'test'
+  ...
+# Subtest: both capability fixtures reject the unsafe :popover-open selector the way stock Chrome 113 does
+ok 137 - both capability fixtures reject the unsafe :popover-open selector the way stock Chrome 113 does
+  ---
+  duration_ms: 0.815667
+  type: 'test'
+  ...
+# Subtest: the shared registry returns one owning instance per element in both capability branches
+ok 138 - the shared registry returns one owning instance per element in both capability branches
+  ---
+  duration_ms: 1.065792
+  type: 'test'
+  ...
+# Subtest: every beforeOpen subscription survives a later owner and runs exactly once per open in both mount orders
+ok 139 - every beforeOpen subscription survives a later owner and runs exactly once per open in both mount orders
+  ---
+  duration_ms: 0.639333
+  type: 'test'
+  ...
+# Subtest: the subscription API delivers one already-open transition and unsubscribes for good
+ok 140 - the subscription API delivers one already-open transition and unsubscribes for good
+  ---
+  duration_ms: 0.315667
+  type: 'test'
+  ...
+# Subtest: fallback trigger clicks toggle open marker, hidden state, aria and first-control focus
+ok 141 - fallback trigger clicks toggle open marker, hidden state, aria and first-control focus
+  ---
+  duration_ms: 0.117958
+  type: 'test'
+  ...
+# Subtest: supporting browsers keep declarative triggers and truthful state even when toggle arrives on a task
+ok 142 - supporting browsers keep declarative triggers and truthful state even when toggle arrives on a task
+  ---
+  duration_ms: 0.103541
+  type: 'test'
+  ...
+# Subtest: Escape closes the fallback with focus return and stays the page keyboard gate
+ok 143 - Escape closes the fallback with focus return and stays the page keyboard gate
+  ---
+  duration_ms: 0.084458
+  type: 'test'
+  ...
+# Subtest: outside pointer and outside focus dismiss the fallback without stealing the intentional target
+ok 144 - outside pointer and outside focus dismiss the fallback without stealing the intentional target
+  ---
+  duration_ms: 0.08025
+  type: 'test'
+  ...
+# Subtest: dismissal never closes on its own trigger or popover interior and an old close cannot steal a newer modal
+ok 145 - dismissal never closes on its own trigger or popover interior and an old close cannot steal a newer modal
+  ---
+  duration_ms: 0.226708
+  type: 'test'
+  ...
+# Subtest: a detached, hidden, display:none or visibility:hidden trigger never takes return focus
+ok 146 - a detached, hidden, display:none or visibility:hidden trigger never takes return focus
+  ---
+  duration_ms: 0.427542
+  type: 'test'
+  ...
+# Subtest: a fallback popover replaces an older one without letting the old close steal focus
+ok 147 - a fallback popover replaces an older one without letting the old close steal focus
+  ---
+  duration_ms: 0.224292
+  type: 'test'
+  ...
+# Subtest: the filter panel reports open/close once to the URL history owner and clears a choice onto its own control
+ok 148 - the filter panel reports open/close once to the URL history owner and clears a choice onto its own control
+  ---
+  duration_ms: 4.791417
+  type: 'test'
+  ...
+# Subtest: the dynamic book menu keeps its actual current trigger and clears it on owner reset
+ok 149 - the dynamic book menu keeps its actual current trigger and clears it on owner reset
+  ---
+  duration_ms: 3.171709
+  type: 'test'
+  ...
+# Subtest: navigation and book actions share one book-info owner and the lifecycle runs once per transition in both mount orders
+ok 150 - navigation and book actions share one book-info owner and the lifecycle runs once per transition in both mount orders
+  ---
+  duration_ms: 4.326667
+  type: 'test'
+  ...
+# Subtest: the palette shortcut defers while a fallback popover is open and recovers after close
+ok 151 - the palette shortcut defers while a fallback popover is open and recovers after close
+  ---
+  duration_ms: 1.66475
+  type: 'test'
+  ...
+# Subtest: the shared safe overlay query covers popovers without evaluating :popover-open
+ok 152 - the shared safe overlay query covers popovers without evaluating :popover-open
+  ---
+  duration_ms: 0.11075
+  type: 'test'
+  ...
+# Subtest: onboarding recommends a real book before three choices and does not repeat a started write
+ok 153 - onboarding recommends a real book before three choices and does not repeat a started write
+  ---
+  duration_ms: 4.972
+  type: 'test'
+  ...
+# Subtest: failed writes show an error and late owner responses never adopt another account preferences
+ok 154 - failed writes show an error and late owner responses never adopt another account preferences
+  ---
+  duration_ms: 0.961167
+  type: 'test'
+  ...
+# Subtest: a late read cannot roll back a newer same-account preference save
+ok 155 - a late read cannot roll back a newer same-account preference save
+  ---
+  duration_ms: 0.528042
+  type: 'test'
+  ...
+# Subtest: a read adoption callback cannot recursively start another read while refreshing
+ok 156 - a read adoption callback cannot recursively start another read while refreshing
+  ---
+  duration_ms: 0.355458
+  type: 'test'
+  ...
+# Subtest: settings selection restores focus after its asynchronous save replaces controls
+ok 157 - settings selection restores focus after its asynchronous save replaces controls
+  ---
+  duration_ms: 1.387833
+  type: 'test'
+  ...
+# Subtest: locale commits update recommendation URLs and labels without replacing editing controls
+ok 158 - locale commits update recommendation URLs and labels without replacing editing controls
+  ---
+  duration_ms: 10.244083
+  type: 'test'
+  ...
+# Subtest: a confirmed settings save queues one required read behind an older pending read
+ok 159 - a confirmed settings save queues one required read behind an older pending read
+  ---
+  duration_ms: 0.61
+  type: 'test'
+  ...
+# Subtest: explicit preferences persist by owner, inferred values wait for confirmation, delete resets defaults
+ok 160 - explicit preferences persist by owner, inferred values wait for confirmation, delete resets defaults
+  ---
+  duration_ms: 21.624458
+  type: 'test'
+  ...
+# Subtest: onboarding is at most three questions, records assigned order and skips once, and is portable
+ok 161 - onboarding is at most three questions, records assigned order and skips once, and is portable
+  ---
+  duration_ms: 14.679208
+  type: 'test'
+  ...
+# Subtest: Agent tools capture account and require trusted per-turn permission for effective writes
+ok 162 - Agent tools capture account and require trusted per-turn permission for effective writes
+  ---
+  duration_ms: 7.559333
+  type: 'test'
+  ...
+# Subtest: hosted CAS backend persists choices and provenance without sharing another owner row
+ok 163 - hosted CAS backend persists choices and provenance without sharing another owner row
+  ---
+  duration_ms: 1.827542
+  type: 'test'
+  ...
+# Subtest: answered onboarding immediately changes the existing reader defaults and records completion once
+ok 164 - answered onboarding immediately changes the existing reader defaults and records completion once
+  ---
+  duration_ms: 6.46625
+  type: 'test'
+  ...
+# Subtest: HTTP memory endpoint requires the current owner and rejects identity injection and oversized bodies
+ok 165 - HTTP memory endpoint requires the current owner and rejects identity injection and oversized bodies
+  ---
+  duration_ms: 278.064166
+  type: 'test'
+  ...
+# Subtest: restore refuses onboarding state that would hide chat with no question or exit
+ok 166 - restore refuses onboarding state that would hide chat with no question or exit
+  ---
+  duration_ms: 0.480875
+  type: 'test'
+  ...
+# Subtest: deleting mode clears its language/form filter and unrelated preference changes leave filters alone
+ok 167 - deleting mode clears its language/form filter and unrelated preference changes leave filters alone
+  ---
+  duration_ms: 6.569
+  type: 'test'
+  ...
+# Subtest: chat opens on body text, resumes the saved anchor, and keeps independent translation states
+ok 168 - chat opens on body text, resumes the saved anchor, and keeps independent translation states
+  ---
+  duration_ms: 32.642083
+  type: 'test'
+  ...
+# Subtest: default chat context skips the catalog source heading using the actual reading start
+ok 169 - default chat context skips the catalog source heading using the actual reading start
+  ---
+  duration_ms: 9.093333
+  type: 'test'
+  ...
+# Subtest: every chat operation rejects guests and anonymous identities before opening a book
+ok 170 - every chat operation rejects guests and anonymous identities before opening a book
+  ---
+  duration_ms: 4.412459
+  type: 'test'
+  ...
+# Subtest: existing authenticated local sessions can use the same isolated chat service
+ok 171 - existing authenticated local sessions can use the same isolated chat service
+  ---
+  duration_ms: 37.895459
+  type: 'test'
+  ...
+# Subtest: private access and chat history stay within the authenticated account
+ok 172 - private access and chat history stay within the authenticated account
+  ---
+  duration_ms: 74.031584
+  type: 'test'
+  ...
+# Subtest: the original question is durable and exportable before generation starts, with AI attribution separate
+ok 173 - the original question is durable and exportable before generation starts, with AI attribution separate
+  ---
+  duration_ms: 26.279875
+  type: 'test'
+  ...
+# Subtest: unconfigured generation remains readable and never creates a phantom question
+ok 174 - unconfigured generation remains readable and never creates a phantom question
+  ---
+  duration_ms: 7.633666
+  type: 'test'
+  ...
+# Subtest: public-domain text is still readable by guests while personal chat requires a session
+ok 175 - public-domain text is still readable by guests while personal chat requires a session
+  ---
+  duration_ms: 8.43725
+  type: 'test'
+  ...
+# Subtest: idempotent finished submissions return the existing answer and reject changed question or anchor
+ok 176 - idempotent finished submissions return the existing answer and reject changed question or anchor
+  ---
+  duration_ms: 27.061417
+  type: 'test'
+  ...
+# Subtest: a second service cannot launch a duplicate or another turn while a book is running
+ok 177 - a second service cannot launch a duplicate or another turn while a book is running
+  ---
+  duration_ms: 18.267292
+  type: 'test'
+  ...
+# Subtest: new conversations receive metadata, chapter location and real account tools rather than book dumps
+ok 178 - new conversations receive metadata, chapter location and real account tools rather than book dumps
+  ---
+  duration_ms: 20.353833
+  type: 'test'
+  ...
+# Subtest: long source paragraphs stay behind paged tools without preventing a greeting
+ok 179 - long source paragraphs stay behind paged tools without preventing a greeting
+  ---
+  duration_ms: 28.36175
+  type: 'test'
+  ...
+# Subtest: follow-ups retain six complete cross-passage role pairs and unchanged current question
+ok 180 - follow-ups retain six complete cross-passage role pairs and unchanged current question
+  ---
+  duration_ms: 65.431
+  type: 'test'
+  ...
+# Subtest: native Unicode answers have no echo schema and candidate references never become evidence
+ok 181 - native Unicode answers have no echo schema and candidate references never become evidence
+  ---
+  duration_ms: 27.072375
+  type: 'test'
+  ...
+# Subtest: actual activity is visible during pending generation and cancelled runs cannot revive it
+ok 182 - actual activity is visible during pending generation and cancelled runs cannot revive it
+  ---
+  duration_ms: 11.00925
+  type: 'test'
+  ...
+# Subtest: cancellation from another service defeats a late model answer durably
+ok 183 - cancellation from another service defeats a late model answer durably
+  ---
+  duration_ms: 8.505417
+  type: 'test'
+  ...
+# Subtest: cancelling from another service promptly aborts the generating signal with local files
+ok 184 - cancelling from another service promptly aborts the generating signal with local files
+  ---
+  duration_ms: 512.511833
+  type: 'test'
+  ...
+# Subtest: cancelling from another service promptly aborts the generating signal with shared dataStore
+ok 185 - cancelling from another service promptly aborts the generating signal with shared dataStore
+  ---
+  duration_ms: 514.593917
+  type: 'test'
+  ...
+# Subtest: successful generation stops cancellation polling instead of reading storage after completion
+ok 186 - successful generation stops cancellation polling instead of reading storage after completion
+  ---
+  duration_ms: 1124.008666
+  type: 'test'
+  ...
+# Subtest: generator failure retains the original exportable question with a safe error
+ok 187 - generator failure retains the original exportable question with a safe error
+  ---
+  duration_ms: 20.844
+  type: 'test'
+  ...
+# Subtest: completed conversations survive restart and expired running leases release the book without accepting late answers
+ok 188 - completed conversations survive restart and expired running leases release the book without accepting late answers
+  ---
+  duration_ms: 25.877458
+  type: 'test'
+  ...
+# Subtest: closing the service aborts its own in-flight generation and retains a cancelled question
+ok 189 - closing the service aborts its own in-flight generation and retains a cancelled question
+  ---
+  duration_ms: 10.328833
+  type: 'test'
+  ...
+# Subtest: the hourly quota is shared across books, survives restart and resets after the hour
+ok 190 - the hourly quota is shared across books, survives restart and resets after the hour
+  ---
+  duration_ms: 47.523208
+  type: 'test'
+  ...
+# Subtest: the global two-run gate spans accounts and services and releases only completed or cancelled leases with local files
+ok 191 - the global two-run gate spans accounts and services and releases only completed or cancelled leases with local files
+  ---
+  duration_ms: 536.579125
+  type: 'test'
+  ...
+# Subtest: the global two-run gate spans accounts and services and releases only completed or cancelled leases with shared dataStore
+ok 192 - the global two-run gate spans accounts and services and releases only completed or cancelled leases with shared dataStore
+  ---
+  duration_ms: 520.163041
+  type: 'test'
+  ...
+# Subtest: global leases expire within ninety seconds even when their execution instances never release them
+ok 193 - global leases expire within ninety seconds even when their execution instances never release them
+  ---
+  duration_ms: 19.301
+  type: 'test'
+  ...
+# Subtest: the shared global hourly budget stops request 101 across accounts and survives CAS callback replay
+ok 194 - the shared global hourly budget stops request 101 across accounts and survives CAS callback replay
+  ---
+  duration_ms: 124.767041
+  type: 'test'
+  ...
+# Subtest: the shared global daily budget stops request 501 while fresh hourly and owner budgets remain available
+ok 195 - the shared global daily budget stops request 501 while fresh hourly and owner budgets remain available
+  ---
+  duration_ms: 662.608541
+  type: 'test'
+  ...
+# Subtest: invalid IDs, question sizes, anchors and versions never invoke the generator
+ok 196 - invalid IDs, question sizes, anchors and versions never invoke the generator
+  ---
+  duration_ms: 3.730292
+  type: 'test'
+  ...
+# Subtest: a full conversation keeps its original turns and refuses another paid run
+ok 197 - a full conversation keeps its original turns and refuses another paid run
+  ---
+  duration_ms: 4.121708
+  type: 'test'
+  ...
+# Subtest: a changed source during generation cannot publish an answer against the old edition
+ok 198 - a changed source during generation cannot publish an answer against the old edition
+  ---
+  duration_ms: 4.949542
+  type: 'test'
+  ...
+# Subtest: a process interrupted before writing its lock owner does not leave chat locked forever
+ok 199 - a process interrupted before writing its lock owner does not leave chat locked forever
+  ---
+  duration_ms: 20.040542
+  type: 'test'
+  ...
+# Subtest: CAS retries cannot repeat generation or duplicate the original question
+ok 200 - CAS retries cannot repeat generation or duplicate the original question
+  ---
+  duration_ms: 4.984417
+  type: 'test'
+  ...
+# Subtest: separate Node processes atomically claim one model run for the same owner and book
+ok 201 - separate Node processes atomically claim one model run for the same owner and book
+  ---
+  duration_ms: 791.430375
+  type: 'test'
+  ...
+# Subtest: a recording failure reports its stage without exposing the private question in diagnostic context
+ok 202 - a recording failure reports its stage without exposing the private question in diagnostic context
+  ---
+  duration_ms: 5.141
+  type: 'test'
+  ...
+# Subtest: a cross-book source is registered under its actual book
+ok 203 - a cross-book source is registered under its actual book
+  ---
+  duration_ms: 11.272375
+  type: 'test'
+  ...
+# Subtest: history byte limits discard only oldest complete pairs while preserving the current question
+ok 204 - history byte limits discard only oldest complete pairs while preserving the current question
+  ---
+  duration_ms: 15.464
+  type: 'test'
+  ...
+# Subtest: selected source and both translations remain attributed data through real chat history and archive
+ok 205 - selected source and both translations remain attributed data through real chat history and archive
+  ---
+  duration_ms: 12.931666
+  type: 'test'
+  ...
+# Subtest: invalid quotations do not claim a turn, save a question, cancel companion or invoke generator
+ok 206 - invalid quotations do not claim a turn, save a question, cancel companion or invoke generator
+  ---
+  duration_ms: 4.682333
+  type: 'test'
+  ...
+# Subtest: exact terminal quote replay survives edited translation while changed quote conflicts without generation
+ok 207 - exact terminal quote replay survives edited translation while changed quote conflicts without generation
+  ---
+  duration_ms: 7.176583
+  type: 'test'
+  ...
+# Subtest: a quoted translation changed during generation fails truthfully and preserves the stored question snapshot
+ok 208 - a quoted translation changed during generation fails truthfully and preserves the stored question snapshot
+  ---
+  duration_ms: 5.1505
+  type: 'test'
+  ...
+# Subtest: actual encoded current input rejects oversize metadata before turn, question or generator work
+ok 209 - actual encoded current input rejects oversize metadata before turn, question or generator work
+  ---
+  duration_ms: 3.585417
+  type: 'test'
+  ...
+# Subtest: new stale quote is a definite 422 before claim, while exact historical retry and real conflicts keep their semantics
+ok 210 - new stale quote is a definite 422 before claim, while exact historical retry and real conflicts keep their semantics
+  ---
+  duration_ms: 6.964666
+  type: 'test'
+  ...
+# Subtest: only per-turn preference authorization reaches the actual Agent tools and retries cannot escalate it
+ok 211 - only per-turn preference authorization reaches the actual Agent tools and retries cannot escalate it
+  ---
+  duration_ms: 13.648792
+  type: 'test'
+  ...
+1..211
+# tests 211
+# suites 0
+# pass 211
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5584.610875

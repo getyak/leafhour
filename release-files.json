@@ -793,5 +793,11 @@
   "tools/copy-tooling/package.json",
   "tools/copy-tooling/package-lock.json",
   "docs/copy/copy-reviewed.json",
-  "tests/copy-ci-environment.test.mjs"
+  "tests/copy-ci-environment.test.mjs",
+  "app/preference-memory-codec.mjs",
+  "app/preference-memory-ui.mjs",
+  "server/preference-memory.mjs",
+  "tests/preference-memory.test.mjs",
+  "tests/preference-memory-ui.test.mjs",
+  "docs/preference-memory.md"
 ]

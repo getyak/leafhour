@@ -82,3 +82,11 @@ for(const terminal of ['completed','failed','cancelled'])test(`a terminal ${term
  state.setDraft('下一个问题');assert.equal(state.view().canSend,true);
  assert.equal(state.rejectLoad(early,new Error('迟到的网络错误')),false);assert.equal(state.view().loadError,'');
 });
+
+test('preference write consent belongs only to the selected turn and survives exact pending recovery',()=>{
+ const {state,create}=durableSetup();state.setDraft('这个词是什么意思？');
+ const request=state.beginSend({preferenceWrites:true});assert.equal(request.payload.preferenceWrites,true);
+ state.resolveSend(request.ticket,{...turn(request.payload.id),preferenceWrites:true});
+ state.setDraft('这个词是什么意思？');assert.equal(state.beginSend().payload.preferenceWrites,undefined);
+ const recovered=create();recovered.resolveLoad(recovered.beginLoad(),content);assert.equal(recovered.view().retry?.payload.preferenceWrites,undefined);
+});

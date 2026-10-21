@@ -1,3 +1,4 @@
+import {memoryFor,recordPreference,applyMemoryChange} from './preference-memory.mjs';
 import {resolveVerifiedSource} from './verified-source.mjs';
 import {createChapterReadStore} from './chapter-read-store.mjs';
 import {renderPdfEvidence} from './pdf-source-evidence.mjs';
@@ -153,6 +154,8 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(!stored?.preferences)return {revision:0,updatedAt:null,preferences:null};
     return {revision:Number.isSafeInteger(stored.revision)?stored.revision:0,updatedAt:typeof stored.updatedAt==='string'&&stored.updatedAt.length<=MAX_PREFERENCE_TIMESTAMP?stored.updatedAt:null,preferences:normalizeGlobalPreferences(stored.preferences)};
   }
+  async function getPreferenceMemory(user){requireUser(user);const data=await read(readingPreferencesFile(user),{});return {revision:data.revision||0,updatedAt:data.updatedAt||null,preferences:data.preferences?normalizeGlobalPreferences(data.preferences):null,memory:memoryFor(data,user)};}
+  async function changePreferenceMemory(user,input,source='settings'){requireUser(user);return mutate(readingPreferencesFile(user),{},data=>applyMemoryChange(data,user,input,source));}
   async function saveReadingPreferences(user,input){
     requireUser(user);if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(key=>!['baseRevision','preferences'].includes(key)))throw fail('阅读习惯请求包含未知字段，尚未保存');
     if(!Number.isSafeInteger(input.baseRevision)||input.baseRevision<0)throw fail('请先读取当前阅读习惯，再保存修改');
@@ -161,7 +164,10 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       const revision=data.revision||0;
       if(revision!==input.baseRevision)throw fail('阅读习惯已在另一处更新，请刷新后重新保存',409);
       if(revision>=Number.MAX_SAFE_INTEGER)throw fail('阅读习惯版本已超过可保存范围',409);
-      data.kind='marginalia-reading-preferences';data.schemaVersion=1;data.revision=revision+1;data.updatedAt=new Date().toISOString();data.preferences=preferences;
+      const memory=memoryFor(data,user),at=new Date().toISOString();
+      for(const key of ['mode','preferredLanguage','theme'])if(data.preferences?.[key]!==preferences[key])recordPreference(memory,'update',key,preferences[key],'settings',at);
+      memory.onboarding.status=preferences.onboarding;data.memory=memory;
+      data.kind='marginalia-reading-preferences';data.schemaVersion=1;data.revision=revision+1;data.updatedAt=at;data.preferences=preferences;
       return {revision:data.revision,updatedAt:data.updatedAt,preferences:structuredClone(preferences)};
     });
   }
@@ -176,7 +182,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       const current=data.revision||0;
       if(current>=Number.MAX_SAFE_INTEGER)throw fail('阅读习惯版本已超过可保存范围',409);
       const revision=Math.max(current+1,incoming.revision);
-      data.kind='marginalia-reading-preferences';data.schemaVersion=1;data.revision=revision;data.updatedAt=incoming.updatedAt;data.preferences=structuredClone(incoming.preferences);
+      data.kind='marginalia-reading-preferences';data.schemaVersion=1;data.revision=revision;data.updatedAt=incoming.updatedAt;data.preferences=structuredClone(incoming.preferences);if(incoming.memory)data.memory=structuredClone(incoming.memory);else delete data.memory;
       return {revision,updatedAt:incoming.updatedAt,preferences:structuredClone(incoming.preferences)};
     });
   }
@@ -452,10 +458,10 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     const available=new Set((await allShelfRows(user)).map(row=>row.bookId));
     return {shelf:{...(shelf.order.length?{order:shelf.order.filter(key=>available.has(key))}:{}),...(Object.hasOwn(shelf.archived,id)?{archivedAt:shelf.archived[id]}:{})}};
   }
-  async function exportLibrary(user){requireUser(user);const books=[];for(const row of await allShelfRows(user)){const book=await getBook(user,row.bookId);books.push({book,records:await records(user,row.bookId),...await shelfBackup(user,row.bookId)});}const prefs=await getReadingPreferences(user);return {kind:'marginalia-library',schemaVersion:1,exportedAt:new Date().toISOString(),books,includesOriginalFiles:false,...(prefs.preferences?{readingPreferences:globalPreferencesMetadata(prefs)}:{})};}
+  async function exportLibrary(user){requireUser(user);const books=[];for(const row of await allShelfRows(user)){const book=await getBook(user,row.bookId);books.push({book,records:await records(user,row.bookId),...await shelfBackup(user,row.bookId)});}const prefs=await getPreferenceMemory(user);return {kind:'marginalia-library',schemaVersion:1,exportedAt:new Date().toISOString(),books,includesOriginalFiles:false,...(prefs.preferences?{readingPreferences:globalPreferencesMetadata(prefs)}:{})};}
   async function exportManifest(user){
     requireUser(user);const rows=await allShelfRows(user);if(rows.length>100)throw fail('单份备份最多容纳100本书，请在本机按书整理后导出。',413);
-    const prefs=await getReadingPreferences(user);
+    const prefs=await getPreferenceMemory(user);
     return {kind:'marginalia-export-manifest',schemaVersion:1,exportedAt:new Date().toISOString(),books:rows.map(({bookId,contentVersion})=>({bookId,contentVersion})),...(prefs.preferences?{readingPreferences:globalPreferencesMetadata(prefs)}:{})};
   }
   async function exportBookEntry(user,id){
@@ -579,5 +585,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     await chapterReads.manifest(user,incoming.bookId);
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,getReadingPreferences,saveReadingPreferences,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }
