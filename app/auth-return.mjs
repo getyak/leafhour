@@ -4,10 +4,17 @@ import {safeReaderReturn,safeGiftReturn} from './reader-return.mjs';
 import {safeLibraryReturn} from './library-view-state.mjs';
 import {parseUiParam,readUiParam,withUiParam} from './ui-locale-codec.mjs';
 
+export function safeMcpReturn(value){
+  if(typeof value!=='string'||!/^\/api\/mcp\/oauth\/authorize\?/.test(value))return null;
+  const url=new URL(value,'https://return.invalid'),q=url.searchParams;
+  if(url.hash||q.getAll('request').length!==1||!/^[A-Za-z0-9_-]{43}$/.test(q.get('request'))||[...q.keys()].some(k=>!['request','ui'].includes(k))||!['absent','valid'].includes(readUiParam(value).status))return null;
+  return '/api/mcp/oauth/authorize?'+q;
+}
+
 export function safeAuthReturn(value){
   if(typeof value!=='string'||value.length>1500||/[\u0000-\u001f\u007f\\]/.test(value)||!value.startsWith('/')||value.startsWith('//'))return null;
   if(!['absent','valid'].includes(readUiParam(value).status))return null;
-  return safeReaderReturn(value)||safeGiftReturn(value)||safeLibraryReturn(value);
+  return safeReaderReturn(value)||safeGiftReturn(value)||safeLibraryReturn(value)||safeMcpReturn(value);
 }
 
 export function authEntryReturn(search){

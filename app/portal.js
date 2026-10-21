@@ -2,7 +2,7 @@ import {mountChatBookUpload} from './chat-book-upload.mjs';
 import {createBookUploadController} from './book-upload-controller.mjs';
 import {t,onUiLocaleChange,onBeforeUiPopstate,getUiLocale,getUiNavigationLocale,uiHref,uiReady,requestUiRoute,adoptUiOwner} from './ui-locale.mjs';
 import {uiAuthoredPath} from './ui-locale-codec.mjs';
-import {authEntryReturn} from './auth-return.mjs';
+import {authEntryReturn,safeMcpReturn} from './auth-return.mjs';
 import {homeLocale,homeText} from './home-locale.mjs';
 import {positionStorageKey} from './reading-progress.mjs';
 import {createUploadState} from './upload-state.mjs';
@@ -77,7 +77,7 @@ function updateUploadProgressLabel(){
 }
 const api=(url,data,ticket=ownerScope.capture())=>readOwnerResponse(ownerScope,ticket,()=>fetch(url,{...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json',...((url.startsWith('/api/library')||url.startsWith('/api/account')||url.startsWith('/api/book-gifts'))?{'X-Reader-Owner':ticket.owner}:{})}}).catch(()=>{throw Object.assign(Error('网络暂时无法连接，请稍后重试。'),{retryable:true});}),()=>{ownerScope.adopt('guest');void adoptUiOwner(null);session={...session,user:null};clearPrivateUI();location.reload();});
 const isLibrary=location.pathname==='/library';$('home-view').hidden=isLibrary;$('library-view').hidden=!isLibrary;document.body.classList.toggle('library-page',isLibrary);
-const entryQuery=new URLSearchParams(location.search),entryReturn=authEntryReturn(entryQuery),returnToReader=safeGiftReturn(entryReturn)||safeReaderReturn(entryReturn);
+const entryQuery=new URLSearchParams(location.search),entryReturn=authEntryReturn(entryQuery),returnToReader=safeGiftReturn(entryReturn)||safeReaderReturn(entryReturn)||safeMcpReturn(entryReturn);
 let returnToLibrary=!returnToReader?safeLibraryReturn(entryReturn):null;
 let pendingSettings=isLibrary&&location.hash==='#agent';
 const adoptPendingReturn=()=>{

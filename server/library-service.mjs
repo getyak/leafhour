@@ -415,7 +415,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   const DAILY_GRANT_SCOPE='daily:deliver',DAILY_GRANT_TTL_MS=30*86400000;
   async function issueGrant(user,bookId,scopes,ttlMs){
     const token=randomBytes(32).toString('base64url'),grant={id:randomUUID(),ownerId:user.id,bookId,scopes:[...new Set(scopes)],tokenHash:digest(token),createdAt:new Date().toISOString(),expiresAt:new Date(Date.now()+ttlMs).toISOString(),revoked:false};
-    await mutate(grantsFile,{grants:[]},data=>{if(data.grants.filter(g=>g.ownerId===user.id&&!g.revoked).length>=50)throw fail('请先撤回不再使用的授权',413);data.grants.push(grant);});
+    await mutate(grantsFile,{grants:[]},data=>{if(data.grants.filter(g=>g.ownerId===user.id&&!g.revoked&&Date.parse(g.expiresAt)>Date.now()).length>=50)throw fail('请先撤回不再使用的授权',413);data.grants.push(grant);});
     const {tokenHash,ownerId,...visible}=grant;return {...visible,token};
   }
   async function createGrant(user,input){
@@ -427,6 +427,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     if(!Array.isArray(scopes)||!scopes.length||scopes.some(s=>!['content','notes','activity','comment:write','audio:read','audio:generate','annotations','annotation:write'].includes(s)||s===DAILY_GRANT_SCOPE))throw fail('请选择授权范围');
     return issueGrant(user,bookId,scopes,7*86400000);
   }
+  async function createMcpGrant(user,bookId){requireUser(user);await getBook(user,bookId);return issueGrant(user,bookId,['content'],3600000);}
   async function createDailyGrant(user,{bookId}={}){
     requireUser(user);await getBook(user,bookId);
     return issueGrant(user,bookId,[DAILY_GRANT_SCOPE],DAILY_GRANT_TTL_MS);
@@ -585,5 +586,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     await chapterReads.manifest(user,incoming.bookId);
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }

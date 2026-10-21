@@ -38,6 +38,7 @@ import {decodePersonalRecordId} from '../app/personal-records.mjs';
 import {agentReadArgs,scopedAgentRead} from './scoped-agent-reading.mjs';
 import {annotationReadArgs} from './reader-annotation-tools.mjs';
 import {createDailyReadingService} from './daily-reading.mjs';
+import {createRemoteMcp} from './mcp-http.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const cookieToken=req=>(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('marginalia_session='))?.slice('marginalia_session='.length);
@@ -79,12 +80,14 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   // generation happens in this process. The external host owns the heartbeat.
   const dailyReading=createDailyReadingService({library,dataDir:path.join(dataDir,'library','daily'),dataStore});
   const portability=createLibraryPortability({library,chat,store:ingestionStore});
+  const remoteMcp=createRemoteMcp({origin:publicOrigin,dataDir:path.join(dataDir,'mcp'),dataStore,library,auth});
   let legacyBook=null;
   const audioLibrary={getBook:(owner,id)=>owner?.id==='legacy-local'&&legacyBook?.bookId===id?Promise.resolve(legacyBook):library.getBook(owner,id)};
   const durableAudio=dataStore&&['read','mutate','putBlob','blob'].every(k=>typeof dataStore[k]==='function');
   const audio=durableAudio||allowLocal&&!publicOrigin&&!dataStore?await createAudioService({store:await createAudioStore({dataDir:path.join(dataDir,'audio'),dataStore:durableAudio?dataStore:null}),getBook:audioLibrary.getBook,speechProvider:speechProvider===undefined?createSpeechProvider({env}):speechProvider,dialogueGenerator:dialogueGenerator===undefined?createDialogueGenerator({env}):dialogueGenerator,schedule,durable:!!durableAudio,env}):null;
   const audioRoutes=createAudioRoutes({audio,library:audioLibrary,guideGenerator:guideGenerator===undefined?createGuideGenerator({env}):guideGenerator});
   async function handle({req,res,url,send}){
+    if(await remoteMcp.handle({req,res,url,send}))return true;
     const presenceReceivedAt=url.pathname==='/api/library/daily-reading/presence'?Date.now():null;
     const p=url.pathname;
     if(p==='/api/internal/ingestion/wake'){if(req.method!=='POST'||!ingestionRunner.authorized(req.headers.authorization))throw fail('找不到这个操作',404);ingestionRunner.tick();send(202,{accepted:true});return true;}

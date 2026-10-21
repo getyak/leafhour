@@ -23,6 +23,9 @@
   <p class="public-byline">Leafhour 文档 · 更新于 2026 年 10 月 16 日</p>
   <p>Leafhour 的 Model Context Protocol（MCP）适配器让兼容的 AI 宿主读取你授权的一本书。它与网页使用同一个阅读服务。访问仅限于一本书和你选择的数据类型；只安装适配器不会获得任何权限。</p>
   <p>这是技术接入。阅读界面支持英文、简体中文、繁体中文和日语，尚无完整的授权管理页面。创建和撤回授权，请使用现有兼容客户端或已认证的服务 API。需要帮助时，请联系 <a href="mailto:support@leafhour.com">support@leafhour.com</a>。</p>
+  <h2 id="remote">通过 OAuth 连接 ChatGPT。</h2>
+  <p>在 <a href="https://chatgpt.com/plugins">ChatGPT Plugins</a> 添加自定义 MCP 服务器，地址填写 <code>https://leafhour.com/api/mcp</code>，选择 OAuth 和动态客户端注册。在 Leafhour 登录，核对账号并选一本书。授权仅只读一小时，不含私人笔记与阅读记录。调用 <code>reader_get_connection</code> 核对已授权的书；在书房的 Agent 设置中可撤回。</p>
+  <p>兼容 skills 的宿主也可从 <code>getyak/leafhour</code> 安装 <code>leafhour-reading</code>。只安装 skill 不会连接或授权 MCP。详见<a href="https://github.com/getyak/leafhour/blob/main/docs/mcp-oauth.md">安装与 OAuth 说明</a>。ChatGPT 账号和工作空间策略决定能否添加自定义服务器；下方命令配置继续适用于 stdio 宿主。</p>
   <h2 id="permissions">选择 Agent 可以访问的内容。</h2>
   <div class="mcp-scroll" role="region" aria-label="权限表，可横向滚动" tabindex="0"><table><thead><tr><th scope="col">权限</th><th scope="col">允许的操作</th></tr></thead><tbody>
     <tr><th scope="row"><code>content</code></th><td>原文与已保存的译文、书籍信息、分页章节以及该书内的搜索。</td></tr>

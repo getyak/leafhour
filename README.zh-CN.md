@@ -186,3 +186,7 @@ PDF 支持最多 256 MB、1200 页，EPUB 与文本最多 20 MB。PDF 优先提�
 [GNU Affero General Public License v3.0](LICENSE)。如果你通过网络提供修改后的版本，需要向该服务的用户提供对应源码。
 
 阅读时间支持明确选择的主动专注、前台估计与手动补记（自报）；总数合并重叠区间，分来源可核对。见[计时与恢复口径](docs/reading-time.md)。
+
+## 阅读 skill 与远程 MCP
+
+兼容 skills 的宿主可安装 `skills/leafhour-reading`。在 ChatGPT 添加 `https://leafhour.com/api/mcp`，通过 OAuth/DCR 登录 Leafhour，为一本书授予一小时只读权限；调用 `reader_get_connection` 核对该书。详见[安装、权限与真实宿主验收](docs/mcp-oauth.md)。已有 stdio 配置继续受支持。

@@ -185,3 +185,7 @@ Project home: [GitHub](https://github.com/getyak/leafhour)
 [GNU Affero General Public License v3.0](LICENSE). If you offer a modified version over a network, you must offer its source to the service’s users.
 
 Reading time supports explicitly chosen active focus, foreground estimates and manual backfill (self-reported); totals merge overlapping intervals and each source stays auditable. See [Timing and recovery rules](docs/reading-time.md).
+
+## Reading skill and remote MCP
+
+Install `skills/leafhour-reading` for a skills-compatible host. Connect ChatGPT to `https://leafhour.com/api/mcp` with OAuth/DCR, sign in on Leafhour, and approve one book for one hour. Call `reader_get_connection` to identify that book. The remote connection is read-only. See [installation, permissions and real-host acceptance](docs/mcp-oauth.md); existing stdio configurations remain supported.

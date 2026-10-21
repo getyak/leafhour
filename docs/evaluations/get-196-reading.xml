@@ -1,0 +1,12 @@
+<evaluation fixture="tests/reading-fixtures.mjs" host="synthetic GET-196 HTTP fixture" read_only="true">
+  <qa_pair><question>Which one book is bound to this connection?</question><answer>reading-test</answer><tools>reader_get_connection</tools></qa_pair>
+  <qa_pair><question>Which source version does the authorized book use?</question><answer>edition-1</answer><tools>reader_get_connection reader_get_manifest</tools></qa_pair>
+  <qa_pair><question>What chapter ID contains the first passage?</question><answer>ch01</answer><tools>reader_get_manifest reader_get_context</tools></qa_pair>
+  <qa_pair><question>Quote the first original passage exactly.</question><answer>Read this first.</answer><tools>reader_get_context</tools></qa_pair>
+  <qa_pair><question>What stable passage ID contains the closing paragraph?</question><answer>p4</answer><tools>reader_search reader_get_chapter</tools></qa_pair>
+  <qa_pair><question>Quote the first paragraph of the second chapter.</question><answer>Continue from here.</answer><tools>reader_get_manifest reader_get_chapter</tools></qa_pair>
+  <qa_pair><question>Does the base fixture contain a stored literal translation for p3?</question><answer>missing</answer><tools>reader_get_chapter</tools></qa_pair>
+  <qa_pair><question>Does the remote connection reveal a saved reading position?</question><answer>no</answer><tools>reader_get_context</tools></qa_pair>
+  <qa_pair><question>May this connection read a foreign-book identifier?</question><answer>denied</answer><tools>reader_get_manifest</tools></qa_pair>
+  <qa_pair><question>Is a private-note write tool available in this remote connection?</question><answer>no</answer><tools>tools/list</tools></qa_pair>
+</evaluation>

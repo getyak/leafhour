@@ -67,3 +67,7 @@ The hosted client also uses `--omit=optional`: it only imports the MCP protocol 
 ## Reading annotations
 
 GET-195 adds explicitly scoped `reader_get_annotations` (`annotations`) and `reader_add_annotation` (`annotation:write`). They share the current-book annotation service; neither reads other threads' user replies or writes reading progress. External writes store caller-supplied AI prose without calling the site's paid generator. Existing grants/defaults are unchanged. See [Reading annotations](reading-annotations.md) for typed selections, exact retries, provenance, JSON portability and bounded batch limits. This stdio extension does not establish a remote OAuth MCP connection.
+
+## Remote OAuth and reading skill
+
+GET-196 adds a separate read-only Streamable HTTP endpoint with one-book OAuth consent. Its five tools do not inherit stdio notes, activity, writes or audio grants. See [installation and authentication](mcp-oauth.md) for the supported DCR/PKCE path, expiry, rate limits, revocation and the distinction between scripted acceptance and real ChatGPT connection.

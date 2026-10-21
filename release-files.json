@@ -799,5 +799,12 @@
   "server/preference-memory.mjs",
   "tests/preference-memory.test.mjs",
   "tests/preference-memory-ui.test.mjs",
-  "docs/preference-memory.md"
+  "docs/preference-memory.md",
+  "server/mcp-oauth.mjs",
+  "server/mcp-http.mjs",
+  "tests/mcp-oauth.test.mjs",
+  "tests/mcp-http.test.mjs",
+  "skills/leafhour-reading/SKILL.md",
+  "docs/mcp-oauth.md",
+  "docs/evaluations/get-196-reading.xml"
 ]
