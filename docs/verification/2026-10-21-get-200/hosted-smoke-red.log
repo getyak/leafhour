@@ -1,0 +1,108 @@
+TAP version 13
+# Subtest: production smoke detects the UI preference authentication boundary
+ok 1 - production smoke detects the UI preference authentication boundary
+  ---
+  duration_ms: 38.684542
+  type: 'test'
+  ...
+# Subtest: production smoke detects the UI preference missing hosted route
+ok 2 - production smoke detects the UI preference missing hosted route
+  ---
+  duration_ms: 36.256042
+  type: 'test'
+  ...
+# Subtest: production smoke detects the UI preference cacheable private response
+ok 3 - production smoke detects the UI preference cacheable private response
+  ---
+  duration_ms: 34.795417
+  type: 'test'
+  ...
+# Subtest: production smoke detects the UI preference misleading cache directive
+ok 4 - production smoke detects the UI preference misleading cache directive
+  ---
+  duration_ms: 33.746083
+  type: 'test'
+  ...
+# Subtest: production smoke detects the UI preference case-insensitive cache directive
+ok 5 - production smoke detects the UI preference case-insensitive cache directive
+  ---
+  duration_ms: 34.740292
+  type: 'test'
+  ...
+# Subtest: production smoke detects the preference memory authentication boundary
+ok 6 - production smoke detects the preference memory authentication boundary
+  ---
+  duration_ms: 35.122875
+  type: 'test'
+  ...
+# Subtest: production smoke detects the preference memory missing hosted route
+ok 7 - production smoke detects the preference memory missing hosted route
+  ---
+  duration_ms: 33.208583
+  type: 'test'
+  ...
+# Subtest: production smoke detects the preference memory cacheable private response
+ok 8 - production smoke detects the preference memory cacheable private response
+  ---
+  duration_ms: 34.211375
+  type: 'test'
+  ...
+# Subtest: production smoke detects the preference memory misleading cache directive
+not ok 9 - production smoke detects the preference memory misleading cache directive
+  ---
+  duration_ms: 33.342667
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-200/tests/production-smoke-boundary.test.mjs:15:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'after-ui-boundary'
+    - 'Preference memory response must not be cached'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Preference memory response must not be cached'
+  actual: 'after-ui-boundary'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-200/tests/production-smoke-boundary.test.mjs:20:141)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: production smoke detects the preference memory case-insensitive cache directive
+not ok 10 - production smoke detects the preference memory case-insensitive cache directive
+  ---
+  duration_ms: 31.880792
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-200/tests/production-smoke-boundary.test.mjs:15:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + 'Preference memory response must not be cached'
+    - 'after-ui-boundary'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'after-ui-boundary'
+  actual: 'Preference memory response must not be cached'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-200/tests/production-smoke-boundary.test.mjs:20:141)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 8
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 386.955084

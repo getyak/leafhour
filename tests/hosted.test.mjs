@@ -80,10 +80,10 @@ test('hosted origin CSV enables only configured HTTPS web clients through the re
 });
 test('hosted entry forwards profile and gift routes through the shared portal',async()=>{
   const routes=[],handler=createHostedHandler({env,storeFactory:()=>({}),authFactory:()=>({}),portalFactory:async()=>({handle:async({url,send})=>{routes.push(url.pathname);send(200,{ready:true});return true;}})});
-  for(const path of ['/api/account/profile','/api/account/reading-preferences','/api/account/ui-preferences','/api/book-gifts/'+ 'a'.repeat(43),'/api/book-gifts/'+ 'a'.repeat(43)+'/accept','/api/library/books/alice/gifts']){
+  for(const path of ['/api/account/profile','/api/account/reading-preferences','/api/account/preference-memory','/api/account/ui-preferences','/api/book-gifts/'+ 'a'.repeat(43),'/api/book-gifts/'+ 'a'.repeat(43)+'/accept','/api/library/books/alice/gifts']){
     let result;const res={setHeader(){},end(value){result=JSON.parse(value);}};await handler({url:path,method:'GET',headers:{}},res);assert.equal(res.statusCode,200,path);assert.equal(result.ready,true);
   }
-  assert.equal(routes.length,6);
+  assert.equal(routes.length,7);
 });
 test('disabled hosted email never sends an OTP and hosted MCP uses only explicit HTTPS configuration',async()=>{
   const auth=createHostedAuth({env,store:{},fetcher:()=>{throw Error('must not send');}});assert.equal(auth.emailAvailable,false);await assert.rejects(auth.requestCode('reader@example.com'),e=>e.status===503);
@@ -174,4 +174,31 @@ test('hosted UI preference admission is exact and never admits adjacent or legac
  let created=0;const handler=createHostedHandler({env,storeFactory:()=>{created++;throw Error('must not create a service for a rejected route');}});
  for(const url of ['/api/account/ui-preferences/','/api/account/ui-preferences-extra','/api/account/ui-preferences/notes','/api/book','/api/records']){const res={setHeader(){},end(){}};await handler({url,method:'GET',headers:{}},res);assert.equal(res.statusCode,404,url);}
  assert.equal(created,0);
+});
+
+
+test('hosted preference memory forwards the catch-all route but rejects suffix and nested lookalikes',async()=>{
+ const routes=[],handler=createHostedHandler({env,storeFactory:()=>({}),authFactory:()=>({}),portalFactory:async()=>({handle:async({url,send})=>{routes.push(url.pathname);send(401,{error:'login required'});return true;}})});
+ for(const query of [undefined,{path:['account','preference-memory']}]){let body;const res={setHeader(){},end(value){body=JSON.parse(value);}};await handler({url:'/api/account/preference-memory',query,method:'GET',headers:{}},res);assert.equal(res.statusCode,401);assert.equal(body.error,'login required');}
+ for(const url of ['/api/account/preference-memory/','/api/account/preference-memory-extra','/api/account/preference-memory/notes']){const res={setHeader(){},end(){}};await handler({url,method:'GET',headers:{}},res);assert.equal(res.statusCode,404);}
+ assert.deepEqual(routes,['/api/account/preference-memory','/api/account/preference-memory']);
+});
+
+test('hosted preference memory reaches real owner authentication and persists CAS across catch-all instances',async t=>{
+ const fixture=authFixture(),portals=[];const {createPortal}=await import('../server/portal.mjs');
+ const make=()=>createHostedHandler({env:fixture.env,storeFactory:()=>fixture.store(),authFactory:({store,env})=>createHostedAuth({...fixture,store,env}),portalFactory:async options=>{const portal=await createPortal({...options,translator:null,chatGenerator:null,companionGenerator:null,annotationGenerator:null,introductionGenerator:null,dialogueGenerator:null,guideGenerator:null});portals.push(portal);return portal;}});
+ t.after(async()=>{for(const portal of portals)await Promise.all([portal.chat.close(),portal.ingestionRunner.close(),portal.audio?.close()]);});
+ const handler=make();let cookie;
+ const call=async(method='GET',body,extra={},target=handler,query)=>{let value;const headers={},res={setHeader:(k,v)=>{headers[k]=v;},end:bytes=>{value=JSON.parse(bytes);}};await target({url:'/api/account/preference-memory',method,query,headers:{host:'reader.example.com',origin:fixture.env.READER_PUBLIC_ORIGIN,'content-type':'application/json',...(cookie?{cookie}:{}),...extra},...(body===undefined?{}:{body}),socket:{remoteAddress:'127.0.0.1'}},res);return {status:res.statusCode,body:value,headers};};
+ const anonymous=await call();assert.equal(anonymous.status,401);assert.match(anonymous.headers['Cache-Control'],/no-store/);
+ const headers={},response={setHeader:(k,v)=>{headers[k]=v;},end(){}};await handler({url:'/api/auth/password',method:'POST',headers:{host:'reader.example.com',origin:fixture.env.READER_PUBLIC_ORIGIN,'content-type':'application/json'},body:{email:'reader@example.com',password:'fixture-password'},socket:{remoteAddress:'127.0.0.1'}},response);assert.equal(response.statusCode,200);cookie=headers['Set-Cookie'].split(';')[0];
+ const owned={'x-reader-owner':fixture.user.id};assert.equal((await call('GET',undefined,owned)).body.revision,0);
+ assert.equal([...fixture.rows.keys()].filter(key=>key.endsWith('/reading-preferences.json')).length,0);
+ const payload={baseRevision:0,action:'update',key:'theme',value:'night'};
+ assert.equal((await call('POST',payload)).status,409);assert.equal((await call('POST',payload,{'x-reader-owner':'synthetic-other'})).status,409);
+ const saved=await call('POST',payload,owned);assert.equal(saved.status,200);assert.equal(saved.body.preferences.theme,'night');assert.equal(saved.body.memory.sources.theme.source,'settings');
+ assert.deepEqual((await call('GET',undefined,owned,make(),{path:['account','preference-memory']})).body,saved.body);
+ assert.equal((await call('POST',payload,owned)).status,409);assert.equal((await call('POST',{...payload,baseRevision:1}, {...owned,origin:'https://unrelated.example'})).status,403);
+ assert.equal((await call('POST',{...payload,value:'x'.repeat(9000)},owned)).status,413);
+ assert.deepEqual((await call('GET',undefined,owned)).body,saved.body);
 });

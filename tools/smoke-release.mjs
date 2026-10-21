@@ -15,6 +15,9 @@ for(const route of ['/reader-companion.mjs','/reader-companion-state.mjs','/read
   const response=await get(route);if(response.headers.get('content-type')?.includes('text/html')||!(await response.text()).length)throw Error('Missing companion asset: '+route);
 }
 const companion=await fetch(new URL('/api/library/books/gutenberg-alice/companion',base),{signal:AbortSignal.timeout(15000)});if(companion.status!==401)throw Error('Anonymous companion access did not require authentication');
+const preferenceMemory=await fetch(new URL('/api/account/preference-memory',base),{signal:AbortSignal.timeout(15000),headers:{'Cache-Control':'no-cache'}});
+if(preferenceMemory.status!==401)throw Error('Anonymous preference memory access did not require authentication');
+if(!preferenceMemory.headers.get('cache-control')?.split(',').some(value=>value.trim().toLowerCase()==='no-store'))throw Error('Preference memory response must not be cached');
 const uiPreferences=await fetch(new URL('/api/account/ui-preferences',base),{signal:AbortSignal.timeout(15000),headers:{'Cache-Control':'no-cache'}});
 if(uiPreferences.status!==401)throw Error('Anonymous UI preference access did not require authentication');
 if(!uiPreferences.headers.get('cache-control')?.split(',').some(value=>value.trim().toLowerCase()==='no-store'))throw Error('UI preference response must not be cached');

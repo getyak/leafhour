@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: production smoke detects the UI preference authentication boundary
+ok 1 - production smoke detects the UI preference authentication boundary
+  ---
+  duration_ms: 34.815709
+  type: 'test'
+  ...
+# Subtest: production smoke detects the UI preference missing hosted route
+ok 2 - production smoke detects the UI preference missing hosted route
+  ---
+  duration_ms: 33.422292
+  type: 'test'
+  ...
+# Subtest: production smoke detects the UI preference cacheable private response
+ok 3 - production smoke detects the UI preference cacheable private response
+  ---
+  duration_ms: 33.01375
+  type: 'test'
+  ...
+# Subtest: production smoke detects the UI preference misleading cache directive
+ok 4 - production smoke detects the UI preference misleading cache directive
+  ---
+  duration_ms: 32.610041
+  type: 'test'
+  ...
+# Subtest: production smoke detects the UI preference case-insensitive cache directive
+ok 5 - production smoke detects the UI preference case-insensitive cache directive
+  ---
+  duration_ms: 33.846
+  type: 'test'
+  ...
+# Subtest: production smoke detects the preference memory authentication boundary
+ok 6 - production smoke detects the preference memory authentication boundary
+  ---
+  duration_ms: 31.8505
+  type: 'test'
+  ...
+# Subtest: production smoke detects the preference memory missing hosted route
+ok 7 - production smoke detects the preference memory missing hosted route
+  ---
+  duration_ms: 32.243667
+  type: 'test'
+  ...
+# Subtest: production smoke detects the preference memory cacheable private response
+ok 8 - production smoke detects the preference memory cacheable private response
+  ---
+  duration_ms: 32.838417
+  type: 'test'
+  ...
+# Subtest: production smoke detects the preference memory misleading cache directive
+ok 9 - production smoke detects the preference memory misleading cache directive
+  ---
+  duration_ms: 32.493542
+  type: 'test'
+  ...
+# Subtest: production smoke detects the preference memory case-insensitive cache directive
+ok 10 - production smoke detects the preference memory case-insensitive cache directive
+  ---
+  duration_ms: 31.381833
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 357.296208
