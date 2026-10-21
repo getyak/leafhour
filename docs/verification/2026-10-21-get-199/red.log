@@ -9,12 +9,12 @@ not ok 1 - reading language and form intersect using saved translations without 
   error: |-
     Expected values to be strictly deep-equal:
     + actual - expected
-    
+
       [
         'chinese',
     -   'parallel'
       ]
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected:

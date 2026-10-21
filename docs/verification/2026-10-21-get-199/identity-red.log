@@ -8,9 +8,9 @@ not ok 1 - a failed first library request cannot preserve one account view when 
   failureType: 'testCodeFailure'
   error: |-
     a real owner change clears the previous view even before the first successful library load
-    
+
     true !== false
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected: false

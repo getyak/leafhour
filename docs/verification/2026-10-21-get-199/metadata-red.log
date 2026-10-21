@@ -8,9 +8,9 @@ not ok 1 - list metadata reflects actual account translations and ignores stale 
   failureType: 'testCodeFailure'
   error: |-
     Expected values to be strictly deep-equal:
-    
+
     undefined !== []
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected:
