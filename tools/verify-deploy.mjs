@@ -14,6 +14,9 @@ for(const args of stages){
   if(args[0]==='--test')for(const key of ['LEAFHOUR_VALE_BIN','LEAFHOUR_TEXTLINT_BIN']){
     if(process.env[key]!==undefined)stageEnvironment[key]=process.env[key];
   }
+  // Native PostgreSQL is mandatory in the preceding GitHub CI gate. Vercel
+  // repeats portable tests without an installed database engine.
+  if(args[0]==='--test'&&process.argv.includes('--hosted')&&process.env.VERCEL==='1')stageEnvironment.LEAFHOUR_HOSTED_BUILD_TESTS='1';
   if(args[0]==='tools/build-reader-runtime.mjs'&&process.env.VERCEL==='1')stageEnvironment.VERCEL='1';
   const result=spawnSync(process.execPath,args,{env:stageEnvironment,stdio:'inherit'});
   if(result.error)throw result.error;if(result.status!==0)process.exit(result.status||1);

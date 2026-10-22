@@ -4,6 +4,7 @@ import {readFile,mkdtemp,rm} from 'node:fs/promises';
 import {existsSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {spawnSync,spawn} from 'node:child_process';
 import {postgresBin} from './helpers/postgres-bin.mjs';
 const migration=new URL('../supabase/migrations/202610210002_reading_subscriptions.sql',import.meta.url);
@@ -15,6 +16,9 @@ const annualMigration=new URL('../supabase/migrations/202610220001_yearly_readin
 test('isolated Postgres executes yearly grants and serializes monthly/yearly cross-process signup',async t=>{
   assert.ok(existsSync(migration));assert.ok(existsSync(fixture));
   const bin=postgresBin();
+  if(!existsSync(join(bin,'initdb'))&&process.env.LEAFHOUR_HOSTED_BUILD_TESTS==='1'){
+    t.skip('native PostgreSQL unavailable in hosted build; required database verification runs in GitHub CI');return;
+  }
   assert.ok(existsSync(join(bin,'initdb')),'Native Postgres required for annual billing verification');
   const root=await mkdtemp(join(tmpdir(),'leafhour-subscriptions-sql-')),data=join(root,'data');
   const env={PATH:process.env.PATH,HOME:root,LC_ALL:'C'};
@@ -42,4 +46,18 @@ end; $$;
     const race=index=>new Promise(resolve=>{const child=spawn(join(bin,'psql'),['-h',root,'-d','postgres','-v','ON_ERROR_STOP=1','-X','-Atc',`select public.reader_billing_command('order','{"mode":"test","ownerId":"synthetic-race","id":"race-${index}","intentKey":"intent-${index}","productKey":"${index===1?'reading_monthly_100':'reading_yearly_1200'}","productId":"product-${index}","amount":${index===1?500:5000},"currency":"USD","units":${index===1?100000000:1200000000},"billingPeriod":"${index===1?'every-month':'every-year'}"}');`],{env});let output='';child.stderr.on('data',chunk=>output+=chunk);child.on('error',error=>resolve({status:-1,output:error.message}));child.on('exit',status=>resolve({status,output}));});
     const results=await Promise.all([race(1),race(2)]);assert.equal(results.filter(x=>x.status===0).length,1,JSON.stringify(results));assert.match(results.find(x=>x.status!==0).output,/reader_billing:subscription_exists/);
   }finally{if(started)run('pg_ctl',['-D',data,'-m','immediate','stop']);await rm(root,{recursive:true,force:true});}
+});
+
+test('annual database verification fails without an engine outside the explicit hosted build context',async t=>{
+  const missing=await mkdtemp(join(tmpdir(),'leafhour-missing-postgres-'));
+  t.after(()=>rm(missing,{recursive:true,force:true}));
+  for(const hosted of [undefined,'0','1']){
+    const env={...process.env,LEAFHOUR_TEST_PG_BIN:missing};
+    delete env.NODE_TEST_CONTEXT;
+    delete env.LEAFHOUR_HOSTED_BUILD_TESTS;
+    if(hosted!==undefined)env.LEAFHOUR_HOSTED_BUILD_TESTS=hosted;
+    const result=spawnSync(process.execPath,['--test','--test-name-pattern=^isolated Postgres',fileURLToPath(import.meta.url)],{env,encoding:'utf8',timeout:30000});
+    assert.equal(result.status,hosted==='1'?0:1,result.stdout+result.stderr);
+    assert.match(result.stdout,hosted==='1'?/SKIP native PostgreSQL unavailable in hosted build/:/Native Postgres required for annual billing verification/);
+  }
 });
