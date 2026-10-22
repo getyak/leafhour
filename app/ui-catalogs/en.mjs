@@ -1256,6 +1256,7 @@ export default Object.freeze({
   "reader.atmosphere.error": "Sounds could not play right now. Retry shortly.",
   "reader.atmosphere.pauseShort": "Pause",
   "reader.shell.end": "End",
+  "reader.atmosphere.waitingGesture": "Click or press a key to resume sounds in this browser.",
   "reader.atmosphere.paused": "Sounds are paused. Start them when you wish.",
   "reader.b1.keyTerms": "Key English terms",
   "reader.shell.viewRecords": "View highlights, thoughts and questions",

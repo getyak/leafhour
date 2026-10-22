@@ -1,0 +1,154 @@
+TAP version 13
+# Subtest: the first audible graph uses the latest mix after a slow recording decode
+ok 1 - the first audible graph uses the latest mix after a slow recording decode
+  ---
+  duration_ms: 11.401834
+  type: 'test'
+  ...
+# Subtest: loop preparation removes recording fades and joins the waveform without a silent seam
+ok 2 - loop preparation removes recording fades and joins the waveform without a silent seam
+  ---
+  duration_ms: 6.503666
+  type: 'test'
+  ...
+# Subtest: atmospheres validate saved playback intent alongside scene and levels
+ok 3 - atmospheres validate saved playback intent alongside scene and levels
+  ---
+  duration_ms: 5.290667
+  type: 'test'
+  ...
+# Subtest: narration ducks both channels without changing saved volume, zero stays silent
+ok 4 - narration ducks both channels without changing saved volume, zero stays silent
+  ---
+  duration_ms: 0.498333
+  type: 'test'
+  ...
+# Subtest: late resource arrival after pause is disposed and cannot resume sound
+ok 5 - late resource arrival after pause is disposed and cannot resume sound
+  ---
+  duration_ms: 0.480584
+  type: 'test'
+  ...
+# Subtest: a rapid scene change retains only the last playback, stale failure cannot replace it
+ok 6 - a rapid scene change retains only the last playback, stale failure cannot replace it
+  ---
+  duration_ms: 0.313916
+  type: 'test'
+  ...
+# Subtest: current playback failure is visible and can be retried
+ok 7 - current playback failure is visible and can be retried
+  ---
+  duration_ms: 0.1235
+  type: 'test'
+  ...
+# Subtest: volume or narration changes made while recordings load reach the accepted playback
+ok 8 - volume or narration changes made while recordings load reach the accepted playback
+  ---
+  duration_ms: 0.087958
+  type: 'test'
+  ...
+# Subtest: selecting a scene starts its matching sound immediately, including after an explicit pause
+ok 9 - selecting a scene starts its matching sound immediately, including after an explicit pause
+  ---
+  duration_ms: 7.866958
+  type: 'test'
+  ...
+# Subtest: restoring a scene stays silent and selecting another scene respects an individually muted channel
+ok 10 - restoring a scene stays silent and selecting another scene respects an individually muted channel
+  ---
+  duration_ms: 1.404959
+  type: 'test'
+  ...
+# Subtest: settings and scene controls share volume, motion and manual playback without restarting sound
+ok 11 - settings and scene controls share volume, motion and manual playback without restarting sound
+  ---
+  duration_ms: 2.123334
+  type: 'test'
+  ...
+# Subtest: quick pause cancels a scene selected while its recording is still loading
+ok 12 - quick pause cancels a scene selected while its recording is still loading
+  ---
+  duration_ms: 1.3525
+  type: 'test'
+  ...
+# Subtest: switching tabs pauses visual motion but keeps the selected sound playing without restarting it
+ok 13 - switching tabs pauses visual motion but keeps the selected sound playing without restarting it
+  ---
+  duration_ms: 1.225709
+  type: 'test'
+  ...
+# Subtest: a background load may finish playing; an explicit pause stays paused on return and leaving the document stops it
+ok 14 - a background load may finish playing; an explicit pause stays paused on return and leaving the document stops it
+  ---
+  duration_ms: 1.4505
+  type: 'test'
+  ...
+# Subtest: the hearth controller starts only visible layers and stops them for motion preferences, other scenes and page exit
+ok 15 - the hearth controller starts only visible layers and stops them for motion preferences, other scenes and page exit
+  ---
+  duration_ms: 1.036458
+  type: 'test'
+  ...
+# Subtest: forest light and sea water follow scene, visibility and motion preferences without ever starting sound
+ok 16 - forest light and sea water follow scene, visibility and motion preferences without ever starting sound
+  ---
+  duration_ms: 2.132666
+  type: 'test'
+  ...
+# Subtest: saved sound resumes on entry and page exit retains intent until an explicit pause
+ok 17 - saved sound resumes on entry and page exit retains intent until an explicit pause
+  ---
+  duration_ms: 0.975417
+  type: 'test'
+  ...
+# Subtest: autoplay denial is waiting for a gesture rather than reported as playing or a network failure
+ok 18 - autoplay denial is waiting for a gesture rather than reported as playing or a network failure
+  ---
+  duration_ms: 0.11325
+  type: 'test'
+  ...
+# Subtest: a trusted pointerdown on the start control does not turn its following click into a pause
+ok 19 - a trusted pointerdown on the start control does not turn its following click into a pause
+  ---
+  duration_ms: 0.78875
+  type: 'test'
+  ...
+# Subtest: bfcache playback waits for same-account confirmation and rejects a changed account
+ok 20 - bfcache playback waits for same-account confirmation and rejects a changed account
+  ---
+  duration_ms: 0.699209
+  type: 'test'
+  ...
+# Subtest: a late same-account confirmation does not restart a manually selected scene
+ok 21 - a late same-account confirmation does not restart a manually selected scene
+  ---
+  duration_ms: 0.851875
+  type: 'test'
+  ...
+# Subtest: reader actions retain canonical gift URLs and the authenticated owner header
+ok 22 - reader actions retain canonical gift URLs and the authenticated owner header
+  ---
+  duration_ms: 29.722458
+  type: 'test'
+  ...
+# Subtest: reader session mismatch synchronously invalidates subscribers before every navigation path
+ok 23 - reader session mismatch synchronously invalidates subscribers before every navigation path
+  ---
+  duration_ms: 5.384334
+  type: 'test'
+  ...
+# Subtest: restored identity checks share one request, fail closed offline, and invalidate a changed owner
+ok 24 - restored identity checks share one request, fail closed offline, and invalidate a changed owner
+  ---
+  duration_ms: 2.31
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 550.366583
