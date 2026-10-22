@@ -1,0 +1,238 @@
+TAP version 13
+# Subtest: the local reader serves its bundled atmosphere assets with correct types and no arbitrary file access
+ok 1 - the local reader serves its bundled atmosphere assets with correct types and no arbitrary file access
+  ---
+  duration_ms: 3706.71375
+  type: 'test'
+  ...
+# Subtest: the first audible graph uses the latest mix after a slow recording decode
+ok 2 - the first audible graph uses the latest mix after a slow recording decode
+  ---
+  duration_ms: 7.34725
+  type: 'test'
+  ...
+# Subtest: loop preparation removes recording fades and joins the waveform without a silent seam
+ok 3 - loop preparation removes recording fades and joins the waveform without a silent seam
+  ---
+  duration_ms: 2.662458
+  type: 'test'
+  ...
+# Subtest: atmospheres validate saved playback intent alongside scene and levels
+ok 4 - atmospheres validate saved playback intent alongside scene and levels
+  ---
+  duration_ms: 0.613958
+  type: 'test'
+  ...
+# Subtest: narration ducks both channels without changing saved volume, zero stays silent
+ok 5 - narration ducks both channels without changing saved volume, zero stays silent
+  ---
+  duration_ms: 0.149625
+  type: 'test'
+  ...
+# Subtest: late resource arrival after pause is disposed and cannot resume sound
+ok 6 - late resource arrival after pause is disposed and cannot resume sound
+  ---
+  duration_ms: 0.31425
+  type: 'test'
+  ...
+# Subtest: a rapid scene change retains only the last playback, stale failure cannot replace it
+ok 7 - a rapid scene change retains only the last playback, stale failure cannot replace it
+  ---
+  duration_ms: 0.158375
+  type: 'test'
+  ...
+# Subtest: current playback failure is visible and can be retried
+ok 8 - current playback failure is visible and can be retried
+  ---
+  duration_ms: 0.102834
+  type: 'test'
+  ...
+# Subtest: volume or narration changes made while recordings load reach the accepted playback
+ok 9 - volume or narration changes made while recordings load reach the accepted playback
+  ---
+  duration_ms: 0.081875
+  type: 'test'
+  ...
+# Subtest: selecting a scene starts its matching sound immediately, including after an explicit pause
+ok 10 - selecting a scene starts its matching sound immediately, including after an explicit pause
+  ---
+  duration_ms: 12.237667
+  type: 'test'
+  ...
+# Subtest: restoring a scene stays silent and selecting another scene respects an individually muted channel
+ok 11 - restoring a scene stays silent and selecting another scene respects an individually muted channel
+  ---
+  duration_ms: 1.09475
+  type: 'test'
+  ...
+# Subtest: settings and scene controls share volume, motion and manual playback without restarting sound
+ok 12 - settings and scene controls share volume, motion and manual playback without restarting sound
+  ---
+  duration_ms: 3.4155
+  type: 'test'
+  ...
+# Subtest: quick pause cancels a scene selected while its recording is still loading
+ok 13 - quick pause cancels a scene selected while its recording is still loading
+  ---
+  duration_ms: 1.042416
+  type: 'test'
+  ...
+# Subtest: switching tabs pauses visual motion but keeps the selected sound playing without restarting it
+ok 14 - switching tabs pauses visual motion but keeps the selected sound playing without restarting it
+  ---
+  duration_ms: 0.686209
+  type: 'test'
+  ...
+# Subtest: a background load may finish playing; an explicit pause stays paused on return and leaving the document stops it
+ok 15 - a background load may finish playing; an explicit pause stays paused on return and leaving the document stops it
+  ---
+  duration_ms: 0.856042
+  type: 'test'
+  ...
+# Subtest: the hearth controller starts only visible layers and stops them for motion preferences, other scenes and page exit
+ok 16 - the hearth controller starts only visible layers and stops them for motion preferences, other scenes and page exit
+  ---
+  duration_ms: 1.108125
+  type: 'test'
+  ...
+# Subtest: forest light and sea water follow scene, visibility and motion preferences without ever starting sound
+ok 17 - forest light and sea water follow scene, visibility and motion preferences without ever starting sound
+  ---
+  duration_ms: 1.852625
+  type: 'test'
+  ...
+# Subtest: saved sound resumes on entry and page exit retains intent until an explicit pause
+ok 18 - saved sound resumes on entry and page exit retains intent until an explicit pause
+  ---
+  duration_ms: 1.097084
+  type: 'test'
+  ...
+# Subtest: autoplay denial is waiting for a gesture rather than reported as playing or a network failure
+ok 19 - autoplay denial is waiting for a gesture rather than reported as playing or a network failure
+  ---
+  duration_ms: 0.095458
+  type: 'test'
+  ...
+# Subtest: a trusted pointerdown on the start control does not turn its following click into a pause
+ok 20 - a trusted pointerdown on the start control does not turn its following click into a pause
+  ---
+  duration_ms: 0.731916
+  type: 'test'
+  ...
+# Subtest: bfcache playback waits for same-account confirmation and rejects a changed account
+ok 21 - bfcache playback waits for same-account confirmation and rejects a changed account
+  ---
+  duration_ms: 1.029166
+  type: 'test'
+  ...
+# Subtest: a late same-account confirmation does not restart a manually selected scene
+ok 22 - a late same-account confirmation does not restart a manually selected scene
+  ---
+  duration_ms: 0.710875
+  type: 'test'
+  ...
+# Subtest: book upload implementation waits for opening chat and stays outside the fixed reader startup budget
+ok 23 - book upload implementation waits for opening chat and stays outside the fixed reader startup budget
+  ---
+  duration_ms: 5218.729792
+  type: 'test'
+  ...
+# Subtest: a held external put CAS loses to the grant-revocation touch ACK and stores no late message
+ok 24 - a held external put CAS loses to the grant-revocation touch ACK and stores no late message
+  ---
+  duration_ms: 28.12375
+  type: 'test'
+  ...
+# Subtest: a source-mutation touch fences a held external put with the honest source status
+ok 25 - a source-mutation touch fences a held external put with the honest source status
+  ---
+  duration_ms: 22.458583
+  type: 'test'
+  ...
+# Subtest: a translation ACK fences a held external highlight before its stale selection can commit
+ok 26 - a translation ACK fences a held external highlight before its stale selection can commit
+  ---
+  duration_ms: 17.792
+  type: 'test'
+  ...
+# Subtest: an accepted external write is historical and the revocation ACK waits for the same-key lock
+ok 27 - an accepted external write is historical and the revocation ACK waits for the same-key lock
+  ---
+  duration_ms: 166.026417
+  type: 'test'
+  ...
+# Subtest: a failed revocation listener fails the ACK honestly and exact retries touch again
+ok 28 - a failed revocation listener fails the ACK honestly and exact retries touch again
+  ---
+  duration_ms: 6.645209
+  type: 'test'
+  ...
+# Subtest: external writes refuse wrong owner, book and scope before any history lookup
+ok 29 - external writes refuse wrong owner, book and scope before any history lookup
+  ---
+  duration_ms: 10.515
+  type: 'test'
+  ...
+# Subtest: an exact external retry repeats one receipt while changed payloads conflict without a model
+ok 30 - an exact external retry repeats one receipt while changed payloads conflict without a model
+  ---
+  duration_ms: 5.045292
+  type: 'test'
+  ...
+# Subtest: an exact external retry survives later source edits while new writes need the current source
+ok 31 - an exact external retry survives later source edits while new writes need the current source
+  ---
+  duration_ms: 10.640875
+  type: 'test'
+  ...
+# Subtest: a deleted thread is never overwritten or resurrected by external writes
+ok 32 - a deleted thread is never overwritten or resurrected by external writes
+  ---
+  duration_ms: 7.448375
+  type: 'test'
+  ...
+# Subtest: a pending site run keeps its output identity against external writes
+ok 33 - a pending site run keeps its output identity against external writes
+  ---
+  duration_ms: 6.490042
+  type: 'test'
+  ...
+# Subtest: an external write cannot consume a pending answer slot and succeeds once it is released
+ok 34 - an external write cannot consume a pending answer slot and succeeds once it is released
+  ---
+  duration_ms: 10.6905
+  type: 'test'
+  ...
+# Subtest: the bounded AI-only external read paginates long Unicode bodies completely and hides user words
+ok 35 - the bounded AI-only external read paginates long Unicode bodies completely and hides user words
+  ---
+  duration_ms: 17.131583
+  type: 'test'
+  ...
+# Subtest: reader actions retain canonical gift URLs and the authenticated owner header
+ok 36 - reader actions retain canonical gift URLs and the authenticated owner header
+  ---
+  duration_ms: 34.505833
+  type: 'test'
+  ...
+# Subtest: reader session mismatch synchronously invalidates subscribers before every navigation path
+ok 37 - reader session mismatch synchronously invalidates subscribers before every navigation path
+  ---
+  duration_ms: 3.293791
+  type: 'test'
+  ...
+# Subtest: restored identity checks share one request, fail closed offline, and invalidate a changed owner
+ok 38 - restored identity checks share one request, fail closed offline, and invalidate a changed owner
+  ---
+  duration_ms: 3.426916
+  type: 'test'
+  ...
+1..38
+# tests 38
+# suites 0
+# pass 38
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6487.764959

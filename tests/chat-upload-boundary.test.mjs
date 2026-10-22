@@ -9,7 +9,7 @@ test('book upload implementation waits for opening chat and stays outside the fi
  const root=path.resolve(import.meta.dirname,'..'),out=await mkdtemp(path.join(os.tmpdir(),'leafhour-upload-boundary-'));
  try{
   const result=await buildReaderWeb({root,outputDir:out,html:await readFile(path.join(root,'app/index.html'),'utf8')});
-  for(const file of ['app/chat-book-upload.mjs','app/book-upload-controller.mjs','app/pdf-ingestion.mjs'])assert.ok(!result.inputs.includes(file),file+' must load only with chat upload');
+  for(const file of ['app/atmosphere-audio.mjs','app/chat-book-upload.mjs','app/book-upload-controller.mjs','app/pdf-ingestion.mjs'])assert.ok(!result.inputs.includes(file),file+' must load only with chat upload');
   const script=await readFile(path.join(out,result.files.find(f=>f.endsWith('.js'))),'utf8');
   assert.match(script,/import\(["']\/chat-book-upload\.mjs["']\)/);
   assert.ok(Buffer.byteLength(script)<=320*1024);

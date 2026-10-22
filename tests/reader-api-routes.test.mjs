@@ -35,3 +35,22 @@ test('reader session mismatch synchronously invalidates subscribers before every
     assert.equal(invalidated,true,route);assert.deepEqual(events,['/library']);
   }
 });
+
+
+test('restored identity checks share one request, fail closed offline, and invalidate a changed owner',async t=>{
+  const previous={fetch:globalThis.fetch,location:globalThis.location,window:globalThis.window,document:globalThis.document};
+  t.after(()=>{for(const [key,value]of Object.entries(previous)){if(value===undefined)delete globalThis[key];else globalThis[key]=value;}});
+  const doc=Object.assign(new EventTarget(),{hidden:false});let response,calls=0,replaced;
+  globalThis.document=doc;globalThis.window={addEventListener:()=>{}};
+  globalThis.location={search:'?book=identity-fixture',origin:'https://reader.example.invalid',replace:url=>replaced=url};
+  globalThis.fetch=async()=>new Response(JSON.stringify({user:{id:'owner-a'}}));
+  const module=await import('../app/reader-api.mjs?identity-confirmation');
+  globalThis.fetch=()=>{calls++;return new Promise(resolve=>response=resolve);};
+  const first=module.confirmReaderIdentity(),second=module.confirmReaderIdentity();
+  assert.equal(first,second);assert.equal(calls,1);
+  response(new Response(JSON.stringify({user:{id:'owner-a'}})));assert.equal(await first,true);
+  globalThis.fetch=async()=>{throw Error('offline');};assert.equal(await module.confirmReaderIdentity(),false);
+  globalThis.fetch=async()=>new Response(JSON.stringify({user:{id:'owner-b'}}));
+  assert.equal(await module.confirmReaderIdentity(),false);assert.equal(replaced,'/library');
+  assert.equal(await module.confirmReaderIdentity(),false);
+});

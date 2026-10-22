@@ -504,6 +504,7 @@
   "tests/arrival-catalog.test.mjs",
   "tests/atmosphere-assets.test.mjs",
   "tests/atmosphere-audio.test.mjs",
+  "tests/atmosphere-loop.test.mjs",
   "tests/atmosphere.test.mjs",
   "tests/audio-backup.test.mjs",
   "tests/audio-boundary-fixture.mjs",

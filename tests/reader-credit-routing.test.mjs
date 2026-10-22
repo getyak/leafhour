@@ -6,7 +6,11 @@ import {parse} from 'acorn';
 import {prepareCreditRequest} from '../app/credit-client.mjs';
 
 const source=await readFile(new URL('../app/reader-api.mjs',import.meta.url),'utf8'),tree=parse(source,{ecmaVersion:'latest',sourceType:'module'});
-let executable=source.replace("import("+"'./credit-client.mjs')","Promise.resolve({prepareCreditRequest:globalThis.prepareCreditRequest})");for(const node of [...tree.body].reverse())if(node.type==='ImportDeclaration')executable=executable.slice(0,node.start)+executable.slice(node.end);else if(node.type==='ExportNamedDeclaration')executable=executable.slice(0,node.start)+executable.slice(node.declaration.start);
+// AST positions belong to the original source. Remove module declarations before
+// changing an import expression's length, including exports after that expression.
+let executable=source;
+for(const node of [...tree.body].reverse())if(node.type==='ImportDeclaration')executable=executable.slice(0,node.start)+executable.slice(node.end);else if(node.type==='ExportNamedDeclaration')executable=executable.slice(0,node.start)+executable.slice(node.declaration.start);
+executable=executable.replace("import("+"'./credit-client.mjs')","Promise.resolve({prepareCreditRequest:globalThis.prepareCreditRequest})");
 async function fixture({enabled=true,prepare,fetcher}={}){
  const calls=[],prepared=[],events=[],listeners=new Map(),doc=Object.assign(new EventTarget(),{hidden:false}),session={user:{id:'owner-a'},billing:{enabled,mode:'test',unitsPerPoint:1_000_000,prices:{translation:1_000_000,conversation:4_000_000,annotation:4_000_000}}};
  const fetch=async(url,options={})=>{calls.push({url,options});if(url==='/api/auth/session')return Response.json(session);return fetcher?fetcher(url,options):Response.json({ok:true});};

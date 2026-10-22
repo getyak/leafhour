@@ -1255,6 +1255,7 @@ export default Object.freeze({
   "reader.atmosphere.error": "聲音暫時無法播放，請重試。",
   "reader.atmosphere.pauseShort": "暫停",
   "reader.shell.end": "結束",
+  "reader.atmosphere.waitingGesture": "瀏覽器需要你先點擊或按鍵，隨後會恢復聲音。",
   "reader.atmosphere.paused": "聲音已暫停。點擊開啟，慢慢讀。",
   "reader.b1.keyTerms": "關鍵英文",
   "reader.shell.viewRecords": "查看標記、想法與問題",

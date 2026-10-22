@@ -1,0 +1,6 @@
+{
+  "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#open-atmosphere') to be visible\u001b[22m\n\u001b[2m    61 × locator resolved to hidden <button lang=\"en\" id=\"open-atmosphere\" class=\"quiet-button\" data-playing=\"false\" aria-haspopup=\"dialog\" aria-controls=\"atmosphere-dialog\" aria-label=\"Reading atmosphere: \" data-ui=\"reader.shell.atmosphere\" data-ui-aria-label=\"reader.shell.readingAtmosphere\">Atmosphere</button>\u001b[22m\n",
+  "checks": [],
+  "errors": [],
+  "url": "http://127.0.0.1:53039/read?book=gutenberg-alice"
+}

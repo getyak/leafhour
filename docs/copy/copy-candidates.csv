@@ -71,9 +71,9 @@ candidate:app/arrival-catalog.mjs:337:16,js-cjk-literal,app/arrival-catalog.mjs,
 candidate:app/arrival-catalog.mjs:343:14,js-cjk-literal,app/arrival-catalog.mjs,343,,unknown,reviewable,,少年维特之烦恼
 candidate:app/arrival-catalog.mjs:344:15,js-cjk-literal,app/arrival-catalog.mjs,344,,unknown,reviewable,,Johann Wolfgang von Goethe · 英译 R. Dillon Boylan
 candidate:app/arrival-catalog.mjs:350:16,js-cjk-literal,app/arrival-catalog.mjs,350,,unknown,reviewable,,书中一段
-candidate:app/atmosphere-audio.mjs:14:39,js-cjk-literal,app/atmosphere-audio.mjs,14,,unknown,reviewable,,这个浏览器暂不支持氛围声音，可以继续使用阅读主题。
-candidate:app/atmosphere-audio.mjs:21:35,js-cjk-literal,app/atmosphere-audio.mjs,21,,unknown,reviewable,,环境声暂时无法载入，请重试。
-candidate:app/atmosphere-audio.mjs:35:77,js-cjk-literal,app/atmosphere-audio.mjs,35,,unknown,reviewable,,请选择一种阅读氛围。
+candidate:app/atmosphere-audio.mjs:34:39,js-cjk-literal,app/atmosphere-audio.mjs,34,,unknown,reviewable,,这个浏览器暂不支持氛围声音，可以继续使用阅读主题。
+candidate:app/atmosphere-audio.mjs:48:35,js-cjk-literal,app/atmosphere-audio.mjs,48,,unknown,reviewable,,环境声暂时无法载入，请重试。
+candidate:app/atmosphere-audio.mjs:62:77,js-cjk-literal,app/atmosphere-audio.mjs,62,,unknown,reviewable,,请选择一种阅读氛围。
 candidate:app/atmosphere-state.mjs:2:21,js-cjk-literal,app/atmosphere-state.mjs,2,,unknown,reviewable,,林间书页
 candidate:app/atmosphere-state.mjs:2:36,js-cjk-literal,app/atmosphere-state.mjs,2,,unknown,reviewable,,风过树梢，读到日落。
 candidate:app/atmosphere-state.mjs:2:56,js-cjk-literal,app/atmosphere-state.mjs,2,,unknown,reviewable,,林风与鸟鸣

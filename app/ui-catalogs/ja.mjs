@@ -1255,6 +1255,7 @@ export default Object.freeze({
   "reader.atmosphere.error": "今は音を再生できません。再試行してください。",
   "reader.atmosphere.pauseShort": "一時停止",
   "reader.shell.end": "終了",
+  "reader.atmosphere.waitingGesture": "クリックまたはキー操作で音を再開します。",
   "reader.atmosphere.paused": "音は一時停止中です。好きな時に再開できます。",
   "reader.b1.keyTerms": "英語の重要語句",
   "reader.shell.viewRecords": "ハイライト、考え、問いを見る",
