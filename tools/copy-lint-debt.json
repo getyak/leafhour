@@ -1635,15 +1635,6 @@
       "state": "unreviewed"
     },
     {
-      "itemId": "reader.highlight.saveFailed",
-      "locale": "zh-Hans",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "1c511964dabaa65b19e6e7f9ff1cc286830e3ae5b6e5296940a6c42c4760723d",
-      "match": "提交",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
       "itemId": "reader.session.backedUp",
       "locale": "zh-Hans",
       "rule": "Leafhour.DevSpeak",
@@ -2792,15 +2783,6 @@
       "rule": "Leafhour.DevSpeak",
       "valueSha256": "761930ef67f1ab5d25e60af6b007c66c55c956f59ba6f016382ff33bb6a317c2",
       "match": "雙譯",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
-      "itemId": "reader.highlight.saveFailed",
-      "locale": "zh-Hant",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "a9ba0b3fb5cfceca69307b6c3dda48c557ee373fe88ec2fa871d5543500378dc",
-      "match": "提交",
       "kind": "existing-debt",
       "state": "unreviewed"
     },

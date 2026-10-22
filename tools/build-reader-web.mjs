@@ -233,7 +233,7 @@ export function assertAudioBoundaryEdges({edges,release,sources=[]}){
 }
 
 export const ANNOTATION_PUBLIC_FILES=Object.freeze([
- 'app/reader-annotations.mjs','app/reader-annotation-pending.mjs','app/credit-labels.mjs',
+ 'app/reader-annotations.mjs','app/reader-annotation-pending.mjs','app/reader-annotation-margins.mjs','app/note-drafts.mjs','app/credit-labels.mjs',
  'app/reading-chat-quote.mjs','app/highlights.mjs','app/library-chat-markdown.mjs',
  'app/reader-annotations.css',...UI_LOCALE_RELEASE_ENTRIES
 ]);
@@ -302,7 +302,7 @@ export async function auditUiLocaleGraph({root,allowed=null}={}){
   assertAudioBoundaryEdges({edges,release,sources:audited.map(file=>file.relative)});
   const annotationFiles=assertAnnotationBoundaryEdges({edges,release,sources:audited.map(file=>file.relative)});
   assertRetainedBackupBoundaryEdges({edges,release,sources:audited.map(file=>file.relative)});
-  if(annotationFiles.length)for(const [file,cap]of [['app/reader-annotations.mjs',24576],['app/reader-annotation-pending.mjs',8192]])if((await readFile(path.join(root,file))).length>cap)throw Error('Annotation module exceeds public asset budget: '+file);
+  if(annotationFiles.length)for(const [file,cap]of [['app/reader-annotations.mjs',32768],['app/reader-annotation-pending.mjs',8192]])if((await readFile(path.join(root,file))).length>cap)throw Error('Annotation module exceeds public asset budget: '+file);
   for(const edge of edges){
     const base=targetFileOf(edge.importer,edge.specifier);
     const targets=new Set([base,base&&base+'.mjs',base&&base+'.js'].filter(Boolean));

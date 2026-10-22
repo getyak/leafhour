@@ -2213,7 +2213,7 @@ candidate:app/index.html:64:260,html-attribute,app/index.html,64,aria-label,unkn
 candidate:app/index.html:66:366,html-attribute,app/index.html,66,placeholder,unknown,reviewable,,Try explaining in your own words without looking…
 candidate:app/index.html:67:359,html-attribute,app/index.html,67,placeholder,unknown,reviewable,,Leave a question worth returning to…
 candidate:app/index.html:70:80,html-attribute,app/index.html,70,aria-label,unknown,reviewable,,Current passage actions
-candidate:app/index.html:71:755,html-attribute,app/index.html,71,aria-label,unknown,reviewable,,More passage actions
+candidate:app/index.html:71:754,html-attribute,app/index.html,71,aria-label,unknown,reviewable,,More passage actions
 candidate:app/index.html:75:57,html-attribute,app/index.html,75,aria-label,unknown,reviewable,,Passage notes and personal records
 candidate:app/index.html:76:205,html-attribute,app/index.html,76,aria-label,unknown,reviewable,,Close passage notes
 candidate:app/index.html:78:56,html-attribute,app/index.html,78,aria-label,unknown,reviewable,,Note types
@@ -2317,15 +2317,15 @@ candidate:app/index.html:68:125,html-text,app/index.html,68,,unknown,reviewable,
 candidate:app/index.html:68:254,html-text,app/index.html,68,,unknown,reviewable,,Keep reading
 candidate:app/index.html:68:342,html-text,app/index.html,68,,unknown,reviewable,,Ending the timer does not mark a chapter as read. Save thoughts and questions separately; check notices for unsent text.
 candidate:app/index.html:71:65,html-text,app/index.html,71,,unknown,reviewable,,Quote to AI
-candidate:app/index.html:71:153,html-text,app/index.html,71,,unknown,reviewable,,Highlight
-candidate:app/index.html:71:245,html-text,app/index.html,71,,unknown,reviewable,,Annotate with AI
-candidate:app/index.html:71:337,html-text,app/index.html,71,,unknown,reviewable,,Share excerpt
-candidate:app/index.html:71:413,html-text,app/index.html,71,,unknown,reviewable,,Inspect
-candidate:app/index.html:71:469,html-text,app/index.html,71,,unknown,reviewable,,Original
-candidate:app/index.html:71:540,html-text,app/index.html,71,,unknown,reviewable,,Read aloud
-candidate:app/index.html:71:624,html-text,app/index.html,71,,unknown,reviewable,,Annotations
-candidate:app/index.html:71:701,html-text,app/index.html,71,,unknown,reviewable,,Thought
-candidate:app/index.html:71:873,html-text,app/index.html,71,,unknown,reviewable,,More
+candidate:app/index.html:71:153,html-text,app/index.html,71,,unknown,reviewable,,Annotate
+candidate:app/index.html:71:244,html-text,app/index.html,71,,unknown,reviewable,,Annotate with AI
+candidate:app/index.html:71:336,html-text,app/index.html,71,,unknown,reviewable,,Share excerpt
+candidate:app/index.html:71:412,html-text,app/index.html,71,,unknown,reviewable,,Inspect
+candidate:app/index.html:71:468,html-text,app/index.html,71,,unknown,reviewable,,Original
+candidate:app/index.html:71:539,html-text,app/index.html,71,,unknown,reviewable,,Read aloud
+candidate:app/index.html:71:623,html-text,app/index.html,71,,unknown,reviewable,,Annotations
+candidate:app/index.html:71:700,html-text,app/index.html,71,,unknown,reviewable,,Thought
+candidate:app/index.html:71:872,html-text,app/index.html,71,,unknown,reviewable,,More
 candidate:app/index.html:72:123,html-text,app/index.html,72,,unknown,reviewable,,Share this passage
 candidate:app/index.html:72:218,html-text,app/index.html,72,,unknown,reviewable,,Listen from here
 candidate:app/index.html:72:300,html-text,app/index.html,72,,unknown,reviewable,,Choose a side
@@ -3046,11 +3046,14 @@ candidate:app/public-navigation.mjs:27:579,js-cjk-literal,app/public-navigation.
 candidate:app/public-navigation.mjs:27:604,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,ポイント
 candidate:app/public-navigation.mjs:27:622,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,外観
 candidate:app/public-navigation.mjs:27:636,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,表示言語
-candidate:app/reader-annotations.mjs:28:129,js-attribute,app/reader-annotations.mjs,28,role,unknown,reviewable,,region
-candidate:app/reader-annotations.mjs:30:129,js-dom-literal,app/reader-annotations.mjs,30,textContent,unknown,reviewable,,×
-candidate:app/reader-annotations.mjs:32:79,js-attribute,app/reader-annotations.mjs,32,role,unknown,reviewable,,status
-candidate:app/reader-annotations.mjs:32:121,js-attribute,app/reader-annotations.mjs,32,aria-live,unknown,reviewable,,polite
-candidate:app/reader-annotations.mjs:84:386,js-dom-literal,app/reader-annotations.mjs,84,textContent,unknown,reviewable,,AI
+candidate:app/reader-annotation-margins.mjs:25:122,js-attribute,app/reader-annotation-margins.mjs,25,role,unknown,reviewable,,status
+candidate:app/reader-annotation-margins.mjs:25:164,js-attribute,app/reader-annotation-margins.mjs,25,aria-live,unknown,reviewable,,polite
+candidate:app/reader-annotations.mjs:30:129,js-attribute,app/reader-annotations.mjs,30,role,unknown,reviewable,,region
+candidate:app/reader-annotations.mjs:32:129,js-dom-literal,app/reader-annotations.mjs,32,textContent,unknown,reviewable,,×
+candidate:app/reader-annotations.mjs:32:444,js-dom-literal,app/reader-annotations.mjs,32,textContent,unknown,reviewable,,‹
+candidate:app/reader-annotations.mjs:32:465,js-dom-literal,app/reader-annotations.mjs,32,textContent,unknown,reviewable,,›
+candidate:app/reader-annotations.mjs:34:79,js-attribute,app/reader-annotations.mjs,34,role,unknown,reviewable,,status
+candidate:app/reader-annotations.mjs:34:121,js-attribute,app/reader-annotations.mjs,34,aria-live,unknown,reviewable,,polite
 candidate:app/reader-api.mjs:20:96,js-cjk-literal,app/reader-api.mjs,20,,unknown,reviewable,,账户已切换，请重新进入书房。
 candidate:app/reader-api.mjs:27:148,js-cjk-literal,app/reader-api.mjs,27,,unknown,reviewable,,账户已切换，请重新进入书房。
 candidate:app/reader-api.mjs:28:75,js-cjk-literal,app/reader-api.mjs,28,,unknown,reviewable,,阅读点数请求格式不正确。

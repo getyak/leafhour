@@ -738,6 +738,7 @@
   "app/reading-chat-quote.mjs",
   "app/reading-chat-input.mjs",
   "app/reader-annotations.mjs",
+  "app/reader-annotation-margins.mjs",
   "app/reader-annotation-pending.mjs",
   "app/reader-annotations.css",
   "tests/reader-annotation-pending.test.mjs",
