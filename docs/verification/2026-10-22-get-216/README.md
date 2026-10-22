@@ -23,6 +23,10 @@
 - 同一次真实浏览器验收中，sea 开启意图重入后是 `blocked`；真实点击恢复后检测到非零输出。显式暂停、无主题再重入均保持关闭，页面无 uncaught error。账号核验竞态以确定性控制器/API 测试覆盖；不把合成 pageshow 事件称为真实 bfcache 验收。
 - 这些记录证明浏览器数字音频图的连续输出，不宣称已完成人工试听或物理扬声器录音。未启动 iOS 模拟器，未调用模型、未全书翻译，未访问其他真实账号。生产音频验收阻止非登录 POST，避免写入阅读记录或触发模型。
 
+## CI 补充
+
+PR 首轮 CI 的 3223 项测试中 3215 通过、8 失败；八项均是 reader-credit-routing 的 VM 夹具先改写 import() 长度，再按原 AST 位置移除后续 export，导致解析错误。现先倒序移除模块声明，再替换 import()；独立复核 8/8 通过，未改产品逻辑或削弱断言。失败原始日志和修复回归分别见 ci-first-failure.log.gz 与 ci-fixture-fixed.log；必须等待修复后新 head 的完整 CI，旧结果不充当通过。
+
 ## 复现
 
 使用已安装 Playwright 与 Chromium，指定 `GET216_BASE`、`GET216_OUT`、`GET216_PLAYWRIGHT_MODULE`、`GET216_CHROMIUM` 运行 browser-check.mjs。输出应放 dev-storage-guard 登记的临时目录。`GET216_AUTH=keychain` 仅用于已授权的生产默认账号；凭据和 Cookie 只存在内存，报告仅保存 owner 的 SHA-256。禁止提交账户运行数据或凭据。

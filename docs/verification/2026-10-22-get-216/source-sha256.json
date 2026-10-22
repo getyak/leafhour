@@ -7,5 +7,6 @@
   "release-files.json": "8d010048807a74a356e4f67d4dc94ba80ae35b0eb1fa74235936104036c4f196",
   "tests/atmosphere-loop.test.mjs": "e55355270d44a5b27ca0900ef20cc87829f6589521208b44ae779947a4920229",
   "tests/atmosphere.test.mjs": "8d367fce755ccf061ae8694bfe4f0ce34fc36a0559dd9ae270fb9086d1907d5c",
-  "tests/reader-api-routes.test.mjs": "e75d56d9b376528601422f6c99c8a23d0a902ab10d1dce9f95f8b3b14be7fd6e"
+  "tests/reader-api-routes.test.mjs": "e75d56d9b376528601422f6c99c8a23d0a902ab10d1dce9f95f8b3b14be7fd6e",
+  "tests/reader-credit-routing.test.mjs": "8b0c9b882f66bb5498f91f9e51e449134f2bcca429d92bbc6058798ec4dc5a19"
 }
