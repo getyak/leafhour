@@ -1,6 +1,6 @@
 # MCP book highlights and AI evaluations
 
-Date: 2026-10-22. Status: implemented and reviewed in an isolated local branch; not merged, deployed or accepted against live HTTPS.
+Date: 2026-10-22. Implementation and verification record. Delivery and matching-release live acceptance are tracked on [PR #164](https://github.com/getyak/leafhour/pull/164).
 
 ## Behavior
 
@@ -24,8 +24,18 @@ The consent page, four public guides, four README tool inventories, MCP contract
 
 All test identities, sources and prose are isolated synthetic fixtures. No live account book, payment, model, OCR or speech provider was used.
 
-## Delivery blockers
+## Initial delivery attempt
 
 The GitHub connector refused branch creation on `getyak/leafhour` with HTTP 403, `Resource not accessible by integration`. The desktop GitHub connection could not complete its existing device authorization. The execution sandbox also cannot reach GitHub through the configured proxy or directly. No branch, PR, remote CI, merge or Production deployment was completed. The source changes and a local commit are preserved for delivery when repository write access is available. No preview deployment was requested.
 
 Production acceptance must later verify the matching release SHA, public OAuth metadata and real default-test-account authorization, selected public/synthetic book, highlighted quote, attributed AI evaluation and rejection after revocation. A scripted synthetic test does not establish that an actual ChatGPT account is connected.
+
+## Native delivery recovery
+
+The later user request authorized real publication through local git/gh. A native command channel confirmed the existing keyring-backed GitHub account has repository push/admin permission. The feature branch was pushed normally and PR #164 created against the unchanged public main; no force push or Preview deployment was used. The earlier connector/sandbox failures remain historical evidence, not the current delivery state.
+
+A fresh isolated `npm ci --ignore-scripts` installed 695 locked packages. The first unrestricted default-concurrency full run completed 3,216 tests: 3,214 passed, one failed (`home-auto-entry`: “a verified account gets a separate bounded read and owner-check window”), and one platform skip. That existing 10 ms timing case passed in isolation. The full suite rerun with four concurrent files completed **3,216 tests: 3,215 passed, zero failures, one platform skip**. The runtime built and initialized 928 files (9.0 MiB) without model calls. Hosted web build, the 409-file/11-media public scan, 877-file release allowlist, source-provenance verification, pinned copy lint and copy negative canaries all passed. No failing test or lint rule was disabled.
+
+The real default account's Supabase-backed website password login returned 200 and its current user identity was checked. The keychain password was read only at runtime and not logged. A live HTTPS SDK acceptance script is prepared to read the public Alice opening, save one attributed highlighter/evaluation pair in that account, verify the web domain records and unchanged progress/time, then revoke the grant and require HTTP 401. Final results and the exact production source SHA belong to PR #164's delivery record; preparing this script is not itself a passed live acceptance.
+
+At the recovery checkpoint GitHub's [official status API](https://www.githubstatus.com/api/v2/summary.json) reported degraded Actions performance and an investigating “Incident with Actions Results” starting 2026-10-22 14:18 UTC. Required PR CI was queued without a runner. Publication continues to require the actual successful current-head CI, followed by the matching main Production deployment and live acceptance.
