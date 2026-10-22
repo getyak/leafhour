@@ -861,5 +861,19 @@
   "tests/provider-dispatch-recording.test.mjs",
   "tests/billing-walkthrough.test.mjs",
   "app/commerce.css",
-  "app/public-navigation.mjs"
+  "app/public-navigation.mjs",
+  "app/checkout-embed.mjs",
+  "app/pricing-checkout-flow.mjs",
+  "app/pricing-checkout-markup.mjs",
+  "app/pricing-checkout.css",
+  "app/pricing-checkout.mjs",
+  "server/billing-plans.mjs",
+  "server/content-security.mjs",
+  "supabase/migrations/202610220001_yearly_reading_subscriptions.sql",
+  "tests/billing-yearly-postgres.test.mjs",
+  "tests/billing-yearly-service.test.mjs",
+  "tests/billing-yearly-setup.test.mjs",
+  "tests/fixtures/billing-yearly-postgres.sql",
+  "tests/pricing-checkout-http.test.mjs",
+  "tests/pricing-checkout.test.mjs"
 ]

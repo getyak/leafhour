@@ -1,0 +1,13 @@
+{
+  "environment": "Creem sandbox",
+  "realCashCharged": false,
+  "identity": "isolated synthetic authentication fixture",
+  "applicationStore": "disposable local reference ledger",
+  "productKey": "reading_yearly_1200",
+  "amountUsd": 50,
+  "pointsGranted": 1200,
+  "paymentVerified": true,
+  "localOrderCount": 1,
+  "afterConfirmation": "/library?ui=zh-Hans",
+  "scope": "actual embedded card form and test payment; authenticated reconciliation of the same transaction after the observed API-shape fix; no production activation"
+}

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBillingRuntime} from '../server/billing-runtime.mjs';
 test('disabled billing leaves self-hosted reading independent of payment credentials',async()=>{
- const b=await createBillingRuntime({env:{}});assert.equal(b.enabled,false);assert.equal((await b.catalog()).available,false);assert.deepEqual((await b.catalog()).products.map(p=>p.key),['reading_monthly_100']);
+ const b=await createBillingRuntime({env:{}});assert.equal(b.enabled,false);assert.equal((await b.catalog()).available,false);assert.deepEqual((await b.catalog()).products.map(p=>p.key),['reading_monthly_100','reading_yearly_1200']);
 });
 test('enabled live billing without durable configuration blocks generation without taking down reading',async()=>{
  const b=await createBillingRuntime({env:{READER_BILLING_ENABLED:'true',CREEM_MODE:'live'}});

@@ -1,0 +1,6 @@
+.commerce-page #pricing-status { min-height: 1.6em; text-align: center; font-size: 13px; line-height: 1.8; color: var(--bill-muted); margin: 20px 0 0; }
+.commerce-page #pricing-status a { color: var(--bill-green); text-underline-offset: 3px; }
+.commerce-page .point-pack button.primary { font: inherit; cursor: pointer; }
+.commerce-page .point-pack button.primary:disabled { cursor: default; opacity: .6; }
+.commerce-page .pricing-confirm { border: 0; background: transparent; color: var(--bill-green); text-decoration: underline; text-underline-offset: 3px; padding: 6px; min-height: 44px; font: inherit; cursor: pointer; }
+.commerce-page .auth-dialog { color: var(--bill-ink); --surface: var(--bill-panel); --ink: var(--bill-ink); --muted: var(--bill-muted); --line: var(--bill-line); --accent: var(--bill-green); }

@@ -1,3 +1,4 @@
+import {BILLING_PLANS,billingPlan} from './billing-plans.mjs';
 import {randomUUID,createHash} from 'node:crypto';
 import {billingError} from './billing-memory-store.mjs';
 import {normalizeCreemEvent,safeCreemCheckoutUrl,safeCreemPortalUrl} from './creem.mjs';
@@ -35,10 +36,10 @@ export function createBillingService({store,creem,enabled=false,mode='test',publ
   const available=(key='reading_monthly_100')=>Boolean(enabled&&store?.command&&creem?.ready&&creem.mode===mode&&productId(key));
   const requireEnabled=()=>{if(!enabled)fail('billing_disabled',503);if(!store?.command)fail('billing_store_unavailable',503);};
   const command=(action,p={})=>{requireEnabled();return store.command(action,{...p,mode});};
-  const product=key=>({key,amount:500,currency:'USD',units:100*CREDIT_UNITS,points:100,taxMode:'exclusive',billingType:'recurring',billingPeriod:'every-month'});
+  const product=key=>{const {interval,schemaVersion,variable,...terms}=billingPlan(key);return terms;};
   const getOrder=({ownerId,orderId})=>command('getOrder',{ownerId:identifier(ownerId),orderId:identifier(orderId)});
   // Retired offers remain auditable, but old clients must not resume their payment links.
-  const orderView=order=>{if(!order||order.productKey==='reading_monthly_100')return order;const {checkoutUrl,...details}=order;return details;};
+  const orderView=order=>{if(!order||billingPlan(order.productKey))return order;const {checkoutUrl,...details}=order;return details;};
   const productChecks=new Map(),productsVerifiedUntil=new Map();
   async function checkProduct(productKey,force=false){
     if(typeof creem?.retrieveProduct!=='function'){if(mode==='live')fail('billing_product_unverified',503);return;}
@@ -48,13 +49,13 @@ export function createBillingService({store,creem,enabled=false,mode='test',publ
   }
   async function readiness({forceProduct=false,productKey='reading_monthly_100'}={}){
     if(!enabled)return {enabled:false,ready:false,mode,reason:'billing_disabled'};
-    if(productKey!=='reading_monthly_100'||!available(productKey))return {enabled:true,ready:false,mode,reason:'billing_configuration_incomplete'};
+    if(!billingPlan(productKey)||!available(productKey))return {enabled:true,ready:false,mode,reason:'billing_configuration_incomplete'};
     const status=await command('readiness');
-    if(!(status.schemaVersion>=2))return {...status,enabled:true,ready:false,mode,reason:'billing_schema_outdated'};
+    if(!(status.schemaVersion>=billingPlan(productKey).schemaVersion))return {...status,enabled:true,ready:false,mode,reason:'billing_schema_outdated'};
     await checkProduct(productKey,forceProduct);
     return {...status,enabled:true,mode,ready:Boolean(mode==='test'&&status.backend==='reference'||status.ready&&(mode!=='live'||status.durable&&status.backend==='postgres'))};
   }
-  const subscriptionFulfillment=createBillingSubscriptions({command,creem,mode,now,monthlyProductId:()=>productId('reading_monthly_100'),units:100*CREDIT_UNITS});
+  const subscriptionFulfillment=createBillingSubscriptions({command,creem,mode,now});
   async function fulfill(event,{recheck=true}={}){
     if(event.ignored)return {received:true,ignored:true};
     if(event.mode!==mode)fail('payment_environment_mismatch',409);
@@ -78,7 +79,7 @@ export function createBillingService({store,creem,enabled=false,mode='test',publ
         const latest=normalizeCreemEvent({id:event.id,eventType:event.type,object:checkout});
         return fulfill({...latest,eventHash:event.eventHash},{recheck:false});
       }
-      if(local.productKey==='reading_monthly_100')return subscriptionFulfillment.checkout(event,local);
+      if(billingPlan(local.productKey))return subscriptionFulfillment.checkout(event,local);
       if(event.status!=='completed'||!['paid','refunded','partially_refunded','chargeback','disputed'].includes(event.orderStatus)||event.quantity!==1||event.billingType&&event.billingType!=='one-time')fail('payment_not_completed',409);
       // Historical purchases are bound to their saved product, not current sale configuration.
       if(local.productKey!=='reading_100'||event.productId!==local.productId||event.amount!==local.amount||event.currency!==local.currency)fail('payment_mismatch',409);
@@ -105,7 +106,7 @@ export function createBillingService({store,creem,enabled=false,mode='test',publ
   }
   const service={
     enabled,mode,readiness,
-    async catalog(){const products=await Promise.all(['reading_monthly_100'].map(async key=>{let ready=false;try{ready=(await readiness({productKey:key})).ready;}catch{}return {...product(key),available:available(key)&&ready};}));return {enabled,mode,available:products.some(p=>p.available),products,prices:{...PRICES},unitsPerPoint:CREDIT_UNITS,priceVersion:PRICE_VERSION,trialUnits:10*CREDIT_UNITS};},
+    async catalog(){const products=await Promise.all(BILLING_PLANS.map(async ({key})=>{let ready=false;try{ready=(await readiness({productKey:key})).ready;}catch{}return {...product(key),available:available(key)&&ready};}));return {enabled,mode,available:products.some(p=>p.available),products,prices:{...PRICES},unitsPerPoint:CREDIT_UNITS,priceVersion:PRICE_VERSION,trialUnits:10*CREDIT_UNITS};},
     account:({ownerId})=>command('account',{ownerId:identifier(ownerId)}),
     trial:({ownerId,verified=false})=>{if(!verified)fail('verified_account_required',403);return command('trial',{ownerId:identifier(ownerId),grantId:'trial:'+ownerId,units:10*CREDIT_UNITS,campaignBudgetUnits:trialBudgetUnits,now:now()});},
     entries:({ownerId,limit,cursor})=>command('entries',{ownerId:identifier(ownerId),limit,cursor}),
@@ -113,17 +114,18 @@ export function createBillingService({store,creem,enabled=false,mode='test',publ
     async subscriptions({ownerId}){const result=await command('subscriptions',{ownerId:identifier(ownerId)});return {subscriptions:result.subscriptions.map(row=>({id:row.subscriptionId,subscriptionId:row.subscriptionId,status:row.status,productKey:row.productKey,currentPeriodStart:row.currentPeriodStart,currentPeriodEnd:row.currentPeriodEnd}))};},
     async portal({ownerId,subscriptionId}){identifier(ownerId);identifier(subscriptionId);const subscription=await command('lookupSubscription',{subscriptionId});if(!subscription||subscription.ownerId!==ownerId)fail('not_found',404);if(!creem?.ready||creem.mode!==mode||typeof creem.createPortal!=='function')fail('creem_unavailable',503);const response=await creem.createPortal({customerId:subscription.customerId});return {portalUrl:safeCreemPortalUrl(response.portalUrl)};},
     async checkout({ownerId,productKey='reading_monthly_100',intentKey}){
-      identifier(ownerId);identifier(intentKey);if(productKey!=='reading_monthly_100')fail('unknown_product');if(!available(productKey)||!(await readiness({forceProduct:true,productKey})).ready)fail('creem_unavailable',503);
+      identifier(ownerId);identifier(intentKey);if(!billingPlan(productKey))fail('unknown_product');if(!available(productKey)||!(await readiness({forceProduct:true,productKey})).ready)fail('creem_unavailable',503);
       const key=JSON.stringify([ownerId,intentKey,productKey]);if(checkouts.has(key))return checkouts.get(key);
       const task=(async()=>{
-        const order=await command('order',{ownerId,id:randomUUID(),intentKey,productKey,productId:productId(productKey),amount:500,currency:'USD',units:100*CREDIT_UNITS,now:now()});
+        if((await command('account',{ownerId})).frozen)fail('frozen_account',403);
+        const order=await command('order',{ownerId,id:randomUUID(),intentKey,productKey,productId:productId(productKey),amount:billingPlan(productKey).amount,currency:billingPlan(productKey).currency,units:billingPlan(productKey).units,billingPeriod:billingPlan(productKey).billingPeriod,now:now()});
         if(order.status==='expired')fail('checkout_expired',409);
         if(order.checkoutId){if(!order.checkoutUrl)fail('checkout_reconciliation_required',503);return {checkoutUrl:safeCreemCheckoutUrl(order.checkoutUrl),order};}
         // Mark an intent before the external request. A timeout stays unknown and is
         // reconciled; a later process must never blindly create a second checkout.
         const claim=await command('checkoutAttempt',{ownerId,orderId:order.id,now:now()});
         if(!claim.claimed)fail('checkout_reconciliation_required',503);
-        const response=await creem.createCheckout({orderId:order.id,ownerId,productId:productId(productKey),successUrl:origin+'/billing?order='+encodeURIComponent(order.id)});
+        const response=await creem.createCheckout({orderId:order.id,ownerId,productId:productId(productKey),successUrl:origin+'/pricing?order='+encodeURIComponent(order.id)});
         const saved=await command('checkout',{ownerId,orderId:order.id,checkoutId:response.id,checkoutUrl:safeCreemCheckoutUrl(response.checkoutUrl),now:now()});
         return {checkoutUrl:saved.checkoutUrl,order:saved};
       })();checkouts.set(key,task);try{return await task;}finally{checkouts.delete(key);}

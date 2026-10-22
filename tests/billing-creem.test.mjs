@@ -43,3 +43,10 @@ test('product lookup uses the fixed authenticated environment and encoded suppli
  let request;const client=createCreemClient({env:{CREEM_MODE:'live',CREEM_API_KEY:'test-key',CREEM_WEBHOOK_SECRET:secret,CREEM_PRODUCT_READING_MONTHLY_100:'prod_test'},fetcher:async(url,init)=>{request={url,init};return Response.json({id:'prod_test'});}});
  assert.deepEqual(await client.retrieveProduct(),{id:'prod_test'});assert.equal(request.url,'https://api.creem.io/v1/products/prod_test');assert.equal(request.init.method,'GET');
 });
+
+test('current hosted and sandbox checkout routes are accepted alongside historical payment links',async()=>{
+ for(const value of ['https://creem.io/test/checkout/prod_example/ch_example','https://www.creem.io/checkout/prod_example/ch_example','https://creem.io/payment/ch_historical'])assert.equal(safeCreemCheckoutUrl(value),value);
+ for(const value of ['https://creem.io/test/checkout-attacker/x','https://creem.io/my-orders/x','https://creem.io:444/test/checkout/x','https://user@creem.io/test/checkout/x','https://evil.creem.io/test/checkout/x'])assert.throws(()=>safeCreemCheckoutUrl(value),{code:'unsafe_checkout_url'});
+ const client=createCreemClient({env:{CREEM_MODE:'test',CREEM_API_KEY:'synthetic-key',CREEM_WEBHOOK_SECRET:secret,CREEM_PRODUCT_READING_MONTHLY_100:'prod_test'},fetcher:async()=>Response.json({id:'ch_test',checkout_url:'https://creem.io/test/checkout/prod_test/ch_test'})});
+ assert.equal((await client.createCheckout({orderId:'local-order',ownerId:'reader',productId:'prod_test',successUrl:'https://leafhour.example/pricing'})).id,'ch_test');
+});
