@@ -12,10 +12,10 @@ test('configuration inventory names missing variables without exposing credentia
  assert.ok(!JSON.stringify(result).includes(env.CREEM_API_KEY));assert.deepEqual(env,before);
 });
 
-test('product preparation validates both configured products without posting or mutating settings',async()=>{
+test('product preparation validates only the monthly offer and ignores retired top-up configuration',async()=>{
  const {prepareBillingProducts}=await import('../tools/configure-billing.mjs');const requests=[];
  const result=await prepareBillingProducts({env,fetcher:async(url,options)=>{requests.push({url,options});return Response.json(product(url.endsWith('prod_topup')?'prod_topup':'prod_monthly',url.endsWith('prod_topup')?'reading_100':'reading_monthly_100'));}});
- assert.equal(requests.length,2);assert.ok(requests.every(r=>r.options.method==='GET'));assert.equal(result.environment.CREEM_PRODUCT_READING_MONTHLY_100,'prod_monthly');
+ assert.equal(requests.length,1);assert.ok(requests[0].url.endsWith("/prod_monthly"));assert.deepEqual(Object.keys(result.environment),["CREEM_PRODUCT_READING_MONTHLY_100"]);assert.ok(requests.every(r=>r.options.method==='GET'));assert.equal(result.environment.CREEM_PRODUCT_READING_MONTHLY_100,'prod_monthly');
  assert.ok(!JSON.stringify(result).includes(env.CREEM_API_KEY));
 });
 
@@ -39,11 +39,20 @@ test('unsafe setup and mismatched product never fall through to a purchase or le
  const {prepareBillingProducts}=await import('../tools/configure-billing.mjs');let requests=0;
  for(const patch of [{CREEM_MODE:'typo'},{READER_PUBLIC_ORIGIN:'https://user:password@leafhour.com'},{CREEM_API_KEY:''}])await assert.rejects(prepareBillingProducts({env:{...env,...patch},createMissing:true,fetcher:async()=>{requests++;}}));
  assert.equal(requests,0);
- await assert.rejects(prepareBillingProducts({env,fetcher:async()=>Response.json({...product('prod_topup','reading_100'),price:600})}),{code:'billing_product_unverified'});
+ await assert.rejects(prepareBillingProducts({env,fetcher:async()=>Response.json({...product('prod_monthly','reading_monthly_100'),price:600})}),{code:'billing_product_unverified'});
  await assert.rejects(prepareBillingProducts({env,fetcher:async()=>{throw Error(env.CREEM_API_KEY);}}),error=>!error.message.includes(env.CREEM_API_KEY));
 });
-test('invalid existing monthly product is rejected before creating a missing top-up',async()=>{
+test('invalid monthly product is rejected without creating any additional offer',async()=>{
  const {prepareBillingProducts}=await import('../tools/configure-billing.mjs');const calls=[];
  await assert.rejects(prepareBillingProducts({env:{...env,CREEM_PRODUCT_READING_100:''},createMissing:true,fetcher:async(url,options)=>{calls.push(options.method);return Response.json(options.method==='POST'?product('prod_new','reading_100'):{...product('prod_monthly','reading_monthly_100'),price:999});}}),{code:'billing_product_unverified'});
  assert.deepEqual(calls,['GET']);
+});
+
+
+test('monthly-only configuration never requires or creates a retired one-time product',async()=>{
+ const {billingConfiguration,prepareBillingProducts}=await import('../tools/configure-billing.mjs');
+ const configured={...env,CREEM_PRODUCT_READING_100:undefined,CREEM_WEBHOOK_SECRET:'test-secret',SUPABASE_URL:'https://example.supabase.co',SUPABASE_SECRET_KEY:'test-key',READER_BILLING_ENABLED:'true',READER_BILLING_TRIAL_BUDGET_POINTS:'10000'};
+ assert.equal(billingConfiguration(configured).configurationComplete,true);
+ const calls=[];const result=await prepareBillingProducts({env:configured,createMissing:true,fetcher:async(url,options)=>{calls.push({url,options});return Response.json(product('prod_monthly','reading_monthly_100'));}});
+ assert.deepEqual(result.created,[]);assert.equal(calls.length,1);assert.equal(calls[0].options.method,'GET');assert.deepEqual(Object.keys(result.environment),['CREEM_PRODUCT_READING_MONTHLY_100']);
 });

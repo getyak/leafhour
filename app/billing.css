@@ -13,3 +13,5 @@
 @media(max-width:600px){.point-products,.billing-products{grid-template-columns:minmax(0,1fr);gap:10px}.point-products .point-pack{padding-bottom:26px}.point-products .pack-price strong{font-size:40px}.billing-products .billing-purchase{padding-top:24px;padding-bottom:24px}}
 
 .billing-order-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.billing-order-actions .outline{font-size:12px;padding:6px 10px;min-height:36px}
+
+.billing-page .billing-monthly-only{grid-template-columns:minmax(0,1fr)}.billing-page .billing-monthly-only .billing-purchase{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:36px;align-items:center}.billing-page .billing-monthly-only .billing-purchase>div:last-child{margin-top:0}.billing-benefits{padding-left:20px;color:var(--bill-muted);font-size:14px;line-height:1.85}@media(max-width:600px){.billing-page .billing-monthly-only .billing-purchase{grid-template-columns:minmax(0,1fr);gap:16px}}
