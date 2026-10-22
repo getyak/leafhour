@@ -88,10 +88,12 @@ export function mountLibraryData({root,api,getSession,getOwner=()=>getSession()?
  // Local archive validation for the staged file: selecting or dropping only
  // stages and checks, it never restores. Every result is bound to its owner,
  // generation and exact File, so a stale check can never paint a later choice.
- let validationToken=0;
+ let validationToken=0,validatedSelection=null;
  const selectionCurrent=(chosen,token,own)=>!disposed&&token===validationToken&&own===getOwner()&&(file.files&&file.files[0])===chosen;
+ const selectionValidated=()=>!!validatedSelection&&selectionCurrent(validatedSelection.file,validatedSelection.token,validatedSelection.owner);
  async function validateSelection(){
   const chosen=file.files&&file.files[0],token=++validationToken,own=getOwner();
+  validatedSelection=null;updateBusy();
   if(!chosen){dropzone.setState({state:'empty'});return;}
   dropzone.setState({state:'checking',name:chosen.name,size:chosen.size});
   try{
@@ -102,7 +104,8 @@ export function mountLibraryData({root,api,getSession,getOwner=()=>getSession()?
    if(chosen.name.toLowerCase().endsWith('.json')){let legacy;try{legacy=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{throw Error('JSON 备份无法读取');}bytes=await createLibraryArchive(legacy);}
    await readLibraryArchive(bytes);
    if(!selectionCurrent(chosen,token,own))return;
-   dropzone.setState({state:'valid',name:chosen.name,size:chosen.size});
+   validatedSelection={file:chosen,token,owner:own};
+   dropzone.setState({state:'valid',name:chosen.name,size:chosen.size});updateBusy();
   }catch(error){
    if(!selectionCurrent(chosen,token,own))return;
    dropzone.setState({state:'invalid',name:chosen.name,size:chosen.size});
@@ -111,7 +114,7 @@ export function mountLibraryData({root,api,getSession,getOwner=()=>getSession()?
 file.addEventListener('change',()=>{void validateSelection();});
  function updateBusy(){
   const blocked=busy||!getSession()?.user;
-  for(const b of allButtons)b.disabled=blocked||b===save&&!preview;
+  for(const b of allButtons)b.disabled=blocked||b===restore&&!selectionValidated()||b===save&&!preview;
   // One consistent read-only story: the file field, both switches and the
   // export selects share the same blocked state, and the enhanced chrome is
   // re-synced after every disabled/value/options change.
@@ -145,11 +148,11 @@ file.addEventListener('change',()=>{void validateSelection();});
  const staleConfirm=()=>{confirm.close();say('data.confirmStale',null,true);};
  const syncChoices=()=>{for(const [,,control]of choices)control?.sync();};
  restore.addEventListener('click',()=>{
-  if(disposed||busy||!getSession()?.user)return;
+  if(disposed||busy||!getSession()?.user||!selectionValidated())return;
   const chosen=file.files&&file.files[0];
   if(!chosen){report(problem('data.chooseFile'));return;}
-  const openedOwner=getOwner(),openedGeneration=generation;
-  const stillOpen=()=>!disposed&&!busy&&openedOwner===getOwner()&&openedGeneration===generation&&(file.files&&file.files[0])===chosen;
+  const openedOwner=getOwner(),openedGeneration=generation,openedValidation=validatedSelection;
+  const stillOpen=()=>!disposed&&!busy&&openedOwner===getOwner()&&openedGeneration===generation&&validatedSelection===openedValidation&&selectionValidated()&&(file.files&&file.files[0])===chosen;
   confirmKind='restore';
   confirm.open({title:t('data.confirm.restoreTitle'),consequence:t('data.confirm.restoreConsequence'),confirmLabel:t('data.confirm.restoreAction'),cancelLabel:t('data.confirm.cancel'),opener:restore,onConfirm:()=>{
    // Re-checked BEFORE any arrayBuffer, parser or API call.
@@ -180,7 +183,7 @@ file.addEventListener('change',()=>{void validateSelection();});
    void doCancel({operation:openedPending,openingRestoreId:openedRestoreId});
   }});
  });
- function clear(){generation++;validationToken++;confirm.close();busy=false;committing=false;restoreId=null;items=[];selected.clear();preview='';originalCheck.checked=false;quotes.checked=false;mode='personal';modeSelect.value=mode;page=0;controls.hidden=true;recordLabels.clear();rows.replaceChildren();bookSelect.replaceChildren();output.value='';file.value='';dropzone.setState({state:'empty'});say('');updateBusy();}
+ function clear(){generation++;validationToken++;validatedSelection=null;confirm.close();busy=false;committing=false;restoreId=null;items=[];selected.clear();preview='';originalCheck.checked=false;quotes.checked=false;mode='personal';modeSelect.value=mode;page=0;controls.hidden=true;recordLabels.clear();rows.replaceChildren();bookSelect.replaceChildren();output.value='';file.value='';dropzone.setState({state:'empty'});say('');updateBusy();}
  function update(){if(disposed)return;if(owner!==getOwner()){owner=getOwner();clear();}updateBusy();}
  function updateLabels(){if(disposed)return;root.setAttribute('lang',getUiLocale());for(const [el,{id,params}]of labels)el.textContent=t(id,params);for(const [el,{format}]of recordLabels)el.textContent=format();for(const [el,id]of attributes)el.setAttribute('aria-label',t(id));for(const [select,key,control]of choices)control?.updateLabels({label:t(key)});dropzone.updateLabels({title:t('data.drop.title'),action:t('data.drop.action'),hint:t('data.drop.hint')});confirm.updateLabels(confirmLabels());statusMessage.refresh();}
  const offLocale=onUiLocaleChange(updateLabels);void uiReady.then(updateLabels);updateLabels();update();

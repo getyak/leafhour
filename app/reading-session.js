@@ -57,7 +57,7 @@ const formatTime=seconds=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds
 const manualUi=mountManualReading({root:$('manual-reading'),getContext:()=>({book,anchor:actualAnchor(),timeZone:deviceTimeZone()}),getAction:()=>manualAction,onOpen:()=>{if(clock.view().status==='active'){clock.pause();checkpoint();}bridge()?.dismissTools({preserveSelection:true});},onSaved:()=>{message(notice('manual.saved'));render();},onFailure:error=>{if(manualAction?.pending()){if(!manualAction.durable())storageFailure=error;message(notice(manualAction.durable()?'manual.unconfirmedLocal':'manual.unconfirmedMemory'),true);render();}}});
 function renderTimeSource(view,allowed){
  const ongoing=['active','paused'].includes(view.status),source=ongoing?view.source:$('reading-time-source').value;
- $('reading-time-options').hidden=$('reading-time-help').hidden=$('manual-reading-open').hidden=!allowed;$('reading-time-source').disabled=ongoing;$('manual-reading-open').disabled=!manualAction||!marks||!drafts||!!storageFailure||!allowed;if(ongoing)$('reading-time-source').value=source;
+ $('reading-timer-settings').hidden=$('reading-time-options').hidden=$('reading-time-help').hidden=$('manual-reading-open').hidden=!allowed;$('reading-time-source').disabled=ongoing;$('manual-reading-open').disabled=!manualAction||!marks||!drafts||!!storageFailure||!allowed;if(ongoing)$('reading-time-source').value=source;
  label($('reading-state'),SESSION_UI+'state.'+(view.status==='paused'&&view.idle?'idlePaused':view.status),{source});
  label($('reading-toggle'),SESSION_UI+'toggle.'+(ongoing?view.status:'idle'),{source});
  label($('reading-time-help'),source==='reader_estimate'?SESSION_UI+'estimateHelp':SESSION_UI+'focusHelp');manualUi.refresh();

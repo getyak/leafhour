@@ -74,6 +74,40 @@ test('inbox cards remain plain text, labelled AI, and only bounded local origina
  await f.ui.refresh();assert.equal(f.inboxRoot.hidden,false);const nodes=all(f.inboxRoot);assert.ok(nodes.some(n=>n.textContent==='<script>private</script>'));assert.ok(nodes.some(n=>n.textContent==='AI · 每日陪读'));
  const links=nodes.filter(n=>n.tagName==='a');assert.equal(links.length,1);assert.match(links[0].href,/^\/read\?/);
 });
+test('reading notes start in a counted disclosure while their text and original links stay available',async()=>{
+ await requestUiRoute('zh-Hans');
+ const calls=[],inbox=Array.from({length:4},(_,index)=>({id:'note-'+index,message:'纸条 '+index,createdAt:'2026-10-'+(18+index)+'T12:00:00Z',link:'/read?book=book-a&passage=p'+index+'&contentVersion=v1&layer=original'}));
+ const f=fixture(async(...args)=>{calls.push(args);return {plan:plan(),inbox};});await f.ui.refresh();
+ const details=f.inboxRoot.querySelector('details');assert.ok(details,'the notes use a native disclosure');
+ assert.equal(!!details.open,false,'old notes do not occupy the first screen');
+ assert.match(details.querySelector('summary').textContent,/3/,'the summary names the number of available recent notes');
+ const cards=all(details).filter(n=>n.tagName==='article');assert.equal(cards.length,3,'the existing recent-note limit stays intact');
+ assert.equal(all(cards[0]).some(n=>n.textContent==='纸条 3'),true,'the latest note stays first');
+ assert.equal(all(details).filter(n=>n.tagName==='a').length,3,'every original passage remains reachable after opening');
+ details.open=true;details.dispatchEvent(new Event('toggle'));assert.deepEqual(calls,[['/api/library/daily-reading']],'opening notes never marks them read or changes the plan');
+});
+test('the reader can keep notes expanded across refreshes and language changes, but another account starts closed',async()=>{
+ await requestUiRoute('zh-Hans');
+ const f=fixture(async()=>({plan:plan(),inbox:[{id:'note',message:'保留原话',createdAt:'2026-10-18T12:00:00Z'}]}));await f.ui.refresh();
+ let details=f.inboxRoot.querySelector('details');assert.ok(details);details.open=true;
+ f.ui.update();details=f.inboxRoot.querySelector('details');assert.equal(details.open,true,'a same-account render respects the explicit expansion');
+ const summary=details.querySelector('summary');for(const n of all(f.inboxRoot))n.isConnected=true;
+ try{await requestUiRoute('en');assert.equal(f.inboxRoot.querySelector('details'),details);assert.equal(details.open,true);assert.notEqual(summary.textContent,'陪读纸条 · 1 张');assert.match(summary.textContent,/1/);assert.equal(all(details).some(n=>n.textContent==='保留原话'),true);}
+ finally{await requestUiRoute('zh-Hans');}
+ f.switch('b');await f.ui.refresh();assert.equal(!!f.inboxRoot.querySelector('details').open,false,'an account change never carries over another reader’s expansion');
+});
+test('same-account updates and refreshes retain focus on the note summary and original link',async()=>{
+ const f=fixture(async()=>({plan:plan(),inbox:[{id:'focus-note',message:'继续这里',createdAt:'2026-10-18T12:00:00Z',link:'/read?book=book-a&passage=p1&contentVersion=v1&layer=original'}]}));await f.ui.refresh();
+ const details=f.inboxRoot.querySelector('details'),summary=details.querySelector('summary'),link=details.querySelector('a');details.open=true;
+ for(const target of [summary,link]){
+  target.focus();f.ui.update();
+  assert.equal(f.inboxRoot.querySelector('details'),details,'same-owner updates keep the native disclosure mounted');
+  assert.equal(details.querySelector('summary'),summary);assert.equal(details.querySelector('a'),link);assert.equal(f.doc.activeElement,target);
+  await f.ui.refresh();
+  assert.equal(f.inboxRoot.querySelector('details'),details,'an unchanged response never replaces focused controls');
+  assert.equal(details.querySelector('summary'),summary);assert.equal(details.querySelector('a'),link);assert.equal(f.doc.activeElement,target);assert.equal(details.open,true);
+ }
+});
 test('reading a rotated grant clears the stale one-time download',async()=>{
  let current=plan({grantId:'g1'});const f=fixture(async(url,body)=>body?{plan:current,token:'old-private-token'}:{plan:current,inbox:[]});
  await f.ui.refresh();f.find('daily-consent').checked=true;f.find('daily-form').dispatchEvent(new Event('submit',{cancelable:true}));await tick();assert.equal(f.find('daily-download').hidden,false);

@@ -35,7 +35,7 @@ class Element extends EventTarget{
  insertBefore(node,before){node.remove();node.parentElement=this;const index=this.children.indexOf(before);this.children.splice(index<0?this.children.length:index,0,node);}
  replaceChildren(...nodes){this.doc.replacements++;this.textContent='';this.append(...nodes);}
  remove(){if(this.parentElement){this.parentElement.children=this.parentElement.children.filter(n=>n!==this);this.parentElement=null;}}
- setAttribute(k,v){this.attrs[k]=String(v);}getAttribute(k){return this.attrs[k]??null;}
+ setAttribute(k,v){this.attrs[k]=String(v);}getAttribute(k){return this.attrs[k]??null;}removeAttribute(k){delete this.attrs[k];}
  closest(){return null;}
  click(){if(!this.disabled){this.doc.clicks.push(this);this.dispatchEvent(new Event('click'));}}
  focus(){this.doc.activeElement=this;}
@@ -128,4 +128,18 @@ test('translation explains insufficient points and cancelled consent without cla
    assert.deepEqual(f.getBook().sections[0].paragraphs[0].translations,{});
   }finally{f.handle.dispose();}
  }
+});
+test('routine translation guidance folds away while task feedback stays visible',async tctx=>{
+ await requestUiRoute('en');const f=fixture({request:async()=>{throw Error('Offline');}});tctx.after(async()=>{f.handle.dispose();await requestUiRoute('en');});
+ const hint=f.all().find(n=>n.className==='translation-notice');
+ assert.equal(hint.parentElement.tagName,'DETAILS');assert.equal(hint.parentElement.open,false);
+ assert.match(hint.textContent,/one on either side/,'the sending boundary remains available');
+ const scope=f.doc.getElementById('translation-action-scope');assert.equal(scope.hidden,true);assert.equal(f.doc.getElementById('translate-passage').getAttribute('aria-describedby'),null);
+ f.select('p1');assert.equal(hint.parentElement.id,'chapter-heading');assert.equal(scope.hidden,false);assert.match(scope.textContent,/cloud model.*drafts/);assert.equal(f.doc.getElementById('translate-passage').getAttribute('aria-describedby'),scope.id);
+ f.doc.getElementById('translate-passage').click();await flush();assert.equal(hint.parentElement.id,'chapter-heading');assert.match(hint.textContent,/could not be completed/);
+ f.select(null);assert.equal(hint.parentElement.id,'chapter-heading','background failure must remain visible');assert.equal(f.doc.getElementById('translate-passage').getAttribute('aria-describedby'),null);
+});
+test('sample scope is never folded into routine translation guidance',async tctx=>{
+ await requestUiRoute('en');const f=fixture({book:{bookId:'fixture-book',contentVersion:'v1',visibility:'public',chineseSample:{paragraphs:6,translator:'Source / Provider'},sections:[],chapters:[]},request:()=>assert.fail('No generation')});tctx.after(()=>f.handle.dispose());
+ const hint=f.all().find(n=>n.className==='translation-notice');assert.equal(hint.parentElement.id,'chapter-heading');assert.match(hint.textContent,/6/);
 });

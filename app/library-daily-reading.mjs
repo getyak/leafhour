@@ -104,21 +104,33 @@ export function mountLibraryDailyReading({root,inboxRoot=null,api,getSession,get
  const currentOwner=()=>getSession()?.user?.id||null;
  const localeDate=(date,options)=>new Intl.DateTimeFormat(getUiLocale(),{timeZone:'Asia/Shanghai',...options}).format(date);
  const paintStatus=(textValue,error)=>{status.textContent=textValue;status.classList.toggle('error',!!error);status.setAttribute('role',error?'alert':'status');};
- let lastNotice=null;
+ let lastNotice=null,inboxDisclosure=null,inboxSummary=null,inboxCardsRoot=null,inboxOwner=null,inboxSignature=null;
  const notice=(id,params=null,error=false,{edited=false}={})=>{lastNotice={id,params,error};noticeEdited=edited;paintStatus(t(id,params)+(edited?' '+t('daily.status.edited'):''),error);};
  const message=(textValue,error=false)=>{lastNotice=null;noticeEdited=false;paintStatus(textValue,error);};
  const valid=(expected,sequence)=>!disposed&&currentOwner()===expected&&owner===expected&&generation===sequence;
  function renderInbox(){
-  if(!inboxRoot)return;inboxRoot.replaceChildren();const cards=owner?[...(view?.inbox||[])].sort((a,b)=>Date.parse(b.deliveredAt||b.createdAt)-Date.parse(a.deliveredAt||a.createdAt)).slice(0,3):[];inboxRoot.hidden=!cards.length;
-  if(!cards.length)return;inboxRoot.append(own(node('h2',''),{id:'daily.inbox.title'}));
-  for(const card of cards){
+  if(!inboxRoot)return;const cards=owner?[...(view?.inbox||[])].sort((a,b)=>Date.parse(b.deliveredAt||b.createdAt)-Date.parse(a.deliveredAt||a.createdAt)).slice(0,3):[];inboxRoot.hidden=!cards.length;
+  if(!cards.length){inboxRoot.replaceChildren();inboxDisclosure=inboxSummary=inboxCardsRoot=null;inboxOwner=owner;inboxSignature=null;return;}
+  // Returning to a book comes first. Notes remain available behind one native
+  // disclosure, without marking anything read or changing the delivery plan.
+  // Reuse its controls on same-owner refreshes so summary and passage-link
+  // focus survive an unchanged response; language changes only relabel them.
+  if(inboxOwner!==owner||!inboxDisclosure){
+   inboxDisclosure=node('details','daily-inbox-disclosure');inboxDisclosure.open=false;
+   inboxSummary=node('summary','daily-inbox-summary');inboxCardsRoot=node('div','daily-inbox-notes');
+   inboxDisclosure.append(inboxSummary,inboxCardsRoot);inboxRoot.replaceChildren(inboxDisclosure);inboxOwner=owner;inboxSignature=null;
+  }
+  own(inboxSummary,{id:'daily.inbox.summary',params:{count:cards.length}});
+  const books=getBooks(),entries=cards.map(card=>({card,bookTitle:card.bookTitle||books.find(b=>b.bookId===card.bookId)?.title?.zh})),signature=JSON.stringify(entries);
+  if(signature===inboxSignature)return;inboxSignature=signature;inboxCardsRoot.replaceChildren();
+  for(const {card,bookTitle} of entries){
    const article=node('article','daily-card'),meta=node('div','daily-card-meta');meta.append(own(node('span',''),{id:'daily.inbox.label'}));
    if(card.label&&card.label!==DEFAULT_INBOX_LABEL)meta.append(node('span','daily-card-label',card.label));
    const date=new Date(card.deliveredAt||card.createdAt);if(!Number.isNaN(date.getTime())){const stamp=node('time','',localeDate(date,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}));stamp.dateTime=date.toISOString();own(stamp,{render:()=>localeDate(date,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})});meta.append(stamp);}
-   const bookTitle=card.bookTitle||getBooks().find(b=>b.bookId===card.bookId)?.title?.zh;if(bookTitle)article.append(own(node('p','daily-card-source'),{render:()=>t('daily.inbox.source',{title:bookTitle})+(card.chapterLabel?' · '+card.chapterLabel:'')}));
+   if(bookTitle)article.append(own(node('p','daily-card-source'),{render:()=>t('daily.inbox.source',{title:bookTitle})+(card.chapterLabel?' · '+card.chapterLabel:'')}));
    article.append(meta,node('p','daily-card-message',card.message||''));
    if(card.quote?.text)article.append(node('blockquote','daily-card-quote',card.quote.text));
-   const link=sourceLink(card.link);if(link){const back=own(node('a','text-link'),{id:'daily.inbox.back'});back.href=uiHref(link);back.setAttribute('data-ui-owned-href',link);links.add(back);article.append(back);}inboxRoot.append(article);
+   const link=sourceLink(card.link);if(link){const back=own(node('a','text-link'),{id:'daily.inbox.back'});back.href=uiHref(link);back.setAttribute('data-ui-owned-href',link);links.add(back);article.append(back);}inboxCardsRoot.append(article);
   }
  }
  // The sentence always shows the editor's current 24-hour value, so the page

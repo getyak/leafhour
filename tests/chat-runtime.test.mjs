@@ -33,8 +33,19 @@ test('plugin blocks native tools and refuses unaffordable frozen requests before
  }finally{await bridge.close();}
 });
 const good={sessionId:'fixture',finalResponse:'你好，可以聊聊你正在读的书。',events:[{type:'assistant/message',data:{message:{content:[{type:'text',text:'你好'}]}}},{type:'turn/end',data:{reason:{kind:'completed'}}}]};
-async function fixture(t,result=good,runImpl,options={}){const runRoot=await mkdtemp(path.join(tmpdir(),'chat-test-'));t.after(()=>rm(runRoot,{recursive:true,force:true}));const calls=[];let closed=0,markStarted;const started=new Promise(resolve=>{markStarted=resolve;});const createHarness=options=>({async start(){calls.push(options);},async run(text,opts){calls.push({text,opts});markStarted();return runImpl?runImpl():result;},async close(){closed++;}});return {runRoot,calls,started,get closed(){return closed;},generate:createChatGenerator({runRoot,env:{PATH:process.env.PATH,DEEPSEEK_API_KEY:'fake',DATABASE_SECRET:'never'},createHarness,...options})};}
+const fixtureClocks=new WeakSet();
+async function fixture(t,result=good,runImpl,options={}){
+ // Runtime simulations use the recorded pricing baseline, independently of
+ // today's date. Keep real timers so timeout and cancellation still execute.
+ if(!fixtureClocks.has(t)){t.mock.timers.enable({apis:['Date'],now:Date.parse(pricing.checkedAt)});fixtureClocks.add(t);}
+ const runRoot=await mkdtemp(path.join(tmpdir(),'chat-test-'));t.after(()=>rm(runRoot,{recursive:true,force:true}));const calls=[];let closed=0,markStarted;const started=new Promise(resolve=>{markStarted=resolve;});const createHarness=options=>({async start(){calls.push(options);},async run(text,opts){calls.push({text,opts});markStarted();return runImpl?runImpl():result;},async close(){closed++;}});return {runRoot,calls,started,get closed(){return closed;},generate:createChatGenerator({runRoot,env:{PATH:process.env.PATH,DEEPSEEK_API_KEY:'fake',DATABASE_SECRET:'never'},createHarness,...options})};}
 const job=()=>({runId:'same-id',book:{bookId:'book',contentVersion:'v1',title:'Book'},passageId:'p1',text:'Hi',history:[{role:'assistant',content:'earlier'}],tools});
+test('the real pricing expiry rejects before starting a simulated runtime',async t=>{
+ const reference=JSON.parse(await readFile(new URL('../harness/pricing.json',import.meta.url),'utf8'));
+ t.mock.timers.enable({apis:['Date'],now:Date.parse(reference.validUntil)+1});let dispatches=0;
+ const generate=createChatGenerator({env:{DEEPSEEK_API_KEY:'fake'},createHarness:()=>{dispatches++;throw Error('Expired pricing must not create a runtime');}});
+ await assert.rejects(generate(job()),/Pricing reference expired/);assert.equal(dispatches,0);
+});
 test('native free answer permits no references, encodes role-labelled data, isolates sessions and cleans files',async t=>{
  const f=await fixture(t);assert.deepEqual(await f.generate(job()),{kind:'conversation',summary:good.finalResponse,sourceRefs:[],recommendations:[],origin:'ai'});await f.generate(job());
  assert.notEqual(f.calls[1].opts.sessionId,f.calls[3].opts.sessionId);assert.equal(JSON.parse(f.calls[1].text.split('\n\n读者这次说：\n')[0]).history[0].role,'assistant');assert.equal(f.calls[0].env.DATABASE_SECRET,undefined);assert.equal(f.closed,2);assert.deepEqual(await readdir(f.runRoot),[]);

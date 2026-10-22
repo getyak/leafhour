@@ -24,6 +24,9 @@
 .daily-form .settings-status{margin-top:16px}
 .daily-form>.text-link{justify-self:start;min-height:44px;text-align:left;font-size:var(--type-caption)}
 .daily-inbox{margin:28px 0 40px;min-width:0}
+.daily-inbox-summary{width:fit-content;box-sizing:border-box;min-height:44px;padding:10px 4px;cursor:pointer;font-size:14px;line-height:24px;color:var(--muted)}
+.daily-inbox-summary::marker{color:var(--accent)}
+.daily-inbox-summary:hover{color:var(--ink)}
 .daily-inbox h2{font:20px/1.6 var(--font-serif);margin:0 0 14px;color:var(--ink)}
 .daily-card{padding:21px 0;border-top:1px solid var(--line-hairline);font-size:14px;line-height:1.9;overflow-wrap:anywhere}
 .daily-card-meta{display:flex;align-items:baseline;flex-wrap:wrap;gap:9px;font-size:12px;color:var(--muted);line-height:1.8}
