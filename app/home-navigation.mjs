@@ -1,3 +1,4 @@
+import {publicPageHref} from './public-navigation.mjs';
 // GET-188 authored-home mobile navigation. One controller, mounted by
 // app/portal.js on the five authored home routes only, owns a quiet pill menu
 // trigger and one full-height native dialog sheet. The sheet reuses the real
@@ -62,6 +63,7 @@ export function mountHomeNavigation({
     if(accountRow)accountRow.setAttribute('href',uiHref(HOME_ACCOUNT_URL));
     if(resumeHref&&resumeRow&&!resumeRow.hidden)resumeRow.setAttribute('href',uiHref(resumeHref));
     for(const {node,href} of documentLinks)node.setAttribute('href',uiHref(href));
+    for(const node of document.querySelectorAll?.('a[data-public-page]')||[])node.setAttribute('href',publicPageHref(node.getAttribute('data-public-page'),getUiLocale()));
   }
 
   const brandNode=()=>document.querySelector('.site-header')?.querySelector('.brand')||document.querySelector('a.brand')||null;

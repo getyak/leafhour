@@ -859,5 +859,7 @@
   "tests/leafhour-surfaces.test.mjs",
   "tests/helpers/postgres-bin.mjs",
   "tests/provider-dispatch-recording.test.mjs",
-  "tests/billing-walkthrough.test.mjs"
+  "tests/billing-walkthrough.test.mjs",
+  "app/commerce.css",
+  "app/public-navigation.mjs"
 ]

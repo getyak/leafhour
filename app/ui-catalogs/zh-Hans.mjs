@@ -468,6 +468,8 @@ export default Object.freeze({
   "nav.signIn": "登录 / 注册",
   "nav.resume": "继续阅读",
   "nav.search": "搜索与命令",
+  "nav.agent": "Agent 接入",
+  "nav.pricing": "价格",
   "nav.method": "阅读的方法",
   "nav.ownership": "自己的书房",
   "filter.form": "阅读形态",

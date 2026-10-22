@@ -1,3 +1,4 @@
+import {publicNavigation} from './public-navigation.mjs';
 import {withUiParam} from './ui-locale-codec.mjs';
 // Both public homepages use home.html. These are authored presentation strings,
 // never book contents, account data, HTML from an API, or model translations.
@@ -332,6 +333,7 @@ export function homeDocument(source,locale){
   const commerceLabels=({'en':['Pricing','Terms','Refunds'],'zh-Hans':['价格','服务条款','退款政策'],'zh-Hant':['價格','服務條款','退款政策'],'ja':['料金','利用規約','返金ポリシー']})[meta.code];
   const commerceLinks='<nav class="home-commerce-links" aria-label="'+commerceLabels[0]+'">'+['pricing','terms','refunds'].map((kind,index)=>'<a href="'+(meta.code==='en'?'/en':meta.route)+'/'+kind+'">'+commerceLabels[index]+'</a>').join(' · ')+'</nav>';
   return homeText(source,locale)
+    .replace(/<nav class="home-navigation"[^>]*>[\s\S]*?<\/nav>/,publicNavigation({locale:meta.code}))
     .replace(/<nav class="home-commerce-links"[^>]*>[\s\S]*?<\/nav>/g,'')
     .replace('</footer>',commerceLinks+'</footer>')
     // The root is automatic; an explicit English language choice uses /en.

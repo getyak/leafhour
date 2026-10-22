@@ -169,3 +169,16 @@ test('first-paint owned home anchors carry the authored language even with denie
  assert.match(rendered,/href="\/read\?book=literal%2Fid&amp;passage=p1&amp;ui=ja#source"/);
  assert.match(rendered,/href="https:\/\/other.test\/read\?book=x"/);assert.match(rendered,/href="\/api\/export\?signature=x"/);assert.match(rendered,/href="\/read-more"/);
 });
+
+
+test('public home navigation exposes localized Agent and pricing links plus a named GitHub mark before JavaScript',async()=>{
+ const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8');
+ for(const locale of homeLocales){
+  const html=homeDocument(source,locale.code),header=html.match(/<header class="site-header"[\s\S]*?<\/header>/)[0];
+  const slug=locale.code==='en'?'en':locale.route.slice(1);
+  assert.ok(header.includes('href="'+(locale.code==='en'?'/mcp':'/'+slug+'/mcp')+'"'));
+  assert.ok(header.includes('href="/'+slug+'/pricing"'));
+  assert.match(header,/<a[^>]*aria-label="GitHub"[^>]*>[\s\S]*?<svg/);
+  assert.match(header,/https:\/\/github.com\/getyak\/leafhour/);
+ }
+});
