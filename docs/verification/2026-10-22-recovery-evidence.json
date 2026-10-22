@@ -1,0 +1,1049 @@
+{
+  "snapshot_base": "d0ecf845298b8ea4d1eff513dd7f96cfea9c415d",
+  "snapshot_checked_at": "2026-10-22T09:54:47+08:00",
+  "scope": "Automated metadata inventory is complete; semantic review is focused, not line-by-line exhaustive. Dependency links and .superpowers scratch evidence are excluded from dirty source-instance counts.",
+  "verified_merged_pr_heads": [
+    {
+      "number": 117,
+      "merged": true,
+      "head": "codex/get-151-batch-delivery",
+      "head_sha": "4f67376017cdf225ce5857facce3afa319d1d005",
+      "merge_commit_sha": "fe6d5ac16600b59228db84f4c52d30142adc5a2a"
+    },
+    {
+      "number": 120,
+      "merged": true,
+      "head": "codex/get-155-daily-companion",
+      "head_sha": "b0903a3b9e86c2a004cef5547635c00e7e833579",
+      "merge_commit_sha": "c1f13f6bd053e2971cf76b79e04019765444b0f1"
+    },
+    {
+      "number": 122,
+      "merged": true,
+      "head": "codex/get-167-typography",
+      "head_sha": "cd2e3585ce14ad93f45a2210669c6cbc5dc3f8d6",
+      "merge_commit_sha": "b542cbec701fb88e219b85895890a33c59c6e20e"
+    },
+    {
+      "number": 123,
+      "merged": true,
+      "head": "codex/get-169-components",
+      "head_sha": "b21ed1b2f0e6618e0d7e93bfb77a62c9db6b577d",
+      "merge_commit_sha": "d8d211baaf61bd393b1c61a1bcd8a4253929ee2f"
+    },
+    {
+      "number": 124,
+      "merged": true,
+      "head": "codex/get-186-190-reader",
+      "head_sha": "d7ca51e5bd28e0b81964a26d70a7d5b07ebe20b9",
+      "merge_commit_sha": "aad2789e11758d460bbb6548bab56babc80e57ff"
+    },
+    {
+      "number": 125,
+      "merged": true,
+      "head": "codex/get-173-platform-acceptance",
+      "head_sha": "f20b582ebf7a99e1d491fecbe8868b8142726e68",
+      "merge_commit_sha": "eae0e9756a85d7d38d26b4c012b711d1d1cc6bc8"
+    },
+    {
+      "number": 126,
+      "merged": true,
+      "head": "codex/get-176-177-179-187",
+      "head_sha": "a67629f3dfc0caee66c1e73bd4a87f32d5e24454",
+      "merge_commit_sha": "2f4fc0d5323e35295127759deb855d8f913cdae1"
+    },
+    {
+      "number": 127,
+      "merged": true,
+      "head": "codex/get-180-book-card",
+      "head_sha": "651820d904c13c5b007a1d94a7cda95b4c696b48",
+      "merge_commit_sha": "9e5777e3e04a1a502932de823a8af5054fd8f508"
+    },
+    {
+      "number": 128,
+      "merged": true,
+      "head": "codex/get-173-android-acceptance",
+      "head_sha": "c318de25da8b19f87a3666b5d87324061b987fa5",
+      "merge_commit_sha": "2c2095e6d7c8eb9b6f53ee92399b56468a0b5b2c"
+    },
+    {
+      "number": 130,
+      "merged": true,
+      "head": "codex/get-178-184-reader-entry",
+      "head_sha": "1d70f8f5e1eb759c68fcd401f4c7ab389671db4a",
+      "merge_commit_sha": "9cac0f0ceccf35b3a2e4969a316d285bc2234da3"
+    },
+    {
+      "number": 131,
+      "merged": true,
+      "head": "codex/get-173-ci-grant-expiry",
+      "head_sha": "b14cd76bec01d79eb9f8604e1f72c0cdc2c7fd81",
+      "merge_commit_sha": "1c0edc61e033ed63a06e1b94b0cc73ba00139ee7"
+    },
+    {
+      "number": 132,
+      "merged": true,
+      "head": "codex/get-188-mobile-navigation",
+      "head_sha": "f480566b4710147c1c9c7652e3a68311acfb7f91",
+      "merge_commit_sha": "e44e83ef79f2470e87027689f1098e22774e9c51"
+    },
+    {
+      "number": 133,
+      "merged": true,
+      "head": "codex/get-192-ui-locale",
+      "head_sha": "511364b46f4d0f6d82a5b904249b2408ee6b8eb5",
+      "merge_commit_sha": "38473b6192a386ce99bd29586c5c7eb5c9239d86"
+    },
+    {
+      "number": 134,
+      "merged": true,
+      "head": "codex/get-192-home-pending-links",
+      "head_sha": "e8f525b83fc02d536e5a2221784fea2839be3695",
+      "merge_commit_sha": "3882bfad7584bbfd3385f0a520595309da2efc9f"
+    },
+    {
+      "number": 137,
+      "merged": true,
+      "head": "codex/get-189-recovery-target",
+      "head_sha": "4617fe6f37c459d673db71c550e56c562a1a698d",
+      "merge_commit_sha": "cae3f61f37570000bdedfcaf43eb5d2e2dc034f1"
+    },
+    {
+      "number": 139,
+      "merged": true,
+      "head": "codex/get-195-highlight-annotations",
+      "head_sha": "4bb9d82093efdebf7604a0f4d7a6a8770611179e",
+      "merge_commit_sha": "233770f7fe84cb4546da75b0df1763e2f30f1edc"
+    },
+    {
+      "number": 149,
+      "merged": true,
+      "head": "codex/get-201-settings-redesign",
+      "head_sha": "5ad8258a8b9ffe6fa6d09336e5847a02c984bbd2",
+      "merge_commit_sha": "43187d0ecaa63aa6575700677744c7cf4b3d099e"
+    },
+    {
+      "number": 150,
+      "merged": true,
+      "head": "codex/get-202-copy-foundation",
+      "head_sha": "c2430dbba5f46264327551e7571218d1f881c704",
+      "merge_commit_sha": "ac93c1e5d5b75093cb8152a78281c1a11a31893c"
+    },
+    {
+      "number": 108,
+      "merged": true,
+      "head": "codex/get-160-book-introduction",
+      "head_sha": "4007ce0aab9f63764636a2655ef0ee10e620c29c",
+      "merge_commit_sha": "f6e01b138c98750a58a6b3677a39a3f8d4052f20"
+    },
+    {
+      "number": 112,
+      "merged": true,
+      "head": "codex/get-160-cancel-commit",
+      "head_sha": "db13ce5667738fc4d90a9a0ad4268ad9840da675",
+      "merge_commit_sha": "e644d3849905e0231bde659c487d59a333eaed79"
+    },
+    {
+      "number": 113,
+      "merged": true,
+      "head": "codex/get-150-sample-review",
+      "head_sha": "306a5bbf24b5996c80e57369722e3b66bcb134eb",
+      "merge_commit_sha": "49c737e11f80084ca238d66bff8a25233cd4c35f"
+    },
+    {
+      "number": 114,
+      "merged": true,
+      "head": "codex/get-153-real-reading-trial",
+      "head_sha": "08cf9a9e52ac0b8ccea975de24cac64029080143",
+      "merge_commit_sha": "10d1044a3c41cd9f924b3724c6a23c2c6d030c35"
+    },
+    {
+      "number": 116,
+      "merged": true,
+      "head": "codex/get-164-sentence-selection",
+      "head_sha": "5dfc2164a2c40a11f250edc89a54a7fca66a7d46",
+      "merge_commit_sha": "f224160a99fbf51320fce5d809ec9b0b74c811a7"
+    },
+    {
+      "number": 118,
+      "merged": true,
+      "head": "codex/get-150-review-gate-clarification",
+      "head_sha": "c1a9c5bb29e4f80371fb02040cb3829edd774ffe",
+      "merge_commit_sha": "924d2b4446820d0c8c28a8683b404944876f68b9"
+    },
+    {
+      "number": 119,
+      "merged": true,
+      "head": "codex/get-151-existing-draft-audit",
+      "head_sha": "f403962500d2fe1c469949481c618245e7043a0e",
+      "merge_commit_sha": "921c77fbb5421f15c3fc9a92c0b2d21cf0a45dcf"
+    },
+    {
+      "number": 121,
+      "merged": true,
+      "head": "codex/get-151-editorial-audit",
+      "head_sha": "0e10a542e43623b29a8a638f5bf16155c38c313e",
+      "merge_commit_sha": "4939cb21c12169d5b1c4340c5b4cc3bc60872c27"
+    },
+    {
+      "number": 129,
+      "merged": true,
+      "head": "codex/get-191-mcp-docs",
+      "head_sha": "e861c80c18f63faea288b7c076aab39a4439b15d",
+      "merge_commit_sha": "ddc9884f2e193e3fbdb325c8131f86fe9e55c127"
+    },
+    {
+      "number": 135,
+      "merged": true,
+      "head": "codex/get-194-ai-reading-workspace",
+      "head_sha": "c51e94a35015c4b59b52099c494bf33126064b24",
+      "merge_commit_sha": "8c4dd18b8c7e6a04de74c12246306f4772a4dc7e"
+    },
+    {
+      "number": 136,
+      "merged": true,
+      "head": "codex/get-189-mobile-targets",
+      "head_sha": "bb86c57fa67b9b67b5bfe5b35cb164641e3914b1",
+      "merge_commit_sha": "ec70349f2da421d532153bb3a9ac532b31d67a4f"
+    },
+    {
+      "number": 138,
+      "merged": true,
+      "head": "codex/get-189-footer-clearance",
+      "head_sha": "a5940ad0cc7d8d073f190e1da81c21f07ba09a29",
+      "merge_commit_sha": "991c11bded265d19067ceb83ebffb252b0ea0962"
+    },
+    {
+      "number": 140,
+      "merged": true,
+      "head": "codex/get-195-mobile-annotation-actions",
+      "head_sha": "da4b586938b0b892442416ef6839e0b51f98edf8",
+      "merge_commit_sha": "8b317c876fe35a661eb27e911c45f505c3bbff0e"
+    },
+    {
+      "number": 141,
+      "merged": true,
+      "head": "codex/get-195-runtime-diagnostics",
+      "head_sha": "6ccb47748eec57d5fc3979242a0c94bed1174fd6",
+      "merge_commit_sha": "7706009bf0c3a82fa1ed398f96da649082e0270e"
+    },
+    {
+      "number": 142,
+      "merged": true,
+      "head": "codex/get-195-terminal-failure-reason",
+      "head_sha": "b95f043d87bb295dad0b3d3d8630d9ab63333c9b",
+      "merge_commit_sha": "0d2ebb310d8af3fc4b94885b37fa089ae929f01b"
+    },
+    {
+      "number": 144,
+      "merged": true,
+      "head": "codex/get-198-account-ui-locale",
+      "head_sha": "e41b30af932f4d03e8697ab4bb6afef210032985",
+      "merge_commit_sha": "1d9e416fa962908d3f981ebb91217f455ea53951"
+    }
+  ],
+  "branch_provenance": [
+    {
+      "branch": "codex/get-150-review-gate-clarification",
+      "head": "c1a9c5bb29e4f80371fb02040cb3829edd774ffe",
+      "category": "exact_merged_pr_head",
+      "pr": 118
+    },
+    {
+      "branch": "codex/get-150-sample-review",
+      "head": "306a5bbf24b5996c80e57369722e3b66bcb134eb",
+      "category": "exact_merged_pr_head",
+      "pr": 113
+    },
+    {
+      "branch": "codex/get-151-batch-delivery",
+      "head": "4f67376017cdf225ce5857facce3afa319d1d005",
+      "category": "exact_merged_pr_head",
+      "pr": 117
+    },
+    {
+      "branch": "codex/get-151-editorial-audit",
+      "head": "0e10a542e43623b29a8a638f5bf16155c38c313e",
+      "category": "exact_merged_pr_head",
+      "pr": 121
+    },
+    {
+      "branch": "codex/get-151-existing-draft-audit",
+      "head": "f403962500d2fe1c469949481c618245e7043a0e",
+      "category": "exact_merged_pr_head",
+      "pr": 119
+    },
+    {
+      "branch": "codex/get-151-translation-batches",
+      "head": "d8822132b62d0a2ac15fa7eb90e637488ff2e821",
+      "category": "ancestor_of_merged_pr_head",
+      "pr": 117
+    },
+    {
+      "branch": "codex/get-153-real-reading-trial",
+      "head": "08cf9a9e52ac0b8ccea975de24cac64029080143",
+      "category": "exact_merged_pr_head",
+      "pr": 114
+    },
+    {
+      "branch": "codex/get-155-daily-companion",
+      "head": "b0903a3b9e86c2a004cef5547635c00e7e833579",
+      "category": "exact_merged_pr_head",
+      "pr": 120
+    },
+    {
+      "branch": "codex/get-160-book-introduction",
+      "head": "4007ce0aab9f63764636a2655ef0ee10e620c29c",
+      "category": "exact_merged_pr_head",
+      "pr": 108
+    },
+    {
+      "branch": "codex/get-160-cancel-commit",
+      "head": "db13ce5667738fc4d90a9a0ad4268ad9840da675",
+      "category": "exact_merged_pr_head",
+      "pr": 112
+    },
+    {
+      "branch": "codex/get-160-cancel-publication",
+      "head": "d2f97366335561c29bd3665eaca27f5965a6dbcc",
+      "category": "needs_semantic_comparison",
+      "pr": null
+    },
+    {
+      "branch": "codex/get-164-sentence-selection",
+      "head": "5dfc2164a2c40a11f250edc89a54a7fca66a7d46",
+      "category": "exact_merged_pr_head",
+      "pr": 116
+    },
+    {
+      "branch": "codex/get-167-typography",
+      "head": "cd2e3585ce14ad93f45a2210669c6cbc5dc3f8d6",
+      "category": "exact_merged_pr_head",
+      "pr": 122
+    },
+    {
+      "branch": "codex/get-169-components",
+      "head": "b21ed1b2f0e6618e0d7e93bfb77a62c9db6b577d",
+      "category": "exact_merged_pr_head",
+      "pr": 123
+    },
+    {
+      "branch": "codex/get-173-android-acceptance",
+      "head": "c318de25da8b19f87a3666b5d87324061b987fa5",
+      "category": "exact_merged_pr_head",
+      "pr": 128
+    },
+    {
+      "branch": "codex/get-173-ci-grant-expiry",
+      "head": "b14cd76bec01d79eb9f8604e1f72c0cdc2c7fd81",
+      "category": "exact_merged_pr_head",
+      "pr": 131
+    },
+    {
+      "branch": "codex/get-173-platform-acceptance",
+      "head": "f20b582ebf7a99e1d491fecbe8868b8142726e68",
+      "category": "exact_merged_pr_head",
+      "pr": 125
+    },
+    {
+      "branch": "codex/get-176-177-179-187",
+      "head": "a67629f3dfc0caee66c1e73bd4a87f32d5e24454",
+      "category": "exact_merged_pr_head",
+      "pr": 126
+    },
+    {
+      "branch": "codex/get-178-184-reader-entry",
+      "head": "1d70f8f5e1eb759c68fcd401f4c7ab389671db4a",
+      "category": "exact_merged_pr_head",
+      "pr": 130
+    },
+    {
+      "branch": "codex/get-180-book-card",
+      "head": "651820d904c13c5b007a1d94a7cda95b4c696b48",
+      "category": "exact_merged_pr_head",
+      "pr": 127
+    },
+    {
+      "branch": "codex/get-186-190-reader",
+      "head": "d7ca51e5bd28e0b81964a26d70a7d5b07ebe20b9",
+      "category": "exact_merged_pr_head",
+      "pr": 124
+    },
+    {
+      "branch": "codex/get-188-mobile-navigation",
+      "head": "f480566b4710147c1c9c7652e3a68311acfb7f91",
+      "category": "exact_merged_pr_head",
+      "pr": 132
+    },
+    {
+      "branch": "codex/get-189-footer-clearance",
+      "head": "a5940ad0cc7d8d073f190e1da81c21f07ba09a29",
+      "category": "exact_merged_pr_head",
+      "pr": 138
+    },
+    {
+      "branch": "codex/get-189-mobile-targets",
+      "head": "bb86c57fa67b9b67b5bfe5b35cb164641e3914b1",
+      "category": "exact_merged_pr_head",
+      "pr": 136
+    },
+    {
+      "branch": "codex/get-189-recovery-target",
+      "head": "4617fe6f37c459d673db71c550e56c562a1a698d",
+      "category": "exact_merged_pr_head",
+      "pr": 137
+    },
+    {
+      "branch": "codex/get-191-mcp-docs",
+      "head": "e861c80c18f63faea288b7c076aab39a4439b15d",
+      "category": "exact_merged_pr_head",
+      "pr": 129
+    },
+    {
+      "branch": "codex/get-192-audio-boundary",
+      "head": "035e2a9a02ee9bc6b9b44537a52bc5e8475c5fcb",
+      "category": "needs_semantic_comparison",
+      "pr": null
+    },
+    {
+      "branch": "codex/get-192-audio-ui",
+      "head": "53be756bcea8dddef97e1b6be3fd11228f4c9bc9",
+      "category": "needs_semantic_comparison",
+      "pr": null
+    },
+    {
+      "branch": "codex/get-192-home-pending-links",
+      "head": "e8f525b83fc02d536e5a2221784fea2839be3695",
+      "category": "exact_merged_pr_head",
+      "pr": 134
+    },
+    {
+      "branch": "codex/get-192-lazy-ui",
+      "head": "64e37380e6f2199e4d3c6f011e342764bac98ac0",
+      "category": "needs_semantic_comparison",
+      "pr": null
+    },
+    {
+      "branch": "codex/get-192-reader-integration",
+      "head": "3b96a291aea17977c9967fba3fffce64a194f2f6",
+      "category": "needs_semantic_comparison",
+      "pr": null
+    },
+    {
+      "branch": "codex/get-192-ui-locale",
+      "head": "511364b46f4d0f6d82a5b904249b2408ee6b8eb5",
+      "category": "exact_merged_pr_head",
+      "pr": 133
+    },
+    {
+      "branch": "codex/get-194-ai-reading-workspace",
+      "head": "c51e94a35015c4b59b52099c494bf33126064b24",
+      "category": "exact_merged_pr_head",
+      "pr": 135
+    },
+    {
+      "branch": "codex/get-195-highlight-annotations",
+      "head": "4bb9d82093efdebf7604a0f4d7a6a8770611179e",
+      "category": "exact_merged_pr_head",
+      "pr": 139
+    },
+    {
+      "branch": "codex/get-195-mobile-annotation-actions",
+      "head": "da4b586938b0b892442416ef6839e0b51f98edf8",
+      "category": "exact_merged_pr_head",
+      "pr": 140
+    },
+    {
+      "branch": "codex/get-195-runtime-diagnostics",
+      "head": "6ccb47748eec57d5fc3979242a0c94bed1174fd6",
+      "category": "exact_merged_pr_head",
+      "pr": 141
+    },
+    {
+      "branch": "codex/get-195-terminal-failure-reason",
+      "head": "b95f043d87bb295dad0b3d3d8630d9ab63333c9b",
+      "category": "exact_merged_pr_head",
+      "pr": 142
+    },
+    {
+      "branch": "codex/get-198-account-ui-locale",
+      "head": "e41b30af932f4d03e8697ab4bb6afef210032985",
+      "category": "exact_merged_pr_head",
+      "pr": 144
+    },
+    {
+      "branch": "codex/get-201-settings-redesign",
+      "head": "5ad8258a8b9ffe6fa6d09336e5847a02c984bbd2",
+      "category": "exact_merged_pr_head",
+      "pr": 149
+    },
+    {
+      "branch": "codex/get-202-copy-foundation",
+      "head": "c2430dbba5f46264327551e7571218d1f881c704",
+      "category": "exact_merged_pr_head",
+      "pr": 150
+    },
+    {
+      "branch": "codex/pi-20261018-095058-8f920a32",
+      "head": "4f67376017cdf225ce5857facce3afa319d1d005",
+      "category": "exact_merged_pr_head",
+      "pr": 117
+    },
+    {
+      "branch": "codex/pi-20261018-110853-40d1d95a",
+      "head": "e472df4bef7c1829dddb04b37ade6943ee95b319",
+      "category": "ancestor_of_merged_pr_head",
+      "pr": 120
+    },
+    {
+      "branch": "codex/pi-20261018-125617-416b54d8",
+      "head": "c1f13f6bd053e2971cf76b79e04019765444b0f1",
+      "category": "ancestor_of_main",
+      "pr": null
+    },
+    {
+      "branch": "codex/pi-20261018-140957-856be674",
+      "head": "b542cbec701fb88e219b85895890a33c59c6e20e",
+      "category": "ancestor_of_main",
+      "pr": null
+    },
+    {
+      "branch": "codex/pi-20261018-163249-86492937",
+      "head": "d8d211baaf61bd393b1c61a1bcd8a4253929ee2f",
+      "category": "ancestor_of_main",
+      "pr": null
+    },
+    {
+      "branch": "codex/pi-20261018-183727-2777929a",
+      "head": "aad2789e11758d460bbb6548bab56babc80e57ff",
+      "category": "ancestor_of_main",
+      "pr": null
+    },
+    {
+      "branch": "codex/pi-20261018-213903-3c5c086a",
+      "head": "eae0e9756a85d7d38d26b4c012b711d1d1cc6bc8",
+      "category": "ancestor_of_main",
+      "pr": null
+    },
+    {
+      "branch": "codex/pi-20261019-005839-79522bf1",
+      "head": "9e5777e3e04a1a502932de823a8af5054fd8f508",
+      "category": "ancestor_of_main",
+      "pr": null
+    },
+    {
+      "branch": "codex/pi-20261019-043715-4322feea",
+      "head": "8912b1f18f80f8f565b433a48cf20084f6a23467",
+      "category": "ancestor_of_merged_pr_head",
+      "pr": 128
+    },
+    {
+      "branch": "codex/pi-20261019-095634-7c97b6ca",
+      "head": "48495f0e3cde74a0632b4e1ec2e29f4b618669aa",
+      "category": "ancestor_of_main",
+      "pr": null
+    },
+    {
+      "branch": "codex/pi-20261019-133507-d9d6fe9a",
+      "head": "27027f7add24a8f88d3340321bcaceb001fd9d9f",
+      "category": "ancestor_of_merged_pr_head",
+      "pr": 133
+    },
+    {
+      "branch": "codex/pi-20261019-210611-1774a4f1",
+      "head": "8238989ccf875c600fd22b3b9de7b37934fd57b6",
+      "category": "needs_semantic_comparison",
+      "pr": null
+    },
+    {
+      "branch": "codex/pi-20261020-054701-8785ff2f",
+      "head": "304a4362c3fc8783f61f24144d34cd4548137629",
+      "category": "ancestor_of_main",
+      "pr": null
+    },
+    {
+      "branch": "codex/pi-20261020-063038-24b590b3",
+      "head": "d091b37ca309f10810e19def990cd7a886071d0d",
+      "category": "ancestor_of_main",
+      "pr": null
+    },
+    {
+      "branch": "codex/pi-20261020-104623-0fc236d3",
+      "head": "cae3f61f37570000bdedfcaf43eb5d2e2dc034f1",
+      "category": "ancestor_of_main",
+      "pr": null
+    },
+    {
+      "branch": "codex/pi-20261020-114752-3cd4f458",
+      "head": "ee51ad1fc078a2d96b4f1e8320abd88c941139ef",
+      "category": "ancestor_of_merged_pr_head",
+      "pr": 139
+    },
+    {
+      "branch": "codex/pi-20261020-134623-aed26061",
+      "head": "0a2a332d14ced603059b4ffcd017c74d09493dd1",
+      "category": "ancestor_of_merged_pr_head",
+      "pr": 139
+    },
+    {
+      "branch": "codex/pi-20261020-170159-789f4ff5",
+      "head": "8b317c876fe35a661eb27e911c45f505c3bbff0e",
+      "category": "ancestor_of_main",
+      "pr": null
+    },
+    {
+      "branch": "codex/pi-20261020-183125-032698b9",
+      "head": "7e84f5c8398ab8fa2d7f634afe84133b2a282603",
+      "category": "ancestor_of_merged_pr_head",
+      "pr": 144
+    },
+    {
+      "branch": "codex/pi-20261020-230842-d14628f7",
+      "head": "3ca0c01776681157b6f86829b529a1ecf0afe2ba",
+      "category": "ancestor_of_merged_pr_head",
+      "pr": 149
+    },
+    {
+      "branch": "main",
+      "head": "d0ecf845298b8ea4d1eff513dd7f96cfea9c415d",
+      "category": "ancestor_of_main",
+      "pr": null
+    }
+  ],
+  "worktrees": [
+    {
+      "worktree": "primary-main",
+      "head": "d0ecf845298b8ea4d1eff513dd7f96cfea9c415d",
+      "branch": "refs/heads/main",
+      "dirty_file_instances": {
+        "same": 0,
+        "different": 0,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "codex-wt/get192-audio-boundary",
+      "head": "035e2a9a02ee9bc6b9b44537a52bc5e8475c5fcb",
+      "branch": "refs/heads/codex/get-192-audio-boundary",
+      "dirty_file_instances": {
+        "same": 0,
+        "different": 0,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "codex-wt/get192-audio-ui",
+      "head": "53be756bcea8dddef97e1b6be3fd11228f4c9bc9",
+      "branch": "refs/heads/codex/get-192-audio-ui",
+      "dirty_file_instances": {
+        "same": 0,
+        "different": 0,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "codex-wt/get192-lazy-ui",
+      "head": "64e37380e6f2199e4d3c6f011e342764bac98ac0",
+      "branch": "refs/heads/codex/get-192-lazy-ui",
+      "dirty_file_instances": {
+        "same": 0,
+        "different": 0,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "codex-wt/get192-reader-integration",
+      "head": "3b96a291aea17977c9967fba3fffce64a194f2f6",
+      "branch": "refs/heads/codex/get-192-reader-integration",
+      "dirty_file_instances": {
+        "same": 0,
+        "different": 0,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "codex-wt/leafhour-linear-delivery",
+      "head": "ac93c1e5d5b75093cb8152a78281c1a11a31893c",
+      "branch": "detached",
+      "dirty_file_instances": {
+        "same": 0,
+        "different": 0,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "codex-wt/leafhour-platform-acceptance",
+      "head": "b14cd76bec01d79eb9f8604e1f72c0cdc2c7fd81",
+      "branch": "refs/heads/codex/get-173-ci-grant-expiry",
+      "dirty_file_instances": {
+        "same": 0,
+        "different": 0,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261018-095058-8f920a32",
+      "head": "4f67376017cdf225ce5857facce3afa319d1d005",
+      "branch": "refs/heads/codex/get-151-batch-delivery",
+      "dirty_file_instances": {
+        "same": 0,
+        "different": 0,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261018-110853-40d1d95a",
+      "head": "e472df4bef7c1829dddb04b37ade6943ee95b319",
+      "branch": "refs/heads/codex/pi-20261018-110853-40d1d95a",
+      "dirty_file_instances": {
+        "same": 2,
+        "different": 10,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261018-125617-416b54d8",
+      "head": "c1f13f6bd053e2971cf76b79e04019765444b0f1",
+      "branch": "refs/heads/codex/pi-20261018-125617-416b54d8",
+      "dirty_file_instances": {
+        "same": 5,
+        "different": 48,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261018-140957-856be674",
+      "head": "b542cbec701fb88e219b85895890a33c59c6e20e",
+      "branch": "refs/heads/codex/pi-20261018-140957-856be674",
+      "dirty_file_instances": {
+        "same": 8,
+        "different": 45,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261018-163249-86492937",
+      "head": "d8d211baaf61bd393b1c61a1bcd8a4253929ee2f",
+      "branch": "refs/heads/codex/pi-20261018-163249-86492937",
+      "dirty_file_instances": {
+        "same": 6,
+        "different": 12,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261018-183727-2777929a",
+      "head": "aad2789e11758d460bbb6548bab56babc80e57ff",
+      "branch": "refs/heads/codex/pi-20261018-183727-2777929a",
+      "dirty_file_instances": {
+        "same": 8,
+        "different": 25,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261018-213903-3c5c086a",
+      "head": "eae0e9756a85d7d38d26b4c012b711d1d1cc6bc8",
+      "branch": "refs/heads/codex/pi-20261018-213903-3c5c086a",
+      "dirty_file_instances": {
+        "same": 0,
+        "different": 9,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261019-005839-79522bf1",
+      "head": "9e5777e3e04a1a502932de823a8af5054fd8f508",
+      "branch": "refs/heads/codex/pi-20261019-005839-79522bf1",
+      "dirty_file_instances": {
+        "same": 4,
+        "different": 39,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261019-043715-4322feea",
+      "head": "8912b1f18f80f8f565b433a48cf20084f6a23467",
+      "branch": "refs/heads/codex/pi-20261019-043715-4322feea",
+      "dirty_file_instances": {
+        "same": 1,
+        "different": 27,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261019-095634-7c97b6ca",
+      "head": "48495f0e3cde74a0632b4e1ec2e29f4b618669aa",
+      "branch": "refs/heads/codex/pi-20261019-095634-7c97b6ca",
+      "dirty_file_instances": {
+        "same": 5,
+        "different": 15,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261019-133507-d9d6fe9a",
+      "head": "27027f7add24a8f88d3340321bcaceb001fd9d9f",
+      "branch": "refs/heads/codex/pi-20261019-133507-d9d6fe9a",
+      "dirty_file_instances": {
+        "same": 8,
+        "different": 34,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261019-210611-1774a4f1",
+      "head": "8238989ccf875c600fd22b3b9de7b37934fd57b6",
+      "branch": "refs/heads/codex/pi-20261019-210611-1774a4f1",
+      "dirty_file_instances": {
+        "same": 3,
+        "different": 13,
+        "absent": 8
+      }
+    },
+    {
+      "worktree": "task/20261020-054701-8785ff2f",
+      "head": "304a4362c3fc8783f61f24144d34cd4548137629",
+      "branch": "refs/heads/codex/pi-20261020-054701-8785ff2f",
+      "dirty_file_instances": {
+        "same": 0,
+        "different": 0,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261020-063038-24b590b3",
+      "head": "d091b37ca309f10810e19def990cd7a886071d0d",
+      "branch": "refs/heads/codex/pi-20261020-063038-24b590b3",
+      "dirty_file_instances": {
+        "same": 0,
+        "different": 0,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261020-104623-0fc236d3",
+      "head": "cae3f61f37570000bdedfcaf43eb5d2e2dc034f1",
+      "branch": "refs/heads/codex/pi-20261020-104623-0fc236d3",
+      "dirty_file_instances": {
+        "same": 0,
+        "different": 2,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261020-114752-3cd4f458",
+      "head": "ee51ad1fc078a2d96b4f1e8320abd88c941139ef",
+      "branch": "refs/heads/codex/pi-20261020-114752-3cd4f458",
+      "dirty_file_instances": {
+        "same": 0,
+        "different": 10,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261020-134623-aed26061",
+      "head": "0a2a332d14ced603059b4ffcd017c74d09493dd1",
+      "branch": "refs/heads/codex/pi-20261020-134623-aed26061",
+      "dirty_file_instances": {
+        "same": 4,
+        "different": 8,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261020-170159-789f4ff5",
+      "head": "8b317c876fe35a661eb27e911c45f505c3bbff0e",
+      "branch": "refs/heads/codex/pi-20261020-170159-789f4ff5",
+      "dirty_file_instances": {
+        "same": 0,
+        "different": 0,
+        "absent": 0
+      }
+    },
+    {
+      "worktree": "task/20261020-230842-d14628f7",
+      "head": "3ca0c01776681157b6f86829b529a1ecf0afe2ba",
+      "branch": "refs/heads/codex/pi-20261020-230842-d14628f7",
+      "dirty_file_instances": {
+        "same": 2,
+        "different": 24,
+        "absent": 1
+      }
+    }
+  ],
+  "dirty_file_instances": {
+    "same": 56,
+    "different": 321,
+    "absent": 9
+  },
+  "stashes": [
+    {
+      "ref": "stash@{0}",
+      "sha": "7e69eea763e88ef70e3cccf0a668928dab427ad7",
+      "files": [
+        "A\tbuild/copy/en.txt",
+        "A\tbuild/copy/export-receipt.json",
+        "A\tbuild/copy/ja.txt",
+        "A\tbuild/copy/lint-report.json",
+        "A\tbuild/copy/manifest.json",
+        "A\tbuild/copy/zh-Hans.txt",
+        "A\tbuild/copy/zh-Hant.txt"
+      ]
+    },
+    {
+      "ref": "stash@{1}",
+      "sha": "a61f476ceaa615e44b858fd2ef960b227b97f1b4",
+      "files": [
+        "A\t.github/workflows/copy.yml",
+        "M\t.gitignore",
+        "A\t.textlint/prh.yml",
+        "A\t.textlintrc.json",
+        "A\t.vale.ini",
+        "A\t.vale/styles/Leafhour/DevSpeak.yml",
+        "A\t.vale/styles/Leafhour/TonePunctuation.yml",
+        "A\t.vale/styles/Leafhour/ToneT1En.yml",
+        "A\t.vale/styles/Leafhour/ToneT1Zh.yml",
+        "A\t.vale/styles/Leafhour/ToneT2En.yml",
+        "A\t.vale/styles/Leafhour/ToneT2Zh.yml",
+        "A\tdocs/copy/README.md",
+        "A\tdocs/copy/copy-candidates.csv",
+        "A\tdocs/copy/copy-inventory.csv",
+        "A\tdocs/copy/copy-inventory.json",
+        "A\tdocs/copy/copy-reviewed.json",
+        "A\tdocs/superpowers/plans/2026-10-21-get-202-copy-guardrails.md",
+        "A\tdocs/verification/2026-10-21-get-202-copy-foundation.md",
+        "A\tdocs/writing.md",
+        "A\tnode_modules",
+        "M\tpackage.json",
+        "M\trelease-files.json",
+        "A\tscripts/copy-inventory.mjs",
+        "A\tscripts/export-copy.mjs",
+        "A\ttests/copy-install.test.mjs",
+        "A\ttests/copy-inventory.test.mjs",
+        "A\ttests/copy-lint.test.mjs",
+        "A\ttools/copy-canaries.mjs",
+        "A\ttools/copy-install-vale.mjs",
+        "A\ttools/copy-lint-allowances.json",
+        "A\ttools/copy-lint-debt.json",
+        "A\ttools/copy-lint.mjs",
+        "A\ttools/copy-tooling/package-lock.json",
+        "A\ttools/copy-tooling/package.json"
+      ]
+    },
+    {
+      "ref": "stash@{2}",
+      "sha": "c246ceb4d82f4787804d52d3b5b5a49378ecebd0",
+      "files": [
+        "A\tapp/account-ui-preferences.mjs",
+        "M\tapp/ui-locale.mjs",
+        "A\tnode_modules",
+        "M\trelease-files.json",
+        "A\ttests/account-ui-preferences-client.test.mjs",
+        "A\ttests/ui-locale-account.test.mjs"
+      ]
+    },
+    {
+      "ref": "stash@{3}",
+      "sha": "09c5a5abf681466c8dafa20cbbf4ef676fe218ed",
+      "files": [
+        "A\tnode_modules",
+        "A\tserver/account-ui-preferences.mjs",
+        "M\tserver/portal.mjs",
+        "A\ttests/account-ui-preferences.test.mjs"
+      ]
+    }
+  ],
+  "preservation_check": {
+    "checked_at": "2026-10-22T02:15:39.908732+00:00",
+    "old_worktrees_checked": 25,
+    "stashes_checked": 4,
+    "unchanged": true,
+    "mismatches": []
+  },
+  "initial_production": {
+    "checked_at": "2026-10-22T01:56:23.046159+00:00",
+    "url": "https://leafhour.com/release.json",
+    "status": 200,
+    "release": {
+      "sourceCommit": "d0ecf845298b8ea4d1eff513dd7f96cfea9c415d"
+    }
+  },
+  "initial_production_assets": {
+    "checked_at": "2026-10-22T02:00:27.725603+00:00",
+    "expected_source": "d0ecf845298b8ea4d1eff513dd7f96cfea9c415d",
+    "assets": [
+      {
+        "path": "/settings-controls.mjs",
+        "http": 200,
+        "content_type": "application/javascript; charset=utf-8",
+        "source_sha256": "c914be1820dbeb7df83a2d72ae45156f2b86283417232a0d1bf0b562723f92c4",
+        "deployed_sha256": "c914be1820dbeb7df83a2d72ae45156f2b86283417232a0d1bf0b562723f92c4",
+        "exact": true
+      },
+      {
+        "path": "/settings-appearance.mjs",
+        "http": 200,
+        "content_type": "application/javascript; charset=utf-8",
+        "source_sha256": "9ce444adc8002974eeb9957af99c18e2fa151109731ba64ce4da06b929a5a285",
+        "deployed_sha256": "9ce444adc8002974eeb9957af99c18e2fa151109731ba64ce4da06b929a5a285",
+        "exact": true
+      },
+      {
+        "path": "/reader-annotation-records.mjs",
+        "http": 200,
+        "content_type": "application/javascript; charset=utf-8",
+        "source_sha256": "b602cd8668301994e3bec7af198f152b6242cc427f48e4599d5e1807efc04c33",
+        "deployed_sha256": "b602cd8668301994e3bec7af198f152b6242cc427f48e4599d5e1807efc04c33",
+        "exact": true
+      },
+      {
+        "path": "/book-reading-languages.mjs",
+        "http": 200,
+        "content_type": "application/javascript; charset=utf-8",
+        "source_sha256": "287141497004fadce3c7cda154aee76536b503fcbef881f23149a2fa9356792f",
+        "deployed_sha256": "287141497004fadce3c7cda154aee76536b503fcbef881f23149a2fa9356792f",
+        "exact": true
+      },
+      {
+        "path": "/account-ui-preferences.mjs",
+        "http": 200,
+        "content_type": "application/javascript; charset=utf-8",
+        "source_sha256": "fb5ec76b24421f5d8b0ba8e2eee8f82fa3f4bdbd545852bdad479732e2f936ad",
+        "deployed_sha256": "fb5ec76b24421f5d8b0ba8e2eee8f82fa3f4bdbd545852bdad479732e2f936ad",
+        "exact": true
+      }
+    ]
+  },
+  "english_catalogue_key_check": {
+    "current_ref": "d0ecf845298b8ea4d1eff513dd7f96cfea9c415d",
+    "current_count": 2111,
+    "old_tips": [
+      {
+        "ref": "8238989ccf875c600fd22b3b9de7b37934fd57b6",
+        "keys": 550,
+        "missing_in_current": 0
+      },
+      {
+        "ref": "3b96a291aea17977c9967fba3fffce64a194f2f6",
+        "keys": 1097,
+        "missing_in_current": 0
+      },
+      {
+        "ref": "53be756bcea8dddef97e1b6be3fd11228f4c9bc9",
+        "keys": 1623,
+        "missing_in_current": 0
+      },
+      {
+        "ref": "64e37380e6f2199e4d3c6f011e342764bac98ac0",
+        "keys": 1935,
+        "missing_in_current": 0
+      },
+      {
+        "ref": "035e2a9a02ee9bc6b9b44537a52bc5e8475c5fcb",
+        "keys": 1950,
+        "missing_in_current": 0
+      }
+    ]
+  }
+}
