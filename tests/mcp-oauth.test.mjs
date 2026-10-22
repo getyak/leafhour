@@ -16,7 +16,7 @@ async function start(f,patch={}){
  const request=await f.oauth.begin(new URLSearchParams({client_id:client.client_id,redirect_uri:client.redirect_uris[0],response_type:'code',scope:'content',resource,state:'opaque-state',code_challenge:challenge,code_challenge_method:'S256',...patch}));
  return {client,request};
 }
-async function approve(f){const flow=await start(f),view=await f.oauth.consent(flow.request,owner,'browser-session'),location=await f.oauth.approve({request:flow.request,csrf:view.csrf,bookId:'own-book',allow:true},owner,'browser-session');return {...flow,location:new URL(location)};}
+async function approve(f,patch={},scopes){const flow=await start(f,patch),view=await f.oauth.consent(flow.request,owner,'browser-session'),location=await f.oauth.approve({request:flow.request,csrf:view.csrf,bookId:'own-book',allow:true,...(scopes?{scopes}:{})},owner,'browser-session');return {...flow,location:new URL(location)};}
 const exchange=(f,flow,patch={})=>f.oauth.exchange(new URLSearchParams({grant_type:'authorization_code',client_id:flow.client.client_id,redirect_uri:flow.client.redirect_uris[0],resource,code:flow.location.searchParams.get('code'),code_verifier:verifier,...patch}));
 
 test('OAuth discovery advertises one resource, PKCE and public client registration',()=>{const f=fixture();assert.equal(f.oauth.resourceMetadata().resource,resource);assert.deepEqual(f.oauth.serverMetadata().code_challenge_methods_supported,['S256']);assert.equal(f.oauth.serverMetadata().authorization_response_iss_parameter_supported,true);});
@@ -29,3 +29,22 @@ test('denial redirects only to the registered callback and never creates a grant
 test('shared persistent rate limits work across OAuth service instances',async()=>{const f=fixture();for(let i=0;i<60;i++)await f.oauth.rate('test',60);await assert.rejects(f.oauth.rate('test',60),e=>e.status===429&&e.retryAfter>0);f.advance(60001);await f.oauth.rate('test',60);});
 
 test('ChatGPT ui_locales is a bounded presentation hint and cannot expand authority',async()=>{const f=fixture();const flow=await start(f,{ui_locales:'en-US zh-Hans'});const view=await f.oauth.consent(flow.request,owner,'session');assert.equal(view.clientName,'Synthetic client');assert.ok(!JSON.stringify([...f.rows]).includes('ui_locales'));for(const value of ['https://evil.example','en-US;scope=notes','en-US '.repeat(9)])await assert.rejects(start(f,{ui_locales:value}));});
+
+const annotationScopes=['content','annotations','highlight:write','annotation:write'];
+test('requested annotation scopes require explicit browser consent and never expand old connections',async()=>{
+ const f=fixture(),scope=annotationScopes.join(' ');
+ assert.deepEqual(f.oauth.resourceMetadata().scopes_supported,annotationScopes);
+ const flow=await approve(f,{scope},annotationScopes),token=await exchange(f,flow);
+ assert.equal(token.scope,scope);assert.equal((await f.oauth.authenticate(token.access_token)).scope,scope);
+ const readOnly=await approve(f,{scope}),readToken=await exchange(f,readOnly);assert.equal(readToken.scope,'content');
+ const old=await start(f),view=await f.oauth.consent(old.request,owner,'session');
+ await assert.rejects(f.oauth.approve({request:old.request,csrf:view.csrf,bookId:'own-book',allow:true,scopes:annotationScopes},owner,'session'));
+ assert.equal((await f.oauth.consent(old.request,owner,'session')).requestedScopes.join(' '),'content');
+});
+test('consent rejects private data scopes, duplicate scopes and malformed scope selections',async()=>{
+ for(const scopes of [['content','notes'],['content','content'],[],['annotation:write'],'content annotations']){
+  const f=fixture(),flow=await start(f,{scope:annotationScopes.join(' ')}),view=await f.oauth.consent(flow.request,owner,'session');
+  await assert.rejects(f.oauth.approve({request:flow.request,csrf:view.csrf,bookId:'own-book',allow:true,scopes},owner,'session'));
+  assert.equal(f.grants.size,0);
+ }
+});

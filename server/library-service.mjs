@@ -15,7 +15,8 @@ import {normalizeAppearance,normalizeGlobalPreferences,validateGlobalPreferences
 import {applyCatalogChapters,alignReadingPosition} from './catalog-chapters.mjs';
 import {resumeSummary} from '../app/reading-progress.mjs';
 import {validateLibraryBackup} from '../app/library-backup.mjs';
-import {saveHighlight,findHighlight,mergeHighlights} from '../app/highlights.mjs';
+import {validateCurrentReadingChatQuote,normalizeReadingChatQuote} from '../app/reading-chat-quote.mjs';
+import {saveHighlight,findHighlight,mergeHighlights,highlightKey} from '../app/highlights.mjs';
 import {inferSourceLanguage} from '../app/source-language.mjs';
 import {bookReadingLanguages} from '../app/book-reading-languages.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
@@ -337,6 +338,25 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
       const data=readingDefaults(raw),saved=saveHighlight(data.highlights,input,book);guardRecordSize(data);return saved;
     });
   }
+  // External selections reuse the reader's exact UTF-16 anchors and record
+  // transaction. No prose is written as a user comment and no model runs.
+  async function addAgentHighlight(user,id,input,{authorize=async()=>false}={}){
+    requireUser(user);
+    if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(k=>!['bookId','id','quote'].includes(k))||input.bookId!==id)throw fail('高亮请求格式不正确');
+    const quote=normalizeReadingChatQuote(input.quote);
+    if(quote.bookId!==id)throw fail('所选文字不属于这本书',409);
+    const check=async()=>{if((await authorize())?.id!==user.id)throw fail('Agent 授权无效或范围不足',403);};
+    await check();const initial=await getBook(user,id);
+    const selection={id:input.id,bookId:id,contentVersion:quote.contentVersion,chapterId:quote.chapterId,createdVia:'external-agent',parts:quote.parts.map(p=>({passageId:p.passageId,language:p.layer==='original'?'en':'zh',variant:p.layer==='original'?'interpretive':p.layer,start:p.start,end:p.end,text:p.text}))};
+    return mutate(recordFile(user,id),emptyRecords(initial),async raw=>{
+      await check();const book=await getBook(user,id),data=readingDefaults(raw),old=findHighlight(data.highlights,input.id);
+      // Exact historical retries retain deletion and the original receipt.
+      if(!old)validateCurrentReadingChatQuote(quote,book);
+      else if(highlightKey(old)!==highlightKey(selection))throw fail('高亮标识冲突，原记录已保留',409);
+      const saved=saveHighlight(data.highlights,selection,book);guardRecordSize(data);
+      return {highlightId:saved.id,status:saved.deletedAt?'deleted':'stored',createdAt:saved.createdAt};
+    });
+  }
   async function removeHighlight(user,id,highlightId){
     requireUser(user);const book=await getBook(user,id);
     const row=await mutate(recordFile(user,id),emptyRecords(book),raw=>{const data=readingDefaults(raw),row=findHighlight(data.highlights,highlightId);if(!row)throw fail('找不到这条高亮',404);row.deletedAt??=new Date().toISOString();guardRecordSize(data);return row;});
@@ -428,10 +448,10 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     const {bookId,scopes}=input;await getBook(user,bookId);
     // GET-195 adds only the two explicit annotation scopes to this allowlist:
     // existing grants, defaults and the daily/audio/content scopes never expand.
-    if(!Array.isArray(scopes)||!scopes.length||scopes.some(s=>!['content','notes','activity','comment:write','audio:read','audio:generate','annotations','annotation:write'].includes(s)||s===DAILY_GRANT_SCOPE))throw fail('请选择授权范围');
+    if(!Array.isArray(scopes)||!scopes.length||scopes.some(s=>!['content','notes','activity','comment:write','highlight:write','audio:read','audio:generate','annotations','annotation:write'].includes(s)||s===DAILY_GRANT_SCOPE))throw fail('请选择授权范围');
     return issueGrant(user,bookId,scopes,7*86400000);
   }
-  async function createMcpGrant(user,bookId){requireUser(user);await getBook(user,bookId);return issueGrant(user,bookId,['content'],3600000);}
+  async function createMcpGrant(user,bookId,scopes=['content']){requireUser(user);await getBook(user,bookId);if(!Array.isArray(scopes)||!scopes.includes('content')||scopes.some(s=>!['content','annotations','highlight:write','annotation:write'].includes(s)))throw fail('请选择授权范围');return issueGrant(user,bookId,scopes,3600000);}
   async function createDailyGrant(user,{bookId}={}){
     requireUser(user);await getBook(user,bookId);
     return issueGrant(user,bookId,[DAILY_GRANT_SCOPE],DAILY_GRANT_TTL_MS);
@@ -448,15 +468,25 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
   // source/highlight deletion, restore or translation ACK awaits every bound
   // listener first. A listener failure fails the API response honestly.
   const sourceMutationListeners=new Set();
-  async function notifySourceMutation(user,bookId,event){for(const listener of sourceMutationListeners)await listener(user,bookId,event);}
+  async function notifySourceMutation(user,bookId,event){
+    for(const listener of sourceMutationListeners)await listener(user,bookId,event);
+    // Share the records key with external highlight writes. A stalled hosted
+    // CAS must retry and revalidate the current selection before a source ACK.
+    const book=await getBook(user,bookId);
+    await mutate(recordFile(user,bookId),emptyRecords(book),()=>{});
+  }
   async function grants(user){requireUser(user);return (await read(grantsFile,{grants:[]})).grants.filter(g=>g.ownerId===user.id).map(({ownerId,tokenHash,...g})=>g);}
   async function revokeGrant(user,id){
     requireUser(user);
-    const result=await mutate(grantsFile,{grants:[]},data=>{const grant=data.grants.find(g=>g.id===id&&g.ownerId===user.id);if(!grant)throw fail('找不到这条授权',404);grant.revoked=true;return {revoked:true};});
+    const result=await mutate(grantsFile,{grants:[]},data=>{const grant=data.grants.find(g=>g.id===id&&g.ownerId===user.id);if(!grant)throw fail('找不到这条授权',404);grant.revoked=true;return {revoked:true,bookId:grant.bookId};});
     // Revocation is only acknowledged once every bound daily plan has been
     // invalidated, so a late daily finish cannot publish after it.
     for(const listener of grantRevocationListeners)await listener(user.id,id);
-    return result;
+    // Fence queued record writes before acknowledging withdrawal. A hosted
+    // CAS retry rechecks its grant; a previously committed write stays history.
+    const book=await getBook(user,result.bookId).catch(error=>{if(error.status===404)return null;throw error;});
+    if(book)await mutate(recordFile(user,result.bookId),emptyRecords(book),()=>{});
+    return {revoked:true};
   }
   async function shelfBackup(user,id){
     const shelf=await read(shelfFile(user),emptyShelf());if(!shelf.order.length&&!Object.hasOwn(shelf.archived,id))return {};
@@ -590,5 +620,5 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     await chapterReads.manifest(user,incoming.bookId);
     return {bookId:incoming.bookId,alreadyOwned:!claim.created};
   }
-  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
+  return {introductions,sourceEvidence,sourceReview,createSourceRevision,resolveSourceAnchor,bookTransfer:async(user,id,offset,snapshot)=>transferBook(await getBook(user,id),offset,snapshot),list,shelfState,reorderShelf,archiveBook,restoreBook,trash,getBook,readingView,readingChapter,importDocument,importExtracted,originalInfo,getOriginal,originalDownload,originalParts,originalRange,records,getReadingPreferences,saveReadingPreferences,getPreferenceMemory,changePreferenceMemory,addComment,editComment,addHighlight,addAgentHighlight,removeHighlight,saveProgress,saveReadingSession,recordReadingMilestone,setReadingGoal,readingActivity,translate,createGrant,createMcpGrant,createDailyGrant,authorize,authorizeDaily,isGrantActive,registerGrantRevocation:listener=>{grantRevocationListeners.add(listener);return()=>grantRevocationListeners.delete(listener);},registerSourceMutation:listener=>{sourceMutationListeners.add(listener);return()=>sourceMutationListeners.delete(listener);},grants,revokeGrant,exportLibrary,exportManifest,exportBookPart,exportBookEntry,restoreOriginal,validateRestore,previewRestoreBooks,restoreLibrary,receiveGift,translationAvailable:!!translator};
 }

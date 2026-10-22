@@ -70,4 +70,6 @@ GET-195 adds explicitly scoped `reader_get_annotations` (`annotations`) and `rea
 
 ## Remote OAuth and reading skill
 
-GET-196 adds a separate read-only Streamable HTTP endpoint with one-book OAuth consent. Its five tools do not inherit stdio notes, activity, writes or audio grants. See [installation and authentication](mcp-oauth.md) for the supported DCR/PKCE path, expiry, rate limits, revocation and the distinction between scripted acceptance and real ChatGPT connection.
+GET-196 adds a separate read-only Streamable HTTP endpoint with one-book OAuth consent. Its five base tools do not inherit stdio notes, activity or audio grants. Separately requested and explicitly selected OAuth scopes expose AI annotation reads, exact-text highlights and AI annotation writes; old connections remain read-only. See [installation and authentication](mcp-oauth.md) for the supported DCR/PKCE path, expiry, rate limits, revocation and the distinction between scripted acceptance and real ChatGPT connection.
+
+`reader_add_highlight` uses the same typed quote as annotations and the separate `highlight:write` scope. It writes the existing owner/book highlight records, marks `createdVia: external-agent`, and returns a narrow idempotent receipt. It does not read personal notes, write progress, call a model or grant access. UTF-16 selection offsets differ from Unicode-code-point content continuation offsets. See [OAuth setup](mcp-oauth.md#highlight-and-evaluate-a-passage) for the complete sequence and partial-save recovery.

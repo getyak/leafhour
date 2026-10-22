@@ -89,7 +89,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   // generation happens in this process. The external host owns the heartbeat.
   const dailyReading=createDailyReadingService({library,dataDir:path.join(dataDir,'library','daily'),dataStore});
   const portability=createLibraryPortability({library,chat,store:ingestionStore});
-  const remoteMcp=createRemoteMcp({origin:publicOrigin,dataDir:path.join(dataDir,'mcp'),dataStore,library,auth});
+  const remoteMcp=createRemoteMcp({origin:publicOrigin,dataDir:path.join(dataDir,'mcp'),dataStore,library,auth,annotations:chat.annotations});
   let legacyBook=null;
   const audioLibrary={getBook:(owner,id)=>owner?.id==='legacy-local'&&legacyBook?.bookId===id?Promise.resolve(legacyBook):library.getBook(owner,id)};
   const durableAudio=dataStore&&['read','mutate','putBlob','blob'].every(k=>typeof dataStore[k]==='function');
@@ -390,7 +390,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
         const result=action==='daily-connect'?await dailyReading.connect(owner,body,identity.grant):action==='daily-claim'?await dailyReading.claim(owner,body,identity.grant):await dailyReading.finish(owner,body,identity.grant);
         send(200,result);return true;
       }
-      const scopes={manifest:'content',passage:'content',context:'content',chapter:'content',search:'content',notes:'notes',activity:'activity',comment:'comment:write',annotations:'annotations',annotation:'annotation:write','audio-prepare':'content','audio-generate':'audio:generate','audio-status':'audio:read','audio-cancel':'audio:generate','audio-clip':'audio:read'};if(!scopes[action])throw fail('找不到这个工具',404);
+      const scopes={manifest:'content',passage:'content',context:'content',chapter:'content',search:'content',notes:'notes',activity:'activity',comment:'comment:write',highlight:'highlight:write',annotations:'annotations',annotation:'annotation:write','audio-prepare':'content','audio-generate':'audio:generate','audio-status':'audio:read','audio-cancel':'audio:generate','audio-clip':'audio:read'};if(!scopes[action])throw fail('找不到这个工具',404);
       const owner=await library.authorize(agentToken,bookId,scopes[action]),book=await library.getBook(owner,bookId),records=()=>library.records(owner,bookId);
       if(action.startsWith('audio-')){
         if(!audio)throw fail('此实例暂未开启听读，请在本机书房使用。',503);
@@ -407,6 +407,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       // captured bearer is re-authorized again inside the domain transaction.
       if(action==='annotations'&&req.method==='GET'){res.setHeader('Cache-Control','private, no-store');send(200,await chat.annotations.readExternal(owner,bookId,annotationReadArgs(url.searchParams),{authorize:()=>library.authorize(agentToken,bookId,'annotations')}));return true;}
       if(action==='annotation'&&req.method==='POST'){res.setHeader('Cache-Control','private, no-store');send(200,await chat.annotations.putExternal(owner,bookId,body,{authorize:()=>library.authorize(agentToken,bookId,'annotation:write')}));return true;}
+      if(action==='highlight'&&req.method==='POST'){res.setHeader('Cache-Control','private, no-store');send(200,await library.addAgentHighlight(owner,bookId,body,{authorize:()=>library.authorize(agentToken,bookId,'highlight:write')}));return true;}
       if(action==='comment'&&req.method==='POST'){if(body.origin!=='user')throw fail('只保存用户明确提供的原话');send(201,await library.addComment(owner,bookId,body));return true;}
       throw fail('不支持这个请求',405);
     }
