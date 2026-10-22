@@ -1,0 +1,214 @@
+TAP version 13
+# Subtest: the local reader serves its bundled atmosphere assets with correct types and no arbitrary file access
+ok 1 - the local reader serves its bundled atmosphere assets with correct types and no arbitrary file access
+  ---
+  duration_ms: 1368.733875
+  type: 'test'
+  ...
+# Subtest: the first audible graph uses the latest mix after a slow recording decode
+ok 2 - the first audible graph uses the latest mix after a slow recording decode
+  ---
+  duration_ms: 2.504084
+  type: 'test'
+  ...
+# Subtest: loop preparation removes recording fades and joins the waveform without a silent seam
+ok 3 - loop preparation removes recording fades and joins the waveform without a silent seam
+  ---
+  duration_ms: 6.348875
+  type: 'test'
+  ...
+# Subtest: atmospheres validate saved playback intent alongside scene and levels
+ok 4 - atmospheres validate saved playback intent alongside scene and levels
+  ---
+  duration_ms: 0.720666
+  type: 'test'
+  ...
+# Subtest: narration ducks both channels without changing saved volume, zero stays silent
+ok 5 - narration ducks both channels without changing saved volume, zero stays silent
+  ---
+  duration_ms: 0.158084
+  type: 'test'
+  ...
+# Subtest: late resource arrival after pause is disposed and cannot resume sound
+ok 6 - late resource arrival after pause is disposed and cannot resume sound
+  ---
+  duration_ms: 0.2425
+  type: 'test'
+  ...
+# Subtest: a rapid scene change retains only the last playback, stale failure cannot replace it
+ok 7 - a rapid scene change retains only the last playback, stale failure cannot replace it
+  ---
+  duration_ms: 0.178125
+  type: 'test'
+  ...
+# Subtest: current playback failure is visible and can be retried
+ok 8 - current playback failure is visible and can be retried
+  ---
+  duration_ms: 0.239917
+  type: 'test'
+  ...
+# Subtest: volume or narration changes made while recordings load reach the accepted playback
+ok 9 - volume or narration changes made while recordings load reach the accepted playback
+  ---
+  duration_ms: 0.087459
+  type: 'test'
+  ...
+# Subtest: selecting a scene starts its matching sound immediately, including after an explicit pause
+ok 10 - selecting a scene starts its matching sound immediately, including after an explicit pause
+  ---
+  duration_ms: 28.011667
+  type: 'test'
+  ...
+# Subtest: restoring a scene stays silent and selecting another scene respects an individually muted channel
+ok 11 - restoring a scene stays silent and selecting another scene respects an individually muted channel
+  ---
+  duration_ms: 1.883667
+  type: 'test'
+  ...
+# Subtest: settings and scene controls share volume, motion and manual playback without restarting sound
+ok 12 - settings and scene controls share volume, motion and manual playback without restarting sound
+  ---
+  duration_ms: 2.472042
+  type: 'test'
+  ...
+# Subtest: quick pause cancels a scene selected while its recording is still loading
+ok 13 - quick pause cancels a scene selected while its recording is still loading
+  ---
+  duration_ms: 2.529375
+  type: 'test'
+  ...
+# Subtest: switching tabs pauses visual motion but keeps the selected sound playing without restarting it
+ok 14 - switching tabs pauses visual motion but keeps the selected sound playing without restarting it
+  ---
+  duration_ms: 1.500417
+  type: 'test'
+  ...
+# Subtest: a background load may finish playing; an explicit pause stays paused on return and leaving the document stops it
+ok 15 - a background load may finish playing; an explicit pause stays paused on return and leaving the document stops it
+  ---
+  duration_ms: 3.583459
+  type: 'test'
+  ...
+# Subtest: the hearth controller starts only visible layers and stops them for motion preferences, other scenes and page exit
+ok 16 - the hearth controller starts only visible layers and stops them for motion preferences, other scenes and page exit
+  ---
+  duration_ms: 1.340625
+  type: 'test'
+  ...
+# Subtest: forest light and sea water follow scene, visibility and motion preferences without ever starting sound
+ok 17 - forest light and sea water follow scene, visibility and motion preferences without ever starting sound
+  ---
+  duration_ms: 3.151584
+  type: 'test'
+  ...
+# Subtest: saved sound resumes on entry and page exit retains intent until an explicit pause
+ok 18 - saved sound resumes on entry and page exit retains intent until an explicit pause
+  ---
+  duration_ms: 0.94075
+  type: 'test'
+  ...
+# Subtest: autoplay denial is waiting for a gesture rather than reported as playing or a network failure
+ok 19 - autoplay denial is waiting for a gesture rather than reported as playing or a network failure
+  ---
+  duration_ms: 0.099583
+  type: 'test'
+  ...
+# Subtest: a trusted pointerdown on the start control does not turn its following click into a pause
+ok 20 - a trusted pointerdown on the start control does not turn its following click into a pause
+  ---
+  duration_ms: 0.924708
+  type: 'test'
+  ...
+# Subtest: bfcache playback waits for same-account confirmation and rejects a changed account
+ok 21 - bfcache playback waits for same-account confirmation and rejects a changed account
+  ---
+  duration_ms: 0.963875
+  type: 'test'
+  ...
+# Subtest: a late same-account confirmation does not restart a manually selected scene
+ok 22 - a late same-account confirmation does not restart a manually selected scene
+  ---
+  duration_ms: 1.668167
+  type: 'test'
+  ...
+# Subtest: book upload implementation waits for opening chat and stays outside the fixed reader startup budget
+ok 23 - book upload implementation waits for opening chat and stays outside the fixed reader startup budget
+  ---
+  duration_ms: 2889.791041
+  type: 'test'
+  ...
+# Subtest: reader actions retain canonical gift URLs and the authenticated owner header
+ok 24 - reader actions retain canonical gift URLs and the authenticated owner header
+  ---
+  duration_ms: 217.244
+  type: 'test'
+  ...
+# Subtest: reader session mismatch synchronously invalidates subscribers before every navigation path
+ok 25 - reader session mismatch synchronously invalidates subscribers before every navigation path
+  ---
+  duration_ms: 3.501125
+  type: 'test'
+  ...
+# Subtest: restored identity checks share one request, fail closed offline, and invalidate a changed owner
+ok 26 - restored identity checks share one request, fail closed offline, and invalidate a changed owner
+  ---
+  duration_ms: 2.308791
+  type: 'test'
+  ...
+# Subtest: reader billing routes keep their account scope instead of acquiring the selected book prefix
+ok 27 - reader billing routes keep their account scope instead of acquiring the selected book prefix
+  ---
+  duration_ms: 178.689084
+  type: 'test'
+  ...
+# Subtest: enabled reader prepares only actual generation POSTs after mapping their book route
+ok 28 - enabled reader prepares only actual generation POSTs after mapping their book route
+  ---
+  duration_ms: 1.897292
+  type: 'test'
+  ...
+# Subtest: billing-disabled reader keeps the exact original generation body and makes no preparation calls
+ok 29 - billing-disabled reader keeps the exact original generation body and makes no preparation calls
+  ---
+  duration_ms: 0.693708
+  type: 'test'
+  ...
+# Subtest: owner invalidation while credit confirmation awaits blocks the generation dispatch
+ok 30 - owner invalidation while credit confirmation awaits blocks the generation dispatch
+  ---
+  duration_ms: 0.975333
+  type: 'test'
+  ...
+# Subtest: aborting a request during credit preparation prevents its later model POST
+ok 31 - aborting a request during credit preparation prevents its later model POST
+  ---
+  duration_ms: 0.546958
+  type: 'test'
+  ...
+# Subtest: a foreign owner quote response invokes the existing session-change navigation guard
+ok 32 - a foreign owner quote response invokes the existing session-change navigation guard
+  ---
+  duration_ms: 0.898542
+  type: 'test'
+  ...
+# Subtest: real reader helper quotes the captured translation version before dispatch and declined consent sends no model request
+ok 33 - real reader helper quotes the captured translation version before dispatch and declined consent sends no model request
+  ---
+  duration_ms: 17.3535
+  type: 'test'
+  ...
+# Subtest: reader onDispatch fires only for final generation after preparation and is stripped from fetch options
+ok 34 - reader onDispatch fires only for final generation after preparation and is stripped from fetch options
+  ---
+  duration_ms: 1.799416
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13992.0535

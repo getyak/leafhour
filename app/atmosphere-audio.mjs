@@ -7,19 +7,46 @@ const ramp=(parameter,value,time,seconds=0.18)=>{
   parameter.setTargetAtTime(value,time,seconds);
 };
 
+// Bundled MP3s have 0.6s fades at either end. Discard them, then overlap
+// two seconds of unfaded sound with equal-power weights. The result loops on
+// the audio render thread; neither an ended event nor a JS timer joins cycles.
+export function prepareAtmosphereLoop(context,recording){
+  const trim=Math.min(Math.round(recording.sampleRate*.75),Math.floor(recording.length/8));
+  const length=recording.length-2*trim;
+  const overlap=Math.min(Math.round(recording.sampleRate*2),Math.floor(length/4));
+  const body=length-2*overlap;
+  const output=context.createBuffer(recording.numberOfChannels,length-overlap,recording.sampleRate);
+  for(let channel=0;channel<recording.numberOfChannels;channel++){
+    const input=recording.getChannelData(channel),samples=output.getChannelData(channel);
+    samples.set(input.subarray(trim+overlap,trim+length-overlap));
+    for(let i=0;i<overlap;i++){
+      const phase=i/(overlap-1)*Math.PI/2;
+      samples[body+i]=input[trim+length-overlap+i]*Math.cos(phase)+input[trim+i]*Math.sin(phase);
+    }
+  }
+  return output;
+}
+
 // Recording buffers and synthesis stay in this browser. No book text enters this module.
 export function createAtmosphereAudio({AudioContextClass=globalThis.AudioContext||globalThis.webkitAudioContext,fetchAudio=globalThis.fetch}={}){
   let context;const buffers=new Map();
   function unlock(){
     if(!AudioContextClass)throw Error('这个浏览器暂不支持氛围声音，可以继续使用阅读主题。');
     if(!context)context=new AudioContextClass({latencyHint:'playback'});
-    return context.resume();
+    const resumed=context.resume();
+    if(context.state==='running')return resumed;
+    // Browsers may leave resume() pending until a gesture. Do not hang the UI
+    // or claim playback while the context is suspended.
+    return new Promise((resolve,reject)=>{
+      const timer=setTimeout(()=>{const error=Error('Audio needs a user gesture.');error.name='NotAllowedError';reject(error);},1000);
+      Promise.resolve(resumed).then(()=>{clearTimeout(timer);if(context.state==='running')resolve();else {const error=Error('Audio needs a user gesture.');error.name='NotAllowedError';reject(error);}},error=>{clearTimeout(timer);reject(error);});
+    });
   }
   async function recording(id){
     if(!buffers.has(id))buffers.set(id,(async()=>{
       const response=await fetchAudio('/assets/atmospheres/'+id+'.mp3');
       if(!response.ok)throw Error('环境声暂时无法载入，请重试。');
-      return context.decodeAudioData(await response.arrayBuffer());
+      return prepareAtmosphereLoop(context,await context.decodeAudioData(await response.arrayBuffer()));
     })().catch(error=>{buffers.delete(id);throw error;}));
     return buffers.get(id);
   }

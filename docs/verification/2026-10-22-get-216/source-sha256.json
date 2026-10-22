@@ -1,0 +1,12 @@
+{
+  "app/atmosphere-audio.mjs": "a02d10b86d2b34659b21e145f612f0ba9007a9bbc83b0ae816fc917f77fb5604",
+  "app/atmosphere-state.mjs": "10a5312eddf6c52ec5a8e1d7df5923660411fbedb165385072f3a76bbf4ce99b",
+  "app/reader-atmosphere.js": "45dace067c40eeae34587d9d0ba43e3518e21a60f1378f44f25023840b9e0824",
+  "app/reader-api.mjs": "9d6fac6061b6abf757e4acd9c18c747085679ce9e9df1872d5bb7d19869ff631",
+  "tools/build-reader-web.mjs": "dd9f065025643d195493538872fe9a7e5498d573d5586479af44f0b2ee25b622",
+  "release-files.json": "8d010048807a74a356e4f67d4dc94ba80ae35b0eb1fa74235936104036c4f196",
+  "tests/atmosphere-loop.test.mjs": "e55355270d44a5b27ca0900ef20cc87829f6589521208b44ae779947a4920229",
+  "tests/atmosphere.test.mjs": "8d367fce755ccf061ae8694bfe4f0ce34fc36a0559dd9ae270fb9086d1907d5c",
+  "tests/reader-api-routes.test.mjs": "e75d56d9b376528601422f6c99c8a23d0a902ab10d1dce9f95f8b3b14be7fd6e",
+  "tests/reader-credit-routing.test.mjs": "8b0c9b882f66bb5498f91f9e51e449134f2bcca429d92bbc6058798ec4dc5a19"
+}

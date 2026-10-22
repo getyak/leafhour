@@ -1,0 +1,102 @@
+[
+  {
+    "id": "wind",
+    "originalSeconds": 32.04,
+    "loopSeconds": 28.54,
+    "sampleRate": 48000,
+    "seams": [
+      {
+        "at": 28.54,
+        "rms": 0.05725055446277155,
+        "sampleStep": 0.012526239734143019
+      },
+      {
+        "at": 57.08,
+        "rms": 0.05725055446277155,
+        "sampleStep": 0.012526239734143019
+      }
+    ],
+    "maximumStep": 0.06405825167894363,
+    "overallRms": 0.036006754920520884
+  },
+  {
+    "id": "birds",
+    "originalSeconds": 32.04,
+    "loopSeconds": 28.54,
+    "sampleRate": 48000,
+    "seams": [
+      {
+        "at": 28.54,
+        "rms": 0.02261794450400349,
+        "sampleStep": 0.00355883885640651
+      },
+      {
+        "at": 57.08,
+        "rms": 0.02261794450400349,
+        "sampleStep": 0.00355883885640651
+      }
+    ],
+    "maximumStep": 0.24542905390262604,
+    "overallRms": 0.026742341885174315
+  },
+  {
+    "id": "rain",
+    "originalSeconds": 32.04,
+    "loopSeconds": 28.54,
+    "sampleRate": 48000,
+    "seams": [
+      {
+        "at": 28.54,
+        "rms": 0.02798662893282692,
+        "sampleStep": 0.012702882988378406
+      },
+      {
+        "at": 57.08,
+        "rms": 0.02798662893282692,
+        "sampleStep": 0.012702882988378406
+      }
+    ],
+    "maximumStep": 0.600713461637497,
+    "overallRms": 0.02710530620727883
+  },
+  {
+    "id": "fire",
+    "originalSeconds": 32.04,
+    "loopSeconds": 28.54,
+    "sampleRate": 48000,
+    "seams": [
+      {
+        "at": 28.54,
+        "rms": 0.014710147581253538,
+        "sampleStep": 0.0010428786044940352
+      },
+      {
+        "at": 57.08,
+        "rms": 0.014710147581253538,
+        "sampleStep": 0.0010428786044940352
+      }
+    ],
+    "maximumStep": 0.5280674397945404,
+    "overallRms": 0.01571067784750479
+  },
+  {
+    "id": "waves",
+    "originalSeconds": 32.04,
+    "loopSeconds": 28.54,
+    "sampleRate": 48000,
+    "seams": [
+      {
+        "at": 28.54,
+        "rms": 0.025321473595587663,
+        "sampleStep": 0.0043952688574790955
+      },
+      {
+        "at": 57.08,
+        "rms": 0.025321473595587663,
+        "sampleStep": 0.0043952688574790955
+      }
+    ],
+    "maximumStep": 0.057405561208724976,
+    "overallRms": 0.026418446875951206
+  }
+]

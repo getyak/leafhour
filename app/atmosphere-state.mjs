@@ -11,7 +11,8 @@ export function normalizeAtmosphere(input){
     scene:source.scene==='none'||atmospheres.some(s=>s.id===source.scene)?source.scene:'none',
     music:Number.isFinite(source.music)&&source.music>=0&&source.music<=100?source.music:defaults.music,
     nature:Number.isFinite(source.nature)&&source.nature>=0&&source.nature<=100?source.nature:defaults.nature,
-    motion:typeof source.motion==='boolean'?source.motion:defaults.motion
+    motion:typeof source.motion==='boolean'?source.motion:defaults.motion,
+    playing:source.scene!=='none'&&atmospheres.some(s=>s.id===source.scene)&&source.playing===true
   };
 }
 export function atmosphereMix(input,{narrating=false}={}){
@@ -33,7 +34,7 @@ export function createAtmosphereSession({start,onState=()=>{}}){
         const ready=await start(next);
         if(ticket!==revision){ready.stop();return;}
         handle=ready;if(mix)handle.setMix?.(mix);status='playing';publish();
-      }catch(cause){if(ticket!==revision)return;error=cause;status='error';publish();}
+      }catch(cause){if(ticket!==revision)return;error=cause;status=cause?.name==='NotAllowedError'?'blocked':'error';publish();}
     },
     setMix(value){mix={...value};handle?.setMix?.(mix);},
     stop(){revision++;handle?.stop();handle=null;status='paused';error=null;publish();}

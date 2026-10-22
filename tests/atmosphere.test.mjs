@@ -7,9 +7,9 @@ import * as uiLocale from '../app/ui-locale.mjs';
 
 await uiLocale.requestUiRoute('zh-Hans');
 
-test('atmospheres restore only supported preferences, never playback intent',()=>{
-  assert.deepEqual(normalizeAtmosphere({scene:'forest',music:0,nature:63,motion:false,playing:true}),{scene:'forest',music:0,nature:63,motion:false});
-  assert.deepEqual(normalizeAtmosphere({scene:'../../private',music:Infinity,nature:-2,motion:'yes'}),{scene:'none',music:28,nature:32,motion:true});
+test('atmospheres validate saved playback intent alongside scene and levels',()=>{
+  assert.deepEqual(normalizeAtmosphere({scene:'forest',music:0,nature:63,motion:false,playing:true}),{scene:'forest',music:0,nature:63,motion:false,playing:true});
+  assert.deepEqual(normalizeAtmosphere({scene:'../../private',music:Infinity,nature:-2,motion:'yes'}),{scene:'none',music:28,nature:32,motion:true,playing:false});
   assert.equal(normalizeAtmosphere(null).scene,'none');
   for(const scene of ['forest','rain','hearth','sea','none'])assert.equal(normalizeAtmosphere({scene}).scene,scene);
 });
@@ -56,7 +56,7 @@ test('volume or narration changes made while recordings load reach the accepted 
 
 // Run the real UI controller; only the DOM and the audio device are stand-ins.
 const controller=await readFile(new URL('../app/reader-atmosphere.js',import.meta.url),'utf8');
-async function readerFixture({saved=null,reduced=false,delayed=false}={}){
+async function readerFixture({saved=null,reduced=false,delayed=false,blocked=false,confirmIdentity=async()=>true}={}){
   const elements=new Map(),started=[],stopped=[],pending=[],hearthMotion=[],natureMotion=[];
   class Element extends EventTarget{
     constructor(){super();this.dataset={};this.attributes=new Map();this.children=[];this.firstElementChild={};}
@@ -76,12 +76,12 @@ async function readerFixture({saved=null,reduced=false,delayed=false}={}){
   const win=new EventTarget();win.matchMedia=()=>motion;
   const storage=new Map(saved?[['marginalia-atmosphere-v1',JSON.stringify(saved)]]:[]);
   const engine={start:async(scene,getMix)=>{
-    started.push({scene,mix:getMix()});if(delayed)await new Promise(resolve=>pending.push(resolve));
+    started.push({scene,mix:getMix()});if(blocked){blocked=false;const error=Error('gesture required');error.name='NotAllowedError';throw error;}if(delayed)await new Promise(resolve=>pending.push(resolve));
     return {stop:()=>stopped.push(scene),setMix(){}};
   }};
-  await vm.runInNewContext('(async()=>{'+controller.replace(/^import .*;\n/gm,'')+'\n})()',{document:doc,window:win,location:{search:''},URLSearchParams,
+  await vm.runInNewContext('(async()=>{'+controller.replace(/^import .*;\n/gm,'')+'\nwindow.testGesture=resumeOnGesture;})()',{document:doc,window:win,location:{search:''},URLSearchParams,
     t:uiLocale.t,uiReady:uiLocale.uiReady,bindUi:uiLocale.bindUi,onUiLocaleChange:uiLocale.onUiLocaleChange,
-    localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)},readerStorageKey:key=>key,
+    localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)},readerStorageKey:key=>key,confirmReaderIdentity:confirmIdentity,
     atmospheres,normalizeAtmosphere,atmosphereMix,createAtmosphereSession,createAtmosphereAudio:()=>engine,
     createHearthMotion:()=>{const layer={active:false,setActive(value){this.active=!!value;}};hearthMotion.push(layer);return layer;},
     createNatureMotion:()=>{const layer={active:false,scene:null,setActive(value){this.active=!!value;},setScene(value){this.scene=value;}};natureMotion.push(layer);return layer;},requestAnimationFrame:fn=>fn()});
@@ -192,4 +192,54 @@ test('forest light and sea water follow scene, visibility and motion preferences
   await f.choose('none');assert.deepEqual(active(),[false,false]);
   f.win.dispatchEvent(new Event('pagehide'));assert.deepEqual(active(),[false,false]);
   f.win.dispatchEvent(new Event('pageshow'));assert.deepEqual(active(),[false,false]);
+});
+
+// A reload must restore intent; an explicit pause must clear it, while page exit must not.
+test('saved sound resumes on entry and page exit retains intent until an explicit pause',async()=>{
+  const f=await readerFixture({saved:{scene:'rain',music:0,nature:50,playing:true}});await f.tick();
+  assert.equal(f.dialog.dataset.playback,'playing');assert.equal(f.started[0].scene,'rain');
+  f.win.dispatchEvent(Object.assign(new Event('pagehide'),{persisted:true}));
+  assert.equal(JSON.parse(f.storage.get('marginalia-atmosphere-v1')).playing,true);
+  f.win.dispatchEvent(Object.assign(new Event('pageshow'),{persisted:true}));await f.tick();
+  assert.equal(f.dialog.dataset.playback,'playing');
+  f.$('atmosphere-quick-pause').dispatchEvent(new Event('click'));
+  assert.equal(JSON.parse(f.storage.get('marginalia-atmosphere-v1')).playing,false);
+  f.win.dispatchEvent(Object.assign(new Event('pagehide'),{persisted:true}));
+  f.win.dispatchEvent(Object.assign(new Event('pageshow'),{persisted:true}));await f.tick();
+  assert.equal(f.dialog.dataset.playback,'paused');
+});
+
+test('autoplay denial is waiting for a gesture rather than reported as playing or a network failure',async()=>{
+  const session=createAtmosphereSession({start:async()=>{const error=Error('gesture required');error.name='NotAllowedError';throw error;}});
+  await session.play('rain');assert.equal(session.status,'blocked');
+});
+
+test('a trusted pointerdown on the start control does not turn its following click into a pause',async()=>{
+  const f=await readerFixture({saved:{scene:'rain',playing:true},blocked:true});await f.tick();
+  assert.equal(f.dialog.dataset.playback,'blocked');
+  f.win.testGesture({isTrusted:true,target:{closest:()=>f.$('atmosphere-play')}});
+  f.$('atmosphere-play').dispatchEvent(new Event('click'));await f.tick();
+  assert.equal(f.dialog.dataset.playback,'playing');
+  assert.equal(JSON.parse(f.storage.get('marginalia-atmosphere-v1')).playing,true);
+});
+
+
+test('bfcache playback waits for same-account confirmation and rejects a changed account',async()=>{
+  let confirm;const f=await readerFixture({saved:{scene:'rain',playing:true},confirmIdentity:()=>new Promise(resolve=>confirm=resolve)});await f.tick();
+  f.win.dispatchEvent(Object.assign(new Event('pagehide'),{persisted:true}));
+  f.win.dispatchEvent(Object.assign(new Event('pageshow'),{persisted:true}));await f.tick();
+  assert.equal(f.started.length,1,'no old-account sound before identity response');
+  confirm(false);await f.tick();assert.equal(f.started.length,1);
+  f.win.dispatchEvent(Object.assign(new Event('pageshow'),{persisted:true}));await f.tick();
+  f.$('atmosphere-quick-pause').dispatchEvent(new Event('click'));confirm(true);await f.tick();
+  assert.equal(f.started.length,1,'pause while identity check is pending stays silent');
+});
+
+
+test('a late same-account confirmation does not restart a manually selected scene',async()=>{
+  let confirm;const f=await readerFixture({saved:{scene:'rain',playing:true},confirmIdentity:()=>new Promise(resolve=>confirm=resolve)});await f.tick();
+  f.win.dispatchEvent(Object.assign(new Event('pagehide'),{persisted:true}));
+  f.win.dispatchEvent(Object.assign(new Event('pageshow'),{persisted:true}));await f.tick();
+  await f.choose('sea');const starts=f.started.length;confirm(true);await f.tick();
+  assert.equal(f.started.length,starts);assert.equal(f.started.at(-1).scene,'sea');
 });

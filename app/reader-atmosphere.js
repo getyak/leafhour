@@ -1,4 +1,4 @@
-import {readerStorageKey} from './reader-api.mjs';
+import {readerStorageKey,confirmReaderIdentity} from './reader-api.mjs';
 import {atmospheres,normalizeAtmosphere,atmosphereMix,createAtmosphereSession} from './atmosphere-state.mjs';
 import {createAtmosphereAudio} from './atmosphere-audio.mjs';
 import {createHearthMotion} from './hearth-motion.mjs';
@@ -8,7 +8,7 @@ import {t,uiReady,bindUi,onUiLocaleChange} from './ui-locale.mjs';
 await uiReady;
 
 const SCENE_UI='reader.atmosphere.',READER_SHELL='reader.shell.';
-let atmosphereDisposed=false;
+let atmosphereDisposed=false,pageGeneration=0;
 const listenerDisposers=[];
 function listen(target,event,handler,options){const owned=e=>{if(!atmosphereDisposed)return handler(e);};target.addEventListener(event,owned,options);listenerDisposers.push(()=>target.removeEventListener(event,owned,options));}
 
@@ -114,12 +114,12 @@ function playbackLabels(){
   if(!playback)return;
   const {playing,loading,hasScene,silent,status,narrating,notice}=playback;
   $('atmosphere-play-label').textContent=t(!hasScene?SCENE_UI+'choose':loading?SCENE_UI+'cancel':playing?SCENE_UI+'pause':status==='error'?SCENE_UI+'retry':SCENE_UI+'start');
-  $('atmosphere-status').textContent=t(notice||(status==='error'?SCENE_UI+'error':loading?SCENE_UI+'loading':playing?(silent?SCENE_UI+'silent':narrating?SCENE_UI+'ducked':SCENE_UI+'playing'):hasScene?SCENE_UI+'paused':SCENE_UI+'pick'));
+  $('atmosphere-status').textContent=t(notice||(status==='blocked'?SCENE_UI+'waitingGesture':status==='error'?SCENE_UI+'error':loading?SCENE_UI+'loading':playing?(silent?SCENE_UI+'silent':narrating?SCENE_UI+'ducked':SCENE_UI+'playing'):hasScene?SCENE_UI+'paused':SCENE_UI+'pick'));
   if($('settings-atmosphere-toggle'))$('settings-atmosphere-toggle').textContent=t(loading?SCENE_UI+'cancel':playing?SCENE_UI+'pauseShort':READER_SHELL+'play');
   if($('settings-atmosphere-status'))$('settings-atmosphere-status').textContent=$('atmosphere-status').textContent;
 }
 function choose(id){
-  const anchor=window.marginaliaReader?.getAnchor();notice='';prefs={...prefs,scene:id};save();render();
+  const anchor=window.marginaliaReader?.getAnchor();notice='';prefs={...prefs,scene:id,playing:id!=='none'};save();render();
   requestAnimationFrame(()=>{if(anchor)window.marginaliaReader?.restoreAnchor(anchor);});
   if(id==='none')session.stop();else session.play(id);
 }
@@ -130,9 +130,10 @@ for(const id of ['close-atmosphere','atmosphere-return'])listen($(id),'click',()
 listen(dialog,'close',()=>{$('open-atmosphere').setAttribute('aria-expanded','false');renderMotion();});
 listen(dialog,'click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();});
 listen($('atmosphere-none'),'click',()=>choose('none'));
-function toggleSound(){notice='';if(['playing','loading'].includes(session.status))session.stop();else session.play(prefs.scene);}
+function pauseSound(){notice='';prefs={...prefs,playing:false};save();session.stop();}
+function toggleSound(){notice='';if(['playing','loading'].includes(session.status))pauseSound();else {prefs={...prefs,playing:prefs.scene!=='none'};save();session.play(prefs.scene);}}
 for(const id of ['atmosphere-play','settings-atmosphere-toggle'])listen($(id),'click',toggleSound);
-listen($('atmosphere-quick-pause'),'click',()=>{notice='';session.stop();});
+listen($('atmosphere-quick-pause'),'click',pauseSound);
 for(const name of ['music','nature'])for(const prefix of ['atmosphere-','settings-atmosphere-'])listen($(prefix+name),'input',event=>{notice='';prefs=normalizeAtmosphere({...prefs,[name]:Number(event.target.value)});save();render();});
 for(const prefix of ['atmosphere-','settings-atmosphere-'])listen($(prefix+'motion'),'change',event=>{prefs={...prefs,motion:event.target.checked};save();render();});
 listen(reducedMotion,'change',renderMotion);
@@ -141,8 +142,13 @@ function syncNarration(){narrating=[...document.querySelectorAll('audio:not([dat
 for(const event of ['play','pause','ended','emptied'])listen(document,event,syncNarration,true);
 // Visibility controls visual motion, never the listener's playback choice.
 listen(document,'visibilitychange',renderMotion);
-listen(window,'pagehide',()=>{session.stop();for(const layer of hearthLayers){layer.motion.setActive(false);layer.nature.setActive(false);}});
-listen(window,'pageshow',renderMotion);
+listen(window,'pagehide',()=>{pageGeneration++;session.stop();for(const layer of hearthLayers){layer.motion.setActive(false);layer.nature.setActive(false);}});
+listen(window,'pageshow',async event=>{renderMotion();if(!event.persisted||!prefs.playing)return;const generation=pageGeneration;if(await confirmReaderIdentity()&&generation===pageGeneration&&!atmosphereDisposed&&prefs.playing&&session.status==='paused')session.play(prefs.scene);});
+// Only browser-delivered activation can satisfy autoplay restrictions.
+function resumeOnGesture(event){if(!event.isTrusted||!prefs.playing)return;if(event.target?.closest?.('#atmosphere-play,#settings-atmosphere-toggle,#atmosphere-quick-pause,.atmosphere-choice,#atmosphere-none'))return;if(session.status==='blocked')session.play(prefs.scene);else if(session.status==='loading')engine.unlock().catch(()=>{});}
+listen(document,'pointerdown',resumeOnGesture);listen(document,'keydown',resumeOnGesture);
+listen(document,'reader:session-changed',()=>{pageGeneration++;session.stop();});
 const unbind=bindUi(dialog);const offLocale=onUiLocaleChange(()=>{sceneLabels();playbackLabels();});
 listen(window,'pagehide',event=>{if(!event.persisted){atmosphereDisposed=true;for(const off of listenerDisposers)off();listenerDisposers.length=0;offLocale();unbind();}});
 render();syncNarration();
+if(prefs.playing)session.play(prefs.scene);

@@ -35,4 +35,18 @@ export async function readerFetch(url,options={}){
   const response=await checkedFetch(target,{...fetchOptions,headers:{...(options.headers||{}),...(url==='/api/book'?{'X-Reader-Book-Transfer':'1'}:{}),...(selectedBookId?{'X-Reader-Owner':readerOwner||'guest'}:{})}});
   if(response.ok&&response.headers.get('X-Reader-Book-Transfer')==='parts'){const manifest=await response.json(),book=await assembleBookTransfer(manifest,async(offset,snapshot)=>{const partUrl=new URL(url,location.origin);partUrl.searchParams.set('offset',offset);partUrl.searchParams.set('snapshot',snapshot);const r=await readerFetch(url==='/api/book'?'/api/content-part?offset='+offset+'&snapshot='+snapshot:partUrl.pathname+partUrl.search);if(!r.ok)throw Error('正文已更新或传输中断，请重新载入。');return r.json();});return new Response(JSON.stringify(book),{headers:{'Content-Type':'application/json'}});}return response;
 }
-if(selectedBookId){const checkIdentity=async()=>{if(document.hidden)return;try{const current=await fetch('/api/auth/session').then(r=>r.json());if((current.user?.id||null)!==readerOwner)leaveChangedSession();else void adoptUiOwner(readerOwner);}catch{}};window.addEventListener('focus',checkIdentity);window.addEventListener('pageshow',checkIdentity);document.addEventListener('visibilitychange',checkIdentity);}
+let identityCheck=null;
+// A restored page must confirm the captured account before resuming its sound.
+// Share the in-flight check with focus/pageshow instead of issuing duplicates.
+export function confirmReaderIdentity(){
+  if(!sessionCurrent||document.hidden)return Promise.resolve(false);
+  if(!selectedBookId)return Promise.resolve(true);
+  if(!identityCheck)identityCheck=(async()=>{try{
+    const response=await fetch('/api/auth/session');if(!response.ok)return false;
+    const current=await response.json();
+    if((current.user?.id||null)!==readerOwner){leaveChangedSession();return false;}
+    void adoptUiOwner(readerOwner);return sessionCurrent;
+  }catch{return false;}})().finally(()=>{identityCheck=null;});
+  return identityCheck;
+}
+if(selectedBookId){window.addEventListener('focus',confirmReaderIdentity);window.addEventListener('pageshow',confirmReaderIdentity);document.addEventListener('visibilitychange',confirmReaderIdentity);}

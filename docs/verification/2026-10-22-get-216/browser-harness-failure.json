@@ -1,0 +1,13 @@
+{
+  "error": "page.evaluate: ReferenceError: scene is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:521)\n    at async <anonymous>:337:30",
+  "checks": [
+    "music muted through trusted keyboard input to isolate environmental loops",
+    "wind real offline boundaries remain non-silent without an exceptional adjacent-sample jump",
+    "birds real offline boundaries remain non-silent without an exceptional adjacent-sample jump",
+    "rain real offline boundaries remain non-silent without an exceptional adjacent-sample jump",
+    "fire real offline boundaries remain non-silent without an exceptional adjacent-sample jump",
+    "waves real offline boundaries remain non-silent without an exceptional adjacent-sample jump"
+  ],
+  "errors": [],
+  "url": "http://127.0.0.1:63030/read?book=gutenberg-alice"
+}
