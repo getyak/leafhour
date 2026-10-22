@@ -135,18 +135,20 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
  function step(delta){const rows=neighbors(),index=rows.findIndex(r=>r.id===activeId),entry=rows[(index+delta+rows.length)%rows.length];if(!entry)return;const mark=activeHighlights(getRecords()).find(r=>'highlight-'+r.id===entry.id);if(mark)openHighlight(mark,opener);else show(entry.id,opener);}
  function show(id,origin){
   if(!ensureScope()||composing)return;
+  const opening=card.hidden,editingElsewhere=!card.contains(document.activeElement)&&document.activeElement?.closest('input,textarea,select,[contenteditable="true"]');
   if(card.hidden&&card.isConnected)card.remove();
   if(activeId!==id){saveDraft();activeId=id;area.value=drafts[id]||'';draftVersion++;lastMessages='';}
   const held=thread();if(!held||held.deletedAt)return;
   if(!area.value)area.value=noteDrafts.text(ownKey());
   view.getSelection?.()?.removeAllRanges();reader()?.dismissTools?.({preserveSelection:true});
   opener=origin||opener;selected.textContent=held.quote.parts.map(part=>part.text).join('\n\n');
-  margins.reveal();margins.select(id);card.hidden=false;render();place();
+  margins.reveal();margins.select(id);card.hidden=false;render();place();if(opening&&!editingElsewhere)close.focus({preventScroll:true});
  }
+ const canReturnFocus=target=>!!target&&target.isConnected&&!target.disabled&&!target.hidden&&!target.closest('[hidden],[inert],[aria-hidden="true"]')&&target.getClientRects().length&&target.matches('button,a[href],input,textarea,select,summary,[tabindex]');
  function hide({restoreFocus=true}={}){
   if(card.hidden)return;saveDraft();const returnFocus=restoreFocus&&card.contains(document.activeElement),origin=opener;
   card.hidden=true;margins.select(null);
-  if(returnFocus){const badge=document.querySelector('[data-annotation-thread="'+activeId+'"]'),target=origin?.isConnected&&origin.getClientRects().length?origin:badge?.isConnected&&badge.getClientRects().length?badge:document.getElementById('book-page');target?.focus({preventScroll:true});}
+  if(returnFocus){const badge=document.querySelector('[data-annotation-thread="'+activeId+'"]'),target=canReturnFocus(origin)?origin:canReturnFocus(badge)?badge:document.getElementById('book-page');target?.focus({preventScroll:true});}
  }
  async function openHighlight(row,origin){
   if(!ensureScope())return;const token=epoch,own=scope;if(!archive&&!await refresh()){if(current(token,own))notice('loadFailed');return;}if(!current(token,own))return;

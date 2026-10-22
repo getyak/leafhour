@@ -10,7 +10,9 @@ import {creditActionLabel,creditErrorId} from './credit-labels.mjs';
 export function mountReaderTranslation({bookId,session,document:doc=globalThis.document,getReader=()=>globalThis.window?.marginaliaReader,request=readerFetch,navigate=url=>globalThis.location.assign(url),urlApi=globalThis.URL,timers=globalThis,intentStorage}={}){
   if(!bookId||!doc)return null;
   const button=doc.createElement('button');button.id='translate-passage';button.type='button';doc.getElementById('paragraph-tools').prepend(button);
+  const scope=doc.createElement('small');scope.id='translation-action-scope';scope.className='translation-action-scope';scope.hidden=true;doc.getElementById('paragraph-tools').append(scope);
   const hint=doc.createElement('p');hint.className='translation-notice';hint.setAttribute('role','status');doc.getElementById('chapter-heading').append(hint);
+  const guidance=doc.createElement('details'),guidanceTitle=doc.createElement('summary');guidance.className='source-review translation-guidance';guidance.hidden=true;guidance.append(guidanceTitle);doc.getElementById('chapter-heading').append(guidance);
   const billingLink=doc.createElement('a');billingLink.className='billing-link';doc.getElementById('chapter-heading').append(billingLink);
   const sourceReview=doc.createElement('details');sourceReview.className='source-review';sourceReview.hidden=true;doc.getElementById('chapter-heading').insertBefore(sourceReview,hint);
   const labels=createUiLabels(),links=new Map(),listeners=[],fileListeners=[],urls=new Map();labels.text(billingLink,'billing.accountLink');
@@ -36,6 +38,11 @@ export function mountReaderTranslation({bookId,session,document:doc=globalThis.d
     if(cachedView){
       const priced=session?.billing?.enabled===true&&!cachedView.disabled&&!hasDualDrafts(selectedPassage())&&['translation.translate','translation.retry'].includes(cachedView.label?.id);
       button.textContent=message(cachedView.label)+(priced?' · '+creditActionLabel('translation',getUiLocale()):'');hint.textContent=cachedView.notice.map(message).join('');
+      const routine=cachedView.notice.length===1&&cachedView.notice[0]?.id==='translation.onDemand';
+      guidanceTitle.textContent=t('reader.shell.aboutTranslation');guidance.hidden=!routine;
+      const destination=routine?guidance:doc.getElementById('chapter-heading');if(hint.parentElement!==destination)destination.append(hint);
+      scope.hidden=!session?.user||!session?.translationAvailable||!tasks.selectedId()||!['translation.translate','translation.retry','translation.translating'].includes(cachedView.label?.id);scope.textContent=t('translation.scopeBrief');
+      if(scope.hidden)button.removeAttribute('aria-describedby');else button.setAttribute('aria-describedby',scope.id);
       billingLink.hidden=!cachedView.notice.some(value=>value?.id==='credit.funds');billingLink.href=uiHref('/billing');
     }
     if(about)doc.getElementById('translation-about').textContent=message(about);
@@ -123,7 +130,7 @@ export function mountReaderTranslation({bookId,session,document:doc=globalThis.d
     finally{if(active(ticket))renderTranslation();}
   });
   const unsubscribe=onUiLocaleChange(paintLabels);
-  const dispose=()=>{if(disposed)return;disposed=true;epoch++;controller.abort();unsubscribe();for(const remove of [...listeners,...fileListeners])remove();for(const [url,timer]of urls){timers.clearTimeout(timer);urlApi.revokeObjectURL(url);}urls.clear();labels.clear();links.clear();button.remove();hint.remove();billingLink.remove();sourceReview.remove();};
+  const dispose=()=>{if(disposed)return;disposed=true;epoch++;controller.abort();unsubscribe();for(const remove of [...listeners,...fileListeners])remove();for(const [url,timer]of urls){timers.clearTimeout(timer);urlApi.revokeObjectURL(url);}urls.clear();labels.clear();links.clear();button.remove();scope.remove();hint.remove();guidance.remove();billingLink.remove();sourceReview.remove();};
   on(doc,'reader:session-changed',dispose);renderTranslation();if(getReader()?.getBook?.())ready();
   return {dispose};
 }

@@ -30,7 +30,7 @@ test('native-like selection downloads exactly the preview; changes and owner swi
  s.label('导出格式').value='markdown';s.label('导出格式').dispatchEvent(new Event('change'));assert.equal(s.button('下载预览内容').disabled,true);assert.equal(s.label('将要下载的完整内容预览').value,'');s.button('预览所选内容').click();const consents=all(s.root).filter(n=>n.type==='checkbox'&&!n.dataset.recordKey);consents.forEach(n=>n.checked=true);s.setOwner('bob');assert.equal(s.label('将要下载的完整内容预览').value,'');assert.equal(s.checks().length,0);assert.equal(s.button('下载预览内容').disabled,true);assert.ok(consents.every(n=>!n.checked));assert.equal(s.label('导出范围').value,'personal');
 });
 test('cancelling while start acknowledgement is pending still clears the newly allocated owner slot',async t=>{
- let resolveStart,started=false;const s=fixture(t,async(url)=>{if(url.endsWith('/start')){started=true;return new Promise(r=>{resolveStart=r;});}if(url.endsWith('/cancel'))return {cancelled:true};throw Error('Unexpected '+url);});const bytes=await createLibraryArchive(s.backup),file=all(s.root).find(n=>n.tagName==='input'&&n.type==='file');file.files=[{name:'backup.zip',size:bytes.length,arrayBuffer:async()=>bytes.buffer}];
+ let resolveStart,started=false;const s=fixture(t,async(url)=>{if(url.endsWith('/start')){started=true;return new Promise(r=>{resolveStart=r;});}if(url.endsWith('/cancel'))return {cancelled:true};throw Error('Unexpected '+url);});const bytes=await createLibraryArchive(s.backup),file=all(s.root).find(n=>n.tagName==='input'&&n.type==='file');file.files=[{name:'backup.zip',size:bytes.length,arrayBuffer:async()=>bytes.buffer}];file.dispatchEvent(new Event('change'));await waitFor(()=>s.zoneState().dataset.state==='valid','the staged archive to validate');
  s.button('校验并恢复').click();all(s.root).find(n=>n.id==='data-confirm-action').click();
  await waitFor(()=>started,'the restore start request');assert.equal(started,true);
  s.button('取消当前操作').click();all(s.root).find(n=>n.id==='data-confirm-action').click();
@@ -56,7 +56,7 @@ test('guest controls stay read-only and explain how to unlock them',async t=>{
  const s=fixture(t);s.setOwner(null);
  assert.equal(s.button('校验并恢复').disabled,true);assert.equal(s.button('读取可选记录').disabled,true);
  const hint=all(s.root).find(n=>n.id==='data-guest');assert.equal(hint.hidden,false);assert.match(hint.textContent,/登录/);
- s.setOwner('alice');assert.equal(hint.hidden,true);assert.equal(s.button('校验并恢复').disabled,false);
+ s.setOwner('alice');assert.equal(hint.hidden,true);assert.equal(s.button('校验并恢复').disabled,true,'sign-in still requires a checked file');
 });
 
 test('actual data owner relabels in place and generates new Markdown only on explicit preview',async t=>{
@@ -92,6 +92,7 @@ test('real focus-record rows relabel in four languages while preserving the expo
 
 // ---- component review 02 repairs ----
 const namedFile=(name,bytes)=>({name,size:bytes.length,arrayBuffer:async()=>bytes.buffer});
+async function stageArchive(s,chosen){const file=all(s.root).find(n=>n.type==='file');file.files=[chosen];file.dispatchEvent(new Event('change'));await waitFor(()=>s.zoneState().dataset.state==='valid','the staged archive to validate');}
 test('the advanced disclosure carries its class and never shows internal identifiers',async t=>{
  const s=fixture(t);
  const advanced=all(s.root).find(n=>String(n.className).split(' ').includes('settings-advanced'));
@@ -133,16 +134,16 @@ test('the dropzone reflects real local archive validation and stale results neve
 test('the restore confirmation is bound to its opening owner, generation and exact file',async t=>{
  let starts=0;const s=fixture(t,async url=>{if(url.endsWith('/start')){starts++;return {id:'op'};}if(url.includes('/part'))return {};if(url.endsWith('/commit'))return {restored:1,originals:0};throw Error('unexpected '+url);});
  const bytes=await createLibraryArchive(s.backup),file=all(s.root).find(n=>n.tagName==='input'&&n.type==='file');
- file.files=[namedFile('A.zip',bytes)];s.button('校验并恢复').click();
+ await stageArchive(s,namedFile('A.zip',bytes));s.button('校验并恢复').click();
  s.setOwner('bob',{update:false}); // owner changed while the confirmation waits
  s.confirmAction().click();await idle(s);
  assert.equal(starts,0,'a confirmation opened for A never restores as B');
  assert.equal(all(s.root).find(n=>String(n.tagName).toLowerCase()==='dialog').hasAttribute('open'),false,'the stale confirmation is withdrawn');
- file.files=[namedFile('C.zip',bytes)];s.setOwner('alice');s.button('校验并恢复').click();
+ s.setOwner('alice');await stageArchive(s,namedFile('C.zip',bytes));s.button('校验并恢复').click();
  file.files=[namedFile('second.zip',bytes)]; // file swapped while the confirmation waits
  s.confirmAction().click();await idle(s);
  assert.equal(starts,0,'the old confirmation never reads the replacement file');
- file.files=[namedFile('final.zip',bytes)];s.button('校验并恢复').click();s.confirmAction().click();
+ await stageArchive(s,namedFile('final.zip',bytes));s.button('校验并恢复').click();s.confirmAction().click();
  await waitFor(()=>starts===1,'the confirmation that matches its opening state');await idle(s);
  assert.equal(starts,1);
 });
@@ -150,7 +151,7 @@ test('the restore confirmation is bound to its opening owner, generation and exa
 test('the cancel confirmation is bound to its opening operation and owner',async t=>{
  let resolveStart,started=false;const s=fixture(t,async url=>{if(url.endsWith('/start')){started=true;return new Promise(r=>{resolveStart=r;});}if(url.endsWith('/cancel'))return {cancelled:true};throw Error('unexpected '+url);});
  const bytes=await createLibraryArchive(s.backup),file=all(s.root).find(n=>n.tagName==='input'&&n.type==='file');
- file.files=[namedFile('backup.zip',bytes)];s.button('校验并恢复').click();s.confirmAction().click();
+ await stageArchive(s,namedFile('backup.zip',bytes));s.button('校验并恢复').click();s.confirmAction().click();
  await waitFor(()=>started,'the restore start request');
  s.button('取消当前操作').click();
  s.setOwner('bob',{update:false});
@@ -165,6 +166,29 @@ test('an oversized staged archive is rejected before reading any bytes',async t=
 });
 
 test('an open restore confirmation relabels without replacing the file or dispatching',async t=>{
- const s=fixture(t),file=all(s.root).find(n=>n.type==='file'),chosen={name:'staged.zip',size:3,arrayBuffer:async()=>new ArrayBuffer(3)};file.files=[chosen];s.button(uiText('data.restore')).click();const title=all(s.root).find(n=>n.className==='settings-confirm-title');
+ const s=fixture(t),file=all(s.root).find(n=>n.type==='file'),chosen=namedFile('staged.zip',await createLibraryArchive(s.backup));await stageArchive(s,chosen);s.button(uiText('data.restore')).click();const title=all(s.root).find(n=>n.className==='settings-confirm-title');
  await requestUiRoute('ja');assert.equal(title.textContent,uiText('data.confirm.restoreTitle'));assert.equal(file.files[0],chosen);assert.equal(s.calls.length,0);
+});
+
+
+test('restore becomes available only for a successfully checked current file',async t=>{
+ const s=fixture(t),restore=s.button('校验并恢复'),file=all(s.root).find(n=>n.type==='file');
+ assert.equal(restore.disabled,true,'no file has been checked yet');
+ const good=await createLibraryArchive(s.backup),bad=strToU8('broken archive');let release;
+ file.files=[{name:'pending.zip',size:good.length,arrayBuffer:()=>new Promise(resolve=>{release=()=>resolve(good.buffer);})}];file.dispatchEvent(new Event('change'));
+ assert.equal(restore.disabled,true,'checking is not permission to restore');
+ restore.dispatchEvent(new Event('click'));assert.equal(all(s.root).find(n=>n.tagName==='dialog').hasAttribute('open'),false,'even a synthetic activation cannot open an unchecked restore');
+ release();await waitFor(()=>s.zoneState().dataset.state==='valid','the archive check');assert.equal(restore.disabled,false);
+ file.files=[namedFile('broken.zip',bad)];file.dispatchEvent(new Event('change'));assert.equal(restore.disabled,true,'replacing a valid file revokes permission immediately');
+ await waitFor(()=>s.zoneState().dataset.state==='invalid','the rejected archive');assert.equal(restore.disabled,true);
+ file.files=[];file.dispatchEvent(new Event('change'));assert.equal(restore.disabled,true);assert.equal(s.zoneState().dataset.state,'empty');assert.equal(s.calls.length,0);
+});
+
+test('an old valid archive check cannot unlock a new file or another account',async t=>{
+ const s=fixture(t),restore=s.button('校验并恢复'),file=all(s.root).find(n=>n.type==='file'),good=await createLibraryArchive(s.backup);let finishOld,finishNew;
+ file.files=[{name:'old.zip',size:good.length,arrayBuffer:()=>new Promise(resolve=>{finishOld=()=>resolve(good.buffer);})}];file.dispatchEvent(new Event('change'));
+ file.files=[{name:'new.zip',size:good.length,arrayBuffer:()=>new Promise(resolve=>{finishNew=()=>resolve(good.buffer);})}];file.dispatchEvent(new Event('change'));
+ finishOld();await delay(15);assert.equal(restore.disabled,true);assert.equal(s.zoneState().dataset.state,'checking');
+ s.setOwner('bob');finishNew();await delay(15);assert.equal(restore.disabled,true,'an earlier owner cannot grant restore permission');assert.equal(s.zoneState().dataset.state,'empty');
+ s.setOwner('alice');assert.equal(restore.disabled,true,'returning to the first owner does not revive its check');assert.equal(s.calls.length,0);
 });

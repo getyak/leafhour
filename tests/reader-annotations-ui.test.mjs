@@ -21,6 +21,31 @@ function setup({storage=new Map(),held=false,brokenStorage=false,deniedStorage=f
  return {...f,$,api,book,calls,pending,storage,notices,dismissals,quote,thread,settle,get controller(){return controller;},remount(){controller.dispose();controller=mount();},dispose(){controller.dispose();},setOwner(value){currentOwner=value;},session(){f.document.dispatchEvent(new Event('reader:session-changed'));},set server(v){server=v;},get server(){return server;}};
 }
 test.afterEach(()=>requestUiRoute('en'));
+test('opening an annotation takes keyboard focus and Escape returns to its visible opener',async()=>{
+ const f=setup({held:true});try{
+  await tick();const origin=f.document.createElement('button');f.document.body.append(origin);origin.focus();f.controller.openThread(f.thread.id,origin);
+  const close=f.$('.reader-annotation-close');assert.ok(f.document.activeElement===close,'the hidden passage toolbar must hand focus into the opened card');
+  const area=f.$('textarea');area.value='Keep my unfinished thought';area.dispatchEvent(new Event('input'));area.focus();await f.controller.refresh();assert.ok(f.document.activeElement===area,'background refresh preserves the focused editor');
+  const escape=new Event('keydown',{cancelable:true});Object.assign(escape,{key:'Escape'});area.dispatchEvent(escape);f.$('.reader-annotation-card').dispatchEvent(escape);
+  assert.equal(f.$('.reader-annotation-card').hidden,true);assert.ok(f.document.activeElement===origin);assert.equal(area.value,'Keep my unfinished thought');
+ }finally{f.dispose();}
+});
+test('closing annotations skips hidden toolbar openers and returns to the current margin entry',async()=>{
+ const f=setup({held:true});try{
+  await tick();const toolbar=f.document.createElement('div'),origin=f.document.createElement('button');toolbar.id='paragraph-tools';toolbar.append(origin);f.document.body.append(toolbar);origin.focus();
+  f.controller.openThread(f.thread.id,origin);toolbar.setAttribute('hidden','');f.$('.reader-annotation-close').focus();f.$('.reader-annotation-close').dispatchEvent(new Event('click'));
+  const summary=f.$('[data-annotation-thread="'+f.thread.id+'"]');assert.ok(summary);assert.ok(f.document.activeElement===summary,'a hidden toolbar cannot be used as the return target');
+  f.controller.openThread(f.thread.id,origin);summary.remove();f.$('.reader-annotation-close').focus();f.$('.reader-annotation-close').dispatchEvent(new Event('click'));
+  assert.ok(f.document.activeElement===f.$('#book-page'),'the book is the final fallback when both openers are unavailable');
+ }finally{f.dispose();}
+});
+test('a delayed annotation opening does not take focus from a newer editor',async()=>{
+ const waiting=gate(),f=setup({readGate:waiting.promise});try{
+  const origin=f.document.createElement('button'),editor=f.document.createElement('textarea');f.document.body.append(origin,editor);origin.focus();
+  const opening=f.controller.openHighlight({...selection(),id:'saved-mark'},origin);editor.value='A newer thought';editor.focus();waiting.resolve();await opening;
+  assert.ok(f.document.activeElement===editor,'later typing owns focus even when the annotation finishes loading');assert.equal(editor.value,'A newer thought');
+ }finally{f.dispose();}
+});
 test('saved annotations have summaries and hiding persists without altering text or generating',async()=>{
  const f=setup({held:true});try{await tick();const summary=f.$('.reader-annotation-summary');assert.ok(summary);assert.match(summary.textContent,/An explanation/);const toggle=f.$('#reader-annotations-toggle');assert.equal(toggle.getAttribute('aria-pressed'),'true');toggle.dispatchEvent(new Event('click'));assert.equal(toggle.getAttribute('aria-pressed'),'false');assert.equal(summary.hidden,true);assert.equal(f.$('#p1').textContent,'Read this first.');assert.equal(f.calls.filter(c=>c.input).length,0);f.remount();await tick();assert.equal(f.$('#reader-annotations-toggle').getAttribute('aria-pressed'),'false');}finally{f.dispose();}
 });

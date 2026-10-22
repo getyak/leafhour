@@ -85,9 +85,10 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   const paintBilling=()=>{billingLink.textContent=billingText();billingLink.href=uiHref('/billing');billingLink.hidden=!accountUser;};
   const accountActions=node('div','settings-actions'),profileRoot=node('div','account-profile-root');accountActions.append(login,logout,billingLink);panels.account.append(accountTitle,accountDetail,profileRoot,accountActions,accountStatus);
   const profile=mountLibraryProfile({root:profileRoot,getSession,api,onProfileUpdated,onRestored});
-  const memoryRoot=node('section','settings-preference-memory');panels['reading-habits'].append(memoryRoot);
-  const memory=mountPreferenceMemory({root:memoryRoot,api,getSession,onSaved:onPreferenceMemorySaved});
   const habits=mountReadingPreferencesForm({root:panels['reading-habits'],api,getSession,onSaved:onReadingPreferencesSaved});
+  const memoryDetails=node('details','settings-advanced'),memorySummary=node('summary','',t('shell.preferences.advanced'));
+  const memoryRoot=node('section','settings-preference-memory');memoryDetails.append(memorySummary,memoryRoot);panels['reading-habits'].append(memoryDetails);
+  const memory=mountPreferenceMemory({root:memoryRoot,api,getSession,onSaved:onPreferenceMemorySaved});
   const daily=mountLibraryDailyReading({root:panels['daily-reading'],inboxRoot,api,getSession,getBooks,getCurrentBook});
   const data=mountLibraryData({root:panels.data,getSession,api,onRestored});
   const appearance=mountSettingsAppearance({
@@ -131,7 +132,7 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
     logoutConfirm.updateLabels({title:t('shell.account.logoutConfirm.title'),consequence:t('shell.account.logoutConfirm.consequence'),confirmLabel:t('shell.account.logoutConfirm.action'),cancelLabel:t('shell.account.logoutConfirm.cancel')});
     license.textContent=t('shell.about.license');licenseLine.textContent=t('shell.about.license.agpl');
     about.textContent=t('shell.about.tagline');source.textContent=t('shell.about.source');privacy.textContent=t('shell.about.privacy');privacy.href=uiAuthoredPath('/privacy',getUiLocale());
-    appearance.updateLabels();
+    appearance.updateLabels();memorySummary.textContent=t('shell.preferences.advanced');
     profile.updateLabels?.();habits.updateLabels?.();memory.updateLabels();daily.updateLabels?.();data.updateLabels?.();
     accountLabels();sidebarLabels();accountMessage.refresh();
   }

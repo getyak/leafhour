@@ -14,7 +14,7 @@ class Element extends EventTarget{
   showModal(){this.open=true;}close(){this.open=false;this.dispatchEvent(new Event('close'));}
 }
 function fixture(user){
-  const doc=new EventTarget(),body=new Element('body'),nodes=new Map();doc.body=body;doc.documentElement=new Element('html');doc.createElement=tag=>new Element(tag);doc.createTextNode=text=>{const n=new Element('#text');n.textContent=text;return n;};doc.querySelectorAll=()=>[];
+  const doc=new EventTarget(),body=new Element('body'),nodes=new Map();doc.body=body;doc.documentElement=new Element('html');doc.createElement=tag=>{const node=new Element(tag);node.ownerDocument=doc;return node;};doc.createTextNode=text=>{const n=new Element('#text');n.textContent=text;return n;};doc.querySelectorAll=()=>[];
   const add=(id,parent=body)=>{const node=new Element('button',id);nodes.set(id,node);parent.append(node);return node;};
   const header=add('library-sidebar'),footer=new Element('div');header.append(footer);add('library-settings',footer);
   for(const id of ['sidebar-toggle','sidebar-search-open','library-calendar','library-chat-open','book-search'])add(id,header);
@@ -160,4 +160,24 @@ for(const change of ['ABA','clear','parent-close'])test('logout confirmation is 
  if(change==='ABA'){f.switch({id:'B'});shell.update();f.switch({id:'A'});shell.update();}
  if(change==='clear')shell.clear();if(change==='parent-close')f.get('library-settings-dialog').close();
  action.dispatchEvent(new Event('click'));assert.equal(logouts,0);
+});
+
+
+test('reading preferences lead with the main form while source controls stay in a closed disclosure',async()=>{
+ const {requestUiRoute,t}=await import('../app/ui-locale.mjs');await requestUiRoute('en');
+ const {initialPreferenceMemory}=await import('../app/preference-memory-codec.mjs');
+ const f=fixture({id:'preferences-owner'}),{mountLibraryShell}=await import('../app/library-shell.mjs');
+ const memory=initialPreferenceMemory();memory.sources.mode={source:'settings',at:'2026-10-23T00:00:00Z'};
+ f.getSession().preferenceMemory={revision:1,preferences:{mode:'parallel'},memory};
+ const shell=mountLibraryShell({getSession:f.getSession,openAuth:f.openAuth,onLogout:async()=>{},onHistory(){},onOpenChat(){},api:async()=>f.getSession().preferenceMemory});
+ shell.openSettings('reading-habits');await new Promise(setImmediate);
+ const all=root=>[root,...root.children.flatMap(all)],panel=f.get('settings-panel-reading-habits'),form=panel.children.find(n=>n.tagName==='form'),details=panel.children.find(n=>n.tagName==='details');
+ assert.ok(form,'the ordinary settings remain directly available');assert.ok(details,'source management has a separate disclosure');
+ assert.equal(panel.children.indexOf(form)<panel.children.indexOf(details),true,'the main form comes first');assert.equal(!!details.open,false,'advanced management starts closed');
+ assert.equal(details.children[0].tagName,'summary');assert.equal(details.children[0].textContent,'Reading topics and preference management');
+ assert.ok(all(details).some(n=>n.id==='memory-setting-mode'),'the original source control is retained');
+ assert.ok(all(details).some(n=>n.tagName==='button'&&n.textContent===t('memory.delete')),'source deletion remains available inside');
+ const summary=details.children[0];details.open=true;
+ try{for(const code of ['zh-Hans','zh-Hant','ja','en']){await requestUiRoute(code);assert.equal(details.children[0],summary);assert.equal(summary.textContent,t('shell.preferences.advanced'));assert.equal(details.open,true,'language changes preserve the disclosure state');}}
+ finally{await requestUiRoute('en');}
 });

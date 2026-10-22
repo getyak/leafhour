@@ -85,7 +85,8 @@ export function mountReaderHighlights({document,getRecords,signedIn,available,ge
     const label=document.createElement('p');label.className='attribution';const part=row.parts[0];write(label,HIGHLIGHT_UI+'own.'+(part.language==='en'?'original':part.variant));
     const quote=document.createElement('blockquote');quote.textContent=row.parts.map(part=>part.text).join('\n\n');
     const actions=document.createElement('div');actions.className='highlight-record-actions';
-    for(const [text,action]of [[HIGHLIGHT_UI+'return',()=>onSelect(row)],['reader.b1.writeThought',()=>{onSelect(row);onNote();}],[HIGHLIGHT_UI+'remove',()=>remove(row)]]){const button=document.createElement('button');button.type='button';write(button,text);button.addEventListener('click',event=>{event.stopPropagation();action();});actions.append(button);}
+    const writeThought=async()=>{try{if(await onSelect(row)===true&&!disposed)onNote();}catch{notify('',{error:true});}};
+    for(const [text,action]of [[HIGHLIGHT_UI+'return',()=>onSelect(row)],['reader.b1.writeThought',writeThought],[HIGHLIGHT_UI+'remove',()=>remove(row)]]){const button=document.createElement('button');button.type='button';write(button,text);button.addEventListener('click',event=>{event.stopPropagation();action();});actions.append(button);}
     section.append(label,quote,actions);return section;
   }
   return {paint,paintAll,updateTools,recordNode,notify,unmount(){if(disposed)return;disposed=true;annotation?.then(controller=>controller?.dispose()).catch(()=>{});offLocale();clearTimeout(timer);labels.clear();for(const off of listeners)off();listeners.length=0;}};

@@ -34,6 +34,10 @@
 .reading-time-options{display:flex;align-items:center;gap:16px;width:100%;font-size:12px}
 .reading-time-options select{min-height:44px;max-width:100%;padding:8px 12px;border:1px solid var(--line-control);border-radius:6px;background:var(--paper);color:var(--ink);font:inherit}
 .reading-time-help{width:100%;margin:0;color:var(--muted);font-size:12px;line-height:1.85;overflow-wrap:anywhere}
+.reading-timer-settings{width:100%;color:var(--muted)}
+.reading-timer-settings>summary{min-height:44px;align-content:center;cursor:pointer;font-size:12px}
+.reading-timer-settings[open]{padding-bottom:8px}
+.reading-timer-settings .reading-time-help{margin-top:8px}
 
 .manual-reading-fields{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .manual-reading-fields label{display:grid;gap:8px;min-width:0;font-size:13px}
