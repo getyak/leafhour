@@ -13,7 +13,7 @@ const scope={bookId:'book-1',sourceVersion:'sha-1',passageId:'p-1',inputHash:'a'
 const command=(store,action,p={})=>store.command(action,{mode,ownerId,...p});
 async function fixture(){
   let time=Date.parse('2026-10-21T00:00:00Z');const store=createBillingMemoryStore({clock:()=>time});let creations=0;
-  const creem={ready:true,mode,productId:'prod_test',async createCheckout(){creations++;return {id:'ch_test',checkoutUrl:'https://checkout.creem.io/ch_test'};}};
+  const creem={ready:true,mode,productIds:{reading_monthly_100:'prod_test'},async createCheckout(){creations++;return {id:'ch_test',checkoutUrl:'https://checkout.creem.io/ch_test'};}};
   const service=createBillingService({store,creem,enabled:true,mode,publicOrigin:'https://leafhour.example',clock:()=>time});
   return {store,service,creem,get creations(){return creations;},advance:ms=>time+=ms};
 }
@@ -124,10 +124,11 @@ test('unknown checkout response is not blindly retried after restart',async()=>{
 });
 function paymentPayload(order,overrides={}){return {id:'evt-payment',eventType:'checkout.completed',object:{id:'ch_test',request_id:order.id,mode:'test',status:'completed',units:1,metadata:{ownerId,orderId:order.id},product:{id:'prod_test',billing_type:'one-time'},order:{id:'ord_test',product:'prod_test',amount:500,currency:'USD',amount_paid:550,tax_amount:50,discount_amount:0,status:'paid',mode:'test'},...overrides}};}
 function signed(service,payload){const rawBody=Buffer.from(JSON.stringify(payload));const signature=createHmac('sha256','test-secret').update(rawBody).digest('hex');return service.webhook({rawBody,signature});}
-async function webhookFixture(reviewIds=''){
-  const f=await fixture();let providerFacts;const creem=createCreem({env:{CREEM_MODE:'test',CREEM_API_KEY:'test-key',CREEM_WEBHOOK_SECRET:'test-secret',CREEM_PRODUCT_READING_100:'prod_test',CREEM_REVIEW_DISCOUNT_IDS:reviewIds},fetcher:async(url,init)=>({ok:true,json:async()=>url.includes('/v1/products/')?{id:'prod_test',mode:'test',price:500,currency:'USD',billing_type:'onetime',status:'active',tax_mode:'exclusive'}:init.method==='POST'?({id:'ch_test',checkout_url:'https://checkout.creem.io/ch_test'}):providerFacts})});
+async function webhookFixture(reviewIds='',productEnv={CREEM_PRODUCT_READING_MONTHLY_100:'prod_monthly'}){
+  const f=await fixture();let providerFacts;const creem=createCreem({env:{CREEM_MODE:'test',CREEM_API_KEY:'test-key',CREEM_WEBHOOK_SECRET:'test-secret',...productEnv,CREEM_REVIEW_DISCOUNT_IDS:reviewIds},fetcher:async(url,init)=>({ok:true,json:async()=>url.includes('/v1/products/')?{id:'prod_test',mode:'test',price:500,currency:'USD',billing_type:'onetime',status:'active',tax_mode:'exclusive'}:init.method==='POST'?({id:'ch_test',checkout_url:'https://checkout.creem.io/ch_test'}):providerFacts})});
   const service=createBillingService({store:f.store,creem,enabled:true,publicOrigin:'https://leafhour.example',clock:()=>Date.parse('2026-10-21T00:00:00Z')});
-  const {order}=await service.checkout({ownerId,intentKey:'webhook-buy'});providerFacts=paymentPayload(order).object;return {...f,creem,service,order,setProviderFacts:facts=>providerFacts=facts};
+  // This order predates subscription-only sales; fulfillment must use its immutable snapshot.
+  const order=await command(f.store,'order',{id:'legacy-webhook-order',intentKey:'webhook-buy',productKey:'reading_100',productId:'prod_test',amount:500,currency:'USD',units:100*U});await command(f.store,'checkout',{orderId:order.id,checkoutId:'ch_test',checkoutUrl:'https://checkout.creem.io/ch_test'});providerFacts=paymentPayload(order).object;return {...f,creem,service,order,setProviderFacts:facts=>providerFacts=facts};
 }
 test('verified webhook fulfills once and rejects arbitrary metadata, mode, product and amount',async()=>{
   const f=await webhookFixture(),payload=paymentPayload(f.order);await signed(f.service,payload);await signed(f.service,payload);
@@ -239,12 +240,54 @@ test('repeated order polling accepts paid to partial and full refund snapshots m
 });
 
 test('configured supplier product is verified before any checkout can charge money',async()=>{
- for(const patch of [{price:1000},{currency:'EUR'},{billing_type:'recurring'},{status:'archived'},{tax_mode:'inclusive'},{mode:'prod'},{id:'prod_other'}]){
-  const f=await fixture();f.creem.retrieveProduct=async()=>({id:'prod_test',mode:'test',price:500,currency:'USD',billing_type:'onetime',status:'active',tax_mode:'exclusive',...patch});
+ for(const patch of [{price:1000},{currency:'EUR'},{billing_type:'onetime'},{status:'archived'},{tax_mode:'inclusive'},{mode:'prod'},{id:'prod_other'}]){
+  const f=await fixture();f.creem.retrieveProduct=async()=>({id:'prod_test',mode:'test',price:500,currency:'USD',billing_type:'recurring',billing_period:'every-month',status:'active',tax_mode:'exclusive',...patch});
   assert.equal((await f.service.catalog()).available,false);
   await assert.rejects(f.service.checkout({ownerId,intentKey:'wrong-product'}),e=>e.status===503);assert.equal(f.creations,0);
  }
- const f=await fixture();let reads=0;f.creem.retrieveProduct=async()=>{reads++;return {id:'prod_test',mode:'sandbox',price:500,currency:'USD',billing_type:'onetime',status:'active',tax_mode:'exclusive'};};
+ const f=await fixture();let reads=0;f.creem.retrieveProduct=async()=>{reads++;return {id:'prod_test',mode:'sandbox',price:500,currency:'USD',billing_type:'recurring',billing_period:'every-month',status:'active',tax_mode:'exclusive'};};
  assert.equal((await f.service.catalog()).available,true);await f.service.catalog();assert.equal(reads,1,'public readiness caches verified facts');
  await f.service.checkout({ownerId,intentKey:'verified-product'});assert.equal(f.creations,1);assert.equal(reads,2,'checkout revalidates current supplier facts');
+});
+
+test('saved one-time payments reconcile and refund after sale product configuration is removed',async()=>{
+ const f=await webhookFixture('',{}),payload=paymentPayload(f.order);
+ await signed(f.service,payload);assert.equal((await f.service.account({ownerId})).availableUnits,100*U);
+ f.setProviderFacts({...payload.object,order:{...payload.object.order,status:'partially_refunded',refunded_amount:275}});
+ await f.service.order({ownerId,orderId:f.order.id,reconcile:true});assert.equal((await f.service.account({ownerId})).availableUnits,50*U);
+ const refund={id:'evt_legacy_refund',eventType:'refund.created',object:{id:'ref_legacy',mode:'test',status:'succeeded',refund_amount:275,checkout:payload.object,transaction:{order:'ord_test',amount_paid:550,refunded_amount:550,currency:'USD'}}};
+ await signed(f.service,refund);await signed(f.service,refund);assert.equal((await f.service.account({ownerId})).availableUnits,0);assert.equal((await f.service.order({ownerId,orderId:f.order.id})).status,'refunded');
+ f.setProviderFacts(payload.object);await signed(f.service,payload);assert.equal((await f.service.account({ownerId})).availableUnits,0);
+});
+test('legacy fulfillment still rejects foreign products, accounts, modes and altered signatures without product environment configuration',async()=>{
+ for(const [patch,code] of [[{product:{id:'prod_foreign',billing_type:'onetime'}},'payment_mismatch'],[{metadata:{ownerId:'foreign-owner',orderId:'legacy-webhook-order'}},'payment_binding_mismatch'],[{mode:'prod'},'payment_environment_mismatch']]){
+  const f=await webhookFixture('',{}),payload=paymentPayload(f.order,patch);f.setProviderFacts(payload.object);await assert.rejects(signed(f.service,payload),{code});assert.equal((await f.service.account({ownerId})).availableUnits,0);
+ }
+ const f=await webhookFixture('',{}),rawBody=Buffer.from(JSON.stringify(paymentPayload(f.order)));await assert.rejects(f.service.webhook({rawBody,signature:'0'.repeat(64)}),{code:'invalid_signature'});assert.equal((await f.service.account({ownerId})).availableUnits,0);
+});
+test('a signed legacy refund cannot target a different saved product',async()=>{
+ const f=await webhookFixture('',{}),payload=paymentPayload(f.order);await signed(f.service,payload);
+ const refund={id:'evt_foreign_product_refund',eventType:'refund.created',object:{id:'ref_foreign',mode:'test',status:'succeeded',refund_amount:550,checkout:{...payload.object,product:{id:'prod_foreign'}},transaction:{order:'ord_test',amount_paid:550,refunded_amount:550,currency:'USD'}}};
+ await assert.rejects(signed(f.service,refund),{code:'payment_mismatch'});assert.equal((await f.service.account({ownerId})).availableUnits,100*U);
+});
+
+test('legacy order views omit payment URLs without changing the saved order or its signed payment rights',async()=>{
+ const f=await webhookFixture('',{}),raw=await command(f.store,'getOrder',{orderId:f.order.id}),{checkoutUrl,...expected}=raw;
+ assert.equal(checkoutUrl,'https://checkout.creem.io/ch_test');assert.equal(raw.status,'pending');
+ f.setProviderFacts({...paymentPayload(f.order).object,status:'pending',order:null});
+ assert.deepEqual(await f.service.order({ownerId,orderId:f.order.id}),expected);
+ assert.deepEqual(await f.service.order({ownerId,orderId:f.order.id,reconcile:true}),expected);
+ const orders=await f.service.orders({ownerId});assert.deepEqual(orders.orders,[expected]);
+ assert.deepEqual(await command(f.store,'getOrder',{orderId:f.order.id}),raw,'view filtering must not rewrite the persisted order');
+ const payload=paymentPayload(f.order);f.setProviderFacts(payload.object);await signed(f.service,payload);
+ const paid=await f.service.order({ownerId,orderId:f.order.id});assert.equal(paid.status,'paid');assert.equal(paid.paymentVerified,true);assert.equal(paid.checkoutUrl,undefined);assert.equal(paid.checkoutId,raw.checkoutId);
+ assert.equal((await f.service.order({ownerId,orderId:f.order.id,reconcile:true})).checkoutUrl,undefined);
+ assert.equal((await f.service.account({ownerId})).availableUnits,100*U);
+ assert.equal((await command(f.store,'getOrder',{orderId:f.order.id})).checkoutUrl,checkoutUrl);
+ assert.equal((await f.service.orders({ownerId})).orders[0].checkoutUrl,undefined);
+});
+test('monthly order views keep the saved checkout URL for the supported resume flow',async()=>{
+ const f=await fixture(),{order,checkoutUrl}=await f.service.checkout({ownerId,intentKey:'resume-monthly'});
+ assert.equal((await f.service.order({ownerId,orderId:order.id})).checkoutUrl,checkoutUrl);
+ assert.equal((await f.service.orders({ownerId})).orders[0].checkoutUrl,checkoutUrl);
 });

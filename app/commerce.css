@@ -27,14 +27,21 @@ body.commerce-page > .site-header #account-button { min-height: 44px; padding: 1
 .commerce-page .commerce-hero { max-width: 720px; margin-bottom: 36px; }
 .commerce-page .commerce-main h1 { font: 500 clamp(36px, 4.2vw, 54px)/1.16 var(--font-sans); letter-spacing: -.045em; margin-bottom: 20px; }
 .commerce-page .lede { max-width: 56ch; font-size: 17px; line-height: 1.85; }
-.commerce-page .point-products { align-items: stretch; gap: 24px; }
-.commerce-page .point-pack { grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto; padding: 28px; gap: 24px; border: 1px solid var(--bill-line); border-radius: 16px; background: var(--bill-panel); }
+.commerce-page .point-products { grid-template-columns: minmax(0, 1fr); }
+.commerce-page .point-pack { grid-template-columns: minmax(0, .9fr) minmax(0, 1fr); padding: 28px; gap: 24px; border: 1px solid var(--bill-line); border-radius: 16px; background: var(--bill-panel); }
 .commerce-page .pack-title { font-size: 16px; font-weight: 500; margin: 0 0 20px; }
 .commerce-page .pack-price { margin: 0 0 5px; }
 .commerce-page .pack-price strong { font: 500 clamp(34px, 3.6vw, 44px)/1.2 var(--font-sans); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 .commerce-page .pack-quantity { color: var(--bill-green); font-size: 15px; margin: 10px 0 18px; }
+.commerce-page .plan-summary { min-width: 0; }
+.commerce-page .plan-benefits { list-style: none; margin: 0; padding: 0 0 0 28px; border-left: 1px solid var(--bill-line); display: grid; align-content: center; gap: 24px; }
+.commerce-page .plan-benefits h3 { font-size: 17px; line-height: 1.6; font-weight: 500; margin: 0 0 6px; }
+.commerce-page .plan-benefits p { color: var(--bill-muted); font-size: 14px; line-height: 1.8; margin: 0; }
+.commerce-page .free-reading { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 28px; margin-top: 36px; border-radius: 16px; background: var(--bill-soft); }
+.commerce-page .free-reading h2, .commerce-page .free-reading h3 { font-size: 17px; font-weight: 500; margin: 0 0 10px; }
+.commerce-page .free-reading p { color: var(--bill-muted); font-size: 14px; line-height: 1.85; margin: 0; }
 .commerce-page .pack-description { max-width: 44ch; font-size: 14px; line-height: 1.8; color: var(--bill-muted); margin: 0; }
-.commerce-page .pack-action { align-self: end; }
+.commerce-page .pack-action { margin-top: 24px; max-width: 340px; }
 .commerce-page .pack-action .primary { width: 100%; min-height: 46px; color: #FFFFFF; background: var(--bill-green); }
 .commerce-page .pack-action .primary:hover { background: color-mix(in srgb, var(--bill-green) 88%, var(--bill-ink)); }
 .commerce-page .availability { max-width: none; margin: 12px 0 0; font-size: 12px; line-height: 1.7; }
@@ -94,7 +101,10 @@ body.commerce-page > .site-header #account-button { min-height: 44px; padding: 1
   :root[lang=ja] .commerce-page .commerce-hero h1 { font-size: clamp(28px, 8.5vw, 36px); text-wrap: balance; }
   .commerce-page .lede { font-size: 15px; }
   .commerce-page .point-products { grid-template-columns: minmax(0, 1fr); gap: 18px; }
-  .commerce-page .point-pack { padding: 24px; gap: 24px; }
+  .commerce-page .point-pack { grid-template-columns: minmax(0, 1fr); padding: 24px; gap: 28px; }
+  .commerce-page .plan-benefits { border-left: 0; border-top: 1px solid var(--bill-line); padding: 24px 0 0; gap: 20px; }
+  .commerce-page .pack-action { max-width: none; }
+  .commerce-page .free-reading { grid-template-columns: minmax(0, 1fr); padding: 24px; gap: 24px; }
   .commerce-page .pack-price strong { font-size: 38px; }
   .commerce-page .pack-title { margin-bottom: 18px; }
   .commerce-page .billing-brand { font-size: 25px; }

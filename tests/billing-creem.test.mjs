@@ -11,7 +11,7 @@ test('HMAC verifies exact bounded raw bytes before parsing',()=>{
   assert.throws(()=>verifyCreemSignature({raw},sig,secret),{code:'invalid_webhook'});
 });
 test('checkout uses fixed API environment and safe return/product fields',async()=>{
-  let request;const client=createCreemClient({env:{CREEM_MODE:'test',CREEM_API_KEY:'test-key',CREEM_WEBHOOK_SECRET:secret,CREEM_PRODUCT_READING_100:'prod_test'},fetcher:async(url,init)=>{request={url,init};return {ok:true,json:async()=>({id:'ch_test',checkout_url:'https://checkout.creem.io/ch_test'})};}});
+  let request;const client=createCreemClient({env:{CREEM_MODE:'test',CREEM_API_KEY:'test-key',CREEM_WEBHOOK_SECRET:secret,CREEM_PRODUCT_READING_MONTHLY_100:'prod_test'},fetcher:async(url,init)=>{request={url,init};return {ok:true,json:async()=>({id:'ch_test',checkout_url:'https://checkout.creem.io/ch_test'})};}});
   await client.createCheckout({orderId:'local-order',ownerId:'owner',productId:'prod_test',successUrl:'https://leafhour.example/billing?order=local-order'});
   assert.equal(request.url,'https://test-api.creem.io/v1/checkouts');const body=JSON.parse(request.init.body);
   assert.equal(body.request_id,'local-order');assert.equal(body.units,1);assert.equal(body.metadata.ownerId,'owner');assert.equal(body.custom_price,undefined);
@@ -40,6 +40,6 @@ test('official onetime product type normalizes to the domain one-time type',()=>
 });
 
 test('product lookup uses the fixed authenticated environment and encoded supplier ID',async()=>{
- let request;const client=createCreemClient({env:{CREEM_MODE:'live',CREEM_API_KEY:'test-key',CREEM_WEBHOOK_SECRET:secret,CREEM_PRODUCT_READING_100:'prod_test'},fetcher:async(url,init)=>{request={url,init};return Response.json({id:'prod_test'});}});
+ let request;const client=createCreemClient({env:{CREEM_MODE:'live',CREEM_API_KEY:'test-key',CREEM_WEBHOOK_SECRET:secret,CREEM_PRODUCT_READING_MONTHLY_100:'prod_test'},fetcher:async(url,init)=>{request={url,init};return Response.json({id:'prod_test'});}});
  assert.deepEqual(await client.retrieveProduct(),{id:'prod_test'});assert.equal(request.url,'https://api.creem.io/v1/products/prod_test');assert.equal(request.init.method,'GET');
 });

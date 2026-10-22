@@ -31,12 +31,14 @@ export function createBillingService({store,creem,enabled=false,mode='test',publ
   if(!Number.isSafeInteger(trialBudgetUnits)||trialBudgetUnits<0)fail('invalid_trial_budget');
   let origin;try{origin=new URL(publicOrigin).origin;}catch{fail('invalid_origin');}
   const now=()=>new Date(clock()).toISOString(),inflight=new Map(),checkouts=new Map();
-  const productId=key=>creem?.productIds?.[key]||(key==='reading_100'?creem?.productId:undefined);
-  const available=(key='reading_100')=>Boolean(enabled&&store?.command&&creem?.ready&&creem.mode===mode&&productId(key));
+  const productId=key=>creem?.productIds?.[key]||(key==='reading_monthly_100'?creem?.productId:undefined);
+  const available=(key='reading_monthly_100')=>Boolean(enabled&&store?.command&&creem?.ready&&creem.mode===mode&&productId(key));
   const requireEnabled=()=>{if(!enabled)fail('billing_disabled',503);if(!store?.command)fail('billing_store_unavailable',503);};
   const command=(action,p={})=>{requireEnabled();return store.command(action,{...p,mode});};
-  const product=key=>({key,amount:500,currency:'USD',units:100*CREDIT_UNITS,points:100,taxMode:'exclusive',...(key==='reading_monthly_100'?{billingType:'recurring',billingPeriod:'every-month'}:{billingType:'onetime'})});
+  const product=key=>({key,amount:500,currency:'USD',units:100*CREDIT_UNITS,points:100,taxMode:'exclusive',billingType:'recurring',billingPeriod:'every-month'});
   const getOrder=({ownerId,orderId})=>command('getOrder',{ownerId:identifier(ownerId),orderId:identifier(orderId)});
+  // Retired offers remain auditable, but old clients must not resume their payment links.
+  const orderView=order=>{if(!order||order.productKey==='reading_monthly_100')return order;const {checkoutUrl,...details}=order;return details;};
   const productChecks=new Map(),productsVerifiedUntil=new Map();
   async function checkProduct(productKey,force=false){
     if(typeof creem?.retrieveProduct!=='function'){if(mode==='live')fail('billing_product_unverified',503);return;}
@@ -44,11 +46,11 @@ export function createBillingService({store,creem,enabled=false,mode='test',publ
     if(!productChecks.has(productKey))productChecks.set(productKey,(async()=>{validateBillingProduct(await creem.retrieveProduct({productId:productId(productKey)}),{productId:productId(productKey),productKey,mode});productsVerifiedUntil.set(productKey,clock()+300000);})());
     try{await productChecks.get(productKey);}catch(error){productsVerifiedUntil.delete(productKey);throw error;}finally{productChecks.delete(productKey);}
   }
-  async function readiness({forceProduct=false,productKey='reading_100'}={}){
+  async function readiness({forceProduct=false,productKey='reading_monthly_100'}={}){
     if(!enabled)return {enabled:false,ready:false,mode,reason:'billing_disabled'};
-    if(!available(productKey))return {enabled:true,ready:false,mode,reason:'billing_configuration_incomplete'};
+    if(productKey!=='reading_monthly_100'||!available(productKey))return {enabled:true,ready:false,mode,reason:'billing_configuration_incomplete'};
     const status=await command('readiness');
-    if((productKey==='reading_monthly_100'||mode==='live'&&productId('reading_monthly_100'))&&!(status.schemaVersion>=2))return {...status,enabled:true,ready:false,mode,reason:'billing_schema_outdated'};
+    if(!(status.schemaVersion>=2))return {...status,enabled:true,ready:false,mode,reason:'billing_schema_outdated'};
     await checkProduct(productKey,forceProduct);
     return {...status,enabled:true,mode,ready:Boolean(mode==='test'&&status.backend==='reference'||status.ready&&(mode!=='live'||status.durable&&status.backend==='postgres'))};
   }
@@ -67,9 +69,9 @@ export function createBillingService({store,creem,enabled=false,mode='test',publ
     if(!local&&event.checkoutId&&!event.subscriptionId)local=await command('lookupOrder',{checkoutId:event.checkoutId});
     if(!local)fail('payment_binding_pending',503);
     if(event.ownerId&&event.ownerId!==local.ownerId||!subscription&&event.orderId&&event.orderId!==local.id||event.checkoutId&&local.checkoutId&&event.checkoutId!==local.checkoutId||event.providerOrderId&&local.providerOrderId&&event.providerOrderId!==local.providerOrderId||event.subscriptionId&&local.subscriptionId&&event.subscriptionId!==local.subscriptionId||subscription&&local.ownerId!==subscription.ownerId)fail('payment_binding_mismatch',409);
+    if(event.productId&&event.productId!==local.productId)fail('payment_mismatch',409);
     const common={ownerId:local.ownerId,orderId:local.id,eventId:identifier(event.id),eventHash:identifier(event.eventHash),now:now()};
     if(event.type==='checkout.completed'){
-      if(event.productId&&event.productId!==local.productId)fail('payment_mismatch',409);
       if(recheck&&creem.retrieveCheckout){
         const checkout=await creem.retrieveCheckout({checkoutId:event.checkoutId});
         if(checkout?.id!==event.checkoutId)fail('payment_binding_mismatch',409);
@@ -78,7 +80,8 @@ export function createBillingService({store,creem,enabled=false,mode='test',publ
       }
       if(local.productKey==='reading_monthly_100')return subscriptionFulfillment.checkout(event,local);
       if(event.status!=='completed'||!['paid','refunded','partially_refunded','chargeback','disputed'].includes(event.orderStatus)||event.quantity!==1||event.billingType&&event.billingType!=='one-time')fail('payment_not_completed',409);
-      if(event.productId!==local.productId||event.productId!==productId('reading_100')||event.amount!==local.amount||event.currency!==local.currency)fail('payment_mismatch',409);
+      // Historical purchases are bound to their saved product, not current sale configuration.
+      if(local.productKey!=='reading_100'||event.productId!==local.productId||event.amount!==local.amount||event.currency!==local.currency)fail('payment_mismatch',409);
       const approvedReview=event.discountAmount===local.amount&&event.paidAmount===0&&event.taxAmount===0&&creem.reviewDiscountIds?.includes(event.discountId);
       if(!Number.isSafeInteger(event.paidAmount)||!Number.isSafeInteger(event.taxAmount)||!Number.isSafeInteger(event.discountAmount)||event.discountAmount!==0&&!approvedReview||event.paidAmount!==event.amount-event.discountAmount+event.taxAmount)fail('payment_amount_unverified',409);
       if(!local.checkoutId){
@@ -102,15 +105,15 @@ export function createBillingService({store,creem,enabled=false,mode='test',publ
   }
   const service={
     enabled,mode,readiness,
-    async catalog(){const products=await Promise.all(['reading_100','reading_monthly_100'].map(async key=>{let ready=false;try{ready=(await readiness({productKey:key})).ready;}catch{}return {...product(key),available:available(key)&&ready};}));return {enabled,mode,available:products.some(p=>p.available),products,prices:{...PRICES},unitsPerPoint:CREDIT_UNITS,priceVersion:PRICE_VERSION,trialUnits:10*CREDIT_UNITS};},
+    async catalog(){const products=await Promise.all(['reading_monthly_100'].map(async key=>{let ready=false;try{ready=(await readiness({productKey:key})).ready;}catch{}return {...product(key),available:available(key)&&ready};}));return {enabled,mode,available:products.some(p=>p.available),products,prices:{...PRICES},unitsPerPoint:CREDIT_UNITS,priceVersion:PRICE_VERSION,trialUnits:10*CREDIT_UNITS};},
     account:({ownerId})=>command('account',{ownerId:identifier(ownerId)}),
     trial:({ownerId,verified=false})=>{if(!verified)fail('verified_account_required',403);return command('trial',{ownerId:identifier(ownerId),grantId:'trial:'+ownerId,units:10*CREDIT_UNITS,campaignBudgetUnits:trialBudgetUnits,now:now()});},
     entries:({ownerId,limit,cursor})=>command('entries',{ownerId:identifier(ownerId),limit,cursor}),
-    orders:({ownerId,limit,cursor})=>command('orders',{ownerId:identifier(ownerId),limit,cursor}),
+    async orders({ownerId,limit,cursor}){const result=await command('orders',{ownerId:identifier(ownerId),limit,cursor});return {...result,orders:result.orders.map(orderView)};},
     async subscriptions({ownerId}){const result=await command('subscriptions',{ownerId:identifier(ownerId)});return {subscriptions:result.subscriptions.map(row=>({id:row.subscriptionId,subscriptionId:row.subscriptionId,status:row.status,productKey:row.productKey,currentPeriodStart:row.currentPeriodStart,currentPeriodEnd:row.currentPeriodEnd}))};},
     async portal({ownerId,subscriptionId}){identifier(ownerId);identifier(subscriptionId);const subscription=await command('lookupSubscription',{subscriptionId});if(!subscription||subscription.ownerId!==ownerId)fail('not_found',404);if(!creem?.ready||creem.mode!==mode||typeof creem.createPortal!=='function')fail('creem_unavailable',503);const response=await creem.createPortal({customerId:subscription.customerId});return {portalUrl:safeCreemPortalUrl(response.portalUrl)};},
-    async checkout({ownerId,productKey='reading_100',intentKey}){
-      identifier(ownerId);identifier(intentKey);if(!['reading_100','reading_monthly_100'].includes(productKey))fail('unknown_product');if(!available(productKey)||!(await readiness({forceProduct:true,productKey})).ready)fail('creem_unavailable',503);
+    async checkout({ownerId,productKey='reading_monthly_100',intentKey}){
+      identifier(ownerId);identifier(intentKey);if(productKey!=='reading_monthly_100')fail('unknown_product');if(!available(productKey)||!(await readiness({forceProduct:true,productKey})).ready)fail('creem_unavailable',503);
       const key=JSON.stringify([ownerId,intentKey,productKey]);if(checkouts.has(key))return checkouts.get(key);
       const task=(async()=>{
         const order=await command('order',{ownerId,id:randomUUID(),intentKey,productKey,productId:productId(productKey),amount:500,currency:'USD',units:100*CREDIT_UNITS,now:now()});
@@ -126,7 +129,7 @@ export function createBillingService({store,creem,enabled=false,mode='test',publ
       })();checkouts.set(key,task);try{return await task;}finally{checkouts.delete(key);}
     },
     async order({ownerId,orderId,reconcile=false}){
-      const order=await getOrder({ownerId,orderId});if(!order||!reconcile||!order.checkoutId||!creem?.retrieveCheckout)return order;
+      const order=await getOrder({ownerId,orderId});if(!order||!reconcile||!order.checkoutId||!creem?.retrieveCheckout)return orderView(order);
       const checkout=await creem.retrieveCheckout({checkoutId:order.checkoutId});
       if(checkout?.id!==order.checkoutId)fail('payment_binding_mismatch',409);
       if(checkout.status==='expired'){
@@ -134,7 +137,7 @@ export function createBillingService({store,creem,enabled=false,mode='test',publ
         if(supplierId(checkout.product)!==order.productId||checkout.request_id!==order.id||checkout.metadata?.ownerId!==undefined&&checkout.metadata.ownerId!==order.ownerId||checkout.metadata?.orderId!==undefined&&checkout.metadata.orderId!==order.id)fail('payment_binding_mismatch',409);
         const financialOrder=checkout.order;
         if(order.paymentVerified||order.subscriptionId||!['pending','expired'].includes(order.status)||checkout.subscription!=null||checkout.transaction!=null||financialOrder!=null&&(typeof financialOrder!=='object'||!['pending','unpaid','canceled','cancelled','void','expired'].includes(financialOrder.status)||financialOrder.amount_paid!=null&&financialOrder.amount_paid!==0||financialOrder.transaction!=null))fail('checkout_expiry_unverified',409);
-        return command('expireCheckout',{ownerId:order.ownerId,orderId:order.id,checkoutId:order.checkoutId,now:now()});
+        return orderView(await command('expireCheckout',{ownerId:order.ownerId,orderId:order.id,checkoutId:order.checkoutId,now:now()}));
       }
       if(checkout.status==='completed'){
         const {id:ignoredId,...snapshot}=normalizeCreemEvent({id:'reconciliation',eventType:'checkout.completed',object:checkout});
@@ -144,7 +147,7 @@ export function createBillingService({store,creem,enabled=false,mode='test',publ
         // their original raw-byte identity and conflict detection.
         await fulfill({...snapshot,id:'reconcile:'+order.checkoutId+':'+eventHash,eventHash},{recheck:false});
       }
-      return getOrder({ownerId,orderId});
+      return orderView(await getOrder({ownerId,orderId}));
     },
     async quote({ownerId,action,scope}){
       identifier(ownerId);if(!Object.hasOwn(PRICES,action))fail('unsupported_billing_action');const clean=safeScope(scope),time=clock();

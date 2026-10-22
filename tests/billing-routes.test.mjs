@@ -21,15 +21,15 @@ test('catalog stays public and private billing rejects anonymous callers',async(
 });
 test('billing mutations require matching owner and exact browser origin',async()=>{
  const f=fixture();
- await assert.rejects(f.run('/api/billing/checkouts',{method:'POST',body:{productKey:'reading_100',intentKey:'intent-a'}}),{status:409});
- await assert.rejects(f.run('/api/billing/checkouts',{method:'POST',body:{productKey:'reading_100',intentKey:'intent-a'},headers:{'x-reader-owner':'account-b'}}),{status:409});
- await assert.rejects(f.run('/api/billing/checkouts',{method:'POST',body:{productKey:'reading_100',intentKey:'intent-a'},headers:{'x-reader-owner':'account-a',origin:'https://foreign.example'}}),{status:403});
+ await assert.rejects(f.run('/api/billing/checkouts',{method:'POST',body:{productKey:'reading_monthly_100',intentKey:'intent-a'}}),{status:409});
+ await assert.rejects(f.run('/api/billing/checkouts',{method:'POST',body:{productKey:'reading_monthly_100',intentKey:'intent-a'},headers:{'x-reader-owner':'account-b'}}),{status:409});
+ await assert.rejects(f.run('/api/billing/checkouts',{method:'POST',body:{productKey:'reading_monthly_100',intentKey:'intent-a'},headers:{'x-reader-owner':'account-a',origin:'https://foreign.example'}}),{status:403});
  assert.deepEqual(f.calls,[]);
 });
 test('checkout binds trusted account and rejects unexpected pricing or owner fields',async()=>{
- const f=fixture(),opts={method:'POST',headers:{'x-reader-owner':'account-a'},body:{productKey:'reading_100',intentKey:'intent-a'}};
+ const f=fixture(),opts={method:'POST',headers:{'x-reader-owner':'account-a'},body:{productKey:'reading_monthly_100',intentKey:'intent-a'}};
  assert.equal((await f.run('/api/billing/checkouts',opts)).status,201);
- assert.deepEqual(f.calls[0],['checkout',{ownerId:'account-a',productKey:'reading_100',intentKey:'intent-a'}]);
+ assert.deepEqual(f.calls[0],['checkout',{ownerId:'account-a',productKey:'reading_monthly_100',intentKey:'intent-a'}]);
  await assert.rejects(f.run('/api/billing/checkouts',{...opts,body:{...opts.body,ownerId:'account-b',amount:1}}),{status:400});
 });
 test('trial grants are explicit and require verified server identity',async()=>{

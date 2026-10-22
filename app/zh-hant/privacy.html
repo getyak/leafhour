@@ -18,7 +18,7 @@
 <a class="skip" href="#main">跳到主要內容</a>
 <header class="site-header"><button class="palette-entry" data-palette-open type="button">搜尋與命令 <kbd data-palette-keycap></kbd></button><a class="brand" href="/zh-hant" aria-label="Leafhour 首頁"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="brand-name" lang="en">Leafhour</span></a><nav aria-label="主導覽"><a href="/library?ui=zh-Hant">回到書房 ↗</a><a href="https://github.com/getyak/leafhour">GitHub</a><div class="home-languages" role="group" aria-label="語言"><a href="/privacy" lang="en" hreflang="en">English</a><a href="/zh-hans/privacy" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a aria-current="true" href="/zh-hant/privacy" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/privacy" lang="ja" hreflang="ja">日本語</a></div></nav></header>
 <main id="main" class="privacy-document">
-  <h1>登入與個人資料</h1><p class="privacy-date">適用於 leafhour.com · 更新於 2026 年 10 月 21 日</p>
+  <h1>登入與個人資料</h1><p class="privacy-date">適用於 leafhour.com · 更新於 2026 年 10 月 22 日</p>
   <p>Leafhour 用登入身分確認書房的歸屬，保存你選擇上傳的書和閱讀記錄。公版樣書可以匿名試讀。本文說明這個線上實例如何處理資料；自行部署的實例由它的營運者負責。</p>
   <h2>登入時會用到什麼</h2>
   <p>郵箱登入使用你填寫的郵箱地址，由 Supabase Auth 校驗密碼或驗證碼，Resend 投遞驗證郵件。註冊與找回密碼先驗證郵箱，再設定密碼。選擇 Google 或 Apple 登入時，由相應供應商驗證身分，Supabase 接收帳戶識別碼、郵箱及供應商提供的基本資料，例如姓名和頭像。Leafhour 用這些資訊識別帳戶和維持登入，不申請郵箱內文、聯絡人、雲碟或行事曆權限。</p>
@@ -29,7 +29,7 @@
   <p>開始閱讀後，頁面只記錄可見且處於前台的停留，暫停於背景，瀏覽器休眠的長間隔也不累計；閱讀時數不代表理解程度。日曆按你的所在時區呈現，跨午夜的時間分別記錄。瀏覽器會快取閱讀設定和部分閱讀狀態，方便繼續閱讀；離線時暫存本帳戶的待同步閱讀時段、章節標記和待確認的提交，恢復連線後可以重試。未主動保存的文字作為本機草稿保留。選取文字、切換譯文和調整排版在本地完成；明確請求 AI 翻譯或解釋時，才會把對應功能所需的段落上下文傳送到設定的模型服務。目前按段翻譯使用 DeepSeek，只傳送所選段落及理解所需的鄰段。閱讀對話可按需查閱目前帳號的書房、公版書及網路資料；這些工具唯讀，不讀取私人筆記，不寫入閱讀進度，也不會自動購買或把推薦書加入書房。登入資料不作為翻譯上下文。</p>
   <p>如果你給自己的 Agent 授權，它只能按授權讀取指定書籍與資料類型；寫入權限需要單獨選擇。舊版用戶端建立的授權仍可使用；需要撤回時，可透過原有用戶端或聯絡下方郵箱處理。撤回會停止後續存取，不能自動清除已經被對方複製的資料。</p>
   <h2>閱讀點與付款</h2>
-  <p>你選擇一次性儲值或月付訂閱時，由 Creem 提供結帳頁、處理每次付款，並透過登入後的客戶入口管理訂閱。Leafhour 將帳戶 ID 與本地訂單、結帳、交易、訂閱、客戶及退款識別碼關聯，保存商品、幣別、金額、付款與訂閱狀態、計費週期和不可變額度帳本。Creem 處理結帳所需的聯絡與付款資訊；Leafhour 不接收或保存完整銀行卡資料。私人書籍、提問、回答和筆記不會傳送給 Creem。</p>
+  <p>你選擇月付訂閱時，由 Creem 提供結帳頁、處理每次付款，並透過登入後的客戶入口管理訂閱。Leafhour 將帳戶 ID 與本地訂單、結帳、交易、訂閱、客戶及退款識別碼關聯，保存商品、幣別、金額、付款與訂閱狀態、計費週期和不可變額度帳本。Creem 處理結帳所需的聯絡與付款資訊；Leafhour 不接收或保存完整銀行卡資料。私人書籍、提問、回答和筆記不會傳送給 Creem。</p>
   <p>供應商用量記錄與閱讀正文分開，保存操作及呼叫嘗試編號、功能、模型、供應商回報的 token 用量和可取得的費用估算；缺少的用量保留為未知。營運帳單報表使用必要的財務與用量事實，不展示私人正文或筆記。刪除閱讀資料或帳戶後，為付款對帳、爭議處理和法定義務可能仍需保留部分財務記錄，這類記錄的刪除請求會單獨核對。免費閱讀與匯出不以購買點數為前提。</p>
   <p><a href="/zh-hant/pricing">價格</a> · <a href="/zh-hant/terms">服務條款</a> · <a href="/zh-hant/refunds">退款政策</a></p>
   <h2>保存、匯出與刪除</h2>

@@ -7,7 +7,7 @@ import {validateBillingProduct} from '../server/billing-product.mjs';
 const env={CREEM_MODE:'test',CREEM_API_KEY:'synthetic-key',CREEM_WEBHOOK_SECRET:'synthetic-secret',CREEM_PRODUCT_READING_100:'prod_topup',CREEM_PRODUCT_READING_MONTHLY_100:'prod_monthly'};
 test('selected products and documented subscription, transaction and portal endpoints stay environment bound',async()=>{
  const calls=[];const client=createCreemClient({env,fetcher:async(url,init)=>{calls.push({url,init});return Response.json(url.endsWith('/billing')?{customer_portal_link:'https://creem.io/my-orders/login/synthetic'}:init.method==='POST'?{id:'ch_monthly',checkout_url:'https://checkout.creem.io/ch_monthly'}:{id:'synthetic'});}});
- assert.deepEqual(client.productIds,{reading_100:'prod_topup',reading_monthly_100:'prod_monthly'});
+ assert.deepEqual(client.productIds,{reading_monthly_100:'prod_monthly'});assert.equal(client.productId,'prod_monthly');
  await client.retrieveProduct({productId:'prod_monthly'});await client.retrieveSubscription({subscriptionId:'sub_synthetic'});await client.retrieveTransaction({transactionId:'tran_synthetic'});
  await client.createCheckout({orderId:'local-order',ownerId:'synthetic-owner',productId:'prod_monthly',successUrl:'https://leafhour.example/billing'});
  assert.equal((await client.createPortal({customerId:'cust_synthetic'})).portalUrl,'https://creem.io/my-orders/login/synthetic');
@@ -42,4 +42,22 @@ test('monthly product validation requires the approved monthly recurrence and re
  assert.equal(validateBillingProduct(product,{productId:'prod_monthly',productKey:'reading_monthly_100',mode:'test'}),true);
  assert.equal(validateBillingProduct({...product,trial_period_days:null,recurring_interval:'month',recurring_interval_count:1},{productId:'prod_monthly',productKey:'reading_monthly_100',mode:'test'}),true);
  for(const patch of [{billing_type:'onetime'},{billing_period:'every-year'},{price:499},{trial_period_days:7},{recurring_interval_count:2},{recurring_interval:'year'},{usage_prices:[{meter_id:'mtr_usage',unit_price:.002}]},{pay_what_you_want:true}])assert.throws(()=>validateBillingProduct({...product,...patch},{productId:'prod_monthly',productKey:'reading_monthly_100',mode:'test'}),{code:'billing_product_unverified'});
+});
+
+test('the adapter rejects a configured legacy product before sending a checkout request',async()=>{
+ let calls=0;const client=createCreemClient({env,fetcher:async()=>{calls++;return Response.json({id:'ch_legacy',checkout_url:'https://checkout.creem.io/ch_legacy'});}});
+ await assert.rejects(client.createCheckout({orderId:'legacy',ownerId:'synthetic-owner',productId:'prod_topup',successUrl:'https://leafhour.example/billing'}),{code:'unknown_product'});assert.equal(calls,0);
+});
+test('payment retrieval remains available with credentials after all sale product IDs are removed',async()=>{
+ const calls=[],client=createCreemClient({env:{CREEM_MODE:'test',CREEM_API_KEY:'synthetic-key',CREEM_WEBHOOK_SECRET:'synthetic-secret'},fetcher:async url=>{calls.push(url);return Response.json({id:'ch_legacy'});}});
+ assert.equal(client.ready,true);assert.deepEqual(await client.retrieveCheckout({checkoutId:'ch_legacy'}),{id:'ch_legacy'});assert.equal(calls.length,1);
+ await assert.rejects(client.createCheckout({productId:'prod_topup'}),{code:'unknown_product'});assert.equal(calls.length,1);
+});
+
+test('new-sale product validation defaults to monthly and rejects legacy one-time products',()=>{
+ const monthly={id:'prod_monthly',mode:'test',price:500,currency:'USD',billing_type:'recurring',billing_period:'every-month',status:'active',tax_mode:'exclusive'};
+ assert.equal(validateBillingProduct(monthly,{productId:'prod_monthly',mode:'test'}),true);
+ const legacy={...monthly,id:'prod_topup',billing_type:'onetime'};
+ assert.throws(()=>validateBillingProduct(legacy,{productId:'prod_topup',mode:'test'}),{code:'billing_product_unverified'});
+ assert.throws(()=>validateBillingProduct(legacy,{productId:'prod_topup',productKey:'reading_100',mode:'test'}),{code:'billing_product_unverified'});
 });

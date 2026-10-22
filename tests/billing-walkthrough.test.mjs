@@ -17,7 +17,7 @@ const {createBillingMemoryStore}=await import(root+'/server/billing-memory-store
 const {createCreemClient}=await import(root+'/server/creem.mjs');
 const {recordProviderCall}=await import(root+'/server/provider-metering.mjs');
 
-test('isolated login, trial exhaustion, top-up, monthly renewal and reporting walkthrough',async()=>{
+test('isolated login, trial exhaustion, subscription-only sale, monthly renewal and reporting walkthrough',async()=>{
 const U=1_000_000,secret='synthetic-walkthrough-secret',identity=authFixture(),origin=identity.env.READER_PUBLIC_ORIGIN;
 const directory=await mkdtemp(path.join(tmpdir(),'leafhour-billing-walkthrough-'));
 const store=createBillingMemoryStore({dataDir:path.join(directory,'billing')});
@@ -25,9 +25,9 @@ const product=(id)=>({id,mode:'sandbox',price:500,currency:'USD',billing_type:id
 const checkouts=new Map(),transactions=new Map();let creations=0,modelCalls=0,cookie=null,ownerId=null,portal;
 const start='2026-10-21T00:00:00.000Z',end='2026-11-21T00:00:00.000Z',later='2026-12-21T00:00:00.000Z';
 let subscription={id:'sub_walkthrough',mode:'sandbox',product:product('prod_monthly'),customer:'cust_walkthrough',status:'active',last_transaction_id:'tran_initial',current_period_start_date:start,current_period_end_date:end,updated_at:start};
-const transaction=(id,from,to)=>({id,mode:'sandbox',type:'invoice',status:'paid',amount:500,amount_paid:550,discount_amount:0,tax_amount:50,refunded_amount:0,currency:'USD',order:id==='tran_initial'?'ord_2':'ord_renewal',subscription:'sub_walkthrough',customer:'cust_walkthrough',period_start:Date.parse(from),period_end:Date.parse(to)});
+const transaction=(id,from,to)=>({id,mode:'sandbox',type:'invoice',status:'paid',amount:500,amount_paid:550,discount_amount:0,tax_amount:50,refunded_amount:0,currency:'USD',order:id==='tran_initial'?'ord_1':'ord_renewal',subscription:'sub_walkthrough',customer:'cust_walkthrough',period_start:Date.parse(from),period_end:Date.parse(to)});
 transactions.set('tran_initial',transaction('tran_initial',start,end));
-const creem=createCreemClient({env:{CREEM_MODE:'test',CREEM_API_KEY:'synthetic-walkthrough-key',CREEM_WEBHOOK_SECRET:secret,CREEM_PRODUCT_READING_100:'prod_topup',CREEM_PRODUCT_READING_MONTHLY_100:'prod_monthly'},fetcher:async(raw,init)=>{
+const creem=createCreemClient({env:{CREEM_MODE:'test',CREEM_API_KEY:'synthetic-walkthrough-key',CREEM_WEBHOOK_SECRET:secret,CREEM_PRODUCT_READING_MONTHLY_100:'prod_monthly'},fetcher:async(raw,init)=>{
   const url=new URL(raw);assert.equal(url.origin,'https://test-api.creem.io');
   if(url.pathname.startsWith('/v1/products/'))return Response.json(product(url.pathname.split('/').at(-1)));
   if(url.pathname==='/v1/checkouts'&&init.method==='POST'){
@@ -84,29 +84,27 @@ try{
   assert.equal(modelCalls,10);assert.equal((await account()).availableUnits,0);checked('saved_translation_remains_free');
   for(const route of ['/zh-hans/pricing','/zh-hans/terms','/zh-hans/refunds'])assert.equal((await request(route,{anonymous:true})).status,200);
   checked('public_pricing_and_legal_pages');
-  const topup=await request('/api/billing/checkouts',{method:'POST',body:{productKey:'reading_100',intentKey:'topup-walkthrough'}});
-  assert.equal(topup.status,201);assert.equal((await account()).availableUnits,0);checked('checkout_redirect_does_not_grant_points');
-  const topupObject=checkouts.get('ch_walkthrough_1');
-  await notify('evt_topup','checkout.completed',topupObject);await notify('evt_topup','checkout.completed',topupObject);
-  assert.equal((await account()).availableUnits,100*U);checked('signed_topup_and_replay_deduplication',{availablePoints:100});
-  await translate(10,'after-topup');assert.equal((await account()).availableUnits,99*U);assert.equal(modelCalls,11);checked('paid_credits_resume_translation',{availablePoints:99});
-  const monthly=await request('/api/billing/checkouts',{method:'POST',body:{productKey:'reading_monthly_100',intentKey:'monthly-walkthrough'}});
-  assert.equal(monthly.status,201);await notify('evt_monthly_checkout','checkout.completed',checkouts.get('ch_walkthrough_2'));
+  await assert.rejects(request('/api/billing/checkouts',{method:'POST',body:{productKey:'reading_100',intentKey:'removed-one-time-walkthrough'}}),{code:'unknown_product'});
+  assert.equal(creations,0);assert.equal((await account()).availableUnits,0);checked('one_time_purchase_rejected');
+  const monthly=await request('/api/billing/checkouts',{method:'POST',body:{intentKey:'monthly-walkthrough'}});
+  assert.equal(monthly.status,201);assert.equal(monthly.data.order.productKey,'reading_monthly_100');assert.equal((await account()).availableUnits,0);checked('checkout_redirect_does_not_grant_points');
+  await notify('evt_monthly_checkout','checkout.completed',checkouts.get('ch_walkthrough_1'));
   await notify('evt_monthly_paid','subscription.paid',subscription);await notify('evt_monthly_paid','subscription.paid',subscription);
-  assert.equal((await account()).availableUnits,199*U);checked('monthly_initial_payment_grants_once',{availablePoints:199});
+  assert.equal((await account()).availableUnits,100*U);checked('monthly_initial_payment_grants_once',{availablePoints:100});
+  await translate(10,'after-subscription');assert.equal((await account()).availableUnits,99*U);assert.equal(modelCalls,11);checked('paid_credits_resume_translation',{availablePoints:99});
   transactions.set('tran_renewal',transaction('tran_renewal',end,later));subscription={...subscription,last_transaction_id:'tran_renewal',current_period_start_date:end,current_period_end_date:later,updated_at:end};
   await notify('evt_renewal','subscription.paid',subscription);await notify('evt_renewal','subscription.paid',subscription);
-  assert.equal((await account()).availableUnits,299*U);checked('monthly_renewal_grants_once',{availablePoints:299});
+  assert.equal((await account()).availableUnits,199*U);checked('monthly_renewal_grants_once',{availablePoints:199});
   assert.equal((await request('/api/billing/portal',{method:'POST',body:{subscriptionId:subscription.id}})).status,200);
   subscription={...subscription,status:'canceled',updated_at:new Date(Date.parse(end)+1000).toISOString()};await notify('evt_cancel','subscription.canceled',subscription);
-  assert.equal((await account()).availableUnits,299*U);assert.equal((await request('/api/billing/subscriptions')).data.subscriptions[0].status,'canceled');checked('customer_portal_and_cancellation_preserve_points');
+  assert.equal((await account()).availableUnits,199*U);assert.equal((await request('/api/billing/subscriptions')).data.subscriptions[0].status,'canceled');checked('customer_portal_and_cancellation_preserve_points');
   const from=new Date(Date.now()-3600000).toISOString(),to=new Date(Date.now()+3600000).toISOString();
   const summary=(await request('/api/admin/billing/summary?'+new URLSearchParams({from,to}))).data;
-  assert.equal(summary.paidOrders,3);assert.equal(summary.monthlyPaidOrders,2);assert.equal(summary.oneTimePaidOrders,1);assert.equal(summary.salesByCurrency.USD,1500);assert.equal(summary.consumedUnits,11*U);assert.equal(summary.calls,11);
-  checked('admin_sales_consumption_and_usage',{paidOrders:3,syntheticNetSalesUsd:15,consumedPoints:11,syntheticProviderCalls:11});
-  const reopened=createBillingMemoryStore({dataDir:path.join(directory,'billing')});assert.equal((await reopened.command('account',{mode:'test',ownerId})).availableUnits,299*U);checked('reference_ledger_restart_preserves_balance');
+  assert.equal(summary.paidOrders,2);assert.equal(summary.monthlyPaidOrders,2);assert.equal(summary.oneTimePaidOrders,0);assert.equal(summary.salesByCurrency.USD,1000);assert.equal(summary.consumedUnits,11*U);assert.equal(summary.calls,11);
+  checked('admin_sales_consumption_and_usage',{paidOrders:2,syntheticNetSalesUsd:10,consumedPoints:11,syntheticProviderCalls:11});
+  const reopened=createBillingMemoryStore({dataDir:path.join(directory,'billing')});assert.equal((await reopened.command('account',{mode:'test',ownerId})).availableUnits,199*U);checked('reference_ledger_restart_preserves_balance');
   await request('/api/auth/logout',{method:'POST',body:{}});await assert.rejects(request('/api/billing/account'),{status:409});await assert.rejects(request('/api/billing/account',{anonymous:true}),{status:401});checked('logout_revokes_access');
-  assert.equal(checkpoints.length,15); assert.equal(creations,2); assert.equal(modelCalls,11);
+  assert.equal(checkpoints.length,15); assert.equal(creations,1); assert.equal(modelCalls,11);
 }finally{
   if(portal){await portal.chat.close();await portal.ingestionRunner.close();await portal.audio?.close();}
   await rm(directory,{recursive:true,force:true});

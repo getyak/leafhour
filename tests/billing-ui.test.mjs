@@ -6,6 +6,7 @@ const billing=await import('../app/billing.mjs').catch(()=>({}));
 const helper=name=>{assert.equal(typeof billing[name],'function',name+' is exported');return billing[name];};
 const response=(data,status=200)=>({ok:status<400,status,json:async()=>data});
 const session=id=>({user:id?{id,email:id+'@example.test'}:null});
+const liveCatalog={enabled:true,mode:'live',available:true,products:[{key:'reading_monthly_100',available:true}]};
 
 test('public pricing and policy pages have four canonical localized paths and truthful point prices',()=>{
  assert.equal(typeof pages.commercePage,'function');
@@ -19,7 +20,7 @@ test('public pricing and policy pages have four canonical localized paths and tr
   assert.doesNotMatch(html,/noindex|local-owner|Most popular/);
  }
  const en=pages.commercePage({kind:'pricing',locale:'en',billingEnabled:false});
- for(const text of ['US$5','100 reading points','10 trial points','1 point','4 points','No automatic renewal','automatic companion','Self-hosting','Export'])assert.ok(en.includes(text),text);
+ for(const text of ['US$5','100 reading points','10 trial points','1 point','4 points','automatically renews','automatic companion','Self-hosting','exported without a subscription'])assert.ok(en.includes(text),text);
  assert.match(en,/Payments are not open/);
  const terms=pages.commercePage({kind:'terms',locale:'en'});assert.match(terms,/private uploads/i);assert.match(terms,/copyright/i);assert.match(terms,/AI.*draft/i);
  const refunds=pages.commercePage({kind:'refunds',locale:'en'});assert.match(refunds,/14 days/);assert.match(refunds,/unused purchased points/);assert.match(refunds,/Creem/);assert.match(refunds,/statutory rights/);
@@ -29,9 +30,9 @@ test('public pricing and policy pages have four canonical localized paths and tr
 test('readiness distinguishes disabled, sandbox and live rather than pretending test checkout is money',()=>{
  const availability=helper('catalogAvailability');
  assert.equal(availability({enabled:false,mode:'live',available:true}),'disabled');
- assert.equal(availability({enabled:true,mode:'test',available:true}),'test');
+ assert.equal(availability({...liveCatalog,mode:'test'}),'test');
  assert.equal(availability({enabled:true,mode:'live',available:false}),'unavailable');
- assert.equal(availability({enabled:true,mode:'live',available:true}),'live');
+ assert.equal(availability(liveCatalog),'live');
  assert.equal(availability({}),'disabled');
 });
 
@@ -39,7 +40,7 @@ test('account render escapes real records and shows holds separately from consum
  const render=helper('renderBillingAccount');
  const empty=render({locale:'en',session:session('A'),catalog:{enabled:false},account:{availableUnits:10000000,reservedUnits:4000000,grantedUnits:10000000,consumedUnits:0,trialGranted:true},entries:[],orders:[]});
  assert.match(empty,/10<\/strong>/);assert.match(empty,/4<\/strong>/);assert.match(empty,/Reserved/);assert.match(empty,/No point entries yet/);assert.match(empty,/No orders yet/);assert.match(empty,/Payments are not open/);
- const html=render({locale:'en',session:session('A'),catalog:{enabled:true,mode:'test',available:true},account:{availableUnits:0},entries:[{id:'<script>',kind:'hold',units:4000000,action:'reading_conversation',createdAt:'2026-10-21T00:00:00Z'}],orders:[{id:'<img src=x onerror=alert(1)>',amount:500,currency:'USD',status:'pending',units:100000000,receiptUrl:'javascript:alert(1)'}]});
+ const html=render({locale:'en',session:session('A'),catalog:{...liveCatalog,mode:'test'},account:{availableUnits:0},entries:[{id:'<script>',kind:'hold',units:4000000,action:'reading_conversation',createdAt:'2026-10-21T00:00:00Z'}],orders:[{id:'<img src=x onerror=alert(1)>',amount:500,currency:'USD',status:'pending',units:100000000,receiptUrl:'javascript:alert(1)'}]});
  assert.doesNotMatch(html,/<script>|<img src=x|javascript:/);assert.match(html,/&lt;script&gt;/);assert.match(html,/Processing/);assert.match(html,/sandbox/i);assert.match(html,/<caption/);assert.match(html,/scope="col"/);
 });
 
@@ -58,9 +59,9 @@ test('account switch during a protected read drops the response and clears prior
 
 test('checkout uses one captured owner intent and cannot redirect after an account change',async()=>{
  const create=helper('createBillingClient');let current='A',resolveCheckout;const bodies=[];
- const client=create({intentFactory:()=> 'isolated-intent',fetcher:async(path,init)=>{if(path==='/api/auth/session')return response(session(current));if(path==='/api/billing/checkouts'){bodies.push(JSON.parse(init.body));assert.equal(init.headers['X-Reader-Owner'],'A');return new Promise(resolve=>resolveCheckout=resolve);}return response({enabled:true,mode:'live',available:true});}});
- await client.refreshSession();const pending=client.checkout();await new Promise(resolve=>setImmediate(resolve));current='B';resolveCheckout(response({checkoutUrl:'https://checkout.creem.io/test',order:{id:'order-A'}}));
- await assert.rejects(pending,{code:'BILLING_ACCOUNT_CHANGED'});assert.deepEqual(bodies,[{productKey:'reading_100',intentKey:'isolated-intent'}]);assert.equal(client.snapshot().returnOrder,null);
+ const client=create({intentFactory:()=> 'isolated-intent',fetcher:async(path,init)=>{if(path==='/api/auth/session')return response(session(current));if(path==='/api/billing/subscriptions')return response({subscriptions:[]});if(path==='/api/billing/checkouts'){bodies.push(JSON.parse(init.body));assert.equal(init.headers['X-Reader-Owner'],'A');return new Promise(resolve=>resolveCheckout=resolve);}return response({enabled:true,mode:'live',available:true});}});
+ await client.refreshSession();await client.loadSubscriptions();const pending=client.checkout();await new Promise(resolve=>setImmediate(resolve));current='B';resolveCheckout(response({checkoutUrl:'https://checkout.creem.io/test',order:{id:'order-A'}}));
+ await assert.rejects(pending,{code:'BILLING_ACCOUNT_CHANGED'});assert.deepEqual(bodies,[{productKey:'reading_monthly_100',intentKey:'isolated-intent'}]);assert.equal(client.snapshot().returnOrder,null);
 });
 
 test('order polling is owner guarded and checkout links only accept trusted HTTPS Creem hosts',async()=>{
@@ -76,7 +77,7 @@ test('private shell is noindex and keyboard responsive styles do not hide real e
 
 test('real ledger entry types and separate trial, purchase and review balances remain visible',()=>{
  const render=helper('renderBillingAccount');
- const html=render({locale:'en',session:session('A'),catalog:{enabled:true,mode:'test',available:true},account:{availableUnits:13000000,reservedUnits:4000000,sources:[{source:'trial',availableUnits:1000000,reservedUnits:0},{source:'purchase',availableUnits:10000000,reservedUnits:4000000},{source:'review',availableUnits:2000000,reservedUnits:0}]},entries:[{id:'hold-real',type:'hold',units:-4000000},{id:'trial-real',type:'grant',source:'trial',units:10000000}]});
+ const html=render({locale:'en',session:session('A'),catalog:{...liveCatalog,mode:'test'},account:{availableUnits:13000000,reservedUnits:4000000,sources:[{source:'trial',availableUnits:1000000,reservedUnits:0},{source:'purchase',availableUnits:10000000,reservedUnits:4000000},{source:'review',availableUnits:2000000,reservedUnits:0}]},entries:[{id:'hold-real',type:'hold',units:-4000000},{id:'trial-real',type:'grant',source:'trial',units:10000000}]});
  for(const text of ['Trial points','Purchased points','Review points','Processing · reserved','Trial grant'])assert.ok(html.includes(text),text);
 });
 
@@ -111,18 +112,19 @@ test('monthly pricing and policy copy discloses paid renewals, cancellation and 
  const expected={en:['US$5 / month','100 points per successful payment','automatically renews','customer portal','no expiry','not unlimited'], 'zh-Hans':['US$5 / 月','每次实际付款成功后发放 100 点','自动续费','客户门户','不过期','并非无限'], 'zh-Hant':['US$5 / 月','每次實際付款成功後發放 100 點','自動續費','客戶入口','不過期','並非無限'],ja:['US$5 / 月','支払いが成功するごとに 100 ポイント','自動更新','カスタマーポータル','有効期限なし','無制限ではありません']};
  for(const [locale,phrases] of Object.entries(expected)){
   const html=pages.commercePage({locale});for(const phrase of phrases)assert.ok(html.includes(phrase),locale+': '+phrase);
-  assert.match(html,/data-product-key="reading_100"/);assert.match(html,/data-product-key="reading_monthly_100"/);
+  assert.doesNotMatch(html,/data-product-key="reading_100"/);assert.match(html,/data-product-key="reading_monthly_100"/);
+  for(const kind of ['pricing','terms','refunds'])assert.doesNotMatch(pages.commercePage({locale,kind}),/one-time top-up|one-time US\$5|一次性充值|一次性儲值|1 回限りの追加購入|no automatic renewal|無自動續費|无自动续费/i);
   const terms=pages.commercePage({locale,kind:'terms'}),refunds=pages.commercePage({locale,kind:'refunds'});
   assert.ok(terms.includes(phrases[2]),locale+' terms renewal');assert.ok(refunds.includes(phrases[3]),locale+' refunds cancellation');
  }
 });
 
-test('each product has independent readiness and active subscription management never hides the point balance',()=>{
+test('only the monthly plan is offered and subscription management never hides the point balance',()=>{
  const catalog={enabled:true,mode:'live',available:true,products:[{key:'reading_100',available:true},{key:'reading_monthly_100',available:false}]};
- assert.equal(helper('catalogAvailability')(catalog,'reading_100'),'live');assert.equal(helper('catalogAvailability')(catalog,'reading_monthly_100'),'unavailable');
+ assert.equal(helper('catalogAvailability')(catalog,'reading_100'),'unavailable');assert.equal(helper('catalogAvailability')(catalog,'reading_monthly_100'),'unavailable');
  const base={locale:'en',session:session('A'),catalog,account:{availableUnits:107000000,trialGranted:true},subscriptions:[]};
  const html=helper('renderBillingAccount')(base);
- assert.match(html,/data-billing-action="checkout" data-product-key="reading_100">/);
+ assert.doesNotMatch(html,/data-billing-action="checkout" data-product-key="reading_100"/);
  assert.match(html,/data-billing-action="checkout" data-product-key="reading_monthly_100" disabled/);
  const active=helper('renderBillingAccount')({...base,catalog:{...catalog,products:catalog.products.map(p=>({...p,available:true}))},subscriptions:[{id:'sub_A',status:'active',periodStart:'2026-10-21T00:00:00Z',periodEnd:'2026-11-21T00:00:00Z',nextTransactionDate:'2026-11-21T00:00:00Z'}]});
  for(const text of ['107</strong>','Active','Next payment','Manage / cancel renewal','data-subscription-id="sub_A"'])assert.ok(active.includes(text),text);
@@ -148,8 +150,8 @@ test('automatic trial and subscription reads discard a response when the signed-
 test('checkout intents are scoped to the selected product and active or pending plans cannot be purchased twice',async()=>{
  let serial=0;const bodies=[];const client=helper('createBillingClient')({intentFactory:()=> 'intent-'+(++serial),fetcher:async(path,init)=>{if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/subscriptions')return response({subscriptions:[]});if(path.startsWith('/api/billing/orders'))return response({orders:[]});bodies.push(JSON.parse(init.body));return response({checkoutUrl:'https://checkout.creem.io/'+serial,order:{id:'order-'+serial,productKey:JSON.parse(init.body).productKey,status:'pending'}});}});
  await client.refreshSession();await client.loadSubscriptions();
- await Promise.all([client.checkout('reading_monthly_100'),client.checkout('reading_monthly_100')]);await client.checkout('reading_100');
- assert.deepEqual(bodies,[{productKey:'reading_monthly_100',intentKey:'intent-1'},{productKey:'reading_100',intentKey:'intent-2'}]);
+ await Promise.all([client.checkout(),client.checkout('reading_monthly_100')]);await assert.rejects(client.checkout('reading_100'),{code:'BILLING_INVALID_PRODUCT'});
+ assert.deepEqual(bodies,[{productKey:'reading_monthly_100',intentKey:'intent-1'}]);
  const active=helper('createBillingClient')({fetcher:async path=>path==='/api/auth/session'?response(session('A')):response({subscriptions:[{id:'sub_A',status:'active'}]})});await active.refreshSession();await active.loadSubscriptions();await assert.rejects(active.checkout('reading_monthly_100'),{code:'BILLING_SUBSCRIPTION_EXISTS'});
 });
 
@@ -162,7 +164,7 @@ test('portal uses only the owner-bound subscription ID and rejects unsafe URLs a
 
 test('unknown or incomplete monthly readiness cannot accidentally expose subscription checkout',()=>{
  const availability=helper('catalogAvailability');assert.equal(availability({enabled:true,available:true,mode:'live'},'reading_monthly_100'),'unavailable');
- assert.equal(availability({enabled:true,available:false,mode:'live',products:[{key:'reading_100',available:true},{key:'reading_monthly_100',available:false}]},'reading_100'),'live');
+ assert.equal(availability({enabled:true,available:false,mode:'live',products:[{key:'reading_100',available:true},{key:'reading_monthly_100',available:false}]},'reading_100'),'unavailable');
 });
 
 test('an unfinished monthly order or scheduled cancellation blocks another subscription while a canceled plan can be replaced',async()=>{
@@ -208,8 +210,8 @@ test('server-confirmed checkout expiration releases only that intent and require
 
 test('checkout_expired errors clear an old intent without retrying or weakening an active subscription lock',async()=>{
  let serial=0;const bodies=[];const client=helper('createBillingClient')({intentFactory:()=> 'intent-'+(++serial),fetcher:async(path,init)=>{
-  if(path==='/api/auth/session')return response(session('A'));bodies.push(JSON.parse(init.body));return response({error:{code:'checkout_expired'}},409);
- }});await client.refreshSession();await assert.rejects(client.checkout(),{code:'checkout_expired'});assert.equal(bodies.length,1);await assert.rejects(client.checkout(),{code:'checkout_expired'});assert.deepEqual(bodies.map(body=>body.intentKey),['intent-1','intent-2']);
+  if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/subscriptions')return response({subscriptions:[]});bodies.push(JSON.parse(init.body));return response({error:{code:'checkout_expired'}},409);
+ }});await client.refreshSession();await client.loadSubscriptions();await assert.rejects(client.checkout(),{code:'checkout_expired'});assert.equal(bodies.length,1);await assert.rejects(client.checkout(),{code:'checkout_expired'});assert.deepEqual(bodies.map(body=>body.intentKey),['intent-1','intent-2']);
 });
 
 test('stale checkout reconciliation can neither return a resume URL nor unlock a new account plan',async()=>{
@@ -251,4 +253,31 @@ test('public pricing and policies share discoverable Agent, pricing and GitHub n
   assert.match(html,/<dialog[^>]*id="home-menu"/);assert.match(header,/id="home-menu-trigger"/);
   assert.ok(html.includes('href="/'+slug+'/'+kind+'" lang="'+locale+'"'));
  }
+});
+
+
+test('the monthly offer explains metered AI and separates the four interface languages from free reading',()=>{
+ const expected={en:['Ask about the book','Explain a selected passage','Chinese translations','literal and interpretive','Free reading','English, Simplified Chinese, Traditional Chinese and Japanese'], 'zh-Hans':['围绕书本提问','解释选中的文字','中文翻译','直译与意译','免费阅读','英语、简体中文、繁体中文和日语'], 'zh-Hant':['圍繞書本提問','解釋選中的文字','中文翻譯','直譯與意譯','免費閱讀','英語、簡體中文、繁體中文和日語'],ja:['本について質問','選択した文章を解説','中国語訳','直訳と意訳','無料で読む','英語、簡体字中国語、繁体字中国語、日本語']};
+ for(const [locale,phrases] of Object.entries(expected)){
+  const html=pages.commercePage({locale});for(const phrase of phrases)assert.ok(html.includes(phrase),locale+': '+phrase);
+  assert.equal((html.match(/data-product-key=/g)||[]).length,1);
+  assert.ok(html.indexOf('class="plan-benefits"')<html.indexOf('class="table-scroll"'));
+  assert.match(html,/class="free-reading"/);
+ }
+});
+
+test('retired one-time orders remain readable but cannot resume checkout',async()=>{
+ const retired={id:'legacy_pending',productKey:'reading_100',status:'pending',checkoutUrl:'https://checkout.creem.io/retired'};
+ const paid={...retired,id:'legacy_paid',status:'paid',paymentVerified:true,units:100000000,amount:500,currency:'USD',receiptUrl:'https://creem.io/receipt/legacy'};
+ const client=helper('createBillingClient')({fetcher:async path=>path==='/api/auth/session'?response(session('A')):path==='/api/billing/subscriptions'?response({subscriptions:[]}):path.startsWith('/api/billing/orders?')?response({orders:[retired,paid]}):path==='/api/billing/account'?response({availableUnits:100000000}):response(retired)});
+ await client.refreshSession();await assert.rejects(client.resumeCheckout(retired.id),{code:'BILLING_INVALID_PRODUCT'});
+ assert.equal(client.snapshot().returnOrder.id,retired.id);
+ const html=helper('renderBillingAccount')({locale:'en',session:session('A'),catalog:liveCatalog,account:{availableUnits:100000000},orders:[retired,paid],subscriptions:[]});
+ assert.doesNotMatch(html,/data-billing-action="resume" data-order-id="legacy_pending"/);assert.match(html,/data-billing-action="recheck" data-order-id="legacy_pending"/);
+ assert.match(html,/legacy_paid/);assert.match(html,/href="https:\/\/creem.io\/receipt\/legacy"/);assert.match(html,/100<\/strong>/);
+});
+
+test('default monthly checkout requires a current subscription read',async()=>{
+ const requests=[];const client=helper('createBillingClient')({fetcher:async path=>{requests.push(path);return path==='/api/auth/session'?response(session('A')):response({});}});
+ await client.refreshSession();await assert.rejects(client.checkout(),{code:'BILLING_SUBSCRIPTION_EXISTS'});assert.deepEqual(requests,['/api/auth/session']);
 });

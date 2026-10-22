@@ -51,8 +51,9 @@ export function normalizeCreemEvent(payload){
 }
 
 export function createCreemClient({env={},fetcher=globalThis.fetch}={}){
-  const mode=env.CREEM_MODE||'test',apiKey=env.CREEM_API_KEY,secret=env.CREEM_WEBHOOK_SECRET,productId=env.CREEM_PRODUCT_READING_100,productIds={reading_100:productId,reading_monthly_100:env.CREEM_PRODUCT_READING_MONTHLY_100};
-  const validMode=['test','live'].includes(mode),ready=Boolean(validMode&&apiKey&&secret&&Object.values(productIds).some(Boolean)),base=mode==='live'?'https://api.creem.io':'https://test-api.creem.io';
+  const mode=env.CREEM_MODE||'test',apiKey=env.CREEM_API_KEY,secret=env.CREEM_WEBHOOK_SECRET,productId=env.CREEM_PRODUCT_READING_MONTHLY_100,productIds={reading_monthly_100:productId};
+  // Authenticated payment retrieval must outlive products removed from new sales.
+  const validMode=['test','live'].includes(mode),ready=Boolean(validMode&&apiKey&&secret),base=mode==='live'?'https://api.creem.io':'https://test-api.creem.io';
   async function request(path,{body}={}){
     if(!ready)invalid('creem_unavailable',503);
     let response;try{response=await fetcher(base+path,{method:body?'POST':'GET',headers:{'x-api-key':apiKey,...(body?{'content-type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(15000)});}catch{invalid('creem_request_unknown',503);}

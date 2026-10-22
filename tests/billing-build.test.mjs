@@ -19,7 +19,11 @@ test('static commerce output contains every localized policy and safe private sh
       assert.ok(flat.includes('href="https://leafhour.com/'+slug+'/'+kind+'"'));
       assert.equal(flat,await readFile(path.join(outputDir,slug,kind,'index.html'),'utf8'));
       assert.match(flat,/src="\/billing.mjs"/);
-      if(kind==='pricing')assert.ok(flat.includes(commerceCopy(locale).disabled),'Static pages must default to unavailable until the live catalog is checked');
+      if(kind==='pricing'){
+        assert.ok(flat.includes(commerceCopy(locale).disabled),'Static pages must default to unavailable until the live catalog is checked');
+        assert.match(flat,/data-product-key="reading_monthly_100"/);assert.doesNotMatch(flat,/data-product-key="reading_100"/);
+        assert.match(flat,/class="plan-benefits"/);assert.match(flat,/class="free-reading"/);
+      }
     }
   }
   for(const kind of ['pricing','terms','refunds'])assert.equal(await readFile(path.join(outputDir,kind+'.html'),'utf8'),await readFile(path.join(outputDir,'en',kind+'.html'),'utf8'));
@@ -35,7 +39,7 @@ test('all authored privacy notices explain billing metadata and link to local po
     const html=await readFile(path.join(root,'app',slug,'privacy.html'),'utf8');
     assert.match(html,/Creem/,'Billing processor must be named in '+slug);
     assert.ok(html.includes(labels[slug]),'Payment-card storage boundary must be explained in '+slug);
-    assert.match(html,/2026(?: 年)?(?:\s+10\s+月\s+21|[-/]10[-/]21)|October 21, 2026/,'Privacy date must reflect this update');
+    assert.match(html,/2026(?: 年)?(?:\s+10\s+月\s+22|[-/]10[-/]22)|October 22, 2026/,'Privacy date must reflect this update');
     for(const kind of ['pricing','terms','refunds'])assert.ok(html.includes('href="/'+slug+'/'+kind+'"'),'Missing '+slug+' '+kind+' link');
   }
 });

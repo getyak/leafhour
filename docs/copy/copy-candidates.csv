@@ -183,59 +183,56 @@ candidate:app/billing.mjs:5:487,js-cjk-literal,app/billing.mjs,5,,unknown,review
 candidate:app/billing.mjs:5:498,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,订单
 candidate:app/billing.mjs:5:511,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,Creem 凭证
 candidate:app/billing.mjs:5:527,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,加载更多
-candidate:app/billing.mjs:5:538,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,购买 100 点 · US$5
-candidate:app/billing.mjs:5:564,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,测试结账 · 100 点
-candidate:app/billing.mjs:5:588,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,正在向服务端核对付款…
-candidate:app/billing.mjs:5:607,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,付款已核实，点数已到账。
-candidate:app/billing.mjs:5:630,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,付款尚未核实。返回页参数不会发放点数，可稍后刷新查看。
-candidate:app/billing.mjs:5:667,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,已记录退款
-candidate:app/billing.mjs:5:684,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,付款核对中
-candidate:app/billing.mjs:5:702,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,已取消
-candidate:app/billing.mjs:5:715,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,失败
-candidate:app/billing.mjs:5:725,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,处理中 · 已预留
-candidate:app/billing.mjs:5:745,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,已消费
-candidate:app/billing.mjs:5:759,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,未扣点 · 已释放
-candidate:app/billing.mjs:5:780,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,点数已退回
-candidate:app/billing.mjs:5:794,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,已发放
-candidate:app/billing.mjs:5:818,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,退款调整
-candidate:app/billing.mjs:5:836,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,试用赠送
-candidate:app/billing.mjs:5:857,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,购买到账
-candidate:app/billing.mjs:5:876,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,单段双译
-candidate:app/billing.mjs:5:896,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,阅读对话
-candidate:app/billing.mjs:5:914,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,AI 注解
-candidate:app/billing.mjs:5:930,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,未报告
-candidate:app/billing.mjs:5:945,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,支付尚未开放，阅读和导出仍可使用。
-candidate:app/billing.mjs:5:970,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,测试模式：仅沙盒结账，不涉及真实付款或正式点数。
-candidate:app/billing.mjs:5:1009,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,支付暂不可用：服务端就绪检查尚未通过。
-candidate:app/billing.mjs:5:1036,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,一次性购买，无自动续费。税费及最终总额以 Creem 结账页为准。
-candidate:app/billing.mjs:5:1078,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,暂时无法载入账单，请稍后重试。
-candidate:app/billing.mjs:5:1106,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,当前账户无权查看运营计费概览。
-candidate:app/billing.mjs:5:1132,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,账户已变化，原账户的账单资料已清除。请刷新后继续。
-candidate:app/billing.mjs:5:1175,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,请重新登录后继续。
-candidate:app/billing.mjs:5:1201,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,目前无法结账，已有点数与阅读资料保持不变。
-candidate:app/billing.mjs:5:1236,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,暂时无法领取试用点，账户须通过验证并符合资格。
-candidate:app/billing.mjs:5:1271,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,账户数
-candidate:app/billing.mjs:5:1288,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,已付款订单
-candidate:app/billing.mjs:5:1306,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,付款账户
-candidate:app/billing.mjs:5:1319,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,按币种收款
-candidate:app/billing.mjs:5:1335,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,按币种退款
-candidate:app/billing.mjs:5:1349,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,供应商调用
-candidate:app/billing.mjs:5:1367,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,已知供应商成本 · USD
-candidate:app/billing.mjs:5:1395,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,次调用成本未知或不完整
-candidate:app/billing.mjs:5:1418,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,缺失用量保持未知。只要有调用缺少完整用量，已知供应商成本就是部分计量。现金收款、点数消费和会计收入分别记录。
-candidate:app/billing.mjs:5:1489,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,还没有金额记录。
-candidate:app/billing.mjs:5:1505,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,开始日期（上海）
-candidate:app/billing.mjs:5:1519,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,结束日期（不含，上海）
-candidate:app/billing.mjs:5:1539,js-cjk-literal,app/billing.mjs,5,,unknown,protected,path,Asia/Shanghai · 半开时间窗：包含开始，不包含结束。
-candidate:app/billing.mjs:5:1581,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,查看报表
-candidate:app/billing.mjs:5:1595,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,报表时间窗
-candidate:app/billing.mjs:5:1613,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,选择时间范围，载入真实计费汇总。
-candidate:app/billing.mjs:5:1642,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,"1 点 = 1,000,000 记账单位。预留与正式消费分开。"
-candidate:app/billing.mjs:5:1681,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,阅读、笔记与导出仍然免费。
-candidate:app/billing.mjs:5:1705,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,需要帮助？
-candidate:app/billing.mjs:5:1721,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,隐私说明
-candidate:app/billing.mjs:5:1737,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,运营报表
-candidate:app/billing.mjs:5:1754,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,请选择有效日期范围，结束日期须晚于开始日期。
+candidate:app/billing.mjs:5:543,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,正在向服务端核对付款…
+candidate:app/billing.mjs:5:562,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,付款已核实，点数已到账。
+candidate:app/billing.mjs:5:585,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,付款尚未核实。返回页参数不会发放点数，可稍后刷新查看。
+candidate:app/billing.mjs:5:622,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,已记录退款
+candidate:app/billing.mjs:5:639,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,付款核对中
+candidate:app/billing.mjs:5:657,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,已取消
+candidate:app/billing.mjs:5:670,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,失败
+candidate:app/billing.mjs:5:680,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,处理中 · 已预留
+candidate:app/billing.mjs:5:700,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,已消费
+candidate:app/billing.mjs:5:714,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,未扣点 · 已释放
+candidate:app/billing.mjs:5:735,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,点数已退回
+candidate:app/billing.mjs:5:749,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,已发放
+candidate:app/billing.mjs:5:773,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,退款调整
+candidate:app/billing.mjs:5:791,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,试用赠送
+candidate:app/billing.mjs:5:812,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,购买到账
+candidate:app/billing.mjs:5:831,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,单段双译
+candidate:app/billing.mjs:5:851,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,阅读对话
+candidate:app/billing.mjs:5:869,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,AI 注解
+candidate:app/billing.mjs:5:885,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,未报告
+candidate:app/billing.mjs:5:900,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,支付尚未开放，阅读和导出仍可使用。
+candidate:app/billing.mjs:5:925,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,测试模式：仅沙盒结账，不涉及真实付款或正式点数。
+candidate:app/billing.mjs:5:964,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,支付暂不可用：服务端就绪检查尚未通过。
+candidate:app/billing.mjs:5:992,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,暂时无法载入账单，请稍后重试。
+candidate:app/billing.mjs:5:1020,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,当前账户无权查看运营计费概览。
+candidate:app/billing.mjs:5:1046,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,账户已变化，原账户的账单资料已清除。请刷新后继续。
+candidate:app/billing.mjs:5:1089,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,请重新登录后继续。
+candidate:app/billing.mjs:5:1115,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,目前无法结账，已有点数与阅读资料保持不变。
+candidate:app/billing.mjs:5:1150,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,暂时无法领取试用点，账户须通过验证并符合资格。
+candidate:app/billing.mjs:5:1185,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,账户数
+candidate:app/billing.mjs:5:1202,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,已付款订单
+candidate:app/billing.mjs:5:1220,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,付款账户
+candidate:app/billing.mjs:5:1233,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,按币种收款
+candidate:app/billing.mjs:5:1249,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,按币种退款
+candidate:app/billing.mjs:5:1263,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,供应商调用
+candidate:app/billing.mjs:5:1281,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,已知供应商成本 · USD
+candidate:app/billing.mjs:5:1309,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,次调用成本未知或不完整
+candidate:app/billing.mjs:5:1332,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,缺失用量保持未知。只要有调用缺少完整用量，已知供应商成本就是部分计量。现金收款、点数消费和会计收入分别记录。
+candidate:app/billing.mjs:5:1403,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,还没有金额记录。
+candidate:app/billing.mjs:5:1419,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,开始日期（上海）
+candidate:app/billing.mjs:5:1433,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,结束日期（不含，上海）
+candidate:app/billing.mjs:5:1453,js-cjk-literal,app/billing.mjs,5,,unknown,protected,path,Asia/Shanghai · 半开时间窗：包含开始，不包含结束。
+candidate:app/billing.mjs:5:1495,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,查看报表
+candidate:app/billing.mjs:5:1509,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,报表时间窗
+candidate:app/billing.mjs:5:1527,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,选择时间范围，载入真实计费汇总。
+candidate:app/billing.mjs:5:1556,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,"1 点 = 1,000,000 记账单位。预留与正式消费分开。"
+candidate:app/billing.mjs:5:1595,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,阅读、笔记与导出仍然免费。
+candidate:app/billing.mjs:5:1619,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,需要帮助？
+candidate:app/billing.mjs:5:1635,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,隐私说明
+candidate:app/billing.mjs:5:1651,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,运营报表
+candidate:app/billing.mjs:5:1668,js-cjk-literal,app/billing.mjs,5,,unknown,reviewable,,请选择有效日期范围，结束日期须晚于开始日期。
 candidate:app/billing.mjs:6:19,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,額度與帳單
 candidate:app/billing.mjs:6:33,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,計費概覽
 candidate:app/billing.mjs:6:45,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,返回自己的書房
@@ -266,59 +263,56 @@ candidate:app/billing.mjs:6:489,js-cjk-literal,app/billing.mjs,6,,unknown,review
 candidate:app/billing.mjs:6:500,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,訂單
 candidate:app/billing.mjs:6:513,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,Creem 憑證
 candidate:app/billing.mjs:6:529,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,載入更多
-candidate:app/billing.mjs:6:540,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,購買 100 點 · US$5
-candidate:app/billing.mjs:6:566,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,測試結帳 · 100 點
-candidate:app/billing.mjs:6:590,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,正在向伺服器核對付款…
-candidate:app/billing.mjs:6:609,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,付款已核實，點數已入帳。
-candidate:app/billing.mjs:6:632,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,付款尚未核實。返回頁參數不會發放點數，可稍後重新整理查看。
-candidate:app/billing.mjs:6:671,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,已記錄退款
-candidate:app/billing.mjs:6:688,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,付款核對中
-candidate:app/billing.mjs:6:706,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,已取消
-candidate:app/billing.mjs:6:719,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,失敗
-candidate:app/billing.mjs:6:729,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,處理中 · 已預留
-candidate:app/billing.mjs:6:749,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,已消費
-candidate:app/billing.mjs:6:763,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,未扣點 · 已釋放
-candidate:app/billing.mjs:6:784,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,點數已退回
-candidate:app/billing.mjs:6:798,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,已發放
-candidate:app/billing.mjs:6:822,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,退款調整
-candidate:app/billing.mjs:6:840,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,試用贈送
-candidate:app/billing.mjs:6:861,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,購買入帳
-candidate:app/billing.mjs:6:880,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,單段雙譯
-candidate:app/billing.mjs:6:900,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,閱讀對話
-candidate:app/billing.mjs:6:918,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,AI 註解
-candidate:app/billing.mjs:6:934,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,未報告
-candidate:app/billing.mjs:6:949,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,付款尚未開放，閱讀和匯出仍可使用。
-candidate:app/billing.mjs:6:974,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,測試模式：僅沙盒結帳，不涉及真實付款或正式點數。
-candidate:app/billing.mjs:6:1013,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,付款暫不可用：伺服器就緒檢查尚未通過。
-candidate:app/billing.mjs:6:1040,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,一次性購買，無自動續費。稅費及最終總額以 Creem 結帳頁為準。
-candidate:app/billing.mjs:6:1082,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,暫時無法載入帳單，請稍後重試。
-candidate:app/billing.mjs:6:1110,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,目前帳戶無權查看營運計費概覽。
-candidate:app/billing.mjs:6:1136,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,帳戶已變更，原帳戶的帳單資料已清除。請重新整理後繼續。
-candidate:app/billing.mjs:6:1181,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,請重新登入後繼續。
-candidate:app/billing.mjs:6:1207,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,目前無法結帳，已有點數與閱讀資料保持不變。
-candidate:app/billing.mjs:6:1242,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,暫時無法領取試用點，帳戶須通過驗證並符合資格。
-candidate:app/billing.mjs:6:1277,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,帳戶數
-candidate:app/billing.mjs:6:1294,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,已付款訂單
-candidate:app/billing.mjs:6:1312,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,付款帳戶
-candidate:app/billing.mjs:6:1325,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,按幣別收款
-candidate:app/billing.mjs:6:1341,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,按幣別退款
-candidate:app/billing.mjs:6:1355,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,供應商呼叫
-candidate:app/billing.mjs:6:1373,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,已知供應商成本 · USD
-candidate:app/billing.mjs:6:1401,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,次呼叫成本未知或不完整
-candidate:app/billing.mjs:6:1424,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,缺少用量維持未知。只要有呼叫缺少完整用量，已知供應商成本就是部分計量。現金收款、點數消費和會計收入分別記錄。
-candidate:app/billing.mjs:6:1495,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,還沒有金額記錄。
-candidate:app/billing.mjs:6:1511,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,開始日期（上海）
-candidate:app/billing.mjs:6:1525,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,結束日期（不含，上海）
-candidate:app/billing.mjs:6:1545,js-cjk-literal,app/billing.mjs,6,,unknown,protected,path,Asia/Shanghai · 半開時間窗：包含開始，不包含結束。
-candidate:app/billing.mjs:6:1587,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,查看報表
-candidate:app/billing.mjs:6:1601,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,報表時間窗
-candidate:app/billing.mjs:6:1619,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,選擇時間範圍，載入真實計費彙總。
-candidate:app/billing.mjs:6:1648,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,"1 點 = 1,000,000 記帳單位。預留與正式消費分開。"
-candidate:app/billing.mjs:6:1687,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,閱讀、筆記與匯出仍然免費。
-candidate:app/billing.mjs:6:1711,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,需要協助？
-candidate:app/billing.mjs:6:1727,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,隱私說明
-candidate:app/billing.mjs:6:1743,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,營運報表
-candidate:app/billing.mjs:6:1760,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,請選擇有效日期範圍，結束日期須晚於開始日期。
+candidate:app/billing.mjs:6:545,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,正在向伺服器核對付款…
+candidate:app/billing.mjs:6:564,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,付款已核實，點數已入帳。
+candidate:app/billing.mjs:6:587,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,付款尚未核實。返回頁參數不會發放點數，可稍後重新整理查看。
+candidate:app/billing.mjs:6:626,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,已記錄退款
+candidate:app/billing.mjs:6:643,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,付款核對中
+candidate:app/billing.mjs:6:661,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,已取消
+candidate:app/billing.mjs:6:674,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,失敗
+candidate:app/billing.mjs:6:684,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,處理中 · 已預留
+candidate:app/billing.mjs:6:704,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,已消費
+candidate:app/billing.mjs:6:718,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,未扣點 · 已釋放
+candidate:app/billing.mjs:6:739,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,點數已退回
+candidate:app/billing.mjs:6:753,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,已發放
+candidate:app/billing.mjs:6:777,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,退款調整
+candidate:app/billing.mjs:6:795,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,試用贈送
+candidate:app/billing.mjs:6:816,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,購買入帳
+candidate:app/billing.mjs:6:835,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,單段雙譯
+candidate:app/billing.mjs:6:855,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,閱讀對話
+candidate:app/billing.mjs:6:873,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,AI 註解
+candidate:app/billing.mjs:6:889,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,未報告
+candidate:app/billing.mjs:6:904,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,付款尚未開放，閱讀和匯出仍可使用。
+candidate:app/billing.mjs:6:929,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,測試模式：僅沙盒結帳，不涉及真實付款或正式點數。
+candidate:app/billing.mjs:6:968,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,付款暫不可用：伺服器就緒檢查尚未通過。
+candidate:app/billing.mjs:6:996,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,暫時無法載入帳單，請稍後重試。
+candidate:app/billing.mjs:6:1024,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,目前帳戶無權查看營運計費概覽。
+candidate:app/billing.mjs:6:1050,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,帳戶已變更，原帳戶的帳單資料已清除。請重新整理後繼續。
+candidate:app/billing.mjs:6:1095,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,請重新登入後繼續。
+candidate:app/billing.mjs:6:1121,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,目前無法結帳，已有點數與閱讀資料保持不變。
+candidate:app/billing.mjs:6:1156,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,暫時無法領取試用點，帳戶須通過驗證並符合資格。
+candidate:app/billing.mjs:6:1191,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,帳戶數
+candidate:app/billing.mjs:6:1208,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,已付款訂單
+candidate:app/billing.mjs:6:1226,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,付款帳戶
+candidate:app/billing.mjs:6:1239,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,按幣別收款
+candidate:app/billing.mjs:6:1255,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,按幣別退款
+candidate:app/billing.mjs:6:1269,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,供應商呼叫
+candidate:app/billing.mjs:6:1287,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,已知供應商成本 · USD
+candidate:app/billing.mjs:6:1315,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,次呼叫成本未知或不完整
+candidate:app/billing.mjs:6:1338,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,缺少用量維持未知。只要有呼叫缺少完整用量，已知供應商成本就是部分計量。現金收款、點數消費和會計收入分別記錄。
+candidate:app/billing.mjs:6:1409,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,還沒有金額記錄。
+candidate:app/billing.mjs:6:1425,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,開始日期（上海）
+candidate:app/billing.mjs:6:1439,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,結束日期（不含，上海）
+candidate:app/billing.mjs:6:1459,js-cjk-literal,app/billing.mjs,6,,unknown,protected,path,Asia/Shanghai · 半開時間窗：包含開始，不包含結束。
+candidate:app/billing.mjs:6:1501,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,查看報表
+candidate:app/billing.mjs:6:1515,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,報表時間窗
+candidate:app/billing.mjs:6:1533,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,選擇時間範圍，載入真實計費彙總。
+candidate:app/billing.mjs:6:1562,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,"1 點 = 1,000,000 記帳單位。預留與正式消費分開。"
+candidate:app/billing.mjs:6:1601,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,閱讀、筆記與匯出仍然免費。
+candidate:app/billing.mjs:6:1625,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,需要協助？
+candidate:app/billing.mjs:6:1641,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,隱私說明
+candidate:app/billing.mjs:6:1657,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,營運報表
+candidate:app/billing.mjs:6:1674,js-cjk-literal,app/billing.mjs,6,,unknown,reviewable,,請選擇有效日期範圍，結束日期須晚於開始日期。
 candidate:app/billing.mjs:7:12,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,ポイントと請求
 candidate:app/billing.mjs:7:28,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,請求の概要
 candidate:app/billing.mjs:7:41,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,自分の読書室に戻る
@@ -349,59 +343,56 @@ candidate:app/billing.mjs:7:578,js-cjk-literal,app/billing.mjs,7,,unknown,review
 candidate:app/billing.mjs:7:589,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,注文
 candidate:app/billing.mjs:7:602,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,Creem 領収書
 candidate:app/billing.mjs:7:619,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,さらに読み込む
-candidate:app/billing.mjs:7:633,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,100 ポイントを購入 · US$5
-candidate:app/billing.mjs:7:662,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,テスト決済 · 100 ポイント
-candidate:app/billing.mjs:7:690,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,サーバーで支払いを確認中…
-candidate:app/billing.mjs:7:711,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,支払いを確認し、ポイントを付与しました。
-candidate:app/billing.mjs:7:742,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,支払いはまだ確認されていません。URL の情報だけでは付与しません。後で更新できます。
-candidate:app/billing.mjs:7:795,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,返金を記録済み
-candidate:app/billing.mjs:7:814,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,支払いを確認中
-candidate:app/billing.mjs:7:834,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,キャンセル済み
-candidate:app/billing.mjs:7:851,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,失敗
-candidate:app/billing.mjs:7:861,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,処理中 · 確保済み
-candidate:app/billing.mjs:7:882,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,消費済み
-candidate:app/billing.mjs:7:897,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,消費なし · 解放済み
-candidate:app/billing.mjs:7:920,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,ポイント返還
-candidate:app/billing.mjs:7:935,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,付与
-candidate:app/billing.mjs:7:958,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,返金調整
-candidate:app/billing.mjs:7:976,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,お試し付与
-candidate:app/billing.mjs:7:998,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,購入分付与
-candidate:app/billing.mjs:7:1018,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,直訳と意訳
-candidate:app/billing.mjs:7:1039,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,読書対話
-candidate:app/billing.mjs:7:1057,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,AI 注釈
-candidate:app/billing.mjs:7:1073,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,未報告
-candidate:app/billing.mjs:7:1088,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,支払いはまだ開始していません。読書とエクスポートは利用できます。
-candidate:app/billing.mjs:7:1128,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,テストモード：サンドボックス決済のみ。実際の支払いや本番ポイントは発生しません。
-candidate:app/billing.mjs:7:1183,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,サーバーの準備確認が完了していないため、支払いは利用できません。
-candidate:app/billing.mjs:7:1223,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,1 回限りの購入。自動更新はありません。税と最終金額は Creem 決済画面に表示します。
-candidate:app/billing.mjs:7:1277,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,請求情報を読み込めませんでした。再試行してください。
-candidate:app/billing.mjs:7:1316,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,このアカウントには運営用の請求概要へのアクセス権がありません。
-candidate:app/billing.mjs:7:1358,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,アカウントが変わったため、前の請求情報を消去しました。更新して続けてください。
-candidate:app/billing.mjs:7:1415,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,再度ログインしてください。
-candidate:app/billing.mjs:7:1445,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,現在は決済を利用できません。既存のポイントと読書記録は維持されます。
-candidate:app/billing.mjs:7:1493,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,お試しポイントを付与できませんでした。認証と利用資格が必要です。
-candidate:app/billing.mjs:7:1537,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,アカウント数
-candidate:app/billing.mjs:7:1557,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,支払済み注文
-candidate:app/billing.mjs:7:1576,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,支払い済みアカウント
-candidate:app/billing.mjs:7:1595,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,通貨別の入金
-candidate:app/billing.mjs:7:1612,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,通貨別の返金
-candidate:app/billing.mjs:7:1627,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,サプライヤー呼び出し
-candidate:app/billing.mjs:7:1650,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,判明したサプライヤー費用 · USD
-candidate:app/billing.mjs:7:1683,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,件の費用が不明または不完全
-candidate:app/billing.mjs:7:1708,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,用量が不明な場合は不明のまま表示します。完全な用量がない呼び出しがあれば、既知の費用は部分的な計測です。入金、ポイント消費、会計上の収益は別に記録します。
-candidate:app/billing.mjs:7:1802,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,金額の記録はありません。
-candidate:app/billing.mjs:7:1822,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,開始日（上海）
-candidate:app/billing.mjs:7:1835,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,終了日（含まない・上海）
-candidate:app/billing.mjs:7:1856,js-cjk-literal,app/billing.mjs,7,,unknown,protected,path,Asia/Shanghai · 半開区間：開始を含み、終了を含みません。
-candidate:app/billing.mjs:7:1901,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,レポートを表示
-candidate:app/billing.mjs:7:1918,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,集計期間
-candidate:app/billing.mjs:7:1935,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,期間を指定して実際の請求集計を読み込みます。
-candidate:app/billing.mjs:7:1970,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,"1 ポイント = 1,000,000 記帳単位。確保と消費は区別します。"
-candidate:app/billing.mjs:7:2014,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,読書、ノート、エクスポートは引き続き無料です。
-candidate:app/billing.mjs:7:2048,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,お問い合わせ
-candidate:app/billing.mjs:7:2065,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,プライバシー
-candidate:app/billing.mjs:7:2083,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,運営レポート
-candidate:app/billing.mjs:7:2102,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,有効な日付範囲を選択してください。終了日は開始日より後にします。
+candidate:app/billing.mjs:7:638,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,サーバーで支払いを確認中…
+candidate:app/billing.mjs:7:659,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,支払いを確認し、ポイントを付与しました。
+candidate:app/billing.mjs:7:690,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,支払いはまだ確認されていません。URL の情報だけでは付与しません。後で更新できます。
+candidate:app/billing.mjs:7:743,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,返金を記録済み
+candidate:app/billing.mjs:7:762,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,支払いを確認中
+candidate:app/billing.mjs:7:782,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,キャンセル済み
+candidate:app/billing.mjs:7:799,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,失敗
+candidate:app/billing.mjs:7:809,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,処理中 · 確保済み
+candidate:app/billing.mjs:7:830,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,消費済み
+candidate:app/billing.mjs:7:845,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,消費なし · 解放済み
+candidate:app/billing.mjs:7:868,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,ポイント返還
+candidate:app/billing.mjs:7:883,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,付与
+candidate:app/billing.mjs:7:906,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,返金調整
+candidate:app/billing.mjs:7:924,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,お試し付与
+candidate:app/billing.mjs:7:946,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,購入分付与
+candidate:app/billing.mjs:7:966,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,直訳と意訳
+candidate:app/billing.mjs:7:987,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,読書対話
+candidate:app/billing.mjs:7:1005,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,AI 注釈
+candidate:app/billing.mjs:7:1021,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,未報告
+candidate:app/billing.mjs:7:1036,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,支払いはまだ開始していません。読書とエクスポートは利用できます。
+candidate:app/billing.mjs:7:1076,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,テストモード：サンドボックス決済のみ。実際の支払いや本番ポイントは発生しません。
+candidate:app/billing.mjs:7:1131,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,サーバーの準備確認が完了していないため、支払いは利用できません。
+candidate:app/billing.mjs:7:1172,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,請求情報を読み込めませんでした。再試行してください。
+candidate:app/billing.mjs:7:1211,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,このアカウントには運営用の請求概要へのアクセス権がありません。
+candidate:app/billing.mjs:7:1253,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,アカウントが変わったため、前の請求情報を消去しました。更新して続けてください。
+candidate:app/billing.mjs:7:1310,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,再度ログインしてください。
+candidate:app/billing.mjs:7:1340,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,現在は決済を利用できません。既存のポイントと読書記録は維持されます。
+candidate:app/billing.mjs:7:1388,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,お試しポイントを付与できませんでした。認証と利用資格が必要です。
+candidate:app/billing.mjs:7:1432,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,アカウント数
+candidate:app/billing.mjs:7:1452,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,支払済み注文
+candidate:app/billing.mjs:7:1471,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,支払い済みアカウント
+candidate:app/billing.mjs:7:1490,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,通貨別の入金
+candidate:app/billing.mjs:7:1507,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,通貨別の返金
+candidate:app/billing.mjs:7:1522,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,サプライヤー呼び出し
+candidate:app/billing.mjs:7:1545,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,判明したサプライヤー費用 · USD
+candidate:app/billing.mjs:7:1578,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,件の費用が不明または不完全
+candidate:app/billing.mjs:7:1603,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,用量が不明な場合は不明のまま表示します。完全な用量がない呼び出しがあれば、既知の費用は部分的な計測です。入金、ポイント消費、会計上の収益は別に記録します。
+candidate:app/billing.mjs:7:1697,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,金額の記録はありません。
+candidate:app/billing.mjs:7:1717,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,開始日（上海）
+candidate:app/billing.mjs:7:1730,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,終了日（含まない・上海）
+candidate:app/billing.mjs:7:1751,js-cjk-literal,app/billing.mjs,7,,unknown,protected,path,Asia/Shanghai · 半開区間：開始を含み、終了を含みません。
+candidate:app/billing.mjs:7:1796,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,レポートを表示
+candidate:app/billing.mjs:7:1813,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,集計期間
+candidate:app/billing.mjs:7:1830,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,期間を指定して実際の請求集計を読み込みます。
+candidate:app/billing.mjs:7:1865,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,"1 ポイント = 1,000,000 記帳単位。確保と消費は区別します。"
+candidate:app/billing.mjs:7:1909,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,読書、ノート、エクスポートは引き続き無料です。
+candidate:app/billing.mjs:7:1943,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,お問い合わせ
+candidate:app/billing.mjs:7:1960,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,プライバシー
+candidate:app/billing.mjs:7:1978,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,運営レポート
+candidate:app/billing.mjs:7:1997,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,有効な日付範囲を選択してください。終了日は開始日より後にします。
 candidate:app/billing.mjs:11:25,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,试用点
 candidate:app/billing.mjs:11:46,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,购买点
 candidate:app/billing.mjs:11:65,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,审核点
@@ -645,228 +636,240 @@ candidate:app/command-palette.mjs:95:108,js-attribute,app/command-palette.mjs,95
 candidate:app/command-palette.mjs:96:101,js-attribute,app/command-palette.mjs,96,role,unknown,reviewable,,listbox
 candidate:app/command-palette.mjs:97:183,js-dom-literal,app/command-palette.mjs,97,textContent,unknown,reviewable,,×
 candidate:app/command-palette.mjs:131:112,js-attribute,app/command-palette.mjs,131,role,unknown,reviewable,,option
-candidate:app/commerce-pages.mjs:9:18,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,首页
-candidate:app/commerce-pages.mjs:9:31,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,价格
-candidate:app/commerce-pages.mjs:9:42,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,服务条款
-candidate:app/commerce-pages.mjs:9:57,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,退款政策
-candidate:app/commerce-pages.mjs:9:72,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,隐私说明
-candidate:app/commerce-pages.mjs:9:87,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,额度与账单
-candidate:app/commerce-pages.mjs:9:105,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,语言
-candidate:app/commerce-pages.mjs:9:115,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,跳到正文
-candidate:app/commerce-pages.mjs:9:130,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,需要时，帮你读下去
-candidate:app/commerce-pages.mjs:9:148,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,"阅读免费。
-AI 按需使用。"
-candidate:app/commerce-pages.mjs:9:172,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,自己的书、已保存的译文与笔记，都留在自己的书房。只有你主动请求的新 AI 处理使用阅读点。
-candidate:app/commerce-pages.mjs:9:225,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,100 阅读点
-candidate:app/commerce-pages.mjs:9:240,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,一次性购买，无自动续费，无自动充值。
-candidate:app/commerce-pages.mjs:9:267,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,每个验证账户一次领取 10 试用点。
-candidate:app/commerce-pages.mjs:9:297,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,打开额度与账单
-candidate:app/commerce-pages.mjs:9:316,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,支付尚未开放。你仍可阅读和导出自己的记录。
-candidate:app/commerce-pages.mjs:9:349,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,请在账户中查看当前支付可用性。
-candidate:app/commerce-pages.mjs:9:371,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,额度包价格为 US$5。适用税费与最终总额以 Creem 结账页为准。
-candidate:app/commerce-pages.mjs:9:417,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,你主动发起的处理
-candidate:app/commerce-pages.mjs:9:433,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,阅读点
-candidate:app/commerce-pages.mjs:9:446,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,单段翻译，独立保存直译与意译
-candidate:app/commerce-pages.mjs:9:463,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,1 点
-candidate:app/commerce-pages.mjs:9:471,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,一次阅读对话或选文 AI 注解
-candidate:app/commerce-pages.mjs:9:489,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,4 点
-candidate:app/commerce-pages.mjs:9:497,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,阅读已有文本、写笔记、调整排版、查看已保存结果
-candidate:app/commerce-pages.mjs:9:523,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,免费
-candidate:app/commerce-pages.mjs:9:530,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,导出书籍与自己的记录
-candidate:app/commerce-pages.mjs:9:543,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,免费
-candidate:app/commerce-pages.mjs:9:550,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,平台赞助的自动松鼠陪读
-candidate:app/commerce-pages.mjs:9:564,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,不使用购买点
-candidate:app/commerce-pages.mjs:9:583,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,"翻译目前面向中文。目标原文须完整，最多 4,000 个 Unicode 码点，总上下文有界。阅读对话使用当前书的授权工具与近期对话，不是无限任务。"
-candidate:app/commerce-pages.mjs:9:668,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,处理中先预留，结果校验并保存后才消费。失败、取消或未交付不消费购买点。再次查看已保存的结果免费。
-candidate:app/commerce-pages.mjs:9:727,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,自动松鼠陪读由平台赞助，绝不借用购买点；独立赞助预算不足时可以暂停。
-candidate:app/commerce-pages.mjs:9:769,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,自托管和导出始终免费
-candidate:app/commerce-pages.mjs:9:791,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,Leafhour 采用 AGPL-3.0 开源。自托管不要求接入 Creem 或购买阅读点；运营者自行配置模型服务并承担费用。
-candidate:app/commerce-pages.mjs:9:866,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,购买前
-candidate:app/commerce-pages.mjs:9:883,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,首发购买点不设常规到期日。点数代表本实例的服务权益，不是现金钱包或可转移资金。请先阅读服务条款与退款政策。
-candidate:app/commerce-pages.mjs:9:950,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,本条款适用于 leafhour.com 的 Leafhour 官方托管阅读服务。服务、支付与账户问题请联系 support@leafhour.com。
-candidate:app/commerce-pages.mjs:9:1044,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,自己的书房
-candidate:app/commerce-pages.mjs:9:1052,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,无需购买点数，也可以阅读已有内容、保存个人笔记和导出记录。个人上传默认私有。你的原创文字仍属于你；AI 回答与用户原话分别保存。
-candidate:app/commerce-pages.mjs:9:1121,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,私人上传与版权
-candidate:app/commerce-pages.mjs:9:1131,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,仅上传你依法有权使用和处理的材料。软件开源许可不等于第三方书籍与译文的发行许可。分享或发表前，请核对来源、版权与所在地规定；公版范围可能因国家或地区而异。
-candidate:app/commerce-pages.mjs:9:1213,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,AI 结果是草稿
-candidate:app/commerce-pages.mjs:9:1224,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,AI 译文、回答与注解可能出错，会标明草稿或生成内容，并与作者原文区分。请核对原文。购买点数不保证某一种解释或事实准确性。
-candidate:app/commerce-pages.mjs:9:1290,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,点数与支付
-candidate:app/commerce-pages.mjs:9:1298,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,首发额度包为 US$5 / 100 阅读点，一次性购买，无自动续费。每个验证账户可领取一次 10 试用点。单段双译 1 点，一次阅读对话或选文 AI 注解 4 点；发起收费请求前显示准确点数。适用税费与最终总额以 Creem 结账页为准。
-candidate:app/commerce-pages.mjs:9:1422,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,交付、限制与暂停
-candidate:app/commerce-pages.mjs:9:1433,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,再次查看已保存的结果不收费。失败、取消或未交付不消费购买点。既有用量与上下文限制仍有效，自动松鼠陪读不使用购买点。支付争议或滥用可能暂停新的收费处理，不改变你的原创文字归属；访问或导出遇到问题请联系支持。
-candidate:app/commerce-pages.mjs:9:1540,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,自托管与变更
-candidate:app/commerce-pages.mjs:9:1549,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,软件使用 AGPL-3.0 许可，本地阅读、自托管和导出不依赖订阅。自托管运营者自行配置供应商及政策。未来新请求的价格可能调整，已创建任务保留报价。购买点数不代表永久运营承诺。
-candidate:app/commerce-pages.mjs:9:1642,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,支持与法定权利
-candidate:app/commerce-pages.mjs:9:1652,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,退款、服务与账户问题请发邮件至 support@leafhour.com。退款政策与强制性消费者权利及适用的 Creem 规则共同适用，本条款不限制法定权利。
-candidate:app/commerce-pages.mjs:9:1748,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,请联系 support@leafhour.com 申请退款。运营者核对后通过 Creem 处理；目前没有自动退款按钮。
-candidate:app/commerce-pages.mjs:9:1827,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,14 天申请窗口
-candidate:app/commerce-pages.mjs:9:1838,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,购买后 14 天内，可以申请未使用购买点的退款。部分使用时，按该订单实际支付、优惠、税费与剩余未用点数核算可退范围。试用点和赞助点不能折现退款。
-candidate:app/commerce-pages.mjs:9:1915,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,申请资料
-candidate:app/commerce-pages.mjs:9:1922,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,请提供订单编号和 Leafhour 账户邮箱，不要发送密码、银行卡资料或私人书籍。我们核对订单与剩余购买点后确认资格及金额。
-candidate:app/commerce-pages.mjs:9:1989,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,原路退回
-candidate:app/commerce-pages.mjs:9:1996,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,获准退款通过 Creem 在支持的情况下退回原支付方式。处理时间和资格受适用法律、法定权利及 Creem 规则约束；提交申请不保证必然获准。
-candidate:app/commerce-pages.mjs:9:2071,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,失败任务与争议
-candidate:app/commerce-pages.mjs:9:2081,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,失败、取消或未交付的 AI 处理不消费购买点，处理中预留与正式消费分开。余额异常时请向支持提供操作编号。退款或支付争议可能撤回相关未用权益并暂停收费生成，阅读记录仍归你所有。
-candidate:app/commerce-pages.mjs:10:18,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,首頁
-candidate:app/commerce-pages.mjs:10:31,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,價格
-candidate:app/commerce-pages.mjs:10:42,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,服務條款
-candidate:app/commerce-pages.mjs:10:57,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,退款政策
-candidate:app/commerce-pages.mjs:10:72,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,隱私說明
-candidate:app/commerce-pages.mjs:10:87,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,額度與帳單
-candidate:app/commerce-pages.mjs:10:105,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,語言
-candidate:app/commerce-pages.mjs:10:115,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,跳到正文
-candidate:app/commerce-pages.mjs:10:130,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,需要時，幫你讀下去
-candidate:app/commerce-pages.mjs:10:148,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,"閱讀免費。
-AI 按需使用。"
-candidate:app/commerce-pages.mjs:10:172,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,自己的書、已儲存的譯文與筆記，都留在自己的書房。只有你主動請求的新 AI 處理使用閱讀點。
-candidate:app/commerce-pages.mjs:10:225,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,100 閱讀點
-candidate:app/commerce-pages.mjs:10:240,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,一次性購買，無自動續費，無自動儲值。
-candidate:app/commerce-pages.mjs:10:267,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,每個驗證帳戶一次領取 10 試用點。
-candidate:app/commerce-pages.mjs:10:297,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,開啟額度與帳單
-candidate:app/commerce-pages.mjs:10:316,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,付款尚未開放。你仍可閱讀和匯出自己的記錄。
-candidate:app/commerce-pages.mjs:10:349,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,請在帳戶中查看目前付款可用性。
-candidate:app/commerce-pages.mjs:10:371,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,額度包價格為 US$5。適用稅費與最終總額以 Creem 結帳頁為準。
-candidate:app/commerce-pages.mjs:10:417,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,你主動發起的處理
-candidate:app/commerce-pages.mjs:10:433,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,閱讀點
-candidate:app/commerce-pages.mjs:10:446,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,單段翻譯，獨立儲存直譯與意譯
-candidate:app/commerce-pages.mjs:10:463,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,1 點
-candidate:app/commerce-pages.mjs:10:471,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,一次閱讀對話或選文 AI 註解
-candidate:app/commerce-pages.mjs:10:489,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,4 點
-candidate:app/commerce-pages.mjs:10:497,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,閱讀已有文字、寫筆記、調整排版、查看已儲存結果
-candidate:app/commerce-pages.mjs:10:523,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,免費
-candidate:app/commerce-pages.mjs:10:530,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,匯出書籍與自己的記錄
-candidate:app/commerce-pages.mjs:10:543,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,免費
-candidate:app/commerce-pages.mjs:10:550,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,平台贊助的自動松鼠陪讀
-candidate:app/commerce-pages.mjs:10:564,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,不使用購買點
-candidate:app/commerce-pages.mjs:10:583,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,"翻譯目前面向中文。目標原文須完整，最多 4,000 個 Unicode 碼點，總上下文有界。閱讀對話使用目前書籍的授權工具與近期對話，不是無限任務。"
-candidate:app/commerce-pages.mjs:10:669,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,處理中先預留，結果校驗並儲存後才消費。失敗、取消或未交付不消費購買點。再次查看已儲存的結果免費。
-candidate:app/commerce-pages.mjs:10:728,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,自動松鼠陪讀由平台贊助，絕不借用購買點；獨立贊助預算不足時可以暫停。
-candidate:app/commerce-pages.mjs:10:770,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,自託管和匯出維持免費
-candidate:app/commerce-pages.mjs:10:792,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,Leafhour 採用 AGPL-3.0 開源。自託管不要求接入 Creem 或購買閱讀點；營運者自行設定模型服務並承擔費用。
-candidate:app/commerce-pages.mjs:10:867,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,購買前
-candidate:app/commerce-pages.mjs:10:884,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,首發購買點不設一般到期日。點數代表本實例的服務權益，不是現金錢包或可轉移資金。請先閱讀服務條款與退款政策。
-candidate:app/commerce-pages.mjs:10:951,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,本條款適用於 leafhour.com 的 Leafhour 官方託管閱讀服務。服務、付款與帳戶問題請聯絡 support@leafhour.com。
-candidate:app/commerce-pages.mjs:10:1045,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,自己的書房
-candidate:app/commerce-pages.mjs:10:1053,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,無需購買點數，也可以閱讀已有內容、儲存個人筆記和匯出記錄。個人上傳預設私有。你的原創文字仍屬於你；AI 回答與使用者原話分別儲存。
-candidate:app/commerce-pages.mjs:10:1123,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,私人上傳與版權
-candidate:app/commerce-pages.mjs:10:1133,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,僅上傳你依法有權使用和處理的材料。軟體開源授權不等於第三方書籍與譯文的發行許可。分享或發表前，請核對來源、版權與所在地規定；公版範圍可能因國家或地區而異。
-candidate:app/commerce-pages.mjs:10:1215,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,AI 結果是草稿
-candidate:app/commerce-pages.mjs:10:1226,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,AI 譯文、回答與註解可能出錯，會標明草稿或生成內容，並與作者原文區分。請核對原文。購買點數不保證某一種解釋或事實準確性。
-candidate:app/commerce-pages.mjs:10:1292,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,點數與付款
-candidate:app/commerce-pages.mjs:10:1300,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,首發額度包為 US$5 / 100 閱讀點，一次性購買，無自動續費。每個驗證帳戶可領取一次 10 試用點。單段雙譯 1 點，一次閱讀對話或選文 AI 註解 4 點；發起收費請求前顯示準確點數。適用稅費與最終總額以 Creem 結帳頁為準。
-candidate:app/commerce-pages.mjs:10:1424,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,交付、限制與暫停
-candidate:app/commerce-pages.mjs:10:1435,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,再次查看已儲存的結果不收費。失敗、取消或未交付不消費購買點。既有用量與上下文限制仍有效，自動松鼠陪讀不使用購買點。付款爭議或濫用可能暫停新的收費處理，不改變你的原創文字歸屬；存取或匯出遇到問題請聯絡支援。
-candidate:app/commerce-pages.mjs:10:1542,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,自託管與變更
-candidate:app/commerce-pages.mjs:10:1551,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,軟體使用 AGPL-3.0 授權，本地閱讀、自託管和匯出不依賴訂閱。自託管營運者自行設定供應商及政策。未來新請求的價格可能調整，已建立任務保留報價。購買點數不代表永久營運承諾。
-candidate:app/commerce-pages.mjs:10:1644,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,支援與法定權利
-candidate:app/commerce-pages.mjs:10:1654,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,退款、服務與帳戶問題請寄信至 support@leafhour.com。退款政策與強制性消費者權利及適用的 Creem 規則共同適用，本條款不限制法定權利。
-candidate:app/commerce-pages.mjs:10:1749,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,請聯絡 support@leafhour.com 申請退款。營運者核對後透過 Creem 處理；目前沒有自動退款按鈕。
-candidate:app/commerce-pages.mjs:10:1828,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,14 天申請期間
-candidate:app/commerce-pages.mjs:10:1839,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,購買後 14 天內，可以申請未使用購買點的退款。部分使用時，按該訂單實際付款、優惠、稅費與剩餘未用點數核算可退範圍。試用點和贊助點不能折現退款。
-candidate:app/commerce-pages.mjs:10:1916,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,申請資料
-candidate:app/commerce-pages.mjs:10:1923,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,請提供訂單編號和 Leafhour 帳戶信箱，不要傳送密碼、銀行卡資料或私人書籍。我們核對訂單與剩餘購買點後確認資格及金額。
-candidate:app/commerce-pages.mjs:10:1990,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,原路退回
-candidate:app/commerce-pages.mjs:10:1997,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,獲准退款透過 Creem 在支援的情況下退回原付款方式。處理時間和資格受適用法律、法定權利及 Creem 規則約束；提交申請不保證必然獲准。
-candidate:app/commerce-pages.mjs:10:2072,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,失敗任務與爭議
-candidate:app/commerce-pages.mjs:10:2082,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,失敗、取消或未交付的 AI 處理不消費購買點，處理中預留與正式消費分開。餘額異常時請向支援提供操作編號。退款或付款爭議可能撤回相關未用權益並暫停收費生成，閱讀記錄仍歸你所有。
-candidate:app/commerce-pages.mjs:11:11,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,ホーム
-candidate:app/commerce-pages.mjs:11:25,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,料金
-candidate:app/commerce-pages.mjs:11:36,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,利用規約
-candidate:app/commerce-pages.mjs:11:51,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,返金ポリシー
-candidate:app/commerce-pages.mjs:11:68,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,プライバシー
-candidate:app/commerce-pages.mjs:11:85,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,ポイントと請求
-candidate:app/commerce-pages.mjs:11:105,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,言語
-candidate:app/commerce-pages.mjs:11:115,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,本文へ
-candidate:app/commerce-pages.mjs:11:129,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,必要なときに、読書の手助けを
-candidate:app/commerce-pages.mjs:11:152,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,"読むことは無料。
-AI は必要なときに。"
-candidate:app/commerce-pages.mjs:11:182,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,本、保存した翻訳、ノートはあなたのもの。自分で依頼する新しい AI 処理にだけ読書ポイントを使います。
-candidate:app/commerce-pages.mjs:11:241,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,100 読書ポイント
-candidate:app/commerce-pages.mjs:11:259,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,1 回限りの購入。自動更新・自動チャージはありません。
-candidate:app/commerce-pages.mjs:11:295,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,認証済みアカウントごとに 10 お試しポイントを 1 回付与。
-candidate:app/commerce-pages.mjs:11:338,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,ポイントと請求を開く
-candidate:app/commerce-pages.mjs:11:360,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,支払いはまだ開始していません。読書と記録のエクスポートは利用できます。
-candidate:app/commerce-pages.mjs:11:407,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,現在の支払い状況はアカウントでご確認ください。
-candidate:app/commerce-pages.mjs:11:437,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,パック価格は US$5 です。適用税と最終金額は Creem 決済画面に表示されます。
-candidate:app/commerce-pages.mjs:11:491,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,依頼する処理
-candidate:app/commerce-pages.mjs:11:505,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,読書ポイント
-candidate:app/commerce-pages.mjs:11:521,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,1 段落の直訳と意訳を別々に保存
-candidate:app/commerce-pages.mjs:11:540,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,1 ポイント
-candidate:app/commerce-pages.mjs:11:551,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,1 回の読書対話または選択テキストの AI 注釈
-candidate:app/commerce-pages.mjs:11:578,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,4 ポイント
-candidate:app/commerce-pages.mjs:11:589,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,保存済み文章の閲覧、ノート、組版調整、結果の再表示
-candidate:app/commerce-pages.mjs:11:617,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,無料
-candidate:app/commerce-pages.mjs:11:624,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,本と自分の記録のエクスポート
-candidate:app/commerce-pages.mjs:11:641,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,無料
-candidate:app/commerce-pages.mjs:11:648,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,運営負担の自動読書コンパニオン
-candidate:app/commerce-pages.mjs:11:666,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,購入ポイントを使いません
-candidate:app/commerce-pages.mjs:11:691,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,"翻訳は現在、中国語向けです。原文は段落全体で最大 4,000 Unicode コードポイント、文脈にも上限があります。対話は現在の本で許可されたツールと最近の会話を使う、範囲を限定した処理です。"
-candidate:app/commerce-pages.mjs:11:800,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,処理中はポイントを確保し、検証済みの結果が保存された後に消費します。失敗、キャンセル、未提供の処理には購入ポイントを消費しません。保存済みの結果の再表示は無料です。
-candidate:app/commerce-pages.mjs:11:893,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,自動読書コンパニオンは運営負担で、購入ポイントは使いません。専用の予算が不足すると一時停止する場合があります。
-candidate:app/commerce-pages.mjs:11:956,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,セルフホストとエクスポートは無料
-candidate:app/commerce-pages.mjs:11:984,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,Leafhour は AGPL-3.0 のオープンソースです。セルフホストに Creem 接続や読書ポイント購入は不要です。運営者がモデルサービスを設定し、その費用を負担します。
-candidate:app/commerce-pages.mjs:11:1085,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,購入前に
-candidate:app/commerce-pages.mjs:11:1103,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,開始時点では購入ポイントに通常の有効期限はありません。このインスタンスのサービス利用権であり、現金の財布や送金可能な資金ではありません。規約と返金ポリシーをご確認ください。
-candidate:app/commerce-pages.mjs:11:1203,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,この規約は leafhour.com の Leafhour 公式ホスティング読書サービスに適用されます。サービス、支払い、アカウントのお問い合わせは support@leafhour.com へ。
-candidate:app/commerce-pages.mjs:11:1320,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,あなたの読書室
-candidate:app/commerce-pages.mjs:11:1330,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,ポイントを買わずに保存済みの内容を読み、個人ノートを保存し、記録をエクスポートできます。個人のアップロードは初期設定で非公開です。あなたの創作文章はあなたのもので、AI の回答と区別して保存します。
-candidate:app/commerce-pages.mjs:11:1434,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,非公開アップロードと著作権
-candidate:app/commerce-pages.mjs:11:1450,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,合法的に利用・処理する権利のある資料だけをアップロードしてください。ソフトウェアの公開ライセンスは他者の本や翻訳の配布許可ではありません。共有・公開前に出典、著作権、地域の規則を確認してください。パブリックドメインの範囲は国によって異なります。
-candidate:app/commerce-pages.mjs:11:1577,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,AI の結果は草稿
-candidate:app/commerce-pages.mjs:11:1589,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,AI 翻訳、回答、注釈には誤りがありえます。草稿または生成内容と表示し、著者の原文とは区別します。原文と照合してください。ポイント購入は特定の解釈や正確性を保証しません。
-candidate:app/commerce-pages.mjs:11:1679,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,ポイントと支払い
-candidate:app/commerce-pages.mjs:11:1690,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,開始時のパックは US$5 で 100 読書ポイント。1 回限りの購入で自動更新はありません。認証済みアカウントごとに 10 お試しポイントを 1 回付与できます。1 段落の直訳・意訳は 1 ポイント、1 回の対話または選択 AI 注釈は 4 ポイントです。依頼前に正確な価格を表示します。税と最終金額は Creem 決済画面に表示されます。
-candidate:app/commerce-pages.mjs:11:1866,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,提供、制限、停止
-candidate:app/commerce-pages.mjs:11:1877,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,保存済み結果の再表示は無料です。失敗、キャンセル、未提供の処理に購入ポイントを消費しません。既存の利用量と文脈の制限は継続します。自動コンパニオンは購入ポイントを使いません。支払い紛争や不正利用で新しい有料処理を停止する場合がありますが、文章の所有権は変わりません。アクセスや出力に問題があればお問い合わせください。
-candidate:app/commerce-pages.mjs:11:2040,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,セルフホストと変更
-candidate:app/commerce-pages.mjs:11:2052,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,ソフトウェアは AGPL-3.0 で提供します。ローカル読書、セルフホスト、エクスポートに定期契約は不要です。セルフホスト運営者は独自の設定と規約を定めます。将来の新規依頼の価格は変更される場合があります。作成済みの処理は見積価格を維持します。ポイント購入は永久運営の約束ではありません。
-candidate:app/commerce-pages.mjs:11:2201,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,サポートと法定権利
-candidate:app/commerce-pages.mjs:11:2213,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,返金、サービス、アカウントについては support@leafhour.com へ。返金ポリシーは強行法規上の消費者権利と Creem の適用規則とともに適用されます。法定の権利を制限しません。
-candidate:app/commerce-pages.mjs:11:2327,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,返金申請は support@leafhour.com へ。運営者が確認し、Creem 経由で処理します。自動返金ボタンはありません。
-candidate:app/commerce-pages.mjs:11:2413,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,14 日間の申請期間
-candidate:app/commerce-pages.mjs:11:2426,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,購入後 14 日以内に、未使用の購入ポイントの返金を申請できます。一部使用したパックは実際の支払額、割引、税、未使用ポイントに基づき確認します。お試し・運営負担ポイントは換金できません。
-candidate:app/commerce-pages.mjs:11:2524,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,必要な情報
-candidate:app/commerce-pages.mjs:11:2532,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,注文 ID と Leafhour アカウントのメールアドレスをお送りください。パスワード、カード情報、非公開の本は送らないでください。注文と残りの購入ポイントを確認し、対象範囲と金額をご案内します。
-candidate:app/commerce-pages.mjs:11:2636,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,元の支払い方法への返金
-candidate:app/commerce-pages.mjs:11:2650,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,承認された返金は、対応可能な場合に Creem 経由で元の支払い方法へ返します。処理期間と対象範囲は適用法、法定権利、Creem の規則に従います。申請は承認を保証するものではありません。
-candidate:app/commerce-pages.mjs:11:2749,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,失敗した処理と紛争
-candidate:app/commerce-pages.mjs:11:2761,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,失敗、キャンセル、未提供の AI 処理は購入ポイントを消費せず、処理中の確保と消費を区別します。残高に問題があれば処理 ID をお知らせください。返金や支払い紛争により関連する未使用権利の撤回や有料生成の停止を行う場合があります。読書記録は引き続きあなたのものです。
-candidate:app/commerce-pages.mjs:16:19,js-cjk-literal,app/commerce-pages.mjs,16,,unknown,reviewable,,一次性充值
-candidate:app/commerce-pages.mjs:16:35,js-cjk-literal,app/commerce-pages.mjs,16,,unknown,reviewable,,每月阅读点
-candidate:app/commerce-pages.mjs:16:56,js-cjk-literal,app/commerce-pages.mjs,16,,unknown,reviewable,,US$5 / 月
-candidate:app/commerce-pages.mjs:16:79,js-cjk-literal,app/commerce-pages.mjs,16,,unknown,reviewable,,每次实际付款成功后发放 100 点。订阅每月自动续费，直至在登录后的 Creem 客户门户取消。适用税费与最终总额以结账页为准。AI 使用并非无限。
-candidate:app/commerce-pages.mjs:16:169,js-cjk-literal,app/commerce-pages.mjs,16,,unknown,reviewable,,购买点数可累积、不过期。取消将停止后续续费，已到账点数保留。阅读、笔记、已保存结果与导出仍免费。
-candidate:app/commerce-pages.mjs:16:226,js-cjk-literal,app/commerce-pages.mjs,16,,unknown,reviewable,,每个验证账户一次 10 试用点，符合资格且活动预算可用时自动发放。
-candidate:app/commerce-pages.mjs:16:275,js-cjk-literal,app/commerce-pages.mjs,16,,unknown,reviewable,,可选择一次性 US$5 / 100 阅读点，无自动续费；或 US$5 / 月，每次实际付款成功后发放 100 点。月付订阅自动续费，直至在登录后的 Creem 客户门户取消。购买点数可累积、不过期；取消停止后续续费，已到账点数保留。AI 使用并非无限。每个验证账户一次 10 试用点，符合资格且活动预算可用时自动发放。单段双译 1 点，一次阅读对话或选文 AI 注解 4 点；发起收费请求前显示准确点数。适用税费与最终总额以 Creem 结账页为准。
-candidate:app/commerce-pages.mjs:16:516,js-cjk-literal,app/commerce-pages.mjs,16,,unknown,reviewable,,每次实际付款后 14 天内，可以申请该次付款中未使用购买点的退款，包括订阅付款。可退范围按该订单实际支付、优惠、税费与剩余未用点数核算。试用点和赞助点不能折现退款。
-candidate:app/commerce-pages.mjs:16:613,js-cjk-literal,app/commerce-pages.mjs,16,,unknown,reviewable,,取消后续续费
-candidate:app/commerce-pages.mjs:16:633,js-cjk-literal,app/commerce-pages.mjs,16,,unknown,protected,quotation,在“额度与账单”选择“管理 / 取消续费”，进入登录后的 Creem 客户门户。取消将停止后续订阅续费，已到账点数保留。取消不会自动退还已付费用；退款请另行联系支持申请。
-candidate:app/commerce-pages.mjs:17:19,js-cjk-literal,app/commerce-pages.mjs,17,,unknown,reviewable,,一次性儲值
-candidate:app/commerce-pages.mjs:17:35,js-cjk-literal,app/commerce-pages.mjs,17,,unknown,reviewable,,每月閱讀點
-candidate:app/commerce-pages.mjs:17:56,js-cjk-literal,app/commerce-pages.mjs,17,,unknown,reviewable,,US$5 / 月
-candidate:app/commerce-pages.mjs:17:79,js-cjk-literal,app/commerce-pages.mjs,17,,unknown,reviewable,,每次實際付款成功後發放 100 點。訂閱每月自動續費，直到在登入後的 Creem 客戶入口取消。適用稅費與最終總額以結帳頁為準。AI 使用並非無限。
-candidate:app/commerce-pages.mjs:17:169,js-cjk-literal,app/commerce-pages.mjs,17,,unknown,reviewable,,購買點數可累積、不過期。取消將停止後續續費，已入帳點數保留。閱讀、筆記、已儲存結果與匯出仍免費。
-candidate:app/commerce-pages.mjs:17:226,js-cjk-literal,app/commerce-pages.mjs,17,,unknown,reviewable,,每個驗證帳戶一次 10 試用點，符合資格且活動預算可用時自動發放。
-candidate:app/commerce-pages.mjs:17:275,js-cjk-literal,app/commerce-pages.mjs,17,,unknown,reviewable,,可選擇一次性 US$5 / 100 閱讀點，無自動續費；或 US$5 / 月，每次實際付款成功後發放 100 點。月付訂閱自動續費，直到在登入後的 Creem 客戶入口取消。購買點數可累積、不過期；取消停止後續續費，已入帳點數保留。AI 使用並非無限。每個驗證帳戶一次 10 試用點，符合資格且活動預算可用時自動發放。單段雙譯 1 點，一次閱讀對話或選文 AI 註解 4 點；發起收費請求前顯示準確點數。適用稅費與最終總額以 Creem 結帳頁為準。
-candidate:app/commerce-pages.mjs:17:516,js-cjk-literal,app/commerce-pages.mjs,17,,unknown,reviewable,,每次實際付款後 14 天內，可以申請該次付款中未使用購買點的退款，包括訂閱付款。可退範圍按該訂單實際付款、優惠、稅費與剩餘未用點數核算。試用點和贊助點不能折現退款。
-candidate:app/commerce-pages.mjs:17:613,js-cjk-literal,app/commerce-pages.mjs,17,,unknown,reviewable,,取消後續續費
-candidate:app/commerce-pages.mjs:17:633,js-cjk-literal,app/commerce-pages.mjs,17,,unknown,protected,quotation,在「額度與帳單」選擇「管理 / 取消續費」，進入登入後的 Creem 客戶入口。取消將停止後續訂閱續費，已入帳點數保留。取消不會自動退還已付費用；退款請另行聯絡支援申請。
-candidate:app/commerce-pages.mjs:18:12,js-cjk-literal,app/commerce-pages.mjs,18,,unknown,reviewable,,1 回限りの追加購入
-candidate:app/commerce-pages.mjs:18:33,js-cjk-literal,app/commerce-pages.mjs,18,,unknown,reviewable,,毎月の読書ポイント
-candidate:app/commerce-pages.mjs:18:58,js-cjk-literal,app/commerce-pages.mjs,18,,unknown,reviewable,,US$5 / 月
-candidate:app/commerce-pages.mjs:18:81,js-cjk-literal,app/commerce-pages.mjs,18,,unknown,reviewable,,支払いが成功するごとに 100 ポイントを付与します。認証後の Creem カスタマーポータルで解約するまで、毎月自動更新されます。適用税と最終金額は決済画面に表示します。AI の利用は無制限ではありません。
-candidate:app/commerce-pages.mjs:18:201,js-cjk-literal,app/commerce-pages.mjs,18,,unknown,reviewable,,購入ポイントは累積し、有効期限なし。解約は次回以降の更新を停止し、付与済みポイントは残ります。読書、ノート、保存済み結果、エクスポートは無料です。
-candidate:app/commerce-pages.mjs:18:283,js-cjk-literal,app/commerce-pages.mjs,18,,unknown,reviewable,,認証済みアカウントごとに 10 お試しポイントを 1 回、資格とキャンペーン予算を確認して自動付与します。
-candidate:app/commerce-pages.mjs:18:352,js-cjk-literal,app/commerce-pages.mjs,18,,unknown,reviewable,,1 回限りの US$5 / 100 読書ポイントの追加購入（自動更新なし）、または US$5 / 月のプランを選べます。月額プランは支払いが成功するごとに 100 ポイントを付与し、認証後の Creem カスタマーポータルで解約するまで自動更新します。購入ポイントは累積し、有効期限なし。解約は次回以降の更新を停止し、付与済みポイントは残ります。AI の利用は無制限ではありません。認証済みアカウントごとに 10 お試しポイントを 1 回、資格とキャンペーン予算を確認して自動付与します。1 段落の直訳・意訳は 1 ポイント、1 回の対話または選択 AI 注釈は 4 ポイントです。依頼前に正確な価格を表示します。適用税と最終金額は Creem 決済画面に表示します。
-candidate:app/commerce-pages.mjs:18:702,js-cjk-literal,app/commerce-pages.mjs,18,,unknown,reviewable,,各支払いから 14 日以内に、その支払いで購入した未使用ポイントの返金を申請できます。定期契約の各支払いも対象です。対象範囲は注文の実際の支払額、割引、税、未使用ポイントに基づき確認します。お試し・運営負担ポイントは換金できません。
-candidate:app/commerce-pages.mjs:18:833,js-cjk-literal,app/commerce-pages.mjs,18,,unknown,reviewable,,次回以降の更新を停止
-candidate:app/commerce-pages.mjs:18:857,js-cjk-literal,app/commerce-pages.mjs,18,,unknown,protected,quotation,「ポイントと請求」の「管理 / 自動更新を解約」から、認証後の Creem カスタマーポータルを開けます。解約は次回以降の更新を停止し、付与済みポイントは残ります。解約による自動返金はありません。返金は別途サポートへ申請してください。
-candidate:app/commerce-pages.mjs:31:194,js-cjk-literal,app/commerce-pages.mjs,31,,unknown,reviewable,,简体中文
-candidate:app/commerce-pages.mjs:31:211,js-cjk-literal,app/commerce-pages.mjs,31,,unknown,reviewable,,繁體中文
-candidate:app/commerce-pages.mjs:31:223,js-cjk-literal,app/commerce-pages.mjs,31,,unknown,reviewable,,日本語
-candidate:app/commerce-pages.mjs:34:862,js-cjk-literal,app/commerce-pages.mjs,34,,unknown,reviewable,,保存结果后才消费
-candidate:app/commerce-pages.mjs:34:883,js-cjk-literal,app/commerce-pages.mjs,34,,unknown,reviewable,,儲存結果後才消費
-candidate:app/commerce-pages.mjs:34:899,js-cjk-literal,app/commerce-pages.mjs,34,,unknown,reviewable,,結果の保存後に消費
+candidate:app/commerce-pages.mjs:9:20,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,首页
+candidate:app/commerce-pages.mjs:9:35,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,价格
+candidate:app/commerce-pages.mjs:9:48,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,服务条款
+candidate:app/commerce-pages.mjs:9:65,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,退款政策
+candidate:app/commerce-pages.mjs:9:82,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,隐私说明
+candidate:app/commerce-pages.mjs:9:99,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,额度与账单
+candidate:app/commerce-pages.mjs:9:119,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,语言
+candidate:app/commerce-pages.mjs:9:131,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,跳到正文
+candidate:app/commerce-pages.mjs:9:148,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,需要时，帮你读下去
+candidate:app/commerce-pages.mjs:9:168,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,"遇到难读的地方，
+多一个帮手。"
+candidate:app/commerce-pages.mjs:9:195,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,围绕书里的想法提问，解释一段话，或对照中文读下去。每月一份阅读点，用在你需要的地方。
+candidate:app/commerce-pages.mjs:9:247,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,每月 100 阅读点
+candidate:app/commerce-pages.mjs:9:268,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,每个验证账户一次 10 试用点，符合资格且活动预算可用时自动发放。
+candidate:app/commerce-pages.mjs:9:315,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,查看月付方案
+candidate:app/commerce-pages.mjs:9:335,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,支付尚未开放。你仍可阅读和导出自己的记录。
+candidate:app/commerce-pages.mjs:9:370,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,请在账户中查看当前支付可用性。
+candidate:app/commerce-pages.mjs:9:394,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,每月 US$5。适用税费与最终总额以 Creem 结账页为准。
+candidate:app/commerce-pages.mjs:9:438,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,哪些操作使用阅读点
+candidate:app/commerce-pages.mjs:9:457,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,阅读点
+candidate:app/commerce-pages.mjs:9:472,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,一次阅读提问或选文解释
+candidate:app/commerce-pages.mjs:9:486,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,4 点
+candidate:app/commerce-pages.mjs:9:494,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,单段中文翻译，独立保存直译与意译
+candidate:app/commerce-pages.mjs:9:513,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,1 点
+candidate:app/commerce-pages.mjs:9:531,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,"翻译目前面向中文。目标原文须完整，最多 4,000 个 Unicode 码点，总上下文有界。阅读对话使用当前书的授权工具与近期对话，不是无限任务。"
+candidate:app/commerce-pages.mjs:9:618,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,处理中先预留，结果校验并保存后才消费。失败、取消或未交付不消费购买点。再次查看已保存的结果免费。
+candidate:app/commerce-pages.mjs:9:679,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,自动松鼠陪读由平台赞助，绝不借用购买点；独立赞助预算不足时可以暂停。
+candidate:app/commerce-pages.mjs:9:723,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,自托管和导出始终免费
+candidate:app/commerce-pages.mjs:9:747,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,Leafhour 采用 AGPL-3.0 开源。自托管不要求接入 Creem 或购买阅读点；运营者自行配置模型服务并承担费用。
+candidate:app/commerce-pages.mjs:9:824,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,购买前
+candidate:app/commerce-pages.mjs:9:843,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,购买点数可累积、不过期。取消将停止后续续费，已到账点数保留。点数代表本站的服务权益，不是现金或可转移资金。请阅读服务条款与退款政策。
+candidate:app/commerce-pages.mjs:9:925,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,本条款适用于 leafhour.com 的 Leafhour 官方托管阅读服务。服务、支付与账户问题请联系 support@leafhour.com。
+candidate:app/commerce-pages.mjs:9:1021,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,自己的书房
+candidate:app/commerce-pages.mjs:9:1029,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,无需购买点数，也可以阅读已有内容、保存个人笔记和导出记录。个人上传默认私有。你的原创文字仍属于你；AI 回答与用户原话分别保存。
+candidate:app/commerce-pages.mjs:9:1098,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,私人上传与版权
+candidate:app/commerce-pages.mjs:9:1108,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,仅上传你依法有权使用和处理的材料。软件开源许可不等于第三方书籍与译文的发行许可。分享或发表前，请核对来源、版权与所在地规定；公版范围可能因国家或地区而异。
+candidate:app/commerce-pages.mjs:9:1190,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,AI 结果是草稿
+candidate:app/commerce-pages.mjs:9:1201,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,AI 译文、回答与注解可能出错，会标明草稿或生成内容，并与作者原文区分。请核对原文。购买点数不保证某一种解释或事实准确性。
+candidate:app/commerce-pages.mjs:9:1267,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,点数与支付
+candidate:app/commerce-pages.mjs:9:1275,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,月付订阅为 US$5 / 月，每次实际付款成功后发放 100 阅读点。订阅每月自动续费，直至在 Creem 客户门户取消。购买点数可累积、不过期；取消停止后续续费，已到账点数保留。AI 使用并非无限。每个验证账户一次 10 试用点，符合资格且活动预算可用时自动发放。单段中文翻译分别保存直译与意译，使用 1 点；一次阅读提问或选文解释使用 4 点。开始收费处理前显示准确点数。适用税费与最终总额以 Creem 结账页为准。
+candidate:app/commerce-pages.mjs:9:1491,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,交付、限制与暂停
+candidate:app/commerce-pages.mjs:9:1502,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,再次查看已保存的结果不收费。失败、取消或未交付不消费购买点。既有用量与上下文限制仍有效，自动松鼠陪读不使用购买点。支付争议或滥用可能暂停新的收费处理，不改变你的原创文字归属；访问或导出遇到问题请联系支持。
+candidate:app/commerce-pages.mjs:9:1609,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,自托管与变更
+candidate:app/commerce-pages.mjs:9:1618,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,软件使用 AGPL-3.0 许可，本地阅读、自托管和导出不依赖订阅。自托管运营者自行配置供应商及政策。未来新请求的价格可能调整，已创建任务保留报价。购买点数不代表永久运营承诺。
+candidate:app/commerce-pages.mjs:9:1711,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,支持与法定权利
+candidate:app/commerce-pages.mjs:9:1721,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,退款、服务与账户问题请发邮件至 support@leafhour.com。退款政策与强制性消费者权利及适用的 Creem 规则共同适用，本条款不限制法定权利。
+candidate:app/commerce-pages.mjs:9:1819,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,请联系 support@leafhour.com 申请退款。运营者核对后通过 Creem 处理；目前没有自动退款按钮。
+candidate:app/commerce-pages.mjs:9:1900,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,14 天申请窗口
+candidate:app/commerce-pages.mjs:9:1911,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,每次实际付款后 14 天内，可以申请该次付款中未使用购买点的退款，包括订阅付款。可退范围按该订单实际支付、优惠、税费与剩余未用点数核算。试用点和赞助点不能折现退款。
+candidate:app/commerce-pages.mjs:9:1998,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,取消后续续费
+candidate:app/commerce-pages.mjs:9:2007,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,protected,quotation,在“额度与账单”选择“管理 / 取消续费”，进入登录后的 Creem 客户门户。取消将停止后续订阅续费，已到账点数保留。取消不会自动退还已付费用；退款请另行联系支持申请。
+candidate:app/commerce-pages.mjs:9:2097,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,申请资料
+candidate:app/commerce-pages.mjs:9:2104,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,请提供订单编号和 Leafhour 账户邮箱，不要发送密码、银行卡资料或私人书籍。我们核对订单与剩余购买点后确认资格及金额。
+candidate:app/commerce-pages.mjs:9:2171,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,原路退回
+candidate:app/commerce-pages.mjs:9:2178,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,获准退款通过 Creem 在支持的情况下退回原支付方式。处理时间和资格受适用法律、法定权利及 Creem 规则约束；提交申请不保证必然获准。
+candidate:app/commerce-pages.mjs:9:2253,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,失败任务与争议
+candidate:app/commerce-pages.mjs:9:2263,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,失败、取消或未交付的 AI 处理不消费购买点，处理中预留与正式消费分开。余额异常时请向支持提供操作编号。退款或支付争议可能撤回相关未用权益并暂停收费生成，阅读记录仍归你所有。
+candidate:app/commerce-pages.mjs:9:2365,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,AI 阅读订阅
+candidate:app/commerce-pages.mjs:9:2390,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,US$5 / 月
+candidate:app/commerce-pages.mjs:9:2415,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,每次实际付款成功后发放 100 点。AI 使用并非无限。
+candidate:app/commerce-pages.mjs:9:2461,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,购买点数可累积、不过期。取消将停止后续续费，已到账点数保留。阅读、笔记、已保存结果与导出仍免费。
+candidate:app/commerce-pages.mjs:9:2527,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,月付订阅为 US$5 / 月，每次实际付款成功后发放 100 阅读点。订阅每月自动续费，直至在 Creem 客户门户取消。购买点数可累积、不过期；取消停止后续续费，已到账点数保留。AI 使用并非无限。每个验证账户一次 10 试用点，符合资格且活动预算可用时自动发放。单段中文翻译分别保存直译与意译，使用 1 点；一次阅读提问或选文解释使用 4 点。开始收费处理前显示准确点数。适用税费与最终总额以 Creem 结账页为准。
+candidate:app/commerce-pages.mjs:9:2756,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,每次实际付款后 14 天内，可以申请该次付款中未使用购买点的退款，包括订阅付款。可退范围按该订单实际支付、优惠、税费与剩余未用点数核算。试用点和赞助点不能折现退款。
+candidate:app/commerce-pages.mjs:9:2855,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,取消后续续费
+candidate:app/commerce-pages.mjs:9:2877,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,protected,quotation,在“额度与账单”选择“管理 / 取消续费”，进入登录后的 Creem 客户门户。取消将停止后续订阅续费，已到账点数保留。取消不会自动退还已付费用；退款请另行联系支持申请。
+candidate:app/commerce-pages.mjs:9:2975,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,订阅每月自动续费，直至在 Creem 客户门户取消。
+candidate:app/commerce-pages.mjs:9:3017,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,围绕书本提问
+candidate:app/commerce-pages.mjs:9:3026,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,顺着一个问题，在当前读的书里寻找线索。
+candidate:app/commerce-pages.mjs:9:3050,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,解释选中的文字
+candidate:app/commerce-pages.mjs:9:3060,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,遇到生词、难句或陌生的想法，选中后查看解释。
+candidate:app/commerce-pages.mjs:9:3087,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,中文翻译
+candidate:app/commerce-pages.mjs:9:3094,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,对照直译与意译阅读，两份译文分别保存。
+candidate:app/commerce-pages.mjs:9:3130,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,免费阅读
+candidate:app/commerce-pages.mjs:9:3148,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,读自己的书、写笔记、调整排版，随时重看已保存的结果。导出书籍与自己的记录也不需要订阅。
+candidate:app/commerce-pages.mjs:9:3210,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,4 种界面语言
+candidate:app/commerce-pages.mjs:9:3235,js-cjk-literal,app/commerce-pages.mjs,9,,unknown,reviewable,,界面可使用英语、简体中文、繁体中文和日语。界面语言不改变翻译目标，目前新译文仅生成中文。
+candidate:app/commerce-pages.mjs:10:20,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,首頁
+candidate:app/commerce-pages.mjs:10:35,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,價格
+candidate:app/commerce-pages.mjs:10:48,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,服務條款
+candidate:app/commerce-pages.mjs:10:65,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,退款政策
+candidate:app/commerce-pages.mjs:10:82,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,隱私說明
+candidate:app/commerce-pages.mjs:10:99,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,額度與帳單
+candidate:app/commerce-pages.mjs:10:119,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,語言
+candidate:app/commerce-pages.mjs:10:131,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,跳到正文
+candidate:app/commerce-pages.mjs:10:148,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,需要時，幫你讀下去
+candidate:app/commerce-pages.mjs:10:168,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,"遇到難讀的地方，
+多一個幫手。"
+candidate:app/commerce-pages.mjs:10:195,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,圍繞書裡的想法提問，解釋一段話，或對照中文讀下去。每月一份閱讀點，用在你需要的地方。
+candidate:app/commerce-pages.mjs:10:247,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,每月 100 閱讀點
+candidate:app/commerce-pages.mjs:10:268,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,每個驗證帳戶一次 10 試用點，符合資格且活動預算可用時自動發放。
+candidate:app/commerce-pages.mjs:10:315,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,查看月付方案
+candidate:app/commerce-pages.mjs:10:335,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,付款尚未開放。你仍可閱讀和匯出自己的記錄。
+candidate:app/commerce-pages.mjs:10:370,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,請在帳戶中查看目前付款可用性。
+candidate:app/commerce-pages.mjs:10:394,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,每月 US$5。適用稅費與最終總額以 Creem 結帳頁為準。
+candidate:app/commerce-pages.mjs:10:438,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,哪些操作使用閱讀點
+candidate:app/commerce-pages.mjs:10:457,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,閱讀點
+candidate:app/commerce-pages.mjs:10:472,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,一次閱讀提問或選文解釋
+candidate:app/commerce-pages.mjs:10:486,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,4 點
+candidate:app/commerce-pages.mjs:10:494,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,單段中文翻譯，獨立儲存直譯與意譯
+candidate:app/commerce-pages.mjs:10:513,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,1 點
+candidate:app/commerce-pages.mjs:10:531,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,"翻譯目前面向中文。目標原文須完整，最多 4,000 個 Unicode 碼點，總上下文有界。閱讀對話使用目前書籍的授權工具與近期對話，不是無限任務。"
+candidate:app/commerce-pages.mjs:10:619,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,處理中先預留，結果校驗並儲存後才消費。失敗、取消或未交付不消費購買點。再次查看已儲存的結果免費。
+candidate:app/commerce-pages.mjs:10:680,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,自動松鼠陪讀由平台贊助，絕不借用購買點；獨立贊助預算不足時可以暫停。
+candidate:app/commerce-pages.mjs:10:724,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,自託管和匯出維持免費
+candidate:app/commerce-pages.mjs:10:748,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,Leafhour 採用 AGPL-3.0 開源。自託管不要求接入 Creem 或購買閱讀點；營運者自行設定模型服務並承擔費用。
+candidate:app/commerce-pages.mjs:10:825,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,購買前
+candidate:app/commerce-pages.mjs:10:844,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,購買點數可累積、不過期。取消將停止後續續費，已入帳點數保留。點數代表本站的服務權益，不是現金或可轉移資金。請閱讀服務條款與退款政策。
+candidate:app/commerce-pages.mjs:10:926,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,本條款適用於 leafhour.com 的 Leafhour 官方託管閱讀服務。服務、付款與帳戶問題請聯絡 support@leafhour.com。
+candidate:app/commerce-pages.mjs:10:1022,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,自己的書房
+candidate:app/commerce-pages.mjs:10:1030,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,無需購買點數，也可以閱讀已有內容、儲存個人筆記和匯出記錄。個人上傳預設私有。你的原創文字仍屬於你；AI 回答與使用者原話分別儲存。
+candidate:app/commerce-pages.mjs:10:1100,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,私人上傳與版權
+candidate:app/commerce-pages.mjs:10:1110,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,僅上傳你依法有權使用和處理的材料。軟體開源授權不等於第三方書籍與譯文的發行許可。分享或發表前，請核對來源、版權與所在地規定；公版範圍可能因國家或地區而異。
+candidate:app/commerce-pages.mjs:10:1192,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,AI 結果是草稿
+candidate:app/commerce-pages.mjs:10:1203,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,AI 譯文、回答與註解可能出錯，會標明草稿或生成內容，並與作者原文區分。請核對原文。購買點數不保證某一種解釋或事實準確性。
+candidate:app/commerce-pages.mjs:10:1269,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,點數與付款
+candidate:app/commerce-pages.mjs:10:1277,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,月付訂閱為 US$5 / 月，每次實際付款成功後發放 100 閱讀點。訂閱每月自動續費，直到在 Creem 客戶入口取消。購買點數可累積、不過期；取消停止後續續費，已入帳點數保留。AI 使用並非無限。每個驗證帳戶一次 10 試用點，符合資格且活動預算可用時自動發放。單段中文翻譯分別儲存直譯與意譯，使用 1 點；一次閱讀提問或選文解釋使用 4 點。開始收費處理前顯示準確點數。適用稅費與最終總額以 Creem 結帳頁為準。
+candidate:app/commerce-pages.mjs:10:1493,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,交付、限制與暫停
+candidate:app/commerce-pages.mjs:10:1504,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,再次查看已儲存的結果不收費。失敗、取消或未交付不消費購買點。既有用量與上下文限制仍有效，自動松鼠陪讀不使用購買點。付款爭議或濫用可能暫停新的收費處理，不改變你的原創文字歸屬；存取或匯出遇到問題請聯絡支援。
+candidate:app/commerce-pages.mjs:10:1611,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,自託管與變更
+candidate:app/commerce-pages.mjs:10:1620,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,軟體使用 AGPL-3.0 授權，本地閱讀、自託管和匯出不依賴訂閱。自託管營運者自行設定供應商及政策。未來新請求的價格可能調整，已建立任務保留報價。購買點數不代表永久營運承諾。
+candidate:app/commerce-pages.mjs:10:1713,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,支援與法定權利
+candidate:app/commerce-pages.mjs:10:1723,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,退款、服務與帳戶問題請寄信至 support@leafhour.com。退款政策與強制性消費者權利及適用的 Creem 規則共同適用，本條款不限制法定權利。
+candidate:app/commerce-pages.mjs:10:1820,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,請聯絡 support@leafhour.com 申請退款。營運者核對後透過 Creem 處理；目前沒有自動退款按鈕。
+candidate:app/commerce-pages.mjs:10:1901,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,14 天申請期間
+candidate:app/commerce-pages.mjs:10:1912,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,每次實際付款後 14 天內，可以申請該次付款中未使用購買點的退款，包括訂閱付款。可退範圍按該訂單實際付款、優惠、稅費與剩餘未用點數核算。試用點和贊助點不能折現退款。
+candidate:app/commerce-pages.mjs:10:1999,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,取消後續續費
+candidate:app/commerce-pages.mjs:10:2008,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,protected,quotation,在「額度與帳單」選擇「管理 / 取消續費」，進入登入後的 Creem 客戶入口。取消將停止後續訂閱續費，已入帳點數保留。取消不會自動退還已付費用；退款請另行聯絡支援申請。
+candidate:app/commerce-pages.mjs:10:2098,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,申請資料
+candidate:app/commerce-pages.mjs:10:2105,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,請提供訂單編號和 Leafhour 帳戶信箱，不要傳送密碼、銀行卡資料或私人書籍。我們核對訂單與剩餘購買點後確認資格及金額。
+candidate:app/commerce-pages.mjs:10:2172,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,原路退回
+candidate:app/commerce-pages.mjs:10:2179,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,獲准退款透過 Creem 在支援的情況下退回原付款方式。處理時間和資格受適用法律、法定權利及 Creem 規則約束；提交申請不保證必然獲准。
+candidate:app/commerce-pages.mjs:10:2254,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,失敗任務與爭議
+candidate:app/commerce-pages.mjs:10:2264,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,失敗、取消或未交付的 AI 處理不消費購買點，處理中預留與正式消費分開。餘額異常時請向支援提供操作編號。退款或付款爭議可能撤回相關未用權益並暫停收費生成，閱讀記錄仍歸你所有。
+candidate:app/commerce-pages.mjs:10:2366,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,AI 閱讀訂閱
+candidate:app/commerce-pages.mjs:10:2391,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,US$5 / 月
+candidate:app/commerce-pages.mjs:10:2416,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,每次實際付款成功後發放 100 點。AI 使用並非無限。
+candidate:app/commerce-pages.mjs:10:2462,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,購買點數可累積、不過期。取消將停止後續續費，已入帳點數保留。閱讀、筆記、已儲存結果與匯出仍免費。
+candidate:app/commerce-pages.mjs:10:2528,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,月付訂閱為 US$5 / 月，每次實際付款成功後發放 100 閱讀點。訂閱每月自動續費，直到在 Creem 客戶入口取消。購買點數可累積、不過期；取消停止後續續費，已入帳點數保留。AI 使用並非無限。每個驗證帳戶一次 10 試用點，符合資格且活動預算可用時自動發放。單段中文翻譯分別儲存直譯與意譯，使用 1 點；一次閱讀提問或選文解釋使用 4 點。開始收費處理前顯示準確點數。適用稅費與最終總額以 Creem 結帳頁為準。
+candidate:app/commerce-pages.mjs:10:2757,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,每次實際付款後 14 天內，可以申請該次付款中未使用購買點的退款，包括訂閱付款。可退範圍按該訂單實際付款、優惠、稅費與剩餘未用點數核算。試用點和贊助點不能折現退款。
+candidate:app/commerce-pages.mjs:10:2856,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,取消後續續費
+candidate:app/commerce-pages.mjs:10:2878,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,protected,quotation,在「額度與帳單」選擇「管理 / 取消續費」，進入登入後的 Creem 客戶入口。取消將停止後續訂閱續費，已入帳點數保留。取消不會自動退還已付費用；退款請另行聯絡支援申請。
+candidate:app/commerce-pages.mjs:10:2976,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,訂閱每月自動續費，直到在 Creem 客戶入口取消。
+candidate:app/commerce-pages.mjs:10:3018,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,圍繞書本提問
+candidate:app/commerce-pages.mjs:10:3027,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,順著一個問題，在目前讀的書裡尋找線索。
+candidate:app/commerce-pages.mjs:10:3051,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,解釋選中的文字
+candidate:app/commerce-pages.mjs:10:3061,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,遇到生詞、難句或陌生的想法，選取後查看解釋。
+candidate:app/commerce-pages.mjs:10:3088,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,中文翻譯
+candidate:app/commerce-pages.mjs:10:3095,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,對照直譯與意譯閱讀，兩份譯文分別儲存。
+candidate:app/commerce-pages.mjs:10:3131,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,免費閱讀
+candidate:app/commerce-pages.mjs:10:3149,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,讀自己的書、寫筆記、調整排版，隨時重看已儲存的結果。匯出書籍與自己的記錄也不需要訂閱。
+candidate:app/commerce-pages.mjs:10:3211,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,4 種介面語言
+candidate:app/commerce-pages.mjs:10:3236,js-cjk-literal,app/commerce-pages.mjs,10,,unknown,reviewable,,介面可使用英語、簡體中文、繁體中文和日語。介面語言不改變翻譯目標，目前新譯文僅生成中文。
+candidate:app/commerce-pages.mjs:11:15,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,ホーム
+candidate:app/commerce-pages.mjs:11:31,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,料金
+candidate:app/commerce-pages.mjs:11:44,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,利用規約
+candidate:app/commerce-pages.mjs:11:61,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,返金ポリシー
+candidate:app/commerce-pages.mjs:11:80,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,プライバシー
+candidate:app/commerce-pages.mjs:11:99,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,ポイントと請求
+candidate:app/commerce-pages.mjs:11:121,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,言語
+candidate:app/commerce-pages.mjs:11:133,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,本文へ
+candidate:app/commerce-pages.mjs:11:149,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,必要なときに、読書の手助けを
+candidate:app/commerce-pages.mjs:11:174,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,"読みたい本を、
+もう少し深く。"
+candidate:app/commerce-pages.mjs:11:201,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,本の考えについて質問する。難しい一節を読み解く。中国語訳と読み比べる。毎月の読書ポイントを、必要な手助けに使えます。
+candidate:app/commerce-pages.mjs:11:269,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,毎月 100 読書ポイント
+candidate:app/commerce-pages.mjs:11:293,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,認証済みアカウントごとに 10 お試しポイントを 1 回、資格とキャンペーン予算を確認して自動付与します。
+candidate:app/commerce-pages.mjs:11:360,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,月額プランを確認
+candidate:app/commerce-pages.mjs:11:382,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,支払いはまだ開始していません。読書と記録のエクスポートは利用できます。
+candidate:app/commerce-pages.mjs:11:431,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,現在の支払い状況はアカウントでご確認ください。
+candidate:app/commerce-pages.mjs:11:463,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,月額 US$5。適用税と最終金額は Creem 決済画面に表示されます。
+candidate:app/commerce-pages.mjs:11:512,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,ポイントを使う操作
+candidate:app/commerce-pages.mjs:11:531,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,読書ポイント
+candidate:app/commerce-pages.mjs:11:549,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,1 回の読書質問または選択した文章の解説
+candidate:app/commerce-pages.mjs:11:572,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,4 ポイント
+candidate:app/commerce-pages.mjs:11:583,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,1 段落の中国語訳を直訳・意訳で別々に保存
+candidate:app/commerce-pages.mjs:11:607,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,1 ポイント
+candidate:app/commerce-pages.mjs:11:628,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,"翻訳は現在、中国語向けです。原文は段落全体で最大 4,000 Unicode コードポイント、文脈にも上限があります。対話は現在の本で許可されたツールと最近の会話を使う、範囲を限定した処理です。"
+candidate:app/commerce-pages.mjs:11:739,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,処理中はポイントを確保し、検証済みの結果が保存された後に消費します。失敗、キャンセル、未提供の処理には購入ポイントを消費しません。保存済みの結果の再表示は無料です。
+candidate:app/commerce-pages.mjs:11:834,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,自動読書コンパニオンは運営負担で、購入ポイントは使いません。専用の予算が不足すると一時停止する場合があります。
+candidate:app/commerce-pages.mjs:11:899,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,セルフホストとエクスポートは無料
+candidate:app/commerce-pages.mjs:11:929,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,Leafhour は AGPL-3.0 のオープンソースです。セルフホストに Creem 接続や読書ポイント購入は不要です。運営者がモデルサービスを設定し、その費用を負担します。
+candidate:app/commerce-pages.mjs:11:1032,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,購入前に
+candidate:app/commerce-pages.mjs:11:1052,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,購入ポイントは累積し、有効期限なし。解約は次回以降の更新を停止し、付与済みポイントは残ります。このサービスの利用権であり、現金や送金可能な資金ではありません。規約と返金ポリシーをご確認ください。
+candidate:app/commerce-pages.mjs:11:1165,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,この規約は leafhour.com の Leafhour 公式ホスティング読書サービスに適用されます。サービス、支払い、アカウントのお問い合わせは support@leafhour.com へ。
+candidate:app/commerce-pages.mjs:11:1284,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,あなたの読書室
+candidate:app/commerce-pages.mjs:11:1294,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,ポイントを買わずに保存済みの内容を読み、個人ノートを保存し、記録をエクスポートできます。個人のアップロードは初期設定で非公開です。あなたの創作文章はあなたのもので、AI の回答と区別して保存します。
+candidate:app/commerce-pages.mjs:11:1398,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,非公開アップロードと著作権
+candidate:app/commerce-pages.mjs:11:1414,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,合法的に利用・処理する権利のある資料だけをアップロードしてください。ソフトウェアの公開ライセンスは他者の本や翻訳の配布許可ではありません。共有・公開前に出典、著作権、地域の規則を確認してください。パブリックドメインの範囲は国によって異なります。
+candidate:app/commerce-pages.mjs:11:1541,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,AI の結果は草稿
+candidate:app/commerce-pages.mjs:11:1553,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,AI 翻訳、回答、注釈には誤りがありえます。草稿または生成内容と表示し、著者の原文とは区別します。原文と照合してください。ポイント購入は特定の解釈や正確性を保証しません。
+candidate:app/commerce-pages.mjs:11:1643,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,ポイントと支払い
+candidate:app/commerce-pages.mjs:11:1654,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,月額プランは US$5 / 月で、支払いが成功するごとに 100 読書ポイントを付与します。Creem カスタマーポータルで解約するまで毎月自動更新されます。購入ポイントは累積し、有効期限なし。解約は次回以降の更新を停止し、付与済みポイントは残ります。AI の利用は無制限ではありません。認証済みアカウントごとに 10 お試しポイントを 1 回、資格とキャンペーン予算を確認して自動付与します。1 段落の中国語訳を直訳・意訳で別々に保存する場合は 1 ポイント、1 回の読書質問または選択した文章の解説は 4 ポイントです。有料処理の前に正確な価格を表示します。適用税と最終金額は Creem 決済画面に表示します。
+candidate:app/commerce-pages.mjs:11:1967,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,提供、制限、停止
+candidate:app/commerce-pages.mjs:11:1978,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,保存済み結果の再表示は無料です。失敗、キャンセル、未提供の処理に購入ポイントを消費しません。既存の利用量と文脈の制限は継続します。自動コンパニオンは購入ポイントを使いません。支払い紛争や不正利用で新しい有料処理を停止する場合がありますが、文章の所有権は変わりません。アクセスや出力に問題があればお問い合わせください。
+candidate:app/commerce-pages.mjs:11:2141,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,セルフホストと変更
+candidate:app/commerce-pages.mjs:11:2153,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,ソフトウェアは AGPL-3.0 で提供します。ローカル読書、セルフホスト、エクスポートに定期契約は不要です。セルフホスト運営者は独自の設定と規約を定めます。将来の新規依頼の価格は変更される場合があります。作成済みの処理は見積価格を維持します。ポイント購入は永久運営の約束ではありません。
+candidate:app/commerce-pages.mjs:11:2302,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,サポートと法定権利
+candidate:app/commerce-pages.mjs:11:2314,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,返金、サービス、アカウントについては support@leafhour.com へ。返金ポリシーは強行法規上の消費者権利と Creem の適用規則とともに適用されます。法定の権利を制限しません。
+candidate:app/commerce-pages.mjs:11:2430,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,返金申請は support@leafhour.com へ。運営者が確認し、Creem 経由で処理します。自動返金ボタンはありません。
+candidate:app/commerce-pages.mjs:11:2518,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,14 日間の申請期間
+candidate:app/commerce-pages.mjs:11:2531,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,各支払いから 14 日以内に、その支払いで購入した未使用ポイントの返金を申請できます。定期契約の各支払いも対象です。対象範囲は注文の実際の支払額、割引、税、未使用ポイントに基づき確認します。お試し・運営負担ポイントは換金できません。
+candidate:app/commerce-pages.mjs:11:2652,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,次回以降の更新を停止
+candidate:app/commerce-pages.mjs:11:2665,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,protected,quotation,「ポイントと請求」の「管理 / 自動更新を解約」から、認証後の Creem カスタマーポータルを開けます。解約は次回以降の更新を停止し、付与済みポイントは残ります。解約による自動返金はありません。返金は別途サポートへ申請してください。
+candidate:app/commerce-pages.mjs:11:2787,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,必要な情報
+candidate:app/commerce-pages.mjs:11:2795,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,注文 ID と Leafhour アカウントのメールアドレスをお送りください。パスワード、カード情報、非公開の本は送らないでください。注文と残りの購入ポイントを確認し、対象範囲と金額をご案内します。
+candidate:app/commerce-pages.mjs:11:2899,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,元の支払い方法への返金
+candidate:app/commerce-pages.mjs:11:2913,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,承認された返金は、対応可能な場合に Creem 経由で元の支払い方法へ返します。処理期間と対象範囲は適用法、法定権利、Creem の規則に従います。申請は承認を保証するものではありません。
+candidate:app/commerce-pages.mjs:11:3012,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,失敗した処理と紛争
+candidate:app/commerce-pages.mjs:11:3024,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,失敗、キャンセル、未提供の AI 処理は購入ポイントを消費せず、処理中の確保と消費を区別します。残高に問題があれば処理 ID をお知らせください。返金や支払い紛争により関連する未使用権利の撤回や有料生成の停止を行う場合があります。読書記録は引き続きあなたのものです。
+candidate:app/commerce-pages.mjs:11:3172,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,AI 読書プラン
+candidate:app/commerce-pages.mjs:11:3198,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,US$5 / 月
+candidate:app/commerce-pages.mjs:11:3223,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,支払いが成功するごとに 100 ポイントを付与します。AI の利用は無制限ではありません。
+candidate:app/commerce-pages.mjs:11:3286,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,購入ポイントは累積し、有効期限なし。解約は次回以降の更新を停止し、付与済みポイントは残ります。読書、ノート、保存済み結果、エクスポートは無料です。
+candidate:app/commerce-pages.mjs:11:3377,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,月額プランは US$5 / 月で、支払いが成功するごとに 100 読書ポイントを付与します。Creem カスタマーポータルで解約するまで毎月自動更新されます。購入ポイントは累積し、有効期限なし。解約は次回以降の更新を停止し、付与済みポイントは残ります。AI の利用は無制限ではありません。認証済みアカウントごとに 10 お試しポイントを 1 回、資格とキャンペーン予算を確認して自動付与します。1 段落の中国語訳を直訳・意訳で別々に保存する場合は 1 ポイント、1 回の読書質問または選択した文章の解説は 4 ポイントです。有料処理の前に正確な価格を表示します。適用税と最終金額は Creem 決済画面に表示します。
+candidate:app/commerce-pages.mjs:11:3703,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,各支払いから 14 日以内に、その支払いで購入した未使用ポイントの返金を申請できます。定期契約の各支払いも対象です。対象範囲は注文の実際の支払額、割引、税、未使用ポイントに基づき確認します。お試し・運営負担ポイントは換金できません。
+candidate:app/commerce-pages.mjs:11:3836,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,次回以降の更新を停止
+candidate:app/commerce-pages.mjs:11:3862,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,protected,quotation,「ポイントと請求」の「管理 / 自動更新を解約」から、認証後の Creem カスタマーポータルを開けます。解約は次回以降の更新を停止し、付与済みポイントは残ります。解約による自動返金はありません。返金は別途サポートへ申請してください。
+candidate:app/commerce-pages.mjs:11:3992,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,Creem カスタマーポータルで解約するまで、毎月自動更新されます。
+candidate:app/commerce-pages.mjs:11:4042,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,本について質問
+candidate:app/commerce-pages.mjs:11:4052,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,読んでいる本の中で、疑問の手がかりを探します。
+candidate:app/commerce-pages.mjs:11:4080,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,選択した文章を解説
+candidate:app/commerce-pages.mjs:11:4092,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,用語、難しい一文、なじみのない考えを読み解きます。
+candidate:app/commerce-pages.mjs:11:4122,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,中国語訳
+candidate:app/commerce-pages.mjs:11:4129,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,別々に保存した直訳と意訳を読み比べられます。
+candidate:app/commerce-pages.mjs:11:4168,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,無料で読む
+candidate:app/commerce-pages.mjs:11:4187,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,自分の本を読み、ノートを書き、組版を調整し、保存した結果を読み返せます。本と自分の記録のエクスポートにも定期契約は不要です。
+candidate:app/commerce-pages.mjs:11:4268,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,4 つの表示言語
+candidate:app/commerce-pages.mjs:11:4294,js-cjk-literal,app/commerce-pages.mjs,11,,unknown,reviewable,,表示言語は英語、簡体字中国語、繁体字中国語、日本語から選べます。表示言語によって翻訳先は変わりません。新しい翻訳は現在、中国語のみです。
+candidate:app/commerce-pages.mjs:18:194,js-cjk-literal,app/commerce-pages.mjs,18,,unknown,reviewable,,简体中文
+candidate:app/commerce-pages.mjs:18:211,js-cjk-literal,app/commerce-pages.mjs,18,,unknown,reviewable,,繁體中文
+candidate:app/commerce-pages.mjs:18:223,js-cjk-literal,app/commerce-pages.mjs,18,,unknown,reviewable,,日本語
+candidate:app/commerce-pages.mjs:21:996,js-cjk-literal,app/commerce-pages.mjs,21,,unknown,reviewable,,保存结果后才消费
+candidate:app/commerce-pages.mjs:21:1017,js-cjk-literal,app/commerce-pages.mjs,21,,unknown,reviewable,,儲存結果後才消費
+candidate:app/commerce-pages.mjs:21:1033,js-cjk-literal,app/commerce-pages.mjs,21,,unknown,reviewable,,結果の保存後に消費
 candidate:app/credit-client.mjs:8:50,js-cjk-literal,app/credit-client.mjs,8,,unknown,reviewable,,单段双译
 candidate:app/credit-client.mjs:8:70,js-cjk-literal,app/credit-client.mjs,8,,unknown,reviewable,,阅读对话
 candidate:app/credit-client.mjs:8:88,js-cjk-literal,app/credit-client.mjs,8,,unknown,reviewable,,AI 注解
@@ -1051,7 +1054,7 @@ candidate:app/en/privacy.html:19:888,html-text,app/en/privacy.html,19,,unknown,r
 candidate:app/en/privacy.html:19:957,html-text,app/en/privacy.html,19,,unknown,reviewable,,繁體中文
 candidate:app/en/privacy.html:19:1011,html-text,app/en/privacy.html,19,,unknown,reviewable,,日本語
 candidate:app/en/privacy.html:21:7,html-text,app/en/privacy.html,21,,unknown,reviewable,,Sign-in and personal data
-candidate:app/en/privacy.html:21:61,html-text,app/en/privacy.html,21,,unknown,reviewable,,"Applies to leafhour.com · Updated October 21, 2026"
+candidate:app/en/privacy.html:21:61,html-text,app/en/privacy.html,21,,unknown,reviewable,,"Applies to leafhour.com · Updated October 22, 2026"
 candidate:app/en/privacy.html:22:6,html-text,app/en/privacy.html,22,,unknown,reviewable,,"Leafhour uses your sign-in identity to confirm who a reading room belongs to, and stores the books you choose to upload together with your reading records. Public samples can be read anonymously. This notice explains how this online instance handles data; a self-deployed instance is the responsibility of its operator."
 candidate:app/en/privacy.html:23:7,html-text,app/en/privacy.html,23,,unknown,reviewable,,What sign-in uses
 candidate:app/en/privacy.html:24:6,html-text,app/en/privacy.html,24,,unknown,reviewable,,"Email sign-in uses the address you enter. Supabase Auth verifies the password or code, and Resend delivers verification email. Sign-up and password recovery verify your email first, then set a password. When you choose Google or Apple sign-in, that provider verifies your identity; Supabase receives the account identifier, email address and the basic profile the provider shares, such as name and avatar. Leafhour uses this information to recognize your account and keep you signed in. It does not request access to email contents, contacts, cloud drives or calendars."
@@ -1062,7 +1065,7 @@ candidate:app/en/privacy.html:28:6,html-text,app/en/privacy.html,28,,unknown,rev
 candidate:app/en/privacy.html:29:6,html-text,app/en/privacy.html,29,,unknown,reviewable,,"Once reading starts, the page counts only time when it is visible and in the foreground. Background time pauses, and long gaps while the browser is suspended are not counted; reading time does not measure understanding. The calendar is shown in your local time zone, and time across midnight is recorded separately. The browser caches reading settings and some reading state so you can continue; while offline it holds pending reading sessions, chapter marks and unconfirmed submissions for this account, which can be retried once you are online again. Text you have not saved stays as a local draft. Selecting text, switching translations and adjusting typography happen locally; paragraph context is sent to the configured model service only when you explicitly request an AI translation or explanation. Per-paragraph translation currently uses DeepSeek and sends only the selected paragraph and the adjacent passages needed to understand it. The reading conversation may consult this account’s reading room, public books and web material on request; these tools are read-only, do not read private notes, do not write reading progress, and never buy books or add recommendations to your shelf. Sign-in details are not used as translation context."
 candidate:app/en/privacy.html:30:6,html-text,app/en/privacy.html,30,,unknown,reviewable,,"If you authorize your own agent, it can only read the books and data types you grant; write access is chosen separately. Grants created by older clients still work; to revoke one, use that client or contact the address below. Revocation stops future access but cannot automatically erase data the other side has already copied."
 candidate:app/en/privacy.html:31:7,html-text,app/en/privacy.html,31,,unknown,reviewable,,Reading points and payments
-candidate:app/en/privacy.html:32:6,html-text,app/en/privacy.html,32,,unknown,reviewable,,"If you choose a top-up or monthly subscription, Creem hosts checkout, processes each payment and provides the authenticated customer portal for subscription management. Leafhour associates your account ID with local order, checkout, transaction, subscription, customer and refund identifiers, product, currency, amounts, payment and subscription status, billing periods and an immutable credit ledger. Creem receives the contact and payment information needed for checkout. Leafhour does not receive or store full payment-card details. Private books, questions, answers and notes are not sent to Creem."
+candidate:app/en/privacy.html:32:6,html-text,app/en/privacy.html,32,,unknown,reviewable,,"If you choose a monthly subscription, Creem hosts checkout, processes each payment and provides the authenticated customer portal for subscription management. Leafhour associates your account ID with local order, checkout, transaction, subscription, customer and refund identifiers, product, currency, amounts, payment and subscription status, billing periods and an immutable credit ledger. Creem receives the contact and payment information needed for checkout. Leafhour does not receive or store full payment-card details. Private books, questions, answers and notes are not sent to Creem."
 candidate:app/en/privacy.html:33:6,html-text,app/en/privacy.html,33,,unknown,reviewable,,"Provider usage records keep operation and attempt IDs, feature, model, reported token usage and available cost estimates separately from reading content. Missing supplier usage remains unknown. Operator billing reports use necessary financial and usage facts, not private book text or notes. Financial records may need to be retained for payment reconciliation, disputes and legal obligations after reading data or an account is deleted; deletion requests are assessed separately for these records. Free reading and export do not depend on buying points."
 candidate:app/en/privacy.html:34:28,html-text,app/en/privacy.html,34,,unknown,reviewable,,Pricing
 candidate:app/en/privacy.html:34:40,html-text,app/en/privacy.html,34,,unknown,reviewable,,·
@@ -2539,7 +2542,7 @@ candidate:app/ja/privacy.html:19:827,html-text,app/ja/privacy.html,19,,unknown,r
 candidate:app/ja/privacy.html:19:896,html-text,app/ja/privacy.html,19,,unknown,reviewable,,繁體中文
 candidate:app/ja/privacy.html:19:970,html-text,app/ja/privacy.html,19,,unknown,reviewable,,日本語
 candidate:app/ja/privacy.html:21:7,html-text,app/ja/privacy.html,21,,unknown,reviewable,,ログインと個人データ
-candidate:app/ja/privacy.html:21:46,html-text,app/ja/privacy.html,21,,unknown,reviewable,,leafhour.com に適用 · 2026 年 10 月 21 日更新
+candidate:app/ja/privacy.html:21:46,html-text,app/ja/privacy.html,21,,unknown,reviewable,,leafhour.com に適用 · 2026 年 10 月 22 日更新
 candidate:app/ja/privacy.html:22:6,html-text,app/ja/privacy.html,22,,unknown,reviewable,,Leafhour はログイン身分で書斎の持ち主を確認し、あなたがアップロードした本と読書記録を保存します。公開サンプルは匿名で読めます。この文書は、このオンラインインスタンスのデータの扱いを説明します。自分で配備したインスタンスは、その運営者の責任です。
 candidate:app/ja/privacy.html:23:7,html-text,app/ja/privacy.html,23,,unknown,reviewable,,ログインで使うもの
 candidate:app/ja/privacy.html:24:6,html-text,app/ja/privacy.html,24,,unknown,reviewable,,メールログインは入力したメールアドレスを使い、Supabase Auth がパスワードまたはコードを確認し、Resend が確認メールを届けます。登録とパスワード再設定は、先にメールを確認してからパスワードを設定します。Google または Apple のログインを選ぶと、各プロバイダーが身分を確認し、Supabase はアカウント識別子、メールアドレス、プロバイダーが共有する名前やアイコンなどの基本情報を受け取ります。Leafhour はこの情報でアカウントを識別し、ログインを維持します。メール本文、連絡先、クラウドドライブ、カレンダーの権限は要求しません。
@@ -2550,7 +2553,7 @@ candidate:app/ja/privacy.html:28:6,html-text,app/ja/privacy.html,28,,unknown,rev
 candidate:app/ja/privacy.html:29:6,html-text,app/ja/privacy.html,29,,unknown,reviewable,,読書を始めると、ページは表示されフォアグラウンドにある時間だけを記録します。バックグラウンドでは一時停止し、ブラウザが休止した長い間隔も加算されません。読書時間は理解度を測るものではありません。カレンダーはあなたのタイムゾーンで表示し、日付をまたぐ時間は分けて記録します。ブラウザは読み続けられるよう読書設定と一部の状態をキャッシュし、オフライン中はこのアカウントの未同期の読書セッション、章の印、未確認の送信を一時保持し、オンラインに復旧したら再試行できます。保存していない文字列は端末の下書きとして残ります。文字の選択、訳文の切り替え、組版の調整はローカルで行われ、AI 翻訳や解説を明示的に求めたときだけ、その機能に必要な段落の文脈が設定済みのモデルサービスへ送られます。段落ごとの翻訳は現在 DeepSeek を使い、選んだ段落と理解に必要な前後の段落のみを送信します。読書の対話は、必要に応じてこのアカウントの書斎、公開書、ウェブ資料を参照できます。これらのツールは読み取り専用で、個人のメモを読まず、読書の進捗を書かず、自動で購入したり推薦の本を書棚に加えたりしません。ログイン情報が翻訳の文脈に使われることはありません。
 candidate:app/ja/privacy.html:30:6,html-text,app/ja/privacy.html,30,,unknown,reviewable,,自分の Agent に許可を与えた場合、その Agent は許可された本とデータ種別だけを読み取れます。書き込み権限は別途選びます。旧クライアントで作成した許可も有効です。取り消すときは、元のクライアントを使うか、下記の連絡先までご連絡ください。取り消しは今後のアクセスを止めますが、相手がすでに複製したデータを自動的に消すことはできません。
 candidate:app/ja/privacy.html:31:7,html-text,app/ja/privacy.html,31,,unknown,reviewable,,読書ポイントと支払い
-candidate:app/ja/privacy.html:32:6,html-text,app/ja/privacy.html,32,,unknown,reviewable,,追加購入または月額プランを選ぶと、Creem が決済画面、各支払いの処理、認証後の契約管理ポータルを提供します。Leafhour はアカウント ID に注文・決済・取引・定期契約・顧客・返金の識別子を紐付け、商品、通貨、金額、支払いと契約の状態、請求期間と変更不可のポイント台帳を保存します。Creem は決済に必要な連絡先と支払い情報を処理します。Leafhour はカードの完全な情報を受け取らず、保存もしません。個人の本、質問、回答、ノートを Creem に送ることはありません。
+candidate:app/ja/privacy.html:32:6,html-text,app/ja/privacy.html,32,,unknown,reviewable,,月額プランを選ぶと、Creem が決済画面、各支払いの処理、認証後の契約管理ポータルを提供します。Leafhour はアカウント ID に注文・決済・取引・定期契約・顧客・返金の識別子を紐付け、商品、通貨、金額、支払いと契約の状態、請求期間と変更不可のポイント台帳を保存します。Creem は決済に必要な連絡先と支払い情報を処理します。Leafhour はカードの完全な情報を受け取らず、保存もしません。個人の本、質問、回答、ノートを Creem に送ることはありません。
 candidate:app/ja/privacy.html:33:6,html-text,app/ja/privacy.html,33,,unknown,reviewable,,モデル提供者の利用記録は読書本文と分け、操作・試行 ID、機能、モデル、報告された token 使用量と取得できた費用見積もりを保存します。報告がない使用量は不明のままです。運営の請求レポートには必要な財務・利用情報を使い、個人の本文やノートは表示しません。読書データやアカウントの削除後も、決済照合、紛争対応、法的義務のために一部の財務記録を保存する場合があり、その削除依頼は別に確認します。無料の読書と書き出しにポイント購入は必要ありません。
 candidate:app/ja/privacy.html:34:28,html-text,app/ja/privacy.html,34,,unknown,reviewable,,料金
 candidate:app/ja/privacy.html:34:35,html-text,app/ja/privacy.html,34,,unknown,reviewable,,·
@@ -3375,7 +3378,7 @@ candidate:app/zh-hans/privacy.html:19:848,html-text,app/zh-hans/privacy.html,19,
 candidate:app/zh-hans/privacy.html:19:917,html-text,app/zh-hans/privacy.html,19,,unknown,reviewable,,繁體中文
 candidate:app/zh-hans/privacy.html:19:971,html-text,app/zh-hans/privacy.html,19,,unknown,reviewable,,日本語
 candidate:app/zh-hans/privacy.html:21:7,html-text,app/zh-hans/privacy.html,21,,unknown,reviewable,,登录与个人数据
-candidate:app/zh-hans/privacy.html:21:43,html-text,app/zh-hans/privacy.html,21,,unknown,reviewable,,适用于 leafhour.com · 更新于 2026 年 10 月 21 日
+candidate:app/zh-hans/privacy.html:21:43,html-text,app/zh-hans/privacy.html,21,,unknown,reviewable,,适用于 leafhour.com · 更新于 2026 年 10 月 22 日
 candidate:app/zh-hans/privacy.html:22:6,html-text,app/zh-hans/privacy.html,22,,unknown,reviewable,,Leafhour 用登录身份确认书房的归属，保存你选择上传的书和阅读记录。公版样书可以匿名试读。本文说明这个线上实例如何处理数据；自行部署的实例由它的运营者负责。
 candidate:app/zh-hans/privacy.html:23:7,html-text,app/zh-hans/privacy.html,23,,unknown,reviewable,,登录时会用到什么
 candidate:app/zh-hans/privacy.html:24:6,html-text,app/zh-hans/privacy.html,24,,unknown,reviewable,,邮箱登录使用你填写的邮箱地址，由 Supabase Auth 校验密码或验证码，Resend 投递验证邮件。注册与找回密码先验证邮箱，再设置密码。选择 Google 或 Apple 登录时，由相应供应商验证身份，Supabase 接收账户标识、邮箱及供应商提供的基本资料，例如姓名和头像。Leafhour 用这些信息识别账户和维持登录，不申请邮箱正文、联系人、云盘或日历权限。
@@ -3386,7 +3389,7 @@ candidate:app/zh-hans/privacy.html:28:6,html-text,app/zh-hans/privacy.html,28,,u
 candidate:app/zh-hans/privacy.html:29:6,html-text,app/zh-hans/privacy.html,29,,unknown,reviewable,,开始阅读后，页面只记录可见且处于前台的停留，后台暂停，浏览器挂起的长间隔也不累计；阅读时间不代表理解程度。日历按你的所在时区呈现，跨午夜的时间分别记录。浏览器会缓存阅读设置和部分阅读状态，方便继续阅读；断网时暂存本账户的待同步阅读时段、章节标记和待确认的提交，联网后可以重试。未主动保存的文字作为本机草稿保留。选择文字、切换译文和调整排版在本地完成；显式请求 AI 翻译或解释时，才会把对应功能所需的段落上下文发送到配置的模型服务。当前按段翻译使用 DeepSeek，只发送所选段落及理解所需的邻段。阅读对话可按需查阅当前账号的书房、公版书及网络资料；这些工具只读，不读取私人笔记，不写入阅读进度，也不会自动购买或把推荐书加入书房。登录资料不作为翻译上下文。
 candidate:app/zh-hans/privacy.html:30:6,html-text,app/zh-hans/privacy.html,30,,unknown,reviewable,,如果你给自己的 Agent 授权，它只能按授权读取指定书籍与数据类型；写入权限需要单独选择。旧版客户端建立的授权仍可使用；需要撤回时，可通过原有客户端或联系下方邮箱处理。撤回会停止后续访问，不能自动清除已经被对方复制的数据。
 candidate:app/zh-hans/privacy.html:31:7,html-text,app/zh-hans/privacy.html,31,,unknown,reviewable,,阅读点与支付
-candidate:app/zh-hans/privacy.html:32:6,html-text,app/zh-hans/privacy.html,32,,unknown,reviewable,,你选择一次性充值或月付订阅时，由 Creem 提供结账页、处理每次付款，并通过登录后的客户门户管理订阅。Leafhour 将账户 ID 与本地订单、结账、交易、订阅、客户及退款标识关联，保存商品、币种、金额、付款与订阅状态、计费周期和不可变额度账本。Creem 处理结账所需的联系与付款信息；Leafhour 不接收或保存完整银行卡资料。私人书籍、提问、回答和笔记不会发送给 Creem。
+candidate:app/zh-hans/privacy.html:32:6,html-text,app/zh-hans/privacy.html,32,,unknown,reviewable,,你选择月付订阅时，由 Creem 提供结账页、处理每次付款，并通过登录后的客户门户管理订阅。Leafhour 将账户 ID 与本地订单、结账、交易、订阅、客户及退款标识关联，保存商品、币种、金额、付款与订阅状态、计费周期和不可变额度账本。Creem 处理结账所需的联系与付款信息；Leafhour 不接收或保存完整银行卡资料。私人书籍、提问、回答和笔记不会发送给 Creem。
 candidate:app/zh-hans/privacy.html:33:6,html-text,app/zh-hans/privacy.html,33,,unknown,reviewable,,供应商用量记录与阅读正文分开，保存操作及调用尝试编号、功能、模型、供应商报告的 token 用量和可取得的费用估算；缺失的用量保留为未知。运营账单报表使用必要的财务与用量事实，不展示私人正文或笔记。删除阅读数据或账户后，为支付对账、争议处理和法定义务可能仍需保留部分财务记录，这类记录的删除请求会单独核对。免费阅读与导出不以购买点数为前提。
 candidate:app/zh-hans/privacy.html:34:33,html-text,app/zh-hans/privacy.html,34,,unknown,reviewable,,价格
 candidate:app/zh-hans/privacy.html:34:40,html-text,app/zh-hans/privacy.html,34,,unknown,reviewable,,·
@@ -3545,7 +3548,7 @@ candidate:app/zh-hant/privacy.html:19:824,html-text,app/zh-hant/privacy.html,19,
 candidate:app/zh-hant/privacy.html:19:913,html-text,app/zh-hant/privacy.html,19,,unknown,reviewable,,繁體中文
 candidate:app/zh-hant/privacy.html:19:967,html-text,app/zh-hant/privacy.html,19,,unknown,reviewable,,日本語
 candidate:app/zh-hant/privacy.html:21:7,html-text,app/zh-hant/privacy.html,21,,unknown,reviewable,,登入與個人資料
-candidate:app/zh-hant/privacy.html:21:43,html-text,app/zh-hant/privacy.html,21,,unknown,reviewable,,適用於 leafhour.com · 更新於 2026 年 10 月 21 日
+candidate:app/zh-hant/privacy.html:21:43,html-text,app/zh-hant/privacy.html,21,,unknown,reviewable,,適用於 leafhour.com · 更新於 2026 年 10 月 22 日
 candidate:app/zh-hant/privacy.html:22:6,html-text,app/zh-hant/privacy.html,22,,unknown,reviewable,,Leafhour 用登入身分確認書房的歸屬，保存你選擇上傳的書和閱讀記錄。公版樣書可以匿名試讀。本文說明這個線上實例如何處理資料；自行部署的實例由它的營運者負責。
 candidate:app/zh-hant/privacy.html:23:7,html-text,app/zh-hant/privacy.html,23,,unknown,reviewable,,登入時會用到什麼
 candidate:app/zh-hant/privacy.html:24:6,html-text,app/zh-hant/privacy.html,24,,unknown,reviewable,,郵箱登入使用你填寫的郵箱地址，由 Supabase Auth 校驗密碼或驗證碼，Resend 投遞驗證郵件。註冊與找回密碼先驗證郵箱，再設定密碼。選擇 Google 或 Apple 登入時，由相應供應商驗證身分，Supabase 接收帳戶識別碼、郵箱及供應商提供的基本資料，例如姓名和頭像。Leafhour 用這些資訊識別帳戶和維持登入，不申請郵箱內文、聯絡人、雲碟或行事曆權限。
@@ -3556,7 +3559,7 @@ candidate:app/zh-hant/privacy.html:28:6,html-text,app/zh-hant/privacy.html,28,,u
 candidate:app/zh-hant/privacy.html:29:6,html-text,app/zh-hant/privacy.html,29,,unknown,reviewable,,開始閱讀後，頁面只記錄可見且處於前台的停留，暫停於背景，瀏覽器休眠的長間隔也不累計；閱讀時數不代表理解程度。日曆按你的所在時區呈現，跨午夜的時間分別記錄。瀏覽器會快取閱讀設定和部分閱讀狀態，方便繼續閱讀；離線時暫存本帳戶的待同步閱讀時段、章節標記和待確認的提交，恢復連線後可以重試。未主動保存的文字作為本機草稿保留。選取文字、切換譯文和調整排版在本地完成；明確請求 AI 翻譯或解釋時，才會把對應功能所需的段落上下文傳送到設定的模型服務。目前按段翻譯使用 DeepSeek，只傳送所選段落及理解所需的鄰段。閱讀對話可按需查閱目前帳號的書房、公版書及網路資料；這些工具唯讀，不讀取私人筆記，不寫入閱讀進度，也不會自動購買或把推薦書加入書房。登入資料不作為翻譯上下文。
 candidate:app/zh-hant/privacy.html:30:6,html-text,app/zh-hant/privacy.html,30,,unknown,reviewable,,如果你給自己的 Agent 授權，它只能按授權讀取指定書籍與資料類型；寫入權限需要單獨選擇。舊版用戶端建立的授權仍可使用；需要撤回時，可透過原有用戶端或聯絡下方郵箱處理。撤回會停止後續存取，不能自動清除已經被對方複製的資料。
 candidate:app/zh-hant/privacy.html:31:7,html-text,app/zh-hant/privacy.html,31,,unknown,reviewable,,閱讀點與付款
-candidate:app/zh-hant/privacy.html:32:6,html-text,app/zh-hant/privacy.html,32,,unknown,reviewable,,你選擇一次性儲值或月付訂閱時，由 Creem 提供結帳頁、處理每次付款，並透過登入後的客戶入口管理訂閱。Leafhour 將帳戶 ID 與本地訂單、結帳、交易、訂閱、客戶及退款識別碼關聯，保存商品、幣別、金額、付款與訂閱狀態、計費週期和不可變額度帳本。Creem 處理結帳所需的聯絡與付款資訊；Leafhour 不接收或保存完整銀行卡資料。私人書籍、提問、回答和筆記不會傳送給 Creem。
+candidate:app/zh-hant/privacy.html:32:6,html-text,app/zh-hant/privacy.html,32,,unknown,reviewable,,你選擇月付訂閱時，由 Creem 提供結帳頁、處理每次付款，並透過登入後的客戶入口管理訂閱。Leafhour 將帳戶 ID 與本地訂單、結帳、交易、訂閱、客戶及退款識別碼關聯，保存商品、幣別、金額、付款與訂閱狀態、計費週期和不可變額度帳本。Creem 處理結帳所需的聯絡與付款資訊；Leafhour 不接收或保存完整銀行卡資料。私人書籍、提問、回答和筆記不會傳送給 Creem。
 candidate:app/zh-hant/privacy.html:33:6,html-text,app/zh-hant/privacy.html,33,,unknown,reviewable,,供應商用量記錄與閱讀正文分開，保存操作及呼叫嘗試編號、功能、模型、供應商回報的 token 用量和可取得的費用估算；缺少的用量保留為未知。營運帳單報表使用必要的財務與用量事實，不展示私人正文或筆記。刪除閱讀資料或帳戶後，為付款對帳、爭議處理和法定義務可能仍需保留部分財務記錄，這類記錄的刪除請求會單獨核對。免費閱讀與匯出不以購買點數為前提。
 candidate:app/zh-hant/privacy.html:34:33,html-text,app/zh-hant/privacy.html,34,,unknown,reviewable,,價格
 candidate:app/zh-hant/privacy.html:34:40,html-text,app/zh-hant/privacy.html,34,,unknown,reviewable,,·

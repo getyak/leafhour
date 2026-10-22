@@ -3,9 +3,8 @@ import {pathToFileURL} from 'node:url';
 import {loadLocalEnvironment} from '../server/local-env.mjs';
 import {validateBillingProduct} from '../server/billing-product.mjs';
 
-const products=[{key:'reading_100',variable:'CREEM_PRODUCT_READING_100',name:'Leafhour · 100 reading points',billing_type:'onetime'},
- {key:'reading_monthly_100',variable:'CREEM_PRODUCT_READING_MONTHLY_100',name:'Leafhour · 100 reading points monthly',billing_type:'recurring',billing_period:'every-month'}];
-const required=['CREEM_API_KEY','CREEM_WEBHOOK_SECRET','CREEM_PRODUCT_READING_100','CREEM_PRODUCT_READING_MONTHLY_100','SUPABASE_URL','SUPABASE_SECRET_KEY','READER_PUBLIC_ORIGIN'];
+const products=[{key:'reading_monthly_100',variable:'CREEM_PRODUCT_READING_MONTHLY_100',name:'Leafhour · 100 reading points monthly',billing_type:'recurring',billing_period:'every-month'}];
+const required=['CREEM_API_KEY','CREEM_WEBHOOK_SECRET','CREEM_PRODUCT_READING_MONTHLY_100','SUPABASE_URL','SUPABASE_SECRET_KEY','READER_PUBLIC_ORIGIN'];
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 
 // An inventory is not an attestation: readiness still needs authoritative
@@ -36,8 +35,8 @@ export async function prepareBillingProducts({env={},fetcher=globalThis.fetch,cr
   if(typeof productId!=='string'||!/^prod_[A-Za-z0-9_-]+$/.test(productId))fail('billing_setup_product_id_invalid');
   validateBillingProduct(product,{productId,mode,productKey:p.key});environment[p.variable]=productId;
  }
- // Preflight every existing product before creating any missing one. A wrong
- // monthly price must not leave an unrelated newly-created top-up behind.
+ // Validate the existing monthly offer before any supplier mutation.
+ // Retired one-time configuration is never a sale or setup dependency.
  for(const p of products){
   const existing=env[p.variable];
   if(existing){if(!/^prod_[A-Za-z0-9_-]+$/.test(existing))fail('billing_setup_product_id_invalid');remember(p,await request(base+'/v1/products/'+encodeURIComponent(existing)),existing);}
@@ -46,7 +45,7 @@ export async function prepareBillingProducts({env={},fetcher=globalThis.fetch,cr
   if(environment[p.variable])continue;
   if(createMissing){
    let product;
-   product=await request(base+'/v1/products',{idempotencyKey:'leafhour-'+mode+'-'+p.key+'-usd500-v1',body:{name:p.name,description:p.key==='reading_100'?'One-time purchase of 100 reading points.':'100 reading points after each successful monthly payment. Cancel future renewals in the customer portal. Points accumulate without expiry.',price:500,currency:'USD',billing_type:p.billing_type,...(p.billing_period?{billing_period:p.billing_period}:{}),tax_mode:'exclusive',tax_category:'saas',default_success_url:origin+'/billing'}});
+   product=await request(base+'/v1/products',{idempotencyKey:'leafhour-'+mode+'-'+p.key+'-usd500-v1',body:{name:p.name,description:'100 reading points after each successful monthly payment. Cancel future renewals in the customer portal. Points accumulate without expiry.',price:500,currency:'USD',billing_type:p.billing_type,...(p.billing_period?{billing_period:p.billing_period}:{}),tax_mode:'exclusive',tax_category:'saas',default_success_url:origin+'/billing'}});
    created.push(p.key);
    remember(p,product,product?.id);
   }else{missingProducts.push(p.key);continue;}
@@ -56,7 +55,7 @@ export async function prepareBillingProducts({env={},fetcher=globalThis.fetch,cr
 
 async function main(){
  const args=process.argv.slice(2);
- if(args.includes('--help')){console.log('Usage: node tools/configure-billing.mjs [--check | --create-products]\nReads protected environment variables and the existing local .env. Never prints credentials. Default --check makes no supplier writes. --create-products creates only missing approved US$5 products with stable idempotency; it does not enable billing, configure webhooks, migrate databases or charge a customer.');return;}
+ if(args.includes('--help')){console.log('Usage: node tools/configure-billing.mjs [--check | --create-products]\nReads protected environment variables and the existing local .env. Never prints credentials. Default --check makes no supplier writes. --create-products creates only the missing approved US$5 monthly product with stable idempotency; it does not enable billing, configure webhooks, migrate databases or charge a customer.');return;}
  if(args.some(arg=>!['--check','--create-products'].includes(arg))||args.includes('--check')&&args.includes('--create-products'))fail('billing_setup_invalid_arguments');
  const env={...process.env};await loadLocalEnvironment({env});
  const inventory=billingConfiguration(env);

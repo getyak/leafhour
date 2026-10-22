@@ -30,12 +30,22 @@ async function fixture({products={},env={}}={}){
  const complete=async()=>{await buy();return send(checkoutEvent());};
  return {store,creem,service,calls,transactions,send,buy,complete,checkoutEvent,paidEvent,get creations(){return creations;},get localOrder(){return localOrder;},get subscription(){return subscription;},set subscription(value){subscription=value;},get checkout(){return checkout;}};
 }
-test('catalog product readiness is independent and the selected monthly product is revalidated before checkout',async()=>{
- const f=await fixture({products:{prod_monthly:{price:600}}}),catalog=await f.service.catalog();
- assert.equal(catalog.available,true);assert.equal(catalog.products.find(p=>p.key==='reading_100').available,true);assert.equal(catalog.products.find(p=>p.key==='reading_monthly_100')?.available,false);
- await assert.rejects(f.buy(),e=>e.status===503);assert.equal(f.creations,0);await f.service.checkout({ownerId,intentKey:'topup'});assert.equal(f.creations,1);
- const missing=await fixture({env:{CREEM_PRODUCT_READING_MONTHLY_100:undefined}});assert.equal((await missing.service.catalog()).products.find(p=>p.key==='reading_100').available,true);
- const valid=await fixture();await valid.service.catalog();await valid.buy();assert.equal(valid.calls.filter(c=>c.url.endsWith('/products/prod_monthly')).length,2);
+test('catalog and default checkout offer only the verified monthly subscription',async()=>{
+ const f=await fixture(),catalog=await f.service.catalog();
+ assert.deepEqual(catalog.products.map(p=>p.key),['reading_monthly_100']);assert.equal(catalog.available,true);
+ assert.equal((await f.service.readiness()).ready,true);
+ const purchase=await f.service.checkout({ownerId,intentKey:'default-monthly'});assert.equal(purchase.order.productKey,'reading_monthly_100');
+ assert.equal(f.calls.filter(c=>c.url.endsWith('/products/prod_topup')).length,0);assert.equal(f.calls.filter(c=>c.url.endsWith('/products/prod_monthly')).length,2);
+});
+test('an unavailable monthly product never falls back to a one-time purchase',async()=>{
+ for(const input of [{products:{prod_monthly:{price:600}}},{env:{CREEM_PRODUCT_READING_MONTHLY_100:undefined}}]){
+  const f=await fixture(input),catalog=await f.service.catalog();assert.equal(catalog.available,false);assert.deepEqual(catalog.products.map(p=>p.key),['reading_monthly_100']);
+  await assert.rejects(f.service.checkout({ownerId,intentKey:'unavailable'}),{status:503});assert.equal(f.creations,0);
+ }
+});
+test('legacy checkout requests fail before supplier access or order mutation even with the old product configured',async()=>{
+ const f=await fixture();await assert.rejects(f.service.checkout({ownerId,productKey:'reading_100',intentKey:'legacy'}),{code:'unknown_product'});
+ assert.deepEqual(f.calls,[]);assert.deepEqual((await f.service.orders({ownerId})).orders,[]);assert.equal(f.creations,0);
 });
 test('checkout plus repeated signed paid events grant one initial purchase lot and one order',async()=>{
  const f=await fixture();await f.complete();await f.send(f.paidEvent());await f.send(f.paidEvent());
@@ -95,11 +105,11 @@ test('renewal refunds target their transaction order even when checkout metadata
  await f.send({id:'evt_refund',eventType:'refund.created',object});assert.equal((await f.service.account({ownerId})).availableUnits,150*U);
  const orders=(await f.service.orders({ownerId})).orders;assert.equal(orders.find(o=>o.transactionId==='tran_initial').status,'paid');assert.equal(orders.find(o=>o.transactionId==='tran_renewal').status,'partially_refunded');
 });
-test('concurrent reuse of one intent for different products fails instead of returning the other product checkout',async()=>{
- const f=await fixture(),results=await Promise.allSettled([f.service.checkout({ownerId,intentKey:'shared-intent'}),f.service.checkout({ownerId,productKey:'reading_monthly_100',intentKey:'shared-intent'})]);
- assert.equal(results.filter(r=>r.status==='fulfilled').length,1);assert.equal(results.find(r=>r.status==='rejected').reason.code,'idempotency_conflict');assert.equal(f.creations,1);
+test('concurrent legacy and monthly requests cannot reuse the monthly checkout',async()=>{
+ const f=await fixture(),results=await Promise.allSettled([f.service.checkout({ownerId,productKey:'reading_100',intentKey:'shared-intent'}),f.service.checkout({ownerId,productKey:'reading_monthly_100',intentKey:'shared-intent'})]);
+ assert.equal(results.filter(r=>r.status==='fulfilled').length,1);assert.equal(results.find(r=>r.status==='rejected').reason.code,'unknown_product');assert.equal(f.creations,1);
 });
-test('live monthly configuration requires subscription schema readiness before either payment path opens',async()=>{
+test('live monthly configuration requires subscription schema readiness before the payment path opens',async()=>{
  const creem={ready:true,mode:'live',productId:'prod_topup',productIds:{reading_100:'prod_topup',reading_monthly_100:'prod_monthly'},retrieveProduct:async()=>({...product('prod_topup'),mode:'prod'})};
  const service=createBillingService({enabled:true,mode:'live',creem,store:{durable:true,kind:'postgres',command:async()=>({ready:true,durable:true,backend:'postgres',schemaVersion:1})}});
  assert.equal((await service.readiness()).reason,'billing_schema_outdated');assert.equal((await service.catalog()).available,false);await assert.rejects(service.checkout({ownerId,intentKey:'unsafe-schema'}),{status:503});
@@ -126,10 +136,10 @@ test('order reconciliation rejects a different completed checkout before applyin
  const f=await fixture(),{order}=await f.buy();f.checkout.id='ch_foreign';await assert.rejects(f.service.order({ownerId,orderId:order.id,reconcile:true}),{code:'payment_binding_mismatch',status:409});assert.equal((await f.service.account({ownerId})).availableUnits,0);
 });
 test('a recovered checkout without a stored URL requires reconciliation instead of returning an unsafe redirect',async()=>{
- const f=await fixture();await f.store.command('order',{mode:'test',ownerId,id:'recovered-order',intentKey:'recovered',productKey:'reading_100',productId:'prod_topup',amount:500,currency:'USD',units:100*U});await f.store.command('checkout',{mode:'test',ownerId,orderId:'recovered-order',checkoutId:'ch_recovered'});
+ const f=await fixture();await f.store.command('order',{mode:'test',ownerId,id:'recovered-order',intentKey:'recovered',productKey:'reading_monthly_100',productId:'prod_monthly',amount:500,currency:'USD',units:100*U});await f.store.command('checkout',{mode:'test',ownerId,orderId:'recovered-order',checkoutId:'ch_recovered'});
  await assert.rejects(f.service.checkout({ownerId,intentKey:'recovered'}),{code:'checkout_reconciliation_required',status:503});assert.equal(f.creations,0);
 });
 test('monthly checkout requires subscription schema version two in test mode too',async()=>{
  const f=await fixture(),store={...f.store,command:async(action,p)=>action==='readiness'?{ready:true,durable:true,backend:'postgres',schemaVersion:1}:f.store.command(action,p)},service=createBillingService({enabled:true,store,creem:f.creem});
- assert.equal((await service.readiness({productKey:'reading_monthly_100'})).reason,'billing_schema_outdated');await assert.rejects(service.checkout({ownerId,productKey:'reading_monthly_100',intentKey:'old-schema'}),{status:503});assert.equal((await service.catalog()).products.find(p=>p.key==='reading_100').available,true);
+ assert.equal((await service.readiness({productKey:'reading_monthly_100'})).reason,'billing_schema_outdated');await assert.rejects(service.checkout({ownerId,productKey:'reading_monthly_100',intentKey:'old-schema'}),{status:503});assert.equal((await service.catalog()).available,false);assert.equal((await service.readiness()).reason,'billing_schema_outdated');
 });
