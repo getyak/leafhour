@@ -220,7 +220,7 @@ candidate:app/en/mcp.html:27:143,html-text,app/en/mcp.html,27,,unknown,reviewabl
 candidate:app/en/mcp.html:27:231,html-text,app/en/mcp.html,27,,unknown,reviewable,,connection instructions
 candidate:app/en/mcp.html:27:259,html-text,app/en/mcp.html,27,,unknown,reviewable,,"include the pre-registered public-client path when ChatGPT rejects dynamic registration. Sign in on Leafhour, check the account and select one book. Access is read-only for one hour; private notes and reading activity are excluded. Call"
 candidate:app/en/mcp.html:27:502,html-text,app/en/mcp.html,27,,unknown,protected,identifier,reader_get_connection
-candidate:app/en/mcp.html:27:531,html-text,app/en/mcp.html,27,,unknown,reviewable,,to identify the selected book. Withdraw access in your bookroom’s Agent settings.
+candidate:app/en/mcp.html:27:531,html-text,app/en/mcp.html,27,,unknown,reviewable,,"to identify the selected book. Access expires after one hour. For earlier withdrawal, use the authenticated service API described below; the website has no connection management page."
 candidate:app/en/mcp.html:28:6,html-text,app/en/mcp.html,28,,unknown,reviewable,,"For a reading skill, install"
 candidate:app/en/mcp.html:28:41,html-text,app/en/mcp.html,28,,unknown,protected,identifier,leafhour-reading
 candidate:app/en/mcp.html:28:65,html-text,app/en/mcp.html,28,,unknown,reviewable,,from
@@ -1752,7 +1752,7 @@ candidate:app/ja/mcp.html:27:131,html-text,app/ja/mcp.html,27,,unknown,reviewabl
 candidate:app/ja/mcp.html:27:244,html-text,app/ja/mcp.html,27,,unknown,reviewable,,接続の説明
 candidate:app/ja/mcp.html:27:253,html-text,app/ja/mcp.html,27,,unknown,reviewable,,に従って事前登録済みの公開クライアントを使います。Leafhour でログインし、アカウントを確認して一冊を選びます。権限は一時間の読み取り専用で、個人メモや読書記録は含みません。
 candidate:app/ja/mcp.html:27:349,html-text,app/ja/mcp.html,27,,unknown,protected,identifier,reader_get_connection
-candidate:app/ja/mcp.html:27:378,html-text,app/ja/mcp.html,27,,unknown,reviewable,,で対象の本を確認でき、書斎の Agent 設定で取り消せます。
+candidate:app/ja/mcp.html:27:378,html-text,app/ja/mcp.html,27,,unknown,reviewable,,で対象の本を確認でき、権限は一時間後に失効します。それより前に取り消す場合は下記の認証済みサービス API を使います。ウェブには接続管理画面がありません。
 candidate:app/ja/mcp.html:28:6,html-text,app/ja/mcp.html,28,,unknown,reviewable,,skills 対応ホストでは
 candidate:app/ja/mcp.html:28:27,html-text,app/ja/mcp.html,28,,unknown,protected,path,getyak/leafhour
 candidate:app/ja/mcp.html:28:50,html-text,app/ja/mcp.html,28,,unknown,reviewable,,から
@@ -2546,7 +2546,7 @@ candidate:app/zh-hans/mcp.html:27:126,html-text,app/zh-hans/mcp.html,27,,unknown
 candidate:app/zh-hans/mcp.html:27:227,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,接入说明
 candidate:app/zh-hans/mcp.html:27:235,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,使用预注册公共客户端。在 Leafhour 登录，核对账号并选一本书。授权仅只读一小时，不含私人笔记与阅读记录。调用
 candidate:app/zh-hans/mcp.html:27:300,html-text,app/zh-hans/mcp.html,27,,unknown,protected,identifier,reader_get_connection
-candidate:app/zh-hans/mcp.html:27:329,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,核对已授权的书；在书房的 Agent 设置中可撤回。
+candidate:app/zh-hans/mcp.html:27:329,html-text,app/zh-hans/mcp.html,27,,unknown,reviewable,,核对已授权的书；授权一小时后过期。提前撤回请使用下方的已认证服务 API；网页尚无连接管理页。
 candidate:app/zh-hans/mcp.html:28:6,html-text,app/zh-hans/mcp.html,28,,unknown,reviewable,,兼容 skills 的宿主也可从
 candidate:app/zh-hans/mcp.html:28:29,html-text,app/zh-hans/mcp.html,28,,unknown,protected,path,getyak/leafhour
 candidate:app/zh-hans/mcp.html:28:52,html-text,app/zh-hans/mcp.html,28,,unknown,reviewable,,安装
@@ -2708,7 +2708,7 @@ candidate:app/zh-hant/mcp.html:27:125,html-text,app/zh-hant/mcp.html,27,,unknown
 candidate:app/zh-hant/mcp.html:27:226,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,接入說明
 candidate:app/zh-hant/mcp.html:27:234,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,使用預先註冊的公共用戶端。在 Leafhour 登入，核對帳戶並選一本書。授權僅唯讀一小時，不含私人筆記與閱讀紀錄。呼叫
 candidate:app/zh-hant/mcp.html:27:301,html-text,app/zh-hant/mcp.html,27,,unknown,protected,identifier,reader_get_connection
-candidate:app/zh-hant/mcp.html:27:330,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,核對已授權的書；可在書房的 Agent 設定中撤回。
+candidate:app/zh-hant/mcp.html:27:330,html-text,app/zh-hant/mcp.html,27,,unknown,reviewable,,核對已授權的書；授權一小時後到期。提前撤回請使用下方的已認證服務 API；網頁尚無連線管理頁。
 candidate:app/zh-hant/mcp.html:28:6,html-text,app/zh-hant/mcp.html,28,,unknown,reviewable,,相容 skills 的宿主也可從
 candidate:app/zh-hant/mcp.html:28:29,html-text,app/zh-hant/mcp.html,28,,unknown,protected,path,getyak/leafhour
 candidate:app/zh-hant/mcp.html:28:52,html-text,app/zh-hant/mcp.html,28,,unknown,reviewable,,安裝
