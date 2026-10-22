@@ -151,7 +151,7 @@ PDF は最大 256 MB・1,200 ページ、EPUB とテキストは最大 20 MB に
 }
 ```
 
-ツールは `reader_get_manifest`、`reader_get_context`、`reader_get_chapter`、`reader_search`、`reader_get_notes`、`reader_get_reading_activity`、`reader_add_comment`。本文、メモ、活動、コメント書き込みは個別に許可し、書き込みはユーザーが明示的に渡した言葉のみを受け付け、冪等キーで二重保存を防ぎます。Agent の読み取りが読書時間を増やすことはありません。本機設定はループバック接続、クラウド設定は認証済み接続エンドポイントが返す実際のデプロイ済みソースコミットに固定し、ソースパックから同じ stdio アダプタを起動し、設定中の HTTPS 書斎を明示的に許可します。完全コミットは実際に動く版を固定し、npm がホスティングのソースパックを直接取得できるようにします。リモートアクセスは引き続き本とデータ種別ごとの許可で、リダイレクトを拒否します。これはリモート OAuth MCP エンドポイントではありません。設定生成はユーザーの Agent へのインストールを意味しません。
+ツールは `reader_get_manifest`、`reader_get_context`、`reader_get_chapter`、`reader_search`、`reader_get_notes`、`reader_get_reading_activity`、`reader_add_highlight`, `reader_get_annotations`, `reader_add_annotation` and `reader_add_comment`。本文、メモ、活動、コメント書き込みは個別に許可し、書き込みはユーザーが明示的に渡した言葉のみを受け付け、冪等キーで二重保存を防ぎます。Agent の読み取りが読書時間を増やすことはありません。本機設定はループバック接続、クラウド設定は認証済み接続エンドポイントが返す実際のデプロイ済みソースコミットに固定し、ソースパックから同じ stdio アダプタを起動し、設定中の HTTPS 書斎を明示的に許可します。完全コミットは実際に動く版を固定し、npm がホスティングのソースパックを直接取得できるようにします。リモートアクセスは引き続き本とデータ種別ごとの許可で、リダイレクトを拒否します。これはリモート OAuth MCP エンドポイントではありません。設定生成はユーザーの Agent へのインストールを意味しません。
 
 ## プライベートホスティング
 

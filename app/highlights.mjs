@@ -20,6 +20,7 @@ export function normalizeHighlight(input,book,{stored=false,matchCurrent=!stored
     return {passageId:part.passageId,language:part.language,variant:part.language==='en'?'interpretive':part.variant,start:part.start,end:part.end,text:part.text};
   });
   const row={id:input.id,bookId:book.bookId,contentVersion:book.contentVersion,chapterId:input.chapterId,parts,origin:'user'};
+  if(input.createdVia!==undefined){if(input.createdVia!=='external-agent')invalid();row.createdVia='external-agent';}
   if(stored){
     if(input.origin!=='user'||typeof input.createdAt!=='string'||!Number.isFinite(Date.parse(input.createdAt))||input.deletedAt!==undefined&&(typeof input.deletedAt!=='string'||!Number.isFinite(Date.parse(input.deletedAt))||Date.parse(input.deletedAt)<Date.parse(input.createdAt)))invalid();
     row.createdAt=input.createdAt;if(input.deletedAt)row.deletedAt=input.deletedAt;

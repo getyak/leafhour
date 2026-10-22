@@ -151,7 +151,7 @@ PDF 支援最多 256 MB、1200 頁，EPUB 與文字檔最多 20 MB。PDF 優先�
 }
 ```
 
-工具包括 `reader_get_manifest`、`reader_get_context`、`reader_get_chapter`、`reader_search`、`reader_get_notes`、`reader_get_reading_activity` 和 `reader_add_comment`。正文、筆記、活動與寫評論分別授權；寫入只接受明確提供的使用者原話，冪等鍵防止重複保存。Agent 讀取不增加閱讀時間。本機設定連接環回位址；雲端設定固定到已登入接入端點回傳的實際部署原始碼提交，透過原始碼包啟動同一 stdio 轉接器，並明確允許設定中的 HTTPS 書房。完整提交固定了實際運行的版本，也讓 npm 可以直接取得託管原始碼包。遠端存取仍按書與資料類型授權，拒絕重新導向；這不是遠端 OAuth MCP 端點。設定生成不代表已在使用者 Agent 中安裝。
+工具包括 `reader_get_manifest`、`reader_get_context`、`reader_get_chapter`、`reader_search`、`reader_get_notes`、`reader_get_reading_activity` 和 `reader_add_highlight`, `reader_get_annotations`, `reader_add_annotation` and `reader_add_comment`。正文、筆記、活動與寫評論分別授權；寫入只接受明確提供的使用者原話，冪等鍵防止重複保存。Agent 讀取不增加閱讀時間。本機設定連接環回位址；雲端設定固定到已登入接入端點回傳的實際部署原始碼提交，透過原始碼包啟動同一 stdio 轉接器，並明確允許設定中的 HTTPS 書房。完整提交固定了實際運行的版本，也讓 npm 可以直接取得託管原始碼包。遠端存取仍按書與資料類型授權，拒絕重新導向；這不是遠端 OAuth MCP 端點。設定生成不代表已在使用者 Agent 中安裝。
 
 ## 私有託管
 
