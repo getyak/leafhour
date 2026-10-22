@@ -115,6 +115,32 @@
           "value": "no-referrer"
         }
       ]
+    },
+    {
+      "source": "/billing",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
+    },
+    {
+      "source": "/admin/billing",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
     }
   ],
   "functions": {
@@ -143,6 +169,10 @@
     {
       "source": "/gift/:token",
       "destination": "/book-gift"
+    },
+    {
+      "source": "/api/webhooks/creem",
+      "destination": "/api/creem-webhook"
     },
     {
       "source": "/api/:path*",

@@ -35,9 +35,9 @@ test('localization never rewrites book sample text and leaves no source text in 
   const stripped=allowed.reduce((text,value)=>text.replaceAll(value,''),english);
   assert.doesNotMatch(stripped,/\p{Script=Han}/u,'the English homepage leaked source-language text');
   const traditional=homeDocument(source,'zh-Hant'),japanese=homeDocument(source,'ja');
-  assert.match(traditional,/網站支援哪些語言？/);assert.match(traditional,/繁體中文/);
-  assert.match(japanese,/対応言語は？/);assert.match(japanese,/本棚を開いています…/);
-  assert.match(english,/Which languages does the site support\?/);
+  assert.match(traditional,/可以匯入哪些格式？/);assert.match(traditional,/繁體中文/);
+  assert.match(japanese,/本棚を開いています…/);
+  assert.match(english,/What files can I import\?/);
   // Fragment rows bridge around inline links; edits must keep each language readable.
   assert.match(english,/are optional\. Unsynced records and drafts remain/);
   assert.match(traditional,/是否納入。未同步的記錄與草稿仍留在原瀏覽器/);
@@ -70,7 +70,7 @@ test('the language switcher appears on the home page with the current language m
   for(const locale of homeLocales){
     const html=homeDocument(source,locale.code);
     const switchers=[...html.matchAll(/<(?:span|div) class="home-languages[^"]*"[^>]*>([\s\S]*?)<\/(?:span|div)>/g)];
-    assert.equal(switchers.length,3,'expected nav, hero and footer switchers');
+    assert.equal(switchers.length,1,'language choices have one place in the compact menu');
     for(const [whole,inner]of switchers){
       assert.match(whole,/aria-label="/);
       for(const row of homeLocales)assert.match(inner,new RegExp('href="'+(row.code==='en'?'/en':row.route).replace(/\//g,'\\/')+'" lang="'+row.htmlLang+'"'));
@@ -104,11 +104,7 @@ test('every static menu sheet control keeps explicit four-language authored copy
     assert.ok(trigger.includes('aria-label="'+labels.open+'"'),locale.code+' menu trigger label');
     const close=(html.match(/<button[^>]*data-close="home-menu"[^>]*>/)||[])[0]||'';
     assert.ok(close.includes('aria-label="'+labels.close+'"'),locale.code+' menu close label');
-    const signIn=(html.match(/<button[^>]*id="home-menu-signin"[^>]*>[\s\S]*?<\/button>/)||[])[0]||'';
-    assert.ok(signIn.includes(labels.signIn),locale.code+' menu sign-in label');
-    const search=(html.match(/<button[^>]*id="home-menu-search"[^>]*>[^<]*/)||[])[0]||'';
-    assert.ok(search.includes(labels.search),locale.code+' menu search label');
-    assert.ok(html.includes('<span class="home-menu-resume-label" data-ui="nav.resume">'+labels.resume+'</span>'),locale.code+' menu resume label');
+    assert.doesNotMatch(html,/id="home-menu-(?:signin|account|search|resume)"/,locale.code+' menu excludes app-only controls');
     assert.ok(html.includes('<h2 id="home-menu-title" data-ui="nav.main">'+labels.title+'</h2>'),locale.code+' menu serif title');
   }
 });
@@ -132,7 +128,7 @@ test('every language serves the same homepage structure over HTTP',async t=>{
     const response=await fetch(base+route),html=await response.text();assert.equal(response.status,200);
     assert.deepEqual(ids(html),ids(english));assert.deepEqual(styles(html),styles(english));assert.deepEqual(scripts(html),scripts(english));
     assert.match(html,new RegExp('<html lang="'+locale.htmlLang+'">'));
-    assert.ok(html.includes('href="/library?ui='+locale.code+'"'));assert.ok(html.includes('href="/read?book=gutenberg-alice&amp;ui='+locale.code+'"'));
+    assert.ok(html.includes('id="account-button"'));assert.ok(html.includes('href="/read?book=gutenberg-alice&amp;ui='+locale.code+'"'));
     assert.doesNotMatch(html,/href="\/#how"/,'in-page navigation must stay on the current page');
     assert.doesNotMatch(html,/class="discovery-page"/);
     for(const guide of ['mcp','privacy']){
@@ -161,12 +157,12 @@ test('first-paint owned home anchors carry the authored language even with denie
  for(const code of ['en','zh-Hans','zh-Hant','ja']){
   const html=homeDocument(source,code),anchors=[...html.matchAll(/<a\b[^>]*\bhref="([^"\n]+)"/g)].map(m=>m[1].replaceAll('&amp;','&'));
   const owned=anchors.filter(href=>/^\/(?:library|read)(?:[?#]|$)/.test(href));
-  assert.ok(owned.length>=6);
+  assert.ok(owned.length>=3,'sample, excerpt and auth fallback links keep the authored language');
   for(const href of owned)assert.equal(new URL(href,'https://leafhour.com').searchParams.get('ui'),code,href);
  }
  const html=homeDocument(source,'en'),hero=/<a class="primary" href="([^"\n]+)"/.exec(html)?.[1];
  assert.ok(hero,'actual authored hero CTA exists');
- const runtime=createUiLocale({storage:denied,languages:['ja-JP'],getLocation:()=>({href:'https://leafhour.com'+hero}),loadCatalogue:async code=>({en:englishUi,ja:japaneseUi}[code])});
+ const runtime=createUiLocale({storage:denied,languages:['ja-JP'],getLocation:()=>({href:'https://leafhour.com'+hero.replaceAll('&amp;','&')}),loadCatalogue:async code=>({en:englishUi,ja:japaneseUi}[code])});
  await runtime.initialize();assert.equal(runtime.getUiLocale(),'en');
  const literal='<body><a href="/read?book=literal%2Fid&amp;passage=p1#source">Literal source</a><a href="https://other.test/read?book=x">External</a><a href="/api/export?signature=x">Export</a><a href="/read-more">Other</a></body>';
  const rendered=homeDocument(literal,'ja');

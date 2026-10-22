@@ -233,3 +233,11 @@ test('reader attachment completes and can select the new chat book while retaini
  assert.equal(input.value,'Keep my question about the current book.');assert.equal(f.doc.activeElement,input);assert.equal(reader.getBook(),current);assert.deepEqual(reader.getAnchor(),{passageId:'p1'});assert.deepEqual(navigation,[]);
  const all=()=>f.all(f.doc.body),select=all().find(n=>n.className.split(' ').includes('chat-book-select'));assert.ok(select);select.click();await flush();assert.ok(requests.some(r=>r.url==='/api/library/books/new-book/chat'));assert.equal(reader.getBook(),current);assert.deepEqual(reader.getAnchor(),{passageId:'p1'});const choice=all().find(n=>n.className==='library-chat-book-choice');choice.value='book-one';choice.dispatchEvent(new Event('change'));await flush();assert.equal(input.value,'Keep my question about the current book.');assert.equal(requests.filter(r=>r.options?.method==='POST'&&r.url.includes('/chat')).length,0);
 });
+
+
+test('reader conversation preserves a terminal billing receipt instead of treating an expired quote as a running question',async()=>{
+ const receipt={id:'operation-1',status:'not_started'};
+ const f=mount({request:async()=>Response.json({error:'Quote expired',billingOperation:receipt},{status:409})});
+ await assert.rejects(f.hooks.api('/api/library/books/book-one/chat',{id:'request-1',text:'Question'}),error=>{assert.deepEqual(error.billingOperation,receipt);return error.status===409;});
+ f.instance.dispose();
+});

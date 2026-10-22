@@ -47,6 +47,12 @@ jobs:
           node tools/copy-lint.mjs --manifest build/copy/manifest.json
       - name: Verify that planted copy violations fail and clean copy passes
         run: node tools/copy-canaries.mjs
+      - name: Require native PostgreSQL for isolated financial ledger checks
+        run: |
+          pg_config --version
+          for tool in initdb pg_ctl psql; do
+            test -x "$(pg_config --bindir)/$tool"
+          done
       - run: npm run verify:deploy
       - name: Verify that copy tooling is absent from the traced function runtime
         run: |

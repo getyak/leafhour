@@ -184,11 +184,15 @@ test('the menu mounts on the five authored home routes and never on the canonica
 
 test('the authored home markup ships one trigger and one native sheet with the exact ids the controller needs',async()=>{
   const source=await readFile(new URL('../app/home.html',import.meta.url),'utf8');
-  for(const id of ['home-menu','home-menu-trigger','home-menu-signin','home-menu-account','home-menu-resume','home-menu-resume-title','home-menu-resume-author','home-menu-search','home-menu-links','home-menu-languages'])
+  for(const id of ['home-menu','home-menu-trigger','home-menu-links','home-menu-languages'])
     assert.match(source,new RegExp('id="'+id+'"'),'home.html must keep the production id '+id);
   assert.match(source,/id="home-menu-trigger"[^>]*aria-haspopup="dialog"/);
   assert.match(source,/id="home-menu-trigger"[^>]*aria-controls="home-menu"/);
-  assert.match(source,/id="home-menu-account"[^>]*href="\/library\?settings=account"/);
+  const header=source.match(/<header class="site-header"[\s\S]*?<\/header>/)[0];
+  const nav=header.match(/<nav class="home-navigation"[\s\S]*?<\/nav>/)[0];
+  assert.doesNotMatch(nav,/data-palette-open|home-languages|href="\/library"/,'public navigation keeps one account entry and no search or language list');
+  assert.equal((header.match(/id="account-button"/g)||[]).length,1);
+  assert.doesNotMatch(source,/id="home-menu-(?:signin|account|search|resume)"/,'the menu does not duplicate account, search or reading controls');
   assert.equal((source.match(/id="home-menu"/g)||[]).length,1,'exactly one menu sheet');
 });
 

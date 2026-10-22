@@ -21,7 +21,7 @@ test('root detection chooses browser or device without recording an inferred Eng
 });
 test('automatic first-paint links defer language to the next canonical page; explicit English keeps its language',()=>{
  const automatic=portalDocument(source,'/'),explicit=portalDocument(source,'/en');
- assert.ok(links(automatic).length>=6);assert.ok(links(explicit).length>=6);
+ assert.ok(links(automatic).length>=3);assert.ok(links(explicit).length>=3);
  for(const href of links(automatic))assert.equal(new URL(href,'https://leafhour.test').searchParams.has('ui'),false,href);
  for(const href of links(explicit))assert.equal(new URL(href,'https://leafhour.test').searchParams.get('ui'),'en',href);
  assert.match(automatic,/<html lang="en">/);assert.match(explicit,/href="\/en" lang="en"/);

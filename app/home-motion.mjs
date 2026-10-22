@@ -28,9 +28,9 @@ export function mountHomeMotion(root,win=root?.ownerDocument?.defaultView){
         // pointerup land on its parent, so interactive hit areas never translate.
         const actionable='a[href], button, input, select, textarea, summary, [tabindex], [contenteditable]';
         const interactive=element.matches(actionable)||element.querySelector(actionable);
-        const frames=interactive?[{opacity:.25},{opacity:1}]:[{opacity:.25,translate:'0 24px'},{opacity:1,translate:'0 0'}];
+        const frames=interactive?[{opacity:.65},{opacity:1}]:[{opacity:.65,translate:'0 12px'},{opacity:1,translate:'0 0'}];
         const animation=element.animate(frames,{
-          duration:780,delay:Math.min(index++*75,150),fill:'backwards',easing:'cubic-bezier(.22,1,.36,1)'
+          duration:420,delay:Math.min(index++*50,100),fill:'backwards',easing:'cubic-bezier(.22,1,.36,1)'
         });
         active.set(element,animation);
         const finished=()=>{if(active.get(element)===animation)active.delete(element);};

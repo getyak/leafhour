@@ -2,6 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mountHomeAtmosphere} from '../app/home-atmosphere.mjs';
 
+test('the clear home surface does not start decorative pointer, scroll or preference work',()=>{
+  const hero={dataset:{visualStyle:'clear'}};
+  const root={hidden:false,querySelector:selector=>selector==='.home-hero'?hero:null};
+  const unexpected=()=>{throw Error('clear surfaces must not mount optical motion');};
+  const stop=mountHomeAtmosphere(root,{requestAnimationFrame:unexpected,matchMedia:unexpected,addEventListener:unexpected});
+  assert.equal(typeof stop,'function');
+  assert.doesNotThrow(stop);
+});
+
 function setup({reduced=false,fine=true,hidden=false,saved=null,locale='zh-Hans'}={}){
   const doc=new EventTarget();doc.hidden=false;doc.documentElement={lang:locale};
   const motion=new EventTarget();motion.matches=reduced;

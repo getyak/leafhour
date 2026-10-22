@@ -371,7 +371,7 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     return mutate(recordFile(user,id),emptyRecords(book),data=>{const revision=data.position?.revision||0;if(input.baseRevision!==undefined&&input.baseRevision!==revision)throw fail('阅读位置已在另一处更新，请选择从哪里继续',409);data.position={...position,revision:revision+1,updatedAt:new Date().toISOString()};guardRecordSize(data);return data.position;});
   }
   async function translate(user,id,passageId,options={}){
-    requireUser(user);const {expectedContentVersion}=translationRequestOptions(options);
+    requireUser(user);const {expectedContentVersion,generationReceipt,authorizeGeneration}=translationRequestOptions(options);
     const book=await getBook(user,id),passages=allPassages(book),i=passages.findIndex(p=>p.id===passageId);
     if(i<0)throw fail('找不到当前段落',404);
     // A stale expected version is refused before any charged provider request.
@@ -385,19 +385,23 @@ export async function createLibraryService({dataDir,catalogDir=path.resolve('cat
     // Versions saved before this generation may only be replaced when they are
     // unchanged drafts; reviewed and concurrent versions survive untouched.
     const before={...(passages[i].translations||{})};
+    const checkPermission=async()=>{if(authorizeGeneration&&!await authorizeGeneration())throw fail('本次翻译已取消或过期，未保存结果',409);};
     try{
       bookCapacity(book,TRANSLATION_RESERVE_BYTES);
       if(dataStore?.reserveTranslation)ticket=await dataStore.reserveTranslation(user,id,passageId);
       {const latest=await getBook(user,id),saved=allPassages(latest).find(p=>p.id===passageId);assertGenerationSource({book,fresh:latest,passage:passages[i],freshPassage:saved});assertExpectedContentVersion(latest,expectedContentVersion);assertBatchPassage(saved,expectedContentVersion);if(saved?.translations.literal&&saved.translations.interpretive){await notifySourceMutation(user,id,{type:'translation-ack',bookId:id,passageId});return saved;}bookCapacity(latest,TRANSLATION_RESERVE_BYTES);}
+      await checkPermission();
       const result=await translator({passageId,sourceLanguage:inferSourceLanguage(passages[i].original),targetLanguage:'zh',passages:passages.slice(Math.max(0,i-1),i+2).map(p=>({id:p.id,original:p.original})),sourceVersion:book.contentVersion});
       if(!result||!['literal','interpretive'].every(k=>typeof result[k]==='string'&&result[k].trim()&&result[k].length<=12000))throw fail('翻译结果不完整，请重试；原文已保留',502);
-      const translations=Object.fromEntries(['literal','interpretive'].map(variant=>[variant,{text:result[variant],status:'draft',variant,origin:'ai',model:result.model||'configured-provider',sourceVersion:book.contentVersion,createdAt:new Date().toISOString()}]));
+      await checkPermission();
+      const translations=Object.fromEntries(['literal','interpretive'].map(variant=>[variant,{text:result[variant],status:'draft',variant,origin:'ai',model:result.model||'configured-provider',sourceVersion:book.contentVersion,createdAt:new Date().toISOString(),...(generationReceipt?{generationReceipt}:{})}]));
       // Re-read source and ownership before saving; an updated or deleted book
       // is neither recreated nor given a stale translation overlay.
       const fresh=await getBook(user,id),freshPassage=allPassages(fresh).find(p=>p.id===passageId);
       assertGenerationSource({book,fresh,passage:passages[i],freshPassage});
       let saved;
-      await mutate(path.join(userDir(user),'translations',digest(id)+'.json'),{},data=>{
+      await mutate(path.join(userDir(user),'translations',digest(id)+'.json'),{},async data=>{
+        await checkPermission();
         const existing={...freshPassage.translations,...(data[passageId]?.contentVersion===fresh.contentVersion?data[passageId].translations:{})};
         saved={contentVersion:fresh.contentVersion,translations:mergeGeneratedTranslations({existing,before,generated:translations})};
         {const projected={...fresh,sections:fresh.sections.map(s=>({...s,paragraphs:s.paragraphs.map(p=>p.id===passageId?{...p,translations:saved.translations}:data[p.id]?.contentVersion===fresh.contentVersion?{...p,translations:data[p.id].translations}:p)}))};bookCapacity(projected);}

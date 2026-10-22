@@ -1,3 +1,4 @@
+import {billingErrorDetails} from './owner-scope.mjs';
 import {readingChatQuoteFromExcerpt} from './reading-chat-quote.mjs';
 import {t,getUiLocale,uiHref,onUiLocaleChange} from './ui-locale.mjs';
 import {mountReaderChatWorkspace} from './reader-chat-workspace.mjs';
@@ -42,7 +43,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
     if(response.headers.get('X-Reader-Session-Changed')==='1')sessionChanged();
     if(url.endsWith('/companion/messages')&&response.ok){const identity=await request('/api/auth/session',{cache:'no-store'});requireActive();const current=await identity.json();requireActive();if(!identity.ok||(current.user?.id||'guest')!==(session?.user?.id||'guest'))sessionChanged();}
     const value=await response.json();requireActive();
-    if(!response.ok)throw Object.assign(Error(value.error||'对话暂时无法载入，请重试。'),{status:response.status});
+    if(!response.ok)throw Object.assign(Error(value.error||'对话暂时无法载入，请重试。'),{status:response.status,...billingErrorDetails(value)});
     return value;
   };
   let taskStorage=null;try{taskStorage=globalThis.localStorage;}catch{}

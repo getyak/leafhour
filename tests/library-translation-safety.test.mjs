@@ -101,3 +101,25 @@ test('saving translations keeps account ownership and never touches personal rec
   assert.equal(records.comments.length,1);
   assert.equal(records.comments[0].text,'我的原话');
 });
+
+// A trusted internal receipt links saved variants to the financial operation.
+test('translation keeps an operation receipt only on newly saved variants',async t=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'translation-credit-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+ let calls=0;const library=await createLibraryService({dataDir:dir,catalogDir:null,translator:async()=>{calls++;return {literal:'独立直译',interpretive:'独立意译'};}});
+ const user={id:'u'},book=await library.importDocument(user,{filename:'receipt.txt',bytes:Buffer.from('Readable source paragraph.')}),passageId=book.sections[0].paragraphs[0].id;
+ const generationReceipt={operationId:'credit-test',requestId:'request-test'};
+ const result=await library.translate(user,book.bookId,passageId,{expectedContentVersion:book.contentVersion,generationReceipt});
+ assert.deepEqual(result.translations.literal.generationReceipt,generationReceipt);
+ assert.deepEqual(result.translations.interpretive.generationReceipt,generationReceipt);
+ const cached=await library.translate(user,book.bookId,passageId,{generationReceipt:{operationId:'another',requestId:'other'}});
+ assert.deepEqual(cached.translations.literal.generationReceipt,generationReceipt);assert.equal(calls,1);
+});
+
+test('revoked generation permission blocks saving a late translation',async t=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'translation-revoked-'));t.after(()=>rm(dir,{recursive:true,force:true}));
+ let active=true,calls=0;const library=await createLibraryService({dataDir:dir,catalogDir:null,translator:async()=>{calls++;active=false;return {literal:'不应保存',interpretive:'不应保存'};}});
+ const user={id:'u'},book=await library.importDocument(user,{filename:'fenced.txt',bytes:Buffer.from('An original sentence.')}),id=book.sections[0].paragraphs[0].id;
+ await assert.rejects(library.translate(user,book.bookId,id,{authorizeGeneration:async()=>active}),e=>e.status===409);
+ assert.equal(calls,1);assert.deepEqual((await library.getBook(user,book.bookId)).sections[0].paragraphs[0].translations,{});
+ await assert.rejects(library.translate(user,book.bookId,id,{authorizeGeneration:async()=>false}),e=>e.status===409);assert.equal(calls,1);
+});

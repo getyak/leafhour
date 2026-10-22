@@ -1,3 +1,4 @@
+const prepareCreditRequest=async options=>(await import('./credit-client.mjs')).prepareCreditRequest(options);
 import {mountChatBookUpload} from './chat-book-upload.mjs';
 import {createBookUploadController} from './book-upload-controller.mjs';
 import {t,onUiLocaleChange,onBeforeUiPopstate,getUiLocale,getUiNavigationLocale,uiHref,uiReady,requestUiRoute,adoptUiOwner} from './ui-locale.mjs';
@@ -75,7 +76,13 @@ function updateUploadProgressLabel(){
   paintStatus('upload-status',t(progress.id,progress.params));
   $('upload-status').setAttribute('lang',getUiLocale());
 }
-const api=(url,data,ticket=ownerScope.capture())=>readOwnerResponse(ownerScope,ticket,()=>fetch(url,{...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json',...((url.startsWith('/api/library')||url.startsWith('/api/account')||url.startsWith('/api/book-gifts'))?{'X-Reader-Owner':ticket.owner}:{})}}).catch(()=>{throw Object.assign(Error('网络暂时无法连接，请稍后重试。'),{retryable:true});}),()=>{ownerScope.adopt('guest');void adoptUiOwner(null);session={...session,user:null};clearPrivateUI();location.reload();});
+const api=async(url,data,ticketOrOptions=ownerScope.capture())=>{
+  const options=Object.hasOwn(ticketOrOptions||{},'owner')?{}:ticketOrOptions||{},ticket=Object.hasOwn(ticketOrOptions||{},'owner')?ticketOrOptions:ownerScope.capture();
+  const maySubmit=()=>!options.signal?.aborted&&ownerScope.isCurrent(ticket)&&session?.user?.id===ticket.owner;
+  const prepared=session?.billing?.enabled&&data!==undefined?await prepareCreditRequest({url,data,session,owner:ticket.owner,isCurrent:maySubmit,locale:getUiLocale()}):data;
+  if(options.signal?.aborted)throw Object.assign(new Error('Request cancelled before submission'),{name:'AbortError',preSubmit:true});
+  return readOwnerResponse(ownerScope,ticket,()=>{options.onDispatch?.();return fetch(url,{...(options.signal?{signal:options.signal}:{}),...(prepared===undefined?{}:{method:'POST',body:JSON.stringify(prepared)}),headers:{'Content-Type':'application/json',...((url.startsWith('/api/library')||url.startsWith('/api/account')||url.startsWith('/api/book-gifts')||url.startsWith('/api/billing'))?{'X-Reader-Owner':ticket.owner}:{})}}).catch(()=>{throw Object.assign(Error('网络暂时无法连接，请稍后重试。'),{retryable:true});});},()=>{ownerScope.adopt('guest');void adoptUiOwner(null);session={...session,user:null};clearPrivateUI();location.reload();});
+};
 const isLibrary=location.pathname==='/library';$('home-view').hidden=isLibrary;$('library-view').hidden=!isLibrary;document.body.classList.toggle('library-page',isLibrary);
 const entryQuery=new URLSearchParams(location.search),entryReturn=authEntryReturn(entryQuery),returnToReader=safeGiftReturn(entryReturn)||safeReaderReturn(entryReturn)||safeMcpReturn(entryReturn);
 let returnToLibrary=!returnToReader?safeLibraryReturn(entryReturn):null;

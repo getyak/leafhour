@@ -29,12 +29,12 @@ class Element extends EventTarget {
   querySelectorAll(selector){const visit=n=>[...n.children.flatMap(visit),n];const all=visit(this).slice(0,-1);const keys=selector.split(',').map(part=>part.trim().replace(/^\[|\]$/g,''));return all.filter(n=>keys.some(key=>n.getAttribute&&n.getAttribute(key)!==undefined));}
 }
 const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
-function setup(t,{handler,navigate,onViewChange,uploadController,uploadOptions,loadUpload,renderMarkdown=renderChatMarkdown,loadMarkdown,books=[{bookId:'one',title:{zh:'书名'}}]}={}){
+function setup(t,{handler,billing=false,navigate,onViewChange,uploadController,uploadOptions,loadUpload,renderMarkdown=renderChatMarkdown,loadMarkdown,books=[{bookId:'one',title:{zh:'书名'}}]}={}){
  const doc=new EventTarget();doc.createElement=tag=>new Element(tag,doc);doc.createTextNode=text=>{const n=new Element('#text',doc);n.textContent=text;return n;};doc.body=doc.createElement('body');const all=()=>{const visit=n=>[n,...n.children.flatMap(visit)];return visit(doc.body);};doc.getElementById=id=>all().find(n=>n.id===id);doc.querySelectorAll=()=>[];
  const previous={document:globalThis.document,localStorage:globalThis.localStorage,window:globalThis.window};const storage=new Map();globalThis.document=doc;globalThis.localStorage={getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)};const viewport=new EventTarget();viewport.height=800;viewport.offsetTop=0;globalThis.window={matchMedia:()=>({matches:false}),visualViewport:viewport};t.after(()=>Object.assign(globalThis,previous));
  const root=doc.createElement('dialog');root.id='chat';doc.body.append(root);const external=doc.createElement('button');doc.body.append(external);external.focus();let owner='alice',passage='p1',turns=[];const calls=[];
- const api=async(url,payload)=>{calls.push({url,payload});if(handler)return handler(url,payload,{turns,setTurns:v=>turns=v});if(payload){const turn={...payload,status:'running',answer:null};turns=[...turns,turn];return turn;}return {bookId:'one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:new URL(url,'http://local').searchParams.get('passageId')||'p1',chapterTitle:'章节',original:'Source'},turns};};
- const chat=mountLibraryChat({root,api,uploadController,mountUpload:uploadController?mountChatBookUpload:null,uploadOptions,loadUpload,renderMarkdown,loadMarkdown,getSession:()=>owner?{user:{id:owner}}:null,getOwner:()=>owner,getBooks:()=>books,openAuth(){},getCurrentBook:()=> 'one',getCurrentPassage:()=>passage,onNavigateToPassage:navigate||(()=>true),onViewChange});t.after(()=>chat.close());t.after(()=>chat.dispose?.());
+ const api=async(url,payload,options)=>{calls.push({url,payload});if(handler)return handler(url,payload,{turns,setTurns:v=>turns=v,options});if(payload){const turn={...payload,status:'running',answer:null};turns=[...turns,turn];return turn;}return {bookId:'one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:new URL(url,'http://local').searchParams.get('passageId')||'p1',chapterTitle:'章节',original:'Source'},turns};};
+ const chat=mountLibraryChat({root,api,uploadController,mountUpload:uploadController?mountChatBookUpload:null,uploadOptions,loadUpload,renderMarkdown,loadMarkdown,getSession:()=>owner?{user:{id:owner},...(billing?{billing:{enabled:true}}:{})}:null,getOwner:()=>owner,getBooks:()=>books,openAuth(){},getCurrentBook:()=> 'one',getCurrentPassage:()=>passage,onNavigateToPassage:navigate||(()=>true),onViewChange});t.after(()=>chat.close());t.after(()=>chat.dispose?.());
  return {root,chat,doc,calls,external,viewport,all,find:cls=>all().find(n=>n.className.split(' ').includes(cls)),input:()=>doc.getElementById('library-chat-input'),setTurns:v=>turns=v,setOwner:v=>owner=v,setPassage:v=>passage=v,complete:()=>{turns=turns.map(turn=>turn.status==='completed'?turn:({...turn,status:'completed',answer:{summary:'真实回答',sourceRefs:[]}}));}};
 }
 function type(el,text){el.value=text;el.dispatchEvent(new Event('input'));}
@@ -324,4 +324,17 @@ test('disposing while upload code loads prevents its UI, requests and selected f
 test('chat history waits for its on-demand renderer while data loads in parallel and disposal fences late rendering',async t=>{
  let resolve;const loading=new Promise(r=>resolve=r),s=setup(t,{renderMarkdown:null,loadMarkdown:()=>loading});s.setTurns([{id:'answer',status:'completed',text:'Question',answer:{summary:'## Answer',sourceRefs:[]}}]);s.chat.open();await flush();assert.ok(s.calls.some(call=>call.url.includes('/chat')),'history request starts before renderer settles');assert.equal(s.find('library-chat-answer'),undefined);type(s.input(),'Retain draft.');s.chat.close();resolve({renderChatMarkdown});await flush();assert.equal(s.input().value,'Retain draft.');assert.equal(s.root.open,false);assert.ok(s.find('library-chat-answer'));
  let later;const stopped=setup(t,{renderMarkdown:null,loadMarkdown:()=>new Promise(r=>later=r)});stopped.chat.open();await flush();stopped.chat.dispose();later({renderChatMarkdown:()=>assert.fail('late disposed answer render')});await flush();assert.equal(stopped.root.open,false);
+});
+
+test('Stop during price confirmation prevents later paid dispatch',async t=>{
+ let release,dispatched=0,cancelled=0;const waiting=new Promise(resolve=>release=resolve);
+ const s=setup(t,{billing:true,handler:async(url,payload,{options})=>{
+  if(!payload)return response([]);
+  if(url.endsWith('/cancel')){cancelled++;throw Object.assign(Error('No native request yet'),{status:404});}
+  await waiting;if(options?.signal?.aborted)throw Object.assign(Error('Cancelled before dispatch'),{name:'AbortError'});
+  options?.onDispatch?.();dispatched++;return {...payload,status:'running',answer:null};
+ }});
+ s.chat.open();await flush();type(s.input(),'Read this source with me.');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();
+ s.find('library-chat-stop').click();await flush();release();await flush();
+ assert.equal(dispatched,0);assert.equal(cancelled,0);assert.equal(s.input().disabled,false);assert.equal(s.input().value,'Read this source with me.');
 });

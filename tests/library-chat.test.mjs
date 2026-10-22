@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createLibraryChatState} from '../app/library-chat-state.mjs';
+import {createLibraryChatState,chatFailureUncertain} from '../app/library-chat-state.mjs';
 
 const content={available:true,bookId:'one',title:{zh:'一本书',en:'A book'},contentVersion:'v1',context:{passageId:'p1',chapterId:'ch1',chapterTitle:'第一章',original:'Source.',literal:null,interpretive:null,translationStatus:{literal:'missing',interpretive:'missing'}},turns:[]};
 const turn=(id,status='completed')=>({id,passageId:'p1',contentVersion:'v1',text:'这个词是什么意思？',origin:'user',createdAt:'2026-10-15T01:00:00Z',status,answer:status==='completed'?{summary:'一个解释候选。',sourceRefs:[{passageId:'p1',quote:'Source.'}],origin:'ai'}:null});
@@ -89,4 +89,18 @@ test('preference write consent belongs only to the selected turn and survives ex
  state.resolveSend(request.ticket,{...turn(request.payload.id),preferenceWrites:true});
  state.setDraft('这个词是什么意思？');assert.equal(state.beginSend().payload.preferenceWrites,undefined);
  const recovered=create();recovered.resolveLoad(recovered.beginLoad(),content);assert.equal(recovered.view().retry?.payload.preferenceWrites,undefined);
+});
+
+
+test('a confirmed expired or released billing attempt starts a new question ID, while ambiguous failures keep the original',()=>{
+  for(const status of ['not_started','released','cancelled','reversed']){
+    const {state,requests}=durableSetup();state.setDraft('这个词是什么意思？');const first=state.beginSend();
+    const error=Object.assign(Error('Quote expired'),{status:409,billingOperation:{id:'operation',status}});
+    assert.equal(chatFailureUncertain(error),false);state.rejectSend(first.ticket,error,{uncertain:chatFailureUncertain(error)});
+    assert.equal(requests.size,0);assert.equal(state.view().draft,'这个词是什么意思？');
+    assert.notEqual(state.beginSend().payload.id,first.payload.id);
+  }
+  assert.equal(chatFailureUncertain({status:409}),true);
+  assert.equal(chatFailureUncertain({status:503,billingOperation:{status:'running'}}),true);
+  assert.equal(chatFailureUncertain({status:503,preSubmit:true}),false);
 });

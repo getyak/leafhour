@@ -45,8 +45,10 @@ test('every language discovery page exposes usable content and metadata before J
     const response=await fetch(base+route),html=await response.text();assert.equal(response.status,200);
     assert.match(html,new RegExp('<html lang="'+lang+'">'));assert.equal(new RegExp('<link rel="canonical" href="'+canonical.replace(/[/.]/g,'\\$&')+'">').test(html),true);
     assert.match(html,/<h1[^>]*>[^<]+<\/h1>/);assert.match(html,/<meta name="description" content="[^"]{24,}"/);
-    if(route==='/'){assert.ok(html.includes('href="/library"'),'automatic root preserves browser/account choice before JavaScript');assert.ok(!html.includes('href="/library?ui=en"'),'root does not force its English fallback on early navigation');}
-    else assert.ok(html.includes('href="/library?ui='+lang+'"'),route+' preserves its authored locale in canonical navigation');
+    const home=['/','/zh-hans','/zh-hant','/ja'].includes(route);
+    const entry=home?'/read?book=gutenberg-alice':'/library';
+    if(route==='/'){assert.ok(html.includes('href="'+entry+'"'),'automatic root preserves browser/account choice before JavaScript');assert.ok(!html.includes('href="'+entry+'&amp;ui=en"'),'root does not force its English fallback on early navigation');}
+    else assert.ok(html.includes('href="'+entry+(home?'&amp;':'?')+'ui='+lang+'"'),route+' preserves its authored locale in canonical navigation');
     assert.match(html,/href="https:\/\/github.com\/getyak\/leafhour/);
     assert.ok(schemas(html).some(s=>s['@type']==='WebPage'||s['@type']==='TechArticle'));
     assert.doesNotMatch(html,/aggregateRating|reviewCount|"offers"/);

@@ -164,10 +164,16 @@ export function createHostedAuth({store,env=process.env,fetcher=fetch,clock=Date
       return current&&!current.revoked&&current.expiresAt>clock()&&user.id===current.user.id?visible(user):null;
     }catch(error){if(error.status===401)return null;throw error;}
   }
+  // Billing trials require fresh provider verification, not an email supplied
+  // by the browser or an old profile snapshot. Public login shapes stay stable.
+  async function emailVerifiedFor(token){
+    if(!validToken(token))return false;const row=await freshSession(token);if(!row)return false;
+    try{const user=await request('user',null,row.access),current=await store.read(sessionKey(token),null);return !!(current&&!current.revoked&&current.expiresAt>clock()&&user.id===current.user.id&&typeof user.email_confirmed_at==='string'&&Number.isFinite(Date.parse(user.email_confirmed_at)));}catch(error){if(error.status===401)return false;throw error;}
+  }
   async function logout(token){
     if(!validToken(token))return;
     const access=await store.mutate(sessionKey(token),{},saved=>{const access=saved.access;saved.revoked=true;delete saved.access;delete saved.refresh;delete saved.refreshLease;return access;});
     if(access)await request('logout?scope=local',{},access).catch(()=>{});
   }
-  return {requestCode,verifyCode,signInPassword,setPassword,userFor,logout,capabilities,beginOAuth,finishOAuth,cancelOAuth,emailAvailable:env.READER_EMAIL_ENABLED==='true'};
+  return {requestCode,verifyCode,signInPassword,setPassword,userFor,emailVerifiedFor,logout,capabilities,beginOAuth,finishOAuth,cancelOAuth,emailAvailable:env.READER_EMAIL_ENABLED==='true'};
 }

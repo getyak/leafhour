@@ -1,6 +1,10 @@
 // GET-192 immutable zh-Hans UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "billing.accountLink": "额度与账单",
+  "credit.funds": "本次阅读点不足，仍可继续阅读。",
+  "billing.cancelled": "已取消。本次没有使用阅读点。",
+
 
   "bookUpload.ready": "可以开始阅读了",
   "bookUpload.permission": "原文件已保存",

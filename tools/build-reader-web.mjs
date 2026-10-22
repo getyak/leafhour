@@ -233,7 +233,7 @@ export function assertAudioBoundaryEdges({edges,release,sources=[]}){
 }
 
 export const ANNOTATION_PUBLIC_FILES=Object.freeze([
- 'app/reader-annotations.mjs','app/reader-annotation-pending.mjs',
+ 'app/reader-annotations.mjs','app/reader-annotation-pending.mjs','app/credit-labels.mjs',
  'app/reading-chat-quote.mjs','app/highlights.mjs','app/library-chat-markdown.mjs',
  'app/reader-annotations.css',...UI_LOCALE_RELEASE_ENTRIES
 ]);
@@ -363,6 +363,8 @@ export async function buildReaderWeb({root,outputDir,html}){
  // open from the statically bundled reader-book-actions-bootstrap.mjs. The
  // prior six exceptions are unchanged.
  const lazyModules={
+  'original-download.mjs':{kind:'dynamic-import',importer:'reader-translation.js'},
+  'credit-client.mjs':{kind:'dynamic-import',importer:'reader-api.mjs'},
   'chat-book-upload.mjs':{kind:'dynamic-import',importer:'library-chat.mjs'},
   'library-chat-markdown.mjs':{kind:'dynamic-import',importer:'library-chat.mjs'},
   'reader-book-actions.mjs':{kind:'dynamic-import',importer:'reader-book-actions-bootstrap.mjs'},
@@ -424,7 +426,7 @@ export async function buildReaderWeb({root,outputDir,html}){
    if(!candidates.some(file=>file&&file.startsWith('app/ui-catalogs/')))return undefined;
    throw Error('Non-public ui-catalogue bundle edge: '+args.path);
   });
-  b.onResolve({filter:/^\.\/(?:chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|reader-settings-choices|command-palette)\.mjs(?:\?.*)?$/},args=>{
+  b.onResolve({filter:/^\.\/(?:original-download|credit-client|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|reader-settings-choices|command-palette)\.mjs(?:\?.*)?$/},args=>{
   const at=args.path.indexOf('?'),query=at<0?'':args.path.slice(at);
   if(query&&args.path!==paletteRetry)throw Error('Non-public lazy reader module: '+args.path);
   const entry=lazyModules[args.path.slice(2,query?at:undefined)];

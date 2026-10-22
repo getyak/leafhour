@@ -87,8 +87,15 @@ function openMenu({focus = false} = {}) {
     const rect = control.getBoundingClientRect();
     const width = menu.offsetWidth || 210;
     const left = Math.max(8, Math.min(rect.left, (win.innerWidth || rect.right) - width - 8));
+    const viewportHeight = win.innerHeight || rect.bottom + (menu.offsetHeight || 180) + 16;
+    const availableHeight = Math.max(0, viewportHeight - 16);
+    menu.style.maxHeight = availableHeight + 'px';
+    menu.style.overflowY = 'auto';
+    const height = Math.min(menu.offsetHeight || 180, availableHeight);
+    const below = rect.bottom + 8;
+    const top = below + height <= viewportHeight - 8 ? below : Math.max(8, rect.top - height - 8);
     menu.style.left = left + 'px';
-    menu.style.top = (rect.bottom + 8) + 'px';
+    menu.style.top = Math.max(8, Math.min(top, viewportHeight - height - 8)) + 'px';
   }
   if (focus) {
     const checked = [...active.options.values()].find(input => input.checked) || active.options.get('system');

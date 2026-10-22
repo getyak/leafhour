@@ -3,6 +3,9 @@
 // code point offsets stay server-owned. Every claim is revalidated against the book snapshot and
 // an invalid or missing selection degrades to a deterministic source sentence.
 import {DEFAULT_MODELS} from './model-config.mjs';
+import {randomUUID} from 'node:crypto';
+import {providerMeterContext,recordProviderDispatch,recordProviderCall,normalizeDeepSeekUsage} from './provider-metering.mjs';
+import {createProviderBudget,priceProviderUsage} from './provider-pricing.mjs';
 
 export const GIFT_QUOTE_KIND='marginalia-gift-quote';
 export const GIFT_QUOTE_SCHEMA_VERSION=1;
@@ -196,27 +199,36 @@ async function readBoundedBody(response,{limit=MAX_PROVIDER_RESPONSE_BYTES,maxCh
   }catch(error){try{await reader.cancel();}catch{}throw error;}
   finally{try{reader.releaseLock();}catch{}}
 }
-// One bounded chat-completions request. No retry, no metering and nothing from
-// this call is logged or echoed back to the browser.
+// One bounded chat-completions request, without retry. Supplier metering only
+// records safe facts; source and response bodies never enter those receipts.
 export function createDeepSeekGiftQuoteGenerator({env=process.env,fetcher=fetch,model=DEFAULT_MODELS.reading,timeoutMs=15000,maxTokens=400}={}){
   if(!env?.DEEPSEEK_API_KEY)return null;
   return async({bookId,contentVersion,pool})=>{
     const candidates=buildQuoteCandidates(pool);
     if(!candidates.length)throw new QuoteProviderError('no-eligible-candidate');
-    let response;
-    try{response=await fetcher(PROVIDER_URL,{method:'POST',redirect:'error',headers:{Authorization:'Bearer '+env.DEEPSEEK_API_KEY,'Content-Type':'application/json'},signal:AbortSignal.timeout(timeoutMs),
-      body:JSON.stringify({model,temperature:0,max_tokens:Math.min(maxTokens,400),stream:false,thinking:{type:'disabled'},response_format:{type:'json_object'},messages:[{role:'system',content:SYSTEM_PROMPT},{role:'user',content:JSON.stringify({candidates:candidates.map(({id,text})=>({id,text}))})}]})});}
-    catch{throw new QuoteProviderError('provider-unavailable','gift quote provider unavailable');}
-    if(!response.ok){await cancelBody(response);throw new QuoteProviderError('provider-unavailable','gift quote provider unavailable');}
+    const outputLimit=Math.min(maxTokens,400),body=JSON.stringify({model,temperature:0,max_tokens:outputLimit,stream:false,thinking:{type:'disabled'},response_format:{type:'json_object'},messages:[{role:'system',content:SYSTEM_PROMPT},{role:'user',content:JSON.stringify({candidates:candidates.map(({id,text})=>({id,text}))})}]});
+    const meter=providerMeterContext();
+    if(meter)createProviderBudget({model,maxCostUsd:Math.min(meter.maxCostUsd??.015,.015),maxRequests:1,maxToolCalls:0}).reserveRequest({kind:'main',inputBytes:Buffer.byteLength(body),maxTokens:outputLimit});
+    const id=randomUUID(),startedAt=new Date().toISOString();let status='failed',usage=normalizeDeepSeekUsage();
+    await recordProviderDispatch({id,provider:'deepseek',model,startedAt});
     try{
-      const payload=JSON.parse(await readBoundedBody(response)),content=payload?.choices?.[0]?.message?.content;
-      if(typeof content!=='string')throw new QuoteProviderError('invalid-response');
-      const selection=JSON.parse(content.trim());
-      if(!object(selection)||Object.keys(selection).join(',')!=='candidateId'||typeof selection.candidateId!=='string')throw new QuoteProviderError('invalid-response');
-      const selected=candidates.find(candidate=>candidate.id===selection.candidateId);
-      if(!selected)throw new QuoteProviderError('unknown-candidate');
-      const {chapterId,passageId,start,end,text}=selected;return {bookId,contentVersion,chapterId,passageId,start,end,text};
-    }catch(error){if(error instanceof QuoteProviderError)throw error;throw new QuoteProviderError('invalid-response');}
+      let response;
+      try{response=await fetcher(PROVIDER_URL,{method:'POST',redirect:'error',headers:{Authorization:'Bearer '+env.DEEPSEEK_API_KEY,'Content-Type':'application/json'},signal:AbortSignal.timeout(timeoutMs),body});}
+      catch{throw new QuoteProviderError('provider-unavailable','gift quote provider unavailable');}
+      if(!response.ok){await cancelBody(response);throw new QuoteProviderError('provider-unavailable','gift quote provider unavailable');}
+      try{
+        const payload=JSON.parse(await readBoundedBody(response)),content=payload?.choices?.[0]?.message?.content;
+        usage=normalizeDeepSeekUsage(payload.usage);status='completed';
+        if(typeof content!=='string')throw new QuoteProviderError('invalid-response');
+        const selection=JSON.parse(content.trim());
+        if(!object(selection)||Object.keys(selection).join(',')!=='candidateId'||typeof selection.candidateId!=='string')throw new QuoteProviderError('invalid-response');
+        const selected=candidates.find(candidate=>candidate.id===selection.candidateId);
+        if(!selected)throw new QuoteProviderError('unknown-candidate');
+        const {chapterId,passageId,start,end,text}=selected;return {bookId,contentVersion,chapterId,passageId,start,end,text};
+      }catch(error){if(error instanceof QuoteProviderError)throw error;throw new QuoteProviderError('invalid-response');}
+    }finally{
+      await recordProviderCall({id,provider:'deepseek',model,status,usage,startedAt,finishedAt:new Date().toISOString(),...priceProviderUsage({usage,model,startedAt,cacheWriteIncludedInInput:true})});
+    }
   };
 }
 export function createGiftQuoteService({library,gifts,generator=null,fetcher=fetch,env=process.env,model=DEFAULT_MODELS.reading,poolLimits=null,cacheLimit=16,onDiagnostic=()=>{}}={}){

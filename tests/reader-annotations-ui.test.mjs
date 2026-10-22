@@ -43,6 +43,18 @@ test('source changes cannot hide the exact-ID retry for an uncertain request',as
 test('unreadable or unwritable outboxes do not dispatch paid generation or silently overwrite corrupt bytes',async()=>{
  for(const corrupt of [false,true]){const storage=new Map();if(corrupt)storage.set('marginalia-annotation-pending-v1|'+JSON.stringify(['owner-a',readingBook.bookId,readingBook.contentVersion]),'{corrupt');const f=setup({storage,brokenStorage:true});try{await tick();await f.controller.annotate();assert.equal(f.pending.length,0);assert.ok(f.notices.some(row=>row[1]?.id==='reader.annotation.requestStorage'));if(corrupt)assert.equal([...storage.values()][0],'{corrupt');}finally{f.dispose();}}
 });
+test('annotation billing refusal keeps selected words and offers billing without an uncertain saved request',async()=>{
+ for(const error of [Object.assign(Error('Internal credit failure'),{status:402,preSubmit:true}),Object.assign(Error('Internal consent event'),{code:'BILLING_CONSENT_CANCELLED',status:409,preSubmit:true})]){
+  const f=setup();try{await tick();const work=f.controller.annotate();await tick();f.pending[0].reject(error);await work;
+   const card=f.$('.reader-annotation-card');assert.equal(card.hidden,false);assert.equal(f.$('.reader-annotation-source blockquote').textContent,'this');
+   assert.match(f.$('.reader-annotation-status').textContent,error.status===402?/Not enough reading points/:/cancelled.*No reading points/i);assert.doesNotMatch(card.textContent,/selected words changed|result is not confirmed|Internal/i);
+   assert.equal([...f.storage.keys()].filter(k=>k.includes('pending')).length,0);
+   const link=f.$('.reader-annotation-billing-link');assert.equal(!!link,error.status===402);
+   assert.equal(f.$('.reader-annotation-actions').children[0].hidden,false,'a new explicit request remains available');assert.equal(f.$('.reader-annotation-actions').children[2].hidden,true,'there is no saved thread to delete');
+   if(error.status===402){assert.equal(link.href,'/billing?ui=en');await requestUiRoute('ja');assert.match(f.$('.reader-annotation-status').textContent,/ポイントが不足/);assert.equal(link.href,'/billing?ui=ja');await requestUiRoute('en');}
+  }finally{f.dispose();}
+ }
+});
 
 test('same-chapter rerender keeps the active annotation and focused resize defers reparent until focus leaves',async()=>{
  const f=setup({held:true});try{await tick();f.$('.reader-annotation-indicator').dispatchEvent(new Event('click'));const card=f.$('.reader-annotation-card'),area=f.$('textarea');assert.equal(card.dataset.placement,'margin');area.value='Retain while resizing';area.focus();f.win.innerWidth=390;f.win.dispatchEvent(new Event('resize'));assert.equal(card.dataset.placement,'margin');assert.ok(parseFloat(card.style.left)+parseFloat(card.style.width)<=390);f.document.activeElement=f.document.body;card.dispatchEvent(new Event('focusout'));f.win.flushFrames();assert.equal(card.dataset.placement,'inline');assert.equal(f.$('textarea'),area);assert.equal(area.value,'Retain while resizing');const event=new Event('reader:chapter');Object.defineProperty(event,'detail',{value:{chapterId:'ch01'}});f.document.dispatchEvent(event);await tick();assert.equal(card.hidden,false);assert.equal(f.calls.filter(c=>c.input).length,0);}finally{f.dispose();}

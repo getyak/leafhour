@@ -2,6 +2,10 @@
 // data, also the safe default for server/static English shells. Complete
 // default data: every other catalogue carries the same keys.
 export default Object.freeze({
+  "billing.accountLink": "Points & billing",
+  "credit.funds": "Not enough reading points. You can keep reading.",
+  "billing.cancelled": "Cancelled. No reading points were used.",
+
 
   "bookUpload.ready": "Ready to read",
   "bookUpload.permission": "Original saved",

@@ -1,6 +1,10 @@
 // GET-192 immutable ja UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "billing.accountLink": "ポイントと請求",
+  "credit.funds": "この依頼に必要なポイントが不足しています。読書は続けられます。",
+  "billing.cancelled": "ポイント利用をキャンセルしました。依頼は送信していません。",
+
 
   "bookUpload.ready": "読書の準備ができました",
   "bookUpload.permission": "元のファイルを保存しました",
