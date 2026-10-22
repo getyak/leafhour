@@ -1,0 +1,19 @@
+<div id="lh-colors" aria-label="Leafhour 推荐配色预览">
+<style>
+#lh-colors{color-scheme:light;--paper:#F7F8F5;--ink:#242A27;--green:#365B47;--muted:#626D65;--line:#DCE3DA;font:14px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:var(--ink)}
+#lh-colors *{box-sizing:border-box}#lh-colors .preview{background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden}#lh-colors .nav{display:flex;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--line)}#lh-colors .brand{font-size:19px;font-weight:600;color:var(--green)}#lh-colors .navlinks{color:var(--muted);font-size:12px;align-self:center}#lh-colors .content{display:grid;grid-template-columns:1fr 1fr;gap:28px;padding:30px 24px}#lh-colors .kicker{color:var(--muted);font-size:12px}#lh-colors h2{font-size:26px;line-height:1.4;letter-spacing:-.7px;margin:8px 0 14px;font-weight:600}#lh-colors p{margin:0 0 18px;color:var(--muted)}#lh-colors button{background:var(--green);color:#fff;font:inherit;border:0;border-radius:8px;padding:10px 18px}#lh-colors button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}#lh-colors .reading{background:#fff;border:1px solid var(--line);border-radius:10px;padding:19px;align-self:center}#lh-colors .reading p{margin:10px 0 0;color:var(--ink)}#lh-colors .dot{display:inline-block;width:8px;height:8px;background:#E9BEA0;border-radius:50%;margin-right:6px}#lh-colors mark{color:var(--green);background:#E9EFE8}#lh-colors .swatches{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-top:18px}#lh-colors .chip{height:46px;border-radius:5px;border:1px solid var(--line);margin-bottom:5px}#lh-colors .label{font-size:12px}#lh-colors .hex{font-size:11px;color:var(--muted)}@media(max-width:520px){#lh-colors .content{grid-template-columns:1fr;padding:24px 20px;gap:20px}#lh-colors .swatches{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+<div class="preview">
+<div class="nav"><span class="brand">Leafhour</span><span class="navlinks">书房　　探索</span></div>
+<div class="content"><div><div class="kicker">阅读界面 · 配色示意</div><h2>给一句话，<br>多留一点时间。</h2><p>原文、译文和你的思考，在同一处。</p><button class="cursor-interaction" type="button" aria-pressed="false">试试选句效果</button></div><div class="reading"><div class="kicker"><span class="dot"></span>Alice’s Adventures in Wonderland</div><p>“And what is the use of a book,” thought Alice, <span id="lh-phrase">“without pictures or conversations?”</span></p></div></div>
+</div>
+<div class="swatches" aria-label="色板">
+<div><div class="chip" style="background:#F7F8F5"></div><div class="label">柔白 · 底色</div><div class="hex">#F7F8F5</div></div>
+<div><div class="chip" style="background:#242A27"></div><div class="label">石墨黑 · 正文</div><div class="hex">#242A27</div></div>
+<div><div class="chip" style="background:#365B47"></div><div class="label">深松绿 · 主色</div><div class="hex">#365B47</div></div>
+<div><div class="chip" style="background:#E9EFE8"></div><div class="label">灰绿 · 选中</div><div class="hex">#E9EFE8</div></div>
+<div><div class="chip" style="background:#E9BEA0"></div><div class="label">杏色 · 点缀</div><div class="hex">#E9BEA0</div></div>
+<div><div class="chip" style="background:#DCE3DA"></div><div class="label">浅灰绿 · 分隔</div><div class="hex">#DCE3DA</div></div>
+</div>
+<script>(()=>{const root=document.getElementById('lh-colors');const button=root.querySelector('button');const phrase=root.querySelector('#lh-phrase');button.addEventListener('click',()=>{const active=button.getAttribute('aria-pressed')!=='true';button.setAttribute('aria-pressed',String(active));phrase.innerHTML=active?'<mark>“without pictures or conversations?”</mark>':'“without pictures or conversations?”';button.textContent=active?'取消选句':'试试选句效果';});})();</script>
+</div>

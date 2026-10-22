@@ -28,3 +28,4 @@ body[data-annotation-pane=true][data-paginated=true] .book-page{height:var(--ann
 body[data-annotation-pane=true][data-annotation-compact=true] .book-page{padding-top:50px;padding-bottom:14px}
 body[data-annotation-pane=true][data-annotation-compact=true] .chapter-heading{display:none}
 body[data-annotation-pane=true][data-annotation-compact=true] :is(#reading-session,.library-chat-launcher){visibility:hidden}
+.reader-annotation-price,.annotation-price{font:inherit;color:var(--muted);white-space:nowrap}

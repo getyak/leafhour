@@ -1,6 +1,9 @@
 // Decorative input only. No reading state, account data, timers, or model calls.
 import {t,onUiLocaleChange,uiReady} from './ui-locale.mjs';
 export function mountHomeAtmosphere(root,win=root?.ownerDocument?.defaultView){
+  // The clear surface has no optical layers. Do not keep invisible pointer or
+  // scroll animation work, or modify the user's legacy light preference.
+  if(root?.querySelector?.('.home-hero')?.dataset?.visualStyle==='clear')return ()=>{};
   if(!root||root.hidden||!win?.requestAnimationFrame||!win.matchMedia)return ()=>{};
   const doc=root.ownerDocument,toggle=root.querySelector('.light-toggle');
   const reduced=win.matchMedia('(prefers-reduced-motion: reduce)'),fine=win.matchMedia('(hover: hover) and (pointer: fine)');

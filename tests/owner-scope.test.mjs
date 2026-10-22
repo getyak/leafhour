@@ -65,3 +65,16 @@ test('an owner switch fences stale search responses and clears the previous owne
   assert.equal(entries.length,1,'clearing an owner never pushes or backs into unrelated entries');
   assert.equal(typeof adapter.snapshot().view,'object');
 });
+
+
+test('owner responses preserve only validated terminal billing receipts for safe new attempts',async()=>{
+ const scope=createOwnerScope('alice');
+ for(const status of ['not_started','released','cancelled','reversed']){
+  await assert.rejects(readOwnerResponse(scope,scope.capture(),async()=>Response.json({error:'Quote expired',billingOperation:{id:'operation-1',status,private:'ignored'}},{status:409}),()=>{}),error=>{
+   assert.deepEqual(error.billingOperation,{id:'operation-1',status});return true;
+  });
+ }
+ for(const billingOperation of [{id:'operation-1',status:'running'},{status:'not_started'},'not_started']){
+  await assert.rejects(readOwnerResponse(scope,scope.capture(),async()=>Response.json({error:'Unknown',billingOperation},{status:503}),()=>{}),error=>!error.billingOperation);
+ }
+});

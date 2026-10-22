@@ -141,6 +141,18 @@ function fixture({lang = 'zh-Hans', stored = null, ui, page, anchors=[]} = {}) {
   return {doc, win, storage, trigger, menu, radios, links, owner, writes};
 }
 
+test('a footer appearance trigger opens its choices inside the viewport', () => {
+  const {win,trigger,menu}=fixture();
+  win.innerHeight=800;
+  trigger.getBoundingClientRect=()=>({left:1100,right:1144,top:740,bottom:784});
+  menu.offsetWidth=210;menu.offsetHeight=180;
+  trigger.dispatch('click');
+  assert.equal(menu.hidden,false);
+  assert.ok(parseFloat(menu.style.top)>=8);
+  assert.ok(parseFloat(menu.style.top)+menu.offsetHeight<=win.innerHeight-8);
+  assert.ok(parseFloat(menu.style.left)+menu.offsetWidth<=win.innerWidth-8);
+});
+
 test('the header trigger opens a labelled popover of native radios with the current mode visible', () => {
   const {doc, trigger, menu, radios} = fixture({stored: 'night'});
   assert.equal(getSiteAppearance(), 'night');
@@ -327,4 +339,26 @@ test('R6 support ownership never rewrites home library reader or an older single
  const waiting=deferred(),oldUi=supportRuntime(()=>waiting.promise),old=fixture({ui:oldUi,page:'support',anchors:[{href:'/library?ui=ja'}]});const initial=oldUi.initializeOnce();
  const currentUi=supportRuntime(async()=>ja),current=fixture({ui:currentUi,page:'support',anchors:[{href:'/library?ui=ja'}]});await currentUi.initializeOnce();await currentUi.requestUiRoute('en');
  waiting.resolve(ja);await initial;await oldUi.uiReady;assert.equal(current.links[0].href,'/library?ui=en');assert.equal(current.trigger.title,currentUi.t('shell.appearance.system'));assert.equal(old.links[0].href,'/library?ui=ja');
+});
+
+test('an appearance trigger in the footer opens its menu above the viewport edge',()=>{
+  const {win,trigger,menu}=fixture();
+  win.innerHeight=600;
+  trigger.getBoundingClientRect=()=>({left:320,right:364,top:548,bottom:592});
+  menu.offsetHeight=196;
+  trigger.dispatch('click');
+  assert.ok(Number.parseFloat(menu.style.top)+menu.offsetHeight<=win.innerHeight-8);
+  assert.equal(menu.style.top,'344px');
+  assert.equal(menu.style.maxHeight,'584px');
+});
+
+test('an oversized appearance menu stays scrollable inside a short viewport',()=>{
+  const {win,trigger,menu}=fixture();
+  win.innerHeight=140;
+  trigger.getBoundingClientRect=()=>({left:320,right:364,top:70,bottom:114});
+  menu.offsetHeight=196;
+  trigger.dispatch('click');
+  assert.equal(menu.style.top,'8px');
+  assert.equal(menu.style.maxHeight,'124px');
+  assert.equal(menu.style.overflowY,'auto');
 });

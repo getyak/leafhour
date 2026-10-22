@@ -82,7 +82,7 @@ test('sidebar locale refresh uses the last real sidebar state without replaying 
 test('settings privacy link follows the authored locale at creation and in place on later commits',async()=>{
  const {requestUiRoute}=await import('../app/ui-locale.mjs');await requestUiRoute('ja');const f=fixture({id:'privacy-owner'}),{mountLibraryShell}=await import('../app/library-shell.mjs');
  mountLibraryShell({getSession:f.getSession,openAuth:f.openAuth,onLogout:async()=>{},onHistory(){},onOpenChat(){},api:async()=>({})});
- const all=root=>[root,...root.children.flatMap(all)],privacy=all(f.get('library-settings-dialog')).find(n=>n.tagName==='a'&&n.href!=='https://github.com/getyak/leafhour');
+ const all=root=>[root,...root.children.flatMap(all)],privacy=all(f.get('library-settings-dialog')).find(n=>n.tagName==='a'&&/(?:^|\/)privacy(?:[?#]|$)/.test(n.href));
  try{assert.equal(privacy.href,'/ja/privacy');for(const [code,path]of [['zh-Hant','/zh-hant/privacy'],['zh-Hans','/zh-hans/privacy'],['en','/privacy'],['ja','/ja/privacy']]){await requestUiRoute(code);assert.equal(privacy.href,path);assert.equal(all(f.get('library-settings-dialog')).includes(privacy),true);}}
  finally{await requestUiRoute('en');}
 });

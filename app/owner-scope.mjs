@@ -1,4 +1,9 @@
 import {authMessageId} from './auth-errors.mjs';
+export function billingErrorDetails(body){
+  const receipt=body?.billingOperation;
+  return receipt&&typeof receipt.id==='string'&&receipt.id.length>0&&receipt.id.length<=256&&['not_started','released','cancelled','reversed'].includes(receipt.status)?{billingOperation:{id:receipt.id,status:receipt.status}}:{};
+}
+
 export function createOwnerScope(initial='guest'){
   let owner=initial,revision=0;
   const current=ticket=>ticket?.owner===owner&&ticket.revision===revision;
@@ -14,7 +19,7 @@ export function readOwnerResponse(scope,ticket,request,onSessionChanged){
       onSessionChanged();throw Error('账户已切换，请重新进入书房。');
     }
     let body;try{body=await response.json();}catch{throw Object.assign(Error('服务暂时无法连接，请稍后重试'),{status:response.status,retryable:response.ok||[408,500,502,503,504].includes(response.status)});}
-    if(!response.ok){const error=Object.assign(Error(typeof body?.error==='string'?body.error:'暂时无法完成'),{status:response.status});const messageId=authMessageId(body?.messageId);if(messageId)error.messageId=messageId;if(Number.isInteger(body?.retryAfter)&&body.retryAfter>0)error.retryAfter=Math.min(3600,body.retryAfter);throw error;}
+    if(!response.ok){const error=Object.assign(Error(typeof body?.error==='string'?body.error:'暂时无法完成'),{status:response.status,...billingErrorDetails(body)});const messageId=authMessageId(body?.messageId);if(messageId)error.messageId=messageId;if(Number.isInteger(body?.retryAfter)&&body.retryAfter>0)error.retryAfter=Math.min(3600,body.retryAfter);throw error;}
     return body;
   });
 }

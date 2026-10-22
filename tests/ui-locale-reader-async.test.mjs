@@ -13,6 +13,9 @@ test('sample disclosure descriptors keep exact sample counts and provider names 
 import vm from 'node:vm';
 import {readFile} from 'node:fs/promises';
 import {parse} from 'acorn';
+import {randomUUID} from 'node:crypto';
+import {prepareCreditRequest} from '../app/credit-client.mjs';
+import * as creditLabels from '../app/credit-labels.mjs';
 import {t,onUiLocaleChange,uiHref,getUiLocale,createUiLabels,requestUiRoute} from '../app/ui-locale.mjs';
 import {sourceDescriptionMessages} from '../app/document-source.mjs';
 import {createTranslationPresentation,hasDualDrafts} from '../app/translation-state.mjs';
@@ -38,14 +41,15 @@ class Element extends EventTarget{
  focus(){this.doc.activeElement=this;}
 }
 const descendants=node=>[node,...node.children.flatMap(descendants)];
-function fixture({visibility='public',request,session={user:{id:'owner-one'},translationAvailable:true},book:initialBook}={}){
+function fixture({visibility='public',request,session={user:{id:'owner-one'},translationAvailable:true},book:initialBook,intentStorage}={}){
+ if(intentStorage===undefined){const values=new Map();intentStorage={getItem:key=>values.get(key),setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)};}
  const doc=new EventTarget();doc.replacements=0;doc.clicks=[];doc.body=new Element('body',doc);doc.createElement=tag=>new Element(tag,doc);doc.querySelectorAll=()=>[];doc.getElementById=id=>descendants(doc.body).find(n=>n.id===id)||null;
  for(const id of ['paragraph-tools','chapter-heading','translation-about','chapter-invitations']){const e=doc.createElement('div');e.id=id;doc.body.append(e);}
  let book=initialBook||{bookId:'fixture-book',contentVersion:'v1',visibility,source:{format:'pdf',processor:'pdfjs-native',structure:'pdf_outline',filename:'来源 / 阅读.pdf'},chapters:[{id:'c1'}],sections:[{chapterId:'c1',paragraphs:[{id:'p1',original:'Original source one.',translations:{}},{id:'p2',original:'Original source two.',translations:{}}]}]},selected='p1',bridgeReads=0,viewReads=0;
- const context=vm.createContext({t,onUiLocaleChange,uiHref,getUiLocale,createUiLabels,sourceDescriptionMessages,createTranslationPresentation:()=>{const tasks=createTranslationPresentation(),view=tasks.view;tasks.view=(...args)=>{viewReads++;return view(...args);};return tasks;},hasDualDrafts,chineseOriginalOnly,sampleNoticeMessage,translationDisclosureMessage,readerLoginUrl,AbortController,CustomEvent,Response,downloadOriginalParts:()=>assert.fail('Not a multipart download fixture')});
+ const context=vm.createContext({t,onUiLocaleChange,uiHref,getUiLocale,createUiLabels,crypto:{randomUUID},creditErrorId:creditLabels.creditErrorId,creditActionLabel:(action,locale)=>{assert.equal(action,'translation');return '1 point ['+locale+']';},sourceDescriptionMessages,createTranslationPresentation:()=>{const tasks=createTranslationPresentation(),view=tasks.view;tasks.view=(...args)=>{viewReads++;return view(...args);};return tasks;},hasDualDrafts,chineseOriginalOnly,sampleNoticeMessage,translationDisclosureMessage,readerLoginUrl,AbortController,CustomEvent,Response,downloadOriginalParts:()=>assert.fail('Not a multipart download fixture')});
  vm.runInContext(source.slice(factory.start,factory.end),context);
  const requests=[],navigations=[],urls=[],timers=[],clears=[];
- const handle=context.mountReaderTranslation({bookId:'fixture-book',session,document:doc,getReader:()=>{bridgeReads++;return {getBook:()=>book,getSelectedId:()=>selected};},request:async(url,options)=>{requests.push({url,options});return request(url,options);},navigate:url=>navigations.push(url),urlApi:{createObjectURL:blob=>{urls.push({kind:'create',blob});return 'blob:fixture';},revokeObjectURL:url=>urls.push({kind:'revoke',url})},timers:{setTimeout:(fn,ms)=>{const timer={fn,ms};timers.push(timer);return timer;},clearTimeout:id=>clears.push(id)}});
+ const handle=context.mountReaderTranslation({bookId:'fixture-book',session,intentStorage,document:doc,getReader:()=>{bridgeReads++;return {getBook:()=>book,getSelectedId:()=>selected};},request:async(url,options)=>{requests.push({url,options});return request(url,options);},navigate:url=>navigations.push(url),urlApi:{createObjectURL:blob=>{urls.push({kind:'create',blob});return 'blob:fixture';},revokeObjectURL:url=>urls.push({kind:'revoke',url})},timers:{setTimeout:(fn,ms)=>{const timer={fn,ms};timers.push(timer);return timer;},clearTimeout:id=>clears.push(id)}});
  const select=id=>{selected=id;doc.dispatchEvent(new Event('reader:selection'));};
  return {doc,handle,requests,navigations,urls,timers,clears,select,getBook:()=>book,setBook:value=>book=value,counts:()=>({bridgeReads,viewReads,requests:requests.length,replacements:doc.replacements}),all:()=>descendants(doc.body)};
 }
@@ -81,5 +85,47 @@ test('book/version transitions invalidate translation completions even when the 
   const pending=deferred(),f=fixture({request:()=>pending.promise}),events=[];f.doc.addEventListener('reader:translation',e=>events.push(e.detail));f.select('p1');f.doc.getElementById('translate-passage').click();await flush();
   const original=f.getBook();if(transition==='same-object-ABA'){original.contentVersion='v2';f.doc.dispatchEvent(new Event('reader:ready'));original.contentVersion='v1';f.doc.dispatchEvent(new Event('reader:ready'));}else{f.setBook({...original,...(transition==='version-ABA'?{contentVersion:'v2'}:{bookId:'other-book'})});f.doc.dispatchEvent(new Event('reader:ready'));if(transition==='version-ABA'){f.setBook(original);f.doc.dispatchEvent(new Event('reader:ready'));}}
   pending.resolve(Response.json({id:'p1',translations:{literal:{text:'Old result'},interpretive:{text:'Old result variant'}}}));await flush();assert.equal(events.length,0,transition+' consumes the old completion');f.handle.dispose();
+ }
+});
+test('paid untranslated button uses the shared point label in every locale and posts the captured source version',async tctx=>{
+ await requestUiRoute('en');const pending=deferred(),f=fixture({session:{user:{id:'owner-one'},translationAvailable:true,billing:{enabled:true}},request:()=>pending.promise});tctx.after(async()=>{f.handle.dispose();await requestUiRoute('en');});
+ f.select('p1');const button=f.doc.getElementById('translate-passage');
+ for(const locale of ['en','zh-Hans','zh-Hant','ja']){await requestUiRoute(locale);assert.ok(button.textContent.endsWith('1 point ['+locale+']'));}
+ button.click();await flush();const body=JSON.parse(f.requests[0].options.body);assert.equal(body.passageId,'p1');assert.equal(body.contentVersion,'v1');assert.match(body.id,/^[A-Za-z0-9_-]+$/);pending.resolve(Response.json({id:'p1',translations:{literal:{text:'Literal'},interpretive:{text:'Interpretive'}}}));await flush();
+ const book=f.getBook();book.sections[0].paragraphs[0].translations={literal:{text:'Saved literal'},interpretive:{text:'Saved interpretive'}};f.doc.dispatchEvent(new Event('reader:ready'));f.select('p1');assert.equal(button.textContent,t('translation.viewDrafts'));assert.doesNotMatch(button.textContent,/point/);const count=f.requests.length;button.click();await flush();assert.equal(f.requests.length,count);
+});
+test('paid translation intent survives unknown response and remount, with owner and source isolation',async tctx=>{
+ await requestUiRoute('en');tctx.after(()=>requestUiRoute('en'));const saved=new Map(),intentStorage={getItem:key=>saved.get(key),setItem:(key,value)=>saved.set(key,value),removeItem:key=>saved.delete(key)},session={user:{id:'owner-one'},translationAvailable:true,billing:{enabled:true}};
+ const first=fixture({session,intentStorage,request:async()=>{throw Error('Unknown transport outcome');}});first.select('p1');first.doc.getElementById('translate-passage').click();await flush();const original=JSON.parse(first.requests[0].options.body);assert.ok(original.id);first.doc.getElementById('translate-passage').click();await flush();assert.equal(JSON.parse(first.requests[1].options.body).id,original.id);first.handle.dispose();
+ const next=fixture({session,intentStorage,request:async()=>Response.json({billingOperation:{id:'credit-'+'a'.repeat(64),status:'released'}},{status:502})});next.select('p1');next.doc.getElementById('translate-passage').click();await flush();assert.equal(JSON.parse(next.requests[0].options.body).id,original.id);next.doc.getElementById('translate-passage').click();await flush();assert.notEqual(JSON.parse(next.requests[1].options.body).id,original.id);next.handle.dispose();
+ const foreign=fixture({session:{...session,user:{id:'owner-two'}},intentStorage,request:async()=>{throw Error('unknown');}});foreign.select('p1');foreign.doc.getElementById('translate-passage').click();await flush();assert.notEqual(JSON.parse(foreign.requests[0].options.body).id,original.id);foreign.handle.dispose();
+ const revised=fixture({session,intentStorage,book:{...first.getBook(),contentVersion:'v2'},request:async()=>{throw Error('unknown');}});revised.select('p1');revised.doc.getElementById('translate-passage').click();await flush();assert.notEqual(JSON.parse(revised.requests[0].options.body).id,original.id);revised.handle.dispose();
+ assert.doesNotMatch(JSON.stringify([...saved]),/Original source|Unknown transport|Literal/);
+});
+test('reader translation remount with the real credit helper reuses the persisted quote and idempotency pair',{timeout:5000},async tctx=>{
+ await requestUiRoute('en');tctx.after(()=>requestUiRoute('en'));const values=new Map(),storage={getItem:key=>values.get(key),setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)},session={user:{id:'owner-reload'},translationAvailable:true,billing:{enabled:true,mode:'test',unitsPerPoint:1_000_000,prices:{translation:1_000_000,conversation:4_000_000,annotation:4_000_000}}},prepared=[];let quotes=0,requestPrepared;
+ const fetcher=async(url,options)=>{
+  if(url==='/api/auth/session')return Response.json({user:{id:'owner-reload'}});
+  assert.equal(url,'/api/billing/quotes');quotes++;const request=JSON.parse(options.body);return Response.json({id:'quote-reload',ownerId:'owner-reload',action:'translation',units:1_000_000,expiresAt:'2099-01-01T00:00:00Z',scope:{bookId:'fixture-book',contentVersion:'v1',passageId:'p1',requestId:request.input.id}});
+ };
+ const request=async(url,options)=>{
+  assert.equal(url,'/api/translate');const data=await prepareCreditRequest({url:'/api/library/books/fixture-book/translate',data:JSON.parse(options.body),session,owner:'owner-reload',isCurrent:()=>!options.signal.aborted,fetcher,confirm:()=>true,storage});prepared.push(data);requestPrepared.resolve();throw Error('Lost generation acknowledgement');
+ };
+ for(let mount=0;mount<2;mount++){requestPrepared=deferred();const f=fixture({session,intentStorage:storage,request});f.select('p1');f.doc.getElementById('translate-passage').click();await requestPrepared.promise;await flush();f.handle.dispose();}
+ assert.equal(prepared.length,2);assert.equal(quotes,1);assert.equal(prepared[0].id,prepared[1].id);assert.deepEqual(prepared[0].billing,prepared[1].billing);assert.equal(prepared[0].billing.quoteId,'quote-reload');
+});
+test('paid translation cannot start without durable browser identity storage',async tctx=>{
+ await requestUiRoute('en');tctx.after(()=>requestUiRoute('en'));const f=fixture({session:{user:{id:'owner-one'},translationAvailable:true,billing:{enabled:true}},intentStorage:null,request:()=>assert.fail('No paid request without a recoverable identity')});tctx.after(()=>f.handle.dispose());f.select('p1');f.doc.getElementById('translate-passage').click();await flush();assert.equal(f.requests.length,0);assert.match(f.doc.getElementById('translate-passage').textContent,/Retry/);
+});
+test('translation explains insufficient points and cancelled consent without claiming a model failure',async tctx=>{
+ await requestUiRoute('en');tctx.after(()=>requestUiRoute('en'));
+ for(const error of [Object.assign(Error('Internal billing failure'),{status:402,preSubmit:true}),Object.assign(Error('Internal consent event'),{code:'BILLING_CONSENT_CANCELLED',status:409,preSubmit:true})]){
+  const f=fixture({session:{user:{id:'owner-one'},translationAvailable:true,billing:{enabled:true}},request:async()=>{throw error;}});
+  try{f.select('p1');f.doc.getElementById('translate-passage').click();await flush();const hint=f.all().find(n=>n.className==='translation-notice');
+   assert.match(hint.textContent,error.status===402?/Not enough reading points/:/cancelled.*No reading points/i);assert.doesNotMatch(hint.textContent,/could not be completed|Internal/);
+   const link=f.all().find(n=>n.className==='billing-link');assert.equal(link.hidden,error.status!==402);
+   if(error.status===402){assert.equal(link.href,'/billing?ui=en');await requestUiRoute('ja');assert.match(hint.textContent,/ポイントが不足/);assert.equal(link.href,'/billing?ui=ja');await requestUiRoute('en');}
+   assert.deepEqual(f.getBook().sections[0].paragraphs[0].translations,{});
+  }finally{f.handle.dispose();}
  }
 });

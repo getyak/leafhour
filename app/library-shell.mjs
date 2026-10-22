@@ -1,5 +1,5 @@
 import {mountPreferenceMemory} from './preference-memory-ui.mjs';
-import {t,onUiLocaleChange,onUiLocaleStateChange,getUiLocale,getUiLocaleState,setUiLocale,retryUiLocale,uiReady,createUiMessage} from './ui-locale.mjs';
+import {t,onUiLocaleChange,onUiLocaleStateChange,getUiLocale,getUiLocaleState,setUiLocale,retryUiLocale,uiReady,uiHref,createUiMessage} from './ui-locale.mjs';
 import {UI_LOCALES,uiAuthoredPath} from './ui-locale-codec.mjs';
 import {mountLibraryDailyReading} from './library-daily-reading.mjs';
 import {mountLibraryData} from './library-data.mjs';
@@ -81,7 +81,9 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
       void doLogout();
     }});
   });
-  const accountActions=node('div','settings-actions'),profileRoot=node('div','account-profile-root');accountActions.append(login,logout);panels.account.append(accountTitle,accountDetail,profileRoot,accountActions,accountStatus);
+  const billingLink=node('a','text-link');const billingText=()=>({'en':'Points & billing','zh-Hans':'额度与账单','zh-Hant':'額度與帳單','ja':'ポイントと請求'})[getUiLocale()]||'Points & billing';
+  const paintBilling=()=>{billingLink.textContent=billingText();billingLink.href=uiHref('/billing');billingLink.hidden=!accountUser;};
+  const accountActions=node('div','settings-actions'),profileRoot=node('div','account-profile-root');accountActions.append(login,logout,billingLink);panels.account.append(accountTitle,accountDetail,profileRoot,accountActions,accountStatus);
   const profile=mountLibraryProfile({root:profileRoot,getSession,api,onProfileUpdated,onRestored});
   const memoryRoot=node('section','settings-preference-memory');panels['reading-habits'].append(memoryRoot);
   const memory=mountPreferenceMemory({root:memoryRoot,api,getSession,onSaved:onPreferenceMemorySaved});
@@ -100,7 +102,7 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   // Label-only account refresh: never clears status, never touches in-flight
   // operations and never triggers a business update.
   let accountUser=null;
-  function accountLabels(){const user=accountUser;accountTitle.textContent=user?t('shell.account.title.signedIn'):t('shell.account.title.guest');accountDetail.textContent=user?(user.kind==='local'?t('shell.account.detail.local'):t('shell.account.detail.email')):t('shell.account.detail.guest');accountName.textContent=user?.displayName||user?.email?.split('@')[0]||(user?t('shell.account.name.local'):t('shell.account.title.guest'));accountEmail.textContent=user?.email||(user?t('shell.account.email.local'):t('shell.account.login'));const accountLabel=user?t('shell.account.settingsLabel',{name:accountName.textContent}):t('shell.account.guestLabel');accountButton.setAttribute('aria-label',accountLabel);accountButton.dataset.hint=accountLabel;if(!logoutBusy)logout.textContent=t('shell.account.logout');}
+  function accountLabels(){paintBilling();const user=accountUser;accountTitle.textContent=user?t('shell.account.title.signedIn'):t('shell.account.title.guest');accountDetail.textContent=user?(user.kind==='local'?t('shell.account.detail.local'):t('shell.account.detail.email')):t('shell.account.detail.guest');accountName.textContent=user?.displayName||user?.email?.split('@')[0]||(user?t('shell.account.name.local'):t('shell.account.title.guest'));accountEmail.textContent=user?.email||(user?t('shell.account.email.local'):t('shell.account.login'));const accountLabel=user?t('shell.account.settingsLabel',{name:accountName.textContent}):t('shell.account.guestLabel');accountButton.setAttribute('aria-label',accountLabel);accountButton.dataset.hint=accountLabel;if(!logoutBusy)logout.textContent=t('shell.account.logout');}
   function update(){const user=accountUser=getSession()?.user;const nextOwner=user?.id||null;if(logoutOwner!==nextOwner){logoutOwner=nextOwner;withdrawLogout();}login.hidden=!!user;logout.hidden=!user;accountMessage.clear();renderProfileAvatar(accountAvatar,user);accountLabels();profile.update();habits.update();memory.update();daily.update();data.update();appearanceSync();}
   const sidebarToggle=$('sidebar-toggle');let sidebarLabelId=null,sidebarHintId=null;
   function sidebarLabels(){if(sidebarLabelId)sidebarToggle.setAttribute('aria-label',t(sidebarLabelId));if(sidebarHintId)sidebarToggle.dataset.hint=t(sidebarHintId);}

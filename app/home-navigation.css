@@ -1,28 +1,129 @@
-/* GET-188 authored-home mobile navigation (GET-189 keeps the final touch-target
-   and fixed-pill audit). At <=1100px the authored home header keeps the brand,
-   the existing appearance button and one quiet 44px pill menu trigger; the
-   original single-line navigation returns at 1101px. The menu itself is one
-   full-height native dialog sheet: existing paper/night tokens, a serif title,
-   hairline rows at least 48px tall, the shared focus ring and reduced motion.
-   The sheet restores display of its cloned .home-nav anchors, so the old 700px
-   home-nav hiding rule can never hide the sheet's own links. */
-.home-menu-trigger{display:none}
-.home-menu-sheet{position:fixed;inset:0;width:100%;max-width:none;height:100dvh;max-height:100dvh;margin:0;padding:0;border:0;border-radius:0;background:var(--paper);color:var(--ink);box-shadow:none;overflow:auto;overscroll-behavior:contain}
-.home-menu-sheet::backdrop{background:color-mix(in srgb,var(--ink,#263b32) 34%,transparent)}
-.home-menu-sheet h2{font:400 26px/1.4 var(--serif);letter-spacing:var(--track-heading);margin:0;padding:28px 24px 12px}
-.home-menu-rows,.home-menu-links{display:flex;flex-direction:column}
-.home-menu-row,.home-menu-links a,.home-menu-sheet .home-nav{display:flex;align-items:center;gap:14px;width:100%;min-height:48px;padding:14px 24px;border:0;border-bottom:1px solid var(--line-hairline);background:none;color:var(--ink);font-size:16px;line-height:1.5;text-align:left}
-.home-menu-resume{flex-wrap:wrap}
-.home-menu-resume-label{width:100%;font-size:12px;color:var(--muted);letter-spacing:var(--track-label)}
-.home-menu-resume-title{font:400 18px/1.5 var(--serif)}
-.home-menu-resume-author{font-size:12px;color:var(--muted)}
-.home-menu-languages{display:flex;flex-direction:column;padding:12px 24px 32px}
-.home-menu-languages .home-languages{display:flex;flex-direction:column;gap:0;font-size:15px}
-.home-menu-languages .home-languages a{min-height:48px;display:flex;align-items:center;border-bottom:1px solid var(--line-hairline)}
-.home-menu-languages .home-languages a+a:before{content:none}
-@media(max-width:1100px){
-  body:not(.library-page)>.site-header .home-navigation,
-  body:not(.library-page)>.site-header>#account-button{display:none}
-  body:not(.library-page)>.site-header .home-menu-trigger{display:inline-flex;align-items:center;justify-content:center;min-height:44px;flex:none;margin-left:0;padding:0 16px;border:1px solid var(--line-hairline);border-radius:var(--action-radius);background:transparent;color:var(--ink);font-size:13px}
+/* Public navigation shares the page's paper. Account actions have one home;
+   languages live in one compact dialog, and reading tools stay in the app. */
+body:not(.library-page) > .site-header {
+  height: 88px;
+  gap: 24px;
+  padding-inline: 6%;
+  background: transparent;
 }
-@media(prefers-reduced-motion:reduce){.home-menu-sheet,.home-menu-sheet *,.home-menu-trigger{transition:none;animation:none}}
+body:not(.library-page) > .site-header .home-navigation {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-left: auto;
+  font-size: 13px;
+}
+body:not(.library-page) > .site-header #account-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-left: 0;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.home-menu-trigger { display: none; }
+body:not(.library-page) > .site-header .home-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin-left: -8px;
+  padding: 0;
+  color: var(--muted);
+  border: 0;
+  background: transparent;
+}
+.home-menu-trigger svg { width: 19px; height: 19px; }
+.home-menu-trigger:hover,
+.home-menu-trigger[aria-expanded=true] { color: var(--ink); }
+.home-menu-sheet {
+  position: fixed;
+  inset: 76px max(16px, 6vw) auto auto;
+  width: min(280px, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 92px);
+  margin: 0;
+  padding: 22px 24px 16px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--line-hairline);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--shadow-popover);
+}
+.home-menu-sheet::backdrop { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.home-menu-sheet h2 {
+  margin: 0 28px 12px 0;
+  font: 400 18px/1.5 var(--serif);
+  letter-spacing: var(--track-heading);
+}
+.home-menu-sheet .dialog-close { top: 10px; right: 9px; }
+.home-menu-links,
+.home-menu-languages .home-languages { display: flex; flex-direction: column; gap: 0; }
+.home-menu-links a,
+.home-menu-sheet .home-nav,
+.home-menu-languages .home-languages a {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: left;
+}
+.home-menu-languages { padding-top: 10px; border-top: 1px solid var(--line-hairline); }
+.home-menu-languages .home-languages a+a::before { content: none; }
+.home-menu-languages a[aria-current],
+.home-menu-languages a:hover,
+.home-menu-links a:hover { color: var(--ink); }
+body:not(.library-page) > .site-footer { flex-wrap: wrap; gap: 12px 26px; }
+body:not(.library-page) > .site-footer .site-theme { margin-left: auto; flex: none; order: 2; }
+#home-view .public-faq details { border-top: 1px solid var(--line-hairline); }
+#home-view .public-faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 64px;
+  padding: 16px 0;
+  list-style: none;
+  cursor: pointer;
+  font: 400 16px/1.6 var(--sans);
+}
+#home-view .public-faq summary::-webkit-details-marker { display: none; }
+#home-view .public-faq summary::after { content: '+'; flex: none; font: 20px/1 var(--sans); color: var(--muted); }
+#home-view .public-faq details[open] summary::after { content: '−'; }
+#home-view .public-faq details > p { padding: 0 32px 24px 0; color: var(--muted); font-size: 14px; }
+#home-view .ownership-section { background: transparent; border-block: 1px solid var(--line-hairline); }
+#home-view .ownership-copy > p:last-child { margin-bottom: 0; }
+@media (max-width: 700px) {
+  body:not(.library-page) > .site-header { height: 76px; gap: 12px; padding-inline: 24px; }
+  body:not(.library-page) > .site-header .home-navigation { display: none; }
+  body:not(.library-page) > .site-header #account-button { margin-left: auto; font-size: 12px; }
+  body:not(.library-page) > .site-header .home-menu-trigger { margin-left: -4px; }
+  .home-menu-sheet { top: 66px; right: 16px; max-height: calc(100dvh - 82px); }
+  body:not(.library-page) > .site-footer > .brand { flex-basis: 100%; }
+  body:not(.library-page) > .site-footer > p { display: none; }
+}
+@media (max-width: 360px) {
+  body:not(.library-page) > .site-header { padding-inline: 16px; gap: 8px; }
+  body:not(.library-page) > .site-header .brand-name { font-size: 25px; }
+  body:not(.library-page) > .site-header .brand-mark { width: 25px; height: 25px; }
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  body:not(.library-page) > .site-header { background: var(--paper); }
+}

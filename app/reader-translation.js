@@ -5,24 +5,39 @@ import {chineseOriginalOnly} from './source-language.mjs';
 import {createTranslationPresentation,hasDualDrafts} from './translation-state.mjs';
 import {readerLoginUrl} from './reader-return.mjs';
 import {sampleNoticeMessage,translationDisclosureMessage} from './catalog-sample.mjs';
-import {downloadOriginalParts} from './original-download.mjs';
+import {creditActionLabel,creditErrorId} from './credit-labels.mjs';
 
-export function mountReaderTranslation({bookId,session,document:doc=globalThis.document,getReader=()=>globalThis.window?.marginaliaReader,request=readerFetch,navigate=url=>globalThis.location.assign(url),urlApi=globalThis.URL,timers=globalThis}={}){
+export function mountReaderTranslation({bookId,session,document:doc=globalThis.document,getReader=()=>globalThis.window?.marginaliaReader,request=readerFetch,navigate=url=>globalThis.location.assign(url),urlApi=globalThis.URL,timers=globalThis,intentStorage}={}){
   if(!bookId||!doc)return null;
   const button=doc.createElement('button');button.id='translate-passage';button.type='button';doc.getElementById('paragraph-tools').prepend(button);
   const hint=doc.createElement('p');hint.className='translation-notice';hint.setAttribute('role','status');doc.getElementById('chapter-heading').append(hint);
+  const billingLink=doc.createElement('a');billingLink.className='billing-link';doc.getElementById('chapter-heading').append(billingLink);
   const sourceReview=doc.createElement('details');sourceReview.className='source-review';sourceReview.hidden=true;doc.getElementById('chapter-heading').insertBefore(sourceReview,hint);
-  const labels=createUiLabels(),links=new Map(),listeners=[],fileListeners=[],urls=new Map();
+  const labels=createUiLabels(),links=new Map(),listeners=[],fileListeners=[],urls=new Map();labels.text(billingLink,'billing.accountLink');
   let tasks=createTranslationPresentation(),book=null,bookVersion=null,epoch=0,disposed=false,controller=new AbortController(),cachedView=null,about=null;
   const on=(target,name,handler)=>{target.addEventListener(name,handler);listeners.push(()=>target.removeEventListener(name,handler));};
   const active=ticket=>!disposed&&ticket===epoch;
   const message=value=>typeof value==='string'?value:value?.id?t(value.id,value.params):'';
   const sourceHref=(link,target)=>{links.set(link,target);link.href=uiHref(target);};
   const selectedPassage=()=>book?.sections.flatMap(s=>s.paragraphs).find(p=>p.id===tasks.selectedId());
+  const capturedOwner=session?.user?.id;
+  const paidIntent=passageId=>{
+    if(typeof capturedOwner!=='string'||!capturedOwner)throw Error('Translation request owner unavailable');
+    const key='marginalia-translation-intent:v1:'+JSON.stringify([capturedOwner,bookId,bookVersion,passageId]);
+    let storage;try{storage=intentStorage===undefined?globalThis.sessionStorage:intentStorage;}catch{}
+    if(!storage||typeof storage.getItem!=='function'||typeof storage.setItem!=='function')throw Error('Translation request identity unavailable');
+    let id=storage.getItem(key);if(typeof id!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(id)){id=globalThis.crypto.randomUUID();storage.setItem(key,id);}
+    return {id,clear:()=>{try{storage.removeItem(key);}catch{}}};
+  };
+  const knownTerminal=result=>/^credit-[a-f0-9]{64}$/.test(result?.billingOperation?.id||'')&&['released','cancelled','reversed','not_started'].includes(result.billingOperation.status);
   const defaultNotice=()=>sampleNoticeMessage(book||{})||{id:book&&chineseOriginalOnly(book)?'translation.bookChinese':session?.translationAvailable?'translation.onDemand':'translation.serviceUnavailable'};
   function paintLabels(){
     if(disposed)return;
-    if(cachedView){button.textContent=message(cachedView.label);hint.textContent=cachedView.notice.map(message).join('');}
+    if(cachedView){
+      const priced=session?.billing?.enabled===true&&!cachedView.disabled&&!hasDualDrafts(selectedPassage())&&['translation.translate','translation.retry'].includes(cachedView.label?.id);
+      button.textContent=message(cachedView.label)+(priced?' · '+creditActionLabel('translation',getUiLocale()):'');hint.textContent=cachedView.notice.map(message).join('');
+      billingLink.hidden=!cachedView.notice.some(value=>value?.id==='credit.funds');billingLink.href=uiHref('/billing');
+    }
     if(about)doc.getElementById('translation-about').textContent=message(about);
     labels.refresh();for(const [link,target]of links)link.href=uiHref(target);
   }
@@ -55,6 +70,7 @@ export function mountReaderTranslation({bookId,session,document:doc=globalThis.d
           let assembled;
           if(info.bytes>8*1024*1024&&session?.directUpload){
             const manifest=await read('/api/original/parts'),plan=await manifest.json();if(!current())return;if(!manifest.ok)throw Error('Original parts unavailable');
+            const {downloadOriginalParts}=await import('./original-download.mjs');
             assembled=await downloadOriginalParts({parts:plan.parts,sha256:info.sha256,bytes:info.bytes,resume,
               rangeFetcher:({offset,length,signal})=>read('/api/original/range?sha256='+info.sha256+'&offset='+offset+'&length='+length,{signal}),
               refreshParts:async({signal})=>{const response=await read('/api/original/parts',{signal}),plan=await response.json();if(!current()||!response.ok)throw Error('Original parts unavailable');return plan.parts;},
@@ -96,15 +112,18 @@ export function mountReaderTranslation({bookId,session,document:doc=globalThis.d
     if(!session?.user){if(!button.disabled)navigate(readerLoginUrl({bookId,passageId:passage.id,action:'translate',ui:getUiLocale()}));return;}
     if(button.disabled)return;const passageId=passage.id,ticket=epoch;tasks.begin(passageId);renderTranslation();
     try{
-      const response=await scopedRequest(ticket,'/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({passageId})}),result=await response.json();if(!active(ticket))return;
-      if(!response.ok)throw Error('Translation unavailable');
+      const intent=session?.billing?.enabled===true?paidIntent(passageId):null;
+      const response=await scopedRequest(ticket,'/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({passageId,...(intent?{id:intent.id,contentVersion:bookVersion}:{})})}),result=await response.json();if(!active(ticket))return;
+      if(intent&&knownTerminal(result))intent.clear();
+      if(!response.ok)throw Object.assign(Error('Translation unavailable'),{status:response.status});
       if(result.id!==passageId||!hasDualDrafts(result)){tasks.fail(passageId,{id:'translation.incomplete'});return;}
+      intent?.clear();
       doc.dispatchEvent(new CustomEvent('reader:translation',{detail:{...result,reveal:tasks.complete(passageId)}}));
-    }catch{if(active(ticket))tasks.fail(passageId,{id:'translation.failed'});}
+    }catch(error){if(active(ticket))tasks.fail(passageId,{id:creditErrorId(error)||'translation.failed'});}
     finally{if(active(ticket))renderTranslation();}
   });
   const unsubscribe=onUiLocaleChange(paintLabels);
-  const dispose=()=>{if(disposed)return;disposed=true;epoch++;controller.abort();unsubscribe();for(const remove of [...listeners,...fileListeners])remove();for(const [url,timer]of urls){timers.clearTimeout(timer);urlApi.revokeObjectURL(url);}urls.clear();labels.clear();links.clear();button.remove();hint.remove();sourceReview.remove();};
+  const dispose=()=>{if(disposed)return;disposed=true;epoch++;controller.abort();unsubscribe();for(const remove of [...listeners,...fileListeners])remove();for(const [url,timer]of urls){timers.clearTimeout(timer);urlApi.revokeObjectURL(url);}urls.clear();labels.clear();links.clear();button.remove();hint.remove();billingLink.remove();sourceReview.remove();};
   on(doc,'reader:session-changed',dispose);renderTranslation();if(getReader()?.getBook?.())ready();
   return {dispose};
 }

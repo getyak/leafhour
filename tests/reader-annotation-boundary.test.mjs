@@ -17,7 +17,7 @@ test('annotation controller has one exact deferred owner and closed public depen
 test('the actual reader keeps annotation UI and its pending store outside the initial asset',async()=>{
  const root=path.resolve(import.meta.dirname,'..'),out=await mkdtemp(path.join(tmpdir(),'annotation-build-'));
  try{const result=await buildReaderWeb({root,outputDir:out,html:await readFile(path.join(root,'app/index.html'),'utf8')});
-  assert.ok(result.inputs.includes('app/reader-highlights.mjs'));assert.ok(!result.inputs.includes('app/reader-annotations.mjs'));assert.ok(!result.inputs.includes('app/reader-annotation-pending.mjs'));
+  assert.ok(result.inputs.includes('app/reader-highlights.mjs'));assert.ok(!result.inputs.includes('app/credit-client.mjs'),'spend consent loads only after an explicit request');assert.ok(!result.inputs.includes('app/reader-annotations.mjs'));assert.ok(!result.inputs.includes('app/reader-annotation-pending.mjs'));
   const js=await readFile(path.join(out,result.files.find(file=>file.endsWith('.js'))),'utf8');assert.match(js,/import\(["']\/reader-annotations\.mjs["']\)/);assert.doesNotMatch(js,/marginalia-annotation-pending-v1/);
   assert.ok(Buffer.byteLength(js)<=320*1024);const css=await readFile(path.join(out,result.files.find(file=>file.endsWith('.css'))),'utf8');assert.match(css,/reader-annotation-card/);assert.ok(Buffer.byteLength(css)<=200*1024);
  }finally{await rm(out,{recursive:true,force:true});}

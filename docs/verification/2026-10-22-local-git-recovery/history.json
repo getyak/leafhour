@@ -1,0 +1,2052 @@
+{
+  "snapshot_utc": "2026-10-22T07:00:34.392796+00:00",
+  "repo": "getyak/leafhour",
+  "origin_main": "ba9eef7f605572dc8eb3dd51b86ad03be1c4cc65",
+  "branch_count": 89,
+  "branch_categories": {
+    "forbidden_old_private_history": 14,
+    "exact_merged_pr_head": 45,
+    "direct_main_ancestor": 27,
+    "subsumed_public_branch": 2,
+    "tree_equivalent_merged_pr": 1
+  },
+  "worktree_count": 10,
+  "merged_prs_fetched": 158,
+  "merged_prs_not_in_baseline": [],
+  "scope": "Read-only retained local branch and stash review. Main uncommitted billing/UI work excluded. Did not read .env, secrets, runtime books/records or session logs. Git refs, index, stashes and worktrees unmodified.",
+  "method": "Exact main ancestry and fresh GitHub merged PR head/merge metadata, historical code/test/configuration tree and blob comparisons, focused diffs for the remaining public tips and three stashes. Not a line-by-line review of all historic prose.",
+  "branches": [
+    {
+      "branch": "codex/authentication",
+      "sha": "cc6414a07ba292bfbe6c43ad3eec2935553154cc",
+      "main_ancestor": false,
+      "public_root": false,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [
+        6,
+        5
+      ],
+      "contained_in_merged_pr_heads": [],
+      "category": "forbidden_old_private_history",
+      "decision": "retain locally; never push old ancestry; no missing valuable code found",
+      "nearest_public_source": {
+        "diff_count": 0,
+        "sha": "374cb61cf72b5371bb5671052fe486803e46c9a0",
+        "subject": "Merge pull request #6 from getyak/codex/authentication",
+        "files": []
+      },
+      "proof": "Source/tests/configuration blobs byte-identical to the public snapshot, including scripts and supabase migrations."
+    },
+    {
+      "branch": "codex/book-ingestion-design",
+      "sha": "9c2790bcc1c6397ae27bef90f900aaed3d639474",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        58
+      ],
+      "same_name_merged_prs": [
+        58
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/book-ingestion-design",
+          "headSha": "9c2790bcc1c6397ae27bef90f900aaed3d639474",
+          "html_url": "https://github.com/getyak/leafhour/pull/58",
+          "mergeSha": "554b7908a80da5163e6d6e3c240fbf4ebb35e25b",
+          "merged_at": "2026-10-17T03:04:41Z",
+          "number": 58,
+          "state": "closed",
+          "title": "docs: design book ingestion, canonical format and anchor migration"
+        }
+      ]
+    },
+    {
+      "branch": "codex/book-upload-reading",
+      "sha": "1c3d6fd35165773739f1e4eb59504dd1ae8f3d38",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        146
+      ],
+      "same_name_merged_prs": [
+        146
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/book-upload-reading",
+          "headSha": "1c3d6fd35165773739f1e4eb59504dd1ae8f3d38",
+          "html_url": "https://github.com/getyak/leafhour/pull/146",
+          "mergeSha": "4ff8360a5d9d418d5a470c0096d9539e8f2dc3fe",
+          "merged_at": "2026-10-20T13:55:36Z",
+          "number": 146,
+          "state": "closed",
+          "title": "Upload books in chat and serve persisted chapters"
+        }
+      ]
+    },
+    {
+      "branch": "codex/bookshelf-filters",
+      "sha": "df7cd84d7e5aea6e400f7ff97b5cf2aa4e519856",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        52
+      ],
+      "same_name_merged_prs": [
+        52
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "codex/catalog-content-audit",
+      "sha": "12063f050a117cc47ee5ecdf0164a660a8dd679b",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        54
+      ],
+      "same_name_merged_prs": [
+        54
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/catalog-content-audit",
+          "headSha": "12063f050a117cc47ee5ecdf0164a660a8dd679b",
+          "html_url": "https://github.com/getyak/leafhour/pull/54",
+          "mergeSha": "8e980921077ec986fe0c46c82d30b3a6aca3524f",
+          "merged_at": "2026-10-16T16:56:08Z",
+          "number": 54,
+          "state": "closed",
+          "title": "fix: verify catalog source fidelity and preserve verse layout"
+        }
+      ]
+    },
+    {
+      "branch": "codex/chapter-end-anchor",
+      "sha": "bae834887352369734d0cc10a587d877652bec17",
+      "main_ancestor": false,
+      "public_root": false,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [
+        15
+      ],
+      "contained_in_merged_pr_heads": [],
+      "category": "forbidden_old_private_history",
+      "decision": "retain locally; never push old ancestry; no missing valuable code found",
+      "nearest_public_source": {
+        "diff_count": 0,
+        "sha": "4736947edaf902ef9ca798f5d3186badce67a6b7",
+        "subject": "Merge pull request #15 from getyak/codex/chapter-end-anchor",
+        "files": []
+      },
+      "proof": "Source/tests/configuration blobs byte-identical to the public snapshot, including scripts and supabase migrations."
+    },
+    {
+      "branch": "codex/chinese-trial-openings",
+      "sha": "62b34a28642a94bdbde95e6236576d7d1c6eb57c",
+      "main_ancestor": false,
+      "public_root": false,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "contained_in_merged_pr_heads": [],
+      "category": "forbidden_old_private_history",
+      "decision": "retain locally; never push old ancestry; no missing valuable code found",
+      "nearest_public_source": {
+        "diff_count": 55,
+        "sha": "dc119f4d6c7b816c98789a491c4b5a8e8ea52053",
+        "subject": "Merge pull request #4 from getyak/codex/public-chinese-trial",
+        "files": [
+          "tests/audio-backup.test.mjs",
+          "tools/check-public-build.mjs",
+          "server/library-service.mjs",
+          "tests/audio-service.test.mjs",
+          "tests/atmosphere.test.mjs",
+          "server/audio-content.mjs",
+          "app/grant-result.mjs",
+          "tests/atmosphere-assets.test.mjs",
+          "tests/audio-fixture.mjs",
+          "app/assets/atmospheres/birds.mp3",
+          "app/assets/atmospheres/NOTICE.md",
+          "app/reader-atmosphere.css",
+          "app/assets/atmospheres/forest.jpg",
+          "tests/audio-ui.test.mjs",
+          "tests/atmosphere-audio.test.mjs",
+          "app/assets/atmospheres/rain.mp3",
+          "package.json",
+          "tests/audio-http.test.mjs",
+          "server/audio-store.mjs",
+          "app/assets/atmospheres/hearth.jpg",
+          "server/portal.mjs",
+          "app/assets/atmospheres/wind.mp3",
+          "app/assets/atmospheres/rain.jpg",
+          "tests/audio-mcp.test.mjs",
+          "tests/public-build.test.mjs",
+          "deploy/README.md",
+          "tests/toolbar-placement.test.mjs",
+          "app/assets/atmospheres/waves.mp3",
+          "app/atmosphere-state.mjs",
+          "server/audio-service.mjs",
+          "server/server.mjs",
+          "tests/audio-provider.test.mjs",
+          "app/assets/atmospheres/fire.mp3",
+          "server/mcp.mjs",
+          "app/atmosphere-audio.mjs",
+          "app/toolbar-placement.mjs",
+          "app/assets/atmospheres/sea.jpg",
+          "app/reader-audio.js",
+          "server/audio-provider.mjs",
+          "app/index.html",
+          "tests/audio-estimate.test.mjs",
+          "app/reader.js",
+          "server/dialogue-generator.mjs",
+          "tests/audio-state.test.mjs",
+          "server/audio-estimate.mjs",
+          "app/home.html",
+          "server/media-config.mjs",
+          ".github/workflows/ci.yml",
+          "tests/audio-content.test.mjs",
+          "server/audio-routes.mjs",
+          "app/assets/atmospheres/manifest.json",
+          "app/audio-state.mjs",
+          "server/audio-backup.mjs",
+          "app/reader-audio.css",
+          "app/reader-atmosphere.js"
+        ]
+      },
+      "proof": "Ancestor of private integration tip 4c906ba8d8a8fa6b39ecad9f91b0a0fbe9d2eac5, whose source/tests/assets/configuration match public snapshot 22cf6e6 except the obsolete private-mirror workflow. Old public snapshot adds newer reader and hosting behavior."
+    },
+    {
+      "branch": "codex/continuous-reading",
+      "sha": "1b39fd8abd856a1865dd27d6088c7b57f594ef93",
+      "main_ancestor": false,
+      "public_root": false,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [
+        14
+      ],
+      "contained_in_merged_pr_heads": [],
+      "category": "forbidden_old_private_history",
+      "decision": "retain locally; never push old ancestry; no missing valuable code found",
+      "nearest_public_source": {
+        "diff_count": 0,
+        "sha": "e07ec7fd6e2374029bfc03256c21569afef56a4f",
+        "subject": "Merge pull request #14 from getyak/codex/continuous-reading",
+        "files": []
+      },
+      "proof": "Source/tests/configuration blobs byte-identical to the public snapshot, including scripts and supabase migrations."
+    },
+    {
+      "branch": "codex/default-data-workspace",
+      "sha": "0a35e94f931b214057ee3e2ffa1a209c2885bd37",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        18
+      ],
+      "same_name_merged_prs": [
+        18
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "codex/deploy-chinese-trial",
+      "sha": "1fde7dff1bd9cf6a3682964fcd7948d01e519c9c",
+      "main_ancestor": false,
+      "public_root": false,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "contained_in_merged_pr_heads": [],
+      "category": "forbidden_old_private_history",
+      "decision": "retain locally; never push old ancestry; no missing valuable code found",
+      "nearest_public_source": {
+        "diff_count": 0,
+        "sha": "dc119f4d6c7b816c98789a491c4b5a8e8ea52053",
+        "subject": "Merge pull request #4 from getyak/codex/public-chinese-trial",
+        "files": []
+      },
+      "proof": "Source/tests/configuration blobs byte-identical to the public snapshot, including scripts and supabase migrations."
+    },
+    {
+      "branch": "codex/fix-gift-entry",
+      "sha": "4785e3d81540bbf18f571b82181570bee1ffa028",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        35
+      ],
+      "same_name_merged_prs": [
+        35
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/fix-gift-entry",
+          "headSha": "4785e3d81540bbf18f571b82181570bee1ffa028",
+          "html_url": "https://github.com/getyak/leafhour/pull/35",
+          "mergeSha": "192a4e3598713808ace28d54f7f18f67f74572e5",
+          "merged_at": "2026-10-15T16:33:03Z",
+          "number": 35,
+          "state": "closed",
+          "title": "Fix the public gift-letter entry on Vercel"
+        }
+      ]
+    },
+    {
+      "branch": "codex/four-reading-experiences",
+      "sha": "1f884ed2b79caec0551ec3bda0d386f233e3fc6d",
+      "main_ancestor": false,
+      "public_root": false,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "contained_in_merged_pr_heads": [],
+      "category": "forbidden_old_private_history",
+      "decision": "retain locally; never push old ancestry; no missing valuable code found",
+      "nearest_public_source": {
+        "diff_count": 0,
+        "sha": "8a441406ca94e61e7365dd498105ce2e6e325260",
+        "subject": "Merge pull request #3 from getyak/codex/hosted-library-v020",
+        "files": []
+      },
+      "proof": "Source/tests/configuration blobs byte-identical to the public snapshot, including scripts and supabase migrations."
+    },
+    {
+      "branch": "codex/gemini-official-speech",
+      "sha": "b49341b25ac133c43ebd5e272f5af917884ad4f1",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        57
+      ],
+      "same_name_merged_prs": [
+        57
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/gemini-official-speech",
+          "headSha": "b49341b25ac133c43ebd5e272f5af917884ad4f1",
+          "html_url": "https://github.com/getyak/leafhour/pull/57",
+          "mergeSha": "61c907d99252b2b9d0b8cc412d158283c025fdcb",
+          "merged_at": "2026-10-17T02:27:57Z",
+          "number": 57,
+          "state": "closed",
+          "title": "Switch speech to Google's official Gemini API"
+        }
+      ]
+    },
+    {
+      "branch": "codex/get-159-book-arrival",
+      "sha": "79ed77b52cccd04261af9bef5120261f8bbd783c",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        104
+      ],
+      "same_name_merged_prs": [
+        104
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/get-159-book-arrival",
+          "headSha": "79ed77b52cccd04261af9bef5120261f8bbd783c",
+          "html_url": "https://github.com/getyak/leafhour/pull/104",
+          "mergeSha": "844de49f2131bf1bbaa5fe38d62696d5b85b847c",
+          "merged_at": "2026-10-18T01:36:00Z",
+          "number": 104,
+          "state": "closed",
+          "title": "fix(reader): match arrival content to the opened book (GET-159)"
+        }
+      ]
+    },
+    {
+      "branch": "codex/get-160-book-introduction",
+      "sha": "4007ce0aab9f63764636a2655ef0ee10e620c29c",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        108
+      ],
+      "same_name_merged_prs": [
+        108
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/get-160-book-introduction",
+          "headSha": "4007ce0aab9f63764636a2655ef0ee10e620c29c",
+          "html_url": "https://github.com/getyak/leafhour/pull/108",
+          "mergeSha": "f6e01b138c98750a58a6b3677a39a3f8d4052f20",
+          "merged_at": "2026-10-18T01:50:24Z",
+          "number": 108,
+          "state": "closed",
+          "title": "feat(reader): add bounded introductions and in-reader gifts (GET-160)"
+        }
+      ]
+    },
+    {
+      "branch": "codex/gift-letter-ritual",
+      "sha": "51c92cd66dba44102702389e39f5b0a2505d7cd7",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        37
+      ],
+      "same_name_merged_prs": [
+        37
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/gift-letter-ritual",
+          "headSha": "51c92cd66dba44102702389e39f5b0a2505d7cd7",
+          "html_url": "https://github.com/getyak/leafhour/pull/37",
+          "mergeSha": "bf17bad8eda8d533d7c3026f369020901635fc93",
+          "merged_at": "2026-10-15T17:57:30Z",
+          "number": 37,
+          "state": "closed",
+          "title": "Make book gifts feel like opening a personal letter"
+        }
+      ]
+    },
+    {
+      "branch": "codex/guide-outline-format",
+      "sha": "b6e01687ba8201e1f2ecf18cc63780006a092017",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        67
+      ],
+      "same_name_merged_prs": [
+        67
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/guide-outline-format",
+          "headSha": "b6e01687ba8201e1f2ecf18cc63780006a092017",
+          "html_url": "https://github.com/getyak/leafhour/pull/67",
+          "mergeSha": "6c20304bdc2ab0398b8fb3d421e5305c1a66a939",
+          "merged_at": "2026-10-17T05:28:05Z",
+          "number": 67,
+          "state": "closed",
+          "title": "Keep chapter guide formatting faithful to the supplied source"
+        }
+      ]
+    },
+    {
+      "branch": "codex/guided-listening",
+      "sha": "c3ea4b00fe19b29bc48eb26da2311e8694706d2e",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        59
+      ],
+      "same_name_merged_prs": [
+        59
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/guided-listening",
+          "headSha": "c3ea4b00fe19b29bc48eb26da2311e8694706d2e",
+          "html_url": "https://github.com/getyak/leafhour/pull/59",
+          "mergeSha": "3851459ca0ce66a7ab93450ae4d6889f55f42b1e",
+          "merged_at": "2026-10-17T03:29:50Z",
+          "number": 59,
+          "state": "closed",
+          "title": "Add source-grounded chapter guides and durable listening"
+        }
+      ]
+    },
+    {
+      "branch": "codex/guided-listening-jsonb",
+      "sha": "18c28e26b4386184f2b25a23631cb187656dbe1e",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        60
+      ],
+      "same_name_merged_prs": [
+        60
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/guided-listening-jsonb",
+          "headSha": "18c28e26b4386184f2b25a23631cb187656dbe1e",
+          "html_url": "https://github.com/getyak/leafhour/pull/60",
+          "mergeSha": "4ab036de71f200cd6291ffc295a644d9a7219024",
+          "merged_at": "2026-10-17T03:53:53Z",
+          "number": 60,
+          "state": "closed",
+          "title": "Fix hosted guide persistence and restored audio cache identity"
+        }
+      ]
+    },
+    {
+      "branch": "codex/hearth-flames",
+      "sha": "039ec05271bd4f511322a7c9123f2021fe95ede1",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        40
+      ],
+      "same_name_merged_prs": [
+        40
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/hearth-flames",
+          "headSha": "039ec05271bd4f511322a7c9123f2021fe95ede1",
+          "html_url": "https://github.com/getyak/leafhour/pull/40",
+          "mergeSha": "dd79c55b63e6b001a4e1c209d4093ed6854e7901",
+          "merged_at": "2026-10-16T02:48:31Z",
+          "number": 40,
+          "state": "closed",
+          "title": "Make the hearth flames visibly burn"
+        }
+      ]
+    },
+    {
+      "branch": "codex/home-spatial-motion",
+      "sha": "353448ee19398c961e01c52ccf7d9c65c0de6954",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        22
+      ],
+      "same_name_merged_prs": [
+        22
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/home-spatial-motion",
+          "headSha": "353448ee19398c961e01c52ccf7d9c65c0de6954",
+          "html_url": "https://github.com/getyak/leafhour/pull/22",
+          "mergeSha": "87167ff592861968df3adfb4d1518a89bcef12aa",
+          "merged_at": "2026-10-15T09:10:48Z",
+          "number": 22,
+          "state": "closed",
+          "title": "Add spatial depth and responsive motion to the homepage"
+        }
+      ]
+    },
+    {
+      "branch": "codex/hosted-build-check",
+      "sha": "bb6eaa5033b08319176038e9e64741b7501efc2d",
+      "main_ancestor": false,
+      "public_root": false,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "contained_in_merged_pr_heads": [],
+      "category": "forbidden_old_private_history",
+      "decision": "retain locally; never push old ancestry; no missing valuable code found",
+      "nearest_public_source": {
+        "diff_count": 1,
+        "sha": "451f6f3f2f89638cfd90a324b178c3ccd2521d14",
+        "subject": "release: sync source 2b9f10d956f79b6533890e42370ec076b8c53fd9",
+        "files": [
+          ".github/workflows/publish.yml"
+        ]
+      },
+      "proof": "Source/tests/assets/configuration blobs byte-identical except .github/workflows/publish.yml, the obsolete private-archive mirror workflow. Scripts and supabase migrations also match."
+    },
+    {
+      "branch": "codex/hosted-library-v020",
+      "sha": "677c1d610956a26efef3ece835f5452ce50fad2e",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        3
+      ],
+      "same_name_merged_prs": [
+        3,
+        2,
+        1
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "codex/hosted-reader-v020",
+      "sha": "af3009bbcf846d2e0641bafdf03e388ea7d06439",
+      "main_ancestor": false,
+      "public_root": false,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "contained_in_merged_pr_heads": [],
+      "category": "forbidden_old_private_history",
+      "decision": "retain locally; never push old ancestry; no missing valuable code found",
+      "nearest_public_source": {
+        "diff_count": 0,
+        "sha": "8a441406ca94e61e7365dd498105ce2e6e325260",
+        "subject": "Merge pull request #3 from getyak/codex/hosted-library-v020",
+        "files": []
+      },
+      "proof": "Source/tests/configuration blobs byte-identical to the public snapshot, including scripts and supabase migrations."
+    },
+    {
+      "branch": "codex/hosted-reading-runtime",
+      "sha": "f2e88c56ce4f6ee7d93e50ce9a6e34fd5e0fe344",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        24
+      ],
+      "same_name_merged_prs": [
+        24
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/hosted-reading-runtime",
+          "headSha": "f2e88c56ce4f6ee7d93e50ce9a6e34fd5e0fe344",
+          "html_url": "https://github.com/getyak/leafhour/pull/24",
+          "mergeSha": "fdd5e128162902289b5de2662b717504b3269530",
+          "merged_at": "2026-10-15T09:35:10Z",
+          "number": 24,
+          "state": "closed",
+          "title": "fix: restore hosted reading conversations with a verified runtime"
+        }
+      ]
+    },
+    {
+      "branch": "codex/immersive-reader",
+      "sha": "9d1686577943a52e48aa1107ad5e28b266720e5a",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        31
+      ],
+      "same_name_merged_prs": [
+        31
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/immersive-reader",
+          "headSha": "9d1686577943a52e48aa1107ad5e28b266720e5a",
+          "html_url": "https://github.com/getyak/leafhour/pull/31",
+          "mergeSha": "6c8985d74ad123a4c3ae98cde8bd5b28e4b89929",
+          "merged_at": "2026-10-15T13:32:27Z",
+          "number": 31,
+          "state": "closed",
+          "title": "feat: default to immersive reading without repeated bilingual labels"
+        }
+      ]
+    },
+    {
+      "branch": "codex/leafhour-brand-launch",
+      "sha": "f472289f55d0211347192c76de6b6474f30b2e9a",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        44
+      ],
+      "same_name_merged_prs": [
+        44
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/leafhour-brand-launch",
+          "headSha": "f472289f55d0211347192c76de6b6474f30b2e9a",
+          "html_url": "https://github.com/getyak/leafhour/pull/44",
+          "mergeSha": "fb6141fc4ceea4a15131fb7abca8a2d6579d6eb1",
+          "merged_at": "2026-10-16T06:12:50Z",
+          "number": 44,
+          "state": "closed",
+          "title": "Launch Leafhour brand and canonical domain"
+        }
+      ]
+    },
+    {
+      "branch": "codex/leafhour-home-language-parity",
+      "sha": "4e2133791722e10e232aec0facede007b7462096",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [
+        48
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "codex/leafhour-launch-verification",
+      "sha": "a3e14516356eaf769f2f6e322408e696a1ddfed7",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        45
+      ],
+      "same_name_merged_prs": [
+        45
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/leafhour-launch-verification",
+          "headSha": "a3e14516356eaf769f2f6e322408e696a1ddfed7",
+          "html_url": "https://github.com/getyak/leafhour/pull/45",
+          "mergeSha": "84ba7d2c9edbf98b71c8287bb07dff03ebb22680",
+          "merged_at": "2026-10-16T06:41:45Z",
+          "number": 45,
+          "state": "closed",
+          "title": "Pin Leafhour Agent setup to the verified release"
+        }
+      ]
+    },
+    {
+      "branch": "codex/leafhour-records-sync",
+      "sha": "9665655f069ca1c518af2d7123a605791dadbb30",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        49
+      ],
+      "same_name_merged_prs": [
+        49
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/leafhour-records-sync",
+          "headSha": "9665655f069ca1c518af2d7123a605791dadbb30",
+          "html_url": "https://github.com/getyak/leafhour/pull/49",
+          "mergeSha": "9732f3a65e9f07ec9e5c86fb9c51e65bb8a2c104",
+          "merged_at": "2026-10-16T10:43:21Z",
+          "number": 49,
+          "state": "closed",
+          "title": "docs: synchronize Leafhour project identity across collaboration records"
+        }
+      ]
+    },
+    {
+      "branch": "codex/leafhour-search-discovery",
+      "sha": "23f158728ec7c6304ea6ad7bb74657990d6e7f0f",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        47
+      ],
+      "same_name_merged_prs": [
+        47
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/leafhour-search-discovery",
+          "headSha": "23f158728ec7c6304ea6ad7bb74657990d6e7f0f",
+          "html_url": "https://github.com/getyak/leafhour/pull/47",
+          "mergeSha": "2742c5c96048d6106ba3c4dd483acf48fda2866a",
+          "merged_at": "2026-10-16T09:05:55Z",
+          "number": 47,
+          "state": "closed",
+          "title": "Improve Leafhour SEO and AI discovery with factual public pages"
+        }
+      ]
+    },
+    {
+      "branch": "codex/leafhour-service-verification",
+      "sha": "c739470325a399b654535e18d8495bceb19aa3da",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        46
+      ],
+      "same_name_merged_prs": [
+        46
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/leafhour-service-verification",
+          "headSha": "c739470325a399b654535e18d8495bceb19aa3da",
+          "html_url": "https://github.com/getyak/leafhour/pull/46",
+          "mergeSha": "90b327a94d203afee1cbd888650f9a7c3c6fe1d6",
+          "merged_at": "2026-10-16T08:42:29Z",
+          "number": 46,
+          "state": "closed",
+          "title": "Publish verified Leafhour support contact and service acceptance"
+        }
+      ]
+    },
+    {
+      "branch": "codex/legacy-private-main-local",
+      "sha": "46f28ebc1fb8d7095add8066fc7ba26f56787242",
+      "main_ancestor": false,
+      "public_root": false,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "contained_in_merged_pr_heads": [],
+      "category": "forbidden_old_private_history",
+      "decision": "retain locally; never push old ancestry; no missing valuable code found",
+      "nearest_public_source": {
+        "diff_count": 12,
+        "sha": "f02baea3c8ce2b82db20956bd45640d7c7861138",
+        "subject": "open source Marginalia Reader",
+        "files": [
+          "deploy/README.md",
+          "tools/import-supabase-book.mjs",
+          "vercel.json",
+          "deploy/supabase-rest.mjs",
+          "app/index.html",
+          "app/reader.js",
+          "package.json",
+          ".github/workflows/ci.yml",
+          "api/[...path].js",
+          "package-lock.json",
+          "tools/build-vercel.mjs",
+          "app/styles.css"
+        ]
+      },
+      "proof": "Ancestor of private integration tip 4c906ba8d8a8fa6b39ecad9f91b0a0fbe9d2eac5, whose source/tests/assets/configuration match public snapshot 22cf6e6 except the obsolete private-mirror workflow. Old public snapshot adds newer reader and hosting behavior."
+    },
+    {
+      "branch": "codex/library-personal-touch",
+      "sha": "ef9e51f3852b1091e23d488d1523a846672104fd",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        34
+      ],
+      "same_name_merged_prs": [
+        34
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/library-personal-touch",
+          "headSha": "ef9e51f3852b1091e23d488d1523a846672104fd",
+          "html_url": "https://github.com/getyak/leafhour/pull/34",
+          "mergeSha": "0fc06d69d511a53a3805476b3de57b4431bd599e",
+          "merged_at": "2026-10-15T16:17:34Z",
+          "number": 34,
+          "state": "closed",
+          "title": "Personalize the library with shelf actions and gift letters"
+        }
+      ]
+    },
+    {
+      "branch": "codex/library-workspace-cicd",
+      "sha": "387afb6108d0b709cfb3875be3dcc932a2657b63",
+      "main_ancestor": false,
+      "public_root": false,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "contained_in_merged_pr_heads": [],
+      "category": "forbidden_old_private_history",
+      "decision": "retain locally; never push old ancestry; no missing valuable code found",
+      "nearest_public_source": {
+        "diff_count": 1,
+        "sha": "696e4d182fe3522a5d90a46b9404dc2af6c04ce8",
+        "subject": "release: sync source 693edcff02da9f9fabfbe8d5eb3d314ccd072f46",
+        "files": [
+          ".github/workflows/publish.yml"
+        ]
+      },
+      "proof": "Source/tests/assets/configuration blobs byte-identical except .github/workflows/publish.yml, the obsolete private-archive mirror workflow. Scripts and supabase migrations also match."
+    },
+    {
+      "branch": "codex/living-reading-atmospheres",
+      "sha": "0c50913493f9c5b97a371fc36f25d5f8a20a844e",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        27
+      ],
+      "same_name_merged_prs": [
+        27
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/living-reading-atmospheres",
+          "headSha": "0c50913493f9c5b97a371fc36f25d5f8a20a844e",
+          "html_url": "https://github.com/getyak/leafhour/pull/27",
+          "mergeSha": "c50749721f91b3350a66044a55644984cf32300f",
+          "merged_at": "2026-10-15T10:56:47Z",
+          "number": 27,
+          "state": "closed",
+          "title": "feat: animate reading scenes and start matching sound on selection"
+        }
+      ]
+    },
+    {
+      "branch": "codex/long-chapter-guides",
+      "sha": "772399f27483165ccb669ee3a8d36ff3a84a35a5",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        64
+      ],
+      "same_name_merged_prs": [
+        64
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/long-chapter-guides",
+          "headSha": "772399f27483165ccb669ee3a8d36ff3a84a35a5",
+          "html_url": "https://github.com/getyak/leafhour/pull/64",
+          "mergeSha": "4c23c802fc71433e5855ebe52ffd990217d3ce19",
+          "merged_at": "2026-10-17T04:45:27Z",
+          "number": 64,
+          "state": "closed",
+          "title": "Fix whole-chapter listening with automatic complete-source batches"
+        }
+      ]
+    },
+    {
+      "branch": "codex/original-first",
+      "sha": "00393010688e009f5a70252d17c45868cb39a362",
+      "main_ancestor": false,
+      "public_root": false,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [
+        16
+      ],
+      "contained_in_merged_pr_heads": [],
+      "category": "forbidden_old_private_history",
+      "decision": "retain locally; never push old ancestry; no missing valuable code found",
+      "nearest_public_source": {
+        "diff_count": 0,
+        "sha": "b446dd023fe3da4a69fc0521e946b286072ed722",
+        "subject": "Merge pull request #16 from getyak/codex/original-first",
+        "files": []
+      },
+      "proof": "Source/tests/configuration blobs byte-identical to the public snapshot, including scripts and supabase migrations."
+    },
+    {
+      "branch": "codex/paper-bookshelf",
+      "sha": "737b221ff925a0724a57def1a93a5379ae491487",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        29
+      ],
+      "same_name_merged_prs": [
+        29
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/paper-bookshelf",
+          "headSha": "737b221ff925a0724a57def1a93a5379ae491487",
+          "html_url": "https://github.com/getyak/leafhour/pull/29",
+          "mergeSha": "020a378d208b412ee7146691ca2d28b84a5f5b98",
+          "merged_at": "2026-10-15T13:03:21Z",
+          "number": 29,
+          "state": "closed",
+          "title": "feat: give the library a textured paper bookshelf"
+        }
+      ]
+    },
+    {
+      "branch": "codex/paper-reader-arrival",
+      "sha": "2e0540b260b2b4aae7ec654c42451a2dfb475a4e",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        23
+      ],
+      "same_name_merged_prs": [
+        23
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/paper-reader-arrival",
+          "headSha": "2e0540b260b2b4aae7ec654c42451a2dfb475a4e",
+          "html_url": "https://github.com/getyak/leafhour/pull/23",
+          "mergeSha": "31e103d76ddc976cf8ca7153cf4df68dee47e8d1",
+          "merged_at": "2026-10-15T09:27:43Z",
+          "number": 23,
+          "state": "closed",
+          "title": "feat: add a paper reading companion to loading screens"
+        }
+      ]
+    },
+    {
+      "branch": "codex/parallel-reading",
+      "sha": "e964e6d5194416e75c23bfc3127bd2fc9d67052f",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        30
+      ],
+      "same_name_merged_prs": [
+        30
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/parallel-reading",
+          "headSha": "e964e6d5194416e75c23bfc3127bd2fc9d67052f",
+          "html_url": "https://github.com/getyak/leafhour/pull/30",
+          "mergeSha": "533fa76bc78b524556695d945c8f9cc84d53928c",
+          "merged_at": "2026-10-15T13:11:24Z",
+          "number": 30,
+          "state": "closed",
+          "title": "feat: add five focused bilingual reading styles and layout controls"
+        }
+      ]
+    },
+    {
+      "branch": "codex/password-first-auth",
+      "sha": "45128cfea30bd1f3f648a5b88701070d291c1926",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        19
+      ],
+      "same_name_merged_prs": [
+        19
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/password-first-auth",
+          "headSha": "45128cfea30bd1f3f648a5b88701070d291c1926",
+          "html_url": "https://github.com/getyak/leafhour/pull/19",
+          "mergeSha": "ae3596b2181706b0aa517a8ecbe1b1509e462050",
+          "merged_at": "2026-10-15T08:02:31Z",
+          "number": 19,
+          "state": "closed",
+          "title": "默认密码登录，简化书房入口与邮箱验证流程"
+        }
+      ]
+    },
+    {
+      "branch": "codex/pdf-cancel-restart",
+      "sha": "8abd513e0a5f70b35d5b4c7163e81bce2b522117",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [
+        80
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "codex/pdf-onboarding",
+      "sha": "e70d725cee30aa536275f412aaba11172d2127e2",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [
+        75
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "codex/pdf-onboarding-acceptance",
+      "sha": "d557390c0f8e7b81526bc62352509d7b11a8c917",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        77
+      ],
+      "same_name_merged_prs": [
+        77
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/pdf-onboarding-acceptance",
+          "headSha": "d557390c0f8e7b81526bc62352509d7b11a8c917",
+          "html_url": "https://github.com/getyak/leafhour/pull/77",
+          "mergeSha": "7d8439e2601908c8226420f5ba1b6dc634a6dba0",
+          "merged_at": "2026-10-17T07:24:31Z",
+          "number": 77,
+          "state": "closed",
+          "title": "Keep completed PDF imports discoverable after closing the page"
+        }
+      ]
+    },
+    {
+      "branch": "codex/pdf-onboarding-copy",
+      "sha": "747292e0f954c58026376520a41e9b25a190fa0a",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        79
+      ],
+      "same_name_merged_prs": [
+        79
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/pdf-onboarding-copy",
+          "headSha": "747292e0f954c58026376520a41e9b25a190fa0a",
+          "html_url": "https://github.com/getyak/leafhour/pull/79",
+          "mergeSha": "f89494b15407dcf91513f8d96444fd40beb30e0d",
+          "merged_at": "2026-10-17T07:41:47Z",
+          "number": 79,
+          "state": "closed",
+          "title": "fix: keep saved PDF feedback accurate after cancellation"
+        }
+      ]
+    },
+    {
+      "branch": "codex/production-only-deployments",
+      "sha": "706850d3bed2925c82e01064b125ef7a77437a85",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        115
+      ],
+      "same_name_merged_prs": [
+        115
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/production-only-deployments",
+          "headSha": "706850d3bed2925c82e01064b125ef7a77437a85",
+          "html_url": "https://github.com/getyak/leafhour/pull/115",
+          "mergeSha": "627a6325632bf3df3cbf1451ec2d1e7cdc0d2dc6",
+          "merged_at": "2026-10-18T02:37:59Z",
+          "number": 115,
+          "state": "closed",
+          "title": "ci: disable preview deployments and keep main releases"
+        }
+      ]
+    },
+    {
+      "branch": "codex/public-chinese-trial",
+      "sha": "dc119f4d6c7b816c98789a491c4b5a8e8ea52053",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [
+        4
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "codex/quiet-reading-controls",
+      "sha": "66b63ee4f7ae9f9399ea9b54fa9e0072d6b35bb5",
+      "main_ancestor": false,
+      "public_root": false,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [
+        13
+      ],
+      "contained_in_merged_pr_heads": [],
+      "category": "forbidden_old_private_history",
+      "decision": "retain locally; never push old ancestry; no missing valuable code found",
+      "nearest_public_source": {
+        "diff_count": 0,
+        "sha": "844fcddcc3dc52f91f1ea3012717b3693fe589a9",
+        "subject": "Merge pull request #13 from getyak/codex/quiet-reading-controls",
+        "files": []
+      },
+      "proof": "Source/tests/configuration blobs byte-identical to the public snapshot, including scripts and supabase migrations."
+    },
+    {
+      "branch": "codex/quiet-reading-craft",
+      "sha": "634c052d0edc7f3ef03e9e6c328e8906a2eb886d",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        26
+      ],
+      "same_name_merged_prs": [
+        26
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/quiet-reading-craft",
+          "headSha": "634c052d0edc7f3ef03e9e6c328e8906a2eb886d",
+          "html_url": "https://github.com/getyak/leafhour/pull/26",
+          "mergeSha": "7c0308664699532a824cb0737f0e8544c77142b3",
+          "merged_at": "2026-10-15T10:19:16Z",
+          "number": 26,
+          "state": "closed",
+          "title": "feat: polish quiet reading returns and honest save receipts"
+        }
+      ]
+    },
+    {
+      "branch": "codex/reader-selection-space",
+      "sha": "d7eb1e3435c9e1323b7033a7ba3ee85523b7c84c",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        42
+      ],
+      "same_name_merged_prs": [
+        42
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/reader-selection-space",
+          "headSha": "d7eb1e3435c9e1323b7033a7ba3ee85523b7c84c",
+          "html_url": "https://github.com/getyak/leafhour/pull/42",
+          "mergeSha": "9edfd883548032dc92973aed0724831245895a98",
+          "merged_at": "2026-10-16T03:28:49Z",
+          "number": 42,
+          "state": "closed",
+          "title": "fix: give selected passages more breathing room"
+        }
+      ]
+    },
+    {
+      "branch": "codex/reader-settings",
+      "sha": "7409c5eb2d5bfdbead8394ca5cf5bdb4dc898983",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        32
+      ],
+      "same_name_merged_prs": [
+        32
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/reader-settings",
+          "headSha": "7409c5eb2d5bfdbead8394ca5cf5bdb4dc898983",
+          "html_url": "https://github.com/getyak/leafhour/pull/32",
+          "mergeSha": "d17c22746149822b09a76e57c853951859af7087",
+          "merged_at": "2026-10-15T16:07:33Z",
+          "number": 32,
+          "state": "closed",
+          "title": "Organize reader settings and preserve background audio"
+        }
+      ]
+    },
+    {
+      "branch": "codex/reader-stylesheet-bundle",
+      "sha": "2154b1f959b5e451704831a33ff2ef7274072422",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "codex/reading-agent-recommendation",
+      "sha": "5108bea2fa080943d8297d9b093dba529a902407",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        39
+      ],
+      "same_name_merged_prs": [
+        39
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/reading-agent-recommendation",
+          "headSha": "5108bea2fa080943d8297d9b093dba529a902407",
+          "html_url": "https://github.com/getyak/leafhour/pull/39",
+          "mergeSha": "79b3025725a3d0bd72e415c5a2a5b3c0970fb97f",
+          "merged_at": "2026-10-15T18:24:30Z",
+          "number": 39,
+          "state": "closed",
+          "title": "Clarify that book recommendations can go beyond the current shelf"
+        }
+      ]
+    },
+    {
+      "branch": "codex/reading-agent-tools",
+      "sha": "7187aec75856a42dbb070a097bdf24fe65979793",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [
+        38
+      ],
+      "contained_in_merged_pr_heads": [],
+      "category": "subsumed_public_branch",
+      "decision": "already delivered",
+      "merged_pr": 39,
+      "proof": "Only commit after exact merged PR38 head is 7187aec. Its server/reading-agent-tools.mjs blob is identical to PR39 head 5108bea, and its 7-line verification note is present there with two additional review lines."
+    },
+    {
+      "branch": "codex/reading-atmospheres-integration",
+      "sha": "4c906ba8d8a8fa6b39ecad9f91b0a0fbe9d2eac5",
+      "main_ancestor": false,
+      "public_root": false,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "contained_in_merged_pr_heads": [],
+      "category": "forbidden_old_private_history",
+      "decision": "retain locally; never push old ancestry; no missing valuable code found",
+      "nearest_public_source": {
+        "diff_count": 1,
+        "sha": "22cf6e6557e147d8a6349e513f3221a706d0ed3f",
+        "subject": "release: sync source bf5145bb27c5e0457fc53b5dbbab163c4a182ea2",
+        "files": [
+          ".github/workflows/publish.yml"
+        ]
+      },
+      "proof": "Source/tests/assets/configuration blobs byte-identical except .github/workflows/publish.yml, the obsolete private-archive mirror workflow. Scripts and supabase migrations also match."
+    },
+    {
+      "branch": "codex/reading-conversation",
+      "sha": "cb40fed8af53346e48ee35fbef78fcca9209f5a2",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        33
+      ],
+      "same_name_merged_prs": [
+        33
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/reading-conversation",
+          "headSha": "cb40fed8af53346e48ee35fbef78fcca9209f5a2",
+          "html_url": "https://github.com/getyak/leafhour/pull/33",
+          "mergeSha": "9396707df44713d99153f4fc30084ba61b27fd7a",
+          "merged_at": "2026-10-15T16:27:09Z",
+          "number": 33,
+          "state": "closed",
+          "title": "Refine reading conversation into a minimal floating companion"
+        }
+      ]
+    },
+    {
+      "branch": "codex/reading-renewal",
+      "sha": "2a51fdc56bb7b613e125a85a79dead2d72e54ea7",
+      "main_ancestor": false,
+      "public_root": false,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [
+        7
+      ],
+      "contained_in_merged_pr_heads": [],
+      "category": "forbidden_old_private_history",
+      "decision": "retain locally; never push old ancestry; no missing valuable code found",
+      "nearest_public_source": {
+        "diff_count": 0,
+        "sha": "b5bf38fa5bfc28767cec474c711e458dadbe09ed",
+        "subject": "Merge pull request #12 from getyak/codex/calendar-source-return",
+        "files": []
+      },
+      "proof": "Source/tests/configuration blobs byte-identical to the public snapshot, including scripts and supabase migrations."
+    },
+    {
+      "branch": "codex/reading-room-final-polish",
+      "sha": "f8768d3ac6a841a3f415010deee1a66c18828fe1",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        21
+      ],
+      "same_name_merged_prs": [
+        21
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/reading-room-final-polish",
+          "headSha": "f8768d3ac6a841a3f415010deee1a66c18828fe1",
+          "html_url": "https://github.com/getyak/leafhour/pull/21",
+          "mergeSha": "5f225cf0621e8e9bef0f82ccf4082d1f409a100e",
+          "merged_at": "2026-10-15T09:05:21Z",
+          "number": 21,
+          "state": "closed",
+          "title": "fix: keep shelf details visible and diagnose hosted conversations"
+        }
+      ]
+    },
+    {
+      "branch": "codex/reading-room-settings",
+      "sha": "2b621e283f9684315436a617702c07a1b297af3b",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        20
+      ],
+      "same_name_merged_prs": [
+        20
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/reading-room-settings",
+          "headSha": "2b621e283f9684315436a617702c07a1b297af3b",
+          "html_url": "https://github.com/getyak/leafhour/pull/20",
+          "mergeSha": "a67dae15847a910ac0c243be9d21237462fb6f4c",
+          "merged_at": "2026-10-15T08:40:57Z",
+          "number": 20,
+          "state": "closed",
+          "title": "feat: simplify the reading room with settings and contextual conversation"
+        }
+      ]
+    },
+    {
+      "branch": "codex/recover-local-work",
+      "sha": "ba9eef7f605572dc8eb3dd51b86ad03be1c4cc65",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "codex/refine-reading-navigation",
+      "sha": "9bcd75608fb06b5d931f32b9103b484c1571f6b4",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        28
+      ],
+      "same_name_merged_prs": [
+        28
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/refine-reading-navigation",
+          "headSha": "9bcd75608fb06b5d931f32b9103b484c1571f6b4",
+          "html_url": "https://github.com/getyak/leafhour/pull/28",
+          "mergeSha": "f3d5f40c1c51a1cf75475dae17bada9e162c89b2",
+          "merged_at": "2026-10-15T11:42:40Z",
+          "number": 28,
+          "state": "closed",
+          "title": "feat: refine reading navigation and introduce the current book"
+        }
+      ]
+    },
+    {
+      "branch": "codex/responsive-book-spread",
+      "sha": "0fd0fd6a3a3137dec5055748bada42d00a014f08",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        43
+      ],
+      "same_name_merged_prs": [
+        43
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/responsive-book-spread",
+          "headSha": "0fd0fd6a3a3137dec5055748bada42d00a014f08",
+          "html_url": "https://github.com/getyak/leafhour/pull/43",
+          "mergeSha": "42427d4f97b639685f9ced219921a8448fa1ade9",
+          "merged_at": "2026-10-16T03:36:06Z",
+          "number": 43,
+          "state": "closed",
+          "title": "Add book-style pagination and adapt compact desktop windows"
+        }
+      ]
+    },
+    {
+      "branch": "codex/review-get-160-cancel-commit",
+      "sha": "b15475513f062f68effc3b01234d9306212b1c48",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "contained_in_merged_pr_heads": [],
+      "category": "subsumed_public_branch",
+      "decision": "already delivered; porting old draft would remove later repair",
+      "merged_pr": 112,
+      "proof": "Compared with merged e644d384: only four files differ, adding upstream storage-error classification, one service classification guard, regression tests and verification. Local cancellation/store/HTTP cleanup behavior is already included."
+    },
+    {
+      "branch": "codex/simplify-env",
+      "sha": "a2ccf4bbf94125a033f78a27da1b47d778012350",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        55
+      ],
+      "same_name_merged_prs": [
+        55
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/simplify-env",
+          "headSha": "a2ccf4bbf94125a033f78a27da1b47d778012350",
+          "html_url": "https://github.com/getyak/leafhour/pull/55",
+          "mergeSha": "eb286a5105239086a4c8bec4d65cbba66275a7d6",
+          "merged_at": "2026-10-17T01:23:09Z",
+          "number": 55,
+          "state": "closed",
+          "title": "feat: simplify environment setup and clarify configuration status"
+        }
+      ]
+    },
+    {
+      "branch": "codex/single-public-repository",
+      "sha": "34bed9dd3c36f445e19cc6e58452a5a544d461bd",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        17
+      ],
+      "same_name_merged_prs": [
+        17
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "codex/squirrel-companion",
+      "sha": "af7afea8f582374f3fa62a93aded7ac1eaaa2f2f",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        50
+      ],
+      "same_name_merged_prs": [
+        50
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "codex/squirrel-drag-default",
+      "sha": "4483116759a3a7d2df23fbf8a287e8978e7fd8a1",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        51
+      ],
+      "same_name_merged_prs": [
+        51
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "codex/sunlit-reading-space",
+      "sha": "32da19f6e56cb49f048d7a86e735bdce7109d82f",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        25
+      ],
+      "same_name_merged_prs": [
+        25
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/sunlit-reading-space",
+          "headSha": "32da19f6e56cb49f048d7a86e735bdce7109d82f",
+          "html_url": "https://github.com/getyak/leafhour/pull/25",
+          "mergeSha": "408392eb5edafffd0f6ef08900deb4cb84d9f68b",
+          "merged_at": "2026-10-15T10:01:32Z",
+          "number": 25,
+          "state": "closed",
+          "title": "Create a sunlit reading space with responsive ambient light"
+        }
+      ]
+    },
+    {
+      "branch": "codex/text-highlights",
+      "sha": "5ede6070263e037c94691a90bd9135557c7f22c5",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        41
+      ],
+      "same_name_merged_prs": [
+        41
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/text-highlights",
+          "headSha": "5ede6070263e037c94691a90bd9135557c7f22c5",
+          "html_url": "https://github.com/getyak/leafhour/pull/41",
+          "mergeSha": "d3cf3b9052c502ff3789c062c94ad6415c7a1ea8",
+          "merged_at": "2026-10-16T03:04:48Z",
+          "number": 41,
+          "state": "closed",
+          "title": "Add persistent text highlights to the reader"
+        }
+      ]
+    },
+    {
+      "branch": "codex/unify-configuration",
+      "sha": "072c3dafb3c207694330ef6abb690e0b3026f53c",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        56
+      ],
+      "same_name_merged_prs": [
+        56
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/unify-configuration",
+          "headSha": "072c3dafb3c207694330ef6abb690e0b3026f53c",
+          "html_url": "https://github.com/getyak/leafhour/pull/56",
+          "mergeSha": "10b584824b12ad929d79523c9307bf61869177a4",
+          "merged_at": "2026-10-17T01:48:18Z",
+          "number": 56,
+          "state": "closed",
+          "title": "Unify local and hosted configuration into one template"
+        }
+      ]
+    },
+    {
+      "branch": "codex/web-interaction-craft",
+      "sha": "26195eb3541a7b0c37a0a5ead9fd322ccadd26bc",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        36
+      ],
+      "same_name_merged_prs": [
+        36
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/web-interaction-craft",
+          "headSha": "26195eb3541a7b0c37a0a5ead9fd322ccadd26bc",
+          "html_url": "https://github.com/getyak/leafhour/pull/36",
+          "mergeSha": "09389259bdca35c5557aa41d57b6533de3b79c33",
+          "merged_at": "2026-10-16T02:08:09Z",
+          "number": 36,
+          "state": "closed",
+          "title": "Fix web click targets and recovery across the reader and library"
+        }
+      ]
+    },
+    {
+      "branch": "codex/world-library",
+      "sha": "7fffb33e2dacece3d7e5b7264e1c7aec6ad45e2e",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [
+        53
+      ],
+      "same_name_merged_prs": [
+        53
+      ],
+      "category": "exact_merged_pr_head",
+      "decision": "already delivered",
+      "delivery_prs": [
+        {
+          "baseRef": "main",
+          "headRef": "codex/world-library",
+          "headSha": "7fffb33e2dacece3d7e5b7264e1c7aec6ad45e2e",
+          "html_url": "https://github.com/getyak/leafhour/pull/53",
+          "mergeSha": "fe08d076e07652971118c8448976a34ae246a00a",
+          "merged_at": "2026-10-16T16:17:32Z",
+          "number": 53,
+          "state": "closed",
+          "title": "Add 30 curated English editions to the default library"
+        }
+      ]
+    },
+    {
+      "branch": "docs/ocr-real-book-verification",
+      "sha": "a0fff722fa3a87806a694cf585b31681b891bc7a",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "docs/paddleocr-acceptance",
+      "sha": "164f501f2e2e6bebb80eddecea4c6777e60f0035",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        74
+      ],
+      "same_name_merged_prs": [
+        74
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "docs/pdf-reading-acceptance",
+      "sha": "ac2f75034b615036d967a66e1a2dcdccc461e0c4",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        83
+      ],
+      "same_name_merged_prs": [
+        83
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "docs/pdf-upload-acceptance",
+      "sha": "c4deaee0fe8b866dc30617c23a4c50e2fffd0be6",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "docs/reading-performance-acceptance",
+      "sha": "4cce4020bb7f1720eea77a2ea2207019aebb9823",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "feat/paddleocr-upload",
+      "sha": "57459fc1d022895eacea70e8785d40fa01a4786b",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        62
+      ],
+      "same_name_merged_prs": [
+        62
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "fix/large-original-download",
+      "sha": "e51a23337648d1e53ec2291314d7659498290b33",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        70
+      ],
+      "same_name_merged_prs": [
+        70
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "fix/ocr-poll-fairness",
+      "sha": "4dbba928502da898ed74dab56e7c4907885eb4b9",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        66
+      ],
+      "same_name_merged_prs": [
+        66
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "fix/ocr-read-recovery",
+      "sha": "4368d72bea17065d7e27036f42818be3e2c6b056",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        69
+      ],
+      "same_name_merged_prs": [
+        69
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "fix/original-download-manifest",
+      "sha": "fa2de4a7024b075bba6edd460f1f650c28b55700",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        71
+      ],
+      "same_name_merged_prs": [
+        71
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "fix/original-download-progress",
+      "sha": "7d0a0309eba6960b9d9c335edbe64d5fbb41579b",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        73
+      ],
+      "same_name_merged_prs": [
+        73
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "fix/original-download-proxy",
+      "sha": "b0974cbdce0fbe043d7c6ff9a726d7e51a49390c",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        82
+      ],
+      "same_name_merged_prs": [
+        82
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "fix/paddleocr-production-recovery",
+      "sha": "cecba0e2e2e6f64ab83981553eb736fe2a4278ab",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        65
+      ],
+      "same_name_merged_prs": [
+        65
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "fix/pdf-reading-performance",
+      "sha": "ae92e72f557bdc94f8603db697f7e68a275000d3",
+      "main_ancestor": false,
+      "public_root": true,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [
+        78
+      ],
+      "contained_in_merged_pr_heads": [],
+      "category": "tree_equivalent_merged_pr",
+      "decision": "already delivered",
+      "merged_pr": 78,
+      "merge_sha": "4cce4020bb7f1720eea77a2ea2207019aebb9823",
+      "proof": "Entire Git tree is identical to merged PR78 commit 4cce4020bb7f1720eea77a2ea2207019aebb9823. Comparison to its PR head alone misleadingly differs by one status string because merge incorporates PR79."
+    },
+    {
+      "branch": "fix/reader-style-bundle",
+      "sha": "88abd145f9c39a82fd51faf8fff856c06d8c5f31",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [
+        81
+      ],
+      "same_name_merged_prs": [
+        81
+      ],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    },
+    {
+      "branch": "main",
+      "sha": "4ff8360a5d9d418d5a470c0096d9539e8f2dc3fe",
+      "main_ancestor": true,
+      "public_root": true,
+      "exact_merged_prs": [],
+      "same_name_merged_prs": [],
+      "category": "direct_main_ancestor",
+      "decision": "already delivered"
+    }
+  ],
+  "stashes": [
+    {
+      "stash": "stash@{0}",
+      "sha": "2eaa83dff58f1cb162c8887c57886d989447ea69",
+      "changed_files": [
+        "README.ja.md",
+        "README.md",
+        "README.zh-CN.md",
+        "README.zh-Hant.md",
+        "app/book-upload-controller.mjs",
+        "app/chat-book-upload.mjs",
+        "app/library-chat.css",
+        "app/library-chat.mjs",
+        "app/pdf-ingestion.mjs",
+        "app/portal.js",
+        "app/reader-conversation.mjs",
+        "app/ui-catalogs/en.mjs",
+        "app/ui-catalogs/ja.mjs",
+        "app/ui-catalogs/zh-Hans.mjs",
+        "app/ui-catalogs/zh-Hant.mjs",
+        "deploy/hosted-store.mjs",
+        "docs/book-upload-reading.md",
+        "docs/superpowers/plans/2026-10-20-book-upload-reading.md",
+        "docs/superpowers/specs/2026-10-20-book-upload-reading-design.md",
+        "docs/verification/2026-10-20-book-upload-reading.md",
+        "release-files.json",
+        "server/book-ingestion.mjs",
+        "server/chapter-read-store.mjs",
+        "server/ingestion-storage.mjs",
+        "server/ingestion-upload.mjs",
+        "server/library-service.mjs",
+        "server/portal.mjs",
+        "server/verified-source.mjs",
+        "tests/book-ingestion.test.mjs",
+        "tests/book-upload-controller.test.mjs",
+        "tests/chat-upload-boundary.test.mjs",
+        "tests/library-chapter-store.test.mjs",
+        "tests/library-chat-ui.test.mjs",
+        "tests/reader-conversation.test.mjs",
+        "tests/reading-chapter-http.test.mjs",
+        "tests/ui-locale-a-remaining.test.mjs",
+        "tests/upload-efficient.test.mjs",
+        "tests/upload-source-adoption.test.mjs",
+        "tools/benchmark-book-pipeline.mjs",
+        "tools/build-reader-web.mjs"
+      ],
+      "comparison_target": "1c3d6fd35165773739f1e4eb59504dd1ae8f3d38",
+      "decision": "already delivered; retain stash unchanged",
+      "evidence": "37 of 40 touched files exactly match merged PR146 head. Remaining three differ only in completed plan checkboxes, later verification and the added production-smoke-boundary release entry; all implementation and tests are identical.",
+      "index_extra": false,
+      "untracked_parent": false
+    },
+    {
+      "stash": "stash@{1}",
+      "sha": "b91101c7430ea85c2364c71160c42b344179d460",
+      "changed_files": [
+        "app/book-introduction.mjs",
+        "server/library-service.mjs",
+        "server/source-revisions.mjs",
+        "tests/book-introduction-http.test.mjs",
+        "tests/book-introduction.test.mjs",
+        "tests/source-revisions.test.mjs"
+      ],
+      "comparison_target": "4007ce0aab9f63764636a2655ef0ee10e620c29c",
+      "decision": "already delivered; retain stash unchanged",
+      "evidence": "4 of 6 touched files exactly match merged PR108 head. All 8 added library-service lines and all 49 added HTTP-test lines remain in PR108. Two whole-file differences come from newer global reading preferences and strengthened quotation fixture.",
+      "index_extra": false,
+      "untracked_parent": false
+    },
+    {
+      "stash": "stash@{2}",
+      "sha": "0d1308719d92c8941fc9ee14f93f907414243c1b",
+      "changed_files": [
+        "AGENTS.md",
+        "_briefs/hosted-release.md"
+      ],
+      "comparison_target": "ba9eef7f605572dc8eb3dd51b86ad03be1c4cc65",
+      "decision": "already delivered; retain stash unchanged",
+      "evidence": "All 9 added hosted-release lines remain on main. AGENTS policy additions remain, with the public repository name updated from marginalia-reader to leafhour.",
+      "index_extra": false,
+      "untracked_parent": false
+    }
+  ],
+  "private_history_guard": "14 branch tips do not descend from public root f02baea3c8ce2b82db20956bd45640d7c7861138. Their old private ancestry must never be pushed; useful public code was already imported through sanitized snapshots. All historical docs/_briefs file paths in those tips exist in current main.",
+  "recovery_candidates": []
+}

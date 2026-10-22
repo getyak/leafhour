@@ -1,3 +1,4 @@
+import {billingErrorDetails} from './billing-routes.mjs';
 import {authMessageId} from '../app/auth-errors.mjs';
 import {audioFailureCode} from '../app/audio-errors.mjs';
 import http from 'node:http';
@@ -150,7 +151,7 @@ export async function createReaderServer({bookPath=path.join(root,'local/finite-
       if(assets.has(url.pathname)){const [file,type]=assets.get(url.pathname);const data=await readFile(path.join(root,file));if(type.startsWith('image/')||type.startsWith('audio/')||type.startsWith('font/')){res.writeHead(200,{'Content-Type':type,'Content-Length':data.length});res.end(req.method==='HEAD'?undefined:data);}else send(200,data,type);return;}
       if(downloads.has(url.pathname)){const filename=downloads.get(url.pathname),file=path.join(path.dirname(bookPath),'exports',filename);res.setHeader('Content-Disposition','attachment; filename="'+filename+'"');send(200,await readFile(file),filename.endsWith('.zip')?'application/zip':'text/markdown');return;}
       throw fail('找不到这个页面',404);
-    }catch(e){send(e.status||500,{error:e.status?e.message:'服务暂时无法完成操作',...(e.status&&authMessageId(e.messageId)?{messageId:e.messageId}:{}),...(audioFailureCode(e.status,e.code)?{code:e.code}:{})});}
+    }catch(e){send(e.status||500,{error:e.status?e.message:'服务暂时无法完成操作',...billingErrorDetails(e),...(e.status&&authMessageId(e.messageId)?{messageId:e.messageId}:{}),...(audioFailureCode(e.status,e.code)?{code:e.code}:{})});}
   });
   const closeHttp=server.close.bind(server);
   server.close=callback=>{const closing=Promise.all([experiences.close(),portal.audio?.close(),portal.chat.close(),portal.ingestionRunner.close()]);closeHttp(error=>{closing.then(()=>callback?.(error),failure=>callback?.(failure));});return server;};

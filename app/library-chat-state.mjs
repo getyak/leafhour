@@ -1,3 +1,4 @@
+export const chatFailureUncertain=error=>error?.preSubmit!==true&&!['not_started','released','cancelled','reversed'].includes(error?.billingOperation?.status)&&(!error?.status||error.status===409||error.status>=500);
 import {READING_CHAT_SCOPES,readChatScope} from './reading-chat-scope.mjs';
 import {normalizeReadingChatQuote} from './reading-chat-quote.mjs';
 export const CHAT_TEXT_LIMIT=2000;

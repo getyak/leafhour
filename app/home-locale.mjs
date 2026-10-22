@@ -329,7 +329,11 @@ export function homeLocaleMeta(locale){
 export function homeDocument(source,locale){
   const meta=homeLocaleMeta(locale);
   const choiceRoute=meta.code==='en'?'/en':meta.route;
+  const commerceLabels=({'en':['Pricing','Terms','Refunds'],'zh-Hans':['价格','服务条款','退款政策'],'zh-Hant':['價格','服務條款','退款政策'],'ja':['料金','利用規約','返金ポリシー']})[meta.code];
+  const commerceLinks='<nav class="home-commerce-links" aria-label="'+commerceLabels[0]+'">'+['pricing','terms','refunds'].map((kind,index)=>'<a href="'+(meta.code==='en'?'/en':meta.route)+'/'+kind+'">'+commerceLabels[index]+'</a>').join(' · ')+'</nav>';
   return homeText(source,locale)
+    .replace(/<nav class="home-commerce-links"[^>]*>[\s\S]*?<\/nav>/g,'')
+    .replace('</footer>',commerceLinks+'</footer>')
     // The root is automatic; an explicit English language choice uses /en.
     .replaceAll('href="/" lang="en"','href="/en" lang="en"')
     // Only trusted, authored navigation anchors are owned here. Include the

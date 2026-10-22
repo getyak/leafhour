@@ -1,5 +1,6 @@
+import {creditActionLabel} from './credit-labels.mjs';
 import {t,getUiLocale,onUiLocaleChange,uiHref,bindUi,createUiMessage,uiReady} from './ui-locale.mjs';
-import {createLibraryChatState,CHAT_TEXT_LIMIT} from './library-chat-state.mjs';
+import {createLibraryChatState,CHAT_TEXT_LIMIT,chatFailureUncertain} from './library-chat-state.mjs';
 import {readChatScope} from './reading-chat-scope.mjs';
 import {safeChatUrl} from './library-chat-markdown.mjs';
 import {trackActionFocus} from './action-focus.mjs';
@@ -68,7 +69,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   for(const [value,id]of [['book','scope.currentBook'],['library','scope.library']]){const option=ui('option','',id);option.value=value;scopeChoice.append(option);}scopeRow.append(scopeLabel,scopeChoice);
   const form=node('form','library-chat-composer'),inputLabel=ui('label','sr-only','placeholder'),input=node('textarea');input.id='library-chat-input';inputLabel.htmlFor=input.id;input.rows=2;uiAttr(input,'placeholder','h.cmp');input.setAttribute('aria-describedby','library-chat-status library-chat-count');
   const quoteChip=node('div','library-chat-quote-chip'),quoteMeta=node('p','library-chat-quote-meta'),quoteText=node('blockquote','library-chat-quote-text'),quoteRemove=button('×','library-chat-quote-remove'),quoteStale=ui('p','library-chat-quote-stale','chat.quote.stale'),quoteLocal=ui('p','library-chat-quote-stale','chat.quote.localOnly');uiAttr(quoteRemove,'aria-label','chat.quote.remove');uiAttr(quoteRemove,'title','chat.quote.remove');quoteRemove.type='button';quoteChip.hidden=true;quoteChip.append(quoteMeta,quoteText,quoteRemove,quoteStale,quoteLocal);let quoteSignature='';
-  const composerBottom=node('div','library-chat-composer-bottom'),count=node('span','library-chat-count');count.id='library-chat-count';const composerActions=node('div','library-chat-composer-actions'),stopButton=ui('button','library-chat-stop','st'),sendButton=node('button','library-chat-send','↑');sendButton.type='submit';composerActions.append(stopButton,sendButton);composerBottom.append(count,composerActions);form.append(quoteChip,inputLabel,input,composerBottom);
+  const composerBottom=node('div','library-chat-composer-bottom'),count=node('span','library-chat-count');count.id='library-chat-count';const composerActions=node('div','library-chat-composer-actions'),price=node('span','library-chat-price'),stopButton=ui('button','library-chat-stop','st'),sendButton=node('button','library-chat-send','↑');sendButton.type='submit';composerActions.append(price,stopButton,sendButton);composerBottom.append(count,composerActions);form.append(quoteChip,inputLabel,input,composerBottom);
   const onboardingHost=node('section','preference-onboarding');onboardingHost.hidden=true;
   const uploadHost=node('div','chat-book-tasks');uploadHost.hidden=true;
   const footer=node('div','library-chat-footer'),hint=node('p','library-chat-hint');hint.id='library-chat-hint';
@@ -214,6 +215,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     const length=view.draft.length;count.classList.toggle('is-over-limit',length>CHAT_TEXT_LIMIT);input.setAttribute('aria-invalid',String(length>CHAT_TEXT_LIMIT));
     if(length>=1800)countMsg.set(length>CHAT_TEXT_LIMIT?'chat.count.over':'chat.count.left',{count:length>CHAT_TEXT_LIMIT?length-CHAT_TEXT_LIMIT:CHAT_TEXT_LIMIT-length});else countMsg.clear();
     input.disabled=!selectedBook||!!view.pending||!!view.retry?.uncertain;sendButton.disabled=!view.canSend||!confirmedScope(view);
+    price.hidden=getSession()?.billing?.enabled!==true;price.textContent=price.hidden?'':creditActionLabel('conversation',getUiLocale());
     sendButton.textContent=view.retry?'↻':'↑';uiAttr(sendButton,'aria-label',view.retry?.uncertain?'cont':view.retry?'ta':'sd');
     if(launcher){launcher.classList.toggle('is-waiting',!!view.pending);uiAttr(launcher,'aria-label',root.open?'close':view.pending?'op':'open');}
     stopButton.hidden=!view.pending;stopButton.disabled=view.pending?.status==='stopping';
@@ -243,11 +245,13 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
       finally{if(loadInFlight===promise)loadInFlight=null;if(isCurrent(captured)){render();if(state.view().pending&&(poll||root.open))schedulePoll();}}
     })();loadInFlight=promise;render();return promise;
   }
+  let sending=null;
   async function send(){
     if(disposed||syncOwner()||!confirmedScope(state.view())){render();return;}const request=state.beginSend({preferenceWrites:preferenceCheckbox.checked});if(!request)return;preferenceCheckbox.checked=false;root.dispatchEvent(new Event('reading-chat-send'));clearPoll();pollCount=0;pollStarted=Date.now();const captured=owner,bookId=selectedBook;render();messages.scrollTop=messages.scrollHeight;void load({poll:true});
-    try{const turn=await api('/api/library/books/'+encodeURIComponent(bookId)+'/chat',request.payload);if(isCurrent(captured)&&state.resolveSend(request.ticket,turn)){render();schedulePoll();if(turn.status!=='running')root.dispatchEvent(new Event('reading-preferences-changed'));}}
-    catch(error){if(!isCurrent(captured))return;const uncertain=!error.status||error.status===409||error.status>=500;if(state.rejectSend(request.ticket,error,{uncertain})){render();if(uncertain||error.status===412)await load();}}
-    finally{if(isCurrent(captured)){render();schedulePoll();}}
+    const entry={id:request.payload.id,payload:request.payload,controller:new AbortController(),dispatched:getSession()?.billing?.enabled!==true};sending=entry;
+    try{const turn=await api('/api/library/books/'+encodeURIComponent(bookId)+'/chat',request.payload,{signal:entry.controller.signal,onDispatch:()=>{entry.dispatched=true;}});if(isCurrent(captured)&&state.resolveSend(request.ticket,turn)){render();schedulePoll();if(turn.status!=='running')root.dispatchEvent(new Event('reading-preferences-changed'));}}
+    catch(error){if(!isCurrent(captured))return;const uncertain=chatFailureUncertain(error);if(state.rejectSend(request.ticket,error,{uncertain})){render();if(uncertain||error.status===412)await load();}}
+    finally{if(sending===entry)sending=null;if(isCurrent(captured)){render();schedulePoll();}}
   }
   async function saveScope(){
     if(disposed||syncOwner()){render();return;}const request=state.beginScopeChange(scopeChoice.value);if(!request){render();return;}
@@ -258,7 +262,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   }
   async function stop(){
     if(disposed)return;const ticket=state.beginCancel();if(!ticket)return;const focus=trackActionFocus(document,stopButton);clearPoll();const captured=owner,bookId=selectedBook;render();
-    try{const turn=await api('/api/library/books/'+encodeURIComponent(bookId)+'/chat/'+encodeURIComponent(ticket.id)+'/cancel',{});if(isCurrent(captured))state.resolveCancel(ticket,turn);}
+    try{const entry=sending?.id===ticket.id?sending:null;if(entry&&!entry.dispatched){entry.controller.abort();state.resolveCancel(ticket,{...entry.payload,status:'cancelled',answer:null});return;}const turn=await api('/api/library/books/'+encodeURIComponent(bookId)+'/chat/'+encodeURIComponent(ticket.id)+'/cancel',{});if(isCurrent(captured))state.resolveCancel(ticket,turn);}
     catch(error){if(isCurrent(captured)){state.rejectCancel(ticket,error);render();await load();}}
     finally{if(isCurrent(captured)){render();if(root.open)focus.restore(!input.disabled&&!form.hidden?input:stopButton.hidden?refreshButton.hidden?closeButton:refreshButton:stopButton);else focus.stop();}else focus.stop();}
   }
@@ -292,6 +296,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     if(trigger){trigger.textContent=CHAT_TEXT.trigger;uiAttr(trigger,'aria-label','open');}
     for(const paints of rowPaints.values())for(const paint of paints)paint();
     for(const link of [...links]){if(link.isConnected===false){links.delete(link);continue;}link.href=uiHref(link.getAttribute('data-ui-owned-href')||'');}
+    price.hidden=getSession()?.billing?.enabled!==true;price.textContent=price.hidden?'':creditActionLabel('conversation',getUiLocale());
     paintHint();statusMsg.refresh();countMsg.refresh();
   }
   const offLocale=onUiLocaleChange(updateLabels);void uiReady.then(()=>{if(!disposed){bindUi(root);updateLabels();}});

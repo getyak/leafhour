@@ -18,7 +18,7 @@
 <a class="skip" href="#main">跳到正文</a>
 <header class="site-header"><button class="palette-entry" data-palette-open type="button">搜索与命令 <kbd data-palette-keycap></kbd></button><a class="brand" href="/zh-hans" aria-label="Leafhour 首页"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="brand-name" lang="en">Leafhour</span></a><nav aria-label="主导航"><a href="/library?ui=zh-Hans">回到书房 ↗</a><a href="https://github.com/getyak/leafhour">GitHub</a><div class="home-languages" role="group" aria-label="切换界面语言"><a href="/privacy" lang="en" hreflang="en">English</a><a aria-current="true" href="/zh-hans/privacy" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a href="/zh-hant/privacy" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/privacy" lang="ja" hreflang="ja">日本語</a></div></nav></header>
 <main id="main" class="privacy-document">
-  <h1>登录与个人数据</h1><p class="privacy-date">适用于 leafhour.com · 更新于 2026 年 10 月 16 日</p>
+  <h1>登录与个人数据</h1><p class="privacy-date">适用于 leafhour.com · 更新于 2026 年 10 月 21 日</p>
   <p>Leafhour 用登录身份确认书房的归属，保存你选择上传的书和阅读记录。公版样书可以匿名试读。本文说明这个线上实例如何处理数据；自行部署的实例由它的运营者负责。</p>
   <h2>登录时会用到什么</h2>
   <p>邮箱登录使用你填写的邮箱地址，由 Supabase Auth 校验密码或验证码，Resend 投递验证邮件。注册与找回密码先验证邮箱，再设置密码。选择 Google 或 Apple 登录时，由相应供应商验证身份，Supabase 接收账户标识、邮箱及供应商提供的基本资料，例如姓名和头像。Leafhour 用这些信息识别账户和维持登录，不申请邮箱正文、联系人、云盘或日历权限。</p>
@@ -28,6 +28,10 @@
   <p>选择上传后，文件与提取出的原文会保存到你的私人书房。评论、问题、阅读位置、阅读时长、明确标记的读完状态和已保存的译文按账户管理。线上存储由 Supabase 提供，网站由 Vercel 托管。匿名公版书与私人上传分别处理，私人文件和记录不会因上传自动公开。</p>
   <p>开始阅读后，页面只记录可见且处于前台的停留，后台暂停，浏览器挂起的长间隔也不累计；阅读时间不代表理解程度。日历按你的所在时区呈现，跨午夜的时间分别记录。浏览器会缓存阅读设置和部分阅读状态，方便继续阅读；断网时暂存本账户的待同步阅读时段、章节标记和待确认的提交，联网后可以重试。未主动保存的文字作为本机草稿保留。选择文字、切换译文和调整排版在本地完成；显式请求 AI 翻译或解释时，才会把对应功能所需的段落上下文发送到配置的模型服务。当前按段翻译使用 DeepSeek，只发送所选段落及理解所需的邻段。阅读对话可按需查阅当前账号的书房、公版书及网络资料；这些工具只读，不读取私人笔记，不写入阅读进度，也不会自动购买或把推荐书加入书房。登录资料不作为翻译上下文。</p>
   <p>如果你给自己的 Agent 授权，它只能按授权读取指定书籍与数据类型；写入权限需要单独选择。旧版客户端建立的授权仍可使用；需要撤回时，可通过原有客户端或联系下方邮箱处理。撤回会停止后续访问，不能自动清除已经被对方复制的数据。</p>
+  <h2>阅读点与支付</h2>
+  <p>你选择一次性充值或月付订阅时，由 Creem 提供结账页、处理每次付款，并通过登录后的客户门户管理订阅。Leafhour 将账户 ID 与本地订单、结账、交易、订阅、客户及退款标识关联，保存商品、币种、金额、付款与订阅状态、计费周期和不可变额度账本。Creem 处理结账所需的联系与付款信息；Leafhour 不接收或保存完整银行卡资料。私人书籍、提问、回答和笔记不会发送给 Creem。</p>
+  <p>供应商用量记录与阅读正文分开，保存操作及调用尝试编号、功能、模型、供应商报告的 token 用量和可取得的费用估算；缺失的用量保留为未知。运营账单报表使用必要的财务与用量事实，不展示私人正文或笔记。删除阅读数据或账户后，为支付对账、争议处理和法定义务可能仍需保留部分财务记录，这类记录的删除请求会单独核对。免费阅读与导出不以购买点数为前提。</p>
+  <p><a href="/zh-hans/pricing">价格</a> · <a href="/zh-hans/terms">服务条款</a> · <a href="/zh-hans/refunds">退款政策</a></p>
   <h2>保存、导出与删除</h2>
   <p>书房数据会继续保存，供你恢复阅读和导出。阅读对话可以从对话窗口导出，AI 回答与用户原话分别标记。书房的“设置 → 数据与迁移”提供完整阅读书房 ZIP 备份与恢复，以及个人记录 Markdown/JSON 和选定分享预览，无需订阅。备份保留已同步的原文、译文、评论、对话、引用、位置与时段，原始文件可选择纳入；不包含登录凭据、Agent 授权或未完成的模型任务。听读音频及听读历史使用单独的音频导出。未同步的阅读记录和未保存的草稿仍留在原浏览器，请先完成同步或保存。需要删除账户或私人数据时，请联系下方邮箱；我们会先核对账户归属，再处理相关数据。托管服务为运行、安全和故障排查产生的日志或备份，由相应服务按其保留机制处理。</p>
   <p>登录数据用于身份验证、会话、安全和你请求的阅读功能，不用于广告投放，也不会出售。Supabase、Resend、Vercel、身份供应商和你主动调用的模型服务，会为提供对应功能处理必要的数据，并适用各自的隐私政策。</p>

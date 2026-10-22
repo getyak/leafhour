@@ -1,3 +1,4 @@
+import {billingErrorDetails} from '../server/billing-routes.mjs';
 import {authMessageId} from '../app/auth-errors.mjs';
 import {audioFailureCode} from '../app/audio-errors.mjs';
 import {gzipSync} from 'node:zlib';
@@ -23,7 +24,7 @@ return async function handler(req,res){
   try{
     const route=routeOf(req);
     // Legacy single-owner APIs never read the private archive on this public surface.
-    if(route!=='/api/internal/ingestion/wake'&&!/^\/api\/(mcp(?:\/|$)|auth\/|library(?:\/|$)|account\/(?:profile|reading-preferences|preference-memory|ui-preferences)$|book-gifts\/|agent\/)/.test(route))return sendJson(404,{error:'请从书房选择一本书再开始阅读'});
+    if(route!=='/api/internal/ingestion/wake'&&!/^\/api\/(billing\/|admin\/billing\/summary$|mcp(?:\/|$)|auth\/|library(?:\/|$)|account\/(?:profile|reading-preferences|preference-memory|ui-preferences)$|book-gifts\/|agent\/)/.test(route))return sendJson(404,{error:'请从书房选择一本书再开始阅读'});
     const origin=env.READER_PUBLIC_ORIGIN;
     if(!origin?.startsWith('https://'))return sendJson(503,{error:'线上书房地址尚未配置'});
     if(!portalPromise){console.info(configurationSummary({env,speechSupported:true}));const store=storeFactory({env}),additionalWebOrigins=(env.READER_ADDITIONAL_WEB_ORIGINS||'').split(',').map(value=>value.trim()).filter(Boolean);portalPromise=portalFactory({dataDir:'hosted',publicOrigin:origin,additionalWebOrigins,allowLocal:false,dataStore:store,authService:authFactory({store,env}),hostedMcp:true,schedule:background,env}).catch(e=>{portalPromise=null;throw e;});}
@@ -32,7 +33,7 @@ return async function handler(req,res){
     if(req.query?.path)url.searchParams.delete('path');
     const handled=await portal.handle({req,res,url,send:(status,body)=>sendJson(status,body)});
     if(!handled)sendJson(404,{error:'找不到这个操作'});
-  }catch(error){const retryAfter=Number.isInteger(error.retryAfter)&&error.retryAfter>0?Math.min(3600,error.retryAfter):null;if(retryAfter)res.setHeader('Retry-After',String(retryAfter));sendJson(error.status||500,{error:error.status?error.message:'服务暂时无法完成操作，请重试',...(retryAfter?{retryAfter}:{}),...(error.status&&authMessageId(error.messageId)?{messageId:error.messageId}:{}),...(audioFailureCode(error.status,error.code)?{code:error.code}:{})});}
+  }catch(error){const retryAfter=Number.isInteger(error.retryAfter)&&error.retryAfter>0?Math.min(3600,error.retryAfter):null;if(retryAfter)res.setHeader('Retry-After',String(retryAfter));sendJson(error.status||500,{error:error.status?error.message:'服务暂时无法完成操作，请重试',...billingErrorDetails(error),...(retryAfter?{retryAfter}:{}),...(error.status&&authMessageId(error.messageId)?{messageId:error.messageId}:{}),...(audioFailureCode(error.status,error.code)?{code:error.code}:{})});}
 }
 }
 export default createHostedHandler();

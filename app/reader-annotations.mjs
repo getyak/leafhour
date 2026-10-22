@@ -1,3 +1,4 @@
+import {creditActionLabel,creditErrorId} from './credit-labels.mjs';
 import {t,getUiLocale,onUiLocaleChange,createUiLabels} from './ui-locale.mjs';
 import {readingChatQuoteFromExcerpt,normalizeReadingChatQuote,validateCurrentReadingChatQuote} from './reading-chat-quote.mjs';
 import {activeHighlights,highlightKey} from './highlights.mjs';
@@ -8,12 +9,11 @@ const PREFIX='reader.annotation.',equal=(a,b)=>JSON.stringify(a)===JSON.stringif
 const terminal=value=>['completed','failed','cancelled'].includes(value);
 const failureKey=error=>({401:'login',403:'login',409:'stale',413:'capacity',422:'stale',429:'limit'}[error?.status]||'unconfirmed');
 
-// This controller receives the live reader's API and highlight acceptance
-// closures. It never imports a second mutable reader/session or locale owner.
-export function mountReaderAnnotations({document,api,getSelection,getRecords,signedIn,available,accept,notify,isCurrent=()=>true,storage}){
+// Uses the live reader's API, highlight acceptance, session and locale owner.
+export function mountReaderAnnotations({document,api,getSession=()=>null,getSelection,getRecords,signedIn,available,accept,notify,isCurrent=()=>true,storage}){
  const view=document.defaultView,labels=createUiLabels(),listeners=[],controllers=new Set(),badges=new Map();
  const reader=()=>view.marginaliaReader,owner=()=>view.marginaliaPaletteAdapter?.getOwner?.();
- let disposed=false,epoch=0,readEpoch=0,layoutEpoch=0,scope=null,outbox=null,archive=null,requests=[],activeId=null,opener=null,busy=false,cancelling=false,composing=false,draftVersion=0,poll=null,frames=[],drafts=Object.create(null),lastMessages='',lastPlacement='',lastTarget=null;
+ let disposed=false,epoch=0,readEpoch=0,layoutEpoch=0,scope=null,outbox=null,archive=null,requests=[],activeId=null,opener=null,busy=false,cancelling=false,composing=false,draftVersion=0,poll=null,frames=[],drafts=Object.create(null),lastMessages='',lastPlacement='',lastTarget=null,refusal=null;
  try{storage??=view.localStorage;}catch{}
  const node=(tag,className)=>{const el=document.createElement(tag);if(className)el.className=className;return el;};
  const write=(el,key,attribute)=>attribute?labels.attr(el,attribute,PREFIX+key):labels.text(el,PREFIX+key);
@@ -23,7 +23,7 @@ export function mountReaderAnnotations({document,api,getSelection,getRecords,sig
  const current=(token=epoch,own=scope)=>!disposed&&isCurrent()&&token===epoch&&own===scope&&identity()===own;
  const book=()=>reader()?.getBook?.(),endpoint=()=>'/api/library/books/'+encodeURIComponent(book().bookId)+'/annotations';
  const draftKey=()=> 'marginalia-annotation-drafts-v1|'+scope;
- const thread=()=>archive?.threads.find(row=>row.id===activeId)|| (outbox?.current()?.input.threadId===activeId?{id:activeId,quote:outbox.current().input.quote,messages:[]}:null);
+ const thread=()=>archive?.threads.find(row=>row.id===activeId)|| (outbox?.current()?.input.threadId===activeId?{id:activeId,quote:outbox.current().input.quote,messages:[]}:refusal?.id===activeId?{...refusal,messages:[]}:null);
  const lastRequest=()=>requests.findLast(row=>row.threadId===activeId);
  const card=node('section','reader-annotation-card');card.id='reader-annotation-card';card.hidden=true;card.setAttribute('role','region');
  const heading=node('header','reader-annotation-heading'),title=node('span');title.id='reader-annotation-title';write(title,'title');card.setAttribute('aria-labelledby',title.id);
@@ -31,10 +31,17 @@ export function mountReaderAnnotations({document,api,getSelection,getRecords,sig
  const scroll=node('div','reader-annotation-scroll'),source=node('div','reader-annotation-source'),sourceLabel=node('span'),sourceState=node('span'),sourceHistory=node('span'),selected=node('blockquote'),messages=node('div','reader-annotation-messages');source.append(sourceLabel,sourceState,sourceHistory,selected);
  const status=node('p','reader-annotation-status');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
  const form=node('form','reader-annotation-form'),area=node('textarea');area.id='reader-annotation-followup';area.maxLength=2000;area.rows=2;write(area,'replyLabel','aria-label');write(area,'placeholder','placeholder');
- const send=button('send',()=>{});send.type='submit';const actions=node('div','reader-annotation-actions');
- const retry=button('retry',()=>retryRequest()),cancel=button('cancel',()=>cancelRequest()),remove=button('remove',()=>removeThread());actions.append(retry,cancel,remove);
+ const send=button('send',()=>{}),price=node('small','reader-annotation-price');send.type='submit';const actions=node('div','reader-annotation-actions');
+ const retry=button('retry',()=>retryRequest()),cancel=button('cancel',()=>cancelRequest()),remove=button('remove',()=>removeThread()),billLink=node('a','reader-annotation-billing-link');actions.append(retry,cancel,remove,price);
  form.append(area,send);scroll.append(source,messages,status,form,actions);card.append(heading,scroll);
  const state=key=>{if(key)write(status,key);else{labels.forget(status);status.textContent='';}};
+ function paintRefusal(){
+  price.hidden=getSession()?.billing?.enabled!==true;price.textContent=price.hidden?'':creditActionLabel('annotation',getUiLocale());
+  const error=refusal?.id===activeId?refusal.error:null;
+  if(error)labels.text(status,creditErrorId(error));
+  if(error?.status===402){labels.text(billLink,'billing.accountLink');billLink.href='/billing?ui='+getUiLocale();if(billLink.parentElement!==actions)actions.append(billLink);}else billLink.remove();
+  return !!error;
+ }
  function notice(key,{recover=false}={}){
   notify('',{error:true,id:PREFIX+key});
   if(recover){const action=button('returnPending',async()=>{const pending=outbox?.current(),own=scope;if(!pending)return;await reader()?.goToPassage?.(pending.input.quote.parts[0].passageId,{validate:()=>!disposed&&identity()===own});if(!disposed&&identity()===own)show(pending.input.threadId,action);});document.getElementById('highlight-status')?.append(action);}
@@ -49,7 +56,7 @@ export function mountReaderAnnotations({document,api,getSelection,getRecords,sig
  function ensureScope(){
   const next=identity();if(next===scope)return !!next;
   epoch++;readEpoch++;cancelLayout();clearTimeout(poll);for(const controller of controllers)controller.abort();controllers.clear();
-  card.hidden=true;card.remove();for(const badge of badges.values())badge.remove();badges.clear();activeId=null;busy=false;cancelling=false;archive=null;requests=[];drafts=Object.create(null);lastMessages='';lastPlacement='';lastTarget=null;scope=next;
+  card.hidden=true;card.remove();for(const badge of badges.values())badge.remove();badges.clear();activeId=null;busy=false;cancelling=false;archive=null;requests=[];drafts=Object.create(null);lastMessages='';lastPlacement='';lastTarget=null;refusal=null;scope=next;
   delete document.body.dataset.annotationPane;delete document.body.dataset.annotationCompact;document.body.style.removeProperty('--annotation-visible-height');
   if(!next){outbox=null;return false;}
   outbox=createAnnotationPending({storage,owner:owner(),bookId:book().bookId,contentVersion:book().contentVersion});document.body.append(card);
@@ -126,7 +133,8 @@ export function mountReaderAnnotations({document,api,getSelection,getRecords,sig
   if(signature!==lastMessages){lastMessages=signature;messages.replaceChildren();for(const message of held.messages){const section=node('section','reader-annotation-message'),attribution=node('span','reader-annotation-attribution');write(attribution,message.origin==='user'?'user':message.provenance.source==='site-agent'?'site':'external');const refs=(message.sourceRefs||[]).map(ref=>({...ref,bookId:book().bookId,url:'/read?book='+encodeURIComponent(book().bookId)+'&passage='+encodeURIComponent(ref.passageId)}));const body=message.origin==='ai'?renderChatMarkdown(document,message.body,{sourceRefs:refs,onInternalLink:(event,ref)=>{event.preventDefault();if(ref&&current())reader()?.goToPassage?.(ref.passageId);}}):node('p');if(message.origin==='user')body.textContent=message.body;section.dataset.origin=message.origin;section.append(attribution);if(message.provenance?.label&&!['External Agent','Leafhour reading agent'].includes(message.provenance.label)){const agent=node('span','reader-annotation-agent');agent.textContent=message.provenance.label;section.append(agent);}section.append(body);messages.append(section);}}
   const pending=outbox?.current(),request=lastRequest();
   state(pending&&!outbox.status().durable?'requestStorage':pending&&!request?'unconfirmed':request?.status==='running'?'pending':request?.status==='failed'?'failed':request?.status==='cancelled'?'cancelled':held.messages.length?'':'noAi');
-  retry.hidden=busy||stale&&!pending||!pending&&!['failed','cancelled'].includes(request?.status);cancel.hidden=request?.status!=='running';cancel.disabled=cancelling;remove.hidden=busy||!!pending||request?.status==='running';send.disabled=stale||busy||!!pending||!area.value.trim();
+  const billingError=paintRefusal();
+  retry.hidden=busy||stale&&!pending||!pending&&!['failed','cancelled'].includes(request?.status)&&!billingError;cancel.hidden=request?.status!=='running';cancel.disabled=cancelling;remove.hidden=busy||!!pending||request?.status==='running'||!archive?.threads.some(row=>row.id===held.id);send.disabled=stale||busy||!!pending||!area.value.trim();
   place();if(card.isConnected)labels.prune();
  }
  function show(id,origin){
@@ -144,7 +152,7 @@ export function mountReaderAnnotations({document,api,getSelection,getRecords,sig
   if(returnFocus){const badge=[...badges.values()].find(node=>node.dataset.annotationThread===activeId),target=origin?.isConnected&&origin.getClientRects().length?origin:badge?.isConnected&&badge.getClientRects().length?badge:document.getElementById('book-page');target?.focus({preventScroll:true});}
  }
  async function resume(operation){
-  if(busy||!operation||!ensureScope())return;busy=true;const token=epoch,own=scope,version=draftVersion,submitted=operation.input.text;readEpoch++;
+  if(busy||!operation||!ensureScope())return;busy=true;refusal=null;const token=epoch,own=scope,version=draftVersion,submitted=operation.input.text;readEpoch++;
   try{
    outbox.remember(operation);if(!outbox.status().durable){notice('requestStorage');return;}
    if(operation.phase==='highlight'){const record=await call('/api/highlights',operation.highlight);if(!current(token,own))return;operation=outbox.highlightSaved(record);accept(record);if(!outbox.status().durable){show(operation.input.threadId,opener);notice('requestStorage');return;}}
@@ -154,7 +162,7 @@ export function mountReaderAnnotations({document,api,getSelection,getRecords,sig
    const receipt=adoptReceipt(result,operation.input);
    if(receipt.status==='completed'&&submitted!==undefined&&draftVersion===version&&area.value===submitted&&!composing){area.value='';draftVersion++;saveDraft();}
    paintBadges();render();schedule();
-  }catch(error){if(current(token,own)&&!error.stale){outbox.rejectPreflight(error.status);state(failureKey(error));notice(failureKey(error));}}
+  }catch(error){if(current(token,own)&&!error.stale){outbox.rejectPreflight(error.status,{preSubmit:error.preSubmit===true});if(creditErrorId(error))refusal={id:operation.input.threadId,quote:operation.input.quote,error};else{state(failureKey(error));notice(failureKey(error));}}}
   finally{if(current(token,own)){busy=false;if(!card.hidden)render();}}
  }
  async function annotate(origin){
@@ -185,11 +193,11 @@ export function mountReaderAnnotations({document,api,getSelection,getRecords,sig
  listen(document,'reader:layout',()=>{paintBadges();place();});listen(document,'reader:content',()=>{paintBadges();place();});
  listen(document,'reader:chapter',event=>{if(event.detail?.chapterId===thread()?.quote.chapterId){paintBadges();place();refresh();return;}epoch++;readEpoch++;busy=false;cancelling=false;hide({restoreFocus:false});refresh();});
  listen(document,'reader:ready',()=>refresh());
- listen(document,'reader:session-changed',()=>{saveDraft();epoch++;readEpoch++;cancelLayout();clearTimeout(poll);for(const controller of controllers)controller.abort();card.hidden=true;card.remove();for(const badge of badges.values())badge.remove();badges.clear();scope=null;outbox=null;archive=null;requests=[];busy=false;cancelling=false;delete document.body.dataset.annotationPane;delete document.body.dataset.annotationCompact;document.body.style.removeProperty('--annotation-visible-height');});
+ listen(document,'reader:session-changed',()=>{saveDraft();epoch++;readEpoch++;cancelLayout();clearTimeout(poll);for(const controller of controllers)controller.abort();card.hidden=true;card.remove();for(const badge of badges.values())badge.remove();badges.clear();scope=null;outbox=null;archive=null;requests=[];refusal=null;busy=false;cancelling=false;delete document.body.dataset.annotationPane;delete document.body.dataset.annotationCompact;document.body.style.removeProperty('--annotation-visible-height');});
  listen(document,'reader:records-updated',()=>refresh());listen(view,'focus',()=>refresh());
  for(const event of ['reader:jump','reader:page','wheel'])listen(document,event,cancelLayout,{passive:true});
  listen(document,'touchstart',event=>{if(!card.contains(event.target))cancelLayout();},{passive:true});
- const offLocale=onUiLocaleChange(()=>labels.refresh());
+ const offLocale=onUiLocaleChange(()=>{labels.refresh();paintRefusal();});
  ensureScope();refresh();
  return {annotate,refresh,dispose(){if(disposed)return;saveDraft();disposed=true;epoch++;readEpoch++;cancelLayout();clearTimeout(poll);for(const controller of controllers)controller.abort();for(const off of listeners)off();offLocale();labels.clear();card.remove();for(const badge of badges.values())badge.remove();delete document.body.dataset.annotationPane;delete document.body.dataset.annotationCompact;document.body.style.removeProperty('--annotation-visible-height');}};
 }

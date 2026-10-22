@@ -1,5 +1,6 @@
+import {creditActionLabel} from './credit-labels.mjs';
 import {activeHighlights,highlightKey,highlightSegments} from './highlights.mjs';
-import {t,onUiLocaleChange,createUiLabels} from './ui-locale.mjs';
+import {t,getUiLocale,onUiLocaleChange,createUiLabels} from './ui-locale.mjs';
 import {sourceLineatedNodes} from './passage-layers.mjs';
 
 const HIGHLIGHT_UI='reader.highlight.';
@@ -10,16 +11,18 @@ export function textRange(document,prose,start,end){
   return null;
 }
 
-export function mountReaderHighlights({document,getRecords,signedIn,available,selectionMatches,api,onSelect,onNote,onChange,announce,loginUrl,loadAnnotationModule=()=>import('./reader-annotations.mjs')}){
+export function mountReaderHighlights({document,getRecords,signedIn,available,getSession=()=>null,selectionMatches,api,onSelect,onNote,onChange,announce,loginUrl,loadAnnotationModule=()=>import('./reader-annotations.mjs')}){
   const root=document.getElementById('chapter-text'),save=document.getElementById('show-highlight'),status=document.getElementById('highlight-status');
   let selected=null,busy=false,timer=null,indexed=null,index=new Map(),pending=new Map(),disposed=false;
-  const annotate=document.getElementById('annotate-selection');let annotation,annotationEpoch=0;
-  const loadAnnotations=()=>annotation??=loadAnnotationModule().then(module=>disposed?null:module.mountReaderAnnotations({document,api,getRecords,getSelection:()=>selected,signedIn,available,accept,notify,isCurrent:()=>!disposed}));
+  const annotate=document.getElementById('annotate-selection');
+  const annotationPrice=document.createElement('small');annotationPrice.className='annotation-price';
+  const paintAnnotationPrice=()=>{if(annotate&&getSession()?.billing?.enabled===true&&annotationPrice.parentElement!==annotate)annotate.append(annotationPrice);annotationPrice.hidden=getSession()?.billing?.enabled!==true;annotationPrice.textContent=annotationPrice.hidden?'':' · '+creditActionLabel('annotation',getUiLocale());};paintAnnotationPrice();let annotation,annotationEpoch=0;
+  const loadAnnotations=()=>annotation??=loadAnnotationModule().then(module=>disposed?null:module.mountReaderAnnotations({document,api,getSession,getRecords,getSelection:()=>selected,signedIn,available,accept,notify,isCurrent:()=>!disposed}));
   const labels=createUiLabels(),listeners=[];
   const pruneLabels=()=>labels.prune();
   const write=(node,id,params,attribute)=>{if(attribute)labels.attr(node,attribute,id,params);else labels.text(node,id,params);};
   const listen=(node,event,fn)=>{node.addEventListener(event,fn);listeners.push(()=>node.removeEventListener(event,fn));};
-  const offLocale=onUiLocaleChange(()=>{labels.refresh({pruneDetached:true});});
+  const offLocale=onUiLocaleChange(()=>{labels.refresh({pruneDetached:true});paintAnnotationPrice();});
   const rows=()=>activeHighlights(getRecords());
   function notify(message,{error=false,login=false,reload=false,id=HIGHLIGHT_UI+'error'}={}){
     if(disposed)return;pruneLabels();
@@ -29,7 +32,7 @@ export function mountReaderHighlights({document,getRecords,signedIn,available,se
     if(!error)timer=setTimeout(()=>{status.hidden=true;},3500);
   }
   function updateTools(snapshot){if(disposed)return;
-    selected=snapshot?structuredClone(snapshot):null;save.hidden=!selected;
+    paintAnnotationPrice();selected=snapshot?structuredClone(snapshot):null;save.hidden=!selected;
     if(annotate)annotate.hidden=!selected;
     save.disabled=busy;write(save,busy?'record.saving':selected&&rows().some(row=>highlightKey(row)===highlightKey(selected))?HIGHLIGHT_UI+'remove':'reader.shell.highlight');
   }
@@ -82,5 +85,5 @@ export function mountReaderHighlights({document,getRecords,signedIn,available,se
     for(const [text,action]of [[HIGHLIGHT_UI+'return',()=>onSelect(row)],['reader.b1.writeThought',()=>{onSelect(row);onNote();}],[HIGHLIGHT_UI+'remove',()=>remove(row)]]){const button=document.createElement('button');button.type='button';write(button,text);button.addEventListener('click',event=>{event.stopPropagation();action();});actions.append(button);}
     section.append(label,quote,actions);return section;
   }
-  return {paint,paintAll,updateTools,recordNode,notify,unmount(){if(disposed)return;disposed=true;annotation?.then(controller=>controller?.dispose()).catch(()=>{});offLocale();clearTimeout(timer);labels.clear();for(const off of listeners)off();listeners.length=0;}};
+  return {paint,paintAll,updateTools,recordNode,notify,unmount(){if(disposed)return;disposed=true;annotation?.then(controller=>controller?.dispose()).catch(()=>{});offLocale();annotationPrice.remove();clearTimeout(timer);labels.clear();for(const off of listeners)off();listeners.length=0;}};
 }

@@ -11,6 +11,8 @@ import {inferSourceLanguage} from '../../app/source-language.mjs';
 import {digest} from '../../server/document-import.mjs';
 
 export const MAX_BATCH_REQUESTS=20;
+const UNITS_PER_POINT=1_000_000;
+const validPointBudget=value=>Number.isSafeInteger(value)&&value>=0&&Number.isSafeInteger(value*UNITS_PER_POINT);
 export const SESSION_ENV='LEAFHOUR_SESSION';
 export const CHECKPOINT_KIND='leafhour-translation-batch-checkpoint';
 export const CHECKPOINT_SCHEMA_VERSION=1;
@@ -35,7 +37,7 @@ export function validateServiceOrigin(value){
 
 // --- command line ----------------------------------------------------------
 export function parseBatchArgs(argv){
-  const out={origin:null,bookId:null,checkpoint:null,execute:false,maxRequests:null,help:false};
+  const out={origin:null,bookId:null,checkpoint:null,execute:false,maxRequests:null,maxPoints:null,help:false};
   const take=flag=>{const value=argv[++position];if(value===undefined)throw error('缺少参数：'+flag,'usage',{usage:true});return value;};
   let position=0;
   for(;position<argv.length;position++){
@@ -46,6 +48,7 @@ export function parseBatchArgs(argv){
     if(arg==='--checkpoint'){out.checkpoint=take(arg);continue;}
     if(arg==='--execute'){out.execute=true;continue;}
     if(arg==='--max-requests'){out.maxRequests=take(arg);continue;}
+    if(arg==='--max-points'){out.maxPoints=take(arg);continue;}
     // Session tokens and passwords are never accepted as arguments.
     throw error('包含未支持的参数；会话与密码只允许通过指定安全入口提供','usage',{usage:true});
   }
@@ -61,6 +64,10 @@ export function parseBatchArgs(argv){
     if(!Number.isInteger(out.maxRequests)||out.maxRequests<1||out.maxRequests>MAX_BATCH_REQUESTS)throw error('--max-requests 必须是 1 到 '+MAX_BATCH_REQUESTS+' 的整数','usage',{usage:true});
   }
   if(out.execute&&out.maxRequests===null)throw error('实际执行需要同时给出 --execute 与 --max-requests 1..'+MAX_BATCH_REQUESTS,'usage',{usage:true});
+  if(out.maxPoints!==null){
+    if(!out.execute||!/^\d{1,10}$/.test(out.maxPoints)||!validPointBudget(Number(out.maxPoints)))throw error('--max-points 必须与 --execute 一起使用，并且是可安全计量的非负整数','usage',{usage:true});
+    out.maxPoints=Number(out.maxPoints);
+  }
   return out;
 }
 
@@ -260,7 +267,7 @@ export function createTransport({origin,session,fetchImpl=fetch,limits={},timeou
     async sessionUser(){
       const data=await json('/api/auth/session',{limit:max.session});
       if(!data?.user||typeof data.user.id!=='string'||!data.user.id)throw error('会话无效或未登录，请提供已登录的 '+SESSION_ENV+' 会话','session');
-      owner=data.user.id;return {id:owner};
+      owner=data.user.id;return {id:owner,billing:{enabled:data.billing?.enabled===true}};
     },
     // The existing per-book GET response/transfer protocol keeps responses bounded.
     async getBook(bookId){
@@ -287,8 +294,13 @@ export function createTransport({origin,session,fetchImpl=fetch,limits={},timeou
     },
     // Only a complete passage acknowledgement establishes a saved draft. Once
     // POST is dispatched, an unreadable/invalid 2xx acknowledgement is unknown.
-    async translate(bookId,passageId,expectedVersion,expectedOriginal){
-      const response=await request('/api/library/books/'+encodeURIComponent(bookId)+'/translate',{method:'POST',body:{passageId,...(expectedVersion!==undefined?{contentVersion:expectedVersion}:{})},limit:max.translate});
+    async quoteTranslation(bookId,passageId,contentVersion,requestId){
+      const quote=await json('/api/billing/quotes',{method:'POST',body:{action:'translation',bookId,input:{id:requestId,passageId,contentVersion}},limit:max.session});
+      if(typeof quote?.id!=='string'||!quote.id||quote.id.length>200||quote.ownerId!==owner||quote.action!=='translation'||!Number.isSafeInteger(quote.units)||quote.units<0||!Number.isFinite(Date.parse(quote.expiresAt))||Date.parse(quote.expiresAt)<=Date.now()||quote.scope?.bookId!==bookId||quote.scope?.passageId!==passageId||quote.scope?.contentVersion!==contentVersion||quote.scope?.requestId!==requestId)throw error('翻译报价未通过账号、来源和额度检查，未提交生成','invalid-quote');
+      return {id:quote.id,units:quote.units};
+    },
+    async translate(bookId,passageId,expectedVersion,expectedOriginal,paid){
+      const response=await request('/api/library/books/'+encodeURIComponent(bookId)+'/translate',{method:'POST',body:{passageId,...(expectedVersion!==undefined?{contentVersion:expectedVersion}:{}),...(paid?{id:paid.requestId,billing:{quoteId:paid.quoteId,idempotencyKey:paid.requestId}}:{})},limit:max.translate});
       let saved;try{saved=parseResponseJson(response.body);}catch{throw error('翻译提交后未收到有效保存确认','response-unknown',{unknown:true});}
       if(saved?.id!==passageId||saved.original!==expectedOriginal||!['literal','interpretive'].every(variant=>typeof saved.translations?.[variant]?.text==='string'&&saved.translations[variant].text.trim()&&saved.translations[variant].sourceVersion===expectedVersion&&['draft','reviewed'].includes(saved.translations[variant].status)))throw error('翻译提交后未收到完整保存确认','response-unknown',{unknown:true});
       return true;
@@ -297,9 +309,10 @@ export function createTransport({origin,session,fetchImpl=fetch,limits={},timeou
 }
 
 // --- bounded serial runner ------------------------------------------------
-export async function runBatch({origin,bookId,session,execute=false,maxRequests=null,checkpointFile,fetchImpl,limits,timeoutMs,signal=null,log=()=>{}}={}){
+export async function runBatch({origin,bookId,session,execute=false,maxRequests=null,maxPoints=null,checkpointFile,fetchImpl,limits,timeoutMs,signal=null,log=()=>{}}={}){
   if(!execute&&maxRequests!==null)throw error('--max-requests 只能与 --execute 一起使用；当前仍是演练','usage',{usage:true});
   if(execute&&(!Number.isInteger(maxRequests)||maxRequests<1||maxRequests>MAX_BATCH_REQUESTS))throw error('实际执行需要 --max-requests 1..'+MAX_BATCH_REQUESTS,'usage',{usage:true});
+  if(maxPoints!==null&&(!execute||!validPointBudget(maxPoints)))throw error('--max-points 必须与 --execute 一起使用，并且是可安全计量的非负整数','usage',{usage:true});
   const transport=createTransport({origin,session,fetchImpl,limits,timeoutMs});
   const user=await transport.sessionUser();
   const file=execute?(checkpointFile||defaultCheckpointPath(bookId)):null;
@@ -311,6 +324,7 @@ export async function runBatch({origin,bookId,session,execute=false,maxRequests=
   const book=await transport.getBook(bookId);
   const plan=planPassages(book);
   const summary={mode:execute?'execute':'dry-run',bookId:book.bookId,contentVersion:book.contentVersion,requests:0,maxRequests:execute?maxRequests:null,counts:plan.counts,eligible:plan.eligible.map(row=>row.id),skipped:[...plan.skipped],entries:[],stopped:null,remaining:plan.eligible.length,checkpoint:file};
+  if(user.billing.enabled)summary.billing={enabled:true,maxPoints,reservedUnits:0,quotedUnits:0};
   if(!execute)return summary;
   const binding=bindingFor({userId:user.id,origin:transport.origin,book});
   const release=await acquireCheckpointLock(file);
@@ -329,9 +343,22 @@ export async function runBatch({origin,bookId,session,execute=false,maxRequests=
       const freshSkip=new Map(planPassages(current).skipped.map(entry=>[entry.id,entry.reason]));
       if(freshSkip.has(row.id)){summary.skipped.push({id:row.id,reason:freshSkip.get(row.id)});done.add(row.id);continue;}
       if(signal?.aborted){summary.stopped='aborted';break;}
+      let paid;
+      if(user.billing.enabled){
+        if(maxPoints===null)throw error('付费模式实际生成还需要显式 --max-points 整数预算；未提交生成','usage',{usage:true});
+        const requestId=randomUUID(),quote=await transport.quoteTranslation(bookId,row.id,binding.contentVersion,requestId);
+        if(!Number.isSafeInteger(summary.billing.quotedUnits+quote.units))throw error('报价累计额度超过安全计量范围，未提交生成','invalid-quote');
+        summary.billing.quotedUnits+=quote.units;
+        await log('quote '+row.id+' '+quote.units/UNITS_PER_POINT+' points; budget '+summary.billing.reservedUnits/UNITS_PER_POINT+' / '+maxPoints+' points');
+        if(signal?.aborted){summary.stopped='aborted';break;}
+        if(quote.units>maxPoints*UNITS_PER_POINT-summary.billing.reservedUnits){summary.stopped='points-limit';break;}
+        // Reserve locally before dispatch, including unknown/failed requests.
+        // Only the server ledger determines actual settlement or release.
+        summary.billing.reservedUnits+=quote.units;paid={requestId,quoteId:quote.id};
+      }
       summary.requests++;
       let outcome;
-      try{await transport.translate(bookId,row.id,binding.contentVersion,allBookPassages(current).find(({passage})=>passage.id===row.id)?.passage.original);outcome={state:'saved'};}
+      try{await transport.translate(bookId,row.id,binding.contentVersion,allBookPassages(current).find(({passage})=>passage.id===row.id)?.passage.original,paid);outcome={state:'saved'};}
       catch(e){outcome={state:e?.unknown?'unknown':'failed',reason:e?.code||'batch-error'};}
       store.record(row.id,outcome);
       await store.save();

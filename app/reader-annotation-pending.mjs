@@ -39,7 +39,8 @@ export function createAnnotationPending({storage,owner,bookId,contentVersion}){
   reconcile(request){if(!current||request?.id!==current.input.id||request.threadId!==current.input.threadId||!['completed','failed','cancelled'].includes(request.status))return false;current=null;problem=false;write();return true;},
   // These explicit Web explain errors precede its atomic claim. Transport
   // errors, quota errors and unconfirmed completion failures are NOT receipts.
-  rejectPreflight(status){if(!current||![400,401,403,404,409,413,422].includes(status))return false;current=null;problem=false;write();return true;},
+  // A caller may separately prove that preparation stopped before dispatch.
+  rejectPreflight(status,{preSubmit=false}={}){if(!current||!preSubmit&&![400,401,403,404,409,413,422].includes(status))return false;current=null;problem=false;write();return true;},
   abandonBeforeDispatch(){if(current?.phase==='explain')return false;current=null;problem=false;write();return true;}
  };
 }
