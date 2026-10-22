@@ -1,22 +1,24 @@
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {loadLocalEnvironment} from '../server/local-env.mjs';
+import {BILLING_PLANS} from '../server/billing-plans.mjs';
 import {validateBillingProduct} from '../server/billing-product.mjs';
 
-const products=[{key:'reading_monthly_100',variable:'CREEM_PRODUCT_READING_MONTHLY_100',name:'Leafhour · 100 reading points monthly',billing_type:'recurring',billing_period:'every-month'}];
-const required=['CREEM_API_KEY','CREEM_WEBHOOK_SECRET','CREEM_PRODUCT_READING_MONTHLY_100','SUPABASE_URL','SUPABASE_SECRET_KEY','READER_PUBLIC_ORIGIN'];
+const products=BILLING_PLANS.map(plan=>({...plan,name:plan.key==='reading_monthly_100'?'Leafhour · 100 reading points monthly':'Leafhour · 1200 reading points yearly',billing_type:plan.billingType,billing_period:plan.billingPeriod}));
+const required=['CREEM_API_KEY','CREEM_WEBHOOK_SECRET','SUPABASE_URL','SUPABASE_SECRET_KEY','READER_PUBLIC_ORIGIN'];
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 
 // An inventory is not an attestation: readiness still needs authoritative
 // product/schema checks and executed checkout/webhook acceptance.
 export function billingConfiguration(env={}){
  const missing=required.filter(key=>typeof env[key]!=='string'||!env[key].trim());
+ if(!products.some(p=>typeof env[p.variable]==='string'&&env[p.variable].trim()))missing.push(...products.map(p=>p.variable));
  if(!['test','live'].includes(env.CREEM_MODE))missing.push('CREEM_MODE');
  if(env.READER_BILLING_ENABLED!=='true')missing.push('READER_BILLING_ENABLED');
  if(env.CREEM_MODE==='live'&&env.READER_BILLING_SCHEMA_VERIFIED!=='true')missing.push('READER_BILLING_SCHEMA_VERIFIED');
  const budget=env.READER_BILLING_TRIAL_BUDGET_POINTS;
  if(!/^\d+$/.test(budget||'')||!Number.isSafeInteger(Number(budget)*1_000_000)||Number(budget)<10)missing.push('READER_BILLING_TRIAL_BUDGET_POINTS');
- return {ready:false,configurationComplete:missing.length===0,mode:['test','live'].includes(env.CREEM_MODE)?env.CREEM_MODE:null,missing,webhookPath:'/api/webhooks/creem',requiredSchemaVersion:2,trialPointsPerVerifiedAccount:10,suggestedTrialCampaignPoints:10000};
+ return {ready:false,configurationComplete:missing.length===0,mode:['test','live'].includes(env.CREEM_MODE)?env.CREEM_MODE:null,missing,webhookPath:'/api/webhooks/creem',requiredSchemaVersion:env.CREEM_PRODUCT_READING_YEARLY_1200?3:2,trialPointsPerVerifiedAccount:10,suggestedTrialCampaignPoints:10000};
 }
 
 export async function prepareBillingProducts({env={},fetcher=globalThis.fetch,createMissing=false}={}){
@@ -35,7 +37,7 @@ export async function prepareBillingProducts({env={},fetcher=globalThis.fetch,cr
   if(typeof productId!=='string'||!/^prod_[A-Za-z0-9_-]+$/.test(productId))fail('billing_setup_product_id_invalid');
   validateBillingProduct(product,{productId,mode,productKey:p.key});environment[p.variable]=productId;
  }
- // Validate the existing monthly offer before any supplier mutation.
+ // Validate every configured offer before any supplier mutation.
  // Retired one-time configuration is never a sale or setup dependency.
  for(const p of products){
   const existing=env[p.variable];
@@ -45,7 +47,7 @@ export async function prepareBillingProducts({env={},fetcher=globalThis.fetch,cr
   if(environment[p.variable])continue;
   if(createMissing){
    let product;
-   product=await request(base+'/v1/products',{idempotencyKey:'leafhour-'+mode+'-'+p.key+'-usd500-v1',body:{name:p.name,description:'100 reading points after each successful monthly payment. Cancel future renewals in the customer portal. Points accumulate without expiry.',price:500,currency:'USD',billing_type:p.billing_type,...(p.billing_period?{billing_period:p.billing_period}:{}),tax_mode:'exclusive',tax_category:'saas',default_success_url:origin+'/billing'}});
+   product=await request(base+'/v1/products',{idempotencyKey:'leafhour-'+mode+'-'+p.key+'-usd'+p.amount+'-v1',body:{name:p.name,description:p.points+' reading points delivered upfront after each successful '+(p.interval==='year'?'yearly':'monthly')+' payment. Cancel future renewals in the customer portal. Points accumulate without expiry.',price:p.amount,currency:'USD',billing_type:p.billing_type,...(p.billing_period?{billing_period:p.billing_period}:{}),tax_mode:'exclusive',tax_category:'saas',default_success_url:origin+'/pricing'}});
    created.push(p.key);
    remember(p,product,product?.id);
   }else{missingProducts.push(p.key);continue;}
@@ -55,7 +57,7 @@ export async function prepareBillingProducts({env={},fetcher=globalThis.fetch,cr
 
 async function main(){
  const args=process.argv.slice(2);
- if(args.includes('--help')){console.log('Usage: node tools/configure-billing.mjs [--check | --create-products]\nReads protected environment variables and the existing local .env. Never prints credentials. Default --check makes no supplier writes. --create-products creates only the missing approved US$5 monthly product with stable idempotency; it does not enable billing, configure webhooks, migrate databases or charge a customer.');return;}
+ if(args.includes('--help')){console.log('Usage: node tools/configure-billing.mjs [--check | --create-products]\nReads protected environment variables and the existing local .env. Never prints credentials. Default --check makes no supplier writes. --create-products creates only the missing approved US$5 monthly and US$50 yearly products with stable idempotency; it does not enable billing, configure webhooks, migrate databases or charge a customer.');return;}
  if(args.some(arg=>!['--check','--create-products'].includes(arg))||args.includes('--check')&&args.includes('--create-products'))fail('billing_setup_invalid_arguments');
  const env={...process.env};await loadLocalEnvironment({env});
  const inventory=billingConfiguration(env);

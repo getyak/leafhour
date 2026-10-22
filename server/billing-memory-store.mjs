@@ -1,3 +1,4 @@
+import {billingPlan,billingPeriodFor,billingPeriodMatches} from './billing-plans.mjs';
 import {createHash,randomUUID} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
 import {createLockedJsonStore} from './locked-json-store.mjs';
@@ -54,7 +55,7 @@ export function createBillingMemoryStore({dataDir,clock=Date.now}={}){
       };
       let result;
       switch(action){
-        case 'readiness':result={ready:false,durable:false,schemaVersion:2,backend:'reference'};break;
+        case 'readiness':result={ready:false,durable:false,schemaVersion:3,backend:'reference'};break;
         case 'lookupSubscription':result=s.subscriptions[identifier(p.subscriptionId)]||null;break;
         case 'subscriptions':result={subscriptions:Object.values(s.subscriptions).filter(x=>x.ownerId===ownerId).reverse()};break;
         case 'bindSubscription':case 'subscriptionState':{
@@ -66,7 +67,7 @@ export function createBillingMemoryStore({dataDir,clock=Date.now}={}){
           if(sub&&sub.ownerId!==ownerId)fail('owner_mismatch',403);
           if(!sub&&action==='subscriptionState')fail('not_found',404);
           if(action==='bindSubscription'){
-            const o=findOrder();if(o.productKey!=='reading_monthly_100'||p.productKey!==o.productKey||p.productId!==o.productId)fail('payment_mismatch',409);
+            const o=findOrder();if(!billingPlan(o.productKey)||p.productKey!==o.productKey||p.productId!==o.productId)fail('payment_mismatch',409);
             if(sub&&(sub.initialOrderId!==o.id||sub.productId!==p.productId))fail('payment_mismatch',409);
             if(o.subscriptionId&&o.subscriptionId!==subscriptionId)fail('payment_mismatch',409);
             if(!sub&&Object.values(s.subscriptions).some(x=>x.ownerId===ownerId&&!terminalSubscriptionStatuses.has(x.status)))fail('subscription_exists',409);
@@ -144,11 +145,13 @@ export function createBillingMemoryStore({dataDir,clock=Date.now}={}){
         }
         case 'order':{
           identifier(p.id);identifier(p.intentKey);identifier(p.productId);identifier(p.productKey);integer(p.amount);integer(p.units,1);if(!/^[A-Z]{3}$/.test(p.currency))fail('invalid_input');
+          if(p.productKey==='reading_yearly_1200'&&p.billingPeriod!=='every-year'||p.billingPeriod!==undefined&&p.billingPeriod!==billingPlan(p.productKey)?.billingPeriod)fail('invalid_input');
           const key=compound(ownerId,p.intentKey),prior=s.orders[s.intents[key]];
           if(prior){if(['productKey','productId','amount','currency','units'].some(k=>prior[k]!==p[k]))fail('idempotency_conflict',409);result=prior;break;}
-          if(p.productKey==='reading_monthly_100'&&(Object.values(s.subscriptions).some(x=>x.ownerId===ownerId&&!terminalSubscriptionStatuses.has(x.status))||Object.values(s.orders).some(o=>o.ownerId===ownerId&&o.productKey==='reading_monthly_100'&&o.status!=='expired'&&(!o.subscriptionId||!terminalSubscriptionStatuses.has(s.subscriptions[o.subscriptionId]?.status)))))fail('subscription_exists',409);
+          if(billingPlan(p.productKey)&&s.accounts[ownerId]?.frozen)fail('frozen_account',403);
+          if(billingPlan(p.productKey)&&(Object.values(s.subscriptions).some(x=>x.ownerId===ownerId&&!terminalSubscriptionStatuses.has(x.status))||Object.values(s.orders).some(o=>o.ownerId===ownerId&&billingPlan(o.productKey)&&o.status!=='expired'&&(!o.subscriptionId||!terminalSubscriptionStatuses.has(s.subscriptions[o.subscriptionId]?.status)))))fail('subscription_exists',409);
           if(s.orders[p.id])fail('idempotency_conflict',409);
-          result=s.orders[p.id]={id:p.id,ownerId,mode:p.mode,intentKey:p.intentKey,productKey:p.productKey,productId:p.productId,amount:p.amount,currency:p.currency,units:p.units,status:'pending',paymentVerified:false,revokedUnits:0,refundedAmount:0,createdAt:now,updatedAt:now};s.intents[key]=p.id;break;
+          result=s.orders[p.id]={id:p.id,ownerId,mode:p.mode,intentKey:p.intentKey,productKey:p.productKey,productId:p.productId,amount:p.amount,currency:p.currency,units:p.units,...(p.billingPeriod?{billingPeriod:p.billingPeriod}:{}),status:'pending',paymentVerified:false,revokedUnits:0,refundedAmount:0,createdAt:now,updatedAt:now};s.intents[key]=p.id;break;
         }
         case 'checkout':{
           const o=findOrder();identifier(p.checkoutId);if(p.checkoutUrl!==undefined&&p.checkoutUrl!==null)identifier(p.checkoutUrl);if(o.checkoutId&&o.checkoutId!==p.checkoutId)fail('idempotency_conflict',409);
@@ -170,7 +173,7 @@ export function createBillingMemoryStore({dataDir,clock=Date.now}={}){
             p.periodStart=timestamp(p.periodStart);p.periodEnd=timestamp(p.periodEnd);if(Date.parse(p.periodEnd)<=Date.parse(p.periodStart))fail('invalid_input');
             identifier(p.providerOrderId);integer(p.paidAmount);integer(p.amount);integer(p.taxAmount);integer(p.discountAmount);integer(p.units,1);
             if(p.paidAmount<=0||p.paidAmount!==p.amount-p.discountAmount+p.taxAmount||p.discountAmount>p.amount)fail('payment_mismatch',409);
-            const initial=s.orders[sub.initialOrderId];if(p.amount!==initial.amount||p.currency!==initial.currency||p.units!==initial.units)fail('payment_mismatch',409);
+            const initial=s.orders[sub.initialOrderId];if(p.billingPeriod!==undefined&&p.billingPeriod!==billingPeriodFor(initial)||!billingPeriodMatches(p.periodStart,p.periodEnd,billingPeriodFor(initial)))fail('payment_mismatch',409);if(p.amount!==initial.amount||p.currency!==initial.currency||p.units!==initial.units)fail('payment_mismatch',409);
             const identity=Object.fromEntries(['subscriptionId','customerId','transactionId','providerOrderId','periodStart','periodEnd','amount','paidAmount','taxAmount','discountAmount','currency','units'].map(k=>[k,p[k]]));
             const previous=s.transactions[transactionId],periodKey=compound(subscriptionId,p.periodStart,p.periodEnd),period=s.periods[periodKey];
             if(previous&&!isDeepStrictEqual(previous.identity,identity)||period&&period!==transactionId)fail('payment_mismatch',409);
@@ -180,7 +183,7 @@ export function createBillingMemoryStore({dataDir,clock=Date.now}={}){
               if(sub.initialProviderOrderId===p.providerOrderId)fail('payment_mismatch',409);
               const id='subscription:'+createHash('sha256').update(p.mode+':'+transactionId).digest('hex');
               if(s.orders[id])fail('payment_mismatch',409);
-              p.orderId=id;s.orders[id]={id,ownerId,mode:p.mode,intentKey:id,productKey:sub.productKey,productId:sub.productId,amount:p.amount,currency:p.currency,units:p.units,status:'pending',paymentVerified:false,revokedUnits:0,refundedAmount:0,createdAt:now,updatedAt:now};
+              p.orderId=id;p.billingPeriod=billingPeriodFor(initial);s.orders[id]={id,ownerId,mode:p.mode,intentKey:id,productKey:sub.productKey,productId:sub.productId,amount:p.amount,currency:p.currency,units:p.units,...(p.billingPeriod?{billingPeriod:p.billingPeriod}:{}),status:'pending',paymentVerified:false,revokedUnits:0,refundedAmount:0,createdAt:now,updatedAt:now};
             }
             const o=findOrder();if(o.providerOrderId&&o.providerOrderId!==p.providerOrderId)fail('payment_mismatch',409);
             if(o.id===sub.initialOrderId)sub.initialProviderOrderId??=p.providerOrderId;
@@ -237,7 +240,7 @@ export function createBillingMemoryStore({dataDir,clock=Date.now}={}){
           const grantedUnitsBySource={trial:0,purchase:0,review:0},consumedUnitsBySource={trial:0,purchase:0,review:0},operationCounts={};
           for(const e of entries){if(e.type==='grant')grantedUnitsBySource[e.source]=(grantedUnitsBySource[e.source]||0)+e.units;if(['consume','reverse'].includes(e.type))for(const source of ['trial','purchase','review'])consumedUnitsBySource[source]+=(e.type==='consume'?1:-1)*(e.unitsBySource?.[source]||0);}
           for(const op of Object.values(s.operations).filter(op=>inRange(op.updatedAt)))operationCounts[op.status]=(operationCounts[op.status]||0)+1;
-          result={accounts:Object.keys(s.accounts).length,orders:orders.length,paidOrders:paid.length,monthlyPaidOrders:paid.filter(e=>s.orders[e.orderId]?.productKey==='reading_monthly_100').length,oneTimePaidOrders:paid.filter(e=>s.orders[e.orderId]?.productKey!=='reading_monthly_100').length,activeSubscriptions:Object.values(s.subscriptions).filter(x=>x.status==='active').length,paidUsers:new Set(paid.map(e=>e.ownerId)).size,reviewOrders:payments.filter(e=>e.source==='review').length,trialGrants:entries.filter(e=>e.type==='grant'&&e.source==='trial').length,salesByCurrency,refundsByCurrency,grantedUnits:sum(entries.filter(e=>e.type==='grant'),'units'),consumedUnits:Math.max(0,-sum(entries.filter(e=>e.type==='consume'||e.type==='reverse'),'units')),reservedUnits:Object.values(s.accounts).reduce((n,a)=>n+balance(a).reservedUnits,0),calls:calls.length,knownCostMicrousd:sum(calls,'costMicrousd'),unknownCostCalls:calls.filter(c=>!costKnown(c)).length,callsByFunding:groupCalls('funding'),callsByFeature:groupCalls('feature'),grantedUnitsBySource,consumedUnitsBySource,operationCounts,costCoverage:calls.length?calls.filter(costKnown).length/calls.length:null,paymentFeesStatus:'unknown',from:p.from,to:p.to,costBasis:'usage_estimate',complete:calls.length>0&&calls.every(costKnown)};break;
+          result={accounts:Object.keys(s.accounts).length,orders:orders.length,paidOrders:paid.length,monthlyPaidOrders:paid.filter(e=>s.orders[e.orderId]?.productKey==='reading_monthly_100').length,yearlyPaidOrders:paid.filter(e=>s.orders[e.orderId]?.productKey==='reading_yearly_1200').length,oneTimePaidOrders:paid.filter(e=>!billingPlan(s.orders[e.orderId]?.productKey)).length,activeSubscriptions:Object.values(s.subscriptions).filter(x=>x.status==='active').length,paidUsers:new Set(paid.map(e=>e.ownerId)).size,reviewOrders:payments.filter(e=>e.source==='review').length,trialGrants:entries.filter(e=>e.type==='grant'&&e.source==='trial').length,salesByCurrency,refundsByCurrency,grantedUnits:sum(entries.filter(e=>e.type==='grant'),'units'),consumedUnits:Math.max(0,-sum(entries.filter(e=>e.type==='consume'||e.type==='reverse'),'units')),reservedUnits:Object.values(s.accounts).reduce((n,a)=>n+balance(a).reservedUnits,0),calls:calls.length,knownCostMicrousd:sum(calls,'costMicrousd'),unknownCostCalls:calls.filter(c=>!costKnown(c)).length,callsByFunding:groupCalls('funding'),callsByFeature:groupCalls('feature'),grantedUnitsBySource,consumedUnitsBySource,operationCounts,costCoverage:calls.length?calls.filter(costKnown).length/calls.length:null,paymentFeesStatus:'unknown',from:p.from,to:p.to,costBasis:'usage_estimate',complete:calls.length>0&&calls.every(costKnown)};break;
         }
         default:fail('unknown_command');
       }

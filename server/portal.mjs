@@ -126,6 +126,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     // GET-188 authored-home mobile navigation: exactly one module and one
     // stylesheet, mounted by portal.js on the authored home routes only.
     for(const file of ['home-navigation.css','home-navigation.mjs'])files['/'+file]=file;
+    for(const file of ['pricing-checkout.mjs','pricing-checkout-flow.mjs','pricing-checkout-markup.mjs','checkout-embed.mjs','pricing-checkout.css'])files['/'+file]=file;
     for(const file of ['library-craft.css','book-binding.mjs','brand-assets/sage-paper.webp'])files['/'+file]=file;
     files['/library-incremental.mjs']='library-incremental.mjs';
     for(const file of ['home-atmosphere.css','home-atmosphere.mjs','brand-assets/sunlit-room.webp','brand-assets/foliage-canopy.webp'])files['/'+file]=file;

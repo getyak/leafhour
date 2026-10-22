@@ -30,16 +30,16 @@ async function fixture({products={},env={}}={}){
  const complete=async()=>{await buy();return send(checkoutEvent());};
  return {store,creem,service,calls,transactions,send,buy,complete,checkoutEvent,paidEvent,get creations(){return creations;},get localOrder(){return localOrder;},get subscription(){return subscription;},set subscription(value){subscription=value;},get checkout(){return checkout;}};
 }
-test('catalog and default checkout offer only the verified monthly subscription',async()=>{
+test('catalog includes both plans while default checkout remains the verified monthly subscription',async()=>{
  const f=await fixture(),catalog=await f.service.catalog();
- assert.deepEqual(catalog.products.map(p=>p.key),['reading_monthly_100']);assert.equal(catalog.available,true);
+ assert.deepEqual(catalog.products.map(p=>p.key),['reading_monthly_100','reading_yearly_1200']);assert.equal(catalog.available,true);
  assert.equal((await f.service.readiness()).ready,true);
  const purchase=await f.service.checkout({ownerId,intentKey:'default-monthly'});assert.equal(purchase.order.productKey,'reading_monthly_100');
  assert.equal(f.calls.filter(c=>c.url.endsWith('/products/prod_topup')).length,0);assert.equal(f.calls.filter(c=>c.url.endsWith('/products/prod_monthly')).length,2);
 });
 test('an unavailable monthly product never falls back to a one-time purchase',async()=>{
  for(const input of [{products:{prod_monthly:{price:600}}},{env:{CREEM_PRODUCT_READING_MONTHLY_100:undefined}}]){
-  const f=await fixture(input),catalog=await f.service.catalog();assert.equal(catalog.available,false);assert.deepEqual(catalog.products.map(p=>p.key),['reading_monthly_100']);
+  const f=await fixture(input),catalog=await f.service.catalog();assert.equal(catalog.available,false);assert.deepEqual(catalog.products.map(p=>p.key),['reading_monthly_100','reading_yearly_1200']);
   await assert.rejects(f.service.checkout({ownerId,intentKey:'unavailable'}),{status:503});assert.equal(f.creations,0);
  }
 });
@@ -82,7 +82,7 @@ test('state changes and failed renewals do not mint points or remove delivered p
  assert.equal((await f.service.subscriptions({ownerId})).subscriptions[0].status,'canceled');
 });
 test('each successful paid cycle requires explicit financial facts and binding to its authenticated subscription',async()=>{
- const patches=[{amount_paid:undefined},{tax_amount:undefined},{discount_amount:undefined},{amount:499},{currency:'EUR'},{discount_amount:500,amount_paid:0,tax_amount:0},{mode:'prod'},{subscription:'sub_foreign'},{customer:'cust_foreign'},{status:'declined'},{order:undefined},{period_start:undefined},{period_end:Date.parse(end)},{refunded_amount:undefined},{status:'refunded',refunded_amount:275},{type:'payment'}];
+ const patches=[{amount_paid:undefined},{tax_amount:undefined},{discount_amount:null},{amount:499},{currency:'EUR'},{discount_amount:500,amount_paid:0,tax_amount:0},{mode:'prod'},{subscription:'sub_foreign'},{customer:'cust_foreign'},{status:'declined'},{order:undefined},{period_start:undefined},{period_end:Date.parse(end)},{refunded_amount:undefined},{status:'refunded',refunded_amount:275},{type:'payment'}];
  for(const patch of patches){const f=await fixture();await f.complete();f.transactions.set('tran_invalid',transaction('tran_invalid',patch));await assert.rejects(f.send(f.paidEvent('evt_invalid',{last_transaction_id:'tran_invalid'})),e=>[409,503].includes(e.status),JSON.stringify(patch));assert.equal((await f.service.account({ownerId})).availableUnits,100*U);}
 });
 test('paid reconciliation atomically respects supplier full refund or chargeback facts',async()=>{
@@ -142,4 +142,11 @@ test('a recovered checkout without a stored URL requires reconciliation instead 
 test('monthly checkout requires subscription schema version two in test mode too',async()=>{
  const f=await fixture(),store={...f.store,command:async(action,p)=>action==='readiness'?{ready:true,durable:true,backend:'postgres',schemaVersion:1}:f.store.command(action,p)},service=createBillingService({enabled:true,store,creem:f.creem});
  assert.equal((await service.readiness({productKey:'reading_monthly_100'})).reason,'billing_schema_outdated');await assert.rejects(service.checkout({ownerId,productKey:'reading_monthly_100',intentKey:'old-schema'}),{status:503});assert.equal((await service.catalog()).available,false);assert.equal((await service.readiness()).reason,'billing_schema_outdated');
+});
+
+test('monthly invoice without a discount field derives zero only from complete authoritative money facts',async()=>{
+ const f=await fixture(),invoice=transaction();delete invoice.discount_amount;f.transactions.set(invoice.id,invoice);
+ await f.complete();await f.send(f.paidEvent());
+ assert.equal((await f.service.account({ownerId})).availableUnits,100*U);
+ const order=(await f.service.orders({ownerId})).orders[0];assert.equal(order.discountAmount,0);assert.equal(order.paidAmount,550);assert.equal(order.taxAmount,50);
 });

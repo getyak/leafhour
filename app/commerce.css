@@ -1,5 +1,4 @@
-/* Public pricing and policy pages share the current Leafhour home palette.
-   Account statements and financial controls keep their existing stylesheet. */
+/* Public pricing and policy pages share the current Leafhour home palette. */
 :root {
   --bill-paper: #F7F8F5;
   --bill-panel: #FFFFFF;
@@ -23,52 +22,55 @@
 body.commerce-page > .site-header #account-button { min-height: 44px; padding: 10px 16px; border: 1px solid var(--bill-line); border-radius: 10px; background: var(--bill-panel); color: var(--ink); text-decoration: none; }
 .commerce-account-compact { display: none; }
 .commerce-page .home-navigation { flex-wrap: nowrap; }
-.commerce-page .commerce-main { width: min(100%, 1120px); padding: 64px 48px 32px; }
-.commerce-page .commerce-hero { max-width: 720px; margin-bottom: 36px; }
-.commerce-page .commerce-main h1 { font: 500 clamp(36px, 4.2vw, 54px)/1.16 var(--font-sans); letter-spacing: -.045em; margin-bottom: 20px; }
-.commerce-page .lede { max-width: 56ch; font-size: 17px; line-height: 1.85; }
-.commerce-page .point-products { grid-template-columns: minmax(0, 1fr); }
-.commerce-page .point-pack { grid-template-columns: minmax(0, .9fr) minmax(0, 1fr); padding: 28px; gap: 24px; border: 1px solid var(--bill-line); border-radius: 16px; background: var(--bill-panel); }
-.commerce-page .pack-title { font-size: 16px; font-weight: 500; margin: 0 0 20px; }
-.commerce-page .pack-price { margin: 0 0 5px; }
-.commerce-page .pack-price strong { font: 500 clamp(34px, 3.6vw, 44px)/1.2 var(--font-sans); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
-.commerce-page .pack-quantity { color: var(--bill-green); font-size: 15px; margin: 10px 0 18px; }
-.commerce-page .plan-summary { min-width: 0; }
-.commerce-page .plan-benefits { list-style: none; margin: 0; padding: 0 0 0 28px; border-left: 1px solid var(--bill-line); display: grid; align-content: center; gap: 24px; }
-.commerce-page .plan-benefits h3 { font-size: 17px; line-height: 1.6; font-weight: 500; margin: 0 0 6px; }
-.commerce-page .plan-benefits p { color: var(--bill-muted); font-size: 14px; line-height: 1.8; margin: 0; }
-.commerce-page .free-reading { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 28px; margin-top: 36px; border-radius: 16px; background: var(--bill-soft); }
-.commerce-page .free-reading h2, .commerce-page .free-reading h3 { font-size: 17px; font-weight: 500; margin: 0 0 10px; }
-.commerce-page .free-reading p { color: var(--bill-muted); font-size: 14px; line-height: 1.85; margin: 0; }
-.commerce-page .pack-description { max-width: 44ch; font-size: 14px; line-height: 1.8; color: var(--bill-muted); margin: 0; }
-.commerce-page .pack-action { margin-top: 24px; max-width: 340px; }
-.commerce-page .pack-action .primary { width: 100%; min-height: 46px; color: #FFFFFF; background: var(--bill-green); }
-.commerce-page .pack-action .primary:hover { background: color-mix(in srgb, var(--bill-green) 88%, var(--bill-ink)); }
-.commerce-page .availability { max-width: none; margin: 12px 0 0; font-size: 12px; line-height: 1.7; }
-.commerce-page .pricing-context { padding: 24px 2px 34px; }
-.commerce-page .pricing-context p { margin: 0; }
-.commerce-page .trial-note { font-size: 14px; color: var(--bill-ink); }
-.commerce-page .pricing-context .fine-print { margin-top: 6px; font-size: 12px; }
-.commerce-page .table-scroll { border-radius: 0; }
-.commerce-page table { font-size: 15px; }
-.commerce-page th, .commerce-page td { padding-block: 19px; line-height: 1.75; }
-.commerce-page thead th { font-size: 13px; }
-.commerce-page td:last-child { width: 170px; text-align: right; color: var(--bill-green); }
-.commerce-page th:last-child { text-align: right; }
-.commerce-page .commerce-main > .fine-print { max-width: 84ch; margin: 18px 0 0; }
-.commerce-page .commerce-notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; gap: 28px; margin-top: 46px; }
-.commerce-page .commerce-notes section { border-top: 1px solid var(--bill-line); padding-top: 20px; }
-.commerce-page .commerce-notes h2 { font-size: 16px; line-height: 1.6; margin: 0 0 12px; }
-.commerce-page .commerce-notes p { font-size: 14px; line-height: 1.85; margin: 0; }
-.commerce-page .commerce-notes > p { grid-column: 1 / -1; font-size: 12px; }
+.commerce-page .commerce-main { width: min(100%, 1320px); max-width: 1320px; padding: 56px 48px 28px; }
+.commerce-page .commerce-hero { max-width: none; margin: 0 auto 48px; text-align: center; }
+.commerce-page .commerce-hero h1 { font: 500 clamp(32px, 3.2vw, 44px)/1.25 var(--font-serif); letter-spacing: var(--track-latin); margin: 0 0 12px; text-wrap: balance; }
+.commerce-page .lede { max-width: 60ch; font-size: 17px; line-height: 1.7; }
+.commerce-page .commerce-hero .lede { margin-inline: auto; text-wrap: balance; }
+.commerce-page .point-products { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; align-items: stretch; }
+.commerce-page .point-pack { display: flex; flex-direction: column; min-width: 0; gap: 0; padding: 28px; border: 1px solid var(--bill-line); border-radius: 16px; background: var(--bill-panel); }
+.commerce-page .point-pack-yearly { border-color: color-mix(in srgb, var(--bill-green) 35%, var(--bill-line)); }
+.commerce-page .plan-heading { display: flex; align-items: center; justify-content: space-between; min-height: 38px; gap: 12px; }
+.commerce-page .pack-title { font: 500 27px/1.4 var(--font-serif); margin: 0; }
+.commerce-page .plan-saving { flex: none; padding: 4px 12px; border-radius: 20px; background: var(--bill-soft); color: var(--bill-ink); font: 400 12px/1.6 var(--font-sans); white-space: nowrap; }
+.commerce-page .point-pack .pack-price { display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 7px; margin: 26px 0 6px; }
+.commerce-page .pack-price strong { font: 500 clamp(36px, 3.3vw, 44px)/1.2 var(--font-sans); letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
+.commerce-page .price-cadence { color: var(--bill-muted); font-size: 14px; }
+.commerce-page .point-pack .pack-description { min-height: 3.3em; margin: 0; color: var(--bill-muted); font-size: 14px; line-height: 1.65; }
+.commerce-page .pack-action { margin-top: 20px; max-width: none; width: 100%; }
+.commerce-page .pack-action .primary, .commerce-page .pack-action .outline { width: 100%; min-height: 48px; font-size: 15px; }
+.commerce-page .pack-action .primary { color: #FFFFFF; background: var(--bill-green); border-color: var(--bill-green); }
+.commerce-page .pack-action .primary:hover:not(:disabled) { background: color-mix(in srgb, var(--bill-green) 88%, var(--bill-ink)); }
+.commerce-page .pack-action .outline { color: var(--bill-ink); border-color: var(--bill-line); background: transparent; }
+.commerce-page .pack-action .outline:hover { background: var(--bill-soft); }
+.commerce-page .plan-benefits { list-style: none; margin: 30px 0 0; padding: 22px 0 2px; border-top: 1px solid var(--bill-line); display: grid; align-content: start; gap: 13px; }
+.commerce-page .plan-benefits li { display: grid; grid-template-columns: 15px minmax(0, 1fr); column-gap: 12px; font-size: 16px; line-height: 1.65; }
+.commerce-page .plan-benefits li::before { content: '✓'; color: var(--bill-muted); font-size: 16px; }
+.commerce-page .pricing-context { padding: 26px 0 22px; text-align: center; }
+.commerce-page .reading-assurance { margin: 0; color: var(--bill-muted); font-size: 13px; line-height: 1.7; }
+.commerce-page .availability { max-width: none; margin: 6px 0 0; color: var(--bill-muted); font-size: 12px; line-height: 1.7; }
+.commerce-page .availability:empty { display: none; }
+.commerce-page .pricing-details { margin-top: 16px; border-top: 1px solid var(--bill-line); }
+.commerce-page .pricing-details > summary { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 0; list-style: none; cursor: pointer; color: var(--bill-muted); font-size: 14px; }
+.commerce-page .pricing-details > summary::-webkit-details-marker { display: none; }
+.commerce-page .pricing-details > summary::after { content: '+'; font-size: 20px; line-height: 1; }
+.commerce-page .pricing-details[open] > summary::after { content: '−'; }
+.commerce-page .pricing-detail-content { max-width: 76ch; padding: 4px 0 8px; }
+.commerce-page .pricing-detail-content section { margin: 0 0 24px; }
+.commerce-page .pricing-detail-content h2 { margin: 0 0 10px; font: 500 16px/1.6 var(--font-sans); }
+.commerce-page .pricing-detail-content p { margin: 0 0 14px; color: var(--bill-muted); font-size: 13px; line-height: 1.85; }
+.commerce-page .point-usage { margin: 0 0 14px; font-size: 13px; }
+.commerce-page .point-usage > div { display: flex; justify-content: space-between; gap: 24px; padding: 7px 0; }
+.commerce-page .point-usage dt { color: var(--bill-muted); }
+.commerce-page .point-usage dd { margin: 0; white-space: nowrap; }
 .commerce-page .policy { max-width: 720px; }
 .commerce-page .policy h1 { font-size: clamp(34px, 4vw, 48px); }
 .commerce-page .policy h2 { font-size: 18px; }
-.commerce-page .billing-footer { position: relative; max-width: 1120px; padding: 30px 48px 36px; margin-top: 48px; }
+.commerce-page .billing-footer { position: relative; max-width: 1320px; padding: 24px 48px 30px; margin-top: 12px; }
 .commerce-page .billing-footer > p { font: 400 14px/1.6 var(--font-sans); }
 .commerce-page .billing-footer a { text-decoration: none; }
 .commerce-page .billing-footer a:hover { text-decoration: underline; }
-.commerce-page .site-theme { position: absolute; right: 48px; top: 30px; width: 44px; height: 44px; border: 0; background: transparent; color: var(--muted); }
+.commerce-page .site-theme { position: absolute; right: 48px; top: 20px; width: 44px; height: 44px; border: 0; background: transparent; color: var(--muted); }
 .commerce-page .home-menu-sheet { color: var(--ink); }
 .commerce-page .home-menu-sheet .dialog-close { position: absolute; right: 10px; top: 10px; width: 40px; height: 40px; border: 0; background: transparent; color: var(--muted); font-size: 22px; }
 .commerce-page .home-menu-sheet h2 { font-family: var(--font-sans); font-size: 17px; }
@@ -83,38 +85,40 @@ body.commerce-page > .site-header #account-button { min-height: 44px; padding: 1
   :root:not([data-site-theme=paper]) .commerce-page .pack-action .primary { color: #17251B; }
   :root:not([data-site-theme=paper]) .commerce-page .billing-brand img { filter: brightness(0) invert(.84); }
 }
-@media (max-width: 800px) {
-  .commerce-page .commerce-main { padding: 52px 28px 28px; }
-  .commerce-page .point-products { gap: 18px; }
-  .commerce-page .point-pack { padding: 24px; }
-  .commerce-page .commerce-notes { grid-template-columns: 1fr; gap: 22px; }
-  .commerce-page .commerce-notes section { max-width: 66ch; }
+@media (max-width: 1000px) {
+  .commerce-page .commerce-main { padding-inline: 28px; }
+  .commerce-page .point-products { gap: 16px; }
+  .commerce-page .point-pack { padding: 24px 20px; }
+  .commerce-page .plan-benefits li { font-size: 14px; column-gap: 9px; }
   .commerce-page .billing-footer { padding-inline: 28px; }
   .commerce-page .site-theme { right: 28px; }
 }
-@media (max-width: 600px) {
+@media (max-width: 760px) {
   .commerce-account-full { display: none; }
   .commerce-account-compact { display: inline; }
-  .commerce-page .commerce-main { padding: 42px 24px 24px; }
-  .commerce-page .commerce-hero { margin-bottom: 32px; }
-  .commerce-page .commerce-main h1 { font-size: 36px; }
-  :root[lang=ja] .commerce-page .commerce-hero h1 { font-size: clamp(28px, 8.5vw, 36px); text-wrap: balance; }
+  .commerce-page .commerce-main { padding: 40px 24px 24px; }
+  .commerce-page .commerce-hero { margin-bottom: 30px; }
+  .commerce-page .commerce-hero h1 { font-size: clamp(28px, 6.4vw, 38px); }
   .commerce-page .lede { font-size: 15px; }
   .commerce-page .point-products { grid-template-columns: minmax(0, 1fr); gap: 18px; }
-  .commerce-page .point-pack { grid-template-columns: minmax(0, 1fr); padding: 24px; gap: 28px; }
-  .commerce-page .plan-benefits { border-left: 0; border-top: 1px solid var(--bill-line); padding: 24px 0 0; gap: 20px; }
-  .commerce-page .pack-action { max-width: none; }
-  .commerce-page .free-reading { grid-template-columns: minmax(0, 1fr); padding: 24px; gap: 24px; }
-  .commerce-page .pack-price strong { font-size: 38px; }
-  .commerce-page .pack-title { margin-bottom: 18px; }
+  .commerce-page .point-pack { padding: 26px; }
+  .commerce-page .point-pack .pack-price { margin-top: 22px; }
+  .commerce-page .pack-price strong { font-size: 40px; }
+  .commerce-page .point-pack .pack-description { min-height: 0; }
+  .commerce-page .pack-action { margin-top: 22px; }
+  .commerce-page .plan-benefits { margin-top: 26px; gap: 12px; }
+  .commerce-page .plan-benefits li { font-size: 16px; }
+  .commerce-page .pricing-context { padding: 24px 2px 12px; }
   .commerce-page .billing-brand { font-size: 25px; }
   .commerce-page .billing-brand img { width: 25px; height: 25px; }
-  .commerce-page th, .commerce-page td { padding-block: 16px; font-size: 14px; }
-  .commerce-page td:last-child { width: auto; padding-left: 20px; }
-  .commerce-page .pricing-context { padding-bottom: 28px; }
   .commerce-page .billing-footer { padding-inline: 24px; }
   .commerce-page .site-theme { right: 24px; }
 }
 @media (forced-colors: active) {
-  .commerce-page .point-pack { border-color: CanvasText; }
+  .commerce-page .point-pack, .commerce-page .pack-action .primary, .commerce-page .pack-action .outline { border-color: CanvasText; }
+}
+@media (max-width: 360px) {
+  .commerce-page .billing-brand { font-size: 23px; gap: 7px; }
+  .commerce-page .billing-brand img { width: 22px; height: 22px; }
+  body.commerce-page > .site-header #account-button { padding-inline: 10px; }
 }

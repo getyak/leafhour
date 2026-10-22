@@ -7,7 +7,7 @@ import {validateBillingProduct} from '../server/billing-product.mjs';
 const env={CREEM_MODE:'test',CREEM_API_KEY:'synthetic-key',CREEM_WEBHOOK_SECRET:'synthetic-secret',CREEM_PRODUCT_READING_100:'prod_topup',CREEM_PRODUCT_READING_MONTHLY_100:'prod_monthly'};
 test('selected products and documented subscription, transaction and portal endpoints stay environment bound',async()=>{
  const calls=[];const client=createCreemClient({env,fetcher:async(url,init)=>{calls.push({url,init});return Response.json(url.endsWith('/billing')?{customer_portal_link:'https://creem.io/my-orders/login/synthetic'}:init.method==='POST'?{id:'ch_monthly',checkout_url:'https://checkout.creem.io/ch_monthly'}:{id:'synthetic'});}});
- assert.deepEqual(client.productIds,{reading_monthly_100:'prod_monthly'});assert.equal(client.productId,'prod_monthly');
+ assert.deepEqual(client.productIds,{reading_monthly_100:'prod_monthly',reading_yearly_1200:undefined});assert.equal(client.productId,'prod_monthly');
  await client.retrieveProduct({productId:'prod_monthly'});await client.retrieveSubscription({subscriptionId:'sub_synthetic'});await client.retrieveTransaction({transactionId:'tran_synthetic'});
  await client.createCheckout({orderId:'local-order',ownerId:'synthetic-owner',productId:'prod_monthly',successUrl:'https://leafhour.example/billing'});
  assert.equal((await client.createPortal({customerId:'cust_synthetic'})).portalUrl,'https://creem.io/my-orders/login/synthetic');

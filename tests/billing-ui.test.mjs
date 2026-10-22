@@ -20,7 +20,7 @@ test('public pricing and policy pages have four canonical localized paths and tr
   assert.doesNotMatch(html,/noindex|local-owner|Most popular/);
  }
  const en=pages.commercePage({kind:'pricing',locale:'en',billingEnabled:false});
- for(const text of ['US$5','100 reading points','10 trial points','1 point','4 points','automatically renews','automatic companion','Self-hosting','exported without a subscription'])assert.ok(en.includes(text),text);
+ for(const text of ['US$0','US$5','US$50','100 reading points','1,200 reading points','10 trial points','1 point','4 points','automatically renews','automatic companion','Self-hosting','Reading and export stay free'])assert.ok(en.includes(text),text);
  assert.match(en,/Payments are not open/);
  const terms=pages.commercePage({kind:'terms',locale:'en'});assert.match(terms,/private uploads/i);assert.match(terms,/copyright/i);assert.match(terms,/AI.*draft/i);
  const refunds=pages.commercePage({kind:'refunds',locale:'en'});assert.match(refunds,/14 days/);assert.match(refunds,/unused purchased points/);assert.match(refunds,/Creem/);assert.match(refunds,/statutory rights/);
@@ -41,7 +41,8 @@ test('account render escapes real records and shows holds separately from consum
  const empty=render({locale:'en',session:session('A'),catalog:{enabled:false},account:{availableUnits:10000000,reservedUnits:4000000,grantedUnits:10000000,consumedUnits:0,trialGranted:true},entries:[],orders:[]});
  assert.match(empty,/10<\/strong>/);assert.match(empty,/4<\/strong>/);assert.match(empty,/Reserved/);assert.match(empty,/No point entries yet/);assert.match(empty,/No orders yet/);assert.match(empty,/Payments are not open/);
  const html=render({locale:'en',session:session('A'),catalog:{...liveCatalog,mode:'test'},account:{availableUnits:0},entries:[{id:'<script>',kind:'hold',units:4000000,action:'reading_conversation',createdAt:'2026-10-21T00:00:00Z'}],orders:[{id:'<img src=x onerror=alert(1)>',amount:500,currency:'USD',status:'pending',units:100000000,receiptUrl:'javascript:alert(1)'}]});
- assert.doesNotMatch(html,/<script>|<img src=x|javascript:/);assert.match(html,/&lt;script&gt;/);assert.match(html,/Processing/);assert.match(html,/sandbox/i);assert.match(html,/<caption/);assert.match(html,/scope="col"/);
+ assert.doesNotMatch(html,/<script>|<img src=x|javascript:/);assert.match(html,/&lt;script&gt;/);assert.match(html,/Processing/);assert.match(html,/<caption/);assert.match(html,/scope="col"/);
+ assert.doesNotMatch(html,/data-billing-action="checkout"/);assert.match(html,/href="\/en\/pricing"/);
 });
 
 test('operator render keeps currencies separate and treats missing supplier usage as unknown',()=>{
@@ -108,27 +109,27 @@ test('order statements show actual refunds and do not claim an unverified paid s
  const render=helper('renderBillingAccount');const html=render({locale:'en',session:session('A'),catalog:{enabled:false},account:{availableUnits:0},orders:[{id:'unverified',status:'paid',paymentVerified:false,amount:500,currency:'USD',units:100000000,refundedAmount:200}]});assert.match(html,/USD\s2\.00/);assert.doesNotMatch(html,/Payment verified\. Points have been granted\./);
 });
 
-test('monthly pricing and policy copy discloses paid renewals, cancellation and accumulated points in all four locales',()=>{
- const expected={en:['US$5 / month','100 points per successful payment','automatically renews','customer portal','no expiry','not unlimited'], 'zh-Hans':['US$5 / 月','每次实际付款成功后发放 100 点','自动续费','客户门户','不过期','并非无限'], 'zh-Hant':['US$5 / 月','每次實際付款成功後發放 100 點','自動續費','客戶入口','不過期','並非無限'],ja:['US$5 / 月','支払いが成功するごとに 100 ポイント','自動更新','カスタマーポータル','有効期限なし','無制限ではありません']};
+test('monthly and annual policies disclose full charges, upfront points, renewal and cancellation in all four locales',()=>{
+ const expected={en:['US$5 / month','100 reading points','US$50 / year','1,200 reading points together, not in monthly instalments','automatically renews monthly or yearly','customer portal','no expiry','not unlimited'], 'zh-Hans':['US$5 / 月','100 阅读点','US$50 / 年','一次发放 1,200 阅读点，不按月分批到账','每月或每年自动续费','客户门户','不过期','并非无限'], 'zh-Hant':['US$5 / 月','100 閱讀點','US$50 / 年','一次發放 1,200 閱讀點，不按月分批入帳','每月或每年自動續費','客戶入口','不過期','並非無限'],ja:['US$5 / 月','100 読書ポイント','US$50 / 年','1,200 読書ポイントをまとめて付与し、月ごとに分割しません','毎月または毎年自動更新','カスタマーポータル','有効期限なし','無制限ではありません']};
  for(const [locale,phrases] of Object.entries(expected)){
-  const html=pages.commercePage({locale});for(const phrase of phrases)assert.ok(html.includes(phrase),locale+': '+phrase);
-  assert.doesNotMatch(html,/data-product-key="reading_100"/);assert.match(html,/data-product-key="reading_monthly_100"/);
+  const html=pages.commercePage({locale}),terms=pages.commercePage({locale,kind:'terms'}),refunds=pages.commercePage({locale,kind:'refunds'});
+  for(const phrase of phrases){assert.ok(html.includes(phrase),locale+' pricing: '+phrase);assert.ok(terms.includes(phrase),locale+' terms: '+phrase);}
+  assert.doesNotMatch(html,/data-product-key="reading_100"/);assert.match(html,/data-product-key="reading_monthly_100"/);assert.match(html,/data-product-key="reading_yearly_1200"/);
   for(const kind of ['pricing','terms','refunds'])assert.doesNotMatch(pages.commercePage({locale,kind}),/one-time top-up|one-time US\$5|一次性充值|一次性儲值|1 回限りの追加購入|no automatic renewal|無自動續費|无自动续费/i);
-  const terms=pages.commercePage({locale,kind:'terms'}),refunds=pages.commercePage({locale,kind:'refunds'});
-  assert.ok(terms.includes(phrases[2]),locale+' terms renewal');assert.ok(refunds.includes(phrases[3]),locale+' refunds cancellation');
+  assert.ok(refunds.includes(phrases[5]),locale+' refunds cancellation');
+  for(const proportion of ['100','1,200','×','÷'])assert.ok(refunds.includes(proportion),locale+' proportional unused-point refund: '+proportion);
  }
 });
 
-test('only the monthly plan is offered and subscription management never hides the point balance',()=>{
- const catalog={enabled:true,mode:'live',available:true,products:[{key:'reading_100',available:true},{key:'reading_monthly_100',available:false}]};
- assert.equal(helper('catalogAvailability')(catalog,'reading_100'),'unavailable');assert.equal(helper('catalogAvailability')(catalog,'reading_monthly_100'),'unavailable');
+test('account statements link to plan selection and retain the balance and subscription management',()=>{
+ const catalog={enabled:true,mode:'live',available:true,products:[{key:'reading_100',available:true},{key:'reading_monthly_100',available:false},{key:'reading_yearly_1200',available:true}]};
+ assert.equal(helper('catalogAvailability')(catalog,'reading_100'),'unavailable');assert.equal(helper('catalogAvailability')(catalog,'reading_monthly_100'),'unavailable');assert.equal(helper('catalogAvailability')(catalog,'reading_yearly_1200'),'live');
  const base={locale:'en',session:session('A'),catalog,account:{availableUnits:107000000,trialGranted:true},subscriptions:[]};
  const html=helper('renderBillingAccount')(base);
- assert.doesNotMatch(html,/data-billing-action="checkout" data-product-key="reading_100"/);
- assert.match(html,/data-billing-action="checkout" data-product-key="reading_monthly_100" disabled/);
+ assert.doesNotMatch(html,/data-billing-action="checkout"/);assert.match(html,/href="\/en\/pricing"/);assert.match(html,/107<\/strong>/);
  const active=helper('renderBillingAccount')({...base,catalog:{...catalog,products:catalog.products.map(p=>({...p,available:true}))},subscriptions:[{id:'sub_A',status:'active',periodStart:'2026-10-21T00:00:00Z',periodEnd:'2026-11-21T00:00:00Z',nextTransactionDate:'2026-11-21T00:00:00Z'}]});
  for(const text of ['107</strong>','Active','Next payment','Manage / cancel renewal','data-subscription-id="sub_A"'])assert.ok(active.includes(text),text);
- assert.match(active,/data-billing-action="checkout" data-product-key="reading_monthly_100" disabled/);
+ assert.doesNotMatch(active,/data-billing-action="checkout"/);assert.match(active,/href="\/en\/pricing"/);
 });
 
 test('billing automatically admits the once-only trial without blocking purchased points on campaign exhaustion',async()=>{
@@ -170,7 +171,9 @@ test('unknown or incomplete monthly readiness cannot accidentally expose subscri
 test('an unfinished monthly order or scheduled cancellation blocks another subscription while a canceled plan can be replaced',async()=>{
  for(const status of ['active','scheduled_cancel','paused','unpaid','expired']){
   const html=helper('renderBillingAccount')({locale:'en',session:session('A'),catalog:{enabled:true,available:true,mode:'live',products:[{key:'reading_monthly_100',available:true}]},account:{availableUnits:100000000},subscriptions:[{subscriptionId:'sub_A',status,currentPeriodEnd:'2026-11-21T00:00:00Z'}]});
-  assert.match(html,/data-billing-action="checkout" data-product-key="reading_monthly_100" disabled/);assert.match(html,/Current period ends/);assert.match(html,/Points already delivered remain/);
+  assert.doesNotMatch(html,/data-billing-action="checkout"/);assert.match(html,/href="\/en\/pricing"/);assert.match(html,/100<\/strong>/);assert.match(html,/Current period ends/);assert.match(html,/Points already delivered remain/);assert.match(html,/data-billing-action="portal" data-subscription-id="sub_A"/);
+  let checkoutCalls=0;const client=helper('createBillingClient')({fetcher:async path=>{if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/subscriptions')return response({subscriptions:[{id:'sub_A',status}]});checkoutCalls++;return response({checkoutUrl:'https://checkout.creem.io/blocked'});}});
+  await client.refreshSession();await client.loadSubscriptions();await assert.rejects(client.checkout('reading_monthly_100'),{code:'BILLING_SUBSCRIPTION_EXISTS'});assert.equal(checkoutCalls,0,status+' must not create a checkout');
  }
  let checkoutCalls=0,orderStatus='creating',subStatus='canceled';const client=helper('createBillingClient')({intentFactory:()=> 'monthly-new',fetcher:async(path)=>{if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/subscriptions')return response({subscriptions:[{id:'sub_A',status:subStatus}]});if(path.startsWith('/api/billing/orders'))return response({orders:[{id:'pending_monthly',productKey:'reading_monthly_100',status:orderStatus}]});checkoutCalls++;return response({checkoutUrl:'https://checkout.creem.io/new'});}});
  await client.refreshSession();await client.loadSubscriptions();await client.loadOrders();await assert.rejects(client.checkout('reading_monthly_100'),{code:'BILLING_SUBSCRIPTION_EXISTS'});assert.equal(checkoutCalls,0);
@@ -249,20 +252,27 @@ test('public pricing and policies share discoverable Agent, pricing and GitHub n
   assert.ok(header.includes('href="/'+slug+'/pricing"'));
   assert.match(header,/aria-label="GitHub"/);assert.match(header,/<svg/);
   const accountName=header.match(/id="account-button"[^>]*aria-label="([^"]+)"/)[1];
-  assert.ok(accountName.includes(({en:"Points","zh-Hans":"阅读点","zh-Hant":"閱讀點",ja:"ポイント"})[locale]),"The compact visible label remains in its accessible name");
+  const compactLabel=header.match(/class="commerce-account-compact"[^>]*>([^<]+)<\/span>/)[1];
+  assert.equal(accountName,({en:'My reading room','zh-Hans':'我的书房','zh-Hant':'我的書房',ja:'自分の書斎'})[locale]);
+  assert.ok(accountName.toLocaleLowerCase().includes(compactLabel.toLocaleLowerCase()),'The compact visible reading-room label remains in its accessible name');
+  assert.ok(header.includes('id="account-button" href="/library?ui='+locale+'"'));assert.doesNotMatch(header,/href="\/billing/);
   assert.match(html,/<dialog[^>]*id="home-menu"/);assert.match(header,/id="home-menu-trigger"/);
   assert.ok(html.includes('href="/'+slug+'/'+kind+'" lang="'+locale+'"'));
  }
 });
 
 
-test('the monthly offer explains metered AI and separates the four interface languages from free reading',()=>{
- const expected={en:['Ask about the book','Explain a selected passage','Chinese translations','literal and interpretive','Free reading','English, Simplified Chinese, Traditional Chinese and Japanese'], 'zh-Hans':['围绕书本提问','解释选中的文字','中文翻译','直译与意译','免费阅读','英语、简体中文、繁体中文和日语'], 'zh-Hant':['圍繞書本提問','解釋選中的文字','中文翻譯','直譯與意譯','免費閱讀','英語、簡體中文、繁體中文和日語'],ja:['本について質問','選択した文章を解説','中国語訳','直訳と意訳','無料で読む','英語、簡体字中国語、繁体字中国語、日本語']};
+test('three comparable plans keep free reading and interface languages separate from Chinese generation',()=>{
+ const expected={en:['Read your own books','Notes and full export','Four interface languages','AI book questions and passage explanations','Literal and interpretive Chinese translations','English, Simplified Chinese, Traditional Chinese and Japanese','new translations currently target Chinese'], 'zh-Hans':['阅读自己的书','笔记与完整导出','4 种界面语言','阅读提问与选文解释','中文直译与意译','英语、简体中文、繁体中文和日语','目前新译文仅生成中文'], 'zh-Hant':['閱讀自己的書','筆記與完整匯出','4 種介面語言','閱讀提問與選文解釋','中文直譯與意譯','英語、簡體中文、繁體中文和日語','目前新譯文僅生成中文'],ja:['自分の本を読む','ノートと全件エクスポート','4 つの表示言語','本への質問と選択した文章の解説','中国語の直訳と意訳','英語、簡体字中国語、繁体字中国語、日本語','新しい翻訳は現在、中国語のみ']};
  for(const [locale,phrases] of Object.entries(expected)){
   const html=pages.commercePage({locale});for(const phrase of phrases)assert.ok(html.includes(phrase),locale+': '+phrase);
-  assert.equal((html.match(/data-product-key=/g)||[]).length,1);
-  assert.ok(html.indexOf('class="plan-benefits"')<html.indexOf('class="table-scroll"'));
-  assert.match(html,/class="free-reading"/);
+  const cards=[...html.matchAll(/<section class="point-pack[^\"]*"[^>]*>[\s\S]*?<\/section>/g)].map(match=>match[0]);
+  assert.equal(cards.length,3);assert.deepEqual(cards.map(card=>card.match(/data-pricing-plan="([^"]+)"/)[1]),['free','reading_monthly_100','reading_yearly_1200']);
+  assert.deepEqual([...html.matchAll(/data-pricing-subscribe="([^"]+)"/g)].map(match=>match[1]),['reading_monthly_100','reading_yearly_1200']);
+  assert.match(cards[0],/US\$0/);assert.ok(cards[0].includes('href="/library?ui='+locale+'"'));assert.doesNotMatch(cards.join(''),/href="\/billing/);
+  assert.match(cards[1],/US\$5/);assert.match(cards[1],/data-billing-period="month" data-price-usd="5" data-reading-points="100"/);
+  assert.match(cards[2],/US\$50/);assert.match(cards[2],/1,200/);assert.match(cards[2],/data-billing-period="year" data-price-usd="50" data-reading-points="1200"/);
+  assert.match(html,/<details class="pricing-details">/);assert.doesNotMatch(html,/<table/);
  }
 });
 

@@ -9,7 +9,7 @@ const modes=value=>value==='sandbox'?'test':value==='prod'?'live':value;
 export function safeCreemCheckoutUrl(value){
   let url;try{url=new URL(value);}catch{invalid('unsafe_checkout_url',502);}
   if(url.protocol!=='https:'||url.username||url.password||url.port||!['checkout.creem.io','test-checkout.creem.io','www.creem.io','creem.io'].includes(url.hostname))invalid('unsafe_checkout_url',502);
-  if(['www.creem.io','creem.io'].includes(url.hostname)&&!url.pathname.startsWith('/payment/'))invalid('unsafe_checkout_url',502);
+  if(['www.creem.io','creem.io'].includes(url.hostname)&&!/^\/(?:payment\/|(?:test\/)?checkout\/)/.test(url.pathname))invalid('unsafe_checkout_url',502);
   return url.href;
 }
 
@@ -51,7 +51,7 @@ export function normalizeCreemEvent(payload){
 }
 
 export function createCreemClient({env={},fetcher=globalThis.fetch}={}){
-  const mode=env.CREEM_MODE||'test',apiKey=env.CREEM_API_KEY,secret=env.CREEM_WEBHOOK_SECRET,productId=env.CREEM_PRODUCT_READING_MONTHLY_100,productIds={reading_monthly_100:productId};
+  const mode=env.CREEM_MODE||'test',apiKey=env.CREEM_API_KEY,secret=env.CREEM_WEBHOOK_SECRET,productId=env.CREEM_PRODUCT_READING_MONTHLY_100,productIds={reading_monthly_100:productId,reading_yearly_1200:env.CREEM_PRODUCT_READING_YEARLY_1200};
   // Authenticated payment retrieval must outlive products removed from new sales.
   const validMode=['test','live'].includes(mode),ready=Boolean(validMode&&apiKey&&secret),base=mode==='live'?'https://api.creem.io':'https://test-api.creem.io';
   async function request(path,{body}={}){

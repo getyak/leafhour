@@ -169,7 +169,7 @@ test('transaction identities and webhook hashes cannot be reassigned or mutate e
 
 test('reference readiness and sales summaries distinguish subscription cycles from topups',async()=>{
   const store=await setup();await run(store,'subscriptionPaid',paid);
-  assert.equal((await store.command('readiness',{mode:'test'})).schemaVersion,2);
+  assert.equal((await store.command('readiness',{mode:'test'})).schemaVersion,3);
   const summary=await store.command('summary',{mode:'test',from:'2026-10-01T00:00:00Z',to:'2026-12-01T00:00:00Z'});
   assert.equal(summary.monthlyPaidOrders,1);assert.equal(summary.oneTimePaidOrders,0);assert.equal(summary.activeSubscriptions,1);
   assert.equal(summary.paidOrders,1);assert.equal(summary.grantedUnitsBySource.purchase,order.units);
