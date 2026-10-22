@@ -152,7 +152,7 @@ PDF 支持最多 256 MB、1200 页，EPUB 与文本最多 20 MB。PDF 优先提�
 }
 ```
 
-工具包括 `reader_get_manifest`、`reader_get_context`、`reader_get_chapter`、`reader_search`、`reader_get_notes`、`reader_get_reading_activity` 和 `reader_add_comment`。正文、笔记、活动与写评论分别授权；写入只接受明确提供的用户原话，幂等键防止重复保存。Agent 读取不增加阅读时间。本机配置连接环回地址；云端配置固定到已登录接入接口返回的实际部署源码提交，通过源码包启动同一 stdio 适配器，并显式允许配置中的 HTTPS 书房。完整提交固定了实际运行的版本，也让 npm 可以直接获取托管源码包。远程访问仍按书与数据类型授权，拒绝重定向；这不是远程 OAuth MCP 端点。配置生成不代表已在用户 Agent 中安装。
+工具包括 `reader_get_manifest`、`reader_get_context`、`reader_get_chapter`、`reader_search`、`reader_get_notes`、`reader_get_reading_activity` 和 `reader_add_highlight`, `reader_get_annotations`, `reader_add_annotation` and `reader_add_comment`。正文、笔记、活动与写评论分别授权；写入只接受明确提供的用户原话，幂等键防止重复保存。Agent 读取不增加阅读时间。本机配置连接环回地址；云端配置固定到已登录接入接口返回的实际部署源码提交，通过源码包启动同一 stdio 适配器，并显式允许配置中的 HTTPS 书房。完整提交固定了实际运行的版本，也让 npm 可以直接获取托管源码包。远程访问仍按书与数据类型授权，拒绝重定向；这不是远程 OAuth MCP 端点。配置生成不代表已在用户 Agent 中安装。
 
 ## 私有托管
 

@@ -92,3 +92,42 @@ test('a deduplicated request stays canceled when its lost acknowledgement is ret
   assert.ok((await fresh.addHighlight(other,readingBook.bookId,duplicate)).deletedAt);
   assert.equal((await fresh.records(other,readingBook.bookId)).highlights.filter(row=>!row.deletedAt).length,0);
 });
+
+const agentQuote=()=>({kind:'leafhour-reading-quote',schemaVersion:1,bookId:readingBook.bookId,contentVersion:readingBook.contentVersion,chapterId:'ch01',parts:[{passageId:'p1',layer:'original',start:5,end:9,text:'this'}]});
+test('external highlights share web records, validate exact quotes and return idempotent narrow receipts',async t=>{
+ const {library,dir}=await setup(t),input={bookId:readingBook.bookId,id:'agent-highlight',quote:agentQuote()},grant=await library.createGrant(owner,{bookId:readingBook.bookId,scopes:['highlight:write']});
+ const authorize=()=>library.authorize(grant.token,readingBook.bookId,'highlight:write');
+ const receipt=await library.addAgentHighlight(owner,readingBook.bookId,input,{authorize});
+ assert.deepEqual(Object.keys(receipt).sort(),['createdAt','highlightId','status']);assert.equal(receipt.status,'stored');
+ assert.deepEqual(await library.addAgentHighlight(owner,readingBook.bookId,input,{authorize}),receipt);
+ const rows=(await library.records(owner,readingBook.bookId)).highlights;assert.equal(rows.length,1);assert.equal(rows[0].createdVia,'external-agent');assert.equal(rows[0].parts[0].text,'this');
+ for(const patch of [{ownerId:other.id},{quote:{...agentQuote(),contentVersion:'stale'}},{quote:{...agentQuote(),parts:[{...agentQuote().parts[0],text:'fake'}]}}])await assert.rejects(library.addAgentHighlight(owner,readingBook.bookId,{...input,id:'bad',...patch},{authorize}));
+ await assert.rejects(library.addAgentHighlight(other,readingBook.bookId,input,{authorize}));
+ const fresh=await createLibraryService({dataDir:path.join(dir,'agent-restore'),catalogDir:null});await fresh.restoreLibrary(other,await library.exportLibrary(owner));assert.equal((await fresh.records(other,readingBook.bookId)).highlights[0].createdVia,'external-agent');
+ await library.removeHighlight(owner,readingBook.bookId,receipt.highlightId);assert.equal((await library.addAgentHighlight(owner,readingBook.bookId,input,{authorize})).status,'deleted');
+ await library.revokeGrant(owner,grant.id);await assert.rejects(library.addAgentHighlight(owner,readingBook.bookId,input,{authorize}));
+ assert.equal((await library.records(owner,readingBook.bookId)).position,null);assert.equal((await library.records(owner,readingBook.bookId)).readingSessions.length,0);
+});
+
+test('real SDK memory transport lists only granted tools and saves a highlighted AI evaluation',{timeout:15000},async t=>{
+ const {createMcpReadingServer}=await import('../server/mcp-http.mjs');assert.equal(typeof createMcpReadingServer,'function');
+ const {Client}=await import('@modelcontextprotocol/sdk/client/index.js'),{InMemoryTransport}=await import('@modelcontextprotocol/sdk/inMemory.js'),{createReaderChatService}=await import('../server/reader-chat.mjs');
+ const {library,dir}=await setup(t),chat=await createReaderChatService({library,dataDir:dir,generator:null,annotationGenerator:null});t.after(()=>chat.close());
+ async function connect(scopes){
+  const grant=await library.createGrant(owner,{bookId:readingBook.bookId,scopes}),identity={bookId:readingBook.bookId,scope:scopes.join(' '),expiresAt:Date.now()+3600000},oauth={authenticate:async()=>{await library.authorize(grant.token,readingBook.bookId,'content');return identity;}};
+  const server=createMcpReadingServer({oauth,identity,token:grant.token,library,annotations:chat.annotations}),client=new Client({name:'memory-test',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();t.after(async()=>{await client.close();await server.close();});await server.connect(b);await client.connect(a);return {client,grant};
+ }
+ const read=await connect(['content']);assert.equal((await read.client.listTools()).tools.length,5);
+ const writable=await connect(['content','annotations','highlight:write','annotation:write']),client=writable.client;
+ assert.equal((await client.listTools()).tools.length,8);
+ const input={bookId:readingBook.bookId,id:'memory-highlight',quote:agentQuote()},put=await client.callTool({name:'reader_add_highlight',arguments:input});assert.ok(!put.isError,put.content[0].text);
+ const args={bookId:readingBook.bookId,threadId:'memory-thread',messageId:'memory-ai',quote:agentQuote(),highlightId:put.structuredContent.highlightId,body:'This is an AI evaluation.'};
+ const saved=await client.callTool({name:'reader_add_annotation',arguments:args});assert.ok(!saved.isError,saved.content[0].text);
+ assert.deepEqual((await client.callTool({name:'reader_add_annotation',arguments:args})).structuredContent,saved.structuredContent);
+ const page=await client.callTool({name:'reader_get_annotations',arguments:{bookId:readingBook.bookId}});assert.equal(page.structuredContent.items[0].attribution.source,'external-agent');
+ assert.equal((await library.records(owner,readingBook.bookId)).comments.length,0);
+ const bad=await client.callTool({name:'reader_add_highlight',arguments:{...input,ownerId:'foreign'}});assert.equal(bad.isError,true);
+ const forged=await client.callTool({name:'reader_add_highlight',arguments:{...input,id:'fake-quote',quote:{...agentQuote(),parts:[{...agentQuote().parts[0],text:'fake'}]}}});assert.equal(forged.isError,true);
+ await library.revokeGrant(owner,writable.grant.id);assert.equal((await client.callTool({name:'reader_add_annotation',arguments:{...args,messageId:'revoked'}})).isError,true);
+ const web=await chat.annotations.view(owner,readingBook.bookId);assert.equal(web.archive.threads[0].messages[0].body,args.body);assert.equal(web.archive.threads[0].highlightId,put.structuredContent.highlightId);
+});

@@ -18,11 +18,12 @@ Use the [existing scoped MCP setup](mcp-reading.md) to let a coding agent prepar
 | --- | --- |
 | `content` | Read authorized book/chapter/passage source. |
 | `annotations` | Read AI explanations with bounded continuation; excludes reader follow-ups. |
+| `highlight:write` | Store an exact-text highlight in the existing web records; no prose or reading progress. |
 | `annotation:write` | Store an external AI explanation; does not call Leafhour's model. |
 
 Existing grants and their defaults do not gain these scopes. Grant creation remains the authenticated owner API workflow; the reading room does not yet provide a token-management panel. Keep the token in the host's private environment, never in a book, prompt, URL, source file or command argument.
 
-The official SDK stdio tools are `reader_get_annotations` and `reader_add_annotation`; the equivalent HTTPS JSON endpoints are `GET /api/agent/annotations` and `POST /api/agent/annotation`. This is not a remote Streamable HTTP/OAuth MCP server or proof that an actual ChatGPT host has been installed.
+The official SDK stdio tools are `reader_get_annotations`, `reader_add_highlight` and `reader_add_annotation`; the equivalent HTTPS JSON endpoints are `GET /api/agent/annotations`, `POST /api/agent/highlight` and `POST /api/agent/annotation`. The remote OAuth endpoint also exposes these tools after separately requested and explicitly approved scopes; see [OAuth setup](mcp-oauth.md). Implementation tests do not prove that an actual ChatGPT host has been installed.
 
 An external write accepts exactly:
 

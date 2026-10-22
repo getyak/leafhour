@@ -24,15 +24,16 @@
   <p>Leafhour 的 Model Context Protocol（MCP）适配器让兼容的 AI 宿主读取你授权的一本书。它与网页使用同一个阅读服务。访问仅限于一本书和你选择的数据类型；只安装适配器不会获得任何权限。</p>
   <p>这是技术接入。阅读界面支持英文、简体中文、繁体中文和日语，尚无完整的授权管理页面。创建和撤回授权，请使用现有兼容客户端或已认证的服务 API。需要帮助时，请联系 <a href="mailto:support@leafhour.com">support@leafhour.com</a>。</p>
   <h2 id="remote">通过 OAuth 连接 ChatGPT。</h2>
-  <p>在 <a href="https://chatgpt.com/plugins">ChatGPT Plugins</a> 添加自定义 MCP 服务器，地址填写 <code>https://leafhour.com/api/mcp</code>，选择 OAuth。若 ChatGPT 拒绝动态注册，按<a href="https://github.com/getyak/leafhour/blob/main/docs/mcp-oauth.md">接入说明</a>使用预注册公共客户端。在 Leafhour 登录，核对账号并选一本书。授权仅只读一小时，不含私人笔记与阅读记录。调用 <code>reader_get_connection</code> 核对已授权的书；授权一小时后过期。提前撤回请使用下方的已认证服务 API；网页尚无连接管理页。</p>
+  <p>在 <a href="https://chatgpt.com/plugins">ChatGPT Plugins</a> 添加自定义 MCP 服务器，地址填写 <code>https://leafhour.com/api/mcp</code>，选择 OAuth。若 ChatGPT 拒绝动态注册，按<a href="https://github.com/getyak/leafhour/blob/main/docs/mcp-oauth.md">接入说明</a>使用预注册公共客户端。在 Leafhour 登录，核对账号并选一本书。授权默认只读一小时。客户端请求批注权限时，可在授权页分别勾选高亮和 AI 评价；可选项默认关闭。私人笔记、注解中的用户追问与阅读记录不在此范围。调用 <code>reader_get_connection</code> 核对已授权的书；授权一小时后过期。提前撤回请使用下方的已认证服务 API；网页尚无连接管理页。</p>
   <p>兼容 skills 的宿主也可从 <code>getyak/leafhour</code> 安装 <code>leafhour-reading</code>。只安装 skill 不会连接或授权 MCP。详见<a href="https://github.com/getyak/leafhour/blob/main/docs/mcp-oauth.md">安装与 OAuth 说明</a>。ChatGPT 账号和工作空间策略决定能否添加自定义服务器；下方命令配置继续适用于 stdio 宿主。</p>
+  <p>先用 <code>reader_add_highlight</code> 保存选文高亮，再用 <code>reader_add_annotation</code> 添加 AI 评价；<code>reader_get_annotations</code> 可读取已有 AI 解释。各项操作独立授权，可选 OAuth 权限的请求方式见接入说明。</p>
   <h2 id="permissions">选择 Agent 可以访问的内容。</h2>
   <div class="mcp-scroll" role="region" aria-label="权限表，可横向滚动" tabindex="0"><table><thead><tr><th scope="col">权限</th><th scope="col">允许的操作</th></tr></thead><tbody>
     <tr><th scope="row"><code>content</code></th><td>原文与已保存的译文、书籍信息、分页章节以及该书内的搜索。</td></tr>
     <tr><th scope="row"><code>notes</code></th><td>单独授权的个人评论和问题。</td></tr>
     <tr><th scope="row"><code>activity</code></th><td>已保存的阅读位置和最近的阅读时段。</td></tr>
     <tr><th scope="row"><code>comment:write</code></th><td>保存用户明确提供的评论，并锚定到段落。它不授权修改书籍。</td></tr>
-  </tbody></table></div>
+  <tr><th scope="row"><code>highlight:write</code></th><td>保存精确原句高亮。</td></tr><tr><th scope="row"><code>annotations</code></th><td>读取 AI 注解，不含用户的私人追问。</td></tr><tr><th scope="row"><code>annotation:write</code></th><td>保存标为 External Agent 的 AI 评价，不调用 Leafhour 模型。</td></tr></tbody></table></div>
   <p>建议先只用 <code>content</code>。授权七天后过期，也可以提前撤回。撤回后，后续服务鉴权会失败；撤回不能清除已经复制到你的 AI 宿主里的内容。</p>
   <h2 id="setup">连接适配器。</h2>
   <ol><li>按<a href="https://github.com/getyak/leafhour#readme">仓库说明</a>在本地运行 Leafhour，或使用托管阅读服务。在自己的<a href="/library?ui=zh-Hans">书房</a>导入一本书，或选择一本公版样书。</li><li>通过兼容客户端或已认证 API，用 <code>POST /api/library/grants</code> 创建带 <code>bookId</code> 和所选 <code>scopes</code> 的授权。令牌只返回一次，请保存在 AI 宿主的私密配置里。</li><li>读取 <code>GET /api/library/mcp-setup</code>，并用<a href="https://github.com/getyak/leafhour/blob/main/app/mcp-config.mjs">配置生成器</a>创建宿主配置。本地源码运行时，适配器以 <code>node server/mcp.mjs</code> 启动。托管接入会返回实际部署的源码提交，生成的配置固定到这份不可变的源码包并显式允许 HTTPS 书房；缺少部署来源时直接拒绝。</li><li>在兼容的 AI 宿主中启用 MCP 服务器，并在工具请求中带上授权的书籍 ID。用完后可用 <code>POST /api/library/grants/{id}/revoke</code> 撤回授权。</li></ol>

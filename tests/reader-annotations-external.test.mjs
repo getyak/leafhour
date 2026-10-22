@@ -143,6 +143,26 @@ test('a source-mutation touch fences a held external put with the honest source 
   assert.deepEqual(view.archive.threads,[],'a fenced external put must persist no words');
 });
 
+test('a translation ACK fences a held external highlight before its stale selection can commit',{timeout:15000},async t=>{
+  const store=fakeSupabase();
+  const {create}=await fixture(t,{store,translator:async()=>({literal:'新的直译结果。',interpretive:'新的意译结果。'})});
+  const a=await create(),b=await create();
+  const grant=await a.library.createGrant(alice,{bookId:'ann-book',scopes:['highlight:write']});
+  const suffix=path.join('records',hash('ann-book')+'.json');
+  const held=deferred(),release=deferred();let armed=true,pending;
+  store.arm(async({key})=>{if(armed&&key.endsWith(suffix)){armed=false;held.resolve();await release.promise;}});
+  try{
+    pending=a.library.addAgentHighlight(alice,'ann-book',{bookId:'ann-book',id:'external-stale-highlight',quote:p3LiteralQuote()},{authorize:()=>a.library.authorize(grant.token,'ann-book','highlight:write')});
+    pending.catch(()=>{});
+    await within(held.promise,6000,'the external highlight CAS never reached the shared store');
+    await within(b.library.translate(alice,'ann-book','p3'),8000,'the translation ACK did not fence pending highlight writes');
+    assert.equal((await b.library.getBook(alice,'ann-book')).sections[0].paragraphs[2].translations.literal.text,'新的直译结果。');
+    release.resolve();
+    await assert.rejects(within(pending,8000,'the released highlight did not settle'),status(409),'a new highlight whose quote became stale before the source ACK must fail');
+    assert.deepEqual((await b.library.records(alice,'ann-book')).highlights,[],'no stale highlight may land after the translation ACK');
+  }finally{release.resolve();await pending?.catch(()=>{});}
+});
+
 test('an accepted external write is historical and the revocation ACK waits for the same-key lock',async t=>{
   const {create}=await fixture(t,{});
   const a=await create();

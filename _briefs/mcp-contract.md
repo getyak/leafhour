@@ -6,6 +6,12 @@
 
 2026-10-12补充：内部 Chapter Agent 采用官方 DeepSeek Harness，MCP 继续作为外部 Personal Agent 的接口；两者共用 Leafhour 的领域数据、授权及 Run 管理。网页和 MCP 后续调用 prepare/act/cancel，模型不能声明自己的 grant。具体运行关联、取消与恢复见 [系统设计](deepseek-harness-system-design.md)，不能把 SDK close 与本产品的单次 cancel 直接混为一谈。
 
+## 2026-10-22 高亮与 AI 评价扩展
+
+远程 OAuth 默认仍为指定一本书的 `content` 只读。客户端可请求 `annotations`、`highlight:write`、`annotation:write`；授权页分别展示且默认不勾选，仅授予请求范围内由用户勾选的权限。旧令牌不扩权。`reader_add_highlight` 与网页共用高亮记录，`reader_add_annotation` 将外部 AI 评价保存到原有注解线程并固定 External Agent 归属；不冒充用户原话，不读取私人追问、不写进度、不调用站内模型。`reader_get_annotations` 只返回有界 AI 内容。实际发布与验收状态见本次验证记录，不能据本段声称真实宿主已连接。
+
+选文沿用类型化 quote、实际版本、译文状态与精确 UTF-16 偏移；正文续读的 Unicode 码点偏移需要先换算。高亮与评价分别幂等保存，后一步失败保留前一步回执，不伪称跨文档原子事务。接入与恢复步骤见 [OAuth 说明](../docs/mcp-oauth.md#highlight-and-evaluate-a-passage)。
+
 ## 2026-10-17 GET-152 实现更新
 
 已实现 manifest/chapter/passage 三类资源、来源与译文状态、有界续读和按数据类型检查授权。原文与译文游标携带原文版本及内容快照，记录分页也可携带快照，变化后拒绝混合页面。最大正文 JSON24KiB、MCP结果96KiB；全文通过显式分页读取。个人评论/问题与阅读活动仍分别授权，历史 AI 对话未新增为 MCP 输出；缺省不授予写权限。线上配置固定实际部署源码提交，不再固定旧版本。已安装 SDK1.32.1 对应协议2025-11-25；不声称支持未验证的新协议。
