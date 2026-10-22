@@ -469,6 +469,8 @@ export default Object.freeze({
   "nav.signIn": "Sign in / Register",
   "nav.resume": "Continue reading",
   "nav.search": "Search and commands",
+  "nav.agent": "Agent access",
+  "nav.pricing": "Pricing",
   "nav.method": "How to read",
   "nav.ownership": "A room of your own",
   "filter.form": "Reading format",

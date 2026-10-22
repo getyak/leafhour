@@ -149,6 +149,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     // GET-169 shared interface foundation: hairlines, shadows, focus rings,
     // action vocabulary and the appearance popover chrome.
     files['/leafhour-surfaces.css']='leafhour-surfaces.css';
+    files['/commerce.css']='commerce.css';files['/public-navigation.mjs']='public-navigation.mjs';
     files['/interface-tokens.css']='interface-tokens.css';files['/share-fonts.mjs']='share-fonts.mjs';
     for(const file of ['settings-controls.mjs','settings-appearance.mjs'])files['/'+file]=file;
     // GET-178 command palette: the small shared trigger is bundled with each

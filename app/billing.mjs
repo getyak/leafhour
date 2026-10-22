@@ -264,6 +264,7 @@ async function mountBilling(document){
  void refresh();
 }
 if(typeof document!=='undefined'){
+ if(document.getElementById('home-menu'))void Promise.all([import('./home-navigation.mjs'),import('./site-appearance.mjs')]).then(([{mountHomeNavigation}])=>{const menu=mountHomeNavigation();document.querySelector('#home-menu [data-close]')?.addEventListener('click',()=>menu?.close('user'));});
  if(document.getElementById('billing-content'))void mountBilling(document);
  const publicStatuses=[...document.querySelectorAll('[data-billing-public]')];
  if(publicStatuses.length){fetch('/api/billing/catalog',{credentials:'same-origin',cache:'no-store',headers:{Accept:'application/json'}}).then(async response=>{if(!response.ok)throw Error('unavailable');const catalog=await response.json();for(const status of publicStatuses)status.textContent=availabilityText(catalog,billingLabels(status.dataset.locale),status.dataset.productKey);}).catch(()=>{for(const status of publicStatuses)status.textContent=billingLabels(status.dataset.locale).unavailable;});}

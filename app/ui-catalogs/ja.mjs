@@ -468,6 +468,8 @@ export default Object.freeze({
   "nav.signIn": "ログイン / 登録",
   "nav.resume": "続きを読む",
   "nav.search": "検索とコマンド",
+  "nav.agent": "Agent 接続",
+  "nav.pricing": "料金",
   "nav.method": "読み方",
   "nav.ownership": "自分だけの書斎",
   "filter.form": "読む形式",

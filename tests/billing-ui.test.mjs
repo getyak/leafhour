@@ -238,3 +238,17 @@ test('account changes between reconciliation reloads cannot return the former ac
   requests.push({path,owner:init.headers['X-Reader-Owner']});if(path==='/api/auth/session')return response(session(current));if(path==='/api/billing/account')return response({availableUnits:100000000});if(path==='/api/billing/subscriptions')return response({subscriptions:[]});if(path.startsWith('/api/billing/orders?'))return response({orders:[]});return response({id:'order_A',productKey:'reading_monthly_100',status:'pending',checkoutUrl:'https://checkout.creem.io/A'});
  }});await client.refreshSession();await assert.rejects(client.resumeCheckout('order_A'),{code:'BILLING_ACCOUNT_CHANGED'});assert.equal(client.snapshot().session.user.id,'B');assert.ok(!requests.some(request=>request.path.startsWith('/api/billing/orders?')&&request.owner==='B'));
 });
+
+
+test('public pricing and policies share discoverable Agent, pricing and GitHub navigation with a native mobile menu',()=>{
+ for(const [locale,slug]of [['en','en'],['zh-Hans','zh-hans'],['zh-Hant','zh-hant'],['ja','ja']])for(const kind of ['pricing','terms','refunds']){
+  const html=pages.commercePage({kind,locale}),header=html.match(/<header[^>]*>[\s\S]*?<\/header>/)[0];
+  assert.ok(header.includes('href="'+(locale==='en'?'/mcp':'/'+slug+'/mcp')+'"'));
+  assert.ok(header.includes('href="/'+slug+'/pricing"'));
+  assert.match(header,/aria-label="GitHub"/);assert.match(header,/<svg/);
+  const accountName=header.match(/id="account-button"[^>]*aria-label="([^"]+)"/)[1];
+  assert.ok(accountName.includes(({en:"Points","zh-Hans":"阅读点","zh-Hant":"閱讀點",ja:"ポイント"})[locale]),"The compact visible label remains in its accessible name");
+  assert.match(html,/<dialog[^>]*id="home-menu"/);assert.match(header,/id="home-menu-trigger"/);
+  assert.ok(html.includes('href="/'+slug+'/'+kind+'" lang="'+locale+'"'));
+ }
+});

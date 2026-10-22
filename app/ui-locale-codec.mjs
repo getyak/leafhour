@@ -104,6 +104,9 @@ export function validateUiParam(code){
 export const UI_AUTHORED_ROUTES=/* @__PURE__ */Object.freeze({
   '/en':'en', '/zh-hans':'zh-Hans', '/zh-hant':'zh-Hant', '/ja':'ja',
   '/mcp':'en', '/en/mcp':'en', '/zh-hans/mcp':'zh-Hans', '/zh-hant/mcp':'zh-Hant', '/ja/mcp':'ja',
+  '/pricing':'en', '/en/pricing':'en', '/zh-hans/pricing':'zh-Hans', '/zh-hant/pricing':'zh-Hant', '/ja/pricing':'ja',
+  '/terms':'en', '/en/terms':'en', '/zh-hans/terms':'zh-Hans', '/zh-hant/terms':'zh-Hant', '/ja/terms':'ja',
+  '/refunds':'en', '/en/refunds':'en', '/zh-hans/refunds':'zh-Hans', '/zh-hant/refunds':'zh-Hant', '/ja/refunds':'ja',
   '/privacy':'en', '/en/privacy':'en', '/zh-hans/privacy':'zh-Hans', '/zh-hant/privacy':'zh-Hant', '/ja/privacy':'ja'
 });
 const UI_HOME_ROUTES=/* @__PURE__ */Object.freeze(['/en', '/zh-hans', '/zh-hant', '/ja']);
@@ -129,7 +132,7 @@ export function sameUiNavigationContext(a,b){
 // Authored prose follows its pathname, even when device persistence is denied.
 // Only these owned documents have localized authored routes.
 export function uiAuthoredPath(route,code){
-  if(!isUiLocale(code)||!['/','/privacy','/mcp'].includes(route))throw Error('Invalid authored UI destination');
+  if(!isUiLocale(code)||!['/','/privacy','/mcp','/pricing','/terms','/refunds'].includes(route))throw Error('Invalid authored UI destination');
   const prefix={en:'','zh-Hans':'/zh-hans','zh-Hant':'/zh-hant',ja:'/ja'}[code];
   return route==='/'?prefix||'/en':prefix+route;
 }
