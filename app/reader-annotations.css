@@ -29,3 +29,35 @@ body[data-annotation-pane=true][data-annotation-compact=true] .book-page{padding
 body[data-annotation-pane=true][data-annotation-compact=true] .chapter-heading{display:none}
 body[data-annotation-pane=true][data-annotation-compact=true] :is(#reading-session,.library-chat-launcher){visibility:hidden}
 .reader-annotation-price,.annotation-price{font:inherit;color:var(--muted);white-space:nowrap}
+
+/* Saved marks, thoughts and AI explanations share one reading surface. */
+.reader-annotations-toggle{position:fixed;top:max(14px,env(safe-area-inset-top));left:24px;z-index:6;min-height:44px;padding:10px 14px;border-radius:24px;color:var(--muted);background:color-mix(in srgb,var(--paper) 92%,transparent);font:12px/1.5 var(--interface);border:1px solid transparent;backdrop-filter:blur(12px)}
+body:not(.is-focused) .reader-annotations-toggle{top:74px}
+.reader-annotations-toggle[aria-pressed=true]{color:var(--accent);border-color:var(--line-hairline)}
+.reader-annotations-toggle:hover{color:var(--ink);background:var(--wash)}
+.reader-annotations-toggle:focus-visible,.reader-annotation-summary:focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}
+.reader-annotation-load-status{position:fixed;top:66px;left:24px;z-index:5;max-width:220px;color:var(--muted);font:12px/1.65 var(--interface)}
+.reader-annotation-margins{pointer-events:none}
+.reader-annotation-margins[hidden],.reader-annotation-summary[hidden]{display:none}
+.reader-annotation-summary{position:absolute;z-index:2;pointer-events:auto;display:flex;flex-direction:column;gap:8px;box-sizing:border-box;height:126px;text-align:left;padding:12px 14px;margin:0;border:0;border-left:1px solid var(--line);border-radius:0;background:transparent;color:var(--muted);font:13px/1.8 var(--interface);letter-spacing:0;overflow:hidden;transition:color 160ms ease,background-color 160ms ease,border-color 160ms ease;animation:annotation-arrive 180ms ease-out both}
+.reader-annotation-summary-author{font:12px/1.6 var(--interface);letter-spacing:.04em;color:var(--accent)}
+.reader-annotation-summary-text{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;text-wrap:pretty}
+.reader-annotation-summary:hover,.reader-annotation-summary[aria-expanded=true]{color:var(--ink);border-color:var(--accent);background:color-mix(in srgb,var(--wash) 65%,transparent)}
+.reader-annotation-summary[data-side=compact]{height:40px;min-height:40px;min-width:24px;padding:4px 0;border-radius:12px;border:1px solid var(--line-hairline);background:var(--paper);font-size:12px;align-items:center;justify-content:center}
+.reader-annotation-summary[data-side=compact] .reader-annotation-summary-text{display:none}
+.reader-annotation-summary[data-side=compact] .reader-annotation-summary-author{display:none}.reader-annotation-summary[data-side=compact]::before{content:"";width:11px;height:13px;border:1px solid currentColor;border-radius:2px;background:linear-gradient(currentColor,currentColor) 2px 4px / 6px 1px no-repeat,linear-gradient(currentColor,currentColor) 2px 7px / 4px 1px no-repeat}
+.reader-annotation-card[data-placement=margin]{position:fixed;z-index:8;height:auto;max-height:min(var(--annotation-card-height,560px),calc(100dvh - 100px));box-shadow:0 12px 36px color-mix(in srgb,var(--ink) 8%,transparent);border-radius:8px}
+.reader-annotation-heading{gap:4px;padding-left:12px}.reader-annotation-heading>span:first-child{margin-right:auto}.reader-annotation-heading .reader-annotation-previous,.reader-annotation-heading .reader-annotation-next{min-width:32px;padding:4px;font-size:20px}.reader-annotation-count{font-size:12px;white-space:nowrap}
+.reader-annotation-card[data-placement=sheet]{position:fixed;z-index:12;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(480px,calc(100% - 24px));height:min(540px,68dvh);max-height:calc(100dvh - 88px);border-radius:14px;box-shadow:0 12px 48px color-mix(in srgb,var(--ink) 18%,transparent)}
+.reader-annotation-card[data-placement=sheet] .reader-annotation-scroll{padding-bottom:max(16px,env(safe-area-inset-bottom))}
+.reader-annotation-card .reader-annotation-save-note{color:var(--accent);align-self:flex-start}
+.reader-annotation-explain{color:var(--accent)}
+.reader-annotation-card button:disabled{opacity:.45;cursor:default}
+body[data-annotations-visible=false] .reader-highlight,body[data-annotations-state=pending] .reader-highlight{background:transparent;box-shadow:none;text-decoration:none}
+@keyframes annotation-arrive{from{opacity:0}to{opacity:1}}
+@media(max-width:767px){.book-page,body[data-paginated=true] .book-page{width:calc(100% - 64px)}.reader-annotations-toggle{left:12px;top:max(9px,env(safe-area-inset-top));padding:9px 12px}.reader-annotation-load-status{left:16px;top:58px}.reader-annotation-card[data-placement=sheet] .reader-annotation-scroll{scroll-padding-bottom:20px}}
+@media(prefers-reduced-motion:reduce){.reader-annotation-summary{animation:none;transition:none}}
+@media print{.reader-annotation-margins,.reader-annotations-toggle,.reader-annotation-load-status{display:none!important}}
+
+body[data-annotations-visible=false] .reader-highlight{cursor:inherit}
+.paragraph-tools[data-excerpt=true] #show-comment{display:none}

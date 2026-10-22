@@ -246,7 +246,7 @@
       },
       {
         "file": "app/index.html",
-        "sha256": "c95502bb2a8e4fd576b14467e116c31c51f85c52832ac3c6e837cd7a56b5052a"
+        "sha256": "9c46748b4a0c822cb39c4c23a8ac6e6ebb34cd5e9e36943e3f0921b2df966701"
       },
       {
         "file": "app/interaction-craft.mjs",
@@ -433,6 +433,10 @@
         "sha256": "810f39046824171e1de829ac56a3595bc85bc687518564ca3d915e3b67db2e71"
       },
       {
+        "file": "app/reader-annotation-margins.mjs",
+        "sha256": "4074c729d889ce68f77a9f19f61fe3f3a057df6f78f7528590d6ea467370efd8"
+      },
+      {
         "file": "app/reader-annotation-pending.mjs",
         "sha256": "6851815d653817bc31cd1cdadec0b7eb1798eb5fe9851e19b92260d187d5334a"
       },
@@ -442,7 +446,7 @@
       },
       {
         "file": "app/reader-annotations.mjs",
-        "sha256": "c8a269454be350aaa9360da917aaaca93a52ca17067334110a0464c86dcb864a"
+        "sha256": "3ecdcd78f9752fabf5c2228e3f4386eba3cbebf6e03b2a5bb3d6a5261ee46835"
       },
       {
         "file": "app/reader-api.mjs",
@@ -494,7 +498,7 @@
       },
       {
         "file": "app/reader-highlights.mjs",
-        "sha256": "c5fed99d066ac619e60120d20c5a75edbe44a70cb56c5f5999187a65d92b3858"
+        "sha256": "c04a6c25186fe20f4565e6571892f6d9e7c31f83a5c5af37fae347915625601b"
       },
       {
         "file": "app/reader-immersion.mjs",
@@ -722,19 +726,19 @@
       },
       {
         "file": "app/ui-catalogs/en.mjs",
-        "sha256": "d230411b6c1eba86d302182cd1da21a2b7738a69cd6777ad2343fa5f13ee488c"
+        "sha256": "1178ccabdfc9583cd2a9f63d2198be976e2e4157e2af6370c893a5c6dbc2c67d"
       },
       {
         "file": "app/ui-catalogs/ja.mjs",
-        "sha256": "d385821f56a83e7450da1bf91256c307c154fbc5699a34712c4b7c1bd0d10f39"
+        "sha256": "fc7d23aef0f5f9481e3d4bcdd131048843b001820ef200a8867d32e46b01403e"
       },
       {
         "file": "app/ui-catalogs/zh-Hans.mjs",
-        "sha256": "0211bd7217a3bdef99e1d1882e64b10b5fa7257e8a6bd02e799061c97722b791"
+        "sha256": "045ba0174f46871be814afe18b189e537ae684267e982e941c48ddf84c238b76"
       },
       {
         "file": "app/ui-catalogs/zh-Hant.mjs",
-        "sha256": "c8be27da742693119b8f27a44a9d16083126f65358804260cede94c0f7661a8e"
+        "sha256": "282628580760e25ca38ac5f11dc8933540b77893fa13eada8c71c34b53e5337b"
       },
       {
         "file": "app/ui-locale-codec.mjs",
@@ -1010,7 +1014,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "ed49eae6df08526d47cc655f3f2011c9f3cba218983732fedf493cc70859188b"
+        "sha256": "f8245fcd8a9f88112d90fb87be0fa15214d2f5ea9f7d682b020970c100643e94"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1066,7 +1070,7 @@
       },
       {
         "file": "server/server.mjs",
-        "sha256": "06207f55e4b31e63f4b74b21252537613f71ba7aa54055cb870bb22d39fb52ab"
+        "sha256": "655458b7e457c407359681b9a9463b7c20f67c8b5c576f3160bf37a537b8e5be"
       },
       {
         "file": "server/source-revisions.mjs",
@@ -1089,7 +1093,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "b553a73fc91e58a02f43c728e3ec09ba847ecd78929e037cac645ea37f8e6b8b"
+    "inputDigest": "bec21b77088af3ae92d2c887a1492cde3b1f5f3d58f7f6ed1b549ec0de8f6bab"
   },
   "locales": [
     "en",
@@ -1103,25 +1107,25 @@
       "locale": "en",
       "file": "app/ui-catalogs/en.mjs",
       "missing": false,
-      "entries": 2117
+      "entries": 2130
     },
     {
       "locale": "zh-Hans",
       "file": "app/ui-catalogs/zh-Hans.mjs",
       "missing": false,
-      "entries": 2117
+      "entries": 2130
     },
     {
       "locale": "zh-Hant",
       "file": "app/ui-catalogs/zh-Hant.mjs",
       "missing": false,
-      "entries": 2117
+      "entries": 2130
     },
     {
       "locale": "ja",
       "file": "app/ui-catalogs/ja.mjs",
       "missing": false,
-      "entries": 2117
+      "entries": 2130
     }
   ],
   "items": [
@@ -1163,7 +1167,7 @@
       "consumers": [
         {
           "file": "app/reader-annotations.mjs",
-          "line": 42,
+          "line": 46,
           "column": 48
         },
         {
@@ -2136,29 +2140,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 27,
           "column": 3,
-          "value": "Annotate with AI",
-          "sha256": "b83845b9fd2ec7d822de626ac86261475954f0ec9a96826fb489ef9a0bc9b43a"
+          "value": "Annotations",
+          "sha256": "1e4d67386295974e7ecb6d86a47e7a694214cdbaae1944a938148e4336767d3f"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 26,
           "column": 3,
-          "value": "请 AI 批注",
-          "sha256": "08867c65c85b481dc5f071e14bb22c95c248ea827e23b0ea9ea3a1cbfbd6d467"
+          "value": "批注",
+          "sha256": "85c5c1f5567b4d67f034fa02f64fb022a9363039fd557751860f03284e3e2eb7"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 26,
           "column": 3,
-          "value": "請 AI 批註",
-          "sha256": "22d863bda9cfe703dfe968f8ed895b21a86c78004433b69a718dfa824781770c"
+          "value": "批註",
+          "sha256": "a33b945ae70f9030f67862353e51475d503160075acf8e18d96ac0263d489013"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 26,
           "column": 3,
-          "value": "AIで注釈",
-          "sha256": "6d54f693b1ef2fe28cb93d8909cc3a9003dab445bcecc304a378d3231904de79"
+          "value": "注釈",
+          "sha256": "1700de690be68197de8052ee5701ad93c4c371635028cfe9740249d66556f3ae"
         }
       },
       "missingLocales": [],
@@ -2187,29 +2191,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 28,
           "column": 3,
-          "value": "AI annotation",
-          "sha256": "2d05b4417fe095d91a2377c4cc6c31606cac135e7174a13846b9973cee9d6873"
+          "value": "Annotations",
+          "sha256": "1e4d67386295974e7ecb6d86a47e7a694214cdbaae1944a938148e4336767d3f"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 27,
           "column": 3,
-          "value": "AI 批注",
-          "sha256": "84de7d81b1d009f8aeddfeba366d0c1d9979277a8b876a19d78637bc0063c0da"
+          "value": "批注",
+          "sha256": "85c5c1f5567b4d67f034fa02f64fb022a9363039fd557751860f03284e3e2eb7"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 27,
           "column": 3,
-          "value": "AI 批註",
-          "sha256": "209cd6e72866f41cf0cdf4ed8869445595c47487d4edd187bd5fdc2fc27676bf"
+          "value": "批註",
+          "sha256": "a33b945ae70f9030f67862353e51475d503160075acf8e18d96ac0263d489013"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 27,
           "column": 3,
-          "value": "AIの注釈",
-          "sha256": "652ddec21d0677f34bb6dfa62b1194f623b2edb83fe4597452782af754cd41b7"
+          "value": "注釈",
+          "sha256": "1700de690be68197de8052ee5701ad93c4c371635028cfe9740249d66556f3ae"
         }
       },
       "missingLocales": [],
@@ -2238,29 +2242,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 29,
           "column": 3,
-          "value": "Read AI annotation",
-          "sha256": "cd42fdbb64725f6d47f5de33e42e3358b536068823b16d9b8fdceca69660cce5"
+          "value": "Read annotation",
+          "sha256": "46e310b5899ccce8b9e68dcc17160677ad98946964cd3713b59fd4266582230b"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 28,
           "column": 3,
-          "value": "查看 AI 批注",
-          "sha256": "97ab1e56d8feb508739a90b88822560e095ffef87502c55b4c239061fa9dc778"
+          "value": "查看批注",
+          "sha256": "e39a722e3e30f1bfa318459c7d8d30bcca57735a396d048dafba3e5b569b2e95"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 28,
           "column": 3,
-          "value": "查看 AI 批註",
-          "sha256": "abd22b07553f489dc24a1a37d773db6727877c95adebeeeaa1c075d5ddd8c6f7"
+          "value": "查看批註",
+          "sha256": "7a397a227bf0ff028d8cb417a0d1bcfaa4b30769b0cfaded874b88242b32dc63"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 28,
           "column": 3,
-          "value": "AIの注釈を読む",
-          "sha256": "2c54b7550759f6b64a0babd10c7c3f76788a6108ab6e07590e85ef737ec2c2b4"
+          "value": "注釈を読む",
+          "sha256": "1410f2b2394c282f8d110bb335fe3d1d07458bb6b1e745f44809305bbd1d2ab2"
         }
       },
       "missingLocales": [],
@@ -2340,29 +2344,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 31,
           "column": 3,
-          "value": "Follow up about these words",
-          "sha256": "2212122829577711ac5597980dad8a23afb4ed5bd35f7a1ba9c8d632f2a2708d"
+          "value": "Your note or question about this selection",
+          "sha256": "722c0c9222c3ea4b5b72fa764c51b50ea217fc8af4c206d607a5fb76677ce853"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 30,
           "column": 3,
-          "value": "围绕这段话继续追问",
-          "sha256": "c1b82dff22e2978200efd0c2bb0ddf6f7f44e8b58bc6f53b19c5f1dd76f735ff"
+          "value": "针对选文写想法或问题",
+          "sha256": "3509550d13aac17984e75e77ce4d8406bfd9612150a2be1aaf64c8b101855108"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 30,
           "column": 3,
-          "value": "圍繞這段話繼續提問",
-          "sha256": "afda4f4c375d33332d9187e4500b79114042730fdd2cae9b601766ced1f3cb90"
+          "value": "針對選文寫想法或問題",
+          "sha256": "56d8d129d280bb46579de969eda41dd9cb10d9a58ef44aa327a32dbcd229c707"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 30,
           "column": 3,
-          "value": "この文章について質問する",
-          "sha256": "f1f9b0bfafc7e77ee59d1597c21038e049e6abf93500873c5c7109ea7e62fe45"
+          "value": "選択した文章へのメモや質問",
+          "sha256": "e0dd45510bd9cb8144df82a548985f4be7d3afca5c9339f2fa5f1f4107465c43"
         }
       },
       "missingLocales": [],
@@ -2391,29 +2395,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 32,
           "column": 3,
-          "value": "Ask about this passage…",
-          "sha256": "8e6ad5ca699127d048e0ab792068b8722c22a0f21758c477a5fda53319c73ca2"
+          "value": "Leave a thought, or ask AI a question…",
+          "sha256": "eacabc20f7a7bcae962165d140402d487c4ad9186fe4d3e541c4a1d33ac31b41"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 31,
           "column": 3,
-          "value": "关于这段话，你还想问什么？",
-          "sha256": "5de90eabdf7756cb3d64ec59ea4ab749cfc30b1a6521be4e848f8b9808b33393"
+          "value": "留下想法，或写下想问 AI 的问题…",
+          "sha256": "6c1fbaeb94a2afb69ec5e03015cf99a035e4d6088f17e8241a9e595ca338b607"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 31,
           "column": 3,
-          "value": "關於這段話，你還想問什麼？",
-          "sha256": "82fe50cdd231bb419ce31c39eda15d8592f56d17b0a64a2b44214bffa46bd731"
+          "value": "留下想法，或寫下想問 AI 的問題…",
+          "sha256": "0ae075dd38b1ead81af55aa99a30b54edb6ad7a02b4b23bd19b6836c7eba506f"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 31,
           "column": 3,
-          "value": "この文章について、何を知りたいですか？",
-          "sha256": "abb563308fb3b19ee113503c572e65f18306cdb35f38b865a1cb1ef30faf1542"
+          "value": "考えを残すか、AIへの質問を書いてください…",
+          "sha256": "30f75566add24228ce0ad5a897ae192025dd909bee470137f02532a2eba9b4ac"
         }
       },
       "missingLocales": [],
@@ -2442,29 +2446,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 33,
           "column": 3,
-          "value": "Send",
-          "sha256": "f6f4688ff23d50c67053963c251fa0ce64a925cf283537cf066b1f362cb9b778"
+          "value": "Ask AI",
+          "sha256": "ea9e45ac7083cf49eaca10fc7c9f1ca1f1aaca9067d4b7e974aaf270a7c95414"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 32,
           "column": 3,
-          "value": "发送",
-          "sha256": "edecf0ae6e5144f9e297af730f9f6ce2ac17914f3368e72ead50c22aacd15db6"
+          "value": "问 AI",
+          "sha256": "2f7d082d5c9e001277fbeec2bbed07679b5b422976c2387e4600d2a6994900c3"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 32,
           "column": 3,
-          "value": "傳送",
-          "sha256": "7c2ce60aaa2c925f96db968a58f706cf4e08db95065ceefe890b3cf8ac50e91e"
+          "value": "問 AI",
+          "sha256": "3ce0b28c1964d0497111dac9c219951dc1e5081c84f0ad2c2dbbc4717ae01eda"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 32,
           "column": 3,
-          "value": "送信",
-          "sha256": "a6c1ceaf4bee1719f37dc10818dd8ff5e3fb3b597255b71608de2aa5cb351b72"
+          "value": "AIに質問",
+          "sha256": "dd69febcc6fdb34354c6c781ae82ea4ff89651a213e3bab6d641af2c1dbbbd3d"
         }
       },
       "missingLocales": [],
@@ -3156,29 +3160,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 47,
           "column": 3,
-          "value": "No explanation has been saved yet.",
-          "sha256": "1d49906ddc3f60e7ea76379dcd646b5853966e551a497ee139de5c0c8bf31a93"
+          "value": "Selection saved. Add a thought or ask AI to explain.",
+          "sha256": "13e3da861d658f35157b0f5d626fc7dd625f0c973e8f3ebe9c9d21433346a55e"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 46,
           "column": 3,
-          "value": "还没有保存 AI 解释。",
-          "sha256": "db20217a56c538143665dc7273f331918f6669d64d94e7340ad2eac25032bd86"
+          "value": "选文已留下，可以写想法，也可以请 AI 解释。",
+          "sha256": "812550d34e2a397aa89e0f9e31d4d521bd8e197b17173cde793682b8ad798c94"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 46,
           "column": 3,
-          "value": "尚未儲存 AI 解釋。",
-          "sha256": "0a2b71152d5b18958649c218252e62d2422bddc60f50f135cd6c178932eb4aa5"
+          "value": "選文已留下，可以寫想法，也可以請 AI 解釋。",
+          "sha256": "4456a44440ab19e07c1760dafec96d7db9c1da3c94869d23c5f95ab907a05fc6"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 46,
           "column": 3,
-          "value": "説明はまだ保存されていません。",
-          "sha256": "a8c36ea8eb2a3c6037f578ad47cb2fffa95f501ab52c1b06cb4d22fe47374172"
+          "value": "文章を保存しました。メモやAIの説明を追加できます。",
+          "sha256": "7d9b3bd39e3c0d8e0e57a815ebc8a19e46e6d4307a1ab566593bb18a41f6ab90"
         }
       },
       "missingLocales": [],
@@ -3360,29 +3364,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 51,
           "column": 3,
-          "value": "Annotations could not load. Reload this page to try again.",
-          "sha256": "84a6fe045837630f99fa707212e4c87a0c370560a575756007d12a5908afae6e"
+          "value": "Annotations could not load. Use the annotations button to retry.",
+          "sha256": "c64e2e3c555e20ba187ad5915622f594769eb711250ff1e86cfd46dc7db763b6"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 50,
           "column": 3,
-          "value": "批注暂时无法载入，请重新载入页面后再试。",
-          "sha256": "605c0d12927dc31bb44e8926759044c137e3671231d3fddd0cc8558fe82031a1"
+          "value": "批注暂时无法载入，点击「批注」重试。",
+          "sha256": "ec67aee4720d4c92216cd678e28ef1c2f3d24ac8889e883e41091e288a2b8bb5"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 50,
           "column": 3,
-          "value": "批註暫時無法載入，請重新載入頁面後再試。",
-          "sha256": "f2f89f67e08f770580276a5840817c2113591a1ff378340bb0bbf247c321eeea"
+          "value": "批註暫時無法載入，點擊「批註」重試。",
+          "sha256": "e1f61e4ae97ca079ab26c7ec8d0fa51cf1e12c38f670c91c172b4a6ea36e4f2b"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 50,
           "column": 3,
-          "value": "注釈を読み込めません。ページを再読み込みしてください。",
-          "sha256": "b2f4fa084c3234faa1c37282e8d9689b83e9aeba9f100766b4092b45592ee5b0"
+          "value": "注釈を読み込めません。注釈ボタンでもう一度お試しください。",
+          "sha256": "fa0f1b38be7d4df07720ce39c71b53a47cc0dbb43a7ad36866c6b3d68a350b83"
         }
       },
       "missingLocales": [],
@@ -3390,8 +3394,8 @@
       "consumers": [
         {
           "file": "app/reader-highlights.mjs",
-          "line": 72,
-          "column": 378
+          "line": 19,
+          "column": 171
         }
       ],
       "hints": [
@@ -3753,7 +3757,7 @@
       "consumers": [
         {
           "file": "app/reader-highlights.mjs",
-          "line": 31,
+          "line": 34,
           "column": 96
         }
       ],
@@ -13244,16 +13248,6 @@
           "column": 68
         },
         {
-          "file": "app/reader-annotations.mjs",
-          "line": 84,
-          "column": 134
-        },
-        {
-          "file": "app/reader-annotations.mjs",
-          "line": 84,
-          "column": 403
-        },
-        {
           "file": "app/reader-immersion.mjs",
           "line": 31,
           "column": 103
@@ -13427,12 +13421,12 @@
         },
         {
           "file": "app/reader-annotations.mjs",
-          "line": 30,
+          "line": 32,
           "column": 21
         },
         {
           "file": "app/reader-annotations.mjs",
-          "line": 30,
+          "line": 32,
           "column": 145
         },
         {
@@ -13917,13 +13911,23 @@
           "column": 81
         },
         {
+          "file": "app/reader-annotation-margins.mjs",
+          "line": 23,
+          "column": 143
+        },
+        {
+          "file": "app/reader-annotation-margins.mjs",
+          "line": 24,
+          "column": 212
+        },
+        {
           "file": "app/reader-annotations.mjs",
-          "line": 29,
+          "line": 31,
           "column": 125
         },
         {
           "file": "app/reader-highlights.mjs",
-          "line": 47,
+          "line": 50,
           "column": 167
         },
         {
@@ -14132,12 +14136,12 @@
         },
         {
           "file": "app/reader-annotations.mjs",
-          "line": 33,
+          "line": 35,
           "column": 191
         },
         {
           "file": "app/reader-annotations.mjs",
-          "line": 33,
+          "line": 35,
           "column": 205
         },
         {
@@ -42002,7 +42006,7 @@
       "consumers": [
         {
           "file": "app/reader-highlights.mjs",
-          "line": 37,
+          "line": 40,
           "column": 40
         },
         {
@@ -66574,29 +66578,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1149,
           "column": 3,
-          "value": "View highlight",
-          "sha256": "8c0aedeb93f226980db8f50ef93f81484f4315e7900f6a69fc27c49941710386"
+          "value": "Read annotation",
+          "sha256": "46e310b5899ccce8b9e68dcc17160677ad98946964cd3713b59fd4266582230b"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1148,
           "column": 3,
-          "value": "点击查看高亮",
-          "sha256": "b7dec65d2704044aa863b093a5e5bbfad32ada96a45febef1cffa3d33c9d55b1"
+          "value": "查看批注",
+          "sha256": "e39a722e3e30f1bfa318459c7d8d30bcca57735a396d048dafba3e5b569b2e95"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1148,
           "column": 3,
-          "value": "點擊查看標記",
-          "sha256": "61b58be052cf47380d7de4182ffc538fdf3e1513c9429c5333ec3e336f8a61fc"
+          "value": "查看批註",
+          "sha256": "7a397a227bf0ff028d8cb417a0d1bcfaa4b30769b0cfaded874b88242b32dc63"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1148,
           "column": 3,
-          "value": "ハイライトを見る",
-          "sha256": "ed28735cd8357f89338acf68e5ab2a37add281c7ee15fa7466b5913cb741abcb"
+          "value": "注釈を読む",
+          "sha256": "1410f2b2394c282f8d110bb335fe3d1d07458bb6b1e745f44809305bbd1d2ab2"
         }
       },
       "missingLocales": [],
@@ -66734,15 +66738,15 @@
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1151,
           "column": 3,
-          "value": "高亮暂未取消，请重试。",
-          "sha256": "fee9952dd1503133860195929011348e5c2086769ac3c34fb7f3eb9ae68034c6"
+          "value": "批注暂未取消，请重试。",
+          "sha256": "f6c0dc561370cdccbb4c54a54bdcf4ee77d27c3f420ade48b036a0827e888b1d"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1151,
           "column": 3,
-          "value": "標記暫未取消，請重試。",
-          "sha256": "f622e2af2965de8d7b85c5bf576964c193d23faadc4433d1f632f20599f34392"
+          "value": "批註暫未取消，請重試。",
+          "sha256": "dfbb474e34aef76161b4d39c767abceb0d62551eccf2fc22255b4768df2af987"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
@@ -67849,29 +67853,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1174,
           "column": 3,
-          "value": "Highlight removed.",
-          "sha256": "70715c518ed751e4adf162103839be629ada15d35c3e1272480a9d7526db0ae2"
+          "value": "Annotation removed.",
+          "sha256": "3ae45bf82aab1c0a880a1b0593ba84dcebb3d76c998ae1e590f79be09b644dfd"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1173,
           "column": 3,
-          "value": "高亮已取消。",
-          "sha256": "5f4bb3fb2291467889c55592c027b27be88365538c6165b7d540f910cf096394"
+          "value": "批注已取消。",
+          "sha256": "c6c6b15650736bd4a4175f47e238fc35216f855783722c172af0df5e7657b79e"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1173,
           "column": 3,
-          "value": "標記已取消。",
-          "sha256": "a93842095678ad13e85aa3931f9c6cf0806a30a0aa762abe978a605fdbb35672"
+          "value": "批註已取消。",
+          "sha256": "64cfb3c3ed12a42b695f2f80aa5827cd9644293b0d7b5f1f953350862ec06912"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1173,
           "column": 3,
-          "value": "ハイライトを削除しました。",
-          "sha256": "bf15508778a1c44c4a05dda2e488e99b2a793257e8ed13fc84ea7ff5e4bb54b3"
+          "value": "注釈を削除しました。",
+          "sha256": "e3967cb85a440174e9014ea39adc7558e74435e9ff19ea74da7f231092bb1496"
         }
       },
       "missingLocales": [],
@@ -74581,29 +74585,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1306,
           "column": 3,
-          "value": "Your highlight · Interpretive",
-          "sha256": "5c2ad2615df3cc2047445fc2b4788e7e427983c9351f6f7d5553e2e1cd441433"
+          "value": "Your annotation · Interpretive",
+          "sha256": "6f87a35776963445c9817f47b52b3dc46a0844e6e65bc346560f48d7fb18feb2"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1305,
           "column": 3,
-          "value": "自己的高亮 · 意译",
-          "sha256": "e2e254c308b7df1270bb523faaee8bacfd0296edc0734df19af84a694de3ac64"
+          "value": "自己的批注 · 意译",
+          "sha256": "650f2f5aa4387716665a5e56683a77907879904a86c48759e317b11d134b4b2c"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1305,
           "column": 3,
-          "value": "自己的標記 · 意譯",
-          "sha256": "77827dcc9dd4c2f21e7dafab4122eb9a287f14791c267e0c38c8c7e71b99f9d9"
+          "value": "自己的批註 · 意譯",
+          "sha256": "b5745902b1d6fa75fe2c14003b61b3ba4a3ea57212f6d846bf0f31ea746925c3"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1305,
           "column": 3,
-          "value": "自分のハイライト · 意訳",
-          "sha256": "4cb70bebde3cb9e70b23d234c671ee69cf885b646bf7f1d4424179eac7d21d0b"
+          "value": "自分の注釈 · 意訳",
+          "sha256": "97ac1873facc16047932641f3829b48993e4cee16322c189d8ea3c0b9c13b940"
         }
       },
       "missingLocales": [],
@@ -76587,29 +76591,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1345,
           "column": 3,
-          "value": "Remove highlight",
-          "sha256": "aab65024f8504822a82e4bb3ce43b05bebd195da462c39d948932e9a593f3b74"
+          "value": "Remove mark",
+          "sha256": "4fee5e5ebefdf30b47031b111cead8eb4a48eed85d6ff772a84a785a1db12f90"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1344,
           "column": 3,
-          "value": "取消高亮",
-          "sha256": "7d5d5e70880473efe499783a3344a61a767eb3ae3b10fb1f5d5401436270dd17"
+          "value": "移除标记",
+          "sha256": "c7e3b7561c5eb756ed9b4efe4201354cf4b3248708de47d23fde11ea46c55073"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1344,
           "column": 3,
-          "value": "取消標記",
-          "sha256": "07e6e27390d3bbeb3ae054fefc9abc28f6ece16c5cbb41edd2dcd23107ecafa3"
+          "value": "移除批註",
+          "sha256": "905ea70b269d3f2e2fd3233adc02ae8dc8ac59433416a72efdb856d58f715153"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1344,
           "column": 3,
-          "value": "ハイライトを削除",
-          "sha256": "733c7279289cf97e6827d7ef2586693145eb1143d72b8ad450591d0e37309fcf"
+          "value": "マークを削除",
+          "sha256": "f37bf17326d024a3953bd761710a0675bc0bd418d077af57ae2d7d2ede309b98"
         }
       },
       "missingLocales": [],
@@ -79545,29 +79549,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1403,
           "column": 3,
-          "value": "Your highlight · Original",
-          "sha256": "62fc1fc6584b24f7e6952607681efe998ccfb10ba63aa5e631d6b56293135251"
+          "value": "Your annotation · Original",
+          "sha256": "e52862ae78792af8c65c5df07103f9ed0ff84f41bcad3130f96f87f6eb024b35"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1402,
           "column": 3,
-          "value": "自己的高亮 · 原文",
-          "sha256": "858153da65c54227658dc63791ae3c36dc974db12a0ca84751faecf72a2d1a49"
+          "value": "自己的批注 · 原文",
+          "sha256": "155fd722f76fd173afdc9789ff65320eb1ac00f61570cc65d30e04cf248e8c44"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1402,
           "column": 3,
-          "value": "自己的標記 · 原文",
-          "sha256": "f3aecb803b66548f09a6e9d978365b9317b873ca7c16c9638fb5397cfdc8d38e"
+          "value": "自己的批註 · 原文",
+          "sha256": "11501d0ffdc59ca99019f8387037ecb98b60847085dc3a5069fe85b14f398733"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1402,
           "column": 3,
-          "value": "自分のハイライト · 原文",
-          "sha256": "45c3a8847ce543fffcae977401cf1694d372100385ff9662eea3a4dbc98ee4e3"
+          "value": "自分の注釈 · 原文",
+          "sha256": "bc87de818684abda5e1682b2e21f99ebbaccf5a5d3d42c5be2497a43e09e530e"
         }
       },
       "missingLocales": [],
@@ -79677,7 +79681,7 @@
       "consumers": [
         {
           "file": "app/reader-highlights.mjs",
-          "line": 85,
+          "line": 88,
           "column": 75
         }
       ],
@@ -80877,29 +80881,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1429,
           "column": 3,
-          "value": "Sign in to save highlights in your own reading room.",
-          "sha256": "c31bd130990f4b6d0002d6634e839f0c67729af3d2668bc581526aee3b849c9e"
+          "value": "Sign in to save annotations in your own reading room.",
+          "sha256": "74e0c2629938615032a45fd609a4c56e40793c2324e8b9a0eac48ca9fa10fc55"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1428,
           "column": 3,
-          "value": "登录后可以把高亮保存到自己的书房。",
-          "sha256": "6699994788d10e468250b9d472b47ba124bb177dabc7be8cbbbd6932d3b016ad"
+          "value": "登录后可以把批注保存到自己的书房。",
+          "sha256": "a15c217959d0f54d9539d90bd85f9cdc3fc810cc8d5c2cdc3f3cf8c997aa3174"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1428,
           "column": 3,
-          "value": "登入後可將標記儲存到自己的書房。",
-          "sha256": "f4acce015bf8fbebbb37f2da0f2ac179428c4c1a9ba18ca96d62bf90a4ff1380"
+          "value": "登入後可將批註儲存到自己的書房。",
+          "sha256": "9c934b8cd22aca941fbc8230772621bf651584befb73239116d314e9dd5ba225"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1428,
           "column": 3,
-          "value": "ログインすると自分の書斎にハイライトを保存できます。",
-          "sha256": "830a747aaca83699386bb2eed13392be67762f8b3e8e33ee3f5aece6950152c1"
+          "value": "ログインすると自分の書斎に注釈を保存できます。",
+          "sha256": "c3ec682ee345e2594d14504709140d0d26ca6e297ebbee32278121b96460a4f1"
         }
       },
       "missingLocales": [],
@@ -81591,29 +81595,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1443,
           "column": 3,
-          "value": "This highlight was removed elsewhere.",
-          "sha256": "6f5899645df9bde4cd92302e0dfd9c0a599b1e7c0193ab0498746232262a4fec"
+          "value": "This annotation was removed elsewhere.",
+          "sha256": "97d5c8313d711c86662dbc3b82f5bce63b0028840617316bfaadeb72576b8862"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1442,
           "column": 3,
-          "value": "这条高亮已在另一处取消。",
-          "sha256": "350199a80bb66faa2402f9dcc5660b70a634166b58c99c42ac13e1d020789e65"
+          "value": "这条批注已在另一处取消。",
+          "sha256": "15344accc5e4d52a16de95bafd2e8abb7ce3b7c79814eeb14d60af842f3b56e3"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1442,
           "column": 3,
-          "value": "這條標記已在另一處取消。",
-          "sha256": "f7b0dcc2192b785fd611e7dd1b5083d4206bd7de7dfff6db7aa5f5167494e265"
+          "value": "這條批註已在另一處取消。",
+          "sha256": "869d3ecba2a67ccc0afe1dd8920a4f708ed05d5fd580a1136923fcd8674cc714"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1442,
           "column": 3,
-          "value": "このハイライトは別の場所で削除されました。",
-          "sha256": "b61987831efbe382e0b4085896b73c8c4e579b1d64f5cb69f6692a4aa84d2fac"
+          "value": "この注釈は別の場所で削除されました。",
+          "sha256": "f7c2ffabad5e2b3c19e79ce117db255b1c79984f6a5010643490513964cbc1b7"
         }
       },
       "missingLocales": [],
@@ -82917,29 +82921,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1469,
           "column": 3,
-          "value": "Your highlight · Literal",
-          "sha256": "86876b0eb41f2693ce6888db9246729b96e29c098e3d425684444515c4ffa458"
+          "value": "Your annotation · Literal",
+          "sha256": "3580e7b3b30b5fb0b5315a927486c1aceab67d167368c3e4fa54e973911122a3"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1468,
           "column": 3,
-          "value": "自己的高亮 · 直译",
-          "sha256": "128f4efc309902c2de09356a8dc57189c093384efd7679f5d962997d5fd6e1c2"
+          "value": "自己的批注 · 直译",
+          "sha256": "4b647705f95fe3f75e85a0002b2b8d88c2c7fb7ba6ccb0ff70015307873f5626"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1468,
           "column": 3,
-          "value": "自己的標記 · 直譯",
-          "sha256": "df3f3950c9b7f14c81b684675c78ddcb17c702433f40b6c0612a784f9669d6a4"
+          "value": "自己的批註 · 直譯",
+          "sha256": "6ee30635a173af987fe404cded59212ae4f7f43c743e10071cac376994950dd5"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1468,
           "column": 3,
-          "value": "自分のハイライト · 直訳",
-          "sha256": "40fdfde9c2c15b6e53303935f20ab5038859ec3b5299d71fc4bbba2068fa7abf"
+          "value": "自分の注釈 · 直訳",
+          "sha256": "80a863bcffdf4d8cd3e1bc49ebb5e030d206d4b0d0393760fbcb69894782bf74"
         }
       },
       "missingLocales": [],
@@ -83427,29 +83431,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1479,
           "column": 3,
-          "value": "The highlight action could not finish. Your selection and records are kept.",
-          "sha256": "042c477dba31970a6201954c2239b4e4c612dd18ff17181b03ffdee7bf335c1e"
+          "value": "The annotation action could not finish. Your selection and records are kept.",
+          "sha256": "fcdd128144ad24a79e70ffb40a1037f0004ca97339bba28107bd9eb4136c5b9d"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1478,
           "column": 3,
-          "value": "高亮操作暂未完成，选中文字与记录仍保留。",
-          "sha256": "8b1eee69ac51fef246191d4d296a8ba6e0e31695cd0d096ebdb83bf52866979c"
+          "value": "批注操作暂未完成，选中文字与记录仍保留。",
+          "sha256": "5d9bc91d704699f8aaf4e230030793c44b07a09f9d011ae604ab1b159278b678"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1478,
           "column": 3,
-          "value": "標記操作暫未完成，選取文字與記錄仍保留。",
-          "sha256": "83e39e996c3573b26267559036951bbc1b499f7755c472fa6d6e4cf2313afbef"
+          "value": "批註操作暫未完成，選取文字與記錄仍保留。",
+          "sha256": "3f55027f1a30b41de40595cc0fa3ffaebad0add7e27a16060b987d9c9e84d120"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1478,
           "column": 3,
-          "value": "ハイライトの操作を完了できません。選択と記録は保持します。",
-          "sha256": "8276abc58764bb4da67dbc8a85abf2ad08019f6dc395a283ee13dbac41a568cb"
+          "value": "注釈の操作を完了できません。選択と記録は保持します。",
+          "sha256": "9b6322aa8dac012609ca50dbe202799e4332f7db610b2d131758fb69a4c8da2f"
         }
       },
       "missingLocales": [],
@@ -83529,29 +83533,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1481,
           "column": 3,
-          "value": "Highlight saved.",
-          "sha256": "6230024786f79bfac3a4e6921cc640c9707e87f10324e64d712166822717b505"
+          "value": "Annotation saved.",
+          "sha256": "e6ba1e51ef4fc511f0b9e8a880dca8e39b192c1504071c8e97ea17051da24445"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1480,
           "column": 3,
-          "value": "高亮已保存。",
-          "sha256": "b004529ab151d2b0f7ac55ebfe7dd22bc250b334dbf5d7871de4af60fe19e8e8"
+          "value": "批注已保存。",
+          "sha256": "e7432a041765cb602e7a318e1b94c18c43b450da5f7738276c3ed94a189146d5"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1480,
           "column": 3,
-          "value": "標記已儲存。",
-          "sha256": "03d467387f2e7b75e1cbfe86669825b1f34046bacd13c754d9e3654da83dc986"
+          "value": "批註已儲存。",
+          "sha256": "a0db4df7880394e01f77b23490d9b193af0c1f11076089bddbfe29c86795f90e"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1480,
           "column": 3,
-          "value": "ハイライトを保存しました。",
-          "sha256": "229d8c59ad7089e9ed3dfcb0af97208ed8d0d74b2ecc25936188d11135685e71"
+          "value": "注釈を保存しました。",
+          "sha256": "719fa8959dde4f157cc743208aa218d036d29bec1574a14d1ea99a019262b2ef"
         }
       },
       "missingLocales": [],
@@ -85943,22 +85947,22 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1528,
           "column": 3,
-          "value": "Saving the highlight is unconfirmed. Retry the same submission.",
-          "sha256": "34ce8b1cdff8dfb6d8ef77c64e25afca2e2acc296af2b0d5502c268406f92d21"
+          "value": "Saving the annotation is unconfirmed. Retry the same submission.",
+          "sha256": "e5d768065f5088eb35b14a6d97c9bf50f19ba182a93a09233b7c102cef87f319"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1527,
           "column": 3,
-          "value": "高亮尚未确认保存，请重试同一次提交。",
-          "sha256": "1c511964dabaa65b19e6e7f9ff1cc286830e3ae5b6e5296940a6c42c4760723d"
+          "value": "保存尚未确认。再试一次会核对刚才的批注。",
+          "sha256": "80106aeb12f1ea27097d9e790c52c20488ffe1e431ce8c3471bd8bba981c983a"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1527,
           "column": 3,
-          "value": "標記尚未確認儲存，請重試同一次提交。",
-          "sha256": "a9ba0b3fb5cfceca69307b6c3dda48c557ee373fe88ec2fa871d5543500378dc"
+          "value": "儲存尚未確認。再試一次會核對剛才的批註。",
+          "sha256": "fbf1380aa197c2b4c74db354c45fbd4bd276e546fdc04b32b14da7ad6baa111c"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
@@ -87790,29 +87794,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1564,
           "column": 3,
-          "value": "Highlight",
-          "sha256": "07ccd15df32aa7e2856680d68167316b03f621035036f97f7e6311acbb04a148"
+          "value": "Annotations",
+          "sha256": "1e4d67386295974e7ecb6d86a47e7a694214cdbaae1944a938148e4336767d3f"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1563,
           "column": 3,
-          "value": "高亮",
-          "sha256": "05f954565f29b0b623e5a36bfd59af8f76c4d84b166e766306313d45033b7198"
+          "value": "批注",
+          "sha256": "85c5c1f5567b4d67f034fa02f64fb022a9363039fd557751860f03284e3e2eb7"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1563,
           "column": 3,
-          "value": "螢光標記",
-          "sha256": "430641a0afe3583ffc30171241e22a9ceb0116f69712b178ea352a7cc9a04f2e"
+          "value": "批註",
+          "sha256": "a33b945ae70f9030f67862353e51475d503160075acf8e18d96ac0263d489013"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1563,
           "column": 3,
-          "value": "ハイライト",
-          "sha256": "37064567383c442ef2309e020f5518daf9e422f623f6bf04df819d43594753bb"
+          "value": "注釈",
+          "sha256": "1700de690be68197de8052ee5701ad93c4c371635028cfe9740249d66556f3ae"
         }
       },
       "missingLocales": [],
@@ -87820,8 +87824,8 @@
       "consumers": [
         {
           "file": "app/reader-highlights.mjs",
-          "line": 37,
-          "column": 149
+          "line": 40,
+          "column": 56
         }
       ],
       "hints": [
@@ -117568,6 +117572,669 @@
         {
           "kind": "key-namespace",
           "evidence": "key-namespace:memory",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "reader.annotation.hide",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2128,
+          "column": 3,
+          "value": "Hide annotations",
+          "sha256": "bb5be6e841c42303c456735b3f48fd0a7e5b48a7402f6ae80148a8893c21c275"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2127,
+          "column": 3,
+          "value": "隐藏批注",
+          "sha256": "cec1655935fa786f68f42c1ded83ca676e22df60f03d384cdfe8a92948d09f6c"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2127,
+          "column": 3,
+          "value": "隱藏批註",
+          "sha256": "78fdd724e31d4cd2511a561e4b6c436dd718acff0531f2d5a1eb4d93f74313c3"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2127,
+          "column": 3,
+          "value": "注釈を隠す",
+          "sha256": "c45440332632ccc1942ed0e2c3dbcd8b04578410072b8498a2f05ee135bfbc5c"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:reader",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "reader.annotation.show",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2129,
+          "column": 3,
+          "value": "Show annotations",
+          "sha256": "0fdc6070ede36f931a6f9b60a69d94210ef7f0585a4735312adeeff8869ddd68"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2128,
+          "column": 3,
+          "value": "显示批注",
+          "sha256": "c52dc5a50f70768d72c8bf7d756527050979b428b9b1b987f0f667895c9419bd"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2128,
+          "column": 3,
+          "value": "顯示批註",
+          "sha256": "eb235ae58e68253ad865d8030adf69d1cd34b24d76268afb6a21f7c714a2c811"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2128,
+          "column": 3,
+          "value": "注釈を表示",
+          "sha256": "5e11340f70a86b36291eec45802fc0443d31e64d12d1bdba17c5aba4f8a5c4e8"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:reader",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "reader.annotation.mine",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2130,
+          "column": 3,
+          "value": "Mine",
+          "sha256": "f57afb7d275a26df0de0e933b28c16f2462e84c09ad605945a4c6163f2be3baa"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2129,
+          "column": 3,
+          "value": "我写的",
+          "sha256": "8e573c4a5c1a4e99ebe6f497124acb4c53fb737a3969d2741fa79a569222eb12"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2129,
+          "column": 3,
+          "value": "我寫的",
+          "sha256": "6b80088819254ce991cb5bd9e08992085202793ce6fdf002cfa62e5ca6a86bd2"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2129,
+          "column": 3,
+          "value": "自分",
+          "sha256": "a83b8bc2853ab707dfd533fcc3e6a5b5b4eb1cdb523135aa28068b73331bde59"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:reader",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "reader.annotation.ai",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2131,
+          "column": 3,
+          "value": "AI",
+          "sha256": "11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2130,
+          "column": 3,
+          "value": "AI",
+          "sha256": "11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2130,
+          "column": 3,
+          "value": "AI",
+          "sha256": "11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2130,
+          "column": 3,
+          "value": "AI",
+          "sha256": "11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:reader",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "reader.annotation.loading",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2132,
+          "column": 3,
+          "value": "Loading annotations…",
+          "sha256": "38b427ec32ef53c7a474d735108b0136facbe9be7fb926b69f4be9debdc97a56"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2131,
+          "column": 3,
+          "value": "正在载入批注…",
+          "sha256": "e974757db25f320444d34095ac9d00296d9762384cc9bba9ffa5026b9a4792da"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2131,
+          "column": 3,
+          "value": "正在載入批註…",
+          "sha256": "8969bd68c4adc1677bfd0069086ed2a4ce2112b118533003633d0ca02f5ac0bb"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2131,
+          "column": 3,
+          "value": "注釈を読み込み中…",
+          "sha256": "b9796a38896291f8d9d1fb4d2e2577863e4679bc9c12491bbe2fc7807e57d2e2"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:reader",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "reader.annotation.saveNote",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2133,
+          "column": 3,
+          "value": "Save note",
+          "sha256": "6501e1ced8da0bffc5e2c7e20a42162e80176b31980e7b073fbf9955854fda4a"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2132,
+          "column": 3,
+          "value": "保存想法",
+          "sha256": "8ad6dfb732162f58a5983de407e27b29540027f131b2e7c41caeb9c108175535"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2132,
+          "column": 3,
+          "value": "儲存想法",
+          "sha256": "6d57ba15f726ddb0b3e77f98c170c3d599bfb2731a4a7a9e879f7ddb1f04628e"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2132,
+          "column": 3,
+          "value": "メモを保存",
+          "sha256": "1a583c47e6aa6a9ea17bf432f5f71f36038e59c6c7d00754c02ca45588334308"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:reader",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "reader.annotation.explain",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2134,
+          "column": 3,
+          "value": "Ask AI to explain",
+          "sha256": "b8e7e87f414c491dc655e3c088dc4acfae6dd7881667a544d9d13f3f5c7ce3c9"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2133,
+          "column": 3,
+          "value": "请 AI 解释",
+          "sha256": "229a96c7fddc0d6fe8661b49d8c6a5881817973c9d7c52a07f5a22932b2f4898"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2133,
+          "column": 3,
+          "value": "請 AI 解釋",
+          "sha256": "cd017defb6c8fcd68c0d6ef7c77f58799b2f82850c7df9c09a6b3a569496e11e"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2133,
+          "column": 3,
+          "value": "AIに説明を頼む",
+          "sha256": "63505ec3f7b394e55c129566bf4052e9c9e630bf73ee2441167cadaf82a3752f"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:reader",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "reader.annotation.savingNote",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2135,
+          "column": 3,
+          "value": "Saving your note…",
+          "sha256": "a15792cb1bc98f82f1684136acdf51094c5c39ed1ff93334a3048dacb2b44c1d"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2134,
+          "column": 3,
+          "value": "正在保存想法…",
+          "sha256": "6cd1d1c9984ebe915736cfc8430d4b6fb90937448cbb97d14d7130957ff5af27"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2134,
+          "column": 3,
+          "value": "正在儲存想法…",
+          "sha256": "fec38da445afcfde70361019435fce868f2970c295432585b18e4119dbfc6775"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2134,
+          "column": 3,
+          "value": "メモを保存中…",
+          "sha256": "192659eaa1e322232c5dc56258eaf135dcf921fb28a409798bb9f94c4b1893e8"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:reader",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "reader.annotation.savedNote",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2136,
+          "column": 3,
+          "value": "Note saved.",
+          "sha256": "2a4a9548cd5f90909a3ced784c9388d1a2b88effb1a8cc68fca0a3e3968e584e"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2135,
+          "column": 3,
+          "value": "想法已保存。",
+          "sha256": "600711a038a7a3cb62804eecb3dccd7edc1718dfb010f58a4ef7bb9a4efebd71"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2135,
+          "column": 3,
+          "value": "想法已儲存。",
+          "sha256": "e5a3d4a17aa2729d83f259fadf760b4651e3a196d668a038625bccad9b537720"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2135,
+          "column": 3,
+          "value": "メモを保存しました。",
+          "sha256": "3a2ca3e5b408d0a7887dd69fe95c3361bec722dff8f9fdb32b4390fe66892090"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:reader",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "reader.annotation.noteUnconfirmed",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2137,
+          "column": 3,
+          "value": "Saving is unconfirmed. Try saving again to check the same submission.",
+          "sha256": "e8bad27f1d36e429c3a1150b1adf25cd095582052de12a1eb0a3cf1be9f7ce60"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2136,
+          "column": 3,
+          "value": "保存尚未确认。再次保存会核对刚才的想法。",
+          "sha256": "9196f1c05051774c2f97dc4a8a8be1bc978a7c63cf4e8facbea7cea069e03fd3"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2136,
+          "column": 3,
+          "value": "儲存尚未確認。再次儲存會核對剛才的想法。",
+          "sha256": "f8c8737800e434973d26552e51523b70cb21df26d511561194906c782151f0ef"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2136,
+          "column": 3,
+          "value": "保存を確認できません。もう一度保存すると同じ送信を確認します。",
+          "sha256": "48324bd906507e2118951b5c18e60bfdad0bdac9aaefec24e323611ea5dd0bc9"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:reader",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "reader.annotation.previous",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2138,
+          "column": 3,
+          "value": "Previous annotation",
+          "sha256": "23eec362896e7ee2a24d53bdc1b4742b7ca003416c3775b61a4d0bd3cd26e390"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2137,
+          "column": 3,
+          "value": "上一条批注",
+          "sha256": "2fc1efedb585058bfbad501579c37d84dba641321821358130139916d20ce853"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2137,
+          "column": 3,
+          "value": "上一條批註",
+          "sha256": "71765861f44161002d96e6ef54955aa07b8e2a4c1397500d0624bdc1d94b48fb"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2137,
+          "column": 3,
+          "value": "前の注釈",
+          "sha256": "8ad6714d82d610e9dcf0376b6853f441b0d4f6bb66dcef77ba4fdaebdfc20903"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:reader",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "reader.annotation.next",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2139,
+          "column": 3,
+          "value": "Next annotation",
+          "sha256": "a8bac65acefd78b7624a6ec1813d554ea1d0fcd719f19d3ba97507fcc9db178a"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2138,
+          "column": 3,
+          "value": "下一条批注",
+          "sha256": "75566e17e3d95ee349c49e91df99a56cf4add645f698342fd3a1cef664f09fd9"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2138,
+          "column": 3,
+          "value": "下一條批註",
+          "sha256": "4a0f4e888e72b60280bca64833ad97e9c499ac69755ed101e1d2be626a1b9535"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2138,
+          "column": 3,
+          "value": "次の注釈",
+          "sha256": "8a42f22ca7cdedba95a06c9d834edc4a0646fafb889ce81c0f79ef7505a7f9f1"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:reader",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "reader.annotation.longSelection",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2140,
+          "column": 3,
+          "value": "This selection is long. You can save a thought; select a shorter passage to ask AI.",
+          "sha256": "768578a1a960a42d00c36f634ac8da129969344b15e71c96a2808c5679eb9938"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2139,
+          "column": 3,
+          "value": "选文较长，可以保存想法；请选取其中一小段来问 AI。",
+          "sha256": "8377eceaff02abf268d635287d599d4a9077b5571cee53f53b028858852b2038"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2139,
+          "column": 3,
+          "value": "選文較長，可以儲存想法；請選取其中一小段來問 AI。",
+          "sha256": "2d280910356eb1fa8425afda52857ef868e168663dcdf07b227b399105695deb"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2139,
+          "column": 3,
+          "value": "選択した文章が長いため、AI に質問するには短い部分を選んでください。自分のメモは保存できます。",
+          "sha256": "1e9e6773e0737c39aa9b8ebf2c0f12e923472e7d8e8171b830cf5124e04ec1d8"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:reader",
           "confidence": "low"
         }
       ],
@@ -164612,10 +165279,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:71:755",
+      "id": "candidate:app/index.html:71:754",
       "file": "app/index.html",
       "line": 71,
-      "column": 755,
+      "column": 754,
       "kind": "html-attribute",
       "property": "aria-label",
       "value": "More passage actions",
@@ -167322,8 +167989,8 @@
       "column": 153,
       "kind": "html-text",
       "property": null,
-      "value": "Highlight",
-      "sha256": "07ccd15df32aa7e2856680d68167316b03f621035036f97f7e6311acbb04a148",
+      "value": "Annotate",
+      "sha256": "205fc388c79eb84686bf83ebc25fe642af71949937f7799f8eb89aa71865935f",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -167342,10 +168009,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:71:245",
+      "id": "candidate:app/index.html:71:244",
       "file": "app/index.html",
       "line": 71,
-      "column": 245,
+      "column": 244,
       "kind": "html-text",
       "property": null,
       "value": "Annotate with AI",
@@ -167368,10 +168035,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:71:337",
+      "id": "candidate:app/index.html:71:336",
       "file": "app/index.html",
       "line": 71,
-      "column": 337,
+      "column": 336,
       "kind": "html-text",
       "property": null,
       "value": "Share excerpt",
@@ -167394,10 +168061,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:71:413",
+      "id": "candidate:app/index.html:71:412",
       "file": "app/index.html",
       "line": 71,
-      "column": 413,
+      "column": 412,
       "kind": "html-text",
       "property": null,
       "value": "Inspect",
@@ -167420,10 +168087,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:71:469",
+      "id": "candidate:app/index.html:71:468",
       "file": "app/index.html",
       "line": 71,
-      "column": 469,
+      "column": 468,
       "kind": "html-text",
       "property": null,
       "value": "Original",
@@ -167446,10 +168113,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:71:540",
+      "id": "candidate:app/index.html:71:539",
       "file": "app/index.html",
       "line": 71,
-      "column": 540,
+      "column": 539,
       "kind": "html-text",
       "property": null,
       "value": "Read aloud",
@@ -167472,10 +168139,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:71:624",
+      "id": "candidate:app/index.html:71:623",
       "file": "app/index.html",
       "line": 71,
-      "column": 624,
+      "column": 623,
       "kind": "html-text",
       "property": null,
       "value": "Annotations",
@@ -167498,10 +168165,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:71:701",
+      "id": "candidate:app/index.html:71:700",
       "file": "app/index.html",
       "line": 71,
-      "column": 701,
+      "column": 700,
       "kind": "html-text",
       "property": null,
       "value": "Thought",
@@ -167524,10 +168191,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:71:873",
+      "id": "candidate:app/index.html:71:872",
       "file": "app/index.html",
       "line": 71,
-      "column": 873,
+      "column": 872,
       "kind": "html-text",
       "property": null,
       "value": "More",
@@ -183370,9 +184037,49 @@
       }
     },
     {
-      "id": "candidate:app/reader-annotations.mjs:28:129",
+      "id": "candidate:app/reader-annotation-margins.mjs:25:122",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 25,
+      "column": 122,
+      "kind": "js-attribute",
+      "property": "role",
+      "value": "status",
+      "sha256": "073c1634c496cdb649d1afe0a312bbb4b7e1741b271542e4a436c3b8824b1761",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/reader-annotation-margins.mjs:25:164",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 25,
+      "column": 164,
+      "kind": "js-attribute",
+      "property": "aria-live",
+      "value": "polite",
+      "sha256": "cad2a80df44e3abf27b7cc4c2a5f932891a32baaf2d49bc133b4013c42480a6a",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/reader-annotations.mjs:30:129",
       "file": "app/reader-annotations.mjs",
-      "line": 28,
+      "line": 30,
       "column": 129,
       "kind": "js-attribute",
       "property": "role",
@@ -183390,9 +184097,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-annotations.mjs:30:129",
+      "id": "candidate:app/reader-annotations.mjs:32:129",
       "file": "app/reader-annotations.mjs",
-      "line": 30,
+      "line": 32,
       "column": 129,
       "kind": "js-dom-literal",
       "property": "textContent",
@@ -183410,9 +184117,49 @@
       }
     },
     {
-      "id": "candidate:app/reader-annotations.mjs:32:79",
+      "id": "candidate:app/reader-annotations.mjs:32:444",
       "file": "app/reader-annotations.mjs",
       "line": 32,
+      "column": 444,
+      "kind": "js-dom-literal",
+      "property": "textContent",
+      "value": "‹",
+      "sha256": "0685a836e46144a549d3a97c41791a7094f129956e17562db80a5bfe688cae2b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/reader-annotations.mjs:32:465",
+      "file": "app/reader-annotations.mjs",
+      "line": 32,
+      "column": 465,
+      "kind": "js-dom-literal",
+      "property": "textContent",
+      "value": "›",
+      "sha256": "7bb37df5cb369f1856c1ea4e6052dda69d72ab0558c852fda36e9a4380abdefe",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/reader-annotations.mjs:34:79",
+      "file": "app/reader-annotations.mjs",
+      "line": 34,
       "column": 79,
       "kind": "js-attribute",
       "property": "role",
@@ -183430,34 +184177,14 @@
       }
     },
     {
-      "id": "candidate:app/reader-annotations.mjs:32:121",
+      "id": "candidate:app/reader-annotations.mjs:34:121",
       "file": "app/reader-annotations.mjs",
-      "line": 32,
+      "line": 34,
       "column": 121,
       "kind": "js-attribute",
       "property": "aria-live",
       "value": "polite",
       "sha256": "cad2a80df44e3abf27b7cc4c2a5f932891a32baaf2d49bc133b4013c42480a6a",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/reader-annotations.mjs:84:386",
-      "file": "app/reader-annotations.mjs",
-      "line": 84,
-      "column": 386,
-      "kind": "js-dom-literal",
-      "property": "textContent",
-      "value": "AI",
-      "sha256": "11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -232730,6 +233457,144 @@
     },
     {
       "kind": "computed-member",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 15,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 16,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 16,
+      "expression": "column",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 17,
+      "expression": "column",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 17,
+      "expression": "column",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 17,
+      "expression": "column",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 26,
+      "expression": "'marginalia-annotation-visible-v1|'+scope",
+      "fragments": [
+        "marginalia-annotation-visible-v1|"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 60,
+      "expression": "'reader-note-author-'+entry.id",
+      "fragments": [
+        "reader-note-author-"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 60,
+      "expression": "'reader-note-summary-'+entry.id",
+      "fragments": [
+        "reader-note-summary-"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 61,
+      "expression": "author.id+' '",
+      "fragments": [
+        " "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 73,
+      "expression": "Math.min(view.innerWidth-28,entry.rect.right+4)+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 73,
+      "expression": "entry.rect.top+view.scrollY+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 74,
+      "expression": "entry.left+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 74,
+      "expression": "entry.top+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotation-margins.mjs",
+      "line": 74,
+      "expression": "entry.width+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
       "file": "app/reader-annotation-pending.mjs",
       "line": 19,
       "expression": "index",
@@ -232853,7 +233718,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 10,
+      "line": 12,
       "expression": "error?.status",
       "fragments": [],
       "unresolved": true
@@ -232861,7 +233726,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 24,
+      "line": 26,
       "expression": "'/api/library/books/'+encodeURIComponent(book().bookId)+'/annotations'",
       "fragments": [
         "/api/library/books/",
@@ -232872,7 +233737,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 24,
+      "line": 26,
       "expression": "'/api/library/books/'+encodeURIComponent(book().bookId)",
       "fragments": [
         "/api/library/books/"
@@ -232882,7 +233747,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 25,
+      "line": 27,
       "expression": "'marginalia-annotation-drafts-v1|'+scope",
       "fragments": [
         "marginalia-annotation-drafts-v1|"
@@ -232892,7 +233757,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 42,
+      "line": 46,
       "expression": "'/billing?ui='+getUiLocale()",
       "fragments": [
         "/billing?ui="
@@ -232902,7 +233767,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 47,
+      "line": 51,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -232910,8 +233775,65 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 49,
+      "line": 53,
       "expression": "activeId",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotations.mjs",
+      "line": 55,
+      "expression": "'highlight-'+r.id",
+      "fragments": [
+        "highlight-"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotations.mjs",
+      "line": 57,
+      "expression": "'marginalia-annotation-own-drafts-v1|'+scope",
+      "fragments": [
+        "marginalia-annotation-own-drafts-v1|"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotations.mjs",
+      "line": 58,
+      "expression": "'comment:'+(held?.highlightId||held?.id)+':'",
+      "fragments": [
+        "comment:",
+        ":"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotations.mjs",
+      "line": 58,
+      "expression": "'comment:'+(held?.highlightId||held?.id)",
+      "fragments": [
+        "comment:"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-annotations.mjs",
+      "line": 58,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-annotations.mjs",
+      "line": 60,
+      "expression": "0",
       "fragments": [],
       "unresolved": true
     },
@@ -232919,6 +233841,40 @@
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
       "line": 63,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-annotations.mjs",
+      "line": 64,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotations.mjs",
+      "line": 64,
+      "expression": "'highlight-'+row.id",
+      "fragments": [
+        "highlight-"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-annotations.mjs",
+      "line": 64,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-annotations.mjs",
+      "line": 75,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -232926,7 +233882,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 82,
+      "line": 103,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -232934,7 +233890,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 94,
+      "line": 104,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -232942,8 +233898,8 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 106,
-      "expression": "Math.min(288,view.innerWidth-32)+'px'",
+      "line": 107,
+      "expression": "rail.width+'px'",
       "fragments": [
         "px"
       ],
@@ -232952,8 +233908,8 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 106,
-      "expression": "Math.max(16,Math.min(parseFloat(card.style.left)||16,view.innerWidth-Math.min(288,view.innerWidth-32)-16))+'px'",
+      "line": 107,
+      "expression": "rail.left+'px'",
       "fragments": [
         "px"
       ],
@@ -232962,8 +233918,8 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 110,
-      "expression": "paneHeight+'px'",
+      "line": 107,
+      "expression": "top+'px'",
       "fragments": [
         "px"
       ],
@@ -232972,67 +233928,35 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 110,
-      "expression": "visible+'px'",
+      "line": 107,
+      "expression": "Math.max(132,view.innerHeight-top-24)+'px'",
       "fragments": [
         "px"
       ],
       "unresolved": true
     },
     {
-      "kind": "concatenation",
-      "file": "app/reader-annotations.mjs",
-      "line": 114,
-      "expression": "next.width+'px'",
-      "fragments": [
-        "px"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reader-annotations.mjs",
-      "line": 114,
-      "expression": "next.left+'px'",
-      "fragments": [
-        "px"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reader-annotations.mjs",
-      "line": 114,
-      "expression": "next.top+'px'",
-      "fragments": [
-        "px"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reader-annotations.mjs",
-      "line": 116,
-      "expression": "visible+'px'",
-      "fragments": [
-        "px"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
+      "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
       "line": 117,
-      "expression": "paneHeight+'px'",
+      "expression": "layer",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotations.mjs",
+      "line": 120,
+      "expression": "(index+1)+' / '",
       "fragments": [
-        "px"
+        " / "
       ],
       "unresolved": true
     },
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 130,
+      "line": 121,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -233040,7 +233964,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 133,
+      "line": 124,
       "expression": "'/read?book='+encodeURIComponent(book().bookId)+'&passage='",
       "fragments": [
         "/read?book=",
@@ -233051,7 +233975,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 133,
+      "line": 124,
       "expression": "'/read?book='+encodeURIComponent(book().bookId)",
       "fragments": [
         "/read?book="
@@ -233061,7 +233985,33 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 143,
+      "line": 134,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-annotations.mjs",
+      "line": 135,
+      "expression": "(index+delta+rows.length)%rows.length",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotations.mjs",
+      "line": 135,
+      "expression": "'highlight-'+r.id",
+      "fragments": [
+        "highlight-"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-annotations.mjs",
+      "line": 139,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -233069,7 +234019,46 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 160,
+      "line": 149,
+      "expression": "'[data-annotation-thread=\"'+activeId+'\"]'",
+      "fragments": [
+        "[data-annotation-thread=\"",
+        "\"]"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotations.mjs",
+      "line": 149,
+      "expression": "'[data-annotation-thread=\"'+activeId",
+      "fragments": [
+        "[data-annotation-thread=\""
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotations.mjs",
+      "line": 156,
+      "expression": "'highlight-'+row.id",
+      "fragments": [
+        "highlight-"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-annotations.mjs",
+      "line": 163,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-annotations.mjs",
+      "line": 176,
       "expression": "endpoint()+'/explain'",
       "fragments": [
         "/explain"
@@ -233079,7 +234068,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 182,
+      "line": 198,
       "expression": "activeId",
       "fragments": [],
       "unresolved": true
@@ -233087,7 +234076,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 185,
+      "line": 201,
       "expression": "endpoint()+'/requests/'+encodeURIComponent(request.id)+'/cancel'",
       "fragments": [
         "/requests/",
@@ -233098,7 +234087,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 185,
+      "line": 201,
       "expression": "endpoint()+'/requests/'",
       "fragments": [
         "/requests/"
@@ -233108,7 +234097,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 186,
+      "line": 202,
       "expression": "endpoint()+'/threads/'+encodeURIComponent(held.id)+'/remove'",
       "fragments": [
         "/threads/",
@@ -233119,7 +234108,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 186,
+      "line": 202,
       "expression": "endpoint()+'/threads/'",
       "fragments": [
         "/threads/"
@@ -234384,17 +235373,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 19,
-      "expression": "' · '+creditActionLabel('annotation',getUiLocale())",
-      "fragments": [
-        " · "
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reader-highlights.mjs",
-      "line": 27,
+      "line": 30,
       "expression": "HIGHLIGHT_UI+'error'",
       "fragments": [
         "error"
@@ -234404,7 +235383,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 30,
+      "line": 33,
       "expression": "HIGHLIGHT_UI+'login'",
       "fragments": [
         "login"
@@ -234414,17 +235393,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 37,
-      "expression": "HIGHLIGHT_UI+'remove'",
-      "fragments": [
-        "remove"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reader-highlights.mjs",
-      "line": 40,
+      "line": 43,
       "expression": "part.passageId+'|'+part.language+'|'",
       "fragments": [
         "|",
@@ -234435,7 +235404,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 40,
+      "line": 43,
       "expression": "part.passageId+'|'",
       "fragments": [
         "|"
@@ -234445,7 +235414,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 41,
+      "line": 44,
       "expression": "passageId+'|'+language+'|'",
       "fragments": [
         "|",
@@ -234456,7 +235425,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 41,
+      "line": 44,
       "expression": "passageId+'|'",
       "fragments": [
         "|"
@@ -234466,7 +235435,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 47,
+      "line": 50,
       "expression": "HIGHLIGHT_UI+'view'",
       "fragments": [
         "view"
@@ -234476,7 +235445,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 58,
+      "line": 61,
       "expression": "'/api/highlights/'+encodeURIComponent(row.id)+'/remove'",
       "fragments": [
         "/api/highlights/",
@@ -234487,7 +235456,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 58,
+      "line": 61,
       "expression": "'/api/highlights/'+encodeURIComponent(row.id)",
       "fragments": [
         "/api/highlights/"
@@ -234497,7 +235466,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 58,
+      "line": 61,
       "expression": "HIGHLIGHT_UI+'removed'",
       "fragments": [
         "removed"
@@ -234507,7 +235476,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 59,
+      "line": 62,
       "expression": "HIGHLIGHT_UI+'removeFailed'",
       "fragments": [
         "removeFailed"
@@ -234517,7 +235486,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 64,
+      "line": 67,
       "expression": "HIGHLIGHT_UI+'loginHint'",
       "fragments": [
         "loginHint"
@@ -234527,7 +235496,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 65,
+      "line": 68,
       "expression": "HIGHLIGHT_UI+'recordsUnavailable'",
       "fragments": [
         "recordsUnavailable"
@@ -234537,7 +235506,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 68,
+      "line": 71,
       "expression": "HIGHLIGHT_UI+'deletedElsewhere'",
       "fragments": [
         "deletedElsewhere"
@@ -234547,7 +235516,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 68,
+      "line": 71,
       "expression": "HIGHLIGHT_UI+'saved'",
       "fragments": [
         "saved"
@@ -234557,7 +235526,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 69,
+      "line": 72,
       "expression": "HIGHLIGHT_UI+'saveFailed'",
       "fragments": [
         "saveFailed"
@@ -234567,7 +235536,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-highlights.mjs",
-      "line": 82,
+      "line": 85,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -234575,7 +235544,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 82,
+      "line": 85,
       "expression": "HIGHLIGHT_UI+'own.'",
       "fragments": [
         "own."
@@ -234585,7 +235554,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 85,
+      "line": 88,
       "expression": "HIGHLIGHT_UI+'return'",
       "fragments": [
         "return"
@@ -234595,7 +235564,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-highlights.mjs",
-      "line": 85,
+      "line": 88,
       "expression": "HIGHLIGHT_UI+'remove'",
       "fragments": [
         "remove"
@@ -249083,19 +250052,19 @@
   },
   "counts": {
     "catalogueFiles": 4,
-    "catalogueKeys": 2117,
-    "localeValues": 8468,
-    "itemsComplete": 2117,
+    "catalogueKeys": 2130,
+    "localeValues": 8520,
+    "itemsComplete": 2130,
     "itemsWithMissingLocales": 0,
     "duplicateKeys": 0,
     "reviewedItems": 0,
-    "unreviewedItems": 2117,
-    "candidates": 4800,
-    "candidatesUnreviewed": 4800,
+    "unreviewedItems": 2130,
+    "candidates": 4803,
+    "candidatesUnreviewed": 4803,
     "candidatesProtected": 129,
     "itemsProtected": 9,
-    "dynamicConsumers": 3005,
+    "dynamicConsumers": 3032,
     "consumerReferences": 1501,
-    "keysWithoutStaticConsumers": 1135
+    "keysWithoutStaticConsumers": 1148
   }
 }
