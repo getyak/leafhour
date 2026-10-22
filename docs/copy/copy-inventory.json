@@ -126,7 +126,7 @@
       },
       {
         "file": "app/en/mcp.html",
-        "sha256": "7d56a9935ab28811294befc9a084e0dc4a1c4c6012281920f1a3e2500f7ca7f6"
+        "sha256": "84ff6d08ecfd94a4c5d6213b646cb35e8b4b5598f31c0966261782b16bc91751"
       },
       {
         "file": "app/en/privacy.html",
@@ -226,7 +226,7 @@
       },
       {
         "file": "app/ja/mcp.html",
-        "sha256": "f0ec983d02d1d51bce810884e84e7c204a32a8c7aacf1a18cf711147fe22288a"
+        "sha256": "4c6fc15fb03a6d324601ee13e42f9f36776b757d7a461a6021308f1e4a170fa5"
       },
       {
         "file": "app/ja/privacy.html",
@@ -710,7 +710,7 @@
       },
       {
         "file": "app/zh-hans/mcp.html",
-        "sha256": "1ebe68122d2b62d1b6fcc78fdb8964a2be8bc79f2439e86c2546d4e6f31c5f9b"
+        "sha256": "0813b19c63b6e60af962771710c873182045d3500daffd6e56d5899d40558d48"
       },
       {
         "file": "app/zh-hans/privacy.html",
@@ -718,7 +718,7 @@
       },
       {
         "file": "app/zh-hant/mcp.html",
-        "sha256": "e6262869bbd12d6f4b1b06159744fd9e27098410c7138ec92e0456da4795fc86"
+        "sha256": "cf89c27f9dd79d81effedaf84128af3848e264657ea19381e9aee13b33610975"
       },
       {
         "file": "app/zh-hant/privacy.html",
@@ -890,7 +890,7 @@
       },
       {
         "file": "server/mcp-http.mjs",
-        "sha256": "6bbbfbea148c6ca247a081a4bd19a84a5308d3169b3aaa84e92cc4296cc32c7c"
+        "sha256": "dd991d7d46e0b42a3b645eaab24bd12900fe770eeaddb76bdce5fe1fc4c6c47f"
       },
       {
         "file": "server/mcp-oauth.mjs",
@@ -997,7 +997,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "37863493227de21e4d3a47247e1a89306b18abbcf9518e0faccb8318430d5f17"
+    "inputDigest": "03ea81bf2f7ae17773fb0ed7d5805bcfc1e872ad168d8e1a8add56a3657306a0"
   },
   "locales": [
     "en",
@@ -121956,8 +121956,8 @@
       "column": 531,
       "kind": "html-text",
       "property": null,
-      "value": "to identify the selected book. Withdraw access in your bookroom’s Agent settings.",
-      "sha256": "8c7d5afe4e10d5b5e6a6d66a2592ecc8ac9c6ca660a24dfbf411a6b00d8799f5",
+      "value": "to identify the selected book. Access expires after one hour. For earlier withdrawal, use the authenticated service API described below; the website has no connection management page.",
+      "sha256": "5e79c0daffeb3ca9bfe9309d8626b9bb141a130291d25f4586c40022f5e89fe6",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -156876,8 +156876,8 @@
       "column": 378,
       "kind": "html-text",
       "property": null,
-      "value": "で対象の本を確認でき、書斎の Agent 設定で取り消せます。",
-      "sha256": "72086d5646eb000722930903b09019bf1441713db2a14a9f043ca48012ce14fd",
+      "value": "で対象の本を確認でき、権限は一時間後に失効します。それより前に取り消す場合は下記の認証済みサービス API を使います。ウェブには接続管理画面がありません。",
+      "sha256": "da8d0a41ef088ec75c7598809c18a4d665a1f9dfcb71ba217374b8b6d6a23a42",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -173250,8 +173250,8 @@
       "column": 329,
       "kind": "html-text",
       "property": null,
-      "value": "核对已授权的书；在书房的 Agent 设置中可撤回。",
-      "sha256": "2e5c5ef5023ed262dceb44467dc6af80997cedf64f393d7e1dea551811c899b4",
+      "value": "核对已授权的书；授权一小时后过期。提前撤回请使用下方的已认证服务 API；网页尚无连接管理页。",
+      "sha256": "25374a202b04314e6ac31270de3f15e1f0ea0a4e7de5d8f57f518c249b419664",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -177332,8 +177332,8 @@
       "column": 330,
       "kind": "html-text",
       "property": null,
-      "value": "核對已授權的書；可在書房的 Agent 設定中撤回。",
-      "sha256": "5af45e1a99b454caeae0a61f4ba92395e35a8368ae9bd50698cec91eed53733b",
+      "value": "核對已授權的書；授權一小時後到期。提前撤回請使用下方的已認證服務 API；網頁尚無連線管理頁。",
+      "sha256": "b32f42b3ef79d0741867806e458367e21273cb45419268d84420587ff0d7ae36",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -223001,11 +223001,11 @@
         "<!doctype html><html lang=\"en\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Connect Leafhour</title><link rel=\"stylesheet\" href=\"/typography.css\"><link rel=\"stylesheet\" href=\"/interface-tokens.css\"><link rel=\"stylesheet\" href=\"/portal.css\"><link rel=\"stylesheet\" href=\"/mcp-guide.css\"><body class=\"privacy-page mcp-page\"><main class=\"privacy-document\"><article class=\"public-article\"><h1>Connect one book</h1><p>Signed in as ",
         ".</p><p><strong>",
         "</strong> requests read-only access. Client names are supplied by the client. Return address: <code>",
-        "</code>.</p><p>Share the selected book’s text, existing translations and source references for one hour. Private notes, conversations, reading history and write actions stay outside this permission. You can withdraw access in your <a href=\"/library#agent\">bookroom’s Agent settings</a>.</p><form><input type=\"hidden\" name=\"request\" value=\"",
+        "</code>.</p><p>Share the selected book’s text, existing translations and source references for one hour. Private notes, conversations, reading history and write actions stay outside this permission. Access expires automatically after one hour. Earlier withdrawal uses the authenticated API; this website has no connection management page. See the <a href=\"/mcp\">connection guide</a>.</p><form method=\"post\" action=\"/api/mcp/oauth/consent\"><input type=\"hidden\" name=\"request\" value=\"",
         "\"><input type=\"hidden\" name=\"csrf\" value=\"",
         "\"><label for=\"book\">Book</label><select id=\"book\" name=\"bookId\" required>",
         "</select><p><button type=\"submit\" value=\"allow\"",
-        ">Allow this book</button> <button type=\"submit\" value=\"deny\" formnovalidate>Cancel</button></p></form><p role=\"status\" aria-live=\"polite\"></p><script src=\"/api/mcp/consent.js\" defer></script></article></main></body></html>"
+        ">Allow this book</button> <button type=\"submit\" value=\"deny\" formnovalidate>Cancel</button></p></form><p role=\"status\" aria-live=\"polite\"></p><script src=\"/api/mcp/consent-script\" defer></script></article></main></body></html>"
       ],
       "unresolved": true
     },

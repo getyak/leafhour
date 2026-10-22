@@ -52,3 +52,16 @@ test('login continuation, CSRF, malicious origins and token passthrough fail saf
  const manual=await f.portal.library.createGrant(f.own,{bookId:readingBook.bookId,scopes:['content','notes']});const passthrough=await f.post('/api/mcp',{jsonrpc:'2.0',id:1,method:'tools/list'},{Authorization:'Bearer '+manual.token});assert.equal(passthrough.status,401);
  const revoked=await f.call('/api/mcp/oauth/revoke',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({token:flow.token,client_id:flow.client.client_id})});assert.equal(revoked.status,200);assert.equal((await f.post('/api/mcp',{},{Authorization:'Bearer '+flow.token})).status,401);
 });
+
+test('consent script survives extensionless routing and scriptless submission fails closed without a GET query',async t=>{
+ const f=await fixture(t),{html,request}=await f.authorize(),src=html.match(/<script src="([^"]+)"/)[1];
+ assert.ok(!src.endsWith('.js'),'Vercel redirects API .js suffixes before the domain handler');
+ for(const url of [src,'/api/mcp/consent','/api/mcp/consent.js']){const response=await f.call(url);assert.equal(response.status,200);assert.match(response.headers.get('content-type'),/^text\/javascript/);assert.match(await response.text(),/addEventListener\('submit'/);}
+ assert.match(html,/<form\s[^>]*method="post"/);assert.match(html,/<form\s[^>]*action="\/api\/mcp\/oauth\/consent"/);
+ const csrf=html.match(/name="csrf" value="([^"]+)"/)[1],before=await f.portal.library.grants(f.own);
+ const response=await f.call('/api/mcp/oauth/consent',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded',Origin:f.origin,Cookie:f.cookie},body:new URLSearchParams({request,csrf,bookId:readingBook.bookId})});
+ assert.equal(response.status,415,'The POST guard is a safe failure, not a no-JavaScript authorization flow');
+ assert.equal(response.headers.get('location'),null);assert.deepEqual(await f.portal.library.grants(f.own),before);
+ assert.ok(!html.includes('/library#agent'),'Do not promise a web revocation control that does not exist');
+
+});

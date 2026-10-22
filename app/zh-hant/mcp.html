@@ -24,7 +24,7 @@
   <p>Leafhour 的 Model Context Protocol（MCP）轉接器讓相容的 AI 宿主讀取你授權的一本書。它與網頁使用同一個閱讀服務。存取僅限於一本書和你選擇的資料類型；只安裝轉接器不會取得任何權限。</p>
   <p>這是技術接入。閱讀介面支援英文、簡體中文、繁體中文和日語，尚無完整的授權管理頁面。建立和撤回授權，請使用現有相容用戶端或已認證的服務 API。需要協助時，請聯絡 <a href="mailto:support@leafhour.com">support@leafhour.com</a>。</p>
   <h2 id="remote">透過 OAuth 連接 ChatGPT。</h2>
-  <p>在 <a href="https://chatgpt.com/plugins">ChatGPT Plugins</a> 新增自訂 MCP 伺服器，地址填入 <code>https://leafhour.com/api/mcp</code>，選擇 OAuth。若 ChatGPT 拒絕動態註冊，按<a href="https://github.com/getyak/leafhour/blob/main/docs/mcp-oauth.md">接入說明</a>使用預先註冊的公共用戶端。在 Leafhour 登入，核對帳戶並選一本書。授權僅唯讀一小時，不含私人筆記與閱讀紀錄。呼叫 <code>reader_get_connection</code> 核對已授權的書；可在書房的 Agent 設定中撤回。</p>
+  <p>在 <a href="https://chatgpt.com/plugins">ChatGPT Plugins</a> 新增自訂 MCP 伺服器，地址填入 <code>https://leafhour.com/api/mcp</code>，選擇 OAuth。若 ChatGPT 拒絕動態註冊，按<a href="https://github.com/getyak/leafhour/blob/main/docs/mcp-oauth.md">接入說明</a>使用預先註冊的公共用戶端。在 Leafhour 登入，核對帳戶並選一本書。授權僅唯讀一小時，不含私人筆記與閱讀紀錄。呼叫 <code>reader_get_connection</code> 核對已授權的書；授權一小時後到期。提前撤回請使用下方的已認證服務 API；網頁尚無連線管理頁。</p>
   <p>相容 skills 的宿主也可從 <code>getyak/leafhour</code> 安裝 <code>leafhour-reading</code>。只安裝 skill 不會連接或授權 MCP。詳見<a href="https://github.com/getyak/leafhour/blob/main/docs/mcp-oauth.md">安裝與 OAuth 說明</a>。ChatGPT 帳戶和工作空間政策決定能否新增自訂伺服器；下方命令設定仍適用於 stdio 宿主。</p>
   <h2 id="permissions">選擇 Agent 可以存取的內容。</h2>
   <div class="mcp-scroll" role="region" aria-label="權限表，可橫向捲動" tabindex="0"><table><thead><tr><th scope="col">權限</th><th scope="col">允許的操作</th></tr></thead><tbody>
