@@ -40,3 +40,21 @@ test('deployment tests receive only the explicit copy tool paths; runtime stages
   const stages=(await readFile(path.join(root,'stages.jsonl'),'utf8')).trim().split('\n').map(row=>JSON.parse(row));
   assert.deepEqual(stages.map(row=>row.stage),['probe.test.mjs','build-reader-runtime.mjs','build-vercel.mjs','check-public-build.mjs','release-policy.mjs','verify-release.mjs']);
 });
+
+test('only an actual hosted build can mark the test stage as lacking native database tools',async t=>{
+  const root=await mkdtemp(path.join(tmpdir(),'hosted-ci-environment-'));
+  t.after(()=>rm(root,{recursive:true,force:true}));
+  await mkdir(path.join(root,'tools'));await mkdir(path.join(root,'tests'));
+  await writeFile(path.join(root,'tools/verify-deploy.mjs'),await readFile(new URL('../tools/verify-deploy.mjs',import.meta.url)));
+  const probe=`import {appendFileSync} from 'node:fs';appendFileSync('stages.jsonl',JSON.stringify({stage:process.argv[1].split('/').at(-1),hosted:process.env.LEAFHOUR_HOSTED_BUILD_TESTS})+'\\n');`;
+  await writeFile(path.join(root,'tests/probe.test.mjs'),probe);
+  for(const file of ['build-reader-runtime.mjs','build-vercel.mjs','check-public-build.mjs','release-policy.mjs','verify-release.mjs'])await writeFile(path.join(root,'tools',file),probe);
+  for(const [args,vercel,expected]of [[[],undefined,undefined],[[], '1',undefined],[['--hosted'],undefined,undefined],[['--hosted'],'1','1']]){
+    await writeFile(path.join(root,'stages.jsonl'),'');
+    const result=spawnSync(process.execPath,['tools/verify-deploy.mjs',...args],{cwd:root,encoding:'utf8',env:{PATH:process.env.PATH,HOME:root,TMPDIR:root,...(vercel?{VERCEL:vercel}:{}),LEAFHOUR_HOSTED_BUILD_TESTS:'1'}});
+    assert.equal(result.status,0,result.stdout+result.stderr);
+    const stages=(await readFile(path.join(root,'stages.jsonl'),'utf8')).trim().split('\n').map(row=>JSON.parse(row));
+    assert.equal(stages[0].stage,'probe.test.mjs');assert.equal(stages[0].hosted,expected);
+    assert.ok(stages.slice(1).every(stage=>stage.hosted===undefined),'hosted test marker must not reach runtime builders');
+  }
+});
