@@ -50,10 +50,10 @@ async function stubSession(context){
     providers:{google:false,apple:false},otp:{digits:6,retryAfter:60},localAvailable:true,translationAvailable:true,
     readingPreferences:null,billing:{enabled:false}
   })}));
-  await context.route('**/api/library/books/*/records',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({
+  await context.route('**/api/library/books/*/records*',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({
     kind:'marginalia-personal-records',schemaVersion:2,bookId:'gutenberg-alice',contentVersion:'0',comments:[],questions:[],readingSessions:[],highlights:[],position:null
   })}));
-  await context.route('**/api/library/books/*/progress',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({saved:true})}));
+  await context.route('**/api/library/books/*/progress*',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({saved:true})}));
 }
 
 for(const [width,height] of widths){

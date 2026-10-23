@@ -114,7 +114,7 @@ body.has-panel .passage.is-panel-anchor::before{border-color:color-mix(in srgb,v
 .source-syntax{display:none}
 #show-highlight{color:var(--accent);font-weight:600}
 .highlight-status{position:fixed;left:50%;bottom:max(80px,env(safe-area-inset-bottom));transform:translateX(-50%);max-width:calc(100vw - 32px);width:max-content;margin:0;padding:12px 18px;border:1px solid var(--line-hairline);border-radius:8px;background:var(--panel);color:var(--ink);box-shadow:var(--shadow-popover);font:13px/1.7 var(--interface);z-index:12}
-.highlight-status a{display:block;color:var(--accent);padding-top:7px;min-height:32px}
+.highlight-status a{display:block;color:var(--accent);padding-top:7px;min-height:44px}
 .highlight-record blockquote{margin:12px 0;padding:0 0 0 14px;border-left:3px solid #d9ba55;white-space:pre-wrap;font:17px/1.9 var(--book)}
 .highlight-record-actions{display:flex;flex-wrap:wrap;gap:4px 16px}.highlight-record-actions button{font:12px var(--interface);color:var(--accent);min-height:44px;padding:6px 0}
 body.is-focused .note-panel:not(.is-inline) .panel-heading{padding-top:76px}
