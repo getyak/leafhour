@@ -2210,8 +2210,8 @@ candidate:app/index.html:12:48,html-attribute,app/index.html,12,aria-label,unkno
 candidate:app/index.html:12:165,html-attribute,app/index.html,12,aria-label,unknown,reviewable,,Back to library
 candidate:app/index.html:14:191,html-attribute,app/index.html,14,aria-label,unknown,reviewable,,Reading atmosphere
 candidate:app/index.html:14:385,html-attribute,app/index.html,14,aria-label,unknown,reviewable,,Pause atmosphere sounds
-candidate:app/index.html:14:615,html-attribute,app/index.html,14,aria-label,unknown,reviewable,,Reading settings
-candidate:app/index.html:14:890,html-attribute,app/index.html,14,aria-label,unknown,reviewable,,Search and commands
+candidate:app/index.html:14:695,html-attribute,app/index.html,14,aria-label,unknown,reviewable,,Reading settings
+candidate:app/index.html:14:970,html-attribute,app/index.html,14,aria-label,unknown,reviewable,,Search and commands
 candidate:app/index.html:21:90,html-attribute,app/index.html,21,aria-label,unknown,reviewable,,Book text
 candidate:app/index.html:22:59,html-attribute,app/index.html,22,aria-label,unknown,reviewable,,Page navigation
 candidate:app/index.html:22:204,html-attribute,app/index.html,22,aria-label,unknown,reviewable,,Previous page
@@ -2258,10 +2258,9 @@ candidate:app/index.html:13:234,html-text,app/index.html,13,,unknown,reviewable,
 candidate:app/index.html:13:458,html-text,app/index.html,13,,unknown,reviewable,,Choose a chapter
 candidate:app/index.html:13:545,html-text,app/index.html,13,,unknown,reviewable,,", open contents to choose a chapter"
 candidate:app/index.html:14:297,html-text,app/index.html,14,,unknown,reviewable,,Atmosphere
-candidate:app/index.html:14:467,html-text,app/index.html,14,,unknown,reviewable,,Ⅱ
-candidate:app/index.html:14:703,html-text,app/index.html,14,,unknown,reviewable,,Aa
-candidate:app/index.html:14:789,html-text,app/index.html,14,,unknown,reviewable,,Focus
-candidate:app/index.html:14:1106,html-text,app/index.html,14,,unknown,reviewable,,Search and commands
+candidate:app/index.html:14:783,html-text,app/index.html,14,,unknown,reviewable,,Aa
+candidate:app/index.html:14:869,html-text,app/index.html,14,,unknown,reviewable,,Focus
+candidate:app/index.html:14:1186,html-text,app/index.html,14,,unknown,reviewable,,Search and commands
 candidate:app/index.html:18:139,html-text,app/index.html,18,,unknown,reviewable,,Opening the book…
 candidate:app/index.html:18:214,html-text,app/index.html,18,,unknown,reviewable,,Back to library
 candidate:app/index.html:19:88,html-text,app/index.html,19,,unknown,reviewable,,This book could not open right now.
@@ -2271,7 +2270,7 @@ candidate:app/index.html:22:536,html-text,app/index.html,22,,unknown,reviewable,
 candidate:app/index.html:23:132,html-text,app/index.html,23,,unknown,reviewable,,Previous chapter
 candidate:app/index.html:23:253,html-text,app/index.html,23,,unknown,reviewable,,Next chapter
 candidate:app/index.html:24:158,html-text,app/index.html,24,,unknown,reviewable,,I finished this chapter
-candidate:app/index.html:28:577,html-text,app/index.html,28,,unknown,reviewable,,Read
+candidate:app/index.html:28:610,html-text,app/index.html,28,,unknown,reviewable,,Read
 candidate:app/index.html:31:109,html-text,app/index.html,31,,unknown,reviewable,,Make time for a book
 candidate:app/index.html:31:403,html-text,app/index.html,31,,unknown,reviewable,,Collapse
 candidate:app/index.html:31:444,html-text,app/index.html,31,,unknown,reviewable,,↓

@@ -246,7 +246,7 @@
       },
       {
         "file": "app/index.html",
-        "sha256": "5c2008250fe65d6f9a5f869c35a4b3be35bae50586d094714f5a8778d5129891"
+        "sha256": "3bb74d87afd642ac7a8568866293851796800f4467165c8ec866d56942ab5ced"
       },
       {
         "file": "app/interaction-craft.mjs",
@@ -1093,7 +1093,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "00b7168de2022389349f773f966d6e90f7d643585dfba813d7866b440f7b8b1b"
+    "inputDigest": "7587a9bf0871337c79dca115f14b0c4f430a56a223b02bb10adc4de3cad3b762"
   },
   "locales": [
     "en",
@@ -165311,10 +165311,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:14:615",
+      "id": "candidate:app/index.html:14:695",
       "file": "app/index.html",
       "line": 14,
-      "column": 615,
+      "column": 695,
       "kind": "html-attribute",
       "property": "aria-label",
       "value": "Reading settings",
@@ -165337,10 +165337,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:14:890",
+      "id": "candidate:app/index.html:14:970",
       "file": "app/index.html",
       "line": 14,
-      "column": 890,
+      "column": 970,
       "kind": "html-attribute",
       "property": "aria-label",
       "value": "Search and commands",
@@ -166559,36 +166559,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:14:467",
+      "id": "candidate:app/index.html:14:783",
       "file": "app/index.html",
       "line": 14,
-      "column": 467,
-      "kind": "html-text",
-      "property": null,
-      "value": "Ⅱ",
-      "sha256": "12c34a19d48a8ff98dce658f0bc760d236359acda979026e65e8ae3962a449ed",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:14:703",
-      "file": "app/index.html",
-      "line": 14,
-      "column": 703,
+      "column": 783,
       "kind": "html-text",
       "property": null,
       "value": "Aa",
@@ -166611,10 +166585,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:14:789",
+      "id": "candidate:app/index.html:14:869",
       "file": "app/index.html",
       "line": 14,
-      "column": 789,
+      "column": 869,
       "kind": "html-text",
       "property": null,
       "value": "Focus",
@@ -166637,10 +166611,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:14:1106",
+      "id": "candidate:app/index.html:14:1186",
       "file": "app/index.html",
       "line": 14,
-      "column": 1106,
+      "column": 1186,
       "kind": "html-text",
       "property": null,
       "value": "Search and commands",
@@ -166897,10 +166871,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:28:577",
+      "id": "candidate:app/index.html:28:610",
       "file": "app/index.html",
       "line": 28,
-      "column": 577,
+      "column": 610,
       "kind": "html-text",
       "property": null,
       "value": "Read",
@@ -250628,8 +250602,8 @@
     "duplicateKeys": 0,
     "reviewedItems": 0,
     "unreviewedItems": 2133,
-    "candidates": 4820,
-    "candidatesUnreviewed": 4820,
+    "candidates": 4819,
+    "candidatesUnreviewed": 4819,
     "candidatesProtected": 129,
     "itemsProtected": 9,
     "dynamicConsumers": 3034,
