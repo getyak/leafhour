@@ -63,8 +63,8 @@
 .toc-title{min-width:0}
 .toc-title-main{display:block;font:14px/1.65 var(--book);color:var(--ink);overflow-wrap:anywhere}
 .toc-title-original{display:block;font:12px/1.7 var(--english);color:var(--muted);margin-top:3px;overflow-wrap:anywhere;opacity:.8}
-.toc-current{font:12px/1.5 var(--interface);text-align:right;opacity:0;transition:opacity .15s}
-.toc-chapter:hover .toc-current,.toc-chapter[aria-current=location] .toc-current{opacity:1}
+.toc-current{font:12px/1.5 var(--interface);text-align:right}
+.toc-chapter[aria-current=location] .toc-current{opacity:1}
 .toc-dialog .toc-section-disclosure{margin:0 13px 12px 50px}
 .toc-dialog .toc-section-disclosure>summary{font:12px/1.8 var(--interface);color:var(--muted);padding:5px 0;list-style:revert;min-height:32px}
 .toc-dialog .toc-sections{padding:2px 0 0}
