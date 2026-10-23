@@ -1,7 +1,7 @@
-.reader-annotation-card{color:var(--ink);background:color-mix(in srgb,var(--panel) 88%,var(--paper));border:1px solid var(--line-hairline);border-left:2px solid color-mix(in srgb,var(--accent) 65%,var(--line));border-radius:4px;display:flex;flex-direction:column;min-width:0;text-align:left;isolation:isolate;font:13px/1.75 var(--interface);box-sizing:border-box}
+.reader-annotation-card{color:var(--ink);background:color-mix(in srgb,var(--panel) 88%,var(--paper));border:1px solid var(--line-hairline);border-left:2px solid color-mix(in srgb,var(--accent) 65%,var(--line));border-radius:var(--radius-dialog,10px);display:flex;flex-direction:column;min-width:0;text-align:left;isolation:isolate;font:13px/1.75 var(--interface);box-sizing:border-box}
 .reader-annotation-card[hidden]{display:none}
 .reader-annotation-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none;min-height:44px;padding-left:16px;color:var(--muted);font-size:12px}
-.reader-annotation-card button,.reader-annotation-indicator{min-height:44px;min-width:44px;font:12px/1.5 var(--interface);padding:8px 12px;border-radius:3px}
+.reader-annotation-card button,.reader-annotation-indicator{min-height:44px;min-width:44px;font:12px/1.5 var(--interface);padding:8px 12px;border-radius:var(--radius-control,6px)}
 .reader-annotation-card button:hover,.reader-annotation-indicator:hover{background:var(--wash)}
 .reader-annotation-card :focus-visible,.reader-annotation-indicator:focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}
 .reader-annotation-scroll{overflow:auto;overscroll-behavior:contain;min-height:0;padding:0 16px 12px;scrollbar-width:thin;overflow-wrap:anywhere}
@@ -15,7 +15,7 @@
 .reader-annotation-card .library-chat-markdown a{color:var(--accent);text-underline-offset:3px}.reader-annotation-card .library-chat-markdown ul,.reader-annotation-card .library-chat-markdown ol{padding-left:22px}
 .reader-annotation-card .reader-annotation-status{font:12px/1.7 var(--interface);color:var(--muted);margin:12px 0;white-space:normal;min-height:0}.reader-annotation-status:empty{display:none}
 .reader-annotation-form{display:flex;flex-direction:column;align-items:flex-end;gap:4px;border-top:1px solid var(--line-hairline);padding-top:12px;margin-top:14px}
-.reader-annotation-form textarea{width:100%;box-sizing:border-box;min-height:72px;max-height:180px;resize:vertical;padding:10px;border:1px solid var(--line-control);border-radius:3px;background:var(--paper);color:var(--ink);font:14px/1.7 var(--interface)}
+.reader-annotation-form textarea{width:100%;box-sizing:border-box;min-height:72px;max-height:180px;resize:vertical;padding:10px;border:1px solid var(--line-control);border-radius:var(--radius-control,6px);background:var(--paper);color:var(--ink);font:14px/1.7 var(--interface)}
 .reader-annotation-form button{color:var(--accent)}.reader-annotation-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:4px}.reader-annotation-actions button{color:var(--muted)}
 .reader-annotation-card[data-placement=inline]{height:min(480px,70dvh);margin:8px 0 28px;width:100%}
 .reader-annotation-card[data-placement=margin]{position:absolute;z-index:2;height:min(460px,70dvh)}
@@ -47,12 +47,12 @@ body[data-annotation-pane=true][data-annotation-compact=true] :is(#reading-sessi
 .reader-annotation-summary-author{font:12px/1.6 var(--interface);letter-spacing:.04em;color:var(--accent)}
 .reader-annotation-summary-text{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;text-wrap:pretty}
 .reader-annotation-summary:hover,.reader-annotation-summary[aria-expanded=true]{color:var(--ink);border-color:var(--accent);background:color-mix(in srgb,var(--wash) 65%,transparent)}
-.reader-annotation-summary[data-side=compact]{height:40px;min-height:40px;min-width:24px;padding:4px 0;border-radius:12px;border:1px solid var(--line-hairline);background:var(--paper);font-size:12px;align-items:center;justify-content:center}
+.reader-annotation-summary[data-side=compact]{height:40px;min-height:40px;min-width:24px;padding:4px 0;border-radius:var(--radius-dialog,10px);border:1px solid var(--line-hairline);background:var(--paper);font-size:12px;align-items:center;justify-content:center}
 .reader-annotation-summary[data-side=compact] .reader-annotation-summary-text{display:none}
 .reader-annotation-summary[data-side=compact] .reader-annotation-summary-author{display:none}.reader-annotation-summary[data-side=compact]::before{content:"";width:11px;height:13px;border:1px solid currentColor;border-radius:2px;background:linear-gradient(currentColor,currentColor) 2px 4px / 6px 1px no-repeat,linear-gradient(currentColor,currentColor) 2px 7px / 4px 1px no-repeat}
-.reader-annotation-card[data-placement=margin]{position:fixed;z-index:8;height:auto;max-height:min(var(--annotation-card-height,560px),calc(100dvh - 100px));box-shadow:0 12px 36px color-mix(in srgb,var(--ink) 8%,transparent);border-radius:8px}
+.reader-annotation-card[data-placement=margin]{position:fixed;z-index:8;height:auto;max-height:min(var(--annotation-card-height,560px),calc(100dvh - 100px));box-shadow:0 12px 36px color-mix(in srgb,var(--ink) 8%,transparent);border-radius:var(--radius-dialog,10px)}
 .reader-annotation-heading{gap:4px;padding-left:12px}.reader-annotation-heading>span:first-child{margin-right:auto}.reader-annotation-heading .reader-annotation-previous,.reader-annotation-heading .reader-annotation-next{min-width:32px;padding:4px;font-size:20px}.reader-annotation-count{font-size:12px;white-space:nowrap}
-.reader-annotation-card[data-placement=sheet]{position:fixed;z-index:12;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(480px,calc(100% - 24px));height:min(540px,68dvh);max-height:calc(100dvh - 88px);border-radius:14px;box-shadow:0 12px 48px color-mix(in srgb,var(--ink) 18%,transparent)}
+.reader-annotation-card[data-placement=sheet]{position:fixed;z-index:12;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(480px,calc(100% - 24px));height:min(540px,68dvh);max-height:calc(100dvh - 88px);border-radius:var(--radius-dialog,10px);box-shadow:0 12px 48px color-mix(in srgb,var(--ink) 18%,transparent)}
 .reader-annotation-card[data-placement=sheet] .reader-annotation-scroll{padding-bottom:max(16px,env(safe-area-inset-bottom))}
 .reader-annotation-card .reader-annotation-save-note{color:var(--accent);align-self:flex-start}
 .reader-annotation-explain{color:var(--accent)}

@@ -24,17 +24,17 @@
 .choice-input{
   display:block;width:100%;min-height:var(--action-target,44px);padding:8px 12px;
   background:var(--paper,#f7f5ef);color:var(--ink,#263b32);
-  border:1px solid var(--line-control,#c7ccbb);border-radius:3px;font-size:14px;
+  border:1px solid var(--line-control,#c7ccbb);border-radius:var(--radius-control,6px);font-size:14px;
 }
 .choice-listbox{
   position:absolute;z-index:5;left:0;right:0;top:calc(100% + 4px);
   max-width:390px;max-height:min(280px,45vh);overflow:auto;
   margin:0;padding:5px;list-style:none;
   background:var(--paper,#f7f5ef);color:var(--ink,#263b32);
-  border:1px solid var(--line-control,#c7ccbb);border-radius:5px;box-shadow:var(--shadow-popover);
+  border:1px solid var(--line-control,#c7ccbb);border-radius:var(--radius-control,6px);box-shadow:var(--shadow-popover);
 }
 .choice-listbox:empty{display:none}
-.choice-option{min-height:var(--action-target,44px);padding:10px 13px;border-radius:3px;font-size:14px;line-height:1.5;cursor:pointer}
+.choice-option{min-height:var(--action-target,44px);padding:10px 13px;border-radius:var(--radius-control,6px);font-size:14px;line-height:1.5;cursor:pointer}
 .choice-option:hover,.choice-option.is-active{background:var(--surface-soft,#f3f1e9)}
 .choice-option.is-selected{color:var(--accent,#365b45);font-weight:600}
 .choice-option[aria-disabled=true]{opacity:.55;cursor:default}
