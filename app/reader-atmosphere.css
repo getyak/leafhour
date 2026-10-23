@@ -17,7 +17,7 @@ body{isolation:isolate}
 .atmosphere-header-control{display:flex;align-items:center;gap:0}
 #atmosphere-quick-pause{min-width:36px;min-height:44px;padding:8px 7px;color:var(--accent);font-size:13px}
 #open-atmosphere[data-playing=true]{color:var(--accent);box-shadow:inset 0 -1px var(--accent)}
-.atmosphere-dialog{padding:0;width:min(880px,calc(100vw - 48px));max-height:calc(100dvh - 64px);margin:auto;border:1px solid var(--line-hairline);border-radius:12px;overflow:auto;box-shadow:var(--shadow-modal);scrollbar-width:thin;overscroll-behavior:contain}
+.atmosphere-dialog{padding:0;width:min(880px,calc(100vw - 48px));max-height:calc(100dvh - 64px);margin:auto;border:1px solid var(--line-hairline);border-radius:var(--radius-dialog,10px);overflow:auto;box-shadow:var(--shadow-modal);scrollbar-width:thin;overscroll-behavior:contain}
 .atmosphere-dialog::backdrop{background:#0b191768;backdrop-filter:blur(6px)}
 .atmosphere-shell{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:650px}
 .atmosphere-preview{position:sticky;top:0;align-self:start;height:100%;max-height:calc(100dvh - 66px);isolation:isolate;background:#26372d;overflow:hidden;color:#fffdf4}
@@ -56,12 +56,13 @@ body{isolation:isolate}
 .atmosphere-volume label span{display:block;font-size:12px;color:var(--muted)}
 .atmosphere-volume input{width:100%;min-width:0;accent-color:var(--accent);height:44px;cursor:pointer}
 .atmosphere-volume output{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
-.atmosphere-motion{display:flex;align-items:center;justify-content:space-between;min-height:32px;font-size:12px;margin-top:4px}
+.atmosphere-motion{display:flex;align-items:center;justify-content:space-between;min-height:44px;font-size:12px;margin-top:4px}
 .atmosphere-motion label span{display:block;color:var(--muted);font-size:12px;line-height:1.8;margin-top:3px}
-.atmosphere-motion input{appearance:none;position:relative;flex:none;width:34px;height:20px;border:1px solid var(--line-control);border-radius:20px;background:var(--wash);cursor:pointer}
-.atmosphere-motion input::before{content:"";position:absolute;top:3px;left:3px;width:12px;height:12px;border-radius:50%;background:var(--muted)}
-.atmosphere-motion input:checked{background:var(--accent);border-color:var(--accent)}
-.atmosphere-motion input:checked::before{left:17px;background:var(--panel)}
+.atmosphere-motion input{appearance:none;-webkit-appearance:none;position:relative;flex:none;width:52px;height:44px;border:0;background:transparent;cursor:pointer}
+.atmosphere-motion input::before{content:"";position:absolute;left:2px;top:9px;width:46px;height:26px;border:1px solid var(--line-control);border-radius:20px;background:var(--wash)}
+.atmosphere-motion input::after{content:"";position:absolute;left:6px;top:13px;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:left .15s ease,background .15s ease}
+.atmosphere-motion input:checked::before{background:var(--accent);border-color:var(--accent)}
+.atmosphere-motion input:checked::after{left:28px;background:var(--panel)}
 .atmosphere-footer{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:17px}
 .atmosphere-play{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 19px;border-radius:6px;background:var(--accent);color:var(--panel);font:12px var(--interface);min-height:44px;min-width:142px}
 #atmosphere-return{font:12px var(--interface);min-height:44px;padding:8px 0;color:var(--muted);white-space:nowrap}
@@ -69,7 +70,7 @@ body{isolation:isolate}
 .atmosphere-status{font:12px/1.9 var(--interface);min-height:19px;color:var(--muted);margin:12px 0 0;overflow-wrap:anywhere}
 .atmosphere-dialog[data-playback=error] .atmosphere-status{color:var(--ink)}
 .atmosphere-about{font:12px/1.8 var(--interface);margin-top:13px;color:var(--muted)}
-.atmosphere-about summary{cursor:pointer;font-size:12px;min-height:24px}.atmosphere-about p{margin:10px 0}.atmosphere-about a{color:var(--accent)}
+.atmosphere-about summary{cursor:pointer;font-size:12px;min-height:44px;display:flex;align-items:center}.atmosphere-about p{margin:10px 0}.atmosphere-about a{display:inline-flex;align-items:center;min-height:44px;color:var(--accent)}
 /* Weather stays behind the fixed paper mask. The hearth adds a small flame field
    anchored to its fuel; its photograph remains still. Forest and sea keep still
    photographs too: their motion is light and water on the elements layers (the

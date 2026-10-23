@@ -37,11 +37,15 @@ export function mountReaderTranslation({bookId,session,document:doc=globalThis.d
     if(disposed)return;
     if(cachedView){
       const priced=session?.billing?.enabled===true&&!cachedView.disabled&&!hasDualDrafts(selectedPassage())&&['translation.translate','translation.retry'].includes(cachedView.label?.id);
-      button.textContent=message(cachedView.label)+(priced?' · '+creditActionLabel('translation',getUiLocale()):'');hint.textContent=cachedView.notice.map(message).join('');
-      const routine=cachedView.notice.length===1&&cachedView.notice[0]?.id==='translation.onDemand';
+      // The sign-in gate explains an action, so it belongs beside that action. The
+      // heading keeps reporting the passage itself instead of switching topics.
+      const gate=cachedView.label?.id==='translation.login';
+      button.textContent=message(cachedView.label)+(priced?' · '+creditActionLabel('translation',getUiLocale()):'');hint.textContent=(gate?[message({id:'translation.untranslated'})]:cachedView.notice).map(message).join('');
+      const routine=!gate&&cachedView.notice.length===1&&cachedView.notice[0]?.id==='translation.onDemand';
       guidanceTitle.textContent=t('reader.shell.aboutTranslation');guidance.hidden=!routine;
       const destination=routine?guidance:doc.getElementById('chapter-heading');if(hint.parentElement!==destination)destination.append(hint);
-      scope.hidden=!session?.user||!session?.translationAvailable||!tasks.selectedId()||!['translation.translate','translation.retry','translation.translating'].includes(cachedView.label?.id);scope.textContent=t('translation.scopeBrief');
+      const actionable=['translation.translate','translation.retry','translation.translating'].includes(cachedView.label?.id);
+      scope.hidden=!tasks.selectedId()||!(gate||(actionable&&session?.user&&session?.translationAvailable));scope.textContent=gate?cachedView.notice.map(message).join(''):t('translation.scopeBrief');
       if(scope.hidden)button.removeAttribute('aria-describedby');else button.setAttribute('aria-describedby',scope.id);
       billingLink.hidden=!cachedView.notice.some(value=>value?.id==='credit.funds');billingLink.href=uiHref('/billing');
     }
