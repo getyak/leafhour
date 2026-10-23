@@ -209,6 +209,13 @@ test('no surface re-implements the brand ring and keyboard focus is never remove
     for (const match of source.matchAll(/([^{}]+){[^}]*outline:\s*(?:none|0)\b/g)) {
       const selector = match[1].replace(/\s+/g, ' ').trim().split('}').pop();
       if (wrapperVariants.test(selector) || programmatic.test(selector)) continue;
+      if (name === 'leafhour-surfaces.css' && selector === 'body.library-page .shelf-search input:focus-visible') {
+        // A composite field may move the keyboard ring to its wrapper, but
+        // only while that wrapper retains the shared visible ring and halo.
+        assert.match(source, /\.shelf-search:has\(input:focus-visible\)\s*\{[^}]*outline:\s*var\(--focus-ring-width\) solid var\(--focus-ring\);[^}]*outline-offset:\s*var\(--focus-ring-offset\)/);
+        assert.match(source, /\.shelf-search:focus-within\s*\{[^}]*border-color:\s*var\(--focus-ring\);[^}]*box-shadow:[^}]*var\(--focus-ring-halo\)/);
+        continue;
+      }
       assert.doesNotMatch(selector, ringSelector,
         name + ' removed keyboard focus indication from ' + selector);
     }
