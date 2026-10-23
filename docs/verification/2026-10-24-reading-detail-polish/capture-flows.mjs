@@ -30,6 +30,7 @@ const audit=page=>page.evaluate(prefixes=>{
     if(cs.display==='none'||cs.visibility==='hidden'||Number(cs.opacity)===0)continue;
     rows.push({tag:el.tagName.toLowerCase(),id:el.id||null,cls:(typeof el.className==='string'?el.className:'').split(/\s+/).filter(Boolean).slice(0,4),
       text:(el.innerText||el.textContent||'').trim().replace(/\s+/g,' ').slice(0,60),
+      name:((el.labels&&el.labels[0]&&(el.labels[0].innerText||el.labels[0].textContent))||'').trim().replace(/\s+/g,' ').slice(0,40)||el.getAttribute('aria-label')||'',
       w:Math.round(r.width*10)/10,h:Math.round(r.height*10)/10,x:Math.round(r.x*10)/10,y:Math.round(r.y*10)/10,
       visible:r.width>0&&r.height>0&&r.bottom>0&&r.top<innerHeight&&r.right>0&&r.left<innerWidth});
   }

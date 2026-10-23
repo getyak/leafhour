@@ -37,6 +37,7 @@ const auditControls=page=>page.evaluate(prefixes=>{
       cls:(el.className&&typeof el.className==='string'?el.className:'').split(/\s+/).filter(Boolean).slice(0,4),
       text:(el.innerText||el.textContent||'').trim().replace(/\s+/g,' ').slice(0,60),
       aria:el.getAttribute('aria-label'),
+      name:((el.labels&&el.labels[0]&&(el.labels[0].innerText||el.labels[0].textContent))||'').trim().replace(/\s+/g,' ').slice(0,40) || el.getAttribute('aria-label') || '',
       title:el.getAttribute('title'),
       w:Math.round(r.width*10)/10,h:Math.round(r.height*10)/10,
       x:Math.round(r.x*10)/10,y:Math.round(r.y*10)/10,
