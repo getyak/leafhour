@@ -3116,6 +3116,7 @@ candidate:app/reader-audio.js:58:181,js-attribute,app/reader-audio.js,58,role,un
 candidate:app/reader-audio.js:58:218,js-attribute,app/reader-audio.js,58,aria-live,unknown,reviewable,,polite
 candidate:app/reader-audio.js:82:88,js-attribute,app/reader-audio.js,82,aria-busy,unknown,reviewable,,true
 candidate:app/reader-audio.js:83:562,js-attribute,app/reader-audio.js,83,aria-busy,unknown,reviewable,,false
+candidate:app/reader-audio.js:93:225,js-attribute,app/reader-audio.js,93,aria-hidden,unknown,reviewable,,true
 candidate:app/reader-audio.js:178:187,js-cjk-literal,app/reader-audio.js,178,,unknown,reviewable,,读到这里，可以停一会儿。把一句话听完整，再回到原文，慢慢想。
 candidate:app/reader-book-actions-bootstrap.mjs:27:43,js-attribute,app/reader-book-actions-bootstrap.mjs,27,role,unknown,reviewable,,alert
 candidate:app/reader-book-actions-bootstrap.mjs:36:43,js-attribute,app/reader-book-actions-bootstrap.mjs,36,role,unknown,reviewable,,status

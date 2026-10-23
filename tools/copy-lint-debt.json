@@ -1725,15 +1725,6 @@
       "state": "unreviewed"
     },
     {
-      "itemId": "reader.shell.manualHelp",
-      "locale": "zh-Hans",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "981017103b80c7bb502d39401977c77e0ee679e576477ba8038f8df3a5fc8e46",
-      "match": "提交",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
       "itemId": "reader.shell.questionPlaceholder",
       "locale": "zh-Hans",
       "rule": "Leafhour.ToneT1Zh",
@@ -1855,15 +1846,6 @@
       "locale": "zh-Hans",
       "rule": "Leafhour.DevSpeak",
       "valueSha256": "a7e3bd2800f685a1e8aff58d949f20132d57abd718b60bc26a05950ff6bfa67f",
-      "match": "AI 草稿",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
-      "itemId": "sample.notice",
-      "locale": "zh-Hans",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "29a8d6a65d882bf4ca26c354fc162b3f2aefefa401cae040b9f783ec6c238c30",
       "match": "AI 草稿",
       "kind": "existing-debt",
       "state": "unreviewed"
@@ -2868,15 +2850,6 @@
       "state": "unreviewed"
     },
     {
-      "itemId": "reader.shell.manualHelp",
-      "locale": "zh-Hant",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "1501862b742794d5a35ba44d32db191d500f62de5e24fb8a48c6987923a575f6",
-      "match": "提交",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
       "itemId": "reader.shell.questionPlaceholder",
       "locale": "zh-Hant",
       "rule": "Leafhour.ToneT1Zh",
@@ -2998,15 +2971,6 @@
       "locale": "zh-Hant",
       "rule": "Leafhour.DevSpeak",
       "valueSha256": "4296a348d158fc2c710f0b40658037dde75a779439262b29fa2dea7577dadd2f",
-      "match": "AI 草稿",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
-      "itemId": "sample.notice",
-      "locale": "zh-Hant",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "629b0f75014690fbfb69c18a9c06faa7fb8ae05281acac357dee2ce3b80c663f",
       "match": "AI 草稿",
       "kind": "existing-debt",
       "state": "unreviewed"

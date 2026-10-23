@@ -466,7 +466,7 @@
       },
       {
         "file": "app/reader-audio.js",
-        "sha256": "590c70cd3581efc6c8816d8c209ae6e79af42d3de888176e884635ebe25d61f4"
+        "sha256": "f338376353ba0506c7830d6c27a546dedb22f2b18837308ae6d66f2d9a8e025b"
       },
       {
         "file": "app/reader-book-actions-bootstrap.mjs",
@@ -734,11 +734,11 @@
       },
       {
         "file": "app/ui-catalogs/zh-Hans.mjs",
-        "sha256": "0786c5dc8f6451bd22059d62d1628b26ac08c5d0bf6b93f0cf5c829de9e6c85a"
+        "sha256": "092f77bf1ce1172493dd8f7f22e1d7550cca7f6a145377aab2657c1cf02e07be"
       },
       {
         "file": "app/ui-catalogs/zh-Hant.mjs",
-        "sha256": "4722b75ff4ad7c34a9ab4041560991cab3845cc60e9c6ae89c49870673812f9b"
+        "sha256": "2c6979af1aae46943c1cd4c62fdc5ccb2f7a8b2e84be2526cc3bae1d4ecbcbdd"
       },
       {
         "file": "app/ui-locale-codec.mjs",
@@ -1093,7 +1093,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "3d4c5abaea0f086d3cedf10358a9643a420468221666152463dafac1417d8a70"
+    "inputDigest": "00b7168de2022389349f773f966d6e90f7d643585dfba813d7866b440f7b8b1b"
   },
   "locales": [
     "en",
@@ -49303,15 +49303,15 @@
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 844,
           "column": 3,
-          "value": "全书仅前 {count} 段备有中文直译与意译（AI 草稿）；其余正文保留英文原文。",
-          "sha256": "50505679861ef3b5dc25db25d6db138c11a95df4fef3f43bea613e4fad65b7bf"
+          "value": "全书仅前 {count} 段备有中文直译与意译，均为 AI 生成的草稿；其余正文保留英文原文。",
+          "sha256": "95beb68f32c7394965967354bda39d2081ccc625dfa4de96a8bdacea700123f0"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 844,
           "column": 3,
-          "value": "全書僅前 {count} 段備有中文直譯與意譯（AI 草稿）；其餘正文保留英文原文。",
-          "sha256": "2b16124cc388b1a95f963591c94b93e5363225f385046bcf0b7f61259a140946"
+          "value": "全書僅前 {count} 段備有中文直譯與意譯，均為 AI 生成的草稿；其餘正文保留英文原文。",
+          "sha256": "7b93849c5471ba631a344ca6af0b5a7f66840fd2e23c27aa05dee19acc837ca7"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
@@ -73097,15 +73097,15 @@
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1275,
           "column": 3,
-          "value": "打开补记会暂停当前计时，关闭后可自行继续。可填一个已结束的时段，最长 24 小时。未提交内容不保留；已提交未确认的记录会继续重试，重叠时间自动合并。补记不证明理解程度。",
-          "sha256": "fc5b137ab7ba4c5f759868148b18c9a1fba38aa987a47d5c5ae6d0be10a0796c"
+          "value": "打开补记会暂停当前计时，关闭后可自行继续。可填一个已结束的时段，最长 24 小时。未送出的内容不保留；已送出但未确认的记录会继续重试，重叠时间自动合并。补记不证明理解程度。",
+          "sha256": "3d39e57e61a7bc2c9bd4a6ca8dce5693e90297e7bb07f9d12c24d0ab91529eb8"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1275,
           "column": 3,
-          "value": "開啟補記會暫停目前計時，關閉後可自行繼續。可填一個已結束的時段，最長 24 小時。未提交內容不保留；已提交未確認的記錄會繼續重試，重疊時間自動合併。補記不證明理解程度。",
-          "sha256": "aea4e250ef5f1abfaac7ca79f373e56349f592899a76ad1182bb115cab7c9f4d"
+          "value": "開啟補記會暫停目前計時，關閉後可自行繼續。可填一個已結束的時段，最長 24 小時。未送出的內容不保留；已送出但未確認的記錄會繼續重試，重疊時間自動合併。補記不證明理解程度。",
+          "sha256": "b8655a5a1957a47c57a2b00e142196a1bb607f633832a38b2542b2c3de2b0a4a"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
@@ -185243,6 +185243,26 @@
       }
     },
     {
+      "id": "candidate:app/reader-audio.js:93:225",
+      "file": "app/reader-audio.js",
+      "line": 93,
+      "column": 225,
+      "kind": "js-attribute",
+      "property": "aria-hidden",
+      "value": "true",
+      "sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
       "id": "candidate:app/reader-audio.js:178:187",
       "file": "app/reader-audio.js",
       "line": 178,
@@ -250608,8 +250628,8 @@
     "duplicateKeys": 0,
     "reviewedItems": 0,
     "unreviewedItems": 2133,
-    "candidates": 4819,
-    "candidatesUnreviewed": 4819,
+    "candidates": 4820,
+    "candidatesUnreviewed": 4820,
     "candidatesProtected": 129,
     "itemsProtected": 9,
     "dynamicConsumers": 3034,
