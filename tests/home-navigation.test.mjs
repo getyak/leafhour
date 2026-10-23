@@ -383,7 +383,7 @@ test('resume eligibility comes only from real current progress; guests without p
   assert.equal(f.resume.getAttribute('href'),'/read?book=mine&ui=en','readingBookUrl(book,null) only: the reader restores the full resume');
 });
 
-test('the account row follows the signed-in session with the validated account destination',()=>{
+test('the home account row opens the reading room without an extra account dialog',()=>{
   const f=menuFixture({user:null});
   f.menu.update({owner:'guest',revision:0});
   assert.equal(f.signIn.hidden,false);
@@ -392,7 +392,7 @@ test('the account row follows the signed-in session with the validated account d
   f.menu.update({owner:'reader',revision:1});
   assert.equal(f.signIn.hidden,true);
   assert.equal(f.account.hidden,false);
-  assert.equal(f.account.getAttribute('href'),'/library?settings=account&ui=en');
+  assert.equal(f.account.getAttribute('href'),'/library?ui=en');
 });
 
 test('dispose detaches the sheet from the shared focus registry and the page listeners',()=>{
@@ -461,7 +461,7 @@ test('the actual refresh wiring syncs identity rows when the session settles eve
   await refresh({user:{id:'reader'}}).catch(()=>{});
   assert.equal(f.signIn.hidden,true,'signed-in identity rows sync without waiting for optional book data');
   assert.equal(f.account.hidden,false);
-  assert.equal(f.account.getAttribute('href'),'/library?settings=account&ui=en');
+  assert.equal(f.account.getAttribute('href'),'/library?ui=en');
   assert.equal(f.resume.hidden,true,'resume stays cleared without current valid books');
 });
 
@@ -512,9 +512,9 @@ test('home locale labels and existing owned links change without querying identi
   const children=[...f.dialog.children],booksBefore=f.calls.books,identityBefore=f.calls.identity,title=f.resumeTitle.textContent,author=f.resumeAuthor.textContent;
   await requestUiRoute('ja');
   assert.equal(f.dialog.open,true);assert.equal(f.document.activeElement,f.search);assert.deepEqual(f.dialog.children,children);assert.equal(f.calls.books,booksBefore);assert.equal(f.calls.identity,identityBefore);assert.equal(f.resumeTitle.textContent,title);assert.equal(f.resumeAuthor.textContent,author);
-  assert.equal(f.account.getAttribute('href'),'/library?settings=account&ui=ja');assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui=ja');assert.equal(f.links.querySelector('a').getAttribute('href'),'/library?ui=ja');assert.equal(f.dialog.getAttribute('lang'),'ja');
+  assert.equal(f.account.getAttribute('href'),'/library?ui=ja');assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui=ja');assert.equal(f.links.querySelector('a').getAttribute('href'),'/library?ui=ja');assert.equal(f.dialog.getAttribute('lang'),'ja');
   f.menu.clear();await requestUiRoute('zh-Hant');assert.equal(f.resume.hidden,true);assert.equal(f.resume.getAttribute('href'),null);assert.equal(f.calls.books,booksBefore);
-  f.menu.dispose();await requestUiRoute('en');assert.equal(f.account.getAttribute('href'),'/library?settings=account&ui=zh-Hant');
+  f.menu.dispose();await requestUiRoute('en');assert.equal(f.account.getAttribute('href'),'/library?ui=zh-Hant');
 });
 
 
@@ -543,11 +543,11 @@ for(const code of ['ja','zh-Hans','zh-Hant'])for(const outcome of ['success','fa
  const auth=portalAst.body.find(n=>n.declarations?.some(d=>d.id.name==='authDialog')).declarations[0].init.arguments[0].properties.find(p=>p.key.name==='getReturnTo').value;const login=vm.runInNewContext('('+portalSource.slice(auth.start,auth.end)+')',{authReturnTarget,pendingUpload:false,returnToReader:null,returnToLibrary:null,currentLibraryReturn:()=>'/library',getUiNavigationLocale:runtime.getUiNavigationLocale});assert.equal(login(),'/library?ui='+code);
  assert.equal(runtime.getUiLocaleState().phase,'pending');assert.equal(runtime.getUiLocale(),'en');
  assert.equal(f.bodyLinks[0].getAttribute('href'),targets[0]);assert.equal(f.bodyLinks[1].getAttribute('href'),targets[1]);
- assert.equal(f.account.getAttribute('href'),'/library?settings=account&ui='+code);assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui='+code);assert.equal(f.links.querySelector('a').getAttribute('href'),'/library?ui='+code);
+ assert.equal(f.account.getAttribute('href'),'/library?ui='+code);assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui='+code);assert.equal(f.links.querySelector('a').getAttribute('href'),'/library?ui='+code);
  const calls={...f.calls},nodes=[...f.bodyLinks];f.trigger.click();f.search.focus();
  if(outcome==='failure')reject(Error('synthetic catalogue failure'));else resolve(catalogue);
  await initial;await runtime.uiReady;await Promise.resolve();
- const effective=outcome==='success'?code:'en';context.link(generated,'/read?book=literal%2Fid');assert.equal(generated.href,'/read?book=literal%2Fid&ui='+effective);assert.equal(login(),'/library?ui='+effective);assert.equal(runtime.getUiLocale(),effective);assert.equal(f.bodyLinks[0].getAttribute('href'),'/library?ui='+effective);assert.equal(f.account.getAttribute('href'),'/library?settings=account&ui='+effective);
+ const effective=outcome==='success'?code:'en';context.link(generated,'/read?book=literal%2Fid');assert.equal(generated.href,'/read?book=literal%2Fid&ui='+effective);assert.equal(login(),'/library?ui='+effective);assert.equal(runtime.getUiLocale(),effective);assert.equal(f.bodyLinks[0].getAttribute('href'),'/library?ui='+effective);assert.equal(f.account.getAttribute('href'),'/library?ui='+effective);
  assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui='+effective);assert.equal(f.links.querySelector('a').getAttribute('href'),'/library?ui='+effective);
  if(outcome==='failure'){retry=true;await runtime.retryUiLocale();assert.equal(f.bodyLinks[0].getAttribute('href'),targets[0]);assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui='+code);}
  assert.equal(f.bodyLinks[2].getAttribute('href'),targets[2]);assert.equal(f.bodyLinks[3].getAttribute('href'),targets[3]);assert.deepEqual(f.bodyLinks,nodes);assert.equal(f.document.activeElement,f.search);assert.equal(f.dialog.open,true);assert.deepEqual(f.calls,calls);

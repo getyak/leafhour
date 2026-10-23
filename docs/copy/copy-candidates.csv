@@ -393,162 +393,177 @@ candidate:app/billing.mjs:7:1943,js-cjk-literal,app/billing.mjs,7,,unknown,revie
 candidate:app/billing.mjs:7:1960,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,プライバシー
 candidate:app/billing.mjs:7:1978,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,運営レポート
 candidate:app/billing.mjs:7:1997,js-cjk-literal,app/billing.mjs,7,,unknown,reviewable,,有効な日付範囲を選択してください。終了日は開始日より後にします。
-candidate:app/billing.mjs:11:25,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,试用点
-candidate:app/billing.mjs:11:46,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,购买点
-candidate:app/billing.mjs:11:65,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,审核点
-candidate:app/billing.mjs:11:84,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,按资金来源统计调用
-candidate:app/billing.mjs:11:109,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,按功能统计调用
-candidate:app/billing.mjs:11:131,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,按来源统计点数
-candidate:app/billing.mjs:11:150,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,类别
-candidate:app/billing.mjs:11:168,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,成本未知调用
-candidate:app/billing.mjs:11:183,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,已知成本 · USD
-candidate:app/billing.mjs:11:206,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,平台赞助
-candidate:app/billing.mjs:11:224,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,用户主动用点
-candidate:app/billing.mjs:11:248,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,运营者承担
-candidate:app/billing.mjs:11:261,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,支付手续费
-candidate:app/billing.mjs:11:282,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,审核订单
-candidate:app/billing.mjs:11:301,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,试用发放
-candidate:app/billing.mjs:11:319,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,任务状态
-candidate:app/billing.mjs:11:334,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,已结算
-candidate:app/billing.mjs:11:348,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,处理中
-candidate:app/billing.mjs:11:367,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,结果已保存
-candidate:app/billing.mjs:11:384,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,已释放
-candidate:app/billing.mjs:11:404,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,已预留
-candidate:app/billing.mjs:12:25,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,試用點
-candidate:app/billing.mjs:12:46,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,購買點
-candidate:app/billing.mjs:12:65,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,審核點
-candidate:app/billing.mjs:12:84,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,按資金來源統計呼叫
-candidate:app/billing.mjs:12:109,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,按功能統計呼叫
-candidate:app/billing.mjs:12:131,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,按來源統計點數
-candidate:app/billing.mjs:12:150,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,類別
-candidate:app/billing.mjs:12:168,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,成本未知呼叫
-candidate:app/billing.mjs:12:183,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,已知成本 · USD
-candidate:app/billing.mjs:12:206,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,平台贊助
-candidate:app/billing.mjs:12:224,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,使用者主動用點
-candidate:app/billing.mjs:12:249,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,營運者承擔
-candidate:app/billing.mjs:12:262,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,付款手續費
-candidate:app/billing.mjs:12:283,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,審核訂單
-candidate:app/billing.mjs:12:302,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,試用發放
-candidate:app/billing.mjs:12:320,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,任務狀態
-candidate:app/billing.mjs:12:335,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,已結算
-candidate:app/billing.mjs:12:349,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,處理中
-candidate:app/billing.mjs:12:368,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,結果已儲存
-candidate:app/billing.mjs:12:385,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,已釋放
-candidate:app/billing.mjs:12:405,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,已預留
-candidate:app/billing.mjs:13:18,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,お試しポイント
-candidate:app/billing.mjs:13:43,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,購入ポイント
-candidate:app/billing.mjs:13:65,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,審査用ポイント
-candidate:app/billing.mjs:13:88,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,費用負担別の呼び出し
-candidate:app/billing.mjs:13:114,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,機能別の呼び出し
-candidate:app/billing.mjs:13:137,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,種類別ポイント
-candidate:app/billing.mjs:13:156,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,種類
-candidate:app/billing.mjs:13:174,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,費用不明の呼び出し
-candidate:app/billing.mjs:13:192,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,既知の費用 · USD
-candidate:app/billing.mjs:13:216,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,運営負担
-candidate:app/billing.mjs:13:234,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,利用者のポイント
-candidate:app/billing.mjs:13:260,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,運営者の費用負担
-candidate:app/billing.mjs:13:276,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,決済手数料
-candidate:app/billing.mjs:13:297,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,審査用注文
-candidate:app/billing.mjs:13:317,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,お試し付与
-candidate:app/billing.mjs:13:336,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,処理状態
-candidate:app/billing.mjs:13:351,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,決済済み
-candidate:app/billing.mjs:13:366,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,処理中
-candidate:app/billing.mjs:13:385,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,結果を保存済み
-candidate:app/billing.mjs:13:404,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,解放済み
-candidate:app/billing.mjs:13:425,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,確保済み
-candidate:app/billing.mjs:17:23,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,订阅 · US$5 / 月
-candidate:app/billing.mjs:17:53,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,测试月付订阅 · US$5 / 月
-candidate:app/billing.mjs:17:85,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,按月自动续费。适用税费与最终总额以 Creem 结账页为准。
-candidate:app/billing.mjs:17:132,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,订阅
-candidate:app/billing.mjs:17:153,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,还没有订阅。
-candidate:app/billing.mjs:17:182,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,请刷新核对已有订阅，再开通月付方案。
-candidate:app/billing.mjs:17:222,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,已有月付订阅或待确认结账。可在下方管理，或刷新核对状态。
-candidate:app/billing.mjs:17:272,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,状态
-candidate:app/billing.mjs:17:284,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,生效中
-candidate:app/billing.mjs:17:299,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,试用期
-candidate:app/billing.mjs:17:314,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,付款逾期
-candidate:app/billing.mjs:17:328,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,尚未付款
-candidate:app/billing.mjs:17:342,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,已暂停
-candidate:app/billing.mjs:17:365,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,已安排取消续费
-candidate:app/billing.mjs:17:384,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,已取消
-candidate:app/billing.mjs:17:408,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,当前周期结束
-candidate:app/billing.mjs:17:429,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,下次付款
-candidate:app/billing.mjs:17:443,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,管理 / 取消续费
-candidate:app/billing.mjs:17:467,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,暂时无法打开客户门户，请刷新或联系支持。
-candidate:app/billing.mjs:17:500,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,符合资格的验证账户自动获得一次 10 试用点，受活动预算限制。
-candidate:app/billing.mjs:17:546,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,试用活动预算暂不可用，仍可使用已购买点数。
-candidate:app/billing.mjs:17:588,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,验证账户后即可核验一次性试用点资格。
-candidate:app/billing.mjs:17:620,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,重试试用点发放
-candidate:app/billing.mjs:17:642,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,在客户门户取消将停止后续续费，已到账点数保留。
-candidate:app/billing.mjs:18:23,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,訂閱 · US$5 / 月
-candidate:app/billing.mjs:18:53,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,測試月付訂閱 · US$5 / 月
-candidate:app/billing.mjs:18:85,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,按月自動續費。適用稅費與最終總額以 Creem 結帳頁為準。
-candidate:app/billing.mjs:18:132,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,訂閱
-candidate:app/billing.mjs:18:153,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,還沒有訂閱。
-candidate:app/billing.mjs:18:182,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,請重新整理核對既有訂閱，再開通月付方案。
-candidate:app/billing.mjs:18:224,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,已有月付訂閱或待確認結帳。可在下方管理，或重新整理核對狀態。
-candidate:app/billing.mjs:18:276,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,狀態
-candidate:app/billing.mjs:18:288,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,生效中
-candidate:app/billing.mjs:18:303,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,試用期
-candidate:app/billing.mjs:18:318,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,付款逾期
-candidate:app/billing.mjs:18:332,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,尚未付款
-candidate:app/billing.mjs:18:346,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,已暫停
-candidate:app/billing.mjs:18:369,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,已安排取消續費
-candidate:app/billing.mjs:18:388,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,已取消
-candidate:app/billing.mjs:18:412,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,目前週期結束
-candidate:app/billing.mjs:18:433,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,下次付款
-candidate:app/billing.mjs:18:447,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,管理 / 取消續費
-candidate:app/billing.mjs:18:471,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,暫時無法開啟客戶入口，請重新整理或聯絡支援。
-candidate:app/billing.mjs:18:506,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,符合資格的驗證帳戶自動獲得一次 10 試用點，受活動預算限制。
-candidate:app/billing.mjs:18:552,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,試用活動預算暫不可用，仍可使用已購買點數。
-candidate:app/billing.mjs:18:594,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,驗證帳戶後即可核驗一次性試用點資格。
-candidate:app/billing.mjs:18:626,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,重試試用點發放
-candidate:app/billing.mjs:18:648,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,在客戶入口取消將停止後續續費，已入帳點數保留。
-candidate:app/billing.mjs:19:16,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,月額プラン · US$5 / 月
-candidate:app/billing.mjs:19:49,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,月額プランのテスト · US$5 / 月
-candidate:app/billing.mjs:19:84,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,毎月自動更新。適用税と最終金額は Creem 決済画面に表示します。
-candidate:app/billing.mjs:19:135,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,定期プラン
-candidate:app/billing.mjs:19:159,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,定期プランはありません。
-candidate:app/billing.mjs:19:194,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,月額プランの開始前に、更新して契約状況を確認してください。
-candidate:app/billing.mjs:19:245,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,月額プランまたは確認中の決済があります。下で管理するか、更新して状況を確認してください。
-candidate:app/billing.mjs:19:311,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,状態
-candidate:app/billing.mjs:19:323,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,有効
-candidate:app/billing.mjs:19:337,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,お試し期間
-candidate:app/billing.mjs:19:354,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,支払期限超過
-candidate:app/billing.mjs:19:370,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,未払い
-candidate:app/billing.mjs:19:383,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,一時停止
-candidate:app/billing.mjs:19:407,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,更新停止予定
-candidate:app/billing.mjs:19:425,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,解約済み
-candidate:app/billing.mjs:19:450,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,現在の期間終了
-candidate:app/billing.mjs:19:472,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,次回の支払い
-candidate:app/billing.mjs:19:488,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,管理 / 自動更新を解約
-candidate:app/billing.mjs:19:515,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,カスタマーポータルを開けませんでした。更新するかサポートへお問い合わせください。
-candidate:app/billing.mjs:19:568,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,認証済みの対象アカウントに、キャンペーン予算の範囲で 10 ポイントを 1 回自動付与します。
-candidate:app/billing.mjs:19:630,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,お試し予算を利用できません。購入済みポイントは引き続き使えます。
-candidate:app/billing.mjs:19:683,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,アカウントを認証すると、お試しポイントの利用資格を確認できます。
-candidate:app/billing.mjs:19:729,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,お試し付与を再試行
-candidate:app/billing.mjs:19:753,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,カスタマーポータルでの解約は次回以降の更新を停止し、付与済みポイントは残ります。
-candidate:app/billing.mjs:21:349,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,已过期
-candidate:app/billing.mjs:21:364,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,继续结账
-candidate:app/billing.mjs:21:386,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,核对付款
-candidate:app/billing.mjs:21:411,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,这次结账已过期，可重新选择购买。
-candidate:app/billing.mjs:21:450,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,月付实付订单
-candidate:app/billing.mjs:21:479,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,一次性实付订单
-candidate:app/billing.mjs:21:511,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,生效订阅
-candidate:app/billing.mjs:21:540,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,已過期
-candidate:app/billing.mjs:21:555,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,繼續結帳
-candidate:app/billing.mjs:21:577,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,核對付款
-candidate:app/billing.mjs:21:602,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,這次結帳已過期，可重新選擇購買。
-candidate:app/billing.mjs:21:641,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,月付實付訂單
-candidate:app/billing.mjs:21:670,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,一次性實付訂單
-candidate:app/billing.mjs:21:702,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,生效訂閱
-candidate:app/billing.mjs:21:726,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,期限切れ
-candidate:app/billing.mjs:21:742,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,決済を続ける
-candidate:app/billing.mjs:21:766,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,支払いを確認
-candidate:app/billing.mjs:21:793,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,この決済は期限切れです。新たに購入を選択できます。
-candidate:app/billing.mjs:21:841,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,月額の支払済み注文
-candidate:app/billing.mjs:21:873,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,1 回限りの支払済み注文
-candidate:app/billing.mjs:21:910,js-cjk-literal,app/billing.mjs,21,,unknown,reviewable,,有効な定期契約
+candidate:app/billing.mjs:11:28,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,支付状态尚未核验，请刷新查看。
+candidate:app/billing.mjs:11:61,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,点数明细尚未核验，请刷新重试。
+candidate:app/billing.mjs:11:93,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,订单尚未核验，请刷新重试。
+candidate:app/billing.mjs:11:122,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,请刷新核对试用点资格。
+candidate:app/billing.mjs:11:154,js-cjk-literal,app/billing.mjs,11,,unknown,reviewable,,当前显示先前载入的记录，请刷新核对最新状态。
+candidate:app/billing.mjs:12:28,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,付款狀態尚未核驗，請重新整理查看。
+candidate:app/billing.mjs:12:63,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,點數明細尚未核驗，請重新整理再試。
+candidate:app/billing.mjs:12:97,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,訂單尚未核驗，請重新整理再試。
+candidate:app/billing.mjs:12:128,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,請重新整理核對試用點資格。
+candidate:app/billing.mjs:12:162,js-cjk-literal,app/billing.mjs,12,,unknown,reviewable,,目前顯示先前載入的記錄，請重新整理核對最新狀態。
+candidate:app/billing.mjs:13:21,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,支払いの利用状況は未確認です。更新して確認してください。
+candidate:app/billing.mjs:13:67,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,ポイント明細は未確認です。更新して再試行してください。
+candidate:app/billing.mjs:13:111,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,注文は未確認です。更新して再試行してください。
+candidate:app/billing.mjs:13:150,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,更新してお試しポイントの利用資格を確認してください。
+candidate:app/billing.mjs:13:197,js-cjk-literal,app/billing.mjs,13,,unknown,reviewable,,前回読み込んだ記録を表示しています。更新して最新情報を確認してください。
+candidate:app/billing.mjs:17:25,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,试用点
+candidate:app/billing.mjs:17:46,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,购买点
+candidate:app/billing.mjs:17:65,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,审核点
+candidate:app/billing.mjs:17:84,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,按资金来源统计调用
+candidate:app/billing.mjs:17:109,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,按功能统计调用
+candidate:app/billing.mjs:17:131,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,按来源统计点数
+candidate:app/billing.mjs:17:150,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,类别
+candidate:app/billing.mjs:17:168,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,成本未知调用
+candidate:app/billing.mjs:17:183,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,已知成本 · USD
+candidate:app/billing.mjs:17:206,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,平台赞助
+candidate:app/billing.mjs:17:224,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,用户主动用点
+candidate:app/billing.mjs:17:248,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,运营者承担
+candidate:app/billing.mjs:17:261,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,支付手续费
+candidate:app/billing.mjs:17:282,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,审核订单
+candidate:app/billing.mjs:17:301,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,试用发放
+candidate:app/billing.mjs:17:319,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,任务状态
+candidate:app/billing.mjs:17:334,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,已结算
+candidate:app/billing.mjs:17:348,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,处理中
+candidate:app/billing.mjs:17:367,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,结果已保存
+candidate:app/billing.mjs:17:384,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,已释放
+candidate:app/billing.mjs:17:404,js-cjk-literal,app/billing.mjs,17,,unknown,reviewable,,已预留
+candidate:app/billing.mjs:18:25,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,試用點
+candidate:app/billing.mjs:18:46,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,購買點
+candidate:app/billing.mjs:18:65,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,審核點
+candidate:app/billing.mjs:18:84,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,按資金來源統計呼叫
+candidate:app/billing.mjs:18:109,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,按功能統計呼叫
+candidate:app/billing.mjs:18:131,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,按來源統計點數
+candidate:app/billing.mjs:18:150,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,類別
+candidate:app/billing.mjs:18:168,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,成本未知呼叫
+candidate:app/billing.mjs:18:183,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,已知成本 · USD
+candidate:app/billing.mjs:18:206,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,平台贊助
+candidate:app/billing.mjs:18:224,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,使用者主動用點
+candidate:app/billing.mjs:18:249,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,營運者承擔
+candidate:app/billing.mjs:18:262,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,付款手續費
+candidate:app/billing.mjs:18:283,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,審核訂單
+candidate:app/billing.mjs:18:302,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,試用發放
+candidate:app/billing.mjs:18:320,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,任務狀態
+candidate:app/billing.mjs:18:335,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,已結算
+candidate:app/billing.mjs:18:349,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,處理中
+candidate:app/billing.mjs:18:368,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,結果已儲存
+candidate:app/billing.mjs:18:385,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,已釋放
+candidate:app/billing.mjs:18:405,js-cjk-literal,app/billing.mjs,18,,unknown,reviewable,,已預留
+candidate:app/billing.mjs:19:18,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,お試しポイント
+candidate:app/billing.mjs:19:43,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,購入ポイント
+candidate:app/billing.mjs:19:65,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,審査用ポイント
+candidate:app/billing.mjs:19:88,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,費用負担別の呼び出し
+candidate:app/billing.mjs:19:114,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,機能別の呼び出し
+candidate:app/billing.mjs:19:137,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,種類別ポイント
+candidate:app/billing.mjs:19:156,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,種類
+candidate:app/billing.mjs:19:174,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,費用不明の呼び出し
+candidate:app/billing.mjs:19:192,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,既知の費用 · USD
+candidate:app/billing.mjs:19:216,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,運営負担
+candidate:app/billing.mjs:19:234,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,利用者のポイント
+candidate:app/billing.mjs:19:260,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,運営者の費用負担
+candidate:app/billing.mjs:19:276,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,決済手数料
+candidate:app/billing.mjs:19:297,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,審査用注文
+candidate:app/billing.mjs:19:317,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,お試し付与
+candidate:app/billing.mjs:19:336,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,処理状態
+candidate:app/billing.mjs:19:351,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,決済済み
+candidate:app/billing.mjs:19:366,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,処理中
+candidate:app/billing.mjs:19:385,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,結果を保存済み
+candidate:app/billing.mjs:19:404,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,解放済み
+candidate:app/billing.mjs:19:425,js-cjk-literal,app/billing.mjs,19,,unknown,reviewable,,確保済み
+candidate:app/billing.mjs:23:23,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,订阅 · US$5 / 月
+candidate:app/billing.mjs:23:53,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,测试月付订阅 · US$5 / 月
+candidate:app/billing.mjs:23:85,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,按月自动续费。适用税费与最终总额以 Creem 结账页为准。
+candidate:app/billing.mjs:23:132,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,订阅
+candidate:app/billing.mjs:23:153,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,还没有订阅。
+candidate:app/billing.mjs:23:182,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,请刷新核对已有订阅，再开通月付方案。
+candidate:app/billing.mjs:23:222,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,已有月付订阅或待确认结账。可在下方管理，或刷新核对状态。
+candidate:app/billing.mjs:23:272,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,状态
+candidate:app/billing.mjs:23:284,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,生效中
+candidate:app/billing.mjs:23:299,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,试用期
+candidate:app/billing.mjs:23:314,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,付款逾期
+candidate:app/billing.mjs:23:328,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,尚未付款
+candidate:app/billing.mjs:23:342,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,已暂停
+candidate:app/billing.mjs:23:365,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,已安排取消续费
+candidate:app/billing.mjs:23:384,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,已取消
+candidate:app/billing.mjs:23:408,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,当前周期结束
+candidate:app/billing.mjs:23:429,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,下次付款
+candidate:app/billing.mjs:23:443,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,管理 / 取消续费
+candidate:app/billing.mjs:23:467,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,暂时无法打开客户门户，请刷新或联系支持。
+candidate:app/billing.mjs:23:500,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,符合资格的验证账户自动获得一次 10 试用点，受活动预算限制。
+candidate:app/billing.mjs:23:546,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,试用活动预算暂不可用，仍可使用已购买点数。
+candidate:app/billing.mjs:23:588,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,验证账户后即可核验一次性试用点资格。
+candidate:app/billing.mjs:23:620,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,重试试用点发放
+candidate:app/billing.mjs:23:642,js-cjk-literal,app/billing.mjs,23,,unknown,reviewable,,在客户门户取消将停止后续续费，已到账点数保留。
+candidate:app/billing.mjs:24:23,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,訂閱 · US$5 / 月
+candidate:app/billing.mjs:24:53,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,測試月付訂閱 · US$5 / 月
+candidate:app/billing.mjs:24:85,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,按月自動續費。適用稅費與最終總額以 Creem 結帳頁為準。
+candidate:app/billing.mjs:24:132,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,訂閱
+candidate:app/billing.mjs:24:153,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,還沒有訂閱。
+candidate:app/billing.mjs:24:182,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,請重新整理核對既有訂閱，再開通月付方案。
+candidate:app/billing.mjs:24:224,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,已有月付訂閱或待確認結帳。可在下方管理，或重新整理核對狀態。
+candidate:app/billing.mjs:24:276,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,狀態
+candidate:app/billing.mjs:24:288,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,生效中
+candidate:app/billing.mjs:24:303,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,試用期
+candidate:app/billing.mjs:24:318,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,付款逾期
+candidate:app/billing.mjs:24:332,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,尚未付款
+candidate:app/billing.mjs:24:346,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,已暫停
+candidate:app/billing.mjs:24:369,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,已安排取消續費
+candidate:app/billing.mjs:24:388,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,已取消
+candidate:app/billing.mjs:24:412,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,目前週期結束
+candidate:app/billing.mjs:24:433,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,下次付款
+candidate:app/billing.mjs:24:447,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,管理 / 取消續費
+candidate:app/billing.mjs:24:471,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,暫時無法開啟客戶入口，請重新整理或聯絡支援。
+candidate:app/billing.mjs:24:506,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,符合資格的驗證帳戶自動獲得一次 10 試用點，受活動預算限制。
+candidate:app/billing.mjs:24:552,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,試用活動預算暫不可用，仍可使用已購買點數。
+candidate:app/billing.mjs:24:594,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,驗證帳戶後即可核驗一次性試用點資格。
+candidate:app/billing.mjs:24:626,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,重試試用點發放
+candidate:app/billing.mjs:24:648,js-cjk-literal,app/billing.mjs,24,,unknown,reviewable,,在客戶入口取消將停止後續續費，已入帳點數保留。
+candidate:app/billing.mjs:25:16,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,月額プラン · US$5 / 月
+candidate:app/billing.mjs:25:49,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,月額プランのテスト · US$5 / 月
+candidate:app/billing.mjs:25:84,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,毎月自動更新。適用税と最終金額は Creem 決済画面に表示します。
+candidate:app/billing.mjs:25:135,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,定期プラン
+candidate:app/billing.mjs:25:159,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,定期プランはありません。
+candidate:app/billing.mjs:25:194,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,月額プランの開始前に、更新して契約状況を確認してください。
+candidate:app/billing.mjs:25:245,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,月額プランまたは確認中の決済があります。下で管理するか、更新して状況を確認してください。
+candidate:app/billing.mjs:25:311,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,状態
+candidate:app/billing.mjs:25:323,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,有効
+candidate:app/billing.mjs:25:337,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,お試し期間
+candidate:app/billing.mjs:25:354,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,支払期限超過
+candidate:app/billing.mjs:25:370,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,未払い
+candidate:app/billing.mjs:25:383,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,一時停止
+candidate:app/billing.mjs:25:407,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,更新停止予定
+candidate:app/billing.mjs:25:425,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,解約済み
+candidate:app/billing.mjs:25:450,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,現在の期間終了
+candidate:app/billing.mjs:25:472,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,次回の支払い
+candidate:app/billing.mjs:25:488,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,管理 / 自動更新を解約
+candidate:app/billing.mjs:25:515,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,カスタマーポータルを開けませんでした。更新するかサポートへお問い合わせください。
+candidate:app/billing.mjs:25:568,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,認証済みの対象アカウントに、キャンペーン予算の範囲で 10 ポイントを 1 回自動付与します。
+candidate:app/billing.mjs:25:630,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,お試し予算を利用できません。購入済みポイントは引き続き使えます。
+candidate:app/billing.mjs:25:683,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,アカウントを認証すると、お試しポイントの利用資格を確認できます。
+candidate:app/billing.mjs:25:729,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,お試し付与を再試行
+candidate:app/billing.mjs:25:753,js-cjk-literal,app/billing.mjs,25,,unknown,reviewable,,カスタマーポータルでの解約は次回以降の更新を停止し、付与済みポイントは残ります。
+candidate:app/billing.mjs:27:349,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,已过期
+candidate:app/billing.mjs:27:364,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,继续结账
+candidate:app/billing.mjs:27:386,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,核对付款
+candidate:app/billing.mjs:27:411,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,这次结账已过期，可重新选择购买。
+candidate:app/billing.mjs:27:450,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,月付实付订单
+candidate:app/billing.mjs:27:479,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,一次性实付订单
+candidate:app/billing.mjs:27:511,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,生效订阅
+candidate:app/billing.mjs:27:540,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,已過期
+candidate:app/billing.mjs:27:555,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,繼續結帳
+candidate:app/billing.mjs:27:577,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,核對付款
+candidate:app/billing.mjs:27:602,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,這次結帳已過期，可重新選擇購買。
+candidate:app/billing.mjs:27:641,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,月付實付訂單
+candidate:app/billing.mjs:27:670,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,一次性實付訂單
+candidate:app/billing.mjs:27:702,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,生效訂閱
+candidate:app/billing.mjs:27:726,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,期限切れ
+candidate:app/billing.mjs:27:742,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,決済を続ける
+candidate:app/billing.mjs:27:766,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,支払いを確認
+candidate:app/billing.mjs:27:793,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,この決済は期限切れです。新たに購入を選択できます。
+candidate:app/billing.mjs:27:841,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,月額の支払済み注文
+candidate:app/billing.mjs:27:873,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,1 回限りの支払済み注文
+candidate:app/billing.mjs:27:910,js-cjk-literal,app/billing.mjs,27,,unknown,reviewable,,有効な定期契約
 candidate:app/book-gift.html:21:48,html-attribute,app/book-gift.html,21,aria-label,unknown,reviewable,,Leafhour home
 candidate:app/book-gift.html:22:248,html-attribute,app/book-gift.html,22,aria-label,unknown,reviewable,,Page appearance
 candidate:app/book-gift.html:50:177,html-attribute,app/book-gift.html,50,aria-label,unknown,reviewable,,Fold the letter
@@ -2006,12 +2021,12 @@ candidate:app/home-locale.mjs:333:115,js-cjk-literal,app/home-locale.mjs,333,,un
 candidate:app/home-locale.mjs:333:129,js-cjk-literal,app/home-locale.mjs,333,,unknown,reviewable,,料金
 candidate:app/home-locale.mjs:333:134,js-cjk-literal,app/home-locale.mjs,333,,unknown,reviewable,,利用規約
 candidate:app/home-locale.mjs:333:141,js-cjk-literal,app/home-locale.mjs,333,,unknown,reviewable,,返金ポリシー
-candidate:app/home-navigation.mjs:103:158,js-attribute,app/home-navigation.mjs,103,tabindex,unknown,reviewable,,-1
-candidate:app/home-navigation.mjs:166:42,js-attribute,app/home-navigation.mjs,166,aria-expanded,unknown,reviewable,,false
-candidate:app/home-navigation.mjs:188:42,js-attribute,app/home-navigation.mjs,188,aria-expanded,unknown,reviewable,,true
-candidate:app/home-navigation.mjs:196:40,js-attribute,app/home-navigation.mjs,196,aria-haspopup,unknown,reviewable,,dialog
-candidate:app/home-navigation.mjs:197:40,js-attribute,app/home-navigation.mjs,197,aria-controls,unknown,protected,identifier,home-menu
-candidate:app/home-navigation.mjs:198:40,js-attribute,app/home-navigation.mjs,198,aria-expanded,unknown,reviewable,,false
+candidate:app/home-navigation.mjs:102:158,js-attribute,app/home-navigation.mjs,102,tabindex,unknown,reviewable,,-1
+candidate:app/home-navigation.mjs:165:42,js-attribute,app/home-navigation.mjs,165,aria-expanded,unknown,reviewable,,false
+candidate:app/home-navigation.mjs:187:42,js-attribute,app/home-navigation.mjs,187,aria-expanded,unknown,reviewable,,true
+candidate:app/home-navigation.mjs:195:40,js-attribute,app/home-navigation.mjs,195,aria-haspopup,unknown,reviewable,,dialog
+candidate:app/home-navigation.mjs:196:40,js-attribute,app/home-navigation.mjs,196,aria-controls,unknown,protected,identifier,home-menu
+candidate:app/home-navigation.mjs:197:40,js-attribute,app/home-navigation.mjs,197,aria-expanded,unknown,reviewable,,false
 candidate:app/home.html:29:68,html-attribute,app/home.html,29,aria-label,unknown,reviewable,,Leafhour 首页
 candidate:app/home.html:29:511,html-attribute,app/home.html,29,aria-label,unknown,reviewable,,收起侧栏
 candidate:app/home.html:30:74,html-attribute,app/home.html,30,aria-label,unknown,reviewable,,主导航
@@ -2222,19 +2237,19 @@ candidate:app/index.html:91:326,html-attribute,app/index.html,91,aria-label,unkn
 candidate:app/index.html:91:519,html-attribute,app/index.html,91,aria-label,unknown,reviewable,,Book contents
 candidate:app/index.html:93:288,html-attribute,app/index.html,93,aria-label,unknown,reviewable,,Close reading settings
 candidate:app/index.html:94:59,html-attribute,app/index.html,94,aria-label,unknown,reviewable,,Reading settings categories
-candidate:app/index.html:114:166,html-attribute,app/index.html,114,aria-label,unknown,reviewable,,Parallel style preview
-candidate:app/index.html:121:277,html-attribute,app/index.html,121,aria-label,unknown,reviewable,,Interface language
-candidate:app/index.html:124:62,html-attribute,app/index.html,124,aria-label,unknown,reviewable,,Body font
-candidate:app/index.html:126:82,html-attribute,app/index.html,126,aria-label,unknown,reviewable,,Paper theme
-candidate:app/index.html:127:82,html-attribute,app/index.html,127,aria-label,unknown,reviewable,,Follow the system
-candidate:app/index.html:127:251,html-attribute,app/index.html,127,aria-label,unknown,reviewable,,Paper
-candidate:app/index.html:127:406,html-attribute,app/index.html,127,aria-label,unknown,reviewable,,Warm
-candidate:app/index.html:127:559,html-attribute,app/index.html,127,aria-label,unknown,reviewable,,Mist
-candidate:app/index.html:127:712,html-attribute,app/index.html,127,aria-label,unknown,reviewable,,Sage
-candidate:app/index.html:127:867,html-attribute,app/index.html,127,aria-label,unknown,reviewable,,Night
-candidate:app/index.html:169:53,html-attribute,app/index.html,169,aria-label,unknown,reviewable,,Share image settings
-candidate:app/index.html:191:86,html-attribute,app/index.html,191,aria-label,unknown,reviewable,,Reading chat
-candidate:app/index.html:195:92,html-attribute,app/index.html,195,aria-label,unknown,reviewable,,Choose listening backup
+candidate:app/index.html:104:62,html-attribute,app/index.html,104,aria-label,unknown,reviewable,,Body font
+candidate:app/index.html:106:82,html-attribute,app/index.html,106,aria-label,unknown,reviewable,,Paper theme
+candidate:app/index.html:107:82,html-attribute,app/index.html,107,aria-label,unknown,reviewable,,Follow the system
+candidate:app/index.html:107:251,html-attribute,app/index.html,107,aria-label,unknown,reviewable,,Paper
+candidate:app/index.html:107:406,html-attribute,app/index.html,107,aria-label,unknown,reviewable,,Warm
+candidate:app/index.html:107:559,html-attribute,app/index.html,107,aria-label,unknown,reviewable,,Mist
+candidate:app/index.html:107:712,html-attribute,app/index.html,107,aria-label,unknown,reviewable,,Sage
+candidate:app/index.html:107:867,html-attribute,app/index.html,107,aria-label,unknown,reviewable,,Night
+candidate:app/index.html:121:166,html-attribute,app/index.html,121,aria-label,unknown,reviewable,,Parallel style preview
+candidate:app/index.html:133:353,html-attribute,app/index.html,133,aria-label,unknown,reviewable,,Interface language
+candidate:app/index.html:171:53,html-attribute,app/index.html,171,aria-label,unknown,reviewable,,Share image settings
+candidate:app/index.html:193:86,html-attribute,app/index.html,193,aria-label,unknown,reviewable,,Reading chat
+candidate:app/index.html:197:92,html-attribute,app/index.html,197,aria-label,unknown,reviewable,,Choose listening backup
 candidate:app/index.html:3:240,html-text,app/index.html,3,,unknown,reviewable,,Leafhour · Read
 candidate:app/index.html:10:70,html-text,app/index.html,10,,unknown,reviewable,,Skip to text
 candidate:app/index.html:12:358,html-text,app/index.html,12,,unknown,reviewable,,Reading room
@@ -2360,159 +2375,160 @@ candidate:app/index.html:95:162,html-text,app/index.html,95,,unknown,reviewable,
 candidate:app/index.html:96:172,html-text,app/index.html,96,,unknown,reviewable,,Sound
 candidate:app/index.html:97:176,html-text,app/index.html,97,,unknown,reviewable,,Habits
 candidate:app/index.html:98:168,html-text,app/index.html,98,,unknown,reviewable,,Data
-candidate:app/index.html:102:135,html-text,app/index.html,102,,unknown,reviewable,,Reading content
-candidate:app/index.html:103:96,html-text,app/index.html,103,,unknown,reviewable,,Reading purpose
-candidate:app/index.html:103:247,html-text,app/index.html,103,,unknown,reviewable,,Not set · Start with original
-candidate:app/index.html:103:340,html-text,app/index.html,103,,unknown,reviewable,,Deep understanding
-candidate:app/index.html:103:429,html-text,app/index.html,103,,unknown,reviewable,,Language learning
-candidate:app/index.html:104:91,html-text,app/index.html,104,,unknown,reviewable,,Deep-reading language
-candidate:app/index.html:104:228,html-text,app/index.html,104,,unknown,reviewable,,Original
-candidate:app/index.html:104:293,html-text,app/index.html,104,,unknown,reviewable,,Chinese
-candidate:app/index.html:105:96,html-text,app/index.html,105,,unknown,reviewable,,Language learning starts with the original; deep reading starts in your preferred language. You can change the view and translation separately. Only existing content is shown; nothing is translated automatically.
-candidate:app/index.html:106:87,html-text,app/index.html,106,,unknown,reviewable,,Reading view
-candidate:app/index.html:106:197,html-text,app/index.html,106,,unknown,reviewable,,English original
-candidate:app/index.html:106:283,html-text,app/index.html,106,,unknown,reviewable,,Chinese translation
-candidate:app/index.html:106:369,html-text,app/index.html,106,,unknown,reviewable,,English and Chinese
-candidate:app/index.html:107:120,html-text,app/index.html,107,,unknown,reviewable,,Page layout
-candidate:app/index.html:107:253,html-text,app/index.html,107,,unknown,reviewable,,Scroll
-candidate:app/index.html:107:320,html-text,app/index.html,107,,unknown,reviewable,,Turn pages
-candidate:app/index.html:107:432,html-text,app/index.html,107,,unknown,reviewable,,Page mode shows two pages in wide windows and one in narrow windows. Use ← → or the buttons below.
-candidate:app/index.html:108:133,html-text,app/index.html,108,,unknown,reviewable,,Chinese translation style
-candidate:app/index.html:108:241,html-text,app/index.html,108,,unknown,reviewable,,Interpretive
-candidate:app/index.html:108:299,html-text,app/index.html,108,,unknown,reviewable,,Literal
-candidate:app/index.html:110:166,html-text,app/index.html,110,,unknown,reviewable,,Parallel reading
-candidate:app/index.html:111:95,html-text,app/index.html,111,,unknown,reviewable,,Arrangement
-candidate:app/index.html:111:197,html-text,app/index.html,111,,unknown,reviewable,,Side by side
-candidate:app/index.html:111:269,html-text,app/index.html,111,,unknown,reviewable,,Stacked
-candidate:app/index.html:112:92,html-text,app/index.html,112,,unknown,reviewable,,Style
-candidate:app/index.html:114:76,html-text,app/index.html,114,,unknown,reviewable,,Live preview · Example
-candidate:app/index.html:115:84,html-text,app/index.html,115,,unknown,reviewable,,Colors and backgrounds
-candidate:app/index.html:116:105,html-text,app/index.html,116,,unknown,reviewable,,Translation color
-candidate:app/index.html:116:213,html-text,app/index.html,116,,unknown,reviewable,,Follow paper
-candidate:app/index.html:116:284,html-text,app/index.html,116,,unknown,reviewable,,Pine green
-candidate:app/index.html:116:351,html-text,app/index.html,116,,unknown,reviewable,,Ink blue
-candidate:app/index.html:116:417,html-text,app/index.html,116,,unknown,reviewable,,Tea brown
-candidate:app/index.html:117:115,html-text,app/index.html,117,,unknown,reviewable,,Translation background
-candidate:app/index.html:117:233,html-text,app/index.html,117,,unknown,reviewable,,Follow style
-candidate:app/index.html:117:311,html-text,app/index.html,117,,unknown,reviewable,,No background
-candidate:app/index.html:117:389,html-text,app/index.html,117,,unknown,reviewable,,Soft background
-candidate:app/index.html:119:73,html-text,app/index.html,119,,unknown,reviewable,,Narrow screens use a stacked layout.
-candidate:app/index.html:121:75,html-text,app/index.html,121,,unknown,reviewable,,Interface language
-candidate:app/index.html:121:209,html-text,app/index.html,121,,unknown,reviewable,,Interface language
-candidate:app/index.html:121:387,html-text,app/index.html,121,,unknown,reviewable,,English
-candidate:app/index.html:121:464,html-text,app/index.html,121,,unknown,reviewable,,简体中文
-candidate:app/index.html:121:538,html-text,app/index.html,121,,unknown,reviewable,,繁體中文
-candidate:app/index.html:121:602,html-text,app/index.html,121,,unknown,reviewable,,日本語
-candidate:app/index.html:121:666,html-text,app/index.html,121,,unknown,reviewable,,Current interface language: English
-candidate:app/index.html:121:847,html-text,app/index.html,121,,unknown,reviewable,,Retry
-candidate:app/index.html:121:952,html-text,app/index.html,121,,unknown,reviewable,,Reload page
-candidate:app/index.html:122:129,html-text,app/index.html,122,,unknown,reviewable,,Text and paper
-candidate:app/index.html:123:204,html-text,app/index.html,123,,unknown,reviewable,,Font size
-candidate:app/index.html:123:250,html-text,app/index.html,123,,unknown,reviewable,,22
-candidate:app/index.html:124:198,html-text,app/index.html,124,,unknown,reviewable,,Serif (Song)
-candidate:app/index.html:124:300,html-text,app/index.html,124,,unknown,reviewable,,Regular (Kai)
-candidate:app/index.html:124:405,html-text,app/index.html,124,,unknown,reviewable,,Sans serif
-candidate:app/index.html:125:82,html-text,app/index.html,125,,unknown,reviewable,,Paper
-candidate:app/index.html:125:146,html-text,app/index.html,125,,unknown,reviewable,,Follow the system
-candidate:app/index.html:127:167,html-text,app/index.html,127,,unknown,reviewable,,◐
-candidate:app/index.html:127:324,html-text,app/index.html,127,,unknown,reviewable,,A
-candidate:app/index.html:127:477,html-text,app/index.html,127,,unknown,reviewable,,A
-candidate:app/index.html:127:630,html-text,app/index.html,127,,unknown,reviewable,,A
-candidate:app/index.html:127:783,html-text,app/index.html,127,,unknown,reviewable,,A
-candidate:app/index.html:127:940,html-text,app/index.html,127,,unknown,reviewable,,A
-candidate:app/index.html:129:194,html-text,app/index.html,129,,unknown,reviewable,,Fine typography
-candidate:app/index.html:129:254,html-text,app/index.html,129,,unknown,reviewable,,"Line spacing, space and indentation"
-candidate:app/index.html:129:439,html-text,app/index.html,129,,unknown,reviewable,,First-line indent
-candidate:app/index.html:129:586,html-text,app/index.html,129,,unknown,reviewable,,Latin fonts are hosted here; Chinese uses device fonts. Word spacing applies only to English.
-candidate:app/index.html:130:105,html-text,app/index.html,130,,unknown,reviewable,,Reset appearance
-candidate:app/index.html:132:120,html-text,app/index.html,132,,unknown,reviewable,,About this translation
-candidate:app/index.html:132:217,html-text,app/index.html,132,,unknown,reviewable,,Literal and interpretive translations are saved separately. AI output is marked as draft. Untranslated passages keep the original for checking. Chinese chapter navigation titles are editorial additions.
-candidate:app/index.html:136:125,html-text,app/index.html,136,,unknown,reviewable,,Reading atmosphere
-candidate:app/index.html:136:239,html-text,app/index.html,136,,unknown,reviewable,,Play
-candidate:app/index.html:137:122,html-text,app/index.html,137,,unknown,reviewable,,No atmosphere selected
-candidate:app/index.html:138:207,html-text,app/index.html,138,,unknown,reviewable,,Choose a scene
-candidate:app/index.html:138:296,html-text,app/index.html,138,,unknown,reviewable,,"Forest, rain, hearth, sea"
-candidate:app/index.html:140:110,html-text,app/index.html,140,,unknown,reviewable,,Music
-candidate:app/index.html:140:280,html-text,app/index.html,140,,unknown,reviewable,,28%
-candidate:app/index.html:141:112,html-text,app/index.html,141,,unknown,reviewable,,Nature sounds
-candidate:app/index.html:141:293,html-text,app/index.html,141,,unknown,reviewable,,32%
-candidate:app/index.html:142:92,html-text,app/index.html,142,,unknown,reviewable,,Scene details
-candidate:app/index.html:142:215,html-text,app/index.html,142,,unknown,reviewable,,Scene motion
-candidate:app/index.html:142:413,html-text,app/index.html,142,,unknown,reviewable,,Respects the system’s reduced-motion preference.
-candidate:app/index.html:144:73,html-text,app/index.html,144,,unknown,reviewable,,Playback continues in other tabs or apps. Pause with the button above.
-candidate:app/index.html:146:153,html-text,app/index.html,146,,unknown,reviewable,,Listen to the text
-candidate:app/index.html:146:379,html-text,app/index.html,146,,unknown,reviewable,,Voice and speed
-candidate:app/index.html:146:473,html-text,app/index.html,146,,unknown,reviewable,,"Choose voice, speed and following"
-candidate:app/index.html:146:577,html-text,app/index.html,146,,unknown,reviewable,,Background sounds soften during narration.
-candidate:app/index.html:149:130,html-text,app/index.html,149,,unknown,reviewable,,Immersive reading
-candidate:app/index.html:149:290,html-text,app/index.html,149,,unknown,reviewable,,Hide the header; tools are always available. Enabled by default when opening a book.
-candidate:app/index.html:150:132,html-text,app/index.html,150,,unknown,reviewable,,Continuous reading
-candidate:app/index.html:150:367,html-text,app/index.html,150,,unknown,reviewable,,The next chapter follows naturally. You decide when it is read.
-candidate:app/index.html:151:138,html-text,app/index.html,151,,unknown,reviewable,,A question for each chapter
-candidate:app/index.html:151:308,html-text,app/index.html,151,,unknown,reviewable,,Offers prompts during ordinary reading; stays quiet in immersive mode.
-candidate:app/index.html:152:117,html-text,app/index.html,152,,unknown,reviewable,,New-book defaults
-candidate:app/index.html:152:202,html-text,app/index.html,152,,unknown,reviewable,,Use this book’s view and typography for new books. This book’s position and records stay unchanged; each book keeps its own choices.
-candidate:app/index.html:152:442,html-text,app/index.html,152,,unknown,reviewable,,Use for new books
-candidate:app/index.html:155:80,html-text,app/index.html,155,,unknown,reviewable,,My records
-candidate:app/index.html:155:288,html-text,app/index.html,155,,unknown,reviewable,,"View highlights, thoughts and questions"
-candidate:app/index.html:155:378,html-text,app/index.html,155,,unknown,reviewable,,Filed by source
-candidate:app/index.html:156:84,html-text,app/index.html,156,,unknown,reviewable,,Reading backup
-candidate:app/index.html:156:253,html-text,app/index.html,156,,unknown,reviewable,,Export records and appearance
-candidate:app/index.html:156:375,html-text,app/index.html,156,,unknown,reviewable,,Import reading records
-candidate:app/index.html:156:529,html-text,app/index.html,156,,unknown,reviewable,,Backups keep reading position and appearance. Export listening records separately.
-candidate:app/index.html:157:86,html-text,app/index.html,157,,unknown,reviewable,,Listening backup
-candidate:app/index.html:157:238,html-text,app/index.html,157,,unknown,reviewable,,View saved listening
-candidate:app/index.html:157:360,html-text,app/index.html,157,,unknown,reviewable,,Export listening records
-candidate:app/index.html:157:487,html-text,app/index.html,157,,unknown,reviewable,,Restore listening records
-candidate:app/index.html:157:594,html-text,app/index.html,157,,unknown,reviewable,,"Includes scripts, audio and playback position. Atmosphere preferences stay in this browser."
-candidate:app/index.html:158:94,html-text,app/index.html,158,,unknown,reviewable,,Reading experience backup
-candidate:app/index.html:158:263,html-text,app/index.html,158,,unknown,reviewable,,"Keeps your choices, retellings and comparisons."
-candidate:app/index.html:162:112,html-text,app/index.html,162,,unknown,reviewable,,Book contents
-candidate:app/index.html:162:212,html-text,app/index.html,162,,unknown,reviewable,,Return to the page
-candidate:app/index.html:166:195,html-text,app/index.html,166,,unknown,reviewable,,Keep these words
-candidate:app/index.html:166:260,html-text,app/index.html,166,,unknown,reviewable,,Leafhour · Excerpt
-candidate:app/index.html:166:371,html-text,app/index.html,166,,unknown,reviewable,,Back to reading
-candidate:app/index.html:170:48,html-text,app/index.html,170,,unknown,reviewable,,Let these words take the focus.
-candidate:app/index.html:172:98,html-text,app/index.html,172,,unknown,reviewable,,Language
-candidate:app/index.html:172:190,html-text,app/index.html,172,,unknown,reviewable,,Chinese
-candidate:app/index.html:172:254,html-text,app/index.html,172,,unknown,reviewable,,English
-candidate:app/index.html:172:332,html-text,app/index.html,172,,unknown,reviewable,,Bilingual
-candidate:app/index.html:173:134,html-text,app/index.html,173,,unknown,reviewable,,Bilingual layout
-candidate:app/index.html:173:235,html-text,app/index.html,173,,unknown,reviewable,,Stacked
-candidate:app/index.html:173:306,html-text,app/index.html,173,,unknown,reviewable,,Side by side
-candidate:app/index.html:174:121,html-text,app/index.html,174,,unknown,reviewable,,Chinese translation style
-candidate:app/index.html:174:223,html-text,app/index.html,174,,unknown,reviewable,,Interpretive
-candidate:app/index.html:174:281,html-text,app/index.html,174,,unknown,reviewable,,Literal
-candidate:app/index.html:175:92,html-text,app/index.html,175,,unknown,reviewable,,Paper
-candidate:app/index.html:175:180,html-text,app/index.html,175,,unknown,reviewable,,Paper
-candidate:app/index.html:175:242,html-text,app/index.html,175,,unknown,reviewable,,Warm
-candidate:app/index.html:175:309,html-text,app/index.html,175,,unknown,reviewable,,Ink
-candidate:app/index.html:176:92,html-text,app/index.html,176,,unknown,reviewable,,Aspect ratio
-candidate:app/index.html:176:162,html-text,app/index.html,176,,unknown,reviewable,,4 : 5
-candidate:app/index.html:176:199,html-text,app/index.html,176,,unknown,reviewable,,1 : 1
-candidate:app/index.html:176:235,html-text,app/index.html,176,,unknown,reviewable,,9 : 16
-candidate:app/index.html:178:80,html-text,app/index.html,178,,unknown,reviewable,,Context and details
-candidate:app/index.html:179:92,html-text,app/index.html,179,,unknown,reviewable,,Text above
-candidate:app/index.html:179:184,html-text,app/index.html,179,,unknown,reviewable,,Fade
-candidate:app/index.html:179:247,html-text,app/index.html,179,,unknown,reviewable,,Hide
-candidate:app/index.html:179:309,html-text,app/index.html,179,,unknown,reviewable,,Keep
-candidate:app/index.html:180:92,html-text,app/index.html,180,,unknown,reviewable,,Text below
-candidate:app/index.html:180:184,html-text,app/index.html,180,,unknown,reviewable,,Fade
-candidate:app/index.html:180:247,html-text,app/index.html,180,,unknown,reviewable,,Hide
-candidate:app/index.html:180:309,html-text,app/index.html,180,,unknown,reviewable,,Keep
-candidate:app/index.html:181:198,html-text,app/index.html,181,,unknown,reviewable,,Font size
-candidate:app/index.html:181:245,html-text,app/index.html,181,,unknown,reviewable,,48
-candidate:app/index.html:182:197,html-text,app/index.html,182,,unknown,reviewable,,Book source
-candidate:app/index.html:184:121,html-text,app/index.html,184,,unknown,reviewable,,Save image
-candidate:app/index.html:184:197,html-text,app/index.html,184,,unknown,reviewable,,Copy image
-candidate:app/index.html:184:284,html-text,app/index.html,184,,unknown,reviewable,,System share
-candidate:app/index.html:190:124,html-text,app/index.html,190,,unknown,reviewable,,Your saved reading position is ready. Return there or keep reading here.
-candidate:app/index.html:190:276,html-text,app/index.html,190,,unknown,reviewable,,Return to saved position
-candidate:app/index.html:190:377,html-text,app/index.html,190,,unknown,reviewable,,Keep reading here
-candidate:app/index.html:193:92,html-text,app/index.html,193,,unknown,reviewable,,"Click a passage or focus it and press Enter for original text, annotations and records. In page mode use ← → or the buttons below. Esc closes overlays. F toggles full-screen reading."
-candidate:app/index.html:196:187,html-text,app/index.html,196,,unknown,reviewable,,Retry
-candidate:app/index.html:196:258,html-text,app/index.html,196,,unknown,reviewable,,Reload page
-candidate:app/index.html:196:328,html-text,app/index.html,196,,unknown,reviewable,,Cancel
+candidate:app/index.html:102:129,html-text,app/index.html,102,,unknown,reviewable,,Text and paper
+candidate:app/index.html:103:204,html-text,app/index.html,103,,unknown,reviewable,,Font size
+candidate:app/index.html:103:250,html-text,app/index.html,103,,unknown,reviewable,,22
+candidate:app/index.html:104:198,html-text,app/index.html,104,,unknown,reviewable,,Serif (Song)
+candidate:app/index.html:104:300,html-text,app/index.html,104,,unknown,reviewable,,Regular (Kai)
+candidate:app/index.html:104:405,html-text,app/index.html,104,,unknown,reviewable,,Sans serif
+candidate:app/index.html:105:82,html-text,app/index.html,105,,unknown,reviewable,,Paper
+candidate:app/index.html:105:146,html-text,app/index.html,105,,unknown,reviewable,,Follow the system
+candidate:app/index.html:107:167,html-text,app/index.html,107,,unknown,reviewable,,◐
+candidate:app/index.html:107:324,html-text,app/index.html,107,,unknown,reviewable,,A
+candidate:app/index.html:107:477,html-text,app/index.html,107,,unknown,reviewable,,A
+candidate:app/index.html:107:630,html-text,app/index.html,107,,unknown,reviewable,,A
+candidate:app/index.html:107:783,html-text,app/index.html,107,,unknown,reviewable,,A
+candidate:app/index.html:107:940,html-text,app/index.html,107,,unknown,reviewable,,A
+candidate:app/index.html:109:194,html-text,app/index.html,109,,unknown,reviewable,,Fine typography
+candidate:app/index.html:109:254,html-text,app/index.html,109,,unknown,reviewable,,"Line spacing, space and indentation"
+candidate:app/index.html:109:439,html-text,app/index.html,109,,unknown,reviewable,,First-line indent
+candidate:app/index.html:109:586,html-text,app/index.html,109,,unknown,reviewable,,Latin fonts are hosted here; Chinese uses device fonts. Word spacing applies only to English.
+candidate:app/index.html:110:105,html-text,app/index.html,110,,unknown,reviewable,,Reset appearance
+candidate:app/index.html:112:135,html-text,app/index.html,112,,unknown,reviewable,,Reading content
+candidate:app/index.html:113:87,html-text,app/index.html,113,,unknown,reviewable,,Reading view
+candidate:app/index.html:113:197,html-text,app/index.html,113,,unknown,reviewable,,English original
+candidate:app/index.html:113:283,html-text,app/index.html,113,,unknown,reviewable,,Chinese translation
+candidate:app/index.html:113:369,html-text,app/index.html,113,,unknown,reviewable,,English and Chinese
+candidate:app/index.html:114:133,html-text,app/index.html,114,,unknown,reviewable,,Chinese translation style
+candidate:app/index.html:114:241,html-text,app/index.html,114,,unknown,reviewable,,Interpretive
+candidate:app/index.html:114:299,html-text,app/index.html,114,,unknown,reviewable,,Literal
+candidate:app/index.html:115:120,html-text,app/index.html,115,,unknown,reviewable,,Page layout
+candidate:app/index.html:115:253,html-text,app/index.html,115,,unknown,reviewable,,Scroll
+candidate:app/index.html:115:320,html-text,app/index.html,115,,unknown,reviewable,,Turn pages
+candidate:app/index.html:115:432,html-text,app/index.html,115,,unknown,reviewable,,Page mode shows two pages in wide windows and one in narrow windows. Use ← → or the buttons below.
+candidate:app/index.html:117:166,html-text,app/index.html,117,,unknown,reviewable,,Parallel reading
+candidate:app/index.html:118:95,html-text,app/index.html,118,,unknown,reviewable,,Arrangement
+candidate:app/index.html:118:197,html-text,app/index.html,118,,unknown,reviewable,,Side by side
+candidate:app/index.html:118:269,html-text,app/index.html,118,,unknown,reviewable,,Stacked
+candidate:app/index.html:119:92,html-text,app/index.html,119,,unknown,reviewable,,Style
+candidate:app/index.html:121:76,html-text,app/index.html,121,,unknown,reviewable,,Live preview · Example
+candidate:app/index.html:122:84,html-text,app/index.html,122,,unknown,reviewable,,Colors and backgrounds
+candidate:app/index.html:123:105,html-text,app/index.html,123,,unknown,reviewable,,Translation color
+candidate:app/index.html:123:213,html-text,app/index.html,123,,unknown,reviewable,,Follow paper
+candidate:app/index.html:123:284,html-text,app/index.html,123,,unknown,reviewable,,Pine green
+candidate:app/index.html:123:351,html-text,app/index.html,123,,unknown,reviewable,,Ink blue
+candidate:app/index.html:123:417,html-text,app/index.html,123,,unknown,reviewable,,Tea brown
+candidate:app/index.html:124:115,html-text,app/index.html,124,,unknown,reviewable,,Translation background
+candidate:app/index.html:124:233,html-text,app/index.html,124,,unknown,reviewable,,Follow style
+candidate:app/index.html:124:311,html-text,app/index.html,124,,unknown,reviewable,,No background
+candidate:app/index.html:124:389,html-text,app/index.html,124,,unknown,reviewable,,Soft background
+candidate:app/index.html:126:73,html-text,app/index.html,126,,unknown,reviewable,,Narrow screens use a stacked layout.
+candidate:app/index.html:128:145,html-text,app/index.html,128,,unknown,reviewable,,Starting view
+candidate:app/index.html:129:96,html-text,app/index.html,129,,unknown,reviewable,,Reading purpose
+candidate:app/index.html:129:247,html-text,app/index.html,129,,unknown,reviewable,,Not set · Start with original
+candidate:app/index.html:129:340,html-text,app/index.html,129,,unknown,reviewable,,Deep understanding
+candidate:app/index.html:129:429,html-text,app/index.html,129,,unknown,reviewable,,Language learning
+candidate:app/index.html:130:91,html-text,app/index.html,130,,unknown,reviewable,,Deep-reading language
+candidate:app/index.html:130:228,html-text,app/index.html,130,,unknown,reviewable,,Original
+candidate:app/index.html:130:293,html-text,app/index.html,130,,unknown,reviewable,,Chinese
+candidate:app/index.html:131:96,html-text,app/index.html,131,,unknown,reviewable,,Language learning starts with the original; deep reading starts in your preferred language. You can change the view and translation separately. Only existing content is shown; nothing is translated automatically.
+candidate:app/index.html:133:141,html-text,app/index.html,133,,unknown,reviewable,,Interface language
+candidate:app/index.html:133:285,html-text,app/index.html,133,,unknown,reviewable,,Interface language
+candidate:app/index.html:133:463,html-text,app/index.html,133,,unknown,reviewable,,English
+candidate:app/index.html:133:540,html-text,app/index.html,133,,unknown,reviewable,,简体中文
+candidate:app/index.html:133:614,html-text,app/index.html,133,,unknown,reviewable,,繁體中文
+candidate:app/index.html:133:678,html-text,app/index.html,133,,unknown,reviewable,,日本語
+candidate:app/index.html:133:742,html-text,app/index.html,133,,unknown,reviewable,,Current interface language: English
+candidate:app/index.html:133:923,html-text,app/index.html,133,,unknown,reviewable,,Retry
+candidate:app/index.html:133:1028,html-text,app/index.html,133,,unknown,reviewable,,Reload page
+candidate:app/index.html:134:120,html-text,app/index.html,134,,unknown,reviewable,,About this translation
+candidate:app/index.html:134:217,html-text,app/index.html,134,,unknown,reviewable,,Literal and interpretive translations are saved separately. AI output is marked as draft. Untranslated passages keep the original for checking. Chinese chapter navigation titles are editorial additions.
+candidate:app/index.html:138:125,html-text,app/index.html,138,,unknown,reviewable,,Reading atmosphere
+candidate:app/index.html:138:239,html-text,app/index.html,138,,unknown,reviewable,,Play
+candidate:app/index.html:139:122,html-text,app/index.html,139,,unknown,reviewable,,No atmosphere selected
+candidate:app/index.html:140:207,html-text,app/index.html,140,,unknown,reviewable,,Choose a scene
+candidate:app/index.html:140:296,html-text,app/index.html,140,,unknown,reviewable,,"Forest, rain, hearth, sea"
+candidate:app/index.html:142:110,html-text,app/index.html,142,,unknown,reviewable,,Music
+candidate:app/index.html:142:280,html-text,app/index.html,142,,unknown,reviewable,,28%
+candidate:app/index.html:143:112,html-text,app/index.html,143,,unknown,reviewable,,Nature sounds
+candidate:app/index.html:143:293,html-text,app/index.html,143,,unknown,reviewable,,32%
+candidate:app/index.html:144:92,html-text,app/index.html,144,,unknown,reviewable,,Scene details
+candidate:app/index.html:144:215,html-text,app/index.html,144,,unknown,reviewable,,Scene motion
+candidate:app/index.html:144:413,html-text,app/index.html,144,,unknown,reviewable,,Respects the system’s reduced-motion preference.
+candidate:app/index.html:146:73,html-text,app/index.html,146,,unknown,reviewable,,Playback continues in other tabs or apps. Pause with the button above.
+candidate:app/index.html:148:153,html-text,app/index.html,148,,unknown,reviewable,,Listen to the text
+candidate:app/index.html:148:379,html-text,app/index.html,148,,unknown,reviewable,,Voice and speed
+candidate:app/index.html:148:473,html-text,app/index.html,148,,unknown,reviewable,,"Choose voice, speed and following"
+candidate:app/index.html:148:577,html-text,app/index.html,148,,unknown,reviewable,,Background sounds soften during narration.
+candidate:app/index.html:151:130,html-text,app/index.html,151,,unknown,reviewable,,Immersive reading
+candidate:app/index.html:151:290,html-text,app/index.html,151,,unknown,reviewable,,Hide the header; tools are always available. Enabled by default when opening a book.
+candidate:app/index.html:152:132,html-text,app/index.html,152,,unknown,reviewable,,Continuous reading
+candidate:app/index.html:152:367,html-text,app/index.html,152,,unknown,reviewable,,The next chapter follows naturally. You decide when it is read.
+candidate:app/index.html:153:138,html-text,app/index.html,153,,unknown,reviewable,,A question for each chapter
+candidate:app/index.html:153:308,html-text,app/index.html,153,,unknown,reviewable,,Offers prompts during ordinary reading; stays quiet in immersive mode.
+candidate:app/index.html:154:117,html-text,app/index.html,154,,unknown,reviewable,,New-book defaults
+candidate:app/index.html:154:202,html-text,app/index.html,154,,unknown,reviewable,,Use this book’s view and typography for new books. This book’s position and records stay unchanged; each book keeps its own choices.
+candidate:app/index.html:154:442,html-text,app/index.html,154,,unknown,reviewable,,Use for new books
+candidate:app/index.html:157:80,html-text,app/index.html,157,,unknown,reviewable,,My records
+candidate:app/index.html:157:288,html-text,app/index.html,157,,unknown,reviewable,,"View highlights, thoughts and questions"
+candidate:app/index.html:157:378,html-text,app/index.html,157,,unknown,reviewable,,Filed by source
+candidate:app/index.html:158:84,html-text,app/index.html,158,,unknown,reviewable,,Reading backup
+candidate:app/index.html:158:253,html-text,app/index.html,158,,unknown,reviewable,,Export records and appearance
+candidate:app/index.html:158:375,html-text,app/index.html,158,,unknown,reviewable,,Import reading records
+candidate:app/index.html:158:529,html-text,app/index.html,158,,unknown,reviewable,,Backups keep reading position and appearance. Export listening records separately.
+candidate:app/index.html:159:86,html-text,app/index.html,159,,unknown,reviewable,,Listening backup
+candidate:app/index.html:159:238,html-text,app/index.html,159,,unknown,reviewable,,View saved listening
+candidate:app/index.html:159:360,html-text,app/index.html,159,,unknown,reviewable,,Export listening records
+candidate:app/index.html:159:487,html-text,app/index.html,159,,unknown,reviewable,,Restore listening records
+candidate:app/index.html:159:594,html-text,app/index.html,159,,unknown,reviewable,,"Includes scripts, audio and playback position. Atmosphere preferences stay in this browser."
+candidate:app/index.html:160:94,html-text,app/index.html,160,,unknown,reviewable,,Reading experience backup
+candidate:app/index.html:160:263,html-text,app/index.html,160,,unknown,reviewable,,"Keeps your choices, retellings and comparisons."
+candidate:app/index.html:164:112,html-text,app/index.html,164,,unknown,reviewable,,Book contents
+candidate:app/index.html:164:212,html-text,app/index.html,164,,unknown,reviewable,,Return to the page
+candidate:app/index.html:168:195,html-text,app/index.html,168,,unknown,reviewable,,Keep these words
+candidate:app/index.html:168:260,html-text,app/index.html,168,,unknown,reviewable,,Leafhour · Excerpt
+candidate:app/index.html:168:371,html-text,app/index.html,168,,unknown,reviewable,,Back to reading
+candidate:app/index.html:172:48,html-text,app/index.html,172,,unknown,reviewable,,Let these words take the focus.
+candidate:app/index.html:174:98,html-text,app/index.html,174,,unknown,reviewable,,Language
+candidate:app/index.html:174:190,html-text,app/index.html,174,,unknown,reviewable,,Chinese
+candidate:app/index.html:174:254,html-text,app/index.html,174,,unknown,reviewable,,English
+candidate:app/index.html:174:332,html-text,app/index.html,174,,unknown,reviewable,,Bilingual
+candidate:app/index.html:175:134,html-text,app/index.html,175,,unknown,reviewable,,Bilingual layout
+candidate:app/index.html:175:235,html-text,app/index.html,175,,unknown,reviewable,,Stacked
+candidate:app/index.html:175:306,html-text,app/index.html,175,,unknown,reviewable,,Side by side
+candidate:app/index.html:176:121,html-text,app/index.html,176,,unknown,reviewable,,Chinese translation style
+candidate:app/index.html:176:223,html-text,app/index.html,176,,unknown,reviewable,,Interpretive
+candidate:app/index.html:176:281,html-text,app/index.html,176,,unknown,reviewable,,Literal
+candidate:app/index.html:177:92,html-text,app/index.html,177,,unknown,reviewable,,Paper
+candidate:app/index.html:177:180,html-text,app/index.html,177,,unknown,reviewable,,Paper
+candidate:app/index.html:177:242,html-text,app/index.html,177,,unknown,reviewable,,Warm
+candidate:app/index.html:177:309,html-text,app/index.html,177,,unknown,reviewable,,Ink
+candidate:app/index.html:178:92,html-text,app/index.html,178,,unknown,reviewable,,Aspect ratio
+candidate:app/index.html:178:162,html-text,app/index.html,178,,unknown,reviewable,,4 : 5
+candidate:app/index.html:178:199,html-text,app/index.html,178,,unknown,reviewable,,1 : 1
+candidate:app/index.html:178:235,html-text,app/index.html,178,,unknown,reviewable,,9 : 16
+candidate:app/index.html:180:80,html-text,app/index.html,180,,unknown,reviewable,,Context and details
+candidate:app/index.html:181:92,html-text,app/index.html,181,,unknown,reviewable,,Text above
+candidate:app/index.html:181:184,html-text,app/index.html,181,,unknown,reviewable,,Fade
+candidate:app/index.html:181:247,html-text,app/index.html,181,,unknown,reviewable,,Hide
+candidate:app/index.html:181:309,html-text,app/index.html,181,,unknown,reviewable,,Keep
+candidate:app/index.html:182:92,html-text,app/index.html,182,,unknown,reviewable,,Text below
+candidate:app/index.html:182:184,html-text,app/index.html,182,,unknown,reviewable,,Fade
+candidate:app/index.html:182:247,html-text,app/index.html,182,,unknown,reviewable,,Hide
+candidate:app/index.html:182:309,html-text,app/index.html,182,,unknown,reviewable,,Keep
+candidate:app/index.html:183:198,html-text,app/index.html,183,,unknown,reviewable,,Font size
+candidate:app/index.html:183:245,html-text,app/index.html,183,,unknown,reviewable,,48
+candidate:app/index.html:184:197,html-text,app/index.html,184,,unknown,reviewable,,Book source
+candidate:app/index.html:186:121,html-text,app/index.html,186,,unknown,reviewable,,Save image
+candidate:app/index.html:186:197,html-text,app/index.html,186,,unknown,reviewable,,Copy image
+candidate:app/index.html:186:284,html-text,app/index.html,186,,unknown,reviewable,,System share
+candidate:app/index.html:192:124,html-text,app/index.html,192,,unknown,reviewable,,Your saved reading position is ready. Return there or keep reading here.
+candidate:app/index.html:192:276,html-text,app/index.html,192,,unknown,reviewable,,Return to saved position
+candidate:app/index.html:192:377,html-text,app/index.html,192,,unknown,reviewable,,Keep reading here
+candidate:app/index.html:195:92,html-text,app/index.html,195,,unknown,reviewable,,"Click a passage or focus it and press Enter for original text, annotations and records. In page mode use ← → or the buttons below. Esc closes overlays. F toggles full-screen reading."
+candidate:app/index.html:198:187,html-text,app/index.html,198,,unknown,reviewable,,Retry
+candidate:app/index.html:198:258,html-text,app/index.html,198,,unknown,reviewable,,Reload page
+candidate:app/index.html:198:328,html-text,app/index.html,198,,unknown,reviewable,,Cancel
 candidate:app/ja/mcp.html:20:69,html-attribute,app/ja/mcp.html,20,aria-label,unknown,reviewable,,Leafhour ホーム
 candidate:app/ja/mcp.html:20:440,html-attribute,app/ja/mcp.html,20,aria-label,unknown,reviewable,,メインナビゲーション
 candidate:app/ja/mcp.html:20:680,html-attribute,app/ja/mcp.html,20,aria-label,unknown,reviewable,,表示言語
@@ -2953,14 +2969,14 @@ candidate:app/portable-chat.mjs:48:69,js-cjk-literal,app/portable-chat.mjs,48,,u
 candidate:app/portable-chat.mjs:49:55,js-cjk-literal,app/portable-chat.mjs,49,,unknown,reviewable,,未完成对话不能携带回答
 candidate:app/portable-chat.mjs:50:375,js-cjk-literal,app/portable-chat.mjs,50,,unknown,reviewable,,导入前的回答已中断，未恢复生成。
 candidate:app/portal.js:84:469,js-cjk-literal,app/portal.js,84,,unknown,reviewable,,网络暂时无法连接，请稍后重试。
-candidate:app/portal.js:167:202,js-cjk-literal,app/portal.js,167,,unknown,reviewable,,爱丽丝梦游仙境
-candidate:app/portal.js:167:212,js-cjk-literal,app/portal.js,167,,unknown,reviewable,,"爱丽丝
+candidate:app/portal.js:166:202,js-cjk-literal,app/portal.js,166,,unknown,reviewable,,爱丽丝梦游仙境
+candidate:app/portal.js:166:212,js-cjk-literal,app/portal.js,166,,unknown,reviewable,,"爱丽丝
 梦游仙境"
-candidate:app/portal.js:184:412,js-cjk-literal,app/portal.js,184,,unknown,reviewable,,文本
-candidate:app/portal.js:187:231,js-attribute,app/portal.js,187,aria-describedby,unknown,protected,identifier,shelf-order-help
-candidate:app/portal.js:187:347,js-attribute,app/portal.js,187,aria-hidden,unknown,reviewable,,true
-candidate:app/portal.js:210:47,js-attribute,app/portal.js,210,aria-busy,unknown,reviewable,,false
-candidate:app/portal.js:251:184,js-attribute,app/portal.js,251,aria-busy,unknown,reviewable,,false
+candidate:app/portal.js:183:412,js-cjk-literal,app/portal.js,183,,unknown,reviewable,,文本
+candidate:app/portal.js:186:231,js-attribute,app/portal.js,186,aria-describedby,unknown,protected,identifier,shelf-order-help
+candidate:app/portal.js:186:347,js-attribute,app/portal.js,186,aria-hidden,unknown,reviewable,,true
+candidate:app/portal.js:213:47,js-attribute,app/portal.js,213,aria-busy,unknown,reviewable,,false
+candidate:app/portal.js:252:184,js-attribute,app/portal.js,252,aria-busy,unknown,reviewable,,false
 candidate:app/pricing-checkout-markup.mjs:2:48,js-cjk-literal,app/pricing-checkout-markup.mjs,2,,unknown,protected,path+quotation,"<dialog autofocus id=""auth-dialog"" class=""auth-dialog"" aria-labelledby=""auth-title"" aria-describedby=""auth-intro"">
   <button class=""dialog-close"" id=""billing-auth-close"" data-close=""auth-dialog"" data-ui-aria-label=""auth.close"" aria-label=""关闭登录"">×</button>
   <div class=""auth-brand"" aria-hidden=""true""><svg viewBox=""0 0 40 40"" fill=""none"" stroke=""currentColor"" stroke-width=""2"" stroke-linecap=""round"" stroke-linejoin=""round"" aria-hidden=""true""><path d=""M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z""/><path d=""M16 23h7v-9""/></svg><span lang=""en"">Leafhour</span></div>

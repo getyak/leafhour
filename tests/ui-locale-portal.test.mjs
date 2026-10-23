@@ -110,8 +110,54 @@ test('actual portal relabels static library chrome in place, including visible n
  assert.equal(calls,4);
 });
 
-test('signed-in desktop home account handoff carries the current UI language',async()=>{
+test('the signed-in home reading-room button opens the shelf without an extra settings dialog',async()=>{
  const accountHandler=ast.body.find(n=>n.type==='ExpressionStatement'&&source.slice(n.start,n.end).startsWith("$('account-button').addEventListener('click'"));assert.ok(accountHandler);
- for(const code of ['en','ja']){await requestUiRoute(code);let handler;const location={href:''};const context={$:()=>({addEventListener(_type,fn){handler=fn;}}),session:{user:{id:'synthetic'}},isLibrary:false,shell:{openSettings(){assert.fail('home route');}},location,uiHref};vm.createContext(context);vm.runInContext(source.slice(accountHandler.start,accountHandler.end),context);handler();assert.equal(location.href,'/library?settings=account&ui='+code);}
+ for(const code of ['en','ja','zh-Hans','zh-Hant']){await requestUiRoute(code);let handler;const location={href:''};const context={$:()=>({addEventListener(_type,fn){handler=fn;}}),session:{user:{id:'synthetic'}},isLibrary:false,shell:{openSettings(){assert.fail('home route');}},location,uiHref};vm.createContext(context);vm.runInContext(source.slice(accountHandler.start,accountHandler.end),context);handler();assert.equal(location.href,'/library?ui='+code);assert.equal(new URL(location.href,'https://leafhour.invalid').searchParams.has('settings'),false,'reading should not require closing a profile dialog');}
  await requestUiRoute('en');
+});
+
+test('the home guest button still opens sign-in and the library account button still opens account settings',()=>{
+ const accountHandler=ast.body.find(n=>n.type==='ExpressionStatement'&&source.slice(n.start,n.end).startsWith("$('account-button').addEventListener('click'"));
+ for(const signedIn of [false,true]){let handler,logins=0,settings=0;const location={href:''};const context={$:()=>({addEventListener(_type,fn){handler=fn;}}),session:{user:signedIn?{id:'synthetic'}:null},isLibrary:signedIn,openAuth(){logins++;},shell:{openSettings(tab){assert.equal(tab,'account');settings++;}},location,uiHref};vm.createContext(context);vm.runInContext(source.slice(accountHandler.start,accountHandler.end),context);handler();assert.equal(logins,signedIn?0:1);assert.equal(settings,signedIn?1:0);assert.equal(location.href,'');}
+});
+
+test('saving, confirming and deleting reading preferences preserves explicit shelf selections and reader defaults',()=>{
+ const selected={query:'my book',topic:'history',language:'en',form:'original'},updates=[];
+ const context={session:{user:{id:'reader'},readingPreferences:{revision:1},preferenceMemory:{revision:1,memory:{topic:null,sources:{}},preferences:{mode:'en'}}},
+  shelfControls:{applyMemoryPreferences(){assert.fail('a saved preference must not filter or clear the shelf');}},
+  setupInvite:{update(){updates.push('invite');}},shell:{update(){updates.push('shell');}}};
+ vm.createContext(context);vm.runInContext(declaration('adoptPreferenceMemory')+'\nthis.adopt=adoptPreferenceMemory;',context);
+ for(const [revision,mode,topic,sources]of [[2,'zh','philosophy',{mode:{source:'settings'}}],[3,'parallel','science',{mode:{source:'agent'}}],[4,'en',null,{}]]){
+  const saved={revision,preferences:{mode,theme:'night'},memory:{topic,sources}};
+  context.adopt(saved,{changed:true,keys:['topic','mode']});
+  assert.equal(context.session.preferenceMemory,saved);assert.equal(context.session.readingPreferences.preferences.mode,mode);
+  assert.deepEqual(selected,{query:'my book',topic:'history',language:'en',form:'original'});
+ }
+ assert.equal(updates.length,6);context.adopt({revision:1});assert.equal(context.session.readingPreferences.revision,4,'stale preference responses remain fenced');
+});
+
+test('opening and refreshing an account never replaces the explicit shelf view with saved preferences',async()=>{
+ for(const firstEntry of [true,false]){
+  const explicit={query:'kept',topic:'history',language:'en',form:'translated'},session={user:{id:'reader'},readingPreferences:{preferences:{preferredLanguage:'zh'}},preferenceMemory:{revision:2,memory:{topic:'philosophy',sources:{mode:{source:'settings'}}},preferences:{mode:'en'}}};
+  let renders=0;
+  const context={refreshGeneration:0,isLibrary:true,identityResolved:!firstEntry,ownerScope:createOwnerScope(firstEntry?'guest':'reader'),session,books:[],shelfRevision:0,pendingUpload:false,pendingChat:false,bootstrapped:false,
+   dashboard:{begin:()=>1,update(){},fail(){}},homeMenu:null,adoptUiOwner(){},
+   authDialog:{updateCapabilities(){},isSettingPasswordFor:()=>false},clearPrivateUI(options){assert.equal(options.preserveView,true,'first identity keeps the incoming explicit URL');},
+   shell:{update(){},refreshDaily(){}},setupInvite:{update(){}},
+   shelfControls:{applyReadingPreferences(){assert.fail('account language cannot filter the shelf');},applyMemoryPreferences(){assert.fail('account topic or mode cannot filter the shelf');}},
+   api:async route=>{assert.equal(route,'/api/library');return {books:[]};},$:()=>({hidden:false,setAttribute(){}}),own(){},status(){},renderBooks(){renders++;},pdfOnboarding:{refresh(){}}};
+  vm.createContext(context);vm.runInContext(declaration('refresh')+'\nthis.refreshAccount=refresh;',context);
+  await context.refreshAccount(session);await context.refreshAccount(session);
+  assert.equal(renders,2);assert.deepEqual(explicit,{query:'kept',topic:'history',language:'en',form:'translated'});
+  assert.equal(context.session.readingPreferences.preferences.preferredLanguage,'zh');
+ }
+});
+
+test('empty shelf help addresses a title search before language and format filters',()=>{
+ const context={};vm.createContext(context);vm.runInContext(declaration('shelfEmptyHelpId')+'\nthis.help=shelfEmptyHelpId;',context);
+ assert.equal(context.help({query:'no such book'}),'portal.empty.filteredHelp');
+ assert.equal(context.help({query:'no such book',language:'zh',form:'bilingual'}),'portal.empty.filteredHelp');
+ assert.equal(context.help({topic:'science'}),'portal.empty.filteredHelp');
+ assert.equal(context.help({language:'zh'}),'filter.languageEmptyHelp');
+ assert.equal(context.help({form:'translated'}),'filter.languageEmptyHelp');
 });

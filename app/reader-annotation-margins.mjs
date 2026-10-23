@@ -23,13 +23,14 @@ export function mountAnnotationMargins({document,storage,getScope,getEntries,onO
  const region=document.createElement('aside');region.id='reader-annotation-margins';region.className='reader-annotation-margins';write(region,'title','aria-label');
  const toggle=document.createElement('button');toggle.id='reader-annotations-toggle';toggle.type='button';toggle.className='reader-annotations-toggle';toggle.setAttribute('aria-controls',region.id);write(toggle,'title');
  const status=document.createElement('span');status.className='reader-annotation-load-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
+ const controls=document.createElement('div');controls.className='reader-annotation-controls';controls.append(toggle,status);
  const key=()=> 'marginalia-annotation-visible-v1|'+scope;
  const listen=(target,event,fn,options)=>{target?.addEventListener(event,fn,options);listeners.push(()=>target?.removeEventListener(event,fn,options));};
  function reset(){
   const next=getScope();if(next===scope)return;scope=next;active=null;
-  for(const node of nodes.values())node.remove();nodes.clear();region.remove();toggle.remove();status.remove();visible=true;
+  for(const node of nodes.values())node.remove();nodes.clear();region.remove();controls.remove();visible=true;
   try{visible=storage?.getItem(key())!=='false';}catch{}
-  if(scope){document.body.append(region,toggle,status);document.body.dataset.annotationsState='pending';}
+  if(scope){document.body.append(region);(document.getElementById('reading-tools-panel')||document.body).append(controls);document.body.dataset.annotationsState='pending';}
   else{delete document.body.dataset.annotationsState;delete document.body.dataset.annotationsVisible;}
   sync();
  }
@@ -83,6 +84,6 @@ export function mountAnnotationMargins({document,storage,getScope,getEntries,onO
   select(id){active=id;for(const [key,node]of nodes)node.setAttribute('aria-expanded',String(key===id));},
   reveal(){if(visible)return;visible=true;try{storage?.setItem(key(),'true');}catch{}sync();layout();},
   state(value){if(!scope||disposed)return;clearTimeout(loadingTimer);document.body.dataset.annotationsState=value;status.textContent='';if(value==='pending')loadingTimer=view.setTimeout(()=>{if(!disposed&&document.body.dataset.annotationsState==='pending')write(status,'loading');},600);else if(value==='error')write(status,'loadFailed');},
-  dispose(){disposed=true;clearTimeout(loadingTimer);if(frame!==null)view.cancelAnimationFrame(frame);for(const off of listeners)off();region.remove();toggle.remove();status.remove();nodes.clear();delete document.body.dataset.annotationsState;delete document.body.dataset.annotationsVisible;}
+  dispose(){disposed=true;clearTimeout(loadingTimer);if(frame!==null)view.cancelAnimationFrame(frame);for(const off of listeners)off();region.remove();controls.remove();nodes.clear();delete document.body.dataset.annotationsState;delete document.body.dataset.annotationsVisible;}
  };
 }

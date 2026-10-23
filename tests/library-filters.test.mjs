@@ -263,19 +263,16 @@ test('form choices, translation language choices and removable chips stay in syn
   assert.equal(controls.read().form,'all');assert.equal(controls.read().language,'ja');
 });
 
-test('account language defaults apply once, respect deliberate views and reset on owner change',()=>{
-  const saved={preferredLanguage:'zh',onboarding:'completed'},f=filterFixture(),controls=mountShelfFilters({root:f.root,onChange:()=>{}});
-  controls.update(books);
-  assert.equal(controls.applyReadingPreferences(saved),true);assert.equal(controls.read().language,'zh');
-  controls.clearAll();
-  assert.equal(controls.applyReadingPreferences(saved),false);assert.equal(controls.read().language,'all','refresh cannot undo clear');
-  controls.reset();controls.set({form:'original'});
-  assert.equal(controls.applyReadingPreferences(saved),false,'explicit choices win');
-  controls.reset();controls.apply({language:'en',form:'translated'});
-  assert.equal(controls.applyReadingPreferences(saved),false,'deep links win');
-  controls.reset();assert.equal(controls.applyReadingPreferences(null),false);
-  assert.equal(controls.applyReadingPreferences({preferredLanguage:'source'}),false,'source is not the English language');
-  controls.reset();assert.equal(controls.applyReadingPreferences(saved),true,'next owner can adopt its own default');
+test('unchanged shelf refreshes preserve the focused filter chip and its original clear action',()=>{
+  const f=filterFixture(),changes=[],controls=mountShelfFilters({root:f.root,onChange:action=>changes.push(action)});
+  controls.update(books);controls.set({topic:'philosophy',form:'original'});
+  const [topicChip,formChip]=f.chips.children;formChip.focus();
+  controls.update([...books]);controls.update([...books,{bookId:'another',sourceLanguage:'fr'}]);
+  assert.equal(f.chips.children[0]===topicChip,true);assert.equal(f.chips.children[1]===formChip,true);
+  assert.equal(f.doc.activeElement,formChip);assert.equal(f.chips.contains(formChip),true);
+  formChip.emit('click');
+  assert.equal(controls.read().form,'all');assert.equal(controls.read().topic,'philosophy');
+  assert.deepEqual(changes.at(-1),{clear:'form'});
 });
 
 test('fiction is an explicit topic choice and the Chinese and English shortcuts stay selectable without matching books',()=>{

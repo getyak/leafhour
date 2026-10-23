@@ -98,10 +98,3 @@ test('restore refuses onboarding state that would hide chat with no question or 
  memory.onboarding.answers=[{key:'topic',choice:null},{key:'language',choice:null},{key:'style',choice:null}];
  assert.throws(()=>validatePreferenceMemory(memory));
 });
-
-test('deleting mode clears its language/form filter and unrelated preference changes leave filters alone',async()=>{
- const {preferenceShelfPatch}=await import('../app/library-filter-controls.mjs');
- const view={preferences:{mode:'en'},memory:{topic:'fiction',sources:{}}};
- assert.deepEqual(preferenceShelfPatch(view,{keys:['mode']}),{language:'all',form:'all'});
- assert.deepEqual(preferenceShelfPatch(view,{keys:['theme']}),{});
-});

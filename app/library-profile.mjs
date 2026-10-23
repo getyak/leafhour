@@ -45,9 +45,9 @@ export function mountLibraryProfile({root,getSession,api,onProfileUpdated=()=>{}
   const avatarHelp=L.text(node('p','profile-help'),'profile.avatar.help');avatarActions.append(uploadLabel,file,reset,avatarHelp);avatarRow.append(avatar,avatarActions);
   const nameLabel=L.text(node('label','profile-field-label'),'profile.name.label'),name=node('input','profile-input');name.id='profile-display-name';name.name='displayName';name.maxLength=80;name.autocomplete='nickname';L.attr(name,'placeholder','profile.name.placeholder');nameLabel.htmlFor=name.id;
   const emailLabel=L.text(node('label','profile-field-label'),'profile.email.label'),email=node('input','profile-input');email.id='profile-email';email.type='text';email.readOnly=true;email.autocomplete='email';emailLabel.htmlFor=email.id;
-  const identityHelp=L.text(node('p','profile-help'),'profile.identity.help'),save=node('button','primary profile-save');save.id='profile-save';save.type='submit';
+  const save=node('button','primary profile-save');save.id='profile-save';save.type='submit';
   const status=node('p','settings-status profile-status');status.id='profile-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
-  form.append(avatarRow,nameLabel,name,emailLabel,email,identityHelp,save,status);root.append(form);
+  form.append(avatarRow,nameLabel,name,emailLabel,email,save,status);root.append(form);
   let localRoomEmail=false;
   let sourceSession=null,sourceOwner=null,revision=0,busy=false,preparing=false,pendingAvatar,disposed=false;
   const current=ticket=>!disposed&&revision===ticket.revision&&getSession()===ticket.session&&getSession()?.user?.id===ticket.owner;

@@ -1,6 +1,25 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {annotationRails,arrangeMarginNotes} from '../app/reader-annotation-margins.mjs';
+import {annotationRails,arrangeMarginNotes,mountAnnotationMargins} from '../app/reader-annotation-margins.mjs';
+import {fixture} from './annotation-dom-fixture.mjs';
+
+test('the single annotation toggle belongs to existing reading tools through refresh, retries and account changes',()=>{
+ const f=fixture('<body><main id="book-page"><div id="reading-pages"><p id="p1">Keep this text selectable.</p></div></main><section id="reading-session"><div id="reading-tools-panel" inert></div></section></body>');
+ let scope='owner-a',hides=0,retries=0;const values=new Map(),panel=f.document.getElementById('reading-tools-panel');
+ const margins=mountAnnotationMargins({document:f.document,storage:{getItem:k=>values.get(k),setItem:(k,v)=>values.set(k,v)},getScope:()=>scope,getEntries:()=>[],onOpen:()=>assert.fail('visibility never opens or generates an annotation'),onHide:()=>hides++,onRetry:()=>retries++,write:(node,key,attribute)=>attribute?node.setAttribute(attribute,key):node.textContent=key});
+ try{
+  const toggle=f.document.getElementById('reader-annotations-toggle'),status=f.document.querySelector('.reader-annotation-load-status');
+  assert.ok(panel.contains(toggle),'the annotation switch must be reached through Read, not float above source text');assert.ok(panel.contains(status));
+  assert.equal(toggle.getAttribute('aria-pressed'),'true');assert.equal(toggle.getAttribute('aria-controls'),'reader-annotation-margins');
+  panel.inert=false;toggle.focus();toggle.dispatchEvent(new Event('click'));assert.equal(toggle.getAttribute('aria-pressed'),'false');assert.equal(hides,1);
+  margins.refresh();assert.equal(f.document.getElementById('reader-annotations-toggle'),toggle);assert.equal(f.document.activeElement,toggle);assert.equal(toggle.getAttribute('aria-pressed'),'false');
+  margins.state('error');toggle.dispatchEvent(new Event('click'));assert.equal(retries,1);assert.equal(toggle.getAttribute('aria-pressed'),'false');assert.equal(status.textContent,'loadFailed');
+  scope='owner-b';margins.reset();assert.ok(panel.contains(toggle));assert.equal(toggle.getAttribute('aria-pressed'),'true');assert.equal(f.document.querySelectorAll('#reader-annotations-toggle').length,1);
+  scope=null;margins.reset();assert.equal(f.document.getElementById('reader-annotations-toggle'),null);assert.equal(f.document.getElementById('reading-tools-panel'),panel);
+  scope='owner-a';margins.reset();assert.ok(panel.contains(toggle));assert.equal(toggle.getAttribute('aria-pressed'),'false');assert.equal(f.document.getElementById('p1').textContent,'Keep this text selectable.');
+ }finally{margins.dispose();}
+ assert.equal(f.document.getElementById('reader-annotations-toggle'),null);assert.equal(f.document.getElementById('reading-tools-panel'),panel);
+});
 
 test('margin rails leave readable text intact across phone, tablet, laptop and desktop widths',()=>{
  for(const viewport of [320,390,768,1024,1280,1440,1920]){

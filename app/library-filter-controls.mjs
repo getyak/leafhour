@@ -17,26 +17,18 @@ const languageName=value=>{
   try{return new Intl.DisplayNames([getUiLocale()],{type:'language'}).of(value)||value;}catch{return value;}
 };
 
-export function preferenceShelfPatch(view,{keys=null}={}){
-  if(!view?.memory)return {};const patch={},wants=key=>!keys||keys.includes(key);
-  if(wants('topic'))patch.topic=view.memory.topic||'all';
-  if(wants('mode')){if(view.memory.sources.mode){patch.form=({en:'original',zh:'translated',parallel:'bilingual'})[view.preferences?.mode]||'all';patch.language=view.preferences?.mode==='zh'?'zh':'all';}else if(keys){patch.form='all';patch.language='all';}}
-  return patch;
-}
-
 export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
   const doc=root.ownerDocument;
   const find=id=>root.querySelector('#'+id),search=find('book-search'),panel=find('shelf-filter-panel'),trigger=find('shelf-filter-button');
   const fields={scope:find('shelf-source'),topic:find('shelf-topic'),language:find('shelf-language'),form:find('shelf-form')};
   const states=[...root.querySelectorAll('[data-reading-status]')],chips=find('shelf-filter-chips'),clearButton=find('shelf-filter-clear'),selection=find('shelf-filter-selection'),count=find('shelf-filter-count');
-  let values=defaults(),optionsKey='',lastBooks=null,disposed=false,summaryRows=[],preferencesApplied=false,userTouched=false;
+  let values=defaults(),optionsKey='',lastBooks=null,disposed=false,summaryRows=[];
   const unbind=bindUi(root),listeners=[];const listen=(node,event,handler)=>{node.addEventListener(event,handler);listeners.push(()=>node.removeEventListener(event,handler));};
   const read=()=>({...values,query:normalizeLibraryQuery(search.value)});
   const popover=mountPopover({document:doc,element:panel,trigger}),offPopover=popover.subscribe({beforeOpen:position,onChange:onOpenChange});
   const close=()=>popover.close();
   const open=()=>popover.open();
   const set=(patch,{source='user'}={})=>{
-    if(source==='user')userTouched=true;
     const changed={};
     for(const [key,value] of Object.entries(patch||{})){
       if(key==='query'){search.value=String(value||'');values={...values};changed.query=String(value||'');continue;}
@@ -47,7 +39,6 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
     onChange({patch:changed,source});
   };
   const clear=key=>{
-    userTouched=true;
     if(key==='query'){search.value='';values={...values};}
     else if(['scope','status','topic','language','form'].includes(key))values={...values,[key]:'all'};
     if(lastBooks)update(lastBooks);
@@ -55,7 +46,6 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
     focusAfterClear(key);
   };
   const clearAll=()=>{
-    userTouched=true;
     values=defaults();search.value='';
     if(lastBooks)update(lastBooks);
     onChange({clearAll:true});
@@ -122,12 +112,16 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
     for(const button of states)button.setAttribute('aria-pressed',String(button.dataset.readingStatus===values.status));
     for(const button of doc.querySelectorAll('[data-shelf]'))button.setAttribute('aria-pressed',String(button.dataset.shelf===values.scope));
     const entries=summaryEntries();
-    summaryRows=entries.map(([key,value])=>{
-      const button=doc.createElement('button');button.type='button';button.className='shelf-filter-chip';
-      button.addEventListener('click',()=>{if(!disposed)clear(key);});
-      return {key,value,button};
-    });
-    chips.replaceChildren(...summaryRows.map(row=>row.button));
+    // A same-view background refresh keeps the keyboard's actual button.
+    // Rebuild only after the reader changes a filter or follows another view.
+    if(entries.length!==summaryRows.length||entries.some(([key,value],index)=>summaryRows[index].key!==key||summaryRows[index].value!==value)){
+      summaryRows=entries.map(([key,value])=>{
+        const button=doc.createElement('button');button.type='button';button.className='shelf-filter-chip';
+        button.addEventListener('click',()=>{if(!disposed)clear(key);});
+        return {key,value,button};
+      });
+      chips.replaceChildren(...summaryRows.map(row=>row.button));
+    }
     const active=hasShelfFilters(read());
     clearButton.hidden=!active;
     selection.hidden=!entries.length;
@@ -151,25 +145,13 @@ export function mountShelfFilters({root,onChange,onOpenChange=()=>{}}){
   }
   const offLocale=onUiLocaleChange(updateLabels);void uiReady.then(updateLabels);updateLabels();
   return {
-    read,set,clear,clearAll,touch(){userTouched=true;},
-    applyMemoryPreferences(view,{force=false,keys=null}={}){
-      if(!view?.memory||!force&&userTouched)return false;
-      const patch=preferenceShelfPatch(view,{keys}),before=read();if(!Object.entries(patch).some(([key,value])=>before[key]!==value))return false;
-      set(patch,{source:'preference'});return true;
-    },
-    applyReadingPreferences(preferences){
-      if(preferencesApplied||userTouched||hasShelfFilters(read())||!preferences)return false;
-      preferencesApplied=true;
-      if(preferences.preferredLanguage!=='zh')return false;
-      set({language:'zh'},{source:'preference'});return true;
-    },update,updateLabels,close,open,choices,
+    read,set,clear,clearAll,update,updateLabels,close,open,choices,
     dispose(){if(disposed)return;disposed=true;offLocale();unbind();for(const off of listeners)off();for(const choice of Object.values(choices))choice?.destroy();offPopover();popover.close({focus:false});if(typeof window!=='undefined'){window.removeEventListener('resize',reposition);window.removeEventListener('scroll',reposition);}},
     apply(view){
       values={scope:view.scope||'all',status:view.status||'all',topic:view.topic||'all',language:view.language||'all',form:view.form||'all'};
-      if(hasShelfFilters(view))userTouched=true;
       search.value=view.query||'';
       if(lastBooks)update(lastBooks);
     },
-    reset(){preferencesApplied=false;userTouched=false;values=defaults();search.value='';optionsKey='';close();if(lastBooks)update(lastBooks);}
+    reset(){values=defaults();search.value='';optionsKey='';close();if(lastBooks)update(lastBooks);}
   };
 }

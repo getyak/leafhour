@@ -241,6 +241,8 @@ body.library-page .shelf-reading-states button[aria-pressed=true]::after { conte
 body.library-page .shelf-search { background: var(--panel); border: 1px solid var(--line); border-radius: var(--lh-radius-sm); padding: 0 12px; width: 220px; }
 body.library-page .shelf-search input { min-height: 42px; font-size: 13px; }
 body.library-page .shelf-search:focus-within { border-color: var(--focus-ring); box-shadow: 0 0 0 3px var(--focus-ring-halo); }
+body.library-page .shelf-search:has(input:focus-visible) { outline: var(--focus-ring-width) solid var(--focus-ring); outline-offset: var(--focus-ring-offset); }
+body.library-page .shelf-search input:focus-visible { outline: none; box-shadow: none; }
 body.library-page .shelf-filter-toggle { padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--lh-radius-sm); background: var(--panel); }
 body.library-page #reading-dashboard { margin-bottom: 32px; }
 body.library-page .today-panel { grid-template-columns: 142px minmax(0,1fr); padding: 28px; column-gap: 32px; border: 1px solid var(--line); border-radius: var(--lh-radius-lg); background: var(--panel); }
