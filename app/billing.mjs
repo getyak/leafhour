@@ -6,6 +6,12 @@ const copy={
  'zh-Hant':{title:'額度與帳單',admin:'計費概覽',back:'返回自己的書房',loading:'正在開啟額度帳戶…',retry:'重新整理',signIn:'登入後查看自己的額度',signInBody:'餘額與訂單僅對目前帳戶可見。',available:'可用閱讀點',reserved:'處理中預留',consumed:'已消費',granted:'累計發放',sources:'點數來源',trial:'10 試用點',trialYes:'已領取試用點',trialNo:'領取 10 試用點',trialHelp:'每個驗證帳戶一次，由伺服器核驗資格。',frozen:'付款問題核對期間已暫停收費生成。閱讀和匯出仍可使用，請聯絡支援。',entries:'點數明細',orders:'訂單',emptyEntries:'還沒有點數分錄。',emptyOrders:'還沒有訂單。',date:'時間',feature:'功能 / 分錄',points:'點數',reference:'關聯編號',state:'狀態',amount:'金額',order:'訂單',receipt:'Creem 憑證',more:'載入更多',checking:'正在向伺服器核對付款…',paid:'付款已核實，點數已入帳。',pending:'付款尚未核實。返回頁參數不會發放點數，可稍後重新整理查看。',refund:'已記錄退款',disputed:'付款核對中',cancelled:'已取消',failed:'失敗',hold:'處理中 · 已預留',consume:'已消費',release:'未扣點 · 已釋放',reversal:'點數已退回',grant:'已發放',refund_adjustment:'退款調整',trialGrant:'試用贈送',purchaseGrant:'購買入帳',translation:'單段雙譯',conversation:'閱讀對話',annotation:'AI 註解',unknown:'未報告',disabled:'付款尚未開放，閱讀和匯出仍可使用。',test:'測試模式：僅沙盒結帳，不涉及真實付款或正式點數。',unavailable:'付款暫不可用：伺服器就緒檢查尚未通過。',error:'暫時無法載入帳單，請稍後重試。',forbidden:'目前帳戶無權查看營運計費概覽。',changed:'帳戶已變更，原帳戶的帳單資料已清除。請重新整理後繼續。',signInRequired:'請重新登入後繼續。',checkoutError:'目前無法結帳，已有點數與閱讀資料保持不變。',trialError:'暫時無法領取試用點，帳戶須通過驗證並符合資格。',accounts:'帳戶數',paidOrders:'已付款訂單',paidUsers:'付款帳戶',sales:'按幣別收款',refunds:'按幣別退款',calls:'供應商呼叫',knownCost:'已知供應商成本 · USD',unknownCost:'次呼叫成本未知或不完整',costNote:'缺少用量維持未知。只要有呼叫缺少完整用量，已知供應商成本就是部分計量。現金收款、點數消費和會計收入分別記錄。',emptyCurrency:'還沒有金額記錄。',from:'開始日期（上海）',to:'結束日期（不含，上海）',range:'Asia/Shanghai · 半開時間窗：包含開始，不包含結束。',apply:'查看報表',report:'報表時間窗',noSummary:'選擇時間範圍，載入真實計費彙總。',unitsNote:'1 點 = 1,000,000 記帳單位。預留與正式消費分開。',free:'閱讀、筆記與匯出仍然免費。',support:'需要協助？',privacy:'隱私說明',operator:'營運報表',timeError:'請選擇有效日期範圍，結束日期須晚於開始日期。'},
  ja:{title:'ポイントと請求',admin:'請求の概要',back:'自分の読書室に戻る',loading:'ポイントを読み込み中…',retry:'更新',signIn:'ログインしてポイントを確認',signInBody:'残高と注文は自分のアカウントだけに表示されます。',available:'利用可能ポイント',reserved:'処理中の確保',consumed:'消費済み',granted:'累計付与',sources:'ポイントの内訳',trial:'10 お試しポイント',trialYes:'お試しポイント付与済み',trialNo:'10 お試しポイントを受け取る',trialHelp:'認証済みアカウントごとに 1 回。サーバーで資格を確認します。',frozen:'支払いを確認中のため有料生成を停止しています。読書とエクスポートは利用できます。サポートへお問い合わせください。',entries:'ポイント明細',orders:'注文',emptyEntries:'ポイントの記録はまだありません。',emptyOrders:'注文はまだありません。',date:'日時',feature:'機能 / 記録',points:'ポイント',reference:'参照 ID',state:'状態',amount:'金額',order:'注文',receipt:'Creem 領収書',more:'さらに読み込む',checking:'サーバーで支払いを確認中…',paid:'支払いを確認し、ポイントを付与しました。',pending:'支払いはまだ確認されていません。URL の情報だけでは付与しません。後で更新できます。',refund:'返金を記録済み',disputed:'支払いを確認中',cancelled:'キャンセル済み',failed:'失敗',hold:'処理中 · 確保済み',consume:'消費済み',release:'消費なし · 解放済み',reversal:'ポイント返還',grant:'付与',refund_adjustment:'返金調整',trialGrant:'お試し付与',purchaseGrant:'購入分付与',translation:'直訳と意訳',conversation:'読書対話',annotation:'AI 注釈',unknown:'未報告',disabled:'支払いはまだ開始していません。読書とエクスポートは利用できます。',test:'テストモード：サンドボックス決済のみ。実際の支払いや本番ポイントは発生しません。',unavailable:'サーバーの準備確認が完了していないため、支払いは利用できません。',error:'請求情報を読み込めませんでした。再試行してください。',forbidden:'このアカウントには運営用の請求概要へのアクセス権がありません。',changed:'アカウントが変わったため、前の請求情報を消去しました。更新して続けてください。',signInRequired:'再度ログインしてください。',checkoutError:'現在は決済を利用できません。既存のポイントと読書記録は維持されます。',trialError:'お試しポイントを付与できませんでした。認証と利用資格が必要です。',accounts:'アカウント数',paidOrders:'支払済み注文',paidUsers:'支払い済みアカウント',sales:'通貨別の入金',refunds:'通貨別の返金',calls:'サプライヤー呼び出し',knownCost:'判明したサプライヤー費用 · USD',unknownCost:'件の費用が不明または不完全',costNote:'用量が不明な場合は不明のまま表示します。完全な用量がない呼び出しがあれば、既知の費用は部分的な計測です。入金、ポイント消費、会計上の収益は別に記録します。',emptyCurrency:'金額の記録はありません。',from:'開始日（上海）',to:'終了日（含まない・上海）',range:'Asia/Shanghai · 半開区間：開始を含み、終了を含みません。',apply:'レポートを表示',report:'集計期間',noSummary:'期間を指定して実際の請求集計を読み込みます。',unitsNote:'1 ポイント = 1,000,000 記帳単位。確保と消費は区別します。',free:'読書、ノート、エクスポートは引き続き無料です。',support:'お問い合わせ',privacy:'プライバシー',operator:'運営レポート',timeError:'有効な日付範囲を選択してください。終了日は開始日より後にします。'}
 };
+const stateCopy={
+ en:{paymentUnknown:'Payment availability has not been verified. Refresh to check.',entriesUnknown:'Point entries have not been verified. Refresh to try again.',ordersUnknown:'Orders have not been verified. Refresh to try again.',trialUnknown:'Refresh to check your trial point eligibility.',recordsUnverified:'Showing previously loaded records. Refresh to check for updates.'},
+ 'zh-Hans':{paymentUnknown:'支付状态尚未核验，请刷新查看。',entriesUnknown:'点数明细尚未核验，请刷新重试。',ordersUnknown:'订单尚未核验，请刷新重试。',trialUnknown:'请刷新核对试用点资格。',recordsUnverified:'当前显示先前载入的记录，请刷新核对最新状态。'},
+ 'zh-Hant':{paymentUnknown:'付款狀態尚未核驗，請重新整理查看。',entriesUnknown:'點數明細尚未核驗，請重新整理再試。',ordersUnknown:'訂單尚未核驗，請重新整理再試。',trialUnknown:'請重新整理核對試用點資格。',recordsUnverified:'目前顯示先前載入的記錄，請重新整理核對最新狀態。'},
+ ja:{paymentUnknown:'支払いの利用状況は未確認です。更新して確認してください。',entriesUnknown:'ポイント明細は未確認です。更新して再試行してください。',ordersUnknown:'注文は未確認です。更新して再試行してください。',trialUnknown:'更新してお試しポイントの利用資格を確認してください。',recordsUnverified:'前回読み込んだ記録を表示しています。更新して最新情報を確認してください。'}
+};
 const reportingCopy={
  en:{trialSource:'Trial points',purchaseSource:'Purchased points',reviewSource:'Review points',fundingTitle:'Calls by funding',featureTitle:'Calls by feature',sourceTitle:'Points by source',category:'Category',unknownCalls:'Unknown cost calls',known:'Known cost · USD',sponsored:'Sponsored',userFunded:'User-requested points',operatorFunded:'Operator-funded',fees:'Payment fees',reviewOrders:'Review orders',trialGrants:'Trial grants',operations:'Operation states',settled:'Settled',running:'Running',result_saved:'Result saved',released:'Released',reservedState:'Reserved'},
  'zh-Hans':{trialSource:'试用点',purchaseSource:'购买点',reviewSource:'审核点',fundingTitle:'按资金来源统计调用',featureTitle:'按功能统计调用',sourceTitle:'按来源统计点数',category:'类别',unknownCalls:'成本未知调用',known:'已知成本 · USD',sponsored:'平台赞助',userFunded:'用户主动用点',operatorFunded:'运营者承担',fees:'支付手续费',reviewOrders:'审核订单',trialGrants:'试用发放',operations:'任务状态',settled:'已结算',running:'处理中',result_saved:'结果已保存',released:'已释放',reservedState:'已预留'},
@@ -19,11 +25,12 @@ const subscriptionCopy={
  ja:{subscribe:'月額プラン · US$5 / 月',subscribeTest:'月額プランのテスト · US$5 / 月',monthlyLive:'毎月自動更新。適用税と最終金額は Creem 決済画面に表示します。',subscriptions:'定期プラン',noSubscriptions:'定期プランはありません。',subscriptionUnknown:'月額プランの開始前に、更新して契約状況を確認してください。',subscriptionExists:'月額プランまたは確認中の決済があります。下で管理するか、更新して状況を確認してください。',subscriptionStatus:'状態',active:'有効',trialing:'お試し期間',past_due:'支払期限超過',unpaid:'未払い',paused:'一時停止',scheduled_cancel:'更新停止予定',canceled:'解約済み',currentPeriodEnds:'現在の期間終了',nextPayment:'次回の支払い',manage:'管理 / 自動更新を解約',portalError:'カスタマーポータルを開けませんでした。更新するかサポートへお問い合わせください。',trialHelp:'認証済みの対象アカウントに、キャンペーン予算の範囲で 10 ポイントを 1 回自動付与します。',trialBudget:'お試し予算を利用できません。購入済みポイントは引き続き使えます。',trialVerification:'アカウントを認証すると、お試しポイントの利用資格を確認できます。',retryTrial:'お試し付与を再試行',renewalNote:'カスタマーポータルでの解約は次回以降の更新を停止し、付与済みポイントは残ります。'}
 };
 const checkoutRecoveryCopy={"en":{"expired":"Expired","resume":"Continue checkout","checkPayment":"Check payment","checkoutExpired":"This checkout has expired. Choose a new purchase to continue.","monthlyPaidOrders":"Monthly paid orders","oneTimePaidOrders":"One-time paid orders","activeSubscriptions":"Active subscriptions"},"zh-Hans":{"expired":"已过期","resume":"继续结账","checkPayment":"核对付款","checkoutExpired":"这次结账已过期，可重新选择购买。","monthlyPaidOrders":"月付实付订单","oneTimePaidOrders":"一次性实付订单","activeSubscriptions":"生效订阅"},"zh-Hant":{"expired":"已過期","resume":"繼續結帳","checkPayment":"核對付款","checkoutExpired":"這次結帳已過期，可重新選擇購買。","monthlyPaidOrders":"月付實付訂單","oneTimePaidOrders":"一次性實付訂單","activeSubscriptions":"生效訂閱"},"ja":{"expired":"期限切れ","resume":"決済を続ける","checkPayment":"支払いを確認","checkoutExpired":"この決済は期限切れです。新たに購入を選択できます。","monthlyPaidOrders":"月額の支払済み注文","oneTimePaidOrders":"1 回限りの支払済み注文","activeSubscriptions":"有効な定期契約"}};
-export const billingLabels=locale=>({...copy[commerceLocale(locale)],...reportingCopy[commerceLocale(locale)],...subscriptionCopy[commerceLocale(locale)],...checkoutRecoveryCopy[commerceLocale(locale)]});
+export const billingLabels=locale=>({...copy[commerceLocale(locale)],...stateCopy[commerceLocale(locale)],...reportingCopy[commerceLocale(locale)],...subscriptionCopy[commerceLocale(locale)],...checkoutRecoveryCopy[commerceLocale(locale)]});
 export function catalogAvailability(catalog,productKey=monthlyKey){
- if(catalog?.enabled!==true)return 'disabled';
+ if(catalog?.enabled===false)return 'disabled';
+ if(catalog?.enabled!==true)return 'unknown';
  if(!currentPlan(productKey))return 'unavailable';
- const product=productKey&&catalog.products?.find(item=>item.key===productKey);
+ const product=productKey&&Array.isArray(catalog.products)&&catalog.products.find(item=>item?.key===productKey);
  if(!product)return 'unavailable';
  if(productKey&&Array.isArray(catalog.products)&&(!product||product.available===false))return 'unavailable';
  if(product?.available!==true&&catalog.available!==true)return 'unavailable';
@@ -50,13 +57,13 @@ const intentId=()=>globalThis.crypto?.randomUUID?.()||(()=>{throw problem('BILLI
 export function createBillingClient({fetcher=globalThis.fetch?.bind(globalThis),intentFactory=intentId,onChange=()=>{}}={}){
  let revision=0,sessionRevision=0,trialPending=null;
  const intents=new Map(),intentOrders=new Map(),checkoutPending=new Map();
- const state={session:null,catalog:null,account:null,entries:[],orders:[],subscriptions:null,trialIssue:null,pendingProducts:[],entriesCursor:null,ordersCursor:null,returnOrder:null,summary:null};
+ const state={session:null,catalog:null,account:null,entries:[],orders:[],entriesStatus:'idle',ordersStatus:'idle',subscriptions:null,trialIssue:null,pendingProducts:[],entriesCursor:null,ordersCursor:null,returnOrder:null,summary:null};
  const snapshot=()=>({...state,entries:[...state.entries],orders:[...state.orders],subscriptions:state.subscriptions&&[...state.subscriptions],pendingProducts:[...state.pendingProducts]});
  const emit=()=>onChange(snapshot());
  function adoptSession(next){
   const changed=ownerOf(state.session)!==ownerOf(next);
   state.session=next;
-  if(changed){revision++;sessionRevision++;intents.clear();intentOrders.clear();checkoutPending.clear();trialPending=null;Object.assign(state,{account:null,entries:[],orders:[],subscriptions:null,trialIssue:null,pendingProducts:[],entriesCursor:null,ordersCursor:null,returnOrder:null,summary:null});}
+  if(changed){revision++;sessionRevision++;intents.clear();intentOrders.clear();checkoutPending.clear();trialPending=null;Object.assign(state,{account:null,entries:[],orders:[],entriesStatus:'idle',ordersStatus:'idle',subscriptions:null,trialIssue:null,pendingProducts:[],entriesCursor:null,ordersCursor:null,returnOrder:null,summary:null});}
   emit();return changed;
  }
  async function raw(path,{method='GET',body,headers={}}={}){
@@ -83,25 +90,29 @@ export function createBillingClient({fetcher=globalThis.fetch?.bind(globalThis),
  async function loadPage(kind,{more=false}={}){
   const ticket=revision,cursor=more?state[kind+'Cursor']:null;
   if(more&&!cursor)return snapshot();
-  const data=await protectedRequest(pagePath(kind,cursor));
-  if(ticket!==revision)throw problem('BILLING_ACCOUNT_CHANGED');
-  const list=Array.isArray(data?.[kind])?data[kind]:[];
-  // A retry of the same cursor must not create duplicate statement lines.
-  const rows=more?[...state[kind],...list]:list;const seen=new Set();
-  state[kind]=rows.filter(row=>{if(!row||typeof row!=='object')return false;if(row.id&&seen.has(row.id))return false;if(row.id)seen.add(row.id);return true;});
-  state[kind+'Cursor']=typeof data?.nextCursor==='string'?data.nextCursor:null;emit();return data;
+  state[kind+'Status']='loading';emit();
+  try{
+   const data=await protectedRequest(pagePath(kind,cursor));
+   if(ticket!==revision)throw problem('BILLING_ACCOUNT_CHANGED');
+   const list=data?.[kind];
+   if(!Array.isArray(list)||list.some(row=>!row||typeof row!=='object'||Array.isArray(row)))throw problem('BILLING_INVALID_RESPONSE',502);
+   // A retry of the same cursor must not create duplicate statement lines.
+   const rows=more?[...state[kind],...list]:list;const seen=new Set();
+   state[kind]=rows.filter(row=>{if(row.id&&seen.has(row.id))return false;if(row.id)seen.add(row.id);return true;});
+   state[kind+'Cursor']=typeof data?.nextCursor==='string'?data.nextCursor:null;state[kind+'Status']='ready';emit();return data;
+  }catch(error){if(ticket===revision){state[kind+'Status']='error';emit();}throw error;}
  }
- async function claimTrial(){const ticket=revision,data=await protectedRequest('/api/billing/trial',{method:'POST',body:{}});if(ticket!==revision)throw problem('BILLING_ACCOUNT_CHANGED');state.account=data?.account||data;state.trialIssue=null;emit();return state.account;}
+ async function claimTrial(){if(typeof state.account?.trialGranted!=='boolean')throw problem('BILLING_ACCOUNT_UNKNOWN');const ticket=revision,data=await protectedRequest('/api/billing/trial',{method:'POST',body:{}});if(ticket!==revision)throw problem('BILLING_ACCOUNT_CHANGED');state.account=data?.account||data;state.trialIssue=null;emit();return state.account;}
  function expireIntent(productKey,orderId){if(!intentOrders.has(productKey)||intentOrders.get(productKey)===orderId){intents.delete(productKey);intentOrders.delete(productKey);state.pendingProducts=state.pendingProducts.filter(key=>key!==productKey);}}
  const client={
   snapshot,adoptSession,refreshSession,
   authRequest:(path,body)=>{if(!/^\/api\/auth\/(?:code|password|verify|password\/setup|local|oauth)$/.test(path))throw problem('BILLING_INVALID_AUTH_REQUEST',400);return raw(path,{method:'POST',body});},
-  async loadCatalog(){state.catalog=await raw('/api/billing/catalog');emit();return state.catalog;},
+  async loadCatalog(){state.catalog=null;emit();const data=await raw('/api/billing/catalog');if(typeof data?.enabled!=='boolean')throw problem('BILLING_INVALID_RESPONSE',502);state.catalog=data;emit();return state.catalog;},
   async loadAccount(){const ticket=revision,data=await protectedRequest('/api/billing/account');if(ticket!==revision)throw problem('BILLING_ACCOUNT_CHANGED');state.account=data?.account||data;emit();return state.account;},
   loadEntries:options=>loadPage('entries',options),loadOrders:options=>loadPage('orders',options),
   claimTrial,
   async ensureTrial(){
-   if(!state.account||state.account.trialGranted)return state.account;
+   if(state.account?.trialGranted!==false)return state.account;
    if(trialPending)return trialPending;
    const ticket=revision;
    const pending=claimTrial().catch(error=>{
@@ -116,6 +127,7 @@ export function createBillingClient({fetcher=globalThis.fetch?.bind(globalThis),
    if(!currentPlan(productKey))return Promise.reject(problem('BILLING_INVALID_PRODUCT',400));
    if(checkoutPending.has(productKey))return checkoutPending.get(productKey);
    if(checkoutPending.size||state.subscriptions===null||state.subscriptions.some(subscriptionBlocksPurchase)||state.orders.some(pendingSubscriptionOrder)||state.pendingProducts.some(currentPlan))return Promise.reject(problem('BILLING_SUBSCRIPTION_EXISTS'));
+   if(catalogAvailability(state.catalog,productKey)==='unknown')return Promise.reject(problem('BILLING_CATALOG_UNKNOWN'));
    if(!intents.has(productKey))intents.set(productKey,intentFactory());const ticket=revision;
    const pending=protectedRequest('/api/billing/checkouts',{method:'POST',body:{productKey,intentKey:intents.get(productKey)}}).then(data=>{
     if(ticket!==revision)throw problem('BILLING_ACCOUNT_CHANGED');const url=safeCheckoutUrl(data?.checkoutUrl);if(!url)throw problem('BILLING_INVALID_CHECKOUT',502);if(data?.order?.id)intentOrders.set(productKey,data.order.id);state.pendingProducts=[...new Set([...state.pendingProducts,productKey])];emit();return {...data,checkoutUrl:url};
@@ -147,7 +159,7 @@ function dateTime(value,locale){const date=new Date(value);return value&&Number.
 const cell=value=>`<td>${escape(value)}</td>`;
 const stat=(label,value)=>`<div class="billing-stat"><span>${escape(label)}</span><strong>${escape(value)}</strong></div>`;
 const notice=(text,kind='')=>`<p class="billing-notice ${escape(kind)}" role="status">${escape(text)}</p>`;
-const availabilityText=(catalog,c,productKey)=>{const availability=catalogAvailability(catalog,productKey);return availability==='live'?c.monthlyLive:c[availability];};
+const availabilityText=(catalog,c,productKey)=>{const availability=catalogAvailability(catalog,productKey);return availability==='live'?c.monthlyLive:availability==='unknown'?c.paymentUnknown:c[availability];};
 const entryType=entry=>entry.type||entry.kind;
 const sourceName=(source,c)=>({trial:c.trialSource,purchase:c.purchaseSource,review:c.reviewSource})[source]||source||c.unknown;
 function entryName(entry,c){if(entryType(entry)==='grant')return entry.source==='trial'?c.trialGrant:entry.source==='purchase'?c.purchaseGrant:sourceName(entry.source,c);const key=({translation:'translation',dual_translation:'translation',reading_conversation:'conversation',conversation:'conversation',reading_chat:'conversation',chat:'conversation',annotation:'annotation',ai_annotation:'annotation'})[entry.action];return key?c[key]:c[entryType(entry)]||entryType(entry)||c.unknown;}
@@ -155,6 +167,7 @@ function entryState(entry,c){return entryType(entry)==='reverse'?c.reversal:c[en
 const entryUnits=entry=>['hold','release'].includes(entryType(entry))&&validNumber(entry.reservedUnits)?Math.abs(entry.reservedUnits):entry.units;
 function orderState(order,c){const paid=order.paymentVerified===true?c.paid:c.pending;return ({paid,completed:paid,fulfilled:paid,refunded:c.refund,partially_refunded:c.refund,disputed:c.disputed,cancelled:c.cancelled,canceled:c.cancelled,expired:c.expired,failed:c.failed})[order.status]||c.pending;}
 function table(title,headers,rows,empty){return `<section class="billing-section"><h2>${escape(title)}</h2>${rows.length?`<div class="table-scroll" tabindex="0" role="region" aria-label="${escape(title)}"><table><caption class="sr-only">${escape(title)}</caption><thead><tr>${headers.map(value=>`<th scope="col">${escape(value)}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>`:`<p class="billing-empty">${escape(empty)}</p>`}</section>`;}
+const historyTable=(title,headers,rows,status,empty,unknown,stale)=>table(title,headers,rows,status==='ready'?empty:unknown)+(rows.length&&status!=='ready'?notice(stale):'');
 function renderAccountSources(account,locale,c){
  const rows=Array.isArray(account?.sources)?account.sources.map(source=>`<tr><th scope="row">${escape(sourceName(source.source,c))}</th>${cell(formatReadingPoints(source.availableUnits,locale))}${cell(formatReadingPoints(source.reservedUnits,locale))}</tr>`):[];
  return rows.length?table(c.sources,[c.category,c.available,c.reserved],rows,c.unknown):`<p>${c.unknown}</p>`;
@@ -167,13 +180,13 @@ function renderSubscriptions(subscriptions,locale,c){
  })||[];
  return `<section class="billing-section billing-subscriptions" aria-labelledby="subscription-title"><h2 id="subscription-title">${c.subscriptions}</h2>${subscriptions===null?notice(c.subscriptionUnknown):rows.length?rows.join(''):`<p class="fine-print">${c.noSubscriptions}</p>`}<p class="fine-print">${c.renewalNote}</p></section>`;
 }
-export function renderBillingAccount({locale='en',session,catalog,account,entries=[],orders=[],subscriptions=null,pendingProducts=[],trialIssue,entriesCursor,ordersCursor,returnOrder}={}){
+export function renderBillingAccount({locale='en',session,catalog,account,entries=[],orders=[],entriesStatus='idle',ordersStatus='idle',subscriptions=null,pendingProducts=[],trialIssue,entriesCursor,ordersCursor,returnOrder}={}){
  locale=commerceLocale(locale);const c=billingLabels(locale),commerce=commerceCopy(locale);
  if(!ownerOf(session))return `<section class="billing-signin"><h2>${c.signIn}</h2><p>${c.signInBody}</p><button class="primary" type="button" data-billing-action="signin">${c.signIn}</button></section>${notice(availabilityText(catalog,c))}`;
  const rows=entries.map(entry=>`<tr>${cell(dateTime(entry.createdAt||entry.at,locale))}${cell(entryName(entry,c))}${cell(formatReadingPoints(entryUnits(entry),locale))}${cell(entryState(entry,c))}<td class="billing-reference">${escape(entry.operationId||entry.orderId||entry.id||'—')}</td></tr>`);
  const orderRows=orders.map(order=>{const receipt=safeCheckoutUrl(order.receiptUrl||order.receipt?.url);return `<tr><td class="billing-reference">${escape(order.id||'—')}</td>${cell(dateTime(order.createdAt,locale))}${cell(money(order.paidAmount??order.amount,order.currency,locale))}${cell(money(order.refundedAmount,order.currency,locale))}${cell(formatReadingPoints(order.units,locale))}${cell(orderState(order,c))}<td>${receipt?`<a href="${escape(receipt)}" target="_blank" rel="noopener noreferrer">${c.receipt} ↗</a>`:'—'}${unfinishedOrder(order)?`<div class="billing-order-actions">${currentPlan(order.productKey)&&safeCheckoutUrl(order.checkoutUrl)?`<button class="outline" type="button" data-billing-action="resume" data-order-id="${escape(order.id)}">${c.resume}</button>`:''}<button class="outline" type="button" data-billing-action="recheck" data-order-id="${escape(order.id)}">${c.checkPayment}</button></div>`:''}</td></tr>`;});
  const trialNotice=trialIssue?notice(trialIssue==='trial_budget_exhausted'?c.trialBudget:trialIssue==='verified_account_required'?c.trialVerification:c.trialError):'';
- return `${account?.frozen?notice(c.frozen,'warning'):''}<section class="balance-strip" aria-label="${c.title}">${stat(c.available,formatReadingPoints(account?.availableUnits,locale))}${stat(c.reserved,formatReadingPoints(account?.reservedUnits,locale))}${stat(c.consumed,formatReadingPoints(account?.consumedUnits,locale))}</section><p class="fine-print">${c.unitsNote}</p>${trialNotice}<p class="billing-plan-link"><a class="outline" href="${commercePath('pricing',locale)}">${commerce.pricing}</a></p>${catalog?.enabled!==true?notice(c.disabled):''}${renderSubscriptions(subscriptions,locale,c)}<details class="billing-sources"><summary>${c.sources}</summary>${renderAccountSources(account,locale,c)}<p>${c.granted}: ${formatReadingPoints(account?.grantedUnits,locale)} · ${c.consumed}: ${formatReadingPoints(account?.consumedUnits,locale)}</p>${account?.trialGranted?`<p>${c.trialYes}</p>`:`<p class="fine-print">${c.trialHelp}</p><button class="outline" type="button" data-billing-action="trial">${c.retryTrial}</button>`}</details>${returnOrder?notice(orderState(returnOrder,c),'return-order'):''}${table(c.entries,[c.date,c.feature,c.points,c.state,c.reference],rows,c.emptyEntries)}${entriesCursor?`<button class="outline" type="button" data-billing-action="entries">${c.more}</button>`:''}${table(c.orders,[c.order,c.date,c.amount,c.refunds,c.points,c.state,c.receipt],orderRows,c.emptyOrders)}${ordersCursor?`<button class="outline" type="button" data-billing-action="orders">${c.more}</button>`:''}<p class="fine-print">${c.free}</p>`;
+ return `${account?.frozen?notice(c.frozen,'warning'):''}<section class="balance-strip" aria-label="${c.title}">${stat(c.available,formatReadingPoints(account?.availableUnits,locale))}${stat(c.reserved,formatReadingPoints(account?.reservedUnits,locale))}${stat(c.consumed,formatReadingPoints(account?.consumedUnits,locale))}</section><p class="fine-print">${c.unitsNote}</p>${trialNotice}<p class="billing-plan-link"><a class="outline" href="${commercePath('pricing',locale)}">${commerce.pricing}</a></p>${catalog?.enabled===false?notice(c.disabled):catalogAvailability(catalog)==='unknown'?notice(c.paymentUnknown):''}${renderSubscriptions(subscriptions,locale,c)}<details class="billing-sources"><summary>${c.sources}</summary>${renderAccountSources(account,locale,c)}<p>${c.granted}: ${formatReadingPoints(account?.grantedUnits,locale)} · ${c.consumed}: ${formatReadingPoints(account?.consumedUnits,locale)}</p>${account?.trialGranted?`<p>${c.trialYes}</p>`:account?.trialGranted===false?`<p class="fine-print">${c.trialHelp}</p><button class="outline" type="button" data-billing-action="trial">${c.retryTrial}</button>`:`<p class="fine-print">${c.trialUnknown}</p>`}</details>${returnOrder?notice(orderState(returnOrder,c),'return-order'):''}${historyTable(c.entries,[c.date,c.feature,c.points,c.state,c.reference],rows,entriesStatus,c.emptyEntries,c.entriesUnknown,c.recordsUnverified)}${entriesCursor?`<button class="outline" type="button" data-billing-action="entries">${c.more}</button>`:''}${historyTable(c.orders,[c.order,c.date,c.amount,c.refunds,c.points,c.state,c.receipt],orderRows,ordersStatus,c.emptyOrders,c.ordersUnknown,c.recordsUnverified)}${ordersCursor?`<button class="outline" type="button" data-billing-action="orders">${c.more}</button>`:''}<p class="fine-print">${c.free}</p>`;
 }
 function currencyList(values,locale,c){
  if(!values||typeof values!=='object'||!Object.keys(values).length)return `<p class="billing-empty">${c.emptyCurrency}</p>`;

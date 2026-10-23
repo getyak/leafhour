@@ -36,7 +36,7 @@ class Element extends EventTarget{
  replaceChildren(...nodes){this.doc.replacements++;this.textContent='';this.append(...nodes);}
  remove(){if(this.parentElement){this.parentElement.children=this.parentElement.children.filter(n=>n!==this);this.parentElement=null;}}
  setAttribute(k,v){this.attrs[k]=String(v);}getAttribute(k){return this.attrs[k]??null;}removeAttribute(k){delete this.attrs[k];}
- closest(){return null;}
+ closest(selector){for(let node=this;node;node=node.parentElement)if(selector.startsWith('.')&&node.className?.split(/\s+/).includes(selector.slice(1)))return node;return null;}
  click(){if(!this.disabled){this.doc.clicks.push(this);this.dispatchEvent(new Event('click'));}}
  focus(){this.doc.activeElement=this;}
 }
@@ -44,15 +44,25 @@ const descendants=node=>[node,...node.children.flatMap(descendants)];
 function fixture({visibility='public',request,session={user:{id:'owner-one'},translationAvailable:true},book:initialBook,intentStorage}={}){
  if(intentStorage===undefined){const values=new Map();intentStorage={getItem:key=>values.get(key),setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)};}
  const doc=new EventTarget();doc.replacements=0;doc.clicks=[];doc.body=new Element('body',doc);doc.createElement=tag=>new Element(tag,doc);doc.querySelectorAll=()=>[];doc.getElementById=id=>descendants(doc.body).find(n=>n.id===id)||null;
- for(const id of ['paragraph-tools','chapter-heading','translation-about','chapter-invitations']){const e=doc.createElement('div');e.id=id;doc.body.append(e);}
+ for(const id of ['paragraph-tools','chapter-heading','translation-about']){const e=doc.createElement('div');e.id=id;doc.body.append(e);}
+ const invitationGroup=doc.createElement('section'),invitationRow=doc.createElement('div'),invitation=doc.createElement('input'),invitationHelp=doc.createElement('p');
+ invitationGroup.className='settings-habit';invitationRow.className='setting-row';invitation.id='chapter-invitations';invitationHelp.textContent='Offers prompts during ordinary reading.';
+ invitationRow.append(invitation);invitationGroup.append(invitationRow,invitationHelp);doc.body.append(invitationGroup);
  let book=initialBook||{bookId:'fixture-book',contentVersion:'v1',visibility,source:{format:'pdf',processor:'pdfjs-native',structure:'pdf_outline',filename:'来源 / 阅读.pdf'},chapters:[{id:'c1'}],sections:[{chapterId:'c1',paragraphs:[{id:'p1',original:'Original source one.',translations:{}},{id:'p2',original:'Original source two.',translations:{}}]}]},selected='p1',bridgeReads=0,viewReads=0;
  const context=vm.createContext({t,onUiLocaleChange,uiHref,getUiLocale,createUiLabels,crypto:{randomUUID},creditErrorId:creditLabels.creditErrorId,creditActionLabel:(action,locale)=>{assert.equal(action,'translation');return '1 point ['+locale+']';},sourceDescriptionMessages,createTranslationPresentation:()=>{const tasks=createTranslationPresentation(),view=tasks.view;tasks.view=(...args)=>{viewReads++;return view(...args);};return tasks;},hasDualDrafts,chineseOriginalOnly,sampleNoticeMessage,translationDisclosureMessage,readerLoginUrl,AbortController,CustomEvent,Response,downloadOriginalParts:()=>assert.fail('Not a multipart download fixture')});
  vm.runInContext(source.slice(factory.start,factory.end),context);
  const requests=[],navigations=[],urls=[],timers=[],clears=[];
  const handle=context.mountReaderTranslation({bookId:'fixture-book',session,intentStorage,document:doc,getReader:()=>{bridgeReads++;return {getBook:()=>book,getSelectedId:()=>selected};},request:async(url,options)=>{requests.push({url,options});return request(url,options);},navigate:url=>navigations.push(url),urlApi:{createObjectURL:blob=>{urls.push({kind:'create',blob});return 'blob:fixture';},revokeObjectURL:url=>urls.push({kind:'revoke',url})},timers:{setTimeout:(fn,ms)=>{const timer={fn,ms};timers.push(timer);return timer;},clearTimeout:id=>clears.push(id)}});
  const select=id=>{selected=id;doc.dispatchEvent(new Event('reader:selection'));};
- return {doc,handle,requests,navigations,urls,timers,clears,select,getBook:()=>book,setBook:value=>book=value,counts:()=>({bridgeReads,viewReads,requests:requests.length,replacements:doc.replacements}),all:()=>descendants(doc.body)};
+ return {doc,handle,requests,navigations,urls,timers,clears,select,invitationGroup,invitationHelp,getBook:()=>book,setBook:value=>book=value,counts:()=>({bridgeReads,viewReads,requests:requests.length,replacements:doc.replacements}),all:()=>descendants(doc.body)};
 }
+
+test('hosted reading hides the unavailable chapter-prompt setting including its orphan help',async tctx=>{
+ const f=fixture({request:async()=>Response.json({available:false})});tctx.after(()=>f.handle.dispose());
+ assert.equal(f.invitationGroup.hidden,true,'the unavailable habit must not leave its description and divider visible');
+ assert.equal(f.invitationHelp.textContent,'Offers prompts during ordinary reading.','hiding presentation does not delete local reading guidance');
+ assert.equal(f.requests.length,0,'removing unavailable controls does not start translation or any other request');
+});
 
 for(const outcome of ['success','conflict','incomplete'])test('translation '+outcome+' keeps the submitted passage and current draft stable through all UI languages',async tctx=>{
  await requestUiRoute('en');const pending=deferred(),f=fixture({request:()=>pending.promise});tctx.after(async()=>{f.handle.dispose();await requestUiRoute('en');});

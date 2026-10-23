@@ -1,7 +1,7 @@
 import {trackActionFocus} from './action-focus.mjs';
 import {t,onUiLocaleChange,uiHref} from './ui-locale.mjs';
 import {memoryChoices,onboardingChoices} from './preference-memory-codec.mjs';
-// The caller owns session adoption and the home filter. Responses are accepted
+// The caller adopts account defaults; shelf filters remain the reader's view. Responses are accepted
 // only for the exact owner/generation; uncertain writes are recovered by GET.
 export function mountPreferenceMemory({root,kind='settings',api,getSession,getBooks=()=>[],isReady=()=>true,open=()=>{},onSaved=()=>{}}){
  const doc=root.ownerDocument;let owner=null,generation=0,busy=false,disposed=false,startedOwner=null,error=false,signature='',view=null,labelPaints=[],queuedRefresh=null;

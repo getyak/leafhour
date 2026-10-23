@@ -79,7 +79,7 @@ test('the shared billing client accepts the verified yearly catalog and preserve
 });
 
 test('the shared client blocks another plan while a checkout request is in flight',async()=>{
- const f=realClientFixture({pauseCheckout:true});await f.client.loadSubscriptions();await f.client.loadOrders();const first=f.client.checkout(monthly);
+ const f=realClientFixture({pauseCheckout:true});await f.client.loadCatalog();await f.client.loadSubscriptions();await f.client.loadOrders();const first=f.client.checkout(monthly);
  await assert.rejects(f.client.checkout(yearly),{code:'BILLING_SUBSCRIPTION_EXISTS'});f.release();await first;assert.equal(f.requests.filter(r=>r[0]==='/api/billing/checkouts').length,1);
 });
 

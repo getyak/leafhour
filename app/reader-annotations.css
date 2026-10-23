@@ -31,12 +31,16 @@ body[data-annotation-pane=true][data-annotation-compact=true] :is(#reading-sessi
 .reader-annotation-price,.annotation-price{font:inherit;color:var(--muted);white-space:nowrap}
 
 /* Saved marks, thoughts and AI explanations share one reading surface. */
-.reader-annotations-toggle{position:fixed;top:max(14px,env(safe-area-inset-top));left:24px;z-index:6;min-height:44px;padding:10px 14px;border-radius:24px;color:var(--muted);background:color-mix(in srgb,var(--paper) 92%,transparent);font:12px/1.5 var(--interface);border:1px solid transparent;backdrop-filter:blur(12px)}
-body:not(.is-focused) .reader-annotations-toggle{top:74px}
-.reader-annotations-toggle[aria-pressed=true]{color:var(--accent);border-color:var(--line-hairline)}
+.reader-annotation-controls{display:flex;flex-direction:column;align-items:stretch;margin:12px 24px}
+.reading-tools-panel .reader-annotation-controls{margin:8px 0 0;padding-top:6px;border-top:1px solid var(--line-hairline)}
+.reader-annotations-toggle{display:flex;align-items:center;justify-content:space-between;min-height:44px;padding:8px 0;color:var(--muted);background:transparent;font:12px/1.5 var(--interface);border:0;text-align:left}
+.reader-annotations-toggle::after{content:"";width:8px;height:8px;flex:none;border:1px solid currentColor;border-radius:50%}
+.reader-annotations-toggle[aria-pressed=true]{color:var(--accent)}
+.reader-annotations-toggle[aria-pressed=true]::after{background:currentColor}
 .reader-annotations-toggle:hover{color:var(--ink);background:var(--wash)}
 .reader-annotations-toggle:focus-visible,.reader-annotation-summary:focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}
-.reader-annotation-load-status{position:fixed;top:66px;left:24px;z-index:5;max-width:220px;color:var(--muted);font:12px/1.65 var(--interface)}
+.reader-annotation-load-status{display:block;color:var(--muted);font:12px/1.65 var(--interface)}
+.reader-annotation-load-status:empty{display:none}
 .reader-annotation-margins{pointer-events:none}
 .reader-annotation-margins[hidden],.reader-annotation-summary[hidden]{display:none}
 .reader-annotation-summary{position:absolute;z-index:2;pointer-events:auto;display:flex;flex-direction:column;gap:8px;box-sizing:border-box;height:126px;text-align:left;padding:12px 14px;margin:0;border:0;border-left:1px solid var(--line);border-radius:0;background:transparent;color:var(--muted);font:13px/1.8 var(--interface);letter-spacing:0;overflow:hidden;transition:color 160ms ease,background-color 160ms ease,border-color 160ms ease;animation:annotation-arrive 180ms ease-out both}
@@ -55,9 +59,9 @@ body:not(.is-focused) .reader-annotations-toggle{top:74px}
 .reader-annotation-card button:disabled{opacity:.45;cursor:default}
 body[data-annotations-visible=false] .reader-highlight,body[data-annotations-state=pending] .reader-highlight{background:transparent;box-shadow:none;text-decoration:none}
 @keyframes annotation-arrive{from{opacity:0}to{opacity:1}}
-@media(max-width:767px){.book-page,body[data-paginated=true] .book-page{width:calc(100% - 64px)}.reader-annotations-toggle{left:12px;top:max(9px,env(safe-area-inset-top));padding:9px 12px}.reader-annotation-load-status{left:16px;top:58px}.reader-annotation-card[data-placement=sheet] .reader-annotation-scroll{scroll-padding-bottom:20px}}
+@media(max-width:767px){.book-page,body[data-paginated=true] .book-page{width:calc(100% - 64px)}.reader-annotation-controls{margin-inline:16px}.reading-tools-panel .reader-annotation-controls{margin-inline:0}.reader-annotation-card[data-placement=sheet] .reader-annotation-scroll{scroll-padding-bottom:20px}}
 @media(prefers-reduced-motion:reduce){.reader-annotation-summary{animation:none;transition:none}}
-@media print{.reader-annotation-margins,.reader-annotations-toggle,.reader-annotation-load-status{display:none!important}}
+@media print{.reader-annotation-margins,.reader-annotation-controls{display:none!important}}
 
 body[data-annotations-visible=false] .reader-highlight{cursor:inherit}
 .paragraph-tools[data-excerpt=true] #show-comment{display:none}

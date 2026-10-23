@@ -33,12 +33,12 @@ test('readiness distinguishes disabled, sandbox and live rather than pretending 
  assert.equal(availability({...liveCatalog,mode:'test'}),'test');
  assert.equal(availability({enabled:true,mode:'live',available:false}),'unavailable');
  assert.equal(availability(liveCatalog),'live');
- assert.equal(availability({}),'disabled');
+ for(const value of [null,{},[],{enabled:'false'}])assert.equal(availability(value),'unknown');
 });
 
 test('account render escapes real records and shows holds separately from consumption without invented rows',()=>{
  const render=helper('renderBillingAccount');
- const empty=render({locale:'en',session:session('A'),catalog:{enabled:false},account:{availableUnits:10000000,reservedUnits:4000000,grantedUnits:10000000,consumedUnits:0,trialGranted:true},entries:[],orders:[]});
+ const empty=render({locale:'en',session:session('A'),catalog:{enabled:false},account:{availableUnits:10000000,reservedUnits:4000000,grantedUnits:10000000,consumedUnits:0,trialGranted:true},entries:[],orders:[],entriesStatus:'ready',ordersStatus:'ready'});
  assert.match(empty,/10<\/strong>/);assert.match(empty,/4<\/strong>/);assert.match(empty,/Reserved/);assert.match(empty,/No point entries yet/);assert.match(empty,/No orders yet/);assert.match(empty,/Payments are not open/);
  const html=render({locale:'en',session:session('A'),catalog:{...liveCatalog,mode:'test'},account:{availableUnits:0},entries:[{id:'<script>',kind:'hold',units:4000000,action:'reading_conversation',createdAt:'2026-10-21T00:00:00Z'}],orders:[{id:'<img src=x onerror=alert(1)>',amount:500,currency:'USD',status:'pending',units:100000000,receiptUrl:'javascript:alert(1)'}]});
  assert.doesNotMatch(html,/<script>|<img src=x|javascript:/);assert.match(html,/&lt;script&gt;/);assert.match(html,/Processing/);assert.match(html,/<caption/);assert.match(html,/scope="col"/);
@@ -61,7 +61,7 @@ test('account switch during a protected read drops the response and clears prior
 test('checkout uses one captured owner intent and cannot redirect after an account change',async()=>{
  const create=helper('createBillingClient');let current='A',resolveCheckout;const bodies=[];
  const client=create({intentFactory:()=> 'isolated-intent',fetcher:async(path,init)=>{if(path==='/api/auth/session')return response(session(current));if(path==='/api/billing/subscriptions')return response({subscriptions:[]});if(path==='/api/billing/checkouts'){bodies.push(JSON.parse(init.body));assert.equal(init.headers['X-Reader-Owner'],'A');return new Promise(resolve=>resolveCheckout=resolve);}return response({enabled:true,mode:'live',available:true});}});
- await client.refreshSession();await client.loadSubscriptions();const pending=client.checkout();await new Promise(resolve=>setImmediate(resolve));current='B';resolveCheckout(response({checkoutUrl:'https://checkout.creem.io/test',order:{id:'order-A'}}));
+ await client.refreshSession();await client.loadCatalog();await client.loadSubscriptions();const pending=client.checkout();await new Promise(resolve=>setImmediate(resolve));current='B';resolveCheckout(response({checkoutUrl:'https://checkout.creem.io/test',order:{id:'order-A'}}));
  await assert.rejects(pending,{code:'BILLING_ACCOUNT_CHANGED'});assert.deepEqual(bodies,[{productKey:'reading_monthly_100',intentKey:'isolated-intent'}]);assert.equal(client.snapshot().returnOrder,null);
 });
 
@@ -149,8 +149,8 @@ test('automatic trial and subscription reads discard a response when the signed-
 });
 
 test('checkout intents are scoped to the selected product and active or pending plans cannot be purchased twice',async()=>{
- let serial=0;const bodies=[];const client=helper('createBillingClient')({intentFactory:()=> 'intent-'+(++serial),fetcher:async(path,init)=>{if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/subscriptions')return response({subscriptions:[]});if(path.startsWith('/api/billing/orders'))return response({orders:[]});bodies.push(JSON.parse(init.body));return response({checkoutUrl:'https://checkout.creem.io/'+serial,order:{id:'order-'+serial,productKey:JSON.parse(init.body).productKey,status:'pending'}});}});
- await client.refreshSession();await client.loadSubscriptions();
+ let serial=0;const bodies=[];const client=helper('createBillingClient')({intentFactory:()=> 'intent-'+(++serial),fetcher:async(path,init)=>{if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/catalog')return response(liveCatalog);if(path==='/api/billing/subscriptions')return response({subscriptions:[]});if(path.startsWith('/api/billing/orders'))return response({orders:[]});bodies.push(JSON.parse(init.body));return response({checkoutUrl:'https://checkout.creem.io/'+serial,order:{id:'order-'+serial,productKey:JSON.parse(init.body).productKey,status:'pending'}});}});
+ await client.refreshSession();await client.loadCatalog();await client.loadSubscriptions();
  await Promise.all([client.checkout(),client.checkout('reading_monthly_100')]);await assert.rejects(client.checkout('reading_100'),{code:'BILLING_INVALID_PRODUCT'});
  assert.deepEqual(bodies,[{productKey:'reading_monthly_100',intentKey:'intent-1'}]);
  const active=helper('createBillingClient')({fetcher:async path=>path==='/api/auth/session'?response(session('A')):response({subscriptions:[{id:'sub_A',status:'active'}]})});await active.refreshSession();await active.loadSubscriptions();await assert.rejects(active.checkout('reading_monthly_100'),{code:'BILLING_SUBSCRIPTION_EXISTS'});
@@ -166,6 +166,7 @@ test('portal uses only the owner-bound subscription ID and rejects unsafe URLs a
 test('unknown or incomplete monthly readiness cannot accidentally expose subscription checkout',()=>{
  const availability=helper('catalogAvailability');assert.equal(availability({enabled:true,available:true,mode:'live'},'reading_monthly_100'),'unavailable');
  assert.equal(availability({enabled:true,available:false,mode:'live',products:[{key:'reading_100',available:true},{key:'reading_monthly_100',available:false}]},'reading_100'),'unavailable');
+ for(const products of [{},[null]])assert.equal(availability({enabled:true,available:true,mode:'live',products}),'unavailable');
 });
 
 test('an unfinished monthly order or scheduled cancellation blocks another subscription while a canceled plan can be replaced',async()=>{
@@ -175,8 +176,8 @@ test('an unfinished monthly order or scheduled cancellation blocks another subsc
   let checkoutCalls=0;const client=helper('createBillingClient')({fetcher:async path=>{if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/subscriptions')return response({subscriptions:[{id:'sub_A',status}]});checkoutCalls++;return response({checkoutUrl:'https://checkout.creem.io/blocked'});}});
   await client.refreshSession();await client.loadSubscriptions();await assert.rejects(client.checkout('reading_monthly_100'),{code:'BILLING_SUBSCRIPTION_EXISTS'});assert.equal(checkoutCalls,0,status+' must not create a checkout');
  }
- let checkoutCalls=0,orderStatus='creating',subStatus='canceled';const client=helper('createBillingClient')({intentFactory:()=> 'monthly-new',fetcher:async(path)=>{if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/subscriptions')return response({subscriptions:[{id:'sub_A',status:subStatus}]});if(path.startsWith('/api/billing/orders'))return response({orders:[{id:'pending_monthly',productKey:'reading_monthly_100',status:orderStatus}]});checkoutCalls++;return response({checkoutUrl:'https://checkout.creem.io/new'});}});
- await client.refreshSession();await client.loadSubscriptions();await client.loadOrders();await assert.rejects(client.checkout('reading_monthly_100'),{code:'BILLING_SUBSCRIPTION_EXISTS'});assert.equal(checkoutCalls,0);
+ let checkoutCalls=0,orderStatus='creating',subStatus='canceled';const client=helper('createBillingClient')({intentFactory:()=> 'monthly-new',fetcher:async(path)=>{if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/catalog')return response(liveCatalog);if(path==='/api/billing/subscriptions')return response({subscriptions:[{id:'sub_A',status:subStatus}]});if(path.startsWith('/api/billing/orders'))return response({orders:[{id:'pending_monthly',productKey:'reading_monthly_100',status:orderStatus}]});checkoutCalls++;return response({checkoutUrl:'https://checkout.creem.io/new'});}});
+ await client.refreshSession();await client.loadCatalog();await client.loadSubscriptions();await client.loadOrders();await assert.rejects(client.checkout('reading_monthly_100'),{code:'BILLING_SUBSCRIPTION_EXISTS'});assert.equal(checkoutCalls,0);
  orderStatus='cancelled';await client.loadOrders();await client.checkout('reading_monthly_100');assert.equal(checkoutCalls,1);
 });
 
@@ -202,19 +203,19 @@ test('interrupted checkout can be resumed from its owner-bound order after remou
 test('server-confirmed checkout expiration releases only that intent and requires another explicit purchase',async()=>{
  let serial=0,status='pending';const bodies=[];const order=()=>({id:'order_monthly',productKey:'reading_monthly_100',status});
  const client=helper('createBillingClient')({intentFactory:()=> 'expiry-intent-'+(++serial),fetcher:async(path,init)=>{
-  if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/subscriptions')return response({subscriptions:[]});if(path==='/api/billing/account')return response({availableUnits:100000000,trialGranted:true});
+  if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/catalog')return response(liveCatalog);if(path==='/api/billing/subscriptions')return response({subscriptions:[]});if(path==='/api/billing/account')return response({availableUnits:100000000,trialGranted:true});
   if(path.startsWith('/api/billing/orders?'))return response({orders:[order()]});if(path.startsWith('/api/billing/orders/'))return response(order());
   bodies.push(JSON.parse(init.body));return response({checkoutUrl:'https://checkout.creem.io/monthly',order:order()});
  }});
- await client.refreshSession();await client.loadSubscriptions();await client.checkout('reading_monthly_100');status='processing';await client.recheckOrder('order_monthly');await assert.rejects(client.checkout('reading_monthly_100'),{code:'BILLING_SUBSCRIPTION_EXISTS'});
+ await client.refreshSession();await client.loadCatalog();await client.loadSubscriptions();await client.checkout('reading_monthly_100');status='processing';await client.recheckOrder('order_monthly');await assert.rejects(client.checkout('reading_monthly_100'),{code:'BILLING_SUBSCRIPTION_EXISTS'});
  status='expired';await client.recheckOrder('order_monthly');assert.equal(bodies.length,1);assert.deepEqual(client.snapshot().pendingProducts,[]);await client.checkout('reading_monthly_100');
  assert.deepEqual(bodies.map(body=>body.intentKey),['expiry-intent-1','expiry-intent-2']);
 });
 
 test('checkout_expired errors clear an old intent without retrying or weakening an active subscription lock',async()=>{
  let serial=0;const bodies=[];const client=helper('createBillingClient')({intentFactory:()=> 'intent-'+(++serial),fetcher:async(path,init)=>{
-  if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/subscriptions')return response({subscriptions:[]});bodies.push(JSON.parse(init.body));return response({error:{code:'checkout_expired'}},409);
- }});await client.refreshSession();await client.loadSubscriptions();await assert.rejects(client.checkout(),{code:'checkout_expired'});assert.equal(bodies.length,1);await assert.rejects(client.checkout(),{code:'checkout_expired'});assert.deepEqual(bodies.map(body=>body.intentKey),['intent-1','intent-2']);
+  if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/catalog')return response(liveCatalog);if(path==='/api/billing/subscriptions')return response({subscriptions:[]});bodies.push(JSON.parse(init.body));return response({error:{code:'checkout_expired'}},409);
+ }});await client.refreshSession();await client.loadCatalog();await client.loadSubscriptions();await assert.rejects(client.checkout(),{code:'checkout_expired'});assert.equal(bodies.length,1);await assert.rejects(client.checkout(),{code:'checkout_expired'});assert.deepEqual(bodies.map(body=>body.intentKey),['intent-1','intent-2']);
 });
 
 test('stale checkout reconciliation can neither return a resume URL nor unlock a new account plan',async()=>{
@@ -233,8 +234,8 @@ test('admin monthly, one-time and active subscription totals come from real summ
 
 test('a later expired order cannot clear the intent of a newer checkout',async()=>{
  let serial=0;const client=helper('createBillingClient')({intentFactory:()=> 'intent-'+(++serial),fetcher:async(path)=>{
-  if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/subscriptions')return response({subscriptions:[]});if(path.startsWith('/api/billing/orders/'))return response({id:'old_order',productKey:'reading_monthly_100',status:'expired'});return response({checkoutUrl:'https://checkout.creem.io/current',order:{id:'current_order',productKey:'reading_monthly_100',status:'pending'}});
- }});await client.refreshSession();await client.loadSubscriptions();await client.checkout('reading_monthly_100');await client.pollOrder('old_order');assert.deepEqual(client.snapshot().pendingProducts,['reading_monthly_100']);await assert.rejects(client.checkout('reading_monthly_100'),{code:'BILLING_SUBSCRIPTION_EXISTS'});
+  if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/catalog')return response(liveCatalog);if(path==='/api/billing/subscriptions')return response({subscriptions:[]});if(path.startsWith('/api/billing/orders/'))return response({id:'old_order',productKey:'reading_monthly_100',status:'expired'});return response({checkoutUrl:'https://checkout.creem.io/current',order:{id:'current_order',productKey:'reading_monthly_100',status:'pending'}});
+ }});await client.refreshSession();await client.loadCatalog();await client.loadSubscriptions();await client.checkout('reading_monthly_100');await client.pollOrder('old_order');assert.deepEqual(client.snapshot().pendingProducts,['reading_monthly_100']);await assert.rejects(client.checkout('reading_monthly_100'),{code:'BILLING_SUBSCRIPTION_EXISTS'});
 });
 
 test('account changes between reconciliation reloads cannot return the former account checkout URL',async()=>{
@@ -290,4 +291,92 @@ test('retired one-time orders remain readable but cannot resume checkout',async(
 test('default monthly checkout requires a current subscription read',async()=>{
  const requests=[];const client=helper('createBillingClient')({fetcher:async path=>{requests.push(path);return path==='/api/auth/session'?response(session('A')):response({});}});
  await client.refreshSession();await assert.rejects(client.checkout(),{code:'BILLING_SUBSCRIPTION_EXISTS'});assert.deepEqual(requests,['/api/auth/session']);
+});
+
+test('signed-in billing keeps unrequested histories and payment availability unknown in every locale',()=>{
+ const client=helper('createBillingClient')();client.adoptSession(session('A'));
+ for(const locale of ['en','zh-Hans','zh-Hant','ja']){
+  const c=helper('billingLabels')(locale),html=helper('renderBillingAccount')({locale,...client.snapshot()});
+  for(const text of [c.emptyEntries,c.emptyOrders,c.disabled])assert.ok(!html.includes(text),locale+': no unsupported empty or closed claim');
+  for(const key of ['entriesUnknown','ordersUnknown','paymentUnknown','trialUnknown'])assert.ok(html.includes(c[key]),locale+': '+key);
+  assert.match(html,/<strong>—<\/strong>/);assert.ok(html.includes(c.subscriptionUnknown));
+  assert.doesNotMatch(html,/data-billing-action="(?:trial|checkout)"/);
+ }
+});
+
+test('only a successful history read can establish an empty collection',async()=>{
+ const client=helper('createBillingClient')({fetcher:async path=>path==='/api/auth/session'?response(session('A')):response({entries:[],orders:[],nextCursor:null})});
+ await client.refreshSession();await client.loadEntries();
+ let html=helper('renderBillingAccount')(client.snapshot());
+ assert.match(html,/No point entries yet\./);assert.doesNotMatch(html,/No orders yet\./);
+ await client.loadOrders();html=helper('renderBillingAccount')(client.snapshot());
+ assert.match(html,/No point entries yet\./);assert.match(html,/No orders yet\./);
+ client.adoptSession(session('B'));html=helper('renderBillingAccount')(client.snapshot());
+ assert.doesNotMatch(html,/No point entries yet\.|No orders yet\./);
+ assert.equal(client.snapshot().entriesStatus,'idle');assert.equal(client.snapshot().ordersStatus,'idle');
+});
+
+test('failed and malformed history reads cannot establish empty collections',async()=>{
+ for(const kind of ['entries','orders'])for(const data of [null,{}, {[kind]:null},{[kind]:{}},{[kind]:[null]},{[kind]:['invalid']}]){
+  const client=helper('createBillingClient')({fetcher:async path=>path==='/api/auth/session'?response(session('A')):response(data)});
+  await client.refreshSession();await assert.rejects(client[kind==='entries'?'loadEntries':'loadOrders'](),{code:'BILLING_INVALID_RESPONSE'});
+  assert.equal(client.snapshot()[kind+'Status'],'error');
+  assert.doesNotMatch(helper('renderBillingAccount')(client.snapshot()),/No point entries yet\.|No orders yet\./);
+ }
+ const failed=helper('createBillingClient')({fetcher:async path=>path==='/api/auth/session'?response(session('A')):response({error:{code:'billing_store_unavailable'}},503)});
+ await failed.refreshSession();await assert.rejects(failed.loadEntries(),{code:'billing_store_unavailable'});
+ assert.doesNotMatch(helper('renderBillingAccount')(failed.snapshot()),/No point entries yet\.|No orders yet\./);
+});
+
+test('a failed later history page preserves successful records and cursor while unrelated success remains usable',async()=>{
+ let failMore=true;const first={id:'entry-first',type:'grant',units:1000000},second={id:'entry-second',type:'consume',units:1000000};
+ const client=helper('createBillingClient')({fetcher:async path=>{
+  if(path==='/api/auth/session')return response(session('A'));
+  if(path.startsWith('/api/billing/orders?'))return response({orders:[],nextCursor:null});
+  if(path.includes('cursor='))return failMore?response({error:{code:'billing_store_unavailable'}},503):response({entries:[first,second],nextCursor:null});
+  return response({entries:[first],nextCursor:'next-page'});
+ }});
+ await client.refreshSession();await client.loadEntries();await client.loadOrders();
+ await assert.rejects(client.loadEntries({more:true}),{code:'billing_store_unavailable'});
+ assert.deepEqual(client.snapshot().entries,[first]);assert.equal(client.snapshot().entriesCursor,'next-page');
+ let html=helper('renderBillingAccount')(client.snapshot());assert.match(html,/entry-first/);assert.match(html,/No orders yet\./);assert.doesNotMatch(html,/No point entries yet\./);
+ assert.ok(html.includes(helper('billingLabels')('en').recordsUnverified));
+ failMore=false;await client.loadEntries({more:true});assert.deepEqual(client.snapshot().entries,[first,second]);assert.equal(client.snapshot().entriesStatus,'ready');
+ html=helper('renderBillingAccount')(client.snapshot());assert.ok(!html.includes(helper('billingLabels')('en').recordsUnverified));
+ client.adoptSession(session('B'));assert.deepEqual(client.snapshot().entries,[]);assert.equal(client.snapshot().entriesCursor,null);assert.equal(client.snapshot().entriesStatus,'idle');
+});
+
+test('a failed refresh of a previously empty history no longer asserts a current empty state',async()=>{
+ let fail=false;const client=helper('createBillingClient')({fetcher:async path=>path==='/api/auth/session'?response(session('A')):fail?response({},503):response({entries:[]})});
+ await client.refreshSession();await client.loadEntries();assert.match(helper('renderBillingAccount')(client.snapshot()),/No point entries yet\./);
+ fail=true;await assert.rejects(client.loadEntries());assert.doesNotMatch(helper('renderBillingAccount')(client.snapshot()),/No point entries yet\./);
+});
+
+test('an identity change during a history read clears both records and their completion state',async()=>{
+ let current='A',resolveEntries;const client=helper('createBillingClient')({fetcher:async path=>path==='/api/auth/session'?response(session(current)):new Promise(resolve=>resolveEntries=resolve)});
+ await client.refreshSession();const pending=client.loadEntries();await new Promise(resolve=>setImmediate(resolve));current='B';resolveEntries(response({entries:[{id:'private-A'}]}));
+ await assert.rejects(pending,{code:'BILLING_ACCOUNT_CHANGED'});assert.deepEqual(client.snapshot().entries,[]);assert.equal(client.snapshot().entriesStatus,'idle');
+ assert.doesNotMatch(helper('renderBillingAccount')(client.snapshot()),/private-A|No point entries yet\./);
+});
+
+test('catalog failures and malformed responses remain unknown and cannot create a checkout',async()=>{
+ let catalog=liveCatalog,fail=false;const requests=[];
+ const client=helper('createBillingClient')({fetcher:async path=>{requests.push(path);if(path==='/api/auth/session')return response(session('A'));if(path==='/api/billing/subscriptions')return response({subscriptions:[]});if(path==='/api/billing/catalog')return response(catalog,fail?503:200);return response({checkoutUrl:'https://checkout.creem.io/should-not-open'});}});
+ await client.refreshSession();await client.loadSubscriptions();await client.loadCatalog();
+ for(const invalid of [null,{},[],{enabled:'false'}]){
+  catalog=invalid;await assert.rejects(client.loadCatalog(),{code:'BILLING_INVALID_RESPONSE'});
+  await assert.rejects(client.checkout(),{code:'BILLING_CATALOG_UNKNOWN'});
+  assert.doesNotMatch(helper('renderBillingAccount')(client.snapshot()),/Payments are not open\./);
+ }
+ catalog=liveCatalog;await client.loadCatalog();fail=true;await assert.rejects(client.loadCatalog());
+ assert.equal(client.snapshot().catalog,null);await assert.rejects(client.checkout(),{code:'BILLING_CATALOG_UNKNOWN'});
+ assert.ok(!requests.includes('/api/billing/checkouts'));
+ fail=false;catalog={enabled:false};await client.loadCatalog();assert.match(helper('renderBillingAccount')(client.snapshot()),/Payments are not open\./);
+});
+
+test('trial actions require a loaded account with an explicit trial state',async()=>{
+ const requests=[];const client=helper('createBillingClient')({fetcher:async path=>{requests.push(path);return path==='/api/auth/session'?response(session('A')):response({availableUnits:1000000});}});
+ await client.refreshSession();await assert.rejects(client.claimTrial(),{code:'BILLING_ACCOUNT_UNKNOWN'});await client.ensureTrial();
+ await client.loadAccount();await client.ensureTrial();await assert.rejects(client.claimTrial(),{code:'BILLING_ACCOUNT_UNKNOWN'});
+ assert.ok(!requests.includes('/api/billing/trial'));assert.doesNotMatch(helper('renderBillingAccount')(client.snapshot()),/data-billing-action="trial"/);
 });

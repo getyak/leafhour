@@ -13,7 +13,6 @@ import {publicPageHref} from './public-navigation.mjs';
 // preserves default scrolling and any existing tabindex.
 import {chooseCurrentBook} from './reading-calendar.mjs';
 import {readingBookUrl} from './library-workspace.mjs';
-import {safeLibraryReturn} from './library-view-state.mjs';
 import {otherOverlayOpen,focusableTrigger} from './popover-controls.mjs';
 import {registerDialogFocusOwner} from './interaction-craft.mjs';
 import {t,uiHref,getUiLocale,onUiLocaleChange,uiReady,bindUi} from './ui-locale.mjs';
@@ -22,8 +21,8 @@ const defaultUi={t,uiHref,getUiLocale,onUiLocaleChange,uiReady,bindUi};
 export const HOME_NAV_ROUTES=Object.freeze(['/','/en','/zh-hans','/zh-hant','/ja']);
 export const HOME_MENU_CLOSE_REASONS=Object.freeze(['user','navigation','auth-handoff','palette-handoff','breakpoint']);
 export const HOME_MENU_DESKTOP_QUERY='(min-width:1101px)';
-// The signed-in account entry uses the validated GET-179 library view codec.
-export const HOME_ACCOUNT_URL=safeLibraryReturn('/library?settings=account')||'/library';
+// The home entry opens the shelf. Account settings stay inside the reading room.
+export const HOME_ACCOUNT_URL='/library';
 
 export const isHomeNavRoute=pathname=>HOME_NAV_ROUTES.includes(String(pathname||''));
 
@@ -56,7 +55,7 @@ export function mountHomeNavigation({
   let opener=null,pendingReason=null,lastReason=null,destinationGeneration=0,disposed=false,resumeHref=null;
   const created=[],rowListeners=[];
   const unbind=bindUi(dialog),unbindNav=nav?bindUi(nav):()=>{};
-  const documentLinks=[...(document.querySelectorAll?.('a[href]')||[])].map(node=>({node,href:node.getAttribute('href')})).filter(row=>/^\/(?:library|read)(?:[?#]|$)/.test(row.href));
+  const documentLinks=[...(document.querySelectorAll?.('a[href]')||[])].map(node=>({node,href:node.getAttribute('href')})).filter(row=>row.node!==accountRow&&/^\/(?:library|read)(?:[?#]|$)/.test(row.href));
   function updateLabels(){
     if(disposed)return;
     dialog.setAttribute('lang',getUiLocale());trigger.setAttribute('lang',getUiLocale());trigger.setAttribute('aria-label',t('nav.open'));

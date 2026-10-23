@@ -108,7 +108,7 @@ export function mountReaderTranslation({bookId,session,document:doc=globalThis.d
     const onlyOriginal=chineseOriginalOnly(book);renderTranslation();for(const choice of doc.querySelectorAll('[data-passage-variant]'))choice.hidden=onlyOriginal;
     for(const id of ['show-xray','show-stance','show-echo','show-chat','chapter-invitations']){const node=doc.getElementById(id);if(node)node.hidden=true;}
     for(const link of doc.querySelectorAll('a[href^="/exports/"],a[href="/evals"],a[href="/api/experiences/export"]'))link.hidden=true;
-    const invitation=doc.getElementById('chapter-invitations')?.closest('.setting-row');if(invitation)invitation.hidden=true;
+    const invitation=doc.getElementById('chapter-invitations')?.closest('.settings-habit');if(invitation)invitation.hidden=true;
   }
   on(doc,'reader:ready',ready);
   on(doc,'reader:selection',()=>{if(disposed)return;tasks.select(getReader()?.getSelectedId?.()||null);renderTranslation();});
