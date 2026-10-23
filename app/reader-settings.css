@@ -30,7 +30,7 @@
 .settings-panel .parallel-preview>.parallel-pair{gap:14px}
 .settings-footer{display:flex;justify-content:space-between;gap:20px;padding:14px 28px max(14px,env(safe-area-inset-bottom));border-top:1px solid var(--line-hairline);flex:none;background:var(--panel)}
 .settings-footer button{font-size:13px;min-height:44px;color:var(--accent)}
-.settings-panel .reset-appearance{margin-top:20px}
+.settings-panel .reset-appearance{margin-top:12px}
 .settings-action{width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:48px;padding:10px 0;text-align:left;font-size:13px;color:var(--ink);text-decoration:none}
 .settings-action span{color:var(--muted);font-size:13px;flex:none}
 .settings-panel .settings-action:hover{color:var(--accent)}

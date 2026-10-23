@@ -67,7 +67,7 @@ function render(){if(disposed||!ready)return;ownedLabels.prune();renderDraftCoun
   toolbar.update({status:view.status,attention:!!storageFailure||!$('reading-retry').hidden||$('reading-sync').classList.contains('error')});
   const chapter=book.chapters.find(c=>c.id===bridge().getChapterId()),journey=readingJourney(book,records()),canMark=allowed&&marks&&bridge().areRecordsAvailable()&&(!chapter?.kind||chapter.kind==='body');$('chapter-reading-actions').hidden=!canMark||document.body.dataset.continuous==='true';
   for(const control of document.querySelectorAll('[data-mark-chapter]')){control.hidden=!canMark;const id=control.dataset.markChapter;label(control,marks?.pending(id)?SESSION_UI+'retryMark':journey.chapterStatuses[id]==='read'?SESSION_UI+'reopenMark':READER_UI+'markChapter');}
-  if(canMark){const pending=marks.pending(chapter.id),read=journey.chapterStatuses[chapter.id]==='read';label($('mark-chapter-read'),pending?SESSION_UI+'retryMark':read?SESSION_UI+'reopenChapter':READER_SHELL+'chapterRead');label($('chapter-read-state'),read?SESSION_UI+'chapterMarked':SESSION_UI+'chapterConfirm');}label($('reading-goal-hint'),SESSION_UI+'goal',{minutes:journey.dailyGoalMinutes});
+  if(canMark){const pending=marks.pending(chapter.id),read=journey.chapterStatuses[chapter.id]==='read';label($('mark-chapter-read'),pending?SESSION_UI+'retryMark':read?SESSION_UI+'reopenChapter':READER_SHELL+'chapterRead');label($('chapter-read-state'),read?SESSION_UI+'chapterMarked':SESSION_UI+'chapterConfirm');}
 }
 function endingSessionState(){
   const snapshot=lastEnding?.snapshot;if(!snapshot)return {confirmed:false,durable:false};

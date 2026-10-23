@@ -626,8 +626,8 @@ candidate:app/book-gift.mjs:189:39,js-cjk-literal,app/book-gift.mjs,189,,unknown
 candidate:app/book-introduction-controller.mjs:23:106,js-cjk-literal,app/book-introduction-controller.mjs,23,,unknown,reviewable,,暂时无法读取简介，可以稍后重试。
 candidate:app/book-introduction.mjs:2:39,js-cjk-literal,app/book-introduction.mjs,2,,unknown,reviewable,,AI 简介的来源或格式不完整
 candidate:app/book-transfer.mjs:1:25,js-cjk-literal,app/book-transfer.mjs,1,,unknown,reviewable,,正文传输未完整通过校验，请重新载入；原文件仍保留。
-candidate:app/catalog-sample.mjs:6:59,js-cjk-literal,app/catalog-sample.mjs,6,,unknown,reviewable,,"已备开篇 "
-candidate:app/catalog-sample.mjs:6:97,js-cjk-literal,app/catalog-sample.mjs,6,,unknown,reviewable,," 段中文直译与意译 · AI 草稿，可核对原文。其余正文保留英文，尚未翻译。"
+candidate:app/catalog-sample.mjs:6:59,js-cjk-literal,app/catalog-sample.mjs,6,,unknown,reviewable,,"开篇 "
+candidate:app/catalog-sample.mjs:6:95,js-cjk-literal,app/catalog-sample.mjs,6,,unknown,reviewable,," 段备有中文直译与意译（AI 草稿）。其余正文保留英文原文。"
 candidate:app/catalog-sample.mjs:7:61,js-cjk-literal,app/catalog-sample.mjs,7,,unknown,reviewable,,"本书开篇 "
 candidate:app/catalog-sample.mjs:7:99,js-cjk-literal,app/catalog-sample.mjs,7,,unknown,reviewable,," 段的直译与意译由 "
 candidate:app/catalog-sample.mjs:7:142,js-cjk-literal,app/catalog-sample.mjs,7,,unknown,reviewable,," 分别编写，均为 AI 草稿，尚未人工审定。试读译文采用 CC0-1.0，可随时核对原文；其余正文仅有英文。英文底本的出处与许可见书房中的来源链接。"
@@ -2235,7 +2235,7 @@ candidate:app/index.html:80:56,html-attribute,app/index.html,80,aria-label,unkno
 candidate:app/index.html:84:157,html-attribute,app/index.html,84,aria-label,unknown,reviewable,,Close book information
 candidate:app/index.html:91:326,html-attribute,app/index.html,91,aria-label,unknown,reviewable,,Close contents
 candidate:app/index.html:91:519,html-attribute,app/index.html,91,aria-label,unknown,reviewable,,Book contents
-candidate:app/index.html:93:288,html-attribute,app/index.html,93,aria-label,unknown,reviewable,,Close reading settings
+candidate:app/index.html:93:207,html-attribute,app/index.html,93,aria-label,unknown,reviewable,,Close reading settings
 candidate:app/index.html:94:59,html-attribute,app/index.html,94,aria-label,unknown,reviewable,,Reading settings categories
 candidate:app/index.html:104:62,html-attribute,app/index.html,104,aria-label,unknown,reviewable,,Body font
 candidate:app/index.html:106:82,html-attribute,app/index.html,106,aria-label,unknown,reviewable,,Paper theme
@@ -2289,8 +2289,8 @@ candidate:app/index.html:38:130,html-text,app/index.html,38,,unknown,reviewable,
 candidate:app/index.html:39:109,html-text,app/index.html,39,,unknown,reviewable,,Sign in to record reading →
 candidate:app/index.html:39:215,html-text,app/index.html,39,,unknown,reviewable,,Reading prompts
 candidate:app/index.html:39:323,html-text,app/index.html,39,,unknown,reviewable,,Drafts
-candidate:app/index.html:40:217,html-text,app/index.html,40,,unknown,reviewable,,Retry saving
-candidate:app/index.html:40:324,html-text,app/index.html,40,,unknown,reviewable,,Save a recovery copy
+candidate:app/index.html:40:155,html-text,app/index.html,40,,unknown,reviewable,,Retry saving
+candidate:app/index.html:40:262,html-text,app/index.html,40,,unknown,reviewable,,Save a recovery copy
 candidate:app/index.html:44:85,html-text,app/index.html,44,,unknown,reviewable,,Leafhour · Your reading records
 candidate:app/index.html:44:187,html-text,app/index.html,44,,unknown,reviewable,,Manual entry (self-reported)
 candidate:app/index.html:44:344,html-text,app/index.html,44,,unknown,reviewable,,×
@@ -2369,8 +2369,7 @@ candidate:app/index.html:89:333,html-text,app/index.html,89,,unknown,reviewable,
 candidate:app/index.html:91:148,html-text,app/index.html,91,,unknown,reviewable,,Leafhour
 candidate:app/index.html:91:222,html-text,app/index.html,91,,unknown,reviewable,,Book contents
 candidate:app/index.html:93:101,html-text,app/index.html,93,,unknown,reviewable,,Your reading style
-candidate:app/index.html:93:167,html-text,app/index.html,93,,unknown,reviewable,,Make this page feel right for you.
-candidate:app/index.html:93:389,html-text,app/index.html,93,,unknown,reviewable,,Close
+candidate:app/index.html:93:308,html-text,app/index.html,93,,unknown,reviewable,,Close
 candidate:app/index.html:95:162,html-text,app/index.html,95,,unknown,reviewable,,Read
 candidate:app/index.html:96:172,html-text,app/index.html,96,,unknown,reviewable,,Sound
 candidate:app/index.html:97:176,html-text,app/index.html,97,,unknown,reviewable,,Habits
@@ -3157,7 +3156,7 @@ candidate:app/reader-return.mjs:46:32,js-cjk-literal,app/reader-return.mjs,46,,u
 candidate:app/reader-settings.mjs:56:132,js-attribute,app/reader-settings.mjs,56,role,unknown,reviewable,,status
 candidate:app/reader-tools.mjs:32:36,js-attribute,app/reader-tools.mjs,32,role,unknown,reviewable,,group
 candidate:app/reader-translation.js:14:98,js-attribute,app/reader-translation.js,14,role,unknown,reviewable,,status
-candidate:app/reader-translation.js:73:220,js-attribute,app/reader-translation.js,73,role,unknown,reviewable,,status
+candidate:app/reader-translation.js:77:220,js-attribute,app/reader-translation.js,77,role,unknown,reviewable,,status
 candidate:app/reader.js:189:282,js-attribute,app/reader.js,189,aria-describedby,unknown,protected,identifier,reading-instructions
 candidate:app/reader.js:243:188,js-attribute,app/reader.js,243,aria-expanded,unknown,reviewable,,false
 candidate:app/reader.js:328:395,js-attribute,app/reader.js,328,role,unknown,reviewable,,status

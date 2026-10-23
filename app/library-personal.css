@@ -219,7 +219,7 @@
 .preference-memory-suggestion { padding: 10px; border: 1px dashed var(--line); }
 .preference-memory-suggestion button { margin-inline-end: 8px; }
 .preference-onboarding { max-height: min(60vh,550px); overflow: auto; border-bottom: 1px solid var(--line); }
-.library-chat-preference-consent { display: flex; align-items: start; gap: 8px; padding: 10px; font-size: var(--type-caption); }
-.library-chat-preference-consent input { margin-top: 3px; }
+.library-chat-preference-consent { display: flex; align-items: start; gap: 8px; min-height: 44px; padding: 10px; font-size: var(--type-caption); }
+.library-chat-preference-consent input { width: 18px; height: 18px; margin-top: 3px; flex: none; }
 .library-chat-dialog.has-preference-onboarding :is(.library-chat-messages,.library-chat-status-row,.library-chat-context,.library-chat-composer,.library-chat-footer) { display: none; }
 .library-chat-dialog.has-preference-onboarding .preference-onboarding { flex: 1; min-height: 0; max-height: none; }

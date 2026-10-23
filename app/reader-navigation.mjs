@@ -32,7 +32,7 @@ export function renderBookContents({list,book,chapterId,onNavigate,document=list
     const number=chapter.kind==='frontmatter'?fixed('span','toc-number','navigation.front',null,'序'):chapter.kind&&chapter.kind!=='body'?fixed('span','toc-number','navigation.back',null,'附'):make('span','toc-number',String(chapter.number).padStart(2,'0'));
     const title=make('span','toc-title');title.append(make('span','toc-title-main',chapter.title.zh));
     if(chapter.title.en&&chapter.title.en!==chapter.title.zh)title.append(make('span','toc-title-original',chapter.title.en));
-    start.append(number,title,current?fixed('span','toc-current','navigation.reading',null,'在读'):make('span','toc-current','↗'));
+    start.append(number,title,current?fixed('span','toc-current','navigation.reading',null,'在读'):make('span','toc-current',''));
     start.addEventListener('click',()=>onNavigate(chapter.id));row.append(start);
     const sections=book.sections.filter(section=>section.chapterId===chapter.id&&section.paragraphs.length);
     if(book.source?.structure!=='source_chapters'&&sections.length){
