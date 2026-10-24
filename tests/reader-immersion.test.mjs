@@ -9,16 +9,19 @@ test.beforeEach(async()=>{await requestUiRoute('zh-Hans');});
 class Element extends EventTarget{
   constructor(){super();this.children=[];this.attributes=new Map();this.dataset={};this.hidden=false;this.inert=false;this.classes=new Set();this.classList={contains:name=>this.classes.has(name),toggle:(name,active)=>active?this.classes.add(name):this.classes.delete(name)};}
   append(...nodes){this.children.push(...nodes);}
+  set textContent(value){this.children=[];this.text=String(value);}
+  get textContent(){return this.text??this.children.map(child=>child.textContent??'').join('');}
   contains(node){return node===this||this.children.some(child=>child===node||child.contains?.(node));}
   setAttribute(name,value){this.attributes.set(name,String(value));}
   getAttribute(name){return this.attributes.get(name);}
-  querySelector(){return this.firstControl||null;}
+  querySelector(selector){return selector==='.quiet-label'?this.children.find(child=>child.className==='quiet-label')||null:this.firstControl||null;}
   querySelectorAll(selector){const attrs=selector.split(',').map(part=>part.slice(1,-1));const walk=node=>node.children.flatMap(child=>[...(attrs.some(attr=>child.attributes.has(attr))?[child]:[]),...walk(child)]);return walk(this);}
   focus(){this.focused=true;}
 }
 function fixture(){
   const document=new EventTarget(),nodes=new Map(['reading-header','exit-focus','focus-fullscreen','enter-focus','immersive-reading'].map(id=>[id,new Element()]));
   Object.assign(document,{body:new Element(),documentElement:new Element(),getElementById:id=>nodes.get(id),createElement:()=>new Element(),querySelector:()=>null,fullscreenEnabled:true,fullscreenElement:null});
+  const icon=new Element(),label=new Element();label.className='quiet-label';nodes.get('enter-focus').append(icon,label);
   let requests=0;document.documentElement.requestFullscreen=async()=>{requests++;document.fullscreenElement=document.documentElement;document.dispatchEvent(new Event('fullscreenchange'));};
   document.exitFullscreen=async()=>{document.fullscreenElement=null;document.dispatchEvent(new Event('fullscreenchange'));};
   return {document,nodes,requests:()=>requests};
@@ -98,19 +101,23 @@ test('a failed fullscreen request returns focus to the visible pill fallback',as
 test('locale changes update fullscreen labels without changing tools, focus or layout',async()=>{
   const {mountReaderImmersion}=await import('../app/reader-immersion.mjs');
   const {document,nodes,requests}=fixture();let layouts=0;
+  const icon=nodes.get('enter-focus').children[0];
   const reader=mountReaderImmersion({document,beforeLayout(){layouts++;},afterLayout(){layouts++;}});
   reader.showTools({focus:false});
   const control=nodes.get('enter-focus'),opener=new Element();document.activeElement=opener;
   const before={inert:nodes.get('reading-header').inert,tools:document.body.dataset.readingTools,focused:document.body.classList.contains('is-focused')};
   await requestUiRoute('en');
-  assert.equal(control.textContent,'Full screen');assert.equal(control.getAttribute('aria-label'),'Full-screen reading');
+  const label=control.querySelector('.quiet-label');
+  assert.equal(label.textContent,'Full screen');assert.equal(control.getAttribute('aria-label'),'Full-screen reading');
+  assert.equal(control.children[0],icon,'locale changes preserve the fullscreen icon');
+  assert.equal(control.children.length,2,'locale changes reuse the existing label');
   assert.deepEqual({inert:nodes.get('reading-header').inert,tools:document.body.dataset.readingTools,focused:document.body.classList.contains('is-focused')},before);
   assert.equal(document.activeElement,opener);assert.equal(layouts,0);assert.equal(requests(),0);
   await reader.toggleFullscreen();const completedLayouts=layouts;
-  await requestUiRoute('ja');assert.equal(control.textContent,'全画面を終了');assert.equal(control.getAttribute('aria-label'),'全画面を終了');
+  await requestUiRoute('ja');assert.equal(label.textContent,'全画面を終了');assert.equal(control.getAttribute('aria-label'),'全画面を終了');
   assert.equal(requests(),1);assert.equal(layouts,completedLayouts);assert.equal(document.fullscreenElement,document.documentElement);
-  await requestUiRoute('zh-Hant');assert.equal(control.textContent,'結束全螢幕');
-  reader.unmount();const detached=control.textContent;await requestUiRoute('en');assert.equal(control.textContent,detached);
+  await requestUiRoute('zh-Hant');assert.equal(label.textContent,'結束全螢幕');assert.equal(control.children[0],icon);assert.equal(control.children.length,2);
+  reader.unmount();const detached=label.textContent;await requestUiRoute('en');assert.equal(label.textContent,detached);
 });
 
 test('unmount fences a pending fullscreen result from a replacement owner',async()=>{

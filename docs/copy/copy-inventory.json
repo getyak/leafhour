@@ -246,7 +246,7 @@
       },
       {
         "file": "app/index.html",
-        "sha256": "3bb74d87afd642ac7a8568866293851796800f4467165c8ec866d56942ab5ced"
+        "sha256": "a9838b7d298862c82d6f4451bd2243a51afcc325a9728e2accb32dc09f855a10"
       },
       {
         "file": "app/interaction-craft.mjs",
@@ -502,7 +502,7 @@
       },
       {
         "file": "app/reader-immersion.mjs",
-        "sha256": "1d6c4c351b7e410a0bdaed6a3eea54078de7beaec54c4fb1fb4f3d6cc1cd7fdc"
+        "sha256": "c686012e2812675b7532b6a32bcc639abf5bfbea26d62107da5d512c11e79dfb"
       },
       {
         "file": "app/reader-navigation.mjs",
@@ -1093,7 +1093,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "7587a9bf0871337c79dca115f14b0c4f430a56a223b02bb10adc4de3cad3b762"
+    "inputDigest": "cf6546fd8eb39eee5445cc9ff6da03ed41026cb3f3b17d5ea81ab75ff50170e4"
   },
   "locales": [
     "en",
@@ -13311,7 +13311,7 @@
         },
         {
           "file": "app/reader-immersion.mjs",
-          "line": 31,
+          "line": 33,
           "column": 103
         },
         {
@@ -39848,7 +39848,7 @@
       "consumers": [
         {
           "file": "app/reader-immersion.mjs",
-          "line": 24,
+          "line": 27,
           "column": 76
         }
       ],
@@ -39905,8 +39905,8 @@
       "consumers": [
         {
           "file": "app/reader-immersion.mjs",
-          "line": 25,
-          "column": 62
+          "line": 26,
+          "column": 55
         }
       ],
       "hints": [
@@ -39962,13 +39962,13 @@
       "consumers": [
         {
           "file": "app/reader-immersion.mjs",
-          "line": 24,
-          "column": 51
+          "line": 26,
+          "column": 30
         },
         {
           "file": "app/reader-immersion.mjs",
-          "line": 25,
-          "column": 37
+          "line": 27,
+          "column": 51
         }
       ],
       "hints": [
@@ -40024,7 +40024,7 @@
       "consumers": [
         {
           "file": "app/reader-immersion.mjs",
-          "line": 56,
+          "line": 58,
           "column": 48
         }
       ],
@@ -165285,10 +165285,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:14:385",
+      "id": "candidate:app/index.html:14:546",
       "file": "app/index.html",
       "line": 14,
-      "column": 385,
+      "column": 546,
       "kind": "html-attribute",
       "property": "aria-label",
       "value": "Pause atmosphere sounds",
@@ -165311,10 +165311,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:14:695",
+      "id": "candidate:app/index.html:14:856",
       "file": "app/index.html",
       "line": 14,
-      "column": 695,
+      "column": 856,
       "kind": "html-attribute",
       "property": "aria-label",
       "value": "Reading settings",
@@ -165337,10 +165337,36 @@
       }
     },
     {
-      "id": "candidate:app/index.html:14:970",
+      "id": "candidate:app/index.html:14:1013",
       "file": "app/index.html",
       "line": 14,
-      "column": 970,
+      "column": 1013,
+      "kind": "html-attribute",
+      "property": "aria-label",
+      "value": "Full screen",
+      "sha256": "674fe2acd0d5f47b46180dd66e26e349cd9c9db215046f5e86ea2f5728d18117",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-property",
+          "evidence": "html-attribute:aria-label",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:14:1345",
+      "file": "app/index.html",
+      "line": 14,
+      "column": 1345,
       "kind": "html-attribute",
       "property": "aria-label",
       "value": "Search and commands",
@@ -166533,10 +166559,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:14:297",
+      "id": "candidate:app/index.html:14:451",
       "file": "app/index.html",
       "line": 14,
-      "column": 297,
+      "column": 451,
       "kind": "html-text",
       "property": null,
       "value": "Atmosphere",
@@ -166559,10 +166585,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:14:783",
+      "id": "candidate:app/index.html:14:944",
       "file": "app/index.html",
       "line": 14,
-      "column": 783,
+      "column": 944,
       "kind": "html-text",
       "property": null,
       "value": "Aa",
@@ -166585,14 +166611,14 @@
       }
     },
     {
-      "id": "candidate:app/index.html:14:869",
+      "id": "candidate:app/index.html:14:1231",
       "file": "app/index.html",
       "line": 14,
-      "column": 869,
+      "column": 1231,
       "kind": "html-text",
       "property": null,
-      "value": "Focus",
-      "sha256": "9d3cab2b5efed4eaef42a707dbc813da2ffad53220aa713b5f3c950596fe35f5",
+      "value": "Full screen",
+      "sha256": "674fe2acd0d5f47b46180dd66e26e349cd9c9db215046f5e86ea2f5728d18117",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -166611,10 +166637,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:14:1186",
+      "id": "candidate:app/index.html:14:1561",
       "file": "app/index.html",
       "line": 14,
-      "column": 1186,
+      "column": 1561,
       "kind": "html-text",
       "property": null,
       "value": "Search and commands",
@@ -250602,8 +250628,8 @@
     "duplicateKeys": 0,
     "reviewedItems": 0,
     "unreviewedItems": 2133,
-    "candidates": 4819,
-    "candidatesUnreviewed": 4819,
+    "candidates": 4820,
+    "candidatesUnreviewed": 4820,
     "candidatesProtected": 129,
     "itemsProtected": 9,
     "dynamicConsumers": 3034,
