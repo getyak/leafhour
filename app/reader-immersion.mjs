@@ -21,8 +21,10 @@ export function mountReaderImmersion({document,announce=()=>{},beforeLayout=()=>
   function updateLabels(){
     if(disposed)return;
     const full=!!document.fullscreenElement;
+    // The icon stays; only the optional text label is rebound.
+    const label=headerScreen.querySelector?.('.quiet-label')||headerScreen;
+    label.textContent=t(full?'reader.fullscreen.exit':'reader.fullscreen.short');
     headerScreen.setAttribute('aria-label',t(full?'reader.fullscreen.exit':'reader.fullscreen.enter'));
-    headerScreen.textContent=t(full?'reader.fullscreen.exit':'reader.fullscreen.short');
   }
   const offLocale=onUiLocaleChange(updateLabels);
   function sync(){

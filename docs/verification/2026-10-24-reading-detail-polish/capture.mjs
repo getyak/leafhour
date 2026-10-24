@@ -12,7 +12,9 @@ const out=process.env.READING_POLISH_OUT;
 if(!out)throw Error('READING_POLISH_OUT is required');
 await mkdir(out,{recursive:true});
 const tag=process.env.READING_POLISH_TAG||'run';
-const widths=[[1440,1000],[768,1024],[390,844]];
+const ui=process.env.READING_POLISH_UI||'';
+const entry=base+'/read?book=gutenberg-alice'+(ui?'&ui='+ui:'');
+const widths=[[1440,1000],[768,1024],[390,844],[320,700]];
 const browser=await chromium.launch({executablePath:process.env.READING_POLISH_CHROMIUM||undefined,headless:true});
 const results={tag,base,at:new Date().toISOString(),viewports:[]};
 
@@ -75,7 +77,7 @@ for(const [width,height] of widths){
     await page.locator('#reading-tools-trigger').click().catch(()=>{});
     await page.waitForTimeout(300);
   };
-  await page.goto(base+'/read?book=gutenberg-alice');
+  await page.goto(entry);
   await page.locator('body[data-ready="true"]').waitFor({timeout:30000});
   await page.waitForTimeout(400);
   state.overflow.default=await page.evaluate(()=>({doc:document.documentElement.scrollWidth,win:innerWidth}));
