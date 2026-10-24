@@ -57,7 +57,7 @@ export function mountAnnotationMargins({document,storage,getScope,getEntries,onO
    if(!node){node=document.createElement('button');node.type='button';node.className='reader-annotation-summary reader-annotation-indicator';node.dataset.annotationThread=entry.id;node.dataset.annotationPassage=entry.passageId;node.addEventListener('click',event=>{event.stopPropagation();onOpen(entry.id,node);});region.append(node);nodes.set(entry.id,node);}
    const signature=JSON.stringify([entry.text,entry.origin,entry.quote]);
    if(node.dataset.summary!==signature){
-    node.dataset.summary=signature;node.replaceChildren();const author=document.createElement('span');author.className='reader-annotation-summary-author';write(author,entry.origin==='user'?'mine':'ai');
+    node.dataset.summary=signature;node.replaceChildren();const author=document.createElement('span');author.className='reader-annotation-summary-author';write(author,entry.origin==='user'?'personalSummary':'ai');
     const text=document.createElement('span');text.className='reader-annotation-summary-text';text.textContent=(entry.text||entry.quote||'').slice(0,280);author.id='reader-note-author-'+entry.id;text.id='reader-note-summary-'+entry.id;
     node.append(author,text);node.setAttribute('aria-labelledby',author.id+' '+text.id);
    }

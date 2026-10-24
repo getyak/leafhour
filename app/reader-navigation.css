@@ -71,7 +71,7 @@
 .toc-dialog .toc-sections{padding:2px 0 0}
 .toc-dialog .toc-sections button{min-height:36px;font-size:12px;padding:6px 0;color:var(--muted)}
 
-@media(max-width:767px){
+@media(max-width:1023px){
   .reading-header,body.is-focused[data-reading-tools=open] .reading-header{grid-template-columns:minmax(0,1fr) auto;height:auto;min-height:102px;gap:4px 8px;padding:8px 12px}
   .reading-header .reader-navigation{gap:3px}
   .reader-nav-item{padding-inline:7px;gap:5px;font-size:12px}

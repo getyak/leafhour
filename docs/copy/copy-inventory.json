@@ -246,7 +246,7 @@
       },
       {
         "file": "app/index.html",
-        "sha256": "a9838b7d298862c82d6f4451bd2243a51afcc325a9728e2accb32dc09f855a10"
+        "sha256": "d3685023ad202572316aa1acb8676e847766137fd442675eb172ca2bbd7cf97c"
       },
       {
         "file": "app/interaction-craft.mjs",
@@ -434,7 +434,7 @@
       },
       {
         "file": "app/reader-annotation-margins.mjs",
-        "sha256": "9f7a5491ee45ec875225ebf0a8e470a20bfb9e7cce562f5371739fa788e8907b"
+        "sha256": "8ecad80d651c575b19710987940dc4929fab1bfa1dd31e815cb165996742fa41"
       },
       {
         "file": "app/reader-annotation-pending.mjs",
@@ -454,7 +454,7 @@
       },
       {
         "file": "app/reader-atmosphere.js",
-        "sha256": "45dace067c40eeae34587d9d0ba43e3518e21a60f1378f44f25023840b9e0824"
+        "sha256": "96ba3a88af61ee918fa74b8c81b7184ef00275c4737cb365f78edbed06b92521"
       },
       {
         "file": "app/reader-audio-bootstrap.mjs",
@@ -726,19 +726,19 @@
       },
       {
         "file": "app/ui-catalogs/en.mjs",
-        "sha256": "9330a06e082760d4059f8a87d334570636deb58b2db347a292e668a145fd974a"
+        "sha256": "f58cbebe1b8b717e60f0ff7ccb9dee7f52bbf40597c5b07f482237efe599ff4e"
       },
       {
         "file": "app/ui-catalogs/ja.mjs",
-        "sha256": "5a018eb903c63196cb07e22de4edce6799e431d6a687c120c19d4ce80d21eed5"
+        "sha256": "e5ba3d973a24379c7240e1f7b706f4eff077d341084c07c7eec94bca29dbc689"
       },
       {
         "file": "app/ui-catalogs/zh-Hans.mjs",
-        "sha256": "092f77bf1ce1172493dd8f7f22e1d7550cca7f6a145377aab2657c1cf02e07be"
+        "sha256": "39307e343811c6d6018ba41271db50904f9950561f46a2f5d9c0f2e968813ee1"
       },
       {
         "file": "app/ui-catalogs/zh-Hant.mjs",
-        "sha256": "2c6979af1aae46943c1cd4c62fdc5ccb2f7a8b2e84be2526cc3bae1d4ecbcbdd"
+        "sha256": "44a6c3e3a22c8348785e4a9bb807e1395ddd5a86a918cc5f7be79e5fe33f70ca"
       },
       {
         "file": "app/ui-locale-codec.mjs",
@@ -1093,7 +1093,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "cf6546fd8eb39eee5445cc9ff6da03ed41026cb3f3b17d5ea81ab75ff50170e4"
+    "inputDigest": "b162cff297e8355cd8c57b813d040660ccd988d1e01e248367f557c766722398"
   },
   "locales": [
     "en",
@@ -1107,25 +1107,25 @@
       "locale": "en",
       "file": "app/ui-catalogs/en.mjs",
       "missing": false,
-      "entries": 2133
+      "entries": 2134
     },
     {
       "locale": "zh-Hans",
       "file": "app/ui-catalogs/zh-Hans.mjs",
       "missing": false,
-      "entries": 2133
+      "entries": 2134
     },
     {
       "locale": "zh-Hant",
       "file": "app/ui-catalogs/zh-Hant.mjs",
       "missing": false,
-      "entries": 2133
+      "entries": 2134
     },
     {
       "locale": "ja",
       "file": "app/ui-catalogs/ja.mjs",
       "missing": false,
-      "entries": 2133
+      "entries": 2134
     }
   ],
   "items": [
@@ -65699,29 +65699,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1133,
           "column": 3,
-          "value": "The preview matches the exported image. Everything is generated on this device.",
-          "sha256": "ddc6fefe3bf6bf8e5744c25f056e8270f8f44bf6a46be012cda0a05224f3636b"
+          "value": "Images are generated on this device.",
+          "sha256": "2830ec8490a15fa0f70e4b39946bddd168d4bd33355b5a53f9a4646570036eea"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1132,
           "column": 3,
-          "value": "预览与导出的图片一致，全部在本机生成。",
-          "sha256": "4ca5a726a93e2af5ef869883e85799619f0bf41054cca83a8d278d31e2ff769c"
+          "value": "图片在本机生成。",
+          "sha256": "e1717c16db71dfb0e7b9fc64d4c9a7a36ab0508b777d457c7fd3bf4c232815d0"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1132,
           "column": 3,
-          "value": "預覽與匯出的圖片一致，全部在本機生成。",
-          "sha256": "84a01aff2af53a60272d3fc2bdd020b227e14b9b19792acdda51f113c69ad970"
+          "value": "圖片在本機產生。",
+          "sha256": "3f3901ed38abfe698a6f3c4b4e5563c1fa785934e34003edc24308aaefbc056c"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1132,
           "column": 3,
-          "value": "プレビューと書き出す画像は同一です。すべて端末内で生成します。",
-          "sha256": "790da5be13c18343d3fe7d58104a01c54fe228daebe7e1a3e84269cbeab9e224"
+          "value": "画像は端末内で生成します。",
+          "sha256": "deb0cbb516ed90f2802a719e04471e6586cab9ae9843da837683a694db7d6b12"
         }
       },
       "missingLocales": [],
@@ -69469,29 +69469,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1205,
           "column": 3,
-          "value": "This literal translation is not ready. Continue in the original.",
-          "sha256": "9c14a16c8bd97141b955e7036bbe4fc3685c1019470122e7a8838757cf5be9aa"
+          "value": "No literal translation yet.",
+          "sha256": "a364897e247736ddc3c065b4c26bd9de34986b8987d15456c92532a908d42896"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1204,
           "column": 3,
-          "value": "这份直译尚未准备好。可继续阅读原文。",
-          "sha256": "9e98cf31616bbbcf140c48447e2f36ae52e4241c62a92ae02985d3337230b1ba"
+          "value": "暂无直译",
+          "sha256": "f02dbffc28fdbb124fdb95dcfe0aaf8638f252919850ed22e57d3a2ae5ae1bf6"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1204,
           "column": 3,
-          "value": "這份直譯尚未準備好。可繼續閱讀原文。",
-          "sha256": "550888a0d06fd2073e195318980c073756d7b30f1eca5cbd5ab304b3a3864227"
+          "value": "暫無直譯",
+          "sha256": "d728f1d4573e41bc9c837c1bd9b84615efbb694c3a9965c97c410fb5ce909be9"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1204,
           "column": 3,
-          "value": "この直訳は未準備です。原文を読めます。",
-          "sha256": "32e07d9cb5ad389ff18b4791385ff25defed32c8851bb6b9ec52a10ad23f7f53"
+          "value": "直訳は未作成です。",
+          "sha256": "36544e0f9a7bf4fd6e1501e84e0a3e17d1c3ee4c35186bc82296c945487e08ea"
         }
       },
       "missingLocales": [],
@@ -70846,29 +70846,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1232,
           "column": 3,
-          "value": "Playback continues in other tabs or apps. Pause with the button above.",
-          "sha256": "9043d9bbc14c5f9e49629b87ce398e721342d53690bb8976b1593c6a142920b8"
+          "value": "Playback continues in the background.",
+          "sha256": "566fb434dde1b72e3caafc92672bf00db793972eb4d615849dfebfa540223aee"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1231,
           "column": 3,
-          "value": "切换网页或应用时继续播放，暂停请使用上方按钮。",
-          "sha256": "317ee2bead676b1e8177b9ccfaed322586bbebc60d884a4b4850483853585349"
+          "value": "切到后台仍会播放。",
+          "sha256": "18421a36ad72afa0c0f5701008303178140fee076fd1e6aa89323f9f0df123d5"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1231,
           "column": 3,
-          "value": "切換網頁或應用程式時繼續播放，暫停請用上方按鈕。",
-          "sha256": "135091a8465988908e18ec522ec1652a74b3612708f5c2e28e110a99f49a055f"
+          "value": "切到背景仍會播放。",
+          "sha256": "2f7a72815d95c32ed664267897b9760ddaacb519fbbec97acf8f4338dd39aa21"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1231,
           "column": 3,
-          "value": "タブやアプリを切り替えても再生は続きます。上のボタンで一時停止できます。",
-          "sha256": "67e8b107a858b0e0a2d2b785e7d7a12d732e5545fbf3f0896b6ec38f24b15827"
+          "value": "バックグラウンドでも再生が続きます。",
+          "sha256": "1312b1e9e548e9daa03d999c57eae8df1a044d62ab336b6e7071a116ffb2c8f3"
         }
       },
       "missingLocales": [],
@@ -77340,29 +77340,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1359,
           "column": 3,
-          "value": "Where would you like to read?",
-          "sha256": "2d494b6472b645abc6b8d4be7e41198805d9923e29767cfbe56ebb32c697ae00"
+          "value": "Choose a scene",
+          "sha256": "d175c38e179529de3da3aa1fedb0d9c536da0001079f2cc17d87e50ce6857be3"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1358,
           "column": 3,
-          "value": "此刻，想在哪里读？",
-          "sha256": "b0b82bd095969e4291b7d77de974a04b6b7b26d5d2ab41172a2e52df57ea52b2"
+          "value": "选择场景",
+          "sha256": "e2992fdb8d7aacc2f522f0aae86ad215e8607f78ca973ab6b596cf2f3582b4a8"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1358,
           "column": 3,
-          "value": "此刻，想在哪裡讀？",
-          "sha256": "7559a21fc61e71497bac5a2004757a38a04c8bec21d1040a3e840fe43d8f26fc"
+          "value": "選擇場景",
+          "sha256": "7f3d0aa1ccf467ad28f42193b56d76b3fc951b3624ed39dc7eaae69ac27be967"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1358,
           "column": 3,
-          "value": "今、どこで読みたいですか？",
-          "sha256": "e15b8f71f77c46829ef5d6a578f535094e68a76e3612c04f5c31ebdf3e6c03f0"
+          "value": "シーンを選ぶ",
+          "sha256": "eeaddb56e235d6458960f0660a2fb266be71f19d8f786a1d485a7671384f586f"
         }
       },
       "missingLocales": [],
@@ -79635,29 +79635,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1404,
           "column": 3,
-          "value": "Make time for a book",
-          "sha256": "d8efe3e0246e697d6989d75a509d3d04b8f0d96a7806d20bca108cb4545aa73d"
+          "value": "Reading tools",
+          "sha256": "07bc689ac94d5609ae5fc62f348bc72381423a7728a4383183625cf1a563a0b1"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1403,
           "column": 3,
-          "value": "留一点时间给书",
-          "sha256": "22de470ef1f3c814633c0492df4dc6e12f4cea42d54c357249ae15d9d129c2f2"
+          "value": "阅读工具",
+          "sha256": "68f7ad0588c739e6dcbb83dc7fa37826dd75682242a49ee231727b9c538abca7"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1403,
           "column": 3,
-          "value": "留一點時間給書",
-          "sha256": "c84f6b2f9ac0aaf37fecd0ea7605de3cbd288c768c2d52e339741ed796cb4b5f"
+          "value": "閱讀工具",
+          "sha256": "b2776f3cea1dd14e5ae949a938892aaa3b9690b49beb774d9779c4d5c79cce6f"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1403,
           "column": 3,
-          "value": "本を読むひととき",
-          "sha256": "08b392f285992f5f857c5a9cd88c30a577a0abe815e6564596d8e4dc4393ad5c"
+          "value": "読書ツール",
+          "sha256": "e1b4821732000085263181a3e903dbc0968deea4eea8da55bf09218e1dad3164"
         }
       },
       "missingLocales": [],
@@ -80508,29 +80508,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1421,
           "column": 3,
-          "value": "Sign in to keep thoughts and questions in your own reading room, linked to this passage.",
-          "sha256": "574c998a0a551ea5a44ebf1dbb64fa4b4316d5dc5c0c04a41b0d06c5890652ee"
+          "value": "Sign in to keep thoughts and questions in your reading room.",
+          "sha256": "a2261520be4bd1b22408fda1d176c295556e545aa300c07c334a9b0b22e55631"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1420,
           "column": 3,
-          "value": "登录后，把想法和问题留在自己的书房。回来时仍在当前原文段落。",
-          "sha256": "f5c377f3ba85972cadcf56acc05c3c4489967f56180d0c2f89dfa6d4e618a683"
+          "value": "登录后，把想法和问题留在自己的书房。",
+          "sha256": "53999d725c931cf2a11c23a61187d3552055446142f6822a30e49abb29bcb839"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1420,
           "column": 3,
-          "value": "登入後，將想法與問題留在自己的書房，仍連結目前原文段落。",
-          "sha256": "37e02a70d84a79d87ce07344448422f4de3c286c7fa3eb774ff64c840ee85f88"
+          "value": "登入後，把想法與問題留在自己的書房。",
+          "sha256": "6bbe88f6b4c05370447057d88871c0cc97c250c38f0229c3713f3c69f3f425be"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1420,
           "column": 3,
-          "value": "ログインすると、この段落に考えや問いを残し、書斎から戻れます。",
-          "sha256": "484a51775252086719eea8082b44dcaa236362e917b4d46204e27478c3fc254d"
+          "value": "ログインして、考えや問いを書斎に残せます。",
+          "sha256": "631a9c5e48e55945ded4505403fb249ea87e69556312ebdbc46b8e459c093dc0"
         }
       },
       "missingLocales": [],
@@ -81528,29 +81528,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1441,
           "column": 3,
-          "value": "This interpretive translation is not ready. Continue in the original.",
-          "sha256": "76195cac8f2406ab7bb9f1cc65e913b5e3be649b55806cdbe2bd668ff57f4757"
+          "value": "No interpretive translation yet.",
+          "sha256": "6c29e96ad0d1f461d72abbe2cad9ba39e7d7f280032de6ea1dd000b0e36138a7"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1440,
           "column": 3,
-          "value": "这份意译尚未准备好。可继续阅读原文。",
-          "sha256": "46a09d5e3050d66012de92802e45db7f3f8d5bba5aa251e92b64da884bd85e4e"
+          "value": "暂无意译",
+          "sha256": "81efd97e535dc63556bda3d6eb04d05c7e7d8081c0cf775636d021afa3b2c521"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1440,
           "column": 3,
-          "value": "這份意譯尚未準備好。可繼續閱讀原文。",
-          "sha256": "e6a72194d65b39568f756a402644d72397e087bb86a666e7df2f203034923e27"
+          "value": "暫無意譯",
+          "sha256": "068eb706445681e963d460091dee4647ee4086fafadf3e5a5fff4f3a68e53887"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1440,
           "column": 3,
-          "value": "この意訳は未準備です。原文を読めます。",
-          "sha256": "f3ec2b83ffe1cc807b404970c094525de097c73f4389fbf92f7a3d9ec5503aa9"
+          "value": "意訳は未作成です。",
+          "sha256": "fb72979f3615cdce2fc5287a0dec371a56480b1078f7c5f17590eb3c453d4598"
         }
       },
       "missingLocales": [],
@@ -86957,29 +86957,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1547,
           "column": 3,
-          "value": "Let sound stay a while",
-          "sha256": "0e0b580decea13eb1d861b6b9ab928de6661c4998ce0c58afc974bc3a09f218b"
+          "value": "Sound and motion",
+          "sha256": "0c22b60a95512ad5a557643847a44845c4cecc820dea7280f60ec9b82c739c6c"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1546,
           "column": 3,
-          "value": "让声音陪一会儿",
-          "sha256": "f2c0ac3345b35605f23d73b580ac3676afdfcbe0ef2f64a68d4ec6bc32188aeb"
+          "value": "声音与动效",
+          "sha256": "33bd31171934da08c74d0640b6c56608bb00c86a32c00b225e86e8368da321ee"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1546,
           "column": 3,
-          "value": "讓聲音陪一會兒",
-          "sha256": "3bc7eff16a62ca3ace201d75c79aa7181367832d21fe37baa817981584939c66"
+          "value": "聲音與動效",
+          "sha256": "f5a8a724cea76c53a7fd46b600547e9c35894893d7b5aa028e7a3b52393abc02"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1546,
           "column": 3,
-          "value": "音と過ごすひととき",
-          "sha256": "1f8cc535286eff2828a80b2e09a4d5caea0286e3aea74c05536be4cbaa31ecd3"
+          "value": "音と動き",
+          "sha256": "4c637c6d38338e94a3f97b0b34aa8e63e3edc08d4346877291221ec8f4d8c04f"
         }
       },
       "missingLocales": [],
@@ -117880,33 +117880,84 @@
       }
     },
     {
-      "id": "reader.annotation.ai",
+      "id": "reader.annotation.personalSummary",
       "kind": "catalogue",
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
           "line": 2133,
           "column": 3,
+          "value": "Highlights and thoughts",
+          "sha256": "5a7454851fbe40308bc62c749306a3140fd5d418159946f6b560b0cbd5dc8d31"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2132,
+          "column": 3,
+          "value": "摘录与想法",
+          "sha256": "9f815d568a26b0ee129eefe28270557cf135d3fb7ae0016593976b4989e56478"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2132,
+          "column": 3,
+          "value": "摘錄與想法",
+          "sha256": "64bf6724b2ff86e186d0fbb342d0811cee0a38a1aea2f39996868d26414257b3"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2132,
+          "column": 3,
+          "value": "ハイライトとメモ",
+          "sha256": "4e21c996a5bf21ff6c945e5f0f38fe93a7c18a0f6127b82ec515df72e8edcc4e"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:reader",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "reader.annotation.ai",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2134,
+          "column": 3,
           "value": "AI",
           "sha256": "11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2132,
+          "line": 2133,
           "column": 3,
           "value": "AI",
           "sha256": "11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2132,
+          "line": 2133,
           "column": 3,
           "value": "AI",
           "sha256": "11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2132,
+          "line": 2133,
           "column": 3,
           "value": "AI",
           "sha256": "11fb682be0a0233d5fb899721ecfc1827d20f0d2ff2e093310efa61efca8af1c"
@@ -117936,28 +117987,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2134,
+          "line": 2135,
           "column": 3,
           "value": "Loading annotations…",
           "sha256": "38b427ec32ef53c7a474d735108b0136facbe9be7fb926b69f4be9debdc97a56"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2133,
+          "line": 2134,
           "column": 3,
           "value": "正在载入批注…",
           "sha256": "e974757db25f320444d34095ac9d00296d9762384cc9bba9ffa5026b9a4792da"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2133,
+          "line": 2134,
           "column": 3,
           "value": "正在載入批註…",
           "sha256": "8969bd68c4adc1677bfd0069086ed2a4ce2112b118533003633d0ca02f5ac0bb"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2133,
+          "line": 2134,
           "column": 3,
           "value": "注釈を読み込み中…",
           "sha256": "b9796a38896291f8d9d1fb4d2e2577863e4679bc9c12491bbe2fc7807e57d2e2"
@@ -117987,28 +118038,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2135,
+          "line": 2136,
           "column": 3,
           "value": "Save note",
           "sha256": "6501e1ced8da0bffc5e2c7e20a42162e80176b31980e7b073fbf9955854fda4a"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2134,
+          "line": 2135,
           "column": 3,
           "value": "保存想法",
           "sha256": "8ad6dfb732162f58a5983de407e27b29540027f131b2e7c41caeb9c108175535"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2134,
+          "line": 2135,
           "column": 3,
           "value": "儲存想法",
           "sha256": "6d57ba15f726ddb0b3e77f98c170c3d599bfb2731a4a7a9e879f7ddb1f04628e"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2134,
+          "line": 2135,
           "column": 3,
           "value": "メモを保存",
           "sha256": "1a583c47e6aa6a9ea17bf432f5f71f36038e59c6c7d00754c02ca45588334308"
@@ -118038,28 +118089,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2136,
+          "line": 2137,
           "column": 3,
           "value": "Ask AI to explain",
           "sha256": "b8e7e87f414c491dc655e3c088dc4acfae6dd7881667a544d9d13f3f5c7ce3c9"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2135,
+          "line": 2136,
           "column": 3,
           "value": "请 AI 解释",
           "sha256": "229a96c7fddc0d6fe8661b49d8c6a5881817973c9d7c52a07f5a22932b2f4898"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2135,
+          "line": 2136,
           "column": 3,
           "value": "請 AI 解釋",
           "sha256": "cd017defb6c8fcd68c0d6ef7c77f58799b2f82850c7df9c09a6b3a569496e11e"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2135,
+          "line": 2136,
           "column": 3,
           "value": "AIに説明を頼む",
           "sha256": "63505ec3f7b394e55c129566bf4052e9c9e630bf73ee2441167cadaf82a3752f"
@@ -118089,28 +118140,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2137,
+          "line": 2138,
           "column": 3,
           "value": "Saving your note…",
           "sha256": "a15792cb1bc98f82f1684136acdf51094c5c39ed1ff93334a3048dacb2b44c1d"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2136,
+          "line": 2137,
           "column": 3,
           "value": "正在保存想法…",
           "sha256": "6cd1d1c9984ebe915736cfc8430d4b6fb90937448cbb97d14d7130957ff5af27"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2136,
+          "line": 2137,
           "column": 3,
           "value": "正在儲存想法…",
           "sha256": "fec38da445afcfde70361019435fce868f2970c295432585b18e4119dbfc6775"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2136,
+          "line": 2137,
           "column": 3,
           "value": "メモを保存中…",
           "sha256": "192659eaa1e322232c5dc56258eaf135dcf921fb28a409798bb9f94c4b1893e8"
@@ -118140,28 +118191,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2138,
+          "line": 2139,
           "column": 3,
           "value": "Note saved.",
           "sha256": "2a4a9548cd5f90909a3ced784c9388d1a2b88effb1a8cc68fca0a3e3968e584e"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2137,
+          "line": 2138,
           "column": 3,
           "value": "想法已保存。",
           "sha256": "600711a038a7a3cb62804eecb3dccd7edc1718dfb010f58a4ef7bb9a4efebd71"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2137,
+          "line": 2138,
           "column": 3,
           "value": "想法已儲存。",
           "sha256": "e5a3d4a17aa2729d83f259fadf760b4651e3a196d668a038625bccad9b537720"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2137,
+          "line": 2138,
           "column": 3,
           "value": "メモを保存しました。",
           "sha256": "3a2ca3e5b408d0a7887dd69fe95c3361bec722dff8f9fdb32b4390fe66892090"
@@ -118191,28 +118242,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2139,
+          "line": 2140,
           "column": 3,
           "value": "Saving is unconfirmed. Try saving again to check the same submission.",
           "sha256": "e8bad27f1d36e429c3a1150b1adf25cd095582052de12a1eb0a3cf1be9f7ce60"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2138,
+          "line": 2139,
           "column": 3,
           "value": "保存尚未确认。再次保存会核对刚才的想法。",
           "sha256": "9196f1c05051774c2f97dc4a8a8be1bc978a7c63cf4e8facbea7cea069e03fd3"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2138,
+          "line": 2139,
           "column": 3,
           "value": "儲存尚未確認。再次儲存會核對剛才的想法。",
           "sha256": "f8c8737800e434973d26552e51523b70cb21df26d511561194906c782151f0ef"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2138,
+          "line": 2139,
           "column": 3,
           "value": "保存を確認できません。もう一度保存すると同じ送信を確認します。",
           "sha256": "48324bd906507e2118951b5c18e60bfdad0bdac9aaefec24e323611ea5dd0bc9"
@@ -118242,28 +118293,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2140,
+          "line": 2141,
           "column": 3,
           "value": "Previous annotation",
           "sha256": "23eec362896e7ee2a24d53bdc1b4742b7ca003416c3775b61a4d0bd3cd26e390"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2139,
+          "line": 2140,
           "column": 3,
           "value": "上一条批注",
           "sha256": "2fc1efedb585058bfbad501579c37d84dba641321821358130139916d20ce853"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2139,
+          "line": 2140,
           "column": 3,
           "value": "上一條批註",
           "sha256": "71765861f44161002d96e6ef54955aa07b8e2a4c1397500d0624bdc1d94b48fb"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2139,
+          "line": 2140,
           "column": 3,
           "value": "前の注釈",
           "sha256": "8ad6714d82d610e9dcf0376b6853f441b0d4f6bb66dcef77ba4fdaebdfc20903"
@@ -118293,28 +118344,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2141,
+          "line": 2142,
           "column": 3,
           "value": "Next annotation",
           "sha256": "a8bac65acefd78b7624a6ec1813d554ea1d0fcd719f19d3ba97507fcc9db178a"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2140,
+          "line": 2141,
           "column": 3,
           "value": "下一条批注",
           "sha256": "75566e17e3d95ee349c49e91df99a56cf4add645f698342fd3a1cef664f09fd9"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2140,
+          "line": 2141,
           "column": 3,
           "value": "下一條批註",
           "sha256": "4a0f4e888e72b60280bca64833ad97e9c499ac69755ed101e1d2be626a1b9535"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2140,
+          "line": 2141,
           "column": 3,
           "value": "次の注釈",
           "sha256": "8a42f22ca7cdedba95a06c9d834edc4a0646fafb889ce81c0f79ef7505a7f9f1"
@@ -118344,28 +118395,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2142,
+          "line": 2143,
           "column": 3,
           "value": "This selection is long. You can save a thought; select a shorter passage to ask AI.",
           "sha256": "768578a1a960a42d00c36f634ac8da129969344b15e71c96a2808c5679eb9938"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2141,
+          "line": 2142,
           "column": 3,
           "value": "选文较长，可以保存想法；请选取其中一小段来问 AI。",
           "sha256": "8377eceaff02abf268d635287d599d4a9077b5571cee53f53b028858852b2038"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2141,
+          "line": 2142,
           "column": 3,
           "value": "選文較長，可以儲存想法；請選取其中一小段來問 AI。",
           "sha256": "2d280910356eb1fa8425afda52857ef868e168663dcdf07b227b399105695deb"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2141,
+          "line": 2142,
           "column": 3,
           "value": "選択した文章が長いため、AI に質問するには短い部分を選んでください。自分のメモは保存できます。",
           "sha256": "1e9e6773e0737c39aa9b8ebf2c0f12e923472e7d8e8171b830cf5124e04ec1d8"
@@ -118395,28 +118446,28 @@
       "values": {
         "en": {
           "file": "app/ui-catalogs/en.mjs",
-          "line": 2143,
+          "line": 2144,
           "column": 3,
           "value": "Reading notes · {count}",
           "sha256": "af44a04a08144c2b16ccb70b6ba0834463b0509e24e388f1a4b1ad02597394ce"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
-          "line": 2142,
+          "line": 2143,
           "column": 3,
           "value": "陪读纸条 · {count} 张",
           "sha256": "54f1c285a353240f9f99c4f33bae933dd92489345a82f855f87cb1aabb88b1eb"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
-          "line": 2142,
+          "line": 2143,
           "column": 3,
           "value": "陪讀紙條 · {count} 張",
           "sha256": "557c32b56c9e16056556ace7c69abab512c34dbe22095798ac0687c717402bf2"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
-          "line": 2142,
+          "line": 2143,
           "column": 3,
           "value": "読書のメモ · {count}件",
           "sha256": "65ca590900c4450077e927a7e6112634262ad8b34d5a309408697b1ae575970b"
@@ -166325,9 +166376,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:193:86",
+      "id": "candidate:app/index.html:192:86",
       "file": "app/index.html",
-      "line": 193,
+      "line": 192,
       "column": 86,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -166351,9 +166402,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:197:92",
+      "id": "candidate:app/index.html:196:92",
       "file": "app/index.html",
-      "line": 197,
+      "line": 196,
       "column": 92,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -169965,36 +170016,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:109:254",
+      "id": "candidate:app/index.html:109:359",
       "file": "app/index.html",
       "line": 109,
-      "column": 254,
-      "kind": "html-text",
-      "property": null,
-      "value": "Line spacing, space and indentation",
-      "sha256": "c182378e66d6cd64e13f6d6aee485eb3a93ffe04c61feafef589b4825abd640d",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:109:439",
-      "file": "app/index.html",
-      "line": 109,
-      "column": 439,
+      "column": 359,
       "kind": "html-text",
       "property": null,
       "value": "First-line indent",
@@ -170017,10 +170042,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:109:586",
+      "id": "candidate:app/index.html:109:506",
       "file": "app/index.html",
       "line": 109,
-      "column": 586,
+      "column": 506,
       "kind": "html-text",
       "property": null,
       "value": "Latin fonts are hosted here; Chinese uses device fonts. Word spacing applies only to English.",
@@ -172513,35 +172538,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:172:48",
+      "id": "candidate:app/index.html:173:98",
       "file": "app/index.html",
-      "line": 172,
-      "column": 48,
-      "kind": "html-text",
-      "property": null,
-      "value": "Let these words take the focus.",
-      "sha256": "2f80bc51ea4f6a4b2c06d484c24a8751352861cfa63c811664ec819ae3926c0d",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:174:98",
-      "file": "app/index.html",
-      "line": 174,
+      "line": 173,
       "column": 98,
       "kind": "html-text",
       "property": null,
@@ -172565,9 +172564,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:174:190",
+      "id": "candidate:app/index.html:173:190",
       "file": "app/index.html",
-      "line": 174,
+      "line": 173,
       "column": 190,
       "kind": "html-text",
       "property": null,
@@ -172591,9 +172590,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:174:254",
+      "id": "candidate:app/index.html:173:254",
       "file": "app/index.html",
-      "line": 174,
+      "line": 173,
       "column": 254,
       "kind": "html-text",
       "property": null,
@@ -172617,9 +172616,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:174:332",
+      "id": "candidate:app/index.html:173:332",
       "file": "app/index.html",
-      "line": 174,
+      "line": 173,
       "column": 332,
       "kind": "html-text",
       "property": null,
@@ -172643,9 +172642,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:175:134",
+      "id": "candidate:app/index.html:174:134",
       "file": "app/index.html",
-      "line": 175,
+      "line": 174,
       "column": 134,
       "kind": "html-text",
       "property": null,
@@ -172669,9 +172668,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:175:235",
+      "id": "candidate:app/index.html:174:235",
       "file": "app/index.html",
-      "line": 175,
+      "line": 174,
       "column": 235,
       "kind": "html-text",
       "property": null,
@@ -172695,9 +172694,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:175:306",
+      "id": "candidate:app/index.html:174:306",
       "file": "app/index.html",
-      "line": 175,
+      "line": 174,
       "column": 306,
       "kind": "html-text",
       "property": null,
@@ -172721,9 +172720,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:176:121",
+      "id": "candidate:app/index.html:175:121",
       "file": "app/index.html",
-      "line": 176,
+      "line": 175,
       "column": 121,
       "kind": "html-text",
       "property": null,
@@ -172747,9 +172746,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:176:223",
+      "id": "candidate:app/index.html:175:223",
       "file": "app/index.html",
-      "line": 176,
+      "line": 175,
       "column": 223,
       "kind": "html-text",
       "property": null,
@@ -172773,14 +172772,118 @@
       }
     },
     {
-      "id": "candidate:app/index.html:176:281",
+      "id": "candidate:app/index.html:175:281",
       "file": "app/index.html",
-      "line": 176,
+      "line": 175,
       "column": 281,
       "kind": "html-text",
       "property": null,
       "value": "Literal",
       "sha256": "a6230c2a81abcafc765628fdc8bc0b77035b0eabb97ea08565a416a8b7a07f94",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:176:92",
+      "file": "app/index.html",
+      "line": 176,
+      "column": 92,
+      "kind": "html-text",
+      "property": null,
+      "value": "Paper",
+      "sha256": "35045eff549e30b5bdf44abb9999f383d87bc54002b130fdcdd05315e188419e",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:176:180",
+      "file": "app/index.html",
+      "line": 176,
+      "column": 180,
+      "kind": "html-text",
+      "property": null,
+      "value": "Paper",
+      "sha256": "35045eff549e30b5bdf44abb9999f383d87bc54002b130fdcdd05315e188419e",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:176:242",
+      "file": "app/index.html",
+      "line": 176,
+      "column": 242,
+      "kind": "html-text",
+      "property": null,
+      "value": "Warm",
+      "sha256": "316f24288be59c8327d0406f2938c59b2eda60426c0f1d2b741b8549fa131e74",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:176:309",
+      "file": "app/index.html",
+      "line": 176,
+      "column": 309,
+      "kind": "html-text",
+      "property": null,
+      "value": "Ink",
+      "sha256": "f089d62295937bb4ea34e0a55642588056865c63160431e5cce16a3e3976de4f",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -172805,110 +172908,6 @@
       "column": 92,
       "kind": "html-text",
       "property": null,
-      "value": "Paper",
-      "sha256": "35045eff549e30b5bdf44abb9999f383d87bc54002b130fdcdd05315e188419e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:177:180",
-      "file": "app/index.html",
-      "line": 177,
-      "column": 180,
-      "kind": "html-text",
-      "property": null,
-      "value": "Paper",
-      "sha256": "35045eff549e30b5bdf44abb9999f383d87bc54002b130fdcdd05315e188419e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:177:242",
-      "file": "app/index.html",
-      "line": 177,
-      "column": 242,
-      "kind": "html-text",
-      "property": null,
-      "value": "Warm",
-      "sha256": "316f24288be59c8327d0406f2938c59b2eda60426c0f1d2b741b8549fa131e74",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:177:309",
-      "file": "app/index.html",
-      "line": 177,
-      "column": 309,
-      "kind": "html-text",
-      "property": null,
-      "value": "Ink",
-      "sha256": "f089d62295937bb4ea34e0a55642588056865c63160431e5cce16a3e3976de4f",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:178:92",
-      "file": "app/index.html",
-      "line": 178,
-      "column": 92,
-      "kind": "html-text",
-      "property": null,
       "value": "Aspect ratio",
       "sha256": "d7ad336f35e1e6853b230bb077b557455ead80a703cc934abfc373cedf72dc6d",
       "protected": false,
@@ -172929,9 +172928,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:178:162",
+      "id": "candidate:app/index.html:177:162",
       "file": "app/index.html",
-      "line": 178,
+      "line": 177,
       "column": 162,
       "kind": "html-text",
       "property": null,
@@ -172955,9 +172954,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:178:199",
+      "id": "candidate:app/index.html:177:199",
       "file": "app/index.html",
-      "line": 178,
+      "line": 177,
       "column": 199,
       "kind": "html-text",
       "property": null,
@@ -172981,9 +172980,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:178:235",
+      "id": "candidate:app/index.html:177:235",
       "file": "app/index.html",
-      "line": 178,
+      "line": 177,
       "column": 235,
       "kind": "html-text",
       "property": null,
@@ -173007,14 +173006,118 @@
       }
     },
     {
-      "id": "candidate:app/index.html:180:80",
+      "id": "candidate:app/index.html:179:80",
       "file": "app/index.html",
-      "line": 180,
+      "line": 179,
       "column": 80,
       "kind": "html-text",
       "property": null,
       "value": "Context and details",
       "sha256": "be922e4b631d9cb629f27f166c0f4d0bee4e6965e1dab6524d0257baf0da4172",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:180:92",
+      "file": "app/index.html",
+      "line": 180,
+      "column": 92,
+      "kind": "html-text",
+      "property": null,
+      "value": "Text above",
+      "sha256": "471941219599756b0391d0af463f60fd7d5bab8130b5939edc6501d7600f7a73",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:180:184",
+      "file": "app/index.html",
+      "line": 180,
+      "column": 184,
+      "kind": "html-text",
+      "property": null,
+      "value": "Fade",
+      "sha256": "9efb597c915414fd84e20eedf169e945155c3408df8c13fb82385ca7b96174b7",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:180:247",
+      "file": "app/index.html",
+      "line": 180,
+      "column": 247,
+      "kind": "html-text",
+      "property": null,
+      "value": "Hide",
+      "sha256": "ac20a57bfde0bbc40bfe70895eb1cfacc944aaff06ca784053623c569b3e1b3d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:180:309",
+      "file": "app/index.html",
+      "line": 180,
+      "column": 309,
+      "kind": "html-text",
+      "property": null,
+      "value": "Keep",
+      "sha256": "183f00f483d3844e875d26eac74c676054383aef38ed5a8e4d1505ef21008585",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -173039,8 +173142,8 @@
       "column": 92,
       "kind": "html-text",
       "property": null,
-      "value": "Text above",
-      "sha256": "471941219599756b0391d0af463f60fd7d5bab8130b5939edc6501d7600f7a73",
+      "value": "Text below",
+      "sha256": "8f99280ddbdab5095eecca0931fa4b6883d288aee45a69c93e546d49f514b2f3",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -173137,113 +173240,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:182:92",
+      "id": "candidate:app/index.html:182:198",
       "file": "app/index.html",
       "line": 182,
-      "column": 92,
-      "kind": "html-text",
-      "property": null,
-      "value": "Text below",
-      "sha256": "8f99280ddbdab5095eecca0931fa4b6883d288aee45a69c93e546d49f514b2f3",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:182:184",
-      "file": "app/index.html",
-      "line": 182,
-      "column": 184,
-      "kind": "html-text",
-      "property": null,
-      "value": "Fade",
-      "sha256": "9efb597c915414fd84e20eedf169e945155c3408df8c13fb82385ca7b96174b7",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:182:247",
-      "file": "app/index.html",
-      "line": 182,
-      "column": 247,
-      "kind": "html-text",
-      "property": null,
-      "value": "Hide",
-      "sha256": "ac20a57bfde0bbc40bfe70895eb1cfacc944aaff06ca784053623c569b3e1b3d",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:182:309",
-      "file": "app/index.html",
-      "line": 182,
-      "column": 309,
-      "kind": "html-text",
-      "property": null,
-      "value": "Keep",
-      "sha256": "183f00f483d3844e875d26eac74c676054383aef38ed5a8e4d1505ef21008585",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:183:198",
-      "file": "app/index.html",
-      "line": 183,
       "column": 198,
       "kind": "html-text",
       "property": null,
@@ -173267,9 +173266,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:183:245",
+      "id": "candidate:app/index.html:182:245",
       "file": "app/index.html",
-      "line": 183,
+      "line": 182,
       "column": 245,
       "kind": "html-text",
       "property": null,
@@ -173293,9 +173292,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:184:197",
+      "id": "candidate:app/index.html:183:197",
       "file": "app/index.html",
-      "line": 184,
+      "line": 183,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -173319,9 +173318,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:186:121",
+      "id": "candidate:app/index.html:185:121",
       "file": "app/index.html",
-      "line": 186,
+      "line": 185,
       "column": 121,
       "kind": "html-text",
       "property": null,
@@ -173345,9 +173344,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:186:197",
+      "id": "candidate:app/index.html:185:197",
       "file": "app/index.html",
-      "line": 186,
+      "line": 185,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -173371,9 +173370,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:186:284",
+      "id": "candidate:app/index.html:185:284",
       "file": "app/index.html",
-      "line": 186,
+      "line": 185,
       "column": 284,
       "kind": "html-text",
       "property": null,
@@ -173397,9 +173396,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:192:124",
+      "id": "candidate:app/index.html:191:124",
       "file": "app/index.html",
-      "line": 192,
+      "line": 191,
       "column": 124,
       "kind": "html-text",
       "property": null,
@@ -173423,9 +173422,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:192:276",
+      "id": "candidate:app/index.html:191:276",
       "file": "app/index.html",
-      "line": 192,
+      "line": 191,
       "column": 276,
       "kind": "html-text",
       "property": null,
@@ -173449,9 +173448,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:192:377",
+      "id": "candidate:app/index.html:191:377",
       "file": "app/index.html",
-      "line": 192,
+      "line": 191,
       "column": 377,
       "kind": "html-text",
       "property": null,
@@ -173475,9 +173474,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:195:92",
+      "id": "candidate:app/index.html:194:92",
       "file": "app/index.html",
-      "line": 195,
+      "line": 194,
       "column": 92,
       "kind": "html-text",
       "property": null,
@@ -173501,9 +173500,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:198:187",
+      "id": "candidate:app/index.html:197:187",
       "file": "app/index.html",
-      "line": 198,
+      "line": 197,
       "column": 187,
       "kind": "html-text",
       "property": null,
@@ -173527,9 +173526,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:198:258",
+      "id": "candidate:app/index.html:197:258",
       "file": "app/index.html",
-      "line": 198,
+      "line": 197,
       "column": 258,
       "kind": "html-text",
       "property": null,
@@ -173553,9 +173552,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:198:328",
+      "id": "candidate:app/index.html:197:328",
       "file": "app/index.html",
-      "line": 198,
+      "line": 197,
       "column": 328,
       "kind": "html-text",
       "property": null,
@@ -250621,19 +250620,19 @@
   },
   "counts": {
     "catalogueFiles": 4,
-    "catalogueKeys": 2133,
-    "localeValues": 8532,
-    "itemsComplete": 2133,
+    "catalogueKeys": 2134,
+    "localeValues": 8536,
+    "itemsComplete": 2134,
     "itemsWithMissingLocales": 0,
     "duplicateKeys": 0,
     "reviewedItems": 0,
-    "unreviewedItems": 2133,
-    "candidates": 4820,
-    "candidatesUnreviewed": 4820,
+    "unreviewedItems": 2134,
+    "candidates": 4818,
+    "candidatesUnreviewed": 4818,
     "candidatesProtected": 129,
     "itemsProtected": 9,
     "dynamicConsumers": 3034,
     "consumerReferences": 1510,
-    "keysWithoutStaticConsumers": 1149
+    "keysWithoutStaticConsumers": 1150
   }
 }

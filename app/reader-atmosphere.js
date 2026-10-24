@@ -107,7 +107,7 @@ function sceneLabels(){
   $('atmosphere-preview-caption').textContent=t(hasScene?SCENE_UI+''+cachedScene+'.caption':SCENE_UI+'noneCaption');
   for(const part of ['music','nature'])$('atmosphere-'+part+'-name').textContent=hasScene?t(SCENE_UI+''+cachedScene+'.'+part):'';
   if($('settings-atmosphere-scene'))$('settings-atmosphere-scene').textContent=name;
-  $('open-atmosphere').setAttribute('aria-label',t(SCENE_UI+'trigger',{scene:hasScene?name:''}));
+  $('open-atmosphere').setAttribute('aria-label',t(SCENE_UI+'trigger',{scene:name}));
   for(const prefix of ['atmosphere-','settings-atmosphere-'])if($(prefix+'motion-hint'))$(prefix+'motion-hint').textContent=t(motionReduced?SCENE_UI+'reduced':SCENE_UI+'motionHint');
 }
 function playbackLabels(){
