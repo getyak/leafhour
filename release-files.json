@@ -190,6 +190,7 @@
   "app/highlights.mjs",
   "app/home-atmosphere.css",
   "app/home-atmosphere.mjs",
+  "app/home-books.css",
   "app/home-locale.mjs",
   "app/home-motion.css",
   "app/home-motion.mjs",

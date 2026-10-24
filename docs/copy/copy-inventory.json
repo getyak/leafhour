@@ -234,7 +234,7 @@
       },
       {
         "file": "app/home-motion.mjs",
-        "sha256": "11429d42c9148095a70d416bd2a9da383306c76b63d0b80591eae996f61847df"
+        "sha256": "0f9cc9c5073903f50cba73f9139c488545d5496510a744eeb43c6f12013b8cfc"
       },
       {
         "file": "app/home-navigation.mjs",
@@ -242,7 +242,7 @@
       },
       {
         "file": "app/home.html",
-        "sha256": "09c15c0f7334bf4ae8926288d34527cfa22d9586bc84cefc3d6ae0b614386120"
+        "sha256": "a596aa166e93f4258152da0c954006857c25ae4051d9be1de35c6819da49df69"
       },
       {
         "file": "app/index.html",
@@ -402,7 +402,7 @@
       },
       {
         "file": "app/portal.js",
-        "sha256": "f075a127df19de38cfd7c9e9ffae7d3b76a8a37502f01d5081074611751b8234"
+        "sha256": "f70548b6b8e3182f914538666c27f45272ca3ceb7165cf20fc7b117f2c5e296b"
       },
       {
         "file": "app/preference-memory-codec.mjs",
@@ -1014,7 +1014,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "f8245fcd8a9f88112d90fb87be0fa15214d2f5ea9f7d682b020970c100643e94"
+        "sha256": "e061c7c6dbec39ca5432ed08c30e65d455469faea94b71c91100862b81b06dc5"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1093,7 +1093,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "b162cff297e8355cd8c57b813d040660ccd988d1e01e248367f557c766722398"
+    "inputDigest": "4914aba3e6d0ee2bdcbae108fb23e6c76d1ad89866fa79e99ecdac2543863814"
   },
   "locales": [
     "en",
@@ -6808,7 +6808,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 316,
+          "line": 331,
           "column": 215
         }
       ],
@@ -8904,17 +8904,17 @@
         },
         {
           "file": "app/portal.js",
-          "line": 186,
+          "line": 201,
           "column": 809
         },
         {
           "file": "app/portal.js",
-          "line": 290,
+          "line": 305,
           "column": 233
         },
         {
           "file": "app/portal.js",
-          "line": 297,
+          "line": 312,
           "column": 385
         }
       ],
@@ -9180,7 +9180,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 297,
+          "line": 312,
           "column": 171
         }
       ],
@@ -9242,7 +9242,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 297,
+          "line": 312,
           "column": 215
         }
       ],
@@ -9304,7 +9304,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 297,
+          "line": 312,
           "column": 261
         }
       ],
@@ -10471,8 +10471,8 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 168,
-          "column": 201
+          "line": 173,
+          "column": 278
         }
       ],
       "hints": [
@@ -13473,7 +13473,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 277,
+          "line": 292,
           "column": 37
         },
         {
@@ -13583,22 +13583,22 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 308,
+          "line": 309,
           "column": 114
         },
         {
           "file": "server/portal.mjs",
-          "line": 309,
+          "line": 310,
           "column": 224
         },
         {
           "file": "server/portal.mjs",
-          "line": 348,
+          "line": 349,
           "column": 110
         },
         {
           "file": "server/portal.mjs",
-          "line": 350,
+          "line": 351,
           "column": 290
         }
       ],
@@ -15937,7 +15937,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 316,
+          "line": 331,
           "column": 49
         }
       ],
@@ -24567,7 +24567,7 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 230,
+          "line": 231,
           "column": 64
         }
       ],
@@ -24748,7 +24748,7 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 234,
+          "line": 235,
           "column": 116
         }
       ],
@@ -24810,12 +24810,12 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 235,
+          "line": 236,
           "column": 119
         },
         {
           "file": "server/portal.mjs",
-          "line": 237,
+          "line": 238,
           "column": 124
         }
       ],
@@ -28751,7 +28751,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 196,
+          "line": 211,
           "column": 41
         }
       ],
@@ -30061,7 +30061,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 205,
+          "line": 220,
           "column": 187
         }
       ],
@@ -45077,6 +45077,11 @@
       "duplicates": [],
       "consumers": [
         {
+          "file": "app/portal.js",
+          "line": 184,
+          "column": 71
+        },
+        {
           "file": "app/reader-navigation.mjs",
           "line": 16,
           "column": 146
@@ -57506,7 +57511,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 323,
+          "line": 338,
           "column": 54
         },
         {
@@ -60339,7 +60344,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 316,
+          "line": 331,
           "column": 152
         }
       ],
@@ -60396,12 +60401,12 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 316,
+          "line": 331,
           "column": 86
         },
         {
           "file": "app/portal.js",
-          "line": 324,
+          "line": 339,
           "column": 53
         }
       ],
@@ -60458,7 +60463,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 316,
+          "line": 331,
           "column": 123
         }
       ],
@@ -60515,7 +60520,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 321,
+          "line": 336,
           "column": 57
         }
       ],
@@ -60572,12 +60577,12 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 320,
+          "line": 335,
           "column": 50
         },
         {
           "file": "app/portal.js",
-          "line": 325,
+          "line": 340,
           "column": 56
         }
       ],
@@ -60634,7 +60639,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 316,
+          "line": 331,
           "column": 182
         }
       ],
@@ -60691,7 +60696,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 240,
+          "line": 255,
           "column": 45
         }
       ],
@@ -60748,7 +60753,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 240,
+          "line": 255,
           "column": 70
         }
       ],
@@ -60805,12 +60810,12 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 173,
+          "line": 188,
           "column": 86
         },
         {
           "file": "app/portal.js",
-          "line": 184,
+          "line": 199,
           "column": 91
         }
       ],
@@ -60867,12 +60872,12 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 172,
-          "column": 24
+          "line": 186,
+          "column": 57
         },
         {
           "file": "app/portal.js",
-          "line": 179,
+          "line": 194,
           "column": 202
         }
       ],
@@ -60926,13 +60931,7 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [
-        {
-          "file": "app/portal.js",
-          "line": 167,
-          "column": 376
-        }
-      ],
+      "consumers": [],
       "hints": [
         {
           "kind": "key-namespace",
@@ -60986,7 +60985,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 175,
+          "line": 190,
           "column": 241
         }
       ],
@@ -61043,12 +61042,12 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 167,
+          "line": 172,
           "column": 153
         },
         {
           "file": "app/portal.js",
-          "line": 183,
+          "line": 198,
           "column": 322
         }
       ],
@@ -61105,12 +61104,12 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 167,
+          "line": 172,
           "column": 132
         },
         {
           "file": "app/portal.js",
-          "line": 183,
+          "line": 198,
           "column": 301
         }
       ],
@@ -61167,12 +61166,12 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 172,
-          "column": 51
+          "line": 186,
+          "column": 84
         },
         {
           "file": "app/portal.js",
-          "line": 179,
+          "line": 194,
           "column": 229
         }
       ],
@@ -61226,13 +61225,7 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [
-        {
-          "file": "app/portal.js",
-          "line": 167,
-          "column": 304
-        }
-      ],
+      "consumers": [],
       "hints": [
         {
           "kind": "key-namespace",
@@ -61286,7 +61279,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 174,
+          "line": 189,
           "column": 113
         }
       ],
@@ -61343,7 +61336,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 183,
+          "line": 198,
           "column": 113
         }
       ],
@@ -61400,7 +61393,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 175,
+          "line": 190,
           "column": 70
         }
       ],
@@ -61457,17 +61450,12 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 163,
-          "column": 67
-        },
-        {
-          "file": "app/portal.js",
-          "line": 173,
+          "line": 188,
           "column": 109
         },
         {
           "file": "app/portal.js",
-          "line": 184,
+          "line": 199,
           "column": 114
         }
       ],
@@ -61521,13 +61509,7 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [
-        {
-          "file": "app/portal.js",
-          "line": 167,
-          "column": 352
-        }
-      ],
+      "consumers": [],
       "hints": [
         {
           "kind": "key-namespace",
@@ -61581,7 +61563,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 216,
+          "line": 231,
           "column": 273
         }
       ],
@@ -61638,7 +61620,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 216,
+          "line": 231,
           "column": 201
         }
       ],
@@ -61695,7 +61677,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 240,
+          "line": 255,
           "column": 169
         }
       ],
@@ -61752,7 +61734,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 240,
+          "line": 255,
           "column": 143
         }
       ],
@@ -61809,7 +61791,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 186,
+          "line": 201,
           "column": 82
         }
       ],
@@ -61866,7 +61848,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 308,
+          "line": 323,
           "column": 39
         }
       ],
@@ -61923,7 +61905,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 186,
+          "line": 201,
           "column": 152
         }
       ],
@@ -61985,7 +61967,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 307,
+          "line": 322,
           "column": 80
         }
       ],
@@ -62042,7 +62024,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 217,
+          "line": 232,
           "column": 483
         }
       ],
@@ -62099,7 +62081,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 217,
+          "line": 232,
           "column": 453
         }
       ],
@@ -62156,12 +62138,12 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 205,
+          "line": 220,
           "column": 71
         },
         {
           "file": "app/portal.js",
-          "line": 217,
+          "line": 232,
           "column": 135
         }
       ],
@@ -62218,12 +62200,12 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 195,
+          "line": 210,
           "column": 26
         },
         {
           "file": "app/portal.js",
-          "line": 196,
+          "line": 211,
           "column": 68
         }
       ],
@@ -62280,7 +62262,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 217,
+          "line": 232,
           "column": 162
         }
       ],
@@ -62337,7 +62319,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 217,
+          "line": 232,
           "column": 315
         }
       ],
@@ -62399,7 +62381,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 217,
+          "line": 232,
           "column": 286
         }
       ],
@@ -62456,7 +62438,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 191,
+          "line": 206,
           "column": 340
         }
       ],
@@ -62513,7 +62495,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 190,
+          "line": 205,
           "column": 298
         }
       ],
@@ -62570,7 +62552,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 189,
+          "line": 204,
           "column": 784
         }
       ],
@@ -62627,7 +62609,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 307,
+          "line": 322,
           "column": 43
         }
       ],
@@ -62684,7 +62666,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 290,
+          "line": 305,
           "column": 146
         }
       ],
@@ -62741,17 +62723,17 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 216,
+          "line": 231,
           "column": 118
         },
         {
           "file": "app/portal.js",
-          "line": 282,
+          "line": 297,
           "column": 124
         },
         {
           "file": "app/portal.js",
-          "line": 327,
+          "line": 342,
           "column": 48
         }
       ],
@@ -62808,17 +62790,17 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 216,
+          "line": 231,
           "column": 93
         },
         {
           "file": "app/portal.js",
-          "line": 282,
+          "line": 297,
           "column": 149
         },
         {
           "file": "app/portal.js",
-          "line": 327,
+          "line": 342,
           "column": 70
         }
       ],
@@ -62875,7 +62857,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 216,
+          "line": 231,
           "column": 43
         }
       ],
@@ -62932,12 +62914,12 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 213,
+          "line": 228,
           "column": 246
         },
         {
           "file": "app/portal.js",
-          "line": 322,
+          "line": 337,
           "column": 51
         }
       ],
@@ -62994,7 +62976,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 213,
+          "line": 228,
           "column": 218
         }
       ],
@@ -63210,7 +63192,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 256,
+          "line": 271,
           "column": 58
         }
       ],
@@ -63374,7 +63356,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 306,
+          "line": 321,
           "column": 33
         }
       ],
@@ -63482,7 +63464,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 314,
+          "line": 329,
           "column": 46
         }
       ],
@@ -63539,7 +63521,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 315,
+          "line": 330,
           "column": 82
         }
       ],
@@ -63647,7 +63629,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 311,
+          "line": 326,
           "column": 40
         }
       ],
@@ -63704,7 +63686,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 313,
+          "line": 328,
           "column": 41
         }
       ],
@@ -63812,7 +63794,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 310,
+          "line": 325,
           "column": 35
         }
       ],
@@ -63869,7 +63851,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 312,
+          "line": 327,
           "column": 36
         }
       ],
@@ -64203,7 +64185,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 262,
+          "line": 277,
           "column": 375
         }
       ],
@@ -64373,7 +64355,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 262,
+          "line": 277,
           "column": 86
         }
       ],
@@ -64435,7 +64417,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 337,
+          "line": 352,
           "column": 53
         }
       ],
@@ -64497,7 +64479,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 337,
+          "line": 352,
           "column": 90
         }
       ],
@@ -114813,7 +114795,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 297,
+          "line": 312,
           "column": 473
         }
       ],
@@ -114880,7 +114862,7 @@
         },
         {
           "file": "app/portal.js",
-          "line": 272,
+          "line": 287,
           "column": 37
         }
       ],
@@ -115371,7 +115353,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 335,
+          "line": 350,
           "column": 39
         }
       ],
@@ -115428,7 +115410,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 331,
+          "line": 346,
           "column": 70
         }
       ],
@@ -115485,7 +115467,7 @@
       "consumers": [
         {
           "file": "app/portal.js",
-          "line": 332,
+          "line": 347,
           "column": 61
         }
       ],
@@ -160604,9 +160586,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:29:68",
+      "id": "candidate:app/home.html:30:68",
       "file": "app/home.html",
-      "line": 29,
+      "line": 30,
       "column": 68,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -160630,9 +160612,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:29:511",
+      "id": "candidate:app/home.html:30:511",
       "file": "app/home.html",
-      "line": 29,
+      "line": 30,
       "column": 511,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -160656,9 +160638,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:30:74",
+      "id": "candidate:app/home.html:31:74",
       "file": "app/home.html",
-      "line": 30,
+      "line": 31,
       "column": 74,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -160682,9 +160664,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:30:415",
+      "id": "candidate:app/home.html:31:415",
       "file": "app/home.html",
-      "line": 30,
+      "line": 31,
       "column": 415,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -160708,9 +160690,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:32:128",
+      "id": "candidate:app/home.html:33:128",
       "file": "app/home.html",
-      "line": 32,
+      "line": 33,
       "column": 128,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -160734,9 +160716,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:33:41",
+      "id": "candidate:app/home.html:34:41",
       "file": "app/home.html",
-      "line": 33,
+      "line": 34,
       "column": 41,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -160760,9 +160742,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:36:135",
+      "id": "candidate:app/home.html:37:135",
       "file": "app/home.html",
-      "line": 36,
+      "line": 37,
       "column": 135,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -160786,9 +160768,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:37:256",
+      "id": "candidate:app/home.html:38:256",
       "file": "app/home.html",
-      "line": 37,
+      "line": 38,
       "column": 256,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -160812,9 +160794,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:43:501",
+      "id": "candidate:app/home.html:44:501",
       "file": "app/home.html",
-      "line": 43,
+      "line": 44,
       "column": 501,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -160838,9 +160820,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:55:73",
+      "id": "candidate:app/home.html:56:73",
       "file": "app/home.html",
-      "line": 55,
+      "line": 56,
       "column": 73,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -160864,9 +160846,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:55:551",
+      "id": "candidate:app/home.html:56:551",
       "file": "app/home.html",
-      "line": 55,
+      "line": 56,
       "column": 551,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -160890,9 +160872,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:57:53",
+      "id": "candidate:app/home.html:58:53",
       "file": "app/home.html",
-      "line": 57,
+      "line": 58,
       "column": 53,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -160916,9 +160898,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:59:101",
+      "id": "candidate:app/home.html:60:101",
       "file": "app/home.html",
-      "line": 59,
+      "line": 60,
       "column": 101,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -160942,9 +160924,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:60:276",
+      "id": "candidate:app/home.html:61:276",
       "file": "app/home.html",
-      "line": 60,
+      "line": 61,
       "column": 276,
       "kind": "html-attribute",
       "property": "placeholder",
@@ -160968,9 +160950,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:60:413",
+      "id": "candidate:app/home.html:61:413",
       "file": "app/home.html",
-      "line": 60,
+      "line": 61,
       "column": 413,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -160994,9 +160976,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:60:564",
+      "id": "candidate:app/home.html:61:564",
       "file": "app/home.html",
-      "line": 60,
+      "line": 61,
       "column": 564,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161020,9 +161002,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:66:77",
+      "id": "candidate:app/home.html:67:77",
       "file": "app/home.html",
-      "line": 66,
+      "line": 67,
       "column": 77,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161046,9 +161028,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:67:308",
+      "id": "candidate:app/home.html:68:308",
       "file": "app/home.html",
-      "line": 67,
+      "line": 68,
       "column": 308,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161072,9 +161054,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:67:395",
+      "id": "candidate:app/home.html:68:395",
       "file": "app/home.html",
-      "line": 67,
+      "line": 68,
       "column": 395,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161098,9 +161080,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:67:889",
+      "id": "candidate:app/home.html:68:889",
       "file": "app/home.html",
-      "line": 67,
+      "line": 68,
       "column": 889,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161124,9 +161106,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:70:607",
+      "id": "candidate:app/home.html:71:607",
       "file": "app/home.html",
-      "line": 70,
+      "line": 71,
       "column": 607,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161150,9 +161132,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:71:83",
+      "id": "candidate:app/home.html:72:83",
       "file": "app/home.html",
-      "line": 71,
+      "line": 72,
       "column": 83,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161176,9 +161158,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:72:82",
+      "id": "candidate:app/home.html:73:82",
       "file": "app/home.html",
-      "line": 72,
+      "line": 73,
       "column": 82,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161202,9 +161184,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:76:101",
+      "id": "candidate:app/home.html:77:101",
       "file": "app/home.html",
-      "line": 76,
+      "line": 77,
       "column": 101,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161228,9 +161210,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:81:185",
+      "id": "candidate:app/home.html:82:185",
       "file": "app/home.html",
-      "line": 81,
+      "line": 82,
       "column": 185,
       "kind": "html-attribute",
       "property": "placeholder",
@@ -161254,9 +161236,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:82:383",
+      "id": "candidate:app/home.html:83:383",
       "file": "app/home.html",
-      "line": 82,
+      "line": 83,
       "column": 383,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161280,9 +161262,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:91:418",
+      "id": "candidate:app/home.html:92:418",
       "file": "app/home.html",
-      "line": 91,
+      "line": 92,
       "column": 418,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161306,9 +161288,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:95:116",
+      "id": "candidate:app/home.html:96:116",
       "file": "app/home.html",
-      "line": 95,
+      "line": 96,
       "column": 116,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161332,9 +161314,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:96:114",
+      "id": "candidate:app/home.html:97:114",
       "file": "app/home.html",
-      "line": 96,
+      "line": 97,
       "column": 114,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161358,9 +161340,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:159",
+      "id": "candidate:app/home.html:102:159",
       "file": "app/home.html",
-      "line": 101,
+      "line": 102,
       "column": 159,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161384,9 +161366,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:351",
+      "id": "candidate:app/home.html:102:351",
       "file": "app/home.html",
-      "line": 101,
+      "line": 102,
       "column": 351,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161410,9 +161392,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:98",
+      "id": "candidate:app/home.html:104:98",
       "file": "app/home.html",
-      "line": 103,
+      "line": 104,
       "column": 98,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161436,9 +161418,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:105:95",
+      "id": "candidate:app/home.html:106:95",
       "file": "app/home.html",
-      "line": 105,
+      "line": 106,
       "column": 95,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161462,9 +161444,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:106:102",
+      "id": "candidate:app/home.html:107:102",
       "file": "app/home.html",
-      "line": 106,
+      "line": 107,
       "column": 102,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -161514,9 +161496,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:27:30",
+      "id": "candidate:app/home.html:28:30",
       "file": "app/home.html",
-      "line": 27,
+      "line": 28,
       "column": 30,
       "kind": "html-text",
       "property": null,
@@ -161540,9 +161522,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:29:402",
+      "id": "candidate:app/home.html:30:402",
       "file": "app/home.html",
-      "line": 29,
+      "line": 30,
       "column": 402,
       "kind": "html-text",
       "property": null,
@@ -161566,9 +161548,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:30:132",
+      "id": "candidate:app/home.html:31:132",
       "file": "app/home.html",
-      "line": 30,
+      "line": 31,
       "column": 132,
       "kind": "html-text",
       "property": null,
@@ -161592,9 +161574,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:30:216",
+      "id": "candidate:app/home.html:31:216",
       "file": "app/home.html",
-      "line": 30,
+      "line": 31,
       "column": 216,
       "kind": "html-text",
       "property": null,
@@ -161618,9 +161600,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:30:321",
+      "id": "candidate:app/home.html:31:321",
       "file": "app/home.html",
-      "line": 30,
+      "line": 31,
       "column": 321,
       "kind": "html-text",
       "property": null,
@@ -161644,9 +161626,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:30:1339",
+      "id": "candidate:app/home.html:31:1339",
       "file": "app/home.html",
-      "line": 30,
+      "line": 31,
       "column": 1339,
       "kind": "html-text",
       "property": null,
@@ -161670,9 +161652,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:32:232",
+      "id": "candidate:app/home.html:33:232",
       "file": "app/home.html",
-      "line": 32,
+      "line": 33,
       "column": 232,
       "kind": "html-text",
       "property": null,
@@ -161696,9 +161678,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:33:203",
+      "id": "candidate:app/home.html:34:203",
       "file": "app/home.html",
-      "line": 33,
+      "line": 34,
       "column": 203,
       "kind": "html-text",
       "property": null,
@@ -161722,9 +161704,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:33:452",
+      "id": "candidate:app/home.html:34:452",
       "file": "app/home.html",
-      "line": 33,
+      "line": 34,
       "column": 452,
       "kind": "html-text",
       "property": null,
@@ -161748,9 +161730,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:34:183",
+      "id": "candidate:app/home.html:35:183",
       "file": "app/home.html",
-      "line": 34,
+      "line": 35,
       "column": 183,
       "kind": "html-text",
       "property": null,
@@ -161774,9 +161756,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:34:352",
+      "id": "candidate:app/home.html:35:352",
       "file": "app/home.html",
-      "line": 34,
+      "line": 35,
       "column": 352,
       "kind": "html-text",
       "property": null,
@@ -161800,9 +161782,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:34:508",
+      "id": "candidate:app/home.html:35:508",
       "file": "app/home.html",
-      "line": 34,
+      "line": 35,
       "column": 508,
       "kind": "html-text",
       "property": null,
@@ -161826,9 +161808,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:36:220",
+      "id": "candidate:app/home.html:37:220",
       "file": "app/home.html",
-      "line": 36,
+      "line": 37,
       "column": 220,
       "kind": "html-text",
       "property": null,
@@ -161852,9 +161834,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:36:406",
+      "id": "candidate:app/home.html:37:406",
       "file": "app/home.html",
-      "line": 36,
+      "line": 37,
       "column": 406,
       "kind": "html-text",
       "property": null,
@@ -161878,9 +161860,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:37:52",
+      "id": "candidate:app/home.html:38:52",
       "file": "app/home.html",
-      "line": 37,
+      "line": 38,
       "column": 52,
       "kind": "html-text",
       "property": null,
@@ -161904,9 +161886,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:37:85",
+      "id": "candidate:app/home.html:38:85",
       "file": "app/home.html",
-      "line": 37,
+      "line": 38,
       "column": 85,
       "kind": "html-text",
       "property": null,
@@ -161930,9 +161912,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:42:66",
+      "id": "candidate:app/home.html:43:66",
       "file": "app/home.html",
-      "line": 42,
+      "line": 43,
       "column": 66,
       "kind": "html-text",
       "property": null,
@@ -161956,9 +161938,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:42:106",
+      "id": "candidate:app/home.html:43:106",
       "file": "app/home.html",
-      "line": 42,
+      "line": 43,
       "column": 106,
       "kind": "html-text",
       "property": null,
@@ -161982,9 +161964,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:42:153",
+      "id": "candidate:app/home.html:43:153",
       "file": "app/home.html",
-      "line": 42,
+      "line": 43,
       "column": 153,
       "kind": "html-text",
       "property": null,
@@ -162008,9 +161990,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:42:192",
+      "id": "candidate:app/home.html:43:192",
       "file": "app/home.html",
-      "line": 42,
+      "line": 43,
       "column": 192,
       "kind": "html-text",
       "property": null,
@@ -162034,9 +162016,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:42:208",
+      "id": "candidate:app/home.html:43:208",
       "file": "app/home.html",
-      "line": 42,
+      "line": 43,
       "column": 208,
       "kind": "html-text",
       "property": null,
@@ -162060,9 +162042,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:42:299",
+      "id": "candidate:app/home.html:43:299",
       "file": "app/home.html",
-      "line": 42,
+      "line": 43,
       "column": 299,
       "kind": "html-text",
       "property": null,
@@ -162086,9 +162068,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:42:329",
+      "id": "candidate:app/home.html:43:329",
       "file": "app/home.html",
-      "line": 42,
+      "line": 43,
       "column": 329,
       "kind": "html-text",
       "property": null,
@@ -162112,9 +162094,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:42:372",
+      "id": "candidate:app/home.html:43:372",
       "file": "app/home.html",
-      "line": 42,
+      "line": 43,
       "column": 372,
       "kind": "html-text",
       "property": null,
@@ -162138,9 +162120,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:43:89",
+      "id": "candidate:app/home.html:44:89",
       "file": "app/home.html",
-      "line": 43,
+      "line": 44,
       "column": 89,
       "kind": "html-text",
       "property": null,
@@ -162164,9 +162146,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:43:115",
+      "id": "candidate:app/home.html:44:115",
       "file": "app/home.html",
-      "line": 43,
+      "line": 44,
       "column": 115,
       "kind": "html-text",
       "property": null,
@@ -162190,9 +162172,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:43:180",
+      "id": "candidate:app/home.html:44:180",
       "file": "app/home.html",
-      "line": 43,
+      "line": 44,
       "column": 180,
       "kind": "html-text",
       "property": null,
@@ -162216,9 +162198,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:43:302",
+      "id": "candidate:app/home.html:44:302",
       "file": "app/home.html",
-      "line": 43,
+      "line": 44,
       "column": 302,
       "kind": "html-text",
       "property": null,
@@ -162242,9 +162224,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:43:338",
+      "id": "candidate:app/home.html:44:338",
       "file": "app/home.html",
-      "line": 43,
+      "line": 44,
       "column": 338,
       "kind": "html-text",
       "property": null,
@@ -162268,9 +162250,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:43:433",
+      "id": "candidate:app/home.html:44:433",
       "file": "app/home.html",
-      "line": 43,
+      "line": 44,
       "column": 433,
       "kind": "html-text",
       "property": null,
@@ -162294,9 +162276,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:43:512",
+      "id": "candidate:app/home.html:44:512",
       "file": "app/home.html",
-      "line": 43,
+      "line": 44,
       "column": 512,
       "kind": "html-text",
       "property": null,
@@ -162320,9 +162302,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:45:85",
+      "id": "candidate:app/home.html:46:85",
       "file": "app/home.html",
-      "line": 45,
+      "line": 46,
       "column": 85,
       "kind": "html-text",
       "property": null,
@@ -162346,9 +162328,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:45:94",
+      "id": "candidate:app/home.html:46:94",
       "file": "app/home.html",
-      "line": 45,
+      "line": 46,
       "column": 94,
       "kind": "html-text",
       "property": null,
@@ -162372,9 +162354,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:45:111",
+      "id": "candidate:app/home.html:46:111",
       "file": "app/home.html",
-      "line": 45,
+      "line": 46,
       "column": 111,
       "kind": "html-text",
       "property": null,
@@ -162398,9 +162380,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:45:173",
+      "id": "candidate:app/home.html:46:173",
       "file": "app/home.html",
-      "line": 45,
+      "line": 46,
       "column": 173,
       "kind": "html-text",
       "property": null,
@@ -162424,9 +162406,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:45:275",
+      "id": "candidate:app/home.html:46:275",
       "file": "app/home.html",
-      "line": 45,
+      "line": 46,
       "column": 275,
       "kind": "html-text",
       "property": null,
@@ -162450,9 +162432,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:45:306",
+      "id": "candidate:app/home.html:46:306",
       "file": "app/home.html",
-      "line": 45,
+      "line": 46,
       "column": 306,
       "kind": "html-text",
       "property": null,
@@ -162476,9 +162458,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:46:92",
+      "id": "candidate:app/home.html:47:92",
       "file": "app/home.html",
-      "line": 46,
+      "line": 47,
       "column": 92,
       "kind": "html-text",
       "property": null,
@@ -162502,9 +162484,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:46:183",
+      "id": "candidate:app/home.html:47:183",
       "file": "app/home.html",
-      "line": 46,
+      "line": 47,
       "column": 183,
       "kind": "html-text",
       "property": null,
@@ -162528,9 +162510,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:46:224",
+      "id": "candidate:app/home.html:47:224",
       "file": "app/home.html",
-      "line": 46,
+      "line": 47,
       "column": 224,
       "kind": "html-text",
       "property": null,
@@ -162554,9 +162536,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:47:62",
+      "id": "candidate:app/home.html:48:62",
       "file": "app/home.html",
-      "line": 47,
+      "line": 48,
       "column": 62,
       "kind": "html-text",
       "property": null,
@@ -162580,9 +162562,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:47:70",
+      "id": "candidate:app/home.html:48:70",
       "file": "app/home.html",
-      "line": 47,
+      "line": 48,
       "column": 70,
       "kind": "html-text",
       "property": null,
@@ -162606,9 +162588,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:47:120",
+      "id": "candidate:app/home.html:48:120",
       "file": "app/home.html",
-      "line": 47,
+      "line": 48,
       "column": 120,
       "kind": "html-text",
       "property": null,
@@ -162632,9 +162614,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:47:180",
+      "id": "candidate:app/home.html:48:180",
       "file": "app/home.html",
-      "line": 47,
+      "line": 48,
       "column": 180,
       "kind": "html-text",
       "property": null,
@@ -162658,66 +162640,14 @@
       }
     },
     {
-      "id": "candidate:app/home.html:48:119",
+      "id": "candidate:app/home.html:49:119",
       "file": "app/home.html",
-      "line": 48,
+      "line": 49,
       "column": 119,
       "kind": "html-text",
       "property": null,
       "value": "开始之前，你也许想知道。",
       "sha256": "08f4f1cad2f7470f2cb68475bd863b1bb0cd9cd27219069b4443e55a10d16995",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:49:23",
-      "file": "app/home.html",
-      "line": 49,
-      "column": 23,
-      "kind": "html-text",
-      "property": null,
-      "value": "可以导入哪些格式？",
-      "sha256": "6e8ebed6d8a8a2e09f5ef32fec495a4ab25ad5a7e6d216cef97d7292e3de6e56",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:49:45",
-      "file": "app/home.html",
-      "line": 49,
-      "column": 45,
-      "kind": "html-text",
-      "property": null,
-      "value": "目前支持 PDF、EPUB、Markdown（.md）和纯文本（.txt）。PDF 提取的文字需要与原稿核对；扫描页会在你确认后自动识别。EPUB 按内置阅读顺序提取，暂不支持加密或 DRM 版本。",
-      "sha256": "4af87146dbcf40adbb5c95810e0e6ac81667bb62e418f9ff1ab8efd98670d511",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -162742,8 +162672,8 @@
       "column": 23,
       "kind": "html-text",
       "property": null,
-      "value": "书籍与记录可以带走吗？",
-      "sha256": "640031dbb13b25ed7b0270a5f5f24ab181581caca469e1ba1567e4ab5a0badb0",
+      "value": "可以导入哪些格式？",
+      "sha256": "6e8ebed6d8a8a2e09f5ef32fec495a4ab25ad5a7e6d216cef97d7292e3de6e56",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -162762,66 +162692,14 @@
       }
     },
     {
-      "id": "candidate:app/home.html:50:47",
+      "id": "candidate:app/home.html:50:45",
       "file": "app/home.html",
       "line": 50,
-      "column": 47,
+      "column": 45,
       "kind": "html-text",
       "property": null,
-      "value": "服务支持整库导出和恢复，不要求订阅。登录后在书房“设置 → 数据与迁移”下载 ZIP 备份、恢复书房或导出选定记录，原文件可自行选择是否纳入。未同步的记录与草稿仍留在原浏览器，处理方式见",
-      "sha256": "087f3eab298867f71512bc3e6e182c2471b8328996a6a0d9dcbec78de9dc8738",
-      "protected": true,
-      "protectionReason": "quotation",
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:50:160",
-      "file": "app/home.html",
-      "line": 50,
-      "column": 160,
-      "kind": "html-text",
-      "property": null,
-      "value": "隐私与数据说明",
-      "sha256": "e5d783e35dad634d562ea86629e0582722008586cc38ab55f78624ae0e281660",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/home.html:50:171",
-      "file": "app/home.html",
-      "line": 50,
-      "column": 171,
-      "kind": "html-text",
-      "property": null,
-      "value": "。",
-      "sha256": "eb0d5884569b398e475b89e77a068c6c575a0064ff6a72fafc173102c4cfcd57",
+      "value": "目前支持 PDF、EPUB、Markdown（.md）和纯文本（.txt）。PDF 提取的文字需要与原稿核对；扫描页会在你确认后自动识别。EPUB 按内置阅读顺序提取，暂不支持加密或 DRM 版本。",
+      "sha256": "4af87146dbcf40adbb5c95810e0e6ac81667bb62e418f9ff1ab8efd98670d511",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -162846,6 +162724,110 @@
       "column": 23,
       "kind": "html-text",
       "property": null,
+      "value": "书籍与记录可以带走吗？",
+      "sha256": "640031dbb13b25ed7b0270a5f5f24ab181581caca469e1ba1567e4ab5a0badb0",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:51:47",
+      "file": "app/home.html",
+      "line": 51,
+      "column": 47,
+      "kind": "html-text",
+      "property": null,
+      "value": "服务支持整库导出和恢复，不要求订阅。登录后在书房“设置 → 数据与迁移”下载 ZIP 备份、恢复书房或导出选定记录，原文件可自行选择是否纳入。未同步的记录与草稿仍留在原浏览器，处理方式见",
+      "sha256": "087f3eab298867f71512bc3e6e182c2471b8328996a6a0d9dcbec78de9dc8738",
+      "protected": true,
+      "protectionReason": "quotation",
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:51:160",
+      "file": "app/home.html",
+      "line": 51,
+      "column": 160,
+      "kind": "html-text",
+      "property": null,
+      "value": "隐私与数据说明",
+      "sha256": "e5d783e35dad634d562ea86629e0582722008586cc38ab55f78624ae0e281660",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:51:171",
+      "file": "app/home.html",
+      "line": 51,
+      "column": 171,
+      "kind": "html-text",
+      "property": null,
+      "value": "。",
+      "sha256": "eb0d5884569b398e475b89e77a068c6c575a0064ff6a72fafc173102c4cfcd57",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/home.html:52:23",
+      "file": "app/home.html",
+      "line": 52,
+      "column": 23,
+      "kind": "html-text",
+      "property": null,
       "value": "使用 AI 和朋友共读有哪些限制？",
       "sha256": "27ceba34fb7464096ff886df840f9280e827945876f73bb93836ea2ccaaf3a70",
       "protected": false,
@@ -162866,9 +162848,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:51:53",
+      "id": "candidate:app/home.html:52:53",
       "file": "app/home.html",
-      "line": 51,
+      "line": 52,
       "column": 53,
       "kind": "html-text",
       "property": null,
@@ -162892,9 +162874,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:55:407",
+      "id": "candidate:app/home.html:56:407",
       "file": "app/home.html",
-      "line": 55,
+      "line": 56,
       "column": 407,
       "kind": "html-text",
       "property": null,
@@ -162918,9 +162900,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:56:49",
+      "id": "candidate:app/home.html:57:49",
       "file": "app/home.html",
-      "line": 56,
+      "line": 57,
       "column": 49,
       "kind": "html-text",
       "property": null,
@@ -162944,9 +162926,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:56:156",
+      "id": "candidate:app/home.html:57:156",
       "file": "app/home.html",
-      "line": 56,
+      "line": 57,
       "column": 156,
       "kind": "html-text",
       "property": null,
@@ -162970,9 +162952,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:56:211",
+      "id": "candidate:app/home.html:57:211",
       "file": "app/home.html",
-      "line": 56,
+      "line": 57,
       "column": 211,
       "kind": "html-text",
       "property": null,
@@ -162996,9 +162978,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:59:175",
+      "id": "candidate:app/home.html:60:175",
       "file": "app/home.html",
-      "line": 59,
+      "line": 60,
       "column": 175,
       "kind": "html-text",
       "property": null,
@@ -163022,9 +163004,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:59:259",
+      "id": "candidate:app/home.html:60:259",
       "file": "app/home.html",
-      "line": 59,
+      "line": 60,
       "column": 259,
       "kind": "html-text",
       "property": null,
@@ -163048,9 +163030,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:59:342",
+      "id": "candidate:app/home.html:60:342",
       "file": "app/home.html",
-      "line": 59,
+      "line": 60,
       "column": 342,
       "kind": "html-text",
       "property": null,
@@ -163074,9 +163056,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:59:427",
+      "id": "candidate:app/home.html:60:427",
       "file": "app/home.html",
-      "line": 59,
+      "line": 60,
       "column": 427,
       "kind": "html-text",
       "property": null,
@@ -163100,9 +163082,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:60:174",
+      "id": "candidate:app/home.html:61:174",
       "file": "app/home.html",
-      "line": 60,
+      "line": 61,
       "column": 174,
       "kind": "html-text",
       "property": null,
@@ -163126,9 +163108,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:60:426",
+      "id": "candidate:app/home.html:61:426",
       "file": "app/home.html",
-      "line": 60,
+      "line": 61,
       "column": 426,
       "kind": "html-text",
       "property": null,
@@ -163152,9 +163134,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:60:676",
+      "id": "candidate:app/home.html:61:676",
       "file": "app/home.html",
-      "line": 60,
+      "line": 61,
       "column": 676,
       "kind": "html-text",
       "property": null,
@@ -163178,9 +163160,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:62:237",
+      "id": "candidate:app/home.html:63:237",
       "file": "app/home.html",
-      "line": 62,
+      "line": 63,
       "column": 237,
       "kind": "html-text",
       "property": null,
@@ -163204,9 +163186,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:177",
+      "id": "candidate:app/home.html:64:177",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 177,
       "kind": "html-text",
       "property": null,
@@ -163230,9 +163212,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:293",
+      "id": "candidate:app/home.html:64:293",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 293,
       "kind": "html-text",
       "property": null,
@@ -163256,9 +163238,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:348",
+      "id": "candidate:app/home.html:64:348",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 348,
       "kind": "html-text",
       "property": null,
@@ -163282,9 +163264,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:484",
+      "id": "candidate:app/home.html:64:484",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 484,
       "kind": "html-text",
       "property": null,
@@ -163308,9 +163290,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:540",
+      "id": "candidate:app/home.html:64:540",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 540,
       "kind": "html-text",
       "property": null,
@@ -163334,9 +163316,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:576",
+      "id": "candidate:app/home.html:64:576",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 576,
       "kind": "html-text",
       "property": null,
@@ -163360,9 +163342,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:612",
+      "id": "candidate:app/home.html:64:612",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 612,
       "kind": "html-text",
       "property": null,
@@ -163386,9 +163368,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:753",
+      "id": "candidate:app/home.html:64:753",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 753,
       "kind": "html-text",
       "property": null,
@@ -163412,9 +163394,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:813",
+      "id": "candidate:app/home.html:64:813",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 813,
       "kind": "html-text",
       "property": null,
@@ -163438,9 +163420,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:948",
+      "id": "candidate:app/home.html:64:948",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 948,
       "kind": "html-text",
       "property": null,
@@ -163464,9 +163446,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:1004",
+      "id": "candidate:app/home.html:64:1004",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 1004,
       "kind": "html-text",
       "property": null,
@@ -163490,9 +163472,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:1042",
+      "id": "candidate:app/home.html:64:1042",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 1042,
       "kind": "html-text",
       "property": null,
@@ -163516,9 +163498,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:1080",
+      "id": "candidate:app/home.html:64:1080",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 1080,
       "kind": "html-text",
       "property": null,
@@ -163542,9 +163524,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:1118",
+      "id": "candidate:app/home.html:64:1118",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 1118,
       "kind": "html-text",
       "property": null,
@@ -163568,9 +163550,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:63:1204",
+      "id": "candidate:app/home.html:64:1204",
       "file": "app/home.html",
-      "line": 63,
+      "line": 64,
       "column": 1204,
       "kind": "html-text",
       "property": null,
@@ -163594,9 +163576,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:65:125",
+      "id": "candidate:app/home.html:66:125",
       "file": "app/home.html",
-      "line": 65,
+      "line": 66,
       "column": 125,
       "kind": "html-text",
       "property": null,
@@ -163620,9 +163602,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:66:94",
+      "id": "candidate:app/home.html:67:94",
       "file": "app/home.html",
-      "line": 66,
+      "line": 67,
       "column": 94,
       "kind": "html-text",
       "property": null,
@@ -163646,9 +163628,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:66:108",
+      "id": "candidate:app/home.html:67:108",
       "file": "app/home.html",
-      "line": 66,
+      "line": 67,
       "column": 108,
       "kind": "html-text",
       "property": null,
@@ -163672,9 +163654,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:66:254",
+      "id": "candidate:app/home.html:67:254",
       "file": "app/home.html",
-      "line": 66,
+      "line": 67,
       "column": 254,
       "kind": "html-text",
       "property": null,
@@ -163698,9 +163680,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:66:333",
+      "id": "candidate:app/home.html:67:333",
       "file": "app/home.html",
-      "line": 66,
+      "line": 67,
       "column": 333,
       "kind": "html-text",
       "property": null,
@@ -163724,9 +163706,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:67:219",
+      "id": "candidate:app/home.html:68:219",
       "file": "app/home.html",
-      "line": 67,
+      "line": 68,
       "column": 219,
       "kind": "html-text",
       "property": null,
@@ -163750,9 +163732,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:67:427",
+      "id": "candidate:app/home.html:68:427",
       "file": "app/home.html",
-      "line": 67,
+      "line": 68,
       "column": 427,
       "kind": "html-text",
       "property": null,
@@ -163776,9 +163758,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:67:623",
+      "id": "candidate:app/home.html:68:623",
       "file": "app/home.html",
-      "line": 67,
+      "line": 68,
       "column": 623,
       "kind": "html-text",
       "property": null,
@@ -163802,9 +163784,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:67:638",
+      "id": "candidate:app/home.html:68:638",
       "file": "app/home.html",
-      "line": 67,
+      "line": 68,
       "column": 638,
       "kind": "html-text",
       "property": null,
@@ -163828,9 +163810,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:67:727",
+      "id": "candidate:app/home.html:68:727",
       "file": "app/home.html",
-      "line": 67,
+      "line": 68,
       "column": 727,
       "kind": "html-text",
       "property": null,
@@ -163854,9 +163836,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:67:806",
+      "id": "candidate:app/home.html:68:806",
       "file": "app/home.html",
-      "line": 67,
+      "line": 68,
       "column": 806,
       "kind": "html-text",
       "property": null,
@@ -163880,9 +163862,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:70:376",
+      "id": "candidate:app/home.html:71:376",
       "file": "app/home.html",
-      "line": 70,
+      "line": 71,
       "column": 376,
       "kind": "html-text",
       "property": null,
@@ -163906,9 +163888,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:70:408",
+      "id": "candidate:app/home.html:71:408",
       "file": "app/home.html",
-      "line": 70,
+      "line": 71,
       "column": 408,
       "kind": "html-text",
       "property": null,
@@ -163932,9 +163914,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:70:444",
+      "id": "candidate:app/home.html:71:444",
       "file": "app/home.html",
-      "line": 70,
+      "line": 71,
       "column": 444,
       "kind": "html-text",
       "property": null,
@@ -163958,9 +163940,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:70:475",
+      "id": "candidate:app/home.html:71:475",
       "file": "app/home.html",
-      "line": 70,
+      "line": 71,
       "column": 475,
       "kind": "html-text",
       "property": null,
@@ -163984,9 +163966,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:70:528",
+      "id": "candidate:app/home.html:71:528",
       "file": "app/home.html",
-      "line": 70,
+      "line": 71,
       "column": 528,
       "kind": "html-text",
       "property": null,
@@ -164010,9 +163992,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:70:615",
+      "id": "candidate:app/home.html:71:615",
       "file": "app/home.html",
-      "line": 70,
+      "line": 71,
       "column": 615,
       "kind": "html-text",
       "property": null,
@@ -164036,9 +164018,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:76:107",
+      "id": "candidate:app/home.html:77:107",
       "file": "app/home.html",
-      "line": 76,
+      "line": 77,
       "column": 107,
       "kind": "html-text",
       "property": null,
@@ -164062,9 +164044,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:77:297",
+      "id": "candidate:app/home.html:78:297",
       "file": "app/home.html",
-      "line": 77,
+      "line": 78,
       "column": 297,
       "kind": "html-text",
       "property": null,
@@ -164088,9 +164070,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:23",
+      "id": "candidate:app/home.html:79:23",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 23,
       "kind": "html-text",
       "property": null,
@@ -164114,9 +164096,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:78:53",
+      "id": "candidate:app/home.html:79:53",
       "file": "app/home.html",
-      "line": 78,
+      "line": 79,
       "column": 53,
       "kind": "html-text",
       "property": null,
@@ -164140,9 +164122,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:81:53",
+      "id": "candidate:app/home.html:82:53",
       "file": "app/home.html",
-      "line": 81,
+      "line": 82,
       "column": 53,
       "kind": "html-text",
       "property": null,
@@ -164166,9 +164148,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:82:122",
+      "id": "candidate:app/home.html:83:122",
       "file": "app/home.html",
-      "line": 82,
+      "line": 83,
       "column": 122,
       "kind": "html-text",
       "property": null,
@@ -164192,9 +164174,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:82:412",
+      "id": "candidate:app/home.html:83:412",
       "file": "app/home.html",
-      "line": 82,
+      "line": 83,
       "column": 412,
       "kind": "html-text",
       "property": null,
@@ -164218,9 +164200,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:83:69",
+      "id": "candidate:app/home.html:84:69",
       "file": "app/home.html",
-      "line": 83,
+      "line": 84,
       "column": 69,
       "kind": "html-text",
       "property": null,
@@ -164244,9 +164226,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:87:143",
+      "id": "candidate:app/home.html:88:143",
       "file": "app/home.html",
-      "line": 87,
+      "line": 88,
       "column": 143,
       "kind": "html-text",
       "property": null,
@@ -164270,9 +164252,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:88:78",
+      "id": "candidate:app/home.html:89:78",
       "file": "app/home.html",
-      "line": 88,
+      "line": 89,
       "column": 78,
       "kind": "html-text",
       "property": null,
@@ -164296,9 +164278,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:88:325",
+      "id": "candidate:app/home.html:89:325",
       "file": "app/home.html",
-      "line": 88,
+      "line": 89,
       "column": 325,
       "kind": "html-text",
       "property": null,
@@ -164322,9 +164304,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:89:122",
+      "id": "candidate:app/home.html:90:122",
       "file": "app/home.html",
-      "line": 89,
+      "line": 90,
       "column": 122,
       "kind": "html-text",
       "property": null,
@@ -164348,9 +164330,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:91:126",
+      "id": "candidate:app/home.html:92:126",
       "file": "app/home.html",
-      "line": 91,
+      "line": 92,
       "column": 126,
       "kind": "html-text",
       "property": null,
@@ -164374,9 +164356,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:91:446",
+      "id": "candidate:app/home.html:92:446",
       "file": "app/home.html",
-      "line": 91,
+      "line": 92,
       "column": 446,
       "kind": "html-text",
       "property": null,
@@ -164400,9 +164382,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:91:518",
+      "id": "candidate:app/home.html:92:518",
       "file": "app/home.html",
-      "line": 91,
+      "line": 92,
       "column": 518,
       "kind": "html-text",
       "property": null,
@@ -164426,9 +164408,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:91:588",
+      "id": "candidate:app/home.html:92:588",
       "file": "app/home.html",
-      "line": 91,
+      "line": 92,
       "column": 588,
       "kind": "html-text",
       "property": null,
@@ -164452,9 +164434,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:92:127",
+      "id": "candidate:app/home.html:93:127",
       "file": "app/home.html",
-      "line": 92,
+      "line": 93,
       "column": 127,
       "kind": "html-text",
       "property": null,
@@ -164478,9 +164460,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:93:129",
+      "id": "candidate:app/home.html:94:129",
       "file": "app/home.html",
-      "line": 93,
+      "line": 94,
       "column": 129,
       "kind": "html-text",
       "property": null,
@@ -164504,9 +164486,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:93:228",
+      "id": "candidate:app/home.html:94:228",
       "file": "app/home.html",
-      "line": 93,
+      "line": 94,
       "column": 228,
       "kind": "html-text",
       "property": null,
@@ -164530,9 +164512,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:93:319",
+      "id": "candidate:app/home.html:94:319",
       "file": "app/home.html",
-      "line": 93,
+      "line": 94,
       "column": 319,
       "kind": "html-text",
       "property": null,
@@ -164556,9 +164538,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:94:81",
+      "id": "candidate:app/home.html:95:81",
       "file": "app/home.html",
-      "line": 94,
+      "line": 95,
       "column": 81,
       "kind": "html-text",
       "property": null,
@@ -164582,9 +164564,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:95:201",
+      "id": "candidate:app/home.html:96:201",
       "file": "app/home.html",
-      "line": 95,
+      "line": 96,
       "column": 201,
       "kind": "html-text",
       "property": null,
@@ -164608,9 +164590,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:95:277",
+      "id": "candidate:app/home.html:96:277",
       "file": "app/home.html",
-      "line": 95,
+      "line": 96,
       "column": 277,
       "kind": "html-text",
       "property": null,
@@ -164634,9 +164616,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:96:197",
+      "id": "candidate:app/home.html:97:197",
       "file": "app/home.html",
-      "line": 96,
+      "line": 97,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -164660,9 +164642,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:96:272",
+      "id": "candidate:app/home.html:97:272",
       "file": "app/home.html",
-      "line": 96,
+      "line": 97,
       "column": 272,
       "kind": "html-text",
       "property": null,
@@ -164686,9 +164668,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:98:91",
+      "id": "candidate:app/home.html:99:91",
       "file": "app/home.html",
-      "line": 98,
+      "line": 99,
       "column": 91,
       "kind": "html-text",
       "property": null,
@@ -164712,9 +164694,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:98:181",
+      "id": "candidate:app/home.html:99:181",
       "file": "app/home.html",
-      "line": 98,
+      "line": 99,
       "column": 181,
       "kind": "html-text",
       "property": null,
@@ -164738,9 +164720,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:98:246",
+      "id": "candidate:app/home.html:99:246",
       "file": "app/home.html",
-      "line": 98,
+      "line": 99,
       "column": 246,
       "kind": "html-text",
       "property": null,
@@ -164764,9 +164746,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:99:97",
+      "id": "candidate:app/home.html:100:97",
       "file": "app/home.html",
-      "line": 99,
+      "line": 100,
       "column": 97,
       "kind": "html-text",
       "property": null,
@@ -164790,9 +164772,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:99:184",
+      "id": "candidate:app/home.html:100:184",
       "file": "app/home.html",
-      "line": 99,
+      "line": 100,
       "column": 184,
       "kind": "html-text",
       "property": null,
@@ -164816,9 +164798,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:99:284",
+      "id": "candidate:app/home.html:100:284",
       "file": "app/home.html",
-      "line": 99,
+      "line": 100,
       "column": 284,
       "kind": "html-text",
       "property": null,
@@ -164842,9 +164824,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:99:322",
+      "id": "candidate:app/home.html:100:322",
       "file": "app/home.html",
-      "line": 99,
+      "line": 100,
       "column": 322,
       "kind": "html-text",
       "property": null,
@@ -164868,9 +164850,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:165",
+      "id": "candidate:app/home.html:102:165",
       "file": "app/home.html",
-      "line": 101,
+      "line": 102,
       "column": 165,
       "kind": "html-text",
       "property": null,
@@ -164894,9 +164876,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:197",
+      "id": "candidate:app/home.html:102:197",
       "file": "app/home.html",
-      "line": 101,
+      "line": 102,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -164920,9 +164902,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:232",
+      "id": "candidate:app/home.html:102:232",
       "file": "app/home.html",
-      "line": 101,
+      "line": 102,
       "column": 232,
       "kind": "html-text",
       "property": null,
@@ -164946,9 +164928,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:427",
+      "id": "candidate:app/home.html:102:427",
       "file": "app/home.html",
-      "line": 101,
+      "line": 102,
       "column": 427,
       "kind": "html-text",
       "property": null,
@@ -164972,9 +164954,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:466",
+      "id": "candidate:app/home.html:102:466",
       "file": "app/home.html",
-      "line": 101,
+      "line": 102,
       "column": 466,
       "kind": "html-text",
       "property": null,
@@ -164998,9 +164980,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:511",
+      "id": "candidate:app/home.html:102:511",
       "file": "app/home.html",
-      "line": 101,
+      "line": 102,
       "column": 511,
       "kind": "html-text",
       "property": null,
@@ -165024,9 +165006,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:729",
+      "id": "candidate:app/home.html:102:729",
       "file": "app/home.html",
-      "line": 101,
+      "line": 102,
       "column": 729,
       "kind": "html-text",
       "property": null,
@@ -165050,9 +165032,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:919",
+      "id": "candidate:app/home.html:102:919",
       "file": "app/home.html",
-      "line": 101,
+      "line": 102,
       "column": 919,
       "kind": "html-text",
       "property": null,
@@ -165076,9 +165058,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:101:932",
+      "id": "candidate:app/home.html:102:932",
       "file": "app/home.html",
-      "line": 101,
+      "line": 102,
       "column": 932,
       "kind": "html-text",
       "property": null,
@@ -165102,9 +165084,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:103:104",
+      "id": "candidate:app/home.html:104:104",
       "file": "app/home.html",
-      "line": 103,
+      "line": 104,
       "column": 104,
       "kind": "html-text",
       "property": null,
@@ -165128,9 +165110,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:104:47",
+      "id": "candidate:app/home.html:105:47",
       "file": "app/home.html",
-      "line": 104,
+      "line": 105,
       "column": 47,
       "kind": "html-text",
       "property": null,
@@ -165154,9 +165136,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:106:163",
+      "id": "candidate:app/home.html:107:163",
       "file": "app/home.html",
-      "line": 106,
+      "line": 107,
       "column": 163,
       "kind": "html-text",
       "property": null,
@@ -165180,9 +165162,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:106:244",
+      "id": "candidate:app/home.html:107:244",
       "file": "app/home.html",
-      "line": 106,
+      "line": 107,
       "column": 244,
       "kind": "html-text",
       "property": null,
@@ -165206,9 +165188,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:106:322",
+      "id": "candidate:app/home.html:107:322",
       "file": "app/home.html",
-      "line": 106,
+      "line": 107,
       "column": 322,
       "kind": "html-text",
       "property": null,
@@ -165232,9 +165214,9 @@
       }
     },
     {
-      "id": "candidate:app/home.html:106:385",
+      "id": "candidate:app/home.html:107:385",
       "file": "app/home.html",
-      "line": 106,
+      "line": 107,
       "column": 385,
       "kind": "html-text",
       "property": null,
@@ -183202,14 +183184,14 @@
       }
     },
     {
-      "id": "candidate:app/portal.js:166:202",
+      "id": "candidate:app/portal.js:170:143",
       "file": "app/portal.js",
-      "line": 166,
-      "column": 202,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "爱丽丝梦游仙境",
-      "sha256": "6e6a9b009a500c5dc917f0e8840cfca4a4c6bf72399fb98e015e8bfc29c92c29",
+      "line": 170,
+      "column": 143,
+      "kind": "js-attribute",
+      "property": "aria-hidden",
+      "value": "true",
+      "sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -183222,14 +183204,14 @@
       }
     },
     {
-      "id": "candidate:app/portal.js:166:212",
+      "id": "candidate:app/portal.js:180:160",
       "file": "app/portal.js",
-      "line": 166,
-      "column": 212,
+      "line": 180,
+      "column": 160,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "爱丽丝\n梦游仙境",
-      "sha256": "7e48091d4957a03c4675574f73e9fe0253a3ec058a7a5fec9df170cbe33e122a",
+      "value": "第 ",
+      "sha256": "9552fe3bd366b2149bdf5aae725008d8e0e3d6582dd17d1e5e53279fc3b7585e",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -183242,9 +183224,29 @@
       }
     },
     {
-      "id": "candidate:app/portal.js:183:412",
+      "id": "candidate:app/portal.js:180:176",
       "file": "app/portal.js",
-      "line": 183,
+      "line": 180,
+      "column": 176,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": " 章 · ",
+      "sha256": "1c34719f31222e19927598ca26f555f916464fc0d993d33536879a8491b4d2fa",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/portal.js:198:412",
+      "file": "app/portal.js",
+      "line": 198,
       "column": 412,
       "kind": "js-cjk-literal",
       "property": null,
@@ -183262,9 +183264,9 @@
       }
     },
     {
-      "id": "candidate:app/portal.js:186:231",
+      "id": "candidate:app/portal.js:201:231",
       "file": "app/portal.js",
-      "line": 186,
+      "line": 201,
       "column": 231,
       "kind": "js-attribute",
       "property": "aria-describedby",
@@ -183282,9 +183284,9 @@
       }
     },
     {
-      "id": "candidate:app/portal.js:186:347",
+      "id": "candidate:app/portal.js:201:347",
       "file": "app/portal.js",
-      "line": 186,
+      "line": 201,
       "column": 347,
       "kind": "js-attribute",
       "property": "aria-hidden",
@@ -183302,9 +183304,9 @@
       }
     },
     {
-      "id": "candidate:app/portal.js:213:47",
+      "id": "candidate:app/portal.js:228:47",
       "file": "app/portal.js",
-      "line": 213,
+      "line": 228,
       "column": 47,
       "kind": "js-attribute",
       "property": "aria-busy",
@@ -183322,9 +183324,9 @@
       }
     },
     {
-      "id": "candidate:app/portal.js:252:184",
+      "id": "candidate:app/portal.js:267:184",
       "file": "app/portal.js",
-      "line": 252,
+      "line": 267,
       "column": 184,
       "kind": "js-attribute",
       "property": "aria-busy",
@@ -216542,9 +216544,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:164:70",
+      "id": "candidate:server/portal.mjs:165:70",
       "file": "server/portal.mjs",
-      "line": 164,
+      "line": 165,
       "column": 70,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216562,9 +216564,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:165:59",
+      "id": "candidate:server/portal.mjs:166:59",
       "file": "server/portal.mjs",
-      "line": 165,
+      "line": 166,
       "column": 59,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216582,9 +216584,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:168:54",
+      "id": "candidate:server/portal.mjs:169:54",
       "file": "server/portal.mjs",
-      "line": 168,
+      "line": 169,
       "column": 54,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216602,9 +216604,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:169:85",
+      "id": "candidate:server/portal.mjs:170:85",
       "file": "server/portal.mjs",
-      "line": 169,
+      "line": 170,
       "column": 85,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216622,9 +216624,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:170:111",
+      "id": "candidate:server/portal.mjs:171:111",
       "file": "server/portal.mjs",
-      "line": 170,
+      "line": 171,
       "column": 111,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216642,9 +216644,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:170:130",
+      "id": "candidate:server/portal.mjs:171:130",
       "file": "server/portal.mjs",
-      "line": 170,
+      "line": 171,
       "column": 130,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216662,9 +216664,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:174:79",
+      "id": "candidate:server/portal.mjs:175:79",
       "file": "server/portal.mjs",
-      "line": 174,
+      "line": 175,
       "column": 79,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216682,9 +216684,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:188:162",
+      "id": "candidate:server/portal.mjs:189:162",
       "file": "server/portal.mjs",
-      "line": 188,
+      "line": 189,
       "column": 162,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216702,9 +216704,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:202:27",
+      "id": "candidate:server/portal.mjs:203:27",
       "file": "server/portal.mjs",
-      "line": 202,
+      "line": 203,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216722,9 +216724,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:204:41",
+      "id": "candidate:server/portal.mjs:205:41",
       "file": "server/portal.mjs",
-      "line": 204,
+      "line": 205,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216742,9 +216744,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:205:61",
+      "id": "candidate:server/portal.mjs:206:61",
       "file": "server/portal.mjs",
-      "line": 205,
+      "line": 206,
       "column": 61,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216762,9 +216764,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:219:27",
+      "id": "candidate:server/portal.mjs:220:27",
       "file": "server/portal.mjs",
-      "line": 219,
+      "line": 220,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216782,9 +216784,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:221:94",
+      "id": "candidate:server/portal.mjs:222:94",
       "file": "server/portal.mjs",
-      "line": 221,
+      "line": 222,
       "column": 94,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216802,9 +216804,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:224:41",
+      "id": "candidate:server/portal.mjs:225:41",
       "file": "server/portal.mjs",
-      "line": 224,
+      "line": 225,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216822,9 +216824,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:225:61",
+      "id": "candidate:server/portal.mjs:226:61",
       "file": "server/portal.mjs",
-      "line": 225,
+      "line": 226,
       "column": 61,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216842,34 +216844,14 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:230:95",
+      "id": "candidate:server/portal.mjs:231:95",
       "file": "server/portal.mjs",
-      "line": 230,
+      "line": 231,
       "column": 95,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "这个登录方式正在准备中",
       "sha256": "5b1fd335876a2e8b42a701e36503a6bb4154b66568cb51b0acd4b9089b6add4b",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:server/portal.mjs:234:146",
-      "file": "server/portal.mjs",
-      "line": 234,
-      "column": 146,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "此书房尚未开启密码登录，可以使用验证码或本机书房",
-      "sha256": "2eff97a40c8dca56027b2c36d573bed634fb9108a04d68017e818f68aaae66f8",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -216888,6 +216870,26 @@
       "column": 146,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "此书房尚未开启密码登录，可以使用验证码或本机书房",
+      "sha256": "2eff97a40c8dca56027b2c36d573bed634fb9108a04d68017e818f68aaae66f8",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/portal.mjs:236:146",
+      "file": "server/portal.mjs",
+      "line": 236,
+      "column": 146,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "此书房尚未开启密码设置",
       "sha256": "32a8eb4db3aec2b39822519b6c143fd981ac6faa92382b8fd5f64f917fd6f73f",
       "protected": false,
@@ -216902,9 +216904,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:237:151",
+      "id": "candidate:server/portal.mjs:238:151",
       "file": "server/portal.mjs",
-      "line": 237,
+      "line": 238,
       "column": 151,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216922,9 +216924,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:241:80",
+      "id": "candidate:server/portal.mjs:242:80",
       "file": "server/portal.mjs",
-      "line": 241,
+      "line": 242,
       "column": 80,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216942,9 +216944,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:247:27",
+      "id": "candidate:server/portal.mjs:248:27",
       "file": "server/portal.mjs",
-      "line": 247,
+      "line": 248,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216962,9 +216964,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:248:149",
+      "id": "candidate:server/portal.mjs:249:149",
       "file": "server/portal.mjs",
-      "line": 248,
+      "line": 249,
       "column": 149,
       "kind": "js-cjk-literal",
       "property": null,
@@ -216982,9 +216984,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:249:35",
+      "id": "candidate:server/portal.mjs:250:35",
       "file": "server/portal.mjs",
-      "line": 249,
+      "line": 250,
       "column": 35,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217002,9 +217004,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:258:446",
+      "id": "candidate:server/portal.mjs:259:446",
       "file": "server/portal.mjs",
-      "line": 258,
+      "line": 259,
       "column": 446,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217022,9 +217024,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:260:45",
+      "id": "candidate:server/portal.mjs:261:45",
       "file": "server/portal.mjs",
-      "line": 260,
+      "line": 261,
       "column": 45,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217042,9 +217044,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:264:48",
+      "id": "candidate:server/portal.mjs:265:48",
       "file": "server/portal.mjs",
-      "line": 264,
+      "line": 265,
       "column": 48,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217062,9 +217064,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:268:27",
+      "id": "candidate:server/portal.mjs:269:27",
       "file": "server/portal.mjs",
-      "line": 268,
+      "line": 269,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217082,9 +217084,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:268:187",
+      "id": "candidate:server/portal.mjs:269:187",
       "file": "server/portal.mjs",
-      "line": 268,
+      "line": 269,
       "column": 187,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217102,9 +217104,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:282:27",
+      "id": "candidate:server/portal.mjs:283:27",
       "file": "server/portal.mjs",
-      "line": 282,
+      "line": 283,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217122,9 +217124,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:282:98",
+      "id": "candidate:server/portal.mjs:283:98",
       "file": "server/portal.mjs",
-      "line": 282,
+      "line": 283,
       "column": 98,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217142,9 +217144,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:284:41",
+      "id": "candidate:server/portal.mjs:285:41",
       "file": "server/portal.mjs",
-      "line": 284,
+      "line": 285,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217162,9 +217164,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:297:164",
+      "id": "candidate:server/portal.mjs:298:164",
       "file": "server/portal.mjs",
-      "line": 297,
+      "line": 298,
       "column": 164,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217182,9 +217184,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:311:25",
+      "id": "candidate:server/portal.mjs:312:25",
       "file": "server/portal.mjs",
-      "line": 311,
+      "line": 312,
       "column": 25,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217202,9 +217204,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:379:120",
+      "id": "candidate:server/portal.mjs:380:120",
       "file": "server/portal.mjs",
-      "line": 379,
+      "line": 380,
       "column": 120,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217222,9 +217224,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:380:175",
+      "id": "candidate:server/portal.mjs:381:175",
       "file": "server/portal.mjs",
-      "line": 380,
+      "line": 381,
       "column": 175,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217242,9 +217244,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:381:99",
+      "id": "candidate:server/portal.mjs:382:99",
       "file": "server/portal.mjs",
-      "line": 381,
+      "line": 382,
       "column": 99,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217262,9 +217264,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:388:43",
+      "id": "candidate:server/portal.mjs:389:43",
       "file": "server/portal.mjs",
-      "line": 388,
+      "line": 389,
       "column": 43,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217282,9 +217284,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:393:430",
+      "id": "candidate:server/portal.mjs:394:430",
       "file": "server/portal.mjs",
-      "line": 393,
+      "line": 394,
       "column": 430,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217302,9 +217304,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:396:30",
+      "id": "candidate:server/portal.mjs:397:30",
       "file": "server/portal.mjs",
-      "line": 396,
+      "line": 397,
       "column": 30,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217322,9 +217324,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:402:20",
+      "id": "candidate:server/portal.mjs:403:20",
       "file": "server/portal.mjs",
-      "line": 402,
+      "line": 403,
       "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217342,9 +217344,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:411:86",
+      "id": "candidate:server/portal.mjs:412:86",
       "file": "server/portal.mjs",
-      "line": 411,
+      "line": 412,
       "column": 86,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217362,9 +217364,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:412:18",
+      "id": "candidate:server/portal.mjs:413:18",
       "file": "server/portal.mjs",
-      "line": 412,
+      "line": 413,
       "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217382,9 +217384,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:414:16",
+      "id": "candidate:server/portal.mjs:415:16",
       "file": "server/portal.mjs",
-      "line": 414,
+      "line": 415,
       "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
@@ -233537,7 +233539,7 @@
     {
       "kind": "concatenation",
       "file": "app/portal.js",
-      "line": 165,
+      "line": 169,
       "expression": "'book-art '+(book.cover||'private')",
       "fragments": [
         "book-art "
@@ -233547,7 +233549,7 @@
     {
       "kind": "concatenation",
       "file": "app/portal.js",
-      "line": 165,
+      "line": 169,
       "expression": "'/read?book='+encodeURIComponent(book.bookId)",
       "fragments": [
         "/read?book="
@@ -233557,7 +233559,38 @@
     {
       "kind": "concatenation",
       "file": "app/portal.js",
-      "line": 179,
+      "line": 180,
+      "expression": "'第 '+row.number+' 章 · '",
+      "fragments": [
+        "第 ",
+        " 章 · "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/portal.js",
+      "line": 180,
+      "expression": "'第 '+row.number",
+      "fragments": [
+        "第 "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/portal.js",
+      "line": 184,
+      "expression": "t('navigation.chapter',{number:chapter.number})+' · '",
+      "fragments": [
+        " · "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/portal.js",
+      "line": 194,
       "expression": "'book-art '+(book.cover||'private')",
       "fragments": [
         "book-art "
@@ -233567,7 +233600,7 @@
     {
       "kind": "computed-member",
       "file": "app/portal.js",
-      "line": 186,
+      "line": 201,
       "expression": "index+(event.key==='ArrowLeft'?-1:1)",
       "fragments": [],
       "unresolved": true
@@ -233575,7 +233608,7 @@
     {
       "kind": "concatenation",
       "file": "app/portal.js",
-      "line": 189,
+      "line": 204,
       "expression": "'.'+focusClass",
       "fragments": [
         "."
@@ -233585,7 +233618,7 @@
     {
       "kind": "concatenation",
       "file": "app/portal.js",
-      "line": 192,
+      "line": 207,
       "expression": "'.'+focusClass",
       "fragments": [
         "."
@@ -233595,7 +233628,7 @@
     {
       "kind": "computed-member",
       "file": "app/portal.js",
-      "line": 274,
+      "line": 289,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -233603,7 +233636,7 @@
     {
       "kind": "computed-member",
       "file": "app/portal.js",
-      "line": 279,
+      "line": 294,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -233611,7 +233644,7 @@
     {
       "kind": "computed-member",
       "file": "app/portal.js",
-      "line": 297,
+      "line": 312,
       "expression": "entryQuery.get('auth_error')",
       "fragments": [],
       "unresolved": true
@@ -247958,16 +247991,6 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 128,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
       "line": 129,
       "expression": "'/'+file",
       "fragments": [
@@ -247988,7 +248011,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 132,
+      "line": 131,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -247998,7 +248021,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 134,
+      "line": 133,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -248008,7 +248031,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 138,
+      "line": 135,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -248018,7 +248041,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 140,
+      "line": 139,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -248059,6 +248082,16 @@
       "kind": "computed-member",
       "file": "server/portal.mjs",
       "line": 144,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 145,
       "expression": "p",
       "fragments": [],
       "unresolved": true
@@ -248066,7 +248099,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 148,
+      "line": 149,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -248076,7 +248109,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 149,
+      "line": 150,
       "expression": "asset.url",
       "fragments": [],
       "unresolved": true
@@ -248084,7 +248117,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 155,
+      "line": 156,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -248094,17 +248127,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 158,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 161,
+      "line": 159,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -248115,6 +248138,16 @@
       "kind": "computed-member",
       "file": "server/portal.mjs",
       "line": 162,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 163,
       "expression": "p",
       "fragments": [],
       "unresolved": true
@@ -248122,7 +248155,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 164,
+      "line": 165,
       "expression": "p",
       "fragments": [],
       "unresolved": true
@@ -248130,7 +248163,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 164,
+      "line": 165,
       "expression": "p",
       "fragments": [],
       "unresolved": true
@@ -248138,7 +248171,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 167,
+      "line": 168,
       "expression": "'http://'+req.headers.host",
       "fragments": [
         "http://"
@@ -248148,7 +248181,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 170,
+      "line": 171,
       "expression": "'请在 '+publicOrigin+' 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。'",
       "fragments": [
         "请在 ",
@@ -248159,7 +248192,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 170,
+      "line": 171,
       "expression": "'请在 '+publicOrigin",
       "fragments": [
         "请在 "
@@ -248169,7 +248202,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 172,
+      "line": 173,
       "expression": "`marginalia_auth_flow=${value}; HttpOnly; Secure; SameSite=Lax; Path=/api/auth; Max-Age=${value?600:0}`",
       "fragments": [
         "marginalia_auth_flow=",
@@ -248180,7 +248213,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 181,
+      "line": 182,
       "expression": "`marginalia_session=${session.token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=604800; Secure`",
       "fragments": [
         "marginalia_session=",
@@ -248191,7 +248224,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 185,
+      "line": 186,
       "expression": "`marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${publicOrigin?.startsWith('https:')?'; Secure':''}`",
       "fragments": [
         "marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0"
@@ -248201,7 +248234,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 193,
+      "line": 194,
       "expression": "`marginalia_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${value?604800:0}${publicOrigin?.startsWith('https:')?'; Secure':''}`",
       "fragments": [
         "marginalia_session=",
@@ -248212,7 +248245,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 251,
+      "line": 252,
       "expression": "'http://'+loopback+':'",
       "fragments": [
         "http://",
@@ -248223,7 +248256,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 251,
+      "line": 252,
       "expression": "'http://'+loopback",
       "fragments": [
         "http://"
@@ -248233,7 +248266,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 255,
+      "line": 256,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -248241,7 +248274,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 255,
+      "line": 256,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -248249,7 +248282,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 255,
+      "line": 256,
       "expression": "partUpload[2]",
       "fragments": [],
       "unresolved": true
@@ -248257,7 +248290,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 255,
+      "line": 256,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -248265,7 +248298,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 255,
+      "line": 256,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -248273,7 +248306,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 255,
+      "line": 256,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -248281,7 +248314,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 258,
+      "line": 259,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -248289,7 +248322,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 273,
+      "line": 274,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -248297,7 +248330,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 279,
+      "line": 280,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -248305,7 +248338,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 341,
+      "line": 342,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -248313,23 +248346,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 341,
-      "expression": "1",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 353,
-      "expression": "1",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 353,
+      "line": 342,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -248345,7 +248362,23 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 361,
+      "line": 354,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 355,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 362,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -248353,7 +248386,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 362,
+      "line": 363,
       "expression": "'bytes '+part.offset+'-'+(part.offset+part.bytes.length-1)+'/'",
       "fragments": [
         "bytes ",
@@ -248365,7 +248398,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 362,
+      "line": 363,
       "expression": "'bytes '+part.offset+'-'",
       "fragments": [
         "bytes ",
@@ -248376,7 +248409,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 362,
+      "line": 363,
       "expression": "'bytes '+part.offset",
       "fragments": [
         "bytes "
@@ -248386,7 +248419,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 365,
+      "line": 366,
       "expression": "file.url+'&download=original.'",
       "fragments": [
         "&download=original."
@@ -248396,7 +248429,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 365,
+      "line": 366,
       "expression": "'attachment; filename=\"original.'+(['pdf','epub','txt','md'].includes(file.format)?file.format:'bin')+'\"'",
       "fragments": [
         "attachment; filename=\"original.",
@@ -248407,7 +248440,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 365,
+      "line": 366,
       "expression": "'attachment; filename=\"original.'+(['pdf','epub','txt','md'].includes(file.format)?file.format:'bin')",
       "fragments": [
         "attachment; filename=\"original."
@@ -248417,7 +248450,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 368,
+      "line": 369,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -248425,7 +248458,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 368,
+      "line": 369,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -248433,7 +248466,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 370,
+      "line": 371,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -248441,16 +248474,8 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 384,
+      "line": 385,
       "expression": "1",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 393,
-      "expression": "action",
       "fragments": [],
       "unresolved": true
     },
@@ -248463,9 +248488,17 @@
       "unresolved": true
     },
     {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 395,
+      "expression": "action",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 399,
+      "line": 400,
       "expression": "`reader://books/${bookId}/audio/clips/${c.id}`",
       "fragments": [
         "reader://books/",
@@ -250627,12 +250660,12 @@
     "duplicateKeys": 0,
     "reviewedItems": 0,
     "unreviewedItems": 2134,
-    "candidates": 4818,
-    "candidatesUnreviewed": 4818,
+    "candidates": 4819,
+    "candidatesUnreviewed": 4819,
     "candidatesProtected": 129,
     "itemsProtected": 9,
-    "dynamicConsumers": 3034,
-    "consumerReferences": 1510,
-    "keysWithoutStaticConsumers": 1150
+    "dynamicConsumers": 3037,
+    "consumerReferences": 1507,
+    "keysWithoutStaticConsumers": 1153
   }
 }
