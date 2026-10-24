@@ -9,7 +9,7 @@ export function mountChatBookUpload({root,document=root.ownerDocument||globalThi
  const rows=new Map(),listeners=[];let disposed=false,dragDepth=0;
  const make=(tag,cls)=>{const n=document.createElement(tag);if(cls)n.className=cls;return n;};
  const listen=(target,event,fn)=>{target.addEventListener(event,fn);listeners.push(()=>target.removeEventListener(event,fn));};
- const attachment=existingAttachment||make('button','chat-book-attach');attachment.type='button';attachment.textContent='＋';
+ const attachment=existingAttachment||make('button','chat-book-attach');attachment.type='button';if(!existingAttachment)attachment.textContent='＋';
  const picker=make('input','chat-book-picker');picker.type='file';picker.accept='.pdf,.epub,.txt,.md';picker.hidden=true;if(!existingAttachment)actionsHost.append(attachment);actionsHost.append(picker);
  const notice=make('p','chat-book-notice');notice.setAttribute('role','status');notice.hidden=true;host.append(notice);
  function add(file){if(disposed||!file)return null;if(!signedIn()){openAuth();return null;}try{const id=controller.start(file);notice.hidden=true;return id;}catch{notice.textContent=t('portal.upload.invalid');notice.hidden=false;host.hidden=false;return null;}}

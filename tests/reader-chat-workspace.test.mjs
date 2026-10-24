@@ -27,7 +27,7 @@ function fixture(width=1440,stored){
 }
 test('desktop reserves book space and bounds keyboard resizing to the available reading column',()=>{
  const f=fixture();f.workspace.setOpen(true);const separator=f.root.children.find(n=>n.getAttribute('role')==='separator');assert.ok(separator);
- assert.equal(f.document.body.classList.contains('has-reader-chat'),true);assert.equal(separator.getAttribute('aria-valuenow'),'440');
+ assert.equal(f.document.body.classList.contains('has-reader-chat'),true);assert.equal(separator.getAttribute('aria-valuenow'),'400');
  f.key(separator,'End');assert.equal(separator.getAttribute('aria-valuenow'),'640');f.key(separator,'Home');assert.equal(separator.getAttribute('aria-valuenow'),'320');
  f.key(separator,'ArrowLeft',true);assert.equal(separator.getAttribute('aria-valuenow'),'384');
  f.window.innerWidth=1100;f.window.dispatchEvent(new Event('resize'));f.key(separator,'End');assert.equal(separator.getAttribute('aria-valuenow'),'460');
@@ -47,14 +47,14 @@ test('opening the workspace restores the same live reading anchor after layout s
 test('pointer resize persists only a completed gesture and releases capture on cancellation',()=>{
  const f=fixture();f.workspace.setOpen(true);const separator=f.root.children.find(n=>n.getAttribute('role')==='separator');
  const pointer=(type,x)=>{const e=new Event(type,{cancelable:true});Object.assign(e,{button:0,pointerId:7,clientX:x});separator.dispatchEvent(e);};
- pointer('pointerdown',1000);pointer('pointermove',900);assert.equal(separator.getAttribute('aria-valuenow'),'540');assert.equal(f.writes.length,0);
- pointer('pointercancel',900);assert.equal(separator.getAttribute('aria-valuenow'),'440');assert.equal(separator.capture,null);
- pointer('pointerdown',1000);pointer('pointermove',900);pointer('pointerup',900);assert.equal(f.writes[0][1],'540');assert.equal(separator.capture,null);
+ pointer('pointerdown',1000);pointer('pointermove',900);assert.equal(separator.getAttribute('aria-valuenow'),'500');assert.equal(f.writes.length,0);
+ pointer('pointercancel',900);assert.equal(separator.getAttribute('aria-valuenow'),'400');assert.equal(separator.capture,null);
+ pointer('pointerdown',1000);pointer('pointermove',900);pointer('pointerup',900);assert.equal(f.writes[0][1],'500');assert.equal(separator.capture,null);
  f.workspace.dispose();pointer('pointermove',800);assert.equal(f.writes.length,1);
 });
 test('invalid stored widths and denied persistence keep a usable bounded in-memory workspace',()=>{
  const f=fixture(1440,'400px');f.storage.setItem=()=>{throw Error('Denied');};f.workspace.setOpen(true);const separator=f.root.children.find(n=>n.getAttribute('role')==='separator');
- assert.equal(separator.getAttribute('aria-valuenow'),'440');assert.doesNotThrow(()=>f.key(separator,'ArrowLeft'));assert.equal(separator.getAttribute('aria-valuenow'),'456');f.workspace.dispose();
+ assert.equal(separator.getAttribute('aria-valuenow'),'400');assert.doesNotThrow(()=>f.key(separator,'ArrowLeft'));assert.equal(separator.getAttribute('aria-valuenow'),'416');f.workspace.dispose();
 });
 test('phone Tab and Shift+Tab stay in the actual conversation focus order',()=>{
  const f=fixture(390),first=new Element(f.document),last=new Element(f.document);f.root.append(first,last);

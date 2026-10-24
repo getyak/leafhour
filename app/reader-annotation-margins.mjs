@@ -1,5 +1,14 @@
 // Presentation only: reading, hiding and arranging saved annotations never write
 // records, move the reading anchor or request a model response.
+export function annotationSheetBounds({viewport,blocked=[]}){
+ const edge=12,limit=Math.max(0,viewport),ranges=blocked.filter(r=>r.right>0&&r.left<limit).map(r=>({left:Math.max(0,r.left),right:Math.min(limit,r.right)})).sort((a,b)=>a.left-b.left);
+ let start=0,best={left:0,right:limit},gaps=[];
+ for(const r of ranges){if(r.left>start)gaps.push({left:start,right:r.left});start=Math.max(start,r.right);}
+ if(start<limit)gaps.push({left:start,right:limit});
+ if(ranges.length)best=gaps.sort((a,b)=>(b.right-b.left)-(a.right-a.left))[0]||{left:0,right:limit};
+ const width=Math.max(0,Math.min(480,best.right-best.left-edge*2));
+ return {left:best.left+(best.right-best.left)/2,width};
+}
 export function annotationRails({left,right,viewport,paginated=false,blocked=[]}){
  const fits=(start,end)=>end-start>=204&&!blocked.some(r=>r.left<end&&r.right>start);
  if(paginated)return [];

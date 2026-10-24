@@ -1,7 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {annotationRails,arrangeMarginNotes,mountAnnotationMargins} from '../app/reader-annotation-margins.mjs';
+import {annotationRails,annotationSheetBounds,arrangeMarginNotes,mountAnnotationMargins} from '../app/reader-annotation-margins.mjs';
 import {fixture} from './annotation-dom-fixture.mjs';
+
+test('a fallback annotation sheet stays entirely in the reading region beside a live chat',()=>{
+ for(const [viewport,chatWidth]of [[1128,440],[1100,460],[1440,640]]){
+  const boundary=viewport-chatWidth,bounds=annotationSheetBounds({viewport,blocked:[{left:boundary,right:viewport}]});
+  assert.ok(bounds.left-bounds.width/2>=12);assert.ok(bounds.left+bounds.width/2<=boundary-12);
+ }
+ for(const viewport of [320,390,768]){
+  const bounds=annotationSheetBounds({viewport});assert.ok(bounds.width<=viewport-24);assert.equal(bounds.left,viewport/2);
+ }
+});
 
 test('the single annotation toggle belongs to existing reading tools through refresh, retries and account changes',()=>{
  const f=fixture('<body><main id="book-page"><div id="reading-pages"><p id="p1">Keep this text selectable.</p></div></main><section id="reading-session"><div id="reading-tools-panel" inert></div></section></body>');

@@ -5,7 +5,7 @@ const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 export function mountReaderChatWorkspace({root,getReader=()=>null,document=globalThis.document,window=globalThis.window,storage,labels={}}={}){
  const body=document?.body;
  if(!root?.classList||!body?.classList||!document.createElement||!window?.addEventListener)return {setOpen(){},setLabels(){},isMobile:()=>false,dispose(){}};
- let disposed=false,opened=false,preferred=440,generation=0,frame1=null,frame2=null,drag=null,observer=null;
+ let disposed=false,opened=false,preferred=400,generation=0,frame1=null,frame2=null,drag=null,observer=null;
  const removers=[],inert=new Map(),originalModal=root.getAttribute('aria-modal'),originalTab=root.getAttribute('tabindex');
  const originalWidth=body.style.getPropertyValue('--reader-chat-width');
  try{storage??=window.localStorage;const saved=storage?.getItem(WIDTH_KEY);if(typeof saved==='string'&&/^\d{3}$/.test(saved)&&Number(saved)>=320&&Number(saved)<=640)preferred=Number(saved);}catch{}
@@ -37,6 +37,7 @@ export function mountReaderChatWorkspace({root,getReader=()=>null,document=globa
   separator.setAttribute('aria-valuemin','320');separator.setAttribute('aria-valuemax',String(Math.min(640,Math.max(320,window.innerWidth-640))));separator.setAttribute('aria-valuenow',String(width()));
   if(narrow){contain();root.setAttribute('aria-modal','true');if(!root.contains(document.activeElement)){root.setAttribute('tabindex','-1');(root.querySelector('.library-chat-close')||root).focus({preventScroll:true});}}
   else{restoreInert();root.setAttribute('aria-modal','false');}
+  document.dispatchEvent(new Event('reader:chat-layout'));
  }
  const save=()=>{try{storage?.setItem(WIDTH_KEY,String(Math.round(preferred)));}catch{}};
  function resize(value,{persist=false}={}){preferred=clamp(Math.round(value),320,Math.min(640,Math.max(320,window.innerWidth-640)));preserveLayout(paint);if(persist)save();}

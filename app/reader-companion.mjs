@@ -37,7 +37,7 @@ export function mountReaderCompanion({bookId,getOwner,getReader,api,chat,openAut
   const anchor=integration?.anchor||launcher,onUnread=integration?.onUnread||(()=>{}),onFocusReturn=integration?.onFocusReturn||null;
   const toggle=button('squirrel-companion-toggle',t('companion.enable')),description=element('p','squirrel-companion-description',t('companion.description'));
   description.id='squirrel-companion-description';toggle.setAttribute('aria-describedby',description.id);toggle.setAttribute('aria-pressed','false');
-  if(surface.preferenceHost)surface.preferenceHost.append(toggle,description);else{header.insertBefore(toggle,header.lastElementChild);header.after(description);}
+  if(surface.companionPreferenceHost||surface.preferenceHost)(surface.companionPreferenceHost||surface.preferenceHost).append(toggle,description);else{header.insertBefore(toggle,header.lastElementChild);header.after(description);}
   const bubble=element('aside','squirrel-companion-bubble'),body=button('squirrel-companion-message',''),dismiss=button('squirrel-companion-dismiss','×'),status=element('span','sr-only squirrel-companion-status');
   status.id='squirrel-companion-status';status.setAttribute('role','status');bubble.setAttribute('aria-label',t('companion.bubble'));dismiss.setAttribute('aria-label',t('companion.dismiss'));bubble.append(body,dismiss);bubble.hidden=true;const detachBubble=surface.position?.attach(bubble);anchor?.after(bubble);anchor?.after(status);
   if(!integration&&launcher&&status.id)launcher.setAttribute('aria-describedby',status.id);
