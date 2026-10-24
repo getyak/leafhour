@@ -88,4 +88,4 @@
 
 ## 合并与生产
 
-PR、当前提交CI、合并、Production部署与线上验收均待实际结果读回后填写。它们是不同状态。
+交付 PR：[#177](https://github.com/getyak/leafhour/pull/177)。本文保存合并前的本地及隔离合成验收；当前提交 CI 与合并记录以该 PR 的 GitHub 检查为准，Production 部署及同提交线上验收证据在该 PR 的合并后评论中读回记录。CI、合并、发布和线上验收是不同状态。
