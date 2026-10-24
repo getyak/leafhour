@@ -24,7 +24,7 @@ export default Object.freeze({
   "chat.dataScope": "哪些內容會傳送給 AI？",
   "chat.settings": "閱讀與陪讀設定",
   "chat.scope.change": "更改閱讀範圍",
-  "chat.textVersion": "文字版本",
+  "chat.textVersion": "查看內容",
   "chat.location.back": "定位這段原文",
   "chat.location": "提問位置",
   "billing.accountLink": "額度與帳單",

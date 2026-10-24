@@ -726,19 +726,19 @@
       },
       {
         "file": "app/ui-catalogs/en.mjs",
-        "sha256": "a7c08f8cef8b1aaaa6bce817bdbb24f07d4622dd853eb6a8ba8f778808337605"
+        "sha256": "327a0f517fdd77b147964791babcc1069b09ce64710170958aae7d96cce9f2d9"
       },
       {
         "file": "app/ui-catalogs/ja.mjs",
-        "sha256": "1eb8b66106bd2f7fb1701fc4b4a490b06ccd5914f47f1f5b5acce5c242fe35f1"
+        "sha256": "296609e371f4c97c3275c39fd784625a1b8a588b92de3bd2dd68a4499b508a10"
       },
       {
         "file": "app/ui-catalogs/zh-Hans.mjs",
-        "sha256": "dae7dd96840a78434eab99d2ff8a13554f336cc0de39100a3d63ec8c6b1337a8"
+        "sha256": "6ab4f94f575674808b021bb99cbe7d30901f78d92b4186c3a8b9777d2a26a50f"
       },
       {
         "file": "app/ui-catalogs/zh-Hant.mjs",
-        "sha256": "50e784aa5c84967b552fff2b20cc531f272081223351d950e07a2ba436c72919"
+        "sha256": "0f834b5d7d165e61dd6965de0a36062912e7818a9962f9d85656f7f1b182172e"
       },
       {
         "file": "app/ui-locale-codec.mjs",
@@ -1093,7 +1093,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "340d89473dd4adf195407dbbf8a7fc8147f71deba3f810cc47facc3ecbc8e55d"
+    "inputDigest": "0e1644337590b3eca14015bca64828d43ad6a015b9f2db6212e57dd2c1edcb35"
   },
   "locales": [
     "en",
@@ -2341,29 +2341,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 28,
           "column": 3,
-          "value": "Text version",
-          "sha256": "42af73d7c771653c5b013696828ca371d8923f84ce2bfa2cad56026f105e6017"
+          "value": "View text",
+          "sha256": "83a39c70af8608b76872a450b270cff71c6620c806ed746c263d3e0408af91d0"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 27,
           "column": 3,
-          "value": "文本版本",
-          "sha256": "272405cd0be5fd5af1dd91338183962d990507eeedaed0af6837339bc7c5a164"
+          "value": "查看内容",
+          "sha256": "393dd8a7f29e28443b7c24ac48056c9a7ce6422f4deb95abb15850acea18fce0"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 27,
           "column": 3,
-          "value": "文字版本",
-          "sha256": "917934cc5c3fc89442028f35e5b8b1b69f939ddb7b72c28e3abc1bf97f174f38"
+          "value": "查看內容",
+          "sha256": "386bbc68f225c1129bffa2d819323966e099df445e255f3dfd9f8b232ddf7caa"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 27,
           "column": 3,
-          "value": "テキストの種類",
-          "sha256": "013317dcb443a999aaabfb279ca375409df9ec0db6973a745c0890b939d23a8e"
+          "value": "表示する本文",
+          "sha256": "e6e1b1f0e8446f1d9d8227c3b2394148af0ba0f95600154256bd8bd5cbb47b63"
         }
       },
       "missingLocales": [],

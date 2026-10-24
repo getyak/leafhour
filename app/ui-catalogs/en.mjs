@@ -25,7 +25,7 @@ export default Object.freeze({
   "chat.dataScope": "What is sent to AI?",
   "chat.settings": "Reading & companion",
   "chat.scope.change": "Change reading scope",
-  "chat.textVersion": "Text version",
+  "chat.textVersion": "View text",
   "chat.location.back": "Go to this passage",
   "chat.location": "Question location",
   "billing.accountLink": "Points & billing",

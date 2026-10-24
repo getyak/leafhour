@@ -21,7 +21,7 @@ chat.latest,catalogue,app/ui-catalogs/en.mjs,24,unknown,unknown,unknown,unknown,
 chat.dataScope,catalogue,app/ui-catalogs/en.mjs,25,unknown,unknown,unknown,unknown,unreviewed,What is sent to AI?,哪些内容会发送给 AI？,哪些內容會傳送給 AI？,AI に送信する内容
 chat.settings,catalogue,app/ui-catalogs/en.mjs,26,unknown,unknown,unknown,unknown,unreviewed,Reading & companion,阅读与陪读设置,閱讀與陪讀設定,読書・伴読の設定
 chat.scope.change,catalogue,app/ui-catalogs/en.mjs,27,unknown,unknown,unknown,unknown,unreviewed,Change reading scope,更改阅读范围,更改閱讀範圍,読書範囲を変更
-chat.textVersion,catalogue,app/ui-catalogs/en.mjs,28,unknown,unknown,unknown,unknown,unreviewed,Text version,文本版本,文字版本,テキストの種類
+chat.textVersion,catalogue,app/ui-catalogs/en.mjs,28,unknown,unknown,unknown,unknown,unreviewed,View text,查看内容,查看內容,表示する本文
 chat.location.back,catalogue,app/ui-catalogs/en.mjs,29,unknown,unknown,unknown,unknown,unreviewed,Go to this passage,定位这段原文,定位這段原文,この段落へ移動
 chat.location,catalogue,app/ui-catalogs/en.mjs,30,unknown,unknown,unknown,unknown,unreviewed,Question location,提问位置,提問位置,質問の位置
 billing.accountLink,catalogue,app/ui-catalogs/en.mjs,31,unknown,unknown,unknown,unknown,unreviewed,Points & billing,额度与账单,額度與帳單,ポイントと請求

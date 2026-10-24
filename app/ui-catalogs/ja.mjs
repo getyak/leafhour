@@ -24,7 +24,7 @@ export default Object.freeze({
   "chat.dataScope": "AI に送信する内容",
   "chat.settings": "読書・伴読の設定",
   "chat.scope.change": "読書範囲を変更",
-  "chat.textVersion": "テキストの種類",
+  "chat.textVersion": "表示する本文",
   "chat.location.back": "この段落へ移動",
   "chat.location": "質問の位置",
   "billing.accountLink": "ポイントと請求",
