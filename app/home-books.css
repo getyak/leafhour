@@ -54,14 +54,13 @@
   background: linear-gradient(115deg, transparent 35%, #fff5 49%, transparent 62%);
 }
 #home-view #featured-books .book-meta { padding-top: 22px; }
-#home-view #featured-books .book-label { display: block; font-size: 11px; letter-spacing: 0; }
+#home-view #featured-books .book-label { display: block; font-size: 12px; letter-spacing: 0; }
 #home-view #featured-books .book-meta h3 { margin-top: 8px; font-size: 22px; line-height: 1.35; text-wrap: balance; }
 #home-view #featured-books .book-author { margin: 8px 0 0; font-size: 12px; line-height: 1.6; }
 #home-view #featured-books .book-description { display: block; margin-top: 12px; font-size: 13px; line-height: 1.7; }
 #home-view #featured-books .book-resume { margin-top: 12px; font-size: 12px; }
 #home-view #featured-books .book-bottom { justify-content: flex-start; gap: 12px 18px; margin-top: 18px; }
-#home-view #featured-books .source-link { font-size: 11px; }
-#home-view #featured-books .book-art:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+#home-view #featured-books .source-link { font-size: 12px; }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   #home-view #featured-books .book-art:hover .book-cover {
     transform: translateY(-5px) rotateX(1deg) rotateY(-5deg) rotateZ(0deg) scale(1.02);
