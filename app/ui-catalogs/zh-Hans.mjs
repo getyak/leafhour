@@ -2129,6 +2129,7 @@ export default Object.freeze({
   "reader.annotation.hide": "隐藏批注",
   "reader.annotation.show": "显示批注",
   "reader.annotation.mine": "我写的",
+  "reader.annotation.personalSummary": "摘录与想法",
   "reader.annotation.ai": "AI",
   "reader.annotation.loading": "正在载入批注…",
   "reader.annotation.saveNote": "保存想法",

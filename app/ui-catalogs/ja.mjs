@@ -2129,6 +2129,7 @@ export default Object.freeze({
   "reader.annotation.hide": "注釈を隠す",
   "reader.annotation.show": "注釈を表示",
   "reader.annotation.mine": "自分",
+  "reader.annotation.personalSummary": "ハイライトとメモ",
   "reader.annotation.ai": "AI",
   "reader.annotation.loading": "注釈を読み込み中…",
   "reader.annotation.saveNote": "メモを保存",

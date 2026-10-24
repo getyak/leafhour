@@ -2130,6 +2130,7 @@ export default Object.freeze({
   "reader.annotation.hide": "Hide annotations",
   "reader.annotation.show": "Show annotations",
   "reader.annotation.mine": "Mine",
+  "reader.annotation.personalSummary": "Highlights and thoughts",
   "reader.annotation.ai": "AI",
   "reader.annotation.loading": "Loading annotations…",
   "reader.annotation.saveNote": "Save note",

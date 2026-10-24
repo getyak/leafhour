@@ -41,3 +41,17 @@ test('fourteen nearby annotations use both margins without overlapping each othe
  for(const side of ['left','right']){const column=placed.filter(e=>e.side===side);for(let i=1;i<column.length;i++)assert.ok(column[i].top>=column[i-1].top+140);}
  assert.deepEqual(arrangeMarginNotes(entries,[]).map(e=>e.id),entries.map(e=>e.id));
 });
+
+
+test('personal margin summaries do not label a highlighted author quote as the reader’s own words',()=>{
+ const f=fixture('<body><div id="reading-pages"><p id="p1">Author quotation.</p></div><div id="reading-tools-panel"></div></body>');
+ const entries=[{id:'mark-only',passageId:'p1',origin:'user',quote:'Author quotation.'},{id:'personal-note',passageId:'p1',origin:'user',text:'My own thought.'},{id:'ai-note',passageId:'p1',origin:'ai',text:'AI explanation.'}];
+ const margins=mountAnnotationMargins({document:f.document,getScope:()=> 'isolated-owner',getEntries:()=>entries,onOpen:()=>{},onHide:()=>{},write:(node,key,attribute)=>attribute?node.setAttribute(attribute,key):node.textContent=key});
+ try{
+  margins.refresh();
+  const summaries=f.document.querySelectorAll('.reader-annotation-summary');
+  assert.deepEqual(summaries.map(node=>node.querySelector('.reader-annotation-summary-author').textContent),['personalSummary','personalSummary','ai']);
+  assert.equal(summaries[0].querySelector('.reader-annotation-summary-text').textContent,'Author quotation.');
+  assert.equal(summaries[1].querySelector('.reader-annotation-summary-text').textContent,'My own thought.');
+ }finally{margins.dispose();}
+});
