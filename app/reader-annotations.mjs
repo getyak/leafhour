@@ -4,7 +4,7 @@ import {readingChatQuoteFromExcerpt,normalizeReadingChatQuote,validateCurrentRea
 import {activeHighlights,highlightKey,normalizeHighlight} from './highlights.mjs';
 import {renderChatMarkdown} from './library-chat-markdown.mjs';
 import {createAnnotationPending} from './reader-annotation-pending.mjs';
-import {mountAnnotationMargins} from './reader-annotation-margins.mjs';
+import {mountAnnotationMargins,annotationSheetBounds} from './reader-annotation-margins.mjs';
 import {createNoteDrafts} from './note-drafts.mjs';
 
 const PREFIX='reader.annotation.',equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -105,7 +105,14 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
   card.dataset.placement=rail?'margin':'sheet';
   if(card.parentElement!==document.body)document.body.append(card);
   if(rail){card.style.width=rail.width+'px';card.style.left=rail.left+'px';const top=Math.max(76,Math.min(rect?.top||76,view.innerHeight-280));card.style.top=top+'px';card.style.setProperty('--annotation-card-height',Math.max(132,view.innerHeight-top-24)+'px');}
-  else{card.style.removeProperty('width');card.style.removeProperty('left');card.style.removeProperty('top');}
+  else{
+   card.style.removeProperty('width');card.style.removeProperty('left');card.style.removeProperty('top');
+   const blocked=[...document.querySelectorAll('.reader-chat-workspace[open]:not(.is-reader-chat-mobile)')].map(el=>el.getBoundingClientRect()).filter(r=>r.width&&r.height);
+   const bounds=annotationSheetBounds({viewport:view.innerWidth,blocked});
+   card.style.setProperty('--annotation-sheet-left',bounds.left+'px');card.style.setProperty('--annotation-sheet-width',bounds.width+'px');
+   const viewport=view.visualViewport;card.style.setProperty('--annotation-sheet-height',Math.max(100,(viewport?.height||view.innerHeight)-32)+'px');
+   card.style.setProperty('--annotation-sheet-bottom',Math.max(12,view.innerHeight-(viewport?.height||view.innerHeight)-(viewport?.offsetTop||0)+12)+'px');
+  }
  }
  function staleQuote(quote){
   if(quote.contentVersion!==book().contentVersion)return true;
@@ -207,9 +214,10 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
  listen(form,'submit',event=>{event.preventDefault();if(thread()?.markOnly===true){saveOwnNote();return;}if(!busy&&!outbox?.current()&&area.value.trim()&&thread()&&!staleQuote(thread().quote))retryRequest();});
  for(const event of ['click','pointerup','keydown'])listen(card,event,e=>{if(event==='keydown'&&e.key==='Escape'&&!e.isComposing&&!composing){e.preventDefault();hide();}e.stopPropagation();});
  listen(card,'focusout',()=>{const token=epoch,own=scope;view.requestAnimationFrame(()=>{if(current(token,own))place();});});
- listen(document,'keydown',event=>{if(event.key==='Escape'&&!card.hidden&&!event.isComposing&&!composing){event.preventDefault();hide();}},true);
+ listen(document,'keydown',event=>{if(event.key==='Escape'&&!card.hidden&&!card.inert&&!card.closest('[inert]')&&!event.isComposing&&!composing){event.preventDefault();event.stopPropagation();hide();}},true);
  listen(view,'resize',place);listen(view.visualViewport,'resize',place);listen(view,'scroll',()=>{if(!card.hidden)place();},{passive:true});
  listen(document,'reader:layout',()=>{paintBadges();place();});listen(document,'reader:content',()=>{paintBadges();place();});
+ listen(document,'reader:chat-layout',()=>{paintBadges();place();});
  listen(document,'reader:chapter',event=>{if(event.detail?.chapterId===thread()?.quote.chapterId){paintBadges();place();refresh();return;}epoch++;readEpoch++;busy=false;noteBusy=false;for(const key of Object.keys(noteDrafts.snapshot().entries))noteDrafts.finish(key);cancelling=false;hide({restoreFocus:false});refresh();});
  listen(document,'reader:ready',()=>refresh());
  listen(document,'reader:session-changed',()=>{saveDraft();epoch++;readEpoch++;clearTimeout(poll);for(const controller of controllers)controller.abort();card.hidden=true;card.remove();margins.reset();scope=null;margins.reset();outbox=null;archive=null;requests=[];refusal=null;markThread=null;noteBusy=false;busy=false;cancelling=false;delete document.body.dataset.annotationPane;delete document.body.dataset.annotationCompact;document.body.style.removeProperty('--annotation-visible-height');});

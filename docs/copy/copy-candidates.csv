@@ -632,7 +632,7 @@ candidate:app/catalog-sample.mjs:7:61,js-cjk-literal,app/catalog-sample.mjs,7,,u
 candidate:app/catalog-sample.mjs:7:99,js-cjk-literal,app/catalog-sample.mjs,7,,unknown,reviewable,," 段的直译与意译由 "
 candidate:app/catalog-sample.mjs:7:142,js-cjk-literal,app/catalog-sample.mjs,7,,unknown,reviewable,," 分别编写，均为 AI 草稿，尚未人工审定。试读译文采用 CC0-1.0，可随时核对原文；其余正文仅有英文。英文底本的出处与许可见书房中的来源链接。"
 candidate:app/catalog-sample.mjs:7:219,js-cjk-literal,app/catalog-sample.mjs,7,,unknown,reviewable,,译文按段独立保存，未译内容保留原文。AI 生成结果标为草稿，可以核对原文；不会把缺失译文补成另一种译法。
-candidate:app/chat-book-upload.mjs:12:121,js-dom-literal,app/chat-book-upload.mjs,12,textContent,unknown,reviewable,,＋
+candidate:app/chat-book-upload.mjs:12:144,js-dom-literal,app/chat-book-upload.mjs,12,textContent,unknown,reviewable,,＋
 candidate:app/chat-book-upload.mjs:14:71,js-attribute,app/chat-book-upload.mjs,14,role,unknown,reviewable,,status
 candidate:app/chat-book-upload.mjs:19:313,js-attribute,app/chat-book-upload.mjs,19,role,unknown,reviewable,,status
 candidate:app/chat-book-upload.mjs:19:355,js-attribute,app/chat-book-upload.mjs,19,aria-live,unknown,reviewable,,polite
@@ -2757,18 +2757,19 @@ candidate:app/library-book-actions.mjs:58:483,js-cjk-literal,app/library-book-ac
 candidate:app/library-book-actions.mjs:77:154,js-attribute,app/library-book-actions.mjs,77,role,unknown,reviewable,,menuitem
 candidate:app/library-book-actions.mjs:81:258,js-attribute,app/library-book-actions.mjs,81,aria-haspopup,unknown,reviewable,,menu
 candidate:app/library-book-actions.mjs:81:303,js-attribute,app/library-book-actions.mjs,81,aria-expanded,unknown,reviewable,,false
-candidate:app/library-chat.mjs:41:81,js-attribute,app/library-chat.mjs,41,aria-labelledby,unknown,protected,identifier,library-chat-title
-candidate:app/library-chat.mjs:42:34,js-attribute,app/library-chat.mjs,42,aria-modal,unknown,reviewable,,false
-candidate:app/library-chat.mjs:55:157,js-attribute,app/library-chat.mjs,55,aria-haspopup,unknown,reviewable,,dialog
-candidate:app/library-chat.mjs:59:171,js-attribute,app/library-chat.mjs,59,aria-expanded,unknown,reviewable,,false
-candidate:app/library-chat.mjs:66:83,js-attribute,app/library-chat.mjs,66,role,unknown,reviewable,,log
-candidate:app/library-chat.mjs:66:162,js-attribute,app/library-chat.mjs,66,aria-live,unknown,reviewable,,polite
-candidate:app/library-chat.mjs:66:210,js-attribute,app/library-chat.mjs,66,aria-relevant,unknown,reviewable,,additions text
-candidate:app/library-chat.mjs:67:155,js-attribute,app/library-chat.mjs,67,role,unknown,reviewable,,status
-candidate:app/library-chat.mjs:70:266,js-attribute,app/library-chat.mjs,70,aria-describedby,unknown,reviewable,,library-chat-status library-chat-count
-candidate:app/library-chat.mjs:269:254,js-attribute,app/library-chat.mjs,269,aria-expanded,unknown,reviewable,,false
-candidate:app/library-chat.mjs:279:159,js-cjk-literal,app/library-chat.mjs,279,,unknown,reviewable,,Leafhour-对话-
-candidate:app/library-chat.mjs:313:168,js-attribute,app/library-chat.mjs,313,aria-expanded,unknown,reviewable,,true
+candidate:app/library-chat-markdown.mjs:81:227,js-attribute,app/library-chat-markdown.mjs,81,aria-expanded,unknown,reviewable,,true
+candidate:app/library-chat.mjs:44:81,js-attribute,app/library-chat.mjs,44,aria-labelledby,unknown,protected,identifier,library-chat-title
+candidate:app/library-chat.mjs:45:34,js-attribute,app/library-chat.mjs,45,aria-modal,unknown,reviewable,,false
+candidate:app/library-chat.mjs:58:157,js-attribute,app/library-chat.mjs,58,aria-haspopup,unknown,reviewable,,dialog
+candidate:app/library-chat.mjs:62:171,js-attribute,app/library-chat.mjs,62,aria-expanded,unknown,reviewable,,false
+candidate:app/library-chat.mjs:70:83,js-attribute,app/library-chat.mjs,70,role,unknown,reviewable,,log
+candidate:app/library-chat.mjs:70:162,js-attribute,app/library-chat.mjs,70,aria-live,unknown,reviewable,,polite
+candidate:app/library-chat.mjs:70:210,js-attribute,app/library-chat.mjs,70,aria-relevant,unknown,reviewable,,additions text
+candidate:app/library-chat.mjs:71:155,js-attribute,app/library-chat.mjs,71,role,unknown,reviewable,,status
+candidate:app/library-chat.mjs:74:266,js-attribute,app/library-chat.mjs,74,aria-describedby,unknown,reviewable,,library-chat-status library-chat-count
+candidate:app/library-chat.mjs:268:254,js-attribute,app/library-chat.mjs,268,aria-expanded,unknown,reviewable,,false
+candidate:app/library-chat.mjs:278:159,js-cjk-literal,app/library-chat.mjs,278,,unknown,reviewable,,Leafhour-对话-
+candidate:app/library-chat.mjs:318:168,js-attribute,app/library-chat.mjs,318,aria-expanded,unknown,reviewable,,true
 candidate:app/library-daily-reading.mjs:9:27,js-cjk-literal,app/library-daily-reading.mjs,9,,unknown,reviewable,,每日陪读
 candidate:app/library-daily-reading.mjs:51:172,js-attribute,app/library-daily-reading.mjs,51,aria-hidden,unknown,reviewable,,true
 candidate:app/library-daily-reading.mjs:56:81,js-attribute,app/library-daily-reading.mjs,56,popover,unknown,reviewable,,auto
@@ -3060,8 +3061,8 @@ candidate:app/public-navigation.mjs:27:579,js-cjk-literal,app/public-navigation.
 candidate:app/public-navigation.mjs:27:604,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,ポイント
 candidate:app/public-navigation.mjs:27:622,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,外観
 candidate:app/public-navigation.mjs:27:636,js-cjk-literal,app/public-navigation.mjs,27,,unknown,reviewable,,表示言語
-candidate:app/reader-annotation-margins.mjs:25:122,js-attribute,app/reader-annotation-margins.mjs,25,role,unknown,reviewable,,status
-candidate:app/reader-annotation-margins.mjs:25:164,js-attribute,app/reader-annotation-margins.mjs,25,aria-live,unknown,reviewable,,polite
+candidate:app/reader-annotation-margins.mjs:34:122,js-attribute,app/reader-annotation-margins.mjs,34,role,unknown,reviewable,,status
+candidate:app/reader-annotation-margins.mjs:34:164,js-attribute,app/reader-annotation-margins.mjs,34,aria-live,unknown,reviewable,,polite
 candidate:app/reader-annotations.mjs:30:129,js-attribute,app/reader-annotations.mjs,30,role,unknown,reviewable,,region
 candidate:app/reader-annotations.mjs:32:129,js-dom-literal,app/reader-annotations.mjs,32,textContent,unknown,reviewable,,×
 candidate:app/reader-annotations.mjs:32:444,js-dom-literal,app/reader-annotations.mjs,32,textContent,unknown,reviewable,,‹

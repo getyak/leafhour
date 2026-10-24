@@ -89,3 +89,51 @@ body:has(#reader-conversation + .library-chat-launcher) .reading-tools-panel{rig
 /* The consent row is an independent target wherever the workspace mounts. */
 .library-chat-preference-consent{min-height:44px}
 .library-chat-preference-consent input{width:18px;height:18px;flex:none}
+
+/* Reading craft: one conversation, with detail revealed at its point of use. */
+.library-chat-header{padding-top:12px;padding-bottom:10px}
+.library-chat-book-title{font:12px/1.6 var(--chat-font);color:var(--chat-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.library-chat-turn{margin-bottom:24px}
+.library-chat-question{padding:9px 13px;border-radius:12px 12px 4px 12px}
+.library-chat-text{font-size:14px;line-height:1.75}
+.library-chat-answer{position:relative;margin-top:14px}
+.library-chat-answer-heading{min-height:24px;margin-bottom:6px}
+.library-chat-answer .library-chat-copy{position:absolute;right:0;top:-10px;padding-inline:8px}
+.library-chat-turn-status{padding-top:6px}
+.library-chat-retry{margin-top:0;text-decoration:underline;text-underline-offset:3px}
+.library-chat-turn:has(>.library-chat-retry)>.library-chat-turn-status{max-width:87%;margin-inline-start:auto;text-align:end}
+.library-chat-dialog .library-chat-turn>.library-chat-retry{display:flex;width:fit-content;margin-inline-start:auto}
+.library-chat-context-chapter{margin-inline-start:7px;color:var(--chat-muted)}
+.library-chat-context>summary{padding-left:0;border:0;min-height:44px;color:var(--chat-ink)}
+.library-chat-context-hint{font-size:0}
+.library-chat-context-hint::after{font-size:16px;content:'⌄'}
+.library-chat-context[open] .library-chat-context-hint::after{content:'⌃'}
+.library-chat-context-body{padding:0 0 10px;border:0}
+.library-chat-context-body>.library-chat-source-link{margin-top:0}
+.library-chat-layer-choice{width:100%;min-height:44px;border:1px solid var(--line-control);border-radius:6px;background:var(--chat-panel);color:var(--chat-ink);font:12px/1.6 var(--chat-font);padding:6px 10px}
+.library-chat-source{margin-top:10px}
+.library-chat-settings>summary,.library-chat-explanation>summary{cursor:pointer;font:13px/1.6 var(--chat-font);color:var(--chat-ink);display:flex;align-items:center;justify-content:space-between;padding:8px 10px;list-style:none}
+.library-chat-settings>summary::after,.library-chat-explanation>summary::after{content:'+';font-size:16px;color:var(--chat-muted)}
+.library-chat-settings[open]>summary::after,.library-chat-explanation[open]>summary::after{content:'−'}
+.library-chat-settings>summary::-webkit-details-marker,.library-chat-explanation>summary::-webkit-details-marker{display:none}
+.library-chat-settings .library-chat-scope-row{margin:6px 10px 12px}
+.library-chat-preference-consent{display:flex;align-items:center;gap:9px;padding:8px 10px;font:12px/1.65 var(--chat-font)}
+.library-chat-explanation{border-top:1px solid var(--line-hairline);margin-top:8px}
+.library-chat-menu-items .library-chat-explanation>p{padding:0 10px}
+.library-chat-menu-items .chat-book-attach{display:flex;align-items:center;width:100%;border-radius:6px;min-height:44px;padding:8px 10px;font:13px/1.6 var(--chat-font);text-align:left;color:var(--chat-ink)}
+.library-chat-menu-items .library-chat-text-button{padding:8px 10px;font-size:13px}
+.library-chat-scope-indicator{border:0;border-radius:6px;padding:5px 8px;max-width:65%;overflow-wrap:anywhere;background:transparent;color:var(--chat-muted);font:12px/1.5 var(--chat-font);text-align:left;min-height:44px}
+.library-chat-scope-indicator:hover:not(:disabled){color:var(--chat-ink);background:var(--chat-soft)}
+.library-chat-latest{flex:none;align-self:center;margin:-2px 0 4px;padding:5px 14px;border:1px solid var(--line-hairline);border-radius:22px;background:var(--chat-panel);color:var(--chat-accent);font:12px/1.5 var(--chat-font)}
+.library-chat-companion-settings{margin:4px 10px;border-top:1px solid var(--line-hairline)}
+.library-chat-companion-settings .squirrel-companion-toggle[aria-pressed=true]{color:var(--chat-accent)}
+.library-chat-recommendations>summary{display:flex;align-items:center;cursor:pointer;list-style:none;min-height:44px;padding:0}
+.library-chat-recommendations>summary::after{content:'+';margin-inline-start:8px}
+.library-chat-recommendations[open]>summary::after{content:'−'}
+.library-chat-answer-toggle{margin-top:4px}
+.library-chat-dialog :is(.library-chat-scope-indicator,.library-chat-settings>summary,.library-chat-explanation>summary,.library-chat-latest):focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:-2px}
+@media(hover:hover) and (pointer:fine){
+ .library-chat-copy{opacity:0;transition:opacity 140ms ease}
+ .library-chat-turn:hover .library-chat-copy,.library-chat-turn:focus-within .library-chat-copy{opacity:1}
+}
+@media(prefers-reduced-motion:reduce){.library-chat-copy{transition:none}}

@@ -30,6 +30,13 @@ test('opening an annotation takes keyboard focus and Escape returns to its visib
   assert.equal(f.$('.reader-annotation-card').hidden,true);assert.ok(f.document.activeElement===origin);assert.equal(area.value,'Keep my unfinished thought');
  }finally{f.dispose();}
 });
+test('an annotation made inert by the mobile chat cannot intercept its Escape key',async()=>{
+ const f=setup({held:true});try{
+  await tick();f.controller.openThread(f.thread.id);const card=f.$('.reader-annotation-card');card.inert=true;
+  const escape=new Event('keydown',{cancelable:true});Object.assign(escape,{key:'Escape'});f.document.dispatchEvent(escape);
+  assert.equal(escape.defaultPrevented,false);assert.equal(card.hidden,false,'the hidden underlying task must retain its editor');
+ }finally{f.dispose();}
+});
 test('closing annotations skips hidden toolbar openers and returns to the current margin entry',async()=>{
  const f=setup({held:true});try{
   await tick();const toolbar=f.document.createElement('div'),origin=f.document.createElement('button');toolbar.id='paragraph-tools';toolbar.append(origin);f.document.body.append(toolbar);origin.focus();

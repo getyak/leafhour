@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mountLibraryChat} from '../app/library-chat.mjs';
+import {mountLibraryChat,chatRetryMatchesDraft} from '../app/library-chat.mjs';
 import {mountChatBookUpload} from '../app/chat-book-upload.mjs';
 import {createBookUploadController} from '../app/book-upload-controller.mjs';
 import {requestUiRoute,t as uiText} from '../app/ui-locale.mjs';
@@ -8,7 +8,7 @@ import {renderChatMarkdown,safeChatUrl} from '../app/library-chat-markdown.mjs';
 
 // Minimal DOM contract for event/state regressions; layout is verified in a browser.
 class Element extends EventTarget {
-  constructor(tag,doc){super();this.tagName=tag.toUpperCase();this.doc=doc;this.children=[];this.attrs={};this.style={setProperty(k,v){this[k]=v;}};this.value='';this.open=false;this.isConnected=true;this.scrollHeight=1000;this.clientHeight=300;this.scrollTop=700;this.className='';this.classList={add:(s)=>this.className+=' '+s,toggle:(s,on)=>{const names=new Set(this.className.split(' ').filter(Boolean));if(on)names.add(s);else names.delete(s);this.className=[...names].join(' ');}};}
+  constructor(tag,doc){super();this.tagName=tag.toUpperCase();this.doc=doc;this.children=[];this.attrs={};this.style={setProperty(k,v){this[k]=v;}};this.value='';this.open=false;this.isConnected=true;this.scrollHeight=1000;this.clientHeight=300;this.scrollTop=700;this.className='';this.classList={contains:s=>this.className.split(' ').includes(s),add:(s)=>this.className+=' '+s,toggle:(s,on)=>{const names=new Set(this.className.split(' ').filter(Boolean));if(on)names.add(s);else names.delete(s);this.className=[...names].join(' ');}};}
   append(...nodes){for(const n of nodes){n.parentElement=this;this.children.push(n);}}
   replaceChildren(...nodes){this.replacements=(this.replacements||0)+1;this.children=[];this.append(...nodes);}
   remove(){if(this.parentElement){const p=this.parentElement;p.children=p.children.filter(n=>n!==this);this.parentElement=null;}}
@@ -26,7 +26,7 @@ class Element extends EventTarget {
   get clientTop(){return this._clientTop||0;}
   set clientTop(value){this._clientTop=value;}
   querySelector(){return null;}
-  querySelectorAll(selector){const visit=n=>[...n.children.flatMap(visit),n];const all=visit(this).slice(0,-1);const keys=selector.split(',').map(part=>part.trim().replace(/^\[|\]$/g,''));return all.filter(n=>keys.some(key=>n.getAttribute&&n.getAttribute(key)!==undefined));}
+  querySelectorAll(selector){const visit=n=>[...n.children.flatMap(visit),n];const all=visit(this).slice(0,-1);if(selector==='details')return all.filter(n=>n.tagName==='DETAILS');const keys=selector.split(',').map(part=>part.trim().replace(/^\[|\]$/g,''));return all.filter(n=>keys.some(key=>n.getAttribute&&n.getAttribute(key)!==undefined));}
 }
 const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
 function setup(t,{handler,billing=false,navigate,onViewChange,uploadController,uploadOptions,loadUpload,renderMarkdown=renderChatMarkdown,loadMarkdown,books=[{bookId:'one',title:{zh:'书名'}}]}={}){
@@ -38,6 +38,77 @@ function setup(t,{handler,billing=false,navigate,onViewChange,uploadController,u
  return {root,chat,doc,calls,external,viewport,all,find:cls=>all().find(n=>n.className.split(' ').includes(cls)),input:()=>doc.getElementById('library-chat-input'),setTurns:v=>turns=v,setOwner:v=>owner=v,setPassage:v=>passage=v,complete:()=>{turns=turns.map(turn=>turn.status==='completed'?turn:({...turn,status:'completed',answer:{summary:'真实回答',sourceRefs:[]}}));}};
 }
 function type(el,text){el.value=text;el.dispatchEvent(new Event('input'));}
+
+test('retry labeling follows the immutable question and preserves uncertain recovery',()=>{
+ const payload={text:'Original question',passageId:'p1',contentVersion:'v1',scopeRevision:0};
+ const view={draft:'Original question',retry:{payload,uncertain:false},data:{context:{passageId:'p1'},contentVersion:'v1',scope:{revision:0}}};
+ assert.equal(chatRetryMatchesDraft(view),true);
+ assert.equal(chatRetryMatchesDraft({...view,draft:'A different question'}),false);
+ assert.equal(chatRetryMatchesDraft({...view,quote:{parts:[{text:'New selection'}]}}),false);
+ assert.equal(chatRetryMatchesDraft({...view,retry:{payload,uncertain:true},draft:'New draft kept locally'}),true);
+});
+
+test('context version changes are local and keep the physical draft and confirmed scope',async t=>{
+ const s=setup(t);s.chat.open();await flush();type(s.input(),'A question still being composed');
+ const input=s.input(),choice=s.find('library-chat-layer-choice'),context=s.find('library-chat-context');
+ assert.equal(choice.value,'original');choice.value='literal';choice.dispatchEvent(new Event('change'));
+ assert.equal(s.input(),input);assert.equal(input.value,'A question still being composed');assert.equal(s.calls.filter(c=>c.payload).length,0);
+ assert.equal(context.open,false);assert.equal(s.find('library-chat-scope-indicator').textContent,uiText('scope.currentBook'));
+ s.find('library-chat-scope-indicator').click();assert.equal(s.find('library-chat-menu').open,true);assert.equal(s.find('library-chat-settings').open,true);assert.equal(s.doc.activeElement,s.find('library-chat-scope-choice'));
+});
+
+test('Escape unwinds nested settings before collapsing the chat',async t=>{
+ const s=setup(t);s.chat.open();await flush();s.find('library-chat-scope-indicator').click();
+ const key=()=>{const e=new Event('keydown',{cancelable:true});Object.assign(e,{key:'Escape'});s.root.dispatchEvent(e);};
+ key();assert.equal(s.find('library-chat-settings').open,false);assert.equal(s.root.open,true);
+ key();assert.equal(s.find('library-chat-menu').open,false);assert.equal(s.root.open,true);
+ key();assert.equal(s.root.open,false);
+});
+
+test('closed More descendants do not consume Escape after reopening the conversation',async t=>{
+ const s=setup(t);s.chat.open();await flush();s.find('library-chat-scope-indicator').click();s.chat.close();s.chat.open();await flush();
+ assert.equal(s.find('library-chat-menu').open,false);const e=new Event('keydown',{cancelable:true});Object.assign(e,{key:'Escape'});s.root.dispatchEvent(e);assert.equal(s.root.open,false);
+});
+
+test('a context hidden by a selected quotation does not consume Escape',async t=>{
+ const s=setup(t);s.chat.open();await flush();const context=s.find('library-chat-context');context.open=true;context.hidden=true;
+ const e=new Event('keydown',{cancelable:true});Object.assign(e,{key:'Escape'});s.root.dispatchEvent(e);assert.equal(s.root.open,false);
+});
+
+test('a retained pending activity relabels the latest tool after a locale change',async t=>{
+ await requestUiRoute('en');t.after(async()=>{await requestUiRoute('en');});
+ const s=setup(t);s.chat.open();await flush();type(s.input(),'Read the chapter');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();
+ const pending=s.find('library-chat-turn-status'),payload=s.calls.find(c=>c.payload).payload;
+ s.setTurns([{...payload,status:'running',activity:[{tool:'reader_read_chapter',label:'Stored label',status:'running'}]}]);s.chat.close();s.chat.open();await flush();await requestUiRoute('ja');
+ assert.equal(s.find('library-chat-turn-status'),pending);assert.equal(pending.textContent,uiText('chat.activity.chapter')+' · '+uiText('chat.activity.running'));
+});
+
+test('desktop source navigation preserves the chat and its unsent question',async t=>{
+ const s=setup(t);s.root.classList.add('reader-chat-workspace');s.chat.open();await flush();type(s.input(),'Keep this draft');
+ const event=new Event('click',{cancelable:true});s.find('library-chat-source-link').dispatchEvent(event);
+ assert.equal(event.defaultPrevented,true);assert.equal(s.root.open,true);assert.equal(s.input().value,'Keep this draft');assert.equal(s.calls.filter(c=>c.payload).length,0);
+});
+
+test('a failed turn owns its recovery notice without a repeated global no-answer banner',async t=>{
+ const s=setup(t,{handler:async(url,payload)=>payload?({...payload,status:'failed',answer:null}):{bookId:'one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:'p1',original:'Source'},turns:[]}});
+ s.chat.open();await flush();type(s.input(),'A failed question');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();
+ assert.equal(s.find('library-chat-turn-status').textContent,uiText('cs.noAnswer'));assert.equal(s.find('library-chat-status-row').hidden,true);
+ type(s.input(),'A new question');assert.equal(s.find('library-chat-send').getAttribute('aria-label'),uiText('sd'));
+ const before=s.calls.filter(c=>c.payload).length;s.find('library-chat-retry').click();assert.equal(s.input().value,'A failed question');assert.equal(s.calls.filter(c=>c.payload).length,before,'editing a failed question cannot silently dispatch generation');
+});
+
+test('a new pending question keeps a failed historical turn and its open process details',async t=>{
+ const s=setup(t);s.setTurns([{id:'old-failure',text:'An earlier question',passageId:'p1',contentVersion:'v1',status:'failed',activity:[{tool:'reader_search',status:'failed'}]}]);s.chat.open();await flush();
+ const old=s.find('library-chat-turn'),details=s.find('library-chat-activity-details'),retry=s.find('library-chat-retry');details.open=true;
+ type(s.input(),'A fresh question');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();
+ assert.ok(s.find('library-chat-turn')===old);assert.ok(s.find('library-chat-activity-details')===details);assert.equal(details.open,true);assert.equal(retry.disabled,true);
+});
+
+test('long answers stay open until explicitly folded without changing their stored prose',async t=>{
+ const s=setup(t),prose='A bounded historical explanation. '.repeat(50);s.setTurns([{id:'long-answer',text:'Explain this passage',status:'completed',answer:{summary:prose,sourceRefs:[]}}]);s.chat.open();await flush();
+ const fold=s.find('library-chat-answer-toggle'),body=s.find('library-chat-markdown');assert.equal(fold.getAttribute('aria-expanded'),'true');assert.notEqual(body.hidden,true);
+ fold.click();assert.equal(body.hidden,true);assert.equal(fold.getAttribute('aria-expanded'),'false');fold.click();assert.equal(body.hidden,false);assert.ok(plain(body).includes(prose.trim()));assert.equal(s.calls.filter(c=>c.payload).length,0);
+});
 
 test('workspace lifecycle reports each actual view transition once and preserves the draft',async t=>{
  const changes=[],s=setup(t,{onViewChange:open=>changes.push(open)});s.chat.open();await flush();type(s.input(),'Keep this question.');s.chat.open();s.chat.close();s.chat.close();assert.deepEqual(changes,[true,false]);
@@ -117,7 +188,7 @@ test('cancel receipt defeats a delayed POST and pending tool activity updates pr
   const post=deferred();let receipt,activity=[];
   const s=setup(t,{handler:async(url,payload)=>{if(url.endsWith('/cancel'))return {...receipt,status:'cancelled',activity};if(payload){receipt={...payload,status:'running',answer:null};return post.promise;}return response(receipt?[{...receipt,activity}]:[]);}});
   s.chat.open();await flush();type(s.input(),'我的问题');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();const row=s.find('library-chat-turn');
-  activity=[{tool:'reader_read_chapter',label:'正在阅读章节',status:'running',chapterId:'ch2'}];s.chat.close();s.chat.open();await flush();assert.equal(s.find('library-chat-turn'),row);assert.ok(plain(row).includes('正在阅读章节'));
+  activity=[{tool:'reader_read_chapter',label:'正在阅读章节',status:'running',chapterId:'ch2'}];s.chat.close();s.chat.open();await flush();assert.equal(s.find('library-chat-turn'),row);assert.ok(plain(row).includes(uiText('chat.activity.chapter')));
   s.find('library-chat-stop').click();await flush();post.resolve({...receipt,status:'completed',answer:{summary:'迟到回答'}});await flush();assert.equal(s.find('library-chat-answer'),undefined);assert.equal(s.input().disabled,false);assert.ok(!s.find('library-chat-activity'),'cancelled tools cannot look active');
 });
 test('Markdown renders real headings tables quotes and code safely with only registered internal links',async t=>{
@@ -193,7 +264,7 @@ test('pending turn has one stable status for neutral thinking and real tool acti
   s.setTurns([{...receipt,status:'running',answer:null,activity}]);s.chat.close();s.chat.open();await flush();
   assert.ok(s.find('library-chat-turn-status')===pending,'status DOM remains stable across activities');
   const visibleStatuses=row.children.filter(n=>n.className.includes('library-chat-turn-status')||n.className==='library-chat-activity');assert.equal(visibleStatuses.length,1,'one visual status per pending turn');
-  assert.equal(plain(pending),activity[0].status==='running'?'正在阅读章节':'正在思考…');
+  assert.equal(plain(pending),activity[0].status==='running'?uiText('chat.activity.chapter')+' · '+uiText('chat.activity.running'):'正在思考…');
  }
 });
 
@@ -215,8 +286,8 @@ test('the scope selector narrows library back to this book with the domain enum 
 test('completed chapter activity and companion attribution relabel on retained turns',async t=>{
  await requestUiRoute('en');const s=setup(t);s.setTurns([{id:'daily',kind:'companion',origin:'ai',status:'completed',answer:{summary:'Literal AI answer',sourceRefs:[]},activity:[{tool:'reader_read_chapter',status:'completed',bookId:'one',chapterId:'c1',label:'Literal activity'}]}]);s.chat.open();await flush();
  const row=s.find('library-chat-turn'),answer=s.find('library-chat-answer'),activity=s.find('library-chat-activity-details'),summary=activity.children[0],attribution=s.find('library-chat-attribution');
- assert.equal(summary.textContent,uiText('chat.activity.chapters',{count:1}));
- for(const code of ['ja','zh-Hant','zh-Hans','en']){await requestUiRoute(code);assert.equal(s.find('library-chat-turn'),row);assert.equal(s.find('library-chat-answer'),answer);assert.equal(summary.textContent,uiText('chat.activity.chapters',{count:1}));assert.equal(attribution.textContent,uiText('cm'));assert.ok(plain(answer).includes('Literal AI answer'));}
+ assert.equal(summary.textContent,uiText('chat.activity.summary',{count:1}));
+ for(const code of ['ja','zh-Hant','zh-Hans','en']){await requestUiRoute(code);assert.equal(s.find('library-chat-turn'),row);assert.equal(s.find('library-chat-answer'),answer);assert.equal(summary.textContent,uiText('chat.activity.summary',{count:1}));assert.equal(attribution.textContent,uiText('cm'));assert.ok(plain(answer).includes('Literal AI answer'));}
 });
 
 test('disposing a chat removes owned root and viewport listeners before remount',async t=>{
@@ -277,10 +348,13 @@ test('review chat R3 missing context translation relabels in place while real pr
  await requestUiRoute('en');t.after(async()=>{await requestUiRoute('en');});const translated=uiText('t.nr');
  const context={passageId:'p1',chapterTitle:'Literal chapter',original:'Original author prose',literal:null,interpretive:translated};
  const s=setup(t,{handler:async()=>({...response([]),context})});s.chat.open();await flush();
- const body=s.find('library-chat-context-body'),original=body.children[1].children[1],missing=body.children[2].children[1],actual=body.children[3].children[1],replacements=body.replacements,calls=s.calls.length;
- type(s.input(),'Unsent question');s.input().focus();s.input().selectionStart=3;s.input().selectionEnd=8;
- assert.equal(missing.textContent,translated);assert.equal(actual.textContent,translated);
- for(const locale of ['ja','zh-Hant','zh-Hans','en']){await requestUiRoute(locale);assert.equal(missing.textContent,uiText('t.nr'));assert.equal(body.children[2].children[1],missing);assert.equal(body.replacements,replacements);assert.equal(original.textContent,context.original);assert.equal(actual.textContent,translated);assert.equal(actual.getAttribute('data-ui'),undefined);assert.equal(s.doc.activeElement,s.input());assert.equal(s.input().selectionStart,3);assert.equal(s.input().selectionEnd,8);assert.equal(s.input().value,'Unsent question');}
+ const body=s.find('library-chat-context-body'),choice=s.find('library-chat-layer-choice'),sourceHost=body.children[2],replacements=body.replacements,calls=s.calls.length;
+ const choose=key=>{choice.value=key;choice.dispatchEvent(new Event('change'));return sourceHost.children[0].children[1];};
+ assert.equal(choose('original').textContent,context.original);assert.equal(choose('interpretive').textContent,translated);
+ const missing=choose('literal');type(s.input(),'Unsent question');s.input().focus();s.input().selectionStart=3;s.input().selectionEnd=8;
+ assert.equal(missing.textContent,translated);
+ for(const locale of ['ja','zh-Hant','zh-Hans','en']){await requestUiRoute(locale);assert.equal(missing.textContent,uiText('t.nr'));assert.equal(sourceHost.children[0].children[1],missing);assert.equal(body.replacements,replacements);assert.equal(s.doc.activeElement,s.input());assert.equal(s.input().selectionStart,3);assert.equal(s.input().selectionEnd,8);assert.equal(s.input().value,'Unsent question');}
+ assert.equal(choose('original').textContent,context.original);const actual=choose('interpretive');assert.equal(actual.textContent,translated);assert.equal(actual.getAttribute('data-ui'),undefined);
  assert.equal(s.calls.length,calls);
 });
 
