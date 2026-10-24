@@ -62,3 +62,19 @@ test('a decorative figure can retain its entrance movement',()=>{
   const s=setup();mountHomeMotion(s.root);s.observers.at(-1).enter(s.element);
   assert.ok(s.animations[0].frames.some(frame=>frame.translate),'noninteractive artwork retains movement');
 });
+
+test('the book shot plays once on decorative layers, stops on focus and respects lifecycle changes',()=>{
+ const s=setup(),cover=s.makeElement(),light=s.makeElement(),card=s.makeElement({interactive:true});
+ const query=card.querySelector;card.querySelector=selector=>selector==='.book-cover'?cover:selector==='.book-scene-light'?light:query(selector);
+ card.matches=selector=>selector==='.book-card';s.cards.push(card);mountHomeMotion(s.root);
+ s.observers.at(-1).enter(card);
+ assert.equal(s.animations.length,3,'card fade plus two decorative camera layers');
+ const shot=s.animations.slice(1);
+ assert.ok(shot.every(animation=>animation.options.duration<=5000&&animation.options.iterations!==Infinity));
+ card.closest=()=>card;card.contains=target=>[card,cover,light].includes(target);
+ const event=new Event('focusin');Object.defineProperty(event,'target',{value:card});s.root.dispatchEvent(event);
+ assert.ok(s.animations.every(animation=>animation.cancelled),'keyboard focus settles the whole shot');
+ s.doc.hidden=true;s.doc.dispatchEvent(new Event('visibilitychange'));s.doc.hidden=false;s.doc.dispatchEvent(new Event('visibilitychange'));
+ assert.ok(!s.observers.at(-1).elements.has(card),'returning to the tab never replays the shot');
+ s.media.matches=true;s.media.dispatchEvent(new Event('change'));assert.ok(s.animations.every(animation=>animation.cancelled));
+});

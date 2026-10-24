@@ -4,6 +4,11 @@ export function mountHomeMotion(root,win=root?.ownerDocument?.defaultView){
   if(!root||root.hidden||!win?.IntersectionObserver||!win.Element?.prototype.animate)return ()=>{};
   const doc=root.ownerDocument,preference=win.matchMedia('(prefers-reduced-motion: reduce)');
   const seen=new WeakSet(),active=new Map();
+  const play=(element,frames,options)=>{
+    const animation=element.animate(frames,options);active.set(element,animation);
+    const finished=()=>{if(active.get(element)===animation)active.delete(element);};
+    animation.finished.then(finished,finished);
+  };
   const selectors='.reading-promise, .section-copy, .sample-sheet, .daily-copy, .page-detail, .section-top, .ownership-section > div, .closing';
   const shelf=root.querySelector('#featured-books');
   let observer=null,changes=null,disposed=false;
@@ -29,12 +34,19 @@ export function mountHomeMotion(root,win=root?.ownerDocument?.defaultView){
         const actionable='a[href], button, input, select, textarea, summary, [tabindex], [contenteditable]';
         const interactive=element.matches(actionable)||element.querySelector(actionable);
         const frames=interactive?[{opacity:.65},{opacity:1}]:[{opacity:.65,translate:'0 12px'},{opacity:1,translate:'0 0'}];
-        const animation=element.animate(frames,{
+        play(element,frames,{
           duration:420,delay:Math.min(index++*50,100),fill:'backwards',easing:'cubic-bezier(.22,1,.36,1)'
         });
-        active.set(element,animation);
-        const finished=()=>{if(active.get(element)===animation)active.delete(element);};
-        animation.finished.then(finished,finished);
+        // One brief camera move on the artwork. The link's hit area stays still.
+        if(element.matches('.book-card')){
+          const cover=element.querySelector('.book-cover'),light=element.querySelector('.book-scene-light');
+          if(cover?.animate)play(cover,[
+            {transform:'translateY(5px) rotateX(6deg) rotateY(-18deg) rotateZ(-3deg) scale(.97)'},
+            {transform:'translateY(-2px) rotateX(3deg) rotateY(-10deg) rotateZ(-2deg) scale(1.01)',offset:.65},
+            {transform:'translateY(0) rotateX(3deg) rotateY(-12deg) rotateZ(-2deg) scale(1)'}
+          ],{duration:4600,easing:'cubic-bezier(.22,1,.36,1)'});
+          if(light?.animate)play(light,[{transform:'translateX(-22%)',opacity:0},{opacity:.6,offset:.35},{transform:'translateX(22%)',opacity:0}],{duration:4600,easing:'ease-in-out'});
+        }
       }
     },{threshold:.08,rootMargin:'0px 0px 32px 0px'});
     for(const element of root.querySelectorAll(selectors))if(!seen.has(element))observer.observe(element);
@@ -43,7 +55,8 @@ export function mountHomeMotion(root,win=root?.ownerDocument?.defaultView){
   };
   const focus=event=>{
     // A keyboard user can act immediately, even during a staggered entrance.
-    for(const [element,animation] of active)if(element.contains(event.target)){animation.cancel();active.delete(element);}
+    const card=event.target.closest?.('.book-card');
+    for(const [element,animation] of active)if(element.contains(event.target)||card?.contains(element)){animation.cancel();active.delete(element);}
   };
   preference.addEventListener('change',start);doc.addEventListener('visibilitychange',start);
   win.addEventListener('pagehide',stop);win.addEventListener('pageshow',start);root.addEventListener('focusin',focus);

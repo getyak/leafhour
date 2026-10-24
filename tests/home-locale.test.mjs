@@ -122,6 +122,7 @@ test('every language serves the same homepage structure over HTTP',async t=>{
   t.after(async()=>{await new Promise(resolve=>server.close(resolve));await rm(dir,{recursive:true,force:true});});
   const base='http://127.0.0.1:'+server.address().port;
   const englishResponse=await fetch(base+'/'),english=await englishResponse.text();assert.equal(englishResponse.status,200);
+  const showcaseStyle=await fetch(base+'/home-books.css');assert.equal(showcaseStyle.status,200);assert.match(showcaseStyle.headers.get('content-type'),/text\/css/);
   assert.match(english,/<html lang="en">/);assert.doesNotMatch(english,/留一点时间，读进一本书。/);
   for(const locale of homeLocales){
     const route=locale.code==='en'?'/en':locale.route;

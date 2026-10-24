@@ -1,0 +1,568 @@
+TAP version 13
+# Subtest: palette extraction accepts shared selectors without confusing day and night
+ok 1 - palette extraction accepts shared selectors without confusing day and night
+  ---
+  duration_ms: 3.114292
+  type: 'test'
+  ...
+# Subtest: every product stylesheet parses cleanly through esbuild
+ok 2 - every product stylesheet parses cleanly through esbuild
+  ---
+  duration_ms: 131.661875
+  type: 'test'
+  ...
+# Subtest: the shared module owns the two line tokens, the shadow family and the focus ring
+ok 3 - the shared module owns the two line tokens, the shadow family and the focus ring
+  ---
+  duration_ms: 1.233417
+  type: 'test'
+  ...
+# Subtest: the 72% accent focus ring keeps 3:1 contrast against every local palette
+ok 4 - the 72% accent focus ring keeps 3:1 contrast against every local palette
+  ---
+  duration_ms: 21.011917
+  type: 'test'
+  ...
+# Subtest: local palettes bind their own ink/accent so the one ring formula resolves locally
+ok 5 - local palettes bind their own ink/accent so the one ring formula resolves locally
+  ---
+  duration_ms: 3.036042
+  type: 'test'
+  ...
+# Subtest: the input variant stays low-specificity and aria-invalid keeps its semantic border
+ok 6 - the input variant stays low-specificity and aria-invalid keeps its semantic border
+  ---
+  duration_ms: 1.236417
+  type: 'test'
+  ...
+# Subtest: no surface re-implements the brand ring and keyboard focus is never removed
+ok 7 - no surface re-implements the brand ring and keyboard focus is never removed
+  ---
+  duration_ms: 147.330833
+  type: 'test'
+  ...
+# Subtest: the action vocabulary covers every primary class and the header sign-in
+ok 8 - the action vocabulary covers every primary class and the header sign-in
+  ---
+  duration_ms: 13.158166
+  type: 'test'
+  ...
+# Subtest: static dialogs declare native autofocus intent without tabindex
+ok 9 - static dialogs declare native autofocus intent without tabindex
+  ---
+  duration_ms: 1.482875
+  type: 'test'
+  ...
+# Subtest: the technical tools load the shared module and keep no competing ring
+ok 10 - the technical tools load the shared module and keep no competing ring
+  ---
+  duration_ms: 1.61325
+  type: 'test'
+  ...
+# Subtest: share primary cannot inherit a secondary-only hover wash or square radius
+ok 11 - share primary cannot inherit a secondary-only hover wash or square radius
+  ---
+  duration_ms: 0.648
+  type: 'test'
+  ...
+# Subtest: the chat composer exposes the shared ring when its textarea receives keyboard focus
+ok 12 - the chat composer exposes the shared ring when its textarea receives keyboard focus
+  ---
+  duration_ms: 0.563584
+  type: 'test'
+  ...
+# Subtest: reader secondary hover uses its own night wash when no portal surface exists
+ok 13 - reader secondary hover uses its own night wash when no portal surface exists
+  ---
+  duration_ms: 0.9765
+  type: 'test'
+  ...
+# Subtest: share feedback styling targets its actual sibling status element
+ok 14 - share feedback styling targets its actual sibling status element
+  ---
+  duration_ms: 0.219
+  type: 'test'
+  ...
+# Subtest: reader language chips keep normal text contrast on paper and night surfaces
+ok 15 - reader language chips keep normal text contrast on paper and night surfaces
+  ---
+  duration_ms: 1.779583
+  type: 'test'
+  ...
+# Subtest: every catalog row carries each public language beside its authored source
+ok 16 - every catalog row carries each public language beside its authored source
+  ---
+  duration_ms: 0.71275
+  type: 'test'
+  ...
+# Subtest: localization never rewrites book sample text and leaves no source text in the English page
+ok 17 - localization never rewrites book sample text and leaves no source text in the English page
+  ---
+  duration_ms: 2.838541
+  type: 'test'
+  ...
+# Subtest: each public language renders the authored home structure and its own presentation
+ok 18 - each public language renders the authored home structure and its own presentation
+  ---
+  duration_ms: 2.187833
+  type: 'test'
+  ...
+# Subtest: the language switcher appears on the home page with the current language marked
+ok 19 - the language switcher appears on the home page with the current language marked
+  ---
+  duration_ms: 1.855333
+  type: 'test'
+  ...
+# Subtest: dynamic sign-in counts and book labels localize per language
+ok 20 - dynamic sign-in counts and book labels localize per language
+  ---
+  duration_ms: 0.078042
+  type: 'test'
+  ...
+# Subtest: every static menu sheet control keeps explicit four-language authored copy
+ok 21 - every static menu sheet control keeps explicit four-language authored copy
+  ---
+  duration_ms: 2.742958
+  type: 'test'
+  ...
+# Subtest: unknown sign-in service messages keep a readable localized fallback
+ok 22 - unknown sign-in service messages keep a readable localized fallback
+  ---
+  duration_ms: 0.150375
+  type: 'test'
+  ...
+# Subtest: every language serves the same homepage structure over HTTP
+ok 23 - every language serves the same homepage structure over HTTP
+  ---
+  duration_ms: 110.264916
+  type: 'test'
+  ...
+# Subtest: the library shell renders the complete safe English shell and hides in-page home navigation
+ok 24 - the library shell renders the complete safe English shell and hides in-page home navigation
+  ---
+  duration_ms: 1.4855
+  type: 'test'
+  ...
+# Subtest: first-paint owned home anchors carry the authored language even with denied storage and another browser language
+ok 25 - first-paint owned home anchors carry the authored language even with denied storage and another browser language
+  ---
+  duration_ms: 5.2855
+  type: 'test'
+  ...
+# Subtest: public home navigation exposes localized Agent and pricing links plus a named GitHub mark before JavaScript
+ok 26 - public home navigation exposes localized Agent and pricing links plus a named GitHub mark before JavaScript
+  ---
+  duration_ms: 2.145458
+  type: 'test'
+  ...
+# Subtest: the hidden homepage in the library never mounts animation observers
+ok 27 - the hidden homepage in the library never mounts animation observers
+  ---
+  duration_ms: 1.460084
+  type: 'test'
+  ...
+# Subtest: reduced motion cancels an entrance immediately and never hides new content
+ok 28 - reduced motion cancels an entrance immediately and never hides new content
+  ---
+  duration_ms: 1.124458
+  type: 'test'
+  ...
+# Subtest: new shelf cards participate, while tab hiding and cleanup stop active animation
+ok 29 - new shelf cards participate, while tab hiding and cleanup stop active animation
+  ---
+  duration_ms: 1.3385
+  type: 'test'
+  ...
+# Subtest: unsupported observation leaves the document readable without an animation dependency
+ok 30 - unsupported observation leaves the document readable without an animation dependency
+  ---
+  duration_ms: 0.420833
+  type: 'test'
+  ...
+# Subtest: tabbing into a section before its intersection callback never dims the focused action
+ok 31 - tabbing into a section before its intersection callback never dims the focused action
+  ---
+  duration_ms: 0.378042
+  type: 'test'
+  ...
+# Subtest: pointer focus during an interactive card entrance never changes its hit geometry
+ok 32 - pointer focus during an interactive card entrance never changes its hit geometry
+  ---
+  duration_ms: 0.540417
+  type: 'test'
+  ...
+# Subtest: a decorative figure can retain its entrance movement
+ok 33 - a decorative figure can retain its entrance movement
+  ---
+  duration_ms: 0.293916
+  type: 'test'
+  ...
+# Subtest: the book shot plays once on decorative layers, stops on focus and respects lifecycle changes
+ok 34 - the book shot plays once on decorative layers, stops on focus and respects lifecycle changes
+  ---
+  duration_ms: 0.780416
+  type: 'test'
+  ...
+# Subtest: the menu mounts on the five authored home routes and never on the canonical library
+ok 35 - the menu mounts on the five authored home routes and never on the canonical library
+  ---
+  duration_ms: 2.555667
+  type: 'test'
+  ...
+# Subtest: the authored home markup ships one trigger and one native sheet with the exact ids the controller needs
+ok 36 - the authored home markup ships one trigger and one native sheet with the exact ids the controller needs
+  ---
+  duration_ms: 62.723334
+  type: 'test'
+  ...
+# Subtest: the sheet opens and closes like a native dialog and Escape returns the visible opener
+ok 37 - the sheet opens and closes like a native dialog and Escape returns the visible opener
+  ---
+  duration_ms: 14.0985
+  type: 'test'
+  ...
+# Subtest: opening refuses another open modal and the open appearance popover
+ok 38 - opening refuses another open modal and the open appearance popover
+  ---
+  duration_ms: 2.054458
+  type: 'test'
+  ...
+# Subtest: the sheet reuses the real navigation anchors and localized language links
+ok 39 - the sheet reuses the real navigation anchors and localized language links
+  ---
+  duration_ms: 2.853834
+  type: 'test'
+  ...
+# Subtest: a normal destination anchor keeps default scrolling and focuses the real target in one guarded RAF
+ok 40 - a normal destination anchor keeps default scrolling and focuses the real target in one guarded RAF
+  ---
+  duration_ms: 2.826542
+  type: 'test'
+  ...
+# Subtest: the guarded destination focus adds the focus affordance only when the target has none
+ok 41 - the guarded destination focus adds the focus affordance only when the target has none
+  ---
+  duration_ms: 1.511041
+  type: 'test'
+  ...
+# Subtest: a newer modal or a superseded destination request never steals the destination focus
+ok 42 - a newer modal or a superseded destination request never steals the destination focus
+  ---
+  duration_ms: 2.005042
+  type: 'test'
+  ...
+# Subtest: modified clicks keep native anchor behaviour and leave the sheet alone
+ok 43 - modified clicks keep native anchor behaviour and leave the sheet alone
+  ---
+  duration_ms: 1.680333
+  type: 'test'
+  ...
+# Subtest: non-fragment destinations close without any later focus steal
+ok 44 - non-fragment destinations close without any later focus steal
+  ---
+  duration_ms: 2.225208
+  type: 'test'
+  ...
+# Subtest: the sign-in handoff closes the sheet, focuses the visible trigger and opens auth immediately
+ok 45 - the sign-in handoff closes the sheet, focuses the visible trigger and opens auth immediately
+  ---
+  duration_ms: 1.712083
+  type: 'test'
+  ...
+# Subtest: the palette entry closes the sheet, focuses the visible trigger and hands that same opener over
+ok 46 - the palette entry closes the sheet, focuses the visible trigger and hands that same opener over
+  ---
+  duration_ms: 1.359167
+  type: 'test'
+  ...
+# Subtest: crossing the desktop breakpoint closes the sheet and returns the visible brand
+ok 47 - crossing the desktop breakpoint closes the sheet and returns the visible brand
+  ---
+  duration_ms: 3.064791
+  type: 'test'
+  ...
+# Subtest: owner clear and same-owner retry remove stale resume rows and stale updates are rejected
+ok 48 - owner clear and same-owner retry remove stale resume rows and stale updates are rejected
+  ---
+  duration_ms: 1.138708
+  type: 'test'
+  ...
+# Subtest: resume eligibility comes only from real current progress; guests without progress see no continue row
+ok 49 - resume eligibility comes only from real current progress; guests without progress see no continue row
+  ---
+  duration_ms: 0.89275
+  type: 'test'
+  ...
+# Subtest: the home account row opens the reading room without an extra account dialog
+ok 50 - the home account row opens the reading room without an extra account dialog
+  ---
+  duration_ms: 0.793958
+  type: 'test'
+  ...
+# Subtest: dispose detaches the sheet from the shared focus registry and the page listeners
+ok 51 - dispose detaches the sheet from the shared focus registry and the page listeners
+  ---
+  duration_ms: 0.394708
+  type: 'test'
+  ...
+# Subtest: the actual refresh wiring clears the optional resume at every generation start through pending and failure
+ok 52 - the actual refresh wiring clears the optional resume at every generation start through pending and failure
+  ---
+  duration_ms: 1.844708
+  type: 'test'
+  ...
+# Subtest: the actual refresh wiring syncs identity rows when the session settles even if the library request fails
+ok 53 - the actual refresh wiring syncs identity rows when the session settles even if the library request fails
+  ---
+  duration_ms: 1.084541
+  type: 'test'
+  ...
+# Subtest: owner transitions keep identity and resume rows in step with the adopted session
+ok 54 - owner transitions keep identity and resume rows in step with the adopted session
+  ---
+  duration_ms: 1.180333
+  type: 'test'
+  ...
+# Subtest: a failed first library request cannot preserve one account view when the next account arrives
+ok 55 - a failed first library request cannot preserve one account view when the next account arrives
+  ---
+  duration_ms: 1.391083
+  type: 'test'
+  ...
+# Subtest: portal wires the owner settlement token beside the real user id getter
+ok 56 - portal wires the owner settlement token beside the real user id getter
+  ---
+  duration_ms: 0.275625
+  type: 'test'
+  ...
+# Subtest: home locale labels and existing owned links change without querying identity or books or replacing the active sheet
+ok 57 - home locale labels and existing owned links change without querying identity or books or replacing the active sheet
+  ---
+  duration_ms: 12.177292
+  type: 'test'
+  ...
+# Subtest: owned hero, sample and footer links retain locale without rebuilding body content or rewriting unowned targets
+ok 58 - owned hero, sample and footer links retain locale without rebuilding body content or rewriting unowned targets
+  ---
+  duration_ms: 7.041625
+  type: 'test'
+  ...
+# Subtest: authored ja links survive the initial pending catalogue, then follow success settlement and retry
+ok 59 - authored ja links survive the initial pending catalogue, then follow success settlement and retry
+  ---
+  duration_ms: 11.92425
+  type: 'test'
+  ...
+# Subtest: authored ja links survive the initial pending catalogue, then follow failure settlement and retry
+ok 60 - authored ja links survive the initial pending catalogue, then follow failure settlement and retry
+  ---
+  duration_ms: 10.259583
+  type: 'test'
+  ...
+# Subtest: authored zh-Hans links survive the initial pending catalogue, then follow success settlement and retry
+ok 61 - authored zh-Hans links survive the initial pending catalogue, then follow success settlement and retry
+  ---
+  duration_ms: 11.185459
+  type: 'test'
+  ...
+# Subtest: authored zh-Hans links survive the initial pending catalogue, then follow failure settlement and retry
+ok 62 - authored zh-Hans links survive the initial pending catalogue, then follow failure settlement and retry
+  ---
+  duration_ms: 10.445459
+  type: 'test'
+  ...
+# Subtest: authored zh-Hant links survive the initial pending catalogue, then follow success settlement and retry
+ok 63 - authored zh-Hant links survive the initial pending catalogue, then follow success settlement and retry
+  ---
+  duration_ms: 8.754208
+  type: 'test'
+  ...
+# Subtest: authored zh-Hant links survive the initial pending catalogue, then follow failure settlement and retry
+ok 64 - authored zh-Hant links survive the initial pending catalogue, then follow failure settlement and retry
+  ---
+  duration_ms: 10.155625
+  type: 'test'
+  ...
+# Subtest: disposing an authored home during first load fences late successful settlement
+ok 65 - disposing an authored home during first load fences late successful settlement
+  ---
+  duration_ms: 6.643542
+  type: 'test'
+  ...
+# Subtest: invalid paragraph fractions cannot become a resumable position
+ok 66 - invalid paragraph fractions cannot become a resumable position
+  ---
+  duration_ms: 0.504666
+  type: 'test'
+  ...
+# Subtest: long-paragraph progress survives service persistence and backup recovery without weakening revision checks
+ok 67 - long-paragraph progress survives service persistence and backup recovery without weakening revision checks
+  ---
+  duration_ms: 83.371125
+  type: 'test'
+  ...
+# Subtest: an earlier save advances the newer pending cache without replacing its passage
+ok 68 - an earlier save advances the newer pending cache without replacing its passage
+  ---
+  duration_ms: 0.508167
+  type: 'test'
+  ...
+# Subtest: a newer server position beats an old browser cache; unsent compatible work and anonymous reading still resume
+ok 69 - a newer server position beats an old browser cache; unsent compatible work and anonymous reading still resume
+  ---
+  duration_ms: 0.346875
+  type: 'test'
+  ...
+# Subtest: resume summaries preserve the anchor and name its actual chapter, without invented completion percentages
+ok 70 - resume summaries preserve the anchor and name its actual chapter, without invented completion percentages
+  ---
+  duration_ms: 0.563459
+  type: 'test'
+  ...
+# Subtest: library returns only the signed-in reader resume and refuses stale browser writes atomically
+ok 71 - library returns only the signed-in reader resume and refuses stale browser writes atomically
+  ---
+  duration_ms: 180.37275
+  type: 'test'
+  ...
+# Subtest: the self-hosted Newsreader faces keep their reviewed bytes, license and metrics
+ok 72 - the self-hosted Newsreader faces keep their reviewed bytes, license and metrics
+  ---
+  duration_ms: 27.598291
+  type: 'test'
+  ...
+# Subtest: the shared typography module declares local swap-faced fonts and the ordered alias
+ok 73 - the shared typography module declares local swap-faced fonts and the ordered alias
+  ---
+  duration_ms: 2.592
+  type: 'test'
+  ...
+# Subtest: every product page loads the shared typography module and only the first screen preloads the upright face
+ok 74 - every product page loads the shared typography module and only the first screen preloads the upright face
+  ---
+  duration_ms: 16.310625
+  type: 'test'
+  ...
+# Subtest: functional type keeps a 12px floor and em/token tracking across product CSS
+ok 75 - functional type keeps a 12px floor and em/token tracking across product CSS
+  ---
+  duration_ms: 25.201042
+  type: 'test'
+  ...
+# Subtest: authored title, path and sample text stays byte-for-byte, including Alice’s apostrophe
+ok 76 - authored title, path and sample text stays byte-for-byte, including Alice’s apostrophe
+  ---
+  duration_ms: 1.642375
+  type: 'test'
+  ...
+# Subtest: the release allowlist and public build policy carry the fonts and shared stylesheet
+ok 77 - the release allowlist and public build policy carry the fonts and shared stylesheet
+  ---
+  duration_ms: 31.301208
+  type: 'test'
+  ...
+# Subtest: the font size exemption rejects joint manifest/file substitution and duplicate face entries
+ok 78 - the font size exemption rejects joint manifest/file substitution and duplicate face entries
+  ---
+  duration_ms: 11.384791
+  type: 'test'
+  ...
+# Subtest: one owner cache retains independent text and attribute slots and explicitly relinquishes only the requested slot
+ok 79 - one owner cache retains independent text and attribute slots and explicitly relinquishes only the requested slot
+  ---
+  duration_ms: 16.419625
+  type: 'test'
+  ...
+# Subtest: cache pruning is explicit, bounded and preserves the existing detached-node refresh default
+ok 80 - cache pruning is explicit, bounded and preserves the existing detached-node refresh default
+  ---
+  duration_ms: 12.516166
+  type: 'test'
+  ...
+# Subtest: actual public and private shelf cards use complete message IDs and preserve their source titles
+ok 81 - actual public and private shelf cards use complete message IDs and preserve their source titles
+  ---
+  duration_ms: 41.990916
+  type: 'test'
+  ...
+# Subtest: upload progress relabels only its current operation and never revives a replaced status
+ok 82 - upload progress relabels only its current operation and never revives a replaced status
+  ---
+  duration_ms: 1.870583
+  type: 'test'
+  ...
+# Subtest: owner reset, owner ABA and a finished upload fence cached and late progress
+ok 83 - owner reset, owner ABA and a finished upload fence cached and late progress
+  ---
+  duration_ms: 1.114875
+  type: 'test'
+  ...
+# Subtest: owner reset drops account translation availability even for shared public books
+ok 84 - owner reset drops account translation availability even for shared public books
+  ---
+  duration_ms: 0.711417
+  type: 'test'
+  ...
+# Subtest: home cover title and stored resume label remain content even when equal to a UI phrase
+ok 85 - home cover title and stored resume label remain content even when equal to a UI phrase
+  ---
+  duration_ms: 0.669
+  type: 'test'
+  ...
+# Subtest: homepage catalog metadata and cached chapter positions follow the committed UI language in place
+ok 86 - homepage catalog metadata and cached chapter positions follow the committed UI language in place
+  ---
+  duration_ms: 1.344542
+  type: 'test'
+  ...
+# Subtest: actual dedicated upload progress replaces a semantic notice and keeps its language truthful without reviving finished work
+ok 87 - actual dedicated upload progress replaces a semantic notice and keeps its language truthful without reviving finished work
+  ---
+  duration_ms: 0.914375
+  type: 'test'
+  ...
+# Subtest: actual portal relabels static library chrome in place, including visible names, hints and authored home destinations
+ok 88 - actual portal relabels static library chrome in place, including visible names, hints and authored home destinations
+  ---
+  duration_ms: 46.307375
+  type: 'test'
+  ...
+# Subtest: the signed-in home reading-room button opens the shelf without an extra settings dialog
+ok 89 - the signed-in home reading-room button opens the shelf without an extra settings dialog
+  ---
+  duration_ms: 3.351541
+  type: 'test'
+  ...
+# Subtest: the home guest button still opens sign-in and the library account button still opens account settings
+ok 90 - the home guest button still opens sign-in and the library account button still opens account settings
+  ---
+  duration_ms: 1.682042
+  type: 'test'
+  ...
+# Subtest: saving, confirming and deleting reading preferences preserves explicit shelf selections and reader defaults
+ok 91 - saving, confirming and deleting reading preferences preserves explicit shelf selections and reader defaults
+  ---
+  duration_ms: 0.913917
+  type: 'test'
+  ...
+# Subtest: opening and refreshing an account never replaces the explicit shelf view with saved preferences
+ok 92 - opening and refreshing an account never replaces the explicit shelf view with saved preferences
+  ---
+  duration_ms: 0.827916
+  type: 'test'
+  ...
+# Subtest: empty shelf help addresses a title search before language and format filters
+ok 93 - empty shelf help addresses a title search before language and format filters
+  ---
+  duration_ms: 0.219792
+  type: 'test'
+  ...
+1..93
+# tests 93
+# suites 0
+# pass 93
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 612.432542

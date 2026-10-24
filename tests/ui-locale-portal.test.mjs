@@ -89,6 +89,32 @@ test('home cover title and stored resume label remain content even when equal to
   assert.equal(nodes.find(x=>x.className==='book-resume').textContent,'阅读');assert.equal(book.resume.label,'阅读');
 });
 
+test('homepage catalog metadata and cached chapter positions follow the committed UI language in place',async()=>{
+ const make=(tag,className='',text)=>({tag,className,textContent:text??'',children:[],attrs:{},setAttribute(k,v){this.attrs[k]=v;},append(...children){this.children.push(...children);}});
+ const labels=new Map(),local={passageId:'p7',chapterLabel:'第 1 章 · 掉进兔子洞',contentVersion:'v'};
+ const context={getUiLocale,homeText,isLibrary:false,make,session:null,readingBookUrl:(_book,resume)=>'/read?book=gutenberg-alice'+(resume?'&passage='+resume.passageId:''),t,chineseTrialUrl:()=>'/read?sample=zh',positionStorageKey:()=>'',localStorage:{getItem:()=>JSON.stringify(local)},registerCardNode(node,spec){labels.set(node,spec);}};
+ vm.createContext(context);vm.runInContext(declaration('landingBookCard')+'\nthis.cardFactory=landingBookCard;',context);
+ const book={bookId:'gutenberg-alice',title:{en:'Alice’s Adventures in Wonderland',zh:'爱丽丝梦游仙境'},author:'Lewis Carroll',description:'跟着白兔进入一个熟悉的陌生世界。',visibility:'public',cover:'alice',source:{format:'txt',sha256:'v'},paragraphs:20,chapterIndex:[{id:'ch01',kind:'body',number:1,title:{zh:'掉进兔子洞',en:'Down the Rabbit-Hole'}}]};
+ const original=JSON.stringify({book,local});
+ try{
+  await requestUiRoute('en');const card=context.cardFactory(book),all=node=>[node,...node.children.flatMap(all)],nodes=all(card);
+  const find=cls=>nodes.find(node=>node.className===cls);
+  assert.equal(find('book-resume').textContent,'Chapter 1 · Down the Rabbit-Hole');
+  assert.equal(find('book-description').textContent,'Follow the White Rabbit into a familiar, unfamiliar world.');
+  assert.equal(find('book-read').attrs['data-ui-message'],'portal.card.continue');
+  assert.match(nodes.find(node=>node.className==='book-art alice').href,/passage=p7/);
+  for(const locale of ['zh-Hans','en']){
+   await requestUiRoute(locale);
+   for(const [node,spec] of labels)if(!spec.attr)node.textContent=spec.render?spec.render():t(spec.id,spec.params);
+   assert.equal(find('book-resume').textContent,locale==='en'?'Chapter 1 · Down the Rabbit-Hole':'第 1 章 · 掉进兔子洞');
+   assert.equal(nodes.find(node=>node.tag==='h3').textContent,book.title[locale==='en'?'en':'zh']);
+  }
+  assert.equal(JSON.stringify({book,local}),original,'formatting never changes source metadata or persisted progress');
+  const meditation=context.cardFactory({...book,bookId:'gutenberg-meditations',author:'Marcus Aurelius · 英译 Meric Casaubon',resume:{chapterId:'ch01',passageId:'p7',label:local.chapterLabel}});
+  assert.equal(all(meditation).find(node=>node.className==='book-author').textContent,'Marcus Aurelius · translated by Meric Casaubon');
+ }finally{await requestUiRoute('en');}
+});
+
 test('actual dedicated upload progress replaces a semantic notice and keeps its language truthful without reviving finished work',async()=>{
  await requestUiRoute('en');const f=uploadFixture({t,getUiLocale});const off=onUiLocaleChange(f.context.relabel);try{f.context.replace('upload-status',{id:'portal.upload.organizing'});assert.equal(f.el('upload-status').getAttribute('lang'),'en');f.context.progress({id:'pdf.upload.saved',params:{percent:73}},f.ticket,f.upload);await requestUiRoute('ja');assert.equal(f.el('upload-status').textContent,t('pdf.upload.saved',{percent:73}));assert.equal(f.el('upload-status').getAttribute('lang'),'ja');const before={text:f.el('upload-status').textContent,lang:f.el('upload-status').getAttribute('lang')};f.upload.finish();await requestUiRoute('en');assert.equal(f.el('upload-status').textContent,before.text);assert.equal(f.el('upload-status').getAttribute('lang'),before.lang);f.context.replace('upload-status','');await requestUiRoute('ja');assert.equal(f.el('upload-status').textContent,'');}finally{off();await requestUiRoute('en');}
 });

@@ -1,0 +1,97 @@
+/* A quiet still life for the public catalog. The private shelf stays separate. */
+#home-view #featured-books { gap: 36px; }
+#home-view #featured-books .book-art {
+  height: 300px;
+  border-radius: 12px;
+  perspective: 1000px;
+  isolation: isolate;
+  background: color-mix(in srgb, var(--surface-soft) 88%, #bac8bd);
+}
+#home-view #featured-books .book-art.meditations { background: color-mix(in srgb, var(--surface-soft) 88%, #c9bfaa); }
+#home-view #featured-books .book-art.walden { background: color-mix(in srgb, var(--surface-soft) 88%, #b6c2b2); }
+#home-view #featured-books .book-art::before {
+  content: "";
+  position: absolute;
+  width: 65%;
+  height: 32px;
+  bottom: 23px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #17291d22, transparent 70%);
+  transform: rotate(-5deg);
+  pointer-events: none;
+}
+#home-view #featured-books .book-cover {
+  width: 164px;
+  height: 232px;
+  flex: none;
+  border-radius: 2px 5px 5px 2px;
+  transform: translateY(0) rotateX(3deg) rotateY(-12deg) rotateZ(-2deg) scale(1);
+  box-shadow: inset 6px 0 6px #0002, inset -1px 0 1px #fff3, 12px 20px 26px -14px #14251e55;
+  transition: transform 650ms cubic-bezier(.22,1,.36,1), box-shadow 650ms ease;
+}
+#home-view #featured-books .book-cover::before { inset: 12px 10px 12px 14px; opacity: .35; }
+#home-view #featured-books .book-cover::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  right: -5px;
+  width: 5px;
+  border-radius: 0 2px 2px 0;
+  background: repeating-linear-gradient(to bottom, #e4dfd0 0 1px, #f5f1e6 1px 3px);
+  transform-origin: left;
+  transform: skewY(-18deg);
+}
+#home-view #featured-books .cover-inner { inset: 27px 18px 24px; justify-content: flex-start; gap: 22px; }
+#home-view #featured-books .cover-inner small { font: 11px/1.4 var(--sans); letter-spacing: .02em; opacity: .7; }
+#home-view #featured-books .cover-inner strong { max-width: 100%; font: 400 22px/1.2 var(--font-serif); letter-spacing: -.025em; text-wrap: balance; overflow-wrap: normal; }
+#home-view #featured-books .cover-ornament { margin-top: auto; font-size: 30px; opacity: .65; }
+#home-view #featured-books .book-scene-light {
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(115deg, transparent 35%, #fff5 49%, transparent 62%);
+}
+#home-view #featured-books .book-meta { padding-top: 22px; }
+#home-view #featured-books .book-label { display: block; font-size: 12px; letter-spacing: 0; }
+#home-view #featured-books .book-meta h3 { margin-top: 8px; font-size: 22px; line-height: 1.35; text-wrap: balance; }
+#home-view #featured-books .book-author { margin: 8px 0 0; font-size: 12px; line-height: 1.6; }
+#home-view #featured-books .book-description { display: block; margin-top: 12px; font-size: 13px; line-height: 1.7; }
+#home-view #featured-books .book-resume { margin-top: 12px; font-size: 12px; }
+#home-view #featured-books .book-bottom { justify-content: flex-start; gap: 12px 18px; margin-top: 18px; }
+#home-view #featured-books .source-link { font-size: 12px; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  #home-view #featured-books .book-art:hover .book-cover {
+    transform: translateY(-5px) rotateX(1deg) rotateY(-5deg) rotateZ(0deg) scale(1.02);
+    box-shadow: inset 6px 0 6px #0002, inset -1px 0 1px #fff3, 10px 24px 30px -14px #14251e55;
+  }
+}
+@media (max-width: 760px) {
+  #home-view #featured-books { gap: 30px; }
+  #home-view #featured-books .book-card { grid-template-columns: 124px minmax(0, 1fr); gap: 22px; }
+  #home-view #featured-books .book-art { height: 192px; }
+  #home-view #featured-books .book-cover { width: 94px; height: 140px; }
+  #home-view #featured-books .cover-inner { inset: 16px 12px 14px; gap: 12px; }
+  #home-view #featured-books .cover-inner small { font-size: 8px; }
+  #home-view #featured-books .cover-inner strong { font-size: 13px; }
+  #home-view #featured-books .cover-ornament { font-size: 20px; }
+  #home-view #featured-books .book-cover::before { inset: 7px; }
+  #home-view #featured-books .book-meta { padding-top: 0; }
+  #home-view #featured-books .book-meta h3 { font-size: 19px; }
+  #home-view #featured-books .book-description { font-size: 12px; margin-top: 8px; }
+  #home-view #featured-books .book-bottom { gap: 4px 12px; margin-top: 8px; }
+  #home-view #featured-books .book-bottom a { min-height: 32px; display: inline-flex; align-items: center; }
+}
+@media (max-width: 370px) {
+  #home-view #featured-books .book-card { grid-template-columns: 100px minmax(0, 1fr); gap: 16px; }
+  #home-view #featured-books .book-art { height: 174px; }
+  #home-view #featured-books .book-cover { width: 78px; height: 122px; }
+  #home-view #featured-books .cover-inner { inset-inline: 8px; }
+  #home-view #featured-books .cover-inner strong { font-size: 11px; }
+  #home-view #featured-books .book-meta h3 { font-size: 17px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #home-view #featured-books .book-cover { transform: none; transition: none; }
+  #home-view #featured-books .book-scene-light { display: none; }
+}

@@ -160,18 +160,33 @@ function clearPrivateUI({keepAuthDialog=false,preserveView=false}={}){
 }
 function landingBookCard(book){
   const cardLabel=(node,id,params,attrName=null)=>{const value=t(id,params);if(attrName)node.setAttribute(attrName,value);else{node.textContent=value;node.setAttribute('lang',getUiLocale());}node.setAttribute(attrName?'data-ui-aria':'data-ui-message',id);if(params)node.setAttribute('data-ui-message-params',JSON.stringify(params));if(typeof registerCardNode==='function')registerCardNode(node,{id,params,attr:attrName});return node;};
-  const spaced=!isLibrary&&!/[\u3000-\u30ff\u3400-\u9fff]/.test(t('portal.card.start'));
-  const title=spaced&&!isLibrary?(book.title.en||book.title.zh):book.title.zh;
+  // Only bundled editorial metadata is translated. Imported titles, prose and
+  // unknown saved labels remain literal; no source or progress is rewritten.
+  const catalog=book.visibility==='public'&&['gutenberg-alice','gutenberg-meditations','gutenberg-walden'].includes(book.bookId);
+  const titleText=()=>getUiLocale()==='en'?(book.title.en||book.title.zh):book.title.zh;
+  const catalogText=value=>catalog?homeText(value,getUiLocale()):value;
+  const contentLabel=(node,render)=>{node.textContent=render();if(typeof registerCardNode==='function')registerCardNode(node,{render});return node;};
   const card=make('article','book-card'),art=make('a','book-art '+(book.cover||'private'));art.href='/read?book='+encodeURIComponent(book.bookId);
-  const cover=make('div','book-cover'),inner=make('div','cover-inner');inner.append(make('small','',book.visibility==='public'?'Leafhour':'MY READING ROOM'),make('strong','',isLibrary&&book.title.zh==='爱丽丝梦游仙境'?'爱丽丝\n梦游仙境':title.slice(0,64)),make('span','cover-ornament',book.cover==='alice'?'❦':book.cover==='walden'?'⌁':'☼'),make('small','',book.visibility==='public'?'ORIGINAL TEXT':'A BOOK OF MY OWN'));cover.append(inner);art.append(cover);
-  const meta=make('div','book-meta'),label=make('div','book-label');label.append(cardLabel(make('span'),book.visibility==='public'?'portal.card.public':'portal.card.private',book.visibility==='public'?null:{format:String(book.source.format||'').toUpperCase()}),cardLabel(make('span'),book.chineseSample?'portal.card.sample':book.visibility==='public'?'portal.card.translate':'portal.card.extracted',book.chineseSample?{count:book.chineseSample.paragraphs}:null));
-  meta.append(label,make('h3','',title),make('p','book-author',book.author||book.source.filename),book.description?make('p','book-description',book.description):cardLabel(make('p','book-description'),'books.descriptionFallback'));
-  let resume=book.resume;if(!session?.user){try{const local=JSON.parse(localStorage.getItem(positionStorageKey(book.bookId))||'null');if(local?.passageId&&local.chapterLabel&&local.contentVersion===book.source.sha256)resume={label:local.chapterLabel,passageId:local.passageId};}catch{}}
+  const cover=make('div','book-cover'),inner=make('div','cover-inner'),light=make('span','book-scene-light');light.setAttribute('aria-hidden','true');
+  inner.append(make('small','','Leafhour'),contentLabel(make('strong'),()=>catalog&&book.bookId==='gutenberg-walden'&&getUiLocale()==='en'?'Walden':titleText()),make('span','cover-ornament',book.cover==='alice'?'❦':book.cover==='walden'?'⌁':'☼'));cover.append(inner);art.append(cover,light);
+  const meta=make('div','book-meta'),label=make('div','book-label');label.append(cardLabel(make('span'),book.visibility==='public'?'portal.card.public':'portal.card.private',book.visibility==='public'?null:{format:String(book.source.format||'').toUpperCase()}));
+  meta.append(label,contentLabel(make('h3'),titleText),contentLabel(make('p','book-author'),()=>catalogText(book.author||book.source.filename)),book.description?contentLabel(make('p','book-description'),()=>catalogText(book.description)):cardLabel(make('p','book-description'),'books.descriptionFallback'));
+  let resume=book.resume;if(!session?.user){try{const local=JSON.parse(localStorage.getItem(positionStorageKey(book.bookId))||'null');if(local?.passageId&&local.chapterLabel&&local.contentVersion===book.source.sha256)resume={chapterId:local.chapterId,label:local.chapterLabel,passageId:local.passageId};}catch{}}
   const readerTarget=readingBookUrl(book,resume);art.href=readerTarget;typeof ownedHref==='function'&&ownedHref(art,readerTarget);
-  if(resume){meta.append(make('p','book-resume',resume.label));}
-  cardLabel(art,resume?'portal.card.continueAria':'portal.card.readAria',{title},'aria-label');
+  if(resume){meta.append(contentLabel(make('p','book-resume'),()=>{
+    if(!catalog)return resume.label;
+    // Older guest caches only saved a label. Match it against this edition's
+    // chapter index instead of guessing translations from arbitrary prose.
+    const chapter=(book.chapterIndex||[]).find(row=>row.id===resume.chapterId)||(book.chapterIndex||[]).find(row=>resume.label===row.title?.zh||resume.label==='第 '+row.number+' 章 · '+row.title?.zh);
+    if(!chapter)return resume.label;
+    const locale=getUiLocale(),chapterTitle=locale==='en'||locale==='ja'?chapter.title?.en:chapter.title?.zh;
+    if(!chapterTitle)return resume.label;
+    return chapter.kind==='body'&&!/^第 .+ [章卷]$/.test(chapterTitle)?t('navigation.chapter',{number:chapter.number})+' · '+chapterTitle:chapterTitle;
+  }));}
+  const artLabel={attr:'aria-label',render:()=>t(resume?'portal.card.continueAria':'portal.card.readAria',{title:titleText()})};
+  art.setAttribute('aria-label',artLabel.render());if(typeof registerCardNode==='function')registerCardNode(art,artLabel);
   const bottom=make('div','book-bottom'),read=cardLabel(make('a','book-read'),resume?'portal.card.continue':'portal.card.start');read.href=readerTarget;typeof ownedHref==='function'&&ownedHref(read,readerTarget);bottom.append(read);
-  if(book.chineseSample){const sampleTarget=chineseTrialUrl(book);const trial=cardLabel(make('a','source-link'),'portal.card.sampleLink');trial.href=sampleTarget;typeof ownedHref==='function'&&ownedHref(trial,sampleTarget);meta.append(trial);}
+  if(book.chineseSample){const sampleTarget=chineseTrialUrl(book);const trial=cardLabel(make('a','source-link'),'portal.card.sampleLink');trial.href=sampleTarget;typeof ownedHref==='function'&&ownedHref(trial,sampleTarget);bottom.append(trial);}
   if(book.source.url){const source=cardLabel(make('a','source-link'),'portal.card.source');source.href=book.source.url;source.target='_blank';source.rel='noopener noreferrer';bottom.append(source);}else bottom.append(cardLabel(make('span'),'portal.card.paragraphs',{count:book.paragraphs}));
   meta.append(bottom);card.append(art,meta);return card;
 }
