@@ -2249,8 +2249,8 @@ candidate:app/index.html:107:867,html-attribute,app/index.html,107,aria-label,un
 candidate:app/index.html:121:166,html-attribute,app/index.html,121,aria-label,unknown,reviewable,,Parallel style preview
 candidate:app/index.html:133:353,html-attribute,app/index.html,133,aria-label,unknown,reviewable,,Interface language
 candidate:app/index.html:171:53,html-attribute,app/index.html,171,aria-label,unknown,reviewable,,Share image settings
-candidate:app/index.html:193:86,html-attribute,app/index.html,193,aria-label,unknown,reviewable,,Reading chat
-candidate:app/index.html:197:92,html-attribute,app/index.html,197,aria-label,unknown,reviewable,,Choose listening backup
+candidate:app/index.html:192:86,html-attribute,app/index.html,192,aria-label,unknown,reviewable,,Reading chat
+candidate:app/index.html:196:92,html-attribute,app/index.html,196,aria-label,unknown,reviewable,,Choose listening backup
 candidate:app/index.html:3:240,html-text,app/index.html,3,,unknown,reviewable,,Leafhour · Read
 candidate:app/index.html:10:70,html-text,app/index.html,10,,unknown,reviewable,,Skip to text
 candidate:app/index.html:12:358,html-text,app/index.html,12,,unknown,reviewable,,Reading room
@@ -2389,9 +2389,8 @@ candidate:app/index.html:107:630,html-text,app/index.html,107,,unknown,reviewabl
 candidate:app/index.html:107:783,html-text,app/index.html,107,,unknown,reviewable,,A
 candidate:app/index.html:107:940,html-text,app/index.html,107,,unknown,reviewable,,A
 candidate:app/index.html:109:194,html-text,app/index.html,109,,unknown,reviewable,,Fine typography
-candidate:app/index.html:109:254,html-text,app/index.html,109,,unknown,reviewable,,"Line spacing, space and indentation"
-candidate:app/index.html:109:439,html-text,app/index.html,109,,unknown,reviewable,,First-line indent
-candidate:app/index.html:109:586,html-text,app/index.html,109,,unknown,reviewable,,Latin fonts are hosted here; Chinese uses device fonts. Word spacing applies only to English.
+candidate:app/index.html:109:359,html-text,app/index.html,109,,unknown,reviewable,,First-line indent
+candidate:app/index.html:109:506,html-text,app/index.html,109,,unknown,reviewable,,Latin fonts are hosted here; Chinese uses device fonts. Word spacing applies only to English.
 candidate:app/index.html:110:105,html-text,app/index.html,110,,unknown,reviewable,,Reset appearance
 candidate:app/index.html:112:135,html-text,app/index.html,112,,unknown,reviewable,,Reading content
 candidate:app/index.html:113:87,html-text,app/index.html,113,,unknown,reviewable,,Reading view
@@ -2487,47 +2486,46 @@ candidate:app/index.html:164:212,html-text,app/index.html,164,,unknown,reviewabl
 candidate:app/index.html:168:195,html-text,app/index.html,168,,unknown,reviewable,,Keep these words
 candidate:app/index.html:168:260,html-text,app/index.html,168,,unknown,reviewable,,Leafhour · Excerpt
 candidate:app/index.html:168:371,html-text,app/index.html,168,,unknown,reviewable,,Back to reading
-candidate:app/index.html:172:48,html-text,app/index.html,172,,unknown,reviewable,,Let these words take the focus.
-candidate:app/index.html:174:98,html-text,app/index.html,174,,unknown,reviewable,,Language
-candidate:app/index.html:174:190,html-text,app/index.html,174,,unknown,reviewable,,Chinese
-candidate:app/index.html:174:254,html-text,app/index.html,174,,unknown,reviewable,,English
-candidate:app/index.html:174:332,html-text,app/index.html,174,,unknown,reviewable,,Bilingual
-candidate:app/index.html:175:134,html-text,app/index.html,175,,unknown,reviewable,,Bilingual layout
-candidate:app/index.html:175:235,html-text,app/index.html,175,,unknown,reviewable,,Stacked
-candidate:app/index.html:175:306,html-text,app/index.html,175,,unknown,reviewable,,Side by side
-candidate:app/index.html:176:121,html-text,app/index.html,176,,unknown,reviewable,,Chinese translation style
-candidate:app/index.html:176:223,html-text,app/index.html,176,,unknown,reviewable,,Interpretive
-candidate:app/index.html:176:281,html-text,app/index.html,176,,unknown,reviewable,,Literal
-candidate:app/index.html:177:92,html-text,app/index.html,177,,unknown,reviewable,,Paper
-candidate:app/index.html:177:180,html-text,app/index.html,177,,unknown,reviewable,,Paper
-candidate:app/index.html:177:242,html-text,app/index.html,177,,unknown,reviewable,,Warm
-candidate:app/index.html:177:309,html-text,app/index.html,177,,unknown,reviewable,,Ink
-candidate:app/index.html:178:92,html-text,app/index.html,178,,unknown,reviewable,,Aspect ratio
-candidate:app/index.html:178:162,html-text,app/index.html,178,,unknown,reviewable,,4 : 5
-candidate:app/index.html:178:199,html-text,app/index.html,178,,unknown,reviewable,,1 : 1
-candidate:app/index.html:178:235,html-text,app/index.html,178,,unknown,reviewable,,9 : 16
-candidate:app/index.html:180:80,html-text,app/index.html,180,,unknown,reviewable,,Context and details
-candidate:app/index.html:181:92,html-text,app/index.html,181,,unknown,reviewable,,Text above
+candidate:app/index.html:173:98,html-text,app/index.html,173,,unknown,reviewable,,Language
+candidate:app/index.html:173:190,html-text,app/index.html,173,,unknown,reviewable,,Chinese
+candidate:app/index.html:173:254,html-text,app/index.html,173,,unknown,reviewable,,English
+candidate:app/index.html:173:332,html-text,app/index.html,173,,unknown,reviewable,,Bilingual
+candidate:app/index.html:174:134,html-text,app/index.html,174,,unknown,reviewable,,Bilingual layout
+candidate:app/index.html:174:235,html-text,app/index.html,174,,unknown,reviewable,,Stacked
+candidate:app/index.html:174:306,html-text,app/index.html,174,,unknown,reviewable,,Side by side
+candidate:app/index.html:175:121,html-text,app/index.html,175,,unknown,reviewable,,Chinese translation style
+candidate:app/index.html:175:223,html-text,app/index.html,175,,unknown,reviewable,,Interpretive
+candidate:app/index.html:175:281,html-text,app/index.html,175,,unknown,reviewable,,Literal
+candidate:app/index.html:176:92,html-text,app/index.html,176,,unknown,reviewable,,Paper
+candidate:app/index.html:176:180,html-text,app/index.html,176,,unknown,reviewable,,Paper
+candidate:app/index.html:176:242,html-text,app/index.html,176,,unknown,reviewable,,Warm
+candidate:app/index.html:176:309,html-text,app/index.html,176,,unknown,reviewable,,Ink
+candidate:app/index.html:177:92,html-text,app/index.html,177,,unknown,reviewable,,Aspect ratio
+candidate:app/index.html:177:162,html-text,app/index.html,177,,unknown,reviewable,,4 : 5
+candidate:app/index.html:177:199,html-text,app/index.html,177,,unknown,reviewable,,1 : 1
+candidate:app/index.html:177:235,html-text,app/index.html,177,,unknown,reviewable,,9 : 16
+candidate:app/index.html:179:80,html-text,app/index.html,179,,unknown,reviewable,,Context and details
+candidate:app/index.html:180:92,html-text,app/index.html,180,,unknown,reviewable,,Text above
+candidate:app/index.html:180:184,html-text,app/index.html,180,,unknown,reviewable,,Fade
+candidate:app/index.html:180:247,html-text,app/index.html,180,,unknown,reviewable,,Hide
+candidate:app/index.html:180:309,html-text,app/index.html,180,,unknown,reviewable,,Keep
+candidate:app/index.html:181:92,html-text,app/index.html,181,,unknown,reviewable,,Text below
 candidate:app/index.html:181:184,html-text,app/index.html,181,,unknown,reviewable,,Fade
 candidate:app/index.html:181:247,html-text,app/index.html,181,,unknown,reviewable,,Hide
 candidate:app/index.html:181:309,html-text,app/index.html,181,,unknown,reviewable,,Keep
-candidate:app/index.html:182:92,html-text,app/index.html,182,,unknown,reviewable,,Text below
-candidate:app/index.html:182:184,html-text,app/index.html,182,,unknown,reviewable,,Fade
-candidate:app/index.html:182:247,html-text,app/index.html,182,,unknown,reviewable,,Hide
-candidate:app/index.html:182:309,html-text,app/index.html,182,,unknown,reviewable,,Keep
-candidate:app/index.html:183:198,html-text,app/index.html,183,,unknown,reviewable,,Font size
-candidate:app/index.html:183:245,html-text,app/index.html,183,,unknown,reviewable,,48
-candidate:app/index.html:184:197,html-text,app/index.html,184,,unknown,reviewable,,Book source
-candidate:app/index.html:186:121,html-text,app/index.html,186,,unknown,reviewable,,Save image
-candidate:app/index.html:186:197,html-text,app/index.html,186,,unknown,reviewable,,Copy image
-candidate:app/index.html:186:284,html-text,app/index.html,186,,unknown,reviewable,,System share
-candidate:app/index.html:192:124,html-text,app/index.html,192,,unknown,reviewable,,Your saved reading position is ready. Return there or keep reading here.
-candidate:app/index.html:192:276,html-text,app/index.html,192,,unknown,reviewable,,Return to saved position
-candidate:app/index.html:192:377,html-text,app/index.html,192,,unknown,reviewable,,Keep reading here
-candidate:app/index.html:195:92,html-text,app/index.html,195,,unknown,reviewable,,"Click a passage or focus it and press Enter for original text, annotations and records. In page mode use ← → or the buttons below. Esc closes overlays. F toggles full-screen reading."
-candidate:app/index.html:198:187,html-text,app/index.html,198,,unknown,reviewable,,Retry
-candidate:app/index.html:198:258,html-text,app/index.html,198,,unknown,reviewable,,Reload page
-candidate:app/index.html:198:328,html-text,app/index.html,198,,unknown,reviewable,,Cancel
+candidate:app/index.html:182:198,html-text,app/index.html,182,,unknown,reviewable,,Font size
+candidate:app/index.html:182:245,html-text,app/index.html,182,,unknown,reviewable,,48
+candidate:app/index.html:183:197,html-text,app/index.html,183,,unknown,reviewable,,Book source
+candidate:app/index.html:185:121,html-text,app/index.html,185,,unknown,reviewable,,Save image
+candidate:app/index.html:185:197,html-text,app/index.html,185,,unknown,reviewable,,Copy image
+candidate:app/index.html:185:284,html-text,app/index.html,185,,unknown,reviewable,,System share
+candidate:app/index.html:191:124,html-text,app/index.html,191,,unknown,reviewable,,Your saved reading position is ready. Return there or keep reading here.
+candidate:app/index.html:191:276,html-text,app/index.html,191,,unknown,reviewable,,Return to saved position
+candidate:app/index.html:191:377,html-text,app/index.html,191,,unknown,reviewable,,Keep reading here
+candidate:app/index.html:194:92,html-text,app/index.html,194,,unknown,reviewable,,"Click a passage or focus it and press Enter for original text, annotations and records. In page mode use ← → or the buttons below. Esc closes overlays. F toggles full-screen reading."
+candidate:app/index.html:197:187,html-text,app/index.html,197,,unknown,reviewable,,Retry
+candidate:app/index.html:197:258,html-text,app/index.html,197,,unknown,reviewable,,Reload page
+candidate:app/index.html:197:328,html-text,app/index.html,197,,unknown,reviewable,,Cancel
 candidate:app/ja/mcp.html:20:69,html-attribute,app/ja/mcp.html,20,aria-label,unknown,reviewable,,Leafhour ホーム
 candidate:app/ja/mcp.html:20:440,html-attribute,app/ja/mcp.html,20,aria-label,unknown,reviewable,,メインナビゲーション
 candidate:app/ja/mcp.html:20:680,html-attribute,app/ja/mcp.html,20,aria-label,unknown,reviewable,,表示言語
