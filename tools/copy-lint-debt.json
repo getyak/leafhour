@@ -1500,15 +1500,6 @@
       "state": "unreviewed"
     },
     {
-      "itemId": "reader.atmosphere.heading",
-      "locale": "zh-Hans",
-      "rule": "Leafhour.ToneT1Zh",
-      "valueSha256": "b0b82bd095969e4291b7d77de974a04b6b7b26d5d2ab41172a2e52df57ea52b2",
-      "match": "此刻",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
       "itemId": "reader.atmosphere.motionHint",
       "locale": "zh-Hans",
       "rule": "Leafhour.ToneT1Zh",
@@ -2630,15 +2621,6 @@
       "rule": "Leafhour.ToneT1Zh",
       "valueSha256": "5b4a11d4993b3a8aad3b9e15fc511f041ff887580ae2c0f094552fae331c3954",
       "match": "一處安靜的地方",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
-      "itemId": "reader.atmosphere.heading",
-      "locale": "zh-Hant",
-      "rule": "Leafhour.ToneT1Zh",
-      "valueSha256": "7559a21fc61e71497bac5a2004757a38a04c8bec21d1040a3e840fe43d8f26fc",
-      "match": "此刻",
       "kind": "existing-debt",
       "state": "unreviewed"
     },
