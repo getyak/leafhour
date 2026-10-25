@@ -58,8 +58,8 @@
 
 **Interfaces:** Consumes the complete live reader from Task 2. Produces a reviewed PR with CI, merge and same-commit Production evidence recorded separately.
 
-- [ ] Run `npm test`, the pinned copy lint/canaries, hosted build and applicable release checks. Resolve introduced failures; identify baseline/environment failures by actual evidence.
-- [ ] Request one fresh whole-branch review against the spec, plan, diff and Review Focus. Fix important findings with regression evidence.
-- [ ] Record real test/browser results and limitations; verify the original checkout's saved file hashes remain unchanged.
+- [x] Run `npm test`, the pinned copy lint/canaries, hosted build and applicable release checks. Resolve introduced failures; identify baseline/environment failures by actual evidence.
+- [x] Request one fresh whole-branch review against the spec, plan, diff and Review Focus. Fix important findings with regression evidence.
+- [x] Record real test/browser results and limitations; verify the original checkout's saved file hashes remain unchanged.
 - [ ] Synchronize main, push this task branch, open/attach a PR, wait for current-head CI and merge normally. Do not request or wait for Preview.
 - [ ] Wait for Production and verify the deployed source commit and online reader behavior. Report implementation, merge, deployment and acceptance accurately.
