@@ -2,45 +2,35 @@
 // owner so this module never creates another interface-locale runtime.
 const WIDTH_KEY='marginalia:ui:reader-chat-width';
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
-export function mountReaderChatWorkspace({root,getReader=()=>null,document=globalThis.document,window=globalThis.window,storage,labels={}}={}){
+export function mountReaderChatWorkspace({root,document=globalThis.document,window=globalThis.window,storage,labels={}}={}){
  const body=document?.body;
  if(!root?.classList||!body?.classList||!document.createElement||!window?.addEventListener)return {setOpen(){},setLabels(){},isMobile:()=>false,dispose(){}};
- let disposed=false,opened=false,preferred=400,generation=0,frame1=null,frame2=null,drag=null,observer=null;
+ let disposed=false,opened=false,preferred=400,drag=null,observer=null,scrollLock=null;
  const removers=[],inert=new Map(),originalModal=root.getAttribute('aria-modal'),originalTab=root.getAttribute('tabindex');
- const originalWidth=body.style.getPropertyValue('--reader-chat-width');
+ const originalWidth=root.style.getPropertyValue('--reader-chat-width');
  try{storage??=window.localStorage;const saved=storage?.getItem(WIDTH_KEY);if(typeof saved==='string'&&/^\d{3}$/.test(saved)&&Number(saved)>=320&&Number(saved)<=640)preferred=Number(saved);}catch{}
  const separator=document.createElement('div');separator.className='reader-chat-separator';separator.setAttribute('role','separator');separator.setAttribute('aria-orientation','vertical');separator.setAttribute('tabindex','0');root.prepend(separator);
  root.classList.add('reader-chat-workspace');
  const listen=(target,type,fn,options)=>{target.addEventListener(type,fn,options);removers.push(()=>target.removeEventListener(type,fn,options));};
  const mobile=()=>window.innerWidth<1100;
  const width=()=>clamp(preferred,320,Math.min(640,Math.max(320,window.innerWidth-640)));
- const cancelFrames=()=>{generation++;if(frame1!==null)window.cancelAnimationFrame(frame1);if(frame2!==null)window.cancelAnimationFrame(frame2);frame1=frame2=null;};
- function preserveLayout(change){
-  cancelFrames();const token=generation,reader=getReader(),book=reader?.getBook?.(),anchor=reader?.getAnchor?.(),current=reader?.captureLayout?.()||(()=>true);change();
-  if(!book||!anchor)return;
-  const identity={bookId:book.bookId,version:book.contentVersion,chapterId:anchor.chapterId};
-  frame1=window.requestAnimationFrame(()=>{frame1=null;if(disposed||token!==generation)return;frame2=window.requestAnimationFrame(()=>{
-   frame2=null;if(disposed||token!==generation||!current())return;const live=getReader(),now=live?.getBook?.();
-   if(now?.bookId!==identity.bookId||now?.contentVersion!==identity.version||identity.chapterId&&live?.getAnchor?.()?.chapterId!==identity.chapterId)return;
-   (live.restoreLayoutAnchor||live.restoreAnchor)?.call(live,anchor);
-  });});
- }
- function restoreInert(){observer?.disconnect();observer=null;for(const [node,value]of inert)node.inert=value;inert.clear();}
+ function restoreInert(){observer?.disconnect();observer=null;if(scrollLock){body.style.setProperty('overflow',scrollLock.overflow);scrollLock=null;}for(const [node,value]of inert)node.inert=value;inert.clear();}
  function contain(){
+  if(!scrollLock){scrollLock={overflow:body.style.getPropertyValue('overflow')};body.style.setProperty('overflow','hidden');}
   for(const node of body.children)if(node!==root&&!node.contains?.(root)&&!inert.has(node)){inert.set(node,node.inert);node.inert=true;}
   if(!observer&&window.MutationObserver){observer=new window.MutationObserver(contain);observer.observe(body,{childList:true});}
  }
  function paint(){
   const narrow=opened&&mobile(),wide=opened&&!mobile();
-  body.classList.toggle('has-reader-chat',wide);root.classList.toggle('is-reader-chat-mobile',narrow);
-  separator.hidden=!wide;body.style.setProperty('--reader-chat-width',width()+'px');
+  root.classList.toggle('is-reader-chat-mobile',narrow);
+  separator.hidden=!wide;root.style.setProperty('--reader-chat-width',width()+'px');
   separator.setAttribute('aria-valuemin','320');separator.setAttribute('aria-valuemax',String(Math.min(640,Math.max(320,window.innerWidth-640))));separator.setAttribute('aria-valuenow',String(width()));
   if(narrow){contain();root.setAttribute('aria-modal','true');if(!root.contains(document.activeElement)){root.setAttribute('tabindex','-1');(root.querySelector('.library-chat-close')||root).focus({preventScroll:true});}}
   else{restoreInert();root.setAttribute('aria-modal','false');}
   document.dispatchEvent(new Event('reader:chat-layout'));
  }
  const save=()=>{try{storage?.setItem(WIDTH_KEY,String(Math.round(preferred)));}catch{}};
- function resize(value,{persist=false}={}){preferred=clamp(Math.round(value),320,Math.min(640,Math.max(320,window.innerWidth-640)));preserveLayout(paint);if(persist)save();}
+ function resize(value,{persist=false}={}){preferred=clamp(Math.round(value),320,Math.min(640,Math.max(320,window.innerWidth-640)));paint();if(persist)save();}
  function endDrag(persist){const previous=drag;if(!previous)return;drag=null;root.classList.remove('is-resizing');if(persist)save();else resize(previous.width);if(separator.hasPointerCapture?.(previous.id))separator.releasePointerCapture(previous.id);}
  listen(separator,'keydown',event=>{
   if(!opened||mobile()||event.altKey||event.ctrlKey||event.metaKey)return;const step=event.shiftKey?64:16,max=Math.min(640,window.innerWidth-640);
@@ -56,20 +46,12 @@ export function mountReaderChatWorkspace({root,getReader=()=>null,document=globa
   const first=nodes[0]||root,last=nodes.at(-1)||root;
   if(!nodes.length||!root.contains(document.activeElement)||event.shiftKey&&document.activeElement===first||!event.shiftKey&&document.activeElement===last||document.activeElement===root){event.preventDefault();(event.shiftKey?last:first).focus({preventScroll:true});}
  });
- listen(window,'resize',()=>{if(opened){endDrag(false);preserveLayout(paint);}});
- for(const event of ['reader:jump','reader:ready','reader:session-changed','reader:page'])listen(document,event,cancelFrames);
- listen(document,'wheel',cancelFrames,{passive:true});
- // A newer reading gesture owns the anchor; never rewind it after layout.
- listen(document,'touchstart',event=>{if(!root.contains(event.target))cancelFrames();},{passive:true});
- listen(document,'keydown',event=>{
-  if(root.contains(event.target)||event.target?.closest?.('input,textarea,select,[contenteditable]')||event.altKey||event.ctrlKey||event.metaKey)return;
-  if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(event.key))cancelFrames();
- });
+ listen(window,'resize',()=>{if(opened){endDrag(false);paint();}});
  function setLabels(next){labels=next||{};separator.setAttribute('aria-label',labels.resize||'Resize AI workspace');}
  setLabels(labels);
- return {setOpen(value){if(disposed||opened===!!value)return;endDrag(false);preserveLayout(()=>{opened=!!value;paint();});},setLabels,isMobile:()=>opened&&mobile(),dispose(){
-  if(disposed)return;disposed=true;cancelFrames();const pointer=drag?.id;drag=null;if(pointer!==undefined&&separator.hasPointerCapture?.(pointer))separator.releasePointerCapture(pointer);for(const remove of removers)remove();restoreInert();separator.remove();body.classList.remove('has-reader-chat');root.classList.remove('reader-chat-workspace','is-reader-chat-mobile','is-resizing');
-  if(originalWidth)body.style.setProperty('--reader-chat-width',originalWidth);else body.style.removeProperty('--reader-chat-width');
+ return {setOpen(value){if(disposed||opened===!!value)return;endDrag(false);opened=!!value;paint();},setLabels,isMobile:()=>opened&&mobile(),dispose(){
+  if(disposed)return;disposed=true;const pointer=drag?.id;drag=null;if(pointer!==undefined&&separator.hasPointerCapture?.(pointer))separator.releasePointerCapture(pointer);for(const remove of removers)remove();restoreInert();separator.remove();root.classList.remove('reader-chat-workspace','is-reader-chat-mobile','is-resizing');
+  root.style.setProperty('--reader-chat-width',originalWidth);
   for(const [name,value]of [['aria-modal',originalModal],['tabindex',originalTab]])if(value===null)root.removeAttribute(name);else root.setAttribute(name,value);
  }};
 }

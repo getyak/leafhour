@@ -1,0 +1,38 @@
+{
+  "source": "5dc20064499e93a5d9d53497a5d89aed780873ae",
+  "engine": "155.0.8059.85",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "before": {
+    "bodyPadding": "0px",
+    "scroll": 0,
+    "paragraph": {
+      "x": 395,
+      "y": 189.75,
+      "width": 650,
+      "height": 20.390625,
+      "top": 189.75,
+      "right": 1045,
+      "bottom": 210.140625,
+      "left": 395
+    }
+  },
+  "opened": {
+    "bodyPadding": "400px",
+    "scroll": 0,
+    "paragraph": {
+      "x": 195,
+      "y": 189.75,
+      "width": 650,
+      "height": 20.390625,
+      "top": 189.75,
+      "right": 845,
+      "bottom": 210.140625,
+      "left": 195
+    }
+  },
+  "outsideClosed": false,
+  "errors": []
+}

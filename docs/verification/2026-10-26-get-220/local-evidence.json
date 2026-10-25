@@ -1,0 +1,43 @@
+{
+  "baseline": {
+    "main": "5dc20064499e93a5d9d53497a5d89aed780873ae",
+    "production": "8b9838ddeab579c6a050021216785ef383635f87",
+    "paragraphBeforeX": 395,
+    "paragraphAfterOpeningX": 195,
+    "outsideClosed": false
+  },
+  "fullSuite": {
+    "tests": 3395,
+    "pass": 3394,
+    "fail": 0,
+    "skip": 1,
+    "exit": 0,
+    "skipReason": "Linux-specific modified Node-license package test is skipped on macOS; current-head Linux CI remains required."
+  },
+  "readerBudget": {
+    "files": [
+      {
+        "file": "reader-web/reader-7f4c4174d27412cc.js",
+        "bytes": 327588
+      },
+      {
+        "file": "reader-web/style-c298ae45a855fe78.css",
+        "bytes": 200463
+      }
+    ],
+    "limits": {
+      "js": 327680,
+      "css": 204800
+    }
+  },
+  "copy": {
+    "newT1Errors": 0,
+    "documentedDebt": 373,
+    "retainedWarnings": 1996,
+    "staleBindings": 0
+  },
+  "limits": [
+    "No production provider answer for this source has been claimed.",
+    "Physical OS IME, physical soft keyboard and native browser toolbar zoom are unverified."
+  ]
+}

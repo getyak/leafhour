@@ -146,3 +146,14 @@ test('unknown reserve transport failure with no visible operation never claims n
  f.store.command=async(action,p)=>{if(action==='reserve')throw Object.assign(new Error('Transport unavailable'),{code:'billing_unavailable',status:503});return original(action,p);};
  await assert.rejects(f.gate.run({user:f.user,action:'translation',bookId:'book-a',input:{...input,billing:{quoteId:q.id,idempotencyKey:input.id}},execute:async()=>{throw new Error('must not dispatch');}}),error=>error.code==='billing_unavailable'&&!Object.hasOwn(error,'billingOperation'));
 });
+
+test('paid preference consent survives generation and is bound to the quote digest',async()=>{
+ const f=await realFixture(),input={id:'consented-question',text:'Explain this paragraph.',passageId:'p1',contentVersion:'version-a',preferenceWrites:true};
+ const quote=await f.gate.quote(f.user,{action:'conversation',bookId:'book-a',input});let dispatched=0;
+ const execute=async body=>{dispatched++;assert.equal(body.preferenceWrites,true);const turn={...body,status:'completed',answer:{summary:'Saved answer'}};f.turns.push(turn);return turn;};
+ await assert.rejects(f.gate.run({user:f.user,action:'conversation',bookId:'book-a',input:{...input,preferenceWrites:false,billing:{quoteId:quote.id,idempotencyKey:'changed-consent'}},execute}),{status:409});
+ assert.equal(dispatched,0);
+ const result=await f.gate.run({user:f.user,action:'conversation',bookId:'book-a',input:{...input,billing:{quoteId:quote.id,idempotencyKey:input.id}},execute});
+ assert.equal(result.preferenceWrites,true);assert.equal(dispatched,1);assert.equal((await f.billing.account({ownerId:f.user.id})).consumedUnits,4_000_000);
+ await assert.rejects(f.gate.quote(f.user,{action:'conversation',bookId:'book-a',input:{...input,preferenceWrites:'yes'}}),{status:400});
+});

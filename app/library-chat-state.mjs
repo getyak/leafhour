@@ -143,7 +143,7 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
       state.scopePending=null;state.scopeUnconfirmed=true;state.notice={id:'cs.scopeReread'};return true;
     },
     beginSend({preferenceWrites=false}={}){
-      if(!canSend())return null;
+      if(typeof preferenceWrites!=='boolean'||!canSend())return null;
       const text=state.draft.trim(),old=state.retry;
       const payload=old?.uncertain&&old.checked?{...old.payload}:{...(preferenceWrites?{preferenceWrites:true}:{}),id:makeId(),passageId:state.data.context.passageId,text,...(state.quote?{quote:structuredClone(state.quote)}:{}),contentVersion:state.data.contentVersion,...(state.data.scope?{scopeRevision:state.data.scope.revision}:{})};
       const request=ticket({operation:++operation,id:payload.id});state.pending={id:payload.id,text:payload.text,payload,draftText:old?.uncertain?old.draftText:state.draft,quoteRevision:old?.uncertain?old.quoteRevision:state.quote?state.quoteRevision:null,status:'running'};state.retry=null;state.notice='';persistPending(state.pending);
@@ -162,7 +162,7 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
       if(!current(request)||request.operation!==operation||request.id!==state.pending?.id)return false;
       if(error?.status===412)state.scopeUnconfirmed=true;
       const pending=state.pending;if(error?.status===422&&pending.payload.quote&&state.quoteRevision===pending.quoteRevision)quoteRejectedRevision=pending.quoteRevision;state.pending=null;restore(pending.text);state.retry={payload:pending.payload,draftText:pending.draftText,quoteRevision:pending.quoteRevision,uncertain,checked:!uncertain};if(uncertain)persistPending(state.retry);else clearPending(pending.payload);
-      putTurn({...state.turns.find(t=>t.id===pending.id),status:uncertain?'running':'failed',error:error?.message});
+      putTurn({...state.turns.find(t=>t.id===pending.id),status:uncertain?'running':'failed',...(!uncertain&&error?.preSubmit===true?{failureCode:'not_submitted'}:!uncertain&&error?.status>=400&&error.status<500?{failureCode:'request_rejected'}:{}),error:error?.message});
       state.notice={id:uncertain?'cs.interrupted':error?.status===422?'chat.quote.changed':'cs.noAnswer'};return true;
     },
     beginCancel(){if(!state.pending||state.pending.status==='stopping')return null;loadSequence++;state.phase=state.data?'ready':'idle';const request=ticket({operation:++operation,id:state.pending.id});state.pending={...state.pending,status:'stopping'};return request;},

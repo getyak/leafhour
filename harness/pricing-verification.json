@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "model": "deepseek-flash",
+  "modelVersion": "DeepSeek-V4.1-Flash-1017",
+  "observedAt": "2026-10-25T17:22:34.268Z",
+  "reviewer": "GET-220 Codex worker",
+  "sources": [
+    {
+      "currency": "CNY",
+      "source": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+      "sha256": "556097caba8adfeeed6455714bffd731c7f60db520fcee06a922eba5840663a3",
+      "bytes": 26182
+    },
+    {
+      "currency": "USD",
+      "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+      "sha256": "b856a6e93fa4793ecc8f3fd03a01bb7d8f7572f78a4739da8ce6dbdb09328d66",
+      "bytes": 26043
+    }
+  ],
+  "verifiedRates": {
+    "CNY": {
+      "peakInputMiss": 2,
+      "peakOutput": 8
+    },
+    "USD": {
+      "peakInputMiss": 0.3,
+      "peakCacheRead": 0.006,
+      "peakOutput": 1.2,
+      "offpeakInputMiss": 0.15,
+      "offpeakCacheRead": 0.003,
+      "offpeakOutput": 0.6,
+      "searchPerThousand": 0.75,
+      "fetchPerThousand": 0.75
+    }
+  },
+  "policy": {
+    "maximumValidityDays": 7,
+    "minimumReleaseRemainingHours": 24,
+    "legacyExpiryCeiling": "2026-10-31T16:00:00.000Z",
+    "reason": "Legacy reservations do not include standalone Search/Fetch fees. Reverify before the promotion boundary."
+  }
+}

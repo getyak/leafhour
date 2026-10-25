@@ -2195,4 +2195,11 @@ export default Object.freeze({
   "export.cancelled": "書き出しをキャンセルしました。ダウンロードは開始していません。",
   "export.downloadRequested": "ダウンロードを開始しました。ブラウザーの履歴を確認してください。",
   "export.glyphError": "PDF のフォントに対応していない文字があります。全文を保持するには Markdown を選択してください。",
+  "chat.failure.notSubmitted": "送信されていません。質問は保持されています。権限やポイント利用を確認してください。",
+  "chat.failure.rejected": "依頼が拒否されました。質問は保持されています。原文とアクセス権を確認してください。",
+  "chat.failure.generation": "回答を生成できませんでした。質問は保持されています。編集して再試行できます。",
+  "chat.failure.pricing": "価格の確認中のため AI を利用できません。質問は保持されています。",
+  "chat.failure.save": "回答を保存できませんでした。質問は保持されています。再試行の前に状態を確認してください。",
+  "chat.failure.validation": "回答を検証できませんでした。質問は保持されています。",
+  "chat.failure.context": "原文が変更されました。現在の段落を確認してから再試行してください。",
 });

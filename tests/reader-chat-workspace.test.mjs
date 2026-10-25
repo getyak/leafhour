@@ -25,9 +25,9 @@ function fixture(width=1440,stored){
  const key=(node,key,shiftKey=false)=>{const event=new Event('keydown',{cancelable:true});Object.assign(event,{key,shiftKey});node.dispatchEvent(event);return event;};
  return {workspace,root,book,header,document,window,reader,storage,writes,restored,flush,key,changeBook:()=>{currentBook={bookId:'two',contentVersion:'v1'};}};
 }
-test('desktop reserves book space and bounds keyboard resizing to the available reading column',()=>{
+test('desktop floats without reserving book space and bounds keyboard resizing',()=>{
  const f=fixture();f.workspace.setOpen(true);const separator=f.root.children.find(n=>n.getAttribute('role')==='separator');assert.ok(separator);
- assert.equal(f.document.body.classList.contains('has-reader-chat'),true);assert.equal(separator.getAttribute('aria-valuenow'),'400');
+ assert.equal(f.document.body.classList.contains('has-reader-chat'),false);assert.equal(separator.getAttribute('aria-valuenow'),'400');
  f.key(separator,'End');assert.equal(separator.getAttribute('aria-valuenow'),'640');f.key(separator,'Home');assert.equal(separator.getAttribute('aria-valuenow'),'320');
  f.key(separator,'ArrowLeft',true);assert.equal(separator.getAttribute('aria-valuenow'),'384');
  f.window.innerWidth=1100;f.window.dispatchEvent(new Event('resize'));f.key(separator,'End');assert.equal(separator.getAttribute('aria-valuenow'),'460');
@@ -41,8 +41,8 @@ test('phone containment restores pre-existing inert ownership across breakpoint 
 test('layout callbacks cannot restore a passage from a book that has since changed',()=>{
  const f=fixture();f.workspace.setOpen(true);f.changeBook();f.flush();assert.deepEqual(f.restored,[]);f.workspace.dispose();f.flush();assert.deepEqual(f.restored,[]);
 });
-test('opening the workspace restores the same live reading anchor after layout settles',()=>{
- const f=fixture();f.workspace.setOpen(true);f.flush();assert.deepEqual(f.restored,[{passageId:'p12',offset:104}]);f.workspace.dispose();
+test('opening a floating conversation never schedules an old reading anchor restore',()=>{
+ const f=fixture();f.workspace.setOpen(true);f.flush();assert.deepEqual(f.restored,[]);f.workspace.dispose();
 });
 test('pointer resize persists only a completed gesture and releases capture on cancellation',()=>{
  const f=fixture();f.workspace.setOpen(true);const separator=f.root.children.find(n=>n.getAttribute('role')==='separator');
@@ -74,4 +74,10 @@ test('new page, touch or reading-key intent defeats a queued old layout restore'
  for(const intent of ['reader:page','touchstart','keydown']){
   const f=fixture();f.workspace.setOpen(true);const event=new Event(intent);if(intent==='keydown')Object.assign(event,{key:'PageDown'});Object.defineProperty(event,'target',{value:f.book});f.document.dispatchEvent(event);f.flush();assert.deepEqual(f.restored,[],intent);f.workspace.dispose();
  }
+});
+
+test('mobile scroll containment restores the prior body overflow on close and desktop resize',()=>{
+ const f=fixture(390);f.document.body.style.setProperty('overflow','auto');f.workspace.setOpen(true);assert.equal(f.document.body.style.getPropertyValue('overflow'),'hidden');
+ f.window.innerWidth=1440;f.window.dispatchEvent(new Event('resize'));assert.equal(f.document.body.style.getPropertyValue('overflow'),'auto');
+ f.window.innerWidth=390;f.window.dispatchEvent(new Event('resize'));f.workspace.dispose();assert.equal(f.document.body.style.getPropertyValue('overflow'),'auto');
 });

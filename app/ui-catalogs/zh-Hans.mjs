@@ -2195,4 +2195,11 @@ export default Object.freeze({
   "export.cancelled": "已取消导出，未发起文件下载。",
   "export.downloadRequested": "已发起下载，请查看浏览器下载列表。",
   "export.glyphError": "PDF 字体无法显示部分字符，请下载 Markdown 保留完整文字。",
+  "chat.failure.notSubmitted": "尚未发出，提问已保留。请核对授权或点数确认后重试。",
+  "chat.failure.rejected": "这条提问暂不被接受，内容已保留。请核对来源和访问权限。",
+  "chat.failure.generation": "回答生成失败，提问已保留，可编辑后重试。",
+  "chat.failure.pricing": "AI 暂不可用，价格参考待核验。提问已保留。",
+  "chat.failure.save": "回答未能保存，提问已保留。请先查看本次状态。",
+  "chat.failure.validation": "回答未通过核验，提问已保留。",
+  "chat.failure.context": "原文已变化，请核对当前段落后重试。",
 });

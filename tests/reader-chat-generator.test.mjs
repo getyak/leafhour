@@ -62,3 +62,9 @@ test('diagnostics bound cyclic, deep and wide causes and never evaluate error ac
  assert.ok(JSON.stringify(diagnostics).length<8000);
  assert.doesNotMatch(JSON.stringify(diagnostics),/private|accessor|stack must/);
 });
+
+test('runtime diagnostics correlate safe request identities without recording question text',async()=>{
+ const diagnostics=[],generate=createReaderChatGenerator({env:{DEEPSEEK_API_KEY:'fixture'},logger:d=>diagnostics.push(d),makeGenerator:()=>async()=>{throw Object.assign(Error('private provider text'),{code:'PRICING_REFERENCE_UNAVAILABLE'});}});
+ await assert.rejects(generate({requestId:'request-safe',runId:'run-safe',text:'private question'}));
+ assert.equal(diagnostics[0].requestId,'request-safe');assert.equal(diagnostics[0].runId,'run-safe');assert.equal(diagnostics[0].code,'PRICING_REFERENCE_UNAVAILABLE');assert.doesNotMatch(JSON.stringify(diagnostics),/private provider|private question/);
+});

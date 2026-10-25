@@ -44,7 +44,7 @@ test('credit-funded chat preserves per-request output caps and rejects an expire
  });
 });
 test('paid chat uses USD while disabled billing preserves legacy CNY reservations',async()=>{
- const legacy={validUntil:'2099-01-01',inputMissPerMillion:2,outputPerMillion:8};
+ const legacy={checkedAt:'2026-10-21',validUntil:'2099-01-01',inputMissPerMillion:2,outputPerMillion:8};
  const free=createChatBudget({pricing:legacy});free.reserveRequest({kind:'main',inputBytes:30000,maxTokens:3072});assert.ok(free.snapshot().reservedCostCny>0);
  await withProviderMeter({ownerId:'a',operationId:'o',feature:'conversation',funding:'purchased',record:()=>{}},async()=>{
   const paid=createChatBudget({pricing:{...legacy,validUntil:'2000-01-01'},clock:()=>now});
