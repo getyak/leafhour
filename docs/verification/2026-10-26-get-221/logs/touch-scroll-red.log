@@ -1,0 +1,16 @@
+{"kind":"native CDP touch scroll","frames":[{"at":1161.699999999255,"expanded":"true","scrollTop":95},{"at":1576.5,"expanded":"true","scrollTop":15},{"at":1992.6000000014901,"expanded":"true","scrollTop":95},{"at":2410.400000002235,"expanded":"true","scrollTop":15},{"at":2827.199999999255,"expanded":"true","scrollTop":95},{"at":3244.10000000149,"expanded":"true","scrollTop":15},{"at":3659.5,"expanded":"true","scrollTop":95},{"at":4076.900000002235,"expanded":"true","scrollTop":15},{"at":4493,"expanded":"true","scrollTop":95},{"at":4910.400000002235,"expanded":"true","scrollTop":15},{"at":5326.5,"expanded":"true","scrollTop":95},{"at":5744.60000000149,"expanded":"true","scrollTop":15},{"at":6159.300000000745,"expanded":"false","scrollTop":95},{"at":6577.400000002235,"expanded":"false","scrollTop":95},{"at":6993.10000000149,"expanded":"false","scrollTop":95},{"at":7410.199999999255,"expanded":"false","scrollTop":95}],"events":[{"type":"pointerdown","id":"reading-tools-panel","trusted":true,"at":721.8000000007451},{"type":"pointercancel","id":"reading-tools-panel","trusted":true,"at":759.1000000014901},{"type":"scroll","id":"reading-tools-panel","trusted":true,"at":771.6999999992549},{"type":"scroll","id":"reading-tools-panel","trusted":true,"at":1172},{"type":"scroll","id":"reading-tools-panel","trusted":true,"at":1590.1000000014901},{"type":"scroll","id":"reading-tools-panel","trusted":true,"at":2006.5},{"type":"scroll","id":"reading-tools-panel","trusted":true,"at":2424.199999999255},{"type":"scroll","id":"reading-tools-panel","trusted":true,"at":2840.300000000745},{"type":"scroll","id":"reading-tools-panel","trusted":true,"at":3256.699999999255},{"type":"scroll","id":"reading-tools-panel","trusted":true,"at":3674.5},{"type":"scroll","id":"reading-tools-panel","trusted":true,"at":4090.400000002235},{"type":"scroll","id":"reading-tools-panel","trusted":true,"at":4506.699999999255},{"type":"scroll","id":"reading-tools-panel","trusted":true,"at":4923.5},{"type":"scroll","id":"reading-tools-panel","trusted":true,"at":5340.400000002235},{"type":"scroll","id":"reading-tools-panel","trusted":true,"at":5755.699999999255},{"type":"touchend","id":"reading-tools-panel","trusted":true,"at":7423.10000000149}],"before":{"height":318,"scrollHeight":537,"scrollTop":0}}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: active native touch scrolling cannot hit the five-second idle deadline
+    at file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/.symphony/touch-scroll.mjs:3:2246 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.23.2

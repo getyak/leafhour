@@ -1,0 +1,191 @@
+TAP version 13
+# Subtest: source self-host serves the new tools module and its complete direct dependencies as JavaScript
+ok 1 - source self-host serves the new tools module and its complete direct dependencies as JavaScript
+  ---
+  duration_ms: 93.233042
+  type: 'test'
+  ...
+# Subtest: locale preserves the sole conceal deadline, unread state, focus and held tools
+ok 2 - locale preserves the sole conceal deadline, unread state, focus and held tools
+  ---
+  duration_ms: 8.902583
+  type: 'test'
+  ...
+# (node:48920) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: unmount releases tools listeners and stale unread callbacks cannot change a replacement pill
+ok 3 - unmount releases tools listeners and stale unread callbacks cannot change a replacement pill
+  ---
+  duration_ms: 0.345541
+  type: 'test'
+  ...
+# Subtest: the single pill interaction drives both tools surfaces through one conceal timer
+ok 4 - the single pill interaction drives both tools surfaces through one conceal timer
+  ---
+  duration_ms: 0.298917
+  type: 'test'
+  ...
+# Subtest: concealing tools returns focus from the revealed header to the visible pill
+ok 5 - concealing tools returns focus from the revealed header to the visible pill
+  ---
+  duration_ms: 0.358875
+  type: 'test'
+  ...
+# Subtest: fullscreen failure restoration targets the visible pill through the reader wiring seam
+ok 6 - fullscreen failure restoration targets the visible pill through the reader wiring seam
+  ---
+  duration_ms: 0.61425
+  type: 'test'
+  ...
+# Subtest: injected chat integration keeps trigger, anchor, focus and unread seams separate
+ok 7 - injected chat integration keeps trigger, anchor, focus and unread seams separate
+  ---
+  duration_ms: 3.769042
+  type: 'test'
+  ...
+# Subtest: control mode follows the reader focus layout for the pill label
+ok 8 - control mode follows the reader focus layout for the pill label
+  ---
+  duration_ms: 0.31325
+  type: 'test'
+  ...
+# Subtest: composed tools keep hover reveals from stealing focus while explicit clicks may focus
+ok 9 - composed tools keep hover reveals from stealing focus while explicit clicks may focus
+  ---
+  duration_ms: 0.365167
+  type: 'test'
+  ...
+# Subtest: composed tools hold concealment while the focused header is hovered or focused
+ok 10 - composed tools hold concealment while the focused header is hovered or focused
+  ---
+  duration_ms: 0.386709
+  type: 'test'
+  ...
+# Subtest: outside completed click and pill click keep one tools state across both surfaces
+ok 11 - outside completed click and pill click keep one tools state across both surfaces
+  ---
+  duration_ms: 0.667125
+  type: 'test'
+  ...
+# Subtest: setFocused and fullscreen transitions cannot strand the toolbar state
+ok 12 - setFocused and fullscreen transitions cannot strand the toolbar state
+  ---
+  duration_ms: 0.308291
+  type: 'test'
+  ...
+# Subtest: the Ask AI handoff closes tools without bubbling re-reveal or focus theft
+ok 13 - the Ask AI handoff closes tools without bubbling re-reveal or focus theft
+  ---
+  duration_ms: 0.200209
+  type: 'test'
+  ...
+# Subtest: hover preview leaves for the adjacent AI sibling after a 200ms gap allowance
+ok 14 - hover preview leaves for the adjacent AI sibling after a 200ms gap allowance
+  ---
+  duration_ms: 0.250208
+  type: 'test'
+  ...
+# Subtest: hover reveals only the card and explicit activation adds the navigation surface
+ok 15 - hover reveals only the card and explicit activation adds the navigation surface
+  ---
+  duration_ms: 0.131583
+  type: 'test'
+  ...
+# Subtest: button and card gap crossings and reentry cancel the sole old preview deadline
+ok 16 - button and card gap crossings and reentry cancel the sole old preview deadline
+  ---
+  duration_ms: 0.213625
+  type: 'test'
+  ...
+# Subtest: mouse focus in navigation cannot hold explicit tools forever but Tab focus can
+ok 17 - mouse focus in navigation cannot hold explicit tools forever but Tab focus can
+  ---
+  duration_ms: 0.164333
+  type: 'test'
+  ...
+# Subtest: outside dismissal waits for a complete primary gesture and preserves its target
+ok 18 - outside dismissal waits for a complete primary gesture and preserves its target
+  ---
+  duration_ms: 0.143958
+  type: 'test'
+  ...
+# Subtest: inside-drag is not an outside dismissal
+ok 19 - inside-drag is not an outside dismissal
+  ---
+  duration_ms: 0.187708
+  type: 'test'
+  ...
+# Subtest: cancelled is not an outside dismissal
+ok 20 - cancelled is not an outside dismissal
+  ---
+  duration_ms: 0.163125
+  type: 'test'
+  ...
+# Subtest: right-click is not an outside dismissal
+ok 21 - right-click is not an outside dismissal
+  ---
+  duration_ms: 0.10825
+  type: 'test'
+  ...
+# Subtest: touch-scroll is not an outside dismissal
+ok 22 - touch-scroll is not an outside dismissal
+  ---
+  duration_ms: 0.155875
+  type: 'test'
+  ...
+# Subtest: leaving the window releases transient mouse holds and a chapter change closes coherently
+ok 23 - leaving the window releases transient mouse holds and a chapter change closes coherently
+  ---
+  duration_ms: 0.156167
+  type: 'test'
+  ...
+# Subtest: pointer cancellation releases a preview hold rather than stranding it
+ok 24 - pointer cancellation releases a preview hold rather than stranding it
+  ---
+  duration_ms: 0.110209
+  type: 'test'
+  ...
+# Subtest: a replacement coordinator retires the old listeners and conceal deadline
+ok 25 - a replacement coordinator retires the old listeners and conceal deadline
+  ---
+  duration_ms: 0.222167
+  type: 'test'
+  ...
+# Subtest: selecting card text holds it through pointer release until the selection leaves
+ok 26 - selecting card text holds it through pointer release until the selection leaves
+  ---
+  duration_ms: 0.148458
+  type: 'test'
+  ...
+# Subtest: an outside gesture that light-dismisses a child popover does not also close its parent tools
+not ok 27 - an outside gesture that light-dismisses a child popover does not also close its parent tools
+  ---
+  duration_ms: 0.385708
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:479:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    one gesture consumes only the child layer
+
+    false !== true
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:484:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 26
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 413.384625

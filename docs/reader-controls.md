@@ -47,3 +47,13 @@ git diff --check   # 无输出
 The listening dialog is created after the side toolbar mounts. Its open lifetime must hold the toolbar without revealing a previously closed panel. A body-subtree observer covers later-added, opened, closed and removed native dialogs; the existing 5-second idle timer resumes only after the dialog hold is released.
 
 Parent browser acceptance exercises real chapter loading and native Escape at 390, 768 and 1440px in scroll and spread layouts. The initial implementation lost the listen opener after waiting 5.6 seconds in the dynamically created audio dialog; the mounted-toolbar regression first failed, then passed with the observer fix. All six real-browser cases now return to the listening entry after the same delay, with no audio generation requests, playback source, horizontal overflow or page errors. Current-head CI, production delivery and live verification remain required.
+
+## GET-221: preview and explicit tools
+
+A mouse hover previews the reading card without revealing the header or taking focus. Only the reading button and card keep that preview alive; the adjacent AI entry does not. Leaving both allows a 200ms crossing gap, then a 180ms exit transition. At the close transition the card becomes inert, `aria-hidden=true`, and stops receiving pointer input. Reduced motion removes the transition.
+
+Activating the button or interacting with the card promotes it to explicit tools and reveals navigation. The same state machine owns its five-second idle deadline. Pointer use, keyboard navigation, an active form control, card text selection, and a child dialog with a real opener hold that deadline. Mouse-induced navigation focus alone does not. Audio, manual entry, prompts and drafts declare their actual `aria-controls`, including browsers without dialog `beforetoggle` events; unrelated dialogs do not hold the card.
+
+An outside primary click closes after the complete gesture without cancelling its target. Inside drags, scroll cancellation, right clicks and a gesture that already dismissed a child layer do not also dismiss the parent. Escape unwinds the current child before the tools. Chapter/reader changes and fullscreen transitions close through the coordinator; window suspension releases transient mouse holds and keeps explicit work available. Unmount removes owned listeners and cancels the sole deadline.
+
+The verification record separates local behavior, browser measurements, CI, merge and matching Production acceptance. These rules do not generate models, start the reading clock or change chat drafts and request identities.

@@ -196,7 +196,7 @@ test('composed tools keep hover reveals from stealing focus while explicit click
     f.elements.get('#reading-tools-trigger').dispatchEvent(hover);
     assert.equal(tools.toolbar.expanded,true,'hover preview reveals the tools');
     assert.equal(f.document.activeElement,activeBefore,'hover reveal never moves activeElement');
-    assert.equal(f.document.body.dataset.readingTools,'open');
+    assert.equal(f.document.body.dataset.readingTools,'closed','hover only previews the card');
     tools.toolbar.conceal();
     f.elements.get('#reading-tools-trigger').dispatchEvent(new Event('click'));
     assert.equal(tools.toolbar.expanded,true);
@@ -220,8 +220,9 @@ test('composed tools hold concealment while the focused header is hovered or foc
     f.header.dispatchEvent(leave);
     t.mock.timers.tick(5000);assert.equal(tools.toolbar.expanded,false);
     tools.toolbar.reveal();
-    f.header.dispatchEvent(new Event('focusin'));
     f.document.activeElement=f.headerControl;
+    const tab=new Event('keydown');Object.defineProperty(tab,'key',{value:'Tab'});f.document.dispatchEvent(tab);
+    f.header.dispatchEvent(new Event('focusin'));
     t.mock.timers.tick(10000);
     assert.equal(tools.toolbar.expanded,true,'header focus holds the single conceal timer');
     assert.equal(f.header.inert,false,'header targets stay operable while held');
@@ -299,7 +300,7 @@ function bubbleFixture(){
     cleanup:()=>Object.assign(globalThis,previous)};
 }
 
-test('outside pointerdown and pill click keep one tools state across both surfaces',()=>{
+test('outside completed click and pill click keep one tools state across both surfaces',()=>{
   const f=bubbleFixture();
   try{
     const immersion=mountReaderImmersion({document:f.document,onToolsCloseRequest:target=>f.tools?.closeRequest?.(target)});
@@ -308,10 +309,10 @@ test('outside pointerdown and pill click keep one tools state across both surfac
     // hover reveal
     f.fire(pill,'pointerenter',{pointerType:'mouse'});
     assert.equal(tools.toolbar.expanded,true);
-    assert.equal(f.document.body.dataset.readingTools,'open','the header surface follows the same state');
+    assert.equal(f.document.body.dataset.readingTools,'closed','hover only previews the card');
     assert.equal(pill.getAttribute('aria-expanded'),'true');
-    // ordinary mouse: outside pointerdown closes everything coherently
-    f.fire(f.outside,'pointerdown',{button:0});
+    // Closing needs the completed gesture, without consuming its action.
+    f.fire(f.outside,'pointerdown',{button:0});f.fire(f.outside,'pointerup',{button:0});f.fire(f.outside,'click',{button:0,detail:1});
     assert.equal(tools.toolbar.expanded,false,'the coordinator owns the close transition');
     assert.equal(f.document.body.dataset.readingTools,'closed','the header can never go invisible while the pill says expanded');
     assert.equal(pill.getAttribute('aria-expanded'),'false');
@@ -379,4 +380,168 @@ test('the Ask AI handoff closes tools without bubbling re-reveal or focus theft'
     assert.equal(f.document.activeElement,f.chatSurface,'focus stays with the chat handoff');
     assert.equal(opened.length,0);
   }finally{f.cleanup();}
+});
+
+// GET-221 exercises the production composition, including its one state timer.
+function composed(t){
+  const f=bubbleFixture();
+  // Production's AI entry is a sibling, outside the panel's hover region.
+  f.sessionRoot.append(f.elements.get('#reading-tools-chat-slot'));
+  f.document.defaultView=new EventTarget();
+  const immersion=mountReaderImmersion({document:f.document,focusReturn:()=>f.tools?.toolFocusTarget,onToolsCloseRequest:target=>f.tools?.closeRequest?.(target)});
+  f.tools=mountReaderTools({sessionRoot:f.sessionRoot,immersion,document:f.document});
+  t.after(()=>{f.tools.unmount();immersion.unmount();f.cleanup();});
+  return f;
+}
+const mouse={pointerType:'mouse',pointerId:1,button:0,isPrimary:true};
+
+test('hover preview leaves for the adjacent AI sibling after a 200ms gap allowance',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);
+  f.fire(f.sessionRoot,'pointerenter',mouse);f.fire(f.trigger,'pointerenter',mouse);
+  f.fire(f.trigger,'pointerleave',mouse);f.fire(f.elements.get('#reading-tools-chat-slot'),'pointerenter',mouse);
+  t.mock.timers.tick(199);assert.equal(f.tools.toolbar.expanded,true);
+  t.mock.timers.tick(1);assert.equal(f.tools.toolbar.expanded,false);
+  assert.equal(f.panel.inert,true);assert.equal(f.panel.getAttribute('aria-hidden'),'true');
+});
+
+test('hover reveals only the card and explicit activation adds the navigation surface',t=>{
+  const f=composed(t);f.fire(f.trigger,'pointerenter',mouse);
+  assert.equal(f.tools.toolbar.expanded,true);assert.equal(f.body.dataset.readingTools,'closed');assert.equal(f.document.activeElement,f.body);
+  assert.doesNotMatch(f.trigger.getAttribute('aria-label'),/导航/,'preview does not claim the closed navigation is expanded');
+  f.fire(f.trigger,'click',{detail:1});assert.equal(f.body.dataset.readingTools,'open');
+  assert.match(f.trigger.getAttribute('aria-label'),/导航/);
+});
+
+test('button and card gap crossings and reentry cancel the sole old preview deadline',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);
+  f.fire(f.trigger,'pointerenter',mouse);f.fire(f.trigger,'pointerleave',mouse);t.mock.timers.tick(150);
+  f.fire(f.panel,'pointerenter',mouse);t.mock.timers.tick(1000);assert.equal(f.tools.toolbar.expanded,true);
+  f.fire(f.panel,'pointerleave',mouse);t.mock.timers.tick(200);assert.equal(f.tools.toolbar.expanded,false);
+  f.fire(f.trigger,'pointerenter',mouse);t.mock.timers.tick(200);assert.equal(f.tools.toolbar.expanded,true);
+  f.fire(f.trigger,'pointerleave',mouse);t.mock.timers.tick(200);assert.equal(f.tools.toolbar.expanded,false);
+});
+
+test('mouse focus in navigation cannot hold explicit tools forever but Tab focus can',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);
+  f.fire(f.trigger,'click',{detail:1});f.fire(f.headerControl,'pointerdown',mouse);f.headerControl.focus();f.fire(f.headerControl,'focusin');
+  t.mock.timers.tick(5000);assert.equal(f.tools.toolbar.expanded,false,'mouse-induced header focus is idle');
+  f.fire(f.trigger,'click',{detail:0});f.fire(f.headerControl,'keydown',{key:'Tab'});f.headerControl.focus();f.fire(f.headerControl,'focusin');
+  t.mock.timers.tick(10000);assert.equal(f.tools.toolbar.expanded,true,'keyboard navigation remains operable');
+});
+
+test('Enter activation establishes keyboard ownership before navigation receives focus',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);
+  f.fire(f.trigger,'keydown',{key:'Enter'});f.fire(f.trigger,'click',{detail:0});f.headerControl.focus();f.fire(f.headerControl,'focusin');
+  t.mock.timers.tick(6000);assert.equal(f.tools.toolbar.expanded,true,'keyboard-opened navigation is still in use');
+});
+
+test('outside dismissal waits for a complete primary gesture and preserves its target',t=>{
+  const f=composed(t);f.fire(f.trigger,'click',{detail:1});
+  f.fire(f.outside,'pointerdown',mouse);assert.equal(f.tools.toolbar.expanded,true,'pointerdown is not a completed click');
+  f.outside.focus();let actions=0;f.outside.addEventListener('click',()=>actions++);
+  f.fire(f.outside,'pointerup',mouse);f.fire(f.outside,'click',{...mouse,detail:1});
+  assert.equal(f.tools.toolbar.expanded,false);assert.equal(actions,1);assert.equal(f.document.activeElement,f.outside);
+});
+
+test('WebKit touch compatibility click can finish its actual released gesture with a mouse ID',t=>{
+  const f=composed(t);f.fire(f.trigger,'click',{detail:1});
+  f.fire(f.outside,'pointerdown',{...mouse,pointerType:'touch',pointerId:0});
+  f.fire(f.outside,'pointerup',{...mouse,pointerType:'touch',pointerId:0});
+  f.fire(f.outside,'click',{...mouse,pointerType:'mouse',pointerId:1,detail:1});
+  assert.equal(f.tools.toolbar.expanded,false,'native WebKit touch(0) -> compatibility mouse click(1) closes immediately');
+});
+
+for(const boundary of ['cancelled','unmatched-release'])test('WebKit compatibility click cannot bypass '+boundary+' touch protection',t=>{
+  const f=composed(t);f.fire(f.trigger,'click',{detail:1});
+  f.fire(f.outside,'pointerdown',{...mouse,pointerType:'touch',pointerId:0});
+  if(boundary==='cancelled')f.fire(f.outside,'pointercancel',{...mouse,pointerType:'touch',pointerId:0});
+  f.fire(f.outside,'pointerup',{...mouse,pointerType:'touch',pointerId:boundary==='unmatched-release'?2:0});
+  f.fire(f.outside,'click',{...mouse,pointerType:'mouse',pointerId:1,detail:1});
+  assert.equal(f.tools.toolbar.expanded,true);
+});
+
+for(const kind of ['inside-drag','cancelled','right-click','touch-scroll'])test(kind+' is not an outside dismissal',t=>{
+  const f=composed(t);f.fire(f.trigger,'click',{detail:1});
+  const start=kind==='inside-drag'?f.panel:f.outside,props={...mouse,...(kind==='right-click'?{button:2}:kind==='touch-scroll'?{pointerType:'touch'}:{})};
+  f.fire(start,'pointerdown',props);
+  if(kind==='cancelled')f.fire(f.outside,'pointercancel',props);
+  if(kind==='touch-scroll')f.fire(f.outside,'pointermove',{...props,clientY:100});
+  f.fire(f.outside,'pointerup',props);f.fire(f.outside,'click',{...props,detail:1});
+  assert.equal(f.tools.toolbar.expanded,true);
+});
+
+test('leaving the window releases transient mouse holds and a chapter change closes coherently',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);
+  f.fire(f.trigger,'pointerenter',mouse);f.document.defaultView.dispatchEvent(new Event('blur'));t.mock.timers.tick(200);
+  assert.equal(f.tools.toolbar.expanded,false);
+  f.fire(f.trigger,'click',{detail:1});f.fire(f.header,'pointerenter',mouse);f.fire(f.document,'reader:chapter');
+  assert.equal(f.tools.toolbar.expanded,false);assert.equal(f.header.inert,true);
+  f.fire(f.trigger,'click',{detail:1});t.mock.timers.tick(5000);assert.equal(f.tools.toolbar.expanded,false,'previous chapter holds are gone');
+});
+
+test('pointer cancellation releases a preview hold rather than stranding it',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);
+  f.fire(f.trigger,'pointerenter',mouse);f.fire(f.document,'pointercancel',mouse);
+  t.mock.timers.tick(200);assert.equal(f.tools.toolbar.expanded,false);
+});
+
+test('a replacement coordinator retires the old listeners and conceal deadline',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t),old=f.tools;
+  const next=mountReaderTools({sessionRoot:f.sessionRoot,document:f.document});t.after(()=>next.unmount());
+  f.fire(f.trigger,'click',{detail:1});
+  assert.equal(old.toolbar.expanded,false,'the old mount cannot react to the replacement pill');
+  assert.equal(next.toolbar.expanded,true);t.mock.timers.tick(5000);assert.equal(next.toolbar.expanded,false);
+});
+
+test('selecting card text holds it through pointer release until the selection leaves',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);let selection=null;
+  f.document.getSelection=()=>selection;
+  f.fire(f.trigger,'click',{detail:1});selection={isCollapsed:false,anchorNode:f.panel,focusNode:f.panel};
+  f.fire(f.document,'selectionchange');t.mock.timers.tick(6000);assert.equal(f.tools.toolbar.expanded,true);
+  selection=null;f.fire(f.document,'selectionchange');t.mock.timers.tick(5000);assert.equal(f.tools.toolbar.expanded,false);
+});
+
+test('an outside gesture that light-dismisses a child popover does not also close its parent tools',t=>{
+  const f=composed(t);let overlay=false;f.document.querySelector=()=>overlay?{}:null;
+  f.fire(f.trigger,'click',{detail:1});overlay=true;
+  f.fire(f.outside,'pointerdown',mouse);overlay=false; // native light dismissal before click
+  f.fire(f.outside,'pointerup',mouse);f.fire(f.outside,'click',{...mouse,detail:1});
+  assert.equal(f.tools.toolbar.expanded,true,'one gesture consumes only the child layer');
+  f.fire(f.outside,'pointerdown',mouse);f.fire(f.outside,'pointerup',mouse);f.fire(f.outside,'click',{...mouse,detail:1});assert.equal(f.tools.toolbar.expanded,false);
+});
+
+test('touch interaction promotes an existing mouse preview before native scroll cancellation',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);
+  f.fire(f.trigger,'pointerenter',mouse);f.fire(f.panel,'pointerdown',{...mouse,pointerType:'touch'});f.fire(f.document,'pointercancel',{...mouse,pointerType:'touch'});
+  t.mock.timers.tick(201);assert.equal(f.tools.toolbar.expanded,true,'active touch scrolling cannot disappear at the preview deadline');
+});
+
+test('active card scrolling renews explicit idle time through native pointer cancellation',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);f.fire(f.trigger,'click',{detail:1});
+  for(let i=0;i<6;i++){t.mock.timers.tick(1000);f.fire(f.panel,'scroll');assert.equal(f.tools.toolbar.expanded,true);}
+  t.mock.timers.tick(4999);assert.equal(f.tools.toolbar.expanded,true);t.mock.timers.tick(1);assert.equal(f.tools.toolbar.expanded,false,'idle starts after the last scroll');
+});
+
+test('a passive layout scroll cannot promote or reopen a hover preview',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);f.fire(f.trigger,'pointerenter',mouse);f.fire(f.trigger,'pointerleave',mouse);
+  f.fire(f.panel,'scroll');t.mock.timers.tick(200);assert.equal(f.tools.toolbar.expanded,false);f.fire(f.panel,'scroll');assert.equal(f.tools.toolbar.expanded,false);
+});
+
+test('a wheel operation promotes preview and gets explicit idle time',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);f.fire(f.trigger,'pointerenter',mouse);f.fire(f.trigger,'pointerleave',mouse);f.fire(f.panel,'wheel');
+  t.mock.timers.tick(201);assert.equal(f.tools.toolbar.expanded,true);assert.equal(f.body.dataset.readingTools,'open');
+});
+
+test('browser fullscreen exit clears the old header hold and tools state',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);
+  f.document.fullscreenElement=f.document.documentElement;f.fire(f.document,'fullscreenchange');
+  f.fire(f.trigger,'click',{detail:1});f.fire(f.header,'pointerenter',mouse);f.document.fullscreenElement=null;f.fire(f.document,'fullscreenchange');
+  assert.equal(f.tools.toolbar.expanded,false);assert.equal(f.header.inert,true);
+  f.fire(f.trigger,'click',{detail:1});t.mock.timers.tick(5000);assert.equal(f.tools.toolbar.expanded,false);
+});
+
+test('a late fullscreen notification cannot close tools opened after that state was already rendered',t=>{
+  const f=composed(t);f.fire(f.trigger,'click',{detail:1});
+  f.fire(f.document,'fullscreenchange'); // property already false at the new explicit open
+  assert.equal(f.tools.toolbar.expanded,true);assert.equal(f.header.inert,false);
 });

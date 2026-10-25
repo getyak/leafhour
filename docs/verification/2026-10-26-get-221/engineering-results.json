@@ -1,0 +1,98 @@
+[
+  {
+    "name": "full-tests",
+    "at": "2026-10-25T20:11:23.598Z",
+    "finished": "2026-10-25T20:12:48.348Z",
+    "status": 0,
+    "error": null,
+    "log": ".symphony/full-tests.log"
+  },
+  {
+    "name": "build-runtime",
+    "at": "2026-10-25T20:12:48.349Z",
+    "finished": "2026-10-25T20:12:49.977Z",
+    "status": 0,
+    "error": null,
+    "log": ".symphony/build-runtime.log"
+  },
+  {
+    "name": "build-public",
+    "at": "2026-10-25T20:12:49.977Z",
+    "finished": "2026-10-25T20:12:50.596Z",
+    "status": 0,
+    "error": null,
+    "log": ".symphony/build-public.log"
+  },
+  {
+    "name": "public-check",
+    "at": "2026-10-25T20:12:50.596Z",
+    "finished": "2026-10-25T20:12:50.643Z",
+    "status": 0,
+    "error": null,
+    "log": ".symphony/public-check.log"
+  },
+  {
+    "name": "release-policy",
+    "at": "2026-10-25T20:12:50.643Z",
+    "finished": "2026-10-25T20:12:51.047Z",
+    "status": 0,
+    "error": null,
+    "log": ".symphony/release-policy.log"
+  },
+  {
+    "name": "release-check",
+    "at": "2026-10-25T20:12:51.047Z",
+    "finished": "2026-10-25T20:12:51.083Z",
+    "status": 0,
+    "error": null,
+    "log": ".symphony/release-check.log"
+  },
+  {
+    "name": "pricing-check",
+    "at": "2026-10-25T20:12:51.084Z",
+    "finished": "2026-10-25T20:12:51.108Z",
+    "status": 0,
+    "error": null,
+    "log": ".symphony/pricing-check.log"
+  },
+  {
+    "name": "copy-export",
+    "at": "2026-10-25T20:12:51.108Z",
+    "finished": "2026-10-25T20:12:51.526Z",
+    "status": 0,
+    "error": null,
+    "log": ".symphony/copy-export.log"
+  },
+  {
+    "name": "copy-lint",
+    "at": "2026-10-25T20:13:38.779Z",
+    "finished": "2026-10-25T20:13:46.162Z",
+    "status": 0,
+    "error": null,
+    "log": ".symphony/copy-lint.log"
+  },
+  {
+    "name": "copy-canaries",
+    "at": "2026-10-25T20:13:46.165Z",
+    "finished": "2026-10-25T20:13:54.623Z",
+    "status": 0,
+    "error": null,
+    "log": ".symphony/copy-canaries.log"
+  },
+  {
+    "name": "built-share",
+    "at": "2026-10-25T20:13:54.623Z",
+    "finished": "2026-10-25T20:13:59.111Z",
+    "status": 0,
+    "error": null,
+    "log": ".symphony/built-share.log"
+  },
+  {
+    "name": "browser-boundaries-strict",
+    "at": "2026-10-25T20:13:59.111Z",
+    "finished": "2026-10-25T20:16:13.306Z",
+    "status": 0,
+    "error": null,
+    "log": ".symphony/browser-boundaries-strict.log"
+  }
+]

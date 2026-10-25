@@ -1,0 +1,40 @@
+{"engine":"chromium","width":1440,"rounds":5,"stage":"boundaries"}
+{"engine":"chromium","width":1440,"rounds":10,"stage":"boundaries"}
+{"engine":"chromium","width":1440,"rounds":15,"stage":"boundaries"}
+{"engine":"chromium","width":1440,"rounds":20,"stage":"boundaries"}
+{"engine":"chromium","width":1440,"rounds":20,"checks":["actual Manual opener retained without dialog beforetoggle","real chapter transition releases tools","actual source-page Share exports a valid PNG and retains selected text; raw model is already imported","native fullscreen enter and exit","denied fullscreen restores visible pill"],"passed":true}
+{"engine":"chromium","width":768,"rounds":5,"stage":"boundaries"}
+{"engine":"chromium","width":768,"rounds":10,"stage":"boundaries"}
+{"engine":"chromium","width":768,"rounds":15,"stage":"boundaries"}
+{"engine":"chromium","width":768,"rounds":20,"stage":"boundaries"}
+{"engine":"chromium","width":768,"rounds":20,"checks":["actual Manual opener retained without dialog beforetoggle","real chapter transition releases tools","actual source-page Share exports a valid PNG and retains selected text; raw model is already imported","native fullscreen enter and exit","denied fullscreen restores visible pill"],"passed":true}
+{"engine":"chromium","width":390,"rounds":5,"stage":"boundaries"}
+{"engine":"chromium","width":390,"rounds":10,"stage":"boundaries"}
+{"engine":"chromium","width":390,"rounds":15,"stage":"boundaries"}
+{"engine":"chromium","width":390,"rounds":20,"stage":"boundaries"}
+{"engine":"chromium","width":390,"rounds":20,"checks":["continuous card scrolling stays active past five seconds; input source is recorded","actual Manual opener retained without dialog beforetoggle","real chapter transition releases tools","actual source-page Share exports a valid PNG and retains selected text; raw model is already imported","native fullscreen enter and exit","denied fullscreen restores visible pill"],"passed":true}
+{"engine":"chromium","width":320,"rounds":5,"stage":"boundaries"}
+{"engine":"chromium","width":320,"rounds":10,"stage":"boundaries"}
+{"engine":"chromium","width":320,"rounds":15,"stage":"boundaries"}
+{"engine":"chromium","width":320,"rounds":20,"stage":"boundaries"}
+{"engine":"chromium","width":320,"rounds":20,"checks":["actual Manual opener retained without dialog beforetoggle","real chapter transition releases tools","actual source-page Share exports a valid PNG and retains selected text; raw model is already imported","native fullscreen enter and exit","denied fullscreen restores visible pill"],"passed":true}
+{"engine":"webkit","width":1440,"rounds":5,"stage":"boundaries"}
+{"engine":"webkit","width":1440,"rounds":10,"stage":"boundaries"}
+{"engine":"webkit","width":1440,"rounds":15,"stage":"boundaries"}
+{"engine":"webkit","width":1440,"rounds":20,"stage":"boundaries"}
+{"engine":"webkit","width":1440,"rounds":20,"checks":["actual Manual opener retained without dialog beforetoggle","real chapter transition releases tools","actual source-page Share exports a valid PNG and retains selected text; raw model is already imported","native fullscreen enter and exit","denied fullscreen restores visible pill"],"passed":true}
+{"engine":"webkit","width":768,"rounds":5,"stage":"boundaries"}
+{"engine":"webkit","width":768,"rounds":10,"stage":"boundaries"}
+{"engine":"webkit","width":768,"rounds":15,"stage":"boundaries"}
+{"engine":"webkit","width":768,"rounds":20,"stage":"boundaries"}
+{"engine":"webkit","width":768,"rounds":20,"checks":["actual Manual opener retained without dialog beforetoggle","real chapter transition releases tools","actual source-page Share exports a valid PNG and retains selected text; raw model is already imported","native fullscreen enter and exit","denied fullscreen restores visible pill"],"passed":true}
+{"engine":"webkit","width":390,"rounds":5,"stage":"boundaries"}
+{"engine":"webkit","width":390,"rounds":10,"stage":"boundaries"}
+{"engine":"webkit","width":390,"rounds":15,"stage":"boundaries"}
+{"engine":"webkit","width":390,"rounds":20,"stage":"boundaries"}
+{"engine":"webkit","width":390,"rounds":20,"checks":["continuous card scrolling stays active past five seconds; input source is recorded","actual Manual opener retained without dialog beforetoggle","real chapter transition releases tools","actual source-page Share exports a valid PNG and retains selected text; raw model is already imported","native fullscreen enter and exit","denied fullscreen restores visible pill"],"passed":true}
+{"engine":"webkit","width":320,"rounds":5,"stage":"boundaries"}
+{"engine":"webkit","width":320,"rounds":10,"stage":"boundaries"}
+{"engine":"webkit","width":320,"rounds":15,"stage":"boundaries"}
+{"engine":"webkit","width":320,"rounds":20,"stage":"boundaries"}
+{"engine":"webkit","width":320,"rounds":20,"checks":["actual Manual opener retained without dialog beforetoggle","real chapter transition releases tools","actual source-page Share exports a valid PNG and retains selected text; raw model is already imported","native fullscreen enter and exit","denied fullscreen restores visible pill"],"passed":true}

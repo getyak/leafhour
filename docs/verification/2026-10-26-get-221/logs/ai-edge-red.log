@@ -1,0 +1,16 @@
+[{"kind":"mouse","elapsed":263,"events":[{"type":"pointerdown","id":"outside","ctor":"PointerEvent","pointerId":1,"pointerType":"mouse","detail":1,"button":0,"isPrimary":true,"trusted":true,"at":299},{"type":"pointerup","id":"outside","ctor":"PointerEvent","pointerId":1,"pointerType":"mouse","detail":1,"button":0,"isPrimary":true,"trusted":true,"at":304},{"type":"click","id":"outside","ctor":"PointerEvent","pointerId":1,"pointerType":"mouse","detail":1,"button":0,"isPrimary":true,"trusted":true,"at":305}],"actions":1,"expanded":"false","focus":"outside"},{"kind":"touch","elapsed":262,"events":[{"type":"pointerdown","id":"outside","ctor":"PointerEvent","pointerId":0,"pointerType":"touch","detail":0,"button":0,"isPrimary":true,"trusted":true,"at":564},{"type":"pointerup","id":"outside","ctor":"PointerEvent","pointerId":0,"pointerType":"touch","detail":0,"button":0,"isPrimary":true,"trusted":true,"at":564},{"type":"click","id":"outside","ctor":"PointerEvent","pointerId":1,"pointerType":"mouse","detail":1,"button":0,"isPrimary":true,"trusted":true,"at":565}],"actions":1,"expanded":"false","focus":"outside"},{"kind":"ai-edge","ai":{"x":1250.5,"y":836,"width":78.984375,"height":44,"top":836,"right":1329.484375,"bottom":880,"left":1250.5},"hit":"reading-tools-panel","owns":false,"panel":{"x":1040,"y":588,"width":374,"height":238,"top":588,"right":1414,"bottom":826,"left":1040}}]
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: the card gap must not intercept the adjacent AI entry
+    at file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/.symphony/ai-edge.mjs:3:2224 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.23.2

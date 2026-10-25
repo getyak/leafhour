@@ -1,0 +1,38 @@
+TAP version 13
+# Subtest: actual share language updates leave pending fonts, canvas, snapshot, controls and generated image intact
+not ok 1 - actual share language updates leave pending fonts, canvas, snapshot, controls and generated image intact
+  ---
+  duration_ms: 17.034667
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/ui-locale-share.test.mjs:26:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+
+      assert.ok(f.draws.some(d=>d.includes('Literal source text.')))
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/ui-locale-share.test.mjs:30:60)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: share preparation errors relabel only their owned announcement leaf and never expose raw failures
+ok 2 - share preparation errors relabel only their owned announcement leaf and never expose raw failures
+  ---
+  duration_ms: 0.94025
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 71.364084

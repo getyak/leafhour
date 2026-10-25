@@ -1,0 +1,188 @@
+TAP version 13
+# Subtest: reading opens immersive before JavaScript and bilingual labels only describe accessible groups
+ok 1 - reading opens immersive before JavaScript and bilingual labels only describe accessible groups
+  ---
+  duration_ms: 9.6445
+  type: 'test'
+  ...
+# Subtest: tool visibility and browser fullscreen are independent, including a browser-initiated exit
+ok 2 - tool visibility and browser fullscreen are independent, including a browser-initiated exit
+  ---
+  duration_ms: 6.444125
+  type: 'test'
+  ...
+# Subtest: a rejected fullscreen request keeps immersion and announces an honest fallback
+ok 3 - a rejected fullscreen request keeps immersion and announces an honest fallback
+  ---
+  duration_ms: 0.677083
+  type: 'test'
+  ...
+# Subtest: nonmodal reading chat leaves page tool dismissal usable without stealing chat interactions
+ok 4 - nonmodal reading chat leaves page tool dismissal usable without stealing chat interactions
+  ---
+  duration_ms: 0.422083
+  type: 'test'
+  ...
+# Subtest: immersive reading keeps the chapter heading and side tools quiet by default
+ok 5 - immersive reading keeps the chapter heading and side tools quiet by default
+  ---
+  duration_ms: 2.5905
+  type: 'test'
+  ...
+# Subtest: immersion exposes show and close hooks and no floating control remains in the reader shell
+ok 6 - immersion exposes show and close hooks and no floating control remains in the reader shell
+  ---
+  duration_ms: 0.902375
+  type: 'test'
+  ...
+# Subtest: a failed fullscreen request returns focus to the visible pill fallback
+ok 7 - a failed fullscreen request returns focus to the visible pill fallback
+  ---
+  duration_ms: 2.689458
+  type: 'test'
+  ...
+# Subtest: locale changes update fullscreen labels without changing tools, focus or layout
+ok 8 - locale changes update fullscreen labels without changing tools, focus or layout
+  ---
+  duration_ms: 16.659541
+  type: 'test'
+  ...
+# Subtest: unmount fences a pending fullscreen result from a replacement owner
+ok 9 - unmount fences a pending fullscreen result from a replacement owner
+  ---
+  duration_ms: 0.941042
+  type: 'test'
+  ...
+# Subtest: parallel reveal labels change in place without revealing text again or replacing source nodes
+ok 10 - parallel reveal labels change in place without revealing text again or replacing source nodes
+  ---
+  duration_ms: 1.578084
+  type: 'test'
+  ...
+# (node:39151) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: source self-host serves the new tools module and its complete direct dependencies as JavaScript
+ok 11 - source self-host serves the new tools module and its complete direct dependencies as JavaScript
+  ---
+  duration_ms: 240.048708
+  type: 'test'
+  ...
+# Subtest: locale preserves the sole conceal deadline, unread state, focus and held tools
+ok 12 - locale preserves the sole conceal deadline, unread state, focus and held tools
+  ---
+  duration_ms: 15.731083
+  type: 'test'
+  ...
+# Subtest: unmount releases tools listeners and stale unread callbacks cannot change a replacement pill
+ok 13 - unmount releases tools listeners and stale unread callbacks cannot change a replacement pill
+  ---
+  duration_ms: 0.375833
+  type: 'test'
+  ...
+# Subtest: the single pill interaction drives both tools surfaces through one conceal timer
+ok 14 - the single pill interaction drives both tools surfaces through one conceal timer
+  ---
+  duration_ms: 0.339292
+  type: 'test'
+  ...
+# Subtest: concealing tools returns focus from the revealed header to the visible pill
+ok 15 - concealing tools returns focus from the revealed header to the visible pill
+  ---
+  duration_ms: 0.398917
+  type: 'test'
+  ...
+# Subtest: fullscreen failure restoration targets the visible pill through the reader wiring seam
+ok 16 - fullscreen failure restoration targets the visible pill through the reader wiring seam
+  ---
+  duration_ms: 0.640792
+  type: 'test'
+  ...
+# Subtest: injected chat integration keeps trigger, anchor, focus and unread seams separate
+ok 17 - injected chat integration keeps trigger, anchor, focus and unread seams separate
+  ---
+  duration_ms: 0.643625
+  type: 'test'
+  ...
+# Subtest: control mode follows the reader focus layout for the pill label
+ok 18 - control mode follows the reader focus layout for the pill label
+  ---
+  duration_ms: 2.354917
+  type: 'test'
+  ...
+# Subtest: composed tools keep hover reveals from stealing focus while explicit clicks may focus
+ok 19 - composed tools keep hover reveals from stealing focus while explicit clicks may focus
+  ---
+  duration_ms: 1.280333
+  type: 'test'
+  ...
+# Subtest: composed tools hold concealment while the focused header is hovered or focused
+ok 20 - composed tools hold concealment while the focused header is hovered or focused
+  ---
+  duration_ms: 1.884958
+  type: 'test'
+  ...
+# Subtest: outside pointerdown and pill click keep one tools state across both surfaces
+ok 21 - outside pointerdown and pill click keep one tools state across both surfaces
+  ---
+  duration_ms: 1.754083
+  type: 'test'
+  ...
+# Subtest: setFocused and fullscreen transitions cannot strand the toolbar state
+ok 22 - setFocused and fullscreen transitions cannot strand the toolbar state
+  ---
+  duration_ms: 0.985375
+  type: 'test'
+  ...
+# Subtest: the Ask AI handoff closes tools without bubbling re-reveal or focus theft
+ok 23 - the Ask AI handoff closes tools without bubbling re-reveal or focus theft
+  ---
+  duration_ms: 0.693208
+  type: 'test'
+  ...
+# (node:39152) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: reading tools start tucked away and return there after leaving them idle
+ok 24 - reading tools start tucked away and return there after leaving them idle
+  ---
+  duration_ms: 7.973041
+  type: 'test'
+  ...
+# Subtest: pointer and keyboard holds independently protect controls from disappearing
+ok 25 - pointer and keyboard holds independently protect controls from disappearing
+  ---
+  duration_ms: 0.293417
+  type: 'test'
+  ...
+# Subtest: closing and reopening cancels the earlier disappearance timer
+ok 26 - closing and reopening cancels the earlier disappearance timer
+  ---
+  duration_ms: 0.230833
+  type: 'test'
+  ...
+# Subtest: a dialog holds the open tools but never opens tucked-away controls on its own
+ok 27 - a dialog holds the open tools but never opens tucked-away controls on its own
+  ---
+  duration_ms: 0.12225
+  type: 'test'
+  ...
+# Subtest: a dialog added after mounting keeps its sidebar opener available until it closes
+ok 28 - a dialog added after mounting keeps its sidebar opener available until it closes
+  ---
+  duration_ms: 1.124625
+  type: 'test'
+  ...
+# Subtest: mountReadingToolbar exposes explicit reveal, conceal, hold and control-mode hooks
+ok 29 - mountReadingToolbar exposes explicit reveal, conceal, hold and control-mode hooks
+  ---
+  duration_ms: 0.749792
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 774.363375

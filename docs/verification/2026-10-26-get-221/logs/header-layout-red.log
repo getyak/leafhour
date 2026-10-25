@@ -1,0 +1,109 @@
+TAP version 13
+# Subtest: reading opens immersive before JavaScript and bilingual labels only describe accessible groups
+ok 1 - reading opens immersive before JavaScript and bilingual labels only describe accessible groups
+  ---
+  duration_ms: 7.521375
+  type: 'test'
+  ...
+# Subtest: tool visibility and browser fullscreen are independent, including a browser-initiated exit
+ok 2 - tool visibility and browser fullscreen are independent, including a browser-initiated exit
+  ---
+  duration_ms: 6.299791
+  type: 'test'
+  ...
+# Subtest: a rejected fullscreen request keeps immersion and announces an honest fallback
+ok 3 - a rejected fullscreen request keeps immersion and announces an honest fallback
+  ---
+  duration_ms: 0.29875
+  type: 'test'
+  ...
+# Subtest: tools geometry notification observes the committed header visibility exactly once per transition
+not ok 4 - tools geometry notification observes the committed header visibility exactly once per transition
+  ---
+  duration_ms: 0.866375
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-immersion.test.mjs:59:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+    + []
+    - [
+    -   {
+    -     inert: false,
+    -     open: 'open'
+    -   },
+    -   {
+    -     inert: true,
+    -     open: 'closed'
+    -   }
+    - ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      inert: false
+      open: 'open'
+    1:
+      inert: true
+      open: 'closed'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-immersion.test.mjs:63:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: nonmodal reading chat leaves page tool dismissal usable without stealing chat interactions
+ok 5 - nonmodal reading chat leaves page tool dismissal usable without stealing chat interactions
+  ---
+  duration_ms: 0.440375
+  type: 'test'
+  ...
+# Subtest: immersive reading keeps the chapter heading and side tools quiet by default
+ok 6 - immersive reading keeps the chapter heading and side tools quiet by default
+  ---
+  duration_ms: 1.463291
+  type: 'test'
+  ...
+# Subtest: immersion exposes show and close hooks and no floating control remains in the reader shell
+ok 7 - immersion exposes show and close hooks and no floating control remains in the reader shell
+  ---
+  duration_ms: 0.43325
+  type: 'test'
+  ...
+# Subtest: a failed fullscreen request returns focus to the visible pill fallback
+ok 8 - a failed fullscreen request returns focus to the visible pill fallback
+  ---
+  duration_ms: 0.228875
+  type: 'test'
+  ...
+# Subtest: locale changes update fullscreen labels without changing tools, focus or layout
+ok 9 - locale changes update fullscreen labels without changing tools, focus or layout
+  ---
+  duration_ms: 9.325041
+  type: 'test'
+  ...
+# Subtest: unmount fences a pending fullscreen result from a replacement owner
+ok 10 - unmount fences a pending fullscreen result from a replacement owner
+  ---
+  duration_ms: 0.434334
+  type: 'test'
+  ...
+# Subtest: parallel reveal labels change in place without revealing text again or replacing source nodes
+ok 11 - parallel reveal labels change in place without revealing text again or replacing source nodes
+  ---
+  duration_ms: 0.803541
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 10
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 71.447541

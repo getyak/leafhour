@@ -1,0 +1,536 @@
+TAP version 13
+# Subtest: reading opens immersive before JavaScript and bilingual labels only describe accessible groups
+ok 1 - reading opens immersive before JavaScript and bilingual labels only describe accessible groups
+  ---
+  duration_ms: 10.751542
+  type: 'test'
+  ...
+# Subtest: tool visibility and browser fullscreen are independent, including a browser-initiated exit
+ok 2 - tool visibility and browser fullscreen are independent, including a browser-initiated exit
+  ---
+  duration_ms: 3.476917
+  type: 'test'
+  ...
+# Subtest: a rejected fullscreen request keeps immersion and announces an honest fallback
+ok 3 - a rejected fullscreen request keeps immersion and announces an honest fallback
+  ---
+  duration_ms: 0.345334
+  type: 'test'
+  ...
+# Subtest: tools geometry notification observes the committed header visibility exactly once per transition
+ok 4 - tools geometry notification observes the committed header visibility exactly once per transition
+  ---
+  duration_ms: 0.502042
+  type: 'test'
+  ...
+# Subtest: nonmodal reading chat leaves page tool dismissal usable without stealing chat interactions
+ok 5 - nonmodal reading chat leaves page tool dismissal usable without stealing chat interactions
+  ---
+  duration_ms: 0.509667
+  type: 'test'
+  ...
+# Subtest: immersive reading keeps the chapter heading and side tools quiet by default
+ok 6 - immersive reading keeps the chapter heading and side tools quiet by default
+  ---
+  duration_ms: 2.357292
+  type: 'test'
+  ...
+# Subtest: immersion exposes show and close hooks and no floating control remains in the reader shell
+ok 7 - immersion exposes show and close hooks and no floating control remains in the reader shell
+  ---
+  duration_ms: 1.241042
+  type: 'test'
+  ...
+# Subtest: a failed fullscreen request returns focus to the visible pill fallback
+ok 8 - a failed fullscreen request returns focus to the visible pill fallback
+  ---
+  duration_ms: 0.275833
+  type: 'test'
+  ...
+# Subtest: locale changes update fullscreen labels without changing tools, focus or layout
+ok 9 - locale changes update fullscreen labels without changing tools, focus or layout
+  ---
+  duration_ms: 11.793542
+  type: 'test'
+  ...
+# Subtest: unmount fences a pending fullscreen result from a replacement owner
+ok 10 - unmount fences a pending fullscreen result from a replacement owner
+  ---
+  duration_ms: 0.510667
+  type: 'test'
+  ...
+# Subtest: parallel reveal labels change in place without revealing text again or replacing source nodes
+ok 11 - parallel reveal labels change in place without revealing text again or replacing source nodes
+  ---
+  duration_ms: 0.848375
+  type: 'test'
+  ...
+# Subtest: source self-host serves the new tools module and its complete direct dependencies as JavaScript
+ok 12 - source self-host serves the new tools module and its complete direct dependencies as JavaScript
+  ---
+  duration_ms: 111.095208
+  type: 'test'
+  ...
+# (node:5036) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: locale preserves the sole conceal deadline, unread state, focus and held tools
+ok 13 - locale preserves the sole conceal deadline, unread state, focus and held tools
+  ---
+  duration_ms: 16.356459
+  type: 'test'
+  ...
+# Subtest: unmount releases tools listeners and stale unread callbacks cannot change a replacement pill
+ok 14 - unmount releases tools listeners and stale unread callbacks cannot change a replacement pill
+  ---
+  duration_ms: 1.159291
+  type: 'test'
+  ...
+# Subtest: the single pill interaction drives both tools surfaces through one conceal timer
+ok 15 - the single pill interaction drives both tools surfaces through one conceal timer
+  ---
+  duration_ms: 1.145583
+  type: 'test'
+  ...
+# Subtest: concealing tools returns focus from the revealed header to the visible pill
+ok 16 - concealing tools returns focus from the revealed header to the visible pill
+  ---
+  duration_ms: 0.581042
+  type: 'test'
+  ...
+# Subtest: fullscreen failure restoration targets the visible pill through the reader wiring seam
+ok 17 - fullscreen failure restoration targets the visible pill through the reader wiring seam
+  ---
+  duration_ms: 1.827209
+  type: 'test'
+  ...
+# Subtest: injected chat integration keeps trigger, anchor, focus and unread seams separate
+ok 18 - injected chat integration keeps trigger, anchor, focus and unread seams separate
+  ---
+  duration_ms: 1.181166
+  type: 'test'
+  ...
+# Subtest: control mode follows the reader focus layout for the pill label
+ok 19 - control mode follows the reader focus layout for the pill label
+  ---
+  duration_ms: 2.675292
+  type: 'test'
+  ...
+# Subtest: composed tools keep hover reveals from stealing focus while explicit clicks may focus
+ok 20 - composed tools keep hover reveals from stealing focus while explicit clicks may focus
+  ---
+  duration_ms: 1.608583
+  type: 'test'
+  ...
+# Subtest: composed tools hold concealment while the focused header is hovered or focused
+ok 21 - composed tools hold concealment while the focused header is hovered or focused
+  ---
+  duration_ms: 1.625334
+  type: 'test'
+  ...
+# Subtest: outside completed click and pill click keep one tools state across both surfaces
+ok 22 - outside completed click and pill click keep one tools state across both surfaces
+  ---
+  duration_ms: 0.93775
+  type: 'test'
+  ...
+# Subtest: setFocused and fullscreen transitions cannot strand the toolbar state
+ok 23 - setFocused and fullscreen transitions cannot strand the toolbar state
+  ---
+  duration_ms: 0.462334
+  type: 'test'
+  ...
+# Subtest: the Ask AI handoff closes tools without bubbling re-reveal or focus theft
+ok 24 - the Ask AI handoff closes tools without bubbling re-reveal or focus theft
+  ---
+  duration_ms: 0.250375
+  type: 'test'
+  ...
+# Subtest: hover preview leaves for the adjacent AI sibling after a 200ms gap allowance
+ok 25 - hover preview leaves for the adjacent AI sibling after a 200ms gap allowance
+  ---
+  duration_ms: 0.321667
+  type: 'test'
+  ...
+# Subtest: hover reveals only the card and explicit activation adds the navigation surface
+ok 26 - hover reveals only the card and explicit activation adds the navigation surface
+  ---
+  duration_ms: 0.188666
+  type: 'test'
+  ...
+# Subtest: button and card gap crossings and reentry cancel the sole old preview deadline
+ok 27 - button and card gap crossings and reentry cancel the sole old preview deadline
+  ---
+  duration_ms: 0.258167
+  type: 'test'
+  ...
+# Subtest: mouse focus in navigation cannot hold explicit tools forever but Tab focus can
+ok 28 - mouse focus in navigation cannot hold explicit tools forever but Tab focus can
+  ---
+  duration_ms: 0.217875
+  type: 'test'
+  ...
+# Subtest: Enter activation establishes keyboard ownership before navigation receives focus
+ok 29 - Enter activation establishes keyboard ownership before navigation receives focus
+  ---
+  duration_ms: 0.162
+  type: 'test'
+  ...
+# Subtest: outside dismissal waits for a complete primary gesture and preserves its target
+ok 30 - outside dismissal waits for a complete primary gesture and preserves its target
+  ---
+  duration_ms: 0.256
+  type: 'test'
+  ...
+# Subtest: WebKit touch compatibility click can finish its actual released gesture with a mouse ID
+ok 31 - WebKit touch compatibility click can finish its actual released gesture with a mouse ID
+  ---
+  duration_ms: 0.2145
+  type: 'test'
+  ...
+# Subtest: WebKit compatibility click cannot bypass cancelled touch protection
+ok 32 - WebKit compatibility click cannot bypass cancelled touch protection
+  ---
+  duration_ms: 0.166209
+  type: 'test'
+  ...
+# Subtest: WebKit compatibility click cannot bypass unmatched-release touch protection
+ok 33 - WebKit compatibility click cannot bypass unmatched-release touch protection
+  ---
+  duration_ms: 0.204916
+  type: 'test'
+  ...
+# Subtest: inside-drag is not an outside dismissal
+ok 34 - inside-drag is not an outside dismissal
+  ---
+  duration_ms: 0.162
+  type: 'test'
+  ...
+# Subtest: cancelled is not an outside dismissal
+ok 35 - cancelled is not an outside dismissal
+  ---
+  duration_ms: 0.125208
+  type: 'test'
+  ...
+# Subtest: right-click is not an outside dismissal
+ok 36 - right-click is not an outside dismissal
+  ---
+  duration_ms: 0.12075
+  type: 'test'
+  ...
+# Subtest: touch-scroll is not an outside dismissal
+ok 37 - touch-scroll is not an outside dismissal
+  ---
+  duration_ms: 0.142
+  type: 'test'
+  ...
+# Subtest: leaving the window releases transient mouse holds and a chapter change closes coherently
+ok 38 - leaving the window releases transient mouse holds and a chapter change closes coherently
+  ---
+  duration_ms: 0.214917
+  type: 'test'
+  ...
+# Subtest: pointer cancellation releases a preview hold rather than stranding it
+ok 39 - pointer cancellation releases a preview hold rather than stranding it
+  ---
+  duration_ms: 0.209167
+  type: 'test'
+  ...
+# Subtest: a replacement coordinator retires the old listeners and conceal deadline
+ok 40 - a replacement coordinator retires the old listeners and conceal deadline
+  ---
+  duration_ms: 0.218958
+  type: 'test'
+  ...
+# Subtest: selecting card text holds it through pointer release until the selection leaves
+ok 41 - selecting card text holds it through pointer release until the selection leaves
+  ---
+  duration_ms: 0.178916
+  type: 'test'
+  ...
+# Subtest: an outside gesture that light-dismisses a child popover does not also close its parent tools
+ok 42 - an outside gesture that light-dismisses a child popover does not also close its parent tools
+  ---
+  duration_ms: 0.159708
+  type: 'test'
+  ...
+# Subtest: touch interaction promotes an existing mouse preview before native scroll cancellation
+ok 43 - touch interaction promotes an existing mouse preview before native scroll cancellation
+  ---
+  duration_ms: 0.1445
+  type: 'test'
+  ...
+# Subtest: active card scrolling renews explicit idle time through native pointer cancellation
+ok 44 - active card scrolling renews explicit idle time through native pointer cancellation
+  ---
+  duration_ms: 0.148375
+  type: 'test'
+  ...
+# Subtest: a passive layout scroll cannot promote or reopen a hover preview
+ok 45 - a passive layout scroll cannot promote or reopen a hover preview
+  ---
+  duration_ms: 0.130208
+  type: 'test'
+  ...
+# Subtest: a wheel operation promotes preview and gets explicit idle time
+ok 46 - a wheel operation promotes preview and gets explicit idle time
+  ---
+  duration_ms: 0.133084
+  type: 'test'
+  ...
+# Subtest: browser fullscreen exit clears the old header hold and tools state
+ok 47 - browser fullscreen exit clears the old header hold and tools state
+  ---
+  duration_ms: 0.185292
+  type: 'test'
+  ...
+# Subtest: a late fullscreen notification cannot close tools opened after that state was already rendered
+ok 48 - a late fullscreen notification cannot close tools opened after that state was already rendered
+  ---
+  duration_ms: 0.1255
+  type: 'test'
+  ...
+# Subtest: browser evidence recognizes the actual domain write routes
+ok 49 - browser evidence recognizes the actual domain write routes
+  ---
+  duration_ms: 0.534833
+  type: 'test'
+  ...
+# Subtest: console acceptance keeps known debt but reports a new real error
+ok 50 - console acceptance keeps known debt but reports a new real error
+  ---
+  duration_ms: 0.361458
+  type: 'test'
+  ...
+# Subtest: missing or mismatched console provenance cannot report a verified clean run
+ok 51 - missing or mismatched console provenance cannot report a verified clean run
+  ---
+  duration_ms: 0.181375
+  type: 'test'
+  ...
+# Subtest: the same HTTP failure text on a different route is still a new error
+ok 52 - the same HTTP failure text on a different route is still a new error
+  ---
+  duration_ms: 0.057583
+  type: 'test'
+  ...
+# (node:5038) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: reading tools start tucked away and return there after leaving them idle
+ok 53 - reading tools start tucked away and return there after leaving them idle
+  ---
+  duration_ms: 6.614625
+  type: 'test'
+  ...
+# Subtest: pointer and keyboard holds independently protect controls from disappearing
+ok 54 - pointer and keyboard holds independently protect controls from disappearing
+  ---
+  duration_ms: 0.271083
+  type: 'test'
+  ...
+# Subtest: closing and reopening cancels the earlier disappearance timer
+ok 55 - closing and reopening cancels the earlier disappearance timer
+  ---
+  duration_ms: 0.2315
+  type: 'test'
+  ...
+# Subtest: a dialog holds the open tools but never opens tucked-away controls on its own
+ok 56 - a dialog holds the open tools but never opens tucked-away controls on its own
+  ---
+  duration_ms: 0.126667
+  type: 'test'
+  ...
+# Subtest: a dialog added after mounting keeps its sidebar opener available until it closes
+ok 57 - a dialog added after mounting keeps its sidebar opener available until it closes
+  ---
+  duration_ms: 0.861792
+  type: 'test'
+  ...
+# Subtest: mountReadingToolbar exposes explicit reveal, conceal, hold and control-mode hooks
+ok 58 - mountReadingToolbar exposes explicit reveal, conceal, hold and control-mode hooks
+  ---
+  duration_ms: 0.593292
+  type: 'test'
+  ...
+# Subtest: listen-chapter keeps its real child dialog available without beforetoggle support
+ok 59 - listen-chapter keeps its real child dialog available without beforetoggle support
+  ---
+  duration_ms: 17.673292
+  type: 'test'
+  ...
+# Subtest: manual-reading-open keeps its real child dialog available without beforetoggle support
+ok 60 - manual-reading-open keeps its real child dialog available without beforetoggle support
+  ---
+  duration_ms: 15.306541
+  type: 'test'
+  ...
+# Subtest: reading-guide-open keeps its real child dialog available without beforetoggle support
+ok 61 - reading-guide-open keeps its real child dialog available without beforetoggle support
+  ---
+  duration_ms: 13.649709
+  type: 'test'
+  ...
+# Subtest: reading-drafts-open keeps its real child dialog available without beforetoggle support
+ok 62 - reading-drafts-open keeps its real child dialog available without beforetoggle support
+  ---
+  duration_ms: 12.855583
+  type: 'test'
+  ...
+# Subtest: an unrelated dialog cannot hold an idle reading card
+ok 63 - an unrelated dialog cannot hold an idle reading card
+  ---
+  duration_ms: 0.453084
+  type: 'test'
+  ...
+# Subtest: unchanged clock updates preserve the touch target text node
+ok 64 - unchanged clock updates preserve the touch target text node
+  ---
+  duration_ms: 0.2325
+  type: 'test'
+  ...
+# Subtest: Chinese source excerpts keep their selected characters and original authorship
+ok 65 - Chinese source excerpts keep their selected characters and original authorship
+  ---
+  duration_ms: 3.067583
+  type: 'test'
+  ...
+# Subtest: a shared excerpt preserves selected words and labels paragraph-level bilingual evidence
+ok 66 - a shared excerpt preserves selected words and labels paragraph-level bilingual evidence
+  ---
+  duration_ms: 0.230666
+  type: 'test'
+  ...
+# Subtest: a changed source, wrong book or mixed-language range cannot silently become a quote
+ok 67 - a changed source, wrong book or mixed-language range cannot silently become a quote
+  ---
+  duration_ms: 0.310917
+  type: 'test'
+  ...
+# Subtest: switching translation cannot fabricate a sentence-level alignment
+ok 68 - switching translation cannot fabricate a sentence-level alignment
+  ---
+  duration_ms: 0.20875
+  type: 'test'
+  ...
+# Subtest: wrapping preserves Unicode and long words without losing selected characters
+ok 69 - wrapping preserves Unicode and long words without losing selected characters
+  ---
+  duration_ms: 7.83175
+  type: 'test'
+  ...
+# Subtest: share preferences are bounded and long layouts extend rather than clipping the quote
+ok 70 - share preferences are bounded and long layouts extend rather than clipping the quote
+  ---
+  duration_ms: 1.831542
+  type: 'test'
+  ...
+# Subtest: share assets are served locally while private library and harness files remain inaccessible
+ok 71 - share assets are served locally while private library and harness files remain inaccessible
+  ---
+  duration_ms: 261.931125
+  type: 'test'
+  ...
+# Subtest: paragraph-alignment labels have drawable coordinates in exported images
+ok 72 - paragraph-alignment labels have drawable coordinates in exported images
+  ---
+  duration_ms: 1.240916
+  type: 'test'
+  ...
+# Subtest: Chinese closing punctuation stays with a preceding character rather than starting a line
+ok 73 - Chinese closing punctuation stays with a preceding character rather than starting a line
+  ---
+  duration_ms: 0.400042
+  type: 'test'
+  ...
+# Subtest: changing a whole-paragraph translation uses neighboring context, never a tail from old offsets
+ok 74 - changing a whole-paragraph translation uses neighboring context, never a tail from old offsets
+  ---
+  duration_ms: 0.221625
+  type: 'test'
+  ...
+# Subtest: a selected original slice keeps canonical raw text while drawing runs from full-source ranges
+ok 75 - a selected original slice keeps canonical raw text while drawing runs from full-source ranges
+  ---
+  duration_ms: 1.778416
+  type: 'test'
+  ...
+# Subtest: whole-paragraph counterparts format their own full source ranges and translations stay literal
+ok 76 - whole-paragraph counterparts format their own full source ranges and translations stay literal
+  ---
+  duration_ms: 1.984667
+  type: 'test'
+  ...
+# Subtest: emphasis display runs cover the visible slice exactly once without splitting surrogate pairs
+ok 77 - emphasis display runs cover the visible slice exactly once without splitting surrogate pairs
+  ---
+  duration_ms: 0.842042
+  type: 'test'
+  ...
+# Subtest: wrapping measures each exact candidate string in the style it draws
+ok 78 - wrapping measures each exact candidate string in the style it draws
+  ---
+  duration_ms: 0.948417
+  type: 'test'
+  ...
+# Subtest: explicit newline hard breaks survive emphasized presentation wrapping
+ok 79 - explicit newline hard breaks survive emphasized presentation wrapping
+  ---
+  duration_ms: 0.699833
+  type: 'test'
+  ...
+# Subtest: presentation wrapping breaks cleanly at word boundaries without changing canonical text
+ok 80 - presentation wrapping breaks cleanly at word boundaries without changing canonical text
+  ---
+  duration_ms: 0.471417
+  type: 'test'
+  ...
+# Subtest: canvas context keeps full-source provenance ranges and never strips model strings
+ok 81 - canvas context keeps full-source provenance ranges and never strips model strings
+  ---
+  duration_ms: 1.457583
+  type: 'test'
+  ...
+# Subtest: accessibility text uses the presented display while canonical model text stays raw
+ok 82 - accessibility text uses the presented display while canonical model text stays raw
+  ---
+  duration_ms: 7.869333
+  type: 'test'
+  ...
+# Subtest: context ellipses fit the drawn width and retain the two-line clamp
+ok 83 - context ellipses fit the drawn width and retain the two-line clamp
+  ---
+  duration_ms: 1.033125
+  type: 'test'
+  ...
+# Subtest: styled wrapping preserves consecutive, leading and trailing hard breaks
+ok 84 - styled wrapping preserves consecutive, leading and trailing hard breaks
+  ---
+  duration_ms: 0.239416
+  type: 'test'
+  ...
+# Subtest: share artifact chrome is formatted only when explicitly building a new source-bound model
+ok 85 - share artifact chrome is formatted only when explicitly building a new source-bound model
+  ---
+  duration_ms: 0.321625
+  type: 'test'
+  ...
+# Subtest: actual share language updates leave pending fonts, canvas, snapshot, controls and generated image intact
+ok 86 - actual share language updates leave pending fonts, canvas, snapshot, controls and generated image intact
+  ---
+  duration_ms: 44.618791
+  type: 'test'
+  ...
+# Subtest: share preparation errors relabel only their owned announcement leaf and never expose raw failures
+ok 87 - share preparation errors relabel only their owned announcement leaf and never expose raw failures
+  ---
+  duration_ms: 0.990042
+  type: 'test'
+  ...
+1..87
+# tests 87
+# suites 0
+# pass 87
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 369.285917

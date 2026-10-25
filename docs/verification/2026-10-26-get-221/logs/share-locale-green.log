@@ -1,0 +1,184 @@
+TAP version 13
+# Subtest: paper-turn rendering loads only after page mode while the ordinary reader keeps its fixed startup budget
+ok 1 - paper-turn rendering loads only after page mode while the ordinary reader keeps its fixed startup budget
+  ---
+  duration_ms: 560.616208
+  type: 'test'
+  ...
+# Subtest: hosted reader starts from one bundled script and one stylesheet without retaining old script execution
+ok 2 - hosted reader starts from one bundled script and one stylesheet without retaining old script execution
+  ---
+  duration_ms: 348.378666
+  type: 'test'
+  ...
+# Subtest: the bookplate enhancement and gift composer remain allowed public modules loaded outside the initial reader bundle
+ok 3 - the bookplate enhancement and gift composer remain allowed public modules loaded outside the initial reader bundle
+  ---
+  duration_ms: 339.422708
+  type: 'test'
+  ...
+# Subtest: external reader modules require the release allowlist and only resolve from their exact callers
+ok 4 - external reader modules require the release allowlist and only resolve from their exact callers
+  ---
+  duration_ms: 91.612875
+  type: 'test'
+  ...
+# Subtest: the authored-home navigation stays outside the reader graph and the fixed budgets hold
+ok 5 - the authored-home navigation stays outside the reader graph and the fixed budgets hold
+  ---
+  duration_ms: 349.074917
+  type: 'test'
+  ...
+# Subtest: the exact palette retry edge is the one amended external import and stays fenced everywhere else
+ok 6 - the exact palette retry edge is the one amended external import and stays fenced everywhere else
+  ---
+  duration_ms: 31.39875
+  type: 'test'
+  ...
+# Subtest: Chinese source excerpts keep their selected characters and original authorship
+ok 7 - Chinese source excerpts keep their selected characters and original authorship
+  ---
+  duration_ms: 2.081416
+  type: 'test'
+  ...
+# Subtest: a shared excerpt preserves selected words and labels paragraph-level bilingual evidence
+ok 8 - a shared excerpt preserves selected words and labels paragraph-level bilingual evidence
+  ---
+  duration_ms: 0.195875
+  type: 'test'
+  ...
+# Subtest: a changed source, wrong book or mixed-language range cannot silently become a quote
+ok 9 - a changed source, wrong book or mixed-language range cannot silently become a quote
+  ---
+  duration_ms: 0.287375
+  type: 'test'
+  ...
+# Subtest: switching translation cannot fabricate a sentence-level alignment
+ok 10 - switching translation cannot fabricate a sentence-level alignment
+  ---
+  duration_ms: 0.199583
+  type: 'test'
+  ...
+# Subtest: wrapping preserves Unicode and long words without losing selected characters
+ok 11 - wrapping preserves Unicode and long words without losing selected characters
+  ---
+  duration_ms: 7.650375
+  type: 'test'
+  ...
+# Subtest: share preferences are bounded and long layouts extend rather than clipping the quote
+ok 12 - share preferences are bounded and long layouts extend rather than clipping the quote
+  ---
+  duration_ms: 0.717208
+  type: 'test'
+  ...
+# Subtest: share assets are served locally while private library and harness files remain inaccessible
+ok 13 - share assets are served locally while private library and harness files remain inaccessible
+  ---
+  duration_ms: 261.616166
+  type: 'test'
+  ...
+# Subtest: paragraph-alignment labels have drawable coordinates in exported images
+ok 14 - paragraph-alignment labels have drawable coordinates in exported images
+  ---
+  duration_ms: 0.719167
+  type: 'test'
+  ...
+# Subtest: Chinese closing punctuation stays with a preceding character rather than starting a line
+ok 15 - Chinese closing punctuation stays with a preceding character rather than starting a line
+  ---
+  duration_ms: 0.353083
+  type: 'test'
+  ...
+# Subtest: changing a whole-paragraph translation uses neighboring context, never a tail from old offsets
+ok 16 - changing a whole-paragraph translation uses neighboring context, never a tail from old offsets
+  ---
+  duration_ms: 0.197833
+  type: 'test'
+  ...
+# Subtest: a selected original slice keeps canonical raw text while drawing runs from full-source ranges
+ok 17 - a selected original slice keeps canonical raw text while drawing runs from full-source ranges
+  ---
+  duration_ms: 1.666
+  type: 'test'
+  ...
+# Subtest: whole-paragraph counterparts format their own full source ranges and translations stay literal
+ok 18 - whole-paragraph counterparts format their own full source ranges and translations stay literal
+  ---
+  duration_ms: 1.065292
+  type: 'test'
+  ...
+# Subtest: emphasis display runs cover the visible slice exactly once without splitting surrogate pairs
+ok 19 - emphasis display runs cover the visible slice exactly once without splitting surrogate pairs
+  ---
+  duration_ms: 1.14175
+  type: 'test'
+  ...
+# Subtest: wrapping measures each exact candidate string in the style it draws
+ok 20 - wrapping measures each exact candidate string in the style it draws
+  ---
+  duration_ms: 0.781084
+  type: 'test'
+  ...
+# Subtest: explicit newline hard breaks survive emphasized presentation wrapping
+ok 21 - explicit newline hard breaks survive emphasized presentation wrapping
+  ---
+  duration_ms: 0.235125
+  type: 'test'
+  ...
+# Subtest: presentation wrapping breaks cleanly at word boundaries without changing canonical text
+ok 22 - presentation wrapping breaks cleanly at word boundaries without changing canonical text
+  ---
+  duration_ms: 0.117458
+  type: 'test'
+  ...
+# Subtest: canvas context keeps full-source provenance ranges and never strips model strings
+ok 23 - canvas context keeps full-source provenance ranges and never strips model strings
+  ---
+  duration_ms: 0.651875
+  type: 'test'
+  ...
+# Subtest: accessibility text uses the presented display while canonical model text stays raw
+ok 24 - accessibility text uses the presented display while canonical model text stays raw
+  ---
+  duration_ms: 1.612625
+  type: 'test'
+  ...
+# Subtest: context ellipses fit the drawn width and retain the two-line clamp
+ok 25 - context ellipses fit the drawn width and retain the two-line clamp
+  ---
+  duration_ms: 1.869209
+  type: 'test'
+  ...
+# Subtest: styled wrapping preserves consecutive, leading and trailing hard breaks
+ok 26 - styled wrapping preserves consecutive, leading and trailing hard breaks
+  ---
+  duration_ms: 0.341125
+  type: 'test'
+  ...
+# Subtest: share artifact chrome is formatted only when explicitly building a new source-bound model
+ok 27 - share artifact chrome is formatted only when explicitly building a new source-bound model
+  ---
+  duration_ms: 0.371875
+  type: 'test'
+  ...
+# Subtest: actual share language updates leave pending fonts, canvas, snapshot, controls and generated image intact
+ok 28 - actual share language updates leave pending fonts, canvas, snapshot, controls and generated image intact
+  ---
+  duration_ms: 26.046667
+  type: 'test'
+  ...
+# Subtest: share preparation errors relabel only their owned announcement leaf and never expose raw failures
+ok 29 - share preparation errors relabel only their owned announcement leaf and never expose raw failures
+  ---
+  duration_ms: 0.924458
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1761.348583

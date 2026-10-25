@@ -1,0 +1,162 @@
+[
+  {
+    "old": true,
+    "steps": [
+      {
+        "step": "selection",
+        "selection": "CHAPTER I. Down the Rabbit-",
+        "excerpt": {
+          "bookId": "gutenberg-alice",
+          "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "chapterId": "ch01",
+          "parts": [
+            {
+              "passageId": "01b38ea4c710a84b-p00007",
+              "language": "en",
+              "variant": "interpretive",
+              "start": 0,
+              "end": 27,
+              "text": "CHAPTER I. Down the Rabbit-"
+            }
+          ]
+        },
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "focus": "01b38ea4c710a84b-p00007"
+      },
+      {
+        "step": "keyboard tools",
+        "selection": "",
+        "excerpt": {
+          "bookId": "gutenberg-alice",
+          "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "chapterId": "ch01",
+          "parts": [
+            {
+              "passageId": "01b38ea4c710a84b-p00007",
+              "language": "en",
+              "variant": "interpretive",
+              "start": 0,
+              "end": 27,
+              "text": "CHAPTER I. Down the Rabbit-"
+            }
+          ]
+        },
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "focus": ""
+      },
+      {
+        "step": "settings closed",
+        "selection": "",
+        "excerpt": {
+          "bookId": "gutenberg-alice",
+          "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "chapterId": "ch01",
+          "parts": [
+            {
+              "passageId": "01b38ea4c710a84b-p00007",
+              "language": "en",
+              "variant": "interpretive",
+              "start": 0,
+              "end": 27,
+              "text": "CHAPTER I. Down the Rabbit-"
+            }
+          ]
+        },
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "focus": "settings-dialog"
+      }
+    ]
+  },
+  {
+    "old": false,
+    "steps": [
+      {
+        "step": "selection",
+        "selection": "CHAPTER I. Down the Rabbit-",
+        "excerpt": {
+          "bookId": "gutenberg-alice",
+          "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "chapterId": "ch01",
+          "parts": [
+            {
+              "passageId": "01b38ea4c710a84b-p00007",
+              "language": "en",
+              "variant": "interpretive",
+              "start": 0,
+              "end": 27,
+              "text": "CHAPTER I. Down the Rabbit-"
+            }
+          ]
+        },
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "focus": "01b38ea4c710a84b-p00007"
+      },
+      {
+        "step": "keyboard tools",
+        "selection": "",
+        "excerpt": {
+          "bookId": "gutenberg-alice",
+          "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "chapterId": "ch01",
+          "parts": [
+            {
+              "passageId": "01b38ea4c710a84b-p00007",
+              "language": "en",
+              "variant": "interpretive",
+              "start": 0,
+              "end": 27,
+              "text": "CHAPTER I. Down the Rabbit-"
+            }
+          ]
+        },
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "focus": ""
+      },
+      {
+        "step": "settings closed",
+        "selection": "",
+        "excerpt": {
+          "bookId": "gutenberg-alice",
+          "contentVersion": "01b38ea4c710a84bc18d0bd41271a5a1a92b94e97b2812f4dece97d4a694725e",
+          "chapterId": "ch01",
+          "parts": [
+            {
+              "passageId": "01b38ea4c710a84b-p00007",
+              "language": "en",
+              "variant": "interpretive",
+              "start": 0,
+              "end": 27,
+              "text": "CHAPTER I. Down the Rabbit-"
+            }
+          ]
+        },
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "focus": "settings-dialog"
+      }
+    ]
+  }
+]

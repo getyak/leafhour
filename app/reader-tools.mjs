@@ -18,6 +18,7 @@ export const readerToolsReady=new Promise(resolve=>{resolveTools=resolve;});
 export const readerTools=()=>currentTools;
 
 export function mountReaderTools({sessionRoot,immersion=null,document=globalThis.document}={}){
+  currentTools?.unmount();
   let disposed=false;
   const listeners=[];
   const listen=(target,name,fn)=>{const owned=event=>{if(!disposed)fn(event);};target.addEventListener(name,owned);listeners.push(()=>target.removeEventListener(name,owned));};
@@ -30,19 +31,12 @@ export function mountReaderTools({sessionRoot,immersion=null,document=globalThis
   const updateUnreadLabel=()=>{if(!disposed){handoffHost?.setAttribute('aria-label',t('chat.entry'));handoffHost?.setAttribute('aria-description',unread?t('reader.tools.companion'):'');}};
   const offLocale=onUiLocaleChange(updateUnreadLabel);
   handoffHost?.setAttribute('role','group');handoffHost?.classList.toggle('has-companion-message',false);updateUnreadLabel();
-  const toolbar=mountReadingToolbar(sessionRoot,{document,onExpandedChange(expanded,{focus}={}){
-    if(expanded){immersion?.showTools?.({focus:!!focus});return;}
+  const toolbar=mountReadingToolbar(sessionRoot,{document,header,onExpandedChange(expanded,{focus,preview,restoreFocus=true}={}){
+    if(expanded){if(!preview)immersion?.showTools?.({focus:!!focus});return;}
     const inside=!!header?.contains?.(document.activeElement);
     immersion?.closeTools?.();
-    if(inside||!document.activeElement||document.activeElement.hidden||document.activeElement===document.body)restorePill();
+    if(restoreFocus&&inside)restorePill();
   }});
-  // The single conceal timer is held while either tools surface is used.
-  if(header?.addEventListener){
-    listen(header,'pointerenter',event=>{if(event.pointerType==='mouse')toolbar.hold('header-pointer',true);});
-    listen(header,'pointerleave',event=>{if(event.pointerType==='mouse')toolbar.hold('header-pointer',false);});
-    listen(header,'focusin',()=>toolbar.hold('header-keyboard',true));
-    listen(header,'focusout',()=>queueMicrotask(()=>{if(!disposed)toolbar.hold('header-keyboard',!!header.contains?.(document.activeElement));}));
-  }
   const chatIntegration={
     triggerHost:handoffHost,
     companionAnchor:handoffHost||pill,
@@ -52,6 +46,6 @@ export function mountReaderTools({sessionRoot,immersion=null,document=globalThis
   };
   toolbar.setControlMode(document.body?.classList?.contains('is-focused')?'focused':'unfocused');
   listen(document,'reader:focus',event=>toolbar.setControlMode(event?.detail?.focused===false?'unfocused':'focused'));
-  const tools={toolbar,chatIntegration,get toolFocusTarget(){return disposed?null:pill;},closeRequest:target=>{if(disposed||sessionRoot.contains(target)||header?.contains(target))return false;toolbar.conceal();return true;},unmount(){if(disposed)return;disposed=true;offLocale();toolbar.unmount();for(const release of listeners)release();listeners.length=0;if(currentTools===tools)currentTools=null;}};
+  const tools={toolbar,chatIntegration,get toolFocusTarget(){return disposed?null:pill;},closeRequest:target=>{if(disposed||sessionRoot.contains(target)||header?.contains(target))return false;toolbar.conceal({restoreFocus:!target});return true;},unmount(){if(disposed)return;disposed=true;offLocale();toolbar.unmount();for(const release of listeners)release();listeners.length=0;if(currentTools===tools)currentTools=null;}};
   currentTools=tools;resolveTools(tools);return tools;
 }

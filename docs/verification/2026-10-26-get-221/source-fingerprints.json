@@ -1,0 +1,23 @@
+{
+  "base": "b6afebd453135acdfba2d614462a9de966ed8c39",
+  "reviewDigest": "a9e2af62a125e5fcd7396064edd2da6350662568403fbe8dcf3a40e5400c2209",
+  "files": {
+    "app/index.html": "cb200e524f69b79ff8d99ac00ac17dd240e1fc5bc2be82935c2acc7b7e3c4f90",
+    "app/reader-immersion.mjs": "d6bb4fb522d821e4f48131b08a7a96adda905bb9e307011fbc02fefafc9358c7",
+    "app/reader-tools.mjs": "06ef100ade0b76811f7b2dda9445607c833fbfaaee3aeda060920dd57bdc1e3d",
+    "app/reader.js": "daff4b54786e80857859485c0f9352d60c8b02486ef122041a48c5f4e83f18c0",
+    "app/reading-session.css": "e18cdaeea39199eca20a9a8626ea6f4e380813300469eb080c0987d3718ace2f",
+    "app/reading-toolbar.mjs": "64794212f01ca6af0bc3e9c0c599b03c5a91fa4529c0e73411ae803d368c9c9d",
+    "app/share.js": "2bcf2ee9ab4bf860dff1cc263afbc26ec1ac5a708f2168dc5998798e4ff764a8",
+    "tests/reader-immersion.test.mjs": "dce26398f224493308e0769df869ba3f730ae7948422793847895594fd416259",
+    "tests/reader-tools.test.mjs": "62bcd288ea769388abd0f4f7d6bbdcf8858a5a773e73d17ac2270f46d65b4d77",
+    "tests/reader-web-build.test.mjs": "c87d9b74d28e2c0b2bcd78b7990a7fc0313deb9d1dd93a226aaa1f134d852af1",
+    "tests/reading-toolbar.test.mjs": "065fed563f2c0059dd810d411467fe7e0a5d35923803f24d7eea402116e72b5e",
+    "tests/ui-locale-share.test.mjs": "bb8f5dfcf87cc60120bed68c7dd46430d28114b14645c046c7a4119cbd91c5eb",
+    "tools/build-reader-web.mjs": "0ae83b1a5acea74693ad7a7ba30e7185aab3ee06f97982e84790f82392690a90",
+    "tests/reader-verification-evidence.test.mjs": "2e1aa6fb7c964c6eeea24b6c1a5191599c151e6579e5bd7089977a93b34c72c7",
+    "tools/reader-verification-evidence.mjs": "bb708b783b3c5337623bb66466510e47c5368070c1e80beb9f278616dc79324d",
+    "tools/verify-reading-boundaries.mjs": "384b9252239c8a7b02fced47e2fe9ce5ab268b1b19cbc68b2bc01a1f60ca1a1c",
+    "tools/verify-reading-hover.mjs": "e93c647be709c404f6eb66ca4341b819ca671f01d70da55059b02db1fbb2fce7"
+  }
+}

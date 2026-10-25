@@ -1,0 +1,224 @@
+[
+  {
+    "file": "ai-edge-green.log",
+    "rawSha256": "fcd9a7cd49a2758f69bc6a0b3b6ca49de9408f377aea26e8124de0ed3764a75b",
+    "repositorySha256": "fcd9a7cd49a2758f69bc6a0b3b6ca49de9408f377aea26e8124de0ed3764a75b",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "ai-edge-red.log",
+    "rawSha256": "1b37c5a6ec81e1404967b09bf98e2da6a36d8c3e0b819419ccd7f36f07fc43aa",
+    "repositorySha256": "1b37c5a6ec81e1404967b09bf98e2da6a36d8c3e0b819419ccd7f36f07fc43aa",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "baseline-browser.log",
+    "rawSha256": "ca7328bc60cbcc95bf920758aca72fffa137e32fecdd50a1056be4d80aa4db78",
+    "repositorySha256": "ca7328bc60cbcc95bf920758aca72fffa137e32fecdd50a1056be4d80aa4db78",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "baseline-tests.log",
+    "rawSha256": "db67563e66753b1f47bf0cfd0ca851b83bf7ba78403c26bf975925440294ca46",
+    "repositorySha256": "db67563e66753b1f47bf0cfd0ca851b83bf7ba78403c26bf975925440294ca46",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "browser-boundaries-strict.log",
+    "rawSha256": "25bbbfb33be7a591d480cacaf87fd9ab819decab531af323fcd690f6abdb760c",
+    "repositorySha256": "25bbbfb33be7a591d480cacaf87fd9ab819decab531af323fcd690f6abdb760c",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "browser-core-final.log",
+    "rawSha256": "3701c3440c467e1ba625e7b1145fe13428e3ffb55400ccab3e2f3b37699c5bb5",
+    "repositorySha256": "3701c3440c467e1ba625e7b1145fe13428e3ffb55400ccab3e2f3b37699c5bb5",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "built-share.log",
+    "rawSha256": "148c3b6fddedd439d82ccff362af0f9f54b07ce33c640132186b34fae04656ab",
+    "repositorySha256": "148c3b6fddedd439d82ccff362af0f9f54b07ce33c640132186b34fae04656ab",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "copy-canaries.log",
+    "rawSha256": "de74e966d96bb302243aad8a1797518945114d7809ae9c93da7ab261b4d12b90",
+    "repositorySha256": "de74e966d96bb302243aad8a1797518945114d7809ae9c93da7ab261b4d12b90",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "copy-lint.log",
+    "rawSha256": "44623dba100a2d1216398664f304db1378d27793f1494a5ea0fde40208a052dc",
+    "repositorySha256": "44623dba100a2d1216398664f304db1378d27793f1494a5ea0fde40208a052dc",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "enter-owner-red.log",
+    "rawSha256": "d417c7cbb6302cab2545e10a340c91104cec6e49007b06c04d8f0b82e2fd2057",
+    "repositorySha256": "65361aa418ac3d652dbf5749a1bb0c427ba94b6187ef5f8145386930cc713a1c",
+    "trailingWhitespaceTrimmed": true
+  },
+  {
+    "file": "evidence-guards-green.log",
+    "rawSha256": "85894e0919415560be92210a27ce56130804ae207efc80d07b09e703e8edd5eb",
+    "repositorySha256": "85894e0919415560be92210a27ce56130804ae207efc80d07b09e703e8edd5eb",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "evidence-guards-red.log",
+    "rawSha256": "d6e21f3bc1acce739312c293a08a2069780436e5681c9940a21881ae5ec642cf",
+    "repositorySha256": "6c1be96d5c19d6857c9c60d4010c272e8e8c79898f31741316c5c2b033ce71e5",
+    "trailingWhitespaceTrimmed": true
+  },
+  {
+    "file": "evidence-route-red.log",
+    "rawSha256": "f6a886aea4eafe70c5fee75f1d33390f031249d675be91b6a57cb677377ed8a2",
+    "repositorySha256": "7ac45d27fbb627af07d18fe97ef6061639f58e452dcfc779850c525383c1a362",
+    "trailingWhitespaceTrimmed": true
+  },
+  {
+    "file": "full-tests-red.log",
+    "rawSha256": "f048094431727d481ea1497846ff4526b41719de56fd1dfe58f192bda4afe1c3",
+    "repositorySha256": "15e0fd94b97f4264b727ce6335101aada259437c87e7a44e21c7e5857097caec",
+    "trailingWhitespaceTrimmed": true
+  },
+  {
+    "file": "full-tests.log",
+    "rawSha256": "d0d77ab661cd06600808af6a5e3df8a3813613bdaa06048f5381990890d06a0d",
+    "repositorySha256": "d0d77ab661cd06600808af6a5e3df8a3813613bdaa06048f5381990890d06a0d",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "fullscreen-late-red.log",
+    "rawSha256": "32833e78f161ed64021c5db00c6ed0f670a2d93ad8d048d4e75dec08764fd0de",
+    "repositorySha256": "1af6762d25da7a5635fa479147c84c4661ae3a04574a769287aed9c3e0f00528",
+    "trailingWhitespaceTrimmed": true
+  },
+  {
+    "file": "header-layout-red.log",
+    "rawSha256": "b1be91a0665a7ac07bb1725b1539f561142b4581b870b2b503a1c49361d25555",
+    "repositorySha256": "20ecaeebfbcd0b7c6d14fb161e62f5f878831cd2600a47a80e08609d76eee1ca",
+    "trailingWhitespaceTrimmed": true
+  },
+  {
+    "file": "lifecycle-red.log",
+    "rawSha256": "ccff3db36c9349b3f406af751dad9d7245de771c1b4ff326f85e577055d45376",
+    "repositorySha256": "5ecafe31ee848454a36d73526682411227e15f4e3041369338cc89979fadc541",
+    "trailingWhitespaceTrimmed": true
+  },
+  {
+    "file": "outside-native-green.log",
+    "rawSha256": "455c0a7ae1f12eec3a4f20011f88bf80f7729064cfc3bb32cf1ad591157ee553",
+    "repositorySha256": "455c0a7ae1f12eec3a4f20011f88bf80f7729064cfc3bb32cf1ad591157ee553",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "outside-native-red.log",
+    "rawSha256": "8a8c8fdb719f7610e90f085690822459dd4b472c91bea42e1e41e151fc8f7d73",
+    "repositorySha256": "8a8c8fdb719f7610e90f085690822459dd4b472c91bea42e1e41e151fc8f7d73",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "overlay-red.log",
+    "rawSha256": "070bac70500abb1396c2d5d61aa38114249dc50b081c2fa8df1b27baff8976c6",
+    "repositorySha256": "3b2cc47656842060070ff342dcf3af4e3edcb4de098228fbd1851e73b3c4eeef",
+    "trailingWhitespaceTrimmed": true
+  },
+  {
+    "file": "pricing-check.log",
+    "rawSha256": "b524d8f98f044ab6d82f9ec7019b65fda4d3ecccfcfb0d3948eefbe1517944f9",
+    "repositorySha256": "b524d8f98f044ab6d82f9ec7019b65fda4d3ecccfcfb0d3948eefbe1517944f9",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "public-check.log",
+    "rawSha256": "e6a728b2f5cc9f321689066c985399b9f98967bea45bed85edadaae452192f0d",
+    "repositorySha256": "e6a728b2f5cc9f321689066c985399b9f98967bea45bed85edadaae452192f0d",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "real-openers-red.log",
+    "rawSha256": "9b9a096d88459c14fdd6719fc802ba328cfaeba78017c98091693ee98a540cdb",
+    "repositorySha256": "e2699952d9428990397e94d957b643b9912fe7dee1b7ba0efe62b51148b3c415",
+    "trailingWhitespaceTrimmed": true
+  },
+  {
+    "file": "regressions-green.log",
+    "rawSha256": "35d3e83ddb1d825eab8c7bd088b05c445283693f58a553795b24eab54affc497",
+    "repositorySha256": "35d3e83ddb1d825eab8c7bd088b05c445283693f58a553795b24eab54affc497",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "regressions-red.log",
+    "rawSha256": "58c4f2ab6e349e631ea5dd763ff87d73bc2f33e252bfdc6187146de868135157",
+    "repositorySha256": "3927ee653da41da3ae6dfb67e70a8973ca05ec18f8b5803dbc328c4080816fa0",
+    "trailingWhitespaceTrimmed": true
+  },
+  {
+    "file": "release-check.log",
+    "rawSha256": "2387f0dd103784033c92bf57b5bdb543c8943b27c295f8b15c30be6056d17348",
+    "repositorySha256": "2387f0dd103784033c92bf57b5bdb543c8943b27c295f8b15c30be6056d17348",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "release-policy.log",
+    "rawSha256": "b13fe78ad861cca7a2de8c0728eaf09333f56c2b572f9edc172cccf429e988f6",
+    "repositorySha256": "b13fe78ad861cca7a2de8c0728eaf09333f56c2b572f9edc172cccf429e988f6",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "review-share-locale-tests.log",
+    "rawSha256": "695f6abb3e0219b2b13a41d80fadc95c1df830ac20d01bb8e1b5711845686be4",
+    "repositorySha256": "695f6abb3e0219b2b13a41d80fadc95c1df830ac20d01bb8e1b5711845686be4",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "scroll-idle-red.log",
+    "rawSha256": "c6366052f9c777afb6e2a95c9ad51fb19d00792117028240c7144205a08b9c82",
+    "repositorySha256": "3b12a9f7a97157474408d0517715e1b86626964503e53b353e8c8dbadcea0fb8",
+    "trailingWhitespaceTrimmed": true
+  },
+  {
+    "file": "share-locale-green.log",
+    "rawSha256": "ee160a49ac0a24202c7894e931a92c082c1f2cc7ce34418441d391ed312cabe8",
+    "repositorySha256": "ee160a49ac0a24202c7894e931a92c082c1f2cc7ce34418441d391ed312cabe8",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "share-locale-red.log",
+    "rawSha256": "17ec2d84e0256e7638dd8d04446c97e3d1163e1261ceaf43e5d3e46e5579173e",
+    "repositorySha256": "5175bac7c89b92fc945aaaf4c8673602325b0ca57a773d444258cfd97fde7f54",
+    "trailingWhitespaceTrimmed": true
+  },
+  {
+    "file": "touch-debug-focus.log",
+    "rawSha256": "d16ef493df352c7d3485cdc065e90259a2ca2486251591711eaf028b58bf7084",
+    "repositorySha256": "d16ef493df352c7d3485cdc065e90259a2ca2486251591711eaf028b58bf7084",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "touch-debug-stable.log",
+    "rawSha256": "d96b27c0e529bc43735af9ea2d5d05f910da53ecac2044c9bdebb49bc832e02f",
+    "repositorySha256": "d96b27c0e529bc43735af9ea2d5d05f910da53ecac2044c9bdebb49bc832e02f",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "touch-scroll-green.log",
+    "rawSha256": "7099a6901cc9ec141404b8b561f71d5707315fea3c8689c8c89302e83146c580",
+    "repositorySha256": "7099a6901cc9ec141404b8b561f71d5707315fea3c8689c8c89302e83146c580",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "touch-scroll-red.log",
+    "rawSha256": "523ad2c6517c05cafccade0535d6d28c7654dbd6b25e480ffed73ce58c11262c",
+    "repositorySha256": "523ad2c6517c05cafccade0535d6d28c7654dbd6b25e480ffed73ce58c11262c",
+    "trailingWhitespaceTrimmed": false
+  },
+  {
+    "file": "touch-target-red.log",
+    "rawSha256": "d51880761a8bdc8642b10df1d94a6037a3822aa7a2421e6887a4763f285a1c6b",
+    "repositorySha256": "d51880761a8bdc8642b10df1d94a6037a3822aa7a2421e6887a4763f285a1c6b",
+    "trailingWhitespaceTrimmed": false
+  }
+]
