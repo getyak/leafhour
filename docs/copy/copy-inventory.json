@@ -509,8 +509,20 @@
         "sha256": "c9d4197ea650cb29c7ca7cfc4a803bec8b174a0721ce1849e006ee371d2ec01b"
       },
       {
+        "file": "app/reader-page-inputs.mjs",
+        "sha256": "63b6dfe7c1fd4f850036a8201af187d3c2f6eaf92e505e9dec179d8d702d64c9"
+      },
+      {
+        "file": "app/reader-page-surface.mjs",
+        "sha256": "4fdc94f5896390cb3d5fe154acc7d089b93eb40f20d2621a9e91b5fe3a66e0ef"
+      },
+      {
+        "file": "app/reader-page-turn.mjs",
+        "sha256": "d396edc10f1419f199eda133ea2346044a7de8e67a0858215384f556fd8ac399"
+      },
+      {
         "file": "app/reader-pagination.mjs",
-        "sha256": "a1abd485a4803e0177d63d009932d452aa1a747597e6c44d56caf928d51b7db7"
+        "sha256": "dfa9ab80d093158839cbe05bbc68e655e25df8da3137ce34453644a4b4592611"
       },
       {
         "file": "app/reader-presence.mjs",
@@ -538,7 +550,7 @@
       },
       {
         "file": "app/reader.js",
-        "sha256": "3d584cda39693597329a340d34a9805e121717b361482e449f2f79c86601e390"
+        "sha256": "fcc53e02db63f85026d813f7e9a9c6b44c3f08171e85ae572cde1d24492bb838"
       },
       {
         "file": "app/reading-arrival.mjs",
@@ -1070,7 +1082,7 @@
       },
       {
         "file": "server/server.mjs",
-        "sha256": "655458b7e457c407359681b9a9463b7c20f67c8b5c576f3160bf37a537b8e5be"
+        "sha256": "5af23fd7c71fa27e4b5fbc7f36f06c17a76051eb9054f285c0e17586c90ab472"
       },
       {
         "file": "server/source-revisions.mjs",
@@ -1093,7 +1105,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "4160c6d716febf524f6cf9e88c89216b19340af1207c0c98c452cf20f6bbeba5"
+    "inputDigest": "1c131a4e85fe108b0bf1832ba5f26109ad23ecadbc39014853053eac425a6555"
   },
   "locales": [
     "en",
@@ -41473,7 +41485,7 @@
       "consumers": [
         {
           "file": "app/reader-pagination.mjs",
-          "line": 36,
+          "line": 35,
           "column": 31
         }
       ],
@@ -41530,7 +41542,7 @@
       "consumers": [
         {
           "file": "app/reader-pagination.mjs",
-          "line": 36,
+          "line": 35,
           "column": 53
         }
       ],
@@ -187264,6 +187276,46 @@
       }
     },
     {
+      "id": "candidate:app/reader-page-surface.mjs:50:128",
+      "file": "app/reader-page-surface.mjs",
+      "line": 50,
+      "column": 128,
+      "kind": "js-attribute",
+      "property": "aria-hidden",
+      "value": "true",
+      "sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/reader-page-surface.mjs:86:118",
+      "file": "app/reader-page-surface.mjs",
+      "line": 86,
+      "column": 118,
+      "kind": "js-attribute",
+      "property": "aria-controls",
+      "value": "chapter-text",
+      "sha256": "4dfe34cc78c30394442b42d473b08dd4cacd04888f8a3285e8d485a76f00076d",
+      "protected": true,
+      "protectionReason": "identifier",
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
       "id": "candidate:app/reader-return.mjs:44:124",
       "file": "app/reader-return.mjs",
       "line": 44,
@@ -237704,9 +237756,191 @@
       "unresolved": true
     },
     {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 28,
+      "expression": "-offset+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 28,
+      "expression": "shape.top+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 28,
+      "expression": "shape.width+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 28,
+      "expression": "shape.height+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 28,
+      "expression": "shape.gap+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-page-surface.mjs",
+      "line": 35,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 35,
+      "expression": "'translate3d('+(origin+part.x)+'px,0,'+(part.z+.5)+'px) rotateY('+part.angle+'deg)'",
+      "fragments": [
+        "translate3d(",
+        "px,0,",
+        "px) rotateY(",
+        "deg)"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 35,
+      "expression": "'translate3d('+(origin+part.x)+'px,0,'+(part.z+.5)+'px) rotateY('",
+      "fragments": [
+        "translate3d(",
+        "px,0,",
+        "px) rotateY("
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 35,
+      "expression": "'translate3d('+(origin+part.x)+'px,0,'",
+      "fragments": [
+        "translate3d(",
+        "px,0,"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 35,
+      "expression": "'translate3d('+(origin+part.x)",
+      "fragments": [
+        "translate3d("
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-page-surface.mjs",
+      "line": 36,
+      "expression": "i",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 51,
+      "expression": "outer+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 51,
+      "expression": "bounds.width+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 51,
+      "expression": "paper.height+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 55,
+      "expression": "peekStart+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 55,
+      "expression": "width+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 58,
+      "expression": "(stripWidth+.6)+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-page-surface.mjs",
+      "line": 85,
+      "expression": "'paper-turn-handle '+(direction===1?'is-next':'is-previous')",
+      "fragments": [
+        "paper-turn-handle "
+      ],
+      "unresolved": true
+    },
+    {
       "kind": "computed-member",
       "file": "app/reader-pagination.mjs",
-      "line": 13,
+      "line": 14,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -237714,7 +237948,17 @@
     {
       "kind": "concatenation",
       "file": "app/reader-pagination.mjs",
-      "line": 33,
+      "line": 31,
+      "expression": "viewport.clientHeight+'px'",
+      "fragments": [
+        "px"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-pagination.mjs",
+      "line": 32,
       "expression": "((count-1)*step+viewport.clientWidth-1)+'px'",
       "fragments": [
         "px"
@@ -237724,7 +237968,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-pagination.mjs",
-      "line": 43,
+      "line": 42,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -237732,7 +237976,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-pagination.mjs",
-      "line": 57,
+      "line": 56,
       "expression": "fragmentIndex(rects,position.withinParagraph)",
       "fragments": [],
       "unresolved": true
@@ -252086,11 +252330,11 @@
     "duplicateKeys": 0,
     "reviewedItems": 0,
     "unreviewedItems": 2161,
-    "candidates": 4815,
-    "candidatesUnreviewed": 4815,
-    "candidatesProtected": 129,
+    "candidates": 4817,
+    "candidatesUnreviewed": 4817,
+    "candidatesProtected": 130,
     "itemsProtected": 9,
-    "dynamicConsumers": 3046,
+    "dynamicConsumers": 3065,
     "consumerReferences": 1520,
     "keysWithoutStaticConsumers": 1172
   }

@@ -1,0 +1,40 @@
+{
+  "drag": {
+    "beforeCommit": "双页 · 1 / 7",
+    "temporaryCopies": 9,
+    "duplicateIds": 0,
+    "inert": true,
+    "angles": [
+      "translate3d(556px, 0px, 0.5px) rotateY(-83.0532deg)",
+      "translate3d(574.142px, 0px, 149.399px) rotateY(-69.1212deg)",
+      "translate3d(627.601px, 0px, 289.549px) rotateY(-55.1892deg)",
+      "translate3d(713.232px, 0px, 412.705px) rotateY(-41.2571deg)"
+    ],
+    "committedOnce": true
+  },
+  "heldShortDragReturned": true,
+  "oppositeInputCancelled": true,
+  "resize": {
+    "anchorRetained": true,
+    "layers": 0,
+    "overflow": 0,
+    "columns": "1"
+  },
+  "settingsBlockedTurn": true,
+  "settings": {
+    "sameWidth": true,
+    "anchorRetained": true,
+    "font": "25"
+  },
+  "phone": {
+    "overflow": 0,
+    "columns": "1",
+    "theme": "night"
+  },
+  "reducedMotion": {
+    "immediate": true,
+    "layers": 0
+  },
+  "selectionDidNotTurn": true,
+  "sourceUnchanged": true
+}

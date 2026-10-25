@@ -75,6 +75,14 @@ test('actual reader boot, source Range, note IME and deferred save survive singl
 
 export {fixture,Element,executeOwner,globals,resetGlobals,syntheticBook,tick};
 
+test('page controls never dismiss an open note or replace its unsaved composer',async()=>{
+ const f=await readerFixture();try{
+  const $=id=>f.document.getElementById(id);click(f.document,$('p1'));$('show-comment').dispatchEvent(new Event('click'));
+  const composer=$('thought-text');composer.value='未保存的想法';
+  for(const target of [$('page-next'),$('page-previous')]){click(f.document,target);assert.equal($('note-panel').hidden,false);assert.equal($('thought-text'),composer);assert.equal(composer.value,'未保存的想法');}
+ }finally{f.win.dispatchEvent(new Event('pagehide'));resetGlobals();await locale.requestUiRoute('en');}
+});
+
 test('actual reader pending failure retains the same submission and in-place retry after locale',async()=>{
  const f=await readerFixture();try{const $=id=>f.document.getElementById(id);click(f.document,$('p1'));$('show-question').dispatchEvent(new Event('click'));const area=$('thought-text'),form=area.closest('form');area.value='用户自己的问题';area.dispatchEvent(new Event('input'));form.dispatchEvent(new Event('submit',{cancelable:true}));await tick();const id=f.pending[0].payload.id;
   await locale.requestUiRoute('ja');f.pending[0].resolve({ok:false,status:409,json:async()=>({error:'untrusted remote prose {reader.shell.close}'})});await tick();await tick();assert.equal($('thought-text'),area);assert.equal(area.value,'用户自己的问题');assert.equal(form.querySelector('button').textContent,locale.t('record.retry'));assert.equal(form.querySelectorAll('p.form-status').at(-1).textContent,locale.t('receipt.note.pendingLocal'));

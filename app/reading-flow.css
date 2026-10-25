@@ -8,7 +8,7 @@
 .skeleton-lines i:last-child{width:56%}
 .flow-chapter[data-first=true]>.flow-heading{display:none}
 .flow-heading{padding-top:38px;margin-bottom:34px;scroll-margin-top:100px}
-.flow-heading h2{font:400 29px/1.6 var(--book);margin:10px 0 0;text-wrap:balance}
+.flow-heading :is(h1,h2){font:400 29px/1.6 var(--book);margin:10px 0 0;text-wrap:balance}
 .flow-heading .chapter-number{font-size:12px;margin:0}
 .flow-chapter-end{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:52px;margin-top:32px;border-top:1px solid var(--line-hairline);font:12px/1.8 var(--interface);color:var(--muted)}
 .flow-chapter-end button{min-height:44px;min-width:44px;color:var(--muted);padding:8px 0;font-size:12px}
@@ -20,4 +20,4 @@ body[data-continuous=false] .flow-chapter-end{display:none}
 .settings-hint{font:12px/1.8 var(--interface);color:var(--muted);margin:-5px 0 18px}
 .flow-chapter:last-child .flow-chapter-end{margin-bottom:0}
 body[data-continuous=true] .chapter-footer{display:none}
-@media(max-width:767px){.flow-heading{padding-top:28px;margin-bottom:28px}.flow-heading h2{font-size:26px}.flow-chapter-end{margin-top:24px}.reading-loading{min-height:500px}}
+@media(max-width:767px){.flow-heading{padding-top:28px;margin-bottom:28px}.flow-heading :is(h1,h2){font-size:26px}.flow-chapter-end{margin-top:24px}.reading-loading{min-height:500px}}
