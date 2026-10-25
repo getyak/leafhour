@@ -1,0 +1,142 @@
+TAP version 13
+# (node:50474) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: reading tools start tucked away and return there after leaving them idle
+ok 1 - reading tools start tucked away and return there after leaving them idle
+  ---
+  duration_ms: 6.198875
+  type: 'test'
+  ...
+# Subtest: pointer and keyboard holds independently protect controls from disappearing
+ok 2 - pointer and keyboard holds independently protect controls from disappearing
+  ---
+  duration_ms: 0.287167
+  type: 'test'
+  ...
+# Subtest: closing and reopening cancels the earlier disappearance timer
+ok 3 - closing and reopening cancels the earlier disappearance timer
+  ---
+  duration_ms: 0.2365
+  type: 'test'
+  ...
+# Subtest: a dialog holds the open tools but never opens tucked-away controls on its own
+ok 4 - a dialog holds the open tools but never opens tucked-away controls on its own
+  ---
+  duration_ms: 0.131541
+  type: 'test'
+  ...
+# Subtest: a dialog added after mounting keeps its sidebar opener available until it closes
+ok 5 - a dialog added after mounting keeps its sidebar opener available until it closes
+  ---
+  duration_ms: 0.795375
+  type: 'test'
+  ...
+# Subtest: mountReadingToolbar exposes explicit reveal, conceal, hold and control-mode hooks
+ok 6 - mountReadingToolbar exposes explicit reveal, conceal, hold and control-mode hooks
+  ---
+  duration_ms: 0.581375
+  type: 'test'
+  ...
+# Subtest: listen-chapter keeps its real child dialog available without beforetoggle support
+not ok 7 - listen-chapter keeps its real child dialog available without beforetoggle support
+  ---
+  duration_ms: 10.060375
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reading-toolbar.test.mjs:119:190'
+  failureType: 'testCodeFailure'
+  error: |-
+    the actual declared opener, not an unrelated overlay, keeps the parent available
+
+    false !== true
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reading-toolbar.test.mjs:129:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: manual-reading-open keeps its real child dialog available without beforetoggle support
+not ok 8 - manual-reading-open keeps its real child dialog available without beforetoggle support
+  ---
+  duration_ms: 5.288792
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reading-toolbar.test.mjs:119:190'
+  failureType: 'testCodeFailure'
+  error: |-
+    the actual declared opener, not an unrelated overlay, keeps the parent available
+
+    false !== true
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reading-toolbar.test.mjs:129:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: reading-guide-open keeps its real child dialog available without beforetoggle support
+not ok 9 - reading-guide-open keeps its real child dialog available without beforetoggle support
+  ---
+  duration_ms: 7.069333
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reading-toolbar.test.mjs:119:190'
+  failureType: 'testCodeFailure'
+  error: |-
+    the actual declared opener, not an unrelated overlay, keeps the parent available
+
+    false !== true
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reading-toolbar.test.mjs:129:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: reading-drafts-open keeps its real child dialog available without beforetoggle support
+not ok 10 - reading-drafts-open keeps its real child dialog available without beforetoggle support
+  ---
+  duration_ms: 4.435959
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reading-toolbar.test.mjs:119:190'
+  failureType: 'testCodeFailure'
+  error: |-
+    the actual declared opener, not an unrelated overlay, keeps the parent available
+
+    false !== true
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reading-toolbar.test.mjs:129:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: an unrelated dialog cannot hold an idle reading card
+ok 11 - an unrelated dialog cannot hold an idle reading card
+  ---
+  duration_ms: 0.827208
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 7
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 88.900125

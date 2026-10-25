@@ -1,5 +1,5 @@
 import {t,getUiLocale,onUiLocaleChange,uiReady} from './ui-locale.mjs';
-import {buildShareModel,normaliseShareOptions,paragraphSnapshot,layoutShareCard,shareThemes,shareFonts,shareFontFallbacks,displayQuoteText} from './share-model.mjs';
+import {buildShareModel,normaliseShareOptions,paragraphSnapshot,shareThemes,shareFonts,shareFontFallbacks,displayQuoteText} from './share-model.mjs';
 import {chineseOriginalOnly} from './source-language.mjs';
 
 await uiReady;
@@ -53,6 +53,7 @@ async function render(){
   await document.fonts.ready;// Canvas text does not start face loads; load/check both faces before the first measure.
   const {prepareShareFonts}=await import('./share-fonts.mjs');
   const loaded=await prepareShareFonts(document.fonts,model,fontState);fontState=loaded.latin;const cjkState=loaded.cjk;
+  const {layoutShareCard}=await import('./share-model.mjs');
   if(version!==renderVersion||!dialog.open)return;
   layout=layoutShareCard(model,opts,(text,size,language,italic=false)=>{setFont(size,language,italic);return context.measureText(text).width;});draw();renderedVersion=version;controlsBusy(false);
   const counterpart=model.blocks.some(b=>b.primary.wholeCounterpart||b.secondary?.wholeCounterpart);

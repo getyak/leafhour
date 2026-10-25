@@ -1,0 +1,303 @@
+TAP version 13
+# Subtest: source self-host serves the new tools module and its complete direct dependencies as JavaScript
+ok 1 - source self-host serves the new tools module and its complete direct dependencies as JavaScript
+  ---
+  duration_ms: 108.704292
+  type: 'test'
+  ...
+# Subtest: locale preserves the sole conceal deadline, unread state, focus and held tools
+# (node:40526) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+ok 2 - locale preserves the sole conceal deadline, unread state, focus and held tools
+  ---
+  duration_ms: 10.007
+  type: 'test'
+  ...
+# Subtest: unmount releases tools listeners and stale unread callbacks cannot change a replacement pill
+ok 3 - unmount releases tools listeners and stale unread callbacks cannot change a replacement pill
+  ---
+  duration_ms: 0.312458
+  type: 'test'
+  ...
+# Subtest: the single pill interaction drives both tools surfaces through one conceal timer
+ok 4 - the single pill interaction drives both tools surfaces through one conceal timer
+  ---
+  duration_ms: 0.275042
+  type: 'test'
+  ...
+# Subtest: concealing tools returns focus from the revealed header to the visible pill
+ok 5 - concealing tools returns focus from the revealed header to the visible pill
+  ---
+  duration_ms: 0.332333
+  type: 'test'
+  ...
+# Subtest: fullscreen failure restoration targets the visible pill through the reader wiring seam
+ok 6 - fullscreen failure restoration targets the visible pill through the reader wiring seam
+  ---
+  duration_ms: 0.369541
+  type: 'test'
+  ...
+# Subtest: injected chat integration keeps trigger, anchor, focus and unread seams separate
+ok 7 - injected chat integration keeps trigger, anchor, focus and unread seams separate
+  ---
+  duration_ms: 0.3575
+  type: 'test'
+  ...
+# Subtest: control mode follows the reader focus layout for the pill label
+ok 8 - control mode follows the reader focus layout for the pill label
+  ---
+  duration_ms: 0.36075
+  type: 'test'
+  ...
+# Subtest: composed tools keep hover reveals from stealing focus while explicit clicks may focus
+ok 9 - composed tools keep hover reveals from stealing focus while explicit clicks may focus
+  ---
+  duration_ms: 0.419625
+  type: 'test'
+  ...
+# Subtest: composed tools hold concealment while the focused header is hovered or focused
+ok 10 - composed tools hold concealment while the focused header is hovered or focused
+  ---
+  duration_ms: 0.391625
+  type: 'test'
+  ...
+# Subtest: outside pointerdown and pill click keep one tools state across both surfaces
+ok 11 - outside pointerdown and pill click keep one tools state across both surfaces
+  ---
+  duration_ms: 0.627584
+  type: 'test'
+  ...
+# Subtest: setFocused and fullscreen transitions cannot strand the toolbar state
+ok 12 - setFocused and fullscreen transitions cannot strand the toolbar state
+  ---
+  duration_ms: 0.340625
+  type: 'test'
+  ...
+# Subtest: the Ask AI handoff closes tools without bubbling re-reveal or focus theft
+ok 13 - the Ask AI handoff closes tools without bubbling re-reveal or focus theft
+  ---
+  duration_ms: 0.217459
+  type: 'test'
+  ...
+# Subtest: hover preview leaves for the adjacent AI sibling after a 200ms gap allowance
+not ok 14 - hover preview leaves for the adjacent AI sibling after a 200ms gap allowance
+  ---
+  duration_ms: 0.573917
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:397:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:402:32)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: hover reveals only the card and explicit activation adds the navigation surface
+not ok 15 - hover reveals only the card and explicit activation adds the navigation surface
+  ---
+  duration_ms: 0.27475
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:406:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    'open' !== 'closed'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'closed'
+  actual: 'open'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:408:54)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: button and card gap crossings and reentry cancel the sole old preview deadline
+not ok 16 - button and card gap crossings and reentry cancel the sole old preview deadline
+  ---
+  duration_ms: 0.234917
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:412:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:416:71)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: mouse focus in navigation cannot hold explicit tools forever but Tab focus can
+not ok 17 - mouse focus in navigation cannot hold explicit tools forever but Tab focus can
+  ---
+  duration_ms: 0.1735
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:421:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    mouse-induced header focus is idle
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:424:35)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: outside dismissal waits for a complete primary gesture and preserves its target
+not ok 18 - outside dismissal waits for a complete primary gesture and preserves its target
+  ---
+  duration_ms: 0.201334
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:429:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    pointerdown is not a completed click
+
+    false !== true
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:431:48)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: inside-drag is not an outside dismissal
+ok 19 - inside-drag is not an outside dismissal
+  ---
+  duration_ms: 0.174125
+  type: 'test'
+  ...
+# Subtest: cancelled is not an outside dismissal
+not ok 20 - cancelled is not an outside dismissal
+  ---
+  duration_ms: 0.179208
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:437:76'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    false !== true
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:444:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: right-click is not an outside dismissal
+not ok 21 - right-click is not an outside dismissal
+  ---
+  duration_ms: 0.129458
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:437:76'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    false !== true
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:444:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: touch-scroll is not an outside dismissal
+not ok 22 - touch-scroll is not an outside dismissal
+  ---
+  duration_ms: 0.165833
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:437:76'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    false !== true
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:444:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: leaving the window releases transient mouse holds and a chapter change closes coherently
+not ok 23 - leaving the window releases transient mouse holds and a chapter change closes coherently
+  ---
+  duration_ms: 0.238417
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:447:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:450:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 14
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 409.848541

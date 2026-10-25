@@ -258,7 +258,7 @@
       },
       {
         "file": "app/index.html",
-        "sha256": "dfa026fcfb0ca100082d7da0038980729ebc8ebbffb1627f3cf4cef6568060e6"
+        "sha256": "cb200e524f69b79ff8d99ac00ac17dd240e1fc5bc2be82935c2acc7b7e3c4f90"
       },
       {
         "file": "app/interaction-craft.mjs",
@@ -514,7 +514,7 @@
       },
       {
         "file": "app/reader-immersion.mjs",
-        "sha256": "c686012e2812675b7532b6a32bcc639abf5bfbea26d62107da5d512c11e79dfb"
+        "sha256": "d6bb4fb522d821e4f48131b08a7a96adda905bb9e307011fbc02fefafc9358c7"
       },
       {
         "file": "app/reader-navigation.mjs",
@@ -554,7 +554,7 @@
       },
       {
         "file": "app/reader-tools.mjs",
-        "sha256": "884fe70a049f94c2865ad4ed81d27e6cd40584e71fbb9f5a344fec119ee42dce"
+        "sha256": "06ef100ade0b76811f7b2dda9445607c833fbfaaee3aeda060920dd57bdc1e3d"
       },
       {
         "file": "app/reader-translation.js",
@@ -562,7 +562,7 @@
       },
       {
         "file": "app/reader.js",
-        "sha256": "e5a03188b7069afd9fe6fc0aec85c9575cf2ee5c9f71b9b507863202f1d205ee"
+        "sha256": "daff4b54786e80857859485c0f9352d60c8b02486ef122041a48c5f4e83f18c0"
       },
       {
         "file": "app/reading-arrival.mjs",
@@ -678,7 +678,7 @@
       },
       {
         "file": "app/reading-toolbar.mjs",
-        "sha256": "407d8eb88de87f7915c2b9e5b940fdb057ac66b4b9e2ba242a1b64cfff127a12"
+        "sha256": "64794212f01ca6af0bc3e9c0c599b03c5a91fa4529c0e73411ae803d368c9c9d"
       },
       {
         "file": "app/save-receipts.mjs",
@@ -702,7 +702,7 @@
       },
       {
         "file": "app/share.js",
-        "sha256": "1108424f7e1fb8a9c983b41cc79c5eb753829074c2999314ba5047a5128adbb8"
+        "sha256": "2bcf2ee9ab4bf860dff1cc263afbc26ec1ac5a708f2168dc5998798e4ff764a8"
       },
       {
         "file": "app/shelf-order.mjs",
@@ -1125,7 +1125,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "8333cd8b5b248f49d1aa163ee0cc3524df959cbd526112ee39eb6f2da61da396"
+    "inputDigest": "12305ddd13a99849a9dcd658a1de35059fbe3d196e2915385885761d0bd6062c"
   },
   "locales": [
     "en",
@@ -5810,7 +5810,7 @@
         },
         {
           "file": "app/reader-tools.mjs",
-          "line": 30,
+          "line": 31,
           "column": 87
         }
       ],
@@ -15021,7 +15021,12 @@
         },
         {
           "file": "app/reading-toolbar.mjs",
-          "line": 76,
+          "line": 86,
+          "column": 62
+        },
+        {
+          "file": "app/reading-toolbar.mjs",
+          "line": 90,
           "column": 145
         },
         {
@@ -15273,7 +15278,7 @@
         },
         {
           "file": "app/share.js",
-          "line": 86,
+          "line": 87,
           "column": 25
         },
         {
@@ -42646,7 +42651,7 @@
       "consumers": [
         {
           "file": "app/reader-tools.mjs",
-          "line": 30,
+          "line": 31,
           "column": 156
         }
       ],
@@ -66582,7 +66587,7 @@
         },
         {
           "file": "app/share.js",
-          "line": 69,
+          "line": 70,
           "column": 46
         }
       ],
@@ -66649,7 +66654,7 @@
         },
         {
           "file": "app/share.js",
-          "line": 69,
+          "line": 70,
           "column": 74
         }
       ],
@@ -66939,7 +66944,7 @@
         },
         {
           "file": "app/share.js",
-          "line": 83,
+          "line": 84,
           "column": 251
         }
       ],
@@ -67224,7 +67229,7 @@
       "consumers": [
         {
           "file": "app/share.js",
-          "line": 59,
+          "line": 60,
           "column": 31
         }
       ],
@@ -67281,7 +67286,7 @@
       "consumers": [
         {
           "file": "app/share.js",
-          "line": 59,
+          "line": 60,
           "column": 79
         }
       ],
@@ -67338,7 +67343,7 @@
       "consumers": [
         {
           "file": "app/share.js",
-          "line": 59,
+          "line": 60,
           "column": 121
         }
       ],
@@ -67395,7 +67400,7 @@
       "consumers": [
         {
           "file": "app/share.js",
-          "line": 59,
+          "line": 60,
           "column": 146
         }
       ],
@@ -67452,7 +67457,7 @@
       "consumers": [
         {
           "file": "app/share.js",
-          "line": 61,
+          "line": 62,
           "column": 82
         }
       ],
@@ -67514,7 +67519,7 @@
         },
         {
           "file": "app/share.js",
-          "line": 74,
+          "line": 75,
           "column": 97
         }
       ],
@@ -67571,17 +67576,17 @@
       "consumers": [
         {
           "file": "app/share.js",
-          "line": 76,
+          "line": 77,
           "column": 102
         },
         {
           "file": "app/share.js",
-          "line": 79,
+          "line": 80,
           "column": 156
         },
         {
           "file": "app/share.js",
-          "line": 79,
+          "line": 80,
           "column": 169
         }
       ],
@@ -67638,12 +67643,12 @@
       "consumers": [
         {
           "file": "app/share.js",
-          "line": 76,
+          "line": 77,
           "column": 206
         },
         {
           "file": "app/share.js",
-          "line": 79,
+          "line": 80,
           "column": 182
         }
       ],
@@ -67700,7 +67705,7 @@
       "consumers": [
         {
           "file": "app/share.js",
-          "line": 77,
+          "line": 78,
           "column": 129
         }
       ],
@@ -67757,7 +67762,7 @@
       "consumers": [
         {
           "file": "app/share.js",
-          "line": 78,
+          "line": 79,
           "column": 241
         }
       ],
@@ -67814,7 +67819,7 @@
       "consumers": [
         {
           "file": "app/share.js",
-          "line": 81,
+          "line": 82,
           "column": 203
         }
       ],
@@ -67871,7 +67876,7 @@
       "consumers": [
         {
           "file": "app/share.js",
-          "line": 81,
+          "line": 82,
           "column": 233
         }
       ],
@@ -67928,7 +67933,7 @@
       "consumers": [
         {
           "file": "app/share.js",
-          "line": 83,
+          "line": 84,
           "column": 284
         }
       ],
@@ -67985,7 +67990,7 @@
       "consumers": [
         {
           "file": "app/share.js",
-          "line": 83,
+          "line": 84,
           "column": 339
         }
       ],
@@ -68042,7 +68047,7 @@
       "consumers": [
         {
           "file": "app/share.js",
-          "line": 83,
+          "line": 84,
           "column": 357
         }
       ],
@@ -170920,10 +170925,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:37:91",
+      "id": "candidate:app/index.html:37:122",
       "file": "app/index.html",
       "line": 37,
-      "column": 91,
+      "column": 122,
       "kind": "html-text",
       "property": null,
       "value": "Add reading time",
@@ -170946,10 +170951,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:38:130",
+      "id": "candidate:app/index.html:38:159",
       "file": "app/index.html",
       "line": 38,
-      "column": 130,
+      "column": 159,
       "kind": "html-text",
       "property": null,
       "value": "Listen to this chapter",
@@ -170998,10 +171003,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:39:215",
+      "id": "candidate:app/index.html:39:245",
       "file": "app/index.html",
       "line": 39,
-      "column": 215,
+      "column": 245,
       "kind": "html-text",
       "property": null,
       "value": "Reading prompts",
@@ -171024,10 +171029,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:39:323",
+      "id": "candidate:app/index.html:39:384",
       "file": "app/index.html",
       "line": 39,
-      "column": 323,
+      "column": 384,
       "kind": "html-text",
       "property": null,
       "value": "Drafts",
@@ -189822,9 +189827,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-tools.mjs:32:36",
+      "id": "candidate:app/reader-tools.mjs:33:36",
       "file": "app/reader-tools.mjs",
-      "line": 32,
+      "line": 33,
       "column": 36,
       "kind": "js-attribute",
       "property": "role",
@@ -192722,9 +192727,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-toolbar.mjs:78:53",
+      "id": "candidate:app/reading-toolbar.mjs:97:53",
       "file": "app/reading-toolbar.mjs",
-      "line": 78,
+      "line": 97,
       "column": 53,
       "kind": "js-attribute",
       "property": "aria-hidden",
@@ -193482,9 +193487,9 @@
       }
     },
     {
-      "id": "candidate:app/share.js:61:66",
+      "id": "candidate:app/share.js:62:66",
       "file": "app/share.js",
-      "line": 61,
+      "line": 62,
       "column": 66,
       "kind": "js-attribute",
       "property": "aria-busy",
@@ -245774,15 +245779,7 @@
     {
       "kind": "computed-member",
       "file": "app/share.js",
-      "line": 67,
-      "expression": "0",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "app/share.js",
-      "line": 67,
+      "line": 68,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -245798,7 +245795,15 @@
     {
       "kind": "computed-member",
       "file": "app/share.js",
-      "line": 71,
+      "line": 69,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/share.js",
+      "line": 72,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -245806,7 +245811,7 @@
     {
       "kind": "computed-member",
       "file": "app/share.js",
-      "line": 86,
+      "line": 87,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -255350,7 +255355,7 @@
     "candidatesProtected": 130,
     "itemsProtected": 9,
     "dynamicConsumers": 3106,
-    "consumerReferences": 1552,
+    "consumerReferences": 1553,
     "keysWithoutStaticConsumers": 1188
   }
 }

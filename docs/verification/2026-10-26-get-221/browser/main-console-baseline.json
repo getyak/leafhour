@@ -1,0 +1,413 @@
+{
+  "source": "8b9838ddeab579c6a050021216785ef383635f87",
+  "sourceVerification": {
+    "kind": "git-tree-blob-check",
+    "files": 2024
+  },
+  "engines": [
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "errors": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "path": "/api/billing/account"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "path": "/api/library/books/gutenberg-alice/audio/preferences"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        }
+      ]
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "errors": [
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/library"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/library"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/library"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/library"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/library"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "path": "/api/billing/account"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "path": "/api/library/books/gutenberg-alice/audio/preferences"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+TAP version 13
+# (node:59571) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: reading tools start tucked away and return there after leaving them idle
+ok 1 - reading tools start tucked away and return there after leaving them idle
+  ---
+  duration_ms: 5.887
+  type: 'test'
+  ...
+# Subtest: pointer and keyboard holds independently protect controls from disappearing
+ok 2 - pointer and keyboard holds independently protect controls from disappearing
+  ---
+  duration_ms: 0.244
+  type: 'test'
+  ...
+# Subtest: closing and reopening cancels the earlier disappearance timer
+ok 3 - closing and reopening cancels the earlier disappearance timer
+  ---
+  duration_ms: 0.206875
+  type: 'test'
+  ...
+# Subtest: a dialog holds the open tools but never opens tucked-away controls on its own
+ok 4 - a dialog holds the open tools but never opens tucked-away controls on its own
+  ---
+  duration_ms: 0.131583
+  type: 'test'
+  ...
+# Subtest: a dialog added after mounting keeps its sidebar opener available until it closes
+ok 5 - a dialog added after mounting keeps its sidebar opener available until it closes
+  ---
+  duration_ms: 0.844084
+  type: 'test'
+  ...
+# Subtest: mountReadingToolbar exposes explicit reveal, conceal, hold and control-mode hooks
+ok 6 - mountReadingToolbar exposes explicit reveal, conceal, hold and control-mode hooks
+  ---
+  duration_ms: 0.524375
+  type: 'test'
+  ...
+# Subtest: listen-chapter keeps its real child dialog available without beforetoggle support
+ok 7 - listen-chapter keeps its real child dialog available without beforetoggle support
+  ---
+  duration_ms: 11.059667
+  type: 'test'
+  ...
+# Subtest: manual-reading-open keeps its real child dialog available without beforetoggle support
+ok 8 - manual-reading-open keeps its real child dialog available without beforetoggle support
+  ---
+  duration_ms: 5.462917
+  type: 'test'
+  ...
+# Subtest: reading-guide-open keeps its real child dialog available without beforetoggle support
+ok 9 - reading-guide-open keeps its real child dialog available without beforetoggle support
+  ---
+  duration_ms: 7.43125
+  type: 'test'
+  ...
+# Subtest: reading-drafts-open keeps its real child dialog available without beforetoggle support
+ok 10 - reading-drafts-open keeps its real child dialog available without beforetoggle support
+  ---
+  duration_ms: 6.200209
+  type: 'test'
+  ...
+# Subtest: an unrelated dialog cannot hold an idle reading card
+ok 11 - an unrelated dialog cannot hold an idle reading card
+  ---
+  duration_ms: 0.44225
+  type: 'test'
+  ...
+# Subtest: unchanged clock updates preserve the touch target text node
+not ok 12 - unchanged clock updates preserve the touch target text node
+  ---
+  duration_ms: 0.409083
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reading-toolbar.test.mjs:141:1'
+  failureType: 'testCodeFailure'
+  error: 'a focus-triggered clock render cannot replace the text under a touch gesture'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reading-toolbar.test.mjs:144:241)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 11
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 95.339709

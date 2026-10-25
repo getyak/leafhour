@@ -2298,11 +2298,11 @@ candidate:app/index.html:34:133,html-text,app/index.html,34,,unknown,reviewable,
 candidate:app/index.html:34:299,html-text,app/index.html,34,,unknown,reviewable,,Active focus
 candidate:app/index.html:34:398,html-text,app/index.html,34,,unknown,reviewable,,Foreground estimate
 candidate:app/index.html:35:92,html-text,app/index.html,35,,unknown,reviewable,,"Focused reading allows time to think without scrolling. Hidden, unfocused or paused time is excluded."
-candidate:app/index.html:37:91,html-text,app/index.html,37,,unknown,reviewable,,Add reading time
-candidate:app/index.html:38:130,html-text,app/index.html,38,,unknown,reviewable,,Listen to this chapter
+candidate:app/index.html:37:122,html-text,app/index.html,37,,unknown,reviewable,,Add reading time
+candidate:app/index.html:38:159,html-text,app/index.html,38,,unknown,reviewable,,Listen to this chapter
 candidate:app/index.html:39:109,html-text,app/index.html,39,,unknown,reviewable,,Sign in to record reading →
-candidate:app/index.html:39:215,html-text,app/index.html,39,,unknown,reviewable,,Reading prompts
-candidate:app/index.html:39:323,html-text,app/index.html,39,,unknown,reviewable,,Drafts
+candidate:app/index.html:39:245,html-text,app/index.html,39,,unknown,reviewable,,Reading prompts
+candidate:app/index.html:39:384,html-text,app/index.html,39,,unknown,reviewable,,Drafts
 candidate:app/index.html:40:155,html-text,app/index.html,40,,unknown,reviewable,,Retry saving
 candidate:app/index.html:40:262,html-text,app/index.html,40,,unknown,reviewable,,Save a recovery copy
 candidate:app/index.html:44:85,html-text,app/index.html,44,,unknown,reviewable,,Manual entry (self-reported)
@@ -3174,7 +3174,7 @@ candidate:app/reader-return.mjs:44:257,js-cjk-literal,app/reader-return.mjs,44,,
 candidate:app/reader-return.mjs:44:359,js-cjk-literal,app/reader-return.mjs,44,,unknown,reviewable,,引用的文本层无效，请从 Agent 重新打开引用。
 candidate:app/reader-return.mjs:46:32,js-cjk-literal,app/reader-return.mjs,46,,unknown,reviewable,,引用段落已无法对应当前书籍，请让 Agent 重新读取当前目录。
 candidate:app/reader-settings.mjs:57:132,js-attribute,app/reader-settings.mjs,57,role,unknown,reviewable,,status
-candidate:app/reader-tools.mjs:32:36,js-attribute,app/reader-tools.mjs,32,role,unknown,reviewable,,group
+candidate:app/reader-tools.mjs:33:36,js-attribute,app/reader-tools.mjs,33,role,unknown,reviewable,,group
 candidate:app/reader-translation.js:14:115,js-attribute,app/reader-translation.js,14,role,unknown,reviewable,,status
 candidate:app/reader-translation.js:79:220,js-attribute,app/reader-translation.js,79,role,unknown,reviewable,,status
 candidate:app/reader.js:189:282,js-attribute,app/reader.js,189,aria-describedby,unknown,protected,identifier,reading-instructions
@@ -3319,7 +3319,7 @@ candidate:app/reading-time-policy.mjs:10:79,js-cjk-literal,app/reading-time-poli
 candidate:app/reading-time-policy.mjs:10:93,js-cjk-literal,app/reading-time-policy.mjs,10,,unknown,reviewable,,手动补记（自报）
 candidate:app/reading-time-policy.mjs:10:111,js-cjk-literal,app/reading-time-policy.mjs,10,,unknown,reviewable,,旧预览记录
 candidate:app/reading-time-policy.mjs:14:35,js-cjk-literal,app/reading-time-policy.mjs,14,,unknown,reviewable,,总时长按所有书籍、设备与口径的区间合并，重叠只计一次；各口径分别去重，彼此可能重叠，不能相加。前台估计在2分钟无操作后暂停；主动专注允许停留思考，隐藏、失焦或手动暂停时不计。手动补记为自报，时长不代表理解程度。
-candidate:app/reading-toolbar.mjs:78:53,js-attribute,app/reading-toolbar.mjs,78,aria-hidden,unknown,reviewable,,true
+candidate:app/reading-toolbar.mjs:97:53,js-attribute,app/reading-toolbar.mjs,97,aria-hidden,unknown,reviewable,,true
 candidate:app/save-receipts.mjs:6:33,js-cjk-literal,app/save-receipts.mjs,6,,unknown,reviewable,,保存尚未确认。文字仅在当前页面，请先复制；刷新或离开可能丢失。 重试会先确认同一次提交。
 candidate:app/save-receipts.mjs:7:36,js-cjk-literal,app/save-receipts.mjs,7,,unknown,reviewable,,本次时段仅在当前页面，请重试保存或另存记录。
 candidate:app/save-receipts.mjs:8:27,js-cjk-literal,app/save-receipts.mjs,8,,unknown,reviewable,,当前文字是草稿，尚未提交。仅在当前页面，请先复制；刷新或离开可能丢失。
@@ -3357,7 +3357,7 @@ candidate:app/share-model.mjs:67:575,js-cjk-literal,app/share-model.mjs,67,,unkn
 candidate:app/share-model.mjs:67:595,js-cjk-literal,app/share-model.mjs,67,,unknown,reviewable,," 页"
 candidate:app/share-model.mjs:70:70,js-cjk-literal,app/share-model.mjs,70,,unknown,reviewable,,这段文字尚未准备好。
 candidate:app/share-model.mjs:209:29,js-cjk-literal,app/share-model.mjs,209,,unknown,reviewable,,双语摘录较长，请缩小字号或减少选中的段落。
-candidate:app/share.js:61:66,js-attribute,app/share.js,61,aria-busy,unknown,reviewable,,false
+candidate:app/share.js:62:66,js-attribute,app/share.js,62,aria-busy,unknown,reviewable,,false
 candidate:app/shelf-order.mjs:7:166,js-cjk-literal,app/shelf-order.mjs,7,,unknown,reviewable,,书架刚刚有变化，请重新拖动。
 candidate:app/shelf-order.mjs:47:196,js-attribute,app/shelf-order.mjs,47,aria-hidden,unknown,reviewable,,true
 candidate:app/shelf-order.mjs:85:153,js-attribute,app/shelf-order.mjs,85,aria-describedby,unknown,protected,identifier,shelf-order-help

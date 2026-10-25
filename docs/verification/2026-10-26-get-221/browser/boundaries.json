@@ -1,0 +1,4259 @@
+{
+  "kind": "GET-221 actual local reader boundaries",
+  "mode": "full",
+  "consoleBaselineProvided": true,
+  "cases": [
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "width": 1440,
+      "rounds": [
+        {
+          "round": 1,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 2,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 3,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 4,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 5,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 6,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 7,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 8,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 9,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 10,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 11,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 12,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 13,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 14,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 15,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 16,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 17,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 18,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 19,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 20,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        }
+      ],
+      "errors": [],
+      "consoleErrors": [
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "path": "/api/library/books/gutenberg-alice/audio/preferences"
+        }
+      ],
+      "writes": [
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/books/gutenberg-alice/companion/observe",
+          "kind": "other"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        }
+      ],
+      "checks": [
+        "actual Manual opener retained without dialog beforetoggle",
+        "real chapter transition releases tools",
+        "actual source-page Share exports a valid PNG and retains selected text; raw model is already imported",
+        "native fullscreen enter and exit",
+        "denied fullscreen restores visible pill"
+      ],
+      "reducedMotionExitMs": 238.30000000074506,
+      "blockedDialogToggles": 2,
+      "chapterBefore": "ch01",
+      "chapterTargetLabel": "Pre.出版说明与前言Front matter",
+      "share": {
+        "png": "chromium-1440-share.png",
+        "bytes": 57196,
+        "width": 1080,
+        "height": 1350
+      },
+      "shareModelRequestObserved": false,
+      "terms": 0,
+      "remount": {
+        "rounds": 20,
+        "timers": {
+          "active": 0,
+          "maximum": 1,
+          "delays": []
+        },
+        "expanded": "false"
+      },
+      "forbiddenWrites": [],
+      "console": {
+        "verified": true,
+        "engine": "chromium",
+        "version": "153.0.8010.12",
+        "newErrors": []
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "width": 768,
+      "rounds": [
+        {
+          "round": 1,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 2,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 3,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 4,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 5,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 6,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 7,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 8,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 9,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 10,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 11,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 12,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 13,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 14,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 15,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 16,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 17,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 18,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 19,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 20,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        }
+      ],
+      "errors": [],
+      "consoleErrors": [
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "path": "/api/library/books/gutenberg-alice/audio/preferences"
+        }
+      ],
+      "writes": [
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/books/gutenberg-alice/companion/observe",
+          "kind": "other"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        }
+      ],
+      "checks": [
+        "actual Manual opener retained without dialog beforetoggle",
+        "real chapter transition releases tools",
+        "actual source-page Share exports a valid PNG and retains selected text; raw model is already imported",
+        "native fullscreen enter and exit",
+        "denied fullscreen restores visible pill"
+      ],
+      "reducedMotionExitMs": 233.19999999925494,
+      "blockedDialogToggles": 2,
+      "chapterBefore": "ch01",
+      "chapterTargetLabel": "Pre.出版说明与前言Front matter",
+      "share": {
+        "png": "chromium-768-share.png",
+        "bytes": 57196,
+        "width": 1080,
+        "height": 1350
+      },
+      "shareModelRequestObserved": false,
+      "terms": 0,
+      "remount": {
+        "rounds": 20,
+        "timers": {
+          "active": 0,
+          "maximum": 1,
+          "delays": []
+        },
+        "expanded": "false"
+      },
+      "forbiddenWrites": [],
+      "console": {
+        "verified": true,
+        "engine": "chromium",
+        "version": "153.0.8010.12",
+        "newErrors": []
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "width": 390,
+      "rounds": [
+        {
+          "round": 1,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 2,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 3,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 4,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 5,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 6,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 7,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 8,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 9,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 10,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 11,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 12,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 13,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 14,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 15,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 16,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 17,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 18,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 19,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 20,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        }
+      ],
+      "errors": [],
+      "consoleErrors": [
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "path": "/api/library/books/gutenberg-alice/audio/preferences"
+        }
+      ],
+      "writes": [
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/books/gutenberg-alice/companion/observe",
+          "kind": "other"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        }
+      ],
+      "checks": [
+        "continuous card scrolling stays active past five seconds; input source is recorded",
+        "actual Manual opener retained without dialog beforetoggle",
+        "real chapter transition releases tools",
+        "actual source-page Share exports a valid PNG and retains selected text; raw model is already imported",
+        "native fullscreen enter and exit",
+        "denied fullscreen restores visible pill"
+      ],
+      "reducedMotionExitMs": 230.89999999850988,
+      "touchScroll": {
+        "source": "native CDP touch-pan",
+        "viewport": {
+          "width": 390,
+          "height": 420
+        },
+        "frames": [
+          {
+            "at": 10400.300000000745,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 10815.5,
+            "expanded": "true",
+            "scrollTop": 15
+          },
+          {
+            "at": 11232.5,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 11649.60000000149,
+            "expanded": "true",
+            "scrollTop": 15
+          },
+          {
+            "at": 12066.89999999851,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 12482.800000000745,
+            "expanded": "true",
+            "scrollTop": 15
+          },
+          {
+            "at": 12901,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 13317.5,
+            "expanded": "true",
+            "scrollTop": 15
+          },
+          {
+            "at": 13733.10000000149,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 14148.89999999851,
+            "expanded": "true",
+            "scrollTop": 15
+          },
+          {
+            "at": 14567.199999999255,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 14982.699999999255,
+            "expanded": "true",
+            "scrollTop": 15
+          },
+          {
+            "at": 15399.89999999851,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 15816.5,
+            "expanded": "true",
+            "scrollTop": 15
+          },
+          {
+            "at": 16232.5,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 16649.39999999851,
+            "expanded": "true",
+            "scrollTop": 15
+          }
+        ],
+        "before": {
+          "height": 318,
+          "scrollHeight": 537
+        },
+        "events": [
+          {
+            "type": "pointerenter",
+            "trusted": true,
+            "pointerType": "touch",
+            "at": 9963.199999999255
+          },
+          {
+            "type": "pointerenter",
+            "id": "",
+            "trusted": true,
+            "pointerType": "touch",
+            "at": 9963.199999999255
+          },
+          {
+            "type": "pointerenter",
+            "id": "",
+            "trusted": true,
+            "pointerType": "touch",
+            "at": 9963.199999999255
+          },
+          {
+            "type": "pointerenter",
+            "id": "reading-session",
+            "trusted": true,
+            "pointerType": "touch",
+            "at": 9963.199999999255
+          },
+          {
+            "type": "pointerenter",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "pointerType": "touch",
+            "at": 9963.199999999255
+          },
+          {
+            "type": "pointerdown",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "pointerType": "touch",
+            "at": 9963.5
+          },
+          {
+            "type": "pointercancel",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "pointerType": "touch",
+            "at": 9997.60000000149
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 10029.5
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 10411.699999999255
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 10830.10000000149
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 11247.199999999255
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 11662.60000000149
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 12079.199999999255
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 12496.89999999851
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 12914.10000000149
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 13330.300000000745
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 13746
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 14163
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 14578.800000000745
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 14996.10000000149
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 15413.199999999255
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 15828.39999999851
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 16247
+          }
+        ],
+        "penRounds": 20,
+        "penObserved": true
+      },
+      "blockedDialogToggles": 2,
+      "chapterBefore": "ch01",
+      "chapterTargetLabel": "Pre.出版说明与前言Front matter",
+      "share": {
+        "png": "chromium-390-share.png",
+        "bytes": 57196,
+        "width": 1080,
+        "height": 1350
+      },
+      "shareModelRequestObserved": false,
+      "terms": 0,
+      "remount": {
+        "rounds": 20,
+        "timers": {
+          "active": 0,
+          "maximum": 1,
+          "delays": []
+        },
+        "expanded": "false"
+      },
+      "forbiddenWrites": [],
+      "console": {
+        "verified": true,
+        "engine": "chromium",
+        "version": "153.0.8010.12",
+        "newErrors": []
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "width": 320,
+      "rounds": [
+        {
+          "round": 1,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 2,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 3,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 4,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 5,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 6,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 7,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 8,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 9,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 10,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 11,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 12,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 13,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 14,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 15,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 16,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 17,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 18,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 19,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 20,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        }
+      ],
+      "errors": [],
+      "consoleErrors": [
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/read"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Applying inline style violates the following Content Security Policy directive 'style-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-PreKG2gbdav2RGFhmFy82sd5Fyh1s8dY/ZlfUVgFPQQ='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "path": "/reader-atmosphere.js"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "path": "/api/library/books/gutenberg-alice/audio/preferences"
+        }
+      ],
+      "writes": [
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/books/gutenberg-alice/companion/observe",
+          "kind": "other"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        }
+      ],
+      "checks": [
+        "actual Manual opener retained without dialog beforetoggle",
+        "real chapter transition releases tools",
+        "actual source-page Share exports a valid PNG and retains selected text; raw model is already imported",
+        "native fullscreen enter and exit",
+        "denied fullscreen restores visible pill"
+      ],
+      "reducedMotionExitMs": 238.10000000149012,
+      "blockedDialogToggles": 2,
+      "chapterBefore": "ch01",
+      "chapterTargetLabel": "Pre.出版说明与前言Front matter",
+      "share": {
+        "png": "chromium-320-share.png",
+        "bytes": 57196,
+        "width": 1080,
+        "height": 1350
+      },
+      "shareModelRequestObserved": false,
+      "terms": 0,
+      "remount": {
+        "rounds": 20,
+        "timers": {
+          "active": 0,
+          "maximum": 1,
+          "delays": []
+        },
+        "expanded": "false"
+      },
+      "forbiddenWrites": [],
+      "console": {
+        "verified": true,
+        "engine": "chromium",
+        "version": "153.0.8010.12",
+        "newErrors": []
+      },
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "width": 1440,
+      "rounds": [
+        {
+          "round": 1,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 2,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 3,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 4,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 5,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 6,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 7,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 8,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 9,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 10,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 11,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 12,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 13,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 14,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 15,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 16,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 17,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 18,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 19,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        },
+        {
+          "round": 20,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 0,
+            "delays": []
+          }
+        }
+      ],
+      "errors": [],
+      "consoleErrors": [
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "path": "/api/library/books/gutenberg-alice/audio/preferences"
+        }
+      ],
+      "writes": [
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/books/gutenberg-alice/companion/observe",
+          "kind": "other"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        }
+      ],
+      "checks": [
+        "actual Manual opener retained without dialog beforetoggle",
+        "real chapter transition releases tools",
+        "actual source-page Share exports a valid PNG and retains selected text; raw model is already imported",
+        "native fullscreen enter and exit",
+        "denied fullscreen restores visible pill"
+      ],
+      "reducedMotionExitMs": 217,
+      "blockedDialogToggles": 2,
+      "chapterBefore": "ch01",
+      "chapterTargetLabel": "Pre.出版说明与前言Front matter",
+      "share": {
+        "png": "webkit-1440-share.png",
+        "bytes": 64338,
+        "width": 1080,
+        "height": 1350
+      },
+      "shareModelRequestObserved": false,
+      "terms": 0,
+      "remount": {
+        "rounds": 20,
+        "timers": {
+          "active": 0,
+          "maximum": 1,
+          "delays": []
+        },
+        "expanded": "false"
+      },
+      "forbiddenWrites": [],
+      "console": {
+        "verified": true,
+        "engine": "webkit",
+        "version": "26.6",
+        "newErrors": []
+      },
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "width": 768,
+      "rounds": [
+        {
+          "round": 1,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 2,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 3,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 4,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 5,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 6,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 7,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 8,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 9,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 10,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 11,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 12,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 13,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 14,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 15,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 16,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 17,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 18,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 19,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 20,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        }
+      ],
+      "errors": [],
+      "consoleErrors": [
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "path": "/api/library/books/gutenberg-alice/audio/preferences"
+        }
+      ],
+      "writes": [
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/books/gutenberg-alice/companion/observe",
+          "kind": "other"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        }
+      ],
+      "checks": [
+        "actual Manual opener retained without dialog beforetoggle",
+        "real chapter transition releases tools",
+        "actual source-page Share exports a valid PNG and retains selected text; raw model is already imported",
+        "native fullscreen enter and exit",
+        "denied fullscreen restores visible pill"
+      ],
+      "reducedMotionExitMs": 219,
+      "blockedDialogToggles": 2,
+      "chapterBefore": "ch01",
+      "chapterTargetLabel": "Pre.出版说明与前言Front matter",
+      "share": {
+        "png": "webkit-768-share.png",
+        "bytes": 64338,
+        "width": 1080,
+        "height": 1350
+      },
+      "shareModelRequestObserved": false,
+      "terms": 0,
+      "remount": {
+        "rounds": 20,
+        "timers": {
+          "active": 0,
+          "maximum": 1,
+          "delays": []
+        },
+        "expanded": "false"
+      },
+      "forbiddenWrites": [],
+      "console": {
+        "verified": true,
+        "engine": "webkit",
+        "version": "26.6",
+        "newErrors": []
+      },
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "width": 390,
+      "rounds": [
+        {
+          "round": 1,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 2,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 3,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 4,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 5,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 6,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 7,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 8,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 9,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 10,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 11,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 12,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 13,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 14,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 15,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 16,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 17,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 18,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 19,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 20,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        }
+      ],
+      "errors": [],
+      "consoleErrors": [
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "path": "/api/library/books/gutenberg-alice/audio/preferences"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        }
+      ],
+      "writes": [
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/books/gutenberg-alice/companion/observe",
+          "kind": "other"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        }
+      ],
+      "checks": [
+        "continuous card scrolling stays active past five seconds; input source is recorded",
+        "actual Manual opener retained without dialog beforetoggle",
+        "real chapter transition releases tools",
+        "actual source-page Share exports a valid PNG and retains selected text; raw model is already imported",
+        "native fullscreen enter and exit",
+        "denied fullscreen restores visible pill"
+      ],
+      "reducedMotionExitMs": 217,
+      "touchScroll": {
+        "source": "DOM scrolling after native tap; injected pointercancel",
+        "viewport": {
+          "width": 390,
+          "height": 420
+        },
+        "frames": [
+          {
+            "at": 7719,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 8130,
+            "expanded": "true",
+            "scrollTop": 15
+          },
+          {
+            "at": 8538,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 8947,
+            "expanded": "true",
+            "scrollTop": 15
+          },
+          {
+            "at": 9355,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 9765,
+            "expanded": "true",
+            "scrollTop": 15
+          },
+          {
+            "at": 10174,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 10586,
+            "expanded": "true",
+            "scrollTop": 15
+          },
+          {
+            "at": 10995,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 11401,
+            "expanded": "true",
+            "scrollTop": 15
+          },
+          {
+            "at": 11808,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 12217,
+            "expanded": "true",
+            "scrollTop": 15
+          },
+          {
+            "at": 12628,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 13038,
+            "expanded": "true",
+            "scrollTop": 15
+          },
+          {
+            "at": 13447,
+            "expanded": "true",
+            "scrollTop": 95
+          },
+          {
+            "at": 13857,
+            "expanded": "true",
+            "scrollTop": 15
+          }
+        ],
+        "before": {
+          "height": 318,
+          "scrollHeight": 516
+        },
+        "events": [
+          {
+            "type": "pointercancel",
+            "id": "reading-tools-panel",
+            "trusted": false,
+            "pointerType": "touch",
+            "at": 7316
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 7325
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 7726
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 8134
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 8544
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 8952
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 9362
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 9770
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 10180
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 10592
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 10997
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 11406
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 11814
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 12224
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 12637
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 13044
+          },
+          {
+            "type": "scroll",
+            "id": "reading-tools-panel",
+            "trusted": true,
+            "at": 13454
+          }
+        ]
+      },
+      "blockedDialogToggles": 2,
+      "chapterBefore": "ch01",
+      "chapterTargetLabel": "Pre.出版说明与前言Front matter",
+      "share": {
+        "png": "webkit-390-share.png",
+        "bytes": 64338,
+        "width": 1080,
+        "height": 1350
+      },
+      "shareModelRequestObserved": false,
+      "terms": 0,
+      "remount": {
+        "rounds": 20,
+        "timers": {
+          "active": 0,
+          "maximum": 1,
+          "delays": []
+        },
+        "expanded": "false"
+      },
+      "forbiddenWrites": [],
+      "console": {
+        "verified": true,
+        "engine": "webkit",
+        "version": "26.6",
+        "newErrors": []
+      },
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "width": 320,
+      "rounds": [
+        {
+          "round": 1,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 2,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 3,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 4,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 5,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 6,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 7,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 8,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 9,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 10,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 11,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 12,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 13,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 14,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 15,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 16,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 17,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 18,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 19,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        },
+        {
+          "round": 20,
+          "excerptPreserved": true,
+          "nativeSelection": "",
+          "copy": true,
+          "settings": true,
+          "bookInfo": true,
+          "atmosphere": true,
+          "chapters": true,
+          "chatDraft": true,
+          "timer": {
+            "active": 0,
+            "maximum": 1,
+            "delays": []
+          }
+        }
+      ],
+      "errors": [],
+      "consoleErrors": [
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy.",
+          "path": "/read"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)",
+          "path": "/api/library/books/gutenberg-alice/audio/preferences"
+        }
+      ],
+      "writes": [
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/books/gutenberg-alice/companion/observe",
+          "kind": "other"
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence"
+        }
+      ],
+      "checks": [
+        "actual Manual opener retained without dialog beforetoggle",
+        "real chapter transition releases tools",
+        "actual source-page Share exports a valid PNG and retains selected text; raw model is already imported",
+        "native fullscreen enter and exit",
+        "denied fullscreen restores visible pill"
+      ],
+      "reducedMotionExitMs": 216,
+      "blockedDialogToggles": 2,
+      "chapterBefore": "ch01",
+      "chapterTargetLabel": "Pre.出版说明与前言Front matter",
+      "share": {
+        "png": "webkit-320-share.png",
+        "bytes": 64338,
+        "width": 1080,
+        "height": 1350
+      },
+      "shareModelRequestObserved": false,
+      "terms": 0,
+      "remount": {
+        "rounds": 20,
+        "timers": {
+          "active": 0,
+          "maximum": 1,
+          "delays": []
+        },
+        "expanded": "false"
+      },
+      "forbiddenWrites": [],
+      "console": {
+        "verified": true,
+        "engine": "webkit",
+        "version": "26.6",
+        "newErrors": []
+      },
+      "passed": true
+    }
+  ],
+  "limitations": [
+    "Synthetic identities and public Alice, no production or physical-device claim.",
+    "Copy verifies native copy dispatch and retained selection, not the OS clipboard payload. Console acceptance requires an explicit matching-version baseline.",
+    "Continuous touch-pan and pen input use native Chromium CDP. The installed WebKit driver supplies taps; its continuous-scroll check uses DOM scrolling after native taps and an explicitly injected cancellation.",
+    "The public sample may contain no glossary terms; absence is reported, not a fabricated glossary pass.",
+    "WebKit 26.6 collapses native selection on keyboard header focus in both base b6afebd and this change; the exact stored excerpt and anchor remain required. The independent baseline/current trace is retained as selection-probe/report.json."
+  ]
+}

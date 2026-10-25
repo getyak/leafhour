@@ -30,6 +30,7 @@ test('the bookplate enhancement and gift composer remain allowed public modules 
   assert.match(js,/import\(["']\/reader-settings-choices\.mjs["']\)/);
   for(const file of ['reader-book-actions.mjs','book-introduction-controller.mjs','gift-compose.mjs','gift-compose-state.mjs','gift-preview.mjs','book-binding.mjs'])assert.ok(!result.inputs.includes('app/'+file),file+' must wait for the explicit user gesture');
   assert.match(js,/import\(["']\/share-fonts\.mjs["']\)/);assert.ok(!js.includes('normal 48px'),'on-demand font loader bodies must be tree-shaken from initial JS, even though the compatibility re-export is parsed');
+  assert.match(js,/import\(["']\/share-model\.mjs["']\)/,'pure canvas layout waits for the actual Share gesture');
   assert.match(js,/from\s*["']\/arrival-catalog\.mjs["']/);assert.equal((js.match(/\/arrival-catalog\.mjs/g)||[]).length,1);assert.ok(!result.inputs.includes('app/arrival-catalog.mjs'),'the public catalog stays a single separate module');
   assert.ok(result.inputs.includes('app/gift-compose.css'),'the shared gift styles stay in the single reader stylesheet');
   const allowed=JSON.parse(await readFile(path.join(root,'release-files.json'),'utf8'));

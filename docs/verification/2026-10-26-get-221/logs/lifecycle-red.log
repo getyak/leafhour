@@ -1,0 +1,219 @@
+TAP version 13
+# Subtest: source self-host serves the new tools module and its complete direct dependencies as JavaScript
+ok 1 - source self-host serves the new tools module and its complete direct dependencies as JavaScript
+  ---
+  duration_ms: 103.135375
+  type: 'test'
+  ...
+# Subtest: locale preserves the sole conceal deadline, unread state, focus and held tools
+# (node:43984) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+ok 2 - locale preserves the sole conceal deadline, unread state, focus and held tools
+  ---
+  duration_ms: 8.749
+  type: 'test'
+  ...
+# Subtest: unmount releases tools listeners and stale unread callbacks cannot change a replacement pill
+ok 3 - unmount releases tools listeners and stale unread callbacks cannot change a replacement pill
+  ---
+  duration_ms: 0.340417
+  type: 'test'
+  ...
+# Subtest: the single pill interaction drives both tools surfaces through one conceal timer
+ok 4 - the single pill interaction drives both tools surfaces through one conceal timer
+  ---
+  duration_ms: 0.323209
+  type: 'test'
+  ...
+# Subtest: concealing tools returns focus from the revealed header to the visible pill
+ok 5 - concealing tools returns focus from the revealed header to the visible pill
+  ---
+  duration_ms: 0.413542
+  type: 'test'
+  ...
+# Subtest: fullscreen failure restoration targets the visible pill through the reader wiring seam
+ok 6 - fullscreen failure restoration targets the visible pill through the reader wiring seam
+  ---
+  duration_ms: 0.524417
+  type: 'test'
+  ...
+# Subtest: injected chat integration keeps trigger, anchor, focus and unread seams separate
+ok 7 - injected chat integration keeps trigger, anchor, focus and unread seams separate
+  ---
+  duration_ms: 0.468709
+  type: 'test'
+  ...
+# Subtest: control mode follows the reader focus layout for the pill label
+ok 8 - control mode follows the reader focus layout for the pill label
+  ---
+  duration_ms: 2.193
+  type: 'test'
+  ...
+# Subtest: composed tools keep hover reveals from stealing focus while explicit clicks may focus
+ok 9 - composed tools keep hover reveals from stealing focus while explicit clicks may focus
+  ---
+  duration_ms: 0.411625
+  type: 'test'
+  ...
+# Subtest: composed tools hold concealment while the focused header is hovered or focused
+ok 10 - composed tools hold concealment while the focused header is hovered or focused
+  ---
+  duration_ms: 0.417042
+  type: 'test'
+  ...
+# Subtest: outside completed click and pill click keep one tools state across both surfaces
+ok 11 - outside completed click and pill click keep one tools state across both surfaces
+  ---
+  duration_ms: 0.671833
+  type: 'test'
+  ...
+# Subtest: setFocused and fullscreen transitions cannot strand the toolbar state
+ok 12 - setFocused and fullscreen transitions cannot strand the toolbar state
+  ---
+  duration_ms: 0.35975
+  type: 'test'
+  ...
+# Subtest: the Ask AI handoff closes tools without bubbling re-reveal or focus theft
+ok 13 - the Ask AI handoff closes tools without bubbling re-reveal or focus theft
+  ---
+  duration_ms: 0.173875
+  type: 'test'
+  ...
+# Subtest: hover preview leaves for the adjacent AI sibling after a 200ms gap allowance
+ok 14 - hover preview leaves for the adjacent AI sibling after a 200ms gap allowance
+  ---
+  duration_ms: 0.269416
+  type: 'test'
+  ...
+# Subtest: hover reveals only the card and explicit activation adds the navigation surface
+ok 15 - hover reveals only the card and explicit activation adds the navigation surface
+  ---
+  duration_ms: 0.196167
+  type: 'test'
+  ...
+# Subtest: button and card gap crossings and reentry cancel the sole old preview deadline
+ok 16 - button and card gap crossings and reentry cancel the sole old preview deadline
+  ---
+  duration_ms: 0.234792
+  type: 'test'
+  ...
+# Subtest: mouse focus in navigation cannot hold explicit tools forever but Tab focus can
+ok 17 - mouse focus in navigation cannot hold explicit tools forever but Tab focus can
+  ---
+  duration_ms: 0.190208
+  type: 'test'
+  ...
+# Subtest: outside dismissal waits for a complete primary gesture and preserves its target
+ok 18 - outside dismissal waits for a complete primary gesture and preserves its target
+  ---
+  duration_ms: 0.205666
+  type: 'test'
+  ...
+# Subtest: inside-drag is not an outside dismissal
+ok 19 - inside-drag is not an outside dismissal
+  ---
+  duration_ms: 0.23275
+  type: 'test'
+  ...
+# Subtest: cancelled is not an outside dismissal
+ok 20 - cancelled is not an outside dismissal
+  ---
+  duration_ms: 0.277791
+  type: 'test'
+  ...
+# Subtest: right-click is not an outside dismissal
+ok 21 - right-click is not an outside dismissal
+  ---
+  duration_ms: 0.155875
+  type: 'test'
+  ...
+# Subtest: touch-scroll is not an outside dismissal
+ok 22 - touch-scroll is not an outside dismissal
+  ---
+  duration_ms: 0.195125
+  type: 'test'
+  ...
+# Subtest: leaving the window releases transient mouse holds and a chapter change closes coherently
+ok 23 - leaving the window releases transient mouse holds and a chapter change closes coherently
+  ---
+  duration_ms: 0.1955
+  type: 'test'
+  ...
+# Subtest: pointer cancellation releases a preview hold rather than stranding it
+not ok 24 - pointer cancellation releases a preview hold rather than stranding it
+  ---
+  duration_ms: 0.471625
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:457:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:460:34)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: a replacement coordinator retires the old listeners and conceal deadline
+not ok 25 - a replacement coordinator retires the old listeners and conceal deadline
+  ---
+  duration_ms: 0.319584
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:463:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    the old mount cannot react to the replacement pill
+
+    true !== false
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:467:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: selecting card text holds it through pointer release until the selection leaves
+not ok 26 - selecting card text holds it through pointer release until the selection leaves
+  ---
+  duration_ms: 0.205542
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:471:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    false !== true
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-221/tests/reader-tools.test.mjs:475:72)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 23
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 393.583833
