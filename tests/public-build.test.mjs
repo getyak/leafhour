@@ -5,6 +5,14 @@ import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {checkPublicBuild} from '../tools/check-public-build.mjs';
+import {copyFile,readFile} from 'node:fs/promises';
+
+test('the exact reviewed PDF software assets pass while same-name modified bytes fail',async t=>{
+ const root=await mkdtemp(path.join(tmpdir(),'public-pdf-vendor-'));t.after(()=>rm(root,{recursive:true,force:true}));await mkdir(path.join(root,'vendor'));
+ for(const file of ['pdf-lib.mjs','pdf-fontkit.mjs'])await copyFile(new URL('../app/vendor/'+file,import.meta.url),path.join(root,'vendor',file));
+ await checkPublicBuild(root);
+ const target=path.join(root,'vendor/pdf-lib.mjs'),bytes=await readFile(target);bytes[bytes.length-1]^=1;await writeFile(target,bytes);await assert.rejects(checkPublicBuild(root),/PDF|software|软件/);
+});
 
 async function fixture(t){
   const root=await mkdtemp(path.join(tmpdir(),'reader-public-build-'));
