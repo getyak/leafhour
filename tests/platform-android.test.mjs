@@ -611,6 +611,7 @@ function fontLayoutScenario({alwaysInvisible=false,cold=false}={}){
   let positioned=false,visible=false;
   const receipt={checks:[]},calls=[];
   const cdp={async evaluate(expression){
+    if(expression.includes('stylesReady')){calls.push('styles');return {status:'ready',after:{viewport:{width:393,height:722}}};}
     if(expression==='document.fonts.ready.then(()=>true)'){assert.equal(cold,false,'withheld-font probe must not wait on the held request');calls.push('ready');if(positioned)visible=false;return true;}
     if(expression.includes('scrollIntoView')){calls.push('scroll');positioned=true;visible=true;return {status:'settled'};}
     if(expression.includes('getComputedStyle'))return {text:'synthetic title',rect:{x:0,y:alwaysInvisible?1200:visible?100:1200,width:200,height:40},viewport:{width:393,height:722,scrollY:100,fontStatus:'loaded'},visible:visible&&!alwaysInvisible};
@@ -695,7 +696,7 @@ test('native completion accounts for newly required outer scrolling and pre-star
 
 test('production font observation positions text after font layout completes and preserves the cold withheld path',async()=>{
   const normal=fontLayoutScenario();assert.equal((await normal.session.fonts('#title','synthetic layout')).visible,true);assert.deepEqual(normal.calls,['ready','scroll']);
-  const cold=fontLayoutScenario({cold:true});assert.equal((await cold.session.fonts('#title','synthetic withheld',{awaitFonts:false})).visible,true);assert.deepEqual(cold.calls,['scroll']);
+  const cold=fontLayoutScenario({cold:true});assert.equal((await cold.session.fonts('#title','synthetic withheld',{awaitFonts:false})).visible,true);assert.deepEqual(cold.calls,['styles','scroll']);
 });
 
 test('font visibility failure retains its actual rectangle and viewport in the receipt',async()=>{

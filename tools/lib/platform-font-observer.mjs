@@ -318,6 +318,10 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
   async function fonts(selector,label,{awaitFonts=true}={}){
     receipt.activeProbe={selector,label,phase:'layout'};
     if(awaitFonts)await cdp.evaluate('document.fonts.ready.then(()=>true)');
+    // Withheld fonts must stay pending, but the authored document's CSS must
+    // have parsed before a native scroll can produce meaningful coordinates.
+    // This observes existing styles/viewport; it never loads or releases fonts.
+    else await viewport(label+' styles');
     const scroll=await cdp.evaluate('('+observeNativeScroll.toString()+')('+JSON.stringify(selector)+')');
     (receipt.scrolls??=[]).push({label,selector,...scroll});
     assert.ok(['settled','unchanged'].includes(scroll.status),label+' native scrolling must complete within the bounded observation');

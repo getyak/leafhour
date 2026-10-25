@@ -208,7 +208,7 @@ try{
   lifecycle.guard('product evidence');
   await session.installFontHold();
   await session.navigateProduct(origin+'/');
-  await session.until(async()=>session.paused.size&&await cdp.evaluate(`!!document.querySelector('.hero-copy h1 .hero-line')`),'font-paused real hero');
+  await session.until(async()=>session.paused.size&&await cdp.evaluate(`['/en','/zh-hans','/zh-hant','/ja'].includes(location.pathname)&&document.readyState!=='loading'&&!!document.querySelector('.hero-copy h1 .hero-line')`),'font-paused authored hero after automatic root entry');
   if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'home-cold',read:()=>session.viewport('home-cold')});
   await delay(500);const cold=await session.fonts('.hero-copy h1 .hero-line','cold font-withheld hero',{awaitFonts:false});assert.ok(cold.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Cold fallback must have visible actual glyphs');assert.ok(!cold.fonts.some(font=>font.isCustomFont&&font.glyphCount>0),'Cold run must not use warmed custom face');await session.capture('home-controlled-font-delay');
   await session.releaseFontHold();
