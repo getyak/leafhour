@@ -10,7 +10,7 @@ Page corners follow a curved strip model while the original HTML stays selectabl
 
 Basic keyboard input is an independently served, small static pagination dependency. Optional rendering and paper CSS load only after page mode is requested. Missing or pending visual assets leave ordinary keyboard/button paging available. Temporary copies are inert and hidden from accessibility, have no duplicate IDs, and are bounded by both element count and text length; oversized chapters use immediate paging.
 
-## Deterministic verification
+## Deterministic verification of the initial feature
 
 - Node **22.22.0**, the repository's complete test set with `--test-concurrency=4`: **3,315 total; 3,314 passed; 0 failed; 0 cancelled; 1 skipped**. No test was omitted or weakened. The existing Linux-x64-only pinned Node-license tamper case is skipped on this macOS host.
 - The initial unrestricted local suite had one 15-second SDK-memory-transport timeout under concurrent load. The affected `highlights.test.mjs` passed **10/10** alone in 436 ms. The controlled complete run above passed without changing that timeout or test.
@@ -62,4 +62,4 @@ The final online gesture check found one remaining boundary: dragging a corner a
 
 Three new tests first failed with zero paging callbacks, then passed through the actual surface event handlers. The gesture now keeps its measured leaf width even without a visual snapshot. A completed fallback gesture delegates immediately to the existing page/chapter owner; a short drag returns. No next-chapter text or preview is fabricated. The motion owner exposes its actual active state rather than a second cached lifecycle flag.
 
-Native browser validation moved `ch01 → ch02 → ch01` by dragging opposite page edges and returned to the previous chapter's final spread; see [edge-drag-boundaries.json](paper-reading/edge-drag-boundaries.json). The focused motion/input/surface/pagination set passed **24/24**. This follow-up's complete checks and same-commit Production receipt are recorded in its PR before final delivery.
+Native browser validation moved `ch01 → ch02 → ch01` by dragging opposite page edges and returned to the previous chapter's final spread; see [edge-drag-boundaries.json](paper-reading/edge-drag-boundaries.json). The focused motion/input/surface/pagination set passed **24/24**. The complete follow-up set passed **3,317**, with **0 failed/cancelled** and the same **1 platform skip**. Copy lint/canaries, hosted/public build and release verification passed; the unchanged startup budgets still hold. The software allowlist now includes the added regression file (**887 entries**). Same-commit Production and online follow-up results are recorded in its PR delivery receipt.
