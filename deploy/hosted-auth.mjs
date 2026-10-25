@@ -170,9 +170,9 @@ export function createHostedAuth({store,env=process.env,fetcher=fetch,clock=Date
     if(!validToken(token))return false;const row=await freshSession(token);if(!row)return false;
     try{const user=await request('user',null,row.access),current=await store.read(sessionKey(token),null);return !!(current&&!current.revoked&&current.expiresAt>clock()&&user.id===current.user.id&&typeof user.email_confirmed_at==='string'&&Number.isFinite(Date.parse(user.email_confirmed_at)));}catch(error){if(error.status===401)return false;throw error;}
   }
-  async function logout(token){
+  async function logout(token,{expectedOwner}={}){
     if(!validToken(token))return;
-    const access=await store.mutate(sessionKey(token),{},saved=>{const access=saved.access;saved.revoked=true;delete saved.access;delete saved.refresh;delete saved.refreshLease;return access;});
+    const access=await store.mutate(sessionKey(token),{},saved=>{if(expectedOwner&&saved.user?.id&&saved.user.id!==expectedOwner)throw Object.assign(authFailure("auth.error.generic",'账户已切换，请重新进入书房。原账户草稿仍留在原处。',409),{readerSessionChanged:true});const access=saved.access;saved.revoked=true;delete saved.access;delete saved.refresh;delete saved.refreshLease;return access;});
     if(access)await request('logout?scope=local',{},access).catch(()=>{});
   }
   return {requestCode,verifyCode,signInPassword,setPassword,userFor,emailVerifiedFor,logout,capabilities,beginOAuth,finishOAuth,cancelOAuth,emailAvailable:env.READER_EMAIL_ENABLED==='true'};

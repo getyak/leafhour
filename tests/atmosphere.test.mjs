@@ -65,7 +65,7 @@ async function readerFixture({saved=null,reduced=false,delayed=false,blocked=fal
     append(...children){this.children.push(...children);}
     set innerHTML(html){for(const [,id]of html.matchAll(/id="([^"]+)"/g))elements.set(id,new Element());}
     querySelector(selector){if(!elements.has(selector))elements.set(selector,new Element());return elements.get(selector);}
-    querySelectorAll(){return this.querySelector('.atmosphere-choices').children;}
+    querySelectorAll(){return this.querySelector('.atmosphere-choices').children.flatMap(node=>node.dataset.scene?[node]:node.children.filter(child=>child.dataset.scene));}
     showModal(){this.open=true;}
     close(){this.open=false;this.dispatchEvent(new Event('close'));}
   }

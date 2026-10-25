@@ -115,6 +115,21 @@ const chapterEntry=mountChapterEntry({document,getBook:()=>book,getChapter:()=>b
 // real user-open lazy enhancement; the optional AI introduction and gifting
 // code loads only when the reader actually opens book-info.
 const bookInfo=mountBookIntroduction({document,getBook:()=>book,getChapter:()=>book&&currentChapter(),onOpen:dismissTools});
+let accountSurface,accountLoad,accountRetry;
+listen($('open-reader-account'),'click',async()=>{
+  const trigger=$('open-reader-account');
+  if(accountLoad)return;
+  if(accountSurface){bookInfo.close({focus:false});accountSurface.open();return;}
+  bookInfo.close({focus:false});const active=document.activeElement;
+  trigger.setAttribute('aria-busy','true');
+  try{
+    accountLoad=accountRetry?import('./reader-account.mjs?retry=1'):import('./reader-account.mjs');const {mountReaderAccount}=await accountLoad;
+    if(readerDisposed||document.activeElement!==active||trigger.closest('[inert]')||document.querySelector('dialog[open],[popover][data-popover-open]'))return;
+    accountSurface=mountReaderAccount({document,trigger,session:readerSession,request:readerFetch,loginHref:()=>readerLoginUrl({bookId:selectedBookId,passageId:anchor()?.passageId,ui:getUiLinkLocale()})});
+    accountSurface.open();
+  }catch{accountRetry=true;if(!readerDisposed)announceUi('ui.generic.error');}
+  finally{accountLoad=null;trigger.removeAttribute('aria-busy');}
+});
 const bookActions=mountReaderBookActionsBootstrap({document,info:bookInfo,getBook:()=>book,api,session:readerSession,bookId:selectedBookId,getOwner:()=>readerOwner()||'guest'});
 function anchor(){
   if(pagination.active)return pagination.anchor();
@@ -198,6 +213,7 @@ function updateChapterNavigation(){
   const chapter=currentChapter(),index=book.chapters.findIndex(c=>c.id===chapter.id),bodyCount=book.chapters.filter(c=>c.kind==='body').length;
   document.title=chapter.title.zh+' · Leafhour';
   $('chapter-fraction').textContent=chapter.kind==='body'?chapter.number+' / '+bodyCount:chapter.kind?chapter.title.zh:(index+1)+' / '+book.chapters.length;
+  $('running-progress').textContent=$('chapter-fraction').textContent;
   $('previous-chapter').disabled=index===0;$('next-chapter').disabled=index===book.chapters.length-1;
   renderToc();document.dispatchEvent(new CustomEvent('reader:chapter',{detail:{chapterId:state.chapterId}}));
 }
@@ -337,7 +353,10 @@ function renderPanel(){
   pruneLabels();
   const content=$('panel-content');content.replaceChildren();const p=paragraphMap.get(selectedId);if(!p)return;
   label($('panel-title'),allRecords?READER_SHELL+'myRecords':panelTab==='annotations'?READER_UI+'annotationTitle':panelTab==='question'?READER_SHELL+'leaveQuestion':READER_UI+'writeThought');
-  label($('panel-anchor'),READER_UI+'anchor.'+(p.source?.printedPage?'printed':p.source?.pdfPage?'pdf':'automatic'),{section:p.section,page:p.source?.printedPage||p.source?.pdfPage});
+  const sourcePage=p.source?.printedPage||p.source?.pdfPage;
+  $('panel-anchor').hidden=!sourcePage;
+  if(sourcePage)label($('panel-anchor'),READER_UI+(p.source?.printedPage?'sourcePrintedPage':'sourcePdfPage'),{page:sourcePage});
+  else{ownedLabels.forget($('panel-anchor'));$('panel-anchor').textContent='';}
   for(const tab of document.querySelectorAll('[data-panel-tab]')){const active=tab.dataset.panelTab===panelTab;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;}content.setAttribute('aria-labelledby','panel-tab-'+panelTab);
   document.querySelector('.panel-tabs').hidden=allRecords;$('panel-source').hidden=allRecords;
   if(!allRecords){renderPanelSource(p);syncPanelTextHighlight();}else clearPanelTextHighlight();
@@ -525,7 +544,7 @@ boot();
 listen(document,'reader:record-saved',e=>{const {type,record}=e.detail||{},field=type==='comment'?'comments':type==='question'?'questions':null;if(!field||!record||record.origin!=='user'||!paragraphMap.has(record.passageId)||record.bookId!==book?.bookId||record.contentVersion!==book?.contentVersion)return;if(!records[field].some(r=>r.id===record.id))records[field].push(record);if(!$('note-panel').hidden)renderPanel();document.dispatchEvent(new CustomEvent('reader:records-updated'));});
 listen(document,'reader:milestone-saved',e=>{const record=e.detail?.record;if(!record||record.origin!=='user'||record.bookId!==book?.bookId||record.contentVersion!==book?.contentVersion)return;records.readingMilestones??=[];if(!records.readingMilestones.some(m=>m.id===record.id))records.readingMilestones.push(record);document.dispatchEvent(new CustomEvent('reader:records-updated'));});
 
-function disposeReader(){if(readerDisposed)return;readerDisposed=true;ownerSubscribers.clear();for(const off of listenerDisposers)off();listenerDisposers.length=0;toolsResizeObserver.disconnect();readerEpoch++;loadGeneration++;clearTimeout(persistTimer);clearTimeout(excerptTimer);clearTimeout(flowIdle);offLocale();unbindShell();localeControls?.unmount();ownedLabels.clear();ownedLoginLinks.clear();for(const owner of [contents,chapterEntry,bookInfo,bookActions,readerConversation,personalRecordsUI,highlights,settingsUI,settingsDefaults,pagination,immersion,readerTools]){if(owner?.unmount)owner.unmount();else owner?.dispose?.();}}
+function disposeReader(){if(readerDisposed)return;readerDisposed=true;ownerSubscribers.clear();for(const off of listenerDisposers)off();listenerDisposers.length=0;toolsResizeObserver.disconnect();readerEpoch++;loadGeneration++;clearTimeout(persistTimer);clearTimeout(excerptTimer);clearTimeout(flowIdle);offLocale();unbindShell();localeControls?.unmount();ownedLabels.clear();ownedLoginLinks.clear();for(const owner of [accountSurface,contents,chapterEntry,bookInfo,bookActions,readerConversation,personalRecordsUI,highlights,settingsUI,settingsDefaults,pagination,immersion,readerTools]){if(owner?.unmount)owner.unmount();else owner?.dispose?.();}}
 listen(window,'pagehide',event=>{if(!event.persisted)disposeReader();});
 listen(document,'reader:session-changed',()=>{
   try{for(const subscriber of [...ownerSubscribers]){if(!ownerSubscribers.has(subscriber))continue;try{subscriber();}catch(error){globalThis.reportError?.(error);}}}

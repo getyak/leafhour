@@ -19,7 +19,7 @@ for(const [locale,expected] of [
   if(!elements.has(id))elements.set(id,{textContent:'',attributes:new Map(),setAttribute(name,value){this.attributes.set(name,value);}});
   return elements.get(id);
  };
- const context=vm.createContext({$:element,t,SCENE_UI:'reader.atmosphere.',cachedScene:'none',motionReduced:false});
+ const context=vm.createContext({dialog:{querySelectorAll:()=>[]},$:element,t,SCENE_UI:'reader.atmosphere.',cachedScene:'none',motionReduced:false});
  vm.runInContext(source.slice(sceneLabels.start,sceneLabels.end)+'\nsceneLabels();',context);
  assert.equal(element('open-atmosphere').attributes.get('aria-label'),expected);
  assert.ok(element('atmosphere-preview-name').textContent.length>0);

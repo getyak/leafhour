@@ -1,6 +1,11 @@
 // GET-192 immutable zh-Hant UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "reader.b1.sourcePrintedPage": "書中第 {page} 頁",
+  "reader.b1.sourcePdfPage": "PDF 第 {page} 頁",
+  "reader.atmosphere.imageLoading": "圖片載入中…",
+  "reader.atmosphere.imageError": "圖片暫不可用",
+  "reader.atmosphere.imageRetry": "重新載入圖片",
   "chat.importBook": "匯入書籍",
   "chat.answer.collapse": "收起回答",
   "chat.answer.expand": "查看完整回答",

@@ -37,6 +37,6 @@ export async function createEmailAuth({dataDir,sendCode=null,clock=Date.now}={})
   }
   async function localSession(){return mutate(data=>session(data,{id:'local-owner',email:null,kind:'local'}));}
   async function userFor(token){if(typeof token!=='string'||token.length>128)return null;await queue.catch(()=>{});return (await read()).sessions.find(s=>s.tokenHash===digest(token)&&s.expiresAt>clock())?.user||null;}
-  async function logout(token){return mutate(data=>{data.sessions=data.sessions.filter(s=>s.tokenHash!==digest(token||''));});}
+  async function logout(token,{expectedOwner}={}){return mutate(data=>{const row=data.sessions.find(s=>s.tokenHash===digest(token||''));if(expectedOwner&&row?.user?.id&&row.user.id!==expectedOwner)throw Object.assign(authFailure("auth.error.generic",'账户已切换，请重新进入书房。原账户草稿仍留在原处。',409),{readerSessionChanged:true});data.sessions=data.sessions.filter(s=>s.tokenHash!==digest(token||''));});}
   return {requestCode,verifyCode,localSession,userFor,logout,capabilities:async()=>({email:!!sendCode,providers:{google:false,apple:false},otp:{...OTP_POLICY}}),emailAvailable:!!sendCode};
 }

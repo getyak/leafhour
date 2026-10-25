@@ -169,7 +169,7 @@ dialog .status:empty { display: none; }
   .settings-dialog .settings-content { padding-bottom: max(28px, env(safe-area-inset-bottom)); }
   .paragraph-tools { max-width: calc(100vw - 20px); }
   .paragraph-tools > button { padding-inline: 10px; }
-  .reading-header .reader-nav-item:first-child { width: 44px; }
+  .reading-header .reader-nav-item:first-of-type { min-width: 44px; }
   .book-info { max-height: calc(100dvh - var(--book-info-top, 80px) - 12px); }
   .audio-dialog-header { position: sticky; top: 0; z-index: 1; background: var(--panel); }
   .share-actions { gap: 8px; }

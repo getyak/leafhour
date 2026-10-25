@@ -274,6 +274,7 @@
   "app/reader-highlights.mjs",
   "app/reader-immersion.mjs",
   "app/reader-navigation.css",
+  "app/reader-account.mjs",
   "app/reader-navigation.mjs",
   "app/reader-paper.css",
   "app/reader-pagination.css",

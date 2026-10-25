@@ -1,6 +1,11 @@
 // GET-192 immutable ja UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "reader.b1.sourcePrintedPage": "書籍の{page}ページ",
+  "reader.b1.sourcePdfPage": "PDFの{page}ページ",
+  "reader.atmosphere.imageLoading": "画像を読み込み中…",
+  "reader.atmosphere.imageError": "画像を読み込めませんでした",
+  "reader.atmosphere.imageRetry": "画像を再読み込み",
   "chat.importBook": "書籍を取り込む",
   "chat.answer.collapse": "回答を折りたたむ",
   "chat.answer.expand": "回答全体を表示",

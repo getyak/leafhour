@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: reader account confirms explicitly and cancels without logout in en
+ok 1 - reader account confirms explicitly and cancels without logout in en
+  ---
+  duration_ms: 15.028959
+  type: 'test'
+  ...
+# Subtest: reader account confirms explicitly and cancels without logout in zh-Hans
+ok 2 - reader account confirms explicitly and cancels without logout in zh-Hans
+  ---
+  duration_ms: 7.881334
+  type: 'test'
+  ...
+# Subtest: reader account confirms explicitly and cancels without logout in zh-Hant
+ok 3 - reader account confirms explicitly and cancels without logout in zh-Hant
+  ---
+  duration_ms: 5.728167
+  type: 'test'
+  ...
+# Subtest: reader account confirms explicitly and cancels without logout in ja
+ok 4 - reader account confirms explicitly and cancels without logout in ja
+  ---
+  duration_ms: 4.943459
+  type: 'test'
+  ...
+# Subtest: anonymous reader has a current return link and no logout action
+ok 5 - anonymous reader has a current return link and no logout action
+  ---
+  duration_ms: 0.176542
+  type: 'test'
+  ...
+# Subtest: failed logout preserves the reader and allows an explicit retry
+ok 6 - failed logout preserves the reader and allows an explicit retry
+  ---
+  duration_ms: 0.905
+  type: 'test'
+  ...
+# Subtest: unmount withdraws pending logout UI, locale subscriptions and late navigation
+ok 7 - unmount withdraws pending logout UI, locale subscriptions and late navigation
+  ---
+  duration_ms: 1.564208
+  type: 'test'
+  ...
+# Subtest: account Tab order stays inside visible actions and does not consume browser shortcuts
+ok 8 - account Tab order stays inside visible actions and does not consume browser shortcuts
+  ---
+  duration_ms: 0.4155
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 90.437708

@@ -36,6 +36,7 @@ assets.set('/source-emphasis.mjs',['app/source-emphasis.mjs','text/javascript'])
 assets.set('/share-fonts.mjs',['app/share-fonts.mjs','text/javascript']);
 assets.set('/reader-entry.mjs',['app/reader-entry.mjs','text/javascript']);
 assets.set('/catalog-sample.mjs',['app/catalog-sample.mjs','text/javascript']);
+assets.set('/reader-account.mjs',['app/reader-account.mjs','text/javascript']);
 assets.set('/reader-navigation.mjs',['app/reader-navigation.mjs','text/javascript']);
 // GET-173 shared popover boundary plus its real user-open bookplate bootstrap.
 for(const file of ['popover-controls.mjs','reader-book-actions-bootstrap.mjs'])assets.set('/'+file,['app/'+file,'text/javascript']);
