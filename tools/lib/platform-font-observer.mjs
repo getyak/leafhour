@@ -302,7 +302,7 @@ export function observeNativeScroll(selector){
   });
 }
 export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]}){
-  const background=new Set(),evidenceListeners=[],paused=new Set();
+  const background=new Set(),evidenceListeners=[],paused=new Set(),pausedNetworkIds=new Map();
   let fetchEnabled=false,holdFonts=false,fontHoldInstalledAt=null,pageLabel='home-cold',closed=false;
   let documentEpoch=0,currentDocument=null;
   const requestFonts=new Map();
@@ -378,9 +378,19 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     observe('CSS.fontsUpdated',({font})=>{if(!font||!/Newsreader/i.test(font.platformFontFamily||''))return;if((receipt.fontFaces?.length||0)>=32){failures.push('Bounded Newsreader face evidence exceeded');return;}(receipt.fontFaces??=[]).push({page:pageLabel,...font,observedDuringDocument:currentDocument});});
     observe('Network.responseReceived',event=>{if(event.type==='Font'||event.type==='Stylesheet'&&/\/(?:fonts\/|typography\.css)/.test(new URL(event.response.url).pathname))requestFonts.set(event.requestId,{page:pageLabel,type:event.type,url:event.response.url,status:event.response.status,mime:event.response.mimeType,fromDiskCache:event.response.fromDiskCache,fromServiceWorker:event.response.fromServiceWorker,document:currentDocument&&event.frameId===currentDocument.frameId&&event.loaderId===currentDocument.loaderId?currentDocument:null});});
     observe('Network.loadingFinished',event=>{const font=requestFonts.get(event.requestId);if(font)task((async()=>{const body=await cdp.send('Network.getResponseBody',{requestId:event.requestId});assert.ok(font.type!=='Font'||body.base64Encoded,'Binary WOFF2 response body expected');const bytes=Buffer.from(body.body,body.base64Encoded?'base64':'utf8'),source=await readFile(path.join(root,'app',new URL(font.url).pathname));assert.equal(sha(bytes),sha(source),'Browser font bytes must match checkout');receipt.fonts.push({...font,bytes:bytes.length,encodedDataLength:event.encodedDataLength,sha256:sha(bytes)});})());});
-    observe('Network.loadingFailed',event=>{if(!event.canceled)receipt.errors.push({type:'network',error:event.errorText,blockedReason:event.blockedReason});});
+    observe('Network.loadingFailed',event=>{
+      if(!event.canceled){receipt.errors.push({type:'network',error:event.errorText,blockedReason:event.blockedReason});return;}
+      // The automatic root entry can replace itself with an authored route.
+      // Chrome cancels the old document's held font requests, invalidating
+      // their Fetch IDs. Retire only an exact Network cancellation match;
+      // arbitrary interception/transport errors still fail the evidence run.
+      for(const [requestId,networkId]of pausedNetworkIds)if(networkId&&networkId===event.requestId){
+        paused.delete(requestId);pausedNetworkIds.delete(requestId);
+        (receipt.cancelledFontRequests??=[]).push({requestId,networkId,error:event.errorText,document:currentDocument});
+      }
+    });
     observe('Runtime.exceptionThrown',event=>receipt.errors.push({type:'runtime',message:event.exceptionDetails.text,exception:event.exceptionDetails.exception?.description}));
-    observe('Fetch.requestPaused',event=>{if(holdFonts){paused.add(event.requestId);return;}task(cdp.send('Fetch.continueRequest',{requestId:event.requestId}));});
+    observe('Fetch.requestPaused',event=>{if(holdFonts){paused.add(event.requestId);pausedNetworkIds.set(event.requestId,event.networkId);return;}task(cdp.send('Fetch.continueRequest',{requestId:event.requestId}));});
   }
   async function installFontHold(){
     if(closed)throw Error('Evidence session is closed; refusing late font interception');
@@ -390,8 +400,7 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
   }
   async function releaseFontHold(){
     holdFonts=false;
-    for(const requestId of paused)await cdp.send('Fetch.continueRequest',{requestId});
-    paused.clear();
+    for(const requestId of paused){paused.delete(requestId);pausedNetworkIds.delete(requestId);await cdp.send('Fetch.continueRequest',{requestId});}
   }
   // Product navigation is refused until cold-font interception is installed,
   // and only the task-owned loopback origin is a product page.
@@ -406,7 +415,7 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     closed=true;
     if(!cdp)return {errors:failures};
     await cdp.send('Page.stopLoading').catch(error=>failures.push(error.message));
-    if(fetchEnabled){holdFonts=false;for(const requestId of paused)await cdp.send('Fetch.continueRequest',{requestId}).catch(error=>failures.push(error.message));await cdp.send('Fetch.disable').catch(error=>failures.push(error.message));}
+    if(fetchEnabled){holdFonts=false;for(const requestId of paused){paused.delete(requestId);pausedNetworkIds.delete(requestId);await cdp.send('Fetch.continueRequest',{requestId}).catch(error=>failures.push(error.message));}await cdp.send('Fetch.disable').catch(error=>failures.push(error.message));}
     // End observation before draining: a snapshot of a growing Set is insufficient.
     for(const unsubscribe of evidenceListeners)unsubscribe();
     receipt.observationClosedAt=new Date().toISOString();
