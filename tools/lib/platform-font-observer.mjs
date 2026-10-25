@@ -24,6 +24,9 @@ export async function until(operation,label,ms=30000,failures=[]){
 // separator. Keep that real parent record, then isolate every existing CJK text
 // run without inventing text or accepting Latin .notdef as CJK.
 const CJK_RUN=/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\u3000-\u303f\uff00-\uffef]+/gu;
+export function stockSans(value){
+  assert.ok(value.fonts.length&&value.fonts.every(font=>!font.isCustomFont&&font.glyphCount>0),value.label+' must render actual stock sans glyphs');
+}
 export function customNewsreader(value){
   assert.ok(value.fonts.some(font=>font.isCustomFont&&/Newsreader/i.test(font.postScriptName||font.familyName)&&font.glyphCount>0),value.label+' must render actual custom Newsreader glyphs');
 }
@@ -305,7 +308,8 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
   const background=new Set(),evidenceListeners=[],paused=new Set(),pausedNetworkIds=new Map();
   let fetchEnabled=false,holdFonts=false,fontHoldInstalledAt=null,pageLabel='home-cold',closed=false;
   let documentEpoch=0,currentDocument=null;
-  const requestFonts=new Map(),fontRequestDocuments=new Map();
+  const requestFonts=new Map(),fontRequestDocuments=new Map(),retiredDocuments=new Map();
+  const documentKey=font=>font.frameId&&font.loaderId?JSON.stringify([font.frameId,font.loaderId]):null;
   const observe=(method,handler)=>evidenceListeners.push(cdp.on(method,handler));
   function task(operation){const promise=Promise.resolve(operation).catch(error=>failures.push(error.message)).finally(()=>background.delete(promise));background.add(promise);}
   async function capture(name){
@@ -382,6 +386,7 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
       if(frame.parentId)return;
       const previous=currentDocument;currentDocument={epoch:++documentEpoch,frameId:frame.id,loaderId:frame.loaderId,url:frame.url};
       if(!previous?.loaderId||previous.frameId!==frame.id||previous.loaderId===frame.loaderId)return;
+      retiredDocuments.set(documentKey(previous),currentDocument);
       // A replaced document can lose a Fetch interception without a separate
       // loadingFailed event. Bind retirement to the request's wire frame and
       // loader IDs, not the mutable page label or an arbitrary protocol error.
@@ -392,8 +397,30 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     });
     observe('Network.requestWillBeSent',event=>{if(event.type==='Font')fontRequestDocuments.set(event.requestId,{frameId:event.frameId,loaderId:event.loaderId,url:event.request.url});});
     observe('CSS.fontsUpdated',({font})=>{if(!font||!/Newsreader/i.test(font.platformFontFamily||''))return;if((receipt.fontFaces?.length||0)>=32){failures.push('Bounded Newsreader face evidence exceeded');return;}(receipt.fontFaces??=[]).push({page:pageLabel,...font,observedDuringDocument:currentDocument});});
-    observe('Network.responseReceived',event=>{if(event.type==='Font'||event.type==='Stylesheet'&&/\/(?:fonts\/|typography\.css)/.test(new URL(event.response.url).pathname))requestFonts.set(event.requestId,{page:pageLabel,type:event.type,url:event.response.url,status:event.response.status,mime:event.response.mimeType,fromDiskCache:event.response.fromDiskCache,fromServiceWorker:event.response.fromServiceWorker,document:currentDocument&&event.frameId===currentDocument.frameId&&event.loaderId===currentDocument.loaderId?currentDocument:null});});
-    observe('Network.loadingFinished',event=>{const font=requestFonts.get(event.requestId);if(font)task((async()=>{const body=await cdp.send('Network.getResponseBody',{requestId:event.requestId});assert.ok(font.type!=='Font'||body.base64Encoded,'Binary WOFF2 response body expected');const bytes=Buffer.from(body.body,body.base64Encoded?'base64':'utf8'),source=await readFile(path.join(root,'app',new URL(font.url).pathname));assert.equal(sha(bytes),sha(source),'Browser font bytes must match checkout');receipt.fonts.push({...font,bytes:bytes.length,encodedDataLength:event.encodedDataLength,sha256:sha(bytes)});})());});
+    observe('Network.responseReceived',event=>{if(event.type==='Font'||event.type==='Stylesheet'&&/\/(?:fonts\/|typography\.css)/.test(new URL(event.response.url).pathname))requestFonts.set(event.requestId,{page:pageLabel,frameId:event.frameId,loaderId:event.loaderId,type:event.type,url:event.response.url,status:event.response.status,mime:event.response.mimeType,fromDiskCache:event.response.fromDiskCache,fromServiceWorker:event.response.fromServiceWorker,document:currentDocument&&event.frameId===currentDocument.frameId&&event.loaderId===currentDocument.loaderId?currentDocument:null});});
+    observe('Network.loadingFinished',event=>{
+      const font=requestFonts.get(event.requestId);if(!font)return;
+      requestFonts.delete(event.requestId);
+      task((async()=>{
+        let body;
+        try{body=await cdp.send('Network.getResponseBody',{requestId:event.requestId});}
+        catch(error){
+          // Only an observed main-document replacement explains an evicted old
+          // body. Never accept it as byte evidence or suppress an unavailable
+          // current/unknown response, a hash failure or another transport error.
+          const replacedBy=retiredDocuments.get(documentKey(font));
+          if(replacedBy&&/^Network\.getResponseBody:.*No resource with given identifier found/.test(error.message)){
+            (receipt.discardedFontResponses??=[]).push({...font,requestId:event.requestId,replacedBy,byteVerified:false,error:error.message});return;
+          }
+          (receipt.responseBodyFailures??=[]).push({...font,requestId:event.requestId,error:error.message});
+          throw Error(error.message+' ['+font.url+'; frame='+font.frameId+'; loader='+font.loaderId+']');
+        }
+        assert.ok(font.type!=='Font'||body.base64Encoded,'Binary WOFF2 response body expected');
+        const bytes=Buffer.from(body.body,body.base64Encoded?'base64':'utf8'),source=await readFile(path.join(root,'app',new URL(font.url).pathname));
+        assert.equal(sha(bytes),sha(source),'Browser font bytes must match checkout');
+        receipt.fonts.push({...font,bytes:bytes.length,encodedDataLength:event.encodedDataLength,sha256:sha(bytes)});
+      })());
+    });
     observe('Network.loadingFailed',event=>{
       if(!event.canceled){receipt.errors.push({type:'network',error:event.errorText,blockedReason:event.blockedReason});return;}
       // The automatic root entry can replace itself with an authored route.

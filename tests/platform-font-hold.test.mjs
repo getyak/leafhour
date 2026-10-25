@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createEvidenceSession} from '../tools/lib/platform-font-observer.mjs';
+import {createEvidenceSession,stockSans,customNewsreader} from '../tools/lib/platform-font-observer.mjs';
 
 function fixture(){
  const handlers=new Map(),continued=[],receipt={errors:[],fonts:[],screenshots:[],checks:[]};
@@ -63,4 +63,28 @@ test('owned navigation waits for in-flight byte evidence and never turns a faile
   if(failed)await assert.rejects(navigation,/font bytes unavailable/);else await navigation;
   await session.close();
  }
+});
+test('an evicted response body is discarded only for an explicitly replaced frame/loader, never claimed byte-verified',async()=>{
+ for(const mode of ['replaced','current','unknown-loader','other-frame','transport-error']){
+  const handlers=new Map(),receipt={errors:[],fonts:[],checks:[],screenshots:[]};let failBody;
+  const cdp={on:(name,fn)=>{handlers.set(name,fn);return ()=>handlers.delete(name);},send:async method=>method==='Network.getResponseBody'?new Promise((resolve,reject)=>{failBody=()=>reject(Error(mode==='transport-error'?'CDP disconnected':'Network.getResponseBody: No resource with given identifier found'));}):{},close:async()=>{}};
+  const session=createEvidenceSession({cdp,receipt,root:'/unused',origin:'http://localhost:1234'});session.observeResponses();await session.installFontHold();
+  handlers.get('Page.frameNavigated')({frame:{id:'main',loaderId:'root',url:'http://localhost:1234/'}});
+  handlers.get('Network.responseReceived')({requestId:'font',type:'Font',frameId:mode==='other-frame'?'other':'main',loaderId:mode==='unknown-loader'?'unknown':'root',response:{url:'http://localhost:1234/fonts/newsreader/newsreader-var.woff2',status:200}});
+  handlers.get('Network.loadingFinished')({requestId:'font'});
+  if(mode!=='current')handlers.get('Page.frameNavigated')({frame:{id:'main',loaderId:'authored',url:'http://localhost:1234/en'}});
+  failBody();await Promise.all([...session.background]);
+  assert.equal(receipt.fonts.length,0,'an unavailable body must never become byte-verified font evidence');
+  if(mode==='replaced'){assert.deepEqual(session.failures,[]);assert.equal(receipt.discardedFontResponses[0].loaderId,'root');assert.equal(receipt.discardedFontResponses[0].byteVerified,false);}
+  else {assert.ok(session.failures.some(message=>message.includes(mode==='transport-error'?'CDP disconnected':'No resource with given identifier found')),mode);assert.equal(receipt.responseBodyFailures[0].requestId,'font');}
+  await session.close();
+ }
+});
+
+test('stock shelf glyph checks and custom source checks cannot substitute for one another',()=>{
+ const stock={label:'actual shelf',fonts:[{isCustomFont:false,glyphCount:5,familyName:'Arial'}]};
+ const source={label:'actual source',fonts:[{isCustomFont:true,glyphCount:5,familyName:'Newsreader'}]};
+ assert.doesNotThrow(()=>stockSans(stock));assert.throws(()=>stockSans(source),/stock sans/);
+ assert.doesNotThrow(()=>customNewsreader(source));assert.throws(()=>customNewsreader(stock),/Newsreader/);
+ for(const value of [{label:'empty',fonts:[]},{label:'unused',fonts:[{isCustomFont:false,glyphCount:0}]}])assert.throws(()=>stockSans(value),/stock sans/);
 });
