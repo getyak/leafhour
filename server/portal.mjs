@@ -186,7 +186,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       res.setHeader('Set-Cookie',cookies);res.setHeader('Cache-Control','private, no-store');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Location',new URL(next,publicOrigin).href);res.statusCode=303;res.end();return true;
     }
     const token=cookieToken(req);
-    if(p==='/api/auth/logout'&&req.method==='POST'){await jsonBody(req,4096);await auth.logout(token);res.setHeader('Set-Cookie',`marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${publicOrigin?.startsWith('https:')?'; Secure':''}`);send(200,{signedOut:true});return true;}
+    if(p==='/api/auth/logout'&&req.method==='POST'){await jsonBody(req,4096);try{await auth.logout(token,{expectedOwner:req.headers['x-reader-owner']});}catch(error){if(error.readerSessionChanged)res.setHeader('X-Reader-Session-Changed','1');throw error;}res.setHeader('Set-Cookie',`marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${publicOrigin?.startsWith('https:')?'; Secure':''}`);send(200,{signedOut:true});return true;}
     const user=req.method==='GET'&&p.startsWith('/api/book-gifts/')?null:await auth.userFor(token);
     const ownerScoped=p.startsWith('/api/billing/')||p.startsWith('/api/admin/billing')||p.startsWith('/api/library')||p==='/api/account/preference-memory'||p==='/api/account/reading-preferences'||p==='/api/account/ui-preferences'||req.method==='POST'&&(p==='/api/account/profile'||/^\/api\/book-gifts\/[^/]+\/(?:accept|revoke)$/.test(p));
     if(ownerScoped&&req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==(user?.id||'guest')){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房。原账户草稿仍留在原处。',409);}

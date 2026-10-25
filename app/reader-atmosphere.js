@@ -8,6 +8,7 @@ import {t,uiReady,bindUi,onUiLocaleChange} from './ui-locale.mjs';
 await uiReady;
 
 const SCENE_UI='reader.atmosphere.',READER_SHELL='reader.shell.';
+const imageLabel=state=>t(SCENE_UI+(state==='error'?'imageError':'imageLoading'));
 let atmosphereDisposed=false,pageGeneration=0;
 const listenerDisposers=[];
 function listen(target,event,handler,options){const owned=e=>{if(!atmosphereDisposed)return handler(e);};target.addEventListener(event,owned,options);listenerDisposers.push(()=>target.removeEventListener(event,owned,options));}
@@ -47,12 +48,21 @@ const hearthLayers=[...document.querySelectorAll('.atmosphere-backdrop,.atmosphe
   preview:host.classList.contains('atmosphere-preview'),motion:createHearthMotion(host.querySelector('.atmosphere-elements')),nature:createNatureMotion(host.querySelector('.atmosphere-elements')),
 }));
 const session=createAtmosphereSession({start:scene=>engine.start(scene,()=>atmosphereMix(prefs,{narrating})),onState:()=>renderPlayback()});
+function sceneNode(tag,className){const node=document.createElement(tag);node.className=className;return node;}
 for(const scene of atmospheres){
-  const button=document.createElement('button');button.className='atmosphere-choice';button.dataset.scene=scene.id;button.setAttribute('aria-pressed','false');
-  const image=document.createElement('img');image.src=scene.image;image.alt='';image.loading='lazy';image.decoding='async';image.width=220;image.height=90;
-  const label=document.createElement('span');label.className='atmosphere-choice-name';label.dataset.ui=SCENE_UI+''+scene.id+'.name';label.textContent=t(label.dataset.ui);
-  const check=document.createElement('span');check.className='atmosphere-choice-check';check.textContent='✓';check.setAttribute('aria-hidden','true');
-  button.append(image,label,check);listen(button,'click',()=>choose(scene.id));dialog.querySelector('.atmosphere-choices').append(button);
+  const button=sceneNode('button','atmosphere-choice');button.dataset.scene=scene.id;button.setAttribute('aria-pressed','false');
+  const image=sceneNode('img','');image.alt='';image.loading='lazy';
+  const artwork=sceneNode('span','atmosphere-artwork');
+  const imageStatus=sceneNode('span','atmosphere-image-status');
+  const retry=sceneNode('button','atmosphere-image-retry');retry.type='button';retry.dataset.ui=SCENE_UI+'imageRetry';
+  const imageState=state=>{button.dataset.imageState=state;imageStatus.textContent=imageLabel(state);imageStatus.hidden=state==='ready';retry.hidden=state!=='error';};
+  imageState('loading');listen(image,'load',()=>imageState(image.naturalWidth?'ready':'error'));listen(image,'error',()=>imageState('error'));
+  listen(retry,'click',()=>{imageState('loading');retry.hidden=true;image.src=scene.image+'?retry='+Date.now();button.focus({preventScroll:true});});
+  image.src=scene.image;artwork.append(image,imageStatus);
+  const label=sceneNode('span','atmosphere-choice-name');label.dataset.ui=SCENE_UI+''+scene.id+'.name';label.textContent=t(label.dataset.ui);
+  const check=sceneNode('span','atmosphere-choice-check');check.textContent='✓';check.setAttribute('aria-hidden','true');
+  button.append(artwork,label,check);listen(button,'click',()=>choose(scene.id));
+  const choice=sceneNode('div','atmosphere-choice-group');choice.append(button,retry);dialog.querySelector('.atmosphere-choices').append(choice);
 }
 function save(){try{localStorage.setItem(key,JSON.stringify(prefs));}catch{notice=SCENE_UI+'storageError';}}
 function renderMotion(){
@@ -93,15 +103,17 @@ function render(){
 }
 function renderPlayback(){if(atmosphereDisposed)return;
   const playing=session.status==='playing',loading=session.status==='loading',hasScene=prefs.scene!=='none',silent=!prefs.music&&!prefs.nature;
+  dialog.querySelector('.atmosphere-sound').hidden=!hasScene;$('atmosphere-play').hidden=!hasScene;
   dialog.dataset.playback=session.status;dialog.dataset.narrating=String(narrating);
   $('atmosphere-play').disabled=!hasScene;$('atmosphere-play').setAttribute('aria-pressed',String(playing||loading));
   $('atmosphere-play').firstElementChild.textContent=playing||loading?'Ⅱ':'▷';
   playback={playing,loading,hasScene,silent,status:session.status,narrating,notice};playbackLabels();
   $('atmosphere-quick-pause').hidden=!playing&&!loading;$('open-atmosphere').dataset.playing=String(playing&&!silent);
   const quick=$('settings-atmosphere-toggle');
-  if(quick){quick.disabled=!hasScene;quick.setAttribute('aria-pressed',String(playing||loading));}
+  if(quick){quick.hidden=!hasScene;quick.disabled=!hasScene;quick.setAttribute('aria-pressed',String(playing||loading));}
 }
 function sceneLabels(){
+  for(const choice of dialog.querySelectorAll('.atmosphere-choice'))if(choice.dataset.imageState!=='ready')choice.querySelector('.atmosphere-image-status').textContent=imageLabel(choice.dataset.imageState);
   const hasScene=cachedScene!=='none',name=t(hasScene?SCENE_UI+''+cachedScene+'.name':SCENE_UI+'none');
   $('atmosphere-preview-name').textContent=name;
   $('atmosphere-preview-caption').textContent=t(hasScene?SCENE_UI+''+cachedScene+'.caption':SCENE_UI+'noneCaption');
@@ -115,8 +127,9 @@ function playbackLabels(){
   const {playing,loading,hasScene,silent,status,narrating,notice}=playback;
   $('atmosphere-play-label').textContent=t(!hasScene?SCENE_UI+'choose':loading?SCENE_UI+'cancel':playing?SCENE_UI+'pause':status==='error'?SCENE_UI+'retry':SCENE_UI+'start');
   $('atmosphere-status').textContent=t(notice||(status==='blocked'?SCENE_UI+'waitingGesture':status==='error'?SCENE_UI+'error':loading?SCENE_UI+'loading':playing?(silent?SCENE_UI+'silent':narrating?SCENE_UI+'ducked':SCENE_UI+'playing'):hasScene?SCENE_UI+'paused':SCENE_UI+'pick'));
+  $('atmosphere-status').hidden=!hasScene&&!notice;
   if($('settings-atmosphere-toggle'))$('settings-atmosphere-toggle').textContent=t(loading?SCENE_UI+'cancel':playing?SCENE_UI+'pauseShort':READER_SHELL+'play');
-  if($('settings-atmosphere-status'))$('settings-atmosphere-status').textContent=$('atmosphere-status').textContent;
+  if($('settings-atmosphere-status')){ $('settings-atmosphere-status').hidden=$('atmosphere-status').hidden;$('settings-atmosphere-status').textContent=$('atmosphere-status').textContent;}
 }
 function choose(id){
   const anchor=window.marginaliaReader?.getAnchor();notice='';prefs={...prefs,scene:id,playing:id!=='none'};save();render();

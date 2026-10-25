@@ -1,0 +1,268 @@
+TAP version 13
+# Subtest: atmospheres validate saved playback intent alongside scene and levels
+ok 1 - atmospheres validate saved playback intent alongside scene and levels
+  ---
+  duration_ms: 0.727792
+  type: 'test'
+  ...
+# Subtest: narration ducks both channels without changing saved volume, zero stays silent
+ok 2 - narration ducks both channels without changing saved volume, zero stays silent
+  ---
+  duration_ms: 0.168167
+  type: 'test'
+  ...
+# Subtest: late resource arrival after pause is disposed and cannot resume sound
+ok 3 - late resource arrival after pause is disposed and cannot resume sound
+  ---
+  duration_ms: 0.131708
+  type: 'test'
+  ...
+# Subtest: a rapid scene change retains only the last playback, stale failure cannot replace it
+ok 4 - a rapid scene change retains only the last playback, stale failure cannot replace it
+  ---
+  duration_ms: 0.137458
+  type: 'test'
+  ...
+# Subtest: current playback failure is visible and can be retried
+ok 5 - current playback failure is visible and can be retried
+  ---
+  duration_ms: 0.118
+  type: 'test'
+  ...
+# Subtest: volume or narration changes made while recordings load reach the accepted playback
+ok 6 - volume or narration changes made while recordings load reach the accepted playback
+  ---
+  duration_ms: 0.071791
+  type: 'test'
+  ...
+# Subtest: selecting a scene starts its matching sound immediately, including after an explicit pause
+ok 7 - selecting a scene starts its matching sound immediately, including after an explicit pause
+  ---
+  duration_ms: 3.049792
+  type: 'test'
+  ...
+# Subtest: restoring a scene stays silent and selecting another scene respects an individually muted channel
+ok 8 - restoring a scene stays silent and selecting another scene respects an individually muted channel
+  ---
+  duration_ms: 1.279833
+  type: 'test'
+  ...
+# Subtest: settings and scene controls share volume, motion and manual playback without restarting sound
+ok 9 - settings and scene controls share volume, motion and manual playback without restarting sound
+  ---
+  duration_ms: 1.050416
+  type: 'test'
+  ...
+# Subtest: quick pause cancels a scene selected while its recording is still loading
+ok 10 - quick pause cancels a scene selected while its recording is still loading
+  ---
+  duration_ms: 0.846083
+  type: 'test'
+  ...
+# Subtest: switching tabs pauses visual motion but keeps the selected sound playing without restarting it
+ok 11 - switching tabs pauses visual motion but keeps the selected sound playing without restarting it
+  ---
+  duration_ms: 0.884709
+  type: 'test'
+  ...
+# Subtest: a background load may finish playing; an explicit pause stays paused on return and leaving the document stops it
+ok 12 - a background load may finish playing; an explicit pause stays paused on return and leaving the document stops it
+  ---
+  duration_ms: 1.71825
+  type: 'test'
+  ...
+# Subtest: the hearth controller starts only visible layers and stops them for motion preferences, other scenes and page exit
+ok 13 - the hearth controller starts only visible layers and stops them for motion preferences, other scenes and page exit
+  ---
+  duration_ms: 0.913708
+  type: 'test'
+  ...
+# Subtest: forest light and sea water follow scene, visibility and motion preferences without ever starting sound
+ok 14 - forest light and sea water follow scene, visibility and motion preferences without ever starting sound
+  ---
+  duration_ms: 0.96575
+  type: 'test'
+  ...
+# Subtest: saved sound resumes on entry and page exit retains intent until an explicit pause
+ok 15 - saved sound resumes on entry and page exit retains intent until an explicit pause
+  ---
+  duration_ms: 0.842458
+  type: 'test'
+  ...
+# Subtest: autoplay denial is waiting for a gesture rather than reported as playing or a network failure
+ok 16 - autoplay denial is waiting for a gesture rather than reported as playing or a network failure
+  ---
+  duration_ms: 0.079042
+  type: 'test'
+  ...
+# Subtest: a trusted pointerdown on the start control does not turn its following click into a pause
+ok 17 - a trusted pointerdown on the start control does not turn its following click into a pause
+  ---
+  duration_ms: 0.88
+  type: 'test'
+  ...
+# Subtest: bfcache playback waits for same-account confirmation and rejects a changed account
+ok 18 - bfcache playback waits for same-account confirmation and rejects a changed account
+  ---
+  duration_ms: 0.949875
+  type: 'test'
+  ...
+# Subtest: a late same-account confirmation does not restart a manually selected scene
+ok 19 - a late same-account confirmation does not restart a manually selected scene
+  ---
+  duration_ms: 0.892333
+  type: 'test'
+  ...
+# Subtest: reader account confirms explicitly and cancels without logout in en
+ok 20 - reader account confirms explicitly and cancels without logout in en
+  ---
+  duration_ms: 13.169167
+  type: 'test'
+  ...
+# Subtest: reader account confirms explicitly and cancels without logout in zh-Hans
+ok 21 - reader account confirms explicitly and cancels without logout in zh-Hans
+  ---
+  duration_ms: 6.309166
+  type: 'test'
+  ...
+# Subtest: reader account confirms explicitly and cancels without logout in zh-Hant
+ok 22 - reader account confirms explicitly and cancels without logout in zh-Hant
+  ---
+  duration_ms: 5.341125
+  type: 'test'
+  ...
+# Subtest: reader account confirms explicitly and cancels without logout in ja
+ok 23 - reader account confirms explicitly and cancels without logout in ja
+  ---
+  duration_ms: 4.695083
+  type: 'test'
+  ...
+# Subtest: anonymous reader has a current return link and no logout action
+ok 24 - anonymous reader has a current return link and no logout action
+  ---
+  duration_ms: 0.149792
+  type: 'test'
+  ...
+# Subtest: failed logout preserves the reader and allows an explicit retry
+ok 25 - failed logout preserves the reader and allows an explicit retry
+  ---
+  duration_ms: 0.625333
+  type: 'test'
+  ...
+# Subtest: unmount withdraws pending logout UI, locale subscriptions and late navigation
+ok 26 - unmount withdraws pending logout UI, locale subscriptions and late navigation
+  ---
+  duration_ms: 0.706917
+  type: 'test'
+  ...
+# Subtest: account Tab order stays inside visible actions and does not consume browser shortcuts
+ok 27 - account Tab order stays inside visible actions and does not consume browser shortcuts
+  ---
+  duration_ms: 0.30925
+  type: 'test'
+  ...
+# Subtest: Just the page has no inactive sound form or prompt, but retains a real storage error
+ok 28 - Just the page has no inactive sound form or prompt, but retains a real storage error
+  ---
+  duration_ms: 12.248833
+  type: 'test'
+  ...
+# Subtest: chapter mark buttons expose their actual read state in en
+ok 29 - chapter mark buttons expose their actual read state in en
+  ---
+  duration_ms: 0.917458
+  type: 'test'
+  ...
+# Subtest: chapter mark buttons expose their actual read state in zh-Hans
+ok 30 - chapter mark buttons expose their actual read state in zh-Hans
+  ---
+  duration_ms: 4.466333
+  type: 'test'
+  ...
+# Subtest: chapter mark buttons expose their actual read state in zh-Hant
+ok 31 - chapter mark buttons expose their actual read state in zh-Hant
+  ---
+  duration_ms: 3.723084
+  type: 'test'
+  ...
+# Subtest: chapter mark buttons expose their actual read state in ja
+ok 32 - chapter mark buttons expose their actual read state in ja
+  ---
+  duration_ms: 4.627
+  type: 'test'
+  ...
+# Subtest: Thought hides generated section identifiers while keeping real source pages and prose
+ok 33 - Thought hides generated section identifiers while keeping real source pages and prose
+  ---
+  duration_ms: 0.366292
+  type: 'test'
+  ...
+# Subtest: a late account import cannot replace newer popover intent
+ok 34 - a late account import cannot replace newer popover intent
+  ---
+  duration_ms: 9.557834
+  type: 'test'
+  ...
+# Subtest: a late account import cannot replace newer focus intent
+ok 35 - a late account import cannot replace newer focus intent
+  ---
+  duration_ms: 6.135916
+  type: 'test'
+  ...
+# Subtest: a late account import cannot replace newer inert intent
+ok 36 - a late account import cannot replace newer inert intent
+  ---
+  duration_ms: 5.071958
+  type: 'test'
+  ...
+# Subtest: hosted owner-checked logout remains local when provider verification is unavailable
+ok 37 - hosted owner-checked logout remains local when provider verification is unavailable
+  ---
+  duration_ms: 9.16175
+  type: 'test'
+  ...
+# Subtest: chapter marking returns keyboard focus to its changed action
+ok 38 - chapter marking returns keyboard focus to its changed action
+  ---
+  duration_ms: 2.280208
+  type: 'test'
+  ...
+# Subtest: chapter marking respects newer focus
+ok 39 - chapter marking respects newer focus
+  ---
+  duration_ms: 2.232583
+  type: 'test'
+  ...
+# Subtest: session disposal releases mark focus ownership while its transport is still pending
+ok 40 - session disposal releases mark focus ownership while its transport is still pending
+  ---
+  duration_ms: 3.9
+  type: 'test'
+  ...
+# Subtest: existing chapter navigation updates one header location in both reading modes
+ok 41 - existing chapter navigation updates one header location in both reading modes
+  ---
+  duration_ms: 10.158084
+  type: 'test'
+  ...
+# Subtest: reader account entry identifies its owned overlay for the existing tools coordinator
+ok 42 - reader account entry identifies its owned overlay for the existing tools coordinator
+  ---
+  duration_ms: 3.033209
+  type: 'test'
+  ...
+# Subtest: actual atmosphere artwork exposes loading, error and a separate image retry without choosing a scene
+ok 43 - actual atmosphere artwork exposes loading, error and a separate image retry without choosing a scene
+  ---
+  duration_ms: 2.328083
+  type: 'test'
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 161.310958

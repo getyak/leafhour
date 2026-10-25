@@ -38,6 +38,7 @@ export const UI_LOCALE_OWNERS=Object.freeze([
  'app/portal.js',
  'app/pricing-checkout.mjs',
  'app/reader-atmosphere.js',
+ 'app/reader-account.mjs',
  'app/reader-audio.js',
  'app/reader-audio-bootstrap.mjs',
  'app/reader-book-actions-bootstrap.mjs',
@@ -365,6 +366,7 @@ export async function buildReaderWeb({root,outputDir,html}){
  // open from the statically bundled reader-book-actions-bootstrap.mjs. The
  // prior six exceptions are unchanged.
  const lazyModules={
+  'reader-account.mjs':{kind:'dynamic-import',importer:'reader.js'},
   // Pure canvas layout waits for Share, preserving the fixed reader budget.
   'share-model.mjs':{kind:'dynamic-import',importer:'share.js'},
   'original-download.mjs':{kind:'dynamic-import',importer:'reader-translation.js'},
@@ -388,7 +390,7 @@ export async function buildReaderWeb({root,outputDir,html}){
  // dynamic-import kind only, backed by the same app/command-palette.mjs release
  // entry. No other query, importer or import kind is resolvable; those stay
  // rejected by policy instead of widening the fence.
- const paletteRetry='./command-palette.mjs?retry=1';
+ const paletteRetry='./command-palette.mjs?retry=1',accountRetry='./reader-account.mjs?retry=1';
  const publicModules={name:'public-reader-modules',setup(b){
   b.onResolve({filter:/.*/},args=>{
    const relative=path.relative(root,args.importer).replaceAll('\\','/'),target=targetFileOf(relative,args.path);
@@ -434,9 +436,9 @@ export async function buildReaderWeb({root,outputDir,html}){
    if(!candidates.some(file=>file&&file.startsWith('app/ui-catalogs/')))return undefined;
    throw Error('Non-public ui-catalogue bundle edge: '+args.path);
   });
-  b.onResolve({filter:/^\.\/(?:atmosphere-audio|original-download|credit-client|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|command-palette)\.mjs(?:\?.*)?$/},args=>{
+  b.onResolve({filter:/^\.\/(?:reader-account|atmosphere-audio|original-download|credit-client|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|command-palette)\.mjs(?:\?.*)?$/},args=>{
   const at=args.path.indexOf('?'),query=at<0?'':args.path.slice(at);
-  if(query&&args.path!==paletteRetry)throw Error('Non-public lazy reader module: '+args.path);
+  if(query&&args.path!==paletteRetry&&args.path!==accountRetry)throw Error('Non-public lazy reader module: '+args.path);
   const entry=lazyModules[args.path.slice(2,query?at:undefined)];
   if(entry&&args.kind===entry.kind&&path.resolve(args.importer)===path.join(root,'app',entry.importer)){
    const file='app/'+args.path.slice(2,query?at:undefined);if(!allowed.has(file))throw Error('Non-public lazy reader module: '+file);

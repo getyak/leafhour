@@ -1,0 +1,78 @@
+TAP version 13
+# Subtest: reader account confirms explicitly and cancels without logout in en
+ok 1 - reader account confirms explicitly and cancels without logout in en
+  ---
+  duration_ms: 12.9015
+  type: 'test'
+  ...
+# Subtest: reader account confirms explicitly and cancels without logout in zh-Hans
+ok 2 - reader account confirms explicitly and cancels without logout in zh-Hans
+  ---
+  duration_ms: 5.811333
+  type: 'test'
+  ...
+# Subtest: reader account confirms explicitly and cancels without logout in zh-Hant
+ok 3 - reader account confirms explicitly and cancels without logout in zh-Hant
+  ---
+  duration_ms: 4.716959
+  type: 'test'
+  ...
+# Subtest: reader account confirms explicitly and cancels without logout in ja
+ok 4 - reader account confirms explicitly and cancels without logout in ja
+  ---
+  duration_ms: 4.19775
+  type: 'test'
+  ...
+# Subtest: anonymous reader has a current return link and no logout action
+ok 5 - anonymous reader has a current return link and no logout action
+  ---
+  duration_ms: 0.136417
+  type: 'test'
+  ...
+# Subtest: failed logout preserves the reader and allows an explicit retry
+ok 6 - failed logout preserves the reader and allows an explicit retry
+  ---
+  duration_ms: 0.55625
+  type: 'test'
+  ...
+# Subtest: unmount withdraws pending logout UI, locale subscriptions and late navigation
+ok 7 - unmount withdraws pending logout UI, locale subscriptions and late navigation
+  ---
+  duration_ms: 0.569208
+  type: 'test'
+  ...
+# Subtest: account Tab order stays inside visible actions and does not consume browser shortcuts
+not ok 8 - account Tab order stays inside visible actions and does not consume browser shortcuts
+  ---
+  duration_ms: 0.476833
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-231/tests/reader-account.test.mjs:31:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    false !== true
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-231/tests/reader-account.test.mjs:34:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 77.810333

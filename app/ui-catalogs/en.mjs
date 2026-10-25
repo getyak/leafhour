@@ -2,6 +2,11 @@
 // data, also the safe default for server/static English shells. Complete
 // default data: every other catalogue carries the same keys.
 export default Object.freeze({
+  "reader.b1.sourcePrintedPage": "Printed page {page}",
+  "reader.b1.sourcePdfPage": "PDF page {page}",
+  "reader.atmosphere.imageLoading": "Loading image…",
+  "reader.atmosphere.imageError": "Image unavailable",
+  "reader.atmosphere.imageRetry": "Reload image",
   "chat.importBook": "Import a book",
   "chat.answer.collapse": "Collapse answer",
   "chat.answer.expand": "Show full answer",

@@ -13,6 +13,8 @@
 .flow-chapter-end{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:52px;margin-top:32px;border-top:1px solid var(--line-hairline);font:12px/1.8 var(--interface);color:var(--muted)}
 .flow-chapter-end button{min-height:44px;min-width:44px;color:var(--muted);padding:8px 0;font-size:12px}
 .flow-chapter-end button:hover{color:var(--accent)}
+.flow-chapter-end [data-mark-chapter],#mark-chapter-read{display:inline-flex;align-items:center;justify-content:center;gap:8px;color:var(--ink);background:var(--panel);border:1px solid var(--line-control);border-radius:6px;padding:10px 14px;line-height:1.6}
+[data-mark-chapter][aria-pressed=true]::before,#mark-chapter-read[aria-pressed=true]::before{content:'✓';font-size:14px}
 body[data-continuous=false] .flow-chapter-end{display:none}
 .flow-chapter .reading-divider{margin:3px 0!important;min-height:0}
 .flow-chapter .reading-divider p{font:12px/1.4 var(--english)!important;letter-spacing:.15em!important;color:var(--muted);text-align:center;text-indent:0!important;margin:0}

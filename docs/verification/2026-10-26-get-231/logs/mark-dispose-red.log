@@ -1,0 +1,126 @@
+TAP version 13
+# Subtest: Just the page has no inactive sound form or prompt, but retains a real storage error
+ok 1 - Just the page has no inactive sound form or prompt, but retains a real storage error
+  ---
+  duration_ms: 22.251125
+  type: 'test'
+  ...
+# Subtest: chapter mark buttons expose their actual read state in en
+ok 2 - chapter mark buttons expose their actual read state in en
+  ---
+  duration_ms: 2.220042
+  type: 'test'
+  ...
+# Subtest: chapter mark buttons expose their actual read state in zh-Hans
+ok 3 - chapter mark buttons expose their actual read state in zh-Hans
+  ---
+  duration_ms: 8.438167
+  type: 'test'
+  ...
+# Subtest: chapter mark buttons expose their actual read state in zh-Hant
+ok 4 - chapter mark buttons expose their actual read state in zh-Hant
+  ---
+  duration_ms: 5.30125
+  type: 'test'
+  ...
+# Subtest: chapter mark buttons expose their actual read state in ja
+ok 5 - chapter mark buttons expose their actual read state in ja
+  ---
+  duration_ms: 7.346209
+  type: 'test'
+  ...
+# Subtest: Thought hides generated section identifiers while keeping real source pages and prose
+ok 6 - Thought hides generated section identifiers while keeping real source pages and prose
+  ---
+  duration_ms: 0.832666
+  type: 'test'
+  ...
+# Subtest: a late account import cannot replace newer popover intent
+ok 7 - a late account import cannot replace newer popover intent
+  ---
+  duration_ms: 16.9215
+  type: 'test'
+  ...
+# Subtest: a late account import cannot replace newer focus intent
+ok 8 - a late account import cannot replace newer focus intent
+  ---
+  duration_ms: 15.017125
+  type: 'test'
+  ...
+# Subtest: a late account import cannot replace newer inert intent
+ok 9 - a late account import cannot replace newer inert intent
+  ---
+  duration_ms: 11.865916
+  type: 'test'
+  ...
+# Subtest: hosted owner-checked logout remains local when provider verification is unavailable
+ok 10 - hosted owner-checked logout remains local when provider verification is unavailable
+  ---
+  duration_ms: 12.85
+  type: 'test'
+  ...
+# Subtest: chapter marking returns keyboard focus to its changed action
+ok 11 - chapter marking returns keyboard focus to its changed action
+  ---
+  duration_ms: 2.590625
+  type: 'test'
+  ...
+# Subtest: chapter marking respects newer focus
+ok 12 - chapter marking respects newer focus
+  ---
+  duration_ms: 2.136167
+  type: 'test'
+  ...
+# Subtest: session disposal releases mark focus ownership while its transport is still pending
+not ok 13 - session disposal releases mark focus ownership while its transport is still pending
+  ---
+  duration_ms: 5.259792
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-231/tests/reader-cleanup.test.mjs:99:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    unmount must not wait for the network
+
+    1 !== 0
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-231/tests/reader-cleanup.test.mjs:104:94)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: existing chapter navigation updates one header location in both reading modes
+ok 14 - existing chapter navigation updates one header location in both reading modes
+  ---
+  duration_ms: 17.934542
+  type: 'test'
+  ...
+# Subtest: reader account entry identifies its owned overlay for the existing tools coordinator
+ok 15 - reader account entry identifies its owned overlay for the existing tools coordinator
+  ---
+  duration_ms: 2.833625
+  type: 'test'
+  ...
+# Subtest: actual atmosphere artwork exposes loading, error and a separate image retry without choosing a scene
+ok 16 - actual atmosphere artwork exposes loading, error and a separate image retry without choosing a scene
+  ---
+  duration_ms: 5.000291
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 15
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 255.124792
