@@ -161,12 +161,9 @@ export function validateEffectiveChromeCommandLine(text){
 export function resolveLanguageEntrance({viewportWidth,locale}){
   if(!Number.isFinite(viewportWidth)||viewportWidth<=0)throw Error('Actual CSS viewport width is required');
   if(typeof locale!=='string'||!/^[A-Za-z][A-Za-z-]{0,19}$/.test(locale))throw Error('Actual authored locale is required');
-  // Desktop navigation is hidden at <=700px (app/portal.css); the mobile
-  // entrance is the hero-copy language switch. Never relabel desktop
-  // navigation as the mobile entrance or vice versa.
-  return viewportWidth<=700
-    ?`.hero-copy .home-language-switch a[hreflang="${locale}"]`
-    :`.home-navigation a[hreflang="${locale}"]`;
+  // The current product puts language links in the same native dialog at
+  // every width. The caller must open it through the real menu control.
+  return `#home-menu-languages a[hreflang="${locale}"]`;
 }
 // Each product route binds its own current CSS viewport; the internal version
 // page viewport is never reused for product decisions.

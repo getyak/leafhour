@@ -420,11 +420,17 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
   }
   // Product navigation is refused until cold-font interception is installed,
   // and only the task-owned loopback origin is a product page.
-  async function navigateProduct(url){
+  async function navigateProduct(url,{page:nextPage}={}){
     if(closed)throw Error('Evidence session is closed; refusing late product navigation');
     if(!fontHoldInstalledAt)throw Error('Cold-font interception must be installed before any product navigation');
-    if(origin&&typeof url==='string'&&url.startsWith(origin))await cdp.send('Page.navigate',{url});
-    else throw Error('Product navigation must stay on the owned origin: '+String(url));
+    if(!origin||typeof url!=='string'||!url.startsWith(origin))throw Error('Product navigation must stay on the owned origin: '+String(url));
+    // Navigation invalidates response-body IDs. Finish byte verification of
+    // the accepted document before leaving it; a failed read remains failed.
+    while(background.size)await Promise.all([...background]);
+    if(failures.length)throw Error('Evidence task failed: '+failures.join('; '));
+    if(closed)throw Error('Evidence session is closed; refusing late product navigation');
+    if(nextPage)pageLabel=nextPage;
+    await cdp.send('Page.navigate',{url});
   }
   async function close({beforeDisconnect}={}){
     if(closed)return {errors:failures};

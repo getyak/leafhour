@@ -339,10 +339,10 @@ test('native readiness requires stock Chrome foreground and a valid observed hie
   assert.match(launcher.reason||'',/Chrome/i);
 });
 
-test('language entrance and original-title probes follow the actual CSS width',()=>{
-  assert.equal(resolveLanguageEntrance({viewportWidth:392,locale:'zh-Hans'}),'.hero-copy .home-language-switch a[hreflang="zh-Hans"]');
-  assert.equal(resolveLanguageEntrance({viewportWidth:360,locale:'ja'}),'.hero-copy .home-language-switch a[hreflang="ja"]');
-  assert.equal(resolveLanguageEntrance({viewportWidth:1200,locale:'zh-Hant'}),'.home-navigation a[hreflang="zh-Hant"]');
+test('language entrances use the current shared menu while original-title probes follow actual CSS width',()=>{
+  assert.equal(resolveLanguageEntrance({viewportWidth:392,locale:'zh-Hans'}),'#home-menu-languages a[hreflang="zh-Hans"]');
+  assert.equal(resolveLanguageEntrance({viewportWidth:360,locale:'ja'}),'#home-menu-languages a[hreflang="ja"]');
+  assert.equal(resolveLanguageEntrance({viewportWidth:1200,locale:'zh-Hant'}),'#home-menu-languages a[hreflang="zh-Hant"]');
   assert.throws(()=>resolveLanguageEntrance({viewportWidth:0,locale:'ja'}),/width/i);
   assert.throws(()=>resolveLanguageEntrance({viewportWidth:392,locale:'ja" onload="x'}),/locale/i);
   const title='Alice’s Adventures in Wonderland';

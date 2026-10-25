@@ -53,3 +53,14 @@ test('a replaced main-document loader retires its held fonts even when Chrome om
  f.event('Fetch.requestPaused',{requestId:'live-font',networkId:'new-net',frameId:'main'});
  await f.session.releaseFontHold();assert.deepEqual(f.continued,['live-font']);assert.equal(f.receipt.replacedDocumentFontRequests[0].loaderId,'root');await f.session.close();
 });
+test('owned navigation waits for in-flight byte evidence and never turns a failed read into a pass',async()=>{
+ for(const failed of [false,true]){
+  let finish;const sends=[],receipt={errors:[],fonts:[],checks:[],screenshots:[]};
+  const session=createEvidenceSession({cdp:{send:async(method,args)=>{sends.push({method,args});return {};},on:()=>()=>{},close:async()=>{}},receipt,origin:'http://localhost:1234'});
+  await session.installFontHold();session.task(new Promise((resolve,reject)=>{finish=()=>failed?reject(Error('font bytes unavailable')):resolve();}));
+  const navigation=session.navigateProduct('http://localhost:1234/zh-hans');navigation.catch(()=>{});await new Promise(setImmediate);
+  assert.ok(!sends.some(c=>c.method==='Page.navigate'),'navigation must wait for the real outstanding response-body read');finish();
+  if(failed)await assert.rejects(navigation,/font bytes unavailable/);else await navigation;
+  await session.close();
+ }
+});

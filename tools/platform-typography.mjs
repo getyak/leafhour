@@ -218,18 +218,17 @@ try{
   await cdp.evaluate('document.fonts.ready.then(()=>true)');await session.capture('home-loaded');customNewsreader(await session.fonts('#home-view .sample-original','loaded source quotation'));
   const headline=await session.fonts('.hero-copy h1 .hero-line','current stock-sans headline');assert.ok(headline.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Current headline must render its actual stock sans glyphs');
   for(const [route,locale] of [['/zh-hans','zh-Hans'],['/zh-hant','zh-Hant'],['/ja','ja']]){
-    session.setPageLabel('home-'+locale);
-    await cdp.send('Page.navigate',{url:origin+route});
-    await session.until(()=>cdp.evaluate(`location.pathname===${JSON.stringify(route)}&&document.readyState==='complete'&&document.documentElement.lang===${JSON.stringify(locale)}&&!!document.querySelector('#how .section-copy h2')`),'authored '+locale+' home');
+    await session.navigateProduct(origin+route,{page:'home-'+locale});
+    await session.until(()=>cdp.evaluate(`location.pathname===${JSON.stringify(route)}&&document.readyState==='complete'&&document.documentElement.lang===${JSON.stringify(locale)}&&document.querySelector('#home-menu-trigger')?.getAttribute('lang')===${JSON.stringify(locale)}&&!!document.querySelector('#how .section-copy h2')`),'authored '+locale+' home and initialized navigation');
     if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'home-'+locale,read:()=>session.viewport('home-'+locale)});
     const entrance=resolveLanguageEntrance({viewportWidth:viewport.width,locale});
     if(args.mode==='android')assert.ok(await cdp.evaluate(`[...document.querySelectorAll('.home-navigation .home-nav')].every(node=>!node.getClientRects().length)`),'Desktop navigation must stay hidden at the actual mobile width');
-    await session.cjkGlyphs(entrance,'actual '+locale+' language entrance');
     await session.cjkGlyphs('#how .section-copy h2','actual '+locale+' stock-sans heading CJK fallback');
-    receipt.cjkNeedsHumanReview=true;await session.capture('home-'+locale+'-cjk-loaded');
+    (receipt.languageMenuInteractions??=[]).push(await exercisePopoverKeyboard({cdp,trigger:'#home-menu-trigger',panel:'#home-menu',guard:()=>lifecycle.guard('owned language-menu input'),afterOpened:()=>session.cjkGlyphs(entrance,'actual '+locale+' language entrance'),capture:()=>session.capture('home-'+locale+'-cjk-loaded')}));
+    receipt.cjkNeedsHumanReview=true;
   }
   lifecycle.guard('library evidence');
-  session.setPageLabel('library');await cdp.send('Page.navigate',{url:origin+'/library'});
+  await session.navigateProduct(origin+'/library',{page:'library'});
   await session.until(()=>cdp.evaluate(`location.pathname==='/library'&&document.readyState==='complete'&&!!document.querySelector('#library-books .binding-original')`),'actual public shelf');await cdp.evaluate('document.fonts.ready.then(()=>true)');
   if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'library',read:()=>session.viewport('library')});
   let originalSelector='#library-books .binding-original';
@@ -281,7 +280,7 @@ try{
   const sourcePassage=sourceBook.sections.flatMap(section=>section.paragraphs).find(p=>p.original.includes('_very_')&&sourceEmphasisRanges(p.original).length);assert.ok(sourcePassage,'Actual source emphasis passage required');
   const citation=new URLSearchParams({book:sourceBook.bookId,passage:sourcePassage.id,contentVersion:sourceBook.contentVersion,layer:'original'}),italicSelector='#chapter-text [data-id='+JSON.stringify(sourcePassage.id)+'] em.source-emphasis';
   receipt.citation={bookId:sourceBook.bookId,passageId:sourcePassage.id,contentVersion:sourceBook.contentVersion,layer:'original',originalSha256:sha(sourcePassage.original)};
-  session.setPageLabel('reader');await cdp.send('Page.navigate',{url:origin+'/read?'+citation});
+  await session.navigateProduct(origin+'/read?'+citation,{page:'reader'});
   await session.until(()=>cdp.evaluate(`location.pathname==='/read'&&document.readyState==='complete'&&document.body.dataset.ready==='true'&&!!document.querySelector(${JSON.stringify(italicSelector)})`),'ready cited actual reader italic');await cdp.evaluate('document.fonts.ready.then(()=>true)');
   if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'reader',read:()=>session.viewport('reader')});
   const resolved=await cdp.evaluate(`(()=>{const reader=window.marginaliaReader,book=reader.getBook(),state=reader.getState(),n=document.querySelector(${JSON.stringify(italicSelector)}).closest('.passage'),r=n.getBoundingClientRect();return {url:location.href,bookId:book.bookId,contentVersion:book.contentVersion,mode:state.mode,passageId:n.dataset.id,visible:r.bottom>0&&r.top<innerHeight};})()`);
