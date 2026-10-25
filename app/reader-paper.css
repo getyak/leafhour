@@ -1,0 +1,51 @@
+/* The page is a stable printed surface. Its controls live outside the leaf. */
+@media screen{
+ body[data-paginated=true]{background:color-mix(in srgb,var(--paper) 96%,var(--ink) 4%);padding-right:0!important}
+ body[data-paginated=true] .book-page{position:relative;width:min(1200px,calc(100% - 96px),calc((100dvh - 144px)*1.5));height:calc(100dvh - 144px);margin:82px auto 62px;padding:30px 44px 28px;background:var(--paper);border-radius:2px 6px 6px 2px;box-shadow:0 7px 28px color-mix(in srgb,var(--ink) 7%,transparent),0 2px 0 var(--line),0 4px 0 var(--paper),0 5px 0 var(--line)}
+ body[data-paginated=true] .book-page::before{content:"";position:absolute;inset:0 auto 0 calc(50% - 28px);width:56px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--ink) 5%,transparent) 47%,color-mix(in srgb,var(--paper) 65%,transparent) 54%,transparent);pointer-events:none;z-index:1}
+ body.is-focused[data-paginated=true] .book-page{height:calc(100dvh - 88px);width:min(1200px,calc(100% - 72px),calc((100dvh - 88px)*1.5));margin-top:24px;padding-top:30px}
+ body[data-paginated=true] .chapter-heading{display:contents;min-height:0;margin:0}
+ body[data-paginated=true] .chapter-heading>.chapter-number,body[data-paginated=true] .chapter-heading>h1,body[data-paginated=true] .chapter-heading>.original-title{display:none}
+ body[data-paginated=true] .chapter-heading .listen-chapter{position:absolute;top:7px;right:22px;font-size:12px;min-height:28px;opacity:.65;z-index:2}
+ body[data-paginated=true] #chapter-text{column-gap:72px}
+ body[data-paginated=true] .flow-chapter[data-first=true]>.flow-heading{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;box-sizing:border-box;height:var(--paper-page-height,60dvh);padding:24px 16px 70px 6px;margin:0;break-inside:avoid;break-after:column}
+ body[data-paginated=true] .flow-heading :is(h1,h2){font:400 clamp(25px,2.7vw,36px)/1.65 var(--book);letter-spacing:.045em;margin:18px 0 0;text-wrap:balance;overflow-wrap:anywhere}
+ body[data-paginated=true] .flow-heading .chapter-number{font:12px/1.6 var(--interface);letter-spacing:var(--track-meta);color:var(--muted)}
+ body[data-paginated=true] .section-number{font-size:12px;color:var(--muted)}
+ body[data-paginated=true] .page-turner{position:absolute;left:50%;bottom:-52px;transform:translateX(-50%);height:44px;min-height:44px;width:max-content;max-width:100%;gap:18px;color:var(--muted)}
+ body[data-paginated=true] .page-turner button{font-size:12px;color:var(--muted);border-radius:2px}
+ body[data-paginated=true] .page-turner button:hover:enabled{color:var(--ink);background:transparent}
+ body[data-paginated=true] .paper-turn-handle{display:block;position:absolute;bottom:0;width:44px;height:64px;padding:0;z-index:4;touch-action:none;border-radius:0;opacity:.55;cursor:grab}
+ body[data-paginated=true] .paper-turn-handle:active{cursor:grabbing;transform:none}
+ body[data-paginated=true] .paper-turn-handle.is-next{right:0;background:linear-gradient(135deg,transparent 0 77%,color-mix(in srgb,var(--ink) 7%,transparent) 78%)}
+ body[data-paginated=true] .paper-turn-handle.is-previous{left:0;background:linear-gradient(225deg,transparent 0 77%,color-mix(in srgb,var(--ink) 7%,transparent) 78%)}
+ body[data-paginated=true] .paper-turn-handle:hover,body[data-paginated=true] .paper-turn-handle:focus-visible{opacity:1}
+ .paper-turn-layer{position:absolute;pointer-events:none;transform-style:preserve-3d;z-index:6;user-select:none;contain:style}
+ .paper-turn-peek,.paper-turn-strip,.paper-turn-face{position:absolute;top:0;height:100%;background:var(--paper)}
+ .paper-turn-peek{overflow:hidden;transform:translateZ(-.5px)}
+ .paper-turn-strip{left:0;transform-origin:0 50%;transform-style:preserve-3d;background:transparent;will-change:transform}
+ .paper-turn-face{inset:0;overflow:hidden;backface-visibility:hidden;transform-style:flat}
+ .paper-turn-face::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--ink) 85%,transparent));opacity:var(--paper-turn-light,0);pointer-events:none}
+ .paper-turn-text{pointer-events:none;user-select:none;overflow:visible}
+ body[data-paginated=true].has-reader-chat .reading-header{right:0}
+ body[data-paginated=true].has-reader-chat .reading-session{right:24px}
+ body[data-paginated=true].has-reader-chat .focus-actions,body[data-paginated=true].has-reader-chat .focus-exit{right:20px}
+ @media(min-width:1100px){body[data-paginated=true] dialog.reader-chat-workspace{inset:auto 24px 88px auto;top:auto;height:min(620px,calc(100dvh - 120px));border:1px solid var(--line-hairline);border-radius:12px;box-shadow:var(--shadow-popover)}body[data-paginated=true] .reader-chat-workspace .library-chat-frame{border-radius:inherit}}
+ @media(max-width:899px){
+  body[data-paginated=true] .book-page{width:min(650px,calc(100% - 56px));padding:30px 34px}
+  body.is-focused[data-paginated=true] .book-page{width:min(650px,calc(100% - 40px))}
+  body[data-paginated=true] .book-page::before{inset:0 auto 0 0;width:10px;opacity:.45}
+  body[data-paginated=true] #chapter-text{column-count:1;column-gap:48px}
+  body[data-paginated=true] .flow-chapter[data-first=true]>.flow-heading{height:auto;min-height:160px;padding:18px 0 40px;justify-content:flex-start;break-after:avoid}
+ }
+ @media(max-width:600px){
+  body[data-paginated=true] .book-page{width:calc(100% - 32px);height:calc(100dvh - 148px);margin:70px auto 78px;padding:25px 22px 22px}
+  body.is-focused[data-paginated=true] .book-page{width:calc(100% - 24px);height:calc(100dvh - 88px);margin-top:18px;padding-top:25px}
+  body[data-paginated=true] .flow-heading :is(h1,h2){font-size:26px}
+  body[data-paginated=true] .chapter-heading .listen-chapter{right:12px;top:2px}
+  body[data-paginated=true] .page-turner{bottom:-52px;gap:8px}
+  body[data-paginated=true] .page-position{min-width:80px}
+ }
+ @media(max-height:500px){body[data-paginated=true] .book-page{height:calc(100dvh - 116px);margin-top:58px;padding-top:18px;padding-bottom:18px}body.is-focused[data-paginated=true] .book-page{height:calc(100dvh - 72px);margin-top:12px;padding-top:18px}body[data-paginated=true] .flow-chapter[data-first=true]>.flow-heading{min-height:0;padding-block:12px}body[data-paginated=true] .flow-heading :is(h1,h2){font-size:23px}}
+ @media(prefers-reduced-motion:reduce){.paper-turn-layer{display:none}.paper-turn-strip{will-change:auto}}
+}

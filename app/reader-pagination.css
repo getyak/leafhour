@@ -48,3 +48,5 @@ body[data-paginated=true] .note-panel{position:fixed;inset:90px 24px auto auto;w
  body[data-paginated=true] #chapter-text{height:auto;columns:auto}
  .page-turner,.page-end{display:none!important}
 }
+
+.paper-turn-handle{display:none}

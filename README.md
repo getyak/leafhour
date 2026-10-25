@@ -35,6 +35,7 @@ Gifts move through “write the note → watch it open → seal and share”. Th
 - Selecting text saves a pale-yellow private highlight; click to remove it or write a thought, and return to the sentence from “My records”
 - Selecting a sentence generates a configurable monolingual or bilingual share image
 - Font, size, line height, paragraph spacing, tracking, first-line indent and paper themes
+- In the reading room, choose Reading → Aa → Page layout → Turn pages for facing paper pages, typographic chapter openings and draggable page corners. Existing saved layouts remain unchanged. Keyboard and button paging work independently of the optional animation; reduced motion uses immediate page changes. Image generation is not included in this release.
 - Reading calendar, daily goals, your understanding and questions, revisited at the source position
 - Actively started foreground reading time, with manual confirmation for finished chapters and books
 - Import and export of highlights, comments, questions, reading position, sessions and reading marks

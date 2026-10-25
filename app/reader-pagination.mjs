@@ -1,51 +1,50 @@
 import {t,onUiLocaleChange} from './ui-locale.mjs';
+import {mountReaderPageInputs} from './reader-page-inputs.mjs';
+export {pageKeyDirection} from './reader-page-inputs.mjs';
 // Columns fragment the existing, selectable text. Paragraph IDs and content stay intact.
-export function pageGeometry({width,scrollWidth,gap,columns}){
+export function pageGeometry({width,scrollWidth,gap}){
   const step=width+gap;
   return {step,count:Math.max(1,Math.ceil((scrollWidth-width-.5)/step)+1)};
 }
-export function fragmentProgress(rects,index){
-  const total=rects.reduce((sum,r)=>sum+r.height,0);
-  return total?rects.slice(0,index).reduce((sum,r)=>sum+r.height,0)/total:0;
-}
+const totalHeight=rects=>rects.reduce((sum,r)=>sum+r.height,0);
+const overlaps=(rect,bounds)=>rect.right>bounds.left+1&&rect.left<bounds.right-1;
+export function fragmentProgress(rects,index){const total=totalHeight(rects);return total?totalHeight(rects.slice(0,index))/total:0;}
 export function fragmentIndex(rects,progress=0){
-  const target=rects.reduce((sum,r)=>sum+r.height,0)*progress;let height=0;
+  const target=totalHeight(rects)*progress;let height=0;
   for(let i=0;i<rects.length;i++){height+=rects[i].height;if(height>target+.5)return i;}
   return Math.max(0,rects.length-1);
 }
-export function pageKeyDirection(event,{blocked=false,selection=''}={}){
-  if(blocked||selection||event.defaultPrevented||event.metaKey||event.ctrlKey||event.altKey||event.shiftKey||event.target?.isContentEditable||event.target?.closest?.('input,textarea,select,a,[role=tab],[role=menu],[contenteditable=true]'))return 0;
-  return event.key==='ArrowRight'?1:event.key==='ArrowLeft'?-1:0;
-}
-
 export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{},onBoundary=()=>false,hasBoundary=()=>false}){
   const view=document.defaultView,viewport=document.getElementById('reading-pages'),text=document.getElementById('chapter-text'),end=document.getElementById('page-end'),controls=document.getElementById('page-turner'),previous=document.getElementById('page-previous'),next=document.getElementById('page-next'),label=document.getElementById('page-position');
-  let active=false,page=0,lastAnchor=null,resizeFrame,resizeEpoch=0,pointerFocus=false,pageLabel=null,disposed=false;
-  const cancelResize=()=>{resizeEpoch++;view.cancelAnimationFrame(resizeFrame);};
+  let active=false,page=0,lastAnchor,resizeFrame,resizeEpoch=0,pointerFocus=false,pageLabel,disposed=false;
+  const inputs=mountReaderPageInputs({document,viewport,text,getGeometry:()=>active?{...geometry(),page,active,previous:!previous.disabled,next:!next.disabled}:null,isBlocked,onTurn:commitTurn});
+  const cancelResize=()=>{resizeEpoch++;view.cancelAnimationFrame(resizeFrame);inputs.cancel();};
   const listeners=[];
   const listen=(target,name,fn,options)=>{const owned=event=>{if(!disposed)fn(event);};target.addEventListener(name,owned,options);listeners.push(()=>target.removeEventListener(name,owned,options));};
   // Locale publication reads only the last measured UI descriptor. Measuring
   // columns or restoring anchors here would disturb an active text selection.
   function updateLabels(){if(!disposed&&pageLabel)label.textContent=t(pageLabel.id,pageLabel.params);}
   const offLocale=onUiLocaleChange(updateLabels);
-  function geometry(){const style=view.getComputedStyle(text);return pageGeometry({width:viewport.clientWidth,scrollWidth:text.scrollWidth,gap:parseFloat(style.columnGap)||0,columns:Number(style.columnCount)||1});}
+  function geometry(){const style=view.getComputedStyle(text),gap=parseFloat(style.columnGap)||0,columns=Number(style.columnCount)||1;return {...pageGeometry({width:viewport.clientWidth,scrollWidth:text.scrollWidth,gap}),gap,columns};}
   function sync(){
-    if(!active)return;const {step,count}=geometry();end.style.left=((count-1)*step+viewport.clientWidth-1)+'px';page=Math.max(0,Math.min(count-1,Math.round(viewport.scrollLeft/step)));
+    if(!active){inputs.sync();return;}
+    text.style.setProperty?.('--paper-page-height',viewport.clientHeight+'px');
+    const {step,count,columns}=geometry();end.style.left=((count-1)*step+viewport.clientWidth-1)+'px';page=Math.max(0,Math.min(count-1,Math.round(viewport.scrollLeft/step)));
     previous.disabled=page===0&&!hasBoundary(-1);next.disabled=page===count-1&&!hasBoundary(1);
-    const columns=Number(view.getComputedStyle(text).columnCount)||1;
+    inputs.sync();
     pageLabel={id:columns===2?'reader.pages.spread':'reader.pages.single',params:{page:page+1,count}};updateLabels();
   }
   function visibleAnchor(){
     if(!active)return null;const bounds=viewport.getBoundingClientRect();
     for(const node of text.querySelectorAll('.passage')){
-      const rects=[...node.getClientRects()],index=rects.findIndex(r=>r.right>bounds.left+1&&r.left<bounds.right-1&&r.bottom>bounds.top&&r.top<bounds.bottom);
+      const rects=[...node.getClientRects()],index=rects.findIndex(r=>overlaps(r,bounds)&&r.bottom>bounds.top&&r.top<bounds.bottom);
       if(index<0)continue;
       return {passageId:node.dataset.id,offset:rects[index].top,...(index?{withinParagraph:fragmentProgress(rects,index)}:{})};
     }
     return null;
   }
   function anchor(){return active?(lastAnchor||visibleAnchor()):null;}
-  function visibleRect(node){const bounds=viewport.getBoundingClientRect();return [...node.getClientRects()].find(r=>r.right>bounds.left+1&&r.left<bounds.right-1)||null;}
+  function visibleRect(node){const bounds=viewport.getBoundingClientRect();return [...node.getClientRects()].find(r=>overlaps(r,bounds))||null;}
   function revealRect(rect,passageId){
     if(!active||!rect)return false;const node=document.getElementById(passageId);if(!node)return false;
     const rects=[...node.getClientRects()],index=rects.findIndex(r=>rect.left>=r.left-.5&&rect.left<r.right+.5);if(index<0)return false;
@@ -59,6 +58,10 @@ export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{
     const target=Math.max(0,Math.min(count-1,Math.floor((left+.5)/step)));sync();viewport.scrollLeft=target*step;sync();lastAnchor={passageId:position.passageId,offset:Number.isFinite(position.offset)?position.offset:rect.top,...(position.withinParagraph!==undefined?{withinParagraph:position.withinParagraph}:{})};
   }
   function turn(direction){
+    // Paging remains immediate if its optional visual module is still loading.
+    return inputs.turn(direction);
+  }
+  function commitTurn(direction){
     if(!active||isBlocked()||view.getSelection()?.toString())return false;
     cancelResize();
     const {count,step}=geometry(),target=page+direction;
@@ -68,10 +71,6 @@ export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{
     onTurn();return true;
   }
   listen(previous,'click',()=>turn(-1));listen(next,'click',()=>turn(1));
-  listen(document,'keydown',event=>{
-    if(!active)return;const direction=pageKeyDirection(event,{blocked:isBlocked(event.target),selection:view.getSelection()?.toString()});
-    if(direction){event.preventDefault();turn(direction);}
-  });
   listen(viewport,'scroll',()=>{if(active)sync();},{passive:true});
   listen(text,'pointerdown',event=>{if(active){pointerFocus=true;try{event.target.closest('.passage')?.focus({preventScroll:true});}finally{pointerFocus=false;}}});
   listen(text,'focusin',event=>{
@@ -95,6 +94,6 @@ export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{
       document.getElementById('page-layout-setting').hidden=state.mode==='parallel';document.getElementById('page-layout-hint').hidden=state.mode==='parallel';sync();
     },
     last(){if(!active)return;cancelResize();sync();viewport.scrollLeft=(geometry().count-1)*geometry().step;sync();lastAnchor=visibleAnchor();},
-    unmount(){if(disposed)return;disposed=true;active=false;offLocale();observer.disconnect?.();view.cancelAnimationFrame(resizeFrame);for(const release of listeners)release();listeners.length=0;}
+    unmount(){if(disposed)return;disposed=true;active=false;inputs.dispose();offLocale();observer.disconnect?.();view.cancelAnimationFrame(resizeFrame);for(const release of listeners)release();listeners.length=0;}
   };
 }
