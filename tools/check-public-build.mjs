@@ -11,6 +11,12 @@ const approvedFonts=new Map([
   ['newsreader-var.woff2',{bytes:214960,sha256:'52f54c34206c51e23e2907bfda4f04fb11ac6ba7f75f8021b2d0075b091d1308'}],
   ['newsreader-italic-var.woff2',{bytes:239360,sha256:'8920f06c4c116e91721a2cbbbb195d1ab6997a657cb3313dab5c99b6b202d899'}],
 ]);
+// Exact, self-hosted third-party software. Names or a mutable manifest alone
+// cannot authorize different large scripts.
+const approvedPdfSoftware=new Map([
+ ['vendor/pdf-lib.mjs',{bytes:523417,sha256:'72c052d97b4d5d9fa6cdbdcb7ad709f03d4ddb1122390cb3afeba4d88651d969'}],
+ ['vendor/pdf-fontkit.mjs',{bytes:985215,sha256:'f22933b6a58752ab8a345ee8295eda49390727176f34d8b585e33c5b21d94490'}],
+]);
 const fontLicense='OFL-1.1';
 const approvedCjkBundle='2e2ebd6fdb630a1188431bedebf2d90de4b5e50e8f5db440d46e40220f589fd6';
 const approvedCjkLicense='5e0da210fb04058a8c0087985d2d456b931c2579811a49655721d3cf0c36b6d6';
@@ -93,6 +99,7 @@ export async function checkPublicBuild(directory){
       }else{
         files++;const info=await lstat(file);
         if(path.dirname(file)===assetRoot&&entry.name.endsWith('.mp3')&&!registered.has(file))throw Error('公开构建包含未登记的录音：'+relative);
+        const pdfSoftware=approvedPdfSoftware.get(relative);if(pdfSoftware){if(info.size!==pdfSoftware.bytes||createHash('sha256').update(await readFile(file)).digest('hex')!==pdfSoftware.sha256)throw Error('PDF software integrity mismatch: '+relative);continue;}
         if(entry.name.endsWith('.woff2')&&!registeredFonts.has(file))throw Error('公开构建包含未登记的字体文件：'+relative);
         if(info.size>limit){const software=/^reader-web\/reader-([a-f0-9]{16})\.js$/.exec(relative);if(software&&info.size<=320*1024&&createHash('sha256').update(await readFile(file)).digest('hex').startsWith(software[1]))continue;if(!registered.has(file)&&!registeredFonts.has(file))throw Error('公开构建包含未登记的大文件：'+relative);largeAssets++;}
       }

@@ -2204,3 +2204,24 @@ reader.annotation.longSelection,catalogue,app/ui-catalogs/en.mjs,2169,unknown,un
 daily.inbox.summary,catalogue,app/ui-catalogs/en.mjs,2170,unknown,unknown,unknown,unknown,unreviewed,Reading notes · {count},陪读纸条 · {count} 张,陪讀紙條 · {count} 張,読書のメモ · {count}件
 sample.disclosureNone,catalogue,app/ui-catalogs/en.mjs,2171,unknown,unknown,unknown,unknown,unreviewed,No translations are saved for this book. Check the sending scope before translating.,本书尚无已保存的译文。翻译前请查看发送范围。,本書尚無已保存的譯文。翻譯前請查看傳送範圍。,この本には保存済みの訳文がありません。翻訳前に送信範囲を確認してください。
 sample.disclosureMetadata,catalogue,app/ui-catalogs/en.mjs,2172,unknown,unknown,unknown,unknown,unreviewed,"{count} saved passage translations: {reviewed} reviewed, {draft} drafts, {unknown} with unknown review status. {ai} marked as AI. Recorded credits: {translators}; {uncredited} without credits. AI models recorded: {models}. Recorded licenses: {licenses}; {unlicensed} without a license record. A dash means no record. Untranslated passages show the original.",共 {count} 份段落译文：已审校 {reviewed} 份，草稿 {draft} 份，审校状态未知 {unknown} 份。其中 {ai} 份标记为 AI。已有署名：{translators}；{uncredited} 份未记录署名。已有 AI 模型记录：{models}。已有许可：{licenses}；{unlicensed} 份未记录许可。破折号表示没有记录。缺译处显示原文。,共 {count} 份段落譯文：已審校 {reviewed} 份，草稿 {draft} 份，審校狀態未知 {unknown} 份。其中 {ai} 份標記為 AI。已有署名：{translators}；{uncredited} 份未記錄署名。已有 AI 模型記錄：{models}。已有許可：{licenses}；{unlicensed} 份未記錄許可。破折號表示沒有記錄。缺譯處顯示原文。,保存済みの段落訳は {count} 件です。確認済み {reviewed} 件、下書き {draft} 件、確認状況不明 {unknown} 件。このうち AI と記録された訳は {ai} 件です。記録された翻訳者：{translators}、翻訳者の記録なし {uncredited} 件。AI モデルの記録：{models}。記録されたライセンス：{licenses}、記録なし {unlicensed} 件。「—」は記録がないことを表します。訳のない箇所には原文を表示します。
+export.notices,catalogue,app/ui-catalogs/en.mjs,2173,unknown,unknown,unknown,unknown,unreviewed,Source and copyright notices,来源与版权声明,來源與版權聲明,出典と著作権表示
+export.close,catalogue,app/ui-catalogs/en.mjs,2174,unknown,unknown,unknown,unknown,unreviewed,Close export,关闭导出,關閉匯出,書き出しを閉じる
+export.download,catalogue,app/ui-catalogs/en.mjs,2175,unknown,unknown,unknown,unknown,unreviewed,Download file,下载文件,下載檔案,ファイルをダウンロード
+export.title,catalogue,app/ui-catalogs/en.mjs,2176,unknown,unknown,unknown,unknown,unreviewed,Export this book,导出这本书,匯出這本書,この本を書き出す
+export.help,catalogue,app/ui-catalogs/en.mjs,2177,unknown,unknown,unknown,unknown,unreviewed,Choose a range and text layers. Personal notes are excluded.,选择范围和正文内容，不包含私人笔记。,選擇範圍和正文內容，不包含私人筆記。,範囲と本文を選択します。個人のノートは含まれません。
+export.format,catalogue,app/ui-catalogs/en.mjs,2178,unknown,unknown,unknown,unknown,unreviewed,Format,文件格式,檔案格式,ファイル形式
+export.range,catalogue,app/ui-catalogs/en.mjs,2179,unknown,unknown,unknown,unknown,unreviewed,Range,导出范围,匯出範圍,範囲
+export.whole,catalogue,app/ui-catalogs/en.mjs,2180,unknown,unknown,unknown,unknown,unreviewed,Whole book,整本书,整本書,本全体
+export.layers,catalogue,app/ui-catalogs/en.mjs,2181,unknown,unknown,unknown,unknown,unreviewed,Text layers,正文内容,正文內容,本文
+export.original,catalogue,app/ui-catalogs/en.mjs,2182,unknown,unknown,unknown,unknown,unreviewed,Original,原文,原文,原文
+export.literal,catalogue,app/ui-catalogs/en.mjs,2183,unknown,unknown,unknown,unknown,unreviewed,Literal translation,直译,直譯,直訳
+export.interpretive,catalogue,app/ui-catalogs/en.mjs,2184,unknown,unknown,unknown,unknown,unreviewed,Interpretive translation,意译,意譯,意訳
+export.all,catalogue,app/ui-catalogs/en.mjs,2185,unknown,unknown,unknown,unknown,unreviewed,Original and both translations,原文与两种译文,原文與兩種譯文,原文と両方の訳文
+export.missing,catalogue,app/ui-catalogs/en.mjs,2186,unknown,unknown,unknown,unknown,unreviewed,Not translated,尚未翻译,尚未翻譯,未翻訳
+export.loading,catalogue,app/ui-catalogs/en.mjs,2187,unknown,unknown,unknown,unknown,unreviewed,Loading book content…,正在读取书籍正文…,正在讀取書籍正文…,本文を読み込み中…
+export.ready,catalogue,app/ui-catalogs/en.mjs,2188,unknown,unknown,unknown,unknown,unreviewed,Choose the content to download.,选择要下载的内容。,選擇要下載的內容。,ダウンロードする内容を選択してください。
+export.preparing,catalogue,app/ui-catalogs/en.mjs,2189,unknown,unknown,unknown,unknown,unreviewed,Preparing your file…,正在生成文件…,正在產生檔案…,ファイルを作成中…
+export.error,catalogue,app/ui-catalogs/en.mjs,2190,unknown,unknown,unknown,unknown,unreviewed,Export failed. Retry the download.,导出失败，请重试下载。,匯出失敗，請重試下載。,書き出せませんでした。再試行してください。
+export.cancelled,catalogue,app/ui-catalogs/en.mjs,2191,unknown,unknown,unknown,unknown,unreviewed,Export cancelled. No file was requested.,已取消导出，未发起文件下载。,已取消匯出，未發起檔案下載。,書き出しをキャンセルしました。ダウンロードは開始していません。
+export.downloadRequested,catalogue,app/ui-catalogs/en.mjs,2192,unknown,unknown,unknown,unknown,unreviewed,Download requested. Check your browser downloads.,已发起下载，请查看浏览器下载列表。,已發起下載，請查看瀏覽器下載清單。,ダウンロードを開始しました。ブラウザーの履歴を確認してください。
+export.glyphError,catalogue,app/ui-catalogs/en.mjs,2193,unknown,unknown,unknown,unknown,unreviewed,This PDF font cannot display some characters. Download Markdown to preserve the full text.,PDF 字体无法显示部分字符，请下载 Markdown 保留完整文字。,PDF 字型無法顯示部分字元，請下載 Markdown 保留完整文字。,PDF のフォントに対応していない文字があります。全文を保持するには Markdown を選択してください。

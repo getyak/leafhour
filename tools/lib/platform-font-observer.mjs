@@ -24,6 +24,9 @@ export async function until(operation,label,ms=30000,failures=[]){
 // separator. Keep that real parent record, then isolate every existing CJK text
 // run without inventing text or accepting Latin .notdef as CJK.
 const CJK_RUN=/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\u3000-\u303f\uff00-\uffef]+/gu;
+export function stockSans(value){
+  assert.ok(value.fonts.length&&value.fonts.every(font=>!font.isCustomFont&&font.glyphCount>0),value.label+' must render actual stock sans glyphs');
+}
 export function customNewsreader(value){
   assert.ok(value.fonts.some(font=>font.isCustomFont&&/Newsreader/i.test(font.postScriptName||font.familyName)&&font.glyphCount>0),value.label+' must render actual custom Newsreader glyphs');
 }
@@ -228,7 +231,8 @@ export function italicFontEvidence(value,{browserProduct,fontFaces=[],fontRespon
 // Serialized into the remote page. Chrome113 maps scrollIntoView's "instant"
 // to auto, which respects the page's native smooth scrolling. Observe one real
 // request's completion; never change CSS or retry a visibility/font assertion.
-export function observeNativeScroll(selector){
+export function observeNativeScroll(selector,alignment='nearest'){
+  if(!['nearest','center'].includes(alignment))throw Error('Unsupported native scroll alignment');
   const node=document.querySelector(selector);if(!node)throw Error('Missing target');
   const scrollers=[document.scrollingElement];
   for(let parent=node.parentElement;parent;parent=parent.parentElement){
@@ -262,12 +266,15 @@ export function observeNativeScroll(selector){
   };
   const needs=value=>value.scrollports.flatMap((port,index)=>{
     const r=value.rect,left=r.x-pixels(margin.scrollMarginLeft),right=r.x+r.width+pixels(margin.scrollMarginRight),top=r.y-pixels(margin.scrollMarginTop),bottom=r.y+r.height+pixels(margin.scrollMarginBottom);
-    const movable=(start,end,low,high,current,max)=>{
-      if(start>=low&&end<=high||start<=low&&end>=high)return false;
-      const small=end-start<=high-low,delta=start<low?(small?start-low:end-high):(small?end-high:start-low);
+    const movable=(start,end,low,high,current,max,center=false)=>{
+      if(!center&&(start>=low&&end<=high||start<=low&&end>=high))return false;
+      const small=end-start<=high-low,delta=center?(start+end-low-high)/2:start<low?(small?start-low:end-high):(small?end-high:start-low);
       return Math.abs(Math.max(0,Math.min(max,current+delta))-current)>.1;
     };
-    return movable(left,right,port.left,port.right,value.positions[index].left,port.maxLeft)||movable(top,bottom,port.top,port.bottom,value.positions[index].top,port.maxTop)?[index]:[];
+    // Center can queue a smooth movement even for a currently visible target.
+    // Its attainable delta must be observed before claiming unchanged. A
+    // viewport-fixed control never queues movement of the root scrollport.
+    return movable(left,right,port.left,port.right,value.positions[index].left,port.maxLeft)||movable(top,bottom,port.top,port.bottom,value.positions[index].top,port.maxTop,alignment==='center'&&(index>0||!value.viewportFixed))?[index]:[];
   });
   const before=sample(),startedAt=performance.now(),required=needs(before),needsMovement=required.length>0;
   return new Promise(resolve=>{
@@ -279,7 +286,7 @@ export function observeNativeScroll(selector){
     const finish=(status,error=null)=>{
       if(finished)return;finished=true;clearTimeout(timer);cancelAnimationFrame(frame);
       document.removeEventListener('scroll',onScroll,true);document.removeEventListener('scrollend',onEnd,true);
-      resolve({status,error,before,after:sample(),needsMovement,started,startedScrollers:[...startedScrollers],scrollEvents,scrollEndEvents,frames,frameTimes,deadlineMs:10000,visibility:document.visibilityState??null,hasFocus:document.hasFocus?.()??null,elapsedMs:performance.now()-startedAt});
+      resolve({status,error,alignment,before,after:sample(),needsMovement,started,startedScrollers:[...startedScrollers],scrollEvents,scrollEndEvents,frames,frameTimes,deadlineMs:10000,visibility:document.visibilityState??null,hasFocus:document.hasFocus?.()??null,elapsedMs:performance.now()-startedAt});
     };
     const tick=()=>{
       const current=sample(),now=performance.now();frames++;
@@ -297,15 +304,16 @@ export function observeNativeScroll(selector){
     };
     document.addEventListener('scroll',onScroll,true);document.addEventListener('scrollend',onEnd,true);
     timer=setTimeout(()=>finish('timeout'),10000);
-    try{node.scrollIntoView({block:'nearest',behavior:'auto'});}catch(error){finish('error',error.message);return;}
+    try{node.scrollIntoView({block:alignment,behavior:'auto'});}catch(error){finish('error',error.message);return;}
     frame=requestAnimationFrame(tick);
   });
 }
 export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]}){
-  const background=new Set(),evidenceListeners=[],paused=new Set();
+  const background=new Set(),evidenceListeners=[],paused=new Set(),pausedNetworkIds=new Map();
   let fetchEnabled=false,holdFonts=false,fontHoldInstalledAt=null,pageLabel='home-cold',closed=false;
   let documentEpoch=0,currentDocument=null;
-  const requestFonts=new Map();
+  const requestFonts=new Map(),fontRequestDocuments=new Map(),retiredDocuments=new Map();
+  const documentKey=font=>font.frameId&&font.loaderId?JSON.stringify([font.frameId,font.loaderId]):null;
   const observe=(method,handler)=>evidenceListeners.push(cdp.on(method,handler));
   function task(operation){const promise=Promise.resolve(operation).catch(error=>failures.push(error.message)).finally(()=>background.delete(promise));background.add(promise);}
   async function capture(name){
@@ -318,7 +326,14 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
   async function fonts(selector,label,{awaitFonts=true}={}){
     receipt.activeProbe={selector,label,phase:'layout'};
     if(awaitFonts)await cdp.evaluate('document.fonts.ready.then(()=>true)');
-    const scroll=await cdp.evaluate('('+observeNativeScroll.toString()+')('+JSON.stringify(selector)+')');
+    // Withheld fonts must stay pending, but the authored document's CSS must
+    // have parsed before a native scroll can produce meaningful coordinates.
+    // This observes existing styles/viewport; it never loads or releases fonts.
+    else await viewport(label+' styles');
+    // A font probe should center the whole real text box. Chrome113 can leave
+    // an only partly visible quote unmoved with nearest; retain one observed
+    // native request and require its completion, never retry a failed probe.
+    const scroll=await cdp.evaluate('('+observeNativeScroll.toString()+')('+JSON.stringify(selector)+',"center")');
     (receipt.scrolls??=[]).push({label,selector,...scroll});
     assert.ok(['settled','unchanged'].includes(scroll.status),label+' native scrolling must complete within the bounded observation');
     let usage;
@@ -374,13 +389,58 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     }
   }
   function observeResponses(){
-    observe('Page.frameNavigated',({frame})=>{if(!frame.parentId)currentDocument={epoch:++documentEpoch,frameId:frame.id,loaderId:frame.loaderId,url:frame.url};});
+    observe('Page.frameNavigated',({frame})=>{
+      if(frame.parentId)return;
+      const previous=currentDocument;currentDocument={epoch:++documentEpoch,frameId:frame.id,loaderId:frame.loaderId,url:frame.url};
+      if(!previous?.loaderId||previous.frameId!==frame.id||previous.loaderId===frame.loaderId)return;
+      retiredDocuments.set(documentKey(previous),currentDocument);
+      // A replaced document can lose a Fetch interception without a separate
+      // loadingFailed event. Bind retirement to the request's wire frame and
+      // loader IDs, not the mutable page label or an arbitrary protocol error.
+      for(const [requestId,networkId]of pausedNetworkIds){const source=fontRequestDocuments.get(networkId);if(source?.frameId===previous.frameId&&source.loaderId===previous.loaderId){
+        paused.delete(requestId);pausedNetworkIds.delete(requestId);
+        (receipt.replacedDocumentFontRequests??=[]).push({requestId,networkId,...source,replacedBy:currentDocument});
+      }}
+    });
+    observe('Network.requestWillBeSent',event=>{if(event.type==='Font')fontRequestDocuments.set(event.requestId,{frameId:event.frameId,loaderId:event.loaderId,url:event.request.url});});
     observe('CSS.fontsUpdated',({font})=>{if(!font||!/Newsreader/i.test(font.platformFontFamily||''))return;if((receipt.fontFaces?.length||0)>=32){failures.push('Bounded Newsreader face evidence exceeded');return;}(receipt.fontFaces??=[]).push({page:pageLabel,...font,observedDuringDocument:currentDocument});});
-    observe('Network.responseReceived',event=>{if(event.type==='Font'||event.type==='Stylesheet'&&/\/(?:fonts\/|typography\.css)/.test(new URL(event.response.url).pathname))requestFonts.set(event.requestId,{page:pageLabel,type:event.type,url:event.response.url,status:event.response.status,mime:event.response.mimeType,fromDiskCache:event.response.fromDiskCache,fromServiceWorker:event.response.fromServiceWorker,document:currentDocument&&event.frameId===currentDocument.frameId&&event.loaderId===currentDocument.loaderId?currentDocument:null});});
-    observe('Network.loadingFinished',event=>{const font=requestFonts.get(event.requestId);if(font)task((async()=>{const body=await cdp.send('Network.getResponseBody',{requestId:event.requestId});assert.ok(font.type!=='Font'||body.base64Encoded,'Binary WOFF2 response body expected');const bytes=Buffer.from(body.body,body.base64Encoded?'base64':'utf8'),source=await readFile(path.join(root,'app',new URL(font.url).pathname));assert.equal(sha(bytes),sha(source),'Browser font bytes must match checkout');receipt.fonts.push({...font,bytes:bytes.length,encodedDataLength:event.encodedDataLength,sha256:sha(bytes)});})());});
-    observe('Network.loadingFailed',event=>{if(!event.canceled)receipt.errors.push({type:'network',error:event.errorText,blockedReason:event.blockedReason});});
+    observe('Network.responseReceived',event=>{if(event.type==='Font'||event.type==='Stylesheet'&&/\/(?:fonts\/|typography\.css)/.test(new URL(event.response.url).pathname))requestFonts.set(event.requestId,{page:pageLabel,frameId:event.frameId,loaderId:event.loaderId,type:event.type,url:event.response.url,status:event.response.status,mime:event.response.mimeType,fromDiskCache:event.response.fromDiskCache,fromServiceWorker:event.response.fromServiceWorker,document:currentDocument&&event.frameId===currentDocument.frameId&&event.loaderId===currentDocument.loaderId?currentDocument:null});});
+    observe('Network.loadingFinished',event=>{
+      const font=requestFonts.get(event.requestId);if(!font)return;
+      requestFonts.delete(event.requestId);
+      task((async()=>{
+        let body;
+        try{body=await cdp.send('Network.getResponseBody',{requestId:event.requestId});}
+        catch(error){
+          // Only an observed main-document replacement explains an evicted old
+          // body. Never accept it as byte evidence or suppress an unavailable
+          // current/unknown response, a hash failure or another transport error.
+          const replacedBy=retiredDocuments.get(documentKey(font));
+          if(replacedBy&&/^Network\.getResponseBody:.*No resource with given identifier found/.test(error.message)){
+            (receipt.discardedFontResponses??=[]).push({...font,requestId:event.requestId,replacedBy,byteVerified:false,error:error.message});return;
+          }
+          (receipt.responseBodyFailures??=[]).push({...font,requestId:event.requestId,error:error.message});
+          throw Error(error.message+' ['+font.url+'; frame='+font.frameId+'; loader='+font.loaderId+']');
+        }
+        assert.ok(font.type!=='Font'||body.base64Encoded,'Binary WOFF2 response body expected');
+        const bytes=Buffer.from(body.body,body.base64Encoded?'base64':'utf8'),source=await readFile(path.join(root,'app',new URL(font.url).pathname));
+        assert.equal(sha(bytes),sha(source),'Browser font bytes must match checkout');
+        receipt.fonts.push({...font,bytes:bytes.length,encodedDataLength:event.encodedDataLength,sha256:sha(bytes)});
+      })());
+    });
+    observe('Network.loadingFailed',event=>{
+      if(!event.canceled){receipt.errors.push({type:'network',error:event.errorText,blockedReason:event.blockedReason});return;}
+      // The automatic root entry can replace itself with an authored route.
+      // Chrome cancels the old document's held font requests, invalidating
+      // their Fetch IDs. Retire only an exact Network cancellation match;
+      // arbitrary interception/transport errors still fail the evidence run.
+      for(const [requestId,networkId]of pausedNetworkIds)if(networkId&&networkId===event.requestId){
+        paused.delete(requestId);pausedNetworkIds.delete(requestId);
+        (receipt.cancelledFontRequests??=[]).push({requestId,networkId,error:event.errorText,document:currentDocument});
+      }
+    });
     observe('Runtime.exceptionThrown',event=>receipt.errors.push({type:'runtime',message:event.exceptionDetails.text,exception:event.exceptionDetails.exception?.description}));
-    observe('Fetch.requestPaused',event=>{if(holdFonts){paused.add(event.requestId);return;}task(cdp.send('Fetch.continueRequest',{requestId:event.requestId}));});
+    observe('Fetch.requestPaused',event=>{if(holdFonts){paused.add(event.requestId);pausedNetworkIds.set(event.requestId,event.networkId);return;}task(cdp.send('Fetch.continueRequest',{requestId:event.requestId}));});
   }
   async function installFontHold(){
     if(closed)throw Error('Evidence session is closed; refusing late font interception');
@@ -390,23 +450,30 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
   }
   async function releaseFontHold(){
     holdFonts=false;
-    for(const requestId of paused)await cdp.send('Fetch.continueRequest',{requestId});
-    paused.clear();
+    for(const requestId of paused){paused.delete(requestId);pausedNetworkIds.delete(requestId);await cdp.send('Fetch.continueRequest',{requestId});}
   }
   // Product navigation is refused until cold-font interception is installed,
   // and only the task-owned loopback origin is a product page.
-  async function navigateProduct(url){
+  async function navigateProduct(url,{page:nextPage}={}){
     if(closed)throw Error('Evidence session is closed; refusing late product navigation');
     if(!fontHoldInstalledAt)throw Error('Cold-font interception must be installed before any product navigation');
-    if(origin&&typeof url==='string'&&url.startsWith(origin))await cdp.send('Page.navigate',{url});
-    else throw Error('Product navigation must stay on the owned origin: '+String(url));
+    if(!origin||typeof url!=='string'||!url.startsWith(origin))throw Error('Product navigation must stay on the owned origin: '+String(url));
+    // Navigation invalidates response-body IDs. Finish byte verification of
+    // the accepted document before leaving it; a failed read remains failed.
+    while(background.size)await Promise.all([...background]);
+    if(failures.length)throw Error('Evidence task failed: '+failures.join('; '));
+    if(closed)throw Error('Evidence session is closed; refusing late product navigation');
+    if(nextPage)pageLabel=nextPage;
+    await cdp.send('Page.navigate',{url});
   }
   async function close({beforeDisconnect}={}){
     if(closed)return {errors:failures};
     closed=true;
     if(!cdp)return {errors:failures};
+    // stopLoading cancels live held requests and invalidates their Fetch IDs.
+    // Resume/disable our interception first, then stop the owned page.
+    if(fetchEnabled){holdFonts=false;for(const requestId of paused){paused.delete(requestId);pausedNetworkIds.delete(requestId);await cdp.send('Fetch.continueRequest',{requestId}).catch(error=>failures.push(error.message));}await cdp.send('Fetch.disable').catch(error=>failures.push(error.message));}
     await cdp.send('Page.stopLoading').catch(error=>failures.push(error.message));
-    if(fetchEnabled){holdFonts=false;for(const requestId of paused)await cdp.send('Fetch.continueRequest',{requestId}).catch(error=>failures.push(error.message));await cdp.send('Fetch.disable').catch(error=>failures.push(error.message));}
     // End observation before draining: a snapshot of a growing Set is insufficient.
     for(const unsubscribe of evidenceListeners)unsubscribe();
     receipt.observationClosedAt=new Date().toISOString();

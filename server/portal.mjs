@@ -1,4 +1,5 @@
 import {bookTransfer as transferReading} from './book-transfer.mjs';
+import {documentExportAssets} from './document-export-assets.mjs';
 import {cjkFontAssets} from './cjk-font-assets.mjs';
 import {createIngestionRunner} from './ingestion-runner.mjs';
 import {readFile} from 'node:fs/promises';
@@ -147,6 +148,8 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     // GET-167 typography foundation: shared tokens plus the self-hosted
     // Newsreader faces (OFL-1.1); the hosted build also ships its public manifest.
     for(const file of ['typography.css','fonts/newsreader/newsreader-var.woff2','fonts/newsreader/newsreader-italic-var.woff2','fonts/newsreader/OFL.txt'])files['/'+file]=file;
+    for(const file of ['book-export-ui.mjs','document-export.mjs','document-pdf.mjs','vendor/pdf-lib.mjs','vendor/pdf-fontkit.mjs','vendor/pdf-lib-LICENSE.txt','vendor/pdf-fontkit-NOTICE.txt'])files['/'+file]=file;
+    for(const asset of documentExportAssets)files['/'+asset]=asset;
     for(const asset of cjkFontAssets)files[asset.url]=asset.file;
     // GET-169 shared interface foundation: hairlines, shadows, focus rings,
     // action vocabulary and the appearance popover chrome.
@@ -162,7 +165,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['popover-controls.mjs','reader-book-actions-bootstrap.mjs'])files['/'+file]=file;
     if(!isAPI&&!files[p])return false;
     if(isAPI||p==='/billing'||p==='/admin/billing'||p==='/source-review'||p==='/library'||p==='/gift-preview'||safeGiftReturn(p))res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
-    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p==="/robots.txt"?"text/plain":p==="/sitemap.xml"?"application/xml":p.endsWith('.woff2')?'font/woff2':p.endsWith('.txt')?'text/plain':p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));if(type.startsWith('font/')){res.writeHead(200,{'Content-Type':type,'Content-Length':file.length});res.end(req.method==='HEAD'?undefined:file);return true;}send(200,files[p]==='home.html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
+    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p==="/robots.txt"?"text/plain":p==="/sitemap.xml"?"application/xml":p.endsWith('.ttf')?'font/ttf':p.endsWith('.json')?'application/json':p.endsWith('.woff2')?'font/woff2':p.endsWith('.txt')?'text/plain':p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));if(type.startsWith('font/')||type==='application/json'){res.writeHead(200,{'Content-Type':type,'Content-Length':file.length});res.end(req.method==='HEAD'?undefined:file);return true;}send(200,files[p]==='home.html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
     if(req.method!=='GET'&&req.method!=='POST')throw fail('不支持这个请求',405);
     // Hosted clients must be configured explicitly; Host only describes a local HTTP instance.
     const originAllowed=webOrigins.has(req.headers.origin)||!publicOrigin&&req.headers.origin==='http://'+req.headers.host;
@@ -324,6 +327,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       // never publishes a link and the sealing endpoint alone creates a gift.
       if(action==='gift-quote'&&req.method==='POST'){send(200,await sponsored(user,'gift-quote',()=>giftQuotes.prepare(user,id)));return true;}
       if(action?.startsWith('audio/'))return audioRoutes.handle({req,res,url,user,bookId:id,action:action.slice(6),body,send});
+      if(action==='document-export'&&req.method==='GET'){send(200,await library.bookTransfer(user,id));return true;}
       if(action==='content-part'&&req.method==='GET'){send(200,await library.bookTransfer(user,id,Number(url.searchParams.get('offset')),url.searchParams.get('snapshot')));return true;}
       if(!action&&req.method==='GET'){const book=await library.getBook(user,id);if(req.headers['x-reader-book-transfer']==='1'&&Buffer.byteLength(JSON.stringify(book))>3000000&&(dataStore||Buffer.byteLength(JSON.stringify(book))<=32*1024*1024)){res.setHeader('X-Reader-Book-Transfer','parts');send(200,await library.bookTransfer(user,id));}else send(200,book);return true;}
       if(action==='preview'&&req.method==='GET'){

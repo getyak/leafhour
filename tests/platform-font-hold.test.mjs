@@ -1,0 +1,100 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createEvidenceSession,stockSans,customNewsreader} from '../tools/lib/platform-font-observer.mjs';
+
+function fixture(){
+ const handlers=new Map(),continued=[],receipt={errors:[],fonts:[],screenshots:[],checks:[]};
+ const cdp={on:(name,fn)=>{handlers.set(name,fn);return ()=>handlers.delete(name);},send:async(method,args)=>{if(method==='Fetch.continueRequest'){continued.push(args.requestId);if(args.requestId==='cancelled-font')throw Error('Invalid InterceptionId');}return {};},close:async()=>{}};
+ const session=createEvidenceSession({cdp,receipt,origin:'http://localhost:1234'});session.observeResponses();
+ return {session,receipt,continued,event:(name,args)=>handlers.get(name)?.(args)};
+}
+test('a root-to-authored-page navigation cannot resume a font request already cancelled by the browser',async()=>{
+ const f=fixture();await f.session.installFontHold();
+ f.event('Page.frameNavigated',{frame:{id:'main',loaderId:'root',url:'http://localhost:1234/'}});
+ f.event('Fetch.requestPaused',{requestId:'cancelled-font',networkId:'old-network-font'});
+ f.event('Network.loadingFailed',{requestId:'old-network-font',canceled:true,errorText:'net::ERR_ABORTED'});
+ f.event('Page.frameNavigated',{frame:{id:'main',loaderId:'authored',url:'http://localhost:1234/en'}});
+ f.event('Fetch.requestPaused',{requestId:'live-font',networkId:'current-network-font'});
+ await f.session.releaseFontHold();
+ assert.deepEqual(f.continued,['live-font']);assert.equal(f.session.paused.size,0);assert.deepEqual(f.receipt.errors,[]);
+ assert.equal(f.receipt.cancelledFontRequests[0].networkId,'old-network-font');
+ await f.session.close();assert.deepEqual(f.continued,['live-font'],'cleanup must not resume the cancelled interception again');
+});
+test('cancellation of another request never hides an invalid live interception or a genuine network failure',async()=>{
+ const f=fixture();await f.session.installFontHold();
+ f.event('Fetch.requestPaused',{requestId:'cancelled-font',networkId:'actual-font'});
+ f.event('Network.loadingFailed',{requestId:'unrelated',canceled:true,errorText:'net::ERR_ABORTED'});
+ f.event('Network.loadingFailed',{requestId:'failed-resource',canceled:false,errorText:'net::ERR_FAILED'});
+ await assert.rejects(f.session.releaseFontHold(),/Invalid InterceptionId/);
+ assert.deepEqual(f.continued,['cancelled-font']);assert.equal(f.receipt.errors[0].error,'net::ERR_FAILED');await f.session.close();
+});
+test('a cold font probe waits for parsed styles before scrolling without waiting for the withheld font',async()=>{
+ let stylesReady=false,resolveStyles;
+ const receipt={errors:[],fonts:[],screenshots:[],checks:[]};
+ const cdp={evaluate:async expression=>{
+  if(expression==='document.fonts.ready.then(()=>true)')throw Error('The intentionally withheld font cannot be awaited');
+  if(expression.includes('stylesReady'))return new Promise(resolve=>{resolveStyles=resolve;});
+  if(expression.includes('scrollIntoView'))return {status:'settled'};
+  if(expression.includes('getComputedStyle'))return {text:'Cold source',visible:stylesReady,rect:{x:0,y:stylesReady?100:-300,width:200,height:40},viewport:{width:1200,height:900}};
+  throw Error('Unexpected observation');
+ },send:async method=>method==='DOM.getDocument'?{root:{nodeId:1}}:method==='DOM.querySelector'?{nodeId:2}:{fonts:[]}};
+ const session=createEvidenceSession({cdp,receipt});
+ const pending=session.fonts('#hero','cold styles',{awaitFonts:false});
+ const settle=new Promise(resolve=>setImmediate(()=>{stylesReady=true;resolveStyles?.({status:'ready',before:{styles:[{ready:false}]},after:{viewport:{width:1200,height:900},styles:[{ready:true}]}});resolve();}));
+ await pending;await settle;assert.equal(receipt.checks[0].visible,true);assert.equal(receipt.viewportReadiness[0].before.styles[0].ready,false);assert.equal(receipt.viewportReadiness[0].after.styles[0].ready,true);
+});
+test('a replaced main-document loader retires its held fonts even when Chrome omits loadingFailed',async()=>{
+ const f=fixture();await f.session.installFontHold();
+ f.event('Page.frameNavigated',{frame:{id:'main',loaderId:'root',url:'http://localhost:1234/'}});
+ f.event('Network.requestWillBeSent',{requestId:'old-net',type:'Font',frameId:'main',loaderId:'root',request:{url:'http://localhost:1234/fonts/newsreader/newsreader-var.woff2'}});
+ f.event('Fetch.requestPaused',{requestId:'cancelled-font',networkId:'old-net',frameId:'main'});
+ f.event('Page.frameNavigated',{frame:{id:'main',loaderId:'authored',url:'http://localhost:1234/en'}});
+ f.event('Network.requestWillBeSent',{requestId:'new-net',type:'Font',frameId:'main',loaderId:'authored',request:{url:'http://localhost:1234/fonts/newsreader/newsreader-var.woff2'}});
+ f.event('Fetch.requestPaused',{requestId:'live-font',networkId:'new-net',frameId:'main'});
+ await f.session.releaseFontHold();assert.deepEqual(f.continued,['live-font']);assert.equal(f.receipt.replacedDocumentFontRequests[0].loaderId,'root');await f.session.close();
+});
+test('owned navigation waits for in-flight byte evidence and never turns a failed read into a pass',async()=>{
+ for(const failed of [false,true]){
+  let finish;const sends=[],receipt={errors:[],fonts:[],checks:[],screenshots:[]};
+  const session=createEvidenceSession({cdp:{send:async(method,args)=>{sends.push({method,args});return {};},on:()=>()=>{},close:async()=>{}},receipt,origin:'http://localhost:1234'});
+  await session.installFontHold();session.task(new Promise((resolve,reject)=>{finish=()=>failed?reject(Error('font bytes unavailable')):resolve();}));
+  const navigation=session.navigateProduct('http://localhost:1234/zh-hans');navigation.catch(()=>{});await new Promise(setImmediate);
+  assert.ok(!sends.some(c=>c.method==='Page.navigate'),'navigation must wait for the real outstanding response-body read');finish();
+  if(failed)await assert.rejects(navigation,/font bytes unavailable/);else await navigation;
+  await session.close();
+ }
+});
+test('an evicted response body is discarded only for an explicitly replaced frame/loader, never claimed byte-verified',async()=>{
+ for(const mode of ['replaced','current','unknown-loader','other-frame','transport-error']){
+  const handlers=new Map(),receipt={errors:[],fonts:[],checks:[],screenshots:[]};let failBody;
+  const cdp={on:(name,fn)=>{handlers.set(name,fn);return ()=>handlers.delete(name);},send:async method=>method==='Network.getResponseBody'?new Promise((resolve,reject)=>{failBody=()=>reject(Error(mode==='transport-error'?'CDP disconnected':'Network.getResponseBody: No resource with given identifier found'));}):{},close:async()=>{}};
+  const session=createEvidenceSession({cdp,receipt,root:'/unused',origin:'http://localhost:1234'});session.observeResponses();await session.installFontHold();
+  handlers.get('Page.frameNavigated')({frame:{id:'main',loaderId:'root',url:'http://localhost:1234/'}});
+  handlers.get('Network.responseReceived')({requestId:'font',type:'Font',frameId:mode==='other-frame'?'other':'main',loaderId:mode==='unknown-loader'?'unknown':'root',response:{url:'http://localhost:1234/fonts/newsreader/newsreader-var.woff2',status:200}});
+  handlers.get('Network.loadingFinished')({requestId:'font'});
+  if(mode!=='current')handlers.get('Page.frameNavigated')({frame:{id:'main',loaderId:'authored',url:'http://localhost:1234/en'}});
+  failBody();await Promise.all([...session.background]);
+  assert.equal(receipt.fonts.length,0,'an unavailable body must never become byte-verified font evidence');
+  if(mode==='replaced'){assert.deepEqual(session.failures,[]);assert.equal(receipt.discardedFontResponses[0].loaderId,'root');assert.equal(receipt.discardedFontResponses[0].byteVerified,false);}
+  else {assert.ok(session.failures.some(message=>message.includes(mode==='transport-error'?'CDP disconnected':'No resource with given identifier found')),mode);assert.equal(receipt.responseBodyFailures[0].requestId,'font');}
+  await session.close();
+ }
+});
+
+test('stock shelf glyph checks and custom source checks cannot substitute for one another',()=>{
+ const stock={label:'actual shelf',fonts:[{isCustomFont:false,glyphCount:5,familyName:'Arial'}]};
+ const source={label:'actual source',fonts:[{isCustomFont:true,glyphCount:5,familyName:'Newsreader'}]};
+ assert.doesNotThrow(()=>stockSans(stock));assert.throws(()=>stockSans(source),/stock sans/);
+ assert.doesNotThrow(()=>customNewsreader(source));assert.throws(()=>customNewsreader(stock),/Newsreader/);
+ for(const value of [{label:'empty',fonts:[]},{label:'unused',fonts:[{isCustomFont:false,glyphCount:0}]}])assert.throws(()=>stockSans(value),/stock sans/);
+});
+
+test('closing a cold session releases live interceptions before stopLoading can invalidate them',async()=>{
+ const events=[],handlers=new Map(),receipt={errors:[],fonts:[],checks:[],screenshots:[]};let stopped=false;
+ const cdp={on:(name,fn)=>{handlers.set(name,fn);return ()=>handlers.delete(name);},send:async method=>{events.push(method);if(method==='Page.stopLoading')stopped=true;if(method==='Fetch.continueRequest'&&stopped)throw Error('Invalid InterceptionId');return {};},close:async()=>{}};
+ const session=createEvidenceSession({cdp,receipt});session.observeResponses();await session.installFontHold();
+ handlers.get('Fetch.requestPaused')({requestId:'live-font',networkId:'live-network'});
+ await session.close();assert.deepEqual(session.failures,[]);
+ assert.ok(events.indexOf('Fetch.continueRequest')<events.indexOf('Page.stopLoading'));
+ assert.ok(events.indexOf('Fetch.disable')<events.indexOf('Page.stopLoading'));
+});
