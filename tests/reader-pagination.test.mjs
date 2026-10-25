@@ -25,7 +25,7 @@ test('page shortcuts leave editing, text selections, controls and modified short
   const {pageKeyDirection}=await pagination();assert.equal(typeof pageKeyDirection,'function');
   const event={key:'ArrowRight',target:{closest:()=>null},preventDefault(){}};
   assert.equal(pageKeyDirection(event),1);assert.equal(pageKeyDirection({...event,key:'ArrowLeft'}),-1);
-  for(const patch of [{ctrlKey:true},{metaKey:true},{altKey:true},{shiftKey:true},{defaultPrevented:true},{target:{isContentEditable:true}},{target:{closest:()=>({})}}])assert.equal(pageKeyDirection({...event,...patch}),0);
+  for(const patch of [{ctrlKey:true},{metaKey:true},{altKey:true},{shiftKey:true},{isComposing:true},{defaultPrevented:true},{target:{isContentEditable:true}},{target:{closest:()=>({})}}])assert.equal(pageKeyDirection({...event,...patch}),0);
   assert.equal(pageKeyDirection(event,{selection:'selected words'}),0);assert.equal(pageKeyDirection(event,{blocked:true}),0);
 });
 

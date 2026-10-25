@@ -47,7 +47,7 @@ assets.set('/reader-settings-choices.mjs',['app/reader-settings-choices.mjs','te
 assets.set('/reader-settings.css',['app/reader-settings.css','text/css']);
 for(const file of ['choice-control.mjs','choice-control.css'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/reader-navigation.css',['app/reader-navigation.css','text/css']);
-for(const file of ['reader-pagination.mjs','reader-pagination.css'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
+for(const file of ['reader-pagination.mjs','reader-pagination.css','reader-paper.css','reader-page-turn.mjs','reader-page-surface.mjs','reader-page-keys.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/parallel-reading.mjs',['app/parallel-reading.mjs','text/javascript']);
 assets.set('/parallel-reading.css',['app/parallel-reading.css','text/css']);
 assets.set('/grant-result.mjs',['app/grant-result.mjs','text/javascript']);

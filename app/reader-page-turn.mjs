@@ -38,7 +38,7 @@ export function createPageTurn({requestFrame,cancelFrame,onPaint,onCommit,reduce
       stop();if(!active)direction=next===-1?-1:1;active=true;return snapshot();
     },
     drag(value,speed=0){if(disposed||!active)return;progress=clamp(value);velocity=Number.isFinite(speed)?Math.max(-8,Math.min(8,speed)):0;paint();},
-    release(cancelled=false){if(disposed||!active)return;settle(!cancelled&&progress+velocity*.12>.35?1:0);},
+    release(cancelled=false,{elapsed=0}={}){if(disposed||!active)return;if(elapsed>100)velocity=0;settle(!cancelled&&progress+velocity*.12>.32?1:0);},
     cancel(){const visible=active||progress>0;stop();active=false;progress=0;velocity=0;if(visible)paint();},
     dispose(){if(disposed)return;this.cancel();disposed=true;}
   };
@@ -57,4 +57,16 @@ export function leafSegments(progress,width,count=5,direction=1){
     x+=Math.cos(radians)*step;z-=Math.sin(radians)*step;
   }
   return segments;
+}
+
+export function leafDragProgress(distance,width){
+  if(!Number.isFinite(width)||width<=0)return 0;
+  if(distance<=0)return 0;if(distance>=width*2)return 1;
+  const edge=width-distance;let low=0,high=1;
+  for(let i=0;i<14;i++){
+    const middle=(low+high)/2,last=leafSegments(middle,width,4,1).at(-1);
+    const x=last.x+Math.cos(last.angle*Math.PI/180)*last.width;
+    if(x>edge)low=middle;else high=middle;
+  }
+  return (low+high)/2;
 }

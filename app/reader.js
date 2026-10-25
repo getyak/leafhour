@@ -182,7 +182,7 @@ function fillPassage(node,p){
 }
 function buildChapter(chapter){
   const wrapper=el('section','flow-chapter');wrapper.dataset.chapterId=chapter.id;label(wrapper,READER_UI+'chapterName',{chapter:chapter.kind&&chapter.kind!=='body'?'':chapter.number,title:chapter.title.zh},'aria-label');
-  const heading=el('header','flow-heading');heading.append(chapterChrome(el('p','chapter-number'),chapter),el('h2','',chapter.title.zh));wrapper.append(heading);
+  const heading=el('header','flow-heading');heading.append(chapterChrome(el('p','chapter-number'),chapter),el(chapter.id===state.chapterId?'h1':'h2','',chapter.title.zh));wrapper.append(heading);
   for(const s of book.sections.filter(s=>s.chapterId===chapter.id)){
     const section=el('section','reading-section');section.id='section-'+s.number;if(book.source?.structure!=='source_chapters')section.append(el('p','section-number','§'+s.number));
     for(const raw of s.paragraphs){
@@ -434,7 +434,7 @@ listen($('continuous-reading'),'change',event=>{
   closePanel();dismissTools();renderChapter();restoreAnchor(a);queueReadingFlow();persist();
 });
 listen(document,'click',e=>{
-  if(e.target.closest('#note-panel,#paragraph-tools,#audio-bootstrap-status,#audio-import-input,#reading-session,dialog,.library-chat-launcher,.reading-header,.focus-actions,.experience-surface,.source-evidence'))return;
+  if(e.target.closest('#note-panel,#paragraph-tools,#audio-bootstrap-status,#audio-import-input,#reading-session,dialog,.library-chat-launcher,.reading-header,.focus-actions,.experience-surface,.source-evidence,.page-turner,.paper-turn-handle'))return;
   const selection=getSelection();if(selection?.toString().trim()&&selectedExcerpt&&$('paragraph-tools').dataset.excerpt==='true')return;
   const node=e.target.closest('.passage');if(node){if(!getSelection()?.toString()){const layer=e.target.closest('p')?.dataset.readingLayer;choosePassage(node.dataset.id,e.clientY,'',layer==='original'?'en':layer==='translation'?'zh':null);}return;}
   dismissTools();closePanel();
@@ -443,7 +443,7 @@ function captureExcerpt(y){
   try{const excerpt=captureDOMSelection(getSelection(),paragraphMap,book);if(!excerpt){if(getSelection()?.toString().trim()){selectedExcerpt=null;dismissTools();}return;}if(selectionKind==='excerpt'&&!$('paragraph-tools').hidden&&selectedExcerpt&&highlightKey(selectedExcerpt)===highlightKey(excerpt))return;const first=excerpt.parts[0];choosePassage(first.passageId,y,excerpt.parts.map(part=>part.text).join('\n\n'),first.language);selectedExcerpt=excerpt;selectionKind='excerpt';for(const part of excerpt.parts)document.getElementById(part.passageId)?.classList.add('is-selected');$('show-share').hidden=false;$('paragraph-tools').dataset.excerpt='true';highlights.updateTools(excerpt);positionTools();}
   catch(error){selectedExcerpt=null;dismissTools();announceUi(READER_UI+'selectAgain');}
 }
-listen(document,'pointerup',e=>{if(e.button!==0||e.target.closest('#note-panel,#paragraph-tools,#audio-bootstrap-status,#reading-session,dialog,.library-chat-launcher,[popover],.experience-surface,.source-evidence')||!book)return;captureExcerpt(e.clientY);});
+listen(document,'pointerup',e=>{if(e.button!==0||e.target.closest('#note-panel,#paragraph-tools,#audio-bootstrap-status,#reading-session,dialog,.library-chat-launcher,[popover],.experience-surface,.source-evidence,.page-turner,.paper-turn-handle')||!book)return;captureExcerpt(e.clientY);});
 let excerptTimer;listen(document,'selectionchange',()=>{clearTimeout(excerptTimer);if(book&&getSelection()?.toString().trim()&&$('chapter-text').contains(getSelection().anchorNode))excerptTimer=setTimeout(()=>captureExcerpt(),120);});
 listen(document,'keyup',e=>{if(book&&!e.target.closest('#audio-bootstrap-status,input,textarea,select,dialog,.library-chat-launcher,[popover]')&&(e.key==='Shift'||e.shiftKey))captureExcerpt();});
 listen(document,'keydown',e=>{

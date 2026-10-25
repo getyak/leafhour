@@ -375,6 +375,7 @@ export async function buildReaderWeb({root,outputDir,html}){
   'arrival-catalog.mjs':{kind:'import-statement',importer:'reading-arrival.mjs'},
   'share-fonts.mjs':{kind:'dynamic-import',importer:'share.js'},
   'reader-settings-choices.mjs':{kind:'dynamic-import',importer:'reader-settings.mjs'},
+  'reader-page-surface.mjs':{kind:'dynamic-import',importer:'reader-pagination.mjs'},
   'command-palette.mjs':{kind:'dynamic-import',importer:'palette-bootstrap.mjs'}
  };
  // GET-188 scope amendment: exactly one additional external edge exists — the
@@ -428,7 +429,7 @@ export async function buildReaderWeb({root,outputDir,html}){
    if(!candidates.some(file=>file&&file.startsWith('app/ui-catalogs/')))return undefined;
    throw Error('Non-public ui-catalogue bundle edge: '+args.path);
   });
-  b.onResolve({filter:/^\.\/(?:atmosphere-audio|original-download|credit-client|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|reader-settings-choices|command-palette)\.mjs(?:\?.*)?$/},args=>{
+  b.onResolve({filter:/^\.\/(?:atmosphere-audio|original-download|credit-client|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|reader-settings-choices|reader-page-surface|command-palette)\.mjs(?:\?.*)?$/},args=>{
   const at=args.path.indexOf('?'),query=at<0?'':args.path.slice(at);
   if(query&&args.path!==paletteRetry)throw Error('Non-public lazy reader module: '+args.path);
   const entry=lazyModules[args.path.slice(2,query?at:undefined)];

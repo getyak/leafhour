@@ -27,6 +27,10 @@ test('pointer cancellation never commits even after a long drag',()=>{
   const f=fixture();f.turn.grab(1);f.turn.drag(.85,2);f.turn.release(true);f.settle();assert.deepEqual(f.commits,[]);
 });
 
+test('a short drag held still before release does not reuse its earlier flick velocity',()=>{
+  const f=fixture();f.turn.grab(1);f.turn.drag(.2,4);f.turn.release(false,{elapsed:200});f.settle();assert.deepEqual(f.commits,[]);
+});
+
 test('regrabbing starts from the displayed leaf and reversing cancels the pending turn',()=>{
   const f=fixture();f.turn.turn(1);f.step();f.step();const visible=f.paints.at(-1).progress;
   const grabbed=f.turn.grab(1);assert.equal(grabbed.progress,visible);assert.equal(grabbed.direction,1);
@@ -60,4 +64,13 @@ test('a soft leaf stays flat at rest and its bent strips meet without seams',()=
   }
   const reversed=module.leafSegments(.5,100,4,-1);assert.equal(Math.sign(reversed[0].angle),-Math.sign(bent[0].angle));
   assert.deepEqual(module.leafSegments(.5,0,4,1),[]);
+});
+
+test('the grabbed paper edge follows pixel distance rather than rotating away from the pointer',()=>{
+  assert.equal(typeof module.leafDragProgress,'function');
+  for(const distance of [0,25,50,100,150,200]){
+    const progress=module.leafDragProgress(distance,100),parts=module.leafSegments(progress,100,4,1),last=parts.at(-1);
+    const edge=last.x+Math.cos(last.angle*Math.PI/180)*last.width;
+    assert.ok(Math.abs(edge-(100-distance))<.1,'the free edge must keep its original grab offset');
+  }
 });
