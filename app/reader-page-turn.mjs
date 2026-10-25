@@ -1,9 +1,10 @@
 const clamp=value=>Math.max(0,Math.min(1,Number(value)||0));
+export const withinPaperSnapshotBudget=(elements,characters)=>elements<=1200&&characters<=48000;
 
 // Own progress, not the reader's position. Only a settled destination commits.
 export function createPageTurn({requestFrame,cancelFrame,onPaint,onCommit,reducedMotion=()=>false}){
   let progress=0,velocity=0,direction=1,target=0,frame=null,last=null,epoch=0,disposed=false,active=false;
-  const snapshot=()=>({progress,direction});
+  const snapshot=()=>({progress,direction,active});
   const stop=()=>{epoch++;if(frame!==null)cancelFrame(frame);frame=null;last=null;};
   const paint=()=>onPaint(snapshot());
   function finish(){
@@ -17,6 +18,7 @@ export function createPageTurn({requestFrame,cancelFrame,onPaint,onCommit,reduce
       if(destination===1)onCommit(direction);
       return;
     }
+    paint();
     const ticket=epoch;
     const tick=time=>{
       if(disposed||ticket!==epoch)return;
@@ -35,7 +37,7 @@ export function createPageTurn({requestFrame,cancelFrame,onPaint,onCommit,reduce
     },
     grab(next){
       if(disposed)return null;
-      stop();if(!active)direction=next===-1?-1:1;active=true;return snapshot();
+      stop();if(!active)direction=next===-1?-1:1;active=true;paint();return snapshot();
     },
     drag(value,speed=0){if(disposed||!active)return;progress=clamp(value);velocity=Number.isFinite(speed)?Math.max(-8,Math.min(8,speed)):0;paint();},
     release(cancelled=false,{elapsed=0}={}){if(disposed||!active)return;if(elapsed>100)velocity=0;settle(!cancelled&&progress+velocity*.12>.32?1:0);},

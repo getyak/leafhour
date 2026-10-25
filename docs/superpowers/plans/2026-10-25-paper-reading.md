@@ -31,7 +31,7 @@
 
 **Files:** Create `app/reader-page-turn.mjs`; create `tests/reader-page-turn.test.mjs`.
 
-**Interfaces:** Produces `createPageTurn({requestFrame,cancelFrame,onPaint,onCommit,reducedMotion})`, with `turn(direction)`, `grab(direction)`, `drag(progress,velocity)`, `release(cancelled, {elapsed})`, `cancel()` and `dispose()`. Paint state is `{progress,direction}`; commit receives direction exactly once. Produces `leafSegments(progress,width,count,direction)` with contiguous segment transforms for a curved, constant-length leaf. The DOM adapter consumes these functions in Task 2.
+**Interfaces:** Produces `createPageTurn({requestFrame,cancelFrame,onPaint,onCommit,reducedMotion})`, with `turn(direction)`, `grab(direction)`, `drag(progress,velocity)`, `release(cancelled, {elapsed})`, `cancel()` and `dispose()`. Paint state is `{progress,direction,active}`; commit receives direction exactly once. Produces `leafSegments(progress,width,count,direction)` with contiguous segment transforms for a curved, constant-length leaf. The DOM adapter consumes these functions in Task 2.
 
 - [x] Write behavioral tests for pending versus committed turns, cancelled/reversed drags, immediate reduced motion, superseded frames and disposal. Name each failure before implementation.
 - [x] Run `node --test tests/reader-page-turn.test.mjs`; observe the missing behavior fail.
@@ -41,7 +41,7 @@
 
 ### Task 2: Live reader integration and paper layout
 
-**Files:** Create `app/reader-page-surface.mjs`, `app/reader-page-keys.mjs`, `app/reader-paper.css`; modify `app/reader-pagination.mjs`, `app/reader-pagination.css`, `app/reader.js`, `app/reading-flow.css`, `server/server.mjs`, `tools/build-reader-web.mjs`, `release-files.json`; extend `tests/reader-pagination.test.mjs` where navigation ownership changes.
+**Files:** Create `app/reader-page-surface.mjs`, `app/reader-page-inputs.mjs`, `app/reader-paper.css`; modify `app/reader-pagination.mjs`, `app/reader-pagination.css`, `app/reader.js`, `app/reading-flow.css`, `server/server.mjs`, `tools/build-reader-web.mjs`, `release-files.json`; extend `tests/reader-pagination.test.mjs` where navigation ownership changes.
 
 **Interfaces:** Consumes Task 1. Produces `mountReaderPageSurface({document,viewport,text,getGeometry,isBlocked,onTurn})` with `turn(direction)`, `cancel()`, `sync()`, `dispose()`; `getGeometry()` returns `{page,step,count,columns,gap}`. A successful turn asks the existing pagination owner to perform its immediate page transition. Chapter-boundary navigation continues through the existing owner.
 

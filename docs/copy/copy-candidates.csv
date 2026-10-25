@@ -3144,8 +3144,8 @@ candidate:app/reader-navigation.mjs:39:144,js-cjk-literal,app/reader-navigation.
 candidate:app/reader-navigation.mjs:41:202,js-cjk-literal,app/reader-navigation.mjs,41,,unknown,reviewable,," · 小节 "
 candidate:app/reader-navigation.mjs:138:68,js-attribute,app/reader-navigation.mjs,138,aria-expanded,unknown,reviewable,,false
 candidate:app/reader-navigation.mjs:143:406,js-attribute,app/reader-navigation.mjs,143,aria-expanded,unknown,reviewable,,false
-candidate:app/reader-page-surface.mjs:51:128,js-attribute,app/reader-page-surface.mjs,51,aria-hidden,unknown,reviewable,,true
-candidate:app/reader-page-surface.mjs:85:118,js-attribute,app/reader-page-surface.mjs,85,aria-controls,unknown,protected,identifier,chapter-text
+candidate:app/reader-page-surface.mjs:50:128,js-attribute,app/reader-page-surface.mjs,50,aria-hidden,unknown,reviewable,,true
+candidate:app/reader-page-surface.mjs:86:118,js-attribute,app/reader-page-surface.mjs,86,aria-controls,unknown,protected,identifier,chapter-text
 candidate:app/reader-return.mjs:44:124,js-cjk-literal,app/reader-return.mjs,44,,unknown,reviewable,,引用参数重复，请从 Agent 重新打开引用。
 candidate:app/reader-return.mjs:44:257,js-cjk-literal,app/reader-return.mjs,44,,unknown,reviewable,,引用的来源版本与当前书籍不同，请让 Agent 重新读取当前目录后打开引用。
 candidate:app/reader-return.mjs:44:359,js-cjk-literal,app/reader-return.mjs,44,,unknown,reviewable,,引用的文本层无效，请从 Agent 重新打开引用。

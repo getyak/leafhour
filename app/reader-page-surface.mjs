@@ -1,5 +1,4 @@
-import {createPageTurn,leafSegments,leafDragProgress} from './reader-page-turn.mjs';
-import {pageKeyDirection} from './reader-page-keys.mjs';
+import {createPageTurn,leafSegments,leafDragProgress,withinPaperSnapshotBudget} from './reader-page-turn.mjs';
 
 // Paper styling belongs to the requested page mode, outside scroll startup.
 let stylesReady=true;
@@ -15,7 +14,7 @@ if(styleDocument?.head&&!styleDocument.querySelector('link[data-reader-paper]'))
 export default function mountReaderPageSurface({document,viewport,text,getGeometry,isBlocked=()=>false,onTurn}){
   const view=document.defaultView,host=viewport.parentElement;
   if(!document.createElement||!text.cloneNode||!host?.append)return {turn:onTurn,sync(){},cancel(){},dispose(){}};
-  let disposed=false,presentation=null,drag=null,ignoreClickUntil=0;
+  let disposed=false,presentation=null,drag=null,ignoreClickUntil=0,turnState=null;
   const removers=[],handles=[];
   const selected=()=>!!view.getSelection()?.toString();
   const blocked=()=>disposed||document.hidden||isBlocked()||selected();
@@ -40,7 +39,7 @@ export default function mountReaderPageSurface({document,viewport,text,getGeomet
   function prepare(direction){
     if(presentation)return true;
     const geometry=getGeometry();
-    if(!geometry||!stylesReady||reduced()||text.querySelectorAll('*').length>1200)return false;
+    if(!geometry||!stylesReady||reduced()||!withinPaperSnapshotBudget(text.querySelectorAll('*').length,text.textContent.length))return false;
     const bounds=viewport.getBoundingClientRect(),paper=host.getBoundingClientRect();
     const outer=bounds.left-paper.left,width=geometry.columns===2?bounds.width/2+outer:paper.width;
     if(!width||!viewport.clientHeight)return false;
@@ -67,15 +66,17 @@ export default function mountReaderPageSurface({document,viewport,text,getGeomet
     presentation={root,strips,width,origin,direction};draw(0,direction);host.append(root);host.dataset.paperTurning='true';return true;
   }
   const motion=createPageTurn({requestFrame:fn=>view.requestAnimationFrame(fn),cancelFrame:id=>view.cancelAnimationFrame(id),reducedMotion:reduced,
-    onPaint:({progress,direction})=>{if(progress===0)clear();else draw(progress,direction);},onCommit:direction=>{clear();if(!blocked())onTurn(direction);}});
+    onPaint:state=>{turnState=state;if(!state.active)clear();else draw(state.progress,state.direction);},onCommit:direction=>{clear();if(!blocked())onTurn(direction);}});
   function cancel(){
     const previous=drag;drag=null;
+    if(previous)ignoreClickUntil=(view.performance?.now?.()||previous.time)+500;
     if(previous?.node.hasPointerCapture?.(previous.id))previous.node.releasePointerCapture(previous.id);
     motion.cancel();clear();
   }
   function turn(direction){
     if(blocked())return false;
     const g=getGeometry();if(!g?.active)return false;
+    if(turnState?.active)return motion.turn(direction);
     if(g.page+direction<0||g.page+direction>=g.count){cancel();return onTurn(direction);}
     if(!prepare(direction)){cancel();return onTurn(direction);}
     return motion.turn(direction);
@@ -110,8 +111,6 @@ export default function mountReaderPageSurface({document,viewport,text,getGeomet
   listen(view,'pagehide',cancel);
   listen(document,'keydown',event=>{
     if(event.key==='Escape'&&presentation){event.preventDefault();cancel();return;}
-    const direction=pageKeyDirection(event,{blocked:!getGeometry()?.active||isBlocked(event.target),selection:view.getSelection()?.toString()});
-    if(direction){event.preventDefault();turn(direction);}
   });
   const sync=()=>{const g=getGeometry();for(const {node,direction} of handles){node.hidden=!g?.active;node.disabled=!g?.active||(direction===1?!g.next:!g.previous);}};
   sync();

@@ -74,3 +74,19 @@ test('the grabbed paper edge follows pixel distance rather than rotating away fr
     assert.ok(Math.abs(edge-(100-distance))<.1,'the free edge must keep its original grab offset');
   }
 });
+
+test('zero progress during a live drag is distinct from a cancelled or completed leaf',()=>{
+  const f=fixture();f.turn.grab(1);f.turn.drag(.4,0);f.turn.drag(0,0);assert.equal(f.paints.at(-1).active,true);
+  f.turn.drag(.5,0);f.turn.release(false);f.settle();assert.deepEqual(f.commits,[1]);assert.equal(f.paints.at(-1).active,false);
+});
+
+test('an opposite input cancels even before the first animation frame',()=>{
+  const f=fixture();f.turn.turn(1);assert.equal(f.paints.at(-1)?.active,true);f.turn.turn(-1);f.settle();assert.deepEqual(f.commits,[]);
+});
+
+test('a giant single paragraph is rejected even when its element count is small',()=>{
+  assert.equal(typeof module.withinPaperSnapshotBudget,'function');
+  assert.equal(module.withinPaperSnapshotBudget(1,230000),false);
+  assert.equal(module.withinPaperSnapshotBudget(3000,500),false);
+  assert.equal(module.withinPaperSnapshotBudget(30,5000),true);
+});

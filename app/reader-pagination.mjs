@@ -1,5 +1,6 @@
 import {t,onUiLocaleChange} from './ui-locale.mjs';
-export {pageKeyDirection} from './reader-page-keys.mjs';
+import {mountReaderPageInputs} from './reader-page-inputs.mjs';
+export {pageKeyDirection} from './reader-page-inputs.mjs';
 // Columns fragment the existing, selectable text. Paragraph IDs and content stay intact.
 export function pageGeometry({width,scrollWidth,gap}){
   const step=width+gap;
@@ -15,16 +16,9 @@ export function fragmentIndex(rects,progress=0){
 }
 export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{},onBoundary=()=>false,hasBoundary=()=>false}){
   const view=document.defaultView,viewport=document.getElementById('reading-pages'),text=document.getElementById('chapter-text'),end=document.getElementById('page-end'),controls=document.getElementById('page-turner'),previous=document.getElementById('page-previous'),next=document.getElementById('page-next'),label=document.getElementById('page-position');
-  let active=false,page=0,lastAnchor,resizeFrame,resizeEpoch=0,pointerFocus=false,pageLabel,disposed=false,surface,surfaceLoading;
-  async function loadSurface(){
-    if(surface||surfaceLoading)return;
-    surfaceLoading=true;
-    try{
-      const mount=(await import('./reader-page-surface.mjs')).default;
-      if(!disposed)surface=mount({document,viewport,text,getGeometry:()=>active?{...geometry(),page,active,previous:!previous.disabled,next:!next.disabled}:null,isBlocked,onTurn:commitTurn});
-    }catch{}finally{surfaceLoading=false;}
-  }
-  const cancelResize=()=>{resizeEpoch++;view.cancelAnimationFrame(resizeFrame);surface?.cancel();};
+  let active=false,page=0,lastAnchor,resizeFrame,resizeEpoch=0,pointerFocus=false,pageLabel,disposed=false;
+  const inputs=mountReaderPageInputs({document,viewport,text,getGeometry:()=>active?{...geometry(),page,active,previous:!previous.disabled,next:!next.disabled}:null,isBlocked,onTurn:commitTurn});
+  const cancelResize=()=>{resizeEpoch++;view.cancelAnimationFrame(resizeFrame);inputs.cancel();};
   const listeners=[];
   const listen=(target,name,fn,options)=>{const owned=event=>{if(!disposed)fn(event);};target.addEventListener(name,owned,options);listeners.push(()=>target.removeEventListener(name,owned,options));};
   // Locale publication reads only the last measured UI descriptor. Measuring
@@ -33,11 +27,11 @@ export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{
   const offLocale=onUiLocaleChange(updateLabels);
   function geometry(){const style=view.getComputedStyle(text),gap=parseFloat(style.columnGap)||0,columns=Number(style.columnCount)||1;return {...pageGeometry({width:viewport.clientWidth,scrollWidth:text.scrollWidth,gap}),gap,columns};}
   function sync(){
-    if(!active){surface?.sync();return;}
+    if(!active){inputs.sync();return;}
     text.style.setProperty?.('--paper-page-height',viewport.clientHeight+'px');
     const {step,count,columns}=geometry();end.style.left=((count-1)*step+viewport.clientWidth-1)+'px';page=Math.max(0,Math.min(count-1,Math.round(viewport.scrollLeft/step)));
     previous.disabled=page===0&&!hasBoundary(-1);next.disabled=page===count-1&&!hasBoundary(1);
-    surface?.sync();
+    inputs.sync();
     pageLabel={id:columns===2?'reader.pages.spread':'reader.pages.single',params:{page:page+1,count}};updateLabels();
   }
   function visibleAnchor(){
@@ -65,7 +59,7 @@ export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{
   }
   function turn(direction){
     // Paging remains immediate if its optional visual module is still loading.
-    return surface?surface.turn(direction):commitTurn(direction);
+    return inputs.turn(direction);
   }
   function commitTurn(direction){
     if(!active||isBlocked()||view.getSelection()?.toString())return false;
@@ -97,9 +91,9 @@ export function mountReaderPagination({document,isBlocked=()=>false,onTurn=()=>{
       const enabled=state.pageLayout==='spread'&&state.mode!=='parallel';
       if(enabled!==active){active=enabled;document.body.dataset.paginated=String(active);controls.hidden=!active;end.hidden=!active;viewport.scrollLeft=0;page=0;lastAnchor=null;if(active)view.scrollTo(0,0);}
       document.getElementById('page-layout').value=state.pageLayout;
-      document.getElementById('page-layout-setting').hidden=state.mode==='parallel';document.getElementById('page-layout-hint').hidden=state.mode==='parallel';sync();if(active)loadSurface();
+      document.getElementById('page-layout-setting').hidden=state.mode==='parallel';document.getElementById('page-layout-hint').hidden=state.mode==='parallel';sync();
     },
     last(){if(!active)return;cancelResize();sync();viewport.scrollLeft=(geometry().count-1)*geometry().step;sync();lastAnchor=visibleAnchor();},
-    unmount(){if(disposed)return;disposed=true;active=false;surface?.dispose();offLocale();observer.disconnect?.();view.cancelAnimationFrame(resizeFrame);for(const release of listeners)release();listeners.length=0;}
+    unmount(){if(disposed)return;disposed=true;active=false;inputs.dispose();offLocale();observer.disconnect?.();view.cancelAnimationFrame(resizeFrame);for(const release of listeners)release();listeners.length=0;}
   };
 }
