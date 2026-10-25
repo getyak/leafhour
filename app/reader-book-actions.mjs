@@ -10,6 +10,7 @@ import {readerLoginUrl} from './reader-return.mjs';
 // cannot exist beside the eagerly bundled controller.
 export function mountReaderBookActions({document,info,getBook,api,session,bookId,loadGiftComposer=()=>Promise.all([import('./gift-compose.mjs'),import('./book-binding.mjs')]).then(modules=>Object.assign({},...modules))}){
   const $=id=>document.getElementById(id),trigger=$('open-book-info'),generate=$('book-intro-generate'),login=$('book-intro-login'),share=$('book-info-share'),status=$('book-intro-status'),note=$('book-intro-provenance'),scope=$('book-intro-scope');
+  const exportButton=$('book-info-export');
   const make=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
   const signedIn=!!(bookId&&session?.user),loginUrl=()=>readerLoginUrl({bookId,ui:getUiLocale()});
   let disposed=false,unsubscribe=()=>{},sequence=0,activeBookId=null,activeVersion=null,composer=null,giftModule=null,openingTicket=null;
@@ -33,6 +34,7 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
     login.hidden=!bookId||signedIn||!missing;loginPath=bookId;login.href=loginUrl();text(login,'signIn');
     scope.hidden=!missing;text(scope,!bookId?'importScope':signedIn?'scope':'signInScope');
     if(display.error)statusMessage.set('bookActions.introFailure',undefined,true);else if(display.phase==='generating'||display.phase==='loading')statusMessage.set('bookActions.'+(display.phase==='generating'?'generatingNote':'loading'));else statusMessage.clear();
+    if(exportButton){exportButton.disabled=!bookId;labels.text(exportButton,'export.title');}
     share.disabled=!bookId;text(share,signedIn?'share':'signInShare');
   }
   const intro=createIntroductionController({getBook,request:(data,options)=>api('/api/introduction',data,options),onChange:render,onSaved:value=>{const book=getBook();if(book&&introductionFor({...book,introduction:value}).source==='ai')book.introduction=value;}});
@@ -41,7 +43,7 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
   const message=(text,error=false)=>{giftMessage.clear();messageNode.textContent=text;messageNode.setAttribute('role',error?'alert':'status');};
   const notice=(id,error=false)=>giftMessage.set('bookActions.'+id,undefined,error);
   const current=ticket=>!disposed&&ticket===sequence&&dialog.open&&getBook()?.bookId===activeBookId&&getBook()?.contentVersion===activeVersion;
-  const show=(book,title)=>{sequence++;activeBookId=book.bookId;activeVersion=book.contentVersion;dialogLabels.clear();if(title&&typeof title==='object')dialogLabels.text(heading,title.id,title.params);else heading.textContent=title;dialogLabels.attr(close,'aria-label','bookActions.closeGift');body.replaceChildren();message('');intro.close();info.close();if(!dialog.open)dialog.showModal();return sequence;};
+  const show=(book,title)=>{sequence++;activeBookId=book.bookId;activeVersion=book.contentVersion;dialogLabels.clear();dialogLabels.attr(close,'aria-label','bookActions.closeGift');if(title&&typeof title==='object')dialogLabels.text(heading,title.id,title.params);else heading.textContent=title;dialogLabels.attr(close,'aria-label','bookActions.closeGift');body.replaceChildren();message('');intro.close();info.close();if(!dialog.open)dialog.showModal();return sequence;};
   // The optional gift module loads once; its controller is constructed only
   // after the import settles for a request that is still current and alive, so
   // a late module is never more than cached code and ordinary close/reopen
@@ -65,6 +67,13 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
     catch{if(!disposed&&current(ticket))notice('giftFailure',true);}
     finally{if(openingTicket===ticket)openingTicket=null;}
   };
+  const onExport=async()=>{
+    if(disposed||!bookId)return;const book=getBook();if(!book)return;
+    const ticket=show(book,{id:'export.title'});dialogLabels.attr(close,'aria-label','export.close');
+    const notify=(id,params,error)=>giftMessage.set(id,params,error);
+    try{const {mountBookExport}=await import('./book-export-ui.mjs');if(!current(ticket))return;await mountBookExport({document,body,book,api,current:()=>current(ticket),t,locale:getUiLocale,notice:notify,label:(el,id)=>dialogLabels.text(el,id)});}
+    catch{if(current(ticket))notify('export.error',null,true);}
+  };
   const onClose=()=>dialog.close();
   const onDialogClose=()=>{sequence++;body.replaceChildren();message('');dialog.classList.remove('gift-compose-dialog');
     // An old close never steals focus from a newer modal or an intentional
@@ -84,6 +93,7 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
     unsubscribe();offLocale();
     generate.removeEventListener('click',onGenerate);
     share.removeEventListener('click',onShare);
+    exportButton?.removeEventListener('click',onExport);if(exportButton)exportButton.disabled=true;
     close.removeEventListener('click',onClose);
     dialog.removeEventListener('close',onDialogClose);
     for(const event of ['reader:ready','reader:chapter'])document.removeEventListener(event,refresh);
@@ -100,6 +110,7 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
     document.body.append(dialog);
     generate.addEventListener('click',onGenerate);
     share.addEventListener('click',onShare);
+    exportButton?.addEventListener('click',onExport);
     close.addEventListener('click',onClose);
     dialog.addEventListener('close',onDialogClose);
     // The injected shared handle owns every transition: subscribing while the

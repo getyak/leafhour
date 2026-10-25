@@ -70,10 +70,17 @@ export function mountLibraryBookActions({api,getSession,getBooks,getOwner,getRev
   }
   giftComposer=mountGiftComposer({api,dialog,body,getSession,getOwner,show,current,message,cover});
   async function share(book){if(authenticated())return giftComposer.open(book);}
+  async function exportBook(book){
+    const ticket=show(book,{id:'export.title'},'export'),owner=getOwner();notice('export.loading');
+    try{const {mountBookExport}=await import('./book-export-ui.mjs');if(!current(ticket)||owner!==getOwner())return;await mountBookExport({document,body,book,api,current:()=>current(ticket)&&owner===getOwner(),t,locale:getUiLocale,notice,label});}
+    catch{if(current(ticket)&&owner===getOwner())notice('export.error',null,true);}
+  }
+
   dialog.addEventListener('close',()=>dialog.classList.remove('gift-compose-dialog'));
   function openMenu(book,trigger){
     if(disposed)return;closeMenu();menuControl.setTrigger(trigger);selected=book;menuLabels.clear();const ids=getBooks().map(b=>b.bookId),index=ids.indexOf(book.bookId);menu.replaceChildren(node('p','book-menu-title',title(book)));
     const items=[['info','book.info',()=>bookInfo(book)],['mail','book.gift',()=>share(book)],['calendar-plus','book.schedule.add',()=>calendar(book)],['arrow-left','book.move.before',()=>{menuControl.trigger?.focus({preventScroll:true});return onReorder(moveShelfBook(ids,book.bookId,ids[index-1],'before'));},index<1],['arrow-right','book.move.after',()=>{menuControl.trigger?.focus({preventScroll:true});return onReorder(moveShelfBook(ids,book.bookId,ids[index+1],'after'));},index===ids.length-1],['trash-2','book.archive.confirm',()=>archive(book)]];
+    items.push(['download','export.title',()=>exportBook(book)]);
     for(const [name,label,run,disabled]of items){const item=button('','book-menu-item'+(name==='trash-2'?' is-destructive':''));item.setAttribute('role','menuitem');item.disabled=!!disabled;item.append(icon(name),uiNode('span','',label,undefined,menuLabels));item.addEventListener('click',()=>{if(disposed)return;closeMenu();const ticket=menuSequence,owner=getOwner();Promise.resolve().then(()=>{if(!disposed&&ticket===menuSequence&&owner===getOwner())return run();}).catch(error=>{if(disposed||ticket!==menuSequence||owner!==getOwner())return;const status=document.getElementById('library-status');if(status)status.textContent=t('book.error');});});menu.append(item);}roomIcons(menu);menuControl.open();const r=trigger.getBoundingClientRect(),width=menu.offsetWidth;menu.style.left=Math.max(12,Math.min(innerWidth-width-12,r.right-width))+'px';menu.style.top=Math.max(12,Math.min(innerHeight-menu.offsetHeight-12,r.bottom+8))+'px';menu.querySelector('button:not(:disabled)')?.focus({preventScroll:true});
   }
   function decorate(card,book){

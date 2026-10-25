@@ -89,6 +89,10 @@
         "sha256": "64815969f076a8c5828a484956854f10eaa302008ff2433bb19d9a33e3692250"
       },
       {
+        "file": "app/book-export-ui.mjs",
+        "sha256": "c22edf2c9314675333f189efa60b89abb2d40ee5dbb369de317b1c82314fcdb6"
+      },
+      {
         "file": "app/book-gift.html",
         "sha256": "e0f18d3052e278b4d9ecdf325b16a702d2ee4130a7ec282a5a491f003807dd40"
       },
@@ -147,6 +151,14 @@
       {
         "file": "app/credit-labels.mjs",
         "sha256": "73688f0ffc09c3695a3aed9ff31eb110ac2d3877a9414cc7a529fa6cf1fa5bf1"
+      },
+      {
+        "file": "app/document-export.mjs",
+        "sha256": "8ea7c6b02557d65ff51cade39d6b2e0954105d23024795ec4bc4b55b34d5a3c7"
+      },
+      {
+        "file": "app/document-pdf.mjs",
+        "sha256": "7684aed91d1b9edc49b7d513820f03dc84ff6eb1a2ac47f2431af6722611db86"
       },
       {
         "file": "app/document-source.mjs",
@@ -246,7 +258,7 @@
       },
       {
         "file": "app/index.html",
-        "sha256": "4ae2bd424c2e2e458dfa2a252b3e30fc1a3785643f4b402114c9cc14cc3cd52c"
+        "sha256": "0f4233151a34df1fe6e30244d65e5f3b5c1f6a47e5c12814a26a6d1ed1c93b6a"
       },
       {
         "file": "app/interaction-craft.mjs",
@@ -266,7 +278,7 @@
       },
       {
         "file": "app/library-book-actions.mjs",
-        "sha256": "bcaca50a8b7ff26ec62b232d8a6f3d616be807c0daee27ec1792b1ea3d32151c"
+        "sha256": "66c7be8c9f8901345d36c91eef958afb82a79a4ac7061e54fa8df46b5d72f9b4"
       },
       {
         "file": "app/library-chat-markdown.mjs",
@@ -286,7 +298,7 @@
       },
       {
         "file": "app/library-data.mjs",
-        "sha256": "89e9655cfe89d94d358e34d17ec82508b1c5eeb49af7978aa40ed22d21c5bc7f"
+        "sha256": "5ef4e1dd1acd70f09b253128dd0f14790c0461af2b0d4a3acaaae233145a016b"
       },
       {
         "file": "app/library-export.mjs",
@@ -474,7 +486,7 @@
       },
       {
         "file": "app/reader-book-actions.mjs",
-        "sha256": "34c1a414ae91a8c7557420db9f512803a966d356b1c2e3cb391eec0b5f774604"
+        "sha256": "5204b3b979ceee661116bc2ce2370d9af27e312598e7bb6582f87f988e1e2fe5"
       },
       {
         "file": "app/reader-chat-workspace.mjs",
@@ -738,19 +750,19 @@
       },
       {
         "file": "app/ui-catalogs/en.mjs",
-        "sha256": "85be45379a2eb7d8826a75620582211bf99dd57c5e25e841b1193cf3132ac853"
+        "sha256": "413957310decf591ade7dfc478990cc3d77cf606dedc0b9aeab17c136b6286f1"
       },
       {
         "file": "app/ui-catalogs/ja.mjs",
-        "sha256": "05c540f174c1d66b7f5fcd3bf503190033c9b926e8d329c150b164c537e4ef24"
+        "sha256": "f87da6f81fe555d8a065d431818121878b3b6ad3f3f23d0e10a149dd40077006"
       },
       {
         "file": "app/ui-catalogs/zh-Hans.mjs",
-        "sha256": "a731f9b7b8899bbbeee2d212b4fbb48c5d99815736112ef899943d22f7526f93"
+        "sha256": "ec50a4541369302d7d63997cac5624b72f62c1f1f97d6ffe64ef037ae0b647f7"
       },
       {
         "file": "app/ui-catalogs/zh-Hant.mjs",
-        "sha256": "d37892022a38c087f6ebdc3bc5c7f2bc25582da4e7748ff6ce2d398a0c61bd9e"
+        "sha256": "8653eb877dffb6868d1c6ac4f3b64c63ca6687b70f399616e8f1b8ed80d1f531"
       },
       {
         "file": "app/ui-locale-codec.mjs",
@@ -921,6 +933,10 @@
         "sha256": "419b3593164a36059ffb563adf92be80b0f069df06bcc3b3d7238eb29209c504"
       },
       {
+        "file": "server/document-export-assets.mjs",
+        "sha256": "1c33b64ddd748f2b2c53e94e031cb87ef509fd1f75db0323f4424736cb6c72d1"
+      },
+      {
         "file": "server/document-import.mjs",
         "sha256": "93cade3bec7560de6953a1a39794e0c05528ff895ca507ea2a02308c76a1116c"
       },
@@ -1026,7 +1042,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "e061c7c6dbec39ca5432ed08c30e65d455469faea94b71c91100862b81b06dc5"
+        "sha256": "a49f06ed893703ee41b393104c206267b7245910d3907d24f2049192f41f43b2"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1105,7 +1121,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "1c131a4e85fe108b0bf1832ba5f26109ad23ecadbc39014853053eac425a6555"
+    "inputDigest": "3ff1ab3ec4bc5de860549c3ea38fbb2c7850012930256a0e3b9d2cb26f046ad9"
   },
   "locales": [
     "en",
@@ -1119,25 +1135,25 @@
       "locale": "en",
       "file": "app/ui-catalogs/en.mjs",
       "missing": false,
-      "entries": 2161
+      "entries": 2182
     },
     {
       "locale": "zh-Hans",
       "file": "app/ui-catalogs/zh-Hans.mjs",
       "missing": false,
-      "entries": 2161
+      "entries": 2182
     },
     {
       "locale": "zh-Hant",
       "file": "app/ui-catalogs/zh-Hant.mjs",
       "missing": false,
-      "entries": 2161
+      "entries": 2182
     },
     {
       "locale": "ja",
       "file": "app/ui-catalogs/ja.mjs",
       "missing": false,
-      "entries": 2161
+      "entries": 2182
     }
   ],
   "items": [
@@ -14830,7 +14846,7 @@
         },
         {
           "file": "app/library-book-actions.mjs",
-          "line": 73,
+          "line": 79,
           "column": 27
         },
         {
@@ -14915,12 +14931,12 @@
         },
         {
           "file": "app/reader-book-actions.mjs",
-          "line": 88,
+          "line": 98,
           "column": 32
         },
         {
           "file": "app/reader-book-actions.mjs",
-          "line": 104,
+          "line": 115,
           "column": 29
         },
         {
@@ -14985,22 +15001,22 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 309,
+          "line": 312,
           "column": 114
         },
         {
           "file": "server/portal.mjs",
-          "line": 310,
+          "line": 313,
           "column": 224
         },
         {
           "file": "server/portal.mjs",
-          "line": 349,
+          "line": 353,
           "column": 110
         },
         {
           "file": "server/portal.mjs",
-          "line": 351,
+          "line": 355,
           "column": 290
         }
       ],
@@ -15690,6 +15706,11 @@
       "missingLocales": [],
       "duplicates": [],
       "consumers": [
+        {
+          "file": "app/library-book-actions.mjs",
+          "line": 74,
+          "column": 48
+        },
         {
           "file": "app/library-chat.mjs",
           "line": 80,
@@ -25971,7 +25992,7 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 231,
+          "line": 234,
           "column": 64
         }
       ],
@@ -26152,7 +26173,7 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 235,
+          "line": 238,
           "column": 116
         }
       ],
@@ -26214,12 +26235,12 @@
         },
         {
           "file": "server/portal.mjs",
-          "line": 236,
+          "line": 239,
           "column": 119
         },
         {
           "file": "server/portal.mjs",
-          "line": 238,
+          "line": 241,
           "column": 124
         }
       ],
@@ -33293,7 +33314,7 @@
         },
         {
           "file": "app/library-book-actions.mjs",
-          "line": 87,
+          "line": 94,
           "column": 169
         },
         {
@@ -33360,7 +33381,7 @@
         },
         {
           "file": "app/library-book-actions.mjs",
-          "line": 84,
+          "line": 91,
           "column": 139
         }
       ],
@@ -33422,7 +33443,7 @@
         },
         {
           "file": "app/library-book-actions.mjs",
-          "line": 84,
+          "line": 91,
           "column": 190
         }
       ],
@@ -33484,7 +33505,7 @@
         },
         {
           "file": "app/library-book-actions.mjs",
-          "line": 76,
+          "line": 82,
           "column": 26
         }
       ],
@@ -35261,7 +35282,7 @@
         },
         {
           "file": "app/library-book-actions.mjs",
-          "line": 76,
+          "line": 82,
           "column": 513
         }
       ],
@@ -35660,7 +35681,7 @@
       "consumers": [
         {
           "file": "app/library-book-actions.mjs",
-          "line": 76,
+          "line": 82,
           "column": 66
         }
       ],
@@ -35717,7 +35738,7 @@
       "consumers": [
         {
           "file": "app/library-book-actions.mjs",
-          "line": 76,
+          "line": 82,
           "column": 112
         }
       ],
@@ -35774,7 +35795,7 @@
       "consumers": [
         {
           "file": "app/library-book-actions.mjs",
-          "line": 76,
+          "line": 82,
           "column": 166
         }
       ],
@@ -35831,7 +35852,7 @@
       "consumers": [
         {
           "file": "app/library-book-actions.mjs",
-          "line": 76,
+          "line": 82,
           "column": 336
         }
       ],
@@ -35888,12 +35909,12 @@
       "consumers": [
         {
           "file": "app/library-book-actions.mjs",
-          "line": 81,
+          "line": 88,
           "column": 120
         },
         {
           "file": "app/library-book-actions.mjs",
-          "line": 87,
+          "line": 94,
           "column": 141
         }
       ],
@@ -35970,7 +35991,7 @@
         },
         {
           "file": "app/library-book-actions.mjs",
-          "line": 77,
+          "line": 84,
           "column": 631
         }
       ],
@@ -37950,6 +37971,11 @@
       "duplicates": [],
       "consumers": [
         {
+          "file": "app/book-export-ui.mjs",
+          "line": 16,
+          "column": 36
+        },
+        {
           "file": "app/library-data.mjs",
           "line": 36,
           "column": 57
@@ -38294,6 +38320,11 @@
       "missingLocales": [],
       "duplicates": [],
       "consumers": [
+        {
+          "file": "app/book-export-ui.mjs",
+          "line": 12,
+          "column": 65
+        },
         {
           "file": "app/library-data.mjs",
           "line": 44,
@@ -39431,7 +39462,7 @@
         {
           "file": "app/library-data.mjs",
           "line": 68,
-          "column": 125
+          "column": 197
         }
       ],
       "hints": [
@@ -39773,7 +39804,7 @@
         {
           "file": "app/library-data.mjs",
           "line": 136,
-          "column": 496
+          "column": 528
         }
       ],
       "hints": [
@@ -39830,7 +39861,7 @@
         {
           "file": "app/library-data.mjs",
           "line": 137,
-          "column": 328
+          "column": 939
         }
       ],
       "hints": [
@@ -40343,7 +40374,7 @@
         {
           "file": "app/library-data.mjs",
           "line": 68,
-          "column": 27
+          "column": 99
         },
         {
           "file": "app/library-data.mjs",
@@ -40410,7 +40441,7 @@
         {
           "file": "app/library-data.mjs",
           "line": 68,
-          "column": 45
+          "column": 117
         },
         {
           "file": "app/library-data.mjs",
@@ -40477,7 +40508,7 @@
         {
           "file": "app/library-data.mjs",
           "line": 68,
-          "column": 61
+          "column": 133
         },
         {
           "file": "app/library-data.mjs",
@@ -40535,7 +40566,13 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [],
+      "consumers": [
+        {
+          "file": "app/library-data.mjs",
+          "line": 137,
+          "column": 463
+        }
+      ],
       "hints": [
         {
           "kind": "key-namespace",
@@ -40586,7 +40623,13 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [],
+      "consumers": [
+        {
+          "file": "app/library-data.mjs",
+          "line": 137,
+          "column": 479
+        }
+      ],
       "hints": [
         {
           "kind": "key-namespace",
@@ -111455,7 +111498,7 @@
       "consumers": [
         {
           "file": "app/reader-book-actions.mjs",
-          "line": 57,
+          "line": 59,
           "column": 32
         }
       ],
@@ -111716,12 +111759,17 @@
       "consumers": [
         {
           "file": "app/reader-book-actions.mjs",
-          "line": 44,
-          "column": 271
+          "line": 46,
+          "column": 157
         },
         {
           "file": "app/reader-book-actions.mjs",
-          "line": 96,
+          "line": 46,
+          "column": 333
+        },
+        {
+          "file": "app/reader-book-actions.mjs",
+          "line": 106,
           "column": 200
         }
       ],
@@ -111829,7 +111877,7 @@
       "consumers": [
         {
           "file": "app/reader-book-actions.mjs",
-          "line": 35,
+          "line": 36,
           "column": 40
         }
       ],
@@ -113365,7 +113413,7 @@
       "consumers": [
         {
           "file": "app/reader-book-actions.mjs",
-          "line": 29,
+          "line": 30,
           "column": 226
         }
       ],
@@ -113575,7 +113623,7 @@
       "consumers": [
         {
           "file": "app/reader-book-actions.mjs",
-          "line": 92,
+          "line": 102,
           "column": 84
         }
       ],
@@ -119930,6 +119978,1194 @@
         {
           "kind": "key-namespace",
           "evidence": "key-namespace:sample",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.notices",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2173,
+          "column": 3,
+          "value": "Source and copyright notices",
+          "sha256": "1e961c11ec86a92757ec6546eb0c104a31822bf8044e976b61218946f1d8f867"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2172,
+          "column": 3,
+          "value": "来源与版权声明",
+          "sha256": "67ee3310dfde884d51ac5ccfd3c48f750a2beba1eba61a32b5f5a3bd98d0036b"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2172,
+          "column": 3,
+          "value": "來源與版權聲明",
+          "sha256": "8656075a31c1614080176e6b3d889888114498ad593874189cb8fb5c9bed1a31"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2172,
+          "column": 3,
+          "value": "出典と著作権表示",
+          "sha256": "21531518f52418e85dbf8269bd059db3f9d0315a6f4775f4dd42640a4c7b735a"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.close",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2174,
+          "column": 3,
+          "value": "Close export",
+          "sha256": "fc98dd8f650968654eb2b4a870a3ab782f39a346935004102b4e73c71473a887"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2173,
+          "column": 3,
+          "value": "关闭导出",
+          "sha256": "b0352bf065da5816270cb2bc628149bf64e796a83a1697704304750030141fca"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2173,
+          "column": 3,
+          "value": "關閉匯出",
+          "sha256": "c05cc72f03e51d70d3de111c2bdd0d4df5200b248611abe2f9034f5e5378a381"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2173,
+          "column": 3,
+          "value": "書き出しを閉じる",
+          "sha256": "818e7b32bf234a77cb9db7fa903164ee14a327ef1ae99cc865c53334efb7e417"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/reader-book-actions.mjs",
+          "line": 72,
+          "column": 86
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.download",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2175,
+          "column": 3,
+          "value": "Download file",
+          "sha256": "9de4149fb9716cfc2d9f757708f261e93698c5bef33d41a0c5b927decc88e169"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2174,
+          "column": 3,
+          "value": "下载文件",
+          "sha256": "3926d1bb98be84016c271dfd7a4c374def982ef5f1ef24f751e4a0d70d15888a"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2174,
+          "column": 3,
+          "value": "下載檔案",
+          "sha256": "d8673fd7efab19cb21ac583cdcf8e2fbe2006e801baa9ee4f78305d22b7fbcd0"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2174,
+          "column": 3,
+          "value": "ファイルをダウンロード",
+          "sha256": "46bee546a70bd02f00ab371c1f7be07bf2b4f600611b10d67e8e22abbbc3661b"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/book-export-ui.mjs",
+          "line": 15,
+          "column": 34
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.title",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2176,
+          "column": 3,
+          "value": "Export this book",
+          "sha256": "c3dfea1d5bcc9306a5987c7d1a4f27d042fd9fea81434abe27635adeffec26b1"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2175,
+          "column": 3,
+          "value": "导出这本书",
+          "sha256": "20be19ce04cb188feb3c4235c8554835646933f1b45c7bda3bb858c1dfdc796d"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2175,
+          "column": 3,
+          "value": "匯出這本書",
+          "sha256": "4843d4d1a859d070cc1779a6f1a400875304cfb3deb739dce21ca487e250ca74"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2175,
+          "column": 3,
+          "value": "この本を書き出す",
+          "sha256": "113de3e385004767beda66fa8c3a6d8d706cacf3c4c2c74eee46b9a391eee181"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/library-book-actions.mjs",
+          "line": 74,
+          "column": 32
+        },
+        {
+          "file": "app/library-book-actions.mjs",
+          "line": 83,
+          "column": 28
+        },
+        {
+          "file": "app/reader-book-actions.mjs",
+          "line": 37,
+          "column": 77
+        },
+        {
+          "file": "app/reader-book-actions.mjs",
+          "line": 72,
+          "column": 32
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.help",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2177,
+          "column": 3,
+          "value": "Choose a range and text layers. Personal notes are excluded.",
+          "sha256": "dc854f69f3d21f4219f1e6f1b4de84536a7019a83ed70b3e0830d942bfb84058"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2176,
+          "column": 3,
+          "value": "选择范围和正文内容，不包含私人笔记。",
+          "sha256": "79cdc1966d47b644edbaedf45605e4d1dde5803fe41c3497cf62d8dcd43e8520"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2176,
+          "column": 3,
+          "value": "選擇範圍和正文內容，不包含私人筆記。",
+          "sha256": "50714b428eaafce51eb22af7eeae251f8559ab50979d44594e1352e48ade3d60"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2176,
+          "column": 3,
+          "value": "範囲と本文を選択します。個人のノートは含まれません。",
+          "sha256": "73f28237dc092a8fd91249a486d184d90125a6949edc8e752ceec264560596d8"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.format",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2178,
+          "column": 3,
+          "value": "Format",
+          "sha256": "2f343666aaa88c44430b12e6ab8a29591a069de76541125e83ff1b5acc367bf2"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2177,
+          "column": 3,
+          "value": "文件格式",
+          "sha256": "8068350f3f799d33fe76ee158935b7b215cdb64c798fca96d3d2785e3835af94"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2177,
+          "column": 3,
+          "value": "檔案格式",
+          "sha256": "00141374b5c5a791396fab20744c8a926924467c856507a836bc6b299df964e7"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2177,
+          "column": 3,
+          "value": "ファイル形式",
+          "sha256": "fcca220f7db98fffbeb7d6a56421ae5e2ad1603085625369e5bc22c68f9ebcc0"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.range",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2179,
+          "column": 3,
+          "value": "Range",
+          "sha256": "5de74a81b192304c10bf7b8cf50e863a19e8ae4c38a4d5c5116359db0deed29f"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2178,
+          "column": 3,
+          "value": "导出范围",
+          "sha256": "16ab91a55018dd01828fa9fabe69c5f45405c2aef740e5a78097711722c8bdb7"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2178,
+          "column": 3,
+          "value": "匯出範圍",
+          "sha256": "7333830e69a7a215b981a4eccc86539f3933d6af0c7e4d585814f7ea83f1169a"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2178,
+          "column": 3,
+          "value": "範囲",
+          "sha256": "0d603e6d0a7ee9251292e08af7a6424025bffa1ef28938797e2d2a595da8a188"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/book-export-ui.mjs",
+          "line": 13,
+          "column": 67
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.whole",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2180,
+          "column": 3,
+          "value": "Whole book",
+          "sha256": "4dace141ba59af2e24f9168b7174d170c964c59f1a7324b2824fc393799610fe"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2179,
+          "column": 3,
+          "value": "整本书",
+          "sha256": "f6bdb6e51cba20eff2d63c5a0dd88998754db27aabe2b364cbed647d111f7ec3"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2179,
+          "column": 3,
+          "value": "整本書",
+          "sha256": "a349bd8df867dc6239ad3d125f5aad4d59909993641fa373a30ec29ef9d65309"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2179,
+          "column": 3,
+          "value": "本全体",
+          "sha256": "f920d716791365be754e9eaee3c577a0eb18efd1aac925a05fb251b3f68098c0"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.layers",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2181,
+          "column": 3,
+          "value": "Text layers",
+          "sha256": "4814c85aa23d74c566389e453bee12344a5b7d75c1ddbe8ace49bdfb237d5d0c"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2180,
+          "column": 3,
+          "value": "正文内容",
+          "sha256": "8c88207cc65259056f996760035d72ddbd428d97023a3a165a6ad9b81167dd40"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2180,
+          "column": 3,
+          "value": "正文內容",
+          "sha256": "932f9e2d12c66a8375ba63d7b00c85688d2863717660a4ee1602de05327ee81a"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2180,
+          "column": 3,
+          "value": "本文",
+          "sha256": "2617ab4ad6fe995785421872bde4648311a8de11848c1f487fb7eb458572e87b"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/book-export-ui.mjs",
+          "line": 14,
+          "column": 65
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.original",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2182,
+          "column": 3,
+          "value": "Original",
+          "sha256": "88d759ea02cef4b82885c6c620473162757c75522805707c20e2be76a40a2825"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2181,
+          "column": 3,
+          "value": "原文",
+          "sha256": "354b28c85333456866931a77eacdf6cd18d80b79981ccf1f4ca927b84fd99302"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2181,
+          "column": 3,
+          "value": "原文",
+          "sha256": "354b28c85333456866931a77eacdf6cd18d80b79981ccf1f4ca927b84fd99302"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2181,
+          "column": 3,
+          "value": "原文",
+          "sha256": "354b28c85333456866931a77eacdf6cd18d80b79981ccf1f4ca927b84fd99302"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.literal",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2183,
+          "column": 3,
+          "value": "Literal translation",
+          "sha256": "e19df17b9ef8b839f76d67c0e27aa0da8d1a4c6ceeb7204e2a45e9130ae2f58f"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2182,
+          "column": 3,
+          "value": "直译",
+          "sha256": "a806219978845553c1fcc3338e4708d981816a9ebd66e4c97038b249e37ae297"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2182,
+          "column": 3,
+          "value": "直譯",
+          "sha256": "be755c80e2e53bf81386d8e4a6605f96b7e7c61eb1c74e6d9c5b1fe27ef3feef"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2182,
+          "column": 3,
+          "value": "直訳",
+          "sha256": "279a15a5878284b10029c2f689b9dfafd47228ad9e8ac00b879e72dffdba9a1e"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.interpretive",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2184,
+          "column": 3,
+          "value": "Interpretive translation",
+          "sha256": "a5d414e1e6a815dc7b4951a71f3c0618b3efb903e9ed4fb5f4b2764d9036e3d7"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2183,
+          "column": 3,
+          "value": "意译",
+          "sha256": "c825cf584eeb7a5ce897a5e09b4b21e6321fa42f14ed83b2b019b02670b544c0"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2183,
+          "column": 3,
+          "value": "意譯",
+          "sha256": "c1dedeffe48bca7a81965db5f2b7f89da5da3f6d89ddbf8009a7b05d26741cc2"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2183,
+          "column": 3,
+          "value": "意訳",
+          "sha256": "69f1f250e3f4e9d5e5b268a09e31f64de69c65173f44e4b8e0f39709032bcf86"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.all",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2185,
+          "column": 3,
+          "value": "Original and both translations",
+          "sha256": "40f534ddaadd991d33237beb7590ad084772189458ecb6fb97b9c53fbb381ace"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2184,
+          "column": 3,
+          "value": "原文与两种译文",
+          "sha256": "d27f7751e515368cfde80c166586dfa6fd36088b7b11a682ca04ceda839d1b94"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2184,
+          "column": 3,
+          "value": "原文與兩種譯文",
+          "sha256": "a2f672bc1ba4bf11bf9fe5ef9a4221ac88883cff57b49b1c987916f1a9f5ac7a"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2184,
+          "column": 3,
+          "value": "原文と両方の訳文",
+          "sha256": "130417de356c10e5f77943f8cb8d88b15d69b481374929ea98a6bc589f6496d0"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.missing",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2186,
+          "column": 3,
+          "value": "Not translated",
+          "sha256": "b6299e140b22fe428293bcd224600c035458ae2953c644dfcb536692d0e16801"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2185,
+          "column": 3,
+          "value": "尚未翻译",
+          "sha256": "e04d48b16bc4a466b7aebaad20fc6d201e78e010a998c2e19692247dd6da5da0"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2185,
+          "column": 3,
+          "value": "尚未翻譯",
+          "sha256": "1da27703e564b0f320a631a6e2064bc8c68fb9e2771fc4210647d4cf4a8c6d5a"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2185,
+          "column": 3,
+          "value": "未翻訳",
+          "sha256": "6b8e4ae7ec149dde7df1e8aaebfdf77fac38d6de4a710ae19009a1546dadcb6b"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.loading",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2187,
+          "column": 3,
+          "value": "Loading book content…",
+          "sha256": "3d50e299dee60152b7d1d5e090ff2a2aef21184de5e0ee004ada25843e22b6fe"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2186,
+          "column": 3,
+          "value": "正在读取书籍正文…",
+          "sha256": "b16ddabcbcb26f9aa123674f1323cfd91c7e2ab366b0ef405522fa8d2c71412f"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2186,
+          "column": 3,
+          "value": "正在讀取書籍正文…",
+          "sha256": "eff1b12ebc99283be64c45948052969aa9280f83a19de56b132f7593de6c82b6"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2186,
+          "column": 3,
+          "value": "本文を読み込み中…",
+          "sha256": "887d27063e5ca618e7c42a710f6c874c23f983553eb8557ce7eca428afd4ca2d"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/book-export-ui.mjs",
+          "line": 22,
+          "column": 14
+        },
+        {
+          "file": "app/library-book-actions.mjs",
+          "line": 74,
+          "column": 82
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.ready",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2188,
+          "column": 3,
+          "value": "Choose the content to download.",
+          "sha256": "bc56c4d4c7549db682028c3b520db83075805a202737e31b187f838f1ff900d9"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2187,
+          "column": 3,
+          "value": "选择要下载的内容。",
+          "sha256": "db7d781a0fe55216b5b0aa620ecc7d26b3185471af55017dc4dbe294c2cd474b"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2187,
+          "column": 3,
+          "value": "選擇要下載的內容。",
+          "sha256": "0fb1d61383ecc3631405ac66a19dcfaf60f257eebf4315269ee480b2c9992759"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2187,
+          "column": 3,
+          "value": "ダウンロードする内容を選択してください。",
+          "sha256": "bd348a3b9f68c2dd289f2ec0f27b1bf4313f9ff784fddeb809e0c4742a01ce1f"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/book-export-ui.mjs",
+          "line": 24,
+          "column": 231
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.preparing",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2189,
+          "column": 3,
+          "value": "Preparing your file…",
+          "sha256": "21d353fcffa54650c39685ae7ff9bc99f29cc75999549b13bc12a3fb936bf343"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2188,
+          "column": 3,
+          "value": "正在生成文件…",
+          "sha256": "d41b880c83427ce16d91bafa4213e88e6a7dac507df213168571b5956d042fd0"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2188,
+          "column": 3,
+          "value": "正在產生檔案…",
+          "sha256": "6de3f11159a466fd18363c6c9f6622fb77a6da8e574f24315c2044702a185ab8"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2188,
+          "column": 3,
+          "value": "ファイルを作成中…",
+          "sha256": "6d9c97e6d7b8e372edf895e4667387e4f6595f17d92b4e1d77ef9eb0d9f39e66"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/book-export-ui.mjs",
+          "line": 32,
+          "column": 11
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.error",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2190,
+          "column": 3,
+          "value": "Export failed. Retry the download.",
+          "sha256": "c7b8bd1ff88f3acd654ff292f18615ff7d2df9b933d31f82f3bac94ea2bb6d92"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2189,
+          "column": 3,
+          "value": "导出失败，请重试下载。",
+          "sha256": "aa778f0c2780491c06d959f099c74b4d2103662e03559230fa58d8c554626e41"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2189,
+          "column": 3,
+          "value": "匯出失敗，請重試下載。",
+          "sha256": "188a1f4eb6cf4e549ce75db8d3e98a478a4d059c8fb830ad480a292183fe9715"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2189,
+          "column": 3,
+          "value": "書き出せませんでした。再試行してください。",
+          "sha256": "585108e235b05b39fc652f8741d19057cec0660645550522a33a87dccd45036f"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/book-export-ui.mjs",
+          "line": 25,
+          "column": 31
+        },
+        {
+          "file": "app/book-export-ui.mjs",
+          "line": 35,
+          "column": 113
+        },
+        {
+          "file": "app/library-book-actions.mjs",
+          "line": 76,
+          "column": 57
+        },
+        {
+          "file": "app/reader-book-actions.mjs",
+          "line": 75,
+          "column": 37
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.cancelled",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2191,
+          "column": 3,
+          "value": "Export cancelled. No file was requested.",
+          "sha256": "8c9cbf9bcae09088e24193bcd8e70e453ab2469f1517cf5eb4f0fb1b7273f51d"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2190,
+          "column": 3,
+          "value": "已取消导出，未发起文件下载。",
+          "sha256": "1a40eacaea24649cadd809372599282af9da9633619103af545a20ec5bd382e9"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2190,
+          "column": 3,
+          "value": "已取消匯出，未發起檔案下載。",
+          "sha256": "5c2afffe7cb67e34b0bd75717eab47dc913778cc5e451bf0c744903015df69e2"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2190,
+          "column": 3,
+          "value": "書き出しをキャンセルしました。ダウンロードは開始していません。",
+          "sha256": "ad09d949475844f371df784b1159520908dca26d01a66e9410b736dd52bd93b6"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/book-export-ui.mjs",
+          "line": 27,
+          "column": 171
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.downloadRequested",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2192,
+          "column": 3,
+          "value": "Download requested. Check your browser downloads.",
+          "sha256": "a8eea21fb41c2131c80482a2126d6c3f8b9281b95efe81cfdbb8c2e5a92d4115"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2191,
+          "column": 3,
+          "value": "已发起下载，请查看浏览器下载列表。",
+          "sha256": "0ffa869d20605fdf9753f48d7366a44ea7bbb8754f7b2864948e5ac889f58342"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2191,
+          "column": 3,
+          "value": "已發起下載，請查看瀏覽器下載清單。",
+          "sha256": "5fb49874b8a1fba62d920ed48f7abf2ab4e84fae566d0b404494309172e2fd83"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2191,
+          "column": 3,
+          "value": "ダウンロードを開始しました。ブラウザーの履歴を確認してください。",
+          "sha256": "7e71f0a2b6e35d544a39e88db7ec1bb424e7583e16d05f23545d30afa9d89194"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/book-export-ui.mjs",
+          "line": 34,
+          "column": 177
+        },
+        {
+          "file": "app/library-data.mjs",
+          "line": 137,
+          "column": 664
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "export.glyphError",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2193,
+          "column": 3,
+          "value": "This PDF font cannot display some characters. Download Markdown to preserve the full text.",
+          "sha256": "274501fcdcb481176e4732021af2a517c105b950cf3dbe4287951b2cf3b60bd2"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2192,
+          "column": 3,
+          "value": "PDF 字体无法显示部分字符，请下载 Markdown 保留完整文字。",
+          "sha256": "f07ce4c12702b5a0852b991220784e649565c41cd4367bf8da19238a012a2afb"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2192,
+          "column": 3,
+          "value": "PDF 字型無法顯示部分字元，請下載 Markdown 保留完整文字。",
+          "sha256": "decd51f74b475b4382d1bdc497804dce8014993f8ecc08c7aa37fb8b9f98daa6"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2192,
+          "column": 3,
+          "value": "PDF のフォントに対応していない文字があります。全文を保持するには Markdown を選択してください。",
+          "sha256": "3c4960f6147674d8c4bf2e2b290dcbe108cda19f6bf8185cadebed35a3c808a6"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/book-export-ui.mjs",
+          "line": 35,
+          "column": 93
+        },
+        {
+          "file": "app/library-data.mjs",
+          "line": 68,
+          "column": 63
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:export",
           "confidence": "low"
         }
       ],
@@ -170680,10 +171916,36 @@
       }
     },
     {
-      "id": "candidate:app/index.html:88:510",
+      "id": "candidate:app/index.html:88:557",
       "file": "app/index.html",
       "line": 88,
-      "column": 510,
+      "column": 557,
+      "kind": "html-text",
+      "property": null,
+      "value": "Export this book",
+      "sha256": "c3dfea1d5bcc9306a5987c7d1a4f27d042fd9fea81434abe27635adeffec26b1",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:88:667",
+      "file": "app/index.html",
+      "line": 88,
+      "column": 667,
       "kind": "html-text",
       "property": null,
       "value": "Reload introduction and sharing",
@@ -180396,9 +181658,9 @@
       }
     },
     {
-      "id": "candidate:app/library-book-actions.mjs:77:154",
+      "id": "candidate:app/library-book-actions.mjs:84:154",
       "file": "app/library-book-actions.mjs",
-      "line": 77,
+      "line": 84,
       "column": 154,
       "kind": "js-attribute",
       "property": "role",
@@ -180416,9 +181678,9 @@
       }
     },
     {
-      "id": "candidate:app/library-book-actions.mjs:81:258",
+      "id": "candidate:app/library-book-actions.mjs:88:258",
       "file": "app/library-book-actions.mjs",
-      "line": 81,
+      "line": 88,
       "column": 258,
       "kind": "js-attribute",
       "property": "aria-haspopup",
@@ -180436,9 +181698,9 @@
       }
     },
     {
-      "id": "candidate:app/library-book-actions.mjs:81:303",
+      "id": "candidate:app/library-book-actions.mjs:88:303",
       "file": "app/library-book-actions.mjs",
-      "line": 81,
+      "line": 88,
       "column": 303,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -186696,9 +187958,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-book-actions.mjs:29:178",
+      "id": "candidate:app/reader-book-actions.mjs:30:178",
       "file": "app/reader-book-actions.mjs",
-      "line": 29,
+      "line": 30,
       "column": 178,
       "kind": "js-attribute",
       "property": "lang",
@@ -186716,9 +187978,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-book-actions.mjs:51:93",
+      "id": "candidate:app/reader-book-actions.mjs:53:93",
       "file": "app/reader-book-actions.mjs",
-      "line": 51,
+      "line": 53,
       "column": 93,
       "kind": "js-attribute",
       "property": "aria-hidden",
@@ -186736,9 +187998,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-book-actions.mjs:95:136",
+      "id": "candidate:app/reader-book-actions.mjs:105:136",
       "file": "app/reader-book-actions.mjs",
-      "line": 95,
+      "line": 105,
       "column": 136,
       "kind": "js-attribute",
       "property": "aria-labelledby",
@@ -186756,9 +188018,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-book-actions.mjs:97:120",
+      "id": "candidate:app/reader-book-actions.mjs:107:120",
       "file": "app/reader-book-actions.mjs",
-      "line": 97,
+      "line": 107,
       "column": 120,
       "kind": "js-attribute",
       "property": "role",
@@ -217736,9 +218998,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:50:123",
+      "id": "candidate:server/portal.mjs:51:123",
       "file": "server/portal.mjs",
-      "line": 50,
+      "line": 51,
       "column": 123,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217756,9 +219018,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:50:247",
+      "id": "candidate:server/portal.mjs:51:247",
       "file": "server/portal.mjs",
-      "line": 50,
+      "line": 51,
       "column": 247,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217776,9 +219038,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:50:387",
+      "id": "candidate:server/portal.mjs:51:387",
       "file": "server/portal.mjs",
-      "line": 50,
+      "line": 51,
       "column": 387,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217796,9 +219058,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:50:509",
+      "id": "candidate:server/portal.mjs:51:509",
       "file": "server/portal.mjs",
-      "line": 50,
+      "line": 51,
       "column": 509,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217816,9 +219078,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:53:54",
+      "id": "candidate:server/portal.mjs:54:54",
       "file": "server/portal.mjs",
-      "line": 53,
+      "line": 54,
       "column": 54,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217836,9 +219098,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:55:116",
+      "id": "candidate:server/portal.mjs:56:116",
       "file": "server/portal.mjs",
-      "line": 55,
+      "line": 56,
       "column": 116,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217856,9 +219118,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:56:91",
+      "id": "candidate:server/portal.mjs:57:91",
       "file": "server/portal.mjs",
-      "line": 56,
+      "line": 57,
       "column": 91,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217876,9 +219138,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:80:16",
+      "id": "candidate:server/portal.mjs:81:16",
       "file": "server/portal.mjs",
-      "line": 80,
+      "line": 81,
       "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217896,9 +219158,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:104:69",
+      "id": "candidate:server/portal.mjs:105:69",
       "file": "server/portal.mjs",
-      "line": 104,
+      "line": 105,
       "column": 69,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217916,9 +219178,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:105:134",
+      "id": "candidate:server/portal.mjs:106:134",
       "file": "server/portal.mjs",
-      "line": 105,
+      "line": 106,
       "column": 134,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217936,9 +219198,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:165:70",
+      "id": "candidate:server/portal.mjs:168:70",
       "file": "server/portal.mjs",
-      "line": 165,
+      "line": 168,
       "column": 70,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217956,9 +219218,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:166:59",
+      "id": "candidate:server/portal.mjs:169:59",
       "file": "server/portal.mjs",
-      "line": 166,
+      "line": 169,
       "column": 59,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217976,9 +219238,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:169:54",
+      "id": "candidate:server/portal.mjs:172:54",
       "file": "server/portal.mjs",
-      "line": 169,
+      "line": 172,
       "column": 54,
       "kind": "js-cjk-literal",
       "property": null,
@@ -217996,9 +219258,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:170:85",
+      "id": "candidate:server/portal.mjs:173:85",
       "file": "server/portal.mjs",
-      "line": 170,
+      "line": 173,
       "column": 85,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218016,9 +219278,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:171:111",
+      "id": "candidate:server/portal.mjs:174:111",
       "file": "server/portal.mjs",
-      "line": 171,
+      "line": 174,
       "column": 111,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218036,9 +219298,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:171:130",
+      "id": "candidate:server/portal.mjs:174:130",
       "file": "server/portal.mjs",
-      "line": 171,
+      "line": 174,
       "column": 130,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218056,9 +219318,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:175:79",
+      "id": "candidate:server/portal.mjs:178:79",
       "file": "server/portal.mjs",
-      "line": 175,
+      "line": 178,
       "column": 79,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218076,9 +219338,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:189:162",
+      "id": "candidate:server/portal.mjs:192:162",
       "file": "server/portal.mjs",
-      "line": 189,
+      "line": 192,
       "column": 162,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218096,9 +219358,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:203:27",
+      "id": "candidate:server/portal.mjs:206:27",
       "file": "server/portal.mjs",
-      "line": 203,
+      "line": 206,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218116,9 +219378,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:205:41",
+      "id": "candidate:server/portal.mjs:208:41",
       "file": "server/portal.mjs",
-      "line": 205,
+      "line": 208,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218136,9 +219398,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:206:61",
+      "id": "candidate:server/portal.mjs:209:61",
       "file": "server/portal.mjs",
-      "line": 206,
+      "line": 209,
       "column": 61,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218156,9 +219418,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:220:27",
+      "id": "candidate:server/portal.mjs:223:27",
       "file": "server/portal.mjs",
-      "line": 220,
+      "line": 223,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218176,9 +219438,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:222:94",
+      "id": "candidate:server/portal.mjs:225:94",
       "file": "server/portal.mjs",
-      "line": 222,
+      "line": 225,
       "column": 94,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218196,9 +219458,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:225:41",
+      "id": "candidate:server/portal.mjs:228:41",
       "file": "server/portal.mjs",
-      "line": 225,
+      "line": 228,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218216,9 +219478,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:226:61",
+      "id": "candidate:server/portal.mjs:229:61",
       "file": "server/portal.mjs",
-      "line": 226,
+      "line": 229,
       "column": 61,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218236,9 +219498,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:231:95",
+      "id": "candidate:server/portal.mjs:234:95",
       "file": "server/portal.mjs",
-      "line": 231,
+      "line": 234,
       "column": 95,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218256,9 +219518,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:235:146",
+      "id": "candidate:server/portal.mjs:238:146",
       "file": "server/portal.mjs",
-      "line": 235,
+      "line": 238,
       "column": 146,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218276,9 +219538,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:236:146",
+      "id": "candidate:server/portal.mjs:239:146",
       "file": "server/portal.mjs",
-      "line": 236,
+      "line": 239,
       "column": 146,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218296,9 +219558,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:238:151",
+      "id": "candidate:server/portal.mjs:241:151",
       "file": "server/portal.mjs",
-      "line": 238,
+      "line": 241,
       "column": 151,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218316,9 +219578,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:242:80",
+      "id": "candidate:server/portal.mjs:245:80",
       "file": "server/portal.mjs",
-      "line": 242,
+      "line": 245,
       "column": 80,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218336,9 +219598,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:248:27",
+      "id": "candidate:server/portal.mjs:251:27",
       "file": "server/portal.mjs",
-      "line": 248,
+      "line": 251,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218356,9 +219618,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:249:149",
+      "id": "candidate:server/portal.mjs:252:149",
       "file": "server/portal.mjs",
-      "line": 249,
+      "line": 252,
       "column": 149,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218376,9 +219638,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:250:35",
+      "id": "candidate:server/portal.mjs:253:35",
       "file": "server/portal.mjs",
-      "line": 250,
+      "line": 253,
       "column": 35,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218396,9 +219658,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:259:446",
+      "id": "candidate:server/portal.mjs:262:446",
       "file": "server/portal.mjs",
-      "line": 259,
+      "line": 262,
       "column": 446,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218416,9 +219678,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:261:45",
+      "id": "candidate:server/portal.mjs:264:45",
       "file": "server/portal.mjs",
-      "line": 261,
+      "line": 264,
       "column": 45,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218436,9 +219698,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:265:48",
+      "id": "candidate:server/portal.mjs:268:48",
       "file": "server/portal.mjs",
-      "line": 265,
+      "line": 268,
       "column": 48,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218456,9 +219718,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:269:27",
+      "id": "candidate:server/portal.mjs:272:27",
       "file": "server/portal.mjs",
-      "line": 269,
+      "line": 272,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218476,9 +219738,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:269:187",
+      "id": "candidate:server/portal.mjs:272:187",
       "file": "server/portal.mjs",
-      "line": 269,
+      "line": 272,
       "column": 187,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218496,9 +219758,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:283:27",
+      "id": "candidate:server/portal.mjs:286:27",
       "file": "server/portal.mjs",
-      "line": 283,
+      "line": 286,
       "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218516,9 +219778,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:283:98",
+      "id": "candidate:server/portal.mjs:286:98",
       "file": "server/portal.mjs",
-      "line": 283,
+      "line": 286,
       "column": 98,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218536,9 +219798,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:285:41",
+      "id": "candidate:server/portal.mjs:288:41",
       "file": "server/portal.mjs",
-      "line": 285,
+      "line": 288,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218556,9 +219818,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:298:164",
+      "id": "candidate:server/portal.mjs:301:164",
       "file": "server/portal.mjs",
-      "line": 298,
+      "line": 301,
       "column": 164,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218576,9 +219838,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:312:25",
+      "id": "candidate:server/portal.mjs:315:25",
       "file": "server/portal.mjs",
-      "line": 312,
+      "line": 315,
       "column": 25,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218596,9 +219858,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:380:120",
+      "id": "candidate:server/portal.mjs:384:120",
       "file": "server/portal.mjs",
-      "line": 380,
+      "line": 384,
       "column": 120,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218616,9 +219878,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:381:175",
+      "id": "candidate:server/portal.mjs:385:175",
       "file": "server/portal.mjs",
-      "line": 381,
+      "line": 385,
       "column": 175,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218636,9 +219898,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:382:99",
+      "id": "candidate:server/portal.mjs:386:99",
       "file": "server/portal.mjs",
-      "line": 382,
+      "line": 386,
       "column": 99,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218656,9 +219918,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:389:43",
+      "id": "candidate:server/portal.mjs:393:43",
       "file": "server/portal.mjs",
-      "line": 389,
+      "line": 393,
       "column": 43,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218676,9 +219938,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:394:430",
+      "id": "candidate:server/portal.mjs:398:430",
       "file": "server/portal.mjs",
-      "line": 394,
+      "line": 398,
       "column": 430,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218696,9 +219958,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:397:30",
+      "id": "candidate:server/portal.mjs:401:30",
       "file": "server/portal.mjs",
-      "line": 397,
+      "line": 401,
       "column": 30,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218716,9 +219978,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:403:20",
+      "id": "candidate:server/portal.mjs:407:20",
       "file": "server/portal.mjs",
-      "line": 403,
+      "line": 407,
       "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218736,9 +219998,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:412:86",
+      "id": "candidate:server/portal.mjs:416:86",
       "file": "server/portal.mjs",
-      "line": 412,
+      "line": 416,
       "column": 86,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218756,9 +220018,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:413:18",
+      "id": "candidate:server/portal.mjs:417:18",
       "file": "server/portal.mjs",
-      "line": 413,
+      "line": 417,
       "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
@@ -218776,9 +220038,9 @@
       }
     },
     {
-      "id": "candidate:server/portal.mjs:415:16",
+      "id": "candidate:server/portal.mjs:419:16",
       "file": "server/portal.mjs",
-      "line": 415,
+      "line": 419,
       "column": 16,
       "kind": "js-cjk-literal",
       "property": null,
@@ -225523,6 +226785,106 @@
     },
     {
       "kind": "concatenation",
+      "file": "app/book-export-ui.mjs",
+      "line": 9,
+      "expression": "'export.'+key",
+      "fragments": [
+        "export."
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/book-export-ui.mjs",
+      "line": 22,
+      "expression": "'/api/library/books/'+encodeURIComponent(book.bookId)+'/document-export'",
+      "fragments": [
+        "/api/library/books/",
+        "/document-export"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/book-export-ui.mjs",
+      "line": 22,
+      "expression": "'/api/library/books/'+encodeURIComponent(book.bookId)",
+      "fragments": [
+        "/api/library/books/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/book-export-ui.mjs",
+      "line": 23,
+      "expression": "'/api/library/books/'+encodeURIComponent(book.bookId)+'/content-part?offset='+offset+'&snapshot='",
+      "fragments": [
+        "/api/library/books/",
+        "/content-part?offset=",
+        "&snapshot="
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/book-export-ui.mjs",
+      "line": 23,
+      "expression": "'/api/library/books/'+encodeURIComponent(book.bookId)+'/content-part?offset='",
+      "fragments": [
+        "/api/library/books/",
+        "/content-part?offset="
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/book-export-ui.mjs",
+      "line": 23,
+      "expression": "'/api/library/books/'+encodeURIComponent(book.bookId)",
+      "fragments": [
+        "/api/library/books/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/book-export-ui.mjs",
+      "line": 24,
+      "expression": "locale()",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/book-export-ui.mjs",
+      "line": 24,
+      "expression": "locale().startsWith('zh')?'zh':'en'",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/book-export-ui.mjs",
+      "line": 32,
+      "expression": "'export.'+key",
+      "fragments": [
+        "export."
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/book-export-ui.mjs",
+      "line": 34,
+      "expression": "'-'+chapter.value",
+      "fragments": [
+        "-"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
       "file": "app/book-gift.mjs",
       "line": 36,
       "expression": "'/api/book-gifts/'+token+'/download-part?'",
@@ -226957,6 +228319,154 @@
       "expression": "`${points} ${points===1?'point':'points'}`",
       "fragments": [
         " "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/document-export.mjs",
+      "line": 3,
+      "expression": "locale",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/document-export.mjs",
+      "line": 3,
+      "expression": "locale.startsWith('zh')?'zh':'en'",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/document-export.mjs",
+      "line": 5,
+      "expression": "format",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/document-export.mjs",
+      "line": 7,
+      "expression": "stem+'.'",
+      "fragments": [
+        "."
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/document-export.mjs",
+      "line": 15,
+      "expression": "book.bookId+' @ '",
+      "fragments": [
+        " @ "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/document-export.mjs",
+      "line": 17,
+      "expression": "'SHA-256: '+book.source.sha256",
+      "fragments": [
+        "SHA-256: "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/document-export.mjs",
+      "line": 22,
+      "expression": "' · '+p.source.page",
+      "fragments": [
+        " · "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/document-export.mjs",
+      "line": 24,
+      "expression": "l",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/document-export.mjs",
+      "line": 26,
+      "expression": "layer",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/document-export.mjs",
+      "line": 27,
+      "expression": "layer",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/document-export.mjs",
+      "line": 27,
+      "expression": "' · '+(translation.status||'draft')",
+      "fragments": [
+        " · "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/document-export.mjs",
+      "line": 27,
+      "expression": "' · '+(labels.missing||'Not translated')",
+      "fragments": [
+        " · "
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/document-export.mjs",
+      "line": 36,
+      "expression": "document.blocks.map(({kind,text})=>(kind==='heading'?'# ':kind==='subheading'?'## ':kind==='label'?'### ':'')+escape(text)).join('\\n\\n')+'\\n'",
+      "fragments": [
+        "\n"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/document-pdf.mjs",
+      "line": 4,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/document-pdf.mjs",
+      "line": 14,
+      "expression": "'fonts/document-export/'+entry.file",
+      "fragments": [
+        "fonts/document-export/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/document-pdf.mjs",
+      "line": 18,
+      "expression": "'PDF font does not contain '+c",
+      "fragments": [
+        "PDF font does not contain "
       ],
       "unresolved": true
     },
@@ -231323,7 +232833,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-book-actions.mjs",
-      "line": 76,
+      "line": 82,
       "expression": "index-1",
       "fragments": [],
       "unresolved": true
@@ -231331,7 +232841,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-book-actions.mjs",
-      "line": 76,
+      "line": 82,
       "expression": "index+1",
       "fragments": [],
       "unresolved": true
@@ -231339,7 +232849,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-book-actions.mjs",
-      "line": 77,
+      "line": 84,
       "expression": "'book-menu-item'+(name==='trash-2'?' is-destructive':'')",
       "fragments": [
         "book-menu-item"
@@ -231349,7 +232859,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-book-actions.mjs",
-      "line": 77,
+      "line": 84,
       "expression": "Math.max(12,Math.min(innerWidth-width-12,r.right-width))+'px'",
       "fragments": [
         "px"
@@ -231359,7 +232869,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-book-actions.mjs",
-      "line": 77,
+      "line": 84,
       "expression": "Math.max(12,Math.min(innerHeight-menu.offsetHeight-12,r.bottom+8))+'px'",
       "fragments": [
         "px"
@@ -237239,7 +238749,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-book-actions.mjs",
-      "line": 17,
+      "line": 18,
       "expression": "'bookActions.'+key",
       "fragments": [
         "bookActions."
@@ -237249,7 +238759,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-book-actions.mjs",
-      "line": 35,
+      "line": 36,
       "expression": "'bookActions.'+(display.phase==='generating'?'generatingNote':'loading')",
       "fragments": [
         "bookActions."
@@ -237259,7 +238769,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-book-actions.mjs",
-      "line": 42,
+      "line": 44,
       "expression": "'bookActions.'+id",
       "fragments": [
         "bookActions."
@@ -246807,6 +248317,16 @@
       "unresolved": true
     },
     {
+      "kind": "concatenation",
+      "file": "server/document-export-assets.mjs",
+      "line": 4,
+      "expression": "'fonts/document-export/'+f.file",
+      "fragments": [
+        "fonts/document-export/"
+      ],
+      "unresolved": true
+    },
+    {
       "kind": "computed-member",
       "file": "server/document-import.mjs",
       "line": 35,
@@ -249561,7 +251081,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 95,
+      "line": 96,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -249569,7 +251089,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 104,
+      "line": 105,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -249577,7 +251097,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 104,
+      "line": 105,
       "expression": "commerce[1]",
       "fragments": [],
       "unresolved": true
@@ -249585,7 +251105,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 104,
+      "line": 105,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -249593,7 +251113,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 104,
+      "line": 105,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -249601,17 +251121,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 108,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 113,
+      "line": 109,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -249641,7 +251151,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 117,
+      "line": 116,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -249651,7 +251161,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 123,
+      "line": 118,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -249661,7 +251171,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 129,
+      "line": 124,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -249691,7 +251201,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 133,
+      "line": 132,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -249701,7 +251211,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 135,
+      "line": 134,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -249711,7 +251221,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 139,
+      "line": 136,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -249721,7 +251231,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 141,
+      "line": 140,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -249762,6 +251272,16 @@
       "kind": "computed-member",
       "file": "server/portal.mjs",
       "line": 145,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 146,
       "expression": "p",
       "fragments": [],
       "unresolved": true
@@ -249769,7 +251289,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 149,
+      "line": 150,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -249779,19 +251299,29 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 150,
+      "line": 151,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 152,
+      "expression": "'/'+asset",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 153,
       "expression": "asset.url",
       "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 156,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
       "unresolved": true
     },
     {
@@ -249817,7 +251347,17 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 163,
+      "line": 165,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 166,
       "expression": "p",
       "fragments": [],
       "unresolved": true
@@ -249825,7 +251365,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 165,
+      "line": 168,
       "expression": "p",
       "fragments": [],
       "unresolved": true
@@ -249833,7 +251373,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 165,
+      "line": 168,
       "expression": "p",
       "fragments": [],
       "unresolved": true
@@ -249841,7 +251381,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 168,
+      "line": 171,
       "expression": "'http://'+req.headers.host",
       "fragments": [
         "http://"
@@ -249851,7 +251391,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 171,
+      "line": 174,
       "expression": "'请在 '+publicOrigin+' 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。'",
       "fragments": [
         "请在 ",
@@ -249862,7 +251402,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 171,
+      "line": 174,
       "expression": "'请在 '+publicOrigin",
       "fragments": [
         "请在 "
@@ -249872,7 +251412,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 173,
+      "line": 176,
       "expression": "`marginalia_auth_flow=${value}; HttpOnly; Secure; SameSite=Lax; Path=/api/auth; Max-Age=${value?600:0}`",
       "fragments": [
         "marginalia_auth_flow=",
@@ -249883,7 +251423,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 182,
+      "line": 185,
       "expression": "`marginalia_session=${session.token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=604800; Secure`",
       "fragments": [
         "marginalia_session=",
@@ -249894,7 +251434,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 186,
+      "line": 189,
       "expression": "`marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${publicOrigin?.startsWith('https:')?'; Secure':''}`",
       "fragments": [
         "marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0"
@@ -249904,7 +251444,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 194,
+      "line": 197,
       "expression": "`marginalia_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${value?604800:0}${publicOrigin?.startsWith('https:')?'; Secure':''}`",
       "fragments": [
         "marginalia_session=",
@@ -249915,7 +251455,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 252,
+      "line": 255,
       "expression": "'http://'+loopback+':'",
       "fragments": [
         "http://",
@@ -249926,7 +251466,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 252,
+      "line": 255,
       "expression": "'http://'+loopback",
       "fragments": [
         "http://"
@@ -249936,47 +251476,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 256,
-      "expression": "2",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 256,
-      "expression": "1",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 256,
-      "expression": "partUpload[2]",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 256,
-      "expression": "2",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 256,
-      "expression": "1",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/portal.mjs",
-      "line": 256,
+      "line": 259,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -249985,6 +251485,46 @@
       "kind": "computed-member",
       "file": "server/portal.mjs",
       "line": 259,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 259,
+      "expression": "partUpload[2]",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 259,
+      "expression": "2",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 259,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 259,
+      "expression": "2",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/portal.mjs",
+      "line": 262,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -249992,7 +251532,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 274,
+      "line": 277,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -250000,7 +251540,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 280,
+      "line": 283,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -250008,7 +251548,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 342,
+      "line": 346,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -250016,7 +251556,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 342,
+      "line": 346,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -250024,7 +251564,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 354,
+      "line": 358,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -250032,7 +251572,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 354,
+      "line": 358,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -250040,7 +251580,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 355,
+      "line": 359,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -250048,7 +251588,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 362,
+      "line": 366,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -250056,7 +251596,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 363,
+      "line": 367,
       "expression": "'bytes '+part.offset+'-'+(part.offset+part.bytes.length-1)+'/'",
       "fragments": [
         "bytes ",
@@ -250068,7 +251608,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 363,
+      "line": 367,
       "expression": "'bytes '+part.offset+'-'",
       "fragments": [
         "bytes ",
@@ -250079,7 +251619,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 363,
+      "line": 367,
       "expression": "'bytes '+part.offset",
       "fragments": [
         "bytes "
@@ -250089,7 +251629,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 366,
+      "line": 370,
       "expression": "file.url+'&download=original.'",
       "fragments": [
         "&download=original."
@@ -250099,7 +251639,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 366,
+      "line": 370,
       "expression": "'attachment; filename=\"original.'+(['pdf','epub','txt','md'].includes(file.format)?file.format:'bin')+'\"'",
       "fragments": [
         "attachment; filename=\"original.",
@@ -250110,7 +251650,7 @@
     {
       "kind": "concatenation",
       "file": "server/portal.mjs",
-      "line": 366,
+      "line": 370,
       "expression": "'attachment; filename=\"original.'+(['pdf','epub','txt','md'].includes(file.format)?file.format:'bin')",
       "fragments": [
         "attachment; filename=\"original."
@@ -250120,7 +251660,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 369,
+      "line": 373,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -250128,7 +251668,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 369,
+      "line": 373,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -250136,7 +251676,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 371,
+      "line": 375,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -250144,7 +251684,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 385,
+      "line": 389,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -250152,7 +251692,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 394,
+      "line": 398,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -250160,7 +251700,7 @@
     {
       "kind": "computed-member",
       "file": "server/portal.mjs",
-      "line": 395,
+      "line": 399,
       "expression": "action",
       "fragments": [],
       "unresolved": true
@@ -250168,7 +251708,7 @@
     {
       "kind": "template",
       "file": "server/portal.mjs",
-      "line": 400,
+      "line": 404,
       "expression": "`reader://books/${bookId}/audio/clips/${c.id}`",
       "fragments": [
         "reader://books/",
@@ -252323,19 +253863,19 @@
   },
   "counts": {
     "catalogueFiles": 4,
-    "catalogueKeys": 2161,
-    "localeValues": 8644,
-    "itemsComplete": 2161,
+    "catalogueKeys": 2182,
+    "localeValues": 8728,
+    "itemsComplete": 2182,
     "itemsWithMissingLocales": 0,
     "duplicateKeys": 0,
     "reviewedItems": 0,
-    "unreviewedItems": 2161,
-    "candidates": 4817,
-    "candidatesUnreviewed": 4817,
+    "unreviewedItems": 2182,
+    "candidates": 4818,
+    "candidatesUnreviewed": 4818,
     "candidatesProtected": 130,
     "itemsProtected": 9,
-    "dynamicConsumers": 3065,
-    "consumerReferences": 1520,
-    "keysWithoutStaticConsumers": 1172
+    "dynamicConsumers": 3094,
+    "consumerReferences": 1547,
+    "keysWithoutStaticConsumers": 1179
   }
 }

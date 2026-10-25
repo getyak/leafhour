@@ -2359,7 +2359,8 @@ candidate:app/index.html:85:153,html-text,app/index.html,85,,unknown,reviewable,
 candidate:app/index.html:88:127,html-text,app/index.html,88,,unknown,reviewable,,Generate AI introduction
 candidate:app/index.html:88:226,html-text,app/index.html,88,,unknown,reviewable,,Sign in for an AI introduction
 candidate:app/index.html:88:401,html-text,app/index.html,88,,unknown,reviewable,,Share this book
-candidate:app/index.html:88:510,html-text,app/index.html,88,,unknown,reviewable,,Reload introduction and sharing
+candidate:app/index.html:88:557,html-text,app/index.html,88,,unknown,reviewable,,Export this book
+candidate:app/index.html:88:667,html-text,app/index.html,88,,unknown,reviewable,,Reload introduction and sharing
 candidate:app/index.html:89:285,html-text,app/index.html,89,,unknown,reviewable,,Original source
 candidate:app/index.html:89:333,html-text,app/index.html,89,,unknown,reviewable,,↗
 candidate:app/index.html:91:148,html-text,app/index.html,91,,unknown,reviewable,,Leafhour
@@ -2749,9 +2750,9 @@ candidate:app/library-book-actions.mjs:24:122,js-attribute,app/library-book-acti
 candidate:app/library-book-actions.mjs:26:110,js-attribute,app/library-book-actions.mjs,26,role,unknown,reviewable,,status
 candidate:app/library-book-actions.mjs:41:101,js-attribute,app/library-book-actions.mjs,41,aria-hidden,unknown,reviewable,,true
 candidate:app/library-book-actions.mjs:58:483,js-cjk-literal,app/library-book-actions.mjs,58,,unknown,reviewable,,·读书日程.ics
-candidate:app/library-book-actions.mjs:77:154,js-attribute,app/library-book-actions.mjs,77,role,unknown,reviewable,,menuitem
-candidate:app/library-book-actions.mjs:81:258,js-attribute,app/library-book-actions.mjs,81,aria-haspopup,unknown,reviewable,,menu
-candidate:app/library-book-actions.mjs:81:303,js-attribute,app/library-book-actions.mjs,81,aria-expanded,unknown,reviewable,,false
+candidate:app/library-book-actions.mjs:84:154,js-attribute,app/library-book-actions.mjs,84,role,unknown,reviewable,,menuitem
+candidate:app/library-book-actions.mjs:88:258,js-attribute,app/library-book-actions.mjs,88,aria-haspopup,unknown,reviewable,,menu
+candidate:app/library-book-actions.mjs:88:303,js-attribute,app/library-book-actions.mjs,88,aria-expanded,unknown,reviewable,,false
 candidate:app/library-chat-markdown.mjs:81:227,js-attribute,app/library-chat-markdown.mjs,81,aria-expanded,unknown,reviewable,,true
 candidate:app/library-chat.mjs:44:81,js-attribute,app/library-chat.mjs,44,aria-labelledby,unknown,protected,identifier,library-chat-title
 candidate:app/library-chat.mjs:45:34,js-attribute,app/library-chat.mjs,45,aria-modal,unknown,reviewable,,false
@@ -3115,10 +3116,10 @@ candidate:app/reader-audio.js:178:187,js-cjk-literal,app/reader-audio.js,178,,un
 candidate:app/reader-book-actions-bootstrap.mjs:27:43,js-attribute,app/reader-book-actions-bootstrap.mjs,27,role,unknown,reviewable,,alert
 candidate:app/reader-book-actions-bootstrap.mjs:36:43,js-attribute,app/reader-book-actions-bootstrap.mjs,36,role,unknown,reviewable,,status
 candidate:app/reader-book-actions-bootstrap.mjs:55:67,js-attribute,app/reader-book-actions-bootstrap.mjs,55,role,unknown,reviewable,,status
-candidate:app/reader-book-actions.mjs:29:178,js-attribute,app/reader-book-actions.mjs,29,lang,unknown,reviewable,,und
-candidate:app/reader-book-actions.mjs:51:93,js-attribute,app/reader-book-actions.mjs,51,aria-hidden,unknown,reviewable,,true
-candidate:app/reader-book-actions.mjs:95:136,js-attribute,app/reader-book-actions.mjs,95,aria-labelledby,unknown,protected,identifier,reader-gift-title
-candidate:app/reader-book-actions.mjs:97:120,js-attribute,app/reader-book-actions.mjs,97,role,unknown,reviewable,,status
+candidate:app/reader-book-actions.mjs:30:178,js-attribute,app/reader-book-actions.mjs,30,lang,unknown,reviewable,,und
+candidate:app/reader-book-actions.mjs:53:93,js-attribute,app/reader-book-actions.mjs,53,aria-hidden,unknown,reviewable,,true
+candidate:app/reader-book-actions.mjs:105:136,js-attribute,app/reader-book-actions.mjs,105,aria-labelledby,unknown,protected,identifier,reader-gift-title
+candidate:app/reader-book-actions.mjs:107:120,js-attribute,app/reader-book-actions.mjs,107,role,unknown,reviewable,,status
 candidate:app/reader-chat-workspace.mjs:12:122,js-attribute,app/reader-chat-workspace.mjs,12,role,unknown,reviewable,,separator
 candidate:app/reader-chat-workspace.mjs:12:177,js-attribute,app/reader-chat-workspace.mjs,12,aria-orientation,unknown,reviewable,,vertical
 candidate:app/reader-chat-workspace.mjs:12:223,js-attribute,app/reader-chat-workspace.mjs,12,tabindex,unknown,reviewable,,0
@@ -4560,59 +4561,59 @@ candidate:server/pdf-source-evidence.mjs:20:219,js-cjk-literal,server/pdf-source
 candidate:server/pdf-source-evidence.mjs:24:14,js-cjk-literal,server/pdf-source-evidence.mjs,24,,unknown,reviewable,,页面图像超过显示容量，请下载原件对照
 candidate:server/pdf-source-evidence.mjs:25:64,js-cjk-literal,server/pdf-source-evidence.mjs,25,,unknown,reviewable,,页面图像核对超时，原件与文字仍保留
 candidate:server/pdf-source-evidence.mjs:25:84,js-cjk-literal,server/pdf-source-evidence.mjs,25,,unknown,reviewable,,页面图像无法呈现，原件与提取文字仍保留，请下载原件对照
-candidate:server/portal.mjs:50:123,js-cjk-literal,server/portal.mjs,50,,unknown,reviewable,,请使用 JSON 请求
-candidate:server/portal.mjs:50:247,js-cjk-literal,server/portal.mjs,50,,unknown,reviewable,,这次导入内容过大，请分书恢复
-candidate:server/portal.mjs:50:387,js-cjk-literal,server/portal.mjs,50,,unknown,reviewable,,这次导入内容过大，请分书恢复
-candidate:server/portal.mjs:50:509,js-cjk-literal,server/portal.mjs,50,,unknown,reviewable,,请求格式不正确
-candidate:server/portal.mjs:53:54,js-cjk-literal,server/portal.mjs,53,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:55:116,js-cjk-literal,server/portal.mjs,55,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:56:91,js-cjk-literal,server/portal.mjs,56,,unknown,reviewable,,额外网页来源配置无效
-candidate:server/portal.mjs:80:16,js-cjk-literal,server/portal.mjs,80,,unknown,reviewable,,书架正在另一处更新，请稍后刷新
-candidate:server/portal.mjs:104:69,js-cjk-literal,server/portal.mjs,104,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:105:134,js-cjk-literal,server/portal.mjs,105,,unknown,reviewable,,找不到这个操作
-candidate:server/portal.mjs:165:70,js-cjk-literal,server/portal.mjs,165,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:166:59,js-cjk-literal,server/portal.mjs,166,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:169:54,js-cjk-literal,server/portal.mjs,169,,unknown,reviewable,,请求来源未授权
-candidate:server/portal.mjs:170:85,js-cjk-literal,server/portal.mjs,170,,unknown,reviewable,,请求来源未授权
-candidate:server/portal.mjs:171:111,js-cjk-literal,server/portal.mjs,171,,unknown,reviewable,,"请在 "
-candidate:server/portal.mjs:171:130,js-cjk-literal,server/portal.mjs,171,,unknown,reviewable,," 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。"
-candidate:server/portal.mjs:175:79,js-cjk-literal,server/portal.mjs,175,,unknown,reviewable,,这个登录入口尚未开放
-candidate:server/portal.mjs:189:162,js-cjk-literal,server/portal.mjs,189,,unknown,reviewable,,账户已切换，请重新进入书房。原账户草稿仍留在原处。
-candidate:server/portal.mjs:203:27,js-cjk-literal,server/portal.mjs,203,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:205:41,js-cjk-literal,server/portal.mjs,205,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:206:61,js-cjk-literal,server/portal.mjs,206,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:220:27,js-cjk-literal,server/portal.mjs,220,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:222:94,js-cjk-literal,server/portal.mjs,222,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:225:41,js-cjk-literal,server/portal.mjs,225,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:226:61,js-cjk-literal,server/portal.mjs,226,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:231:95,js-cjk-literal,server/portal.mjs,231,,unknown,reviewable,,这个登录方式正在准备中
-candidate:server/portal.mjs:235:146,js-cjk-literal,server/portal.mjs,235,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
-candidate:server/portal.mjs:236:146,js-cjk-literal,server/portal.mjs,236,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:server/portal.mjs:238:151,js-cjk-literal,server/portal.mjs,238,,unknown,reviewable,,此书房尚未开启密码设置
-candidate:server/portal.mjs:242:80,js-cjk-literal,server/portal.mjs,242,,unknown,reviewable,,本机书房只在本机模式可用
-candidate:server/portal.mjs:248:27,js-cjk-literal,server/portal.mjs,248,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:249:149,js-cjk-literal,server/portal.mjs,249,,unknown,reviewable,,线上版本尚未准备好，请稍后重新读取接入配置。
-candidate:server/portal.mjs:250:35,js-cjk-literal,server/portal.mjs,250,,unknown,reviewable,,本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。
-candidate:server/portal.mjs:259:446,js-cjk-literal,server/portal.mjs,259,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:261:45,js-cjk-literal,server/portal.mjs,261,,unknown,reviewable,,此书房使用本机上传
-candidate:server/portal.mjs:265:48,js-cjk-literal,server/portal.mjs,265,,unknown,reviewable,,此书房使用本机上传
-candidate:server/portal.mjs:269:27,js-cjk-literal,server/portal.mjs,269,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:269:187,js-cjk-literal,server/portal.mjs,269,,unknown,reviewable,,文件编码不正确
-candidate:server/portal.mjs:283:27,js-cjk-literal,server/portal.mjs,283,,unknown,reviewable,,请先进入自己的书房
-candidate:server/portal.mjs:283:98,js-cjk-literal,server/portal.mjs,283,,unknown,reviewable,,请重新核对当前书房账户
-candidate:server/portal.mjs:285:41,js-cjk-literal,server/portal.mjs,285,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:298:164,js-cjk-literal,server/portal.mjs,298,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
-candidate:server/portal.mjs:312:25,js-cjk-literal,server/portal.mjs,312,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:380:120,js-cjk-literal,server/portal.mjs,380,,unknown,reviewable,,本书尚未开启探索体验统计
-candidate:server/portal.mjs:381:175,js-cjk-literal,server/portal.mjs,381,,unknown,reviewable,,请选择这本书的记录包
-candidate:server/portal.mjs:382:99,js-cjk-literal,server/portal.mjs,382,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
-candidate:server/portal.mjs:389:43,js-cjk-literal,server/portal.mjs,389,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:394:430,js-cjk-literal,server/portal.mjs,394,,unknown,reviewable,,找不到这个工具
-candidate:server/portal.mjs:397:30,js-cjk-literal,server/portal.mjs,397,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
-candidate:server/portal.mjs:403:20,js-cjk-literal,server/portal.mjs,403,,unknown,reviewable,,不支持这个听读操作
-candidate:server/portal.mjs:412:86,js-cjk-literal,server/portal.mjs,412,,unknown,reviewable,,只保存用户明确提供的原话
-candidate:server/portal.mjs:413:18,js-cjk-literal,server/portal.mjs,413,,unknown,reviewable,,不支持这个请求
-candidate:server/portal.mjs:415:16,js-cjk-literal,server/portal.mjs,415,,unknown,reviewable,,找不到这个操作
+candidate:server/portal.mjs:51:123,js-cjk-literal,server/portal.mjs,51,,unknown,reviewable,,请使用 JSON 请求
+candidate:server/portal.mjs:51:247,js-cjk-literal,server/portal.mjs,51,,unknown,reviewable,,这次导入内容过大，请分书恢复
+candidate:server/portal.mjs:51:387,js-cjk-literal,server/portal.mjs,51,,unknown,reviewable,,这次导入内容过大，请分书恢复
+candidate:server/portal.mjs:51:509,js-cjk-literal,server/portal.mjs,51,,unknown,reviewable,,请求格式不正确
+candidate:server/portal.mjs:54:54,js-cjk-literal,server/portal.mjs,54,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:56:116,js-cjk-literal,server/portal.mjs,56,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:57:91,js-cjk-literal,server/portal.mjs,57,,unknown,reviewable,,额外网页来源配置无效
+candidate:server/portal.mjs:81:16,js-cjk-literal,server/portal.mjs,81,,unknown,reviewable,,书架正在另一处更新，请稍后刷新
+candidate:server/portal.mjs:105:69,js-cjk-literal,server/portal.mjs,105,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:106:134,js-cjk-literal,server/portal.mjs,106,,unknown,reviewable,,找不到这个操作
+candidate:server/portal.mjs:168:70,js-cjk-literal,server/portal.mjs,168,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:169:59,js-cjk-literal,server/portal.mjs,169,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:172:54,js-cjk-literal,server/portal.mjs,172,,unknown,reviewable,,请求来源未授权
+candidate:server/portal.mjs:173:85,js-cjk-literal,server/portal.mjs,173,,unknown,reviewable,,请求来源未授权
+candidate:server/portal.mjs:174:111,js-cjk-literal,server/portal.mjs,174,,unknown,reviewable,,"请在 "
+candidate:server/portal.mjs:174:130,js-cjk-literal,server/portal.mjs,174,,unknown,reviewable,," 使用 Google 或 Apple 登录。当前页面仍可使用邮箱或密码登录。"
+candidate:server/portal.mjs:178:79,js-cjk-literal,server/portal.mjs,178,,unknown,reviewable,,这个登录入口尚未开放
+candidate:server/portal.mjs:192:162,js-cjk-literal,server/portal.mjs,192,,unknown,reviewable,,账户已切换，请重新进入书房。原账户草稿仍留在原处。
+candidate:server/portal.mjs:206:27,js-cjk-literal,server/portal.mjs,206,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:208:41,js-cjk-literal,server/portal.mjs,208,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:209:61,js-cjk-literal,server/portal.mjs,209,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:223:27,js-cjk-literal,server/portal.mjs,223,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:225:94,js-cjk-literal,server/portal.mjs,225,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:228:41,js-cjk-literal,server/portal.mjs,228,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:229:61,js-cjk-literal,server/portal.mjs,229,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:234:95,js-cjk-literal,server/portal.mjs,234,,unknown,reviewable,,这个登录方式正在准备中
+candidate:server/portal.mjs:238:146,js-cjk-literal,server/portal.mjs,238,,unknown,reviewable,,此书房尚未开启密码登录，可以使用验证码或本机书房
+candidate:server/portal.mjs:239:146,js-cjk-literal,server/portal.mjs,239,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:server/portal.mjs:241:151,js-cjk-literal,server/portal.mjs,241,,unknown,reviewable,,此书房尚未开启密码设置
+candidate:server/portal.mjs:245:80,js-cjk-literal,server/portal.mjs,245,,unknown,reviewable,,本机书房只在本机模式可用
+candidate:server/portal.mjs:251:27,js-cjk-literal,server/portal.mjs,251,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:252:149,js-cjk-literal,server/portal.mjs,252,,unknown,reviewable,,线上版本尚未准备好，请稍后重新读取接入配置。
+candidate:server/portal.mjs:253:35,js-cjk-literal,server/portal.mjs,253,,unknown,reviewable,,本机接入配置只能在运行 Leafhour 的电脑上读取。远程接入尚未支持。
+candidate:server/portal.mjs:262:446,js-cjk-literal,server/portal.mjs,262,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:264:45,js-cjk-literal,server/portal.mjs,264,,unknown,reviewable,,此书房使用本机上传
+candidate:server/portal.mjs:268:48,js-cjk-literal,server/portal.mjs,268,,unknown,reviewable,,此书房使用本机上传
+candidate:server/portal.mjs:272:27,js-cjk-literal,server/portal.mjs,272,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:272:187,js-cjk-literal,server/portal.mjs,272,,unknown,reviewable,,文件编码不正确
+candidate:server/portal.mjs:286:27,js-cjk-literal,server/portal.mjs,286,,unknown,reviewable,,请先进入自己的书房
+candidate:server/portal.mjs:286:98,js-cjk-literal,server/portal.mjs,286,,unknown,reviewable,,请重新核对当前书房账户
+candidate:server/portal.mjs:288:41,js-cjk-literal,server/portal.mjs,288,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:301:164,js-cjk-literal,server/portal.mjs,301,,unknown,reviewable,,这份阅读包较大，请从赠书信页面分段下载
+candidate:server/portal.mjs:315:25,js-cjk-literal,server/portal.mjs,315,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:384:120,js-cjk-literal,server/portal.mjs,384,,unknown,reviewable,,本书尚未开启探索体验统计
+candidate:server/portal.mjs:385:175,js-cjk-literal,server/portal.mjs,385,,unknown,reviewable,,请选择这本书的记录包
+candidate:server/portal.mjs:386:99,js-cjk-literal,server/portal.mjs,386,,unknown,reviewable,,这本书的探索体验尚未接入，可以按段翻译并保存自己的笔记
+candidate:server/portal.mjs:393:43,js-cjk-literal,server/portal.mjs,393,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:398:430,js-cjk-literal,server/portal.mjs,398,,unknown,reviewable,,找不到这个工具
+candidate:server/portal.mjs:401:30,js-cjk-literal,server/portal.mjs,401,,unknown,reviewable,,此实例暂未开启听读，请在本机书房使用。
+candidate:server/portal.mjs:407:20,js-cjk-literal,server/portal.mjs,407,,unknown,reviewable,,不支持这个听读操作
+candidate:server/portal.mjs:416:86,js-cjk-literal,server/portal.mjs,416,,unknown,reviewable,,只保存用户明确提供的原话
+candidate:server/portal.mjs:417:18,js-cjk-literal,server/portal.mjs,417,,unknown,reviewable,,不支持这个请求
+candidate:server/portal.mjs:419:16,js-cjk-literal,server/portal.mjs,419,,unknown,reviewable,,找不到这个操作
 candidate:server/preference-memory.mjs:5:97,js-cjk-literal,server/preference-memory.mjs,5,,unknown,reviewable,,阅读偏好记录无法识别，已保持原样
 candidate:server/preference-memory.mjs:15:245,js-cjk-literal,server/preference-memory.mjs,15,,unknown,reviewable,,阅读偏好请求格式不正确
 candidate:server/preference-memory.mjs:16:56,js-cjk-literal,server/preference-memory.mjs,16,,unknown,reviewable,,阅读偏好已在另一处更新，请读取最新版本

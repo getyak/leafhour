@@ -10,7 +10,7 @@ import path from 'node:path';
 import os from 'node:os';
 import {pathToFileURL} from 'node:url';
 import {CDP,closeOwnedDesktopChrome} from './lib/platform-cdp.mjs';
-import {delay,sha,until,customNewsreader,italicFontEvidence,captureFailurePage,createEvidenceSession,observeInitialPopovers,assertInitialPopoversClosed,exercisePopoverKeyboard,activateRemoteButton,observeReaderTools,observeReaderBookActions} from './lib/platform-font-observer.mjs';
+import {delay,sha,until,customNewsreader,stockSans,italicFontEvidence,captureFailurePage,createEvidenceSession,observeInitialPopovers,assertInitialPopoversClosed,exercisePopoverKeyboard,activateRemoteButton,observeReaderTools,observeReaderBookActions} from './lib/platform-font-observer.mjs';
 import {
   parseScriptArgs,
   assertRunnerGuard,
@@ -171,6 +171,12 @@ try{
   lifecycle.guard('evidence session creation');
   session=createEvidenceSession({cdp,out,receipt,root,origin,failures});
   receipt.browser=await cdp.send('Browser.getVersion');
+  receipt.devtoolsTarget={id:pages.id,url:pages.url,type:pages.type};
+  for(const method of ['Inspector.targetCrashed','Inspector.detached','Runtime.executionContextsCleared','Runtime.executionContextDestroyed'])session.observe(method,event=>{
+    const events=receipt.targetLifecycle??=[];
+    if(events.length<32)events.push({method,event,observedAt:new Date().toISOString(),startupPhase:receipt.android?.startupPhase??null});
+    else receipt.targetLifecycleOmitted=(receipt.targetLifecycleOmitted||0)+1;
+  });
   let viewport={width:1200,height:900,dpr:1,ua:receipt.browser.userAgent||''};
   if(args.mode==='desktop')await cdp.send('Emulation.setDeviceMetricsOverride',{width:1200,height:900,deviceScaleFactor:1,mobile:false});
   for(const method of ['Page.enable','Runtime.enable','DOM.enable','CSS.enable','Network.enable'])await cdp.send(method);
@@ -197,35 +203,51 @@ try{
       receipt.android.foreground=assessNativeForeground({dumpsysText:snapshot.dumpsys});
       receipt.android.firstRun=assessFirstRunOverlay(snapshot.uiautomatorXml);
     };
+    receipt.android.startupPhase='native-overlay-verification';
     await verifyNativeStartup({lifecycle,adapter,recordNative,capture:nativeCapture,readInternal:()=>cdp.evaluate('location.href'),waitForClear:check=>until(check,'known native notification rejection to clear',20000,failures),receipt:receipt.android});
     assert.ok(receipt.android.firstRun.ok,'No native startup dialog or permission overlay may cover the browser');
     // The internal version viewport is recorded separately and never reused for
     // product decisions; every product route binds its own current viewport.
-    receipt.android.versionViewport=await cdp.evaluate(VIEWPORT_EXPRESSION);
+    // Dismissing native Chrome setup can change activity/tab visibility. Bring
+    // this same owned target forward and verify the internal page before any
+    // product navigation. A lost target or timeout remains a failed run.
+    lifecycle.guard('post-native owned target foreground');
+    receipt.android.startupPhase='post-native-owned-target-foreground';
+    await cdp.send('Page.bringToFront');
+    receipt.android.startupPhase='internal-version-viewport';
+    const internal=await cdp.evaluate(`({url:location.href,visibility:document.visibilityState,viewport:${VIEWPORT_EXPRESSION}})`);
+    assert.ok(['chrome://version','chrome://version/'].includes(internal.url),'Same owned internal version page required after native setup');
+    assert.equal(internal.visibility,'visible','Owned internal page must be foreground after native setup');
+    receipt.android.postNativeTarget={...receipt.devtoolsTarget,url:internal.url,visibility:internal.visibility};
+    receipt.android.versionViewport=internal.viewport;
+    receipt.android.startupPhase='verified';
   }
   // Cold-font interception is installed before any product page navigation or
   // font warming on every mode.
   lifecycle.guard('product evidence');
   await session.installFontHold();
   await session.navigateProduct(origin+'/');
-  await session.until(async()=>session.paused.size&&await cdp.evaluate(`!!document.querySelector('.hero-copy h1 .hero-line')`),'font-paused real hero');
+  await session.until(async()=>session.paused.size&&await cdp.evaluate(`['/en','/zh-hans','/zh-hant','/ja'].includes(location.pathname)&&document.readyState!=='loading'&&!!document.querySelector('.hero-copy h1 .hero-line')`),'font-paused authored hero after automatic root entry');
   if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'home-cold',read:()=>session.viewport('home-cold')});
-  await delay(500);const cold=await session.fonts('.hero-copy h1 .hero-line','cold font-withheld hero',{awaitFonts:false});assert.ok(cold.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Cold fallback must have visible actual glyphs');assert.ok(!cold.fonts.some(font=>font.isCustomFont&&font.glyphCount>0),'Cold run must not use warmed custom face');await session.capture('home-controlled-font-delay');
+  // Current surfaces use stock sans for the headline and Leafhour Serif for
+  // the actual source quotation. Exercise the font owner that the product
+  // really renders; never restyle a node to satisfy the font assertions.
+  await delay(500);const cold=await session.fonts('#home-view .sample-original','cold font-withheld source quotation',{awaitFonts:false});assert.ok(cold.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Cold fallback must have visible actual glyphs');assert.ok(!cold.fonts.some(font=>font.isCustomFont&&font.glyphCount>0),'Cold run must not use warmed custom face');await session.capture('home-controlled-font-delay');
   await session.releaseFontHold();
-  await cdp.evaluate('document.fonts.ready.then(()=>true)');await session.capture('home-loaded');customNewsreader(await session.fonts('.hero-copy h1 .hero-line','loaded hero'));
+  await cdp.evaluate('document.fonts.ready.then(()=>true)');await session.capture('home-loaded');customNewsreader(await session.fonts('#home-view .sample-original','loaded source quotation'));
+  const headline=await session.fonts('.hero-copy h1 .hero-line','current stock-sans headline');assert.ok(headline.fonts.some(font=>!font.isCustomFont&&font.glyphCount>0),'Current headline must render its actual stock sans glyphs');
   for(const [route,locale] of [['/zh-hans','zh-Hans'],['/zh-hant','zh-Hant'],['/ja','ja']]){
-    session.setPageLabel('home-'+locale);
-    await cdp.send('Page.navigate',{url:origin+route});
-    await session.until(()=>cdp.evaluate(`location.pathname===${JSON.stringify(route)}&&document.readyState==='complete'&&document.documentElement.lang===${JSON.stringify(locale)}&&!!document.querySelector('#how .section-copy h2')`),'authored '+locale+' home');
+    await session.navigateProduct(origin+route,{page:'home-'+locale});
+    await session.until(()=>cdp.evaluate(`location.pathname===${JSON.stringify(route)}&&document.readyState==='complete'&&document.documentElement.lang===${JSON.stringify(locale)}&&document.querySelector('#home-menu-trigger')?.getAttribute('lang')===${JSON.stringify(locale)}&&!!document.querySelector('#how .section-copy h2')`),'authored '+locale+' home and initialized navigation');
     if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'home-'+locale,read:()=>session.viewport('home-'+locale)});
     const entrance=resolveLanguageEntrance({viewportWidth:viewport.width,locale});
     if(args.mode==='android')assert.ok(await cdp.evaluate(`[...document.querySelectorAll('.home-navigation .home-nav')].every(node=>!node.getClientRects().length)`),'Desktop navigation must stay hidden at the actual mobile width');
-    await session.cjkGlyphs(entrance,'actual '+locale+' language entrance');
-    await session.cjkGlyphs('#how .section-copy h2','actual '+locale+' heading CJK fallback',{serif:true});
-    receipt.cjkNeedsHumanReview=true;await session.capture('home-'+locale+'-cjk-loaded');
+    await session.cjkGlyphs('#how .section-copy h2','actual '+locale+' stock-sans heading CJK fallback');
+    (receipt.languageMenuInteractions??=[]).push(await exercisePopoverKeyboard({cdp,trigger:'#home-menu-trigger',panel:'#home-menu',guard:()=>lifecycle.guard('owned language-menu input'),afterOpened:()=>session.cjkGlyphs(entrance,'actual '+locale+' language entrance'),capture:()=>session.capture('home-'+locale+'-cjk-loaded')}));
+    receipt.cjkNeedsHumanReview=true;
   }
   lifecycle.guard('library evidence');
-  session.setPageLabel('library');await cdp.send('Page.navigate',{url:origin+'/library'});
+  await session.navigateProduct(origin+'/library',{page:'library'});
   await session.until(()=>cdp.evaluate(`location.pathname==='/library'&&document.readyState==='complete'&&!!document.querySelector('#library-books .binding-original')`),'actual public shelf');await cdp.evaluate('document.fonts.ready.then(()=>true)');
   if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'library',read:()=>session.viewport('library')});
   let originalSelector='#library-books .binding-original';
@@ -258,10 +280,10 @@ try{
     }
   }
   if(originalSelector){
-    customNewsreader(await session.fonts(originalSelector,'actual Alice cover original title'));
+    stockSans(await session.fonts(originalSelector,'actual Alice cover original title'));
     // Isolate a glyph in the actual text while preserving inherited typography.
     const punctuation=await cdp.evaluate(`(()=>{const n=[...document.querySelectorAll(${JSON.stringify(originalSelector)})].find(n=>n.textContent.includes('Alice’s'));if(!n)throw Error('Actual Alice’s title missing');const raw=n.textContent,node=[...n.childNodes].find(n=>n.nodeType===3&&n.textContent.includes('’'));if(!node)throw Error('Actual apostrophe text missing');const i=node.textContent.indexOf('’'),r=document.createRange();r.setStart(node,i);r.setEnd(node,i+1);const before=r.getBoundingClientRect().width,span=document.createElement('span');span.id='platform-apostrophe-probe';r.surroundContents(span);const after=span.getBoundingClientRect().width;return {raw,before,after,em:parseFloat(getComputedStyle(span).fontSize)};})()`);
-    const apostrophe=await session.fonts('#platform-apostrophe-probe','actual inherited U+2019 glyph');customNewsreader(apostrophe);assert.equal(apostrophe.text,'’');assert.ok(punctuation.after<punctuation.em*.5,'Apostrophe must be proportional');assert.ok(Math.abs(punctuation.before-punctuation.after)<.1,'Probe must preserve actual glyph width');receipt.punctuation=punctuation;
+    const apostrophe=await session.fonts('#platform-apostrophe-probe','actual inherited U+2019 glyph');stockSans(apostrophe);assert.equal(apostrophe.text,'’');assert.ok(punctuation.after<punctuation.em*.5,'Apostrophe must be proportional');assert.ok(Math.abs(punctuation.before-punctuation.after)<.1,'Probe must preserve actual glyph width');receipt.punctuation=punctuation;
   }
   await session.fonts('#library-books .binding-title','stock CJK book title fallback');await session.capture('library-loaded');
   const shelfPopovers=await cdp.evaluate('('+observeInitialPopovers.toString()+')()');
@@ -277,7 +299,7 @@ try{
   const sourcePassage=sourceBook.sections.flatMap(section=>section.paragraphs).find(p=>p.original.includes('_very_')&&sourceEmphasisRanges(p.original).length);assert.ok(sourcePassage,'Actual source emphasis passage required');
   const citation=new URLSearchParams({book:sourceBook.bookId,passage:sourcePassage.id,contentVersion:sourceBook.contentVersion,layer:'original'}),italicSelector='#chapter-text [data-id='+JSON.stringify(sourcePassage.id)+'] em.source-emphasis';
   receipt.citation={bookId:sourceBook.bookId,passageId:sourcePassage.id,contentVersion:sourceBook.contentVersion,layer:'original',originalSha256:sha(sourcePassage.original)};
-  session.setPageLabel('reader');await cdp.send('Page.navigate',{url:origin+'/read?'+citation});
+  await session.navigateProduct(origin+'/read?'+citation,{page:'reader'});
   await session.until(()=>cdp.evaluate(`location.pathname==='/read'&&document.readyState==='complete'&&document.body.dataset.ready==='true'&&!!document.querySelector(${JSON.stringify(italicSelector)})`),'ready cited actual reader italic');await cdp.evaluate('document.fonts.ready.then(()=>true)');
   if(args.mode==='android')viewport=await bindAndroidProductViewport({receipt,label:'reader',read:()=>session.viewport('reader')});
   const resolved=await cdp.evaluate(`(()=>{const reader=window.marginaliaReader,book=reader.getBook(),state=reader.getState(),n=document.querySelector(${JSON.stringify(italicSelector)}).closest('.passage'),r=n.getBoundingClientRect();return {url:location.href,bookId:book.bookId,contentVersion:book.contentVersion,mode:state.mode,passageId:n.dataset.id,visible:r.bottom>0&&r.top<innerHeight};})()`);
