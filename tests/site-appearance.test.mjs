@@ -304,7 +304,7 @@ test('every public language labels the appearance selection', async () => {
 });
 
 
-const supportRuntime=loader=>createUiLocale({loadCatalogue:loader,getLocation:()=>({href:'https://leafhour.com/ja/privacy'}),languages:['en']});
+const supportRuntime=loader=>createUiLocale({loadCatalogue:loader,getLocation:()=>({href:'https://leafhour.com/ja/privacy'}),storage:{getItem:()=> 'ja'},languages:['en']});
 const deferred=()=>{let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});return {promise,resolve,reject};};
 
 test('R6 support initial catalogue failure follows actual uiReady English fallback and explicit retry',async()=>{

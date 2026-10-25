@@ -1,5 +1,5 @@
 import {creditActionLabel,creditErrorId} from './credit-labels.mjs';
-import {t,getUiLocale,onUiLocaleChange,createUiLabels} from './ui-locale.mjs';
+import {t,getUiLocale,uiHref,onUiLocaleChange,createUiLabels} from './ui-locale.mjs';
 import {readingChatQuoteFromExcerpt,normalizeReadingChatQuote,validateCurrentReadingChatQuote} from './reading-chat-quote.mjs';
 import {activeHighlights,highlightKey,normalizeHighlight} from './highlights.mjs';
 import {renderChatMarkdown} from './library-chat-markdown.mjs';
@@ -43,7 +43,7 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
   price.hidden=getSession()?.billing?.enabled!==true;price.textContent=price.hidden?'':creditActionLabel('annotation',getUiLocale());
   const error=refusal?.id===activeId?refusal.error:null;
   if(error)labels.text(status,creditErrorId(error));
-  if(error?.status===402){labels.text(billLink,'billing.accountLink');billLink.href='/billing?ui='+getUiLocale();if(billLink.parentElement!==actions)actions.append(billLink);}else billLink.remove();
+  if(error?.status===402){labels.text(billLink,'billing.accountLink');billLink.href=uiHref('/billing');if(billLink.parentElement!==actions)actions.append(billLink);}else billLink.remove();
   return !!error;
  }
  function notice(key,{recover=false}={}){

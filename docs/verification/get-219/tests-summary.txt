@@ -1,0 +1,15 @@
+ok 445 - isolated Postgres executes billing invariants and concurrent reservation fixture # SKIP isolated SQL not executed: local Postgres binaries unavailable
+ok 512 - isolated Postgres executes subscription cycles, lifecycle and concurrent monthly signup # SKIP isolated subscription SQL not executed: native Postgres unavailable
+ok 600 - isolated Postgres executes yearly grants and serializes monthly/yearly cross-process signup # SKIP native PostgreSQL unavailable in hosted build; required database verification runs in GitHub CI
+ok 2550 - a modified Node license is rejected even when the executable matches the pinned official binary # SKIP
+ok 3250 - GET-219 regression: account system survives history with an old device language
+ok 3276 - GET-219 regression: root home uses account system instead of the old device language
+ok 3277 - GET-219 regression: denied storage keeps session system in generated links
+# tests 3377
+# suites 0
+# pass 3373
+# fail 0
+# cancelled 0
+# skipped 4
+# todo 0
+# duration_ms 81521.815583

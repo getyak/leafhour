@@ -48,7 +48,7 @@ test('locale commits update recommendation URLs and labels without replacing edi
  session.preferenceMemory.memory.onboarding.events=[{event:'started',at:new Date().toISOString(),order:['topic','language','style']}];
  const ui=mountPreferenceMemory({root:document.getElementById('one'),kind:'onboarding',getSession:()=>session,getBooks:()=>[{bookId:'book',title:{en:'Book'}}],api:async()=>session.preferenceMemory});
  const settings=mountPreferenceMemory({root:document.getElementById('two'),getSession:()=>session,api:async()=>session.preferenceMemory});t.after(()=>{ui.dispose();settings.dispose();});ui.update();settings.update();
- const select=document.querySelector('#memory-setting-theme');await requestUiRoute('zh-Hans');assert.match(document.querySelector('a').href,/ui=zh-Hans/);assert.equal(select.getAttribute('aria-label'),'阅读纸面');assert.ok(select===document.querySelector('#memory-setting-theme'),'locale preserves the field node');
+ const select=document.querySelector('#memory-setting-theme');await requestUiRoute('zh-Hans');assert.equal(new URL(document.querySelector('a').href,'https://synthetic.invalid').searchParams.has('ui'),false);assert.equal(select.getAttribute('aria-label'),'阅读纸面');assert.ok(select===document.querySelector('#memory-setting-theme'),'locale preserves the field node');
 });
 
 test('a confirmed settings save queues one required read behind an older pending read',async t=>{

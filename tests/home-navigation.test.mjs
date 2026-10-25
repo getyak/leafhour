@@ -231,7 +231,7 @@ test('opening refuses another open modal and the open appearance popover',()=>{
 test('the sheet reuses the real navigation anchors and localized language links',()=>{
   const f=menuFixture();
   const cloned=[...f.links.querySelectorAll('a')];
-  assert.deepEqual(cloned.map(a=>a.getAttribute('href')),['/library?ui=en','#how','#ownership'],'all three destinations stay real anchors');
+  assert.deepEqual(cloned.map(a=>a.getAttribute('href')),["/library","#how","#ownership"],'all three destinations stay real anchors');
   assert.equal(cloned.some(a=>a.hasAttribute('data-palette-open')),false,'the unwired cloned palette launcher is never copied');
   const languages=[...f.languageSlot.querySelectorAll('a')];
   assert.deepEqual(languages.map(a=>a.getAttribute('href')),['/','/zh-hans','/zh-hant','/ja'],'language links reuse the actual localized hrefs');
@@ -294,7 +294,7 @@ test('modified clicks keep native anchor behaviour and leave the sheet alone',()
 test('non-fragment destinations close without any later focus steal',()=>{
   const f=menuFixture();
   f.trigger.focus();f.trigger.click();
-  const library=[...f.links.querySelectorAll('a')].find(a=>a.getAttribute('href')==='/library?ui=en');
+  const library=[...f.links.querySelectorAll('a')].find(a=>a.getAttribute('href')==='/library');
   library.click();
   assert.equal(f.dialog.open,false);
   assert.equal(f.menu.lastCloseReason(),'navigation');
@@ -349,7 +349,7 @@ test('owner clear and same-owner retry remove stale resume rows and stale update
   f.setBooks([currentBook()]);
   assert.equal(f.menu.update({owner:'reader',revision:3}),true);
   assert.equal(f.resume.hidden,false);
-  assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui=en','the resume link is the book-only protocol');
+  assert.equal(f.resume.getAttribute('href'),"/read?book=walden",'the resume link is the book-only protocol');
   assert.equal(f.resumeTitle.textContent,'瓦尔登湖','the dynamic title is exact textContent, never translated');
   assert.equal(f.resumeAuthor.textContent,'Thoreau');
   assert.equal(f.menu.update({owner:'reader',revision:2}),false,'a stale captured revision is rejected');
@@ -364,7 +364,7 @@ test('owner clear and same-owner retry remove stale resume rows and stale update
   f.menu.clear({owner:'reader',revision:3});
   f.setBooks([currentBook()]);
   f.menu.update({owner:'reader',revision:3});
-  assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui=en');
+  assert.equal(f.resume.getAttribute('href'),"/read?book=walden");
 });
 
 test('resume eligibility comes only from real current progress; guests without progress see no continue row',()=>{
@@ -380,7 +380,7 @@ test('resume eligibility comes only from real current progress; guests without p
   f.setBooks([{bookId:'mine',title:{zh:'我的书'},author:'我',journey:{lastReadAt:'2026-10-19T00:00:00Z'}}]);
   f.menu.update({owner:'reader',revision:2});
   assert.equal(f.resume.hidden,false,'real current authorized progress gets the optional row');
-  assert.equal(f.resume.getAttribute('href'),'/read?book=mine&ui=en','readingBookUrl(book,null) only: the reader restores the full resume');
+  assert.equal(f.resume.getAttribute('href'),"/read?book=mine",'readingBookUrl(book,null) only: the reader restores the full resume');
 });
 
 test('the home account row opens the reading room without an extra account dialog',()=>{
@@ -392,7 +392,7 @@ test('the home account row opens the reading room without an extra account dialo
   f.menu.update({owner:'reader',revision:1});
   assert.equal(f.signIn.hidden,true);
   assert.equal(f.account.hidden,false);
-  assert.equal(f.account.getAttribute('href'),'/library?ui=en');
+  assert.equal(f.account.getAttribute('href'),"/library");
 });
 
 test('dispose detaches the sheet from the shared focus registry and the page listeners',()=>{
@@ -437,7 +437,7 @@ test('the actual refresh wiring clears the optional resume at every generation s
   const refresh=productionRefresh({api,homeMenu:f.menu,ownerScope:scope,document:f.document});
   await refresh({user:{id:'reader'}});
   assert.equal(f.resume.hidden,false,'the first successful refresh renders the real resume row');
-  assert.equal(f.resume.getAttribute('href'),'/read?book=private-synthetic&ui=en');
+  assert.equal(f.resume.getAttribute('href'),"/read?book=private-synthetic");
   assert.equal(f.resumeTitle.textContent,'Synthetic title');
   const retry=refresh({user:{id:'reader'}});
   assert.equal(f.resume.hidden,true,'the same-owner refresh generation clears the stale row synchronously at its start');
@@ -461,7 +461,7 @@ test('the actual refresh wiring syncs identity rows when the session settles eve
   await refresh({user:{id:'reader'}}).catch(()=>{});
   assert.equal(f.signIn.hidden,true,'signed-in identity rows sync without waiting for optional book data');
   assert.equal(f.account.hidden,false);
-  assert.equal(f.account.getAttribute('href'),'/library?ui=en');
+  assert.equal(f.account.getAttribute('href'),"/library");
   assert.equal(f.resume.hidden,true,'resume stays cleared without current valid books');
 });
 
@@ -512,9 +512,9 @@ test('home locale labels and existing owned links change without querying identi
   const children=[...f.dialog.children],booksBefore=f.calls.books,identityBefore=f.calls.identity,title=f.resumeTitle.textContent,author=f.resumeAuthor.textContent;
   await requestUiRoute('ja');
   assert.equal(f.dialog.open,true);assert.equal(f.document.activeElement,f.search);assert.deepEqual(f.dialog.children,children);assert.equal(f.calls.books,booksBefore);assert.equal(f.calls.identity,identityBefore);assert.equal(f.resumeTitle.textContent,title);assert.equal(f.resumeAuthor.textContent,author);
-  assert.equal(f.account.getAttribute('href'),'/library?ui=ja');assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui=ja');assert.equal(f.links.querySelector('a').getAttribute('href'),'/library?ui=ja');assert.equal(f.dialog.getAttribute('lang'),'ja');
+  assert.equal(f.account.getAttribute('href'),"/library");assert.equal(f.resume.getAttribute('href'),"/read?book=walden");assert.equal(f.links.querySelector('a').getAttribute('href'),"/library");assert.equal(f.dialog.getAttribute('lang'),'ja');
   f.menu.clear();await requestUiRoute('zh-Hant');assert.equal(f.resume.hidden,true);assert.equal(f.resume.getAttribute('href'),null);assert.equal(f.calls.books,booksBefore);
-  f.menu.dispose();await requestUiRoute('en');assert.equal(f.account.getAttribute('href'),'/library?ui=zh-Hant');
+  f.menu.dispose();await requestUiRoute('en');assert.equal(f.account.getAttribute('href'),"/library");
 });
 
 
@@ -525,7 +525,7 @@ test('owned hero, sample and footer links retain locale without rebuilding body 
   for(const code of ['en','ja','zh-Hant','zh-Hans']){
     await requestUiRoute(code);
     for(let i=0;i<targets.length;i++){
-      const expected=i<4?targets[i].replace(/#.*$/,'')+(targets[i].includes('?')?'&':'?')+'ui='+code+(targets[i].includes('#')?targets[i].slice(targets[i].indexOf('#')):''):targets[i];
+      const expected=targets[i];
       assert.equal(f.bodyLinks[i].getAttribute('href'),expected);
       assert.equal(f.bodyLinks[i],nodes[i]);assert.equal(nodes[i].textContent,'Literal body link');
     }
@@ -539,17 +539,17 @@ for(const code of ['ja','zh-Hans','zh-Hant'])for(const outcome of ['success','fa
  const runtime=createUiLocale({getLocation:()=>({href:'https://leafhour.com/'+({ja:'ja','zh-Hans':'zh-hans','zh-Hant':'zh-hant'}[code])}),loadCatalogue:()=>retry?Promise.resolve(catalogue):pending});
  const initial=runtime.initializeOnce(),targets=['/library?ui='+code,'/read?book=literal%2Fid&ui='+code+'#source','https://example.test/read?ui=literal','/api/export?signature=literal'];
  const f=menuFixture({user:{id:'a'},books:[currentBook()],authoredLang:code,extraLinks:targets,ui:runtime});f.menu.update({owner:'guest',revision:0});
- const context={uiHref:runtime.uiHref,ownedLinks:new Set()};vm.createContext(context);const owned=portalAst.body.find(n=>n.type==='FunctionDeclaration'&&n.id.name==='ownedHref');vm.runInContext(portalSource.slice(owned.start,owned.end)+';this.link=ownedHref;',context);const generated=f.document.createElement('a');context.link(generated,'/read?book=literal%2Fid');assert.equal(generated.href,'/read?book=literal%2Fid&ui='+code);
- const auth=portalAst.body.find(n=>n.declarations?.some(d=>d.id.name==='authDialog')).declarations[0].init.arguments[0].properties.find(p=>p.key.name==='getReturnTo').value;const login=vm.runInNewContext('('+portalSource.slice(auth.start,auth.end)+')',{authReturnTarget,pendingUpload:false,returnToReader:null,returnToLibrary:null,currentLibraryReturn:()=>'/library',getUiNavigationLocale:runtime.getUiNavigationLocale});assert.equal(login(),'/library?ui='+code);
+ const context={uiHref:runtime.uiHref,ownedLinks:new Set()};vm.createContext(context);const owned=portalAst.body.find(n=>n.type==='FunctionDeclaration'&&n.id.name==='ownedHref');vm.runInContext(portalSource.slice(owned.start,owned.end)+';this.link=ownedHref;',context);const generated=f.document.createElement('a');context.link(generated,'/read?book=literal%2Fid');assert.equal(generated.href,"/read?book=literal%2Fid");
+ const auth=portalAst.body.find(n=>n.declarations?.some(d=>d.id.name==='authDialog')).declarations[0].init.arguments[0].properties.find(p=>p.key.name==='getReturnTo').value;const login=vm.runInNewContext('('+portalSource.slice(auth.start,auth.end)+')',{authReturnTarget,pendingUpload:false,returnToReader:null,returnToLibrary:null,currentLibraryReturn:()=>'/library',getUiNavigationLocale:runtime.getUiNavigationLocale,uiHref:runtime.uiHref});assert.equal(login(),"/library");
  assert.equal(runtime.getUiLocaleState().phase,'pending');assert.equal(runtime.getUiLocale(),'en');
- assert.equal(f.bodyLinks[0].getAttribute('href'),targets[0]);assert.equal(f.bodyLinks[1].getAttribute('href'),targets[1]);
- assert.equal(f.account.getAttribute('href'),'/library?ui='+code);assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui='+code);assert.equal(f.links.querySelector('a').getAttribute('href'),'/library?ui='+code);
+ assert.equal(f.bodyLinks[0].getAttribute('href'),'/library');assert.equal(f.bodyLinks[1].getAttribute('href'),'/read?book=literal%2Fid#source');
+ assert.equal(f.account.getAttribute('href'),"/library");assert.equal(f.resume.getAttribute('href'),"/read?book=walden");assert.equal(f.links.querySelector('a').getAttribute('href'),"/library");
  const calls={...f.calls},nodes=[...f.bodyLinks];f.trigger.click();f.search.focus();
  if(outcome==='failure')reject(Error('synthetic catalogue failure'));else resolve(catalogue);
  await initial;await runtime.uiReady;await Promise.resolve();
- const effective=outcome==='success'?code:'en';context.link(generated,'/read?book=literal%2Fid');assert.equal(generated.href,'/read?book=literal%2Fid&ui='+effective);assert.equal(login(),'/library?ui='+effective);assert.equal(runtime.getUiLocale(),effective);assert.equal(f.bodyLinks[0].getAttribute('href'),'/library?ui='+effective);assert.equal(f.account.getAttribute('href'),'/library?ui='+effective);
- assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui='+effective);assert.equal(f.links.querySelector('a').getAttribute('href'),'/library?ui='+effective);
- if(outcome==='failure'){retry=true;await runtime.retryUiLocale();assert.equal(f.bodyLinks[0].getAttribute('href'),targets[0]);assert.equal(f.resume.getAttribute('href'),'/read?book=walden&ui='+code);}
+ const effective=outcome==='success'?code:'en';context.link(generated,'/read?book=literal%2Fid');assert.equal(generated.href,"/read?book=literal%2Fid");assert.equal(login(),"/library");assert.equal(runtime.getUiLocale(),effective);assert.equal(f.bodyLinks[0].getAttribute('href'),"/library");assert.equal(f.account.getAttribute('href'),"/library");
+ assert.equal(f.resume.getAttribute('href'),"/read?book=walden");assert.equal(f.links.querySelector('a').getAttribute('href'),"/library");
+ if(outcome==='failure'){retry=true;await runtime.retryUiLocale();assert.equal(f.bodyLinks[0].getAttribute('href'),'/library');assert.equal(f.resume.getAttribute('href'),"/read?book=walden");}
  assert.equal(f.bodyLinks[2].getAttribute('href'),targets[2]);assert.equal(f.bodyLinks[3].getAttribute('href'),targets[3]);assert.deepEqual(f.bodyLinks,nodes);assert.equal(f.document.activeElement,f.search);assert.equal(f.dialog.open,true);assert.deepEqual(f.calls,calls);
 });
 

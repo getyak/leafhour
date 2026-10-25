@@ -106,6 +106,11 @@ export default Object.freeze({
 
   "ui.language.label": "介面語言",
   "ui.language.name": "繁體中文",
+  "ui.language.systemDescription": "隨系統使用瀏覽器語言。",
+  "ui.language.pageOverride": "本頁語言覆寫",
+  "ui.language.settings": "介面語言設定",
+  "ui.locale.pageOnly": "瀏覽器儲存空間無法使用，介面語言僅在本頁生效。",
+  "ui.language.option.system": "隨系統",
   "ui.language.option.en": "English",
   "ui.language.option.zh-Hans": "简体中文",
   "ui.language.option.zh-Hant": "繁體中文",

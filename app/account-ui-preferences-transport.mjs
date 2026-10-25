@@ -1,7 +1,7 @@
 // The browser entry supplies an owner from its verified session. This transport
 // knows one same-origin resource; it never discovers an account or sends books,
 // reading settings, credentials or raw server errors to another service.
-const locales=new Set(['en','zh-Hans','zh-Hant','ja']);
+const locales=new Set(['system','en','zh-Hans','zh-Hant','ja']);
 const failure=status=>Object.assign(Error('Interface language could not be synchronized.'),{status});
 const validOwner=owner=>typeof owner==='string'&&owner.length>0&&owner.length<=512&&!/[\u0000-\u001f\u007f]/.test(owner);
 const validWrite=value=>value!==null&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).length===2&&Object.hasOwn(value,'baseRevision')&&Object.hasOwn(value,'uiLocale')&&Number.isSafeInteger(value.baseRevision)&&value.baseRevision>=0&&(value.uiLocale===null||locales.has(value.uiLocale));

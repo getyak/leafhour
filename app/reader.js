@@ -32,7 +32,7 @@ import {createPersonalRecordRenderer} from './personal-record-editor.mjs';
 import {personalRecordRevision} from './personal-records.mjs';
 import {activeHighlights,highlightKey} from './highlights.mjs';
 import {mountReaderHighlights,textRange} from './reader-highlights.mjs';
-import {t,uiReady,bindUi,onUiLocaleChange,uiHref,getUiLocaleState,setUiLocale,retryUiLocale,onUiLocaleStateChange,createUiLabels} from './ui-locale.mjs';
+import {getUiLinkLocale,t,uiReady,bindUi,onUiLocaleChange,uiHref,getUiLocaleState,setUiLocale,retryUiLocale,onUiLocaleStateChange,createUiLabels} from './ui-locale.mjs';
 import {mountNativeUiLocaleControl} from './ui-locale-controls.mjs';
 await uiReady;
 
@@ -48,7 +48,7 @@ const ownerSubscribers=new Set();
 
 const $=id=>document.getElementById(id);
 const ownedLabels=createUiLabels(),ownedLoginLinks=new Map();
-const loginLink=(node,params)=>{for(const [old]of ownedLoginLinks)if(old.isConnected===false)ownedLoginLinks.delete(old);ownedLoginLinks.set(node,params);return node.href=readerLoginUrl({...params,ui:getUiLocaleState().effective});};
+const loginLink=(node,params)=>{for(const [old]of ownedLoginLinks)if(old.isConnected===false)ownedLoginLinks.delete(old);ownedLoginLinks.set(node,params);return node.href=readerLoginUrl({...params,ui:getUiLinkLocale()});};
 let readerDisposed=false,readerEpoch=0;
 // Per-mount slots retain only owned chrome and semantic parameters. Detached
 // dynamic views are pruned, never walked or rebuilt on a locale commit.
@@ -59,7 +59,7 @@ const unbindShell=bindUi(document.body);
 label($('chapter-text'),READER_SHELL+'bookText',null,'aria-label');
 let syncLocaleChoice=()=>{};
 const localeControls=mountNativeUiLocaleControl({root:$('reader-ui-language'),getState:getUiLocaleState,setLocale:setUiLocale,retry:retryUiLocale,subscribeState:onUiLocaleStateChange,labels:t,onState:()=>syncLocaleChoice()});
-const offLocale=onUiLocaleChange(()=>{refreshLabels();for(const [link,params]of ownedLoginLinks){if(link.isConnected===false)ownedLoginLinks.delete(link);else link.href=readerLoginUrl({...params,ui:getUiLocaleState().effective});}for(const link of document.querySelectorAll('[data-reader-ui-link]'))link.href=uiHref(link.dataset.readerUiLink);});
+const offLocale=onUiLocaleChange(()=>{refreshLabels();for(const [link,params]of ownedLoginLinks){if(link.isConnected===false)ownedLoginLinks.delete(link);else link.href=readerLoginUrl({...params,ui:getUiLinkLocale()});}for(const link of document.querySelectorAll('[data-reader-ui-link]'))link.href=uiHref(link.dataset.readerUiLink);});
 for(const link of document.querySelectorAll('a[href="/library"],a[href="/library?calendar=1"]')){link.dataset.readerUiLink=link.getAttribute('href');link.href=uiHref(link.dataset.readerUiLink);}
 const receiptFor=node=>(id,params)=>{label(node,id,params);return t(id,params);};
 const arrival=mountReadingArrival($('loading'));
@@ -92,7 +92,7 @@ const api=async(url,data,options={})=>{const response=await readerFetch(url,{...
 const dailyPresence=mountReaderPresence({api,getUserId:readerOwner,enabled:()=>readerPresenceReady&&!!selectedBookId});
 const settingsDefaults=mountReadingDefaults({document,api,getState:()=>state,getSession:()=>readerSession,onSaved:saved=>{if(readerSession)readerSession.readingPreferences=saved;},onAnnounce:text=>announce(text)});
 const personalRecordsUI=createPersonalRecordRenderer({document,getBook:()=>book,scope:readerStorageKey('marginalia-record-edit-drafts-v1'),api,onUpdate:(record,type)=>{const key=type==='question'?'questions':'comments',index=records[key].findIndex(row=>row.id===record.id);if(index>=0&&personalRecordRevision(record)>=personalRecordRevision(records[key][index]))records[key][index]=record;document.dispatchEvent(new CustomEvent('reader:records-updated'));},onJump:async(record,type,anchor)=>{closePanel();if(await changeChapter(anchor.chapterId,record.passageId)){choosePassage(record.passageId);openPanel(type);}}});
-const highlights=mountReaderHighlights({document,getSession:()=>readerSession,getRecords:()=>records,signedIn:()=>!selectedBookId||!!readerOwner(),available:()=>!recordsUnavailable,selectionMatches:snapshot=>{try{const native=captureDOMSelection(getSelection(),paragraphMap,book);return !!native&&highlightKey(native)===highlightKey(snapshot);}catch{return false;}},api,onSelect:selectHighlight,onNote:()=>openPanel('comment'),onChange:()=>{flow?.invalidatePrepared();if(!$('note-panel').hidden)renderPanel();document.dispatchEvent(new CustomEvent('reader:records-updated'));},announce,loginUrl:link=>link?loginLink(link,{bookId:selectedBookId,passageId:selectedId}):readerLoginUrl({ui:getUiLocaleState().effective,bookId:selectedBookId,passageId:selectedId})});
+const highlights=mountReaderHighlights({document,getSession:()=>readerSession,getRecords:()=>records,signedIn:()=>!selectedBookId||!!readerOwner(),available:()=>!recordsUnavailable,selectionMatches:snapshot=>{try{const native=captureDOMSelection(getSelection(),paragraphMap,book);return !!native&&highlightKey(native)===highlightKey(snapshot);}catch{return false;}},api,onSelect:selectHighlight,onNote:()=>openPanel('comment'),onChange:()=>{flow?.invalidatePrepared();if(!$('note-panel').hidden)renderPanel();document.dispatchEvent(new CustomEvent('reader:records-updated'));},announce,loginUrl:link=>link?loginLink(link,{bookId:selectedBookId,passageId:selectedId}):readerLoginUrl({ui:getUiLinkLocale(),bookId:selectedBookId,passageId:selectedId})});
 const progressKey=readerStorageKey('marginalia-focus-position-v1'),localWriterId=crypto.randomUUID();let progressSequence=0,restoringProgress=true,allowScrollSave=false;
 let latestPositionAttempt=null,latestPositionDurable=false,confirmedPosition=null;
 const positionChanged=()=>document.dispatchEvent(new CustomEvent('reader:position-status'));

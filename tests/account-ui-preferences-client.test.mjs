@@ -275,7 +275,8 @@ test('an intent followed by an owner change never saves to the new owner',async(
   jaGate.resolve(ja);
   await picker;
   await new Promise(resolve=>setImmediate(resolve));
-  assert.equal(f.runtime.getUiLocale(),'ja','the language itself still activates');
+  assert.equal(f.runtime.getUiLocale(),'en','the old identity picker is revoked before it can activate');
+  assert.deepEqual(f.storageWrites,[]);assert.deepEqual(f.historyWrites,[]);
   assert.deepEqual(f.calls.map(entry=>entry[0]+':'+entry[1]),['read:owner-a','read:owner-b'],'the stale intent never reads or writes for the new owner');
   assert.notEqual(f.bridge.getState().phase,'saved');
   readB.resolve(emptyView());

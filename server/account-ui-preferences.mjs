@@ -6,7 +6,8 @@
 // account-profile paradigm: serial per-file queue, private atomic rename for
 // local runs, and the hosted dataStore mutate/CAS transaction otherwise.
 //
-// Only one explicit document shape is supported: the complete v1 record below.
+// Both supported versions have the same exact five-field document shape.
+// Version 1 null means no account choice; version 2 also accepts explicit system.
 // A missing record is the initial v1 state and may be initialized; any existing
 // document that is not that exact shape (foreign kind, unknown schemaVersion,
 // unknown/missing fields, unsafe revision, non-object or primitive values) is
@@ -16,7 +17,7 @@ import {mkdir,readFile,writeFile,rename,unlink} from 'node:fs/promises';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {digest,fail} from './document-import.mjs';
-import {isUiLocale} from '../app/ui-locale-codec.mjs';
+import {isUiLocale,isUiPreference} from '../app/ui-locale-codec.mjs';
 
 const queues=new Map();
 const controls=/[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/;
@@ -33,15 +34,15 @@ function accountFile(dataDir,user){
   if(typeof user?.id!=='string'||!user.id||user.id.length>512||controls.test(user.id))throw fail('请先进入自己的书房',401);
   return path.join(dataDir,'users',digest(user.id),'ui-preferences.json');
 }
-// Strict v1 validation: exactly the five owned keys with valid values. A
+// Strict supported-version validation: exactly the five owned keys with valid values. A
 // revision-0 record is the initial state only; saved records carry a timestamp.
 function parseRecord(value){
   if(!value||typeof value!=='object'||Array.isArray(value))throw invalidRecord();
   const keys=Object.keys(value);
   if(keys.length!==RECORD_KEYS.length||!keys.every(key=>RECORD_KEYS.includes(key)))throw invalidRecord();
-  if(value.kind!==RECORD_KIND||value.schemaVersion!==1)throw invalidRecord();
+  if(value.kind!==RECORD_KIND||![1,2].includes(value.schemaVersion))throw invalidRecord();
   if(!Number.isSafeInteger(value.revision)||value.revision<0)throw invalidRecord();
-  if(value.uiLocale!==null&&!isUiLocale(value.uiLocale))throw invalidRecord();
+  if(value.uiLocale!==null&&!(value.schemaVersion===2?isUiPreference(value.uiLocale):isUiLocale(value.uiLocale)))throw invalidRecord();
   if(value.revision===0){if(value.updatedAt!==null||value.uiLocale!==null)throw invalidRecord();}
   else if(typeof value.updatedAt!=='string'||!value.updatedAt||value.updatedAt.length>MAX_TIMESTAMP_LENGTH||!Number.isFinite(Date.parse(value.updatedAt)))throw invalidRecord();
   return value;
@@ -56,7 +57,7 @@ function requireInput(input){
   if(keys.some(key=>!['baseRevision','uiLocale'].includes(key)))throw fail('界面语言请求包含未知字段，尚未保存');
   if(keys.length!==2)throw fail('界面语言请求缺少版本或语言，尚未保存');
   if(!Number.isSafeInteger(input.baseRevision)||input.baseRevision<0)throw fail('请先读取当前界面语言，再保存修改');
-  if(input.uiLocale!==null&&!isUiLocale(input.uiLocale))throw fail('界面语言格式不正确，尚未保存');
+  if(input.uiLocale!==null&&!isUiPreference(input.uiLocale))throw fail('界面语言格式不正确，尚未保存');
 }
 export function createAccountUiPreferences({dataDir,dataStore=null}={}){
   if(typeof dataDir!=='string'||!dataDir)throw Error('Account UI preferences data directory is required');
@@ -94,6 +95,7 @@ export function createAccountUiPreferences({dataDir,dataStore=null}={}){
       const revision=data.revision;
       if(revision!==input.baseRevision)throw fail('界面语言已在另一处更新，请刷新后重新保存',409);
       if(revision>=Number.MAX_SAFE_INTEGER)throw fail('界面语言版本已超过可保存范围',409);
+      if(input.uiLocale==='system')data.schemaVersion=2;
       data.revision=revision+1;data.updatedAt=new Date().toISOString();data.uiLocale=input.uiLocale;
       return {revision:data.revision,updatedAt:data.updatedAt,uiLocale:input.uiLocale};
     });

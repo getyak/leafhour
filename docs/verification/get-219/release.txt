@@ -1,0 +1,3 @@
+Public build checked: 514 files, 11 registered media assets; no private content directories.
+Release allowlist checked: 988 software files; private history and data excluded.
+Public build checked: expected assets and source provenance only.

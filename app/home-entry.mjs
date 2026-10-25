@@ -1,4 +1,4 @@
-import {isUiLocale,browserUiLocale,readUiParam,UI_PREFERENCE_KEY} from './ui-locale-codec.mjs';
+import {isUiPreference,resolveUiPreference,browserUiLocale,readUiParam,UI_PREFERENCE_KEY,UI_SESSION_PREFERENCE_KEY} from './ui-locale-codec.mjs';
 
 const destinations={en:'/en','zh-Hans':'/zh-hans','zh-Hant':'/zh-hant',ja:'/ja'};
 function accountChoice(value){
@@ -6,7 +6,7 @@ function accountChoice(value){
  const keys=Object.keys(value);
  if(keys.length!==3||keys.some(k=>!['revision','updatedAt','uiLocale'].includes(k)))return null;
  if(!Number.isSafeInteger(value.revision)||value.revision<0)return null;
- if(value.uiLocale!==null&&!isUiLocale(value.uiLocale))return null;
+ if(value.uiLocale!==null&&!isUiPreference(value.uiLocale))return null;
  if(value.revision===0){if(value.updatedAt!==null||value.uiLocale!==null)return null;}
  else if(typeof value.updatedAt!=='string'||!value.updatedAt||value.updatedAt.length>64||!Number.isFinite(Date.parse(value.updatedAt)))return null;
  return value.uiLocale;
@@ -15,8 +15,8 @@ function accountChoice(value){
 // The automatic root entry owns one navigation, no preference or auth writes.
 // Authored documents and business routes keep their existing lifecycle.
 export async function enterAutoHome({
- location=globalThis.location,view=globalThis.window,storage,
- languages=globalThis.navigator?.languages||[],request=globalThis.fetch,
+ location=globalThis.location,view=globalThis.window,storage,sessionStorage,
+ languages=globalThis.navigator?.languages?.length?globalThis.navigator.languages:[globalThis.navigator?.language].filter(Boolean),request=globalThis.fetch,
  timeoutMs=2000,accountTimeoutMs=5000
 }={}){
  let original;
@@ -32,7 +32,8 @@ export async function enterAutoHome({
  for(const type of events)view?.addEventListener?.(type,mark,{capture:true});
  view?.document?.addEventListener?.('reader:session-changed',mark,{capture:true});
  try{
-  try{const value=(storage===undefined?globalThis.localStorage:storage)?.getItem?.(UI_PREFERENCE_KEY);if(isUiLocale(value))device=value;}catch{}
+  try{const value=(storage===undefined?globalThis.localStorage:storage)?.getItem?.(UI_PREFERENCE_KEY);if(isUiPreference(value))device=value;}catch{}
+  try{const value=(sessionStorage===undefined?globalThis.sessionStorage:sessionStorage)?.getItem?.(UI_SESSION_PREFERENCE_KEY);if(isUiPreference(value))device=value;}catch{}
   let code=query.status==='valid'?query.code:null;
   if(!code&&typeof request==='function'){
    // Guests retain the short identity deadline. Only a verified owner gets a
@@ -73,7 +74,8 @@ export async function enterAutoHome({
    code=await Promise.race([Promise.resolve().then(read).catch(()=>null),deadline,interaction]);
    if(expired())code=null;
   }
-  code=code||device||browserUiLocale(languages);
+  const preference=resolveUiPreference({account:code,device}).preference;
+  code=preference==='system'?browserUiLocale(languages):preference;
   if(interacted||location.href!==original.href)return {kind:'continue',reason:interacted?'interacted':'navigated'};
   const target=new URL(original.href);target.pathname=destinations[code];
   try{location.replace(target.pathname+target.search+target.hash);}catch{return {kind:'continue',reason:'navigation-unavailable'};}

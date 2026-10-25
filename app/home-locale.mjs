@@ -6,6 +6,7 @@ import {withUiParam} from './ui-locale-codec.mjs';
 // other public languages next to it, so one source document serves all locales:
 // [source, English, Traditional Chinese, Japanese].
 const strings=[
+  ['界面语言设置','Interface language settings','介面語言設定','表示言語の設定'],
   // Document metadata and navigation
   ['Leafhour — AI 辅助的私人阅读书房','Leafhour — Your personal AI reading room','Leafhour — AI 輔助的私人閱讀書房','Leafhour — AI と読む、自分だけの読書室'],
   ['Leafhour 是开源的 AI 辅助私人阅读书房。导入 PDF、Markdown 或文本，按段对照原文与译文，保存高亮、笔记和阅读时间，并按书授权自己的 AI Agent。','Leafhour is an open-source AI reading room for PDF, Markdown and text books, with bilingual passages, personal notes, reading time and book-scoped MCP access.','Leafhour 是開源的 AI 輔助私人閱讀書房。匯入 PDF、Markdown 或文字檔，按段對照原文與譯文，保存高亮、筆記和閱讀時間，並按書授權自己的 AI Agent。','Leafhour はオープンソースの AI 読書室です。PDF・Markdown・テキストを取り込み、原文と訳文を段落ごとに見比べ、ハイライト・メモ・読書時間を保存し、本ごとに自分の AI Agent へ権限を渡せます。'],

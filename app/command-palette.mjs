@@ -1,4 +1,4 @@
-import {t,onUiLocaleChange,uiReady,uiHref,getUiNavigationLocale} from './ui-locale.mjs';
+import {t,onUiLocaleChange,uiReady,uiHref,getUiNavigationLocale,getUiLinkLocale} from './ui-locale.mjs';
 import {uiAuthoredPath} from './ui-locale-codec.mjs';
 import {createPaletteLibrary} from './palette-library.mjs';
 import {readingBookUrl} from './library-workspace.mjs';
@@ -35,7 +35,7 @@ const matches=(label,query)=>!query||fold(label).includes(fold(query));
 // Settings and calendar destinations are produced by the exact GET-179 owned
 // view codec and validated by its safe return codec; unknown keys never ride.
 export function paletteLibraryUrl(overlay){
-  const target='/library'+writeLibraryView('',{view:libraryViewDefaults(),overlay:overlay||null,ui:getUiNavigationLocale()});
+  const target='/library'+writeLibraryView('',{view:libraryViewDefaults(),overlay:overlay||null,ui:getUiLinkLocale()});
   return safeLibraryReturn(target)||'/library';
 }
 

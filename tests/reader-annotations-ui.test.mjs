@@ -116,7 +116,7 @@ test('annotation billing refusal keeps selected words and offers billing without
    assert.equal([...f.storage.keys()].filter(k=>k.includes('pending')).length,0);
    const link=f.$('.reader-annotation-billing-link');assert.equal(!!link,error.status===402);
    assert.equal(f.$('.reader-annotation-actions').children[0].hidden,false,'a new explicit request remains available');assert.equal(f.$('.reader-annotation-actions').children[2].hidden,true,'there is no saved thread to delete');
-   if(error.status===402){assert.equal(link.href,'/billing?ui=en');await requestUiRoute('ja');assert.match(f.$('.reader-annotation-status').textContent,/ポイントが不足/);assert.equal(link.href,'/billing?ui=ja');await requestUiRoute('en');}
+   if(error.status===402){assert.equal(link.href,'/billing');await requestUiRoute('ja');assert.match(f.$('.reader-annotation-status').textContent,/ポイントが不足/);assert.equal(link.href,'/billing');await requestUiRoute('en');}
   }finally{f.dispose();}
  }
 });

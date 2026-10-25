@@ -57,7 +57,7 @@ export function mountSettingsAppearance({document,root,t,getAppearance,setAppear
   group.body.append(cards);
   // Interface language: one labelled group, each choice written in its own
   // language. The shared control keeps its own notices and retry affordances.
-  const language=settingGroup({document,title:t('shell.settings.language.title'),description:''});
+  const language=settingGroup({document,title:t('shell.settings.language.title'),description:t('ui.language.systemDescription')});
   const localeRoot=make(document,'settings-locale');
   language.body.append(localeRoot);
   const localeControls=locale&&typeof locale.getState==='function'?mountUiLocaleControls({
@@ -69,6 +69,7 @@ export function mountSettingsAppearance({document,root,t,getAppearance,setAppear
   const updateLabels=()=>{
     group.setTitle(t('shell.appearance.title'));group.setDescription(t('shell.appearance.description'));
     language.setTitle(t('shell.settings.language.title'));
+    language.setDescription(t('ui.language.systemDescription'));
     for(const entry of entries){
       const label=t('shell.appearance.'+entry.input.value);
       entry.name.textContent=label;

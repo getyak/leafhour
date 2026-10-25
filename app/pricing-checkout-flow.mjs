@@ -7,7 +7,7 @@ const issue=code=>Object.assign(new Error(code),{code});
 
 // The provider callback changes presentation only. The local owner-bound order
 // must be reconciled by the server before leaving the pricing page.
-export function createPricingCheckout({client,openCheckout,onSignIn=async()=>{},navigate=()=>{},onChange=()=>{},locale='en',delay=ms=>new Promise(resolve=>setTimeout(resolve,ms)),pollAttempts=12}={}){
+export function createPricingCheckout({client,openCheckout,onSignIn=async()=>{},navigate=()=>{},onChange=()=>{},locale='en',libraryHref=()=>'/library?ui='+encodeURIComponent(locale),delay=ms=>new Promise(resolve=>setTimeout(resolve,ms)),pollAttempts=12}={}){
  let generation=0,handle=null,disposed=false;
  const state={phase:'loading',selectedPlan:null,errorCode:null,orderId:null};
  const snapshot=()=>({...state});
@@ -35,7 +35,7 @@ export function createPricingCheckout({client,openCheckout,onSignIn=async()=>{},
     const result=await client.recheckOrder(order.id);
     if(!checkpoint(ticket,actor))return;
     if(result?.id!==order.id)throw issue('BILLING_INVALID_ORDER');
-    if(verified(result)){emit('done');navigate('/library?ui='+encodeURIComponent(locale));return;}
+    if(verified(result)){emit('done');navigate(libraryHref());return;}
     if(['refunded','partially_refunded','disputed','cancelled','canceled','failed','expired'].includes(result.status)){emit('error','BILLING_PAYMENT_NOT_COMPLETED');return;}
     if(attempt+1<pollAttempts)await delay(2500);
     if(!checkpoint(ticket,actor))return;

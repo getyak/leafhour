@@ -29,7 +29,7 @@
 // again. Corrupt snapshots are rejected outright and never open a
 // baseRevision-0 CAS window over existing data. Every read/write call is
 // bounded to one explicit action: no polling and no automatic retry.
-import {isUiLocale,readUiParam,uiNavigationContext,classifyUiRoute} from './ui-locale-codec.mjs';
+import {isUiPreference} from './ui-locale-codec.mjs';
 
 // Fixed phase and reason vocabularies: independent of catalogue loading, safe
 // for the existing UI notice, and never raw backend errors or account data.
@@ -49,7 +49,7 @@ export function isAccountUiSnapshot(value){
   const keys=Object.keys(value);
   if(keys.length!==SNAPSHOT_KEYS.length||keys.some(key=>!SNAPSHOT_KEYS.includes(key)))return false;
   if(!Number.isSafeInteger(value.revision)||value.revision<0)return false;
-  if(value.uiLocale!==null&&!isUiLocale(value.uiLocale))return false;
+  if(value.uiLocale!==null&&!isUiPreference(value.uiLocale))return false;
   if(value.revision===0)return value.updatedAt===null&&value.uiLocale===null;
   return typeof value.updatedAt==='string'&&!!value.updatedAt&&value.updatedAt.length<=MAX_TIMESTAMP_LENGTH&&Number.isFinite(Date.parse(value.updatedAt));
 }
@@ -92,12 +92,6 @@ export function createAccountUiPreferencesBridge({runtime,read,write,getLocation
 
   // A valid ui deep link or an explicit authored language path is the page's
   // own choice and always outranks account recovery.
-  const routeOverride=()=>{
-    const href=String(getLocation()?.href||'');
-    const route=classifyUiRoute(uiNavigationContext(href).pathname);
-    if(route.kind!=='canonical')return true;
-    return readUiParam(href).status==='valid';
-  };
 
   // One bounded serial chain: consecutive selections queue behind each other
   // and a superseded queued selection merges into the newest one.
@@ -160,7 +154,7 @@ export function createAccountUiPreferencesBridge({runtime,read,write,getLocation
     // The owner/intent guard is captured here and handed to the runtime as the
     // isCurrent recheck; the deep-link/authored-path precedence is checked at
     // result time so a page's explicit choice always stays authoritative.
-    if(!restoreCurrent(capture)||routeOverride())return {applied:false};
+    if(!restoreCurrent(capture))return {applied:false};
     return runtime.requestAccountUiLocale(code==null?null:code,{isCurrent:()=>restoreCurrent(capture)});
   }).then(result=>{
     const applied=!!result&&String(result.kind).startsWith('committed');
@@ -216,6 +210,7 @@ export function createAccountUiPreferencesBridge({runtime,read,write,getLocation
     // pending success feedback before any new IO starts.
     const previousOwner=owner;
     epoch++;owner=ownerId;conflict=null;queued=null;lastAttempt=null;
+    if(previousOwner!==null&&previousOwner!==ownerId)void runtime.invalidateUiOwner?.();
     const capture={epoch,owner:ownerId,intent:latestIntent,commit:latestCommit};
     adoptionCapture=capture;
     // A previous owner's account-restored language must never become the new

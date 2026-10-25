@@ -1,4 +1,4 @@
-import {t,getUiLocale,uiReady,onUiLocaleChange,createUiLabels,createUiMessage} from './ui-locale.mjs';
+import {getUiLinkLocale,t,getUiLocale,uiReady,onUiLocaleChange,createUiLabels,createUiMessage} from './ui-locale.mjs';
 import {createIntroductionController} from './book-introduction-controller.mjs';
 import {introductionFor} from './book-introduction.mjs';
 import {readerLoginUrl} from './reader-return.mjs';
@@ -12,11 +12,11 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
   const $=id=>document.getElementById(id),trigger=$('open-book-info'),generate=$('book-intro-generate'),login=$('book-intro-login'),share=$('book-info-share'),status=$('book-intro-status'),note=$('book-intro-provenance'),scope=$('book-intro-scope');
   const exportButton=$('book-info-export');
   const make=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
-  const signedIn=!!(bookId&&session?.user),loginUrl=()=>readerLoginUrl({bookId,ui:getUiLocale()});
+  const signedIn=!!(bookId&&session?.user),loginUrl=()=>readerLoginUrl({bookId,ui:getUiLinkLocale()});
   let disposed=false,unsubscribe=()=>{},sequence=0,activeBookId=null,activeVersion=null,composer=null,giftModule=null,openingTicket=null;
   const labels=createUiLabels(),descriptionLabels=createUiLabels(),dialogLabels=createUiLabels();let descriptionFallback=false,loginPath=null;
   const text=(n,key,params)=>labels.text(n,'bookActions.'+key,params);
-  const relabel=()=>{if(disposed)return;labels.refresh();descriptionLabels.refresh();dialogLabels.refresh();if(descriptionFallback)$('book-info-description').setAttribute('lang',getUiLocale());if(loginPath)login.href=readerLoginUrl({bookId:loginPath,ui:getUiLocale()});statusMessage.refresh();giftMessage.refresh();};
+  const relabel=()=>{if(disposed)return;labels.refresh();descriptionLabels.refresh();dialogLabels.refresh();if(descriptionFallback)$('book-info-description').setAttribute('lang',getUiLocale());if(loginPath)login.href=readerLoginUrl({bookId:loginPath,ui:getUiLinkLocale()});statusMessage.refresh();giftMessage.refresh();};
   let offLocale=()=>{};
   // Terminal disposal makes every action, render and asynchronous handler
   // inert: a captured stale control can never call the API or re-enable a

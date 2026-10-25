@@ -26,7 +26,7 @@
 // isCurrent guard is rechecked after the async catalogue settles and before
 // any active state/document/subscription side effect; a stale guard settles
 // only its own pending request and can never tear down a newer picker.
-import {UI_LOCALES,DEFAULT_UI_LOCALE,UI_PREFERENCE_KEY,isUiLocale,browserUiLocale,parseUiParam,withUiParam,readUiParam,mergeOwnedUi,classifyUiRoute,uiNavigationContext,sameUiNavigationContext} from './ui-locale-codec.mjs';
+import {UI_LOCALES,DEFAULT_UI_LOCALE,UI_PREFERENCE_KEY,UI_SESSION_PREFERENCE_KEY,isUiLocale,isUiPreference,resolveUiPreference,browserUiLocale,parseUiParam,withUiParam,withoutUiParam,readUiParam,mergeOwnedUi,classifyUiRoute,uiNavigationContext,sameUiNavigationContext} from './ui-locale-codec.mjs';
 import englishCatalogue from './ui-catalogs/en.mjs';
 import {createBrowserAccountUiPreferences} from './account-ui-preferences-browser.mjs';
 
@@ -126,7 +126,9 @@ export function validateUiCatalogue(catalogue,code,english=englishCatalogue){
 export function createUiLocale({
   loadCatalogue,
   storage=null,
+  sessionStorage=null,
   languages=[],
+  getLanguages=()=>languages,
   history=null,
   getLocation=()=>globalThis.location||{href:''},
   getHistoryState=()=>history&&history.state,
@@ -139,11 +141,14 @@ export function createUiLocale({
   const englishData=validateUiCatalogue(english,'en',english);
   const catalogues=new Map([['en',englishData]]);
   const attempts=new Map(); // code -> {base,retry}
+  const loading=new Map(); // code -> the in-flight base/retry catalogue promises
   const languageListeners=new Set(),stateListeners=new Set(),faultListeners=new Set(),beforePopListeners=new Set(),manualIntentListeners=new Set(),manualCommitListeners=new Set(),roots=new Set();
   let generation=0,currentRequest=null,firstSettled=false,uiReadyResolve=null,started=false,startPromise=null;
   let intentToken=0,retryIntentToken=null;
+  let accountPreference=null,manualPreference=null,retryDecision=null,pendingChoice=null,pickerPromise=null,sessionRetry=null,lastPickerPreference=null;
   const uiReady=new Promise(resolve=>{uiReadyResolve=resolve;});
   const state={
+    preference:'system',preferenceSource:'default',source:'default',pendingPreference:null,persistenceScope:null,
     requested:DEFAULT_UI_LOCALE,
     effective:DEFAULT_UI_LOCALE,
     fallbackReason:'none',
@@ -156,6 +161,8 @@ export function createUiLocale({
     initialFallback:false
   };
   const snapshot=()=>Object.freeze({
+    preference:state.preference,preferenceSource:state.preferenceSource,source:state.source,pendingPreference:state.pendingPreference,
+    persistenceScope:state.persistenceScope,
     requested:state.requested,effective:state.effective,fallbackReason:state.fallbackReason,
     retryTarget:state.retryTarget,retryActor:state.retryActor,attempt:state.attempt,
     persistence:state.persistence,phase:state.phase,offerReload:state.offerReload,
@@ -214,9 +221,20 @@ export function createUiLocale({
     }
     return state.effective;
   };
-  const uiHref=url=>withUiParam(url,getUiNavigationLocale());
+  const getUiLinkLocale=()=>(firstSettled?state.preference:resolveTarget().preference)==='system'?null:getUiNavigationLocale();
+  const uiHref=url=>getUiLinkLocale()===null?withoutUiParam(url):withUiParam(url,getUiNavigationLocale());
+  const readSessionPreference=()=>{try{const value=sessionStorage?.getItem?.(UI_SESSION_PREFERENCE_KEY);return isUiPreference(value)?value:null;}catch{return null;}};
   const readPreference=()=>{
-    try{return isUiLocale(storage?.getItem?.(UI_PREFERENCE_KEY))?storage.getItem(UI_PREFERENCE_KEY):null;}catch{return null;}
+    const session=readSessionPreference();if(session)return session;
+    try{const value=storage?.getItem?.(UI_PREFERENCE_KEY);return isUiPreference(value)?value:null;}catch{return null;}
+  };
+  const resolveTarget=({account=accountPreference,manual=manualPreference,page=true}={})=>{
+    const choice=resolveUiPreference({manual,account,device:readPreference()});
+    let code=choice.preference==='system'?browserUiLocale(getLanguages()):choice.preference;
+    let source=choice.preferenceSource;
+    const href=String(getLocation().href||''),route=classifyUiRoute(uiNavigationContext(href).pathname),query=readUiParam(href);
+    if(page&&(route.kind!=='canonical'||query.status==='valid')){code=route.kind!=='canonical'?route.code:query.code;source='page';}
+    return {...choice,code,source,account,manual};
   };
   const cancelPending=reason=>{
     const request=currentRequest;
@@ -232,21 +250,17 @@ export function createUiLocale({
   const loadFor=async(code,{retry})=>{
     const record=attemptRecord(code);
     if(catalogues.has(code))return catalogues.get(code);
-    if(retry&&!record.retry){
-      record.retry=true;
-      return validateUiCatalogue(await loadCatalogue(code,{retry:true}),code,englishData);
-    }
-    if(!retry&&!record.base){
-      record.base=true;
-      return validateUiCatalogue(await loadCatalogue(code,{retry:false}),code,englishData);
-    }
-    if(!retry&&!record.retry){
-      // A new explicit user action after a base failure is the one explicit
-      // retry: it uses the single fixed ?retry=1 variant and no other URL.
-      record.retry=true;
-      return validateUiCatalogue(await loadCatalogue(code,{retry:true}),code,englishData);
-    }
-    throw Object.assign(Error('UI catalogue load budget exhausted'),{code:'UI_CATALOGUE_EXHAUSTED'});
+    let pending=loading.get(code);if(!pending){pending={};loading.set(code,pending);}
+    // Owner clear and restore may supersede each other's transactions. They
+    // share the physical import, while each transaction keeps its own guard.
+    if(pending.retry)return pending.retry;
+    if(!retry&&pending.base)return pending.base;
+    const variant=retry||record.base?'retry':'base';
+    if(record[variant])throw Object.assign(Error('UI catalogue load budget exhausted'),{code:'UI_CATALOGUE_EXHAUSTED'});
+    record[variant]=true;
+    const promise=(async()=>validateUiCatalogue(await loadCatalogue(code,{retry:variant==='retry'}),code,englishData))();
+    pending[variant]=promise;
+    try{return await promise;}finally{if(pending[variant]===promise)delete pending[variant];}
   };
   const settleFirst=()=>{
     if(firstSettled)return;
@@ -257,6 +271,8 @@ export function createUiLocale({
   // A stale request cleans up ONLY its own pending bookkeeping; a newer
   // request owns the state and is never touched here.
   const clearOwnPending=()=>{
+    state.pendingPreference=null;
+    retryDecision=null;
     state.requested=state.effective;state.phase='ready';state.fallbackReason='none';
     state.retryTarget=null;state.retryActor=null;retryIntentToken=null;retryGuard=null;retryContext=null;
     state.attempt=0;state.offerReload=false;state.initialFallback=false;
@@ -291,7 +307,7 @@ export function createUiLocale({
     // started an attempt at all.
     return {kind:'rejected',reason,error};
   };
-  const commitHistoryFirst=(code,actor,{intentToken:token=null,isCurrent=null}={})=>{
+  const commitHistoryFirst=(code,actor,{intentToken:token=null,isCurrent=null,decision=null}={})=>{
     // Synchronous commit block: no await between the final navigation-context
     // check / location read and the history write, and history failure rejects
     // before any preference or active-language side effect. The GET-198 caller
@@ -302,44 +318,69 @@ export function createUiLocale({
     const href=String(getLocation().href||'');
     if(!sameUiNavigationContext(currentContext,uiNavigationContext(href)))return {kind:'stale',reason:'navigated'};
     let sessionOnly=false;
+    let persistenceScope=state.persistenceScope;
     if(actor==='picker'){
       let target;
-      try{target=withUiParam(href,code);}catch{return {kind:'rejected',reason:'invalid-target'};}
+      try{target=decision?.preference==='system'?withoutUiParam(href):withUiParam(href,code);}catch{return {kind:'rejected',reason:'invalid-target'};}
       // Falsy history state (0, false, '') is preserved exactly.
       try{history.replaceState(getHistoryState()??null,'',target);}
       catch(error){return failRequest(code,actor,'history',{error,intentToken:token,guard:isCurrent});}
     }
     if(actor==='picker'||actor==='explicit-route'){
       if(!storage||typeof storage.setItem!=='function')sessionOnly=true;
-      else{try{storage.setItem(UI_PREFERENCE_KEY,code);}catch{sessionOnly=true;}}
+      else{try{storage.setItem(UI_PREFERENCE_KEY,decision?.preference||code);}catch{sessionOnly=true;}}
+      if(sessionOnly){
+        persistenceScope='page';
+        try{if(typeof sessionStorage?.setItem==='function'){sessionStorage.setItem(UI_SESSION_PREFERENCE_KEY,decision?.preference||code);persistenceScope='tab';}}catch{}
+      }else{
+        persistenceScope='device';try{sessionStorage?.removeItem?.(UI_SESSION_PREFERENCE_KEY);}catch{}
+      }
     }
     const previous=state.effective;
+    const previousPreference=state.preference;
+    const sessionChoice=decision?.account==null&&decision?.manual==null&&decision?.preference===readSessionPreference();
+    const keepSessionOnly=sessionChoice||state.persistence==='session-only'&&decision?.manual!=null&&decision.manual===manualPreference;
+    if(sessionChoice)persistenceScope='tab';
+    if(decision){
+      accountPreference=decision.account;manualPreference=decision.manual;
+      state.preference=decision.preference;state.preferenceSource=decision.preferenceSource;state.source=decision.source;
+    }
+    state.pendingPreference=null;
     state.requested=code;state.effective=code;state.fallbackReason='none';state.retryTarget=null;state.retryActor=null;retryIntentToken=null;retryGuard=null;retryContext=null;
+    retryDecision=null;
     state.attempt=0;state.phase='ready';state.offerReload=false;state.initialFallback=false;
-    state.persistence=actor==='picker'||actor==='explicit-route'?sessionOnly?'session-only':'saved':actor==='initial'?'initial':actor==='account'?'account':'route';
+    state.persistence=actor==='picker'||actor==='explicit-route'?sessionOnly?'session-only':'saved':keepSessionOnly?'session-only':actor==='initial'?'initial':actor==='account'?'account':'route';
+    state.persistenceScope=persistenceScope;
+    if(actor==='picker'){sessionRetry=sessionOnly?{decision,token}:null;lastPickerPreference=decision?.preference;}
+    else if(actor==='explicit-route')lastPickerPreference=null;
     if(setDocumentLang&&!isAuthoredActor()){try{setDocumentLang(code);}catch(error){reportSubscriberFault('document-lang',error);}}
-    if(previous!==code||actor==='picker')publish();
+    if(previous!==code||previousPreference!==state.preference||actor==='picker')publish();
     emitState();
     return {kind:sessionOnly?'committed+session-only':actor==='route'||actor==='initial'?'committed+route':actor==='account'?'committed+account':'committed+saved',locale:code};
   };
-  const run=async(code,actor,{useRetryVariant=false,intentToken:token=null,isCurrent=null}={})=>{
+  const run=async(code,actor,{useRetryVariant=false,intentToken:token=null,isCurrent=null,decision=resolveTarget()}={})=>{
     if(!isUiLocale(code))return {kind:'rejected',reason:'invalid'};
+    const retryAfterFailure=(actor==='picker'||actor==='explicit-route')&&state.phase==='error'&&state.retryTarget===code;
     const stamp=++generation;
     // A superseding request replaces the retry identity and settles the older
     // attempt as stale instead of leaving its caller promise hanging.
     cancelPending('superseded');
     state.retryTarget=null;state.retryActor=null;retryIntentToken=null;retryGuard=null;retryContext=null;
+    retryDecision=decision;
     if(code===state.effective&&(actor==='route'||actor==='initial')&&catalogues.has(code)){
       // Same-effective transitions skip formatting only: pending work was
       // already cancelled above and obsolete pending/error state clears.
       state.phase='ready';state.requested=code;state.fallbackReason='none';state.offerReload=false;state.initialFallback=false;
-      state.persistence=actor==='initial'?'initial':'route';
+      if(state.persistence!=='session-only')state.persistence=actor==='initial'?'initial':'route';
+      const modeChanged=state.preference!==decision.preference;
+      state.preference=decision.preference;state.preferenceSource=decision.preferenceSource;state.source=decision.source;state.pendingPreference=null;
+      if(modeChanged)publish();
       emitState();
       settleFirst();
       return {kind:'committed+route',locale:code,sameEffective:true};
     }
     currentContext=uiNavigationContext(String(getLocation().href||''));
-    state.requested=code;state.phase='pending';state.fallbackReason='none';state.offerReload=false;
+    state.requested=code;state.phase='pending';state.pendingPreference=decision.preference;state.fallbackReason='none';state.offerReload=false;
     emitState();
     const result=await new Promise(resolve=>{
       const request={timer:null,settle:null,settled:false,actor,intentToken:token};
@@ -353,7 +394,7 @@ export function createUiLocale({
       request.settle=settle;
       currentRequest=request;
       request.timer=timers.setTimeout(()=>settle({kind:'timeout'}),UI_LOCALE_ATTEMPT_MS);
-      loadFor(code,{retry:useRetryVariant||(attempts.get(code)?.base&&!attempts.get(code)?.retry&&!catalogues.has(code))}).then(
+      loadFor(code,{retry:useRetryVariant||retryAfterFailure}).then(
         catalogue=>{if(catalogue&&stamp===generation&&!catalogues.has(code))catalogues.set(code,catalogue);settle({kind:'loaded',catalogue});},
         error=>settle({kind:'failed',error})
       );
@@ -382,7 +423,7 @@ export function createUiLocale({
       const exhausted=result.error?.code==='UI_CATALOGUE_EXHAUSTED';
       return failRequest(code,actor,result.kind==='timeout'?'timeout':exhausted?'exhausted':'load-failed',{error:result.error,intentToken:token,guard:isCurrent});
     }
-    const outcome=commitHistoryFirst(code,actor,{intentToken:token,isCurrent});
+    const outcome=commitHistoryFirst(code,actor,{intentToken:token,isCurrent,decision});
     settleFirst();
     if(outcome.kind==='stale'&&outcome.reason==='guard'&&stamp===generation){
       // A stale account guard cleans up ONLY its own pending bookkeeping; a
@@ -390,20 +431,13 @@ export function createUiLocale({
       clearOwnPending();
       emitState();
     }
-    if(actor==='picker'&&outcome.kind==='committed+saved'&&token)emitManualCommit({token,code});
+    if(actor==='picker'&&outcome.kind==='committed+saved'&&token)emitManualCommit({token,code:decision.preference});
     return outcome;
   };
   const routeTarget=()=>{
     // Canonical precedence: one validated query ui, then the saved choice, then
     // bounded navigator fallback. Authored routes are path-authoritative.
-    const href=String(getLocation().href||'');
-    const route=classifyUiRoute(uiNavigationContext(href).pathname);
-    if(route.kind!=='canonical')return {code:route.code,actor:'route'};
-    const query=readUiParam(href);
-    if(query.status==='valid')return {code:query.code,actor:'route'};
-    const saved=readPreference();
-    if(saved)return {code:saved,actor:'route'};
-    return {code:browserUiLocale(languages),actor:'initial'};
+    return {...resolveTarget(),actor:'route'};
   };
   return {
     uiReady,
@@ -413,6 +447,7 @@ export function createUiLocale({
     uiHref,
     getUiLocale:()=>state.effective,
     getUiNavigationLocale,
+    getUiLinkLocale,
     getRequestedUiLocale:()=>state.requested,
     getUiLocaleState:snapshot,
     readUiParam,
@@ -426,13 +461,20 @@ export function createUiLocale({
     setUiLocale(code){
       // Every legal picker intent starts with its strictly increasing token,
       // emitted synchronously so owners can bind owner+intent at start.
-      if(!isUiLocale(code))return Promise.resolve({kind:'rejected',reason:'invalid'});
+      if(!isUiPreference(code))return Promise.resolve({kind:'rejected',reason:'invalid'});
+      if(pendingChoice===code&&pickerPromise&&state.phase==='pending')return pickerPromise;
+      if(lastPickerPreference===code&&state.phase==='ready'&&state.preference===code&&state.preferenceSource==='manual'&&state.source!=='page'&&state.effective===(code==='system'?browserUiLocale(getLanguages()):code))return Promise.resolve({kind:'unchanged'});
       const token=++intentToken;
       emitManualIntent({token,code});
-      return run(code,'picker',{intentToken:token});
+      const decision=resolveTarget({manual:code,page:false});
+      pendingChoice=code;
+      const promise=run(decision.code,'picker',{intentToken:token,decision});
+      pickerPromise=promise;
+      void promise.finally(()=>{if(pickerPromise===promise){pendingChoice=null;pickerPromise=null;}});
+      return promise;
     },
     requestUiRoute(code){return isUiLocale(code)?run(code,'route'):Promise.resolve({kind:'rejected',reason:'invalid'});},
-    requestExplicitRoute(code){return isUiLocale(code)?run(code,'explicit-route'):Promise.resolve({kind:'rejected',reason:'invalid'});},
+    requestExplicitRoute(code){return isUiLocale(code)?run(code,'explicit-route',{decision:resolveTarget({manual:code,page:false})}):Promise.resolve({kind:'rejected',reason:'invalid'});},
     requestAccountUiLocale(code,{isCurrent=null}={}){
       // GET-198 account-actor recovery: activate only catalogues here, with no
       // device preference, no history write and no remount. `code:null` means
@@ -440,8 +482,19 @@ export function createUiLocale({
       // path. A pending manual picker owns the request until it settles: an
       // account recovery must never tear it down.
       if(currentRequest&&currentRequest.actor==='picker')return Promise.resolve({kind:'stale',reason:'manual-pending'});
-      if(code==null)return run(routeTarget().code,'account',{isCurrent});
-      return isUiLocale(code)?run(code,'account',{isCurrent}):Promise.resolve({kind:'rejected',reason:'invalid'});
+      if(code!==null&&!isUiPreference(code))return Promise.resolve({kind:'rejected',reason:'invalid'});
+      const decision=resolveTarget({account:code,manual:null});
+      return run(decision.code,'account',{isCurrent,decision});
+    },
+    invalidateUiOwner(){
+      // Identity changes revoke old picker and retry capabilities immediately,
+      // including A -> B -> A. A later catalogue can only warm its cache.
+      ++generation;cancelPending('owner-changed');
+      accountPreference=null;manualPreference=null;sessionRetry=null;lastPickerPreference=null;
+      pendingChoice=null;pickerPromise=null;retryDecision=null;
+      clearOwnPending();
+      const decision=resolveTarget();
+      return run(decision.code,'account',{decision});
     },
     handlePopstate(){
       // Trusted document owners may normalize an explicitly consumed history
@@ -451,19 +504,29 @@ export function createUiLocale({
       // Native popstate is a route-override actor: no URL/device write, and an
       // authored route's path language wins over a conflicting ui.
       const target=routeTarget();
-      return run(target.code,'route');
+      return run(target.code,'route',{decision:target});
     },
     initialize(){
       // Opening a document is read-only. Only a successful manual picker
       // (including a verified authored-link handoff) records a preference.
-      const href=String(getLocation().href||'');
-      const route=classifyUiRoute(uiNavigationContext(href).pathname);
-      if(route.kind!=='canonical')return run(route.code,'route');
-      const query=readUiParam(href);
-      if(query.status==='valid')return run(query.code,'route');
-      const saved=readPreference();
-      if(saved)return run(saved,'route');
-      return run(browserUiLocale(languages),'initial');
+      const target=resolveTarget();
+      state.preference=target.preference;state.preferenceSource=target.preferenceSource;
+      if(readSessionPreference()&&target.preferenceSource==='device'){state.persistence='session-only';state.persistenceScope='tab';}
+      return run(target.code,target.source==='default'?'initial':'route',{decision:target});
+    },
+    handleLanguagechange(){
+      const decision=resolveTarget();
+      if(decision.preference!=='system'||decision.source==='page'||currentRequest?.actor==='picker')return Promise.resolve({kind:'unchanged'});
+      // Browser lifecycle events never spend the user's fixed retry import.
+      if(state.requested===decision.code&&(state.phase==='pending'||state.phase==='error')||state.effective===decision.code&&state.phase==='ready')return Promise.resolve({kind:'unchanged'});
+      if(!catalogues.has(decision.code)&&attempts.get(decision.code)?.base)return Promise.resolve({kind:'unchanged'});
+      return run(decision.code,'system',{decision});
+    },
+    handleStorage(){
+      // A tab cannot override this document's picker, explicit account or temporary choice.
+      if(manualPreference!==null||accountPreference!==null||state.persistence==='session-only'||currentRequest?.actor==='picker')return Promise.resolve({kind:'unchanged'});
+      const decision=resolveTarget();
+      return run(decision.code,'route',{decision});
     },
     initializeOnce(){
       if(!started){started=true;startPromise=Promise.resolve(this.initialize());}
@@ -474,16 +537,26 @@ export function createUiLocale({
       // operating, whichever request stored the retry identity (the picker's
       // own run already replaced it).
       if(currentRequest&&currentRequest.actor==='picker')return Promise.resolve({kind:'stale',reason:'manual-pending'});
+      if(state.persistence==='session-only'&&state.phase!=='error'){
+        // A restored tab has no token from this document. Bind a new intent
+        // to its current owner before attempting device/account persistence.
+        if(!sessionRetry)return this.setUiLocale(state.preference);
+        const decision=resolveTarget({manual:sessionRetry.decision.preference,page:false});
+        return run(decision.code,'picker',{intentToken:sessionRetry.token,decision});
+      }
       if(state.retryTarget&&retryContext&&!sameUiNavigationContext(retryContext,uiNavigationContext(String(getLocation().href||'')))){
         clearOwnPending();
         settleFirst();emitState();return Promise.resolve({kind:'stale',reason:'navigated'});
       }
-      const target=state.retryTarget||state.requested;
+      const originalTarget=state.retryTarget||state.requested;
+      let decision=retryDecision||resolveTarget();
+      if(decision.preference==='system'&&decision.source!=='page')decision={...decision,code:browserUiLocale(getLanguages())};
+      const target=decision.code||originalTarget;
       const actor=state.retryActor||'route';
       if(!isUiLocale(target))return Promise.resolve({kind:'rejected',reason:'invalid'});
       // A picker retry continues the same manual intent token; an account
       // retry reuses its captured guard so it can never act unguarded.
-      return run(target,actor,{useRetryVariant:true,intentToken:retryIntentToken,isCurrent:retryGuard});
+      return run(target,actor,{useRetryVariant:target===originalTarget,intentToken:retryIntentToken,isCurrent:retryGuard,decision});
     }
   };
 }
@@ -526,13 +599,16 @@ export function mountUiLocaleNotice({document:doc=globalThis.document,runtime={.
 function browserStorage(){
   try{return globalThis.localStorage||null;}catch{return null;}
 }
+function browserSessionStorage(){try{return globalThis.sessionStorage||null;}catch{return null;}}
 function browserLanguages(){
-  return globalThis.navigator?.languages||[];
+  const nav=globalThis.navigator;
+  return nav?.languages?.length?nav.languages:[nav?.language].filter(Boolean);
 }
 export const uiLocale=createUiLocale({
   loadCatalogue:browserCatalogueLoader(),
   storage:browserStorage(),
-  languages:browserLanguages(),
+  sessionStorage:browserSessionStorage(),
+  getLanguages:browserLanguages,
   history:globalThis.history||null,
   getLocation:()=>({href:globalThis.location?.href||''}),
   getHistoryState:()=>globalThis.history?.state,
@@ -546,6 +622,7 @@ export const t=(id,params)=>uiLocale.t(id,params);
 export const createUiLabels=(translate=t)=>uiLocale.createUiLabels(translate);
 export const getUiLocale=()=>uiLocale.getUiLocale();
 export const getUiNavigationLocale=()=>uiLocale.getUiNavigationLocale();
+export const getUiLinkLocale=()=>uiLocale.getUiLinkLocale();
 export const getUiLocaleState=()=>browserAccountUi.getUiLocaleState();
 export const setUiLocale=code=>uiLocale.setUiLocale(code);
 export const onUiLocaleChange=fn=>uiLocale.onUiLocaleChange(fn);
@@ -568,4 +645,7 @@ if(globalThis.document&&globalThis.location){
   uiLocale.initializeOnce();
   if(classifyUiRoute(globalThis.location.pathname||uiNavigationContext(String(globalThis.location.href||'')).pathname).kind==='support')void browserAccountUi.verifySupportOwner();
   globalThis.addEventListener?.('popstate',()=>{void uiLocale.handlePopstate();});
+  globalThis.addEventListener?.('languagechange',()=>{void uiLocale.handleLanguagechange();});
+  globalThis.addEventListener?.('storage',event=>{if(event.key===UI_PREFERENCE_KEY)void uiLocale.handleStorage();});
+  globalThis.addEventListener?.('pageshow',event=>{if(event.persisted)void uiLocale.handlePopstate();});
 }

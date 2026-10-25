@@ -106,6 +106,11 @@ export default Object.freeze({
 
   "ui.language.label": "界面语言",
   "ui.language.name": "简体中文",
+  "ui.language.systemDescription": "随系统使用浏览器语言。",
+  "ui.language.pageOverride": "本页语言覆盖",
+  "ui.language.settings": "界面语言设置",
+  "ui.locale.pageOnly": "浏览器存储不可用，界面语言仅在本页生效。",
+  "ui.language.option.system": "随系统",
   "ui.language.option.en": "English",
   "ui.language.option.zh-Hans": "简体中文",
   "ui.language.option.zh-Hant": "繁體中文",
