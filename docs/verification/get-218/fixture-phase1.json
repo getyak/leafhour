@@ -1,0 +1,45 @@
+{
+  "bookId": "private-ef6bea4ef5653e1837b6577f",
+  "paragraphs": [
+    "c8b9fe8f433e7306-p00001",
+    "c8b9fe8f433e7306-p00002",
+    "c8b9fe8f433e7306-p00003",
+    "c8b9fe8f433e7306-p00004",
+    "c8b9fe8f433e7306-p00005",
+    "c8b9fe8f433e7306-p00006",
+    "c8b9fe8f433e7306-p00007",
+    "c8b9fe8f433e7306-p00008",
+    "c8b9fe8f433e7306-p00009",
+    "c8b9fe8f433e7306-p00010"
+  ],
+  "ownerKind": "isolated synthetic local fixture",
+  "realProviderCalls": 0,
+  "mode": "success",
+  "pending": 0,
+  "calls": [
+    {
+      "passageId": "c8b9fe8f433e7306-p00003",
+      "sourceIds": [
+        "c8b9fe8f433e7306-p00002",
+        "c8b9fe8f433e7306-p00003",
+        "c8b9fe8f433e7306-p00004"
+      ]
+    },
+    {
+      "passageId": "c8b9fe8f433e7306-p00004",
+      "sourceIds": [
+        "c8b9fe8f433e7306-p00003",
+        "c8b9fe8f433e7306-p00004",
+        "c8b9fe8f433e7306-p00005"
+      ]
+    },
+    {
+      "passageId": "c8b9fe8f433e7306-p00005",
+      "sourceIds": [
+        "c8b9fe8f433e7306-p00004",
+        "c8b9fe8f433e7306-p00005",
+        "c8b9fe8f433e7306-p00006"
+      ]
+    }
+  ]
+}

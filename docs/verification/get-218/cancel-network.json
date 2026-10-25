@@ -1,0 +1,7 @@
+{
+  "truncated": true,
+  "hasMore": false,
+  "quotePosts": 1,
+  "generationPosts": 0,
+  "evidenceScope": "Partial retained browser trace only; truncated=true means these counts do not prove a complete four-locale network trace. The complete sandbox controller receipts separately record four quotes, zero translator invocations and zero pending jobs."
+}

@@ -1,0 +1,10 @@
+{
+  "disabled": false,
+  "label": "View translations",
+  "notice": "",
+  "untranslated": {
+    "disabled": true,
+    "label": "Translation unavailable",
+    "notice": "The translation service is not configured. The original and existing translations remain available."
+  }
+}

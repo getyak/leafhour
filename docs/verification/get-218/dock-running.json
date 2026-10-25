@@ -1,0 +1,23 @@
+{
+  "savedLabel": "查看译文",
+  "expanded": "true",
+  "headerTop": 64,
+  "notice": {
+    "bottom": 776,
+    "left": 36,
+    "right": 376,
+    "top": 732.40625
+  },
+  "panel": {
+    "bottom": 720.40625,
+    "left": 14,
+    "right": 376,
+    "top": 308.40625
+  },
+  "parent": "reading-session",
+  "text": "另一段正在翻译。",
+  "viewport": {
+    "height": 844,
+    "width": 390
+  }
+}

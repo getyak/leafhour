@@ -1,0 +1,22 @@
+[
+  {
+    "lang": "en",
+    "text": "Saved listening\nClose\nExport scripts and positions\nExport backup with audio\nRestore backup\n\nNo listening records yet.",
+    "overflow": false
+  },
+  {
+    "lang": "zh-Hans",
+    "text": "已保存的听读\n关闭\n导出讲稿与位置\n导出含声音的备份\n恢复备份\n\n还没有听读记录。",
+    "overflow": false
+  },
+  {
+    "lang": "zh-Hant",
+    "text": "已儲存的聽讀\n關閉\n匯出講稿與位置\n匯出含聲音的備份\n還原備份\n\n還沒有聽讀記錄。",
+    "overflow": false
+  },
+  {
+    "lang": "ja",
+    "text": "保存した音声\n閉じる\n台本と再生位置をエクスポート\n音声付きバックアップをエクスポート\nバックアップを復元\n\n音声の記録はまだありません。",
+    "overflow": false
+  }
+]

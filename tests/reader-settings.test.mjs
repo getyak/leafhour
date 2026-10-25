@@ -11,7 +11,7 @@ test('settings only expose the translation controls relevant to the active readi
   const {mountReaderSettings}=await settings();assert.equal(typeof mountReaderSettings,'function');
   const f=fixture(),ui=mountReaderSettings({document:f.document});
   for(const [mode,translation,parallel]of [['en',false,false],['zh',true,false],['parallel',true,true]]){
-    ui.update({mode});assert.equal(f.elements.get('translation-settings').hidden,!translation);assert.equal(f.elements.get('translation-details').hidden,!translation);assert.equal(f.elements.get('parallel-settings').hidden,!parallel);
+    ui.update({mode});assert.equal(f.elements.get('translation-settings').hidden,!translation);assert.equal(f.elements.get('translation-details').hidden,false);assert.equal(f.elements.get('parallel-settings').hidden,!parallel);
   }
 });
 test('four settings tabs expose one panel at a time and keep keyboard focus in the selected tab',async()=>{

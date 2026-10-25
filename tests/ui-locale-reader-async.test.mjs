@@ -28,13 +28,13 @@ const deferred=()=>{let resolve,reject;const promise=new Promise((a,b)=>{resolve
 class Element extends EventTarget{
  constructor(tag,doc){super();this.tagName=tag.toUpperCase();this.doc=doc;this.children=[];this.parentElement=null;this.attrs={};this.dataset={};this._text='';this.hidden=false;this.disabled=false;this.value='';this.scrollTop=0;this.open=false;}
  get isConnected(){return this===this.doc.body||!!this.parentElement?.isConnected;}
- set textContent(value){this._text=String(value??'');for(const child of this.children)child.parentElement=null;this.children=[];}
+ set textContent(value){this._text=String(value??'');for(const child of this.children){if(descendants(child).includes(this.doc.activeElement))this.doc.activeElement=this.doc.body;child.parentElement=null;}this.children=[];}
  get textContent(){return this._text+this.children.map(n=>n.textContent).join('');}
  append(...nodes){for(const n of nodes){n.remove();n.parentElement=this;this.children.push(n);}}
  prepend(...nodes){for(const n of [...nodes].reverse()){n.remove();n.parentElement=this;this.children.unshift(n);}}
  insertBefore(node,before){node.remove();node.parentElement=this;const index=this.children.indexOf(before);this.children.splice(index<0?this.children.length:index,0,node);}
  replaceChildren(...nodes){this.doc.replacements++;this.textContent='';this.append(...nodes);}
- remove(){if(this.parentElement){this.parentElement.children=this.parentElement.children.filter(n=>n!==this);this.parentElement=null;}}
+ remove(){if(this.parentElement){if(descendants(this).includes(this.doc.activeElement))this.doc.activeElement=this.doc.body;this.parentElement.children=this.parentElement.children.filter(n=>n!==this);this.parentElement=null;}}
  setAttribute(k,v){this.attrs[k]=String(v);}getAttribute(k){return this.attrs[k]??null;}removeAttribute(k){delete this.attrs[k];}
  closest(selector){for(let node=this;node;node=node.parentElement)if(selector.startsWith('.')&&node.className?.split(/\s+/).includes(selector.slice(1)))return node;return null;}
  click(){if(!this.disabled){this.doc.clicks.push(this);this.dispatchEvent(new Event('click'));}}
@@ -44,13 +44,14 @@ const descendants=node=>[node,...node.children.flatMap(descendants)];
 function fixture({visibility='public',request,session={user:{id:'owner-one'},translationAvailable:true},book:initialBook,intentStorage}={}){
  if(intentStorage===undefined){const values=new Map();intentStorage={getItem:key=>values.get(key),setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)};}
  const doc=new EventTarget();doc.replacements=0;doc.clicks=[];doc.body=new Element('body',doc);doc.createElement=tag=>new Element(tag,doc);doc.querySelectorAll=()=>[];doc.getElementById=id=>descendants(doc.body).find(n=>n.id===id)||null;
- for(const id of ['paragraph-tools','chapter-heading','translation-about']){const e=doc.createElement('div');e.id=id;doc.body.append(e);}
+ for(const id of ['paragraph-tools','chapter-heading','translation-about','translation-details','reading-session']){const e=doc.createElement('div');e.id=id;doc.body.append(e);}
  const invitationGroup=doc.createElement('section'),invitationRow=doc.createElement('div'),invitation=doc.createElement('input'),invitationHelp=doc.createElement('p');
  invitationGroup.className='settings-habit';invitationRow.className='setting-row';invitation.id='chapter-invitations';invitationHelp.textContent='Offers prompts during ordinary reading.';
  invitationRow.append(invitation);invitationGroup.append(invitationRow,invitationHelp);doc.body.append(invitationGroup);
  let book=initialBook||{bookId:'fixture-book',contentVersion:'v1',visibility,source:{format:'pdf',processor:'pdfjs-native',structure:'pdf_outline',filename:'来源 / 阅读.pdf'},chapters:[{id:'c1'}],sections:[{chapterId:'c1',paragraphs:[{id:'p1',original:'Original source one.',translations:{}},{id:'p2',original:'Original source two.',translations:{}}]}]},selected='p1',bridgeReads=0,viewReads=0;
  const context=vm.createContext({t,onUiLocaleChange,uiHref,getUiLocale,createUiLabels,crypto:{randomUUID},creditErrorId:creditLabels.creditErrorId,creditActionLabel:(action,locale)=>{assert.equal(action,'translation');return '1 point ['+locale+']';},sourceDescriptionMessages,createTranslationPresentation:()=>{const tasks=createTranslationPresentation(),view=tasks.view;tasks.view=(...args)=>{viewReads++;return view(...args);};return tasks;},hasDualDrafts,chineseOriginalOnly,sampleNoticeMessage,translationDisclosureMessage,readerLoginUrl,AbortController,CustomEvent,Response,downloadOriginalParts:()=>assert.fail('Not a multipart download fixture')});
  vm.runInContext(source.slice(factory.start,factory.end),context);
+ doc.addEventListener('reader:translation',event=>{const passage=book.sections.flatMap(s=>s.paragraphs).find(p=>p.id===event.detail.id);if(passage)passage.translations=event.detail.translations;});
  const requests=[],navigations=[],urls=[],timers=[],clears=[];
  const handle=context.mountReaderTranslation({bookId:'fixture-book',session,intentStorage,document:doc,getReader:()=>{bridgeReads++;return {getBook:()=>book,getSelectedId:()=>selected};},request:async(url,options)=>{requests.push({url,options});return request(url,options);},navigate:url=>navigations.push(url),urlApi:{createObjectURL:blob=>{urls.push({kind:'create',blob});return 'blob:fixture';},revokeObjectURL:url=>urls.push({kind:'revoke',url})},timers:{setTimeout:(fn,ms)=>{const timer={fn,ms};timers.push(timer);return timer;},clearTimeout:id=>clears.push(id)}});
  const select=id=>{selected=id;doc.dispatchEvent(new Event('reader:selection'));};
@@ -72,13 +73,13 @@ for(const outcome of ['success','conflict','incomplete'])test('translation '+out
  const original=JSON.stringify(f.getBook()),before=f.counts();
  for(const [locale,label]of [['ja','翻訳中…'],['zh-Hant','正在翻譯…'],['zh-Hans','正在翻译…'],['en','Translating…']]){await requestUiRoute(locale);assert.equal(button.textContent,label);assert.equal(button.disabled,true);assert.deepEqual(f.counts(),before);assert.equal(f.doc.activeElement,input);assert.equal(input.value,'来源 / 阅读 · unsaved draft');assert.equal(input.selectionStart,2);assert.equal(input.selectionEnd,5);assert.equal(input.scrollTop,37);assert.equal(JSON.stringify(f.getBook()),original);assert.equal(f.requests[0].options.body,submitted);}
  if(outcome==='success'){f.select('p2');pending.resolve(Response.json({id:'p1',original:'Original source one.',translations:{literal:{text:'Literal 来源'},interpretive:{text:'Interpretive 阅读'}}}));await flush();assert.equal(events.length,1);assert.equal(events[0].id,'p1');assert.equal(events[0].reveal,false);assert.equal(events[0].translations.literal.text,'Literal 来源');assert.equal(button.textContent,'Translate passage');}
- else{pending.resolve(Response.json(outcome==='conflict'?{error:'Untrusted remote prose'}:{id:'wrong',translations:{}},{status:outcome==='conflict'?409:200}));await flush();assert.equal(events.length,0);assert.equal(button.textContent,'Retry translation');const hint=f.all().find(n=>n.className==='translation-notice');assert.ok(!hint.textContent.includes('Untrusted remote prose'));assert.match(hint.textContent,outcome==='conflict'?/could not be completed/:/two complete translations/);await requestUiRoute('ja');assert.equal(button.textContent,'翻訳を再試行');}
+ else{pending.resolve(Response.json(outcome==='conflict'?{error:'Untrusted remote prose'}:{id:'wrong',translations:{}},{status:outcome==='conflict'?409:200}));await flush();assert.equal(events.length,0);assert.equal(button.textContent,'Retry translation');const hint=f.all().find(n=>n.className==='translation-notice');assert.ok(!hint.textContent.includes('Untrusted remote prose'));assert.match(hint.textContent,outcome==='conflict'?/could not be confirmed/:/result is unconfirmed/);await requestUiRoute('ja');assert.equal(button.textContent,'翻訳を再試行');}
  assert.equal(f.requests.length,1);assert.equal(f.doc.activeElement,input);assert.equal(input.value,'来源 / 阅读 · unsaved draft');
 });
 
 test('source download and review controls retain their nodes, source metadata and request during locale commits',async tctx=>{
  await requestUiRoute('en');const download=deferred(),f=fixture({visibility:'private',request:async url=>url==='/api/original/info'?Response.json({available:true,filename:'来源 / 阅读.pdf',bytes:4}):download.promise});tctx.after(async()=>{f.handle.dispose();await requestUiRoute('en');});await flush();
- const review=f.all().find(n=>n.className==='source-review'),filename=f.all().find(n=>n.className==='source-filename'),button=f.all().find(n=>n.className==='source-download'&&n.tagName==='BUTTON'),reviewLink=f.all().find(n=>n.className==='source-download'&&n.tagName==='A');assert.ok(button);assert.equal(filename.textContent,'来源 / 阅读.pdf');review.open=true;review.scrollTop=87;
+ const review=f.all().find(n=>n.className==='source-review'),filename=f.all().find(n=>n.className==='source-filename'),button=f.all().find(n=>n.className==='source-download'&&n.tagName==='BUTTON'),reviewLink=f.all().find(n=>n.className==='source-download'&&n.tagName==='A');assert.ok(button);assert.equal(filename.textContent,'来源 / 阅读.pdf');assert.equal(review.parentElement.id,'translation-details');review.open=true;review.scrollTop=87;
  Object.defineProperty(filename,'textContent',{get:()=> '来源 / 阅读.pdf',set:()=>assert.fail('Locale rewrote the source filename')});const children=[...review.children],before=f.counts();await requestUiRoute('ja');assert.deepEqual(f.counts(),before);assert.deepEqual(review.children,children);assert.equal(review.open,true);assert.equal(review.scrollTop,87);assert.equal(button.textContent,'元のファイルをダウンロードして照合 ↗');assert.ok(reviewLink.href.includes('ui=ja'));assert.equal(f.urls.length,0);
  button.click();await flush();assert.equal(button.disabled,true);const during=f.counts();await requestUiRoute('zh-Hant');assert.deepEqual(f.counts(),during);assert.equal(button.disabled,true);assert.equal(f.all().includes(button),true);assert.equal(f.urls.length,0);download.resolve(new Response('file'));await flush();assert.equal(button.disabled,false);assert.equal(f.urls.filter(x=>x.kind==='create').length,1);const anchor=f.doc.clicks.find(n=>n.tagName==='A');assert.equal(anchor.download,'来源 / 阅读.pdf');assert.equal(f.timers.length,1);assert.equal(f.timers[0].ms,1000);
 });
@@ -133,23 +134,54 @@ test('translation explains insufficient points and cancelled consent without cla
   const f=fixture({session:{user:{id:'owner-one'},translationAvailable:true,billing:{enabled:true}},request:async()=>{throw error;}});
   try{f.select('p1');f.doc.getElementById('translate-passage').click();await flush();const hint=f.all().find(n=>n.className==='translation-notice');
    assert.match(hint.textContent,error.status===402?/Not enough reading points/:/cancelled.*No reading points/i);assert.doesNotMatch(hint.textContent,/could not be completed|Internal/);
-   const link=f.all().find(n=>n.className==='billing-link');assert.equal(link.hidden,error.status!==402);
-   if(error.status===402){assert.equal(link.href,'/billing?ui=en');await requestUiRoute('ja');assert.match(hint.textContent,/ポイントが不足/);assert.equal(link.href,'/billing?ui=ja');await requestUiRoute('en');}
+   const link=f.all().find(n=>n.className==='billing-link');if(error.status===402){assert.ok(link);assert.equal(link.parentElement,hint);}else assert.equal(link,undefined);
+   if(error.status===402){assert.equal(link.href,'/billing?ui=en');link.focus();await requestUiRoute('ja');assert.equal(f.doc.activeElement,link,'locale repaint retains keyboard focus on recovery');assert.match(hint.textContent,/ポイントが不足/);assert.equal(link.href,'/billing?ui=ja');await requestUiRoute('en');}
+   if(error.code==='BILLING_CONSENT_CANCELLED'){f.select(null);assert.equal(hint.hidden,true,'confirmed pre-submit cancellation must not become an unresolved background failure');}
    assert.deepEqual(f.getBook().sections[0].paragraphs[0].translations,{});
   }finally{f.handle.dispose();}
  }
 });
-test('routine translation guidance folds away while task feedback stays visible',async tctx=>{
+test('routine translation furniture is removed while action scope and task feedback stay available',async tctx=>{
  await requestUiRoute('en');const f=fixture({request:async()=>{throw Error('Offline');}});tctx.after(async()=>{f.handle.dispose();await requestUiRoute('en');});
  const hint=f.all().find(n=>n.className==='translation-notice');
- assert.equal(hint.parentElement.tagName,'DETAILS');assert.equal(hint.parentElement.open,false);
- assert.match(hint.textContent,/one on either side/,'the sending boundary remains available');
+ assert.equal(hint.hidden,true);assert.equal(hint.textContent,'');
+ assert.equal(f.all().some(n=>n.className?.includes('translation-guidance')),false);
  const scope=f.doc.getElementById('translation-action-scope');assert.equal(scope.hidden,true);assert.equal(f.doc.getElementById('translate-passage').getAttribute('aria-describedby'),null);
- f.select('p1');assert.equal(hint.parentElement.id,'chapter-heading');assert.equal(scope.hidden,false);assert.match(scope.textContent,/cloud model.*drafts/);assert.equal(f.doc.getElementById('translate-passage').getAttribute('aria-describedby'),scope.id);
- f.doc.getElementById('translate-passage').click();await flush();assert.equal(hint.parentElement.id,'chapter-heading');assert.match(hint.textContent,/could not be completed/);
- f.select(null);assert.equal(hint.parentElement.id,'chapter-heading','background failure must remain visible');assert.equal(f.doc.getElementById('translate-passage').getAttribute('aria-describedby'),null);
+ f.select('p1');assert.equal(hint.parentElement.id,'paragraph-tools');assert.equal(scope.hidden,false);assert.match(scope.textContent,/AI.*private notes.*drafts/);assert.equal(f.doc.getElementById('translate-passage').getAttribute('aria-describedby'),scope.id);
+ f.doc.getElementById('translate-passage').click();await flush();assert.equal(hint.parentElement.id,'reading-session');assert.match(hint.textContent,/could not be confirmed/);
+ f.select(null);assert.equal(hint.parentElement.id,'reading-session','background failure must remain in the viewport dock');assert.equal(f.doc.getElementById('translate-passage').getAttribute('aria-describedby'),null);
 });
-test('sample scope is never folded into routine translation guidance',async tctx=>{
- await requestUiRoute('en');const f=fixture({book:{bookId:'fixture-book',contentVersion:'v1',visibility:'public',chineseSample:{paragraphs:6,translator:'Source / Provider'},sections:[],chapters:[]},request:()=>assert.fail('No generation')});tctx.after(()=>f.handle.dispose());
- const hint=f.all().find(n=>n.className==='translation-notice');assert.equal(hint.parentElement.id,'chapter-heading');assert.match(hint.textContent,/6/);
+test('sample coverage belongs in explicit details, with no routine heading notice or empty furniture',async tctx=>{
+ await requestUiRoute('en');const f=fixture({book:{bookId:'fixture-book',contentVersion:'v1',visibility:'public',chineseSample:{paragraphs:6,translator:'Source / Provider'},sections:[{paragraphs:Array.from({length:6},(_,i)=>({id:'p'+i,translations:Object.fromEntries(['literal','interpretive'].map(variant=>[variant,{text:variant,status:'draft',origin:'ai',translator:'Source / Provider',license:'CC0-1.0'}]))}))}],chapters:[]},request:()=>assert.fail('No generation')});tctx.after(()=>f.handle.dispose());
+ const hint=f.all().find(n=>n.className==='translation-notice');assert.equal(hint.hidden,true);assert.equal(hint.textContent,'');
+ assert.match(f.doc.getElementById('translation-about').textContent,/6/);
+});
+
+test('existing translations do not repeat a routine heading message; background outcomes survive selection changes',async tctx=>{
+ await requestUiRoute('en');const response=deferred();const f=fixture({request:()=>response.promise});tctx.after(()=>f.handle.dispose());
+ f.select('p1');f.doc.getElementById('translate-passage').click();f.select('p2');
+ const hint=f.all().find(n=>n.className==='translation-notice');assert.equal(hint.hidden,false);assert.equal(hint.parentElement.id,'reading-session');assert.match(hint.textContent,/another passage/i);
+ response.resolve(new Response(JSON.stringify({id:'p1',translations:{literal:{text:'Literal'},interpretive:{text:'Interpretive'}}})));await flush();
+ assert.equal(hint.hidden,false);assert.match(hint.textContent,/saved/i);
+ f.select(null);assert.equal(hint.hidden,false);assert.match(hint.textContent,/saved/i);
+});
+
+test('confirmed background success expires without dismissing a later failure',async tctx=>{
+ await requestUiRoute('en');let calls=0;const f=fixture({request:async()=>{if(calls++)throw Error('Offline');return new Response(JSON.stringify({id:'p1',translations:{literal:{text:'L'},interpretive:{text:'I'}}}));}});tctx.after(()=>f.handle.dispose());
+ f.select('p1');f.doc.getElementById('translate-passage').click();f.select(null);await flush();const hint=f.all().find(n=>n.className==='translation-notice');assert.equal(hint.hidden,false);assert.match(hint.textContent,/saved/);assert.equal(f.timers.length,1);
+ f.timers[0].fn();assert.equal(hint.hidden,true);assert.equal(hint.textContent,'');
+ f.select('p2');f.doc.getElementById('translate-passage').click();f.select(null);await flush();f.timers[0].fn();assert.equal(hint.hidden,false);assert.match(hint.textContent,/earlier passage|previous selection/);
+});
+
+
+test('translation details follow a newly saved result without waiting for a new book-ready event',async tctx=>{
+ await requestUiRoute('en');const f=fixture({request:async()=>new Response(JSON.stringify({id:'p1',translations:{literal:{text:'Literal',status:'draft',origin:'ai',translator:'Fixture provider',license:'CC0-1.0'},interpretive:{text:'Interpretation',status:'draft',origin:'ai',translator:'Fixture provider',license:'CC0-1.0'}}}))});tctx.after(()=>f.handle.dispose());
+ assert.match(f.doc.getElementById('translation-about').textContent,/No translations/);f.select('p1');f.doc.getElementById('translate-passage').click();await flush();
+ assert.doesNotMatch(f.doc.getElementById('translation-about').textContent,/No translations/);assert.match(f.doc.getElementById('translation-about').textContent,/2 saved passage translations/);assert.match(f.doc.getElementById('translation-about').textContent,/Fixture provider/);
+});
+
+test('cancelling another translation never clears an unresolved earlier failure',async tctx=>{
+ await requestUiRoute('en');let calls=0;const f=fixture({request:async()=>{throw calls++?Object.assign(Error('cancel'),{code:'BILLING_CONSENT_CANCELLED',preSubmit:true}):Error('Offline');}});tctx.after(()=>f.handle.dispose());
+ f.select('p1');f.doc.getElementById('translate-passage').click();await flush();f.select('p2');f.doc.getElementById('translate-passage').click();await flush();f.select(null);const hint=f.all().find(n=>n.className==='translation-notice');assert.equal(hint.hidden,false);assert.match(hint.textContent,/earlier passage|previous selection/);
+ f.select('p1');assert.match(f.doc.getElementById('translate-passage').textContent,/Retry/);
 });

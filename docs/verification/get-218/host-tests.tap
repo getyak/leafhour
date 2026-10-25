@@ -1,0 +1,826 @@
+TAP version 13
+# Subtest: atmospheres validate saved playback intent alongside scene and levels
+ok 1 - atmospheres validate saved playback intent alongside scene and levels
+  ---
+  duration_ms: 0.900084
+  type: 'test'
+  ...
+# Subtest: narration ducks both channels without changing saved volume, zero stays silent
+ok 2 - narration ducks both channels without changing saved volume, zero stays silent
+  ---
+  duration_ms: 0.764875
+  type: 'test'
+  ...
+# Subtest: late resource arrival after pause is disposed and cannot resume sound
+ok 3 - late resource arrival after pause is disposed and cannot resume sound
+  ---
+  duration_ms: 0.668667
+  type: 'test'
+  ...
+# Subtest: a rapid scene change retains only the last playback, stale failure cannot replace it
+ok 4 - a rapid scene change retains only the last playback, stale failure cannot replace it
+  ---
+  duration_ms: 1.911084
+  type: 'test'
+  ...
+# Subtest: current playback failure is visible and can be retried
+ok 5 - current playback failure is visible and can be retried
+  ---
+  duration_ms: 0.48325
+  type: 'test'
+  ...
+# Subtest: volume or narration changes made while recordings load reach the accepted playback
+ok 6 - volume or narration changes made while recordings load reach the accepted playback
+  ---
+  duration_ms: 0.254042
+  type: 'test'
+  ...
+# Subtest: selecting a scene starts its matching sound immediately, including after an explicit pause
+ok 7 - selecting a scene starts its matching sound immediately, including after an explicit pause
+  ---
+  duration_ms: 11.533041
+  type: 'test'
+  ...
+# Subtest: restoring a scene stays silent and selecting another scene respects an individually muted channel
+ok 8 - restoring a scene stays silent and selecting another scene respects an individually muted channel
+  ---
+  duration_ms: 2.648666
+  type: 'test'
+  ...
+# Subtest: settings and scene controls share volume, motion and manual playback without restarting sound
+ok 9 - settings and scene controls share volume, motion and manual playback without restarting sound
+  ---
+  duration_ms: 4.854833
+  type: 'test'
+  ...
+# Subtest: quick pause cancels a scene selected while its recording is still loading
+ok 10 - quick pause cancels a scene selected while its recording is still loading
+  ---
+  duration_ms: 2.852166
+  type: 'test'
+  ...
+# Subtest: switching tabs pauses visual motion but keeps the selected sound playing without restarting it
+ok 11 - switching tabs pauses visual motion but keeps the selected sound playing without restarting it
+  ---
+  duration_ms: 2.432708
+  type: 'test'
+  ...
+# Subtest: a background load may finish playing; an explicit pause stays paused on return and leaving the document stops it
+ok 12 - a background load may finish playing; an explicit pause stays paused on return and leaving the document stops it
+  ---
+  duration_ms: 2.613292
+  type: 'test'
+  ...
+# Subtest: the hearth controller starts only visible layers and stops them for motion preferences, other scenes and page exit
+ok 13 - the hearth controller starts only visible layers and stops them for motion preferences, other scenes and page exit
+  ---
+  duration_ms: 2.28125
+  type: 'test'
+  ...
+# Subtest: forest light and sea water follow scene, visibility and motion preferences without ever starting sound
+ok 14 - forest light and sea water follow scene, visibility and motion preferences without ever starting sound
+  ---
+  duration_ms: 2.114291
+  type: 'test'
+  ...
+# Subtest: saved sound resumes on entry and page exit retains intent until an explicit pause
+ok 15 - saved sound resumes on entry and page exit retains intent until an explicit pause
+  ---
+  duration_ms: 1.076542
+  type: 'test'
+  ...
+# Subtest: autoplay denial is waiting for a gesture rather than reported as playing or a network failure
+ok 16 - autoplay denial is waiting for a gesture rather than reported as playing or a network failure
+  ---
+  duration_ms: 0.122208
+  type: 'test'
+  ...
+# Subtest: a trusted pointerdown on the start control does not turn its following click into a pause
+ok 17 - a trusted pointerdown on the start control does not turn its following click into a pause
+  ---
+  duration_ms: 2.614167
+  type: 'test'
+  ...
+# Subtest: bfcache playback waits for same-account confirmation and rejects a changed account
+ok 18 - bfcache playback waits for same-account confirmation and rejects a changed account
+  ---
+  duration_ms: 2.150292
+  type: 'test'
+  ...
+# Subtest: a late same-account confirmation does not restart a manually selected scene
+ok 19 - a late same-account confirmation does not restart a manually selected scene
+  ---
+  duration_ms: 2.155666
+  type: 'test'
+  ...
+# Subtest: the local trial serves its imported module and both Chinese drafts over HTTP to guests
+ok 20 - the local trial serves its imported module and both Chinese drafts over HTTP to guests
+  ---
+  duration_ms: 240.765209
+  type: 'test'
+  ...
+# Subtest: guests can read independent Chinese openings without an account or model call; later text stays untranslated
+ok 21 - guests can read independent Chinese openings without an account or model call; later text stays untranslated
+  ---
+  duration_ms: 205.121167
+  type: 'test'
+  ...
+# Subtest: published samples refuse another source version and preserve personal translation overrides
+ok 22 - published samples refuse another source version and preserve personal translation overrides
+  ---
+  duration_ms: 240.58475
+  type: 'test'
+  ...
+# Subtest: Chinese trial links explicitly open the prepared translated start
+ok 23 - Chinese trial links explicitly open the prepared translated start
+  ---
+  duration_ms: 1.306083
+  type: 'test'
+  ...
+# Subtest: translation details describe only the actual public excerpt rather than the old seven-chapter private sample
+ok 24 - translation details describe only the actual public excerpt rather than the old seven-chapter private sample
+  ---
+  duration_ms: 0.472375
+  type: 'test'
+  ...
+# Subtest: deployment tests receive only the explicit copy tool paths; runtime stages and provider credentials stay isolated
+ok 25 - deployment tests receive only the explicit copy tool paths; runtime stages and provider credentials stay isolated
+  ---
+  duration_ms: 463.270209
+  type: 'test'
+  ...
+# Subtest: only an actual hosted build can mark the test stage as lacking native database tools
+ok 26 - only an actual hosted build can mark the test stage as lacking native database tools
+  ---
+  duration_ms: 1311.558333
+  type: 'test'
+  ...
+# Subtest: the pinned release table binds exact upstream assets and checksums
+ok 27 - the pinned release table binds exact upstream assets and checksums
+  ---
+  duration_ms: 0.766708
+  type: 'test'
+  ...
+# Subtest: an unsupported platform or architecture fails instead of guessing a build
+ok 28 - an unsupported platform or architecture fails instead of guessing a build
+  ---
+  duration_ms: 19.118875
+  type: 'test'
+  ...
+# Subtest: a checksum mismatch fails before anything is extracted
+ok 29 - a checksum mismatch fails before anything is extracted
+  ---
+  duration_ms: 14.251209
+  type: 'test'
+  ...
+# Subtest: archive entries that try to escape the destination are rejected
+ok 30 - archive entries that try to escape the destination are rejected
+  ---
+  duration_ms: 9.00075
+  type: 'test'
+  ...
+# Subtest: a successful pinned install extracts only the vale executable
+ok 31 - a successful pinned install extracts only the vale executable
+  ---
+  duration_ms: 8.164084
+  type: 'test'
+  ...
+# Subtest: an archive without the vale executable fails closed
+ok 32 - an archive without the vale executable fails closed
+  ---
+  duration_ms: 3.06275
+  type: 'test'
+  ...
+# Subtest: the CLI rejects an unsupported host platform before touching the archive
+ok 33 - the CLI rejects an unsupported host platform before touching the archive
+  ---
+  duration_ms: 55.787542
+  type: 'test'
+  ...
+# Subtest: four-locale key mismatch is reported as unresolved parity, never guessed away
+ok 34 - four-locale key mismatch is reported as unresolved parity, never guessed away
+  ---
+  duration_ms: 31.353375
+  type: 'test'
+  ...
+# Subtest: computed and concatenated catalogue references stay unresolved evidence with their literal fragments
+ok 35 - computed and concatenated catalogue references stay unresolved evidence with their literal fragments
+  ---
+  duration_ms: 27.78175
+  type: 'test'
+  ...
+# Subtest: DOM literal candidates on different lines stay distinct rows with source references
+ok 36 - DOM literal candidates on different lines stay distinct rows with source references
+  ---
+  duration_ms: 27.65825
+  type: 'test'
+  ...
+# Subtest: aria, title, placeholder and alt HTML attributes are exact candidates
+ok 37 - aria, title, placeholder and alt HTML attributes are exact candidates
+  ---
+  duration_ms: 14.768458
+  type: 'test'
+  ...
+# Subtest: multiline, HTML-like and protected source text survive extraction byte-exact and stay labelled
+ok 38 - multiline, HTML-like and protected source text survive extraction byte-exact and stay labelled
+  ---
+  duration_ms: 35.238292
+  type: 'test'
+  ...
+# Subtest: duplicate catalogue ids are recorded at every source location, never overwritten
+ok 39 - duplicate catalogue ids are recorded at every source location, never overwritten
+  ---
+  duration_ms: 9.987125
+  type: 'test'
+  ...
+# Subtest: an empty corpus is an explicit state, not a silent success
+ok 40 - an empty corpus is an explicit state, not a silent success
+  ---
+  duration_ms: 2.106792
+  type: 'test'
+  ...
+# Subtest: source references and review state stay evidence-bound for every item
+ok 41 - source references and review state stay evidence-bound for every item
+  ---
+  duration_ms: 9.863
+  type: 'test'
+  ...
+# Subtest: inventory CSV quoting keeps columns aligned for commas, quotes and newlines
+ok 42 - inventory CSV quoting keeps columns aligned for commas, quotes and newlines
+  ---
+  duration_ms: 8.45175
+  type: 'test'
+  ...
+# Subtest: CSV preserves edge whitespace as quoted data without whitespace errors in source diffs
+ok 43 - CSV preserves edge whitespace as quoted data without whitespace errors in source diffs
+  ---
+  duration_ms: 7.413625
+  type: 'test'
+  ...
+# Subtest: export writes deterministic per-locale text plus a complete line-to-item map
+ok 44 - export writes deterministic per-locale text plus a complete line-to-item map
+  ---
+  duration_ms: 18.556875
+  type: 'test'
+  ...
+# Subtest: the current repository inventory is four-locale complete and keeps unresolved counts honest
+ok 45 - the current repository inventory is four-locale complete and keeps unresolved counts honest
+  ---
+  duration_ms: 1020.971833
+  type: 'test'
+  ...
+# Subtest: same-line HTML nodes keep distinct stable identities without merging
+ok 46 - same-line HTML nodes keep distinct stable identities without merging
+  ---
+  duration_ms: 16.5735
+  type: 'test'
+  ...
+# Subtest: plain UI labels stay reviewable while keys, paths, URLs and quotes stay protected source
+ok 47 - plain UI labels stay reviewable while keys, paths, URLs and quotes stay protected source
+  ---
+  duration_ms: 8.072084
+  type: 'test'
+  ...
+# Subtest: the generated inventory binds input bytes, not the current commit
+ok 48 - the generated inventory binds input bytes, not the current commit
+  ---
+  duration_ms: 191.454542
+  type: 'test'
+  ...
+# Subtest: export appends only explicitly reviewed static literals to their own locale corpus
+ok 49 - export appends only explicitly reviewed static literals to their own locale corpus
+  ---
+  duration_ms: 13.604833
+  type: 'test'
+  ...
+# Subtest: stale, unknown, duplicate and incomplete review decisions fail closed
+ok 50 - stale, unknown, duplicate and incomplete review decisions fail closed
+  ---
+  duration_ms: 10.967833
+  type: 'test'
+  ...
+# Subtest: export refuses an inventory whose declared value hash is wrong
+ok 51 - export refuses an inventory whose declared value hash is wrong
+  ---
+  duration_ms: 7.033583
+  type: 'test'
+  ...
+# Subtest: HTML attribute coordinates locate quoted values even when attribute names repeat them
+ok 52 - HTML attribute coordinates locate quoted values even when attribute names repeat them
+  ---
+  duration_ms: 21.259041
+  type: 'test'
+  ...
+# Subtest: reviewed static bytes are verified before any export write
+ok 53 - reviewed static bytes are verified before any export write
+  ---
+  duration_ms: 7.395834
+  type: 'test'
+  ...
+# Subtest: CLI requires an existing explicit review registry, including the default empty registry
+ok 54 - CLI requires an existing explicit review registry, including the default empty registry
+  ---
+  duration_ms: 313.132542
+  type: 'test'
+  ...
+# Subtest: a newly introduced T1 fails the lint while its alerts stay visible
+ok 55 - a newly introduced T1 fails the lint while its alerts stay visible
+  ---
+  duration_ms: 1642.950875
+  type: 'test'
+  ...
+# Subtest: warning-only copy still succeeds and keeps every warning visible
+ok 56 - warning-only copy still succeeds and keeps every warning visible
+  ---
+  duration_ms: 771.792208
+  type: 'test'
+  ...
+# Subtest: unchanged documented debt passes but stays separately visible
+ok 57 - unchanged documented debt passes but stays separately visible
+  ---
+  duration_ms: 755.915042
+  type: 'test'
+  ...
+# Subtest: a changed value or another locale loses its debt binding and fails
+ok 58 - a changed value or another locale loses its debt binding and fails
+  ---
+  duration_ms: 559.201166
+  type: 'test'
+  ...
+# Subtest: a narrow exception binds exactly one item, locale, rule and value
+ok 59 - a narrow exception binds exactly one item, locale, rule and value
+  ---
+  duration_ms: 1128.827375
+  type: 'test'
+  ...
+# Subtest: a stale exception fails the run instead of covering silently
+ok 60 - a stale exception fails the run instead of covering silently
+  ---
+  duration_ms: 646.548083
+  type: 'test'
+  ...
+# Subtest: a missing tool fails closed
+ok 61 - a missing tool fails closed
+  ---
+  duration_ms: 553.228208
+  type: 'test'
+  ...
+# Subtest: malformed and empty tool output fails closed
+ok 62 - malformed and empty tool output fails closed
+  ---
+  duration_ms: 6089.914333
+  type: 'test'
+  ...
+# Subtest: an empty corpus and an unsupported locale fail closed
+ok 63 - an empty corpus and an unsupported locale fail closed
+  ---
+  duration_ms: 5.276667
+  type: 'test'
+  ...
+# Subtest: a baseline entry must bind a value that existed at the frozen revision
+ok 64 - a baseline entry must bind a value that existed at the frozen revision
+  ---
+  duration_ms: 0.302833
+  type: 'test'
+  ...
+# Subtest: the JA textlint config freezes every preset rule at explicit warning severity
+ok 65 - the JA textlint config freezes every preset rule at explicit warning severity
+  ---
+  duration_ms: 0.442417
+  type: 'test'
+  ...
+# Subtest: the copy-lint CLI reports warnings on success and fails on new T1
+ok 66 - the copy-lint CLI reports warnings on success and fails on new T1
+  ---
+  duration_ms: 1515.15975
+  type: 'test'
+  ...
+# Subtest: changed export bytes with an old manifest fail as inventory, never as documented debt
+ok 67 - changed export bytes with an old manifest fail as inventory, never as documented debt
+  ---
+  duration_ms: 636.219083
+  type: 'test'
+  ...
+# Subtest: a second locale-matching file cannot borrow the first item exception
+ok 68 - a second locale-matching file cannot borrow the first item exception
+  ---
+  duration_ms: 646.417333
+  type: 'test'
+  ...
+# Subtest: structured but empty tool results fail closed
+ok 69 - structured but empty tool results fail closed
+  ---
+  duration_ms: 1159.086
+  type: 'test'
+  ...
+# Subtest: textlint must report every requested file exactly once with a valid severity
+ok 70 - textlint must report every requested file exactly once with a valid severity
+  ---
+  duration_ms: 1318.104583
+  type: 'test'
+  ...
+# Subtest: the JA prh T1 severity cannot be downgraded by configuration
+ok 71 - the JA prh T1 severity cannot be downgraded by configuration
+  ---
+  duration_ms: 0.191084
+  type: 'test'
+  ...
+# Subtest: a downgraded prh configuration fails even when the real JA corpus still has T1
+ok 72 - a downgraded prh configuration fails even when the real JA corpus still has T1
+  ---
+  duration_ms: 653.046458
+  type: 'test'
+  ...
+# Subtest: only explicitly reviewed static literals join the lint corpus
+ok 73 - only explicitly reviewed static literals join the lint corpus
+  ---
+  duration_ms: 596.332458
+  type: 'test'
+  ...
+# Subtest: lexical aliases cannot map the same physical line twice or borrow its exception
+ok 74 - lexical aliases cannot map the same physical line twice or borrow its exception
+  ---
+  duration_ms: 1151.94275
+  type: 'test'
+  ...
+# Subtest: every catalog row carries each public language beside its authored source
+ok 75 - every catalog row carries each public language beside its authored source
+  ---
+  duration_ms: 1.748333
+  type: 'test'
+  ...
+# Subtest: localization never rewrites book sample text and leaves no source text in the English page
+ok 76 - localization never rewrites book sample text and leaves no source text in the English page
+  ---
+  duration_ms: 4.923583
+  type: 'test'
+  ...
+# Subtest: each public language renders the authored home structure and its own presentation
+ok 77 - each public language renders the authored home structure and its own presentation
+  ---
+  duration_ms: 5.847459
+  type: 'test'
+  ...
+# Subtest: the language switcher appears on the home page with the current language marked
+ok 78 - the language switcher appears on the home page with the current language marked
+  ---
+  duration_ms: 8.636709
+  type: 'test'
+  ...
+# Subtest: dynamic sign-in counts and book labels localize per language
+ok 79 - dynamic sign-in counts and book labels localize per language
+  ---
+  duration_ms: 0.14525
+  type: 'test'
+  ...
+# Subtest: every static menu sheet control keeps explicit four-language authored copy
+ok 80 - every static menu sheet control keeps explicit four-language authored copy
+  ---
+  duration_ms: 7.182834
+  type: 'test'
+  ...
+# Subtest: unknown sign-in service messages keep a readable localized fallback
+ok 81 - unknown sign-in service messages keep a readable localized fallback
+  ---
+  duration_ms: 0.186542
+  type: 'test'
+  ...
+# Subtest: every language serves the same homepage structure over HTTP
+ok 82 - every language serves the same homepage structure over HTTP
+  ---
+  duration_ms: 340.537291
+  type: 'test'
+  ...
+# Subtest: the library shell renders the complete safe English shell and hides in-page home navigation
+ok 83 - the library shell renders the complete safe English shell and hides in-page home navigation
+  ---
+  duration_ms: 2.5755
+  type: 'test'
+  ...
+# Subtest: first-paint owned home anchors carry the authored language even with denied storage and another browser language
+ok 84 - first-paint owned home anchors carry the authored language even with denied storage and another browser language
+  ---
+  duration_ms: 7.00725
+  type: 'test'
+  ...
+# Subtest: public home navigation exposes localized Agent and pricing links plus a named GitHub mark before JavaScript
+ok 85 - public home navigation exposes localized Agent and pricing links plus a named GitHub mark before JavaScript
+  ---
+  duration_ms: 37.072125
+  type: 'test'
+  ...
+# Subtest: the no-scene trigger names its current state in en
+ok 86 - the no-scene trigger names its current state in en
+  ---
+  duration_ms: 1.104083
+  type: 'test'
+  ...
+# Subtest: the no-scene trigger names its current state in zh-Hans
+ok 87 - the no-scene trigger names its current state in zh-Hans
+  ---
+  duration_ms: 11.24875
+  type: 'test'
+  ...
+# Subtest: the no-scene trigger names its current state in zh-Hant
+ok 88 - the no-scene trigger names its current state in zh-Hant
+  ---
+  duration_ms: 9.829709
+  type: 'test'
+  ...
+# Subtest: the no-scene trigger names its current state in ja
+ok 89 - the no-scene trigger names its current state in ja
+  ---
+  duration_ms: 39.154834
+  type: 'test'
+  ...
+# Subtest: settings only expose the translation controls relevant to the active reading mode
+ok 90 - settings only expose the translation controls relevant to the active reading mode
+  ---
+  duration_ms: 34.722958
+  type: 'test'
+  ...
+# Subtest: four settings tabs expose one panel at a time and keep keyboard focus in the selected tab
+ok 91 - four settings tabs expose one panel at a time and keep keyboard focus in the selected tab
+  ---
+  duration_ms: 0.746208
+  type: 'test'
+  ...
+# Subtest: all nine Aa drawer selects upgrade to the shared choice primitive while the drawer-outside timer select stays native
+ok 92 - all nine Aa drawer selects upgrade to the shared choice primitive while the drawer-outside timer select stays native
+  ---
+  duration_ms: 5.112791
+  type: 'test'
+  ...
+# Subtest: Aa option and value writes need the explicit sync call and never fabricate change events
+ok 93 - Aa option and value writes need the explicit sync call and never fabricate change events
+  ---
+  duration_ms: 0.843625
+  type: 'test'
+  ...
+# Subtest: Aa controls load once on explicit opening and read the latest native values after the load
+ok 94 - Aa controls load once on explicit opening and read the latest native values after the load
+  ---
+  duration_ms: 2.390167
+  type: 'test'
+  ...
+# Subtest: a rejected Aa module keeps every native fallback available
+ok 95 - a rejected Aa module keeps every native fallback available
+  ---
+  duration_ms: 0.545917
+  type: 'test'
+  ...
+# Subtest: an Aa module arriving while a native select has focus transfers focus to its selected enhancement
+ok 96 - an Aa module arriving while a native select has focus transfers focus to its selected enhancement
+  ---
+  duration_ms: 1.709125
+  type: 'test'
+  ...
+# Subtest: locale relabels existing Aa choices without touching native values, open query or composition
+ok 97 - locale relabels existing Aa choices without touching native values, open query or composition
+  ---
+  duration_ms: 14.676292
+  type: 'test'
+  ...
+# Subtest: locale changes preserve a pending new-book default snapshot and only reformat its receipt
+ok 98 - locale changes preserve a pending new-book default snapshot and only reformat its receipt
+  ---
+  duration_ms: 67.316625
+  type: 'test'
+  ...
+# Subtest: an A to B to A account transition fences a late default save while the current owner remains usable
+ok 99 - an A to B to A account transition fences a late default save while the current owner remains usable
+  ---
+  duration_ms: 3.853542
+  type: 'test'
+  ...
+# Subtest: hosted reader starts from one bundled script and one stylesheet without retaining old script execution
+ok 100 - hosted reader starts from one bundled script and one stylesheet without retaining old script execution
+  ---
+  duration_ms: 877.238959
+  type: 'test'
+  ...
+# Subtest: the bookplate enhancement and gift composer remain allowed public modules loaded outside the initial reader bundle
+ok 101 - the bookplate enhancement and gift composer remain allowed public modules loaded outside the initial reader bundle
+  ---
+  duration_ms: 509.87975
+  type: 'test'
+  ...
+# Subtest: external reader modules require the release allowlist and only resolve from their exact callers
+ok 102 - external reader modules require the release allowlist and only resolve from their exact callers
+  ---
+  duration_ms: 1184.441167
+  type: 'test'
+  ...
+# Subtest: the authored-home navigation stays outside the reader graph and the fixed budgets hold
+ok 103 - the authored-home navigation stays outside the reader graph and the fixed budgets hold
+  ---
+  duration_ms: 293.688584
+  type: 'test'
+  ...
+# Subtest: the exact palette retry edge is the one amended external import and stays fenced everywhere else
+ok 104 - the exact palette retry edge is the one amended external import and stays fenced everywhere else
+  ---
+  duration_ms: 358.933458
+  type: 'test'
+  ...
+# Subtest: disclosure derives review status and attribution from saved variants, including personal sample overrides
+ok 105 - disclosure derives review status and attribution from saved variants, including personal sample overrides
+  ---
+  duration_ms: 1.504542
+  type: 'test'
+  ...
+# Subtest: a book with no saved translations is not described as an unreviewed AI translation
+ok 106 - a book with no saved translations is not described as an unreviewed AI translation
+  ---
+  duration_ms: 0.14875
+  type: 'test'
+  ...
+# Subtest: a guest cannot be sent to unavailable email login for untranslated text
+ok 107 - a guest cannot be sent to unavailable email login for untranslated text
+  ---
+  duration_ms: 3.078792
+  type: 'test'
+  ...
+# Subtest: a late result belongs to its original paragraph and cannot reveal a different selection
+ok 108 - a late result belongs to its original paragraph and cannot reveal a different selection
+  ---
+  duration_ms: 0.238625
+  type: 'test'
+  ...
+# Subtest: returning to a paragraph that is still translating keeps the request locked
+ok 109 - returning to a paragraph that is still translating keeps the request locked
+  ---
+  duration_ms: 0.111417
+  type: 'test'
+  ...
+# Subtest: a failure is kept with the original paragraph and retry clears the error
+ok 110 - a failure is kept with the original paragraph and retry clears the error
+  ---
+  duration_ms: 0.076916
+  type: 'test'
+  ...
+# Subtest: existing independent drafts can be opened locally even without a translation service
+ok 111 - existing independent drafts can be opened locally even without a translation service
+  ---
+  duration_ms: 0.200458
+  type: 'test'
+  ...
+# Subtest: changing chapters clears selection without losing the background request
+ok 112 - changing chapters clears selection without losing the background request
+  ---
+  duration_ms: 0.088042
+  type: 'test'
+  ...
+# Subtest: dismissed selection invalidates reveal while keeping the submitted paragraph result
+ok 113 - dismissed selection invalidates reveal while keeping the submitted paragraph result
+  ---
+  duration_ms: 0.096
+  type: 'test'
+  ...
+# Subtest: anonymous readers are not promised translation when the service is unavailable
+ok 114 - anonymous readers are not promised translation when the service is unavailable
+  ---
+  duration_ms: 0.068708
+  type: 'test'
+  ...
+# Subtest: an optional presentation formatter receives stable messages without changing pending jobs or source identity
+ok 115 - an optional presentation formatter receives stable messages without changing pending jobs or source identity
+  ---
+  duration_ms: 0.5175
+  type: 'test'
+  ...
+# Subtest: acknowledging a confirmed save never dismisses an in-flight task or failure
+ok 116 - acknowledging a confirmed save never dismisses an in-flight task or failure
+  ---
+  duration_ms: 0.310166
+  type: 'test'
+  ...
+# Subtest: source provenance can be captured as owned message IDs without altering source metadata
+ok 117 - source provenance can be captured as owned message IDs without altering source metadata
+  ---
+  duration_ms: 1.393292
+  type: 'test'
+  ...
+# Subtest: sample disclosure descriptors keep exact sample counts and provider names outside interface keys
+ok 118 - sample disclosure descriptors keep exact sample counts and provider names outside interface keys
+  ---
+  duration_ms: 0.560667
+  type: 'test'
+  ...
+# Subtest: hosted reading hides the unavailable chapter-prompt setting including its orphan help
+ok 119 - hosted reading hides the unavailable chapter-prompt setting including its orphan help
+  ---
+  duration_ms: 16.25875
+  type: 'test'
+  ...
+# Subtest: translation success keeps the submitted passage and current draft stable through all UI languages
+ok 120 - translation success keeps the submitted passage and current draft stable through all UI languages
+  ---
+  duration_ms: 34.799417
+  type: 'test'
+  ...
+# Subtest: translation conflict keeps the submitted passage and current draft stable through all UI languages
+ok 121 - translation conflict keeps the submitted passage and current draft stable through all UI languages
+  ---
+  duration_ms: 4.910958
+  type: 'test'
+  ...
+# Subtest: translation incomplete keeps the submitted passage and current draft stable through all UI languages
+ok 122 - translation incomplete keeps the submitted passage and current draft stable through all UI languages
+  ---
+  duration_ms: 5.449958
+  type: 'test'
+  ...
+# Subtest: source download and review controls retain their nodes, source metadata and request during locale commits
+ok 123 - source download and review controls retain their nodes, source metadata and request during locale commits
+  ---
+  duration_ms: 4.858458
+  type: 'test'
+  ...
+# Subtest: disposed translation consumes late success and failure and permits a fresh mount
+ok 124 - disposed translation consumes late success and failure and permits a fresh mount
+  ---
+  duration_ms: 16.988166
+  type: 'test'
+  ...
+# Subtest: book/version transitions invalidate translation completions even when the original version returns
+ok 125 - book/version transitions invalidate translation completions even when the original version returns
+  ---
+  duration_ms: 9.991042
+  type: 'test'
+  ...
+# Subtest: paid untranslated button uses the shared point label in every locale and posts the captured source version
+ok 126 - paid untranslated button uses the shared point label in every locale and posts the captured source version
+  ---
+  duration_ms: 9.382334
+  type: 'test'
+  ...
+# Subtest: paid translation intent survives unknown response and remount, with owner and source isolation
+ok 127 - paid translation intent survives unknown response and remount, with owner and source isolation
+  ---
+  duration_ms: 6.621875
+  type: 'test'
+  ...
+# Subtest: reader translation remount with the real credit helper reuses the persisted quote and idempotency pair
+ok 128 - reader translation remount with the real credit helper reuses the persisted quote and idempotency pair
+  ---
+  duration_ms: 6.226542
+  type: 'test'
+  ...
+# Subtest: paid translation cannot start without durable browser identity storage
+ok 129 - paid translation cannot start without durable browser identity storage
+  ---
+  duration_ms: 2.474416
+  type: 'test'
+  ...
+# Subtest: translation explains insufficient points and cancelled consent without claiming a model failure
+ok 130 - translation explains insufficient points and cancelled consent without claiming a model failure
+  ---
+  duration_ms: 8.647834
+  type: 'test'
+  ...
+# Subtest: routine translation furniture is removed while action scope and task feedback stay available
+ok 131 - routine translation furniture is removed while action scope and task feedback stay available
+  ---
+  duration_ms: 2.449042
+  type: 'test'
+  ...
+# Subtest: sample coverage belongs in explicit details, with no routine heading notice or empty furniture
+ok 132 - sample coverage belongs in explicit details, with no routine heading notice or empty furniture
+  ---
+  duration_ms: 2.565667
+  type: 'test'
+  ...
+# Subtest: existing translations do not repeat a routine heading message; background outcomes survive selection changes
+ok 133 - existing translations do not repeat a routine heading message; background outcomes survive selection changes
+  ---
+  duration_ms: 4.162583
+  type: 'test'
+  ...
+# Subtest: confirmed background success expires without dismissing a later failure
+ok 134 - confirmed background success expires without dismissing a later failure
+  ---
+  duration_ms: 3.238916
+  type: 'test'
+  ...
+# Subtest: translation details follow a newly saved result without waiting for a new book-ready event
+ok 135 - translation details follow a newly saved result without waiting for a new book-ready event
+  ---
+  duration_ms: 2.854
+  type: 'test'
+  ...
+# Subtest: cancelling another translation never clears an unresolved earlier failure
+ok 136 - cancelling another translation never clears an unresolved earlier failure
+  ---
+  duration_ms: 3.703917
+  type: 'test'
+  ...
+1..136
+# tests 136
+# suites 0
+# pass 136
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19977.029291

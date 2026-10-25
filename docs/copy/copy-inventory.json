@@ -118,7 +118,7 @@
       },
       {
         "file": "app/catalog-sample.mjs",
-        "sha256": "b97952f1542b76f83350123333947fcfb16b0401743c9095e6500dc61923d1c4"
+        "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
       },
       {
         "file": "app/chat-book-upload.mjs",
@@ -230,7 +230,7 @@
       },
       {
         "file": "app/home-locale.mjs",
-        "sha256": "05c486cc164569fe0a46240256c7050a34405a5f6786df38bd310e2c3c05e1ad"
+        "sha256": "06c78c2a7d296e2bb6a85b8109cde07de291c328569067511c70f18c650ffa34"
       },
       {
         "file": "app/home-motion.mjs",
@@ -242,11 +242,11 @@
       },
       {
         "file": "app/home.html",
-        "sha256": "a596aa166e93f4258152da0c954006857c25ae4051d9be1de35c6819da49df69"
+        "sha256": "8c87087f2278ad0df749515da7b0f3fa55ec9dd645989e8f1601f11012910b91"
       },
       {
         "file": "app/index.html",
-        "sha256": "d3685023ad202572316aa1acb8676e847766137fd442675eb172ca2bbd7cf97c"
+        "sha256": "4ae2bd424c2e2e458dfa2a252b3e30fc1a3785643f4b402114c9cc14cc3cd52c"
       },
       {
         "file": "app/interaction-craft.mjs",
@@ -526,7 +526,7 @@
       },
       {
         "file": "app/reader-settings.mjs",
-        "sha256": "998963cea71ec6753294b61fb5905392d7b103086a576feb1d808edfc95f7d05"
+        "sha256": "a620f3f5e846f343cab7fba1f3f0c74b9eae7148497766dd9f9c11fb89349635"
       },
       {
         "file": "app/reader-tools.mjs",
@@ -534,7 +534,7 @@
       },
       {
         "file": "app/reader-translation.js",
-        "sha256": "87fd3ead7c92c4ab1ad3d5d1480aa50ccefb6b2b7af3aa080c68716405cd3af5"
+        "sha256": "e6d8fb09442e5811db511e98dee5686e785311afbcd1c3e0a0720accd64e721c"
       },
       {
         "file": "app/reader.js",
@@ -722,23 +722,23 @@
       },
       {
         "file": "app/translation-state.mjs",
-        "sha256": "7762351645c4fa0305e03c7d52191ce951de34c5566ef7beaebbafcee43379ca"
+        "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
       },
       {
         "file": "app/ui-catalogs/en.mjs",
-        "sha256": "327a0f517fdd77b147964791babcc1069b09ce64710170958aae7d96cce9f2d9"
+        "sha256": "85be45379a2eb7d8826a75620582211bf99dd57c5e25e841b1193cf3132ac853"
       },
       {
         "file": "app/ui-catalogs/ja.mjs",
-        "sha256": "296609e371f4c97c3275c39fd784625a1b8a588b92de3bd2dd68a4499b508a10"
+        "sha256": "05c540f174c1d66b7f5fcd3bf503190033c9b926e8d329c150b164c537e4ef24"
       },
       {
         "file": "app/ui-catalogs/zh-Hans.mjs",
-        "sha256": "6ab4f94f575674808b021bb99cbe7d30901f78d92b4186c3a8b9777d2a26a50f"
+        "sha256": "a731f9b7b8899bbbeee2d212b4fbb48c5d99815736112ef899943d22f7526f93"
       },
       {
         "file": "app/ui-catalogs/zh-Hant.mjs",
-        "sha256": "0f834b5d7d165e61dd6965de0a36062912e7818a9962f9d85656f7f1b182172e"
+        "sha256": "d37892022a38c087f6ebdc3bc5c7f2bc25582da4e7748ff6ce2d398a0c61bd9e"
       },
       {
         "file": "app/ui-locale-codec.mjs",
@@ -1093,7 +1093,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "0e1644337590b3eca14015bca64828d43ad6a015b9f2db6212e57dd2c1edcb35"
+    "inputDigest": "4160c6d716febf524f6cf9e88c89216b19340af1207c0c98c452cf20f6bbeba5"
   },
   "locales": [
     "en",
@@ -1107,25 +1107,25 @@
       "locale": "en",
       "file": "app/ui-catalogs/en.mjs",
       "missing": false,
-      "entries": 2159
+      "entries": 2161
     },
     {
       "locale": "zh-Hans",
       "file": "app/ui-catalogs/zh-Hans.mjs",
       "missing": false,
-      "entries": 2159
+      "entries": 2161
     },
     {
       "locale": "zh-Hant",
       "file": "app/ui-catalogs/zh-Hant.mjs",
       "missing": false,
-      "entries": 2159
+      "entries": 2161
     },
     {
       "locale": "ja",
       "file": "app/ui-catalogs/ja.mjs",
       "missing": false,
-      "entries": 2159
+      "entries": 2161
     }
   ],
   "items": [
@@ -2547,8 +2547,8 @@
         },
         {
           "file": "app/reader-translation.js",
-          "line": 18,
-          "column": 118
+          "line": 52,
+          "column": 85
         }
       ],
       "hints": [
@@ -2609,8 +2609,8 @@
         },
         {
           "file": "app/reader-translation.js",
-          "line": 50,
-          "column": 69
+          "line": 52,
+          "column": 42
         }
       ],
       "hints": [
@@ -2668,6 +2668,11 @@
           "file": "app/credit-labels.mjs",
           "line": 7,
           "column": 51
+        },
+        {
+          "file": "app/translation-state.mjs",
+          "line": 44,
+          "column": 77
         }
       ],
       "hints": [
@@ -23936,29 +23941,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 397,
           "column": 3,
-          "value": "Translations currently use Simplified Chinese. Books with only an original keep that original; no translation is generated automatically. A displayed translation may still be an unreviewed draft. Fine typography stays in the book’s reading settings and is preserved when you save here.",
-          "sha256": "6e65598b0e7147910b5129172b26ba2581eb3904e52fb3016b7b5a6f90cca545"
+          "value": "New books use these reading preferences. Translations currently use Simplified Chinese. Untranslated passages show the original; choosing a translation does not generate one or confirm human review. Adjust detailed typography in the reader.",
+          "sha256": "71368c8b83d8fef33df5c435540756d6393f1619cb34d1e74d26b569301b5b4a"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 396,
           "column": 3,
-          "value": "译文目前提供简体中文；只含原文的书仍显示原文，不会自动生成译文。显示译文不代表已经人工校对。精细排版仍在书页的“阅读设置”里调整，并随这次保存一并保留。",
-          "sha256": "fd52cb4a668fe17539f7c7b93828e4e14e2269f3a76341d49ce2a43bcfa26e05"
+          "value": "新书沿用这些阅读偏好。译文目前为简体中文，缺译处显示原文；选择译文不会自动翻译，也不代表已经人工审校。精细排版在书页中调整。",
+          "sha256": "cc21c601a7772f8d94f146b7a6fee585e5000af65bf4eb9f893ef6df78c7872d"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 396,
           "column": 3,
-          "value": "譯文目前提供簡體中文；只有原文的書仍顯示原文，不會自動產生譯文。顯示譯文不代表已經人工校對。細部排版仍在書頁的「閱讀設定」中調整，並隨這次儲存一併保留。",
-          "sha256": "72909bcd84fa91033aa0c2f2c027ff0b3babaa20bbb4d8b186ce49abc295f406"
+          "value": "新書沿用這些閱讀偏好。譯文目前為簡體中文，缺譯處顯示原文；選擇譯文不會自動翻譯，也不代表已經人工審校。精細排版在書頁中調整。",
+          "sha256": "75fcd88dee6d23dc556152a86655d88764809714833ece1e5e8ac074603e8c2d"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 396,
           "column": 3,
-          "value": "訳文は現在、簡体字中国語で提供しています。原文だけの本では原文を表示し、訳文を自動生成しません。表示された訳文も未校正の場合があります。細かな組版は本の読書設定で調整でき、ここで保存しても保持されます。",
-          "sha256": "c6f5995fc2958421e75c81bd5582be713b31804d9792ebfcce9b8f9dcf639388"
+          "value": "新しい本に使う表示設定です。訳文は現在、簡体字中国語で提供しています。訳のない箇所は原文のままで、訳文を選んでも自動翻訳や人による確認は行いません。細かな組版は読書画面で調整します。",
+          "sha256": "9c020f70b73bb6c9f00dce982a26642bbb5b019f51b01d4e56590302c682134c"
         }
       },
       "missingLocales": [],
@@ -45442,7 +45447,7 @@
       "consumers": [
         {
           "file": "app/reader-settings.mjs",
-          "line": 48,
+          "line": 49,
           "column": 34
         }
       ],
@@ -45499,7 +45504,7 @@
       "consumers": [
         {
           "file": "app/reader-settings.mjs",
-          "line": 48,
+          "line": 49,
           "column": 59
         }
       ],
@@ -45556,7 +45561,7 @@
       "consumers": [
         {
           "file": "app/reader-settings.mjs",
-          "line": 64,
+          "line": 65,
           "column": 101
         }
       ],
@@ -45613,7 +45618,7 @@
       "consumers": [
         {
           "file": "app/reader-settings.mjs",
-          "line": 69,
+          "line": 70,
           "column": 30
         }
       ],
@@ -45670,7 +45675,7 @@
       "consumers": [
         {
           "file": "app/reader-settings.mjs",
-          "line": 72,
+          "line": 73,
           "column": 35
         }
       ],
@@ -45727,7 +45732,7 @@
       "consumers": [
         {
           "file": "app/reader-settings.mjs",
-          "line": 72,
+          "line": 73,
           "column": 62
         }
       ],
@@ -48456,13 +48461,8 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 39,
+          "line": 37,
           "column": 112
-        },
-        {
-          "file": "app/reader-translation.js",
-          "line": 47,
-          "column": 25
         },
         {
           "file": "app/translation-state.mjs",
@@ -48471,12 +48471,12 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 46,
+          "line": 47,
           "column": 39
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 54,
+          "line": 55,
           "column": 27
         }
       ],
@@ -48503,29 +48503,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 836,
           "column": 3,
-          "value": "View both drafts",
-          "sha256": "98bc5235ce68db3418e2a0d55ff49acc7e043109b7a97686f13ebd146494c9b0"
+          "value": "View translations",
+          "sha256": "785a296a73a9645539d64c59080f549194c811928eab2ca14fe49396a13169f2"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 835,
           "column": 3,
-          "value": "查看双译",
-          "sha256": "ff7819ad46229144b5d54a6ee6229b391cdf4bf69f86cb0415a42a252d52428a"
+          "value": "查看译文",
+          "sha256": "c936981218c2c27d5c1b2df720998e11b126434df0d4ec28e24551523f7ba79e"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 835,
           "column": 3,
-          "value": "查看雙譯",
-          "sha256": "b3c4d159be51c50e63c6561329884df615190f5cfc834757d87d1a02ce35e49d"
+          "value": "查看譯文",
+          "sha256": "75f80ef25fcb3d2ad2209451c6c5748364513b59a917a194e55db0076578277f"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 835,
           "column": 3,
-          "value": "2つの訳の下書きを見る",
-          "sha256": "c04bc539d5c5b1a7fd46abc4c2ff539e6ae9a97882b0ce89db6f1472abfce001"
+          "value": "訳文を見る",
+          "sha256": "c79dbce35e781dddb29164132a3dd1db0c9315fbb19874ba05dfcd9cb73dad35"
         }
       },
       "missingLocales": [],
@@ -48538,7 +48538,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 47,
+          "line": 48,
           "column": 36
         }
       ],
@@ -48594,18 +48594,13 @@
       "duplicates": [],
       "consumers": [
         {
-          "file": "app/reader-translation.js",
-          "line": 47,
-          "column": 69
-        },
-        {
           "file": "app/translation-state.mjs",
           "line": 11,
           "column": 3
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 48,
+          "line": 49,
           "column": 54
         }
       ],
@@ -48632,29 +48627,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 838,
           "column": 3,
-          "value": "This passage is being translated. You can keep reading; the result will be saved in your library.",
-          "sha256": "a0b98eb0f9f4b6e1ab0e49308a744773588ccc788a08fc289cb8f1f86e4ab27f"
+          "value": "Translating this passage. A result appears after saving is confirmed.",
+          "sha256": "b7634ce66a4333ffc19cdd8dba08d14f369525c573228242362e001f87aba0fe"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 837,
           "column": 3,
-          "value": "正在翻译这一段。可以继续阅读，结果会保留在书房里。",
-          "sha256": "77d776d097bf729e99c92def445a57a8be5a1f045ff29b6334ef3e6af4db582a"
+          "value": "正在翻译本段，确认保存后显示结果。",
+          "sha256": "926d7611251ffb370e4fdca7d2bae23c241c5041a3d667b3b496f5398953cb99"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 837,
           "column": 3,
-          "value": "正在翻譯這一段。可以繼續閱讀，結果會保留在書房裡。",
-          "sha256": "13e61cb75ee1183099fbfc844c1cc44bb9ac4e794fa088fac692121fd77e06e6"
+          "value": "正在翻譯本段，確認保存後顯示結果。",
+          "sha256": "98475773d113f1db6ecf1a5b0e143154f2b8ab4a7c820acc88d4adabbbe7ed03"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 837,
           "column": 3,
-          "value": "この段落を翻訳しています。読書を続けられます。結果は本棚に保存されます。",
-          "sha256": "0ed1ef1c3db60bbaee43e8826df2af6c75c891a6c11bf6527ae9bc88415ad844"
+          "value": "この段落を翻訳中です。保存を確認できたら結果を表示します。",
+          "sha256": "08f079c6fc7eb010585f8ec45a4a68d8a2630ca8a3fe4c6edcd9499bec59f97e"
         }
       },
       "missingLocales": [],
@@ -48667,7 +48662,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 48,
+          "line": 49,
           "column": 94
         }
       ],
@@ -48694,29 +48689,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 839,
           "column": 3,
-          "value": "Another passage is being translated. You can keep reading. ",
-          "sha256": "fbabcd946766196d7278297cd5ef9ece61953b6371e98309314c2a83c20bb01e"
+          "value": "Another passage is being translated.",
+          "sha256": "13d9b234ac32569a0a6fab29f2250eca9a852c1eed5bf62c088bb2f80ee0e4a8"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 838,
           "column": 3,
-          "value": "另一段正在翻译，可以继续阅读。",
-          "sha256": "6469ec6f9aa34d5c7807cf6eab8c52aa238fcfb4cc723cf374e1ccfcd21e5830"
+          "value": "另一段正在翻译。",
+          "sha256": "ad38683adf242e6d2773568b690586250cb8c8b0d626e40e292c570f60e34abb"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 838,
           "column": 3,
-          "value": "另一段正在翻譯，可以繼續閱讀。",
-          "sha256": "28b1aa4b40e08697db7b0af2f6296687944be33b359a03648dea0a52c1c2d3c3"
+          "value": "另一段正在翻譯。",
+          "sha256": "76651fa6cd1d1244c289cdae86f38610eb854f1178381cd74240dc8ec011b7a7"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 838,
           "column": 3,
-          "value": "別の段落を翻訳しています。読書を続けられます。",
-          "sha256": "37439695ea9ba2a976bdd3f12a15f2b2dd51b51fd0f53fc59040f1452bb417bf"
+          "value": "別の段落を翻訳中です。",
+          "sha256": "7fa7bf99feecbca2f8cccf2d9092c21351d453c2d4357c0e0ed5e024a18f598c"
         }
       },
       "missingLocales": [],
@@ -48756,29 +48751,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 840,
           "column": 3,
-          "value": "Both drafts for the previous selection have been saved. ",
-          "sha256": "2654dbcb478831702b03fac1796f8cb33c9de3bc3e355de5f4e9895daf41a669"
+          "value": "The earlier passage’s translations are saved.",
+          "sha256": "888cfef4d3f4c79be90c4fe844735a28be3682285f7270444ec8a46ed066d631"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 839,
           "column": 3,
-          "value": "之前选择的段落双译已保存。",
-          "sha256": "5feac707f27402eda578c341fd2002e0a84a2db266004278d2534400407a2bfe"
+          "value": "先前段落的译文已保存。",
+          "sha256": "b1e7406cb7561a38727b5660cbee90007a884f1429f101d779e0d0303cf2faf6"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 839,
           "column": 3,
-          "value": "之前選擇的段落雙譯已保存。",
-          "sha256": "9282fb2ba52c0123695d88dba9e6ae9e7100829a86668c1ccd7a6a63b07dc31b"
+          "value": "先前段落的譯文已保存。",
+          "sha256": "b9df28587ba25053169f755306864118cba234ba634ef7436d8ddad683b3a1ed"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 839,
           "column": 3,
-          "value": "前に選んだ段落の2つの訳の下書きを保存しました。",
-          "sha256": "9ca636aeaa18c873c14dbf1040f32b6c4004f7b7d906757f92857762c4456900"
+          "value": "先ほどの段落の訳文を保存しました。",
+          "sha256": "3b1d8c1459d16b06e76baf4a06b9209e2eab9d0783980be71d2a7266867cec9b"
         }
       },
       "missingLocales": [],
@@ -48818,29 +48813,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 841,
           "column": 3,
-          "value": "The previous selection could not be translated. Its original remains available; return to that passage to retry. ",
-          "sha256": "46bb92ab09ef37e3f16247fb0a21aa189e5c0046ecd67f1848fbd2b3bb8bbbe3"
+          "value": "The earlier passage’s translation needs attention. Return to that passage to check its status.",
+          "sha256": "d33ba321c8d6759ad8d7a6ce9c365193475bc59a33d2b95fd18db8e9ff0fe89f"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 840,
           "column": 3,
-          "value": "之前选择的段落翻译未完成，原文保留。回到那一段可重试。",
-          "sha256": "1d3ea70b1830034bc763c7084e4483888d40d16a7a5c77116a8291a3d4c48cc3"
+          "value": "先前段落的翻译需要处理，请回到该段查看状态。",
+          "sha256": "17f913e4c4ab73336f99034f5e23acd771f43bafe5058b3a7a498ac78d4caefa"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 840,
           "column": 3,
-          "value": "之前選擇的段落翻譯未完成，原文保留。回到那一段可重試。",
-          "sha256": "cbac3e8c0e643208ba1dffe297aeb041cc537681f7037b7b763ae2eddb60b39d"
+          "value": "先前段落的翻譯需要處理，請回到該段查看狀態。",
+          "sha256": "6528bf6d2276ba6afda13c51cd85ec25cb0cc41a31a79ba04a85ee78d9088966"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 840,
           "column": 3,
-          "value": "前に選んだ段落の翻訳は完了しませんでした。原文は残っています。その段落に戻って再試行できます。",
-          "sha256": "47bcb00bd63902fa6d776edbcee43d036f68a90234077a61c7cf08197ad16929"
+          "value": "先ほどの段落の翻訳に確認が必要です。その段落に戻って状態を確認してください。",
+          "sha256": "ee2d94dc2b6813025ac9fab3cca2e7dcb66439bbcc926011281271d2de68b5b8"
         }
       },
       "missingLocales": [],
@@ -48880,29 +48875,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 842,
           "column": 3,
-          "value": "This passage has separate literal and interpretive drafts. Open them locally to check against the original. ",
-          "sha256": "e19d2dd98f4a197846f4f776a4061720580cfacffcad0f0f4b6504b5fbb26e22"
+          "value": "Literal and interpretive translations are available.",
+          "sha256": "4609b0616167b8bfb230c372f76384b8ebccb28fe9db7e575ef2ce747c9aa5ab"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 841,
           "column": 3,
-          "value": "这一段已有直译与意译草稿，可在本地打开并核对原文。",
-          "sha256": "73f49c3618a0d61a81ace49ed329b3f028fe0eba6174bb337fd58321fee729aa"
+          "value": "已有直译与意译。",
+          "sha256": "dabad8bfa83aa29da790300f60058ba9d4a45f2bf522990473125f8d4a5813fd"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 841,
           "column": 3,
-          "value": "這一段已有直譯與意譯草稿，可在本地開啟並核對原文。",
-          "sha256": "e87f41b495cf99087bba99f1c7e247bdb337fe1919ca657c0072249c08bab946"
+          "value": "已有直譯與意譯。",
+          "sha256": "6b0afaa76c25009a592c3c49f34c2f836a5bea8cc36ac86a7105cc7898f081e9"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 841,
           "column": 3,
-          "value": "この段落には直訳と意訳の下書きがあります。ローカルで開き、原文と照合できます。",
-          "sha256": "e810088c7fcdd1d25be0e202c59619db645b20a836ed48bdd0c161304cefb25a"
+          "value": "直訳と意訳があります。",
+          "sha256": "e93a40d88cca001b51ae5df4f9ff16b0a46f926d4a480f90739eb0b162e47beb"
         }
       },
       "missingLocales": [],
@@ -48915,7 +48910,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 47,
+          "line": 48,
           "column": 76
         }
       ],
@@ -48977,7 +48972,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 49,
+          "line": 50,
           "column": 75
         }
       ],
@@ -49039,7 +49034,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 49,
+          "line": 50,
           "column": 119
         }
       ],
@@ -49101,7 +49096,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 50,
+          "line": 51,
           "column": 41
         }
       ],
@@ -49163,7 +49158,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 50,
+          "line": 51,
           "column": 82
         }
       ],
@@ -49225,7 +49220,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 51,
+          "line": 52,
           "column": 62
         }
       ],
@@ -49287,7 +49282,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 51,
+          "line": 52,
           "column": 105
         }
       ],
@@ -49344,7 +49339,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 42,
+          "line": 40,
           "column": 41
         },
         {
@@ -49354,7 +49349,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 52,
+          "line": 53,
           "column": 45
         }
       ],
@@ -49416,7 +49411,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 52,
+          "line": 53,
           "column": 80
         }
       ],
@@ -49473,13 +49468,8 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 39,
+          "line": 37,
           "column": 136
-        },
-        {
-          "file": "app/reader-translation.js",
-          "line": 47,
-          "column": 49
         },
         {
           "file": "app/translation-state.mjs",
@@ -49488,7 +49478,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 53,
+          "line": 54,
           "column": 53
         }
       ],
@@ -49515,29 +49505,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 852,
           "column": 3,
-          "value": "Translation could not be completed.",
-          "sha256": "370f8697ea6b62a5ff143b1bb54984d966dd43e7bd020795d9e3f501e7551825"
+          "value": "The translation result could not be confirmed. Please retry.",
+          "sha256": "1fcc63d2cb1c64e35bb58e0bfda589aef149a605d5f90012b88b922547156999"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 851,
           "column": 3,
-          "value": "翻译暂时无法完成。",
-          "sha256": "f9fdb8ff7145a9d64ee1b1b6b6f4fb56cbcf0a6e302b15f61150ad7c473b63aa"
+          "value": "未能确认翻译结果，请重试。",
+          "sha256": "5756b239db492c85e91c9d61e411ef0bc7bd1478407ad9294b1fbebb22552cd0"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 851,
           "column": 3,
-          "value": "翻譯暫時無法完成。",
-          "sha256": "6c3feff6953d510c9785c2043d2c30e7025abac5dc6a465d6e6d38f55163a6d0"
+          "value": "未能確認翻譯結果，請重試。",
+          "sha256": "eee769a9e5c44c091f833b1b23bd7534ef6f4e4f6783831179f4fba2ae195bf6"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 851,
           "column": 3,
-          "value": "翻訳を完了できませんでした。",
-          "sha256": "635be5e4dadc1f7b30ad670befe55cfe5caac663505ad2bad9d17138dc7dfebc"
+          "value": "翻訳結果を確認できませんでした。再試行してください。",
+          "sha256": "0530460286b226c5caa48cf80a3043a6113ffa60522ad57eab41f3e243aab772"
         }
       },
       "missingLocales": [],
@@ -49545,7 +49535,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 133,
+          "line": 140,
           "column": 84
         },
         {
@@ -49555,7 +49545,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 53,
+          "line": 54,
           "column": 101
         }
       ],
@@ -49617,7 +49607,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 53,
+          "line": 54,
           "column": 131
         }
       ],
@@ -49674,8 +49664,8 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 43,
-          "column": 153
+          "line": 45,
+          "column": 31
         },
         {
           "file": "app/translation-state.mjs",
@@ -49684,7 +49674,7 @@
         },
         {
           "file": "app/translation-state.mjs",
-          "line": 54,
+          "line": 55,
           "column": 86
         }
       ],
@@ -49711,29 +49701,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 855,
           "column": 3,
-          "value": "The result did not contain two complete translations for this passage. Please retry.",
-          "sha256": "f4a0d526a6639b4052453167b058107d04f9b26169cd10bc9c8c0a58b5906e47"
+          "value": "The full translation was not received. The result is unconfirmed; retry to check.",
+          "sha256": "a0d688da23c73fcc20f08f6515c3ff7b57c6416d3af90122194274cf29387c99"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 854,
           "column": 3,
-          "value": "翻译结果未对应完整双译，请重试。",
-          "sha256": "7bb49e006d74d9457dffedb2b499553787e4cf21cbd722e665cf3b8b15c1d50c"
+          "value": "未收到完整译文，结果待确认。重试可继续核对。",
+          "sha256": "7ec06b02f30fc3e01f2f0f1884b017be27195eff7c4d2d3c3f8ef1f04e29678d"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 854,
           "column": 3,
-          "value": "翻譯結果未對應完整雙譯，請重試。",
-          "sha256": "2f82c179854bcb1a884821297d1508b1fdf74bae0d0ed866d9d56dd3ee48f7ca"
+          "value": "未收到完整譯文，結果待確認。重試可繼續核對。",
+          "sha256": "7bca6ed086ce2d777c5077b1532433711c719074436865b7df8eacf657b564bf"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 854,
           "column": 3,
-          "value": "この段落に対応する2つの完全な訳が返されませんでした。再試行してください。",
-          "sha256": "8527fe42189447de415f46d692e258e3ac4aa11c038f269ea236dd7c1f5c4fff"
+          "value": "訳文全体を受信できませんでした。結果は未確認です。再試行して確認してください。",
+          "sha256": "2f3a1549ec9126bc737ec67db3b956fc3d638c4ebaa27ddd7edb2dd4416b6b57"
         }
       },
       "missingLocales": [],
@@ -49741,7 +49731,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 130,
+          "line": 132,
           "column": 82
         }
       ],
@@ -49795,13 +49785,7 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [
-        {
-          "file": "app/reader-translation.js",
-          "line": 35,
-          "column": 94
-        }
-      ],
+      "consumers": [],
       "hints": [
         {
           "kind": "key-namespace",
@@ -49852,18 +49836,7 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [
-        {
-          "file": "app/reader-translation.js",
-          "line": 35,
-          "column": 150
-        },
-        {
-          "file": "app/reader-translation.js",
-          "line": 44,
-          "column": 85
-        }
-      ],
+      "consumers": [],
       "hints": [
         {
           "kind": "key-namespace",
@@ -49914,13 +49887,7 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [
-        {
-          "file": "app/reader-translation.js",
-          "line": 35,
-          "column": 173
-        }
-      ],
+      "consumers": [],
       "hints": [
         {
           "kind": "key-namespace",
@@ -50688,29 +50655,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 871,
           "column": 3,
-          "value": "Only the first {count} passages have literal and interpretive Chinese AI drafts; the rest stays in the English original.",
-          "sha256": "f58997502715678661d2ccaf59726b040d838bd5b219049b5712d90765a7effd"
+          "value": "Chinese sample · {count} passages",
+          "sha256": "027310fa9ca1d124a563c09877fecc468e9e8baad2e6cb64befc4f655a8d7789"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 870,
           "column": 3,
-          "value": "全书仅前 {count} 段备有中文直译与意译，均为 AI 生成的草稿；其余正文保留英文原文。",
-          "sha256": "95beb68f32c7394965967354bda39d2081ccc625dfa4de96a8bdacea700123f0"
+          "value": "中文试读 · {count} 段",
+          "sha256": "04e5e185f1e93a148bd1b2fe06ee35dcecda1104d4e89e8e1422a774fdaedb27"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 870,
           "column": 3,
-          "value": "全書僅前 {count} 段備有中文直譯與意譯，均為 AI 生成的草稿；其餘正文保留英文原文。",
-          "sha256": "7b93849c5471ba631a344ca6af0b5a7f66840fd2e23c27aa05dee19acc837ca7"
+          "value": "中文試讀 · {count} 段",
+          "sha256": "a07048a497befc255c1c4f84cd9486d49e74f8fd181c3e987ff597d50289dbe0"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 870,
           "column": 3,
-          "value": "全書で最初の{count}段落のみ中国語の直訳と意訳のAI下書きがあり、以降は英語の原文です。",
-          "sha256": "81236da5b658bb05f5e888fe6fc0a2283b0cebca8ef511cf55092f876d842388"
+          "value": "中国語試し読み · {count} 段落",
+          "sha256": "e74521785223687e4d09f866a44a33e07cd83fe7bc224f6ae0a1c1b88a19aa97"
         }
       },
       "missingLocales": [],
@@ -50745,29 +50712,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 872,
           "column": 3,
-          "value": "The opening {count} passages have separate literal and interpretive drafts written by {translator}. These are AI drafts and have not been reviewed by a human. The sample translations use CC0-1.0 and can be checked against the original. The remaining text is English only. Source and license details are linked in the library.",
-          "sha256": "e2fc399eeafad4ffc22c278eb9b07eb22c637e0c77f84daa6113f199f9ac534b"
+          "value": "The first {count} passages have literal and interpretive Chinese translations by {translator}: AI drafts, not human-reviewed. Translation license: CC0-1.0. Later passages remain in English. The book’s source link provides its original attribution and license.",
+          "sha256": "94a1260beff2e11d2bb38a46caaf12df4b2f20b365926d5dc09cba60c9f6c12e"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 871,
           "column": 3,
-          "value": "本书开篇 {count} 段的直译与意译由 {translator} 分别编写，均为 AI 草稿，尚未人工审定。试读译文采用 CC0-1.0，可随时核对原文；其余正文仅有英文。英文底本的出处与许可见书房中的来源链接。",
-          "sha256": "a7e3bd2800f685a1e8aff58d949f20132d57abd718b60bc26a05950ff6bfa67f"
+          "value": "开篇 {count} 段含 {translator} 编写的中文直译与意译，均为未经人工审校的 AI 初稿，许可为 CC0-1.0。其余正文为英文；底本出处与许可见书籍来源链接。",
+          "sha256": "189fe836728795dcd3f03081bd298b84dba48762c74b59944f09e2c2bb71b64a"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 871,
           "column": 3,
-          "value": "本書開篇 {count} 段的直譯與意譯由 {translator} 分別編寫，均為 AI 草稿，尚未人工審定。試讀譯文採用 CC0-1.0，可隨時核對原文；其餘正文僅有英文。英文底本的出處與授權見書房中的來源連結。",
-          "sha256": "4296a348d158fc2c710f0b40658037dde75a779439262b29fa2dea7577dadd2f"
+          "value": "開篇 {count} 段含 {translator} 編寫的中文直譯與意譯，均為未經人工審校的 AI 初稿，許可為 CC0-1.0。其餘正文為英文；底本出處與許可見書籍來源連結。",
+          "sha256": "31460e708a3f60940e53ea1b7951d37c61df26762aa87cd3329bad6dafd6b189"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 871,
           "column": 3,
-          "value": "冒頭{count}段落の直訳と意訳は{translator}が個別に作成しました。いずれもAIの下書きで、人による確認は未実施です。試読訳のライセンスはCC0-1.0です。原文と照合できます。残りの本文は英語のみです。原文の出典とライセンスは本棚の出典リンクで確認できます。",
-          "sha256": "a7b5726f31f9806c073bb1301781133688e5d7bded0f7fba274f69e451ad18f5"
+          "value": "冒頭 {count} 段落には {translator} による中国語の直訳と意訳があります。AI による初稿で、人による確認は未実施です。訳文のライセンスは CC0-1.0 です。以降は英語原文です。原書の出典とライセンスは、本の出典リンクで確認できます。",
+          "sha256": "534550b906ebd343733a3795066d9c4d09c6141dfa5e3d92b2bbb72dc57af21d"
         }
       },
       "missingLocales": [],
@@ -50775,8 +50742,8 @@
       "consumers": [
         {
           "file": "app/catalog-sample.mjs",
-          "line": 12,
-          "column": 72
+          "line": 18,
+          "column": 33
         }
       ],
       "hints": [
@@ -50802,40 +50769,34 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 873,
           "column": 3,
-          "value": "Translations are saved separately for each passage. Untranslated passages retain the original. AI results are marked as drafts; a missing translation is never replaced with the other variant.",
-          "sha256": "8322fa6e5caa56de6b6cc8990af35f5cebb4ba102cec8d601432605ff689570a"
+          "value": "Literal and interpretive translations are stored separately. Untranslated passages show the original; each saved translation carries its own source and review status.",
+          "sha256": "16a2e0f6421d371b370bfaba7448dd92b4aa4842fa67bad42c2d57268317931c"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 872,
           "column": 3,
-          "value": "译文按段独立保存，未译内容保留原文。AI 生成结果标为草稿，可以核对原文；不会把缺失译文补成另一种译法。",
-          "sha256": "ed076dde25f7f7b96d6e6fe2a6212b08386e0b2437dcda974ad07ae12121256c"
+          "value": "直译与意译分别保存。缺译处显示原文；来源与审校状态以各份译文记录为准。",
+          "sha256": "1ccee1130cf13232f7836fedce5c0cb75104562c48b7dba0ba66ec3ed712e196"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 872,
           "column": 3,
-          "value": "譯文按段獨立儲存，未譯內容保留原文。AI 生成結果標為草稿，可以核對原文；不會把缺失譯文補成另一種譯法。",
-          "sha256": "290243f7cc06107d0f11cf9b9942aba26eff2465f9bfc4d0caaf696133bcbbe0"
+          "value": "直譯與意譯分別保存。缺譯處顯示原文；來源與審校狀態以各份譯文記錄為準。",
+          "sha256": "2fc8dc9fae2760716ebd837f9cd46d30654eef2bfd2f71fddf18852b8312b120"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 872,
           "column": 3,
-          "value": "訳文は段落ごとに個別に保存します。未翻訳の箇所は原文を保持します。AIの結果は下書きと明記し、片方の訳がない場合にもう片方で埋めることはありません。",
-          "sha256": "62886f6522ce9060fceabae43cd0d6086997afff0af64089b3393da0ec98e071"
+          "value": "直訳と意訳は別々に保存します。訳のない箇所には原文を表示します。出典と確認状況は各訳文の記録に従います。",
+          "sha256": "7646d10c216a30d0e63080bdc12a099996c4969a5c58c000c8f5e94e0bff2a7a"
         }
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [
-        {
-          "file": "app/catalog-sample.mjs",
-          "line": 12,
-          "column": 183
-        }
-      ],
+      "consumers": [],
       "hints": [
         {
           "kind": "key-namespace",
@@ -50889,7 +50850,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 68,
+          "line": 70,
           "column": 103
         }
       ],
@@ -50946,7 +50907,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 75,
+          "line": 77,
           "column": 95
         }
       ],
@@ -51003,7 +50964,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 75,
+          "line": 77,
           "column": 134
         }
       ],
@@ -51060,7 +51021,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 77,
+          "line": 79,
           "column": 174
         }
       ],
@@ -51117,7 +51078,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 79,
+          "line": 81,
           "column": 91
         }
       ],
@@ -51174,7 +51135,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 88,
+          "line": 90,
           "column": 74
         }
       ],
@@ -51231,7 +51192,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 93,
+          "line": 95,
           "column": 138
         }
       ],
@@ -51288,7 +51249,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 94,
+          "line": 96,
           "column": 48
         }
       ],
@@ -51345,7 +51306,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 97,
+          "line": 99,
           "column": 47
         }
       ],
@@ -51402,7 +51363,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 107,
+          "line": 109,
           "column": 68
         }
       ],
@@ -51459,7 +51420,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 107,
+          "line": 109,
           "column": 115
         }
       ],
@@ -51516,7 +51477,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 107,
+          "line": 109,
           "column": 164
         }
       ],
@@ -51573,7 +51534,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 107,
+          "line": 109,
           "column": 184
         }
       ],
@@ -51630,7 +51591,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 110,
+          "line": 112,
           "column": 109
         }
       ],
@@ -58225,29 +58186,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1006,
           "column": 3,
-          "value": "No records today. A few pages are enough.",
-          "sha256": "10ee764cd3dbe88ccc26b29c4319deeb0fa54c5c63a43493b15a9f315783671a"
+          "value": "No reading time recorded today.",
+          "sha256": "e5a5b9af142158cae5ed255b6f6d85a41df4d44c544c988e4237f76ec66e127b"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1005,
           "column": 3,
-          "value": "今天还没有记录。从几页开始就好。",
-          "sha256": "e0f1021310b3f53cdec0deb49dd29a6a2cc2b6d61d832adc92d32c8854095d0e"
+          "value": "今天还没有阅读记录。",
+          "sha256": "04ed42f6393910338dee06db98876e0d742c41e2c22c52053a57ec80bad50418"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1005,
           "column": 3,
-          "value": "今天還沒有記錄。從幾頁開始就好。",
-          "sha256": "840c98f91919f44a51e9f84fda41d03bf1c606f1eda6e75991ff59f191beba43"
+          "value": "今天還沒有閱讀記錄。",
+          "sha256": "062b2eccc1a346668cf4173bca6ab908e344a52a0560d47a0f980ea5e9bba11c"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1005,
           "column": 3,
-          "value": "今日はまだ記録がありません。数頁からで大丈夫です。",
-          "sha256": "94c7f2c900b90951122c0377c3d8bf5cdc416bc97299dfb2963622519689e04d"
+          "value": "今日はまだ読書記録がありません。",
+          "sha256": "a6733f614b0e7fd8796bc6171da26a764d4f51874ad2ad82b58b08a053d54b17"
         }
       },
       "missingLocales": [],
@@ -63670,29 +63631,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1100,
           "column": 3,
-          "value": "Sign in to bring your own books and keep your reading records.",
-          "sha256": "7434779a42d8eb1861c8a912163ea0f8f7d296b472206836aaeced5182b13572"
+          "value": "Sign in to import books and save reading records.",
+          "sha256": "7c8fa1adc087e50f164a79b17d135670e8d9ceed68b4fce02206e0a853a40a12"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1099,
           "column": 3,
-          "value": "登录后，带来自己的书，留下自己的阅读记录。",
-          "sha256": "edf6fd5939e7a531118613a57a8327425b68ac689f94916a2acbcf63ce1c094e"
+          "value": "登录后导入书籍并保存阅读记录。",
+          "sha256": "51d40c05269f68afc078ebd667e30f64bff00bfdf1ee052c18bf37e67db8449a"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1099,
           "column": 3,
-          "value": "登錄後，帶來自己的書，留下自己的閱讀記錄。",
-          "sha256": "d2c3ea207abb833748866c09f5972c725509b64442385b55a793bf8fefc82435"
+          "value": "登入後匯入書籍並保存閱讀記錄。",
+          "sha256": "0c4b5cae25046a8d41e4b6b32a76f3aca3c648dcc86c151d5ba39ca88a203ecd"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1099,
           "column": 3,
-          "value": "ログインすると、自分の本を持ち込み、読書記録を残せます。",
-          "sha256": "85d4d884fdda59c31acb0750eedd18d78f77fda5ecd1ead6ef12a943832d6be8"
+          "value": "ログインすると、本の読み込みと読書記録の保存ができます。",
+          "sha256": "b4302f9d4e61b471fa6adef8f8e1297268ed33f83de89565d3e8d86e7ee9d29e"
         }
       },
       "missingLocales": [],
@@ -63727,29 +63688,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1101,
           "column": 3,
-          "value": "Bring a PDF, EPUB, TXT or Markdown file and start with your own book.",
-          "sha256": "c9b87b8980314548d218d9339b7ca504d67b81721b75dc05348d215d161f1f97"
+          "value": "Import a PDF, EPUB, TXT or Markdown file.",
+          "sha256": "396e345cbe77c090e2f6e1be89c8baca6ab6c99194d5914759ce60f31f858d79"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1100,
           "column": 3,
-          "value": "带来一份 PDF、EPUB、TXT 或 Markdown，从自己的书开始。",
-          "sha256": "2ab203f7c7df1d2a08169dc697183f4162f2d019626c45f62096d49d9c38dada"
+          "value": "导入 PDF、EPUB、TXT 或 Markdown。",
+          "sha256": "6ecc26240e6863a24da2c55f8c761afa98c0a601614312f536172cca0567e24e"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1100,
           "column": 3,
-          "value": "帶來一份 PDF、EPUB、TXT 或 Markdown，從自己的書開始。",
-          "sha256": "641986365d04f3014130ace5bd0308becc743fbb6a033616aa36d31fb0b4b000"
+          "value": "匯入 PDF、EPUB、TXT 或 Markdown。",
+          "sha256": "f391de8d00299eeb66b95d505bbc4da254803c1aae63a56d0691155e5e79d510"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1100,
           "column": 3,
-          "value": "PDF・EPUB・TXT・Markdown のファイルを持ち込んで、自分の本から始めましょう。",
-          "sha256": "30b86a7f7aa2159d34acae2197d285d5e1e3e69f601c65dcd75a9a5e44cf22e4"
+          "value": "PDF・EPUB・TXT・Markdown ファイルを読み込んでください。",
+          "sha256": "53db48491499682e8c5cdfb8e10d0844ecfb190b23b386f4759a365e3e0a9791"
         }
       },
       "missingLocales": [],
@@ -68786,40 +68747,34 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1191,
           "column": 3,
-          "value": "About this translation",
-          "sha256": "745525ea1746619309b29fad84f07aa85c6578afd616be606cd795beb64d5548"
+          "value": "Source and translations",
+          "sha256": "32250d876f8b08ed093c4376acc5445b662ea20733f7719a7e64d61b73a08102"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1190,
           "column": 3,
-          "value": "关于这份译文",
-          "sha256": "bc8c4f942be02f997e5b88fb131a6b12c6545c8f754de9ea146f2891d4a03f37"
+          "value": "来源与译文",
+          "sha256": "fbdb5c1f2062bba827be8bada7e3037f35dd70ea46166fa44eb53237d18560c4"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1190,
           "column": 3,
-          "value": "關於這份譯文",
-          "sha256": "2ee6a6565b69228b6b373fe3d517a72875372f45eb05f646cc9df8e59cac5e64"
+          "value": "來源與譯文",
+          "sha256": "fa091ea50fc11ef12a430754f0ab313bec06eb124245128708a9600f6bab1619"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1190,
           "column": 3,
-          "value": "この翻訳について",
-          "sha256": "ae6aa47620da1805f62a06ea64fa921e2e288b4b04025a204d8a7c6f695b9be2"
+          "value": "出典と訳文",
+          "sha256": "6eb54670a07fcdc539754761d19057fc727ef3f9908c544443218cebdb8fc782"
         }
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [
-        {
-          "file": "app/reader-translation.js",
-          "line": 45,
-          "column": 35
-        }
-      ],
+      "consumers": [],
       "hints": [
         {
           "kind": "key-namespace",
@@ -85452,29 +85407,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1517,
           "column": 3,
-          "value": "This passage and one on each side go to the cloud model. Both translations are saved as drafts.",
-          "sha256": "7f4ead58c7725c05ccfb480df7e8bbcaf670dc45ecc895ce163de742d724d1f9"
+          "value": "The current passage and one on either side go to AI, without private notes. Literal and interpretive translations are saved as drafts.",
+          "sha256": "7e3ebec15bf606e2d7196eb7c953e68888d2b53ceb5349cad86f8caaccfd4e71"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1516,
           "column": 3,
-          "value": "本段及前后各一段发送到云端，直译与意译保存为草稿。",
-          "sha256": "c2e09fdcaf9540fac32ac1e23abc01f2d72c4f7d20f2a2362f41b2f4a5bfae2f"
+          "value": "本段与前后各一段会发给 AI，不含私人笔记。生成的直译、意译标为草稿。",
+          "sha256": "97e3aeb2eb046badc7c81a8bd2b1efda4fbff93c455d0a72ccdc2d2357200a27"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1516,
           "column": 3,
-          "value": "本段及前後各一段傳送至雲端，直譯與意譯儲存為草稿。",
-          "sha256": "c8041ef1e2ff9a87fc0811e2f5ec3688f43dd2af3d01b2b2c3f93372404672b4"
+          "value": "本段與前後各一段會傳給 AI，不含私人筆記。生成的直譯、意譯標為草稿。",
+          "sha256": "f3b61080c776e2f4fa57029cf8536f256c75030f10c9e34dd497081c7ae800ed"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1516,
           "column": 3,
-          "value": "この段落と前後1段落ずつをクラウドモデルへ送り、2つの訳を下書きとして保存します。",
-          "sha256": "ac6ae672b9ee1f85dea0957bc59aa8d749b889b4adeacbbccf80c91c5496fa7e"
+          "value": "この段落と前後 1 段落ずつを AI に送ります。個人のメモは含みません。直訳と意訳は下書きとして保存します。",
+          "sha256": "236b1d8a19e15fc414bb4cabcaac2de524d087eb71a3a1a8c1ec0730a2b8aba5"
         }
       },
       "missingLocales": [],
@@ -85482,8 +85437,8 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 48,
-          "column": 174
+          "line": 50,
+          "column": 173
         }
       ],
       "hints": [
@@ -86937,29 +86892,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1546,
           "column": 3,
-          "value": "The opening {count} passages have Chinese literal and interpretive AI drafts. Check against the original. The rest remains untranslated English.",
-          "sha256": "889f147183a58f94c52f691fe14edfb62328b98a6dd8de00a5aa694327ee52ff"
+          "value": "Chinese sample · {count} passages",
+          "sha256": "027310fa9ca1d124a563c09877fecc468e9e8baad2e6cb64befc4f655a8d7789"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1545,
           "column": 3,
-          "value": "已备开篇 {count} 段中文直译与意译 · AI 草稿，可核对原文。其余正文保留英文，尚未翻译。",
-          "sha256": "29a8d6a65d882bf4ca26c354fc162b3f2aefefa401cae040b9f783ec6c238c30"
+          "value": "中文试读 · {count} 段",
+          "sha256": "04e5e185f1e93a148bd1b2fe06ee35dcecda1104d4e89e8e1422a774fdaedb27"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1545,
           "column": 3,
-          "value": "已備開篇 {count} 段中文直譯與意譯 · AI 草稿，可核對原文。其餘正文保留英文，尚未翻譯。",
-          "sha256": "629b0f75014690fbfb69c18a9c06faa7fb8ae05281acac357dee2ce3b80c663f"
+          "value": "中文試讀 · {count} 段",
+          "sha256": "a07048a497befc255c1c4f84cd9486d49e74f8fd181c3e987ff597d50289dbe0"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1545,
           "column": 3,
-          "value": "冒頭 {count} 段落には中国語の直訳と意訳のAI下書きがあります。原文と照合できます。残りは未翻訳の英語です。",
-          "sha256": "8ab821483be0f951ed92917a35c3dbb3c608c8727d5737d212ea9cabfc761268"
+          "value": "中国語試し読み · {count} 段落",
+          "sha256": "e74521785223687e4d09f866a44a33e07cd83fe7bc224f6ae0a1c1b88a19aa97"
         }
       },
       "missingLocales": [],
@@ -107546,29 +107501,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1936,
           "column": 3,
-          "value": "No saved listening yet. Start with a passage.",
-          "sha256": "409f8c405ebf1286909c6f35844e91ea1b362a01634ee2e540bb0b652c9a0b9f"
+          "value": "No listening records yet.",
+          "sha256": "5ade781917c4a8625596d7fa10753fdfcaed88e4ca5ef79dd66d927b1f77867b"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1935,
           "column": 3,
-          "value": "这里还没有听读记录。可以从一段文字开始。",
-          "sha256": "00c3c43ccdd45479cf632e463c0106b89afd519c209ac591e4c7f0fa9176672f"
+          "value": "还没有听读记录。",
+          "sha256": "3fff4394290c1c7fcceec4131cb4f085cd835ebd2d24b9b67d90a9a9d725b952"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1935,
           "column": 3,
-          "value": "這裡還沒有聽讀記錄。可以從一段文字開始。",
-          "sha256": "2001a3052eeff00458349205441d4a6356941fec8423406f24db419307b2e663"
+          "value": "還沒有聽讀記錄。",
+          "sha256": "0fbfaeecf8ff6ed9e5e75173b92e0fe77c5f0838ef888973741ae8193351900d"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1935,
           "column": 3,
-          "value": "保存した音声はまだありません。段落から始められます。",
-          "sha256": "58f7f5b57d0bdfd68bf27d27a8d76f5104407135259fa6b3dc472e8d969fbae1"
+          "value": "音声の記録はまだありません。",
+          "sha256": "48fa2f2bedce100281fb96e9442c2d18eb95bf7886ddd0ff9636107f4ea0ca72"
         }
       },
       "missingLocales": [],
@@ -111889,29 +111844,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 2020,
           "column": 3,
-          "value": "Name and message may be left blank. Preview it before sealing.",
-          "sha256": "d929c37426657ce1cce80b829a0727f9de87a61fcbcd32402fbb733430e4cea4"
+          "value": "Recipient and message are optional. Preview before sealing.",
+          "sha256": "caa299c0b97af42d96b64c721c6e016e6442bdf5dda1a5ae734302a8957a40e6"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 2019,
           "column": 3,
-          "value": "称呼和赠言都可以留空。先看看收信的样子，喜欢了再封好。",
-          "sha256": "4732715117660662f59dc4e3cda934e7dc6aef42bd8841fa8f6f047624005555"
+          "value": "称呼与赠言可留空。封好前可以预览。",
+          "sha256": "3b5682133f577f855393e73cb72f3dd39b8810e76fe3d7c4797dc4f0705d9afe"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 2019,
           "column": 3,
-          "value": "稱呼和贈言都可以留空。先看看收信的樣子，喜歡了再封好。",
-          "sha256": "9992748b536ffa09099e83e9290bc3df4d3d38988bf310a976b606e6959d7d35"
+          "value": "稱呼與贈言可留空。封好前可以預覽。",
+          "sha256": "b99b595309c42e16f640ff53dad27b408d3ea64bfd957a2e9e57b9d83b78de6f"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 2019,
           "column": 3,
-          "value": "呼び名とメッセージは空欄でも構いません。届く様子を確認してから封をしてください。",
-          "sha256": "acc4d640884b4556b43e29ba29b306d13d2c48a5d32627e84c021410fdf62a24"
+          "value": "宛名とメッセージは任意です。封をする前にプレビューできます。",
+          "sha256": "2775d036d869cc2cff4c29d4b818413b11a0d7d8a02fe485f26aab6b659d388b"
         }
       },
       "missingLocales": [],
@@ -117331,29 +117286,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 2123,
           "column": 3,
-          "value": "Bring a book to your library whenever you are ready.",
-          "sha256": "f7b39ec7bf44018c0f5327db6ee6ad3902f7cb4cc4405677ad41b9908579bb04"
+          "value": "Import a book from your reading room.",
+          "sha256": "5d18d37e2a48a5efb54434fc2f6ae9c266a52519ea7004f07c0edf73426b9845"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 2122,
           "column": 3,
-          "value": "准备好后，随时把一本书带进书房。",
-          "sha256": "eedbe381b1e74b6d5911e12ac837f1e827925fbd09d569ca6d8576e58a762d04"
+          "value": "在书房导入一本书。",
+          "sha256": "089291805dea1ab44efc72b1ffbf090252177672e21e89d6fa0053d6fb6ff9b4"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 2122,
           "column": 3,
-          "value": "準備好後，隨時把一本書帶進書房。",
-          "sha256": "59a37eaf875b9cbd24d3f4645db2b1eb7ff10f5763ed1e4ae8c9fed7f46cd7be"
+          "value": "在書房匯入一本書。",
+          "sha256": "81e77f9633b964a97928404f70e8d8892f9654233c53178317b29fc20c04d858"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 2122,
           "column": 3,
-          "value": "準備ができたら本を追加してください。",
-          "sha256": "75e7c76580946c066fff91e4367a65b39b7d66ebead10dee7fcad7806a86306f"
+          "value": "書斎で本を読み込んでください。",
+          "sha256": "8a7047031c647b2d6da4daab6ee9a004e14cb713a304d896c2db8f63c8435819"
         }
       },
       "missingLocales": [],
@@ -119849,6 +119804,120 @@
         {
           "kind": "key-namespace",
           "evidence": "key-namespace:daily",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "sample.disclosureNone",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2171,
+          "column": 3,
+          "value": "No translations are saved for this book. Check the sending scope before translating.",
+          "sha256": "e5117103efaff8ee9ce34c2bbf22d7c68ec062ad9774895c6a1efdefca19ac54"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2170,
+          "column": 3,
+          "value": "本书尚无已保存的译文。翻译前请查看发送范围。",
+          "sha256": "1fcc5a5aed052b5c440d623ab0ba97c656b99fa37b22bd73820fd3758994787a"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2170,
+          "column": 3,
+          "value": "本書尚無已保存的譯文。翻譯前請查看傳送範圍。",
+          "sha256": "55144d2a39781c0d1d0f8e9956345bb892ee49810ae533b9120c49a80551e740"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2170,
+          "column": 3,
+          "value": "この本には保存済みの訳文がありません。翻訳前に送信範囲を確認してください。",
+          "sha256": "96391ba1e4e82849d235422bb18c750ccf9585f072edaccf4e6478437d84c41f"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/catalog-sample.mjs",
+          "line": 19,
+          "column": 39
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:sample",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "sample.disclosureMetadata",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2172,
+          "column": 3,
+          "value": "{count} saved passage translations: {reviewed} reviewed, {draft} drafts, {unknown} with unknown review status. {ai} marked as AI. Recorded credits: {translators}; {uncredited} without credits. AI models recorded: {models}. Recorded licenses: {licenses}; {unlicensed} without a license record. A dash means no record. Untranslated passages show the original.",
+          "sha256": "38996a431cb799bf187499891c892d720221d29da9d751a3dd2aa36beedbbd7b"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2171,
+          "column": 3,
+          "value": "共 {count} 份段落译文：已审校 {reviewed} 份，草稿 {draft} 份，审校状态未知 {unknown} 份。其中 {ai} 份标记为 AI。已有署名：{translators}；{uncredited} 份未记录署名。已有 AI 模型记录：{models}。已有许可：{licenses}；{unlicensed} 份未记录许可。破折号表示没有记录。缺译处显示原文。",
+          "sha256": "681daeb0b12de8265b3bcd9334293aae3ae09ab4b1f0919a5fd6034b4472fb18"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2171,
+          "column": 3,
+          "value": "共 {count} 份段落譯文：已審校 {reviewed} 份，草稿 {draft} 份，審校狀態未知 {unknown} 份。其中 {ai} 份標記為 AI。已有署名：{translators}；{uncredited} 份未記錄署名。已有 AI 模型記錄：{models}。已有許可：{licenses}；{unlicensed} 份未記錄許可。破折號表示沒有記錄。缺譯處顯示原文。",
+          "sha256": "82641956354734454caa0c2f57778f1d08ff48ec639f5d367a9aaa3c4d973d9b"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2171,
+          "column": 3,
+          "value": "保存済みの段落訳は {count} 件です。確認済み {reviewed} 件、下書き {draft} 件、確認状況不明 {unknown} 件。このうち AI と記録された訳は {ai} 件です。記録された翻訳者：{translators}、翻訳者の記録なし {uncredited} 件。AI モデルの記録：{models}。記録されたライセンス：{licenses}、記録なし {unlicensed} 件。「—」は記録がないことを表します。訳のない箇所には原文を表示します。",
+          "sha256": "bc25aae5d9c2b273a65351d53c586220da0493b142c03dc70afbf32503f235f2"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/catalog-sample.mjs",
+          "line": 23,
+          "column": 14
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:sample",
           "confidence": "low"
         }
       ],
@@ -133015,8 +133084,8 @@
       "column": 59,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "开篇 ",
-      "sha256": "4d00b923c866b090af6be446997bbb3f842da8a0046d1b9ff509768c51eba6a9",
+      "value": "中文试读 · ",
+      "sha256": "f9179575442781ac0d4fcc53a09517592fd81aeb16b6aff61ad5ef8f60b28e45",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -133029,14 +133098,14 @@
       }
     },
     {
-      "id": "candidate:app/catalog-sample.mjs:6:95",
+      "id": "candidate:app/catalog-sample.mjs:6:99",
       "file": "app/catalog-sample.mjs",
       "line": 6,
-      "column": 95,
+      "column": 99,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": " 段备有中文直译与意译（AI 草稿）。其余正文保留英文原文。",
-      "sha256": "109ac64cd9383aada78d3fb8691fbceb5227598368288922ea32ac00a14cd3d0",
+      "value": " 段",
+      "sha256": "03b7163f76aa751746fbc231593404437f67d0ee3b3fb1ecb6c2689699c29c69",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -149053,8 +149122,8 @@
       "column": 4,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "先挑一本，慢慢读。",
-      "sha256": "1ba2742edfc3e29a5cd9987b32fd4937dff10543316f4afb80fb3921c0e80991",
+      "value": "选一本书",
+      "sha256": "393d3a30b0a9cfa675742d1624fd493e5a94811570168a3189b2000438e03a32",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -149067,14 +149136,14 @@
       }
     },
     {
-      "id": "candidate:app/home-locale.mjs:54:47",
+      "id": "candidate:app/home-locale.mjs:54:27",
       "file": "app/home-locale.mjs",
       "line": 54,
-      "column": 47,
+      "column": 27,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "先挑一本，慢慢讀。",
-      "sha256": "6017e11bd1b327e6c194981ae416bcbc9bc4363ba2de47a1ed6bedc6359662ff",
+      "value": "選一本書",
+      "sha256": "97fbaf82d517971f5ce16933d9836d967c7e79b2c64ef00c9f4aa7a18fadd219",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -149087,14 +149156,14 @@
       }
     },
     {
-      "id": "candidate:app/home-locale.mjs:54:59",
+      "id": "candidate:app/home-locale.mjs:54:34",
       "file": "app/home-locale.mjs",
       "line": 54,
-      "column": 59,
+      "column": 34,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "一冊選んで、ゆっくり読む。",
-      "sha256": "eb772da1196ae984e77f0765aa111b175b48d29f39ecde0c965ea497c75a113b",
+      "value": "本を選ぶ",
+      "sha256": "0d9d71a27ec6a358d7bc0353caa8852a37865f91ca280dc14ca0f63b0bbdab4b",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -163845,8 +163914,8 @@
       "column": 92,
       "kind": "html-text",
       "property": null,
-      "value": "先挑一本，慢慢读。",
-      "sha256": "1ba2742edfc3e29a5cd9987b32fd4937dff10543316f4afb80fb3921c0e80991",
+      "value": "选一本书",
+      "sha256": "393d3a30b0a9cfa675742d1624fd493e5a94811570168a3189b2000438e03a32",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -163865,10 +163934,10 @@
       }
     },
     {
-      "id": "candidate:app/home.html:47:183",
+      "id": "candidate:app/home.html:47:178",
       "file": "app/home.html",
       "line": 47,
-      "column": 183,
+      "column": 178,
       "kind": "html-text",
       "property": null,
       "value": "正在载入书架…",
@@ -163891,10 +163960,10 @@
       }
     },
     {
-      "id": "candidate:app/home.html:47:224",
+      "id": "candidate:app/home.html:47:219",
       "file": "app/home.html",
       "line": 47,
-      "column": 224,
+      "column": 219,
       "kind": "html-text",
       "property": null,
       "value": "默认书籍来自 Project Gutenberg，原文在美国属于公版；各书保留来源和许可说明，使用时请核对所在地规则。",
@@ -167037,10 +167106,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:44:278",
+      "id": "candidate:app/index.html:44:176",
       "file": "app/index.html",
       "line": 44,
-      "column": 278,
+      "column": 176,
       "kind": "html-attribute",
       "property": "aria-label",
       "value": "Close manual entry",
@@ -167063,10 +167132,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:55:269",
+      "id": "candidate:app/index.html:55:172",
       "file": "app/index.html",
       "line": 55,
-      "column": 269,
+      "column": 172,
       "kind": "html-attribute",
       "property": "aria-label",
       "value": "Close reading prompts",
@@ -167089,10 +167158,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:62:276",
+      "id": "candidate:app/index.html:62:168",
       "file": "app/index.html",
       "line": 62,
-      "column": 276,
+      "column": 168,
       "kind": "html-attribute",
       "property": "aria-label",
       "value": "Close draft list",
@@ -167115,10 +167184,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:66:260",
+      "id": "candidate:app/index.html:66:169",
       "file": "app/index.html",
       "line": 66,
-      "column": 260,
+      "column": 169,
       "kind": "html-attribute",
       "property": "aria-label",
       "value": "Close after-reading notes",
@@ -168837,32 +168906,6 @@
       "column": 85,
       "kind": "html-text",
       "property": null,
-      "value": "Leafhour · Your reading records",
-      "sha256": "531e11e1d1c8aecd8b0f362023575985018be37bd7cf3721b4d15664f6757453",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:44:187",
-      "file": "app/index.html",
-      "line": 44,
-      "column": 187,
-      "kind": "html-text",
-      "property": null,
       "value": "Manual entry (self-reported)",
       "sha256": "d9fb7702d7e446f05e6b9a9871cda053b15611b39b1c703abb79a36f889ef31f",
       "protected": false,
@@ -168883,10 +168926,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:44:344",
+      "id": "candidate:app/index.html:44:242",
       "file": "app/index.html",
       "line": 44,
-      "column": 344,
+      "column": 242,
       "kind": "html-text",
       "property": null,
       "value": "×",
@@ -169013,36 +169056,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:55:85",
+      "id": "candidate:app/index.html:55:84",
       "file": "app/index.html",
       "line": 55,
-      "column": 85,
-      "kind": "html-text",
-      "property": null,
-      "value": "Leafhour · Reading prompts",
-      "sha256": "e064afcb293f6e37d23eee45c4bf5a9e2a09c8bb3ec0b2e2a29ba463fa807721",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:55:181",
-      "file": "app/index.html",
-      "line": 55,
-      "column": 181,
+      "column": 84,
       "kind": "html-text",
       "property": null,
       "value": "Begin with a question.",
@@ -169065,10 +169082,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:55:337",
+      "id": "candidate:app/index.html:55:240",
       "file": "app/index.html",
       "line": 55,
-      "column": 337,
+      "column": 240,
       "kind": "html-text",
       "property": null,
       "value": "×",
@@ -169429,36 +169446,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:62:86",
+      "id": "candidate:app/index.html:62:82",
       "file": "app/index.html",
       "line": 62,
-      "column": 86,
-      "kind": "html-text",
-      "property": null,
-      "value": "Kept on this device for your return.",
-      "sha256": "65879eebed47e9b219c9c6211343d7dcd0c1f87a3f19b3265090293c091ef57e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:62:190",
-      "file": "app/index.html",
-      "line": 62,
-      "column": 190,
+      "column": 82,
       "kind": "html-text",
       "property": null,
       "value": "Unfinished thoughts",
@@ -169481,10 +169472,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:62:340",
+      "id": "candidate:app/index.html:62:232",
       "file": "app/index.html",
       "line": 62,
-      "column": 340,
+      "column": 232,
       "kind": "html-text",
       "property": null,
       "value": "×",
@@ -169533,36 +169524,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:66:100",
+      "id": "candidate:app/index.html:66:242",
       "file": "app/index.html",
       "line": 66,
-      "column": 100,
-      "kind": "html-text",
-      "property": null,
-      "value": "One page, then another.",
-      "sha256": "e17f6465ad4a787dc494f1c07df340075ff47c202495a885318765461c019c1b",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:66:333",
-      "file": "app/index.html",
-      "line": 66,
-      "column": 333,
+      "column": 242,
       "kind": "html-text",
       "property": null,
       "value": "×",
@@ -169585,10 +169550,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:66:406",
+      "id": "candidate:app/index.html:66:315",
       "file": "app/index.html",
       "line": 66,
-      "column": 406,
+      "column": 315,
       "kind": "html-text",
       "property": null,
       "value": "A place to stop for today.",
@@ -172185,32 +172150,6 @@
       }
     },
     {
-      "id": "candidate:app/index.html:126:73",
-      "file": "app/index.html",
-      "line": 126,
-      "column": 73,
-      "kind": "html-text",
-      "property": null,
-      "value": "Narrow screens use a stacked layout.",
-      "sha256": "bf1005474949292d4819d9755ee3edd1a75203b19686bfbda475617de79e322a",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
       "id": "candidate:app/index.html:128:145",
       "file": "app/index.html",
       "line": 128,
@@ -172685,8 +172624,8 @@
       "column": 120,
       "kind": "html-text",
       "property": null,
-      "value": "About this translation",
-      "sha256": "745525ea1746619309b29fad84f07aa85c6578afd616be606cd795beb64d5548",
+      "value": "Source and translations",
+      "sha256": "32250d876f8b08ed093c4376acc5445b662ea20733f7719a7e64d61b73a08102",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -172705,10 +172644,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:134:217",
+      "id": "candidate:app/index.html:134:218",
       "file": "app/index.html",
       "line": 134,
-      "column": 217,
+      "column": 218,
       "kind": "html-text",
       "property": null,
       "value": "Literal and interpretive translations are saved separately. AI output is marked as draft. Untranslated passages keep the original for checking. Chinese chapter navigation titles are editorial additions.",
@@ -187405,9 +187344,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-settings.mjs:56:132",
+      "id": "candidate:app/reader-settings.mjs:57:132",
       "file": "app/reader-settings.mjs",
-      "line": 56,
+      "line": 57,
       "column": 132,
       "kind": "js-attribute",
       "property": "role",
@@ -187445,10 +187384,10 @@
       }
     },
     {
-      "id": "candidate:app/reader-translation.js:14:98",
+      "id": "candidate:app/reader-translation.js:14:115",
       "file": "app/reader-translation.js",
       "line": 14,
-      "column": 98,
+      "column": 115,
       "kind": "js-attribute",
       "property": "role",
       "value": "status",
@@ -187465,9 +187404,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-translation.js:77:220",
+      "id": "candidate:app/reader-translation.js:79:220",
       "file": "app/reader-translation.js",
-      "line": 77,
+      "line": 79,
       "column": 220,
       "kind": "js-attribute",
       "property": "role",
@@ -225846,10 +225785,10 @@
       "kind": "concatenation",
       "file": "app/catalog-sample.mjs",
       "line": 6,
-      "expression": "'开篇 '+book.chineseSample.paragraphs+' 段备有中文直译与意译（AI 草稿）。其余正文保留英文原文。'",
+      "expression": "'中文试读 · '+book.chineseSample.paragraphs+' 段'",
       "fragments": [
-        "开篇 ",
-        " 段备有中文直译与意译（AI 草稿）。其余正文保留英文原文。"
+        "中文试读 · ",
+        " 段"
       ],
       "unresolved": true
     },
@@ -225857,9 +225796,9 @@
       "kind": "concatenation",
       "file": "app/catalog-sample.mjs",
       "line": 6,
-      "expression": "'开篇 '+book.chineseSample.paragraphs",
+      "expression": "'中文试读 · '+book.chineseSample.paragraphs",
       "fragments": [
-        "开篇 "
+        "中文试读 · "
       ],
       "unresolved": true
     },
@@ -225894,6 +225833,14 @@
       "fragments": [
         "本书开篇 "
       ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/catalog-sample.mjs",
+      "line": 21,
+      "expression": "key",
+      "fragments": [],
       "unresolved": true
     },
     {
@@ -237867,7 +237814,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 28,
+      "line": 27,
       "expression": "'marginalia-translation-intent:v1:'+JSON.stringify([capturedOwner,bookId,bookVersion,passageId])",
       "fragments": [
         "marginalia-translation-intent:v1:"
@@ -237877,7 +237824,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 43,
+      "line": 41,
       "expression": "' · '+creditActionLabel('translation',getUiLocale())",
       "fragments": [
         " · "
@@ -237885,17 +237832,9 @@
       "unresolved": true
     },
     {
-      "kind": "computed-member",
-      "file": "app/reader-translation.js",
-      "line": 44,
-      "expression": "0",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 86,
+      "line": 88,
       "expression": "'/api/original/range?sha256='+info.sha256+'&offset='+offset+'&length='",
       "fragments": [
         "/api/original/range?sha256=",
@@ -237907,7 +237846,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 86,
+      "line": 88,
       "expression": "'/api/original/range?sha256='+info.sha256+'&offset='",
       "fragments": [
         "/api/original/range?sha256=",
@@ -237918,7 +237857,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 86,
+      "line": 88,
       "expression": "'/api/original/range?sha256='+info.sha256",
       "fragments": [
         "/api/original/range?sha256="
@@ -237928,7 +237867,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 110,
+      "line": 112,
       "expression": "'/source-review?book='+encodeURIComponent(bookId)",
       "fragments": [
         "/source-review?book="
@@ -252140,19 +252079,19 @@
   },
   "counts": {
     "catalogueFiles": 4,
-    "catalogueKeys": 2159,
-    "localeValues": 8636,
-    "itemsComplete": 2159,
+    "catalogueKeys": 2161,
+    "localeValues": 8644,
+    "itemsComplete": 2161,
     "itemsWithMissingLocales": 0,
     "duplicateKeys": 0,
     "reviewedItems": 0,
-    "unreviewedItems": 2159,
-    "candidates": 4820,
-    "candidatesUnreviewed": 4820,
+    "unreviewedItems": 2161,
+    "candidates": 4815,
+    "candidatesUnreviewed": 4815,
     "candidatesProtected": 129,
     "itemsProtected": 9,
     "dynamicConsumers": 3046,
-    "consumerReferences": 1526,
-    "keysWithoutStaticConsumers": 1167
+    "consumerReferences": 1520,
+    "keysWithoutStaticConsumers": 1172
   }
 }

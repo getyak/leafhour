@@ -1,0 +1,22 @@
+[
+  {
+    "lang": "en",
+    "help": "Import a PDF, EPUB, TXT or Markdown file.",
+    "overflow": false
+  },
+  {
+    "lang": "zh-Hans",
+    "help": "导入 PDF、EPUB、TXT 或 Markdown。",
+    "overflow": false
+  },
+  {
+    "lang": "zh-Hant",
+    "help": "匯入 PDF、EPUB、TXT 或 Markdown。",
+    "overflow": false
+  },
+  {
+    "lang": "ja",
+    "help": "PDF・EPUB・TXT・Markdown ファイルを読み込んでください。",
+    "overflow": false
+  }
+]

@@ -1,0 +1,3 @@
+npm notice run leafhour@0.3.0 build:reader-runtime
+npm notice run node tools/build-reader-runtime.mjs
+Built and initialized the isolated reading runtime: 928 files, 9.0 MB; no model requests.

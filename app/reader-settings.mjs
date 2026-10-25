@@ -30,7 +30,8 @@ export function mountReaderSettings({document,loadChoices=()=>import('./reader-s
     if(disposed)return;
     const translated=mode==='zh'||mode==='parallel';
     document.getElementById('translation-settings').hidden=!translated;
-    document.getElementById('translation-details').hidden=!translated;
+    // Source provenance remains available in original-only mode too.
+    document.getElementById('translation-details').hidden=false;
     document.getElementById('parallel-settings').hidden=mode!=='parallel';
     sync();
   }};

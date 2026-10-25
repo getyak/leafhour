@@ -626,8 +626,8 @@ candidate:app/book-gift.mjs:189:39,js-cjk-literal,app/book-gift.mjs,189,,unknown
 candidate:app/book-introduction-controller.mjs:23:106,js-cjk-literal,app/book-introduction-controller.mjs,23,,unknown,reviewable,,暂时无法读取简介，可以稍后重试。
 candidate:app/book-introduction.mjs:2:39,js-cjk-literal,app/book-introduction.mjs,2,,unknown,reviewable,,AI 简介的来源或格式不完整
 candidate:app/book-transfer.mjs:1:25,js-cjk-literal,app/book-transfer.mjs,1,,unknown,reviewable,,正文传输未完整通过校验，请重新载入；原文件仍保留。
-candidate:app/catalog-sample.mjs:6:59,js-cjk-literal,app/catalog-sample.mjs,6,,unknown,reviewable,,"开篇 "
-candidate:app/catalog-sample.mjs:6:95,js-cjk-literal,app/catalog-sample.mjs,6,,unknown,reviewable,," 段备有中文直译与意译（AI 草稿）。其余正文保留英文原文。"
+candidate:app/catalog-sample.mjs:6:59,js-cjk-literal,app/catalog-sample.mjs,6,,unknown,reviewable,,"中文试读 · "
+candidate:app/catalog-sample.mjs:6:99,js-cjk-literal,app/catalog-sample.mjs,6,,unknown,reviewable,," 段"
 candidate:app/catalog-sample.mjs:7:61,js-cjk-literal,app/catalog-sample.mjs,7,,unknown,reviewable,,"本书开篇 "
 candidate:app/catalog-sample.mjs:7:99,js-cjk-literal,app/catalog-sample.mjs,7,,unknown,reviewable,," 段的直译与意译由 "
 candidate:app/catalog-sample.mjs:7:142,js-cjk-literal,app/catalog-sample.mjs,7,,unknown,reviewable,," 分别编写，均为 AI 草稿，尚未人工审定。试读译文采用 CC0-1.0，可随时核对原文；其余正文仅有英文。英文底本的出处与许可见书房中的来源链接。"
@@ -1381,9 +1381,9 @@ candidate:app/home-locale.mjs:51:174,js-cjk-literal,app/home-locale.mjs,51,,unkn
 candidate:app/home-locale.mjs:52:4,js-cjk-literal,app/home-locale.mjs,52,,unknown,reviewable,,打开我的阅读日历
 candidate:app/home-locale.mjs:52:42,js-cjk-literal,app/home-locale.mjs,52,,unknown,reviewable,,打開我的閱讀日曆
 candidate:app/home-locale.mjs:52:53,js-cjk-literal,app/home-locale.mjs,52,,unknown,reviewable,,読書カレンダーを開く
-candidate:app/home-locale.mjs:54:4,js-cjk-literal,app/home-locale.mjs,54,,unknown,reviewable,,先挑一本，慢慢读。
-candidate:app/home-locale.mjs:54:47,js-cjk-literal,app/home-locale.mjs,54,,unknown,reviewable,,先挑一本，慢慢讀。
-candidate:app/home-locale.mjs:54:59,js-cjk-literal,app/home-locale.mjs,54,,unknown,reviewable,,一冊選んで、ゆっくり読む。
+candidate:app/home-locale.mjs:54:4,js-cjk-literal,app/home-locale.mjs,54,,unknown,reviewable,,选一本书
+candidate:app/home-locale.mjs:54:27,js-cjk-literal,app/home-locale.mjs,54,,unknown,reviewable,,選一本書
+candidate:app/home-locale.mjs:54:34,js-cjk-literal,app/home-locale.mjs,54,,unknown,reviewable,,本を選ぶ
 candidate:app/home-locale.mjs:55:4,js-cjk-literal,app/home-locale.mjs,55,,unknown,reviewable,,进入书房
 candidate:app/home-locale.mjs:55:32,js-cjk-literal,app/home-locale.mjs,55,,unknown,reviewable,,進入書房
 candidate:app/home-locale.mjs:55:39,js-cjk-literal,app/home-locale.mjs,55,,unknown,reviewable,,書斎へ
@@ -2099,9 +2099,9 @@ candidate:app/home.html:46:111,html-text,app/home.html,46,,unknown,reviewable,,�
 candidate:app/home.html:46:173,html-text,app/home.html,46,,unknown,reviewable,,遇见难句，可以对照原文、直译与意译。AI 译文标为草稿；没有译文的地方，原文始终保留。
 candidate:app/home.html:46:275,html-text,app/home.html,46,,unknown,reviewable,,打开这本书
 candidate:app/home.html:46:306,html-text,app/home.html,46,,unknown,reviewable,,→
-candidate:app/home.html:47:92,html-text,app/home.html,47,,unknown,reviewable,,先挑一本，慢慢读。
-candidate:app/home.html:47:183,html-text,app/home.html,47,,unknown,reviewable,,正在载入书架…
-candidate:app/home.html:47:224,html-text,app/home.html,47,,unknown,reviewable,,默认书籍来自 Project Gutenberg，原文在美国属于公版；各书保留来源和许可说明，使用时请核对所在地规则。
+candidate:app/home.html:47:92,html-text,app/home.html,47,,unknown,reviewable,,选一本书
+candidate:app/home.html:47:178,html-text,app/home.html,47,,unknown,reviewable,,正在载入书架…
+candidate:app/home.html:47:219,html-text,app/home.html,47,,unknown,reviewable,,默认书籍来自 Project Gutenberg，原文在美国属于公版；各书保留来源和许可说明，使用时请核对所在地规则。
 candidate:app/home.html:48:62,html-text,app/home.html,48,,unknown,reviewable,,一本书，
 candidate:app/home.html:48:70,html-text,app/home.html,48,,unknown,reviewable,,一间自己的书房。
 candidate:app/home.html:48:120,html-text,app/home.html,48,,unknown,reviewable,,带来自己的 PDF、EPUB、Markdown 或纯文本。原文和译文各自保留，你写下的笔记也有自己的位置。
@@ -2222,10 +2222,10 @@ candidate:app/index.html:28:154,html-attribute,app/index.html,28,aria-label,unkn
 candidate:app/index.html:28:224,html-attribute,app/index.html,28,title,unknown,reviewable,,Reading tools · Hover or tap to expand
 candidate:app/index.html:31:195,html-attribute,app/index.html,31,aria-label,unknown,reviewable,,Collapse reading tools
 candidate:app/index.html:32:198,html-attribute,app/index.html,32,aria-label,unknown,reviewable,,Time recorded this session
-candidate:app/index.html:44:278,html-attribute,app/index.html,44,aria-label,unknown,reviewable,,Close manual entry
-candidate:app/index.html:55:269,html-attribute,app/index.html,55,aria-label,unknown,reviewable,,Close reading prompts
-candidate:app/index.html:62:276,html-attribute,app/index.html,62,aria-label,unknown,reviewable,,Close draft list
-candidate:app/index.html:66:260,html-attribute,app/index.html,66,aria-label,unknown,reviewable,,Close after-reading notes
+candidate:app/index.html:44:176,html-attribute,app/index.html,44,aria-label,unknown,reviewable,,Close manual entry
+candidate:app/index.html:55:172,html-attribute,app/index.html,55,aria-label,unknown,reviewable,,Close reading prompts
+candidate:app/index.html:62:168,html-attribute,app/index.html,62,aria-label,unknown,reviewable,,Close draft list
+candidate:app/index.html:66:169,html-attribute,app/index.html,66,aria-label,unknown,reviewable,,Close after-reading notes
 candidate:app/index.html:68:366,html-attribute,app/index.html,68,placeholder,unknown,reviewable,,Try explaining in your own words without looking…
 candidate:app/index.html:69:359,html-attribute,app/index.html,69,placeholder,unknown,reviewable,,Leave a question worth returning to…
 candidate:app/index.html:72:80,html-attribute,app/index.html,72,aria-label,unknown,reviewable,,Current passage actions
@@ -2291,16 +2291,14 @@ candidate:app/index.html:39:215,html-text,app/index.html,39,,unknown,reviewable,
 candidate:app/index.html:39:323,html-text,app/index.html,39,,unknown,reviewable,,Drafts
 candidate:app/index.html:40:155,html-text,app/index.html,40,,unknown,reviewable,,Retry saving
 candidate:app/index.html:40:262,html-text,app/index.html,40,,unknown,reviewable,,Save a recovery copy
-candidate:app/index.html:44:85,html-text,app/index.html,44,,unknown,reviewable,,Leafhour · Your reading records
-candidate:app/index.html:44:187,html-text,app/index.html,44,,unknown,reviewable,,Manual entry (self-reported)
-candidate:app/index.html:44:344,html-text,app/index.html,44,,unknown,reviewable,,×
+candidate:app/index.html:44:85,html-text,app/index.html,44,,unknown,reviewable,,Manual entry (self-reported)
+candidate:app/index.html:44:242,html-text,app/index.html,44,,unknown,reviewable,,×
 candidate:app/index.html:46:74,html-text,app/index.html,46,,unknown,reviewable,,Opening this pauses the current timer. Resume it yourself after closing. Enter a completed period up to 24 hours. Unsubmitted inputs are not retained; unconfirmed entries retry with the same ID. Overlapping time is merged. Self-reported time does not prove understanding.
 candidate:app/index.html:48:183,html-text,app/index.html,48,,unknown,reviewable,,Start time
 candidate:app/index.html:48:424,html-text,app/index.html,48,,unknown,reviewable,,End time
 candidate:app/index.html:51:100,html-text,app/index.html,51,,unknown,reviewable,,Save reading entry
-candidate:app/index.html:55:85,html-text,app/index.html,55,,unknown,reviewable,,Leafhour · Reading prompts
-candidate:app/index.html:55:181,html-text,app/index.html,55,,unknown,reviewable,,Begin with a question.
-candidate:app/index.html:55:337,html-text,app/index.html,55,,unknown,reviewable,,×
+candidate:app/index.html:55:84,html-text,app/index.html,55,,unknown,reviewable,,Begin with a question.
+candidate:app/index.html:55:240,html-text,app/index.html,55,,unknown,reviewable,,×
 candidate:app/index.html:56:107,html-text,app/index.html,56,,unknown,reviewable,,The timer is paused and resumes when you return.
 candidate:app/index.html:57:87,html-text,app/index.html,57,,unknown,reviewable,,Read with a question
 candidate:app/index.html:57:155,html-text,app/index.html,57,,unknown,reviewable,,What does this section try to answer? Bring your question into the next few pages.
@@ -2314,13 +2312,11 @@ candidate:app/index.html:58:182,html-text,app/index.html,58,,unknown,reviewable,
 candidate:app/index.html:58:409,html-text,app/index.html,58,,unknown,reviewable,,Cornell reading strategies ↗
 candidate:app/index.html:58:583,html-text,app/index.html,58,,unknown,reviewable,,. These prompts are optional; choose what suits your book and pace.
 candidate:app/index.html:59:114,html-text,app/index.html,59,,unknown,reviewable,,Return to reading
-candidate:app/index.html:62:86,html-text,app/index.html,62,,unknown,reviewable,,Kept on this device for your return.
-candidate:app/index.html:62:190,html-text,app/index.html,62,,unknown,reviewable,,Unfinished thoughts
-candidate:app/index.html:62:340,html-text,app/index.html,62,,unknown,reviewable,,×
+candidate:app/index.html:62:82,html-text,app/index.html,62,,unknown,reviewable,,Unfinished thoughts
+candidate:app/index.html:62:232,html-text,app/index.html,62,,unknown,reviewable,,×
 candidate:app/index.html:63:73,html-text,app/index.html,63,,unknown,reviewable,,Each draft keeps its source location. Drafts from separate reading pages stay separate and enter your notes only after saving.
-candidate:app/index.html:66:100,html-text,app/index.html,66,,unknown,reviewable,,"One page, then another."
-candidate:app/index.html:66:333,html-text,app/index.html,66,,unknown,reviewable,,×
-candidate:app/index.html:66:406,html-text,app/index.html,66,,unknown,reviewable,,A place to stop for today.
+candidate:app/index.html:66:242,html-text,app/index.html,66,,unknown,reviewable,,×
+candidate:app/index.html:66:315,html-text,app/index.html,66,,unknown,reviewable,,A place to stop for today.
 candidate:app/index.html:67:297,html-text,app/index.html,67,,unknown,reviewable,,Retry saving
 candidate:app/index.html:67:430,html-text,app/index.html,67,,unknown,reviewable,,Where you stopped
 candidate:app/index.html:68:198,html-text,app/index.html,68,,unknown,reviewable,,One sentence in your own words
@@ -2420,7 +2416,6 @@ candidate:app/index.html:124:115,html-text,app/index.html,124,,unknown,reviewabl
 candidate:app/index.html:124:233,html-text,app/index.html,124,,unknown,reviewable,,Follow style
 candidate:app/index.html:124:311,html-text,app/index.html,124,,unknown,reviewable,,No background
 candidate:app/index.html:124:389,html-text,app/index.html,124,,unknown,reviewable,,Soft background
-candidate:app/index.html:126:73,html-text,app/index.html,126,,unknown,reviewable,,Narrow screens use a stacked layout.
 candidate:app/index.html:128:145,html-text,app/index.html,128,,unknown,reviewable,,Starting view
 candidate:app/index.html:129:96,html-text,app/index.html,129,,unknown,reviewable,,Reading purpose
 candidate:app/index.html:129:247,html-text,app/index.html,129,,unknown,reviewable,,Not set · Start with original
@@ -2439,8 +2434,8 @@ candidate:app/index.html:133:678,html-text,app/index.html,133,,unknown,reviewabl
 candidate:app/index.html:133:742,html-text,app/index.html,133,,unknown,reviewable,,Current interface language: English
 candidate:app/index.html:133:923,html-text,app/index.html,133,,unknown,reviewable,,Retry
 candidate:app/index.html:133:1028,html-text,app/index.html,133,,unknown,reviewable,,Reload page
-candidate:app/index.html:134:120,html-text,app/index.html,134,,unknown,reviewable,,About this translation
-candidate:app/index.html:134:217,html-text,app/index.html,134,,unknown,reviewable,,Literal and interpretive translations are saved separately. AI output is marked as draft. Untranslated passages keep the original for checking. Chinese chapter navigation titles are editorial additions.
+candidate:app/index.html:134:120,html-text,app/index.html,134,,unknown,reviewable,,Source and translations
+candidate:app/index.html:134:218,html-text,app/index.html,134,,unknown,reviewable,,Literal and interpretive translations are saved separately. AI output is marked as draft. Untranslated passages keep the original for checking. Chinese chapter navigation titles are editorial additions.
 candidate:app/index.html:138:125,html-text,app/index.html,138,,unknown,reviewable,,Reading atmosphere
 candidate:app/index.html:138:239,html-text,app/index.html,138,,unknown,reviewable,,Play
 candidate:app/index.html:139:122,html-text,app/index.html,139,,unknown,reviewable,,No atmosphere selected
@@ -3153,10 +3148,10 @@ candidate:app/reader-return.mjs:44:124,js-cjk-literal,app/reader-return.mjs,44,,
 candidate:app/reader-return.mjs:44:257,js-cjk-literal,app/reader-return.mjs,44,,unknown,reviewable,,引用的来源版本与当前书籍不同，请让 Agent 重新读取当前目录后打开引用。
 candidate:app/reader-return.mjs:44:359,js-cjk-literal,app/reader-return.mjs,44,,unknown,reviewable,,引用的文本层无效，请从 Agent 重新打开引用。
 candidate:app/reader-return.mjs:46:32,js-cjk-literal,app/reader-return.mjs,46,,unknown,reviewable,,引用段落已无法对应当前书籍，请让 Agent 重新读取当前目录。
-candidate:app/reader-settings.mjs:56:132,js-attribute,app/reader-settings.mjs,56,role,unknown,reviewable,,status
+candidate:app/reader-settings.mjs:57:132,js-attribute,app/reader-settings.mjs,57,role,unknown,reviewable,,status
 candidate:app/reader-tools.mjs:32:36,js-attribute,app/reader-tools.mjs,32,role,unknown,reviewable,,group
-candidate:app/reader-translation.js:14:98,js-attribute,app/reader-translation.js,14,role,unknown,reviewable,,status
-candidate:app/reader-translation.js:77:220,js-attribute,app/reader-translation.js,77,role,unknown,reviewable,,status
+candidate:app/reader-translation.js:14:115,js-attribute,app/reader-translation.js,14,role,unknown,reviewable,,status
+candidate:app/reader-translation.js:79:220,js-attribute,app/reader-translation.js,79,role,unknown,reviewable,,status
 candidate:app/reader.js:189:282,js-attribute,app/reader.js,189,aria-describedby,unknown,protected,identifier,reading-instructions
 candidate:app/reader.js:243:188,js-attribute,app/reader.js,243,aria-expanded,unknown,reviewable,,false
 candidate:app/reader.js:328:395,js-attribute,app/reader.js,328,role,unknown,reviewable,,status

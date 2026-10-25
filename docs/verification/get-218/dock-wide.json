@@ -1,0 +1,40 @@
+[
+  {
+    "overflow": false,
+    "parent": "reading-session",
+    "rect": {
+      "bottom": 948,
+      "height": 65.1875,
+      "left": 402,
+      "right": 742,
+      "top": 882.8125,
+      "width": 340,
+      "x": 402,
+      "y": 882.8125
+    },
+    "text": "The earlier passage’s translation needs attention. Return to that passage to check its status.",
+    "viewport": [
+      768,
+      1024
+    ]
+  },
+  {
+    "overflow": false,
+    "parent": "reading-session",
+    "rect": {
+      "bottom": 924,
+      "height": 65.1875,
+      "left": 1074,
+      "right": 1414,
+      "top": 858.8125,
+      "width": 340,
+      "x": 1074,
+      "y": 858.8125
+    },
+    "text": "The earlier passage’s translation needs attention. Return to that passage to check its status.",
+    "viewport": [
+      1440,
+      1000
+    ]
+  }
+]
