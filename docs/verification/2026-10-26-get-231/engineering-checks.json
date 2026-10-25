@@ -1,0 +1,62 @@
+[
+  {
+    "stage": "copy-export",
+    "exitCode": 0,
+    "seconds": 0.631,
+    "log": "/private/tmp/ai-test-GET-231.uMmQk2/copy-export.log"
+  },
+  {
+    "stage": "copy-lint",
+    "exitCode": 1,
+    "seconds": 9.629,
+    "log": "/private/tmp/ai-test-GET-231.uMmQk2/copy-lint.log"
+  },
+  {
+    "stage": "copy-lint",
+    "exitCode": 0,
+    "seconds": 7.29,
+    "log": "/private/tmp/ai-test-GET-231.uMmQk2/copy-lint.log"
+  },
+  {
+    "stage": "copy-canaries",
+    "exitCode": 0,
+    "seconds": 8.172,
+    "log": "/private/tmp/ai-test-GET-231.uMmQk2/copy-canaries.log"
+  },
+  {
+    "stage": "pricing",
+    "exitCode": 0,
+    "seconds": 0.026,
+    "log": "/private/tmp/ai-test-GET-231.uMmQk2/pricing.log"
+  },
+  {
+    "stage": "runtime-build",
+    "exitCode": 0,
+    "seconds": 1.809,
+    "log": "/private/tmp/ai-test-GET-231.uMmQk2/runtime-build.log"
+  },
+  {
+    "stage": "public-build",
+    "exitCode": 0,
+    "seconds": 0.787,
+    "log": "/private/tmp/ai-test-GET-231.uMmQk2/public-build.log"
+  },
+  {
+    "stage": "public-assets",
+    "exitCode": 0,
+    "seconds": 0.047,
+    "log": "/private/tmp/ai-test-GET-231.uMmQk2/public-assets.log"
+  },
+  {
+    "stage": "release-policy",
+    "exitCode": 0,
+    "seconds": 0.483,
+    "log": "/private/tmp/ai-test-GET-231.uMmQk2/release-policy.log"
+  },
+  {
+    "stage": "release-contents",
+    "exitCode": 0,
+    "seconds": 0.036,
+    "log": "/private/tmp/ai-test-GET-231.uMmQk2/release-contents.log"
+  }
+]

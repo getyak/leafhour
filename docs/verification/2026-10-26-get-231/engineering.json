@@ -1,0 +1,17 @@
+{
+  "builtSourceCommit": "16b437ed8d2f3ae3dd7d04d2e276e930304184c3",
+  "assets": [
+    {
+      "file": "reader-web/reader-fdd3f0f05dd35b68.js",
+      "bytes": 327657,
+      "sha256": "fdd3f0f05dd35b68c4a7cbf5c15bf60a5f4a8e32f0ff9eea3d8e5190b2e77e96"
+    },
+    {
+      "file": "reader-web/style-1a6e0e0e12c61bdc.css",
+      "bytes": 203062,
+      "sha256": "1a6e0e0e12c61bdc517c72e2f2bb3713b330d93604a53ae81981fceb9acf4dd4"
+    }
+  ],
+  "lazyAccountMatchesSource": true,
+  "runtime": "marginalia-reader-runtime"
+}

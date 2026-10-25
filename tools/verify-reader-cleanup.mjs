@@ -40,7 +40,7 @@ async function exerciseBoundaries(page,item,context,base){
  mode='error';await Promise.all(held.map(route=>route.fulfill({status:404,body:'Image unavailable'})));
  await page.waitForFunction(()=>[...document.querySelectorAll('.atmosphere-choice img')].every(n=>n.complete));
  check(item,'artworkFailureVisible',await page.locator('.atmosphere-choice[data-image-state=error] .atmosphere-image-status:visible').count()===4);
- await page.locator('#reader-account').evaluate(async n=>{getComputedStyle(n).opacity;await Promise.all(n.getAnimations({subtree:true}).filter(a=>a.effect.getTiming().iterations!==Infinity).map(a=>a.finished.catch(()=>{})));});await page.screenshot({path:path.join(output,item.engine+'-'+item.width+'-'+(item.zoom||1)+'-image-error.png')});
+ await page.locator('#atmosphere-dialog').evaluate(async n=>{getComputedStyle(n).opacity;await Promise.all(n.getAnimations({subtree:true}).filter(a=>a.effect.getTiming().iterations!==Infinity).map(a=>a.finished.catch(()=>{})));});await page.screenshot({path:path.join(output,item.engine+'-'+item.width+'-'+(item.zoom||1)+'-image-error.png')});
  mode='ready';for(const retry of await page.locator('.atmosphere-image-retry').all())await retry.click();
  await page.waitForFunction(()=>[...document.querySelectorAll('.atmosphere-choice img')].every(n=>n.complete&&n.naturalWidth>0));
  check(item,'artworkRetryRestored',await page.locator('.atmosphere-choice[data-image-state=ready]').count()===4&&await page.locator('.atmosphere-image-retry:visible').count()===0);

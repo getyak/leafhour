@@ -35,6 +35,22 @@ Final local, build and delivery receipts follow. Local fixtures do not constitut
 - Complete serial suite: **3453 passed, 0 failed, 1 existing platform skip** (3454 tests, 189.39s). Native PostgreSQL was an isolated task-owned instance; no Docker, iOS simulator or model provider was started.
 - Browser matrix: **64/64** ordinary/scene cases across Chromium 153.0.8010.12 and WebKit 26.6, widths 1280/390/320, four UI locales and paper/night themes. **6/6** additional desktop, narrow and 200%-equivalent boundary cases passed. The measured mark contrast range is **12.73–14.09:1**. See the machine-readable reports in `browser/`.
 - Copy export, pinned Vale 3.24.0/textlint 15.8.0 lint, planted-violation canaries and pricing checks passed. Existing documented debt and warnings remain explicit. The initial shallow-clone copy failure was resolved by fetching the same frozen public source object required by CI, without changing debt rules.
-- The final single-line close-button CSS has a separate four-locale narrow replay and Japanese logout-boundary replay; those results, exact built-entry checks and engineering receipts will be appended after completion.
+- The final single-line close-button CSS passed **16/16** four-locale narrow cases and **2/2** Japanese logout/image-failure boundaries across both engines. A verification-only wrong animation-wait locator was corrected before the final boundary replay; production logic did not change. Exact built-entry and engineering receipts follow.
 
 [Independent review](review.md) binds all 26 source/test/tool hashes in [the manifest](source-fingerprints.json). The source manifest, test log and browser reports are preserved here; original issue screenshots remain local and unpublished.
+
+## Build and packaged entry
+
+All five final engineering stages passed: traced runtime, public build, registered public assets, release policy and release contents. The runtime has **928 files / 9,404,531 bytes**, excludes copy tooling and passed its offline load check. Public assets contain **515 files / 11 registered media assets**. No fixed budget was raised: reader JS is **327,657 / 327,680 bytes** and CSS **203,062 / 204,800 bytes**. The exact hashes are in `engineering.json`.
+
+Both engines passed the actual built `read.html` plus hashed JS/CSS replay, including native account open/close, identity, retained anchor/focus and the lazy account request. The released account module is byte-identical to the reviewed source. APIs and optional external modules still use the local synthetic server; this is **not Production acceptance**.
+
+The public build identifies source **16b437ed8d2f3ae3dd7d04d2e276e930304184c3**. Subsequent changes contain verification tooling and evidence only; production sources are unchanged. Copy inventory re-export is reproducible with no diff.
+
+Built console comparison uses an actual build of main `0329f9c...` in each same-version browser. CSP messages emitted by the compiled reader move from the old to the new content-hashed entry filename. The baseline records exactly one explicit old-entry → new-entry path alias; message text and all other paths remain strict. This is separate from the raw-source console baseline, and does not suppress CSP diagnostics.
+
+Replays are bounded batches: run ordinary cases with `--matrix-only` and one engine at a time (24 accounts each), scene cases separately with `--scenes-only` (16 total across both engines), and `--boundary-only` separately (6). This keeps each local server below the unchanged authentication limit. `LEAFHOUR_PLAYWRIGHT_MODULE`, `LEAFHOUR_CHROMIUM_EXECUTABLE` and `LEAFHOUR_WEBKIT_EXECUTABLE` select existing runtime/browser installations; every output must use a task-registered artifact directory.
+
+## Delivery state before PR
+
+Implementation, local checks, independent review and packaged-entry replay are complete. Current-head CI, normal merge and same-revision Production/live acceptance remain separate delivery gates. GET-231 stays In Progress until all are satisfied. No Preview deployment, manual deployment retry, provider upgrade, real-account mutation, model request or other-issue change was performed.

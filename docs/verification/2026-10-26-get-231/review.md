@@ -2,9 +2,9 @@
 
 Reviewer: independent Codex agent `/root/get231_review`.
 
-Reviewed checkout: `/Users/cubxxw/ops/symphony/runtime/workspaces/GET-231`, public `getyak/leafhour`, branch `codex/get-231-b2`. Baseline and current local HEAD: `0329f9c26fee75dc5bb05257908a6729ea1738e3`.
+Reviewed checkout: `/Users/cubxxw/ops/symphony/runtime/workspaces/GET-231`, public `getyak/leafhour`, branch `codex/get-231-b2`. Baseline: `0329f9c26fee75dc5bb05257908a6729ea1738e3`. Local HEAD at the tool-only amendment: `16b437ed8d2f3ae3dd7d04d2e276e930304184c3` (local commit; this receipt also covers the subsequent working-tree locator correction).
 
-Binding checked at `2026-10-25T22:40:07+00:00` (2026-10-26 in Asia/Shanghai). This receipt binds working-tree bytes, including the new account module, tests and verification tool. It does not identify a released commit.
+Binding checked at `2026-10-25T22:42:58+00:00` (2026-10-26 in Asia/Shanghai). This receipt binds working-tree bytes, including the new account module, tests and verification tool. It does not identify a released commit.
 
 ## Decision and exact source binding
 
@@ -13,7 +13,7 @@ Binding checked at `2026-10-25T22:40:07+00:00` (2026-10-26 in Asia/Shanghai). Th
 All **26 actual files** match [source-fingerprints.json](source-fingerprints.json). The public manifest is byte-identical to `.symphony/source-fingerprints.json`; its SHA-256 is:
 
 ```text
-b6be7d77f89f469b536bf6faa5d8875f427413bbfe03e0b7a8e891910c9a19ea
+a4a604ed5c1b5b5b9efd5b702cdf4150f16585191c49d28d17d9e887ec668bbd
 ```
 
 The manifest was checked again immediately before writing this receipt. An earlier write attempt correctly stopped when the close-button CSS changed after the prior fingerprint snapshot; no stale receipt was written.
@@ -57,3 +57,13 @@ This final binding pass did not rerun that suite or the full project suite. It p
 ## Delivery boundaries
 
 This receipt approves the exact source snapshot above only. Final browser matrices, complete engineering/copy/build gates, current-head CI, commit/PR merge, Vercel Production and same-revision live acceptance require separate primary-agent receipts. No unfinished run is marked passed here. Synthetic identities, isolated local records and public-domain Alice do not establish real-account or Production acceptance.
+
+## 2026-10-26 tool-only amendment
+
+The reviewer inspected the one-line working-tree diff after local commit `16b437ed8d2f3ae3dd7d04d2e276e930304184c3`. The image-error screenshot animation wait now targets the already-open `#atmosphere-dialog`, rather than `#reader-account`, which has not yet been loaded at that point. The separate account screenshot continues waiting on `#reader-account`. This removes the erroneous locator timeout without bypassing or weakening the actual image-failure/retry checks.
+
+Only `tools/verify-reader-cleanup.mjs` changed among the 26 manifest entries relative to that commit's manifest. Its current SHA-256 is `81954389ba3c5f03878cab43dd63ef24b6e7eeebe7b8d0046e21e0267e7a8783`. Both manifest copies match and all 26 actual files were rechecked. Syntax validation and `git diff --check` passed; no heavy tests, build or browser were run by the reviewer. The no-unresolved-P0/P1/P2 source-review decision is unchanged.
+
+The primary agent reports the 16 close-button layout cases passed and is rerunning the two affected narrow boundary cases. This amendment does **not** mark those pending runs, any current-head CI/merge, or Production as passed. Their completed receipts remain separate.
+
+For audit continuity, the preceding manifest SHA-256 was `b6be7d77f89f469b536bf6faa5d8875f427413bbfe03e0b7a8e891910c9a19ea`, and the preceding review-file SHA-256 was `7af98c1f572bdae56a6ca6222854954a381d7b6440dc98738265eb2f9345e1fa`.

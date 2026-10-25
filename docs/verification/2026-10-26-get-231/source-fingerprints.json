@@ -24,5 +24,5 @@
   "tests/reader-atmosphere-labels.test.mjs": "239a5ea21b214777d3949665153023ac7c1a61628b98027c9e492c3a30f261ac",
   "tests/reader-cleanup.test.mjs": "3596618dd6b40198e89b877267fa7c80cca6ba47974d125dd9b87eb3ef6d0c0e",
   "tools/build-reader-web.mjs": "6cf1d02efe7295422168ee78cac16eb753270dfdd65038d812ebb44c63a264d4",
-  "tools/verify-reader-cleanup.mjs": "95d9747e3c91b244a4b39c5a409392715cb3d6bd8b47ea85ad60bebc7f409553"
+  "tools/verify-reader-cleanup.mjs": "81954389ba3c5f03878cab43dd63ef24b6e7eeebe7b8d0046e21e0267e7a8783"
 }
