@@ -30,6 +30,7 @@ export function createPageTurn({requestFrame,cancelFrame,onPaint,onCommit,reduce
     frame=requestFrame(tick);
   }
   return {
+    get active(){return active;},
     turn(next){
       if(disposed||![1,-1].includes(next))return false;
       if(active&&next!==direction){settle(0);return true;}

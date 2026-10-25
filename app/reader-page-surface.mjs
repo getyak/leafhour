@@ -14,7 +14,7 @@ if(styleDocument?.head&&!styleDocument.querySelector('link[data-reader-paper]'))
 export default function mountReaderPageSurface({document,viewport,text,getGeometry,isBlocked=()=>false,onTurn}){
   const view=document.defaultView,host=viewport.parentElement;
   if(!document.createElement||!text.cloneNode||!host?.append)return {turn:onTurn,sync(){},cancel(){},dispose(){}};
-  let disposed=false,presentation=null,drag=null,ignoreClickUntil=0,turnState=null;
+  let disposed=false,presentation=null,drag=null,ignoreClickUntil=0;
   const removers=[],handles=[];
   const selected=()=>!!view.getSelection()?.toString();
   const blocked=()=>disposed||document.hidden||isBlocked()||selected();
@@ -39,7 +39,7 @@ export default function mountReaderPageSurface({document,viewport,text,getGeomet
   function prepare(direction){
     if(presentation)return true;
     const geometry=getGeometry();
-    if(!geometry||!stylesReady||reduced()||!withinPaperSnapshotBudget(text.querySelectorAll('*').length,text.textContent.length))return false;
+    if(!geometry||geometry.page+direction<0||geometry.page+direction>=geometry.count||!stylesReady||reduced()||!withinPaperSnapshotBudget(text.querySelectorAll('*').length,text.textContent.length))return false;
     const bounds=viewport.getBoundingClientRect(),paper=host.getBoundingClientRect();
     const outer=bounds.left-paper.left,width=geometry.columns===2?bounds.width/2+outer:paper.width;
     if(!width||!viewport.clientHeight)return false;
@@ -65,8 +65,8 @@ export default function mountReaderPageSurface({document,viewport,text,getGeomet
     }
     presentation={root,strips,width,origin,direction};draw(0,direction);host.append(root);host.dataset.paperTurning='true';return true;
   }
-  const motion=createPageTurn({requestFrame:fn=>view.requestAnimationFrame(fn),cancelFrame:id=>view.cancelAnimationFrame(id),reducedMotion:reduced,
-    onPaint:state=>{turnState=state;if(!state.active)clear();else draw(state.progress,state.direction);},onCommit:direction=>{clear();if(!blocked())onTurn(direction);}});
+  const motion=createPageTurn({requestFrame:fn=>view.requestAnimationFrame(fn),cancelFrame:id=>view.cancelAnimationFrame(id),reducedMotion:()=>reduced()||!presentation,
+    onPaint:state=>{if(!state.active)clear();else draw(state.progress,state.direction);},onCommit:direction=>{clear();if(!blocked())onTurn(direction);}});
   function cancel(){
     const previous=drag;drag=null;
     if(previous)ignoreClickUntil=(view.performance?.now?.()||previous.time)+500;
@@ -76,7 +76,7 @@ export default function mountReaderPageSurface({document,viewport,text,getGeomet
   function turn(direction){
     if(blocked())return false;
     const g=getGeometry();if(!g?.active)return false;
-    if(turnState?.active)return motion.turn(direction);
+    if(motion.active){const result=motion.turn(direction);if(!motion.active)clear();return result;}
     if(g.page+direction<0||g.page+direction>=g.count){cancel();return onTurn(direction);}
     if(!prepare(direction)){cancel();return onTurn(direction);}
     return motion.turn(direction);
@@ -87,21 +87,23 @@ export default function mountReaderPageSurface({document,viewport,text,getGeomet
     node.addEventListener('click',event=>{if(event.detail&&event.timeStamp<ignoreClickUntil)return;turn(direction);});
     listen(node,'pointerdown',event=>{
       if(event.button!==0||event.isPrimary===false||blocked())return;
-      const g=getGeometry();if(!g?.active||g.page+direction<0||g.page+direction>=g.count||!prepare(direction))return;
+      const g=getGeometry();if(!g?.active||!(direction===1?g.next:g.previous))return;
+      prepare(direction);
       event.preventDefault();const current=motion.grab(direction);if(!current)return;
-      const width=presentation.width,last=leafSegments(current.progress,width,4,1).at(-1),distance=width-last.x-Math.cos(last.angle*Math.PI/180)*last.width;
-      drag={node,id:event.pointerId,x:event.clientX,time:event.timeStamp,distance,progress:current.progress,direction:current.direction,moved:false};node.setPointerCapture(event.pointerId);
+      const width=presentation?.width||Math.max(1,host.clientWidth/(g.columns===2?2:1)),last=leafSegments(current.progress,width,4,1).at(-1),distance=width-last.x-Math.cos(last.angle*Math.PI/180)*last.width;
+      drag={node,id:event.pointerId,x:event.clientX,time:event.timeStamp,width,distance,progress:current.progress,direction:current.direction,moved:false};node.setPointerCapture(event.pointerId);
     });
     listen(node,'pointermove',event=>{
       if(!drag||drag.id!==event.pointerId)return;if(blocked()){cancel();return;}
       const delta=(drag.x-event.clientX)*drag.direction;if(Math.abs(delta)>4)drag.moved=true;
-      const dt=Math.max(8,event.timeStamp-drag.time)/1000,width=presentation?.width||viewport.clientWidth;
+      const dt=Math.max(8,event.timeStamp-drag.time)/1000,width=drag.width;
       const progress=leafDragProgress(drag.distance+delta,width);motion.drag(progress,(progress-drag.progress)/dt);drag.progress=progress;drag.time=event.timeStamp;
     });
     function release(event,cancelled){
       if(!drag||drag.id!==event.pointerId)return;const previous=drag;drag=null;ignoreClickUntil=event.timeStamp+500;
       if(node.hasPointerCapture(event.pointerId))node.releasePointerCapture(event.pointerId);
       if(!cancelled&&!previous.moved)motion.turn(previous.direction);else motion.release(cancelled,{elapsed:event.timeStamp-previous.time});
+      if(!motion.active)clear();
     }
     listen(node,'pointerup',event=>release(event,false));listen(node,'pointercancel',event=>release(event,true));listen(node,'lostpointercapture',event=>release(event,true));
     host.append(node);handles.push({node,direction});

@@ -658,6 +658,7 @@
   "tests/reader-navigation.test.mjs",
   "tests/reader-pagination.test.mjs",
   "tests/reader-page-inputs.test.mjs",
+  "tests/reader-page-surface.test.mjs",
   "tests/reader-page-turn.test.mjs",
   "tests/reader-presence.test.mjs",
   "tests/reader-return.test.mjs",
