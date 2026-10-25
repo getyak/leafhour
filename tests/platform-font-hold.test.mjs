@@ -6,7 +6,7 @@ function fixture(){
  const handlers=new Map(),continued=[],receipt={errors:[],fonts:[],screenshots:[],checks:[]};
  const cdp={on:(name,fn)=>{handlers.set(name,fn);return ()=>handlers.delete(name);},send:async(method,args)=>{if(method==='Fetch.continueRequest'){continued.push(args.requestId);if(args.requestId==='cancelled-font')throw Error('Invalid InterceptionId');}return {};},close:async()=>{}};
  const session=createEvidenceSession({cdp,receipt,origin:'http://localhost:1234'});session.observeResponses();
- return {session,receipt,continued,event:(name,args)=>handlers.get(name)(args)};
+ return {session,receipt,continued,event:(name,args)=>handlers.get(name)?.(args)};
 }
 test('a root-to-authored-page navigation cannot resume a font request already cancelled by the browser',async()=>{
  const f=fixture();await f.session.installFontHold();
@@ -42,4 +42,14 @@ test('a cold font probe waits for parsed styles before scrolling without waiting
  const pending=session.fonts('#hero','cold styles',{awaitFonts:false});
  const settle=new Promise(resolve=>setImmediate(()=>{stylesReady=true;resolveStyles?.({status:'ready',before:{styles:[{ready:false}]},after:{viewport:{width:1200,height:900},styles:[{ready:true}]}});resolve();}));
  await pending;await settle;assert.equal(receipt.checks[0].visible,true);assert.equal(receipt.viewportReadiness[0].before.styles[0].ready,false);assert.equal(receipt.viewportReadiness[0].after.styles[0].ready,true);
+});
+test('a replaced main-document loader retires its held fonts even when Chrome omits loadingFailed',async()=>{
+ const f=fixture();await f.session.installFontHold();
+ f.event('Page.frameNavigated',{frame:{id:'main',loaderId:'root',url:'http://localhost:1234/'}});
+ f.event('Network.requestWillBeSent',{requestId:'old-net',type:'Font',frameId:'main',loaderId:'root',request:{url:'http://localhost:1234/fonts/newsreader/newsreader-var.woff2'}});
+ f.event('Fetch.requestPaused',{requestId:'cancelled-font',networkId:'old-net',frameId:'main'});
+ f.event('Page.frameNavigated',{frame:{id:'main',loaderId:'authored',url:'http://localhost:1234/en'}});
+ f.event('Network.requestWillBeSent',{requestId:'new-net',type:'Font',frameId:'main',loaderId:'authored',request:{url:'http://localhost:1234/fonts/newsreader/newsreader-var.woff2'}});
+ f.event('Fetch.requestPaused',{requestId:'live-font',networkId:'new-net',frameId:'main'});
+ await f.session.releaseFontHold();assert.deepEqual(f.continued,['live-font']);assert.equal(f.receipt.replacedDocumentFontRequests[0].loaderId,'root');await f.session.close();
 });

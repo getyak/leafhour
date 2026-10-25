@@ -305,7 +305,7 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
   const background=new Set(),evidenceListeners=[],paused=new Set(),pausedNetworkIds=new Map();
   let fetchEnabled=false,holdFonts=false,fontHoldInstalledAt=null,pageLabel='home-cold',closed=false;
   let documentEpoch=0,currentDocument=null;
-  const requestFonts=new Map();
+  const requestFonts=new Map(),fontRequestDocuments=new Map();
   const observe=(method,handler)=>evidenceListeners.push(cdp.on(method,handler));
   function task(operation){const promise=Promise.resolve(operation).catch(error=>failures.push(error.message)).finally(()=>background.delete(promise));background.add(promise);}
   async function capture(name){
@@ -378,7 +378,19 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     }
   }
   function observeResponses(){
-    observe('Page.frameNavigated',({frame})=>{if(!frame.parentId)currentDocument={epoch:++documentEpoch,frameId:frame.id,loaderId:frame.loaderId,url:frame.url};});
+    observe('Page.frameNavigated',({frame})=>{
+      if(frame.parentId)return;
+      const previous=currentDocument;currentDocument={epoch:++documentEpoch,frameId:frame.id,loaderId:frame.loaderId,url:frame.url};
+      if(!previous?.loaderId||previous.frameId!==frame.id||previous.loaderId===frame.loaderId)return;
+      // A replaced document can lose a Fetch interception without a separate
+      // loadingFailed event. Bind retirement to the request's wire frame and
+      // loader IDs, not the mutable page label or an arbitrary protocol error.
+      for(const [requestId,networkId]of pausedNetworkIds){const source=fontRequestDocuments.get(networkId);if(source?.frameId===previous.frameId&&source.loaderId===previous.loaderId){
+        paused.delete(requestId);pausedNetworkIds.delete(requestId);
+        (receipt.replacedDocumentFontRequests??=[]).push({requestId,networkId,...source,replacedBy:currentDocument});
+      }}
+    });
+    observe('Network.requestWillBeSent',event=>{if(event.type==='Font')fontRequestDocuments.set(event.requestId,{frameId:event.frameId,loaderId:event.loaderId,url:event.request.url});});
     observe('CSS.fontsUpdated',({font})=>{if(!font||!/Newsreader/i.test(font.platformFontFamily||''))return;if((receipt.fontFaces?.length||0)>=32){failures.push('Bounded Newsreader face evidence exceeded');return;}(receipt.fontFaces??=[]).push({page:pageLabel,...font,observedDuringDocument:currentDocument});});
     observe('Network.responseReceived',event=>{if(event.type==='Font'||event.type==='Stylesheet'&&/\/(?:fonts\/|typography\.css)/.test(new URL(event.response.url).pathname))requestFonts.set(event.requestId,{page:pageLabel,type:event.type,url:event.response.url,status:event.response.status,mime:event.response.mimeType,fromDiskCache:event.response.fromDiskCache,fromServiceWorker:event.response.fromServiceWorker,document:currentDocument&&event.frameId===currentDocument.frameId&&event.loaderId===currentDocument.loaderId?currentDocument:null});});
     observe('Network.loadingFinished',event=>{const font=requestFonts.get(event.requestId);if(font)task((async()=>{const body=await cdp.send('Network.getResponseBody',{requestId:event.requestId});assert.ok(font.type!=='Font'||body.base64Encoded,'Binary WOFF2 response body expected');const bytes=Buffer.from(body.body,body.base64Encoded?'base64':'utf8'),source=await readFile(path.join(root,'app',new URL(font.url).pathname));assert.equal(sha(bytes),sha(source),'Browser font bytes must match checkout');receipt.fonts.push({...font,bytes:bytes.length,encodedDataLength:event.encodedDataLength,sha256:sha(bytes)});})());});
