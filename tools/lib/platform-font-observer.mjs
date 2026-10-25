@@ -231,7 +231,8 @@ export function italicFontEvidence(value,{browserProduct,fontFaces=[],fontRespon
 // Serialized into the remote page. Chrome113 maps scrollIntoView's "instant"
 // to auto, which respects the page's native smooth scrolling. Observe one real
 // request's completion; never change CSS or retry a visibility/font assertion.
-export function observeNativeScroll(selector){
+export function observeNativeScroll(selector,alignment='nearest'){
+  if(!['nearest','center'].includes(alignment))throw Error('Unsupported native scroll alignment');
   const node=document.querySelector(selector);if(!node)throw Error('Missing target');
   const scrollers=[document.scrollingElement];
   for(let parent=node.parentElement;parent;parent=parent.parentElement){
@@ -265,12 +266,15 @@ export function observeNativeScroll(selector){
   };
   const needs=value=>value.scrollports.flatMap((port,index)=>{
     const r=value.rect,left=r.x-pixels(margin.scrollMarginLeft),right=r.x+r.width+pixels(margin.scrollMarginRight),top=r.y-pixels(margin.scrollMarginTop),bottom=r.y+r.height+pixels(margin.scrollMarginBottom);
-    const movable=(start,end,low,high,current,max)=>{
-      if(start>=low&&end<=high||start<=low&&end>=high)return false;
-      const small=end-start<=high-low,delta=start<low?(small?start-low:end-high):(small?end-high:start-low);
+    const movable=(start,end,low,high,current,max,center=false)=>{
+      if(!center&&(start>=low&&end<=high||start<=low&&end>=high))return false;
+      const small=end-start<=high-low,delta=center?(start+end-low-high)/2:start<low?(small?start-low:end-high):(small?end-high:start-low);
       return Math.abs(Math.max(0,Math.min(max,current+delta))-current)>.1;
     };
-    return movable(left,right,port.left,port.right,value.positions[index].left,port.maxLeft)||movable(top,bottom,port.top,port.bottom,value.positions[index].top,port.maxTop)?[index]:[];
+    // Center can queue a smooth movement even for a currently visible target.
+    // Its attainable delta must be observed before claiming unchanged. A
+    // viewport-fixed control never queues movement of the root scrollport.
+    return movable(left,right,port.left,port.right,value.positions[index].left,port.maxLeft)||movable(top,bottom,port.top,port.bottom,value.positions[index].top,port.maxTop,alignment==='center'&&(index>0||!value.viewportFixed))?[index]:[];
   });
   const before=sample(),startedAt=performance.now(),required=needs(before),needsMovement=required.length>0;
   return new Promise(resolve=>{
@@ -282,7 +286,7 @@ export function observeNativeScroll(selector){
     const finish=(status,error=null)=>{
       if(finished)return;finished=true;clearTimeout(timer);cancelAnimationFrame(frame);
       document.removeEventListener('scroll',onScroll,true);document.removeEventListener('scrollend',onEnd,true);
-      resolve({status,error,before,after:sample(),needsMovement,started,startedScrollers:[...startedScrollers],scrollEvents,scrollEndEvents,frames,frameTimes,deadlineMs:10000,visibility:document.visibilityState??null,hasFocus:document.hasFocus?.()??null,elapsedMs:performance.now()-startedAt});
+      resolve({status,error,alignment,before,after:sample(),needsMovement,started,startedScrollers:[...startedScrollers],scrollEvents,scrollEndEvents,frames,frameTimes,deadlineMs:10000,visibility:document.visibilityState??null,hasFocus:document.hasFocus?.()??null,elapsedMs:performance.now()-startedAt});
     };
     const tick=()=>{
       const current=sample(),now=performance.now();frames++;
@@ -300,7 +304,7 @@ export function observeNativeScroll(selector){
     };
     document.addEventListener('scroll',onScroll,true);document.addEventListener('scrollend',onEnd,true);
     timer=setTimeout(()=>finish('timeout'),10000);
-    try{node.scrollIntoView({block:'nearest',behavior:'auto'});}catch(error){finish('error',error.message);return;}
+    try{node.scrollIntoView({block:alignment,behavior:'auto'});}catch(error){finish('error',error.message);return;}
     frame=requestAnimationFrame(tick);
   });
 }
@@ -326,7 +330,10 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     // have parsed before a native scroll can produce meaningful coordinates.
     // This observes existing styles/viewport; it never loads or releases fonts.
     else await viewport(label+' styles');
-    const scroll=await cdp.evaluate('('+observeNativeScroll.toString()+')('+JSON.stringify(selector)+')');
+    // A font probe should center the whole real text box. Chrome113 can leave
+    // an only partly visible quote unmoved with nearest; retain one observed
+    // native request and require its completion, never retry a failed probe.
+    const scroll=await cdp.evaluate('('+observeNativeScroll.toString()+')('+JSON.stringify(selector)+',"center")');
     (receipt.scrolls??=[]).push({label,selector,...scroll});
     assert.ok(['settled','unchanged'].includes(scroll.status),label+' native scrolling must complete within the bounded observation');
     let usage;
@@ -463,8 +470,10 @@ export function createEvidenceSession({cdp,out,receipt,root,origin,failures=[]})
     if(closed)return {errors:failures};
     closed=true;
     if(!cdp)return {errors:failures};
-    await cdp.send('Page.stopLoading').catch(error=>failures.push(error.message));
+    // stopLoading cancels live held requests and invalidates their Fetch IDs.
+    // Resume/disable our interception first, then stop the owned page.
     if(fetchEnabled){holdFonts=false;for(const requestId of paused){paused.delete(requestId);pausedNetworkIds.delete(requestId);await cdp.send('Fetch.continueRequest',{requestId}).catch(error=>failures.push(error.message));}await cdp.send('Fetch.disable').catch(error=>failures.push(error.message));}
+    await cdp.send('Page.stopLoading').catch(error=>failures.push(error.message));
     // End observation before draining: a snapshot of a growing Set is insufficient.
     for(const unsubscribe of evidenceListeners)unsubscribe();
     receipt.observationClosedAt=new Date().toISOString();

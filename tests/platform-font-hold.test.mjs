@@ -88,3 +88,13 @@ test('stock shelf glyph checks and custom source checks cannot substitute for on
  assert.doesNotThrow(()=>customNewsreader(source));assert.throws(()=>customNewsreader(stock),/Newsreader/);
  for(const value of [{label:'empty',fonts:[]},{label:'unused',fonts:[{isCustomFont:false,glyphCount:0}]}])assert.throws(()=>stockSans(value),/stock sans/);
 });
+
+test('closing a cold session releases live interceptions before stopLoading can invalidate them',async()=>{
+ const events=[],handlers=new Map(),receipt={errors:[],fonts:[],checks:[],screenshots:[]};let stopped=false;
+ const cdp={on:(name,fn)=>{handlers.set(name,fn);return ()=>handlers.delete(name);},send:async method=>{events.push(method);if(method==='Page.stopLoading')stopped=true;if(method==='Fetch.continueRequest'&&stopped)throw Error('Invalid InterceptionId');return {};},close:async()=>{}};
+ const session=createEvidenceSession({cdp,receipt});session.observeResponses();await session.installFontHold();
+ handlers.get('Fetch.requestPaused')({requestId:'live-font',networkId:'live-network'});
+ await session.close();assert.deepEqual(session.failures,[]);
+ assert.ok(events.indexOf('Fetch.continueRequest')<events.indexOf('Page.stopLoading'));
+ assert.ok(events.indexOf('Fetch.disable')<events.indexOf('Page.stopLoading'));
+});
