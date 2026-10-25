@@ -1,0 +1,42 @@
+[
+  {
+    "lang": "en",
+    "text": "",
+    "overflow": false,
+    "assertion": {
+      "visibleExactTextMatched": true,
+      "key": "portal.empty.signInHelp",
+      "expectedText": "Sign in to import books and save reading records."
+    }
+  },
+  {
+    "lang": "zh-Hans",
+    "text": "",
+    "overflow": false,
+    "assertion": {
+      "visibleExactTextMatched": true,
+      "key": "portal.empty.signInHelp",
+      "expectedText": "登录后导入书籍并保存阅读记录。"
+    }
+  },
+  {
+    "lang": "zh-Hant",
+    "text": "",
+    "overflow": false,
+    "assertion": {
+      "visibleExactTextMatched": true,
+      "key": "portal.empty.signInHelp",
+      "expectedText": "登入後匯入書籍並保存閱讀記錄。"
+    }
+  },
+  {
+    "lang": "ja",
+    "text": "",
+    "overflow": false,
+    "assertion": {
+      "visibleExactTextMatched": true,
+      "key": "portal.empty.signInHelp",
+      "expectedText": "ログインすると、本の読み込みと読書記録の保存ができます。"
+    }
+  }
+]

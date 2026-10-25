@@ -1,0 +1,170 @@
+[
+  {
+    "heading": "Choose a book",
+    "lang": "en",
+    "overflow": false,
+    "surface": "home",
+    "width": 390
+  },
+  {
+    "heading": "Choose a book",
+    "lang": "en",
+    "overflow": false,
+    "surface": "home",
+    "width": 768
+  },
+  {
+    "heading": "Choose a book",
+    "lang": "en",
+    "overflow": false,
+    "surface": "home",
+    "width": 1440
+  },
+  {
+    "heading": "选一本书",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "surface": "home",
+    "width": 390
+  },
+  {
+    "heading": "选一本书",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "surface": "home",
+    "width": 768
+  },
+  {
+    "heading": "选一本书",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "surface": "home",
+    "width": 1440
+  },
+  {
+    "heading": "選一本書",
+    "lang": "zh-Hant",
+    "overflow": false,
+    "surface": "home",
+    "width": 390
+  },
+  {
+    "heading": "選一本書",
+    "lang": "zh-Hant",
+    "overflow": false,
+    "surface": "home",
+    "width": 768
+  },
+  {
+    "heading": "選一本書",
+    "lang": "zh-Hant",
+    "overflow": false,
+    "surface": "home",
+    "width": 1440
+  },
+  {
+    "heading": "本を選ぶ",
+    "lang": "ja",
+    "overflow": false,
+    "surface": "home",
+    "width": 390
+  },
+  {
+    "heading": "本を選ぶ",
+    "lang": "ja",
+    "overflow": false,
+    "surface": "home",
+    "width": 768
+  },
+  {
+    "heading": "本を選ぶ",
+    "lang": "ja",
+    "overflow": false,
+    "surface": "home",
+    "width": 1440
+  },
+  {
+    "formText": "New books\nHow new books open\nOriginal\nTranslation\nSide by side (original and translation)\nDeep-reading language\nOriginal\nChinese\nTypography\nNew book text size\n22\nNew book typeface\nSerif (Song)\nRegular (Kai)\nSans serif\nPage\nNew book page tone\nFollow the system\nPaper\nWarm\nMist\nSage\nNight\n\n22 px · A sample reading line\n\nNew books use these reading preferences. Translations currently use Simplified Chinese. Untranslated passages show the original; choosing a translation does not generate one or confirm human review. Adjust detailed typography in the reader.\n\nSign in to keep these reading defaults on your account and use them on your other devices. Until then this page is read-only.",
+    "lang": "en",
+    "overflow": false,
+    "surface": "preferences",
+    "width": 390
+  },
+  {
+    "formText": "New books\nHow new books open\nOriginal\nTranslation\nSide by side (original and translation)\nDeep-reading language\nOriginal\nChinese\nTypography\nNew book text size\n22\nNew book typeface\nSerif (Song)\nRegular (Kai)\nSans serif\nPage\nNew book page tone\nFollow the system\nPaper\nWarm\nMist\nSage\nNight\n\n22 px · A sample reading line\n\nNew books use these reading preferences. Translations currently use Simplified Chinese. Untranslated passages show the original; choosing a translation does not generate one or confirm human review. Adjust detailed typography in the reader.\n\nSign in to keep these reading defaults on your account and use them on your other devices. Until then this page is read-only.",
+    "lang": "en",
+    "overflow": false,
+    "surface": "preferences",
+    "width": 768
+  },
+  {
+    "formText": "New books\nHow new books open\nOriginal\nTranslation\nSide by side (original and translation)\nDeep-reading language\nOriginal\nChinese\nTypography\nNew book text size\n22\nNew book typeface\nSerif (Song)\nRegular (Kai)\nSans serif\nPage\nNew book page tone\nFollow the system\nPaper\nWarm\nMist\nSage\nNight\n\n22 px · A sample reading line\n\nNew books use these reading preferences. Translations currently use Simplified Chinese. Untranslated passages show the original; choosing a translation does not generate one or confirm human review. Adjust detailed typography in the reader.\n\nSign in to keep these reading defaults on your account and use them on your other devices. Until then this page is read-only.",
+    "lang": "en",
+    "overflow": false,
+    "surface": "preferences",
+    "width": 1440
+  },
+  {
+    "formText": "新书\n新书的阅读方式\n原文\n译文\n对照（原文与译文）\n深读优先语言\n原文\n中文\n排版\n新书字号\n22\n新书正文字体\n宋体\n楷体\n无衬线\n纸面\n新书纸面\n跟随系统\n纸白\n暖纸\n雾灰\n浅绿\n夜读\n\n22 px · 阅读示例\n\n新书沿用这些阅读偏好。译文目前为简体中文，缺译处显示原文；选择译文不会自动翻译，也不代表已经人工审校。精细排版在书页中调整。\n\n登录后可把这些阅读习惯保存到账号，在其他设备继续使用。未登录时本页仅可查看。",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "surface": "preferences",
+    "width": 390
+  },
+  {
+    "formText": "新书\n新书的阅读方式\n原文\n译文\n对照（原文与译文）\n深读优先语言\n原文\n中文\n排版\n新书字号\n22\n新书正文字体\n宋体\n楷体\n无衬线\n纸面\n新书纸面\n跟随系统\n纸白\n暖纸\n雾灰\n浅绿\n夜读\n\n22 px · 阅读示例\n\n新书沿用这些阅读偏好。译文目前为简体中文，缺译处显示原文；选择译文不会自动翻译，也不代表已经人工审校。精细排版在书页中调整。\n\n登录后可把这些阅读习惯保存到账号，在其他设备继续使用。未登录时本页仅可查看。",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "surface": "preferences",
+    "width": 768
+  },
+  {
+    "formText": "新书\n新书的阅读方式\n原文\n译文\n对照（原文与译文）\n深读优先语言\n原文\n中文\n排版\n新书字号\n22\n新书正文字体\n宋体\n楷体\n无衬线\n纸面\n新书纸面\n跟随系统\n纸白\n暖纸\n雾灰\n浅绿\n夜读\n\n22 px · 阅读示例\n\n新书沿用这些阅读偏好。译文目前为简体中文，缺译处显示原文；选择译文不会自动翻译，也不代表已经人工审校。精细排版在书页中调整。\n\n登录后可把这些阅读习惯保存到账号，在其他设备继续使用。未登录时本页仅可查看。",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "surface": "preferences",
+    "width": 1440
+  },
+  {
+    "formText": "新書\n新書的閱讀方式\n原文\n譯文\n對照（原文與譯文）\n深讀優先語言\n原文\n中文\n排版\n新書字號\n22\n新書正文字體\n宋體\n楷體\n無襯線\n紙面\n新書紙面\n跟隨系統\n紙白\n暖紙\n霧灰\n淺綠\n夜讀\n\n22 px · 閱讀示例\n\n新書沿用這些閱讀偏好。譯文目前為簡體中文，缺譯處顯示原文；選擇譯文不會自動翻譯，也不代表已經人工審校。精細排版在書頁中調整。\n\n登入後可把這些閱讀習慣儲存到帳號，在其他裝置繼續使用。未登入時本頁僅可檢視。",
+    "lang": "zh-Hant",
+    "overflow": false,
+    "surface": "preferences",
+    "width": 390
+  },
+  {
+    "formText": "新書\n新書的閱讀方式\n原文\n譯文\n對照（原文與譯文）\n深讀優先語言\n原文\n中文\n排版\n新書字號\n22\n新書正文字體\n宋體\n楷體\n無襯線\n紙面\n新書紙面\n跟隨系統\n紙白\n暖紙\n霧灰\n淺綠\n夜讀\n\n22 px · 閱讀示例\n\n新書沿用這些閱讀偏好。譯文目前為簡體中文，缺譯處顯示原文；選擇譯文不會自動翻譯，也不代表已經人工審校。精細排版在書頁中調整。\n\n登入後可把這些閱讀習慣儲存到帳號，在其他裝置繼續使用。未登入時本頁僅可檢視。",
+    "lang": "zh-Hant",
+    "overflow": false,
+    "surface": "preferences",
+    "width": 768
+  },
+  {
+    "formText": "新書\n新書的閱讀方式\n原文\n譯文\n對照（原文與譯文）\n深讀優先語言\n原文\n中文\n排版\n新書字號\n22\n新書正文字體\n宋體\n楷體\n無襯線\n紙面\n新書紙面\n跟隨系統\n紙白\n暖紙\n霧灰\n淺綠\n夜讀\n\n22 px · 閱讀示例\n\n新書沿用這些閱讀偏好。譯文目前為簡體中文，缺譯處顯示原文；選擇譯文不會自動翻譯，也不代表已經人工審校。精細排版在書頁中調整。\n\n登入後可把這些閱讀習慣儲存到帳號，在其他裝置繼續使用。未登入時本頁僅可檢視。",
+    "lang": "zh-Hant",
+    "overflow": false,
+    "surface": "preferences",
+    "width": 1440
+  },
+  {
+    "formText": "新しい本\n新しい本の読み方\n原文\n訳文\n対照（原文と訳文）\n深読の優先言語\n原文\n中国語\n組版\n新しい本の文字サイズ\n22\n新しい本の本文書体\nセリフ\n楷書体\nサンセリフ\nページ\n新しい本の紙面\nシステムに合わせる\n紙の白\n暖色\n霧の灰\n淡い緑\n夜読\n\n22 px · 読書の見本\n\n新しい本に使う表示設定です。訳文は現在、簡体字中国語で提供しています。訳のない箇所は原文のままで、訳文を選んでも自動翻訳や人による確認は行いません。細かな組版は読書画面で調整します。\n\nサインインすると、これらの設定をアカウントに保存し、他の端末でも使えます。サインインするまでこのページは閲覧のみです。",
+    "lang": "ja",
+    "overflow": false,
+    "surface": "preferences",
+    "width": 390
+  },
+  {
+    "formText": "新しい本\n新しい本の読み方\n原文\n訳文\n対照（原文と訳文）\n深読の優先言語\n原文\n中国語\n組版\n新しい本の文字サイズ\n22\n新しい本の本文書体\nセリフ\n楷書体\nサンセリフ\nページ\n新しい本の紙面\nシステムに合わせる\n紙の白\n暖色\n霧の灰\n淡い緑\n夜読\n\n22 px · 読書の見本\n\n新しい本に使う表示設定です。訳文は現在、簡体字中国語で提供しています。訳のない箇所は原文のままで、訳文を選んでも自動翻訳や人による確認は行いません。細かな組版は読書画面で調整します。\n\nサインインすると、これらの設定をアカウントに保存し、他の端末でも使えます。サインインするまでこのページは閲覧のみです。",
+    "lang": "ja",
+    "overflow": false,
+    "surface": "preferences",
+    "width": 768
+  },
+  {
+    "formText": "新しい本\n新しい本の読み方\n原文\n訳文\n対照（原文と訳文）\n深読の優先言語\n原文\n中国語\n組版\n新しい本の文字サイズ\n22\n新しい本の本文書体\nセリフ\n楷書体\nサンセリフ\nページ\n新しい本の紙面\nシステムに合わせる\n紙の白\n暖色\n霧の灰\n淡い緑\n夜読\n\n22 px · 読書の見本\n\n新しい本に使う表示設定です。訳文は現在、簡体字中国語で提供しています。訳のない箇所は原文のままで、訳文を選んでも自動翻訳や人による確認は行いません。細かな組版は読書画面で調整します。\n\nサインインすると、これらの設定をアカウントに保存し、他の端末でも使えます。サインインするまでこのページは閲覧のみです。",
+    "lang": "ja",
+    "overflow": false,
+    "surface": "preferences",
+    "width": 1440
+  }
+]

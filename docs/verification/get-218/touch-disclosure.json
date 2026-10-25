@@ -1,0 +1,11 @@
+{
+  "disclosure": "The first 6 passages have literal and interpretive Chinese translations by Codex: AI drafts, not human-reviewed. Translation license: CC0-1.0. Later passages remain in English. The book’s source link provides its original attribution and license.",
+  "kind": "Chrome CDP touch emulation; not a physical device",
+  "open": true,
+  "overflow": false,
+  "viewport": [
+    390,
+    844
+  ],
+  "closedAfterSecondTap": true
+}

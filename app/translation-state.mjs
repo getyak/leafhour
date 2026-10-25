@@ -40,7 +40,8 @@ function createState(present){
     select:id=>{selected=id;},
     begin(id){if(jobs.get(id)?.status==='running')throw Error('这一段正在翻译');jobs.set(id,{status:'running'});},
     complete(id){jobs.set(id,{status:'saved'});lastOutcome={id,status:'saved'};return selected===id;},
-    fail(id,text){jobs.set(id,{status:'failed',message:text});lastOutcome={id,status:'failed'};},
+    acknowledgeSaved(id){if(lastOutcome?.id!==id||lastOutcome.status!=='saved')return false;lastOutcome=null;return true;},
+    fail(id,text){jobs.set(id,{status:'failed',message:text});if(text?.id!=='billing.cancelled')lastOutcome={id,status:'failed'};},
     view(passage,{authenticated,available,loginAvailable=true,defaultNotice=''}={}){
       const job=jobs.get(passage?.id),saved=hasDualDrafts(passage),other=lastOutcome?.id!==passage?.id?background():null;
       if(!passage)return view(message('translation.translate'),true,background()||defaultNotice);

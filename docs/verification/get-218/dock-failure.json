@@ -1,0 +1,46 @@
+[
+  {
+    "bottom": 776,
+    "height": 844,
+    "lang": "en",
+    "left": 36,
+    "parent": "reading-session",
+    "right": 376,
+    "text": "The earlier passage’s translation needs attention. Return to that passage to check its status.",
+    "top": 710.8125,
+    "width": 390
+  },
+  {
+    "bottom": 776,
+    "height": 844,
+    "lang": "zh-Hans",
+    "left": 36,
+    "parent": "reading-session",
+    "right": 376,
+    "text": "先前段落的翻译需要处理，请回到该段查看状态。",
+    "top": 732.40625,
+    "width": 390
+  },
+  {
+    "bottom": 776,
+    "height": 844,
+    "lang": "zh-Hant",
+    "left": 36,
+    "parent": "reading-session",
+    "right": 376,
+    "text": "先前段落的翻譯需要處理，請回到該段查看狀態。",
+    "top": 732.40625,
+    "width": 390
+  },
+  {
+    "bottom": 776,
+    "height": 844,
+    "lang": "ja",
+    "left": 36,
+    "parent": "reading-session",
+    "right": 376,
+    "text": "先ほどの段落の翻訳に確認が必要です。その段落に戻って状態を確認してください。",
+    "top": 710.8125,
+    "width": 390
+  }
+]

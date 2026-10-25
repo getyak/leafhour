@@ -44,6 +44,8 @@ Frequency-dependent items stay manual review on purpose. Do not "fix" the linter
 
 ## Truthful error wording
 
+Routine coverage and usage explanations do not belong between a chapter title and its text, including inside a collapsed panel. Show short sample coverage in book details and put provenance in explicitly opened source/translation details. Derive review status and authorship from the actual saved variants, including personal overrides of public samples. Keep missing-translation labels at the affected passage and sending scope beside the generation action. Progress, failures, unconfirmed outcomes, unsaved drafts and changing prices remain visible when relevant; a previous consent never substitutes for a necessary new price decision.
+
 - A transport failure does not prove the server failed to save. Say that save confirmation was unavailable and keep the known local draft; never claim "nothing was saved" as fact.
 - Claim a file/record is safe only when the relevant local or server fact is established.
 - A source marked unreviewed must not become "reviewed" through a quieter badge.

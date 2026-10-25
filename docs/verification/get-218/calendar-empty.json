@@ -1,0 +1,30 @@
+[
+  {
+    "lang": "en",
+    "date": "2026-10-25",
+    "emptyToday": "No reading time recorded today.",
+    "onboardingNoBook": "Import a book from your reading room.",
+    "overflow": false
+  },
+  {
+    "lang": "zh-Hans",
+    "date": "2026-10-25",
+    "emptyToday": "今天还没有阅读记录。",
+    "onboardingNoBook": "在书房导入一本书。",
+    "overflow": false
+  },
+  {
+    "lang": "zh-Hant",
+    "date": "2026-10-25",
+    "emptyToday": "今天還沒有閱讀記錄。",
+    "onboardingNoBook": "在書房匯入一本書。",
+    "overflow": false
+  },
+  {
+    "lang": "ja",
+    "date": "2026-10-25",
+    "emptyToday": "今日はまだ読書記録がありません。",
+    "onboardingNoBook": "書斎で本を読み込んでください。",
+    "overflow": false
+  }
+]

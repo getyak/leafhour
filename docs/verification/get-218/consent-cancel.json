@@ -1,0 +1,22 @@
+[
+  {
+    "lang": "en",
+    "dialog": "Test mode: these are sandbox points, not a real payment.\n\nDual translation uses 1 point.\n\nA single-passage dual translation costs 1 point; a reading question or AI annotation costs 4 points. Points are reserved during processing and consumed only after a valid result is saved. Failed, cancelled or undelivered work does not consume purchased points. Saved results, reading, notes and export remain free. Automatic companion messages never use purchased points. Future action buttons show their point price.\n\nUse reading points for this request?",
+    "feedback": "Cancelled. No reading points were used. You can keep reading the original."
+  },
+  {
+    "lang": "zh-Hans",
+    "dialog": "测试模式：仅使用沙盒点数，不涉及真实付款。\n\n单段双译使用 1 点。\n\n单段双译 1 点，一次阅读对话或 AI 注解 4 点。处理中先预留，结果校验并保存后才消费。失败、取消或未交付不消费购买点。已有结果、阅读、笔记与导出免费。自动松鼠陪读绝不使用购买点。后续操作按钮会显示点数。\n\n确认本次使用阅读点？",
+    "feedback": "已取消。本次没有使用阅读点。 原文仍可继续阅读。"
+  },
+  {
+    "lang": "zh-Hant",
+    "dialog": "測試模式：僅使用沙盒點數，不涉及真實付款。\n\n單段雙譯使用 1 點。\n\n單段雙譯 1 點，一次閱讀對話或 AI 註解 4 點。處理中先預留，結果校驗並儲存後才消費。失敗、取消或未交付不消費購買點。已有結果、閱讀、筆記與匯出免費。自動松鼠陪讀絕不使用購買點。後續操作按鈕會顯示點數。\n\n確認本次使用閱讀點？",
+    "feedback": "已取消。本次沒有使用閱讀點。 原文仍可繼續閱讀。"
+  },
+  {
+    "lang": "ja",
+    "dialog": "テストモード：サンドボックスポイントのみで、実際の支払いはありません。\n\n直訳と意訳は 1 ポイント を使用します。\n\n1 段落の直訳と意訳は 1 ポイント、1 回の読書対話または AI 注釈は 4 ポイントです。処理中に確保し、検証済み結果の保存後に消費します。失敗、キャンセル、未提供の処理には購入ポイントを消費しません。保存済み結果、読書、ノート、エクスポートは無料です。自動コンパニオンは購入ポイントを使いません。今後の操作ボタンにも価格を表示します。\n\nこの依頼に読書ポイントを使いますか？",
+    "feedback": "ポイント利用をキャンセルしました。依頼は送信していません。 原文は引き続き読めます。"
+  }
+]

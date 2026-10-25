@@ -1,0 +1,7 @@
+{
+  "kind": "copy-export-execution-receipt",
+  "trackedArtifactsBind": "input-sha256",
+  "inputDigest": "4160c6d716febf524f6cf9e88c89216b19340af1207c0c98c452cf20f6bbeba5",
+  "executingCommit": "dca8eab7ebb231ffea521a0b7c212416923c0ccf",
+  "note": "Untracked run metadata only. The checked-in inventory binds scanned file bytes and never claims to represent any commit."
+}

@@ -1356,15 +1356,6 @@
       "state": "unreviewed"
     },
     {
-      "itemId": "giftCompose.help",
-      "locale": "zh-Hans",
-      "rule": "Leafhour.ToneT1Zh",
-      "valueSha256": "4732715117660662f59dc4e3cda934e7dc6aef42bd8841fa8f6f047624005555",
-      "match": "先看看收信的样子，喜欢了再",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
       "itemId": "manual.preview",
       "locale": "zh-Hans",
       "rule": "Leafhour.DevSpeak",
@@ -1608,15 +1599,6 @@
       "state": "unreviewed"
     },
     {
-      "itemId": "reader.b1.sampleNotice",
-      "locale": "zh-Hans",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "29a8d6a65d882bf4ca26c354fc162b3f2aefefa401cae040b9f783ec6c238c30",
-      "match": "AI 草稿",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
       "itemId": "reader.b1.translationSaved",
       "locale": "zh-Hans",
       "rule": "Leafhour.DevSpeak",
@@ -1833,15 +1815,6 @@
       "state": "unreviewed"
     },
     {
-      "itemId": "sample.disclosure",
-      "locale": "zh-Hans",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "a7e3bd2800f685a1e8aff58d949f20132d57abd718b60bc26a05950ff6bfa67f",
-      "match": "AI 草稿",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
       "itemId": "sc.mod",
       "locale": "zh-Hans",
       "rule": "Leafhour.DevSpeak",
@@ -1905,24 +1878,6 @@
       "state": "unreviewed"
     },
     {
-      "itemId": "translation.backgroundSaved",
-      "locale": "zh-Hans",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "5feac707f27402eda578c341fd2002e0a84a2db266004278d2534400407a2bfe",
-      "match": "双译",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
-      "itemId": "translation.incomplete",
-      "locale": "zh-Hans",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "7bb49e006d74d9457dffedb2b499553787e4cf21cbd722e665cf3b8b15c1d50c",
-      "match": "双译",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
       "itemId": "translation.loginNotice",
       "locale": "zh-Hans",
       "rule": "Leafhour.DevSpeak",
@@ -1937,15 +1892,6 @@
       "rule": "Leafhour.DevSpeak",
       "valueSha256": "3b388103d725e13a0486bc878223120ee4f404241c58dd8b9f7ef31ec833c356",
       "match": "已配置的",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
-      "itemId": "translation.viewDrafts",
-      "locale": "zh-Hans",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "ff7819ad46229144b5d54a6ee6229b391cdf4bf69f86cb0415a42a252d52428a",
-      "match": "双译",
       "kind": "existing-debt",
       "state": "unreviewed"
     },
@@ -2481,15 +2427,6 @@
       "state": "unreviewed"
     },
     {
-      "itemId": "giftCompose.help",
-      "locale": "zh-Hant",
-      "rule": "Leafhour.ToneT1Zh",
-      "valueSha256": "9992748b536ffa09099e83e9290bc3df4d3d38988bf310a976b606e6959d7d35",
-      "match": "先看看收信的樣子，喜歡了再",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
       "itemId": "manual.preview",
       "locale": "zh-Hant",
       "rule": "Leafhour.DevSpeak",
@@ -2733,15 +2670,6 @@
       "state": "unreviewed"
     },
     {
-      "itemId": "reader.b1.sampleNotice",
-      "locale": "zh-Hant",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "629b0f75014690fbfb69c18a9c06faa7fb8ae05281acac357dee2ce3b80c663f",
-      "match": "AI 草稿",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
       "itemId": "reader.b1.translationSaved",
       "locale": "zh-Hant",
       "rule": "Leafhour.DevSpeak",
@@ -2949,15 +2877,6 @@
       "state": "unreviewed"
     },
     {
-      "itemId": "sample.disclosure",
-      "locale": "zh-Hant",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "4296a348d158fc2c710f0b40658037dde75a779439262b29fa2dea7577dadd2f",
-      "match": "AI 草稿",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
       "itemId": "sc.mod",
       "locale": "zh-Hant",
       "rule": "Leafhour.DevSpeak",
@@ -3021,37 +2940,10 @@
       "state": "unreviewed"
     },
     {
-      "itemId": "translation.backgroundSaved",
-      "locale": "zh-Hant",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "9282fb2ba52c0123695d88dba9e6ae9e7100829a86668c1ccd7a6a63b07dc31b",
-      "match": "雙譯",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
-      "itemId": "translation.incomplete",
-      "locale": "zh-Hant",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "2f82c179854bcb1a884821297d1508b1fdf74bae0d0ed866d9d56dd3ee48f7ca",
-      "match": "雙譯",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
       "itemId": "translation.onDemand",
       "locale": "zh-Hant",
       "rule": "Leafhour.DevSpeak",
       "valueSha256": "90c14269b192e02a297fff687382d9743c2dd113c3b8c6bde5f8eb547a6c3955",
-      "match": "雙譯",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
-      "itemId": "translation.viewDrafts",
-      "locale": "zh-Hant",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "b3c4d159be51c50e63c6561329884df615190f5cfc834757d87d1a02ce35e49d",
       "match": "雙譯",
       "kind": "existing-debt",
       "state": "unreviewed"

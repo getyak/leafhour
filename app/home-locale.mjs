@@ -51,7 +51,7 @@ const strings=[
   ['阅读时间只记录前台停留。读完由你标记，理解也由你判断。','Reading time counts foreground visits only. You decide when you have finished and what you have understood.','閱讀時間只記錄前台停留。讀完由你標記，理解也由你判斷。','読書時間は画面に表示されている間だけ記録します。読み終えたかどうかも、理解できたかどうかも、あなたが決めます。'],
   ['打开我的阅读日历','Open my reading calendar','打開我的閱讀日曆','読書カレンダーを開く'],
   // Bookshelf
-  ['先挑一本，慢慢读。','Pick a book. Take your time.','先挑一本，慢慢讀。','一冊選んで、ゆっくり読む。'],
+  ['选一本书','Choose a book','選一本書','本を選ぶ'],
   ['进入书房','Enter reading room','進入書房','書斎へ'],
   ['正在载入书架…','Opening the bookshelf…','正在載入書架…','本棚を開いています…'],
   ['默认书籍来自 Project Gutenberg，原文在美国属于公版；各书保留来源和许可说明，使用时请核对所在地规则。','The default books come from Project Gutenberg and are public domain in the United States. Source and license details are retained; check the rules where you live.','預設書籍來自 Project Gutenberg，原文在美國屬於公版；各書保留來源和許可說明，使用時請核對所在地規則。','既定の書籍は Project Gutenberg 由来で、原文は米国ではパブリックドメインです。出典と許諾の説明は各書に残してあります。お住まいの地域の規則をご確認ください。'],

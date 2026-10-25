@@ -34,3 +34,9 @@ test('an optional presentation formatter receives stable messages without changi
  const running=tasks.view(first,capabilities);assert.equal(running.label.id,'translation.translating');assert.equal(running.disabled,true);assert.equal(running.notice[0].id,'translation.translatingNotice');assert.equal(tasks.selectedId(),'p1');assert.throws(()=>tasks.begin('p1'));
  tasks.select('p2');assert.equal(tasks.complete('p1'),false);const background=tasks.view(second,capabilities);assert.equal(background.label.id,'translation.translate');assert.deepEqual(background.notice.map(m=>m.id),['translation.backgroundSaved','translation.untranslated']);assert.equal(tasks.selectedId(),'p2');assert.equal(descriptions,2);assert.equal(first.original,'First paragraph.');
 });
+
+test('acknowledging a confirmed save never dismisses an in-flight task or failure',()=>{
+ const tasks=createTranslationState();tasks.select('p1');tasks.begin('p1');assert.equal(tasks.acknowledgeSaved('p1'),false);
+ tasks.complete('p1');tasks.select(null);assert.match(tasks.view(null,capabilities).notice,/已保存/);assert.equal(tasks.acknowledgeSaved('p2'),false);assert.equal(tasks.acknowledgeSaved('p1'),true);assert.equal(tasks.view(null,capabilities).notice,'');
+ tasks.begin('p1');tasks.fail('p1','Offline');assert.equal(tasks.acknowledgeSaved('p1'),false);assert.match(tasks.view(null,capabilities).notice,/未完成/);
+});
