@@ -54,4 +54,12 @@ Physical touch devices, Safari/WebKit, Firefox, VoiceOver speech output and prol
 
 ## Delivery receipt
 
-PR CI, normal merge, Vercel Production and same-commit online readbacks are required next. Their identifiers and results are recorded in the PR delivery receipt after they occur; this source does not predict a future merge SHA. No Preview deployment is created or awaited.
+The initial feature merged through [PR #180](https://github.com/getyak/leafhour/pull/180) as `7d9684a75c7e1de3418a5291c53f09f9f9ec0989`. PR CI, main CI and [Production verification](https://github.com/getyak/leafhour/actions/runs/40182667675) passed. An anonymous online readback confirmed that exact release and actual paper mode/button paging. No Preview was created or awaited.
+
+## Page-edge fallback follow-up
+
+The final online gesture check found one remaining boundary: dragging a corner at the chapter edge did not continue, although tapping the corner or footer did. The snapshot guard returned before starting the gesture. The same path affected oversized chapters and reduced motion.
+
+Three new tests first failed with zero paging callbacks, then passed through the actual surface event handlers. The gesture now keeps its measured leaf width even without a visual snapshot. A completed fallback gesture delegates immediately to the existing page/chapter owner; a short drag returns. No next-chapter text or preview is fabricated. The motion owner exposes its actual active state rather than a second cached lifecycle flag.
+
+Native browser validation moved `ch01 → ch02 → ch01` by dragging opposite page edges and returned to the previous chapter's final spread; see [edge-drag-boundaries.json](paper-reading/edge-drag-boundaries.json). The focused motion/input/surface/pagination set passed **24/24**. This follow-up's complete checks and same-commit Production receipt are recorded in its PR before final delivery.

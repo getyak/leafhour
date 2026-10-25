@@ -514,11 +514,11 @@
       },
       {
         "file": "app/reader-page-surface.mjs",
-        "sha256": "4fdc94f5896390cb3d5fe154acc7d089b93eb40f20d2621a9e91b5fe3a66e0ef"
+        "sha256": "9526494edae241bc0fe5c38f3314d827a8e3d50f34a827dd9525821304f7a486"
       },
       {
         "file": "app/reader-page-turn.mjs",
-        "sha256": "d396edc10f1419f199eda133ea2346044a7de8e67a0858215384f556fd8ac399"
+        "sha256": "2fac5f710cfacafeedfee4085f92da6b2edf791af3aaf02ecd36b74a8974ebd4"
       },
       {
         "file": "app/reader-pagination.mjs",
@@ -1105,7 +1105,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "1c131a4e85fe108b0bf1832ba5f26109ad23ecadbc39014853053eac425a6555"
+    "inputDigest": "8b98115d2f22688b265f42d1c24ae17ad4dbc6a46c0bfd026aecae5143f38f8b"
   },
   "locales": [
     "en",
