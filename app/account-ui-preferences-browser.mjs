@@ -38,6 +38,7 @@ export function createBrowserAccountUiPreferences({runtime,request=globalThis.fe
  void Promise.resolve(runtime.uiReady).then(applyHandoff);
  function invalidate(){
   epoch++;owner=undefined;offBridge();bridge.dispose();
+  void runtime.invalidateUiOwner?.();
   const captured=epoch;
   void runtime.requestAccountUiLocale(null,{isCurrent:()=>!disposed&&epoch===captured&&owner===undefined});
  }

@@ -1,3 +1,4 @@
+import {uiReady,getUiLocale,uiHref,adoptUiOwner,onUiLocaleChange} from './ui-locale.mjs';
 import {commerceLocale,commerceCopy,commercePath,escapeBilling as escape} from './commerce-pages.mjs';
 
 const copy={
@@ -220,10 +221,16 @@ export function billingDateRange(from,to){
 
 async function mountBilling(document){
  const root=document.getElementById('billing-content');if(!root)return;
- const params=new URLSearchParams(location.search),locale=commerceLocale(params.get('ui')||document.documentElement.lang),c=billingLabels(locale),admin=location.pathname==='/admin/billing';
+ await uiReady;
+ const params=new URLSearchParams(location.search),admin=location.pathname==='/admin/billing';
+ let locale=getUiLocale(),c=billingLabels(locale);
+ const relabel=()=>{
+ locale=getUiLocale();c=billingLabels(locale);
  document.documentElement.lang=locale;document.title=(admin?c.admin:c.title)+' · Leafhour';
- const $=id=>document.getElementById(id);$('billing-title').textContent=admin?c.admin:c.title;$('billing-back').textContent=c.back;$('billing-back').href='/library?ui='+locale;$('billing-refresh').textContent=c.retry;
+ $('billing-title').textContent=admin?c.admin:c.title;$('billing-back').textContent=c.back;$('billing-back').href=uiHref('/library');$('billing-refresh').textContent=c.retry;
  $('billing-policy-links').innerHTML=['pricing','terms','refunds'].map(kind=>`<a href="${commercePath(kind,locale)}">${commerceCopy(locale)[kind]}</a>`).join('')+`<a href="/${({'en':'en','zh-Hans':'zh-hans','zh-Hant':'zh-hant','ja':'ja'})[locale]}/privacy">${c.privacy}</a><a href="mailto:support@leafhour.com">support@leafhour.com</a>`;
+ };
+ const $=id=>document.getElementById(id);relabel();
  let busy=false,auth=null,inlineCheckout=null,disposed=false,pollTimer=null,returnOwner=null,returnGeneration=0,range=null,restoreAction=null;
  const render=()=>{
   if(disposed)return;
@@ -240,9 +247,9 @@ async function mountBilling(document){
  const errorText=(error,fallback='error')=>error?.code==='BILLING_ACCOUNT_CHANGED'?c.changed:error?.code==='checkout_expired'?c.checkoutExpired:error?.code==='BILLING_SUBSCRIPTION_EXISTS'?c.subscriptionExists:error?.status===401?c.signInRequired:error?.status===403&&admin?c.forbidden:c[fallback];
  function stopPolling(){returnGeneration++;clearTimeout(pollTimer);pollTimer=null;}
  async function loadPrivate(){if(!ownerOf(client.snapshot().session))return;if(admin){range||=billingDateRange($('billing-from').value,$('billing-to').value);await client.loadSummary(range);}else{await client.loadAccount();await client.ensureTrial();await client.loadEntries();await client.loadOrders();await client.loadSubscriptions();}}
- async function refresh(){if(busy)return;busy=true;stopPolling();render();setStatus(c.loading);try{await client.refreshSession();if(!returnOwner&&params.get('order'))returnOwner=ownerOf(client.snapshot().session);await client.loadCatalog();await loadPrivate();setStatus('');if(!admin)void beginPolling();}catch(error){setStatus(errorText(error),true);}finally{busy=false;render();}}
+ async function refresh(){if(busy)return;busy=true;stopPolling();render();setStatus(c.loading);try{await client.refreshSession();await adoptUiOwner(ownerOf(client.snapshot().session));if(disposed)return;relabel();if(!returnOwner&&params.get('order'))returnOwner=ownerOf(client.snapshot().session);await client.loadCatalog();await loadPrivate();setStatus('');if(!admin)void beginPolling();}catch(error){setStatus(errorText(error),true);}finally{busy=false;render();}}
  async function ensureAuth(){
-  if(!auth){const {mountAuthDialog}=await import('./auth-dialog.mjs');auth=mountAuthDialog({dialog:$('auth-dialog'),api:client.authRequest,getSession:()=>client.snapshot().session,getReturnTo:()=>location.pathname+location.search,onAuthenticated:refresh,onSessionSettled:refresh});$('billing-auth-close').addEventListener('click',()=>auth.close());}
+  if(!auth){const {mountAuthDialog}=await import('./auth-dialog.mjs');auth=mountAuthDialog({dialog:$('auth-dialog'),api:client.authRequest,getSession:()=>client.snapshot().session,getReturnTo:()=>uiHref(location.pathname+location.search),onAuthenticated:refresh,onSessionSettled:refresh});$('billing-auth-close').addEventListener('click',()=>auth.close());}
   auth.open();
  }
  async function beginPolling(){
@@ -271,10 +278,12 @@ async function mountBilling(document){
  if(admin){$('billing-from-label').textContent=c.from;$('billing-to-label').textContent=c.to;$('billing-range-submit').textContent=c.apply;$('billing-range-help').textContent=c.range;const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());$('billing-to').value=today;const from=new Date(today+'T00:00:00+08:00');from.setUTCDate(from.getUTCDate()-30);$('billing-from').value=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(from);
   form.addEventListener('submit',event=>{event.preventDefault();try{range=billingDateRange($('billing-from').value,$('billing-to').value);void refresh();}catch{setStatus(c.timeError,true);}});
  }
- const checkIdentity=async()=>{if(disposed||document.hidden||busy||auth?.hasPendingSessionChange())return;const before=ownerOf(client.snapshot().session);try{await client.refreshSession();if(before!==ownerOf(client.snapshot().session)){stopPolling();auth?.reset();setStatus(c.changed,true);}}catch{client.adoptSession({user:null});stopPolling();setStatus(c.signInRequired,true);}};
+ const checkIdentity=async()=>{if(disposed||document.hidden||busy||auth?.hasPendingSessionChange())return;const before=ownerOf(client.snapshot().session);try{await client.refreshSession();await adoptUiOwner(ownerOf(client.snapshot().session));if(before!==ownerOf(client.snapshot().session)){stopPolling();auth?.reset();setStatus(c.changed,true);}}catch{client.adoptSession({user:null});await adoptUiOwner(null);stopPolling();setStatus(c.signInRequired,true);}};
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopPolling();else void checkIdentity();});window.addEventListener('focus',()=>{void checkIdentity();});
+ // Relabel cached billing data only; no network, trial, order or model action.
+ const offLocale=onUiLocaleChange(()=>{if(!disposed){relabel();render();}});
  const identityTimer=setInterval(()=>{void checkIdentity();},30000);
- window.addEventListener('pagehide',()=>{disposed=true;clearInterval(identityTimer);stopPolling();inlineCheckout?.dispose();auth?.dispose();},{once:true});
+ window.addEventListener('pagehide',()=>{disposed=true;offLocale();clearInterval(identityTimer);stopPolling();inlineCheckout?.dispose();auth?.dispose();},{once:true});
  void refresh();
 }
 if(typeof document!=='undefined'){

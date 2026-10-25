@@ -118,7 +118,7 @@ function syncOverlay(target){
   }finally{syncingOverlay=false;}
 }
 if(isLibrary)document.title=t('portal.title.library');
-const authDialog=mountAuthDialog({dialog:$('auth-dialog'),api,getSession:()=>session,getReturnTo:()=>authReturnTarget({pendingUpload,readerReturn:returnToReader,libraryReturn:returnToLibrary,current:currentLibraryReturn(),ui:getUiNavigationLocale()}),onSessionSettled:()=>refresh().catch(error=>status('library-status',{id:'ui.generic.error'},true)),onAuthenticated:async()=>{const returnToChat=pendingChat;pendingChat=false;if(returnAfterAuth())return;try{await refresh();adoptPendingReturn();status('library-status','');if(pendingUpload)openUpload();else if(returnToChat)chat?.open();}catch(error){status('library-status',{id:'portal.status.signedInFailed'},true);}}});
+const authDialog=mountAuthDialog({dialog:$('auth-dialog'),api,getSession:()=>session,getReturnTo:()=>uiHref(authReturnTarget({pendingUpload,readerReturn:returnToReader,libraryReturn:returnToLibrary,current:currentLibraryReturn(),ui:getUiNavigationLocale()})),onSessionSettled:()=>refresh().catch(error=>status('library-status',{id:'ui.generic.error'},true)),onAuthenticated:async()=>{const returnToChat=pendingChat;pendingChat=false;if(returnAfterAuth())return;try{await refresh();adoptPendingReturn();status('library-status','');if(pendingUpload)openUpload();else if(returnToChat)chat?.open();}catch(error){status('library-status',{id:'portal.status.signedInFailed'},true);}}});
 const openAuth=message=>authDialog.open(message&&typeof message.messageId==='string'?message:undefined);
 $('auth-dialog').addEventListener('close',()=>{pendingChat=false;});
 const ensureUser=()=>{if(session?.user)return true;openAuth();return false;};

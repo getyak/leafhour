@@ -138,7 +138,7 @@ test('actual portal relabels static library chrome in place, including visible n
 
 test('the signed-in home reading-room button opens the shelf without an extra settings dialog',async()=>{
  const accountHandler=ast.body.find(n=>n.type==='ExpressionStatement'&&source.slice(n.start,n.end).startsWith("$('account-button').addEventListener('click'"));assert.ok(accountHandler);
- for(const code of ['en','ja','zh-Hans','zh-Hant']){await requestUiRoute(code);let handler;const location={href:''};const context={$:()=>({addEventListener(_type,fn){handler=fn;}}),session:{user:{id:'synthetic'}},isLibrary:false,shell:{openSettings(){assert.fail('home route');}},location,uiHref};vm.createContext(context);vm.runInContext(source.slice(accountHandler.start,accountHandler.end),context);handler();assert.equal(location.href,'/library?ui='+code);assert.equal(new URL(location.href,'https://leafhour.invalid').searchParams.has('settings'),false,'reading should not require closing a profile dialog');}
+ for(const code of ['en','ja','zh-Hans','zh-Hant']){await requestUiRoute(code);let handler;const location={href:''};const context={$:()=>({addEventListener(_type,fn){handler=fn;}}),session:{user:{id:'synthetic'}},isLibrary:false,shell:{openSettings(){assert.fail('home route');}},location,uiHref};vm.createContext(context);vm.runInContext(source.slice(accountHandler.start,accountHandler.end),context);handler();assert.equal(location.href,"/library");assert.equal(new URL(location.href,'https://leafhour.invalid').searchParams.has('settings'),false,'reading should not require closing a profile dialog');}
  await requestUiRoute('en');
 });
 

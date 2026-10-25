@@ -96,7 +96,7 @@ test('palette keyboard keeps one active result coherent across arrows, Home/End 
   assert.equal(input.getAttribute('aria-activedescendant'),options[0].id);
   const enter=key(input,{key:'Enter'});input.dispatchEvent(enter);
   assert.equal(enter.defaultPrevented,true);
-  assert.deepEqual(f.nav,['/read?book=one&passage=p7&ui=en'],'Enter runs the active result with its real resume id');
+  assert.deepEqual(f.nav,['/read?book=one&passage=p7'],'Enter runs the active result with its real resume id');
 });
 
 test('the dialog announces loading, empty and error states and Escape restores the opener',()=>{
@@ -121,7 +121,7 @@ test('modal handoff closes the palette without stale focus restoration',()=>{
   settings.dispatchEvent(new Event('click',{bubbles:true}));
   assert.equal(f.dialog.open,false);
   assert.notEqual(f.doc.activeElement,f.opener,'a settings handoff must not restore stale focus');
-  assert.equal(f.nav[0],'/library?settings=appearance&ui=en','the destination uses the exact GET-179 codec output');
+  assert.equal(f.nav[0],'/library?settings=appearance','the destination uses the exact GET-179 codec output');
 });
 
 test('reader appearance commands use the existing appearance adapter and preserve the launch point',()=>{
@@ -654,7 +654,7 @@ test('language refresh preserves palette result identity, query, active choice a
     assert.equal(input.value,'open');assert.equal(f.doc.activeElement,input);assert.equal(f.dialog.scrollTop,39);
     assert.equal(searches,count);assert.equal(input.getAttribute('aria-activedescendant'),active);
     assert.deepEqual(f.options(),before);assert.equal(before[1].textContent,t('palette.settings'));
-    input.dispatchEvent(key(input,{key:'Enter'}));assert.equal(f.nav[0],'/library?settings=appearance&ui=ja');
+    input.dispatchEvent(key(input,{key:'Enter'}));assert.equal(f.nav[0],'/library?settings=appearance');
   }finally{f.palette.dispose();await requestUiRoute('en');}
 });
 
@@ -665,11 +665,11 @@ test('palette destinations carry Japanese through authored home and canonical pa
   try{
     const nav=[];const commands=paletteCommands('home',null,url=>nav.push(url));
     for(const id of ['home','library','settings','calendar'])commands.find(x=>x.id===id).run();
-    assert.deepEqual(nav,['/ja','/library?ui=ja','/library?settings=appearance&ui=ja','/library?calendar=1&ui=ja']);
+    assert.deepEqual(nav,['/ja','/library','/library?settings=appearance','/library?calendar=1']);
     for(const saved of [null,'ja'])for(const target of nav){
       const location={href:'https://leafhour.com'+target};
       const runtime=createUiLocale({getLocation:()=>location,storage:{getItem:()=>saved,setItem(){}},languages:['en'],loadCatalogue:async()=>ja,history:{replaceState(){}},eventTarget:null});
-      await runtime.initialize();assert.equal(runtime.getUiLocale(),'ja',target+' keeps UI locale independently of storage');
+      await runtime.initialize();assert.equal(runtime.getUiLocale(),target==='/ja'?'ja':saved||'en',target+' follows the selected preference');
     }
   }finally{await requestUiRoute('en');}
 });
@@ -688,6 +688,6 @@ test('dispose followed by a fresh mount on the same document binds working searc
   const first=openCommandPalette({document:doc,library,navigate:url=>nav.push(url)});first.open();const old=first.dialog;first.dispose();
   assert.equal(doc.getElementById('command-palette'),null);
   const second=openCommandPalette({document:doc,library,navigate:url=>nav.push(url)});
-  try{second.open();assert.notEqual(second.dialog,old);const input=doc.getElementById('command-palette-input');input.value='Again';input.dispatchEvent(new Event('input'));input.dispatchEvent(key(input,{key:'Enter'}));assert.deepEqual(nav,['/read?book=again&ui=en']);}
+  try{second.open();assert.notEqual(second.dialog,old);const input=doc.getElementById('command-palette-input');input.value='Again';input.dispatchEvent(new Event('input'));input.dispatchEvent(key(input,{key:'Enter'}));assert.deepEqual(nav,['/read?book=again']);}
   finally{second.dispose();}
 });

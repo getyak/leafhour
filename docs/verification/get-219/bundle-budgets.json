@@ -1,0 +1,17 @@
+{
+  "budgetsUnchanged": true,
+  "assets": [
+    {
+      "file": "reader-web/reader-822316555ce2083c.js",
+      "bytes": 327676,
+      "budgetBytes": 327680,
+      "sha256": "822316555ce2083c2a48ca6e7b685fe163aaed3714610fc95ef69a2baa9a7124"
+    },
+    {
+      "file": "reader-web/style-f0bffc7ca3b8c6a4.css",
+      "bytes": 200730,
+      "budgetBytes": 204800,
+      "sha256": "f0bffc7ca3b8c6a45dd8a47a2021319637dbad97604391678db7f9bb3d01861f"
+    }
+  ]
+}

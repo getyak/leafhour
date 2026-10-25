@@ -76,5 +76,5 @@ test('actual portal statuses and initial failure keep semantic labels through lo
 });
 
 test('uploaded book reading action keeps the current route UI and exact encoded book ID',async()=>{
- const {uploadedBookHref}=await import('../app/chat-book-upload.mjs');await locale.requestUiRoute('ja');const target=new URL(uploadedBookHref('来源/a?b'),'https://example.invalid');assert.equal(target.pathname,'/read');assert.equal(target.searchParams.get('book'),'来源/a?b');assert.deepEqual(target.searchParams.getAll('ui'),['ja']);await locale.requestUiRoute('en');
+ const {uploadedBookHref}=await import('../app/chat-book-upload.mjs');await locale.requestUiRoute('ja');const target=new URL(uploadedBookHref('来源/a?b'),'https://example.invalid');assert.equal(target.pathname,'/read');assert.equal(target.searchParams.get('book'),'来源/a?b');assert.deepEqual(target.searchParams.getAll('ui'),[]);await locale.requestUiRoute('en');
 });

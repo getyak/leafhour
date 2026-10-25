@@ -48,3 +48,7 @@ test('a newer manual intent discards a failed incoming handoff before another do
  for(const [key,value] of f.storage)next.storage.set(key,value);
  await next.runtime.initializeOnce();await next.bridge.adoptOwner('A');await tick();assert.equal(posts,0,'an authored route is not a new manual account choice');next.bridge.dispose();
 });
+test('a verified authenticated authored handoff still emits a picker intent after the local explicit route',async()=>{
+ let resolve,posts=[],reads=0;const f=fixture(async(_url,options)=>{if(options.method==='POST'){const body=JSON.parse(options.body);posts.push(body);return Response.json({revision:body.baseRevision+1,updatedAt:'2026-10-25T00:00:00Z',uiLocale:body.uiLocale});}if(++reads===1)return new Promise(r=>resolve=r);return Response.json({revision:1,updatedAt:'2026-10-25T00:00:00Z',uiLocale:'en'});},{href:'https://leafhour.test/ja'});
+ f.storage.set('leafhour.ui.locale.navigation.v1',JSON.stringify({version:1,code:'ja',path:'/ja',owner:'A',verified:true,createdAt:Date.now()}));await f.runtime.initializeOnce();await tick();const adoption=f.bridge.adoptOwner('A');await tick();resolve(Response.json({revision:1,updatedAt:'2026-10-25T00:00:00Z',uiLocale:'en'}));await adoption;await tick();assert.equal(f.runtime.getUiLocaleState().preference,'ja');assert.deepEqual(posts,[{baseRevision:1,uiLocale:'ja'}]);f.bridge.dispose();
+});

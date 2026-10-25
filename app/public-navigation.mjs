@@ -37,6 +37,8 @@ export function publicNavigation({locale='en',methodHref='#how',current=null}={}
  return `<nav class="home-navigation" data-ui-aria-label="nav.main" aria-label="${c.main}"><a class="home-nav" data-ui="nav.method" href="${methodHref}">${c.method}</a><a class="home-nav" data-ui="nav.agent" data-public-page="mcp" href="${publicPageHref('mcp',locale)}">${c.agent}</a><a class="home-nav" data-ui="nav.pricing" data-public-page="pricing" href="${publicPageHref('pricing',locale)}"${current==='pricing'?' aria-current="page"':''}>${c.pricing}</a>${githubLink}</nav>`;
 }
 export function publicNavigationMenu({locale='en',languages=''}){
+ const settings={en:'Interface language settings','zh-Hans':'界面语言设置','zh-Hant':'介面語言設定',ja:'表示言語の設定'}[locale]||'Interface language settings';
+ languages+='<a href="/library?settings=appearance" data-ui="ui.language.settings">'+settings+'</a>';
  const c=publicNavigationCopy(locale);
  return `<dialog autofocus id="home-menu" class="home-menu-sheet" aria-labelledby="home-menu-title"><button class="dialog-close" data-close="home-menu" type="button" aria-label="${c.close}">×</button><h2 id="home-menu-title" data-ui="nav.main">${c.main}</h2><nav class="home-menu-links" id="home-menu-links" aria-label="${c.main}"></nav><div class="home-menu-languages" id="home-menu-languages"><span class="home-languages" aria-label="${c.language}">${languages}</span></div></dialog>`;
 }

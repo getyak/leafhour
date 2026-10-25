@@ -106,6 +106,11 @@ export default Object.freeze({
 
   "ui.language.label": "表示言語",
   "ui.language.name": "日本語",
+  "ui.language.systemDescription": "システム設定ではブラウザーの言語を使います。",
+  "ui.language.pageOverride": "このページの言語指定",
+  "ui.language.settings": "表示言語の設定",
+  "ui.locale.pageOnly": "ブラウザーに保存できないため、表示言語はこのページのみ有効です。",
+  "ui.language.option.system": "システムに合わせる",
   "ui.language.option.en": "English",
   "ui.language.option.zh-Hans": "简体中文",
   "ui.language.option.zh-Hant": "繁體中文",

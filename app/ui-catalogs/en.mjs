@@ -107,6 +107,11 @@ export default Object.freeze({
 
   "ui.language.label": "Interface language",
   "ui.language.name": "English",
+  "ui.language.systemDescription": "Browser language is used for System.",
+  "ui.language.pageOverride": "Page language override",
+  "ui.language.settings": "Interface language settings",
+  "ui.locale.pageOnly": "Interface language applies to this page only; browser storage is unavailable.",
+  "ui.language.option.system": "System",
   "ui.language.option.en": "English",
   "ui.language.option.zh-Hans": "简体中文",
   "ui.language.option.zh-Hant": "繁體中文",

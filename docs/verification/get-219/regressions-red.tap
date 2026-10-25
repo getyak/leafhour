@@ -1,0 +1,77 @@
+TAP version 13
+# Subtest: GET-219 regression: account system survives history with an old device language
+not ok 1 - GET-219 regression: account system survives history with an old device language
+  ---
+  duration_ms: 3.646084
+  type: 'test'
+  location: '<task-workspace>/tests/ui-locale-system.test.mjs:15:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - 'system'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'system'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<task-workspace>/tests/ui-locale-system.test.mjs:17:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: GET-219 regression: root home uses account system instead of the old device language
+not ok 2 - GET-219 regression: root home uses account system instead of the old device language
+  ---
+  duration_ms: 0.939084
+  type: 'test'
+  location: '<task-workspace>/tests/ui-locale-system.test.mjs:19:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    'en' !== 'ja'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ja'
+  actual: 'en'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<task-workspace>/tests/ui-locale-system.test.mjs:22:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: GET-219 regression: denied storage keeps session system in generated links
+not ok 3 - GET-219 regression: denied storage keeps session system in generated links
+  ---
+  duration_ms: 2.953334
+  type: 'test'
+  location: '<task-workspace>/tests/ui-locale-system.test.mjs:24:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    'en' !== 'ja'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ja'
+  actual: 'en'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<task-workspace>/tests/ui-locale-system.test.mjs:26:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 56.651208

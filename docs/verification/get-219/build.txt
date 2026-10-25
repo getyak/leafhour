@@ -1,0 +1,2 @@
+{"kind":"runtime","files":928,"bytes":9404531,"initialized":true}
+Built hosted library and reader at <registered-artifact>/public-build; private content stays in Supabase.

@@ -1,6 +1,6 @@
 import {billingErrorDetails} from './owner-scope.mjs';
 import {readingChatQuoteFromExcerpt} from './reading-chat-quote.mjs';
-import {t,getUiLocale,uiHref,onUiLocaleChange} from './ui-locale.mjs';
+import {getUiLinkLocale,t,uiHref,onUiLocaleChange} from './ui-locale.mjs';
 import {mountReaderChatWorkspace} from './reader-chat-workspace.mjs';
 import {readerLoginUrl} from './reader-return.mjs';
 import {mountReaderCompanion,mountCompanionAnchor} from './reader-companion.mjs';
@@ -25,7 +25,7 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
   const events=globalThis.document,listeners=[];
   const on=(name,handler)=>{events.addEventListener(name,handler);listeners.push(()=>events.removeEventListener(name,handler));};
   const requireActive=()=>{if(disposed)throw Object.assign(Error('Conversation disposed'),{code:'READER_CONVERSATION_DISPOSED'});};
-  const openAuth=()=>{if(disposed)return;const passageId=context()?.passageId;navigate(readerLoginUrl({bookId,passageId,ui:getUiLocale()}));};
+  const openAuth=()=>{if(disposed)return;const passageId=context()?.passageId;navigate(readerLoginUrl({bookId,passageId,ui:getUiLinkLocale()}));};
   let disposeChat;
   const dispose=()=>{if(disposed)return;disposed=true;for(const remove of listeners)remove();companion?.dispose();uploadController?.dispose();disposeChat?.();workspace?.dispose();externalLauncher?.position?.dispose();};
   const sessionChanged=()=>{requireActive();companion?.dispose();chat?.reset();dispose();events.dispatchEvent(new CustomEvent('reader:session-changed'));replace(uiHref('/library'));throw Object.assign(Error(t('conversation.accountChanged')),{status:409});};

@@ -128,8 +128,8 @@ dialog.library-settings-dialog:not([open]){display:none}
 
 /* Interface language shares the settings hierarchy and native radio behavior. */
 .settings-locale{display:grid;gap:8px;min-width:0;margin:0;padding:0;border:0}
-.settings-locale .ui-locale-current{display:none} /* the group title names the group; choices name themselves */
-.settings-locale .ui-locale-choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;min-inline-size:0;margin:0;padding:0;border:0}
+.settings-locale .ui-locale-current{margin:0;font-size:13px;line-height:1.8;color:var(--muted)} /* the group title names the group; choices name themselves */
+.settings-locale .ui-locale-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-inline-size:0;margin:0;padding:0;border:0}
 .settings-locale .ui-locale-choice{display:flex;align-items:center;gap:9px;min-width:0;min-height:44px;padding:8px 10px;border:1px solid transparent;border-radius:5px;color:var(--muted);font-size:13px;line-height:1.6;cursor:pointer}
 .settings-locale .ui-locale-choice:hover{background:var(--surface-soft);color:var(--ink)}
 .settings-locale .ui-locale-choice:has(input:checked){border-color:var(--line-control);background:var(--surface);color:var(--ink)}
@@ -145,3 +145,5 @@ dialog.library-settings-dialog:not([open]){display:none}
 @media(max-width:980px){.appearance-card{grid-template-rows:1fr 1fr;align-items:center}.appearance-card .theme-preview{grid-column:1;grid-row:1 / 3}.appearance-name{grid-column:2;grid-row:1;align-self:end}.appearance-detail{grid-column:2;grid-row:2;align-self:start}}
 
 .settings-switch-label,.daily-connection{text-wrap:balance}
+
+.settings-locale .ui-locale-choice:first-of-type{grid-column:1 / -1}

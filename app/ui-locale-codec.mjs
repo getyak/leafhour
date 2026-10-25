@@ -7,6 +7,15 @@ export const UI_LOCALES=Object.freeze(['en','zh-Hans','zh-Hant','ja']);
 export const DEFAULT_UI_LOCALE='en';
 export const UI_PARAM='ui';
 export const UI_PREFERENCE_KEY='leafhour.ui.locale.v1';
+export const UI_SESSION_PREFERENCE_KEY='leafhour.ui.locale.session.v1';
+export const UI_PREFERENCES=Object.freeze(['system',...UI_LOCALES]);
+export const isUiPreference=value=>value==='system'||isUiLocale(value);
+export function resolveUiPreference({manual=null,account=null,device=null}={}){
+  for(const [preference,preferenceSource] of [[manual,'manual'],[account,'account'],[device,'device']]){
+    if(isUiPreference(preference))return {preference,preferenceSource};
+  }
+  return {preference:'system',preferenceSource:'default'};
+}
 
 // Owned URL/device/API values use the exact four canonical codes. Only the
 // bounded navigator mapping below accepts BCP-47 forms.
@@ -17,15 +26,20 @@ export function isUiLocale(value){
 // Bounded navigator BCP-47 mapping: only the listed language tags map to a
 // canonical code. Arbitrary ja-/en- suffixes, unknown tags and whitespace are
 // unsupported here as well as in owned URLs.
-const NAVIGATOR_LOCALE_ALIASES=/* @__PURE__ */Object.freeze({
-  en:'en', 'en-us':'en', 'en-gb':'en', 'en-au':'en', 'en-ca':'en',
-  zh:'zh-Hans', 'zh-cn':'zh-Hans', 'zh-sg':'zh-Hans', 'zh-hans':'zh-Hans',
-  'zh-tw':'zh-Hant', 'zh-hk':'zh-Hant', 'zh-mo':'zh-Hant', 'zh-hant':'zh-Hant',
-  ja:'ja', 'ja-jp':'ja'
-});
 export function normalizeUiLocale(value){
   if(typeof value!=='string')return null;
-  return NAVIGATOR_LOCALE_ALIASES[value.trim().toLowerCase()]||null;
+  // Validate BCP-47 before mapping: scripts/regions belong to navigator only,
+  // never to the four-code URL grammar. Explicit Chinese script wins region.
+  try{
+    const locale=new Intl.Locale(value);
+    if(!/^(?:en|ja|zh)(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}|\d{3}))?$/.test(locale.baseName))return null;
+    if(locale.language==='en'||locale.language==='ja')return locale.language;
+    if(locale.language==='zh'){
+      if(locale.script)return locale.script==='Hant'?'zh-Hant':locale.script==='Hans'?'zh-Hans':null;
+      return ['TW','HK','MO'].includes(locale.region)?'zh-Hant':'zh-Hans';
+    }
+  }catch{}
+  return null;
 }
 
 // Browser-language fallback: the first language that maps to a supported code.
@@ -70,27 +84,28 @@ export function mergeOwnedUi(search,code){
   return params.toString();
 }
 
+// Share the URL split so owned-link and safe-return parsing stay identical.
+function uiUrlParts(url){
+  const raw=String(url||''),hashAt=raw.indexOf('#');
+  const hash=hashAt<0?'':raw.slice(hashAt),base=hashAt<0?raw:raw.slice(0,hashAt),queryAt=base.indexOf('?');
+  return [queryAt<0?base:base.slice(0,queryAt),queryAt<0?'':base.slice(queryAt+1),hash];
+}
 export function withUiParam(url,code){
   if(!isUiLocale(code))throw Object.assign(Error('Invalid UI locale for owned link'),{code:'UI_LOCALE_INVALID'});
-  const raw=String(url||'');
-  const hashAt=raw.indexOf('#');
-  const hash=hashAt<0?'':raw.slice(hashAt);
-  const withoutHash=hashAt<0?raw:raw.slice(0,hashAt);
-  const queryAt=withoutHash.indexOf('?');
-  const pathname=queryAt<0?withoutHash:withoutHash.slice(0,queryAt);
-  const search=queryAt<0?'':withoutHash.slice(queryAt+1);
+  const [pathname,search,hash]=uiUrlParts(url);
   return pathname+'?'+mergeOwnedUi(search,code)+hash;
 }
 
-// Reads the single validated ui from an owned URL. Returns the effective code
-// decision data, never a fallback opinion.
-export function readUiParam(url){
-  const raw=String(url||'');
-  const hashAt=raw.indexOf('#');
-  const withoutHash=hashAt<0?raw:raw.slice(0,hashAt);
-  const queryAt=withoutHash.indexOf('?');
-  return parseUiParam(queryAt<0?'':withoutHash.slice(queryAt+1));
+// System is a mode, so navigation must not freeze today's resolved language.
+// Preserve business parameter multiplicity/order and the fragment.
+export function withoutUiParam(url){
+  const [pathname,search,hash]=uiUrlParts(url),params=new URLSearchParams(search);
+  params.delete(UI_PARAM);const query=params.toString();
+  return pathname+(query?'?'+query:'')+hash;
 }
+
+// Reads the one strictly validated owned ui; never a preference opinion.
+export function readUiParam(url){return parseUiParam(uiUrlParts(url)[1]);}
 
 export function validateUiParam(code){
   return isUiLocale(code)?code:null;

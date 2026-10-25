@@ -1,4 +1,4 @@
-import {uiReady,t,onUiLocaleChange,uiHref,getUiLocale,createUiLabels} from './ui-locale.mjs';
+import {getUiLinkLocale,uiReady,t,onUiLocaleChange,uiHref,getUiLocale,createUiLabels} from './ui-locale.mjs';
 import {sourceDescriptionMessages} from './document-source.mjs';
 import {selectedBookId,readerSession,readerFetch} from './reader-api.mjs';
 import {chineseOriginalOnly} from './source-language.mjs';
@@ -122,7 +122,7 @@ export function mountReaderTranslation({bookId,session,document:doc=globalThis.d
   on(button,'click',async()=>{
     if(disposed)return;const passage=selectedPassage();if(!passage)return;
     if(hasDualDrafts(passage)){doc.dispatchEvent(new CustomEvent('reader:translation',{detail:{...passage,reveal:true}}));renderTranslation();return;}
-    if(!session?.user){if(!button.disabled)navigate(readerLoginUrl({bookId,passageId:passage.id,action:'translate',ui:getUiLocale()}));return;}
+    if(!session?.user){if(!button.disabled)navigate(readerLoginUrl({bookId,passageId:passage.id,action:'translate',ui:getUiLinkLocale()}));return;}
     if(button.disabled)return;const passageId=passage.id,ticket=epoch;tasks.begin(passageId);renderTranslation();
     try{
       const intent=session?.billing?.enabled===true?paidIntent(passageId):null;

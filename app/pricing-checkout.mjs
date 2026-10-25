@@ -1,3 +1,4 @@
+import {uiHref} from './ui-locale.mjs';
 import {createBillingClient,billingLabels} from './billing.mjs';
 import {commerceLocale} from './commerce-pages.mjs';
 import {createPricingCheckout} from './pricing-checkout-flow.mjs';
@@ -30,7 +31,7 @@ export async function mountPricingCheckout({document=globalThis.document,window=
   status.replaceChildren(document.createTextNode(text));
   status.setAttribute('role',state.phase==='error'?'alert':'status');
   if(active()){
-   const link=document.createElement('a');link.href='/billing?ui='+encodeURIComponent(locale);link.textContent=c.manage;status.append(' ',link);
+   const link=document.createElement('a');link.href=uiHref('/billing');link.textContent=c.manage;status.append(' ',link);
   }
   if(state.phase==='pending'&&state.orderId&&owner()){
    const confirm=document.createElement('button');confirm.type='button';confirm.className='pricing-confirm';confirm.textContent=c.confirm;confirm.addEventListener('click',()=>{void controller.checkOrder(state.orderId);});status.append(' ',confirm);
@@ -56,7 +57,7 @@ export async function mountPricingCheckout({document=globalThis.document,window=
   }
   auth.open();
  }
- controller=createPricingCheckout({client,openCheckout,onSignIn:showAuth,onChange:render,locale,navigate:url=>window.location.assign(url)});
+ controller=createPricingCheckout({client,openCheckout,onSignIn:showAuth,onChange:render,locale,libraryHref:()=>uiHref('/library'),navigate:url=>window.location.assign(url)});
  for(const button of buttons)button.addEventListener('click',()=>{void controller.choose(button.dataset.pricingSubscribe);});
  const params=new URLSearchParams(window.location.search),order=params.get('order');
  async function checkReturn(){

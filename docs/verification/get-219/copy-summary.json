@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "counts": {
+    "alerts": 2369,
+    "rawAlerts": 2369,
+    "newErrors": 0,
+    "warnings": 1996,
+    "existingDebt": 373,
+    "appliedExceptions": 0,
+    "staleDebt": 0,
+    "staleAllowances": 0,
+    "problems": 0
+  },
+  "newErrors": [],
+  "staleDebt": [],
+  "staleAllowances": [],
+  "tools": {
+    "vale": {
+      "ok": true,
+      "exit": 1,
+      "version": "vale version 3.24.0"
+    },
+    "textlint": {
+      "ok": true,
+      "exit": 1,
+      "version": "v15.8.0"
+    }
+  }
+}
