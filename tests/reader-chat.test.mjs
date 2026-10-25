@@ -348,7 +348,7 @@ test('separate Node processes atomically claim one model run for the same owner 
 test('a recording failure reports its stage without exposing the private question in diagnostic context',async t=>{
   const {create,library}=await fixture(t),diagnostics=[];
   const service=await create({library:{...library,addComment:async()=>{throw Error('private storage error');}},onError:(error,context)=>diagnostics.push(context)});
-  const result=await service.send(alice,'chat-book',input());assert.equal(result.status,'failed');assert.deepEqual(diagnostics,[{phase:'record-question'}]);assert.doesNotMatch(JSON.stringify(diagnostics),/这里|private storage/);
+  const result=await service.send(alice,'chat-book',input());assert.equal(result.status,'failed');assert.deepEqual(diagnostics,[{phase:'record-question',requestId:'question-1'}]);assert.doesNotMatch(JSON.stringify(diagnostics),/这里|private storage/);
 });
 test('a cross-book source is registered under its actual book',async t=>{
   const other=bookFixture();other.bookId='second-book';other.sections[1].paragraphs[0].original='A real second-book source.';
@@ -405,4 +405,17 @@ test('only per-turn preference authorization reaches the actual Agent tools and 
  await service.send(alice,'chat-book',input({id:'memory-no-consent'}));assert.ok(outcomes[0].error);assert.equal((await library.getPreferenceMemory(alice)).revision,0);
  await service.send(alice,'chat-book',input({id:'memory-with-consent',preferenceWrites:true}));assert.equal(outcomes[1].preferences.theme,'night');
  await assert.rejects(service.send(alice,'chat-book',input({id:'memory-no-consent',preferenceWrites:true})),e=>e.status===409);
+});
+
+test('generation and price failures publish only a safe stage and the original identity',async t=>{
+ for(const [error,code] of [[Error('private provider output'),'generation_failed'],[Object.assign(Error('private price details'),{code:'PRICING_REFERENCE_UNAVAILABLE'}),'pricing_unavailable']]){
+  const {service}=await fixture(t,{generator:async()=>{throw error;}});
+  const result=await service.send(alice,'chat-book',input());assert.equal(result.status,'failed');assert.equal(result.failureCode,code);assert.equal(result.id,'question-1');assert.equal(result.answer,null);assert.doesNotMatch(JSON.stringify(result),/private provider|private price/);
+ }
+});
+test('failed persistence never publishes a completed answer and records save recovery',async t=>{
+ const store=sharedStore(),mutate=store.mutate;let injected=false;
+ store.mutate=async function(file,fallback,operation){return mutate.call(this,file,fallback,async data=>{const out=await operation(data);if(!injected&&out?.status==='completed'){injected=true;throw Error('synthetic failed final save');}return out;});};
+ const {service}=await fixture(t,{dataStore:store,generator:async()=>validAnswer()});
+ const result=await service.send(alice,'chat-book',input());assert.equal(result.status,'failed');assert.equal(result.failureCode,'save_failed');assert.equal(result.answer,null);assert.equal((await service.view(alice,'chat-book')).turns[0].status,'failed');
 });

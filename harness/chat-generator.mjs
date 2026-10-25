@@ -1,6 +1,7 @@
 import {encodeReadingChatInput} from '../app/reading-chat-input.mjs';
 import {DEFAULT_MODELS} from '../server/model-config.mjs';
 import {providerMeterContext,withProviderMeter,createDshMeter,recordProviderDispatch} from '../server/provider-metering.mjs';
+import {assertPricingWindow} from '../server/pricing-reference.mjs';
 import {createProviderBudget} from '../server/provider-pricing.mjs';
 import {createServer} from 'node:http';
 import {randomBytes,randomUUID,timingSafeEqual} from 'node:crypto';
@@ -11,13 +12,15 @@ import {fileURLToPath,pathToFileURL} from 'node:url';
 const project=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 
 // Reservations deliberately overestimate tokens using UTF-8 bytes. They are not invoices.
-function createLegacyChatBudget({pricing,maxCostCny=.75,maxRequests=8,maxToolCalls=24}={}){
- if(!pricing||!Number.isFinite(Date.parse(pricing.validUntil))||Date.now()>Date.parse(pricing.validUntil)||pricing.inputMissPerMillion!==2||pricing.outputPerMillion!==8)throw Error('Pricing reference expired or unavailable');
+function createLegacyChatBudget({pricing,maxCostCny=.75,maxRequests=8,maxToolCalls=24,clock=Date.now}={}){
+ assertPricingWindow(pricing,clock());
+ if(pricing.inputMissPerMillion!==2||pricing.outputPerMillion!==8)throw Error('Pricing reference expired or unavailable');
  if(!Number.isFinite(maxCostCny)||maxCostCny<=0)throw Error('Invalid cost budget');
  let requests=0,toolCalls=0,reservedCostCny=0,blocked=false;const requestSizes=[];
  const fail=()=>{blocked=true;throw Error('Generation budget exhausted');};
  return {
   reserveRequest({inputBytes,maxTokens,kind}={}){
+   assertPricingWindow(pricing,clock());
    if(blocked||!['main','web'].includes(kind)||!Number.isSafeInteger(inputBytes)||inputBytes<0||inputBytes>65536||!Number.isSafeInteger(maxTokens)||maxTokens<=0||requests>=maxRequests)return fail();
    const inputCost=inputBytes*2/1e6,remaining=maxCostCny-reservedCostCny-inputCost;
    const permitted=Math.min(maxTokens,kind==='main'?3072:1024,Math.floor((remaining+1e-12)*1e6/8));
@@ -33,7 +36,7 @@ function createLegacyChatBudget({pricing,maxCostCny=.75,maxRequests=8,maxToolCal
 
 export function createChatBudget({pricing,maxCostCny=.75,maxRequests=8,maxToolCalls=24,clock=Date.now,usdPricing}={}){
  const meter=providerMeterContext(),paid=meter&&(meter.maxCostUsd!==undefined||['credits','purchased','trial'].includes(meter.funding));
- const budget=paid?createProviderBudget({maxCostUsd:Math.min(meter.maxCostUsd??.12,.12),maxRequests,maxToolCalls,clock,...(usdPricing?{pricing:usdPricing}:{})}):createLegacyChatBudget({pricing,maxCostCny,maxRequests,maxToolCalls});
+ const budget=paid?createProviderBudget({maxCostUsd:Math.min(meter.maxCostUsd??.12,.12),maxRequests,maxToolCalls,clock,...(usdPricing?{pricing:usdPricing}:{})}):createLegacyChatBudget({pricing,maxCostCny,maxRequests,maxToolCalls,clock});
  const attempts=[],reserve=budget.reserveRequest;let blocked=false;
  budget.reserveRequest=request=>{
   if(paid&&(blocked||request?.maxTokens>(request?.kind==='web'?1024:3072))){blocked=true;throw Error('Generation budget exhausted');}

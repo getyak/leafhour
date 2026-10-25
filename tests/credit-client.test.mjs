@@ -71,3 +71,16 @@ test('consent cancellation and quote failure are marked as not yet submitted',as
  const prepare=helper('prepareCreditRequest'),t=setup();t.f.confirm=()=>false;
  await assert.rejects(prepare({...t.f,url:'/api/library/books/book-1/translate',data:input}),error=>error.code==='BILLING_CONSENT_CANCELLED'&&error.preSubmit===true);
 });
+
+test('paid conversation quotes and preserves explicit per-turn preference consent',async()=>{
+ const t=setup(),data={...input,text:'Explain this.',scopeRevision:0,preferenceWrites:true};
+ t.f.fetcher=async(url,options)=>{t.calls.push({url,options});return reply(url==='/api/auth/session'?{user:{id:'A'}}:{id:'q-chat',ownerId:'A',action:'conversation',units:4000000,scope:{bookId:'book-1',requestId:data.id,passageId:data.passageId,contentVersion:data.contentVersion}});};
+ const prepared=await helper('prepareCreditRequest')({...t.f,url:'/api/library/books/book-1/chat',data});
+ assert.equal(prepared.preferenceWrites,true);assert.deepEqual(JSON.parse(t.calls.find(c=>c.url==='/api/billing/quotes').options.body).input,data);assert.equal(prepared.billing.quoteId,'q-chat');
+ await assert.rejects(helper('prepareCreditRequest')({...t.f,url:'/api/library/books/book-1/chat',data:{...data,id:'bad',preferenceWrites:'true'}}),e=>e.code==='BILLING_INVALID_INPUT');
+});
+
+
+test('point confirmation includes explicit per-question preference authority',()=>{
+ const text=helper('creditConsentText');assert.match(text({action:'conversation',units:4000000,locale:'en',preferenceWrites:true}),/updates are allowed/);assert.match(text({action:'conversation',units:4000000,locale:'en',preferenceWrites:false}),/updates are off/);
+});

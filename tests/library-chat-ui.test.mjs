@@ -412,3 +412,30 @@ test('Stop during price confirmation prevents later paid dispatch',async t=>{
  s.find('library-chat-stop').click();await flush();release();await flush();
  assert.equal(dispatched,0);assert.equal(cancelled,0);assert.equal(s.input().disabled,false);assert.equal(s.input().value,'Read this source with me.');
 });
+
+function outsideEvent(doc,type,target,props={}){const event=new Event(type,{cancelable:true});Object.defineProperty(event,'target',{value:target});Object.assign(event,props);doc.dispatchEvent(event);return event;}
+test('outside click dismisses chat without stealing focus or losing its draft',async t=>{
+ const s=setup(t);s.chat.open();await flush();type(s.input(),'Keep my draft.');s.input().focus();
+ outsideEvent(s.doc,'pointerdown',s.external,{button:0});s.external.focus();outsideEvent(s.doc,'click',s.external,{button:0});
+ assert.equal(s.root.open,false);assert.equal(s.doc.activeElement,s.external);s.chat.open();await flush();assert.equal(s.input().value,'Keep my draft.');
+});
+test('pointer exit, inside-to-outside drag and opener clicks do not dismiss the conversation',async t=>{
+ const s=setup(t);s.chat.open();await flush();
+ outsideEvent(s.doc,'pointerleave',s.root);assert.equal(s.root.open,true);
+ outsideEvent(s.doc,'pointerdown',s.input(),{button:0});outsideEvent(s.doc,'click',s.external,{button:0});assert.equal(s.root.open,true);
+ const launcher=s.find('library-chat-launcher');outsideEvent(s.doc,'pointerdown',launcher,{button:0});outsideEvent(s.doc,'click',launcher,{button:0});assert.equal(s.root.open,true);
+});
+test('an outside handoff click that opens chat is not dismissed by its own bubbling event',async t=>{
+ const s=setup(t);outsideEvent(s.doc,'pointerdown',s.external,{button:0});s.chat.open();outsideEvent(s.doc,'click',s.external,{button:0});assert.equal(s.root.open,true);await flush();
+ outsideEvent(s.doc,'pointerdown',s.external,{button:0});s.chat.open({messageId:'new-companion'});outsideEvent(s.doc,'click',s.external,{button:0});assert.equal(s.root.open,true);
+});
+test('More closes on a composer click and Escape dismisses the nearest open surface first',async t=>{
+ const s=setup(t);s.chat.open();await flush();const menu=s.find('library-chat-menu');menu.open=true;
+ outsideEvent(s.doc,'click',s.input(),{button:0});assert.equal(menu.open,false);assert.equal(s.root.open,true);
+ menu.open=true;const key=new Event('keydown',{cancelable:true});Object.assign(key,{key:'Escape'});s.root.dispatchEvent(key);assert.equal(menu.open,false);assert.equal(s.root.open,true);
+});
+test('outside dismissal leaves a running question recoverable without a second POST',async t=>{
+ const s=setup(t);s.chat.open();await flush();type(s.input(),'Explain this passage.');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();
+ outsideEvent(s.doc,'pointerdown',s.external,{button:0});outsideEvent(s.doc,'click',s.external,{button:0});assert.equal(s.root.open,false);
+ s.complete();s.chat.open();await flush();assert.equal(s.calls.filter(c=>c.payload).length,1);assert.ok(s.find('library-chat-answer'));
+});

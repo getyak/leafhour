@@ -33,11 +33,12 @@ test('plugin blocks native tools and refuses unaffordable frozen requests before
  }finally{await bridge.close();}
 });
 const good={sessionId:'fixture',finalResponse:'你好，可以聊聊你正在读的书。',events:[{type:'assistant/message',data:{message:{content:[{type:'text',text:'你好'}]}}},{type:'turn/end',data:{reason:{kind:'completed'}}}]};
+const shippedPricing=JSON.parse(await readFile(new URL('../harness/pricing.json',import.meta.url),'utf8'));
 const fixtureClocks=new WeakSet();
 async function fixture(t,result=good,runImpl,options={}){
  // Runtime simulations use the recorded pricing baseline, independently of
  // today's date. Keep real timers so timeout and cancellation still execute.
- if(!fixtureClocks.has(t)){t.mock.timers.enable({apis:['Date'],now:Date.parse(pricing.checkedAt)});fixtureClocks.add(t);}
+ if(!fixtureClocks.has(t)){t.mock.timers.enable({apis:['Date'],now:Date.parse(shippedPricing.checkedAt)});fixtureClocks.add(t);}
  const runRoot=await mkdtemp(path.join(tmpdir(),'chat-test-'));t.after(()=>rm(runRoot,{recursive:true,force:true}));const calls=[];let closed=0,markStarted;const started=new Promise(resolve=>{markStarted=resolve;});const createHarness=options=>({async start(){calls.push(options);},async run(text,opts){calls.push({text,opts});markStarted();return runImpl?runImpl():result;},async close(){closed++;}});return {runRoot,calls,started,get closed(){return closed;},generate:createChatGenerator({runRoot,env:{PATH:process.env.PATH,DEEPSEEK_API_KEY:'fake',DATABASE_SECRET:'never'},createHarness,...options})};}
 const job=()=>({runId:'same-id',book:{bookId:'book',contentVersion:'v1',title:'Book'},passageId:'p1',text:'Hi',history:[{role:'assistant',content:'earlier'}],tools});
 test('the real pricing expiry rejects before starting a simulated runtime',async t=>{
@@ -78,7 +79,7 @@ test('expired and revoked plugins stop before model dispatch, including during s
 
 test('timeout closes started runtime and sends only a secret-free reservation receipt',async t=>{const receipts=[];const f=await fixture(t,good,()=>new Promise(()=>{}),{timeoutMs:500,onReceipt:r=>receipts.push(r)});await assert.rejects(f.generate(job()),/取消|超时/);assert.equal(f.closed,1);assert.equal(receipts.length,1);assert.equal(receipts[0].settlement,'reservation-not-invoice');assert.ok(receipts[0].pricing.source);assert.ok(receipts[0].pricing.checkedAt);assert.doesNotMatch(JSON.stringify(receipts),/fake|earlier|Book/);});
 for(const boundary of ['close','abort','expiry'])test(`auxiliary reservation capability is revoked across await on ${boundary}`,async t=>{
- t.mock.timers.enable({apis:['Date','setTimeout'],now:1700000000000});
+ t.mock.timers.enable({apis:['Date','setTimeout'],now:Date.parse(pricing.checkedAt)});
  let ready,release,settle,dispatches=0;const started=new Promise(r=>ready=r),paused=new Promise(r=>release=r),finished=new Promise(r=>settle=r),controller=new AbortController(),budget=createChatBudget({pricing});
  const bridge=await createChatBridge({budget,signal:controller.signal,expiresAt:Date.now()+100,tools:{...tools,async execute(name,args,{reserveRequest}){ready();await paused;try{reserveRequest({kind:'web',inputBytes:100,maxTokens:1024});dispatches++;}finally{settle();}return {};}}});
  const pending=fetch(bridge.url+'/tool',{method:'POST',headers:{Authorization:'Bearer '+bridge.token},body:JSON.stringify({name:'reader_get_context',args:{}})}).catch(()=>null);

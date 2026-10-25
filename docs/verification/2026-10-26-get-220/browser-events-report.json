@@ -1,0 +1,26 @@
+{
+  "kind": "GET-220-browser",
+  "at": "2026-10-25T17:59:30.143Z",
+  "engine": "155.0.8059.85",
+  "cases": [],
+  "checks": [
+    "capture outside target executes once, keeps focus and draft",
+    "pointer exit, right click and inside drag do not dismiss",
+    "cancelled exterior pointer gesture does not dismiss",
+    "keyboard outside activation executes once and preserves focus",
+    "same-click audio handoff stays open and preserves an existing draft",
+    "native separator resize keeps body and reading position",
+    "More boundary wheel stays inside the menu",
+    "Escape unwinds explanation, settings, More and chat in order",
+    "native source selection survives opening and closing without a layout change",
+    "mobile focus containment and desktop breakpoint restore inert and scroll ownership",
+    "half CSS viewport at DPR 2 keeps close and composer within 200 percent equivalent bounds"
+  ],
+  "failures": [],
+  "limits": [
+    "Synthetic local generator proves HTTP, validation and persistence, not the production provider.",
+    "CompositionEvent tests do not prove a physical OS IME.",
+    "A half CSS viewport at DPR 2 models 200 percent layout; native browser toolbar zoom and physical soft keyboards remain unverified."
+  ],
+  "passed": true
+}

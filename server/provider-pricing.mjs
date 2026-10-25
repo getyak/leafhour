@@ -1,3 +1,4 @@
+import {assertPricingWindow} from './pricing-reference.mjs';
 // Verified against the official pricing page on 2026-10-21. USD estimates are
 // separate from customer credits and from the legacy CNY admission guard.
 export const DEEPSEEK_PRICING=Object.freeze({
@@ -11,7 +12,7 @@ export const DEEPSEEK_PRICING=Object.freeze({
 const knownCount=value=>Number.isSafeInteger(value)&&value>=0;
 function reference(pricing,model,now){
  if(model!==pricing?.model||model!=='deepseek-flash')throw Error('Model pricing unavailable');
- if(!Number.isFinite(now)||!Number.isFinite(Date.parse(pricing.checkedAt))||!Number.isFinite(Date.parse(pricing.validUntil))||now<Date.parse(pricing.checkedAt)||now>=Date.parse(pricing.validUntil))throw Error('Pricing reference expired or unavailable');
+ assertPricingWindow(pricing,now);
  for(const period of ['peak','offpeak'])for(const field of ['inputPerMillion','cacheReadPerMillion','outputPerMillion'])if(!Number.isFinite(pricing[period]?.[field])||pricing[period][field]<=0)throw Error('Pricing reference unavailable');
  return pricing;
 }

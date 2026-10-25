@@ -23,7 +23,7 @@ function failure(error){
   }
   if(queue.length)causeLimitReached=true;
   const message=causes.map(e=>{const text=field(e,'message');if(typeof text!=='string')return '';const part=text.slice(0,Math.min(8192,32768-textBytes));textBytes+=part.length;return part;}).join(' ');
-  const codes=['ERR_MODULE_NOT_FOUND','MODULE_NOT_FOUND','ERR_DLOPEN_FAILED','ERR_INVALID_ARG_TYPE','ENOENT','EROFS','EACCES','EPERM','ETIMEDOUT','EINVAL','EADDRINUSE','EADDRNOTAVAIL','ECONNREFUSED','ECONNRESET','ENOTFOUND'];
+  const codes=['PRICING_REFERENCE_UNAVAILABLE','ERR_MODULE_NOT_FOUND','MODULE_NOT_FOUND','ERR_DLOPEN_FAILED','ERR_INVALID_ARG_TYPE','ENOENT','EROFS','EACCES','EPERM','ETIMEDOUT','EINVAL','EADDRINUSE','EADDRNOTAVAIL','ECONNREFUSED','ECONNRESET','ENOTFOUND'];
   const code=causes.map(e=>field(e,'code')).find(code=>codes.includes(code))||codes.find(code=>new RegExp('\\b'+code+'\\b').test(message))||'OTHER';
   const allowedTypes=['Error','TypeError','RangeError','AggregateError','TransportClosedError','RequestTimeoutError','SdkProtocolError','JsonRpcResponseError'];
   const errorTypes=[...new Set(causes.map(e=>{const name=field(e,'name');if(allowedTypes.includes(name))return name;try{if(e instanceof AggregateError)return 'AggregateError';if(e instanceof TypeError)return 'TypeError';if(e instanceof RangeError)return 'RangeError';if(e instanceof Error)return 'Error';}catch{}return null;}).filter(Boolean))];
@@ -53,13 +53,14 @@ export function createReaderChatGenerator({env=process.env,makeGenerator=createC
   const generate=makeGenerator({runRoot:env.VERCEL?path.join(tmpdir(),'marginalia-reading-chat'):undefined,timeoutMs:75000,env,...(inputLabel!==undefined?{inputLabel}:{}),...(systemPrompt!==undefined?{systemPrompt}:{})});
   const reported=new WeakSet();
   const phases=new Set(['record-question','quota','generation','verify-source','verify-version','save-answer','preparation','initialize','run','publish','cleanup']);
-  const reportFailure=(error,{phase}={})=>{
+  const reportFailure=(error,{phase,requestId,runId}={})=>{
     if(error&&typeof error==='object'){if(reported.has(error))return;reported.add(error);}
     const knownStage=field(error,'readerStage'),stage=phases.has(knownStage)?knownStage:phases.has(phase)?phase:'unclassified';
-    const diagnostic={event:'reading-chat-runtime-failed',stage,...failure(error),hosted:!!env.VERCEL,platform:process.platform,arch:process.arch,nodeMajor:Number(process.versions.node.split('.')[0]),bundleManifest:existsSync(path.join(project,'.reader-runtime/manifest.json')),bundleClient:existsSync(path.join(project,'.reader-runtime/node_modules/@deepseek-ai/dsh-sdk-client/lib/index.js'))};
+    const safeId=value=>typeof value==='string'&&/^[A-Za-z0-9][A-Za-z0-9_-]{0,119}$/.test(value);
+    const diagnostic={event:'reading-chat-runtime-failed',stage,...(safeId(requestId)?{requestId}:{}),...(safeId(runId)?{runId}:{}),...failure(error),hosted:!!env.VERCEL,platform:process.platform,arch:process.arch,nodeMajor:Number(process.versions.node.split('.')[0]),bundleManifest:existsSync(path.join(project,'.reader-runtime/manifest.json')),bundleClient:existsSync(path.join(project,'.reader-runtime/node_modules/@deepseek-ai/dsh-sdk-client/lib/index.js'))};
     try{logger(diagnostic);}catch{}
   };
-  const wrapped=async job=>{try{return await generate(job);}catch(error){reportFailure(error);throw error;}};
+  const wrapped=async job=>{try{return await generate(job);}catch(error){reportFailure(error,{requestId:field(job,'requestId'),runId:field(job,'runId')});throw error;}};
   wrapped.reportFailure=reportFailure;return wrapped;
 }
 // GET-195 named annotation factory: same official DSH harness, pricing, client

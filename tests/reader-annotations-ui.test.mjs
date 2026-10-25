@@ -132,3 +132,12 @@ test('a failed read-only annotation module load offers an explicit full reload w
 test('cold bootstrap cannot generate for a changed selection or an owner ABA after the click',async()=>{
  for(const invalidation of ['selection','session','none']){const f=setup();f.dispose();await tick();const loading=gate();f.document.getSelection=()=>null;for(const id of ['show-highlight','annotate-selection']){const node=f.document.createElement('button');node.id=id;f.document.body.append(node);}const control=mountReaderHighlights({document:f.document,getRecords:()=>({highlights:[]}),signedIn:()=>true,available:()=>true,selectionMatches:()=>false,api:f.api,onSelect(){},onNote(){},onChange(){},announce(){},loginUrl:()=>'/library',loadAnnotationModule:()=>loading.promise});try{control.updateTools(selection());f.document.getElementById('annotate-selection').dispatchEvent(new Event('click'));if(invalidation==='selection')control.updateTools({...selection(),parts:[{passageId:'p2',language:'en',variant:'interpretive',start:5,end:9,text:'your'}]});else if(invalidation==='session')f.session();loading.resolve({mountReaderAnnotations});await tick();await tick();assert.equal(f.calls.filter(c=>c.input).length,invalidation==='none'?2:0,'A click must retain its valid target or discard an obsolete import');if(invalidation==='none')assert.equal(f.pending[0].input.quote.parts[0].passageId,'p1');}finally{control.unmount();for(const entry of f.pending)entry.reject(Error('test cleanup'));await tick();}}
 });
+
+test('Escape in a foreground chat leaves the underlying annotation intact',async()=>{
+ const f=setup({held:true});try{
+  await tick();f.controller.openThread(f.thread.id);const card=f.$('.reader-annotation-card');assert.equal(card.hidden,false);
+  const dialog=f.document.createElement('dialog'),input=f.document.createElement('textarea');dialog.setAttribute('open','');dialog.open=true;dialog.append(input);f.document.body.append(dialog);
+  const event=new Event('keydown',{cancelable:true});Object.assign(event,{key:'Escape'});Object.defineProperty(event,'target',{value:input});f.document.dispatchEvent(event);
+  assert.equal(card.hidden,false);assert.equal(event.defaultPrevented,false);
+ }finally{f.dispose();}
+});

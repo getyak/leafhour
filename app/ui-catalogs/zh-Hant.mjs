@@ -2195,4 +2195,11 @@ export default Object.freeze({
   "export.cancelled": "已取消匯出，未發起檔案下載。",
   "export.downloadRequested": "已發起下載，請查看瀏覽器下載清單。",
   "export.glyphError": "PDF 字型無法顯示部分字元，請下載 Markdown 保留完整文字。",
+  "chat.failure.notSubmitted": "尚未送出，提問已保留。請核對授權或點數確認後重試。",
+  "chat.failure.rejected": "這條提問暫不被接受，內容已保留。請核對來源及存取權限。",
+  "chat.failure.generation": "回答產生失敗，提問已保留，可編輯後重試。",
+  "chat.failure.pricing": "AI 暫不可用，價格參考待核驗。提問已保留。",
+  "chat.failure.save": "回答未能儲存，提問已保留。請先查看本次狀態。",
+  "chat.failure.validation": "回答未通過核驗，提問已保留。",
+  "chat.failure.context": "原文已變更，請核對目前段落後重試。",
 });

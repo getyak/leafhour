@@ -2,7 +2,7 @@
 // and settings never pass this gate. Browser consent is presentation; the server
 // remains the authority for identity, quote scope, balance and settlement.
 const PRICES={translation:1000000,conversation:4000000,annotation:4000000};
-const fields={translation:['id','passageId','contentVersion'],conversation:['id','text','passageId','contentVersion','scopeRevision','quote'],annotation:['id','threadId','quote','highlightId','text','responseLocale']};
+const fields={translation:['id','passageId','contentVersion'],conversation:['id','text','passageId','contentVersion','scopeRevision','quote','preferenceWrites'],annotation:['id','threadId','quote','highlightId','text','responseLocale']};
 const languages={
  en:{point:n=>n===1?'1 point':`${n} points`,names:{translation:'Dual translation',conversation:'Reading question',annotation:'AI annotation'},consent:(name,price)=>`${name} uses ${price}.\n\nA single-passage dual translation costs 1 point; a reading question or AI annotation costs 4 points. Points are reserved during processing and consumed only after a valid result is saved. Failed, cancelled or undelivered work does not consume purchased points. Saved results, reading, notes and export remain free. Automatic companion messages never use purchased points. Future action buttons show their point price.\n\nUse reading points for this request?`,test:'Test mode: these are sandbox points, not a real payment.\n\n',changed:'Your account changed. Reopen your reading room before using points.',cancelled:'Point use was cancelled. Nothing was submitted.',funds:'Not enough reading points for this request. Open Points & billing or keep reading.',signin:'Sign in before using reading points.',unavailable:'Paid AI is unavailable. You can keep reading and export your records.',invalid:'This quote changed or could not be verified. Refresh before trying again.'},
  'zh-Hans':{point:n=>`${n} 点`,names:{translation:'单段双译',conversation:'阅读对话',annotation:'AI 注解'},consent:(name,price)=>`${name}使用 ${price}。\n\n单段双译 1 点，一次阅读对话或 AI 注解 4 点。处理中先预留，结果校验并保存后才消费。失败、取消或未交付不消费购买点。已有结果、阅读、笔记与导出免费。自动松鼠陪读绝不使用购买点。后续操作按钮会显示点数。\n\n确认本次使用阅读点？`,test:'测试模式：仅使用沙盒点数，不涉及真实付款。\n\n',changed:'账户已变化，请重新进入自己的书房后使用点数。',cancelled:'已取消使用阅读点，本次尚未提交。',funds:'本次阅读点不足。可以打开“额度与账单”，也可以继续阅读。',signin:'请先登录再使用阅读点。',unavailable:'收费 AI 暂不可用，阅读与导出仍可使用。',invalid:'报价已变化或无法核验，请刷新后重试。'},
@@ -13,7 +13,8 @@ const localeCode=locale=>Object.hasOwn(languages,locale)?locale:'en';
 const labels=locale=>languages[localeCode(locale)];
 const fail=(code,status,locale)=>Object.assign(new Error(creditErrorMessage({code,status},locale)),{code,status,preSubmit:true,billingUrl:'/billing?ui='+localeCode(locale)});
 export {creditActionLabel} from './credit-labels.mjs';
-export function creditConsentText({action,units,locale='en',mode='live'}={}){const c=labels(locale);return (mode==='test'?c.test:'')+c.consent(c.names[action]||'',c.point(units/1000000));}
+const preferenceSummary={en:['Preference updates are off.','Preference updates are allowed.'],'zh-Hans':['不可修改阅读偏好。','允许修改阅读偏好。'],'zh-Hant':['不可修改閱讀偏好。','允許修改閱讀偏好。'],ja:['設定は変更できません。','設定の変更を許可。']};
+export function creditConsentText({action,units,locale='en',mode='live',preferenceWrites=false}={}){const c=labels(locale);return (mode==='test'?c.test:'')+c.consent(c.names[action]||'',c.point(units/1000000))+(action==='conversation'?'\n\n'+preferenceSummary[localeCode(locale)][preferenceWrites===true?1:0]:'');}
 export function creditErrorMessage(error,locale='en'){
  const c=labels(locale);return error?.code==='BILLING_ACCOUNT_CHANGED'?c.changed:error?.code==='BILLING_CONSENT_CANCELLED'?c.cancelled:error?.status===402?c.funds:error?.status===401?c.signin:error?.code==='BILLING_INVALID_QUOTE'||error?.code==='BILLING_INVALID_INPUT'||error?.code==='BILLING_INPUT_CHANGED'?c.invalid:c.unavailable;
 }
@@ -41,6 +42,7 @@ async function prepare({url,data,session,owner,isCurrent=()=>true,fetcher=global
  const current=()=>isCurrent()&&session?.user?.id===capturedOwner;
  if(!current())throw fail('BILLING_ACCOUNT_CHANGED',409,locale);
  if(!data||typeof data!=='object'||Array.isArray(data)||Object.keys(data).some(key=>!fields[action].includes(key)))throw fail('BILLING_INVALID_INPUT',400,locale);
+ if(action==='conversation'&&data.preferenceWrites!==undefined&&typeof data.preferenceWrites!=='boolean')throw fail('BILLING_INVALID_INPUT',400,locale);
  const units=session.billing.prices?.[action];
  if(session.billing.unitsPerPoint!==1000000||units!==PRICES[action]||!['live','test'].includes(mode))throw fail('BILLING_INVALID_QUOTE',409,locale);
  let original;try{original=JSON.stringify(data);}catch{throw fail('BILLING_INVALID_INPUT',400,locale);}
@@ -71,11 +73,11 @@ async function prepare({url,data,session,owner,isCurrent=()=>true,fetcher=global
  const quote=cached?cached.quote:await request('/api/billing/quotes',{action,bookId,input:body});
  if(!quote||typeof quote.id!=='string'||!quote.id||quote.id.length>200||quote.units!==units||quote.ownerId!==capturedOwner||quote.action!==action||(quote.mode!==undefined&&quote.mode!==mode)||quote.scope?.bookId!==bookId||quote.scope?.requestId!==body.id||(body.passageId&&quote.scope.passageId!==undefined&&quote.scope.passageId!==body.passageId)||(body.contentVersion&&quote.scope.contentVersion!==undefined&&quote.scope.contentVersion!==body.contentVersion)||(!cached&&quote.expiresAt&&(!Number.isFinite(Date.parse(quote.expiresAt))||Date.parse(quote.expiresAt)<=Date.now()))||(cached&&(typeof cached.idempotencyKey!=='string'||!cached.idempotencyKey||cached.idempotencyKey.length>200)))throw fail('BILLING_INVALID_QUOTE',409,locale);
  await verifyIdentity();
- const schedule=JSON.stringify([mode,session.billing.priceVersion||'',session.billing.unitsPerPoint,...Object.keys(PRICES).map(key=>session.billing.prices[key])]);
+ const schedule=JSON.stringify([mode,session.billing.priceVersion||'',session.billing.unitsPerPoint,...Object.keys(PRICES).map(key=>session.billing.prices[key]),...(action==='conversation'?[body.preferenceWrites===true]:[])]);
  const consentKey='marginalia-credit-consent:v1:'+encodeURIComponent(capturedOwner)+':'+schedule;
  let newlyConsented=false;
  if(!hasConsent(storage,consentKey)){
-  if(typeof confirm!=='function'||!await confirm(creditConsentText({action,units,locale,mode})))throw fail('BILLING_CONSENT_CANCELLED',409,locale);
+  if(typeof confirm!=='function'||!await confirm(creditConsentText({action,units,locale,mode,preferenceWrites:body.preferenceWrites===true})))throw fail('BILLING_CONSENT_CANCELLED',409,locale);
   if(!unchanged())throw fail('BILLING_ACCOUNT_CHANGED',409,locale);
   await verifyIdentity();newlyConsented=true;
  }

@@ -2196,4 +2196,11 @@ export default Object.freeze({
   "export.cancelled": "Export cancelled. No file was requested.",
   "export.downloadRequested": "Download requested. Check your browser downloads.",
   "export.glyphError": "This PDF font cannot display some characters. Download Markdown to preserve the full text.",
+  "chat.failure.notSubmitted": "Not sent. Your question is kept; check access or points.",
+  "chat.failure.rejected": "Question not accepted. Check its source and access; the text is kept.",
+  "chat.failure.generation": "Could not answer. Your question is kept; edit it to retry.",
+  "chat.failure.pricing": "AI is unavailable while prices are checked. Your question is kept.",
+  "chat.failure.save": "Could not save the answer. Your question is kept; check its status.",
+  "chat.failure.validation": "Could not verify the answer. Your question is kept.",
+  "chat.failure.context": "The source changed. Check this passage before retrying.",
 });

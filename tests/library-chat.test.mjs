@@ -104,3 +104,8 @@ test('a confirmed expired or released billing attempt starts a new question ID, 
   assert.equal(chatFailureUncertain({status:503,billingOperation:{status:'running'}}),true);
   assert.equal(chatFailureUncertain({status:503,preSubmit:true}),false);
 });
+
+test('known pre-submit refusal differs from an accepted generation failure without losing the draft',()=>{
+ const {state}=setup();state.setDraft('Keep this question');const request=state.beginSend();state.rejectSend(request.ticket,{status:503,preSubmit:true},{uncertain:false});
+ assert.equal(state.view().turns.at(-1).failureCode,'not_submitted');assert.equal(state.view().draft,'Keep this question');assert.equal(state.view().pending,null);
+});

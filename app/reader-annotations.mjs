@@ -214,7 +214,7 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
  listen(form,'submit',event=>{event.preventDefault();if(thread()?.markOnly===true){saveOwnNote();return;}if(!busy&&!outbox?.current()&&area.value.trim()&&thread()&&!staleQuote(thread().quote))retryRequest();});
  for(const event of ['click','pointerup','keydown'])listen(card,event,e=>{if(event==='keydown'&&e.key==='Escape'&&!e.isComposing&&!composing){e.preventDefault();hide();}e.stopPropagation();});
  listen(card,'focusout',()=>{const token=epoch,own=scope;view.requestAnimationFrame(()=>{if(current(token,own))place();});});
- listen(document,'keydown',event=>{if(event.key==='Escape'&&!card.hidden&&!card.inert&&!card.closest('[inert]')&&!event.isComposing&&!composing){event.preventDefault();event.stopPropagation();hide();}},true);
+ listen(document,'keydown',event=>{if(event.defaultPrevented||event.target?.closest?.('dialog[open]'))return;if(event.key==='Escape'&&!card.hidden&&!card.inert&&!card.closest('[inert]')&&!event.isComposing&&!composing){event.preventDefault();event.stopPropagation();hide();}},true);
  listen(view,'resize',place);listen(view.visualViewport,'resize',place);listen(view,'scroll',()=>{if(!card.hidden)place();},{passive:true});
  listen(document,'reader:layout',()=>{paintBadges();place();});listen(document,'reader:content',()=>{paintBadges();place();});
  listen(document,'reader:chat-layout',()=>{paintBadges();place();});

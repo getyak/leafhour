@@ -14,13 +14,14 @@ import {readChatScope,changeChatScope,checkChatScopeRevision} from '../app/readi
 
 const MAX_TURNS=100,RUN_MS=90000,HOUR_MS=3600000,DAY_MS=86400000,CANCEL_POLL_MS=500;
 const FAILED='这次回答未通过生成或来源核验，你的提问已保留。';
+const FAILURE_CODES=new Set(['generation_failed','pricing_unavailable','save_failed','result_invalid','context_changed','interrupted']);
 const EXPIRED='上次回答已中断或超时，你的提问已保留。';
 const digest=value=>createHash('sha256').update(value).digest('hex');
 const bytes=value=>Buffer.byteLength(JSON.stringify(value));
 const text=(value,max)=>typeof value==='string'&&value.trim().length>0&&value.length<=max&&value.isWellFormed();
 const safeId=value=>typeof value==='string'&&/^[A-Za-z0-9][A-Za-z0-9_-]{0,119}$/.test(value);
 const identity=user=>{if(!text(user?.id,256)||user.is_anonymous)throw invalid('请先进入自己的书房',401);return user;};
-const publicTurn=turn=>structuredClone({id:turn.id,passageId:turn.passageId,contentVersion:turn.contentVersion,...(turn.scopeRevision!==undefined?{scopeRevision:turn.scopeRevision}:{}),text:turn.text,...(turn.preferenceWrites===true?{preferenceWrites:true}:{}),...(turn.quote!==undefined?{quote:turn.quote}:{}),origin:turn.kind==='companion'?'ai':'user',...(turn.kind==='companion'?{kind:'companion'}:{}),createdAt:turn.createdAt,status:turn.status,answer:turn.answer,activity:safeActivity(turn.activity),...(turn.error?{error:turn.error}:{})});
+const publicTurn=turn=>structuredClone({id:turn.id,passageId:turn.passageId,contentVersion:turn.contentVersion,...(turn.scopeRevision!==undefined?{scopeRevision:turn.scopeRevision}:{}),text:turn.text,...(turn.preferenceWrites===true?{preferenceWrites:true}:{}),...(turn.quote!==undefined?{quote:turn.quote}:{}),origin:turn.kind==='companion'?'ai':'user',...(turn.kind==='companion'?{kind:'companion'}:{}),createdAt:turn.createdAt,status:turn.status,answer:turn.answer,activity:safeActivity(turn.activity),...(turn.error?{error:turn.error}:{}),...(turn.status==='failed'&&FAILURE_CODES.has(turn.failureCode)?{failureCode:turn.failureCode}:{})});
 const safeActivity=value=>(Array.isArray(value)?value:[]).slice(-48).map(item=>Object.fromEntries(['tool','label','status','bookId','chapterId'].filter(key=>typeof item[key]==='string'&&item[key].length<=200).map(key=>[key,item[key]])));
 const empty=bookId=>({kind:'marginalia-reader-chat',schemaVersion:1,bookId,turns:[]});
 
@@ -94,7 +95,7 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
     queues.set(file,work);try{return await work;}finally{if(queues.get(file)===work)queues.delete(file);}
   }
   function expire(data,now){
-    for(const turn of data.turns)if(turn.status==='running'&&(!Number.isFinite(turn.expiresAt)||turn.expiresAt<=now))Object.assign(turn,{status:'failed',answer:null,error:EXPIRED});
+    for(const turn of data.turns)if(turn.status==='running'&&(!Number.isFinite(turn.expiresAt)||turn.expiresAt<=now))Object.assign(turn,{status:'failed',answer:null,error:EXPIRED,failureCode:'interrupted'});
   }
   const mutateBook=(user,bookId,operation)=>{const now=clock();return mutate(filename(user,bookId),empty(bookId),data=>{expire(data,now);return operation(data);});};
   function watchRun(user,bookId,id,runId,controller){
@@ -214,7 +215,7 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
       };
       const tools=createReadingAgentTools({library,user,bookId,passageId:input.passageId,scope:claimed.scope.mode,allowPreferenceWrites:input.preferenceWrites===true,signal:controller.signal,onActivity});
       const selected=index.byId.get(input.passageId);
-      phase='generation';const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'conversation',book:{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title},passageId:input.passageId,chapterId:selected.chapterId,chapterTitle:book.chapters.find(c=>c.id===selected.chapterId)?.title||null,text:input.text,...(input.quote?{quote:input.quote}:{}),history:claimed.history,runId,signal:controller.signal,tools})),abort]);
+      phase='generation';const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'conversation',book:{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title},passageId:input.passageId,chapterId:selected.chapterId,chapterTitle:book.chapters.find(c=>c.id===selected.chapterId)?.title||null,text:input.text,...(input.quote?{quote:input.quote}:{}),history:claimed.history,runId,requestId:input.id,signal:controller.signal,tools})),abort]);
       phase='verify-source';
       if(candidate?.kind!=='conversation'||!text(candidate.summary,12000))throw invalid('回答内容无效');
       await tools.verify();
@@ -226,8 +227,10 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
       if(controller.signal.aborted)throw invalid('回答已取消',408);
       phase='save-answer';return await finish(user,bookId,input.id,runId,{status:'completed',answer});
     }catch(error){
-      if(!controller.signal.aborted&&error?.status!==429)try{onError(error,{phase});}catch{}
-      const turn=await finish(user,bookId,input.id,runId,{status:'failed',answer:null,error:FAILED});
+      if(!controller.signal.aborted&&error?.status!==429)try{onError(error,{phase,requestId:input.id});}catch{}
+      const code=Object.getOwnPropertyDescriptor(error||{},'code')?.value;
+      const failureCode=phase==='save-answer'?'save_failed':code==='PRICING_REFERENCE_UNAVAILABLE'?'pricing_unavailable':phase==='verify-source'?'result_invalid':phase==='verify-version'?'context_changed':'generation_failed';
+      const turn=await finish(user,bookId,input.id,runId,{status:'failed',answer:null,error:FAILED,failureCode});
       if(error?.status===429)throw error;
       return turn;
     }finally{stopWatching();clearTimeout(timer);controller.abort();active.delete(key);if(ticket)await releaseGlobal(ticket).catch(()=>{});}

@@ -55,7 +55,7 @@ export function mountReadingToolbar(root,{onExpandedChange=()=>{},document=root.
     updateText();
   }
   const focusHold=()=>{if(!disposed)toolbar.hold('keyboard',keyboard&&panel.contains(document.activeElement));};
-  listen(trigger,'pointerenter',event=>{if(event.pointerType==='mouse'&&!toolbar.expanded){hoverPreview=true;reveal(false);}});
+  listen(trigger,'pointerenter',event=>{if(event.pointerType==='mouse'&&!toolbar.expanded&&!overlayOpen(document)){hoverPreview=true;reveal(false);}});
   listen(root,'pointerenter',event=>{if(event.pointerType==='mouse')toolbar.hold('pointer',true);});
   listen(root,'pointerleave',event=>{if(event.pointerType==='mouse')toolbar.hold('pointer',false);});
   listen(trigger,'click',()=>{if(toolbar.expanded&&!hoverPreview)toolbar.conceal();else{hoverPreview=false;reveal(true);}});

@@ -1,0 +1,1460 @@
+{
+  "kind": "GET-220-browser",
+  "at": "2026-10-25T17:40:58.994Z",
+  "engine": "155.0.8059.85",
+  "cases": [
+    {
+      "id": 1,
+      "width": 1440,
+      "height": 900,
+      "locale": "en",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "1-1440x900-en-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "1-1440x900-en-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "1-1440x900-en-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "1-1440x900-en-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "1-1440x900-en-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 2,
+      "width": 1440,
+      "height": 900,
+      "locale": "en",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "2-1440x900-en-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "2-1440x900-en-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "2-1440x900-en-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "2-1440x900-en-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "2-1440x900-en-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 3,
+      "width": 1440,
+      "height": 900,
+      "locale": "zh-Hans",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "3-1440x900-zh-Hans-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "3-1440x900-zh-Hans-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "3-1440x900-zh-Hans-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "3-1440x900-zh-Hans-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "3-1440x900-zh-Hans-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 4,
+      "width": 1440,
+      "height": 900,
+      "locale": "zh-Hans",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "4-1440x900-zh-Hans-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "4-1440x900-zh-Hans-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "4-1440x900-zh-Hans-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "4-1440x900-zh-Hans-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "4-1440x900-zh-Hans-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 5,
+      "width": 1440,
+      "height": 900,
+      "locale": "zh-Hant",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "5-1440x900-zh-Hant-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "5-1440x900-zh-Hant-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "5-1440x900-zh-Hant-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "5-1440x900-zh-Hant-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "5-1440x900-zh-Hant-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 6,
+      "width": 1440,
+      "height": 900,
+      "locale": "zh-Hant",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "6-1440x900-zh-Hant-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "6-1440x900-zh-Hant-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "6-1440x900-zh-Hant-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "6-1440x900-zh-Hant-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "6-1440x900-zh-Hant-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 7,
+      "width": 1440,
+      "height": 900,
+      "locale": "ja",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "7-1440x900-ja-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "7-1440x900-ja-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "7-1440x900-ja-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "7-1440x900-ja-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "7-1440x900-ja-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 8,
+      "width": 1440,
+      "height": 900,
+      "locale": "ja",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "8-1440x900-ja-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "8-1440x900-ja-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "8-1440x900-ja-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "8-1440x900-ja-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "8-1440x900-ja-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 9,
+      "width": 1200,
+      "height": 600,
+      "locale": "en",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "9-1200x600-en-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "9-1200x600-en-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "9-1200x600-en-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "9-1200x600-en-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "9-1200x600-en-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 10,
+      "width": 1200,
+      "height": 600,
+      "locale": "en",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "10-1200x600-en-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "10-1200x600-en-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "10-1200x600-en-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "10-1200x600-en-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "10-1200x600-en-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 11,
+      "width": 1200,
+      "height": 600,
+      "locale": "zh-Hans",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "11-1200x600-zh-Hans-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "11-1200x600-zh-Hans-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "11-1200x600-zh-Hans-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "11-1200x600-zh-Hans-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "11-1200x600-zh-Hans-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 12,
+      "width": 1200,
+      "height": 600,
+      "locale": "zh-Hans",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "12-1200x600-zh-Hans-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "12-1200x600-zh-Hans-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "12-1200x600-zh-Hans-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "12-1200x600-zh-Hans-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "12-1200x600-zh-Hans-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 13,
+      "width": 1200,
+      "height": 600,
+      "locale": "zh-Hant",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "13-1200x600-zh-Hant-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "13-1200x600-zh-Hant-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "13-1200x600-zh-Hant-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "13-1200x600-zh-Hant-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "13-1200x600-zh-Hant-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 14,
+      "width": 1200,
+      "height": 600,
+      "locale": "zh-Hant",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "14-1200x600-zh-Hant-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "14-1200x600-zh-Hant-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "14-1200x600-zh-Hant-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "14-1200x600-zh-Hant-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "14-1200x600-zh-Hant-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 15,
+      "width": 1200,
+      "height": 600,
+      "locale": "ja",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "15-1200x600-ja-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "15-1200x600-ja-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "15-1200x600-ja-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "15-1200x600-ja-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "15-1200x600-ja-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 16,
+      "width": 1200,
+      "height": 600,
+      "locale": "ja",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "16-1200x600-ja-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "16-1200x600-ja-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "16-1200x600-ja-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "16-1200x600-ja-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "16-1200x600-ja-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 17,
+      "width": 768,
+      "height": 1024,
+      "locale": "en",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "17-768x1024-en-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "17-768x1024-en-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "17-768x1024-en-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "17-768x1024-en-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "17-768x1024-en-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 18,
+      "width": 768,
+      "height": 1024,
+      "locale": "en",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "18-768x1024-en-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "18-768x1024-en-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "18-768x1024-en-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "18-768x1024-en-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "18-768x1024-en-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 19,
+      "width": 768,
+      "height": 1024,
+      "locale": "zh-Hans",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "19-768x1024-zh-Hans-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "19-768x1024-zh-Hans-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "19-768x1024-zh-Hans-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "19-768x1024-zh-Hans-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "19-768x1024-zh-Hans-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 20,
+      "width": 768,
+      "height": 1024,
+      "locale": "zh-Hans",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "20-768x1024-zh-Hans-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "20-768x1024-zh-Hans-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "20-768x1024-zh-Hans-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "20-768x1024-zh-Hans-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "20-768x1024-zh-Hans-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 21,
+      "width": 768,
+      "height": 1024,
+      "locale": "zh-Hant",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "21-768x1024-zh-Hant-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "21-768x1024-zh-Hant-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "21-768x1024-zh-Hant-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "21-768x1024-zh-Hant-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "21-768x1024-zh-Hant-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 22,
+      "width": 768,
+      "height": 1024,
+      "locale": "zh-Hant",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "22-768x1024-zh-Hant-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "22-768x1024-zh-Hant-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "22-768x1024-zh-Hant-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "22-768x1024-zh-Hant-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "22-768x1024-zh-Hant-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 23,
+      "width": 768,
+      "height": 1024,
+      "locale": "ja",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "23-768x1024-ja-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "23-768x1024-ja-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "23-768x1024-ja-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "23-768x1024-ja-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "23-768x1024-ja-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 24,
+      "width": 768,
+      "height": 1024,
+      "locale": "ja",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "24-768x1024-ja-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "24-768x1024-ja-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "24-768x1024-ja-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "24-768x1024-ja-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "24-768x1024-ja-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 25,
+      "width": 390,
+      "height": 844,
+      "locale": "en",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "25-390x844-en-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "25-390x844-en-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "25-390x844-en-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "25-390x844-en-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "25-390x844-en-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 26,
+      "width": 390,
+      "height": 844,
+      "locale": "en",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "26-390x844-en-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "26-390x844-en-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "26-390x844-en-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "26-390x844-en-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "26-390x844-en-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 27,
+      "width": 390,
+      "height": 844,
+      "locale": "zh-Hans",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "27-390x844-zh-Hans-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "27-390x844-zh-Hans-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "27-390x844-zh-Hans-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "27-390x844-zh-Hans-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "27-390x844-zh-Hans-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 28,
+      "width": 390,
+      "height": 844,
+      "locale": "zh-Hans",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "28-390x844-zh-Hans-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "28-390x844-zh-Hans-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "28-390x844-zh-Hans-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "28-390x844-zh-Hans-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "28-390x844-zh-Hans-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 29,
+      "width": 390,
+      "height": 844,
+      "locale": "zh-Hant",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "29-390x844-zh-Hant-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "29-390x844-zh-Hant-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "29-390x844-zh-Hant-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "29-390x844-zh-Hant-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "29-390x844-zh-Hant-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 30,
+      "width": 390,
+      "height": 844,
+      "locale": "zh-Hant",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "30-390x844-zh-Hant-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "30-390x844-zh-Hant-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "30-390x844-zh-Hant-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "30-390x844-zh-Hant-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "30-390x844-zh-Hant-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 31,
+      "width": 390,
+      "height": 844,
+      "locale": "ja",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "31-390x844-ja-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "31-390x844-ja-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "31-390x844-ja-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "31-390x844-ja-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "31-390x844-ja-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 32,
+      "width": 390,
+      "height": 844,
+      "locale": "ja",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "32-390x844-ja-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "32-390x844-ja-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "32-390x844-ja-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "32-390x844-ja-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "32-390x844-ja-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 33,
+      "width": 390,
+      "height": 420,
+      "locale": "en",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "33-390x420-en-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "33-390x420-en-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "33-390x420-en-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "33-390x420-en-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "33-390x420-en-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 34,
+      "width": 390,
+      "height": 420,
+      "locale": "en",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "34-390x420-en-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "34-390x420-en-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "34-390x420-en-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "34-390x420-en-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "34-390x420-en-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 35,
+      "width": 390,
+      "height": 420,
+      "locale": "zh-Hans",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "35-390x420-zh-Hans-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "35-390x420-zh-Hans-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "35-390x420-zh-Hans-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "35-390x420-zh-Hans-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "35-390x420-zh-Hans-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 36,
+      "width": 390,
+      "height": 420,
+      "locale": "zh-Hans",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "36-390x420-zh-Hans-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "36-390x420-zh-Hans-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "36-390x420-zh-Hans-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "36-390x420-zh-Hans-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "36-390x420-zh-Hans-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 37,
+      "width": 390,
+      "height": 420,
+      "locale": "zh-Hant",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "37-390x420-zh-Hant-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "37-390x420-zh-Hant-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "37-390x420-zh-Hant-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "37-390x420-zh-Hant-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "37-390x420-zh-Hant-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 38,
+      "width": 390,
+      "height": 420,
+      "locale": "zh-Hant",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "38-390x420-zh-Hant-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "38-390x420-zh-Hant-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "38-390x420-zh-Hant-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "38-390x420-zh-Hant-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "38-390x420-zh-Hant-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    },
+    {
+      "id": 39,
+      "width": 390,
+      "height": 420,
+      "locale": "ja",
+      "theme": "light",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "39-390x420-ja-light-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "39-390x420-ja-light-open.png"
+        },
+        {
+          "state": "more",
+          "file": "39-390x420-ja-light-more.png"
+        },
+        {
+          "state": "input",
+          "file": "39-390x420-ja-light-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "39-390x420-ja-light-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "paper",
+        "paper": "#faf9f5"
+      },
+      "passed": true
+    },
+    {
+      "id": 40,
+      "width": 390,
+      "height": 420,
+      "locale": "ja",
+      "theme": "dark",
+      "ownerVerified": true,
+      "states": [
+        {
+          "state": "closed",
+          "file": "40-390x420-ja-dark-closed.png"
+        },
+        {
+          "state": "open",
+          "file": "40-390x420-ja-dark-open.png"
+        },
+        {
+          "state": "more",
+          "file": "40-390x420-ja-dark-more.png"
+        },
+        {
+          "state": "input",
+          "file": "40-390x420-ja-dark-input.png"
+        },
+        {
+          "state": "sent",
+          "file": "40-390x420-ja-dark-sent.png"
+        }
+      ],
+      "errors": [],
+      "themeObserved": {
+        "theme": "night",
+        "paper": "#181b19"
+      },
+      "passed": true
+    }
+  ],
+  "checks": [
+    "capture outside target executes once, keeps focus and draft",
+    "pointer exit, right click and inside drag do not dismiss",
+    "native separator resize keeps body and reading position",
+    "Escape unwinds More before chat"
+  ],
+  "failures": [],
+  "limits": [
+    "Synthetic local generator proves HTTP, validation and persistence, not the production provider.",
+    "CompositionEvent tests do not prove a physical OS IME.",
+    "CSS zoom 2 is a layout stress proxy; native browser toolbar zoom and physical soft keyboards remain unverified."
+  ],
+  "passed": true
+}
