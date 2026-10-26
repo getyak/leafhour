@@ -150,3 +150,49 @@ test('parallel reveal labels change in place without revealing text again or rep
   }
   off();
 });
+
+// GET-229: these call the production controller, with API fakes only for the
+// failure/race boundary. Browser-reserved Escape is verified separately.
+test('a delivered F / Escape uses the same native state and a visible exit action',async()=>{
+ const {mountReaderImmersion}=await import('../app/reader-immersion.mjs'),{document,nodes,requests}=fixture();
+ const exit=new Element();nodes.set('reader-exit-fullscreen',exit);document.activeElement=exit;
+ const reader=mountReaderImmersion({document});assert.equal(exit.hidden,true);
+ const key=key=>({key,target:{closest:()=>null},preventDefault(){this.defaultPrevented=true;}});
+ await reader.handleKeydown(key('f'));assert.equal(requests(),1);assert.equal(exit.hidden,false);
+ await reader.handleKeydown(key('Escape'));assert.equal(document.fullscreenElement,null);assert.equal(exit.hidden,true);
+ await reader.handleKeydown(key('Escape'));assert.equal(requests(),1,'Escape can never enter fullscreen');
+ await reader.handleKeydown(key('f'));exit.dispatchEvent(new Event('click'));await Promise.resolve();assert.equal(document.fullscreenElement,null);
+ reader.unmount();exit.dispatchEvent(new Event('click'));assert.equal(requests(),2);
+});
+test('fullscreen shortcuts leave composition, text, modified and held keys alone',async()=>{
+ const {mountReaderImmersion}=await import('../app/reader-immersion.mjs'),{document,requests}=fixture();const reader=mountReaderImmersion({document});
+ for(const patch of [{isComposing:true},{keyCode:229},{repeat:true},{ctrlKey:true},{metaKey:true},{altKey:true},{shiftKey:true},{defaultPrevented:true},{target:{isContentEditable:true}},{target:{closest:()=>({})}}]){
+  await reader.handleKeydown({key:'f',target:{closest:()=>null},preventDefault(){throw Error('claimed an editing key');},...patch});
+ }
+ document.dispatchEvent(new Event('compositionstart'));await reader.handleKeydown({key:'f',target:{closest:()=>null},preventDefault(){throw Error('composition claimed');}});document.dispatchEvent(new Event('compositionend'));
+ assert.equal(requests(),0);reader.unmount();
+});
+test('pending and failed exits never invent a successful exit or reenter after an external exit',async()=>{
+ const {mountReaderImmersion}=await import('../app/reader-immersion.mjs'),{document,nodes,requests}=fixture();const exit=new Element();nodes.set('reader-exit-fullscreen',exit);const notices=[];
+ const reader=mountReaderImmersion({document,announce:v=>notices.push(v)});await reader.toggleFullscreen();let reject,calls=0;document.exitFullscreen=()=>{calls++;return new Promise((_,r)=>reject=r);};
+ const pending=reader.exitFullscreen();assert.equal(exit.hidden,false);assert.equal(document.body.dataset.fullscreen,'true');assert.equal(await reader.exitFullscreen(),false);assert.equal(calls,1);
+ reject(Error('Denied'));assert.equal(await pending,false);assert.equal(exit.hidden,false);assert.equal(notices.length,1);
+ document.fullscreenElement=null;document.dispatchEvent(new Event('fullscreenchange'));assert.equal(exit.hidden,true);assert.equal(await reader.exitFullscreen(),false);assert.equal(requests(),1);reader.unmount();
+});
+test('unavailable API, fullscreenerror and disposed input keep real state and release ownership',async()=>{
+ const {mountReaderImmersion}=await import('../app/reader-immersion.mjs'),{document,nodes,requests}=fixture();document.fullscreenEnabled=false;const exit=new Element();nodes.set('reader-exit-fullscreen',exit);const notices=[];
+ const reader=mountReaderImmersion({document,announce:v=>notices.push(v)});assert.equal(await reader.toggleFullscreen(),false);assert.equal(exit.hidden,true);assert.equal(requests(),0);
+ document.fullscreenElement=document.documentElement;document.dispatchEvent(new Event('fullscreenchange'));assert.equal(exit.hidden,false,'native exit stays available even when entry is unsupported');assert.equal(nodes.get('enter-focus').hidden,false);
+ await reader.exitFullscreen();assert.equal(exit.hidden,true);reader.unmount();document.fullscreenElement=document.documentElement;document.dispatchEvent(new Event('fullscreenerror'));assert.equal(exit.hidden,true);
+});
+test('a rejected exit that raced an external native exit reports the observed result',async()=>{
+ const {mountReaderImmersion}=await import('../app/reader-immersion.mjs'),{document}=fixture(),notices=[];const reader=mountReaderImmersion({document,announce:v=>notices.push(v)});await reader.toggleFullscreen();let reject;document.exitFullscreen=()=>new Promise((_,r)=>reject=r);const pending=reader.exitFullscreen();document.fullscreenElement=null;document.dispatchEvent(new Event('fullscreenchange'));reject(Error('Already exited'));assert.equal(await pending,true);assert.deepEqual(notices,[]);reader.unmount();
+});
+test('expanded reader tools provide the header exit without obscuring it with a second button',async()=>{
+ const {mountReaderImmersion}=await import('../app/reader-immersion.mjs'),{document,nodes}=fixture(),exit=new Element(),pill=new Element();nodes.set('reader-exit-fullscreen',exit);const reader=mountReaderImmersion({document,focusReturn:()=>pill});await reader.toggleFullscreen();assert.equal(exit.hidden,false);document.activeElement=exit;reader.showTools({focus:false});assert.equal(exit.hidden,true);assert.equal(pill.focused,true);assert.equal(nodes.get('enter-focus').hidden,false);reader.closeTools();assert.equal(exit.hidden,false);reader.unmount();
+});
+test('repeated mounts release every owned element/document listener including IME and native errors',async()=>{
+ const {mountReaderImmersion}=await import('../app/reader-immersion.mjs'),{document,nodes}=fixture(),exit=new Element();nodes.set('reader-exit-fullscreen',exit);const owners=[document,...nodes.values()],live=new Set();
+ for(const target of owners){const add=target.addEventListener.bind(target),remove=target.removeEventListener.bind(target);target.addEventListener=(name,fn,options)=>{live.add(fn);add(name,fn,options);};target.removeEventListener=(name,fn,options)=>{live.delete(fn);remove(name,fn,options);};}
+ for(let i=0;i<12;i++){const reader=mountReaderImmersion({document});await reader.toggleFullscreen();await reader.exitFullscreen();assert.ok(live.size>0);reader.unmount();reader.unmount();assert.equal(live.size,0);}
+});

@@ -1,0 +1,58 @@
+[
+  {
+    "engine": "chromium",
+    "entered": {
+      "full": "HTML",
+      "state": "true",
+      "geometry": {
+        "w": 1280,
+        "h": 800,
+        "ow": 1282,
+        "oh": 880
+      },
+      "active": "",
+      "events": [
+        {
+          "type": "keydown",
+          "key": "f",
+          "trusted": true,
+          "full": null
+        },
+        {
+          "type": "fullscreenchange",
+          "trusted": true,
+          "full": "HTML"
+        }
+      ]
+    },
+    "escaped": {
+      "full": null,
+      "state": "false",
+      "geometry": {
+        "w": 1280,
+        "h": 800,
+        "ow": 1282,
+        "oh": 880
+      },
+      "active": "",
+      "events": [
+        {
+          "type": "keydown",
+          "key": "f",
+          "trusted": true,
+          "full": null
+        },
+        {
+          "type": "fullscreenchange",
+          "trusted": true,
+          "full": "HTML"
+        },
+        {
+          "type": "fullscreenchange",
+          "trusted": true,
+          "full": null
+        }
+      ]
+    }
+  }
+]

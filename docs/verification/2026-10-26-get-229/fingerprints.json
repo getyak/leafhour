@@ -1,0 +1,27 @@
+{
+  "sources": {
+    "app/index.html": "cc0b92f0477abd00fc75cac5f28757902fed11183070ee242392b1586b6bd81f",
+    "app/reader-immersion.mjs": "d0b1109ce7f22b4f1b0478856244c832d0d3d1c86773b6d7400fd9d3e359d7fb",
+    "app/reader.js": "d07fea39b3c8673f726ae143a1b9a72a79b896ed9f1cafb43f4973b15fd0bcc6",
+    "app/reader-navigation.css": "02a9aa830adaef21a692d36914683e5d8f8e2804f56e64646124d58add0e4b6c",
+    "tests/reader-immersion.test.mjs": "a3cc966d499feef8c2a7034daabcb125849e482ff501f13262181c71e943c7b9",
+    "tests/audio-boundary.test.mjs": "22d6e01fc83d106a90c2ef1fefbc4d13d5b5c1345d9493824682c34ca437b984",
+    "tests/library-reading-preferences.test.mjs": "8eb28ae1546038f55650465503d9cf60c2d803725158b255a9b35cf79337d4a6",
+    "tests/reading-preferences.test.mjs": "ac30cb3dba4fb7e5c82d17498a0b3d58d3109d77f5677c61f142ec4f7a2b3f1a",
+    "tools/verify-reader-fullscreen.mjs": "a69c370fdc687f758932f1e54c068c60e70604935aee308abd0e8b1e4bd5b2ce",
+    "app/ui-catalogs/en.mjs": "68ab5665456b41413d1809c958da53e455b496c17c351292ada16ac88dca0091",
+    "app/ui-catalogs/zh-Hans.mjs": "cbf7779328d98002d04a613c57f0709fd11fcf8c8b6e8a8146b04cdcc8cbda89",
+    "app/ui-catalogs/zh-Hant.mjs": "d0ca537d6e925a51fbd62882ec2bb20168febfc93e677e0457b4189f1aacabb1",
+    "app/ui-catalogs/ja.mjs": "509b8b5c8c2f636d26787085d89352486b6f4201068223083dc492c0afa26a7f"
+  },
+  "builtAssets": {
+    "dist/reader-web/reader-74c561648033be62.js": {
+      "bytes": 327513,
+      "sha256": "74c561648033be622b6d463bce0eb254a8207cf809ad40d970ced532317cfd0a"
+    },
+    "dist/reader-web/style-73e85074847a865d.css": {
+      "bytes": 203726,
+      "sha256": "73e85074847a865d9a2fc6c1a8cf06d4c41b02908dfa0c0eca521790f434e829"
+    }
+  }
+}

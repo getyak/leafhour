@@ -123,3 +123,7 @@
 #reader-account-logout,#reader-account-login{border:1px solid var(--line-control);border-radius:var(--radius-control)}
 #reader-account-status:empty{display:none}
 .chapter-chooser .running-progress{margin-right:6px}
+
+/* The native fullscreen escape remains visible without revealing reader tools. */
+.reader-fullscreen-exit{position:fixed;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));z-index:5;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;max-width:calc(100vw - 24px);padding:8px 12px;border:1px solid var(--line);border-radius:var(--radius-control,6px);background:var(--paper);color:var(--muted);font:400 12px/1.5 var(--interface)}
+.reader-fullscreen-exit[hidden]{display:none}.reader-fullscreen-exit:hover,.reader-fullscreen-exit:focus-visible{color:var(--ink);background:var(--wash)}.reader-fullscreen-exit kbd{font:inherit;opacity:.7}

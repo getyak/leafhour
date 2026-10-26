@@ -1312,7 +1312,7 @@ export default Object.freeze({
   "reader.shell.viewRecords": "ハイライト、考え、問いを見る",
   "reader.shell.manual": "読書時間を追加",
   "reader.shell.ownRecords": "Leafhour · 自分の読書記録",
-  "reader.shell.instructions": "段落をクリックするか、フォーカスしてEnterで原文、注釈、記録を表示します。ページ送りは ← → または下のボタン。Escで閉じ、Fで全画面を切り替えます。",
+  "reader.shell.instructions": "段落をクリックするか、フォーカスして Enter を押すと、原文・注釈・記録を開けます。ページ表示では ← → または下のボタンで移動できます。対応するブラウザーでは F で全画面を切り替え、Esc で終了します。その際、開いているパネルも閉じる場合があります。通常表示では Esc でパネルを閉じます。",
   "reader.b1.draftUnavailable": "端末の下書きを読み込めません。元データは保持します。復旧用コピーか新しい文のコピーを先に保存してください。",
   "reader.shell.draftHelp": "各下書きは原文の位置を保持します。別々の読書ページの文は個別に保持し、保存後に書斎のノートに入ります。",
   "reader.session.state.active": "{source}中",

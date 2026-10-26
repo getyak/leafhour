@@ -258,7 +258,7 @@
       },
       {
         "file": "app/index.html",
-        "sha256": "00b6e11727cf2903c5ca1e25b670d7be635a65dde6441b105302491f6370e967"
+        "sha256": "cc0b92f0477abd00fc75cac5f28757902fed11183070ee242392b1586b6bd81f"
       },
       {
         "file": "app/interaction-craft.mjs",
@@ -522,7 +522,7 @@
       },
       {
         "file": "app/reader-immersion.mjs",
-        "sha256": "d6bb4fb522d821e4f48131b08a7a96adda905bb9e307011fbc02fefafc9358c7"
+        "sha256": "d0b1109ce7f22b4f1b0478856244c832d0d3d1c86773b6d7400fd9d3e359d7fb"
       },
       {
         "file": "app/reader-navigation.mjs",
@@ -570,7 +570,7 @@
       },
       {
         "file": "app/reader.js",
-        "sha256": "8981d1095aa89f0bac65c5f48744ecc13dbc2154c46fc6995e794db1ca7dca06"
+        "sha256": "d07fea39b3c8673f726ae143a1b9a72a79b896ed9f1cafb43f4973b15fd0bcc6"
       },
       {
         "file": "app/reading-arrival.mjs",
@@ -758,19 +758,19 @@
       },
       {
         "file": "app/ui-catalogs/en.mjs",
-        "sha256": "74a527829c1d72ca114de167e5586fe1e9dac29842c0236e03f36e3c705d96b6"
+        "sha256": "68ab5665456b41413d1809c958da53e455b496c17c351292ada16ac88dca0091"
       },
       {
         "file": "app/ui-catalogs/ja.mjs",
-        "sha256": "5735c635d5d7a75b8e7609be1d5f14570e583e3cbee14da3e57ca5fcd816f1f8"
+        "sha256": "509b8b5c8c2f636d26787085d89352486b6f4201068223083dc492c0afa26a7f"
       },
       {
         "file": "app/ui-catalogs/zh-Hans.mjs",
-        "sha256": "82dff906f52c67a1eef7b556029ab8bd709ca032b79d25cce91eee9c4b5c5151"
+        "sha256": "cbf7779328d98002d04a613c57f0709fd11fcf8c8b6e8a8146b04cdcc8cbda89"
       },
       {
         "file": "app/ui-catalogs/zh-Hant.mjs",
-        "sha256": "6febd022c1399495be70d35fece098ecf56b4dd1a60dad6c339d2fc37eb65725"
+        "sha256": "d0ca537d6e925a51fbd62882ec2bb20168febfc93e677e0457b4189f1aacabb1"
       },
       {
         "file": "app/ui-locale-codec.mjs",
@@ -1133,7 +1133,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "6eb5a87747630564906e15fa1d59b30614820dd18f9c220241874c637f106427"
+    "inputDigest": "6d2808dacc6e021f78c30f059414ddb87a7f51f2e876ab468605e25d20e98376"
   },
   "locales": [
     "en",
@@ -11700,7 +11700,7 @@
         },
         {
           "file": "app/reader.js",
-          "line": 130,
+          "line": 132,
           "column": 58
         }
       ],
@@ -16354,7 +16354,7 @@
         },
         {
           "file": "app/reader.js",
-          "line": 535,
+          "line": 537,
           "column": 121
         },
         {
@@ -17029,7 +17029,7 @@
         },
         {
           "file": "app/reader.js",
-          "line": 380,
+          "line": 382,
           "column": 297
         },
         {
@@ -23356,17 +23356,17 @@
         },
         {
           "file": "app/reader.js",
-          "line": 284,
+          "line": 286,
           "column": 327
         },
         {
           "file": "app/reader.js",
-          "line": 428,
+          "line": 430,
           "column": 373
         },
         {
           "file": "app/reader.js",
-          "line": 496,
+          "line": 498,
           "column": 379
         }
       ],
@@ -42875,7 +42875,7 @@
         {
           "file": "app/reader-immersion.mjs",
           "line": 58,
-          "column": 48
+          "column": 88
         }
       ],
       "hints": [
@@ -44912,12 +44912,12 @@
         },
         {
           "file": "app/reader.js",
-          "line": 382,
+          "line": 384,
           "column": 180
         },
         {
           "file": "app/reader.js",
-          "line": 387,
+          "line": 389,
           "column": 438
         },
         {
@@ -44984,7 +44984,7 @@
       "consumers": [
         {
           "file": "app/reader.js",
-          "line": 382,
+          "line": 384,
           "column": 204
         },
         {
@@ -45771,7 +45771,7 @@
       "consumers": [
         {
           "file": "app/reader.js",
-          "line": 387,
+          "line": 389,
           "column": 454
         }
       ],
@@ -47938,7 +47938,7 @@
         },
         {
           "file": "app/reader.js",
-          "line": 109,
+          "line": 111,
           "column": 104
         }
       ],
@@ -75367,29 +75367,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 1316,
           "column": 3,
-          "value": "Click a passage or focus it and press Enter for original text, annotations and records. In page mode use ← → or the buttons below. Esc closes overlays. F toggles full-screen reading.",
-          "sha256": "4ba9b8592718e95cf4e42628aee0ad1f506f4b79bfdbf21d4ac5bbca66c3e27c"
+          "value": "Click a passage or focus it and press Enter for original text, annotations and records. In page mode use ← → or the buttons below. F toggles full screen when available. Esc exits full screen; the browser may also close an overlay. Outside full screen, Esc closes overlays.",
+          "sha256": "aac5059223acbb93f2721777a3d9513f64d834d7cc36e405e6d2804a1fa0a99b"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 1315,
           "column": 3,
-          "value": "点击段落或聚焦段落后按回车，可以查看原文、注解和个人记录。翻页阅读时，用 ← → 或页底按钮翻页。Esc关闭浮层。F切换专注阅读。",
-          "sha256": "a0c9d23387de1cd78bb98927e97419c822fd4ecc78e486315df4dc945cb00a33"
+          "value": "点击段落，或聚焦后按 Enter，查看原文、注解和记录。翻页模式可用 ← → 或下方按钮。浏览器支持时，F 切换全屏。Esc 退出全屏，浏览器也可能同时关闭浮层；普通阅读时，Esc 关闭浮层。",
+          "sha256": "8aa4c491d1c671cf66010b8858c4d5e85de803afdb22659b74c1b0c20c1df1fe"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 1315,
           "column": 3,
-          "value": "點擊段落或聚焦後按 Enter，可查看原文、註解與個人記錄。翻頁閱讀用 ← → 或頁底按鈕。Esc 關閉浮層，F 切換全螢幕閱讀。",
-          "sha256": "7c227f73872d9fcf2b2afb1994203f81354683b0f1f909790f7720ee068bb6df"
+          "value": "點擊段落，或聚焦後按 Enter，查看原文、注解和記錄。翻頁模式可用 ← → 或下方按鈕。瀏覽器支援時，F 切換全螢幕。Esc 結束全螢幕，瀏覽器也可能同時關閉浮層；一般閱讀時，Esc 關閉浮層。",
+          "sha256": "459a7874008cfa4f95261692abfe74c57466980c1de2b31f656995d854e912cd"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 1315,
           "column": 3,
-          "value": "段落をクリックするか、フォーカスしてEnterで原文、注釈、記録を表示します。ページ送りは ← → または下のボタン。Escで閉じ、Fで全画面を切り替えます。",
-          "sha256": "6810f740d3ea22a91053ebe7fe3a8ee1ad09a93f39c6a5a5b7cc79b3ca192f15"
+          "value": "段落をクリックするか、フォーカスして Enter を押すと、原文・注釈・記録を開けます。ページ表示では ← → または下のボタンで移動できます。対応するブラウザーでは F で全画面を切り替え、Esc で終了します。その際、開いているパネルも閉じる場合があります。通常表示では Esc でパネルを閉じます。",
+          "sha256": "c54c4cdc98da9f058c314594d34e76f7047e741d764b5ae82bdd6b6fdab5da69"
         }
       },
       "missingLocales": [],
@@ -170195,9 +170195,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:21:90",
+      "id": "candidate:app/index.html:22:90",
       "file": "app/index.html",
-      "line": 21,
+      "line": 22,
       "column": 90,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170221,9 +170221,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:22:59",
+      "id": "candidate:app/index.html:23:59",
       "file": "app/index.html",
-      "line": 22,
+      "line": 23,
       "column": 59,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170247,9 +170247,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:22:204",
+      "id": "candidate:app/index.html:23:204",
       "file": "app/index.html",
-      "line": 22,
+      "line": 23,
       "column": 204,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170273,9 +170273,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:22:462",
+      "id": "candidate:app/index.html:23:462",
       "file": "app/index.html",
-      "line": 22,
+      "line": 23,
       "column": 462,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170299,9 +170299,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:26:69",
+      "id": "candidate:app/index.html:27:69",
       "file": "app/index.html",
-      "line": 26,
+      "line": 27,
       "column": 69,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170325,9 +170325,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:28:154",
+      "id": "candidate:app/index.html:29:154",
       "file": "app/index.html",
-      "line": 28,
+      "line": 29,
       "column": 154,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170351,9 +170351,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:28:224",
+      "id": "candidate:app/index.html:29:224",
       "file": "app/index.html",
-      "line": 28,
+      "line": 29,
       "column": 224,
       "kind": "html-attribute",
       "property": "title",
@@ -170377,9 +170377,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:31:195",
+      "id": "candidate:app/index.html:32:195",
       "file": "app/index.html",
-      "line": 31,
+      "line": 32,
       "column": 195,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170403,9 +170403,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:32:198",
+      "id": "candidate:app/index.html:33:198",
       "file": "app/index.html",
-      "line": 32,
+      "line": 33,
       "column": 198,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170429,9 +170429,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:44:176",
+      "id": "candidate:app/index.html:45:176",
       "file": "app/index.html",
-      "line": 44,
+      "line": 45,
       "column": 176,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170455,9 +170455,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:55:172",
+      "id": "candidate:app/index.html:56:172",
       "file": "app/index.html",
-      "line": 55,
+      "line": 56,
       "column": 172,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170481,9 +170481,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:62:168",
+      "id": "candidate:app/index.html:63:168",
       "file": "app/index.html",
-      "line": 62,
+      "line": 63,
       "column": 168,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170507,9 +170507,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:66:169",
+      "id": "candidate:app/index.html:67:169",
       "file": "app/index.html",
-      "line": 66,
+      "line": 67,
       "column": 169,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170533,9 +170533,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:68:366",
+      "id": "candidate:app/index.html:69:366",
       "file": "app/index.html",
-      "line": 68,
+      "line": 69,
       "column": 366,
       "kind": "html-attribute",
       "property": "placeholder",
@@ -170559,9 +170559,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:69:359",
+      "id": "candidate:app/index.html:70:359",
       "file": "app/index.html",
-      "line": 69,
+      "line": 70,
       "column": 359,
       "kind": "html-attribute",
       "property": "placeholder",
@@ -170585,9 +170585,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:72:80",
+      "id": "candidate:app/index.html:73:80",
       "file": "app/index.html",
-      "line": 72,
+      "line": 73,
       "column": 80,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170611,9 +170611,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:73:754",
+      "id": "candidate:app/index.html:74:754",
       "file": "app/index.html",
-      "line": 73,
+      "line": 74,
       "column": 754,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170637,9 +170637,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:77:57",
+      "id": "candidate:app/index.html:78:57",
       "file": "app/index.html",
-      "line": 77,
+      "line": 78,
       "column": 57,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170663,9 +170663,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:78:205",
+      "id": "candidate:app/index.html:79:205",
       "file": "app/index.html",
-      "line": 78,
+      "line": 79,
       "column": 205,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170689,9 +170689,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:80:56",
+      "id": "candidate:app/index.html:81:56",
       "file": "app/index.html",
-      "line": 80,
+      "line": 81,
       "column": 56,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170715,9 +170715,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:84:157",
+      "id": "candidate:app/index.html:85:157",
       "file": "app/index.html",
-      "line": 84,
+      "line": 85,
       "column": 157,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170741,9 +170741,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:91:326",
+      "id": "candidate:app/index.html:92:326",
       "file": "app/index.html",
-      "line": 91,
+      "line": 92,
       "column": 326,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170767,9 +170767,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:91:519",
+      "id": "candidate:app/index.html:92:519",
       "file": "app/index.html",
-      "line": 91,
+      "line": 92,
       "column": 519,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170793,9 +170793,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:93:207",
+      "id": "candidate:app/index.html:94:207",
       "file": "app/index.html",
-      "line": 93,
+      "line": 94,
       "column": 207,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170819,9 +170819,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:94:59",
+      "id": "candidate:app/index.html:95:59",
       "file": "app/index.html",
-      "line": 94,
+      "line": 95,
       "column": 59,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170845,40 +170845,14 @@
       }
     },
     {
-      "id": "candidate:app/index.html:104:62",
+      "id": "candidate:app/index.html:105:62",
       "file": "app/index.html",
-      "line": 104,
+      "line": 105,
       "column": 62,
       "kind": "html-attribute",
       "property": "aria-label",
       "value": "Body font",
       "sha256": "2448d20d8bd95e8040fa1644989e9a40ce7c5de960dbf93b24847c8bac8a0a1f",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-property",
-          "evidence": "html-attribute:aria-label",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:106:82",
-      "file": "app/index.html",
-      "line": 106,
-      "column": 82,
-      "kind": "html-attribute",
-      "property": "aria-label",
-      "value": "Paper theme",
-      "sha256": "c9069afb5a44f560efce4ae1a2d62d81c799b8c8f923050ee6974afb880d615a",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -170903,6 +170877,32 @@
       "column": 82,
       "kind": "html-attribute",
       "property": "aria-label",
+      "value": "Paper theme",
+      "sha256": "c9069afb5a44f560efce4ae1a2d62d81c799b8c8f923050ee6974afb880d615a",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-property",
+          "evidence": "html-attribute:aria-label",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:108:82",
+      "file": "app/index.html",
+      "line": 108,
+      "column": 82,
+      "kind": "html-attribute",
+      "property": "aria-label",
       "value": "Follow the system",
       "sha256": "d153cd62208d56b40dc3f9f78763b8f79c7782529ac1d1cceeeb26b294e923d1",
       "protected": false,
@@ -170923,9 +170923,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:107:251",
+      "id": "candidate:app/index.html:108:251",
       "file": "app/index.html",
-      "line": 107,
+      "line": 108,
       "column": 251,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170949,9 +170949,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:107:406",
+      "id": "candidate:app/index.html:108:406",
       "file": "app/index.html",
-      "line": 107,
+      "line": 108,
       "column": 406,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -170975,9 +170975,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:107:559",
+      "id": "candidate:app/index.html:108:559",
       "file": "app/index.html",
-      "line": 107,
+      "line": 108,
       "column": 559,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171001,9 +171001,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:107:712",
+      "id": "candidate:app/index.html:108:712",
       "file": "app/index.html",
-      "line": 107,
+      "line": 108,
       "column": 712,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171027,9 +171027,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:107:867",
+      "id": "candidate:app/index.html:108:867",
       "file": "app/index.html",
-      "line": 107,
+      "line": 108,
       "column": 867,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171053,9 +171053,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:121:166",
+      "id": "candidate:app/index.html:122:166",
       "file": "app/index.html",
-      "line": 121,
+      "line": 122,
       "column": 166,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171079,9 +171079,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:133:353",
+      "id": "candidate:app/index.html:134:353",
       "file": "app/index.html",
-      "line": 133,
+      "line": 134,
       "column": 353,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171105,9 +171105,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:171:53",
+      "id": "candidate:app/index.html:172:53",
       "file": "app/index.html",
-      "line": 171,
+      "line": 172,
       "column": 53,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171131,9 +171131,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:192:86",
+      "id": "candidate:app/index.html:193:86",
       "file": "app/index.html",
-      "line": 192,
+      "line": 193,
       "column": 86,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171157,9 +171157,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:196:92",
+      "id": "candidate:app/index.html:197:92",
       "file": "app/index.html",
-      "line": 196,
+      "line": 197,
       "column": 92,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171469,9 +171469,61 @@
       }
     },
     {
-      "id": "candidate:app/index.html:18:139",
+      "id": "candidate:app/index.html:16:130",
       "file": "app/index.html",
-      "line": 18,
+      "line": 16,
+      "column": 130,
+      "kind": "html-text",
+      "property": null,
+      "value": "Exit full screen",
+      "sha256": "897e0cf78b808eddc424bd97c46c1730f6dd19c8c11e7bd6ed6b6e559dc41981",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:16:177",
+      "file": "app/index.html",
+      "line": 16,
+      "column": 177,
+      "kind": "html-text",
+      "property": null,
+      "value": "Esc",
+      "sha256": "52f878edb34fa14fa5597bf7dc55b084cd69c03df673f913988a79b1600148d3",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:19:139",
+      "file": "app/index.html",
+      "line": 19,
       "column": 139,
       "kind": "html-text",
       "property": null,
@@ -171495,9 +171547,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:18:214",
+      "id": "candidate:app/index.html:19:214",
       "file": "app/index.html",
-      "line": 18,
+      "line": 19,
       "column": 214,
       "kind": "html-text",
       "property": null,
@@ -171521,9 +171573,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:19:88",
+      "id": "candidate:app/index.html:20:88",
       "file": "app/index.html",
-      "line": 19,
+      "line": 20,
       "column": 88,
       "kind": "html-text",
       "property": null,
@@ -171547,9 +171599,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:19:184",
+      "id": "candidate:app/index.html:20:184",
       "file": "app/index.html",
-      "line": 19,
+      "line": 20,
       "column": 184,
       "kind": "html-text",
       "property": null,
@@ -171573,9 +171625,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:22:290",
+      "id": "candidate:app/index.html:23:290",
       "file": "app/index.html",
-      "line": 22,
+      "line": 23,
       "column": 290,
       "kind": "html-text",
       "property": null,
@@ -171599,9 +171651,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:22:536",
+      "id": "candidate:app/index.html:23:536",
       "file": "app/index.html",
-      "line": 22,
+      "line": 23,
       "column": 536,
       "kind": "html-text",
       "property": null,
@@ -171625,9 +171677,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:23:132",
+      "id": "candidate:app/index.html:24:132",
       "file": "app/index.html",
-      "line": 23,
+      "line": 24,
       "column": 132,
       "kind": "html-text",
       "property": null,
@@ -171651,9 +171703,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:23:253",
+      "id": "candidate:app/index.html:24:253",
       "file": "app/index.html",
-      "line": 23,
+      "line": 24,
       "column": 253,
       "kind": "html-text",
       "property": null,
@@ -171677,9 +171729,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:24:158",
+      "id": "candidate:app/index.html:25:158",
       "file": "app/index.html",
-      "line": 24,
+      "line": 25,
       "column": 158,
       "kind": "html-text",
       "property": null,
@@ -171703,9 +171755,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:28:610",
+      "id": "candidate:app/index.html:29:610",
       "file": "app/index.html",
-      "line": 28,
+      "line": 29,
       "column": 610,
       "kind": "html-text",
       "property": null,
@@ -171729,9 +171781,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:31:109",
+      "id": "candidate:app/index.html:32:109",
       "file": "app/index.html",
-      "line": 31,
+      "line": 32,
       "column": 109,
       "kind": "html-text",
       "property": null,
@@ -171755,9 +171807,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:31:403",
+      "id": "candidate:app/index.html:32:403",
       "file": "app/index.html",
-      "line": 31,
+      "line": 32,
       "column": 403,
       "kind": "html-text",
       "property": null,
@@ -171781,9 +171833,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:31:444",
+      "id": "candidate:app/index.html:32:444",
       "file": "app/index.html",
-      "line": 31,
+      "line": 32,
       "column": 444,
       "kind": "html-text",
       "property": null,
@@ -171807,9 +171859,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:32:138",
+      "id": "candidate:app/index.html:33:138",
       "file": "app/index.html",
-      "line": 32,
+      "line": 33,
       "column": 138,
       "kind": "html-text",
       "property": null,
@@ -171833,9 +171885,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:32:289",
+      "id": "candidate:app/index.html:33:289",
       "file": "app/index.html",
-      "line": 32,
+      "line": 33,
       "column": 289,
       "kind": "html-text",
       "property": null,
@@ -171859,9 +171911,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:32:385",
+      "id": "candidate:app/index.html:33:385",
       "file": "app/index.html",
-      "line": 32,
+      "line": 33,
       "column": 385,
       "kind": "html-text",
       "property": null,
@@ -171885,9 +171937,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:32:480",
+      "id": "candidate:app/index.html:33:480",
       "file": "app/index.html",
-      "line": 32,
+      "line": 33,
       "column": 480,
       "kind": "html-text",
       "property": null,
@@ -171911,9 +171963,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:33:118",
+      "id": "candidate:app/index.html:34:118",
       "file": "app/index.html",
-      "line": 33,
+      "line": 34,
       "column": 118,
       "kind": "html-text",
       "property": null,
@@ -171937,9 +171989,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:34:133",
+      "id": "candidate:app/index.html:35:133",
       "file": "app/index.html",
-      "line": 34,
+      "line": 35,
       "column": 133,
       "kind": "html-text",
       "property": null,
@@ -171963,9 +172015,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:34:299",
+      "id": "candidate:app/index.html:35:299",
       "file": "app/index.html",
-      "line": 34,
+      "line": 35,
       "column": 299,
       "kind": "html-text",
       "property": null,
@@ -171989,9 +172041,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:34:398",
+      "id": "candidate:app/index.html:35:398",
       "file": "app/index.html",
-      "line": 34,
+      "line": 35,
       "column": 398,
       "kind": "html-text",
       "property": null,
@@ -172015,9 +172067,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:35:92",
+      "id": "candidate:app/index.html:36:92",
       "file": "app/index.html",
-      "line": 35,
+      "line": 36,
       "column": 92,
       "kind": "html-text",
       "property": null,
@@ -172041,9 +172093,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:37:122",
+      "id": "candidate:app/index.html:38:122",
       "file": "app/index.html",
-      "line": 37,
+      "line": 38,
       "column": 122,
       "kind": "html-text",
       "property": null,
@@ -172067,9 +172119,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:38:159",
+      "id": "candidate:app/index.html:39:159",
       "file": "app/index.html",
-      "line": 38,
+      "line": 39,
       "column": 159,
       "kind": "html-text",
       "property": null,
@@ -172093,9 +172145,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:39:109",
+      "id": "candidate:app/index.html:40:109",
       "file": "app/index.html",
-      "line": 39,
+      "line": 40,
       "column": 109,
       "kind": "html-text",
       "property": null,
@@ -172119,9 +172171,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:39:245",
+      "id": "candidate:app/index.html:40:245",
       "file": "app/index.html",
-      "line": 39,
+      "line": 40,
       "column": 245,
       "kind": "html-text",
       "property": null,
@@ -172145,9 +172197,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:39:384",
+      "id": "candidate:app/index.html:40:384",
       "file": "app/index.html",
-      "line": 39,
+      "line": 40,
       "column": 384,
       "kind": "html-text",
       "property": null,
@@ -172171,9 +172223,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:40:155",
+      "id": "candidate:app/index.html:41:155",
       "file": "app/index.html",
-      "line": 40,
+      "line": 41,
       "column": 155,
       "kind": "html-text",
       "property": null,
@@ -172197,9 +172249,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:40:262",
+      "id": "candidate:app/index.html:41:262",
       "file": "app/index.html",
-      "line": 40,
+      "line": 41,
       "column": 262,
       "kind": "html-text",
       "property": null,
@@ -172223,9 +172275,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:44:85",
+      "id": "candidate:app/index.html:45:85",
       "file": "app/index.html",
-      "line": 44,
+      "line": 45,
       "column": 85,
       "kind": "html-text",
       "property": null,
@@ -172249,9 +172301,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:44:242",
+      "id": "candidate:app/index.html:45:242",
       "file": "app/index.html",
-      "line": 44,
+      "line": 45,
       "column": 242,
       "kind": "html-text",
       "property": null,
@@ -172275,9 +172327,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:46:74",
+      "id": "candidate:app/index.html:47:74",
       "file": "app/index.html",
-      "line": 46,
+      "line": 47,
       "column": 74,
       "kind": "html-text",
       "property": null,
@@ -172301,9 +172353,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:48:183",
+      "id": "candidate:app/index.html:49:183",
       "file": "app/index.html",
-      "line": 48,
+      "line": 49,
       "column": 183,
       "kind": "html-text",
       "property": null,
@@ -172327,9 +172379,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:48:424",
+      "id": "candidate:app/index.html:49:424",
       "file": "app/index.html",
-      "line": 48,
+      "line": 49,
       "column": 424,
       "kind": "html-text",
       "property": null,
@@ -172353,9 +172405,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:51:100",
+      "id": "candidate:app/index.html:52:100",
       "file": "app/index.html",
-      "line": 51,
+      "line": 52,
       "column": 100,
       "kind": "html-text",
       "property": null,
@@ -172379,9 +172431,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:55:84",
+      "id": "candidate:app/index.html:56:84",
       "file": "app/index.html",
-      "line": 55,
+      "line": 56,
       "column": 84,
       "kind": "html-text",
       "property": null,
@@ -172405,9 +172457,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:55:240",
+      "id": "candidate:app/index.html:56:240",
       "file": "app/index.html",
-      "line": 55,
+      "line": 56,
       "column": 240,
       "kind": "html-text",
       "property": null,
@@ -172431,9 +172483,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:56:107",
+      "id": "candidate:app/index.html:57:107",
       "file": "app/index.html",
-      "line": 56,
+      "line": 57,
       "column": 107,
       "kind": "html-text",
       "property": null,
@@ -172457,9 +172509,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:57:87",
+      "id": "candidate:app/index.html:58:87",
       "file": "app/index.html",
-      "line": 57,
+      "line": 58,
       "column": 87,
       "kind": "html-text",
       "property": null,
@@ -172483,9 +172535,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:57:155",
+      "id": "candidate:app/index.html:58:155",
       "file": "app/index.html",
-      "line": 57,
+      "line": 58,
       "column": 155,
       "kind": "html-text",
       "property": null,
@@ -172509,9 +172561,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:57:294",
+      "id": "candidate:app/index.html:58:294",
       "file": "app/index.html",
-      "line": 57,
+      "line": 58,
       "column": 294,
       "kind": "html-text",
       "property": null,
@@ -172535,9 +172587,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:57:373",
+      "id": "candidate:app/index.html:58:373",
       "file": "app/index.html",
-      "line": 57,
+      "line": 58,
       "column": 373,
       "kind": "html-text",
       "property": null,
@@ -172561,9 +172613,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:57:507",
+      "id": "candidate:app/index.html:58:507",
       "file": "app/index.html",
-      "line": 57,
+      "line": 58,
       "column": 507,
       "kind": "html-text",
       "property": null,
@@ -172587,9 +172639,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:57:580",
+      "id": "candidate:app/index.html:58:580",
       "file": "app/index.html",
-      "line": 57,
+      "line": 58,
       "column": 580,
       "kind": "html-text",
       "property": null,
@@ -172613,9 +172665,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:57:775",
+      "id": "candidate:app/index.html:58:775",
       "file": "app/index.html",
-      "line": 57,
+      "line": 58,
       "column": 775,
       "kind": "html-text",
       "property": null,
@@ -172639,9 +172691,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:57:850",
+      "id": "candidate:app/index.html:58:850",
       "file": "app/index.html",
-      "line": 57,
+      "line": 58,
       "column": 850,
       "kind": "html-text",
       "property": null,
@@ -172665,9 +172717,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:58:182",
+      "id": "candidate:app/index.html:59:182",
       "file": "app/index.html",
-      "line": 58,
+      "line": 59,
       "column": 182,
       "kind": "html-text",
       "property": null,
@@ -172691,9 +172743,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:58:409",
+      "id": "candidate:app/index.html:59:409",
       "file": "app/index.html",
-      "line": 58,
+      "line": 59,
       "column": 409,
       "kind": "html-text",
       "property": null,
@@ -172717,9 +172769,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:58:583",
+      "id": "candidate:app/index.html:59:583",
       "file": "app/index.html",
-      "line": 58,
+      "line": 59,
       "column": 583,
       "kind": "html-text",
       "property": null,
@@ -172743,9 +172795,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:59:114",
+      "id": "candidate:app/index.html:60:114",
       "file": "app/index.html",
-      "line": 59,
+      "line": 60,
       "column": 114,
       "kind": "html-text",
       "property": null,
@@ -172769,9 +172821,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:62:82",
+      "id": "candidate:app/index.html:63:82",
       "file": "app/index.html",
-      "line": 62,
+      "line": 63,
       "column": 82,
       "kind": "html-text",
       "property": null,
@@ -172795,9 +172847,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:62:232",
+      "id": "candidate:app/index.html:63:232",
       "file": "app/index.html",
-      "line": 62,
+      "line": 63,
       "column": 232,
       "kind": "html-text",
       "property": null,
@@ -172821,9 +172873,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:63:73",
+      "id": "candidate:app/index.html:64:73",
       "file": "app/index.html",
-      "line": 63,
+      "line": 64,
       "column": 73,
       "kind": "html-text",
       "property": null,
@@ -172847,9 +172899,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:66:242",
+      "id": "candidate:app/index.html:67:242",
       "file": "app/index.html",
-      "line": 66,
+      "line": 67,
       "column": 242,
       "kind": "html-text",
       "property": null,
@@ -172873,9 +172925,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:66:315",
+      "id": "candidate:app/index.html:67:315",
       "file": "app/index.html",
-      "line": 66,
+      "line": 67,
       "column": 315,
       "kind": "html-text",
       "property": null,
@@ -172899,9 +172951,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:67:297",
+      "id": "candidate:app/index.html:68:297",
       "file": "app/index.html",
-      "line": 67,
+      "line": 68,
       "column": 297,
       "kind": "html-text",
       "property": null,
@@ -172925,92 +172977,14 @@
       }
     },
     {
-      "id": "candidate:app/index.html:67:430",
+      "id": "candidate:app/index.html:68:430",
       "file": "app/index.html",
-      "line": 67,
+      "line": 68,
       "column": 430,
       "kind": "html-text",
       "property": null,
       "value": "Where you stopped",
       "sha256": "918345c13d317448cfae333a22dee7bce15bb1bbaabf29d030be51af7d7b2480",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:68:198",
-      "file": "app/index.html",
-      "line": 68,
-      "column": 198,
-      "kind": "html-text",
-      "property": null,
-      "value": "One sentence in your own words",
-      "sha256": "22c83dcfbaa06138c069ef0efa1b5a4e7f128e8c9bc05d7a9a11078712112629",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:68:274",
-      "file": "app/index.html",
-      "line": 68,
-      "column": 274,
-      "kind": "html-text",
-      "property": null,
-      "value": "Optional",
-      "sha256": "59be71333c960fd08e7e4fe9862206d9355f0a9884121a5b50ef8b36efdfe4cf",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:68:634",
-      "file": "app/index.html",
-      "line": 68,
-      "column": 634,
-      "kind": "html-text",
-      "property": null,
-      "value": "Save understanding",
-      "sha256": "50f99be5235693aae9f83f1c7c19c0ad10d6da7fc8f2c6cd4f40ad7c30c982b2",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -173035,6 +173009,84 @@
       "column": 198,
       "kind": "html-text",
       "property": null,
+      "value": "One sentence in your own words",
+      "sha256": "22c83dcfbaa06138c069ef0efa1b5a4e7f128e8c9bc05d7a9a11078712112629",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:69:274",
+      "file": "app/index.html",
+      "line": 69,
+      "column": 274,
+      "kind": "html-text",
+      "property": null,
+      "value": "Optional",
+      "sha256": "59be71333c960fd08e7e4fe9862206d9355f0a9884121a5b50ef8b36efdfe4cf",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:69:634",
+      "file": "app/index.html",
+      "line": 69,
+      "column": 634,
+      "kind": "html-text",
+      "property": null,
+      "value": "Save understanding",
+      "sha256": "50f99be5235693aae9f83f1c7c19c0ad10d6da7fc8f2c6cd4f40ad7c30c982b2",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:70:198",
+      "file": "app/index.html",
+      "line": 70,
+      "column": 198,
+      "kind": "html-text",
+      "property": null,
       "value": "What is still unclear?",
       "sha256": "ea172ba1ecbd3901d896de739a48b9e345c7dc0a3b78e16c246b0936e13cabcd",
       "protected": false,
@@ -173055,9 +173107,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:69:266",
+      "id": "candidate:app/index.html:70:266",
       "file": "app/index.html",
-      "line": 69,
+      "line": 70,
       "column": 266,
       "kind": "html-text",
       "property": null,
@@ -173081,9 +173133,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:69:606",
+      "id": "candidate:app/index.html:70:606",
       "file": "app/index.html",
-      "line": 69,
+      "line": 70,
       "column": 606,
       "kind": "html-text",
       "property": null,
@@ -173107,9 +173159,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:70:125",
+      "id": "candidate:app/index.html:71:125",
       "file": "app/index.html",
-      "line": 70,
+      "line": 71,
       "column": 125,
       "kind": "html-text",
       "property": null,
@@ -173133,9 +173185,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:70:254",
+      "id": "candidate:app/index.html:71:254",
       "file": "app/index.html",
-      "line": 70,
+      "line": 71,
       "column": 254,
       "kind": "html-text",
       "property": null,
@@ -173159,9 +173211,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:70:342",
+      "id": "candidate:app/index.html:71:342",
       "file": "app/index.html",
-      "line": 70,
+      "line": 71,
       "column": 342,
       "kind": "html-text",
       "property": null,
@@ -173185,9 +173237,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:73:65",
+      "id": "candidate:app/index.html:74:65",
       "file": "app/index.html",
-      "line": 73,
+      "line": 74,
       "column": 65,
       "kind": "html-text",
       "property": null,
@@ -173211,9 +173263,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:73:153",
+      "id": "candidate:app/index.html:74:153",
       "file": "app/index.html",
-      "line": 73,
+      "line": 74,
       "column": 153,
       "kind": "html-text",
       "property": null,
@@ -173237,9 +173289,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:73:244",
+      "id": "candidate:app/index.html:74:244",
       "file": "app/index.html",
-      "line": 73,
+      "line": 74,
       "column": 244,
       "kind": "html-text",
       "property": null,
@@ -173263,9 +173315,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:73:336",
+      "id": "candidate:app/index.html:74:336",
       "file": "app/index.html",
-      "line": 73,
+      "line": 74,
       "column": 336,
       "kind": "html-text",
       "property": null,
@@ -173289,9 +173341,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:73:412",
+      "id": "candidate:app/index.html:74:412",
       "file": "app/index.html",
-      "line": 73,
+      "line": 74,
       "column": 412,
       "kind": "html-text",
       "property": null,
@@ -173315,9 +173367,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:73:468",
+      "id": "candidate:app/index.html:74:468",
       "file": "app/index.html",
-      "line": 73,
+      "line": 74,
       "column": 468,
       "kind": "html-text",
       "property": null,
@@ -173341,9 +173393,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:73:539",
+      "id": "candidate:app/index.html:74:539",
       "file": "app/index.html",
-      "line": 73,
+      "line": 74,
       "column": 539,
       "kind": "html-text",
       "property": null,
@@ -173367,9 +173419,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:73:623",
+      "id": "candidate:app/index.html:74:623",
       "file": "app/index.html",
-      "line": 73,
+      "line": 74,
       "column": 623,
       "kind": "html-text",
       "property": null,
@@ -173393,9 +173445,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:73:700",
+      "id": "candidate:app/index.html:74:700",
       "file": "app/index.html",
-      "line": 73,
+      "line": 74,
       "column": 700,
       "kind": "html-text",
       "property": null,
@@ -173419,9 +173471,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:73:872",
+      "id": "candidate:app/index.html:74:872",
       "file": "app/index.html",
-      "line": 73,
+      "line": 74,
       "column": 872,
       "kind": "html-text",
       "property": null,
@@ -173445,9 +173497,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:74:123",
+      "id": "candidate:app/index.html:75:123",
       "file": "app/index.html",
-      "line": 74,
+      "line": 75,
       "column": 123,
       "kind": "html-text",
       "property": null,
@@ -173471,9 +173523,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:74:218",
+      "id": "candidate:app/index.html:75:218",
       "file": "app/index.html",
-      "line": 74,
+      "line": 75,
       "column": 218,
       "kind": "html-text",
       "property": null,
@@ -173497,9 +173549,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:74:300",
+      "id": "candidate:app/index.html:75:300",
       "file": "app/index.html",
-      "line": 74,
+      "line": 75,
       "column": 300,
       "kind": "html-text",
       "property": null,
@@ -173523,9 +173575,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:74:377",
+      "id": "candidate:app/index.html:75:377",
       "file": "app/index.html",
-      "line": 74,
+      "line": 75,
       "column": 377,
       "kind": "html-text",
       "property": null,
@@ -173549,9 +173601,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:74:471",
+      "id": "candidate:app/index.html:75:471",
       "file": "app/index.html",
-      "line": 74,
+      "line": 75,
       "column": 471,
       "kind": "html-text",
       "property": null,
@@ -173575,9 +173627,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:74:576",
+      "id": "candidate:app/index.html:75:576",
       "file": "app/index.html",
-      "line": 74,
+      "line": 75,
       "column": 576,
       "kind": "html-text",
       "property": null,
@@ -173601,9 +173653,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:74:691",
+      "id": "candidate:app/index.html:75:691",
       "file": "app/index.html",
-      "line": 74,
+      "line": 75,
       "column": 691,
       "kind": "html-text",
       "property": null,
@@ -173627,9 +173679,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:74:788",
+      "id": "candidate:app/index.html:75:788",
       "file": "app/index.html",
-      "line": 74,
+      "line": 75,
       "column": 788,
       "kind": "html-text",
       "property": null,
@@ -173653,9 +173705,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:78:93",
+      "id": "candidate:app/index.html:79:93",
       "file": "app/index.html",
-      "line": 78,
+      "line": 79,
       "column": 93,
       "kind": "html-text",
       "property": null,
@@ -173679,9 +173731,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:78:300",
+      "id": "candidate:app/index.html:79:300",
       "file": "app/index.html",
-      "line": 78,
+      "line": 79,
       "column": 300,
       "kind": "html-text",
       "property": null,
@@ -173705,9 +173757,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:79:366",
+      "id": "candidate:app/index.html:80:366",
       "file": "app/index.html",
-      "line": 79,
+      "line": 80,
       "column": 366,
       "kind": "html-text",
       "property": null,
@@ -173731,9 +173783,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:79:413",
+      "id": "candidate:app/index.html:80:413",
       "file": "app/index.html",
-      "line": 79,
+      "line": 80,
       "column": 413,
       "kind": "html-text",
       "property": null,
@@ -173757,9 +173809,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:80:288",
+      "id": "candidate:app/index.html:81:288",
       "file": "app/index.html",
-      "line": 80,
+      "line": 81,
       "column": 288,
       "kind": "html-text",
       "property": null,
@@ -173783,9 +173835,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:80:475",
+      "id": "candidate:app/index.html:81:475",
       "file": "app/index.html",
-      "line": 80,
+      "line": 81,
       "column": 475,
       "kind": "html-text",
       "property": null,
@@ -173809,9 +173861,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:80:654",
+      "id": "candidate:app/index.html:81:654",
       "file": "app/index.html",
-      "line": 80,
+      "line": 81,
       "column": 654,
       "kind": "html-text",
       "property": null,
@@ -173835,9 +173887,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:84:65",
+      "id": "candidate:app/index.html:85:65",
       "file": "app/index.html",
-      "line": 84,
+      "line": 85,
       "column": 65,
       "kind": "html-text",
       "property": null,
@@ -173861,9 +173913,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:85:91",
+      "id": "candidate:app/index.html:86:91",
       "file": "app/index.html",
-      "line": 85,
+      "line": 86,
       "column": 91,
       "kind": "html-text",
       "property": null,
@@ -173887,9 +173939,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:85:153",
+      "id": "candidate:app/index.html:86:153",
       "file": "app/index.html",
-      "line": 85,
+      "line": 86,
       "column": 153,
       "kind": "html-text",
       "property": null,
@@ -173913,9 +173965,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:88:127",
+      "id": "candidate:app/index.html:89:127",
       "file": "app/index.html",
-      "line": 88,
+      "line": 89,
       "column": 127,
       "kind": "html-text",
       "property": null,
@@ -173939,9 +173991,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:88:226",
+      "id": "candidate:app/index.html:89:226",
       "file": "app/index.html",
-      "line": 88,
+      "line": 89,
       "column": 226,
       "kind": "html-text",
       "property": null,
@@ -173965,9 +174017,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:88:438",
+      "id": "candidate:app/index.html:89:438",
       "file": "app/index.html",
-      "line": 88,
+      "line": 89,
       "column": 438,
       "kind": "html-text",
       "property": null,
@@ -173991,9 +174043,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:88:594",
+      "id": "candidate:app/index.html:89:594",
       "file": "app/index.html",
-      "line": 88,
+      "line": 89,
       "column": 594,
       "kind": "html-text",
       "property": null,
@@ -174017,9 +174069,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:88:704",
+      "id": "candidate:app/index.html:89:704",
       "file": "app/index.html",
-      "line": 88,
+      "line": 89,
       "column": 704,
       "kind": "html-text",
       "property": null,
@@ -174043,9 +174095,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:89:285",
+      "id": "candidate:app/index.html:90:285",
       "file": "app/index.html",
-      "line": 89,
+      "line": 90,
       "column": 285,
       "kind": "html-text",
       "property": null,
@@ -174069,9 +174121,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:89:333",
+      "id": "candidate:app/index.html:90:333",
       "file": "app/index.html",
-      "line": 89,
+      "line": 90,
       "column": 333,
       "kind": "html-text",
       "property": null,
@@ -174095,9 +174147,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:91:148",
+      "id": "candidate:app/index.html:92:148",
       "file": "app/index.html",
-      "line": 91,
+      "line": 92,
       "column": 148,
       "kind": "html-text",
       "property": null,
@@ -174121,9 +174173,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:91:222",
+      "id": "candidate:app/index.html:92:222",
       "file": "app/index.html",
-      "line": 91,
+      "line": 92,
       "column": 222,
       "kind": "html-text",
       "property": null,
@@ -174147,9 +174199,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:93:101",
+      "id": "candidate:app/index.html:94:101",
       "file": "app/index.html",
-      "line": 93,
+      "line": 94,
       "column": 101,
       "kind": "html-text",
       "property": null,
@@ -174173,9 +174225,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:93:308",
+      "id": "candidate:app/index.html:94:308",
       "file": "app/index.html",
-      "line": 93,
+      "line": 94,
       "column": 308,
       "kind": "html-text",
       "property": null,
@@ -174199,9 +174251,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:95:162",
+      "id": "candidate:app/index.html:96:162",
       "file": "app/index.html",
-      "line": 95,
+      "line": 96,
       "column": 162,
       "kind": "html-text",
       "property": null,
@@ -174225,9 +174277,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:96:172",
+      "id": "candidate:app/index.html:97:172",
       "file": "app/index.html",
-      "line": 96,
+      "line": 97,
       "column": 172,
       "kind": "html-text",
       "property": null,
@@ -174251,9 +174303,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:97:176",
+      "id": "candidate:app/index.html:98:176",
       "file": "app/index.html",
-      "line": 97,
+      "line": 98,
       "column": 176,
       "kind": "html-text",
       "property": null,
@@ -174277,9 +174329,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:98:168",
+      "id": "candidate:app/index.html:99:168",
       "file": "app/index.html",
-      "line": 98,
+      "line": 99,
       "column": 168,
       "kind": "html-text",
       "property": null,
@@ -174303,9 +174355,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:102:129",
+      "id": "candidate:app/index.html:103:129",
       "file": "app/index.html",
-      "line": 102,
+      "line": 103,
       "column": 129,
       "kind": "html-text",
       "property": null,
@@ -174329,9 +174381,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:103:204",
+      "id": "candidate:app/index.html:104:204",
       "file": "app/index.html",
-      "line": 103,
+      "line": 104,
       "column": 204,
       "kind": "html-text",
       "property": null,
@@ -174355,9 +174407,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:103:250",
+      "id": "candidate:app/index.html:104:250",
       "file": "app/index.html",
-      "line": 103,
+      "line": 104,
       "column": 250,
       "kind": "html-text",
       "property": null,
@@ -174381,9 +174433,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:104:198",
+      "id": "candidate:app/index.html:105:198",
       "file": "app/index.html",
-      "line": 104,
+      "line": 105,
       "column": 198,
       "kind": "html-text",
       "property": null,
@@ -174407,9 +174459,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:104:300",
+      "id": "candidate:app/index.html:105:300",
       "file": "app/index.html",
-      "line": 104,
+      "line": 105,
       "column": 300,
       "kind": "html-text",
       "property": null,
@@ -174433,9 +174485,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:104:405",
+      "id": "candidate:app/index.html:105:405",
       "file": "app/index.html",
-      "line": 104,
+      "line": 105,
       "column": 405,
       "kind": "html-text",
       "property": null,
@@ -174459,9 +174511,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:105:82",
+      "id": "candidate:app/index.html:106:82",
       "file": "app/index.html",
-      "line": 105,
+      "line": 106,
       "column": 82,
       "kind": "html-text",
       "property": null,
@@ -174485,9 +174537,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:105:146",
+      "id": "candidate:app/index.html:106:146",
       "file": "app/index.html",
-      "line": 105,
+      "line": 106,
       "column": 146,
       "kind": "html-text",
       "property": null,
@@ -174511,9 +174563,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:107:167",
+      "id": "candidate:app/index.html:108:167",
       "file": "app/index.html",
-      "line": 107,
+      "line": 108,
       "column": 167,
       "kind": "html-text",
       "property": null,
@@ -174537,9 +174589,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:107:324",
+      "id": "candidate:app/index.html:108:324",
       "file": "app/index.html",
-      "line": 107,
+      "line": 108,
       "column": 324,
       "kind": "html-text",
       "property": null,
@@ -174563,9 +174615,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:107:477",
+      "id": "candidate:app/index.html:108:477",
       "file": "app/index.html",
-      "line": 107,
+      "line": 108,
       "column": 477,
       "kind": "html-text",
       "property": null,
@@ -174589,9 +174641,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:107:630",
+      "id": "candidate:app/index.html:108:630",
       "file": "app/index.html",
-      "line": 107,
+      "line": 108,
       "column": 630,
       "kind": "html-text",
       "property": null,
@@ -174615,9 +174667,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:107:783",
+      "id": "candidate:app/index.html:108:783",
       "file": "app/index.html",
-      "line": 107,
+      "line": 108,
       "column": 783,
       "kind": "html-text",
       "property": null,
@@ -174641,9 +174693,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:107:940",
+      "id": "candidate:app/index.html:108:940",
       "file": "app/index.html",
-      "line": 107,
+      "line": 108,
       "column": 940,
       "kind": "html-text",
       "property": null,
@@ -174667,9 +174719,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:109:194",
+      "id": "candidate:app/index.html:110:194",
       "file": "app/index.html",
-      "line": 109,
+      "line": 110,
       "column": 194,
       "kind": "html-text",
       "property": null,
@@ -174693,9 +174745,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:109:359",
+      "id": "candidate:app/index.html:110:359",
       "file": "app/index.html",
-      "line": 109,
+      "line": 110,
       "column": 359,
       "kind": "html-text",
       "property": null,
@@ -174719,9 +174771,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:109:506",
+      "id": "candidate:app/index.html:110:506",
       "file": "app/index.html",
-      "line": 109,
+      "line": 110,
       "column": 506,
       "kind": "html-text",
       "property": null,
@@ -174745,9 +174797,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:110:105",
+      "id": "candidate:app/index.html:111:105",
       "file": "app/index.html",
-      "line": 110,
+      "line": 111,
       "column": 105,
       "kind": "html-text",
       "property": null,
@@ -174771,9 +174823,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:112:135",
+      "id": "candidate:app/index.html:113:135",
       "file": "app/index.html",
-      "line": 112,
+      "line": 113,
       "column": 135,
       "kind": "html-text",
       "property": null,
@@ -174797,9 +174849,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:113:87",
+      "id": "candidate:app/index.html:114:87",
       "file": "app/index.html",
-      "line": 113,
+      "line": 114,
       "column": 87,
       "kind": "html-text",
       "property": null,
@@ -174823,9 +174875,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:113:197",
+      "id": "candidate:app/index.html:114:197",
       "file": "app/index.html",
-      "line": 113,
+      "line": 114,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -174849,9 +174901,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:113:283",
+      "id": "candidate:app/index.html:114:283",
       "file": "app/index.html",
-      "line": 113,
+      "line": 114,
       "column": 283,
       "kind": "html-text",
       "property": null,
@@ -174875,9 +174927,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:113:369",
+      "id": "candidate:app/index.html:114:369",
       "file": "app/index.html",
-      "line": 113,
+      "line": 114,
       "column": 369,
       "kind": "html-text",
       "property": null,
@@ -174901,9 +174953,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:114:133",
+      "id": "candidate:app/index.html:115:133",
       "file": "app/index.html",
-      "line": 114,
+      "line": 115,
       "column": 133,
       "kind": "html-text",
       "property": null,
@@ -174927,9 +174979,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:114:241",
+      "id": "candidate:app/index.html:115:241",
       "file": "app/index.html",
-      "line": 114,
+      "line": 115,
       "column": 241,
       "kind": "html-text",
       "property": null,
@@ -174953,9 +175005,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:114:299",
+      "id": "candidate:app/index.html:115:299",
       "file": "app/index.html",
-      "line": 114,
+      "line": 115,
       "column": 299,
       "kind": "html-text",
       "property": null,
@@ -174979,9 +175031,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:115:120",
+      "id": "candidate:app/index.html:116:120",
       "file": "app/index.html",
-      "line": 115,
+      "line": 116,
       "column": 120,
       "kind": "html-text",
       "property": null,
@@ -175005,9 +175057,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:115:253",
+      "id": "candidate:app/index.html:116:253",
       "file": "app/index.html",
-      "line": 115,
+      "line": 116,
       "column": 253,
       "kind": "html-text",
       "property": null,
@@ -175031,9 +175083,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:115:320",
+      "id": "candidate:app/index.html:116:320",
       "file": "app/index.html",
-      "line": 115,
+      "line": 116,
       "column": 320,
       "kind": "html-text",
       "property": null,
@@ -175057,9 +175109,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:115:432",
+      "id": "candidate:app/index.html:116:432",
       "file": "app/index.html",
-      "line": 115,
+      "line": 116,
       "column": 432,
       "kind": "html-text",
       "property": null,
@@ -175083,9 +175135,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:117:166",
+      "id": "candidate:app/index.html:118:166",
       "file": "app/index.html",
-      "line": 117,
+      "line": 118,
       "column": 166,
       "kind": "html-text",
       "property": null,
@@ -175109,9 +175161,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:118:95",
+      "id": "candidate:app/index.html:119:95",
       "file": "app/index.html",
-      "line": 118,
+      "line": 119,
       "column": 95,
       "kind": "html-text",
       "property": null,
@@ -175135,9 +175187,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:118:197",
+      "id": "candidate:app/index.html:119:197",
       "file": "app/index.html",
-      "line": 118,
+      "line": 119,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -175161,9 +175213,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:118:269",
+      "id": "candidate:app/index.html:119:269",
       "file": "app/index.html",
-      "line": 118,
+      "line": 119,
       "column": 269,
       "kind": "html-text",
       "property": null,
@@ -175187,9 +175239,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:119:92",
+      "id": "candidate:app/index.html:120:92",
       "file": "app/index.html",
-      "line": 119,
+      "line": 120,
       "column": 92,
       "kind": "html-text",
       "property": null,
@@ -175213,9 +175265,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:121:76",
+      "id": "candidate:app/index.html:122:76",
       "file": "app/index.html",
-      "line": 121,
+      "line": 122,
       "column": 76,
       "kind": "html-text",
       "property": null,
@@ -175239,9 +175291,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:122:84",
+      "id": "candidate:app/index.html:123:84",
       "file": "app/index.html",
-      "line": 122,
+      "line": 123,
       "column": 84,
       "kind": "html-text",
       "property": null,
@@ -175265,9 +175317,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:123:105",
+      "id": "candidate:app/index.html:124:105",
       "file": "app/index.html",
-      "line": 123,
+      "line": 124,
       "column": 105,
       "kind": "html-text",
       "property": null,
@@ -175291,9 +175343,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:123:213",
+      "id": "candidate:app/index.html:124:213",
       "file": "app/index.html",
-      "line": 123,
+      "line": 124,
       "column": 213,
       "kind": "html-text",
       "property": null,
@@ -175317,9 +175369,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:123:284",
+      "id": "candidate:app/index.html:124:284",
       "file": "app/index.html",
-      "line": 123,
+      "line": 124,
       "column": 284,
       "kind": "html-text",
       "property": null,
@@ -175343,9 +175395,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:123:351",
+      "id": "candidate:app/index.html:124:351",
       "file": "app/index.html",
-      "line": 123,
+      "line": 124,
       "column": 351,
       "kind": "html-text",
       "property": null,
@@ -175369,9 +175421,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:123:417",
+      "id": "candidate:app/index.html:124:417",
       "file": "app/index.html",
-      "line": 123,
+      "line": 124,
       "column": 417,
       "kind": "html-text",
       "property": null,
@@ -175395,9 +175447,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:124:115",
+      "id": "candidate:app/index.html:125:115",
       "file": "app/index.html",
-      "line": 124,
+      "line": 125,
       "column": 115,
       "kind": "html-text",
       "property": null,
@@ -175421,9 +175473,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:124:233",
+      "id": "candidate:app/index.html:125:233",
       "file": "app/index.html",
-      "line": 124,
+      "line": 125,
       "column": 233,
       "kind": "html-text",
       "property": null,
@@ -175447,9 +175499,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:124:311",
+      "id": "candidate:app/index.html:125:311",
       "file": "app/index.html",
-      "line": 124,
+      "line": 125,
       "column": 311,
       "kind": "html-text",
       "property": null,
@@ -175473,9 +175525,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:124:389",
+      "id": "candidate:app/index.html:125:389",
       "file": "app/index.html",
-      "line": 124,
+      "line": 125,
       "column": 389,
       "kind": "html-text",
       "property": null,
@@ -175499,9 +175551,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:128:145",
+      "id": "candidate:app/index.html:129:145",
       "file": "app/index.html",
-      "line": 128,
+      "line": 129,
       "column": 145,
       "kind": "html-text",
       "property": null,
@@ -175525,9 +175577,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:129:96",
+      "id": "candidate:app/index.html:130:96",
       "file": "app/index.html",
-      "line": 129,
+      "line": 130,
       "column": 96,
       "kind": "html-text",
       "property": null,
@@ -175551,9 +175603,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:129:247",
+      "id": "candidate:app/index.html:130:247",
       "file": "app/index.html",
-      "line": 129,
+      "line": 130,
       "column": 247,
       "kind": "html-text",
       "property": null,
@@ -175577,9 +175629,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:129:340",
+      "id": "candidate:app/index.html:130:340",
       "file": "app/index.html",
-      "line": 129,
+      "line": 130,
       "column": 340,
       "kind": "html-text",
       "property": null,
@@ -175603,9 +175655,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:129:429",
+      "id": "candidate:app/index.html:130:429",
       "file": "app/index.html",
-      "line": 129,
+      "line": 130,
       "column": 429,
       "kind": "html-text",
       "property": null,
@@ -175629,9 +175681,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:130:91",
+      "id": "candidate:app/index.html:131:91",
       "file": "app/index.html",
-      "line": 130,
+      "line": 131,
       "column": 91,
       "kind": "html-text",
       "property": null,
@@ -175655,9 +175707,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:130:228",
+      "id": "candidate:app/index.html:131:228",
       "file": "app/index.html",
-      "line": 130,
+      "line": 131,
       "column": 228,
       "kind": "html-text",
       "property": null,
@@ -175681,9 +175733,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:130:293",
+      "id": "candidate:app/index.html:131:293",
       "file": "app/index.html",
-      "line": 130,
+      "line": 131,
       "column": 293,
       "kind": "html-text",
       "property": null,
@@ -175707,9 +175759,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:131:96",
+      "id": "candidate:app/index.html:132:96",
       "file": "app/index.html",
-      "line": 131,
+      "line": 132,
       "column": 96,
       "kind": "html-text",
       "property": null,
@@ -175733,9 +175785,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:133:141",
+      "id": "candidate:app/index.html:134:141",
       "file": "app/index.html",
-      "line": 133,
+      "line": 134,
       "column": 141,
       "kind": "html-text",
       "property": null,
@@ -175759,9 +175811,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:133:285",
+      "id": "candidate:app/index.html:134:285",
       "file": "app/index.html",
-      "line": 133,
+      "line": 134,
       "column": 285,
       "kind": "html-text",
       "property": null,
@@ -175785,9 +175837,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:133:480",
+      "id": "candidate:app/index.html:134:480",
       "file": "app/index.html",
-      "line": 133,
+      "line": 134,
       "column": 480,
       "kind": "html-text",
       "property": null,
@@ -175811,9 +175863,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:133:546",
+      "id": "candidate:app/index.html:134:546",
       "file": "app/index.html",
-      "line": 133,
+      "line": 134,
       "column": 546,
       "kind": "html-text",
       "property": null,
@@ -175837,9 +175889,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:133:623",
+      "id": "candidate:app/index.html:134:623",
       "file": "app/index.html",
-      "line": 133,
+      "line": 134,
       "column": 623,
       "kind": "html-text",
       "property": null,
@@ -175863,9 +175915,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:133:697",
+      "id": "candidate:app/index.html:134:697",
       "file": "app/index.html",
-      "line": 133,
+      "line": 134,
       "column": 697,
       "kind": "html-text",
       "property": null,
@@ -175889,9 +175941,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:133:761",
+      "id": "candidate:app/index.html:134:761",
       "file": "app/index.html",
-      "line": 133,
+      "line": 134,
       "column": 761,
       "kind": "html-text",
       "property": null,
@@ -175915,9 +175967,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:133:825",
+      "id": "candidate:app/index.html:134:825",
       "file": "app/index.html",
-      "line": 133,
+      "line": 134,
       "column": 825,
       "kind": "html-text",
       "property": null,
@@ -175941,9 +175993,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:133:1006",
+      "id": "candidate:app/index.html:134:1006",
       "file": "app/index.html",
-      "line": 133,
+      "line": 134,
       "column": 1006,
       "kind": "html-text",
       "property": null,
@@ -175967,9 +176019,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:133:1111",
+      "id": "candidate:app/index.html:134:1111",
       "file": "app/index.html",
-      "line": 133,
+      "line": 134,
       "column": 1111,
       "kind": "html-text",
       "property": null,
@@ -175993,9 +176045,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:134:120",
+      "id": "candidate:app/index.html:135:120",
       "file": "app/index.html",
-      "line": 134,
+      "line": 135,
       "column": 120,
       "kind": "html-text",
       "property": null,
@@ -176019,9 +176071,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:134:218",
+      "id": "candidate:app/index.html:135:218",
       "file": "app/index.html",
-      "line": 134,
+      "line": 135,
       "column": 218,
       "kind": "html-text",
       "property": null,
@@ -176045,9 +176097,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:138:125",
+      "id": "candidate:app/index.html:139:125",
       "file": "app/index.html",
-      "line": 138,
+      "line": 139,
       "column": 125,
       "kind": "html-text",
       "property": null,
@@ -176071,9 +176123,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:138:239",
+      "id": "candidate:app/index.html:139:239",
       "file": "app/index.html",
-      "line": 138,
+      "line": 139,
       "column": 239,
       "kind": "html-text",
       "property": null,
@@ -176097,9 +176149,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:139:122",
+      "id": "candidate:app/index.html:140:122",
       "file": "app/index.html",
-      "line": 139,
+      "line": 140,
       "column": 122,
       "kind": "html-text",
       "property": null,
@@ -176123,9 +176175,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:140:207",
+      "id": "candidate:app/index.html:141:207",
       "file": "app/index.html",
-      "line": 140,
+      "line": 141,
       "column": 207,
       "kind": "html-text",
       "property": null,
@@ -176149,9 +176201,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:140:296",
+      "id": "candidate:app/index.html:141:296",
       "file": "app/index.html",
-      "line": 140,
+      "line": 141,
       "column": 296,
       "kind": "html-text",
       "property": null,
@@ -176175,9 +176227,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:142:110",
+      "id": "candidate:app/index.html:143:110",
       "file": "app/index.html",
-      "line": 142,
+      "line": 143,
       "column": 110,
       "kind": "html-text",
       "property": null,
@@ -176201,9 +176253,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:142:280",
+      "id": "candidate:app/index.html:143:280",
       "file": "app/index.html",
-      "line": 142,
+      "line": 143,
       "column": 280,
       "kind": "html-text",
       "property": null,
@@ -176227,9 +176279,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:143:112",
+      "id": "candidate:app/index.html:144:112",
       "file": "app/index.html",
-      "line": 143,
+      "line": 144,
       "column": 112,
       "kind": "html-text",
       "property": null,
@@ -176253,9 +176305,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:143:293",
+      "id": "candidate:app/index.html:144:293",
       "file": "app/index.html",
-      "line": 143,
+      "line": 144,
       "column": 293,
       "kind": "html-text",
       "property": null,
@@ -176279,9 +176331,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:144:92",
+      "id": "candidate:app/index.html:145:92",
       "file": "app/index.html",
-      "line": 144,
+      "line": 145,
       "column": 92,
       "kind": "html-text",
       "property": null,
@@ -176305,9 +176357,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:144:215",
+      "id": "candidate:app/index.html:145:215",
       "file": "app/index.html",
-      "line": 144,
+      "line": 145,
       "column": 215,
       "kind": "html-text",
       "property": null,
@@ -176331,9 +176383,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:144:413",
+      "id": "candidate:app/index.html:145:413",
       "file": "app/index.html",
-      "line": 144,
+      "line": 145,
       "column": 413,
       "kind": "html-text",
       "property": null,
@@ -176357,9 +176409,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:146:73",
+      "id": "candidate:app/index.html:147:73",
       "file": "app/index.html",
-      "line": 146,
+      "line": 147,
       "column": 73,
       "kind": "html-text",
       "property": null,
@@ -176383,9 +176435,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:148:153",
+      "id": "candidate:app/index.html:149:153",
       "file": "app/index.html",
-      "line": 148,
+      "line": 149,
       "column": 153,
       "kind": "html-text",
       "property": null,
@@ -176409,9 +176461,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:148:379",
+      "id": "candidate:app/index.html:149:379",
       "file": "app/index.html",
-      "line": 148,
+      "line": 149,
       "column": 379,
       "kind": "html-text",
       "property": null,
@@ -176435,9 +176487,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:148:473",
+      "id": "candidate:app/index.html:149:473",
       "file": "app/index.html",
-      "line": 148,
+      "line": 149,
       "column": 473,
       "kind": "html-text",
       "property": null,
@@ -176461,9 +176513,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:148:577",
+      "id": "candidate:app/index.html:149:577",
       "file": "app/index.html",
-      "line": 148,
+      "line": 149,
       "column": 577,
       "kind": "html-text",
       "property": null,
@@ -176487,9 +176539,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:151:130",
+      "id": "candidate:app/index.html:152:130",
       "file": "app/index.html",
-      "line": 151,
+      "line": 152,
       "column": 130,
       "kind": "html-text",
       "property": null,
@@ -176513,9 +176565,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:151:290",
+      "id": "candidate:app/index.html:152:290",
       "file": "app/index.html",
-      "line": 151,
+      "line": 152,
       "column": 290,
       "kind": "html-text",
       "property": null,
@@ -176539,9 +176591,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:152:132",
+      "id": "candidate:app/index.html:153:132",
       "file": "app/index.html",
-      "line": 152,
+      "line": 153,
       "column": 132,
       "kind": "html-text",
       "property": null,
@@ -176565,9 +176617,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:152:367",
+      "id": "candidate:app/index.html:153:367",
       "file": "app/index.html",
-      "line": 152,
+      "line": 153,
       "column": 367,
       "kind": "html-text",
       "property": null,
@@ -176591,9 +176643,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:153:138",
+      "id": "candidate:app/index.html:154:138",
       "file": "app/index.html",
-      "line": 153,
+      "line": 154,
       "column": 138,
       "kind": "html-text",
       "property": null,
@@ -176617,9 +176669,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:153:308",
+      "id": "candidate:app/index.html:154:308",
       "file": "app/index.html",
-      "line": 153,
+      "line": 154,
       "column": 308,
       "kind": "html-text",
       "property": null,
@@ -176643,9 +176695,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:154:117",
+      "id": "candidate:app/index.html:155:117",
       "file": "app/index.html",
-      "line": 154,
+      "line": 155,
       "column": 117,
       "kind": "html-text",
       "property": null,
@@ -176669,9 +176721,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:154:202",
+      "id": "candidate:app/index.html:155:202",
       "file": "app/index.html",
-      "line": 154,
+      "line": 155,
       "column": 202,
       "kind": "html-text",
       "property": null,
@@ -176695,9 +176747,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:154:442",
+      "id": "candidate:app/index.html:155:442",
       "file": "app/index.html",
-      "line": 154,
+      "line": 155,
       "column": 442,
       "kind": "html-text",
       "property": null,
@@ -176721,9 +176773,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:157:80",
+      "id": "candidate:app/index.html:158:80",
       "file": "app/index.html",
-      "line": 157,
+      "line": 158,
       "column": 80,
       "kind": "html-text",
       "property": null,
@@ -176747,9 +176799,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:157:288",
+      "id": "candidate:app/index.html:158:288",
       "file": "app/index.html",
-      "line": 157,
+      "line": 158,
       "column": 288,
       "kind": "html-text",
       "property": null,
@@ -176773,9 +176825,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:157:378",
+      "id": "candidate:app/index.html:158:378",
       "file": "app/index.html",
-      "line": 157,
+      "line": 158,
       "column": 378,
       "kind": "html-text",
       "property": null,
@@ -176799,9 +176851,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:158:84",
+      "id": "candidate:app/index.html:159:84",
       "file": "app/index.html",
-      "line": 158,
+      "line": 159,
       "column": 84,
       "kind": "html-text",
       "property": null,
@@ -176825,9 +176877,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:158:253",
+      "id": "candidate:app/index.html:159:253",
       "file": "app/index.html",
-      "line": 158,
+      "line": 159,
       "column": 253,
       "kind": "html-text",
       "property": null,
@@ -176851,9 +176903,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:158:375",
+      "id": "candidate:app/index.html:159:375",
       "file": "app/index.html",
-      "line": 158,
+      "line": 159,
       "column": 375,
       "kind": "html-text",
       "property": null,
@@ -176877,9 +176929,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:158:529",
+      "id": "candidate:app/index.html:159:529",
       "file": "app/index.html",
-      "line": 158,
+      "line": 159,
       "column": 529,
       "kind": "html-text",
       "property": null,
@@ -176903,9 +176955,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:159:86",
+      "id": "candidate:app/index.html:160:86",
       "file": "app/index.html",
-      "line": 159,
+      "line": 160,
       "column": 86,
       "kind": "html-text",
       "property": null,
@@ -176929,9 +176981,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:159:238",
+      "id": "candidate:app/index.html:160:238",
       "file": "app/index.html",
-      "line": 159,
+      "line": 160,
       "column": 238,
       "kind": "html-text",
       "property": null,
@@ -176955,9 +177007,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:159:360",
+      "id": "candidate:app/index.html:160:360",
       "file": "app/index.html",
-      "line": 159,
+      "line": 160,
       "column": 360,
       "kind": "html-text",
       "property": null,
@@ -176981,9 +177033,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:159:487",
+      "id": "candidate:app/index.html:160:487",
       "file": "app/index.html",
-      "line": 159,
+      "line": 160,
       "column": 487,
       "kind": "html-text",
       "property": null,
@@ -177007,9 +177059,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:159:594",
+      "id": "candidate:app/index.html:160:594",
       "file": "app/index.html",
-      "line": 159,
+      "line": 160,
       "column": 594,
       "kind": "html-text",
       "property": null,
@@ -177033,9 +177085,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:160:94",
+      "id": "candidate:app/index.html:161:94",
       "file": "app/index.html",
-      "line": 160,
+      "line": 161,
       "column": 94,
       "kind": "html-text",
       "property": null,
@@ -177059,9 +177111,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:160:263",
+      "id": "candidate:app/index.html:161:263",
       "file": "app/index.html",
-      "line": 160,
+      "line": 161,
       "column": 263,
       "kind": "html-text",
       "property": null,
@@ -177085,9 +177137,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:164:112",
+      "id": "candidate:app/index.html:165:112",
       "file": "app/index.html",
-      "line": 164,
+      "line": 165,
       "column": 112,
       "kind": "html-text",
       "property": null,
@@ -177111,9 +177163,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:164:212",
+      "id": "candidate:app/index.html:165:212",
       "file": "app/index.html",
-      "line": 164,
+      "line": 165,
       "column": 212,
       "kind": "html-text",
       "property": null,
@@ -177137,9 +177189,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:168:195",
+      "id": "candidate:app/index.html:169:195",
       "file": "app/index.html",
-      "line": 168,
+      "line": 169,
       "column": 195,
       "kind": "html-text",
       "property": null,
@@ -177163,9 +177215,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:168:260",
+      "id": "candidate:app/index.html:169:260",
       "file": "app/index.html",
-      "line": 168,
+      "line": 169,
       "column": 260,
       "kind": "html-text",
       "property": null,
@@ -177189,9 +177241,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:168:371",
+      "id": "candidate:app/index.html:169:371",
       "file": "app/index.html",
-      "line": 168,
+      "line": 169,
       "column": 371,
       "kind": "html-text",
       "property": null,
@@ -177215,9 +177267,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:173:98",
+      "id": "candidate:app/index.html:174:98",
       "file": "app/index.html",
-      "line": 173,
+      "line": 174,
       "column": 98,
       "kind": "html-text",
       "property": null,
@@ -177241,9 +177293,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:173:190",
+      "id": "candidate:app/index.html:174:190",
       "file": "app/index.html",
-      "line": 173,
+      "line": 174,
       "column": 190,
       "kind": "html-text",
       "property": null,
@@ -177267,9 +177319,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:173:254",
+      "id": "candidate:app/index.html:174:254",
       "file": "app/index.html",
-      "line": 173,
+      "line": 174,
       "column": 254,
       "kind": "html-text",
       "property": null,
@@ -177293,9 +177345,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:173:332",
+      "id": "candidate:app/index.html:174:332",
       "file": "app/index.html",
-      "line": 173,
+      "line": 174,
       "column": 332,
       "kind": "html-text",
       "property": null,
@@ -177319,9 +177371,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:174:134",
+      "id": "candidate:app/index.html:175:134",
       "file": "app/index.html",
-      "line": 174,
+      "line": 175,
       "column": 134,
       "kind": "html-text",
       "property": null,
@@ -177345,9 +177397,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:174:235",
+      "id": "candidate:app/index.html:175:235",
       "file": "app/index.html",
-      "line": 174,
+      "line": 175,
       "column": 235,
       "kind": "html-text",
       "property": null,
@@ -177371,9 +177423,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:174:306",
+      "id": "candidate:app/index.html:175:306",
       "file": "app/index.html",
-      "line": 174,
+      "line": 175,
       "column": 306,
       "kind": "html-text",
       "property": null,
@@ -177397,9 +177449,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:175:121",
+      "id": "candidate:app/index.html:176:121",
       "file": "app/index.html",
-      "line": 175,
+      "line": 176,
       "column": 121,
       "kind": "html-text",
       "property": null,
@@ -177423,9 +177475,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:175:223",
+      "id": "candidate:app/index.html:176:223",
       "file": "app/index.html",
-      "line": 175,
+      "line": 176,
       "column": 223,
       "kind": "html-text",
       "property": null,
@@ -177449,118 +177501,14 @@
       }
     },
     {
-      "id": "candidate:app/index.html:175:281",
+      "id": "candidate:app/index.html:176:281",
       "file": "app/index.html",
-      "line": 175,
+      "line": 176,
       "column": 281,
       "kind": "html-text",
       "property": null,
       "value": "Literal",
       "sha256": "a6230c2a81abcafc765628fdc8bc0b77035b0eabb97ea08565a416a8b7a07f94",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:176:92",
-      "file": "app/index.html",
-      "line": 176,
-      "column": 92,
-      "kind": "html-text",
-      "property": null,
-      "value": "Paper",
-      "sha256": "35045eff549e30b5bdf44abb9999f383d87bc54002b130fdcdd05315e188419e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:176:180",
-      "file": "app/index.html",
-      "line": 176,
-      "column": 180,
-      "kind": "html-text",
-      "property": null,
-      "value": "Paper",
-      "sha256": "35045eff549e30b5bdf44abb9999f383d87bc54002b130fdcdd05315e188419e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:176:242",
-      "file": "app/index.html",
-      "line": 176,
-      "column": 242,
-      "kind": "html-text",
-      "property": null,
-      "value": "Warm",
-      "sha256": "316f24288be59c8327d0406f2938c59b2eda60426c0f1d2b741b8549fa131e74",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:176:309",
-      "file": "app/index.html",
-      "line": 176,
-      "column": 309,
-      "kind": "html-text",
-      "property": null,
-      "value": "Ink",
-      "sha256": "f089d62295937bb4ea34e0a55642588056865c63160431e5cce16a3e3976de4f",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -177585,6 +177533,110 @@
       "column": 92,
       "kind": "html-text",
       "property": null,
+      "value": "Paper",
+      "sha256": "35045eff549e30b5bdf44abb9999f383d87bc54002b130fdcdd05315e188419e",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:177:180",
+      "file": "app/index.html",
+      "line": 177,
+      "column": 180,
+      "kind": "html-text",
+      "property": null,
+      "value": "Paper",
+      "sha256": "35045eff549e30b5bdf44abb9999f383d87bc54002b130fdcdd05315e188419e",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:177:242",
+      "file": "app/index.html",
+      "line": 177,
+      "column": 242,
+      "kind": "html-text",
+      "property": null,
+      "value": "Warm",
+      "sha256": "316f24288be59c8327d0406f2938c59b2eda60426c0f1d2b741b8549fa131e74",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:177:309",
+      "file": "app/index.html",
+      "line": 177,
+      "column": 309,
+      "kind": "html-text",
+      "property": null,
+      "value": "Ink",
+      "sha256": "f089d62295937bb4ea34e0a55642588056865c63160431e5cce16a3e3976de4f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:178:92",
+      "file": "app/index.html",
+      "line": 178,
+      "column": 92,
+      "kind": "html-text",
+      "property": null,
       "value": "Aspect ratio",
       "sha256": "d7ad336f35e1e6853b230bb077b557455ead80a703cc934abfc373cedf72dc6d",
       "protected": false,
@@ -177605,9 +177657,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:177:162",
+      "id": "candidate:app/index.html:178:162",
       "file": "app/index.html",
-      "line": 177,
+      "line": 178,
       "column": 162,
       "kind": "html-text",
       "property": null,
@@ -177631,9 +177683,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:177:199",
+      "id": "candidate:app/index.html:178:199",
       "file": "app/index.html",
-      "line": 177,
+      "line": 178,
       "column": 199,
       "kind": "html-text",
       "property": null,
@@ -177657,9 +177709,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:177:235",
+      "id": "candidate:app/index.html:178:235",
       "file": "app/index.html",
-      "line": 177,
+      "line": 178,
       "column": 235,
       "kind": "html-text",
       "property": null,
@@ -177683,118 +177735,14 @@
       }
     },
     {
-      "id": "candidate:app/index.html:179:80",
+      "id": "candidate:app/index.html:180:80",
       "file": "app/index.html",
-      "line": 179,
+      "line": 180,
       "column": 80,
       "kind": "html-text",
       "property": null,
       "value": "Context and details",
       "sha256": "be922e4b631d9cb629f27f166c0f4d0bee4e6965e1dab6524d0257baf0da4172",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:180:92",
-      "file": "app/index.html",
-      "line": 180,
-      "column": 92,
-      "kind": "html-text",
-      "property": null,
-      "value": "Text above",
-      "sha256": "471941219599756b0391d0af463f60fd7d5bab8130b5939edc6501d7600f7a73",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:180:184",
-      "file": "app/index.html",
-      "line": 180,
-      "column": 184,
-      "kind": "html-text",
-      "property": null,
-      "value": "Fade",
-      "sha256": "9efb597c915414fd84e20eedf169e945155c3408df8c13fb82385ca7b96174b7",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:180:247",
-      "file": "app/index.html",
-      "line": 180,
-      "column": 247,
-      "kind": "html-text",
-      "property": null,
-      "value": "Hide",
-      "sha256": "ac20a57bfde0bbc40bfe70895eb1cfacc944aaff06ca784053623c569b3e1b3d",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:180:309",
-      "file": "app/index.html",
-      "line": 180,
-      "column": 309,
-      "kind": "html-text",
-      "property": null,
-      "value": "Keep",
-      "sha256": "183f00f483d3844e875d26eac74c676054383aef38ed5a8e4d1505ef21008585",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -177819,8 +177767,8 @@
       "column": 92,
       "kind": "html-text",
       "property": null,
-      "value": "Text below",
-      "sha256": "8f99280ddbdab5095eecca0931fa4b6883d288aee45a69c93e546d49f514b2f3",
+      "value": "Text above",
+      "sha256": "471941219599756b0391d0af463f60fd7d5bab8130b5939edc6501d7600f7a73",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -177917,9 +177865,113 @@
       }
     },
     {
-      "id": "candidate:app/index.html:182:198",
+      "id": "candidate:app/index.html:182:92",
       "file": "app/index.html",
       "line": 182,
+      "column": 92,
+      "kind": "html-text",
+      "property": null,
+      "value": "Text below",
+      "sha256": "8f99280ddbdab5095eecca0931fa4b6883d288aee45a69c93e546d49f514b2f3",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:182:184",
+      "file": "app/index.html",
+      "line": 182,
+      "column": 184,
+      "kind": "html-text",
+      "property": null,
+      "value": "Fade",
+      "sha256": "9efb597c915414fd84e20eedf169e945155c3408df8c13fb82385ca7b96174b7",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:182:247",
+      "file": "app/index.html",
+      "line": 182,
+      "column": 247,
+      "kind": "html-text",
+      "property": null,
+      "value": "Hide",
+      "sha256": "ac20a57bfde0bbc40bfe70895eb1cfacc944aaff06ca784053623c569b3e1b3d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:182:309",
+      "file": "app/index.html",
+      "line": 182,
+      "column": 309,
+      "kind": "html-text",
+      "property": null,
+      "value": "Keep",
+      "sha256": "183f00f483d3844e875d26eac74c676054383aef38ed5a8e4d1505ef21008585",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:183:198",
+      "file": "app/index.html",
+      "line": 183,
       "column": 198,
       "kind": "html-text",
       "property": null,
@@ -177943,9 +177995,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:182:245",
+      "id": "candidate:app/index.html:183:245",
       "file": "app/index.html",
-      "line": 182,
+      "line": 183,
       "column": 245,
       "kind": "html-text",
       "property": null,
@@ -177969,9 +178021,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:183:197",
+      "id": "candidate:app/index.html:184:197",
       "file": "app/index.html",
-      "line": 183,
+      "line": 184,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -177995,9 +178047,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:185:121",
+      "id": "candidate:app/index.html:186:121",
       "file": "app/index.html",
-      "line": 185,
+      "line": 186,
       "column": 121,
       "kind": "html-text",
       "property": null,
@@ -178021,9 +178073,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:185:197",
+      "id": "candidate:app/index.html:186:197",
       "file": "app/index.html",
-      "line": 185,
+      "line": 186,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -178047,9 +178099,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:185:284",
+      "id": "candidate:app/index.html:186:284",
       "file": "app/index.html",
-      "line": 185,
+      "line": 186,
       "column": 284,
       "kind": "html-text",
       "property": null,
@@ -178073,9 +178125,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:191:124",
+      "id": "candidate:app/index.html:192:124",
       "file": "app/index.html",
-      "line": 191,
+      "line": 192,
       "column": 124,
       "kind": "html-text",
       "property": null,
@@ -178099,9 +178151,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:191:276",
+      "id": "candidate:app/index.html:192:276",
       "file": "app/index.html",
-      "line": 191,
+      "line": 192,
       "column": 276,
       "kind": "html-text",
       "property": null,
@@ -178125,9 +178177,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:191:377",
+      "id": "candidate:app/index.html:192:377",
       "file": "app/index.html",
-      "line": 191,
+      "line": 192,
       "column": 377,
       "kind": "html-text",
       "property": null,
@@ -178151,9 +178203,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:194:92",
+      "id": "candidate:app/index.html:195:92",
       "file": "app/index.html",
-      "line": 194,
+      "line": 195,
       "column": 92,
       "kind": "html-text",
       "property": null,
@@ -178177,9 +178229,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:197:187",
+      "id": "candidate:app/index.html:198:187",
       "file": "app/index.html",
-      "line": 197,
+      "line": 198,
       "column": 187,
       "kind": "html-text",
       "property": null,
@@ -178203,9 +178255,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:197:258",
+      "id": "candidate:app/index.html:198:258",
       "file": "app/index.html",
-      "line": 197,
+      "line": 198,
       "column": 258,
       "kind": "html-text",
       "property": null,
@@ -178229,9 +178281,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:197:328",
+      "id": "candidate:app/index.html:198:328",
       "file": "app/index.html",
-      "line": 197,
+      "line": 198,
       "column": 328,
       "kind": "html-text",
       "property": null,
@@ -191063,9 +191115,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:124:36",
+      "id": "candidate:app/reader.js:126:36",
       "file": "app/reader.js",
-      "line": 124,
+      "line": 126,
       "column": 36,
       "kind": "js-attribute",
       "property": "aria-busy",
@@ -191083,9 +191135,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:204:282",
+      "id": "candidate:app/reader.js:206:282",
       "file": "app/reader.js",
-      "line": 204,
+      "line": 206,
       "column": 282,
       "kind": "js-attribute",
       "property": "aria-describedby",
@@ -191103,9 +191155,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:259:188",
+      "id": "candidate:app/reader.js:261:188",
       "file": "app/reader.js",
-      "line": 259,
+      "line": 261,
       "column": 188,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -191123,9 +191175,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:344:395",
+      "id": "candidate:app/reader.js:346:395",
       "file": "app/reader.js",
-      "line": 344,
+      "line": 346,
       "column": 395,
       "kind": "js-attribute",
       "property": "role",
@@ -191143,9 +191195,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:348:124",
+      "id": "candidate:app/reader.js:350:124",
       "file": "app/reader.js",
-      "line": 348,
+      "line": 350,
       "column": 124,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191163,9 +191215,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:381:139",
+      "id": "candidate:app/reader.js:383:139",
       "file": "app/reader.js",
-      "line": 381,
+      "line": 383,
       "column": 139,
       "kind": "js-attribute",
       "property": "aria-live",
@@ -191183,9 +191235,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:388:153",
+      "id": "candidate:app/reader.js:390:153",
       "file": "app/reader.js",
-      "line": 388,
+      "line": 390,
       "column": 153,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191203,9 +191255,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:388:350",
+      "id": "candidate:app/reader.js:390:350",
       "file": "app/reader.js",
-      "line": 388,
+      "line": 390,
       "column": 350,
       "kind": "js-attribute",
       "property": "role",
@@ -191223,9 +191275,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:389:85",
+      "id": "candidate:app/reader.js:391:85",
       "file": "app/reader.js",
-      "line": 389,
+      "line": 391,
       "column": 85,
       "kind": "js-attribute",
       "property": "role",
@@ -191243,9 +191295,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:514:129",
+      "id": "candidate:app/reader.js:516:129",
       "file": "app/reader.js",
-      "line": 514,
+      "line": 516,
       "column": 129,
       "kind": "js-attribute",
       "property": "aria-busy",
@@ -191263,9 +191315,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:515:41",
+      "id": "candidate:app/reader.js:517:41",
       "file": "app/reader.js",
-      "line": 515,
+      "line": 517,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191283,9 +191335,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:515:122",
+      "id": "candidate:app/reader.js:517:122",
       "file": "app/reader.js",
-      "line": 515,
+      "line": 517,
       "column": 122,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191303,9 +191355,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:515:311",
+      "id": "candidate:app/reader.js:517:311",
       "file": "app/reader.js",
-      "line": 515,
+      "line": 517,
       "column": 311,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191323,9 +191375,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:515:669",
+      "id": "candidate:app/reader.js:517:669",
       "file": "app/reader.js",
-      "line": 515,
+      "line": 517,
       "column": 669,
       "kind": "js-attribute",
       "property": "role",
@@ -191343,9 +191395,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:516:106",
+      "id": "candidate:app/reader.js:518:106",
       "file": "app/reader.js",
-      "line": 516,
+      "line": 518,
       "column": 106,
       "kind": "js-attribute",
       "property": "role",
@@ -191363,9 +191415,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:518:224",
+      "id": "candidate:app/reader.js:520:224",
       "file": "app/reader.js",
-      "line": 518,
+      "line": 520,
       "column": 224,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191383,10 +191435,10 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:518:688",
+      "id": "candidate:app/reader.js:520:648",
       "file": "app/reader.js",
-      "line": 518,
-      "column": 688,
+      "line": 520,
+      "column": 648,
       "kind": "js-attribute",
       "property": "role",
       "value": "status",
@@ -191403,10 +191455,10 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:518:849",
+      "id": "candidate:app/reader.js:520:809",
       "file": "app/reader.js",
-      "line": 518,
-      "column": 849,
+      "line": 520,
+      "column": 809,
       "kind": "js-attribute",
       "property": "role",
       "value": "alert",
@@ -191423,9 +191475,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:527:166",
+      "id": "candidate:app/reader.js:529:166",
       "file": "app/reader.js",
-      "line": 527,
+      "line": 529,
       "column": 166,
       "kind": "js-cjk-literal",
       "property": null,
@@ -242381,7 +242433,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 59,
+      "line": 61,
       "expression": "READER_SHELL+'bookText'",
       "fragments": [
         "bookText"
@@ -242391,7 +242443,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 78,
+      "line": 80,
       "expression": "book.chapters.findIndex(c=>c.id===state.chapterId)+direction",
       "fragments": [],
       "unresolved": true
@@ -242399,7 +242451,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 78,
+      "line": 80,
       "expression": "book.chapters.findIndex(c=>c.id===state.chapterId)+direction",
       "fragments": [],
       "unresolved": true
@@ -242407,7 +242459,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 91,
+      "line": 93,
       "expression": "READER_UI+'unknownError'",
       "fragments": [
         "unknownError"
@@ -242417,7 +242469,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 94,
+      "line": 96,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242425,7 +242477,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 94,
+      "line": 96,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -242433,7 +242485,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 94,
+      "line": 96,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242441,7 +242493,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 94,
+      "line": 96,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -242449,7 +242501,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 94,
+      "line": 96,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242457,7 +242509,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 104,
+      "line": 106,
       "expression": "READER_UI+'progressConflict'",
       "fragments": [
         "progressConflict"
@@ -242467,7 +242519,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 105,
+      "line": 107,
       "expression": "READER_UI+'progressLocal'",
       "fragments": [
         "progressLocal"
@@ -242477,7 +242529,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 105,
+      "line": 107,
       "expression": "READER_UI+'progressMemory'",
       "fragments": [
         "progressMemory"
@@ -242487,7 +242539,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 109,
+      "line": 111,
       "expression": "READER_UI+'fragment'",
       "fragments": [
         "fragment"
@@ -242497,7 +242549,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 142,
+      "line": 144,
       "expression": "'[data-id=\"'+a.passageId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -242508,7 +242560,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 142,
+      "line": 144,
       "expression": "'[data-id=\"'+a.passageId",
       "fragments": [
         "[data-id=\""
@@ -242518,7 +242570,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 164,
+      "line": 166,
       "expression": "state.font+'px'",
       "fragments": [
         "px"
@@ -242528,7 +242580,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 164,
+      "line": 166,
       "expression": "state.fontFamily",
       "fragments": [],
       "unresolved": true
@@ -242536,7 +242588,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 165,
+      "line": 167,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242544,7 +242596,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 171,
+      "line": 173,
       "expression": "'setting-'+key",
       "fragments": [
         "setting-"
@@ -242554,7 +242606,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 171,
+      "line": 173,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242562,7 +242614,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 171,
+      "line": 173,
       "expression": "'[data-adjust=\"'+key+'\"]'",
       "fragments": [
         "[data-adjust=\"",
@@ -242573,7 +242625,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 171,
+      "line": 173,
       "expression": "'[data-adjust=\"'+key",
       "fragments": [
         "[data-adjust=\""
@@ -242583,7 +242635,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 171,
+      "line": 173,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242591,7 +242643,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 171,
+      "line": 173,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -242599,7 +242651,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 171,
+      "line": 173,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242607,7 +242659,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 171,
+      "line": 173,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242615,7 +242667,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 171,
+      "line": 173,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -242623,7 +242675,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 171,
+      "line": 173,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242631,7 +242683,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 180,
+      "line": 182,
       "expression": "READER_UI+'type.'",
       "fragments": [
         "type."
@@ -242641,7 +242693,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 180,
+      "line": 182,
       "expression": "'label-'+key",
       "fragments": [
         "label-"
@@ -242651,7 +242703,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 181,
+      "line": 183,
       "expression": "'setting-'+key",
       "fragments": [
         "setting-"
@@ -242661,7 +242713,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 182,
+      "line": 184,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242669,7 +242721,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 182,
+      "line": 184,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242677,7 +242729,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 183,
+      "line": 185,
       "expression": "READER_UI+'type.'",
       "fragments": [
         "type."
@@ -242687,7 +242739,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 186,
+      "line": 188,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -242695,7 +242747,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 186,
+      "line": 188,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -242703,7 +242755,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 187,
+      "line": 189,
       "expression": "READER_UI+'missing.'",
       "fragments": [
         "missing."
@@ -242713,7 +242765,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 193,
+      "line": 195,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -242721,7 +242773,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 195,
+      "line": 197,
       "expression": "READER_UI+'fallback.'",
       "fragments": [
         "fallback."
@@ -242731,7 +242783,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 199,
+      "line": 201,
       "expression": "READER_UI+'chapterName'",
       "fragments": [
         "chapterName"
@@ -242741,7 +242793,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 202,
+      "line": 204,
       "expression": "'section-'+s.number",
       "fragments": [
         "section-"
@@ -242751,7 +242803,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 202,
+      "line": 204,
       "expression": "'§'+s.number",
       "fragments": [
         "§"
@@ -242761,7 +242813,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 205,
+      "line": 207,
       "expression": "READER_UI+'sampleEnd'",
       "fragments": [
         "sampleEnd"
@@ -242771,7 +242823,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 205,
+      "line": 207,
       "expression": "READER_UI+'sampleHelp'",
       "fragments": [
         "sampleHelp"
@@ -242781,7 +242833,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 208,
+      "line": 210,
       "expression": "READER_UI+'chapterEndNumber'",
       "fragments": [
         "chapterEndNumber"
@@ -242791,7 +242843,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 209,
+      "line": 211,
       "expression": "READER_UI+'markChapter'",
       "fragments": [
         "markChapter"
@@ -242801,7 +242853,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 214,
+      "line": 216,
       "expression": "chapter.title.zh+' · Leafhour'",
       "fragments": [
         " · Leafhour"
@@ -242811,7 +242863,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 215,
+      "line": 217,
       "expression": "chapter.number+' / '",
       "fragments": [
         " / "
@@ -242821,7 +242873,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 215,
+      "line": 217,
       "expression": "(index+1)+' / '",
       "fragments": [
         " / "
@@ -242831,7 +242883,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 253,
+      "line": 255,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -242839,7 +242891,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 266,
+      "line": 268,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -242847,7 +242899,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 275,
+      "line": 277,
       "expression": "Math.min(nodeRect.width,innerWidth-24)+'px'",
       "fragments": [
         "px"
@@ -242857,7 +242909,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 279,
+      "line": 281,
       "expression": "placement.left+'px'",
       "fragments": [
         "px"
@@ -242867,7 +242919,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 279,
+      "line": 281,
       "expression": "placement.top+'px'",
       "fragments": [
         "px"
@@ -242877,7 +242929,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 280,
+      "line": 282,
       "expression": "(at.left-tools.getBoundingClientRect().left)+'px'",
       "fragments": [
         "px"
@@ -242887,7 +242939,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 280,
+      "line": 282,
       "expression": "(at.top-tools.getBoundingClientRect().top)+'px'",
       "fragments": [
         "px"
@@ -242897,7 +242949,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 280,
+      "line": 282,
       "expression": "at.maxHeight+'px'",
       "fragments": [
         "px"
@@ -242907,7 +242959,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 283,
+      "line": 285,
       "expression": "id+':'",
       "fragments": [
         ":"
@@ -242917,7 +242969,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 283,
+      "line": 285,
       "expression": "'[data-id=\"'+id+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -242928,7 +242980,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 283,
+      "line": 285,
       "expression": "'[data-id=\"'+id",
       "fragments": [
         "[data-id=\""
@@ -242938,7 +242990,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 284,
+      "line": 286,
       "expression": "READER_UI+'translation'",
       "fragments": [
         "translation"
@@ -242948,7 +243000,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 291,
+      "line": 293,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -242956,7 +243008,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 296,
+      "line": 298,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -242964,7 +243016,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 297,
+      "line": 299,
       "expression": "part.variant",
       "fragments": [],
       "unresolved": true
@@ -242972,7 +243024,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 297,
+      "line": 299,
       "expression": "READER_UI+'highlightChanged'",
       "fragments": [
         "highlightChanged"
@@ -242982,7 +243034,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 301,
+      "line": 303,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -242993,7 +243045,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 301,
+      "line": 303,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -243003,7 +243055,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 317,
+      "line": 319,
       "expression": "'[data-id=\"'+part.passageId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -243014,7 +243066,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 317,
+      "line": 319,
       "expression": "'[data-id=\"'+part.passageId",
       "fragments": [
         "[data-id=\""
@@ -243024,7 +243076,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 322,
+      "line": 324,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243032,7 +243084,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 322,
+      "line": 324,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243040,7 +243092,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 323,
+      "line": 325,
       "expression": "READER_UI+'sourceLabel.'+(excerpt?'excerpt':'passage')+'.'",
       "fragments": [
         "sourceLabel.",
@@ -243051,7 +243103,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 323,
+      "line": 325,
       "expression": "READER_UI+'sourceLabel.'",
       "fragments": [
         "sourceLabel."
@@ -243061,7 +243113,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 328,
+      "line": 330,
       "expression": "variant",
       "fragments": [],
       "unresolved": true
@@ -243069,7 +243121,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 328,
+      "line": 330,
       "expression": "READER_UI+'missing.'",
       "fragments": [
         "missing."
@@ -243079,7 +243131,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 332,
+      "line": 334,
       "expression": "READER_UI+'returnQuote'",
       "fragments": [
         "returnQuote"
@@ -243089,7 +243141,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 335,
+      "line": 337,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243097,7 +243149,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 335,
+      "line": 337,
       "expression": "'[data-id=\"'+id+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -243108,7 +243160,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 335,
+      "line": 337,
       "expression": "'[data-id=\"'+id",
       "fragments": [
         "[data-id=\""
@@ -243118,7 +243170,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 340,
+      "line": 342,
       "expression": "READER_UI+'loginPreparing'",
       "fragments": [
         "loginPreparing"
@@ -243128,7 +243180,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 341,
+      "line": 343,
       "expression": "READER_UI+'loginNotes'",
       "fragments": [
         "loginNotes"
@@ -243138,7 +243190,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 341,
+      "line": 343,
       "expression": "READER_UI+'loginPassage'",
       "fragments": [
         "loginPassage"
@@ -243148,7 +243200,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 343,
+      "line": 345,
       "expression": "READER_UI+'recordsLoading'",
       "fragments": [
         "recordsLoading"
@@ -243158,7 +243210,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 344,
+      "line": 346,
       "expression": "READER_UI+'recordsUnavailable'",
       "fragments": [
         "recordsUnavailable"
@@ -243168,7 +243220,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 344,
+      "line": 346,
       "expression": "READER_UI+'recordsReading'",
       "fragments": [
         "recordsReading"
@@ -243178,7 +243230,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 344,
+      "line": 346,
       "expression": "READER_UI+'recordsRetry'",
       "fragments": [
         "recordsRetry"
@@ -243188,27 +243240,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 344,
-      "expression": "READER_UI+'recordsFailed'",
-      "fragments": [
-        "recordsFailed"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reader.js",
-      "line": 348,
-      "expression": "READER_UI+'progressConflict'",
-      "fragments": [
-        "progressConflict"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reader.js",
-      "line": 349,
+      "line": 346,
       "expression": "READER_UI+'recordsFailed'",
       "fragments": [
         "recordsFailed"
@@ -243219,6 +243251,26 @@
       "kind": "concatenation",
       "file": "app/reader.js",
       "line": 350,
+      "expression": "READER_UI+'progressConflict'",
+      "fragments": [
+        "progressConflict"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader.js",
+      "line": 351,
+      "expression": "READER_UI+'recordsFailed'",
+      "fragments": [
+        "recordsFailed"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader.js",
+      "line": 352,
       "expression": "'[data-panel-tab=\"'+panelTab+'\"]'",
       "fragments": [
         "[data-panel-tab=\"",
@@ -243229,7 +243281,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 350,
+      "line": 352,
       "expression": "'[data-panel-tab=\"'+panelTab",
       "fragments": [
         "[data-panel-tab=\""
@@ -243239,7 +243291,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 355,
+      "line": 357,
       "expression": "READER_SHELL+'myRecords'",
       "fragments": [
         "myRecords"
@@ -243249,7 +243301,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 355,
+      "line": 357,
       "expression": "READER_UI+'annotationTitle'",
       "fragments": [
         "annotationTitle"
@@ -243259,7 +243311,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 355,
+      "line": 357,
       "expression": "READER_SHELL+'leaveQuestion'",
       "fragments": [
         "leaveQuestion"
@@ -243269,7 +243321,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 355,
+      "line": 357,
       "expression": "READER_UI+'writeThought'",
       "fragments": [
         "writeThought"
@@ -243279,7 +243331,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 360,
+      "line": 362,
       "expression": "'panel-tab-'+panelTab",
       "fragments": [
         "panel-tab-"
@@ -243289,7 +243341,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 364,
+      "line": 366,
       "expression": "READER_SHELL+'myRecords'",
       "fragments": [
         "myRecords"
@@ -243299,7 +243351,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 367,
+      "line": 369,
       "expression": "READER_UI+'noRecords'",
       "fragments": [
         "noRecords"
@@ -243309,7 +243361,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 371,
+      "line": 373,
       "expression": "READER_UI+'annotation.'+(['difficulty','paradox','example','context','cross_reference','term'].includes(n.kind)?n.kind:'note')+'.'",
       "fragments": [
         "annotation.",
@@ -243320,7 +243372,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 371,
+      "line": 373,
       "expression": "READER_UI+'annotation.'",
       "fragments": [
         "annotation."
@@ -243330,7 +243382,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 372,
+      "line": 374,
       "expression": "READER_UI+'keyTerms'",
       "fragments": [
         "keyTerms"
@@ -243340,7 +243392,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 372,
+      "line": 374,
       "expression": "t.zh+' · '",
       "fragments": [
         " · "
@@ -243350,7 +243402,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 373,
+      "line": 375,
       "expression": "READER_UI+'noAnnotations'",
       "fragments": [
         "noAnnotations"
@@ -243360,7 +243412,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 375,
+      "line": 377,
       "expression": "type+':'",
       "fragments": [
         ":"
@@ -243370,7 +243422,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 379,
+      "line": 381,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -243378,7 +243430,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 380,
+      "line": 382,
       "expression": "READER_UI+'questionLabel'",
       "fragments": [
         "questionLabel"
@@ -243388,7 +243440,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 380,
+      "line": 382,
       "expression": "READER_UI+'thoughtLabel'",
       "fragments": [
         "thoughtLabel"
@@ -243398,7 +243450,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 380,
+      "line": 382,
       "expression": "READER_UI+'questionPlaceholder'",
       "fragments": [
         "questionPlaceholder"
@@ -243408,7 +243460,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 380,
+      "line": 382,
       "expression": "READER_UI+'thoughtPlaceholder'",
       "fragments": [
         "thoughtPlaceholder"
@@ -243418,7 +243470,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 382,
+      "line": 384,
       "expression": "READER_SHELL+'saveQuestion'",
       "fragments": [
         "saveQuestion"
@@ -243428,7 +243480,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 382,
+      "line": 384,
       "expression": "READER_UI+'saveThought'",
       "fragments": [
         "saveThought"
@@ -243438,7 +243490,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 382,
+      "line": 384,
       "expression": "READER_UI+'pendingNote'",
       "fragments": [
         "pendingNote"
@@ -243448,7 +243500,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 382,
+      "line": 384,
       "expression": "READER_UI+'empty'",
       "fragments": [
         "empty"
@@ -243458,7 +243510,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 388,
+      "line": 390,
       "expression": "'/api/'+key",
       "fragments": [
         "/api/"
@@ -243468,7 +243520,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 388,
+      "line": 390,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -243476,7 +243528,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 388,
+      "line": 390,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -243484,7 +243536,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 392,
+      "line": 394,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -243492,7 +243544,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 395,
+      "line": 397,
       "expression": "'[data-panel-tab=\"'+tab+'\"]'",
       "fragments": [
         "[data-panel-tab=\"",
@@ -243503,7 +243555,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 395,
+      "line": 397,
       "expression": "'[data-panel-tab=\"'+tab",
       "fragments": [
         "[data-panel-tab=\""
@@ -243513,7 +243565,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 407,
+      "line": 409,
       "expression": "'/api/reading?'+query",
       "fragments": [
         "/api/reading?"
@@ -243523,7 +243575,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 413,
+      "line": 415,
       "expression": "READER_UI+'draftUnavailable'",
       "fragments": [
         "draftUnavailable"
@@ -243533,7 +243585,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 413,
+      "line": 415,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243541,7 +243593,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 414,
+      "line": 416,
       "expression": "'/api/chapters/'+encodeURIComponent(id)+'?contentVersion='",
       "fragments": [
         "/api/chapters/",
@@ -243552,7 +243604,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 414,
+      "line": 416,
       "expression": "'/api/chapters/'+encodeURIComponent(id)",
       "fragments": [
         "/api/chapters/"
@@ -243562,7 +243614,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 415,
+      "line": 417,
       "expression": "READER_UI+'chapterLoading'",
       "fragments": [
         "chapterLoading"
@@ -243572,7 +243624,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 415,
+      "line": 417,
       "expression": "READER_UI+'chapterFailed'",
       "fragments": [
         "chapterFailed"
@@ -243582,7 +243634,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 427,
+      "line": 429,
       "expression": "location.pathname+'?'",
       "fragments": [
         "?"
@@ -243592,7 +243644,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 428,
+      "line": 430,
       "expression": "READER_UI+'chineseOriginal'",
       "fragments": [
         "chineseOriginal"
@@ -243602,7 +243654,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 428,
+      "line": 430,
       "expression": "READER_SHELL+'englishOriginal'",
       "fragments": [
         "englishOriginal"
@@ -243612,7 +243664,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 428,
+      "line": 430,
       "expression": "READER_SHELL+'chineseTranslation'",
       "fragments": [
         "chineseTranslation"
@@ -243622,7 +243674,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 428,
+      "line": 430,
       "expression": "READER_SHELL+'bilingual'",
       "fragments": [
         "bilingual"
@@ -243632,7 +243684,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 428,
+      "line": 430,
       "expression": "READER_UI+'sourceAndTranslation'",
       "fragments": [
         "sourceAndTranslation"
@@ -243642,7 +243694,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 430,
+      "line": 432,
       "expression": "location.pathname+'?'",
       "fragments": [
         "?"
@@ -243652,7 +243704,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 431,
+      "line": 433,
       "expression": "READER_UI+'citationInvalid'",
       "fragments": [
         "citationInvalid"
@@ -243662,7 +243714,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 431,
+      "line": 433,
       "expression": "READER_SHELL+'loadError'",
       "fragments": [
         "loadError"
@@ -243672,7 +243724,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 431,
+      "line": 433,
       "expression": "READER_UI+'loginCitation'",
       "fragments": [
         "loginCitation"
@@ -243682,7 +243734,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 442,
+      "line": 444,
       "expression": "READER_UI+'savedSourceFailed'",
       "fragments": [
         "savedSourceFailed"
@@ -243692,7 +243744,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 444,
+      "line": 446,
       "expression": "READER_UI+'savedPositionReady'",
       "fragments": [
         "savedPositionReady"
@@ -243702,7 +243754,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 462,
+      "line": 464,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243710,7 +243762,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 463,
+      "line": 465,
       "expression": "READER_UI+'selectAgain'",
       "fragments": [
         "selectAgain"
@@ -243720,7 +243772,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 472,
+      "line": 474,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -243731,7 +243783,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 472,
+      "line": 474,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -243741,7 +243793,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 493,
+      "line": 495,
       "expression": "READER_UI+'appearanceReset'",
       "fragments": [
         "appearanceReset"
@@ -243751,7 +243803,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 496,
+      "line": 498,
       "expression": "selectedId",
       "fragments": [],
       "unresolved": true
@@ -243759,7 +243811,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 496,
+      "line": 498,
       "expression": "selectedId",
       "fragments": [],
       "unresolved": true
@@ -243767,7 +243819,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 496,
+      "line": 498,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -243778,7 +243830,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 496,
+      "line": 498,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -243788,7 +243840,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 496,
+      "line": 498,
       "expression": "READER_UI+'translation'",
       "fragments": [
         "translation"
@@ -243798,7 +243850,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 500,
+      "line": 502,
       "expression": "selectedId",
       "fragments": [],
       "unresolved": true
@@ -243806,7 +243858,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 500,
+      "line": 502,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -243817,7 +243869,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 500,
+      "line": 502,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -243827,7 +243879,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 507,
+      "line": 509,
       "expression": "next",
       "fragments": [],
       "unresolved": true
@@ -243835,7 +243887,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 507,
+      "line": 509,
       "expression": "next",
       "fragments": [],
       "unresolved": true
@@ -243843,7 +243895,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 511,
+      "line": 513,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -243854,7 +243906,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 511,
+      "line": 513,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -243864,7 +243916,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 512,
+      "line": 514,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243872,7 +243924,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 512,
+      "line": 514,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243880,7 +243932,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 515,
+      "line": 517,
       "expression": "READER_UI+'exported'",
       "fragments": [
         "exported"
@@ -243890,7 +243942,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 516,
+      "line": 518,
       "expression": "READER_UI+'exportFailed'",
       "fragments": [
         "exportFailed"
@@ -243900,7 +243952,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 518,
+      "line": 520,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243908,7 +243960,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 518,
+      "line": 520,
       "expression": "READER_UI+'imported'",
       "fragments": [
         "imported"
@@ -243918,7 +243970,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 518,
+      "line": 520,
       "expression": "READER_UI+'importFailed'",
       "fragments": [
         "importFailed"
@@ -243928,7 +243980,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 519,
+      "line": 521,
       "expression": "n",
       "fragments": [],
       "unresolved": true
@@ -243936,7 +243988,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 519,
+      "line": 521,
       "expression": "n",
       "fragments": [],
       "unresolved": true
@@ -243944,7 +243996,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 519,
+      "line": 521,
       "expression": "n",
       "fragments": [],
       "unresolved": true
@@ -243952,7 +244004,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 519,
+      "line": 521,
       "expression": "n",
       "fragments": [],
       "unresolved": true
@@ -243960,7 +244012,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 528,
+      "line": 530,
       "expression": "READER_UI+'positionReturned'",
       "fragments": [
         "positionReturned"
@@ -243970,7 +244022,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 529,
+      "line": 531,
       "expression": "READER_UI+'positionKept'",
       "fragments": [
         "positionKept"
@@ -243980,7 +244032,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 531,
+      "line": 533,
       "expression": "READER_UI+'progressConflict'",
       "fragments": [
         "progressConflict"
@@ -243990,7 +244042,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 539,
+      "line": 541,
       "expression": "READER_UI+'translationSaved'",
       "fragments": [
         "translationSaved"
@@ -244000,7 +244052,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 539,
+      "line": 541,
       "expression": "READER_UI+'previousTranslationSaved'",
       "fragments": [
         "previousTranslationSaved"
@@ -244010,7 +244062,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 544,
+      "line": 546,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -244018,7 +244070,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 544,
+      "line": 546,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -256678,8 +256730,8 @@
     "duplicateKeys": 0,
     "reviewedItems": 0,
     "unreviewedItems": 2213,
-    "candidates": 4854,
-    "candidatesUnreviewed": 4854,
+    "candidates": 4856,
+    "candidatesUnreviewed": 4856,
     "candidatesProtected": 132,
     "itemsProtected": 9,
     "dynamicConsumers": 3119,

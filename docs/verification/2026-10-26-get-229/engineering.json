@@ -1,0 +1,47 @@
+[
+  {
+    "name": "copy-lint",
+    "exit": 0,
+    "durationMs": 7066
+  },
+  {
+    "name": "copy-canaries",
+    "exit": 0,
+    "durationMs": 7943
+  },
+  {
+    "name": "pricing",
+    "exit": 0,
+    "durationMs": 26
+  },
+  {
+    "name": "full-tests",
+    "exit": 0,
+    "durationMs": 93762
+  },
+  {
+    "name": "runtime",
+    "exit": 0,
+    "durationMs": 1828
+  },
+  {
+    "name": "vercel",
+    "exit": 0,
+    "durationMs": 758
+  },
+  {
+    "name": "assets",
+    "exit": 0,
+    "durationMs": 51
+  },
+  {
+    "name": "policy",
+    "exit": 0,
+    "durationMs": 514
+  },
+  {
+    "name": "release",
+    "exit": 0,
+    "durationMs": 38
+  }
+]
