@@ -1,0 +1,112 @@
+{
+  "at": "2026-10-26T18:47:08.246969+00:00",
+  "scope": "Figma design and fixed-state prototype",
+  "status": "pass",
+  "fileURL": "https://www.figma.com/design/zjkapX58kUJZZh0la8F4Nw/Leafhour",
+  "pluginVersion": "0.7.0",
+  "screens": 13,
+  "diagrams": 3,
+  "pages": 3,
+  "nativeNodeTypesOnPrototypePage": {
+    "FRAME": 816,
+    "INSTANCE": 13,
+    "TEXT": 379,
+    "VECTOR": 91
+  },
+  "hotspotReadbacks": 165,
+  "prototypeReactionCount": 176,
+  "startingFlows": 3,
+  "colorVariables": 4,
+  "textStyles": 19,
+  "sharedComponents": 5,
+  "presentationClickthrough": {
+    "method": "Figma Desktop through Computer Use",
+    "steps": [
+      {
+        "action": "读到这里",
+        "screen": "03 · 半屏陪读",
+        "verified": true
+      },
+      {
+        "action": "展开或收起面板",
+        "screen": "04 · 展开讨论",
+        "verified": true
+      },
+      {
+        "action": "本段",
+        "screen": "05 · 核对出处",
+        "verified": true
+      },
+      {
+        "action": "返回讨论",
+        "screen": "04 · 展开讨论",
+        "verified": true
+      },
+      {
+        "action": "继续读",
+        "screen": "01 · 打开即续读",
+        "verified": true
+      }
+    ],
+    "limits": "Fixed states; does not verify typing, scrolling restoration or continuous sheet physics."
+  },
+  "visuallyReviewedScreenshots": {
+    "1:15": {
+      "file": "evidence/figma/1-15.png",
+      "width": 402,
+      "height": 874,
+      "sha256": "be58ce226617351eb4a2b1e72e804b56bc57b20ec90f19f4b9277887d87b7b42"
+    },
+    "1:267": {
+      "file": "evidence/figma/1-267.png",
+      "width": 402,
+      "height": 874,
+      "sha256": "15319b1dcb3d3751e60e632596b411d8d9c0a021d8f6c997224c47c129a179de"
+    },
+    "1:378": {
+      "file": "evidence/figma/1-378.png",
+      "width": 402,
+      "height": 874,
+      "sha256": "24099ea6b549aeb652f9841b2d13e00069902a35092562510ef7d7accc7addcf"
+    },
+    "1:496": {
+      "file": "evidence/figma/1-496.png",
+      "width": 402,
+      "height": 874,
+      "sha256": "f3e030bfc89dae74cf300f8265ed6b2e3dfd151b858670f34bc59a986c79bf9a"
+    },
+    "1:1313": {
+      "file": "evidence/figma/1-1313.png",
+      "width": 402,
+      "height": 874,
+      "sha256": "109375dc6680e11bbb8fc42b8bb2f99b079334d1ed0555780ac046beffc269fc"
+    },
+    "1:1620": {
+      "file": "evidence/figma/1-1620.png",
+      "width": 1760,
+      "height": 1080,
+      "sha256": "cb5fd12b40c817e52ba71a45273881cb1e1eaf9e924cf383e1bb30e4d8d45fd9"
+    },
+    "1:1662": {
+      "file": "evidence/figma/1-1662.png",
+      "width": 1760,
+      "height": 1130,
+      "sha256": "232bafe3a0b56028247c901e4596366e932917150e95076b6713c96654c0949e"
+    },
+    "1:1710": {
+      "file": "evidence/figma/1-1710.png",
+      "width": 1760,
+      "height": 980,
+      "sha256": "6432645ebdbd350c42c62bc085696ca983cab7aeca54dfb7cbd6b4ca8f284246"
+    }
+  },
+  "repairs": [
+    "Imported SVG connector namespaces/markers were replaced by explicit vector paths and arrowheads; final exports reviewed."
+  ],
+  "limits": [
+    "Fixed state Figma navigation; free text and restoration verified in the standalone Web prototype.",
+    "Native SwiftUI, iPhone, VoiceOver, keyboard and haptics unverified.",
+    "Body type specimens have fixed editorial line breaks; responsive reflow, scrolling and persistence are Web prototype evidence.",
+    "File permissions unchanged; no library publish or public sharing performed."
+  ]
+}

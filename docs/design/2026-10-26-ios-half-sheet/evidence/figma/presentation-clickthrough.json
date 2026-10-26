@@ -1,0 +1,31 @@
+{
+  "method": "Figma Desktop through Computer Use",
+  "steps": [
+    {
+      "action": "读到这里",
+      "screen": "03 · 半屏陪读",
+      "verified": true
+    },
+    {
+      "action": "展开或收起面板",
+      "screen": "04 · 展开讨论",
+      "verified": true
+    },
+    {
+      "action": "本段",
+      "screen": "05 · 核对出处",
+      "verified": true
+    },
+    {
+      "action": "返回讨论",
+      "screen": "04 · 展开讨论",
+      "verified": true
+    },
+    {
+      "action": "继续读",
+      "screen": "01 · 打开即续读",
+      "verified": true
+    }
+  ],
+  "limits": "Fixed states; does not verify typing, scrolling restoration or continuous sheet physics."
+}

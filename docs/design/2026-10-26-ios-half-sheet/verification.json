@@ -1,0 +1,170 @@
+{
+  "at": "2026-10-26T18:40:35.429Z",
+  "timeZone": "Asia/Singapore",
+  "kind": "design-prototype",
+  "checks": [
+    {
+      "name": "launch-enters-reading-with-companion-collapsed",
+      "status": "pass"
+    },
+    {
+      "name": "repeated-word-selection-keeps-actual-utf16-range",
+      "status": "pass",
+      "range": [
+        54,
+        56
+      ]
+    },
+    {
+      "name": "restored-draft-never-adopts-another-passages-sent-question",
+      "status": "pass"
+    },
+    {
+      "name": "citation-roundtrip-restores-half-detent-scroll-quote-and-draft",
+      "status": "pass",
+      "beforeScroll": 172,
+      "afterScroll": 172
+    },
+    {
+      "name": "half-sheet-background-reading-survives-closing",
+      "status": "pass",
+      "before": 170,
+      "after": 170
+    },
+    {
+      "name": "reopen-restores-reading-and-keeps-discussion-collapsed",
+      "status": "pass"
+    },
+    {
+      "name": "connection-recovery-requires-explicit-retry-and-retains-edited-draft",
+      "status": "pass"
+    },
+    {
+      "name": "note-drafts-stay-with-their-own-quote-and-saved-notes-keep-user-attribution",
+      "status": "pass"
+    },
+    {
+      "name": "320px-large-text-night-and-reduced-motion-remain-operable",
+      "status": "pass"
+    },
+    {
+      "name": "13-core-states-render-at-402x874",
+      "status": "pass",
+      "screens": 13
+    },
+    {
+      "name": "no-page-errors-and-no-external-network-requests",
+      "status": "pass"
+    }
+  ],
+  "screens": [
+    {
+      "slug": "01-resume",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "02-selected",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "03-companion",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "04-discussion",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "05-citation",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "06-note",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "07-original",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "08-library",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "09-records",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "10-contents",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "11-appearance",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "12-offline",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "13-night",
+      "width": 402,
+      "height": 874
+    }
+  ],
+  "errors": [],
+  "blockedExternalRequests": [],
+  "limits": [
+    "Fixed public-domain Walden excerpts, independent draft translations and labelled example answers.",
+    "No live model, production account, paid generation, notification or real library request.",
+    "Chromium desktop/touch emulation only; not native SwiftUI, physical iPhone, Safari, VoiceOver speech, haptics or native keyboard acceptance.",
+    "This run checks the Web prototype; Figma authoring and readback have separate evidence in figma-verification.json."
+  ],
+  "browser": {
+    "engine": "chromium",
+    "version": "156.0.8078.48"
+  },
+  "status": "pass",
+  "sourceHashes": {
+    "prototype/app.js": "89565c78d235961d8f2a167abb5753e4c5ecb779aec364d62e14717459983459",
+    "prototype/style.css": "f163d61b129f5133c38fb2f685133d77b8b00eec731f5ce88e700681319cfe87",
+    "prototype/index.html": "9bdea4a0db4c7f73897eb4845033ba322e922cd523285bd09bffe458f82e2e7d"
+  },
+  "artifactRendering": [
+    {
+      "name": "core-flow",
+      "width": 1760,
+      "height": 1080,
+      "renderer": "Chrome system-font rendering"
+    },
+    {
+      "name": "relationships",
+      "width": 1760,
+      "height": 1130,
+      "renderer": "Chrome system-font rendering"
+    },
+    {
+      "name": "navigation",
+      "width": 1760,
+      "height": 980,
+      "renderer": "Chrome system-font rendering"
+    }
+  ],
+  "standalone": {
+    "status": "pass",
+    "opensDirectlyFromLocalFile": true,
+    "externalCSSOrScriptDependencies": 0
+  }
+}

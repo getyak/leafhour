@@ -1,0 +1,2005 @@
+{
+  "name": "03 · 半屏陪读",
+  "width": 402,
+  "height": 874,
+  "root": {
+    "kind": "frame",
+    "key": "n1",
+    "name": "phone",
+    "x": 0,
+    "y": 0,
+    "width": 402,
+    "height": 874,
+    "background": "rgb(247, 248, 245)",
+    "color": "rgb(36, 42, 39)",
+    "radius": "0px",
+    "borderWidth": "0px",
+    "borderColor": "rgb(36, 42, 39)",
+    "clip": true,
+    "tag": "DIV",
+    "action": null,
+    "children": [
+      {
+        "kind": "frame",
+        "key": "n2",
+        "name": "status-bar",
+        "x": 0,
+        "y": 0,
+        "width": 402,
+        "height": 54,
+        "background": "rgb(247, 248, 245)",
+        "color": "rgb(36, 42, 39)",
+        "radius": "0px",
+        "borderWidth": "0px",
+        "borderColor": "rgb(36, 42, 39)",
+        "clip": false,
+        "tag": "DIV",
+        "action": null,
+        "children": [
+          {
+            "kind": "frame",
+            "key": "n3",
+            "name": "SPAN",
+            "x": 29,
+            "y": 18,
+            "width": 31.328125,
+            "height": 18,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(36, 42, 39)",
+            "radius": "0px",
+            "borderWidth": "0px",
+            "borderColor": "rgb(36, 42, 39)",
+            "clip": false,
+            "tag": "SPAN",
+            "action": null,
+            "children": [
+              {
+                "kind": "text",
+                "name": "9:41",
+                "text": "9:41",
+                "x": 0,
+                "y": 0,
+                "width": 31.328125,
+                "height": 18,
+                "glyphLines": [
+                  {
+                    "x": 0,
+                    "baseline": 15,
+                    "text": "9:41"
+                  }
+                ],
+                "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                "fontWeight": "600",
+                "fontSize": "15px",
+                "lineHeight": "normal",
+                "letterSpacing": "normal",
+                "color": "rgb(36, 42, 39)"
+              }
+            ]
+          },
+          {
+            "kind": "frame",
+            "key": "n4",
+            "name": "island",
+            "x": 145,
+            "y": 12,
+            "width": 112,
+            "height": 30,
+            "background": "rgb(18, 23, 18)",
+            "color": "rgb(36, 42, 39)",
+            "radius": "20px",
+            "borderWidth": "0px",
+            "borderColor": "rgb(36, 42, 39)",
+            "clip": false,
+            "tag": "SPAN",
+            "action": null,
+            "children": []
+          },
+          {
+            "kind": "frame",
+            "key": "n5",
+            "name": "status-icons",
+            "x": 359.140625,
+            "y": 13.5,
+            "width": 13.859375,
+            "height": 27,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(36, 42, 39)",
+            "radius": "0px",
+            "borderWidth": "0px",
+            "borderColor": "rgb(36, 42, 39)",
+            "clip": false,
+            "tag": "SPAN",
+            "action": null,
+            "children": [
+              {
+                "kind": "text",
+                "name": "▰",
+                "text": "▰",
+                "x": 0,
+                "y": 0,
+                "width": 13.859375,
+                "height": 27,
+                "glyphLines": [
+                  {
+                    "x": 0,
+                    "baseline": 22,
+                    "text": "▰"
+                  }
+                ],
+                "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                "fontWeight": "600",
+                "fontSize": "23px",
+                "lineHeight": "normal",
+                "letterSpacing": "normal",
+                "color": "rgb(36, 42, 39)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "frame",
+        "key": "n6",
+        "name": "阅读导航",
+        "x": 0,
+        "y": 54,
+        "width": 402,
+        "height": 56,
+        "background": "rgba(249, 250, 245, 0.91)",
+        "color": "rgb(36, 42, 39)",
+        "radius": "0px",
+        "borderWidth": "0px",
+        "borderColor": "rgb(36, 42, 39)",
+        "clip": false,
+        "tag": "NAV",
+        "action": null,
+        "children": [
+          {
+            "kind": "frame",
+            "key": "n7",
+            "name": "打开书房",
+            "x": 20,
+            "y": 6,
+            "width": 44,
+            "height": 44,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(36, 42, 39)",
+            "radius": "50%",
+            "borderWidth": "0px",
+            "borderColor": "rgb(36, 42, 39)",
+            "clip": false,
+            "tag": "BUTTON",
+            "action": null,
+            "children": [
+              {
+                "kind": "frame",
+                "key": "n8",
+                "name": "SPAN",
+                "x": 11,
+                "y": 9,
+                "width": 22,
+                "height": 26,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(36, 42, 39)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(36, 42, 39)",
+                "clip": false,
+                "tag": "SPAN",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "svg",
+                    "name": "图标",
+                    "x": 0,
+                    "y": 0,
+                    "width": 22,
+                    "height": 22,
+                    "svg": "<svg class=\"icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 4v16M9 4v16M14 4l6 15M3 4h3M8 4h3M3 20h8M14 4l3-1 6 16-3 1\"></path></svg>",
+                    "color": "rgb(36, 42, 39)"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "frame",
+            "key": "n9",
+            "name": "contents-button",
+            "x": 156.5,
+            "y": 6,
+            "width": 89,
+            "height": 44,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(36, 42, 39)",
+            "radius": "50%",
+            "borderWidth": "0px",
+            "borderColor": "rgb(36, 42, 39)",
+            "clip": false,
+            "tag": "BUTTON",
+            "action": null,
+            "children": [
+              {
+                "kind": "text",
+                "name": "瓦尔登湖",
+                "text": "瓦尔登湖",
+                "x": 6,
+                "y": 12.5,
+                "width": 60,
+                "height": 18,
+                "glyphLines": [
+                  {
+                    "x": 6,
+                    "baseline": 27.5,
+                    "text": "瓦尔登湖"
+                  }
+                ],
+                "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                "fontWeight": "500",
+                "fontSize": "15px",
+                "lineHeight": "normal",
+                "letterSpacing": "normal",
+                "color": "rgb(36, 42, 39)"
+              },
+              {
+                "kind": "frame",
+                "key": "n10",
+                "name": "SPAN",
+                "x": 71,
+                "y": 13,
+                "width": 12,
+                "height": 18,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(36, 42, 39)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(36, 42, 39)",
+                "clip": false,
+                "tag": "SPAN",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "svg",
+                    "name": "图标",
+                    "x": 0,
+                    "y": 3,
+                    "width": 12,
+                    "height": 12,
+                    "svg": "<svg class=\"icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 9 7 7 7-7\"></path></svg>",
+                    "color": "rgb(93, 106, 98)"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "frame",
+            "key": "n11",
+            "name": "排版设置",
+            "x": 338,
+            "y": 6,
+            "width": 44,
+            "height": 44,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(36, 42, 39)",
+            "radius": "50%",
+            "borderWidth": "0px",
+            "borderColor": "rgb(36, 42, 39)",
+            "clip": false,
+            "tag": "BUTTON",
+            "action": null,
+            "children": [
+              {
+                "kind": "text",
+                "name": "Aa",
+                "text": "Aa",
+                "x": 12.484375,
+                "y": 11.5,
+                "width": 19.03125,
+                "height": 21,
+                "glyphLines": [
+                  {
+                    "x": 12.484375,
+                    "baseline": 28.5,
+                    "text": "Aa"
+                  }
+                ],
+                "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                "fontWeight": "400",
+                "fontSize": "18px",
+                "lineHeight": "normal",
+                "letterSpacing": "-1px",
+                "color": "rgb(36, 42, 39)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "frame",
+        "key": "n12",
+        "name": "阅读正文",
+        "x": 0,
+        "y": 110,
+        "width": 402,
+        "height": 650,
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgb(36, 42, 39)",
+        "radius": "0px",
+        "borderWidth": "0px",
+        "borderColor": "rgb(36, 42, 39)",
+        "clip": true,
+        "tag": "ARTICLE",
+        "action": null,
+        "children": [
+          {
+            "kind": "frame",
+            "key": "n13",
+            "name": "chapter-heading",
+            "x": 26,
+            "y": -111,
+            "width": 332,
+            "height": 102.890625,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(36, 42, 39)",
+            "radius": "0px",
+            "borderWidth": "0px",
+            "borderColor": "rgb(36, 42, 39)",
+            "clip": false,
+            "tag": "DIV",
+            "action": null,
+            "children": [
+              {
+                "kind": "frame",
+                "key": "n14",
+                "name": "SPAN",
+                "x": 0,
+                "y": 4,
+                "width": 39,
+                "height": 13,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(93, 106, 98)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(93, 106, 98)",
+                "clip": false,
+                "tag": "SPAN",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "text",
+                    "name": "第二章",
+                    "text": "第二章",
+                    "x": 0,
+                    "y": 0,
+                    "width": 39,
+                    "height": 13,
+                    "glyphLines": [
+                      {
+                        "x": 0,
+                        "baseline": 11,
+                        "text": "第二章"
+                      }
+                    ],
+                    "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                    "fontWeight": "400",
+                    "fontSize": "11px",
+                    "lineHeight": "normal",
+                    "letterSpacing": "2px",
+                    "color": "rgb(93, 106, 98)"
+                  }
+                ]
+              },
+              {
+                "kind": "frame",
+                "key": "n15",
+                "name": "H1",
+                "x": 0,
+                "y": 32,
+                "width": 332,
+                "height": 45.890625,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(36, 42, 39)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(36, 42, 39)",
+                "clip": false,
+                "tag": "H1",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "text",
+                    "name": "我为何生活",
+                    "text": "我为何生活",
+                    "x": 0,
+                    "y": -2,
+                    "width": 175,
+                    "height": 48,
+                    "glyphLines": [
+                      {
+                        "x": 0,
+                        "baseline": 34,
+                        "text": "我为何生活"
+                      }
+                    ],
+                    "fontFamily": "\"Songti SC\", STSong, \"Noto Serif CJK SC\", serif",
+                    "fontWeight": "500",
+                    "fontSize": "34px",
+                    "lineHeight": "45.9px",
+                    "letterSpacing": "1px",
+                    "color": "rgb(36, 42, 39)"
+                  }
+                ]
+              },
+              {
+                "kind": "frame",
+                "key": "n16",
+                "name": "version-label",
+                "x": 0,
+                "y": 86.890625,
+                "width": 332,
+                "height": 16,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(93, 106, 98)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(93, 106, 98)",
+                "clip": false,
+                "tag": "P",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "text",
+                    "name": "示例意译",
+                    "text": "示例意译",
+                    "x": 0,
+                    "y": 1,
+                    "width": 44,
+                    "height": 13,
+                    "glyphLines": [
+                      {
+                        "x": 0,
+                        "baseline": 12,
+                        "text": "示例意译"
+                      }
+                    ],
+                    "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                    "fontWeight": "400",
+                    "fontSize": "11px",
+                    "lineHeight": "normal",
+                    "letterSpacing": "normal",
+                    "color": "rgb(93, 106, 98)"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "frame",
+            "key": "n17",
+            "name": "prose",
+            "x": 26,
+            "y": 23.890625,
+            "width": 332,
+            "height": 672,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(36, 42, 39)",
+            "radius": "0px",
+            "borderWidth": "0px",
+            "borderColor": "rgb(36, 42, 39)",
+            "clip": false,
+            "tag": "DIV",
+            "action": null,
+            "children": [
+              {
+                "kind": "frame",
+                "key": "n18",
+                "name": "walden-2-001",
+                "x": 0,
+                "y": 0,
+                "width": 332,
+                "height": 228.75,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(36, 42, 39)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(36, 42, 39)",
+                "clip": false,
+                "tag": "P",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "frame",
+                    "key": "n19",
+                    "name": "resume-mark",
+                    "x": 0,
+                    "y": 0,
+                    "width": 332,
+                    "height": 16.5,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(54, 91, 71)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(54, 91, 71)",
+                    "clip": false,
+                    "tag": "SPAN",
+                    "action": null,
+                    "children": [
+                      {
+                        "kind": "text",
+                        "name": "上次读到这里",
+                        "text": "上次读到这里",
+                        "x": 0,
+                        "y": 0,
+                        "width": 66.90625,
+                        "height": 16,
+                        "glyphLines": [
+                          {
+                            "x": 0,
+                            "baseline": 10,
+                            "text": "上次读到这里"
+                          }
+                        ],
+                        "fontFamily": "-apple-system, sans-serif",
+                        "fontWeight": "400",
+                        "fontSize": "11px",
+                        "lineHeight": "16.5px",
+                        "letterSpacing": "0.15px",
+                        "color": "rgb(54, 91, 71)"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "frame",
+                    "key": "n20",
+                    "name": "passage-text",
+                    "x": 0,
+                    "y": 32.5,
+                    "width": 310.109375,
+                    "height": 191,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(36, 42, 39)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(36, 42, 39)",
+                    "clip": false,
+                    "tag": "SPAN",
+                    "action": null,
+                    "children": [
+                      {
+                        "kind": "text",
+                        "name": "我来到林中，是想清醒地过日子，面对生活最要紧的事实，看看生活能教",
+                        "text": "我来到林中，是想清醒地过日子，面对生活最要紧的事实，看看生活能教给我什么；我不想等到死时才发现，自己没有真正生活过。",
+                        "x": 0,
+                        "y": 0,
+                        "width": 310.109375,
+                        "height": 191,
+                        "glyphLines": [
+                          {
+                            "x": 0,
+                            "baseline": 23,
+                            "text": "我来到林中，是想清醒地过日"
+                          },
+                          {
+                            "x": 0,
+                            "baseline": 63.25,
+                            "text": "子，面对生活最要紧的事实，看"
+                          },
+                          {
+                            "x": 0,
+                            "baseline": 103.5,
+                            "text": "看生活能教给我什么；我不想等"
+                          },
+                          {
+                            "x": 0,
+                            "baseline": 143.75,
+                            "text": "到死时才发现，自己没有真正生"
+                          },
+                          {
+                            "x": 0,
+                            "baseline": 184,
+                            "text": "活过。"
+                          }
+                        ],
+                        "fontFamily": "\"Songti SC\", STSong, \"Noto Serif CJK SC\", serif",
+                        "fontWeight": "400",
+                        "fontSize": "22px",
+                        "lineHeight": "40.26px",
+                        "letterSpacing": "0.15px",
+                        "color": "rgb(36, 42, 39)"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "frame",
+                    "key": "n21",
+                    "name": "选择这一段",
+                    "x": 332,
+                    "y": 5,
+                    "width": 44,
+                    "height": 44,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(54, 91, 71)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(54, 91, 71)",
+                    "clip": false,
+                    "tag": "BUTTON",
+                    "action": null,
+                    "children": [
+                      {
+                        "kind": "text",
+                        "name": "⌜",
+                        "text": "⌜",
+                        "x": 15.96875,
+                        "y": 8,
+                        "width": 12.046875,
+                        "height": 28,
+                        "glyphLines": [
+                          {
+                            "x": 15.96875,
+                            "baseline": 26,
+                            "text": "⌜"
+                          }
+                        ],
+                        "fontFamily": "-apple-system, sans-serif",
+                        "fontWeight": "400",
+                        "fontSize": "20px",
+                        "lineHeight": "normal",
+                        "letterSpacing": "normal",
+                        "color": "rgb(54, 91, 71)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "frame",
+                "key": "n22",
+                "name": "walden-2-002",
+                "x": 0,
+                "y": 255.75,
+                "width": 332,
+                "height": 161,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(36, 42, 39)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(36, 42, 39)",
+                "clip": false,
+                "tag": "P",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "frame",
+                    "key": "n23",
+                    "name": "passage-text",
+                    "x": 0,
+                    "y": 5,
+                    "width": 310.109375,
+                    "height": 150.75,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(36, 42, 39)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(36, 42, 39)",
+                    "clip": false,
+                    "tag": "SPAN",
+                    "action": null,
+                    "children": [
+                      {
+                        "kind": "text",
+                        "name": "日子这样珍贵，我不愿把它过成并非生活的样子；只要还没有到非如此不",
+                        "text": "日子这样珍贵，我不愿把它过成并非生活的样子；只要还没有到非如此不可的时候，我也不想认命。",
+                        "x": 0,
+                        "y": 0,
+                        "width": 310.109375,
+                        "height": 150.75,
+                        "glyphLines": [
+                          {
+                            "x": 0,
+                            "baseline": 23,
+                            "text": "日子这样珍贵，我不愿把它过成"
+                          },
+                          {
+                            "x": 0,
+                            "baseline": 63.25,
+                            "text": "并非生活的样子；只要还没有到"
+                          },
+                          {
+                            "x": 0,
+                            "baseline": 103.5,
+                            "text": "非如此不可的时候，我也不想认"
+                          },
+                          {
+                            "x": 0,
+                            "baseline": 143.75,
+                            "text": "命。"
+                          }
+                        ],
+                        "fontFamily": "\"Songti SC\", STSong, \"Noto Serif CJK SC\", serif",
+                        "fontWeight": "400",
+                        "fontSize": "22px",
+                        "lineHeight": "40.26px",
+                        "letterSpacing": "0.15px",
+                        "color": "rgb(36, 42, 39)"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "frame",
+                    "key": "n24",
+                    "name": "选择这一段",
+                    "x": 332,
+                    "y": 5,
+                    "width": 44,
+                    "height": 44,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(54, 91, 71)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(54, 91, 71)",
+                    "clip": false,
+                    "tag": "BUTTON",
+                    "action": null,
+                    "children": [
+                      {
+                        "kind": "text",
+                        "name": "⌜",
+                        "text": "⌜",
+                        "x": 15.96875,
+                        "y": 8,
+                        "width": 12.046875,
+                        "height": 28,
+                        "glyphLines": [
+                          {
+                            "x": 15.96875,
+                            "baseline": 26,
+                            "text": "⌜"
+                          }
+                        ],
+                        "fontFamily": "-apple-system, sans-serif",
+                        "fontWeight": "400",
+                        "fontSize": "20px",
+                        "lineHeight": "normal",
+                        "letterSpacing": "normal",
+                        "color": "rgb(54, 91, 71)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "frame",
+                "key": "n25",
+                "name": "walden-2-003",
+                "x": 0,
+                "y": 443.75,
+                "width": 332,
+                "height": 120.75,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(36, 42, 39)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(36, 42, 39)",
+                "clip": false,
+                "tag": "P",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "frame",
+                    "key": "n26",
+                    "name": "passage-text",
+                    "x": 0,
+                    "y": 5,
+                    "width": 310.109375,
+                    "height": 110.5,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(36, 42, 39)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(36, 42, 39)",
+                    "clip": false,
+                    "tag": "SPAN",
+                    "action": null,
+                    "children": [
+                      {
+                        "kind": "text",
+                        "name": "我想把生活过深，尝尽它的滋味；用结实、简朴的日子，赶走那些算不上",
+                        "text": "我想把生活过深，尝尽它的滋味；用结实、简朴的日子，赶走那些算不上生活的东西。",
+                        "x": 0,
+                        "y": 0,
+                        "width": 310.109375,
+                        "height": 110.5,
+                        "glyphLines": [
+                          {
+                            "x": 0,
+                            "baseline": 23,
+                            "text": "我想把生活过深，尝尽它的滋"
+                          },
+                          {
+                            "x": 0,
+                            "baseline": 63.25,
+                            "text": "味；用结实、简朴的日子，赶走"
+                          },
+                          {
+                            "x": 0,
+                            "baseline": 103.5,
+                            "text": "那些算不上生活的东西。"
+                          }
+                        ],
+                        "fontFamily": "\"Songti SC\", STSong, \"Noto Serif CJK SC\", serif",
+                        "fontWeight": "400",
+                        "fontSize": "22px",
+                        "lineHeight": "40.26px",
+                        "letterSpacing": "0.15px",
+                        "color": "rgb(36, 42, 39)"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "frame",
+                    "key": "n27",
+                    "name": "选择这一段",
+                    "x": 332,
+                    "y": 5,
+                    "width": 44,
+                    "height": 44,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(54, 91, 71)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(54, 91, 71)",
+                    "clip": false,
+                    "tag": "BUTTON",
+                    "action": null,
+                    "children": [
+                      {
+                        "kind": "text",
+                        "name": "⌜",
+                        "text": "⌜",
+                        "x": 15.96875,
+                        "y": 8,
+                        "width": 12.046875,
+                        "height": 28,
+                        "glyphLines": [
+                          {
+                            "x": 15.96875,
+                            "baseline": 26,
+                            "text": "⌜"
+                          }
+                        ],
+                        "fontFamily": "-apple-system, sans-serif",
+                        "fontWeight": "400",
+                        "fontSize": "20px",
+                        "lineHeight": "normal",
+                        "letterSpacing": "normal",
+                        "color": "rgb(54, 91, 71)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "frame",
+                "key": "n28",
+                "name": "walden-2-004",
+                "x": 0,
+                "y": 591.5,
+                "width": 332,
+                "height": 80.5,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(36, 42, 39)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(36, 42, 39)",
+                "clip": false,
+                "tag": "P",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "frame",
+                    "key": "n29",
+                    "name": "passage-text",
+                    "x": 0,
+                    "y": 5,
+                    "width": 287.953125,
+                    "height": 70.25,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(36, 42, 39)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(36, 42, 39)",
+                    "clip": false,
+                    "tag": "SPAN",
+                    "action": null,
+                    "children": [
+                      {
+                        "kind": "text",
+                        "name": "日子就在种种琐事里一点点消磨。",
+                        "text": "日子就在种种琐事里一点点消磨。",
+                        "x": 0,
+                        "y": 0,
+                        "width": 287.953125,
+                        "height": 70.25,
+                        "glyphLines": [
+                          {
+                            "x": 0,
+                            "baseline": 23,
+                            "text": "日子就在种种琐事里一点点消"
+                          },
+                          {
+                            "x": 0,
+                            "baseline": 63.25,
+                            "text": "磨。"
+                          }
+                        ],
+                        "fontFamily": "\"Songti SC\", STSong, \"Noto Serif CJK SC\", serif",
+                        "fontWeight": "400",
+                        "fontSize": "22px",
+                        "lineHeight": "40.26px",
+                        "letterSpacing": "0.15px",
+                        "color": "rgb(36, 42, 39)"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "frame",
+                    "key": "n30",
+                    "name": "选择这一段",
+                    "x": 332,
+                    "y": 5,
+                    "width": 44,
+                    "height": 44,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(54, 91, 71)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(54, 91, 71)",
+                    "clip": false,
+                    "tag": "BUTTON",
+                    "action": null,
+                    "children": [
+                      {
+                        "kind": "text",
+                        "name": "⌜",
+                        "text": "⌜",
+                        "x": 15.96875,
+                        "y": 8,
+                        "width": 12.046875,
+                        "height": 28,
+                        "glyphLines": [
+                          {
+                            "x": 15.96875,
+                            "baseline": 26,
+                            "text": "⌜"
+                          }
+                        ],
+                        "fontFamily": "-apple-system, sans-serif",
+                        "fontWeight": "400",
+                        "fontSize": "20px",
+                        "lineHeight": "normal",
+                        "letterSpacing": "normal",
+                        "color": "rgb(54, 91, 71)"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "frame",
+            "key": "n31",
+            "name": "chapter-end",
+            "x": 26,
+            "y": 722.890625,
+            "width": 118,
+            "height": 47,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(93, 106, 98)",
+            "radius": "0px",
+            "borderWidth": "0px",
+            "borderColor": "rgb(93, 106, 98)",
+            "clip": false,
+            "tag": "BUTTON",
+            "action": null,
+            "children": [
+              {
+                "kind": "text",
+                "name": "回到这一章的开头",
+                "text": "回到这一章的开头",
+                "x": 0,
+                "y": 16,
+                "width": 96,
+                "height": 15,
+                "glyphLines": [
+                  {
+                    "x": 0,
+                    "baseline": 28,
+                    "text": "回到这一章的开头"
+                  }
+                ],
+                "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                "fontWeight": "400",
+                "fontSize": "12px",
+                "lineHeight": "normal",
+                "letterSpacing": "normal",
+                "color": "rgb(93, 106, 98)"
+              },
+              {
+                "kind": "frame",
+                "key": "n32",
+                "name": "SPAN",
+                "x": 104,
+                "y": 15,
+                "width": 14,
+                "height": 17,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(93, 106, 98)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(93, 106, 98)",
+                "clip": false,
+                "tag": "SPAN",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "svg",
+                    "name": "图标",
+                    "x": 0,
+                    "y": 0,
+                    "width": 14,
+                    "height": 14,
+                    "svg": "<svg class=\"icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 19V5m-6 6 6-6 6 6\"></path></svg>",
+                    "color": "rgb(93, 106, 98)"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "frame",
+        "key": "n33",
+        "name": "reading-dock",
+        "x": 20,
+        "y": 773,
+        "width": 362,
+        "height": 64,
+        "background": "rgba(249, 250, 245, 0.91)",
+        "color": "rgb(36, 42, 39)",
+        "radius": "24px",
+        "borderWidth": "1px",
+        "borderColor": "rgb(220, 227, 218)",
+        "clip": false,
+        "tag": "FOOTER",
+        "action": null,
+        "children": [
+          {
+            "kind": "frame",
+            "key": "n34",
+            "name": "progress-button",
+            "x": 13,
+            "y": 8,
+            "width": 68,
+            "height": 48,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(93, 106, 98)",
+            "radius": "16px",
+            "borderWidth": "0px",
+            "borderColor": "rgb(93, 106, 98)",
+            "clip": false,
+            "tag": "BUTTON",
+            "action": null,
+            "children": [
+              {
+                "kind": "frame",
+                "key": "n35",
+                "name": "SPAN",
+                "x": 8,
+                "y": 6,
+                "width": 52,
+                "height": 16,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(93, 106, 98)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(93, 106, 98)",
+                "clip": false,
+                "tag": "SPAN",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "text",
+                    "name": "第二章",
+                    "text": "第二章",
+                    "x": 0,
+                    "y": 1,
+                    "width": 33,
+                    "height": 13,
+                    "glyphLines": [
+                      {
+                        "x": 0,
+                        "baseline": 12,
+                        "text": "第二章"
+                      }
+                    ],
+                    "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                    "fontWeight": "400",
+                    "fontSize": "11px",
+                    "lineHeight": "normal",
+                    "letterSpacing": "normal",
+                    "color": "rgb(93, 106, 98)"
+                  }
+                ]
+              },
+              {
+                "kind": "frame",
+                "key": "n36",
+                "name": "dock-location",
+                "x": 8,
+                "y": 24,
+                "width": 52,
+                "height": 18,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(36, 42, 39)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(36, 42, 39)",
+                "clip": false,
+                "tag": "SPAN",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "text",
+                    "name": "林中生活",
+                    "text": "林中生活",
+                    "x": 0,
+                    "y": 1,
+                    "width": 52,
+                    "height": 16,
+                    "glyphLines": [
+                      {
+                        "x": 0,
+                        "baseline": 14,
+                        "text": "林中生活"
+                      }
+                    ],
+                    "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                    "fontWeight": "400",
+                    "fontSize": "13px",
+                    "lineHeight": "normal",
+                    "letterSpacing": "normal",
+                    "color": "rgb(36, 42, 39)"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "frame",
+            "key": "n37",
+            "name": "dock-divider",
+            "x": 163.5,
+            "y": 20,
+            "width": 1,
+            "height": 24,
+            "background": "rgb(220, 227, 218)",
+            "color": "rgb(36, 42, 39)",
+            "radius": "0px",
+            "borderWidth": "0px",
+            "borderColor": "rgb(36, 42, 39)",
+            "clip": false,
+            "tag": "SPAN",
+            "action": null,
+            "children": []
+          },
+          {
+            "kind": "frame",
+            "key": "n38",
+            "name": "companion-button",
+            "x": 247,
+            "y": 8,
+            "width": 102,
+            "height": 48,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(54, 91, 71)",
+            "radius": "16px",
+            "borderWidth": "0px",
+            "borderColor": "rgb(54, 91, 71)",
+            "clip": false,
+            "tag": "BUTTON",
+            "action": null,
+            "children": [
+              {
+                "kind": "frame",
+                "key": "n39",
+                "name": "SPAN",
+                "x": 8,
+                "y": 11.5,
+                "width": 22,
+                "height": 25,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(54, 91, 71)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(54, 91, 71)",
+                "clip": false,
+                "tag": "SPAN",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "svg",
+                    "name": "图标",
+                    "x": 0,
+                    "y": 0,
+                    "width": 22,
+                    "height": 22,
+                    "svg": "<svg class=\"icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M20 11a8 8 0 0 1-8 8H5l-4 3 1.6-6A8 8 0 1 1 20 11Z\"></path><path d=\"M6 10h8M6 14h5\"></path></svg>",
+                    "color": "rgb(54, 91, 71)"
+                  }
+                ]
+              },
+              {
+                "kind": "text",
+                "name": "读到这里",
+                "text": "读到这里",
+                "x": 38,
+                "y": 15,
+                "width": 56,
+                "height": 17,
+                "glyphLines": [
+                  {
+                    "x": 38,
+                    "baseline": 29,
+                    "text": "读到这里"
+                  }
+                ],
+                "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                "fontWeight": "400",
+                "fontSize": "14px",
+                "lineHeight": "normal",
+                "letterSpacing": "normal",
+                "color": "rgb(54, 91, 71)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "frame",
+        "key": "n40",
+        "name": "阅读辅助",
+        "x": 0,
+        "y": 419.5306396484375,
+        "width": 402,
+        "height": 769.109375,
+        "background": "rgb(255, 255, 255)",
+        "color": "rgb(36, 42, 39)",
+        "radius": "28px",
+        "borderWidth": "1px",
+        "borderColor": "rgb(220, 227, 218)",
+        "clip": false,
+        "tag": "SECTION",
+        "action": null,
+        "children": [
+          {
+            "kind": "frame",
+            "key": "n41",
+            "name": "展开或收起面板",
+            "x": 0,
+            "y": 1,
+            "width": 402,
+            "height": 24,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(36, 42, 39)",
+            "radius": "32px",
+            "borderWidth": "0px",
+            "borderColor": "rgb(36, 42, 39)",
+            "clip": false,
+            "tag": "BUTTON",
+            "action": null,
+            "children": [
+              {
+                "kind": "frame",
+                "key": "n42",
+                "name": "SPAN",
+                "x": 184,
+                "y": 10,
+                "width": 34,
+                "height": 4,
+                "background": "rgb(220, 227, 218)",
+                "color": "rgb(36, 42, 39)",
+                "radius": "8px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(36, 42, 39)",
+                "clip": false,
+                "tag": "SPAN",
+                "action": null,
+                "children": []
+              }
+            ]
+          },
+          {
+            "kind": "frame",
+            "key": "n43",
+            "name": "sheet-header",
+            "x": 0,
+            "y": 25,
+            "width": 402,
+            "height": 47,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(36, 42, 39)",
+            "radius": "0px",
+            "borderWidth": "0px",
+            "borderColor": "rgb(36, 42, 39)",
+            "clip": false,
+            "tag": "HEADER",
+            "action": null,
+            "children": [
+              {
+                "kind": "frame",
+                "key": "n44",
+                "name": "sheet-title",
+                "x": 24,
+                "y": 9.5,
+                "width": 295,
+                "height": 28,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(36, 42, 39)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(36, 42, 39)",
+                "clip": false,
+                "tag": "H2",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "text",
+                    "name": "读到这里",
+                    "text": "读到这里",
+                    "x": 0,
+                    "y": 2,
+                    "width": 78.8125,
+                    "height": 23,
+                    "glyphLines": [
+                      {
+                        "x": 0,
+                        "baseline": 21,
+                        "text": "读到这里"
+                      }
+                    ],
+                    "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                    "fontWeight": "600",
+                    "fontSize": "20px",
+                    "lineHeight": "normal",
+                    "letterSpacing": "-0.3px",
+                    "color": "rgb(36, 42, 39)"
+                  }
+                ]
+              },
+              {
+                "kind": "frame",
+                "key": "n45",
+                "name": "sheet-done",
+                "x": 327,
+                "y": 1.5,
+                "width": 51,
+                "height": 44,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(54, 91, 71)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(54, 91, 71)",
+                "clip": false,
+                "tag": "BUTTON",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "text",
+                    "name": "继续读",
+                    "text": "继续读",
+                    "x": 12,
+                    "y": 14,
+                    "width": 39,
+                    "height": 16,
+                    "glyphLines": [
+                      {
+                        "x": 12,
+                        "baseline": 27,
+                        "text": "继续读"
+                      }
+                    ],
+                    "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                    "fontWeight": "400",
+                    "fontSize": "13px",
+                    "lineHeight": "normal",
+                    "letterSpacing": "normal",
+                    "color": "rgb(54, 91, 71)"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "frame",
+            "key": "n46",
+            "name": "sheet-body",
+            "x": 0,
+            "y": 72,
+            "width": 402,
+            "height": 296.484375,
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(36, 42, 39)",
+            "radius": "0px",
+            "borderWidth": "0px",
+            "borderColor": "rgb(36, 42, 39)",
+            "clip": true,
+            "tag": "DIV",
+            "action": null,
+            "children": [
+              {
+                "kind": "frame",
+                "key": "n47",
+                "name": "context-quote",
+                "x": 24,
+                "y": 13,
+                "width": 354,
+                "height": 98.515625,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(93, 106, 98)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(93, 106, 98)",
+                "clip": false,
+                "tag": "DIV",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "frame",
+                    "key": "n48",
+                    "name": "SMALL",
+                    "x": 14,
+                    "y": 0,
+                    "width": 340,
+                    "height": 16.5,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(54, 91, 71)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(54, 91, 71)",
+                    "clip": false,
+                    "tag": "SMALL",
+                    "action": null,
+                    "children": [
+                      {
+                        "kind": "text",
+                        "name": "本段 · 示例意译",
+                        "text": "本段 · 示例意译",
+                        "x": 0,
+                        "y": 2,
+                        "width": 68.953125,
+                        "height": 12,
+                        "glyphLines": [
+                          {
+                            "x": 0,
+                            "baseline": 12,
+                            "text": "本段 · 示例意译"
+                          }
+                        ],
+                        "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                        "fontWeight": "400",
+                        "fontSize": "10px",
+                        "lineHeight": "16.5px",
+                        "letterSpacing": "normal",
+                        "color": "rgb(54, 91, 71)"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "frame",
+                    "key": "n49",
+                    "name": "quote-excerpt",
+                    "x": 14,
+                    "y": 21.5,
+                    "width": 340,
+                    "height": 42.875,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(93, 106, 98)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(93, 106, 98)",
+                    "clip": true,
+                    "tag": "DIV",
+                    "action": null,
+                    "children": [
+                      {
+                        "kind": "text",
+                        "name": "我来到林中，是想清醒地过日子，面对生活最要紧的事实，看看生活能教",
+                        "text": "我来到林中，是想清醒地过日子，面对生活最要紧的事实，看看生活能教给我什么；我不想等到死时才发现，自己没有真正生活过。",
+                        "x": 0,
+                        "y": 2,
+                        "width": 338,
+                        "height": 58.875,
+                        "glyphLines": [
+                          {
+                            "x": 0,
+                            "baseline": 15,
+                            "text": "我来到林中，是想清醒地过日子，面对生活最要紧的事实，"
+                          },
+                          {
+                            "x": 0,
+                            "baseline": 36.4375,
+                            "text": "看看生活能教给我什么；我不想等到死时才发现，自己没有"
+                          },
+                          {
+                            "x": 0,
+                            "baseline": 57.875,
+                            "text": "真正生活过。"
+                          }
+                        ],
+                        "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                        "fontWeight": "400",
+                        "fontSize": "13px",
+                        "lineHeight": "21.45px",
+                        "letterSpacing": "normal",
+                        "color": "rgb(93, 106, 98)"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "frame",
+                    "key": "n50",
+                    "name": "BUTTON",
+                    "x": 14,
+                    "y": 64.375,
+                    "width": 66,
+                    "height": 34.140625,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(54, 91, 71)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(54, 91, 71)",
+                    "clip": false,
+                    "tag": "BUTTON",
+                    "action": "return-quote",
+                    "children": [
+                      {
+                        "kind": "text",
+                        "name": "返回提问原句",
+                        "text": "返回提问原句",
+                        "x": 0,
+                        "y": 10,
+                        "width": 66,
+                        "height": 13,
+                        "glyphLines": [
+                          {
+                            "x": 0,
+                            "baseline": 21,
+                            "text": "返回提问原句"
+                          }
+                        ],
+                        "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                        "fontWeight": "400",
+                        "fontSize": "11px",
+                        "lineHeight": "18.15px",
+                        "letterSpacing": "normal",
+                        "color": "rgb(54, 91, 71)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "frame",
+                "key": "n51",
+                "name": "answer-label",
+                "x": 24,
+                "y": 127.515625,
+                "width": 354,
+                "height": 16,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(93, 106, 98)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(93, 106, 98)",
+                "clip": false,
+                "tag": "P",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "text",
+                    "name": "讲解 · 示例",
+                    "text": "讲解 · 示例",
+                    "x": 0,
+                    "y": 1,
+                    "width": 53.65625,
+                    "height": 13,
+                    "glyphLines": [
+                      {
+                        "x": 0,
+                        "baseline": 12,
+                        "text": "讲解 · 示例"
+                      }
+                    ],
+                    "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                    "fontWeight": "400",
+                    "fontSize": "11px",
+                    "lineHeight": "normal",
+                    "letterSpacing": "normal",
+                    "color": "rgb(93, 106, 98)"
+                  }
+                ]
+              },
+              {
+                "kind": "frame",
+                "key": "n52",
+                "name": "answer",
+                "x": 24,
+                "y": 153.515625,
+                "width": 354,
+                "height": 142.34375,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(36, 42, 39)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(36, 42, 39)",
+                "clip": false,
+                "tag": "P",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "text",
+                    "name": "这里的 deliberately，可以读成“有意识地选择怎样生活",
+                    "text": "这里的 deliberately，可以读成“有意识地选择怎样生活”。\n\n梭罗把林中生活当作一次亲自检验。他想知道，哪些事值得用自己的日子去做。",
+                    "x": 0,
+                    "y": 5,
+                    "width": 352,
+                    "height": 131.875,
+                    "glyphLines": [
+                      {
+                        "x": 0,
+                        "baseline": 20,
+                        "text": "这里的 deliberately，可以读成“有意识地选择怎样"
+                      },
+                      {
+                        "x": 0,
+                        "baseline": 48.46875,
+                        "text": "生活”。"
+                      },
+                      {
+                        "x": 0,
+                        "baseline": 105.40625,
+                        "text": "梭罗把林中生活当作一次亲自检验。他想知道，哪"
+                      },
+                      {
+                        "x": 0,
+                        "baseline": 133.875,
+                        "text": "些事值得用自己的日子去做。"
+                      }
+                    ],
+                    "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                    "fontWeight": "400",
+                    "fontSize": "16px",
+                    "lineHeight": "28.48px",
+                    "letterSpacing": "normal",
+                    "color": "rgb(36, 42, 39)"
+                  }
+                ]
+              },
+              {
+                "kind": "frame",
+                "key": "n53",
+                "name": "source-link",
+                "x": 24,
+                "y": 309.859375,
+                "width": 59,
+                "height": 44,
+                "background": "rgb(237, 241, 235)",
+                "color": "rgb(54, 91, 71)",
+                "radius": "12px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(54, 91, 71)",
+                "clip": false,
+                "tag": "BUTTON",
+                "action": "citation",
+                "children": [
+                  {
+                    "kind": "text",
+                    "name": "本段",
+                    "text": "本段",
+                    "x": 10,
+                    "y": 15,
+                    "width": 22,
+                    "height": 13,
+                    "glyphLines": [
+                      {
+                        "x": 10,
+                        "baseline": 26,
+                        "text": "本段"
+                      }
+                    ],
+                    "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                    "fontWeight": "400",
+                    "fontSize": "11px",
+                    "lineHeight": "normal",
+                    "letterSpacing": "normal",
+                    "color": "rgb(54, 91, 71)"
+                  },
+                  {
+                    "kind": "svg",
+                    "name": "图标",
+                    "x": 37,
+                    "y": 16,
+                    "width": 12,
+                    "height": 12,
+                    "svg": "<svg class=\"icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M14 3h7v7m0-7L10 14M10 4H4v16h16v-6\"></path></svg>",
+                    "color": "rgb(54, 91, 71)"
+                  }
+                ]
+              },
+              {
+                "kind": "frame",
+                "key": "n54",
+                "name": "answer-actions",
+                "x": 24,
+                "y": 369.859375,
+                "width": 354,
+                "height": 40,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(54, 91, 71)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(54, 91, 71)",
+                "clip": false,
+                "tag": "DIV",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "frame",
+                    "key": "n55",
+                    "name": "BUTTON",
+                    "x": 0,
+                    "y": 0,
+                    "width": 67,
+                    "height": 40,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(54, 91, 71)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(54, 91, 71)",
+                    "clip": false,
+                    "tag": "BUTTON",
+                    "action": "expand",
+                    "children": [
+                      {
+                        "kind": "svg",
+                        "name": "图标",
+                        "x": 4,
+                        "y": 11.5,
+                        "width": 17,
+                        "height": 17,
+                        "svg": "<svg class=\"icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M20 11a8 8 0 0 1-8 8H5l-4 3 1.6-6A8 8 0 1 1 20 11Z\"></path><path d=\"M6 10h8M6 14h5\"></path></svg>",
+                        "color": "rgb(54, 91, 71)"
+                      },
+                      {
+                        "kind": "text",
+                        "name": "接着聊",
+                        "text": "接着聊",
+                        "x": 27,
+                        "y": 12.5,
+                        "width": 36,
+                        "height": 15,
+                        "glyphLines": [
+                          {
+                            "x": 27,
+                            "baseline": 24.5,
+                            "text": "接着聊"
+                          }
+                        ],
+                        "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                        "fontWeight": "400",
+                        "fontSize": "12px",
+                        "lineHeight": "normal",
+                        "letterSpacing": "normal",
+                        "color": "rgb(54, 91, 71)"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "frame",
+                    "key": "n56",
+                    "name": "BUTTON",
+                    "x": 287,
+                    "y": 0,
+                    "width": 67,
+                    "height": 40,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(54, 91, 71)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(54, 91, 71)",
+                    "clip": false,
+                    "tag": "BUTTON",
+                    "action": "note",
+                    "children": [
+                      {
+                        "kind": "svg",
+                        "name": "图标",
+                        "x": 4,
+                        "y": 11.5,
+                        "width": 17,
+                        "height": 17,
+                        "svg": "<svg class=\"icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M14 4H4v16h16V10m-9 3 8-8 3 3-8 8-4 1Z\"></path></svg>",
+                        "color": "rgb(54, 91, 71)"
+                      },
+                      {
+                        "kind": "text",
+                        "name": "记一句",
+                        "text": "记一句",
+                        "x": 27,
+                        "y": 12.5,
+                        "width": 36,
+                        "height": 15,
+                        "glyphLines": [
+                          {
+                            "x": 27,
+                            "baseline": 24.5,
+                            "text": "记一句"
+                          }
+                        ],
+                        "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                        "fontWeight": "400",
+                        "fontSize": "12px",
+                        "lineHeight": "normal",
+                        "letterSpacing": "normal",
+                        "color": "rgb(54, 91, 71)"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "frame",
+            "key": "n57",
+            "name": "composer",
+            "x": 0,
+            "y": 368.484375,
+            "width": 402,
+            "height": 55,
+            "background": "rgb(255, 255, 255)",
+            "color": "rgb(36, 42, 39)",
+            "radius": "0px",
+            "borderWidth": "1px",
+            "borderColor": "rgb(220, 227, 218)",
+            "clip": false,
+            "tag": "DIV",
+            "action": null,
+            "children": [
+              {
+                "kind": "frame",
+                "key": "n58",
+                "name": "question-form",
+                "x": 20,
+                "y": 9,
+                "width": 362,
+                "height": 46,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(36, 42, 39)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(36, 42, 39)",
+                "clip": false,
+                "tag": "FORM",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "frame",
+                    "key": "n59",
+                    "name": "继续问这段",
+                    "x": 0,
+                    "y": 0,
+                    "width": 309,
+                    "height": 46,
+                    "background": "rgb(247, 248, 245)",
+                    "color": "rgb(36, 42, 39)",
+                    "radius": "18px",
+                    "borderWidth": "1px",
+                    "borderColor": "rgb(220, 227, 218)",
+                    "clip": true,
+                    "tag": "INPUT",
+                    "action": null,
+                    "children": [],
+                    "field": {
+                      "name": "继续问这段",
+                      "text": "接着问这段…",
+                      "paddingLeft": "14px",
+                      "paddingRight": "14px",
+                      "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                      "fontWeight": "400",
+                      "fontSize": "16px",
+                      "lineHeight": "normal",
+                      "color": "rgb(117, 117, 117)"
+                    }
+                  },
+                  {
+                    "kind": "frame",
+                    "key": "n60",
+                    "name": "发送问题",
+                    "x": 318,
+                    "y": 1,
+                    "width": 44,
+                    "height": 44,
+                    "background": "rgb(54, 91, 71)",
+                    "color": "rgb(255, 255, 255)",
+                    "radius": "50%",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(255, 255, 255)",
+                    "clip": false,
+                    "tag": "BUTTON",
+                    "action": null,
+                    "children": [
+                      {
+                        "kind": "frame",
+                        "key": "n61",
+                        "name": "SPAN",
+                        "x": 11,
+                        "y": 9.5,
+                        "width": 22,
+                        "height": 25,
+                        "background": "rgba(0, 0, 0, 0)",
+                        "color": "rgb(255, 255, 255)",
+                        "radius": "0px",
+                        "borderWidth": "0px",
+                        "borderColor": "rgb(255, 255, 255)",
+                        "clip": false,
+                        "tag": "SPAN",
+                        "action": null,
+                        "children": [
+                          {
+                            "kind": "svg",
+                            "name": "图标",
+                            "x": 0,
+                            "y": 0,
+                            "width": 22,
+                            "height": 22,
+                            "svg": "<svg class=\"icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 19V5m-6 6 6-6 6 6\"></path></svg>",
+                            "color": "rgb(255, 255, 255)"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "frame",
+        "key": "n62",
+        "name": "home-indicator",
+        "x": 140,
+        "y": 861,
+        "width": 122,
+        "height": 4,
+        "background": "rgb(36, 42, 39)",
+        "color": "rgb(36, 42, 39)",
+        "radius": "5px",
+        "borderWidth": "0px",
+        "borderColor": "rgb(36, 42, 39)",
+        "clip": false,
+        "tag": "DIV",
+        "action": null,
+        "children": []
+      }
+    ]
+  },
+  "source": "Observed DOM and glyph baselines of the fixed-content prototype"
+}

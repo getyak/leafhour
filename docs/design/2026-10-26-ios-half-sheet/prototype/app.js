@@ -1,0 +1,962 @@
+const icons = {
+  library:
+    '<path d="M4 4v16M9 4v16M14 4l6 15M3 4h3M8 4h3M3 20h8M14 4l3-1 6 16-3 1"/>',
+  down: '<path d="m5 9 7 7 7-7"/>',
+  left: '<path d="m15 5-7 7 7 7"/>',
+  right: '<path d="m9 5 7 7-7 7"/>',
+  up: '<path d="M12 19V5m-6 6 6-6 6 6"/>',
+  conversation:
+    '<path d="M20 11a8 8 0 0 1-8 8H5l-4 3 1.6-6A8 8 0 1 1 20 11Z"/><path d="M6 10h8M6 14h5"/>',
+  quote: '<path d="M10 5H4v7h5c0 4-2 6-5 7M21 5h-6v7h5c0 4-2 6-5 7"/>',
+  note: '<path d="M14 4H4v16h16V10m-9 3 8-8 3 3-8 8-4 1Z"/>',
+  check: '<path d="m5 12 5 5L20 6"/>',
+  external: '<path d="M14 3h7v7m0-7L10 14M10 4H4v16h16v-6"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/>',
+  moon: '<path d="M20 14A9 9 0 0 1 10 3a9 9 0 1 0 10 11Z"/>',
+};
+const icon = (name) =>
+  `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${icons[name] || icons.right}</svg>`;
+function drawIcons(scope = document) {
+  scope
+    .querySelectorAll("[data-icon]")
+    .forEach((node) => (node.innerHTML = icon(node.dataset.icon)));
+}
+const paragraphs = [
+  {
+    id: "walden-2-001",
+    source:
+      "I went to the woods because I wished to live deliberately, to front only the essential facts of life, and see if I could not learn what it had to teach, and not, when I came to die, discover that I had not lived.",
+    literal:
+      "我走进树林，因为我希望有意识地生活，直面生活中最基本的事实，看看能否学到它要教我的东西；免得临终时才发现，自己从未活过。",
+    interpretive:
+      "我来到林中，是想清醒地过日子，面对生活最要紧的事实，看看生活能教给我什么；我不想等到死时才发现，自己没有真正生活过。",
+  },
+  {
+    id: "walden-2-002",
+    source:
+      "I did not wish to live what was not life, living is so dear; nor did I wish to practise resignation, unless it was quite necessary.",
+    literal:
+      "我不愿过不算生活的生活，生活是如此珍贵；我也不愿练习顺从，除非确实有必要。",
+    interpretive:
+      "日子这样珍贵，我不愿把它过成并非生活的样子；只要还没有到非如此不可的时候，我也不想认命。",
+  },
+  {
+    id: "walden-2-003",
+    source:
+      "I wanted to live deep and suck out all the marrow of life, to live so sturdily and Spartan-like as to put to rout all that was not life",
+    literal:
+      "我想活得深入，吸取生活所有的骨髓，活得坚实而像斯巴达人那样，使一切不是生活的东西败退。",
+    interpretive:
+      "我想把生活过深，尝尽它的滋味；用结实、简朴的日子，赶走那些算不上生活的东西。",
+  },
+  {
+    id: "walden-2-004",
+    source: "Our life is frittered away by detail.",
+    literal: "我们的生活被细节耗散了。",
+    interpretive: "日子就在种种琐事里一点点消磨。",
+  },
+];
+const sourceURL = "https://www.gutenberg.org/files/205/205-h/205-h.htm";
+const $ = (id) => document.getElementById(id),
+  escape = (s) =>
+    String(s).replace(
+      /[&<>"']/g,
+      (c) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[c],
+    );
+const key = "leafhour-ios-half-sheet-prototype-v1";
+let saved = {};
+try {
+  saved = JSON.parse(sessionStorage.getItem(key) || "{}");
+} catch {}
+const initialQuote = () => ({
+  passageId: paragraphs[0].id,
+  text: paragraphs[0].interpretive,
+  layer: "interpretive",
+  version: "prototype-20261026",
+  selection: "固定样文选区",
+  startUtf16: 0,
+  endUtf16: paragraphs[0].interpretive.length,
+  startCodePoint: 0,
+});
+const state = {
+  theme: saved.theme || "paper",
+  size: saved.size || 22,
+  layer: saved.layer || "interpretive",
+  readingTop: saved.readingTop || 0,
+  quote: saved.quote || initialQuote(),
+  draft: saved.draft || "",
+  drafts: saved.drafts || [],
+  notes: saved.notes || [],
+  turns: saved.turns || [],
+  pendingTurn: saved.pendingTurn || null,
+  noteDrafts: saved.noteDrafts || {},
+  question: saved.question || "",
+  answered: !!saved.answered,
+  route: "closed",
+  detent: "half",
+  returnFrame: null,
+  offline: false,
+  pendingSelection: null,
+  recordsTab: "notes",
+  y: 0,
+  velocity: 0,
+  target: 0,
+  raf: 0,
+  drag: null,
+};
+window.leafhourPrototype = {
+  snapshot: () => ({
+    route: state.route,
+    detent: state.detent,
+    readingTop: $("reading-scroll").scrollTop,
+    quote: { ...state.quote },
+    draft: state.draft,
+    drafts: state.drafts.map((x) => ({ ...x })),
+    question: state.question,
+    notes: state.notes.length,
+    theme: state.theme,
+    layer: state.layer,
+    offline: state.offline,
+  }),
+  scenario: showScenario,
+};
+function persist() {
+  try {
+    sessionStorage.setItem(
+      key,
+      JSON.stringify({
+        theme: state.theme,
+        size: state.size,
+        layer: state.layer,
+        readingTop: $("reading-scroll").scrollTop,
+        quote: state.quote,
+        draft: state.draft,
+        drafts: state.drafts,
+        notes: state.notes,
+        question: state.question,
+        answered: state.answered,
+        turns: state.turns,
+        pendingTurn: state.pendingTurn,
+        noteDrafts: state.noteDrafts,
+      }),
+    );
+  } catch {}
+}
+function notify(text) {
+  $("phone-toast").textContent = text;
+  $("phone-toast").hidden = false;
+  clearTimeout(notify.timer);
+  notify.timer = setTimeout(() => ($("phone-toast").hidden = true), 2800);
+}
+function setStudy(title, detail) {
+  $("study-state").textContent = title;
+  $("study-detail").textContent = detail;
+  document
+    .querySelectorAll("[data-scenario]")
+    .forEach((button) =>
+      button.classList.toggle(
+        "active",
+        button.dataset.scenario === state.route ||
+          (button.dataset.scenario === "resume" && state.route === "closed"),
+      ),
+    );
+}
+function readerAnchor() {
+  const top = $("reading-scroll").getBoundingClientRect().top + 20;
+  const node = [...document.querySelectorAll("[data-passage]")].find(
+    (n) => n.getBoundingClientRect().bottom > top,
+  );
+  if (!node) return null;
+  const rect = node.getBoundingClientRect();
+  return {
+    id: node.id,
+    offset: rect.top - top,
+    fraction: rect.top < top ? (top - rect.top) / rect.height : null,
+  };
+}
+function restoreReaderAnchor(anchor) {
+  if (!anchor) return;
+  const node = $(anchor.id);
+  if (!node) return;
+  const top = $("reading-scroll").getBoundingClientRect().top + 20,
+    rect = node.getBoundingClientRect();
+  $("reading-scroll").scrollTop +=
+    anchor.fraction === null
+      ? rect.top - top - anchor.offset
+      : rect.top + rect.height * anchor.fraction - top;
+}
+function renderReader({ restore = true } = {}) {
+  const anchor = readerAnchor();
+  $("phone").dataset.theme = state.theme;
+  $("phone").style.setProperty("--reader-size", state.size + "px");
+  $("version-label").textContent =
+    state.layer === "source"
+      ? "作者原文 · 节选"
+      : state.layer === "literal"
+        ? "示例直译"
+        : "示例意译";
+  $("prose").innerHTML = paragraphs
+    .map(
+      (p, i) =>
+        `<p class="passage ${state.layer === "source" ? "source" : ""}" id="${p.id}" data-passage="${p.id}">${i === 0 ? '<span class="resume-mark">上次读到这里</span>' : ""}<span class="passage-text">${escape(p[state.layer])}</span><button class="select-anchor" data-quote="${p.id}" aria-label="选择这一段">⌜</button></p>`,
+    )
+    .join("");
+  if (restore) restoreReaderAnchor(anchor);
+}
+function quoteKey(quote) {
+  return JSON.stringify([
+    quote.passageId,
+    quote.version,
+    quote.layer,
+    quote.startUtf16,
+    quote.endUtf16,
+    quote.text,
+  ]);
+}
+function captureQuote(id, text, startOffset = null) {
+  const p = paragraphs.find((p) => p.id === id) || paragraphs[0],
+    value = text || p[state.layer],
+    start =
+      startOffset !== null ? startOffset : value === p[state.layer] ? 0 : -1;
+  return {
+    passageId: p.id,
+    text: value,
+    layer: state.layer,
+    version: "prototype-20261026",
+    selection: "当前样文选区",
+    startUtf16: start < 0 ? null : start,
+    endUtf16: start < 0 ? null : start + value.length,
+    startCodePoint:
+      start < 0 ? null : [...p[state.layer].slice(0, start)].length,
+  };
+}
+function rememberTurn(turn) {
+  if (!state.turns.some((item) => item.id === turn.id))
+    state.turns.push({ ...turn, quote: { ...turn.quote } });
+  state.turns = state.turns.slice(-6);
+}
+function takeQuote(next, { open = true } = {}) {
+  captureComposer();
+  if (quoteKey(state.quote) !== quoteKey(next)) {
+    if (state.draft.trim()) {
+      state.drafts.push({ quote: { ...state.quote }, draft: state.draft });
+      notify("上一句的问题草稿已保留");
+    }
+    const previous = state.drafts.findIndex(
+      (item) => quoteKey(item.quote) === quoteKey(next),
+    );
+    state.draft =
+      previous >= 0 ? state.drafts.splice(previous, 1)[0].draft : "";
+    state.question = "";
+    state.answered = false;
+    state.returnFrame = null;
+  }
+  state.quote = next;
+  state.pendingSelection = null;
+  $("question-input").value = state.draft;
+  $("selection-menu").hidden = true;
+  window.getSelection()?.removeAllRanges();
+  persist();
+  if (open) openRoute("companion", "half", { capture: false });
+}
+function selectPassage(id) {
+  state.pendingSelection = captureQuote(id);
+  document.querySelectorAll(".passage-text").forEach((n) => {
+    n.style.background =
+      n.closest("[data-passage]").dataset.passage === id
+        ? "var(--highlight)"
+        : "";
+  });
+  $("selection-menu").hidden = false;
+  setStudy(
+    "选文决定问题的范围",
+    "选文不会自动替换当前讨论。点“解释这句”才用这句提问，旧草稿保留。",
+  );
+}
+function contextQuote() {
+  return `<div class="context-quote" data-passage-id="${escape(state.quote.passageId)}" data-source-layer="${escape(state.quote.layer)}" data-selection-start="${state.quote.startUtf16 ?? ""}" data-selection-end="${state.quote.endUtf16 ?? ""}"><small>本段 · ${state.quote.layer === "source" ? "原文" : state.quote.layer === "literal" ? "示例直译" : "示例意译"}</small><div class="quote-excerpt">${escape(state.quote.text)}</div><button data-action="return-quote">返回提问原句</button></div>`;
+}
+function answerText() {
+  return (
+    {
+      "walden-2-001":
+        "这里的 deliberately，可以读成“有意识地选择怎样生活”。\n\n梭罗把林中生活当作一次亲自检验。他想知道，哪些事值得用自己的日子去做。",
+      "walden-2-002":
+        "这一段同时说到珍惜生活与不愿认命。\n\n“除非确实有必要”保留了余地，不能删去这个限定，读成任何时候都必须抗拒。",
+      "walden-2-003":
+        "“骨髓”把生活写成需要亲身尝试的东西。\n\n一种读法是：他期待从切身经验里分辨，哪些事对自己是必要的。",
+      "walden-2-004":
+        "这句把日子的消耗归于不断分散注意力的琐事。\n\n可以接着想：哪些细节值得认真做，哪些只是占满了时间？",
+    }[state.quote.passageId] || "这份原型只提供所选公版样章的固定讲解示例。"
+  );
+}
+function discussion() {
+  const full = state.route === "discussion",
+    question =
+      state.question ||
+      {
+        "walden-2-001": "deliberately 为什么不只是“刻意”？",
+        "walden-2-002": "这里为什么说“不算生活”？",
+        "walden-2-003": "“活得深入”是什么意思？",
+        "walden-2-004": "琐事怎样消磨了日子？",
+      }[state.quote.passageId];
+  return (
+    contextQuote() +
+    (full || state.answered
+      ? `${state.question ? "" : '<p class="answer-label">问题示例</p>'}<p class="question-bubble">${escape(question)}</p>`
+      : "") +
+    (state.offline || state.pendingTurn
+      ? `<div class="error-card"><p>${state.offline ? "暂时无法连接。问题和选文已保留，你可以继续读。" : state.pendingTurn && quoteKey(state.pendingTurn.quote) !== quoteKey(state.quote) ? "上一句还有一次未完成的提问，返回后可以重试。" : "连接已恢复，这次提问尚未重试。"}</p><button data-action="retry">${state.pendingTurn && quoteKey(state.pendingTurn.quote) !== quoteKey(state.quote) ? "返回并重试原问题" : "重试这次提问"}</button></div>`
+      : `<p class="answer-label">讲解 · 示例</p><p class="answer">${escape(answerText())}</p><button class="source-link" data-action="citation">本段 ${icon("external")}</button><div class="answer-actions"><button data-action="expand">${icon("conversation")}接着聊</button><button data-action="note">${icon("note")}记一句</button></div><p class="scope-line">依据：所选句与本段前后文</p>`)
+  );
+}
+function renderBody() {
+  let html = "";
+  let title = "读到这里";
+  let composer = false;
+  let back = false;
+  if (state.route === "companion" || state.route === "discussion") {
+    title = state.route === "discussion" ? "接着聊这句" : "读到这里";
+    html = discussion();
+    composer = true;
+  }
+  if (state.route === "citation") {
+    title = "核对出处";
+    back = true;
+    const p =
+      paragraphs.find((p) => p.id === state.quote.passageId) || paragraphs[0];
+    html = `<p class="quote-title">瓦尔登湖 · 第二章</p><span class="record-kind">作者原文 · 节选</span><p class="citation-original">${escape(p.source)}</p><div class="quiet-rule"></div><span class="record-kind">示例意译</span><p class="citation-translation">${escape(p.interpretive)}</p><a class="source-external" href="${sourceURL}" target="_blank" rel="noopener">查看公版底本 ${icon("external")}</a>`;
+  }
+  if (state.route === "original") {
+    title = "核对原文";
+    const p =
+      paragraphs.find((p) => p.id === state.quote.passageId) || paragraphs[0];
+    html = `<div class="segmented"><button class="${state.layer === "source" ? "active" : ""}" data-layer="source">原文</button><button class="${state.layer === "literal" ? "active" : ""}" data-layer="literal">直译</button><button class="${state.layer === "interpretive" ? "active" : ""}" data-layer="interpretive">意译</button></div><span class="record-kind">作者原文 · 节选</span><p class="citation-original">${escape(p.source)}</p><div class="quiet-rule"></div><span class="record-kind">${state.layer === "literal" ? "示例直译" : "示例意译"}</span><p class="citation-translation">${escape(p[state.layer === "literal" ? "literal" : "interpretive"])}</p>`;
+  }
+  if (state.route === "note") {
+    title = "记一句";
+    back = !!state.returnFrame;
+    html =
+      contextQuote() +
+      `<textarea class="note-field" id="note-field" aria-label="自己的笔记" placeholder="用自己的话，留下一点想法…">${escape(state.noteDrafts[quoteKey(state.quote)] || "")}</textarea><div class="save-note-row"><span>自己的笔记</span><button class="primary-button" data-action="save-note">保存</button></div>`;
+  }
+  if (state.route === "library") {
+    title = "书房";
+    html = `<div class="shelf-book"><div class="book-cover"><h3>瓦尔登湖</h3><p>Walden<br>Henry D. Thoreau</p><div class="cover-pond"></div></div><div><h3>瓦尔登湖</h3><p>亨利·戴维·梭罗<br>第二章 · 公版样章</p><button class="primary-button" data-action="continue">继续读</button></div></div><button class="list-row" data-action="records"><span><strong>我的记录</strong><small>笔记与还想继续的问题</small></span>${icon("right")}</button><button class="list-row" data-action="appearance"><span><strong>阅读偏好</strong><small>字号、纸面与正文版本</small></span>${icon("right")}</button><p class="shelf-note">这份原型只放一份公版样章，原文与两种示例译文独立保存。</p>`;
+  }
+  if (state.route === "records") {
+    title = "我的记录";
+    html = `<div class="segmented"><button data-record-tab="notes" class="${state.recordsTab === "notes" ? "active" : ""}">自己的笔记</button><button data-record-tab="discussion" class="${state.recordsTab === "discussion" ? "active" : ""}">讨论</button></div>`;
+    if (state.recordsTab === "notes") {
+      html += state.notes.length
+        ? state.notes
+            .map(
+              (n, i) =>
+                `<button class="list-row" data-record="${i}"><span><span class="record-kind">自己的笔记</span><strong>${escape(n.text)}</strong><small>瓦尔登湖 · 第二章</small></span>${icon("right")}</button>`,
+            )
+            .join("")
+        : '<div class="empty-records"><h3>还没有笔记</h3><p>读到想留下的话，可以记一句。</p><button class="secondary-button" data-action="continue">回到书里</button></div>';
+    } else {
+      html += state.turns.length
+        ? state.turns
+            .map(
+              (turn, index) =>
+                `<button class="list-row" data-turn="${index}"><span><span class="record-kind">阅读讨论 · 原型演示</span><strong>${escape(turn.question)}</strong><small>瓦尔登湖 · ${escape(turn.quote.text.slice(0, 24))}…</small></span>${icon("right")}</button>`,
+            )
+            .join("")
+        : `<button class="list-row" data-action="expand"><span><span class="record-kind">阅读讨论 · 示例</span><strong>deliberately 为什么不只是“刻意”？</strong><small>瓦尔登湖 · 绑定提问原句</small></span>${icon("right")}</button>`;
+    }
+  }
+  if (state.route === "contents") {
+    title = "目录";
+    html =
+      '<p class="quote-title">第二章 · 我生活的地方，我为何生活</p>' +
+      paragraphs
+        .map(
+          (p, i) =>
+            `<button class="list-row" data-jump="${p.id}"><span><strong>${["林中生活", "生活如此珍贵", "活得深入", "琐事与日子"][i]}</strong><small>${escape(p.interpretive.slice(0, 25))}…</small></span>${icon("right")}</button>`,
+        )
+        .join("");
+  }
+  if (state.route === "appearance") {
+    title = "排版";
+    html = `<div class="setting-group"><label>正文大小</label><div class="type-size-controls"><button data-size="-1" aria-label="减小字号">A−</button><output>${state.size}</output><button data-size="1" aria-label="增大字号">A＋</button></div></div><div class="setting-group"><label>纸面</label><button class="appearance-option" data-theme="paper" aria-pressed="${state.theme === "paper"}">清纸 ${state.theme === "paper" ? icon("check") : icon("sun")}</button><button class="appearance-option night-preview" data-theme="night" aria-pressed="${state.theme === "night"}">夜读 ${state.theme === "night" ? icon("check") : icon("moon")}</button></div><div class="setting-group"><label>正文版本</label><div class="segmented"><button class="${state.layer === "source" ? "active" : ""}" data-layer="source">原文</button><button class="${state.layer === "literal" ? "active" : ""}" data-layer="literal">直译</button><button class="${state.layer === "interpretive" ? "active" : ""}" data-layer="interpretive">意译</button></div></div><p class="type-preview">我来到林中，是想清醒地过日子。</p>`;
+  }
+  $("sheet-title").textContent = title;
+  $("sheet-back").hidden = !back;
+  $("sheet-title").hidden = back;
+  $("sheet-done").textContent = [
+    "companion",
+    "discussion",
+    "citation",
+  ].includes(state.route)
+    ? "继续读"
+    : "完成";
+  $("sheet-body").innerHTML = html;
+  $("composer").hidden = !composer;
+  $("question-input").value = state.draft;
+  $("draft-return").hidden = !state.drafts.length;
+  $("sheet-body").scrollTop = 0;
+  drawIcons($("sheet-body"));
+}
+function phoneHeight() {
+  return $("phone").clientHeight;
+}
+function targetY(detent) {
+  return (
+    phoneHeight() * (detent === "closed" ? 0.88 : detent === "half" ? 0.36 : 0)
+  );
+}
+function paintSheet() {
+  const visible = Math.max(0, phoneHeight() * 0.88 - state.y);
+  $("reader-sheet").style.transform = `translateY(${state.y}px)`;
+  $("reader-sheet").style.paddingBottom = Math.max(0, state.y) + 31 + "px";
+  const isFull = state.route !== "closed" && visible > phoneHeight() * 0.68;
+  $("sheet-scrim").hidden = !isFull;
+  $("sheet-scrim").style.opacity = isFull ? "1" : "0";
+  $("reader-sheet").setAttribute("aria-modal", String(isFull));
+  $("reader-sheet").setAttribute("role", isFull ? "dialog" : "region");
+  for (const node of [$("reader-nav"), $("reading-scroll"), $("reading-dock")])
+    node.inert = isFull;
+  if (isFull && !$("reader-sheet").contains(document.activeElement))
+    $("sheet-done").focus({ preventScroll: true });
+  $("reading-scroll").style.paddingBottom =
+    state.route === "closed" ? "64px" : Math.max(64, visible - 85) + "px";
+}
+function snap(detent, { immediate = false, onComplete = null } = {}) {
+  $("reader-sheet").dataset.motion = "moving";
+  state.detent = detent;
+  state.target = targetY(detent);
+  cancelAnimationFrame(state.raf);
+  if (immediate || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    state.y = state.target;
+    state.velocity = 0;
+    paintSheet();
+    onComplete?.();
+    $("reader-sheet").dataset.motion = "settled";
+    return;
+  }
+  let last = performance.now();
+  function tick(now) {
+    const dt = Math.min(0.032, (now - last) / 1000);
+    last = now;
+    const force = (state.target - state.y) * 390 - state.velocity * 36;
+    state.velocity += force * dt;
+    state.y += state.velocity * dt;
+    paintSheet();
+    if (Math.abs(state.target - state.y) > 0.4 || Math.abs(state.velocity) > 4)
+      state.raf = requestAnimationFrame(tick);
+    else {
+      state.y = state.target;
+      paintSheet();
+      onComplete?.();
+      $("reader-sheet").dataset.motion = "settled";
+    }
+  }
+  state.raf = requestAnimationFrame(tick);
+}
+function openRoute(
+  route,
+  detent = "full",
+  { capture = true, restoreScroll = null } = {},
+) {
+  if (capture) captureComposer();
+  state.route = route;
+  $("selection-menu").hidden = true;
+  $("reader-sheet").inert = false;
+  $("reader-sheet").hidden = false;
+  renderBody();
+  const scrollRevision = state.scrollRevision || 0;
+  snap(detent, {
+    onComplete: () => {
+      if (
+        restoreScroll !== null &&
+        state.route === route &&
+        (state.scrollRevision || 0) === scrollRevision
+      )
+        $("sheet-body").scrollTop = restoreScroll;
+    },
+  });
+  setStudy(
+    {
+      companion: "半屏陪读",
+      discussion: "展开讨论",
+      citation: "出处有回程",
+      original: "同段核对",
+      note: "自己的笔记",
+      library: "自己的书房",
+      records: "从记录回到原句",
+      contents: "章节与段落",
+      appearance: "排版不丢位置",
+    }[route] || "阅读",
+    route === "companion"
+      ? "上方正文可以继续读。所提问题仍绑定原来的选文，收起后保留最新阅读位置。"
+      : route === "citation"
+        ? "出处是临时核对，返回讨论会恢复草稿、回答位置与面板高度。"
+        : "每个入口都有清楚的对象与返回路径。",
+  );
+}
+function closeSheet() {
+  captureComposer();
+  state.returnFrame = null;
+  state.route = "closed";
+  $("reader-sheet").inert = true;
+  $("sheet-scrim").hidden = true;
+  for (const node of [$("reader-nav"), $("reading-scroll"), $("reading-dock")])
+    node.inert = false;
+  $("reading-scroll").style.paddingBottom = "64px";
+  $("selection-menu").hidden = true;
+  snap("closed", {
+    onComplete: () => {
+      if (state.route === "closed") $("reader-sheet").hidden = true;
+    },
+  });
+  persist();
+  setStudy(
+    "继续阅读",
+    "保留你刚才主动读到的位置。需要回到提问处时，再点“返回提问原句”。",
+  );
+  $("companion-button").focus({ preventScroll: true });
+}
+function captureComposer() {
+  if (state.route === "note") {
+    state.noteDrafts[quoteKey(state.quote)] = $("note-field")?.value || "";
+    persist();
+    return;
+  }
+  if (!["companion", "discussion"].includes(state.route)) return;
+  state.draft = $("question-input").value;
+  persist();
+}
+function visitCitation() {
+  captureComposer();
+  state.returnFrame = {
+    route: state.route,
+    detent: state.detent,
+    scrollTop: $("sheet-body").scrollTop,
+    draft: state.draft,
+    quote: { ...state.quote },
+    question: state.question,
+    answered: state.answered,
+  };
+  openRoute("citation", "full");
+}
+function backToDiscussion() {
+  if (state.route === "note") captureComposer();
+  const frame = state.returnFrame;
+  if (frame) {
+    state.returnFrame = null;
+    state.draft = frame.draft;
+    if (frame.quote) state.quote = { ...frame.quote };
+    state.question = frame.question || "";
+    state.answered = !!frame.answered;
+    openRoute(frame.route, frame.detent, {
+      capture: false,
+      restoreScroll: frame.scrollTop,
+    });
+  } else openRoute("discussion", "full", { capture: false });
+}
+function jumpTo(id, { close = true } = {}) {
+  if (close) closeSheet();
+  const p = $(id);
+  if (p) $("reading-scroll").scrollTop = p.offsetTop - 24;
+  persist();
+}
+function action(name) {
+  if (name === "continue") {
+    closeSheet();
+    return;
+  }
+  if (name === "citation") {
+    visitCitation();
+    return;
+  }
+  if (name === "return-quote") {
+    jumpTo(state.quote.passageId, { close: false });
+    notify("已回到提问原句");
+    return;
+  }
+  if (name === "expand") {
+    openRoute("discussion", "full");
+    return;
+  }
+  if (name === "note") {
+    captureComposer();
+    state.returnFrame = {
+      route: state.route,
+      detent: state.detent,
+      scrollTop: $("sheet-body").scrollTop,
+      draft: state.draft,
+      quote: { ...state.quote },
+      question: state.question,
+      answered: state.answered,
+    };
+    openRoute("note", "full");
+    return;
+  }
+  if (name === "save-note") {
+    const text = $("note-field")?.value.trim();
+    if (!text) {
+      $("note-field")?.focus();
+      return;
+    }
+    state.notes.unshift({ text, quote: { ...state.quote }, author: "user" });
+    state.noteDrafts[quoteKey(state.quote)] = "";
+    $("note-field").value = "";
+    persist();
+    notify("笔记已保存");
+    backToDiscussion();
+    return;
+  }
+  if (name === "retry") {
+    if (state.offline) {
+      notify("仍在断网示例中，问题已保留");
+      return;
+    }
+    if (state.pendingTurn) {
+      const turn = state.pendingTurn;
+      if (
+        state.draft.trim() &&
+        (quoteKey(state.quote) !== quoteKey(turn.quote) ||
+          state.draft.trim() !== turn.question)
+      )
+        state.drafts.push({ quote: { ...state.quote }, draft: state.draft });
+      state.quote = { ...turn.quote };
+      state.question = turn.question;
+      state.draft = "";
+      $("question-input").value = "";
+      rememberTurn(turn);
+      state.pendingTurn = null;
+    }
+    state.answered = true;
+    persist();
+    renderBody();
+    notify("已恢复示例讲解");
+    return;
+  }
+  openRoute(name, "full");
+}
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("button");
+  if (!button) return;
+  if (button.dataset.quote) {
+    selectPassage(button.dataset.quote);
+    return;
+  }
+  if (button.dataset.selection) {
+    takeQuote(state.pendingSelection || initialQuote(), { open: false });
+    openRoute(
+      button.dataset.selection === "explain"
+        ? "companion"
+        : button.dataset.selection,
+      button.dataset.selection === "explain" ? "half" : "full",
+      { capture: false },
+    );
+    return;
+  }
+  if (button.dataset.action) {
+    action(button.dataset.action);
+    return;
+  }
+  if (button.dataset.layer) {
+    state.layer = button.dataset.layer;
+    renderReader();
+    renderBody();
+    persist();
+    return;
+  }
+  if (button.dataset.size) {
+    state.size = Math.max(
+      18,
+      Math.min(28, state.size + Number(button.dataset.size)),
+    );
+    renderReader();
+    renderBody();
+    persist();
+    return;
+  }
+  if (button.dataset.theme) {
+    state.theme = button.dataset.theme;
+    renderReader();
+    renderBody();
+    persist();
+    return;
+  }
+  if (button.dataset.jump) {
+    jumpTo(button.dataset.jump);
+    return;
+  }
+  if (button.dataset.record !== undefined) {
+    const note = state.notes[Number(button.dataset.record)];
+    jumpTo(note.quote.passageId);
+    return;
+  }
+  if (button.dataset.turn !== undefined) {
+    const turn = state.turns[Number(button.dataset.turn)];
+    takeQuote({ ...turn.quote }, { open: false });
+    state.question = turn.question;
+    state.answered = true;
+    openRoute("discussion", "full", { capture: false });
+    return;
+  }
+  if (button.dataset.recordTab) {
+    state.recordsTab = button.dataset.recordTab;
+    renderBody();
+    return;
+  }
+  if (button.dataset.scenario) showScenario(button.dataset.scenario);
+});
+$("library-button").onclick = () => openRoute("library", "full");
+$("contents-button").onclick = () => openRoute("contents", "full");
+$("progress-button").onclick = () => openRoute("contents", "full");
+$("appearance-button").onclick = () => openRoute("appearance", "full");
+$("companion-button").onclick = () => openRoute("companion", "half");
+$("sheet-done").onclick = closeSheet;
+$("sheet-back").onclick = backToDiscussion;
+$("sheet-scrim").onclick = () => snap("half");
+$("chapter-end").onclick = () => jumpTo(paragraphs[0].id);
+$("night-mode").onclick = () => {
+  state.theme = state.theme === "paper" ? "night" : "paper";
+  renderReader();
+  persist();
+};
+$("offline-mode").onchange = (event) => {
+  state.offline = event.target.checked;
+  if (["companion", "discussion"].includes(state.route)) renderBody();
+  setStudy(
+    state.offline ? "断网仍可读" : "连接恢复示例",
+    state.offline
+      ? "原文与已缓存内容继续可读，问题和选文仍保留。"
+      : "已有问题可以显式重试。",
+  );
+};
+$("reopen").onclick = () => {
+  captureComposer();
+  persist();
+  location.reload();
+};
+$("question-input").oninput = (event) => {
+  state.draft = event.target.value;
+  persist();
+};
+$("question-input").onfocus = () => snap("full");
+$("question-form").onsubmit = (event) => {
+  event.preventDefault();
+  const question = $("question-input").value.trim();
+  if (!question) return;
+  state.question = question;
+  const turn = {
+    id: "prototype-" + Date.now(),
+    question,
+    quote: { ...state.quote },
+  };
+  state.pendingTurn = turn;
+  if (!state.offline) {
+    rememberTurn(turn);
+    state.pendingTurn = null;
+    state.draft = "";
+    state.answered = true;
+  }
+  persist();
+  $("question-input").value = state.draft;
+  openRoute("discussion", "full", { capture: false });
+};
+$("draft-return").onclick = () => {
+  captureComposer();
+  const previous = state.drafts.pop();
+  if (!previous) return;
+  if (state.draft.trim())
+    state.drafts.unshift({ quote: { ...state.quote }, draft: state.draft });
+  state.quote = previous.quote;
+  state.draft = previous.draft;
+  state.question = "";
+  state.answered = false;
+  state.returnFrame = null;
+  persist();
+  renderBody();
+};
+$("reading-scroll").addEventListener(
+  "scroll",
+  () => {
+    state.readingTop = $("reading-scroll").scrollTop;
+    const current = [...document.querySelectorAll("[data-passage]")].find(
+      (p) =>
+        p.getBoundingClientRect().bottom >
+        $("reading-scroll").getBoundingClientRect().top + 36,
+    );
+    $("dock-location").textContent = current
+      ? ["林中生活", "生活如此珍贵", "活得深入", "琐事与日子"][
+          paragraphs.findIndex((p) => p.id === current.id)
+        ]
+      : "林中生活";
+    persist();
+  },
+  { passive: true },
+);
+document.addEventListener("selectionchange", () => {
+  const selection = window.getSelection();
+  if (!selection || selection.isCollapsed || !selection.rangeCount) return;
+  const range = selection.getRangeAt(0),
+    startNode =
+      range.startContainer.nodeType === 3
+        ? range.startContainer.parentElement
+        : range.startContainer,
+    endNode =
+      range.endContainer.nodeType === 3
+        ? range.endContainer.parentElement
+        : range.endContainer,
+    startRoot = startNode?.closest(".passage-text"),
+    endRoot = endNode?.closest(".passage-text");
+  if (!startRoot || startRoot !== endRoot) {
+    state.pendingSelection = null;
+    $("selection-menu").hidden = true;
+    return;
+  }
+  const prefix = document.createRange();
+  prefix.selectNodeContents(startRoot);
+  prefix.setEnd(range.startContainer, range.startOffset);
+  const id = startRoot.closest("[data-passage]").dataset.passage,
+    start = prefix.toString().length,
+    text = range.toString();
+  if (!text.trim()) return;
+  state.pendingSelection = captureQuote(id, text, start);
+  $("selection-menu").hidden = false;
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    if (state.route === "citation") backToDiscussion();
+    else if (!$("selection-menu").hidden) $("selection-menu").hidden = true;
+    else if (state.route !== "closed") closeSheet();
+  }
+});
+const grip = $("sheet-grip");
+grip.addEventListener("pointerdown", (event) => {
+  cancelAnimationFrame(state.raf);
+  state.drag = {
+    id: event.pointerId,
+    startY: event.clientY,
+    start: state.y,
+    previousY: event.clientY,
+    time: performance.now(),
+    velocity: 0,
+  };
+  grip.setPointerCapture(event.pointerId);
+});
+grip.addEventListener("pointermove", (event) => {
+  const d = state.drag;
+  if (!d || d.id !== event.pointerId) return;
+  const now = performance.now(),
+    dt = Math.max(1, now - d.time);
+  d.velocity = ((event.clientY - d.previousY) / dt) * 1000;
+  d.previousY = event.clientY;
+  d.time = now;
+  const candidate = d.start + event.clientY - d.startY;
+  state.y =
+    candidate < 0
+      ? candidate * 0.22
+      : Math.min(phoneHeight() * 0.88, candidate);
+  paintSheet();
+});
+function endDrag(event) {
+  const d = state.drag;
+  if (!d || d.id !== event.pointerId) return;
+  state.drag = null;
+  const moved = Math.abs(event.clientY - d.startY);
+  if (moved < 5) {
+    snap(state.detent === "full" ? "half" : "full");
+    return;
+  }
+  const projected = state.y + d.velocity * 0.12;
+  state.velocity = d.velocity;
+  const stops = [
+    ["full", targetY("full")],
+    ["half", targetY("half")],
+    ["closed", targetY("closed")],
+  ].sort((a, b) => Math.abs(a[1] - projected) - Math.abs(b[1] - projected));
+  if (stops[0][0] === "closed") closeSheet();
+  else snap(stops[0][0]);
+}
+grip.addEventListener("pointerup", endDrag);
+grip.addEventListener("pointercancel", () => {
+  state.drag = null;
+  snap(state.detent);
+});
+function showScenario(name) {
+  if (name === "resume") {
+    closeSheet();
+    jumpTo(paragraphs[0].id);
+    return;
+  }
+  if (name === "selected") {
+    closeSheet();
+    jumpTo(paragraphs[0].id);
+    selectPassage(paragraphs[0].id);
+    return;
+  }
+  if (name === "citation") {
+    if (!["companion", "discussion"].includes(state.route))
+      openRoute("discussion", "full");
+    visitCitation();
+    return;
+  }
+  if (name === "note") {
+    if (state.route === "closed") openRoute("companion", "half");
+    action("note");
+    return;
+  }
+  if (name === "night") {
+    state.theme = "night";
+    renderReader();
+    openRoute("companion", "half");
+    return;
+  }
+  if (name === "offline") {
+    state.offline = true;
+    $("offline-mode").checked = true;
+    openRoute("companion", "half");
+    return;
+  }
+  openRoute(name, name === "companion" ? "half" : "full");
+}
+drawIcons();
+renderReader({ restore: false });
+$("reading-scroll").scrollTop = state.readingTop;
+state.y = targetY("closed");
+setStudy("打开即续读", "从上次的位置进入正文，陪读面板保持收起。");
+window.addEventListener("resize", () => {
+  if (state.route !== "closed") snap(state.detent, { immediate: true });
+});
+window.addEventListener("pagehide", persist);
+const params = new URLSearchParams(location.search);
+if (params.get("state")) showScenario(params.get("state"));
+
+grip.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    snap(state.detent === "full" ? "half" : "full");
+  }
+});
+
+document.addEventListener("input", (event) => {
+  if (event.target.id === "note-field") {
+    state.noteDrafts[quoteKey(state.quote)] = event.target.value;
+    persist();
+  }
+});
+
+for (const event of ["wheel", "touchstart", "keydown"])
+  $("sheet-body").addEventListener(
+    event,
+    () => {
+      state.scrollRevision = (state.scrollRevision || 0) + 1;
+    },
+    { passive: true },
+  );

@@ -1,0 +1,34 @@
+{
+  "at": "2026-10-26T16:41:04.845Z",
+  "timeZone": "Asia/Singapore",
+  "kind": "design-prototype",
+  "checks": [
+    {
+      "name": "launch-enters-reading-with-companion-collapsed",
+      "status": "pass"
+    }
+  ],
+  "screens": [],
+  "errors": [],
+  "blockedExternalRequests": [],
+  "limits": [
+    "Fixed public-domain Walden excerpts, independent draft translations and labelled example answers.",
+    "No live model, production account, paid generation, notification or real library request.",
+    "Chromium desktop/touch emulation only; not native SwiftUI, physical iPhone, Safari, VoiceOver speech, haptics or native keyboard acceptance.",
+    "Figma Desktop was restarted through Computer Use; its new-file view remained blank and Figwright had no connected canvas. No Figma write is claimed."
+  ],
+  "browser": {
+    "engine": "chromium",
+    "version": "156.0.8078.48"
+  },
+  "status": "fail",
+  "failure": {
+    "message": "Expected values to be strictly equal:\n\n41 !== 54\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n41 !== 54\n\n    at file:///Users/xiongxinwei/data/mine/marginalia-reader/docs/design/2026-10-26-ios-half-sheet/verify-prototype.mjs:31:241\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:453:9)\n    at process.callbackTrampoline (node:internal/async_hooks:130:17)"
+  },
+  "sourceHashes": {
+    "prototype/app.js": "7fbcf6a219089e0b9c271331f1dd0bb64af4401fb111958eb195658e5772d5ec",
+    "prototype/style.css": "395ce10907791bc9ba5aa612780ef2518ef0718d1dbd15db1f2968a8cb42ac91",
+    "prototype/index.html": "9bdea4a0db4c7f73897eb4845033ba322e922cd523285bd09bffe458f82e2e7d"
+  }
+}

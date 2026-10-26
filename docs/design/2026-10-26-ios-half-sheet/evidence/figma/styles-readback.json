@@ -1,0 +1,387 @@
+{
+  "paints": [],
+  "texts": [
+    {
+      "id": "S:741f872af051506c3679dfc0e81b83096935554a,",
+      "name": "Leafhour/PingFang SC/15 · 18",
+      "key": "741f872af051506c3679dfc0e81b83096935554a",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Semibold"
+      },
+      "fontSize": 15,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 18
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:decc733b4ec8a1c5b32d06d2ee181afe46b286f5,",
+      "name": "Leafhour/PingFang SC/23 · 27.600000381469727",
+      "key": "decc733b4ec8a1c5b32d06d2ee181afe46b286f5",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Semibold"
+      },
+      "fontSize": 23,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 27.600000381469727
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:a1cc764ce3cd1d7fa50ee2f7bf170af7697cdad7,",
+      "name": "Leafhour/PingFang SC/15 · 18",
+      "key": "a1cc764ce3cd1d7fa50ee2f7bf170af7697cdad7",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Medium"
+      },
+      "fontSize": 15,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 18
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:5890f52117a0dd6527f7639188b57d8eb367bf5c,",
+      "name": "Leafhour/PingFang SC/18 · 21.600000381469727",
+      "key": "5890f52117a0dd6527f7639188b57d8eb367bf5c",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Regular"
+      },
+      "fontSize": 18,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 21.600000381469727
+      },
+      "letterSpacing": {
+        "unit": "PIXELS",
+        "value": -1
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:77b702da71f9ab5de06163edeeb5e12ddfd13f73,",
+      "name": "Leafhour/PingFang SC/11 · 13.199999809265137",
+      "key": "77b702da71f9ab5de06163edeeb5e12ddfd13f73",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Regular"
+      },
+      "fontSize": 11,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 13.199999809265137
+      },
+      "letterSpacing": {
+        "unit": "PIXELS",
+        "value": 2
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:2fdd75258a2ecb8e839cef61c8e6c94a7401591c,",
+      "name": "Leafhour/PingFang SC/11 · 13.199999809265137",
+      "key": "2fdd75258a2ecb8e839cef61c8e6c94a7401591c",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Regular"
+      },
+      "fontSize": 11,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 13.199999809265137
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:24a6b216d28e9e4e326f502054a0b747707104e7,",
+      "name": "Leafhour/PingFang SC/11 · 16.5",
+      "key": "24a6b216d28e9e4e326f502054a0b747707104e7",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Regular"
+      },
+      "fontSize": 11,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 16.5
+      },
+      "letterSpacing": {
+        "unit": "PIXELS",
+        "value": 0.15000000596046448
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:382f089c80be1ace330ac904a620a85288da6396,",
+      "name": "Leafhour/PingFang SC/20 · 24",
+      "key": "382f089c80be1ace330ac904a620a85288da6396",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Regular"
+      },
+      "fontSize": 20,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 24
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:72903074fdbbee5100863ba464c44d06bafb8b2c,",
+      "name": "Leafhour/PingFang SC/13 · 15.600000381469727",
+      "key": "72903074fdbbee5100863ba464c44d06bafb8b2c",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Regular"
+      },
+      "fontSize": 13,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 15.600000381469727
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:0b0334aba67bc6decae76f3231556d328d7b2d6d,",
+      "name": "Leafhour/PingFang SC/14 · 16.799999237060547",
+      "key": "0b0334aba67bc6decae76f3231556d328d7b2d6d",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Regular"
+      },
+      "fontSize": 14,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 16.799999237060547
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:d212b8cfd157abf4cc73a3489ce1d000ab224825,",
+      "name": "Leafhour/PingFang SC/12 · 14.399999618530273",
+      "key": "d212b8cfd157abf4cc73a3489ce1d000ab224825",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Regular"
+      },
+      "fontSize": 12,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 14.399999618530273
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:b4612f4660a81fed6521609d72551e3a53dfd246,",
+      "name": "Leafhour/PingFang SC/20 · 24",
+      "key": "b4612f4660a81fed6521609d72551e3a53dfd246",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Semibold"
+      },
+      "fontSize": 20,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 24
+      },
+      "letterSpacing": {
+        "unit": "PIXELS",
+        "value": -0.30000001192092896
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:a5661313e4b332ed31c473b7aba09f0d14414caa,",
+      "name": "Leafhour/PingFang SC/10 · 16.5",
+      "key": "a5661313e4b332ed31c473b7aba09f0d14414caa",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Regular"
+      },
+      "fontSize": 10,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 16.5
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:2a8da1f5027490cfb60541bed5e456c8f8e45ed5,",
+      "name": "Leafhour/PingFang SC/13 · 21.450000762939453",
+      "key": "2a8da1f5027490cfb60541bed5e456c8f8e45ed5",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Regular"
+      },
+      "fontSize": 13,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 21.450000762939453
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:decef5e07b5892174d4a0480eb01083e0ae3f783,",
+      "name": "Leafhour/PingFang SC/11 · 18.149999618530273",
+      "key": "decef5e07b5892174d4a0480eb01083e0ae3f783",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Regular"
+      },
+      "fontSize": 11,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 18.149999618530273
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:36d06e03c09aec2928db1c2ac92e29b3625ca0cc,",
+      "name": "Leafhour/PingFang SC/10 · 12",
+      "key": "36d06e03c09aec2928db1c2ac92e29b3625ca0cc",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Regular"
+      },
+      "fontSize": 10,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 12
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:641a0cf266a4a8cc6d5e3ea5a0f269e128b3ac70,",
+      "name": "Leafhour/PingFang SC/15 · 24",
+      "key": "641a0cf266a4a8cc6d5e3ea5a0f269e128b3ac70",
+      "description": "",
+      "fontName": {
+        "family": "PingFang SC",
+        "style": "Medium"
+      },
+      "fontSize": 15,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 24
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:b73ed19b76ae0ca52f68a887a85a20df9225d89c,",
+      "name": "Leafhour/Songti SC/34 · 45.900001525878906",
+      "key": "b73ed19b76ae0ca52f68a887a85a20df9225d89c",
+      "description": "",
+      "fontName": {
+        "family": "Songti SC",
+        "style": "Regular"
+      },
+      "fontSize": 34,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 45.900001525878906
+      },
+      "letterSpacing": {
+        "unit": "PIXELS",
+        "value": 1
+      },
+      "textWrapStyle": "AUTO"
+    },
+    {
+      "id": "S:ce183abb26f9210960a62b68d26bf39d23f3aa08,",
+      "name": "Leafhour/Songti SC/22 · 40.2599983215332",
+      "key": "ce183abb26f9210960a62b68d26bf39d23f3aa08",
+      "description": "",
+      "fontName": {
+        "family": "Songti SC",
+        "style": "Regular"
+      },
+      "fontSize": 22,
+      "lineHeight": {
+        "unit": "PIXELS",
+        "value": 40.2599983215332
+      },
+      "letterSpacing": {
+        "unit": "PIXELS",
+        "value": 0.15000000596046448
+      },
+      "textWrapStyle": "AUTO"
+    }
+  ],
+  "effects": [],
+  "grids": []
+}

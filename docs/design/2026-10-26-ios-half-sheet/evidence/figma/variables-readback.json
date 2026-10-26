@@ -1,0 +1,88 @@
+{
+  "collections": [
+    {
+      "id": "VariableCollectionId:1:6",
+      "name": "Leafhour / Semantic colors",
+      "key": "4656aee9f206487f27e7a0e17a4efeb504ecc09d",
+      "defaultModeId": "1:0",
+      "modes": [
+        {
+          "modeId": "1:0",
+          "name": "Mode 1"
+        }
+      ],
+      "variableIds": [
+        "VariableID:1:7",
+        "VariableID:1:8",
+        "VariableID:1:9",
+        "VariableID:1:10"
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "id": "VariableID:1:7",
+      "name": "Paper",
+      "key": "88df04b41533c72b519553d0807156603396d773",
+      "resolvedType": "COLOR",
+      "collectionId": "VariableCollectionId:1:6",
+      "valuesByMode": {
+        "1:0": {
+          "r": 0.9686274528503418,
+          "g": 0.9725490212440491,
+          "b": 0.9607843160629272,
+          "a": 1,
+          "hex": "#F7F8F5"
+        }
+      }
+    },
+    {
+      "id": "VariableID:1:8",
+      "name": "Ink",
+      "key": "267df20a48abb4a65297ae2ebd3548ebff707217",
+      "resolvedType": "COLOR",
+      "collectionId": "VariableCollectionId:1:6",
+      "valuesByMode": {
+        "1:0": {
+          "r": 0.1411764770746231,
+          "g": 0.16470588743686676,
+          "b": 0.15294118225574493,
+          "a": 1,
+          "hex": "#242A27"
+        }
+      }
+    },
+    {
+      "id": "VariableID:1:9",
+      "name": "Secondary",
+      "key": "9b9a60774e1786e184094f1f692b80e3510502c5",
+      "resolvedType": "COLOR",
+      "collectionId": "VariableCollectionId:1:6",
+      "valuesByMode": {
+        "1:0": {
+          "r": 0.364705890417099,
+          "g": 0.4156862795352936,
+          "b": 0.3843137323856354,
+          "a": 1,
+          "hex": "#5D6A62"
+        }
+      }
+    },
+    {
+      "id": "VariableID:1:10",
+      "name": "Leaf",
+      "key": "c2cacb6c992f7fb692a5ea4e9ce43a19e4be36ed",
+      "resolvedType": "COLOR",
+      "collectionId": "VariableCollectionId:1:6",
+      "valuesByMode": {
+        "1:0": {
+          "r": 0.21176470816135406,
+          "g": 0.35686275362968445,
+          "b": 0.27843138575553894,
+          "a": 1,
+          "hex": "#365B47"
+        }
+      }
+    }
+  ]
+}
