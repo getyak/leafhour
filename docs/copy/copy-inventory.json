@@ -462,7 +462,7 @@
       },
       {
         "file": "app/reader-annotation-margins.mjs",
-        "sha256": "d286dc5a22a4f65717d9c1c0968b0d29d00402946d3903b19f11b52d80c61a1c"
+        "sha256": "7cf6d4c0fd8052761afee7c527101f692a0923b28a9e65f6b3a433c27c3fd378"
       },
       {
         "file": "app/reader-annotation-pending.mjs",
@@ -474,7 +474,7 @@
       },
       {
         "file": "app/reader-annotations.mjs",
-        "sha256": "5c356396dc892327c08af068d02785299517e77fa279dc8b700f785e32de03b4"
+        "sha256": "e9f9d6c2c7f8966f7d306065fa1372ebb2f20f8c74a09bc14403f2dc1699e142"
       },
       {
         "file": "app/reader-api.mjs",
@@ -506,7 +506,7 @@
       },
       {
         "file": "app/reader-chat-workspace.mjs",
-        "sha256": "91f87863d476216a34698ae0c2248410d28285f4681a7f8244fd7f8e9196fbe5"
+        "sha256": "b303c3097c4cb4c40370c17399f4b19ea92f8476dd82ce46f95ac8c48cb195e5"
       },
       {
         "file": "app/reader-companion-state.mjs",
@@ -1157,7 +1157,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "4caeec0343de2f74bde16282b524d08256ba8c1d3fb68e777c528e98eb4579f9"
+    "inputDigest": "5555e03fdba8bc1c10075f41387d8009e68ebf2e3647aa61009accdfa1bfb535"
   },
   "locales": [
     "en",
@@ -191031,9 +191031,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-chat-workspace.mjs:27:42",
+      "id": "candidate:app/reader-chat-workspace.mjs:28:42",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 27,
+      "line": 28,
       "column": 42,
       "kind": "js-attribute",
       "property": "aria-valuemin",
@@ -191051,10 +191051,10 @@
       }
     },
     {
-      "id": "candidate:app/reader-chat-workspace.mjs:28:55",
+      "id": "candidate:app/reader-chat-workspace.mjs:29:111",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 28,
-      "column": 55,
+      "line": 29,
+      "column": 111,
       "kind": "js-attribute",
       "property": "aria-modal",
       "value": "true",
@@ -191071,10 +191071,10 @@
       }
     },
     {
-      "id": "candidate:app/reader-chat-workspace.mjs:28:135",
+      "id": "candidate:app/reader-chat-workspace.mjs:29:191",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 28,
-      "column": 135,
+      "line": 29,
+      "column": 191,
       "kind": "js-attribute",
       "property": "tabindex",
       "value": "-1",
@@ -191091,9 +191091,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-chat-workspace.mjs:29:54",
+      "id": "candidate:app/reader-chat-workspace.mjs:30:54",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 29,
+      "line": 30,
       "column": 54,
       "kind": "js-attribute",
       "property": "aria-modal",
@@ -240729,7 +240729,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 103,
+      "line": 109,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -240737,7 +240737,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 104,
+      "line": 110,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -240745,7 +240745,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 107,
+      "line": 113,
       "expression": "rail.width+'px'",
       "fragments": [
         "px"
@@ -240755,7 +240755,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 107,
+      "line": 113,
       "expression": "rail.left+'px'",
       "fragments": [
         "px"
@@ -240765,7 +240765,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 107,
+      "line": 113,
       "expression": "top+'px'",
       "fragments": [
         "px"
@@ -240775,7 +240775,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 107,
+      "line": 113,
       "expression": "Math.max(132,view.innerHeight-top-24)+'px'",
       "fragments": [
         "px"
@@ -240785,7 +240785,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 112,
+      "line": 118,
       "expression": "bounds.left+'px'",
       "fragments": [
         "px"
@@ -240795,7 +240795,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 112,
+      "line": 118,
       "expression": "bounds.width+'px'",
       "fragments": [
         "px"
@@ -240805,8 +240805,8 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 113,
-      "expression": "Math.max(100,(viewport?.height||view.innerHeight)-32)+'px'",
+      "line": 123,
+      "expression": "Math.max(0,view.innerHeight-bottom-top)+'px'",
       "fragments": [
         "px"
       ],
@@ -240815,8 +240815,8 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 114,
-      "expression": "Math.max(12,view.innerHeight-(viewport?.height||view.innerHeight)-(viewport?.offsetTop||0)+12)+'px'",
+      "line": 124,
+      "expression": "bottom+'px'",
       "fragments": [
         "px"
       ],
@@ -240825,7 +240825,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 124,
+      "line": 134,
       "expression": "layer",
       "fragments": [],
       "unresolved": true
@@ -240833,7 +240833,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 127,
+      "line": 137,
       "expression": "(index+1)+' / '",
       "fragments": [
         " / "
@@ -240843,7 +240843,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 128,
+      "line": 138,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -240851,7 +240851,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 131,
+      "line": 141,
       "expression": "'/read?book='+encodeURIComponent(book().bookId)+'&passage='",
       "fragments": [
         "/read?book=",
@@ -240862,7 +240862,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 131,
+      "line": 141,
       "expression": "'/read?book='+encodeURIComponent(book().bookId)",
       "fragments": [
         "/read?book="
@@ -240872,7 +240872,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 141,
+      "line": 151,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -240880,7 +240880,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 142,
+      "line": 152,
       "expression": "(index+delta+rows.length)%rows.length",
       "fragments": [],
       "unresolved": true
@@ -240888,7 +240888,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 142,
+      "line": 152,
       "expression": "'highlight-'+r.id",
       "fragments": [
         "highlight-"
@@ -240898,7 +240898,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 147,
+      "line": 157,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -240906,7 +240906,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 158,
+      "line": 168,
       "expression": "'[data-annotation-thread=\"'+activeId+'\"]'",
       "fragments": [
         "[data-annotation-thread=\"",
@@ -240917,7 +240917,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 158,
+      "line": 168,
       "expression": "'[data-annotation-thread=\"'+activeId",
       "fragments": [
         "[data-annotation-thread=\""
@@ -240927,7 +240927,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 165,
+      "line": 175,
       "expression": "'highlight-'+row.id",
       "fragments": [
         "highlight-"
@@ -240937,7 +240937,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 172,
+      "line": 182,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -240945,7 +240945,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 185,
+      "line": 195,
       "expression": "endpoint()+'/explain'",
       "fragments": [
         "/explain"
@@ -240955,7 +240955,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-annotations.mjs",
-      "line": 207,
+      "line": 217,
       "expression": "activeId",
       "fragments": [],
       "unresolved": true
@@ -240963,7 +240963,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 210,
+      "line": 220,
       "expression": "endpoint()+'/requests/'+encodeURIComponent(request.id)+'/cancel'",
       "fragments": [
         "/requests/",
@@ -240974,7 +240974,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 210,
+      "line": 220,
       "expression": "endpoint()+'/requests/'",
       "fragments": [
         "/requests/"
@@ -240984,7 +240984,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 211,
+      "line": 221,
       "expression": "endpoint()+'/threads/'+encodeURIComponent(held.id)+'/remove'",
       "fragments": [
         "/threads/",
@@ -240995,7 +240995,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-annotations.mjs",
-      "line": 211,
+      "line": 221,
       "expression": "endpoint()+'/threads/'",
       "fragments": [
         "/threads/"
@@ -242147,7 +242147,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 26,
+      "line": 27,
       "expression": "width()+'px'",
       "fragments": [
         "px"
@@ -242157,7 +242157,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 37,
+      "line": 38,
       "expression": "event.key",
       "fragments": [],
       "unresolved": true
@@ -242165,7 +242165,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-chat-workspace.mjs",
-      "line": 46,
+      "line": 47,
       "expression": "0",
       "fragments": [],
       "unresolved": true
