@@ -722,6 +722,31 @@ test('GET-227 reader Ctrl+K hands off an open overlay even from an editable fiel
  assert.equal(event.defaultPrevented,true);assert.equal(handoffs,1);assert.equal(settings.open,false);assert.equal(doc.activeElement.id,'command-palette-input');doc.getElementById('command-palette').dispatchEvent(new Event('cancel'));assert.equal(doc.activeElement,safe);
 });
 
+test('a delayed reader palette cannot replace a newer primary overlay or paint a stale failure',async()=>{
+ for(const fail of [false,true]){
+  const doc=fixture();let revision=0,finish,mounted=0;
+  const bootstrap=mountPaletteBootstrap({document:doc,page:'reader',adapter:{getOwner:()=>null,getOverlayRevision:()=>revision},loadPalette:()=>new Promise((resolve,reject)=>{finish=()=>fail?reject(Error('Delayed import failed')):resolve({openCommandPalette(){mounted++;return {open(){},close(){}};}});})});
+  const pending=bootstrap.open();await Promise.resolve();revision++;finish();
+  if(fail)await assert.rejects(pending,/Delayed import failed/);else assert.equal(await pending,null);
+  assert.equal(mounted,0);assert.equal(noticeOf(doc),null);
+ }
+});
+
+test('a delayed native palette close cannot steal focus from the next reader surface',()=>{
+ let revision=0;const f=openFixture({page:'reader',adapter:{getOverlayRevision:()=>revision},library:{view:()=>({phase:'ready'}),search:()=>[]}});
+ f.palette.open();const next=f.doc.createElement('button');f.doc.body.append(next);
+ f.dialog.open=false;revision++;next.focus();f.dialog.dispatchEvent(new Event('close'));
+ assert.equal(f.doc.activeElement,next);
+});
+
+test('a reader palette failure after its own handoff retains rollback and retry',async()=>{
+ const doc=fixture(),create=doc.createElement;let revision=0;
+ doc.createElement=tag=>{const node=create(tag);if(tag==='dialog')node.showModal=()=>{node.open=true;throw Error('Failed after handoff');};return node;};
+ const bootstrap=mountPaletteBootstrap({document:doc,page:'reader',adapter:{getOverlayRevision:()=>revision,prepareOverlay:()=>{revision++;return doc.body;}},loadPalette:async()=>({openCommandPalette:options=>openCommandPalette({...options,library:{view:()=>({phase:'ready'}),search:()=>[]}})})});
+ await assert.rejects(bootstrap.open(),/Failed after handoff/);
+ assert.equal(doc.getElementById('command-palette').open,false);assert.ok(noticeOf(doc));assert.equal(noticeParts(doc).retry.hidden,false);
+});
+
 test('GET-227 retry stays visible while a failed catalogue is reloaded',async()=>{
  let phase='error',finish;const library={view:()=>({phase}),search:()=>[],load:()=>{phase='loading';return new Promise(r=>finish=()=>{phase='ready';r();});}};
  const f=openFixture({library});f.palette.open();f.options().find(n=>/Reload/.test(n.textContent)).click();

@@ -52,6 +52,12 @@ function withTools(run){
   try{return run(f);}finally{f.cleanup();}
 }
 
+test('a disposed primary-surface owner cannot close a replacement reader dialog',()=>withTools(f=>{
+ const tools=mountReaderTools({sessionRoot:f.sessionRoot,immersion:f.immersion,document:f.document});let closed=0;
+ f.document.querySelectorAll=selector=>selector.startsWith('#settings-dialog')?[{id:'settings-dialog',close(){closed++;}}]:[];
+ tools.unmount();tools.chatIntegration.onOpen();assert.equal(closed,0);
+}));
+
 test('returning from tucked-away chat reveals its existing entry before restoring focus',t=>withTools(f=>{
   t.mock.timers.enable({apis:['setTimeout']});
   const entry=new Element('chat-entry'),host=f.elements.get('#reading-tools-chat-slot');

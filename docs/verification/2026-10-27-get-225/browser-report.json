@@ -1,0 +1,83 @@
+{
+  "at": "2026-10-26T19:54:58.773Z",
+  "cases": [
+    {
+      "locale": "en",
+      "width": 1280,
+      "height": 800,
+      "checks": [
+        "tools → settings",
+        "Starting view / Interface language, Sound / Data bottom controls and modal focus",
+        "Settings ↔ Atmosphere ↔ Palette, Escape no remaining main layer",
+        "owned Audio dialog → Palette → Tools without an old modal or focus return",
+        "controlled Chat GET error/retry preserves draft without a model call",
+        "Chat nested Escape, unsent draft, mobile inert release, scrim gesture and visible focus"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence"
+      ],
+      "passed": true
+    },
+    {
+      "locale": "zh-Hans",
+      "width": 390,
+      "height": 844,
+      "checks": [
+        "tools → settings",
+        "Starting view / Interface language, Sound / Data bottom controls and modal focus",
+        "Settings ↔ Atmosphere ↔ Palette, Escape no remaining main layer",
+        "owned Audio dialog → Palette → Tools without an old modal or focus return",
+        "controlled Chat GET error/retry preserves draft without a model call",
+        "Chat nested Escape, unsent draft, mobile inert release, scrim gesture and visible focus"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/books/gutenberg-alice/progress"
+      ],
+      "passed": true
+    },
+    {
+      "locale": "zh-Hant",
+      "width": 320,
+      "height": 740,
+      "checks": [
+        "tools → settings",
+        "Starting view / Interface language, Sound / Data bottom controls and modal focus",
+        "Settings ↔ Atmosphere ↔ Palette, Escape no remaining main layer",
+        "owned Audio dialog → Palette → Tools without an old modal or focus return",
+        "controlled Chat GET error/retry preserves draft without a model call",
+        "Chat nested Escape, unsent draft, mobile inert release, scrim gesture and visible focus"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/books/gutenberg-alice/progress"
+      ],
+      "passed": true
+    },
+    {
+      "locale": "ja",
+      "width": 800,
+      "height": 390,
+      "checks": [
+        "tools → settings",
+        "Starting view / Interface language, Sound / Data bottom controls and modal focus",
+        "Settings ↔ Atmosphere ↔ Palette, Escape no remaining main layer",
+        "owned Audio dialog → Palette → Tools without an old modal or focus return",
+        "controlled Chat GET error/retry preserves draft without a model call",
+        "Chat nested Escape, unsent draft, mobile inert release, scrim gesture and visible focus"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence"
+      ],
+      "passed": true
+    }
+  ],
+  "limits": [
+    "Browser input does not establish physical-device or screen-reader acceptance.",
+    "Public Alice; page API writes are blocked; no model output is requested."
+  ]
+}
