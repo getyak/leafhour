@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover"
+  />
+  <meta name="color-scheme" content="light dark" />
+  <title>Leafhour · 半屏陪读</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="style.css" />
+  <body>
+    <main class="workbench">
+      <header class="study-header">
+        <a class="wordmark" href="../README.md">Leafhour <span>iOS</span></a>
+        <div class="study-controls">
+          <label><input type="checkbox" id="offline-mode" />断网示例</label
+          ><button id="reopen">重新打开</button
+          ><button id="night-mode">深色</button>
+        </div>
+      </header>
+      <div class="stage">
+        <div class="phone" id="phone" data-theme="paper">
+          <div class="status-bar" aria-hidden="true">
+            <span>9:41</span><span class="island"></span
+            ><span class="status-icons">▰</span>
+          </div>
+          <nav class="reader-nav" id="reader-nav" aria-label="阅读导航">
+            <button id="library-button" aria-label="打开书房">
+              <span data-icon="library"></span></button
+            ><button id="contents-button" class="book-title">
+              瓦尔登湖 <span data-icon="down"></span></button
+            ><button
+              id="appearance-button"
+              class="type-button"
+              aria-label="排版设置"
+            >
+              Aa
+            </button>
+          </nav>
+          <article
+            class="reading-scroll"
+            id="reading-scroll"
+            aria-label="阅读正文"
+            tabindex="0"
+          >
+            <div class="chapter-heading">
+              <span>第二章</span>
+              <h1>我为何生活</h1>
+              <p id="version-label">示例意译</p>
+            </div>
+            <div id="prose"></div>
+            <button class="chapter-end" id="chapter-end">
+              回到这一章的开头 <span data-icon="up"></span>
+            </button>
+          </article>
+          <div
+            class="selection-menu"
+            id="selection-menu"
+            hidden
+            aria-label="选文操作"
+          >
+            <button data-selection="explain">解释这句</button
+            ><button data-selection="original">看原文</button
+            ><button data-selection="note">记一句</button>
+          </div>
+          <footer class="reading-dock" id="reading-dock">
+            <button id="progress-button">
+              <span>第二章</span
+              ><span class="dock-location" id="dock-location"
+                >林中生活</span
+              ></button
+            ><span class="dock-divider"></span
+            ><button id="companion-button">
+              <span data-icon="conversation"></span>读到这里
+            </button>
+          </footer>
+          <div class="sheet-scrim" id="sheet-scrim" hidden></div>
+          <section
+            class="reader-sheet"
+            id="reader-sheet"
+            hidden
+            aria-label="阅读辅助"
+          >
+            <button
+              class="sheet-grip"
+              id="sheet-grip"
+              aria-label="展开或收起面板"
+            >
+              <span></span>
+            </button>
+            <header class="sheet-header">
+              <button class="sheet-back" id="sheet-back" hidden>
+                <span data-icon="left"></span><span>返回讨论</span>
+              </button>
+              <h2 id="sheet-title">读到这里</h2>
+              <button class="sheet-done" id="sheet-done">继续读</button>
+            </header>
+            <div class="sheet-body" id="sheet-body"></div>
+            <div class="composer" id="composer" hidden>
+              <form id="question-form">
+                <input
+                  id="question-input"
+                  aria-label="继续问这段"
+                  placeholder="接着问这段…"
+                  autocomplete="off"
+                /><button type="submit" aria-label="发送问题">
+                  <span data-icon="up"></span>
+                </button>
+              </form>
+              <button class="draft-return" id="draft-return" hidden>
+                找回未发送的草稿
+              </button>
+            </div>
+          </section>
+          <div class="phone-toast" id="phone-toast" role="status" hidden></div>
+          <div class="home-indicator" aria-hidden="true"></div>
+        </div>
+        <aside class="study-notes">
+          <p class="study-state" id="study-state">打开即续读</p>
+          <p id="study-detail">从上次的位置进入正文，陪读面板保持收起。</p>
+          <div class="scenario-links" aria-label="查看关键状态">
+            <button data-scenario="resume">续读</button
+            ><button data-scenario="selected">选文</button
+            ><button data-scenario="companion">半屏</button
+            ><button data-scenario="discussion">讨论</button
+            ><button data-scenario="citation">出处</button
+            ><button data-scenario="note">笔记</button
+            ><button data-scenario="records">记录</button
+            ><button data-scenario="library">书房</button>
+          </div>
+          <a href="../exports/core-flow.svg">核心流程图</a
+          ><a href="../exports/relationships.svg">页面与内容关系</a>
+          <p class="prototype-label">
+            交互原型 · 固定公版样章与示例讲解<br />不接联网模型，输入仅留在当前浏览器会话。
+          </p>
+        </aside>
+      </div>
+    </main>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
