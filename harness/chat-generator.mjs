@@ -50,7 +50,7 @@ export function createChatBudget({pricing,maxCostCny=.75,maxRequests=8,maxToolCa
  budget.providerAttempts=()=>attempts.map(attempt=>({...attempt}));return budget;
 }
 
-export async function createChatBridge({tools,budget,signal,expiresAt=Date.now()+75000}={}){
+export async function createChatBridge({tools,budget,signal,onProgress,expiresAt=Date.now()+75000}={}){
  const token=randomBytes(32).toString('hex'),auth=Buffer.from('Bearer '+token),pending=new Set(),controller=new AbortController(),activeSignal=signal?AbortSignal.any([signal,controller.signal]):controller.signal;let closed=false,closePromise,timer;
  const live=()=>{if(closed||activeSignal.aborted||Date.now()>expiresAt)throw Error('Run cancelled or expired');};
  const meter=providerMeterContext();
@@ -59,10 +59,13 @@ export async function createChatBridge({tools,budget,signal,expiresAt=Date.now()
   try{
    live();const supplied=Buffer.from(req.headers.authorization||'');
    if(supplied.length!==auth.length||!timingSafeEqual(supplied,auth))return respond(401,{error:'Unauthorized'});
-   if(req.method!=='POST'||!['/tool','/reserve'].includes(req.url))return respond(404,{error:'Unavailable'});
-   let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>8192){respond(413,{error:'Request too large'});return;}chunks.push(chunk);}
+   if(req.method!=='POST'||!['/tool','/reserve','/progress'].includes(req.url))return respond(404,{error:'Unavailable'});
+   let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>(req.url==='/progress'?65536:8192)){respond(413,{error:'Request too large'});return;}chunks.push(chunk);}
    live();const body=JSON.parse(Buffer.concat(chunks).toString('utf8'));let value;
-   if(req.url==='/reserve')value=await budget.dispatchRequest(body);
+   if(req.url==='/progress'){
+    if(!Number.isSafeInteger(body.sequence)||body.sequence<1||typeof body.text!=='string'||body.text.length>12000||!body.text.isWellFormed())throw Error('Invalid progress');
+    await onProgress?.({sequence:body.sequence,text:body.text});value={ok:true};
+   }else if(req.url==='/reserve')value=await budget.dispatchRequest(body);
    else{
     if(typeof body.name!=='string'||!tools.definitions.some(d=>d.name===body.name)||!body.args||typeof body.args!=='object'||Array.isArray(body.args))throw Error('Invalid tool');
     budget.tool();value=await tools.execute(body.name,body.args,{reserveRequest:request=>{live();return budget.reserveRequest(request);},signal:activeSignal});
@@ -141,9 +144,9 @@ export function createChatGenerator({runRoot=path.join(tmpdir(),'marginalia-read
   job.signal?.addEventListener('abort',abort,{once:true});timer=setTimeout(abort,timeoutMs);
   try{
    if(job.signal?.aborted)throw Error('已取消阅读对话。');
-   bridge=await createBridge({tools:job.tools,budget,signal:controller.signal,expiresAt});
+   bridge=await createBridge({tools:job.tools,budget,signal:controller.signal,expiresAt,onProgress:job.onProgress});
    if(controller.signal.aborted)throw Error('Run cancelled');
-   const patch=[...['persistent-bash','persistent-pwsh','tool-working-directory','llm-retry','session-title'].map(id=>({id,disabled:true})),{id:'sandbox-policy',name:'@deepseek-ai/dsh-sandbox-policy',config:{mode:'read-only',workspaceRoot:dir}},{id:'tools',name:'@deepseek-ai/dsh-tools',config:{mode:'native'}},{insert:[{id:'reading-chat',name:path.join(runtimeRoot||project,'harness/chat-plugin.mjs'),inject:['tools','llm'],config:{definitions:job.tools.definitions,bridgeUrl:bridge.url,token:bridge.token,expiresAt}}]}];
+   const patch=[...['persistent-bash','persistent-pwsh','tool-working-directory','llm-retry','session-title'].map(id=>({id,disabled:true})),{id:'sandbox-policy',name:'@deepseek-ai/dsh-sandbox-policy',config:{mode:'read-only',workspaceRoot:dir}},{id:'tools',name:'@deepseek-ai/dsh-tools',config:{mode:'native'}},{insert:[{id:'reading-chat',name:path.join(runtimeRoot||project,'harness/chat-plugin.mjs'),inject:['tools','llm'],config:{definitions:job.tools.definitions,bridgeUrl:bridge.url,token:bridge.token,expiresAt,progress:typeof job.onProgress==='function'}}]}];
    const patchPath=path.join(dir,'chat.patch.json');await writeFile(patchPath,JSON.stringify(patch),{mode:0o600});
    const factory=createHarness||((options)=>new thisSDK.DeepSeekHarness(options));
    const thisSDK=createHarness?null:await import(runtimeRoot?pathToFileURL(path.join(runtimeRoot,'node_modules/@deepseek-ai/dsh-sdk-client/lib/index.js')).href:'@deepseek-ai/dsh-sdk-client');

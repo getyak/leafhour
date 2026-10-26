@@ -1,0 +1,11 @@
+# GET-260 incremental reading replies
+
+The current path waits for the entire DSH run, returns JSON after verification and settlement, and polls only task status. Durable DSH assistant events contain settled steps, so replaying their embedded chunks would not establish live streaming.
+
+1. Forward real `text-delta` chunks from the existing DSH plugin through its authenticated, expiring loopback bridge. Send bounded cumulative snapshots with increasing sequence numbers; reset the visible prefix when a new model step starts. Keep model, pricing, context, runtime and tool budgets unchanged.
+2. Negotiate NDJSON on the existing chat POST. Keep authentication, owner, origin, credit and idempotency gates. Only the terminal frame after verification and billing is an authoritative answer. JSON callers retain their existing contract.
+3. Decode incremental UTF-8 frames in both browser mounts. Scope progress to the original account, book and operation ticket; ignore duplicate/late snapshots. Polls recover authoritative state without duplicating a model request. Drafts and quotes retain existing recovery semantics.
+4. Give reader replies a restrained paper container, 16px text, generous line spacing and modest headings. Show plain, selectable provisional text while generating; enable formatted content, verified citations and copy after completion. Keep evidence collapsed, original passage in More, reading geometry, focus and reduced-motion behavior.
+5. Verify plugin/bridge, HTTP arrival order, state and DOM boundaries including stop, disconnect, empty/error, retries, duplicates and account changes. Run packaged browser cases on desktop/narrow paper/night; record fixture versus provider and production versus local separately. Independent review, current-head CI, merge, exact production revision, real-account acceptance and Linear readback remain delivery gates.
+
+Initial resources: 267 Node/npm processes, 16.08 GiB swap, 35.31 GiB disk free; subsequent memory sample reports 35% free and swap below 16 GiB. No hard pause marker. Use one bounded test/build/browser session and no iOS devices. Owned test artifact: `/private/tmp/ai-test-GET-260.eZqmH4`. Existing services and processes are not task resources.

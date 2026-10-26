@@ -114,7 +114,7 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
       const scopeWasUnconfirmed=state.scopeUnconfirmed;if(data.scope!==undefined&&!state.scopePending)state.scopeUnconfirmed=false;
       const previous=state.turns;state.data=data;state.phase='ready';state.loadError='';
       if(scopeWasUnconfirmed&&!state.scopeUnconfirmed)state.notice={id:'cs.scopeReloaded'};
-      state.turns=data.turns.map(turn=>{const local=previous.find(t=>t.id===turn.id);return turn.status==='running'&&local&&local.status!=='running'?local:turn;});
+      state.turns=data.turns.map(turn=>{const local=previous.find(t=>t.id===turn.id);return turn.status==='running'&&local?(local.status!=='running'?local:{...turn,...(local.partial?{partial:local.partial}:{})}):turn;});
       const target=state.pending?.id||state.retry?.payload.id,recovered=target&&state.turns.find(t=>t.id===target);
       if(recovered&&state.pending?.status!=='stopping'){
         const tracked=state.pending?.payload||state.retry?.payload;
@@ -150,6 +150,11 @@ export function createLibraryChatState({readDraft=()=>'',writeDraft=()=>{},readP
       putTurn({id:payload.id,passageId:payload.passageId,contentVersion:payload.contentVersion,text:payload.text,...(payload.quote?{quote:payload.quote}:{}),origin:'user',createdAt:new Date().toISOString(),status:'running',answer:null});
       // Save the original id before dispatch so reloading cannot create a paid duplicate.
       return {ticket:request,payload};
+    },
+    resolveProgress(request,value){
+      if(!current(request)||request.operation!==operation||request.id!==state.pending?.id||state.pending.status!=='running'||value?.id!==request.id||!Number.isSafeInteger(value.sequence)||value.sequence<1||typeof value.text!=='string'||value.text.length>12000||!value.text.isWellFormed())return false;
+      const turn=state.turns.find(t=>t.id===request.id);if(!turn||turn.status!=='running'||value.sequence<=(turn.partial?.sequence||0))return false;
+      putTurn({...turn,partial:{sequence:value.sequence,text:value.text}});return true;
     },
     resolveSend(request,turn){
       if(!current(request)||request.operation!==operation||request.id!==state.pending?.id||state.pending.status==='stopping'||!matches(turn,state.pending.payload))return false;

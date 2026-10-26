@@ -4,6 +4,23 @@ import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {createReaderServer} from '../server/server.mjs';
+test('chat POST delivers an actual prefix before the generator settles, then an authoritative terminal',async t=>{
+ const dir=await mkdtemp(path.join(tmpdir(),'reader-chat-stream-'));let started,release;
+ const running=new Promise(r=>started=r),held=new Promise(r=>release=r);
+ const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),portalDataDir:path.join(dir,'portal'),env:{},chatGenerator:async job=>{
+  await job.onProgress?.({sequence:1,text:'增量正文'});started();await held;return {kind:'conversation',summary:'增量正文，完整回答。'};
+ }});
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(async()=>{release();await new Promise(r=>server.close(r));await rm(dir,{recursive:true,force:true});});
+ const base='http://127.0.0.1:'+server.address().port,session=await server.portal.auth.localSession(),url=base+'/api/library/books/gutenberg-alice/chat',headers={Cookie:'marginalia_session='+session.token,'X-Reader-Owner':session.user.id,'Content-Type':'application/json',Origin:base,Accept:'application/x-ndjson'};
+ const view=await (await fetch(url,{headers})).json(),input={id:'stream-prefix',text:'Synthetic streaming question',passageId:view.context.passageId,contentVersion:view.contentVersion};
+ const pending=fetch(url,{method:'POST',headers,body:JSON.stringify(input)});await running;
+ const timer=setTimeout(release,200);t.after(()=>clearTimeout(timer));const response=await pending;
+ assert.match(response.headers.get('content-type'),/application\/x-ndjson/);
+ const reader=response.body.getReader(),first=await reader.read(),prefix=new TextDecoder().decode(first.value);
+ assert.match(prefix,/增量正文/);assert.doesNotMatch(prefix,/"type":"result"/);release();
+ let rest='';for(;;){const row=await reader.read();if(row.done)break;rest+=new TextDecoder().decode(row.value);}
+ const frames=(prefix+rest).trim().split('\n').map(JSON.parse);assert.equal(frames[0].id,input.id);assert.equal(frames.at(-1).type,'result');assert.equal(frames.at(-1).turn.status,'completed');assert.equal(frames.at(-1).turn.answer.summary,'增量正文，完整回答。');
+});
 test('the reading window uses authenticated chat routes, real source references and account guarded requests',async t=>{
   const dir=await mkdtemp(path.join(tmpdir(),'reader-chat-http-'));let calls=0;
   const server=await createReaderServer({recordsPath:path.join(dir,'records.json'),translator:null,sendCode:null,chatGenerator:async job=>{calls++;assert.equal(job.kind,'conversation');const context=await job.tools.execute('reader_get_context',{});const p=context.passages[0];await job.tools.execute('reader_cite',{bookId:job.book.bookId,passageId:p.passageId,layer:'original',quote:p.original.slice(0,24)});return {kind:'conversation',summary:'这是依据当前原文的回答。'};}});

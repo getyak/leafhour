@@ -1,0 +1,283 @@
+{
+  "at": "2026-10-26T18:31:50.346Z",
+  "chain": "synthetic adapter text-delta → real DSH plugin → authenticated loopback bridge → chat domain → NDJSON → fetch decoder → operation state → packaged DOM",
+  "cases": [
+    {
+      "locale": "en",
+      "width": 1440,
+      "height": 900,
+      "theme": "paper",
+      "mode": "NORMAL",
+      "checks": [
+        "prefix visible before adapter completion; no premature copy or verified citations",
+        "16px/1.9 reading text; padded bordered card; collapsed evidence; source return; book geometry; no horizontal overflow"
+      ],
+      "errors": [],
+      "firstDOMAt": 1793039512533,
+      "trace": [
+        {
+          "stage": "bridge-prefix",
+          "sequence": 1,
+          "length": 0,
+          "at": 1793039512485
+        },
+        {
+          "stage": "bridge-prefix",
+          "sequence": 2,
+          "length": 10,
+          "at": 1793039512488
+        },
+        {
+          "stage": "bridge-prefix",
+          "sequence": 3,
+          "length": 60,
+          "at": 1793039512607
+        },
+        {
+          "stage": "bridge-prefix",
+          "sequence": 4,
+          "length": 103,
+          "at": 1793039512682
+        },
+        {
+          "stage": "adapter-completed",
+          "at": 1793039512683
+        }
+      ],
+      "computed": {
+        "font": "16px",
+        "lineHeight": "30.4px",
+        "padding": "16px 18px 10px",
+        "border": "1px",
+        "background": "color(srgb 0.986039 0.982588 0.96549)",
+        "theme": "paper"
+      }
+    },
+    {
+      "locale": "zh-Hans",
+      "width": 390,
+      "height": 844,
+      "theme": "paper",
+      "mode": "NORMAL",
+      "checks": [
+        "prefix visible before adapter completion; no premature copy or verified citations",
+        "16px/1.9 reading text; padded bordered card; collapsed evidence; source return; book geometry; no horizontal overflow"
+      ],
+      "errors": [],
+      "firstDOMAt": 1793039513383,
+      "trace": [
+        {
+          "stage": "bridge-prefix",
+          "sequence": 1,
+          "length": 0,
+          "at": 1793039513327
+        },
+        {
+          "stage": "bridge-prefix",
+          "sequence": 2,
+          "length": 10,
+          "at": 1793039513328
+        },
+        {
+          "stage": "bridge-prefix",
+          "sequence": 3,
+          "length": 60,
+          "at": 1793039513456
+        },
+        {
+          "stage": "bridge-prefix",
+          "sequence": 4,
+          "length": 103,
+          "at": 1793039513530
+        },
+        {
+          "stage": "adapter-completed",
+          "at": 1793039513531
+        }
+      ],
+      "computed": {
+        "font": "16px",
+        "lineHeight": "30.4px",
+        "padding": "16px 18px 10px",
+        "border": "1px",
+        "background": "color(srgb 0.986039 0.982588 0.96549)",
+        "theme": "paper"
+      }
+    },
+    {
+      "locale": "zh-Hant",
+      "width": 320,
+      "height": 740,
+      "theme": "night",
+      "mode": "NORMAL",
+      "checks": [
+        "prefix visible before adapter completion; no premature copy or verified citations",
+        "16px/1.9 reading text; padded bordered card; collapsed evidence; source return; book geometry; no horizontal overflow"
+      ],
+      "errors": [],
+      "firstDOMAt": 1793039514277,
+      "trace": [
+        {
+          "stage": "bridge-prefix",
+          "sequence": 1,
+          "length": 0,
+          "at": 1793039514216
+        },
+        {
+          "stage": "bridge-prefix",
+          "sequence": 2,
+          "length": 10,
+          "at": 1793039514218
+        },
+        {
+          "stage": "bridge-prefix",
+          "sequence": 3,
+          "length": 60,
+          "at": 1793039514351
+        },
+        {
+          "stage": "bridge-prefix",
+          "sequence": 4,
+          "length": 103,
+          "at": 1793039514424
+        },
+        {
+          "stage": "adapter-completed",
+          "at": 1793039514425
+        }
+      ],
+      "computed": {
+        "font": "16px",
+        "lineHeight": "30.4px",
+        "padding": "16px 18px 10px",
+        "border": "1px",
+        "background": "color(srgb 0.146824 0.163451 0.154667)",
+        "theme": "night"
+      }
+    },
+    {
+      "locale": "ja",
+      "width": 768,
+      "height": 1024,
+      "theme": "night",
+      "mode": "NORMAL",
+      "checks": [
+        "prefix visible before adapter completion; no premature copy or verified citations",
+        "16px/1.9 reading text; padded bordered card; collapsed evidence; source return; book geometry; no horizontal overflow"
+      ],
+      "errors": [],
+      "firstDOMAt": 1793039515174,
+      "trace": [
+        {
+          "stage": "bridge-prefix",
+          "sequence": 1,
+          "length": 0,
+          "at": 1793039515113
+        },
+        {
+          "stage": "bridge-prefix",
+          "sequence": 2,
+          "length": 10,
+          "at": 1793039515115
+        },
+        {
+          "stage": "bridge-prefix",
+          "sequence": 3,
+          "length": 60,
+          "at": 1793039515247
+        },
+        {
+          "stage": "bridge-prefix",
+          "sequence": 4,
+          "length": 103,
+          "at": 1793039515321
+        },
+        {
+          "stage": "adapter-completed",
+          "at": 1793039515321
+        }
+      ],
+      "computed": {
+        "font": "16px",
+        "lineHeight": "30.4px",
+        "padding": "16px 18px 10px",
+        "border": "1px",
+        "background": "color(srgb 0.146824 0.163451 0.154667)",
+        "theme": "night"
+      }
+    },
+    {
+      "locale": "zh-Hans",
+      "width": 390,
+      "height": 420,
+      "theme": "paper",
+      "mode": "STOP",
+      "checks": [
+        "prefix visible before adapter completion; no premature copy or verified citations",
+        "Stop cancels the runtime, discards provisional text and restores the question"
+      ],
+      "errors": [],
+      "firstDOMAt": 1793039516031,
+      "trace": [
+        {
+          "stage": "bridge-prefix",
+          "sequence": 1,
+          "length": 0,
+          "at": 1793039516018
+        },
+        {
+          "stage": "bridge-prefix",
+          "sequence": 2,
+          "length": 10,
+          "at": 1793039516019
+        },
+        {
+          "stage": "adapter-completed",
+          "at": 1793039516066
+        }
+      ]
+    },
+    {
+      "locale": "en",
+      "width": 1440,
+      "height": 900,
+      "theme": "paper",
+      "mode": "EMPTY",
+      "checks": [
+        "empty response fails honestly and retains question"
+      ],
+      "errors": []
+    },
+    {
+      "locale": "zh-Hans",
+      "width": 390,
+      "height": 844,
+      "theme": "night",
+      "mode": "ERROR",
+      "checks": [
+        "prefix visible before adapter completion; no premature copy or verified citations",
+        "partial provider failure never publishes an answer and retains retry text"
+      ],
+      "errors": [],
+      "firstDOMAt": 1793039517058
+    },
+    {
+      "locale": "en",
+      "width": 1440,
+      "height": 900,
+      "theme": "paper",
+      "mode": "DISCONNECT",
+      "checks": [
+        "prefix visible before adapter completion; no premature copy or verified citations",
+        "lost response reconciles the same request through GET without another model run"
+      ],
+      "errors": [],
+      "firstDOMAt": 1793039517595
+    }
+  ],
+  "limits": [
+    "Synthetic model chunks are not real provider output.",
+    "Local fixture identities and public-domain Alice only; production and real-account acceptance are separate.",
+    "Chromium driver input is not physical-device, OS IME or screen-reader speech acceptance."
+  ]
+}

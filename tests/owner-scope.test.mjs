@@ -1,5 +1,9 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createOwnerScope,readOwnerResponse} from '../app/owner-scope.mjs';
+test('a library chat stream lost after HTTP 200 stays uncertain for idempotent recovery',async()=>{
+ const scope=createOwnerScope('alice'),response=new Response('{"type":"progress","id":"q","sequence":1,"text":"Partial"}\n',{headers:{'Content-Type':'application/x-ndjson'}});
+ await assert.rejects(readOwnerResponse(scope,scope.capture(),async()=>response,()=>{}, {onProgress(){}}),error=>error.status===502&&error.retryable===true);
+});
 test('late results from the previous account cannot be rendered after signing out and back in',async()=>{
   const scope=createOwnerScope('alice'),ticket=scope.capture();let release;
   const pending=scope.run(ticket,()=>new Promise(resolve=>release=()=>resolve('old private data')));

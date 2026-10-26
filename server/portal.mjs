@@ -120,7 +120,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     // GET-186/190 reader modules: shared entry policy and the conservative
     // source-emphasis presentation module used by reader and share rendering.
     files['/reader-entry.mjs']='reader-entry.mjs';files['/source-emphasis.mjs']='source-emphasis.mjs';
-    files['/reader-conversation.mjs']='reader-conversation.mjs';
+    files['/reader-conversation.mjs']='reader-conversation.mjs';files['/chat-stream.mjs']='chat-stream.mjs';
     for(const file of ['reader-companion.mjs','reader-companion-state.mjs','reader-companion.css'])files['/'+file]=file;
     files['/reading-arrival.css']='reading-arrival.css';files['/reading-arrival.mjs']='reading-arrival.mjs';files['/arrival-catalog.mjs']='arrival-catalog.mjs';files['/arrival-excerpt.mjs']='arrival-excerpt.mjs';files['/save-receipts.mjs']='save-receipts.mjs';
     files['/home-motion.css']='home-motion.css';files['/home-motion.mjs']='home-motion.mjs';
@@ -342,7 +342,22 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(action==='companion/messages'&&req.method==='POST'){send(200,await sponsored(user,'companion',()=>chat.companion.generate(user,id,body,{authorize:async()=>(await auth.userFor(token))?.id===user?.id})));return true;}
       if(action==='chat/scope'&&req.method==='POST'){send(200,await chat.configureScope(user,id,body));return true;}
       if(action==='chat'&&req.method==='GET'){send(200,await chat.view(user,id,{passageId:url.searchParams.get('passageId')||undefined}));return true;}
-      if(action==='chat'&&req.method==='POST'){send(200,await creditGate.run({user,action:'conversation',bookId:id,input:body,execute:input=>chat.send(user,id,input)}));return true;}
+      if(action==='chat'&&req.method==='POST'){
+        const streaming=String(req.headers.accept||'').split(',').some(value=>value.trim()==='application/x-ndjson');
+        const frame=value=>{
+          if(res.destroyed||res.writableEnded)return;
+          if(!res.headersSent){res.writeHead(200,{'Content-Type':'application/x-ndjson; charset=utf-8','Cache-Control':'private, no-store, no-transform','X-Accel-Buffering':'no'});res.flushHeaders?.();}
+          res.write(JSON.stringify(value)+'\n');
+        };
+        try{
+          const result=await creditGate.run({user,action:'conversation',bookId:id,input:body,execute:input=>chat.send(user,id,input,streaming?{onProgress:frame}:{})});
+          if(streaming){frame({type:'result',turn:result});res.end();}else send(200,result);
+        }catch(error){
+          if(!res.headersSent)throw error;
+          frame({type:'error',status:error.status||500,...(error.billingOperation?{billingOperation:error.billingOperation}:{})});res.end();
+        }
+        return true;
+      }
       const cancelChat=action?.match(/^chat\/([^/]+)\/cancel$/);if(cancelChat&&req.method==='POST'){const result=await chat.cancel(user,id,cancelChat[1]);if(result.status==='cancelled')await creditGate.cancel(user,'conversation',id,cancelChat[1]);send(200,result);return true;}
       // GET-195 web API: same owner/session/CSRF gates as the other library
       // routes. The authorize delegate re-reads the actual auth user for the
