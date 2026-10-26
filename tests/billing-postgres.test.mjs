@@ -1,3 +1,4 @@
+import {processResult} from './helpers/process-result.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,mkdtemp,rm} from 'node:fs/promises';
@@ -136,10 +137,10 @@ test('isolated Postgres executes billing invariants and concurrent reservation f
       select public.reader_billing_command('quote','{"mode":"test","ownerId":"race","id":"race-q2","action":"translation","units":7,"scopeHash":"same","scope":{},"priceVersion":"v1","expiresAt":"2099-01-01"}');`);
     assert.equal(prep.status,0,prep.stderr);
     const {spawn}=await import('node:child_process');
-    const reserve=index=>new Promise(resolve=>{
+    const reserve=index=>{
       const child=spawn(join(candidate,'psql'),['-h',root,'-d','postgres','-v','ON_ERROR_STOP=1','-X','-Atc',`select public.reader_billing_command('reserve','{"mode":"test","ownerId":"race","quoteId":"race-q${index}","operationId":"race-o${index}","idempotencyKey":"race-k${index}","scopeHash":"same"}');`],{env:{PATH:process.env.PATH,HOME:root,LC_ALL:'C'}});
-      let output='';child.stderr.on('data',chunk=>output+=chunk);child.on('error',error=>resolve({status:-1,output:error.message}));child.on('exit',status=>resolve({status,output}));
-    });
+      return processResult(child);
+    };
     const raced=await Promise.all([reserve(1),reserve(2)]);
     assert.equal(raced.filter(result=>result.status===0).length,1,JSON.stringify(raced));
     assert.match(raced.find(result=>result.status!==0).output,/reader_billing:insufficient_credits/);

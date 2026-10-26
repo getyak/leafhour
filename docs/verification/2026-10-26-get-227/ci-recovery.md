@@ -1,0 +1,11 @@
+# Post-merge CI recovery
+
+GET-227 PR #186 merged as `537fbe76af5200fd8c02b509a351bdf7d9457887`. PR CI passed, but [main CI 40248202673](https://github.com/getyak/leafhour/actions/runs/40248202673) failed the existing yearly PostgreSQL race fixture: exactly one process succeeded, while the rejected process's captured stderr was empty. Production verification was skipped because that main CI failed. GET-227 remained In Progress.
+
+Both affected SQL race collectors resolved on ChildProcess `exit`. [Node's documented process boundary](https://nodejs.org/api/child_process.html#event-close) allows stdio to remain open at exit; `close` follows stream closure. A deterministic real-process regression reproduces the failure: a descendant retains stderr and writes only after its parent is actually gone. With the old exit collector the expected rejection diagnostic is empty; the shared close collector retains it.
+
+The recovery changes only test infrastructure and its software allowlist: two race collectors use the shared helper, which preserves actual spawn errors and drains unused stdout. The one-success, subscription-exists and insufficient-credit assertions remain strict. No SQL, migration, billing behavior, reader source, locale or production API is changed. The fixture's descendant has a five-second failure exit; the parent test has a ten-second timeout and cleanup of its own live child. Success still uses observed process disappearance rather than a guessed delay.
+
+Independent review closed the fixture-lifetime finding and reported no unresolved P0/P1/P2. The real PostgreSQL and process contract target set passed 13/13. The final recovery suite passed **3463 tests, 0 failures, 1 existing macOS skip** (3464 total, 171.72s). An earlier local rerun encountered this task's generated-output directory symlink in the PDF package copier; releasing only those owned output links fixed the environment, and the PDF target passed before the complete final run. The remote CI failure and this local environment failure are retained separately.
+
+Original product and browser evidence from PR #186 remains valid for its unchanged application hashes. The recovery receives fresh current-head CI, normal merge, same-commit Production verification and actual online acceptance before GET-227 can be completed. No manual deployment retry or Preview is introduced.
