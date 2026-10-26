@@ -53,6 +53,6 @@ dialog.reader-chat-workspace.is-reader-chat-mobile.is-compact-viewport{top:var(-
 .reader-chat-workspace .library-chat-menu-items{right:-48px;width:280px;padding:6px;max-height:calc(min(640px,var(--chat-viewport-height,100dvh) - 108px) - 76px)}
 .reader-chat-workspace.is-reader-chat-mobile .library-chat-composer textarea{font-size:16px}
 
-.reader-chat-workspace.is-reader-chat-mobile .library-chat-menu-items{max-height:calc(var(--chat-viewport-height,100dvh) - 84px)}
+.reader-chat-workspace.is-reader-chat-mobile .library-chat-menu-items{max-height:calc(var(--chat-viewport-height,100dvh)*.76 - 84px)}
 
 .reader-chat-workspace .library-chat-menu-items,.reader-chat-workspace .library-chat-messages{overscroll-behavior:contain}

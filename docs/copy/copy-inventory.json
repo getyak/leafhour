@@ -290,7 +290,7 @@
       },
       {
         "file": "app/library-chat.mjs",
-        "sha256": "1f101c6bba6181e6573519681764f3a51777854c140b0340ee0c2c6107bc991f"
+        "sha256": "3d7f1b46b201a2bb4aad704bb301fbd9b3da2b10ec356b8ef8baa727b0fb5884"
       },
       {
         "file": "app/library-daily-reading.mjs",
@@ -1153,7 +1153,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "839c84eb09a0007e6d66cb2e6a139b99ae0e67547b0bcd883136022235b66bb5"
+    "inputDigest": "3df595d66ae6644ef4c9e7358502c8dfe961ee7526a568e1c1e13207290523f0"
   },
   "locales": [
     "en",
@@ -14219,7 +14219,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 309,
+          "line": 310,
           "column": 162
         }
       ],
@@ -14281,7 +14281,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 309,
+          "line": 310,
           "column": 155
         }
       ],
@@ -16313,7 +16313,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 315,
+          "line": 316,
           "column": 83
         },
         {
@@ -16495,7 +16495,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 307,
+          "line": 308,
           "column": 112
         },
         {
@@ -184650,9 +184650,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:333:168",
+      "id": "candidate:app/library-chat.mjs:334:168",
       "file": "app/library-chat.mjs",
-      "line": 333,
+      "line": 334,
       "column": 168,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -236790,7 +236790,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 304,
+      "line": 305,
       "expression": "viewport.height+'px'",
       "fragments": [
         "px"
@@ -236800,7 +236800,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 304,
+      "line": 305,
       "expression": "viewport.offsetTop+'px'",
       "fragments": [
         "px"
@@ -236810,7 +236810,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 329,
+      "line": 330,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -236818,7 +236818,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 329,
+      "line": 330,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -236826,7 +236826,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 337,
+      "line": 338,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -236834,7 +236834,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 337,
+      "line": 338,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -236842,7 +236842,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 344,
+      "line": 345,
       "expression": "0",
       "fragments": [],
       "unresolved": true

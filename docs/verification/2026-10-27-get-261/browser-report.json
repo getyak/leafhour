@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-26T17:33:19.600Z",
+  "at": "2026-10-26T17:39:32.434Z",
   "packaged": true,
   "cases": [
     {
@@ -9,6 +9,7 @@
       "checks": [
         "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
         "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
         "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
         "close-reopen-preserves-draft; load-error-retry-recovers",
         "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
@@ -33,6 +34,7 @@
       "checks": [
         "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
         "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
         "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
         "close-reopen-preserves-draft; load-error-retry-recovers",
         "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
@@ -57,6 +59,7 @@
       "checks": [
         "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
         "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
         "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
         "close-reopen-preserves-draft; load-error-retry-recovers",
         "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
@@ -81,6 +84,7 @@
       "checks": [
         "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
         "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
         "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
         "close-reopen-preserves-draft; load-error-retry-recovers",
         "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
@@ -105,6 +109,7 @@
       "checks": [
         "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
         "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
         "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
         "close-reopen-preserves-draft; load-error-retry-recovers",
         "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
@@ -129,6 +134,7 @@
       "checks": [
         "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
         "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
         "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
         "close-reopen-preserves-draft; load-error-retry-recovers",
         "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
@@ -153,6 +159,7 @@
       "checks": [
         "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
         "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
         "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
         "close-reopen-preserves-draft; load-error-retry-recovers",
         "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
@@ -177,6 +184,7 @@
       "checks": [
         "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
         "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
         "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
         "close-reopen-preserves-draft; load-error-retry-recovers",
         "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
@@ -201,6 +209,7 @@
       "checks": [
         "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
         "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
         "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
         "close-reopen-preserves-draft; load-error-retry-recovers",
         "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
@@ -225,6 +234,7 @@
       "checks": [
         "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
         "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
         "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
         "close-reopen-preserves-draft; load-error-retry-recovers",
         "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
@@ -249,6 +259,7 @@
       "checks": [
         "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
         "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
         "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
         "close-reopen-preserves-draft; load-error-retry-recovers",
         "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"

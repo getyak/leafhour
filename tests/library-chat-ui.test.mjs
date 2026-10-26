@@ -25,7 +25,7 @@ class Element extends EventTarget {
   getBoundingClientRect(){return {top:0};}
   get clientTop(){return this._clientTop||0;}
   set clientTop(value){this._clientTop=value;}
-  querySelector(){return null;}
+  querySelector(selector){return selector==='summary'?this.children.find(n=>n.tagName==='SUMMARY')||null:null;}
   querySelectorAll(selector){const visit=n=>[...n.children.flatMap(visit),n];const all=visit(this).slice(0,-1);if(selector==='details')return all.filter(n=>n.tagName==='DETAILS');const keys=selector.split(',').map(part=>part.trim().replace(/^\[|\]$/g,''));return all.filter(n=>keys.some(key=>n.getAttribute&&n.getAttribute(key)!==undefined));}
 }
 const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
@@ -87,6 +87,12 @@ test('Escape unwinds nested settings before collapsing the chat',async t=>{
  key();assert.equal(s.find('library-chat-settings').open,false);assert.equal(s.root.open,true);
  key();assert.equal(s.find('library-chat-menu').open,false);assert.equal(s.root.open,true);
  key();assert.equal(s.root.open,false);
+});
+
+test('Escape closes the focused passage disclosure before an open sibling setting',async t=>{
+ const s=setup(t);s.chat.open();await flush();s.find('library-chat-scope-indicator').click();const context=s.find('library-chat-context'),settings=s.find('library-chat-settings');context.open=true;context.querySelector('summary').focus();
+ const e=new Event('keydown',{cancelable:true});Object.assign(e,{key:'Escape'});s.root.dispatchEvent(e);
+ assert.equal(context.open,false);assert.equal(settings.open,true);assert.equal(s.doc.activeElement,context.querySelector('summary'));assert.equal(s.root.open,true);
 });
 
 test('closed More descendants do not consume Escape after reopening the conversation',async t=>{

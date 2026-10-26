@@ -2788,7 +2788,7 @@ candidate:app/library-chat.mjs:71:155,js-attribute,app/library-chat.mjs,71,role,
 candidate:app/library-chat.mjs:74:266,js-attribute,app/library-chat.mjs,74,aria-describedby,unknown,reviewable,,library-chat-status library-chat-count
 candidate:app/library-chat.mjs:269:225,js-attribute,app/library-chat.mjs,269,aria-expanded,unknown,reviewable,,false
 candidate:app/library-chat.mjs:279:159,js-cjk-literal,app/library-chat.mjs,279,,unknown,reviewable,,Leafhour-对话-
-candidate:app/library-chat.mjs:333:168,js-attribute,app/library-chat.mjs,333,aria-expanded,unknown,reviewable,,true
+candidate:app/library-chat.mjs:334:168,js-attribute,app/library-chat.mjs,334,aria-expanded,unknown,reviewable,,true
 candidate:app/library-daily-reading.mjs:9:27,js-cjk-literal,app/library-daily-reading.mjs,9,,unknown,reviewable,,每日陪读
 candidate:app/library-daily-reading.mjs:51:172,js-attribute,app/library-daily-reading.mjs,51,aria-hidden,unknown,reviewable,,true
 candidate:app/library-daily-reading.mjs:56:81,js-attribute,app/library-daily-reading.mjs,56,popover,unknown,reviewable,,auto

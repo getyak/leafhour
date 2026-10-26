@@ -12,3 +12,9 @@ Narrow chat uses 76% of the visual viewport so part of the book remains visible.
 - `tools/verify-chat-evidence.mjs` passes 11 packaged Chromium cases: all four locales at 1440×900 / 390×844, plus 768×1024, 390×420 and 320×740. Native disclosures, nested Escape/focus, source return, explicit missing translation, failed-question editing, load error/retry, close/reopen/reload drafts, paragraph geometry and horizontal overflow are checked. Phone cases use reduced motion and touch-capable contexts. The report records synthetic API fixtures and blocked page mutations.
 
 The screenshots contain only public-domain Alice and named synthetic chat text. Production source, real-account readback, independent review, current-head CI and merge are separate delivery receipts; local checks alone do not establish them. No physical keyboard/OS IME or screen-reader speech acceptance is claimed.
+
+## Independent review fixes
+
+The independent reviewer `/root/get261_review` inspected `2f6b9ee82734eec418048ba607e01dce96189e49` and ran 78 UI/workspace tests. There were no P0/P1 and two P2 findings: the mobile menu still used the full viewport after the sheet became shorter, and Escape preferred Settings over a focused sibling Current passage disclosure.
+
+The menu now has a conservative limit based on the shortened sheet, including compact viewports. Escape selects the nearest visible open disclosure containing keyboard focus before using its existing fallback. A new sibling-focus test fails before this fix and passes afterwards. The final affected UI/workspace/conversation run passes 97 tests, and all 11 packaged browser cases pass with current passage, settings and data scope expanded together, Export scrolled into view, and focused sibling Escape checked. The original copy/build budgets still pass. Final reviewer closure is recorded separately against the resulting commit.

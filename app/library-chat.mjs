@@ -283,7 +283,8 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     if(event.key!=='Escape'||!root.open||event.defaultPrevented||event.isComposing||composing)return;
     event.preventDefault();event.stopPropagation();
     const visible=n=>{if(n.hidden)return false;for(let parent=n.parentElement;parent&&parent!==root;parent=parent.parentElement)if(parent.hidden||parent.tagName==='DETAILS'&&!parent.open)return false;return true;};
-    const nested=menu.open?(settings.open&&explanation.open?explanation:settings.open?settings:context.open&&!context.hidden?context:menu):[...root.querySelectorAll('details')].filter(n=>n.open&&visible(n)).at(-1);
+    const opened=[...root.querySelectorAll('details')].filter(n=>n.open&&visible(n)&&(!menu.open||menu.contains(n))),focused=opened.filter(n=>n.contains(document.activeElement));
+    const nested=focused.find(n=>!focused.some(other=>other!==n&&n.contains(other)))||opened.at(-1);
     if(nested){nested.open=false;(nested.querySelector('summary')||menuSummary).focus();return;}close();
   }
   listen(root,'keydown',escape);listen(launcher||trigger,'keydown',escape);
