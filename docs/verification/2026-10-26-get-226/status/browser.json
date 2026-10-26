@@ -1,0 +1,1810 @@
+{
+  "at": "2026-10-26T07:02:54.761Z",
+  "baseline": false,
+  "packaged": true,
+  "cases": [
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "en",
+      "width": 1280,
+      "height": 800,
+      "theme": "paper",
+      "scale": 1,
+      "writes": [],
+      "errors": [],
+      "checks": [
+        "initial-current-chapter-position",
+        "unsaved-caption-stays-visible",
+        "middle-end-measured-chapter-geometry",
+        "reflow-remeasured",
+        "long-title-keyboard-and-touch-disclosure",
+        "top-pointer-reveal-keyboard-hold",
+        "actual-page-spread-position",
+        "real-fullscreen-exit-and-anchor",
+        "long-named-frontmatter-stays-bounded"
+      ],
+      "initial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "top": 189.75,
+        "bottom": 7154.421875,
+        "height": 6964.671875,
+        "inset": 24,
+        "viewport": 800,
+        "label": "Chapter 1 / 12 · 0% within chapter",
+        "running": "0%",
+        "runningName": "0% within chapter",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "attention": {
+        "fixture": "controller attention state on actual CSS",
+        "labelDisplay": "block",
+        "positionDisplay": "none",
+        "height": 44
+      },
+      "at0.5": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00018",
+          "offset": 17.609375,
+          "withinParagraph": 0.02090147179067866,
+          "chapterId": "ch01"
+        },
+        "top": -3070.25,
+        "bottom": 3894.421875,
+        "height": 6964.671875,
+        "inset": 24,
+        "viewport": 800,
+        "label": "Chapter 1 / 12 · 50% within chapter",
+        "running": "50%",
+        "runningName": "50% within chapter",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "at1": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00031",
+          "offset": -292.78125,
+          "withinParagraph": 0.9209593894794222,
+          "chapterId": "ch01"
+        },
+        "top": -6164.25,
+        "bottom": 800.421875,
+        "height": 6964.671875,
+        "inset": 24,
+        "viewport": 800,
+        "label": "Chapter 1 / 12 · 100% within chapter",
+        "running": "100%",
+        "runningName": "100% within chapter",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "reflow": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00031",
+          "offset": -307.5625,
+          "withinParagraph": 0.9202879694682974,
+          "chapterId": "ch01"
+        },
+        "top": -6862.25,
+        "bottom": 865.546875,
+        "height": 7727.796875,
+        "inset": 24,
+        "viewport": 800,
+        "label": "Chapter 1 / 12 · 99% within chapter",
+        "running": "99%",
+        "runningName": "99% within chapter",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "actualTheme": "paper",
+      "contrast": [
+        {
+          "id": "open-book-info",
+          "foreground": [
+            41,
+            42,
+            37,
+            1
+          ],
+          "composedBackground": [
+            250,
+            249,
+            245
+          ],
+          "opacity": "1",
+          "ratio": 13.726630877501822
+        },
+        {
+          "id": "open-chapter",
+          "foreground": [
+            41,
+            42,
+            37,
+            1
+          ],
+          "composedBackground": [
+            250,
+            249,
+            245
+          ],
+          "opacity": "1",
+          "ratio": 13.726630877501822
+        },
+        {
+          "id": "reading-tools-trigger",
+          "foreground": [
+            41,
+            42,
+            37,
+            1
+          ],
+          "composedBackground": [
+            253,
+            252,
+            248
+          ],
+          "opacity": "1",
+          "ratio": 14.086480125083334
+        }
+      ],
+      "pageInitial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00031",
+          "offset": -307.5625,
+          "withinParagraph": 0.9202879694682974,
+          "chapterId": "ch01"
+        },
+        "top": 54,
+        "bottom": 708,
+        "height": 654,
+        "inset": 24,
+        "viewport": 800,
+        "label": "Chapter 1 / 12",
+        "running": "7 / 8",
+        "runningName": "Two pages · 7 / 8",
+        "page": "Two pages · 7 / 8",
+        "mode": "spread",
+        "full": false
+      },
+      "pageNext": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00032",
+          "offset": 54,
+          "chapterId": "ch01"
+        },
+        "top": 54,
+        "bottom": 708,
+        "height": 654,
+        "inset": 24,
+        "viewport": 800,
+        "label": "Chapter 1 / 12",
+        "running": "9 / 9",
+        "runningName": "Two pages · 9 / 9",
+        "page": "Two pages · 9 / 9",
+        "mode": "spread",
+        "full": false
+      },
+      "full": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00032",
+          "offset": 54,
+          "chapterId": "ch01"
+        },
+        "top": 54,
+        "bottom": 708,
+        "height": 654,
+        "inset": 24,
+        "viewport": 800,
+        "label": "Chapter 1 / 12",
+        "running": "9 / 9",
+        "runningName": "Two pages · 9 / 9",
+        "page": "Two pages · 9 / 9",
+        "mode": "spread",
+        "full": true
+      },
+      "namedPill": {
+        "x": 964,
+        "y": 736,
+        "width": 290,
+        "height": 44
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "zh-Hans",
+      "width": 390,
+      "height": 800,
+      "theme": "night",
+      "scale": 1,
+      "writes": [],
+      "errors": [],
+      "checks": [
+        "initial-current-chapter-position",
+        "unsaved-caption-stays-visible",
+        "middle-end-measured-chapter-geometry",
+        "reflow-remeasured",
+        "long-title-keyboard-and-touch-disclosure",
+        "top-pointer-reveal-keyboard-hold",
+        "actual-page-spread-position",
+        "real-fullscreen-exit-and-anchor",
+        "long-named-frontmatter-stays-bounded"
+      ],
+      "initial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 182.5,
+          "chapterId": "ch01"
+        },
+        "top": 182.5,
+        "bottom": 13071.078125,
+        "height": 12888.578125,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章内 0%",
+        "running": "0%",
+        "runningName": "章内 0%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "attention": {
+        "fixture": "controller attention state on actual CSS",
+        "labelDisplay": "block",
+        "positionDisplay": "none",
+        "height": 44
+      },
+      "at0.5": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00018",
+          "offset": -269.328125,
+          "withinParagraph": 0.4796862224039248,
+          "chapterId": "ch01"
+        },
+        "top": -6032.5,
+        "bottom": 6856.078125,
+        "height": 12888.578125,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章内 50%",
+        "running": "50%",
+        "runningName": "章内 50%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "at1": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00032",
+          "offset": -383.78125,
+          "withinParagraph": 0.969969523526351,
+          "chapterId": "ch01"
+        },
+        "top": -12088.5,
+        "bottom": 800.078125,
+        "height": 12888.578125,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章内 100%",
+        "running": "100%",
+        "runningName": "章内 100%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "reflow": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00032",
+          "offset": -441.8125,
+          "withinParagraph": 0.9696851418162894,
+          "chapterId": "ch01"
+        },
+        "top": -13425.5,
+        "bottom": 907.453125,
+        "height": 14332.953125,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章内 99%",
+        "running": "99%",
+        "runningName": "章内 99%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "actualTheme": "night",
+      "contrast": [
+        {
+          "id": "open-book-info",
+          "foreground": [
+            228,
+            229,
+            220,
+            1
+          ],
+          "composedBackground": [
+            24,
+            27,
+            25
+          ],
+          "opacity": "1",
+          "ratio": 13.673377135280505
+        },
+        {
+          "id": "open-chapter",
+          "foreground": [
+            228,
+            229,
+            220,
+            1
+          ],
+          "composedBackground": [
+            24,
+            27,
+            25
+          ],
+          "opacity": "1",
+          "ratio": 13.673377135280505
+        },
+        {
+          "id": "reading-tools-trigger",
+          "foreground": [
+            228,
+            229,
+            220,
+            1
+          ],
+          "composedBackground": [
+            29,
+            34,
+            30
+          ],
+          "opacity": "1",
+          "ratio": 12.725014673113167
+        }
+      ],
+      "pageInitial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00032",
+          "offset": -441.8125,
+          "withinParagraph": 0.9696851418162894,
+          "chapterId": "ch01"
+        },
+        "top": 43,
+        "bottom": 646,
+        "height": 603,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章",
+        "running": "26 / 27",
+        "runningName": "单页 · 26 / 27",
+        "page": "单页 · 26 / 27",
+        "mode": "spread",
+        "full": false
+      },
+      "pageNext": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": 43,
+          "withinParagraph": 0.8617227979274611,
+          "chapterId": "ch01"
+        },
+        "top": 43,
+        "bottom": 646,
+        "height": 603,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章",
+        "running": "27 / 27",
+        "runningName": "单页 · 27 / 27",
+        "page": "单页 · 27 / 27",
+        "mode": "spread",
+        "full": false
+      },
+      "full": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": 43,
+          "withinParagraph": 0.8617227979274611,
+          "chapterId": "ch01"
+        },
+        "top": 43,
+        "bottom": 646,
+        "height": 603,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章",
+        "running": "27 / 27",
+        "runningName": "单页 · 27 / 27",
+        "page": "单页 · 27 / 27",
+        "mode": "spread",
+        "full": true
+      },
+      "namedPill": {
+        "x": 111.5,
+        "y": 744,
+        "width": 264.5,
+        "height": 44
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "zh-Hant",
+      "width": 320,
+      "height": 800,
+      "theme": "paper",
+      "scale": 2,
+      "writes": [],
+      "errors": [],
+      "checks": [
+        "initial-current-chapter-position",
+        "unsaved-caption-stays-visible",
+        "middle-end-measured-chapter-geometry",
+        "reflow-remeasured",
+        "long-title-keyboard-and-touch-disclosure",
+        "top-pointer-reveal-keyboard-hold",
+        "actual-page-spread-position",
+        "real-fullscreen-exit-and-anchor",
+        "long-named-frontmatter-stays-bounded"
+      ],
+      "initial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 182.5,
+          "chapterId": "ch01"
+        },
+        "top": 182.5,
+        "bottom": 16510.765625,
+        "height": 16328.265625,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章內 0%",
+        "running": "0%",
+        "runningName": "章內 0%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "attention": {
+        "fixture": "controller attention state on actual CSS",
+        "labelDisplay": "block",
+        "positionDisplay": "none",
+        "height": 44
+      },
+      "at0.5": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00018",
+          "offset": -384.140625,
+          "withinParagraph": 0.5339533932951758,
+          "chapterId": "ch01"
+        },
+        "top": -7752.5,
+        "bottom": 8575.765625,
+        "height": 16328.265625,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章內 50%",
+        "running": "50%",
+        "runningName": "章內 50%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "at1": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": -92.5625,
+          "withinParagraph": 0.19061733442354864,
+          "chapterId": "ch01"
+        },
+        "top": -15528.5,
+        "bottom": 799.765625,
+        "height": 16328.265625,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章內 100%",
+        "running": "100%",
+        "runningName": "章內 100%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "reflow": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": -105.625,
+          "withinParagraph": 0.19047619047619047,
+          "chapterId": "ch01"
+        },
+        "top": -17196.5,
+        "bottom": 859.359375,
+        "height": 18055.859375,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章內 100%",
+        "running": "100%",
+        "runningName": "章內 100%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "actualTheme": "paper",
+      "contrast": [
+        {
+          "id": "open-book-info",
+          "foreground": [
+            41,
+            42,
+            37,
+            1
+          ],
+          "composedBackground": [
+            250,
+            249,
+            245
+          ],
+          "opacity": "1",
+          "ratio": 13.726630877501822
+        },
+        {
+          "id": "open-chapter",
+          "foreground": [
+            41,
+            42,
+            37,
+            1
+          ],
+          "composedBackground": [
+            250,
+            249,
+            245
+          ],
+          "opacity": "1",
+          "ratio": 13.726630877501822
+        },
+        {
+          "id": "reading-tools-trigger",
+          "foreground": [
+            41,
+            42,
+            37,
+            1
+          ],
+          "composedBackground": [
+            253,
+            252,
+            248
+          ],
+          "opacity": "1",
+          "ratio": 14.086480125083334
+        }
+      ],
+      "pageInitial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": -105.625,
+          "withinParagraph": 0.19047619047619047,
+          "chapterId": "ch01"
+        },
+        "top": 43,
+        "bottom": 646,
+        "height": 603,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章",
+        "running": "32 / 34",
+        "runningName": "單頁 · 32 / 34",
+        "page": "單頁 · 32 / 34",
+        "mode": "spread",
+        "full": false
+      },
+      "pageNext": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": 43,
+          "withinParagraph": 0.40423642820903094,
+          "chapterId": "ch01"
+        },
+        "top": 43,
+        "bottom": 646,
+        "height": 603,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章",
+        "running": "33 / 34",
+        "runningName": "單頁 · 33 / 34",
+        "page": "單頁 · 33 / 34",
+        "mode": "spread",
+        "full": false
+      },
+      "full": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": 43,
+          "withinParagraph": 0.40423642820903094,
+          "chapterId": "ch01"
+        },
+        "top": 43,
+        "bottom": 646,
+        "height": 603,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章",
+        "running": "33 / 34",
+        "runningName": "單頁 · 33 / 34",
+        "page": "單頁 · 33 / 34",
+        "mode": "spread",
+        "full": true
+      },
+      "namedPill": {
+        "x": 80,
+        "y": 727.609375,
+        "width": 226,
+        "height": 60.390625
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "ja",
+      "width": 800,
+      "height": 390,
+      "theme": "night",
+      "scale": 1,
+      "writes": [],
+      "errors": [],
+      "checks": [
+        "initial-current-chapter-position",
+        "unsaved-caption-stays-visible",
+        "middle-end-measured-chapter-geometry",
+        "reflow-remeasured",
+        "long-title-keyboard-and-touch-disclosure",
+        "top-pointer-reveal-keyboard-hold",
+        "actual-page-spread-position",
+        "real-fullscreen-exit-and-anchor",
+        "long-named-frontmatter-stays-bounded"
+      ],
+      "initial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 191.75,
+          "chapterId": "ch01"
+        },
+        "top": 191.75,
+        "bottom": 7156.421875,
+        "height": 6964.671875,
+        "inset": 24,
+        "viewport": 390,
+        "label": "第 1 / 12 章 · 章内 0%",
+        "running": "0%",
+        "runningName": "章内 0%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "attention": {
+        "fixture": "controller attention state on actual CSS",
+        "labelDisplay": "block",
+        "positionDisplay": "none",
+        "height": 44
+      },
+      "at0.5": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00018",
+          "offset": -187.390625,
+          "withinParagraph": 0.6913838920686836,
+          "chapterId": "ch01"
+        },
+        "top": -3275.25,
+        "bottom": 3689.421875,
+        "height": 6964.671875,
+        "inset": 24,
+        "viewport": 390,
+        "label": "第 1 / 12 章 · 章内 50%",
+        "running": "50%",
+        "runningName": "章内 50%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "at1": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": -81.5,
+          "withinParagraph": 0.4600708639956391,
+          "chapterId": "ch01"
+        },
+        "top": -6574.25,
+        "bottom": 390.421875,
+        "height": 6964.671875,
+        "inset": 24,
+        "viewport": 390,
+        "label": "第 1 / 12 章 · 章内 100%",
+        "running": "100%",
+        "runningName": "章内 100%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "reflow": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": -105.09375,
+          "withinParagraph": 0.460689193710271,
+          "chapterId": "ch01"
+        },
+        "top": -7308.25,
+        "bottom": 419.546875,
+        "height": 7727.796875,
+        "inset": 24,
+        "viewport": 390,
+        "label": "第 1 / 12 章 · 章内 100%",
+        "running": "100%",
+        "runningName": "章内 100%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "actualTheme": "night",
+      "contrast": [
+        {
+          "id": "open-book-info",
+          "foreground": [
+            228,
+            229,
+            220,
+            1
+          ],
+          "composedBackground": [
+            24,
+            27,
+            25
+          ],
+          "opacity": "1",
+          "ratio": 13.673377135280505
+        },
+        {
+          "id": "open-chapter",
+          "foreground": [
+            228,
+            229,
+            220,
+            1
+          ],
+          "composedBackground": [
+            24,
+            27,
+            25
+          ],
+          "opacity": "1",
+          "ratio": 13.673377135280505
+        },
+        {
+          "id": "reading-tools-trigger",
+          "foreground": [
+            228,
+            229,
+            220,
+            1
+          ],
+          "composedBackground": [
+            29,
+            34,
+            30
+          ],
+          "opacity": "1",
+          "ratio": 12.725014673113167
+        }
+      ],
+      "pageInitial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": -105.09375,
+          "withinParagraph": 0.460689193710271,
+          "chapterId": "ch01"
+        },
+        "top": 30,
+        "bottom": 246,
+        "height": 216,
+        "inset": 24,
+        "viewport": 390,
+        "label": "第 1 / 12 章",
+        "running": "45 / 47",
+        "runningName": "単ページ · 45 / 47",
+        "page": "単ページ · 45 / 47",
+        "mode": "spread",
+        "full": false
+      },
+      "pageNext": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": 30,
+          "withinParagraph": 0.8037683823529411,
+          "chapterId": "ch01"
+        },
+        "top": 30,
+        "bottom": 246,
+        "height": 216,
+        "inset": 24,
+        "viewport": 390,
+        "label": "第 1 / 12 章",
+        "running": "46 / 47",
+        "runningName": "単ページ · 46 / 47",
+        "page": "単ページ · 46 / 47",
+        "mode": "spread",
+        "full": false
+      },
+      "full": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": 30,
+          "withinParagraph": 0.8037683823529411,
+          "chapterId": "ch01"
+        },
+        "top": 30,
+        "bottom": 246,
+        "height": 216,
+        "inset": 24,
+        "viewport": 390,
+        "label": "第 1 / 12 章",
+        "running": "46 / 47",
+        "runningName": "単ページ · 46 / 47",
+        "page": "単ページ · 46 / 47",
+        "mode": "spread",
+        "full": true
+      },
+      "namedPill": {
+        "x": 484,
+        "y": 326,
+        "width": 290,
+        "height": 44
+      },
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "locale": "en",
+      "width": 1280,
+      "height": 800,
+      "theme": "paper",
+      "scale": 1,
+      "writes": [],
+      "errors": [],
+      "checks": [
+        "initial-current-chapter-position",
+        "unsaved-caption-stays-visible",
+        "middle-end-measured-chapter-geometry",
+        "reflow-remeasured",
+        "long-title-keyboard-and-touch-disclosure",
+        "top-pointer-reveal-keyboard-hold",
+        "actual-page-spread-position",
+        "real-fullscreen-exit-and-anchor",
+        "long-named-frontmatter-stays-bounded"
+      ],
+      "initial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "top": 189.75,
+        "bottom": 7230.859375,
+        "height": 7041.109375,
+        "inset": 24,
+        "viewport": 800,
+        "label": "Chapter 1 / 12 · 0% within chapter",
+        "running": "0%",
+        "runningName": "0% within chapter",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "attention": {
+        "fixture": "controller attention state on actual CSS",
+        "labelDisplay": "block",
+        "positionDisplay": "none",
+        "height": 44
+      },
+      "at0.5": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00018",
+          "offset": 17.828125,
+          "withinParagraph": 0.02018601798855274,
+          "chapterId": "ch01"
+        },
+        "top": -3108.25,
+        "bottom": 3932.859375,
+        "height": 7041.109375,
+        "inset": 24,
+        "viewport": 800,
+        "label": "Chapter 1 / 12 · 50% within chapter",
+        "running": "50%",
+        "runningName": "50% within chapter",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "at1": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00031",
+          "offset": -292.34375,
+          "withinParagraph": 0.9196874716089761,
+          "chapterId": "ch01"
+        },
+        "top": -6240.25,
+        "bottom": 800.859375,
+        "height": 7041.109375,
+        "inset": 24,
+        "viewport": 800,
+        "label": "Chapter 1 / 12 · 100% within chapter",
+        "running": "100%",
+        "runningName": "100% within chapter",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "reflow": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00031",
+          "offset": -306.5625,
+          "withinParagraph": 0.9175123601353109,
+          "chapterId": "ch01"
+        },
+        "top": -6861.25,
+        "bottom": 866.546875,
+        "height": 7727.796875,
+        "inset": 24,
+        "viewport": 800,
+        "label": "Chapter 1 / 12 · 99% within chapter",
+        "running": "99%",
+        "runningName": "99% within chapter",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "actualTheme": "paper",
+      "contrast": [
+        {
+          "id": "open-book-info",
+          "foreground": [
+            41,
+            42,
+            37,
+            1
+          ],
+          "composedBackground": [
+            250,
+            249,
+            245
+          ],
+          "opacity": "1",
+          "ratio": 13.726630877501822
+        },
+        {
+          "id": "open-chapter",
+          "foreground": [
+            41,
+            42,
+            37,
+            1
+          ],
+          "composedBackground": [
+            250,
+            249,
+            245
+          ],
+          "opacity": "1",
+          "ratio": 13.726630877501822
+        },
+        {
+          "id": "reading-tools-trigger",
+          "foreground": [
+            41,
+            42,
+            37,
+            1
+          ],
+          "composedBackground": [
+            253,
+            252,
+            248
+          ],
+          "opacity": "1",
+          "ratio": 14.086480125083334
+        }
+      ],
+      "pageInitial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00031",
+          "offset": -306.5625,
+          "withinParagraph": 0.9175123601353109,
+          "chapterId": "ch01"
+        },
+        "top": 54,
+        "bottom": 708,
+        "height": 654,
+        "inset": 24,
+        "viewport": 800,
+        "label": "Chapter 1 / 12",
+        "running": "8 / 9",
+        "runningName": "Two pages · 8 / 9",
+        "page": "Two pages · 8 / 9",
+        "mode": "spread",
+        "full": false
+      },
+      "pageNext": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00032",
+          "offset": 54,
+          "withinParagraph": 0.7711069418386491,
+          "chapterId": "ch01"
+        },
+        "top": 54,
+        "bottom": 708,
+        "height": 654,
+        "inset": 24,
+        "viewport": 800,
+        "label": "Chapter 1 / 12",
+        "running": "9 / 9",
+        "runningName": "Two pages · 9 / 9",
+        "page": "Two pages · 9 / 9",
+        "mode": "spread",
+        "full": false
+      },
+      "full": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00032",
+          "offset": 54,
+          "withinParagraph": 0.7711069418386491,
+          "chapterId": "ch01"
+        },
+        "top": 54,
+        "bottom": 708,
+        "height": 654,
+        "inset": 24,
+        "viewport": 800,
+        "label": "Chapter 1 / 12",
+        "running": "9 / 9",
+        "runningName": "Two pages · 9 / 9",
+        "page": "Two pages · 9 / 9",
+        "mode": "spread",
+        "full": true
+      },
+      "namedPill": {
+        "x": 964,
+        "y": 736,
+        "width": 290,
+        "height": 44
+      },
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "locale": "zh-Hans",
+      "width": 390,
+      "height": 800,
+      "theme": "night",
+      "scale": 1,
+      "writes": [],
+      "errors": [],
+      "checks": [
+        "initial-current-chapter-position",
+        "unsaved-caption-stays-visible",
+        "middle-end-measured-chapter-geometry",
+        "reflow-remeasured",
+        "long-title-keyboard-and-touch-disclosure",
+        "top-pointer-reveal-keyboard-hold",
+        "actual-page-spread-position",
+        "real-fullscreen-exit-and-anchor",
+        "long-named-frontmatter-stays-bounded"
+      ],
+      "initial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 180.5,
+          "chapterId": "ch01"
+        },
+        "top": 180.5,
+        "bottom": 13145.515625,
+        "height": 12965.015625,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章内 0%",
+        "running": "0%",
+        "runningName": "章内 0%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "attention": {
+        "fixture": "controller attention state on actual CSS",
+        "labelDisplay": "block",
+        "positionDisplay": "none",
+        "height": 44
+      },
+      "at0.5": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00018",
+          "offset": -230.890625,
+          "withinParagraph": 0.41682849550286183,
+          "chapterId": "ch01"
+        },
+        "top": -6070.5,
+        "bottom": 6894.515625,
+        "height": 12965.015625,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章内 50%",
+        "running": "50%",
+        "runningName": "章内 50%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "at1": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00032",
+          "offset": -383.34375,
+          "withinParagraph": 0.9689288634505315,
+          "chapterId": "ch01"
+        },
+        "top": -12164.5,
+        "bottom": 800.515625,
+        "height": 12965.015625,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章内 100%",
+        "running": "100%",
+        "runningName": "章内 100%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "reflow": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00032",
+          "offset": -440.8125,
+          "withinParagraph": 0.9676034348165495,
+          "chapterId": "ch01"
+        },
+        "top": -13424.5,
+        "bottom": 908.453125,
+        "height": 14332.953125,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章内 99%",
+        "running": "99%",
+        "runningName": "章内 99%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "actualTheme": "night",
+      "contrast": [
+        {
+          "id": "open-book-info",
+          "foreground": [
+            228,
+            229,
+            220,
+            1
+          ],
+          "composedBackground": [
+            24,
+            27,
+            25
+          ],
+          "opacity": "1",
+          "ratio": 13.673377135280505
+        },
+        {
+          "id": "open-chapter",
+          "foreground": [
+            228,
+            229,
+            220,
+            1
+          ],
+          "composedBackground": [
+            24,
+            27,
+            25
+          ],
+          "opacity": "1",
+          "ratio": 13.673377135280505
+        },
+        {
+          "id": "reading-tools-trigger",
+          "foreground": [
+            228,
+            229,
+            220,
+            1
+          ],
+          "composedBackground": [
+            29,
+            34,
+            30
+          ],
+          "opacity": "1",
+          "ratio": 12.725014673113167
+        }
+      ],
+      "pageInitial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00032",
+          "offset": -440.8125,
+          "withinParagraph": 0.9676034348165495,
+          "chapterId": "ch01"
+        },
+        "top": 43,
+        "bottom": 646,
+        "height": 603,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章",
+        "running": "26 / 27",
+        "runningName": "单页 · 26 / 27",
+        "page": "单页 · 26 / 27",
+        "mode": "spread",
+        "full": false
+      },
+      "pageNext": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": 43,
+          "withinParagraph": 0.9308613989637305,
+          "chapterId": "ch01"
+        },
+        "top": 43,
+        "bottom": 646,
+        "height": 603,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章",
+        "running": "27 / 27",
+        "runningName": "单页 · 27 / 27",
+        "page": "单页 · 27 / 27",
+        "mode": "spread",
+        "full": false
+      },
+      "full": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": 43,
+          "withinParagraph": 0.9308613989637305,
+          "chapterId": "ch01"
+        },
+        "top": 43,
+        "bottom": 646,
+        "height": 603,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章",
+        "running": "27 / 27",
+        "runningName": "单页 · 27 / 27",
+        "page": "单页 · 27 / 27",
+        "mode": "spread",
+        "full": true
+      },
+      "namedPill": {
+        "x": 111.5,
+        "y": 744,
+        "width": 264.5,
+        "height": 44
+      },
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "locale": "zh-Hant",
+      "width": 320,
+      "height": 800,
+      "theme": "paper",
+      "scale": 2,
+      "writes": [],
+      "errors": [],
+      "checks": [
+        "initial-current-chapter-position",
+        "unsaved-caption-stays-visible",
+        "middle-end-measured-chapter-geometry",
+        "reflow-remeasured",
+        "long-title-keyboard-and-touch-disclosure",
+        "top-pointer-reveal-keyboard-hold",
+        "actual-page-spread-position",
+        "real-fullscreen-exit-and-anchor",
+        "long-named-frontmatter-stays-bounded"
+      ],
+      "initial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 180.5,
+          "chapterId": "ch01"
+        },
+        "top": 180.5,
+        "bottom": 16546.984375,
+        "height": 16366.484375,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章內 0%",
+        "running": "0%",
+        "runningName": "章內 0%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "attention": {
+        "fixture": "controller attention state on actual CSS",
+        "labelDisplay": "block",
+        "positionDisplay": "none",
+        "height": 44
+      },
+      "at0.5": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00018",
+          "offset": -402.140625,
+          "withinParagraph": 0.5575020441537204,
+          "chapterId": "ch01"
+        },
+        "top": -7770.5,
+        "bottom": 8595.984375,
+        "height": 16366.484375,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章內 50%",
+        "running": "50%",
+        "runningName": "章內 50%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "at1": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": -91.34375,
+          "withinParagraph": 0.18862428454619787,
+          "chapterId": "ch01"
+        },
+        "top": -15565.5,
+        "bottom": 800.984375,
+        "height": 16366.484375,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章內 100%",
+        "running": "100%",
+        "runningName": "章內 100%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "reflow": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": -103.59375,
+          "withinParagraph": 0.1874913899986224,
+          "chapterId": "ch01"
+        },
+        "top": -17234.5,
+        "bottom": 861.390625,
+        "height": 18095.890625,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章 · 章內 100%",
+        "running": "100%",
+        "runningName": "章內 100%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "actualTheme": "paper",
+      "contrast": [
+        {
+          "id": "open-book-info",
+          "foreground": [
+            41,
+            42,
+            37,
+            1
+          ],
+          "composedBackground": [
+            250,
+            249,
+            245
+          ],
+          "opacity": "1",
+          "ratio": 13.726630877501822
+        },
+        {
+          "id": "open-chapter",
+          "foreground": [
+            41,
+            42,
+            37,
+            1
+          ],
+          "composedBackground": [
+            250,
+            249,
+            245
+          ],
+          "opacity": "1",
+          "ratio": 13.726630877501822
+        },
+        {
+          "id": "reading-tools-trigger",
+          "foreground": [
+            41,
+            42,
+            37,
+            1
+          ],
+          "composedBackground": [
+            253,
+            252,
+            248
+          ],
+          "opacity": "1",
+          "ratio": 14.086480125083334
+        }
+      ],
+      "pageInitial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": -103.59375,
+          "withinParagraph": 0.1874913899986224,
+          "chapterId": "ch01"
+        },
+        "top": 43,
+        "bottom": 646,
+        "height": 603,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章",
+        "running": "32 / 34",
+        "runningName": "單頁 · 32 / 34",
+        "page": "單頁 · 32 / 34",
+        "mode": "spread",
+        "full": false
+      },
+      "pageNext": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": 43,
+          "withinParagraph": 0.40423642820903094,
+          "chapterId": "ch01"
+        },
+        "top": 43,
+        "bottom": 646,
+        "height": 603,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章",
+        "running": "33 / 34",
+        "runningName": "單頁 · 33 / 34",
+        "page": "單頁 · 33 / 34",
+        "mode": "spread",
+        "full": false
+      },
+      "full": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": 43,
+          "withinParagraph": 0.40423642820903094,
+          "chapterId": "ch01"
+        },
+        "top": 43,
+        "bottom": 646,
+        "height": 603,
+        "inset": 24,
+        "viewport": 800,
+        "label": "第 1 / 12 章",
+        "running": "33 / 34",
+        "runningName": "單頁 · 33 / 34",
+        "page": "單頁 · 33 / 34",
+        "mode": "spread",
+        "full": true
+      },
+      "namedPill": {
+        "x": 80,
+        "y": 727.609375,
+        "width": 226,
+        "height": 60.390625
+      },
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "locale": "ja",
+      "width": 800,
+      "height": 390,
+      "theme": "night",
+      "scale": 1,
+      "writes": [],
+      "errors": [],
+      "checks": [
+        "initial-current-chapter-position",
+        "unsaved-caption-stays-visible",
+        "middle-end-measured-chapter-geometry",
+        "reflow-remeasured",
+        "long-title-keyboard-and-touch-disclosure",
+        "top-pointer-reveal-keyboard-hold",
+        "actual-page-spread-position",
+        "real-fullscreen-exit-and-anchor",
+        "long-named-frontmatter-stays-bounded"
+      ],
+      "initial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "top": 189.75,
+        "bottom": 7230.859375,
+        "height": 7041.109375,
+        "inset": 24,
+        "viewport": 390,
+        "label": "第 1 / 12 章 · 章内 0%",
+        "running": "0%",
+        "runningName": "章内 0%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "attention": {
+        "fixture": "controller attention state on actual CSS",
+        "labelDisplay": "block",
+        "positionDisplay": "none",
+        "height": 44
+      },
+      "at0.5": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00018",
+          "offset": -187.171875,
+          "withinParagraph": 0.6906684382665577,
+          "chapterId": "ch01"
+        },
+        "top": -3313.25,
+        "bottom": 3727.859375,
+        "height": 7041.109375,
+        "inset": 24,
+        "viewport": 390,
+        "label": "第 1 / 12 章 · 章内 50%",
+        "running": "50%",
+        "runningName": "章内 50%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "at1": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": -81.0625,
+          "withinParagraph": 0.45816298718997,
+          "chapterId": "ch01"
+        },
+        "top": -6650.25,
+        "bottom": 390.859375,
+        "height": 7041.109375,
+        "inset": 24,
+        "viewport": 390,
+        "label": "第 1 / 12 章 · 章内 100%",
+        "running": "100%",
+        "runningName": "章内 100%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "reflow": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": -104.09375,
+          "withinParagraph": 0.4571205531392885,
+          "chapterId": "ch01"
+        },
+        "top": -7307.25,
+        "bottom": 420.546875,
+        "height": 7727.796875,
+        "inset": 24,
+        "viewport": 390,
+        "label": "第 1 / 12 章 · 章内 100%",
+        "running": "100%",
+        "runningName": "章内 100%",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "actualTheme": "night",
+      "contrast": [
+        {
+          "id": "open-book-info",
+          "foreground": [
+            228,
+            229,
+            220,
+            1
+          ],
+          "composedBackground": [
+            24,
+            27,
+            25
+          ],
+          "opacity": "1",
+          "ratio": 13.673377135280505
+        },
+        {
+          "id": "open-chapter",
+          "foreground": [
+            228,
+            229,
+            220,
+            1
+          ],
+          "composedBackground": [
+            24,
+            27,
+            25
+          ],
+          "opacity": "1",
+          "ratio": 13.673377135280505
+        },
+        {
+          "id": "reading-tools-trigger",
+          "foreground": [
+            228,
+            229,
+            220,
+            1
+          ],
+          "composedBackground": [
+            29,
+            34,
+            30
+          ],
+          "opacity": "1",
+          "ratio": 12.725014673113167
+        }
+      ],
+      "pageInitial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": -104.09375,
+          "withinParagraph": 0.4571205531392885,
+          "chapterId": "ch01"
+        },
+        "top": 30,
+        "bottom": 246,
+        "height": 216,
+        "inset": 24,
+        "viewport": 390,
+        "label": "第 1 / 12 章",
+        "running": "44 / 46",
+        "runningName": "単ページ · 44 / 46",
+        "page": "単ページ · 44 / 46",
+        "mode": "spread",
+        "full": false
+      },
+      "pageNext": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": 30,
+          "withinParagraph": 0.8912101910828025,
+          "chapterId": "ch01"
+        },
+        "top": 30,
+        "bottom": 246,
+        "height": 216,
+        "inset": 24,
+        "viewport": 390,
+        "label": "第 1 / 12 章",
+        "running": "45 / 46",
+        "runningName": "単ページ · 45 / 46",
+        "page": "単ページ · 45 / 46",
+        "mode": "spread",
+        "full": false
+      },
+      "full": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00033",
+          "offset": 30,
+          "withinParagraph": 0.8912101910828025,
+          "chapterId": "ch01"
+        },
+        "top": 30,
+        "bottom": 246,
+        "height": 216,
+        "inset": 24,
+        "viewport": 390,
+        "label": "第 1 / 12 章",
+        "running": "45 / 46",
+        "runningName": "単ページ · 45 / 46",
+        "page": "単ページ · 45 / 46",
+        "mode": "spread",
+        "full": true
+      },
+      "namedPill": {
+        "x": 484,
+        "y": 326,
+        "width": 290,
+        "height": 44
+      },
+      "passed": true
+    }
+  ],
+  "limits": [
+    "Local synthetic owner and public-domain Alice. Long-title injection and text scaling are named fixtures.",
+    "All non-GET API requests are rejected before backend dispatch. No new progress/notes/model writes.",
+    "Driver WebKit is not physical Safari, human VoiceOver or native-language review."
+  ]
+}

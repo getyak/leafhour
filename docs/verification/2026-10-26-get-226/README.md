@@ -33,3 +33,7 @@ Driver WebKit is not physical Safari. Human VoiceOver, physical-device interacti
 The inherited fullscreen verifier passed both engine smoke cases. A separate owned headed Chromium replay sent F and Escape through macOS System Events, observed native fullscreenElement HTML then null, verified the visible exit and restored the prior foreground process. See [native.json](native.json). The OS-input replay does not establish green-button macOS window fullscreen.
 
 Independent review, PR, exact production revision and real-account online acceptance remain separate receipts.
+
+## Attention-caption follow-up
+
+The final reading-state check caught an error caption hidden by the new pill. The scoped CSS correction, separate source fingerprints and review are in [status/README.md](status/README.md). It preserves the visible Unsaved state without changing persistence or reading position.
