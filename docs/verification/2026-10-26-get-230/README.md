@@ -1,0 +1,22 @@
+# GET-230 reader loading
+
+Scope: [GET-230](https://linear.app/getyak/issue/GET-230), based on public main `8c08783`. The cold reader previously supplied only a loading sentence until JavaScript mounted an illustration and quotation. The reader and its ending illustration both statically imported the arrival module, whose separate quotation catalogue therefore joined the startup dependency graph.
+
+The reader now carries a static, decorative text-column skeleton. A short loading status and library exit are present before any JavaScript, authentication or book response. After eight seconds of a pending book read, an explicit reopen action appears without replacing the status with a longer warning. Successful text and actual errors both remove the skeleton immediately; errors retain the existing explicit retry and sign-in recovery. The library exit remains usable while startup is pending.
+
+A small independent loader owns the pending ticket, timer, locale subscription and cleanup. The ending paper illustration is extracted unchanged into its own module, so it no longer brings quotations into the reading entry. The library arrival and ending drawing retain their existing behavior. The reader makes no request for the arrival catalogue. Account validation, authorized book responses, reading position selection, personal records, draft keys, fonts and model/billing boundaries use their existing paths; no new body cache is introduced.
+
+## Verification
+
+- The new static-shell regression failed on the baseline because no skeleton existed. The loader test covers late retry callbacks, overlapping tickets, stable slow status, locale changes, explicit reopen and disposal. Together with existing arrival, build and reader-owner checks, 33 targeted tests passed.
+- Full host suite: **3489 passed, 0 failed, 1 platform skip** (the existing modified Linux Node-license case). Native isolated PostgreSQL checks executed using an existing checksum-verified official PostgreSQL image mounted read-only. Test concurrency was limited to two, and temporary test data stayed in a registered task artifact. No iOS Simulator or global cleanup was used.
+- Fixed Vale 3.24.0 and textlint: pass, retaining existing warnings and documented debt. Copy inventory regenerated; no new catalogue wording, suppression or debt was added.
+- Pricing, isolated runtime trace, public Vercel build, public-asset verification, release allowlist and release provenance checks passed. Reader JS is **321769 bytes** (cap 327680), CSS **204548 bytes** (cap 204800); budgets are unchanged.
+- Independent sub-agent review: no unresolved P0/P1/P2. Reviewer independently ran 19 local tests. The browser verifier originally contained an unbounded request latch; review caught it and it was replaced with a request wait using the browser context's 15-second timeout, preserving cleanup.
+- Packaged Chromium 153 browser matrix: **4/4 passed**, EN/1280, zh-Hans/390, zh-Hant/320 and JA/390, including reduced motion. See [browser.json](browser.json). All initial JavaScript was held while the skeleton and library exit were verified. The book response was then deliberately held, including an eight-second slow-read check. All image requests remained pending while real book text became scrollable and selectable; no arrival catalogue was requested. Explicit synthetic HTTP 503 followed by real service retry restored the saved passage, chapter, reading mode, translation choice, account-scoped draft storage and action focus. No uncaught page error or horizontal overflow occurred.
+
+[Desktop cold skeleton](en-skeleton.png) · [320px cold skeleton](zh-Hant-skeleton.png)
+
+The replay tool is [tools/verify-reader-loading-browser.mjs](../../../tools/verify-reader-loading-browser.mjs). It requires an existing browser module, a packaged reader and an explicitly registered artifact directory. Successful content comes from the real isolated library service; delayed responses and HTTP 503 are clearly marked transport fixtures. No model generation or real-account data mutation is needed. Initial HTML retains its English fallback until the shared locale runtime initializes. Local timing observations are not a production latency guarantee.
+
+CI, merge, exact-SHA Production release and real-account browser acceptance remain separate evidence layers. Postmerge receipts are recorded on the associated PR after live release readback. Physical-device input and assistive-technology speech are not claimed.

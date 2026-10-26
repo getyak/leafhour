@@ -258,7 +258,7 @@
       },
       {
         "file": "app/index.html",
-        "sha256": "d5a818b9933575a1f1a55e7dc2b982b87f37c6a6a1982b9e281344d29cc0f792"
+        "sha256": "eca76f6a5f4d66118520ba7c7b1785a3ca4accea151fbb52a11e799818f86b52"
       },
       {
         "file": "app/interaction-craft.mjs",
@@ -375,6 +375,10 @@
       {
         "file": "app/palette-library.mjs",
         "sha256": "704f88847bb5c9cef7dc4e49c09d83301394001cec9691e6a2e3c0f2e164485b"
+      },
+      {
+        "file": "app/paper-companion.mjs",
+        "sha256": "85e942a5f3c132c2b28654b17e4b622262bbb3e5c7748ba00e4055e5fa855e11"
       },
       {
         "file": "app/paragraph-anchor.mjs",
@@ -525,6 +529,10 @@
         "sha256": "d0b1109ce7f22b4f1b0478856244c832d0d3d1c86773b6d7400fd9d3e359d7fb"
       },
       {
+        "file": "app/reader-loading.mjs",
+        "sha256": "1ba02d9c1a951bf5d4c894d280cc7c16bc6a5582cdd1e10a700a61f0e3674092"
+      },
+      {
         "file": "app/reader-location.mjs",
         "sha256": "27b8338df163aca621bc3f029799a993f65293823f39c3345edfe12f658944ed"
       },
@@ -574,11 +582,11 @@
       },
       {
         "file": "app/reader.js",
-        "sha256": "f89c46465821573bfa6a1ac32f7d1be0d84f5c1ce2f012836642003e30485f65"
+        "sha256": "9db018dbe0a81e87b36c2f0e64edca84cd90b08c1a67ae8a63f0eb8f9548bd73"
       },
       {
         "file": "app/reading-arrival.mjs",
-        "sha256": "410062d7ed607282f874505d97dedc846a4369c5428b42c46ebd209ed05ef362"
+        "sha256": "d67de936870d70038e429929885f8032d4de966a8fc9ae594146f7968293e3c5"
       },
       {
         "file": "app/reading-book.mjs",
@@ -682,7 +690,7 @@
       },
       {
         "file": "app/reading-session.js",
-        "sha256": "be26543820d8019e7feb14d44e6c41ffc381ca8875b167ae029895a0bfdcd7de"
+        "sha256": "18bd7d168d40d10e87d68922f26787d2bf1ae9c6f967c514539cddf6cce7211d"
       },
       {
         "file": "app/reading-time-policy.mjs",
@@ -1137,7 +1145,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "948e6d404f3ee7cfdb9ed793e067e29a44fdabd009033dd47756c79f152de0ce"
+    "inputDigest": "f447c85bbe97815edb561c7a22b559647e7dc0bd639f3f2f4bc3ccd6953161df"
   },
   "locales": [
     "en",
@@ -53326,7 +53334,7 @@
       "consumers": [
         {
           "file": "app/reading-arrival.mjs",
-          "line": 89,
+          "line": 80,
           "column": 50
         }
       ],
@@ -53383,7 +53391,7 @@
       "consumers": [
         {
           "file": "app/reading-arrival.mjs",
-          "line": 88,
+          "line": 79,
           "column": 38
         }
       ],
@@ -53644,7 +53652,7 @@
       "consumers": [
         {
           "file": "app/reading-arrival.mjs",
-          "line": 90,
+          "line": 81,
           "column": 148
         }
       ],
@@ -53701,7 +53709,7 @@
       "consumers": [
         {
           "file": "app/reading-arrival.mjs",
-          "line": 84,
+          "line": 75,
           "column": 25
         }
       ],
@@ -53758,7 +53766,7 @@
       "consumers": [
         {
           "file": "app/reading-arrival.mjs",
-          "line": 86,
+          "line": 77,
           "column": 61
         }
       ],
@@ -67737,7 +67745,7 @@
       "consumers": [
         {
           "file": "app/reading-arrival.mjs",
-          "line": 13,
+          "line": 14,
           "column": 89
         }
       ],
@@ -67794,12 +67802,12 @@
       "consumers": [
         {
           "file": "app/reading-arrival.mjs",
-          "line": 13,
+          "line": 14,
           "column": 116
         },
         {
           "file": "app/reading-arrival.mjs",
-          "line": 29,
+          "line": 30,
           "column": 280
         }
       ],
@@ -67856,7 +67864,7 @@
       "consumers": [
         {
           "file": "app/reading-arrival.mjs",
-          "line": 70,
+          "line": 61,
           "column": 91
         }
       ],
@@ -69748,6 +69756,11 @@
           "file": "app/command-palette.mjs",
           "line": 239,
           "column": 61
+        },
+        {
+          "file": "app/reader-loading.mjs",
+          "line": 9,
+          "column": 86
         }
       ],
       "hints": [
@@ -72044,7 +72057,13 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [],
+      "consumers": [
+        {
+          "file": "app/reader-loading.mjs",
+          "line": 9,
+          "column": 42
+        }
+      ],
       "hints": [
         {
           "kind": "key-namespace",
@@ -171741,10 +171760,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:19:139",
+      "id": "candidate:app/index.html:19:109",
       "file": "app/index.html",
       "line": 19,
-      "column": 139,
+      "column": 109,
       "kind": "html-text",
       "property": null,
       "value": "Opening the book…",
@@ -171767,14 +171786,40 @@
       }
     },
     {
-      "id": "candidate:app/index.html:19:214",
+      "id": "candidate:app/index.html:19:213",
       "file": "app/index.html",
       "line": 19,
-      "column": 214,
+      "column": 213,
       "kind": "html-text",
       "property": null,
       "value": "Back to library",
       "sha256": "008e42d22277157638a3d2b586f73c4c5a6a094488431960c376b0d04075113b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:19:313",
+      "file": "app/index.html",
+      "line": 19,
+      "column": 313,
+      "kind": "html-text",
+      "property": null,
+      "value": "Open again",
+      "sha256": "ecae00bf50d90e8b064ea4346cc8c89f1f3aea65f604d7bd757f0afa7b5b9d54",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -187081,6 +187126,26 @@
       }
     },
     {
+      "id": "candidate:app/paper-companion.mjs:3:114",
+      "file": "app/paper-companion.mjs",
+      "line": 3,
+      "column": 114,
+      "kind": "js-attribute",
+      "property": "aria-hidden",
+      "value": "true",
+      "sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
       "id": "candidate:app/parallel-reading.mjs:3:20",
       "file": "app/parallel-reading.mjs",
       "line": 3,
@@ -191741,9 +191806,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:6:35",
+      "id": "candidate:app/reading-arrival.mjs:7:35",
       "file": "app/reading-arrival.mjs",
-      "line": 6,
+      "line": 7,
       "column": 35,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191761,9 +191826,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:6:52",
+      "id": "candidate:app/reading-arrival.mjs:7:52",
       "file": "app/reading-arrival.mjs",
-      "line": 6,
+      "line": 7,
       "column": 52,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191781,9 +191846,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:6:70",
+      "id": "candidate:app/reading-arrival.mjs:7:70",
       "file": "app/reading-arrival.mjs",
-      "line": 6,
+      "line": 7,
       "column": 70,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191801,9 +191866,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:6:231",
+      "id": "candidate:app/reading-arrival.mjs:7:231",
       "file": "app/reading-arrival.mjs",
-      "line": 6,
+      "line": 7,
       "column": 231,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191821,9 +191886,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:7:36",
+      "id": "candidate:app/reading-arrival.mjs:8:36",
       "file": "app/reading-arrival.mjs",
-      "line": 7,
+      "line": 8,
       "column": 36,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191841,9 +191906,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:7:50",
+      "id": "candidate:app/reading-arrival.mjs:8:50",
       "file": "app/reading-arrival.mjs",
-      "line": 7,
+      "line": 8,
       "column": 50,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191861,9 +191926,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:7:69",
+      "id": "candidate:app/reading-arrival.mjs:8:69",
       "file": "app/reading-arrival.mjs",
-      "line": 7,
+      "line": 8,
       "column": 69,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191881,9 +191946,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:7:234",
+      "id": "candidate:app/reading-arrival.mjs:8:234",
       "file": "app/reading-arrival.mjs",
-      "line": 7,
+      "line": 8,
       "column": 234,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191901,9 +191966,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:8:41",
+      "id": "candidate:app/reading-arrival.mjs:9:41",
       "file": "app/reading-arrival.mjs",
-      "line": 8,
+      "line": 9,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191921,9 +191986,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:8:54",
+      "id": "candidate:app/reading-arrival.mjs:9:54",
       "file": "app/reading-arrival.mjs",
-      "line": 8,
+      "line": 9,
       "column": 54,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191941,9 +192006,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:8:71",
+      "id": "candidate:app/reading-arrival.mjs:9:71",
       "file": "app/reading-arrival.mjs",
-      "line": 8,
+      "line": 9,
       "column": 71,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191961,9 +192026,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:8:260",
+      "id": "candidate:app/reading-arrival.mjs:9:260",
       "file": "app/reading-arrival.mjs",
-      "line": 8,
+      "line": 9,
       "column": 260,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191981,9 +192046,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:13:49",
+      "id": "candidate:app/reading-arrival.mjs:14:49",
       "file": "app/reading-arrival.mjs",
-      "line": 13,
+      "line": 14,
       "column": 49,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192001,9 +192066,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:21:77",
+      "id": "candidate:app/reading-arrival.mjs:22:77",
       "file": "app/reading-arrival.mjs",
-      "line": 21,
+      "line": 22,
       "column": 77,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192021,9 +192086,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:29:263",
+      "id": "candidate:app/reading-arrival.mjs:30:263",
       "file": "app/reading-arrival.mjs",
-      "line": 29,
+      "line": 30,
       "column": 263,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192041,29 +192106,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:54:114",
+      "id": "candidate:app/reading-arrival.mjs:61:74",
       "file": "app/reading-arrival.mjs",
-      "line": 54,
-      "column": 114,
-      "kind": "js-attribute",
-      "property": "aria-hidden",
-      "value": "true",
-      "sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/reading-arrival.mjs:70:74",
-      "file": "app/reading-arrival.mjs",
-      "line": 70,
+      "line": 61,
       "column": 74,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192081,9 +192126,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:100:70",
+      "id": "candidate:app/reading-arrival.mjs:91:70",
       "file": "app/reading-arrival.mjs",
-      "line": 100,
+      "line": 91,
       "column": 70,
       "kind": "js-attribute",
       "property": "role",
@@ -192101,9 +192146,9 @@
       }
     },
     {
-      "id": "candidate:app/reading-arrival.mjs:100:112",
+      "id": "candidate:app/reading-arrival.mjs:91:112",
       "file": "app/reading-arrival.mjs",
-      "line": 100,
+      "line": 91,
       "column": 112,
       "kind": "js-attribute",
       "property": "aria-live",
@@ -238661,6 +238706,36 @@
     },
     {
       "kind": "concatenation",
+      "file": "app/paper-companion.mjs",
+      "line": 3,
+      "expression": "'arrival-scene paper-companion paper-companion-'+pose",
+      "fragments": [
+        "arrival-scene paper-companion paper-companion-"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/paper-companion.mjs",
+      "line": 5,
+      "expression": "'arrival-'+part.replaceAll(' ',' arrival-')",
+      "fragments": [
+        "arrival-"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/paper-companion.mjs",
+      "line": 7,
+      "expression": "'arrival-page arrival-page-'+part",
+      "fragments": [
+        "arrival-page arrival-page-"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
       "file": "app/parallel-reading.mjs",
       "line": 16,
       "expression": "'parallel-column parallel-'+layer.kind",
@@ -244362,7 +244437,7 @@
     {
       "kind": "computed-member",
       "file": "app/reading-arrival.mjs",
-      "line": 12,
+      "line": 13,
       "expression": "bookId",
       "fragments": [],
       "unresolved": true
@@ -244370,37 +244445,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 54,
-      "expression": "'arrival-scene paper-companion paper-companion-'+pose",
-      "fragments": [
-        "arrival-scene paper-companion paper-companion-"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reading-arrival.mjs",
-      "line": 56,
-      "expression": "'arrival-'+part.replaceAll(' ',' arrival-')",
-      "fragments": [
-        "arrival-"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reading-arrival.mjs",
-      "line": 58,
-      "expression": "'arrival-page arrival-page-'+part",
-      "fragments": [
-        "arrival-page arrival-page-"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reading-arrival.mjs",
-      "line": 83,
+      "line": 74,
       "expression": "'arrival.greeting.'+(library?'library':'reader')",
       "fragments": [
         "arrival.greeting."
@@ -244410,7 +244455,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 86,
+      "line": 77,
       "expression": "'arrival.target.'+(library?'library':'reader')",
       "fragments": [
         "arrival.target."
@@ -244420,7 +244465,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 86,
+      "line": 77,
       "expression": "'arrival.status.'+(library?'library':'reader')",
       "fragments": [
         "arrival.status."
@@ -244430,7 +244475,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 90,
+      "line": 81,
       "expression": "'arrival.provenance.'+(quote.variant==='literal'?'literal':'interpretive')",
       "fragments": [
         "arrival.provenance."
@@ -244440,7 +244485,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 94,
+      "line": 85,
       "expression": "'“'+(quote.translation||quote.original)+'”'",
       "fragments": [
         "“",
@@ -244451,7 +244496,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 94,
+      "line": 85,
       "expression": "'“'+(quote.translation||quote.original)",
       "fragments": [
         "“"
@@ -244461,7 +244506,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 96,
+      "line": 87,
       "expression": "(quote.author?quote.author+' ':'')+'《'+quote.title+'》'",
       "fragments": [
         "《",
@@ -244472,7 +244517,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 96,
+      "line": 87,
       "expression": "(quote.author?quote.author+' ':'')+'《'",
       "fragments": [
         "《"
@@ -244482,7 +244527,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 96,
+      "line": 87,
       "expression": "quote.author+' '",
       "fragments": [
         " "
@@ -244492,7 +244537,7 @@
     {
       "kind": "concatenation",
       "file": "app/reading-arrival.mjs",
-      "line": 96,
+      "line": 87,
       "expression": "' · '+quote.chapter",
       "fragments": [
         " · "
@@ -257014,12 +257059,12 @@
     "duplicateKeys": 0,
     "reviewedItems": 0,
     "unreviewedItems": 2217,
-    "candidates": 4857,
-    "candidatesUnreviewed": 4857,
+    "candidates": 4858,
+    "candidatesUnreviewed": 4858,
     "candidatesProtected": 132,
     "itemsProtected": 9,
     "dynamicConsumers": 3123,
-    "consumerReferences": 1580,
-    "keysWithoutStaticConsumers": 1201
+    "consumerReferences": 1582,
+    "keysWithoutStaticConsumers": 1200
   }
 }

@@ -1,5 +1,5 @@
 import {formatNoteSaveReceipt as noteSaveReceipt,formatReadingSessionReceipt as readingSessionReceipt,matchingSessionSnapshot,formatDraftSaveReceipt as draftSaveReceipt,formatCurrentSessionReceipt as currentSessionReceipt} from './save-receipts.mjs';
-import {createPaperCompanion} from './reading-arrival.mjs';
+import {createPaperCompanion} from './paper-companion.mjs';
 import {readerFetch,readerSession,readerStorageKey,selectedBookId} from './reader-api.mjs';
 import {readerLoginUrl} from './reader-return.mjs';
 import {createReadingClock} from './reading-clock.mjs';
