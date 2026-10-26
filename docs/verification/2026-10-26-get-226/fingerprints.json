@@ -1,0 +1,15 @@
+{
+  "app/reader-location.mjs": "27b8338df163aca621bc3f029799a993f65293823f39c3345edfe12f658944ed",
+  "app/reader.js": "f89c46465821573bfa6a1ac32f7d1be0d84f5c1ce2f012836642003e30485f65",
+  "app/reader-navigation.css": "ffeba8b6e9e7b48b0d2a5ea2979e677ba9480e82ec4838273f54b4786ad2ff4c",
+  "server/server.mjs": "502e8a63fb264b03974bd99c4adb795a32afc26943538b1c2e62310f8018ef65",
+  "tools/build-reader-web.mjs": "59d51d4faa4396818a27b4a4a48c6eb1f04f3f44d830be90402fd4b816530e21",
+  "tools/verify-reader-location.mjs": "7b91724c084d3e61c392cf2827bc367099a3221ecb2a1e8e8e3036bf3dc8c3ba",
+  "tests/reader-location.test.mjs": "d58c313c58c9dcea8fb0bbe5790e68baee1f0f421b112c7ff3898a99781cbe1f",
+  "tests/reader-cleanup.test.mjs": "a49e062b6c45bf99596dd0dc0d29bbcd1cc07de403a1b410d74782c21bb3c0d1",
+  "release-files.json": "c82bb3df659431052c8fff595877bc1746fc96a7b76b4ed6b10414c366e8f7d8",
+  "app/ui-catalogs/en.mjs": "4fd6c4582acd8c38942c497676bd79fb107ba62954249de93ca682202be59dfd",
+  "app/ui-catalogs/zh-Hans.mjs": "08a59aec69155fe3d8db8e300e8b9635d808ae7f33464774789a8b5c9a9efd0d",
+  "app/ui-catalogs/zh-Hant.mjs": "d1019de5b1bed17591bececbfa7305944a374f560877dc2b7afe2a3aa506f6b0",
+  "app/ui-catalogs/ja.mjs": "2daa8f45211bd8b0c1160c13221cc5908011ab2593630d6842b8bfcfb57d2f08"
+}

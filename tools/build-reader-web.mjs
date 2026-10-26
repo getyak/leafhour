@@ -48,6 +48,7 @@ export const UI_LOCALE_OWNERS=Object.freeze([
  'app/reader-highlights.mjs',
  'app/reader-annotations.mjs',
  'app/reader-immersion.mjs',
+ 'app/reader-location.mjs',
  'app/reader-navigation.mjs',
  'app/reader-pagination.mjs',
  'app/reader-settings-choices.mjs',
@@ -367,6 +368,7 @@ export async function buildReaderWeb({root,outputDir,html}){
  // prior six exceptions are unchanged.
  const lazyModules={
   'reader-account.mjs':{kind:'dynamic-import',importer:'reader.js'},
+  'reader-location.mjs':{kind:'dynamic-import',importer:'reader.js'},
   // Pure canvas layout waits for Share, preserving the fixed reader budget.
   'share-model.mjs':{kind:'dynamic-import',importer:'share.js'},
   'original-download.mjs':{kind:'dynamic-import',importer:'reader-translation.js'},
@@ -436,7 +438,7 @@ export async function buildReaderWeb({root,outputDir,html}){
    if(!candidates.some(file=>file&&file.startsWith('app/ui-catalogs/')))return undefined;
    throw Error('Non-public ui-catalogue bundle edge: '+args.path);
   });
-  b.onResolve({filter:/^\.\/(?:reader-account|atmosphere-audio|original-download|credit-client|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|command-palette)\.mjs(?:\?.*)?$/},args=>{
+  b.onResolve({filter:/^\.\/(?:reader-account|atmosphere-audio|original-download|credit-client|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|reader-location|command-palette)\.mjs(?:\?.*)?$/},args=>{
   const at=args.path.indexOf('?'),query=at<0?'':args.path.slice(at);
   if(query&&args.path!==paletteRetry&&args.path!==accountRetry)throw Error('Non-public lazy reader module: '+args.path);
   const entry=lazyModules[args.path.slice(2,query?at:undefined)];

@@ -1,0 +1,3701 @@
+{
+  "at": "2026-10-26T06:11:20.120Z",
+  "packaged": true,
+  "cases": [
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "en",
+      "width": 1280,
+      "height": 800,
+      "theme": "paper",
+      "checks": [
+        "real Fullscreen API F entry, trusted Escape exit, visible 44px exit, chapter/anchor/scroll retained",
+        "focus-seeded native Tab/Shift+Tab roundtrip, Enter exit and visible focus return",
+        "pointer explicit exit",
+        "external native API exit event reconciles rendered state",
+        "held trusted key makes one native request",
+        "Book info uses existing close priority; browser-reserved Escape may exit on first key",
+        "real chat textarea owns F, Escape closes chat without sending, draft survives reopening",
+        "modified F is not claimed",
+        "injected composition lifecycle + trusted F leaves native state unchanged",
+        "localized name/help, 200% exit text, reduced-motion focus, no horizontal overflow",
+        "existing paragraph Escape priority and personal textarea draft survives fullscreen roundtrip",
+        "programmatically seeded native Selection and exact saved excerpt survive trusted F enter/exit",
+        "settings, command palette and account keep their existing dialog Escape owners",
+        "close/reopen document starts clean with one mounted key owner",
+        "explicit API rejection fixture: real non-full state, notice and recoverable pill",
+        "explicit unavailable capability fixture: F cannot fabricate a fullscreen state"
+      ],
+      "writes": [
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence",
+          "blocked": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence",
+          "blocked": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence",
+          "blocked": true
+        }
+      ],
+      "errors": [],
+      "before": {
+        "full": null,
+        "rendered": "false",
+        "active": "",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00010",
+          "offset": -12.109375,
+          "withinParagraph": 0.09448078495502862,
+          "chapterId": "ch01"
+        },
+        "scroll": 600,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "events": [],
+        "api": {
+          "enter": 0,
+          "exit": 0
+        }
+      },
+      "entered": {
+        "full": "HTML",
+        "rendered": "true",
+        "active": "",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00010",
+          "offset": -12.109375,
+          "withinParagraph": 0.09448078495502862,
+          "chapterId": "ch01"
+        },
+        "scroll": 600,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 1130.796875,
+          "y": 12,
+          "width": 137.203125,
+          "height": 44,
+          "top": 12,
+          "right": 1268,
+          "bottom": 56,
+          "left": 1130.796875
+        },
+        "events": [
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          }
+        ],
+        "api": {
+          "enter": 1,
+          "exit": 0
+        }
+      },
+      "colors": {
+        "theme": "paper",
+        "paper": "#faf9f5",
+        "exit": "rgb(113, 111, 101)"
+      },
+      "escaped": {
+        "full": null,
+        "rendered": "false",
+        "active": "",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00010",
+          "offset": -12.109375,
+          "withinParagraph": 0.09448078495502862,
+          "chapterId": "ch01"
+        },
+        "scroll": 600,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "events": [
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          }
+        ],
+        "api": {
+          "enter": 1,
+          "exit": 1
+        }
+      },
+      "tabKeys": [
+        "Tab",
+        "Shift+Tab"
+      ],
+      "overlayFirstEscape": {
+        "full": "HTML",
+        "rendered": "true",
+        "active": "open-book-info",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "scroll": 0,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "events": [
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          }
+        ],
+        "api": {
+          "enter": 6,
+          "exit": 5
+        }
+      },
+      "exitName": "Exit full screen",
+      "help": "Click a passage or focus it and press Enter for original text, annotations and records. In page mode use ← → or the buttons below. F toggles full screen when available. Esc exits full screen; the browser may also close an overlay. Outside full screen, Esc closes overlays.",
+      "paragraphEscape": {
+        "full": "HTML",
+        "rendered": "true",
+        "active": "01b38ea4c710a84b-p00007",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "scroll": 0,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 1047.9375,
+          "y": 12,
+          "width": 220.0625,
+          "height": 54,
+          "top": 12,
+          "right": 1268,
+          "bottom": 66,
+          "left": 1047.9375
+        },
+        "events": [
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          }
+        ],
+        "api": {
+          "enter": 8,
+          "exit": 7
+        }
+      },
+      "#open-settingsEscape": {
+        "full": "HTML",
+        "rendered": "true",
+        "active": "open-settings",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 184.75,
+          "chapterId": "ch01"
+        },
+        "scroll": 5,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "events": [
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          }
+        ],
+        "api": {
+          "enter": 11,
+          "exit": 10
+        }
+      },
+      "[data-palette-open]Escape": {
+        "full": "HTML",
+        "rendered": "true",
+        "active": "reading-tools-trigger",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 184.75,
+          "chapterId": "ch01"
+        },
+        "scroll": 5,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 1047.9375,
+          "y": 12,
+          "width": 220.0625,
+          "height": 54,
+          "top": 12,
+          "right": 1268,
+          "bottom": 66,
+          "left": 1047.9375
+        },
+        "events": [
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          }
+        ],
+        "api": {
+          "enter": 12,
+          "exit": 11
+        }
+      },
+      "#open-reader-accountEscape": {
+        "full": "HTML",
+        "rendered": "true",
+        "active": "open-reader-account",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 184.75,
+          "chapterId": "ch01"
+        },
+        "scroll": 5,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "events": [
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          }
+        ],
+        "api": {
+          "enter": 13,
+          "exit": 12
+        }
+      },
+      "denial": "Immersive reading is kept; this browser could not switch full screen.",
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "locale": "en",
+      "width": 1280,
+      "height": 800,
+      "theme": "paper",
+      "checks": [
+        "real Fullscreen API F entry, trusted Escape exit, visible 44px exit, chapter/anchor/scroll retained",
+        "focus-seeded native Tab/Shift+Tab roundtrip, Enter exit and visible focus return",
+        "pointer explicit exit",
+        "external native API exit event reconciles rendered state",
+        "held trusted key makes one native request",
+        "Book info uses existing close priority; browser-reserved Escape may exit on first key",
+        "real chat textarea owns F, Escape closes chat without sending, draft survives reopening",
+        "modified F is not claimed",
+        "injected composition lifecycle + trusted F leaves native state unchanged",
+        "localized name/help, 200% exit text, reduced-motion focus, no horizontal overflow",
+        "existing paragraph Escape priority and personal textarea draft survives fullscreen roundtrip",
+        "programmatically seeded native Selection and exact saved excerpt survive trusted F enter/exit",
+        "settings, command palette and account keep their existing dialog Escape owners",
+        "close/reopen document starts clean with one mounted key owner",
+        "explicit API rejection fixture: real non-full state, notice and recoverable pill",
+        "explicit unavailable capability fixture: F cannot fabricate a fullscreen state"
+      ],
+      "writes": [
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence",
+          "blocked": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence",
+          "blocked": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/library/daily-reading/presence",
+          "kind": "presence",
+          "blocked": true
+        }
+      ],
+      "errors": [],
+      "before": {
+        "full": null,
+        "rendered": "false",
+        "active": "",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00010",
+          "offset": -12.109375,
+          "withinParagraph": 0.09448078495502862,
+          "chapterId": "ch01"
+        },
+        "scroll": 600,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "events": [],
+        "api": {
+          "enter": 0,
+          "exit": 0
+        }
+      },
+      "entered": {
+        "full": "HTML",
+        "rendered": "true",
+        "active": "",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00010",
+          "offset": -12.109375,
+          "withinParagraph": 0.09448078495502862,
+          "chapterId": "ch01"
+        },
+        "scroll": 600,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 1130.796875,
+          "y": 12,
+          "width": 137.203125,
+          "height": 44,
+          "top": 12,
+          "right": 1268,
+          "bottom": 56,
+          "left": 1130.796875
+        },
+        "events": [
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          }
+        ],
+        "api": {
+          "enter": 1,
+          "exit": 0
+        }
+      },
+      "colors": {
+        "theme": "paper",
+        "paper": "#faf9f5",
+        "exit": "rgb(113, 111, 101)"
+      },
+      "escaped": {
+        "full": null,
+        "rendered": "false",
+        "active": "",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00010",
+          "offset": -12.109375,
+          "withinParagraph": 0.09448078495502862,
+          "chapterId": "ch01"
+        },
+        "scroll": 600,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "events": [
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          }
+        ],
+        "api": {
+          "enter": 1,
+          "exit": 0
+        }
+      },
+      "tabKeys": [
+        "Alt+Tab",
+        "Alt+Shift+Tab"
+      ],
+      "overlayFirstEscape": {
+        "full": null,
+        "rendered": "true",
+        "active": "",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "scroll": 0,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "events": [
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          }
+        ],
+        "api": {
+          "enter": 6,
+          "exit": 4
+        }
+      },
+      "exitName": "Exit full screen",
+      "help": "Click a passage or focus it and press Enter for original text, annotations and records. In page mode use ← → or the buttons below. F toggles full screen when available. Esc exits full screen; the browser may also close an overlay. Outside full screen, Esc closes overlays.",
+      "paragraphEscape": {
+        "full": null,
+        "rendered": "true",
+        "active": "01b38ea4c710a84b-p00007",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "scroll": 0,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 1047.921875,
+          "y": 12,
+          "width": 220.078125,
+          "height": 54,
+          "top": 12,
+          "right": 1268,
+          "bottom": 66,
+          "left": 1047.921875
+        },
+        "events": [
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          }
+        ],
+        "api": {
+          "enter": 8,
+          "exit": 5
+        }
+      },
+      "#open-settingsEscape": {
+        "full": null,
+        "rendered": "true",
+        "active": "settings-dialog",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 184.75,
+          "chapterId": "ch01"
+        },
+        "scroll": 5,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "events": [
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          }
+        ],
+        "api": {
+          "enter": 11,
+          "exit": 6
+        }
+      },
+      "[data-palette-open]Escape": {
+        "full": null,
+        "rendered": "true",
+        "active": "command-palette-input",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 184.75,
+          "chapterId": "ch01"
+        },
+        "scroll": 5,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 1047.921875,
+          "y": 12,
+          "width": 220.078125,
+          "height": 54,
+          "top": 12,
+          "right": 1268,
+          "bottom": 66,
+          "left": 1047.921875
+        },
+        "events": [
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          }
+        ],
+        "api": {
+          "enter": 12,
+          "exit": 6
+        }
+      },
+      "#open-reader-accountEscape": {
+        "full": null,
+        "rendered": "false",
+        "active": "reader-account-close",
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 184.75,
+          "chapterId": "ch01"
+        },
+        "scroll": 5,
+        "selection": "",
+        "geometry": {
+          "width": 1280,
+          "height": 800,
+          "outerWidth": 1280,
+          "outerHeight": 800
+        },
+        "exit": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "events": [
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": true,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "Escape",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "keydown",
+            "key": "f",
+            "repeat": false,
+            "trusted": true,
+            "full": null
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": "HTML"
+          },
+          {
+            "type": "fullscreenchange",
+            "trusted": true,
+            "full": null
+          }
+        ],
+        "api": {
+          "enter": 13,
+          "exit": 6
+        }
+      },
+      "denial": "Immersive reading is kept; this browser could not switch full screen.",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "Playwright trusted input is not physical keyboard input. Browser-reserved Escape is also verified with a separate owned headed window and OS input.",
+    "API-denial/unavailability and IME composition events are explicit fixtures.",
+    "All non-GET API requests are blocked before backend writes. No model or sharing request is sent.",
+    "WebKit driver evidence is not Safari or physical-device acceptance."
+  ]
+}
