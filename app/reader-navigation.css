@@ -128,7 +128,7 @@
 .reader-fullscreen-exit{position:fixed;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));z-index:5;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;max-width:calc(100vw - 24px);padding:8px 12px;border:1px solid var(--line);border-radius:var(--radius-control,6px);background:var(--paper);color:var(--muted);font:400 12px/1.5 var(--interface)}
 .reader-fullscreen-exit[hidden]{display:none}.reader-fullscreen-exit:hover,.reader-fullscreen-exit:focus-visible{color:var(--ink);background:var(--wash)}.reader-fullscreen-exit kbd{font:inherit;opacity:.7}
 
-.reading-location{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,max-content);max-width:min(240px,55vw);color:var(--ink)}.reading-location>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.reading-tools-trigger:has(.reading-location:not([hidden])) #reading-tools-label{display:none}.reading-session .reading-tools-panel{bottom:calc(100% + 10px)}
+.reading-location{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,max-content);max-width:min(240px,55vw);color:var(--ink)}.reading-location>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.reading-session:not([data-attention=true]) .reading-tools-trigger:has(.reading-location:not([hidden])) #reading-tools-label{display:none}.reading-session[data-attention=true] .reading-location{display:none}.reading-session .reading-tools-panel{bottom:calc(100% + 10px)}
 
 @media(max-width:1023px){body[data-paginated=true] #book-page{padding-bottom:84px}body[data-paginated=true] #page-turner{bottom:24px}}
 
