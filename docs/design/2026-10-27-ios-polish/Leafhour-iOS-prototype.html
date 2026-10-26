@@ -1,0 +1,2245 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover"
+  />
+  <meta name="color-scheme" content="light dark" />
+  <title>Leafhour · 半屏陪读</title>
+  <link rel="icon" href="data:," />
+  <style>* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #ecefec;
+  color: #242a27;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+}
+button,
+input,
+textarea {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.phone button:not(.sheet-grip) {
+  transition: transform 120ms ease-out, filter 120ms ease-out;
+}
+.phone button:not(.sheet-grip):active {
+  transform: scale(0.97);
+  filter: brightness(0.96);
+}
+button:disabled {
+  cursor: default;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #759b82;
+  outline-offset: 3px;
+}
+button {
+  border: 0;
+  background: none;
+  color: inherit;
+}
+a {
+  color: inherit;
+}
+button svg {
+  pointer-events: none;
+}
+svg.icon {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+.workbench {
+  max-width: 1240px;
+  margin: auto;
+  padding: 25px 32px 40px;
+}
+.study-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.wordmark {
+  text-decoration: none;
+  font:
+    24px Georgia,
+    serif;
+  letter-spacing: -1px;
+}
+.wordmark span {
+  font:
+    12px -apple-system,
+    sans-serif;
+  color: #617067;
+  margin-left: 10px;
+  letter-spacing: 0;
+}
+.study-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  font-size: 12px;
+  color: #526057;
+}
+.study-controls button {
+  padding: 10px 4px;
+}
+.study-controls label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.study-controls input {
+  accent-color: #365b47;
+}
+.stage {
+  display: flex;
+  gap: 70px;
+  align-items: center;
+  justify-content: center;
+}
+.phone {
+  --paper: #f7f8f5;
+  --ink: #242a27;
+  --secondary: #5d6a62;
+  --accent: #365b47;
+  --surface: #fff;
+  --wash: #edf1eb;
+  --line: #dce3da;
+  --glass: #f9faf5e8;
+  --highlight: #dce9dc;
+  position: relative;
+  isolation: isolate;
+  width: 402px;
+  height: 874px;
+  flex-shrink: 0;
+  border-radius: 46px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow:
+    0 30px 100px #25433320,
+    0 0 0 1px #1b33251c;
+  overflow: hidden;
+}
+.phone[data-theme="night"] {
+  --paper: #191e1b;
+  --ink: #e7eee7;
+  --secondary: #aebcaf;
+  --accent: #a8cbb4;
+  --surface: #242d27;
+  --wash: #2b382e;
+  --line: #435147;
+  --glass: #202a23ee;
+  --highlight: #3b5141;
+}
+.status-bar {
+  height: 62px;
+  position: absolute;
+  z-index: 8;
+  inset: 0 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+  font-size: 15px;
+  font-weight: 600;
+  background: var(--paper);
+}
+.status-bar .island {
+  width: 112px;
+  height: 30px;
+  border-radius: 20px;
+  background: #121712;
+  position: absolute;
+  top: 15px;
+  left: calc(50% - 56px);
+}
+.status-icons {
+  font-size: 23px;
+}
+.reader-nav {
+  position: absolute;
+  inset: 62px 0 auto;
+  height: 56px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+}
+.reader-nav > button {
+  height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 18px;
+}
+.reader-nav .book-title {
+  font-size: 15px;
+  gap: 5px;
+  font-weight: 500;
+}
+.book-title svg.icon {
+  width: 12px;
+  height: 12px;
+  color: var(--secondary);
+}
+.type-button {
+  letter-spacing: -1px;
+}
+.reading-scroll {
+  position: absolute;
+  inset: 118px 0 114px;
+  overflow: auto;
+  padding: 24px 44px 64px 28px;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
+}
+.reading-scroll::-webkit-scrollbar,
+.sheet-body::-webkit-scrollbar {
+  display: none;
+}
+.chapter-heading {
+  margin: 0 0 32px;
+}
+.chapter-heading > span {
+  font-size: 11px;
+  color: var(--secondary);
+  letter-spacing: 2px;
+}
+.chapter-heading h1 {
+  font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+  font-size: 34px;
+  line-height: 1.35;
+  letter-spacing: 1px;
+  font-weight: 500;
+  margin: 13px 0 9px;
+}
+.chapter-heading p {
+  font-size: 11px;
+  color: var(--secondary);
+  margin: 0;
+}
+.passage {
+  position: relative;
+  font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+  font-size: var(--reader-size, 22px);
+  line-height: 1.83;
+  letter-spacing: 0.15px;
+  margin: 0 0 27px;
+  white-space: pre-wrap;
+}
+.passage.source {
+  font-family: "New York", Georgia, serif;
+  line-height: 1.7;
+  font-size: var(--reader-size, 21px);
+  letter-spacing: 0;
+}
+.passage .resume-mark {
+  display: block;
+  font:
+    11px/1.5 -apple-system,
+    sans-serif;
+  color: var(--accent);
+  margin: 0 0 11px;
+}
+.passage em {
+  font-style: normal;
+  background: var(--highlight);
+  border-radius: 3px;
+}
+.passage.is-selected .passage-text {
+  background: var(--highlight);
+  border-radius: 4px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.passage-text::selection { background: var(--highlight); color: var(--ink); }
+.select-anchor {
+  position: absolute;
+  right: -44px;
+  top: 5px;
+  min-height: 44px;
+  width: 44px;
+  color: var(--accent);
+  opacity: 0.75;
+  font:
+    20px -apple-system,
+    sans-serif;
+}
+.chapter-end {
+  font-size: 12px;
+  color: var(--secondary);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 20px;
+  padding: 15px 0;
+}
+.chapter-end .icon {
+  width: 14px;
+  height: 14px;
+}
+.reading-dock {
+  position: absolute;
+  z-index: 6;
+  bottom: 37px;
+  left: 24px;
+  right: 24px;
+  height: 64px;
+  padding: 7px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 24px;
+  background: var(--glass);
+  backdrop-filter: blur(24px) saturate(1.4);
+  box-shadow: 0 4px 24px #1a302418;
+  border: 1px solid var(--line);
+}
+.reading-dock button {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--accent);
+  padding: 0 8px;
+  border-radius: 16px;
+}
+.reading-dock button:first-child {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+  font-size: 11px;
+  color: var(--secondary);
+  align-content: center;
+}
+.reading-dock .dock-location {
+  font-size: 13px;
+  color: var(--ink);
+}
+.dock-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--line);
+}
+.home-indicator {
+  position: absolute;
+  z-index: 12;
+  bottom: 9px;
+  left: calc(50% - 61px);
+  width: 122px;
+  height: 4px;
+  border-radius: 5px;
+  background: var(--ink);
+  opacity: 0.8;
+}
+.selection-menu {
+  position: absolute;
+  z-index: 10;
+  top: 118px;
+  left: 16px;
+  width: min(294px, calc(100% - 32px));
+  display: flex;
+  padding: 4px;
+  background: var(--surface);
+  box-shadow: 0 8px 30px #182a2625;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  animation: selection-in 140ms ease-out;
+}
+.selection-menu[data-placement="above"]::before,
+.selection-menu[data-placement="below"]::before {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  left: calc(var(--anchor-x) - 5px);
+  background: var(--surface);
+  transform: rotate(45deg);
+  z-index: -1;
+}
+.selection-menu[data-placement="above"]::before { bottom: -6px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.selection-menu[data-placement="below"]::before { top: -6px; border-left: 1px solid var(--line); border-top: 1px solid var(--line); }
+@keyframes selection-in {
+  from { opacity: 0; scale: 0.97; }
+  to { opacity: 1; scale: 1; }
+}
+.selection-menu button {
+  flex: 1;
+  min-height: 44px;
+  font-size: 13px;
+  white-space: nowrap;
+  color: var(--accent);
+  padding: 5px;
+}
+.selection-menu button + button {
+  border-left: 1px solid var(--line);
+  border-radius: 0;
+}
+.sheet-scrim {
+  position: absolute;
+  z-index: 8;
+  inset: 118px 0 0;
+  background: #12201928;
+  opacity: 0;
+}
+.reader-sheet {
+  position: absolute;
+  z-index: 9;
+  inset: auto 0 0;
+  height: 88%;
+  border-radius: 32px 32px 0 0;
+  background: var(--surface);
+  box-shadow: 0 -10px 38px #15251d17;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 31px;
+  will-change: transform;
+  border-top: 1px solid var(--line);
+}
+.sheet-grip {
+  width: 84px;
+  height: 44px;
+  margin: -10px 0;
+  align-self: center;
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  border-radius: 32px 32px 0 0;
+}
+.sheet-grip span {
+  width: 34px;
+  height: 4px;
+  background: var(--line);
+  border-radius: 8px;
+  transition: background-color 100ms;
+}
+.sheet-grip[data-dragging="true"] span { background: var(--accent); }
+.sheet-header {
+  height: 47px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+}
+.sheet-header h2 {
+  font-size: 20px;
+  letter-spacing: -0.3px;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+}
+.sheet-header .sheet-done {
+  margin-left: auto;
+  height: 44px;
+  padding: 0 0 0 12px;
+  font-size: 13px;
+  color: var(--accent);
+}
+.sheet-back {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 44px;
+  color: var(--accent);
+  font-size: 13px;
+  padding: 0;
+}
+.sheet-back .icon {
+  width: 17px;
+  height: 17px;
+}
+.sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 13px 24px 12px;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+}
+.context-quote {
+  padding: 0 0 0 12px;
+  border-left: 2px solid var(--accent);
+  color: var(--secondary);
+  font-size: 13px;
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+.context-quote small {
+  display: block;
+  font-size: 10px;
+  color: var(--accent);
+  margin-bottom: 5px;
+}
+.context-quote button {
+  color: var(--accent);
+  font-size: 11px;
+  padding: 8px 0;
+  display: block;
+}
+.answer-label {
+  font-size: 11px;
+  color: var(--secondary);
+  margin: 5px 0 10px;
+}
+.answer {
+  font-size: 16px;
+  line-height: 1.78;
+  margin: 0 0 14px;
+  white-space: pre-wrap;
+}
+.source-link {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 12px;
+  background: var(--wash);
+  color: var(--accent);
+  font-size: 11px;
+}
+.source-link .icon {
+  width: 12px;
+  height: 12px;
+}
+.question-bubble {
+  margin: 4px 0 20px;
+  padding: 12px 15px;
+  border-radius: 18px 18px 4px 18px;
+  background: var(--wash);
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.answer-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  color: var(--accent);
+  font-size: 12px;
+}
+.answer-actions button {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 40px;
+  padding: 4px;
+}
+.answer-actions .icon {
+  width: 17px;
+  height: 17px;
+}
+.composer {
+  padding: 8px 20px 0;
+  background: var(--surface);
+  flex: none;
+  border-top: 1px solid var(--line);
+}
+.composer form {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.composer input {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--paper);
+  padding: 0 14px;
+  font-size: 16px;
+  color: var(--ink);
+}
+.composer form > button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--surface);
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.draft-return {
+  font-size: 11px;
+  color: var(--accent);
+  padding: 8px 2px;
+}
+.quote-title {
+  font-size: 12px;
+  color: var(--secondary);
+  margin: 3px 0 17px;
+}
+.citation-original {
+  font:
+    21px/1.75 Georgia,
+    serif;
+  margin: 12px 0 22px;
+  white-space: pre-wrap;
+}
+.citation-translation {
+  font:
+    20px/1.8 "Songti SC",
+    serif;
+  white-space: pre-wrap;
+}
+.quiet-rule {
+  height: 1px;
+  background: var(--line);
+  margin: 22px 0;
+}
+.primary-button {
+  background: var(--accent);
+  color: var(--surface);
+  border-radius: 17px;
+  min-height: 48px;
+  padding: 10px 18px;
+  font-size: 14px;
+}
+.secondary-button {
+  background: var(--wash);
+  color: var(--accent);
+  border-radius: 17px;
+  min-height: 48px;
+  padding: 10px 18px;
+  font-size: 14px;
+}
+.wide-button {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+}
+.segmented {
+  display: flex;
+  padding: 4px;
+  background: var(--wash);
+  border-radius: 15px;
+  gap: 3px;
+  margin-bottom: 20px;
+}
+.segmented button {
+  min-height: 44px;
+  flex: 1;
+  font-size: 12px;
+  border-radius: 11px;
+  color: var(--secondary);
+}
+.segmented .active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 2px 6px #152a1910;
+}
+.note-field {
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  width: 100%;
+  resize: none;
+  min-height: 220px;
+  font-size: 18px;
+  line-height: 1.8;
+  padding: 8px 0;
+}
+.note-field::placeholder {
+  color: var(--secondary);
+  opacity: 0.8;
+}
+.save-note-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--secondary);
+}
+.book-cover {
+  width: 126px;
+  height: 180px;
+  padding: 19px 17px;
+  color: #edf2e9;
+  background: #365b47;
+  box-shadow: 5px 6px 12px #142b2420;
+  border-radius: 2px 7px 7px 2px;
+  position: relative;
+  overflow: hidden;
+  flex: none;
+}
+.book-cover .cover-pond {
+  position: absolute;
+  width: 155px;
+  height: 80px;
+  border-radius: 50%;
+  border: 1px solid #cdd9b28a;
+  bottom: -36px;
+  left: -12px;
+  box-shadow:
+    0 -8px 0 0 #365b47,
+    0 -9px 0 0 #cdd9b25c,
+    0 -17px 0 0 #365b47,
+    0 -18px 0 0 #cdd9b240;
+}
+.book-cover h3 {
+  font:
+    27px/1.3 "Songti SC",
+    serif;
+  margin: 0 0 12px;
+}
+.book-cover p {
+  font:
+    10px/1.6 Georgia,
+    serif;
+  margin: 0;
+}
+.shelf-book {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  padding: 18px 0 28px;
+}
+.shelf-book h3 {
+  font:
+    24px/1.4 "Songti SC",
+    serif;
+  margin: 0 0 8px;
+}
+.shelf-book p {
+  font-size: 12px;
+  color: var(--secondary);
+  line-height: 1.7;
+}
+.shelf-actions {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.shelf-note {
+  font-size: 12px;
+  color: var(--secondary);
+  line-height: 1.8;
+  margin-top: 24px;
+}
+.list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  width: 100%;
+  text-align: left;
+  gap: 14px;
+}
+.list-row > span {
+  display: block;
+}
+.list-row strong {
+  font-size: 15px;
+  font-weight: 500;
+  display: block;
+  line-height: 1.6;
+}
+.list-row small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--secondary);
+  margin-top: 3px;
+}
+.list-row .icon {
+  width: 17px;
+  height: 17px;
+  color: var(--secondary);
+  flex: none;
+}
+.record-kind {
+  font-size: 10px;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 7px;
+}
+.empty-records {
+  padding: 36px 0;
+  text-align: left;
+}
+.empty-records h3 {
+  font:
+    24px/1.5 "Songti SC",
+    serif;
+  margin: 0 0 12px;
+}
+.empty-records p {
+  font-size: 14px;
+  color: var(--secondary);
+  line-height: 1.8;
+}
+.setting-group {
+  margin: 6px 0 28px;
+}
+.setting-group > label {
+  display: block;
+  font-size: 12px;
+  color: var(--secondary);
+  margin-bottom: 14px;
+}
+.type-size-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.type-size-controls button {
+  background: var(--wash);
+  min-width: 54px;
+  min-height: 44px;
+  border-radius: 13px;
+  color: var(--accent);
+  font-size: 18px;
+}
+.type-size-controls output {
+  font-size: 14px;
+  flex: 1;
+  text-align: center;
+}
+.appearance-option {
+  width: 100%;
+  min-height: 65px;
+  border-radius: 16px;
+  padding: 15px 18px;
+  margin: 9px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--line);
+  font-size: 14px;
+}
+.appearance-option[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--wash);
+}
+.error-card {
+  background: var(--wash);
+  padding: 17px;
+  border-radius: 18px;
+  margin: 15px 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.error-card p {
+  margin: 0 0 10px;
+}
+.error-card button {
+  color: var(--accent);
+  padding: 8px 0;
+  font-size: 13px;
+}
+.phone-toast {
+  position: absolute;
+  z-index: 15;
+  left: 24px;
+  right: 24px;
+  bottom: 113px;
+  min-height: 48px;
+  border-radius: 18px;
+  padding: 13px 18px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 13px;
+  line-height: 1.7;
+  box-shadow: 0 5px 20px #0002;
+}
+.study-notes {
+  width: 260px;
+  flex-shrink: 0;
+  font-size: 14px;
+  line-height: 1.9;
+  color: #5a685f;
+}
+.study-state {
+  font:
+    26px/1.5 "Songti SC",
+    serif;
+  color: #242a27;
+  margin: 0 0 15px;
+}
+.study-notes > p {
+  margin-top: 0;
+}
+.scenario-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 28px 0;
+}
+.scenario-links button {
+  border: 1px solid #d0d9cf;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 12px;
+  min-height: 38px;
+}
+.scenario-links button.active {
+  background: #365b47;
+  color: #fff;
+  border-color: #365b47;
+}
+.study-notes > a {
+  font-size: 12px;
+  display: block;
+  margin: 8px 0;
+}
+.prototype-label {
+  font-size: 11px;
+  line-height: 1.8;
+  margin-top: 24px !important;
+  color: #6a776d;
+}
+.phone button:active {
+  filter: brightness(0.94);
+}
+[hidden] {
+  display: none !important;
+}
+.pending-quote {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--secondary);
+  line-height: 1.7;
+}
+.pending-quote button {
+  color: var(--accent);
+  min-height: 40px;
+  padding: 4px 0;
+}
+.scope-line {
+  font-size: 10px;
+  color: var(--secondary);
+  padding-top: 12px;
+}
+.source-external {
+  font-size: 12px;
+  color: var(--accent);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.night-preview {
+  background: #191e1b;
+  color: #e7eee7;
+}
+.type-preview {
+  font:
+    22px/1.8 "Songti SC",
+    serif;
+  padding: 20px 0;
+  margin: 0;
+}
+.screen-enter {
+  animation: screen-in 0.22s ease-out;
+}
+@keyframes screen-in {
+  from {
+    opacity: 0.3;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .phone button:not(.sheet-grip):active { transform: none; }
+  *,
+  *:before,
+  *:after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .reader-nav, .reading-dock { background: var(--paper); backdrop-filter: none; }
+  .reader-sheet { background: var(--surface); }
+}
+@media (prefers-contrast: more) {
+  .reader-nav, .reading-dock, .reader-sheet { border: 1px solid var(--secondary); }
+}
+@media (max-width: 820px) {
+  .workbench {
+    padding: 20px;
+  }
+  .stage {
+    gap: 30px;
+  }
+  .study-notes {
+    width: 210px;
+  }
+}
+@media (max-width: 690px) {
+  .workbench {
+    padding: 18px 12px 28px;
+  }
+  .study-header {
+    margin: 0 8px 22px;
+  }
+  .stage {
+    display: block;
+  }
+  .phone {
+    margin: auto;
+  }
+  .study-notes {
+    width: min(100%, 402px);
+    margin: 35px auto 0;
+  }
+  .study-controls {
+    gap: 12px;
+  }
+  .wordmark {
+    font-size: 21px;
+  }
+}
+@media (max-width: 430px) {
+  body {
+    background: #f7f8f5;
+  }
+  .workbench {
+    padding: 0;
+  }
+  .study-header {
+    position: absolute;
+    left: -10000px;
+  }
+  .phone {
+    width: 100%;
+    height: 100dvh;
+    max-height: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .status-bar {
+    height: 54px;
+  }
+  .status-bar .island {
+    top: 12px;
+  }
+  .reader-nav {
+    top: 54px;
+  }
+  .reading-scroll {
+    top: 110px;
+  }
+  .study-notes {
+    padding: 25px 22px;
+    margin: 0;
+    background: #ecefec;
+  }
+  .phone .reading-dock {
+    bottom: 37px;
+    left: 20px;
+    right: 20px;
+  }
+  .reader-sheet {
+    border-radius: 28px 28px 0 0;
+  }
+  .reading-scroll {
+    padding-left: 26px;
+    padding-right: 44px;
+  }
+  .status-bar {
+    padding-left: 29px;
+    padding-right: 29px;
+  }
+}
+
+.quote-excerpt {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.context-quote {
+  margin-bottom: 16px;
+}
+@media (max-width: 430px) {
+  .study-header {
+    display: none;
+  }
+}
+
+@media (max-width: 430px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+  .workbench {
+    height: 100dvh;
+  }
+  .study-notes {
+    display: none;
+  }
+}
+</style>
+  <body>
+    <main class="workbench">
+      <header class="study-header">
+        <a class="wordmark" href="./README.md">Leafhour <span>iOS</span></a>
+        <div class="study-controls">
+          <label><input type="checkbox" id="offline-mode" />断网示例</label
+          ><button id="reopen">重新打开</button
+          ><button id="night-mode">深色</button>
+        </div>
+      </header>
+      <div class="stage">
+        <div class="phone" id="phone" data-theme="paper">
+          <div class="status-bar" aria-hidden="true">
+            <span>9:41</span><span class="island"></span
+            ><span class="status-icons">▰</span>
+          </div>
+          <nav class="reader-nav" id="reader-nav" aria-label="阅读导航">
+            <button id="library-button" aria-label="打开书房">
+              <span data-icon="library"></span></button
+            ><button id="contents-button" class="book-title">
+              瓦尔登湖 <span data-icon="down"></span></button
+            ><button
+              id="appearance-button"
+              class="type-button"
+              aria-label="排版设置"
+            >
+              Aa
+            </button>
+          </nav>
+          <article
+            class="reading-scroll"
+            id="reading-scroll"
+            aria-label="阅读正文"
+            tabindex="0"
+          >
+            <div class="chapter-heading">
+              <span>第二章</span>
+              <h1>我为何生活</h1>
+              <p id="version-label">示例意译</p>
+            </div>
+            <div id="prose"></div>
+            <button class="chapter-end" id="chapter-end">
+              回到这一章的开头 <span data-icon="up"></span>
+            </button>
+          </article>
+          <div
+            class="selection-menu"
+            id="selection-menu"
+            hidden
+            aria-label="选文操作"
+          >
+            <button data-selection="explain">解释这句</button
+            ><button data-selection="original">看原文</button
+            ><button data-selection="note">记一句</button>
+          </div>
+          <footer class="reading-dock" id="reading-dock">
+            <button id="progress-button">
+              <span>第二章</span
+              ><span class="dock-location" id="dock-location"
+                >林中生活</span
+              ></button
+            ><span class="dock-divider"></span
+            ><button id="companion-button">
+              <span data-icon="conversation"></span>读到这里
+            </button>
+          </footer>
+          <div class="sheet-scrim" id="sheet-scrim" hidden></div>
+          <section
+            class="reader-sheet"
+            id="reader-sheet"
+            hidden
+            aria-label="阅读辅助"
+          >
+            <button
+              class="sheet-grip"
+              id="sheet-grip"
+              aria-label="展开或收起面板"
+            >
+              <span></span>
+            </button>
+            <header class="sheet-header" id="sheet-header">
+              <button class="sheet-back" id="sheet-back" hidden>
+                <span data-icon="left"></span><span>返回讨论</span>
+              </button>
+              <h2 id="sheet-title">读到这里</h2>
+              <button class="sheet-done" id="sheet-done">继续读</button>
+            </header>
+            <div class="sheet-body" id="sheet-body"></div>
+            <div class="composer" id="composer" hidden>
+              <form id="question-form">
+                <input
+                  id="question-input"
+                  aria-label="继续问这段"
+                  placeholder="接着问这段…"
+                  autocomplete="off"
+                /><button type="submit" aria-label="发送问题">
+                  <span data-icon="up"></span>
+                </button>
+              </form>
+              <button class="draft-return" id="draft-return" hidden>
+                找回未发送的草稿
+              </button>
+            </div>
+          </section>
+          <div class="phone-toast" id="phone-toast" role="status" hidden></div>
+          <div class="home-indicator" aria-hidden="true"></div>
+        </div>
+        <aside class="study-notes">
+          <p class="study-state" id="study-state">打开即续读</p>
+          <p id="study-detail">从上次的位置进入正文，陪读面板保持收起。</p>
+          <div class="scenario-links" aria-label="查看关键状态">
+            <button data-scenario="resume">续读</button
+            ><button data-scenario="selected">选文</button
+            ><button data-scenario="companion">半屏</button
+            ><button data-scenario="discussion">讨论</button
+            ><button data-scenario="citation">出处</button
+            ><button data-scenario="note">笔记</button
+            ><button data-scenario="records">记录</button
+            ><button data-scenario="library">书房</button>
+          </div>
+          <a href="./exports/core-flow.svg">核心流程图</a
+          ><a href="./exports/relationships.svg">页面与内容关系</a>
+          <p class="prototype-label">
+            交互原型 · 固定公版样章与示例讲解<br />不接联网模型，输入仅留在当前浏览器会话。
+          </p>
+        </aside>
+      </div>
+    </main>
+    <script>(() => {
+  // docs/design/2026-10-27-ios-polish/prototype/motion.mjs
+  function advanceSpring({ position, velocity }, target, seconds) {
+    if (seconds <= 0) return { position, velocity };
+    const stiffness = 390;
+    const decay = 18;
+    const frequency = Math.sqrt(stiffness - decay * decay);
+    const displacement = position - target;
+    const envelope = Math.exp(-decay * seconds);
+    const cosine = Math.cos(frequency * seconds);
+    const sine = Math.sin(frequency * seconds);
+    return {
+      position: target + envelope * (displacement * cosine + (velocity + decay * displacement) / frequency * sine),
+      velocity: envelope * (velocity * cosine - (decay * velocity + stiffness * displacement) / frequency * sine)
+    };
+  }
+  function resistedPosition(value, min, max, extent) {
+    if (value >= min && value <= max) return value;
+    const edge = value < min ? min : max;
+    const distance = value - edge;
+    const dimension = Math.max(1, extent);
+    return edge + distance * dimension * 0.55 / (dimension + 0.55 * Math.abs(distance));
+  }
+  function nearestDetent(position, velocity, stops) {
+    const projected = position + velocity / 1e3 * 0.998 / (1 - 0.998);
+    return stops.reduce(
+      (nearest, stop) => Math.abs(stop[1] - projected) < Math.abs(nearest[1] - projected) ? stop : nearest
+    )[0];
+  }
+
+  // docs/design/2026-10-27-ios-polish/prototype/selection-position.mjs
+  function placeSelectionMenu(anchor, menu, bounds) {
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+    const left = clamp((anchor.left + anchor.right - menu.width) / 2, bounds.left, bounds.right - menu.width);
+    const above = anchor.top - menu.height - 10;
+    const below = anchor.bottom + 10;
+    if (above >= bounds.top) return { left, top: above, placement: "above" };
+    if (below + menu.height <= bounds.bottom) return { left, top: below, placement: "below" };
+    return { left, top: clamp(below, bounds.top, bounds.bottom - menu.height), placement: "edge" };
+  }
+
+  // docs/design/2026-10-27-ios-polish/prototype/app.js
+  var icons = {
+    library: '<path d="M4 4v16M9 4v16M14 4l6 15M3 4h3M8 4h3M3 20h8M14 4l3-1 6 16-3 1"/>',
+    down: '<path d="m5 9 7 7 7-7"/>',
+    left: '<path d="m15 5-7 7 7 7"/>',
+    right: '<path d="m9 5 7 7-7 7"/>',
+    up: '<path d="M12 19V5m-6 6 6-6 6 6"/>',
+    conversation: '<path d="M20 11a8 8 0 0 1-8 8H5l-4 3 1.6-6A8 8 0 1 1 20 11Z"/><path d="M6 10h8M6 14h5"/>',
+    quote: '<path d="M10 5H4v7h5c0 4-2 6-5 7M21 5h-6v7h5c0 4-2 6-5 7"/>',
+    note: '<path d="M14 4H4v16h16V10m-9 3 8-8 3 3-8 8-4 1Z"/>',
+    check: '<path d="m5 12 5 5L20 6"/>',
+    external: '<path d="M14 3h7v7m0-7L10 14M10 4H4v16h16v-6"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/>',
+    moon: '<path d="M20 14A9 9 0 0 1 10 3a9 9 0 1 0 10 11Z"/>'
+  };
+  var icon = (name) => `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${icons[name] || icons.right}</svg>`;
+  function drawIcons(scope = document) {
+    scope.querySelectorAll("[data-icon]").forEach((node) => node.innerHTML = icon(node.dataset.icon));
+  }
+  var paragraphs = [
+    {
+      id: "walden-2-001",
+      source: "I went to the woods because I wished to live deliberately, to front only the essential facts of life, and see if I could not learn what it had to teach, and not, when I came to die, discover that I had not lived.",
+      literal: "\u6211\u8D70\u8FDB\u6811\u6797\uFF0C\u56E0\u4E3A\u6211\u5E0C\u671B\u6709\u610F\u8BC6\u5730\u751F\u6D3B\uFF0C\u76F4\u9762\u751F\u6D3B\u4E2D\u6700\u57FA\u672C\u7684\u4E8B\u5B9E\uFF0C\u770B\u770B\u80FD\u5426\u5B66\u5230\u5B83\u8981\u6559\u6211\u7684\u4E1C\u897F\uFF1B\u514D\u5F97\u4E34\u7EC8\u65F6\u624D\u53D1\u73B0\uFF0C\u81EA\u5DF1\u4ECE\u672A\u6D3B\u8FC7\u3002",
+      interpretive: "\u6211\u6765\u5230\u6797\u4E2D\uFF0C\u662F\u60F3\u6E05\u9192\u5730\u8FC7\u65E5\u5B50\uFF0C\u9762\u5BF9\u751F\u6D3B\u6700\u8981\u7D27\u7684\u4E8B\u5B9E\uFF0C\u770B\u770B\u751F\u6D3B\u80FD\u6559\u7ED9\u6211\u4EC0\u4E48\uFF1B\u6211\u4E0D\u60F3\u7B49\u5230\u6B7B\u65F6\u624D\u53D1\u73B0\uFF0C\u81EA\u5DF1\u6CA1\u6709\u771F\u6B63\u751F\u6D3B\u8FC7\u3002"
+    },
+    {
+      id: "walden-2-002",
+      source: "I did not wish to live what was not life, living is so dear; nor did I wish to practise resignation, unless it was quite necessary.",
+      literal: "\u6211\u4E0D\u613F\u8FC7\u4E0D\u7B97\u751F\u6D3B\u7684\u751F\u6D3B\uFF0C\u751F\u6D3B\u662F\u5982\u6B64\u73CD\u8D35\uFF1B\u6211\u4E5F\u4E0D\u613F\u7EC3\u4E60\u987A\u4ECE\uFF0C\u9664\u975E\u786E\u5B9E\u6709\u5FC5\u8981\u3002",
+      interpretive: "\u65E5\u5B50\u8FD9\u6837\u73CD\u8D35\uFF0C\u6211\u4E0D\u613F\u628A\u5B83\u8FC7\u6210\u5E76\u975E\u751F\u6D3B\u7684\u6837\u5B50\uFF1B\u53EA\u8981\u8FD8\u6CA1\u6709\u5230\u975E\u5982\u6B64\u4E0D\u53EF\u7684\u65F6\u5019\uFF0C\u6211\u4E5F\u4E0D\u60F3\u8BA4\u547D\u3002"
+    },
+    {
+      id: "walden-2-003",
+      source: "I wanted to live deep and suck out all the marrow of life, to live so sturdily and Spartan-like as to put to rout all that was not life",
+      literal: "\u6211\u60F3\u6D3B\u5F97\u6DF1\u5165\uFF0C\u5438\u53D6\u751F\u6D3B\u6240\u6709\u7684\u9AA8\u9AD3\uFF0C\u6D3B\u5F97\u575A\u5B9E\u800C\u50CF\u65AF\u5DF4\u8FBE\u4EBA\u90A3\u6837\uFF0C\u4F7F\u4E00\u5207\u4E0D\u662F\u751F\u6D3B\u7684\u4E1C\u897F\u8D25\u9000\u3002",
+      interpretive: "\u6211\u60F3\u628A\u751F\u6D3B\u8FC7\u6DF1\uFF0C\u5C1D\u5C3D\u5B83\u7684\u6ECB\u5473\uFF1B\u7528\u7ED3\u5B9E\u3001\u7B80\u6734\u7684\u65E5\u5B50\uFF0C\u8D76\u8D70\u90A3\u4E9B\u7B97\u4E0D\u4E0A\u751F\u6D3B\u7684\u4E1C\u897F\u3002"
+    },
+    {
+      id: "walden-2-004",
+      source: "Our life is frittered away by detail.",
+      literal: "\u6211\u4EEC\u7684\u751F\u6D3B\u88AB\u7EC6\u8282\u8017\u6563\u4E86\u3002",
+      interpretive: "\u65E5\u5B50\u5C31\u5728\u79CD\u79CD\u7410\u4E8B\u91CC\u4E00\u70B9\u70B9\u6D88\u78E8\u3002"
+    }
+  ];
+  var sourceURL = "https://www.gutenberg.org/files/205/205-h/205-h.htm";
+  var $ = (id) => document.getElementById(id);
+  var escape = (s) => String(s).replace(
+    /[&<>"']/g,
+    (c) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[c]
+  );
+  var key = "leafhour-ios-half-sheet-prototype-v1";
+  var saved = {};
+  try {
+    saved = JSON.parse(sessionStorage.getItem(key) || "{}");
+  } catch {
+  }
+  var initialQuote = () => ({
+    passageId: paragraphs[0].id,
+    text: paragraphs[0].interpretive,
+    layer: "interpretive",
+    version: "prototype-20261026",
+    selection: "\u56FA\u5B9A\u6837\u6587\u9009\u533A",
+    startUtf16: 0,
+    endUtf16: paragraphs[0].interpretive.length,
+    startCodePoint: 0
+  });
+  var state = {
+    theme: saved.theme || "paper",
+    size: saved.size || 22,
+    layer: saved.layer || "interpretive",
+    readingTop: saved.readingTop || 0,
+    quote: saved.quote || initialQuote(),
+    draft: saved.draft || "",
+    drafts: saved.drafts || [],
+    notes: saved.notes || [],
+    turns: saved.turns || [],
+    pendingTurn: saved.pendingTurn || null,
+    noteDrafts: saved.noteDrafts || {},
+    question: saved.question || "",
+    answered: !!saved.answered,
+    route: "closed",
+    detent: "half",
+    returnFrame: null,
+    offline: false,
+    pendingSelection: null,
+    selectionRange: null,
+    recordsTab: "notes",
+    y: 0,
+    velocity: 0,
+    target: 0,
+    raf: 0,
+    drag: null,
+    closingFrame: null
+  };
+  window.leafhourPrototype = {
+    snapshot: () => ({
+      route: state.route,
+      detent: state.detent,
+      readingTop: $("reading-scroll").scrollTop,
+      quote: { ...state.quote },
+      draft: state.draft,
+      drafts: state.drafts.map((x) => ({ ...x })),
+      question: state.question,
+      notes: state.notes.length,
+      theme: state.theme,
+      layer: state.layer,
+      offline: state.offline
+    }),
+    scenario: showScenario
+  };
+  function persist() {
+    try {
+      sessionStorage.setItem(
+        key,
+        JSON.stringify({
+          theme: state.theme,
+          size: state.size,
+          layer: state.layer,
+          readingTop: $("reading-scroll").scrollTop,
+          quote: state.quote,
+          draft: state.draft,
+          drafts: state.drafts,
+          notes: state.notes,
+          question: state.question,
+          answered: state.answered,
+          turns: state.turns,
+          pendingTurn: state.pendingTurn,
+          noteDrafts: state.noteDrafts
+        })
+      );
+    } catch {
+    }
+  }
+  function notify(text) {
+    $("phone-toast").textContent = text;
+    $("phone-toast").hidden = false;
+    clearTimeout(notify.timer);
+    notify.timer = setTimeout(() => $("phone-toast").hidden = true, 2800);
+  }
+  function setStudy(title, detail) {
+    $("study-state").textContent = title;
+    $("study-detail").textContent = detail;
+    document.querySelectorAll("[data-scenario]").forEach(
+      (button) => button.classList.toggle(
+        "active",
+        button.dataset.scenario === state.route || button.dataset.scenario === "resume" && state.route === "closed"
+      )
+    );
+  }
+  function readerAnchor() {
+    const top = $("reading-scroll").getBoundingClientRect().top + 20;
+    const node = [...document.querySelectorAll("[data-passage]")].find(
+      (n) => n.getBoundingClientRect().bottom > top
+    );
+    if (!node) return null;
+    const rect = node.getBoundingClientRect();
+    return {
+      id: node.id,
+      offset: rect.top - top,
+      fraction: rect.top < top ? (top - rect.top) / rect.height : null
+    };
+  }
+  function restoreReaderAnchor(anchor) {
+    if (!anchor) return;
+    const node = $(anchor.id);
+    if (!node) return;
+    const top = $("reading-scroll").getBoundingClientRect().top + 20, rect = node.getBoundingClientRect();
+    $("reading-scroll").scrollTop += anchor.fraction === null ? rect.top - top - anchor.offset : rect.top + rect.height * anchor.fraction - top;
+  }
+  function renderReader({ restore = true } = {}) {
+    const anchor = readerAnchor();
+    hideSelectionMenu();
+    $("phone").dataset.theme = state.theme;
+    $("phone").style.setProperty("--reader-size", state.size + "px");
+    $("version-label").textContent = state.layer === "source" ? "\u4F5C\u8005\u539F\u6587 \xB7 \u8282\u9009" : state.layer === "literal" ? "\u793A\u4F8B\u76F4\u8BD1" : "\u793A\u4F8B\u610F\u8BD1";
+    $("prose").innerHTML = paragraphs.map(
+      (p, i) => `<p class="passage ${state.layer === "source" ? "source" : ""}" id="${p.id}" data-passage="${p.id}">${i === 0 ? '<span class="resume-mark">\u4E0A\u6B21\u8BFB\u5230\u8FD9\u91CC</span>' : ""}<span class="passage-text">${escape(p[state.layer])}</span><button class="select-anchor" data-quote="${p.id}" aria-label="\u9009\u62E9\u8FD9\u4E00\u6BB5">\u231C</button></p>`
+    ).join("");
+    if (restore) restoreReaderAnchor(anchor);
+  }
+  function quoteKey(quote) {
+    return JSON.stringify([
+      quote.passageId,
+      quote.version,
+      quote.layer,
+      quote.startUtf16,
+      quote.endUtf16,
+      quote.text
+    ]);
+  }
+  function captureQuote(id, text, startOffset = null) {
+    const p = paragraphs.find((p2) => p2.id === id) || paragraphs[0], value = text || p[state.layer], start = startOffset !== null ? startOffset : value === p[state.layer] ? 0 : -1;
+    return {
+      passageId: p.id,
+      text: value,
+      layer: state.layer,
+      version: "prototype-20261026",
+      selection: "\u5F53\u524D\u6837\u6587\u9009\u533A",
+      startUtf16: start < 0 ? null : start,
+      endUtf16: start < 0 ? null : start + value.length,
+      startCodePoint: start < 0 ? null : [...p[state.layer].slice(0, start)].length
+    };
+  }
+  function rememberTurn(turn) {
+    if (!state.turns.some((item) => item.id === turn.id))
+      state.turns.push({ ...turn, quote: { ...turn.quote } });
+    state.turns = state.turns.slice(-6);
+  }
+  function takeQuote(next, { open = true } = {}) {
+    captureComposer();
+    if (quoteKey(state.quote) !== quoteKey(next)) {
+      if (state.draft.trim()) {
+        state.drafts.push({ quote: { ...state.quote }, draft: state.draft });
+        notify("\u4E0A\u4E00\u53E5\u7684\u95EE\u9898\u8349\u7A3F\u5DF2\u4FDD\u7559");
+      }
+      const previous = state.drafts.findIndex(
+        (item) => quoteKey(item.quote) === quoteKey(next)
+      );
+      state.draft = previous >= 0 ? state.drafts.splice(previous, 1)[0].draft : "";
+      state.question = "";
+      state.answered = false;
+      state.returnFrame = null;
+    }
+    state.quote = next;
+    $("question-input").value = state.draft;
+    hideSelectionMenu();
+    window.getSelection()?.removeAllRanges();
+    persist();
+    if (open) openRoute("companion", "half", { capture: false });
+  }
+  function selectPassage(id) {
+    hideSelectionMenu();
+    state.pendingSelection = captureQuote(id);
+    $(id).classList.add("is-selected");
+    $("selection-menu").hidden = false;
+    positionSelectionMenu();
+    setStudy(
+      "\u9009\u6587\u51B3\u5B9A\u95EE\u9898\u7684\u8303\u56F4",
+      "\u9009\u6587\u4E0D\u4F1A\u81EA\u52A8\u66FF\u6362\u5F53\u524D\u8BA8\u8BBA\u3002\u70B9\u201C\u89E3\u91CA\u8FD9\u53E5\u201D\u624D\u7528\u8FD9\u53E5\u63D0\u95EE\uFF0C\u65E7\u8349\u7A3F\u4FDD\u7559\u3002"
+    );
+  }
+  function hideSelectionMenu() {
+    $("selection-menu").hidden = true;
+    state.pendingSelection = null;
+    state.selectionRange = null;
+    document.querySelectorAll(".passage.is-selected").forEach((n) => n.classList.remove("is-selected"));
+  }
+  function positionSelectionMenu() {
+    const menu = $("selection-menu");
+    if (menu.hidden || !state.pendingSelection) return;
+    const text = $(state.pendingSelection.passageId)?.querySelector(".passage-text");
+    if (!text) return hideSelectionMenu();
+    const phone = $("phone").getBoundingClientRect();
+    const scale = phone.width / $("phone").clientWidth;
+    const local = (rect) => ({ left: (rect.left - phone.left) / scale, right: (rect.right - phone.left) / scale, top: (rect.top - phone.top) / scale, bottom: (rect.bottom - phone.top) / scale });
+    const selected = state.selectionRange?.commonAncestorContainer.isConnected ? state.selectionRange.getBoundingClientRect() : text.getBoundingClientRect();
+    const anchor = local(selected);
+    const reading = local($("reading-scroll").getBoundingClientRect());
+    const nav = local($("reader-nav").getBoundingClientRect());
+    const dock = local($("reading-dock").getBoundingClientRect());
+    const bounds = { left: 16, right: $("phone").clientWidth - 16, top: Math.max(reading.top, nav.bottom + 8), bottom: Math.min(reading.bottom, dock.top - 8) };
+    if (state.route !== "closed") bounds.bottom = Math.min(bounds.bottom, local($("reader-sheet").getBoundingClientRect()).top - 8);
+    const size = { width: menu.offsetWidth, height: menu.offsetHeight };
+    if (anchor.bottom < bounds.top || anchor.top > bounds.bottom || bounds.bottom - bounds.top < size.height) return hideSelectionMenu();
+    const placement = placeSelectionMenu({ ...anchor, top: Math.max(anchor.top, bounds.top), bottom: Math.min(anchor.bottom, bounds.bottom) }, size, bounds);
+    menu.style.left = placement.left + "px";
+    menu.style.top = placement.top + "px";
+    menu.style.setProperty("--anchor-x", Math.max(16, Math.min(size.width - 16, (anchor.left + anchor.right) / 2 - placement.left)) + "px");
+    menu.dataset.placement = placement.placement;
+  }
+  function contextQuote() {
+    return `<div class="context-quote" data-passage-id="${escape(state.quote.passageId)}" data-source-layer="${escape(state.quote.layer)}" data-selection-start="${state.quote.startUtf16 ?? ""}" data-selection-end="${state.quote.endUtf16 ?? ""}"><small>\u672C\u6BB5 \xB7 ${state.quote.layer === "source" ? "\u539F\u6587" : state.quote.layer === "literal" ? "\u793A\u4F8B\u76F4\u8BD1" : "\u793A\u4F8B\u610F\u8BD1"}</small><div class="quote-excerpt">${escape(state.quote.text)}</div><button data-action="return-quote">\u8FD4\u56DE\u63D0\u95EE\u539F\u53E5</button></div>`;
+  }
+  function answerText() {
+    return {
+      "walden-2-001": "\u8FD9\u91CC\u7684 deliberately\uFF0C\u53EF\u4EE5\u8BFB\u6210\u201C\u6709\u610F\u8BC6\u5730\u9009\u62E9\u600E\u6837\u751F\u6D3B\u201D\u3002\n\n\u68AD\u7F57\u628A\u6797\u4E2D\u751F\u6D3B\u5F53\u4F5C\u4E00\u6B21\u4EB2\u81EA\u68C0\u9A8C\u3002\u4ED6\u60F3\u77E5\u9053\uFF0C\u54EA\u4E9B\u4E8B\u503C\u5F97\u7528\u81EA\u5DF1\u7684\u65E5\u5B50\u53BB\u505A\u3002",
+      "walden-2-002": "\u8FD9\u4E00\u6BB5\u540C\u65F6\u8BF4\u5230\u73CD\u60DC\u751F\u6D3B\u4E0E\u4E0D\u613F\u8BA4\u547D\u3002\n\n\u201C\u9664\u975E\u786E\u5B9E\u6709\u5FC5\u8981\u201D\u4FDD\u7559\u4E86\u4F59\u5730\uFF0C\u4E0D\u80FD\u5220\u53BB\u8FD9\u4E2A\u9650\u5B9A\uFF0C\u8BFB\u6210\u4EFB\u4F55\u65F6\u5019\u90FD\u5FC5\u987B\u6297\u62D2\u3002",
+      "walden-2-003": "\u201C\u9AA8\u9AD3\u201D\u628A\u751F\u6D3B\u5199\u6210\u9700\u8981\u4EB2\u8EAB\u5C1D\u8BD5\u7684\u4E1C\u897F\u3002\n\n\u4E00\u79CD\u8BFB\u6CD5\u662F\uFF1A\u4ED6\u671F\u5F85\u4ECE\u5207\u8EAB\u7ECF\u9A8C\u91CC\u5206\u8FA8\uFF0C\u54EA\u4E9B\u4E8B\u5BF9\u81EA\u5DF1\u662F\u5FC5\u8981\u7684\u3002",
+      "walden-2-004": "\u8FD9\u53E5\u628A\u65E5\u5B50\u7684\u6D88\u8017\u5F52\u4E8E\u4E0D\u65AD\u5206\u6563\u6CE8\u610F\u529B\u7684\u7410\u4E8B\u3002\n\n\u53EF\u4EE5\u63A5\u7740\u60F3\uFF1A\u54EA\u4E9B\u7EC6\u8282\u503C\u5F97\u8BA4\u771F\u505A\uFF0C\u54EA\u4E9B\u53EA\u662F\u5360\u6EE1\u4E86\u65F6\u95F4\uFF1F"
+    }[state.quote.passageId] || "\u8FD9\u4EFD\u539F\u578B\u53EA\u63D0\u4F9B\u6240\u9009\u516C\u7248\u6837\u7AE0\u7684\u56FA\u5B9A\u8BB2\u89E3\u793A\u4F8B\u3002";
+  }
+  function discussion() {
+    const full = state.route === "discussion", question = state.question || {
+      "walden-2-001": "deliberately \u4E3A\u4EC0\u4E48\u4E0D\u53EA\u662F\u201C\u523B\u610F\u201D\uFF1F",
+      "walden-2-002": "\u8FD9\u91CC\u4E3A\u4EC0\u4E48\u8BF4\u201C\u4E0D\u7B97\u751F\u6D3B\u201D\uFF1F",
+      "walden-2-003": "\u201C\u6D3B\u5F97\u6DF1\u5165\u201D\u662F\u4EC0\u4E48\u610F\u601D\uFF1F",
+      "walden-2-004": "\u7410\u4E8B\u600E\u6837\u6D88\u78E8\u4E86\u65E5\u5B50\uFF1F"
+    }[state.quote.passageId];
+    return contextQuote() + (full || state.answered ? `${state.question ? "" : '<p class="answer-label">\u95EE\u9898\u793A\u4F8B</p>'}<p class="question-bubble">${escape(question)}</p>` : "") + (state.offline || state.pendingTurn ? `<div class="error-card"><p>${state.offline ? "\u6682\u65F6\u65E0\u6CD5\u8FDE\u63A5\u3002\u95EE\u9898\u548C\u9009\u6587\u5DF2\u4FDD\u7559\uFF0C\u4F60\u53EF\u4EE5\u7EE7\u7EED\u8BFB\u3002" : state.pendingTurn && quoteKey(state.pendingTurn.quote) !== quoteKey(state.quote) ? "\u4E0A\u4E00\u53E5\u8FD8\u6709\u4E00\u6B21\u672A\u5B8C\u6210\u7684\u63D0\u95EE\uFF0C\u8FD4\u56DE\u540E\u53EF\u4EE5\u91CD\u8BD5\u3002" : "\u8FDE\u63A5\u5DF2\u6062\u590D\uFF0C\u8FD9\u6B21\u63D0\u95EE\u5C1A\u672A\u91CD\u8BD5\u3002"}</p><button data-action="retry">${state.pendingTurn && quoteKey(state.pendingTurn.quote) !== quoteKey(state.quote) ? "\u8FD4\u56DE\u5E76\u91CD\u8BD5\u539F\u95EE\u9898" : "\u91CD\u8BD5\u8FD9\u6B21\u63D0\u95EE"}</button></div>` : `<p class="answer-label">\u8BB2\u89E3 \xB7 \u793A\u4F8B</p><p class="answer">${escape(answerText())}</p><button class="source-link" data-action="citation">\u672C\u6BB5 ${icon("external")}</button><div class="answer-actions"><button data-action="expand">${icon("conversation")}\u63A5\u7740\u804A</button><button data-action="note">${icon("note")}\u8BB0\u4E00\u53E5</button></div><p class="scope-line">\u4F9D\u636E\uFF1A\u6240\u9009\u53E5\u4E0E\u672C\u6BB5\u524D\u540E\u6587</p>`);
+  }
+  function renderBody() {
+    let html = "";
+    let title = "\u8BFB\u5230\u8FD9\u91CC";
+    let composer = false;
+    let back = false;
+    if (state.route === "companion" || state.route === "discussion") {
+      title = state.route === "discussion" ? "\u63A5\u7740\u804A\u8FD9\u53E5" : "\u8BFB\u5230\u8FD9\u91CC";
+      html = discussion();
+      composer = true;
+    }
+    if (state.route === "citation") {
+      title = "\u6838\u5BF9\u51FA\u5904";
+      back = true;
+      const p = paragraphs.find((p2) => p2.id === state.quote.passageId) || paragraphs[0];
+      html = `<p class="quote-title">\u74E6\u5C14\u767B\u6E56 \xB7 \u7B2C\u4E8C\u7AE0</p><span class="record-kind">\u4F5C\u8005\u539F\u6587 \xB7 \u8282\u9009</span><p class="citation-original">${escape(p.source)}</p><div class="quiet-rule"></div><span class="record-kind">\u793A\u4F8B\u610F\u8BD1</span><p class="citation-translation">${escape(p.interpretive)}</p><a class="source-external" href="${sourceURL}" target="_blank" rel="noopener">\u67E5\u770B\u516C\u7248\u5E95\u672C ${icon("external")}</a>`;
+    }
+    if (state.route === "original") {
+      title = "\u6838\u5BF9\u539F\u6587";
+      const p = paragraphs.find((p2) => p2.id === state.quote.passageId) || paragraphs[0];
+      html = `<div class="segmented"><button class="${state.layer === "source" ? "active" : ""}" data-layer="source">\u539F\u6587</button><button class="${state.layer === "literal" ? "active" : ""}" data-layer="literal">\u76F4\u8BD1</button><button class="${state.layer === "interpretive" ? "active" : ""}" data-layer="interpretive">\u610F\u8BD1</button></div><span class="record-kind">\u4F5C\u8005\u539F\u6587 \xB7 \u8282\u9009</span><p class="citation-original">${escape(p.source)}</p><div class="quiet-rule"></div><span class="record-kind">${state.layer === "literal" ? "\u793A\u4F8B\u76F4\u8BD1" : "\u793A\u4F8B\u610F\u8BD1"}</span><p class="citation-translation">${escape(p[state.layer === "literal" ? "literal" : "interpretive"])}</p>`;
+    }
+    if (state.route === "note") {
+      title = "\u8BB0\u4E00\u53E5";
+      back = !!state.returnFrame;
+      html = contextQuote() + `<textarea class="note-field" id="note-field" aria-label="\u81EA\u5DF1\u7684\u7B14\u8BB0" placeholder="\u7528\u81EA\u5DF1\u7684\u8BDD\uFF0C\u7559\u4E0B\u4E00\u70B9\u60F3\u6CD5\u2026">${escape(state.noteDrafts[quoteKey(state.quote)] || "")}</textarea><div class="save-note-row"><span>\u81EA\u5DF1\u7684\u7B14\u8BB0</span><button class="primary-button" data-action="save-note">\u4FDD\u5B58</button></div>`;
+    }
+    if (state.route === "library") {
+      title = "\u4E66\u623F";
+      html = `<div class="shelf-book"><div class="book-cover"><h3>\u74E6\u5C14\u767B\u6E56</h3><p>Walden<br>Henry D. Thoreau</p><div class="cover-pond"></div></div><div><h3>\u74E6\u5C14\u767B\u6E56</h3><p>\u4EA8\u5229\xB7\u6234\u7EF4\xB7\u68AD\u7F57<br>\u7B2C\u4E8C\u7AE0 \xB7 \u516C\u7248\u6837\u7AE0</p><button class="primary-button" data-action="continue">\u7EE7\u7EED\u8BFB</button></div></div><button class="list-row" data-action="records"><span><strong>\u6211\u7684\u8BB0\u5F55</strong><small>\u7B14\u8BB0\u4E0E\u8FD8\u60F3\u7EE7\u7EED\u7684\u95EE\u9898</small></span>${icon("right")}</button><button class="list-row" data-action="appearance"><span><strong>\u9605\u8BFB\u504F\u597D</strong><small>\u5B57\u53F7\u3001\u7EB8\u9762\u4E0E\u6B63\u6587\u7248\u672C</small></span>${icon("right")}</button><p class="shelf-note">\u8FD9\u4EFD\u539F\u578B\u53EA\u653E\u4E00\u4EFD\u516C\u7248\u6837\u7AE0\uFF0C\u539F\u6587\u4E0E\u4E24\u79CD\u793A\u4F8B\u8BD1\u6587\u72EC\u7ACB\u4FDD\u5B58\u3002</p>`;
+    }
+    if (state.route === "records") {
+      title = "\u6211\u7684\u8BB0\u5F55";
+      html = `<div class="segmented"><button data-record-tab="notes" class="${state.recordsTab === "notes" ? "active" : ""}">\u81EA\u5DF1\u7684\u7B14\u8BB0</button><button data-record-tab="discussion" class="${state.recordsTab === "discussion" ? "active" : ""}">\u8BA8\u8BBA</button></div>`;
+      if (state.recordsTab === "notes") {
+        html += state.notes.length ? state.notes.map(
+          (n, i) => `<button class="list-row" data-record="${i}"><span><span class="record-kind">\u81EA\u5DF1\u7684\u7B14\u8BB0</span><strong>${escape(n.text)}</strong><small>\u74E6\u5C14\u767B\u6E56 \xB7 \u7B2C\u4E8C\u7AE0</small></span>${icon("right")}</button>`
+        ).join("") : '<div class="empty-records"><h3>\u8FD8\u6CA1\u6709\u7B14\u8BB0</h3><p>\u8BFB\u5230\u60F3\u7559\u4E0B\u7684\u8BDD\uFF0C\u53EF\u4EE5\u8BB0\u4E00\u53E5\u3002</p><button class="secondary-button" data-action="continue">\u56DE\u5230\u4E66\u91CC</button></div>';
+      } else {
+        html += state.turns.length ? state.turns.map(
+          (turn, index) => `<button class="list-row" data-turn="${index}"><span><span class="record-kind">\u9605\u8BFB\u8BA8\u8BBA \xB7 \u539F\u578B\u6F14\u793A</span><strong>${escape(turn.question)}</strong><small>\u74E6\u5C14\u767B\u6E56 \xB7 ${escape(turn.quote.text.slice(0, 24))}\u2026</small></span>${icon("right")}</button>`
+        ).join("") : `<button class="list-row" data-action="expand"><span><span class="record-kind">\u9605\u8BFB\u8BA8\u8BBA \xB7 \u793A\u4F8B</span><strong>deliberately \u4E3A\u4EC0\u4E48\u4E0D\u53EA\u662F\u201C\u523B\u610F\u201D\uFF1F</strong><small>\u74E6\u5C14\u767B\u6E56 \xB7 \u7ED1\u5B9A\u63D0\u95EE\u539F\u53E5</small></span>${icon("right")}</button>`;
+      }
+    }
+    if (state.route === "contents") {
+      title = "\u76EE\u5F55";
+      html = '<p class="quote-title">\u7B2C\u4E8C\u7AE0 \xB7 \u6211\u751F\u6D3B\u7684\u5730\u65B9\uFF0C\u6211\u4E3A\u4F55\u751F\u6D3B</p>' + paragraphs.map(
+        (p, i) => `<button class="list-row" data-jump="${p.id}"><span><strong>${["\u6797\u4E2D\u751F\u6D3B", "\u751F\u6D3B\u5982\u6B64\u73CD\u8D35", "\u6D3B\u5F97\u6DF1\u5165", "\u7410\u4E8B\u4E0E\u65E5\u5B50"][i]}</strong><small>${escape(p.interpretive.slice(0, 25))}\u2026</small></span>${icon("right")}</button>`
+      ).join("");
+    }
+    if (state.route === "appearance") {
+      title = "\u6392\u7248";
+      html = `<div class="setting-group"><label>\u6B63\u6587\u5927\u5C0F</label><div class="type-size-controls"><button data-size="-1" aria-label="\u51CF\u5C0F\u5B57\u53F7">A\u2212</button><output>${state.size}</output><button data-size="1" aria-label="\u589E\u5927\u5B57\u53F7">A\uFF0B</button></div></div><div class="setting-group"><label>\u7EB8\u9762</label><button class="appearance-option" data-theme="paper" aria-pressed="${state.theme === "paper"}">\u6E05\u7EB8 ${state.theme === "paper" ? icon("check") : icon("sun")}</button><button class="appearance-option night-preview" data-theme="night" aria-pressed="${state.theme === "night"}">\u591C\u8BFB ${state.theme === "night" ? icon("check") : icon("moon")}</button></div><div class="setting-group"><label>\u6B63\u6587\u7248\u672C</label><div class="segmented"><button class="${state.layer === "source" ? "active" : ""}" data-layer="source">\u539F\u6587</button><button class="${state.layer === "literal" ? "active" : ""}" data-layer="literal">\u76F4\u8BD1</button><button class="${state.layer === "interpretive" ? "active" : ""}" data-layer="interpretive">\u610F\u8BD1</button></div></div><p class="type-preview">\u6211\u6765\u5230\u6797\u4E2D\uFF0C\u662F\u60F3\u6E05\u9192\u5730\u8FC7\u65E5\u5B50\u3002</p>`;
+    }
+    $("sheet-title").textContent = title;
+    $("sheet-back").hidden = !back;
+    $("sheet-title").hidden = back;
+    $("sheet-done").textContent = [
+      "companion",
+      "discussion",
+      "citation"
+    ].includes(state.route) ? "\u7EE7\u7EED\u8BFB" : "\u5B8C\u6210";
+    $("sheet-body").innerHTML = html;
+    $("composer").hidden = !composer;
+    $("question-input").value = state.draft;
+    $("draft-return").hidden = !state.drafts.length;
+    $("sheet-body").scrollTop = 0;
+    drawIcons($("sheet-body"));
+  }
+  function phoneHeight() {
+    return $("phone").clientHeight;
+  }
+  function targetY(detent) {
+    return phoneHeight() * (detent === "closed" ? 0.88 : detent === "half" ? 0.36 : 0);
+  }
+  function paintSheet() {
+    const visible = Math.max(0, phoneHeight() * 0.88 - state.y);
+    $("reader-sheet").style.transform = `translateY(${state.y}px)`;
+    $("reader-sheet").style.paddingBottom = Math.max(0, state.y) + 31 + "px";
+    const fullness = Math.max(0, Math.min(1, (visible / phoneHeight() - 0.52) / 0.36));
+    const isFull = state.route !== "closed" && state.detent === "full";
+    const becameModal = isFull && $("reader-sheet").getAttribute("aria-modal") !== "true";
+    $("sheet-scrim").hidden = fullness <= 2e-3;
+    $("sheet-scrim").style.opacity = fullness;
+    $("sheet-scrim").style.pointerEvents = isFull ? "auto" : "none";
+    $("reader-sheet").setAttribute("aria-modal", String(isFull));
+    $("reader-sheet").setAttribute("role", isFull ? "dialog" : "region");
+    $("sheet-grip").setAttribute("aria-expanded", String(isFull));
+    for (const node of [$("reader-nav"), $("reading-scroll"), $("reading-dock")])
+      node.inert = isFull;
+    if (becameModal && !$("reader-sheet").contains(document.activeElement))
+      $("sheet-done").focus({ preventScroll: true });
+    $("reading-scroll").style.paddingBottom = state.route === "closed" ? "64px" : Math.max(64, visible - 85) + "px";
+    positionSelectionMenu();
+  }
+  function snap(detent, { immediate = false, onComplete = null } = {}) {
+    $("reader-sheet").dataset.motion = "moving";
+    state.detent = detent;
+    state.target = targetY(detent);
+    cancelAnimationFrame(state.raf);
+    if (immediate || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      state.y = state.target;
+      state.velocity = 0;
+      paintSheet();
+      onComplete?.();
+      $("reader-sheet").dataset.motion = "settled";
+      return;
+    }
+    let last = performance.now();
+    function tick(now) {
+      const dt = Math.max(0, (now - last) / 1e3);
+      last = now;
+      const frame = advanceSpring({ position: state.y, velocity: state.velocity }, state.target, dt);
+      const crossesFullStop = state.target === targetY("full") && state.y >= 0 && frame.position < 0;
+      const crossesClosedStop = state.target === targetY("closed") && state.y <= targetY("closed") && frame.position > targetY("closed");
+      state.y = crossesFullStop || crossesClosedStop ? state.target : frame.position;
+      state.velocity = crossesFullStop || crossesClosedStop ? 0 : frame.velocity;
+      paintSheet();
+      if (Math.abs(state.target - state.y) > 0.4 || Math.abs(state.velocity) > 4)
+        state.raf = requestAnimationFrame(tick);
+      else {
+        state.y = state.target;
+        paintSheet();
+        onComplete?.();
+        $("reader-sheet").dataset.motion = "settled";
+      }
+    }
+    state.raf = requestAnimationFrame(tick);
+  }
+  function openRoute(route, detent = "full", { capture = true, restoreScroll = null } = {}) {
+    if (capture) captureComposer();
+    if (state.closingFrame) state.returnFrame = null;
+    state.closingFrame = null;
+    setClosingControls(false);
+    state.route = route;
+    hideSelectionMenu();
+    $("reader-sheet").inert = false;
+    $("reader-sheet").hidden = false;
+    renderBody();
+    const scrollRevision = state.scrollRevision || 0;
+    snap(detent, {
+      onComplete: () => {
+        if (restoreScroll !== null && state.route === route && (state.scrollRevision || 0) === scrollRevision)
+          $("sheet-body").scrollTop = restoreScroll;
+      }
+    });
+    setStudy(
+      {
+        companion: "\u534A\u5C4F\u966A\u8BFB",
+        discussion: "\u5C55\u5F00\u8BA8\u8BBA",
+        citation: "\u51FA\u5904\u6709\u56DE\u7A0B",
+        original: "\u540C\u6BB5\u6838\u5BF9",
+        note: "\u81EA\u5DF1\u7684\u7B14\u8BB0",
+        library: "\u81EA\u5DF1\u7684\u4E66\u623F",
+        records: "\u4ECE\u8BB0\u5F55\u56DE\u5230\u539F\u53E5",
+        contents: "\u7AE0\u8282\u4E0E\u6BB5\u843D",
+        appearance: "\u6392\u7248\u4E0D\u4E22\u4F4D\u7F6E"
+      }[route] || "\u9605\u8BFB",
+      route === "companion" ? "\u4E0A\u65B9\u6B63\u6587\u53EF\u4EE5\u7EE7\u7EED\u8BFB\u3002\u6240\u63D0\u95EE\u9898\u4ECD\u7ED1\u5B9A\u539F\u6765\u7684\u9009\u6587\uFF0C\u6536\u8D77\u540E\u4FDD\u7559\u6700\u65B0\u9605\u8BFB\u4F4D\u7F6E\u3002" : route === "citation" ? "\u51FA\u5904\u662F\u4E34\u65F6\u6838\u5BF9\uFF0C\u8FD4\u56DE\u8BA8\u8BBA\u4F1A\u6062\u590D\u8349\u7A3F\u3001\u56DE\u7B54\u4F4D\u7F6E\u4E0E\u9762\u677F\u9AD8\u5EA6\u3002" : "\u6BCF\u4E2A\u5165\u53E3\u90FD\u6709\u6E05\u695A\u7684\u5BF9\u8C61\u4E0E\u8FD4\u56DE\u8DEF\u5F84\u3002"
+    );
+  }
+  function setClosingControls(closing) {
+    for (const node of [$("sheet-header"), $("sheet-body"), $("composer")]) node.inert = closing;
+    $("reader-sheet").dataset.closing = String(closing);
+  }
+  function restoreClosingPanel() {
+    const frame = state.closingFrame;
+    if (!frame) return false;
+    cancelAnimationFrame(state.raf);
+    state.closingFrame = null;
+    state.route = frame.route;
+    state.detent = frame.detent;
+    state.target = targetY(frame.detent);
+    state.returnFrame = frame.returnFrame;
+    $("reader-sheet").inert = false;
+    setClosingControls(false);
+    setStudy("\u5DF2\u56DE\u5230\u539F\u6765\u7684\u9762\u677F", "\u5173\u95ED\u5DF2\u53D6\u6D88\uFF0C\u539F\u53E5\u3001\u95EE\u9898\u548C\u8349\u7A3F\u4ECD\u7136\u4FDD\u7559\u3002");
+    return true;
+  }
+  function closeSheet() {
+    if (state.route === "closed" && $("reader-sheet").hidden) return;
+    captureComposer();
+    if (state.route !== "closed") state.closingFrame = { route: state.route, detent: state.detent, returnFrame: state.returnFrame };
+    state.route = "closed";
+    $("reader-sheet").inert = false;
+    setClosingControls(true);
+    for (const node of [$("reader-nav"), $("reading-scroll"), $("reading-dock")])
+      node.inert = false;
+    $("reading-scroll").style.paddingBottom = "64px";
+    hideSelectionMenu();
+    snap("closed", {
+      onComplete: () => {
+        if (state.route === "closed") {
+          $("reader-sheet").hidden = true;
+          $("reader-sheet").inert = true;
+          state.closingFrame = null;
+          state.returnFrame = null;
+          setClosingControls(false);
+        }
+      }
+    });
+    persist();
+    setStudy(
+      "\u7EE7\u7EED\u9605\u8BFB",
+      "\u4FDD\u7559\u4F60\u521A\u624D\u4E3B\u52A8\u8BFB\u5230\u7684\u4F4D\u7F6E\u3002\u9700\u8981\u56DE\u5230\u63D0\u95EE\u5904\u65F6\uFF0C\u518D\u70B9\u201C\u8FD4\u56DE\u63D0\u95EE\u539F\u53E5\u201D\u3002"
+    );
+    $("companion-button").focus({ preventScroll: true });
+  }
+  function captureComposer() {
+    if (state.route === "note") {
+      state.noteDrafts[quoteKey(state.quote)] = $("note-field")?.value || "";
+      persist();
+      return;
+    }
+    if (!["companion", "discussion"].includes(state.route)) return;
+    state.draft = $("question-input").value;
+    persist();
+  }
+  function visitCitation() {
+    captureComposer();
+    state.returnFrame = {
+      route: state.route,
+      detent: state.detent,
+      scrollTop: $("sheet-body").scrollTop,
+      draft: state.draft,
+      quote: { ...state.quote },
+      question: state.question,
+      answered: state.answered
+    };
+    openRoute("citation", "full");
+  }
+  function backToDiscussion() {
+    if (state.route === "note") captureComposer();
+    const frame = state.returnFrame;
+    if (frame) {
+      state.returnFrame = null;
+      state.draft = frame.draft;
+      if (frame.quote) state.quote = { ...frame.quote };
+      state.question = frame.question || "";
+      state.answered = !!frame.answered;
+      openRoute(frame.route, frame.detent, {
+        capture: false,
+        restoreScroll: frame.scrollTop
+      });
+    } else openRoute("discussion", "full", { capture: false });
+  }
+  function jumpTo(id, { close = true } = {}) {
+    if (close) closeSheet();
+    const p = $(id);
+    if (p) $("reading-scroll").scrollTop = p.offsetTop - 24;
+    persist();
+  }
+  function action(name) {
+    if (name === "continue") {
+      closeSheet();
+      return;
+    }
+    if (name === "citation") {
+      visitCitation();
+      return;
+    }
+    if (name === "return-quote") {
+      jumpTo(state.quote.passageId, { close: false });
+      notify("\u5DF2\u56DE\u5230\u63D0\u95EE\u539F\u53E5");
+      return;
+    }
+    if (name === "expand") {
+      openRoute("discussion", "full");
+      return;
+    }
+    if (name === "note") {
+      captureComposer();
+      state.returnFrame = {
+        route: state.route,
+        detent: state.detent,
+        scrollTop: $("sheet-body").scrollTop,
+        draft: state.draft,
+        quote: { ...state.quote },
+        question: state.question,
+        answered: state.answered
+      };
+      openRoute("note", "full");
+      return;
+    }
+    if (name === "save-note") {
+      const text = $("note-field")?.value.trim();
+      if (!text) {
+        $("note-field")?.focus();
+        return;
+      }
+      state.notes.unshift({ text, quote: { ...state.quote }, author: "user" });
+      state.noteDrafts[quoteKey(state.quote)] = "";
+      $("note-field").value = "";
+      persist();
+      notify("\u7B14\u8BB0\u5DF2\u4FDD\u5B58");
+      backToDiscussion();
+      return;
+    }
+    if (name === "retry") {
+      if (state.offline) {
+        notify("\u4ECD\u5728\u65AD\u7F51\u793A\u4F8B\u4E2D\uFF0C\u95EE\u9898\u5DF2\u4FDD\u7559");
+        return;
+      }
+      if (state.pendingTurn) {
+        const turn = state.pendingTurn;
+        if (state.draft.trim() && (quoteKey(state.quote) !== quoteKey(turn.quote) || state.draft.trim() !== turn.question))
+          state.drafts.push({ quote: { ...state.quote }, draft: state.draft });
+        state.quote = { ...turn.quote };
+        state.question = turn.question;
+        state.draft = "";
+        $("question-input").value = "";
+        rememberTurn(turn);
+        state.pendingTurn = null;
+      }
+      state.answered = true;
+      persist();
+      renderBody();
+      notify("\u5DF2\u6062\u590D\u793A\u4F8B\u8BB2\u89E3");
+      return;
+    }
+    openRoute(name, "full");
+  }
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("button");
+    if (!button) return;
+    if (button.dataset.quote) {
+      selectPassage(button.dataset.quote);
+      return;
+    }
+    if (button.dataset.selection) {
+      takeQuote(state.pendingSelection || initialQuote(), { open: false });
+      openRoute(
+        button.dataset.selection === "explain" ? "companion" : button.dataset.selection,
+        button.dataset.selection === "explain" ? "half" : "full",
+        { capture: false }
+      );
+      return;
+    }
+    if (button.dataset.action) {
+      action(button.dataset.action);
+      return;
+    }
+    if (button.dataset.layer) {
+      state.layer = button.dataset.layer;
+      renderReader();
+      renderBody();
+      persist();
+      return;
+    }
+    if (button.dataset.size) {
+      state.size = Math.max(
+        18,
+        Math.min(28, state.size + Number(button.dataset.size))
+      );
+      renderReader();
+      renderBody();
+      persist();
+      return;
+    }
+    if (button.dataset.theme) {
+      state.theme = button.dataset.theme;
+      renderReader();
+      renderBody();
+      persist();
+      return;
+    }
+    if (button.dataset.jump) {
+      jumpTo(button.dataset.jump);
+      return;
+    }
+    if (button.dataset.record !== void 0) {
+      const note = state.notes[Number(button.dataset.record)];
+      jumpTo(note.quote.passageId);
+      return;
+    }
+    if (button.dataset.turn !== void 0) {
+      const turn = state.turns[Number(button.dataset.turn)];
+      takeQuote({ ...turn.quote }, { open: false });
+      state.question = turn.question;
+      state.answered = true;
+      openRoute("discussion", "full", { capture: false });
+      return;
+    }
+    if (button.dataset.recordTab) {
+      state.recordsTab = button.dataset.recordTab;
+      renderBody();
+      return;
+    }
+    if (button.dataset.scenario) showScenario(button.dataset.scenario);
+  });
+  $("library-button").onclick = () => openRoute("library", "full");
+  $("contents-button").onclick = () => openRoute("contents", "full");
+  $("progress-button").onclick = () => openRoute("contents", "full");
+  $("appearance-button").onclick = () => openRoute("appearance", "full");
+  $("companion-button").onclick = () => openRoute("companion", "half");
+  $("sheet-done").onclick = closeSheet;
+  $("sheet-back").onclick = backToDiscussion;
+  $("sheet-scrim").onclick = () => snap("half");
+  $("chapter-end").onclick = () => jumpTo(paragraphs[0].id);
+  $("night-mode").onclick = () => {
+    state.theme = state.theme === "paper" ? "night" : "paper";
+    renderReader();
+    persist();
+  };
+  $("offline-mode").onchange = (event) => {
+    state.offline = event.target.checked;
+    if (["companion", "discussion"].includes(state.route)) renderBody();
+    setStudy(
+      state.offline ? "\u65AD\u7F51\u4ECD\u53EF\u8BFB" : "\u8FDE\u63A5\u6062\u590D\u793A\u4F8B",
+      state.offline ? "\u539F\u6587\u4E0E\u5DF2\u7F13\u5B58\u5185\u5BB9\u7EE7\u7EED\u53EF\u8BFB\uFF0C\u95EE\u9898\u548C\u9009\u6587\u4ECD\u4FDD\u7559\u3002" : "\u5DF2\u6709\u95EE\u9898\u53EF\u4EE5\u663E\u5F0F\u91CD\u8BD5\u3002"
+    );
+  };
+  $("reopen").onclick = () => {
+    captureComposer();
+    persist();
+    location.reload();
+  };
+  $("question-input").oninput = (event) => {
+    state.draft = event.target.value;
+    persist();
+  };
+  $("question-input").onfocus = () => snap("full");
+  $("question-form").onsubmit = (event) => {
+    event.preventDefault();
+    const question = $("question-input").value.trim();
+    if (!question) return;
+    state.question = question;
+    const turn = {
+      id: "prototype-" + Date.now(),
+      question,
+      quote: { ...state.quote }
+    };
+    state.pendingTurn = turn;
+    if (!state.offline) {
+      rememberTurn(turn);
+      state.pendingTurn = null;
+      state.draft = "";
+      state.answered = true;
+    }
+    persist();
+    $("question-input").value = state.draft;
+    openRoute("discussion", "full", { capture: false });
+  };
+  $("draft-return").onclick = () => {
+    captureComposer();
+    const previous = state.drafts.pop();
+    if (!previous) return;
+    if (state.draft.trim())
+      state.drafts.unshift({ quote: { ...state.quote }, draft: state.draft });
+    state.quote = previous.quote;
+    state.draft = previous.draft;
+    state.question = "";
+    state.answered = false;
+    state.returnFrame = null;
+    persist();
+    renderBody();
+  };
+  $("reading-scroll").addEventListener(
+    "scroll",
+    () => {
+      state.readingTop = $("reading-scroll").scrollTop;
+      const current = [...document.querySelectorAll("[data-passage]")].find(
+        (p) => p.getBoundingClientRect().bottom > $("reading-scroll").getBoundingClientRect().top + 36
+      );
+      $("dock-location").textContent = current ? ["\u6797\u4E2D\u751F\u6D3B", "\u751F\u6D3B\u5982\u6B64\u73CD\u8D35", "\u6D3B\u5F97\u6DF1\u5165", "\u7410\u4E8B\u4E0E\u65E5\u5B50"][paragraphs.findIndex((p) => p.id === current.id)] : "\u6797\u4E2D\u751F\u6D3B";
+      persist();
+      if (!$("selection-menu").hidden) requestAnimationFrame(positionSelectionMenu);
+    },
+    { passive: true }
+  );
+  document.addEventListener("selectionchange", () => {
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed || !selection.rangeCount) return;
+    const range = selection.getRangeAt(0), startNode = range.startContainer.nodeType === 3 ? range.startContainer.parentElement : range.startContainer, endNode = range.endContainer.nodeType === 3 ? range.endContainer.parentElement : range.endContainer, startRoot = startNode?.closest(".passage-text"), endRoot = endNode?.closest(".passage-text");
+    if (!startRoot || startRoot !== endRoot) {
+      hideSelectionMenu();
+      return;
+    }
+    const prefix = document.createRange();
+    prefix.selectNodeContents(startRoot);
+    prefix.setEnd(range.startContainer, range.startOffset);
+    const id = startRoot.closest("[data-passage]").dataset.passage, start = prefix.toString().length, text = range.toString();
+    if (!text.trim()) return;
+    hideSelectionMenu();
+    state.pendingSelection = captureQuote(id, text, start);
+    state.selectionRange = range.cloneRange();
+    $("selection-menu").hidden = false;
+    positionSelectionMenu();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      if (state.route === "citation") backToDiscussion();
+      else if (!$("selection-menu").hidden) hideSelectionMenu();
+      else if (state.route !== "closed") closeSheet();
+    }
+  });
+  $("selection-menu").addEventListener("mousedown", (event) => event.preventDefault());
+  var outsideSelectionPress = null;
+  document.addEventListener("pointerdown", (event) => {
+    outsideSelectionPress = null;
+    if ($("selection-menu").hidden || $("selection-menu").contains(event.target) || event.target.closest?.("[data-quote]")) return;
+    if (event.target.closest?.("#reading-scroll")) outsideSelectionPress = { id: event.pointerId, x: event.clientX, y: event.clientY, distance: 0 };
+    else hideSelectionMenu();
+  });
+  document.addEventListener("pointermove", (event) => {
+    const press = outsideSelectionPress;
+    if (press?.id === event.pointerId) press.distance = Math.max(press.distance, Math.hypot(event.clientX - press.x, event.clientY - press.y));
+  }, { passive: true });
+  document.addEventListener("pointerup", (event) => {
+    const press = outsideSelectionPress;
+    if (press?.id !== event.pointerId) return;
+    outsideSelectionPress = null;
+    if (Math.max(press.distance, Math.hypot(event.clientX - press.x, event.clientY - press.y)) < 6) hideSelectionMenu();
+  }, { passive: true });
+  document.addEventListener("pointercancel", () => {
+    outsideSelectionPress = null;
+  }, { passive: true });
+  var grip = $("sheet-grip");
+  grip.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0 || state.drag) return;
+    const interruptedClosing = restoreClosingPanel();
+    cancelAnimationFrame(state.raf);
+    $("reader-sheet").dataset.motion = "dragging";
+    grip.dataset.dragging = "true";
+    state.velocity = 0;
+    state.drag = {
+      id: event.pointerId,
+      startY: event.clientY,
+      start: state.y,
+      previousY: event.clientY,
+      time: performance.now(),
+      velocity: 0,
+      maxDistance: 0,
+      interruptedClosing,
+      samples: [{ y: event.clientY, time: performance.now() }]
+    };
+    grip.setPointerCapture(event.pointerId);
+    paintSheet();
+  });
+  grip.addEventListener("pointermove", (event) => {
+    const d = state.drag;
+    if (!d || d.id !== event.pointerId) return;
+    const now = performance.now();
+    d.samples.push({ y: event.clientY, time: now });
+    while (d.samples.length > 2 && now - d.samples[0].time > 80) d.samples.shift();
+    const first = d.samples[0];
+    d.velocity = (event.clientY - first.y) / Math.max(1, now - first.time) * 1e3;
+    d.previousY = event.clientY;
+    d.time = now;
+    d.maxDistance = Math.max(d.maxDistance, Math.abs(event.clientY - d.startY));
+    const candidate = d.start + event.clientY - d.startY;
+    const extent = Math.max(1, Math.min(16, phoneHeight() * 0.12 - document.querySelector(".status-bar").clientHeight - 8));
+    state.y = resistedPosition(candidate, 0, targetY("closed"), extent);
+    paintSheet();
+  });
+  function endDrag(event) {
+    const d = state.drag;
+    if (!d || d.id !== event.pointerId) return;
+    state.drag = null;
+    delete grip.dataset.dragging;
+    const moved = Math.max(d.maxDistance, Math.abs(event.clientY - d.startY));
+    if (moved < 5) {
+      snap(d.interruptedClosing ? state.detent : state.detent === "full" ? "half" : "full");
+      return;
+    }
+    let velocity = performance.now() - d.time > 100 ? 0 : d.velocity;
+    if (state.y < 0 && velocity < 0 || state.y > targetY("closed") && velocity > 0) velocity = 0;
+    state.velocity = velocity;
+    const stops = [
+      ["full", targetY("full")],
+      ["half", targetY("half")],
+      ["closed", targetY("closed")]
+    ];
+    const destination = nearestDetent(state.y, velocity, stops);
+    if (destination === "closed") closeSheet();
+    else snap(destination);
+  }
+  grip.addEventListener("pointerup", endDrag);
+  function cancelDrag() {
+    if (!state.drag) return;
+    state.drag = null;
+    delete grip.dataset.dragging;
+    state.velocity = 0;
+    snap(state.detent);
+  }
+  grip.addEventListener("pointercancel", cancelDrag);
+  grip.addEventListener("lostpointercapture", cancelDrag);
+  function showScenario(name) {
+    if (name === "resume") {
+      closeSheet();
+      jumpTo(paragraphs[0].id);
+      return;
+    }
+    if (name === "selected") {
+      closeSheet();
+      jumpTo(paragraphs[0].id);
+      selectPassage(paragraphs[0].id);
+      return;
+    }
+    if (name === "citation") {
+      if (!["companion", "discussion"].includes(state.route))
+        openRoute("discussion", "full");
+      visitCitation();
+      return;
+    }
+    if (name === "note") {
+      if (state.route === "closed") openRoute("companion", "half");
+      action("note");
+      return;
+    }
+    if (name === "night") {
+      state.theme = "night";
+      renderReader();
+      openRoute("companion", "half");
+      return;
+    }
+    if (name === "offline") {
+      state.offline = true;
+      $("offline-mode").checked = true;
+      openRoute("companion", "half");
+      return;
+    }
+    openRoute(name, name === "companion" ? "half" : "full");
+  }
+  drawIcons();
+  renderReader({ restore: false });
+  $("reading-scroll").scrollTop = state.readingTop;
+  state.y = targetY("closed");
+  setStudy("\u6253\u5F00\u5373\u7EED\u8BFB", "\u4ECE\u4E0A\u6B21\u7684\u4F4D\u7F6E\u8FDB\u5165\u6B63\u6587\uFF0C\u966A\u8BFB\u9762\u677F\u4FDD\u6301\u6536\u8D77\u3002");
+  window.addEventListener("resize", () => {
+    if (state.route !== "closed") snap(state.detent, { immediate: true });
+    positionSelectionMenu();
+  });
+  window.addEventListener("pagehide", persist);
+  var params = new URLSearchParams(location.search);
+  if (params.get("state")) showScenario(params.get("state"));
+  grip.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      const interruptedClosing = restoreClosingPanel();
+      snap(interruptedClosing ? state.detent : state.detent === "full" ? "half" : "full");
+    }
+  });
+  document.addEventListener("input", (event) => {
+    if (event.target.id === "note-field") {
+      state.noteDrafts[quoteKey(state.quote)] = event.target.value;
+      persist();
+    }
+  });
+  for (const event of ["wheel", "touchstart", "keydown"])
+    $("sheet-body").addEventListener(
+      event,
+      () => {
+        state.scrollRevision = (state.scrollRevision || 0) + 1;
+      },
+      { passive: true }
+    );
+})();
+</script>
+  </body>
+</html>
