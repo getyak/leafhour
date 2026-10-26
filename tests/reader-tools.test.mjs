@@ -52,6 +52,30 @@ function withTools(run){
   try{return run(f);}finally{f.cleanup();}
 }
 
+test('returning from tucked-away chat reveals its existing entry before restoring focus',t=>withTools(f=>{
+  t.mock.timers.enable({apis:['setTimeout']});
+  const entry=new Element('chat-entry'),host=f.elements.get('#reading-tools-chat-slot');
+  host.querySelector=()=>entry;host.append(entry);f.sessionRoot.append(host);
+  const tools=mountReaderTools({sessionRoot:f.sessionRoot,immersion:f.immersion,document:f.document});
+  try{
+    tools.toolbar.reveal(false);tools.chatIntegration.onOpen();
+    assert.equal(tools.toolbar.expanded,false);
+    tools.chatIntegration.focusReturn();
+    assert.equal(tools.toolbar.expanded,true,'a closed chat must not return focus to a concealed entry');
+    assert.equal(f.document.activeElement,entry);
+    assert.equal(f.immersion.shown,2,'the existing coordinator owns the reveal');
+    t.mock.timers.tick(5000);
+    assert.equal(tools.toolbar.expanded,false);
+    assert.equal(f.document.activeElement,f.elements.get('#reading-tools-trigger'),'mouse idle concealment returns focus to the persistent pill');
+    tools.chatIntegration.focusReturn();
+    f.document.dispatchEvent(Object.assign(new Event('keydown'),{key:'Tab'}));
+    t.mock.timers.tick(6000);
+    assert.equal(tools.toolbar.expanded,true,'keyboard focus holds the visible Agent entry');
+    assert.equal(f.document.activeElement,entry);
+    f.document.activeElement=null;f.sessionRoot.dispatchEvent(new Event('focusout'));
+  }finally{tools.unmount();}
+}));
+
 test('locale preserves the sole conceal deadline, unread state, focus and held tools',async t=>{
   t.mock.timers.enable({apis:['setTimeout']});
   const f=fixture();let tools;
@@ -395,12 +419,13 @@ function composed(t){
 }
 const mouse={pointerType:'mouse',pointerId:1,button:0,isPrimary:true};
 
-test('hover preview leaves for the adjacent AI sibling after a 200ms gap allowance',t=>{
+test('hover preview stays available on the tucked-away AI sibling and conceals after leaving',t=>{
   t.mock.timers.enable({apis:['setTimeout']});const f=composed(t);
   f.fire(f.sessionRoot,'pointerenter',mouse);f.fire(f.trigger,'pointerenter',mouse);
   f.fire(f.trigger,'pointerleave',mouse);f.fire(f.elements.get('#reading-tools-chat-slot'),'pointerenter',mouse);
-  t.mock.timers.tick(199);assert.equal(f.tools.toolbar.expanded,true);
-  t.mock.timers.tick(1);assert.equal(f.tools.toolbar.expanded,false);
+  t.mock.timers.tick(1000);assert.equal(f.tools.toolbar.expanded,true);
+  f.fire(f.elements.get('#reading-tools-chat-slot'),'pointerleave',mouse);
+  t.mock.timers.tick(200);assert.equal(f.tools.toolbar.expanded,false);
   assert.equal(f.panel.inert,true);assert.equal(f.panel.getAttribute('aria-hidden'),'true');
 });
 

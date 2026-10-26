@@ -258,7 +258,7 @@
       },
       {
         "file": "app/index.html",
-        "sha256": "cc0b92f0477abd00fc75cac5f28757902fed11183070ee242392b1586b6bd81f"
+        "sha256": "d5a818b9933575a1f1a55e7dc2b982b87f37c6a6a1982b9e281344d29cc0f792"
       },
       {
         "file": "app/interaction-craft.mjs",
@@ -566,7 +566,7 @@
       },
       {
         "file": "app/reader-tools.mjs",
-        "sha256": "06ef100ade0b76811f7b2dda9445607c833fbfaaee3aeda060920dd57bdc1e3d"
+        "sha256": "27b789ffc565fd720e846394d9d45d8950d7441a2fef9741d055b1435dce3f91"
       },
       {
         "file": "app/reader-translation.js",
@@ -690,7 +690,7 @@
       },
       {
         "file": "app/reading-toolbar.mjs",
-        "sha256": "64794212f01ca6af0bc3e9c0c599b03c5a91fa4529c0e73411ae803d368c9c9d"
+        "sha256": "4dfdcaeb65d7729f0453746b5d4c911e07e6fdb7a5d0b1310ada5b2204262563"
       },
       {
         "file": "app/save-receipts.mjs",
@@ -1137,7 +1137,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "a79cbf983e0c0b45cba9b3f36c751501da64509868808ef63e5252a49438caac"
+    "inputDigest": "0d28d99b29c23ac65794c08cd7e0eb3b29e2be98b943185e70f7ec3a57458887"
   },
   "locales": [
     "en",
@@ -171065,14 +171065,14 @@
       }
     },
     {
-      "id": "candidate:app/index.html:105:62",
+      "id": "candidate:app/index.html:106:82",
       "file": "app/index.html",
-      "line": 105,
-      "column": 62,
+      "line": 106,
+      "column": 82,
       "kind": "html-attribute",
       "property": "aria-label",
-      "value": "Body font",
-      "sha256": "2448d20d8bd95e8040fa1644989e9a40ce7c5de960dbf93b24847c8bac8a0a1f",
+      "value": "Paper theme",
+      "sha256": "c9069afb5a44f560efce4ae1a2d62d81c799b8c8f923050ee6974afb880d615a",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -171097,32 +171097,6 @@
       "column": 82,
       "kind": "html-attribute",
       "property": "aria-label",
-      "value": "Paper theme",
-      "sha256": "c9069afb5a44f560efce4ae1a2d62d81c799b8c8f923050ee6974afb880d615a",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-property",
-          "evidence": "html-attribute:aria-label",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:108:82",
-      "file": "app/index.html",
-      "line": 108,
-      "column": 82,
-      "kind": "html-attribute",
-      "property": "aria-label",
       "value": "Follow the system",
       "sha256": "d153cd62208d56b40dc3f9f78763b8f79c7782529ac1d1cceeeb26b294e923d1",
       "protected": false,
@@ -171143,9 +171117,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:108:251",
+      "id": "candidate:app/index.html:107:251",
       "file": "app/index.html",
-      "line": 108,
+      "line": 107,
       "column": 251,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171169,9 +171143,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:108:406",
+      "id": "candidate:app/index.html:107:406",
       "file": "app/index.html",
-      "line": 108,
+      "line": 107,
       "column": 406,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171195,9 +171169,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:108:559",
+      "id": "candidate:app/index.html:107:559",
       "file": "app/index.html",
-      "line": 108,
+      "line": 107,
       "column": 559,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171221,9 +171195,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:108:712",
+      "id": "candidate:app/index.html:107:712",
       "file": "app/index.html",
-      "line": 108,
+      "line": 107,
       "column": 712,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171247,9 +171221,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:108:867",
+      "id": "candidate:app/index.html:107:867",
       "file": "app/index.html",
-      "line": 108,
+      "line": 107,
       "column": 867,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171273,9 +171247,35 @@
       }
     },
     {
-      "id": "candidate:app/index.html:122:166",
+      "id": "candidate:app/index.html:110:64",
       "file": "app/index.html",
-      "line": 122,
+      "line": 110,
+      "column": 64,
+      "kind": "html-attribute",
+      "property": "aria-label",
+      "value": "Body font",
+      "sha256": "2448d20d8bd95e8040fa1644989e9a40ce7c5de960dbf93b24847c8bac8a0a1f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-property",
+          "evidence": "html-attribute:aria-label",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:124:166",
+      "file": "app/index.html",
+      "line": 124,
       "column": 166,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171299,9 +171299,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:134:353",
+      "id": "candidate:app/index.html:138:353",
       "file": "app/index.html",
-      "line": 134,
+      "line": 138,
       "column": 353,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171325,9 +171325,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:172:53",
+      "id": "candidate:app/index.html:176:53",
       "file": "app/index.html",
-      "line": 172,
+      "line": 176,
       "column": 53,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171351,9 +171351,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:193:86",
+      "id": "candidate:app/index.html:197:86",
       "file": "app/index.html",
-      "line": 193,
+      "line": 197,
       "column": 86,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -171377,9 +171377,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:197:92",
+      "id": "candidate:app/index.html:201:92",
       "file": "app/index.html",
-      "line": 197,
+      "line": 201,
       "column": 92,
       "kind": "html-attribute",
       "property": "aria-label",
@@ -174653,87 +174653,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:105:198",
+      "id": "candidate:app/index.html:105:82",
       "file": "app/index.html",
       "line": 105,
-      "column": 198,
-      "kind": "html-text",
-      "property": null,
-      "value": "Serif (Song)",
-      "sha256": "623850f0533acb5cdfcc1c334cc885db0d8d6c82ba6bac1b213422750add96ae",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:105:300",
-      "file": "app/index.html",
-      "line": 105,
-      "column": 300,
-      "kind": "html-text",
-      "property": null,
-      "value": "Regular (Kai)",
-      "sha256": "8e3624b388d739a48bfb3851633a5f9bdac1cbaf021211cc371a05cfb54ddc17",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:105:405",
-      "file": "app/index.html",
-      "line": 105,
-      "column": 405,
-      "kind": "html-text",
-      "property": null,
-      "value": "Sans serif",
-      "sha256": "afb6b97420b68b646aa2bd60d1cbd4c44b0132823c24c44bf22ab98278c163f4",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:106:82",
-      "file": "app/index.html",
-      "line": 106,
       "column": 82,
       "kind": "html-text",
       "property": null,
@@ -174757,9 +174679,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:106:146",
+      "id": "candidate:app/index.html:105:146",
       "file": "app/index.html",
-      "line": 106,
+      "line": 105,
       "column": 146,
       "kind": "html-text",
       "property": null,
@@ -174783,9 +174705,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:108:167",
+      "id": "candidate:app/index.html:107:167",
       "file": "app/index.html",
-      "line": 108,
+      "line": 107,
       "column": 167,
       "kind": "html-text",
       "property": null,
@@ -174809,9 +174731,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:108:324",
+      "id": "candidate:app/index.html:107:324",
       "file": "app/index.html",
-      "line": 108,
+      "line": 107,
       "column": 324,
       "kind": "html-text",
       "property": null,
@@ -174835,9 +174757,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:108:477",
+      "id": "candidate:app/index.html:107:477",
       "file": "app/index.html",
-      "line": 108,
+      "line": 107,
       "column": 477,
       "kind": "html-text",
       "property": null,
@@ -174861,9 +174783,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:108:630",
+      "id": "candidate:app/index.html:107:630",
       "file": "app/index.html",
-      "line": 108,
+      "line": 107,
       "column": 630,
       "kind": "html-text",
       "property": null,
@@ -174887,9 +174809,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:108:783",
+      "id": "candidate:app/index.html:107:783",
       "file": "app/index.html",
-      "line": 108,
+      "line": 107,
       "column": 783,
       "kind": "html-text",
       "property": null,
@@ -174913,9 +174835,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:108:940",
+      "id": "candidate:app/index.html:107:940",
       "file": "app/index.html",
-      "line": 108,
+      "line": 107,
       "column": 940,
       "kind": "html-text",
       "property": null,
@@ -174939,9 +174861,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:110:194",
+      "id": "candidate:app/index.html:109:194",
       "file": "app/index.html",
-      "line": 110,
+      "line": 109,
       "column": 194,
       "kind": "html-text",
       "property": null,
@@ -174965,10 +174887,88 @@
       }
     },
     {
-      "id": "candidate:app/index.html:110:359",
+      "id": "candidate:app/index.html:110:200",
       "file": "app/index.html",
       "line": 110,
-      "column": 359,
+      "column": 200,
+      "kind": "html-text",
+      "property": null,
+      "value": "Serif (Song)",
+      "sha256": "623850f0533acb5cdfcc1c334cc885db0d8d6c82ba6bac1b213422750add96ae",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:110:302",
+      "file": "app/index.html",
+      "line": 110,
+      "column": 302,
+      "kind": "html-text",
+      "property": null,
+      "value": "Regular (Kai)",
+      "sha256": "8e3624b388d739a48bfb3851633a5f9bdac1cbaf021211cc371a05cfb54ddc17",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:110:407",
+      "file": "app/index.html",
+      "line": 110,
+      "column": 407,
+      "kind": "html-text",
+      "property": null,
+      "value": "Sans serif",
+      "sha256": "afb6b97420b68b646aa2bd60d1cbd4c44b0132823c24c44bf22ab98278c163f4",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:111:146",
+      "file": "app/index.html",
+      "line": 111,
+      "column": 146,
       "kind": "html-text",
       "property": null,
       "value": "First-line indent",
@@ -174991,10 +174991,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:110:506",
+      "id": "candidate:app/index.html:111:293",
       "file": "app/index.html",
-      "line": 110,
-      "column": 506,
+      "line": 111,
+      "column": 293,
       "kind": "html-text",
       "property": null,
       "value": "Latin fonts are hosted here; Chinese uses device fonts. Word spacing applies only to English.",
@@ -175017,10 +175017,10 @@
       }
     },
     {
-      "id": "candidate:app/index.html:111:105",
+      "id": "candidate:app/index.html:112:107",
       "file": "app/index.html",
-      "line": 111,
-      "column": 105,
+      "line": 112,
+      "column": 107,
       "kind": "html-text",
       "property": null,
       "value": "Reset appearance",
@@ -175043,9 +175043,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:113:135",
+      "id": "candidate:app/index.html:115:135",
       "file": "app/index.html",
-      "line": 113,
+      "line": 115,
       "column": 135,
       "kind": "html-text",
       "property": null,
@@ -175069,9 +175069,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:114:87",
+      "id": "candidate:app/index.html:117:87",
       "file": "app/index.html",
-      "line": 114,
+      "line": 117,
       "column": 87,
       "kind": "html-text",
       "property": null,
@@ -175095,9 +175095,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:114:197",
+      "id": "candidate:app/index.html:117:197",
       "file": "app/index.html",
-      "line": 114,
+      "line": 117,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -175121,9 +175121,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:114:283",
+      "id": "candidate:app/index.html:117:283",
       "file": "app/index.html",
-      "line": 114,
+      "line": 117,
       "column": 283,
       "kind": "html-text",
       "property": null,
@@ -175147,9 +175147,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:114:369",
+      "id": "candidate:app/index.html:117:369",
       "file": "app/index.html",
-      "line": 114,
+      "line": 117,
       "column": 369,
       "kind": "html-text",
       "property": null,
@@ -175173,9 +175173,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:115:133",
+      "id": "candidate:app/index.html:118:133",
       "file": "app/index.html",
-      "line": 115,
+      "line": 118,
       "column": 133,
       "kind": "html-text",
       "property": null,
@@ -175199,9 +175199,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:115:241",
+      "id": "candidate:app/index.html:118:241",
       "file": "app/index.html",
-      "line": 115,
+      "line": 118,
       "column": 241,
       "kind": "html-text",
       "property": null,
@@ -175225,9 +175225,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:115:299",
+      "id": "candidate:app/index.html:118:299",
       "file": "app/index.html",
-      "line": 115,
+      "line": 118,
       "column": 299,
       "kind": "html-text",
       "property": null,
@@ -175251,113 +175251,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:116:120",
+      "id": "candidate:app/index.html:120:166",
       "file": "app/index.html",
-      "line": 116,
-      "column": 120,
-      "kind": "html-text",
-      "property": null,
-      "value": "Page layout",
-      "sha256": "fc7cdce7cf4091c24a1fd660ae93e604270f9c15268f14afe76225be52ea3283",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:116:253",
-      "file": "app/index.html",
-      "line": 116,
-      "column": 253,
-      "kind": "html-text",
-      "property": null,
-      "value": "Scroll",
-      "sha256": "291873e31ccb2289508f7e02cb47ce5e8f62b31a51f07513b407d359a9aaa2c7",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:116:320",
-      "file": "app/index.html",
-      "line": 116,
-      "column": 320,
-      "kind": "html-text",
-      "property": null,
-      "value": "Turn pages",
-      "sha256": "a0396bad5ae79e09e8e605159986d100fac636ad13f894401a48be21452e6748",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:116:432",
-      "file": "app/index.html",
-      "line": 116,
-      "column": 432,
-      "kind": "html-text",
-      "property": null,
-      "value": "Page mode shows two pages in wide windows and one in narrow windows. Use ← → or the buttons below.",
-      "sha256": "db2b280faa50991d0d0b1ffef223a8f442a13accec37ac4761b81ec8a52b0dde",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:118:166",
-      "file": "app/index.html",
-      "line": 118,
+      "line": 120,
       "column": 166,
       "kind": "html-text",
       "property": null,
@@ -175381,9 +175277,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:119:95",
+      "id": "candidate:app/index.html:121:95",
       "file": "app/index.html",
-      "line": 119,
+      "line": 121,
       "column": 95,
       "kind": "html-text",
       "property": null,
@@ -175407,9 +175303,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:119:197",
+      "id": "candidate:app/index.html:121:197",
       "file": "app/index.html",
-      "line": 119,
+      "line": 121,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -175433,9 +175329,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:119:269",
+      "id": "candidate:app/index.html:121:269",
       "file": "app/index.html",
-      "line": 119,
+      "line": 121,
       "column": 269,
       "kind": "html-text",
       "property": null,
@@ -175459,9 +175355,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:120:92",
+      "id": "candidate:app/index.html:122:92",
       "file": "app/index.html",
-      "line": 120,
+      "line": 122,
       "column": 92,
       "kind": "html-text",
       "property": null,
@@ -175485,9 +175381,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:122:76",
+      "id": "candidate:app/index.html:124:76",
       "file": "app/index.html",
-      "line": 122,
+      "line": 124,
       "column": 76,
       "kind": "html-text",
       "property": null,
@@ -175511,9 +175407,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:123:84",
+      "id": "candidate:app/index.html:125:84",
       "file": "app/index.html",
-      "line": 123,
+      "line": 125,
       "column": 84,
       "kind": "html-text",
       "property": null,
@@ -175537,9 +175433,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:124:105",
+      "id": "candidate:app/index.html:126:105",
       "file": "app/index.html",
-      "line": 124,
+      "line": 126,
       "column": 105,
       "kind": "html-text",
       "property": null,
@@ -175563,9 +175459,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:124:213",
+      "id": "candidate:app/index.html:126:213",
       "file": "app/index.html",
-      "line": 124,
+      "line": 126,
       "column": 213,
       "kind": "html-text",
       "property": null,
@@ -175589,9 +175485,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:124:284",
+      "id": "candidate:app/index.html:126:284",
       "file": "app/index.html",
-      "line": 124,
+      "line": 126,
       "column": 284,
       "kind": "html-text",
       "property": null,
@@ -175615,9 +175511,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:124:351",
+      "id": "candidate:app/index.html:126:351",
       "file": "app/index.html",
-      "line": 124,
+      "line": 126,
       "column": 351,
       "kind": "html-text",
       "property": null,
@@ -175641,9 +175537,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:124:417",
+      "id": "candidate:app/index.html:126:417",
       "file": "app/index.html",
-      "line": 124,
+      "line": 126,
       "column": 417,
       "kind": "html-text",
       "property": null,
@@ -175667,9 +175563,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:125:115",
+      "id": "candidate:app/index.html:127:115",
       "file": "app/index.html",
-      "line": 125,
+      "line": 127,
       "column": 115,
       "kind": "html-text",
       "property": null,
@@ -175693,9 +175589,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:125:233",
+      "id": "candidate:app/index.html:127:233",
       "file": "app/index.html",
-      "line": 125,
+      "line": 127,
       "column": 233,
       "kind": "html-text",
       "property": null,
@@ -175719,9 +175615,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:125:311",
+      "id": "candidate:app/index.html:127:311",
       "file": "app/index.html",
-      "line": 125,
+      "line": 127,
       "column": 311,
       "kind": "html-text",
       "property": null,
@@ -175745,9 +175641,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:125:389",
+      "id": "candidate:app/index.html:127:389",
       "file": "app/index.html",
-      "line": 125,
+      "line": 127,
       "column": 389,
       "kind": "html-text",
       "property": null,
@@ -175771,9 +175667,139 @@
       }
     },
     {
-      "id": "candidate:app/index.html:129:145",
+      "id": "candidate:app/index.html:132:152",
       "file": "app/index.html",
-      "line": 129,
+      "line": 132,
+      "column": 152,
+      "kind": "html-text",
+      "property": null,
+      "value": "Page layout",
+      "sha256": "fc7cdce7cf4091c24a1fd660ae93e604270f9c15268f14afe76225be52ea3283",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:132:285",
+      "file": "app/index.html",
+      "line": 132,
+      "column": 285,
+      "kind": "html-text",
+      "property": null,
+      "value": "Scroll",
+      "sha256": "291873e31ccb2289508f7e02cb47ce5e8f62b31a51f07513b407d359a9aaa2c7",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:132:352",
+      "file": "app/index.html",
+      "line": 132,
+      "column": 352,
+      "kind": "html-text",
+      "property": null,
+      "value": "Turn pages",
+      "sha256": "a0396bad5ae79e09e8e605159986d100fac636ad13f894401a48be21452e6748",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:132:460",
+      "file": "app/index.html",
+      "line": 132,
+      "column": 460,
+      "kind": "html-text",
+      "property": null,
+      "value": "Page navigation",
+      "sha256": "024148d6099b7d63a971f0907735592389e9b1eb1858f9ce593a83cfa4f071ab",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:132:563",
+      "file": "app/index.html",
+      "line": 132,
+      "column": 563,
+      "kind": "html-text",
+      "property": null,
+      "value": "Page mode shows two pages in wide windows and one in narrow windows. Use ← → or the buttons below.",
+      "sha256": "db2b280faa50991d0d0b1ffef223a8f442a13accec37ac4761b81ec8a52b0dde",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:133:145",
+      "file": "app/index.html",
+      "line": 133,
       "column": 145,
       "kind": "html-text",
       "property": null,
@@ -175797,9 +175823,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:130:96",
+      "id": "candidate:app/index.html:134:96",
       "file": "app/index.html",
-      "line": 130,
+      "line": 134,
       "column": 96,
       "kind": "html-text",
       "property": null,
@@ -175823,9 +175849,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:130:247",
+      "id": "candidate:app/index.html:134:247",
       "file": "app/index.html",
-      "line": 130,
+      "line": 134,
       "column": 247,
       "kind": "html-text",
       "property": null,
@@ -175849,9 +175875,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:130:340",
+      "id": "candidate:app/index.html:134:340",
       "file": "app/index.html",
-      "line": 130,
+      "line": 134,
       "column": 340,
       "kind": "html-text",
       "property": null,
@@ -175875,9 +175901,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:130:429",
+      "id": "candidate:app/index.html:134:429",
       "file": "app/index.html",
-      "line": 130,
+      "line": 134,
       "column": 429,
       "kind": "html-text",
       "property": null,
@@ -175901,9 +175927,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:131:91",
+      "id": "candidate:app/index.html:135:91",
       "file": "app/index.html",
-      "line": 131,
+      "line": 135,
       "column": 91,
       "kind": "html-text",
       "property": null,
@@ -175927,9 +175953,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:131:228",
+      "id": "candidate:app/index.html:135:228",
       "file": "app/index.html",
-      "line": 131,
+      "line": 135,
       "column": 228,
       "kind": "html-text",
       "property": null,
@@ -175953,9 +175979,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:131:293",
+      "id": "candidate:app/index.html:135:293",
       "file": "app/index.html",
-      "line": 131,
+      "line": 135,
       "column": 293,
       "kind": "html-text",
       "property": null,
@@ -175979,9 +176005,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:132:96",
+      "id": "candidate:app/index.html:136:96",
       "file": "app/index.html",
-      "line": 132,
+      "line": 136,
       "column": 96,
       "kind": "html-text",
       "property": null,
@@ -176005,9 +176031,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:134:141",
+      "id": "candidate:app/index.html:138:141",
       "file": "app/index.html",
-      "line": 134,
+      "line": 138,
       "column": 141,
       "kind": "html-text",
       "property": null,
@@ -176031,9 +176057,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:134:285",
+      "id": "candidate:app/index.html:138:285",
       "file": "app/index.html",
-      "line": 134,
+      "line": 138,
       "column": 285,
       "kind": "html-text",
       "property": null,
@@ -176057,9 +176083,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:134:480",
+      "id": "candidate:app/index.html:138:480",
       "file": "app/index.html",
-      "line": 134,
+      "line": 138,
       "column": 480,
       "kind": "html-text",
       "property": null,
@@ -176083,9 +176109,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:134:546",
+      "id": "candidate:app/index.html:138:546",
       "file": "app/index.html",
-      "line": 134,
+      "line": 138,
       "column": 546,
       "kind": "html-text",
       "property": null,
@@ -176109,9 +176135,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:134:623",
+      "id": "candidate:app/index.html:138:623",
       "file": "app/index.html",
-      "line": 134,
+      "line": 138,
       "column": 623,
       "kind": "html-text",
       "property": null,
@@ -176135,9 +176161,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:134:697",
+      "id": "candidate:app/index.html:138:697",
       "file": "app/index.html",
-      "line": 134,
+      "line": 138,
       "column": 697,
       "kind": "html-text",
       "property": null,
@@ -176161,9 +176187,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:134:761",
+      "id": "candidate:app/index.html:138:761",
       "file": "app/index.html",
-      "line": 134,
+      "line": 138,
       "column": 761,
       "kind": "html-text",
       "property": null,
@@ -176187,9 +176213,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:134:825",
+      "id": "candidate:app/index.html:138:825",
       "file": "app/index.html",
-      "line": 134,
+      "line": 138,
       "column": 825,
       "kind": "html-text",
       "property": null,
@@ -176213,9 +176239,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:134:1006",
+      "id": "candidate:app/index.html:138:1006",
       "file": "app/index.html",
-      "line": 134,
+      "line": 138,
       "column": 1006,
       "kind": "html-text",
       "property": null,
@@ -176239,9 +176265,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:134:1111",
+      "id": "candidate:app/index.html:138:1111",
       "file": "app/index.html",
-      "line": 134,
+      "line": 138,
       "column": 1111,
       "kind": "html-text",
       "property": null,
@@ -176265,9 +176291,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:135:120",
+      "id": "candidate:app/index.html:139:120",
       "file": "app/index.html",
-      "line": 135,
+      "line": 139,
       "column": 120,
       "kind": "html-text",
       "property": null,
@@ -176291,9 +176317,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:135:218",
+      "id": "candidate:app/index.html:139:218",
       "file": "app/index.html",
-      "line": 135,
+      "line": 139,
       "column": 218,
       "kind": "html-text",
       "property": null,
@@ -176317,9 +176343,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:139:125",
+      "id": "candidate:app/index.html:143:125",
       "file": "app/index.html",
-      "line": 139,
+      "line": 143,
       "column": 125,
       "kind": "html-text",
       "property": null,
@@ -176343,9 +176369,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:139:239",
+      "id": "candidate:app/index.html:143:239",
       "file": "app/index.html",
-      "line": 139,
+      "line": 143,
       "column": 239,
       "kind": "html-text",
       "property": null,
@@ -176369,9 +176395,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:140:122",
+      "id": "candidate:app/index.html:144:122",
       "file": "app/index.html",
-      "line": 140,
+      "line": 144,
       "column": 122,
       "kind": "html-text",
       "property": null,
@@ -176395,9 +176421,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:141:207",
+      "id": "candidate:app/index.html:145:207",
       "file": "app/index.html",
-      "line": 141,
+      "line": 145,
       "column": 207,
       "kind": "html-text",
       "property": null,
@@ -176421,9 +176447,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:141:296",
+      "id": "candidate:app/index.html:145:296",
       "file": "app/index.html",
-      "line": 141,
+      "line": 145,
       "column": 296,
       "kind": "html-text",
       "property": null,
@@ -176447,9 +176473,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:143:110",
+      "id": "candidate:app/index.html:147:110",
       "file": "app/index.html",
-      "line": 143,
+      "line": 147,
       "column": 110,
       "kind": "html-text",
       "property": null,
@@ -176473,9 +176499,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:143:280",
+      "id": "candidate:app/index.html:147:280",
       "file": "app/index.html",
-      "line": 143,
+      "line": 147,
       "column": 280,
       "kind": "html-text",
       "property": null,
@@ -176499,9 +176525,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:144:112",
+      "id": "candidate:app/index.html:148:112",
       "file": "app/index.html",
-      "line": 144,
+      "line": 148,
       "column": 112,
       "kind": "html-text",
       "property": null,
@@ -176525,9 +176551,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:144:293",
+      "id": "candidate:app/index.html:148:293",
       "file": "app/index.html",
-      "line": 144,
+      "line": 148,
       "column": 293,
       "kind": "html-text",
       "property": null,
@@ -176551,9 +176577,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:145:92",
+      "id": "candidate:app/index.html:149:92",
       "file": "app/index.html",
-      "line": 145,
+      "line": 149,
       "column": 92,
       "kind": "html-text",
       "property": null,
@@ -176577,9 +176603,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:145:215",
+      "id": "candidate:app/index.html:149:215",
       "file": "app/index.html",
-      "line": 145,
+      "line": 149,
       "column": 215,
       "kind": "html-text",
       "property": null,
@@ -176603,9 +176629,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:145:413",
+      "id": "candidate:app/index.html:149:413",
       "file": "app/index.html",
-      "line": 145,
+      "line": 149,
       "column": 413,
       "kind": "html-text",
       "property": null,
@@ -176629,9 +176655,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:147:73",
+      "id": "candidate:app/index.html:151:73",
       "file": "app/index.html",
-      "line": 147,
+      "line": 151,
       "column": 73,
       "kind": "html-text",
       "property": null,
@@ -176655,9 +176681,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:149:153",
+      "id": "candidate:app/index.html:153:153",
       "file": "app/index.html",
-      "line": 149,
+      "line": 153,
       "column": 153,
       "kind": "html-text",
       "property": null,
@@ -176681,9 +176707,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:149:379",
+      "id": "candidate:app/index.html:153:379",
       "file": "app/index.html",
-      "line": 149,
+      "line": 153,
       "column": 379,
       "kind": "html-text",
       "property": null,
@@ -176707,9 +176733,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:149:473",
+      "id": "candidate:app/index.html:153:473",
       "file": "app/index.html",
-      "line": 149,
+      "line": 153,
       "column": 473,
       "kind": "html-text",
       "property": null,
@@ -176733,9 +176759,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:149:577",
+      "id": "candidate:app/index.html:153:577",
       "file": "app/index.html",
-      "line": 149,
+      "line": 153,
       "column": 577,
       "kind": "html-text",
       "property": null,
@@ -176759,9 +176785,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:152:130",
+      "id": "candidate:app/index.html:156:130",
       "file": "app/index.html",
-      "line": 152,
+      "line": 156,
       "column": 130,
       "kind": "html-text",
       "property": null,
@@ -176785,9 +176811,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:152:290",
+      "id": "candidate:app/index.html:156:290",
       "file": "app/index.html",
-      "line": 152,
+      "line": 156,
       "column": 290,
       "kind": "html-text",
       "property": null,
@@ -176811,9 +176837,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:153:132",
+      "id": "candidate:app/index.html:157:132",
       "file": "app/index.html",
-      "line": 153,
+      "line": 157,
       "column": 132,
       "kind": "html-text",
       "property": null,
@@ -176837,9 +176863,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:153:367",
+      "id": "candidate:app/index.html:157:367",
       "file": "app/index.html",
-      "line": 153,
+      "line": 157,
       "column": 367,
       "kind": "html-text",
       "property": null,
@@ -176863,9 +176889,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:154:138",
+      "id": "candidate:app/index.html:158:138",
       "file": "app/index.html",
-      "line": 154,
+      "line": 158,
       "column": 138,
       "kind": "html-text",
       "property": null,
@@ -176889,9 +176915,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:154:308",
+      "id": "candidate:app/index.html:158:308",
       "file": "app/index.html",
-      "line": 154,
+      "line": 158,
       "column": 308,
       "kind": "html-text",
       "property": null,
@@ -176915,9 +176941,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:155:117",
+      "id": "candidate:app/index.html:159:117",
       "file": "app/index.html",
-      "line": 155,
+      "line": 159,
       "column": 117,
       "kind": "html-text",
       "property": null,
@@ -176941,9 +176967,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:155:202",
+      "id": "candidate:app/index.html:159:202",
       "file": "app/index.html",
-      "line": 155,
+      "line": 159,
       "column": 202,
       "kind": "html-text",
       "property": null,
@@ -176967,9 +176993,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:155:442",
+      "id": "candidate:app/index.html:159:442",
       "file": "app/index.html",
-      "line": 155,
+      "line": 159,
       "column": 442,
       "kind": "html-text",
       "property": null,
@@ -176993,9 +177019,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:158:80",
+      "id": "candidate:app/index.html:162:80",
       "file": "app/index.html",
-      "line": 158,
+      "line": 162,
       "column": 80,
       "kind": "html-text",
       "property": null,
@@ -177019,9 +177045,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:158:288",
+      "id": "candidate:app/index.html:162:288",
       "file": "app/index.html",
-      "line": 158,
+      "line": 162,
       "column": 288,
       "kind": "html-text",
       "property": null,
@@ -177045,9 +177071,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:158:378",
+      "id": "candidate:app/index.html:162:378",
       "file": "app/index.html",
-      "line": 158,
+      "line": 162,
       "column": 378,
       "kind": "html-text",
       "property": null,
@@ -177071,9 +177097,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:159:84",
+      "id": "candidate:app/index.html:163:84",
       "file": "app/index.html",
-      "line": 159,
+      "line": 163,
       "column": 84,
       "kind": "html-text",
       "property": null,
@@ -177097,9 +177123,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:159:253",
+      "id": "candidate:app/index.html:163:253",
       "file": "app/index.html",
-      "line": 159,
+      "line": 163,
       "column": 253,
       "kind": "html-text",
       "property": null,
@@ -177123,9 +177149,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:159:375",
+      "id": "candidate:app/index.html:163:375",
       "file": "app/index.html",
-      "line": 159,
+      "line": 163,
       "column": 375,
       "kind": "html-text",
       "property": null,
@@ -177149,9 +177175,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:159:529",
+      "id": "candidate:app/index.html:163:529",
       "file": "app/index.html",
-      "line": 159,
+      "line": 163,
       "column": 529,
       "kind": "html-text",
       "property": null,
@@ -177175,9 +177201,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:160:86",
+      "id": "candidate:app/index.html:164:86",
       "file": "app/index.html",
-      "line": 160,
+      "line": 164,
       "column": 86,
       "kind": "html-text",
       "property": null,
@@ -177201,9 +177227,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:160:238",
+      "id": "candidate:app/index.html:164:238",
       "file": "app/index.html",
-      "line": 160,
+      "line": 164,
       "column": 238,
       "kind": "html-text",
       "property": null,
@@ -177227,9 +177253,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:160:360",
+      "id": "candidate:app/index.html:164:360",
       "file": "app/index.html",
-      "line": 160,
+      "line": 164,
       "column": 360,
       "kind": "html-text",
       "property": null,
@@ -177253,9 +177279,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:160:487",
+      "id": "candidate:app/index.html:164:487",
       "file": "app/index.html",
-      "line": 160,
+      "line": 164,
       "column": 487,
       "kind": "html-text",
       "property": null,
@@ -177279,9 +177305,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:160:594",
+      "id": "candidate:app/index.html:164:594",
       "file": "app/index.html",
-      "line": 160,
+      "line": 164,
       "column": 594,
       "kind": "html-text",
       "property": null,
@@ -177305,9 +177331,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:161:94",
+      "id": "candidate:app/index.html:165:94",
       "file": "app/index.html",
-      "line": 161,
+      "line": 165,
       "column": 94,
       "kind": "html-text",
       "property": null,
@@ -177331,9 +177357,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:161:263",
+      "id": "candidate:app/index.html:165:263",
       "file": "app/index.html",
-      "line": 161,
+      "line": 165,
       "column": 263,
       "kind": "html-text",
       "property": null,
@@ -177357,9 +177383,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:165:112",
+      "id": "candidate:app/index.html:169:112",
       "file": "app/index.html",
-      "line": 165,
+      "line": 169,
       "column": 112,
       "kind": "html-text",
       "property": null,
@@ -177383,9 +177409,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:165:212",
+      "id": "candidate:app/index.html:169:212",
       "file": "app/index.html",
-      "line": 165,
+      "line": 169,
       "column": 212,
       "kind": "html-text",
       "property": null,
@@ -177409,9 +177435,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:169:195",
+      "id": "candidate:app/index.html:173:195",
       "file": "app/index.html",
-      "line": 169,
+      "line": 173,
       "column": 195,
       "kind": "html-text",
       "property": null,
@@ -177435,9 +177461,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:169:260",
+      "id": "candidate:app/index.html:173:260",
       "file": "app/index.html",
-      "line": 169,
+      "line": 173,
       "column": 260,
       "kind": "html-text",
       "property": null,
@@ -177461,9 +177487,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:169:371",
+      "id": "candidate:app/index.html:173:371",
       "file": "app/index.html",
-      "line": 169,
+      "line": 173,
       "column": 371,
       "kind": "html-text",
       "property": null,
@@ -177487,9 +177513,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:174:98",
+      "id": "candidate:app/index.html:178:98",
       "file": "app/index.html",
-      "line": 174,
+      "line": 178,
       "column": 98,
       "kind": "html-text",
       "property": null,
@@ -177513,9 +177539,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:174:190",
+      "id": "candidate:app/index.html:178:190",
       "file": "app/index.html",
-      "line": 174,
+      "line": 178,
       "column": 190,
       "kind": "html-text",
       "property": null,
@@ -177539,9 +177565,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:174:254",
+      "id": "candidate:app/index.html:178:254",
       "file": "app/index.html",
-      "line": 174,
+      "line": 178,
       "column": 254,
       "kind": "html-text",
       "property": null,
@@ -177565,9 +177591,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:174:332",
+      "id": "candidate:app/index.html:178:332",
       "file": "app/index.html",
-      "line": 174,
+      "line": 178,
       "column": 332,
       "kind": "html-text",
       "property": null,
@@ -177591,9 +177617,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:175:134",
+      "id": "candidate:app/index.html:179:134",
       "file": "app/index.html",
-      "line": 175,
+      "line": 179,
       "column": 134,
       "kind": "html-text",
       "property": null,
@@ -177617,9 +177643,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:175:235",
+      "id": "candidate:app/index.html:179:235",
       "file": "app/index.html",
-      "line": 175,
+      "line": 179,
       "column": 235,
       "kind": "html-text",
       "property": null,
@@ -177643,9 +177669,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:175:306",
+      "id": "candidate:app/index.html:179:306",
       "file": "app/index.html",
-      "line": 175,
+      "line": 179,
       "column": 306,
       "kind": "html-text",
       "property": null,
@@ -177669,9 +177695,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:176:121",
+      "id": "candidate:app/index.html:180:121",
       "file": "app/index.html",
-      "line": 176,
+      "line": 180,
       "column": 121,
       "kind": "html-text",
       "property": null,
@@ -177695,9 +177721,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:176:223",
+      "id": "candidate:app/index.html:180:223",
       "file": "app/index.html",
-      "line": 176,
+      "line": 180,
       "column": 223,
       "kind": "html-text",
       "property": null,
@@ -177721,248 +177747,14 @@
       }
     },
     {
-      "id": "candidate:app/index.html:176:281",
+      "id": "candidate:app/index.html:180:281",
       "file": "app/index.html",
-      "line": 176,
+      "line": 180,
       "column": 281,
       "kind": "html-text",
       "property": null,
       "value": "Literal",
       "sha256": "a6230c2a81abcafc765628fdc8bc0b77035b0eabb97ea08565a416a8b7a07f94",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:177:92",
-      "file": "app/index.html",
-      "line": 177,
-      "column": 92,
-      "kind": "html-text",
-      "property": null,
-      "value": "Paper",
-      "sha256": "35045eff549e30b5bdf44abb9999f383d87bc54002b130fdcdd05315e188419e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:177:180",
-      "file": "app/index.html",
-      "line": 177,
-      "column": 180,
-      "kind": "html-text",
-      "property": null,
-      "value": "Paper",
-      "sha256": "35045eff549e30b5bdf44abb9999f383d87bc54002b130fdcdd05315e188419e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:177:242",
-      "file": "app/index.html",
-      "line": 177,
-      "column": 242,
-      "kind": "html-text",
-      "property": null,
-      "value": "Warm",
-      "sha256": "316f24288be59c8327d0406f2938c59b2eda60426c0f1d2b741b8549fa131e74",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:177:309",
-      "file": "app/index.html",
-      "line": 177,
-      "column": 309,
-      "kind": "html-text",
-      "property": null,
-      "value": "Ink",
-      "sha256": "f089d62295937bb4ea34e0a55642588056865c63160431e5cce16a3e3976de4f",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:178:92",
-      "file": "app/index.html",
-      "line": 178,
-      "column": 92,
-      "kind": "html-text",
-      "property": null,
-      "value": "Aspect ratio",
-      "sha256": "d7ad336f35e1e6853b230bb077b557455ead80a703cc934abfc373cedf72dc6d",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:178:162",
-      "file": "app/index.html",
-      "line": 178,
-      "column": 162,
-      "kind": "html-text",
-      "property": null,
-      "value": "4 : 5",
-      "sha256": "3418f6f16dbcb948d782007863f4cab66334dc438aaba6d4ecd1197647b4f6a6",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:178:199",
-      "file": "app/index.html",
-      "line": 178,
-      "column": 199,
-      "kind": "html-text",
-      "property": null,
-      "value": "1 : 1",
-      "sha256": "7925ec755996a716b6c4275175176e74533332d676f80507aa0fbd965d21913c",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:178:235",
-      "file": "app/index.html",
-      "line": 178,
-      "column": 235,
-      "kind": "html-text",
-      "property": null,
-      "value": "9 : 16",
-      "sha256": "0049516320f43894d5128a9080a47ea5554ab343da335a02a84b028ef3a4fe11",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [
-        {
-          "kind": "dom-text",
-          "evidence": "html-text-node",
-          "confidence": "low"
-        }
-      ],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/index.html:180:80",
-      "file": "app/index.html",
-      "line": 180,
-      "column": 80,
-      "kind": "html-text",
-      "property": null,
-      "value": "Context and details",
-      "sha256": "be922e4b631d9cb629f27f166c0f4d0bee4e6965e1dab6524d0257baf0da4172",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -177987,8 +177779,8 @@
       "column": 92,
       "kind": "html-text",
       "property": null,
-      "value": "Text above",
-      "sha256": "471941219599756b0391d0af463f60fd7d5bab8130b5939edc6501d7600f7a73",
+      "value": "Paper",
+      "sha256": "35045eff549e30b5bdf44abb9999f383d87bc54002b130fdcdd05315e188419e",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -178007,14 +177799,14 @@
       }
     },
     {
-      "id": "candidate:app/index.html:181:184",
+      "id": "candidate:app/index.html:181:180",
       "file": "app/index.html",
       "line": 181,
-      "column": 184,
+      "column": 180,
       "kind": "html-text",
       "property": null,
-      "value": "Fade",
-      "sha256": "9efb597c915414fd84e20eedf169e945155c3408df8c13fb82385ca7b96174b7",
+      "value": "Paper",
+      "sha256": "35045eff549e30b5bdf44abb9999f383d87bc54002b130fdcdd05315e188419e",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -178033,14 +177825,14 @@
       }
     },
     {
-      "id": "candidate:app/index.html:181:247",
+      "id": "candidate:app/index.html:181:242",
       "file": "app/index.html",
       "line": 181,
-      "column": 247,
+      "column": 242,
       "kind": "html-text",
       "property": null,
-      "value": "Hide",
-      "sha256": "ac20a57bfde0bbc40bfe70895eb1cfacc944aaff06ca784053623c569b3e1b3d",
+      "value": "Warm",
+      "sha256": "316f24288be59c8327d0406f2938c59b2eda60426c0f1d2b741b8549fa131e74",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -178065,8 +177857,8 @@
       "column": 309,
       "kind": "html-text",
       "property": null,
-      "value": "Keep",
-      "sha256": "183f00f483d3844e875d26eac74c676054383aef38ed5a8e4d1505ef21008585",
+      "value": "Ink",
+      "sha256": "f089d62295937bb4ea34e0a55642588056865c63160431e5cce16a3e3976de4f",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -178091,8 +177883,8 @@
       "column": 92,
       "kind": "html-text",
       "property": null,
-      "value": "Text below",
-      "sha256": "8f99280ddbdab5095eecca0931fa4b6883d288aee45a69c93e546d49f514b2f3",
+      "value": "Aspect ratio",
+      "sha256": "d7ad336f35e1e6853b230bb077b557455ead80a703cc934abfc373cedf72dc6d",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -178111,9 +177903,139 @@
       }
     },
     {
-      "id": "candidate:app/index.html:182:184",
+      "id": "candidate:app/index.html:182:162",
       "file": "app/index.html",
       "line": 182,
+      "column": 162,
+      "kind": "html-text",
+      "property": null,
+      "value": "4 : 5",
+      "sha256": "3418f6f16dbcb948d782007863f4cab66334dc438aaba6d4ecd1197647b4f6a6",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:182:199",
+      "file": "app/index.html",
+      "line": 182,
+      "column": 199,
+      "kind": "html-text",
+      "property": null,
+      "value": "1 : 1",
+      "sha256": "7925ec755996a716b6c4275175176e74533332d676f80507aa0fbd965d21913c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:182:235",
+      "file": "app/index.html",
+      "line": 182,
+      "column": 235,
+      "kind": "html-text",
+      "property": null,
+      "value": "9 : 16",
+      "sha256": "0049516320f43894d5128a9080a47ea5554ab343da335a02a84b028ef3a4fe11",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:184:80",
+      "file": "app/index.html",
+      "line": 184,
+      "column": 80,
+      "kind": "html-text",
+      "property": null,
+      "value": "Context and details",
+      "sha256": "be922e4b631d9cb629f27f166c0f4d0bee4e6965e1dab6524d0257baf0da4172",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:185:92",
+      "file": "app/index.html",
+      "line": 185,
+      "column": 92,
+      "kind": "html-text",
+      "property": null,
+      "value": "Text above",
+      "sha256": "471941219599756b0391d0af463f60fd7d5bab8130b5939edc6501d7600f7a73",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:185:184",
+      "file": "app/index.html",
+      "line": 185,
       "column": 184,
       "kind": "html-text",
       "property": null,
@@ -178137,9 +178059,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:182:247",
+      "id": "candidate:app/index.html:185:247",
       "file": "app/index.html",
-      "line": 182,
+      "line": 185,
       "column": 247,
       "kind": "html-text",
       "property": null,
@@ -178163,9 +178085,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:182:309",
+      "id": "candidate:app/index.html:185:309",
       "file": "app/index.html",
-      "line": 182,
+      "line": 185,
       "column": 309,
       "kind": "html-text",
       "property": null,
@@ -178189,9 +178111,113 @@
       }
     },
     {
-      "id": "candidate:app/index.html:183:198",
+      "id": "candidate:app/index.html:186:92",
       "file": "app/index.html",
-      "line": 183,
+      "line": 186,
+      "column": 92,
+      "kind": "html-text",
+      "property": null,
+      "value": "Text below",
+      "sha256": "8f99280ddbdab5095eecca0931fa4b6883d288aee45a69c93e546d49f514b2f3",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:186:184",
+      "file": "app/index.html",
+      "line": 186,
+      "column": 184,
+      "kind": "html-text",
+      "property": null,
+      "value": "Fade",
+      "sha256": "9efb597c915414fd84e20eedf169e945155c3408df8c13fb82385ca7b96174b7",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:186:247",
+      "file": "app/index.html",
+      "line": 186,
+      "column": 247,
+      "kind": "html-text",
+      "property": null,
+      "value": "Hide",
+      "sha256": "ac20a57bfde0bbc40bfe70895eb1cfacc944aaff06ca784053623c569b3e1b3d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:186:309",
+      "file": "app/index.html",
+      "line": 186,
+      "column": 309,
+      "kind": "html-text",
+      "property": null,
+      "value": "Keep",
+      "sha256": "183f00f483d3844e875d26eac74c676054383aef38ed5a8e4d1505ef21008585",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:187:198",
+      "file": "app/index.html",
+      "line": 187,
       "column": 198,
       "kind": "html-text",
       "property": null,
@@ -178215,9 +178241,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:183:245",
+      "id": "candidate:app/index.html:187:245",
       "file": "app/index.html",
-      "line": 183,
+      "line": 187,
       "column": 245,
       "kind": "html-text",
       "property": null,
@@ -178241,9 +178267,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:184:197",
+      "id": "candidate:app/index.html:188:197",
       "file": "app/index.html",
-      "line": 184,
+      "line": 188,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -178267,9 +178293,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:186:121",
+      "id": "candidate:app/index.html:190:121",
       "file": "app/index.html",
-      "line": 186,
+      "line": 190,
       "column": 121,
       "kind": "html-text",
       "property": null,
@@ -178293,9 +178319,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:186:197",
+      "id": "candidate:app/index.html:190:197",
       "file": "app/index.html",
-      "line": 186,
+      "line": 190,
       "column": 197,
       "kind": "html-text",
       "property": null,
@@ -178319,9 +178345,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:186:284",
+      "id": "candidate:app/index.html:190:284",
       "file": "app/index.html",
-      "line": 186,
+      "line": 190,
       "column": 284,
       "kind": "html-text",
       "property": null,
@@ -178345,9 +178371,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:192:124",
+      "id": "candidate:app/index.html:196:124",
       "file": "app/index.html",
-      "line": 192,
+      "line": 196,
       "column": 124,
       "kind": "html-text",
       "property": null,
@@ -178371,9 +178397,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:192:276",
+      "id": "candidate:app/index.html:196:276",
       "file": "app/index.html",
-      "line": 192,
+      "line": 196,
       "column": 276,
       "kind": "html-text",
       "property": null,
@@ -178397,9 +178423,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:192:377",
+      "id": "candidate:app/index.html:196:377",
       "file": "app/index.html",
-      "line": 192,
+      "line": 196,
       "column": 377,
       "kind": "html-text",
       "property": null,
@@ -178423,9 +178449,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:195:92",
+      "id": "candidate:app/index.html:199:92",
       "file": "app/index.html",
-      "line": 195,
+      "line": 199,
       "column": 92,
       "kind": "html-text",
       "property": null,
@@ -178449,9 +178475,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:198:187",
+      "id": "candidate:app/index.html:202:187",
       "file": "app/index.html",
-      "line": 198,
+      "line": 202,
       "column": 187,
       "kind": "html-text",
       "property": null,
@@ -178475,9 +178501,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:198:258",
+      "id": "candidate:app/index.html:202:258",
       "file": "app/index.html",
-      "line": 198,
+      "line": 202,
       "column": 258,
       "kind": "html-text",
       "property": null,
@@ -178501,9 +178527,9 @@
       }
     },
     {
-      "id": "candidate:app/index.html:198:328",
+      "id": "candidate:app/index.html:202:328",
       "file": "app/index.html",
-      "line": 198,
+      "line": 202,
       "column": 328,
       "kind": "html-text",
       "property": null,
@@ -256988,8 +257014,8 @@
     "duplicateKeys": 0,
     "reviewedItems": 0,
     "unreviewedItems": 2217,
-    "candidates": 4856,
-    "candidatesUnreviewed": 4856,
+    "candidates": 4857,
+    "candidatesUnreviewed": 4857,
     "candidatesProtected": 132,
     "itemsProtected": 9,
     "dynamicConsumers": 3123,

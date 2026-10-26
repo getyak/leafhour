@@ -29,7 +29,7 @@ export function mountReadingToolbar(root,{onExpandedChange=()=>{},header=null,do
   const reveal=(focus=true,preview=false)=>{revealFocus=focus;toolbar.reveal({preview});};
   const toolbar=createReadingToolbarState({onChange(expanded,{restoreFocus=true,preview=false}={}){
     // Focus must never remain inside a concealed, inert panel.
-    if(!expanded&&restoreFocus&&panel.contains(document.activeElement))trigger.focus({preventScroll:true});
+    if(!expanded&&restoreFocus&&root.contains(document.activeElement))trigger.focus({preventScroll:true});
     panel.inert=!expanded;
     panel.setAttribute('aria-hidden',String(!expanded));
     root.dataset.expanded=String(expanded);
@@ -54,9 +54,9 @@ export function mountReadingToolbar(root,{onExpandedChange=()=>{},header=null,do
     trigger.setAttribute('aria-expanded',String(toolbar.expanded));
     updateText();
   }
-  const inside=target=>panel.contains(target)||header?.contains(target);
+  const inside=target=>root.contains(target)||header?.contains(target);
   const focusHold=()=>{if(!disposed)toolbar.hold('keyboard',inside(document.activeElement)&&(keyboard||!!document.activeElement?.closest?.('input,textarea,select,[contenteditable=true]')));};
-  for(const node of [trigger,panel,header].filter(Boolean)){
+  for(const node of [trigger,panel,header,root.querySelector('#reading-tools-chat-slot')].filter(Boolean)){
     const reason=node===header?'header-pointer':'pointer';
     listen(node,'pointerenter',event=>{if(event.pointerType!=='mouse')return;if(node===trigger&&!toolbar.expanded&&!overlayOpen(document))reveal(false,true);if(toolbar.expanded&&(node!==header||!toolbar.preview))toolbar.hold(reason,true);});
     listen(node,'pointerleave',event=>{if(event.pointerType==='mouse'&&!node.contains(event.relatedTarget)&&!(node!==header&&(trigger.contains(event.relatedTarget)||panel.contains(event.relatedTarget))))toolbar.hold(reason,false);});
