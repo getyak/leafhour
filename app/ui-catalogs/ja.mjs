@@ -949,6 +949,7 @@ export default Object.freeze({
   "chat.sendRetry": "もう一度試す",
   "chat.stop": "停止",
   "chat.stopped": "この質問は停止しました。",
+  "chat.streaming": "回答を作成中です。まだ完了していません。",
   "chat.suggestion.argument": "この一節はどう本章の主張を支えていますか？",
   "chat.suggestion.favorite": "この章で心に残った一文はどれですか？",
   "chat.thinking": "考えています…",

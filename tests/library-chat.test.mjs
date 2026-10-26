@@ -5,6 +5,13 @@ import {createLibraryChatState,chatFailureUncertain} from '../app/library-chat-s
 const content={available:true,bookId:'one',title:{zh:'一本书',en:'A book'},contentVersion:'v1',context:{passageId:'p1',chapterId:'ch1',chapterTitle:'第一章',original:'Source.',literal:null,interpretive:null,translationStatus:{literal:'missing',interpretive:'missing'}},turns:[]};
 const turn=(id,status='completed')=>({id,passageId:'p1',contentVersion:'v1',text:'这个词是什么意思？',origin:'user',createdAt:'2026-10-15T01:00:00Z',status,answer:status==='completed'?{summary:'一个解释候选。',sourceRefs:[{passageId:'p1',quote:'Source.'}],origin:'ai'}:null});
 function setup(){const drafts=new Map();let next=0;const state=createLibraryChatState({readDraft:(owner,book)=>drafts.get(owner+'/'+book)||'',writeDraft:(owner,book,text)=>drafts.set(owner+'/'+book,text),makeId:()=>`request-${++next}`});state.setContext('alice','one');state.resolveLoad(state.beginLoad(),content);return {state,drafts};}
+test('progress is ephemeral, monotonic, poll-safe and fenced by cancellation and account tickets',()=>{
+ const {state}=setup();state.setDraft('Question');const request=state.beginSend(),frame={type:'progress',id:request.payload.id,sequence:1,text:'正在生成'};
+ assert.equal(state.resolveProgress(request.ticket,frame),true);assert.equal(state.resolveProgress(request.ticket,frame),false);assert.equal(state.resolveProgress(request.ticket,{...frame,id:'other',sequence:2}),false);
+ const running={...request.payload,status:'running',answer:null};state.resolveLoad(state.beginLoad(),{...content,turns:[running]});assert.equal(state.view().turns[0].partial.text,'正在生成');
+ const cancel=state.beginCancel();assert.equal(state.resolveProgress(request.ticket,{...frame,sequence:2,text:'迟到'}),false);state.resolveCancel(cancel,{...running,status:'cancelled'});assert.equal(state.view().turns[0].partial,undefined);assert.equal(state.view().draft,'Question');
+ const next=state.beginSend();state.setContext('bob','one');assert.equal(state.resolveProgress(next.ticket,{...frame,id:next.payload.id}),false);assert.deepEqual(state.view().turns,[]);
+});
 function durableSetup(){
   const drafts=new Map(),requests=new Map();let next=0;
   const create=(owner='alice',book='one')=>{const state=createLibraryChatState({readDraft:(o,b)=>drafts.get(o+'/'+b)||'',writeDraft:(o,b,text)=>drafts.set(o+'/'+b,text),readPending:(o,b)=>structuredClone(requests.get(o+'/'+b)||null),writePending:(o,b,record)=>{if(record)requests.set(o+'/'+b,structuredClone(record));else requests.delete(o+'/'+b);},makeId:()=>`durable-${++next}`});state.setContext(owner,book);return state;};

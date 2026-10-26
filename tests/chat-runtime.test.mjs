@@ -41,6 +41,14 @@ async function fixture(t,result=good,runImpl,options={}){
  if(!fixtureClocks.has(t)){t.mock.timers.enable({apis:['Date'],now:Date.parse(shippedPricing.checkedAt)});fixtureClocks.add(t);}
  const runRoot=await mkdtemp(path.join(tmpdir(),'chat-test-'));t.after(()=>rm(runRoot,{recursive:true,force:true}));const calls=[];let closed=0,markStarted;const started=new Promise(resolve=>{markStarted=resolve;});const createHarness=options=>({async start(){calls.push(options);},async run(text,opts){calls.push({text,opts});markStarted();return runImpl?runImpl():result;},async close(){closed++;}});return {runRoot,calls,started,get closed(){return closed;},generate:createChatGenerator({runRoot,env:{PATH:process.env.PATH,DEEPSEEK_API_KEY:'fake',DATABASE_SECRET:'never'},createHarness,...options})};}
 const job=()=>({runId:'same-id',book:{bookId:'book',contentVersion:'v1',title:'Book'},passageId:'p1',text:'Hi',history:[{role:'assistant',content:'earlier'}],tools});
+test('the runtime plugin sends live text prefixes through the existing authenticated bridge',async()=>{
+ const progress=[],bridge=await createChatBridge({tools,budget:createChatBudget({pricing}),onProgress:value=>progress.push(value)});
+ try{
+  const ctx=pluginContext();apply(ctx,{definitions:tools.definitions,bridgeUrl:bridge.url,token:bridge.token,expiresAt:Date.now()+1000,progress:true});
+  for await(const chunk of ctx.hooks['llm/stream']({messages:[],maxTokens:3072},async function*(){yield {type:'text-delta',index:0,text:'正在'};yield {type:'reasoning-delta',index:1,text:'PRIVATE REASONING'};yield {type:'text-delta',index:0,text:'增长'};})){}
+  assert.ok(progress.some(value=>value.text==='正在'));assert.equal(progress.at(-1).text,'正在增长');assert.ok(progress.every(value=>!value.text.includes('PRIVATE')));
+ }finally{await bridge.close();}
+});
 test('the real pricing expiry rejects before starting a simulated runtime',async t=>{
  const reference=JSON.parse(await readFile(new URL('../harness/pricing.json',import.meta.url),'utf8'));
  t.mock.timers.enable({apis:['Date'],now:Date.parse(reference.validUntil)+1});let dispatches=0;

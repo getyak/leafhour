@@ -11,14 +11,14 @@ export function createOwnerScope(initial='guest'){
   return {capture:()=>({owner,revision}),isCurrent:current,assertCurrent:assert,adopt(next){if(owner===next)return false;owner=next;revision++;return true;},async run(ticket,operation){assert(ticket);let value;try{value=await operation();}catch(error){assert(ticket);throw error;}assert(ticket);return value;}};
 }
 
-export function readOwnerResponse(scope,ticket,request,onSessionChanged){
+export function readOwnerResponse(scope,ticket,request,onSessionChanged,{onProgress}={}){
   return scope.run(ticket,async()=>{
     const response=await request();
     scope.assertCurrent(ticket);
     if(response.headers.get('X-Reader-Session-Changed')==='1'){
       onSessionChanged();throw Error('账户已切换，请重新进入书房。');
     }
-    let body;try{body=await response.json();}catch{throw Object.assign(Error('服务暂时无法连接，请稍后重试'),{status:response.status,retryable:response.ok||[408,500,502,503,504].includes(response.status)});}
+    let body;try{body=onProgress?await (await import('./chat-stream.mjs')).readChatResponse(response,{onProgress,isCurrent:()=>scope.isCurrent(ticket)}):await response.json();}catch(error){throw Object.assign(Error('服务暂时无法连接，请稍后重试'),{status:error?.status||(onProgress&&response.ok?502:response.status),retryable:response.ok||[408,500,502,503,504].includes(response.status),...billingErrorDetails(error)});}
     if(!response.ok){const error=Object.assign(Error(typeof body?.error==='string'?body.error:'暂时无法完成'),{status:response.status,...billingErrorDetails(body)});const messageId=authMessageId(body?.messageId);if(messageId)error.messageId=messageId;if(Number.isInteger(body?.retryAfter)&&body.retryAfter>0)error.retryAfter=Math.min(3600,body.retryAfter);throw error;}
     return body;
   });

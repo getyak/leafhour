@@ -154,7 +154,7 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
   async function finish(user,bookId,id,runId,changes){
     return mutateBook(user,bookId,data=>{const turn=data.turns.find(t=>t.id===id);if(!turn)throw invalid('找不到这次提问',404);if(turn.status==='running'&&turn.runId===runId)Object.assign(turn,changes);return publicTurn(turn);});
   }
-  async function send(user,bookId,input){
+  async function send(user,bookId,input,{onProgress}={}){
     const book=await bookFor(user,bookId);
     if(!input||!safeId(input.id)||!text(input.text,2000)||!text(input.contentVersion,256)||!text(input.passageId,128))throw invalid('请提交当前段落中不超过 2,000 字的提问');
     // Normalize without current-source validation: exact terminal retries are
@@ -215,7 +215,14 @@ export async function createReaderChatService({library,dataDir,dataStore=null,ge
       };
       const tools=createReadingAgentTools({library,user,bookId,passageId:input.passageId,scope:claimed.scope.mode,allowPreferenceWrites:input.preferenceWrites===true,signal:controller.signal,onActivity});
       const selected=index.byId.get(input.passageId);
-      phase='generation';const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'conversation',book:{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title},passageId:input.passageId,chapterId:selected.chapterId,chapterTitle:book.chapters.find(c=>c.id===selected.chapterId)?.title||null,text:input.text,...(input.quote?{quote:input.quote}:{}),history:claimed.history,runId,requestId:input.id,signal:controller.signal,tools})),abort]);
+      let sequence=0;
+      const progress=typeof onProgress==='function'?async value=>{
+        if(controller.signal.aborted||!Number.isSafeInteger(value?.sequence)||value.sequence<=sequence||typeof value.text!=='string'||value.text.length>12000||!value.text.isWellFormed())return;
+        // watchRun checks shared cancellation every 500ms. Token delivery must
+        // not add a cloud-storage read per chunk or persist provisional text.
+        sequence=value.sequence;await onProgress({type:'progress',id:input.id,sequence,text:value.text});
+      }:undefined;
+      phase='generation';const candidate=await Promise.race([Promise.resolve().then(()=>generator({kind:'conversation',book:{bookId:book.bookId,contentVersion:book.contentVersion,title:book.title},passageId:input.passageId,chapterId:selected.chapterId,chapterTitle:book.chapters.find(c=>c.id===selected.chapterId)?.title||null,text:input.text,...(input.quote?{quote:input.quote}:{}),history:claimed.history,runId,requestId:input.id,signal:controller.signal,tools,...(progress?{onProgress:progress}:{})})),abort]);
       phase='verify-source';
       if(candidate?.kind!=='conversation'||!text(candidate.summary,12000))throw invalid('回答内容无效');
       await tools.verify();

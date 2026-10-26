@@ -950,6 +950,7 @@ export default Object.freeze({
   "chat.sendRetry": "Try again",
   "chat.stop": "Stop",
   "chat.stopped": "This question was stopped.",
+  "chat.streaming": "Writing the answer; it is not complete yet.",
   "chat.suggestion.argument": "How does this passage support the chapter’s argument?",
   "chat.suggestion.favorite": "Which sentence in this chapter stayed with you?",
   "chat.thinking": "Thinking…",

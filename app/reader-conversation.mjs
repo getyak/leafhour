@@ -6,6 +6,7 @@ import {readerLoginUrl} from './reader-return.mjs';
 import {mountReaderCompanion,mountCompanionAnchor} from './reader-companion.mjs';
 import {mountLibraryChat} from './library-chat.mjs';
 import {overlayOpen} from './popover-controls.mjs';
+import {readChatResponse} from './chat-stream.mjs';
 
 export function readerInteractionBlocked(document,target){
   return overlayOpen(document,'dialog[open]:not(.library-chat-dialog)')||!!target?.closest?.('dialog,.library-chat-launcher,.squirrel-companion-bubble,.squirrel-companion-pill');
@@ -38,11 +39,12 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
   const context=()=>disposed?null:readerConversationContext(getReader(),bookId);
   const api=async(url,data,options={})=>{
     requireActive();
-    const response=await request(url,{...options,...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json','X-Reader-Owner':session?.user?.id||'guest'}});
+    const {onProgress,...requestOptions}=options;
+    const response=await request(url,{...requestOptions,...(data===undefined?{}:{method:'POST',body:JSON.stringify(data)}),headers:{'Content-Type':'application/json','X-Reader-Owner':session?.user?.id||'guest',...(onProgress?{Accept:'application/x-ndjson'}:{})}});
     requireActive();
     if(response.headers.get('X-Reader-Session-Changed')==='1')sessionChanged();
     if(url.endsWith('/companion/messages')&&response.ok){const identity=await request('/api/auth/session',{cache:'no-store'});requireActive();const current=await identity.json();requireActive();if(!identity.ok||(current.user?.id||'guest')!==(session?.user?.id||'guest'))sessionChanged();}
-    const value=await response.json();requireActive();
+    const value=await readChatResponse(response,{onProgress,isCurrent:()=>!disposed&&!options.signal?.aborted});requireActive();
     if(!response.ok)throw Object.assign(Error(value.error||'对话暂时无法载入，请重试。'),{status:response.status,...billingErrorDetails(value)});
     return value;
   };

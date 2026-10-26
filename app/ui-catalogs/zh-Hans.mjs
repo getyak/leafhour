@@ -949,6 +949,7 @@ export default Object.freeze({
   "chat.sendRetry": "再试一次",
   "chat.stop": "停止",
   "chat.stopped": "这次提问已停止。",
+  "chat.streaming": "正在生成，回答尚未完成。",
   "chat.suggestion.argument": "这段话如何支持本章的论点？",
   "chat.suggestion.favorite": "你最喜欢这一章的哪句话？",
   "chat.thinking": "正在思考…",

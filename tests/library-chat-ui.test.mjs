@@ -39,6 +39,20 @@ function setup(t,{handler,billing=false,navigate,onViewChange,uploadController,u
 }
 function type(el,text){el.value=text;el.dispatchEvent(new Event('input'));}
 
+test('live reply grows in one selectable container before completion and only final answers offer copy',async t=>{
+ let progress,release,payload;
+ const held=new Promise(r=>release=r);t.after(()=>release?.());
+ const s=setup(t,{handler:async(url,data,{options})=>{
+  if(data){payload=data;progress=options.onProgress;await held;return {...data,status:'completed',answer:{summary:'生成中的完整回答。',sourceRefs:[]}};}
+  return {bookId:'one',available:true,contentVersion:'v1',scope:{mode:'book',revision:0},context:{passageId:'p1',original:'Source'},turns:[]};
+ }});
+ s.chat.open();await flush();type(s.input(),'A streaming question');s.find('library-chat-composer').dispatchEvent(new Event('submit',{cancelable:true}));await flush();
+ assert.equal(typeof progress,'function');progress({type:'progress',id:payload.id,sequence:1,text:'生成中'});await flush();
+ const element=s.find('library-chat-stream-text'),row=s.find('library-chat-turn');assert.ok(element);assert.equal(element.textContent,'生成中');assert.equal(s.find('library-chat-copy'),undefined);
+ progress({type:'progress',id:payload.id,sequence:2,text:'生成中的完整'});await flush();assert.equal(s.find('library-chat-stream-text'),element);assert.equal(s.find('library-chat-turn'),row);assert.equal(element.textContent,'生成中的完整');
+ release();await flush();assert.ok(s.find('library-chat-copy'));assert.equal(s.find('library-chat-stream-text'),undefined);
+});
+
 test('retry labeling follows the immutable question and preserves uncertain recovery',()=>{
  const payload={text:'Original question',passageId:'p1',contentVersion:'v1',scopeRevision:0};
  const view={draft:'Original question',retry:{payload,uncertain:false},data:{context:{passageId:'p1'},contentVersion:'v1',scope:{revision:0}}};
