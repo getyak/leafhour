@@ -26,7 +26,7 @@ class Element extends EventTarget {
 function fixture(){
   const doc=new EventTarget();doc.createElement=tag=>new Element(tag,doc);doc.body=doc.createElement('body');doc.activeElement=doc.body;
   const all=n=>[n,...n.children.flatMap(all)];doc.getElementById=id=>all(doc.body).find(n=>n.id===id)||null;
-  doc.querySelectorAll=selector=>all(doc.body).filter(n=>selector==='.command-palette'?n.className.split(' ').includes('command-palette'):selector==='[data-palette-keycap]'?n.dataset.paletteKeycap!==undefined:selector==='[data-palette-open]'?n.dataset.paletteOpen!==undefined:selector==='[role=option]'?n.getAttribute('role')==='option':selector==='[role="status"]'?n.getAttribute('role')==='status':selector==='[data-palette-open],[data-palette-keycap]'?(n.dataset.paletteOpen!==undefined||n.dataset.paletteKeycap!==undefined):false);
+  doc.querySelectorAll=selector=>all(doc.body).filter(n=>selector==='.command-palette'?n.className.split(' ').includes('command-palette'):selector==='[data-palette-keycap]'?n.dataset.paletteKeycap!==undefined:selector==='[data-palette-open]'?n.dataset.paletteOpen!==undefined:selector==='dialog[open]'?n.tagName==='DIALOG'&&n.open:selector==='[role=option]'?n.getAttribute('role')==='option':selector==='[role="status"]'?n.getAttribute('role')==='status':selector==='[data-palette-open],[data-palette-keycap]'?(n.dataset.paletteOpen!==undefined||n.dataset.paletteKeycap!==undefined):false);
   // Minimal truthful compound/descendant matching so production selectors like
   // overlayOpen's safe marker query and the brand fallback resolve real nodes.
   const matchToken=(node,token)=>{
@@ -64,6 +64,7 @@ function fixture(){
     }
     return null;
   };
+  const create=doc.createElement;doc.createElement=tag=>{const node=create(tag);node.matches=selector=>String(selector).split(',').some(token=>matchToken(node,token.trim()));return node;};
   return doc;
 }
 const key=(target,init={})=>{const event=new Event('keydown',{cancelable:true,bubbles:true});Object.assign(event,{key:'k',isComposing:false,keyCode:0,...init});Object.defineProperty(event,'target',{value:target});return event;};
@@ -130,7 +131,7 @@ test('reader appearance commands use the existing appearance adapter and preserv
   const f=openFixture({page:'reader',adapter,library});f.palette.open();
   f.input().value='night';f.input().dispatchEvent(new Event('input'));
   const night=f.options().find(option=>option.textContent.includes('Night'));
-  assert.equal(f.status().textContent,'Night · 1 results','a matching command must not also announce no matches');
+  assert.equal(f.status().textContent,'1 result','the status counts matches without repeating the active option');
   night.dispatchEvent(new Event('click',{bubbles:true}));
   assert.deepEqual(calls,[['theme','night']]);
   assert.equal(f.dialog.open,false);
@@ -690,4 +691,76 @@ test('dispose followed by a fresh mount on the same document binds working searc
   const second=openCommandPalette({document:doc,library,navigate:url=>nav.push(url)});
   try{second.open();assert.notEqual(second.dialog,old);const input=doc.getElementById('command-palette-input');input.value='Again';input.dispatchEvent(new Event('input'));input.dispatchEvent(key(input,{key:'Enter'}));assert.deepEqual(nav,['/read?book=again']);}
   finally{second.dispose();}
+});
+
+test('GET-227 current-book hits precede book titles and navigate through the reader adapter',async()=>{
+ const jumps=[];
+ const book={bookId:'alice',contentVersion:'v1',chapters:[{id:'ch1',title:{en:'Rabbit hole'},startPassageId:'p1'}],sections:[{chapterId:'ch1',paragraphs:[{id:'p1',original:'Alice followed the rabbit.',translations:{}}]}]};
+ const adapter={getBook:()=>book,goToPassage:async id=>{jumps.push(id);return true;}};
+ const library={view:()=>({phase:'ready'}),search:()=>[{bookId:'other',title:{en:'Alice elsewhere'}}]};
+ const f=openFixture({page:'reader',adapter,library});f.palette.open();
+ f.input().value='Alice';f.input().dispatchEvent(new Event('input'));
+ assert.match(f.options()[0].textContent,/Alice followed the rabbit/);
+ assert.equal(f.input().value,'Alice');assert.doesNotMatch(f.input().placeholder,/Loading|results/);
+ f.options()[0].click();await flush();assert.deepEqual(jumps,['p1']);assert.deepEqual(f.nav,[]);
+});
+
+test('GET-227 count announcements do not repeat the active label during arrow navigation',()=>{
+ const library={view:()=>({phase:'ready'}),search:()=>[{bookId:'a',title:{en:'Alice'}},{bookId:'b',title:{en:'Alice two'}}]};
+ const f=openFixture({library});f.palette.open();f.input().value='Alice';f.input().dispatchEvent(new Event('input'));
+ const before=f.status().textContent;f.input().dispatchEvent(key(f.input(),{key:'ArrowDown'}));
+ assert.equal(f.status().textContent,before);assert.doesNotMatch(before,/Alice/);
+});
+
+test('GET-227 reader Ctrl+K hands off an open overlay even from an editable field',async()=>{
+ const doc=fixture();const settings=doc.createElement('dialog'),area=doc.createElement('textarea'),safe=doc.createElement('button');
+ settings.append(area);doc.body.append(settings,safe);settings.showModal();area.focus();area.isContentEditable=true;
+ let handoffs=0;
+ const adapter={getReader:()=>({}),tools:{toolFocusTarget:safe,toolbar:{conceal(){handoffs++;}}}};
+ mountPaletteBootstrap({document:doc,page:'reader',adapter,loadPalette:async()=>({openCommandPalette:options=>openCommandPalette({...options,library:{view:()=>({phase:'ready'}),search:()=>[]}})})});
+ const event=key(area,{ctrlKey:true});doc.dispatchEvent(event);await flush();
+ assert.equal(event.defaultPrevented,true);assert.equal(handoffs,1);assert.equal(settings.open,false);assert.equal(doc.activeElement.id,'command-palette-input');doc.getElementById('command-palette').dispatchEvent(new Event('cancel'));assert.equal(doc.activeElement,safe);
+});
+
+test('GET-227 retry stays visible while a failed catalogue is reloaded',async()=>{
+ let phase='error',finish;const library={view:()=>({phase}),search:()=>[],load:()=>{phase='loading';return new Promise(r=>finish=()=>{phase='ready';r();});}};
+ const f=openFixture({library});f.palette.open();f.options().find(n=>/Reload/.test(n.textContent)).click();
+ assert.equal(f.dialog.open,true);assert.match(f.status().textContent,/Loading/);finish();await flush();assert.equal(f.dialog.open,true);
+});
+
+test('GET-227 IME Enter does not run a result and Tab cycles the actual dialog controls',()=>{
+ const f=openFixture({library:{view:()=>({phase:'ready'}),search:()=>[]}});f.palette.open();
+ const enter=key(f.input(),{key:'Enter',isComposing:true});f.input().dispatchEvent(enter);assert.equal(enter.defaultPrevented,false);assert.equal(f.dialog.open,true);
+ f.dialog.dispatchEvent(key(f.input(),{key:'Tab'}));assert.equal(f.doc.activeElement.id,'command-palette-close');
+ f.dialog.dispatchEvent(key(f.doc.activeElement,{key:'Tab'}));assert.equal(f.doc.activeElement,f.input());
+ const escape=new Event('keyup',{cancelable:true});Object.assign(escape,{key:'Escape',isComposing:true,keyCode:229});f.input().dispatchEvent(escape);assert.equal(f.dialog.open,true,'IME candidate cancellation must retain the palette');
+});
+
+test('GET-227 current book search excludes unloaded text and untranslated placeholders',async()=>{
+ const {matchPaletteBook}=await import('../app/palette-book.mjs');
+ const book={chapters:[{id:'c1',title:{en:'Alice chapter'},startPassageId:'p1'},{id:'c2',title:{zh:'兔子洞'},startPassageId:'p2'}],sections:[{chapterId:'c1',paragraphs:[{id:'p1',original:'Ａｌｉｃｅ entered.',translations:{literal:{status:'ready',text:'译文候选'},interpretive:{status:'missing',text:'假的'}}},{id:'p3',original:'爱丽丝走进来。',translations:{}}]},{chapterId:'c2',paragraphs:[{id:'p2',unloaded:true,original:'Alice hidden'}]}],notes:[{text:'private note'}]};
+ assert.deepEqual(matchPaletteBook(book,'alice').hits.map(h=>h.id),['passage:p1','chapter:c1']);
+ assert.equal(matchPaletteBook(book,'爱丽丝').hits[0].passageId,'p3');
+ assert.equal(matchPaletteBook(book,'译文候选').hits.length,0,'hidden translation layers cannot claim a visible match');
+ assert.deepEqual(matchPaletteBook(book,'兔子洞').hits.map(h=>h.id),['chapter:c2']);
+ for(const q of ['假的','private note','\u0000Alice'])assert.equal(matchPaletteBook(book,q).hits.length,0);
+ assert.equal(matchPaletteBook(book,'Alice').phase,'partial');
+});
+
+test('GET-227 a failed reader load is an error with the existing reopen action',()=>{
+ const f=openFixture({page:'reader',adapter:{getBook:()=>null},library:{view:()=>({phase:'ready'}),search:()=>[]}});
+ const error=f.doc.createElement('div');error.id='load-error';error.hidden=false;const retry=f.doc.createElement('button');retry.id='retry-load';let reopened=0;retry.addEventListener('click',()=>reopened++);f.doc.body.append(error,retry);
+ f.palette.open();f.input().value='Alice';f.input().dispatchEvent(new Event('input'));
+ assert.doesNotMatch(f.status().textContent,/Loading this book/);assert.match(f.status().textContent,/could not be loaded/i);
+ f.options().find(n=>/Open again/.test(n.textContent)).click();assert.equal(reopened,1);
+ const partial=openFixture({page:'reader',adapter:{getBook:()=>({chapters:[{id:'c',title:{en:'Alice'},startPassageId:'p'}],sections:[{chapterId:'c',paragraphs:[{id:'p',original:'Alice',unloaded:true}]}]})},library:{view:()=>({phase:'ready'}),search:()=>[]}});
+ const lateError=partial.doc.createElement('div');lateError.id='load-error';lateError.hidden=false;partial.doc.body.append(lateError);partial.palette.open();partial.input().value='Alice';partial.input().dispatchEvent(new Event('input'));assert.match(partial.status().textContent,/could not be loaded/i,'chapter failure after metadata load is still an error');
+});
+
+test('GET-227 normalized matches keep the matching grapheme and exact source text in the excerpt',async()=>{
+ const {matchPaletteBook}=await import('../app/palette-book.mjs');
+ for(const original of [('e\u0301').repeat(200)+'MAGIC',('👩🏽‍💻').repeat(100)+'MAGIC']){
+  const book={chapters:[{id:'c',title:{en:'Chapter'}}],sections:[{chapterId:'c',paragraphs:[{id:'p',original}]}]};
+  const [hit]=matchPaletteBook(book,'magic').hits;assert.ok(hit.label.includes('MAGIC'));assert.ok(hit.label.isWellFormed());assert.ok(original.includes(hit.label.replace(/^…|…$/g,'')));
+ }
 });

@@ -1,0 +1,16 @@
+{"list":{"x":28,"y":265.1875,"width":264,"height":368,"top":265.1875,"right":292,"bottom":633.1875,"left":28},"active":{"x":28,"y":1649.890625,"width":264,"height":44.390625,"top":1649.890625,"right":292,"bottom":1694.28125,"left":28},"scroll":0}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: active End result must be visible in the scrolling list
+    at file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-227/.symphony/keyboard-regression.mjs:9:364 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.23.2

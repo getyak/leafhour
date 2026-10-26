@@ -1,0 +1,12 @@
+[
+  {
+    "name": "empty",
+    "exitCode": 1,
+    "rejected": true
+  },
+  {
+    "name": "missing-asset",
+    "exitCode": 1,
+    "rejected": true
+  }
+]

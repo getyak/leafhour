@@ -1,0 +1,4 @@
+{"engine":"chromium","locale":"en","width":1280,"checks":5}
+{"engine":"chromium","locale":"ja","width":320,"checks":5}
+{"engine":"webkit","locale":"en","width":1280,"checks":5}
+{"engine":"webkit","locale":"ja","width":320,"checks":5}

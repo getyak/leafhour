@@ -1,0 +1,30 @@
+TAP version 13
+# Subtest: GET-227 a failed reader load is an error with the existing reopen action
+not ok 1 - GET-227 a failed reader load is an error with the existing reopen action
+  ---
+  duration_ms: 2.643
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-227/tests/command-palette.test.mjs:750:1'
+  failureType: 'testCodeFailure'
+  error: 'chapter failure after metadata load is still an error'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '1 result · Searching loaded original text and chapter titles. Other text is not loaded.'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-227/tests/command-palette.test.mjs:757:245)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 52.864417

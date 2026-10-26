@@ -59,7 +59,7 @@ export function mountPaletteBootstrap({document=globalThis.document,navigator=gl
   // real user id getter for /api/auth/session compatibility.
   const live=()=>globalThis.marginaliaPaletteAdapter||adapter;
   const ownerNow=()=>{try{const a=live()||null;return a?.getOwnerToken?.()??a?.getOwner?.();}catch{return null;}};
-  const blocked=()=>{const menu=document.getElementById?.('site-appearance-menu');return overlayOpen(document)||!!menu&&!menu.hidden;};
+  const blocked=()=>page!=='reader'&&(overlayOpen(document)||document.getElementById?.('site-appearance-menu')?.hidden===false);
   const current=stamp=>stamp.generation===generation&&stamp.owner===ownerNow();
   // The eventual focus-return target is the actual visible opener; a breakpoint
   // that hid it falls back to the visible brand or an existing safe page-level
@@ -130,8 +130,9 @@ export function mountPaletteBootstrap({document=globalThis.document,navigator=gl
   // gesture/open path with the caller's actual visible opener.
   document.addEventListener?.('palette:open',event=>gesture(event?.detail||document.activeElement));
   const onKeydown=event=>{
-    const key=event.key?.toLowerCase?.()||'',primary=!!event.metaKey||!!event.ctrlKey,target=event.target;
-    const allowed=paletteShortcutAllowed(event,{editable:!!target&&(target.isContentEditable||!!target.closest?.('input,textarea,select,[contenteditable="true"]')),modalOpen:overlayOpen(document)});
+    const key=event.key?.toLowerCase?.()||'',primary=event.metaKey||event.ctrlKey,target=event.target;
+    const handoff=primary&&page==='reader';
+    const allowed=paletteShortcutAllowed(event,{editable:!handoff&&!!target&&(target.isContentEditable||!!target.closest?.('input,textarea,select,[contenteditable="true"]')),modalOpen:!handoff&&overlayOpen(document)});
     if(key==='k'&&primary&&!event.altKey&&!event.shiftKey&&allowed){event.preventDefault();gesture(target);}
     else if(key==='/'&&!primary&&!event.altKey&&!event.shiftKey&&allowed){
       const input=document.getElementById?.('book-search');

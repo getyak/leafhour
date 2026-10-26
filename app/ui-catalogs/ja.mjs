@@ -1,6 +1,14 @@
 // GET-192 immutable ja UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "palette.bookUnavailable": "この本を読み込めませんでした。",
+  "palette.jumpFailed": "この段落に移動できませんでした。もう一度お試しください。",
+  "palette.chapterHit": "章 · {chapter}",
+  "palette.passageHit": "この本 · {chapter}",
+  "palette.bookPartial": "読み込み済みの原文と章のタイトルを検索。他の本文は未読み込みです。",
+  "palette.bookLoading": "この本を読み込み中…",
+  "palette.countOne": "1 件",
+  "palette.readerPlaceholder": "この本・タイトル・コマンドを検索",
   "reader.b1.sourcePrintedPage": "書籍の{page}ページ",
   "reader.b1.sourcePdfPage": "PDFの{page}ページ",
   "reader.atmosphere.imageLoading": "画像を読み込み中…",
@@ -297,7 +305,7 @@ export default Object.freeze({
   "palette.close": "コマンドパレットを閉じる",
   "palette.loading": "書誌を読み込んでいます…",
   "palette.empty": "一致する本やコマンドがありません",
-  "palette.count": "{name} · {count} 件",
+  "palette.count": "{count} 件",
   "palette.retryBooks": "書誌を再読み込み",
   "palette.library": "書斎を開く",
   "palette.settings": "設定を開く",

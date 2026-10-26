@@ -159,7 +159,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['settings-controls.mjs','settings-appearance.mjs'])files['/'+file]=file;
     // GET-178 command palette: the small shared trigger is bundled with each
     // scoped page; the palette module and its stylesheet load on demand.
-    for(const file of ['palette-bootstrap.mjs','command-palette.mjs','command-palette.css','palette-library.mjs'])files['/'+file]=file;
+    for(const file of ['palette-bootstrap.mjs','command-palette.mjs','command-palette.css','palette-library.mjs','palette-book.mjs'])files['/'+file]=file;
     // GET-173 shared popover controller and the reader's lazy bookplate
     // bootstrap share the same fixed public URLs on every surface.
     for(const file of ['popover-controls.mjs','reader-book-actions-bootstrap.mjs'])files['/'+file]=file;

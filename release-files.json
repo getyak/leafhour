@@ -241,6 +241,7 @@
   "app/owner-scope.mjs",
   "app/palette-bootstrap.mjs",
   "app/palette-library.mjs",
+  "app/palette-book.mjs",
   "app/paragraph-anchor.mjs",
   "app/parallel-reading.css",
   "app/parallel-reading.mjs",
@@ -991,5 +992,6 @@
   "server/document-export-assets.mjs",
   "app/vendor/README.md",
   "app/fonts/document-export/README.md",
-  "tools/build-export-fonts.py"
+  "tools/build-export-fonts.py",
+  "tools/verify-command-palette-browser.mjs"
 ]

@@ -1,0 +1,32 @@
+[
+  {
+    "file": "reader-web/reader-7d0d4a0c71c8cf29.js",
+    "sha256": "7d0d4a0c71c8cf29bcfed50c56e5afb0de410b2db46c41ad1ad1ec5cebe26229",
+    "bytes": 327678
+  },
+  {
+    "file": "reader-web/style-1a6e0e0e12c61bdc.css",
+    "sha256": "1a6e0e0e12c61bdc517c72e2f2bb3713b330d93604a53ae81981fceb9acf4dd4",
+    "bytes": 203062
+  },
+  {
+    "file": "command-palette.mjs",
+    "sha256": "30a126a1ac4f5eb8fa9a4aa68d69c42f8a4a11629d0e54bf2163363668c8e6c5",
+    "bytes": 18386
+  },
+  {
+    "file": "palette-book.mjs",
+    "sha256": "655061b3426a4d1a6977f6e663469f897d0f7fa8f28c0e08db1701daacbbe5c0",
+    "bytes": 2195
+  },
+  {
+    "file": "command-palette.css",
+    "sha256": "af111261c8e085d090d21a45434a23c2150617354698f4bc6ea049557bd79df4",
+    "bytes": 3031
+  },
+  {
+    "file": "palette-bootstrap.mjs",
+    "sha256": "fa8c6d374315610e1cbd61b338e920e6911c377a7cc35206f5ca3040b8361343",
+    "bytes": 9870
+  }
+]
