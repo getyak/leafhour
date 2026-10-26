@@ -378,7 +378,7 @@
       },
       {
         "file": "app/paper-companion.mjs",
-        "sha256": "85e942a5f3c132c2b28654b17e4b622262bbb3e5c7748ba00e4055e5fa855e11"
+        "sha256": "53ca75ae1fc2103babf0ae05fac42d06466268f8123c36d9bf9a1c91036aa817"
       },
       {
         "file": "app/paragraph-anchor.mjs",
@@ -1145,7 +1145,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "f447c85bbe97815edb561c7a22b559647e7dc0bd639f3f2f4bc3ccd6953161df"
+    "inputDigest": "4dfc3df1c1cce18e0d6a1e9cec658439666f2608a64a2a41c13eff2d77f3e7dd"
   },
   "locales": [
     "en",
