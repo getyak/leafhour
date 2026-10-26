@@ -1,0 +1,8 @@
+{
+  "base": "34e155b688bc7cc01fef75ca07516181cb18cfca",
+  "files": {
+    "app/reader-annotation-margins.mjs": "d286dc5a22a4f65717d9c1c0968b0d29d00402946d3903b19f11b52d80c61a1c",
+    "tests/reader-annotation-margins.test.mjs": "624732298a7861d50e56b17e09689cb42d01f6d008b860f3f012c8b506c24098",
+    "tools/verify-reader-quiet.mjs": "c0a2472323636a59d0f5bbd8ec5bee8ac1b3d69dbc1c1021176ad60a06ef376b"
+  }
+}

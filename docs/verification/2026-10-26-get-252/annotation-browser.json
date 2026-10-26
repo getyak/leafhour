@@ -1,0 +1,539 @@
+{
+  "at": "2026-10-26T09:13:52.813Z",
+  "packaged": true,
+  "cases": [
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "en",
+      "width": 1280,
+      "height": 800,
+      "theme": "paper",
+      "scale": 1,
+      "checks": [
+        "default-text-and-measured-progress-only-opaque-44px-entry",
+        "native-pointer-crossing-holds-agent-preview",
+        "unread-fixture-preserves-discoverable-agent",
+        "keyboard-focus-survives-five-second-deadline",
+        "agent-empty-open-close-restores-visible-entry-without-anchor-shift",
+        "native-disclosures-choices-and-source-provenance-retain-values-and-focus",
+        "existing-page-mode-real-count-and-turn",
+        "reload-retains-view-and-quiet-entry",
+        "optional-module-failure-native-select-remains-usable",
+        "actual-load-error-retry-recovers",
+        "empty-content-fixture-keeps-location-unknown",
+        "unsaved-caption-fixture-remains-visible",
+        "long-title-disclosure-and-existing-real-F-Escape-exit",
+        "saved-annotation-fixture-default-tucked-explicit-reveal-open-reload-retained",
+        "annotation-load-error-and-retry-remain-actionable",
+        "isolated-local-auth-draft-close-reload-restore-and-session-revocation"
+      ],
+      "writes": [
+        {
+          "path": "/api/library/daily-reading/presence",
+          "blocked": true
+        },
+        {
+          "path": "/api/library/daily-reading/presence",
+          "blocked": true
+        },
+        {
+          "path": "/api/library/daily-reading/presence",
+          "blocked": true
+        },
+        {
+          "path": "/api/library/daily-reading/presence",
+          "blocked": true
+        }
+      ],
+      "errors": [],
+      "initial": {
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "mode": "en",
+        "pageLayout": "scroll",
+        "location": "Chapter 1 / 12 · 0% within chapter",
+        "tools": "closed",
+        "overflow": false
+      },
+      "pill": {
+        "x": 1017.125,
+        "y": 736,
+        "width": 236.875,
+        "height": 44,
+        "background": "rgb(250, 249, 245)",
+        "opacity": "1"
+      },
+      "settingsHeight": 776,
+      "initialSettings": "Your reading style\nClose\nRead\nSound\nHabits\nData\nText and paper\nFont size 22\nPaper\nPaper\n◐\nA\nA\nA\nA\nA\nFine typography\nReading content\nPage layout\nScroll\nTurn pages\nPage navigation\nStarting view\nInterface language\nSource and translations\nBook contents\nReturn to the page",
+      "sourceDisclosure": "The first 6 passages have literal and interpretive Chinese translations by Codex: AI drafts, not human-reviewed. Translation license: CC0-1.0. Later passages remain in English. The book’s source link provides its original attribution and license.",
+      "attention": {
+        "fixture": "attention CSS state",
+        "caption": "block",
+        "position": "none"
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "en",
+      "width": 390,
+      "height": 800,
+      "theme": "night",
+      "scale": 1,
+      "checks": [
+        "default-text-and-measured-progress-only-opaque-44px-entry",
+        "unread-fixture-preserves-discoverable-agent",
+        "agent-empty-open-close-restores-visible-entry-without-anchor-shift",
+        "native-disclosures-choices-and-source-provenance-retain-values-and-focus",
+        "unsaved-caption-fixture-remains-visible",
+        "long-title-disclosure-and-existing-real-F-Escape-exit",
+        "saved-annotation-fixture-default-tucked-explicit-reveal-open-reload-retained",
+        "annotation-load-error-and-retry-remain-actionable",
+        "isolated-local-auth-draft-close-reload-restore-and-session-revocation"
+      ],
+      "writes": [
+        {
+          "path": "/api/library/daily-reading/presence",
+          "blocked": true
+        },
+        {
+          "path": "/api/library/daily-reading/presence",
+          "blocked": true
+        },
+        {
+          "path": "/api/library/daily-reading/presence",
+          "blocked": true
+        },
+        {
+          "path": "/api/library/daily-reading/presence",
+          "blocked": true
+        }
+      ],
+      "errors": [],
+      "initial": {
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 180.5,
+          "chapterId": "ch01"
+        },
+        "mode": "en",
+        "pageLayout": "scroll",
+        "location": "Chapter 1 / 12 · 0% within chapter",
+        "tools": "closed",
+        "overflow": false
+      },
+      "pill": {
+        "x": 139.125,
+        "y": 744,
+        "width": 236.875,
+        "height": 44,
+        "background": "rgb(24, 27, 25)",
+        "opacity": "1"
+      },
+      "settingsHeight": 776,
+      "initialSettings": "Your reading style\nClose\nRead\nSound\nHabits\nData\nText and paper\nFont size 22\nPaper\nNight\n◐\nA\nA\nA\nA\nA\nFine typography\nReading content\nPage layout\nScroll\nTurn pages\nPage navigation\nStarting view\nInterface language\nSource and translations\nBook contents\nReturn to the page",
+      "sourceDisclosure": "The first 6 passages have literal and interpretive Chinese translations by Codex: AI drafts, not human-reviewed. Translation license: CC0-1.0. Later passages remain in English. The book’s source link provides its original attribution and license.",
+      "attention": {
+        "fixture": "attention CSS state",
+        "caption": "block",
+        "position": "none"
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "zh-Hans",
+      "width": 1280,
+      "height": 800,
+      "theme": "paper",
+      "scale": 1,
+      "checks": [
+        "default-text-and-measured-progress-only-opaque-44px-entry",
+        "unread-fixture-preserves-discoverable-agent",
+        "agent-empty-open-close-restores-visible-entry-without-anchor-shift",
+        "native-disclosures-choices-and-source-provenance-retain-values-and-focus",
+        "unsaved-caption-fixture-remains-visible",
+        "long-title-disclosure-and-existing-real-F-Escape-exit"
+      ],
+      "writes": [],
+      "errors": [],
+      "initial": {
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 191.75,
+          "chapterId": "ch01"
+        },
+        "mode": "en",
+        "pageLayout": "scroll",
+        "location": "第 1 / 12 章 · 章内 0%",
+        "tools": "closed",
+        "overflow": false
+      },
+      "pill": {
+        "x": 1091.484375,
+        "y": 736,
+        "width": 162.515625,
+        "height": 44,
+        "background": "rgb(250, 249, 245)",
+        "opacity": "1"
+      },
+      "settingsHeight": 780,
+      "initialSettings": "你的阅读方式\n关闭\n阅读\n声音\n习惯\n数据\n文字与纸面\n字号 22\n纸面\n纸白\n◐\nA\nA\nA\nA\nA\n精细排版\n阅读内容\n书页布局\n滚动阅读\n翻页阅读\n阅读翻页\n打开时的阅读方式\n界面语言\n来源与译文\n全书目录\n返回书页",
+      "sourceDisclosure": "开篇 6 段含 Codex 编写的中文直译与意译，均为未经人工审校的 AI 初稿，许可为 CC0-1.0。其余正文为英文；底本出处与许可见书籍来源链接。",
+      "attention": {
+        "fixture": "attention CSS state",
+        "caption": "block",
+        "position": "none"
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "zh-Hans",
+      "width": 390,
+      "height": 800,
+      "theme": "night",
+      "scale": 1,
+      "checks": [
+        "default-text-and-measured-progress-only-opaque-44px-entry",
+        "unread-fixture-preserves-discoverable-agent",
+        "agent-empty-open-close-restores-visible-entry-without-anchor-shift",
+        "native-disclosures-choices-and-source-provenance-retain-values-and-focus",
+        "unsaved-caption-fixture-remains-visible",
+        "long-title-disclosure-and-existing-real-F-Escape-exit"
+      ],
+      "writes": [],
+      "errors": [],
+      "initial": {
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 182.5,
+          "chapterId": "ch01"
+        },
+        "mode": "en",
+        "pageLayout": "scroll",
+        "location": "第 1 / 12 章 · 章内 0%",
+        "tools": "closed",
+        "overflow": false
+      },
+      "pill": {
+        "x": 213.484375,
+        "y": 744,
+        "width": 162.515625,
+        "height": 44,
+        "background": "rgb(24, 27, 25)",
+        "opacity": "1"
+      },
+      "settingsHeight": 780,
+      "initialSettings": "你的阅读方式\n关闭\n阅读\n声音\n习惯\n数据\n文字与纸面\n字号 22\n纸面\n夜读\n◐\nA\nA\nA\nA\nA\n精细排版\n阅读内容\n书页布局\n滚动阅读\n翻页阅读\n阅读翻页\n打开时的阅读方式\n界面语言\n来源与译文\n全书目录\n返回书页",
+      "sourceDisclosure": "开篇 6 段含 Codex 编写的中文直译与意译，均为未经人工审校的 AI 初稿，许可为 CC0-1.0。其余正文为英文；底本出处与许可见书籍来源链接。",
+      "attention": {
+        "fixture": "attention CSS state",
+        "caption": "block",
+        "position": "none"
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "zh-Hant",
+      "width": 1280,
+      "height": 800,
+      "theme": "paper",
+      "scale": 1,
+      "checks": [
+        "default-text-and-measured-progress-only-opaque-44px-entry",
+        "unread-fixture-preserves-discoverable-agent",
+        "agent-empty-open-close-restores-visible-entry-without-anchor-shift",
+        "native-disclosures-choices-and-source-provenance-retain-values-and-focus",
+        "unsaved-caption-fixture-remains-visible",
+        "long-title-disclosure-and-existing-real-F-Escape-exit"
+      ],
+      "writes": [],
+      "errors": [],
+      "initial": {
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 191.75,
+          "chapterId": "ch01"
+        },
+        "mode": "en",
+        "pageLayout": "scroll",
+        "location": "第 1 / 12 章 · 章內 0%",
+        "tools": "closed",
+        "overflow": false
+      },
+      "pill": {
+        "x": 1091.484375,
+        "y": 736,
+        "width": 162.515625,
+        "height": 44,
+        "background": "rgb(250, 249, 245)",
+        "opacity": "1"
+      },
+      "settingsHeight": 780,
+      "initialSettings": "你的閱讀方式\n關閉\n閱讀\n聲音\n習慣\n資料\n文字與紙面\n字級 22\n紙面\n紙白\n◐\nA\nA\nA\nA\nA\n精細排版\n閱讀內容\n書頁版面\n捲動閱讀\n翻頁閱讀\n閱讀翻頁\n開啟時的閱讀方式\n介面語言\n來源與譯文\n全書目錄\n返回書頁",
+      "sourceDisclosure": "開篇 6 段含 Codex 編寫的中文直譯與意譯，均為未經人工審校的 AI 初稿，許可為 CC0-1.0。其餘正文為英文；底本出處與許可見書籍來源連結。",
+      "attention": {
+        "fixture": "attention CSS state",
+        "caption": "block",
+        "position": "none"
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "zh-Hant",
+      "width": 390,
+      "height": 800,
+      "theme": "night",
+      "scale": 1,
+      "checks": [
+        "default-text-and-measured-progress-only-opaque-44px-entry",
+        "unread-fixture-preserves-discoverable-agent",
+        "agent-empty-open-close-restores-visible-entry-without-anchor-shift",
+        "native-disclosures-choices-and-source-provenance-retain-values-and-focus",
+        "unsaved-caption-fixture-remains-visible",
+        "long-title-disclosure-and-existing-real-F-Escape-exit"
+      ],
+      "writes": [],
+      "errors": [],
+      "initial": {
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 182.5,
+          "chapterId": "ch01"
+        },
+        "mode": "en",
+        "pageLayout": "scroll",
+        "location": "第 1 / 12 章 · 章內 0%",
+        "tools": "closed",
+        "overflow": false
+      },
+      "pill": {
+        "x": 213.484375,
+        "y": 744,
+        "width": 162.515625,
+        "height": 44,
+        "background": "rgb(24, 27, 25)",
+        "opacity": "1"
+      },
+      "settingsHeight": 780,
+      "initialSettings": "你的閱讀方式\n關閉\n閱讀\n聲音\n習慣\n資料\n文字與紙面\n字級 22\n紙面\n夜讀\n◐\nA\nA\nA\nA\nA\n精細排版\n閱讀內容\n書頁版面\n捲動閱讀\n翻頁閱讀\n閱讀翻頁\n開啟時的閱讀方式\n介面語言\n來源與譯文\n全書目錄\n返回書頁",
+      "sourceDisclosure": "開篇 6 段含 Codex 編寫的中文直譯與意譯，均為未經人工審校的 AI 初稿，許可為 CC0-1.0。其餘正文為英文；底本出處與許可見書籍來源連結。",
+      "attention": {
+        "fixture": "attention CSS state",
+        "caption": "block",
+        "position": "none"
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "ja",
+      "width": 1280,
+      "height": 800,
+      "theme": "paper",
+      "scale": 1,
+      "checks": [
+        "default-text-and-measured-progress-only-opaque-44px-entry",
+        "unread-fixture-preserves-discoverable-agent",
+        "agent-empty-open-close-restores-visible-entry-without-anchor-shift",
+        "native-disclosures-choices-and-source-provenance-retain-values-and-focus",
+        "unsaved-caption-fixture-remains-visible",
+        "long-title-disclosure-and-existing-real-F-Escape-exit"
+      ],
+      "writes": [],
+      "errors": [],
+      "initial": {
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 191.75,
+          "chapterId": "ch01"
+        },
+        "mode": "en",
+        "pageLayout": "scroll",
+        "location": "第 1 / 12 章 · 章内 0%",
+        "tools": "closed",
+        "overflow": false
+      },
+      "pill": {
+        "x": 1091.484375,
+        "y": 736,
+        "width": 162.515625,
+        "height": 44,
+        "background": "rgb(250, 249, 245)",
+        "opacity": "1"
+      },
+      "settingsHeight": 780,
+      "initialSettings": "自分の読み方\n閉じる\n読書\n音\n習慣\nデータ\n文字と紙面\n文字サイズ 22\n紙面\n紙の白\n◐\nA\nA\nA\nA\nA\n細かい組版\n読む内容\nページ構成\nスクロール\nページ送り\nページ送り\n開いたときの表示\n表示言語\n出典と訳文\n本の目次\n本のページに戻る",
+      "sourceDisclosure": "冒頭 6 段落には Codex による中国語の直訳と意訳があります。AI による初稿で、人による確認は未実施です。訳文のライセンスは CC0-1.0 です。以降は英語原文です。原書の出典とライセンスは、本の出典リンクで確認できます。",
+      "attention": {
+        "fixture": "attention CSS state",
+        "caption": "block",
+        "position": "none"
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "ja",
+      "width": 390,
+      "height": 800,
+      "theme": "night",
+      "scale": 1,
+      "checks": [
+        "default-text-and-measured-progress-only-opaque-44px-entry",
+        "unread-fixture-preserves-discoverable-agent",
+        "agent-empty-open-close-restores-visible-entry-without-anchor-shift",
+        "native-disclosures-choices-and-source-provenance-retain-values-and-focus",
+        "unsaved-caption-fixture-remains-visible",
+        "long-title-disclosure-and-existing-real-F-Escape-exit"
+      ],
+      "writes": [],
+      "errors": [],
+      "initial": {
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 182.5,
+          "chapterId": "ch01"
+        },
+        "mode": "en",
+        "pageLayout": "scroll",
+        "location": "第 1 / 12 章 · 章内 0%",
+        "tools": "closed",
+        "overflow": false
+      },
+      "pill": {
+        "x": 213.484375,
+        "y": 744,
+        "width": 162.515625,
+        "height": 44,
+        "background": "rgb(24, 27, 25)",
+        "opacity": "1"
+      },
+      "settingsHeight": 780,
+      "initialSettings": "自分の読み方\n閉じる\n読書\n音\n習慣\nデータ\n文字と紙面\n文字サイズ 22\n紙面\n夜読\n◐\nA\nA\nA\nA\nA\n細かい組版\n読む内容\nページ構成\nスクロール\nページ送り\nページ送り\n開いたときの表示\n表示言語\n出典と訳文\n本の目次\n本のページに戻る",
+      "sourceDisclosure": "冒頭 6 段落には Codex による中国語の直訳と意訳があります。AI による初稿で、人による確認は未実施です。訳文のライセンスは CC0-1.0 です。以降は英語原文です。原書の出典とライセンスは、本の出典リンクで確認できます。",
+      "attention": {
+        "fixture": "attention CSS state",
+        "caption": "block",
+        "position": "none"
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "zh-Hant",
+      "width": 320,
+      "height": 800,
+      "theme": "paper",
+      "scale": 2,
+      "checks": [
+        "default-text-and-measured-progress-only-opaque-44px-entry",
+        "unread-fixture-preserves-discoverable-agent",
+        "agent-empty-open-close-restores-visible-entry-without-anchor-shift",
+        "native-disclosures-choices-and-source-provenance-retain-values-and-focus",
+        "unsaved-caption-fixture-remains-visible",
+        "long-title-disclosure-and-existing-real-F-Escape-exit"
+      ],
+      "writes": [],
+      "errors": [],
+      "initial": {
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 182.5,
+          "chapterId": "ch01"
+        },
+        "mode": "en",
+        "pageLayout": "scroll",
+        "location": "第 1 / 12 章 · 章內 0%",
+        "tools": "closed",
+        "overflow": false
+      },
+      "pill": {
+        "x": 143.484375,
+        "y": 744,
+        "width": 162.515625,
+        "height": 44,
+        "background": "rgb(250, 249, 245)",
+        "opacity": "1"
+      },
+      "settingsHeight": 832,
+      "initialSettings": "你的閱讀方式\n關閉\n閱讀\n聲音\n習慣\n資料\n文字與紙面\n字級 22\n紙面\n紙白\n◐\nA\nA\nA\nA\nA\n精細排版\n閱讀內容\n書頁版面\n捲動閱讀\n翻頁閱讀\n閱讀翻頁\n開啟時的閱讀方式\n介面語言\n來源與譯文\n全書目錄\n返回書頁",
+      "sourceDisclosure": "開篇 6 段含 Codex 編寫的中文直譯與意譯，均為未經人工審校的 AI 初稿，許可為 CC0-1.0。其餘正文為英文；底本出處與許可見書籍來源連結。",
+      "attention": {
+        "fixture": "attention CSS state",
+        "caption": "block",
+        "position": "none"
+      },
+      "passed": true
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "en",
+      "width": 800,
+      "height": 390,
+      "theme": "night",
+      "scale": 1,
+      "checks": [
+        "default-text-and-measured-progress-only-opaque-44px-entry",
+        "unread-fixture-preserves-discoverable-agent",
+        "agent-empty-open-close-restores-visible-entry-without-anchor-shift",
+        "native-disclosures-choices-and-source-provenance-retain-values-and-focus",
+        "unsaved-caption-fixture-remains-visible",
+        "long-title-disclosure-and-existing-real-F-Escape-exit"
+      ],
+      "writes": [],
+      "errors": [],
+      "initial": {
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "mode": "en",
+        "pageLayout": "scroll",
+        "location": "Chapter 1 / 12 · 0% within chapter",
+        "tools": "closed",
+        "overflow": false
+      },
+      "pill": {
+        "x": 537.125,
+        "y": 326,
+        "width": 236.875,
+        "height": 44,
+        "background": "rgb(207, 207, 203)",
+        "opacity": "1"
+      },
+      "settingsHeight": 776,
+      "initialSettings": "Your reading style\nClose\nRead\nSound\nHabits\nData\nText and paper\nFont size 22\nPaper\nNight\n◐\nA\nA\nA\nA\nA\nFine typography\nReading content\nPage layout\nScroll\nTurn pages\nPage navigation\nStarting view\nInterface language\nSource and translations\nBook contents\nReturn to the page",
+      "sourceDisclosure": "The first 6 passages have literal and interpretive Chinese translations by Codex: AI drafts, not human-reviewed. Translation license: CC0-1.0. Later passages remain in English. The book’s source link provides its original attribution and license.",
+      "attention": {
+        "fixture": "attention CSS state",
+        "caption": "block",
+        "position": "none"
+      },
+      "passed": true
+    }
+  ],
+  "limits": [
+    "Synthetic local owner and public-domain Alice; no production-account acceptance.",
+    "Page API mutations blocked before dispatch; explicit isolated local auth/logout fixture allowed. No model, translation or shared-resource write.",
+    "Unread/unsaved/long-title/text-scale states are named in-memory fixtures.",
+    "Driver input is not physical device, Safari or screen-reader speech acceptance."
+  ]
+}
