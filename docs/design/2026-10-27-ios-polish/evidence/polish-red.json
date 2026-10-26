@@ -1,0 +1,36 @@
+{
+  "at": "2026-10-26T19:19:25.314Z",
+  "checks": [
+    {
+      "name": "handle-has-a-44-pixel-touch-target",
+      "status": "fail",
+      "message": "The handle must remain easy to grab"
+    },
+    {
+      "name": "scrim-changes-continuously-during-an-upward-drag",
+      "status": "fail",
+      "message": "The scrim should be partway visible before reaching full height"
+    },
+    {
+      "name": "holding-the-sheet-still-clears-stale-flick-velocity",
+      "status": "fail",
+      "message": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#reader-sheet[data-motion=\"settled\"]') to be visible\u001b[22m\n\u001b[2m    19 × locator resolved to hidden <section inert=\"\" hidden=\"\" role=\"region\" id=\"reader-sheet\" aria-label=\"阅读辅助\" aria-modal=\"false\" class=\"reader-sheet\" data-motion=\"settled\">…</section>\u001b[22m\n"
+    },
+    {
+      "name": "a-moving-sheet-can-be-grabbed-and-reversed-without-a-jump",
+      "status": "fail",
+      "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Math.abs((await y(p))-before-35)<1.5)\n"
+    },
+    {
+      "name": "pointer-cancellation-restores-the-detent-without-dismissing",
+      "status": "pass"
+    },
+    {
+      "name": "reduced-motion-keeps-the-handle-operable-without-a-running-spring",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "fail"
+}

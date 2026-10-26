@@ -1,0 +1,78 @@
+{
+  "at": "2026-10-26T19:51:36.931165+00:00",
+  "status": "pass",
+  "scope": "Figma v2 fixed states and readback",
+  "fileURL": "https://www.figma.com/design/zjkapX58kUJZZh0la8F4Nw/Leafhour",
+  "frames": 13,
+  "hotspots": 165,
+  "nodeTypes": {
+    "FRAME": 817,
+    "INSTANCE": 13,
+    "TEXT": 377,
+    "VECTOR": 92
+  },
+  "nativeTextStyleBindingsReported": 0,
+  "sharedTypeSignatures": 19,
+  "screenshots": [
+    {
+      "file": "evidence/figma/1-1933.png",
+      "sha256": "170f2b842887438ef36868c530c7ed65a0f12df74f01c95c20011f98d26fca79"
+    },
+    {
+      "file": "evidence/figma/1-2009.png",
+      "sha256": "7bf59458ab2310b2bd495a5ad50e78714a8c37aec90deb1de713ceb98ce1cc31"
+    },
+    {
+      "file": "evidence/figma/1-2120.png",
+      "sha256": "ad36152687dfb0c06a00855a371b3f0e90aa106317a94d62131ab09aedad3959"
+    },
+    {
+      "file": "evidence/figma/1-2238.png",
+      "sha256": "f4ec0aaf2a88bf7538e1154d986c75eafe26a41f501ef47b8da8c9831c4ea414"
+    },
+    {
+      "file": "evidence/figma/1-3055.png",
+      "sha256": "861d6457648511c0c061f75ac6f6babf9016d18c819d298ee3c5da23c6faf4e5"
+    }
+  ],
+  "visuallyCheckedFrames": [
+    "02-selected",
+    "03-companion",
+    "04-discussion",
+    "05-citation",
+    "13-night"
+  ],
+  "presentationClickthrough": {
+    "method": "Computer Use in Figma Desktop; screenshot pointer clicks with destination node IDs observed in the prototype URL",
+    "steps": [
+      {
+        "action": "读到这里",
+        "destinationId": "1:2009"
+      },
+      {
+        "action": "展开或收起面板",
+        "destinationId": "1:2120"
+      },
+      {
+        "action": "本段",
+        "destinationId": "1:2238"
+      },
+      {
+        "action": "返回讨论",
+        "destinationId": "1:2120"
+      },
+      {
+        "action": "继续读",
+        "destinationId": "1:1869"
+      }
+    ],
+    "status": "pass",
+    "limits": "Fixed-state navigation only; continuous dragging, typing and restoration are Web prototype evidence."
+  },
+  "oldFramesPreserved": true,
+  "limits": [
+    "Figma is a fixed-state prototype. Continuous physics, selection and restoration are Web prototype evidence.",
+    "Native SwiftUI, physical iPhone, VoiceOver, haptics and keyboard remain unverified.",
+    "Figma full-paragraph highlight is a paragraph background; Web uses per-line text highlighting."
+  ]
+}

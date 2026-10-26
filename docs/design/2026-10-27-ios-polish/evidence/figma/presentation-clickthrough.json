@@ -1,0 +1,27 @@
+{
+  "method": "Computer Use in Figma Desktop; screenshot pointer clicks with destination node IDs observed in the prototype URL",
+  "steps": [
+    {
+      "action": "读到这里",
+      "destinationId": "1:2009"
+    },
+    {
+      "action": "展开或收起面板",
+      "destinationId": "1:2120"
+    },
+    {
+      "action": "本段",
+      "destinationId": "1:2238"
+    },
+    {
+      "action": "返回讨论",
+      "destinationId": "1:2120"
+    },
+    {
+      "action": "继续读",
+      "destinationId": "1:1869"
+    }
+  ],
+  "status": "pass",
+  "limits": "Fixed-state navigation only; continuous dragging, typing and restoration are Web prototype evidence."
+}

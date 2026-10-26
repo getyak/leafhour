@@ -1,0 +1,1734 @@
+{
+  "fileURL": "https://www.figma.com/design/zjkapX58kUJZZh0la8F4Nw/Leafhour",
+  "fileName": "Leafhour · iOS · 半屏陪读",
+  "version": "2026-10-27 · polish",
+  "pluginVersion": "0.7.0",
+  "pages": {
+    "flows": "0:1",
+    "screens": "1:2",
+    "system": "1:3"
+  },
+  "screens": {
+    "01-resume": {
+      "id": "1:1869",
+      "name": "01 · 打开即续读"
+    },
+    "02-selected": {
+      "id": "1:1933",
+      "name": "02 · 选文"
+    },
+    "03-companion": {
+      "id": "1:2009",
+      "name": "03 · 半屏陪读"
+    },
+    "04-discussion": {
+      "id": "1:2120",
+      "name": "04 · 展开讨论"
+    },
+    "05-citation": {
+      "id": "1:2238",
+      "name": "05 · 核对出处"
+    },
+    "06-note": {
+      "id": "1:2336",
+      "name": "06 · 记一句"
+    },
+    "07-original": {
+      "id": "1:2433",
+      "name": "07 · 原文与两种译文"
+    },
+    "08-library": {
+      "id": "1:2528",
+      "name": "08 · 书房"
+    },
+    "09-records": {
+      "id": "1:2641",
+      "name": "09 · 我的记录"
+    },
+    "10-contents": {
+      "id": "1:2732",
+      "name": "10 · 章节与段落"
+    },
+    "11-appearance": {
+      "id": "1:2845",
+      "name": "11 · 阅读偏好"
+    },
+    "12-offline": {
+      "id": "1:2957",
+      "name": "12 · 连接失败"
+    },
+    "13-night": {
+      "id": "1:3055",
+      "name": "13 · 夜读陪读"
+    }
+  },
+  "connections": [
+    {
+      "from": "01-resume",
+      "control": "打开书房",
+      "nodeId": "1:1877",
+      "to": "08-library",
+      "destinationId": "1:2528",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "01-resume",
+      "control": "contents-button",
+      "nodeId": "1:1881",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "01-resume",
+      "control": "排版设置",
+      "nodeId": "1:1886",
+      "to": "11-appearance",
+      "destinationId": "1:2845",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "01-resume",
+      "control": "选择这一段",
+      "nodeId": "1:1902",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "01-resume",
+      "control": "选择这一段",
+      "nodeId": "1:1907",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "01-resume",
+      "control": "选择这一段",
+      "nodeId": "1:1912",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "01-resume",
+      "control": "选择这一段",
+      "nodeId": "1:1917",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "01-resume",
+      "control": "progress-button",
+      "nodeId": "1:1920",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "01-resume",
+      "control": "companion-button",
+      "nodeId": "1:1926",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "02-selected",
+      "control": "打开书房",
+      "nodeId": "1:1941",
+      "to": "08-library",
+      "destinationId": "1:2528",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "02-selected",
+      "control": "contents-button",
+      "nodeId": "1:1945",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "02-selected",
+      "control": "排版设置",
+      "nodeId": "1:1950",
+      "to": "11-appearance",
+      "destinationId": "1:2845",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "02-selected",
+      "control": "BUTTON",
+      "nodeId": "1:1989",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "02-selected",
+      "control": "BUTTON",
+      "nodeId": "1:1991",
+      "to": "07-original",
+      "destinationId": "1:2433",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "02-selected",
+      "control": "BUTTON",
+      "nodeId": "1:1993",
+      "to": "06-note",
+      "destinationId": "1:2336",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "02-selected",
+      "control": "progress-button",
+      "nodeId": "1:1996",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "02-selected",
+      "control": "companion-button",
+      "nodeId": "1:2002",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "打开书房",
+      "nodeId": "1:2017",
+      "to": "08-library",
+      "destinationId": "1:2528",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "contents-button",
+      "nodeId": "1:2021",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "排版设置",
+      "nodeId": "1:2026",
+      "to": "11-appearance",
+      "destinationId": "1:2845",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "选择这一段",
+      "nodeId": "1:2042",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "选择这一段",
+      "nodeId": "1:2047",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "选择这一段",
+      "nodeId": "1:2052",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "选择这一段",
+      "nodeId": "1:2057",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "progress-button",
+      "nodeId": "1:2065",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "展开或收起面板",
+      "nodeId": "1:2078",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK",
+        "ON_DRAG"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "sheet-done",
+      "nodeId": "1:2083",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "BUTTON",
+      "nodeId": "1:2091",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "source-link",
+      "nodeId": "1:2097",
+      "to": "05-citation",
+      "destinationId": "1:2238",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "BUTTON",
+      "nodeId": "1:2102",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "BUTTON",
+      "nodeId": "1:2107",
+      "to": "06-note",
+      "destinationId": "1:2336",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "继续问这段",
+      "nodeId": "1:2113",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "03-companion",
+      "control": "发送问题",
+      "nodeId": "1:2115",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "04-discussion",
+      "control": "打开书房",
+      "nodeId": "1:2128",
+      "to": "08-library",
+      "destinationId": "1:2528",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "04-discussion",
+      "control": "contents-button",
+      "nodeId": "1:2132",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "04-discussion",
+      "control": "排版设置",
+      "nodeId": "1:2137",
+      "to": "11-appearance",
+      "destinationId": "1:2845",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "04-discussion",
+      "control": "选择这一段",
+      "nodeId": "1:2153",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "04-discussion",
+      "control": "选择这一段",
+      "nodeId": "1:2158",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "04-discussion",
+      "control": "选择这一段",
+      "nodeId": "1:2163",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "04-discussion",
+      "control": "选择这一段",
+      "nodeId": "1:2168",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "04-discussion",
+      "control": "progress-button",
+      "nodeId": "1:2176",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "04-discussion",
+      "control": "companion-button",
+      "nodeId": "1:2182",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "04-discussion",
+      "control": "展开或收起面板",
+      "nodeId": "1:2190",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK",
+        "ON_DRAG"
+      ]
+    },
+    {
+      "from": "04-discussion",
+      "control": "sheet-done",
+      "nodeId": "1:2195",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "04-discussion",
+      "control": "BUTTON",
+      "nodeId": "1:2203",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "04-discussion",
+      "control": "source-link",
+      "nodeId": "1:2213",
+      "to": "05-citation",
+      "destinationId": "1:2238",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "04-discussion",
+      "control": "BUTTON",
+      "nodeId": "1:2223",
+      "to": "06-note",
+      "destinationId": "1:2336",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "05-citation",
+      "control": "打开书房",
+      "nodeId": "1:2246",
+      "to": "08-library",
+      "destinationId": "1:2528",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "05-citation",
+      "control": "contents-button",
+      "nodeId": "1:2250",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "05-citation",
+      "control": "排版设置",
+      "nodeId": "1:2255",
+      "to": "11-appearance",
+      "destinationId": "1:2845",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "05-citation",
+      "control": "选择这一段",
+      "nodeId": "1:2271",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "05-citation",
+      "control": "选择这一段",
+      "nodeId": "1:2276",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "05-citation",
+      "control": "选择这一段",
+      "nodeId": "1:2281",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "05-citation",
+      "control": "选择这一段",
+      "nodeId": "1:2286",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "05-citation",
+      "control": "progress-button",
+      "nodeId": "1:2294",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "05-citation",
+      "control": "companion-button",
+      "nodeId": "1:2300",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "05-citation",
+      "control": "展开或收起面板",
+      "nodeId": "1:2308",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK",
+        "ON_DRAG"
+      ]
+    },
+    {
+      "from": "05-citation",
+      "control": "sheet-back",
+      "nodeId": "1:2311",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "05-citation",
+      "control": "sheet-done",
+      "nodeId": "1:2317",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "06-note",
+      "control": "打开书房",
+      "nodeId": "1:2344",
+      "to": "08-library",
+      "destinationId": "1:2528",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "06-note",
+      "control": "contents-button",
+      "nodeId": "1:2348",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "06-note",
+      "control": "排版设置",
+      "nodeId": "1:2353",
+      "to": "11-appearance",
+      "destinationId": "1:2845",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "06-note",
+      "control": "选择这一段",
+      "nodeId": "1:2369",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "06-note",
+      "control": "选择这一段",
+      "nodeId": "1:2374",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "06-note",
+      "control": "选择这一段",
+      "nodeId": "1:2379",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "06-note",
+      "control": "选择这一段",
+      "nodeId": "1:2384",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "06-note",
+      "control": "progress-button",
+      "nodeId": "1:2392",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "06-note",
+      "control": "companion-button",
+      "nodeId": "1:2398",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "06-note",
+      "control": "展开或收起面板",
+      "nodeId": "1:2406",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK",
+        "ON_DRAG"
+      ]
+    },
+    {
+      "from": "06-note",
+      "control": "sheet-back",
+      "nodeId": "1:2409",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "06-note",
+      "control": "sheet-done",
+      "nodeId": "1:2415",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "06-note",
+      "control": "BUTTON",
+      "nodeId": "1:2423",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "06-note",
+      "control": "primary-button",
+      "nodeId": "1:2430",
+      "to": "09-records",
+      "destinationId": "1:2641",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "07-original",
+      "control": "打开书房",
+      "nodeId": "1:2441",
+      "to": "08-library",
+      "destinationId": "1:2528",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "07-original",
+      "control": "contents-button",
+      "nodeId": "1:2445",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "07-original",
+      "control": "排版设置",
+      "nodeId": "1:2450",
+      "to": "11-appearance",
+      "destinationId": "1:2845",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "07-original",
+      "control": "选择这一段",
+      "nodeId": "1:2466",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "07-original",
+      "control": "选择这一段",
+      "nodeId": "1:2471",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "07-original",
+      "control": "选择这一段",
+      "nodeId": "1:2476",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "07-original",
+      "control": "选择这一段",
+      "nodeId": "1:2481",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "07-original",
+      "control": "progress-button",
+      "nodeId": "1:2489",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "07-original",
+      "control": "companion-button",
+      "nodeId": "1:2495",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "07-original",
+      "control": "展开或收起面板",
+      "nodeId": "1:2503",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK",
+        "ON_DRAG"
+      ]
+    },
+    {
+      "from": "07-original",
+      "control": "sheet-done",
+      "nodeId": "1:2508",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "08-library",
+      "control": "contents-button",
+      "nodeId": "1:2540",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "08-library",
+      "control": "排版设置",
+      "nodeId": "1:2545",
+      "to": "11-appearance",
+      "destinationId": "1:2845",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "08-library",
+      "control": "选择这一段",
+      "nodeId": "1:2561",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "08-library",
+      "control": "选择这一段",
+      "nodeId": "1:2566",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "08-library",
+      "control": "选择这一段",
+      "nodeId": "1:2571",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "08-library",
+      "control": "选择这一段",
+      "nodeId": "1:2576",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "08-library",
+      "control": "progress-button",
+      "nodeId": "1:2584",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "08-library",
+      "control": "companion-button",
+      "nodeId": "1:2590",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "08-library",
+      "control": "展开或收起面板",
+      "nodeId": "1:2598",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK",
+        "ON_DRAG"
+      ]
+    },
+    {
+      "from": "08-library",
+      "control": "sheet-done",
+      "nodeId": "1:2603",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "08-library",
+      "control": "primary-button",
+      "nodeId": "1:2620",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "08-library",
+      "control": "list-row",
+      "nodeId": "1:2622",
+      "to": "09-records",
+      "destinationId": "1:2641",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "08-library",
+      "control": "list-row",
+      "nodeId": "1:2630",
+      "to": "11-appearance",
+      "destinationId": "1:2845",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "09-records",
+      "control": "打开书房",
+      "nodeId": "1:2649",
+      "to": "08-library",
+      "destinationId": "1:2528",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "09-records",
+      "control": "contents-button",
+      "nodeId": "1:2653",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "09-records",
+      "control": "排版设置",
+      "nodeId": "1:2658",
+      "to": "11-appearance",
+      "destinationId": "1:2845",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "09-records",
+      "control": "选择这一段",
+      "nodeId": "1:2674",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "09-records",
+      "control": "选择这一段",
+      "nodeId": "1:2679",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "09-records",
+      "control": "选择这一段",
+      "nodeId": "1:2684",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "09-records",
+      "control": "选择这一段",
+      "nodeId": "1:2689",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "09-records",
+      "control": "progress-button",
+      "nodeId": "1:2697",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "09-records",
+      "control": "companion-button",
+      "nodeId": "1:2703",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "09-records",
+      "control": "展开或收起面板",
+      "nodeId": "1:2711",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK",
+        "ON_DRAG"
+      ]
+    },
+    {
+      "from": "09-records",
+      "control": "sheet-done",
+      "nodeId": "1:2716",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "09-records",
+      "control": "secondary-button",
+      "nodeId": "1:2729",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "10-contents",
+      "control": "打开书房",
+      "nodeId": "1:2740",
+      "to": "08-library",
+      "destinationId": "1:2528",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "10-contents",
+      "control": "排版设置",
+      "nodeId": "1:2749",
+      "to": "11-appearance",
+      "destinationId": "1:2845",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "10-contents",
+      "control": "选择这一段",
+      "nodeId": "1:2765",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "10-contents",
+      "control": "选择这一段",
+      "nodeId": "1:2770",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "10-contents",
+      "control": "选择这一段",
+      "nodeId": "1:2775",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "10-contents",
+      "control": "选择这一段",
+      "nodeId": "1:2780",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "10-contents",
+      "control": "companion-button",
+      "nodeId": "1:2794",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "10-contents",
+      "control": "展开或收起面板",
+      "nodeId": "1:2802",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK",
+        "ON_DRAG"
+      ]
+    },
+    {
+      "from": "10-contents",
+      "control": "sheet-done",
+      "nodeId": "1:2807",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "10-contents",
+      "control": "list-row",
+      "nodeId": "1:2812",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "10-contents",
+      "control": "list-row",
+      "nodeId": "1:2820",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "10-contents",
+      "control": "list-row",
+      "nodeId": "1:2828",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "10-contents",
+      "control": "list-row",
+      "nodeId": "1:2836",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "11-appearance",
+      "control": "打开书房",
+      "nodeId": "1:2853",
+      "to": "08-library",
+      "destinationId": "1:2528",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "11-appearance",
+      "control": "contents-button",
+      "nodeId": "1:2857",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "11-appearance",
+      "control": "选择这一段",
+      "nodeId": "1:2878",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "11-appearance",
+      "control": "选择这一段",
+      "nodeId": "1:2883",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "11-appearance",
+      "control": "选择这一段",
+      "nodeId": "1:2888",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "11-appearance",
+      "control": "选择这一段",
+      "nodeId": "1:2893",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "11-appearance",
+      "control": "progress-button",
+      "nodeId": "1:2901",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "11-appearance",
+      "control": "companion-button",
+      "nodeId": "1:2907",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "11-appearance",
+      "control": "展开或收起面板",
+      "nodeId": "1:2915",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK",
+        "ON_DRAG"
+      ]
+    },
+    {
+      "from": "11-appearance",
+      "control": "sheet-done",
+      "nodeId": "1:2920",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "11-appearance",
+      "control": "appearance-option night-preview",
+      "nodeId": "1:2940",
+      "to": "13-night",
+      "destinationId": "1:3055",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "打开书房",
+      "nodeId": "1:2965",
+      "to": "08-library",
+      "destinationId": "1:2528",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "contents-button",
+      "nodeId": "1:2969",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "排版设置",
+      "nodeId": "1:2974",
+      "to": "11-appearance",
+      "destinationId": "1:2845",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "选择这一段",
+      "nodeId": "1:2990",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "选择这一段",
+      "nodeId": "1:2995",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "选择这一段",
+      "nodeId": "1:3000",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "选择这一段",
+      "nodeId": "1:3005",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "progress-button",
+      "nodeId": "1:3013",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "companion-button",
+      "nodeId": "1:3019",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "展开或收起面板",
+      "nodeId": "1:3026",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK",
+        "ON_DRAG"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "sheet-done",
+      "nodeId": "1:3031",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "BUTTON",
+      "nodeId": "1:3039",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "BUTTON",
+      "nodeId": "1:3044",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "继续问这段",
+      "nodeId": "1:3048",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "12-offline",
+      "control": "发送问题",
+      "nodeId": "1:3050",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "打开书房",
+      "nodeId": "1:3063",
+      "to": "08-library",
+      "destinationId": "1:2528",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "contents-button",
+      "nodeId": "1:3067",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "排版设置",
+      "nodeId": "1:3072",
+      "to": "11-appearance",
+      "destinationId": "1:2845",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "选择这一段",
+      "nodeId": "1:3088",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "选择这一段",
+      "nodeId": "1:3093",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "选择这一段",
+      "nodeId": "1:3098",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "选择这一段",
+      "nodeId": "1:3103",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "progress-button",
+      "nodeId": "1:3111",
+      "to": "10-contents",
+      "destinationId": "1:2732",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "companion-button",
+      "nodeId": "1:3117",
+      "to": "03-companion",
+      "destinationId": "1:2009",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "展开或收起面板",
+      "nodeId": "1:3124",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK",
+        "ON_DRAG"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "sheet-done",
+      "nodeId": "1:3129",
+      "to": "01-resume",
+      "destinationId": "1:1869",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "BUTTON",
+      "nodeId": "1:3137",
+      "to": "02-selected",
+      "destinationId": "1:1933",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "source-link",
+      "nodeId": "1:3143",
+      "to": "05-citation",
+      "destinationId": "1:2238",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "BUTTON",
+      "nodeId": "1:3148",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "BUTTON",
+      "nodeId": "1:3153",
+      "to": "06-note",
+      "destinationId": "1:2336",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "继续问这段",
+      "nodeId": "1:3159",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    },
+    {
+      "from": "13-night",
+      "control": "发送问题",
+      "nodeId": "1:3161",
+      "to": "04-discussion",
+      "destinationId": "1:2120",
+      "triggers": [
+        "ON_CLICK"
+      ]
+    }
+  ],
+  "oldFramesPreserved": true,
+  "typeStylesReused": 19,
+  "limitations": [
+    "Figma is a fixed-state prototype. Continuous physics, selection and restoration are Web prototype evidence.",
+    "Native SwiftUI, physical iPhone, VoiceOver, haptics and keyboard remain unverified."
+  ]
+}

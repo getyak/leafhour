@@ -1,0 +1,42 @@
+{
+  "at": "2026-10-26T19:24:19.093Z",
+  "checks": [
+    {
+      "name": "handle-has-a-44-pixel-touch-target",
+      "status": "pass"
+    },
+    {
+      "name": "scrim-changes-continuously-during-an-upward-drag",
+      "status": "pass"
+    },
+    {
+      "name": "holding-the-sheet-still-clears-stale-flick-velocity",
+      "status": "pass"
+    },
+    {
+      "name": "a-moving-sheet-can-be-grabbed-and-reversed-without-a-jump",
+      "status": "pass"
+    },
+    {
+      "name": "pointer-cancellation-restores-the-detent-without-dismissing",
+      "status": "pass"
+    },
+    {
+      "name": "reduced-motion-keeps-the-handle-operable-without-a-running-spring",
+      "status": "pass"
+    },
+    {
+      "name": "selection-tools-follow-the-selected-paragraph-and-stay-in-bounds",
+      "status": "fail",
+      "message": "Tools must follow their source rather than keep a fixed screen position"
+    },
+    {
+      "name": "confirming-a-quote-clears-the-temporary-paragraph-highlight",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n\ntrue !== false\n"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "fail"
+}

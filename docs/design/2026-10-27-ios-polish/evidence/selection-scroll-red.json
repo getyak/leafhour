@@ -1,0 +1,50 @@
+{
+  "at": "2026-10-26T19:26:57.083Z",
+  "checks": [
+    {
+      "name": "handle-has-a-44-pixel-touch-target",
+      "status": "pass"
+    },
+    {
+      "name": "scrim-changes-continuously-during-an-upward-drag",
+      "status": "pass"
+    },
+    {
+      "name": "holding-the-sheet-still-clears-stale-flick-velocity",
+      "status": "pass"
+    },
+    {
+      "name": "a-moving-sheet-can-be-grabbed-and-reversed-without-a-jump",
+      "status": "pass"
+    },
+    {
+      "name": "pointer-cancellation-restores-the-detent-without-dismissing",
+      "status": "pass"
+    },
+    {
+      "name": "reduced-motion-keeps-the-handle-operable-without-a-running-spring",
+      "status": "pass"
+    },
+    {
+      "name": "selection-tools-follow-the-selected-paragraph-and-stay-in-bounds",
+      "status": "pass"
+    },
+    {
+      "name": "confirming-a-quote-clears-the-temporary-paragraph-highlight",
+      "status": "pass"
+    },
+    {
+      "name": "scrolling-keeps-visible-selection-tools-attached-to-the-source",
+      "status": "fail",
+      "message": "page.waitForFunction: Timeout 10000ms exceeded."
+    },
+    {
+      "name": "scrolling-the-selection-out-of-view-dismisses-its-tools",
+      "status": "fail",
+      "message": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#selection-menu') to be hidden\u001b[22m\n\u001b[2m    24 × locator resolved to visible <div aria-label=\"选文操作\" id=\"selection-menu\" class=\"selection-menu\" data-placement=\"above\">…</div>\u001b[22m\n"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "fail"
+}
