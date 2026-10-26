@@ -80,9 +80,9 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   const exportButton=ui('button','library-chat-text-button','export'),menuHint=node('p','library-chat-menu-hint');
   const preferenceConsent=node('label','library-chat-preference-consent'),preferenceCheckbox=node('input');preferenceCheckbox.type='checkbox';preferenceCheckbox.id='chat-preference-consent';preferenceConsent.append(preferenceCheckbox,ui('span','','memory.allowTurn'));
   const settings=node('details','library-chat-settings'),settingsSummary=ui('summary','','chat.settings'),explanation=node('details','library-chat-explanation'),explanationSummary=ui('summary','','chat.dataScope'),companionHost=node('section','library-chat-companion-settings');
-  explanation.append(explanationSummary,hint,menuHint);settings.append(settingsSummary,scopeRow,preferenceConsent,companionHost,explanation);menuItems.append(settings,exportButton);
+  explanation.append(explanationSummary,hint,menuHint);settings.append(settingsSummary,scopeRow,preferenceConsent,companionHost,explanation);menuItems.append(context,settings,exportButton);
   const latestButton=ui('button','library-chat-latest','chat.latest');latestButton.type='button';latestButton.hidden=true;
-  frame.append(header,onboardingHost,uploadHost,messages,latestButton,statusBar,context,form,footer);root.replaceChildren(frame);
+  frame.append(header,onboardingHost,uploadHost,messages,latestButton,statusBar,form,footer);root.replaceChildren(frame);
   // Composed scope hints repaint from cached state on business renders and on
   // language commits alike; the wording itself lives in the catalogues.
   function paintHint(){
@@ -175,7 +175,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
       const row=node('article','library-chat-turn');row.setAttribute('data-message-id',turn.id);if(turn.kind!=='companion'){const question=node('div','library-chat-question');question.append(ui('p','library-chat-attribution','mq'));if(turn.quote){const selected=node('blockquote','library-chat-selected-snapshot');selected.append(ui('p','library-chat-source-label','chat.quote.snapshot'),ui('span','library-chat-source-label',({original:'lo',literal:'ll',interpretive:'li'})[turn.quote.parts[0].layer]));if(turn.quote.parts.some(part=>part.translationStatus==='draft'))selected.append(ui('span','library-chat-source-label','ds'));selected.append(node('p','',turn.quote.parts.map(part=>part.text).join('\n\n')));question.append(selected);}question.append(node('p','library-chat-text',turn.text));row.append(question);}
       if(turn.answer?.summary){
         const answer=node('div','library-chat-answer'),answerHeading=node('div','library-chat-answer-heading'),copy=ui('button','library-chat-text-button library-chat-copy','cp');const answerText=markdownRenderer(document,turn.answer.summary,{sourceRefs:turn.answer.sourceRefs||[],onInternalLinkCreated:sourceHref,onInternalLink:(event,ref)=>{if(disposed)return;if(ref&&ref.bookId===currentBookId()&&!event.metaKey&&!event.ctrlKey&&!event.shiftKey&&!event.altKey&&!(event.button>0)&&onNavigateToPassage?.(ref.bookId,ref.passageId)===true){event.preventDefault();finishSourceNavigation();}}});uiAttr(copy,'aria-label','copyAnswer');live(copy,'click',()=>copyAnswer(turn.answer.summary,answerText,copy));answerHeading.append(turn.kind==='companion'?ui('p','library-chat-attribution','cm'):node('p','library-chat-attribution','AI'));answer.append(answerHeading,answerText);
-        decorations.renderReferences({parent:answer,refs:turn.answer.sourceRefs,node,ui,sourceLink,createUiMessage,paintFor,ownerRow:row,bookId:selectedBook});renderRecommendations(answer,turn.answer);renderActivity(answer,turn,true,row);answer.append(copy);
+        decorations.renderEvidence({parent:answer,turn,node,ui,t,sourceLink,createUiMessage,paintFor,ownerRow:row,bookId:selectedBook});renderRecommendations(answer,turn.answer);answer.append(copy);
         decorations.addAnswerFold({answer,heading:answerHeading,copy,summary:turn.answer.summary,ui,live,t});row.append(answer);if(cached?.status==='running'&&turn.status==='completed')completedAnswer=answer;
       }else{
         const pending=node('p','library-chat-turn-status');latestTurns.set(row,turn);paintFor(row,()=>{pending.textContent=pendingText(latestTurns.get(row),currentView);});
@@ -283,7 +283,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     if(event.key!=='Escape'||!root.open||event.defaultPrevented||event.isComposing||composing)return;
     event.preventDefault();event.stopPropagation();
     const visible=n=>{if(n.hidden)return false;for(let parent=n.parentElement;parent&&parent!==root;parent=parent.parentElement)if(parent.hidden||parent.tagName==='DETAILS'&&!parent.open)return false;return true;};
-    const nested=menu.open?(settings.open&&explanation.open?explanation:settings.open?settings:menu):[...root.querySelectorAll('details')].filter(n=>n.open&&visible(n)).at(-1);
+    const nested=menu.open?(settings.open&&explanation.open?explanation:settings.open?settings:context.open&&!context.hidden?context:menu):[...root.querySelectorAll('details')].filter(n=>n.open&&visible(n)).at(-1);
     if(nested){nested.open=false;(nested.querySelector('summary')||menuSummary).focus();return;}close();
   }
   listen(root,'keydown',escape);listen(launcher||trigger,'keydown',escape);

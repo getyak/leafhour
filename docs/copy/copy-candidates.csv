@@ -2776,7 +2776,7 @@ candidate:app/library-book-actions.mjs:58:483,js-cjk-literal,app/library-book-ac
 candidate:app/library-book-actions.mjs:84:154,js-attribute,app/library-book-actions.mjs,84,role,unknown,reviewable,,menuitem
 candidate:app/library-book-actions.mjs:88:258,js-attribute,app/library-book-actions.mjs,88,aria-haspopup,unknown,reviewable,,menu
 candidate:app/library-book-actions.mjs:88:303,js-attribute,app/library-book-actions.mjs,88,aria-expanded,unknown,reviewable,,false
-candidate:app/library-chat-markdown.mjs:81:227,js-attribute,app/library-chat-markdown.mjs,81,aria-expanded,unknown,reviewable,,true
+candidate:app/library-chat-markdown.mjs:90:331,js-attribute,app/library-chat-markdown.mjs,90,aria-expanded,unknown,reviewable,,true
 candidate:app/library-chat.mjs:44:81,js-attribute,app/library-chat.mjs,44,aria-labelledby,unknown,protected,identifier,library-chat-title
 candidate:app/library-chat.mjs:45:34,js-attribute,app/library-chat.mjs,45,aria-modal,unknown,reviewable,,false
 candidate:app/library-chat.mjs:58:157,js-attribute,app/library-chat.mjs,58,aria-haspopup,unknown,reviewable,,dialog

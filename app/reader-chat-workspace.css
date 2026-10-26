@@ -17,20 +17,16 @@ body:has(#settings-dialog[open]) .reading-tools-panel{visibility:hidden}
 .library-chat-menu-items .library-chat-hint,.library-chat-menu-items .library-chat-menu-hint{margin:10px 0;padding:0;min-width:0;max-width:none;font:12px/1.75 var(--chat-font);white-space:normal;overflow-wrap:anywhere}
 .library-chat-menu-items .squirrel-companion-toggle{display:block;min-height:44px;width:100%;margin:10px 0 0;text-align:left;border-radius:6px}
 .library-chat-menu-items .squirrel-companion-description{margin:6px 0 0;padding:0;max-width:none}
-.library-chat-close,.library-chat-menu>summary{width:44px;height:44px}
-.library-chat-composer .library-chat-send{width:44px;height:44px;min-height:44px}
 dialog.reader-chat-workspace{--chat-panel:var(--panel);--chat-soft:var(--wash);--chat-ink:var(--reader-workspace-ink);--chat-muted:var(--muted);--chat-accent:var(--reader-workspace-accent);--chat-strong:var(--reader-workspace-ink);--chat-on-strong:var(--reader-workspace-paper);inset:auto 24px 76px auto;top:auto;width:var(--reader-chat-width,400px);height:min(640px,calc(var(--chat-viewport-height,100dvh) - 108px));margin:0;border:1px solid var(--line-control);border-radius:18px;box-shadow:var(--shadow-popover);overflow:visible;background:var(--chat-panel);color:var(--chat-ink);animation:none}
 dialog.reader-chat-workspace[open]{animation:none}
 .reader-chat-workspace .library-chat-frame{overflow:hidden;display:flex;flex-direction:column;min-height:0;height:100%;border-radius:inherit;background:var(--chat-panel)}
 .reader-chat-workspace .library-chat-header{padding:10px 12px 10px 20px;border-bottom:1px solid var(--line-hairline);background:var(--chat-panel);gap:4px}
 .reader-chat-workspace .library-chat-heading h2{font-size:14px;font-weight:500;letter-spacing:0}
 .reader-chat-workspace .library-chat-messages{min-height:0;padding:20px;flex:1 1 auto}
-.reader-chat-workspace .library-chat-context{margin:0 20px 2px}
-.reader-chat-workspace .library-chat-context-body{max-height:min(28dvh,240px);overflow:auto}
+.reader-chat-workspace .library-chat-context{margin:0 6px 2px}
 .reader-chat-workspace .library-chat-empty{margin:28px auto;max-width:320px}
 .reader-chat-workspace .library-chat-empty h3{font:400 25px/1.4 var(--font-serif);letter-spacing:var(--track-heading);margin-bottom:12px}
 .reader-chat-workspace .library-chat-suggestion{min-height:44px;font-size:13px;border-bottom:1px solid var(--line-hairline)}
-.reader-chat-workspace .library-chat-context-body{max-height:min(28dvh,240px);overflow:auto}
 .reader-chat-workspace .library-chat-composer{margin:0 12px;padding:10px 10px 6px;border:1px solid var(--line-control);border-radius:12px;background:var(--chat-panel)}
 .reader-chat-workspace .library-chat-composer-bottom{margin-top:0;min-height:44px;gap:4px}
 .reader-chat-workspace .library-chat-footer{height:max(12px,env(safe-area-inset-bottom));flex:none}
@@ -39,7 +35,8 @@ dialog.reader-chat-workspace[open]{animation:none}
 .reader-chat-separator:hover::after,.reader-chat-separator:focus-visible::after,.is-resizing .reader-chat-separator::after{background:var(--chat-accent)}
 .reader-chat-separator:focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:-2px}
 .reader-chat-workspace.is-resizing{user-select:none}
-dialog.reader-chat-workspace.is-reader-chat-mobile{inset:auto 0 auto 0;top:var(--chat-viewport-top,0px);width:100%;height:var(--chat-viewport-height,100dvh);border:0;border-radius:0;max-height:none}
+dialog.reader-chat-workspace.is-reader-chat-mobile{inset:auto 0 auto 0;top:calc(var(--chat-viewport-top,0px) + var(--chat-viewport-height,100dvh)*.24);width:100%;height:calc(var(--chat-viewport-height,100dvh)*.76);border:1px solid var(--line-control);border-bottom:0;border-radius:18px 18px 0 0;max-height:none}
+dialog.reader-chat-workspace.is-reader-chat-mobile.is-compact-viewport{top:var(--chat-viewport-top,0px);height:var(--chat-viewport-height,100dvh);border:0;border-radius:0}
 .reader-chat-workspace.is-reader-chat-mobile .library-chat-header{padding-top:max(10px,env(safe-area-inset-top));padding-left:20px;padding-right:12px}
 .reader-chat-workspace.is-reader-chat-mobile .library-chat-messages{padding:24px 20px}
 .reader-chat-workspace.is-compact-viewport .library-chat-frame{display:flex;overflow:hidden}

@@ -50,7 +50,7 @@ export default Object.freeze({
   "chat.scope.change": "更改阅读范围",
   "chat.textVersion": "查看内容",
   "chat.location.back": "定位这段原文",
-  "chat.location": "提问位置",
+  "chat.location":"当前原句",
   "billing.accountLink": "额度与账单",
   "credit.funds": "本次阅读点不足，仍可继续阅读。",
   "billing.cancelled": "已取消。本次没有使用阅读点。",
@@ -2226,4 +2226,6 @@ export default Object.freeze({
   "chat.failure.save": "回答未能保存，提问已保留。请先查看本次状态。",
   "chat.failure.validation": "回答未通过核验，提问已保留。",
   "chat.failure.context": "原文已变化，请核对当前段落后重试。",
+  "chat.evidence":"查看依据",
+  "chat.evidence.incomplete":"部分查找失败，回答可能不完整。",
 });

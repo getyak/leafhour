@@ -51,7 +51,7 @@ export default Object.freeze({
   "chat.scope.change": "Change reading scope",
   "chat.textVersion": "View text",
   "chat.location.back": "Go to this passage",
-  "chat.location": "Question location",
+  "chat.location":"Current passage",
   "billing.accountLink": "Points & billing",
   "credit.funds": "Not enough reading points. You can keep reading.",
   "billing.cancelled": "Cancelled. No reading points were used.",
@@ -2227,4 +2227,6 @@ export default Object.freeze({
   "chat.failure.save": "Could not save the answer. Your question is kept; check its status.",
   "chat.failure.validation": "Could not verify the answer. Your question is kept.",
   "chat.failure.context": "The source changed. Check this passage before retrying.",
+  "chat.evidence":"About this answer",
+  "chat.evidence.incomplete":"Some lookups failed. This answer may be incomplete.",
 });

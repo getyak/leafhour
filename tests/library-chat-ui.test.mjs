@@ -57,6 +57,30 @@ test('context version changes are local and keep the physical draft and confirme
  s.find('library-chat-scope-indicator').click();assert.equal(s.find('library-chat-menu').open,true);assert.equal(s.find('library-chat-settings').open,true);assert.equal(s.doc.activeElement,s.find('library-chat-scope-choice'));
 });
 
+test('answer evidence has one quiet entry and preserves references, failures and locale state',async t=>{
+ await requestUiRoute('zh-Hans');t.after(()=>requestUiRoute('en'));
+ const s=setup(t);assert.equal(s.root.open,false);
+ s.setTurns([{id:'evidence',passageId:'p1',status:'completed',text:'这一句呢？',activity:[{tool:'reader_get_context',status:'completed'},{tool:'reader_search_web',status:'failed'}],answer:{summary:'仅依据当前原句。',sourceRefs:[{bookId:'one',passageId:'p1',quote:'Source',layer:'literal',translationStatus:'draft'}]}}]);
+ s.chat.open();await flush();
+ const evidence=s.find('library-chat-evidence'),references=s.find('library-chat-references'),activity=s.find('library-chat-activity-details'),context=s.find('library-chat-context');
+ assert.ok(evidence);assert.equal(evidence.open,false);assert.equal(references.parentElement,evidence);assert.equal(activity.parentElement,evidence);
+ assert.equal(context.parentElement,s.find('library-chat-menu-items'));assert.equal(context.open,false);
+ const warning=s.find('library-chat-evidence-warning');assert.ok(warning);assert.equal(warning.parentElement,s.find('library-chat-answer'));
+ type(s.input(),'保留草稿');evidence.open=true;references.open=true;activity.open=true;const input=s.input();input.focus();
+ await requestUiRoute('ja');assert.equal(s.find('library-chat-evidence'),evidence);assert.equal(evidence.open,true);assert.equal(references.open,true);assert.equal(activity.open,true);assert.equal(s.input(),input);assert.equal(input.value,'保留草稿');assert.equal(s.doc.activeElement,input);
+ assert.equal(s.calls.filter(c=>c.payload).length,0);assert.ok(plain(references).includes('Source'));assert.ok(plain(references).includes(uiText('ds')));
+ s.chat.close();s.chat.open();await flush();assert.equal(input.value,'保留草稿');assert.equal(s.find('library-chat-evidence'),evidence);
+});
+
+test('answers without evidence have no empty disclosure',async t=>{
+ const s=setup(t);s.setTurns([{id:'plain',status:'completed',text:'Question',answer:{summary:'Answer',sourceRefs:[]}}]);s.chat.open();await flush();assert.equal(s.find('library-chat-evidence'),undefined);
+});
+
+test('folding a long answer keeps its qualification and source access available',async t=>{
+ const s=setup(t);s.setTurns([{id:'long',status:'completed',text:'Question',activity:[{tool:'reader_search_web',status:'failed'}],answer:{summary:'Long answer. '.repeat(110),sourceRefs:[{passageId:'p1',quote:'Source'}]}}]);s.chat.open();await flush();
+ s.find('library-chat-answer-toggle').click();assert.equal(s.find('library-chat-markdown').hidden,true);assert.notEqual(s.find('library-chat-evidence').hidden,true);assert.notEqual(s.find('library-chat-evidence-warning').hidden,true);
+});
+
 test('Escape unwinds nested settings before collapsing the chat',async t=>{
  const s=setup(t);s.chat.open();await flush();s.find('library-chat-scope-indicator').click();
  const key=()=>{const e=new Event('keydown',{cancelable:true});Object.assign(e,{key:'Escape'});s.root.dispatchEvent(e);};
