@@ -1,0 +1,42 @@
+{
+  "atMs": 16743.90000000596,
+  "navigation": [
+    {
+      "requestStart": 1156.800000011921,
+      "responseStart": 1669.2000000029802,
+      "responseEnd": 2099.9000000059605,
+      "domInteractive": 2131.1000000089407
+    }
+  ],
+  "paints": [
+    {
+      "name": "first-paint",
+      "start": 16668
+    },
+    {
+      "name": "first-contentful-paint",
+      "start": 16668
+    }
+  ],
+  "resources": [
+    {
+      "path": "/fonts/newsreader/newsreader-var.woff2",
+      "start": 2100.7000000029802,
+      "end": 12578,
+      "duration": 10477.29999999702
+    },
+    {
+      "path": "/reader-web/style-455ecb00d10b8fb4.css",
+      "start": 2101.2000000029802,
+      "end": 14579.60000000894,
+      "duration": 12478.40000000596
+    },
+    {
+      "path": "/fonts/noto-serif-sc/font-faces.css",
+      "start": 14587.90000000596,
+      "end": 16605.70000000298,
+      "duration": 2017.7999999970198
+    }
+  ],
+  "visibility": true
+}

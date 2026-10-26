@@ -1,0 +1,130 @@
+{
+  "kind": "packaged browser with real isolated services and deliberate network gates",
+  "cases": [
+    {
+      "locale": "en",
+      "width": 1280,
+      "motion": "no-preference",
+      "version": "153.0.8010.12",
+      "checks": [
+        "text-column skeleton and working library exit before full CSS, JavaScript, auth or book data",
+        "slow read keeps the same short status; keyboard-accessible reopen appears",
+        "real book text is scrollable and selectable while all images are still held; no arrival catalogue request",
+        "503 remains a real error; explicit retry restores text and focus with saved passage/chapter/view and account-scoped draft storage intact",
+        "synthetic full stylesheet failure keeps library exit and readable failure; explicit reopen fetches real CSS and restores the reader"
+      ],
+      "errors": [
+        "Reader styles unavailable"
+      ],
+      "catalogueRequests": 0,
+      "beforeScripts": {
+        "atMs": 125,
+        "skeleton": true,
+        "passages": 0,
+        "overflow": false
+      },
+      "firstPaintBeforeStyles": 92,
+      "withImagesPending": {
+        "atMs": 8832,
+        "skeleton": false,
+        "passages": 31,
+        "overflow": false
+      },
+      "expectedStyleError": "Reader styles unavailable"
+    },
+    {
+      "locale": "zh-Hans",
+      "width": 390,
+      "motion": "reduce",
+      "version": "153.0.8010.12",
+      "checks": [
+        "text-column skeleton and working library exit before full CSS, JavaScript, auth or book data",
+        "real book text is scrollable and selectable while all images are still held; no arrival catalogue request",
+        "503 remains a real error; explicit retry restores text and focus with saved passage/chapter/view and account-scoped draft storage intact",
+        "synthetic full stylesheet failure keeps library exit and readable failure; explicit reopen fetches real CSS and restores the reader"
+      ],
+      "errors": [
+        "Reader styles unavailable"
+      ],
+      "catalogueRequests": 0,
+      "beforeScripts": {
+        "atMs": 79,
+        "skeleton": true,
+        "passages": 0,
+        "overflow": false
+      },
+      "firstPaintBeforeStyles": 48,
+      "withImagesPending": {
+        "atMs": 249,
+        "skeleton": false,
+        "passages": 31,
+        "overflow": false
+      },
+      "expectedStyleError": "Reader styles unavailable"
+    },
+    {
+      "locale": "zh-Hant",
+      "width": 320,
+      "motion": "reduce",
+      "version": "153.0.8010.12",
+      "checks": [
+        "text-column skeleton and working library exit before full CSS, JavaScript, auth or book data",
+        "real book text is scrollable and selectable while all images are still held; no arrival catalogue request",
+        "503 remains a real error; explicit retry restores text and focus with saved passage/chapter/view and account-scoped draft storage intact",
+        "synthetic full stylesheet failure keeps library exit and readable failure; explicit reopen fetches real CSS and restores the reader"
+      ],
+      "errors": [
+        "Reader styles unavailable"
+      ],
+      "catalogueRequests": 0,
+      "beforeScripts": {
+        "atMs": 96,
+        "skeleton": true,
+        "passages": 0,
+        "overflow": false
+      },
+      "firstPaintBeforeStyles": 64,
+      "withImagesPending": {
+        "atMs": 277,
+        "skeleton": false,
+        "passages": 31,
+        "overflow": false
+      },
+      "expectedStyleError": "Reader styles unavailable"
+    },
+    {
+      "locale": "ja",
+      "width": 390,
+      "motion": "reduce",
+      "version": "153.0.8010.12",
+      "checks": [
+        "text-column skeleton and working library exit before full CSS, JavaScript, auth or book data",
+        "real book text is scrollable and selectable while all images are still held; no arrival catalogue request",
+        "503 remains a real error; explicit retry restores text and focus with saved passage/chapter/view and account-scoped draft storage intact",
+        "synthetic full stylesheet failure keeps library exit and readable failure; explicit reopen fetches real CSS and restores the reader"
+      ],
+      "errors": [
+        "Reader styles unavailable"
+      ],
+      "catalogueRequests": 0,
+      "beforeScripts": {
+        "atMs": 81,
+        "skeleton": true,
+        "passages": 0,
+        "overflow": false
+      },
+      "firstPaintBeforeStyles": 48,
+      "withImagesPending": {
+        "atMs": 241,
+        "skeleton": false,
+        "passages": 31,
+        "overflow": false
+      },
+      "expectedStyleError": "Reader styles unavailable"
+    }
+  ],
+  "limits": [
+    "Synthetic delays and 503 are transport fixtures, not real provider failures.",
+    "Local timings are observations, not a production latency guarantee. No model call, iOS or assistive speech test."
+  ]
+}

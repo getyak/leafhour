@@ -573,6 +573,10 @@
         "sha256": "a620f3f5e846f343cab7fba1f3f0c74b9eae7148497766dd9f9c11fb89349635"
       },
       {
+        "file": "app/reader-style-ready.mjs",
+        "sha256": "cb8b8c26d1a2f5868cc28a82c0b23163d98a7dd34ebf2e0ee2955e327893fc08"
+      },
+      {
         "file": "app/reader-tools.mjs",
         "sha256": "27b789ffc565fd720e846394d9d45d8950d7441a2fef9741d055b1435dce3f91"
       },
@@ -582,7 +586,7 @@
       },
       {
         "file": "app/reader.js",
-        "sha256": "9db018dbe0a81e87b36c2f0e64edca84cd90b08c1a67ae8a63f0eb8f9548bd73"
+        "sha256": "ae50ce4fdcd635613336b86d54c0984fe3ac0a409dd3dd17d38c593db39ee002"
       },
       {
         "file": "app/reading-arrival.mjs",
@@ -934,7 +938,7 @@
       },
       {
         "file": "server/content-security.mjs",
-        "sha256": "f4651459638f084e601cf512345ef6aeb1898c800c75a5f7da812344db70c29c"
+        "sha256": "28dab797f48649f62f56463b6a103e2f6631bf0f6ea16124a5b8e1694399fa4c"
       },
       {
         "file": "server/credit-gate.mjs",
@@ -1101,6 +1105,10 @@
         "sha256": "8fddc5fe7ad1c9868d4824acdfe6277c9e5930f79900c0941a779dc369a4de1c"
       },
       {
+        "file": "server/reader-shell.mjs",
+        "sha256": "2af4df9ed68478079ff2cb515a58e78b8fd3beee2f8c0882fb0169f77358d91c"
+      },
+      {
         "file": "server/reading-activity.mjs",
         "sha256": "8a0c300c4ae4fb116681b35fc238b25740d5e7aae2b15a6d2dfcdb5157183de2"
       },
@@ -1145,7 +1153,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "4dfc3df1c1cce18e0d6a1e9cec658439666f2608a64a2a41c13eff2d77f3e7dd"
+    "inputDigest": "b66eb3006e1713b239e2ccbdca12f38d583b82702acc9a6fa555a7e467d6f3dd"
   },
   "locales": [
     "en",
@@ -11928,7 +11936,7 @@
         },
         {
           "file": "app/reader.js",
-          "line": 133,
+          "line": 135,
           "column": 58
         }
       ],
@@ -16582,7 +16590,7 @@
         },
         {
           "file": "app/reader.js",
-          "line": 537,
+          "line": 539,
           "column": 121
         },
         {
@@ -17257,7 +17265,7 @@
         },
         {
           "file": "app/reader.js",
-          "line": 382,
+          "line": 384,
           "column": 297
         },
         {
@@ -23584,17 +23592,17 @@
         },
         {
           "file": "app/reader.js",
-          "line": 286,
+          "line": 288,
           "column": 327
         },
         {
           "file": "app/reader.js",
-          "line": 430,
+          "line": 432,
           "column": 373
         },
         {
           "file": "app/reader.js",
-          "line": 498,
+          "line": 500,
           "column": 379
         }
       ],
@@ -45140,12 +45148,12 @@
         },
         {
           "file": "app/reader.js",
-          "line": 384,
+          "line": 386,
           "column": 180
         },
         {
           "file": "app/reader.js",
-          "line": 389,
+          "line": 391,
           "column": 438
         },
         {
@@ -45212,7 +45220,7 @@
       "consumers": [
         {
           "file": "app/reader.js",
-          "line": 384,
+          "line": 386,
           "column": 204
         },
         {
@@ -45999,7 +46007,7 @@
       "consumers": [
         {
           "file": "app/reader.js",
-          "line": 389,
+          "line": 391,
           "column": 454
         }
       ],
@@ -48166,7 +48174,7 @@
         },
         {
           "file": "app/reader.js",
-          "line": 112,
+          "line": 114,
           "column": 104
         }
       ],
@@ -69761,6 +69769,11 @@
           "file": "app/reader-loading.mjs",
           "line": 9,
           "column": 86
+        },
+        {
+          "file": "app/reader-style-ready.mjs",
+          "line": 10,
+          "column": 141
         }
       ],
       "hints": [
@@ -72062,6 +72075,11 @@
           "file": "app/reader-loading.mjs",
           "line": 9,
           "column": 42
+        },
+        {
+          "file": "app/reader-style-ready.mjs",
+          "line": 10,
+          "column": 97
         }
       ],
       "hints": [
@@ -75123,7 +75141,13 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [],
+      "consumers": [
+        {
+          "file": "app/reader-style-ready.mjs",
+          "line": 10,
+          "column": 186
+        }
+      ],
       "hints": [
         {
           "kind": "key-namespace",
@@ -81923,7 +81947,13 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [],
+      "consumers": [
+        {
+          "file": "app/reader-style-ready.mjs",
+          "line": 10,
+          "column": 72
+        }
+      ],
       "hints": [
         {
           "kind": "key-namespace",
@@ -191426,9 +191456,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:127:36",
+      "id": "candidate:app/reader.js:129:36",
       "file": "app/reader.js",
-      "line": 127,
+      "line": 129,
       "column": 36,
       "kind": "js-attribute",
       "property": "aria-busy",
@@ -191446,9 +191476,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:207:282",
+      "id": "candidate:app/reader.js:209:282",
       "file": "app/reader.js",
-      "line": 207,
+      "line": 209,
       "column": 282,
       "kind": "js-attribute",
       "property": "aria-describedby",
@@ -191466,9 +191496,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:261:188",
+      "id": "candidate:app/reader.js:263:188",
       "file": "app/reader.js",
-      "line": 261,
+      "line": 263,
       "column": 188,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -191486,9 +191516,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:346:395",
+      "id": "candidate:app/reader.js:348:395",
       "file": "app/reader.js",
-      "line": 346,
+      "line": 348,
       "column": 395,
       "kind": "js-attribute",
       "property": "role",
@@ -191506,9 +191536,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:350:124",
+      "id": "candidate:app/reader.js:352:124",
       "file": "app/reader.js",
-      "line": 350,
+      "line": 352,
       "column": 124,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191526,9 +191556,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:383:139",
+      "id": "candidate:app/reader.js:385:139",
       "file": "app/reader.js",
-      "line": 383,
+      "line": 385,
       "column": 139,
       "kind": "js-attribute",
       "property": "aria-live",
@@ -191546,9 +191576,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:390:153",
+      "id": "candidate:app/reader.js:392:153",
       "file": "app/reader.js",
-      "line": 390,
+      "line": 392,
       "column": 153,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191566,9 +191596,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:390:350",
+      "id": "candidate:app/reader.js:392:350",
       "file": "app/reader.js",
-      "line": 390,
+      "line": 392,
       "column": 350,
       "kind": "js-attribute",
       "property": "role",
@@ -191586,9 +191616,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:391:85",
+      "id": "candidate:app/reader.js:393:85",
       "file": "app/reader.js",
-      "line": 391,
+      "line": 393,
       "column": 85,
       "kind": "js-attribute",
       "property": "role",
@@ -191606,9 +191636,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:516:129",
+      "id": "candidate:app/reader.js:518:129",
       "file": "app/reader.js",
-      "line": 516,
+      "line": 518,
       "column": 129,
       "kind": "js-attribute",
       "property": "aria-busy",
@@ -191626,9 +191656,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:517:41",
+      "id": "candidate:app/reader.js:519:41",
       "file": "app/reader.js",
-      "line": 517,
+      "line": 519,
       "column": 41,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191646,9 +191676,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:517:122",
+      "id": "candidate:app/reader.js:519:122",
       "file": "app/reader.js",
-      "line": 517,
+      "line": 519,
       "column": 122,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191666,9 +191696,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:517:311",
+      "id": "candidate:app/reader.js:519:311",
       "file": "app/reader.js",
-      "line": 517,
+      "line": 519,
       "column": 311,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191686,9 +191716,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:517:669",
+      "id": "candidate:app/reader.js:519:669",
       "file": "app/reader.js",
-      "line": 517,
+      "line": 519,
       "column": 669,
       "kind": "js-attribute",
       "property": "role",
@@ -191706,9 +191736,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:518:106",
+      "id": "candidate:app/reader.js:520:106",
       "file": "app/reader.js",
-      "line": 518,
+      "line": 520,
       "column": 106,
       "kind": "js-attribute",
       "property": "role",
@@ -191726,9 +191756,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:520:224",
+      "id": "candidate:app/reader.js:522:224",
       "file": "app/reader.js",
-      "line": 520,
+      "line": 522,
       "column": 224,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191746,9 +191776,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:520:648",
+      "id": "candidate:app/reader.js:522:648",
       "file": "app/reader.js",
-      "line": 520,
+      "line": 522,
       "column": 648,
       "kind": "js-attribute",
       "property": "role",
@@ -191766,9 +191796,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:520:809",
+      "id": "candidate:app/reader.js:522:809",
       "file": "app/reader.js",
-      "line": 520,
+      "line": 522,
       "column": 809,
       "kind": "js-attribute",
       "property": "role",
@@ -191786,9 +191816,9 @@
       }
     },
     {
-      "id": "candidate:app/reader.js:529:166",
+      "id": "candidate:app/reader.js:531:166",
       "file": "app/reader.js",
-      "line": 529,
+      "line": 531,
       "column": 166,
       "kind": "js-cjk-literal",
       "property": null,
@@ -242792,7 +242822,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 61,
+      "line": 63,
       "expression": "READER_SHELL+'bookText'",
       "fragments": [
         "bookText"
@@ -242802,7 +242832,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 80,
+      "line": 82,
       "expression": "book.chapters.findIndex(c=>c.id===state.chapterId)+direction",
       "fragments": [],
       "unresolved": true
@@ -242810,7 +242840,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 80,
+      "line": 82,
       "expression": "book.chapters.findIndex(c=>c.id===state.chapterId)+direction",
       "fragments": [],
       "unresolved": true
@@ -242818,7 +242848,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 94,
+      "line": 96,
       "expression": "READER_UI+'unknownError'",
       "fragments": [
         "unknownError"
@@ -242828,7 +242858,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 97,
+      "line": 99,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242836,7 +242866,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 97,
+      "line": 99,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -242844,7 +242874,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 97,
+      "line": 99,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242852,7 +242882,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 97,
+      "line": 99,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -242860,7 +242890,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 97,
+      "line": 99,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242868,7 +242898,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 107,
+      "line": 109,
       "expression": "READER_UI+'progressConflict'",
       "fragments": [
         "progressConflict"
@@ -242878,7 +242908,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 108,
+      "line": 110,
       "expression": "READER_UI+'progressLocal'",
       "fragments": [
         "progressLocal"
@@ -242888,7 +242918,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 108,
+      "line": 110,
       "expression": "READER_UI+'progressMemory'",
       "fragments": [
         "progressMemory"
@@ -242898,7 +242928,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 112,
+      "line": 114,
       "expression": "READER_UI+'fragment'",
       "fragments": [
         "fragment"
@@ -242908,7 +242938,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 145,
+      "line": 147,
       "expression": "'[data-id=\"'+a.passageId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -242919,7 +242949,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 145,
+      "line": 147,
       "expression": "'[data-id=\"'+a.passageId",
       "fragments": [
         "[data-id=\""
@@ -242929,7 +242959,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 167,
+      "line": 169,
       "expression": "state.font+'px'",
       "fragments": [
         "px"
@@ -242939,7 +242969,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 167,
+      "line": 169,
       "expression": "state.fontFamily",
       "fragments": [],
       "unresolved": true
@@ -242947,7 +242977,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 168,
+      "line": 170,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242955,7 +242985,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 174,
+      "line": 176,
       "expression": "'setting-'+key",
       "fragments": [
         "setting-"
@@ -242965,7 +242995,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 174,
+      "line": 176,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -242973,7 +243003,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 174,
+      "line": 176,
       "expression": "'[data-adjust=\"'+key+'\"]'",
       "fragments": [
         "[data-adjust=\"",
@@ -242984,7 +243014,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 174,
+      "line": 176,
       "expression": "'[data-adjust=\"'+key",
       "fragments": [
         "[data-adjust=\""
@@ -242994,7 +243024,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 174,
+      "line": 176,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -243002,7 +243032,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 174,
+      "line": 176,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243010,7 +243040,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 174,
+      "line": 176,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -243018,7 +243048,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 174,
+      "line": 176,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -243026,7 +243056,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 174,
+      "line": 176,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -243034,7 +243064,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 174,
+      "line": 176,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -243042,7 +243072,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 183,
+      "line": 185,
       "expression": "READER_UI+'type.'",
       "fragments": [
         "type."
@@ -243052,7 +243082,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 183,
+      "line": 185,
       "expression": "'label-'+key",
       "fragments": [
         "label-"
@@ -243062,7 +243092,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 184,
+      "line": 186,
       "expression": "'setting-'+key",
       "fragments": [
         "setting-"
@@ -243072,7 +243102,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 185,
+      "line": 187,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -243080,7 +243110,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 185,
+      "line": 187,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -243088,7 +243118,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 186,
+      "line": 188,
       "expression": "READER_UI+'type.'",
       "fragments": [
         "type."
@@ -243098,7 +243128,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 189,
+      "line": 191,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -243106,7 +243136,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 189,
+      "line": 191,
       "expression": "p.id",
       "fragments": [],
       "unresolved": true
@@ -243114,7 +243144,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 190,
+      "line": 192,
       "expression": "READER_UI+'missing.'",
       "fragments": [
         "missing."
@@ -243124,7 +243154,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 196,
+      "line": 198,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243132,7 +243162,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 198,
+      "line": 200,
       "expression": "READER_UI+'fallback.'",
       "fragments": [
         "fallback."
@@ -243142,7 +243172,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 202,
+      "line": 204,
       "expression": "READER_UI+'chapterName'",
       "fragments": [
         "chapterName"
@@ -243152,7 +243182,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 205,
+      "line": 207,
       "expression": "'section-'+s.number",
       "fragments": [
         "section-"
@@ -243162,7 +243192,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 205,
+      "line": 207,
       "expression": "'§'+s.number",
       "fragments": [
         "§"
@@ -243172,7 +243202,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 208,
+      "line": 210,
       "expression": "READER_UI+'sampleEnd'",
       "fragments": [
         "sampleEnd"
@@ -243182,7 +243212,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 208,
+      "line": 210,
       "expression": "READER_UI+'sampleHelp'",
       "fragments": [
         "sampleHelp"
@@ -243192,7 +243222,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 211,
+      "line": 213,
       "expression": "READER_UI+'chapterEndNumber'",
       "fragments": [
         "chapterEndNumber"
@@ -243202,7 +243232,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 212,
+      "line": 214,
       "expression": "READER_UI+'markChapter'",
       "fragments": [
         "markChapter"
@@ -243212,7 +243242,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 217,
+      "line": 219,
       "expression": "chapter.title.zh+' · Leafhour'",
       "fragments": [
         " · Leafhour"
@@ -243222,7 +243252,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 218,
+      "line": 220,
       "expression": "chapter.number+' / '",
       "fragments": [
         " / "
@@ -243232,7 +243262,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 218,
+      "line": 220,
       "expression": "(index+1)+' / '",
       "fragments": [
         " / "
@@ -243242,7 +243272,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 255,
+      "line": 257,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243250,7 +243280,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 268,
+      "line": 270,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243258,7 +243288,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 277,
+      "line": 279,
       "expression": "Math.min(nodeRect.width,innerWidth-24)+'px'",
       "fragments": [
         "px"
@@ -243268,7 +243298,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 281,
+      "line": 283,
       "expression": "placement.left+'px'",
       "fragments": [
         "px"
@@ -243278,7 +243308,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 281,
+      "line": 283,
       "expression": "placement.top+'px'",
       "fragments": [
         "px"
@@ -243288,7 +243318,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 282,
+      "line": 284,
       "expression": "(at.left-tools.getBoundingClientRect().left)+'px'",
       "fragments": [
         "px"
@@ -243298,7 +243328,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 282,
+      "line": 284,
       "expression": "(at.top-tools.getBoundingClientRect().top)+'px'",
       "fragments": [
         "px"
@@ -243308,7 +243338,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 282,
+      "line": 284,
       "expression": "at.maxHeight+'px'",
       "fragments": [
         "px"
@@ -243318,7 +243348,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 285,
+      "line": 287,
       "expression": "id+':'",
       "fragments": [
         ":"
@@ -243328,7 +243358,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 285,
+      "line": 287,
       "expression": "'[data-id=\"'+id+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -243339,7 +243369,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 285,
+      "line": 287,
       "expression": "'[data-id=\"'+id",
       "fragments": [
         "[data-id=\""
@@ -243349,7 +243379,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 286,
+      "line": 288,
       "expression": "READER_UI+'translation'",
       "fragments": [
         "translation"
@@ -243359,7 +243389,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 293,
+      "line": 295,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243367,7 +243397,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 298,
+      "line": 300,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243375,7 +243405,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 299,
+      "line": 301,
       "expression": "part.variant",
       "fragments": [],
       "unresolved": true
@@ -243383,7 +243413,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 299,
+      "line": 301,
       "expression": "READER_UI+'highlightChanged'",
       "fragments": [
         "highlightChanged"
@@ -243393,7 +243423,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 303,
+      "line": 305,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -243404,7 +243434,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 303,
+      "line": 305,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -243414,7 +243444,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 319,
+      "line": 321,
       "expression": "'[data-id=\"'+part.passageId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -243425,7 +243455,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 319,
+      "line": 321,
       "expression": "'[data-id=\"'+part.passageId",
       "fragments": [
         "[data-id=\""
@@ -243435,7 +243465,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 324,
+      "line": 326,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243443,7 +243473,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 324,
+      "line": 326,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243451,7 +243481,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 325,
+      "line": 327,
       "expression": "READER_UI+'sourceLabel.'+(excerpt?'excerpt':'passage')+'.'",
       "fragments": [
         "sourceLabel.",
@@ -243462,7 +243492,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 325,
+      "line": 327,
       "expression": "READER_UI+'sourceLabel.'",
       "fragments": [
         "sourceLabel."
@@ -243472,7 +243502,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 330,
+      "line": 332,
       "expression": "variant",
       "fragments": [],
       "unresolved": true
@@ -243480,7 +243510,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 330,
+      "line": 332,
       "expression": "READER_UI+'missing.'",
       "fragments": [
         "missing."
@@ -243490,7 +243520,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 334,
+      "line": 336,
       "expression": "READER_UI+'returnQuote'",
       "fragments": [
         "returnQuote"
@@ -243500,7 +243530,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 337,
+      "line": 339,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243508,7 +243538,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 337,
+      "line": 339,
       "expression": "'[data-id=\"'+id+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -243519,7 +243549,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 337,
+      "line": 339,
       "expression": "'[data-id=\"'+id",
       "fragments": [
         "[data-id=\""
@@ -243529,7 +243559,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 342,
+      "line": 344,
       "expression": "READER_UI+'loginPreparing'",
       "fragments": [
         "loginPreparing"
@@ -243539,7 +243569,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 343,
+      "line": 345,
       "expression": "READER_UI+'loginNotes'",
       "fragments": [
         "loginNotes"
@@ -243549,7 +243579,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 343,
+      "line": 345,
       "expression": "READER_UI+'loginPassage'",
       "fragments": [
         "loginPassage"
@@ -243559,7 +243589,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 345,
+      "line": 347,
       "expression": "READER_UI+'recordsLoading'",
       "fragments": [
         "recordsLoading"
@@ -243569,7 +243599,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 346,
+      "line": 348,
       "expression": "READER_UI+'recordsUnavailable'",
       "fragments": [
         "recordsUnavailable"
@@ -243579,7 +243609,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 346,
+      "line": 348,
       "expression": "READER_UI+'recordsReading'",
       "fragments": [
         "recordsReading"
@@ -243589,7 +243619,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 346,
+      "line": 348,
       "expression": "READER_UI+'recordsRetry'",
       "fragments": [
         "recordsRetry"
@@ -243599,27 +243629,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 346,
-      "expression": "READER_UI+'recordsFailed'",
-      "fragments": [
-        "recordsFailed"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reader.js",
-      "line": 350,
-      "expression": "READER_UI+'progressConflict'",
-      "fragments": [
-        "progressConflict"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reader.js",
-      "line": 351,
+      "line": 348,
       "expression": "READER_UI+'recordsFailed'",
       "fragments": [
         "recordsFailed"
@@ -243630,6 +243640,26 @@
       "kind": "concatenation",
       "file": "app/reader.js",
       "line": 352,
+      "expression": "READER_UI+'progressConflict'",
+      "fragments": [
+        "progressConflict"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader.js",
+      "line": 353,
+      "expression": "READER_UI+'recordsFailed'",
+      "fragments": [
+        "recordsFailed"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader.js",
+      "line": 354,
       "expression": "'[data-panel-tab=\"'+panelTab+'\"]'",
       "fragments": [
         "[data-panel-tab=\"",
@@ -243640,7 +243670,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 352,
+      "line": 354,
       "expression": "'[data-panel-tab=\"'+panelTab",
       "fragments": [
         "[data-panel-tab=\""
@@ -243650,7 +243680,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 357,
+      "line": 359,
       "expression": "READER_SHELL+'myRecords'",
       "fragments": [
         "myRecords"
@@ -243660,7 +243690,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 357,
+      "line": 359,
       "expression": "READER_UI+'annotationTitle'",
       "fragments": [
         "annotationTitle"
@@ -243670,7 +243700,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 357,
+      "line": 359,
       "expression": "READER_SHELL+'leaveQuestion'",
       "fragments": [
         "leaveQuestion"
@@ -243680,7 +243710,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 357,
+      "line": 359,
       "expression": "READER_UI+'writeThought'",
       "fragments": [
         "writeThought"
@@ -243690,7 +243720,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 362,
+      "line": 364,
       "expression": "'panel-tab-'+panelTab",
       "fragments": [
         "panel-tab-"
@@ -243700,7 +243730,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 366,
+      "line": 368,
       "expression": "READER_SHELL+'myRecords'",
       "fragments": [
         "myRecords"
@@ -243710,7 +243740,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 369,
+      "line": 371,
       "expression": "READER_UI+'noRecords'",
       "fragments": [
         "noRecords"
@@ -243720,7 +243750,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 373,
+      "line": 375,
       "expression": "READER_UI+'annotation.'+(['difficulty','paradox','example','context','cross_reference','term'].includes(n.kind)?n.kind:'note')+'.'",
       "fragments": [
         "annotation.",
@@ -243731,7 +243761,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 373,
+      "line": 375,
       "expression": "READER_UI+'annotation.'",
       "fragments": [
         "annotation."
@@ -243741,7 +243771,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 374,
+      "line": 376,
       "expression": "READER_UI+'keyTerms'",
       "fragments": [
         "keyTerms"
@@ -243751,7 +243781,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 374,
+      "line": 376,
       "expression": "t.zh+' · '",
       "fragments": [
         " · "
@@ -243761,7 +243791,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 375,
+      "line": 377,
       "expression": "READER_UI+'noAnnotations'",
       "fragments": [
         "noAnnotations"
@@ -243771,7 +243801,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 377,
+      "line": 379,
       "expression": "type+':'",
       "fragments": [
         ":"
@@ -243781,7 +243811,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 381,
+      "line": 383,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -243789,7 +243819,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 382,
+      "line": 384,
       "expression": "READER_UI+'questionLabel'",
       "fragments": [
         "questionLabel"
@@ -243799,7 +243829,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 382,
+      "line": 384,
       "expression": "READER_UI+'thoughtLabel'",
       "fragments": [
         "thoughtLabel"
@@ -243809,7 +243839,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 382,
+      "line": 384,
       "expression": "READER_UI+'questionPlaceholder'",
       "fragments": [
         "questionPlaceholder"
@@ -243819,7 +243849,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 382,
+      "line": 384,
       "expression": "READER_UI+'thoughtPlaceholder'",
       "fragments": [
         "thoughtPlaceholder"
@@ -243829,7 +243859,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 384,
+      "line": 386,
       "expression": "READER_SHELL+'saveQuestion'",
       "fragments": [
         "saveQuestion"
@@ -243839,7 +243869,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 384,
+      "line": 386,
       "expression": "READER_UI+'saveThought'",
       "fragments": [
         "saveThought"
@@ -243849,7 +243879,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 384,
+      "line": 386,
       "expression": "READER_UI+'pendingNote'",
       "fragments": [
         "pendingNote"
@@ -243859,7 +243889,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 384,
+      "line": 386,
       "expression": "READER_UI+'empty'",
       "fragments": [
         "empty"
@@ -243869,7 +243899,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 390,
+      "line": 392,
       "expression": "'/api/'+key",
       "fragments": [
         "/api/"
@@ -243879,7 +243909,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 390,
+      "line": 392,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -243887,7 +243917,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 390,
+      "line": 392,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -243895,7 +243925,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 394,
+      "line": 396,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -243903,7 +243933,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 397,
+      "line": 399,
       "expression": "'[data-panel-tab=\"'+tab+'\"]'",
       "fragments": [
         "[data-panel-tab=\"",
@@ -243914,7 +243944,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 397,
+      "line": 399,
       "expression": "'[data-panel-tab=\"'+tab",
       "fragments": [
         "[data-panel-tab=\""
@@ -243924,7 +243954,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 409,
+      "line": 411,
       "expression": "'/api/reading?'+query",
       "fragments": [
         "/api/reading?"
@@ -243934,7 +243964,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 415,
+      "line": 417,
       "expression": "READER_UI+'draftUnavailable'",
       "fragments": [
         "draftUnavailable"
@@ -243944,7 +243974,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 415,
+      "line": 417,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -243952,7 +243982,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 416,
+      "line": 418,
       "expression": "'/api/chapters/'+encodeURIComponent(id)+'?contentVersion='",
       "fragments": [
         "/api/chapters/",
@@ -243963,7 +243993,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 416,
+      "line": 418,
       "expression": "'/api/chapters/'+encodeURIComponent(id)",
       "fragments": [
         "/api/chapters/"
@@ -243973,7 +244003,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 417,
+      "line": 419,
       "expression": "READER_UI+'chapterLoading'",
       "fragments": [
         "chapterLoading"
@@ -243983,7 +244013,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 417,
+      "line": 419,
       "expression": "READER_UI+'chapterFailed'",
       "fragments": [
         "chapterFailed"
@@ -243993,7 +244023,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 429,
+      "line": 431,
       "expression": "location.pathname+'?'",
       "fragments": [
         "?"
@@ -244003,7 +244033,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 430,
+      "line": 432,
       "expression": "READER_UI+'chineseOriginal'",
       "fragments": [
         "chineseOriginal"
@@ -244013,7 +244043,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 430,
+      "line": 432,
       "expression": "READER_SHELL+'englishOriginal'",
       "fragments": [
         "englishOriginal"
@@ -244023,7 +244053,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 430,
+      "line": 432,
       "expression": "READER_SHELL+'chineseTranslation'",
       "fragments": [
         "chineseTranslation"
@@ -244033,7 +244063,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 430,
+      "line": 432,
       "expression": "READER_SHELL+'bilingual'",
       "fragments": [
         "bilingual"
@@ -244043,7 +244073,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 430,
+      "line": 432,
       "expression": "READER_UI+'sourceAndTranslation'",
       "fragments": [
         "sourceAndTranslation"
@@ -244053,7 +244083,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 432,
+      "line": 434,
       "expression": "location.pathname+'?'",
       "fragments": [
         "?"
@@ -244063,7 +244093,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 433,
+      "line": 435,
       "expression": "READER_UI+'citationInvalid'",
       "fragments": [
         "citationInvalid"
@@ -244073,7 +244103,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 433,
+      "line": 435,
       "expression": "READER_SHELL+'loadError'",
       "fragments": [
         "loadError"
@@ -244083,7 +244113,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 433,
+      "line": 435,
       "expression": "READER_UI+'loginCitation'",
       "fragments": [
         "loginCitation"
@@ -244093,7 +244123,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 444,
+      "line": 446,
       "expression": "READER_UI+'savedSourceFailed'",
       "fragments": [
         "savedSourceFailed"
@@ -244103,7 +244133,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 446,
+      "line": 448,
       "expression": "READER_UI+'savedPositionReady'",
       "fragments": [
         "savedPositionReady"
@@ -244113,7 +244143,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 464,
+      "line": 466,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -244121,7 +244151,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 465,
+      "line": 467,
       "expression": "READER_UI+'selectAgain'",
       "fragments": [
         "selectAgain"
@@ -244131,7 +244161,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 474,
+      "line": 476,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -244142,7 +244172,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 474,
+      "line": 476,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -244152,7 +244182,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 495,
+      "line": 497,
       "expression": "READER_UI+'appearanceReset'",
       "fragments": [
         "appearanceReset"
@@ -244162,7 +244192,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 498,
+      "line": 500,
       "expression": "selectedId",
       "fragments": [],
       "unresolved": true
@@ -244170,7 +244200,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 498,
+      "line": 500,
       "expression": "selectedId",
       "fragments": [],
       "unresolved": true
@@ -244178,7 +244208,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 498,
+      "line": 500,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -244189,7 +244219,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 498,
+      "line": 500,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -244199,7 +244229,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 498,
+      "line": 500,
       "expression": "READER_UI+'translation'",
       "fragments": [
         "translation"
@@ -244209,7 +244239,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 502,
+      "line": 504,
       "expression": "selectedId",
       "fragments": [],
       "unresolved": true
@@ -244217,7 +244247,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 502,
+      "line": 504,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -244228,7 +244258,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 502,
+      "line": 504,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -244238,7 +244268,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 509,
+      "line": 511,
       "expression": "next",
       "fragments": [],
       "unresolved": true
@@ -244246,7 +244276,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 509,
+      "line": 511,
       "expression": "next",
       "fragments": [],
       "unresolved": true
@@ -244254,7 +244284,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 513,
+      "line": 515,
       "expression": "'[data-id=\"'+selectedId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -244265,7 +244295,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 513,
+      "line": 515,
       "expression": "'[data-id=\"'+selectedId",
       "fragments": [
         "[data-id=\""
@@ -244275,7 +244305,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 514,
+      "line": 516,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -244283,7 +244313,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 514,
+      "line": 516,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -244291,7 +244321,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 517,
+      "line": 519,
       "expression": "READER_UI+'exported'",
       "fragments": [
         "exported"
@@ -244301,7 +244331,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 518,
+      "line": 520,
       "expression": "READER_UI+'exportFailed'",
       "fragments": [
         "exportFailed"
@@ -244311,7 +244341,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 520,
+      "line": 522,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -244319,7 +244349,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 520,
+      "line": 522,
       "expression": "READER_UI+'imported'",
       "fragments": [
         "imported"
@@ -244329,7 +244359,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 520,
+      "line": 522,
       "expression": "READER_UI+'importFailed'",
       "fragments": [
         "importFailed"
@@ -244339,7 +244369,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 521,
+      "line": 523,
       "expression": "n",
       "fragments": [],
       "unresolved": true
@@ -244347,7 +244377,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 521,
+      "line": 523,
       "expression": "n",
       "fragments": [],
       "unresolved": true
@@ -244355,7 +244385,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 521,
+      "line": 523,
       "expression": "n",
       "fragments": [],
       "unresolved": true
@@ -244363,7 +244393,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 521,
+      "line": 523,
       "expression": "n",
       "fragments": [],
       "unresolved": true
@@ -244371,7 +244401,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 530,
+      "line": 532,
       "expression": "READER_UI+'positionReturned'",
       "fragments": [
         "positionReturned"
@@ -244381,7 +244411,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 531,
+      "line": 533,
       "expression": "READER_UI+'positionKept'",
       "fragments": [
         "positionKept"
@@ -244391,7 +244421,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 533,
+      "line": 535,
       "expression": "READER_UI+'progressConflict'",
       "fragments": [
         "progressConflict"
@@ -244401,7 +244431,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 541,
+      "line": 543,
       "expression": "READER_UI+'translationSaved'",
       "fragments": [
         "translationSaved"
@@ -244411,7 +244441,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader.js",
-      "line": 541,
+      "line": 543,
       "expression": "READER_UI+'previousTranslationSaved'",
       "fragments": [
         "previousTranslationSaved"
@@ -244421,7 +244451,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 546,
+      "line": 548,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -244429,7 +244459,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader.js",
-      "line": 546,
+      "line": 548,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -251274,10 +251304,31 @@
     {
       "kind": "concatenation",
       "file": "server/content-security.mjs",
-      "line": 2,
+      "line": 4,
       "expression": "base.replace(\"script-src 'self'\",\"script-src 'self' https://www.creem.io\").replace(\"style-src 'self'\",\"style-src 'self' 'unsafe-inline'\")+\"; frame-src 'self' ht",
       "fragments": [
         "; frame-src 'self' https://creem.io https://*.creem.io"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/content-security.mjs",
+      "line": 6,
+      "expression": "\"style-src 'self' 'sha256-\"+createHash('sha256').update(READER_CRITICAL_CSS).digest('base64')+\"'\"",
+      "fragments": [
+        "style-src 'self' 'sha256-",
+        "'"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/content-security.mjs",
+      "line": 6,
+      "expression": "\"style-src 'self' 'sha256-\"+createHash('sha256').update(READER_CRITICAL_CSS).digest('base64')",
+      "fragments": [
+        "style-src 'self' 'sha256-"
       ],
       "unresolved": true
     },
@@ -257063,8 +257114,8 @@
     "candidatesUnreviewed": 4858,
     "candidatesProtected": 132,
     "itemsProtected": 9,
-    "dynamicConsumers": 3123,
-    "consumerReferences": 1582,
-    "keysWithoutStaticConsumers": 1200
+    "dynamicConsumers": 3125,
+    "consumerReferences": 1586,
+    "keysWithoutStaticConsumers": 1198
   }
 }

@@ -1,3 +1,4 @@
+import {prepareReaderStyles} from './reader-style-ready.mjs';
 import {readingChatExcerptIsVisible} from './reading-chat-quote.mjs';
 import {mountReaderPresence} from './reader-presence.mjs';
 import {createReadingBook,createReadingNavigation} from './reading-book.mjs';
@@ -34,6 +35,7 @@ import {activeHighlights,highlightKey} from './highlights.mjs';
 import {mountReaderHighlights,textRange} from './reader-highlights.mjs';
 import {getUiLinkLocale,t,uiReady,bindUi,onUiLocaleChange,uiHref,getUiLocaleState,setUiLocale,retryUiLocale,onUiLocaleStateChange,createUiLabels} from './ui-locale.mjs';
 import {mountNativeUiLocaleControl} from './ui-locale-controls.mjs';
+await prepareReaderStyles(document);
 await uiReady;
 
 const READER_UI='reader.b1.',READER_SHELL='reader.shell.';
@@ -62,7 +64,7 @@ label($('chapter-text'),READER_SHELL+'bookText',null,'aria-label');
 let syncLocaleChoice=()=>{};
 const localeControls=mountNativeUiLocaleControl({root:$('reader-ui-language'),getState:getUiLocaleState,setLocale:setUiLocale,retry:retryUiLocale,subscribeState:onUiLocaleStateChange,labels:t,onState:()=>syncLocaleChoice()});
 const offLocale=onUiLocaleChange(()=>{refreshLabels();for(const [link,params]of ownedLoginLinks){if(link.isConnected===false)ownedLoginLinks.delete(link);else link.href=readerLoginUrl({...params,ui:getUiLinkLocale()});}for(const link of document.querySelectorAll('[data-reader-ui-link]'))link.href=uiHref(link.dataset.readerUiLink);});
-for(const link of document.querySelectorAll('a[href="/library"],a[href="/library?calendar=1"]')){link.dataset.readerUiLink=link.getAttribute('href');link.href=uiHref(link.dataset.readerUiLink);}
+for(const link of document.querySelectorAll('a[href="/library"],a[href="/library?calendar=1"],[data-reader-ui-link]')){link.dataset.readerUiLink??=link.getAttribute('href');link.href=uiHref(link.dataset.readerUiLink);}
 const receiptFor=node=>(id,params)=>{label(node,id,params);return t(id,params);};
 const arrival=mountReaderLoading($('loading'));
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};

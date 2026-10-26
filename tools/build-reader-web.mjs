@@ -1,3 +1,4 @@
+import {READER_CRITICAL_CSS} from '../server/reader-shell.mjs';
 import {build} from 'esbuild';
 import {parse} from 'acorn';
 import {mkdir,writeFile,readFile,readdir,realpath} from 'node:fs/promises';
@@ -58,6 +59,7 @@ export const UI_LOCALE_OWNERS=Object.freeze([
  'app/reader-api.mjs',
  'app/reader.js',
  'app/reader-loading.mjs',
+ 'app/reader-style-ready.mjs',
  'app/reading-arrival.mjs',
  'app/reading-dashboard.mjs',
  'app/reading-manual-ui.mjs',
@@ -353,6 +355,8 @@ export async function auditUiLocaleGraph({root,allowed=null}={}){
   return {owners:[...owners].sort(),catalogueEdges:[...catalogueEdges].sort()};
 }
 
+// This shell uses system fonts and no network resource. It stays scoped to
+// startup so the complete stylesheet remains the sole reading layout owner.
 export async function buildReaderWeb({root,outputDir,html}){
  root=await realpath(root);
  const scripts=[...html.matchAll(/<script\s+type="module"\s+src="(\/[^"]+)"\s*><\/script>/g)].map(x=>x[1]);
@@ -461,6 +465,6 @@ export async function buildReaderWeb({root,outputDir,html}){
  await mkdir(path.join(outputDir,'reader-web'),{recursive:true});
  for(const [prefix,extension,bytes]of [['reader','js',js],['style','css',css]]){if(bytes.length>(extension==='js'?320:200)*1024)throw Error('Reader bundle exceeds public asset budget: '+prefix+' '+bytes.length);const file='reader-web/'+prefix+'-'+createHash('sha256').update(bytes).digest('hex').slice(0,16)+'.'+extension;await writeFile(path.join(outputDir,file),bytes);files.push(file);}
  html=html.replace(/<script\s+type="module"\s+src="\/[^"]+"\s*><\/script>/g,'').replace(/<link\s+rel="stylesheet"\s+href="\/[^"]+"\s*>/g,'');
- html=html.replace('</head>','<link rel="stylesheet" href="/'+files[1]+'"><script type="module" src="/'+files[0]+'"></script></head>');
+ html=html.replace('</head>','<style data-reader-critical>'+READER_CRITICAL_CSS+'</style><link rel="preload" as="style" href="/'+files[1]+'" data-reader-styles><script type="module" src="/'+files[0]+'"></script></head>');
  return {html,files,inputs:[...inputs].sort()};
 }
