@@ -11,3 +11,9 @@ The reviewer also caught an accidental removal of the existing final chat-contex
 A report wording suggestion was applied: page API mutations are blocked, while local auth/logout are deliberate isolated-fixture setup/teardown writes. This does not describe production-account acceptance.
 
 Production diff SHA-256 supplied by reviewer: `233f9e76404db23a4ead2e81c398139f5476e8c88d2e49e9a43646827167ff27`. Per-file final source fingerprints are in `fingerprints.json`.
+
+## Saved-annotation follow-up review
+
+The same independent native reviewer examined the follow-up against merged `34e155b` and ran 38 directly related margins, annotation UI and pending-recovery tests. Result: **no P0/P1/P2**. Explicit visibility choices take precedence; reset does not write; pending recovery and explicit opening still call the existing reveal path; sheet, API, outbox and drafts are unchanged. The existing hide-annotations semantic also conceals highlight styling, with the original tools toggle retaining access to the records.
+
+The reviewer correctly identified that the first new browser fixture ran only at 1280px. The primary agent extended it to 390px and used native touchscreen input for toggle/card activation; both cases pass in the final ten-case browser report. Final source fingerprints for the follow-up are separate from the foundation receipt.

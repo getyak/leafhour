@@ -1,0 +1,10 @@
+{
+  "version": "16.15",
+  "archive": "Postgres-2.9.6-16.dmg",
+  "sha256": "2689dc64d6a02e0a66e4585616919060d8fbf5bb06886fccc05b7f87638bf081",
+  "source": "https://github.com/PostgresApp/PostgresApp/releases/tag/v2.9.6",
+  "officialDigestMatched": true,
+  "codesignVerified": true,
+  "mount": "task-owned read-only mount",
+  "productionDatabaseAccess": false
+}

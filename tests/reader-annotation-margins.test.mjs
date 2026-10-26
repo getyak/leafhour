@@ -44,6 +44,19 @@ test('margin rails leave readable text intact across phone, tablet, laptop and d
  assert.equal(annotationRails({left:380,right:1060,viewport:1440,paginated:true}).length,0);
  assert.deepEqual(annotationRails({left:380,right:1060,viewport:1440,blocked:[{left:1050,right:1440}]}).map(r=>r.side),['left']);
 });
+
+test('quiet reading tucks saved summaries away by default and preserves an explicit visibility choice',()=>{
+ for(const [focused,saved,expected]of [[true,null,false],[false,null,true],[true,'true',true],[true,'false',false],[false,'false',false]]){
+  const f=fixture('<body><div id="reading-pages"><p id="p1">The author’s words.</p></div><div id="reading-tools-panel"></div></body>');
+  f.document.body.classList.toggle('is-focused',focused);const writes=[],values=new Map(saved===null?[]:[['marginalia-annotation-visible-v1|quiet-reader',saved]]);
+  const margins=mountAnnotationMargins({document:f.document,storage:{getItem:key=>values.get(key),setItem:(key,value)=>{writes.push({key,value});values.set(key,value);}},getScope:()=> 'quiet-reader',getEntries:()=>[{id:'saved-explanation',passageId:'p1',origin:'ai',text:'An existing explanation.'}],onOpen:()=>assert.fail('presentation never opens or generates'),onHide:()=>{},write:(node,key,attribute)=>attribute?node.setAttribute(attribute,key):node.textContent=key});
+  try{
+   margins.refresh();assert.equal(f.document.getElementById('reader-annotation-margins').hidden,!expected);assert.equal(f.document.getElementById('reader-annotations-toggle').getAttribute('aria-pressed'),String(expected));assert.equal(writes.length,0,'opening a book never rewrites the visibility preference');
+   margins.reveal();assert.equal(f.document.getElementById('reader-annotation-margins').hidden,false);assert.equal(f.document.getElementById('p1').textContent,'The author’s words.');
+   margins.state('error');assert.equal(f.document.querySelector('.reader-annotation-load-status').textContent,'loadFailed');
+  }finally{margins.dispose();}
+ }
+});
 test('fourteen nearby annotations use both margins without overlapping each other',()=>{
  const entries=Array.from({length:14},(_,i)=>({id:'note-'+i,top:100+Math.floor(i/3)*90}));
  const placed=arrangeMarginNotes(entries,annotationRails({left:380,right:1060,viewport:1440}));

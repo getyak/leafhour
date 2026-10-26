@@ -37,8 +37,8 @@ export function mountAnnotationMargins({document,storage,getScope,getEntries,onO
  const listen=(target,event,fn,options)=>{target?.addEventListener(event,fn,options);listeners.push(()=>target?.removeEventListener(event,fn,options));};
  function reset(){
   const next=getScope();if(next===scope)return;scope=next;active=null;
-  for(const node of nodes.values())node.remove();nodes.clear();region.remove();controls.remove();visible=true;
-  try{visible=storage?.getItem(key())!=='false';}catch{}
+  for(const node of nodes.values())node.remove();nodes.clear();region.remove();controls.remove();visible=!document.body.classList.contains('is-focused');
+  try{const saved=storage?.getItem(key());if(saved==='true'||saved==='false')visible=saved==='true';}catch{}
   if(scope){document.body.append(region);(document.getElementById('reading-tools-panel')||document.body).append(controls);document.body.dataset.annotationsState='pending';}
   else{delete document.body.dataset.annotationsState;delete document.body.dataset.annotationsVisible;}
   sync();

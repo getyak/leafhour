@@ -28,13 +28,20 @@ for(const engine of (process.env.LEAFHOUR_BROWSER_ENGINES||'chromium').split(','
  for(const [locale,width,height,theme,scale]of matrix){
   const row={engine,version:browser.version(),locale,width,height,theme,scale,checks:[],writes:[],errors:[]};report.cases.push(row);
   context=await browser.newContext({viewport:{width,height},hasTouch:width<=390,reducedMotion:width<=390?'reduce':'no-preference'});context.setDefaultTimeout(15000);
-  let failReading=false,failChoices=false,emptyReading=false;
+  let failReading=false,failChoices=false,emptyReading=false,fixtureBook=null,failAnnotations=false;
   await context.route('**/*',async route=>{
    const req=route.request(),u=new URL(req.url());if(u.origin!==base)return route.abort();
    if(u.pathname.startsWith('/api/')){
     if(req.method()!=='GET'){row.writes.push({path:u.pathname,blocked:true});return route.fulfill({status:403,json:{error:'Read-only verification'}});}
     if(failReading&&u.pathname.endsWith('/reading')){failReading=false;return route.fulfill({status:503,json:{error:'Injected reading outage'}});}
     if(emptyReading&&u.pathname.endsWith('/reading')){const response=await route.fetch(),book=await response.json();book.sections=[];return route.fulfill({response,json:book});}
+    if(u.pathname.endsWith('/reading')){const response=await route.fetch();fixtureBook=await response.json();return route.fulfill({response,json:fixtureBook});}
+    if(u.pathname.endsWith('/annotations')&&fixtureBook){
+     if(failAnnotations){failAnnotations=false;return route.fulfill({status:503,json:{error:'Injected annotation outage'}});}
+     const section=fixtureBook.sections.find(s=>s.paragraphs.some(p=>!p.unloaded&&p.original)),p=section.paragraphs.find(p=>!p.unloaded&&p.original),text=p.original.slice(0,30);
+     const quote={kind:'leafhour-reading-quote',schemaVersion:1,bookId:fixtureBook.bookId,contentVersion:fixtureBook.contentVersion,chapterId:section.chapterId,parts:[{passageId:p.id,layer:'original',start:0,end:text.length,text}]};
+     return route.fulfill({status:200,json:{archive:{kind:'leafhour-reader-annotations',bookId:fixtureBook.bookId,threads:[{id:'quiet-saved-note',quote,messages:[{id:'quiet-saved-message',origin:'ai',body:'Synthetic saved explanation.',provenance:{source:'external-agent',label:'Synthetic fixture'}}]}]},requests:[]}});
+    }
     return route.continue();
    }
    if(failChoices&&u.pathname==='/reader-settings-choices.mjs')return route.abort();
@@ -93,11 +100,15 @@ for(const engine of (process.env.LEAFHOUR_BROWSER_ENGINES||'chromium').split(','
    const exit=await p.locator('#reader-exit-fullscreen').boundingBox();assert.ok(exit.height>=44&&exit.width>=44&&exit.x>=0&&exit.x+exit.width<=width);await p.keyboard.press('Escape');await p.waitForFunction(()=>!document.fullscreenElement);
    row.checks.push('long-title-disclosure-and-existing-real-F-Escape-exit');
    await p.screenshot({path:out+'/'+engine+'-'+locale+'-'+width+'-final.png'});assert.equal((await state(p)).overflow,false);
-   if(locale==='en'&&width===1280){
+   if(locale==='en'&&(width===1280||width===390)){
     // Local fixture auth only; the isolated server has no production secrets.
     const auth=await context.request.post(base+'/api/auth/local',{data:{},headers:{Origin:base}});assert.equal(auth.ok(),true);const owner=(await auth.json()).user.id;assert.ok(owner);
     const draftPage=await context.newPage();await draftPage.goto(base+'/read?book=gutenberg-alice&ui='+locale);await draftPage.waitForFunction(()=>document.body.dataset.ready==='true');
     assert.equal(await draftPage.evaluate(async()=>((await (await fetch('/api/auth/session')).json()).user.id)),owner);
+    await draftPage.waitForFunction(()=>document.body.dataset.annotationsState==='ready');await draftPage.locator('.reader-annotation-summary').waitFor({state:'attached'});assert.equal(await draftPage.locator('.reader-annotation-summary').isVisible(),false);assert.equal(await draftPage.locator('#reader-annotations-toggle').getAttribute('aria-pressed'),'false');
+    const activate=locator=>width<=390?locator.tap():locator.click();await show(draftPage);await activate(draftPage.locator('#reader-annotations-toggle'));await draftPage.evaluate(()=>scrollTo(0,0));await draftPage.locator('.reader-annotation-summary').first().waitFor({state:'visible'});await activate(draftPage.locator('.reader-annotation-summary').first());await draftPage.locator('#reader-annotation-card').waitFor({state:'visible'});assert.ok((await draftPage.locator('#reader-annotation-card').textContent()).includes('Synthetic saved explanation.'));await activate(draftPage.locator('.reader-annotation-close'));
+    await draftPage.reload();await draftPage.waitForFunction(()=>document.body.dataset.annotationsState==='ready');assert.equal(await draftPage.locator('#reader-annotations-toggle').getAttribute('aria-pressed'),'true');row.checks.push('saved-annotation-fixture-default-tucked-explicit-reveal-open-reload-retained');
+    failAnnotations=true;await draftPage.reload();await draftPage.waitForFunction(()=>document.body.dataset.annotationsState==='error');await show(draftPage);assert.ok((await draftPage.locator('.reader-annotation-load-status').textContent()).length>0);await draftPage.locator('#reader-annotations-toggle').click();await draftPage.waitForFunction(()=>document.body.dataset.annotationsState==='ready');await draftPage.locator('#reader-annotations-toggle').click();assert.equal(await draftPage.locator('#reader-annotations-toggle').getAttribute('aria-pressed'),'false');row.checks.push('annotation-load-error-and-retry-remain-actionable');
     await show(draftPage);await draftPage.locator('#reading-tools-chat-slot .library-chat-trigger').click();const input=draftPage.locator('.library-chat-composer textarea');await input.fill('GET-252 isolated draft, never sent');
     await draftPage.locator('.library-chat-close').click();await draftPage.reload();await draftPage.waitForFunction(()=>document.body.dataset.ready==='true');await show(draftPage);await draftPage.locator('#reading-tools-chat-slot .library-chat-trigger').click();assert.equal(await input.inputValue(),'GET-252 isolated draft, never sent');await input.fill('');await draftPage.close();
     const logout=await context.request.post(base+'/api/auth/logout',{data:{},headers:{Origin:base,'X-Reader-Owner':owner}});assert.equal(logout.ok(),true);assert.equal((await (await context.request.get(base+'/api/auth/session')).json()).user,null);row.checks.push('isolated-local-auth-draft-close-reload-restore-and-session-revocation');
