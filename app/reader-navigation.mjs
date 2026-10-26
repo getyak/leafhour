@@ -66,6 +66,9 @@ export function mountBookIntroduction({document,getBook,getChapter,onOpen=()=>{}
     cached={book:{source:{structure:book.source?.structure}},chapter:chapter?{...chapter,title:{...chapter.title}}:null,title:info.title,untitled:!book.title?.zh,grouped:book.source?.structure==='automatic_groups',count:(book.chapters||[]).filter(c=>book.source?.structure==='automatic_groups'||!c.kind||c.kind==='body').length,sample:book.chineseSample?.paragraphs};
     for(const [id,value] of [['book-info-title',info.title],['book-info-cover-title',info.title],['book-info-original-title',info.originalTitle],['book-info-author',info.author],['book-info-description',info.description],['book-info-extent',info.extent],['book-info-current',info.current],['book-info-sample',info.sample],['book-info-scope',info.scopeNote]]){$(id).textContent=value;$(id).hidden=!value;}
     fallbackText=null;if(!introductionFor(book).text){fallbackText=document.createTextNode(t('reader.b1.noIntroduction'));$('book-info-description').replaceChildren(fallbackText);}
+    // Until the optional metadata read finishes, absence in the current book
+    // snapshot is unknown rather than a confirmed empty account introduction.
+    $('book-info-description').hidden=!introductionFor(book).text;
     updateLabels();
     popover.dataset.cover=['alice','walden','meditations'].includes(info.cover)?info.cover:'private';
     const source=$('book-info-source');source.hidden=!info.sourceUrl;if(info.sourceUrl)source.href=info.sourceUrl;else source.removeAttribute('href');

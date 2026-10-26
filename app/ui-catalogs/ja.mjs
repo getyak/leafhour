@@ -1,6 +1,12 @@
 // GET-192 immutable ja UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "giftCompose.shareCancelled": "共有をキャンセルしました。",
+  "bookActions.introTimeout": "紹介文の読み込みがタイムアウトしました。再試行してください。",
+  "bookActions.introAccess": "アクセス状況が変わりました。書房から本を開き直してください。",
+  "bookActions.introBusy": "試行回数が多いため、しばらくしてから再試行してください。",
+  "bookActions.introChanged": "この本は変更されました。書房から開き直してください。",
+  "bookActions.generateFailure": "AI の紹介文を作成できませんでした。再読み込みで確認してください。",
   "palette.bookUnavailable": "この本を読み込めませんでした。",
   "palette.jumpFailed": "この段落に移動できませんでした。もう一度お試しください。",
   "palette.chapterHit": "章 · {chapter}",

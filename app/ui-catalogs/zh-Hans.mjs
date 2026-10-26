@@ -1,6 +1,12 @@
 // GET-192 immutable zh-Hans UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "giftCompose.shareCancelled": "已取消分享。",
+  "bookActions.introTimeout": "简介载入超时，请重试。",
+  "bookActions.introAccess": "访问状态已变化，请从书房重新打开这本书。",
+  "bookActions.introBusy": "尝试次数较多，请稍后重试。",
+  "bookActions.introChanged": "这本书已变化，请从书房重新打开。",
+  "bookActions.generateFailure": "AI 简介未能完成，请重新载入查看。",
   "palette.bookUnavailable": "当前书暂时无法载入。",
   "palette.jumpFailed": "暂时无法跳到这一段，请重试。",
   "palette.chapterHit": "章节 · {chapter}",

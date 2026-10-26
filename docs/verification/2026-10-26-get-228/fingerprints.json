@@ -1,0 +1,22 @@
+{
+  "baseline": "97fba8a84477aeebc1c3c79ebfc343553627a849",
+  "sources": {
+    "app/book-introduction-controller.mjs": "54ced41c28a36cc61120b2b61dc67811f9f1ad150bf218a75a3acf3394e30204",
+    "app/reader-book-actions-bootstrap.mjs": "aaf0dcfaa44769dd430c7eca13625f72f06e87e8cbb69c5e7aa95209de70aadb",
+    "app/reader-book-actions.mjs": "3b50436cc588662ddb7d8a0d517fd703b8537e1597d95325204d24bee7d38ea7",
+    "app/reader-navigation.mjs": "08a7618e48821145044eda229908ab2f955d92e72ad71a9ddfce855eec7c49cb",
+    "app/gift-compose.mjs": "947f8ccfb21ad4fa7f3697a1cfc5c131085a5ff4f39aafacf5961a02d56d1b42",
+    "app/index.html": "00b6e11727cf2903c5ca1e25b670d7be635a65dde6441b105302491f6370e967",
+    "tools/verify-book-info-browser.mjs": "f8a82a9b7ed9395922fd49df8fed5b6c1c1e8b5b4fb7d58ad9829894cd4293de"
+  },
+  "readerAssets": {
+    "reader-web/style-1b6f44d039a5f0f5.css": {
+      "bytes": 203118,
+      "sha256": "1b6f44d039a5f0f55e0a0207ccc02806a820b25baece5558a98e98bee6593cfa"
+    },
+    "reader-web/reader-2b75475adec012d0.js": {
+      "bytes": 327653,
+      "sha256": "2b75475adec012d0342f9332f736e0d6d952cefa62ec480c0d0ee91220896522"
+    }
+  }
+}

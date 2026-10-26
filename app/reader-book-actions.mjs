@@ -10,7 +10,7 @@ import {readerLoginUrl} from './reader-return.mjs';
 // cannot exist beside the eagerly bundled controller.
 export function mountReaderBookActions({document,info,getBook,api,session,bookId,loadGiftComposer=()=>Promise.all([import('./gift-compose.mjs'),import('./book-binding.mjs')]).then(modules=>Object.assign({},...modules))}){
   const $=id=>document.getElementById(id),trigger=$('open-book-info'),generate=$('book-intro-generate'),login=$('book-intro-login'),share=$('book-info-share'),status=$('book-intro-status'),note=$('book-intro-provenance'),scope=$('book-intro-scope');
-  const exportButton=$('book-info-export');
+  const exportButton=$('book-info-export'),retry=$('book-intro-retry');
   const make=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
   const signedIn=!!(bookId&&session?.user),loginUrl=()=>readerLoginUrl({bookId,ui:getUiLinkLocale()});
   let disposed=false,unsubscribe=()=>{},sequence=0,activeBookId=null,activeVersion=null,composer=null,giftModule=null,openingTicket=null;
@@ -25,20 +25,24 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
     if(disposed)return;
     const book=getBook();if(!book)return;
     labels.clear();
-    const display=value||{...introductionFor(book),introduction:book.introduction||null,phase:'idle',available:true};
-    descriptionLabels.clear();descriptionFallback=!display.text;
-    const description=$('book-info-description');if(display.text){if(description.textContent!==display.text)description.textContent=display.text;description.setAttribute('lang','und');}else{descriptionLabels.text(description,'bookActions.missing');description.setAttribute('lang',getUiLocale());}
+    const display=value||{...introductionFor(book),introduction:book.introduction||null,phase:'idle',available:null};
+    const working=['generating','loading'].includes(display.phase),failed=display.phase==='error',missing=display.source==='missing';
+    descriptionLabels.clear();descriptionFallback=!display.text&&!working&&!failed;
+    const description=$('book-info-description');if(display.text){if(description.textContent!==display.text)description.textContent=display.text;description.setAttribute('lang','und');}else if(descriptionFallback){descriptionLabels.text(description,'bookActions.missing');description.setAttribute('lang',getUiLocale());}else description.textContent='';
+    description.hidden=!display.text&&!descriptionFallback;
+    const region=$('book-info');if(region){region.dataset.introductionState=working?'loading':failed?'error':display.text?'ready':'empty';}
+    description.setAttribute('aria-busy',String(working));
     note.hidden=display.source!=='ai';if(display.source==='ai')text(note,'aiNote');else note.textContent='';
-    const missing=display.source==='missing',working=['generating','loading'].includes(display.phase);
-    generate.hidden=!missing||!signedIn;generate.disabled=working||display.available===false;text(generate,display.phase==='generating'?'generating':display.available===false?'unavailable':'generate');
+    generate.hidden=!missing||!signedIn;generate.disabled=working||display.available!==true;text(generate,display.phase==='generating'?'generating':display.available===false?'unavailable':'generate');
     login.hidden=!bookId||signedIn||!missing;loginPath=bookId;login.href=loginUrl();text(login,'signIn');
-    scope.hidden=!missing;text(scope,!bookId?'importScope':signedIn?'scope':'signInScope');
-    if(display.error)statusMessage.set('bookActions.introFailure',undefined,true);else if(display.phase==='generating'||display.phase==='loading')statusMessage.set('bookActions.'+(display.phase==='generating'?'generatingNote':'loading'));else statusMessage.clear();
+    scope.hidden=!!bookId&&(!missing||working);text(scope,!bookId?'importScope':signedIn?'scope':'signInScope');
+    if(retry){retry.hidden=!failed;text(retry,'retry');}
+    if(display.error){const key=({timeout:'introTimeout',access:'introAccess',busy:'introBusy',changed:'introChanged',generate:'generateFailure'})[display.errorKind]||'introFailure';statusMessage.set('bookActions.'+key,undefined,true);}else if(display.phase==='generating'||display.phase==='loading')statusMessage.set('bookActions.'+(display.phase==='generating'?'generatingNote':'loading'));else statusMessage.clear();
     if(exportButton){exportButton.disabled=!bookId;labels.text(exportButton,'export.title');}
-    share.disabled=!bookId;text(share,signedIn?'share':'signInShare');
+    share.disabled=!bookId;if(bookId)share.removeAttribute('aria-describedby');else share.setAttribute('aria-describedby','book-intro-scope');text(share,signedIn?'share':'signInShare');
   }
-  const intro=createIntroductionController({getBook,request:(data,options)=>api('/api/introduction',data,options),onChange:render,onSaved:value=>{const book=getBook();if(book&&introductionFor({...book,introduction:value}).source==='ai')book.introduction=value;}});
-  const statusMessage=createUiMessage((text,error)=>{status.textContent=text;status.setAttribute('role',error?'alert':'status');});
+  const intro=createIntroductionController({getBook,getOwner:()=>session?.user?.id||'guest',request:(data,options)=>api('/api/introduction',data,options),onChange:render,onSaved:value=>{const book=getBook();if(book&&introductionFor({...book,introduction:value}).source==='ai')book.introduction=value;}});
+  const statusMessage=createUiMessage((text,error)=>{status.textContent=text;status.setAttribute('role',error?'alert':'status');status.setAttribute('aria-live',error?'assertive':'polite');});
   const giftMessage=createUiMessage((text,error)=>{messageNode.textContent=text;messageNode.setAttribute('role',error?'alert':'status');});
   const message=(text,error=false)=>{giftMessage.clear();messageNode.textContent=text;messageNode.setAttribute('role',error?'alert':'status');};
   const notice=(id,error=false)=>giftMessage.set('bookActions.'+id,undefined,error);
@@ -52,7 +56,8 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
   const attachGift=({mountGiftComposer,paintBookCover})=>composer??=mountGiftComposer({api,dialog,body,getSession:()=>session,getOwner:()=>session?.user?.id||'guest',message,current,
     cover:book=>{const node=make('div','action-book-cover');node.setAttribute('aria-hidden','true');paintBookCover(node,book);return node;},
     show});
-  const onGenerate=()=>{if(!disposed)intro.generate();};
+  const onRetry=()=>{if(!disposed&&info.isOpen()){if(document.activeElement===retry)info.element?.focus({preventScroll:true});void intro.open();}};
+  const onGenerate=()=>{if(!disposed&&!generate.disabled&&!generate.hidden)intro.generate();};
   const onShare=async()=>{
     if(disposed||!bookId)return;if(!signedIn){document.defaultView.location.assign(loginUrl());return;}
     const book=getBook();if(!book||openingTicket!==null&&current(openingTicket))return;
@@ -81,7 +86,7 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
     const active=document.activeElement;
     if((!active||active===document.body||dialog.contains(active))&&trigger&&trigger.isConnected!==false&&!trigger.hidden&&!trigger.closest?.('[inert]')&&trigger.getClientRects?.().length!==0)trigger.focus({preventScroll:true});
   };
-  const refresh=()=>{if(disposed)return;const value=intro.snapshot(),book=getBook();render(value.bookId===book?.bookId&&value.contentVersion===book?.contentVersion&&value.phase!=='idle'?value:undefined);};
+  const refresh=()=>{if(disposed)return;const value=intro.snapshot(),book=getBook();if(value.bookId!==book?.bookId||value.contentVersion!==book?.contentVersion){intro.close();render();if(signedIn&&info.isOpen())void intro.open();return;}render(value);};
   const staleDialog=()=>{if(dialog.open&&!current(sequence))dialog.close();};
   // clear() is ordinary owner reset; dispose() additionally unsubscribes,
   // detaches listeners and disables this enhancement's controls before an
@@ -91,7 +96,7 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
     if(disposed)return;
     disposed=true;
     unsubscribe();offLocale();
-    generate.removeEventListener('click',onGenerate);
+    generate.removeEventListener('click',onGenerate);retry?.removeEventListener('click',onRetry);
     share.removeEventListener('click',onShare);
     exportButton?.removeEventListener('click',onExport);if(exportButton)exportButton.disabled=true;
     close.removeEventListener('click',onClose);
@@ -108,7 +113,7 @@ export function mountReaderBookActions({document,info,getBook,api,session,bookId
   try{
     offLocale=onUiLocaleChange(relabel);void uiReady.then(relabel);
     document.body.append(dialog);
-    generate.addEventListener('click',onGenerate);
+    generate.addEventListener('click',onGenerate);retry?.addEventListener('click',onRetry);
     share.addEventListener('click',onShare);
     exportButton?.addEventListener('click',onExport);
     close.addEventListener('click',onClose);

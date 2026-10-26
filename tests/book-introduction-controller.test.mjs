@@ -20,9 +20,28 @@ test('changing the current book fences a response even when its request succeeds
   const f=fixture(),pending=f.controller.generate();f.change();f.calls[0].resolve(answer);await pending;assert.equal(f.saved.length,0);assert.notEqual(f.states.at(-1).source,'ai');
 });
 test('repeated clicks do not issue duplicate POSTs; failure leaves an honest retry',async()=>{
-  const f=fixture(),pending=f.controller.generate();await f.controller.generate();assert.equal(f.calls.length,1);f.calls[0].reject(Error('模型超时，请重试'));await pending;assert.equal(f.states.at(-1).phase,'error');assert.match(f.states.at(-1).error,/超时/);
+  const f=fixture(),pending=f.controller.generate();await f.controller.generate();assert.equal(f.calls.length,1);f.calls[0].reject(Object.assign(Error('PRIVATE TIMEOUT DETAIL'),{name:'TimeoutError'}));await pending;assert.equal(f.states.at(-1).phase,'error');assert.equal(f.states.at(-1).errorKind,'timeout');
   const retry=f.controller.generate();assert.equal(f.calls.length,2);f.calls[1].resolve(answer);await retry;assert.equal(f.states.at(-1).phase,'idle');
 });
 test('a source description is never overwritten by an explicit generation action',async()=>{
   const f=fixture();f.book.description='既有书目介绍';await f.controller.generate();assert.equal(f.calls.length,0);assert.equal(f.states.at(-1).source,'provided');
+});
+
+test('malformed metadata is a read error rather than a false empty introduction',async()=>{
+  for(const reply of [{},{source:'provided',text:''},{source:'missing',text:'invented'},{source:'ai',text:'   '},null]){
+    const f=fixture(),pending=f.controller.open();f.calls[0].resolve(reply);await pending;
+    assert.equal(f.controller.snapshot().phase,'error');
+    assert.equal(f.controller.snapshot().errorKind,'load');
+  }
+});
+test('metadata read timeout settles as an error and ignores the late answer',async()=>{
+  let finish;const saved=[],states=[];
+  const c=createIntroductionController({getBook:()=>structuredClone(readingBook),request:()=>new Promise(r=>finish=r),onChange:s=>states.push(s),onSaved:s=>saved.push(s),timeoutMs:5});
+  const pending=c.open();const settled=await Promise.race([pending.then(()=>true),new Promise(r=>setTimeout(()=>r(false),40))]);assert.equal(settled,true,'the read must settle without waiting for a stalled transport');assert.equal(c.snapshot().phase,'error');assert.equal(c.snapshot().errorKind,'timeout');
+  finish(answer);await new Promise(setImmediate);assert.equal(saved.length,0);assert.equal(states.at(-1).phase,'error');c.close();
+});
+test('a duplicate open shares its pending read and owner change fences a late answer',async()=>{
+  let owner='one',finish,calls=0;const saved=[];
+  const c=createIntroductionController({getBook:()=>readingBook,getOwner:()=>owner,request:()=>{calls++;return new Promise(r=>finish=r);},onSaved:s=>saved.push(s)});
+  const first=c.open(),second=c.open();assert.equal(calls,1);owner='two';finish(answer);await Promise.all([first,second]);assert.equal(saved.length,0);c.close();
 });

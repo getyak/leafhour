@@ -144,3 +144,23 @@ test('pending quotation and sealing settle current UI; errors never expose remot
 test('remote seal failures and quote failure notices localize in place without exposing raw prose',async t=>{
  await requestUiRoute('en');const f=mount(t,{seal:async()=>{throw Error('PRIVATE SERVICE ERROR');},quote:async()=>{throw Error('PRIVATE QUOTE ERROR');}});t.after(()=>requestUiRoute('en'));await f.controller.open({bookId:'book',title:{zh:'Book'}});await tick();assert.ok(f.find('A quotation could not be selected. You can try again.'));f.click(f.find('See how it arrives'));f.click(f.find('Seal this letter and create a link'));await tick();assert.equal(f.messages.at(-1),'This action could not finish. Your draft is kept.');const calls=f.calls.length;await requestUiRoute('ja');assert.equal(f.messages.at(-1),'操作を完了できません。下書きは保持しています。');assert.equal(f.calls.length,calls);assert.ok(f.messages.every(text=>!text.includes('PRIVATE')));assert.ok(f.find('引用を選べませんでした。再取得できます。'));
 });
+
+test('system sharing cancellation replaces an earlier success without claiming another send',async t=>{
+ await requestUiRoute('zh-Hans');t.after(()=>requestUiRoute('en'));
+ const descriptor=Object.getOwnPropertyDescriptor(globalThis,'navigator');let cancel=false;
+ Object.defineProperty(globalThis,'navigator',{configurable:true,value:{share:async()=>{if(cancel)throw new DOMException('Cancelled','AbortError');}}});
+ t.after(()=>{if(descriptor)Object.defineProperty(globalThis,'navigator',descriptor);else delete globalThis.navigator;});
+ const f=mount(t);await f.controller.open({bookId:'book',title:{zh:'Book'}});f.click(f.find('看看收信时的样子'));f.click(f.find('封好这封信，生成链接'));await tick();
+ const share=f.find('分享给朋友');assert.ok(share);f.click(share);await tick();const success=f.messages.at(-1);cancel=true;f.click(share);await tick();
+ assert.notEqual(f.messages.at(-1),success);assert.match(f.messages.at(-1),/取消/);
+});
+
+test('clipboard denial after a previous copy restores the copy action and exposes the manual link',async t=>{
+ await requestUiRoute('zh-Hans');t.after(()=>requestUiRoute('en'));
+ const descriptor=Object.getOwnPropertyDescriptor(globalThis,'navigator');let denied=false;
+ Object.defineProperty(globalThis,'navigator',{configurable:true,value:{clipboard:{writeText:async()=>{if(denied)throw new DOMException('Denied','NotAllowedError');}}}});
+ t.after(()=>{if(descriptor)Object.defineProperty(globalThis,'navigator',descriptor);else delete globalThis.navigator;});
+ const f=mount(t);await f.controller.open({bookId:'book',title:{zh:'Book'}});f.click(f.find('看看收信时的样子'));f.click(f.find('封好这封信，生成链接'));await tick();
+ const copy=f.find('复制赠书链接'),input=f.all().find(n=>n.className==='gift-share-url');input.select=()=>{input.selected=true;};f.click(copy);await tick();const copied=copy.textContent;denied=true;f.click(copy);await tick();
+ assert.notEqual(copy.textContent,copied);assert.equal(input.parentElement.open,true);assert.equal(input.selected,true);assert.equal(f.document.activeElement,input);
+});

@@ -30,7 +30,7 @@ function mount(t,{sourceBook=readingBook,response={gifts:[]},loadGiftComposer,op
   }
   document.body=new Element('body');document.createElement=tag=>new Element(tag);document.getElementById=id=>map.get(id);
   document.defaultView={location:{assign(){}}};document.activeElement=document.body;
-  for(const id of ['book-info','open-book-info','book-intro-generate','book-intro-login','book-info-share','book-intro-status','book-intro-provenance','book-intro-scope','book-info-description']){const node=new Element('div');node.id=id;map.set(id,node);document.body.append(node);}
+  for(const id of ['book-info','open-book-info','book-intro-generate','book-intro-login','book-info-share','book-intro-status','book-intro-retry','book-info-share-reason','book-intro-provenance','book-intro-scope','book-info-description']){const node=new Element('div');node.id=id;map.set(id,node);document.body.append(node);}
   globalThis.document=document;globalThis.window=new EventTarget();globalThis.location={origin:'https://fixture.invalid'};
   t.after(()=>{for(const [key,value]of Object.entries(previous))if(value===undefined)delete globalThis[key];else globalThis[key]=value;});
   const calls=[];let book=structuredClone(sourceBook);
@@ -183,4 +183,20 @@ test('lazy sharing still publishes only once after the explicit seal action',asy
   assert.equal(f.calls.filter(call=>call.url.endsWith('/gifts')&&call.data!==undefined).length,1);
   finish({token:'A'.repeat(43),recipient:'A reader'});await new Promise(setImmediate);
   assert.ok(f.find('这封信已封好。'));
+});
+
+
+test('a failed introduction read has a working read-only retry and keeps book sharing available',async t=>{
+  let attempts=0;const f=mount(t,{response:(url,data)=>{assert.equal(data,undefined);if(++attempts===1)throw Object.assign(Error('PRIVATE DETAIL'),{status:429});return {source:'missing',text:'',introduction:null,available:false};}});
+  f.openInfo();await new Promise(setImmediate);
+  assert.equal(f.id('book-intro-retry').hidden,false);assert.equal(f.id('book-info-share').disabled,false);assert.equal(f.id('book-intro-generate').disabled,true);f.click(f.id('book-intro-generate'));assert.equal(attempts,1,'a failed read cannot start a paid action');
+  assert.equal(f.id('book-info-description').hidden,true,'a failed read is not an empty introduction');
+  assert.doesNotMatch(f.id('book-intro-status').textContent,/PRIVATE DETAIL/);assert.equal(f.id('book-intro-status').getAttribute('role'),'alert');
+  f.click(f.id('book-intro-retry'));await new Promise(setImmediate);
+  assert.equal(attempts,2);assert.equal(f.id('book-intro-retry').hidden,true);assert.equal(f.id('book-info-description').hidden,false);assert.equal(f.id('book-intro-status').textContent,'');
+  f.actions.dispose();
+});
+test('closing during a failed read and reopening never retries a paid generation',async t=>{
+ const f=mount(t,{response:()=>Promise.reject(Error('unavailable'))});f.openInfo();await new Promise(setImmediate);f.info.close();f.openInfo();await new Promise(setImmediate);
+ assert.equal(f.calls.length,2);assert.ok(f.calls.every(c=>c.data===undefined));f.actions.dispose();
 });

@@ -1,0 +1,57 @@
+[
+  {
+    "name": "copy-export",
+    "exit": 0,
+    "durationMs": 466
+  },
+  {
+    "name": "copy-repro",
+    "exit": 0,
+    "durationMs": 440
+  },
+  {
+    "name": "copy-lint",
+    "exit": 0,
+    "durationMs": 7352
+  },
+  {
+    "name": "copy-canaries",
+    "exit": 0,
+    "durationMs": 7452
+  },
+  {
+    "name": "pricing",
+    "exit": 0,
+    "durationMs": 29
+  },
+  {
+    "name": "full-tests",
+    "exit": 0,
+    "durationMs": 97363
+  },
+  {
+    "name": "runtime",
+    "exit": 0,
+    "durationMs": 1846
+  },
+  {
+    "name": "vercel",
+    "exit": 0,
+    "durationMs": 759
+  },
+  {
+    "name": "assets",
+    "exit": 0,
+    "durationMs": 47
+  },
+  {
+    "name": "policy",
+    "exit": 0,
+    "durationMs": 454
+  },
+  {
+    "name": "release",
+    "exit": 0,
+    "durationMs": 35
+  }
+]

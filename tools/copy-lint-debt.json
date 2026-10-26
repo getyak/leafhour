@@ -51,24 +51,6 @@
       "state": "unreviewed"
     },
     {
-      "itemId": "bookActions.generatingNote",
-      "locale": "en",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "e0a3717392c739d42b8ddfd9f678e0f49dbf9613efbe729b0cc77b9285b9e855",
-      "match": "request",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
-      "itemId": "bookActions.scope",
-      "locale": "en",
-      "rule": "Leafhour.DevSpeak",
-      "valueSha256": "91b0181f967a5e4e0f04a0416f3c47bdc8059ed59bb0c9eb85d4c3652089c739",
-      "match": "request",
-      "kind": "existing-debt",
-      "state": "unreviewed"
-    },
-    {
       "itemId": "bookUpload.review",
       "locale": "en",
       "rule": "Leafhour.DevSpeak",
