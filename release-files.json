@@ -993,5 +993,8 @@
   "app/vendor/README.md",
   "app/fonts/document-export/README.md",
   "tools/build-export-fonts.py",
-  "tools/verify-command-palette-browser.mjs"
+  "tools/verify-command-palette-browser.mjs",
+  "tests/helpers/process-result.mjs",
+  "tests/process-result.test.mjs",
+  "tests/fixtures/inherited-stderr-child.mjs"
 ]

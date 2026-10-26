@@ -1,0 +1,8 @@
+{
+  "tests/fixtures/inherited-stderr-child.mjs": "7d6414d7fa7f8ef07608b47315cd78cddff3c557fe7310efbdc3657740a80b6a",
+  "tests/process-result.test.mjs": "bb4c5885cb1a3a3d2c191f0ae50dd102bb36b7a75d8c5af3f8d44cf39863d145",
+  "tests/helpers/process-result.mjs": "2d7db949a47c7fd9172faf965b15342794522de7e58fe3e93e5e111153b62880",
+  "tests/billing-postgres.test.mjs": "047966ac6de13542daa1d9bf52b068de35803e59212e1c581f8911d00b2fef7f",
+  "tests/billing-yearly-postgres.test.mjs": "c124b945c7534baa6073a9567bce0225ace8c20ae9d4eebffed1f26d19de6524",
+  "release-files.json": "b3d2555df3025ce5246726f6dd2c5791c1aa594c50a34adfdd0c325f9454fd40"
+}

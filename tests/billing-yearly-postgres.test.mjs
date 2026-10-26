@@ -1,3 +1,4 @@
+import {processResult} from './helpers/process-result.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,mkdtemp,rm} from 'node:fs/promises';
@@ -43,7 +44,7 @@ end; $$;
 `;
     const applied=run('psql',['-h',root,'-d','postgres','-v','ON_ERROR_STOP=1','-X','-q'],"create role anon; create role authenticated; create role service_role bypassrls;\n"+await readFile(original,'utf8')+'\n'+await readFile(migration,'utf8')+'\n'+await readFile(monthlyFixture,'utf8')+'\n'+seed+'\n'+await readFile(annualMigration,'utf8')+'\n'+verifyHistory+'\n'+(await readFile(monthlyFixture,'utf8')).replace("value->>'schemaVersion'='2'","value->>'schemaVersion'='3'")+'\n'+await readFile(fixture,'utf8'));
     assert.equal(applied.status,0,applied.stderr||applied.stdout);assert.match(applied.stdout,/billing_yearly_sql_invariants_passed/);
-    const race=index=>new Promise(resolve=>{const child=spawn(join(bin,'psql'),['-h',root,'-d','postgres','-v','ON_ERROR_STOP=1','-X','-Atc',`select public.reader_billing_command('order','{"mode":"test","ownerId":"synthetic-race","id":"race-${index}","intentKey":"intent-${index}","productKey":"${index===1?'reading_monthly_100':'reading_yearly_1200'}","productId":"product-${index}","amount":${index===1?500:5000},"currency":"USD","units":${index===1?100000000:1200000000},"billingPeriod":"${index===1?'every-month':'every-year'}"}');`],{env});let output='';child.stderr.on('data',chunk=>output+=chunk);child.on('error',error=>resolve({status:-1,output:error.message}));child.on('exit',status=>resolve({status,output}));});
+    const race=index=>{const child=spawn(join(bin,'psql'),['-h',root,'-d','postgres','-v','ON_ERROR_STOP=1','-X','-Atc',`select public.reader_billing_command('order','{"mode":"test","ownerId":"synthetic-race","id":"race-${index}","intentKey":"intent-${index}","productKey":"${index===1?'reading_monthly_100':'reading_yearly_1200'}","productId":"product-${index}","amount":${index===1?500:5000},"currency":"USD","units":${index===1?100000000:1200000000},"billingPeriod":"${index===1?'every-month':'every-year'}"}');`],{env});return processResult(child);};
     const results=await Promise.all([race(1),race(2)]);assert.equal(results.filter(x=>x.status===0).length,1,JSON.stringify(results));assert.match(results.find(x=>x.status!==0).output,/reader_billing:subscription_exists/);
   }finally{if(started)run('pg_ctl',['-D',data,'-m','immediate','stop']);await rm(root,{recursive:true,force:true});}
 });
