@@ -27,7 +27,7 @@ export function mountReaderTools({sessionRoot,immersion=null,document=globalThis
   const header=document.getElementById('reading-header');
   const handoffHost=sessionRoot.querySelector('#reading-tools-chat-slot');
   let unread=false;
-  const restoreChat=()=>{if(disposed)return false;const trigger=handoffHost?.querySelector?.('.library-chat-trigger');if(trigger?.isConnected!==false&&trigger){trigger.focus({preventScroll:true});return true;}return restorePill();};
+  const restoreChat=()=>{if(disposed)return false;const trigger=handoffHost?.querySelector?.('.library-chat-trigger');if(trigger?.isConnected!==false&&trigger){toolbar.reveal(false);trigger.focus({preventScroll:true});return true;}return restorePill();};
   const updateUnreadLabel=()=>{if(!disposed){handoffHost?.setAttribute('aria-label',t('chat.entry'));handoffHost?.setAttribute('aria-description',unread?t('reader.tools.companion'):'');}};
   const offLocale=onUiLocaleChange(updateUnreadLabel);
   handoffHost?.setAttribute('role','group');handoffHost?.classList.toggle('has-companion-message',false);updateUnreadLabel();

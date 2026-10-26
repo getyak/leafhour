@@ -1,0 +1,11 @@
+{
+  "base": "c5f9e96081152b5c9cf3194f603d632e2f53a9e9",
+  "files": {
+    "app/index.html": "d5a818b9933575a1f1a55e7dc2b982b87f37c6a6a1982b9e281344d29cc0f792",
+    "app/reader-chat-workspace.css": "7100380e0945caf414b5ae7727eba14c7bdfbf4cbcc8b44c3409e36b5336d83c",
+    "app/reading-toolbar.mjs": "4dfdcaeb65d7729f0453746b5d4c911e07e6fdb7a5d0b1310ada5b2204262563",
+    "app/reader-tools.mjs": "27b789ffc565fd720e846394d9d45d8950d7441a2fef9741d055b1435dce3f91",
+    "tests/reader-tools.test.mjs": "2866cfcdc143e1cf4e5a325da38852f8a0ad053c69266d20e61905f1b21f25ab",
+    "tools/verify-reader-quiet.mjs": "8f4da721ad00a212f856d7deaa7fb01eee1d67bc86db56a3356f91aa59e1667b"
+  }
+}
