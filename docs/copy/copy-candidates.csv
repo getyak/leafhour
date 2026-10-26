@@ -623,7 +623,6 @@ candidate:app/book-gift.mjs:179:75,js-attribute,app/book-gift.mjs,179,aria-busy,
 candidate:app/book-gift.mjs:188:86,js-attribute,app/book-gift.mjs,188,aria-disabled,unknown,reviewable,,true
 candidate:app/book-gift.mjs:188:142,js-attribute,app/book-gift.mjs,188,aria-disabled,unknown,reviewable,,true
 candidate:app/book-gift.mjs:189:39,js-cjk-literal,app/book-gift.mjs,189,,unknown,reviewable,,请从书房的赠书窗口打开收信预览。
-candidate:app/book-introduction-controller.mjs:23:106,js-cjk-literal,app/book-introduction-controller.mjs,23,,unknown,reviewable,,暂时无法读取简介，可以稍后重试。
 candidate:app/book-introduction.mjs:2:39,js-cjk-literal,app/book-introduction.mjs,2,,unknown,reviewable,,AI 简介的来源或格式不完整
 candidate:app/book-transfer.mjs:1:25,js-cjk-literal,app/book-transfer.mjs,1,,unknown,reviewable,,正文传输未完整通过校验，请重新载入；原文件仍保留。
 candidate:app/catalog-sample.mjs:6:59,js-cjk-literal,app/catalog-sample.mjs,6,,unknown,reviewable,,"中文试读 · "
@@ -2373,9 +2372,9 @@ candidate:app/index.html:85:91,html-text,app/index.html,85,,unknown,reviewable,,
 candidate:app/index.html:85:153,html-text,app/index.html,85,,unknown,reviewable,,❦
 candidate:app/index.html:88:127,html-text,app/index.html,88,,unknown,reviewable,,Generate AI introduction
 candidate:app/index.html:88:226,html-text,app/index.html,88,,unknown,reviewable,,Sign in for an AI introduction
-candidate:app/index.html:88:401,html-text,app/index.html,88,,unknown,reviewable,,Share this book
-candidate:app/index.html:88:557,html-text,app/index.html,88,,unknown,reviewable,,Export this book
-candidate:app/index.html:88:667,html-text,app/index.html,88,,unknown,reviewable,,Reload introduction and sharing
+candidate:app/index.html:88:438,html-text,app/index.html,88,,unknown,reviewable,,Share this book
+candidate:app/index.html:88:594,html-text,app/index.html,88,,unknown,reviewable,,Export this book
+candidate:app/index.html:88:704,html-text,app/index.html,88,,unknown,reviewable,,Reload introduction and sharing
 candidate:app/index.html:89:285,html-text,app/index.html,89,,unknown,reviewable,,Original source
 candidate:app/index.html:89:333,html-text,app/index.html,89,,unknown,reviewable,,↗
 candidate:app/index.html:91:148,html-text,app/index.html,91,,unknown,reviewable,,Leafhour
@@ -3141,13 +3140,11 @@ candidate:app/reader-audio.js:82:88,js-attribute,app/reader-audio.js,82,aria-bus
 candidate:app/reader-audio.js:83:562,js-attribute,app/reader-audio.js,83,aria-busy,unknown,reviewable,,false
 candidate:app/reader-audio.js:93:225,js-attribute,app/reader-audio.js,93,aria-hidden,unknown,reviewable,,true
 candidate:app/reader-audio.js:178:187,js-cjk-literal,app/reader-audio.js,178,,unknown,reviewable,,读到这里，可以停一会儿。把一句话听完整，再回到原文，慢慢想。
-candidate:app/reader-book-actions-bootstrap.mjs:27:43,js-attribute,app/reader-book-actions-bootstrap.mjs,27,role,unknown,reviewable,,alert
-candidate:app/reader-book-actions-bootstrap.mjs:36:43,js-attribute,app/reader-book-actions-bootstrap.mjs,36,role,unknown,reviewable,,status
-candidate:app/reader-book-actions-bootstrap.mjs:55:67,js-attribute,app/reader-book-actions-bootstrap.mjs,55,role,unknown,reviewable,,status
-candidate:app/reader-book-actions.mjs:30:178,js-attribute,app/reader-book-actions.mjs,30,lang,unknown,reviewable,,und
-candidate:app/reader-book-actions.mjs:53:93,js-attribute,app/reader-book-actions.mjs,53,aria-hidden,unknown,reviewable,,true
-candidate:app/reader-book-actions.mjs:105:136,js-attribute,app/reader-book-actions.mjs,105,aria-labelledby,unknown,protected,identifier,reader-gift-title
-candidate:app/reader-book-actions.mjs:107:120,js-attribute,app/reader-book-actions.mjs,107,role,unknown,reviewable,,status
+candidate:app/reader-book-actions.mjs:31:178,js-attribute,app/reader-book-actions.mjs,31,lang,unknown,reviewable,,und
+candidate:app/reader-book-actions.mjs:42:123,js-attribute,app/reader-book-actions.mjs,42,aria-describedby,unknown,protected,identifier,book-intro-scope
+candidate:app/reader-book-actions.mjs:57:93,js-attribute,app/reader-book-actions.mjs,57,aria-hidden,unknown,reviewable,,true
+candidate:app/reader-book-actions.mjs:110:136,js-attribute,app/reader-book-actions.mjs,110,aria-labelledby,unknown,protected,identifier,reader-gift-title
+candidate:app/reader-book-actions.mjs:112:120,js-attribute,app/reader-book-actions.mjs,112,role,unknown,reviewable,,status
 candidate:app/reader-chat-workspace.mjs:12:122,js-attribute,app/reader-chat-workspace.mjs,12,role,unknown,reviewable,,separator
 candidate:app/reader-chat-workspace.mjs:12:177,js-attribute,app/reader-chat-workspace.mjs,12,aria-orientation,unknown,reviewable,,vertical
 candidate:app/reader-chat-workspace.mjs:12:223,js-attribute,app/reader-chat-workspace.mjs,12,tabindex,unknown,reviewable,,0
@@ -3171,8 +3168,8 @@ candidate:app/reader-navigation.mjs:32:187,js-cjk-literal,app/reader-navigation.
 candidate:app/reader-navigation.mjs:35:92,js-cjk-literal,app/reader-navigation.mjs,35,,unknown,reviewable,,在读
 candidate:app/reader-navigation.mjs:39:144,js-cjk-literal,app/reader-navigation.mjs,39,,unknown,reviewable,,本章小节
 candidate:app/reader-navigation.mjs:41:202,js-cjk-literal,app/reader-navigation.mjs,41,,unknown,reviewable,," · 小节 "
-candidate:app/reader-navigation.mjs:138:68,js-attribute,app/reader-navigation.mjs,138,aria-expanded,unknown,reviewable,,false
-candidate:app/reader-navigation.mjs:143:406,js-attribute,app/reader-navigation.mjs,143,aria-expanded,unknown,reviewable,,false
+candidate:app/reader-navigation.mjs:141:68,js-attribute,app/reader-navigation.mjs,141,aria-expanded,unknown,reviewable,,false
+candidate:app/reader-navigation.mjs:146:406,js-attribute,app/reader-navigation.mjs,146,aria-expanded,unknown,reviewable,,false
 candidate:app/reader-page-surface.mjs:50:128,js-attribute,app/reader-page-surface.mjs,50,aria-hidden,unknown,reviewable,,true
 candidate:app/reader-page-surface.mjs:86:118,js-attribute,app/reader-page-surface.mjs,86,aria-controls,unknown,protected,identifier,chapter-text
 candidate:app/reader-return.mjs:44:124,js-cjk-literal,app/reader-return.mjs,44,,unknown,reviewable,,引用参数重复，请从 Agent 重新打开引用。

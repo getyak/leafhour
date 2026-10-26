@@ -137,7 +137,7 @@ function nativePopover(node){
 const tick=()=>new Promise(resolve=>queueMicrotask(resolve));
 const settle=async()=>{for(let i=0;i<8;i++)await tick();};
 
-function bootstrapFixture({native=false,loadEnhancement,introductionResponse=null}={}){
+function bootstrapFixture({native=false,loadEnhancement,introductionResponse=null,description=''}={}){
   const document=new Doc({native});
   const previous={document:globalThis.document,window:globalThis.window,location:globalThis.location};
   globalThis.document=document;globalThis.window=new EventTarget();globalThis.location={origin:'https://fixture.invalid'};
@@ -151,7 +151,7 @@ function bootstrapFixture({native=false,loadEnhancement,introductionResponse=nul
   if(native)trigger.addEventListener('click',()=>info._nativeOpen?info.hidePopover():info.showPopover());
   const handle=mountPopover({document,element:info,trigger});
   const calls={imports:0,introduction:0};
-  let book={bookId:'fixture-book',contentVersion:'v1',title:{zh:'一本书'},chapters:[{id:'ch1',number:1,title:{zh:'第一章'}}],sections:[{chapterId:'ch1',number:1,title:'一',paragraphs:[{id:'p1'}]}],source:{}};
+  let book={description,bookId:'fixture-book',contentVersion:'v1',title:{zh:'一本书'},chapters:[{id:'ch1',number:1,title:{zh:'第一章'}}],sections:[{chapterId:'ch1',number:1,title:'一',paragraphs:[{id:'p1'}]}],source:{}};
   let owner='owner-one';
   const injected=[];
   const load=loadEnhancement||(async()=>({mountReaderBookActions}));
@@ -324,7 +324,7 @@ test('a hidden, detached, display:none or visibility:hidden opener prevents the 
 
 test('a failed import keeps the basic bookplate readable and one explicit retry recovers exactly once',async t=>{
   let attempts=0;
-  const f=bootstrapFixture({loadEnhancement:async()=>{if(++attempts===1)throw Error('module unavailable');return {mountReaderBookActions:args=>mountReaderBookActions(args)};}});
+  const f=bootstrapFixture({description:'已有的简介',loadEnhancement:async()=>{if(++attempts===1)throw Error('module unavailable');return {mountReaderBookActions:args=>mountReaderBookActions(args)};}});
   t.after(f.restore);
   f.document.getElementById('book-info-description').textContent='已有的简介';
   f.open();
@@ -378,13 +378,13 @@ test('close and reopen during one shared pending import adopt only the newest re
   assert.equal(f.calls.introduction,1);
 });
 
-test('reader:ready invalidates a pending load but never disturbs a mounted enhancement',async t=>{
+test('reader:ready adopts a new source once and never duplicates a mounted enhancement',async t=>{
   const f=bootstrapFixture();
   t.after(f.restore);
   f.open();
-  f.document.emit('reader:ready');
+  f.changeVersion();f.document.emit('reader:ready');
   await settle();
-  assert.equal(f.document.getElementById('reader-book-gift'),null,'a source revision change cancels the pending mount');
+  assert.equal(f.calls.introduction,1,'only the new source reads after the old pending mount is fenced');
   f.handle.close();f.open();
   await settle();
   assert.ok(f.document.getElementById('reader-book-gift'));
@@ -405,4 +405,15 @@ test('the native controller runs the same bootstrap boundary with truthful state
   await settle();
   assert.equal(f.calls.imports,1);
   assert.equal(f.calls.introduction,1);
+});
+
+test('a same-book reader ready during lazy loading cannot clear feedback and strand sharing',async t=>{
+  let resolve;const f=bootstrapFixture({loadEnhancement:()=>new Promise(r=>resolve=r)});t.after(f.restore);t.after(()=>f.bootstrap.dispose());
+  f.open();f.document.emit('reader:ready');resolve({mountReaderBookActions});await settle();
+  assert.equal(f.document.getElementById('book-info-share').disabled,false);
+  assert.equal(f.calls.introduction,1);
+});
+test('an unusable opener leaves a visible recoverable reason instead of permanent preparation',async t=>{
+  const f=bootstrapFixture();t.after(f.restore);t.after(()=>f.bootstrap.dispose());f.open();f.trigger.style.visibility='hidden';await settle();
+  assert.equal(f.retry.hidden,false);assert.equal(f.status.getAttribute('role'),'alert');assert.ok(!f.status.textContent.includes('Preparing'));
 });

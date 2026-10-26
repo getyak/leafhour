@@ -1,0 +1,814 @@
+{
+  "kind": "real isolated server and browser; synthetic transport faults",
+  "cases": [
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "en",
+      "width": 1280,
+      "theme": "paper",
+      "checks": [
+        "cold lazy module; real chapter event collapses parent tools; visible error, preserved unknown and close/reopen recovery with one GET",
+        "real public-domain description; enabled sharing independent of introduction",
+        "real missing metadata; explicit empty state; unavailable generator disabled",
+        "500 error, safe reason, explicit GET retry, panel focus retained",
+        "429 error, safe reason, explicit GET retry, panel focus retained",
+        "403 error, safe reason, explicit GET retry, panel focus retained",
+        "json error, safe reason, explicit GET retry, panel focus retained",
+        "null error, safe reason, explicit GET retry, panel focus retained",
+        "close/reopen cancels old read; late answer cannot paint",
+        "real 15s client deadline and explicit recovery",
+        "existing gift composer, draft survives cancellation, no published link",
+        "200% text sizing, scrollable close action, no horizontal clipping",
+        "outside dismissal"
+      ],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "500"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "429"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "403"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "json"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "null"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "delay"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "delay"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        }
+      ],
+      "reads": 20
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "zh-Hans",
+      "width": 390,
+      "theme": "night",
+      "checks": [
+        "cold lazy module; real chapter event collapses parent tools; visible error, preserved unknown and close/reopen recovery with one GET",
+        "real public-domain description; enabled sharing independent of introduction",
+        "real missing metadata; explicit empty state; unavailable generator disabled",
+        "500 error, safe reason, explicit GET retry, panel focus retained",
+        "429 error, safe reason, explicit GET retry, panel focus retained",
+        "403 error, safe reason, explicit GET retry, panel focus retained",
+        "json error, safe reason, explicit GET retry, panel focus retained",
+        "null error, safe reason, explicit GET retry, panel focus retained",
+        "close/reopen cancels old read; late answer cannot paint",
+        "existing gift composer, draft survives cancellation, no published link",
+        "200% text sizing, scrollable close action, no horizontal clipping",
+        "outside dismissal"
+      ],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "500"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "429"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "403"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "json"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "null"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "delay"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        }
+      ],
+      "reads": 18
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "zh-Hant",
+      "width": 320,
+      "theme": "paper",
+      "checks": [
+        "cold lazy module; real chapter event collapses parent tools; visible error, preserved unknown and close/reopen recovery with one GET",
+        "real public-domain description; enabled sharing independent of introduction",
+        "real missing metadata; explicit empty state; unavailable generator disabled",
+        "500 error, safe reason, explicit GET retry, panel focus retained",
+        "429 error, safe reason, explicit GET retry, panel focus retained",
+        "403 error, safe reason, explicit GET retry, panel focus retained",
+        "json error, safe reason, explicit GET retry, panel focus retained",
+        "null error, safe reason, explicit GET retry, panel focus retained",
+        "close/reopen cancels old read; late answer cannot paint",
+        "existing gift composer, draft survives cancellation, no published link",
+        "200% text sizing, scrollable close action, no horizontal clipping",
+        "outside dismissal"
+      ],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "500"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "429"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "403"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "json"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "null"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "delay"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        }
+      ],
+      "reads": 18
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "ja",
+      "width": 320,
+      "theme": "night",
+      "checks": [
+        "cold lazy module; real chapter event collapses parent tools; visible error, preserved unknown and close/reopen recovery with one GET",
+        "real public-domain description; enabled sharing independent of introduction",
+        "real missing metadata; explicit empty state; unavailable generator disabled",
+        "500 error, safe reason, explicit GET retry, panel focus retained",
+        "429 error, safe reason, explicit GET retry, panel focus retained",
+        "403 error, safe reason, explicit GET retry, panel focus retained",
+        "json error, safe reason, explicit GET retry, panel focus retained",
+        "null error, safe reason, explicit GET retry, panel focus retained",
+        "close/reopen cancels old read; late answer cannot paint",
+        "existing gift composer, draft survives cancellation, no published link",
+        "200% text sizing, scrollable close action, no horizontal clipping",
+        "outside dismissal"
+      ],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "500"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "429"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "403"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "json"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "null"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "delay"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        }
+      ],
+      "reads": 18
+    },
+    {
+      "engine": "webkit",
+      "version": "26.5",
+      "locale": "en",
+      "width": 1280,
+      "theme": "paper",
+      "checks": [
+        "cold lazy module; real chapter event collapses parent tools; visible error, preserved unknown and close/reopen recovery with one GET",
+        "real public-domain description; enabled sharing independent of introduction",
+        "real missing metadata; explicit empty state; unavailable generator disabled",
+        "500 error, safe reason, explicit GET retry, panel focus retained",
+        "429 error, safe reason, explicit GET retry, panel focus retained",
+        "403 error, safe reason, explicit GET retry, panel focus retained",
+        "json error, safe reason, explicit GET retry, panel focus retained",
+        "null error, safe reason, explicit GET retry, panel focus retained",
+        "close/reopen cancels old read; late answer cannot paint",
+        "real 15s client deadline and explicit recovery",
+        "existing gift composer, draft survives cancellation, no published link",
+        "200% text sizing, scrollable close action, no horizontal clipping",
+        "outside dismissal"
+      ],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "500"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "429"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "403"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "json"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "null"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "delay"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "delay"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        }
+      ],
+      "reads": 20
+    },
+    {
+      "engine": "webkit",
+      "version": "26.5",
+      "locale": "zh-Hans",
+      "width": 390,
+      "theme": "night",
+      "checks": [
+        "cold lazy module; real chapter event collapses parent tools; visible error, preserved unknown and close/reopen recovery with one GET",
+        "real public-domain description; enabled sharing independent of introduction",
+        "real missing metadata; explicit empty state; unavailable generator disabled",
+        "500 error, safe reason, explicit GET retry, panel focus retained",
+        "429 error, safe reason, explicit GET retry, panel focus retained",
+        "403 error, safe reason, explicit GET retry, panel focus retained",
+        "json error, safe reason, explicit GET retry, panel focus retained",
+        "null error, safe reason, explicit GET retry, panel focus retained",
+        "close/reopen cancels old read; late answer cannot paint",
+        "existing gift composer, draft survives cancellation, no published link",
+        "200% text sizing, scrollable close action, no horizontal clipping",
+        "outside dismissal"
+      ],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "500"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "429"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "403"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "json"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "null"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "delay"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        }
+      ],
+      "reads": 18
+    },
+    {
+      "engine": "webkit",
+      "version": "26.5",
+      "locale": "zh-Hant",
+      "width": 320,
+      "theme": "paper",
+      "checks": [
+        "cold lazy module; real chapter event collapses parent tools; visible error, preserved unknown and close/reopen recovery with one GET",
+        "real public-domain description; enabled sharing independent of introduction",
+        "real missing metadata; explicit empty state; unavailable generator disabled",
+        "500 error, safe reason, explicit GET retry, panel focus retained",
+        "429 error, safe reason, explicit GET retry, panel focus retained",
+        "403 error, safe reason, explicit GET retry, panel focus retained",
+        "json error, safe reason, explicit GET retry, panel focus retained",
+        "null error, safe reason, explicit GET retry, panel focus retained",
+        "close/reopen cancels old read; late answer cannot paint",
+        "existing gift composer, draft survives cancellation, no published link",
+        "200% text sizing, scrollable close action, no horizontal clipping",
+        "outside dismissal"
+      ],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "500"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "429"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "403"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "json"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "null"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "delay"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        }
+      ],
+      "reads": 18
+    },
+    {
+      "engine": "webkit",
+      "version": "26.5",
+      "locale": "ja",
+      "width": 320,
+      "theme": "night",
+      "checks": [
+        "cold lazy module; real chapter event collapses parent tools; visible error, preserved unknown and close/reopen recovery with one GET",
+        "real public-domain description; enabled sharing independent of introduction",
+        "real missing metadata; explicit empty state; unavailable generator disabled",
+        "500 error, safe reason, explicit GET retry, panel focus retained",
+        "429 error, safe reason, explicit GET retry, panel focus retained",
+        "403 error, safe reason, explicit GET retry, panel focus retained",
+        "json error, safe reason, explicit GET retry, panel focus retained",
+        "null error, safe reason, explicit GET retry, panel focus retained",
+        "close/reopen cancels old read; late answer cannot paint",
+        "existing gift composer, draft survives cancellation, no published link",
+        "200% text sizing, scrollable close action, no horizontal clipping",
+        "outside dismissal"
+      ],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "500"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "429"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "403"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "json"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "null"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "delay"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        },
+        {
+          "method": "GET",
+          "mode": "real"
+        }
+      ],
+      "reads": 18
+    }
+  ],
+  "limits": [
+    "No real model generation, public gift creation or external sending.",
+    "Text zoom doubles computed text sizes in the Book info surface; no physical assistive output is claimed."
+  ],
+  "cleanup": [
+    {
+      "status": "fulfilled"
+    },
+    {
+      "status": "fulfilled"
+    },
+    {
+      "status": "fulfilled"
+    }
+  ]
+}
