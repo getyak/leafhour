@@ -20,7 +20,9 @@ export async function verifyReaderOverlays({browser,contextFactory,base,out,dist
   let chatFailure=false;
   await context.route('**/api/**',async route=>{
    if(route.request().method()!=='GET'){row.blockedWrites.push(new URL(route.request().url()).pathname);return route.fulfill({status:403,json:{error:'Read-only overlay verification'}});}
-   if(new URL(route.request().url()).pathname.endsWith('/chat')){if(chatFailure)return route.fulfill({status:503,json:{error:'Synthetic GET outage'}});const response=await route.fetch(),data=await response.json();return route.fulfill({response,json:{...data,available:true}});}
+   // Chat GET reconciles expired jobs on the server. Geometry/retry checks
+   // use an explicit empty history instead of touching an account's turns.
+   if(new URL(route.request().url()).pathname.endsWith('/chat'))return route.fulfill(chatFailure?{status:503,json:{error:'Synthetic GET outage'}}:{status:200,json:{available:true,bookId:'gutenberg-alice',title:{en:'Alice in Wonderland'},contentVersion:'get225-geometry-fixture',context:null,scope:{mode:'book',revision:0},turns:[]}});
    return route.continue();
   });
   const p=await context.newPage();p.on('pageerror',error=>row.errors.push(error.stack));
