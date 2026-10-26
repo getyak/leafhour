@@ -76,9 +76,18 @@ function renderChatContext({item,contextBody,sourceLink,node,ui,uiAttr,live}){
 }
 
 function renderChatReferences({parent,refs,node,ui,sourceLink,createUiMessage,paintFor,ownerRow,bookId}){if(!refs?.length)return;const references=node('details','library-chat-references'),summary=node('summary'),refsMsg=createUiMessage(text=>{summary.textContent=text;});refsMsg.set('chat.referencesCount',{count:refs.length});paintFor(ownerRow,()=>refsMsg.refresh());references.append(summary);for(const ref of refs){const quote=node('blockquote','',ref.quote),label=node('span','library-chat-source-label');label.append(ui('span','',({original:'lo',literal:'ll',interpretive:'li'})[ref.layer]||'lo'));if(ref.translationStatus==='draft')label.append(ui('span','','ds'));quote.append(label,sourceLink('backToQuote',ref.passageId,ref.bookId||bookId));references.append(quote);}parent.append(references);}
+function renderChatEvidence(options){
+ const {parent,turn,node,ui}=options;
+ if(!turn.answer?.sourceRefs?.length&&!turn.activity?.length)return;
+ // A failed lookup qualifies the answer even while its routine evidence is shut.
+ if(turn.activity?.some(item=>item.status==='failed'))parent.append(ui('p','library-chat-evidence-warning','chat.evidence.incomplete'));
+ const evidence=node('details','library-chat-evidence');evidence.append(ui('summary','','chat.evidence'));
+ renderChatReferences({...options,parent:evidence,refs:turn.answer?.sourceRefs});
+ renderChatActivity({...options,parent:evidence,completed:true});parent.append(evidence);
+}
 function addAnswerFold({answer,heading,copy,summary,ui,live,t}){
  if(summary.length<=1200)return;
-          const content=[...answer.children].filter(n=>n!==heading&&n!==copy),fold=ui('button','library-chat-text-button library-chat-answer-toggle','chat.answer.collapse');fold.type='button';fold.setAttribute('aria-expanded','true');
+          const content=[...answer.children].filter(n=>n!==heading&&n!==copy&&!n.classList.contains('library-chat-evidence-warning')&&!n.classList.contains('library-chat-evidence')),fold=ui('button','library-chat-text-button library-chat-answer-toggle','chat.answer.collapse');fold.type='button';fold.setAttribute('aria-expanded','true');
           live(fold,'click',()=>{const collapsed=fold.getAttribute('aria-expanded')==='true';for(const n of content)n.hidden=collapsed;fold.setAttribute('aria-expanded',String(!collapsed));const id=collapsed?'chat.answer.expand':'chat.answer.collapse';fold.setAttribute('data-ui',id);fold.textContent=t(id);});answer.append(fold);
         }
-renderChatMarkdown.decorations=Object.freeze({addAnswerFold,activityLabel:(tool,t)=>t('chat.activity.'+activityKey(tool)),renderReferences:renderChatReferences,renderActivity:renderChatActivity,renderRecommendations:renderChatRecommendations,renderContext:renderChatContext});
+renderChatMarkdown.decorations=Object.freeze({addAnswerFold,activityLabel:(tool,t)=>t('chat.activity.'+activityKey(tool)),renderEvidence:renderChatEvidence,renderReferences:renderChatReferences,renderActivity:renderChatActivity,renderRecommendations:renderChatRecommendations,renderContext:renderChatContext});

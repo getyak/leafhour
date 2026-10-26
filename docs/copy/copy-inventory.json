@@ -282,7 +282,7 @@
       },
       {
         "file": "app/library-chat-markdown.mjs",
-        "sha256": "ea6e127db8a375b3144171f07e0f47ba9e8fb3a1ebdde8f21777f501beaff1d0"
+        "sha256": "34631d3f9aab2b470f84d4bb294ac4e6f4b448a7a11af0ac0604f0910bf2d7c6"
       },
       {
         "file": "app/library-chat-state.mjs",
@@ -290,7 +290,7 @@
       },
       {
         "file": "app/library-chat.mjs",
-        "sha256": "56436dd8dc67366cf9ffc01170bd3d8b9aca54600ea9923ec2dbf1609c34d592"
+        "sha256": "3d7f1b46b201a2bb4aad704bb301fbd9b3da2b10ec356b8ef8baa727b0fb5884"
       },
       {
         "file": "app/library-daily-reading.mjs",
@@ -774,19 +774,19 @@
       },
       {
         "file": "app/ui-catalogs/en.mjs",
-        "sha256": "4fd6c4582acd8c38942c497676bd79fb107ba62954249de93ca682202be59dfd"
+        "sha256": "932144635e7ef2d776ef1fc98535a7bea6f727b53f86df65522a8b6648e43e27"
       },
       {
         "file": "app/ui-catalogs/ja.mjs",
-        "sha256": "2daa8f45211bd8b0c1160c13221cc5908011ab2593630d6842b8bfcfb57d2f08"
+        "sha256": "04e1c0279f650b63c0d823e5096a0f2da4146009eba96dc8fecf45a53da80dfc"
       },
       {
         "file": "app/ui-catalogs/zh-Hans.mjs",
-        "sha256": "08a59aec69155fe3d8db8e300e8b9635d808ae7f33464774789a8b5c9a9efd0d"
+        "sha256": "e00e39e360ce6ee83983f3cdb56eafc6f06eadc724c944621d447b501308ec4a"
       },
       {
         "file": "app/ui-catalogs/zh-Hant.mjs",
-        "sha256": "d1019de5b1bed17591bececbfa7305944a374f560877dc2b7afe2a3aa506f6b0"
+        "sha256": "727480af0625544731cc2c1865e1f8e429cc730189a0970d6b8ee872806676fc"
       },
       {
         "file": "app/ui-locale-codec.mjs",
@@ -1153,7 +1153,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "b66eb3006e1713b239e2ccbdca12f38d583b82702acc9a6fa555a7e467d6f3dd"
+    "inputDigest": "3df595d66ae6644ef4c9e7358502c8dfe961ee7526a568e1c1e13207290523f0"
   },
   "locales": [
     "en",
@@ -1167,25 +1167,25 @@
       "locale": "en",
       "file": "app/ui-catalogs/en.mjs",
       "missing": false,
-      "entries": 2217
+      "entries": 2219
     },
     {
       "locale": "zh-Hans",
       "file": "app/ui-catalogs/zh-Hans.mjs",
       "missing": false,
-      "entries": 2217
+      "entries": 2219
     },
     {
       "locale": "zh-Hant",
       "file": "app/ui-catalogs/zh-Hant.mjs",
       "missing": false,
-      "entries": 2217
+      "entries": 2219
     },
     {
       "locale": "ja",
       "file": "app/ui-catalogs/ja.mjs",
       "missing": false,
-      "entries": 2217
+      "entries": 2219
     }
   ],
   "items": [
@@ -2532,12 +2532,12 @@
       "consumers": [
         {
           "file": "app/library-chat-markdown.mjs",
-          "line": 81,
-          "column": 150
+          "line": 90,
+          "column": 254
         },
         {
           "file": "app/library-chat-markdown.mjs",
-          "line": 82,
+          "line": 91,
           "column": 230
         }
       ],
@@ -2594,7 +2594,7 @@
       "consumers": [
         {
           "file": "app/library-chat-markdown.mjs",
-          "line": 82,
+          "line": 91,
           "column": 209
         }
       ],
@@ -3763,29 +3763,29 @@
           "file": "app/ui-catalogs/en.mjs",
           "line": 54,
           "column": 3,
-          "value": "Question location",
-          "sha256": "5b2d6abadb57d6dd949b14859018f419d5196c5a1ca22fb7c603296ba9c869b8"
+          "value": "Current passage",
+          "sha256": "ecd8e168478ae6a1cd444969fed22b83a0a42f63a527b184c5e20fddba2d571b"
         },
         "zh-Hans": {
           "file": "app/ui-catalogs/zh-Hans.mjs",
           "line": 53,
           "column": 3,
-          "value": "提问位置",
-          "sha256": "a57c28633c785ed3cc311118bf3b4c06d1d11b06e27be705f88002afc998f859"
+          "value": "当前原句",
+          "sha256": "155b7f51a6b80956009c538325d6ccaa6aed4f63e298d1d183b6b78381ac923b"
         },
         "zh-Hant": {
           "file": "app/ui-catalogs/zh-Hant.mjs",
           "line": 53,
           "column": 3,
-          "value": "提問位置",
-          "sha256": "d13dd4fe50df9eb67a579c546a1c70808ef7e4041611e50648574290f63cdb73"
+          "value": "目前原句",
+          "sha256": "39d858f7a76cf31ecf7dc69ae9d003dd534a38ebc71b03495d4736ab041cc66d"
         },
         "ja": {
           "file": "app/ui-catalogs/ja.mjs",
           "line": 53,
           "column": 3,
-          "value": "質問の位置",
-          "sha256": "1e605b6c05665e8b312e21a602fa008fb0e721e0f89ba426adb3e3ea36d5bdf3"
+          "value": "現在の本文",
+          "sha256": "4c5fe7bb815b2428363f1eb61e5a6b6ab273bccd2abaad9b85c85b0af170ed11"
         }
       },
       "missingLocales": [],
@@ -14219,7 +14219,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 309,
+          "line": 310,
           "column": 162
         }
       ],
@@ -14281,7 +14281,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 309,
+          "line": 310,
           "column": 155
         }
       ],
@@ -16313,7 +16313,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 315,
+          "line": 316,
           "column": 83
         },
         {
@@ -16495,7 +16495,7 @@
         },
         {
           "file": "app/library-chat.mjs",
-          "line": 307,
+          "line": 308,
           "column": 112
         },
         {
@@ -123204,6 +123204,120 @@
         "trigger": "unknown",
         "decision": "unknown"
       }
+    },
+    {
+      "id": "chat.evidence",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2230,
+          "column": 3,
+          "value": "About this answer",
+          "sha256": "914da7574caddf712c65d63dc6ef200aa175c71b07a8b134d20baa850f36cf4e"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2229,
+          "column": 3,
+          "value": "查看依据",
+          "sha256": "88b38a87c01f87495acfe1d29bab91254b8380df0f8de9f38393fccf20e24a55"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2229,
+          "column": 3,
+          "value": "查看依據",
+          "sha256": "98915c3989d65fd04d522d31795497b9d3cfa72530c13196ac4d1ea82bee7056"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2229,
+          "column": 3,
+          "value": "回答の根拠",
+          "sha256": "b103721990c11cf6ef8add53da76aaada0673f6e5416c5d7aa720bb7dd5c799a"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/library-chat-markdown.mjs",
+          "line": 84,
+          "column": 89
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:chat",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "chat.evidence.incomplete",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2231,
+          "column": 3,
+          "value": "Some lookups failed. This answer may be incomplete.",
+          "sha256": "61f703eaa2142487ccd34cb96fc934e1a4d927a67afa694d6ac2afe17c7d8265"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2230,
+          "column": 3,
+          "value": "部分查找失败，回答可能不完整。",
+          "sha256": "ff802219fb5268e42d0064d4c6160b8b5279a1b44ee33a5b7203974a9332b483"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2230,
+          "column": 3,
+          "value": "部分查找失敗，回答可能不完整。",
+          "sha256": "4ce020876fd7ba66434f50890eea58ae099a9ad1c2b19342950c8f5da5fbd280"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2230,
+          "column": 3,
+          "value": "一部の検索に失敗しました。回答が不完全な場合があります。",
+          "sha256": "f350a176063dc0663c3f87bce4bb3842657adf602af08ce39513ec6203f6eda9"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/library-chat-markdown.mjs",
+          "line": 83,
+          "column": 108
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:chat",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
     }
   ],
   "candidates": [
@@ -184296,10 +184410,10 @@
       }
     },
     {
-      "id": "candidate:app/library-chat-markdown.mjs:81:227",
+      "id": "candidate:app/library-chat-markdown.mjs:90:331",
       "file": "app/library-chat-markdown.mjs",
-      "line": 81,
-      "column": 227,
+      "line": 90,
+      "column": 331,
       "kind": "js-attribute",
       "property": "aria-expanded",
       "value": "true",
@@ -184536,9 +184650,9 @@
       }
     },
     {
-      "id": "candidate:app/library-chat.mjs:333:168",
+      "id": "candidate:app/library-chat.mjs:334:168",
       "file": "app/library-chat.mjs",
-      "line": 333,
+      "line": 334,
       "column": 168,
       "kind": "js-attribute",
       "property": "aria-expanded",
@@ -236221,7 +236335,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat-markdown.mjs",
-      "line": 84,
+      "line": 93,
       "expression": "'chat.activity.'+activityKey(tool)",
       "fragments": [
         "chat.activity."
@@ -236676,7 +236790,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 304,
+      "line": 305,
       "expression": "viewport.height+'px'",
       "fragments": [
         "px"
@@ -236686,7 +236800,7 @@
     {
       "kind": "concatenation",
       "file": "app/library-chat.mjs",
-      "line": 304,
+      "line": 305,
       "expression": "viewport.offsetTop+'px'",
       "fragments": [
         "px"
@@ -236696,7 +236810,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 329,
+      "line": 330,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -236704,7 +236818,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 329,
+      "line": 330,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -236712,7 +236826,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 337,
+      "line": 338,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -236720,7 +236834,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 337,
+      "line": 338,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -236728,7 +236842,7 @@
     {
       "kind": "computed-member",
       "file": "app/library-chat.mjs",
-      "line": 344,
+      "line": 345,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -257103,19 +257217,19 @@
   },
   "counts": {
     "catalogueFiles": 4,
-    "catalogueKeys": 2217,
-    "localeValues": 8868,
-    "itemsComplete": 2217,
+    "catalogueKeys": 2219,
+    "localeValues": 8876,
+    "itemsComplete": 2219,
     "itemsWithMissingLocales": 0,
     "duplicateKeys": 0,
     "reviewedItems": 0,
-    "unreviewedItems": 2217,
+    "unreviewedItems": 2219,
     "candidates": 4858,
     "candidatesUnreviewed": 4858,
     "candidatesProtected": 132,
     "itemsProtected": 9,
     "dynamicConsumers": 3125,
-    "consumerReferences": 1586,
+    "consumerReferences": 1588,
     "keysWithoutStaticConsumers": 1198
   }
 }

@@ -50,7 +50,7 @@ export default Object.freeze({
   "chat.scope.change": "読書範囲を変更",
   "chat.textVersion": "表示する本文",
   "chat.location.back": "この段落へ移動",
-  "chat.location": "質問の位置",
+  "chat.location":"現在の本文",
   "billing.accountLink": "ポイントと請求",
   "credit.funds": "この依頼に必要なポイントが不足しています。読書は続けられます。",
   "billing.cancelled": "ポイント利用をキャンセルしました。依頼は送信していません。",
@@ -2226,4 +2226,6 @@ export default Object.freeze({
   "chat.failure.save": "回答を保存できませんでした。質問は保持されています。再試行の前に状態を確認してください。",
   "chat.failure.validation": "回答を検証できませんでした。質問は保持されています。",
   "chat.failure.context": "原文が変更されました。現在の段落を確認してから再試行してください。",
+  "chat.evidence":"回答の根拠",
+  "chat.evidence.incomplete":"一部の検索に失敗しました。回答が不完全な場合があります。",
 });

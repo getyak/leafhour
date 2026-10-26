@@ -1,0 +1,287 @@
+{
+  "at": "2026-10-26T17:39:32.434Z",
+  "packaged": true,
+  "cases": [
+    {
+      "locale": "en",
+      "width": 1440,
+      "height": 900,
+      "checks": [
+        "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
+        "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
+        "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
+        "close-reopen-preserves-draft; load-error-retry-recovers",
+        "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/daily-reading/presence"
+      ],
+      "bounds": {
+        "x": 1016,
+        "y": 184,
+        "width": 400,
+        "height": 640
+      },
+      "passed": true
+    },
+    {
+      "locale": "en",
+      "width": 390,
+      "height": 844,
+      "checks": [
+        "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
+        "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
+        "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
+        "close-reopen-preserves-draft; load-error-retry-recovers",
+        "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/daily-reading/presence"
+      ],
+      "bounds": {
+        "x": 0,
+        "y": 202.546875,
+        "width": 390,
+        "height": 641.4375
+      },
+      "passed": true
+    },
+    {
+      "locale": "zh-Hans",
+      "width": 1440,
+      "height": 900,
+      "checks": [
+        "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
+        "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
+        "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
+        "close-reopen-preserves-draft; load-error-retry-recovers",
+        "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/daily-reading/presence"
+      ],
+      "bounds": {
+        "x": 1016,
+        "y": 184,
+        "width": 400,
+        "height": 640
+      },
+      "passed": true
+    },
+    {
+      "locale": "zh-Hans",
+      "width": 390,
+      "height": 844,
+      "checks": [
+        "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
+        "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
+        "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
+        "close-reopen-preserves-draft; load-error-retry-recovers",
+        "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/daily-reading/presence"
+      ],
+      "bounds": {
+        "x": 0,
+        "y": 202.546875,
+        "width": 390,
+        "height": 641.4375
+      },
+      "passed": true
+    },
+    {
+      "locale": "zh-Hant",
+      "width": 1440,
+      "height": 900,
+      "checks": [
+        "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
+        "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
+        "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
+        "close-reopen-preserves-draft; load-error-retry-recovers",
+        "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/daily-reading/presence"
+      ],
+      "bounds": {
+        "x": 1016,
+        "y": 184,
+        "width": 400,
+        "height": 640
+      },
+      "passed": true
+    },
+    {
+      "locale": "zh-Hant",
+      "width": 390,
+      "height": 844,
+      "checks": [
+        "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
+        "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
+        "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
+        "close-reopen-preserves-draft; load-error-retry-recovers",
+        "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/daily-reading/presence"
+      ],
+      "bounds": {
+        "x": 0,
+        "y": 202.546875,
+        "width": 390,
+        "height": 641.4375
+      },
+      "passed": true
+    },
+    {
+      "locale": "ja",
+      "width": 1440,
+      "height": 900,
+      "checks": [
+        "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
+        "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
+        "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
+        "close-reopen-preserves-draft; load-error-retry-recovers",
+        "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/daily-reading/presence"
+      ],
+      "bounds": {
+        "x": 1016,
+        "y": 184,
+        "width": 400,
+        "height": 640
+      },
+      "passed": true
+    },
+    {
+      "locale": "ja",
+      "width": 390,
+      "height": 844,
+      "checks": [
+        "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
+        "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
+        "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
+        "close-reopen-preserves-draft; load-error-retry-recovers",
+        "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/daily-reading/presence"
+      ],
+      "bounds": {
+        "x": 0,
+        "y": 202.546875,
+        "width": 390,
+        "height": 641.4375
+      },
+      "passed": true
+    },
+    {
+      "locale": "en",
+      "width": 768,
+      "height": 1024,
+      "checks": [
+        "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
+        "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
+        "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
+        "close-reopen-preserves-draft; load-error-retry-recovers",
+        "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/daily-reading/presence"
+      ],
+      "bounds": {
+        "x": 0,
+        "y": 245.75,
+        "width": 768,
+        "height": 778.234375
+      },
+      "passed": true
+    },
+    {
+      "locale": "zh-Hans",
+      "width": 390,
+      "height": 420,
+      "checks": [
+        "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
+        "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
+        "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
+        "close-reopen-preserves-draft; load-error-retry-recovers",
+        "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/daily-reading/presence"
+      ],
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 420
+      },
+      "passed": true
+    },
+    {
+      "locale": "zh-Hant",
+      "width": 320,
+      "height": 740,
+      "checks": [
+        "closed-default-no-chat-fetch; one-evidence-entry; visible-failure-qualification; book-layout-preserved",
+        "native-keyboard-disclosure-and-nested-Escape-focus-return",
+        "expanded-passage-settings-data-scope-menu-fits-sheet-and-export-scrolls-into-view",
+        "current-passage-on-demand; missing-translation-explicit; failed-question-edit; reference-return",
+        "close-reopen-preserves-draft; load-error-retry-recovers",
+        "reload-quiet-with-draft; no-horizontal-overflow; no-page-errors"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/daily-reading/presence"
+      ],
+      "bounds": {
+        "x": 0,
+        "y": 177.59375,
+        "width": 320,
+        "height": 562.390625
+      },
+      "passed": true
+    }
+  ],
+  "limits": [
+    "Chat answers, failed lookups and load outages are synthetic GET fixtures. All page API mutations are blocked.",
+    "Driver input is not physical keyboard, OS IME or screen-reader speech acceptance.",
+    "Production revision and real-account acceptance are separate receipts."
+  ],
+  "passed": true
+}

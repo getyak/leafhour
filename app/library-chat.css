@@ -65,9 +65,10 @@ body:has(#reader-conversation + .library-chat-launcher) .reading-tools-panel{rig
 .library-chat-table table{width:100%;border-collapse:collapse;font:.9em/1.7 var(--chat-font);text-align:left}
 .library-chat-table th,.library-chat-table td{min-width:90px;padding:7px 9px;border:1px solid var(--chat-line);vertical-align:top}
 .library-chat-table th{font-weight:600}
-.library-chat-activity,.library-chat-activity-details{margin:10px 0 0;font:12px/1.8 var(--chat-font);color:var(--chat-muted)}
+.library-chat-activity,.library-chat-activity-details,.library-chat-evidence,.library-chat-evidence-warning{margin:10px 0 0;font:12px/1.8 var(--chat-font);color:var(--chat-muted)}
 .library-chat-activity-details summary{cursor:pointer}
 .library-chat-activity-details p{margin:3px 0}
+.library-chat-evidence>summary{min-height:44px;align-content:center;cursor:pointer}
 .library-chat-recommendations{margin-top:18px}
 .library-chat-recommendation{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:7px;padding:9px 0;border-bottom:1px solid var(--line-hairline);color:inherit;text-decoration:none;font:12px/1.7 var(--chat-font)}
 .library-chat-recommendation small{flex-shrink:0;color:var(--chat-muted);font-size:12px}
@@ -131,7 +132,7 @@ body:has(#reader-conversation + .library-chat-launcher) .reading-tools-panel{rig
 .library-chat-recommendations>summary::after{content:'+';margin-inline-start:8px}
 .library-chat-recommendations[open]>summary::after{content:'−'}
 .library-chat-answer-toggle{margin-top:4px}
-.library-chat-dialog :is(.library-chat-scope-indicator,.library-chat-settings>summary,.library-chat-explanation>summary,.library-chat-latest):focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:-2px}
+.library-chat-dialog :is(.library-chat-scope-indicator,.library-chat-settings>summary,.library-chat-explanation>summary,.library-chat-evidence>summary,.library-chat-latest):focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:-2px}
 @media(hover:hover) and (pointer:fine){
  .library-chat-copy{opacity:0;transition:opacity 140ms ease}
  .library-chat-turn:hover .library-chat-copy,.library-chat-turn:focus-within .library-chat-copy{opacity:1}
