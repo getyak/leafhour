@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: billing adapter sends only the typed command through the service RPC
+ok 1 - billing adapter sends only the typed command through the service RPC
+  ---
+  duration_ms: 9.705791
+  type: 'test'
+  ...
+# Subtest: billing adapter preserves consistent operation lookup and confirmed absence
+ok 2 - billing adapter preserves consistent operation lookup and confirmed absence
+  ---
+  duration_ms: 0.323625
+  type: 'test'
+  ...
+# Subtest: billing adapter refuses missing configuration and invalid commands before a request
+ok 3 - billing adapter refuses missing configuration and invalid commands before a request
+  ---
+  duration_ms: 0.309125
+  type: 'test'
+  ...
+# Subtest: billing adapter maps only recognized business errors and never leaks database details
+ok 4 - billing adapter maps only recognized business errors and never leaks database details
+  ---
+  duration_ms: 1.896667
+  type: 'test'
+  ...
+# Subtest: billing adapter retries serialization/deadlock failures but never ambiguous network failures
+ok 5 - billing adapter retries serialization/deadlock failures but never ambiguous network failures
+  ---
+  duration_ms: 0.304084
+  type: 'test'
+  ...
+# Subtest: billing migration defines relational transactions and service-only privileges
+ok 6 - billing migration defines relational transactions and service-only privileges
+  ---
+  duration_ms: 3.391416
+  type: 'test'
+  ...
+# Subtest: billing migration preserves canonical pricing and immutable source reporting facts
+ok 7 - billing migration preserves canonical pricing and immutable source reporting facts
+  ---
+  duration_ms: 0.866791
+  type: 'test'
+  ...
+# Subtest: consistent SQL operation reads lock the owner account before checking absence
+ok 8 - consistent SQL operation reads lock the owner account before checking absence
+  ---
+  duration_ms: 0.435334
+  type: 'test'
+  ...
+# Subtest: isolated Postgres executes billing invariants and concurrent reservation fixture
+ok 9 - isolated Postgres executes billing invariants and concurrent reservation fixture
+  ---
+  duration_ms: 3729.665542
+  type: 'test'
+  ...
+# Subtest: subscription migration extends the delivered schema and private transaction boundary
+ok 10 - subscription migration extends the delivered schema and private transaction boundary
+  ---
+  duration_ms: 2.737833
+  type: 'test'
+  ...
+# Subtest: isolated Postgres executes subscription cycles, lifecycle and concurrent monthly signup
+ok 11 - isolated Postgres executes subscription cycles, lifecycle and concurrent monthly signup
+  ---
+  duration_ms: 880.2915
+  type: 'test'
+  ...
+# Subtest: isolated Postgres executes yearly grants and serializes monthly/yearly cross-process signup
+ok 12 - isolated Postgres executes yearly grants and serializes monthly/yearly cross-process signup
+  ---
+  duration_ms: 766.982916
+  type: 'test'
+  ...
+# Subtest: annual database verification fails without an engine outside the explicit hosted build context
+ok 13 - annual database verification fails without an engine outside the explicit hosted build context
+  ---
+  duration_ms: 193.846292
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5692.579792

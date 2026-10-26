@@ -16,6 +16,7 @@ export function mountReaderChatWorkspace({root,document=globalThis.document,wind
  const width=()=>clamp(preferred,320,Math.min(640,Math.max(320,window.innerWidth-640)));
  function restoreInert(){observer?.disconnect();observer=null;if(scrollLock){body.style.setProperty('overflow',scrollLock.overflow);scrollLock=null;}for(const [node,value]of inert)node.inert=value;inert.clear();}
  function contain(){
+  for(const [node,value]of inert)if(root.contains(node)){node.inert=value;inert.delete(node);}
   if(!scrollLock){scrollLock={overflow:body.style.getPropertyValue('overflow')};body.style.setProperty('overflow','hidden');}
   for(const node of body.children)if(node!==root&&!node.contains?.(root)&&!inert.has(node)){inert.set(node,node.inert);node.inert=true;}
   if(!observer&&window.MutationObserver){observer=new window.MutationObserver(contain);observer.observe(body,{childList:true});}
@@ -25,9 +26,9 @@ export function mountReaderChatWorkspace({root,document=globalThis.document,wind
   root.classList.toggle('is-reader-chat-mobile',narrow);
   separator.hidden=!wide;root.style.setProperty('--reader-chat-width',width()+'px');
   separator.setAttribute('aria-valuemin','320');separator.setAttribute('aria-valuemax',String(Math.min(640,Math.max(320,window.innerWidth-640))));separator.setAttribute('aria-valuenow',String(width()));
-  if(narrow){contain();root.setAttribute('aria-modal','true');if(!root.contains(document.activeElement)){root.setAttribute('tabindex','-1');(root.querySelector('.library-chat-close')||root).focus({preventScroll:true});}}
+  if(narrow){document.dispatchEvent(new Event('reader:chat-layout'));contain();root.setAttribute('aria-modal','true');if(!root.contains(document.activeElement)){root.setAttribute('tabindex','-1');(root.querySelector('.library-chat-close')||root).focus({preventScroll:true});}}
   else{restoreInert();root.setAttribute('aria-modal','false');}
-  document.dispatchEvent(new Event('reader:chat-layout'));
+  if(!narrow)document.dispatchEvent(new Event('reader:chat-layout'));
  }
  const save=()=>{try{storage?.setItem(WIDTH_KEY,String(Math.round(preferred)));}catch{}};
  function resize(value,{persist=false}={}){preferred=clamp(Math.round(value),320,Math.min(640,Math.max(320,window.innerWidth-640)));paint();if(persist)save();}

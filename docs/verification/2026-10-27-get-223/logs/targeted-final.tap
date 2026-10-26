@@ -1,0 +1,292 @@
+TAP version 13
+# Subtest: a fallback annotation sheet stays entirely in the reading region beside a live chat
+ok 1 - a fallback annotation sheet stays entirely in the reading region beside a live chat
+  ---
+  duration_ms: 0.455375
+  type: 'test'
+  ...
+# Subtest: the single annotation toggle belongs to existing reading tools through refresh, retries and account changes
+ok 2 - the single annotation toggle belongs to existing reading tools through refresh, retries and account changes
+  ---
+  duration_ms: 1.911875
+  type: 'test'
+  ...
+# Subtest: margin rails leave readable text intact across phone, tablet, laptop and desktop widths
+ok 3 - margin rails leave readable text intact across phone, tablet, laptop and desktop widths
+  ---
+  duration_ms: 0.919917
+  type: 'test'
+  ...
+# Subtest: quiet reading tucks saved summaries away by default and preserves an explicit visibility choice
+ok 4 - quiet reading tucks saved summaries away by default and preserves an explicit visibility choice
+  ---
+  duration_ms: 3.087041
+  type: 'test'
+  ...
+# Subtest: fourteen nearby annotations use both margins without overlapping each other
+ok 5 - fourteen nearby annotations use both margins without overlapping each other
+  ---
+  duration_ms: 0.214667
+  type: 'test'
+  ...
+# Subtest: personal margin summaries do not label a highlighted author quote as the reader’s own words
+ok 6 - personal margin summaries do not label a highlighted author quote as the reader’s own words
+  ---
+  duration_ms: 0.326667
+  type: 'test'
+  ...
+# Subtest: laptop widths always use compact marks even when both gutters appear to fit
+ok 7 - laptop widths always use compact marks even when both gutters appear to fit
+  ---
+  duration_ms: 0.125625
+  type: 'test'
+  ...
+# Subtest: opening an annotation takes keyboard focus and Escape returns to its visible opener
+ok 8 - opening an annotation takes keyboard focus and Escape returns to its visible opener
+  ---
+  duration_ms: 8.877708
+  type: 'test'
+  ...
+# Subtest: an annotation made inert by the mobile chat cannot intercept its Escape key
+ok 9 - an annotation made inert by the mobile chat cannot intercept its Escape key
+  ---
+  duration_ms: 1.887292
+  type: 'test'
+  ...
+# Subtest: closing annotations skips hidden toolbar openers and returns to the current margin entry
+ok 10 - closing annotations skips hidden toolbar openers and returns to the current margin entry
+  ---
+  duration_ms: 2.880834
+  type: 'test'
+  ...
+# Subtest: a delayed annotation opening does not take focus from a newer editor
+ok 11 - a delayed annotation opening does not take focus from a newer editor
+  ---
+  duration_ms: 1.014042
+  type: 'test'
+  ...
+# Subtest: saved annotations have summaries and hiding persists without altering text or generating
+ok 12 - saved annotations have summaries and hiding persists without altering text or generating
+  ---
+  duration_ms: 1.820833
+  type: 'test'
+  ...
+# Subtest: opening a saved mark uses the annotation card without requesting a model
+ok 13 - opening a saved mark uses the annotation card without requesting a model
+  ---
+  duration_ms: 1.216166
+  type: 'test'
+  ...
+# Subtest: long saved marks support personal thoughts while retaining the smaller AI limit
+ok 14 - long saved marks support personal thoughts while retaining the smaller AI limit
+  ---
+  duration_ms: 3.498208
+  type: 'test'
+  ...
+# Subtest: unavailable browser storage never dispatches a personal save without a durable retry
+ok 15 - unavailable browser storage never dispatches a personal save without a durable retry
+  ---
+  duration_ms: 1.7285
+  type: 'test'
+  ...
+# Subtest: answered questions stay cleared after reopening and remounting an annotation
+ok 16 - answered questions stay cleared after reopening and remounting an annotation
+  ---
+  duration_ms: 9.207042
+  type: 'test'
+  ...
+# Subtest: cold reads resolve existing explanations before opening a saved selection
+ok 17 - cold reads resolve existing explanations before opening a saved selection
+  ---
+  duration_ms: 1.144125
+  type: 'test'
+  ...
+# Subtest: own thoughts retry the same id after a lost receipt and preserve a newer draft
+ok 18 - own thoughts retry the same id after a lost receipt and preserve a newer draft
+  ---
+  duration_ms: 2.249875
+  type: 'test'
+  ...
+# Subtest: unconfirmed personal notes survive remount and opening does not submit them
+ok 19 - unconfirmed personal notes survive remount and opening does not submit them
+  ---
+  duration_ms: 2.026416
+  type: 'test'
+  ...
+# Subtest: chapter changes during a pending personal save cannot disable later annotations
+ok 20 - chapter changes during a pending personal save cannot disable later annotations
+  ---
+  duration_ms: 3.12
+  type: 'test'
+  ...
+# Subtest: a personal note receipt preserves active IME composition
+ok 21 - a personal note receipt preserves active IME composition
+  ---
+  duration_ms: 1.492541
+  type: 'test'
+  ...
+# Subtest: several annotations on one paragraph stay reachable in the narrow detail card
+ok 22 - several annotations on one paragraph stay reachable in the narrow detail card
+  ---
+  duration_ms: 1.478708
+  type: 'test'
+  ...
+# Subtest: pre-generated notes are read-only until an explicit request and locale preserves the physical editor
+ok 23 - pre-generated notes are read-only until an explicit request and locale preserves the physical editor
+  ---
+  duration_ms: 13.769875
+  type: 'test'
+  ...
+# Subtest: unknown initial delivery survives reload and retries the exact tuple without a fake user message
+ok 24 - unknown initial delivery survives reload and retries the exact tuple without a fake user message
+  ---
+  duration_ms: 5.007959
+  type: 'test'
+  ...
+# Subtest: late answer preserves a newer draft and follow-up retains actual submitted words
+ok 25 - late answer preserves a newer draft and follow-up retains actual submitted words
+  ---
+  duration_ms: 2.010875
+  type: 'test'
+  ...
+# Subtest: owner ABA and a disposed late response cannot paint or write the replacement owner
+ok 26 - owner ABA and a disposed late response cannot paint or write the replacement owner
+  ---
+  duration_ms: 1.9245
+  type: 'test'
+  ...
+# Subtest: known running request can be cancelled while its original POST is unresolved; close alone never cancels
+ok 27 - known running request can be cancelled while its original POST is unresolved; close alone never cancels
+  ---
+  duration_ms: 1.898333
+  type: 'test'
+  ...
+# Subtest: source changes cannot hide the exact-ID retry for an uncertain request
+ok 28 - source changes cannot hide the exact-ID retry for an uncertain request
+  ---
+  duration_ms: 2.41975
+  type: 'test'
+  ...
+# Subtest: unreadable or unwritable outboxes do not dispatch paid generation or silently overwrite corrupt bytes
+ok 29 - unreadable or unwritable outboxes do not dispatch paid generation or silently overwrite corrupt bytes
+  ---
+  duration_ms: 0.952541
+  type: 'test'
+  ...
+# Subtest: annotation billing refusal keeps selected words and offers billing without an uncertain saved request
+ok 30 - annotation billing refusal keeps selected words and offers billing without an uncertain saved request
+  ---
+  duration_ms: 3.988667
+  type: 'test'
+  ...
+# Subtest: same-chapter rerender and focused resize preserve the physical editor outside the reading flow
+ok 31 - same-chapter rerender and focused resize preserve the physical editor outside the reading flow
+  ---
+  duration_ms: 3.139
+  type: 'test'
+  ...
+# Subtest: a failed read-only annotation module load offers an explicit full reload without another module URL
+ok 32 - a failed read-only annotation module load offers an explicit full reload without another module URL
+  ---
+  duration_ms: 0.774667
+  type: 'test'
+  ...
+# Subtest: cold bootstrap cannot generate for a changed selection or an owner ABA after the click
+ok 33 - cold bootstrap cannot generate for a changed selection or an owner ABA after the click
+  ---
+  duration_ms: 2.335541
+  type: 'test'
+  ...
+# Subtest: Escape in a foreground chat leaves the underlying annotation intact
+ok 34 - Escape in a foreground chat leaves the underlying annotation intact
+  ---
+  duration_ms: 0.716042
+  type: 'test'
+  ...
+# Subtest: an open annotation joins the mobile dialog without losing its draft and returns on desktop
+ok 35 - an open annotation joins the mobile dialog without losing its draft and returns on desktop
+  ---
+  duration_ms: 1.793
+  type: 'test'
+  ...
+# Subtest: desktop floats without reserving book space and bounds keyboard resizing
+ok 36 - desktop floats without reserving book space and bounds keyboard resizing
+  ---
+  duration_ms: 1.932084
+  type: 'test'
+  ...
+# Subtest: phone containment restores pre-existing inert ownership across breakpoint changes and disposal
+ok 37 - phone containment restores pre-existing inert ownership across breakpoint changes and disposal
+  ---
+  duration_ms: 0.324625
+  type: 'test'
+  ...
+# Subtest: layout callbacks cannot restore a passage from a book that has since changed
+ok 38 - layout callbacks cannot restore a passage from a book that has since changed
+  ---
+  duration_ms: 0.357
+  type: 'test'
+  ...
+# Subtest: opening a floating conversation never schedules an old reading anchor restore
+ok 39 - opening a floating conversation never schedules an old reading anchor restore
+  ---
+  duration_ms: 0.115208
+  type: 'test'
+  ...
+# Subtest: pointer resize persists only a completed gesture and releases capture on cancellation
+ok 40 - pointer resize persists only a completed gesture and releases capture on cancellation
+  ---
+  duration_ms: 0.17575
+  type: 'test'
+  ...
+# Subtest: invalid stored widths and denied persistence keep a usable bounded in-memory workspace
+ok 41 - invalid stored widths and denied persistence keep a usable bounded in-memory workspace
+  ---
+  duration_ms: 0.144458
+  type: 'test'
+  ...
+# Subtest: phone Tab and Shift+Tab stay in the actual conversation focus order
+ok 42 - phone Tab and Shift+Tab stay in the actual conversation focus order
+  ---
+  duration_ms: 0.174292
+  type: 'test'
+  ...
+# Subtest: disposing a drag releases pointer capture without persisting an unfinished gesture
+ok 43 - disposing a drag releases pointer capture without persisting an unfinished gesture
+  ---
+  duration_ms: 0.074375
+  type: 'test'
+  ...
+# Subtest: a newer chapter navigation defeats the queued layout restore without cancelling the navigation
+ok 44 - a newer chapter navigation defeats the queued layout restore without cancelling the navigation
+  ---
+  duration_ms: 0.368334
+  type: 'test'
+  ...
+# Subtest: new page, touch or reading-key intent defeats a queued old layout restore
+ok 45 - new page, touch or reading-key intent defeats a queued old layout restore
+  ---
+  duration_ms: 1.442
+  type: 'test'
+  ...
+# Subtest: mobile scroll containment restores the prior body overflow on close and desktop resize
+ok 46 - mobile scroll containment restores the prior body overflow on close and desktop resize
+  ---
+  duration_ms: 0.1095
+  type: 'test'
+  ...
+# Subtest: mobile containment releases its inert ownership when an annotation joins the dialog
+ok 47 - mobile containment releases its inert ownership when an annotation joins the dialog
+  ---
+  duration_ms: 0.110166
+  type: 'test'
+  ...
+1..47
+# tests 47
+# suites 0
+# pass 47
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 151.1045

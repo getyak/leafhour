@@ -3155,10 +3155,10 @@ candidate:app/reader-book-actions.mjs:112:120,js-attribute,app/reader-book-actio
 candidate:app/reader-chat-workspace.mjs:12:122,js-attribute,app/reader-chat-workspace.mjs,12,role,unknown,reviewable,,separator
 candidate:app/reader-chat-workspace.mjs:12:177,js-attribute,app/reader-chat-workspace.mjs,12,aria-orientation,unknown,reviewable,,vertical
 candidate:app/reader-chat-workspace.mjs:12:223,js-attribute,app/reader-chat-workspace.mjs,12,tabindex,unknown,reviewable,,0
-candidate:app/reader-chat-workspace.mjs:27:42,js-attribute,app/reader-chat-workspace.mjs,27,aria-valuemin,unknown,reviewable,,320
-candidate:app/reader-chat-workspace.mjs:28:55,js-attribute,app/reader-chat-workspace.mjs,28,aria-modal,unknown,reviewable,,true
-candidate:app/reader-chat-workspace.mjs:28:135,js-attribute,app/reader-chat-workspace.mjs,28,tabindex,unknown,reviewable,,-1
-candidate:app/reader-chat-workspace.mjs:29:54,js-attribute,app/reader-chat-workspace.mjs,29,aria-modal,unknown,reviewable,,false
+candidate:app/reader-chat-workspace.mjs:28:42,js-attribute,app/reader-chat-workspace.mjs,28,aria-valuemin,unknown,reviewable,,320
+candidate:app/reader-chat-workspace.mjs:29:111,js-attribute,app/reader-chat-workspace.mjs,29,aria-modal,unknown,reviewable,,true
+candidate:app/reader-chat-workspace.mjs:29:191,js-attribute,app/reader-chat-workspace.mjs,29,tabindex,unknown,reviewable,,-1
+candidate:app/reader-chat-workspace.mjs:30:54,js-attribute,app/reader-chat-workspace.mjs,30,aria-modal,unknown,reviewable,,false
 candidate:app/reader-companion.mjs:39:141,js-attribute,app/reader-companion.mjs,39,aria-pressed,unknown,reviewable,,false
 candidate:app/reader-companion.mjs:42:68,js-attribute,app/reader-companion.mjs,42,role,unknown,reviewable,,status
 candidate:app/reader-conversation.mjs:48:60,js-cjk-literal,app/reader-conversation.mjs,48,,unknown,reviewable,,对话暂时无法载入，请重试。

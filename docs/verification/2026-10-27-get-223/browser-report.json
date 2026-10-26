@@ -1,0 +1,472 @@
+{
+  "at": "2026-10-26T19:09:27.213Z",
+  "baseline": false,
+  "packaged": true,
+  "cases": [
+    {
+      "locale": "en",
+      "width": 1280,
+      "height": 800,
+      "theme": "paper",
+      "scale": 1,
+      "checks": [
+        "compact-marks-and-keyboard-open; header-and-edges-in-viewport; long-body-and-bottom-actions-scroll; neighbor-list-and-draft-retained",
+        "editing-focus-retained-across-both-mobile-desktop-reparents",
+        "Ask-AI-coexists-with-readable-scrollable-annotation; responsive-reparenting-and-resizer; focus-remains-in-mobile-dialog",
+        "annotation-load-error-stays-visible-and-retry-recovers",
+        "chat-close-returns-annotation-with-draft; Escape-returns-to-mark; no-horizontal-overflow-or-page-error"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/books/gutenberg-alice/progress",
+        "/api/library/daily-reading/presence"
+      ],
+      "marks": [
+        {
+          "side": "compact",
+          "rect": {
+            "x": 969,
+            "y": 189.75,
+            "width": 24,
+            "height": 40,
+            "top": 189.75,
+            "right": 993,
+            "bottom": 229.75,
+            "left": 969
+          }
+        },
+        {
+          "side": "compact",
+          "rect": {
+            "x": 969,
+            "y": 234.140625,
+            "width": 24,
+            "height": 40,
+            "top": 234.140625,
+            "right": 993,
+            "bottom": 274.140625,
+            "left": 969
+          }
+        },
+        {
+          "side": "compact",
+          "rect": {
+            "x": 969,
+            "y": 411.015625,
+            "width": 24,
+            "height": 40,
+            "top": 411.015625,
+            "right": 993,
+            "bottom": 451.015625,
+            "left": 969
+          }
+        },
+        {
+          "side": "compact",
+          "rect": {
+            "x": 969,
+            "y": 587.890625,
+            "width": 24,
+            "height": 40,
+            "top": 587.890625,
+            "right": 993,
+            "bottom": 627.890625,
+            "left": 969
+          }
+        },
+        {
+          "side": "compact",
+          "rect": {
+            "x": 969,
+            "y": 994.078125,
+            "width": 24,
+            "height": 40,
+            "top": 994.078125,
+            "right": 993,
+            "bottom": 1034.078125,
+            "left": 969
+          }
+        }
+      ],
+      "annotation": {
+        "rect": {
+          "x": 400,
+          "y": 248,
+          "width": 480,
+          "height": 540,
+          "top": 248,
+          "right": 880,
+          "bottom": 788,
+          "left": 400
+        },
+        "placement": "sheet"
+      },
+      "withChat": {
+        "rect": {
+          "x": 188,
+          "y": 248,
+          "width": 480,
+          "height": 540,
+          "top": 248,
+          "right": 668,
+          "bottom": 788,
+          "left": 188
+        },
+        "placement": "sheet"
+      },
+      "resize1600": {
+        "rect": {
+          "x": 195,
+          "y": 189.75,
+          "width": 256,
+          "height": 586.25,
+          "top": 189.75,
+          "right": 451,
+          "bottom": 776,
+          "left": 195
+        },
+        "placement": "margin"
+      },
+      "resize1280": {
+        "rect": {
+          "x": 188,
+          "y": 248,
+          "width": 480,
+          "height": 540,
+          "top": 248,
+          "right": 668,
+          "bottom": 788,
+          "left": 188
+        },
+        "placement": "sheet"
+      },
+      "maximumChatWidth": {
+        "rect": {
+          "x": 68,
+          "y": 248,
+          "width": 480,
+          "height": 540,
+          "top": 248,
+          "right": 548,
+          "bottom": 788,
+          "left": 68
+        },
+        "placement": "sheet"
+      },
+      "browserZoomEquivalent": {
+        "rect": {
+          "x": 0,
+          "y": 63,
+          "width": 640,
+          "height": 128,
+          "top": 63,
+          "right": 640,
+          "bottom": 191,
+          "left": 0
+        },
+        "placement": "chat"
+      },
+      "passed": true
+    },
+    {
+      "locale": "zh-Hans",
+      "width": 390,
+      "height": 844,
+      "theme": "night",
+      "scale": 1,
+      "checks": [
+        "compact-marks-and-keyboard-open; header-and-edges-in-viewport; long-body-and-bottom-actions-scroll; neighbor-list-and-draft-retained",
+        "Ask-AI-coexists-with-readable-scrollable-annotation; responsive-reparenting-and-resizer; focus-remains-in-mobile-dialog",
+        "chat-close-returns-annotation-with-draft; Escape-returns-to-mark; no-horizontal-overflow-or-page-error"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/books/gutenberg-alice/progress"
+      ],
+      "marks": [
+        {
+          "side": "compact",
+          "rect": {
+            "x": 362,
+            "y": 182.5,
+            "width": 24,
+            "height": 40,
+            "top": 182.5,
+            "right": 386,
+            "bottom": 222.5,
+            "left": 362
+          }
+        },
+        {
+          "side": "compact",
+          "rect": {
+            "x": 362,
+            "y": 226.890625,
+            "width": 24,
+            "height": 40,
+            "top": 226.890625,
+            "right": 386,
+            "bottom": 266.890625,
+            "left": 362
+          }
+        },
+        {
+          "side": "compact",
+          "rect": {
+            "x": 362,
+            "y": 594.859375,
+            "width": 24,
+            "height": 40,
+            "top": 594.859375,
+            "right": 386,
+            "bottom": 634.859375,
+            "left": 362
+          }
+        },
+        {
+          "side": "compact",
+          "rect": {
+            "x": 362,
+            "y": 924.609375,
+            "width": 24,
+            "height": 40,
+            "top": 924.609375,
+            "right": 386,
+            "bottom": 964.609375,
+            "left": 362
+          }
+        }
+      ],
+      "annotation": {
+        "rect": {
+          "x": 12,
+          "y": 236,
+          "width": 366,
+          "height": 540,
+          "top": 236,
+          "right": 378,
+          "bottom": 776,
+          "left": 12
+        },
+        "placement": "sheet"
+      },
+      "withChat": {
+        "rect": {
+          "x": 1,
+          "y": 268.546875,
+          "width": 388,
+          "height": 220,
+          "top": 268.546875,
+          "right": 389,
+          "bottom": 488.546875,
+          "left": 1
+        },
+        "placement": "chat"
+      },
+      "passed": true
+    },
+    {
+      "locale": "zh-Hant",
+      "width": 320,
+      "height": 740,
+      "theme": "paper",
+      "scale": 2,
+      "checks": [
+        "compact-marks-and-keyboard-open; header-and-edges-in-viewport; long-body-and-bottom-actions-scroll; neighbor-list-and-draft-retained",
+        "Ask-AI-coexists-with-readable-scrollable-annotation; responsive-reparenting-and-resizer; focus-remains-in-mobile-dialog",
+        "chat-close-returns-annotation-with-draft; Escape-returns-to-mark; no-horizontal-overflow-or-page-error"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/books/gutenberg-alice/progress"
+      ],
+      "marks": [
+        {
+          "side": "compact",
+          "rect": {
+            "x": 292,
+            "y": 182.5,
+            "width": 24,
+            "height": 40,
+            "top": 182.5,
+            "right": 316,
+            "bottom": 222.5,
+            "left": 292
+          }
+        },
+        {
+          "side": "compact",
+          "rect": {
+            "x": 292,
+            "y": 226.890625,
+            "width": 24,
+            "height": 40,
+            "top": 226.890625,
+            "right": 316,
+            "bottom": 266.890625,
+            "left": 292
+          }
+        },
+        {
+          "side": "compact",
+          "rect": {
+            "x": 292,
+            "y": 671.296875,
+            "width": 24,
+            "height": 40,
+            "top": 671.296875,
+            "right": 316,
+            "bottom": 711.296875,
+            "left": 292
+          }
+        },
+        {
+          "side": "compact",
+          "rect": {
+            "x": 292,
+            "y": 1115.703125,
+            "width": 24,
+            "height": 40,
+            "top": 1115.703125,
+            "right": 316,
+            "bottom": 1155.703125,
+            "left": 292
+          }
+        }
+      ],
+      "annotation": {
+        "rect": {
+          "x": 12,
+          "y": 132,
+          "width": 296,
+          "height": 540,
+          "top": 132,
+          "right": 308,
+          "bottom": 672,
+          "left": 12
+        },
+        "placement": "sheet"
+      },
+      "withChat": {
+        "rect": {
+          "x": 1,
+          "y": 243.59375,
+          "width": 318,
+          "height": 220,
+          "top": 243.59375,
+          "right": 319,
+          "bottom": 463.59375,
+          "left": 1
+        },
+        "placement": "chat"
+      },
+      "passed": true
+    },
+    {
+      "locale": "ja",
+      "width": 800,
+      "height": 390,
+      "theme": "night",
+      "scale": 1,
+      "checks": [
+        "compact-marks-and-keyboard-open; header-and-edges-in-viewport; long-body-and-bottom-actions-scroll; neighbor-list-and-draft-retained",
+        "Ask-AI-coexists-with-readable-scrollable-annotation; responsive-reparenting-and-resizer; focus-remains-in-mobile-dialog",
+        "chat-close-returns-annotation-with-draft; Escape-returns-to-mark; no-horizontal-overflow-or-page-error"
+      ],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence",
+        "/api/library/books/gutenberg-alice/progress"
+      ],
+      "marks": [
+        {
+          "side": "compact",
+          "rect": {
+            "x": 729,
+            "y": 191.75,
+            "width": 24,
+            "height": 40,
+            "top": 191.75,
+            "right": 753,
+            "bottom": 231.75,
+            "left": 729
+          }
+        },
+        {
+          "side": "compact",
+          "rect": {
+            "x": 729,
+            "y": 236.140625,
+            "width": 24,
+            "height": 40,
+            "top": 236.140625,
+            "right": 753,
+            "bottom": 276.140625,
+            "left": 729
+          }
+        },
+        {
+          "side": "compact",
+          "rect": {
+            "x": 729,
+            "y": 413.015625,
+            "width": 24,
+            "height": 40,
+            "top": 413.015625,
+            "right": 753,
+            "bottom": 453.015625,
+            "left": 729
+          }
+        },
+        {
+          "side": "compact",
+          "rect": {
+            "x": 729,
+            "y": 589.890625,
+            "width": 24,
+            "height": 40,
+            "top": 589.890625,
+            "right": 753,
+            "bottom": 629.890625,
+            "left": 729
+          }
+        }
+      ],
+      "annotation": {
+        "rect": {
+          "x": 160,
+          "y": 12,
+          "width": 480,
+          "height": 302,
+          "top": 12,
+          "right": 640,
+          "bottom": 314,
+          "left": 160
+        },
+        "placement": "sheet"
+      },
+      "withChat": {
+        "rect": {
+          "x": 0,
+          "y": 63,
+          "width": 800,
+          "height": 124.796875,
+          "top": 63,
+          "right": 800,
+          "bottom": 187.796875,
+          "left": 0
+        },
+        "placement": "chat"
+      },
+      "passed": true
+    }
+  ],
+  "limits": [
+    "Public-domain Alice with synthetic annotation GET fixtures; no saved-note, progress or model write.",
+    "Browser input and reduced viewport checks do not establish physical-device, OS keyboard or screen-reader acceptance."
+  ],
+  "passed": true
+}

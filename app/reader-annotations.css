@@ -1,6 +1,6 @@
 .reader-annotation-card{color:var(--ink);background:color-mix(in srgb,var(--panel) 88%,var(--paper));border:1px solid var(--line-hairline);border-left:2px solid color-mix(in srgb,var(--accent) 65%,var(--line));border-radius:var(--radius-dialog,10px);display:flex;flex-direction:column;min-width:0;text-align:left;isolation:isolate;font:13px/1.75 var(--interface);box-sizing:border-box}
 .reader-annotation-card[hidden]{display:none}
-.reader-annotation-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none;min-height:44px;padding-left:16px;color:var(--muted);font-size:12px}
+.reader-annotation-heading{display:flex;align-items:center;justify-content:space-between;gap:4px;flex:none;flex-wrap:wrap;min-height:44px;padding-left:12px;color:var(--muted);font-size:12px}
 .reader-annotation-card button,.reader-annotation-indicator{min-height:44px;min-width:44px;font:12px/1.5 var(--interface);padding:8px 12px;border-radius:var(--radius-control,6px)}
 .reader-annotation-card button:hover,.reader-annotation-indicator:hover{background:var(--wash)}
 .reader-annotation-card :focus-visible,.reader-annotation-indicator:focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}
@@ -18,11 +18,10 @@
 .reader-annotation-form textarea{width:100%;box-sizing:border-box;min-height:72px;max-height:180px;resize:vertical;padding:10px;border:1px solid var(--line-control);border-radius:var(--radius-control,6px);background:var(--paper);color:var(--ink);font:14px/1.7 var(--interface)}
 .reader-annotation-form button{color:var(--accent)}.reader-annotation-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:4px}.reader-annotation-actions button{color:var(--muted)}
 .reader-annotation-card[data-placement=inline]{height:min(480px,70dvh);margin:8px 0 28px;width:100%}
-.reader-annotation-card[data-placement=margin]{position:absolute;z-index:2;height:min(460px,70dvh)}
 .reader-annotation-card[data-placement=pane]{flex:none;height:var(--annotation-pane-height,160px);margin:8px 0;max-width:100%;width:100%}
 body[data-annotation-pane=true][data-paginated=true] .book-page{height:var(--annotation-visible-height,100dvh)}
 .reader-annotation-indicator{display:block;margin:-8px 0 16px auto;color:var(--accent);letter-spacing:.04em;font-size:12px}
-@media(max-width:767px){.reader-annotation-card:not([data-placement=pane]) .reader-annotation-scroll{padding-bottom:calc(80px + env(safe-area-inset-bottom));scroll-padding-bottom:calc(80px + env(safe-area-inset-bottom))}.reader-annotation-card .library-chat-markdown,.reader-annotation-card .library-chat-markdown p,.reader-annotation-message>p{font-size:14px}.reader-annotation-form textarea{font-size:16px}.reader-annotation-card[data-placement=inline]{height:min(440px,72dvh)}}
+@media(max-width:767px){.reader-annotation-card .library-chat-markdown,.reader-annotation-card .library-chat-markdown p,.reader-annotation-message>p{font-size:14px}.reader-annotation-form textarea{font-size:16px}.reader-annotation-card[data-placement=inline]{height:min(440px,72dvh)}}
 @media print{.reader-annotation-card,.reader-annotation-indicator{display:none!important}}
 
 body[data-annotation-pane=true][data-annotation-compact=true] .book-page{padding-top:50px;padding-bottom:14px}
@@ -51,8 +50,8 @@ body[data-annotation-pane=true][data-annotation-compact=true] :is(#reading-sessi
 .reader-annotation-summary[data-side=compact] .reader-annotation-summary-text{display:none}
 .reader-annotation-summary[data-side=compact] .reader-annotation-summary-author{display:none}.reader-annotation-summary[data-side=compact]::before{content:"";width:11px;height:13px;border:1px solid currentColor;border-radius:2px;background:linear-gradient(currentColor,currentColor) 2px 4px / 6px 1px no-repeat,linear-gradient(currentColor,currentColor) 2px 7px / 4px 1px no-repeat}
 .reader-annotation-card[data-placement=margin]{position:fixed;z-index:8;height:auto;max-height:min(var(--annotation-card-height,560px),calc(100dvh - 100px));box-shadow:0 12px 36px color-mix(in srgb,var(--ink) 8%,transparent);border-radius:var(--radius-dialog,10px)}
-.reader-annotation-heading{gap:4px;padding-left:12px}.reader-annotation-heading>span:first-child{margin-right:auto}.reader-annotation-heading .reader-annotation-previous,.reader-annotation-heading .reader-annotation-next{min-width:32px;padding:4px;font-size:20px}.reader-annotation-count{font-size:12px;white-space:nowrap}
-.reader-annotation-card[data-placement=sheet]{position:fixed;z-index:12;left:var(--annotation-sheet-left,50%);bottom:max(var(--annotation-sheet-bottom,12px),env(safe-area-inset-bottom));transform:translateX(-50%);width:var(--annotation-sheet-width,min(480px,calc(100% - 24px)));height:auto;max-height:min(540px,var(--annotation-sheet-height,100dvh),calc(100dvh - 88px));border-radius:var(--radius-dialog,10px);box-shadow:0 12px 48px color-mix(in srgb,var(--ink) 18%,transparent)}
+.reader-annotation-heading>span:first-child{margin-right:auto}.reader-annotation-heading .reader-annotation-previous,.reader-annotation-heading .reader-annotation-next{min-width:32px;padding:4px;font-size:20px}.reader-annotation-count{font-size:12px;white-space:nowrap}
+.reader-annotation-card[data-placement=sheet]{position:fixed;z-index:12;left:var(--annotation-sheet-left,50%);bottom:max(var(--annotation-sheet-bottom,12px),env(safe-area-inset-bottom));transform:translateX(-50%);width:var(--annotation-sheet-width,min(480px,calc(100% - 24px)));height:auto;max-height:min(540px,var(--annotation-sheet-height,calc(100dvh - 88px)));border-radius:var(--radius-dialog,10px);box-shadow:0 12px 48px color-mix(in srgb,var(--ink) 18%,transparent)}
 .reader-annotation-card[data-placement=sheet] .reader-annotation-scroll{padding-bottom:max(16px,env(safe-area-inset-bottom))}
 .reader-annotation-card .reader-annotation-save-note{color:var(--accent);align-self:flex-start}
 .reader-annotation-explain{color:var(--accent)}
@@ -65,3 +64,5 @@ body[data-annotations-visible=false] .reader-highlight,body[data-annotations-sta
 
 body[data-annotations-visible=false] .reader-highlight{cursor:inherit}
 .paragraph-tools[data-excerpt=true] #show-comment{display:none}
+
+.reader-annotation-card[data-placement=chat]{flex:none;width:100%;height:min(220px,32dvh);height:min(220px,calc(var(--chat-viewport-height,100dvh)*.32));border:0;border-bottom:1px solid var(--line-hairline);border-radius:0}

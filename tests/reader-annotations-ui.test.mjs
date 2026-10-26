@@ -141,3 +141,15 @@ test('Escape in a foreground chat leaves the underlying annotation intact',async
   assert.equal(card.hidden,false);assert.equal(event.defaultPrevented,false);
  }finally{f.dispose();}
 });
+
+test('an open annotation joins the mobile dialog without losing its draft and returns on desktop',async()=>{
+ const f=setup({held:true});try{
+  await tick();f.controller.openThread(f.thread.id);const card=f.$('#reader-annotation-card'),area=f.$('textarea');area.value='An unsent thought';area.dispatchEvent(new Event('input'));
+  const chat=f.document.createElement('dialog'),frame=f.document.createElement('div'),messages=f.document.createElement('div'),close=f.document.createElement('button');
+  chat.className='reader-chat-workspace is-reader-chat-mobile';chat.open=true;frame.className='library-chat-frame';messages.className='library-chat-messages';close.className='library-chat-close';frame.append(close,messages);chat.append(frame);f.document.body.append(chat);card.inert=true;
+  f.document.dispatchEvent(new Event('reader:chat-layout'));assert.equal(card.parentElement,frame);assert.equal(card.dataset.placement,'chat');assert.equal(card.inert,false);assert.equal(area.value,'An unsent thought');
+  area.focus();card.dispatchEvent(Object.assign(new Event('keydown',{cancelable:true}),{key:'Escape'}));assert.equal(card.hidden,true);assert.equal(f.document.activeElement,close);assert.equal(area.value,'An unsent thought');
+  f.controller.openThread(f.thread.id);chat.classList.remove('is-reader-chat-mobile');f.document.dispatchEvent(new Event('reader:chat-layout'));assert.equal(card.parentElement,f.document.body);assert.notEqual(card.dataset.placement,'chat');assert.equal(area.value,'An unsent thought');
+  f.session();assert.equal(card.isConnected,false);
+ }finally{f.dispose();}
+});
