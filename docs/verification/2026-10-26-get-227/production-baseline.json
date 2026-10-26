@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-25T23:24:59.928Z",
+  "engine": "153.0.8010.12",
+  "url": "https://leafhour.com/read?book=gutenberg-alice&ui=en",
+  "errors": [],
+  "release": {
+    "sourceCommit": "d8a1863556bc4bb7d4786cb306015917efacc81c"
+  },
+  "palette": {
+    "value": "Alice",
+    "placeholder": "Search titles, authors or commands",
+    "status": "Loading the catalogue…",
+    "options": []
+  },
+  "settings": {
+    "settings": true,
+    "palette": false,
+    "focus": ""
+  }
+}

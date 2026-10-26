@@ -1,6 +1,14 @@
 // GET-192 immutable zh-Hans UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "palette.bookUnavailable": "当前书暂时无法载入。",
+  "palette.jumpFailed": "暂时无法跳到这一段，请重试。",
+  "palette.chapterHit": "章节 · {chapter}",
+  "palette.passageHit": "当前书 · {chapter}",
+  "palette.bookPartial": "检索已载入原文和章节标题，其他正文尚未载入。",
+  "palette.bookLoading": "正在载入当前书…",
+  "palette.countOne": "1 项结果",
+  "palette.readerPlaceholder": "搜索当前书、书名或命令",
   "reader.b1.sourcePrintedPage": "书中第 {page} 页",
   "reader.b1.sourcePdfPage": "PDF 第 {page} 页",
   "reader.atmosphere.imageLoading": "图片加载中…",
@@ -297,7 +305,7 @@ export default Object.freeze({
   "palette.close": "关闭命令面板",
   "palette.loading": "正在载入书目…",
   "palette.empty": "没有匹配的书目或命令",
-  "palette.count": "{name} · {count} 项结果",
+  "palette.count": "{count} 项结果",
   "palette.retryBooks": "重新载入书目",
   "palette.library": "打开书房",
   "palette.settings": "打开设置",

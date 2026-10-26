@@ -1,0 +1,14 @@
+{
+  "app/command-palette.mjs": "30a126a1ac4f5eb8fa9a4aa68d69c42f8a4a11629d0e54bf2163363668c8e6c5",
+  "app/palette-book.mjs": "655061b3426a4d1a6977f6e663469f897d0f7fa8f28c0e08db1701daacbbe5c0",
+  "app/palette-bootstrap.mjs": "fa8c6d374315610e1cbd61b338e920e6911c377a7cc35206f5ca3040b8361343",
+  "app/reader.js": "8981d1095aa89f0bac65c5f48744ecc13dbc2154c46fc6995e794db1ca7dca06",
+  "server/portal.mjs": "2a67379ee6e001b05a240215d6c5830165134c85c7398a2b50530617d002598e",
+  "app/ui-catalogs/zh-Hans.mjs": "8926d5ed7509ca6db44595f3c719995af6c8faa5811c6fb4a342a111a9d6e6e2",
+  "app/ui-catalogs/zh-Hant.mjs": "d03043d5d9c47933bee2bf6bb41645ae0458133863360c2a86771df52d9e4a4d",
+  "app/ui-catalogs/ja.mjs": "568a34e146864d714572df9d17d3ad4d7464ca9b77a955ef17a2b6352b0cb917",
+  "app/ui-catalogs/en.mjs": "a81e99d7239b8726bc8aa51f9736a30a945d6cc3912c954682d31bbe8e9fab65",
+  "tests/command-palette.test.mjs": "c58b9c5a36fa42d651c4abb381e0e894ba499bfba3d7ea27e80956e120325ccc",
+  "release-files.json": "4fef9e6890d17a95bda7417eada24979a49598a10edf2fa4e0ece4b86ba9816c",
+  "tools/verify-command-palette-browser.mjs": "8c628603b5b419393d96b5eac81bf21752f4ae579141d09016a90cc7cae6b7b5"
+}

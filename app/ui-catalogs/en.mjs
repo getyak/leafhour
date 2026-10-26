@@ -2,6 +2,14 @@
 // data, also the safe default for server/static English shells. Complete
 // default data: every other catalogue carries the same keys.
 export default Object.freeze({
+  "palette.bookUnavailable": "This book could not be loaded.",
+  "palette.jumpFailed": "Could not reach this passage. Please try again.",
+  "palette.chapterHit": "Chapter · {chapter}",
+  "palette.passageHit": "In this book · {chapter}",
+  "palette.bookPartial": "Searching loaded original text and chapter titles. Other text is not loaded.",
+  "palette.bookLoading": "Loading this book…",
+  "palette.countOne": "1 result",
+  "palette.readerPlaceholder": "Search this book, titles or commands",
   "reader.b1.sourcePrintedPage": "Printed page {page}",
   "reader.b1.sourcePdfPage": "PDF page {page}",
   "reader.atmosphere.imageLoading": "Loading image…",
@@ -298,7 +306,7 @@ export default Object.freeze({
   "palette.close": "Close the command palette",
   "palette.loading": "Loading the catalogue…",
   "palette.empty": "No matching books or commands",
-  "palette.count": "{name} · {count} results",
+  "palette.count": "{count} results",
   "palette.retryBooks": "Reload the catalogue",
   "palette.library": "Open the reading room",
   "palette.settings": "Open settings",
