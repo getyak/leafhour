@@ -57,6 +57,7 @@ export const UI_LOCALE_OWNERS=Object.freeze([
  'app/reader-translation.js',
  'app/reader-api.mjs',
  'app/reader.js',
+ 'app/reader-loading.mjs',
  'app/reading-arrival.mjs',
  'app/reading-dashboard.mjs',
  'app/reading-manual-ui.mjs',

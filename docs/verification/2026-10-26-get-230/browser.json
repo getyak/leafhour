@@ -1,0 +1,110 @@
+{
+  "kind": "packaged browser with real isolated services and deliberate network gates",
+  "cases": [
+    {
+      "locale": "en",
+      "width": 1280,
+      "motion": "no-preference",
+      "version": "153.0.8010.12",
+      "checks": [
+        "text-column skeleton and working library exit before JavaScript, auth or book data",
+        "slow read keeps the same short status; keyboard-accessible reopen appears",
+        "real book text is scrollable and selectable while all images are still held; no arrival catalogue request",
+        "503 remains a real error; explicit retry restores text and focus with saved passage/chapter/view and account-scoped draft storage intact"
+      ],
+      "errors": [],
+      "catalogueRequests": 0,
+      "beforeScripts": {
+        "atMs": 102,
+        "skeleton": true,
+        "passages": 0,
+        "overflow": false
+      },
+      "withImagesPending": {
+        "atMs": 8660,
+        "skeleton": false,
+        "passages": 31,
+        "overflow": false
+      }
+    },
+    {
+      "locale": "zh-Hans",
+      "width": 390,
+      "motion": "reduce",
+      "version": "153.0.8010.12",
+      "checks": [
+        "text-column skeleton and working library exit before JavaScript, auth or book data",
+        "real book text is scrollable and selectable while all images are still held; no arrival catalogue request",
+        "503 remains a real error; explicit retry restores text and focus with saved passage/chapter/view and account-scoped draft storage intact"
+      ],
+      "errors": [],
+      "catalogueRequests": 0,
+      "beforeScripts": {
+        "atMs": 50,
+        "skeleton": true,
+        "passages": 0,
+        "overflow": false
+      },
+      "withImagesPending": {
+        "atMs": 211,
+        "skeleton": false,
+        "passages": 31,
+        "overflow": false
+      }
+    },
+    {
+      "locale": "zh-Hant",
+      "width": 320,
+      "motion": "reduce",
+      "version": "153.0.8010.12",
+      "checks": [
+        "text-column skeleton and working library exit before JavaScript, auth or book data",
+        "real book text is scrollable and selectable while all images are still held; no arrival catalogue request",
+        "503 remains a real error; explicit retry restores text and focus with saved passage/chapter/view and account-scoped draft storage intact"
+      ],
+      "errors": [],
+      "catalogueRequests": 0,
+      "beforeScripts": {
+        "atMs": 33,
+        "skeleton": true,
+        "passages": 0,
+        "overflow": false
+      },
+      "withImagesPending": {
+        "atMs": 189,
+        "skeleton": false,
+        "passages": 31,
+        "overflow": false
+      }
+    },
+    {
+      "locale": "ja",
+      "width": 390,
+      "motion": "reduce",
+      "version": "153.0.8010.12",
+      "checks": [
+        "text-column skeleton and working library exit before JavaScript, auth or book data",
+        "real book text is scrollable and selectable while all images are still held; no arrival catalogue request",
+        "503 remains a real error; explicit retry restores text and focus with saved passage/chapter/view and account-scoped draft storage intact"
+      ],
+      "errors": [],
+      "catalogueRequests": 0,
+      "beforeScripts": {
+        "atMs": 92,
+        "skeleton": true,
+        "passages": 0,
+        "overflow": false
+      },
+      "withImagesPending": {
+        "atMs": 233,
+        "skeleton": false,
+        "passages": 31,
+        "overflow": false
+      }
+    }
+  ],
+  "limits": [
+    "Synthetic delays and 503 are transport fixtures, not real provider failures.",
+    "Local timings are observations, not a production latency guarantee. No model call, iOS or assistive speech test."
+  ]
+}

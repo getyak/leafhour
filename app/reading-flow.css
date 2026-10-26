@@ -1,5 +1,8 @@
 .reading-loading{padding:0;max-width:100%;min-height:560px}
 .reading-loading>p{font:12px/1.8 var(--interface);color:var(--muted);margin:32px 0 0;letter-spacing:var(--track-meta)}
+.reading-skeleton{margin-top:32px}
+.loading-actions{display:flex;gap:24px;align-items:center;margin-top:8px;font-size:13px}
+.loading-actions button{font:inherit;color:var(--accent);min-height:44px}
 .reading-skeleton i{display:block;background:var(--line);border-radius:2px;opacity:.38;height:9px}
 .reading-skeleton .skeleton-eyebrow{width:50px;height:7px;margin-bottom:28px}
 .reading-skeleton .skeleton-title{width:40%;height:28px;margin-bottom:70px}

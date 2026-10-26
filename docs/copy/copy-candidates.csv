@@ -2278,8 +2278,9 @@ candidate:app/index.html:14:1231,html-text,app/index.html,14,,unknown,reviewable
 candidate:app/index.html:14:1561,html-text,app/index.html,14,,unknown,reviewable,,Search and commands
 candidate:app/index.html:16:130,html-text,app/index.html,16,,unknown,reviewable,,Exit full screen
 candidate:app/index.html:16:177,html-text,app/index.html,16,,unknown,reviewable,,Esc
-candidate:app/index.html:19:139,html-text,app/index.html,19,,unknown,reviewable,,Opening the book…
-candidate:app/index.html:19:214,html-text,app/index.html,19,,unknown,reviewable,,Back to library
+candidate:app/index.html:19:109,html-text,app/index.html,19,,unknown,reviewable,,Opening the book…
+candidate:app/index.html:19:213,html-text,app/index.html,19,,unknown,reviewable,,Back to library
+candidate:app/index.html:19:313,html-text,app/index.html,19,,unknown,reviewable,,Open again
 candidate:app/index.html:20:88,html-text,app/index.html,20,,unknown,reviewable,,This book could not open right now.
 candidate:app/index.html:20:184,html-text,app/index.html,20,,unknown,reviewable,,Open again
 candidate:app/index.html:23:290,html-text,app/index.html,23,,unknown,reviewable,,← Previous page
@@ -2924,6 +2925,7 @@ candidate:app/palette-bootstrap.mjs:18:48,js-cjk-literal,app/palette-bootstrap.m
 candidate:app/palette-bootstrap.mjs:18:68,js-cjk-literal,app/palette-bootstrap.mjs,18,,unknown,reviewable,,重试
 candidate:app/palette-bootstrap.mjs:18:80,js-cjk-literal,app/palette-bootstrap.mjs,18,,unknown,reviewable,,重新加载页面
 candidate:app/palette-bootstrap.mjs:88:105,js-attribute,app/palette-bootstrap.mjs,88,role,unknown,reviewable,,status
+candidate:app/paper-companion.mjs:3:114,js-attribute,app/paper-companion.mjs,3,aria-hidden,unknown,reviewable,,true
 candidate:app/parallel-reading.mjs:3:20,js-cjk-literal,app/parallel-reading.mjs,3,,unknown,reviewable,,素面对照
 candidate:app/parallel-reading.mjs:3:39,js-cjk-literal,app/parallel-reading.mjs,3,,unknown,reviewable,,原文与译文同等清晰，适合细读核对。
 candidate:app/parallel-reading.mjs:4:20,js-cjk-literal,app/parallel-reading.mjs,4,,unknown,reviewable,,译文淡化
@@ -3202,25 +3204,24 @@ candidate:app/reader.js:520:224,js-cjk-literal,app/reader.js,520,,unknown,review
 candidate:app/reader.js:520:648,js-attribute,app/reader.js,520,role,unknown,reviewable,,status
 candidate:app/reader.js:520:809,js-attribute,app/reader.js,520,role,unknown,reviewable,,alert
 candidate:app/reader.js:529:166,js-cjk-literal,app/reader.js,529,,unknown,reviewable,,较新的位置暂时无法对应原文，请继续读这里。
-candidate:app/reading-arrival.mjs:6:35,js-cjk-literal,app/reading-arrival.mjs,6,,unknown,reviewable,,爱丽丝梦游仙境
-candidate:app/reading-arrival.mjs:6:52,js-cjk-literal,app/reading-arrival.mjs,6,,unknown,reviewable,,刘易斯·卡罗尔
-candidate:app/reading-arrival.mjs:6:70,js-cjk-literal,app/reading-arrival.mjs,6,,unknown,reviewable,,第一章
-candidate:app/reading-arrival.mjs:6:231,js-cjk-literal,app/reading-arrival.mjs,6,,unknown,reviewable,,书里连图画和对话都没有，读它有什么意思？
-candidate:app/reading-arrival.mjs:7:36,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,瓦尔登湖
-candidate:app/reading-arrival.mjs:7:50,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,亨利·戴维·梭罗
-candidate:app/reading-arrival.mjs:7:69,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,经济篇
-candidate:app/reading-arrival.mjs:7:234,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,若我同样了解另一个人，就不会说这么多自己的事。
-candidate:app/reading-arrival.mjs:8:41,js-cjk-literal,app/reading-arrival.mjs,8,,unknown,reviewable,,沉思录
-candidate:app/reading-arrival.mjs:8:54,js-cjk-literal,app/reading-arrival.mjs,8,,unknown,reviewable,,马可·奥勒留
-candidate:app/reading-arrival.mjs:8:71,js-cjk-literal,app/reading-arrival.mjs,8,,unknown,reviewable,,卷一 · 第一节
-candidate:app/reading-arrival.mjs:8:260,js-cjk-literal,app/reading-arrival.mjs,8,,unknown,reviewable,,祖父维鲁斯教我待人温和、保持谦逊，不任由怒气和激情支配自己。
-candidate:app/reading-arrival.mjs:13:49,js-cjk-literal,app/reading-arrival.mjs,13,,unknown,reviewable,,书中一句
-candidate:app/reading-arrival.mjs:21:77,js-cjk-literal,app/reading-arrival.mjs,21,,unknown,reviewable,,当前书籍
-candidate:app/reading-arrival.mjs:29:263,js-cjk-literal,app/reading-arrival.mjs,29,,unknown,reviewable,,书中一段
-candidate:app/reading-arrival.mjs:54:114,js-attribute,app/reading-arrival.mjs,54,aria-hidden,unknown,reviewable,,true
-candidate:app/reading-arrival.mjs:70:74,js-cjk-literal,app/reading-arrival.mjs,70,,unknown,reviewable,,书房拾句
-candidate:app/reading-arrival.mjs:100:70,js-attribute,app/reading-arrival.mjs,100,role,unknown,reviewable,,status
-candidate:app/reading-arrival.mjs:100:112,js-attribute,app/reading-arrival.mjs,100,aria-live,unknown,reviewable,,polite
+candidate:app/reading-arrival.mjs:7:35,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,爱丽丝梦游仙境
+candidate:app/reading-arrival.mjs:7:52,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,刘易斯·卡罗尔
+candidate:app/reading-arrival.mjs:7:70,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,第一章
+candidate:app/reading-arrival.mjs:7:231,js-cjk-literal,app/reading-arrival.mjs,7,,unknown,reviewable,,书里连图画和对话都没有，读它有什么意思？
+candidate:app/reading-arrival.mjs:8:36,js-cjk-literal,app/reading-arrival.mjs,8,,unknown,reviewable,,瓦尔登湖
+candidate:app/reading-arrival.mjs:8:50,js-cjk-literal,app/reading-arrival.mjs,8,,unknown,reviewable,,亨利·戴维·梭罗
+candidate:app/reading-arrival.mjs:8:69,js-cjk-literal,app/reading-arrival.mjs,8,,unknown,reviewable,,经济篇
+candidate:app/reading-arrival.mjs:8:234,js-cjk-literal,app/reading-arrival.mjs,8,,unknown,reviewable,,若我同样了解另一个人，就不会说这么多自己的事。
+candidate:app/reading-arrival.mjs:9:41,js-cjk-literal,app/reading-arrival.mjs,9,,unknown,reviewable,,沉思录
+candidate:app/reading-arrival.mjs:9:54,js-cjk-literal,app/reading-arrival.mjs,9,,unknown,reviewable,,马可·奥勒留
+candidate:app/reading-arrival.mjs:9:71,js-cjk-literal,app/reading-arrival.mjs,9,,unknown,reviewable,,卷一 · 第一节
+candidate:app/reading-arrival.mjs:9:260,js-cjk-literal,app/reading-arrival.mjs,9,,unknown,reviewable,,祖父维鲁斯教我待人温和、保持谦逊，不任由怒气和激情支配自己。
+candidate:app/reading-arrival.mjs:14:49,js-cjk-literal,app/reading-arrival.mjs,14,,unknown,reviewable,,书中一句
+candidate:app/reading-arrival.mjs:22:77,js-cjk-literal,app/reading-arrival.mjs,22,,unknown,reviewable,,当前书籍
+candidate:app/reading-arrival.mjs:30:263,js-cjk-literal,app/reading-arrival.mjs,30,,unknown,reviewable,,书中一段
+candidate:app/reading-arrival.mjs:61:74,js-cjk-literal,app/reading-arrival.mjs,61,,unknown,reviewable,,书房拾句
+candidate:app/reading-arrival.mjs:91:70,js-attribute,app/reading-arrival.mjs,91,role,unknown,reviewable,,status
+candidate:app/reading-arrival.mjs:91:112,js-attribute,app/reading-arrival.mjs,91,aria-live,unknown,reviewable,,polite
 candidate:app/reading-book.mjs:4:68,js-cjk-literal,app/reading-book.mjs,4,,unknown,reviewable,,找不到这一章
 candidate:app/reading-book.mjs:9:191,js-cjk-literal,app/reading-book.mjs,9,,unknown,reviewable,,章节版本无法核对，请重新打开这本书
 candidate:app/reading-book.mjs:12:245,js-cjk-literal,app/reading-book.mjs,12,,unknown,reviewable,,章节原文不完整，请重试读取
