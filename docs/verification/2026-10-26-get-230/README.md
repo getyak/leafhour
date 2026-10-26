@@ -1,5 +1,7 @@
 # GET-230 reader loading
 
+Postmerge update (2026-10-27): functional checks for #195 passed, but a navigation trace still found a 16.668-second first paint caused by the full stylesheet and its imported font-face declarations. GET-230 remains open until the [first-paint follow-up](../2026-10-27-get-230-first-paint/README.md) is released and accepted. The evidence below describes the first implementation.
+
 Scope: [GET-230](https://linear.app/getyak/issue/GET-230), based on public main `8c08783`. The cold reader previously supplied only a loading sentence until JavaScript mounted an illustration and quotation. The reader and its ending illustration both statically imported the arrival module, whose separate quotation catalogue therefore joined the startup dependency graph.
 
 The reader now carries a static, decorative text-column skeleton. A short loading status and library exit are present before any JavaScript, authentication or book response. After eight seconds of a pending book read, an explicit reopen action appears without replacing the status with a longer warning. Successful text and actual errors both remove the skeleton immediately; errors retain the existing explicit retry and sign-in recovery. The library exit remains usable while startup is pending.
