@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "source": "Observed prototype DOM geometry; text remains editable in SVG and capture JSON.",
+  "screens": [
+    {
+      "slug": "01-resume",
+      "name": "01 · 打开即续读",
+      "width": 402,
+      "height": 874,
+      "source": "captures/01-resume.json",
+      "svg": "exports/01-resume.svg",
+      "png": "exports/01-resume.png"
+    },
+    {
+      "slug": "02-selected",
+      "name": "02 · 选文",
+      "width": 402,
+      "height": 874,
+      "source": "captures/02-selected.json",
+      "svg": "exports/02-selected.svg",
+      "png": "exports/02-selected.png"
+    },
+    {
+      "slug": "03-companion",
+      "name": "03 · 半屏陪读",
+      "width": 402,
+      "height": 874,
+      "source": "captures/03-companion.json",
+      "svg": "exports/03-companion.svg",
+      "png": "exports/03-companion.png"
+    },
+    {
+      "slug": "04-discussion",
+      "name": "04 · 展开讨论",
+      "width": 402,
+      "height": 874,
+      "source": "captures/04-discussion.json",
+      "svg": "exports/04-discussion.svg",
+      "png": "exports/04-discussion.png"
+    },
+    {
+      "slug": "05-citation",
+      "name": "05 · 核对出处",
+      "width": 402,
+      "height": 874,
+      "source": "captures/05-citation.json",
+      "svg": "exports/05-citation.svg",
+      "png": "exports/05-citation.png"
+    },
+    {
+      "slug": "06-note",
+      "name": "06 · 记一句",
+      "width": 402,
+      "height": 874,
+      "source": "captures/06-note.json",
+      "svg": "exports/06-note.svg",
+      "png": "exports/06-note.png"
+    },
+    {
+      "slug": "07-original",
+      "name": "07 · 原文与两种译文",
+      "width": 402,
+      "height": 874,
+      "source": "captures/07-original.json",
+      "svg": "exports/07-original.svg",
+      "png": "exports/07-original.png"
+    },
+    {
+      "slug": "08-library",
+      "name": "08 · 书房",
+      "width": 402,
+      "height": 874,
+      "source": "captures/08-library.json",
+      "svg": "exports/08-library.svg",
+      "png": "exports/08-library.png"
+    },
+    {
+      "slug": "09-records",
+      "name": "09 · 我的记录",
+      "width": 402,
+      "height": 874,
+      "source": "captures/09-records.json",
+      "svg": "exports/09-records.svg",
+      "png": "exports/09-records.png"
+    },
+    {
+      "slug": "10-contents",
+      "name": "10 · 章节与段落",
+      "width": 402,
+      "height": 874,
+      "source": "captures/10-contents.json",
+      "svg": "exports/10-contents.svg",
+      "png": "exports/10-contents.png"
+    },
+    {
+      "slug": "11-appearance",
+      "name": "11 · 阅读偏好",
+      "width": 402,
+      "height": 874,
+      "source": "captures/11-appearance.json",
+      "svg": "exports/11-appearance.svg",
+      "png": "exports/11-appearance.png"
+    },
+    {
+      "slug": "12-offline",
+      "name": "12 · 连接失败",
+      "width": 402,
+      "height": 874,
+      "source": "captures/12-offline.json",
+      "svg": "exports/12-offline.svg",
+      "png": "exports/12-offline.png"
+    },
+    {
+      "slug": "13-night",
+      "name": "13 · 夜读陪读",
+      "width": 402,
+      "height": 874,
+      "source": "captures/13-night.json",
+      "svg": "exports/13-night.svg",
+      "png": "exports/13-night.png"
+    }
+  ]
+}
