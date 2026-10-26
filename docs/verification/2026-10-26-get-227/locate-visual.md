@@ -1,0 +1,17 @@
+# Visible paragraph location follow-up
+
+PRs [186](https://github.com/getyak/leafhour/pull/186) and [187](https://github.com/getyak/leafhour/pull/187) merged as `537fbe76af5200fd8c02b509a351bdf7d9457887` and `c7ed3f22caffb2c66482a606489053211fb968ca`. The latter main CI 40250651118 and Production workflow 40251009542 succeeded. These receipts do not assert final GET-227 online acceptance.
+
+A real pointer/touch jump exposed a visual gap in the first implementation. The destination had focus and `is-locating`, but `:focus-visible` was false and its pseudo-element had `content: none` and static positioning. The with/without-class screenshot pixels were identical. The red evidence is preserved without rewriting the log.
+
+The correction extends the two existing selected-passage pseudo-element foundation selectors to locating passages. Existing location colors and the 1.8-second expiry now produce an actual visible frame/background. It adds no layout, reader selection, progress, network or timer behavior. Reader JS stays at **327678/327680 bytes**; the CSS resource remains within its unchanged budget. The final packaged asset hashes and sizes are in [assets.json](assets.json).
+
+The public verifier now atomically observes the real navigation destination, focus, viewport and generated paint, then observes natural location expiry. After expiry, a reversible static CSS class A/B probe compares cropped pixels. This stable visual probe is explicitly separate from native behavior and never changes the product timer. It also waits for actual catalogue completion before testing stable result counts.
+
+The final source replay passed **8/8** (English, simplified/traditional Chinese and Japanese; widths 1280, 390 and 320; paper/night; Chromium 153.0.8010.12 and WebKit 26.6). The packaged replay passed **4/4**, with no source fallback or missing assets. In all four English/Japanese packaged cases, native location appeared and expired and static A/B pixels changed. Search, count/query retention and Settings/Tools/Account/Atmosphere handoff, Tab and Escape checks passed. Screenshots were visually inspected in light desktop and narrow night mode. All owned browser/server cleanup promises fulfilled.
+
+Targeted palette/build tests passed **52/52**. The final serial full suite passed **3463 tests, 0 failures, 1 existing macOS skip** (3464 total, 170.62 seconds). An earlier run used an overly nested TMPDIR and failed two PostgreSQL socket tests at the OS 103-byte pathname limit. Its original output is retained; a short registered TMPDIR passed the affected PostgreSQL tests and the final full suite. Copy export/lint/canaries, pricing, runtime/public build, resource check, release policy and release contents all passed; [engineering-locate.json](engineering-locate.json) records each exit code.
+
+Independent reviewer `/root/get227_review` approved the exact [locate-fingerprints.json](locate-fingerprints.json) snapshot, with no unresolved P0/P1/P2. It separately rechecked the native-then-static distinction and unconditional probe cleanup. Browser automation does not assert physical devices, OS IME candidate UI or spoken assistive output.
+
+Same-final-commit CI, normal merge, Production release and actual HTTPS guest/default-account acceptance remain separate delivery gates. Search intentionally covers loaded original passages and real chapter titles, and states the unloaded-body boundary in the UI.

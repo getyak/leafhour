@@ -1,0 +1,47 @@
+[
+  {
+    "name": "copy-export",
+    "status": 0,
+    "seconds": 0.71
+  },
+  {
+    "name": "copy-lint",
+    "status": 0,
+    "seconds": 8.516
+  },
+  {
+    "name": "copy-canaries",
+    "status": 0,
+    "seconds": 7.664
+  },
+  {
+    "name": "pricing",
+    "status": 0,
+    "seconds": 0.024
+  },
+  {
+    "name": "runtime-build",
+    "status": 0,
+    "seconds": 1.848
+  },
+  {
+    "name": "public-build",
+    "status": 0,
+    "seconds": 0.793
+  },
+  {
+    "name": "public-check",
+    "status": 0,
+    "seconds": 0.047
+  },
+  {
+    "name": "release-policy",
+    "status": 0,
+    "seconds": 0.462
+  },
+  {
+    "name": "release-contents",
+    "status": 0,
+    "seconds": 0.039
+  }
+]
