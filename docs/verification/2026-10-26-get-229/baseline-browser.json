@@ -1,0 +1,115 @@
+[
+  {
+    "engine": "chromium",
+    "entered": {
+      "full": "HTML",
+      "state": "true",
+      "geometry": {
+        "w": 1280,
+        "h": 800,
+        "ow": 1280,
+        "oh": 800
+      },
+      "active": "",
+      "events": [
+        {
+          "type": "keydown",
+          "key": "f",
+          "trusted": true,
+          "full": null
+        },
+        {
+          "type": "fullscreenchange",
+          "trusted": true,
+          "full": "HTML"
+        }
+      ]
+    },
+    "escaped": {
+      "full": "HTML",
+      "state": "true",
+      "geometry": {
+        "w": 1280,
+        "h": 800,
+        "ow": 1280,
+        "oh": 800
+      },
+      "active": "",
+      "events": [
+        {
+          "type": "keydown",
+          "key": "f",
+          "trusted": true,
+          "full": null
+        },
+        {
+          "type": "fullscreenchange",
+          "trusted": true,
+          "full": "HTML"
+        },
+        {
+          "type": "keydown",
+          "key": "Escape",
+          "trusted": true,
+          "full": "HTML"
+        }
+      ]
+    }
+  },
+  {
+    "engine": "webkit",
+    "entered": {
+      "full": "HTML",
+      "state": "true",
+      "geometry": {
+        "w": 1280,
+        "h": 800,
+        "ow": 1280,
+        "oh": 800
+      },
+      "active": "",
+      "events": [
+        {
+          "type": "keydown",
+          "key": "f",
+          "trusted": true,
+          "full": null
+        },
+        {
+          "type": "fullscreenchange",
+          "trusted": true,
+          "full": "HTML"
+        }
+      ]
+    },
+    "escaped": {
+      "full": null,
+      "state": "false",
+      "geometry": {
+        "w": 1280,
+        "h": 800,
+        "ow": 1280,
+        "oh": 800
+      },
+      "active": "",
+      "events": [
+        {
+          "type": "keydown",
+          "key": "f",
+          "trusted": true,
+          "full": null
+        },
+        {
+          "type": "fullscreenchange",
+          "trusted": true,
+          "full": "HTML"
+        },
+        {
+          "type": "fullscreenchange",
+          "trusted": true,
+          "full": null
+        }
+      ]
+    }
+  }
+]

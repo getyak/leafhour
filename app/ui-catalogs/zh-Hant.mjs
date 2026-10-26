@@ -1312,7 +1312,7 @@ export default Object.freeze({
   "reader.shell.viewRecords": "查看標記、想法與問題",
   "reader.shell.manual": "手動補記",
   "reader.shell.ownRecords": "Leafhour · 自己的閱讀記錄",
-  "reader.shell.instructions": "點擊段落或聚焦後按 Enter，可查看原文、註解與個人記錄。翻頁閱讀用 ← → 或頁底按鈕。Esc 關閉浮層，F 切換全螢幕閱讀。",
+  "reader.shell.instructions": "點擊段落，或聚焦後按 Enter，查看原文、注解和記錄。翻頁模式可用 ← → 或下方按鈕。瀏覽器支援時，F 切換全螢幕。Esc 結束全螢幕，瀏覽器也可能同時關閉浮層；一般閱讀時，Esc 關閉浮層。",
   "reader.b1.draftUnavailable": "本機草稿暫時無法讀取，原資料保留。請先另存待同步資料或複製新寫的文字。",
   "reader.shell.draftHelp": "每份草稿保留原文位置。多個閱讀頁的文字分別保留，儲存後才進入書房筆記。",
   "reader.session.state.active": "{source}中",

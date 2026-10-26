@@ -110,7 +110,7 @@ test('delayed and conflict restoration keep Chinese original-only books readable
     context.readerOwner=()=>context.readerSession?.user?.id||null;
     context.anchor=()=>anchor;
     vm.createContext(context);
-    vm.runInContext(delayed+'\n'+conflict+';this.restoreDelayed=adoptLoadedRecords;this.restoreConflict=reconcileProgress;',context);
+    vm.runInContext(reader.match(/^const dispatchReaderEvent=.*$/m)[0]+'\n'+delayed+'\n'+conflict+';this.restoreDelayed=adoptLoadedRecords;this.restoreConflict=reconcileProgress;',context);
     if(restore==='delayed')await context.restoreDelayed(fresh,{generation:1,explicitEntry:false});else await context.restoreConflict(true);
     assert.equal(rendered?.mode,sourceLanguage==='zh'?'en':'parallel',sourceLanguage+' '+restore);
     for(const key of ['readingPurpose','preferredLanguage','variant'])assert.equal(rendered[key],position[key],key);
