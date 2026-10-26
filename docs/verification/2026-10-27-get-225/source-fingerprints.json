@@ -1,0 +1,10 @@
+{
+  "app/reader-tools.mjs": "fbf78befdc815865942c1b32793b49be254c8bd48dc1b89e226c4466226e38e2",
+  "app/reader.js": "358d1299633f9e598013bdcb8aadecf3c794cfd8c9f5090e22acf9fb7a6d1dfe",
+  "app/reader-atmosphere.js": "6bc618cbc78aca69ced27a0d66062b47fae025db8e6660606f81f49a14598a74",
+  "app/command-palette.mjs": "735fac846b3f462c17b30e77da5efa192b810ac6670ece9e200654da6346d364",
+  "app/palette-bootstrap.mjs": "04d75f1dbd2abc85f5bc1940b2a059953c1be2bcb9dae8119ab98bc2faa26e6d",
+  "tests/reader-tools.test.mjs": "77ee2127f70ebe07b72c21bc7b1864e806343e2cffeec2a9d6af168c2744c92b",
+  "tests/command-palette.test.mjs": "ea1a960e1f0d8f563562f38b247abb758cc6a877ae449803ddbb503e05ce0af2",
+  "tools/verify-reader-overlays.mjs": "b024d45d5d1370dbfb7a23420893be39d9b66f713a79f11d0d2801cb3e9ee406"
+}

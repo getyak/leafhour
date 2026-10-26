@@ -136,7 +136,7 @@ function choose(id){
   requestAnimationFrame(()=>{if(anchor)window.marginaliaReader?.restoreAnchor(anchor);});
   if(id==='none')session.stop();else session.play(id);
 }
-function open(){window.marginaliaReader?.dismissTools();notice='';render();dialog.showModal();renderMotion();$('open-atmosphere').setAttribute('aria-expanded','true');}
+function open(){window.marginaliaPaletteAdapter?.prepareOverlay?.('atmosphere-dialog');window.marginaliaReader?.dismissTools();notice='';render();dialog.showModal();renderMotion();$('open-atmosphere').setAttribute('aria-expanded','true');}
 listen($('open-atmosphere'),'click',open);
 listen($('settings-atmosphere'),'click',()=>{$('settings-dialog').close();open();});
 for(const id of ['close-atmosphere','atmosphere-return'])listen($(id),'click',()=>dialog.close());

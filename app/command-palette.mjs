@@ -37,6 +37,7 @@ const matches=(label,query)=>!query||fold(label).includes(fold(query));
 // Reader handoff is lazy and uses the mounted tools/chat/popover owners. The
 // common dialog focus coordinator sees the new modal before its close RAF.
 export function prepareReaderPalette({document,adapter,opener}){
+ if(adapter?.prepareOverlay){const safe=adapter.prepareOverlay('command-palette');for(const node of document.querySelectorAll('dialog[open]'))if(node.id!=='command-palette')node.close();return safe;}
  const safe=focusableTrigger(opener)&&!opener.closest?.('dialog,#reading-tools-panel,#reading-header,[popover]')?opener:adapter?.tools?.toolFocusTarget||document.getElementById('reading-tools-trigger');
  // Activate the existing owners so chat scroll locks, toolbar timers and
  // native/fallback popover state are released through their normal paths.
@@ -137,8 +138,8 @@ export function openCommandPalette({document=globalThis.document,page='home',ada
     event.preventDefault();
     (document.activeElement===input?closeControl:input)?.focus();
   });
-  let results=[],activeIndex=0,launchPoint=null,disposed=false,bookView=null,actionGeneration=0;
-  dialog.addEventListener('close',()=>{if(launchPoint&&typeof launchPoint.focus==='function'&&launchPoint.isConnected!==false&&!launchPoint.closest?.('[hidden],[inert]'))launchPoint.focus({preventScroll:true});});
+  let results=[],activeIndex=0,launchPoint=null,disposed=false,bookView=null,actionGeneration=0,overlayRevision;
+  dialog.addEventListener('close',()=>{if(dialog.open)return;const at=launchPoint;launchPoint=null;if(overlayRevision===adapter?.getOverlayRevision?.()&&focusableTrigger(at))at.focus({preventScroll:true});});
   function visibleEntries(){
     const query=input.value.trim();
     const getBook=()=>adapter?.getBook?.()||(adapter?.getReader?.()||document.defaultView?.marginaliaReader)?.getBook?.();
@@ -209,10 +210,12 @@ export function openCommandPalette({document=globalThis.document,page='home',ada
     if(!entry.keepOpen)closePalette({restoreFocus:!entry.handoff});
     entry.run();
   }
-  function open(at=opener){
+  function open(at=opener,{onPrepared=()=>{}}={}){
     if(disposed)return;
     actionGeneration++;
     if(page==='reader')at=prepareReaderPalette({document,adapter,opener:at})||at;
+    overlayRevision=adapter?.getOverlayRevision?.();
+    onPrepared();
     launchPoint=at&&typeof at.focus==='function'?at:document.activeElement;
     activeIndex=0;
     if(dialog.showModal&&!dialog.open)dialog.showModal();else if(!dialog.open&&dialog.show)dialog.show();

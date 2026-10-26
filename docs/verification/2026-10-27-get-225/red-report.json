@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-26T19:40:01.880Z",
+  "cases": [
+    {
+      "locale": "en",
+      "width": 1280,
+      "height": 800,
+      "checks": [],
+      "errors": [],
+      "blockedWrites": [
+        "/api/library/daily-reading/presence"
+      ],
+      "failure": "tools → settings leaves exactly one primary surface\n+ actual - expected\n\n  [\n+   'reading-session',\n    'settings-dialog'\n  ]\n"
+    }
+  ],
+  "limits": [
+    "Browser input does not establish physical-device or screen-reader acceptance.",
+    "Public Alice; page API writes are blocked; no model output is requested."
+  ]
+}

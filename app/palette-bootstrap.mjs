@@ -60,7 +60,7 @@ export function mountPaletteBootstrap({document=globalThis.document,navigator=gl
   const live=()=>globalThis.marginaliaPaletteAdapter||adapter;
   const ownerNow=()=>{try{const a=live()||null;return a?.getOwnerToken?.()??a?.getOwner?.();}catch{return null;}};
   const blocked=()=>page!=='reader'&&(overlayOpen(document)||document.getElementById?.('site-appearance-menu')?.hidden===false);
-  const current=stamp=>stamp.generation===generation&&stamp.owner===ownerNow();
+  const current=stamp=>stamp.generation===generation&&stamp.owner===ownerNow()&&stamp.overlay===live()?.getOverlayRevision?.();
   // The eventual focus-return target is the actual visible opener; a breakpoint
   // that hid it falls back to the visible brand or an existing safe page-level
   // target, never a closed sheet's child.
@@ -99,7 +99,7 @@ export function mountPaletteBootstrap({document=globalThis.document,navigator=gl
     notice.hidden=false;
   };
   const open=async(opener=document.activeElement)=>{
-    const stamp={generation:++generation,owner:ownerNow()};
+    const stamp={generation:++generation,owner:ownerNow(),overlay:live()?.getOverlayRevision?.()};
     lastOpener=opener;
     try{
       const module=await ensureModule();
@@ -109,7 +109,9 @@ export function mountPaletteBootstrap({document=globalThis.document,navigator=gl
       if(!controller)controller=module.openCommandPalette({document,page,adapter:live(),opener});
       // Revalidate immediately before displaying the lazily built palette.
       if(!current(stamp)||blocked())return null;
-      controller.open(returnTarget(opener));
+      // Seal this request's own synchronous handoff before show/focus/render
+      // can fail; a genuinely newer surface still invalidates its catch.
+      controller.open(returnTarget(opener),{onPrepared:()=>{stamp.overlay=live()?.getOverlayRevision?.();}});
       if(notice)notice.hidden=true;
       return controller;
     }catch(error){

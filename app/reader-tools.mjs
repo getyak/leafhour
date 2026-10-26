@@ -1,5 +1,6 @@
 import {mountReadingToolbar} from './reading-toolbar.mjs';
 import {t,onUiLocaleChange} from './ui-locale.mjs';
+import {mountPopover,overlayOpen,focusableTrigger} from './popover-controls.mjs';
 
 // GET-184 tools coordinator: the single owner of the reader pill's expanded
 // state, its five-second concealment and the pointer/keyboard/dialog holds
@@ -25,14 +26,28 @@ export function mountReaderTools({sessionRoot,immersion=null,document=globalThis
   const pill=sessionRoot.querySelector('#reading-tools-trigger');
   const restorePill=()=>{if(disposed)return false;if(pill&&pill.isConnected!==false&&!pill.hidden){pill.focus({preventScroll:true});return true;}immersion?.restoreToolFocus?.();};
   const header=document.getElementById('reading-header');
+  let chat=null,overlayRevision=0;
+  // Primary surfaces hand off synchronously, before a modal takes focus or
+  // chat applies mobile inert. Closing a view never cancels its underlying job.
+  const prepareOverlay=id=>{
+    if(disposed)return null;
+    overlayRevision++;
+    const active=document.activeElement;
+    const safe=focusableTrigger(active)&&!active.closest?.('dialog,#reading-tools-panel,#reading-header,[popover]')?active:pill;
+    if(id!=='tools')toolbar.conceal({restoreFocus:false});
+    if(id!=='chat')chat?.close({focus:false});
+    for(const node of document.querySelectorAll('#settings-dialog[open],#atmosphere-dialog[open],#command-palette[open]'))if(node.id!==id)node.close();
+    for(const node of document.querySelectorAll('[popover][data-popover-open]'))if(!node.closest?.('#'+id))mountPopover({document,element:node}).close({focus:false});
+    return safe;
+  };
   const handoffHost=sessionRoot.querySelector('#reading-tools-chat-slot');
   let unread=false;
-  const restoreChat=()=>{if(disposed)return false;const trigger=handoffHost?.querySelector?.('.library-chat-trigger');if(trigger?.isConnected!==false&&trigger){toolbar.reveal(false);trigger.focus({preventScroll:true});return true;}return restorePill();};
+  const restoreChat=()=>{if(disposed||overlayOpen(document))return false;const trigger=handoffHost?.querySelector?.('.library-chat-trigger');if(trigger?.isConnected!==false&&trigger){toolbar.reveal(false);trigger.focus({preventScroll:true});return true;}return restorePill();};
   const updateUnreadLabel=()=>{if(!disposed){handoffHost?.setAttribute('aria-label',t('chat.entry'));handoffHost?.setAttribute('aria-description',unread?t('reader.tools.companion'):'');}};
   const offLocale=onUiLocaleChange(updateUnreadLabel);
   handoffHost?.setAttribute('role','group');handoffHost?.classList.toggle('has-companion-message',false);updateUnreadLabel();
   const toolbar=mountReadingToolbar(sessionRoot,{document,header,onExpandedChange(expanded,{focus,preview,restoreFocus=true}={}){
-    if(expanded){if(!preview)immersion?.showTools?.({focus:!!focus});return;}
+    if(expanded){prepareOverlay('tools');if(!preview)immersion?.showTools?.({focus:!!focus});return;}
     const inside=!!header?.contains?.(document.activeElement);
     immersion?.closeTools?.();
     if(restoreFocus&&inside)restorePill();
@@ -42,10 +57,10 @@ export function mountReaderTools({sessionRoot,immersion=null,document=globalThis
     companionAnchor:handoffHost||pill,
     focusReturn:restoreChat,
     onUnread:value=>{if(disposed)return;unread=!!value;handoffHost?.classList.toggle('has-companion-message',unread);updateUnreadLabel();},
-    onOpen:()=>toolbar.conceal()
+    onOpen:()=>prepareOverlay('chat')
   };
   toolbar.setControlMode(document.body?.classList?.contains('is-focused')?'focused':'unfocused');
   listen(document,'reader:focus',event=>toolbar.setControlMode(event?.detail?.focused===false?'unfocused':'focused'));
-  const tools={toolbar,chatIntegration,get toolFocusTarget(){return disposed?null:pill;},closeRequest:target=>{if(disposed||sessionRoot.contains(target)||header?.contains(target))return false;toolbar.conceal({restoreFocus:!target});return true;},unmount(){if(disposed)return;disposed=true;offLocale();toolbar.unmount();for(const release of listeners)release();listeners.length=0;if(currentTools===tools)currentTools=null;}};
+  const tools={toolbar,chatIntegration,prepareOverlay,getOverlayRevision:()=>overlayRevision,setChat:value=>{chat=value;},get toolFocusTarget(){return disposed?null:pill;},closeRequest:target=>{if(disposed||sessionRoot.contains(target)||header?.contains(target))return false;toolbar.conceal({restoreFocus:!target});return true;},unmount(){if(disposed)return;disposed=true;offLocale();toolbar.unmount();for(const release of listeners)release();listeners.length=0;if(currentTools===tools)currentTools=null;}};
   currentTools=tools;resolveTools(tools);return tools;
 }
