@@ -9,4 +9,3 @@ export function createPaperCompanion(doc,{pose='loading'}={}){
   scene.append(floor,person);if(pose!=='bookmark')scene.append(node('i','arrival-leaf arrival-leaf-one'),node('i','arrival-leaf arrival-leaf-two'));
   return scene;
 }
-
