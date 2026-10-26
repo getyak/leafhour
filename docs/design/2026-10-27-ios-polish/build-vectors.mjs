@@ -183,10 +183,10 @@ for (let i = 0; i < manifest.length; i++) {
   const item = manifest[i],
     x = gap + (i % cols) * (cardWidth + gap),
     y = header + Math.floor(i / cols) * (874 + 88);
-  try {
-    const img = await loadImage(await readFile(path.join(root, item.png)));
-    ctx.drawImage(img, x, y, 402, 874);
-  } catch {}
+  const img = await loadImage(await readFile(path.join(root, item.png)));
+  const scale = Math.min(402 / item.width, 874 / item.height);
+  const drawWidth = item.width * scale, drawHeight = item.height * scale;
+  ctx.drawImage(img, x + (402 - drawWidth) / 2, y + (874 - drawHeight) / 2, drawWidth, drawHeight);
   ctx.fillStyle = "#242A27";
   ctx.font = '18px "PingFang SC"';
   ctx.fillText(item.name, x, y + 905);

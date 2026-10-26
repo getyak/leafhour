@@ -118,6 +118,15 @@
       "source": "captures/13-night.json",
       "svg": "exports/13-night.svg",
       "png": "exports/13-night.png"
+    },
+    {
+      "slug": "14-resume-narrow",
+      "name": "14 · 窄屏续读",
+      "width": 320,
+      "height": 874,
+      "source": "captures/14-resume-narrow.json",
+      "svg": "exports/14-resume-narrow.svg",
+      "png": "exports/14-resume-narrow.png"
     }
   ]
 }

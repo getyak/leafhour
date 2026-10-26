@@ -406,6 +406,7 @@ try {
     "prototype/app.js",
     "prototype/motion.mjs",
     "prototype/selection-position.mjs",
+    "prototype/reading-position.mjs",
     "prototype/style.css",
     "prototype/index.html",
   ])

@@ -23,6 +23,7 @@ function drawIcons(scope = document) {
 }
 import { advanceSpring, resistedPosition, nearestDetent } from "./motion.mjs";
 import { placeSelectionMenu } from "./selection-position.mjs";
+import { normalizeReadingPosition, captureReadingPosition, restoreReadingPosition } from "./reading-position.mjs";
 
 const paragraphs = [
   {
@@ -60,6 +61,7 @@ const paragraphs = [
   },
 ];
 const sourceURL = "https://www.gutenberg.org/files/205/205-h/205-h.htm";
+const readingDocument = { bookId: "walden-public-sample", sourceVersion: "prototype-20261026" };
 const $ = (id) => document.getElementById(id),
   escape = (s) =>
     String(s).replace(
@@ -78,6 +80,10 @@ let saved = {};
 try {
   saved = JSON.parse(sessionStorage.getItem(key) || "{}");
 } catch {}
+if (!saved || typeof saved !== "object" || Array.isArray(saved)) saved = {};
+const initialLayer = ["source", "literal", "interpretive"].includes(saved.layer) ? saved.layer : "interpretive";
+const savedParagraph = paragraphs.find(p => p.id === saved.readingPosition?.passageId);
+const initialReading = savedParagraph && normalizeReadingPosition(saved.readingPosition, { ...readingDocument, layer: initialLayer }, savedParagraph[initialLayer]);
 const initialQuote = () => ({
   passageId: paragraphs[0].id,
   text: paragraphs[0].interpretive,
@@ -89,10 +95,17 @@ const initialQuote = () => ({
   startCodePoint: 0,
 });
 const state = {
-  theme: saved.theme || "paper",
-  size: saved.size || 22,
-  layer: saved.layer || "interpretive",
-  readingTop: saved.readingTop || 0,
+  theme: saved.theme === "night" ? "night" : "paper",
+  size: Number.isFinite(Number(saved.size)) && saved.size != null ? Math.max(18, Math.min(28, Number(saved.size))) : 22,
+  layer: initialLayer,
+  readingTop: Number.isFinite(Number(saved.readingTop)) ? Math.max(0, Number(saved.readingTop)) : 0,
+  readingPosition: initialReading?.position || null,
+  resumePassageId: initialReading?.position.passageId || paragraphs[0].id,
+  restoringReading: false,
+  readingTransition: false,
+  readingRestoreRevision: 0,
+  readingWidth: 0,
+  readingHeight: 0,
   quote: saved.quote || initialQuote(),
   draft: saved.draft || "",
   drafts: saved.drafts || [],
@@ -121,6 +134,7 @@ window.leafhourPrototype = {
     route: state.route,
     detent: state.detent,
     readingTop: $("reading-scroll").scrollTop,
+    readingPosition: state.readingPosition ? { ...state.readingPosition } : null,
     quote: { ...state.quote },
     draft: state.draft,
     drafts: state.drafts.map((x) => ({ ...x })),
@@ -133,6 +147,10 @@ window.leafhourPrototype = {
   scenario: showScenario,
 };
 function persist() {
+  const scroller = $("reading-scroll");
+  if (!state.restoringReading && !state.readingTransition && readingGeometryMatches() && scroller.scrollTop !== state.readingTop)
+    state.readingPosition = captureReadingPosition(scroller, readerIdentity()) || state.readingPosition;
+  state.readingTop = scroller.scrollTop;
   try {
     sessionStorage.setItem(
       key,
@@ -141,6 +159,7 @@ function persist() {
         size: state.size,
         layer: state.layer,
         readingTop: $("reading-scroll").scrollTop,
+        readingPosition: state.readingPosition,
         quote: state.quote,
         draft: state.draft,
         drafts: state.drafts,
@@ -174,28 +193,33 @@ function setStudy(title, detail) {
     );
 }
 function readerAnchor() {
-  const top = $("reading-scroll").getBoundingClientRect().top + 20;
-  const node = [...document.querySelectorAll("[data-passage]")].find(
-    (n) => n.getBoundingClientRect().bottom > top,
-  );
-  if (!node) return null;
-  const rect = node.getBoundingClientRect();
-  return {
-    id: node.id,
-    offset: rect.top - top,
-    fraction: rect.top < top ? (top - rect.top) / rect.height : null,
-  };
+  return state.readingPosition || captureReadingPosition($("reading-scroll"), readerIdentity());
+}
+function readerIdentity() {
+  return { ...readingDocument, layer: $("prose").dataset.layer || state.layer };
+}
+function readingGeometryMatches() {
+  return state.readingWidth === $("phone").clientWidth && state.readingHeight === $("phone").clientHeight;
+}
+function rememberReadingGeometry() {
+  state.readingWidth = $("phone").clientWidth;
+  state.readingHeight = $("phone").clientHeight;
 }
 function restoreReaderAnchor(anchor) {
-  if (!anchor) return;
-  const node = $(anchor.id);
-  if (!node) return;
-  const top = $("reading-scroll").getBoundingClientRect().top + 20,
-    rect = node.getBoundingClientRect();
-  $("reading-scroll").scrollTop +=
-    anchor.fraction === null
-      ? rect.top - top - anchor.offset
-      : rect.top + rect.height * anchor.fraction - top;
+  if (!anchor) return false;
+  state.restoringReading = true;
+  $("reading-scroll").setAttribute("data-restoring", "");
+  const revision = ++state.readingRestoreRevision;
+  const restored = restoreReadingPosition($("reading-scroll"), anchor, readerIdentity());
+  if (restored) state.readingPosition = restored;
+  state.readingTop = $("reading-scroll").scrollTop;
+  rememberReadingGeometry();
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    if (revision !== state.readingRestoreRevision) return;
+    state.restoringReading = false;
+    $("reading-scroll").removeAttribute("data-restoring");
+  }));
+  return !!restored;
 }
 function renderReader({ restore = true } = {}) {
   const anchor = readerAnchor();
@@ -208,13 +232,15 @@ function renderReader({ restore = true } = {}) {
       : state.layer === "literal"
         ? "示例直译"
         : "示例意译";
+  $("prose").dataset.layer = state.layer;
   $("prose").innerHTML = paragraphs
     .map(
       (p, i) =>
-        `<p class="passage ${state.layer === "source" ? "source" : ""}" id="${p.id}" data-passage="${p.id}">${i === 0 ? '<span class="resume-mark">上次读到这里</span>' : ""}<span class="passage-text">${escape(p[state.layer])}</span><button class="select-anchor" data-quote="${p.id}" aria-label="选择这一段">⌜</button></p>`,
+        `<p class="passage ${state.layer === "source" ? "source" : ""}" id="${p.id}" data-passage="${p.id}">${p.id === state.resumePassageId ? '<span class="resume-mark">上次读到这里</span>' : ""}<span class="passage-text">${escape(p[state.layer])}</span><button class="select-anchor" data-quote="${p.id}" aria-label="选择这一段">⌜</button></p>`,
     )
     .join("");
   if (restore) restoreReaderAnchor(anchor);
+  else rememberReadingGeometry();
 }
 function quoteKey(quote) {
   return JSON.stringify([
@@ -468,6 +494,7 @@ function paintSheet() {
   positionSelectionMenu();
 }
 function snap(detent, { immediate = false, onComplete = null } = {}) {
+  state.readingTransition = true;
   $("reader-sheet").dataset.motion = "moving";
   state.detent = detent;
   state.target = targetY(detent);
@@ -476,6 +503,8 @@ function snap(detent, { immediate = false, onComplete = null } = {}) {
     state.y = state.target;
     state.velocity = 0;
     paintSheet();
+    if (state.readingPosition) restoreReaderAnchor(state.readingPosition);
+    state.readingTransition = false;
     onComplete?.();
     $("reader-sheet").dataset.motion = "settled";
     return;
@@ -495,6 +524,8 @@ function snap(detent, { immediate = false, onComplete = null } = {}) {
     else {
       state.y = state.target;
       paintSheet();
+      if (state.readingPosition) restoreReaderAnchor(state.readingPosition);
+      state.readingTransition = false;
       onComplete?.();
       $("reader-sheet").dataset.motion = "settled";
     }
@@ -633,7 +664,12 @@ function backToDiscussion() {
 function jumpTo(id, { close = true } = {}) {
   if (close) closeSheet();
   const p = $(id);
-  if (p) $("reading-scroll").scrollTop = p.offsetTop - 24;
+  if (p?.hasAttribute("data-passage")) {
+    $("reading-scroll").scrollTop = p.offsetTop - 24;
+    state.readingPosition = captureReadingPosition($("reading-scroll"), readerIdentity(), id) || state.readingPosition;
+    state.readingTop = $("reading-scroll").scrollTop;
+    rememberReadingGeometry();
+  }
   persist();
 }
 function action(name) {
@@ -853,6 +889,8 @@ $("reading-scroll").addEventListener(
   "scroll",
   () => {
     state.readingTop = $("reading-scroll").scrollTop;
+    if (!state.restoringReading && !state.readingTransition && readingGeometryMatches())
+      state.readingPosition = captureReadingPosition($("reading-scroll"), readerIdentity()) || state.readingPosition;
     const current = [...document.querySelectorAll("[data-passage]")].find(
       (p) =>
         p.getBoundingClientRect().bottom >
@@ -868,6 +906,12 @@ $("reading-scroll").addEventListener(
   },
   { passive: true },
 );
+for (const type of ["wheel", "touchstart", "pointerdown", "keydown"])
+  $("reading-scroll").addEventListener(type, () => {
+    state.restoringReading = false;
+    state.readingTransition = false;
+    $("reading-scroll").removeAttribute("data-restoring");
+  }, { passive: true });
 document.addEventListener("selectionchange", () => {
   const selection = window.getSelection();
   if (!selection || selection.isCollapsed || !selection.rangeCount) return;
@@ -932,6 +976,7 @@ grip.addEventListener("pointerdown", (event) => {
   const interruptedClosing = restoreClosingPanel();
   cancelAnimationFrame(state.raf);
   $("reader-sheet").dataset.motion = "dragging";
+  state.readingTransition = true;
   grip.dataset.dragging = "true";
   state.velocity = 0;
   state.drag = {
@@ -1035,10 +1080,23 @@ function showScenario(name) {
 }
 drawIcons();
 renderReader({ restore: false });
-$("reading-scroll").scrollTop = state.readingTop;
+const hadStoredLocator = saved.readingPosition != null;
+const restoredReading = state.readingPosition && restoreReaderAnchor(state.readingPosition);
+if (!restoredReading) {
+  $("reading-scroll").scrollTop = hadStoredLocator ? 0 : state.readingTop;
+  state.readingTop = $("reading-scroll").scrollTop;
+  state.readingPosition = captureReadingPosition($("reading-scroll"), readerIdentity());
+  const entry = state.readingPosition?.passageId || paragraphs[0].id;
+  if (entry !== state.resumePassageId) {
+    state.resumePassageId = entry;
+    renderReader();
+  }
+}
+rememberReadingGeometry();
 state.y = targetY("closed");
 setStudy("打开即续读", "从上次的位置进入正文，陪读面板保持收起。");
 window.addEventListener("resize", () => {
+  if (state.readingPosition) restoreReaderAnchor(state.readingPosition);
   if (state.route !== "closed") snap(state.detent, { immediate: true });
   positionSelectionMenu();
 });
