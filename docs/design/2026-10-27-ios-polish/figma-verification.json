@@ -74,5 +74,18 @@
     "Figma is a fixed-state prototype. Continuous physics, selection and restoration are Web prototype evidence.",
     "Native SwiftUI, physical iPhone, VoiceOver, haptics and keyboard remain unverified.",
     "Figma full-paragraph highlight is a paragraph background; Web uses per-line text highlighting."
-  ]
+  ],
+  "restorationSpecimen": {
+    "nodeId": "3:3346",
+    "width": 320,
+    "height": 874,
+    "scope": "Static restoration comparison; Web behavior verified separately",
+    "nodeReadback": "evidence/figma/reading-restoration-node.json",
+    "screenshot": "evidence/figma/3-3346.png",
+    "screenshotSha256": "6c0605805e2433845ee16d8893b746e454f3154cba1d23fed4a2f3ae970d467c",
+    "visuallyChecked": true,
+    "presentationEntryCheckedThroughComputerUse": true,
+    "interactiveNavigation": false
+  },
+  "totalVersionedFrames": 14
 }

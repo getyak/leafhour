@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-26T19:44:41.515Z",
+  "at": "2026-10-26T21:02:36.127Z",
   "timeZone": "Asia/Singapore",
   "kind": "design-prototype",
   "checks": [
@@ -138,10 +138,11 @@
   },
   "status": "pass",
   "sourceHashes": {
-    "prototype/app.js": "5026b0d1d8e25a0439c8bb32da117796cac046f2b4a3dca7e2cf758d7b970047",
+    "prototype/app.js": "43c809f367a788ff0215881298b232a74cd0c3010c7111f1de2ccd50db18a49f",
     "prototype/motion.mjs": "53fd5df37f2034bcdf9fa47e7ae5d2bca1a11fff46bae63e77a30f2691ffd9ee",
     "prototype/selection-position.mjs": "ffd097f46090c18b411f18b3891fc5fe73733242f7e0c2bba7f0f9c8b97cacf8",
-    "prototype/style.css": "c06dc81cf8c08e2b9e4d515dd0575126e22407e372732a05df419d7dff949489",
+    "prototype/reading-position.mjs": "26c1c49866f01a7324c77e8b5c6db3845114bc1fc419d07bbb92b59f2eddf3ed",
+    "prototype/style.css": "a77f91dd9b1afccdef546c93079be976d0abea87a99e40350b24e996e9403024",
     "prototype/index.html": "40f95c8709035f596f1cd5d4d59f7eb425178ed215c5147627ac151949e4a2c6"
   },
   "artifactRendering": [

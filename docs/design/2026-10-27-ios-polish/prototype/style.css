@@ -199,6 +199,7 @@ svg.icon {
   letter-spacing: -1px;
 }
 .reading-scroll {
+  overflow-anchor: none;
   position: absolute;
   inset: 118px 0 114px;
   overflow: auto;

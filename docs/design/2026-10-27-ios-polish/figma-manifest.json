@@ -1730,5 +1730,13 @@
   "limitations": [
     "Figma is a fixed-state prototype. Continuous physics, selection and restoration are Web prototype evidence.",
     "Native SwiftUI, physical iPhone, VoiceOver, haptics and keyboard remain unverified."
-  ]
+  ],
+  "restorationSpecimen": {
+    "nodeId": "3:3346",
+    "width": 320,
+    "height": 874,
+    "capture": "captures/14-resume-narrow.json",
+    "scope": "Static cross-width restoration specimen; no false cross-paragraph navigation",
+    "textStyleId": "S:542492c2598774e7119f5de97136c10b20ab9ab4,"
+  }
 }

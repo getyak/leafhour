@@ -17,6 +17,8 @@
 
 本轮 [Figma 新版流程](https://www.figma.com/proto/zjkapX58kUJZZh0la8F4Nw/Leafhour?node-id=1-1869&starting-point-node-id=1%3A1869&page-id=1%3A2) 已写入同一文件下方，初版保留。13 个画面、165 个控件反应读回；通过 Computer Use 实际点通阅读→半屏→展开→出处→返回讨论→继续读。原生图层中的整段选择用段落背景表达，网页中用文字行背景表达；这不等同系统文本选择验收。
 
+第二轮新增[窄屏续读校对样张](https://www.figma.com/proto/zjkapX58kUJZZh0la8F4Nw/Leafhour?node-id=3-3346&starting-point-node-id=3%3A3346&page-id=1%3A2)。它是 320 px 的固定对照画面，不连接会把第二段误送到第一段讨论的跳转；恢复、重排和输入行为以真实网页原型验证为准。
+
 ## 重现与验证
 
 先运行 `node --test motion.test.mjs selection-position.test.mjs`，再用已有 Playwright 运行时设置 `LEAFHOUR_PLAYWRIGHT_MODULE`，执行 `node verify-polish.mjs` 与 `node build.mjs`。前者验证新增手势和选文行为；后者运行原有 11 条阅读/草稿/出处回程检查，导出 13 个状态，再检查单文件。
@@ -24,3 +26,11 @@
 打包使用仓库已有的 [esbuild API](https://esbuild.github.io/api/#bundle)，把运动和定位模块合入单文件。没有新增项目依赖。报告中的浏览器、源文件哈希和错误记录是实际结果；不能当作 SwiftUI、真实 iPhone、Safari、触觉、系统键盘或 VoiceOver 已验收。
 
 独立审阅的关闭中抓取、往返拖动、真实触摸滚动和快速上甩边界问题，均先复现失败，再通过对应回归。新增 10 项计算检查、14 项浏览器检查与原有 11 项阅读回归分别记录，不将检查数量当作审美评价。计算检查通过 `tests/ios-design-interaction.test.mjs` 纳入仓库常规检查；全量应用检查以远端结果为准。
+
+## 续读位置
+
+位置现在包含稳定段落与段内字符锚点，重开、宽度和字号变化会重新定位到原文字。换正文层时使用同段比例，不把译文字符偏移当成原文偏移。旧像素记录继续迁移，阅读与讨论草稿保持独立；位置仍属于当前浏览器会话。
+
+目录、笔记记录和返回原句是显式阅读意图，会立即更新逻辑锚点，面板收起后不会被旧位置拉回。标记“上次读到这里”对应本次进入的段落。段尾受滚动范围限制时保留目标文字可见和逻辑锚点，不能用短样章的第一可见段落冒充目标段落。
+
+第二轮共有 17 项计算、12 项续读浏览器检查、14 项手势检查和 11 项原有回归；单文件、14 张截图及源文件哈希另验。规范见 READING-POSITION.md，真实结果见 evidence/reading-position-verification.json。`node build.mjs` 顺序运行三组浏览器检查再导出，缺少截图时会失败，不留下空白画面冒充完成。

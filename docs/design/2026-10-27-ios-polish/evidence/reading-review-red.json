@@ -1,0 +1,55 @@
+{
+  "at": "2026-10-26T20:56:45.572Z",
+  "checks": [
+    {
+      "name": "cold-resume-keeps-the-source-paragraph-across-widths",
+      "status": "pass"
+    },
+    {
+      "name": "live-resize-does-not-rewrite-the-logical-character-anchor",
+      "status": "pass"
+    },
+    {
+      "name": "legacy-pixels-migrate-without-dropping-the-current-session",
+      "status": "pass"
+    },
+    {
+      "name": "a-foreign-document-locator-falls-back-to-the-start-safely",
+      "status": "pass"
+    },
+    {
+      "name": "restoring-reading-does-not-rebind-a-previous-question-or-draft",
+      "status": "pass"
+    },
+    {
+      "name": "the-entry-marker-follows-the-restored-paragraph",
+      "status": "pass"
+    },
+    {
+      "name": "smaller-type-keeps-the-target-word-and-logical-offset-even-at-the-book-end",
+      "status": "pass"
+    },
+    {
+      "name": "changing-text-layer-uses-the-same-paragraph-with-a-new-layer-offset",
+      "status": "pass"
+    },
+    {
+      "name": "directory-jump-survives-panel-close-and-reopen-no-preference",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'walden-2-001'\n- 'walden-2-002'\n              ^\n"
+    },
+    {
+      "name": "directory-jump-survives-panel-close-and-reopen-reduce",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'walden-2-001'\n- 'walden-2-002'\n              ^\n"
+    },
+    {
+      "name": "a-note-record-jump-updates-reading-without-changing-its-bound-source",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'walden-2-001'\n- 'walden-2-002'\n              ^\n"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "fail"
+}
