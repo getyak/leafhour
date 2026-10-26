@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-26T21:02:36.127Z",
+  "at": "2026-10-26T22:21:33.225Z",
   "timeZone": "Asia/Singapore",
   "kind": "design-prototype",
   "checks": [
@@ -22,8 +22,8 @@
     {
       "name": "citation-roundtrip-restores-half-detent-scroll-quote-and-draft",
       "status": "pass",
-      "beforeScroll": 172,
-      "afterScroll": 172
+      "beforeScroll": 182,
+      "afterScroll": 182
     },
     {
       "name": "half-sheet-background-reading-survives-closing",
@@ -138,12 +138,13 @@
   },
   "status": "pass",
   "sourceHashes": {
-    "prototype/app.js": "43c809f367a788ff0215881298b232a74cd0c3010c7111f1de2ccd50db18a49f",
+    "prototype/app.js": "93aae707f02b464ebb58cb4dbea577ddc34239204356d4c0e441590303bf350f",
     "prototype/motion.mjs": "53fd5df37f2034bcdf9fa47e7ae5d2bca1a11fff46bae63e77a30f2691ffd9ee",
     "prototype/selection-position.mjs": "ffd097f46090c18b411f18b3891fc5fe73733242f7e0c2bba7f0f9c8b97cacf8",
     "prototype/reading-position.mjs": "26c1c49866f01a7324c77e8b5c6db3845114bc1fc419d07bbb92b59f2eddf3ed",
-    "prototype/style.css": "a77f91dd9b1afccdef546c93079be976d0abea87a99e40350b24e996e9403024",
-    "prototype/index.html": "40f95c8709035f596f1cd5d4d59f7eb425178ed215c5147627ac151949e4a2c6"
+    "prototype/companion-context.mjs": "59a43939064c9f68d734c3b88d0066d9c4c55c85b2aa97d5b55f3867958ae4cb",
+    "prototype/style.css": "ca1951672ed1d2f7fce6d6c0d41a4acff55d14d2246aa3d5f8193b378d327d15",
+    "prototype/index.html": "f609165da4c50d0f1284b727c38b5c4cf4e14a0555e1c30488293cc77a47ef1b"
   },
   "artifactRendering": [
     {

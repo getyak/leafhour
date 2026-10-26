@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-26T22:06:11.075Z",
+  "checks": [
+    {
+      "name": "a-different-paragraph-note-keeps-the-chat-scope-and-does-not-feed-note-text-back",
+      "status": "fail",
+      "message": "locator.click: Error: strict mode violation: getByRole('button', { name: '记一句', exact: true }) resolved to 2 elements:\n    1) <button data-selection=\"note\">记一句</button> aka getByLabel('选文操作').getByRole('button', { name: '记一句' })\n    2) <button data-action=\"note\">…</button> aka getByRole('region', { name: '阅读辅助' }).getByRole('button', { name: '记一句' })\n\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '记一句', exact: true })\u001b[22m\n"
+    },
+    {
+      "name": "a-source-preview-keeps-the-existing-question-and-draft",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'walden-2-002'\n- 'walden-2-001'\n              ^\n"
+    },
+    {
+      "name": "a-note-started-from-reading-returns-to-reading",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'discussion'\n- 'closed'\n"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "fail"
+}

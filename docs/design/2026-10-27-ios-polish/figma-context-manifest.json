@@ -1,0 +1,77 @@
+{
+  "fileURL": "https://www.figma.com/design/zjkapX58kUJZZh0la8F4Nw/Leafhour",
+  "fileName": "Leafhour · iOS · 半屏陪读",
+  "version": "2026-10-27 · companion context",
+  "pluginVersion": "0.7.0",
+  "screens": {
+    "15-current-entry": {
+      "id": "6:3411",
+      "name": "15 · 从当前段开始"
+    },
+    "16-current-companion": {
+      "id": "6:3475",
+      "name": "16 · 当前段陪读"
+    },
+    "17-existing-discussion": {
+      "id": "6:3582",
+      "name": "17 · 继续已有讨论"
+    },
+    "18-current-with-recovery": {
+      "id": "6:3688",
+      "name": "18 · 改问当前并保留草稿"
+    },
+    "19-layer-identity": {
+      "id": "6:3799",
+      "name": "19 · 阅读层与讨论层各自清楚"
+    }
+  },
+  "connections": [
+    {
+      "nodeId": "6:3467",
+      "from": "15-current-entry",
+      "control": "companion-button",
+      "to": "16-current-companion",
+      "destinationId": "6:3475"
+    },
+    {
+      "nodeId": "6:3662",
+      "from": "17-existing-discussion",
+      "control": "ask-current",
+      "to": "18-current-with-recovery",
+      "destinationId": "6:3688"
+    },
+    {
+      "nodeId": "6:3794",
+      "from": "18-current-with-recovery",
+      "control": "draft-return",
+      "to": "17-existing-discussion",
+      "destinationId": "6:3582"
+    }
+  ],
+  "flows": [
+    {
+      "nodeId": "6:3411",
+      "name": "上下文 · 从正在读的段落问"
+    },
+    {
+      "nodeId": "6:3582",
+      "name": "上下文 · 继续或主动换段"
+    },
+    {
+      "nodeId": "6:3799",
+      "name": "版本校对 · 正文与讨论"
+    }
+  ],
+  "previousFramesPreserved": [
+    "1:1869",
+    "3:3346"
+  ],
+  "textStyleApplyCalls": 91,
+  "nativeTextStyleBindingsReported": 91,
+  "boundColorNodes": 155,
+  "limitations": [
+    "Five fixed specimens; only the three exact-state transitions listed here are connected. Closing and other controls stay in the existing full v2 flow or Web prototype.",
+    "No text input, adaptive discussion state or generation in Figma. Source and draft states are fixed samples.",
+    "Web/Figma checks do not establish native iPhone, SwiftUI, Safari, system keyboard, VoiceOver or haptic acceptance."
+  ]
+}

@@ -1,0 +1,80 @@
+[
+  {
+    "nodeId": "6:3467",
+    "reactions": [
+      {
+        "trigger": {
+          "type": "ON_CLICK"
+        },
+        "actions": [
+          {
+            "type": "NODE",
+            "destinationId": "6:3475",
+            "navigation": "NAVIGATE",
+            "transition": {
+              "type": "SMART_ANIMATE",
+              "easing": {
+                "type": "EASE_OUT"
+              },
+              "duration": 0.2199999988079071
+            },
+            "resetVideoPosition": false,
+            "resetScrollPosition": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "nodeId": "6:3662",
+    "reactions": [
+      {
+        "trigger": {
+          "type": "ON_CLICK"
+        },
+        "actions": [
+          {
+            "type": "NODE",
+            "destinationId": "6:3688",
+            "navigation": "NAVIGATE",
+            "transition": {
+              "type": "SMART_ANIMATE",
+              "easing": {
+                "type": "EASE_OUT"
+              },
+              "duration": 0.2199999988079071
+            },
+            "resetVideoPosition": false,
+            "resetScrollPosition": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "nodeId": "6:3794",
+    "reactions": [
+      {
+        "trigger": {
+          "type": "ON_CLICK"
+        },
+        "actions": [
+          {
+            "type": "NODE",
+            "destinationId": "6:3582",
+            "navigation": "NAVIGATE",
+            "transition": {
+              "type": "SMART_ANIMATE",
+              "easing": {
+                "type": "EASE_OUT"
+              },
+              "duration": 0.2199999988079071
+            },
+            "resetVideoPosition": false,
+            "resetScrollPosition": false
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-26T22:16:31.765Z",
+  "checks": [
+    {
+      "name": "changing-note-target-keeps-the-original-discussion-return-frame",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'closed'\n- 'companion'\n"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "fail"
+}

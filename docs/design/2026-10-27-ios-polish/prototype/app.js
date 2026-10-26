@@ -24,6 +24,7 @@ function drawIcons(scope = document) {
 import { advanceSpring, resistedPosition, nearestDetent } from "./motion.mjs";
 import { placeSelectionMenu } from "./selection-position.mjs";
 import { normalizeReadingPosition, captureReadingPosition, restoreReadingPosition } from "./reading-position.mjs";
+import { quoteIdentity, resolveCompanionContext } from "./companion-context.mjs";
 
 const paragraphs = [
   {
@@ -115,6 +116,8 @@ const state = {
   noteDrafts: saved.noteDrafts || {},
   question: saved.question || "",
   answered: !!saved.answered,
+  discussionStarted: saved.discussionStarted === true,
+  previewQuote: null,
   route: "closed",
   detent: "half",
   returnFrame: null,
@@ -139,6 +142,7 @@ window.leafhourPrototype = {
     draft: state.draft,
     drafts: state.drafts.map((x) => ({ ...x })),
     question: state.question,
+    discussionStarted: state.discussionStarted,
     notes: state.notes.length,
     theme: state.theme,
     layer: state.layer,
@@ -151,6 +155,7 @@ function persist() {
   if (!state.restoringReading && !state.readingTransition && readingGeometryMatches() && scroller.scrollTop !== state.readingTop)
     state.readingPosition = captureReadingPosition(scroller, readerIdentity()) || state.readingPosition;
   state.readingTop = scroller.scrollTop;
+  updateContextChrome();
   try {
     sessionStorage.setItem(
       key,
@@ -166,6 +171,7 @@ function persist() {
         notes: state.notes,
         question: state.question,
         answered: state.answered,
+        discussionStarted: state.discussionStarted,
         turns: state.turns,
         pendingTurn: state.pendingTurn,
         noteDrafts: state.noteDrafts,
@@ -232,6 +238,7 @@ function renderReader({ restore = true } = {}) {
       : state.layer === "literal"
         ? "示例直译"
         : "示例意译";
+  $("nav-version").textContent = $("version-label").textContent;
   $("prose").dataset.layer = state.layer;
   $("prose").innerHTML = paragraphs
     .map(
@@ -243,14 +250,53 @@ function renderReader({ restore = true } = {}) {
   else rememberReadingGeometry();
 }
 function quoteKey(quote) {
-  return JSON.stringify([
-    quote.passageId,
-    quote.version,
-    quote.layer,
-    quote.startUtf16,
-    quote.endUtf16,
-    quote.text,
-  ]);
+  return quoteIdentity(quote);
+}
+function currentReadingQuote() {
+  const id = state.readingPosition?.passageId || paragraphs[0].id;
+  const quote = captureQuote(paragraphs.some(p => p.id === id) ? id : paragraphs[0].id);
+  return { ...quote, selection: "当前阅读段落" };
+}
+function companionContext() {
+  return resolveCompanionContext({ readingQuote: currentReadingQuote(), discussionQuote: state.quote, discussionStarted: state.discussionStarted, draft: state.draft, question: state.question, pendingTurn: state.pendingTurn });
+}
+function layerLabel(layer) {
+  return { source: "原文", literal: "示例直译", interpretive: "示例意译" }[layer] || "来源待确认";
+}
+function contextCaption(context) {
+  return { current: "正在读的段落", selection: "当前段的选文", previous: "先前讨论的原句" }[context.relation] + " · " + layerLabel(state.quote.layer);
+}
+function updateContextChrome() {
+  const context = companionContext();
+  $("companion-label").textContent = context.label;
+  const label = $("sheet-body").querySelector("[data-context-label]");
+  if (label) label.textContent = contextCaption(context);
+  const switcher = $("sheet-body").querySelector('[data-action="ask-current"]');
+  if (switcher) switcher.hidden = !context.canAskCurrent;
+  if (state.route === "companion") $("sheet-title").textContent = context.relation === "previous" ? "继续讨论" : "读到这里";
+}
+function viewQuote() {
+  return state.previewQuote || state.quote;
+}
+function preserveCurrentQuestion() {
+  if (!state.question.trim()) return;
+  const key = quoteKey(state.quote);
+  if (state.pendingTurn?.question === state.question && quoteKey(state.pendingTurn.quote) === key) return;
+  if (state.turns.some(t => t.question === state.question && quoteKey(t.quote) === key)) return;
+  rememberTurn({ id: "prototype-retained-" + Date.now() + "-" + state.turns.length, question: state.question, quote: { ...state.quote }, answered: state.answered });
+}
+function enterCompanion() {
+  captureComposer();
+  const context = companionContext();
+  if (!context.quote) return notify("原问题的出处不完整，请先重新选一句");
+  if (context.mode === "reading") takeQuote(context.quote, { open: false });
+  else if (quoteKey(context.quote) !== quoteKey(state.quote)) {
+    state.quote = { ...context.quote };
+    if (!state.question.trim() && state.pendingTurn) state.question = state.pendingTurn.question;
+  }
+  state.discussionStarted = true;
+  persist();
+  openRoute("companion", "half", { capture: false });
 }
 function captureQuote(id, text, startOffset = null) {
   const p = paragraphs.find((p) => p.id === id) || paragraphs[0],
@@ -276,7 +322,9 @@ function rememberTurn(turn) {
 }
 function takeQuote(next, { open = true } = {}) {
   captureComposer();
+  state.previewQuote = null;
   if (quoteKey(state.quote) !== quoteKey(next)) {
+    preserveCurrentQuestion();
     if (state.draft.trim()) {
       state.drafts.push({ quote: { ...state.quote }, draft: state.draft });
       notify("上一句的问题草稿已保留");
@@ -288,6 +336,7 @@ function takeQuote(next, { open = true } = {}) {
       previous >= 0 ? state.drafts.splice(previous, 1)[0].draft : "";
     state.question = "";
     state.answered = false;
+    state.discussionStarted = false;
     state.returnFrame = null;
   }
   state.quote = next;
@@ -338,8 +387,11 @@ function positionSelectionMenu() {
   menu.style.setProperty("--anchor-x", Math.max(16, Math.min(size.width - 16, (anchor.left + anchor.right) / 2 - placement.left)) + "px");
   menu.dataset.placement = placement.placement;
 }
-function contextQuote() {
-  return `<div class="context-quote" data-passage-id="${escape(state.quote.passageId)}" data-source-layer="${escape(state.quote.layer)}" data-selection-start="${state.quote.startUtf16 ?? ""}" data-selection-end="${state.quote.endUtf16 ?? ""}"><small>本段 · ${state.quote.layer === "source" ? "原文" : state.quote.layer === "literal" ? "示例直译" : "示例意译"}</small><div class="quote-excerpt">${escape(state.quote.text)}</div><button data-action="return-quote">返回提问原句</button></div>`;
+function contextQuote(kind = "discussion") {
+  const quote = kind === "note" ? viewQuote() : state.quote;
+  const context = companionContext();
+  const caption = kind === "note" ? "笔记原句 · " + layerLabel(quote.layer) : contextCaption(context);
+  return `<div class="context-quote" data-passage-id="${escape(quote.passageId)}" data-source-layer="${escape(quote.layer)}" data-selection-start="${quote.startUtf16 ?? ""}" data-selection-end="${quote.endUtf16 ?? ""}"><small ${kind === "discussion" ? "data-context-label" : ""}>${escape(caption)}</small><div class="quote-excerpt">${escape(quote.text)}</div><div class="context-actions"><button data-action="return-quote">${kind === "note" ? "返回笔记原句" : "返回提问原句"}</button>${kind === "discussion" ? `<button class="ask-current" data-action="ask-current" ${context.canAskCurrent ? "" : "hidden"}>改问正在读的段落 ${icon("right")}</button>` : ""}</div></div>`;
 }
 function answerText() {
   return (
@@ -394,16 +446,17 @@ function renderBody() {
   }
   if (state.route === "original") {
     title = "核对原文";
+    back = !!state.returnFrame;
     const p =
-      paragraphs.find((p) => p.id === state.quote.passageId) || paragraphs[0];
+      paragraphs.find((p) => p.id === viewQuote().passageId) || paragraphs[0];
     html = `<div class="segmented"><button class="${state.layer === "source" ? "active" : ""}" data-layer="source">原文</button><button class="${state.layer === "literal" ? "active" : ""}" data-layer="literal">直译</button><button class="${state.layer === "interpretive" ? "active" : ""}" data-layer="interpretive">意译</button></div><span class="record-kind">作者原文 · 节选</span><p class="citation-original">${escape(p.source)}</p><div class="quiet-rule"></div><span class="record-kind">${state.layer === "literal" ? "示例直译" : "示例意译"}</span><p class="citation-translation">${escape(p[state.layer === "literal" ? "literal" : "interpretive"])}</p>`;
   }
   if (state.route === "note") {
     title = "记一句";
     back = !!state.returnFrame;
     html =
-      contextQuote() +
-      `<textarea class="note-field" id="note-field" aria-label="自己的笔记" placeholder="用自己的话，留下一点想法…">${escape(state.noteDrafts[quoteKey(state.quote)] || "")}</textarea><div class="save-note-row"><span>自己的笔记</span><button class="primary-button" data-action="save-note">保存</button></div>`;
+      contextQuote("note") +
+      `<textarea class="note-field" id="note-field" aria-label="自己的笔记" placeholder="用自己的话，留下一点想法…">${escape(state.noteDrafts[quoteKey(viewQuote())] || "")}</textarea><div class="save-note-row"><span>自己的笔记</span><button class="primary-button" data-action="save-note">保存</button></div>`;
   }
   if (state.route === "library") {
     title = "书房";
@@ -463,6 +516,7 @@ function renderBody() {
   $("draft-return").hidden = !state.drafts.length;
   $("sheet-body").scrollTop = 0;
   drawIcons($("sheet-body"));
+  updateContextChrome();
 }
 function phoneHeight() {
   return $("phone").clientHeight;
@@ -538,6 +592,7 @@ function openRoute(
   { capture = true, restoreScroll = null } = {},
 ) {
   if (capture) captureComposer();
+  if (!["note", "original"].includes(route)) state.previewQuote = null;
   if (state.closingFrame) state.returnFrame = null;
   state.closingFrame = null;
   setClosingControls(false);
@@ -612,6 +667,7 @@ function closeSheet() {
         $("reader-sheet").inert = true;
         state.closingFrame = null;
         state.returnFrame = null;
+        state.previewQuote = null;
         setClosingControls(false);
       }
     },
@@ -625,7 +681,7 @@ function closeSheet() {
 }
 function captureComposer() {
   if (state.route === "note") {
-    state.noteDrafts[quoteKey(state.quote)] = $("note-field")?.value || "";
+    state.noteDrafts[quoteKey(viewQuote())] = $("note-field")?.value || "";
     persist();
     return;
   }
@@ -682,12 +738,21 @@ function action(name) {
     return;
   }
   if (name === "return-quote") {
-    jumpTo(state.quote.passageId, { close: false });
+    jumpTo((state.route === "note" || state.route === "original" ? viewQuote() : state.quote).passageId, { close: false });
     notify("已回到提问原句");
     return;
   }
   if (name === "expand") {
+    state.discussionStarted = true;
     openRoute("discussion", "full");
+    return;
+  }
+  if (name === "ask-current") {
+    const route = state.route === "discussion" ? "discussion" : "companion", detent = state.detent;
+    takeQuote(currentReadingQuote(), { open: false });
+    state.discussionStarted = true;
+    persist();
+    openRoute(route, detent, { capture: false });
     return;
   }
   if (name === "note") {
@@ -710,12 +775,13 @@ function action(name) {
       $("note-field")?.focus();
       return;
     }
-    state.notes.unshift({ text, quote: { ...state.quote }, author: "user" });
-    state.noteDrafts[quoteKey(state.quote)] = "";
+    state.notes.unshift({ text, quote: { ...viewQuote() }, author: "user" });
+    state.noteDrafts[quoteKey(viewQuote())] = "";
     $("note-field").value = "";
     persist();
     notify("笔记已保存");
-    backToDiscussion();
+    if (state.returnFrame) backToDiscussion();
+    else closeSheet();
     return;
   }
   if (name === "retry") {
@@ -735,10 +801,11 @@ function action(name) {
       state.question = turn.question;
       state.draft = "";
       $("question-input").value = "";
-      rememberTurn(turn);
+      rememberTurn({ ...turn, answered: true });
       state.pendingTurn = null;
     }
     state.answered = true;
+    state.discussionStarted = true;
     persist();
     renderBody();
     notify("已恢复示例讲解");
@@ -754,7 +821,19 @@ document.addEventListener("click", (event) => {
     return;
   }
   if (button.dataset.selection) {
-    takeQuote(state.pendingSelection || initialQuote(), { open: false });
+    const selected = state.pendingSelection || initialQuote();
+    if (button.dataset.selection === "explain") {
+      takeQuote(selected, { open: false });
+      state.discussionStarted = true;
+      persist();
+    } else {
+      captureComposer();
+      state.previewQuote = { ...selected };
+      if (["companion", "discussion"].includes(state.route)) state.returnFrame = { route: state.route, detent: state.detent, scrollTop: $("sheet-body").scrollTop, draft: state.draft, quote: { ...state.quote }, question: state.question, answered: state.answered };
+      else if (!["note", "original"].includes(state.route)) state.returnFrame = null;
+      hideSelectionMenu();
+      window.getSelection()?.removeAllRanges();
+    }
     openRoute(
       button.dataset.selection === "explain"
         ? "companion"
@@ -805,7 +884,8 @@ document.addEventListener("click", (event) => {
     const turn = state.turns[Number(button.dataset.turn)];
     takeQuote({ ...turn.quote }, { open: false });
     state.question = turn.question;
-    state.answered = true;
+    state.answered = turn.answered !== false;
+    state.discussionStarted = true;
     openRoute("discussion", "full", { capture: false });
     return;
   }
@@ -820,7 +900,7 @@ $("library-button").onclick = () => openRoute("library", "full");
 $("contents-button").onclick = () => openRoute("contents", "full");
 $("progress-button").onclick = () => openRoute("contents", "full");
 $("appearance-button").onclick = () => openRoute("appearance", "full");
-$("companion-button").onclick = () => openRoute("companion", "half");
+$("companion-button").onclick = enterCompanion;
 $("sheet-done").onclick = closeSheet;
 $("sheet-back").onclick = backToDiscussion;
 $("sheet-scrim").onclick = () => snap("half");
@@ -855,10 +935,12 @@ $("question-form").onsubmit = (event) => {
   const question = $("question-input").value.trim();
   if (!question) return;
   state.question = question;
+  state.discussionStarted = true;
   const turn = {
     id: "prototype-" + Date.now(),
     question,
     quote: { ...state.quote },
+    answered: !state.offline,
   };
   state.pendingTurn = turn;
   if (!state.offline) {
@@ -881,6 +963,7 @@ $("draft-return").onclick = () => {
   state.draft = previous.draft;
   state.question = "";
   state.answered = false;
+  state.discussionStarted = true;
   state.returnFrame = null;
   persist();
   renderBody();
@@ -1095,6 +1178,7 @@ if (!restoredReading) {
 rememberReadingGeometry();
 state.y = targetY("closed");
 setStudy("打开即续读", "从上次的位置进入正文，陪读面板保持收起。");
+updateContextChrome();
 window.addEventListener("resize", () => {
   if (state.readingPosition) restoreReaderAnchor(state.readingPosition);
   if (state.route !== "closed") snap(state.detent, { immediate: true });
@@ -1114,7 +1198,7 @@ grip.addEventListener("keydown", (event) => {
 
 document.addEventListener("input", (event) => {
   if (event.target.id === "note-field") {
-    state.noteDrafts[quoteKey(state.quote)] = event.target.value;
+    state.noteDrafts[quoteKey(viewQuote())] = event.target.value;
     persist();
   }
 });

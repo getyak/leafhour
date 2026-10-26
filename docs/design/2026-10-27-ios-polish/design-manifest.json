@@ -127,6 +127,51 @@
       "source": "captures/14-resume-narrow.json",
       "svg": "exports/14-resume-narrow.svg",
       "png": "exports/14-resume-narrow.png"
+    },
+    {
+      "slug": "15-current-entry",
+      "name": "15 · 从当前段开始",
+      "width": 402,
+      "height": 874,
+      "source": "captures/15-current-entry.json",
+      "svg": "exports/15-current-entry.svg",
+      "png": "exports/15-current-entry.png"
+    },
+    {
+      "slug": "16-current-companion",
+      "name": "16 · 当前段陪读",
+      "width": 402,
+      "height": 874,
+      "source": "captures/16-current-companion.json",
+      "svg": "exports/16-current-companion.svg",
+      "png": "exports/16-current-companion.png"
+    },
+    {
+      "slug": "17-existing-discussion",
+      "name": "17 · 继续已有讨论",
+      "width": 402,
+      "height": 874,
+      "source": "captures/17-existing-discussion.json",
+      "svg": "exports/17-existing-discussion.svg",
+      "png": "exports/17-existing-discussion.png"
+    },
+    {
+      "slug": "18-current-with-recovery",
+      "name": "18 · 改问当前并保留草稿",
+      "width": 402,
+      "height": 874,
+      "source": "captures/18-current-with-recovery.json",
+      "svg": "exports/18-current-with-recovery.svg",
+      "png": "exports/18-current-with-recovery.png"
+    },
+    {
+      "slug": "19-layer-identity",
+      "name": "19 · 阅读层与讨论层各自清楚",
+      "width": 402,
+      "height": 874,
+      "source": "captures/19-layer-identity.json",
+      "svg": "exports/19-layer-identity.svg",
+      "png": "exports/19-layer-identity.png"
     }
   ]
 }

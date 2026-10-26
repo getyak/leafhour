@@ -21,7 +21,7 @@
 
 ## 重现与验证
 
-先运行 `node --test motion.test.mjs selection-position.test.mjs`，再用已有 Playwright 运行时设置 `LEAFHOUR_PLAYWRIGHT_MODULE`，执行 `node verify-polish.mjs` 与 `node build.mjs`。前者验证新增手势和选文行为；后者运行原有 11 条阅读/草稿/出处回程检查，导出 13 个状态，再检查单文件。
+先运行 `node --test motion.test.mjs selection-position.test.mjs`，再用已有 Playwright 运行时设置 `LEAFHOUR_PLAYWRIGHT_MODULE`，执行 `node build.mjs`。它顺序验证手势、稳定续读、陪读上下文与原有阅读/草稿/出处回程，再导出全部截图和矢量、检查单文件。纯计算检查统一入口为 `node --test tests/ios-design-interaction.test.mjs`。
 
 打包使用仓库已有的 [esbuild API](https://esbuild.github.io/api/#bundle)，把运动和定位模块合入单文件。没有新增项目依赖。报告中的浏览器、源文件哈希和错误记录是实际结果；不能当作 SwiftUI、真实 iPhone、Safari、触觉、系统键盘或 VoiceOver 已验收。
 
@@ -33,4 +33,13 @@
 
 目录、笔记记录和返回原句是显式阅读意图，会立即更新逻辑锚点，面板收起后不会被旧位置拉回。标记“上次读到这里”对应本次进入的段落。段尾受滚动范围限制时保留目标文字可见和逻辑锚点，不能用短样章的第一可见段落冒充目标段落。
 
-第二轮共有 17 项计算、12 项续读浏览器检查、14 项手势检查和 11 项原有回归；单文件、14 张截图及源文件哈希另验。规范见 READING-POSITION.md，真实结果见 evidence/reading-position-verification.json。`node build.mjs` 顺序运行三组浏览器检查再导出，缺少截图时会失败，不留下空白画面冒充完成。
+第二轮共有 17 项计算、12 项续读浏览器检查、14 项手势检查和 11 项原有回归；单文件、14 张截图及源文件哈希另验。规范见 READING-POSITION.md，真实结果见 evidence/reading-position-verification.json。`node build.mjs` 顺序运行浏览器检查再导出，缺少截图时会失败，不留下空白画面冒充完成。
+
+
+## 陪读从哪里开始
+
+没有已有讨论时，“读到这里”从正在读的段落开始。已有问题、草稿、明确选过的句子或未完成提问时，入口改为“继续讨论”，原引用保留。读者可点“改问正在读的段落”，旧草稿仍能找回，旧问题进入带原出处的讨论记录。只选择文字不会改绑讨论。
+
+正文导航持续显示原文、示例直译或示例意译；讨论卡显示自己的版本。看原文与记笔记使用临时出处，不改写讨论。笔记从阅读发起就回阅读，从讨论发起就回原讨论；在笔记面板换选另一段也保留原来的返回位置。
+
+[第三轮 Figma 对照](https://www.figma.com/proto/zjkapX58kUJZZh0la8F4Nw/Leafhour?node-id=6-3582&starting-point-node-id=6%3A3582&page-id=1%3A2) 位于画布 y=7000，原有设计保留。五个新增状态只连接三个引用、草稿状态严格一致的跳转；其他输入和恢复以网页原型为准。规范见 [COMPANION-CONTEXT.md](COMPANION-CONTEXT.md)，读回与导出见 `figma-context-manifest.json` 和 `evidence/figma-context/`。
