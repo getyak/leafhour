@@ -2,6 +2,11 @@
 // data, also the safe default for server/static English shells. Complete
 // default data: every other catalogue carries the same keys.
 export default Object.freeze({
+  "reader.location.fragmentPercent": "{percent}% within part",
+  "reader.location.chapter": "Chapter {number} / {count}",
+  "reader.location.fragment": "Part {number} / {count}",
+  "reader.location.percent": "{percent}% within chapter",
+
   "giftCompose.shareCancelled": "Sharing cancelled.",
   "bookActions.introTimeout": "Introduction timed out. Retry loading.",
   "bookActions.introAccess": "Access changed. Reopen this book from your library.",

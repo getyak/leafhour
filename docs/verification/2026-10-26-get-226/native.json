@@ -1,0 +1,83 @@
+{
+  "kind": "macOS OS input in an exclusively owned Chromium window; real packaged reader",
+  "previousFrontmostRestored": true,
+  "states": [
+    {
+      "name": "ordinary",
+      "full": null,
+      "rendered": "false",
+      "events": [],
+      "geometry": {
+        "innerWidth": 1200,
+        "innerHeight": 918,
+        "outerWidth": 1200,
+        "outerHeight": 1005,
+        "screenWidth": 1920,
+        "screenHeight": 1080
+      },
+      "exitVisible": false
+    },
+    {
+      "name": "fullscreen",
+      "full": "HTML",
+      "rendered": "true",
+      "events": [
+        {
+          "type": "keydown",
+          "key": "f",
+          "trusted": true,
+          "full": null
+        },
+        {
+          "type": "fullscreenchange",
+          "trusted": true,
+          "full": "HTML"
+        }
+      ],
+      "geometry": {
+        "innerWidth": 1200,
+        "innerHeight": 918,
+        "outerWidth": 1200,
+        "outerHeight": 1005,
+        "screenWidth": 1920,
+        "screenHeight": 1080
+      },
+      "exitVisible": true
+    },
+    {
+      "name": "escaped",
+      "full": null,
+      "rendered": "false",
+      "events": [
+        {
+          "type": "keydown",
+          "key": "f",
+          "trusted": true,
+          "full": null
+        },
+        {
+          "type": "fullscreenchange",
+          "trusted": true,
+          "full": "HTML"
+        },
+        {
+          "type": "fullscreenchange",
+          "trusted": true,
+          "full": null
+        }
+      ],
+      "geometry": {
+        "innerWidth": 1200,
+        "innerHeight": 918,
+        "outerWidth": 1200,
+        "outerHeight": 1005,
+        "screenWidth": 1920,
+        "screenHeight": 1080
+      },
+      "exitVisible": false
+    }
+  ],
+  "browserPid": 38136,
+  "started": "Mon Oct 26 14:11:26 2026",
+  "passed": true
+}

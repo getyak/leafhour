@@ -1,0 +1,71 @@
+[
+  {
+    "name": "copy-export",
+    "exit": 0,
+    "durationMs": 519
+  },
+  {
+    "name": "copy-repro",
+    "exit": 0,
+    "durationMs": 434
+  },
+  {
+    "name": "copy-lint",
+    "exit": 0,
+    "durationMs": 8946
+  },
+  {
+    "name": "copy-canaries",
+    "exit": 0,
+    "durationMs": 9371
+  },
+  {
+    "name": "pricing",
+    "exit": 0,
+    "durationMs": 26
+  },
+  {
+    "name": "full-tests",
+    "exit": 0,
+    "durationMs": 95659
+  },
+  {
+    "name": "runtime",
+    "exit": 0,
+    "durationMs": 1852
+  },
+  {
+    "name": "vercel",
+    "exit": 0,
+    "durationMs": 686
+  },
+  {
+    "name": "assets",
+    "exit": 0,
+    "durationMs": 48
+  },
+  {
+    "name": "policy",
+    "exit": 0,
+    "durationMs": 473
+  },
+  {
+    "name": "release",
+    "exit": 0,
+    "durationMs": 36
+  },
+  {
+    "name": "final-landscape-css-targeted",
+    "exit": 0,
+    "tests": 28,
+    "note": "Final source is separately fenced for the subsequent complete suite; CSS budget 204608."
+  },
+  {
+    "name": "final-exact-source-full-tests",
+    "exit": 0,
+    "pass": 3485,
+    "fail": 0,
+    "skip": 1,
+    "sourceFingerprintCount": 13
+  }
+]

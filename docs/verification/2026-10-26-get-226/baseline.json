@@ -1,0 +1,93 @@
+{
+  "at": "2026-10-26T05:44:10.185Z",
+  "baseline": true,
+  "packaged": false,
+  "cases": [
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "en",
+      "width": 1280,
+      "height": 800,
+      "theme": "paper",
+      "scale": 1,
+      "writes": [],
+      "errors": [],
+      "checks": [],
+      "initial": {
+        "chapter": "ch01",
+        "anchor": {
+          "passageId": "01b38ea4c710a84b-p00007",
+          "offset": 189.75,
+          "chapterId": "ch01"
+        },
+        "top": 189.75,
+        "bottom": 7154.421875,
+        "height": 6964.671875,
+        "inset": 24,
+        "viewport": 800,
+        "label": "",
+        "running": "1 / 12",
+        "page": "",
+        "mode": "scroll",
+        "full": false
+      },
+      "contrast": [
+        {
+          "id": "open-book-info",
+          "foreground": [
+            113,
+            111,
+            101
+          ],
+          "composedBackground": [
+            250,
+            249,
+            245
+          ],
+          "opacity": "1",
+          "ratio": 4.787314122972962
+        },
+        {
+          "id": "open-chapter",
+          "foreground": [
+            113,
+            111,
+            101
+          ],
+          "composedBackground": [
+            250,
+            249,
+            245
+          ],
+          "opacity": "1",
+          "ratio": 4.787314122972962
+        },
+        {
+          "id": "reading-tools-trigger",
+          "foreground": [
+            41,
+            42,
+            37
+          ],
+          "composedBackground": [
+            253,
+            252,
+            248
+          ],
+          "opacity": "1",
+          "ratio": 14.086480125083334
+        }
+      ],
+      "expectedFailures": {
+        "persistentPosition": true,
+        "scrollPercentage": true
+      }
+    }
+  ],
+  "limits": [
+    "Local synthetic owner and public-domain Alice. Long-title injection and text scaling are named fixtures.",
+    "All non-GET API requests are rejected before backend dispatch. No new progress/notes/model writes.",
+    "Driver WebKit is not physical Safari, human VoiceOver or native-language review."
+  ]
+}

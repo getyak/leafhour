@@ -83,6 +83,7 @@ syncLocaleChoice=()=>settingsUI.choices['reader-ui-choice']?.sync();
 let readerToolsHandle=null;
 const immersion=mountReaderImmersion({document,announce,beforeLayout:()=>anchor(),afterLayout:a=>{restoreAnchor(a);if(!$('paragraph-tools').hidden)positionTools();dispatchReaderEvent('reader:layout');},onToolsLayout:()=>{if(!$('paragraph-tools').hidden)positionTools();},focusReturn:()=>readerToolsHandle?.toolFocusTarget,onToolsCloseRequest:target=>readerToolsHandle?.closeRequest?.(target)});
 const readerTools=readerToolsHandle=mountReaderTools({sessionRoot:$('reading-session'),immersion,document});
+void import('./reader-location.mjs').then(m=>!readerDisposed&&m.mountReaderLocation({document,tools:readerTools})).catch(()=>{});
 // GET-178 page adapter: reader appearance actions run through the existing
 // appearance API so paragraph position and progress stay preserved.
 window.marginaliaPaletteAdapter={getOwner:readerOwner,appearance:{setTheme:theme=>adjustAppearance({theme}),adjustFont:d=>adjustAppearance({font:state.font+d})},fullscreen:immersion.toggleFullscreen,
@@ -215,7 +216,6 @@ function updateChapterNavigation(){
   const chapter=currentChapter(),index=book.chapters.findIndex(c=>c.id===chapter.id),bodyCount=book.chapters.filter(c=>c.kind==='body').length;
   document.title=chapter.title.zh+' · Leafhour';
   $('chapter-fraction').textContent=chapter.kind==='body'?chapter.number+' / '+bodyCount:chapter.kind?chapter.title.zh:(index+1)+' / '+book.chapters.length;
-  $('running-progress').textContent=$('chapter-fraction').textContent;
   $('previous-chapter').disabled=index===0;$('next-chapter').disabled=index===book.chapters.length-1;
   renderToc();document.dispatchEvent(new CustomEvent('reader:chapter',{detail:{chapterId:state.chapterId}}));
 }

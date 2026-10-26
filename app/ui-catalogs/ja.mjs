@@ -1,6 +1,11 @@
 // GET-192 immutable ja UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "reader.location.fragmentPercent": "部分内 {percent}%",
+  "reader.location.chapter": "第 {number} / {count} 章",
+  "reader.location.fragment": "第 {number} / {count} 部分",
+  "reader.location.percent": "章内 {percent}%",
+
   "giftCompose.shareCancelled": "共有をキャンセルしました。",
   "bookActions.introTimeout": "紹介文の読み込みがタイムアウトしました。再試行してください。",
   "bookActions.introAccess": "アクセス状況が変わりました。書房から本を開き直してください。",

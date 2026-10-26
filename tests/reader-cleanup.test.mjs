@@ -104,12 +104,12 @@ test('session disposal releases mark focus ownership while its transport is stil
  const saving=api.markChapter('one');assert.equal(active.size,1);api.disposeSession();assert.equal(active.size,0,'unmount must not wait for the network');assert.equal(markFocusOwners.size,0);release({type:'chapter_read'});await saving;assert.equal(active.size,0);
 });
 
-test('existing chapter navigation updates one header location in both reading modes',()=>{
+test('chapter navigation publishes its chapter without replacing measured position with an ordinal',()=>{
  const {document}=fixture(html),$=id=>document.getElementById(id);let events=0;
- document.addEventListener('reader:chapter',()=>events++);
+ document.addEventListener('reader:chapter',()=>events++);$('running-progress').textContent='37%';
  const state={chapterId:'two'},run=new Function('book','currentChapter','state','$','document','renderToc','CustomEvent',declaration(reader,'updateChapterNavigation')+';updateChapterNavigation();');
  assert.ok($('running-progress'),'one location belongs to the existing chapter chooser');
- for(const continuous of [true,false]){document.body.dataset.continuous=String(continuous);run(book,()=>book.chapters[1],state,$,document,()=>{},class extends Event{constructor(name,options){super(name);this.detail=options.detail;}});assert.equal($('running-progress').textContent,$('chapter-fraction').textContent);assert.equal($('running-progress').textContent,'2 / 2');}
+ for(const continuous of [true,false]){document.body.dataset.continuous=String(continuous);run(book,()=>book.chapters[1],state,$,document,()=>{},class extends Event{constructor(name,options){super(name);this.detail=options.detail;}});assert.equal($('running-progress').textContent,'37%');assert.equal($('chapter-fraction').textContent,'2 / 2');}
  assert.equal(events,2);
 });
 

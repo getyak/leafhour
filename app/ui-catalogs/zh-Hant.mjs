@@ -1,6 +1,11 @@
 // GET-192 immutable zh-Hant UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "reader.location.fragmentPercent": "片段內 {percent}%",
+  "reader.location.chapter": "第 {number} / {count} 章",
+  "reader.location.fragment": "第 {number} / {count} 個片段",
+  "reader.location.percent": "章內 {percent}%",
+
   "giftCompose.shareCancelled": "已取消分享。",
   "bookActions.introTimeout": "簡介載入逾時，請重試。",
   "bookActions.introAccess": "存取狀態已變化，請從書房重新開啟這本書。",
