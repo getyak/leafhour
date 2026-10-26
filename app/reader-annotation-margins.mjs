@@ -11,7 +11,7 @@ export function annotationSheetBounds({viewport,blocked=[]}){
 }
 export function annotationRails({left,right,viewport,paginated=false,blocked=[]}){
  const fits=(start,end)=>end-start>=204&&!blocked.some(r=>r.left<end&&r.right>start);
- if(paginated)return [];
+ if(paginated||viewport<1400)return [];
  const rails=[];
  if(fits(24,left-24))rails.push({side:'left',left:Math.max(24,left-280),width:Math.min(256,left-48)});
  if(fits(right+24,viewport-24))rails.push({side:'right',left:right+24,width:Math.min(256,viewport-right-48)});

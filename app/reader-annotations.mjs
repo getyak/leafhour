@@ -100,18 +100,28 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
  function schedule(){clearTimeout(poll);if(outbox?.current()?.phase==='explain'&&(busy||requests.some(row=>row.id===outbox.current()?.input.id&&row.status==='running')))poll=view.setTimeout(()=>refresh(),1000);}
  function place(){
   if(card.hidden)return;
+  const move=(parent,before=null)=>{if(card.parentElement===parent)return;const focused=card.contains(document.activeElement)&&document.activeElement;parent.insertBefore(card,before);if(focused)focused.focus({preventScroll:true});};
+  const chat=document.querySelector('.reader-chat-workspace[open]'),embedded=chat?.classList.contains('is-reader-chat-mobile'),frame=embedded&&chat.querySelector('.library-chat-frame');
+  if(frame){
+   move(frame,frame.querySelector('.library-chat-messages'));
+   card.inert=false;card.dataset.placement='chat';card.style.removeProperty('width');card.style.removeProperty('left');card.style.removeProperty('top');return;
+  }
   const held=thread(),rect=held&&margins.rectFor(held.quote.parts[0].passageId),rails=margins.rails();
   const rail=rails.find(r=>r.side==='right')||rails[0];
   card.dataset.placement=rail?'margin':'sheet';
-  if(card.parentElement!==document.body)document.body.append(card);
+  move(document.body);
   if(rail){card.style.width=rail.width+'px';card.style.left=rail.left+'px';const top=Math.max(76,Math.min(rect?.top||76,view.innerHeight-280));card.style.top=top+'px';card.style.setProperty('--annotation-card-height',Math.max(132,view.innerHeight-top-24)+'px');}
   else{
    card.style.removeProperty('width');card.style.removeProperty('left');card.style.removeProperty('top');
    const blocked=[...document.querySelectorAll('.reader-chat-workspace[open]:not(.is-reader-chat-mobile)')].map(el=>el.getBoundingClientRect()).filter(r=>r.width&&r.height);
    const bounds=annotationSheetBounds({viewport:view.innerWidth,blocked});
    card.style.setProperty('--annotation-sheet-left',bounds.left+'px');card.style.setProperty('--annotation-sheet-width',bounds.width+'px');
-   const viewport=view.visualViewport;card.style.setProperty('--annotation-sheet-height',Math.max(100,(viewport?.height||view.innerHeight)-32)+'px');
-   card.style.setProperty('--annotation-sheet-bottom',Math.max(12,view.innerHeight-(viewport?.height||view.innerHeight)-(viewport?.offsetTop||0)+12)+'px');
+   const viewport=view.visualViewport,top=(viewport?.offsetTop||0)+12;
+   let bottom=Math.max(12,view.innerHeight-(viewport?.height||view.innerHeight)-(viewport?.offsetTop||0)+12);
+   const tools=document.getElementById('reading-session')?.getBoundingClientRect();
+   if(tools?.width&&tools.left<bounds.left+bounds.width/2&&tools.right>bounds.left-bounds.width/2)bottom=Math.max(bottom,view.innerHeight-tools.top+12);
+   card.style.setProperty('--annotation-sheet-height',Math.max(0,view.innerHeight-bottom-top)+'px');
+   card.style.setProperty('--annotation-sheet-bottom',bottom+'px');
   }
  }
  function staleQuote(quote){
@@ -155,7 +165,7 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
  function hide({restoreFocus=true}={}){
   if(card.hidden)return;saveDraft();const returnFocus=restoreFocus&&card.contains(document.activeElement),origin=opener;
   card.hidden=true;margins.select(null);
-  if(returnFocus){const badge=document.querySelector('[data-annotation-thread="'+activeId+'"]'),target=canReturnFocus(origin)?origin:canReturnFocus(badge)?badge:document.getElementById('book-page');target?.focus({preventScroll:true});}
+  if(returnFocus){const badge=document.querySelector('[data-annotation-thread="'+activeId+'"]'),target=card.closest('dialog[open]')?.querySelector('.library-chat-close')||(canReturnFocus(origin)?origin:canReturnFocus(badge)?badge:document.getElementById('book-page'));target?.focus({preventScroll:true});}
  }
  async function openHighlight(row,origin){
   if(!ensureScope())return;const token=epoch,own=scope;if(!archive&&!await refresh()){if(current(token,own))notice('loadFailed');return;}if(!current(token,own))return;
@@ -212,10 +222,10 @@ export function mountReaderAnnotations({document,api,getSession=()=>null,getSele
  listen(area,'input',()=>{draftVersion++;saveDraft();noteDrafts.edit(ownKey(),area.value);persistOwn();saveNote.disabled=noteBusy||!area.value.trim()&&!noteDrafts.pending(ownKey());send.disabled=!!thread()&&staleQuote(thread().quote)||busy||!!outbox?.current()||!area.value.trim();});
  listen(area,'compositionstart',()=>{composing=true;});listen(area,'compositionend',()=>{composing=false;draftVersion++;saveDraft();noteDrafts.edit(ownKey(),area.value);persistOwn();place();});
  listen(form,'submit',event=>{event.preventDefault();if(thread()?.markOnly===true){saveOwnNote();return;}if(!busy&&!outbox?.current()&&area.value.trim()&&thread()&&!staleQuote(thread().quote))retryRequest();});
- for(const event of ['click','pointerup','keydown'])listen(card,event,e=>{if(event==='keydown'&&e.key==='Escape'&&!e.isComposing&&!composing){e.preventDefault();hide();}e.stopPropagation();});
+ for(const event of ['click','pointerup','keydown'])listen(card,event,e=>{if(event==='keydown'&&e.key==='Tab')return;if(event==='keydown'&&e.key==='Escape'&&!e.isComposing&&!composing){e.preventDefault();hide();}e.stopPropagation();});
  listen(card,'focusout',()=>{const token=epoch,own=scope;view.requestAnimationFrame(()=>{if(current(token,own))place();});});
  listen(document,'keydown',event=>{if(event.defaultPrevented||event.target?.closest?.('dialog[open]'))return;if(event.key==='Escape'&&!card.hidden&&!card.inert&&!card.closest('[inert]')&&!event.isComposing&&!composing){event.preventDefault();event.stopPropagation();hide();}},true);
- listen(view,'resize',place);listen(view.visualViewport,'resize',place);listen(view,'scroll',()=>{if(!card.hidden)place();},{passive:true});
+ listen(view,'resize',place);listen(view.visualViewport,'resize',place);listen(view.visualViewport,'scroll',place);listen(view,'scroll',()=>{if(!card.hidden)place();},{passive:true});
  listen(document,'reader:layout',()=>{paintBadges();place();});listen(document,'reader:content',()=>{paintBadges();place();});
  listen(document,'reader:chat-layout',()=>{paintBadges();place();});
  listen(document,'reader:chapter',event=>{if(event.detail?.chapterId===thread()?.quote.chapterId){paintBadges();place();refresh();return;}epoch++;readEpoch++;busy=false;noteBusy=false;for(const key of Object.keys(noteDrafts.snapshot().entries))noteDrafts.finish(key);cancelling=false;hide({restoreFocus:false});refresh();});

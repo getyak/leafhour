@@ -81,3 +81,9 @@ test('mobile scroll containment restores the prior body overflow on close and de
  f.window.innerWidth=1440;f.window.dispatchEvent(new Event('resize'));assert.equal(f.document.body.style.getPropertyValue('overflow'),'auto');
  f.window.innerWidth=390;f.window.dispatchEvent(new Event('resize'));f.workspace.dispose();assert.equal(f.document.body.style.getPropertyValue('overflow'),'auto');
 });
+
+test('mobile containment releases its inert ownership when an annotation joins the dialog',()=>{
+ const f=fixture(390),annotation=new Element(f.document);f.document.body.append(annotation);f.workspace.setOpen(true);assert.equal(annotation.inert,true);
+ annotation.remove();f.root.append(annotation);f.window.dispatchEvent(new Event('resize'));assert.equal(annotation.inert,false);assert.equal(f.book.inert,true);
+ f.workspace.setOpen(false);assert.equal(annotation.inert,false);assert.equal(f.book.inert,false);f.workspace.dispose();
+});

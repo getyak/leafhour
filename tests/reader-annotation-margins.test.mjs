@@ -78,3 +78,8 @@ test('personal margin summaries do not label a highlighted author quote as the r
   assert.equal(summaries[1].querySelector('.reader-annotation-summary-text').textContent,'My own thought.');
  }finally{margins.dispose();}
 });
+
+test('laptop widths always use compact marks even when both gutters appear to fit',()=>{
+ for(const viewport of [1024,1280,1399])assert.deepEqual(annotationRails({left:400,right:viewport-400,viewport}),[]);
+ assert.equal(annotationRails({left:360,right:1040,viewport:1400}).length,2);
+});

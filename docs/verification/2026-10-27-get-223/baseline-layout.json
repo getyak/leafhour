@@ -1,0 +1,106 @@
+{
+  "kind": "GET-223 production baseline",
+  "release": {
+    "sourceCommit": "de5651ef4c4a8666b4cc2616ba7ea3c7d64f9b3f"
+  },
+  "accountVerified": true,
+  "summaries": [
+    {
+      "side": "left",
+      "rect": {
+        "x": 35,
+        "y": 189.75,
+        "width": 256,
+        "height": 126,
+        "top": 189.75,
+        "right": 291,
+        "bottom": 315.75,
+        "left": 35
+      }
+    },
+    {
+      "side": "right",
+      "rect": {
+        "x": 989,
+        "y": 189.75,
+        "width": 256,
+        "height": 126,
+        "top": 189.75,
+        "right": 1245,
+        "bottom": 315.75,
+        "left": 989
+      }
+    },
+    {
+      "side": "left",
+      "rect": {
+        "x": 35,
+        "y": 329.75,
+        "width": 256,
+        "height": 126,
+        "top": 329.75,
+        "right": 291,
+        "bottom": 455.75,
+        "left": 35
+      }
+    },
+    {
+      "side": "right",
+      "rect": {
+        "x": 989,
+        "y": 329.75,
+        "width": 256,
+        "height": 126,
+        "top": 329.75,
+        "right": 1245,
+        "bottom": 455.75,
+        "left": 989
+      }
+    },
+    {
+      "side": "left",
+      "rect": {
+        "x": 35,
+        "y": 469.75,
+        "width": 256,
+        "height": 126,
+        "top": 469.75,
+        "right": 291,
+        "bottom": 595.75,
+        "left": 35
+      }
+    }
+  ],
+  "card": {
+    "x": 989,
+    "y": 189.75,
+    "width": 256,
+    "height": 586.25
+  },
+  "withChat": {
+    "card": {
+      "x": 35,
+      "y": 189.75,
+      "width": 256,
+      "height": 586.25
+    },
+    "chat": {
+      "x": 856,
+      "y": 84,
+      "width": 400,
+      "height": 640
+    }
+  },
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/library/daily-reading/presence",
+      "blocked": true
+    },
+    {
+      "path": "/api/library/books/gutenberg-alice/companion/observe",
+      "blocked": true
+    }
+  ],
+  "sessionRevoked": true
+}
