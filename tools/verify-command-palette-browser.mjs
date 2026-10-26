@@ -17,7 +17,7 @@ const engines=await import(pathToFileURL(process.env.LEAFHOUR_PLAYWRIGHT_MODULE)
 const codes=new Map();
 const server=await createReaderServer({bookPath:path.join(out,'missing.json'),recordsPath:path.join(out,'records/records.json'),portalDataDir:path.join(out,'records/portal'),env:{},allowLocal:false,sendCode:async(email,code)=>codes.set(email,code),chatGenerator:null,companionGenerator:null});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;
-const report={kind:'isolated synthetic server, real browser',at:new Date().toISOString(),cases:[]};let browser,context;
+const report={kind:'isolated synthetic server, real browser',at:new Date().toISOString(),cases:[],limits:['Actual native jump, focus and generated paint are observed first. After its natural expiry, a reversible CSS class A/B probe checks stable pixels without changing product timers.','Automated browser keyboard/mouse/touch events do not assert physical devices, OS IME candidates or spoken assistive output.']};let browser,context;
 const tools=async p=>{if(await p.evaluate(()=>document.body.dataset.readingTools!=='open')){await p.locator('#reading-tools-trigger').focus();await p.keyboard.press('Enter');}await p.waitForFunction(()=>document.body.dataset.readingTools==='open');};
 const palette=async p=>{await p.keyboard.press('Control+k');await p.locator('#command-palette[open]').waitFor();await p.locator('#command-palette-input').fill('Alice');await p.waitForFunction(()=>[...document.querySelectorAll('#command-palette-list li')].some(n=>n.textContent.includes('Alice was beginning')));};
 try{
@@ -41,12 +41,26 @@ try{
    await p.goto(base+'/read?book=gutenberg-alice&ui='+locale);await p.waitForFunction(()=>document.body.dataset.ready==='true');
    await p.evaluate(theme=>window.marginaliaPaletteAdapter.appearance.setTheme(theme),theme);
    await palette(p);assert.equal(await p.locator('#command-palette-input').inputValue(),'Alice');
+   const loadingHint={'en':'Loading the catalogue…','zh-Hans':'正在载入书目…','zh-Hant':'正在載入書目…','ja':'書誌を読み込んでいます…'}[locale];await p.waitForFunction(text=>!document.querySelector('#command-palette-status').textContent.includes(text),loadingHint);
    row.status=await p.locator('#command-palette-status').textContent();assert.doesNotMatch(row.status,/1 results/);
    await p.locator('#command-palette').evaluate(async n=>{await Promise.all(n.getAnimations().map(a=>a.finished.catch(()=>{})));});
    await p.screenshot({path:path.join(out,engine+'-'+locale+'-'+width+'-search.png')});
    const before=row.status;await p.keyboard.press('ArrowDown');assert.equal(await p.locator('#command-palette-status').textContent(),before);await p.keyboard.press('Home');
-   if(width<500)await p.locator('#command-palette-list li').first().tap();else await p.keyboard.press('Enter');await p.waitForFunction(()=>document.activeElement.matches('.passage.is-locating'));
-   row.jump=await p.evaluate(()=>({id:document.activeElement.id,text:document.activeElement.textContent.slice(0,90),rect:document.activeElement.getBoundingClientRect().toJSON()}));assert.ok(row.jump.rect.bottom>0&&row.jump.rect.y<800);row.checks.push('real book hit, retained query, stable count, keyboard jump focus/highlight');
+   if(width<500)await p.locator('#command-palette-list li').first().tap();else await p.keyboard.press('Enter');
+   const jump=await p.waitForFunction(()=>{const n=document.activeElement;if(!n.matches('.passage.is-locating'))return false;const paint=getComputedStyle(n,'::before');if(paint.content==='none'||paint.position!=='absolute')return false;return {id:n.id,text:n.textContent.slice(0,90),rect:n.getBoundingClientRect().toJSON(),paint:{content:paint.content,position:paint.position,background:paint.backgroundColor}};});row.jump=await jump.jsonValue();await jump.dispose();row.nativeLocationObserved=true;row.locationPaint=row.jump.paint;assert.ok(row.jump.rect.bottom>0&&row.jump.rect.y<800);row.checks.push('real book hit, retained query, stable count, actual jump focus and paint');
+   if(locale==='en'||locale==='ja'){
+    const n=p.locator('[id="'+row.jump.id+'"]');
+    // First observe the real jump and its natural expiry. Then isolate CSS
+    // paint in a stable class A/B probe, without racing or changing its timer.
+    await p.waitForFunction(id=>!document.getElementById(id).classList.contains('is-locating'),row.jump.id);row.nativeLocationExpired=true;
+    const rect=await n.boundingBox(),x=Math.max(0,rect.x-12),y=Math.max(0,rect.y-12),clip={x,y,width:Math.min(width-x,rect.width+24),height:Math.min(800-y,rect.height+24)};
+    try{await n.evaluate(node=>node.classList.add('is-locating'));
+     const located=await p.screenshot({path:path.join(out,engine+'-'+locale+'-'+width+'-located.png'),clip});
+     await n.evaluate(node=>node.classList.remove('is-locating'));
+     const ordinary=await p.screenshot({path:path.join(out,engine+'-'+locale+'-'+width+'-ordinary.png'),clip});
+     row.locationPixelsChanged=!located.equals(ordinary);assert.equal(row.locationPixelsChanged,true,'location highlight must change actual passage pixels');
+    }finally{await n.evaluate(node=>node.classList.remove('is-locating'));}
+   }
    assert.equal(await p.evaluate(()=>document.documentElement.dataset.theme),theme,'jump retains the actual reader theme');
    for(const target of ['settings','tools','account','atmosphere']){
     await tools(p);

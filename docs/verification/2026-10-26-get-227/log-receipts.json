@@ -334,5 +334,69 @@
     "gzipBytes": 94,
     "gzipSha256": "ff56e1fbd503dac17cbaa726e9049f1d5ed1a3617bb613beefbc5debe438ec75",
     "roundTripVerified": true
+  },
+  {
+    "file": "logs/locate-red.log.gz",
+    "rawBytes": 659,
+    "rawSha256": "3848209848d37490a976f909120cdd005f2ccd1b91865985aa08fece9d6b7d67",
+    "gzipBytes": 467,
+    "gzipSha256": "ab50bec385372ea3d39e810b2f8b3b8474cca05d05c73ceee32fd37d378492e1",
+    "roundTripVerified": true
+  },
+  {
+    "file": "logs/locate-green.log.gz",
+    "rawBytes": 207,
+    "rawSha256": "13083e0dda2e7ad216b17177564c8c4471374f6d0fdf7a94959665a7186fa92e",
+    "gzipBytes": 170,
+    "gzipSha256": "5b5881ecb4a5db4b13f282188d5ba91b141ee7bb29cdab55993edf42d41bb26d",
+    "roundTripVerified": true
+  },
+  {
+    "file": "logs/locate-full-tests-long-socket-path.log.gz",
+    "rawBytes": 838434,
+    "rawSha256": "193e6aa4d323813cc2908a9509e3361b7fffdf76e7906fe98501bfbc29adb643",
+    "gzipBytes": 155197,
+    "gzipSha256": "2dd636ced706ee296ece1ca52d8af2b29735919b52a2f3cbc00c034a6af2de96",
+    "roundTripVerified": true
+  },
+  {
+    "file": "logs/locate-short-socket-path.log.gz",
+    "rawBytes": 1122,
+    "rawSha256": "38b2de2bf0a6a168d9bd76adaad94ee941ea07f5bf4a6d5564cc058a40b592b8",
+    "gzipBytes": 413,
+    "gzipSha256": "028a1b5f60ad5d254d737ed4622307bf570032d242a5fc3b346992d63339f20d",
+    "roundTripVerified": true
+  },
+  {
+    "file": "logs/locate-full-tests-final.log.gz",
+    "rawBytes": 835575,
+    "rawSha256": "e5217ab61f5d510dfc1d126ea3ec9ffdcd8b04853834360a829c2d457f8b105b",
+    "gzipBytes": 153999,
+    "gzipSha256": "3ff08dcac9eba986cd0ffbda90db8875959389192a27a4c688e6d6abf9b1de85",
+    "roundTripVerified": true
+  },
+  {
+    "file": "logs/locate-raw-final.log.gz",
+    "rawBytes": 486,
+    "rawSha256": "8841da249abffc0e012593bdbe96a84953f7938d8ad31cdf3156e224d49c03f5",
+    "gzipBytes": 125,
+    "gzipSha256": "9a158ef42e24d969f8802a2a5d77907d3af695410b967dc9a1375928d11af789",
+    "roundTripVerified": true
+  },
+  {
+    "file": "logs/locate-built.log.gz",
+    "rawBytes": 234,
+    "rawSha256": "f70bc5abaed380a491b332a93f101a767f60c2d1b3e7ec2aeffdc91ebe70925e",
+    "gzipBytes": 100,
+    "gzipSha256": "67f25cb1fc2be34801716e020a59fdf536aaa1f943288741f0f3bbb00e039f5e",
+    "roundTripVerified": true
+  },
+  {
+    "file": "logs/locate-engineering-run.log.gz",
+    "rawBytes": 457,
+    "rawSha256": "5cf7b1f5e9ae45990ffdd468a77cdc2f62299bb80daf8ce462d309d710165c15",
+    "gzipBytes": 177,
+    "gzipSha256": "c3210cbf844c63560a413cc681f925817ac886a8d6dff96a1797446534a38543",
+    "roundTripVerified": true
   }
 ]

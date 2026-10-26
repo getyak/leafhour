@@ -1,0 +1,201 @@
+{
+  "kind": "isolated synthetic server, real browser",
+  "at": "2026-10-26T01:10:29.341Z",
+  "cases": [
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "en",
+      "width": 1280,
+      "theme": "paper",
+      "checks": [
+        "real book hit, retained query, stable count, actual jump focus and paint",
+        "settings handoff, Tab containment, Escape/focus return",
+        "tools handoff, Tab containment, Escape/focus return",
+        "account handoff, Tab containment, Escape/focus return",
+        "atmosphere handoff, Tab containment, Escape/focus return"
+      ],
+      "errors": [],
+      "writes": [],
+      "status": "10 results · Searching loaded original text and chapter titles. Other text is not loaded.",
+      "jump": {
+        "id": "01b38ea4c710a84b-p00008",
+        "text": "Alice was beginning to get very tired of sitting by her sister on the bank, and of having ",
+        "rect": {
+          "x": 315,
+          "y": 45.140625,
+          "width": 650,
+          "height": 152.875,
+          "top": 45.140625,
+          "right": 965,
+          "bottom": 198.015625,
+          "left": 315
+        },
+        "paint": {
+          "content": "\"\"",
+          "position": "absolute",
+          "background": "color(srgb 0.247059 0.34902 0.298039 / 0.07)"
+        }
+      },
+      "nativeLocationObserved": true,
+      "locationPaint": {
+        "content": "\"\"",
+        "position": "absolute",
+        "background": "color(srgb 0.247059 0.34902 0.298039 / 0.07)"
+      },
+      "nativeLocationExpired": true,
+      "locationPixelsChanged": true,
+      "packageFailures": []
+    },
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "locale": "ja",
+      "width": 320,
+      "theme": "night",
+      "checks": [
+        "real book hit, retained query, stable count, actual jump focus and paint",
+        "settings handoff, Tab containment, Escape/focus return",
+        "tools handoff, Tab containment, Escape/focus return",
+        "account handoff, Tab containment, Escape/focus return",
+        "atmosphere handoff, Tab containment, Escape/focus return"
+      ],
+      "errors": [],
+      "writes": [],
+      "status": "10 件 · 読み込み済みの原文と章のタイトルを検索。他の本文は未読み込みです。",
+      "jump": {
+        "id": "01b38ea4c710a84b-p00008",
+        "text": "Alice was beginning to get very tired of sitting by her sister on the bank, and of having ",
+        "rect": {
+          "x": 32,
+          "y": 44.890625,
+          "width": 256,
+          "height": 420.40625,
+          "top": 44.890625,
+          "right": 288,
+          "bottom": 465.296875,
+          "left": 32
+        },
+        "paint": {
+          "content": "\"\"",
+          "position": "absolute",
+          "background": "color(srgb 0.690196 0.772549 0.709804 / 0.07)"
+        }
+      },
+      "nativeLocationObserved": true,
+      "locationPaint": {
+        "content": "\"\"",
+        "position": "absolute",
+        "background": "color(srgb 0.690196 0.772549 0.709804 / 0.07)"
+      },
+      "nativeLocationExpired": true,
+      "locationPixelsChanged": true,
+      "packageFailures": []
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "locale": "en",
+      "width": 1280,
+      "theme": "paper",
+      "checks": [
+        "real book hit, retained query, stable count, actual jump focus and paint",
+        "settings handoff, Tab containment, Escape/focus return",
+        "tools handoff, Tab containment, Escape/focus return",
+        "account handoff, Tab containment, Escape/focus return",
+        "atmosphere handoff, Tab containment, Escape/focus return"
+      ],
+      "errors": [],
+      "writes": [],
+      "status": "10 results · Searching loaded original text and chapter titles. Other text is not loaded.",
+      "jump": {
+        "id": "01b38ea4c710a84b-p00008",
+        "text": "Alice was beginning to get very tired of sitting by her sister on the bank, and of having ",
+        "rect": {
+          "x": 315,
+          "y": 45.140625,
+          "width": 650,
+          "height": 152.875,
+          "top": 45.140625,
+          "right": 965,
+          "bottom": 198.015625,
+          "left": 315
+        },
+        "paint": {
+          "content": "\"\"",
+          "position": "absolute",
+          "background": "color(srgb 0.247059 0.34902 0.298039 / 0.07)"
+        }
+      },
+      "nativeLocationObserved": true,
+      "locationPaint": {
+        "content": "\"\"",
+        "position": "absolute",
+        "background": "color(srgb 0.247059 0.34902 0.298039 / 0.07)"
+      },
+      "nativeLocationExpired": true,
+      "locationPixelsChanged": true,
+      "packageFailures": []
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "locale": "ja",
+      "width": 320,
+      "theme": "night",
+      "checks": [
+        "real book hit, retained query, stable count, actual jump focus and paint",
+        "settings handoff, Tab containment, Escape/focus return",
+        "tools handoff, Tab containment, Escape/focus return",
+        "account handoff, Tab containment, Escape/focus return",
+        "atmosphere handoff, Tab containment, Escape/focus return"
+      ],
+      "errors": [],
+      "writes": [],
+      "status": "10 件 · 読み込み済みの原文と章のタイトルを検索。他の本文は未読み込みです。",
+      "jump": {
+        "id": "01b38ea4c710a84b-p00008",
+        "text": "Alice was beginning to get very tired of sitting by her sister on the bank, and of having ",
+        "rect": {
+          "x": 32,
+          "y": 45.890625,
+          "width": 256,
+          "height": 420.40625,
+          "top": 45.890625,
+          "right": 288,
+          "bottom": 466.296875,
+          "left": 32
+        },
+        "paint": {
+          "content": "\"\"",
+          "position": "absolute",
+          "background": "color(srgb 0.690196 0.772549 0.709804 / 0.07)"
+        }
+      },
+      "nativeLocationObserved": true,
+      "locationPaint": {
+        "content": "\"\"",
+        "position": "absolute",
+        "background": "color(srgb 0.690196 0.772549 0.709804 / 0.07)"
+      },
+      "nativeLocationExpired": true,
+      "locationPixelsChanged": true,
+      "packageFailures": []
+    }
+  ],
+  "limits": [
+    "Actual native jump, focus and generated paint are observed first. After its natural expiry, a reversible CSS class A/B probe checks stable pixels without changing product timers.",
+    "Automated browser keyboard/mouse/touch events do not assert physical devices, OS IME candidates or spoken assistive output."
+  ],
+  "cleanup": [
+    {
+      "status": "fulfilled"
+    },
+    {
+      "status": "fulfilled"
+    },
+    {
+      "status": "fulfilled"
+    }
+  ]
+}
