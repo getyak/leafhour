@@ -3,48 +3,56 @@
     "name": "full-tests-frozen",
     "exitCode": 0,
     "seconds": 171.906,
-    "log": "/private/tmp/ai-test-GET-227.omIZqV/full-tests-frozen.log"
+    "log": "logs/full-tests-frozen.log.gz",
+    "originalLogPath": "/private/tmp/ai-test-GET-227.omIZqV/full-tests-frozen.log"
   },
   {
     "name": "copy-canaries",
     "exitCode": 0,
     "seconds": 8.34,
-    "log": "/private/tmp/ai-test-GET-227.omIZqV/copy-canaries.log"
+    "log": "logs/copy-canaries.log.gz",
+    "originalLogPath": "/private/tmp/ai-test-GET-227.omIZqV/copy-canaries.log"
   },
   {
     "name": "pricing",
     "exitCode": 0,
     "seconds": 0.025,
-    "log": "/private/tmp/ai-test-GET-227.omIZqV/pricing.log"
+    "log": "logs/pricing.log.gz",
+    "originalLogPath": "/private/tmp/ai-test-GET-227.omIZqV/pricing.log"
   },
   {
     "name": "runtime-build",
     "exitCode": 0,
     "seconds": 1.732,
-    "log": "/private/tmp/ai-test-GET-227.omIZqV/runtime-build.log"
+    "log": "logs/runtime-build.log.gz",
+    "originalLogPath": "/private/tmp/ai-test-GET-227.omIZqV/runtime-build.log"
   },
   {
     "name": "public-build",
     "exitCode": 0,
     "seconds": 0.889,
-    "log": "/private/tmp/ai-test-GET-227.omIZqV/public-build.log"
+    "log": "logs/public-build.log.gz",
+    "originalLogPath": "/private/tmp/ai-test-GET-227.omIZqV/public-build.log"
   },
   {
     "name": "public-check",
     "exitCode": 0,
     "seconds": 0.05,
-    "log": "/private/tmp/ai-test-GET-227.omIZqV/public-check.log"
+    "log": "logs/public-check.log.gz",
+    "originalLogPath": "/private/tmp/ai-test-GET-227.omIZqV/public-check.log"
   },
   {
     "name": "release-policy",
     "exitCode": 0,
     "seconds": 0.506,
-    "log": "/private/tmp/ai-test-GET-227.omIZqV/release-policy.log"
+    "log": "logs/release-policy.log.gz",
+    "originalLogPath": "/private/tmp/ai-test-GET-227.omIZqV/release-policy.log"
   },
   {
     "name": "release-contents",
     "exitCode": 0,
     "seconds": 0.037,
-    "log": "/private/tmp/ai-test-GET-227.omIZqV/release-contents.log"
+    "log": "logs/release-contents.log.gz",
+    "originalLogPath": "/private/tmp/ai-test-GET-227.omIZqV/release-contents.log"
   }
 ]

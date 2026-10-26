@@ -30,6 +30,8 @@ The public [browser verifier](../../../tools/verify-command-palette-browser.mjs)
 
 The final two-engine boundary replay also retains a real mouse-selected excerpt across open/cancel, in addition to unsent Thought/chat drafts. Mouse/keyboard/touch are automated browser events; physical mobile devices, OS IME candidate windows and spoken VoiceOver output are not asserted. The same-version main/current lifecycle comparison matches after disposal, including main's existing one interval and two observers; the existing CSP diagnostic remains and no new unique diagnostic was observed.
 
+Complete terminal evidence is stored as deterministic gzip files in `logs/`. [log-receipts.json](log-receipts.json) records compressed and original byte hashes and verified decompression; no output lines were removed or edited. `engineering.json` links the retained compressed logs and also preserves the original run paths.
+
 ## Delivery state
 
 Implementation and independent review are complete. Current-head CI, normal merge, same-commit Production, actual online acceptance and Linear Done are separate gates and are not asserted by this document's local evidence.
