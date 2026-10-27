@@ -2229,4 +2229,5 @@ export default Object.freeze({
   "chat.failure.context": "原文已變更，請核對目前段落後重試。",
   "chat.evidence":"查看依據",
   "chat.evidence.incomplete":"部分查找失敗，回答可能不完整。",
+  "audio.options": "更多聆聽方式",
 });

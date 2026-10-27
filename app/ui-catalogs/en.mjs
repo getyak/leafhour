@@ -2230,4 +2230,5 @@ export default Object.freeze({
   "chat.failure.context": "The source changed. Check this passage before retrying.",
   "chat.evidence":"About this answer",
   "chat.evidence.incomplete":"Some lookups failed. This answer may be incomplete.",
+  "audio.options": "More listening options",
 });

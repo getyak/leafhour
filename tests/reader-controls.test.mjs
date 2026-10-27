@@ -47,7 +47,7 @@ test('the chapter heading stays quiet and the single listen entry is a 44px side
   assert.equal(html.split('id="listen-chapter"').length-1,1,'exactly one listen entry, one ID');
   const at=html.indexOf('id="listen-chapter"'),panel=html.indexOf('id="reading-tools-panel"'),end=html.indexOf('</section>',panel);
   assert.ok(panel<at&&at<end,'the listen entry lives inside the collapsible reading-tools panel');
-  assert.match(html,/id="listen-chapter"[^>]*aria-haspopup="dialog"[^>]*>Listen to this chapter</,'the raw English shell labels the listen entry');
+  assert.match(html,/id="listen-chapter"[^>]*>Listen to this chapter</,'the raw English shell labels the direct listen entry');assert.match(html,/id="listen-options"[^>]*aria-haspopup="dialog"/,'optional listening modes retain a separate dialog entry');
 });
 
 test('the top chapter entry stays disabled until readiness and names the current chapter',()=>{

@@ -1,0 +1,200 @@
+{
+  "url": "https://leafhour.com/read?book=gutenberg-alice&ui=zh-Hans",
+  "title": "掉进兔子洞 · Leafhour",
+  "playing": {
+    "time": 0.416966,
+    "duration": 2.96,
+    "paused": false,
+    "passages": [
+      {
+        "id": "01b38ea4c710a84b-p00007",
+        "current": "true"
+      }
+    ],
+    "label": "暂停"
+  },
+  "paused": {
+    "time": 0.469096,
+    "paused": true
+  },
+  "pausedLater": 0.469096,
+  "mobile": {
+    "left": 10,
+    "right": 380,
+    "bottom": 834,
+    "viewport": 390,
+    "button": {
+      "width": 44,
+      "height": 44
+    },
+    "overflow": false
+  },
+  "events": [
+    {
+      "event": "loadedmetadata",
+      "trusted": true,
+      "time": 0,
+      "duration": 2.96,
+      "paused": true,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "play",
+      "trusted": true,
+      "time": 0,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "playing",
+      "trusted": true,
+      "time": 0,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "time": 0.048855,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "time": 0.265877,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "time": 0.469096,
+      "duration": 2.96,
+      "paused": true,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "pause",
+      "trusted": true,
+      "time": 0.469096,
+      "duration": 2.96,
+      "paused": true,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "play",
+      "trusted": true,
+      "time": 0.533333,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "playing",
+      "trusted": true,
+      "time": 0.533333,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "time": 0.706964,
+      "duration": 2.96,
+      "paused": true,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "pause",
+      "trusted": true,
+      "time": 0.706964,
+      "duration": 2.96,
+      "paused": true,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    }
+  ],
+  "errors": [],
+  "blocked": [
+    {
+      "path": "/api/library/books/gutenberg-alice/companion/observe",
+      "at": 1793067721540
+    },
+    {
+      "path": "/api/library/books/gutenberg-alice/companion/observe",
+      "at": 1793067729542
+    },
+    {
+      "path": "/api/library/books/gutenberg-alice/companion/observe",
+      "at": 1793067738539
+    },
+    {
+      "path": "/api/library/books/gutenberg-alice/companion/observe",
+      "at": 1793067746549
+    },
+    {
+      "path": "/api/library/books/gutenberg-alice/companion/observe",
+      "at": 1793067754542
+    },
+    {
+      "path": "/api/library/books/gutenberg-alice/companion/observe",
+      "at": 1793067762548
+    },
+    {
+      "path": "/api/library/books/gutenberg-alice/companion/observe",
+      "at": 1793067770540
+    },
+    {
+      "path": "/api/library/books/gutenberg-alice/companion/observe",
+      "at": 1793067779541
+    },
+    {
+      "path": "/api/library/books/gutenberg-alice/companion/observe",
+      "at": 1793067787540
+    }
+  ],
+  "claims": {
+    "realCachedAudio": true,
+    "multiParagraph": false,
+    "physicalSafari": false,
+    "semanticListening": false
+  }
+}

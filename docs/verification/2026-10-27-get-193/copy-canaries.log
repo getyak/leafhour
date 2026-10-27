@@ -1,0 +1,484 @@
+{
+  "mode": "GET-202 real pinned CLI canaries; not rendered product acceptance",
+  "tools": {
+    "vale": "vale version 3.24.0",
+    "textlint": "v15.8.0",
+    "valeBin": "/Users/cubxxw/ops/symphony/runtime/tools/vale/3.24.0/darwin-arm64/vale",
+    "textlintBin": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tools/copy-tooling/node_modules/.bin/textlint"
+  },
+  "coverage": {
+    "cases": 11,
+    "rulesExercised": [
+      "Leafhour.DevSpeak",
+      "Leafhour.ToneT2En",
+      "Leafhour.ToneT2Zh",
+      "ja-technical-writing/ja-no-mixed-period",
+      "ja-technical-writing/no-exclamation-question-mark",
+      "prh"
+    ]
+  },
+  "cases": [
+    {
+      "name": "en-t1-blocked",
+      "pass": true,
+      "failures": [],
+      "counts": {
+        "alerts": 1,
+        "rawAlerts": 1,
+        "newErrors": 1,
+        "warnings": 0,
+        "existingDebt": 0,
+        "appliedExceptions": 0,
+        "staleDebt": 0,
+        "staleAllowances": 0,
+        "problems": 0
+      },
+      "toolStatus": {
+        "vale": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/tools/vale/3.24.0/darwin-arm64/vale",
+          "ok": true,
+          "exit": 1,
+          "version": "vale version 3.24.0"
+        },
+        "textlint": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tools/copy-tooling/node_modules/.bin/textlint",
+          "ok": true,
+          "exit": 0,
+          "version": "v15.8.0"
+        }
+      },
+      "newErrors": [
+        {
+          "locale": "en",
+          "itemId": "a",
+          "rule": "Leafhour.DevSpeak",
+          "match": "receipt"
+        }
+      ],
+      "warnings": [],
+      "appliedExceptions": []
+    },
+    {
+      "name": "zh-t1-blocked",
+      "pass": true,
+      "failures": [],
+      "counts": {
+        "alerts": 4,
+        "rawAlerts": 4,
+        "newErrors": 4,
+        "warnings": 0,
+        "existingDebt": 0,
+        "appliedExceptions": 0,
+        "staleDebt": 0,
+        "staleAllowances": 0,
+        "problems": 0
+      },
+      "toolStatus": {
+        "vale": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/tools/vale/3.24.0/darwin-arm64/vale",
+          "ok": true,
+          "exit": 1,
+          "version": "vale version 3.24.0"
+        },
+        "textlint": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tools/copy-tooling/node_modules/.bin/textlint",
+          "ok": true,
+          "exit": 0,
+          "version": "v15.8.0"
+        }
+      },
+      "newErrors": [
+        {
+          "locale": "zh-Hans",
+          "itemId": "a",
+          "rule": "Leafhour.DevSpeak",
+          "match": "提交"
+        },
+        {
+          "locale": "zh-Hans",
+          "itemId": "a",
+          "rule": "Leafhour.DevSpeak",
+          "match": "回执"
+        },
+        {
+          "locale": "zh-Hant",
+          "itemId": "a",
+          "rule": "Leafhour.DevSpeak",
+          "match": "提交"
+        },
+        {
+          "locale": "zh-Hant",
+          "itemId": "a",
+          "rule": "Leafhour.DevSpeak",
+          "match": "回執"
+        }
+      ],
+      "warnings": [],
+      "appliedExceptions": []
+    },
+    {
+      "name": "ja-prh-t1-blocked",
+      "pass": true,
+      "failures": [],
+      "counts": {
+        "alerts": 1,
+        "rawAlerts": 1,
+        "newErrors": 1,
+        "warnings": 0,
+        "existingDebt": 0,
+        "appliedExceptions": 0,
+        "staleDebt": 0,
+        "staleAllowances": 0,
+        "problems": 0
+      },
+      "toolStatus": {
+        "vale": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/tools/vale/3.24.0/darwin-arm64/vale",
+          "ok": true,
+          "exit": 0,
+          "version": "vale version 3.24.0"
+        },
+        "textlint": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tools/copy-tooling/node_modules/.bin/textlint",
+          "ok": true,
+          "exit": 1,
+          "version": "v15.8.0"
+        }
+      },
+      "newErrors": [
+        {
+          "locale": "ja",
+          "itemId": "a",
+          "rule": "prh",
+          "match": "リクエスト"
+        }
+      ],
+      "warnings": [],
+      "appliedExceptions": []
+    },
+    {
+      "name": "warning-only-passes",
+      "pass": true,
+      "failures": [],
+      "counts": {
+        "alerts": 4,
+        "rawAlerts": 4,
+        "newErrors": 0,
+        "warnings": 4,
+        "existingDebt": 0,
+        "appliedExceptions": 0,
+        "staleDebt": 0,
+        "staleAllowances": 0,
+        "problems": 0
+      },
+      "toolStatus": {
+        "vale": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/tools/vale/3.24.0/darwin-arm64/vale",
+          "ok": true,
+          "exit": 0,
+          "version": "vale version 3.24.0"
+        },
+        "textlint": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tools/copy-tooling/node_modules/.bin/textlint",
+          "ok": true,
+          "exit": 0,
+          "version": "v15.8.0"
+        }
+      },
+      "newErrors": [],
+      "warnings": [
+        {
+          "locale": "en",
+          "rule": "Leafhour.ToneT2En",
+          "match": "quietly"
+        },
+        {
+          "locale": "zh-Hans",
+          "rule": "Leafhour.ToneT2Zh",
+          "match": "安静"
+        },
+        {
+          "locale": "zh-Hant",
+          "rule": "Leafhour.ToneT2Zh",
+          "match": "安靜"
+        },
+        {
+          "locale": "ja",
+          "rule": "ja-technical-writing/no-exclamation-question-mark",
+          "match": "！"
+        }
+      ],
+      "appliedExceptions": []
+    },
+    {
+      "name": "clean-passes",
+      "pass": true,
+      "failures": [],
+      "counts": {
+        "alerts": 0,
+        "rawAlerts": 0,
+        "newErrors": 0,
+        "warnings": 0,
+        "existingDebt": 0,
+        "appliedExceptions": 0,
+        "staleDebt": 0,
+        "staleAllowances": 0,
+        "problems": 0
+      },
+      "toolStatus": {
+        "vale": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/tools/vale/3.24.0/darwin-arm64/vale",
+          "ok": true,
+          "exit": 0,
+          "version": "vale version 3.24.0"
+        },
+        "textlint": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tools/copy-tooling/node_modules/.bin/textlint",
+          "ok": true,
+          "exit": 0,
+          "version": "v15.8.0"
+        }
+      },
+      "newErrors": [],
+      "warnings": [],
+      "appliedExceptions": []
+    },
+    {
+      "name": "narrow-justified-exception-passes",
+      "pass": true,
+      "failures": [],
+      "counts": {
+        "alerts": 2,
+        "rawAlerts": 2,
+        "newErrors": 0,
+        "warnings": 1,
+        "existingDebt": 0,
+        "appliedExceptions": 1,
+        "staleDebt": 0,
+        "staleAllowances": 0,
+        "problems": 0
+      },
+      "toolStatus": {
+        "vale": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/tools/vale/3.24.0/darwin-arm64/vale",
+          "ok": true,
+          "exit": 1,
+          "version": "vale version 3.24.0"
+        },
+        "textlint": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tools/copy-tooling/node_modules/.bin/textlint",
+          "ok": true,
+          "exit": 0,
+          "version": "v15.8.0"
+        }
+      },
+      "newErrors": [],
+      "warnings": [
+        {
+          "locale": "ja",
+          "rule": "ja-technical-writing/ja-no-mixed-period",
+          "match": "ぶ"
+        }
+      ],
+      "appliedExceptions": [
+        {
+          "locale": "zh-Hans",
+          "itemId": "a",
+          "rule": "Leafhour.DevSpeak",
+          "reason": "Privacy page must name the request the reader is about to send; reviewed in GET-202 batch A."
+        }
+      ]
+    },
+    {
+      "name": "changed-value-negative",
+      "pass": true,
+      "failures": [],
+      "counts": {
+        "alerts": 2,
+        "rawAlerts": 2,
+        "newErrors": 1,
+        "warnings": 1,
+        "existingDebt": 0,
+        "appliedExceptions": 0,
+        "staleDebt": 0,
+        "staleAllowances": 1,
+        "problems": 1
+      },
+      "toolStatus": {
+        "vale": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/tools/vale/3.24.0/darwin-arm64/vale",
+          "ok": true,
+          "exit": 1,
+          "version": "vale version 3.24.0"
+        },
+        "textlint": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tools/copy-tooling/node_modules/.bin/textlint",
+          "ok": true,
+          "exit": 0,
+          "version": "v15.8.0"
+        }
+      },
+      "newErrors": [
+        {
+          "locale": "zh-Hans",
+          "itemId": "a",
+          "rule": "Leafhour.DevSpeak",
+          "match": "請求"
+        }
+      ],
+      "warnings": [
+        {
+          "locale": "ja",
+          "rule": "ja-technical-writing/ja-no-mixed-period",
+          "match": "ぶ"
+        }
+      ],
+      "appliedExceptions": []
+    },
+    {
+      "name": "protected-quote-path-unchanged",
+      "pass": true,
+      "failures": [],
+      "counts": {
+        "alerts": 1,
+        "rawAlerts": 1,
+        "newErrors": 1,
+        "warnings": 0,
+        "existingDebt": 0,
+        "appliedExceptions": 0,
+        "staleDebt": 0,
+        "staleAllowances": 0,
+        "problems": 0
+      },
+      "toolStatus": {
+        "vale": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/tools/vale/3.24.0/darwin-arm64/vale",
+          "ok": true,
+          "exit": 1,
+          "version": "vale version 3.24.0"
+        },
+        "textlint": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tools/copy-tooling/node_modules/.bin/textlint",
+          "ok": true,
+          "exit": 0,
+          "version": "v15.8.0"
+        }
+      },
+      "newErrors": [
+        {
+          "locale": "en",
+          "itemId": "a",
+          "rule": "Leafhour.DevSpeak",
+          "match": "receipt"
+        }
+      ],
+      "warnings": [],
+      "appliedExceptions": []
+    },
+    {
+      "name": "ja-prh-severity-downgrade-blocked",
+      "pass": true,
+      "failures": [],
+      "downgradeCliExit": 0,
+      "counts": {
+        "alerts": 1,
+        "rawAlerts": 1,
+        "newErrors": 0,
+        "warnings": 1,
+        "existingDebt": 0,
+        "appliedExceptions": 0,
+        "staleDebt": 0,
+        "staleAllowances": 0,
+        "problems": 1
+      },
+      "toolStatus": {
+        "vale": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/tools/vale/3.24.0/darwin-arm64/vale",
+          "ok": true,
+          "exit": 0,
+          "version": "vale version 3.24.0"
+        },
+        "textlint": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tools/copy-tooling/node_modules/.bin/textlint",
+          "ok": true,
+          "exit": 0,
+          "version": "v15.8.0"
+        }
+      },
+      "newErrors": [],
+      "warnings": [
+        {
+          "locale": "ja",
+          "rule": "prh",
+          "match": "リクエスト"
+        }
+      ],
+      "appliedExceptions": []
+    },
+    {
+      "name": "missing-tool-fails-closed",
+      "pass": true,
+      "failures": [],
+      "counts": {
+        "alerts": 0,
+        "rawAlerts": 0,
+        "newErrors": 0,
+        "warnings": 0,
+        "existingDebt": 0,
+        "appliedExceptions": 0,
+        "staleDebt": 0,
+        "staleAllowances": 0,
+        "problems": 1
+      },
+      "toolStatus": {
+        "vale": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/no-such-vale",
+          "ok": false
+        },
+        "textlint": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tools/copy-tooling/node_modules/.bin/textlint",
+          "ok": true,
+          "exit": 0,
+          "version": "v15.8.0"
+        }
+      },
+      "newErrors": [],
+      "warnings": [],
+      "appliedExceptions": []
+    },
+    {
+      "name": "malformed-tool-output-fails-closed",
+      "pass": true,
+      "failures": [],
+      "counts": {
+        "alerts": 0,
+        "rawAlerts": 0,
+        "newErrors": 0,
+        "warnings": 0,
+        "existingDebt": 0,
+        "appliedExceptions": 0,
+        "staleDebt": 0,
+        "staleAllowances": 0,
+        "problems": 1
+      },
+      "toolStatus": {
+        "vale": {
+          "bin": "/var/folders/qk/yyffbdsn4gz71wd9gf_3rb8r0000gn/T/copy-canary-8uagnS/fake-vale",
+          "ok": true,
+          "exit": 0,
+          "version": "not json"
+        },
+        "textlint": {
+          "bin": "/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tools/copy-tooling/node_modules/.bin/textlint",
+          "ok": true,
+          "exit": 0,
+          "version": "v15.8.0"
+        }
+      },
+      "newErrors": [],
+      "warnings": [],
+      "appliedExceptions": []
+    }
+  ],
+  "pass": true
+}

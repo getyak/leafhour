@@ -262,7 +262,7 @@
       },
       {
         "file": "app/index.html",
-        "sha256": "eca76f6a5f4d66118520ba7c7b1785a3ca4accea151fbb52a11e799818f86b52"
+        "sha256": "097c46c56e3ef1e77b4187f2093a073b5f38e379aa314d9f36bd8e604e3c872e"
       },
       {
         "file": "app/interaction-craft.mjs",
@@ -486,7 +486,7 @@
       },
       {
         "file": "app/reader-audio-bootstrap.mjs",
-        "sha256": "d999fc345d9ac894f56d6d5df78c675ad4553f54b491aeae83bc575e19da8d58"
+        "sha256": "8de8b76d88e37efcee10357ad2232db0eee70f92bac5c6bc97ed98825a46fd42"
       },
       {
         "file": "app/reader-audio-metadata.mjs",
@@ -494,7 +494,7 @@
       },
       {
         "file": "app/reader-audio.js",
-        "sha256": "a34d5c0a8bad400a8227d461b9116e5b82f47b921ff1d152b3ccc10edd9f2617"
+        "sha256": "1ad92de34e5132717bc2caa94ee23b1690f0122f2e70ae9460d30a1853753024"
       },
       {
         "file": "app/reader-book-actions-bootstrap.mjs",
@@ -778,19 +778,19 @@
       },
       {
         "file": "app/ui-catalogs/en.mjs",
-        "sha256": "e93cd616c15fc47984ec1024e8487c25d2a7e77c183b51747a4353a8c4f808e3"
+        "sha256": "6527b967b9f2116657740db795a762f8b62287272092f1c6aa04074fe33f04e9"
       },
       {
         "file": "app/ui-catalogs/ja.mjs",
-        "sha256": "7c4f7f65d4cc8e5daaa615a77c487e1b5e6734fea983a43b564c7f2fd44018e2"
+        "sha256": "f6cbe84525bc97584e1782d14478b88b746d522ca15a30065727cd077b239de8"
       },
       {
         "file": "app/ui-catalogs/zh-Hans.mjs",
-        "sha256": "3d51f0aeef7328b0b2b5579e4b8e4587dceca3ddcf5c65f4c13aa2e8c159ffc6"
+        "sha256": "2900289c6c58dc999f45f4f5c18aa1b81e9a34b7003c30573b536b588c29b9ad"
       },
       {
         "file": "app/ui-catalogs/zh-Hant.mjs",
-        "sha256": "95dd83dec6af4d58b63d60994e17e298c1bc043e53679fd5b179e199ab6f7233"
+        "sha256": "a65db31f93d0ccea623974889477d5b094c6afb41247ac1402093e93ac0ff80d"
       },
       {
         "file": "app/ui-locale-codec.mjs",
@@ -850,7 +850,7 @@
       },
       {
         "file": "server/audio-routes.mjs",
-        "sha256": "a6c9899b4fb3bca8ef45c86ec364081fd54dce530164fecf5a766aa79bcf9e1e"
+        "sha256": "480f15bd580fdbea52c039591537dc7b858176040c9a033b35c274975685d4c4"
       },
       {
         "file": "server/audio-scenes.mjs",
@@ -858,7 +858,7 @@
       },
       {
         "file": "server/audio-service.mjs",
-        "sha256": "3254761ba7798846895318f3afc0262d51df03e1b697d6d747a224b18b849fbc"
+        "sha256": "195f5b4c2a659f4921f54a1b92e084909a3e18157d37ceab4cf53b0115f18bd8"
       },
       {
         "file": "server/audio-store.mjs",
@@ -1157,7 +1157,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "7d657b5ec7a6322d7849fe66af4d316cfb892dcfe0bd5c3aa6e45322e9a99aff"
+    "inputDigest": "d9f0d171b9c8a442efb4bcd763255a7a82b0f9319d82a9df15229ca8ecdb275e"
   },
   "locales": [
     "en",
@@ -1171,25 +1171,25 @@
       "locale": "en",
       "file": "app/ui-catalogs/en.mjs",
       "missing": false,
-      "entries": 2220
+      "entries": 2221
     },
     {
       "locale": "zh-Hans",
       "file": "app/ui-catalogs/zh-Hans.mjs",
       "missing": false,
-      "entries": 2220
+      "entries": 2221
     },
     {
       "locale": "zh-Hant",
       "file": "app/ui-catalogs/zh-Hant.mjs",
       "missing": false,
-      "entries": 2220
+      "entries": 2221
     },
     {
       "locale": "ja",
       "file": "app/ui-catalogs/ja.mjs",
       "missing": false,
-      "entries": 2220
+      "entries": 2221
     }
   ],
   "items": [
@@ -16559,12 +16559,12 @@
         },
         {
           "file": "app/reader-audio.js",
-          "line": 40,
+          "line": 41,
           "column": 505
         },
         {
           "file": "app/reader-audio.js",
-          "line": 42,
+          "line": 43,
           "column": 38
         },
         {
@@ -17356,7 +17356,7 @@
         },
         {
           "file": "app/reader-audio.js",
-          "line": 181,
+          "line": 234,
           "column": 255
         },
         {
@@ -104104,7 +104104,7 @@
       "consumers": [
         {
           "file": "app/reader-audio-bootstrap.mjs",
-          "line": 97,
+          "line": 99,
           "column": 381
         }
       ],
@@ -105844,7 +105844,7 @@
       "consumers": [
         {
           "file": "app/reader-audio-bootstrap.mjs",
-          "line": 97,
+          "line": 99,
           "column": 212
         }
       ],
@@ -106156,7 +106156,7 @@
       "consumers": [
         {
           "file": "app/reader-audio-bootstrap.mjs",
-          "line": 97,
+          "line": 99,
           "column": 363
         }
       ],
@@ -107182,7 +107182,7 @@
       "consumers": [
         {
           "file": "app/reader-audio-bootstrap.mjs",
-          "line": 97,
+          "line": 99,
           "column": 311
         }
       ],
@@ -118047,12 +118047,12 @@
       "consumers": [
         {
           "file": "app/reader-audio-bootstrap.mjs",
-          "line": 97,
+          "line": 99,
           "column": 136
         },
         {
           "file": "app/reader-audio.js",
-          "line": 176,
+          "line": 229,
           "column": 184
         }
       ],
@@ -118109,12 +118109,12 @@
       "consumers": [
         {
           "file": "app/reader-audio-bootstrap.mjs",
-          "line": 65,
+          "line": 67,
           "column": 37
         },
         {
           "file": "app/reader-audio-bootstrap.mjs",
-          "line": 96,
+          "line": 98,
           "column": 43
         }
       ],
@@ -118362,12 +118362,12 @@
         },
         {
           "file": "app/reader-audio-bootstrap.mjs",
-          "line": 72,
+          "line": 74,
           "column": 105
         },
         {
           "file": "app/reader-audio-bootstrap.mjs",
-          "line": 83,
+          "line": 85,
           "column": 73
         }
       ],
@@ -123369,6 +123369,57 @@
         {
           "kind": "key-namespace",
           "evidence": "key-namespace:chat",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "audio.options",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2233,
+          "column": 3,
+          "value": "More listening options",
+          "sha256": "fa9aeb4ec788b97453bd39abe7bb645d702321e4b2253cef3e6e54881461110b"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2232,
+          "column": 3,
+          "value": "更多听读方式",
+          "sha256": "23408c78bf54b235cca0c25efe1272940c2d937293be7e18e607ccd2160940e7"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2232,
+          "column": 3,
+          "value": "更多聆聽方式",
+          "sha256": "299719d8652e2322d557bf24fecc8c51fda3cdc0ccc26169ac0ed49203c8d251"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2232,
+          "column": 3,
+          "value": "ほかの読み上げ方法",
+          "sha256": "c9fd7e9a58e4928b2377d8a2a3ae5f46a26a240f2e26e2457ee1c5b59c07abff"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:audio",
           "confidence": "low"
         }
       ],
@@ -170873,6 +170924,32 @@
       }
     },
     {
+      "id": "candidate:app/index.html:39:296",
+      "file": "app/index.html",
+      "line": 39,
+      "column": 296,
+      "kind": "html-attribute",
+      "property": "aria-label",
+      "value": "More listening options",
+      "sha256": "fa9aeb4ec788b97453bd39abe7bb645d702321e4b2253cef3e6e54881461110b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-property",
+          "evidence": "html-attribute:aria-label",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
       "id": "candidate:app/index.html:45:176",
       "file": "app/index.html",
       "line": 45,
@@ -172589,14 +172666,40 @@
       }
     },
     {
-      "id": "candidate:app/index.html:39:159",
+      "id": "candidate:app/index.html:39:165",
       "file": "app/index.html",
       "line": 39,
-      "column": 159,
+      "column": 165,
       "kind": "html-text",
       "property": null,
       "value": "Listen to this chapter",
       "sha256": "db38ed1e41abd5ec2f8f4b3e61b82dfbbb18fb804fc191d774dc9cf38fc681b6",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:39:355",
+      "file": "app/index.html",
+      "line": 39,
+      "column": 355,
+      "kind": "html-text",
+      "property": null,
+      "value": "⋯",
+      "sha256": "6d67cab95d71bc28f9f2623ba9c98ab82f7b7d8215bcb2c0a566d315557d028e",
       "protected": false,
       "protectionReason": null,
       "hints": [
@@ -190691,9 +190794,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-audio.js:40:107",
+      "id": "candidate:app/reader-audio.js:41:107",
       "file": "app/reader-audio.js",
-      "line": 40,
+      "line": 41,
       "column": 107,
       "kind": "js-attribute",
       "property": "aria-labelledby",
@@ -190711,9 +190814,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-audio.js:40:146",
+      "id": "candidate:app/reader-audio.js:41:146",
       "file": "app/reader-audio.js",
-      "line": 40,
+      "line": 41,
       "column": 146,
       "kind": "js-dom-literal",
       "property": "innerHTML",
@@ -190731,9 +190834,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-audio.js:41:143",
+      "id": "candidate:app/reader-audio.js:42:143",
       "file": "app/reader-audio.js",
-      "line": 41,
+      "line": 42,
       "column": 143,
       "kind": "js-dom-literal",
       "property": "innerHTML",
@@ -190751,9 +190854,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-audio.js:58:181",
+      "id": "candidate:app/reader-audio.js:73:181",
       "file": "app/reader-audio.js",
-      "line": 58,
+      "line": 73,
       "column": 181,
       "kind": "js-attribute",
       "property": "role",
@@ -190771,9 +190874,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-audio.js:58:218",
+      "id": "candidate:app/reader-audio.js:73:218",
       "file": "app/reader-audio.js",
-      "line": 58,
+      "line": 73,
       "column": 218,
       "kind": "js-attribute",
       "property": "aria-live",
@@ -190791,9 +190894,29 @@
       }
     },
     {
-      "id": "candidate:app/reader-audio.js:82:88",
+      "id": "candidate:app/reader-audio.js:85:95",
       "file": "app/reader-audio.js",
-      "line": 82,
+      "line": 85,
+      "column": 95,
+      "kind": "js-attribute",
+      "property": "aria-current",
+      "value": "true",
+      "sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/reader-audio.js:105:88",
+      "file": "app/reader-audio.js",
+      "line": 105,
       "column": 88,
       "kind": "js-attribute",
       "property": "aria-busy",
@@ -190811,9 +190934,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-audio.js:83:562",
+      "id": "candidate:app/reader-audio.js:106:562",
       "file": "app/reader-audio.js",
-      "line": 83,
+      "line": 106,
       "column": 562,
       "kind": "js-attribute",
       "property": "aria-busy",
@@ -190831,9 +190954,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-audio.js:93:225",
+      "id": "candidate:app/reader-audio.js:146:225",
       "file": "app/reader-audio.js",
-      "line": 93,
+      "line": 146,
       "column": 225,
       "kind": "js-attribute",
       "property": "aria-hidden",
@@ -190851,9 +190974,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-audio.js:178:187",
+      "id": "candidate:app/reader-audio.js:231:187",
       "file": "app/reader-audio.js",
-      "line": 178,
+      "line": 231,
       "column": 187,
       "kind": "js-cjk-literal",
       "property": null,
@@ -208759,10 +208882,10 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:73:258",
+      "id": "candidate:server/audio-service.mjs:73:403",
       "file": "server/audio-service.mjs",
       "line": 73,
-      "column": 258,
+      "column": 403,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "请求标识已用于其他文字。",
@@ -208779,9 +208902,29 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:74:50",
+      "id": "candidate:server/audio-service.mjs:74:67",
       "file": "server/audio-service.mjs",
       "line": 74,
+      "column": 67,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "取消请求记录较多，请在本机继续。",
+      "sha256": "2e4412738b072afbe2717e71e96b85d3b87b9e3c438647159ce2503c15045525",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/audio-service.mjs:75:50",
+      "file": "server/audio-service.mjs",
+      "line": 75,
       "column": 50,
       "kind": "js-cjk-literal",
       "property": null,
@@ -208799,9 +208942,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:77:194",
+      "id": "candidate:server/audio-service.mjs:79:194",
       "file": "server/audio-service.mjs",
-      "line": 77,
+      "line": 79,
       "column": 194,
       "kind": "js-cjk-literal",
       "property": null,
@@ -208819,9 +208962,29 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:78:105",
+      "id": "candidate:server/audio-service.mjs:80:65",
       "file": "server/audio-service.mjs",
-      "line": 78,
+      "line": 80,
+      "column": 65,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "取消请求记录较多，请在本机继续。",
+      "sha256": "2e4412738b072afbe2717e71e96b85d3b87b9e3c438647159ce2503c15045525",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/audio-service.mjs:81:105",
+      "file": "server/audio-service.mjs",
+      "line": 81,
       "column": 105,
       "kind": "js-cjk-literal",
       "property": null,
@@ -208839,9 +209002,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:78:197",
+      "id": "candidate:server/audio-service.mjs:81:197",
       "file": "server/audio-service.mjs",
-      "line": 78,
+      "line": 81,
       "column": 197,
       "kind": "js-cjk-literal",
       "property": null,
@@ -208859,9 +209022,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:79:88",
+      "id": "candidate:server/audio-service.mjs:82:88",
       "file": "server/audio-service.mjs",
-      "line": 79,
+      "line": 82,
       "column": 88,
       "kind": "js-cjk-literal",
       "property": null,
@@ -208879,9 +209042,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:80:207",
+      "id": "candidate:server/audio-service.mjs:83:207",
       "file": "server/audio-service.mjs",
-      "line": 80,
+      "line": 83,
       "column": 207,
       "kind": "js-cjk-literal",
       "property": null,
@@ -208899,9 +209062,49 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:87:266",
+      "id": "candidate:server/audio-service.mjs:92:95",
       "file": "server/audio-service.mjs",
-      "line": 87,
+      "line": 92,
+      "column": 95,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "请求标识无效。",
+      "sha256": "3ba0c71fd75f7ebbbbf5443982948d9cc6520064e827912b2a0016c99c043922",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/audio-service.mjs:98:48",
+      "file": "server/audio-service.mjs",
+      "line": 98,
+      "column": 48,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "取消请求记录较多，请在本机继续。",
+      "sha256": "2e4412738b072afbe2717e71e96b85d3b87b9e3c438647159ce2503c15045525",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:server/audio-service.mjs:107:266",
+      "file": "server/audio-service.mjs",
+      "line": 107,
       "column": 266,
       "kind": "js-cjk-literal",
       "property": null,
@@ -208919,9 +209122,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:87:385",
+      "id": "candidate:server/audio-service.mjs:107:385",
       "file": "server/audio-service.mjs",
-      "line": 87,
+      "line": 107,
       "column": 385,
       "kind": "js-cjk-literal",
       "property": null,
@@ -208939,9 +209142,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:88:268",
+      "id": "candidate:server/audio-service.mjs:108:268",
       "file": "server/audio-service.mjs",
-      "line": 88,
+      "line": 108,
       "column": 268,
       "kind": "js-cjk-literal",
       "property": null,
@@ -208959,9 +209162,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:88:414",
+      "id": "candidate:server/audio-service.mjs:108:414",
       "file": "server/audio-service.mjs",
-      "line": 88,
+      "line": 108,
       "column": 414,
       "kind": "js-cjk-literal",
       "property": null,
@@ -208979,9 +209182,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:88:531",
+      "id": "candidate:server/audio-service.mjs:108:531",
       "file": "server/audio-service.mjs",
-      "line": 88,
+      "line": 108,
       "column": 531,
       "kind": "js-cjk-literal",
       "property": null,
@@ -208999,9 +209202,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:89:357",
+      "id": "candidate:server/audio-service.mjs:109:357",
       "file": "server/audio-service.mjs",
-      "line": 89,
+      "line": 109,
       "column": 357,
       "kind": "js-cjk-literal",
       "property": null,
@@ -209019,9 +209222,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:90:96",
+      "id": "candidate:server/audio-service.mjs:110:96",
       "file": "server/audio-service.mjs",
-      "line": 90,
+      "line": 110,
       "column": 96,
       "kind": "js-cjk-literal",
       "property": null,
@@ -209039,9 +209242,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:90:249",
+      "id": "candidate:server/audio-service.mjs:110:249",
       "file": "server/audio-service.mjs",
-      "line": 90,
+      "line": 110,
       "column": 249,
       "kind": "js-cjk-literal",
       "property": null,
@@ -209059,9 +209262,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:90:364",
+      "id": "candidate:server/audio-service.mjs:110:364",
       "file": "server/audio-service.mjs",
-      "line": 90,
+      "line": 110,
       "column": 364,
       "kind": "js-cjk-literal",
       "property": null,
@@ -209079,9 +209282,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:90:464",
+      "id": "candidate:server/audio-service.mjs:110:464",
       "file": "server/audio-service.mjs",
-      "line": 90,
+      "line": 110,
       "column": 464,
       "kind": "js-cjk-literal",
       "property": null,
@@ -209099,9 +209302,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:90:811",
+      "id": "candidate:server/audio-service.mjs:110:811",
       "file": "server/audio-service.mjs",
-      "line": 90,
+      "line": 110,
       "column": 811,
       "kind": "js-cjk-literal",
       "property": null,
@@ -209119,9 +209322,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:93:202",
+      "id": "candidate:server/audio-service.mjs:113:202",
       "file": "server/audio-service.mjs",
-      "line": 93,
+      "line": 113,
       "column": 202,
       "kind": "js-cjk-literal",
       "property": null,
@@ -209139,9 +209342,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:93:284",
+      "id": "candidate:server/audio-service.mjs:113:284",
       "file": "server/audio-service.mjs",
-      "line": 93,
+      "line": 113,
       "column": 284,
       "kind": "js-cjk-literal",
       "property": null,
@@ -209159,9 +209362,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:95:231",
+      "id": "candidate:server/audio-service.mjs:115:231",
       "file": "server/audio-service.mjs",
-      "line": 95,
+      "line": 115,
       "column": 231,
       "kind": "js-cjk-literal",
       "property": null,
@@ -209179,9 +209382,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:95:369",
+      "id": "candidate:server/audio-service.mjs:115:369",
       "file": "server/audio-service.mjs",
-      "line": 95,
+      "line": 115,
       "column": 369,
       "kind": "js-cjk-literal",
       "property": null,
@@ -209199,9 +209402,9 @@
       }
     },
     {
-      "id": "candidate:server/audio-service.mjs:96:314",
+      "id": "candidate:server/audio-service.mjs:116:314",
       "file": "server/audio-service.mjs",
-      "line": 96,
+      "line": 116,
       "column": 314,
       "kind": "js-cjk-literal",
       "property": null,
@@ -241594,7 +241797,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio-bootstrap.mjs",
-      "line": 41,
+      "line": 42,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -241610,7 +241813,15 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio-bootstrap.mjs",
-      "line": 88,
+      "line": 43,
+      "expression": "0",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-audio-bootstrap.mjs",
+      "line": 90,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -241618,7 +241829,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio-bootstrap.mjs",
-      "line": 102,
+      "line": 104,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -241681,7 +241892,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 24,
+      "line": 25,
       "expression": "'audio.'+key",
       "fragments": [
         "audio."
@@ -241691,7 +241902,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 56,
+      "line": 57,
       "expression": "'/api/audio/'+action",
       "fragments": [
         "/api/audio/"
@@ -241701,7 +241912,69 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 61,
+      "line": 62,
+      "expression": "'/api/audio/sessions/'+encodeURIComponent(session.id)+'/cancel'",
+      "fragments": [
+        "/api/audio/sessions/",
+        "/cancel"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-audio.js",
+      "line": 62,
+      "expression": "'/api/audio/sessions/'+encodeURIComponent(session.id)",
+      "fragments": [
+        "/api/audio/sessions/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-audio.js",
+      "line": 65,
+      "expression": "'request:'+key",
+      "fragments": [
+        "request:"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-audio.js",
+      "line": 66,
+      "expression": "'request:'+key",
+      "fragments": [
+        "request:"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-audio.js",
+      "line": 66,
+      "expression": "'/api/audio/requests/'+encodeURIComponent(key)+'/cancel'",
+      "fragments": [
+        "/api/audio/requests/",
+        "/cancel"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-audio.js",
+      "line": 66,
+      "expression": "'/api/audio/requests/'+encodeURIComponent(key)",
+      "fragments": [
+        "/api/audio/requests/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/reader-audio.js",
+      "line": 76,
       "expression": "Math.ceil(window.innerHeight-player.getBoundingClientRect().top+12)+'px'",
       "fragments": [
         "px"
@@ -241711,7 +241984,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 64,
+      "line": 81,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -241719,36 +241992,31 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 65,
+      "line": 83,
       "expression": "index",
       "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reader-audio.js",
-      "line": 67,
-      "expression": "'sessions/'+previous.id+'/cancel'",
-      "fragments": [
-        "sessions/",
-        "/cancel"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/reader-audio.js",
-      "line": 67,
-      "expression": "'sessions/'+previous.id",
-      "fragments": [
-        "sessions/"
-      ],
       "unresolved": true
     },
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 71,
+      "line": 84,
+      "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-audio.js",
+      "line": 87,
+      "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/reader-audio.js",
+      "line": 93,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -241756,7 +242024,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 73,
+      "line": 95,
       "expression": "'/api/audio/clips/'+clip.id",
       "fragments": [
         "/api/audio/clips/"
@@ -241766,7 +242034,7 @@
     {
       "kind": "template",
       "file": "app/reader-audio.js",
-      "line": 76,
+      "line": 99,
       "expression": "`${Math.floor(n/60)}:${String(Math.floor(n%60)).padStart(2,'0')}`",
       "fragments": [
         ":"
@@ -241776,7 +242044,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 76,
+      "line": 99,
       "expression": "time(media.currentTime)+' / '",
       "fragments": [
         " / "
@@ -241786,7 +242054,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 79,
+      "line": 102,
       "expression": "'sessions/'+sessionId",
       "fragments": [
         "sessions/"
@@ -241796,7 +242064,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 79,
+      "line": 102,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -241804,7 +242072,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 86,
+      "line": 139,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -241812,7 +242080,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 86,
+      "line": 139,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -241820,7 +242088,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 91,
+      "line": 144,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -241828,7 +242096,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 92,
+      "line": 145,
       "expression": "at",
       "fragments": [],
       "unresolved": true
@@ -241836,7 +242104,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 92,
+      "line": 145,
       "expression": "active.variant",
       "fragments": [],
       "unresolved": true
@@ -241844,7 +242112,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 92,
+      "line": 145,
       "expression": "at+1",
       "fragments": [],
       "unresolved": true
@@ -241852,7 +242120,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 92,
+      "line": 145,
       "expression": "at+1",
       "fragments": [],
       "unresolved": true
@@ -241860,7 +242128,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 95,
+      "line": 148,
       "expression": "'dialogues/'+lastGuideJob.dialogueId",
       "fragments": [
         "dialogues/"
@@ -241870,7 +242138,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 95,
+      "line": 148,
       "expression": "'sessions/'+job.sessionId",
       "fragments": [
         "sessions/"
@@ -241880,7 +242148,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 95,
+      "line": 148,
       "expression": "'sessions/'+s.id+'/cancel'",
       "fragments": [
         "sessions/",
@@ -241891,7 +242159,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 95,
+      "line": 148,
       "expression": "'sessions/'+s.id",
       "fragments": [
         "sessions/"
@@ -241901,7 +242169,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 108,
+      "line": 161,
       "expression": "'–'+time.max",
       "fragments": [
         "–"
@@ -241911,7 +242179,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 114,
+      "line": 167,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -241919,7 +242187,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 119,
+      "line": 172,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -241927,7 +242195,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 154,
+      "line": 207,
       "expression": "'dialogues/'+d.id",
       "fragments": [
         "dialogues/"
@@ -241937,7 +242205,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 154,
+      "line": 207,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -241945,7 +242213,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 154,
+      "line": 207,
       "expression": "i",
       "fragments": [],
       "unresolved": true
@@ -241953,7 +242221,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 154,
+      "line": 207,
       "expression": "'dialogues/'+d.id",
       "fragments": [
         "dialogues/"
@@ -241963,7 +242231,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 158,
+      "line": 211,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -241971,7 +242239,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 159,
+      "line": 212,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -241979,7 +242247,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 159,
+      "line": 212,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -241987,7 +242255,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 182,
+      "line": 235,
       "expression": "'sessions/'+id",
       "fragments": [
         "sessions/"
@@ -241997,7 +242265,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 182,
+      "line": 235,
       "expression": "s.position?.clipIndex||0",
       "fragments": [],
       "unresolved": true
@@ -242005,7 +242273,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 183,
+      "line": 236,
       "expression": "'guides/'+job.id",
       "fragments": [
         "guides/"
@@ -242015,7 +242283,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 183,
+      "line": 236,
       "expression": "'dialogues/'+d.id",
       "fragments": [
         "dialogues/"
@@ -242023,9 +242291,17 @@
       "unresolved": true
     },
     {
+      "kind": "computed-member",
+      "file": "app/reader-audio.js",
+      "line": 247,
+      "expression": "index",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 191,
+      "line": 252,
       "expression": "'/api/audio/clips/'+active.clips[index].id",
       "fragments": [
         "/api/audio/clips/"
@@ -242035,7 +242311,7 @@
     {
       "kind": "computed-member",
       "file": "app/reader-audio.js",
-      "line": 191,
+      "line": 252,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -242043,7 +242319,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 191,
+      "line": 252,
       "expression": "'leafhour-'+(index+1)",
       "fragments": [
         "leafhour-"
@@ -242053,7 +242329,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 191,
+      "line": 252,
       "expression": "'dialogues/'+active.dialogueId",
       "fragments": [
         "dialogues/"
@@ -242063,7 +242339,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-audio.js",
-      "line": 211,
+      "line": 273,
       "expression": "'sessions/'+saved.sessionId",
       "fragments": [
         "sessions/"
@@ -249334,30 +249610,6 @@
       "kind": "computed-member",
       "file": "server/audio-routes.mjs",
       "line": 28,
-      "expression": "2",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/audio-routes.mjs",
-      "line": 28,
-      "expression": "1",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/audio-routes.mjs",
-      "line": 28,
-      "expression": "2",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/audio-routes.mjs",
-      "line": 28,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -249366,6 +249618,38 @@
       "kind": "computed-member",
       "file": "server/audio-routes.mjs",
       "line": 30,
+      "expression": "2",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/audio-routes.mjs",
+      "line": 30,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/audio-routes.mjs",
+      "line": 30,
+      "expression": "2",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/audio-routes.mjs",
+      "line": 30,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/audio-routes.mjs",
+      "line": 32,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -249373,7 +249657,7 @@
     {
       "kind": "concatenation",
       "file": "server/audio-routes.mjs",
-      "line": 30,
+      "line": 32,
       "expression": "'inline; filename=\"leafhour-audio.'+(mimeType==='audio/wav'?'wav':'mp3')+'\"'",
       "fragments": [
         "inline; filename=\"leafhour-audio.",
@@ -249384,7 +249668,7 @@
     {
       "kind": "concatenation",
       "file": "server/audio-routes.mjs",
-      "line": 30,
+      "line": 32,
       "expression": "'inline; filename=\"leafhour-audio.'+(mimeType==='audio/wav'?'wav':'mp3')",
       "fragments": [
         "inline; filename=\"leafhour-audio."
@@ -249394,7 +249678,7 @@
     {
       "kind": "computed-member",
       "file": "server/audio-routes.mjs",
-      "line": 32,
+      "line": 34,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -249402,7 +249686,7 @@
     {
       "kind": "computed-member",
       "file": "server/audio-routes.mjs",
-      "line": 32,
+      "line": 34,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -249460,7 +249744,7 @@
     {
       "kind": "computed-member",
       "file": "server/audio-service.mjs",
-      "line": 80,
+      "line": 83,
       "expression": "c.speaker",
       "fragments": [],
       "unresolved": true
@@ -249468,7 +249752,7 @@
     {
       "kind": "computed-member",
       "file": "server/audio-service.mjs",
-      "line": 80,
+      "line": 83,
       "expression": "t.speaker",
       "fragments": [],
       "unresolved": true
@@ -249476,7 +249760,7 @@
     {
       "kind": "computed-member",
       "file": "server/audio-service.mjs",
-      "line": 88,
+      "line": 108,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -249484,7 +249768,7 @@
     {
       "kind": "computed-member",
       "file": "server/audio-service.mjs",
-      "line": 88,
+      "line": 108,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -249492,7 +249776,7 @@
     {
       "kind": "computed-member",
       "file": "server/audio-service.mjs",
-      "line": 88,
+      "line": 108,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -249500,7 +249784,7 @@
     {
       "kind": "computed-member",
       "file": "server/audio-service.mjs",
-      "line": 88,
+      "line": 108,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -257338,19 +257622,19 @@
   },
   "counts": {
     "catalogueFiles": 4,
-    "catalogueKeys": 2220,
-    "localeValues": 8880,
-    "itemsComplete": 2220,
+    "catalogueKeys": 2221,
+    "localeValues": 8884,
+    "itemsComplete": 2221,
     "itemsWithMissingLocales": 0,
     "duplicateKeys": 0,
     "reviewedItems": 0,
-    "unreviewedItems": 2220,
-    "candidates": 4860,
-    "candidatesUnreviewed": 4860,
+    "unreviewedItems": 2221,
+    "candidates": 4867,
+    "candidatesUnreviewed": 4867,
     "candidatesProtected": 132,
     "itemsProtected": 9,
-    "dynamicConsumers": 3127,
+    "dynamicConsumers": 3136,
     "consumerReferences": 1589,
-    "keysWithoutStaticConsumers": 1198
+    "keysWithoutStaticConsumers": 1199
   }
 }

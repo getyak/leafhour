@@ -24,6 +24,8 @@ export function createAudioRoutes({audio,library,guides,guideGenerator}){
   if(action==='preferences'){if(get)send(200,await audio.getPreferences(user));else if(post)send(200,await audio.savePreferences(user,body));else return false;return true;}
   if(action==='records'&&get){send(200,await audio.listRecords(user,bookId));return true;}
   if(action==='sessions'&&post){send(202,await audio.createSession(user,bookId,body));return true;}
+  const cancelledRequest=action.match(/^requests\/([A-Za-z0-9-]{1,128})\/cancel$/);
+  if(cancelledRequest&&post){send(200,await audio.cancelRequest(user,bookId,cancelledRequest[1]));return true;}
   const session=action.match(/^sessions\/([A-Za-z0-9-]+)(\/cancel)?$/);
   if(session){if(session[2]&&post)send(200,await audio.cancelSession(user,bookId,session[1]));else if(!session[2]&&get)send(200,await audio.getSession(user,bookId,session[1]));else return false;return true;}
   if(action==='position'&&post){send(200,await audio.savePosition(user,bookId,body));return true;}

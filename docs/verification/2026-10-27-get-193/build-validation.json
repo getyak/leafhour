@@ -1,0 +1,48 @@
+[
+  {
+    "name": "runtime-build",
+    "args": [
+      "tools/build-reader-runtime.mjs"
+    ],
+    "start": "2026-10-27T02:45:03.368Z",
+    "end": "2026-10-27T02:45:08.960Z",
+    "exitCode": 0
+  },
+  {
+    "name": "web-build",
+    "args": [
+      "tools/build-vercel.mjs"
+    ],
+    "start": "2026-10-27T02:45:08.962Z",
+    "end": "2026-10-27T02:45:10.751Z",
+    "exitCode": 0
+  },
+  {
+    "name": "public-build",
+    "args": [
+      "tools/check-public-build.mjs",
+      "dist"
+    ],
+    "start": "2026-10-27T02:45:10.751Z",
+    "end": "2026-10-27T02:45:10.893Z",
+    "exitCode": 0
+  },
+  {
+    "name": "release-policy",
+    "args": [
+      "tools/release-policy.mjs"
+    ],
+    "start": "2026-10-27T02:45:10.894Z",
+    "end": "2026-10-27T02:45:12.106Z",
+    "exitCode": 0
+  },
+  {
+    "name": "release-verification",
+    "args": [
+      "tools/verify-release.mjs"
+    ],
+    "start": "2026-10-27T02:45:12.108Z",
+    "end": "2026-10-27T02:45:12.210Z",
+    "exitCode": 0
+  }
+]

@@ -1,0 +1,608 @@
+TAP version 13
+# Subtest: sidebar starts narration directly and continues exact source order until the chapter ends
+ok 1 - sidebar starts narration directly and continues exact source order until the chapter ends
+  ---
+  duration_ms: 235.639917
+  type: 'test'
+  ...
+# Subtest: late created narration is canceled after its book scope is disposed
+ok 2 - late created narration is canceled after its book scope is disposed
+  ---
+  duration_ms: 79.539375
+  type: 'test'
+  ...
+# Subtest: disposing known generating narration cancels its owned session
+ok 3 - disposing known generating narration cancels its owned session
+  ---
+  duration_ms: 78.07325
+  type: 'test'
+  ...
+# Subtest: explicit play retries a failed preparation using the frozen start
+ok 4 - explicit play retries a failed preparation using the frozen start
+  ---
+  duration_ms: 97.662333
+  type: 'test'
+  ...
+# Subtest: manual scrolling while the next batch is preparing disables following
+ok 5 - manual scrolling while the next batch is preparing disables following
+  ---
+  duration_ms: 105.7955
+  type: 'test'
+  ...
+# Subtest: pagehide cannot be undone by an awaited source navigation
+ok 6 - pagehide cannot be undone by an awaited source navigation
+  ---
+  duration_ms: 85.797958
+  type: 'test'
+  ...
+# Subtest: stopping an uncertain create cancels by its original idempotency key
+ok 7 - stopping an uncertain create cancels by its original idempotency key
+  ---
+  duration_ms: 67.9025
+  type: 'test'
+  ...
+# Subtest: BFCache returns an invalid prepare intent to explicit recovery
+ok 8 - BFCache returns an invalid prepare intent to explicit recovery
+  ---
+  duration_ms: 102.278333
+  type: 'test'
+  ...
+# Subtest: BFCache returns an invalid create intent to explicit recovery
+ok 9 - BFCache returns an invalid create intent to explicit recovery
+  ---
+  duration_ms: 95.739625
+  type: 'test'
+  ...
+# Subtest: BFCache interrupted create failure can be explicitly recovered
+ok 10 - BFCache interrupted create failure can be explicitly recovered
+  ---
+  duration_ms: 94.675208
+  type: 'test'
+  ...
+# Subtest: missing translation offers explicit original narration without silently switching or synthesizing
+ok 11 - missing translation offers explicit original narration without silently switching or synthesizing
+  ---
+  duration_ms: 62.591541
+  type: 'test'
+  ...
+# Subtest: pause while a clip is being prepared prevents late automatic playback
+ok 12 - pause while a clip is being prepared prevents late automatic playback
+  ---
+  duration_ms: 93.580875
+  type: 'test'
+  ...
+# Subtest: from-here captures a bounded batch instead of copying the remaining chapter into selected parts
+ok 13 - from-here captures a bounded batch instead of copying the remaining chapter into selected parts
+  ---
+  duration_ms: 59.450125
+  type: 'test'
+  ...
+# Subtest: a ready clip transport failure can be explicitly retried without a new session
+ok 14 - a ready clip transport failure can be explicitly retried without a new session
+  ---
+  duration_ms: 107.742458
+  type: 'test'
+  ...
+# Subtest: automatic continuation preserves manual reading rather than restoring follow
+ok 15 - automatic continuation preserves manual reading rather than restoring follow
+  ---
+  duration_ms: 110.306875
+  type: 'test'
+  ...
+# Subtest: local actual audio routes transport a missing-translation cause for selection and narration
+ok 16 - local actual audio routes transport a missing-translation cause for selection and narration
+  ---
+  duration_ms: 362.606
+  type: 'test'
+  ...
+# Leafhour 配置：
+#   阅读：无需 AI Key
+#   AI 文字：未配置（可填写 DEEPSEEK_API_KEY）
+#   语音：未配置（可填写 GEMINI_API_KEY）
+# Subtest: hosted actual audio routes transport a missing-translation cause for selection and narration
+ok 17 - hosted actual audio routes transport a missing-translation cause for selection and narration
+  ---
+  duration_ms: 165.5985
+  type: 'test'
+  ...
+# Subtest: only the exact 409 domain code offers an original; prose and unknown/status-mismatched codes do not
+ok 18 - only the exact 409 domain code offers an original; prose and unknown/status-mismatched codes do not
+  ---
+  duration_ms: 63.81325
+  type: 'test'
+  ...
+# Subtest: actual audio owner preserves playing media, cached business state and accessible labels through four commits
+ok 19 - actual audio owner preserves playing media, cached business state and accessible labels through four commits
+  ---
+  duration_ms: 203.085166
+  type: 'test'
+  ...
+# Subtest: pending preparation success settles in effective language without automatic fallback
+ok 20 - pending preparation success settles in effective language without automatic fallback
+  ---
+  duration_ms: 85.537042
+  type: 'test'
+  ...
+# Subtest: pending preparation unknown settles in effective language without automatic fallback
+ok 21 - pending preparation unknown settles in effective language without automatic fallback
+  ---
+  duration_ms: 73.8875
+  type: 'test'
+  ...
+# Subtest: pending preparation typed settles in effective language without automatic fallback
+ok 22 - pending preparation typed settles in effective language without automatic fallback
+  ---
+  duration_ms: 46.944417
+  type: 'test'
+  ...
+# Subtest: pending preparation wrongStatus settles in effective language without automatic fallback
+ok 23 - pending preparation wrongStatus settles in effective language without automatic fallback
+  ---
+  duration_ms: 54.28325
+  type: 'test'
+  ...
+# Subtest: manual script dirty textarea and pending estimate success keep native editing identity
+ok 24 - manual script dirty textarea and pending estimate success keep native editing identity
+  ---
+  duration_ms: 40.359667
+  type: 'test'
+  ...
+# Subtest: manual script dirty textarea and pending estimate failure keep native editing identity
+ok 25 - manual script dirty textarea and pending estimate failure keep native editing identity
+  ---
+  duration_ms: 34.934167
+  type: 'test'
+  ...
+# Subtest: voice, speed and guide native selects retain dirty values and focus without media or preference changes
+ok 26 - voice, speed and guide native selects retain dirty values and focus without media or preference changes
+  ---
+  duration_ms: 46.465084
+  type: 'test'
+  ...
+# Subtest: pending guide job success keeps UUID payload, timer and session through locale
+ok 27 - pending guide job success keeps UUID payload, timer and session through locale
+  ---
+  duration_ms: 62.507917
+  type: 'test'
+  ...
+# Subtest: pending guide job failure keeps UUID payload, timer and session through locale
+ok 28 - pending guide job failure keeps UUID payload, timer and session through locale
+  ---
+  duration_ms: 58.758291
+  type: 'test'
+  ...
+# Subtest: new explicit Ask uses locale framework while transcript, IDs, citations and existing draft stay literal
+ok 29 - new explicit Ask uses locale framework while transcript, IDs, citations and existing draft stay literal
+  ---
+  duration_ms: 34.91525
+  type: 'test'
+  ...
+# Subtest: closed old view and disposed owner consume late prepare/estimate completions and failures
+ok 30 - closed old view and disposed owner consume late prepare/estimate completions and failures
+  ---
+  duration_ms: 83.146958
+  type: 'test'
+  ...
+# Subtest: first meaningful audio controls await the physical ready promise, including English fallback
+ok 31 - first meaningful audio controls await the physical ready promise, including English fallback
+  ---
+  duration_ms: 23.746792
+  type: 'test'
+  ...
+# Subtest: pending guide scope success keeps scope input and settles once in the effective locale
+ok 32 - pending guide scope success keeps scope input and settles once in the effective locale
+  ---
+  duration_ms: 42.491041
+  type: 'test'
+  ...
+# Subtest: pending guide scope failure keeps scope input and settles once in the effective locale
+ok 33 - pending guide scope failure keeps scope input and settles once in the effective locale
+  ---
+  duration_ms: 55.376667
+  type: 'test'
+  ...
+# Subtest: historical errors, retained scripts, source leaves and view registry remain literal and bounded
+ok 34 - historical errors, retained scripts, source leaves and view registry remain literal and bounded
+  ---
+  duration_ms: 78.847459
+  type: 'test'
+  ...
+# Subtest: saved records and resume entry format cached chapter/count descriptors without refetching
+ok 35 - saved records and resume entry format cached chapter/count descriptors without refetching
+  ---
+  duration_ms: 54.190083
+  type: 'test'
+  ...
+# Subtest: pending estimate from a replaced or disposed script cannot write its retained old leaf
+ok 36 - pending estimate from a replaced or disposed script cannot write its retained old leaf
+  ---
+  duration_ms: 90.188292
+  type: 'test'
+  ...
+# Subtest: actual runtime initial rejection resolves audio to coherent English without language-triggered reinitialization
+ok 37 - actual runtime initial rejection resolves audio to coherent English without language-triggered reinitialization
+  ---
+  duration_ms: 29.778917
+  type: 'test'
+  ...
+# Subtest: disposed media and guide owners consume late blobs/jobs without playback or scheduling
+ok 38 - disposed media and guide owners consume late blobs/jobs without playback or scheduling
+  ---
+  duration_ms: 52.695958
+  type: 'test'
+  ...
+# Subtest: persisted pagehide pauses audio but retains cached UI ownership for Back restoration
+ok 39 - persisted pagehide pauses audio but retains cached UI ownership for Back restoration
+  ---
+  duration_ms: 31.013917
+  type: 'test'
+  ...
+# Subtest: typed fallback activates corresponding original only on an explicit click
+ok 40 - typed fallback activates corresponding original only on an explicit click
+  ---
+  duration_ms: 25.806875
+  type: 'test'
+  ...
+# Subtest: disposed bootstrap ignores late preferences without writing native controls
+ok 41 - disposed bootstrap ignores late preferences without writing native controls
+  ---
+  duration_ms: 21.091667
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after panel
+ok 42 - scene callbacks ask first wait consumes success after panel
+  ---
+  duration_ms: 35.624833
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after panel
+ok 43 - scene callbacks ask first wait consumes failure after panel
+  ---
+  duration_ms: 37.024875
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after stop
+ok 44 - scene callbacks ask first wait consumes success after stop
+  ---
+  duration_ms: 29.441125
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after stop
+ok 45 - scene callbacks ask first wait consumes failure after stop
+  ---
+  duration_ms: 31.748083
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after session
+ok 46 - scene callbacks ask first wait consumes success after session
+  ---
+  duration_ms: 39.096583
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after session
+ok 47 - scene callbacks ask first wait consumes failure after session
+  ---
+  duration_ms: 30.532375
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after clip
+ok 48 - scene callbacks ask first wait consumes success after clip
+  ---
+  duration_ms: 25.9015
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after clip
+ok 49 - scene callbacks ask first wait consumes failure after clip
+  ---
+  duration_ms: 26.472541
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after clipABA
+ok 50 - scene callbacks ask first wait consumes success after clipABA
+  ---
+  duration_ms: 40.128041
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after clipABA
+ok 51 - scene callbacks ask first wait consumes failure after clipABA
+  ---
+  duration_ms: 44.192458
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after ownerABA
+ok 52 - scene callbacks ask first wait consumes success after ownerABA
+  ---
+  duration_ms: 31.6355
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after ownerABA
+ok 53 - scene callbacks ask first wait consumes failure after ownerABA
+  ---
+  duration_ms: 26.55425
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after bookABA
+ok 54 - scene callbacks ask first wait consumes success after bookABA
+  ---
+  duration_ms: 26.130584
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after bookABA
+ok 55 - scene callbacks ask first wait consumes failure after bookABA
+  ---
+  duration_ms: 26.896625
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after book
+ok 56 - scene callbacks ask first wait consumes success after book
+  ---
+  duration_ms: 26.29075
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after book
+ok 57 - scene callbacks ask first wait consumes failure after book
+  ---
+  duration_ms: 26.315209
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after disposed
+ok 58 - scene callbacks ask first wait consumes success after disposed
+  ---
+  duration_ms: 27.565125
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after disposed
+ok 59 - scene callbacks ask first wait consumes failure after disposed
+  ---
+  duration_ms: 33.254542
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after panel
+ok 60 - scene callbacks sources first wait consumes success after panel
+  ---
+  duration_ms: 32.960375
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after panel
+ok 61 - scene callbacks sources first wait consumes failure after panel
+  ---
+  duration_ms: 28.084708
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after stop
+ok 62 - scene callbacks sources first wait consumes success after stop
+  ---
+  duration_ms: 29.060875
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after stop
+ok 63 - scene callbacks sources first wait consumes failure after stop
+  ---
+  duration_ms: 28.302417
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after session
+ok 64 - scene callbacks sources first wait consumes success after session
+  ---
+  duration_ms: 29.772083
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after session
+ok 65 - scene callbacks sources first wait consumes failure after session
+  ---
+  duration_ms: 30.317458
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after clip
+ok 66 - scene callbacks sources first wait consumes success after clip
+  ---
+  duration_ms: 28.230125
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after clip
+ok 67 - scene callbacks sources first wait consumes failure after clip
+  ---
+  duration_ms: 29.269041
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after clipABA
+ok 68 - scene callbacks sources first wait consumes success after clipABA
+  ---
+  duration_ms: 52.207042
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after clipABA
+ok 69 - scene callbacks sources first wait consumes failure after clipABA
+  ---
+  duration_ms: 45.528042
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after ownerABA
+ok 70 - scene callbacks sources first wait consumes success after ownerABA
+  ---
+  duration_ms: 37.461417
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after ownerABA
+ok 71 - scene callbacks sources first wait consumes failure after ownerABA
+  ---
+  duration_ms: 33.338208
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after bookABA
+ok 72 - scene callbacks sources first wait consumes success after bookABA
+  ---
+  duration_ms: 30.90725
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after bookABA
+ok 73 - scene callbacks sources first wait consumes failure after bookABA
+  ---
+  duration_ms: 30.02375
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after book
+ok 74 - scene callbacks sources first wait consumes success after book
+  ---
+  duration_ms: 31.706959
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after book
+ok 75 - scene callbacks sources first wait consumes failure after book
+  ---
+  duration_ms: 26.532125
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after disposed
+ok 76 - scene callbacks sources first wait consumes success after disposed
+  ---
+  duration_ms: 28.094917
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after disposed
+ok 77 - scene callbacks sources first wait consumes failure after disposed
+  ---
+  duration_ms: 28.281583
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after panel
+ok 78 - scene callbacks sources second wait consumes success after panel
+  ---
+  duration_ms: 30.556125
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after panel
+ok 79 - scene callbacks sources second wait consumes failure after panel
+  ---
+  duration_ms: 27.540042
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after stop
+ok 80 - scene callbacks sources second wait consumes success after stop
+  ---
+  duration_ms: 35.962
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after stop
+ok 81 - scene callbacks sources second wait consumes failure after stop
+  ---
+  duration_ms: 42.335125
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after session
+ok 82 - scene callbacks sources second wait consumes success after session
+  ---
+  duration_ms: 32.853833
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after session
+ok 83 - scene callbacks sources second wait consumes failure after session
+  ---
+  duration_ms: 31.195584
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after clip
+ok 84 - scene callbacks sources second wait consumes success after clip
+  ---
+  duration_ms: 29.294584
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after clip
+ok 85 - scene callbacks sources second wait consumes failure after clip
+  ---
+  duration_ms: 32.427625
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after clipABA
+ok 86 - scene callbacks sources second wait consumes success after clipABA
+  ---
+  duration_ms: 60.468583
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after clipABA
+ok 87 - scene callbacks sources second wait consumes failure after clipABA
+  ---
+  duration_ms: 46.419834
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after ownerABA
+ok 88 - scene callbacks sources second wait consumes success after ownerABA
+  ---
+  duration_ms: 27.181042
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after ownerABA
+ok 89 - scene callbacks sources second wait consumes failure after ownerABA
+  ---
+  duration_ms: 28.055542
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after bookABA
+ok 90 - scene callbacks sources second wait consumes success after bookABA
+  ---
+  duration_ms: 34.973125
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after bookABA
+ok 91 - scene callbacks sources second wait consumes failure after bookABA
+  ---
+  duration_ms: 40.665375
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after book
+ok 92 - scene callbacks sources second wait consumes success after book
+  ---
+  duration_ms: 34.267042
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after book
+ok 93 - scene callbacks sources second wait consumes failure after book
+  ---
+  duration_ms: 26.417916
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after disposed
+ok 94 - scene callbacks sources second wait consumes success after disposed
+  ---
+  duration_ms: 26.556833
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after disposed
+ok 95 - scene callbacks sources second wait consumes failure after disposed
+  ---
+  duration_ms: 26.430458
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask accepts pending success through locale commits
+ok 96 - scene callbacks ask accepts pending success through locale commits
+  ---
+  duration_ms: 37.199333
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask accepts pending failure through locale commits
+ok 97 - scene callbacks ask accepts pending failure through locale commits
+  ---
+  duration_ms: 41.984833
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources accepts pending success through locale commits
+ok 98 - scene callbacks sources accepts pending success through locale commits
+  ---
+  duration_ms: 48.584291
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources accepts pending failure through locale commits
+ok 99 - scene callbacks sources accepts pending failure through locale commits
+  ---
+  duration_ms: 49.162167
+  type: 'test'
+  ...
+1..99
+# tests 99
+# suites 0
+# pass 99
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4787.490667

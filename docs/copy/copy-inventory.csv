@@ -2263,3 +2263,4 @@ chat.failure.validation,catalogue,app/ui-catalogs/en.mjs,2229,unknown,unknown,un
 chat.failure.context,catalogue,app/ui-catalogs/en.mjs,2230,unknown,unknown,unknown,unknown,unreviewed,The source changed. Check this passage before retrying.,原文已变化，请核对当前段落后重试。,原文已變更，請核對目前段落後重試。,原文が変更されました。現在の段落を確認してから再試行してください。
 chat.evidence,catalogue,app/ui-catalogs/en.mjs,2231,unknown,unknown,unknown,unknown,unreviewed,About this answer,查看依据,查看依據,回答の根拠
 chat.evidence.incomplete,catalogue,app/ui-catalogs/en.mjs,2232,unknown,unknown,unknown,unknown,unreviewed,Some lookups failed. This answer may be incomplete.,部分查找失败，回答可能不完整。,部分查找失敗，回答可能不完整。,一部の検索に失敗しました。回答が不完全な場合があります。
+audio.options,catalogue,app/ui-catalogs/en.mjs,2233,unknown,unknown,unknown,unknown,unreviewed,More listening options,更多听读方式,更多聆聽方式,ほかの読み上げ方法

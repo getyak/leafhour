@@ -4,6 +4,33 @@ import {createSpeechProvider} from '../server/audio-provider.mjs';
 const owner={id:'a'},other={id:'b'};const pause=()=>new Promise(r=>setTimeout(r,15));
 async function fixture(t,provider){const dir=await mkdtemp(path.join(tmpdir(),'reader-audio-'));let book=audioBook();const store=await createAudioStore({dataDir:dir});const options={store,getBook:async()=>structuredClone(book),speechProvider:provider||{available:true,model:'test-model',synthesize:async()=>({bytes:Buffer.from('test-audio'),mimeType:'audio/mpeg'})},dialogueGenerator:async()=>({turns:[{speaker:'guide',text:'认真读。',sourceRefs:[{passageId:'p1',quote:'Read'}]}]})};const audio=await createAudioService(options);t.after(async()=>{await audio.close();await rm(dir,{recursive:true,force:true});});return {audio,store,options,book,request:{...audioSelection,idempotencyKey:'one'}};}
 async function settled(audio,id){for(let i=0;i<80;i++){const s=await audio.getSession(owner,'audio-book',id);if(s.status!=='generating')return s;await pause();}throw Error('never settled');}
+test('request cancellation persists before creation and across service instances',async t=>{
+ let calls=0;const {audio,request,options}=await fixture(t,{available:true,model:'m',synthesize:async()=>{calls++;return {bytes:Buffer.from('unit'),mimeType:'audio/mpeg'};}});
+ await audio.cancelRequest(owner,'audio-book',request.idempotencyKey);
+ const resumed=await createAudioService(options);t.after(()=>resumed.close());
+ const result=await resumed.createSession(owner,'audio-book',request);assert.equal(result.status,'cancelled');assert.equal(calls,0);
+ const otherResult=await resumed.createSession(other,'audio-book',request);assert.notEqual(otherResult.status,'cancelled');
+ for(let i=0;i<80;i++){if((await resumed.getSession(other,'audio-book',otherResult.id)).status!=='generating')break;await pause();}await resumed.close();
+});
+test('request cancellation aborts an accepted session without its response ID',async t=>{
+ let signal;const {audio,request}=await fixture(t,{available:true,model:'m',synthesize:input=>{signal=input.signal;return new Promise(()=>{});}});
+ const created=await audio.createSession(owner,'audio-book',request);while(!signal)await pause();
+ await audio.cancelRequest(other,'audio-book',request.idempotencyKey);assert.equal(signal.aborted,false);
+ await audio.cancelRequest(owner,'audio-book',request.idempotencyKey);assert.equal(signal.aborted,true);assert.equal((await audio.getSession(owner,'audio-book',created.id)).status,'cancelled');
+});
+test('a request cancelled while source preparation is pending never synthesizes',async t=>{
+ let calls=0;const {audio,request,options}=await fixture(t,{available:true,model:'m',synthesize:async()=>{calls++;return {bytes:Buffer.from('unit'),mimeType:'audio/mpeg'};}});
+ let release;const pending=new Promise(r=>release=r);let reads=0;
+ const concurrent=await createAudioService({...options,getBook:async()=>{if(++reads===1)await pending;return audioBook();}});t.after(()=>concurrent.close());
+ const create=concurrent.createSession(owner,'audio-book',request);await new Promise(setImmediate);
+ await audio.cancelRequest(owner,'audio-book',request.idempotencyKey);release();assert.equal((await create).status,'cancelled');assert.equal(calls,0);
+});
+test('unknown requests fail closed when cancellation receipt capacity is exhausted',async t=>{
+ let calls=0;const {audio,store,request}=await fixture(t,{available:true,model:'m',synthesize:async()=>{calls++;return {bytes:Buffer.from('unit'),mimeType:'audio/mpeg'};}});
+ await store.mutate(owner.id,'audio-book',d=>{d.sessionCancelledRequests=Array.from({length:1000},(_,i)=>({key:'cancelled-'+i}));});
+ await assert.rejects(audio.cancelRequest(owner,'audio-book','new-key'),{status:413,code:'record_limit'});
+ await assert.rejects(audio.createSession(owner,'audio-book',{...request,idempotencyKey:'new-key'}),{status:413,code:'record_limit'});assert.equal(calls,0);
+});
 test('parallel retries create one session and a key cannot be rebound to other text',async t=>{let calls=0;const {audio,request}=await fixture(t,{available:true,model:'m',synthesize:async()=>{calls++;return {bytes:Buffer.from('audio'),mimeType:'audio/mpeg'};}});const [a,b]=await Promise.all([audio.createSession(owner,'audio-book',request),audio.createSession(owner,'audio-book',request)]);assert.equal(a.id,b.id);assert.equal((await settled(audio,a.id)).status,'ready');assert.equal(calls,1);await assert.rejects(audio.createSession(owner,'audio-book',{...request,parts:[{passageId:'p2'}]}),{status:409});await assert.rejects(audio.getSession(other,'audio-book',a.id),{status:404});});
 test('cancelled generation cannot publish a late result',async t=>{let release;const {audio,request}=await fixture(t,{available:true,model:'m',synthesize:()=>new Promise(r=>release=r)});const session=await audio.createSession(owner,'audio-book',request);while(!release)await pause();await audio.cancelSession(owner,'audio-book',session.id);release({bytes:Buffer.from('late'),mimeType:'audio/mpeg'});await pause();const after=await audio.getSession(owner,'audio-book',session.id);assert.equal(after.status,'cancelled');assert.ok(after.clips.every(c=>c.status!=='ready'));});
 test('changed content hides cached audio and a fresh instance retains completed audio without regenerating',async t=>{const {audio,request,options,book}=await fixture(t);const s=await audio.createSession(owner,'audio-book',request),ready=await settled(audio,s.id);assert.deepEqual((await audio.getClip(owner,'audio-book',ready.clips[0].id)).bytes,Buffer.from('test-audio'));const next=await createAudioService(options);t.after(()=>next.close());assert.equal((await next.getSession(owner,'audio-book',s.id)).status,'ready');book.sections[0].paragraphs[0].original='Changed.';await assert.rejects(audio.getClip(owner,'audio-book',ready.clips[0].id),{status:409});});

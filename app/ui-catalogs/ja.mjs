@@ -2229,4 +2229,5 @@ export default Object.freeze({
   "chat.failure.context": "原文が変更されました。現在の段落を確認してから再試行してください。",
   "chat.evidence":"回答の根拠",
   "chat.evidence.incomplete":"一部の検索に失敗しました。回答が不完全な場合があります。",
+  "audio.options": "ほかの読み上げ方法",
 });
