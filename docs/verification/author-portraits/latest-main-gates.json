@@ -1,0 +1,49 @@
+{
+  "at": "2026-10-27T19:41:04.389163+00:00",
+  "sourceHead": "91f430c30b91fb3a1bc9f525a22708fdc8b4424b",
+  "node": "v22.22.0",
+  "tests": {
+    "command": "node --test --test-concurrency=2 tests/*.test.mjs",
+    "passed": 3885,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 1,
+    "skippedCase": "Modified Node license rejection is platform-skipped on this local macOS run; Linux CI remains a separate gate."
+  },
+  "copy": {
+    "lint": "passed",
+    "newT1": 0,
+    "historicalDebt": 371,
+    "retainedWarnings": 2091,
+    "realCliCanaries": "12 passed"
+  },
+  "build": {
+    "isolatedRuntime": {
+      "files": 928,
+      "megabytes": 9.0
+    },
+    "public": {
+      "files": 550,
+      "registeredMediaAssets": 11
+    },
+    "softwareReleaseAllowlist": 1136,
+    "status": "passed"
+  },
+  "review": {
+    "previousFindings": "closed",
+    "peopleResource": "approved; 9 independent targeted tests passed",
+    "latestMainIntegration": "approved; 9 independently repeated checks passed"
+  },
+  "limits": [
+    "Not a production receipt",
+    "Not reader research or a nine-dimension score",
+    "No model calls or real account writes in this verification"
+  ],
+  "priorAttempt": {
+    "status": "failed",
+    "passed": 3820,
+    "failed": 16,
+    "skipped": 1,
+    "reason": "Missing new-main dependency and dependency installation overlapping the tail of the test run; complete clean rerun above replaces no historical result."
+  }
+}

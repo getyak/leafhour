@@ -4,7 +4,7 @@ import {otherOverlayOpen,focusableTrigger} from './popover-controls.mjs';
 // One user-open import, one shared popover handle and one mounted enhancement.
 // Late code is reusable, but callbacks belong to a primitive source/owner stamp.
 // Metadata retry never starts generation, gifting or a second overlay registry.
-export function mountReaderBookActionsBootstrap({document,info,getBook,api,session,bookId,getOwner=()=>session?.user?.id||'guest',loadEnhancement=()=>import('./reader-book-actions.mjs')}){
+export function mountReaderBookActionsBootstrap({document,info,getBook,getReader=()=>null,api,session,bookId,getOwner=()=>session?.user?.id||'guest',loadEnhancement=()=>import('./reader-book-actions.mjs')}){
   const status=document.getElementById('book-intro-status'),retry=document.getElementById('book-intro-retry'),view=document.defaultView||globalThis;
   let generation=0,pending=null,shared=null,mounted=null,disposed=false,unsubscribe=()=>{},statusId=null,enhancementOwnsStatus=false,timer=null;
   const identity=()=>[getBook()?.bookId,getBook()?.contentVersion,getOwner()].join('\0');
@@ -33,7 +33,7 @@ export function mountReaderBookActionsBootstrap({document,info,getBook,api,sessi
       if(!focusableTrigger(info.trigger)||otherOverlayOpen(document,info.element)){fail();return;}
       clearTimeout(timer);enhancementOwnsStatus=true;statusId=null;
       paint();
-      const handle=module.mountReaderBookActions({document,info,getBook,api,session,bookId});
+      const handle=module.mountReaderBookActions({document,info,getBook,getReader,api,session,bookId});
       if(!current(stamp)){handle?.dispose?.();return;}
       mounted=handle;pending=null;
     }).catch(()=>{if(shared===promise)shared=null;if(current(stamp))fail();});

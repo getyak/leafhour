@@ -1,0 +1,1152 @@
+{
+  "schemaVersion": 1,
+  "id": "mary-shelley",
+  "revision": 1,
+  "visibility": "public",
+  "originalName": "Mary Wollstonecraft Shelley",
+  "names": {
+    "en": "Mary Shelley",
+    "zh-Hans": "玛丽·雪莱",
+    "zh-Hant": "瑪麗·雪萊",
+    "ja": "メアリー・シェリー"
+  },
+  "intro": {
+    "en": "She began Frankenstein at eighteen, then spent decades writing fiction, travel and literary lives, and editing Percy Shelley’s work. Her later account of the novel’s beginning belongs to the 1831 edition.",
+    "zh-Hans": "她 18 岁时开始写《弗兰肯斯坦》，此后还写小说、游记与传记，并整理珀西·雪莱的作品。那段常被引用的构思回忆写于 1831 年，距最初的湖畔之夏已有 15 年。",
+    "zh-Hant": "她 18 歲時開始寫《科學怪人》，此後還寫小說、遊記與傳記，並整理珀西·雪萊的作品。那段常被引用的構思回憶寫於 1831 年，距最初的湖畔之夏已有 15 年。",
+    "ja": "18歳で『フランケンシュタイン』を書き始め、その後も小説、紀行、伝記を執筆し、パーシー・シェリーの作品を編集した。よく知られる着想の回想は、湖畔の夏から15年後の1831年に書かれた。"
+  },
+  "birth": {
+    "value": "1797-08-30",
+    "precision": "day",
+    "claimIds": [
+      "s-birth"
+    ]
+  },
+  "death": {
+    "value": "1851-02-01",
+    "precision": "day",
+    "claimIds": [
+      "s-death"
+    ]
+  },
+  "portrait": {
+    "url": "/assets/people/mary-shelley.jpg",
+    "alt": {
+      "en": "Mary Shelley, portrait by Richard Rothwell",
+      "zh-Hans": "理查德·罗斯韦尔绘玛丽·雪莱肖像",
+      "zh-Hant": "理查德·羅斯韋爾繪瑪麗·雪萊肖像",
+      "ja": "リチャード・ロスウェルによるメアリー・シェリーの肖像"
+    },
+    "credit": "Richard Rothwell (1800–1868), Mary Wollstonecraft Shelley, c.1831–1840. National Portrait Gallery, London, NPG 1235.",
+    "license": "Public domain; Public Domain Mark 1.0; faithful historical image. Jurisdiction details in licence record.",
+    "sourceId": "shelley-portrait"
+  },
+  "periods": [
+    {
+      "id": "s-early",
+      "from": "1797",
+      "to": "1814",
+      "title": {
+        "en": "Family, reading and travel",
+        "zh-Hans": "家庭、阅读与远行",
+        "zh-Hant": "家庭、閱讀與遠行",
+        "ja": "家族、読書、旅"
+      },
+      "summary": {
+        "en": "A literary household and an early departure for Europe.",
+        "zh-Hans": "在文学家庭长大，少年时离家远行。",
+        "zh-Hant": "在文學家庭長大，少年時離家遠行。",
+        "ja": "文学者の家で育ち、若くして大陸へ旅立つ。"
+      },
+      "eventIds": [
+        "s-born",
+        "s-stepfamily",
+        "s-elopement"
+      ]
+    },
+    {
+      "id": "s-making",
+      "from": "1816",
+      "to": "1818",
+      "title": {
+        "en": "Making Frankenstein",
+        "zh-Hans": "写出《弗兰肯斯坦》",
+        "zh-Hant": "寫出《科學怪人》",
+        "ja": "物語の成立"
+      },
+      "summary": {
+        "en": "Conception, completion and anonymous first publication remain distinct events.",
+        "zh-Hans": "构思、完稿与匿名出版分别记录。",
+        "zh-Hant": "構思、完稿與匿名出版分別記錄。",
+        "ja": "着想、完成、匿名での初刊を分けてたどる。"
+      },
+      "eventIds": [
+        "s-geneva",
+        "s-reads-davy",
+        "s-married",
+        "s-finishes",
+        "event-shelley-tour",
+        "event-shelley-frankenstein",
+        "s-italy"
+      ]
+    },
+    {
+      "id": "s-writer",
+      "from": "1822",
+      "to": "1831",
+      "title": {
+        "en": "An independent writing life",
+        "zh-Hans": "独立写作",
+        "zh-Hant": "獨立寫作",
+        "ja": "執筆を続ける"
+      },
+      "summary": {
+        "en": "Widowhood, new novels and a later return to the first book.",
+        "zh-Hans": "丧夫后继续写作新书，后来重访第一部小说。",
+        "zh-Hant": "喪夫後繼續寫作新書，後來重訪第一部小說。",
+        "ja": "夫の死後も新しい小説を書き、最初の作品を振り返る。"
+      },
+      "eventIds": [
+        "s-percy-dies",
+        "event-shelley-valperga",
+        "s-london",
+        "event-shelley-last-man",
+        "s-new-intro"
+      ]
+    },
+    {
+      "id": "s-later",
+      "from": "1839",
+      "to": "1851",
+      "title": {
+        "en": "Editing and later travels",
+        "zh-Hans": "编辑与晚年旅行",
+        "zh-Hant": "編輯與晚年旅行",
+        "ja": "編集と晩年の旅"
+      },
+      "summary": {
+        "en": "Editing Percy’s poems and publishing further travel writing.",
+        "zh-Hans": "整理珀西诗集，也将后来的旅途写成游记。",
+        "zh-Hant": "整理珀西詩集，也將後來的旅途寫成遊記。",
+        "ja": "パーシーの詩を編集し、その後の旅を紀行にする。"
+      },
+      "eventIds": [
+        "event-shelley-poems",
+        "event-shelley-rambles",
+        "s-died"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "s-born",
+      "date": {
+        "value": "1797-08-30",
+        "precision": "day",
+        "claimIds": [
+          "s-birth"
+        ]
+      },
+      "title": {
+        "en": "Born into a literary household",
+        "zh-Hans": "生于文学家庭",
+        "zh-Hant": "生於文學家庭",
+        "ja": "文学者の家に生まれる"
+      },
+      "body": {
+        "en": "Her parents were Mary Wollstonecraft and William Godwin. Wollstonecraft died shortly after the birth.",
+        "zh-Hans": "父母是玛丽·沃斯通克拉夫特与威廉·戈德温。母亲在她出生后不久去世。",
+        "zh-Hant": "父母是瑪麗·沃斯通克拉夫特與威廉·葛德溫。母親在她出生後不久去世。",
+        "ja": "両親はメアリー・ウルストンクラフトとウィリアム・ゴドウィン。母は出産後まもなく亡くなった。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "s-birth"
+      ]
+    },
+    {
+      "id": "s-stepfamily",
+      "date": {
+        "value": "1801",
+        "precision": "year",
+        "claimIds": [
+          "s-stepfamily"
+        ]
+      },
+      "title": {
+        "en": "A new household",
+        "zh-Hans": "父亲再婚",
+        "zh-Hant": "父親再婚",
+        "ja": "新しい家族"
+      },
+      "body": {
+        "en": "Mary Jane Clairmont and her children Charles and Claire joined the household.",
+        "zh-Hans": "玛丽·简·克莱尔蒙特带着查尔斯与克莱尔进入这个家庭。",
+        "zh-Hant": "瑪麗·珍·克萊爾蒙特帶著查爾斯與克萊爾進入這個家庭。",
+        "ja": "メアリー・ジェーン・クレアモントと子どもたちが家族に加わった。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "s-stepfamily"
+      ]
+    },
+    {
+      "id": "s-elopement",
+      "date": {
+        "value": "1814",
+        "precision": "year",
+        "claimIds": [
+          "s-travel"
+        ]
+      },
+      "title": {
+        "en": "Travel with Percy and Claire",
+        "zh-Hans": "与珀西、克莱尔赴欧洲",
+        "zh-Hant": "與珀西、克萊爾赴歐洲",
+        "ja": "パーシー、クレアと大陸へ"
+      },
+      "body": {
+        "en": "At sixteen she left England with Percy Shelley and her stepsister Claire Clairmont.",
+        "zh-Hans": "16 岁时，她与珀西·雪莱、继姊妹克莱尔·克莱尔蒙特离开英国。",
+        "zh-Hant": "16 歲時，她與珀西·雪萊、繼姊妹克萊爾·克萊爾蒙特離開英國。",
+        "ja": "16歳でパーシー・シェリー、義姉妹クレア・クレアモントとイギリスを離れた。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "s-travel"
+      ]
+    },
+    {
+      "id": "s-geneva",
+      "date": {
+        "value": "1816",
+        "precision": "year",
+        "claimIds": [
+          "s-origin"
+        ]
+      },
+      "title": {
+        "en": "A story begins by Lake Geneva",
+        "zh-Hans": "日内瓦湖畔的构思",
+        "zh-Hant": "日內瓦湖畔的構思",
+        "ja": "レマン湖畔で物語が始まる"
+      },
+      "body": {
+        "en": "In her 1831 account, the rainy Swiss summer and Byron’s ghost-story challenge preceded her waking vision. This is retrospective testimony.",
+        "zh-Hans": "她在 1831 年回忆，瑞士多雨的夏天、拜伦的鬼故事挑战，随后出现的清醒梦境，构成了开端。这是后来的自述。",
+        "zh-Hant": "她在 1831 年回憶，瑞士多雨的夏天、拜倫的鬼故事挑戰，隨後出現的清醒夢境，構成了開端。這是後來的自述。",
+        "ja": "1831年の回想では、雨の多いスイスの夏とバイロンの怪談競作の提案、目覚めたまま見た幻影が物語の始まりとして語られる。"
+      },
+      "kind": "life",
+      "workIds": [
+        "shelley-frankenstein"
+      ],
+      "claimIds": [
+        "s-origin"
+      ]
+    },
+    {
+      "id": "s-reads-davy",
+      "date": {
+        "value": "1816-10",
+        "precision": "month",
+        "claimIds": [
+          "s-davy"
+        ]
+      },
+      "title": {
+        "en": "Reading chemistry",
+        "zh-Hans": "写作时读化学",
+        "zh-Hant": "寫作時讀化學",
+        "ja": "執筆中に化学を読む"
+      },
+      "body": {
+        "en": "Her diary records reading Humphry Davy’s Elements of Chemical Philosophy while writing the novel. The record establishes reading alongside composition.",
+        "zh-Hans": "她的日记记录，写小说期间读过汉弗里·戴维的《化学哲学原理》。这条记录能确认阅读与写作同期发生。",
+        "zh-Hant": "她的日記記錄，寫小說期間讀過漢弗里·戴維的《化學哲學原理》。這條記錄能確認閱讀與寫作同期發生。",
+        "ja": "執筆期の日記にはハンフリー・デーヴィの『化学哲学要綱』を読んだ記録がある。同時期の読書を確認できる資料である。"
+      },
+      "kind": "life",
+      "workIds": [
+        "shelley-frankenstein"
+      ],
+      "claimIds": [
+        "s-davy"
+      ]
+    },
+    {
+      "id": "s-married",
+      "date": {
+        "value": "1816-12",
+        "precision": "month",
+        "claimIds": [
+          "s-marriage"
+        ]
+      },
+      "title": {
+        "en": "Marriage",
+        "zh-Hans": "与珀西结婚",
+        "zh-Hant": "與珀西結婚",
+        "ja": "結婚"
+      },
+      "body": {
+        "en": "They married after the death of Percy’s first wife.",
+        "zh-Hans": "珀西的第一任妻子去世后，两人结婚。",
+        "zh-Hant": "珀西的第一任妻子去世後，兩人結婚。",
+        "ja": "パーシーの最初の妻の死後、二人は結婚した。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "s-marriage"
+      ]
+    },
+    {
+      "id": "s-finishes",
+      "date": {
+        "value": "1817",
+        "precision": "year",
+        "claimIds": [
+          "s-completion"
+        ]
+      },
+      "title": {
+        "en": "Finishing the novel in Marlow",
+        "zh-Hans": "在马洛完成小说",
+        "zh-Hant": "在馬洛完成小說",
+        "ja": "マーローで小説を完成"
+      },
+      "body": {
+        "en": "The family lived in Marlow during the completion of Frankenstein.",
+        "zh-Hans": "一家住在马洛期间，她完成了《弗兰肯斯坦》。",
+        "zh-Hant": "一家住在馬洛期間，她完成了《科學怪人》。",
+        "ja": "マーローで暮らす間に『フランケンシュタイン』を完成させた。"
+      },
+      "kind": "life",
+      "workIds": [
+        "shelley-frankenstein"
+      ],
+      "claimIds": [
+        "s-completion"
+      ]
+    },
+    {
+      "id": "event-shelley-tour",
+      "date": {
+        "value": "1817",
+        "precision": "year",
+        "claimIds": [
+          "claim-shelley-tour"
+        ]
+      },
+      "title": {
+        "en": "History of a Six Weeks’ Tour published",
+        "zh-Hans": "六周漫游记出版",
+        "zh-Hant": "六週漫遊記出版",
+        "ja": "六週間の旅を刊行"
+      },
+      "body": {
+        "en": "A travel narrative drawing on journeys in 1814 and 1816.",
+        "zh-Hans": "取材于 1814 年与 1816 年欧洲旅行的游记。",
+        "zh-Hant": "取材於 1814 年與 1816 年歐洲旅行的遊記。",
+        "ja": "1814年と1816年の大陸旅行をもとにした紀行。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "shelley-tour"
+      ],
+      "claimIds": [
+        "claim-shelley-tour"
+      ]
+    },
+    {
+      "id": "event-shelley-frankenstein",
+      "date": {
+        "value": "1818",
+        "precision": "year",
+        "claimIds": [
+          "claim-shelley-frankenstein"
+        ]
+      },
+      "title": {
+        "en": "Frankenstein; or, The Modern Prometheus published",
+        "zh-Hans": "弗兰肯斯坦出版",
+        "zh-Hant": "科學怪人出版",
+        "ja": "フランケンシュタインを刊行"
+      },
+      "body": {
+        "en": "First published anonymously in 1818; the 1831 introduction is a separate later text.",
+        "zh-Hans": "1818 年匿名初版。1831 年序言是另一篇晚出的文字。",
+        "zh-Hant": "1818 年匿名初版。1831 年序言是另一篇晚出的文字。",
+        "ja": "1818年に匿名で初刊。1831年の序文は後年の別の文章。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "shelley-frankenstein"
+      ],
+      "claimIds": [
+        "claim-shelley-frankenstein"
+      ]
+    },
+    {
+      "id": "s-italy",
+      "date": {
+        "value": "1818",
+        "precision": "year",
+        "claimIds": [
+          "s-italy"
+        ]
+      },
+      "title": {
+        "en": "Living in Italy",
+        "zh-Hans": "迁居意大利",
+        "zh-Hant": "遷居義大利",
+        "ja": "イタリアへ移る"
+      },
+      "body": {
+        "en": "The family moved to Italy in the year Frankenstein appeared.",
+        "zh-Hans": "《弗兰肯斯坦》出版同年，一家迁居意大利。",
+        "zh-Hant": "《科學怪人》出版同年，一家遷居義大利。",
+        "ja": "小説が刊行された年、一家はイタリアに移った。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "s-italy"
+      ]
+    },
+    {
+      "id": "s-percy-dies",
+      "date": {
+        "value": "1822",
+        "precision": "year",
+        "claimIds": [
+          "s-widowed"
+        ]
+      },
+      "title": {
+        "en": "Percy Shelley dies",
+        "zh-Hans": "珀西去世",
+        "zh-Hant": "珀西去世",
+        "ja": "パーシーの死"
+      },
+      "body": {
+        "en": "Percy died in a sailing accident. This occurred four years after Frankenstein’s first publication.",
+        "zh-Hans": "珀西在航海事故中去世。这发生在《弗兰肯斯坦》初版四年之后。",
+        "zh-Hant": "珀西在航海事故中去世。這發生在《科學怪人》初版四年之後。",
+        "ja": "パーシーが航海事故で亡くなった。『フランケンシュタイン』初刊の4年後の出来事である。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "s-widowed"
+      ]
+    },
+    {
+      "id": "event-shelley-valperga",
+      "date": {
+        "value": "1823",
+        "precision": "year",
+        "claimIds": [
+          "claim-shelley-valperga"
+        ]
+      },
+      "title": {
+        "en": "Valperga published",
+        "zh-Hans": "瓦尔佩加出版",
+        "zh-Hant": "瓦爾佩加出版",
+        "ja": "ヴァルペルガを刊行"
+      },
+      "body": {
+        "en": "A historical novel set in medieval Italy.",
+        "zh-Hans": "以中世纪意大利为背景的历史小说。",
+        "zh-Hant": "以中世紀義大利為背景的歷史小說。",
+        "ja": "中世イタリアを舞台にした歴史小説。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "shelley-valperga"
+      ],
+      "claimIds": [
+        "claim-shelley-valperga"
+      ]
+    },
+    {
+      "id": "s-london",
+      "date": {
+        "value": "1823",
+        "precision": "year",
+        "claimIds": [
+          "s-widowed"
+        ]
+      },
+      "title": {
+        "en": "Returning to London",
+        "zh-Hans": "返回伦敦",
+        "zh-Hant": "返回倫敦",
+        "ja": "ロンドンへ戻る"
+      },
+      "body": {
+        "en": "Mary returned with her surviving son and continued writing and editing.",
+        "zh-Hans": "玛丽带着幸存的儿子回到伦敦，继续写作与编辑。",
+        "zh-Hant": "瑪麗帶著倖存的兒子回到倫敦，繼續寫作與編輯。",
+        "ja": "生き残った息子とロンドンへ戻り、執筆と編集を続けた。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "s-widowed"
+      ]
+    },
+    {
+      "id": "event-shelley-last-man",
+      "date": {
+        "value": "1826",
+        "precision": "year",
+        "claimIds": [
+          "claim-shelley-last-man"
+        ]
+      },
+      "title": {
+        "en": "The Last Man published",
+        "zh-Hans": "最后一个人出版",
+        "zh-Hant": "最後一人出版",
+        "ja": "最後のひとりを刊行"
+      },
+      "body": {
+        "en": "A novel published in 1826; its chronology follows Frankenstein’s first edition.",
+        "zh-Hans": "1826 年出版的小说，晚于《弗兰肯斯坦》初版。",
+        "zh-Hant": "1826 年出版的小說，晚於《科學怪人》初版。",
+        "ja": "1826年刊の小説。『フランケンシュタイン』初版より後の作品。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "shelley-last-man"
+      ],
+      "claimIds": [
+        "claim-shelley-last-man"
+      ]
+    },
+    {
+      "id": "s-new-intro",
+      "date": {
+        "value": "1831-10-15",
+        "precision": "day",
+        "claimIds": [
+          "s-revision"
+        ]
+      },
+      "title": {
+        "en": "Revisiting the beginning",
+        "zh-Hans": "回忆小说的起点",
+        "zh-Hant": "回憶小說的起點",
+        "ja": "物語の始まりを振り返る"
+      },
+      "body": {
+        "en": "She dated the new introduction 15 October 1831. It tells the origin story retrospectively and accompanies a revised edition.",
+        "zh-Hans": "她将新序言落款为 1831 年 10 月 15 日，回顾当年的构思，并随修订本刊行。",
+        "zh-Hant": "她將新序言落款為 1831 年 10 月 15 日，回顧當年的構思，並隨修訂本刊行。",
+        "ja": "新しい序文の日付は1831年10月15日。着想を回想する文章として改訂版に添えられた。"
+      },
+      "kind": "life",
+      "workIds": [
+        "shelley-frankenstein"
+      ],
+      "claimIds": [
+        "s-revision"
+      ]
+    },
+    {
+      "id": "event-shelley-poems",
+      "date": {
+        "value": "1839",
+        "precision": "year",
+        "claimIds": [
+          "claim-shelley-poems"
+        ]
+      },
+      "title": {
+        "en": "The Poetical Works of Percy Bysshe Shelley published",
+        "zh-Hans": "珀西·比希·雪莱诗集出版",
+        "zh-Hant": "珀西·比希·雪萊詩集出版",
+        "ja": "パーシー・ビッシュ・シェリー詩集を刊行"
+      },
+      "body": {
+        "en": "Mary Shelley edited the poems and supplied prefaces and notes; Percy Shelley is the poet.",
+        "zh-Hans": "玛丽整理诗作并撰写序言与注释。诗歌作者是珀西·雪莱。",
+        "zh-Hant": "瑪麗整理詩作並撰寫序言與註釋。詩歌作者是珀西·雪萊。",
+        "ja": "メアリーは詩を編集し、序文と注釈を付した。詩の作者はパーシーである。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "shelley-poems"
+      ],
+      "claimIds": [
+        "claim-shelley-poems"
+      ]
+    },
+    {
+      "id": "event-shelley-rambles",
+      "date": {
+        "value": "1844",
+        "precision": "year",
+        "claimIds": [
+          "claim-shelley-rambles"
+        ]
+      },
+      "title": {
+        "en": "Rambles in Germany and Italy published",
+        "zh-Hans": "德意志与意大利漫游出版",
+        "zh-Hant": "德意志與義大利漫遊出版",
+        "ja": "ドイツ・イタリア漫遊記を刊行"
+      },
+      "body": {
+        "en": "Travel writing from journeys in 1840, 1842 and 1843.",
+        "zh-Hans": "记述 1840、1842 与 1843 年的旅行。",
+        "zh-Hant": "記述 1840、1842 與 1843 年的旅行。",
+        "ja": "1840年、1842年、1843年の旅を記す。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "shelley-rambles"
+      ],
+      "claimIds": [
+        "claim-shelley-rambles"
+      ]
+    },
+    {
+      "id": "s-died",
+      "date": {
+        "value": "1851-02-01",
+        "precision": "day",
+        "claimIds": [
+          "s-death"
+        ]
+      },
+      "title": {
+        "en": "Death in London",
+        "zh-Hans": "逝于伦敦",
+        "zh-Hant": "逝於倫敦",
+        "ja": "ロンドンで死去"
+      },
+      "body": {
+        "en": "She died aged 53. The Oxford timeline describes a long illness, possibly a brain tumour.",
+        "zh-Hans": "她去世时 53 岁。牛津年表记为久病后去世，病因可能是脑瘤。",
+        "zh-Hant": "她去世時 53 歲。牛津年表記為久病後去世，病因可能是腦瘤。",
+        "ja": "53歳で亡くなった。オックスフォードの年表は、長い闘病の末、脳腫瘍の可能性を記している。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "s-death"
+      ]
+    }
+  ],
+  "works": [
+    {
+      "id": "shelley-tour",
+      "title": {
+        "en": "History of a Six Weeks’ Tour",
+        "zh-Hans": "六周漫游记",
+        "zh-Hant": "六週漫遊記",
+        "ja": "六週間の旅"
+      },
+      "originalTitle": "History of a Six Weeks’ Tour",
+      "kind": "travel",
+      "year": {
+        "value": "1817",
+        "precision": "year",
+        "claimIds": [
+          "claim-shelley-tour"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "A travel narrative drawing on journeys in 1814 and 1816.",
+        "zh-Hans": "取材于 1814 年与 1816 年欧洲旅行的游记。",
+        "zh-Hant": "取材於 1814 年與 1816 年歐洲旅行的遊記。",
+        "ja": "1814年と1816年の大陸旅行をもとにした紀行。"
+      },
+      "claimIds": [
+        "claim-shelley-tour"
+      ]
+    },
+    {
+      "id": "shelley-frankenstein",
+      "title": {
+        "en": "Frankenstein; or, The Modern Prometheus",
+        "zh-Hans": "弗兰肯斯坦",
+        "zh-Hant": "科學怪人",
+        "ja": "フランケンシュタイン"
+      },
+      "originalTitle": "Frankenstein; or, The Modern Prometheus",
+      "kind": "novel",
+      "year": {
+        "value": "1818",
+        "precision": "year",
+        "claimIds": [
+          "claim-shelley-frankenstein"
+        ]
+      },
+      "bookId": "gutenberg-frankenstein",
+      "summary": {
+        "en": "First published anonymously in 1818; the 1831 introduction is a separate later text.",
+        "zh-Hans": "1818 年匿名初版。1831 年序言是另一篇晚出的文字。",
+        "zh-Hant": "1818 年匿名初版。1831 年序言是另一篇晚出的文字。",
+        "ja": "1818年に匿名で初刊。1831年の序文は後年の別の文章。"
+      },
+      "claimIds": [
+        "claim-shelley-frankenstein"
+      ]
+    },
+    {
+      "id": "shelley-valperga",
+      "title": {
+        "en": "Valperga",
+        "zh-Hans": "瓦尔佩加",
+        "zh-Hant": "瓦爾佩加",
+        "ja": "ヴァルペルガ"
+      },
+      "originalTitle": "Valperga",
+      "kind": "novel",
+      "year": {
+        "value": "1823",
+        "precision": "year",
+        "claimIds": [
+          "claim-shelley-valperga"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "A historical novel set in medieval Italy.",
+        "zh-Hans": "以中世纪意大利为背景的历史小说。",
+        "zh-Hant": "以中世紀義大利為背景的歷史小說。",
+        "ja": "中世イタリアを舞台にした歴史小説。"
+      },
+      "claimIds": [
+        "claim-shelley-valperga"
+      ]
+    },
+    {
+      "id": "shelley-last-man",
+      "title": {
+        "en": "The Last Man",
+        "zh-Hans": "最后一个人",
+        "zh-Hant": "最後一人",
+        "ja": "最後のひとり"
+      },
+      "originalTitle": "The Last Man",
+      "kind": "novel",
+      "year": {
+        "value": "1826",
+        "precision": "year",
+        "claimIds": [
+          "claim-shelley-last-man"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "A novel published in 1826; its chronology follows Frankenstein’s first edition.",
+        "zh-Hans": "1826 年出版的小说，晚于《弗兰肯斯坦》初版。",
+        "zh-Hant": "1826 年出版的小說，晚於《科學怪人》初版。",
+        "ja": "1826年刊の小説。『フランケンシュタイン』初版より後の作品。"
+      },
+      "claimIds": [
+        "claim-shelley-last-man"
+      ]
+    },
+    {
+      "id": "shelley-poems",
+      "title": {
+        "en": "The Poetical Works of Percy Bysshe Shelley",
+        "zh-Hans": "珀西·比希·雪莱诗集",
+        "zh-Hant": "珀西·比希·雪萊詩集",
+        "ja": "パーシー・ビッシュ・シェリー詩集"
+      },
+      "originalTitle": "The Poetical Works of Percy Bysshe Shelley",
+      "kind": "edited-volume",
+      "year": {
+        "value": "1839",
+        "precision": "year",
+        "claimIds": [
+          "claim-shelley-poems"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "Mary Shelley edited the poems and supplied prefaces and notes; Percy Shelley is the poet.",
+        "zh-Hans": "玛丽整理诗作并撰写序言与注释。诗歌作者是珀西·雪莱。",
+        "zh-Hant": "瑪麗整理詩作並撰寫序言與註釋。詩歌作者是珀西·雪萊。",
+        "ja": "メアリーは詩を編集し、序文と注釈を付した。詩の作者はパーシーである。"
+      },
+      "claimIds": [
+        "claim-shelley-poems"
+      ]
+    },
+    {
+      "id": "shelley-rambles",
+      "title": {
+        "en": "Rambles in Germany and Italy",
+        "zh-Hans": "德意志与意大利漫游",
+        "zh-Hant": "德意志與義大利漫遊",
+        "ja": "ドイツ・イタリア漫遊記"
+      },
+      "originalTitle": "Rambles in Germany and Italy",
+      "kind": "travel",
+      "year": {
+        "value": "1844",
+        "precision": "year",
+        "claimIds": [
+          "claim-shelley-rambles"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "Travel writing from journeys in 1840, 1842 and 1843.",
+        "zh-Hans": "记述 1840、1842 与 1843 年的旅行。",
+        "zh-Hant": "記述 1840、1842 與 1843 年的旅行。",
+        "ja": "1840年、1842年、1843年の旅を記す。"
+      },
+      "claimIds": [
+        "claim-shelley-rambles"
+      ]
+    }
+  ],
+  "contexts": [
+    {
+      "workId": "shelley-frankenstein",
+      "body": {
+        "en": "In the 1831 introduction Shelley looks back to the 1816 ghost-story challenge and her waking vision. She also credits Percy with encouraging a longer story. This later account supports a documented origin narrative, while the novel’s speaking creature raises questions of creation and responsibility. Percy’s death in 1822 cannot be the cause of the 1818 first edition.",
+        "zh-Hans": "雪莱在 1831 年序言中回忆 1816 年的鬼故事挑战与清醒梦境，也说珀西鼓励她把短篇写长。这篇晚出的序言为构思经过提供了依据。小说中，造物向创造者追问自身的位置。珀西 1822 年的去世晚于 1818 年初版，不能倒置为初版的起因。",
+        "zh-Hant": "雪萊在 1831 年序言中回憶 1816 年的鬼故事挑戰與清醒夢境，也說珀西鼓勵她把短篇寫長。這篇晚出的序言為構思經過提供了依據。小說中，造物向創造者追問自身的位置。珀西 1822 年的去世晚於 1818 年初版，不能倒置為初版的起因。",
+        "ja": "1831年の序文でシェリーは、1816年の怪談競作と覚醒時の幻影を振り返り、パーシーが物語を長くするよう励ましたとも述べる。これは後年の自述に基づく成立の説明である。作中では被造物が創造者に自らの位置を問う。1822年のパーシーの死を1818年初版の原因にはできない。"
+      },
+      "relationship": "author_testimony",
+      "eventIds": [
+        "s-geneva",
+        "s-new-intro"
+      ],
+      "claimIds": [
+        "s-origin",
+        "s-revision",
+        "s-intro-quote",
+        "s-creature-quote"
+      ],
+      "excerptIds": [
+        "s-invention",
+        "s-adam"
+      ]
+    }
+  ],
+  "excerpts": [
+    {
+      "id": "s-invention",
+      "text": "Invention consists in the capacity of seizing on the\ncapabilities of a subject, and in the power of moulding and fashioning\nideas suggested to it.",
+      "language": "en",
+      "workId": "shelley-frankenstein",
+      "sourceId": "shelley-1831",
+      "locator": "PG42324; photo-reprint of 1831 edition; Introduction; paragraph beginning “Every thing must have a beginning”; external edition, not PG84 catalogue body",
+      "claimIds": [
+        "s-intro-quote"
+      ],
+      "translations": {
+        "zh-Hans": {
+          "text": "创造在于把握题材蕴含的可能，并将它所唤起的想法加以塑造。",
+          "status": "draft",
+          "attribution": "Leafhour editorial translation; not independently reviewed"
+        },
+        "zh-Hant": {
+          "text": "創造在於把握題材蘊含的可能，並將它所喚起的想法加以塑造。",
+          "status": "draft",
+          "attribution": "Leafhour editorial translation; not independently reviewed"
+        },
+        "ja": {
+          "text": "創作とは、題材に潜む可能性をつかみ、そこから生まれる考えに形を与える力である。",
+          "status": "draft",
+          "attribution": "Leafhour editorial translation; not independently reviewed"
+        }
+      }
+    },
+    {
+      "id": "s-adam",
+      "text": "I ought to be thy Adam, but I am rather the fallen angel, whom thou drivest from joy for no misdeed.",
+      "language": "en",
+      "workId": "shelley-frankenstein",
+      "sourceId": "shelley-frankenstein-local",
+      "locator": "PG84; Project Gutenberg 84; Chapter 10, paragraph 12; bookId=gutenberg-frankenstein; chapterId=ch14; passageId=50ff55785f190ba3-p00293; catalogSha256=50ff55785f190ba3d548930fa850f99f1aa9f2e98e5de2fc2f127173dc5dd5b6",
+      "claimIds": [
+        "s-creature-quote"
+      ],
+      "translations": {
+        "zh-Hans": {
+          "text": "我本该是你的亚当，却更像那个堕落的天使；我没有做错什么，你却把我逐出欢乐。",
+          "status": "draft",
+          "attribution": "Leafhour editorial translation; not independently reviewed"
+        },
+        "zh-Hant": {
+          "text": "我本該是你的亞當，卻更像那個墮落的天使；我沒有做錯什麼，你卻把我逐出歡樂。",
+          "status": "draft",
+          "attribution": "Leafhour editorial translation; not independently reviewed"
+        },
+        "ja": {
+          "text": "私はあなたのアダムであるべきだった。だがむしろ堕天使なのだ。何も悪いことをしていないのに、あなたは私を喜びから追い払う。",
+          "status": "draft",
+          "attribution": "Leafhour editorial translation; not independently reviewed"
+        }
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "shelley-oxford",
+      "url": "https://hsm.ox.ac.uk/files/frankenstein-timeline-resourcepdf",
+      "title": "Timeline of Mary Wollstonecraft Shelley’s Life — p. 1, dated timeline entries",
+      "publisher": "History of Science Museum, University of Oxford",
+      "accessedAt": "2026-10-27T16:07:50.046674Z",
+      "license": "Copyright retained by the source. Selected short evidence excerpts only; not a full-page snapshot or a licence to republish the article.",
+      "excerpt": "[p.1]\n1801\nA new step-family\nJune 1814\nElopes with Shelley\nFebruary 1823\nMary publishes Valperga\nDecember 1816\nPercy and Mary get married in London.",
+      "read": true,
+      "digest": "3bc64048994451b4af0c8b432206ce7497dca416687d58a533c6680041b11b39"
+    },
+    {
+      "id": "shelley-chilterns",
+      "url": "https://www.chilterns.org.uk/map_marker/mary-shelley/",
+      "title": "Mary Shelley — Biography, paragraph 2 (marriage), paragraphs 3–4 (publication and Italy)",
+      "publisher": "Chilterns National Landscape",
+      "accessedAt": "2026-10-27T16:07:50.047109Z",
+      "license": "Copyright retained by the source. Selected short evidence excerpts only; not a full-page snapshot or a licence to republish the article.",
+      "excerpt": "30th August 1797\n1st February 1851\nAt the end of 1816\nhe and Mary were married.\nIt was published anonymously in January 1818.",
+      "read": true,
+      "digest": "91ec7858c400158eabb928cc01530b44d4a2ae7997ac44c9bed3fdc613c76844"
+    },
+    {
+      "id": "shelley-morgan",
+      "url": "https://www.themorgan.org/printed-books/174621",
+      "title": "The last man / by the author of Frankenstein",
+      "publisher": "The Morgan Library & Museum",
+      "accessedAt": "2026-10-27",
+      "license": "Copyright retained by the source. Selected short evidence excerpts only; not a full-page snapshot or a licence to republish the article.",
+      "excerpt": "Shelley, Mary Wollstonecraft, 1797-1851.\nThe last man / by the author of Frankenstein [i.e. M. Shelley].\nLondon : Henry Colburn, 1826.",
+      "read": true,
+      "digest": "2088ae16f916a1bba09467671e082e4ad04b64b99fed3d14c1758f6ef6c2840b"
+    },
+    {
+      "id": "shelley-chronology",
+      "url": "https://api.pageplace.de/preview/DT0400.9781783168477_A35684297/preview-9781783168477_A35684297.pdf",
+      "title": "Mary Shelley — A Chronology, pp. xiv–xv",
+      "publisher": "University of Wales Press; public publisher preview",
+      "accessedAt": "2026-10-27",
+      "license": "Copyright retained by the source. Selected short evidence excerpts only; not a full-page snapshot or a licence to republish the article.",
+      "excerpt": "1844\nRambles in Germany and Italy\n1851\nMary Shelley dies at the age of fifty-three at home in London\n1 February",
+      "read": true,
+      "digest": "1e3bed8da2daf07fe7a3898d7648bdcb0ed674d07792129caf2c6bf5f4a194a0"
+    },
+    {
+      "id": "shelley-science",
+      "url": "https://www.nlm.nih.gov/exhibition/frankenstein/exhibition2.html",
+      "title": "Frankenstein: An Extraordinary Life",
+      "publisher": "U.S. National Library of Medicine",
+      "accessedAt": "2026-10-27",
+      "license": "Copyright retained by the source. Selected short evidence excerpts only; not a full-page snapshot or a licence to republish the article.",
+      "excerpt": "In October 1816\nworking on Frankenstein every day\nMary Shelley recorded in her diary\nreading Humphry Davy’s Elements of Chemical Philosophy.",
+      "read": true,
+      "digest": "44d3792a0549fe874b0e4441368e35e5161e84a068cf7d266a26459b25e950a2"
+    },
+    {
+      "id": "shelley-1831",
+      "url": "https://www.gutenberg.org/files/42324/42324-h/42324-h.htm",
+      "title": "Frankenstein — 1831 Introduction, PG42324",
+      "publisher": "Mary W. Shelley; Project Gutenberg",
+      "accessedAt": "2026-10-27",
+      "license": "Public domain underlying text (1831); PG42324 transcription of a photo-reprint of the 1831 edition.",
+      "excerpt": "I lived principally in the country as a girl, and passed a considerable\ntime in Scotland. I made occasional visits to the more picturesque\nparts; but my habitual residence was on the blank and dreary northern\nshores of the Tay, near Dundee. Blank and dreary on retrospection I call\nthem; they were not so to me then. They were the eyry of freedom, and\nthe pleasant region where unheeded I could commune with the creatures of\nmy fancy. I wrote then—but in a most common-place style. It was beneath\nthe trees of the grounds belonging to our house, or on the bleak sides\nof the woodless mountains near, that my true compositions, the airy\nflights of my imagination, were born and fostered. I did not make myself\nthe heroine of my tales. Life appeared to me too common-place an affair\nas regarded myself. I could not figure to myself that romantic woes or\nwonderful events would ever be my lot; but I was not confined to my own\nidentity, and I could people the hours with creations far more\ninteresting to me at that age, than my own sensations.\nIn the summer of 1816, we visited Switzerland, and became the neighbours\nof Lord Byron. At first we spent our pleasant hours on the lake, or\nwandering on its shores; and Lord Byron, who was writing the third canto\nof Childe Harold, was the only one among us who put his thoughts upon\npaper. These, as he brought them successively to us, clothed in all the\nlight and harmony of poetry, seemed to stamp as divine the glories of\nheaven and earth, whose influences we partook with him.\nBut it proved a wet, ungenial summer, and incessant rain often confined\nus for days to the house. Some volumes of ghost stories, translated from\nthe German into French, fell into our hands. There was the History of\nthe Inconstant Lover, who, when he thought to clasp the bride to whom he\nhad pledged his vows, found himself in the arms of the pale ghost of her\nwhom he had deserted. There was the tale of the sinful founder of his\nrace, whose miserable doom it was to bestow the kiss of death on all the\nyounger sons of his fated house, just when they reached the age of\npromise. His gigantic, shadowy form, clothed like the ghost in Hamlet,\nin complete armour, but with the beaver up, was seen at midnight, by\nthe moon's fitful beams, to advance slowly along the gloomy avenue. The\nshape was lost beneath the shadow of the castle walls; but soon a gate\nswung back, a step was heard, the door of the chamber opened, and he\nadvanced to the couch of the blooming youths, cradled in healthy sleep.\nEternal sorrow sat upon his face as he bent down and kissed the forehead\nof the boys, who from that hour withered like flowers snapt upon the\nstalk. I have not seen these stories since then; but their incidents are\nas fresh in my mind as if I had read them yesterday.\n\"We will each write a ghost story,\" said Lord Byron; and his proposition\nwas acceded to. There were four of us. The noble author began a tale, a\nfragment of which he printed at the end of his poem of Mazeppa. Shelley,\nmore apt to embody ideas and sentiments in the radiance of brilliant\nimagery, and in the music of the most melodious verse that adorns our\nlanguage, than to invent the machinery of a story, commenced one founded\non the experiences of his early life. Poor Polidori had some terrible\nidea about a skull-headed lady, who was so punished for peeping through\na key-hole—what to see I forget—something very shocking and wrong of\ncourse; but when she was reduced to a worse condition than the renowned\nTom of Coventry, he did not know what to do with her, and was obliged to\ndespatch her to the tomb of the Capulets, the only place for which she\nwas fitted. The illustrious poets also, annoyed by the platitude of\nprose, speedily relinquished their uncongenial task.\nI busied myself to think of a story,—a story to rival those which had\nexcited us to this task. One which would speak to the mysterious fears\nof our nature, and awaken thrilling horror—one to make the reader dread\nto look round, to curdle the blood, and quicken the beatings of the\nheart. If I did not accomplish these things, my ghost story would be\nunworthy of its name. I thought and pondered—vainly. I felt that blank\nincapability of invention which is the greatest misery of authorship,\nwhen dull Nothing replies to our anxious invocations. Have you thought\nof a story? I was asked each morning, and each morning I was forced to\nreply with a mortifying negative.\nEvery thing must have a beginning, to speak in Sanchean phrase; and that\nbeginning must be linked to something that went before. The Hindoos give\nthe world an elephant to support it, but they make the elephant stand\nupon a tortoise. Invention, it must be humbly admitted, does not consist\nin creating out of void, but out of chaos; the materials must, in the\nfirst place, be afforded: it can give form to dark, shapeless\nsubstances, but cannot bring into being the substance itself. In all\nmatters of discovery and invention, even of those that appertain to the\nimagination, we are continually reminded of the story of Columbus and\nhis egg. Invention consists in the capacity of seizing on the\ncapabilities of a subject, and in the power of moulding and fashioning\nideas suggested to it.\nMany and long were the conversations between Lord Byron and Shelley, to\nwhich I was a devout but nearly silent listener. During one of these,\nvarious philosophical doctrines were discussed, and among others the\nnature of the principle of life, and whether there was any probability\nof its ever being discovered and communicated. They talked of the\nexperiments of Dr. Darwin, (I speak not of what the Doctor really did,\nor said that he did, but, as more to my purpose, of what was then spoken\nof as having been done by him,) who preserved a piece of vermicelli in a\nglass case, till by some extraordinary means it began to move with\nvoluntary motion. Not thus, after all, would life be given. Perhaps a\ncorpse would be re-animated; galvanism had given token of such things:\nperhaps the component parts of a creature might be manufactured, brought\ntogether, and endued with vital warmth.\nNight waned upon this talk, and even the witching hour had gone by,\nbefore we retired to rest. When I placed my head on my pillow, I did not\nsleep, nor could I be said to think. My imagination, unbidden, possessed\nand guided me, gifting the successive images that arose in my mind with\na vividness far beyond the usual bounds of reverie. I saw—with shut\neyes, but acute mental vision,—I saw the pale student of unhallowed\narts kneeling beside the thing he had put together. I saw the hideous\nphantasm of a man stretched out, and then, on the working of some\npowerful engine, show signs of life, and stir with an uneasy, half vital\nmotion. Frightful must it be; for supremely frightful would be the\neffect of any human endeavour to mock the stupendous mechanism of the\nCreator of the world. His success would terrify the artist; he would\nrush away from his odious handywork, horror-stricken. He would hope\nthat, left to itself, the slight spark of life which he had communicated\nwould fade; that this thing, which had received such imperfect\nanimation, would subside into dead matter; and he might sleep in the\nbelief that the silence of the grave would quench for ever the transient\nexistence of the hideous corpse which he had looked upon as the cradle\nof life. He sleeps; but he is awakened; he opens his eyes; behold the\nhorrid thing stands at his bedside, opening his curtains, and looking on\nhim with yellow, watery, but speculative eyes.\nI opened mine in terror. The idea so possessed my mind, that a thrill of\nfear ran through me, and I wished to exchange the ghastly image of my\nfancy for the realities around. I see them still; the very room, the\ndark parquet, the closed shutters, with the moonlight struggling\nthrough, and the sense I had that the glassy lake and white high Alps\nwere beyond. I could not so easily get rid of my hideous phantom; still\nit haunted me. I must try to think of something else. I recurred to my\nghost story,—my tiresome unlucky ghost story! O! if I could only\ncontrive one which would frighten my reader as I myself had been\nfrightened that night!\nSwift as light and as cheering was the idea that broke in upon me. \"I\nhave found it! What terrified me will terrify others; and I need only\ndescribe the spectre which had haunted my midnight pillow.\" On the\nmorrow I announced that I had thought of a story. I began that day\nwith the words, It was on a dreary night of November, making only a\ntranscript of the grim terrors of my waking dream.\nAt first I thought but of a few pages—of a short tale; but Shelley\nurged me to develope the idea at greater length. I certainly did not owe\nthe suggestion of one incident, nor scarcely of one train of feeling, to\nmy husband, and yet but for his incitement, it would never have taken\nthe form in which it was presented to the world. From this declaration I\nmust except the preface. As far as I can recollect, it was entirely\nwritten by him.\nAnd now, once again, I bid my hideous progeny go forth and prosper. I\nhave an affection for it, for it was the offspring of happy days, when\ndeath and grief were but words, which found no true echo in my heart.\nIts several pages speak of many a walk, many a drive, and many a\nconversation, when I was not alone; and my companion was one who, in\nthis world, I shall never see more. But this is for myself; my readers\nhave nothing to do with these associations.\nI will add but one word as to the alterations I have made. They are\nprincipally those of style. I have changed no portion of the story, nor\nintroduced any new ideas or circumstances. I have mended the language\nwhere it was so bald as to interfere with the interest of the narrative;\nand these changes occur almost exclusively in the beginning of the first\nvolume. Throughout they are entirely confined to such parts as are mere\nadjuncts to the story, leaving the core and substance of it untouched.\nM. W. S.\nLondon, October 15, 1831.\n",
+      "read": true,
+      "digest": "58c468d1295b840698abeb337c8da0024c21abe19e90f5b576928cda75805e87"
+    },
+    {
+      "id": "shelley-frankenstein-local",
+      "url": "https://www.gutenberg.org/cache/epub/84/pg84-images.html",
+      "title": "Frankenstein — local public catalogue PG84 text",
+      "publisher": "Mary W. Shelley; Project Gutenberg",
+      "accessedAt": "2026-10-27",
+      "license": "Public domain underlying text (1818/1831); PG84 catalogue text. Source edition statement retained in catalog/world/frankenstein.json.",
+      "excerpt": "“Be calm! I entreat you to hear me before you give vent to your hatred on my devoted head. Have I not suffered enough, that you seek to increase my misery? Life, although it may only be an accumulation of anguish, is dear to me, and I will defend it. Remember, thou hast made me more powerful than thyself; my height is superior to thine, my joints more supple. But I will not be tempted to set myself in opposition to thee. I am thy creature, and I will be even mild and docile to my natural lord and king if thou wilt also perform thy part, the which thou owest me. Oh, Frankenstein, be not equitable to every other and trample upon me alone, to whom thy justice, and even thy clemency and affection, is most due. Remember that I am thy creature; I ought to be thy Adam, but I am rather the fallen angel, whom thou drivest from joy for no misdeed. Everywhere I see bliss, from which I alone am irrevocably excluded. I was benevolent and good; misery made me a fiend. Make me happy, and I shall again be virtuous.”",
+      "read": true,
+      "digest": "b263a84d39d1fac816c0b4ce6f7a81c4ef3cf09153c10f136d7d6bc63dbb1a11"
+    },
+    {
+      "id": "shelley-portrait",
+      "url": "https://commons.wikimedia.org/wiki/File:Richard_Rothwell_(1800-1868)_-_Mary_Wollstonecraft_Shelley_-_NPG_1235_-_National_Portrait_Gallery.jpg",
+      "title": "Richard Rothwell (1800–1868), Mary Wollstonecraft Shelley, c.1831–1840. National Portrait Gallery, London, NPG 1235.",
+      "publisher": "Wikimedia Commons; original creator and holding institution credited",
+      "accessedAt": "2026-10-27",
+      "license": "Public domain; Public Domain Mark 1.0; faithful historical image. Jurisdiction details in licence record.",
+      "excerpt": "This is a faithful photographic reproduction of a two-dimensional, public domain work of art. The author died in 1868, so this work is in the public domain in its country of origin and other countries and areas where the copyright term is the author’s life plus 100 years or fewer. The photographic reproduction is considered public domain in the United States. In other jurisdictions, re-use of this content may be restricted.",
+      "read": true,
+      "digest": "69b535b13c1bc1b4dad588b656f641a3a65e119642e610a6afc055a7a432eb2c"
+    }
+  ],
+  "claims": [
+    {
+      "id": "s-birth",
+      "text": "Mary Wollstonecraft Godwin was born on 30 August 1797 in London.",
+      "sourceIds": [
+        "shelley-chilterns",
+        "shelley-oxford"
+      ],
+      "status": "uncertain"
+    },
+    {
+      "id": "s-stepfamily",
+      "text": "William Godwin married Mary Jane Clairmont in 1801.",
+      "sourceIds": [
+        "shelley-oxford"
+      ],
+      "status": "uncertain"
+    },
+    {
+      "id": "s-travel",
+      "text": "Mary left for Europe with Percy Shelley and Claire Clairmont in 1814.",
+      "sourceIds": [
+        "shelley-oxford"
+      ],
+      "status": "uncertain"
+    },
+    {
+      "id": "s-origin",
+      "text": "Shelley’s 1831 introduction recalls the 1816 Swiss summer, ghost-story challenge and waking vision.",
+      "sourceIds": [
+        "shelley-1831"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "s-davy",
+      "text": "The NLM exhibition records Shelley reading Davy in October 1816 while working daily on Frankenstein.",
+      "sourceIds": [
+        "shelley-science"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "s-marriage",
+      "text": "Mary and Percy Shelley married in late 1816.",
+      "sourceIds": [
+        "shelley-chilterns",
+        "shelley-oxford"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "s-completion",
+      "text": "She completed Frankenstein in Marlow in 1817.",
+      "sourceIds": [
+        "shelley-chilterns"
+      ],
+      "status": "uncertain"
+    },
+    {
+      "id": "claim-shelley-tour",
+      "text": "History of a Six Weeks’ Tour was published in 1817. Mary Shelley’s role is author.",
+      "sourceIds": [
+        "shelley-chilterns"
+      ],
+      "status": "uncertain"
+    },
+    {
+      "id": "claim-shelley-frankenstein",
+      "text": "Frankenstein; or, The Modern Prometheus was published in 1818. Mary Shelley’s role is author.",
+      "sourceIds": [
+        "shelley-chilterns",
+        "shelley-oxford"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "claim-shelley-valperga",
+      "text": "Valperga was published in 1823. Mary Shelley’s role is author.",
+      "sourceIds": [
+        "shelley-oxford"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "claim-shelley-last-man",
+      "text": "The Last Man was published in 1826. Mary Shelley’s role is author.",
+      "sourceIds": [
+        "shelley-morgan"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "claim-shelley-poems",
+      "text": "The Poetical Works of Percy Bysshe Shelley was published in 1839. Mary Shelley’s role is editor.",
+      "sourceIds": [
+        "shelley-chronology"
+      ],
+      "status": "uncertain"
+    },
+    {
+      "id": "claim-shelley-rambles",
+      "text": "Rambles in Germany and Italy was published in 1844. Mary Shelley’s role is author.",
+      "sourceIds": [
+        "shelley-chronology"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "s-italy",
+      "text": "The Shelleys moved to Italy in 1818.",
+      "sourceIds": [
+        "shelley-chilterns"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "s-widowed",
+      "text": "Percy Shelley drowned in 1822; Mary returned to London in 1823 with her surviving son.",
+      "sourceIds": [
+        "shelley-chilterns"
+      ],
+      "status": "uncertain"
+    },
+    {
+      "id": "s-revision",
+      "text": "The 1831 edition includes an introduction dated London, October 15, 1831, in PG42324.",
+      "sourceIds": [
+        "shelley-1831"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "s-death",
+      "text": "Mary Shelley died on 1 February 1851 in London.",
+      "sourceIds": [
+        "shelley-chilterns",
+        "shelley-chronology",
+        "shelley-oxford"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "s-intro-quote",
+      "text": "The selected invention passage is in the 1831 Introduction, PG42324, not the PG84 local body.",
+      "sourceIds": [
+        "shelley-1831"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "s-creature-quote",
+      "text": "The creature’s Adam passage is in the actual PG84 catalogue paragraph identified here.",
+      "sourceIds": [
+        "shelley-frankenstein-local"
+      ],
+      "status": "verified"
+    }
+  ]
+}

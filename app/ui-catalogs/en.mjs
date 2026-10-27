@@ -2154,6 +2154,7 @@ export default Object.freeze({
   "data.settings.intro": "Back up your reading room, or take just your own records. No subscription needed.",
   "data.settings.backupHelp": "Your reading texts and translations are included. Source files are optional.",
   "data.settings.restoreHelp": "The file is checked locally. Restoring starts only after you confirm.",
+  "chat.people.allowTurn": "Allow this question to create, edit or delete my person records",
   "memory.allowTurn": "Allow this question to change my reading preferences",
   "memory.welcome": "A book to begin with",
   "memory.title": "My reading preferences",

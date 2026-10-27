@@ -1,13 +1,14 @@
 import {createHash} from 'node:crypto';
 import {fail} from './document-import.mjs';
 import {withProviderMeter} from './provider-metering.mjs';
-const allowed={translation:['id','passageId','contentVersion'],conversation:['id','text','passageId','contentVersion','scopeRevision','quote','preferenceWrites'],annotation:['id','threadId','quote','highlightId','text','responseLocale']};
+const allowed={translation:['id','passageId','contentVersion'],conversation:['id','text','passageId','contentVersion','scopeRevision','quote','preferenceWrites','peopleWrites'],annotation:['id','threadId','quote','highlightId','text','responseLocale']};
 const stable=value=>value===null||typeof value!=='object'?value:Array.isArray(value)?value.map(stable):Object.fromEntries(Object.keys(value).sort().map(k=>[k,stable(value[k])]));
 const hash=value=>createHash('sha256').update(JSON.stringify(stable(value))).digest('hex');
 const paragraphs=book=>book.sections.flatMap(s=>s.paragraphs);
 const operationId=(user,action,bookId,id)=>'credit-'+hash([user.id,action,bookId,id]);
 function cleanInput(input,action){
  if(!input||typeof input!=='object'||Array.isArray(input)||!allowed[action]||Object.keys(input).some(k=>k!=='billing'&&!allowed[action].includes(k)))throw fail('收费请求格式不正确',400);
+ if(action==='conversation'&&input.peopleWrites!==undefined&&typeof input.peopleWrites!=='boolean')throw fail('收费请求格式不正确',400);
  if(action==='conversation'&&input.preferenceWrites!==undefined&&typeof input.preferenceWrites!=='boolean')throw fail('收费请求格式不正确',400);
  const {billing,...body}=input;return body;
 }

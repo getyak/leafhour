@@ -79,8 +79,9 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   const footer=node('div','library-chat-footer'),hint=node('p','library-chat-hint');hint.id='library-chat-hint';
   const exportButton=ui('button','library-chat-text-button','export'),menuHint=node('p','library-chat-menu-hint');
   const preferenceConsent=node('label','library-chat-preference-consent'),preferenceCheckbox=node('input');preferenceCheckbox.type='checkbox';preferenceCheckbox.id='chat-preference-consent';preferenceConsent.append(preferenceCheckbox,ui('span','','memory.allowTurn'));
+  const peopleConsent=node('label','library-chat-preference-consent'),peopleCheckbox=node('input');peopleCheckbox.type='checkbox';peopleCheckbox.id='chat-people-consent';peopleConsent.append(peopleCheckbox,ui('span','','chat.people.allowTurn'));
   const settings=node('details','library-chat-settings'),settingsSummary=ui('summary','','chat.settings'),explanation=node('details','library-chat-explanation'),explanationSummary=ui('summary','','chat.dataScope'),companionHost=node('section','library-chat-companion-settings');
-  explanation.append(explanationSummary,hint,menuHint);settings.append(settingsSummary,scopeRow,preferenceConsent,companionHost,explanation);menuItems.append(context,settings,exportButton);
+  explanation.append(explanationSummary,hint,menuHint);settings.append(settingsSummary,scopeRow,preferenceConsent,peopleConsent,companionHost,explanation);menuItems.append(context,settings,exportButton);
   const latestButton=ui('button','library-chat-latest','chat.latest');latestButton.type='button';latestButton.hidden=true;
   frame.append(header,onboardingHost,uploadHost,messages,latestButton,statusBar,form,footer);root.replaceChildren(frame);
   // Composed scope hints repaint from cached state on business renders and on
@@ -114,7 +115,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   function clearPoll(){if(pollTimer)clearTimeout(pollTimer);pollTimer=null;}
   function syncOwner(){
     const next=activeOwner();if(next===owner)return false;
-    preferenceCheckbox.checked=false;uploadEpoch++;(uploadView?.controller||uploadController)?.syncOwner();owner=next;clearPoll();loadInFlight=null;pollCount=0;pollStarted=0;requestedPassage=null;historySignature='';selectedBook=books().some(book=>book.bookId===currentBookId())?currentBookId():books()[0]?.bookId||null;
+    preferenceCheckbox.checked=false;peopleCheckbox.checked=false;uploadEpoch++;(uploadView?.controller||uploadController)?.syncOwner();owner=next;clearPoll();loadInFlight=null;pollCount=0;pollStarted=0;requestedPassage=null;historySignature='';selectedBook=books().some(book=>book.bookId===currentBookId())?currentBookId():books()[0]?.bookId||null;
     state.reset();state.setContext(owner,selectedBook);requestedPassage=state.view().retry?.payload.passageId||state.view().quote?.parts[0].passageId||null;input.value='';context.open=false;return true;
   }
   function isCurrent(captured){if(disposed)return false;if(captured===activeOwner()&&captured===owner)return true;syncOwner();render();return false;}
@@ -219,6 +220,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
     input.style.setProperty('height','auto');input.style.setProperty('height',Math.min(128,Math.max(36,input.scrollHeight||36))+'px');
     const length=view.draft.length;count.classList.toggle('is-over-limit',length>CHAT_TEXT_LIMIT);input.setAttribute('aria-invalid',String(length>CHAT_TEXT_LIMIT));
     if(length>=1800)countMsg.set(length>CHAT_TEXT_LIMIT?'chat.count.over':'chat.count.left',{count:length>CHAT_TEXT_LIMIT?length-CHAT_TEXT_LIMIT:CHAT_TEXT_LIMIT-length});else countMsg.clear();
+    peopleConsent.hidden=confirmedScope(view)?.mode!=='library';peopleCheckbox.disabled=peopleConsent.hidden||!!view.pending||!!view.retry?.uncertain||!!view.scopePending;if(peopleConsent.hidden)peopleCheckbox.checked=false;
     preferenceCheckbox.disabled=!!view.pending||!!view.retry?.uncertain||!!view.scopePending;
     input.disabled=!selectedBook||!!view.pending||!!view.retry?.uncertain;sendButton.disabled=!view.canSend||!confirmedScope(view);
     price.hidden=getSession()?.billing?.enabled!==true;price.textContent=price.hidden?'':creditActionLabel('conversation',getUiLocale());
@@ -254,7 +256,7 @@ export function mountLibraryChat({root,api,getSession,getBooks,getOwner,openAuth
   }
   let sending=null;
   async function send(){
-    if(disposed||syncOwner()||!confirmedScope(state.view())){render();return;}const request=state.beginSend({preferenceWrites:preferenceCheckbox.checked});if(!request)return;preferenceCheckbox.checked=false;root.dispatchEvent(new Event('reading-chat-send'));clearPoll();pollCount=0;pollStarted=Date.now();const captured=owner,bookId=selectedBook;render();messages.scrollTop=messages.scrollHeight;void load({poll:true});
+    if(disposed||syncOwner()||!confirmedScope(state.view())){render();return;}const request=state.beginSend({preferenceWrites:preferenceCheckbox.checked,peopleWrites:peopleCheckbox.checked});if(!request)return;preferenceCheckbox.checked=false;peopleCheckbox.checked=false;root.dispatchEvent(new Event('reading-chat-send'));clearPoll();pollCount=0;pollStarted=Date.now();const captured=owner,bookId=selectedBook;render();messages.scrollTop=messages.scrollHeight;void load({poll:true});
     const entry={id:request.payload.id,payload:request.payload,controller:new AbortController(),dispatched:getSession()?.billing?.enabled!==true};sending=entry;
     try{const turn=await api('/api/library/books/'+encodeURIComponent(bookId)+'/chat',request.payload,{signal:entry.controller.signal,onDispatch:()=>{entry.dispatched=true;},onProgress:value=>{if(isCurrent(captured)&&state.resolveProgress(request.ticket,value))render();}});if(isCurrent(captured)&&state.resolveSend(request.ticket,turn)){render();schedulePoll();if(turn.status!=='running')root.dispatchEvent(new Event('reading-preferences-changed'));}}
     catch(error){if(!isCurrent(captured))return;const uncertain=chatFailureUncertain(error);if(state.rejectSend(request.ticket,error,{uncertain})){render();if(uncertain||error.status===412)await load();}}

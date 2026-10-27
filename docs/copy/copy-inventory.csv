@@ -2187,155 +2187,156 @@ prefs.setup.description,catalogue,app/ui-catalogs/en.mjs,2153,unknown,unknown,un
 data.settings.intro,catalogue,app/ui-catalogs/en.mjs,2154,unknown,unknown,unknown,unknown,unreviewed,"Back up your reading room, or take just your own records. No subscription needed.",备份书房，或只带走自己的记录。无需订阅。,備份書房，或只帶走自己的記錄。無需訂閱。,書斎全体のバックアップも、自分の記録だけの保存も。購読は不要です。
 data.settings.backupHelp,catalogue,app/ui-catalogs/en.mjs,2155,unknown,unknown,unknown,unknown,unreviewed,Your reading texts and translations are included. Source files are optional.,阅读文本与译文都会备份；原文件可选。,閱讀文字與譯文都會備份；原始檔案可選。,読書用の原文と訳文を保存します。元ファイルは任意です。
 data.settings.restoreHelp,catalogue,app/ui-catalogs/en.mjs,2156,unknown,unknown,unknown,unknown,unreviewed,The file is checked locally. Restoring starts only after you confirm.,先在本机校验，确认后才开始恢复。,先在本機校驗，確認後才開始還原。,ファイルを手元で確認し、同意してから復元を始めます。
-memory.allowTurn,catalogue,app/ui-catalogs/en.mjs,2157,unknown,unknown,unknown,unknown,unreviewed,Allow this question to change my reading preferences,允许本次提问修改我的阅读偏好,允許本次提問修改我的閱讀偏好,この質問で読書設定の変更を許可する
-memory.welcome,catalogue,app/ui-catalogs/en.mjs,2158,unknown,unknown,unknown,unknown,unreviewed,A book to begin with,先从一本书开始,先從一本書開始,まずは一冊から
-memory.title,catalogue,app/ui-catalogs/en.mjs,2159,unknown,unknown,unknown,unknown,unreviewed,My reading preferences,我的阅读偏好,我的閱讀偏好,読書の好み
-memory.tryBook,catalogue,app/ui-catalogs/en.mjs,2160,unknown,unknown,unknown,unknown,unreviewed,You can start reading this book now.,这本书现在就可以读。,這本書現在就可以讀。,この本はすぐに読めます。
-memory.noBook,catalogue,app/ui-catalogs/en.mjs,2161,empty-library reading setup,the existing onboarding panel has no available book (preference-memory-ui.mjs),C+D,preserve,reviewed,Import a book from your reading room.,在书房导入一本书。,在書房匯入一本書。,書斎で本を読み込んでください。
-memory.noGeneration,catalogue,app/ui-catalogs/en.mjs,2162,unknown,unknown,unknown,unknown,unreviewed,Translation choices display saved translations; they never generate new ones.,译文选项只显示已有译文，不会自动生成。,譯文選項只顯示已有譯文，不會自動生成。,翻訳の選択は保存済みの訳を表示し、新たな翻訳は生成しません。
-memory.progress,catalogue,app/ui-catalogs/en.mjs,2163,unknown,unknown,unknown,unknown,unreviewed,Question {step} of 3 · all optional,第 {step} / 3 题 · 都可跳过,第 {step} / 3 題 · 都可略過,質問 {step} / 3 ・すべて任意
-memory.question.topic,catalogue,app/ui-catalogs/en.mjs,2164,unknown,unknown,unknown,unknown,unreviewed,What would you like to read about?,你想读哪类内容？,你想讀哪類內容？,どんな内容を読みたいですか？
-memory.question.language,catalogue,app/ui-catalogs/en.mjs,2165,unknown,unknown,unknown,unknown,unreviewed,How would you like to read?,你习惯怎样阅读原文与译文？,你習慣怎樣閱讀原文與譯文？,原文と訳文をどう表示しますか？
-memory.question.style,catalogue,app/ui-catalogs/en.mjs,2166,unknown,unknown,unknown,unknown,unreviewed,Which page feels comfortable?,哪种纸面看着舒服？,哪種紙面看著舒服？,どの背景が読みやすいですか？
-memory.skipQuestion,catalogue,app/ui-catalogs/en.mjs,2167,unknown,unknown,unknown,unknown,unreviewed,Skip this question,跳过这题,略過這題,この質問をスキップ
-memory.skipAll,catalogue,app/ui-catalogs/en.mjs,2168,unknown,unknown,unknown,unknown,unreviewed,Skip setup and start reading,跳过设置，直接阅读,略過設定，直接閱讀,設定をスキップして読む
-memory.explanation,catalogue,app/ui-catalogs/en.mjs,2169,unknown,unknown,unknown,unknown,unreviewed,"Reading view, language and page style become defaults for new books. Each book keeps its saved settings; your topic is remembered without filtering the shelf.",阅读方式、优先语言与纸面用于新书默认值，每本书已有的设置优先。主题会保留，不改变书架筛选。,閱讀方式、優先語言與紙面用於新書預設值，每本書已有的設定優先。主題會保留，不改變書架篩選。,表示方法、優先言語、紙面は新しい本の初期設定になります。本ごとの保存済み設定が優先されます。読書テーマは記憶されますが、本棚の絞り込みは変わりません。
-memory.key.topic,catalogue,app/ui-catalogs/en.mjs,2170,unknown,unknown,unknown,unknown,unreviewed,Reading topic,阅读主题,閱讀主題,テーマ
-memory.key.mode,catalogue,app/ui-catalogs/en.mjs,2171,unknown,unknown,unknown,unknown,unreviewed,Text display,原文与译文,原文與譯文,本文の表示
-memory.key.preferredLanguage,catalogue,app/ui-catalogs/en.mjs,2172,unknown,unknown,unknown,unknown,unreviewed,Preferred reading language,优先阅读语言,優先閱讀語言,優先する言語
-memory.key.theme,catalogue,app/ui-catalogs/en.mjs,2173,unknown,unknown,unknown,unknown,unreviewed,Page style,阅读纸面,閱讀紙面,ページの背景
-memory.value.en,catalogue,app/ui-catalogs/en.mjs,2174,unknown,unknown,unknown,unknown,unreviewed,Original text,原文，不默认显示译文,原文，不預設顯示譯文,原文のみ
-memory.value.zh,catalogue,app/ui-catalogs/en.mjs,2175,unknown,unknown,unknown,unknown,unreviewed,Simplified Chinese translation,简体中文译文,簡體中文譯文,簡体字中国語訳
-memory.value.parallel,catalogue,app/ui-catalogs/en.mjs,2176,unknown,unknown,unknown,unknown,unreviewed,Original and translation,原文与译文对照,原文與譯文對照,原文と訳文
-memory.value.source,catalogue,app/ui-catalogs/en.mjs,2177,unknown,unknown,unknown,unknown,unreviewed,Original language,原文语言,原文語言,原文の言語
-memory.value.system,catalogue,app/ui-catalogs/en.mjs,2178,unknown,unknown,unknown,unknown,unreviewed,Follow system,跟随系统,跟隨系統,システム設定
-memory.value.paper,catalogue,app/ui-catalogs/en.mjs,2179,unknown,unknown,unknown,unknown,unreviewed,White paper,白纸,白紙,白い紙
-memory.value.warm,catalogue,app/ui-catalogs/en.mjs,2180,unknown,unknown,unknown,unknown,unreviewed,Warm paper,暖纸,暖紙,暖かい紙
-memory.value.mist,catalogue,app/ui-catalogs/en.mjs,2181,unknown,unknown,unknown,unknown,unreviewed,Mist,雾白,霧白,霧
-memory.value.leaf,catalogue,app/ui-catalogs/en.mjs,2182,unknown,unknown,unknown,unknown,unreviewed,Leaf,叶色,葉色,葉
-memory.value.night,catalogue,app/ui-catalogs/en.mjs,2183,unknown,unknown,unknown,unknown,unreviewed,Dark page,深色,深色,ダーク
-memory.source.settings,catalogue,app/ui-catalogs/en.mjs,2184,unknown,unknown,unknown,unknown,unreviewed,Chosen in settings,设置页选择,設定頁選擇,設定で選択
-memory.source.onboarding,catalogue,app/ui-catalogs/en.mjs,2185,unknown,unknown,unknown,unknown,unreviewed,Chosen during setup,引导中选择,引導中選擇,初期設定で選択
-memory.source.agent,catalogue,app/ui-catalogs/en.mjs,2186,unknown,unknown,unknown,unknown,unreviewed,Changed by Agent,Agent 修改,Agent 修改,Agent による変更
-memory.inferred,catalogue,app/ui-catalogs/en.mjs,2187,unknown,unknown,unknown,unknown,unreviewed,Inferred: {value}. Not active until you confirm.,推测：{value}。确认后才生效。,推測：{value}。確認後才生效。,推測：{value}。確認するまで適用されません。
-memory.confirm,catalogue,app/ui-catalogs/en.mjs,2188,unknown,unknown,unknown,unknown,unreviewed,Confirm preference,确认偏好,確認偏好,確認して適用
-memory.reject,catalogue,app/ui-catalogs/en.mjs,2189,unknown,unknown,unknown,unknown,unreviewed,Dismiss suggestion,忽略推测,忽略推測,推測を破棄
-memory.delete,catalogue,app/ui-catalogs/en.mjs,2190,unknown,unknown,unknown,unknown,unreviewed,Delete preference,删除偏好,刪除偏好,好みを削除
-memory.failed,catalogue,app/ui-catalogs/en.mjs,2191,unknown,unknown,unknown,unknown,unreviewed,Save not confirmed. Read the latest version before trying again.,尚未确认是否保存成功。可查看当前偏好后继续修改。,尚未確認是否儲存成功。可查看目前偏好後繼續修改。,保存を確認できません。最新の設定を読み込んでから変更してください。
-memory.saving,catalogue,app/ui-catalogs/en.mjs,2192,unknown,unknown,unknown,unknown,unreviewed,Saving…,正在保存…,正在儲存…,保存中…
-memory.readLatest,catalogue,app/ui-catalogs/en.mjs,2193,unknown,unknown,unknown,unknown,unreviewed,Read latest version,查看当前偏好,查看目前偏好,最新の設定を読む
-reader.annotation.hide,catalogue,app/ui-catalogs/en.mjs,2194,unknown,unknown,unknown,unknown,unreviewed,Hide annotations,隐藏批注,隱藏批註,注釈を隠す
-reader.annotation.show,catalogue,app/ui-catalogs/en.mjs,2195,unknown,unknown,unknown,unknown,unreviewed,Show annotations,显示批注,顯示批註,注釈を表示
-reader.annotation.mine,catalogue,app/ui-catalogs/en.mjs,2196,unknown,unknown,unknown,unknown,unreviewed,Mine,我写的,我寫的,自分
-reader.annotation.personalSummary,catalogue,app/ui-catalogs/en.mjs,2197,unknown,unknown,unknown,unknown,unreviewed,Highlights and thoughts,摘录与想法,摘錄與想法,ハイライトとメモ
-reader.annotation.ai,catalogue,app/ui-catalogs/en.mjs,2198,unknown,unknown,unknown,unknown,unreviewed,AI,AI,AI,AI
-reader.annotation.loading,catalogue,app/ui-catalogs/en.mjs,2199,unknown,unknown,unknown,unknown,unreviewed,Loading annotations…,正在载入批注…,正在載入批註…,注釈を読み込み中…
-reader.annotation.saveNote,catalogue,app/ui-catalogs/en.mjs,2200,unknown,unknown,unknown,unknown,unreviewed,Save note,保存想法,儲存想法,メモを保存
-reader.annotation.explain,catalogue,app/ui-catalogs/en.mjs,2201,unknown,unknown,unknown,unknown,unreviewed,Ask AI to explain,请 AI 解释,請 AI 解釋,AIに説明を頼む
-reader.annotation.savingNote,catalogue,app/ui-catalogs/en.mjs,2202,unknown,unknown,unknown,unknown,unreviewed,Saving your note…,正在保存想法…,正在儲存想法…,メモを保存中…
-reader.annotation.savedNote,catalogue,app/ui-catalogs/en.mjs,2203,unknown,unknown,unknown,unknown,unreviewed,Note saved.,想法已保存。,想法已儲存。,メモを保存しました。
-reader.annotation.noteUnconfirmed,catalogue,app/ui-catalogs/en.mjs,2204,unknown,unknown,unknown,unknown,unreviewed,Saving is unconfirmed. Try saving again to check the same submission.,保存尚未确认。再次保存会核对刚才的想法。,儲存尚未確認。再次儲存會核對剛才的想法。,保存を確認できません。もう一度保存すると同じ送信を確認します。
-reader.annotation.previous,catalogue,app/ui-catalogs/en.mjs,2205,unknown,unknown,unknown,unknown,unreviewed,Previous annotation,上一条批注,上一條批註,前の注釈
-reader.annotation.next,catalogue,app/ui-catalogs/en.mjs,2206,unknown,unknown,unknown,unknown,unreviewed,Next annotation,下一条批注,下一條批註,次の注釈
-reader.annotation.longSelection,catalogue,app/ui-catalogs/en.mjs,2207,unknown,unknown,unknown,unknown,unreviewed,This selection is long. You can save a thought; select a shorter passage to ask AI.,选文较长，可以保存想法；请选取其中一小段来问 AI。,選文較長，可以儲存想法；請選取其中一小段來問 AI。,選択した文章が長いため、AI に質問するには短い部分を選んでください。自分のメモは保存できます。
-daily.inbox.summary,catalogue,app/ui-catalogs/en.mjs,2208,unknown,unknown,unknown,unknown,unreviewed,Reading notes · {count},陪读纸条 · {count} 张,陪讀紙條 · {count} 張,読書のメモ · {count}件
-sample.disclosureNone,catalogue,app/ui-catalogs/en.mjs,2209,unknown,unknown,unknown,unknown,unreviewed,No translations are saved for this book. Check the sending scope before translating.,本书尚无已保存的译文。翻译前请查看发送范围。,本書尚無已保存的譯文。翻譯前請查看傳送範圍。,この本には保存済みの訳文がありません。翻訳前に送信範囲を確認してください。
-sample.disclosureMetadata,catalogue,app/ui-catalogs/en.mjs,2210,unknown,unknown,unknown,unknown,unreviewed,"{count} saved passage translations: {reviewed} reviewed, {draft} drafts, {unknown} with unknown review status. {ai} marked as AI. Recorded credits: {translators}; {uncredited} without credits. AI models recorded: {models}. Recorded licenses: {licenses}; {unlicensed} without a license record. A dash means no record. Untranslated passages show the original.",共 {count} 份段落译文：已审校 {reviewed} 份，草稿 {draft} 份，审校状态未知 {unknown} 份。其中 {ai} 份标记为 AI。已有署名：{translators}；{uncredited} 份未记录署名。已有 AI 模型记录：{models}。已有许可：{licenses}；{unlicensed} 份未记录许可。破折号表示没有记录。缺译处显示原文。,共 {count} 份段落譯文：已審校 {reviewed} 份，草稿 {draft} 份，審校狀態未知 {unknown} 份。其中 {ai} 份標記為 AI。已有署名：{translators}；{uncredited} 份未記錄署名。已有 AI 模型記錄：{models}。已有許可：{licenses}；{unlicensed} 份未記錄許可。破折號表示沒有記錄。缺譯處顯示原文。,保存済みの段落訳は {count} 件です。確認済み {reviewed} 件、下書き {draft} 件、確認状況不明 {unknown} 件。このうち AI と記録された訳は {ai} 件です。記録された翻訳者：{translators}、翻訳者の記録なし {uncredited} 件。AI モデルの記録：{models}。記録されたライセンス：{licenses}、記録なし {unlicensed} 件。「—」は記録がないことを表します。訳のない箇所には原文を表示します。
-export.notices,catalogue,app/ui-catalogs/en.mjs,2211,unknown,unknown,unknown,unknown,unreviewed,Source and copyright notices,来源与版权声明,來源與版權聲明,出典と著作権表示
-export.close,catalogue,app/ui-catalogs/en.mjs,2212,unknown,unknown,unknown,unknown,unreviewed,Close export,关闭导出,關閉匯出,書き出しを閉じる
-export.download,catalogue,app/ui-catalogs/en.mjs,2213,unknown,unknown,unknown,unknown,unreviewed,Download file,下载文件,下載檔案,ファイルをダウンロード
-export.title,catalogue,app/ui-catalogs/en.mjs,2214,unknown,unknown,unknown,unknown,unreviewed,Export this book,导出这本书,匯出這本書,この本を書き出す
-export.help,catalogue,app/ui-catalogs/en.mjs,2215,unknown,unknown,unknown,unknown,unreviewed,Choose a range and text layers. Personal notes are excluded.,选择范围和正文内容，不包含私人笔记。,選擇範圍和正文內容，不包含私人筆記。,範囲と本文を選択します。個人のノートは含まれません。
-export.format,catalogue,app/ui-catalogs/en.mjs,2216,unknown,unknown,unknown,unknown,unreviewed,Format,文件格式,檔案格式,ファイル形式
-export.range,catalogue,app/ui-catalogs/en.mjs,2217,unknown,unknown,unknown,unknown,unreviewed,Range,导出范围,匯出範圍,範囲
-export.whole,catalogue,app/ui-catalogs/en.mjs,2218,unknown,unknown,unknown,unknown,unreviewed,Whole book,整本书,整本書,本全体
-export.layers,catalogue,app/ui-catalogs/en.mjs,2219,unknown,unknown,unknown,unknown,unreviewed,Text layers,正文内容,正文內容,本文
-export.original,catalogue,app/ui-catalogs/en.mjs,2220,unknown,unknown,unknown,unknown,unreviewed,Original,原文,原文,原文
-export.literal,catalogue,app/ui-catalogs/en.mjs,2221,unknown,unknown,unknown,unknown,unreviewed,Literal translation,直译,直譯,直訳
-export.interpretive,catalogue,app/ui-catalogs/en.mjs,2222,unknown,unknown,unknown,unknown,unreviewed,Interpretive translation,意译,意譯,意訳
-export.all,catalogue,app/ui-catalogs/en.mjs,2223,unknown,unknown,unknown,unknown,unreviewed,Original and both translations,原文与两种译文,原文與兩種譯文,原文と両方の訳文
-export.missing,catalogue,app/ui-catalogs/en.mjs,2224,unknown,unknown,unknown,unknown,unreviewed,Not translated,尚未翻译,尚未翻譯,未翻訳
-export.loading,catalogue,app/ui-catalogs/en.mjs,2225,unknown,unknown,unknown,unknown,unreviewed,Loading book content…,正在读取书籍正文…,正在讀取書籍正文…,本文を読み込み中…
-export.ready,catalogue,app/ui-catalogs/en.mjs,2226,unknown,unknown,unknown,unknown,unreviewed,Choose the content to download.,选择要下载的内容。,選擇要下載的內容。,ダウンロードする内容を選択してください。
-export.preparing,catalogue,app/ui-catalogs/en.mjs,2227,unknown,unknown,unknown,unknown,unreviewed,Preparing your file…,正在生成文件…,正在產生檔案…,ファイルを作成中…
-export.error,catalogue,app/ui-catalogs/en.mjs,2228,unknown,unknown,unknown,unknown,unreviewed,Export failed. Retry the download.,导出失败，请重试下载。,匯出失敗，請重試下載。,書き出せませんでした。再試行してください。
-export.cancelled,catalogue,app/ui-catalogs/en.mjs,2229,unknown,unknown,unknown,unknown,unreviewed,Export cancelled. No file was requested.,已取消导出，未发起文件下载。,已取消匯出，未發起檔案下載。,書き出しをキャンセルしました。ダウンロードは開始していません。
-export.downloadRequested,catalogue,app/ui-catalogs/en.mjs,2230,unknown,unknown,unknown,unknown,unreviewed,Download requested. Check your browser downloads.,已发起下载，请查看浏览器下载列表。,已發起下載，請查看瀏覽器下載清單。,ダウンロードを開始しました。ブラウザーの履歴を確認してください。
-export.glyphError,catalogue,app/ui-catalogs/en.mjs,2231,unknown,unknown,unknown,unknown,unreviewed,This PDF font cannot display some characters. Download Markdown to preserve the full text.,PDF 字体无法显示部分字符，请下载 Markdown 保留完整文字。,PDF 字型無法顯示部分字元，請下載 Markdown 保留完整文字。,PDF のフォントに対応していない文字があります。全文を保持するには Markdown を選択してください。
-chat.failure.notSubmitted,catalogue,app/ui-catalogs/en.mjs,2232,unknown,unknown,unknown,unknown,unreviewed,Not sent. Your question is kept; check access or points.,尚未发出，提问已保留。请核对授权或点数确认后重试。,尚未送出，提問已保留。請核對授權或點數確認後重試。,送信されていません。質問は保持されています。権限やポイント利用を確認してください。
-chat.failure.rejected,catalogue,app/ui-catalogs/en.mjs,2233,unknown,unknown,unknown,unknown,unreviewed,Question not accepted. Check its source and access; the text is kept.,这条提问暂不被接受，内容已保留。请核对来源和访问权限。,這條提問暫不被接受，內容已保留。請核對來源及存取權限。,依頼が拒否されました。質問は保持されています。原文とアクセス権を確認してください。
-chat.failure.generation,catalogue,app/ui-catalogs/en.mjs,2234,unknown,unknown,unknown,unknown,unreviewed,Could not answer. Your question is kept; edit it to retry.,回答生成失败，提问已保留，可编辑后重试。,回答產生失敗，提問已保留，可編輯後重試。,回答を生成できませんでした。質問は保持されています。編集して再試行できます。
-chat.failure.pricing,catalogue,app/ui-catalogs/en.mjs,2235,unknown,unknown,unknown,unknown,unreviewed,AI is unavailable while prices are checked. Your question is kept.,AI 暂不可用，价格参考待核验。提问已保留。,AI 暫不可用，價格參考待核驗。提問已保留。,価格の確認中のため AI を利用できません。質問は保持されています。
-chat.failure.save,catalogue,app/ui-catalogs/en.mjs,2236,unknown,unknown,unknown,unknown,unreviewed,Could not save the answer. Your question is kept; check its status.,回答未能保存，提问已保留。请先查看本次状态。,回答未能儲存，提問已保留。請先查看本次狀態。,回答を保存できませんでした。質問は保持されています。再試行の前に状態を確認してください。
-chat.failure.validation,catalogue,app/ui-catalogs/en.mjs,2237,unknown,unknown,unknown,unknown,unreviewed,Could not verify the answer. Your question is kept.,回答未通过核验，提问已保留。,回答未通過核驗，提問已保留。,回答を検証できませんでした。質問は保持されています。
-chat.failure.context,catalogue,app/ui-catalogs/en.mjs,2238,unknown,unknown,unknown,unknown,unreviewed,The source changed. Check this passage before retrying.,原文已变化，请核对当前段落后重试。,原文已變更，請核對目前段落後重試。,原文が変更されました。現在の段落を確認してから再試行してください。
-chat.evidence,catalogue,app/ui-catalogs/en.mjs,2239,unknown,unknown,unknown,unknown,unreviewed,About this answer,查看依据,查看依據,回答の根拠
-chat.evidence.incomplete,catalogue,app/ui-catalogs/en.mjs,2240,unknown,unknown,unknown,unknown,unreviewed,Some lookups failed. This answer may be incomplete.,部分查找失败，回答可能不完整。,部分查找失敗，回答可能不完整。,一部の検索に失敗しました。回答が不完全な場合があります。
-audio.options,catalogue,app/ui-catalogs/en.mjs,2241,unknown,unknown,unknown,unknown,unreviewed,More listening options,更多听读方式,更多聆聽方式,ほかの読み上げ方法
-translation.firstUse.title,catalogue,app/ui-catalogs/en.mjs,2242,unknown,unknown,unknown,unknown,unreviewed,Translate this paragraph?,翻译这一段？,翻譯這一段？,この段落を翻訳しますか？
-translation.firstUse.body,catalogue,app/ui-catalogs/en.mjs,2243,unknown,unknown,unknown,unknown,unreviewed,Translating sends this paragraph and up to one paragraph before and after it to an AI. Your notes are not included.,翻译会把这一段和前后各一段（如有）发给 AI，不会带上你的笔记。,翻譯會把這一段和前後各一段（如有）傳給 AI，不會附上你的筆記。,翻訳のため、この段落と前後の段落（各1段落まで）をAIに送ります。ノートは送りません。
-translation.firstUse.accept,catalogue,app/ui-catalogs/en.mjs,2244,unknown,unknown,unknown,unknown,unreviewed,Translate this paragraph,翻译这一段,翻譯這一段,この段落を翻訳
-translation.firstUse.cancel,catalogue,app/ui-catalogs/en.mjs,2245,unknown,unknown,unknown,unknown,unreviewed,Keep reading,继续阅读,繼續閱讀,読書を続ける
-translation.firstUse.privacy,catalogue,app/ui-catalogs/en.mjs,2246,unknown,unknown,unknown,unknown,unreviewed,Privacy details,隐私说明,隱私說明,プライバシーについて
-notebook.title,catalogue,app/ui-catalogs/en.mjs,2247,unknown,unknown,unknown,unknown,unreviewed,My notebook,我的笔记,我的筆記,自分のノート
-notebook.intro,catalogue,app/ui-catalogs/en.mjs,2248,unknown,unknown,unknown,unknown,unreviewed,"Thoughts, questions and highlights across books.",各本书中留下的想法、问题与摘录。,各本書中留下的想法、問題與摘錄。,本ごとに残した考え、問い、ハイライト。
-notebook.close,catalogue,app/ui-catalogs/en.mjs,2249,unknown,unknown,unknown,unknown,unreviewed,Close notebook,关闭笔记,關閉筆記,ノートを閉じる
-notebook.search,catalogue,app/ui-catalogs/en.mjs,2250,unknown,unknown,unknown,unknown,unreviewed,Search your notes,搜索自己的笔记,搜尋自己的筆記,ノートを検索
-notebook.bookFilter,catalogue,app/ui-catalogs/en.mjs,2251,unknown,unknown,unknown,unknown,unreviewed,Filter by book,按书籍筛选,依書籍篩選,本で絞り込む
-notebook.kindFilter,catalogue,app/ui-catalogs/en.mjs,2252,unknown,unknown,unknown,unknown,unreviewed,Filter by type,按类型筛选,依類型篩選,種類で絞り込む
-notebook.allBooks,catalogue,app/ui-catalogs/en.mjs,2253,unknown,unknown,unknown,unknown,unreviewed,Every book,全部书籍,全部書籍,すべての本
-notebook.allKinds,catalogue,app/ui-catalogs/en.mjs,2254,unknown,unknown,unknown,unknown,unreviewed,All records,全部记录,全部記錄,すべての記録
-notebook.kind.comment,catalogue,app/ui-catalogs/en.mjs,2255,unknown,unknown,unknown,unknown,unreviewed,My thought,我的想法,我的想法,自分の考え
-notebook.kind.question,catalogue,app/ui-catalogs/en.mjs,2256,unknown,unknown,unknown,unknown,unreviewed,My question,我的问题,我的問題,自分の問い
-notebook.kind.highlight,catalogue,app/ui-catalogs/en.mjs,2257,unknown,unknown,unknown,unknown,unreviewed,Highlight,摘录,摘錄,ハイライト
-notebook.count,catalogue,app/ui-catalogs/en.mjs,2258,unknown,unknown,unknown,unknown,unreviewed,{count} records in {books} books,{count} 条记录，来自 {books} 本书,{count} 條記錄，來自 {books} 本書,{books} 冊から {count} 件の記録
-notebook.export,catalogue,app/ui-catalogs/en.mjs,2259,unknown,unknown,unknown,unknown,unreviewed,Export filtered notes,导出筛选结果,匯出篩選結果,表示中のノートを書き出す
-notebook.retry,catalogue,app/ui-catalogs/en.mjs,2260,unknown,unknown,unknown,unknown,unreviewed,Load notes again,重新载入笔记,重新載入筆記,ノートを再読み込み
-notebook.signIn,catalogue,app/ui-catalogs/en.mjs,2261,unknown,unknown,unknown,unknown,unreviewed,Sign in,登录,登入,ログイン
-notebook.guest,catalogue,app/ui-catalogs/en.mjs,2262,unknown,unknown,unknown,unknown,unreviewed,Sign in to read your notes.,登录后查看自己的笔记。,登入後查看自己的筆記。,ログインすると自分のノートを読めます。
-notebook.partial,catalogue,app/ui-catalogs/en.mjs,2263,unknown,unknown,unknown,unknown,unreviewed,Could not load notes from {count} books. Other notes are shown.,{count} 本书的笔记暂未载入，其余笔记已显示。,{count} 本書的筆記暫未載入，其餘筆記已顯示。,{count} 冊のノートを読み込めませんでした。他のノートは下に表示されています。
-notebook.loading,catalogue,app/ui-catalogs/en.mjs,2264,unknown,unknown,unknown,unknown,unreviewed,Loading notes ({done}/{total})…,正在打开各本书的笔记（{done}/{total}）…,正在開啟各本書的筆記（{done}/{total}）…,各本のノートを開いています（{done}/{total}）…
-notebook.empty,catalogue,app/ui-catalogs/en.mjs,2265,unknown,unknown,unknown,unknown,unreviewed,Your notebook begins here,从一条笔记开始,從一條筆記開始,最初のノートから
-notebook.emptyHelp,catalogue,app/ui-catalogs/en.mjs,2266,unknown,unknown,unknown,unknown,unreviewed,"Save thoughts, questions or highlights while reading. Find them here across books.",阅读时记下想法、留下问题或划出一句话，都能在这里找到。,閱讀時記下想法、留下問題或畫出一句話，都能在這裡找到。,読書中に考えや問い、ハイライトを残すと、ここで見返せます。
-notebook.noMatch,catalogue,app/ui-catalogs/en.mjs,2267,unknown,unknown,unknown,unknown,unreviewed,No matching notes,没有找到对应笔记,沒有找到對應筆記,一致するノートがありません
-notebook.noMatchHelp,catalogue,app/ui-catalogs/en.mjs,2268,unknown,unknown,unknown,unknown,unreviewed,Try another word or clear filters.,换个词搜索，或清空筛选条件。,換個詞搜尋，或清空篩選條件。,別の言葉で検索するか、絞り込みを解除してください。
-notebook.clearFilters,catalogue,app/ui-catalogs/en.mjs,2269,unknown,unknown,unknown,unknown,unreviewed,Clear filters,清空筛选,清空篩選,絞り込みを解除
-notebook.more,catalogue,app/ui-catalogs/en.mjs,2270,unknown,unknown,unknown,unknown,unreviewed,Show more,显示更多,顯示更多,もっと見る
-notebook.moreCount,catalogue,app/ui-catalogs/en.mjs,2271,unknown,unknown,unknown,unknown,unreviewed,Show {count} more,再看 {count} 条,再看 {count} 條,あと {count} 件を見る
-notebook.source,catalogue,app/ui-catalogs/en.mjs,2272,unknown,unknown,unknown,unknown,unreviewed,Open source and edit,回到原文与编辑,回到原文與編輯,本文を開いて編集
-notebook.quote,catalogue,app/ui-catalogs/en.mjs,2273,unknown,unknown,unknown,unknown,unreviewed,Saved quotation,保存的引文,儲存的引文,保存した引用
-notebook.created,catalogue,app/ui-catalogs/en.mjs,2274,unknown,unknown,unknown,unknown,unreviewed,Created,创建,建立,作成日
-notebook.updated,catalogue,app/ui-catalogs/en.mjs,2275,unknown,unknown,unknown,unknown,unreviewed,Updated,修改,修改,更新日
-notebook.dateUnknown,catalogue,app/ui-catalogs/en.mjs,2276,unknown,unknown,unknown,unknown,unreviewed,Date unavailable,日期待确认,日期待確認,日付不明
-notebook.edited,catalogue,app/ui-catalogs/en.mjs,2277,unknown,unknown,unknown,unknown,unreviewed,Edited {date},{date} 修改,{date} 修改,{date} に編集
-notebook.openBook,catalogue,app/ui-catalogs/en.mjs,2278,unknown,unknown,unknown,unknown,unreviewed,Open book,打开书籍,開啟書籍,本を開く
-notebook.sourceUnavailable,catalogue,app/ui-catalogs/en.mjs,2279,unknown,unknown,unknown,unknown,unreviewed,Source needs checking. Your note is kept.,原文位置待确认，笔记仍保留。,原文位置待確認，筆記仍保留。,本文の位置を確認できません。ノートは保存されています。
-nav.notebook,catalogue,app/ui-catalogs/en.mjs,2280,unknown,unknown,unknown,unknown,unreviewed,My notes,我的笔记,我的筆記,マイノート
-journal.title,catalogue,app/ui-catalogs/en.mjs,2281,unknown,unknown,unknown,unknown,unreviewed,Reading footprint,阅读足迹,閱讀足跡,読書の記録
-journal.days,catalogue,app/ui-catalogs/en.mjs,2282,unknown,unknown,unknown,unknown,unreviewed,Read on {count} days this month,这个月读了 {count} 天,這個月讀了 {count} 天,今月は {count} 日読書
-journal.selectDay,catalogue,app/ui-catalogs/en.mjs,2283,unknown,unknown,unknown,unknown,unreviewed,Choose a reading day,选择一天，回看阅读记录,選擇一天，回看閱讀記錄,日付を選んで読書を振り返る
-journal.activity,catalogue,app/ui-catalogs/en.mjs,2284,unknown,unknown,unknown,unknown,unreviewed,Note,记录,記錄,記録
-journal.legend,catalogue,app/ui-catalogs/en.mjs,2285,unknown,unknown,unknown,unknown,unreviewed,Minutes below dates. Darker means longer; underlines mark notes or finished chapters.,日期下方为分钟数。颜色越深，阅读越久；下划线表示笔记或读完的章节。,日期下方為分鐘數。顏色越深，閱讀越久；底線表示筆記或讀完的章節。,日付の下は分数です。色が濃いほど長く読書。下線はメモや読了した章。
-journal.empty,catalogue,app/ui-catalogs/en.mjs,2286,unknown,unknown,unknown,unknown,unreviewed,Your next reading day appears here.,下一次阅读，会留在这里。,下一次閱讀，會留在這裡。,次の読書がここに残ります。
-journal.measurement,catalogue,app/ui-catalogs/en.mjs,2287,unknown,unknown,unknown,unknown,unreviewed,How time is counted,时长口径,時長口徑,時間の集計方法
-journal.share.title,catalogue,app/ui-catalogs/en.mjs,2288,unknown,unknown,unknown,unknown,unreviewed,Preview this day,预览这一天,預覽這一天,この日のプレビュー
-journal.share.help,catalogue,app/ui-catalogs/en.mjs,2289,unknown,unknown,unknown,unknown,unreviewed,Date and reading time included. Book titles optional. Notes and questions excluded.,图片包含日期和阅读时长，可选择附上书名。笔记和提问不进入图片。,圖片包含日期和閱讀時長，可選擇附上書名。筆記和提問不進入圖片。,画像には日付と読書時間が入ります。書名は任意です。メモや質問は含まれません。
-journal.share.books,catalogue,app/ui-catalogs/en.mjs,2290,unknown,unknown,unknown,unknown,unreviewed,Include book titles,附上这一天的书名,附上這一天的書名,この日の書名を含める
-journal.share.open,catalogue,app/ui-catalogs/en.mjs,2291,unknown,unknown,unknown,unknown,unreviewed,Share this day,分享这一天,分享這一天,この日を共有
-journal.share.save,catalogue,app/ui-catalogs/en.mjs,2292,unknown,unknown,unknown,unknown,unreviewed,Save image,保存图片,儲存圖片,画像を保存
-journal.share.close,catalogue,app/ui-catalogs/en.mjs,2293,unknown,unknown,unknown,unknown,unreviewed,Back to this day,返回这一天,返回這一天,この日の記録に戻る
-journal.share.failed,catalogue,app/ui-catalogs/en.mjs,2294,unknown,unknown,unknown,unknown,unreviewed,Could not save image. Try again.,图片未能保存，请重试。,圖片未能儲存，請重試。,画像を保存できませんでした。もう一度お試しください。
-journal.share.saved,catalogue,app/ui-catalogs/en.mjs,2295,unknown,unknown,unknown,unknown,unreviewed,Image download started,已开始下载图片,已開始下載圖片,画像のダウンロードを開始しました
-journal.share.imageTitle,catalogue,app/ui-catalogs/en.mjs,2296,unknown,unknown,unknown,unknown,unreviewed,Reading footprint,阅读足迹,閱讀足跡,読書の記録
-journal.share.bookLabel,catalogue,app/ui-catalogs/en.mjs,2297,unknown,unknown,unknown,unknown,unreviewed,Books read,这一天读的书,這一天讀的書,この日に読んだ本
-journal.share.imageLine,catalogue,app/ui-catalogs/en.mjs,2298,unknown,unknown,unknown,unknown,unreviewed,Read with Leafhour,在 Leafhour 读书,在 Leafhour 讀書,Leafhour で読書
-journal.share.overlap,catalogue,app/ui-catalogs/en.mjs,2299,unknown,unknown,unknown,unknown,unreviewed,Measurements may overlap.,各口径可能重叠。,各口徑可能重疊。,集計方法間で時間が重複する場合があります。
-journal.share.imageAria,catalogue,app/ui-catalogs/en.mjs,2300,unknown,unknown,unknown,unknown,unreviewed,Reading image for {date}: {time},{date}的阅读图片：{time},{date}的閱讀圖片：{time},{date}の読書画像：{time}
-notebook.quote.original,catalogue,app/ui-catalogs/en.mjs,2301,unknown,unknown,unknown,unknown,unreviewed,Original quotation,原文引文,原文引文,原文の引用
-notebook.quote.translation,catalogue,app/ui-catalogs/en.mjs,2302,unknown,unknown,unknown,unknown,unreviewed,Translated quotation,译文引文,譯文引文,訳文の引用
-notebook.archiveFailed,catalogue,app/ui-catalogs/en.mjs,2303,unknown,unknown,unknown,unknown,unreviewed,Trash notes could not load. Other notes are shown.,回收站中的书籍笔记暂未载入，其余笔记已显示。,回收站中的書籍筆記暫未載入，其餘筆記已顯示。,ゴミ箱の本のノートを読み込めませんでした。他のノートは下に表示されています。
-journal.share.preparing,catalogue,app/ui-catalogs/en.mjs,2304,unknown,unknown,unknown,unknown,unreviewed,Preparing image…,正在准备图片…,正在準備圖片…,画像を準備しています…
-reader.hub.appearance,catalogue,app/ui-catalogs/en.mjs,2305,unknown,unknown,unknown,unknown,unreviewed,Appearance,排版,排版,表示設定
-reader.hub.notes,catalogue,app/ui-catalogs/en.mjs,2306,unknown,unknown,unknown,unknown,unreviewed,My notes,本书笔记,本書筆記,この本のノート
-reader.hub.more,catalogue,app/ui-catalogs/en.mjs,2307,unknown,unknown,unknown,unknown,unreviewed,More tools,更多工具,更多工具,その他のツール
-reader.hub.primary,catalogue,app/ui-catalogs/en.mjs,2308,unknown,unknown,unknown,unknown,unreviewed,Reading tools,阅读工具,閱讀工具,読書ツール
+chat.people.allowTurn,catalogue,app/ui-catalogs/en.mjs,2157,unknown,unknown,unknown,unknown,unreviewed,"Allow this question to create, edit or delete my person records",允许本次提问创建、修改或删除人物资料,允許本次提問建立、修改或刪除人物資料,この質問で人物資料の作成・変更・削除を許可する
+memory.allowTurn,catalogue,app/ui-catalogs/en.mjs,2158,unknown,unknown,unknown,unknown,unreviewed,Allow this question to change my reading preferences,允许本次提问修改我的阅读偏好,允許本次提問修改我的閱讀偏好,この質問で読書設定の変更を許可する
+memory.welcome,catalogue,app/ui-catalogs/en.mjs,2159,unknown,unknown,unknown,unknown,unreviewed,A book to begin with,先从一本书开始,先從一本書開始,まずは一冊から
+memory.title,catalogue,app/ui-catalogs/en.mjs,2160,unknown,unknown,unknown,unknown,unreviewed,My reading preferences,我的阅读偏好,我的閱讀偏好,読書の好み
+memory.tryBook,catalogue,app/ui-catalogs/en.mjs,2161,unknown,unknown,unknown,unknown,unreviewed,You can start reading this book now.,这本书现在就可以读。,這本書現在就可以讀。,この本はすぐに読めます。
+memory.noBook,catalogue,app/ui-catalogs/en.mjs,2162,empty-library reading setup,the existing onboarding panel has no available book (preference-memory-ui.mjs),C+D,preserve,reviewed,Import a book from your reading room.,在书房导入一本书。,在書房匯入一本書。,書斎で本を読み込んでください。
+memory.noGeneration,catalogue,app/ui-catalogs/en.mjs,2163,unknown,unknown,unknown,unknown,unreviewed,Translation choices display saved translations; they never generate new ones.,译文选项只显示已有译文，不会自动生成。,譯文選項只顯示已有譯文，不會自動生成。,翻訳の選択は保存済みの訳を表示し、新たな翻訳は生成しません。
+memory.progress,catalogue,app/ui-catalogs/en.mjs,2164,unknown,unknown,unknown,unknown,unreviewed,Question {step} of 3 · all optional,第 {step} / 3 题 · 都可跳过,第 {step} / 3 題 · 都可略過,質問 {step} / 3 ・すべて任意
+memory.question.topic,catalogue,app/ui-catalogs/en.mjs,2165,unknown,unknown,unknown,unknown,unreviewed,What would you like to read about?,你想读哪类内容？,你想讀哪類內容？,どんな内容を読みたいですか？
+memory.question.language,catalogue,app/ui-catalogs/en.mjs,2166,unknown,unknown,unknown,unknown,unreviewed,How would you like to read?,你习惯怎样阅读原文与译文？,你習慣怎樣閱讀原文與譯文？,原文と訳文をどう表示しますか？
+memory.question.style,catalogue,app/ui-catalogs/en.mjs,2167,unknown,unknown,unknown,unknown,unreviewed,Which page feels comfortable?,哪种纸面看着舒服？,哪種紙面看著舒服？,どの背景が読みやすいですか？
+memory.skipQuestion,catalogue,app/ui-catalogs/en.mjs,2168,unknown,unknown,unknown,unknown,unreviewed,Skip this question,跳过这题,略過這題,この質問をスキップ
+memory.skipAll,catalogue,app/ui-catalogs/en.mjs,2169,unknown,unknown,unknown,unknown,unreviewed,Skip setup and start reading,跳过设置，直接阅读,略過設定，直接閱讀,設定をスキップして読む
+memory.explanation,catalogue,app/ui-catalogs/en.mjs,2170,unknown,unknown,unknown,unknown,unreviewed,"Reading view, language and page style become defaults for new books. Each book keeps its saved settings; your topic is remembered without filtering the shelf.",阅读方式、优先语言与纸面用于新书默认值，每本书已有的设置优先。主题会保留，不改变书架筛选。,閱讀方式、優先語言與紙面用於新書預設值，每本書已有的設定優先。主題會保留，不改變書架篩選。,表示方法、優先言語、紙面は新しい本の初期設定になります。本ごとの保存済み設定が優先されます。読書テーマは記憶されますが、本棚の絞り込みは変わりません。
+memory.key.topic,catalogue,app/ui-catalogs/en.mjs,2171,unknown,unknown,unknown,unknown,unreviewed,Reading topic,阅读主题,閱讀主題,テーマ
+memory.key.mode,catalogue,app/ui-catalogs/en.mjs,2172,unknown,unknown,unknown,unknown,unreviewed,Text display,原文与译文,原文與譯文,本文の表示
+memory.key.preferredLanguage,catalogue,app/ui-catalogs/en.mjs,2173,unknown,unknown,unknown,unknown,unreviewed,Preferred reading language,优先阅读语言,優先閱讀語言,優先する言語
+memory.key.theme,catalogue,app/ui-catalogs/en.mjs,2174,unknown,unknown,unknown,unknown,unreviewed,Page style,阅读纸面,閱讀紙面,ページの背景
+memory.value.en,catalogue,app/ui-catalogs/en.mjs,2175,unknown,unknown,unknown,unknown,unreviewed,Original text,原文，不默认显示译文,原文，不預設顯示譯文,原文のみ
+memory.value.zh,catalogue,app/ui-catalogs/en.mjs,2176,unknown,unknown,unknown,unknown,unreviewed,Simplified Chinese translation,简体中文译文,簡體中文譯文,簡体字中国語訳
+memory.value.parallel,catalogue,app/ui-catalogs/en.mjs,2177,unknown,unknown,unknown,unknown,unreviewed,Original and translation,原文与译文对照,原文與譯文對照,原文と訳文
+memory.value.source,catalogue,app/ui-catalogs/en.mjs,2178,unknown,unknown,unknown,unknown,unreviewed,Original language,原文语言,原文語言,原文の言語
+memory.value.system,catalogue,app/ui-catalogs/en.mjs,2179,unknown,unknown,unknown,unknown,unreviewed,Follow system,跟随系统,跟隨系統,システム設定
+memory.value.paper,catalogue,app/ui-catalogs/en.mjs,2180,unknown,unknown,unknown,unknown,unreviewed,White paper,白纸,白紙,白い紙
+memory.value.warm,catalogue,app/ui-catalogs/en.mjs,2181,unknown,unknown,unknown,unknown,unreviewed,Warm paper,暖纸,暖紙,暖かい紙
+memory.value.mist,catalogue,app/ui-catalogs/en.mjs,2182,unknown,unknown,unknown,unknown,unreviewed,Mist,雾白,霧白,霧
+memory.value.leaf,catalogue,app/ui-catalogs/en.mjs,2183,unknown,unknown,unknown,unknown,unreviewed,Leaf,叶色,葉色,葉
+memory.value.night,catalogue,app/ui-catalogs/en.mjs,2184,unknown,unknown,unknown,unknown,unreviewed,Dark page,深色,深色,ダーク
+memory.source.settings,catalogue,app/ui-catalogs/en.mjs,2185,unknown,unknown,unknown,unknown,unreviewed,Chosen in settings,设置页选择,設定頁選擇,設定で選択
+memory.source.onboarding,catalogue,app/ui-catalogs/en.mjs,2186,unknown,unknown,unknown,unknown,unreviewed,Chosen during setup,引导中选择,引導中選擇,初期設定で選択
+memory.source.agent,catalogue,app/ui-catalogs/en.mjs,2187,unknown,unknown,unknown,unknown,unreviewed,Changed by Agent,Agent 修改,Agent 修改,Agent による変更
+memory.inferred,catalogue,app/ui-catalogs/en.mjs,2188,unknown,unknown,unknown,unknown,unreviewed,Inferred: {value}. Not active until you confirm.,推测：{value}。确认后才生效。,推測：{value}。確認後才生效。,推測：{value}。確認するまで適用されません。
+memory.confirm,catalogue,app/ui-catalogs/en.mjs,2189,unknown,unknown,unknown,unknown,unreviewed,Confirm preference,确认偏好,確認偏好,確認して適用
+memory.reject,catalogue,app/ui-catalogs/en.mjs,2190,unknown,unknown,unknown,unknown,unreviewed,Dismiss suggestion,忽略推测,忽略推測,推測を破棄
+memory.delete,catalogue,app/ui-catalogs/en.mjs,2191,unknown,unknown,unknown,unknown,unreviewed,Delete preference,删除偏好,刪除偏好,好みを削除
+memory.failed,catalogue,app/ui-catalogs/en.mjs,2192,unknown,unknown,unknown,unknown,unreviewed,Save not confirmed. Read the latest version before trying again.,尚未确认是否保存成功。可查看当前偏好后继续修改。,尚未確認是否儲存成功。可查看目前偏好後繼續修改。,保存を確認できません。最新の設定を読み込んでから変更してください。
+memory.saving,catalogue,app/ui-catalogs/en.mjs,2193,unknown,unknown,unknown,unknown,unreviewed,Saving…,正在保存…,正在儲存…,保存中…
+memory.readLatest,catalogue,app/ui-catalogs/en.mjs,2194,unknown,unknown,unknown,unknown,unreviewed,Read latest version,查看当前偏好,查看目前偏好,最新の設定を読む
+reader.annotation.hide,catalogue,app/ui-catalogs/en.mjs,2195,unknown,unknown,unknown,unknown,unreviewed,Hide annotations,隐藏批注,隱藏批註,注釈を隠す
+reader.annotation.show,catalogue,app/ui-catalogs/en.mjs,2196,unknown,unknown,unknown,unknown,unreviewed,Show annotations,显示批注,顯示批註,注釈を表示
+reader.annotation.mine,catalogue,app/ui-catalogs/en.mjs,2197,unknown,unknown,unknown,unknown,unreviewed,Mine,我写的,我寫的,自分
+reader.annotation.personalSummary,catalogue,app/ui-catalogs/en.mjs,2198,unknown,unknown,unknown,unknown,unreviewed,Highlights and thoughts,摘录与想法,摘錄與想法,ハイライトとメモ
+reader.annotation.ai,catalogue,app/ui-catalogs/en.mjs,2199,unknown,unknown,unknown,unknown,unreviewed,AI,AI,AI,AI
+reader.annotation.loading,catalogue,app/ui-catalogs/en.mjs,2200,unknown,unknown,unknown,unknown,unreviewed,Loading annotations…,正在载入批注…,正在載入批註…,注釈を読み込み中…
+reader.annotation.saveNote,catalogue,app/ui-catalogs/en.mjs,2201,unknown,unknown,unknown,unknown,unreviewed,Save note,保存想法,儲存想法,メモを保存
+reader.annotation.explain,catalogue,app/ui-catalogs/en.mjs,2202,unknown,unknown,unknown,unknown,unreviewed,Ask AI to explain,请 AI 解释,請 AI 解釋,AIに説明を頼む
+reader.annotation.savingNote,catalogue,app/ui-catalogs/en.mjs,2203,unknown,unknown,unknown,unknown,unreviewed,Saving your note…,正在保存想法…,正在儲存想法…,メモを保存中…
+reader.annotation.savedNote,catalogue,app/ui-catalogs/en.mjs,2204,unknown,unknown,unknown,unknown,unreviewed,Note saved.,想法已保存。,想法已儲存。,メモを保存しました。
+reader.annotation.noteUnconfirmed,catalogue,app/ui-catalogs/en.mjs,2205,unknown,unknown,unknown,unknown,unreviewed,Saving is unconfirmed. Try saving again to check the same submission.,保存尚未确认。再次保存会核对刚才的想法。,儲存尚未確認。再次儲存會核對剛才的想法。,保存を確認できません。もう一度保存すると同じ送信を確認します。
+reader.annotation.previous,catalogue,app/ui-catalogs/en.mjs,2206,unknown,unknown,unknown,unknown,unreviewed,Previous annotation,上一条批注,上一條批註,前の注釈
+reader.annotation.next,catalogue,app/ui-catalogs/en.mjs,2207,unknown,unknown,unknown,unknown,unreviewed,Next annotation,下一条批注,下一條批註,次の注釈
+reader.annotation.longSelection,catalogue,app/ui-catalogs/en.mjs,2208,unknown,unknown,unknown,unknown,unreviewed,This selection is long. You can save a thought; select a shorter passage to ask AI.,选文较长，可以保存想法；请选取其中一小段来问 AI。,選文較長，可以儲存想法；請選取其中一小段來問 AI。,選択した文章が長いため、AI に質問するには短い部分を選んでください。自分のメモは保存できます。
+daily.inbox.summary,catalogue,app/ui-catalogs/en.mjs,2209,unknown,unknown,unknown,unknown,unreviewed,Reading notes · {count},陪读纸条 · {count} 张,陪讀紙條 · {count} 張,読書のメモ · {count}件
+sample.disclosureNone,catalogue,app/ui-catalogs/en.mjs,2210,unknown,unknown,unknown,unknown,unreviewed,No translations are saved for this book. Check the sending scope before translating.,本书尚无已保存的译文。翻译前请查看发送范围。,本書尚無已保存的譯文。翻譯前請查看傳送範圍。,この本には保存済みの訳文がありません。翻訳前に送信範囲を確認してください。
+sample.disclosureMetadata,catalogue,app/ui-catalogs/en.mjs,2211,unknown,unknown,unknown,unknown,unreviewed,"{count} saved passage translations: {reviewed} reviewed, {draft} drafts, {unknown} with unknown review status. {ai} marked as AI. Recorded credits: {translators}; {uncredited} without credits. AI models recorded: {models}. Recorded licenses: {licenses}; {unlicensed} without a license record. A dash means no record. Untranslated passages show the original.",共 {count} 份段落译文：已审校 {reviewed} 份，草稿 {draft} 份，审校状态未知 {unknown} 份。其中 {ai} 份标记为 AI。已有署名：{translators}；{uncredited} 份未记录署名。已有 AI 模型记录：{models}。已有许可：{licenses}；{unlicensed} 份未记录许可。破折号表示没有记录。缺译处显示原文。,共 {count} 份段落譯文：已審校 {reviewed} 份，草稿 {draft} 份，審校狀態未知 {unknown} 份。其中 {ai} 份標記為 AI。已有署名：{translators}；{uncredited} 份未記錄署名。已有 AI 模型記錄：{models}。已有許可：{licenses}；{unlicensed} 份未記錄許可。破折號表示沒有記錄。缺譯處顯示原文。,保存済みの段落訳は {count} 件です。確認済み {reviewed} 件、下書き {draft} 件、確認状況不明 {unknown} 件。このうち AI と記録された訳は {ai} 件です。記録された翻訳者：{translators}、翻訳者の記録なし {uncredited} 件。AI モデルの記録：{models}。記録されたライセンス：{licenses}、記録なし {unlicensed} 件。「—」は記録がないことを表します。訳のない箇所には原文を表示します。
+export.notices,catalogue,app/ui-catalogs/en.mjs,2212,unknown,unknown,unknown,unknown,unreviewed,Source and copyright notices,来源与版权声明,來源與版權聲明,出典と著作権表示
+export.close,catalogue,app/ui-catalogs/en.mjs,2213,unknown,unknown,unknown,unknown,unreviewed,Close export,关闭导出,關閉匯出,書き出しを閉じる
+export.download,catalogue,app/ui-catalogs/en.mjs,2214,unknown,unknown,unknown,unknown,unreviewed,Download file,下载文件,下載檔案,ファイルをダウンロード
+export.title,catalogue,app/ui-catalogs/en.mjs,2215,unknown,unknown,unknown,unknown,unreviewed,Export this book,导出这本书,匯出這本書,この本を書き出す
+export.help,catalogue,app/ui-catalogs/en.mjs,2216,unknown,unknown,unknown,unknown,unreviewed,Choose a range and text layers. Personal notes are excluded.,选择范围和正文内容，不包含私人笔记。,選擇範圍和正文內容，不包含私人筆記。,範囲と本文を選択します。個人のノートは含まれません。
+export.format,catalogue,app/ui-catalogs/en.mjs,2217,unknown,unknown,unknown,unknown,unreviewed,Format,文件格式,檔案格式,ファイル形式
+export.range,catalogue,app/ui-catalogs/en.mjs,2218,unknown,unknown,unknown,unknown,unreviewed,Range,导出范围,匯出範圍,範囲
+export.whole,catalogue,app/ui-catalogs/en.mjs,2219,unknown,unknown,unknown,unknown,unreviewed,Whole book,整本书,整本書,本全体
+export.layers,catalogue,app/ui-catalogs/en.mjs,2220,unknown,unknown,unknown,unknown,unreviewed,Text layers,正文内容,正文內容,本文
+export.original,catalogue,app/ui-catalogs/en.mjs,2221,unknown,unknown,unknown,unknown,unreviewed,Original,原文,原文,原文
+export.literal,catalogue,app/ui-catalogs/en.mjs,2222,unknown,unknown,unknown,unknown,unreviewed,Literal translation,直译,直譯,直訳
+export.interpretive,catalogue,app/ui-catalogs/en.mjs,2223,unknown,unknown,unknown,unknown,unreviewed,Interpretive translation,意译,意譯,意訳
+export.all,catalogue,app/ui-catalogs/en.mjs,2224,unknown,unknown,unknown,unknown,unreviewed,Original and both translations,原文与两种译文,原文與兩種譯文,原文と両方の訳文
+export.missing,catalogue,app/ui-catalogs/en.mjs,2225,unknown,unknown,unknown,unknown,unreviewed,Not translated,尚未翻译,尚未翻譯,未翻訳
+export.loading,catalogue,app/ui-catalogs/en.mjs,2226,unknown,unknown,unknown,unknown,unreviewed,Loading book content…,正在读取书籍正文…,正在讀取書籍正文…,本文を読み込み中…
+export.ready,catalogue,app/ui-catalogs/en.mjs,2227,unknown,unknown,unknown,unknown,unreviewed,Choose the content to download.,选择要下载的内容。,選擇要下載的內容。,ダウンロードする内容を選択してください。
+export.preparing,catalogue,app/ui-catalogs/en.mjs,2228,unknown,unknown,unknown,unknown,unreviewed,Preparing your file…,正在生成文件…,正在產生檔案…,ファイルを作成中…
+export.error,catalogue,app/ui-catalogs/en.mjs,2229,unknown,unknown,unknown,unknown,unreviewed,Export failed. Retry the download.,导出失败，请重试下载。,匯出失敗，請重試下載。,書き出せませんでした。再試行してください。
+export.cancelled,catalogue,app/ui-catalogs/en.mjs,2230,unknown,unknown,unknown,unknown,unreviewed,Export cancelled. No file was requested.,已取消导出，未发起文件下载。,已取消匯出，未發起檔案下載。,書き出しをキャンセルしました。ダウンロードは開始していません。
+export.downloadRequested,catalogue,app/ui-catalogs/en.mjs,2231,unknown,unknown,unknown,unknown,unreviewed,Download requested. Check your browser downloads.,已发起下载，请查看浏览器下载列表。,已發起下載，請查看瀏覽器下載清單。,ダウンロードを開始しました。ブラウザーの履歴を確認してください。
+export.glyphError,catalogue,app/ui-catalogs/en.mjs,2232,unknown,unknown,unknown,unknown,unreviewed,This PDF font cannot display some characters. Download Markdown to preserve the full text.,PDF 字体无法显示部分字符，请下载 Markdown 保留完整文字。,PDF 字型無法顯示部分字元，請下載 Markdown 保留完整文字。,PDF のフォントに対応していない文字があります。全文を保持するには Markdown を選択してください。
+chat.failure.notSubmitted,catalogue,app/ui-catalogs/en.mjs,2233,unknown,unknown,unknown,unknown,unreviewed,Not sent. Your question is kept; check access or points.,尚未发出，提问已保留。请核对授权或点数确认后重试。,尚未送出，提問已保留。請核對授權或點數確認後重試。,送信されていません。質問は保持されています。権限やポイント利用を確認してください。
+chat.failure.rejected,catalogue,app/ui-catalogs/en.mjs,2234,unknown,unknown,unknown,unknown,unreviewed,Question not accepted. Check its source and access; the text is kept.,这条提问暂不被接受，内容已保留。请核对来源和访问权限。,這條提問暫不被接受，內容已保留。請核對來源及存取權限。,依頼が拒否されました。質問は保持されています。原文とアクセス権を確認してください。
+chat.failure.generation,catalogue,app/ui-catalogs/en.mjs,2235,unknown,unknown,unknown,unknown,unreviewed,Could not answer. Your question is kept; edit it to retry.,回答生成失败，提问已保留，可编辑后重试。,回答產生失敗，提問已保留，可編輯後重試。,回答を生成できませんでした。質問は保持されています。編集して再試行できます。
+chat.failure.pricing,catalogue,app/ui-catalogs/en.mjs,2236,unknown,unknown,unknown,unknown,unreviewed,AI is unavailable while prices are checked. Your question is kept.,AI 暂不可用，价格参考待核验。提问已保留。,AI 暫不可用，價格參考待核驗。提問已保留。,価格の確認中のため AI を利用できません。質問は保持されています。
+chat.failure.save,catalogue,app/ui-catalogs/en.mjs,2237,unknown,unknown,unknown,unknown,unreviewed,Could not save the answer. Your question is kept; check its status.,回答未能保存，提问已保留。请先查看本次状态。,回答未能儲存，提問已保留。請先查看本次狀態。,回答を保存できませんでした。質問は保持されています。再試行の前に状態を確認してください。
+chat.failure.validation,catalogue,app/ui-catalogs/en.mjs,2238,unknown,unknown,unknown,unknown,unreviewed,Could not verify the answer. Your question is kept.,回答未通过核验，提问已保留。,回答未通過核驗，提問已保留。,回答を検証できませんでした。質問は保持されています。
+chat.failure.context,catalogue,app/ui-catalogs/en.mjs,2239,unknown,unknown,unknown,unknown,unreviewed,The source changed. Check this passage before retrying.,原文已变化，请核对当前段落后重试。,原文已變更，請核對目前段落後重試。,原文が変更されました。現在の段落を確認してから再試行してください。
+chat.evidence,catalogue,app/ui-catalogs/en.mjs,2240,unknown,unknown,unknown,unknown,unreviewed,About this answer,查看依据,查看依據,回答の根拠
+chat.evidence.incomplete,catalogue,app/ui-catalogs/en.mjs,2241,unknown,unknown,unknown,unknown,unreviewed,Some lookups failed. This answer may be incomplete.,部分查找失败，回答可能不完整。,部分查找失敗，回答可能不完整。,一部の検索に失敗しました。回答が不完全な場合があります。
+audio.options,catalogue,app/ui-catalogs/en.mjs,2242,unknown,unknown,unknown,unknown,unreviewed,More listening options,更多听读方式,更多聆聽方式,ほかの読み上げ方法
+translation.firstUse.title,catalogue,app/ui-catalogs/en.mjs,2243,unknown,unknown,unknown,unknown,unreviewed,Translate this paragraph?,翻译这一段？,翻譯這一段？,この段落を翻訳しますか？
+translation.firstUse.body,catalogue,app/ui-catalogs/en.mjs,2244,unknown,unknown,unknown,unknown,unreviewed,Translating sends this paragraph and up to one paragraph before and after it to an AI. Your notes are not included.,翻译会把这一段和前后各一段（如有）发给 AI，不会带上你的笔记。,翻譯會把這一段和前後各一段（如有）傳給 AI，不會附上你的筆記。,翻訳のため、この段落と前後の段落（各1段落まで）をAIに送ります。ノートは送りません。
+translation.firstUse.accept,catalogue,app/ui-catalogs/en.mjs,2245,unknown,unknown,unknown,unknown,unreviewed,Translate this paragraph,翻译这一段,翻譯這一段,この段落を翻訳
+translation.firstUse.cancel,catalogue,app/ui-catalogs/en.mjs,2246,unknown,unknown,unknown,unknown,unreviewed,Keep reading,继续阅读,繼續閱讀,読書を続ける
+translation.firstUse.privacy,catalogue,app/ui-catalogs/en.mjs,2247,unknown,unknown,unknown,unknown,unreviewed,Privacy details,隐私说明,隱私說明,プライバシーについて
+notebook.title,catalogue,app/ui-catalogs/en.mjs,2248,unknown,unknown,unknown,unknown,unreviewed,My notebook,我的笔记,我的筆記,自分のノート
+notebook.intro,catalogue,app/ui-catalogs/en.mjs,2249,unknown,unknown,unknown,unknown,unreviewed,"Thoughts, questions and highlights across books.",各本书中留下的想法、问题与摘录。,各本書中留下的想法、問題與摘錄。,本ごとに残した考え、問い、ハイライト。
+notebook.close,catalogue,app/ui-catalogs/en.mjs,2250,unknown,unknown,unknown,unknown,unreviewed,Close notebook,关闭笔记,關閉筆記,ノートを閉じる
+notebook.search,catalogue,app/ui-catalogs/en.mjs,2251,unknown,unknown,unknown,unknown,unreviewed,Search your notes,搜索自己的笔记,搜尋自己的筆記,ノートを検索
+notebook.bookFilter,catalogue,app/ui-catalogs/en.mjs,2252,unknown,unknown,unknown,unknown,unreviewed,Filter by book,按书籍筛选,依書籍篩選,本で絞り込む
+notebook.kindFilter,catalogue,app/ui-catalogs/en.mjs,2253,unknown,unknown,unknown,unknown,unreviewed,Filter by type,按类型筛选,依類型篩選,種類で絞り込む
+notebook.allBooks,catalogue,app/ui-catalogs/en.mjs,2254,unknown,unknown,unknown,unknown,unreviewed,Every book,全部书籍,全部書籍,すべての本
+notebook.allKinds,catalogue,app/ui-catalogs/en.mjs,2255,unknown,unknown,unknown,unknown,unreviewed,All records,全部记录,全部記錄,すべての記録
+notebook.kind.comment,catalogue,app/ui-catalogs/en.mjs,2256,unknown,unknown,unknown,unknown,unreviewed,My thought,我的想法,我的想法,自分の考え
+notebook.kind.question,catalogue,app/ui-catalogs/en.mjs,2257,unknown,unknown,unknown,unknown,unreviewed,My question,我的问题,我的問題,自分の問い
+notebook.kind.highlight,catalogue,app/ui-catalogs/en.mjs,2258,unknown,unknown,unknown,unknown,unreviewed,Highlight,摘录,摘錄,ハイライト
+notebook.count,catalogue,app/ui-catalogs/en.mjs,2259,unknown,unknown,unknown,unknown,unreviewed,{count} records in {books} books,{count} 条记录，来自 {books} 本书,{count} 條記錄，來自 {books} 本書,{books} 冊から {count} 件の記録
+notebook.export,catalogue,app/ui-catalogs/en.mjs,2260,unknown,unknown,unknown,unknown,unreviewed,Export filtered notes,导出筛选结果,匯出篩選結果,表示中のノートを書き出す
+notebook.retry,catalogue,app/ui-catalogs/en.mjs,2261,unknown,unknown,unknown,unknown,unreviewed,Load notes again,重新载入笔记,重新載入筆記,ノートを再読み込み
+notebook.signIn,catalogue,app/ui-catalogs/en.mjs,2262,unknown,unknown,unknown,unknown,unreviewed,Sign in,登录,登入,ログイン
+notebook.guest,catalogue,app/ui-catalogs/en.mjs,2263,unknown,unknown,unknown,unknown,unreviewed,Sign in to read your notes.,登录后查看自己的笔记。,登入後查看自己的筆記。,ログインすると自分のノートを読めます。
+notebook.partial,catalogue,app/ui-catalogs/en.mjs,2264,unknown,unknown,unknown,unknown,unreviewed,Could not load notes from {count} books. Other notes are shown.,{count} 本书的笔记暂未载入，其余笔记已显示。,{count} 本書的筆記暫未載入，其餘筆記已顯示。,{count} 冊のノートを読み込めませんでした。他のノートは下に表示されています。
+notebook.loading,catalogue,app/ui-catalogs/en.mjs,2265,unknown,unknown,unknown,unknown,unreviewed,Loading notes ({done}/{total})…,正在打开各本书的笔记（{done}/{total}）…,正在開啟各本書的筆記（{done}/{total}）…,各本のノートを開いています（{done}/{total}）…
+notebook.empty,catalogue,app/ui-catalogs/en.mjs,2266,unknown,unknown,unknown,unknown,unreviewed,Your notebook begins here,从一条笔记开始,從一條筆記開始,最初のノートから
+notebook.emptyHelp,catalogue,app/ui-catalogs/en.mjs,2267,unknown,unknown,unknown,unknown,unreviewed,"Save thoughts, questions or highlights while reading. Find them here across books.",阅读时记下想法、留下问题或划出一句话，都能在这里找到。,閱讀時記下想法、留下問題或畫出一句話，都能在這裡找到。,読書中に考えや問い、ハイライトを残すと、ここで見返せます。
+notebook.noMatch,catalogue,app/ui-catalogs/en.mjs,2268,unknown,unknown,unknown,unknown,unreviewed,No matching notes,没有找到对应笔记,沒有找到對應筆記,一致するノートがありません
+notebook.noMatchHelp,catalogue,app/ui-catalogs/en.mjs,2269,unknown,unknown,unknown,unknown,unreviewed,Try another word or clear filters.,换个词搜索，或清空筛选条件。,換個詞搜尋，或清空篩選條件。,別の言葉で検索するか、絞り込みを解除してください。
+notebook.clearFilters,catalogue,app/ui-catalogs/en.mjs,2270,unknown,unknown,unknown,unknown,unreviewed,Clear filters,清空筛选,清空篩選,絞り込みを解除
+notebook.more,catalogue,app/ui-catalogs/en.mjs,2271,unknown,unknown,unknown,unknown,unreviewed,Show more,显示更多,顯示更多,もっと見る
+notebook.moreCount,catalogue,app/ui-catalogs/en.mjs,2272,unknown,unknown,unknown,unknown,unreviewed,Show {count} more,再看 {count} 条,再看 {count} 條,あと {count} 件を見る
+notebook.source,catalogue,app/ui-catalogs/en.mjs,2273,unknown,unknown,unknown,unknown,unreviewed,Open source and edit,回到原文与编辑,回到原文與編輯,本文を開いて編集
+notebook.quote,catalogue,app/ui-catalogs/en.mjs,2274,unknown,unknown,unknown,unknown,unreviewed,Saved quotation,保存的引文,儲存的引文,保存した引用
+notebook.created,catalogue,app/ui-catalogs/en.mjs,2275,unknown,unknown,unknown,unknown,unreviewed,Created,创建,建立,作成日
+notebook.updated,catalogue,app/ui-catalogs/en.mjs,2276,unknown,unknown,unknown,unknown,unreviewed,Updated,修改,修改,更新日
+notebook.dateUnknown,catalogue,app/ui-catalogs/en.mjs,2277,unknown,unknown,unknown,unknown,unreviewed,Date unavailable,日期待确认,日期待確認,日付不明
+notebook.edited,catalogue,app/ui-catalogs/en.mjs,2278,unknown,unknown,unknown,unknown,unreviewed,Edited {date},{date} 修改,{date} 修改,{date} に編集
+notebook.openBook,catalogue,app/ui-catalogs/en.mjs,2279,unknown,unknown,unknown,unknown,unreviewed,Open book,打开书籍,開啟書籍,本を開く
+notebook.sourceUnavailable,catalogue,app/ui-catalogs/en.mjs,2280,unknown,unknown,unknown,unknown,unreviewed,Source needs checking. Your note is kept.,原文位置待确认，笔记仍保留。,原文位置待確認，筆記仍保留。,本文の位置を確認できません。ノートは保存されています。
+nav.notebook,catalogue,app/ui-catalogs/en.mjs,2281,unknown,unknown,unknown,unknown,unreviewed,My notes,我的笔记,我的筆記,マイノート
+journal.title,catalogue,app/ui-catalogs/en.mjs,2282,unknown,unknown,unknown,unknown,unreviewed,Reading footprint,阅读足迹,閱讀足跡,読書の記録
+journal.days,catalogue,app/ui-catalogs/en.mjs,2283,unknown,unknown,unknown,unknown,unreviewed,Read on {count} days this month,这个月读了 {count} 天,這個月讀了 {count} 天,今月は {count} 日読書
+journal.selectDay,catalogue,app/ui-catalogs/en.mjs,2284,unknown,unknown,unknown,unknown,unreviewed,Choose a reading day,选择一天，回看阅读记录,選擇一天，回看閱讀記錄,日付を選んで読書を振り返る
+journal.activity,catalogue,app/ui-catalogs/en.mjs,2285,unknown,unknown,unknown,unknown,unreviewed,Note,记录,記錄,記録
+journal.legend,catalogue,app/ui-catalogs/en.mjs,2286,unknown,unknown,unknown,unknown,unreviewed,Minutes below dates. Darker means longer; underlines mark notes or finished chapters.,日期下方为分钟数。颜色越深，阅读越久；下划线表示笔记或读完的章节。,日期下方為分鐘數。顏色越深，閱讀越久；底線表示筆記或讀完的章節。,日付の下は分数です。色が濃いほど長く読書。下線はメモや読了した章。
+journal.empty,catalogue,app/ui-catalogs/en.mjs,2287,unknown,unknown,unknown,unknown,unreviewed,Your next reading day appears here.,下一次阅读，会留在这里。,下一次閱讀，會留在這裡。,次の読書がここに残ります。
+journal.measurement,catalogue,app/ui-catalogs/en.mjs,2288,unknown,unknown,unknown,unknown,unreviewed,How time is counted,时长口径,時長口徑,時間の集計方法
+journal.share.title,catalogue,app/ui-catalogs/en.mjs,2289,unknown,unknown,unknown,unknown,unreviewed,Preview this day,预览这一天,預覽這一天,この日のプレビュー
+journal.share.help,catalogue,app/ui-catalogs/en.mjs,2290,unknown,unknown,unknown,unknown,unreviewed,Date and reading time included. Book titles optional. Notes and questions excluded.,图片包含日期和阅读时长，可选择附上书名。笔记和提问不进入图片。,圖片包含日期和閱讀時長，可選擇附上書名。筆記和提問不進入圖片。,画像には日付と読書時間が入ります。書名は任意です。メモや質問は含まれません。
+journal.share.books,catalogue,app/ui-catalogs/en.mjs,2291,unknown,unknown,unknown,unknown,unreviewed,Include book titles,附上这一天的书名,附上這一天的書名,この日の書名を含める
+journal.share.open,catalogue,app/ui-catalogs/en.mjs,2292,unknown,unknown,unknown,unknown,unreviewed,Share this day,分享这一天,分享這一天,この日を共有
+journal.share.save,catalogue,app/ui-catalogs/en.mjs,2293,unknown,unknown,unknown,unknown,unreviewed,Save image,保存图片,儲存圖片,画像を保存
+journal.share.close,catalogue,app/ui-catalogs/en.mjs,2294,unknown,unknown,unknown,unknown,unreviewed,Back to this day,返回这一天,返回這一天,この日の記録に戻る
+journal.share.failed,catalogue,app/ui-catalogs/en.mjs,2295,unknown,unknown,unknown,unknown,unreviewed,Could not save image. Try again.,图片未能保存，请重试。,圖片未能儲存，請重試。,画像を保存できませんでした。もう一度お試しください。
+journal.share.saved,catalogue,app/ui-catalogs/en.mjs,2296,unknown,unknown,unknown,unknown,unreviewed,Image download started,已开始下载图片,已開始下載圖片,画像のダウンロードを開始しました
+journal.share.imageTitle,catalogue,app/ui-catalogs/en.mjs,2297,unknown,unknown,unknown,unknown,unreviewed,Reading footprint,阅读足迹,閱讀足跡,読書の記録
+journal.share.bookLabel,catalogue,app/ui-catalogs/en.mjs,2298,unknown,unknown,unknown,unknown,unreviewed,Books read,这一天读的书,這一天讀的書,この日に読んだ本
+journal.share.imageLine,catalogue,app/ui-catalogs/en.mjs,2299,unknown,unknown,unknown,unknown,unreviewed,Read with Leafhour,在 Leafhour 读书,在 Leafhour 讀書,Leafhour で読書
+journal.share.overlap,catalogue,app/ui-catalogs/en.mjs,2300,unknown,unknown,unknown,unknown,unreviewed,Measurements may overlap.,各口径可能重叠。,各口徑可能重疊。,集計方法間で時間が重複する場合があります。
+journal.share.imageAria,catalogue,app/ui-catalogs/en.mjs,2301,unknown,unknown,unknown,unknown,unreviewed,Reading image for {date}: {time},{date}的阅读图片：{time},{date}的閱讀圖片：{time},{date}の読書画像：{time}
+notebook.quote.original,catalogue,app/ui-catalogs/en.mjs,2302,unknown,unknown,unknown,unknown,unreviewed,Original quotation,原文引文,原文引文,原文の引用
+notebook.quote.translation,catalogue,app/ui-catalogs/en.mjs,2303,unknown,unknown,unknown,unknown,unreviewed,Translated quotation,译文引文,譯文引文,訳文の引用
+notebook.archiveFailed,catalogue,app/ui-catalogs/en.mjs,2304,unknown,unknown,unknown,unknown,unreviewed,Trash notes could not load. Other notes are shown.,回收站中的书籍笔记暂未载入，其余笔记已显示。,回收站中的書籍筆記暫未載入，其餘筆記已顯示。,ゴミ箱の本のノートを読み込めませんでした。他のノートは下に表示されています。
+journal.share.preparing,catalogue,app/ui-catalogs/en.mjs,2305,unknown,unknown,unknown,unknown,unreviewed,Preparing image…,正在准备图片…,正在準備圖片…,画像を準備しています…
+reader.hub.appearance,catalogue,app/ui-catalogs/en.mjs,2306,unknown,unknown,unknown,unknown,unreviewed,Appearance,排版,排版,表示設定
+reader.hub.notes,catalogue,app/ui-catalogs/en.mjs,2307,unknown,unknown,unknown,unknown,unreviewed,My notes,本书笔记,本書筆記,この本のノート
+reader.hub.more,catalogue,app/ui-catalogs/en.mjs,2308,unknown,unknown,unknown,unknown,unreviewed,More tools,更多工具,更多工具,その他のツール
+reader.hub.primary,catalogue,app/ui-catalogs/en.mjs,2309,unknown,unknown,unknown,unknown,unreviewed,Reading tools,阅读工具,閱讀工具,読書ツール

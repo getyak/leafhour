@@ -3,7 +3,7 @@ import {readingChatQuoteFromExcerpt} from './reading-chat-quote.mjs';
 import {getUiLinkLocale,t,uiHref,onUiLocaleChange} from './ui-locale.mjs';
 import {mountReaderChatWorkspace} from './reader-chat-workspace.mjs';
 import {readerLoginUrl} from './reader-return.mjs';
-import {mountReaderCompanion,mountCompanionAnchor} from './reader-companion.mjs';
+import {mountCompanionAnchor} from './reader-companion.mjs';
 import {mountLibraryChat} from './library-chat.mjs';
 import {overlayOpen} from './popover-controls.mjs';
 import {readChatResponse} from './chat-stream.mjs';
@@ -20,7 +20,7 @@ export function readerConversationContext(reader,bookId){
   return {book,passages,passageId:passages.has(selected)?selected:passages.has(anchor)?anchor:null};
 }
 
-export function mountReaderConversation({bookId,session,getReader,root,request=fetch,navigate=url=>location.assign(url),replace=url=>location.replace(url),mountChat=mountLibraryChat,mountCompanion=mountReaderCompanion,integration=null,uploadController=null,mountUpload=null,renderMarkdown=null,announce=()=>{}}){
+export function mountReaderConversation({bookId,session,getReader,root,request=fetch,navigate=url=>location.assign(url),replace=url=>location.replace(url),mountChat=mountLibraryChat,mountCompanion=null,integration=null,uploadController=null,mountUpload=null,renderMarkdown=null,announce=()=>{}}){
   if(!bookId||!root)return null;
   let chat,companion,workspace,disposed=false;
   const events=globalThis.document,listeners=[];
@@ -70,8 +70,10 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
   };
   workspace=mountReaderChatWorkspace({root,getReader,labels:{resize:t('chat.resize')}});
   listeners.push(onUiLocaleChange(()=>workspace.setLabels({resize:t('chat.resize')})));
-  if(typeof chat.surface==='function')companion=mountCompanion({bookId,getOwner:()=>session?.user?.id||null,getReader,api,chat,openAuth,integration:integration?{anchor:integration.companionAnchor,onUnread:integration.onUnread,onFocusReturn:integration.focusReturn}:null});
-  on('reader:ready',()=>{if(!disposed)chat.update();});
+  if(typeof chat.surface==='function'){const options={bookId,getOwner:()=>session?.user?.id||null,getReader,api,chat,openAuth,integration:integration?{anchor:integration.companionAnchor,onUnread:integration.onUnread,onFocusReturn:integration.focusReturn}:null};if(mountCompanion)companion=mountCompanion(options);else chat.companionReady=import('./reader-companion-loader.mjs').then(m=>{if(!disposed)companion=m.mountReaderCompanion(options);}).catch(()=>{});}
+  let restoredPerson=false;
+  const restorePerson=()=>{if(disposed||restoredPerson||!context())return;try{const storage=globalThis.sessionStorage;if(!storage?.getItem('leafhour:person-return:1'))return;restoredPerson=true;void import('./person-return-controller.mjs').then(m=>{if(!disposed)return m.restorePersonReadingReturn({storage,owner:session?.user?.id||'guest',bookId,getReader,chat,isCurrent:()=>!disposed});}).catch(()=>{});}catch{}};
+  on('reader:ready',()=>{if(!disposed){chat.update();void restorePerson();}});
   on('reader:audio-question',event=>{
     if(disposed)return;
     const detail=event.detail,current=context();
@@ -79,6 +81,6 @@ export function mountReaderConversation({bookId,session,getReader,root,request=f
     chat.open?.({bookId,passageId:detail.passageId,draft:detail.draft});
   });
   disposeChat=chat.dispose?.bind(chat);chat.dispose=dispose;
-  if(context())chat.update();
+  if(context()){chat.update();void restorePerson();}
   return chat;
 }

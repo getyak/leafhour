@@ -1,0 +1,1 @@
+.book-author-entry{display:flex;flex-wrap:wrap;gap:4px 18px;margin:6px 0 15px;font:12px/1.7 var(--interface)}.book-author-entry a{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:var(--accent);text-underline-offset:4px}
