@@ -1130,7 +1130,7 @@
       },
       {
         "file": "server/observability.mjs",
-        "sha256": "581b9c05ed3667e756ec46f238d62d225dff7df713c29d8f4a4da1da8f582c64"
+        "sha256": "75cd03c86d2688265a5609a8855739c93d4cabe3ae7585320cf3c6c48f3be9e4"
       },
       {
         "file": "server/paddleocr.mjs",
@@ -1277,7 +1277,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "fd0a8b2dd54acafc35d223e44caa8ab5bf07eaafbe57def3341548ce2ea1dfce"
+    "inputDigest": "14514f187ae5a10a9e08b9a27e9aad28c7b1d9ecbadfef5a4ccb6e5aec008ead"
   },
   "locales": [
     "en",
