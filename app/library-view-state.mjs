@@ -19,9 +19,9 @@ export const LIBRARY_SETTINGS_TABS=Object.freeze(['account','reading-habits','da
 // and serialized URLs stay on the canonical set above.
 const SETTINGS_TAB_ALIASES=Object.freeze({reading:'reading-habits'});
 const settingsTab=value=>typeof value==='string'?(LIBRARY_SETTINGS_TABS.includes(value)?value:Object.hasOwn(SETTINGS_TAB_ALIASES,value)?SETTINGS_TAB_ALIASES[value]:null):null;
-export const LIBRARY_OVERLAYS=Object.freeze(['settings','calendar','upload','trash','filter']);
+export const LIBRARY_OVERLAYS=Object.freeze(['settings','calendar','notebook','upload','trash','filter']);
 export const LIBRARY_VIEW_KEYS=Object.freeze(['q','scope','status','topic','language','form','ui']);
-export const LIBRARY_OVERLAY_KEYS=Object.freeze(['filter','calendar','settings','upload','trash']);
+export const LIBRARY_OVERLAY_KEYS=Object.freeze(['filter','calendar','notebook','settings','upload','trash']);
 
 import {parseUiParam,isUiLocale,withUiParam} from './ui-locale-codec.mjs';
 
@@ -70,10 +70,11 @@ export function parseLibraryView(search){
   const topic=raw('topic');if(LIBRARY_TOPICS.includes(topic))view.topic=topic;
   const language=languageValue(raw('language'));if(language)view.language=language;
   const form=raw('form');if(LIBRARY_FORMS.includes(form))view.form=form;
-  const settings=settingsTab(raw('settings')),calendar=raw('calendar'),upload=raw('upload'),trash=raw('trash'),filter=raw('filter');
+  const settings=settingsTab(raw('settings')),calendar=raw('calendar'),notebook=raw('notebook'),upload=raw('upload'),trash=raw('trash'),filter=raw('filter');
   let overlay=null;
   if(settings!==null)overlay={kind:'settings',tab:settings};
   else if(calendar==='1')overlay={kind:'calendar'};
+  else if(notebook==='1')overlay={kind:'notebook'};
   else if(upload==='1')overlay={kind:'upload'};
   else if(trash==='1')overlay={kind:'trash'};
   else if(filter==='1')overlay={kind:'filter'};

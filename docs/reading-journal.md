@@ -1,0 +1,11 @@
+# Reading journal and notebook
+
+The shelf’s Reading footprint shows the current month. Each date opens its reading time, books, personal thoughts, questions and completion marks; source links return to the saved passage. A line marks personal activity independently of the duration color. Blank days stay blank. Foreground estimates, active focus and manual additions retain their existing meanings, with source totals available under How time is counted. Overlapping intervals are merged for the total.
+
+Share this day opens an image preview before a local PNG download. It contains the selected date and measured duration, with book titles unchecked initially. It never contains personal thought or question text. No public reading-history link is created. The same model produces the preview and download, using bundled fonts.
+
+My notes is available from the library sidebar and at `/library?notebook=1`. It gathers personal thoughts, questions and highlights across the shelf and the trash. Search covers personal text, saved quotations, titles and authors; book and type filters can be combined. Only user-authored records are included. Quotations retain their own labels. Existing source links open the book’s editing tools. Filtered records can be downloaded as Markdown; original records stay in the existing account-scoped service.
+
+The reading page has one persistent Reading tools entry. Contents, appearance, current-book notes and listening share its first level, with the existing reading conversation beside them. More tools holds atmosphere, account, full screen, search and timing options. The optional layout waits for its own stylesheet before moving controls. Until then the original layout stays usable. The controls are the original nodes, so their action handlers and state remain owned by their existing controllers. Selection actions still appear beside the selected text. Escape returns through nested controls; closing the tray keeps the reading position.
+
+The changes do not start model requests, migrate data or publish personal records. The design, rubric and actual verification are recorded separately under `docs/superpowers/specs/2026-10-28-reading-journal-design.md` and `docs/verification/2026-10-28-reading-journal/`.

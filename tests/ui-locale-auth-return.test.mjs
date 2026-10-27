@@ -13,7 +13,7 @@ import {readerLoginUrl,safeGiftReturn} from '../app/reader-return.mjs';
 
 const codes=['en','zh-Hans','zh-Hant','ja'];
 const gift='/gift/'+'A'.repeat(43);
-const targets=['/read?book=alice&passage=p1&contentVersion=v1&layer=original',gift,'/library?upload=1'];
+const targets=['/read?book=alice&passage=p1&contentVersion=v1&layer=original',gift,'/library?upload=1','/library?notebook=1'];
 const disabled={translator:null,chatGenerator:null,companionGenerator:null,introductionGenerator:null,speechProvider:null,dialogueGenerator:null,guideGenerator:null,paddleProvider:null};
 
 test('one validated outer/inner ui survives bounded auth entry; ambiguous values never become a next',()=>{
@@ -38,7 +38,7 @@ test('one validated outer/inner ui survives bounded auth entry; ambiguous values
   assert.equal(login.searchParams.get('ui'),'ja');assert.equal(new URL(login.searchParams.get('next'),'https://reader.example').searchParams.get('ui'),'ja');
 });
 
-test('actual HTTP OAuth success, cancellation, expiration and unavailable callbacks preserve four-language reader/gift/upload returns',async t=>{
+test('actual HTTP OAuth success, cancellation, expiration and unavailable callbacks preserve four-language reader/gift/upload/notebook returns',async t=>{
   let providerUnavailable=false;
   const f=authFixture({onProvider:({url})=>providerUnavailable&&url.searchParams.get('grant_type')==='pkce'?Response.json({error_code:'unexpected_failure'},{status:503}):undefined});
   const dataDir=await mkdtemp(path.join(tmpdir(),'locale-auth-return-'));
@@ -70,7 +70,7 @@ test('actual HTTP OAuth success, cancellation, expiration and unavailable callba
       assert.doesNotMatch(callback.headers.get('set-cookie'),/marginalia_session=/);
     }
   }
-  assert.equal(callbacks,48);
+  assert.equal(callbacks,codes.length*targets.length*4);
   for(const next of [gift+'?ui=ja&ui=ja','/read?book=alice&ui=ja&ui=en','/library?ui=unsupported']){
     const before=[...f.rows.keys()].filter(key=>key.startsWith('auth/oauth/')).length;
     const response=await start(next);assert.equal(response.status,400);await response.json();

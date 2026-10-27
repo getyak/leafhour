@@ -1067,5 +1067,13 @@
   "tests/ios-vendor.test.mjs",
   "apps/ios/LeafhourUITests/ReadingUITests.swift",
   "tests/reader-quiet-chrome.test.mjs",
-  "app/reader-quiet.css"
+  "app/reader-quiet.css",
+  "app/library-notebook.mjs",
+  "app/library-notebook-state.mjs",
+  "app/library-notebook.css",
+  "app/reading-journal.mjs",
+  "app/reading-journal.css",
+  "app/reading-hub.mjs",
+  "app/reading-hub.css",
+  "docs/reading-journal.md"
 ]
