@@ -4,7 +4,26 @@ import {mkdtemp, readFile, writeFile, rm, readdir} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
-import {createLiveIntent, claimLiveRun} from '../tools/pdf-live-guard.mjs';
+import {createLiveIntent, claimLiveRun, projectRawPageContent} from '../tools/pdf-live-guard.mjs';
+
+test('retained OCR metadata rejects nested transport objects without changing content text', () => {
+  const leak = {downloadUrl: 'https://provider.invalid/result?token=secret'};
+  const projected = projectRawPageContent({width: leak, height: Infinity, parsing_res_list: [
+    {block_content: '甲乙\n丙丁', block_label: 'table_caption', block_bbox: [0, 12, 238, 340], block_order: 0},
+    {block_content: leak, block_label: leak, block_bbox: leak, block_order: leak},
+    {block_content: '', block_label: 'https://provider.invalid/?token=secret', block_bbox: [0, 1, NaN, 2], block_order: -1},
+    null,
+  ]});
+  assert.deepEqual(projected, {width: null, height: null, blocks: [
+    {text: '甲乙\n丙丁', label: 'table_caption', bbox: [0, 12, 238, 340], order: 0},
+    {text: null, label: null, bbox: null, order: null},
+    {text: '', label: null, bbox: null, order: null},
+    {text: null, label: null, bbox: null, order: null},
+  ]});
+  assert.doesNotMatch(JSON.stringify(projected), /provider\.invalid|token=|downloadUrl/);
+  assert.deepEqual(projectRawPageContent({width: 612, height: 792, parsing_res_list: leak}),
+    {width: 612, height: 792, blocks: null});
+});
 
 // These tests keep the real filesystem/exclusive claim/budget writes. Only the
 // external submit is synthetic; removing a guard must expose a duplicate or

@@ -26,7 +26,7 @@ import {inspectNativePdf} from '../server/pdf-native.mjs';
 import {createBookIngestion} from '../server/book-ingestion.mjs';
 import {createPaddleProvider} from '../server/paddleocr.mjs';
 import {digest} from '../server/document-import.mjs';
-import {createLiveIntent, assertFreshLiveRun, claimLiveRun, writeExclusiveEvidence} from './pdf-live-guard.mjs';
+import {createLiveIntent, assertFreshLiveRun, claimLiveRun, writeExclusiveEvidence, projectRawPageContent} from './pdf-live-guard.mjs';
 
 const fontkit = createRequire(import.meta.url)('fontkit');
 const fixedDate = new Date('2026-10-27T00:00:00Z');
@@ -343,11 +343,8 @@ async function runRoute(fixture, mode, provider) {
   // Preserve text/geometry needed for offline inspection, excluding transport
   // metadata and result/download URLs. This is a projection, not the raw blob.
   const rawContentProjection = [...store.blobs.entries()].filter(([k]) => /\/raw-/.test(k)).map(([k, v]) => ({
-    key: k.split('/').pop(), rawSha256: digest(v), pages: JSON.parse(v).pages.map(p => ({
-      width: p.prunedResult?.width, height: p.prunedResult?.height,
-      blocks: p.prunedResult?.parsing_res_list?.map(b => ({text: b.block_content, label: b.block_label,
-        bbox: b.block_bbox, order: b.block_order})),
-    })),
+    key: k.split('/').pop(), rawSha256: digest(v),
+    pages: JSON.parse(v).pages.map(p => projectRawPageContent(p.prunedResult)),
   }));
   return {
     mode, state: job.state, error: lastError, resumes,

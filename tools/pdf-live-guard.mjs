@@ -9,6 +9,26 @@ import path from 'node:path';
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const modes = ['auto', 'ocr'];
 const sampleIds = ['zh-single', 'zh-scan', 'zh-columns-footnote'];
+
+// Only content and finite geometry belong in retained OCR evidence. Provider
+// metadata can contain arbitrary objects (including signed transport URLs).
+// Never copy those objects into the durable content projection.
+export function projectRawPageContent(result) {
+  const positive = value => typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : null;
+  return {
+    width: positive(result?.width), height: positive(result?.height),
+    blocks: Array.isArray(result?.parsing_res_list) ? result.parsing_res_list.map(block => ({
+      text: typeof block?.block_content === 'string' ? block.block_content : null,
+      label: typeof block?.block_label === 'string' && /^[A-Za-z][A-Za-z0-9_-]{0,63}$/.test(block.block_label)
+        ? block.block_label : null,
+      bbox: Array.isArray(block?.block_bbox) && block.block_bbox.length === 4
+        && Array.from(block.block_bbox).every(value => typeof value === 'number' && Number.isFinite(value))
+        ? [...block.block_bbox] : null,
+      order: Number.isSafeInteger(block?.block_order) && block.block_order >= 0 ? block.block_order : null,
+    })) : null,
+  };
+}
+
 const provider = {
   model: 'PaddleOCR-VL-1.6', sdkPackage: '@paddleocr/api-sdk@0.2.3',
   providerOptionsFrozenFromRepo: {useDocOrientationClassify: false, useDocUnwarping: false,
