@@ -39,3 +39,12 @@ test('public OAuth discovery paths route to the remote MCP metadata handler',asy
   assert.equal(routeOf({query:{path:route},url:source}),'/api/'+route);
  }
 });
+
+test('hosted file inclusion fits the deployment schema and preserves required source and PDF assets',async()=>{
+ const {minimatch}=await import('minimatch');
+ const config=JSON.parse(await readFile(new URL('../vercel.json',import.meta.url),'utf8'));
+ const pattern=config.functions['api/*.js'].includeFiles;
+ assert.ok(pattern.length<=256,'Vercel rejects includeFiles longer than 256 characters before running the build');
+ for(const file of ['catalog/people/manifest.json','server/observability.mjs','deploy/hosted-store.mjs','app/observability-bridge.mjs','harness/person-generator.mjs','skills/leafhour-author-portrait/SKILL.md','.reader-runtime/manifest.json','node_modules/pdfjs-dist/wasm/openjpeg.wasm','node_modules/pdfjs-dist/cmaps/78-EUC-H.bcmap','node_modules/pdfjs-dist/standard_fonts/FoxitSans.pfb','node_modules/@napi-rs/canvas/index.js','node_modules/@napi-rs/canvas-linux-x64-gnu/skia.linux-x64-gnu.node'])assert.equal(minimatch(file,pattern,{dot:true}),true,'Required packaged file '+file);
+ for(const file of ['local/private-book.json','.env','node_modules/pdfjs-dist/unrelated.js'])assert.equal(minimatch(file,pattern,{dot:true}),false,'Unrelated private or unneeded file '+file);
+});
