@@ -73,6 +73,12 @@
       "focus": "open-reader-account",
       "bodyText": "CHAPTER I. Down the Rabbit-Hole\n\nAlice was beginning to get very tired of sittin"
     },
+    "ring": {
+      "width": "2px",
+      "style": "solid",
+      "color": "color(srgb 0.222902 0.297412 0.255216)",
+      "offset": "-3px"
+    },
     "edgeSelection": "Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothin",
     "paged": {
       "enabled": "true",
@@ -158,6 +164,12 @@
       "scrollY": 206,
       "focus": "open-reader-account",
       "bodyText": "CHAPTER I. Down the Rabbit-Hole\n\nAlice was beginning to get very tired of sittin"
+    },
+    "ring": {
+      "width": "2px",
+      "style": "solid",
+      "color": "color(srgb 0.222902 0.297412 0.255216)",
+      "offset": "-3px"
     },
     "edgeSelection": "Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, bu",
     "paged": {
