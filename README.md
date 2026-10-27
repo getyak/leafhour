@@ -81,6 +81,8 @@ Opening personal records from anonymous trial reading lets you sign in and retur
 
 ### Books and catalog
 
+The shared catalog contains 64 reading volumes and editions, including Chinese originals, English originals and historical English translations. The [catalog guide](docs/world-catalog.md) records sources, edition boundaries and reproduction steps; the [latest reading list](docs/classics-reading-list-20261028.md) explains the selection.
+
 The top-bar book title and current chapter are clickable and open a book-info overlay with the existing description, author, source and current chapter. The overlay closes with Esc, its close button or an outside click while the reading position stays put. The left “Room” and “Contents” entries share icons, spacing and touch height; contents are grouped by chapter with the current chapter marked, and clicking the row enters it. Books with numbered sections can still expand sections and return to their passages.
 
 ### Reading atmosphere
