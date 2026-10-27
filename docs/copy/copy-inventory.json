@@ -438,7 +438,7 @@
       },
       {
         "file": "app/people-copy.mjs",
-        "sha256": "a47e3af70254ae49c237dfbc0a44ebb24feea7361f87297ae69b225f660069b2"
+        "sha256": "81d98180b9c9cdb95f21b1c42562741da9d4769b4623c6b685f398b3426828b5"
       },
       {
         "file": "app/people.html",
@@ -1285,7 +1285,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "0b883c9293b5b6744bc2a1e089e73f16a5184a191ddd71f9ae18f6f9284fa876"
+    "inputDigest": "44e34d72c4884a9277c76fcc610f4f2bf5feb422f4d2594aa186badd185eb415"
   },
   "locales": [
     "en",
@@ -200327,34 +200327,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:2697",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 2697,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "尚有争议",
-      "sha256": "9ac73dc3aadcb0a2662500d38df4bef4d95b63c9154a73acd0fe2b4a3edf2e70",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
       "id": "candidate:app/people-copy.mjs:8:2704",
       "file": "app/people-copy.mjs",
       "line": 8,
       "column": 2704,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "尚有爭議",
-      "sha256": "726b959c388fca10752e10e291f308263ff7cba4902523536fcd817e56fbf1dc",
+      "value": "资料待核",
+      "sha256": "9b363592a1dc55c8f9b9413da098b25c860be4896e52f50f0c46191d67cbd939",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -200373,8 +200353,8 @@
       "column": 2711,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "未確定",
-      "sha256": "8ba2fc546953804492f366d48c2cfa5d6eaadf229b979a12ab260e41a78b7cf3",
+      "value": "資料待核",
+      "sha256": "9e3c801e359933de92395c47b96138bb6314be0cf30601e98c7b0f46297c795c",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -200387,14 +200367,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:2761",
+      "id": "candidate:app/people-copy.mjs:8:2718",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 2761,
+      "column": 2718,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "编辑解读",
-      "sha256": "3a4285a1207e32552b952d9c49cff3278514f84814a1c06b2efe59cb912cc3d6",
+      "value": "未確認",
+      "sha256": "7d75a463ec8c065e120b3ab4118d7343fd895304bee543f132fb0abe490877c1",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -200413,8 +200393,8 @@
       "column": 2768,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "編輯解讀",
-      "sha256": "8516c012bd6a496b886bd01f2b3af84501d6448e9cfdd86ee55497ed99ceac18",
+      "value": "编辑解读",
+      "sha256": "3a4285a1207e32552b952d9c49cff3278514f84814a1c06b2efe59cb912cc3d6",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -200433,6 +200413,26 @@
       "column": 2775,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "編輯解讀",
+      "sha256": "8516c012bd6a496b886bd01f2b3af84501d6448e9cfdd86ee55497ed99ceac18",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:2782",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 2782,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "編集上の解釈",
       "sha256": "470dde0e554f43f3e1561d8c257a630d35c5caa572de5f3b02f7be51bdaea0eb",
       "protected": false,
@@ -200447,10 +200447,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:2818",
+      "id": "candidate:app/people-copy.mjs:8:2825",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 2818,
+      "column": 2825,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "有资料依据",
@@ -200467,10 +200467,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:2826",
+      "id": "candidate:app/people-copy.mjs:8:2833",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 2826,
+      "column": 2833,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "有資料依據",
@@ -200487,34 +200487,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:2834",
+      "id": "candidate:app/people-copy.mjs:8:2841",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 2834,
+      "column": 2841,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "資料に基づく",
       "sha256": "fa1e6e462800d96532d3fe6a82b9be9da3c9385b3e17c61e122412c33c8d017a",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:2886",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 2886,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "作者自述",
-      "sha256": "cb668dc1a7a9825b9395a24a640b49d55bbb97f72fa87f3a349345cf283252e4",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -200553,6 +200533,26 @@
       "column": 2900,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "作者自述",
+      "sha256": "cb668dc1a7a9825b9395a24a640b49d55bbb97f72fa87f3a349345cf283252e4",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:2907",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 2907,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "著者自身の言葉",
       "sha256": "49925752fc9db7a564360f8ab4775ebc59a097ee636079badbe17b21357fb629",
       "protected": false,
@@ -200567,10 +200567,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:2956",
+      "id": "candidate:app/people-copy.mjs:8:2963",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 2956,
+      "column": 2963,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "文献记载的关系",
@@ -200587,10 +200587,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:2966",
+      "id": "candidate:app/people-copy.mjs:8:2973",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 2966,
+      "column": 2973,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "文獻記載的關係",
@@ -200607,10 +200607,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:2976",
+      "id": "candidate:app/people-copy.mjs:8:2983",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 2976,
+      "column": 2983,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "資料に記された関係",
@@ -200627,10 +200627,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3038",
+      "id": "candidate:app/people-copy.mjs:8:3045",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3038,
+      "column": 3045,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "可作这样的理解",
@@ -200647,10 +200647,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3048",
+      "id": "candidate:app/people-copy.mjs:8:3055",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3048,
+      "column": 3055,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "可作這樣的理解",
@@ -200667,10 +200667,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3058",
+      "id": "candidate:app/people-copy.mjs:8:3065",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3058,
+      "column": 3065,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "解釈の一つ",
@@ -200687,10 +200687,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3108",
+      "id": "candidate:app/people-copy.mjs:8:3115",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3108,
+      "column": 3115,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "同时期背景",
@@ -200707,10 +200707,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3116",
+      "id": "candidate:app/people-copy.mjs:8:3123",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3116,
+      "column": 3123,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "同時期背景",
@@ -200727,34 +200727,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3124",
+      "id": "candidate:app/people-copy.mjs:8:3131",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3124,
+      "column": 3131,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "同時代の背景",
       "sha256": "a4437ef82d275505973c02a4caaaabb0229f0f0caa76772fff353f242002e887",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:3157",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 3157,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "打开作品",
-      "sha256": "c40cb0b7ffa3a02965e41f6fdfeba06d0ee28d28f610ce4d393e4f6f49011234",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -200773,8 +200753,8 @@
       "column": 3164,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "打開作品",
-      "sha256": "c992533e419aedbdbb2e846dc84be5ed411108b113a1276b08024aedb488f03a",
+      "value": "打开作品",
+      "sha256": "c40cb0b7ffa3a02965e41f6fdfeba06d0ee28d28f610ce4d393e4f6f49011234",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -200793,6 +200773,26 @@
       "column": 3171,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "打開作品",
+      "sha256": "c992533e419aedbdbb2e846dc84be5ed411108b113a1276b08024aedb488f03a",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:3178",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 3178,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "作品を開く",
       "sha256": "621a62df16769e6da9d1905c2d6a897af4a360bb3224a078d3860a72455f18fb",
       "protected": false,
@@ -200807,10 +200807,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3217",
+      "id": "candidate:app/people-copy.mjs:8:3224",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3217,
+      "column": 3224,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "查看书目来源",
@@ -200827,10 +200827,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3226",
+      "id": "candidate:app/people-copy.mjs:8:3233",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3226,
+      "column": 3233,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "查看書目來源",
@@ -200847,10 +200847,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3235",
+      "id": "candidate:app/people-copy.mjs:8:3242",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3235,
+      "column": 3242,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "書誌資料へ",
@@ -200867,10 +200867,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3281",
+      "id": "candidate:app/people-copy.mjs:8:3288",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3281,
+      "column": 3288,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "书房暂未收录正文",
@@ -200887,10 +200887,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3292",
+      "id": "candidate:app/people-copy.mjs:8:3299",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3292,
+      "column": 3299,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "書房暫未收錄正文",
@@ -200907,10 +200907,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3303",
+      "id": "candidate:app/people-copy.mjs:8:3310",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3303,
+      "column": 3310,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "本文の収録なし",
@@ -200927,10 +200927,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3335",
+      "id": "candidate:app/people-copy.mjs:8:3342",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3335,
+      "column": 3342,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "原文",
@@ -200947,10 +200947,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3340",
+      "id": "candidate:app/people-copy.mjs:8:3347",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3340,
+      "column": 3347,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "原文",
@@ -200967,10 +200967,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3345",
+      "id": "candidate:app/people-copy.mjs:8:3352",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3345,
+      "column": 3352,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "原文",
@@ -200987,10 +200987,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3378",
+      "id": "candidate:app/people-copy.mjs:8:3385",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3378,
+      "column": 3385,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "译文",
@@ -201007,10 +201007,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3383",
+      "id": "candidate:app/people-copy.mjs:8:3390",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3383,
+      "column": 3390,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "譯文",
@@ -201027,10 +201027,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3388",
+      "id": "candidate:app/people-copy.mjs:8:3395",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3388,
+      "column": 3395,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "訳文",
@@ -201047,10 +201047,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3426",
+      "id": "candidate:app/people-copy.mjs:8:3433",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3426,
+      "column": 3433,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "译文未校订",
@@ -201067,10 +201067,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3434",
+      "id": "candidate:app/people-copy.mjs:8:3441",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3434,
+      "column": 3441,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "譯文未校訂",
@@ -201087,10 +201087,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3442",
+      "id": "candidate:app/people-copy.mjs:8:3449",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3442,
+      "column": 3449,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "未校訂の訳文",
@@ -201107,10 +201107,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3486",
+      "id": "candidate:app/people-copy.mjs:8:3493",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3486,
+      "column": 3493,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "带着一句话回去",
@@ -201127,10 +201127,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3496",
+      "id": "candidate:app/people-copy.mjs:8:3503",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3496,
+      "column": 3503,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "帶著一句話回去",
@@ -201147,10 +201147,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3506",
+      "id": "candidate:app/people-copy.mjs:8:3513",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3506,
+      "column": 3513,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "一節を手に、本へ戻る",
@@ -201167,10 +201167,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3555",
+      "id": "candidate:app/people-copy.mjs:8:3562",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3555,
+      "column": 3562,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "和这句话聊聊",
@@ -201187,10 +201187,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3564",
+      "id": "candidate:app/people-copy.mjs:8:3571",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3564,
+      "column": 3571,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "和這句話聊聊",
@@ -201207,10 +201207,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3573",
+      "id": "candidate:app/people-copy.mjs:8:3580",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3573,
+      "column": 3580,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "この一節について話す",
@@ -201227,10 +201227,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3683",
+      "id": "candidate:app/people-copy.mjs:8:3690",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3683,
+      "column": 3690,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "这句话与 {name} 的经历、这部作品有什么关系？\n\n{text}",
@@ -201247,10 +201247,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3722",
+      "id": "candidate:app/people-copy.mjs:8:3729",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3722,
+      "column": 3729,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "這句話與 {name} 的經歷、這部作品有什麼關係？\n\n{text}",
@@ -201267,10 +201267,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3761",
+      "id": "candidate:app/people-copy.mjs:8:3768",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3761,
+      "column": 3768,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "この一節は、{name} の生涯や作品とどのようにつながっていますか？\n\n{text}",
@@ -201287,10 +201287,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3868",
+      "id": "candidate:app/people-copy.mjs:8:3875",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3868,
+      "column": 3875,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "打开已收录的作品后，可以继续讨论这句话。",
@@ -201307,10 +201307,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3891",
+      "id": "candidate:app/people-copy.mjs:8:3898",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3891,
+      "column": 3898,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "打開已收錄的作品後，可以繼續討論這句話。",
@@ -201327,10 +201327,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3914",
+      "id": "candidate:app/people-copy.mjs:8:3921",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3914,
+      "column": 3921,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "本文がある作品を開くと、この一節について話せます。",
@@ -201347,10 +201347,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:3984",
+      "id": "candidate:app/people-copy.mjs:8:3991",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 3984,
+      "column": 3991,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "原文内容：{language}",
@@ -201367,10 +201367,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4002",
+      "id": "candidate:app/people-copy.mjs:8:4009",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4002,
+      "column": 4009,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "原文內容：{language}",
@@ -201387,34 +201387,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4020",
+      "id": "candidate:app/people-copy.mjs:8:4027",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4020,
+      "column": 4027,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "原文の言語：{language}",
       "sha256": "be5eb799c56b38cdf2684f4941703c4fefb29906c195c53ed9fb111c5cad8fbb",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:4068",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 4068,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "年份未详",
-      "sha256": "582e86cc4ef559edfd37f3db9016e3182cf3b27292cc14b7cd5821bda48bf437",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -201433,8 +201413,8 @@
       "column": 4075,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "年份未詳",
-      "sha256": "c8f9d0acb837ffeffeb3821121229a4b1017fa1b6745efed946c0aecbdeb01ad",
+      "value": "年份未详",
+      "sha256": "582e86cc4ef559edfd37f3db9016e3182cf3b27292cc14b7cd5821bda48bf437",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -201453,6 +201433,26 @@
       "column": 4082,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "年份未詳",
+      "sha256": "c8f9d0acb837ffeffeb3821121229a4b1017fa1b6745efed946c0aecbdeb01ad",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:4089",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 4089,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "年代不明",
       "sha256": "28bb049ed35db7e9a2a55af1ee02fc480a86a230794fa561846a21a67c8b7d1c",
       "protected": false,
@@ -201467,10 +201467,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4118",
+      "id": "candidate:app/people-copy.mjs:8:4125",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4118,
+      "column": 4125,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "约 {date}",
@@ -201487,10 +201487,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4129",
+      "id": "candidate:app/people-copy.mjs:8:4136",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4129,
+      "column": 4136,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "約 {date}",
@@ -201507,10 +201507,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4140",
+      "id": "candidate:app/people-copy.mjs:8:4147",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4140,
+      "column": 4147,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "{date} ごろ",
@@ -201527,10 +201527,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4193",
+      "id": "candidate:app/people-copy.mjs:8:4200",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4193,
+      "column": 4200,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "来源尚未核对",
@@ -201547,10 +201547,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4202",
+      "id": "candidate:app/people-copy.mjs:8:4209",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4202,
+      "column": 4209,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "來源尚未核對",
@@ -201567,10 +201567,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4211",
+      "id": "candidate:app/people-copy.mjs:8:4218",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4211,
+      "column": 4218,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "未確認の出典",
@@ -201587,10 +201587,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4253",
+      "id": "candidate:app/people-copy.mjs:8:4260",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4253,
+      "column": 4260,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "已核对来源",
@@ -201607,10 +201607,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4261",
+      "id": "candidate:app/people-copy.mjs:8:4268",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4261,
+      "column": 4268,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "已核對來源",
@@ -201627,10 +201627,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4269",
+      "id": "candidate:app/people-copy.mjs:8:4276",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4269,
+      "column": 4276,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "確認済みの出典",
@@ -201647,10 +201647,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4332",
+      "id": "candidate:app/people-copy.mjs:8:4339",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4332,
+      "column": 4339,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "此项尚无出处记录。",
@@ -201667,10 +201667,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4344",
+      "id": "candidate:app/people-copy.mjs:8:4351",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4344,
+      "column": 4351,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "此項尚無出處記錄。",
@@ -201687,34 +201687,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4356",
+      "id": "candidate:app/people-copy.mjs:8:4363",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4356,
+      "column": 4363,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "この項目には出典が記録されていません。",
       "sha256": "b66b3118cf57c31081c63f7a302fda8ffd5c97680f4ce94f4654c5c8974edb87",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:4412",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 4412,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "肖像资料",
-      "sha256": "8cac5c98485a0ca7c20926208e230cc754a15a1bc9f40cec55be57108aac8b26",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -201733,8 +201713,8 @@
       "column": 4419,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "肖像資料",
-      "sha256": "2595383c461f47b24219044dc08b54a75cf2804df79a9fa5c97a6688bb5f420f",
+      "value": "肖像资料",
+      "sha256": "8cac5c98485a0ca7c20926208e230cc754a15a1bc9f40cec55be57108aac8b26",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -201753,6 +201733,26 @@
       "column": 4426,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "肖像資料",
+      "sha256": "2595383c461f47b24219044dc08b54a75cf2804df79a9fa5c97a6688bb5f420f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:4433",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 4433,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "肖像の情報",
       "sha256": "776363fb880bc5a457032dc99baeb6dc6a495ca370eb42476c9dfa0bf6592c12",
       "protected": false,
@@ -201767,10 +201767,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4450",
+      "id": "candidate:app/people-copy.mjs:8:4457",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4450,
+      "column": 4457,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "关闭",
@@ -201787,10 +201787,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4455",
+      "id": "candidate:app/people-copy.mjs:8:4462",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4455,
+      "column": 4462,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "關閉",
@@ -201807,34 +201807,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4460",
+      "id": "candidate:app/people-copy.mjs:8:4467",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4460,
+      "column": 4467,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "閉じる",
       "sha256": "f6c244f98893cd951392f88864ef16a239999b2e95a6cebf5f6aa8d670460637",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:4490",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 4490,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "我的资料",
-      "sha256": "c3f46556ef6b7d3b6d5a2eab1558d9bfd5253aa49bd7319cbc97f1a50243905f",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -201853,8 +201833,8 @@
       "column": 4497,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "我的資料",
-      "sha256": "85e4d189ac3fb3af1cc699381bbc65d20e27bbb4050eb0204d45f3ee12375f6c",
+      "value": "我的资料",
+      "sha256": "c3f46556ef6b7d3b6d5a2eab1558d9bfd5253aa49bd7319cbc97f1a50243905f",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -201873,6 +201853,26 @@
       "column": 4504,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "我的資料",
+      "sha256": "85e4d189ac3fb3af1cc699381bbc65d20e27bbb4050eb0204d45f3ee12375f6c",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:4511",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 4511,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "自分の資料",
       "sha256": "7b85e43b3428e80e651976b99073a4b47d584a4cfd5b182eaa4b7295af2c3812",
       "protected": false,
@@ -201887,10 +201887,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4539",
+      "id": "candidate:app/people-copy.mjs:8:4546",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4539,
+      "column": 4546,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "编辑我的资料",
@@ -201907,10 +201907,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4548",
+      "id": "candidate:app/people-copy.mjs:8:4555",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4548,
+      "column": 4555,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "編輯我的資料",
@@ -201927,34 +201927,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4557",
+      "id": "candidate:app/people-copy.mjs:8:4564",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4557,
+      "column": 4564,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "自分の資料を編集",
       "sha256": "34abfc9b07e8a1eb889ac53eb739e972e286062e63bfbf40e5ed6ca9d70bacc6",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:4592",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 4592,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "新增人物",
-      "sha256": "eb8d4d0d168c77ad3ce9723ab8e4645403066c37f73e59ee7c487b782ccdb14e",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -201993,6 +201973,26 @@
       "column": 4606,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "新增人物",
+      "sha256": "eb8d4d0d168c77ad3ce9723ab8e4645403066c37f73e59ee7c487b782ccdb14e",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:4613",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 4613,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "人物を追加",
       "sha256": "01019061bff4a2fa1ac053e37730ec6296c04926f891b1e70eea935380b4fa8e",
       "protected": false,
@@ -202007,10 +202007,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4628",
+      "id": "candidate:app/people-copy.mjs:8:4635",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4628,
+      "column": 4635,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "姓名",
@@ -202027,10 +202027,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4633",
+      "id": "candidate:app/people-copy.mjs:8:4640",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4633,
+      "column": 4640,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "姓名",
@@ -202047,34 +202047,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4638",
+      "id": "candidate:app/people-copy.mjs:8:4645",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4638,
+      "column": 4645,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "名前",
       "sha256": "7ec26292414bccefa35290004928d8cf8f5e19d2bfb8b0c0322ee9e8b2854349",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:4674",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 4674,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "原文姓名",
-      "sha256": "c2c43ed0fa175c207cc4e924012292256f682716b75420d58e3bbee8df6c37bc",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -202113,8 +202093,8 @@
       "column": 4688,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "原語表記",
-      "sha256": "97f8af4d45f1e9b06c0ee7cd9c286323f40d2763eaf788bd159362719e34ee67",
+      "value": "原文姓名",
+      "sha256": "c2c43ed0fa175c207cc4e924012292256f682716b75420d58e3bbee8df6c37bc",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -202127,14 +202107,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4718",
+      "id": "candidate:app/people-copy.mjs:8:4695",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4718,
+      "column": 4695,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "人物引入",
-      "sha256": "4360a5ca0db56678aa242def2d66f48591ba04e9809811a0442aaa2528a11ea4",
+      "value": "原語表記",
+      "sha256": "97f8af4d45f1e9b06c0ee7cd9c286323f40d2763eaf788bd159362719e34ee67",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -202173,6 +202153,26 @@
       "column": 4732,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "人物引入",
+      "sha256": "4360a5ca0db56678aa242def2d66f48591ba04e9809811a0442aaa2528a11ea4",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:4739",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 4739,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "紹介",
       "sha256": "b8f605046c636ce6ef614282afc66883e25a2da24be51d614eb97ff031e33db0",
       "protected": false,
@@ -202187,10 +202187,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4751",
+      "id": "candidate:app/people-copy.mjs:8:4758",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4751,
+      "column": 4758,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "保存",
@@ -202207,10 +202207,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4756",
+      "id": "candidate:app/people-copy.mjs:8:4763",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4756,
+      "column": 4763,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "儲存",
@@ -202227,10 +202227,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4761",
+      "id": "candidate:app/people-copy.mjs:8:4768",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4761,
+      "column": 4768,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "保存",
@@ -202247,10 +202247,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4784",
+      "id": "candidate:app/people-copy.mjs:8:4791",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4784,
+      "column": 4791,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "取消",
@@ -202267,10 +202267,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4789",
+      "id": "candidate:app/people-copy.mjs:8:4796",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4789,
+      "column": 4796,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "取消",
@@ -202287,10 +202287,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4794",
+      "id": "candidate:app/people-copy.mjs:8:4801",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4794,
+      "column": 4801,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "キャンセル",
@@ -202307,10 +202307,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4818",
+      "id": "candidate:app/people-copy.mjs:8:4825",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4818,
+      "column": 4825,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "已保存",
@@ -202327,10 +202327,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4824",
+      "id": "candidate:app/people-copy.mjs:8:4831",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4824,
+      "column": 4831,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "已儲存",
@@ -202347,10 +202347,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4830",
+      "id": "candidate:app/people-copy.mjs:8:4837",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4830,
+      "column": 4837,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "保存しました",
@@ -202367,10 +202367,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4858",
+      "id": "candidate:app/people-copy.mjs:8:4865",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4858,
+      "column": 4865,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "正在保存…",
@@ -202387,10 +202387,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4866",
+      "id": "candidate:app/people-copy.mjs:8:4873",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4866,
+      "column": 4873,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "正在儲存…",
@@ -202407,34 +202407,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:4874",
+      "id": "candidate:app/people-copy.mjs:8:4881",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 4874,
+      "column": 4881,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "保存中…",
       "sha256": "ff509c9ba052a21c008c88b36ef5f13acc9cb693641689b35747be6daf11d9d6",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:4909",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 4909,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "个人资料",
-      "sha256": "b94d13a45ea21152fd63e193e3c0e3d6ff168931b471e1f8bfca84b0723dd3c1",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -202453,8 +202433,8 @@
       "column": 4916,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "個人資料",
-      "sha256": "f772a5aa09bbd0e60d877904c948230a0b81662e56a73d62f18f5cdfa1e079aa",
+      "value": "个人资料",
+      "sha256": "b94d13a45ea21152fd63e193e3c0e3d6ff168931b471e1f8bfca84b0723dd3c1",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -202473,6 +202453,26 @@
       "column": 4923,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "個人資料",
+      "sha256": "f772a5aa09bbd0e60d877904c948230a0b81662e56a73d62f18f5cdfa1e079aa",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:4930",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 4930,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "非公開の資料",
       "sha256": "c3389fe4897c934bf4dc05f61bf83019c94561634aa44b550850a51e4be1e962",
       "protected": false,
@@ -202487,10 +202487,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5018",
+      "id": "candidate:app/people-copy.mjs:8:5025",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5018,
+      "column": 5025,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "修改保存在你的书房中。",
@@ -202507,10 +202507,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5032",
+      "id": "candidate:app/people-copy.mjs:8:5039",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5032,
+      "column": 5039,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "修改儲存在你的書房中。",
@@ -202527,10 +202527,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5046",
+      "id": "candidate:app/people-copy.mjs:8:5053",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5046,
+      "column": 5053,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "変更は自分のライブラリに保存されます。",
@@ -202547,10 +202547,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5111",
+      "id": "candidate:app/people-copy.mjs:8:5118",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5111,
+      "column": 5118,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "登录后整理人物资料",
@@ -202567,10 +202567,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5123",
+      "id": "candidate:app/people-copy.mjs:8:5130",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5123,
+      "column": 5130,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "登入後整理人物資料",
@@ -202587,34 +202587,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5135",
+      "id": "candidate:app/people-copy.mjs:8:5142",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5135,
+      "column": 5142,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "ログインして人物資料を編集",
       "sha256": "d9ba43b331aba968680190e59ac823612a48ff2df34d51eb743c174278cb71f0",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:5178",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 5178,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "下载备份",
-      "sha256": "cb439176a2dd3837489d44aa8b09480d6294bd7c1f09b70e30e5bdad8b11e15f",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -202633,8 +202613,8 @@
       "column": 5185,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "下載備份",
-      "sha256": "5b1365f485c143a4203940965986af91e15e5a4156b6085bb8c58178dd5bbaa3",
+      "value": "下载备份",
+      "sha256": "cb439176a2dd3837489d44aa8b09480d6294bd7c1f09b70e30e5bdad8b11e15f",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -202653,6 +202633,26 @@
       "column": 5192,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "下載備份",
+      "sha256": "5b1365f485c143a4203940965986af91e15e5a4156b6085bb8c58178dd5bbaa3",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:5199",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 5199,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "バックアップを保存",
       "sha256": "ed80b69aea92feba7aadd3830bb15b2ab48c5d0f5d10c3a4b33c100deb2c8f19",
       "protected": false,
@@ -202667,10 +202667,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5235",
+      "id": "candidate:app/people-copy.mjs:8:5242",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5235,
+      "column": 5242,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "删除我的资料",
@@ -202687,10 +202687,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5244",
+      "id": "candidate:app/people-copy.mjs:8:5251",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5244,
+      "column": 5251,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "刪除我的資料",
@@ -202707,10 +202707,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5253",
+      "id": "candidate:app/people-copy.mjs:8:5260",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5253,
+      "column": 5260,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "自分の資料を削除",
@@ -202727,10 +202727,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5387",
+      "id": "candidate:app/people-copy.mjs:8:5394",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5387,
+      "column": 5394,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "删除「{name}」的个人资料？已发布的分享会同时撤回，删除后可以恢复资料。",
@@ -202747,10 +202747,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5428",
+      "id": "candidate:app/people-copy.mjs:8:5435",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5428,
+      "column": 5435,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "刪除「{name}」的個人資料？已發布的分享會同時撤回，刪除後可以復原資料。",
@@ -202767,10 +202767,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5469",
+      "id": "candidate:app/people-copy.mjs:8:5476",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5469,
+      "column": 5476,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "「{name}」の自分の資料を削除しますか？公開した共有も取り下げられます。資料は後で復元できます。",
@@ -202787,10 +202787,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5560",
+      "id": "candidate:app/people-copy.mjs:8:5567",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5560,
+      "column": 5567,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "个人资料已删除。",
@@ -202807,10 +202807,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5571",
+      "id": "candidate:app/people-copy.mjs:8:5578",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5571,
+      "column": 5578,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "個人資料已刪除。",
@@ -202827,34 +202827,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5582",
+      "id": "candidate:app/people-copy.mjs:8:5589",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5582,
+      "column": 5589,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "自分の資料を削除しました。",
       "sha256": "45ccd0fb0829472eaf851d6c597ae9e2fb87d0e6aa2e1c94efa05a9f79a1706a",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:5626",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 5626,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "恢复资料",
-      "sha256": "e5c4350e89a4b7f04b973d7fea9165ecb652d7d8b4b043b50e506b04212ae6a0",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -202873,8 +202853,8 @@
       "column": 5633,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "復原資料",
-      "sha256": "43377faaee567a8631790cd7f8c6824f882799967fb529aba1b851faea1c772f",
+      "value": "恢复资料",
+      "sha256": "e5c4350e89a4b7f04b973d7fea9165ecb652d7d8b4b043b50e506b04212ae6a0",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -202893,6 +202873,26 @@
       "column": 5640,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "復原資料",
+      "sha256": "43377faaee567a8631790cd7f8c6824f882799967fb529aba1b851faea1c772f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:5647",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 5647,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "資料を復元",
       "sha256": "095065c5d2d9074cdcaf9e5191b5281dd9d4c5fe9c17a6e9aab7d7d753884450",
       "protected": false,
@@ -202907,10 +202907,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5670",
+      "id": "candidate:app/people-copy.mjs:8:5677",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5670,
+      "column": 5677,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "已恢复",
@@ -202927,10 +202927,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5676",
+      "id": "candidate:app/people-copy.mjs:8:5683",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5676,
+      "column": 5683,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "已復原",
@@ -202947,10 +202947,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5682",
+      "id": "candidate:app/people-copy.mjs:8:5689",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5682,
+      "column": 5689,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "復元しました",
@@ -202967,10 +202967,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5789",
+      "id": "candidate:app/people-copy.mjs:8:5796",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5789,
+      "column": 5796,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "资料已在别处修改。请下载当前填写的内容，再重新载入比较。",
@@ -202987,10 +202987,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5820",
+      "id": "candidate:app/people-copy.mjs:8:5827",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5820,
+      "column": 5827,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "資料已在別處修改。請下載目前填寫的內容，再重新載入比較。",
@@ -203007,10 +203007,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5851",
+      "id": "candidate:app/people-copy.mjs:8:5858",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5851,
+      "column": 5858,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "別の画面で変更されました。入力内容を保存してから、再読み込みして比較してください。",
@@ -203027,10 +203027,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5934",
+      "id": "candidate:app/people-copy.mjs:8:5941",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5934,
+      "column": 5941,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "下载当前填写内容",
@@ -203047,10 +203047,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5945",
+      "id": "candidate:app/people-copy.mjs:8:5952",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5945,
+      "column": 5952,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "下載目前填寫內容",
@@ -203067,34 +203067,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:5956",
+      "id": "candidate:app/people-copy.mjs:8:5963",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 5956,
+      "column": 5963,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "入力内容を保存",
       "sha256": "aa1b00cc058361b4eb5dfdbe950d90f6535ee7915acf264b987f3a828a3a614c",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:5984",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 5984,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "重新载入",
-      "sha256": "35588dcb9be3dc8eb1761b0a1da8264d59cdf31a12fb02c813317018106ad44e",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -203113,8 +203093,8 @@
       "column": 5991,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "重新載入",
-      "sha256": "70dd895b66db82bbcf7404a930a3e4e7b0079f71eef52d2b631cc51c7f65e4ac",
+      "value": "重新载入",
+      "sha256": "35588dcb9be3dc8eb1761b0a1da8264d59cdf31a12fb02c813317018106ad44e",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -203133,6 +203113,26 @@
       "column": 5998,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "重新載入",
+      "sha256": "70dd895b66db82bbcf7404a930a3e4e7b0079f71eef52d2b631cc51c7f65e4ac",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:6005",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 6005,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "再読み込み",
       "sha256": "2322ab25033631770ba1955e96cb5e9c6ff1d8375acf701f8e9062b4edd05362",
       "protected": false,
@@ -203147,10 +203147,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6047",
+      "id": "candidate:app/people-copy.mjs:8:6054",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6047,
+      "column": 6054,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "分享人物或一句原文",
@@ -203167,10 +203167,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6059",
+      "id": "candidate:app/people-copy.mjs:8:6066",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6059,
+      "column": 6066,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "分享人物或一句原文",
@@ -203187,10 +203187,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6071",
+      "id": "candidate:app/people-copy.mjs:8:6078",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6071,
+      "column": 6078,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "人物や一節を共有",
@@ -203207,10 +203207,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6202",
+      "id": "candidate:app/people-copy.mjs:8:6209",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6202,
+      "column": 6209,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "预览只使用可公开的资料与原文，不包含个人书籍和私人译文。",
@@ -203227,10 +203227,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6233",
+      "id": "candidate:app/people-copy.mjs:8:6240",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6233,
+      "column": 6240,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "預覽僅使用可公開的資料與原文，不包含個人書籍和私人譯文。",
@@ -203247,10 +203247,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6264",
+      "id": "candidate:app/people-copy.mjs:8:6271",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6264,
+      "column": 6271,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "公開できる資料と原文だけを使用します。個人の書籍や訳文は含みません。",
@@ -203267,10 +203267,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6325",
+      "id": "candidate:app/people-copy.mjs:8:6332",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6325,
+      "column": 6332,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "人物卡",
@@ -203287,10 +203287,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6331",
+      "id": "candidate:app/people-copy.mjs:8:6338",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6331,
+      "column": 6338,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "人物卡",
@@ -203307,10 +203307,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6337",
+      "id": "candidate:app/people-copy.mjs:8:6344",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6337,
+      "column": 6344,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "人物",
@@ -203327,10 +203327,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6373",
+      "id": "candidate:app/people-copy.mjs:8:6380",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6373,
+      "column": 6380,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "人物与原文",
@@ -203347,10 +203347,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6381",
+      "id": "candidate:app/people-copy.mjs:8:6388",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6381,
+      "column": 6388,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "人物與原文",
@@ -203367,10 +203367,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6389",
+      "id": "candidate:app/people-copy.mjs:8:6396",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6389,
+      "column": 6396,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "人物と一節",
@@ -203387,10 +203387,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6424",
+      "id": "candidate:app/people-copy.mjs:8:6431",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6424,
+      "column": 6431,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "竖图",
@@ -203407,10 +203407,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6429",
+      "id": "candidate:app/people-copy.mjs:8:6436",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6429,
+      "column": 6436,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "直式",
@@ -203427,10 +203427,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6434",
+      "id": "candidate:app/people-copy.mjs:8:6441",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6434,
+      "column": 6441,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "縦長",
@@ -203447,10 +203447,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6457",
+      "id": "candidate:app/people-copy.mjs:8:6464",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6457,
+      "column": 6464,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "方图",
@@ -203467,10 +203467,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6462",
+      "id": "candidate:app/people-copy.mjs:8:6469",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6462,
+      "column": 6469,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "方圖",
@@ -203487,10 +203487,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6467",
+      "id": "candidate:app/people-copy.mjs:8:6474",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6467,
+      "column": 6474,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "正方形",
@@ -203507,10 +203507,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6505",
+      "id": "candidate:app/people-copy.mjs:8:6512",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6505,
+      "column": 6512,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "保存图片{count}",
@@ -203527,10 +203527,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6519",
+      "id": "candidate:app/people-copy.mjs:8:6526",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6519,
+      "column": 6526,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "儲存圖片{count}",
@@ -203547,34 +203547,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6533",
+      "id": "candidate:app/people-copy.mjs:8:6540",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6533,
+      "column": 6540,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "画像を保存{count}",
       "sha256": "c0f5e463f45e2693325ea7f6f9c477a35359324d35901df9e92801791ce9f41f",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:6571",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 6571,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "复制链接",
-      "sha256": "8e86f9b1d54f2c5125b0deb2617517c0b0601399dca6917c7527fc1b72ebda7f",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -203593,8 +203573,8 @@
       "column": 6578,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "複製連結",
-      "sha256": "d55104374e081eacd19e8bf542fc239121bab34818699ecd99145123a3c448e9",
+      "value": "复制链接",
+      "sha256": "8e86f9b1d54f2c5125b0deb2617517c0b0601399dca6917c7527fc1b72ebda7f",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -203613,6 +203593,26 @@
       "column": 6585,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "複製連結",
+      "sha256": "d55104374e081eacd19e8bf542fc239121bab34818699ecd99145123a3c448e9",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:6592",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 6592,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "リンクをコピー",
       "sha256": "4dbdddb66a62d1c7e3150c1ed5eb2cb43f2e1a1e51bc72958a9194ee9cb0e46d",
       "protected": false,
@@ -203627,10 +203627,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6618",
+      "id": "candidate:app/people-copy.mjs:8:6625",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6618,
+      "column": 6625,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "链接已复制",
@@ -203647,10 +203647,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6626",
+      "id": "candidate:app/people-copy.mjs:8:6633",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6626,
+      "column": 6633,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "連結已複製",
@@ -203667,10 +203667,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6634",
+      "id": "candidate:app/people-copy.mjs:8:6641",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6634,
+      "column": 6641,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "リンクをコピーしました",
@@ -203687,10 +203687,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6690",
+      "id": "candidate:app/people-copy.mjs:8:6697",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6690,
+      "column": 6697,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "请选中链接后复制。",
@@ -203707,10 +203707,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6702",
+      "id": "candidate:app/people-copy.mjs:8:6709",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6702,
+      "column": 6709,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "請選取連結後複製。",
@@ -203727,10 +203727,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6714",
+      "id": "candidate:app/people-copy.mjs:8:6721",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6714,
+      "column": 6721,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "リンクを選択してコピーしてください。",
@@ -203747,10 +203747,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6763",
+      "id": "candidate:app/people-copy.mjs:8:6770",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6763,
+      "column": 6770,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "系统分享图片",
@@ -203767,10 +203767,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6772",
+      "id": "candidate:app/people-copy.mjs:8:6779",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6772,
+      "column": 6779,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "系統分享圖片",
@@ -203787,10 +203787,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6781",
+      "id": "candidate:app/people-copy.mjs:8:6788",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6781,
+      "column": 6788,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "画像を共有",
@@ -203807,10 +203807,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6861",
+      "id": "candidate:app/people-copy.mjs:8:6868",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6861,
+      "column": 6868,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "保存图片后，可从相册分享。",
@@ -203827,10 +203827,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6877",
+      "id": "candidate:app/people-copy.mjs:8:6884",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6877,
+      "column": 6884,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "儲存圖片後，可從相簿分享。",
@@ -203847,10 +203847,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6893",
+      "id": "candidate:app/people-copy.mjs:8:6900",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6893,
+      "column": 6900,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "画像を保存して、写真アプリから共有してください。",
@@ -203867,10 +203867,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6952",
+      "id": "candidate:app/people-copy.mjs:8:6959",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6952,
+      "column": 6959,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "正在排版图片…",
@@ -203887,10 +203887,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6962",
+      "id": "candidate:app/people-copy.mjs:8:6969",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6962,
+      "column": 6969,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "正在排版圖片…",
@@ -203907,10 +203907,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:6972",
+      "id": "candidate:app/people-copy.mjs:8:6979",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 6972,
+      "column": 6979,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "画像を作成しています…",
@@ -203927,10 +203927,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7029",
+      "id": "candidate:app/people-copy.mjs:8:7036",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7029,
+      "column": 7036,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "共 {count} 张，原文完整保留",
@@ -203947,10 +203947,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7050",
+      "id": "candidate:app/people-copy.mjs:8:7057",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7050,
+      "column": 7057,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "共 {count} 張，原文完整保留",
@@ -203967,10 +203967,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7071",
+      "id": "candidate:app/people-copy.mjs:8:7078",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7071,
+      "column": 7078,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "全 {count} 枚・全文を収録",
@@ -203987,10 +203987,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7124",
+      "id": "candidate:app/people-copy.mjs:8:7131",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7124,
+      "column": 7131,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "发布这份预览",
@@ -204007,10 +204007,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7133",
+      "id": "candidate:app/people-copy.mjs:8:7140",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7133,
+      "column": 7140,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "發布這份預覽",
@@ -204027,10 +204027,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7142",
+      "id": "candidate:app/people-copy.mjs:8:7149",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7142,
+      "column": 7149,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "この内容を公開",
@@ -204047,10 +204047,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7253",
+      "id": "candidate:app/people-copy.mjs:8:7260",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7253,
+      "column": 7260,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "发布后，任何人都能通过链接查看这份预览，之后的编辑不会改动它。",
@@ -204067,10 +204067,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7287",
+      "id": "candidate:app/people-copy.mjs:8:7294",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7287,
+      "column": 7294,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "發布後，任何人都能透過連結查看這份預覽，之後的編輯不會改動它。",
@@ -204087,10 +204087,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7321",
+      "id": "candidate:app/people-copy.mjs:8:7328",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7321,
+      "column": 7328,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "公開後は誰でも閲覧できます。後の編集はこの公開内容を変更しません。",
@@ -204107,10 +204107,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7389",
+      "id": "candidate:app/people-copy.mjs:8:7396",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7389,
+      "column": 7396,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "撤回公开链接",
@@ -204127,10 +204127,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7398",
+      "id": "candidate:app/people-copy.mjs:8:7405",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7398,
+      "column": 7405,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "撤回公開連結",
@@ -204147,10 +204147,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7407",
+      "id": "candidate:app/people-copy.mjs:8:7414",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7407,
+      "column": 7414,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "公開リンクを取り下げる",
@@ -204167,10 +204167,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7455",
+      "id": "candidate:app/people-copy.mjs:8:7462",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7455,
+      "column": 7462,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "公开链接已撤回",
@@ -204187,10 +204187,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7465",
+      "id": "candidate:app/people-copy.mjs:8:7472",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7465,
+      "column": 7472,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "公開連結已撤回",
@@ -204207,10 +204207,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7475",
+      "id": "candidate:app/people-copy.mjs:8:7482",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7475,
+      "column": 7482,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "公開リンクを取り下げました",
@@ -204227,10 +204227,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7529",
+      "id": "candidate:app/people-copy.mjs:8:7536",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7529,
+      "column": 7536,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "下载图片资料",
@@ -204247,10 +204247,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7538",
+      "id": "candidate:app/people-copy.mjs:8:7545",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7538,
+      "column": 7545,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "下載圖片資料",
@@ -204267,10 +204267,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7547",
+      "id": "candidate:app/people-copy.mjs:8:7554",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7547,
+      "column": 7554,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "画像の出典を保存",
@@ -204287,10 +204287,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7592",
+      "id": "candidate:app/people-copy.mjs:8:7599",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7592,
+      "column": 7599,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "整理人物资料",
@@ -204307,10 +204307,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7601",
+      "id": "candidate:app/people-copy.mjs:8:7608",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7601,
+      "column": 7608,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "整理人物資料",
@@ -204327,10 +204327,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7610",
+      "id": "candidate:app/people-copy.mjs:8:7617",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7610,
+      "column": 7617,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "人物資料を調べる",
@@ -204347,10 +204347,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7655",
+      "id": "candidate:app/people-copy.mjs:8:7662",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7655,
+      "column": 7662,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "查看整理范围",
@@ -204367,10 +204367,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7664",
+      "id": "candidate:app/people-copy.mjs:8:7671",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7664,
+      "column": 7671,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "查看整理範圍",
@@ -204387,10 +204387,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7673",
+      "id": "candidate:app/people-copy.mjs:8:7680",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7673,
+      "column": 7680,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "調査範囲を確認",
@@ -204407,10 +204407,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7805",
+      "id": "candidate:app/people-copy.mjs:8:7812",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7805,
+      "column": 7812,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "整理 1 人，最多查阅 8 个来源、20 件事件、8 部作品与 3 段原文，不读取私人笔记。",
@@ -204427,10 +204427,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7854",
+      "id": "candidate:app/people-copy.mjs:8:7861",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7854,
+      "column": 7861,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "整理 1 人，最多查閱 8 個來源、20 件事件、8 部作品與 3 段原文，不讀取私人筆記。",
@@ -204447,10 +204447,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7903",
+      "id": "candidate:app/people-copy.mjs:8:7910",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7903,
+      "column": 7910,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "1 人について、出典 8 件・出来事 20 件・作品 8 点・引用 3 件まで調べます。個人のノートは読みません。",
@@ -204467,10 +204467,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:7998",
+      "id": "candidate:app/people-copy.mjs:8:8005",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 7998,
+      "column": 8005,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "费用上限：¥{amount}",
@@ -204487,10 +204487,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8015",
+      "id": "candidate:app/people-copy.mjs:8:8022",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8015,
+      "column": 8022,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "費用上限：¥{amount}",
@@ -204507,34 +204507,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8032",
+      "id": "candidate:app/people-copy.mjs:8:8039",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8032,
+      "column": 8039,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "料金の上限：CN¥{amount}",
       "sha256": "9cdf497f93e646813726cc28c479c7630f06427ff11d94fa12dc2f677af4c0b7",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:8087",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 8087,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "开始整理",
-      "sha256": "794a5135f51c868c4e03584524c47fc9bd64ef2dd0593e5c3e20cbf055232dde",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -204553,8 +204533,8 @@
       "column": 8094,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "開始整理",
-      "sha256": "49664af8fb356ac16e083847b8ca8a45c125857d8ecc797f3c906f84fd4ed1ac",
+      "value": "开始整理",
+      "sha256": "794a5135f51c868c4e03584524c47fc9bd64ef2dd0593e5c3e20cbf055232dde",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -204573,6 +204553,26 @@
       "column": 8101,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "開始整理",
+      "sha256": "49664af8fb356ac16e083847b8ca8a45c125857d8ecc797f3c906f84fd4ed1ac",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:8108",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 8108,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "調査を開始",
       "sha256": "e286c37cca95abb5a266670e00954320a5ef6e2eeaeecfec44d6fd80de46c849",
       "protected": false,
@@ -204587,10 +204587,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8216",
+      "id": "candidate:app/people-copy.mjs:8:8223",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8216,
+      "column": 8223,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "当前书房尚未开放资料整理，已有资料仍可阅读和编辑。",
@@ -204607,10 +204607,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8244",
+      "id": "candidate:app/people-copy.mjs:8:8251",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8244,
+      "column": 8251,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "目前書房尚未開放資料整理，現有資料仍可閱讀和編輯。",
@@ -204627,10 +204627,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8272",
+      "id": "candidate:app/people-copy.mjs:8:8279",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8272,
+      "column": 8279,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "このライブラリでは調査を利用できません。既存の資料は閲覧・編集できます。",
@@ -204647,10 +204647,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8347",
+      "id": "candidate:app/people-copy.mjs:8:8354",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8347,
+      "column": 8354,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "正在查阅资料…",
@@ -204667,10 +204667,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8357",
+      "id": "candidate:app/people-copy.mjs:8:8364",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8357,
+      "column": 8364,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "正在查閱資料…",
@@ -204687,10 +204687,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8367",
+      "id": "candidate:app/people-copy.mjs:8:8374",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8367,
+      "column": 8374,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "出典を調べています…",
@@ -204707,10 +204707,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8415",
+      "id": "candidate:app/people-copy.mjs:8:8422",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8415,
+      "column": 8422,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "资料已整理保存。",
@@ -204727,10 +204727,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8426",
+      "id": "candidate:app/people-copy.mjs:8:8433",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8426,
+      "column": 8433,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "資料已整理儲存。",
@@ -204747,34 +204747,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8437",
+      "id": "candidate:app/people-copy.mjs:8:8444",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8437,
+      "column": 8444,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "調査した資料を保存しました。",
       "sha256": "fabc071e7bbdb4093cb5d3973e9a397c6087d5644675ce5886db3ae299e53b04",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:8489",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 8489,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "停止整理",
-      "sha256": "d7c9ce1ec1be3c6f9bfcc7f3198f7505914840ea4bcd6a82912e69a47ba968b6",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -204813,6 +204793,26 @@
       "column": 8503,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "停止整理",
+      "sha256": "d7c9ce1ec1be3c6f9bfcc7f3198f7505914840ea4bcd6a82912e69a47ba968b6",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:8510",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 8510,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "調査を停止",
       "sha256": "4633a6545578199aea6746b6e49c2ddaad0b7bc10920fdae0d41449721b99f38",
       "protected": false,
@@ -204827,10 +204827,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8543",
+      "id": "candidate:app/people-copy.mjs:8:8550",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8543,
+      "column": 8550,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "整理已停止。",
@@ -204847,10 +204847,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8552",
+      "id": "candidate:app/people-copy.mjs:8:8559",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8552,
+      "column": 8559,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "整理已停止。",
@@ -204867,10 +204867,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8561",
+      "id": "candidate:app/people-copy.mjs:8:8568",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8561,
+      "column": 8568,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "調査を停止しました。",
@@ -204887,10 +204887,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8657",
+      "id": "candidate:app/people-copy.mjs:8:8664",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8657,
+      "column": 8664,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "操作结果尚未确认，请重试核对。",
@@ -204907,10 +204907,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8675",
+      "id": "candidate:app/people-copy.mjs:8:8682",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8675,
+      "column": 8682,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "操作結果尚未確認，請重試核對。",
@@ -204927,10 +204927,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8693",
+      "id": "candidate:app/people-copy.mjs:8:8700",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8693,
+      "column": 8700,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "操作結果を確認できません。再試行して確認してください。",
@@ -204947,10 +204947,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8764",
+      "id": "candidate:app/people-copy.mjs:8:8771",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8764,
+      "column": 8771,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "图片已准备好保存。",
@@ -204967,10 +204967,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8776",
+      "id": "candidate:app/people-copy.mjs:8:8783",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8776,
+      "column": 8783,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "圖片已準備好儲存。",
@@ -204987,10 +204987,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8788",
+      "id": "candidate:app/people-copy.mjs:8:8795",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8788,
+      "column": 8795,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "画像を保存できます。",
@@ -205007,10 +205007,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8838",
+      "id": "candidate:app/people-copy.mjs:8:8845",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8838,
+      "column": 8845,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "在一本书里，遇见一个人。",
@@ -205027,10 +205027,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8853",
+      "id": "candidate:app/people-copy.mjs:8:8860",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8853,
+      "column": 8860,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "在一本書裡，遇見一個人。",
@@ -205047,10 +205047,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8868",
+      "id": "candidate:app/people-copy.mjs:8:8875",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8868,
+      "column": 8875,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "一冊から、一人の生涯へ。",
@@ -205067,10 +205067,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8911",
+      "id": "candidate:app/people-copy.mjs:8:8918",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8911,
+      "column": 8918,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "{count} 部作品",
@@ -205087,10 +205087,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8925",
+      "id": "candidate:app/people-copy.mjs:8:8932",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8925,
+      "column": 8932,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "{count} 部作品",
@@ -205107,10 +205107,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8939",
+      "id": "candidate:app/people-copy.mjs:8:8946",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8939,
+      "column": 8946,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "作品 {count} 点",
@@ -205127,10 +205127,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8988",
+      "id": "candidate:app/people-copy.mjs:8:8995",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8988,
+      "column": 8995,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "编辑完整资料",
@@ -205147,10 +205147,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:8997",
+      "id": "candidate:app/people-copy.mjs:8:9004",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 8997,
+      "column": 9004,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "編輯完整資料",
@@ -205167,10 +205167,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9006",
+      "id": "candidate:app/people-copy.mjs:8:9013",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9006,
+      "column": 9013,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "すべての資料を編集",
@@ -205187,10 +205187,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9121",
+      "id": "candidate:app/people-copy.mjs:8:9128",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9121,
+      "column": 9128,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "保留出处标识与原文，保存不会开始整理。",
@@ -205207,10 +205207,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9143",
+      "id": "candidate:app/people-copy.mjs:8:9150",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9143,
+      "column": 9150,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "保留出處標識與原文，儲存不會開始整理。",
@@ -205227,10 +205227,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9165",
+      "id": "candidate:app/people-copy.mjs:8:9172",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9165,
+      "column": 9172,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "出典の識別子と原文は保持してください。保存で調査は始まりません。",
@@ -205247,10 +205247,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9255",
+      "id": "candidate:app/people-copy.mjs:8:9262",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9255,
+      "column": 9262,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "请检查资料格式后再保存。",
@@ -205267,10 +205267,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9270",
+      "id": "candidate:app/people-copy.mjs:8:9277",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9270,
+      "column": 9277,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "請檢查資料格式後再儲存。",
@@ -205287,34 +205287,14 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9285",
+      "id": "candidate:app/people-copy.mjs:8:9292",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9285,
+      "column": 9292,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "資料の形式を確認してください。",
       "sha256": "568e0f9f9beabfad76358810a69aa31077c1b45b159879c7c845ba0e62c47b4e",
-      "protected": false,
-      "protectionReason": null,
-      "hints": [],
-      "review": {
-        "state": "unknown",
-        "classification": "unknown",
-        "surface": "unknown",
-        "trigger": "unknown",
-        "decision": "unknown"
-      }
-    },
-    {
-      "id": "candidate:app/people-copy.mjs:8:9327",
-      "file": "app/people-copy.mjs",
-      "line": 8,
-      "column": 9327,
-      "kind": "js-cjk-literal",
-      "property": null,
-      "value": "回到页首",
-      "sha256": "c9aac5af02a0df2a74313a2a652a025f3886e006acad4d93be058ff5144e7337",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -205333,8 +205313,8 @@
       "column": 9334,
       "kind": "js-cjk-literal",
       "property": null,
-      "value": "回到頁首",
-      "sha256": "b3426f37f22ed1a89c7bf9635a835b8e8d1ab779f67e2e99107b8373992cb2eb",
+      "value": "回到页首",
+      "sha256": "c9aac5af02a0df2a74313a2a652a025f3886e006acad4d93be058ff5144e7337",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -205353,6 +205333,26 @@
       "column": 9341,
       "kind": "js-cjk-literal",
       "property": null,
+      "value": "回到頁首",
+      "sha256": "b3426f37f22ed1a89c7bf9635a835b8e8d1ab779f67e2e99107b8373992cb2eb",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:8:9348",
+      "file": "app/people-copy.mjs",
+      "line": 8,
+      "column": 9348,
+      "kind": "js-cjk-literal",
+      "property": null,
       "value": "ページ先頭へ",
       "sha256": "3c391372744a2c1b6bf34fc81c07429a08d457fd8ca88e7c7bb3eb3e22d5367b",
       "protected": false,
@@ -205367,10 +205367,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9394",
+      "id": "candidate:app/people-copy.mjs:8:9401",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9394,
+      "column": 9401,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "生平年表尚待整理。",
@@ -205387,10 +205387,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9406",
+      "id": "candidate:app/people-copy.mjs:8:9413",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9406,
+      "column": 9413,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "生平年表尚待整理。",
@@ -205407,10 +205407,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9418",
+      "id": "candidate:app/people-copy.mjs:8:9425",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9418,
+      "column": 9425,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "年表はまだありません。",
@@ -205427,10 +205427,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9471",
+      "id": "candidate:app/people-copy.mjs:8:9478",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9471,
+      "column": 9478,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "作品目录尚待整理。",
@@ -205447,10 +205447,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9483",
+      "id": "candidate:app/people-copy.mjs:8:9490",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9483,
+      "column": 9490,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "作品目錄尚待整理。",
@@ -205467,10 +205467,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9495",
+      "id": "candidate:app/people-copy.mjs:8:9502",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9495,
+      "column": 9502,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "作品はまだ登録されていません。",
@@ -205487,10 +205487,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9545",
+      "id": "candidate:app/people-copy.mjs:8:9552",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9545,
+      "column": 9552,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "阅读来源原文",
@@ -205507,10 +205507,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9554",
+      "id": "candidate:app/people-copy.mjs:8:9561",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9554,
+      "column": 9561,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "閱讀來源原文",
@@ -205527,10 +205527,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9563",
+      "id": "candidate:app/people-copy.mjs:8:9570",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9563,
+      "column": 9570,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "出典の原文を読む",
@@ -205547,10 +205547,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9609",
+      "id": "candidate:app/people-copy.mjs:8:9616",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9609,
+      "column": 9616,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "第 {current} / {total} 张",
@@ -205567,10 +205567,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9635",
+      "id": "candidate:app/people-copy.mjs:8:9642",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9635,
+      "column": 9642,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "第 {current} / {total} 張",
@@ -205587,10 +205587,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9661",
+      "id": "candidate:app/people-copy.mjs:8:9668",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9661,
+      "column": 9668,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "{total} 枚中 {current} 枚目",
@@ -205607,10 +205607,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9712",
+      "id": "candidate:app/people-copy.mjs:8:9719",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9712,
+      "column": 9719,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "下一张",
@@ -205627,10 +205627,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9718",
+      "id": "candidate:app/people-copy.mjs:8:9725",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9718,
+      "column": 9725,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "下一張",
@@ -205647,10 +205647,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9724",
+      "id": "candidate:app/people-copy.mjs:8:9731",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9724,
+      "column": 9731,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "次の画像",
@@ -205667,10 +205667,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9760",
+      "id": "candidate:app/people-copy.mjs:8:9767",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9760,
+      "column": 9767,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "上一张",
@@ -205687,10 +205687,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9766",
+      "id": "candidate:app/people-copy.mjs:8:9773",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9766,
+      "column": 9773,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "上一張",
@@ -205707,10 +205707,10 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:8:9772",
+      "id": "candidate:app/people-copy.mjs:8:9779",
       "file": "app/people-copy.mjs",
       "line": 8,
-      "column": 9772,
+      "column": 9779,
       "kind": "js-cjk-literal",
       "property": null,
       "value": "前の画像",
