@@ -630,7 +630,7 @@
       },
       {
         "file": "app/reading-dashboard.mjs",
-        "sha256": "abd7ae1d3735963f0e446324b3bdc17cbccb142973f05932f85c1e9a09dc646b"
+        "sha256": "01c9d7eaa5f20b59a53a64720d7b39318e169afbd1fe393c6d4c652eceb930a2"
       },
       {
         "file": "app/reading-draft-store.mjs",
@@ -1177,7 +1177,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "797ffefb35d1360e3fd880e840f69feccb2e47d1bcad7716906b80267070413c"
+    "inputDigest": "361e4ebc6791eefef4dfeb57cabf866d64487c78d16d519783e6ee773db1cad3"
   },
   "locales": [
     "en",

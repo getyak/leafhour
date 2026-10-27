@@ -25,9 +25,9 @@ export function mountReadingDashboard({root,overviewRoot,historyRoot,api,getSess
   const ownedLink=(n,target)=>{n.href=uiHref(target);n.setAttribute('data-ui-owned-href',target);links.add(n);return n;};
   const num=value=>new Intl.NumberFormat(getUiLocale()).format(value);
   const duration=seconds=>readingTimeLabel(seconds,()=>seconds<60?seconds>0?t('unit.timeLess'):t('unit.timeZero'):t('unit.minutes',{minutes:num(Math.floor(seconds/60))}));
-  const monthHeading=()=>new Intl.DateTimeFormat(getUiLocale(),{year:'numeric',month:'long'}).format(new Date(month+'-01T12:00:00Z'));
-  const dayHeading=()=>new Intl.DateTimeFormat(getUiLocale(),{month:'long',day:'numeric'}).format(new Date(selectedDate+'T12:00:00Z'));
-  const weekday=date=>new Intl.DateTimeFormat(getUiLocale(),{weekday:'narrow'}).format(new Date(date+'T12:00:00Z'));
+  const monthHeading=()=>new Intl.DateTimeFormat(getUiLocale(),{year:'numeric',month:'long',timeZone:'UTC'}).format(new Date(month+'-01T12:00:00Z'));
+  const dayHeading=()=>new Intl.DateTimeFormat(getUiLocale(),{month:'long',day:'numeric',timeZone:'UTC'}).format(new Date(selectedDate+'T12:00:00Z'));
+  const weekday=date=>new Intl.DateTimeFormat(getUiLocale(),{weekday:'narrow',timeZone:'UTC'}).format(new Date(date+'T12:00:00Z'));
   const zone=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC',today=()=>localReadingDate(zone),requests=createCalendarRequestState();let month=today().slice(0,7),selectedDate=today(),selectedBook=null,busy=false,overviewData=null,disposed=false;
   let todayBook=null,calendarSignedIn=false,writeMessage=null;
   const todayPanel=node('section','today-panel'),copy=node('div','today-copy'),label=node('p','today-label'),title=node('h2'),author=node('p','today-author'),description=node('p','today-description'),progress=node('p','today-progress'),choice=node('select','today-book-choice');
