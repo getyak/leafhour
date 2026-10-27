@@ -1,0 +1,19 @@
+PASS fresh-entry-uses-the-logical-reading-paragraph
+PASS old-draft-keeps-its-source-and-the-entry-says-continue
+PASS explicit-current-switch-preserves-and-recovers-the-old-draft
+PASS an-existing-question-is-kept-in-history-with-its-original-source
+PASS pending-request-is-not-completed-or-rebound-by-entry-or-switch
+PASS selecting-text-alone-does-not-change-the-existing-discussion
+PASS sending-a-new-question-keeps-the-old-pending-request-recoverable
+PASS offline-new-question-and-history-switch-keep-both-pending-requests
+PASS completed-history-trimming-does-not-discard-an-unfinished-request
+PASS a-new-offline-question-does-not-inherit-the-previous-answer-status
+PASS an-explicit-word-explanation-survives-close-and-reentry-without-typed-text
+PASS reading-layer-identity-stays-visible-and-is-separate-from-old-discussion
+PASS background-reading-refreshes-only-chrome-not-answer-scroll-or-draft
+PASS narrow-night-context-switch-remains-reachable
+PASS a-different-paragraph-note-keeps-the-chat-scope-and-does-not-feed-note-text-back
+PASS changing-note-target-keeps-the-original-discussion-return-frame
+PASS a-source-preview-keeps-the-existing-question-and-draft
+PASS a-note-started-from-reading-returns-to-reading
+

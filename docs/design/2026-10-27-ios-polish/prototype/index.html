@@ -20,12 +20,13 @@
         </div>
       </header>
       <div class="stage">
-        <div class="phone" id="phone" data-theme="paper">
+        <div class="phone" id="phone" data-theme="paper" data-intent="pure">
           <div class="status-bar" aria-hidden="true">
             <span>9:41</span><span class="island"></span
             ><span class="status-icons">▰</span>
           </div>
-          <nav class="reader-nav" id="reader-nav" aria-label="阅读导航">
+          <button class="wake-edge wake-top" id="wake-top" aria-label="显示阅读导航" aria-controls="reader-nav" aria-expanded="false"></button>
+          <nav class="reader-nav" id="reader-nav" aria-label="阅读导航" inert>
             <button id="library-button" aria-label="打开书房">
               <span data-icon="library"></span></button
             ><button id="contents-button" class="book-title">
@@ -50,9 +51,6 @@
               <p id="version-label">示例意译</p>
             </div>
             <div id="prose"></div>
-            <button class="chapter-end" id="chapter-end">
-              回到这一章的开头 <span data-icon="up"></span>
-            </button>
           </article>
           <div
             class="selection-menu"
@@ -64,16 +62,15 @@
             ><button data-selection="original">看原文</button
             ><button data-selection="note">记一句</button>
           </div>
-          <footer class="reading-dock" id="reading-dock">
-            <button id="progress-button">
-              <span>第二章</span
-              ><span class="dock-location" id="dock-location"
-                >林中生活</span
-              ></button
-            ><span class="dock-divider"></span
-            ><button id="companion-button">
+          <button class="wake-edge wake-bottom" id="wake-bottom" aria-label="显示本章进度" aria-controls="reading-dock" aria-expanded="false"></button>
+          <footer class="reading-dock" id="reading-dock" aria-label="本章进度" inert>
+            <button id="companion-button" class="companion-call">
               <span data-icon="conversation"></span><span id="companion-label">读到这里</span>
             </button>
+            <div class="progress-surface">
+              <div class="progress-caption"><button id="progress-button"><span>第二章</span><span class="dock-location" id="dock-location">林中生活</span></button><output id="progress-value">0%</output></div>
+              <input id="reading-progress" type="range" min="0" max="1000" value="0" aria-label="本章阅读进度" />
+            </div>
           </footer>
           <div class="sheet-scrim" id="sheet-scrim" hidden></div>
           <section
@@ -118,9 +115,11 @@
         </div>
         <aside class="study-notes">
           <p class="study-state" id="study-state">打开即续读</p>
-          <p id="study-detail">从上次的位置进入正文，陪读面板保持收起。</p>
+          <p id="study-detail">从上次的位置进入正文。点上下边界唤醒工具，长按文字再选动作。</p>
           <div class="scenario-links" aria-label="查看关键状态">
-            <button data-scenario="resume">续读</button
+            <button data-scenario="resume">纯读</button
+            ><button data-scenario="top">导航</button
+            ><button data-scenario="progress">进度</button
             ><button data-scenario="selected">选文</button
             ><button data-scenario="companion">半屏</button
             ><button data-scenario="discussion">讨论</button
@@ -129,7 +128,7 @@
             ><button data-scenario="records">记录</button
             ><button data-scenario="library">书房</button>
           </div>
-          <a href="../exports/core-flow.svg">核心流程图</a
+          <a href="../exports/intent-flow.svg">核心流程图</a
           ><a href="../exports/relationships.svg">页面与内容关系</a>
           <p class="prototype-label">
             交互原型 · 固定公版样章与示例讲解<br />不接联网模型，输入仅留在当前浏览器会话。

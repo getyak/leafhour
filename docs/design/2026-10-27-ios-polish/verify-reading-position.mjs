@@ -1,3 +1,4 @@
+import {choosePassage,openNavigation,openProgress,openCompanion} from './browser-interactions.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -8,6 +9,9 @@ const root=path.dirname(fileURLToPath(import.meta.url));
 if(!process.env.LEAFHOUR_PLAYWRIGHT_MODULE)throw Error('Set an existing Playwright module');
 const {chromium}=await import(pathToFileURL(process.env.LEAFHOUR_PLAYWRIGHT_MODULE));
 const key='leafhour-ios-half-sheet-prototype-v1';
+// A600px fixture keeps this four-paragraph chapter scrollable after pure reading
+// claims its safe-area height. Full-height clamping remains covered below.
+const SCROLLABLE_HEIGHT=600;
 const identity={bookId:'walden-public-sample',sourceVersion:'prototype-20261026',layer:'interpretive'};
 const server=createServer(async(req,res)=>{
   try{
@@ -34,7 +38,7 @@ const visible=p=>p.evaluate(()=>{
   return node?.id;
 });
 async function page(width=402,saved=null){
-  const c=await browser.newContext({viewport:{width,height:874},hasTouch:true,isMobile:true});
+  const c=await browser.newContext({viewport:{width,height:SCROLLABLE_HEIGHT},hasTouch:true,isMobile:true});
   await c.route('**/*',r=>{const u=r.request().url();if(u.startsWith(base)||u.startsWith('data:'))return r.continue();report.externalRequests.push(u);return r.abort();});
   if(saved)await c.addInitScript(({key,saved})=>{if(sessionStorage.getItem(key)===null)sessionStorage.setItem(key,JSON.stringify(saved));},{key,saved});
   const p=await c.newPage();p.setDefaultTimeout(Number(process.env.LEAFHOUR_BROWSER_TIMEOUT_MS) || 10000);p.on('pageerror',e=>report.errors.push(e.message));await p.goto(base+'/prototype/');await layoutSettled(p);return {c,p};
@@ -47,7 +51,7 @@ async function check(name,fn){
   finally{await Promise.all(owned.map(c=>c.close()));}
 }
 async function atSecondParagraph(p){
-  await p.getByRole('button',{name:'排版设置',exact:true}).click();await settled(p);
+  await openNavigation(p);await p.getByRole('button',{name:'排版设置',exact:true}).click();await settled(p);
   for(let i=0;i<6;i++)await p.getByRole('button',{name:'增大字号',exact:true}).click();
   await p.getByRole('button',{name:'完成',exact:true}).click();await p.locator('#reader-sheet').waitFor({state:'hidden'});
   await p.locator('#reading-scroll').evaluate(n=>{n.scrollTop=document.getElementById('walden-2-002').offsetTop-24;});
@@ -71,11 +75,11 @@ try{
   await check('live-resize-does-not-rewrite-the-logical-character-anchor',async open=>{
     const p=await open(402);await atSecondParagraph(p);const before=(await snapshot(p)).readingPosition;
     assert.ok(before?.offsetUtf16>=0,'a logical locator is required');
-    await p.setViewportSize({width:320,height:874});
+    await p.setViewportSize({width:320,height:SCROLLABLE_HEIGHT});
     await layoutSettled(p);
     assert.equal(await visible(p),'walden-2-002');
     const after=(await snapshot(p)).readingPosition;assert.equal(after.passageId,before.passageId);assert.equal(after.offsetUtf16,before.offsetUtf16);
-    await p.setViewportSize({width:402,height:874});await p.setViewportSize({width:320,height:874});
+    await p.setViewportSize({width:402,height:SCROLLABLE_HEIGHT});await p.setViewportSize({width:320,height:SCROLLABLE_HEIGHT});
     await layoutSettled(p);
     assert.equal((await snapshot(p)).readingPosition.offsetUtf16,before.offsetUtf16);
   });
@@ -104,7 +108,7 @@ try{
   });
   await check('smaller-type-keeps-the-target-word-and-logical-offset-even-at-the-book-end',async open=>{
     const p=await open(402);await atSecondParagraph(p);const before=(await snapshot(p)).readingPosition;
-    await p.getByRole('button',{name:'排版设置',exact:true}).click();await settled(p);
+    await openNavigation(p);await p.getByRole('button',{name:'排版设置',exact:true}).click();await settled(p);
     for(let i=0;i<10;i++)await p.getByRole('button',{name:'减小字号',exact:true}).click();
     await p.getByRole('button',{name:'完成',exact:true}).click();await p.locator('#reader-sheet').waitFor({state:'hidden'});
     const after=(await snapshot(p)).readingPosition;
@@ -114,7 +118,7 @@ try{
   });
   await check('changing-text-layer-uses-the-same-paragraph-with-a-new-layer-offset',async open=>{
     const p=await open(402);await atSecondParagraph(p);
-    await p.getByRole('button',{name:'排版设置',exact:true}).click();await settled(p);
+    await openNavigation(p);await p.getByRole('button',{name:'排版设置',exact:true}).click();await settled(p);
     for(let i=0;i<10;i++)await p.getByRole('button',{name:'减小字号',exact:true}).click();
     await p.getByRole('button',{name:'直译',exact:true}).click();
     await p.getByRole('button',{name:'完成',exact:true}).click();await p.locator('#reader-sheet').waitFor({state:'hidden'});
@@ -125,7 +129,7 @@ try{
   });
   for(const reducedMotion of ['no-preference','reduce'])await check('directory-jump-survives-panel-close-and-reopen-'+reducedMotion,async open=>{
     const p=await open(320,{size:28,layer:'interpretive'},{reducedMotion});
-    await p.locator('#contents-button').click();await settled(p);
+    await openNavigation(p);await p.locator('#contents-button').click();await settled(p);
     await p.locator('[data-jump="walden-2-002"]').click();await p.locator('#reader-sheet').waitFor({state:'hidden'});await layoutSettled(p);
     assert.equal(await visible(p),'walden-2-002');
     assert.equal((await snapshot(p)).readingPosition.passageId,'walden-2-002');
@@ -135,7 +139,7 @@ try{
   await check('a-note-record-jump-updates-reading-without-changing-its-bound-source',async open=>{
     const quote={passageId:'walden-2-002',text:'固定样章第二段',layer:'interpretive',version:'prototype-20261026',startUtf16:0,endUtf16:8};
     const p=await open(320,{size:28,layer:'interpretive',notes:[{text:'定位测试：第二段',author:'user',quote}]});
-    await p.locator('#library-button').click();await settled(p);await p.locator('[data-action="records"]').click();await settled(p);
+    await openNavigation(p);await p.locator('#library-button').click();await settled(p);await p.locator('[data-action="records"]').click();await settled(p);
     await p.locator('[data-record="0"]').click();await p.locator('#reader-sheet').waitFor({state:'hidden'});await layoutSettled(p);
     assert.equal((await snapshot(p)).readingPosition.passageId,'walden-2-002');
     const saved=await p.evaluate(key=>JSON.parse(sessionStorage.getItem(key)),key);assert.equal(saved.notes[0].quote.passageId,'walden-2-002');assert.equal(saved.notes[0].author,'user');

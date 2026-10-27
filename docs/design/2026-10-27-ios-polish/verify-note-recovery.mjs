@@ -1,3 +1,4 @@
+import {choosePassage,openNavigation,openProgress,openCompanion} from './browser-interactions.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -44,8 +45,8 @@ const noteQuote={...firstQuote,passageId:'walden-2-002',text:'日子这样珍贵
 noteQuote.endUtf16=noteQuote.text.length;
 const draftKey=q=>JSON.stringify([q.passageId,q.version,q.layer,q.startUtf16,q.endUtf16,q.text]);
 const seed={quote:firstQuote,draft:'第一段仍在写的问题',question:'原讨论的问题',answered:true,noteDrafts:{[draftKey(noteQuote)]:noteText}};
-async function records(p){await p.locator('#library-button').click();await settle(p);await p.locator('[data-action="records"]').click();await settle(p);}
-async function selectNote(p,id='walden-2-002'){await p.locator('[data-quote="'+id+'"]').click();await p.locator('[data-selection="note"]').click();await settle(p);}
+async function records(p){await openNavigation(p);await p.locator('#library-button').click();await settle(p);await p.locator('[data-action="records"]').click();await settle(p);}
+async function selectNote(p,id='walden-2-002'){await choosePassage(p,id);await p.locator('[data-selection="note"]').click();await settle(p);}
 async function save(p){await p.locator('[data-action="save-note"]').click();await settle(p);}
 async function needUndo(p){assert.equal(await p.locator('[data-action="undo-note-save"]').count(),1,'Saving must offer Undo');}
 try{
@@ -72,7 +73,7 @@ try{
   await p.locator('[data-action="undo-note-save"]').click();await settle(p);assert.equal(await p.locator('#note-field').inputValue(),noteText);assert.equal((await snapshot(p)).quote.passageId,'walden-2-001');await p.locator('#sheet-done').click();await p.locator('#reader-sheet').waitFor({state:'hidden'});assert.equal((await snapshot(p)).readingPosition.passageId,before.passageId);
  },{saved:{...seed,noteDrafts:{}}});
  await check('discussion-origin-undo-preserves-its-return-frame-and-composer',async p=>{
-  await p.locator('#companion-button').click();await settle(p);await selectNote(p);await p.locator('#note-field').fill(noteText);await save(p);await needUndo(p);assert.equal((await snapshot(p)).route,'companion');
+  await openCompanion(p);await settle(p);await selectNote(p);await p.locator('#note-field').fill(noteText);await save(p);await needUndo(p);assert.equal((await snapshot(p)).route,'companion');
   await p.locator('[data-action="undo-note-save"]').click();await settle(p);assert.match(await p.locator('#sheet-back').innerText(),/返回讨论/);await p.locator('#sheet-back').click();await settle(p);let s=await snapshot(p);assert.equal(s.route,'companion');assert.equal(s.quote.passageId,'walden-2-001');assert.equal(s.draft,seed.draft);assert.equal(s.question,seed.question);
  },{saved:seed});
  await check('undo-does-not-overwrite-a-newer-draft-on-the-same-quote',async p=>{
@@ -84,7 +85,7 @@ try{
   const s=await storage(p);assert.equal(s.notes.length,1);assert.equal(s.notes[0].text,'第二段保存');assert.equal(await p.locator('#note-field').inputValue(),'第三段保存');assert.equal(await p.locator('.context-quote').getAttribute('data-passage-id'),'walden-2-003');
  },{saved:seed});
  await check('undo-feedback-remains-operable-while-keyboard-focus-is-inside',async p=>{
-  await selectNote(p);await p.locator('#note-field').fill(noteText);await save(p);await needUndo(p);await p.locator('#reader-sheet').waitFor({state:'hidden'});await p.locator('[data-action="undo-note-save"]').focus();await p.clock.fastForward(9000);assert.equal(await p.locator('#phone-toast').isVisible(),true);await p.locator('#library-button').focus();await p.clock.fastForward(9000);assert.equal(await p.locator('#phone-toast').isVisible(),false);assert.equal((await storage(p)).notes.length,1);
+  await selectNote(p);await p.locator('#note-field').fill(noteText);await save(p);await needUndo(p);await p.locator('#reader-sheet').waitFor({state:'hidden'});await p.locator('[data-action="undo-note-save"]').focus();await p.clock.fastForward(9000);assert.equal(await p.locator('#phone-toast').isVisible(),true);await p.locator('#reading-scroll').focus();await p.clock.fastForward(9000);assert.equal(await p.locator('#phone-toast').isVisible(),false);assert.equal((await storage(p)).notes.length,1);
  },{saved:seed,clock:true});
  await check('narrow-night-note-recovery-has-reachable-controls-and-no-overflow',async p=>{
   await records(p);assert.equal(await p.locator('[data-note-draft]').count(),1);await p.locator('[data-note-draft]').click();await settle(p);await save(p);await needUndo(p);const u=await p.locator('[data-action="undo-note-save"]').boundingBox();assert.ok(u.height>=44&&u.y+u.height<=740);assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);

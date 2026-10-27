@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-27T06:02:39.718Z",
+  "checks": [
+    {
+      "name": "direct-demo-intents-initialize-without-a-startup-race",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "pass"
+}

@@ -1,0 +1,152 @@
+{
+  "at": "2026-10-27T06:15:52.797Z",
+  "timeZone": "Asia/Singapore",
+  "kind": "design-prototype",
+  "checks": [
+    {
+      "name": "launch-enters-reading-with-companion-collapsed",
+      "status": "pass"
+    },
+    {
+      "name": "repeated-word-selection-keeps-actual-utf16-range",
+      "status": "pass",
+      "range": [
+        54,
+        56
+      ]
+    },
+    {
+      "name": "restored-draft-never-adopts-another-passages-sent-question",
+      "status": "pass"
+    },
+    {
+      "name": "citation-roundtrip-restores-half-detent-scroll-quote-and-draft",
+      "status": "pass",
+      "beforeScroll": 93,
+      "afterScroll": 93
+    },
+    {
+      "name": "half-sheet-background-reading-survives-closing",
+      "status": "pass",
+      "before": 170,
+      "after": 170
+    },
+    {
+      "name": "reopen-restores-reading-and-keeps-discussion-collapsed",
+      "status": "pass"
+    },
+    {
+      "name": "connection-recovery-requires-explicit-retry-and-retains-edited-draft",
+      "status": "pass"
+    },
+    {
+      "name": "note-drafts-stay-with-their-own-quote-and-saved-notes-keep-user-attribution",
+      "status": "pass"
+    },
+    {
+      "name": "320px-large-text-night-and-reduced-motion-remain-operable",
+      "status": "pass"
+    },
+    {
+      "name": "13-core-states-render-at-402x874",
+      "status": "pass",
+      "screens": 13
+    },
+    {
+      "name": "no-page-errors-and-no-external-network-requests",
+      "status": "pass"
+    }
+  ],
+  "screens": [
+    {
+      "slug": "01-resume",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "02-selected",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "03-companion",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "04-discussion",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "05-citation",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "06-note",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "07-original",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "08-library",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "09-records",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "10-contents",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "11-appearance",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "12-offline",
+      "width": 402,
+      "height": 874
+    },
+    {
+      "slug": "13-night",
+      "width": 402,
+      "height": 874
+    }
+  ],
+  "errors": [],
+  "blockedExternalRequests": [],
+  "limits": [
+    "Fixed public-domain Walden excerpts, independent draft translations and labelled example answers.",
+    "No live model, production account, paid generation, notification or real library request.",
+    "Chromium desktop/touch emulation only; not native SwiftUI, physical iPhone, Safari, VoiceOver speech, haptics or native keyboard acceptance.",
+    "This run checks the Web prototype; Figma authoring and readback have separate evidence in figma-verification.json."
+  ],
+  "browser": {
+    "engine": "chromium",
+    "version": "156.0.8078.48"
+  },
+  "status": "pass",
+  "sourceHashes": {
+    "prototype/app.js": "832ff9307643d251f6ae988f03427b92fc7607cb0d8cb2a6a4b156a49012b053",
+    "prototype/motion.mjs": "53fd5df37f2034bcdf9fa47e7ae5d2bca1a11fff46bae63e77a30f2691ffd9ee",
+    "prototype/selection-position.mjs": "ffd097f46090c18b411f18b3891fc5fe73733242f7e0c2bba7f0f9c8b97cacf8",
+    "prototype/reading-position.mjs": "26c1c49866f01a7324c77e8b5c6db3845114bc1fc419d07bbb92b59f2eddf3ed",
+    "prototype/companion-context.mjs": "59a43939064c9f68d734c3b88d0066d9c4c55c85b2aa97d5b55f3867958ae4cb",
+    "prototype/note-recovery.mjs": "77a5d2e99e50cb3cd33afba947a0b2cc2f457c4a94141026f131e268167cf989",
+    "prototype/reading-intent.mjs": "5a6dc0333639b3ce46630bf566866ab68e96cc4e715b12c3e9bc110bbdc56efa",
+    "prototype/reading-progress.mjs": "81c38e3cdfc35d14e72373e26faa659593ac3697e37cf0914989924e41a670d2",
+    "prototype/style.css": "5d749ba5876df36804a5ceb4278a75e9e371a75ee871dacd6ccb969402a43b48",
+    "prototype/index.html": "abdf05674d951f7e1415c75c4c58cfd2c248ca26523cbf00f8bc5ddba5fa758b"
+  }
+}

@@ -1,3 +1,4 @@
+import {choosePassage,openNavigation,openProgress,openCompanion} from './browser-interactions.mjs';
 import { captureDOM } from "../2026-10-26-ios-half-sheet/capture-dom.mjs";
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
@@ -67,7 +68,7 @@ const browser = await chromium.launch({
   args: ["--no-proxy-server"],
 });
 report.browser = { engine: "chromium", version: browser.version() };
-async function context(options = {}) {
+async function context({ fixtureSize, ...options } = {}) {
   const c = await browser.newContext({
     viewport: { width: 402, height: 874 },
     hasTouch: true,
@@ -82,6 +83,7 @@ async function context(options = {}) {
     report.blockedExternalRequests.push(url);
     return route.abort();
   });
+  if (fixtureSize) await c.addInitScript(size => { if (!sessionStorage.getItem("leafhour-ios-half-sheet-prototype-v1")) sessionStorage.setItem("leafhour-ios-half-sheet-prototype-v1", JSON.stringify({ size })); }, fixtureSize);
   const p = await c.newPage();
   p.setDefaultTimeout(Number(process.env.LEAFHOUR_BROWSER_TIMEOUT_MS) || 10000);
   p.on("pageerror", (error) => report.errors.push(error.message));
@@ -104,7 +106,7 @@ async function close(p) {
 }
 async function select(p, id) {
   await close(p);
-  await p.locator('[data-quote="' + id + '"]').click();
+  await choosePassage(p,id);
   await p.getByRole("button", { name: "解释这句", exact: true }).click();
   await settled(p);
 }
@@ -159,6 +161,8 @@ try {
   await p.mouse.down();
   await p.mouse.move(range.x2, range.y2, { steps: 10 });
   await p.mouse.up();
+  await p.locator("#reading-scroll").focus();
+  await p.keyboard.press("Shift+F10");
   await p.getByRole("button", { name: "解释这句", exact: true }).click();
   await settled(p);
   const selected = await quote(p);
@@ -192,7 +196,8 @@ try {
   );
   pass("restored-draft-never-adopts-another-passages-sent-question");
   await active.c.close();
-  active = await context();
+  // This check requires genuine book overflow after the sheet closes.
+  active = await context({ fixtureSize: 28 });
   p = active.p;
   await select(p, "walden-2-001");
   await p.locator("#question-input").fill("核对出处后仍要保留的草稿");
@@ -234,6 +239,8 @@ try {
   await p.waitForFunction(
     () => document.getElementById("reading-scroll").scrollTop > 0,
   );
+  // Wheel dispatch resolves before the scroll has finished applying.
+  await p.waitForTimeout(200);
   const readingBefore = await p
     .locator("#reading-scroll")
     .evaluate((n) => n.scrollTop);
@@ -247,6 +254,7 @@ try {
     after: readingAfter,
   });
   await p.reload();
+  await p.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
   assert.equal(await p.locator("#reader-sheet").isVisible(), false);
   assert.ok(
     Math.abs(
@@ -289,7 +297,7 @@ try {
   await settled(p);
   await p.locator("#reading-scroll").hover({ position: { x: 130, y: 60 } });
   await p.mouse.wheel(0, 250);
-  await p.locator('[data-quote="walden-2-002"]').click();
+  await choosePassage(p,"walden-2-002");
   await p.getByRole("button", { name: "记一句", exact: true }).click();
   await settled(p);
   assert.equal(await p.locator("#note-field").inputValue(), "");
@@ -298,7 +306,7 @@ try {
     .fill("（演示笔记）把自己的问题与讲解分开保存。");
   await p.getByRole("button", { name: "保存", exact: true }).click();
   await close(p);
-  await p.getByLabel("打开书房", { exact: true }).click();
+  await openNavigation(p);await p.getByLabel("打开书房", { exact: true }).click();
   await settled(p);
   await p.getByRole("button", { name: /我的记录 笔记/ }).click();
   await settled(p);
@@ -316,7 +324,7 @@ try {
     reducedMotion: "reduce",
   });
   p = active.p;
-  await p.getByLabel("排版设置", { exact: true }).click();
+  await openNavigation(p);await p.getByLabel("排版设置", { exact: true }).click();
   await settled(p);
   for (let i = 0; i < 6; i++)
     await p.getByLabel("增大字号", { exact: true }).click();
@@ -327,7 +335,7 @@ try {
     await p.evaluate(() => document.documentElement.scrollWidth > innerWidth),
     false,
   );
-  await p.locator("#companion-button").click();
+  await openCompanion(p);
   await settled(p);
   const composer = await p.locator("#composer").boundingBox();
   assert.ok(composer.y + composer.height <= 740);
@@ -362,7 +370,7 @@ try {
       base + "/prototype/" + (route === "resume" ? "" : "?state=" + route),
     );
     if (route === "selected")
-      await p.locator('[data-quote="walden-2-001"]').click();
+      await choosePassage(p,"walden-2-001");
     if (route !== "resume" && route !== "selected") {
       await settled(p);
       await p.locator(".sheet-header").click({ position: { x: 200, y: 20 } });
@@ -410,6 +418,8 @@ try {
     "prototype/reading-position.mjs",
     "prototype/companion-context.mjs",
     "prototype/note-recovery.mjs",
+    "prototype/reading-intent.mjs",
+    "prototype/reading-progress.mjs",
     "prototype/style.css",
     "prototype/index.html",
   ])

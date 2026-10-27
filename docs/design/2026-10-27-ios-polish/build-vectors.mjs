@@ -3,7 +3,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createCanvas, loadImage } from "@napi-rs/canvas";
 import { build } from "esbuild";
-const root = path.dirname(fileURLToPath(import.meta.url));
+const sourceRoot = path.dirname(fileURLToPath(import.meta.url));
+const root = process.env.LEAFHOUR_DESIGN_OUTPUT ? path.resolve(process.env.LEAFHOUR_DESIGN_OUTPUT) : sourceRoot;
+const immersive = root !== sourceRoot;
 const measure = createCanvas(10, 10).getContext("2d");
 const esc = (s) =>
   String(s ?? "").replace(
@@ -178,7 +180,7 @@ ctx.font = "32px Georgia";
 ctx.fillText("Leafhour", gap, 58);
 ctx.fillStyle = "#5D6A62";
 ctx.font = '18px "PingFang SC"';
-ctx.fillText("iOS · 半屏陪读 · 核心画面", gap + 180, 57);
+ctx.fillText(immersive ? "iOS · 纯读与意图" : "iOS · 半屏陪读 · 核心画面", gap + 180, 57);
 for (let i = 0; i < manifest.length; i++) {
   const item = manifest[i],
     x = gap + (i % cols) * (cardWidth + gap),
@@ -205,18 +207,14 @@ heroContext.fillText("Leafhour", 58, 58);
 heroContext.fillStyle = "#242A27";
 heroContext.font = '19px "Songti SC"';
 heroContext.fillText("继续阅读，沿着原句展开思考。", 240, 57);
-for (const [index, slug] of [
-  "01-resume",
-  "03-companion",
-  "05-citation",
-].entries()) {
+for (const [index, slug] of (immersive ? ["01-pure","04-selected","05-companion"] : ["01-resume","03-companion","05-citation"]).entries()) {
   const x = 58 + index * 460;
   const source = await loadImage(
     await readFile(path.join(root, "exports", slug + ".png")),
   );
   heroContext.drawImage(source, x, 110, 402, 874);
   heroContext.fillText(
-    ["打开即续读", "半屏读与问", "核对出处，原路返回"][index],
+    (immersive ? ["整屏是书","长按才有动作","陪读按需出现"] : ["打开即续读", "半屏读与问", "核对出处，原路返回"])[index],
     x,
     1024,
   );
@@ -225,9 +223,9 @@ await writeFile(
   path.join(root, "exports", "core-preview.png"),
   hero.toBuffer("image/png"),
 );
-const html = await readFile(path.join(root, "prototype", "index.html"), "utf8"),
-  css = await readFile(path.join(root, "prototype", "style.css"), "utf8"),
-  js = (await build({ entryPoints: [path.join(root, "prototype", "app.js")], bundle: true, write: false, format: "iife", target: "es2022" })).outputFiles[0].text;
+const html = await readFile(path.join(sourceRoot, "prototype", "index.html"), "utf8"),
+  css = await readFile(path.join(sourceRoot, "prototype", "style.css"), "utf8"),
+  js = (await build({ entryPoints: [path.join(sourceRoot, "prototype", "app.js")], bundle: true, write: false, format: "iife", target: "es2022" })).outputFiles[0].text;
 const standalone = html
   .replace(
     /<link\s+rel="stylesheet"\s+href="style\.css"\s*\/?>/,

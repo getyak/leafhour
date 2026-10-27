@@ -1,0 +1,71 @@
+{
+  "at": "2026-10-27T06:13:58.084Z",
+  "checks": [
+    {
+      "name": "handle-has-a-44-pixel-touch-target",
+      "status": "pass"
+    },
+    {
+      "name": "scrim-changes-continuously-during-an-upward-drag",
+      "status": "pass"
+    },
+    {
+      "name": "holding-the-sheet-still-clears-stale-flick-velocity",
+      "status": "pass"
+    },
+    {
+      "name": "a-moving-sheet-can-be-grabbed-and-reversed-without-a-jump",
+      "status": "pass"
+    },
+    {
+      "name": "pointer-cancellation-restores-the-detent-without-dismissing",
+      "status": "pass"
+    },
+    {
+      "name": "reduced-motion-keeps-the-handle-operable-without-a-running-spring",
+      "status": "pass"
+    },
+    {
+      "name": "selection-tools-follow-the-selected-paragraph-and-stay-in-bounds",
+      "status": "pass"
+    },
+    {
+      "name": "confirming-a-quote-clears-the-temporary-paragraph-highlight",
+      "status": "pass"
+    },
+    {
+      "name": "scrolling-keeps-visible-selection-tools-attached-to-the-source",
+      "status": "pass"
+    },
+    {
+      "name": "scrolling-the-selection-out-of-view-dismisses-its-tools",
+      "status": "pass"
+    },
+    {
+      "name": "a-closing-sheet-can-be-grabbed-and-cancelled-with-its-draft",
+      "status": "pass"
+    },
+    {
+      "name": "dragging-away-and-back-is-not-treated-as-a-tap",
+      "status": "pass"
+    },
+    {
+      "name": "real-touch-scrolling-keeps-tools-for-a-still-visible-selection",
+      "status": "pass"
+    },
+    {
+      "name": "a-fast-upward-flick-keeps-the-handle-below-the-status-area",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "closingInput": {
+    "captured": true,
+    "hidden": false,
+    "inert": null,
+    "top": 472.66888427734375,
+    "target": ""
+  },
+  "status": "pass"
+}

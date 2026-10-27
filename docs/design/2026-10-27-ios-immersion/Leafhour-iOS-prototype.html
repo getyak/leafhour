@@ -1,0 +1,2892 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover"
+  />
+  <meta name="color-scheme" content="light dark" />
+  <title>Leafhour · 半屏陪读</title>
+  <link rel="icon" href="data:," />
+  <style>* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #ecefec;
+  color: #242a27;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+}
+button,
+input,
+textarea {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.phone button:not(.sheet-grip) {
+  transition: transform 120ms ease-out, filter 120ms ease-out;
+}
+.phone button:not(.sheet-grip):active {
+  transform: scale(0.97);
+  filter: brightness(0.96);
+}
+button:disabled {
+  cursor: default;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #759b82;
+  outline-offset: 3px;
+}
+button {
+  border: 0;
+  background: none;
+  color: inherit;
+}
+a {
+  color: inherit;
+}
+button svg {
+  pointer-events: none;
+}
+svg.icon {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+.workbench {
+  max-width: 1240px;
+  margin: auto;
+  padding: 25px 32px 40px;
+}
+.study-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.wordmark {
+  text-decoration: none;
+  font:
+    24px Georgia,
+    serif;
+  letter-spacing: -1px;
+}
+.wordmark span {
+  font:
+    12px -apple-system,
+    sans-serif;
+  color: #617067;
+  margin-left: 10px;
+  letter-spacing: 0;
+}
+.study-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  font-size: 12px;
+  color: #526057;
+}
+.study-controls button {
+  padding: 10px 4px;
+}
+.study-controls label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.study-controls input {
+  accent-color: #365b47;
+}
+.stage {
+  display: flex;
+  gap: 70px;
+  align-items: center;
+  justify-content: center;
+}
+.phone {
+  --status-height: 62px;
+  --reading-bottom: 44px;
+  --paper: #f7f8f5;
+  --ink: #242a27;
+  --secondary: #5d6a62;
+  --accent: #365b47;
+  --surface: #fff;
+  --wash: #edf1eb;
+  --line: #dce3da;
+  --glass: #f9faf5e8;
+  --highlight: #dce9dc;
+  position: relative;
+  isolation: isolate;
+  width: 402px;
+  height: 874px;
+  flex-shrink: 0;
+  border-radius: 46px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow:
+    0 30px 100px #25433320,
+    0 0 0 1px #1b33251c;
+  overflow: hidden;
+}
+.phone[data-theme="night"] {
+  --paper: #191e1b;
+  --ink: #e7eee7;
+  --secondary: #aebcaf;
+  --accent: #a8cbb4;
+  --surface: #242d27;
+  --wash: #2b382e;
+  --line: #435147;
+  --glass: #202a23ee;
+  --highlight: #3b5141;
+}
+.status-bar {
+  height: var(--status-height);
+  position: absolute;
+  z-index: 8;
+  inset: 0 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+  font-size: 15px;
+  font-weight: 600;
+  background: var(--paper);
+}
+.status-bar .island {
+  width: 112px;
+  height: 30px;
+  border-radius: 20px;
+  background: #121712;
+  position: absolute;
+  top: 15px;
+  left: calc(50% - 56px);
+}
+.status-icons {
+  font-size: 23px;
+}
+.reader-nav {
+  position: absolute;
+  inset: var(--status-height) 0 auto;
+  height: 56px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 160ms ease, transform 160ms ease, visibility 0s linear 160ms;
+}
+.phone[data-intent="top"] .reader-nav {opacity:1;visibility:visible;pointer-events:auto;transform:none;transition-delay:0s;}
+.wake-edge {position:absolute;z-index:9;left:0;right:0;width:100%;border:0;background:transparent;border-radius:0;min-height:44px;}
+.wake-top {top:0;height:var(--status-height);}
+.wake-bottom {bottom:0;height:var(--reading-bottom);}
+.wake-edge:focus-visible {outline:2px solid var(--accent);outline-offset:-6px;}
+.phone[data-intent="selection"] .wake-edge,.phone[data-intent="sheet"] .wake-edge {pointer-events:none;}
+.phone[data-intent="pure"] .status-bar > span:not(.island) {opacity:.38;}
+.reader-nav > button {
+  height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 18px;
+}
+.reader-nav .book-title {
+  font-size: 15px;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 112px;
+  border-radius: 14px;
+  font-weight: 500;
+}
+.book-title-row { display: flex; gap: 5px; align-items: center; line-height: 19px; }
+.nav-version { font-size: 11px; line-height: 14px; color: var(--secondary); font-weight: 400; }
+.book-title svg.icon {
+  width: 12px;
+  height: 12px;
+  color: var(--secondary);
+}
+.type-button {
+  letter-spacing: -1px;
+}
+.reading-scroll {
+  overflow-anchor: none;
+  position: absolute;
+  inset: var(--status-height) 0 var(--reading-bottom);
+  overflow: auto;
+  padding: 24px 28px;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
+}
+.reading-scroll::-webkit-scrollbar,
+.sheet-body::-webkit-scrollbar {
+  display: none;
+}
+.chapter-heading {
+  margin: 0 0 32px;
+}
+.chapter-heading > span {
+  font-size: 11px;
+  color: var(--secondary);
+  letter-spacing: 2px;
+}
+.chapter-heading h1 {
+  font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+  font-size: 34px;
+  line-height: 1.35;
+  letter-spacing: 1px;
+  font-weight: 500;
+  margin: 13px 0 9px;
+}
+.chapter-heading p {
+  font-size: 11px;
+  color: var(--secondary);
+  margin: 0;
+}
+.passage {
+  position: relative;
+  font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+  font-size: var(--reader-size, 22px);
+  line-height: 1.83;
+  letter-spacing: 0.15px;
+  margin: 0 0 27px;
+  white-space: pre-wrap;
+}
+.passage.source {
+  font-family: "New York", Georgia, serif;
+  line-height: 1.7;
+  font-size: var(--reader-size, 21px);
+  letter-spacing: 0;
+}
+.passage .resume-mark {
+  display: block;
+  font:
+    11px/1.5 -apple-system,
+    sans-serif;
+  color: var(--accent);
+  margin: 0 0 11px;
+}
+.passage em {
+  font-style: normal;
+  background: var(--highlight);
+  border-radius: 3px;
+}
+.passage.is-selected .passage-text {
+  background: var(--highlight);
+  border-radius: 4px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.passage-text::selection { background: var(--highlight); color: var(--ink); }
+.chapter-end {
+  font-size: 12px;
+  color: var(--secondary);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 20px;
+  padding: 15px 0;
+}
+.chapter-end .icon {
+  width: 14px;
+  height: 14px;
+}
+.reading-dock {
+  position: absolute;
+  z-index: 6;
+  bottom: var(--reading-bottom);
+  left: 0;
+  right: 0;
+  padding: 22px 28px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  background: linear-gradient(transparent,var(--paper) 30%);
+  opacity:0;visibility:hidden;pointer-events:none;transform:translateY(6px);
+  transition:opacity 160ms ease,transform 160ms ease,visibility 0s linear 160ms;
+}
+.phone[data-intent="progress"] .reading-dock {opacity:1;visibility:visible;pointer-events:auto;transform:none;transition-delay:0s;}
+.reading-dock button {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--accent);
+  padding: 0 4px;
+  border-radius: 10px;
+}
+.reading-dock .companion-call {align-self:flex-end;font-size:13px;font-weight:400;color:var(--accent);}
+.progress-surface {width:100%;}
+.progress-caption {display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.progress-caption button {display:flex;gap:8px;align-items:center;font-size:11px;color:var(--secondary);}
+.progress-caption output {font-size:11px;color:var(--secondary);font-variant-numeric:tabular-nums;}
+#reading-progress {width:100%;margin:0;min-height:44px;accent-color:var(--accent);cursor:ew-resize;touch-action:pan-x;}
+.reading-dock .dock-location {
+  font-size: 13px;
+  color: var(--ink);
+}
+.dock-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--line);
+}
+.home-indicator {
+  pointer-events: none;
+  position: absolute;
+  z-index: 12;
+  bottom: 9px;
+  left: calc(50% - 61px);
+  width: 122px;
+  height: 4px;
+  border-radius: 5px;
+  background: var(--ink);
+  opacity: 0.8;
+}
+.selection-menu {
+  position: absolute;
+  z-index: 10;
+  top: 118px;
+  left: 16px;
+  width: min(294px, calc(100% - 32px));
+  display: flex;
+  padding: 4px;
+  background: var(--surface);
+  box-shadow: 0 8px 30px #182a2625;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  animation: selection-in 80ms ease-out;
+}
+.selection-menu[data-placement="above"]::before,
+.selection-menu[data-placement="below"]::before {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  left: calc(var(--anchor-x) - 5px);
+  background: var(--surface);
+  transform: rotate(45deg);
+  z-index: -1;
+}
+.selection-menu[data-placement="above"]::before { bottom: -6px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.selection-menu[data-placement="below"]::before { top: -6px; border-left: 1px solid var(--line); border-top: 1px solid var(--line); }
+@keyframes selection-in {
+  from { opacity: 0; scale: 0.97; }
+  to { opacity: 1; scale: 1; }
+}
+.selection-menu button {
+  flex: 1;
+  min-height: 44px;
+  font-size: 13px;
+  white-space: nowrap;
+  color: var(--accent);
+  padding: 5px;
+}
+.selection-menu button + button {
+  border-left: 1px solid var(--line);
+  border-radius: 0;
+}
+.sheet-scrim {
+  position: absolute;
+  z-index: 8;
+  inset: 118px 0 0;
+  background: #12201928;
+  opacity: 0;
+}
+.reader-sheet {
+  position: absolute;
+  z-index: 9;
+  inset: auto 0 0;
+  height: 88%;
+  border-radius: 32px 32px 0 0;
+  background: var(--surface);
+  box-shadow: 0 -10px 38px #15251d17;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 31px;
+  will-change: transform;
+  border-top: 1px solid var(--line);
+}
+.sheet-grip {
+  width: 84px;
+  height: 44px;
+  margin: -10px 0;
+  align-self: center;
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  border-radius: 32px 32px 0 0;
+}
+.sheet-grip span {
+  width: 34px;
+  height: 4px;
+  background: var(--line);
+  border-radius: 8px;
+  transition: background-color 100ms;
+}
+.sheet-grip[data-dragging="true"] span { background: var(--accent); }
+.sheet-header {
+  height: 47px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+}
+.sheet-header h2 {
+  font-size: 20px;
+  letter-spacing: -0.3px;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+}
+.sheet-header .sheet-done {
+  margin-left: auto;
+  height: 44px;
+  padding: 0 0 0 12px;
+  font-size: 13px;
+  color: var(--accent);
+}
+.sheet-back {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 44px;
+  color: var(--accent);
+  font-size: 13px;
+  padding: 0;
+}
+.sheet-back .icon {
+  width: 17px;
+  height: 17px;
+}
+.sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 13px 24px 12px;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+}
+.context-quote {
+  padding: 0 0 0 12px;
+  border-left: 2px solid var(--accent);
+  color: var(--secondary);
+  font-size: 13px;
+  line-height: 1.65;
+  margin-bottom: 20px;
+  animation: context-in 140ms ease-out;
+}
+@keyframes context-in { from { opacity: 0; translate: 0 3px; } to { opacity: 1; translate: 0 0; } }
+.context-quote small {
+  display: block;
+  font-size: 10px;
+  color: var(--accent);
+  margin-bottom: 5px;
+}
+.context-quote button {
+  color: var(--accent);
+  font-size: 11px;
+  padding: 8px 0;
+  display: block;
+  min-height: 44px;
+}
+.context-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.context-actions .ask-current { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 500; }
+.ask-current .icon { width: 14px; height: 14px; }
+.context-quote[data-quote-kind="discussion"] .quote-return {display:flex;align-items:center;gap:8px;min-width:0;flex:1;font-size:13px;text-align:left;}
+.quote-return .quote-line {display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.quote-return .icon {width:12px;height:12px;flex-shrink:0;}
+.context-quote[data-quote-kind="discussion"] .ask-current {flex-shrink:0;}
+.answer-label {
+  font-size: 11px;
+  color: var(--secondary);
+  margin: 5px 0 10px;
+}
+.answer {
+  font-size: 16px;
+  line-height: 1.78;
+  margin: 0 0 14px;
+  white-space: pre-wrap;
+}
+.source-link {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 11px;
+}
+.source-link .icon {
+  width: 12px;
+  height: 12px;
+}
+.question-bubble {
+  margin: 4px 0 20px;
+  padding: 0;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.answer-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  color: var(--accent);
+  font-size: 12px;
+}
+.answer-actions button {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 40px;
+  padding: 4px;
+}
+.answer-actions .icon {
+  width: 17px;
+  height: 17px;
+}
+.composer {
+  padding: 8px 20px 0;
+  background: var(--surface);
+  flex: none;
+  border-top: 1px solid var(--line);
+}
+.composer form {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.composer input {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--paper);
+  padding: 0 14px;
+  font-size: 16px;
+  color: var(--ink);
+}
+.composer form > button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--surface);
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.draft-return {
+  font-size: 11px;
+  color: var(--accent);
+  padding: 8px 2px;
+}
+.quote-title {
+  font-size: 12px;
+  color: var(--secondary);
+  margin: 3px 0 17px;
+}
+.citation-original {
+  font:
+    21px/1.75 Georgia,
+    serif;
+  margin: 12px 0 22px;
+  white-space: pre-wrap;
+}
+.citation-translation {
+  font:
+    20px/1.8 "Songti SC",
+    serif;
+  white-space: pre-wrap;
+}
+.quiet-rule {
+  height: 1px;
+  background: var(--line);
+  margin: 22px 0;
+}
+.primary-button {
+  background: var(--accent);
+  color: var(--surface);
+  border-radius: 17px;
+  min-height: 48px;
+  padding: 10px 18px;
+  font-size: 14px;
+}
+.secondary-button {
+  background: var(--wash);
+  color: var(--accent);
+  border-radius: 17px;
+  min-height: 48px;
+  padding: 10px 18px;
+  font-size: 14px;
+}
+.wide-button {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+}
+.segmented {
+  display: flex;
+  padding: 4px;
+  background: var(--wash);
+  border-radius: 15px;
+  gap: 3px;
+  margin-bottom: 20px;
+}
+.segmented button {
+  min-height: 44px;
+  flex: 1;
+  font-size: 12px;
+  border-radius: 11px;
+  color: var(--secondary);
+}
+.segmented .active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 2px 6px #152a1910;
+}
+.note-field {
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  width: 100%;
+  resize: none;
+  min-height: 220px;
+  font-size: 18px;
+  line-height: 1.8;
+  padding: 8px 0;
+}
+.note-field::placeholder {
+  color: var(--secondary);
+  opacity: 0.8;
+}
+.save-note-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--secondary);
+}
+.book-cover {
+  width: 126px;
+  height: 180px;
+  padding: 19px 17px;
+  color: #edf2e9;
+  background: #365b47;
+  box-shadow: 5px 6px 12px #142b2420;
+  border-radius: 2px 7px 7px 2px;
+  position: relative;
+  overflow: hidden;
+  flex: none;
+}
+.book-cover .cover-pond {
+  position: absolute;
+  width: 155px;
+  height: 80px;
+  border-radius: 50%;
+  border: 1px solid #cdd9b28a;
+  bottom: -36px;
+  left: -12px;
+  box-shadow:
+    0 -8px 0 0 #365b47,
+    0 -9px 0 0 #cdd9b25c,
+    0 -17px 0 0 #365b47,
+    0 -18px 0 0 #cdd9b240;
+}
+.book-cover h3 {
+  font:
+    27px/1.3 "Songti SC",
+    serif;
+  margin: 0 0 12px;
+}
+.book-cover p {
+  font:
+    10px/1.6 Georgia,
+    serif;
+  margin: 0;
+}
+.shelf-book {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  padding: 18px 0 28px;
+}
+.shelf-book h3 {
+  font:
+    24px/1.4 "Songti SC",
+    serif;
+  margin: 0 0 8px;
+}
+.shelf-book p {
+  font-size: 12px;
+  color: var(--secondary);
+  line-height: 1.7;
+}
+.shelf-actions {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.shelf-note {
+  font-size: 12px;
+  color: var(--secondary);
+  line-height: 1.8;
+  margin-top: 24px;
+}
+.list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  width: 100%;
+  text-align: left;
+  gap: 14px;
+}
+.list-row > span {
+  display: block;
+}
+.list-row strong {
+  font-size: 15px;
+  font-weight: 500;
+  display: block;
+  line-height: 1.6;
+}
+.list-row small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--secondary);
+  margin-top: 3px;
+}
+.list-row .icon {
+  width: 17px;
+  height: 17px;
+  color: var(--secondary);
+  flex: none;
+}
+.record-kind {
+  font-size: 10px;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 7px;
+}
+.empty-records {
+  padding: 36px 0;
+  text-align: left;
+}
+.record-section-heading {display:flex;align-items:center;gap:9px;font-size:13px;line-height:20px;font-weight:600;color:var(--secondary);margin:24px 0 4px;}
+.record-section-heading span {font-size:11px;min-width:21px;padding:1px 6px;background:var(--wash);border-radius:8px;text-align:center;}
+.saved-notes-heading {margin-top:30px;}
+.note-draft-row strong {display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;white-space:normal;}
+.empty-records h3 {
+  font:
+    24px/1.5 "Songti SC",
+    serif;
+  margin: 0 0 12px;
+}
+.empty-records p {
+  font-size: 14px;
+  color: var(--secondary);
+  line-height: 1.8;
+}
+.setting-group {
+  margin: 6px 0 28px;
+}
+.setting-group > label {
+  display: block;
+  font-size: 12px;
+  color: var(--secondary);
+  margin-bottom: 14px;
+}
+.type-size-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.type-size-controls button {
+  background: var(--wash);
+  min-width: 54px;
+  min-height: 44px;
+  border-radius: 13px;
+  color: var(--accent);
+  font-size: 18px;
+}
+.type-size-controls output {
+  font-size: 14px;
+  flex: 1;
+  text-align: center;
+}
+.appearance-option {
+  width: 100%;
+  min-height: 65px;
+  border-radius: 16px;
+  padding: 15px 18px;
+  margin: 9px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--line);
+  font-size: 14px;
+}
+.appearance-option[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--wash);
+}
+.error-card {
+  background: var(--wash);
+  padding: 17px;
+  border-radius: 18px;
+  margin: 15px 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.error-card p {
+  margin: 0 0 10px;
+}
+.error-card button {
+  color: var(--accent);
+  padding: 8px 0;
+  font-size: 13px;
+}
+.phone-toast {
+  position: absolute;
+  z-index: 15;
+  left: 24px;
+  right: 24px;
+  bottom: 113px;
+  min-height: 48px;
+  border-radius: 18px;
+  padding: 13px 18px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 13px;
+  line-height: 1.7;
+  box-shadow: 0 5px 20px #0002;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.phone-toast button {color:inherit;min-width:52px;min-height:44px;font-size:14px;font-weight:600;flex-shrink:0;border-radius:12px;}
+.phone-toast:has(button) {padding:5px 10px 5px 18px;}
+.study-notes {
+  width: 260px;
+  flex-shrink: 0;
+  font-size: 14px;
+  line-height: 1.9;
+  color: #5a685f;
+}
+.study-state {
+  font:
+    26px/1.5 "Songti SC",
+    serif;
+  color: #242a27;
+  margin: 0 0 15px;
+}
+.study-notes > p {
+  margin-top: 0;
+}
+.scenario-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 28px 0;
+}
+.scenario-links button {
+  border: 1px solid #d0d9cf;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 12px;
+  min-height: 38px;
+}
+.scenario-links button.active {
+  background: #365b47;
+  color: #fff;
+  border-color: #365b47;
+}
+.study-notes > a {
+  font-size: 12px;
+  display: block;
+  margin: 8px 0;
+}
+.prototype-label {
+  font-size: 11px;
+  line-height: 1.8;
+  margin-top: 24px !important;
+  color: #6a776d;
+}
+.phone button:active {
+  filter: brightness(0.94);
+}
+[hidden] {
+  display: none !important;
+}
+.pending-quote {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--secondary);
+  line-height: 1.7;
+}
+.pending-quote button {
+  color: var(--accent);
+  min-height: 40px;
+  padding: 4px 0;
+}
+.scope-line {
+  display: none;
+  font-size: 10px;
+  color: var(--secondary);
+  padding-top: 12px;
+}
+.source-external {
+  font-size: 12px;
+  color: var(--accent);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.night-preview {
+  background: #191e1b;
+  color: #e7eee7;
+}
+.type-preview {
+  font:
+    22px/1.8 "Songti SC",
+    serif;
+  padding: 20px 0;
+  margin: 0;
+}
+.screen-enter {
+  animation: screen-in 0.22s ease-out;
+}
+@keyframes screen-in {
+  from {
+    opacity: 0.3;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .phone button:not(.sheet-grip):active { transform: none; }
+  *,
+  *:before,
+  *:after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .reader-nav, .reading-dock { background: var(--paper); backdrop-filter: none; }
+  .reader-sheet { background: var(--surface); }
+}
+@media (prefers-contrast: more) {
+  .reader-nav, .reading-dock, .reader-sheet { border: 1px solid var(--secondary); }
+}
+@media (max-width: 820px) {
+  .workbench {
+    padding: 20px;
+  }
+  .stage {
+    gap: 30px;
+  }
+  .study-notes {
+    width: 210px;
+  }
+}
+@media (max-width: 690px) {
+  .workbench {
+    padding: 18px 12px 28px;
+  }
+  .study-header {
+    margin: 0 8px 22px;
+  }
+  .stage {
+    display: block;
+  }
+  .phone {
+    --status-height: 54px;
+    margin: auto;
+  }
+  .study-notes {
+    width: min(100%, 402px);
+    margin: 35px auto 0;
+  }
+  .study-controls {
+    gap: 12px;
+  }
+  .wordmark {
+    font-size: 21px;
+  }
+}
+@media (max-width: 430px) {
+  body {
+    background: #f7f8f5;
+  }
+  .workbench {
+    padding: 0;
+  }
+  .study-header {
+    position: absolute;
+    left: -10000px;
+  }
+  .phone {
+    width: 100%;
+    height: 100dvh;
+    max-height: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .status-bar {
+    height: 54px;
+  }
+  .status-bar .island {
+    top: 12px;
+  }
+  .study-notes {
+    padding: 25px 22px;
+    margin: 0;
+    background: #ecefec;
+  }
+  .phone .reading-dock {
+    padding-left:26px;
+    padding-right:26px;
+  }
+  .reader-sheet {
+    border-radius: 28px 28px 0 0;
+  }
+  .reading-scroll {
+    padding-left: 26px;
+    padding-right: 26px;
+  }
+  .status-bar {
+    padding-left: 29px;
+    padding-right: 29px;
+  }
+}
+
+.quote-excerpt {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.context-quote {
+  margin-bottom: 16px;
+}
+@media (max-width: 430px) {
+  .study-header {
+    display: none;
+  }
+}
+
+@media (max-width: 430px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+  .workbench {
+    height: 100dvh;
+  }
+  .study-notes {
+    display: none;
+  }
+}
+
+.wake-edge:hover,.wake-edge:active {background:transparent;transform:none;}
+</style>
+  <body>
+    <main class="workbench">
+      <header class="study-header">
+        <a class="wordmark" href="./README.md">Leafhour <span>iOS</span></a>
+        <div class="study-controls">
+          <label><input type="checkbox" id="offline-mode" />断网示例</label
+          ><button id="reopen">重新打开</button
+          ><button id="night-mode">深色</button>
+        </div>
+      </header>
+      <div class="stage">
+        <div class="phone" id="phone" data-theme="paper" data-intent="pure">
+          <div class="status-bar" aria-hidden="true">
+            <span>9:41</span><span class="island"></span
+            ><span class="status-icons">▰</span>
+          </div>
+          <button class="wake-edge wake-top" id="wake-top" aria-label="显示阅读导航" aria-controls="reader-nav" aria-expanded="false"></button>
+          <nav class="reader-nav" id="reader-nav" aria-label="阅读导航" inert>
+            <button id="library-button" aria-label="打开书房">
+              <span data-icon="library"></span></button
+            ><button id="contents-button" class="book-title">
+              <span class="book-title-row">瓦尔登湖 <span data-icon="down"></span></span><span class="nav-version" id="nav-version">示例意译</span></button
+            ><button
+              id="appearance-button"
+              class="type-button"
+              aria-label="排版设置"
+            >
+              Aa
+            </button>
+          </nav>
+          <article
+            class="reading-scroll"
+            id="reading-scroll"
+            aria-label="阅读正文"
+            tabindex="0"
+          >
+            <div class="chapter-heading">
+              <span>第二章</span>
+              <h1>我为何生活</h1>
+              <p id="version-label">示例意译</p>
+            </div>
+            <div id="prose"></div>
+          </article>
+          <div
+            class="selection-menu"
+            id="selection-menu"
+            hidden
+            aria-label="选文操作"
+          >
+            <button data-selection="explain">解释这句</button
+            ><button data-selection="original">看原文</button
+            ><button data-selection="note">记一句</button>
+          </div>
+          <button class="wake-edge wake-bottom" id="wake-bottom" aria-label="显示本章进度" aria-controls="reading-dock" aria-expanded="false"></button>
+          <footer class="reading-dock" id="reading-dock" aria-label="本章进度" inert>
+            <button id="companion-button" class="companion-call">
+              <span data-icon="conversation"></span><span id="companion-label">读到这里</span>
+            </button>
+            <div class="progress-surface">
+              <div class="progress-caption"><button id="progress-button"><span>第二章</span><span class="dock-location" id="dock-location">林中生活</span></button><output id="progress-value">0%</output></div>
+              <input id="reading-progress" type="range" min="0" max="1000" value="0" aria-label="本章阅读进度" />
+            </div>
+          </footer>
+          <div class="sheet-scrim" id="sheet-scrim" hidden></div>
+          <section
+            class="reader-sheet"
+            id="reader-sheet"
+            hidden
+            aria-label="阅读辅助"
+          >
+            <button
+              class="sheet-grip"
+              id="sheet-grip"
+              aria-label="展开或收起面板"
+            >
+              <span></span>
+            </button>
+            <header class="sheet-header" id="sheet-header">
+              <button class="sheet-back" id="sheet-back" hidden>
+                <span data-icon="left"></span><span>返回讨论</span>
+              </button>
+              <h2 id="sheet-title">读到这里</h2>
+              <button class="sheet-done" id="sheet-done">继续读</button>
+            </header>
+            <div class="sheet-body" id="sheet-body"></div>
+            <div class="composer" id="composer" hidden>
+              <form id="question-form">
+                <input
+                  id="question-input"
+                  aria-label="继续问这段"
+                  placeholder="接着问这段…"
+                  autocomplete="off"
+                /><button type="submit" aria-label="发送问题">
+                  <span data-icon="up"></span>
+                </button>
+              </form>
+              <button class="draft-return" id="draft-return" hidden>
+                找回未发送的草稿
+              </button>
+            </div>
+          </section>
+          <div class="phone-toast" id="phone-toast" role="status" hidden></div>
+          <div class="home-indicator" aria-hidden="true"></div>
+        </div>
+        <aside class="study-notes">
+          <p class="study-state" id="study-state">打开即续读</p>
+          <p id="study-detail">从上次的位置进入正文。点上下边界唤醒工具，长按文字再选动作。</p>
+          <div class="scenario-links" aria-label="查看关键状态">
+            <button data-scenario="resume">纯读</button
+            ><button data-scenario="top">导航</button
+            ><button data-scenario="progress">进度</button
+            ><button data-scenario="selected">选文</button
+            ><button data-scenario="companion">半屏</button
+            ><button data-scenario="discussion">讨论</button
+            ><button data-scenario="citation">出处</button
+            ><button data-scenario="note">笔记</button
+            ><button data-scenario="records">记录</button
+            ><button data-scenario="library">书房</button>
+          </div>
+          <a href="./exports/intent-flow.svg">核心流程图</a
+          ><a href="./exports/relationships.svg">页面与内容关系</a>
+          <p class="prototype-label">
+            交互原型 · 固定公版样章与示例讲解<br />不接联网模型，输入仅留在当前浏览器会话。
+          </p>
+        </aside>
+      </div>
+    </main>
+    <script>(() => {
+  // docs/design/2026-10-27-ios-polish/prototype/motion.mjs
+  function advanceSpring({ position, velocity }, target, seconds) {
+    if (seconds <= 0) return { position, velocity };
+    const stiffness = 390;
+    const decay = 18;
+    const frequency = Math.sqrt(stiffness - decay * decay);
+    const displacement = position - target;
+    const envelope = Math.exp(-decay * seconds);
+    const cosine = Math.cos(frequency * seconds);
+    const sine = Math.sin(frequency * seconds);
+    return {
+      position: target + envelope * (displacement * cosine + (velocity + decay * displacement) / frequency * sine),
+      velocity: envelope * (velocity * cosine - (decay * velocity + stiffness * displacement) / frequency * sine)
+    };
+  }
+  function resistedPosition(value, min, max, extent) {
+    if (value >= min && value <= max) return value;
+    const edge = value < min ? min : max;
+    const distance = value - edge;
+    const dimension = Math.max(1, extent);
+    return edge + distance * dimension * 0.55 / (dimension + 0.55 * Math.abs(distance));
+  }
+  function nearestDetent(position, velocity, stops) {
+    const projected = position + velocity / 1e3 * 0.998 / (1 - 0.998);
+    return stops.reduce(
+      (nearest, stop) => Math.abs(stop[1] - projected) < Math.abs(nearest[1] - projected) ? stop : nearest
+    )[0];
+  }
+
+  // docs/design/2026-10-27-ios-polish/prototype/selection-position.mjs
+  function placeSelectionMenu(anchor, menu, bounds) {
+    const clamp3 = (value, min, max) => Math.max(min, Math.min(max, value));
+    const left = clamp3((anchor.left + anchor.right - menu.width) / 2, bounds.left, bounds.right - menu.width);
+    const above = anchor.top - menu.height - 10;
+    const below = anchor.bottom + 10;
+    if (above >= bounds.top) return { left, top: above, placement: "above" };
+    if (below + menu.height <= bounds.bottom) return { left, top: below, placement: "below" };
+    return { left, top: clamp3(below, bounds.top, bounds.bottom - menu.height), placement: "edge" };
+  }
+
+  // docs/design/2026-10-27-ios-polish/prototype/reading-position.mjs
+  var layers = /* @__PURE__ */ new Set(["source", "literal", "interpretive"]);
+  var clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  function textOffset(text, value) {
+    let offset = clamp(Math.trunc(value), 0, Math.max(0, text.length - 1));
+    const code = text.charCodeAt(offset);
+    if (offset > 0 && code >= 56320 && code <= 57343) offset--;
+    return offset;
+  }
+  function normalizeReadingPosition(raw, identity, text) {
+    if (!raw || Array.isArray(raw) || raw.schema !== 1 || raw.bookId !== identity.bookId || raw.sourceVersion !== identity.sourceVersion || !layers.has(raw.layer) || typeof raw.passageId !== "string" || !raw.passageId || !text) return null;
+    if (![raw.offsetUtf16, raw.fraction, raw.viewportOffsetPx].every(Number.isFinite)) return null;
+    const sameLayer = raw.layer === identity.layer;
+    return {
+      sameLayer,
+      position: {
+        schema: 1,
+        bookId: identity.bookId,
+        sourceVersion: identity.sourceVersion,
+        layer: raw.layer,
+        passageId: raw.passageId,
+        offsetUtf16: sameLayer ? textOffset(text, raw.offsetUtf16) : Math.max(0, Math.trunc(raw.offsetUtf16)),
+        fraction: clamp(raw.fraction, 0, 1),
+        viewportOffsetPx: raw.viewportOffsetPx
+      }
+    };
+  }
+  function textGeometry(span) {
+    const text = span.textContent;
+    if (!text) return null;
+    const nodes = [], walker = span.ownerDocument.createTreeWalker(span, 4);
+    let node, start = 0;
+    while (node = walker.nextNode()) {
+      nodes.push({ node, start, end: start + node.data.length });
+      start += node.data.length;
+    }
+    if (!nodes.length) return null;
+    function boundary(offset) {
+      const part = nodes.find((p) => offset <= p.end) || nodes.at(-1);
+      return [part.node, clamp(offset - part.start, 0, part.node.data.length)];
+    }
+    return {
+      text,
+      rectAt(value) {
+        const offset = textOffset(text, value);
+        const length = text.codePointAt(offset) > 65535 ? 2 : 1;
+        const range = span.ownerDocument.createRange();
+        range.setStart(...boundary(offset));
+        range.setEnd(...boundary(Math.min(text.length, offset + length)));
+        return range.getBoundingClientRect();
+      }
+    };
+  }
+  function offsetAtTop(geometry, top) {
+    let low = 0, high = geometry.text.length - 1;
+    while (low < high) {
+      const middle = Math.floor((low + high) / 2);
+      if (geometry.rectAt(middle).bottom <= top) low = middle + 1;
+      else high = middle;
+    }
+    return textOffset(geometry.text, low);
+  }
+  function captureReadingPosition(scroller, identity, passageId = null) {
+    const top = scroller.getBoundingClientRect().top + 20;
+    const passages = [...scroller.querySelectorAll("[data-passage]")];
+    const passage = passageId == null ? passages.find((p) => p.querySelector(".passage-text")?.getBoundingClientRect().bottom > top) || passages.at(-1) : passages.find((p) => p.dataset.passage === passageId);
+    const span = passage?.querySelector(".passage-text"), geometry = span && textGeometry(span);
+    if (!geometry) return null;
+    const offset = offsetAtTop(geometry, top), rect = geometry.rectAt(offset), block = span.getBoundingClientRect();
+    return {
+      schema: 1,
+      bookId: identity.bookId,
+      sourceVersion: identity.sourceVersion,
+      layer: identity.layer,
+      passageId: passage.dataset.passage,
+      offsetUtf16: offset,
+      fraction: clamp((rect.top - block.top) / Math.max(1, block.height), 0, 1),
+      viewportOffsetPx: Math.round((rect.top - top) * 1e3) / 1e3
+    };
+  }
+  function restoreReadingPosition(scroller, raw, identity) {
+    const passage = [...scroller.querySelectorAll("[data-passage]")].find((p) => p.dataset.passage === raw?.passageId);
+    const span = passage?.querySelector(".passage-text"), geometry = span && textGeometry(span);
+    if (!geometry) return null;
+    const normalized = normalizeReadingPosition(raw, identity, geometry.text);
+    if (!normalized) return null;
+    const position = normalized.position;
+    const offset = clamp(position.viewportOffsetPx, -scroller.clientHeight, scroller.clientHeight);
+    const top = scroller.getBoundingClientRect().top + 20;
+    const rect = span.getBoundingClientRect();
+    const character = normalized.sameLayer ? position.offsetUtf16 : offsetAtTop(geometry, rect.top + rect.height * position.fraction);
+    const line = geometry.rectAt(character);
+    const delta = line.top - top - offset;
+    if (Math.abs(delta) >= 0.5) scroller.scrollTop += delta;
+    return {
+      ...position,
+      layer: identity.layer,
+      offsetUtf16: character,
+      fraction: clamp((line.top - rect.top) / Math.max(1, rect.height), 0, 1),
+      viewportOffsetPx: offset
+    };
+  }
+
+  // docs/design/2026-10-27-ios-polish/prototype/companion-context.mjs
+  var layers2 = /* @__PURE__ */ new Set(["source", "literal", "interpretive"]);
+  var hasText = (value) => typeof value === "string" && !!value.trim();
+  var validQuote = (quote) => quote && typeof quote === "object" && hasText(quote.passageId) && hasText(quote.version) && layers2.has(quote.layer) && hasText(quote.text);
+  function quoteIdentity(quote) {
+    if (!quote) return "";
+    return JSON.stringify([quote.passageId, quote.version, quote.layer, quote.startUtf16, quote.endUtf16, quote.text]);
+  }
+  function resolveCompanionContext({ readingQuote, discussionQuote, discussionStarted = false, draft = "", question = "", pendingTurn = null }) {
+    const established = discussionStarted === true || hasText(draft) || hasText(question);
+    const pending = validQuote(pendingTurn?.quote) && hasText(pendingTurn?.question);
+    const continuing = established || pending;
+    const chosen = established ? discussionQuote : pending ? pendingTurn.quote : readingQuote;
+    const quote = validQuote(chosen) ? { ...chosen } : null;
+    const reading = validQuote(readingQuote) ? readingQuote : null;
+    const same = !!quote && !!reading && quoteIdentity(quote) === quoteIdentity(reading);
+    const samePassage = !!quote && !!reading && quote.passageId === reading.passageId && quote.version === reading.version && quote.layer === reading.layer;
+    return {
+      mode: !quote ? "blocked" : continuing ? "discussion" : "reading",
+      label: continuing ? "\u7EE7\u7EED\u8BA8\u8BBA" : "\u8BFB\u5230\u8FD9\u91CC",
+      quote,
+      relation: same ? "current" : samePassage ? "selection" : "previous",
+      canAskCurrent: !!quote && !!reading && continuing && !same
+    };
+  }
+
+  // docs/design/2026-10-27-ios-polish/prototype/note-recovery.mjs
+  var layers3 = /* @__PURE__ */ new Set(["source", "literal", "interpretive"]);
+  function decodeQuote(key2) {
+    try {
+      const values = JSON.parse(key2);
+      if (!Array.isArray(values) || values.length !== 6 || JSON.stringify(values) !== key2) return null;
+      const [passageId, version, layer, startUtf16, endUtf16, text] = values;
+      const absent = startUtf16 === null && endUtf16 === null;
+      const range = Number.isSafeInteger(startUtf16) && Number.isSafeInteger(endUtf16) && startUtf16 >= 0 && endUtf16 > startUtf16;
+      if (typeof passageId !== "string" || !passageId || typeof version !== "string" || !version || !layers3.has(layer) || typeof text !== "string" || !text.trim() || !absent && !range) return null;
+      return { passageId, version, layer, startUtf16, endUtf16, text };
+    } catch {
+      return null;
+    }
+  }
+  var splitsSurrogate = (text, offset) => text.charCodeAt(offset - 1) >= 55296 && text.charCodeAt(offset - 1) <= 56319 && text.charCodeAt(offset) >= 56320 && text.charCodeAt(offset) <= 57343;
+  function readNoteDrafts(drafts, { passages, version }) {
+    if (!drafts || typeof drafts !== "object" || Array.isArray(drafts)) return [];
+    return Object.entries(drafts).flatMap(([key2, text]) => {
+      if (typeof text !== "string" || !text.trim()) return [];
+      const quote = decodeQuote(key2);
+      if (!quote || quote.version !== version) return [];
+      const source = passages.find((p) => p.id === quote.passageId)?.[quote.layer];
+      if (typeof source !== "string") return [];
+      if (quote.startUtf16 === null) {
+        if (!source.includes(quote.text)) return [];
+      } else if (quote.endUtf16 > source.length || source.slice(quote.startUtf16, quote.endUtf16) !== quote.text || splitsSurrogate(source, quote.startUtf16) || splitsSurrogate(source, quote.endUtf16)) return [];
+      return [{ key: key2, quote, text }];
+    });
+  }
+  function undoNoteSave({ notes, drafts, receipt }) {
+    const unchanged = (status) => ({ status, notes, drafts });
+    if (!receipt?.note || typeof receipt.draftText !== "string" || !Array.isArray(notes)) return unchanged("unavailable");
+    const expected = receipt.note, key2 = quoteIdentity(expected.quote);
+    if (expected.author !== "user" || receipt.draftText.trim() !== expected.text) return unchanged("unavailable");
+    const index = notes.findIndex((note) => note.id === expected.id);
+    if (!expected.id || index < 0 || !decodeQuote(key2)) return unchanged("unavailable");
+    const actual = notes[index];
+    if (actual.author !== "user" || actual.text !== expected.text || quoteIdentity(actual.quote) !== key2) return unchanged("unavailable");
+    const current = drafts?.[key2];
+    if (current != null && (typeof current !== "string" || current.trim() && current !== receipt.draftText)) return unchanged("conflict");
+    return { status: "undone", notes: notes.filter((_, i) => i !== index), drafts: { ...drafts, [key2]: receipt.draftText }, quote: { ...expected.quote } };
+  }
+
+  // docs/design/2026-10-27-ios-polish/prototype/reading-intent.mjs
+  var CHROME_IDLE_MS = 3e3;
+  var HOLD_MS = 420;
+  var HOLD_SLOP = 8;
+  var initialIntent = () => ({ kind: "pure", expiresAt: null, pinned: false });
+  function transitionIntent(state2, event, now) {
+    if (event.type === "pure") return initialIntent();
+    if (["top", "progress"].includes(event.type)) return { kind: event.type, expiresAt: now + CHROME_IDLE_MS, pinned: false };
+    if (["sheet", "selection"].includes(event.type)) return { kind: event.type, expiresAt: null, pinned: false };
+    if (event.type === "pin" && ["top", "progress"].includes(state2.kind)) return { ...state2, pinned: true };
+    if (event.type === "unpin" && ["top", "progress"].includes(state2.kind)) return { ...state2, pinned: false, expiresAt: now + CHROME_IDLE_MS };
+    if (event.type === "read" && ["top", "progress"].includes(state2.kind)) return initialIntent();
+    if (event.type === "tick" && !state2.pinned && state2.expiresAt !== null && now >= state2.expiresAt) return initialIntent();
+    return state2;
+  }
+  function startHold({ id, pointerType, x, y, passageId, isPrimary = true, button = 0 }, now) {
+    if (!["touch", "pen"].includes(pointerType) || !isPrimary || button !== 0 || !passageId) return null;
+    return { id, x, y, passageId, startedAt: now, cancelled: false };
+  }
+  function moveHold(hold, { id, x, y }) {
+    if (!hold || hold.id !== id) return hold;
+    return { ...hold, cancelled: hold.cancelled || Math.hypot(x - hold.x, y - hold.y) > HOLD_SLOP };
+  }
+  var holdReady = (hold, now) => !!hold && !hold.cancelled && now - hold.startedAt >= HOLD_MS;
+
+  // docs/design/2026-10-27-ios-polish/prototype/reading-progress.mjs
+  var clamp2 = (value) => Math.max(0, Math.min(1, value));
+  var content = (passages, layer) => passages.filter((p) => typeof p[layer] === "string" && p[layer].length);
+  function positionAtProgress(fraction, passages, identity) {
+    if (!Number.isFinite(fraction)) return null;
+    const list = content(passages, identity.layer), total = list.reduce((n, p) => n + p[identity.layer].length, 0);
+    if (!total) return null;
+    let offset = Math.round(clamp2(fraction) * (total - 1));
+    for (const p of list) {
+      const text = p[identity.layer];
+      if (offset < text.length) return normalizeReadingPosition({ schema: 1, ...identity, passageId: p.id, offsetUtf16: offset, fraction: offset / Math.max(1, text.length - 1), viewportOffsetPx: 8 }, identity, text)?.position || null;
+      offset -= text.length;
+    }
+    return null;
+  }
+  function progressAtPosition(position, passages, layer) {
+    if (!position) return 0;
+    const list = content(passages, layer), total = list.reduce((n, p) => n + p[layer].length, 0);
+    let before = 0;
+    for (const p of list) {
+      if (p.id === position.passageId) {
+        const max = p[layer].length - 1, offset = position.layer === layer ? position.offsetUtf16 : position.fraction * max;
+        return clamp2((before + Math.max(0, Math.min(max, Number(offset) || 0))) / Math.max(1, total - 1));
+      }
+      before += p[layer].length;
+    }
+    return 0;
+  }
+
+  // docs/design/2026-10-27-ios-polish/prototype/app.js
+  var icons = {
+    library: '<path d="M4 4v16M9 4v16M14 4l6 15M3 4h3M8 4h3M3 20h8M14 4l3-1 6 16-3 1"/>',
+    down: '<path d="m5 9 7 7 7-7"/>',
+    left: '<path d="m15 5-7 7 7 7"/>',
+    right: '<path d="m9 5 7 7-7 7"/>',
+    up: '<path d="M12 19V5m-6 6 6-6 6 6"/>',
+    conversation: '<path d="M20 11a8 8 0 0 1-8 8H5l-4 3 1.6-6A8 8 0 1 1 20 11Z"/><path d="M6 10h8M6 14h5"/>',
+    quote: '<path d="M10 5H4v7h5c0 4-2 6-5 7M21 5h-6v7h5c0 4-2 6-5 7"/>',
+    note: '<path d="M14 4H4v16h16V10m-9 3 8-8 3 3-8 8-4 1Z"/>',
+    check: '<path d="m5 12 5 5L20 6"/>',
+    external: '<path d="M14 3h7v7m0-7L10 14M10 4H4v16h16v-6"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/>',
+    moon: '<path d="M20 14A9 9 0 0 1 10 3a9 9 0 1 0 10 11Z"/>'
+  };
+  var icon = (name) => `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${icons[name] || icons.right}</svg>`;
+  function drawIcons(scope = document) {
+    scope.querySelectorAll("[data-icon]").forEach((node) => node.innerHTML = icon(node.dataset.icon));
+  }
+  var paragraphs = [
+    {
+      id: "walden-2-001",
+      source: "I went to the woods because I wished to live deliberately, to front only the essential facts of life, and see if I could not learn what it had to teach, and not, when I came to die, discover that I had not lived.",
+      literal: "\u6211\u8D70\u8FDB\u6811\u6797\uFF0C\u56E0\u4E3A\u6211\u5E0C\u671B\u6709\u610F\u8BC6\u5730\u751F\u6D3B\uFF0C\u76F4\u9762\u751F\u6D3B\u4E2D\u6700\u57FA\u672C\u7684\u4E8B\u5B9E\uFF0C\u770B\u770B\u80FD\u5426\u5B66\u5230\u5B83\u8981\u6559\u6211\u7684\u4E1C\u897F\uFF1B\u514D\u5F97\u4E34\u7EC8\u65F6\u624D\u53D1\u73B0\uFF0C\u81EA\u5DF1\u4ECE\u672A\u6D3B\u8FC7\u3002",
+      interpretive: "\u6211\u6765\u5230\u6797\u4E2D\uFF0C\u662F\u60F3\u6E05\u9192\u5730\u8FC7\u65E5\u5B50\uFF0C\u9762\u5BF9\u751F\u6D3B\u6700\u8981\u7D27\u7684\u4E8B\u5B9E\uFF0C\u770B\u770B\u751F\u6D3B\u80FD\u6559\u7ED9\u6211\u4EC0\u4E48\uFF1B\u6211\u4E0D\u60F3\u7B49\u5230\u6B7B\u65F6\u624D\u53D1\u73B0\uFF0C\u81EA\u5DF1\u6CA1\u6709\u771F\u6B63\u751F\u6D3B\u8FC7\u3002"
+    },
+    {
+      id: "walden-2-002",
+      source: "I did not wish to live what was not life, living is so dear; nor did I wish to practise resignation, unless it was quite necessary.",
+      literal: "\u6211\u4E0D\u613F\u8FC7\u4E0D\u7B97\u751F\u6D3B\u7684\u751F\u6D3B\uFF0C\u751F\u6D3B\u662F\u5982\u6B64\u73CD\u8D35\uFF1B\u6211\u4E5F\u4E0D\u613F\u7EC3\u4E60\u987A\u4ECE\uFF0C\u9664\u975E\u786E\u5B9E\u6709\u5FC5\u8981\u3002",
+      interpretive: "\u65E5\u5B50\u8FD9\u6837\u73CD\u8D35\uFF0C\u6211\u4E0D\u613F\u628A\u5B83\u8FC7\u6210\u5E76\u975E\u751F\u6D3B\u7684\u6837\u5B50\uFF1B\u53EA\u8981\u8FD8\u6CA1\u6709\u5230\u975E\u5982\u6B64\u4E0D\u53EF\u7684\u65F6\u5019\uFF0C\u6211\u4E5F\u4E0D\u60F3\u8BA4\u547D\u3002"
+    },
+    {
+      id: "walden-2-003",
+      source: "I wanted to live deep and suck out all the marrow of life, to live so sturdily and Spartan-like as to put to rout all that was not life",
+      literal: "\u6211\u60F3\u6D3B\u5F97\u6DF1\u5165\uFF0C\u5438\u53D6\u751F\u6D3B\u6240\u6709\u7684\u9AA8\u9AD3\uFF0C\u6D3B\u5F97\u575A\u5B9E\u800C\u50CF\u65AF\u5DF4\u8FBE\u4EBA\u90A3\u6837\uFF0C\u4F7F\u4E00\u5207\u4E0D\u662F\u751F\u6D3B\u7684\u4E1C\u897F\u8D25\u9000\u3002",
+      interpretive: "\u6211\u60F3\u628A\u751F\u6D3B\u8FC7\u6DF1\uFF0C\u5C1D\u5C3D\u5B83\u7684\u6ECB\u5473\uFF1B\u7528\u7ED3\u5B9E\u3001\u7B80\u6734\u7684\u65E5\u5B50\uFF0C\u8D76\u8D70\u90A3\u4E9B\u7B97\u4E0D\u4E0A\u751F\u6D3B\u7684\u4E1C\u897F\u3002"
+    },
+    {
+      id: "walden-2-004",
+      source: "Our life is frittered away by detail.",
+      literal: "\u6211\u4EEC\u7684\u751F\u6D3B\u88AB\u7EC6\u8282\u8017\u6563\u4E86\u3002",
+      interpretive: "\u65E5\u5B50\u5C31\u5728\u79CD\u79CD\u7410\u4E8B\u91CC\u4E00\u70B9\u70B9\u6D88\u78E8\u3002"
+    }
+  ];
+  var sourceURL = "https://www.gutenberg.org/files/205/205-h/205-h.htm";
+  var readingDocument = { bookId: "walden-public-sample", sourceVersion: "prototype-20261026" };
+  var $ = (id) => document.getElementById(id);
+  var escape = (s) => String(s).replace(
+    /[&<>"']/g,
+    (c) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[c]
+  );
+  var key = "leafhour-ios-half-sheet-prototype-v1";
+  var saved = {};
+  try {
+    saved = JSON.parse(sessionStorage.getItem(key) || "{}");
+  } catch {
+  }
+  if (!saved || typeof saved !== "object" || Array.isArray(saved)) saved = {};
+  var initialLayer = ["source", "literal", "interpretive"].includes(saved.layer) ? saved.layer : "interpretive";
+  var savedParagraph = paragraphs.find((p) => p.id === saved.readingPosition?.passageId);
+  var initialReading = savedParagraph && normalizeReadingPosition(saved.readingPosition, { ...readingDocument, layer: initialLayer }, savedParagraph[initialLayer]);
+  var initialQuote = () => ({
+    passageId: paragraphs[0].id,
+    text: paragraphs[0].interpretive,
+    layer: "interpretive",
+    version: "prototype-20261026",
+    selection: "\u56FA\u5B9A\u6837\u6587\u9009\u533A",
+    startUtf16: 0,
+    endUtf16: paragraphs[0].interpretive.length,
+    startCodePoint: 0
+  });
+  var keyboardTools = false;
+  var state = {
+    theme: saved.theme === "night" ? "night" : "paper",
+    size: Number.isFinite(Number(saved.size)) && saved.size != null ? Math.max(18, Math.min(28, Number(saved.size))) : 22,
+    layer: initialLayer,
+    readingTop: Number.isFinite(Number(saved.readingTop)) ? Math.max(0, Number(saved.readingTop)) : 0,
+    readingPosition: initialReading?.position || null,
+    resumePassageId: initialReading?.position.passageId || paragraphs[0].id,
+    restoringReading: false,
+    readingTransition: false,
+    readingRestoreRevision: 0,
+    readingWidth: 0,
+    readingHeight: 0,
+    quote: saved.quote || initialQuote(),
+    draft: saved.draft || "",
+    drafts: saved.drafts || [],
+    notes: saved.notes || [],
+    turns: saved.turns || [],
+    pendingTurn: saved.pendingTurn || null,
+    noteDrafts: saved.noteDrafts || {},
+    question: saved.question || "",
+    answered: !!saved.answered,
+    discussionStarted: saved.discussionStarted === true,
+    previewQuote: null,
+    noteSaveUndo: null,
+    readingIntent: initialIntent(),
+    touchHold: null,
+    touchSelectionArmed: false,
+    lastPointerType: matchMedia("(pointer: coarse)").matches ? "touch" : "mouse",
+    selectionReturnFrame: null,
+    progressAdjusting: false,
+    progressScrollUntil: 0,
+    route: "closed",
+    detent: "half",
+    returnFrame: null,
+    offline: false,
+    pendingSelection: null,
+    selectionRange: null,
+    recordsTab: "notes",
+    y: 0,
+    velocity: 0,
+    target: 0,
+    raf: 0,
+    drag: null,
+    closingFrame: null
+  };
+  window.leafhourPrototype = {
+    snapshot: () => ({
+      route: state.route,
+      detent: state.detent,
+      readingTop: $("reading-scroll").scrollTop,
+      readingPosition: state.readingPosition ? { ...state.readingPosition } : null,
+      quote: { ...state.quote },
+      draft: state.draft,
+      drafts: state.drafts.map((x) => ({ ...x })),
+      question: state.question,
+      discussionStarted: state.discussionStarted,
+      notes: state.notes.length,
+      theme: state.theme,
+      layer: state.layer,
+      offline: state.offline,
+      intent: state.readingIntent.kind,
+      selection: state.pendingSelection ? { ...state.pendingSelection } : null
+    }),
+    scenario: showScenario
+  };
+  function syncReadingIntent() {
+    const kind = state.readingIntent.kind, active = document.activeElement;
+    if (kind !== "top" && $("reader-nav").contains(active) || kind !== "progress" && $("reading-dock").contains(active)) $("reading-scroll").focus({ preventScroll: true });
+    $("phone").dataset.intent = kind;
+    $("reader-nav").inert = kind !== "top";
+    $("reading-dock").inert = kind !== "progress";
+    for (const id of ["wake-top", "wake-bottom"]) {
+      $(id).inert = !["pure", "top", "progress"].includes(kind);
+      $(id).setAttribute("aria-hidden", String($(id).inert));
+    }
+    $("wake-top").setAttribute("aria-expanded", String(kind === "top"));
+    $("wake-bottom").setAttribute("aria-expanded", String(kind === "progress"));
+  }
+  function setReadingIntent(type) {
+    state.readingIntent = transitionIntent(state.readingIntent, { type }, performance.now());
+    syncReadingIntent();
+    clearTimeout(setReadingIntent.timer);
+    if (state.readingIntent.expiresAt !== null && !state.readingIntent.pinned) setReadingIntent.timer = setTimeout(() => setReadingIntent("tick"), Math.max(0, state.readingIntent.expiresAt - performance.now()));
+  }
+  function wakeReadingTools(kind) {
+    if (state.route !== "closed") return;
+    hideSelectionMenu();
+    window.getSelection()?.removeAllRanges();
+    setReadingIntent(kind);
+    const active = document.activeElement;
+    if (keyboardTools && (active === $("wake-top") || active === $("wake-bottom"))) setReadingIntent("pin");
+  }
+  function updateProgress() {
+    const index = paragraphs.findIndex((p) => p.id === state.readingPosition?.passageId);
+    $("dock-location").textContent = ["\u6797\u4E2D\u751F\u6D3B", "\u751F\u6D3B\u5982\u6B64\u73CD\u8D35", "\u6D3B\u5F97\u6DF1\u5165", "\u7410\u4E8B\u4E0E\u65E5\u5B50"][Math.max(0, index)];
+    const fraction = progressAtPosition(state.readingPosition, paragraphs, state.layer);
+    if (!state.progressAdjusting) $("reading-progress").value = String(Math.round(fraction * 1e3));
+    $("progress-value").textContent = Math.round(fraction * 100) + "%";
+    $("reading-progress").setAttribute("aria-valuetext", Math.round(fraction * 100) + "%");
+  }
+  function persist() {
+    const scroller = $("reading-scroll");
+    if (!state.restoringReading && !state.readingTransition && readingGeometryMatches() && scroller.scrollTop !== state.readingTop)
+      state.readingPosition = captureReadingPosition(scroller, readerIdentity()) || state.readingPosition;
+    state.readingTop = scroller.scrollTop;
+    updateContextChrome();
+    try {
+      sessionStorage.setItem(
+        key,
+        JSON.stringify({
+          theme: state.theme,
+          size: state.size,
+          layer: state.layer,
+          readingTop: $("reading-scroll").scrollTop,
+          readingPosition: state.readingPosition,
+          quote: state.quote,
+          draft: state.draft,
+          drafts: state.drafts,
+          notes: state.notes,
+          question: state.question,
+          answered: state.answered,
+          discussionStarted: state.discussionStarted,
+          turns: state.turns,
+          pendingTurn: state.pendingTurn,
+          noteDrafts: state.noteDrafts
+        })
+      );
+    } catch {
+    }
+  }
+  function scheduleNoticeEnd() {
+    clearTimeout(notify.timer);
+    notify.timer = setTimeout(() => {
+      const toast = $("phone-toast");
+      if (toast.contains(document.activeElement)) return;
+      toast.hidden = true;
+      state.noteSaveUndo = null;
+    }, notify.undo ? 8e3 : 2800);
+  }
+  function notify(text, { undo = false } = {}) {
+    notify.undo = undo;
+    if (!undo) state.noteSaveUndo = null;
+    const toast = $("phone-toast"), label = document.createElement("span");
+    label.textContent = text;
+    toast.replaceChildren(label);
+    if (undo) {
+      const button = document.createElement("button");
+      button.dataset.action = "undo-note-save";
+      button.textContent = "\u64A4\u9500";
+      toast.append(button);
+    }
+    toast.hidden = false;
+    scheduleNoticeEnd();
+  }
+  $("phone-toast").addEventListener("focusout", scheduleNoticeEnd);
+  $("phone-toast").addEventListener("pointerenter", () => clearTimeout(notify.timer));
+  $("phone-toast").addEventListener("pointerleave", scheduleNoticeEnd);
+  function setStudy(title, detail) {
+    $("study-state").textContent = title;
+    $("study-detail").textContent = detail;
+    document.querySelectorAll("[data-scenario]").forEach(
+      (button) => button.classList.toggle(
+        "active",
+        button.dataset.scenario === state.route || button.dataset.scenario === "resume" && state.route === "closed"
+      )
+    );
+  }
+  function readerAnchor() {
+    return state.readingPosition || captureReadingPosition($("reading-scroll"), readerIdentity());
+  }
+  function readerIdentity() {
+    return { ...readingDocument, layer: $("prose").dataset.layer || state.layer };
+  }
+  function readingGeometryMatches() {
+    return state.readingWidth === $("phone").clientWidth && state.readingHeight === $("phone").clientHeight;
+  }
+  function rememberReadingGeometry() {
+    state.readingWidth = $("phone").clientWidth;
+    state.readingHeight = $("phone").clientHeight;
+  }
+  function restoreReaderAnchor(anchor) {
+    if (!anchor) return false;
+    state.restoringReading = true;
+    $("reading-scroll").setAttribute("data-restoring", "");
+    const revision = ++state.readingRestoreRevision;
+    const restored = restoreReadingPosition($("reading-scroll"), anchor, readerIdentity());
+    if (restored) state.readingPosition = restored;
+    state.readingTop = $("reading-scroll").scrollTop;
+    rememberReadingGeometry();
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (revision !== state.readingRestoreRevision) return;
+      state.restoringReading = false;
+      $("reading-scroll").removeAttribute("data-restoring");
+    }));
+    return !!restored;
+  }
+  function renderReader({ restore = true } = {}) {
+    const anchor = readerAnchor();
+    hideSelectionMenu();
+    $("phone").dataset.theme = state.theme;
+    $("phone").style.setProperty("--reader-size", state.size + "px");
+    $("version-label").textContent = state.layer === "source" ? "\u4F5C\u8005\u539F\u6587 \xB7 \u8282\u9009" : state.layer === "literal" ? "\u793A\u4F8B\u76F4\u8BD1" : "\u793A\u4F8B\u610F\u8BD1";
+    $("nav-version").textContent = $("version-label").textContent;
+    $("prose").dataset.layer = state.layer;
+    $("prose").innerHTML = paragraphs.map(
+      (p, i) => `<p class="passage ${state.layer === "source" ? "source" : ""}" id="${p.id}" data-passage="${p.id}">${p.id === state.resumePassageId ? '<span class="resume-mark">\u4E0A\u6B21\u8BFB\u5230\u8FD9\u91CC</span>' : ""}<span class="passage-text">${escape(p[state.layer])}</span></p>`
+    ).join("");
+    if (restore) restoreReaderAnchor(anchor);
+    else rememberReadingGeometry();
+  }
+  function quoteKey(quote) {
+    return quoteIdentity(quote);
+  }
+  function currentReadingQuote() {
+    const id = state.readingPosition?.passageId || paragraphs[0].id;
+    const quote = captureQuote(paragraphs.some((p) => p.id === id) ? id : paragraphs[0].id);
+    return { ...quote, selection: "\u5F53\u524D\u9605\u8BFB\u6BB5\u843D" };
+  }
+  function companionContext() {
+    return resolveCompanionContext({ readingQuote: currentReadingQuote(), discussionQuote: state.quote, discussionStarted: state.discussionStarted, draft: state.draft, question: state.question, pendingTurn: state.pendingTurn });
+  }
+  function layerLabel(layer) {
+    return { source: "\u539F\u6587", literal: "\u793A\u4F8B\u76F4\u8BD1", interpretive: "\u793A\u4F8B\u610F\u8BD1" }[layer] || "\u6765\u6E90\u5F85\u786E\u8BA4";
+  }
+  function contextCaption(context) {
+    return { current: "\u6B63\u5728\u8BFB\u7684\u6BB5\u843D", selection: "\u5F53\u524D\u6BB5\u7684\u9009\u6587", previous: "\u5148\u524D\u8BA8\u8BBA\u7684\u539F\u53E5" }[context.relation] + " \xB7 " + layerLabel(state.quote.layer);
+  }
+  function updateContextChrome() {
+    const context = companionContext();
+    $("companion-label").textContent = context.label;
+    const label = $("sheet-body").querySelector("[data-context-label]");
+    if (label) label.textContent = contextCaption(context);
+    const switcher = $("sheet-body").querySelector('[data-action="ask-current"]');
+    if (switcher) switcher.hidden = !context.canAskCurrent;
+    if (state.route === "companion") $("sheet-title").textContent = context.relation === "previous" ? "\u7EE7\u7EED\u8BA8\u8BBA" : "\u8BFB\u5230\u8FD9\u91CC";
+  }
+  function viewQuote() {
+    return state.previewQuote || state.quote;
+  }
+  function noteDraftEntries() {
+    return readNoteDrafts(state.noteDrafts, { passages: paragraphs, version: readingDocument.sourceVersion });
+  }
+  function openNotePreview(quote, { capture = true } = {}) {
+    if (capture) captureComposer();
+    if (["companion", "discussion", "records"].includes(state.route)) state.returnFrame = { route: state.route, detent: state.detent, scrollTop: $("sheet-body").scrollTop, draft: state.draft, quote: { ...state.quote }, question: state.question, answered: state.answered };
+    else if (!["note", "original"].includes(state.route)) state.returnFrame = null;
+    state.previewQuote = { ...quote };
+    openRoute("note", "full", { capture: false });
+  }
+  function preserveCurrentQuestion() {
+    if (!state.question.trim()) return;
+    const key2 = quoteKey(state.quote);
+    if (state.pendingTurn?.question === state.question && quoteKey(state.pendingTurn.quote) === key2) return;
+    if (state.turns.some((t) => t.question === state.question && quoteKey(t.quote) === key2)) return;
+    rememberTurn({ id: "prototype-retained-" + Date.now() + "-" + state.turns.length, question: state.question, quote: { ...state.quote }, answered: state.answered });
+  }
+  function enterCompanion() {
+    captureComposer();
+    const context = companionContext();
+    if (!context.quote) return notify("\u539F\u95EE\u9898\u7684\u51FA\u5904\u4E0D\u5B8C\u6574\uFF0C\u8BF7\u5148\u91CD\u65B0\u9009\u4E00\u53E5");
+    if (context.mode === "reading") takeQuote(context.quote, { open: false });
+    else if (quoteKey(context.quote) !== quoteKey(state.quote)) {
+      state.quote = { ...context.quote };
+      if (!state.question.trim() && state.pendingTurn) state.question = state.pendingTurn.question;
+    }
+    state.discussionStarted = true;
+    persist();
+    openRoute("companion", "half", { capture: false, exposeQuote: context.mode === "reading" ? context.quote : null });
+  }
+  function captureQuote(id, text, startOffset = null) {
+    const p = paragraphs.find((p2) => p2.id === id) || paragraphs[0], value = text || p[state.layer], start = startOffset !== null ? startOffset : value === p[state.layer] ? 0 : -1;
+    return {
+      passageId: p.id,
+      text: value,
+      layer: state.layer,
+      version: "prototype-20261026",
+      selection: "\u5F53\u524D\u6837\u6587\u9009\u533A",
+      startUtf16: start < 0 ? null : start,
+      endUtf16: start < 0 ? null : start + value.length,
+      startCodePoint: start < 0 ? null : [...p[state.layer].slice(0, start)].length
+    };
+  }
+  function rememberTurn(turn) {
+    const snapshot = { ...turn, quote: { ...turn.quote } };
+    const index = state.turns.findIndex((item) => item.id === turn.id);
+    if (index < 0) state.turns.push(snapshot);
+    else state.turns[index] = snapshot;
+    const completed = state.turns.filter((item) => item.answered !== false).slice(-6);
+    state.turns = state.turns.filter((item) => item.answered === false || completed.includes(item));
+  }
+  function rememberPendingTurn(exceptId = null) {
+    if (state.pendingTurn && state.pendingTurn.id !== exceptId)
+      rememberTurn({ ...state.pendingTurn, answered: false });
+  }
+  function takeQuote(next, { open = true } = {}) {
+    captureComposer();
+    state.previewQuote = null;
+    if (quoteKey(state.quote) !== quoteKey(next)) {
+      preserveCurrentQuestion();
+      if (state.draft.trim()) {
+        state.drafts.push({ quote: { ...state.quote }, draft: state.draft });
+        notify("\u4E0A\u4E00\u53E5\u7684\u95EE\u9898\u8349\u7A3F\u5DF2\u4FDD\u7559");
+      }
+      const previous = state.drafts.findIndex(
+        (item) => quoteKey(item.quote) === quoteKey(next)
+      );
+      state.draft = previous >= 0 ? state.drafts.splice(previous, 1)[0].draft : "";
+      state.question = "";
+      state.answered = false;
+      state.discussionStarted = false;
+      state.returnFrame = null;
+    }
+    state.quote = next;
+    $("question-input").value = state.draft;
+    hideSelectionMenu();
+    window.getSelection()?.removeAllRanges();
+    persist();
+    if (open) openRoute("companion", "half", { capture: false });
+  }
+  function selectPassage(id) {
+    const text = $(id)?.querySelector(".passage-text");
+    if (!text) return;
+    const range = document.createRange();
+    range.selectNodeContents(text);
+    state.touchSelectionArmed = true;
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    presentSelection(range);
+  }
+  function suspendForSelection() {
+    if (state.route === "closed") return;
+    captureComposer();
+    const frame = ["companion", "discussion", "records"].includes(state.route) ? { route: state.route, detent: state.detent, scrollTop: $("sheet-body").scrollTop, draft: state.draft, quote: { ...state.quote }, question: state.question, answered: state.answered } : state.returnFrame;
+    closeSheet({ immediate: true, focus: false });
+    state.selectionReturnFrame = frame;
+  }
+  function presentSelection(range) {
+    const parent = (node) => node.nodeType === 3 ? node.parentElement : node;
+    const first = parent(range.startContainer)?.closest(".passage-text"), last = parent(range.endContainer)?.closest(".passage-text");
+    if (!first || first !== last || !range.toString().trim()) return hideSelectionMenu();
+    suspendForSelection();
+    const prefix = document.createRange();
+    prefix.selectNodeContents(first);
+    prefix.setEnd(range.startContainer, range.startOffset);
+    hideSelectionMenu({ release: false });
+    const id = first.closest("[data-passage]").dataset.passage;
+    state.pendingSelection = captureQuote(id, range.toString(), prefix.toString().length);
+    state.selectionRange = range.cloneRange();
+    state.touchSelectionArmed = true;
+    if (range.toString() === first.textContent) $(id).classList.add("is-selected");
+    setReadingIntent("selection");
+    $("selection-menu").hidden = false;
+    positionSelectionMenu();
+    setStudy("\u9009\u533A\u624D\u5524\u9192\u52A8\u4F5C", "\u53EA\u9009\u5B57\u4E0D\u4F1A\u66FF\u6362\u5DF2\u6709\u95EE\u9898\uFF1B\u70B9\u89E3\u91CA\u624D\u91C7\u7528\u8FD9\u4EFD\u539F\u53E5\uFF0C\u65E7\u8349\u7A3F\u4ECD\u4FDD\u7559\u3002");
+  }
+  function hideSelectionMenu({ release = true } = {}) {
+    $("selection-menu").hidden = true;
+    state.pendingSelection = null;
+    state.selectionRange = null;
+    document.querySelectorAll(".passage.is-selected").forEach((n) => n.classList.remove("is-selected"));
+    if (release) {
+      state.touchSelectionArmed = false;
+      state.selectionReturnFrame = null;
+      if (state.readingIntent.kind === "selection") setReadingIntent("pure");
+    }
+  }
+  function positionSelectionMenu() {
+    const menu = $("selection-menu");
+    if (menu.hidden || !state.pendingSelection) return;
+    const text = $(state.pendingSelection.passageId)?.querySelector(".passage-text");
+    if (!text) return hideSelectionMenu();
+    const phone = $("phone").getBoundingClientRect();
+    const scale = phone.width / $("phone").clientWidth;
+    const local = (rect) => ({ left: (rect.left - phone.left) / scale, right: (rect.right - phone.left) / scale, top: (rect.top - phone.top) / scale, bottom: (rect.bottom - phone.top) / scale });
+    const selected = state.selectionRange?.commonAncestorContainer.isConnected ? state.selectionRange.getBoundingClientRect() : text.getBoundingClientRect();
+    const anchor = local(selected);
+    const reading = local($("reading-scroll").getBoundingClientRect());
+    const nav = local($("reader-nav").getBoundingClientRect());
+    const dock = local($("reading-dock").getBoundingClientRect());
+    const bounds = { left: 16, right: $("phone").clientWidth - 16, top: reading.top + 8, bottom: reading.bottom - 8 };
+    if (state.readingIntent.kind === "top") bounds.top = Math.max(bounds.top, nav.bottom + 8);
+    if (state.readingIntent.kind === "progress") bounds.bottom = Math.min(bounds.bottom, dock.top - 8);
+    if (state.route !== "closed") bounds.bottom = Math.min(bounds.bottom, local($("reader-sheet").getBoundingClientRect()).top - 8);
+    const size = { width: menu.offsetWidth, height: menu.offsetHeight };
+    if (anchor.bottom < bounds.top || anchor.top > bounds.bottom || bounds.bottom - bounds.top < size.height) return hideSelectionMenu();
+    const placement = placeSelectionMenu({ ...anchor, top: Math.max(anchor.top, bounds.top), bottom: Math.min(anchor.bottom, bounds.bottom) }, size, bounds);
+    menu.style.left = placement.left + "px";
+    menu.style.top = placement.top + "px";
+    menu.style.setProperty("--anchor-x", Math.max(16, Math.min(size.width - 16, (anchor.left + anchor.right) / 2 - placement.left)) + "px");
+    menu.dataset.placement = placement.placement;
+  }
+  function contextQuote(kind = "discussion") {
+    const quote = kind === "note" ? viewQuote() : state.quote;
+    const context = companionContext();
+    const caption = kind === "note" ? "\u7B14\u8BB0\u539F\u53E5 \xB7 " + layerLabel(quote.layer) : contextCaption(context);
+    if (kind === "discussion") return `<div class="context-quote" data-quote-kind="discussion" data-passage-id="${escape(quote.passageId)}" data-source-layer="${escape(quote.layer)}" data-selection-start="${quote.startUtf16 ?? ""}" data-selection-end="${quote.endUtf16 ?? ""}"><small data-context-label>${escape(caption)}</small><div class="context-actions"><button class="quote-excerpt quote-return" data-action="return-quote" aria-label="\u8FD4\u56DE\u63D0\u95EE\u539F\u53E5" aria-description="${escape(quote.text)}"><span class="quote-line">${escape(quote.text)}</span>${icon("external")}</button><button class="ask-current" data-action="ask-current" ${context.canAskCurrent ? "" : "hidden"}>\u6539\u95EE\u6B63\u5728\u8BFB\u7684\u6BB5\u843D ${icon("right")}</button></div></div>`;
+    return `<div class="context-quote" data-passage-id="${escape(quote.passageId)}" data-source-layer="${escape(quote.layer)}" data-selection-start="${quote.startUtf16 ?? ""}" data-selection-end="${quote.endUtf16 ?? ""}"><small ${kind === "discussion" ? "data-context-label" : ""}>${escape(caption)}</small><div class="quote-excerpt">${escape(quote.text)}</div><div class="context-actions"><button data-action="return-quote">${kind === "note" ? "\u8FD4\u56DE\u7B14\u8BB0\u539F\u53E5" : "\u8FD4\u56DE\u63D0\u95EE\u539F\u53E5"}</button>${kind === "discussion" ? `<button class="ask-current" data-action="ask-current" ${context.canAskCurrent ? "" : "hidden"}>\u6539\u95EE\u6B63\u5728\u8BFB\u7684\u6BB5\u843D ${icon("right")}</button>` : ""}</div></div>`;
+  }
+  function answerText() {
+    return {
+      "walden-2-001": "\u8FD9\u91CC\u7684 deliberately\uFF0C\u53EF\u4EE5\u8BFB\u6210\u201C\u6709\u610F\u8BC6\u5730\u9009\u62E9\u600E\u6837\u751F\u6D3B\u201D\u3002\n\n\u68AD\u7F57\u628A\u6797\u4E2D\u751F\u6D3B\u5F53\u4F5C\u4E00\u6B21\u4EB2\u81EA\u68C0\u9A8C\u3002\u4ED6\u60F3\u77E5\u9053\uFF0C\u54EA\u4E9B\u4E8B\u503C\u5F97\u7528\u81EA\u5DF1\u7684\u65E5\u5B50\u53BB\u505A\u3002",
+      "walden-2-002": "\u8FD9\u4E00\u6BB5\u540C\u65F6\u8BF4\u5230\u73CD\u60DC\u751F\u6D3B\u4E0E\u4E0D\u613F\u8BA4\u547D\u3002\n\n\u201C\u9664\u975E\u786E\u5B9E\u6709\u5FC5\u8981\u201D\u4FDD\u7559\u4E86\u4F59\u5730\uFF0C\u4E0D\u80FD\u5220\u53BB\u8FD9\u4E2A\u9650\u5B9A\uFF0C\u8BFB\u6210\u4EFB\u4F55\u65F6\u5019\u90FD\u5FC5\u987B\u6297\u62D2\u3002",
+      "walden-2-003": "\u201C\u9AA8\u9AD3\u201D\u628A\u751F\u6D3B\u5199\u6210\u9700\u8981\u4EB2\u8EAB\u5C1D\u8BD5\u7684\u4E1C\u897F\u3002\n\n\u4E00\u79CD\u8BFB\u6CD5\u662F\uFF1A\u4ED6\u671F\u5F85\u4ECE\u5207\u8EAB\u7ECF\u9A8C\u91CC\u5206\u8FA8\uFF0C\u54EA\u4E9B\u4E8B\u5BF9\u81EA\u5DF1\u662F\u5FC5\u8981\u7684\u3002",
+      "walden-2-004": "\u8FD9\u53E5\u628A\u65E5\u5B50\u7684\u6D88\u8017\u5F52\u4E8E\u4E0D\u65AD\u5206\u6563\u6CE8\u610F\u529B\u7684\u7410\u4E8B\u3002\n\n\u53EF\u4EE5\u63A5\u7740\u60F3\uFF1A\u54EA\u4E9B\u7EC6\u8282\u503C\u5F97\u8BA4\u771F\u505A\uFF0C\u54EA\u4E9B\u53EA\u662F\u5360\u6EE1\u4E86\u65F6\u95F4\uFF1F"
+    }[state.quote.passageId] || "\u8FD9\u4EFD\u539F\u578B\u53EA\u63D0\u4F9B\u6240\u9009\u516C\u7248\u6837\u7AE0\u7684\u56FA\u5B9A\u8BB2\u89E3\u793A\u4F8B\u3002";
+  }
+  function discussion() {
+    const full = state.route === "discussion", question = state.question || {
+      "walden-2-001": "deliberately \u4E3A\u4EC0\u4E48\u4E0D\u53EA\u662F\u201C\u523B\u610F\u201D\uFF1F",
+      "walden-2-002": "\u8FD9\u91CC\u4E3A\u4EC0\u4E48\u8BF4\u201C\u4E0D\u7B97\u751F\u6D3B\u201D\uFF1F",
+      "walden-2-003": "\u201C\u6D3B\u5F97\u6DF1\u5165\u201D\u662F\u4EC0\u4E48\u610F\u601D\uFF1F",
+      "walden-2-004": "\u7410\u4E8B\u600E\u6837\u6D88\u78E8\u4E86\u65E5\u5B50\uFF1F"
+    }[state.quote.passageId];
+    return contextQuote() + (full || state.answered ? `${state.question ? "" : '<p class="answer-label">\u95EE\u9898\u793A\u4F8B</p>'}<p class="question-bubble">${escape(question)}</p>` : "") + (state.offline || state.pendingTurn ? `<div class="error-card"><p>${state.offline ? "\u6682\u65F6\u65E0\u6CD5\u8FDE\u63A5\u3002\u95EE\u9898\u548C\u9009\u6587\u5DF2\u4FDD\u7559\uFF0C\u4F60\u53EF\u4EE5\u7EE7\u7EED\u8BFB\u3002" : state.pendingTurn && quoteKey(state.pendingTurn.quote) !== quoteKey(state.quote) ? "\u4E0A\u4E00\u53E5\u8FD8\u6709\u4E00\u6B21\u672A\u5B8C\u6210\u7684\u63D0\u95EE\uFF0C\u8FD4\u56DE\u540E\u53EF\u4EE5\u91CD\u8BD5\u3002" : "\u8FDE\u63A5\u5DF2\u6062\u590D\uFF0C\u8FD9\u6B21\u63D0\u95EE\u5C1A\u672A\u91CD\u8BD5\u3002"}</p><button data-action="retry">${state.pendingTurn && quoteKey(state.pendingTurn.quote) !== quoteKey(state.quote) ? "\u8FD4\u56DE\u5E76\u91CD\u8BD5\u539F\u95EE\u9898" : "\u91CD\u8BD5\u8FD9\u6B21\u63D0\u95EE"}</button></div>` : `<p class="answer-label">\u8BB2\u89E3 \xB7 \u793A\u4F8B</p><p class="answer">${escape(answerText())}</p><button class="source-link" data-action="citation">\u672C\u6BB5 ${icon("external")}</button><div class="answer-actions"><button data-action="expand">${icon("conversation")}\u63A5\u7740\u804A</button><button data-action="note">${icon("note")}\u8BB0\u4E00\u53E5</button></div><p class="scope-line">\u4F9D\u636E\uFF1A\u6240\u9009\u53E5\u4E0E\u672C\u6BB5\u524D\u540E\u6587</p>`);
+  }
+  function renderBody() {
+    let html = "";
+    let title = "\u8BFB\u5230\u8FD9\u91CC";
+    let composer = false;
+    let back = false;
+    if (state.route === "companion" || state.route === "discussion") {
+      title = state.route === "discussion" ? "\u63A5\u7740\u804A\u8FD9\u53E5" : "\u8BFB\u5230\u8FD9\u91CC";
+      html = discussion();
+      composer = true;
+    }
+    if (state.route === "citation") {
+      title = "\u6838\u5BF9\u51FA\u5904";
+      back = true;
+      const p = paragraphs.find((p2) => p2.id === state.quote.passageId) || paragraphs[0];
+      html = `<p class="quote-title">\u74E6\u5C14\u767B\u6E56 \xB7 \u7B2C\u4E8C\u7AE0</p><span class="record-kind">\u4F5C\u8005\u539F\u6587 \xB7 \u8282\u9009</span><p class="citation-original">${escape(p.source)}</p><div class="quiet-rule"></div><span class="record-kind">\u793A\u4F8B\u610F\u8BD1</span><p class="citation-translation">${escape(p.interpretive)}</p><a class="source-external" href="${sourceURL}" target="_blank" rel="noopener">\u67E5\u770B\u516C\u7248\u5E95\u672C ${icon("external")}</a>`;
+    }
+    if (state.route === "original") {
+      title = "\u6838\u5BF9\u539F\u6587";
+      back = !!state.returnFrame;
+      const p = paragraphs.find((p2) => p2.id === viewQuote().passageId) || paragraphs[0];
+      html = `<div class="segmented"><button class="${state.layer === "source" ? "active" : ""}" data-layer="source">\u539F\u6587</button><button class="${state.layer === "literal" ? "active" : ""}" data-layer="literal">\u76F4\u8BD1</button><button class="${state.layer === "interpretive" ? "active" : ""}" data-layer="interpretive">\u610F\u8BD1</button></div><span class="record-kind">\u4F5C\u8005\u539F\u6587 \xB7 \u8282\u9009</span><p class="citation-original">${escape(p.source)}</p><div class="quiet-rule"></div><span class="record-kind">${state.layer === "literal" ? "\u793A\u4F8B\u76F4\u8BD1" : "\u793A\u4F8B\u610F\u8BD1"}</span><p class="citation-translation">${escape(p[state.layer === "literal" ? "literal" : "interpretive"])}</p>`;
+    }
+    if (state.route === "note") {
+      title = "\u8BB0\u4E00\u53E5";
+      back = !!state.returnFrame;
+      html = contextQuote("note") + `<textarea class="note-field" id="note-field" aria-label="\u81EA\u5DF1\u7684\u7B14\u8BB0" placeholder="\u7528\u81EA\u5DF1\u7684\u8BDD\uFF0C\u7559\u4E0B\u4E00\u70B9\u60F3\u6CD5\u2026">${escape(state.noteDrafts[quoteKey(viewQuote())] || "")}</textarea><div class="save-note-row"><span>\u81EA\u5DF1\u7684\u7B14\u8BB0</span><button class="primary-button" data-action="save-note">\u4FDD\u5B58</button></div>`;
+    }
+    if (state.route === "library") {
+      title = "\u4E66\u623F";
+      html = `<div class="shelf-book"><div class="book-cover"><h3>\u74E6\u5C14\u767B\u6E56</h3><p>Walden<br>Henry D. Thoreau</p><div class="cover-pond"></div></div><div><h3>\u74E6\u5C14\u767B\u6E56</h3><p>\u4EA8\u5229\xB7\u6234\u7EF4\xB7\u68AD\u7F57<br>\u7B2C\u4E8C\u7AE0 \xB7 \u516C\u7248\u6837\u7AE0</p><button class="primary-button" data-action="continue">\u7EE7\u7EED\u8BFB</button></div></div><button class="list-row" data-action="records"><span><strong>\u6211\u7684\u8BB0\u5F55</strong><small>\u7B14\u8BB0\u4E0E\u8FD8\u60F3\u7EE7\u7EED\u7684\u95EE\u9898</small></span>${icon("right")}</button><button class="list-row" data-action="appearance"><span><strong>\u9605\u8BFB\u504F\u597D</strong><small>\u5B57\u53F7\u3001\u7EB8\u9762\u4E0E\u6B63\u6587\u7248\u672C</small></span>${icon("right")}</button><p class="shelf-note">\u8FD9\u4EFD\u539F\u578B\u53EA\u653E\u4E00\u4EFD\u516C\u7248\u6837\u7AE0\uFF0C\u539F\u6587\u4E0E\u4E24\u79CD\u793A\u4F8B\u8BD1\u6587\u72EC\u7ACB\u4FDD\u5B58\u3002</p>`;
+    }
+    if (state.route === "records") {
+      title = "\u6211\u7684\u8BB0\u5F55";
+      html = `<div class="segmented"><button data-record-tab="notes" class="${state.recordsTab === "notes" ? "active" : ""}">\u81EA\u5DF1\u7684\u7B14\u8BB0</button><button data-record-tab="discussion" class="${state.recordsTab === "discussion" ? "active" : ""}">\u8BA8\u8BBA</button></div>`;
+      if (state.recordsTab === "notes") {
+        const drafts = noteDraftEntries();
+        if (drafts.length) html += `<div class="record-section-heading">\u672A\u4FDD\u5B58\u7684\u7B14\u8BB0 <span>${drafts.length}</span></div>` + drafts.map((d) => `<button class="list-row note-draft-row" data-note-draft="${escape(d.key)}"><span><span class="record-kind">\u8349\u7A3F \xB7 ${escape(layerLabel(d.quote.layer))}</span><strong>${escape(d.text.trim())}</strong><small>\u539F\u53E5 \xB7 ${escape(d.quote.text.slice(0, 32))}\u2026</small></span>${icon("right")}</button>`).join("");
+        if (state.notes.length && drafts.length) html += '<div class="record-section-heading saved-notes-heading">\u5DF2\u4FDD\u5B58</div>';
+        html += state.notes.length ? state.notes.map(
+          (n, i) => `<button class="list-row" data-record="${i}"><span><span class="record-kind">\u81EA\u5DF1\u7684\u7B14\u8BB0</span><strong>${escape(n.text)}</strong><small>\u74E6\u5C14\u767B\u6E56 \xB7 \u7B2C\u4E8C\u7AE0</small></span>${icon("right")}</button>`
+        ).join("") : drafts.length ? "" : '<div class="empty-records"><h3>\u8FD8\u6CA1\u6709\u7B14\u8BB0</h3><p>\u8BFB\u5230\u60F3\u7559\u4E0B\u7684\u8BDD\uFF0C\u53EF\u4EE5\u8BB0\u4E00\u53E5\u3002</p><button class="secondary-button" data-action="continue">\u56DE\u5230\u4E66\u91CC</button></div>';
+      } else {
+        html += state.turns.length ? state.turns.map(
+          (turn, index) => `<button class="list-row" data-turn="${index}"><span><span class="record-kind">${turn.answered === false ? "\u672A\u5B8C\u6210\u63D0\u95EE" : "\u9605\u8BFB\u8BA8\u8BBA"} \xB7 \u539F\u578B\u6F14\u793A</span><strong>${escape(turn.question)}</strong><small>\u74E6\u5C14\u767B\u6E56 \xB7 ${escape(turn.quote.text.slice(0, 24))}\u2026</small></span>${icon("right")}</button>`
+        ).join("") : `<button class="list-row" data-action="expand"><span><span class="record-kind">\u9605\u8BFB\u8BA8\u8BBA \xB7 \u793A\u4F8B</span><strong>deliberately \u4E3A\u4EC0\u4E48\u4E0D\u53EA\u662F\u201C\u523B\u610F\u201D\uFF1F</strong><small>\u74E6\u5C14\u767B\u6E56 \xB7 \u7ED1\u5B9A\u63D0\u95EE\u539F\u53E5</small></span>${icon("right")}</button>`;
+      }
+    }
+    if (state.route === "contents") {
+      title = "\u76EE\u5F55";
+      html = '<p class="quote-title">\u7B2C\u4E8C\u7AE0 \xB7 \u6211\u751F\u6D3B\u7684\u5730\u65B9\uFF0C\u6211\u4E3A\u4F55\u751F\u6D3B</p>' + paragraphs.map(
+        (p, i) => `<button class="list-row" data-jump="${p.id}"><span><strong>${["\u6797\u4E2D\u751F\u6D3B", "\u751F\u6D3B\u5982\u6B64\u73CD\u8D35", "\u6D3B\u5F97\u6DF1\u5165", "\u7410\u4E8B\u4E0E\u65E5\u5B50"][i]}</strong><small>${escape(p.interpretive.slice(0, 25))}\u2026</small></span>${icon("right")}</button>`
+      ).join("");
+    }
+    if (state.route === "appearance") {
+      title = "\u6392\u7248";
+      html = `<div class="setting-group"><label>\u6B63\u6587\u5927\u5C0F</label><div class="type-size-controls"><button data-size="-1" aria-label="\u51CF\u5C0F\u5B57\u53F7">A\u2212</button><output>${state.size}</output><button data-size="1" aria-label="\u589E\u5927\u5B57\u53F7">A\uFF0B</button></div></div><div class="setting-group"><label>\u7EB8\u9762</label><button class="appearance-option" data-theme="paper" aria-pressed="${state.theme === "paper"}">\u6E05\u7EB8 ${state.theme === "paper" ? icon("check") : icon("sun")}</button><button class="appearance-option night-preview" data-theme="night" aria-pressed="${state.theme === "night"}">\u591C\u8BFB ${state.theme === "night" ? icon("check") : icon("moon")}</button></div><div class="setting-group"><label>\u6B63\u6587\u7248\u672C</label><div class="segmented"><button class="${state.layer === "source" ? "active" : ""}" data-layer="source">\u539F\u6587</button><button class="${state.layer === "literal" ? "active" : ""}" data-layer="literal">\u76F4\u8BD1</button><button class="${state.layer === "interpretive" ? "active" : ""}" data-layer="interpretive">\u610F\u8BD1</button></div></div><p class="type-preview">\u6211\u6765\u5230\u6797\u4E2D\uFF0C\u662F\u60F3\u6E05\u9192\u5730\u8FC7\u65E5\u5B50\u3002</p>`;
+    }
+    $("sheet-title").textContent = title;
+    $("sheet-back").hidden = !back;
+    $("sheet-back").lastElementChild.textContent = state.returnFrame?.route === "records" ? "\u8FD4\u56DE\u8BB0\u5F55" : "\u8FD4\u56DE\u8BA8\u8BBA";
+    $("sheet-title").hidden = back;
+    $("sheet-done").textContent = [
+      "companion",
+      "discussion",
+      "citation"
+    ].includes(state.route) ? "\u7EE7\u7EED\u8BFB" : "\u5B8C\u6210";
+    $("sheet-body").innerHTML = html;
+    $("composer").hidden = !composer;
+    $("question-input").value = state.draft;
+    $("draft-return").hidden = !state.drafts.length;
+    $("sheet-body").scrollTop = 0;
+    drawIcons($("sheet-body"));
+    updateContextChrome();
+  }
+  function phoneHeight() {
+    return $("phone").clientHeight;
+  }
+  function targetY(detent) {
+    return phoneHeight() * (detent === "closed" ? 0.88 : detent === "half" ? 0.36 : 0);
+  }
+  function paintSheet() {
+    const visible = Math.max(0, phoneHeight() * 0.88 - state.y);
+    $("reader-sheet").style.transform = `translateY(${state.y}px)`;
+    $("reader-sheet").style.paddingBottom = Math.max(0, state.y) + 31 + "px";
+    const fullness = Math.max(0, Math.min(1, (visible / phoneHeight() - 0.52) / 0.36));
+    const isFull = state.route !== "closed" && state.detent === "full";
+    const becameModal = isFull && $("reader-sheet").getAttribute("aria-modal") !== "true";
+    $("sheet-scrim").hidden = fullness <= 2e-3;
+    $("sheet-scrim").style.opacity = fullness;
+    $("sheet-scrim").style.pointerEvents = isFull ? "auto" : "none";
+    $("reader-sheet").setAttribute("aria-modal", String(isFull));
+    $("reader-sheet").setAttribute("role", isFull ? "dialog" : "region");
+    $("sheet-grip").setAttribute("aria-expanded", String(isFull));
+    $("reading-scroll").inert = isFull;
+    syncReadingIntent();
+    if (becameModal && !$("reader-sheet").contains(document.activeElement))
+      $("sheet-done").focus({ preventScroll: true });
+    $("reading-scroll").style.paddingBottom = state.route === "closed" ? "24px" : Math.max(24, visible - 85) + "px";
+    positionSelectionMenu();
+  }
+  function snap(detent, { immediate = false, onComplete = null } = {}) {
+    state.readingTransition = true;
+    $("reader-sheet").dataset.motion = "moving";
+    state.detent = detent;
+    state.target = targetY(detent);
+    cancelAnimationFrame(state.raf);
+    if (immediate || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      state.y = state.target;
+      state.velocity = 0;
+      paintSheet();
+      if (state.readingPosition) restoreReaderAnchor(state.readingPosition);
+      state.readingTransition = false;
+      onComplete?.();
+      $("reader-sheet").dataset.motion = "settled";
+      return;
+    }
+    let last = performance.now();
+    function tick(now) {
+      const dt = Math.max(0, (now - last) / 1e3);
+      last = now;
+      const frame = advanceSpring({ position: state.y, velocity: state.velocity }, state.target, dt);
+      const crossesFullStop = state.target === targetY("full") && state.y >= 0 && frame.position < 0;
+      const crossesClosedStop = state.target === targetY("closed") && state.y <= targetY("closed") && frame.position > targetY("closed");
+      state.y = crossesFullStop || crossesClosedStop ? state.target : frame.position;
+      state.velocity = crossesFullStop || crossesClosedStop ? 0 : frame.velocity;
+      paintSheet();
+      if (Math.abs(state.target - state.y) > 0.4 || Math.abs(state.velocity) > 4)
+        state.raf = requestAnimationFrame(tick);
+      else {
+        state.y = state.target;
+        paintSheet();
+        if (state.readingPosition) restoreReaderAnchor(state.readingPosition);
+        state.readingTransition = false;
+        onComplete?.();
+        $("reader-sheet").dataset.motion = "settled";
+      }
+    }
+    state.raf = requestAnimationFrame(tick);
+  }
+  function openRoute(route, detent = "full", { capture = true, restoreScroll = null, exposeQuote = null } = {}) {
+    if (capture) captureComposer();
+    if (!["note", "original"].includes(route)) state.previewQuote = null;
+    if (state.closingFrame) state.returnFrame = null;
+    state.closingFrame = null;
+    setClosingControls(false);
+    state.route = route;
+    hideSelectionMenu();
+    setReadingIntent("sheet");
+    $("reader-sheet").inert = false;
+    $("reader-sheet").hidden = false;
+    renderBody();
+    const scrollRevision = state.scrollRevision || 0;
+    snap(detent, {
+      onComplete: () => {
+        if (restoreScroll !== null && state.route === route && (state.scrollRevision || 0) === scrollRevision)
+          $("sheet-body").scrollTop = restoreScroll;
+        if (exposeQuote) exposeSelectedQuote(exposeQuote);
+      }
+    });
+    setStudy(
+      {
+        companion: "\u534A\u5C4F\u966A\u8BFB",
+        discussion: "\u5C55\u5F00\u8BA8\u8BBA",
+        citation: "\u51FA\u5904\u6709\u56DE\u7A0B",
+        original: "\u540C\u6BB5\u6838\u5BF9",
+        note: "\u81EA\u5DF1\u7684\u7B14\u8BB0",
+        library: "\u81EA\u5DF1\u7684\u4E66\u623F",
+        records: "\u4ECE\u8BB0\u5F55\u56DE\u5230\u539F\u53E5",
+        contents: "\u7AE0\u8282\u4E0E\u6BB5\u843D",
+        appearance: "\u6392\u7248\u4E0D\u4E22\u4F4D\u7F6E"
+      }[route] || "\u9605\u8BFB",
+      route === "companion" ? "\u4E0A\u65B9\u6B63\u6587\u53EF\u4EE5\u7EE7\u7EED\u8BFB\u3002\u6240\u63D0\u95EE\u9898\u4ECD\u7ED1\u5B9A\u539F\u6765\u7684\u9009\u6587\uFF0C\u6536\u8D77\u540E\u4FDD\u7559\u6700\u65B0\u9605\u8BFB\u4F4D\u7F6E\u3002" : route === "citation" ? "\u51FA\u5904\u662F\u4E34\u65F6\u6838\u5BF9\uFF0C\u8FD4\u56DE\u8BA8\u8BBA\u4F1A\u6062\u590D\u8349\u7A3F\u3001\u56DE\u7B54\u4F4D\u7F6E\u4E0E\u9762\u677F\u9AD8\u5EA6\u3002" : "\u6BCF\u4E2A\u5165\u53E3\u90FD\u6709\u6E05\u695A\u7684\u5BF9\u8C61\u4E0E\u8FD4\u56DE\u8DEF\u5F84\u3002"
+    );
+  }
+  function setClosingControls(closing) {
+    for (const node of [$("sheet-header"), $("sheet-body"), $("composer")]) node.inert = closing;
+    $("reader-sheet").dataset.closing = String(closing);
+  }
+  function restoreClosingPanel() {
+    const frame = state.closingFrame;
+    if (!frame) return false;
+    cancelAnimationFrame(state.raf);
+    state.closingFrame = null;
+    state.route = frame.route;
+    state.detent = frame.detent;
+    state.target = targetY(frame.detent);
+    state.returnFrame = frame.returnFrame;
+    setReadingIntent("sheet");
+    $("reader-sheet").inert = false;
+    setClosingControls(false);
+    setStudy("\u5DF2\u56DE\u5230\u539F\u6765\u7684\u9762\u677F", "\u5173\u95ED\u5DF2\u53D6\u6D88\uFF0C\u539F\u53E5\u3001\u95EE\u9898\u548C\u8349\u7A3F\u4ECD\u7136\u4FDD\u7559\u3002");
+    return true;
+  }
+  function closeSheet({ immediate = false, focus = true } = {}) {
+    if (state.route === "closed" && $("reader-sheet").hidden) return;
+    captureComposer();
+    if (state.route !== "closed") state.closingFrame = { route: state.route, detent: state.detent, returnFrame: state.returnFrame };
+    state.route = "closed";
+    setReadingIntent("pure");
+    $("reader-sheet").inert = false;
+    setClosingControls(true);
+    $("reading-scroll").inert = false;
+    $("reading-scroll").style.paddingBottom = "24px";
+    hideSelectionMenu();
+    snap("closed", {
+      immediate,
+      onComplete: () => {
+        if (state.route === "closed") {
+          $("reader-sheet").hidden = true;
+          $("reader-sheet").inert = true;
+          state.closingFrame = null;
+          state.returnFrame = null;
+          state.previewQuote = null;
+          setClosingControls(false);
+        }
+      }
+    });
+    persist();
+    setStudy(
+      "\u7EE7\u7EED\u9605\u8BFB",
+      "\u4FDD\u7559\u4F60\u521A\u624D\u4E3B\u52A8\u8BFB\u5230\u7684\u4F4D\u7F6E\u3002\u9700\u8981\u56DE\u5230\u63D0\u95EE\u5904\u65F6\uFF0C\u518D\u70B9\u201C\u8FD4\u56DE\u63D0\u95EE\u539F\u53E5\u201D\u3002"
+    );
+    if (focus) $("reading-scroll").focus({ preventScroll: true });
+  }
+  function exposeSelectedQuote(quote) {
+    if (quote.layer !== state.layer) return;
+    const text = $(quote.passageId)?.querySelector(".passage-text");
+    if (!text) return;
+    let box = text.getBoundingClientRect();
+    if (text.firstChild?.nodeType === 3 && Number.isInteger(quote.startUtf16) && Number.isInteger(quote.endUtf16) && quote.endUtf16 <= text.firstChild.length) {
+      const range = document.createRange();
+      range.setStart(text.firstChild, quote.startUtf16);
+      range.setEnd(text.firstChild, quote.endUtf16);
+      box = range.getBoundingClientRect();
+    }
+    const reading = $("reading-scroll").getBoundingClientRect(), sheet = $("reader-sheet").getBoundingClientRect();
+    if (box.top < sheet.top - 44 && box.bottom > reading.top + 8) return;
+    $("reading-scroll").scrollTop += box.top - reading.top - 40;
+    state.readingPosition = captureReadingPosition($("reading-scroll"), readerIdentity(), quote.passageId) || state.readingPosition;
+    state.readingTop = $("reading-scroll").scrollTop;
+    rememberReadingGeometry();
+    persist();
+  }
+  function captureComposer() {
+    if (state.route === "note") {
+      state.noteDrafts[quoteKey(viewQuote())] = $("note-field")?.value || "";
+      persist();
+      return;
+    }
+    if (!["companion", "discussion"].includes(state.route)) return;
+    state.draft = $("question-input").value;
+    persist();
+  }
+  function visitCitation() {
+    captureComposer();
+    state.returnFrame = {
+      route: state.route,
+      detent: state.detent,
+      scrollTop: $("sheet-body").scrollTop,
+      draft: state.draft,
+      quote: { ...state.quote },
+      question: state.question,
+      answered: state.answered
+    };
+    openRoute("citation", "full");
+  }
+  function backToDiscussion() {
+    if (state.route === "note") captureComposer();
+    const frame = state.returnFrame;
+    if (frame) {
+      state.returnFrame = null;
+      state.draft = frame.draft;
+      if (frame.quote) state.quote = { ...frame.quote };
+      state.question = frame.question || "";
+      state.answered = !!frame.answered;
+      openRoute(frame.route, frame.detent, {
+        capture: false,
+        restoreScroll: frame.scrollTop
+      });
+    } else openRoute("discussion", "full", { capture: false });
+  }
+  function jumpTo(id, { close = true } = {}) {
+    if (close) closeSheet();
+    const p = $(id);
+    if (p?.hasAttribute("data-passage")) {
+      $("reading-scroll").scrollTop = p.offsetTop - 24;
+      state.readingPosition = captureReadingPosition($("reading-scroll"), readerIdentity(), id) || state.readingPosition;
+      state.readingTop = $("reading-scroll").scrollTop;
+      rememberReadingGeometry();
+    }
+    persist();
+  }
+  function action(name) {
+    if (name === "continue") {
+      closeSheet();
+      return;
+    }
+    if (name === "citation") {
+      visitCitation();
+      return;
+    }
+    if (name === "return-quote") {
+      jumpTo((state.route === "note" || state.route === "original" ? viewQuote() : state.quote).passageId, { close: false });
+      notify(state.route === "note" ? "\u5DF2\u56DE\u5230\u7B14\u8BB0\u539F\u53E5" : "\u5DF2\u56DE\u5230\u63D0\u95EE\u539F\u53E5");
+      return;
+    }
+    if (name === "expand") {
+      state.discussionStarted = true;
+      openRoute("discussion", "full");
+      return;
+    }
+    if (name === "ask-current") {
+      const route = state.route === "discussion" ? "discussion" : "companion", detent = state.detent;
+      takeQuote(currentReadingQuote(), { open: false });
+      state.discussionStarted = true;
+      persist();
+      openRoute(route, detent, { capture: false });
+      return;
+    }
+    if (name === "note") {
+      captureComposer();
+      state.returnFrame = {
+        route: state.route,
+        detent: state.detent,
+        scrollTop: $("sheet-body").scrollTop,
+        draft: state.draft,
+        quote: { ...state.quote },
+        question: state.question,
+        answered: state.answered
+      };
+      openRoute("note", "full");
+      return;
+    }
+    if (name === "save-note") {
+      const draftText = $("note-field")?.value || "", text = draftText.trim();
+      if (!text) {
+        $("note-field")?.focus();
+        return;
+      }
+      const note = { id: "prototype-note-" + crypto.randomUUID(), text, quote: { ...viewQuote() }, author: "user" };
+      state.notes.unshift(note);
+      state.noteDrafts[quoteKey(viewQuote())] = "";
+      $("note-field").value = "";
+      persist();
+      if (state.returnFrame) backToDiscussion();
+      else closeSheet();
+      state.noteSaveUndo = { note: { ...note, quote: { ...note.quote } }, draftText };
+      notify("\u7B14\u8BB0\u5DF2\u4FDD\u5B58", { undo: true });
+      return;
+    }
+    if (name === "undo-note-save") {
+      captureComposer();
+      const result = undoNoteSave({ notes: state.notes, drafts: state.noteDrafts, receipt: state.noteSaveUndo });
+      if (result.status !== "undone") {
+        notify(result.status === "conflict" ? "\u8FD9\u53E5\u5DF2\u6709\u65B0\u8349\u7A3F\uFF0C\u4E24\u4EFD\u5185\u5BB9\u90FD\u5DF2\u4FDD\u7559" : "\u8FD9\u6B21\u4FDD\u5B58\u5DF2\u5B8C\u6210\uFF0C\u53EF\u5728\u8BB0\u5F55\u4E2D\u67E5\u770B");
+        return;
+      }
+      state.notes = result.notes;
+      state.noteDrafts = result.drafts;
+      persist();
+      openNotePreview(result.quote, { capture: false });
+      notify("\u5DF2\u6062\u590D\u4E3A\u8349\u7A3F");
+      return;
+    }
+    if (name === "retry") {
+      if (state.offline) {
+        notify("\u4ECD\u5728\u65AD\u7F51\u793A\u4F8B\u4E2D\uFF0C\u95EE\u9898\u5DF2\u4FDD\u7559");
+        return;
+      }
+      if (state.pendingTurn) {
+        const turn = state.pendingTurn;
+        if (state.draft.trim() && (quoteKey(state.quote) !== quoteKey(turn.quote) || state.draft.trim() !== turn.question))
+          state.drafts.push({ quote: { ...state.quote }, draft: state.draft });
+        state.quote = { ...turn.quote };
+        state.question = turn.question;
+        state.draft = "";
+        $("question-input").value = "";
+        rememberTurn({ ...turn, answered: true });
+        state.pendingTurn = null;
+      }
+      state.answered = true;
+      state.discussionStarted = true;
+      persist();
+      renderBody();
+      notify("\u5DF2\u6062\u590D\u793A\u4F8B\u8BB2\u89E3");
+      return;
+    }
+    openRoute(name, "full");
+  }
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("button");
+    if (!button) return;
+    if (button.dataset.selection) {
+      const selected = state.pendingSelection || initialQuote();
+      const returnFromSelection = state.selectionReturnFrame;
+      if (button.dataset.selection === "explain") {
+        takeQuote(selected, { open: false });
+        state.discussionStarted = true;
+        persist();
+      } else {
+        captureComposer();
+        state.previewQuote = { ...selected };
+        if (returnFromSelection) state.returnFrame = returnFromSelection;
+        else if (["companion", "discussion"].includes(state.route)) state.returnFrame = { route: state.route, detent: state.detent, scrollTop: $("sheet-body").scrollTop, draft: state.draft, quote: { ...state.quote }, question: state.question, answered: state.answered };
+        else if (!["note", "original"].includes(state.route)) state.returnFrame = null;
+        hideSelectionMenu();
+        window.getSelection()?.removeAllRanges();
+      }
+      openRoute(
+        button.dataset.selection === "explain" ? "companion" : button.dataset.selection,
+        button.dataset.selection === "explain" ? "half" : "full",
+        { capture: false, exposeQuote: button.dataset.selection === "explain" ? selected : null }
+      );
+      return;
+    }
+    if (button.dataset.action) {
+      action(button.dataset.action);
+      return;
+    }
+    if (button.dataset.noteDraft !== void 0) {
+      const draft = noteDraftEntries().find((d) => d.key === button.dataset.noteDraft);
+      if (draft) openNotePreview(draft.quote);
+      return;
+    }
+    if (button.dataset.layer) {
+      state.layer = button.dataset.layer;
+      renderReader();
+      renderBody();
+      persist();
+      return;
+    }
+    if (button.dataset.size) {
+      state.size = Math.max(
+        18,
+        Math.min(28, state.size + Number(button.dataset.size))
+      );
+      renderReader();
+      renderBody();
+      persist();
+      return;
+    }
+    if (button.dataset.theme) {
+      state.theme = button.dataset.theme;
+      renderReader();
+      renderBody();
+      persist();
+      return;
+    }
+    if (button.dataset.jump) {
+      jumpTo(button.dataset.jump);
+      return;
+    }
+    if (button.dataset.record !== void 0) {
+      const note = state.notes[Number(button.dataset.record)];
+      jumpTo(note.quote.passageId);
+      return;
+    }
+    if (button.dataset.turn !== void 0) {
+      const turn = state.turns[Number(button.dataset.turn)];
+      if (turn.answered === false) rememberPendingTurn(turn.id);
+      takeQuote({ ...turn.quote }, { open: false });
+      state.question = turn.question;
+      state.answered = turn.answered !== false;
+      if (turn.answered === false) state.pendingTurn = { ...turn, quote: { ...turn.quote } };
+      state.discussionStarted = true;
+      persist();
+      openRoute("discussion", "full", { capture: false });
+      return;
+    }
+    if (button.dataset.recordTab) {
+      state.recordsTab = button.dataset.recordTab;
+      renderBody();
+      return;
+    }
+    if (button.dataset.scenario) showScenario(button.dataset.scenario);
+  });
+  $("library-button").onclick = () => openRoute("library", "full");
+  $("contents-button").onclick = () => openRoute("contents", "full");
+  $("progress-button").onclick = () => openRoute("contents", "full");
+  $("appearance-button").onclick = () => openRoute("appearance", "full");
+  $("companion-button").onclick = enterCompanion;
+  $("wake-top").onclick = () => wakeReadingTools("top");
+  $("wake-bottom").onclick = () => wakeReadingTools("progress");
+  $("sheet-done").onclick = closeSheet;
+  $("sheet-back").onclick = backToDiscussion;
+  $("sheet-scrim").onclick = () => snap("half");
+  $("night-mode").onclick = () => {
+    state.theme = state.theme === "paper" ? "night" : "paper";
+    renderReader();
+    persist();
+  };
+  $("offline-mode").onchange = (event) => {
+    state.offline = event.target.checked;
+    if (["companion", "discussion"].includes(state.route)) renderBody();
+    setStudy(
+      state.offline ? "\u65AD\u7F51\u4ECD\u53EF\u8BFB" : "\u8FDE\u63A5\u6062\u590D\u793A\u4F8B",
+      state.offline ? "\u539F\u6587\u4E0E\u5DF2\u7F13\u5B58\u5185\u5BB9\u7EE7\u7EED\u53EF\u8BFB\uFF0C\u95EE\u9898\u548C\u9009\u6587\u4ECD\u4FDD\u7559\u3002" : "\u5DF2\u6709\u95EE\u9898\u53EF\u4EE5\u663E\u5F0F\u91CD\u8BD5\u3002"
+    );
+  };
+  $("reopen").onclick = () => {
+    captureComposer();
+    persist();
+    location.reload();
+  };
+  $("question-input").oninput = (event) => {
+    state.draft = event.target.value;
+    persist();
+  };
+  $("question-input").onfocus = () => snap("full");
+  $("question-form").onsubmit = (event) => {
+    event.preventDefault();
+    const question = $("question-input").value.trim();
+    if (!question) return;
+    state.question = question;
+    state.answered = false;
+    state.discussionStarted = true;
+    const turn = {
+      id: "prototype-" + Date.now(),
+      question,
+      quote: { ...state.quote },
+      answered: !state.offline
+    };
+    rememberPendingTurn();
+    state.pendingTurn = turn;
+    if (!state.offline) {
+      rememberTurn(turn);
+      state.pendingTurn = null;
+      state.draft = "";
+      state.answered = true;
+    }
+    persist();
+    $("question-input").value = state.draft;
+    openRoute("discussion", "full", { capture: false });
+  };
+  $("draft-return").onclick = () => {
+    captureComposer();
+    const previous = state.drafts.pop();
+    if (!previous) return;
+    if (state.draft.trim())
+      state.drafts.unshift({ quote: { ...state.quote }, draft: state.draft });
+    state.quote = previous.quote;
+    state.draft = previous.draft;
+    state.question = "";
+    state.answered = false;
+    state.discussionStarted = true;
+    state.returnFrame = null;
+    persist();
+    renderBody();
+  };
+  $("reading-scroll").addEventListener(
+    "scroll",
+    () => {
+      state.readingTop = $("reading-scroll").scrollTop;
+      if (!state.restoringReading && !state.readingTransition && readingGeometryMatches())
+        state.readingPosition = captureReadingPosition($("reading-scroll"), readerIdentity()) || state.readingPosition;
+      persist();
+      updateProgress();
+      if (!state.progressAdjusting && !state.restoringReading && performance.now() > state.progressScrollUntil) setReadingIntent("read");
+      if (!$("selection-menu").hidden) requestAnimationFrame(positionSelectionMenu);
+    },
+    { passive: true }
+  );
+  for (const type of ["wheel", "touchstart", "pointerdown", "keydown"])
+    $("reading-scroll").addEventListener(type, () => {
+      if (type === "wheel") setReadingIntent("read");
+      state.restoringReading = false;
+      state.readingTransition = false;
+      $("reading-scroll").removeAttribute("data-restoring");
+    }, { passive: true });
+  document.addEventListener("selectionchange", () => {
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed || !selection.rangeCount) {
+      if (state.readingIntent.kind === "selection" && !state.touchHold) hideSelectionMenu();
+      return;
+    }
+    if (state.lastPointerType !== "mouse" && !state.touchSelectionArmed) return;
+    presentSelection(selection.getRangeAt(0));
+  });
+  function cancelTouchHold() {
+    clearTimeout(cancelTouchHold.timer);
+    state.touchHold = null;
+  }
+  $("reading-scroll").addEventListener("pointerdown", (event) => {
+    state.lastPointerType = event.pointerType || "mouse";
+    if (state.touchHold && state.touchHold.id !== event.pointerId) return cancelTouchHold();
+    const text = event.target.closest?.(".passage-text");
+    if (!text) return;
+    if (state.readingIntent.kind !== "selection") state.touchSelectionArmed = false;
+    state.touchHold = startHold({ id: event.pointerId, pointerType: event.pointerType, x: event.clientX, y: event.clientY, passageId: text.closest("[data-passage]").dataset.passage, isPrimary: event.isPrimary, button: event.button }, performance.now());
+    if (!state.touchHold) return;
+    cancelTouchHold.timer = setTimeout(() => {
+      if (!holdReady(state.touchHold, performance.now())) return;
+      state.touchSelectionArmed = true;
+      selectPassage(state.touchHold.passageId);
+    }, HOLD_MS);
+  }, { passive: true });
+  $("reading-scroll").addEventListener("pointermove", (event) => {
+    state.touchHold = moveHold(state.touchHold, { id: event.pointerId, x: event.clientX, y: event.clientY });
+    if (state.touchHold?.cancelled) {
+      clearTimeout(cancelTouchHold.timer);
+      setReadingIntent("read");
+    }
+  }, { passive: true });
+  for (const type of ["pointerup", "pointercancel"]) $("reading-scroll").addEventListener(type, cancelTouchHold, { passive: true });
+  $("reading-scroll").addEventListener("contextmenu", (event) => {
+    if (!event.target.closest?.(".passage-text") || state.lastPointerType === "mouse") return;
+    state.touchSelectionArmed = true;
+    const selection = window.getSelection();
+    if (selection?.rangeCount && !selection.isCollapsed) presentSelection(selection.getRangeAt(0));
+    else selectPassage(event.target.closest("[data-passage]").dataset.passage);
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.isComposing || event.keyCode === 229) return;
+    if ((event.key === "ContextMenu" || event.key === "F10" && event.shiftKey) && event.target.closest?.("#reading-scroll")) {
+      event.preventDefault();
+      state.touchSelectionArmed = true;
+      const selection = window.getSelection();
+      if (selection?.rangeCount && !selection.isCollapsed) presentSelection(selection.getRangeAt(0));
+      else selectPassage(currentReadingQuote().passageId);
+      return;
+    }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      if (state.route === "citation") backToDiscussion();
+      else if (!$("selection-menu").hidden) {
+        hideSelectionMenu();
+        window.getSelection()?.removeAllRanges();
+      } else if (state.route !== "closed") closeSheet();
+      else setReadingIntent("pure");
+    }
+  });
+  $("selection-menu").addEventListener("mousedown", (event) => event.preventDefault());
+  var outsideSelectionPress = null;
+  document.addEventListener("pointerdown", (event) => {
+    outsideSelectionPress = null;
+    if ($("selection-menu").hidden || $("selection-menu").contains(event.target) || event.target.closest?.("[data-quote]")) return;
+    if (event.target.closest?.("#reading-scroll")) outsideSelectionPress = { id: event.pointerId, x: event.clientX, y: event.clientY, distance: 0 };
+    else hideSelectionMenu();
+  });
+  document.addEventListener("pointermove", (event) => {
+    const press = outsideSelectionPress;
+    if (press?.id === event.pointerId) press.distance = Math.max(press.distance, Math.hypot(event.clientX - press.x, event.clientY - press.y));
+  }, { passive: true });
+  document.addEventListener("pointerup", (event) => {
+    const press = outsideSelectionPress;
+    if (press?.id !== event.pointerId) return;
+    outsideSelectionPress = null;
+    if (Math.max(press.distance, Math.hypot(event.clientX - press.x, event.clientY - press.y)) < 6) {
+      hideSelectionMenu();
+      window.getSelection()?.removeAllRanges();
+    }
+  }, { passive: true });
+  document.addEventListener("pointercancel", () => {
+    outsideSelectionPress = null;
+  }, { passive: true });
+  var grip = $("sheet-grip");
+  grip.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0 || state.drag) return;
+    const interruptedClosing = restoreClosingPanel();
+    cancelAnimationFrame(state.raf);
+    $("reader-sheet").dataset.motion = "dragging";
+    state.readingTransition = true;
+    grip.dataset.dragging = "true";
+    state.velocity = 0;
+    state.drag = {
+      id: event.pointerId,
+      startY: event.clientY,
+      start: state.y,
+      previousY: event.clientY,
+      time: performance.now(),
+      velocity: 0,
+      maxDistance: 0,
+      interruptedClosing,
+      samples: [{ y: event.clientY, time: performance.now() }]
+    };
+    grip.setPointerCapture(event.pointerId);
+    paintSheet();
+  });
+  grip.addEventListener("pointermove", (event) => {
+    const d = state.drag;
+    if (!d || d.id !== event.pointerId) return;
+    const now = performance.now();
+    d.samples.push({ y: event.clientY, time: now });
+    while (d.samples.length > 2 && now - d.samples[0].time > 80) d.samples.shift();
+    const first = d.samples[0];
+    d.velocity = (event.clientY - first.y) / Math.max(1, now - first.time) * 1e3;
+    d.previousY = event.clientY;
+    d.time = now;
+    d.maxDistance = Math.max(d.maxDistance, Math.abs(event.clientY - d.startY));
+    const candidate = d.start + event.clientY - d.startY;
+    const extent = Math.max(1, Math.min(16, phoneHeight() * 0.12 - document.querySelector(".status-bar").clientHeight - 8));
+    state.y = resistedPosition(candidate, 0, targetY("closed"), extent);
+    paintSheet();
+  });
+  function endDrag(event) {
+    const d = state.drag;
+    if (!d || d.id !== event.pointerId) return;
+    state.drag = null;
+    delete grip.dataset.dragging;
+    const moved = Math.max(d.maxDistance, Math.abs(event.clientY - d.startY));
+    if (moved < 5) {
+      snap(d.interruptedClosing ? state.detent : state.detent === "full" ? "half" : "full");
+      return;
+    }
+    let velocity = performance.now() - d.time > 100 ? 0 : d.velocity;
+    if (state.y < 0 && velocity < 0 || state.y > targetY("closed") && velocity > 0) velocity = 0;
+    state.velocity = velocity;
+    const stops = [
+      ["full", targetY("full")],
+      ["half", targetY("half")],
+      ["closed", targetY("closed")]
+    ];
+    const destination = nearestDetent(state.y, velocity, stops);
+    if (destination === "closed") closeSheet();
+    else snap(destination);
+  }
+  grip.addEventListener("pointerup", endDrag);
+  function cancelDrag() {
+    if (!state.drag) return;
+    state.drag = null;
+    delete grip.dataset.dragging;
+    state.velocity = 0;
+    snap(state.detent);
+  }
+  grip.addEventListener("pointercancel", cancelDrag);
+  grip.addEventListener("lostpointercapture", cancelDrag);
+  function showScenario(name) {
+    if (["top", "progress"].includes(name)) {
+      closeSheet({ immediate: true });
+      wakeReadingTools(name);
+      return;
+    }
+    if (name === "resume") {
+      closeSheet();
+      hideSelectionMenu();
+      setReadingIntent("pure");
+      jumpTo(paragraphs[0].id);
+      return;
+    }
+    if (name === "selected") {
+      closeSheet();
+      jumpTo(paragraphs[0].id);
+      selectPassage(paragraphs[0].id);
+      return;
+    }
+    if (name === "citation") {
+      if (!["companion", "discussion"].includes(state.route))
+        openRoute("discussion", "full");
+      visitCitation();
+      return;
+    }
+    if (name === "note") {
+      if (state.route === "closed") openRoute("companion", "half");
+      action("note");
+      return;
+    }
+    if (name === "night") {
+      state.theme = "night";
+      renderReader();
+      openRoute("companion", "half");
+      return;
+    }
+    if (name === "offline") {
+      state.offline = true;
+      $("offline-mode").checked = true;
+      openRoute("companion", "half");
+      return;
+    }
+    openRoute(name, name === "companion" ? "half" : "full");
+  }
+  drawIcons();
+  renderReader({ restore: false });
+  var hadStoredLocator = saved.readingPosition != null;
+  var restoredReading = state.readingPosition && restoreReaderAnchor(state.readingPosition);
+  if (!restoredReading) {
+    $("reading-scroll").scrollTop = hadStoredLocator ? 0 : state.readingTop;
+    state.readingTop = $("reading-scroll").scrollTop;
+    state.readingPosition = captureReadingPosition($("reading-scroll"), readerIdentity());
+    const entry = state.readingPosition?.passageId || paragraphs[0].id;
+    if (entry !== state.resumePassageId) {
+      state.resumePassageId = entry;
+      renderReader();
+    }
+  }
+  rememberReadingGeometry();
+  state.y = targetY("closed");
+  setStudy("\u6574\u5C4F\u662F\u4E66", "\u70B9\u9876\u90E8\u8FB9\u754C\u770B\u5BFC\u822A\uFF0C\u70B9\u5E95\u90E8\u8FB9\u754C\u8C03\u8FDB\u5EA6\uFF1B\u957F\u6309\u6587\u5B57\u540E\u518D\u89E3\u91CA\u3001\u6838\u5BF9\u6216\u8BB0\u4E00\u53E5\u3002");
+  setReadingIntent("pure");
+  updateProgress();
+  updateContextChrome();
+  window.addEventListener("resize", () => {
+    if (state.readingPosition) restoreReaderAnchor(state.readingPosition);
+    if (state.route !== "closed") snap(state.detent, { immediate: true });
+    positionSelectionMenu();
+  });
+  window.addEventListener("pagehide", persist);
+  var params = new URLSearchParams(location.search);
+  if (params.get("state")) showScenario(params.get("state"));
+  grip.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      const interruptedClosing = restoreClosingPanel();
+      snap(interruptedClosing ? state.detent : state.detent === "full" ? "half" : "full");
+    }
+  });
+  document.addEventListener("input", (event) => {
+    if (event.target.id === "note-field") {
+      state.noteDrafts[quoteKey(viewQuote())] = event.target.value;
+      persist();
+    }
+  });
+  for (const event of ["wheel", "touchstart", "keydown"])
+    $("sheet-body").addEventListener(
+      event,
+      () => {
+        state.scrollRevision = (state.scrollRevision || 0) + 1;
+      },
+      { passive: true }
+    );
+  document.addEventListener("pointerdown", () => {
+    keyboardTools = false;
+  }, true);
+  document.addEventListener("keydown", () => {
+    keyboardTools = true;
+  }, true);
+  for (const [id, kind] of [["reader-nav", "top"], ["reading-dock", "progress"]]) {
+    $(id).addEventListener("focusin", () => {
+      if (keyboardTools && state.readingIntent.kind === kind) setReadingIntent("pin");
+    });
+    $(id).addEventListener("focusout", () => queueMicrotask(() => {
+      if (!$(id).contains(document.activeElement) && state.readingIntent.kind === kind) setReadingIntent("unpin");
+    }));
+  }
+  for (const id of ["wake-top", "wake-bottom"]) $(id).addEventListener("focusout", () => queueMicrotask(() => {
+    if (![$("reader-nav"), $("reading-dock")].some((n) => n.contains(document.activeElement))) setReadingIntent("unpin");
+  }));
+  var progress = $("reading-progress");
+  function releaseProgress() {
+    state.progressAdjusting = false;
+    state.progressScrollUntil = performance.now() + 150;
+    if (keyboardTools && $("reading-dock").contains(document.activeElement)) setReadingIntent("pin");
+    else setReadingIntent("unpin");
+  }
+  progress.addEventListener("pointerdown", () => {
+    state.progressAdjusting = true;
+    setReadingIntent("pin");
+  });
+  progress.addEventListener("input", () => {
+    state.progressAdjusting = true;
+    const position = positionAtProgress(Number(progress.value) / 1e3, paragraphs, readerIdentity());
+    if (!position) return;
+    state.readingPosition = position;
+    restoreReaderAnchor(position);
+    state.readingTop = $("reading-scroll").scrollTop;
+    rememberReadingGeometry();
+    updateProgress();
+    persist();
+  });
+  for (const type of ["change", "pointerup", "pointercancel"]) progress.addEventListener(type, releaseProgress);
+})();
+</script>
+  </body>
+</html>

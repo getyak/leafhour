@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-27T06:16:07.425Z",
+  "checks": [
+    {
+      "name": "waking-progress-refreshes-an-explicit-directory-jump",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "pass"
+}

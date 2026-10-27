@@ -1,0 +1,56 @@
+{
+  "at": "2026-10-27T06:15:41.594Z",
+  "checks": [
+    {
+      "name": "note-drafts-have-a-records-entry-without-a-false-empty-state",
+      "status": "pass"
+    },
+    {
+      "name": "records-recovery-keeps-note-source-discussion-and-refresh-continuity",
+      "status": "pass"
+    },
+    {
+      "name": "save-and-undo-from-records-restore-the-exact-draft-without-duplicating-notes",
+      "status": "pass"
+    },
+    {
+      "name": "reading-origin-undo-reopens-the-note-and-keeps-reading-position",
+      "status": "pass"
+    },
+    {
+      "name": "discussion-origin-undo-preserves-its-return-frame-and-composer",
+      "status": "pass"
+    },
+    {
+      "name": "undo-does-not-overwrite-a-newer-draft-on-the-same-quote",
+      "status": "pass"
+    },
+    {
+      "name": "consecutive-saves-undo-only-the-latest-note",
+      "status": "pass"
+    },
+    {
+      "name": "undo-feedback-remains-operable-while-keyboard-focus-is-inside",
+      "status": "pass"
+    },
+    {
+      "name": "narrow-night-note-recovery-has-reachable-controls-and-no-overflow",
+      "status": "pass"
+    },
+    {
+      "name": "undo-during-the-closing-note-sheet-keeps-the-source-and-return",
+      "status": "pass"
+    },
+    {
+      "name": "source-validation-keeps-corrupt-drafts-stored-without-opening-a-false-quote",
+      "status": "pass"
+    },
+    {
+      "name": "noncanonical-draft-key-remains-stored-without-a-broken-recovery-row",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "pass"
+}

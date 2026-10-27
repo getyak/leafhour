@@ -1,3 +1,4 @@
+import {choosePassage,openNavigation,openProgress,openCompanion} from './browser-interactions.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -24,18 +25,19 @@ const report = {at:new Date().toISOString(),checks:[],errors:[],externalRequests
 const settle = async p => p.locator('#reader-sheet[data-motion="settled"]').waitFor({state:'attached'});
 const y = p => p.locator('#reader-sheet').evaluate(n => new DOMMatrix(getComputedStyle(n).transform).m42);
 async function half(p) {
-  await p.getByRole('button',{name:'读到这里',exact:true}).click();
+  await openCompanion(p);
   await settle(p);
 }
 async function check(name, fn, options={}) {
   if(process.env.LEAFHOUR_POLISH_FILTER && !new RegExp(process.env.LEAFHOUR_POLISH_FILTER).test(name)) return;
-  const {controlledClock=false,...contextOptions}=options;
+  const {controlledClock=false,readerSize=null,...contextOptions}=options;
   const context = await browser.newContext({viewport:{width:402,height:874},hasTouch:true,isMobile:true,...contextOptions});
   await context.route('**/*',route => {
     const url=route.request().url();
     if(url.startsWith(base)||url.startsWith('data:')) return route.continue();
     report.externalRequests.push(url);return route.abort();
   });
+  if(readerSize)await context.addInitScript(size=>sessionStorage.setItem('leafhour-ios-half-sheet-prototype-v1',JSON.stringify({size})),readerSize);
   const p=await context.newPage();p.setDefaultTimeout(Number(process.env.LEAFHOUR_BROWSER_TIMEOUT_MS) || 30000);
   if(controlledClock) await p.clock.install({time:new Date('2026-10-27T00:00:00Z')});
   p.on('pageerror',e=>report.errors.push(e.message));
@@ -93,16 +95,16 @@ try {
     await p.locator('#reader-sheet').waitFor({state:'hidden'});
   },{reducedMotion:'reduce'});
   await check('selection-tools-follow-the-selected-paragraph-and-stay-in-bounds',async p => {
-    await p.locator('[data-quote="walden-2-001"]').click();
+    await choosePassage(p,"walden-2-001");
     const first=await p.locator('#selection-menu').boundingBox();
-    await p.locator('[data-quote="walden-2-002"]').click();
+    await choosePassage(p,"walden-2-002");
     const second=await p.locator('#selection-menu').boundingBox();
     assert.ok(Math.abs(second.y-first.y)>40,'Tools must follow their source rather than keep a fixed screen position');
     const phone=await p.locator('#phone').boundingBox();
     assert.ok(second.x>=phone.x+15 && second.x+second.width<=phone.x+phone.width-15);
   });
   await check('confirming-a-quote-clears-the-temporary-paragraph-highlight',async p => {
-    await p.locator('[data-quote="walden-2-001"]').click();
+    await choosePassage(p,"walden-2-001");
     await p.getByRole('button',{name:'解释这句',exact:true}).click();await settle(p);
     const highlighted=await p.locator('#walden-2-001 .passage-text').evaluate(n=>{
       const c=getComputedStyle(n).backgroundColor;
@@ -111,21 +113,21 @@ try {
     assert.equal(highlighted,false);
   });
   await check('scrolling-keeps-visible-selection-tools-attached-to-the-source',async p => {
-    await p.locator('[data-quote="walden-2-001"]').click();
+    await choosePassage(p,"walden-2-001");
     const initial=await p.locator('#selection-menu').evaluate(n=>n.offsetTop);
     await p.locator('#reading-scroll').evaluate(n=>{n.scrollTop+=60;});
     await p.waitForFunction(initial=>document.getElementById('selection-menu').offsetTop<initial-40,initial);
-  });
+  },{readerSize:28});
   await check('scrolling-the-selection-out-of-view-dismisses-its-tools',async p => {
-    await p.getByRole('button',{name:'排版设置',exact:true}).click();await settle(p);
+    await openNavigation(p);await p.getByRole('button',{name:'排版设置',exact:true}).click();await settle(p);
     for(let i=0;i<6;i++) await p.getByRole('button',{name:'增大字号',exact:true}).click();
     await p.getByRole('button',{name:'完成',exact:true}).click();await settle(p);
-    await p.locator('[data-quote="walden-2-001"]').click();
+    await choosePassage(p,"walden-2-001");
     await p.locator('#reading-scroll').evaluate(n=>{n.scrollTop=n.scrollHeight;});
     const isOutside=await p.locator('#walden-2-001 .passage-text').evaluate(n=>n.getBoundingClientRect().bottom<document.getElementById('reader-nav').getBoundingClientRect().bottom+8);
     assert.ok(isOutside,'The test must actually move the selected text outside the exposed reading area');
     await p.locator('#selection-menu').waitFor({state:'hidden'});
-  });
+  },{readerSize:28,viewport:{width:402,height:600}});
   await check('a-closing-sheet-can-be-grabbed-and-cancelled-with-its-draft',async p => {
     await half(p);await p.locator('#question-input').fill('关闭中也保留这份草稿');await settle(p);
     await p.locator('#sheet-grip').press('Enter');await settle(p);
@@ -150,7 +152,7 @@ try {
     assert.equal(await p.evaluate(()=>window.leafhourPrototype.snapshot().detent),'half');
   });
   await check('real-touch-scrolling-keeps-tools-for-a-still-visible-selection',async p => {
-    await p.locator('[data-quote="walden-2-001"]').click();
+    await choosePassage(p,"walden-2-001");
     const start=await p.locator('#reading-scroll').evaluate(n=>n.scrollTop);
     const session=await p.context().newCDPSession(p);
     await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:180,y:620,id:1}]});
@@ -161,7 +163,7 @@ try {
     assert.ok(visible,'The source must still be visible after the touch gesture');
     assert.equal(await p.locator('#selection-menu').isVisible(),true);
     await session.detach();
-  });
+  },{readerSize:28});
   await check('a-fast-upward-flick-keeps-the-handle-below-the-status-area',async p => {
     await half(p);const b=await p.locator('#sheet-grip').boundingBox();
     const sampling=p.evaluate(async()=>{
