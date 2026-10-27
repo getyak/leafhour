@@ -43,10 +43,10 @@ test('display subscription follows layout and locale, delegates reveal and relea
  assert.equal(document.getElementById('open-chapter').title,'完整章节名');
  top=-538;resize();win.flushFrames();assert.equal(document.getElementById('running-progress').textContent,'50%');
  document.body.dataset.paginated='true';document.dispatchEvent(new Event('reader:page'));win.flushFrames();assert.equal(document.getElementById('running-progress').textContent,'2 / 5');assert.equal(document.getElementById('running-progress').getAttribute('aria-label'),'Two pages · 2 / 5');assert.doesNotMatch(document.getElementById('reading-location').textContent,/%/);
- const move=new Event('pointermove');Object.assign(move,{pointerType:'mouse',clientY:8,buttons:0});document.dispatchEvent(move);assert.deepEqual(revealed,[[false]]);
+ const move=new Event('pointermove');Object.assign(move,{pointerType:'mouse',clientY:8,buttons:0});document.dispatchEvent(move);assert.deepEqual(revealed,[],'pointer movement cannot wake pure reading');
  const stale=frames.at(-1);document.dispatchEvent(new Event('reader:session-changed'));stale();resize();win.flushFrames();
  assert.equal(disconnected,1);assert.equal(document.getElementById('reading-location'),null);assert.equal(document.getElementById('reading-tools-trigger').getAttribute('aria-describedby'),'existing');
- document.dispatchEvent(move);assert.equal(revealed.length,1);await requestUiRoute('ja');handle.unmount();assert.equal(disconnected,1);
+ document.dispatchEvent(move);assert.equal(revealed.length,0);await requestUiRoute('ja');handle.unmount();assert.equal(disconnected,1);
 });
 test('a location module resolved after reader disposal cannot mount a new subscription',async()=>{
  const fs=await import('node:fs/promises'),vm=await import('node:vm');const source=await fs.readFile(new URL('../app/reader.js',import.meta.url),'utf8');

@@ -22,7 +22,7 @@ export function createReadingToolbarState({onChange=()=>{}}={}) {
 // only through the explicit hooks returned here; there is no second timer.
 export function mountReadingToolbar(root,{onExpandedChange=()=>{},header=null,document=root.ownerDocument||globalThis.document}={}) {
   const trigger=root.querySelector('#reading-tools-trigger'),panel=root.querySelector('#reading-tools-panel'),close=root.querySelector('#reading-tools-close'),label=root.querySelector('#reading-tools-label'),notice=root.querySelector('#reading-tools-notice');
-  let keyboard=false,status='idle',attention=false,draftCount=0,controlMode='unfocused';
+  let keyboard=false,status='idle',attention=false,draftCount=0,focused=false;
   let revealFocus=true,disposed=false;
   const listeners=[];
   const listen=(target,name,fn,options)=>{const owned=event=>{if(!disposed)fn(event);};target.addEventListener(name,owned,options);listeners.push(()=>target.removeEventListener(name,owned,options));};
@@ -41,7 +41,7 @@ export function mountReadingToolbar(root,{onExpandedChange=()=>{},header=null,do
     if(disposed)return;
     label.textContent=t(attention?'reader.tools.unsaved':status==='active'?'reader.tools.active':'reader.tools.idle');
     const details=[status==='active'?t('reader.tools.clockActive'):status==='paused'?t('reader.tools.clockPaused'):'',attention?t('reader.tools.pending'):'',draftCount?t('reader.tools.drafts',{count:draftCount}):''].filter(Boolean).join(t('reader.tools.separator'));
-    const named=t('reader.tools.'+(toolbar.expanded?'expanded':'expand')+(controlMode==='focused'&&!toolbar.preview?'Navigation':''));
+    const named=t('reader.tools.'+(toolbar.expanded?'expanded':'expand')+(focused&&!toolbar.preview?'Navigation':''));
     trigger.setAttribute('aria-label',named+(details?t('reader.tools.separator')+details:''));
     trigger.title=t('reader.tools.hint')+(details?' · '+details:'');
     notice.textContent=attention?t('reader.tools.notice'):'';
@@ -58,7 +58,7 @@ export function mountReadingToolbar(root,{onExpandedChange=()=>{},header=null,do
   const focusHold=()=>{if(!disposed)toolbar.hold('keyboard',inside(document.activeElement)&&(keyboard||!!document.activeElement?.closest?.('input,textarea,select,[contenteditable=true]')));};
   for(const node of [trigger,panel,header,root.querySelector('#reading-tools-chat-slot')].filter(Boolean)){
     const reason=node===header?'header-pointer':'pointer';
-    listen(node,'pointerenter',event=>{if(event.pointerType!=='mouse')return;if(node===trigger&&!toolbar.expanded&&!overlayOpen(document))reveal(false,true);if(toolbar.expanded&&(node!==header||!toolbar.preview))toolbar.hold(reason,true);});
+    listen(node,'pointerenter',event=>{if(event.pointerType!=='mouse')return;if(focused)return;if(node===trigger&&!toolbar.expanded&&!overlayOpen(document))reveal(false,true);if(toolbar.expanded&&(node!==header||!toolbar.preview))toolbar.hold(reason,true);});
     listen(node,'pointerleave',event=>{if(event.pointerType==='mouse'&&!node.contains(event.relatedTarget)&&!(node!==header&&(trigger.contains(event.relatedTarget)||panel.contains(event.relatedTarget))))toolbar.hold(reason,false);});
   }
   listen(trigger,'click',event=>{if(toolbar.expanded&&!toolbar.preview)toolbar.conceal();else reveal(event.detail!==1);});
@@ -107,6 +107,6 @@ export function mountReadingToolbar(root,{onExpandedChange=()=>{},header=null,do
   reveal,
   conceal:toolbar.conceal,
   hold:toolbar.hold,
-  setControlMode:mode=>{controlMode=mode==='focused'?'focused':'unfocused';updateLabel();},
+  setControlMode:mode=>{focused=mode==='focused';updateLabel();},
   unmount(){if(disposed)return;toolbar.conceal();disposed=true;offLocale();observer.disconnect?.();toolbar.unmount();handed.clear();for(const release of listeners)release();listeners.length=0;}};
 }
