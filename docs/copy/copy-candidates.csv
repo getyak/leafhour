@@ -1170,9 +1170,9 @@ candidate:app/en/privacy.html:19:743,html-attribute,app/en/privacy.html,19,aria-
 candidate:app/en/privacy.html:41:597,html-attribute,app/en/privacy.html,41,aria-label,unknown,reviewable,,Language
 candidate:app/en/privacy.html:6:10,html-text,app/en/privacy.html,6,,unknown,reviewable,,Sign-in and personal data · Leafhour
 candidate:app/en/privacy.html:18:30,html-text,app/en/privacy.html,18,,unknown,reviewable,,Skip to content
-candidate:app/en/privacy.html:19:91,html-text,app/en/privacy.html,19,,unknown,reviewable,,Search &amp; commands
+candidate:app/en/privacy.html:19:91,html-text,app/en/privacy.html,19,,reviewed,reviewable,,Search &amp; commands
 candidate:app/en/privacy.html:19:527,html-text,app/en/privacy.html,19,,unknown,reviewable,,Leafhour
-candidate:app/en/privacy.html:19:605,html-text,app/en/privacy.html,19,,unknown,reviewable,,Back to the reading room ↗
+candidate:app/en/privacy.html:19:605,html-text,app/en/privacy.html,19,,reviewed,reviewable,,Back to the reading room ↗
 candidate:app/en/privacy.html:19:680,html-text,app/en/privacy.html,19,,unknown,reviewable,,GitHub
 candidate:app/en/privacy.html:19:816,html-text,app/en/privacy.html,19,,unknown,reviewable,,English
 candidate:app/en/privacy.html:19:888,html-text,app/en/privacy.html,19,,unknown,reviewable,,简体中文
@@ -1205,7 +1205,7 @@ candidate:app/en/privacy.html:38:7,html-text,app/en/privacy.html,38,,unknown,rev
 candidate:app/en/privacy.html:38:28,html-text,app/en/privacy.html,38,,unknown,reviewable,,"This instance is operated by cubxxw. For questions about sign-in, data export, deletion or this notice, contact"
 candidate:app/en/privacy.html:38:178,html-text,app/en/privacy.html,38,,unknown,reviewable,,support@leafhour.com
 candidate:app/en/privacy.html:38:202,html-text,app/en/privacy.html,38,,unknown,reviewable,,.
-candidate:app/en/privacy.html:39:31,html-text,app/en/privacy.html,39,,unknown,reviewable,,Back to the reading room →
+candidate:app/en/privacy.html:39:31,html-text,app/en/privacy.html,39,,reviewed,reviewable,,Back to the reading room →
 candidate:app/en/privacy.html:41:376,html-text,app/en/privacy.html,41,,unknown,reviewable,,Leafhour
 candidate:app/en/privacy.html:41:398,html-text,app/en/privacy.html,41,,unknown,reviewable,,Read slowly. Leave a thought of your own.
 candidate:app/en/privacy.html:41:468,html-text,app/en/privacy.html,41,,unknown,reviewable,,My reading room ↗

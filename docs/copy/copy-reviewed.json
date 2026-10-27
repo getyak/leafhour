@@ -1,6 +1,39 @@
 {
   "schemaVersion": 1,
-  "kind": "reviewed-static-literals",
-  "policy": "Source-bound adjudication record for hardcoded UI literals. Only an explicit entry here can add a static literal to the lint corpus (scripts/export-copy.mjs appends it to its own locale). Every entry binds the exact candidate id and the original value SHA256 seen in the inventory, names locale, surface, trigger and a concrete review rationale, and declares state 'reviewed'. Stale hashes, unknown candidates, duplicates, missing rationale, non-UI or protected source material (quotes, paths, URLs, author text) and any non-'reviewed' state are rejected. Unknown candidates never enter the corpus automatically. Batch A has adjudicated zero static literals: all 3726 discovered candidates stay unreviewed, and global HTML coverage is not complete.",
-  "reviews": []
+  "scope": "Three agent source-inspected English navigation labels only; no human review or whole-page review.",
+  "reviews": [
+    {
+      "candidateId": "candidate:app/en/privacy.html:19:91",
+      "locale": "en",
+      "valueSha256": "22ae744e7a995d5813f92a06db3e0c551719a621a3b297efbb6b077994e0da7f",
+      "sourceSha256": "b0003297eca200d981ba0440f61833d458836dfba8092822beb8912efbee86be",
+      "by": "agent",
+      "surface": "privacy-page header search button",
+      "trigger": "open the English privacy page; activate Search & commands",
+      "rationale": "Plain visible button label opens the existing command palette; no legal text, book content or technical payload is admitted.",
+      "state": "reviewed"
+    },
+    {
+      "candidateId": "candidate:app/en/privacy.html:19:605",
+      "locale": "en",
+      "valueSha256": "c81de5d022d3790f7a1914b3d45221a94a9f5232581dbe50b81ea90f9b9a3c95",
+      "sourceSha256": "b0003297eca200d981ba0440f61833d458836dfba8092822beb8912efbee86be",
+      "by": "agent",
+      "surface": "privacy-page header reading-room link",
+      "trigger": "open the English privacy page; follow its library navigation",
+      "rationale": "Visible header link names the destination and preserves its arrow; only the link label enters lint, never its URL or legal paragraphs.",
+      "state": "reviewed"
+    },
+    {
+      "candidateId": "candidate:app/en/privacy.html:39:31",
+      "locale": "en",
+      "valueSha256": "682ed177a8ef262bf1b114dcf346b5729320488dd7f7730eff7db12bcde22adb",
+      "sourceSha256": "b0003297eca200d981ba0440f61833d458836dfba8092822beb8912efbee86be",
+      "by": "agent",
+      "surface": "privacy-page content return link",
+      "trigger": "reach the end of the English privacy notice; return to library",
+      "rationale": "Visible return action after the notice is ordinary navigation copy; the notice body and contact/source data remain unknown candidates.",
+      "state": "reviewed"
+    }
+  ]
 }

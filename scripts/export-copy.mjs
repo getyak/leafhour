@@ -13,12 +13,16 @@ import {execFileSync} from 'node:child_process';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {collectCopy,inventoryCsv,candidatesCsv,classifyProtectedValue,sha256,COPY_SCHEMA_VERSION,UI_LOCALES} from './copy-inventory.mjs';
+import {loadCopyLedger} from './copy-ledger.mjs';
 
 const REVIEWABLE_KINDS=new Set(['js-dom-literal','js-attribute','js-cjk-literal','html-attribute','html-text']);
 const SOURCE_PROTECTION=new Set(['path','url','quotation']);
 
 export function validateReviewedLiterals({inventory,reviews}={}){
   if(!Array.isArray(reviews))throw Error('Reviewed literal decisions must be a list');
+  for(const candidate of inventory.candidates||[])candidate.review={state:'unknown',classification:'unknown',surface:'unknown',trigger:'unknown',decision:'unknown'};
+  inventory.counts.reviewedStaticItems=0;
+  inventory.counts.candidatesUnreviewed=(inventory.candidates||[]).length;
   const byId=new Map((inventory&&inventory.candidates||[]).map(entry=>[entry.id,entry]));
   const seen=new Set(),items=[];
   for(const [index,review] of reviews.entries()){
@@ -37,6 +41,8 @@ export function validateReviewedLiterals({inventory,reviews}={}){
     if(protection.protected&&protection.reasons.some(reason=>SOURCE_PROTECTION.has(reason)))throw Error(where+' targets protected source material');
     if(typeof review.valueSha256!=='string'||review.valueSha256!==candidate.sha256)throw Error(where+' is stale: the value hash does not match the current candidate value for '+review.candidateId);
     if(!UI_LOCALES.includes(review.locale))throw Error(where+' has an unsupported locale: '+String(review.locale));
+    if(review.by!=='agent')throw Error(where+' needs explicit by: agent attribution; no human review is inferred');
+    if(!/^[a-f0-9]{64}$/.test(review.sourceSha256||'')||review.sourceSha256!==inventory.source.inputs.find(input=>input.file===candidate.file)?.sha256)throw Error(where+' has stale or missing source context; reopen the candidate as unknown');
     if(typeof review.surface!=='string'||!review.surface.trim())throw Error(where+' needs an explicit surface');
     if(typeof review.trigger!=='string'||!review.trigger.trim())throw Error(where+' needs an explicit trigger');
     if(typeof review.rationale!=='string'||review.rationale.trim().length<12)throw Error(where+' needs a concrete review rationale');
@@ -45,9 +51,12 @@ export function validateReviewedLiterals({inventory,reviews}={}){
       id:candidate.id,locale:review.locale,kind:'static-literal',
       value:candidate.value,sha256:candidate.sha256,
       protected:candidate.protected?candidate.protectionReason:null,
-      review:{surface:review.surface.trim(),trigger:review.trigger.trim(),rationale:review.rationale.trim(),state:'reviewed'}
+      review:{by:'agent',surface:review.surface.trim(),trigger:review.trigger.trim(),rationale:review.rationale.trim(),sourceSha256:review.sourceSha256,state:'reviewed'}
     });
   }
+  for(const item of items)byId.get(item.id).review={...item.review,classification:'checked-no-A-F-finding',decision:'preserve'};
+  inventory.counts.reviewedStaticItems=items.length;
+  inventory.counts.candidatesUnreviewed=inventory.candidates.length-items.length;
   return items;
 }
 
@@ -130,6 +139,7 @@ async function main(argv){
   }
   const root=path.resolve(options.root);
   const inventory=await collectCopy({root});
+  await loadCopyLedger({root,inventory});
   const reviewsPath=options.reviews?path.resolve(options.reviews):path.join(root,'docs/copy/copy-reviewed.json');
   let reviews=[];
   try{
@@ -153,7 +163,7 @@ async function main(argv){
     executingCommit:executionCommit(root),
     note:'Untracked run metadata only. The checked-in inventory binds scanned file bytes and never claims to represent any commit.'
   },null,2)+'\n');
-  console.log('Copy inventory: '+inventory.counts.catalogueKeys+' catalogue keys, '+inventory.counts.localeValues+' locale values, '+inventory.counts.candidates+' unreviewed literal candidates ('+inventory.counts.candidatesProtected+' protected source), '+inventory.counts.dynamicConsumers+' unresolved dynamic references.');
+  console.log('Copy inventory: '+inventory.counts.catalogueKeys+' catalogue keys ('+inventory.counts.reviewedItems+' agent-reviewed / '+inventory.counts.unreviewedItems+' unreviewed), '+inventory.counts.localeValues+' locale values, '+inventory.counts.candidatesUnreviewed+' unreviewed literal candidates ('+inventory.counts.candidatesProtected+' protected source), '+inventory.counts.dynamicConsumers+' unresolved dynamic references.');
   console.log('Copy export: '+UI_LOCALES.map(locale=>locale+'='+result.counts.exportedLines[locale]+' lines').join(', ')+' in '+options.out+'/; '+result.counts.reviewedStaticItems+' explicitly reviewed static literal(s); manifest maps every line to its item.');
 }
 

@@ -295,7 +295,7 @@ test('export appends only explicitly reviewed static literals to their own local
   const unknown=inventory.candidates.find(entry=>entry.value==='retry the receipt now');
   const protectedPath=inventory.candidates.find(entry=>entry.value==='样本.pdf');
   assert.ok(reviewed&&unknown&&protectedPath);
-  const reviews=[{candidateId:reviewed.id,locale:'en',valueSha256:reviewed.sha256,surface:'reader toolbar',trigger:'after an AI translation saves',rationale:'Adjudicated as visible toolbar copy in GET-202 batch A review record.',state:'reviewed'}];
+  const reviews=[{candidateId:reviewed.id,locale:'en',valueSha256:reviewed.sha256,by:'agent',sourceSha256:inventory.source.inputs.find(input=>input.file===reviewed.file).sha256,surface:'reader toolbar',trigger:'after an AI translation saves',rationale:'Adjudicated as visible toolbar copy in GET-202 batch A review record.',state:'reviewed'}];
   const outDir=path.join(root,'out');
   const result=await exportCopy({inventory,outDir,reviews});
   const en=await readFile(path.join(outDir,'en.txt'),'utf8');
@@ -317,7 +317,7 @@ test('stale, unknown, duplicate and incomplete review decisions fail closed',asy
   const inventory=await collectCopy({root});
   const reviewed=inventory.candidates.find(entry=>entry.value==='Save your receipt');
   const protectedPath=inventory.candidates.find(entry=>entry.value==='样本.pdf');
-  const valid=()=>({candidateId:reviewed.id,locale:'en',valueSha256:reviewed.sha256,surface:'reader toolbar',trigger:'after save',rationale:'Adjudicated as visible toolbar copy in the batch A review record.',state:'reviewed'});
+  const valid=()=>({candidateId:reviewed.id,locale:'en',valueSha256:reviewed.sha256,by:'agent',sourceSha256:inventory.source.inputs.find(input=>input.file===reviewed.file).sha256,surface:'reader toolbar',trigger:'after save',rationale:'Adjudicated as visible toolbar copy in the batch A review record.',state:'reviewed'});
   const outDir=path.join(root,'out');
   await assert.rejects(exportCopy({inventory,outDir,reviews:[{...valid(),candidateId:'candidate:app/nope.html:1:1'}]}),/unknown|candidate/i);
   await assert.rejects(exportCopy({inventory,outDir,reviews:[{...valid(),valueSha256:'a'.repeat(64)}]}),/hash|stale/i);
@@ -353,7 +353,7 @@ test('reviewed static bytes are verified before any export write',async t=>{
   const root=await fixture(t,four({'app/view.mjs':'label.textContent="Save the receipt";\n'}));
   const inventory=await collectCopy({root});
   const candidate=inventory.candidates.find(entry=>entry.value==='Save the receipt');
-  const reviews=[{candidateId:candidate.id,locale:'en',valueSha256:candidate.sha256,surface:'reader toolbar',trigger:'after save',rationale:'Synthetic explicit adjudication of this visible toolbar label.',state:'reviewed'}];
+  const reviews=[{candidateId:candidate.id,locale:'en',valueSha256:candidate.sha256,by:'agent',sourceSha256:inventory.source.inputs.find(input=>input.file===candidate.file).sha256,surface:'reader toolbar',trigger:'after save',rationale:'Synthetic explicit adjudication of this visible toolbar label.',state:'reviewed'}];
   await exportCopy({inventory,outDir:path.join(root,'valid'),reviews});
   candidate.value='New changed receipt';
   const outDir=path.join(root,'rejected');
@@ -361,8 +361,21 @@ test('reviewed static bytes are verified before any export write',async t=>{
   await assert.rejects(readdir(outDir),{code:'ENOENT'},'validation precedes directory creation');
 });
 
+test('static admission names the agent and reopens when the surrounding UI source changes',async t=>{
+  const root=await fixture(t,four({'app/view.mjs':'label.textContent="Read";\n'}));
+  const inventory=await collectCopy({root});
+  const candidate=inventory.candidates.find(entry=>entry.value==='Read');
+  const review={candidateId:candidate.id,locale:'en',valueSha256:candidate.sha256,by:'agent',sourceSha256:inventory.source.inputs.find(input=>input.file===candidate.file).sha256,surface:'reader button',trigger:'open the book',rationale:'Source inspection confirms this is visible navigation copy.',state:'reviewed'};
+  await exportCopy({inventory,outDir:path.join(root,'valid-agent'),reviews:[review]});
+  await assert.rejects(exportCopy({inventory,outDir:path.join(root,'no-agent'),reviews:[{...review,by:undefined}]}),/attribution|agent|by/i);
+  await writeFile(path.join(root,'app/view.mjs'),'label.textContent="Read";\nlabel.hidden=true;\n');
+  const changed=await collectCopy({root});
+  await assert.rejects(exportCopy({inventory:changed,outDir:path.join(root,'stale-context'),reviews:[review]}),/source|context|stale/i);
+  assert.equal(changed.candidates.find(entry=>entry.id===candidate.id).review.state,'unknown');
+});
+
 test('CLI requires an existing explicit review registry, including the default empty registry',async t=>{
-  const root=await fixture(t,four({'docs/copy/copy-reviewed.json':JSON.stringify({reviews:[]})}));
+  const root=await fixture(t,four({'docs/copy/copy-reviewed.json':JSON.stringify({reviews:[]}),'docs/copy/copy-ledger.json':JSON.stringify({schemaVersion:1,catalogueReviews:[],structuralDecisions:[]})}));
   const run=(out,...args)=>spawnSync(process.execPath,[path.join(REPO_ROOT,'scripts/export-copy.mjs'),'--root',root,'--out',out,...args],{encoding:'utf8',env:{PATH:process.env.PATH,HOME:process.env.HOME}});
   assert.equal(run('valid-default').status,0,'an explicitly empty default registry is valid');
   assert.equal(run('valid-explicit','--reviews',path.join(root,'docs/copy/copy-reviewed.json')).status,0);
