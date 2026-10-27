@@ -1,0 +1,565 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "live-ab-real-provider",
+  "generatedAt": "2026-10-27T03:15:27.560Z",
+  "status": "executed",
+  "tokenProbe": {
+    "ok": true,
+    "detail": "batch lookup answered (no such batch); token accepted"
+  },
+  "environment": {
+    "node": "v22.23.2",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "totals": {
+    "recognizedPages": 8,
+    "submissions": 4,
+    "worstCasePlanned": 12
+  },
+  "samples": [
+    {
+      "id": "zh-single",
+      "layout": "single-column",
+      "nativeInspection": [
+        {
+          "page": 1,
+          "needsRecognition": false,
+          "chars": 234
+        },
+        {
+          "page": 2,
+          "needsRecognition": false,
+          "chars": 204
+        }
+      ],
+      "runs": [
+        {
+          "mode": "auto",
+          "state": "done",
+          "error": null,
+          "resumes": 0,
+          "totalMs": 81.7,
+          "recognitionPages": 0,
+          "providerStats": {
+            "submissions": 0,
+            "submittedPages": 0,
+            "submitMs": 0,
+            "resultMs": 0,
+            "statusPolls": 0,
+            "handleDigests": []
+          },
+          "rawResultDigests": [],
+          "sourceBytesVerified": true,
+          "pageCoverageComplete": true,
+          "metrics": [
+            {
+              "page": 1,
+              "refCharsRaw": 217,
+              "cerRaw": 0.0783,
+              "refCharsStripped": 208,
+              "cerStripped": 0,
+              "foundBlocks": [
+                "H1",
+                "P1",
+                "P2",
+                "P3",
+                "P4"
+              ],
+              "missingBlocks": [],
+              "duplicateBlocks": [],
+              "orderInversions": 0,
+              "footnote": null
+            },
+            {
+              "page": 2,
+              "refCharsRaw": 189,
+              "cerRaw": 0.0794,
+              "refCharsStripped": 183,
+              "cerStripped": 0,
+              "foundBlocks": [
+                "P5",
+                "P6",
+                "P7",
+                "P8"
+              ],
+              "missingBlocks": [],
+              "duplicateBlocks": [],
+              "orderInversions": 0,
+              "footnote": null
+            }
+          ],
+          "pagesText": [
+            {
+              "page": 1,
+              "blank": false,
+              "chars": 234
+            },
+            {
+              "page": 2,
+              "blank": false,
+              "chars": 204
+            }
+          ],
+          "normalizedDigest": "7e95acf8decd8431ca407b2c16d71f5812fae5cc3a5df36fff22ec7ae2e68a3f"
+        },
+        {
+          "mode": "ocr",
+          "state": "done",
+          "error": null,
+          "resumes": 0,
+          "totalMs": 18779.3,
+          "recognitionPages": 2,
+          "providerStats": {
+            "submissions": 1,
+            "submittedPages": 2,
+            "submitMs": 5304.396083,
+            "resultMs": 8495.275833,
+            "statusPolls": 2,
+            "handleDigests": [
+              "3b7a14f147e6e178"
+            ]
+          },
+          "rawResultDigests": [
+            {
+              "key": "raw-0",
+              "sha256": "a3c9460a8141716acd65d8026bd282123a049b311364ffb3f81d97b34b847bc2",
+              "bytes": 16840
+            }
+          ],
+          "sourceBytesVerified": true,
+          "pageCoverageComplete": true,
+          "metrics": [
+            {
+              "page": 1,
+              "refCharsRaw": 217,
+              "cerRaw": 0,
+              "refCharsStripped": 208,
+              "cerStripped": 0,
+              "foundBlocks": [
+                "H1",
+                "P1",
+                "P2",
+                "P3",
+                "P4"
+              ],
+              "missingBlocks": [],
+              "duplicateBlocks": [],
+              "orderInversions": 0,
+              "footnote": null
+            },
+            {
+              "page": 2,
+              "refCharsRaw": 189,
+              "cerRaw": 0,
+              "refCharsStripped": 183,
+              "cerStripped": 0,
+              "foundBlocks": [
+                "P5",
+                "P6",
+                "P7",
+                "P8"
+              ],
+              "missingBlocks": [],
+              "duplicateBlocks": [],
+              "orderInversions": 0,
+              "footnote": null
+            }
+          ],
+          "pagesText": [
+            {
+              "page": 1,
+              "blank": false,
+              "chars": 217
+            },
+            {
+              "page": 2,
+              "blank": false,
+              "chars": 189
+            }
+          ],
+          "normalizedDigest": "b26d60b6c824ef021c8af3baf2d3094de0078d6d5ed12543d3181fe6f07e2304"
+        }
+      ]
+    },
+    {
+      "id": "zh-scan",
+      "layout": "raster-only",
+      "nativeInspection": [
+        {
+          "page": 1,
+          "needsRecognition": true,
+          "chars": 0
+        },
+        {
+          "page": 2,
+          "needsRecognition": true,
+          "chars": 0
+        }
+      ],
+      "runs": [
+        {
+          "mode": "auto",
+          "state": "done",
+          "error": null,
+          "resumes": 0,
+          "totalMs": 12118.6,
+          "recognitionPages": 2,
+          "providerStats": {
+            "submissions": 1,
+            "submittedPages": 2,
+            "submitMs": 2066.3277909999997,
+            "resultMs": 3651.9735839999994,
+            "statusPolls": 2,
+            "handleDigests": [
+              "3c4186a941f9b5f6"
+            ]
+          },
+          "rawResultDigests": [
+            {
+              "key": "raw-0",
+              "sha256": "c85ad18e00efc1d3c70fdc415e0a5b587d6e0d95622481d8e0bdae6c7532a3ed",
+              "bytes": 9928
+            }
+          ],
+          "sourceBytesVerified": true,
+          "pageCoverageComplete": true,
+          "metrics": [
+            {
+              "page": 1,
+              "refCharsRaw": 79,
+              "cerRaw": 0.0506,
+              "refCharsStripped": 75,
+              "cerStripped": 0,
+              "foundBlocks": [
+                "S1",
+                "S2",
+                "S3"
+              ],
+              "missingBlocks": [],
+              "duplicateBlocks": [],
+              "orderInversions": 0,
+              "footnote": null
+            },
+            {
+              "page": 2,
+              "refCharsRaw": 80,
+              "cerRaw": 0.05,
+              "refCharsStripped": 76,
+              "cerStripped": 0,
+              "foundBlocks": [
+                "S4",
+                "S5",
+                "S6"
+              ],
+              "missingBlocks": [],
+              "duplicateBlocks": [],
+              "orderInversions": 0,
+              "footnote": null
+            }
+          ],
+          "pagesText": [
+            {
+              "page": 1,
+              "blank": false,
+              "chars": 75
+            },
+            {
+              "page": 2,
+              "blank": false,
+              "chars": 76
+            }
+          ],
+          "normalizedDigest": "b7222fdcb45f8fc934f9de100be770a871adf0bc851e547739046c3552a18d53"
+        },
+        {
+          "mode": "ocr",
+          "state": "done",
+          "error": null,
+          "resumes": 0,
+          "totalMs": 7131.8,
+          "recognitionPages": 2,
+          "providerStats": {
+            "submissions": 1,
+            "submittedPages": 2,
+            "submitMs": 1302.5644170000014,
+            "resultMs": 2237.910041999996,
+            "statusPolls": 2,
+            "handleDigests": [
+              "fd3acf62d71f49de"
+            ]
+          },
+          "rawResultDigests": [
+            {
+              "key": "raw-0",
+              "sha256": "417129878400674cad6a8043a861f072e39e2009b32b2c5d24dbc505bfd7ec41",
+              "bytes": 9928
+            }
+          ],
+          "sourceBytesVerified": true,
+          "pageCoverageComplete": true,
+          "metrics": [
+            {
+              "page": 1,
+              "refCharsRaw": 79,
+              "cerRaw": 0.0506,
+              "refCharsStripped": 75,
+              "cerStripped": 0,
+              "foundBlocks": [
+                "S1",
+                "S2",
+                "S3"
+              ],
+              "missingBlocks": [],
+              "duplicateBlocks": [],
+              "orderInversions": 0,
+              "footnote": null
+            },
+            {
+              "page": 2,
+              "refCharsRaw": 80,
+              "cerRaw": 0.05,
+              "refCharsStripped": 76,
+              "cerStripped": 0,
+              "foundBlocks": [
+                "S4",
+                "S5",
+                "S6"
+              ],
+              "missingBlocks": [],
+              "duplicateBlocks": [],
+              "orderInversions": 0,
+              "footnote": null
+            }
+          ],
+          "pagesText": [
+            {
+              "page": 1,
+              "blank": false,
+              "chars": 75
+            },
+            {
+              "page": 2,
+              "blank": false,
+              "chars": 76
+            }
+          ],
+          "normalizedDigest": "b7222fdcb45f8fc934f9de100be770a871adf0bc851e547739046c3552a18d53"
+        }
+      ]
+    },
+    {
+      "id": "zh-columns-footnote",
+      "layout": "two-columns-footnote",
+      "nativeInspection": [
+        {
+          "page": 1,
+          "needsRecognition": false,
+          "chars": 248
+        },
+        {
+          "page": 2,
+          "needsRecognition": false,
+          "chars": 248
+        }
+      ],
+      "runs": [
+        {
+          "mode": "auto",
+          "state": "done",
+          "error": null,
+          "resumes": 0,
+          "totalMs": 36.4,
+          "recognitionPages": 0,
+          "providerStats": {
+            "submissions": 0,
+            "submittedPages": 0,
+            "submitMs": 0,
+            "resultMs": 0,
+            "statusPolls": 0,
+            "handleDigests": []
+          },
+          "rawResultDigests": [],
+          "sourceBytesVerified": true,
+          "pageCoverageComplete": true,
+          "metrics": [
+            {
+              "page": 1,
+              "refCharsRaw": 246,
+              "cerRaw": 0.561,
+              "refCharsStripped": 229,
+              "cerStripped": 0.5459,
+              "foundBlocks": [
+                "L1",
+                "R1",
+                "L2",
+                "L3",
+                "R3",
+                "L4",
+                "R4",
+                "F1"
+              ],
+              "missingBlocks": [
+                "R2"
+              ],
+              "duplicateBlocks": [],
+              "orderInversions": 4,
+              "footnote": {
+                "block": "F1",
+                "belongsTo": "L3",
+                "found": true,
+                "isLastInReadingOrder": true,
+                "ownerRank": 3,
+                "footnoteRank": 7
+              }
+            },
+            {
+              "page": 2,
+              "refCharsRaw": 243,
+              "cerRaw": 0.5556,
+              "refCharsStripped": 226,
+              "cerStripped": 0.5398,
+              "foundBlocks": [
+                "L1",
+                "R1",
+                "L2",
+                "R2",
+                "L3",
+                "R3",
+                "L4",
+                "R4",
+                "F1"
+              ],
+              "missingBlocks": [],
+              "duplicateBlocks": [],
+              "orderInversions": 6,
+              "footnote": {
+                "block": "F1",
+                "belongsTo": "L2",
+                "found": true,
+                "isLastInReadingOrder": true,
+                "ownerRank": 2,
+                "footnoteRank": 8
+              }
+            }
+          ],
+          "pagesText": [
+            {
+              "page": 1,
+              "blank": false,
+              "chars": 248
+            },
+            {
+              "page": 2,
+              "blank": false,
+              "chars": 248
+            }
+          ],
+          "normalizedDigest": "44e2020c50564bf02b57ea9169b0e674388ada10ee1ea9a73572b487b916f8ec"
+        },
+        {
+          "mode": "ocr",
+          "state": "done",
+          "error": null,
+          "resumes": 0,
+          "totalMs": 8150,
+          "recognitionPages": 2,
+          "providerStats": {
+            "submissions": 1,
+            "submittedPages": 2,
+            "submitMs": 1522.3007920000018,
+            "resultMs": 3464.072874999998,
+            "statusPolls": 2,
+            "handleDigests": [
+              "cd864e5d3ec9ddc5"
+            ]
+          },
+          "rawResultDigests": [
+            {
+              "key": "raw-0",
+              "sha256": "451927c1ad248086c04a1a6b422832a842e875b2647e966a71b94a3902035c34",
+              "bytes": 18326
+            }
+          ],
+          "sourceBytesVerified": true,
+          "pageCoverageComplete": true,
+          "metrics": [
+            {
+              "page": 1,
+              "refCharsRaw": 246,
+              "cerRaw": 0.7033,
+              "refCharsStripped": 229,
+              "cerStripped": 0.6856,
+              "foundBlocks": [
+                "L1",
+                "R1",
+                "L2",
+                "L3",
+                "R3",
+                "L4",
+                "R4"
+              ],
+              "missingBlocks": [
+                "R2",
+                "F1"
+              ],
+              "duplicateBlocks": [],
+              "orderInversions": 4,
+              "footnote": {
+                "block": "F1",
+                "belongsTo": "L3",
+                "found": false,
+                "isLastInReadingOrder": false,
+                "ownerRank": 3,
+                "footnoteRank": -1
+              }
+            },
+            {
+              "page": 2,
+              "refCharsRaw": 243,
+              "cerRaw": 1.0206,
+              "refCharsStripped": 226,
+              "cerStripped": 1.0619,
+              "foundBlocks": [
+                "L1",
+                "R1",
+                "L3",
+                "R3",
+                "L4",
+                "R4"
+              ],
+              "missingBlocks": [
+                "L2",
+                "R2",
+                "F1"
+              ],
+              "duplicateBlocks": [],
+              "orderInversions": 3,
+              "footnote": {
+                "block": "F1",
+                "belongsTo": "L2",
+                "found": false,
+                "isLastInReadingOrder": false,
+                "ownerRank": -1,
+                "footnoteRank": -1
+              }
+            }
+          ],
+          "pagesText": [
+            {
+              "page": 1,
+              "blank": false,
+              "chars": 194
+            },
+            {
+              "page": 2,
+              "blank": false,
+              "chars": 312
+            }
+          ],
+          "normalizedDigest": "4ece841470183577d1f9396d1ebc875724237e29ba284ec26f9ce401512d80c9"
+        }
+      ]
+    }
+  ]
+}
