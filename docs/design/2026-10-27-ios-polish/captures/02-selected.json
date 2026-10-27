@@ -207,13 +207,13 @@
             "kind": "frame",
             "key": "n9",
             "name": "contents-button",
-            "x": 156.5,
+            "x": 145,
             "y": 6,
-            "width": 89,
+            "width": 112,
             "height": 44,
             "background": "rgba(0, 0, 0, 0)",
             "color": "rgb(36, 42, 39)",
-            "radius": "50%",
+            "radius": "14px",
             "borderWidth": "0px",
             "borderColor": "rgb(36, 42, 39)",
             "clip": false,
@@ -221,35 +221,13 @@
             "action": null,
             "children": [
               {
-                "kind": "text",
-                "name": "瓦尔登湖",
-                "text": "瓦尔登湖",
-                "x": 6,
-                "y": 12.5,
-                "width": 60,
-                "height": 18,
-                "glyphLines": [
-                  {
-                    "x": 6,
-                    "baseline": 27.5,
-                    "text": "瓦尔登湖"
-                  }
-                ],
-                "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
-                "fontWeight": "500",
-                "fontSize": "15px",
-                "lineHeight": "normal",
-                "letterSpacing": "normal",
-                "color": "rgb(36, 42, 39)"
-              },
-              {
                 "kind": "frame",
                 "key": "n10",
-                "name": "SPAN",
-                "x": 71,
-                "y": 13,
-                "width": 12,
-                "height": 18,
+                "name": "book-title-row",
+                "x": 17.5,
+                "y": 5,
+                "width": 77,
+                "height": 19,
                 "background": "rgba(0, 0, 0, 0)",
                 "color": "rgb(36, 42, 39)",
                 "radius": "0px",
@@ -260,13 +238,95 @@
                 "action": null,
                 "children": [
                   {
-                    "kind": "svg",
-                    "name": "图标",
+                    "kind": "text",
+                    "name": "瓦尔登湖",
+                    "text": "瓦尔登湖",
                     "x": 0,
-                    "y": 3,
+                    "y": 0,
+                    "width": 60,
+                    "height": 18,
+                    "glyphLines": [
+                      {
+                        "x": 0,
+                        "baseline": 15,
+                        "text": "瓦尔登湖"
+                      }
+                    ],
+                    "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                    "fontWeight": "500",
+                    "fontSize": "15px",
+                    "lineHeight": "19px",
+                    "letterSpacing": "normal",
+                    "color": "rgb(36, 42, 39)"
+                  },
+                  {
+                    "kind": "frame",
+                    "key": "n11",
+                    "name": "SPAN",
+                    "x": 65,
+                    "y": 0,
                     "width": 12,
-                    "height": 12,
-                    "svg": "<svg class=\"icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 9 7 7 7-7\"></path></svg>",
+                    "height": 19,
+                    "background": "rgba(0, 0, 0, 0)",
+                    "color": "rgb(36, 42, 39)",
+                    "radius": "0px",
+                    "borderWidth": "0px",
+                    "borderColor": "rgb(36, 42, 39)",
+                    "clip": false,
+                    "tag": "SPAN",
+                    "action": null,
+                    "children": [
+                      {
+                        "kind": "svg",
+                        "name": "图标",
+                        "x": 0,
+                        "y": 3,
+                        "width": 12,
+                        "height": 12,
+                        "svg": "<svg class=\"icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 9 7 7 7-7\"></path></svg>",
+                        "color": "rgb(93, 106, 98)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "frame",
+                "key": "n12",
+                "name": "nav-version",
+                "x": 34,
+                "y": 25,
+                "width": 44,
+                "height": 14,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(93, 106, 98)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(93, 106, 98)",
+                "clip": false,
+                "tag": "SPAN",
+                "action": null,
+                "children": [
+                  {
+                    "kind": "text",
+                    "name": "示例意译",
+                    "text": "示例意译",
+                    "x": 0,
+                    "y": 0,
+                    "width": 44,
+                    "height": 13,
+                    "glyphLines": [
+                      {
+                        "x": 0,
+                        "baseline": 11,
+                        "text": "示例意译"
+                      }
+                    ],
+                    "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                    "fontWeight": "400",
+                    "fontSize": "11px",
+                    "lineHeight": "14px",
+                    "letterSpacing": "normal",
                     "color": "rgb(93, 106, 98)"
                   }
                 ]
@@ -275,7 +335,7 @@
           },
           {
             "kind": "frame",
-            "key": "n11",
+            "key": "n13",
             "name": "排版设置",
             "x": 338,
             "y": 6,
@@ -318,7 +378,7 @@
       },
       {
         "kind": "frame",
-        "key": "n12",
+        "key": "n14",
         "name": "阅读正文",
         "x": 0,
         "y": 110,
@@ -335,7 +395,7 @@
         "children": [
           {
             "kind": "frame",
-            "key": "n13",
+            "key": "n15",
             "name": "chapter-heading",
             "x": 26,
             "y": -111,
@@ -352,7 +412,7 @@
             "children": [
               {
                 "kind": "frame",
-                "key": "n14",
+                "key": "n16",
                 "name": "SPAN",
                 "x": 0,
                 "y": 4,
@@ -393,7 +453,7 @@
               },
               {
                 "kind": "frame",
-                "key": "n15",
+                "key": "n17",
                 "name": "H1",
                 "x": 0,
                 "y": 32,
@@ -434,7 +494,7 @@
               },
               {
                 "kind": "frame",
-                "key": "n16",
+                "key": "n18",
                 "name": "version-label",
                 "x": 0,
                 "y": 86.890625,
@@ -477,7 +537,7 @@
           },
           {
             "kind": "frame",
-            "key": "n17",
+            "key": "n19",
             "name": "prose",
             "x": 26,
             "y": 23.890625,
@@ -494,7 +554,7 @@
             "children": [
               {
                 "kind": "frame",
-                "key": "n18",
+                "key": "n20",
                 "name": "walden-2-001",
                 "x": 0,
                 "y": 0,
@@ -511,7 +571,7 @@
                 "children": [
                   {
                     "kind": "frame",
-                    "key": "n19",
+                    "key": "n21",
                     "name": "resume-mark",
                     "x": 0,
                     "y": 0,
@@ -552,7 +612,7 @@
                   },
                   {
                     "kind": "frame",
-                    "key": "n20",
+                    "key": "n22",
                     "name": "passage-text",
                     "x": 0,
                     "y": 32.5,
@@ -613,7 +673,7 @@
                   },
                   {
                     "kind": "frame",
-                    "key": "n21",
+                    "key": "n23",
                     "name": "选择这一段",
                     "x": 332,
                     "y": 5,
@@ -656,7 +716,7 @@
               },
               {
                 "kind": "frame",
-                "key": "n22",
+                "key": "n24",
                 "name": "walden-2-002",
                 "x": 0,
                 "y": 255.75,
@@ -673,7 +733,7 @@
                 "children": [
                   {
                     "kind": "frame",
-                    "key": "n23",
+                    "key": "n25",
                     "name": "passage-text",
                     "x": 0,
                     "y": 5,
@@ -729,7 +789,7 @@
                   },
                   {
                     "kind": "frame",
-                    "key": "n24",
+                    "key": "n26",
                     "name": "选择这一段",
                     "x": 332,
                     "y": 5,
@@ -772,7 +832,7 @@
               },
               {
                 "kind": "frame",
-                "key": "n25",
+                "key": "n27",
                 "name": "walden-2-003",
                 "x": 0,
                 "y": 443.75,
@@ -789,7 +849,7 @@
                 "children": [
                   {
                     "kind": "frame",
-                    "key": "n26",
+                    "key": "n28",
                     "name": "passage-text",
                     "x": 0,
                     "y": 5,
@@ -840,7 +900,7 @@
                   },
                   {
                     "kind": "frame",
-                    "key": "n27",
+                    "key": "n29",
                     "name": "选择这一段",
                     "x": 332,
                     "y": 5,
@@ -883,7 +943,7 @@
               },
               {
                 "kind": "frame",
-                "key": "n28",
+                "key": "n30",
                 "name": "walden-2-004",
                 "x": 0,
                 "y": 591.5,
@@ -900,7 +960,7 @@
                 "children": [
                   {
                     "kind": "frame",
-                    "key": "n29",
+                    "key": "n31",
                     "name": "passage-text",
                     "x": 0,
                     "y": 5,
@@ -946,7 +1006,7 @@
                   },
                   {
                     "kind": "frame",
-                    "key": "n30",
+                    "key": "n32",
                     "name": "选择这一段",
                     "x": 332,
                     "y": 5,
@@ -991,7 +1051,7 @@
           },
           {
             "kind": "frame",
-            "key": "n31",
+            "key": "n33",
             "name": "chapter-end",
             "x": 26,
             "y": 722.890625,
@@ -1030,7 +1090,7 @@
               },
               {
                 "kind": "frame",
-                "key": "n32",
+                "key": "n34",
                 "name": "SPAN",
                 "x": 104,
                 "y": 15,
@@ -1063,7 +1123,7 @@
       },
       {
         "kind": "frame",
-        "key": "n33",
+        "key": "n35",
         "name": "选文操作",
         "x": 34.046875,
         "y": 367.390625,
@@ -1080,7 +1140,7 @@
         "children": [
           {
             "kind": "frame",
-            "key": "n34",
+            "key": "n36",
             "name": "BUTTON",
             "x": 5,
             "y": 5,
@@ -1121,7 +1181,7 @@
           },
           {
             "kind": "frame",
-            "key": "n35",
+            "key": "n37",
             "name": "BUTTON",
             "x": 99,
             "y": 5,
@@ -1162,7 +1222,7 @@
           },
           {
             "kind": "frame",
-            "key": "n36",
+            "key": "n38",
             "name": "BUTTON",
             "x": 194,
             "y": 5,
@@ -1205,7 +1265,7 @@
       },
       {
         "kind": "frame",
-        "key": "n37",
+        "key": "n39",
         "name": "reading-dock",
         "x": 20,
         "y": 773,
@@ -1222,7 +1282,7 @@
         "children": [
           {
             "kind": "frame",
-            "key": "n38",
+            "key": "n40",
             "name": "progress-button",
             "x": 13,
             "y": 8,
@@ -1239,7 +1299,7 @@
             "children": [
               {
                 "kind": "frame",
-                "key": "n39",
+                "key": "n41",
                 "name": "SPAN",
                 "x": 8,
                 "y": 6,
@@ -1280,7 +1340,7 @@
               },
               {
                 "kind": "frame",
-                "key": "n40",
+                "key": "n42",
                 "name": "dock-location",
                 "x": 8,
                 "y": 24,
@@ -1323,7 +1383,7 @@
           },
           {
             "kind": "frame",
-            "key": "n41",
+            "key": "n43",
             "name": "dock-divider",
             "x": 163.5,
             "y": 20,
@@ -1341,7 +1401,7 @@
           },
           {
             "kind": "frame",
-            "key": "n42",
+            "key": "n44",
             "name": "companion-button",
             "x": 247,
             "y": 8,
@@ -1358,7 +1418,7 @@
             "children": [
               {
                 "kind": "frame",
-                "key": "n43",
+                "key": "n45",
                 "name": "SPAN",
                 "x": 8,
                 "y": 11.5,
@@ -1386,26 +1446,45 @@
                 ]
               },
               {
-                "kind": "text",
-                "name": "读到这里",
-                "text": "读到这里",
+                "kind": "frame",
+                "key": "n46",
+                "name": "companion-label",
                 "x": 38,
-                "y": 15,
+                "y": 14,
                 "width": 56,
-                "height": 17,
-                "glyphLines": [
+                "height": 20,
+                "background": "rgba(0, 0, 0, 0)",
+                "color": "rgb(54, 91, 71)",
+                "radius": "0px",
+                "borderWidth": "0px",
+                "borderColor": "rgb(54, 91, 71)",
+                "clip": false,
+                "tag": "SPAN",
+                "action": null,
+                "children": [
                   {
-                    "x": 38,
-                    "baseline": 29,
-                    "text": "读到这里"
+                    "kind": "text",
+                    "name": "读到这里",
+                    "text": "读到这里",
+                    "x": 0,
+                    "y": 1,
+                    "width": 56,
+                    "height": 17,
+                    "glyphLines": [
+                      {
+                        "x": 0,
+                        "baseline": 15,
+                        "text": "读到这里"
+                      }
+                    ],
+                    "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
+                    "fontWeight": "400",
+                    "fontSize": "14px",
+                    "lineHeight": "normal",
+                    "letterSpacing": "normal",
+                    "color": "rgb(54, 91, 71)"
                   }
-                ],
-                "fontFamily": "-apple-system, \"system-ui\", \"PingFang SC\", sans-serif",
-                "fontWeight": "400",
-                "fontSize": "14px",
-                "lineHeight": "normal",
-                "letterSpacing": "normal",
-                "color": "rgb(54, 91, 71)"
+                ]
               }
             ]
           }
@@ -1413,7 +1492,7 @@
       },
       {
         "kind": "frame",
-        "key": "n44",
+        "key": "n47",
         "name": "home-indicator",
         "x": 140,
         "y": 861,

@@ -37,7 +37,7 @@ async function page(width=402,saved=null){
   const c=await browser.newContext({viewport:{width,height:874},hasTouch:true,isMobile:true});
   await c.route('**/*',r=>{const u=r.request().url();if(u.startsWith(base)||u.startsWith('data:'))return r.continue();report.externalRequests.push(u);return r.abort();});
   if(saved)await c.addInitScript(({key,saved})=>{if(sessionStorage.getItem(key)===null)sessionStorage.setItem(key,JSON.stringify(saved));},{key,saved});
-  const p=await c.newPage();p.setDefaultTimeout(10000);p.on('pageerror',e=>report.errors.push(e.message));await p.goto(base+'/prototype/');await layoutSettled(p);return {c,p};
+  const p=await c.newPage();p.setDefaultTimeout(Number(process.env.LEAFHOUR_BROWSER_TIMEOUT_MS) || 10000);p.on('pageerror',e=>report.errors.push(e.message));await p.goto(base+'/prototype/');await layoutSettled(p);return {c,p};
 }
 async function check(name,fn){
   const owned=[];

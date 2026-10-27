@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-26T22:36:55.176Z",
+  "checks": [
+    {
+      "name": "sending-a-new-question-keeps-the-old-pending-request-recoverable",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- '第一段未完成的问题'\n"
+    },
+    {
+      "name": "offline-new-question-and-history-switch-keep-both-pending-requests",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- false\n"
+    },
+    {
+      "name": "completed-history-trimming-does-not-discard-an-unfinished-request",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- false\n"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "fail"
+}

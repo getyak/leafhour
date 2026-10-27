@@ -197,9 +197,14 @@ svg.icon {
 }
 .reader-nav .book-title {
   font-size: 15px;
-  gap: 5px;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 112px;
+  border-radius: 14px;
   font-weight: 500;
 }
+.book-title-row { display: flex; gap: 5px; align-items: center; line-height: 19px; }
+.nav-version { font-size: 11px; line-height: 14px; color: var(--secondary); font-weight: 400; }
 .book-title svg.icon {
   width: 12px;
   height: 12px;
@@ -494,7 +499,9 @@ svg.icon {
   font-size: 13px;
   line-height: 1.65;
   margin-bottom: 20px;
+  animation: context-in 140ms ease-out;
 }
+@keyframes context-in { from { opacity: 0; translate: 0 3px; } to { opacity: 1; translate: 0 0; } }
 .context-quote small {
   display: block;
   font-size: 10px;
@@ -506,7 +513,11 @@ svg.icon {
   font-size: 11px;
   padding: 8px 0;
   display: block;
+  min-height: 44px;
 }
+.context-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.context-actions .ask-current { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 500; }
+.ask-current .icon { width: 14px; height: 14px; }
 .answer-label {
   font-size: 11px;
   color: var(--secondary);
@@ -1137,7 +1148,7 @@ svg.icon {
             <button id="library-button" aria-label="打开书房">
               <span data-icon="library"></span></button
             ><button id="contents-button" class="book-title">
-              瓦尔登湖 <span data-icon="down"></span></button
+              <span class="book-title-row">瓦尔登湖 <span data-icon="down"></span></span><span class="nav-version" id="nav-version">示例意译</span></button
             ><button
               id="appearance-button"
               class="type-button"
@@ -1180,7 +1191,7 @@ svg.icon {
               ></button
             ><span class="dock-divider"></span
             ><button id="companion-button">
-              <span data-icon="conversation"></span>读到这里
+              <span data-icon="conversation"></span><span id="companion-label">读到这里</span>
             </button>
           </footer>
           <div class="sheet-scrim" id="sheet-scrim" hidden></div>
@@ -1389,6 +1400,32 @@ svg.icon {
     };
   }
 
+  // docs/design/2026-10-27-ios-polish/prototype/companion-context.mjs
+  var layers2 = /* @__PURE__ */ new Set(["source", "literal", "interpretive"]);
+  var hasText = (value) => typeof value === "string" && !!value.trim();
+  var validQuote = (quote) => quote && typeof quote === "object" && hasText(quote.passageId) && hasText(quote.version) && layers2.has(quote.layer) && hasText(quote.text);
+  function quoteIdentity(quote) {
+    if (!quote) return "";
+    return JSON.stringify([quote.passageId, quote.version, quote.layer, quote.startUtf16, quote.endUtf16, quote.text]);
+  }
+  function resolveCompanionContext({ readingQuote, discussionQuote, discussionStarted = false, draft = "", question = "", pendingTurn = null }) {
+    const established = discussionStarted === true || hasText(draft) || hasText(question);
+    const pending = validQuote(pendingTurn?.quote) && hasText(pendingTurn?.question);
+    const continuing = established || pending;
+    const chosen = established ? discussionQuote : pending ? pendingTurn.quote : readingQuote;
+    const quote = validQuote(chosen) ? { ...chosen } : null;
+    const reading = validQuote(readingQuote) ? readingQuote : null;
+    const same = !!quote && !!reading && quoteIdentity(quote) === quoteIdentity(reading);
+    const samePassage = !!quote && !!reading && quote.passageId === reading.passageId && quote.version === reading.version && quote.layer === reading.layer;
+    return {
+      mode: !quote ? "blocked" : continuing ? "discussion" : "reading",
+      label: continuing ? "\u7EE7\u7EED\u8BA8\u8BBA" : "\u8BFB\u5230\u8FD9\u91CC",
+      quote,
+      relation: same ? "current" : samePassage ? "selection" : "previous",
+      canAskCurrent: !!quote && !!reading && continuing && !same
+    };
+  }
+
   // docs/design/2026-10-27-ios-polish/prototype/app.js
   var icons = {
     library: '<path d="M4 4v16M9 4v16M14 4l6 15M3 4h3M8 4h3M3 20h8M14 4l3-1 6 16-3 1"/>',
@@ -1488,6 +1525,8 @@ svg.icon {
     noteDrafts: saved.noteDrafts || {},
     question: saved.question || "",
     answered: !!saved.answered,
+    discussionStarted: saved.discussionStarted === true,
+    previewQuote: null,
     route: "closed",
     detent: "half",
     returnFrame: null,
@@ -1512,6 +1551,7 @@ svg.icon {
       draft: state.draft,
       drafts: state.drafts.map((x) => ({ ...x })),
       question: state.question,
+      discussionStarted: state.discussionStarted,
       notes: state.notes.length,
       theme: state.theme,
       layer: state.layer,
@@ -1524,6 +1564,7 @@ svg.icon {
     if (!state.restoringReading && !state.readingTransition && readingGeometryMatches() && scroller.scrollTop !== state.readingTop)
       state.readingPosition = captureReadingPosition(scroller, readerIdentity()) || state.readingPosition;
     state.readingTop = scroller.scrollTop;
+    updateContextChrome();
     try {
       sessionStorage.setItem(
         key,
@@ -1539,6 +1580,7 @@ svg.icon {
           notes: state.notes,
           question: state.question,
           answered: state.answered,
+          discussionStarted: state.discussionStarted,
           turns: state.turns,
           pendingTurn: state.pendingTurn,
           noteDrafts: state.noteDrafts
@@ -1598,6 +1640,7 @@ svg.icon {
     $("phone").dataset.theme = state.theme;
     $("phone").style.setProperty("--reader-size", state.size + "px");
     $("version-label").textContent = state.layer === "source" ? "\u4F5C\u8005\u539F\u6587 \xB7 \u8282\u9009" : state.layer === "literal" ? "\u793A\u4F8B\u76F4\u8BD1" : "\u793A\u4F8B\u610F\u8BD1";
+    $("nav-version").textContent = $("version-label").textContent;
     $("prose").dataset.layer = state.layer;
     $("prose").innerHTML = paragraphs.map(
       (p, i) => `<p class="passage ${state.layer === "source" ? "source" : ""}" id="${p.id}" data-passage="${p.id}">${p.id === state.resumePassageId ? '<span class="resume-mark">\u4E0A\u6B21\u8BFB\u5230\u8FD9\u91CC</span>' : ""}<span class="passage-text">${escape(p[state.layer])}</span><button class="select-anchor" data-quote="${p.id}" aria-label="\u9009\u62E9\u8FD9\u4E00\u6BB5">\u231C</button></p>`
@@ -1606,14 +1649,53 @@ svg.icon {
     else rememberReadingGeometry();
   }
   function quoteKey(quote) {
-    return JSON.stringify([
-      quote.passageId,
-      quote.version,
-      quote.layer,
-      quote.startUtf16,
-      quote.endUtf16,
-      quote.text
-    ]);
+    return quoteIdentity(quote);
+  }
+  function currentReadingQuote() {
+    const id = state.readingPosition?.passageId || paragraphs[0].id;
+    const quote = captureQuote(paragraphs.some((p) => p.id === id) ? id : paragraphs[0].id);
+    return { ...quote, selection: "\u5F53\u524D\u9605\u8BFB\u6BB5\u843D" };
+  }
+  function companionContext() {
+    return resolveCompanionContext({ readingQuote: currentReadingQuote(), discussionQuote: state.quote, discussionStarted: state.discussionStarted, draft: state.draft, question: state.question, pendingTurn: state.pendingTurn });
+  }
+  function layerLabel(layer) {
+    return { source: "\u539F\u6587", literal: "\u793A\u4F8B\u76F4\u8BD1", interpretive: "\u793A\u4F8B\u610F\u8BD1" }[layer] || "\u6765\u6E90\u5F85\u786E\u8BA4";
+  }
+  function contextCaption(context) {
+    return { current: "\u6B63\u5728\u8BFB\u7684\u6BB5\u843D", selection: "\u5F53\u524D\u6BB5\u7684\u9009\u6587", previous: "\u5148\u524D\u8BA8\u8BBA\u7684\u539F\u53E5" }[context.relation] + " \xB7 " + layerLabel(state.quote.layer);
+  }
+  function updateContextChrome() {
+    const context = companionContext();
+    $("companion-label").textContent = context.label;
+    const label = $("sheet-body").querySelector("[data-context-label]");
+    if (label) label.textContent = contextCaption(context);
+    const switcher = $("sheet-body").querySelector('[data-action="ask-current"]');
+    if (switcher) switcher.hidden = !context.canAskCurrent;
+    if (state.route === "companion") $("sheet-title").textContent = context.relation === "previous" ? "\u7EE7\u7EED\u8BA8\u8BBA" : "\u8BFB\u5230\u8FD9\u91CC";
+  }
+  function viewQuote() {
+    return state.previewQuote || state.quote;
+  }
+  function preserveCurrentQuestion() {
+    if (!state.question.trim()) return;
+    const key2 = quoteKey(state.quote);
+    if (state.pendingTurn?.question === state.question && quoteKey(state.pendingTurn.quote) === key2) return;
+    if (state.turns.some((t) => t.question === state.question && quoteKey(t.quote) === key2)) return;
+    rememberTurn({ id: "prototype-retained-" + Date.now() + "-" + state.turns.length, question: state.question, quote: { ...state.quote }, answered: state.answered });
+  }
+  function enterCompanion() {
+    captureComposer();
+    const context = companionContext();
+    if (!context.quote) return notify("\u539F\u95EE\u9898\u7684\u51FA\u5904\u4E0D\u5B8C\u6574\uFF0C\u8BF7\u5148\u91CD\u65B0\u9009\u4E00\u53E5");
+    if (context.mode === "reading") takeQuote(context.quote, { open: false });
+    else if (quoteKey(context.quote) !== quoteKey(state.quote)) {
+      state.quote = { ...context.quote };
+      if (!state.question.trim() && state.pendingTurn) state.question = state.pendingTurn.question;
+    }
+    state.discussionStarted = true;
+    persist();
+    openRoute("companion", "half", { capture: false });
   }
   function captureQuote(id, text, startOffset = null) {
     const p = paragraphs.find((p2) => p2.id === id) || paragraphs[0], value = text || p[state.layer], start = startOffset !== null ? startOffset : value === p[state.layer] ? 0 : -1;
@@ -1629,13 +1711,22 @@ svg.icon {
     };
   }
   function rememberTurn(turn) {
-    if (!state.turns.some((item) => item.id === turn.id))
-      state.turns.push({ ...turn, quote: { ...turn.quote } });
-    state.turns = state.turns.slice(-6);
+    const snapshot = { ...turn, quote: { ...turn.quote } };
+    const index = state.turns.findIndex((item) => item.id === turn.id);
+    if (index < 0) state.turns.push(snapshot);
+    else state.turns[index] = snapshot;
+    const completed = state.turns.filter((item) => item.answered !== false).slice(-6);
+    state.turns = state.turns.filter((item) => item.answered === false || completed.includes(item));
+  }
+  function rememberPendingTurn(exceptId = null) {
+    if (state.pendingTurn && state.pendingTurn.id !== exceptId)
+      rememberTurn({ ...state.pendingTurn, answered: false });
   }
   function takeQuote(next, { open = true } = {}) {
     captureComposer();
+    state.previewQuote = null;
     if (quoteKey(state.quote) !== quoteKey(next)) {
+      preserveCurrentQuestion();
       if (state.draft.trim()) {
         state.drafts.push({ quote: { ...state.quote }, draft: state.draft });
         notify("\u4E0A\u4E00\u53E5\u7684\u95EE\u9898\u8349\u7A3F\u5DF2\u4FDD\u7559");
@@ -1646,6 +1737,7 @@ svg.icon {
       state.draft = previous >= 0 ? state.drafts.splice(previous, 1)[0].draft : "";
       state.question = "";
       state.answered = false;
+      state.discussionStarted = false;
       state.returnFrame = null;
     }
     state.quote = next;
@@ -1695,8 +1787,11 @@ svg.icon {
     menu.style.setProperty("--anchor-x", Math.max(16, Math.min(size.width - 16, (anchor.left + anchor.right) / 2 - placement.left)) + "px");
     menu.dataset.placement = placement.placement;
   }
-  function contextQuote() {
-    return `<div class="context-quote" data-passage-id="${escape(state.quote.passageId)}" data-source-layer="${escape(state.quote.layer)}" data-selection-start="${state.quote.startUtf16 ?? ""}" data-selection-end="${state.quote.endUtf16 ?? ""}"><small>\u672C\u6BB5 \xB7 ${state.quote.layer === "source" ? "\u539F\u6587" : state.quote.layer === "literal" ? "\u793A\u4F8B\u76F4\u8BD1" : "\u793A\u4F8B\u610F\u8BD1"}</small><div class="quote-excerpt">${escape(state.quote.text)}</div><button data-action="return-quote">\u8FD4\u56DE\u63D0\u95EE\u539F\u53E5</button></div>`;
+  function contextQuote(kind = "discussion") {
+    const quote = kind === "note" ? viewQuote() : state.quote;
+    const context = companionContext();
+    const caption = kind === "note" ? "\u7B14\u8BB0\u539F\u53E5 \xB7 " + layerLabel(quote.layer) : contextCaption(context);
+    return `<div class="context-quote" data-passage-id="${escape(quote.passageId)}" data-source-layer="${escape(quote.layer)}" data-selection-start="${quote.startUtf16 ?? ""}" data-selection-end="${quote.endUtf16 ?? ""}"><small ${kind === "discussion" ? "data-context-label" : ""}>${escape(caption)}</small><div class="quote-excerpt">${escape(quote.text)}</div><div class="context-actions"><button data-action="return-quote">${kind === "note" ? "\u8FD4\u56DE\u7B14\u8BB0\u539F\u53E5" : "\u8FD4\u56DE\u63D0\u95EE\u539F\u53E5"}</button>${kind === "discussion" ? `<button class="ask-current" data-action="ask-current" ${context.canAskCurrent ? "" : "hidden"}>\u6539\u95EE\u6B63\u5728\u8BFB\u7684\u6BB5\u843D ${icon("right")}</button>` : ""}</div></div>`;
   }
   function answerText() {
     return {
@@ -1733,13 +1828,14 @@ svg.icon {
     }
     if (state.route === "original") {
       title = "\u6838\u5BF9\u539F\u6587";
-      const p = paragraphs.find((p2) => p2.id === state.quote.passageId) || paragraphs[0];
+      back = !!state.returnFrame;
+      const p = paragraphs.find((p2) => p2.id === viewQuote().passageId) || paragraphs[0];
       html = `<div class="segmented"><button class="${state.layer === "source" ? "active" : ""}" data-layer="source">\u539F\u6587</button><button class="${state.layer === "literal" ? "active" : ""}" data-layer="literal">\u76F4\u8BD1</button><button class="${state.layer === "interpretive" ? "active" : ""}" data-layer="interpretive">\u610F\u8BD1</button></div><span class="record-kind">\u4F5C\u8005\u539F\u6587 \xB7 \u8282\u9009</span><p class="citation-original">${escape(p.source)}</p><div class="quiet-rule"></div><span class="record-kind">${state.layer === "literal" ? "\u793A\u4F8B\u76F4\u8BD1" : "\u793A\u4F8B\u610F\u8BD1"}</span><p class="citation-translation">${escape(p[state.layer === "literal" ? "literal" : "interpretive"])}</p>`;
     }
     if (state.route === "note") {
       title = "\u8BB0\u4E00\u53E5";
       back = !!state.returnFrame;
-      html = contextQuote() + `<textarea class="note-field" id="note-field" aria-label="\u81EA\u5DF1\u7684\u7B14\u8BB0" placeholder="\u7528\u81EA\u5DF1\u7684\u8BDD\uFF0C\u7559\u4E0B\u4E00\u70B9\u60F3\u6CD5\u2026">${escape(state.noteDrafts[quoteKey(state.quote)] || "")}</textarea><div class="save-note-row"><span>\u81EA\u5DF1\u7684\u7B14\u8BB0</span><button class="primary-button" data-action="save-note">\u4FDD\u5B58</button></div>`;
+      html = contextQuote("note") + `<textarea class="note-field" id="note-field" aria-label="\u81EA\u5DF1\u7684\u7B14\u8BB0" placeholder="\u7528\u81EA\u5DF1\u7684\u8BDD\uFF0C\u7559\u4E0B\u4E00\u70B9\u60F3\u6CD5\u2026">${escape(state.noteDrafts[quoteKey(viewQuote())] || "")}</textarea><div class="save-note-row"><span>\u81EA\u5DF1\u7684\u7B14\u8BB0</span><button class="primary-button" data-action="save-note">\u4FDD\u5B58</button></div>`;
     }
     if (state.route === "library") {
       title = "\u4E66\u623F";
@@ -1754,7 +1850,7 @@ svg.icon {
         ).join("") : '<div class="empty-records"><h3>\u8FD8\u6CA1\u6709\u7B14\u8BB0</h3><p>\u8BFB\u5230\u60F3\u7559\u4E0B\u7684\u8BDD\uFF0C\u53EF\u4EE5\u8BB0\u4E00\u53E5\u3002</p><button class="secondary-button" data-action="continue">\u56DE\u5230\u4E66\u91CC</button></div>';
       } else {
         html += state.turns.length ? state.turns.map(
-          (turn, index) => `<button class="list-row" data-turn="${index}"><span><span class="record-kind">\u9605\u8BFB\u8BA8\u8BBA \xB7 \u539F\u578B\u6F14\u793A</span><strong>${escape(turn.question)}</strong><small>\u74E6\u5C14\u767B\u6E56 \xB7 ${escape(turn.quote.text.slice(0, 24))}\u2026</small></span>${icon("right")}</button>`
+          (turn, index) => `<button class="list-row" data-turn="${index}"><span><span class="record-kind">${turn.answered === false ? "\u672A\u5B8C\u6210\u63D0\u95EE" : "\u9605\u8BFB\u8BA8\u8BBA"} \xB7 \u539F\u578B\u6F14\u793A</span><strong>${escape(turn.question)}</strong><small>\u74E6\u5C14\u767B\u6E56 \xB7 ${escape(turn.quote.text.slice(0, 24))}\u2026</small></span>${icon("right")}</button>`
         ).join("") : `<button class="list-row" data-action="expand"><span><span class="record-kind">\u9605\u8BFB\u8BA8\u8BBA \xB7 \u793A\u4F8B</span><strong>deliberately \u4E3A\u4EC0\u4E48\u4E0D\u53EA\u662F\u201C\u523B\u610F\u201D\uFF1F</strong><small>\u74E6\u5C14\u767B\u6E56 \xB7 \u7ED1\u5B9A\u63D0\u95EE\u539F\u53E5</small></span>${icon("right")}</button>`;
       }
     }
@@ -1782,6 +1878,7 @@ svg.icon {
     $("draft-return").hidden = !state.drafts.length;
     $("sheet-body").scrollTop = 0;
     drawIcons($("sheet-body"));
+    updateContextChrome();
   }
   function phoneHeight() {
     return $("phone").clientHeight;
@@ -1850,6 +1947,7 @@ svg.icon {
   }
   function openRoute(route, detent = "full", { capture = true, restoreScroll = null } = {}) {
     if (capture) captureComposer();
+    if (!["note", "original"].includes(route)) state.previewQuote = null;
     if (state.closingFrame) state.returnFrame = null;
     state.closingFrame = null;
     setClosingControls(false);
@@ -1916,6 +2014,7 @@ svg.icon {
           $("reader-sheet").inert = true;
           state.closingFrame = null;
           state.returnFrame = null;
+          state.previewQuote = null;
           setClosingControls(false);
         }
       }
@@ -1929,7 +2028,7 @@ svg.icon {
   }
   function captureComposer() {
     if (state.route === "note") {
-      state.noteDrafts[quoteKey(state.quote)] = $("note-field")?.value || "";
+      state.noteDrafts[quoteKey(viewQuote())] = $("note-field")?.value || "";
       persist();
       return;
     }
@@ -1986,12 +2085,21 @@ svg.icon {
       return;
     }
     if (name === "return-quote") {
-      jumpTo(state.quote.passageId, { close: false });
+      jumpTo((state.route === "note" || state.route === "original" ? viewQuote() : state.quote).passageId, { close: false });
       notify("\u5DF2\u56DE\u5230\u63D0\u95EE\u539F\u53E5");
       return;
     }
     if (name === "expand") {
+      state.discussionStarted = true;
       openRoute("discussion", "full");
+      return;
+    }
+    if (name === "ask-current") {
+      const route = state.route === "discussion" ? "discussion" : "companion", detent = state.detent;
+      takeQuote(currentReadingQuote(), { open: false });
+      state.discussionStarted = true;
+      persist();
+      openRoute(route, detent, { capture: false });
       return;
     }
     if (name === "note") {
@@ -2014,12 +2122,13 @@ svg.icon {
         $("note-field")?.focus();
         return;
       }
-      state.notes.unshift({ text, quote: { ...state.quote }, author: "user" });
-      state.noteDrafts[quoteKey(state.quote)] = "";
+      state.notes.unshift({ text, quote: { ...viewQuote() }, author: "user" });
+      state.noteDrafts[quoteKey(viewQuote())] = "";
       $("note-field").value = "";
       persist();
       notify("\u7B14\u8BB0\u5DF2\u4FDD\u5B58");
-      backToDiscussion();
+      if (state.returnFrame) backToDiscussion();
+      else closeSheet();
       return;
     }
     if (name === "retry") {
@@ -2035,10 +2144,11 @@ svg.icon {
         state.question = turn.question;
         state.draft = "";
         $("question-input").value = "";
-        rememberTurn(turn);
+        rememberTurn({ ...turn, answered: true });
         state.pendingTurn = null;
       }
       state.answered = true;
+      state.discussionStarted = true;
       persist();
       renderBody();
       notify("\u5DF2\u6062\u590D\u793A\u4F8B\u8BB2\u89E3");
@@ -2054,7 +2164,19 @@ svg.icon {
       return;
     }
     if (button.dataset.selection) {
-      takeQuote(state.pendingSelection || initialQuote(), { open: false });
+      const selected = state.pendingSelection || initialQuote();
+      if (button.dataset.selection === "explain") {
+        takeQuote(selected, { open: false });
+        state.discussionStarted = true;
+        persist();
+      } else {
+        captureComposer();
+        state.previewQuote = { ...selected };
+        if (["companion", "discussion"].includes(state.route)) state.returnFrame = { route: state.route, detent: state.detent, scrollTop: $("sheet-body").scrollTop, draft: state.draft, quote: { ...state.quote }, question: state.question, answered: state.answered };
+        else if (!["note", "original"].includes(state.route)) state.returnFrame = null;
+        hideSelectionMenu();
+        window.getSelection()?.removeAllRanges();
+      }
       openRoute(
         button.dataset.selection === "explain" ? "companion" : button.dataset.selection,
         button.dataset.selection === "explain" ? "half" : "full",
@@ -2101,9 +2223,13 @@ svg.icon {
     }
     if (button.dataset.turn !== void 0) {
       const turn = state.turns[Number(button.dataset.turn)];
+      if (turn.answered === false) rememberPendingTurn(turn.id);
       takeQuote({ ...turn.quote }, { open: false });
       state.question = turn.question;
-      state.answered = true;
+      state.answered = turn.answered !== false;
+      if (turn.answered === false) state.pendingTurn = { ...turn, quote: { ...turn.quote } };
+      state.discussionStarted = true;
+      persist();
       openRoute("discussion", "full", { capture: false });
       return;
     }
@@ -2118,7 +2244,7 @@ svg.icon {
   $("contents-button").onclick = () => openRoute("contents", "full");
   $("progress-button").onclick = () => openRoute("contents", "full");
   $("appearance-button").onclick = () => openRoute("appearance", "full");
-  $("companion-button").onclick = () => openRoute("companion", "half");
+  $("companion-button").onclick = enterCompanion;
   $("sheet-done").onclick = closeSheet;
   $("sheet-back").onclick = backToDiscussion;
   $("sheet-scrim").onclick = () => snap("half");
@@ -2151,11 +2277,15 @@ svg.icon {
     const question = $("question-input").value.trim();
     if (!question) return;
     state.question = question;
+    state.answered = false;
+    state.discussionStarted = true;
     const turn = {
       id: "prototype-" + Date.now(),
       question,
-      quote: { ...state.quote }
+      quote: { ...state.quote },
+      answered: !state.offline
     };
+    rememberPendingTurn();
     state.pendingTurn = turn;
     if (!state.offline) {
       rememberTurn(turn);
@@ -2177,6 +2307,7 @@ svg.icon {
     state.draft = previous.draft;
     state.question = "";
     state.answered = false;
+    state.discussionStarted = true;
     state.returnFrame = null;
     persist();
     renderBody();
@@ -2375,6 +2506,7 @@ svg.icon {
   rememberReadingGeometry();
   state.y = targetY("closed");
   setStudy("\u6253\u5F00\u5373\u7EED\u8BFB", "\u4ECE\u4E0A\u6B21\u7684\u4F4D\u7F6E\u8FDB\u5165\u6B63\u6587\uFF0C\u966A\u8BFB\u9762\u677F\u4FDD\u6301\u6536\u8D77\u3002");
+  updateContextChrome();
   window.addEventListener("resize", () => {
     if (state.readingPosition) restoreReaderAnchor(state.readingPosition);
     if (state.route !== "closed") snap(state.detent, { immediate: true });
@@ -2392,7 +2524,7 @@ svg.icon {
   });
   document.addEventListener("input", (event) => {
     if (event.target.id === "note-field") {
-      state.noteDrafts[quoteKey(state.quote)] = event.target.value;
+      state.noteDrafts[quoteKey(viewQuote())] = event.target.value;
       persist();
     }
   });

@@ -1,0 +1,55 @@
+{
+  "at": "2026-10-26T22:02:12.875Z",
+  "checks": [
+    {
+      "name": "fresh-entry-uses-the-logical-reading-paragraph",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'walden-2-001'\n- 'walden-2-002'\n              ^\n"
+    },
+    {
+      "name": "old-draft-keeps-its-source-and-the-entry-says-continue",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n\n'读到这里' !== '继续讨论'\n"
+    },
+    {
+      "name": "explicit-current-switch-preserves-and-recovers-the-old-draft",
+      "status": "fail",
+      "message": "locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-action=\"ask-current\"]')\u001b[22m\n"
+    },
+    {
+      "name": "an-existing-question-is-kept-in-history-with-its-original-source",
+      "status": "fail",
+      "message": "locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-action=\"ask-current\"]')\u001b[22m\n"
+    },
+    {
+      "name": "pending-request-is-not-completed-or-rebound-by-entry-or-switch",
+      "status": "fail",
+      "message": "locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-action=\"ask-current\"]')\u001b[22m\n"
+    },
+    {
+      "name": "selecting-text-alone-does-not-change-the-existing-discussion",
+      "status": "pass"
+    },
+    {
+      "name": "an-explicit-word-explanation-survives-close-and-reentry-without-typed-text",
+      "status": "pass"
+    },
+    {
+      "name": "reading-layer-identity-stays-visible-and-is-separate-from-old-discussion",
+      "status": "fail",
+      "message": "locator.innerText: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#nav-version')\u001b[22m\n"
+    },
+    {
+      "name": "background-reading-refreshes-only-chrome-not-answer-scroll-or-draft",
+      "status": "pass"
+    },
+    {
+      "name": "narrow-night-context-switch-remains-reachable",
+      "status": "fail",
+      "message": "locator.boundingBox: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-action=\"ask-current\"]')\u001b[22m\n"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "fail"
+}

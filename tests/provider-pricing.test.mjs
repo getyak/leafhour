@@ -5,7 +5,9 @@ import {createChatBudget} from '../harness/chat-generator.mjs';
 import {withProviderMeter} from '../server/provider-metering.mjs';
 import {createTranslator} from '../server/translation.mjs';
 
-const now=Date.parse('2026-10-21T12:00:00Z');
+// Budget tests need a clock inside the reviewed reference. Calendar examples
+// below retain their fixed weekday; the release guard separately uses real time.
+const now=Date.parse(DEEPSEEK_PRICING.checkedAt)+12*60*60*1000;
 test('verified USD reference has separate peak/cache/tool prices and dated expiry',()=>{
  assert.equal(DEEPSEEK_PRICING.currency,'USD');assert.equal(DEEPSEEK_PRICING.peak.inputPerMillion,.3);assert.equal(DEEPSEEK_PRICING.peak.cacheReadPerMillion,.006);assert.equal(DEEPSEEK_PRICING.peak.outputPerMillion,1.2);assert.equal(DEEPSEEK_PRICING.searchPerThousand,.75);assert.equal(DEEPSEEK_PRICING.harnessToolsFreeUntil,'2026-10-31T16:00:00.000Z');
  assert.ok(Date.parse(DEEPSEEK_PRICING.validUntil)>now);

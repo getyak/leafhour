@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-26T22:35:11.407Z",
+  "checks": [
+    {
+      "name": "sending-a-new-question-keeps-the-old-pending-request-recoverable",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- '第一段未完成的问题'\n"
+    },
+    {
+      "name": "offline-new-question-and-history-switch-keep-both-pending-requests",
+      "status": "fail",
+      "message": "locator.check: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#offline-mode')\u001b[22m\n\u001b[2m    - locator resolved to <input type=\"checkbox\" id=\"offline-mode\"/>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    13 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "fail"
+}

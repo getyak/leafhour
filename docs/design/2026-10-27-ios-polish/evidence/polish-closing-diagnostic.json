@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-26T22:48:18.436Z",
+  "checks": [
+    {
+      "name": "a-closing-sheet-can-be-grabbed-and-cancelled-with-its-draft",
+      "status": "pass"
+    },
+    {
+      "name": "real-touch-scrolling-keeps-tools-for-a-still-visible-selection",
+      "status": "pass"
+    },
+    {
+      "name": "a-fast-upward-flick-keeps-the-handle-below-the-status-area",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "pass"
+}

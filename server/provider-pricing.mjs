@@ -1,10 +1,10 @@
 import {assertPricingWindow} from './pricing-reference.mjs';
-// Verified against the official pricing page on 2026-10-21. USD estimates are
+// Verified against the official pricing page on 2026-10-27. USD estimates are
 // separate from customer credits and from the legacy CNY admission guard.
 export const DEEPSEEK_PRICING=Object.freeze({
- version:'deepseek-flash-usd-2026-10-21',model:'deepseek-flash',currency:'USD',
+ version:'deepseek-flash-usd-2026-10-27',model:'deepseek-flash',currency:'USD',
  source:'https://api-docs.deepseek.com/quick_start/pricing/',
- checkedAt:'2026-10-21T00:00:00.000Z',validUntil:'2026-10-28T00:00:00.000Z',
+ checkedAt:'2026-10-27T00:19:49.314Z',validUntil:'2026-10-31T16:00:00.000Z',
  peak:Object.freeze({inputPerMillion:.3,cacheReadPerMillion:.006,outputPerMillion:1.2}),
  offpeak:Object.freeze({inputPerMillion:.15,cacheReadPerMillion:.003,outputPerMillion:.6}),
  searchPerThousand:.75,fetchPerThousand:.75,harnessToolsFreeUntil:'2026-10-31T16:00:00.000Z'

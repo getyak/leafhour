@@ -1,0 +1,20 @@
+{
+  "model": "deepseek-flash",
+  "observedAt": "2026-10-27T00:19:49.314Z",
+  "references": [
+    {
+      "version": "deepseek-flash-cny-2026-10-27",
+      "currency": "CNY",
+      "checkedAt": "2026-10-27T00:19:49.314Z",
+      "validUntil": "2026-10-31T16:00:00.000Z"
+    },
+    {
+      "version": "deepseek-flash-usd-2026-10-27",
+      "currency": "USD",
+      "checkedAt": "2026-10-27T00:19:49.314Z",
+      "validUntil": "2026-10-31T16:00:00.000Z"
+    }
+  ],
+  "minimumReleaseRemainingHours": 24,
+  "sourceCheck": "matched"
+}

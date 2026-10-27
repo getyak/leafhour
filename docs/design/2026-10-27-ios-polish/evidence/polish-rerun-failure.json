@@ -1,0 +1,67 @@
+{
+  "at": "2026-10-26T22:40:48.019Z",
+  "checks": [
+    {
+      "name": "handle-has-a-44-pixel-touch-target",
+      "status": "pass"
+    },
+    {
+      "name": "scrim-changes-continuously-during-an-upward-drag",
+      "status": "pass"
+    },
+    {
+      "name": "holding-the-sheet-still-clears-stale-flick-velocity",
+      "status": "pass"
+    },
+    {
+      "name": "a-moving-sheet-can-be-grabbed-and-reversed-without-a-jump",
+      "status": "pass"
+    },
+    {
+      "name": "pointer-cancellation-restores-the-detent-without-dismissing",
+      "status": "pass"
+    },
+    {
+      "name": "reduced-motion-keeps-the-handle-operable-without-a-running-spring",
+      "status": "pass"
+    },
+    {
+      "name": "selection-tools-follow-the-selected-paragraph-and-stay-in-bounds",
+      "status": "pass"
+    },
+    {
+      "name": "confirming-a-quote-clears-the-temporary-paragraph-highlight",
+      "status": "pass"
+    },
+    {
+      "name": "scrolling-keeps-visible-selection-tools-attached-to-the-source",
+      "status": "pass"
+    },
+    {
+      "name": "scrolling-the-selection-out-of-view-dismisses-its-tools",
+      "status": "pass"
+    },
+    {
+      "name": "a-closing-sheet-can-be-grabbed-and-cancelled-with-its-draft",
+      "status": "fail",
+      "message": "The visible closing handle must still receive input"
+    },
+    {
+      "name": "dragging-away-and-back-is-not-treated-as-a-tap",
+      "status": "pass"
+    },
+    {
+      "name": "real-touch-scrolling-keeps-tools-for-a-still-visible-selection",
+      "status": "fail",
+      "message": "page.goto: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:58238/prototype/\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "name": "a-fast-upward-flick-keeps-the-handle-below-the-status-area",
+      "status": "fail",
+      "message": "locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '读到这里', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"companion-button\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "fail"
+}

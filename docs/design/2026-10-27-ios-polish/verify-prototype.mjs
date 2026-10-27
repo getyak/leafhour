@@ -83,7 +83,7 @@ async function context(options = {}) {
     return route.abort();
   });
   const p = await c.newPage();
-  p.setDefaultTimeout(10000);
+  p.setDefaultTimeout(Number(process.env.LEAFHOUR_BROWSER_TIMEOUT_MS) || 10000);
   p.on("pageerror", (error) => report.errors.push(error.message));
   await p.goto(base + "/prototype/");
   return { c, p };
@@ -336,6 +336,7 @@ try {
     .locator("#phone")
     .screenshot({
       path: path.join(root, "exports", "14-narrow-large-night.png"),
+      animations: "disabled",
     });
   await active.c.close();
   active = await context({ reducedMotion: "reduce" });
@@ -372,7 +373,7 @@ try {
     );
     await p
       .locator("#phone")
-      .screenshot({ path: path.join(root, "exports", slug + ".png") });
+      .screenshot({ path: path.join(root, "exports", slug + ".png"), animations: "disabled" });
     const scene = await p.evaluate(captureDOM, { name });
     await fs.writeFile(
       path.join(root, "captures", slug + ".json"),
@@ -407,6 +408,7 @@ try {
     "prototype/motion.mjs",
     "prototype/selection-position.mjs",
     "prototype/reading-position.mjs",
+    "prototype/companion-context.mjs",
     "prototype/style.css",
     "prototype/index.html",
   ])

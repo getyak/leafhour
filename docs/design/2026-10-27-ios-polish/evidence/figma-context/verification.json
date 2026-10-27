@@ -1,0 +1,21 @@
+{
+  "fileURL": "https://www.figma.com/design/zjkapX58kUJZZh0la8F4Nw/Leafhour",
+  "fileName": "Leafhour · iOS · 半屏陪读",
+  "fileIdentityConfirmedBy": "native Figma design and presentation URL plus bridge metadata and previous specimen node readback",
+  "exportedFrames": 7,
+  "exactStateReactionsReadBack": 4,
+  "textStyleBindingsReadBack": 128,
+  "colorBoundNodes": 216,
+  "computerUse": {
+    "flow": "上下文 · 继续或主动换段",
+    "from": "6:3582",
+    "switchToCurrent": "6:3688",
+    "recoverDraft": "6:3582",
+    "observed": "Native presentation changed to the exact target node IDs; rendered text and original draft visually confirmed.",
+    "fullAppChromeCommitted": false
+  },
+  "limits": [
+    "Fixed state navigation and editable Figma layers only. No native reading or dynamic text input acceptance.",
+    "Four exact-state reactions read back; the two switch/recover edges were clicked in native presentation. The unfinished-history edge is exported/read back only."
+  ]
+}

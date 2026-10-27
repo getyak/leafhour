@@ -1,0 +1,17 @@
+{
+  "observedAt": "2026-10-27T00:19:49.314Z",
+  "sources": [
+    {
+      "currency": "CNY",
+      "source": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+      "sha256": "556097caba8adfeeed6455714bffd731c7f60db520fcee06a922eba5840663a3",
+      "bytes": 26182
+    },
+    {
+      "currency": "USD",
+      "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+      "sha256": "b856a6e93fa4793ecc8f3fd03a01bb7d8f7572f78a4739da8ce6dbdb09328d66",
+      "bytes": 26043
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-26T22:49:12.932Z",
+  "checks": [
+    {
+      "name": "a-new-offline-question-does-not-inherit-the-previous-answer-status",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n\ntrue !== false\n"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "fail"
+}

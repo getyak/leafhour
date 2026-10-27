@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-26T22:17:31.347Z",
+  "checks": [
+    {
+      "name": "changing-note-target-keeps-the-original-discussion-return-frame",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "pass"
+}
