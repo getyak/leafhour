@@ -25,6 +25,7 @@ for(const file of ['reader-annotations.mjs','reader-annotation-margins.mjs','rea
 assets.set('/preference-memory-codec.mjs',['app/preference-memory-codec.mjs','text/javascript']);
 assets.set('/reading-preferences.mjs',['app/reading-preferences.mjs','text/javascript']);
 assets.set('/personal-records.mjs',['app/personal-records.mjs','text/javascript']);
+for(const file of ['library-notebook.mjs', 'library-notebook-state.mjs', 'library-notebook.css', 'reading-journal.mjs', 'reading-journal.css', 'paper-companion.mjs', 'reading-hub.mjs', 'reading-hub.css', 'reader-style-ready.mjs', 'reader-loading.mjs'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/reading-chat-scope.mjs',['app/reading-chat-scope.mjs','text/javascript']);
 for(const file of ['reading-chat-quote.mjs','reading-chat-input.mjs','reader-chat-workspace.mjs','reader-chat-workspace.css'])assets.set('/'+file,['app/'+file,file.endsWith('.css')?'text/css':'text/javascript']);
 assets.set('/personal-record-editor.mjs',['app/personal-record-editor.mjs','text/javascript']);

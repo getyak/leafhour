@@ -53,3 +53,15 @@ test('a location module resolved after reader disposal cannot mount a new subscr
  const statement=source.split('\n').find(line=>line.startsWith('void import(')&&line.includes('mountReaderLocation'));assert.ok(statement);
  let mounts=0;vm.runInNewContext(statement.replace(/import\([^)]+\)/,'loading'),{loading:Promise.resolve({mountReaderLocation:()=>mounts++}),readerDisposed:true,document:{},readerTools:{}});await Promise.resolve();await Promise.resolve();assert.equal(mounts,0);
 });
+test('hub layout waits for optional styles and ignores a load completed after owner disposal',async()=>{
+ const {fixture}=await import('./annotation-dom-fixture.mjs'),{loadReadingHubStyles}=await import('../app/reading-hub.mjs'),{mountReaderLocation}=await location();
+ const {document,win}=fixture('<head></head><body><header id="reading-header"><button id="open-settings">Aa</button></header><span id="running-progress"></span><div id="reading-pages"><article id="chapter-text"></article></div><section id="reading-session"><button id="reading-tools-trigger"></button><div id="reading-tools-panel"></div></section></body>');
+ win.ResizeObserver=class{observe(){}disconnect(){}};
+ const settings=document.getElementById('open-settings'),handle=mountReaderLocation({document,tools:{toolbar:{reveal(){}}},getReader:()=>null});
+ assert.equal(document.getElementById('reading-hub-primary'),null,'unstyled enhancement cannot move existing actions');
+ assert.ok(document.getElementById('reading-header').contains(settings));
+ const pending=loadReadingHubStyles(document);document.dispatchEvent(new Event('reader:session-changed'));
+ document.querySelector('link[data-reading-hub-style]').dispatchEvent(new Event('load'));await pending;await Promise.resolve();
+ assert.equal(document.getElementById('reading-hub-primary'),null,'an old owner cannot finish mounting after stylesheet load');
+ assert.ok(document.getElementById('reading-header').contains(settings));handle.unmount();
+});
