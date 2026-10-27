@@ -28,10 +28,11 @@ class Element extends EventTarget{
 const all=n=>[n,...n.children.flatMap(all)],flush=()=>new Promise(setImmediate);
 const source=await readFile(new URL('../app/reading-dashboard.mjs',import.meta.url),'utf8'),ast=parse(source,{ecmaVersion:'latest',sourceType:'module'});
 const executable=ast.body.map(n=>n.type==='ImportDeclaration'?'':n.type==='ExportNamedDeclaration'?source.slice(n.declaration.start,n.end):source.slice(n.start,n.end)).join('\n');
-function fixture({pending=false}={}){
+function fixture({pending=false,timeZone=null}={}){
+ const intl=timeZone?Object.create(Intl):Intl;if(timeZone)intl.DateTimeFormat=function(language,options={}){return new Intl.DateTimeFormat(language,{timeZone,...options});};
  const doc=new EventTarget();doc.defaultView={location:{search:''}};doc.createElement=tag=>new Element(tag,doc);doc.body=doc.createElement('body');const roots=Array.from({length:3},()=>doc.createElement('section'));doc.body.append(...roots);roots[1].hidden=true;let owner='a',resolve,calls=0;
  const date=calendar.localReadingDate(Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC'),month=date.slice(0,7),day={date,durationSeconds:600,sourceDurationSeconds:{reader_focus:600},notes:1,questions:1,chapterMarks:0,books:[{bookId:'book',title:{zh:'Literal title'},durationSeconds:600,notes:1,questions:1,chapterMarks:0,source:{bookId:'book',passageId:'p1',type:'reading'}}],totalDetails:1,details:[{id:'s1',bookId:'book',passageId:'p1',type:'reading',title:{zh:'Literal title'},source:'reader_focus'}]};const data={month,days:[day],durationSeconds:600,readingDays:1,notes:1,questions:1};
- const promise=new Promise(r=>resolve=r);const context={...locale,...journal,...calendar,...workspace,...policy,document:doc,Intl,Date,Event,inferSourceLanguage,paintBookCover,mountReadingArrival,trackActionFocus,crypto:globalThis.crypto};vm.createContext(context);vm.runInContext(executable+'\nthis.mount=mountReadingDashboard;',context);
+ const promise=new Promise(r=>resolve=r);const context={...locale,...journal,...calendar,...workspace,...policy,document:doc,Intl:intl,Date,Event,inferSourceLanguage,paintBookCover,mountReadingArrival,trackActionFocus,crypto:globalThis.crypto};vm.createContext(context);vm.runInContext(executable+'\nthis.mount=mountReadingDashboard;',context);
  const ui=context.mount({root:roots[0],overviewRoot:roots[1],historyRoot:roots[2],api(){calls++;return pending?promise:Promise.resolve(data);},getSession:()=>({user:{id:owner}}),getOwner:()=>owner,getBooks:()=>[],openAuth(){},refresh(){}});
  return {doc,ui,roots,day,date,data,resolve,calls:()=>calls,setOwner:value=>owner=value,find:cls=>all(doc.body).find(n=>n.className.split(' ').includes(cls)),days:()=>all(roots[1]).filter(n=>n.className==='journal-day')};
 }
@@ -50,4 +51,17 @@ test('locale changes relabel the month and day descriptions without replacing ca
 test('share image paints deterministic portrait pixels from the allowlisted model',()=>{
  const canvas=createCanvas(1,1),model=journal.buildReadingJournalShare({date:'2026-10-28',durationSeconds:600,sourceDurationSeconds:{reader_focus:600}}),copy={title:'Reading footprint',dateLabel:'October 28, 2026',timeLabel:'10 minutes',sourceLabels:{reader_focus:()=> 'Active focus 10 minutes'},bookLabel:'Books',returnLabel:'Read with Leafhour'};
  journal.paintReadingJournalShare(canvas,model,copy);const first=canvas.toBuffer('image/png');assert.equal(canvas.width,1200);assert.equal(canvas.height,1500);assert.ok(first.length>20000);journal.paintReadingJournalShare(canvas,model,copy);assert.deepEqual(canvas.toBuffer('image/png'),first);
+});
+
+test('calendar date keys keep their day and Monday-first labels in positive-offset time zones',async()=>{
+ await locale.requestUiRoute('en');
+ for(const timeZone of ['Pacific/Kiritimati','Pacific/Auckland','Pacific/Fiji']){
+  const f=fixture({timeZone});try{
+   f.ui.openHistory('2026-10-31');
+   assert.equal(f.find('calendar-detail').children[0].textContent,'October 31',timeZone+' month boundary');
+   assert.deepEqual(f.find('calendar-grid').children.filter(n=>n.className==='calendar-weekday').map(n=>n.textContent),['M','T','W','T','F','S','S'],timeZone+' weekday columns');
+   f.ui.openHistory('2026-10-28');
+   assert.equal(f.find('calendar-detail').children[0].textContent,'October 28',timeZone+' selected date');
+  }finally{f.ui.dispose();}
+ }
 });
