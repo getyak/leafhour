@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-27T01:42:50.701Z",
+  "checks": [
+    {
+      "name": "source-validation-keeps-corrupt-drafts-stored-without-opening-a-false-quote",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n\n2 !== 1\n"
+    },
+    {
+      "name": "noncanonical-draft-key-remains-stored-without-a-broken-recovery-row",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n\n1 !== 0\n"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "fail"
+}

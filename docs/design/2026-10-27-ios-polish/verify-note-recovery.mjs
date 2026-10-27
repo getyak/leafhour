@@ -96,6 +96,13 @@ try{
   const u=await p.locator('[data-action="undo-note-save"]').boundingBox();await p.mouse.click(u.x+u.width/2,u.y+u.height/2);await p.clock.resume();await settle(p);
   assert.equal((await snapshot(p)).route,'note');assert.equal((await storage(p)).notes.length,0);assert.equal(await p.locator('#note-field').inputValue(),noteText);assert.equal(await p.locator('.context-quote').getAttribute('data-passage-id'),'walden-2-002');assert.equal((await snapshot(p)).quote.passageId,'walden-2-001');
  },{saved:seed,clock:true,reducedMotion:'no-preference'});
+ await check('source-validation-keeps-corrupt-drafts-stored-without-opening-a-false-quote',async p=>{
+  const bad=JSON.stringify(['walden-2-002','prototype-20261026','interpretive',0,999999,'THIS IS NOT IN THE BOOK']);
+  await records(p);assert.equal(await p.locator('[data-note-draft]').count(),1);assert.ok(!(await p.locator('#sheet-body').innerText()).includes('THIS IS NOT IN THE BOOK'));assert.equal((await storage(p)).noteDrafts[bad],'不能伪造出处的合成草稿');
+ },{saved:{...seed,noteDrafts:{...seed.noteDrafts,[JSON.stringify(['walden-2-002','prototype-20261026','interpretive',0,999999,'THIS IS NOT IN THE BOOK'])]:'不能伪造出处的合成草稿'}}});
+ await check('noncanonical-draft-key-remains-stored-without-a-broken-recovery-row',async p=>{
+  const key=JSON.stringify(JSON.parse(draftKey(noteQuote)),null,2);await records(p);assert.equal(await p.locator('[data-note-draft]').count(),0);assert.equal((await storage(p)).noteDrafts[key],noteText);assert.equal((await storage(p)).noteDrafts[draftKey(noteQuote)],undefined);
+ },{saved:{...seed,noteDrafts:{[JSON.stringify(JSON.parse(draftKey(noteQuote)),null,2)]:noteText}}});
  assert.deepEqual(report.errors,[]);assert.deepEqual(report.externalRequests,[]);report.status=report.checks.every(c=>c.status==='pass')?'pass':'fail';
 }finally{await fs.mkdir(root+'/evidence',{recursive:true});await fs.writeFile(root+'/evidence/'+(process.env.LEAFHOUR_NOTE_REPORT||'note-recovery-verification.json'),JSON.stringify(report,null,2));await browser.close();await new Promise(r=>server.close(r));}
 if(report.status!=='pass')process.exitCode=1;

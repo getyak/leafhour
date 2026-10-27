@@ -27,7 +27,7 @@
 ### Task 1: 纯草稿与撤销规则
 
 **Files:** Create prototype/note-recovery.mjs and note-recovery.test.mjs; modify tests/ios-design-interaction.test.mjs.
-**Interfaces:** readNoteDrafts(drafts,{passageIds,version}) → entries {key,quote,text}; undoNoteSave({notes,drafts,receipt}) → status/notes/drafts; quoteIdentity retains existing format.
+**Interfaces:** readNoteDrafts(drafts,{passages,version}) → verified entries {key,quote,text}; actual paragraph/layer text validates ranges and quotation; undoNoteSave({notes,drafts,receipt}) → status/notes/drafts; quoteIdentity retains existing format.
 
 - [ ] Write failing tests: full/partial quote, invalid keys, no fake timestamps, immutability, exact save undo, conflict and repeat undo.
 - [ ] Implement only these rules and verify all calculation tests.
@@ -40,6 +40,6 @@
 - [ ] Reproduce missing draft entry and missing undo before integration.
 - [ ] Add isolated checks for refresh recovery, quote/layer identity, reading/discussion/records return, conflict, consecutive saves, focus/expiry and narrow/night/reduced motion.
 - [ ] Implement conditional draft section, return label and8秒可操作反馈；no new navigation tab.
-- [ ] Run new checks, three related prior note/preview checks and baseline11; rebuild captures/vectors/standalone without rerunning unrelated gestures/reading.
+- [ ] Run new checks, four related prior note/preview checks and baseline11; rebuild captures/vectors/standalone without rerunning unrelated gestures/reading.
 - [ ] Add versioned Figma three-state flow, confirm file/nodes then export/read back.
 - [ ] One fresh whole-branch review; fix material findings RED→GREEN, no second review; sequential sync/validation/CI/merge/publication gates.

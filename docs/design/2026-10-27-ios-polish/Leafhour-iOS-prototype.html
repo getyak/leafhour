@@ -1441,22 +1441,28 @@ svg.icon {
   function decodeQuote(key2) {
     try {
       const values = JSON.parse(key2);
-      if (!Array.isArray(values) || values.length !== 6) return null;
+      if (!Array.isArray(values) || values.length !== 6 || JSON.stringify(values) !== key2) return null;
       const [passageId, version, layer, startUtf16, endUtf16, text] = values;
       const absent = startUtf16 === null && endUtf16 === null;
-      const range = Number.isSafeInteger(startUtf16) && Number.isSafeInteger(endUtf16) && startUtf16 >= 0 && endUtf16 >= startUtf16;
+      const range = Number.isSafeInteger(startUtf16) && Number.isSafeInteger(endUtf16) && startUtf16 >= 0 && endUtf16 > startUtf16;
       if (typeof passageId !== "string" || !passageId || typeof version !== "string" || !version || !layers3.has(layer) || typeof text !== "string" || !text.trim() || !absent && !range) return null;
       return { passageId, version, layer, startUtf16, endUtf16, text };
     } catch {
       return null;
     }
   }
-  function readNoteDrafts(drafts, { passageIds, version }) {
+  var splitsSurrogate = (text, offset) => text.charCodeAt(offset - 1) >= 55296 && text.charCodeAt(offset - 1) <= 56319 && text.charCodeAt(offset) >= 56320 && text.charCodeAt(offset) <= 57343;
+  function readNoteDrafts(drafts, { passages, version }) {
     if (!drafts || typeof drafts !== "object" || Array.isArray(drafts)) return [];
     return Object.entries(drafts).flatMap(([key2, text]) => {
       if (typeof text !== "string" || !text.trim()) return [];
       const quote = decodeQuote(key2);
-      if (!quote || quote.version !== version || !passageIds.includes(quote.passageId)) return [];
+      if (!quote || quote.version !== version) return [];
+      const source = passages.find((p) => p.id === quote.passageId)?.[quote.layer];
+      if (typeof source !== "string") return [];
+      if (quote.startUtf16 === null) {
+        if (!source.includes(quote.text)) return [];
+      } else if (quote.endUtf16 > source.length || source.slice(quote.startUtf16, quote.endUtf16) !== quote.text || splitsSurrogate(source, quote.startUtf16) || splitsSurrogate(source, quote.endUtf16)) return [];
       return [{ key: key2, quote, text }];
     });
   }
@@ -1748,7 +1754,7 @@ svg.icon {
     return state.previewQuote || state.quote;
   }
   function noteDraftEntries() {
-    return readNoteDrafts(state.noteDrafts, { passageIds: paragraphs.map((p) => p.id), version: readingDocument.sourceVersion });
+    return readNoteDrafts(state.noteDrafts, { passages: paragraphs, version: readingDocument.sourceVersion });
   }
   function openNotePreview(quote, { capture = true } = {}) {
     if (capture) captureComposer();

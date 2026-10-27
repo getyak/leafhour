@@ -302,7 +302,7 @@ function viewQuote() {
   return state.previewQuote || state.quote;
 }
 function noteDraftEntries() {
-  return readNoteDrafts(state.noteDrafts, { passageIds: paragraphs.map(p => p.id), version: readingDocument.sourceVersion });
+  return readNoteDrafts(state.noteDrafts, { passages: paragraphs, version: readingDocument.sourceVersion });
 }
 function openNotePreview(quote, { capture = true } = {}) {
   if (capture) captureComposer();

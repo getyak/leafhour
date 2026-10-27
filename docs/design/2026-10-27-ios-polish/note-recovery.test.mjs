@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 const api=await import('./prototype/note-recovery.mjs').catch(()=>({}));
 const quote={passageId:'p2',version:'sample-v1',layer:'interpretive',startUtf16:3,endUtf16:8,text:'字里的一句'};
 const key=JSON.stringify([quote.passageId,quote.version,quote.layer,quote.startUtf16,quote.endUtf16,quote.text]);
-const scope={passageIds:['p1','p2'],version:'sample-v1'};
+const scope={passageIds:['p1','p2'],passages:[{id:'p1',source:'Original.',literal:'原句',interpretive:'原句意译'},{id:'p2',source:'A🙂B',literal:'另一层',interpretive:'起初的字里的一句然后'}],version:'sample-v1'};
 const note={id:'note-1',text:'留下的想法',quote:{...quote},author:'user'};
 const receipt={note:{...note,quote:{...quote}},draftText:'  留下的想法\n'};
 test('existing six-field partial quote draft retains exact source and editor text',()=>{const [d]=api.readNoteDrafts({[key]:'  想法\n'},scope);assert.equal(d.key,key);assert.deepEqual(d.quote,quote);assert.equal(d.text,'  想法\n');assert.equal('updatedAt' in d,false);});
@@ -17,3 +17,8 @@ test('same draft text can be restored without duplication',()=>{const r=api.undo
 test('changed save or another author cannot be removed by an old receipt',()=>{for(const changed of [{...note,text:'edited'},{...note,quote:{...quote,layer:'source'}},{...note,author:'editor'}])assert.equal(api.undoNoteSave({notes:[changed],drafts:{},receipt}).status,'unavailable');});
 test('repeat or missing undo does not produce a second draft or remove another save',()=>{const r=api.undoNoteSave({notes:[note],drafts:{},receipt});assert.equal(api.undoNoteSave({notes:r.notes,drafts:r.drafts,receipt}).status,'unavailable');assert.equal(api.undoNoteSave({notes:[note],drafts:{},receipt:null}).status,'unavailable');});
 test('a malformed receipt cannot replace saved text with another draft',()=>{for(const bad of [{...receipt,draftText:'另一份内容'},{...receipt,note:{...receipt.note,author:'editor'}}])assert.equal(api.undoNoteSave({notes:[note],drafts:{},receipt:bad}).status,'unavailable');});
+
+test('source validation rejects out-of-bounds zero-length and mismatched quotes without deleting storage',()=>{const fields=[['p2','sample-v1','interpretive',0,999999,'THIS IS NOT IN THE BOOK'],['p2','sample-v1','interpretive',3,3,quote.text],['p2','sample-v1','interpretive',0,5,quote.text],['p2','sample-v1','literal',3,8,quote.text]];const drafts=Object.fromEntries(fields.map(f=>[JSON.stringify(f),'保留的草稿']));const before=structuredClone(drafts);assert.deepEqual(api.readNoteDrafts(drafts,scope),[]);assert.deepEqual(drafts,before);});
+test('noncanonical JSON keys do not advertise a draft the editor cannot recover',()=>{const k=JSON.stringify(JSON.parse(key),null,2),drafts={[k]:'保留原键'};assert.deepEqual(api.readNoteDrafts(drafts,scope),[]);assert.equal(drafts[k],'保留原键');});
+test('surrogate boundaries reject split characters while a full selected codepoint survives',()=>{const full=JSON.stringify(['p2','sample-v1','source',1,3,'🙂']),half=JSON.stringify(['p2','sample-v1','source',1,2,'\ud83d']);const a=api.readNoteDrafts({[full]:'good',[half]:'retain'},scope);assert.equal(a.length,1);assert.equal(a[0].key,full);});
+test('unverified legacy null-range text is not presented as an original quotation',()=>{const k=JSON.stringify(['p1','sample-v1','source',null,null,'not in this paragraph']);assert.deepEqual(api.readNoteDrafts({[k]:'retain'},scope),[]);});

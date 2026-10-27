@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-27T01:19:24.940Z",
+  "at": "2026-10-27T01:44:43.755Z",
   "checks": [
     {
       "name": "note-drafts-have-a-records-entry-without-a-false-empty-state",
@@ -39,6 +39,14 @@
     },
     {
       "name": "undo-during-the-closing-note-sheet-keeps-the-source-and-return",
+      "status": "pass"
+    },
+    {
+      "name": "source-validation-keeps-corrupt-drafts-stored-without-opening-a-false-quote",
+      "status": "pass"
+    },
+    {
+      "name": "noncanonical-draft-key-remains-stored-without-a-broken-recovery-row",
       "status": "pass"
     }
   ],
