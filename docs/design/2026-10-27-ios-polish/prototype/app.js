@@ -1228,8 +1228,8 @@ $("selection-menu").addEventListener("mousedown", event => event.preventDefault(
 let outsideSelectionPress = null;
 document.addEventListener("pointerdown", event => {
   outsideSelectionPress = null;
-  if ($("selection-menu").hidden || $("selection-menu").contains(event.target) || event.target.closest?.("[data-quote]")) return;
-  if (event.target.closest?.("#reading-scroll")) outsideSelectionPress = { id: event.pointerId, x: event.clientX, y: event.clientY, distance: 0 };
+  if (event.button !== 0 || event.isPrimary === false || $("selection-menu").hidden || $("selection-menu").contains(event.target)) return;
+  if (event.target.closest?.("#reading-scroll")) outsideSelectionPress = { id: event.pointerId, x: event.clientX, y: event.clientY, distance: 0, startedAt: performance.now() };
   else hideSelectionMenu();
 });
 document.addEventListener("pointermove", event => {
@@ -1240,7 +1240,9 @@ document.addEventListener("pointerup", event => {
   const press = outsideSelectionPress;
   if (press?.id !== event.pointerId) return;
   outsideSelectionPress = null;
-  if (Math.max(press.distance, Math.hypot(event.clientX - press.x, event.clientY - press.y)) < 6) { hideSelectionMenu(); window.getSelection()?.removeAllRanges(); }
+  // A completed long press owns its new selection. Secondary clicks retain the
+  // native range for the browser copy menu. Only a primary short tap cancels.
+  if (event.button === 0 && performance.now() - press.startedAt < HOLD_MS && Math.max(press.distance, Math.hypot(event.clientX - press.x, event.clientY - press.y)) < 6) { hideSelectionMenu(); window.getSelection()?.removeAllRanges(); }
 }, { passive: true });
 document.addEventListener("pointercancel", () => { outsideSelectionPress = null; }, { passive: true });
 const grip = $("sheet-grip");

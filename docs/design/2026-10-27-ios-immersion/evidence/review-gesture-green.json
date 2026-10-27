@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-27T06:25:00.473Z",
+  "checks": [
+    {
+      "name": "a-second-long-press-keeps-the-new-selection-after-release",
+      "status": "pass"
+    },
+    {
+      "name": "right-clicking-selected-text-preserves-the-native-copy-range",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "pass"
+}
