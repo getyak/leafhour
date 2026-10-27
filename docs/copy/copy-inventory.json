@@ -1086,7 +1086,7 @@
       },
       {
         "file": "server/provider-pricing.mjs",
-        "sha256": "c935f0c647d8c9d7a0992d34a0c34ac54eade750e0d3dbf263fa170b32bba46e"
+        "sha256": "9868bc78e95d7ba0e9698cc0056886568de950c31cfbf940dca77118a294e022"
       },
       {
         "file": "server/reader-annotation-tools.mjs",
@@ -1157,7 +1157,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "36ca54d180ab72bcca976c7a533a0424779eae6474c76618fba330ac69eb83b7"
+    "inputDigest": "7d657b5ec7a6322d7849fe66af4d316cfb892dcfe0bd5c3aa6e45322e9a99aff"
   },
   "locales": [
     "en",
