@@ -374,6 +374,8 @@ export async function buildReaderWeb({root,outputDir,html}){
  // open from the statically bundled reader-book-actions-bootstrap.mjs. The
  // prior six exceptions are unchanged.
  const lazyModules={
+  // Optional observability loads after usable paint; it has one literal lazy owner.
+  'observability-bridge.mjs':{kind:'dynamic-import',importer:'reader.js'},
   'reader-account.mjs':{kind:'dynamic-import',importer:'reader.js'},
   'reader-location.mjs':{kind:'dynamic-import',importer:'reader.js'},
   // Pure canvas layout waits for Share, preserving the fixed reader budget.
@@ -446,7 +448,7 @@ export async function buildReaderWeb({root,outputDir,html}){
    if(!candidates.some(file=>file&&file.startsWith('app/ui-catalogs/')))return undefined;
    throw Error('Non-public ui-catalogue bundle edge: '+args.path);
   });
-  b.onResolve({filter:/^\.\/(?:reader-account|atmosphere-audio|original-download|translation-first-use|credit-client|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|reader-location|command-palette)\.mjs(?:\?.*)?$/},args=>{
+  b.onResolve({filter:/^\.\/(?:observability-bridge|reader-account|atmosphere-audio|original-download|translation-first-use|credit-client|chat-book-upload|library-chat-markdown|reader-book-actions|gift-compose|book-binding|arrival-catalog|share-fonts|share-model|reader-settings-choices|reader-page-inputs|reader-page-surface|reader-location|command-palette)\.mjs(?:\?.*)?$/},args=>{
   const at=args.path.indexOf('?'),query=at<0?'':args.path.slice(at);
   if(query&&args.path!==paletteRetry&&args.path!==accountRetry)throw Error('Non-public lazy reader module: '+args.path);
   const entry=lazyModules[args.path.slice(2,query?at:undefined)];
@@ -458,7 +460,7 @@ export async function buildReaderWeb({root,outputDir,html}){
   return undefined;
  });}};
  const compile=async(contents,loader)=>{
-  const result=await build({stdin:{contents,resolveDir:path.join(root,'app'),sourcefile:'reader-entry.'+(loader==='css'?'css':'js'),loader},bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,charset:'utf8',legalComments:'none',plugins:loader==='css'?[{name:'public-css-urls',setup(b){b.onResolve({filter:/^\//},args=>{if(args.kind==='url-token')return {path:args.path,external:true};if(args.kind==='import-rule'&&args.path==='/fonts/noto-serif-sc/font-faces.css'&&path.resolve(args.importer)===path.join(root,'app/typography.css')){if(!allowed.has('app/fonts/noto-serif-sc/font-faces.css'))throw Error('Non-public CJK stylesheet');return {path:args.path,external:true};}return undefined;});}}]:[publicModules],write:false,metafile:true,logLevel:'silent'});
+  const result=await build({stdin:{contents,resolveDir:path.join(root,'app'),sourcefile:'reader-entry.'+(loader==='css'?'css':'js'),loader},bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,charset:'utf8',legalComments:'none',plugins:loader==='css'?[{name:'public-css-urls',setup(b){b.onResolve({filter:/^\//},args=>{if(args.kind==='url-token')return {path:args.path,external:true};if(args.kind==='import-rule'&&args.path==='/fonts/noto-serif-sc/font-faces.css'&&path.resolve(args.importer)===path.join(root,'app/typography.css')){if(!allowed.has('app/fonts/noto-serif-sc/font-faces.css'))throw Error('Non-public CJK stylesheet');return {path:args.path,external:true};}return undefined;});}}]:[publicModules],write:false,metafile:true,logLevel:'silent',...(loader==='js'?{inject:[path.join(root,'app/browser-globals.mjs')]}:{})});
   for(const key of Object.keys(result.metafile.inputs)){if(key==='reader-entry.js'||key==='reader-entry.css')continue;const relative=path.relative(root,path.resolve(key)).replaceAll('\\','/');if(relative==='app/reader-entry.js'||relative==='app/reader-entry.css')continue;if(relative==='app/ui-locale.mjs')throw Error('Mutable ui-locale API bundled by alias: '+key);if(!relative.startsWith('app/')||!allowed.has(relative))throw Error('Non-public reader bundle input: '+relative);inputs.add(relative);}
   return result.outputFiles[0].contents;
  };

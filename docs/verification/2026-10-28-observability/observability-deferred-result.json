@@ -1,0 +1,39 @@
+{
+  "scope": "isolated synthetic book/account with intercepted APIs; no production vendor receipt",
+  "success": {
+    "readerReadyMs": 140,
+    "firstPaintMs": 167.8,
+    "secondPaintMs": 171.3,
+    "bridgeRequestMs": 174.7,
+    "events": [
+      "reader_open_requested",
+      "reader_content_visible",
+      "reader_resume_result",
+      "reader_active"
+    ],
+    "resume": "restored",
+    "resumeObservationDurationMs": 1
+  },
+  "failure": {
+    "errorUiMs": 128.6,
+    "firstPaintMs": 142.9,
+    "secondPaintMs": 159.3,
+    "bridgeRequestMs": 160.9,
+    "events": [
+      "reader_load_failed"
+    ],
+    "errorKind": "unknown"
+  },
+  "thirdPartyRequests": [],
+  "privateSentinelExported": false,
+  "focusedTests": {
+    "passed": 125,
+    "failed": 0,
+    "log": "/tmp/leafhour-observability-lazy-final.log"
+  },
+  "compiledBudget": "Parent owns current optimized builder and integrated check; unchanged limit320KiB",
+  "limitations": [
+    "Browser fixture uses test-only route for raw optional bridge.",
+    "Existing local inline-style CSP console errors remain outside this browser observation change."
+  ]
+}

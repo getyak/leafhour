@@ -1,6 +1,14 @@
 // GET-192 immutable ja UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "observability.title": "Leafhour の改善",
+  "observability.description": "いつでもオフにできます。本の内容や個人の記録は含みません。",
+  "observability.analytics": "利用状況の統計",
+  "observability.analytics.description": "本を開く、続きから読むなどの操作を集計します。",
+  "observability.diagnostics": "エラーの報告",
+  "observability.diagnostics.description": "エラーの種類を送り、不具合の調査に役立てます。",
+  "observability.saved": "保存しました",
+  "observability.saveFailed": "設定を保存できませんでした。もう一度お試しください。",
   "reader.location.fragmentPercent": "部分内 {percent}%",
   "reader.location.chapter": "第 {number} / {count} 章",
   "reader.location.fragment": "第 {number} / {count} 部分",

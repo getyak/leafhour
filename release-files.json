@@ -1075,5 +1075,13 @@
   "app/reading-journal.css",
   "app/reading-hub.mjs",
   "app/reading-hub.css",
-  "docs/reading-journal.md"
+  "docs/reading-journal.md",
+  "app/observability-contract.mjs",
+  "app/observability.mjs",
+  "app/observability-settings.mjs",
+  "server/observability.mjs",
+  "docs/observability.md",
+  "tools/configure-observability.mjs",
+  "app/observability-bridge.mjs",
+  "app/browser-globals.mjs"
 ]

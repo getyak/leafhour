@@ -1,0 +1,38 @@
+{
+  "scope": "isolated synthetic account and book; intercepted APIs; no vendor delivery",
+  "consentDelayMs": 700,
+  "recordsDelayMs": 1400,
+  "eventsAtReaderReady": [],
+  "eventsAfterRecordsAndTrustedClick": [
+    {
+      "name": "reader_open_requested"
+    },
+    {
+      "name": "reader_content_visible",
+      "durationMs": 0
+    },
+    {
+      "name": "reader_resume_result",
+      "resume": "restored",
+      "durationMs": 1108
+    },
+    {
+      "name": "reader_active",
+      "durationMs": 4113
+    }
+  ],
+  "thirdPartyRequests": [],
+  "privateSentinelExported": false,
+  "readerReady": true,
+  "recordsState": "ready",
+  "mobileOverflow": false,
+  "screenshots": [
+    "observability-settings-desktop.png",
+    "observability-settings-mobile.png"
+  ],
+  "limitations": [
+    "Temporary test-only routes supplied three existing static modules; server worker has separately corrected their local mappings.",
+    "Existing local CSP inline style console errors are outside browser observability changes.",
+    "No production/vendor receipt verified by this worker."
+  ]
+}

@@ -180,7 +180,7 @@ test('the checked-in evidence matches the frozen lockfile and records every thir
   const lockBytes=await readFile(path.join(root,'package-lock.json'));
   const lock=JSON.parse(lockBytes.toString('utf8'));
   const entries=Object.keys(lock.packages).filter(lockPath=>lockPath!=='');
-  assert.equal(result.report.summary.packageCount,799);
+  assert.equal(result.report.summary.packageCount,817);
   assert.equal(result.report.summary.packageCount,entries.length);
   assert.equal(result.report.lockfile.sha256,createHash('sha256').update(lockBytes).digest('hex'));
   assert.equal(result.report.root.license,'AGPL-3.0-only');

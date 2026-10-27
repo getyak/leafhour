@@ -1,0 +1,232 @@
+{
+  "compiledRoot": "/tmp/leafhour-observability-compiled-site",
+  "scope": "Static production build with production reader CSP; synthetic account/public filler; API interception only",
+  "mainScript": "/reader-web/reader-c21062e9a024312f.js",
+  "mainBytes": 327303,
+  "within320KiB": true,
+  "rawBridgeStatus": 200,
+  "cases": [
+    {
+      "consentDelayMs": 0,
+      "recordsDelayMs": 0,
+      "recordsAtReady": "ready",
+      "timing": {
+        "readyMs": 800.3999999761581,
+        "firstPaintMs": 861.6999999880791,
+        "secondPaintMs": 869.8999999761581,
+        "bridgeMs": 874.8999999761581,
+        "resumeSignalMs": 856.8000000119209,
+        "resumeEventMs": 1334
+      },
+      "eventNames": [
+        "reader_open_requested",
+        "reader_content_visible",
+        "reader_resume_result"
+      ],
+      "resume": "restored",
+      "operationStable": true,
+      "delayedUntilPaint": true,
+      "actualResume": true,
+      "spread": {
+        "paginated": true,
+        "firstParagraphOffscreen": true,
+        "scrollLeft": 13344,
+        "targetVisible": true,
+        "readerApiAvailable": true,
+        "documentIdentity": true,
+        "windowIdentity": true
+      }
+    },
+    {
+      "consentDelayMs": 700,
+      "recordsDelayMs": 0,
+      "recordsAtReady": "ready",
+      "timing": {
+        "readyMs": 475.10000002384186,
+        "firstPaintMs": 483.9000000357628,
+        "secondPaintMs": 487.10000002384186,
+        "bridgeMs": 513.8000000119209,
+        "resumeSignalMs": 503.80000001192093,
+        "resumeEventMs": 1357.199951171875
+      },
+      "eventNames": [
+        "reader_open_requested",
+        "reader_content_visible",
+        "reader_resume_result"
+      ],
+      "resume": "restored",
+      "operationStable": true,
+      "delayedUntilPaint": true,
+      "actualResume": true,
+      "spread": {
+        "paginated": true,
+        "firstParagraphOffscreen": true,
+        "scrollLeft": 13344,
+        "targetVisible": true,
+        "readerApiAvailable": true,
+        "documentIdentity": true,
+        "windowIdentity": true
+      }
+    },
+    {
+      "consentDelayMs": 0,
+      "recordsDelayMs": 1400,
+      "recordsAtReady": "pending",
+      "timing": {
+        "readyMs": 540.8000000119209,
+        "firstPaintMs": 553.1999999880791,
+        "secondPaintMs": 556.6000000238419,
+        "bridgeMs": 604.1000000238419,
+        "resumeSignalMs": 1944,
+        "resumeEventMs": 1949.300048828125
+      },
+      "eventNames": [
+        "reader_open_requested",
+        "reader_content_visible",
+        "reader_resume_result"
+      ],
+      "resume": "restored",
+      "operationStable": true,
+      "delayedUntilPaint": true,
+      "actualResume": true,
+      "spread": {
+        "paginated": true,
+        "firstParagraphOffscreen": true,
+        "scrollLeft": 13344,
+        "targetVisible": true,
+        "readerApiAvailable": true,
+        "documentIdentity": true,
+        "windowIdentity": true
+      }
+    },
+    {
+      "consentDelayMs": 700,
+      "recordsDelayMs": 1400,
+      "recordsAtReady": "pending",
+      "timing": {
+        "readyMs": 850.1000000238419,
+        "firstPaintMs": 862.1999999880791,
+        "secondPaintMs": 866.6000000238419,
+        "bridgeMs": 867.1999999880791,
+        "resumeSignalMs": 2255.400000035763,
+        "resumeEventMs": 2259.699951171875
+      },
+      "eventNames": [
+        "reader_open_requested",
+        "reader_content_visible",
+        "reader_resume_result"
+      ],
+      "resume": "restored",
+      "operationStable": true,
+      "delayedUntilPaint": true,
+      "actualResume": true,
+      "spread": {
+        "paginated": true,
+        "firstParagraphOffscreen": true,
+        "scrollLeft": 13344,
+        "targetVisible": true,
+        "readerApiAvailable": true,
+        "documentIdentity": true,
+        "windowIdentity": true
+      }
+    }
+  ],
+  "spread": {
+    "paginated": true,
+    "firstParagraphOffscreen": true,
+    "scrollLeft": 13344,
+    "targetVisible": true,
+    "readerApiAvailable": true,
+    "documentIdentity": true,
+    "windowIdentity": true
+  },
+  "initialEvents": [
+    {
+      "name": "reader_open_requested",
+      "properties": {
+        "page": "reader",
+        "stage": "reader_open",
+        "client": "browser"
+      }
+    },
+    {
+      "name": "reader_content_visible",
+      "properties": {
+        "page": "reader",
+        "stage": "reader_visible",
+        "outcome": "success",
+        "client": "browser",
+        "durationMs": 0
+      }
+    },
+    {
+      "name": "reader_resume_result",
+      "properties": {
+        "page": "reader",
+        "stage": "reader_resume",
+        "outcome": "restored",
+        "resume": "restored",
+        "client": "browser",
+        "durationMs": 439
+      }
+    }
+  ],
+  "operationStable": true,
+  "trustedButtonActive": true,
+  "programmaticFlipActive": false,
+  "trustedDragActive": true,
+  "realHandleHit": true,
+  "dragProof": {
+    "scrollBefore": 14456,
+    "scrollAfter": 15568,
+    "trustedPointers": [
+      "pointermove",
+      "pointerdown",
+      "pointermove",
+      "pointermove",
+      "pointermove",
+      "pointermove",
+      "pointermove",
+      "pointermove",
+      "pointermove",
+      "pointermove",
+      "pointermove",
+      "pointermove",
+      "pointermove",
+      "pointermove",
+      "pointerup"
+    ],
+    "trustedCommits": 1
+  },
+  "failureTiming": {
+    "trigger": "reader:failed",
+    "triggerMs": 131.69999998807907,
+    "firstPaintMs": 147,
+    "secondPaintMs": 163.69999998807907,
+    "bridgeRequestMs": 165.4000000357628,
+    "mainScript": "/reader-web/reader-c21062e9a024312f.js",
+    "rawReaderRequested": false,
+    "bridgeRequested": 1,
+    "timeOrigin": 1793128244177.9
+  },
+  "failureEvents": [
+    {
+      "name": "reader_load_failed",
+      "properties": {
+        "page": "reader",
+        "stage": "reader_load",
+        "outcome": "failure",
+        "client": "browser",
+        "errorKind": "unknown"
+      }
+    }
+  ],
+  "privateSentinelExported": false,
+  "thirdPartyRequests": [],
+  "assetFailures": [],
+  "pageErrors": [],
+  "consoleCounts": {
+    "stylePolicy": 132,
+    "other": 1
+  }
+}

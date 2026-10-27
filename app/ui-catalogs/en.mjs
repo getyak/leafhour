@@ -2,6 +2,14 @@
 // data, also the safe default for server/static English shells. Complete
 // default data: every other catalogue carries the same keys.
 export default Object.freeze({
+  "observability.title": "Improve Leafhour",
+  "observability.description": "Optional. Book content and personal records are never included.",
+  "observability.analytics": "Usage statistics",
+  "observability.analytics.description": "Count actions such as opening and resuming a book.",
+  "observability.diagnostics": "Error reports",
+  "observability.diagnostics.description": "Send error categories to help investigate problems.",
+  "observability.saved": "Saved",
+  "observability.saveFailed": "Settings could not be saved. Try again.",
   "reader.location.fragmentPercent": "{percent}% within part",
   "reader.location.chapter": "Chapter {number} / {count}",
   "reader.location.fragment": "Part {number} / {count}",

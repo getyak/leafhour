@@ -7,7 +7,7 @@ Deterministic evidence for what the dependency tree **declares**, produced only 
 | File | Role |
 | --- | --- |
 | `tools/dependency-licenses.mjs` | Generator and checker (no network, lockfile only) |
-| `docs/dependency-licenses.json` | Generated report: all 799 third-party records bound to the lockfile SHA256 |
+| `docs/dependency-licenses.json` | Generated report: all 817 third-party records bound to the lockfile SHA256 |
 | `docs/dependency-licenses-reviewed.json` | Maintainer-controlled technical review register for every exact declared expression |
 | `docs/open-source-release.md` | Root AGPL code vs third-party software vs media |
 
@@ -67,3 +67,7 @@ The GET-154 candidate is a source-only export from `release-files.json`. It cont
 The report records declared SPDX expressions and lock provenance only. It does not verify license texts against declared fields, does not conclude compatibility, does not count every platform alternative as deployed, and does not claim dev dependencies ship in production. Official license texts are linked from `docs/open-source-release.md`; a URL alone never satisfies attribution or source obligations.
 
 The expression parser checks supported syntax and rejects placeholders. It does not embed the SPDX identifier registry. Every complete expression must also appear in the explicit register, whose initial technical notes were prepared by the coding agent; this is not a claim of human or legal sign-off.
+
+## Observability integration (2026-10-28)
+
+The runtime integration pins `@sentry/node`10.77.1 and its MIT-licensed SDK family. Version11.9.0 introduced an additional `sentry` CLI package with a new `FSL-1.1-Apache-2.0` declaration through runtime-injection tooling. That tool is not needed for the isolated manual client, so this integration uses the compatible SDK without that dependency instead of admitting a new expression silently. All817 current lock records use the existing technically reviewed expressions; this records metadata, not a new legal ruling.

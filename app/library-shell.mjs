@@ -8,6 +8,8 @@ import {mountLibraryProfile,renderProfileAvatar} from './library-profile.mjs';
 import {mountReadingPreferencesForm} from './library-reading-preferences.mjs';
 import {mountSettingsAppearance} from './settings-appearance.mjs';
 import {mountConfirm} from './settings-controls.mjs';
+import {createBrowserObservability} from './observability.mjs';
+import {mountObservabilitySettings} from './observability-settings.mjs';
 const $=id=>document.getElementById(id);
 const node=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
 // P2 opener safety: the settings dialog captures its opener only on first open
@@ -36,6 +38,7 @@ export function roomIcons(root=document){for(const holder of root.querySelectorA
 // edge fades, and the selected tab scrolls itself into view. URL/history
 // semantics stay with library-view-state and the caller callbacks.
 export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpenChat,api,onProfileUpdated,onRestored,onReadingPreferencesSaved=()=>{},onPreferenceMemorySaved=()=>{},getBooks=()=>[],getCurrentBook=()=>null,inboxRoot=null,onSettingsOpen=()=>{},onSettingsClose=()=>{},onSettingsTab=()=>{}}){
+  let accountUser=getSession()?.user||null;
   const header=$('library-sidebar'),navigation=$('library-nav-dialog'),settings=$('library-settings-dialog'),media=matchMedia('(max-width:980px)'),key='marginalia-library-sidebar';let collapsed=false,opener=null,navigationReturn=null;
   for(const control of header.querySelectorAll('button[data-hint]'))if(!control.hasAttribute('aria-label'))control.setAttribute('aria-label',control.dataset.hint);
   const accountButton=node('button','sidebar-account');accountButton.id='library-account';accountButton.type='button';
@@ -91,6 +94,10 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   const memory=mountPreferenceMemory({root:memoryRoot,api,getSession,onSaved:onPreferenceMemorySaved});
   const daily=mountLibraryDailyReading({root:panels['daily-reading'],inboxRoot,api,getSession,getBooks,getCurrentBook});
   const data=mountLibraryData({root:panels.data,getSession,api,onRestored});
+  const observability=createBrowserObservability({getOwner:()=>accountUser?.id||null,page:'library'});
+  const observabilitySettings=mountObservabilitySettings({document,root:panels.data,client:observability,getOwner:()=>accountUser?.id||null,t});
+  let observedOwner=null,observedEpoch=0;
+  const observeLibrary=()=>{const owner=accountUser?.id||null;if(owner!==observedOwner){observedOwner=owner;const epoch=++observedEpoch;void observabilitySettings.update().then(()=>{if(epoch===observedEpoch&&owner&&accountUser?.id===owner&&!document.hidden)observability.event('library_opened',{stage:'library',outcome:'success'});});}else void observabilitySettings.update();};
   const appearance=mountSettingsAppearance({
     document,root:panels.appearance,t,getAppearance:getSiteAppearance,setAppearance:setSiteAppearance,
     locale:{options:UI_LOCALES,getState:getUiLocaleState,setLocale:code=>{setUiLocale(code).catch(()=>{});},retry:()=>{retryUiLocale().catch(()=>{});},subscribeState:onUiLocaleStateChange,labels:id=>t(id)}
@@ -102,9 +109,8 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
   function appearanceSync(){appearance.sync();}
   // Label-only account refresh: never clears status, never touches in-flight
   // operations and never triggers a business update.
-  let accountUser=null;
   function accountLabels(){paintBilling();const user=accountUser;accountTitle.hidden=!!user;accountTitle.textContent=user?t('shell.account.title.signedIn'):t('shell.account.title.guest');accountDetail.textContent=user?(user.kind==='local'?t('shell.account.detail.local'):t('shell.account.detail.email')):t('shell.account.detail.guest');accountName.textContent=user?.displayName||user?.email?.split('@')[0]||(user?t('shell.account.name.local'):t('shell.account.title.guest'));accountEmail.textContent=user?.email||(user?t('shell.account.email.local'):t('shell.account.login'));const accountLabel=user?t('shell.account.settingsLabel',{name:accountName.textContent}):t('shell.account.guestLabel');accountButton.setAttribute('aria-label',accountLabel);accountButton.dataset.hint=accountLabel;if(!logoutBusy)logout.textContent=t('shell.account.logout');}
-  function update(){const user=accountUser=getSession()?.user;const nextOwner=user?.id||null;if(logoutOwner!==nextOwner){logoutOwner=nextOwner;withdrawLogout();}login.hidden=!!user;logout.hidden=!user;accountMessage.clear();renderProfileAvatar(accountAvatar,user);accountLabels();profile.update();habits.update();memory.update();daily.update();data.update();appearanceSync();}
+  function update(){const user=accountUser=getSession()?.user;const nextOwner=user?.id||null;if(logoutOwner!==nextOwner){logoutOwner=nextOwner;withdrawLogout();}login.hidden=!!user;logout.hidden=!user;accountMessage.clear();renderProfileAvatar(accountAvatar,user);accountLabels();profile.update();habits.update();memory.update();daily.update();data.update();observeLibrary();appearanceSync();}
   const sidebarToggle=$('sidebar-toggle');let sidebarLabelId=null,sidebarHintId=null;
   function sidebarLabels(){if(sidebarLabelId)sidebarToggle.setAttribute('aria-label',t(sidebarLabelId));if(sidebarHintId)sidebarToggle.dataset.hint=t(sidebarHintId);}
   function syncSidebar(){$('library-menu').setAttribute('aria-expanded',String(navigation.open));document.body.dataset.sidebarCollapsed=String(collapsed);sidebarToggle.setAttribute('aria-expanded',String(media.matches?navigation.open:!collapsed));sidebarLabelId=media.matches?'shell.sidebar.closeNav':collapsed?'shell.sidebar.expand':'shell.sidebar.collapse';sidebarHintId=collapsed?'shell.sidebar.expand':'shell.sidebar.collapse';sidebarLabels();}
@@ -133,7 +139,7 @@ export function mountLibraryShell({getSession,openAuth,onLogout,onHistory,onOpen
     license.textContent=t('shell.about.license');licenseLine.textContent=t('shell.about.license.agpl');
     about.textContent=t('shell.about.tagline');source.textContent=t('shell.about.source');privacy.textContent=t('shell.about.privacy');privacy.href=uiAuthoredPath('/privacy',getUiLocale());
     appearance.updateLabels();memorySummary.textContent=t('shell.preferences.advanced');
-    profile.updateLabels?.();habits.updateLabels?.();memory.updateLabels();daily.updateLabels?.();data.updateLabels?.();
+    profile.updateLabels?.();habits.updateLabels?.();memory.updateLabels();daily.updateLabels?.();data.updateLabels?.();observabilitySettings.updateLabels();
     accountLabels();sidebarLabels();accountMessage.refresh();
   }
   onUiLocaleChange(updateLabels);void uiReady.then(()=>updateLabels());

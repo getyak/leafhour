@@ -77,3 +77,13 @@ test('restoring a later page moves the viewport and retains only the reading anc
   nodes.get('page-next').dispatchEvent(new Event('click'));assert.equal(replacementTurns,1);assert.equal(turns,beforeRemount,'the unmounted owner cannot turn or save progress again');
   replacement.unmount();
 });
+test('Next and Previous commit trusted provenance while blocked and programmatic control actions do not',async()=>{
+  const {mountReaderPagination}=await pagination();
+  class Element extends EventTarget{constructor(){super();this.style={};this.dataset={};this.hidden=false;this.scrollLeft=0;this.clientWidth=300;this.handlers=new Map();}focus(){}addEventListener(name,fn,options){this.handlers.set(name,[...(this.handlers.get(name)||[]),fn]);super.addEventListener(name,fn,options);}trustedClick(){for(const fn of this.handlers.get('click')||[])fn({isTrusted:true});}}
+  const ids=['reading-pages','chapter-text','page-end','page-turner','page-previous','page-next','page-position','page-layout','page-layout-setting','page-layout-hint','book-page'],nodes=new Map(ids.map(id=>[id,new Element()])),viewport=nodes.get('reading-pages'),text=nodes.get('chapter-text');
+  viewport.getBoundingClientRect=()=>({left:0,right:300,top:0,bottom:500});text.scrollWidth=900;text.contains=()=>false;text.querySelectorAll=()=>[];
+  const document=Object.assign(new EventTarget(),{body:{dataset:{}},activeElement:null,getElementById:id=>nodes.get(id),defaultView:{getComputedStyle:()=>({columnGap:'0',columnCount:'1'}),getSelection:()=>'',scrollTo(){},cancelAnimationFrame(){},requestAnimationFrame(){},ResizeObserver:class{observe(){}}}});
+  let blocked=false;const commits=[],pages=mountReaderPagination({document,isBlocked:()=>blocked,onTurn:source=>commits.push(source.trusted)});pages.update({pageLayout:'spread',mode:'en'});
+  nodes.get('page-next').trustedClick();nodes.get('page-previous').trustedClick();assert.deepEqual(commits,[true,true]);
+  nodes.get('page-next').dispatchEvent(new Event('click'));assert.deepEqual(commits,[true,true,false]);blocked=true;nodes.get('page-next').trustedClick();assert.deepEqual(commits,[true,true,false]);pages.unmount();
+});
