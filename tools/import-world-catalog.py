@@ -4,18 +4,26 @@ Requires beautifulsoup4 and lxml. No network, model calls or account writes.
 Usage: python3 tools/import-world-catalog.py /path/to/cached/sources [--write]
 Raw cache filenames are PG_ID.html, room.html and ivan.xml.
 """
-import json,re,hashlib,sys
+import argparse,json,re,hashlib,sys
 from pathlib import Path
 from bs4 import BeautifulSoup
 root=Path(__file__).resolve().parents[1]
-source_dir=Path(sys.argv[1])
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('source_cache')
+parser.add_argument('--write',action='store_true')
+parser.add_argument('--only',nargs='+',help='Reproduce only these structured catalog IDs')
+args=parser.parse_args()
+source_dir=Path(args.source_cache)
+entries=json.loads((root/'catalog/manifest.json').read_text())
+if args.only and not set(args.only)<={e['id'] for e in entries if e.get('format')=='structured'}:parser.error('--only contains an unknown structured catalog ID')
 def text(el):
  # Preserve word adjacency across inline emphasis and deliberately retain verse line breaks.
  for br in el.find_all('br'):br.replace_with('\n')
  value=el.get_text('')
- if el.name=='pre' or 'poem' in el.get('class',[]) or 'stanza' in el.get('class',[]):
+ preformatted=el.name=='pre' or (el.name=='div' and 'pre' in el.get('class',[]))
+ if preformatted or 'poem' in el.get('class',[]) or 'stanza' in el.get('class',[]):
   lines=[re.sub(r'[ \t\r\f\v]+',' ',line).strip() for line in value.strip().split('\n')]
-  return '\n'.join(lines if el.name=='pre' else [line for line in lines if line])
+  return '\n'.join(lines if preformatted else [line for line in lines if line])
  return re.sub(r'\s+',' ',value).strip()
 def build(n):
  raw=(source_dir/(str(n)+'.html' if n!='ivan' else 'ivan.xml')).read_bytes()
@@ -25,9 +33,11 @@ def build(n):
  if n=='ivan':notices='Leo Tolstoy, The Death of Ivan Ilych (1886). Translated by Louise and Aylmer Maude. Distributed by the Tolstoy Library. Digitized by Christian Classics Ethereal Library. Only the public-domain translated story is included; CCEL staff summary, XML styling and generated indexes are omitted.'
  for e in s.select('#pg-header,#pg-footer,script,style,table,.pagenum,.caption'):e.decompose()
  prophetTitles=[a.get_text(' ',strip=True) for a in BeautifulSoup(raw,'html.parser').select('a[href^="#link"]')][:28] if n==58585 else []
- chapters=[]
+ chapters=[];pending_labels=[]
  def add(title,kind='body'):chapters.append({'title':title,'kind':kind,'paragraphs':[]})
  def put(value):
+  if n in [1998,4363] and re.fullmatch(r'\d+\.?',value or ''):pending_labels.append(value);return
+  if pending_labels and value:value=' '.join(pending_labels+[value]);pending_labels.clear()
   if chapters and value and not re.fullmatch(r'[\d\s{}\[\]*._—-]+',value):chapters[-1]['paragraphs'].append(value)
  if n=='ivan':
   for div in s.find_all('div1'):
@@ -43,7 +53,7 @@ def build(n):
    add('Author’s introductory note','frontmatter');put(text(note))
   started=False;part='';tao=1;work='The Awakening'
   # Select outermost paragraph/verse blocks, avoiding duplicate nested text.
-  elements=s.select('h1,h2,h3,h4,h5,p,pre,div.stanza')
+  elements=s.select('h1,h2,h3,h4,h5,p,pre,div.stanza'+(',div.pre,div.ph3' if n==1998 else ''))
   selected={id(e) for e in elements}
   for el in elements:
    if any(id(a) in selected for a in el.parents):continue
@@ -53,7 +63,16 @@ def build(n):
    if value.startswith('The Home and the World by Rabindranath Tagore. Translated'):break
    if re.search(r'END OF (?:THE |THIS )?PROJECT GUTENBERG',value,re.I) or value.startswith('THE FULL PROJECT GUTENBERG'):break
    heading=el.name.startswith('h');title=None;kind='body';skip=False
-   if n==201:
+   if n==4363:
+    if el.name=='h2' and value=='PREFACE':title=value;kind='frontmatter'
+    elif el.name=='h2' and re.match(r'^CHAPTER [IVX]+\.',value):title=value
+    elif el.name=='h2' and value=='FROM THE HEIGHTS':title=value;kind='appendix'
+   elif n==1998:
+    if heading and value=='APPENDIX.':break
+    if el.name=='h2' and value in ['FIRST PART. ZARATHUSTRA’S DISCOURSES.','THUS SPAKE ZARATHUSTRA. SECOND PART.','THIRD PART.','FOURTH AND LAST PART.']:part=value;skip=True
+    elif el.name=='h2' and (value=='ZARATHUSTRA’S PROLOGUE.' or re.match(r'^[IVXLCDM]+\.',value)):title=part+' · '+value
+    elif heading:skip=True
+   elif n==201:
     if heading and re.match(r'Section \d+\.',value):title=value
     elif heading and value.startswith('PART '):part=value;skip=True
    elif n==84:
@@ -124,13 +143,16 @@ def build(n):
     if value=='CONCLUSION.':title=value
     elif el.name=='h2' and value.startswith('CHAPTER '):title=value
    if title:
+    if pending_labels:raise ValueError('Unattached source numbering: '+repr((n,pending_labels,title)))
     # Merge title-only markers with following source body without manufacturing prose.
     add(title,kind);started=True
     if n==216 or (n==2388 and value.startswith('[FN#1]')):put(value)
    elif started and not skip:put(value)
+ if pending_labels:raise ValueError('Unattached final source numbering: '+str(n))
  chapters=[c for c in chapters if c['paragraphs']]
  return raw,chapters,notices
-for entry in json.loads((root/'catalog/manifest.json').read_text()):
+for entry in entries:
+ if args.only and entry['id'] not in args.only:continue
  if entry.get('format')!='structured':continue
  target=root/'catalog'/entry['file'];prior=json.loads(target.read_text())
  url=prior['downloadUrl']
@@ -140,6 +162,6 @@ for entry in json.loads((root/'catalog/manifest.json').read_text()):
  result={**prior,'chapters':chapters,'notices':notices}
  if sum(c['kind']=='body' for c in chapters)!=entry['bodyChapters']:raise ValueError('Chapter boundary mismatch: '+entry['id'])
  encoded=json.dumps(result,ensure_ascii=False,indent=2)+'\n'
- if '--write' in sys.argv:target.write_text(encoded)
+ if args.write:target.write_text(encoded)
  elif encoded!=target.read_text():raise ValueError('Reproduction mismatch: '+entry['id'])
  print(entry['id'],len(chapters),'chapters verified')

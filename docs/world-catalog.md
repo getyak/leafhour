@@ -1,6 +1,6 @@
-# Thirty shared English editions
+# Thirty-two shared English editions
 
-The default library contains 30 readable books: the existing Alice, Meditations and Walden editions plus 27 English reading editions. This is the shared public catalog consumed by the website and MCP domain service. It is versioned with the application, not inserted into an account’s private `reader_documents` or the retired single-book `reader_books` archive. Personal progress, translations, annotations and reading history continue to use account storage.
+The default library contains 32 readable books: the original thirty editions plus Nietzsche’s Beyond Good and Evil and Thus Spake Zarathustra. This is the shared public catalog consumed by the website and MCP domain service. It is versioned with the application, not inserted into an account’s private `reader_documents` or the retired single-book `reader_books` archive. Personal progress, translations, annotations and reading history continue to use account storage.
 
 `catalog/manifest.json` identifies each edition, language, translator, subjects, chapter count and source boundary samples. `catalog/world/*.json` stores the selected reading text in source chapter order, with download URLs, SHA-256 checksums and separate license/credit notices. The per-book `scopeNote`, visible in About this book, identifies omissions: some editions exclude author or translator prefaces, glossaries or editorial material as well as publisher preliminaries and illustrations. This is a reading selection, not a claim that every source volume is reproduced cover to cover.
 
@@ -20,6 +20,8 @@ The original three source files, hashes, passage IDs and Chinese trial translati
 - **Brazilian Tales:** six stories plus Goldberg’s separately labeled introduction.
 - **The Underdogs:** Munguía translation, main story without the Carleton Beals introduction or Orozco illustrations.
 - **Candide:** Modern Library 1918 English edition; the translator is unnamed in that edition. Do not attribute it to Smollett.
+- **Beyond Good and Evil:** Helen Zimmern translated the prose; L. A. Magnus translated the concluding poem FROM THE HEIGHTS. Includes the author preface and all 296 aphorisms in nine chapters. The Chinese shelf title includes both 超越善恶 and 善恶的彼岸. The German original language and English reading language are recorded separately; no Chinese translation is supplied.
+- **Thus Spake Zarathustra:** Thomas Common; all four parts, including the Prologue and eighty numbered discourses. This reading selection excludes Elisabeth Förster-Nietzsche’s introduction and Anthony M. Ludovici’s appended commentary. Preserve original section numbers and verse line breaks; notices remain available separately.
 
 Underlying texts and translations have source-specific public-domain assessments. Project Gutenberg’s notices describe US status, not a universal license determination. Software AGPL-3.0 does not relicense these books; retain each artifact’s notices on redistribution.
 
@@ -35,7 +37,9 @@ node --test tests/world-catalog.test.mjs tests/catalog.test.mjs tests/catalog-re
 npm run verify:deploy
 ```
 
-The first command verifies all raw download hashes and compares regenerated chapter artifacts byte for byte. `--write` explicitly replaces derived artifacts; never run that against a published edition without considering anchors. Source changes are refused until the edition is deliberately reviewed. Production smoke checks all 30 IDs and fetches every book to verify its first/last anchors and body chapter count, in addition to the existing auth boundaries.
+The first command verifies all raw download hashes and compares regenerated chapter artifacts byte for byte. `--write` explicitly replaces derived artifacts; never run that against a published edition without considering anchors. Source changes are refused until the edition is deliberately reviewed. Production smoke checks every manifest ID and fetches every book to verify its first/last anchors and body chapter count, in addition to the existing auth boundaries.
+
+The two Nietzsche sources can be reproduced independently when only `4363.html` and `1998.html` are cached. Pass `--only gutenberg-beyond-good-and-evil gutenberg-zarathustra` to each of the three Python tools above. The reading-metadata compiler preserves all unselected entries. The source audit’s reported total then covers exactly the selected books; it does not claim that unselected sources were re-audited. See the [2026-10-27 addition record](verification/2026-10-27-public-nietzsche/README.md).
 
 The metadata compiler additionally needs the exact primary HTML for the original three books, named `11.html`, `2680.html` and `205.html`. Their layout-source hashes are recorded in `catalog/reading-metadata.json`. This sidecar restores explicit source line breaks and standalone labels without changing original strings or paragraph IDs; the loader rejects stale versions, changed paragraph hashes and invalid offsets. Highlight rendering preserves these breaks without inserting quote characters. The original three books also retain their full Gutenberg credits and notices in exports.
 

@@ -16,61 +16,67 @@ candidate:app/arrival-catalog.mjs:44:14,js-cjk-literal,app/arrival-catalog.mjs,4
 candidate:app/arrival-catalog.mjs:51:16,js-cjk-literal,app/arrival-catalog.mjs,51,,unknown,reviewable,,书中一段
 candidate:app/arrival-catalog.mjs:57:14,js-cjk-literal,app/arrival-catalog.mjs,57,,unknown,reviewable,,觉醒及短篇选
 candidate:app/arrival-catalog.mjs:64:16,js-cjk-literal,app/arrival-catalog.mjs,64,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:70:14,js-cjk-literal,app/arrival-catalog.mjs,70,,unknown,reviewable,,薄伽梵歌
-candidate:app/arrival-catalog.mjs:71:15,js-cjk-literal,app/arrival-catalog.mjs,71,,unknown,reviewable,,Vyasa (traditional attribution) · 英译 Edwin Arnold · 英语诗译
+candidate:app/arrival-catalog.mjs:70:14,js-cjk-literal,app/arrival-catalog.mjs,70,,unknown,reviewable,,超越善恶（善恶的彼岸）
+candidate:app/arrival-catalog.mjs:71:15,js-cjk-literal,app/arrival-catalog.mjs,71,,unknown,reviewable,,弗里德里希·尼采（Friedrich Nietzsche）
 candidate:app/arrival-catalog.mjs:77:16,js-cjk-literal,app/arrival-catalog.mjs,77,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:83:14,js-cjk-literal,app/arrival-catalog.mjs,83,,unknown,reviewable,,茶之书
+candidate:app/arrival-catalog.mjs:83:14,js-cjk-literal,app/arrival-catalog.mjs,83,,unknown,reviewable,,薄伽梵歌
+candidate:app/arrival-catalog.mjs:84:15,js-cjk-literal,app/arrival-catalog.mjs,84,,unknown,reviewable,,Vyasa (traditional attribution) · 英译 Edwin Arnold · 英语诗译
 candidate:app/arrival-catalog.mjs:90:16,js-cjk-literal,app/arrival-catalog.mjs,90,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:96:14,js-cjk-literal,app/arrival-catalog.mjs,96,,unknown,reviewable,,巴西短篇小说选
-candidate:app/arrival-catalog.mjs:97:15,js-cjk-literal,app/arrival-catalog.mjs,97,,unknown,reviewable,,Machado de Assis; Medeiros e Albuquerque; Henrique Coelho Netto; Carmen Dolores · 英译 Isaac Goldberg
+candidate:app/arrival-catalog.mjs:96:14,js-cjk-literal,app/arrival-catalog.mjs,96,,unknown,reviewable,,茶之书
 candidate:app/arrival-catalog.mjs:103:16,js-cjk-literal,app/arrival-catalog.mjs,103,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:109:14,js-cjk-literal,app/arrival-catalog.mjs,109,,unknown,reviewable,,老实人
-candidate:app/arrival-catalog.mjs:110:15,js-cjk-literal,app/arrival-catalog.mjs,110,,unknown,reviewable,,Voltaire · 英译 The Modern Library · 1918 edition; translator unnamed
+candidate:app/arrival-catalog.mjs:109:14,js-cjk-literal,app/arrival-catalog.mjs,109,,unknown,reviewable,,巴西短篇小说选
+candidate:app/arrival-catalog.mjs:110:15,js-cjk-literal,app/arrival-catalog.mjs,110,,unknown,reviewable,,Machado de Assis; Medeiros e Albuquerque; Henrique Coelho Netto; Carmen Dolores · 英译 Isaac Goldberg
 candidate:app/arrival-catalog.mjs:116:16,js-cjk-literal,app/arrival-catalog.mjs,116,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:122:14,js-cjk-literal,app/arrival-catalog.mjs,122,,unknown,reviewable,,法句经
-candidate:app/arrival-catalog.mjs:123:15,js-cjk-literal,app/arrival-catalog.mjs,123,,unknown,reviewable,,Buddhist canon · 英译 F. Max Müller
+candidate:app/arrival-catalog.mjs:122:14,js-cjk-literal,app/arrival-catalog.mjs,122,,unknown,reviewable,,老实人
+candidate:app/arrival-catalog.mjs:123:15,js-cjk-literal,app/arrival-catalog.mjs,123,,unknown,reviewable,,Voltaire · 英译 The Modern Library · 1918 edition; translator unnamed
 candidate:app/arrival-catalog.mjs:129:16,js-cjk-literal,app/arrival-catalog.mjs,129,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:135:14,js-cjk-literal,app/arrival-catalog.mjs,135,,unknown,reviewable,,堂吉诃德
-candidate:app/arrival-catalog.mjs:136:15,js-cjk-literal,app/arrival-catalog.mjs,136,,unknown,reviewable,,Miguel de Cervantes · 英译 John Ormsby
+candidate:app/arrival-catalog.mjs:135:14,js-cjk-literal,app/arrival-catalog.mjs,135,,unknown,reviewable,,法句经
+candidate:app/arrival-catalog.mjs:136:15,js-cjk-literal,app/arrival-catalog.mjs,136,,unknown,reviewable,,Buddhist canon · 英译 F. Max Müller
 candidate:app/arrival-catalog.mjs:142:16,js-cjk-literal,app/arrival-catalog.mjs,142,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:148:14,js-cjk-literal,app/arrival-catalog.mjs,148,,unknown,reviewable,,弗雷德里克·道格拉斯自传
+candidate:app/arrival-catalog.mjs:148:14,js-cjk-literal,app/arrival-catalog.mjs,148,,unknown,reviewable,,堂吉诃德
+candidate:app/arrival-catalog.mjs:149:15,js-cjk-literal,app/arrival-catalog.mjs,149,,unknown,reviewable,,Miguel de Cervantes · 英译 John Ormsby
 candidate:app/arrival-catalog.mjs:155:16,js-cjk-literal,app/arrival-catalog.mjs,155,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:161:14,js-cjk-literal,app/arrival-catalog.mjs,161,,unknown,reviewable,,埃奎亚诺自传
+candidate:app/arrival-catalog.mjs:161:14,js-cjk-literal,app/arrival-catalog.mjs,161,,unknown,reviewable,,弗雷德里克·道格拉斯自传
 candidate:app/arrival-catalog.mjs:168:16,js-cjk-literal,app/arrival-catalog.mjs,168,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:174:14,js-cjk-literal,app/arrival-catalog.mjs,174,,unknown,reviewable,,埃瑞璜
+candidate:app/arrival-catalog.mjs:174:14,js-cjk-literal,app/arrival-catalog.mjs,174,,unknown,reviewable,,埃奎亚诺自传
 candidate:app/arrival-catalog.mjs:181:16,js-cjk-literal,app/arrival-catalog.mjs,181,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:187:14,js-cjk-literal,app/arrival-catalog.mjs,187,,unknown,reviewable,,平面国
+candidate:app/arrival-catalog.mjs:187:14,js-cjk-literal,app/arrival-catalog.mjs,187,,unknown,reviewable,,埃瑞璜
 candidate:app/arrival-catalog.mjs:194:16,js-cjk-literal,app/arrival-catalog.mjs,194,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:200:14,js-cjk-literal,app/arrival-catalog.mjs,200,,unknown,reviewable,,弗兰肯斯坦
+candidate:app/arrival-catalog.mjs:200:14,js-cjk-literal,app/arrival-catalog.mjs,200,,unknown,reviewable,,平面国
 candidate:app/arrival-catalog.mjs:207:16,js-cjk-literal,app/arrival-catalog.mjs,207,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:213:14,js-cjk-literal,app/arrival-catalog.mjs,213,,unknown,reviewable,,家庭与世界
-candidate:app/arrival-catalog.mjs:214:15,js-cjk-literal,app/arrival-catalog.mjs,214,,unknown,reviewable,,Rabindranath Tagore · 英译 Surendranath Tagore
+candidate:app/arrival-catalog.mjs:213:14,js-cjk-literal,app/arrival-catalog.mjs,213,,unknown,reviewable,,弗兰肯斯坦
 candidate:app/arrival-catalog.mjs:220:16,js-cjk-literal,app/arrival-catalog.mjs,220,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:226:14,js-cjk-literal,app/arrival-catalog.mjs,226,,unknown,reviewable,,地下室手记
-candidate:app/arrival-catalog.mjs:227:15,js-cjk-literal,app/arrival-catalog.mjs,227,,unknown,reviewable,,Fyodor Dostoyevsky · 英译 Constance Garnett
+candidate:app/arrival-catalog.mjs:226:14,js-cjk-literal,app/arrival-catalog.mjs,226,,unknown,reviewable,,家庭与世界
+candidate:app/arrival-catalog.mjs:227:15,js-cjk-literal,app/arrival-catalog.mjs,227,,unknown,reviewable,,Rabindranath Tagore · 英译 Surendranath Tagore
 candidate:app/arrival-catalog.mjs:233:16,js-cjk-literal,app/arrival-catalog.mjs,233,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:239:14,js-cjk-literal,app/arrival-catalog.mjs,239,,unknown,reviewable,,论自由
+candidate:app/arrival-catalog.mjs:239:14,js-cjk-literal,app/arrival-catalog.mjs,239,,unknown,reviewable,,地下室手记
+candidate:app/arrival-catalog.mjs:240:15,js-cjk-literal,app/arrival-catalog.mjs,240,,unknown,reviewable,,Fyodor Dostoyevsky · 英译 Constance Garnett
 candidate:app/arrival-catalog.mjs:246:16,js-cjk-literal,app/arrival-catalog.mjs,246,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:252:14,js-cjk-literal,app/arrival-catalog.mjs,252,,unknown,reviewable,,傲慢与偏见
+candidate:app/arrival-catalog.mjs:252:14,js-cjk-literal,app/arrival-catalog.mjs,252,,unknown,reviewable,,论自由
 candidate:app/arrival-catalog.mjs:259:16,js-cjk-literal,app/arrival-catalog.mjs,259,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:265:14,js-cjk-literal,app/arrival-catalog.mjs,265,,unknown,reviewable,,先知
+candidate:app/arrival-catalog.mjs:265:14,js-cjk-literal,app/arrival-catalog.mjs,265,,unknown,reviewable,,傲慢与偏见
 candidate:app/arrival-catalog.mjs:272:16,js-cjk-literal,app/arrival-catalog.mjs,272,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:278:14,js-cjk-literal,app/arrival-catalog.mjs,278,,unknown,reviewable,,鲁拜集
-candidate:app/arrival-catalog.mjs:279:15,js-cjk-literal,app/arrival-catalog.mjs,279,,unknown,reviewable,,Omar Khayyam · 英译 Edward FitzGerald · 英语译写
+candidate:app/arrival-catalog.mjs:278:14,js-cjk-literal,app/arrival-catalog.mjs,278,,unknown,reviewable,,先知
 candidate:app/arrival-catalog.mjs:285:16,js-cjk-literal,app/arrival-catalog.mjs,285,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:291:14,js-cjk-literal,app/arrival-catalog.mjs,291,,unknown,reviewable,,西科尔夫人历险记
+candidate:app/arrival-catalog.mjs:291:14,js-cjk-literal,app/arrival-catalog.mjs,291,,unknown,reviewable,,鲁拜集
+candidate:app/arrival-catalog.mjs:292:15,js-cjk-literal,app/arrival-catalog.mjs,292,,unknown,reviewable,,Omar Khayyam · 英译 Edward FitzGerald · 英语译写
 candidate:app/arrival-catalog.mjs:298:16,js-cjk-literal,app/arrival-catalog.mjs,298,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:304:14,js-cjk-literal,app/arrival-catalog.mjs,304,,unknown,reviewable,,道德经
-candidate:app/arrival-catalog.mjs:305:15,js-cjk-literal,app/arrival-catalog.mjs,305,,unknown,reviewable,,Laozi · 英译 James Legge
+candidate:app/arrival-catalog.mjs:304:14,js-cjk-literal,app/arrival-catalog.mjs,304,,unknown,reviewable,,西科尔夫人历险记
 candidate:app/arrival-catalog.mjs:311:16,js-cjk-literal,app/arrival-catalog.mjs,311,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:317:14,js-cjk-literal,app/arrival-catalog.mjs,317,,unknown,reviewable,,时间机器
+candidate:app/arrival-catalog.mjs:317:14,js-cjk-literal,app/arrival-catalog.mjs,317,,unknown,reviewable,,道德经
+candidate:app/arrival-catalog.mjs:318:15,js-cjk-literal,app/arrival-catalog.mjs,318,,unknown,reviewable,,Laozi · 英译 James Legge
 candidate:app/arrival-catalog.mjs:324:16,js-cjk-literal,app/arrival-catalog.mjs,324,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:330:14,js-cjk-literal,app/arrival-catalog.mjs,330,,unknown,reviewable,,底层的人们
-candidate:app/arrival-catalog.mjs:331:15,js-cjk-literal,app/arrival-catalog.mjs,331,,unknown,reviewable,,"Mariano Azuela · 英译 Enrique Munguía (E. Munguia, Jr.)"
+candidate:app/arrival-catalog.mjs:330:14,js-cjk-literal,app/arrival-catalog.mjs,330,,unknown,reviewable,,时间机器
 candidate:app/arrival-catalog.mjs:337:16,js-cjk-literal,app/arrival-catalog.mjs,337,,unknown,reviewable,,书中一段
-candidate:app/arrival-catalog.mjs:343:14,js-cjk-literal,app/arrival-catalog.mjs,343,,unknown,reviewable,,少年维特之烦恼
-candidate:app/arrival-catalog.mjs:344:15,js-cjk-literal,app/arrival-catalog.mjs,344,,unknown,reviewable,,Johann Wolfgang von Goethe · 英译 R. Dillon Boylan
+candidate:app/arrival-catalog.mjs:343:14,js-cjk-literal,app/arrival-catalog.mjs,343,,unknown,reviewable,,底层的人们
+candidate:app/arrival-catalog.mjs:344:15,js-cjk-literal,app/arrival-catalog.mjs,344,,unknown,reviewable,,"Mariano Azuela · 英译 Enrique Munguía (E. Munguia, Jr.)"
 candidate:app/arrival-catalog.mjs:350:16,js-cjk-literal,app/arrival-catalog.mjs,350,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:356:14,js-cjk-literal,app/arrival-catalog.mjs,356,,unknown,reviewable,,少年维特之烦恼
+candidate:app/arrival-catalog.mjs:357:15,js-cjk-literal,app/arrival-catalog.mjs,357,,unknown,reviewable,,Johann Wolfgang von Goethe · 英译 R. Dillon Boylan
+candidate:app/arrival-catalog.mjs:363:16,js-cjk-literal,app/arrival-catalog.mjs,363,,unknown,reviewable,,书中一段
+candidate:app/arrival-catalog.mjs:369:14,js-cjk-literal,app/arrival-catalog.mjs,369,,unknown,reviewable,,查拉图斯特拉如是说
+candidate:app/arrival-catalog.mjs:370:15,js-cjk-literal,app/arrival-catalog.mjs,370,,unknown,reviewable,,弗里德里希·尼采（Friedrich Nietzsche）
+candidate:app/arrival-catalog.mjs:376:16,js-cjk-literal,app/arrival-catalog.mjs,376,,unknown,reviewable,,书中一段
 candidate:app/atmosphere-audio.mjs:34:39,js-cjk-literal,app/atmosphere-audio.mjs,34,,unknown,reviewable,,这个浏览器暂不支持氛围声音，可以继续使用阅读主题。
 candidate:app/atmosphere-audio.mjs:48:35,js-cjk-literal,app/atmosphere-audio.mjs,48,,unknown,reviewable,,环境声暂时无法载入，请重试。
 candidate:app/atmosphere-audio.mjs:62:77,js-cjk-literal,app/atmosphere-audio.mjs,62,,unknown,reviewable,,请选择一种阅读氛围。

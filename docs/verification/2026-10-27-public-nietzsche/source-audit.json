@@ -1,0 +1,29 @@
+{
+  "kind": "catalog-source-sequence-audit",
+  "books": [
+    {
+      "id": "gutenberg-beyond-good-and-evil",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/4363/pg4363-images.html",
+      "sourceSha256": "b283c3dd34fd2e91299eefee8d123af970a3625a58bc7d605d87f68c188d2500",
+      "sourceChars": 378566,
+      "matchedChars": 378247,
+      "scopeNote": "本版收录 Helen Zimmern 英译的作者序言与九章正文，以及 L. A. Magnus 英译的卷末诗歌；出版页与插图见原文出处。未附中文译文。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    },
+    {
+      "id": "gutenberg-zarathustra",
+      "sourceUrl": "https://www.gutenberg.org/cache/epub/1998/pg1998-images.html",
+      "sourceSha256": "089980e295ea86e415ff1ece22d5569d56aa257695e12e96c4cb14a0550225a4",
+      "sourceChars": 504803,
+      "matchedChars": 501325,
+      "scopeNote": "本版采用 Thomas Common 英译，收录序篇及四部正文；不含福尔斯特-尼采的导言与 Ludovici 的后附解说，原文出处保留完整版本。未附中文译文。",
+      "differences": [],
+      "excludedGaps": [],
+      "status": "pass"
+    }
+  ],
+  "passed": 2,
+  "total": 2
+}

@@ -1599,5 +1599,17 @@
     },
     "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/23031/pg23031-images.html",
     "layoutSourceSha256": "fcf64e2039f8bd3dacdc4a21b54936992f78e8e31b201c618cdd09f6b1dc208f"
+  },
+  "gutenberg-beyond-good-and-evil": {
+    "contentVersion": "e19805bf4bbb11e3e02e2a4df2ca3049baca32fca1a57bb83fe7040079c9e1d0",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/4363/pg4363-images.html",
+    "layoutSourceSha256": "b283c3dd34fd2e91299eefee8d123af970a3625a58bc7d605d87f68c188d2500"
+  },
+  "gutenberg-zarathustra": {
+    "contentVersion": "0429d315f5d90046c051b09327b7665a83f3732b7a1e455319c173c78a4af5c1",
+    "passages": {},
+    "layoutSourceUrl": "https://www.gutenberg.org/cache/epub/1998/pg1998-images.html",
+    "layoutSourceSha256": "089980e295ea86e415ff1ece22d5569d56aa257695e12e96c4cb14a0550225a4"
   }
 }

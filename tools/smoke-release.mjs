@@ -47,10 +47,10 @@ for(const route of ['/library?login=1','/read?book=gutenberg-alice','/gift-previ
   const response=await get(route);if(!response.headers.get('x-robots-tag')?.includes('noindex'))throw Error('Missing private search exclusion: '+route);
 }
 const session=await(await get('/api/auth/session')).json();if(session.user)throw Error('Anonymous request received a user');
-const library=await(await get('/api/library')).json();if(library.books?.length!==30||library.books.some(book=>book.visibility!=='public'))throw Error('Anonymous catalog is not the thirty shared English editions');
+const catalog=JSON.parse(await readFile(new URL('../catalog/manifest.json',import.meta.url),'utf8'));
+const library=await(await get('/api/library')).json();if(library.books?.length!==catalog.length||library.books.some(book=>book.visibility!=='public'))throw Error('Anonymous catalog does not match the shared English editions');
 if(library.books.some(book=>book.sourceLanguage!=='en'||!Array.isArray(book.topics)||!book.topics.length))throw Error('Public catalog is missing original language or curated filter metadata');
 if(library.books.some(book=>!Array.isArray(book.translationLanguages)||typeof book.supportsParallel!=='boolean'||!['none','partial','complete'].includes(book.translationCoverage)))throw Error('Public catalog is missing reading language metadata');
-const catalog=JSON.parse(await readFile(new URL('../catalog/manifest.json',import.meta.url),'utf8'));
 const readingMetadata=JSON.parse(await readFile(new URL('../catalog/reading-metadata.json',import.meta.url),'utf8'));
 if(JSON.stringify(library.books.map(b=>b.bookId).sort())!==JSON.stringify(catalog.map(b=>b.id).sort()))throw Error('Production catalog IDs differ from the released manifest');
 for(const entry of catalog){

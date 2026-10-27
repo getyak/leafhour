@@ -5,12 +5,12 @@ import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {createLibraryService} from '../server/library-service.mjs';
 
-test('the thirty selected English editions are complete readable shared books with honest provenance',async t=>{
+test('the thirty-two selected English editions are complete readable shared books with honest provenance',async t=>{
  const dir=await mkdtemp(path.join(tmpdir(),'world-catalog-'));t.after(()=>rm(dir,{recursive:true,force:true}));
  const entries=JSON.parse(await readFile('catalog/manifest.json','utf8'));
- assert.equal(entries.length,30);
+ assert.equal(entries.length,32);
  const library=await createLibraryService({dataDir:dir,translator:()=>{throw Error('Catalog reading must not generate translations');}});
- const rows=await library.list(null);assert.equal(rows.length,30);
+ const rows=await library.list(null);assert.equal(rows.length,32);
  for(const entry of entries){
   const book=await library.getBook(null,entry.id),paragraphs=book.sections.flatMap(s=>s.paragraphs);
   assert.equal(book.visibility,'public');assert.equal(book.sourceLanguage,'en');assert.ok(book.topics.length);

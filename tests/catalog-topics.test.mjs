@@ -6,7 +6,8 @@ import path from 'node:path';
 import {createLibraryService} from '../server/library-service.mjs';
 import {digest} from '../server/document-import.mjs';
 
-// GET-177 whole-30 metadata regression. The frozen rows below are the audited
+// GET-177 metadata regression plus the two 2026-10-27 Nietzsche editions.
+// The original thirty rows remain byte-for-byte pinned. The frozen rows are the audited
 // baseline of the shipped catalog: ids, source files and their SHA-256 (which is
 // also the contentVersion), original languages, the pre-fiction topic sets and
 // stable paragraph IDs. The fiction topic is the only allowed manifest change,
@@ -42,7 +43,9 @@ const BASELINE=[
 ['gutenberg-equiano','world/equiano.json','56acf0cdc09e6f54f347eb95f0883da8c71493e175fd3637f4f5c6cbd8cc1a89','en',['history','literature'],false,318,'56acf0cdc09e6f54-p00001','56acf0cdc09e6f54-p00318'],
 ['gutenberg-african-farm','world/african-farm.json','c24e2b5f86aa46340fd891e7cc26217c692f418c6097044218267e235fde3905','en',['literature','history'],true,2343,'c24e2b5f86aa4634-p00001','c24e2b5f86aa4634-p02343'],
 ['gutenberg-douglass','world/douglass.json','ca232c39e000830d259fa7bfbca39caa3bc0e75aa045f5fbaa489ed1a7721de5','en',['history','literature'],false,163,'ca232c39e000830d-p00001','ca232c39e000830d-p00163'],
-['gutenberg-seacole','world/seacole.json','dd7438368201924ef27803132fffd17bb96bb449a3c25245955a3d1d93b621f1','en',['history','literature'],false,466,'dd7438368201924e-p00001','dd7438368201924e-p00466']
+['gutenberg-seacole','world/seacole.json','dd7438368201924ef27803132fffd17bb96bb449a3c25245955a3d1d93b621f1','en',['history','literature'],false,466,'dd7438368201924e-p00001','dd7438368201924e-p00466'],
+['gutenberg-beyond-good-and-evil','world/beyond-good-and-evil.json','e19805bf4bbb11e3e02e2a4df2ca3049baca32fca1a57bb83fe7040079c9e1d0','de',['philosophy'],false,319,'e19805bf4bbb11e3-p00001','e19805bf4bbb11e3-p00319'],
+['gutenberg-zarathustra','world/zarathustra.json','0429d315f5d90046c051b09327b7665a83f3732b7a1e455319c173c78a4af5c1','de',['philosophy','literature'],false,3478,'0429d315f5d90046-p00001','0429d315f5d90046-p03478']
 ];
 
 test('the whole shipped catalog keeps its ids, source bytes, content versions and stable paragraph ids',async t=>{
