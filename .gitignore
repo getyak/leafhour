@@ -26,3 +26,7 @@ apps/ios/**/.build
 apps/ios/**/.swiftpm/
 apps/ios/**/xcuserdata/
 apps/ios/Config/Signing.local.xcconfig
+
+# Offline source-parser caches
+__pycache__/
+*.py[cod]

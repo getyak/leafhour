@@ -9,6 +9,7 @@ correctness of historical translation/OCR. See per-book scopeNote.
 import argparse,json,re,unicodedata,hashlib,sys,subprocess
 from pathlib import Path
 from bs4 import BeautifulSoup,NavigableString,Tag,Comment
+from classic_catalog import source_bytes,audit_document
 root=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('source_cache');parser.add_argument('--report');parser.add_argument('--only',nargs='+')
@@ -35,6 +36,10 @@ for e in entries:
   if body!=target:raise ValueError('Legacy source sequence mismatch: '+e['id'])
   results.append({'id':e['id'],'sourceUrl':e['sourceUrl'],'sourceSha256':hashlib.sha256((root/'catalog'/e['file']).read_bytes()).hexdigest(),'sourceChars':len(body),'matchedChars':len(target),'scopeNote':e['scopeNote'],'differences':[],'status':'pass'});print(e['id'],'PASS',len(body),flush=True);continue
  d=json.loads((root/'catalog'/e['file']).read_text());u=d['downloadUrl'];n=re.search(r'/epub/(\d+)/',u)
+ if d.get('extraction'):
+  raw=source_bytes(d,cache);checked=audit_document(d,raw,e.get('sourceLanguage','en'))
+  row={'id':e['id'],'sourceUrl':u,'sourceSha256':hashlib.sha256(raw).hexdigest(),'scopeNote':e['scopeNote'],**checked};results.append(row)
+  print(e['id'],row['status'].upper(),checked['sourceChars'],'source characters',flush=True);continue
  key=n[1] if n else 'room' if 'gutenberg.net.au' in u else 'ivan'
  raw=(cache/(key+('.xml' if key=='ivan' else '.html'))).read_bytes()
  if hashlib.sha256(raw).hexdigest()!=d['downloadSha256']:raise ValueError('Pinned source hash mismatch: '+e['id'])

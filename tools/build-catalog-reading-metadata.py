@@ -22,7 +22,7 @@ result=json.loads(target.read_text()) if args.only else {}
 for book in books:
  if args.only and book['bookId'] not in args.only:continue
  source=book['source'];entry={'contentVersion':book['contentVersion'],'passages':{}}
- url=source.get('downloadUrl') or source['url'];match=re.search(r'(?:/epub/|/ebooks/)(\d+)',url);key=match[1] if match else 'room' if 'gutenberg.net.au' in url else 'ivan'
+ url=source.get('downloadUrl') or source['url'];match=re.search(r'(?:/epub/|/ebooks/|/files/)(\d+)',url);key=match[1] if match else 'room' if 'gutenberg.net.au' in url else 'ivan'
  raw=(cache/(key+('.xml' if key=='ivan' else '.html'))).read_bytes()
  if source.get('downloadSha256') and hashlib.sha256(raw).hexdigest()!=source['downloadSha256']:raise ValueError('Changed source '+book['bookId'])
  entry['layoutSourceUrl']=source.get('downloadUrl') or f'https://www.gutenberg.org/cache/epub/{key}/pg{key}-images.html'

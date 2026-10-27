@@ -1,0 +1,7 @@
+.book-page .passage p.source-preformatted[lang]{max-width:100%;overflow-x:auto;white-space:pre!important;overflow-wrap:normal;word-break:normal;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-style:normal;line-height:1.6;letter-spacing:normal;word-spacing:normal;text-indent:0;overscroll-behavior-x:contain}
+.source-resource-links{display:flex;flex-wrap:wrap;gap:.4em 1em;margin:.3em 0 1em;font-size:max(16px,.8em)}
+.source-resource-links a{display:inline-block;max-width:100%;min-height:32px;padding-block:6px;text-underline-offset:.2em;overflow-wrap:anywhere}
+
+body[data-paginated=true] .book-page .passage p.source-preformatted[lang]{box-sizing:border-box;max-height:calc(var(--paper-page-height,60dvh) - 24px);overflow-y:auto;break-inside:avoid;overscroll-behavior:contain}
+
+@media print{body[data-paginated=true] .book-page .passage p.source-preformatted[lang]{max-height:none;overflow:visible}}

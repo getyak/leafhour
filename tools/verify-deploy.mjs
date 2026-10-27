@@ -6,7 +6,8 @@ const environment=Object.fromEntries(['PATH','HOME','TMPDIR','TMP','TEMP','Syste
 const tests=(await readdir('tests')).filter(file=>file.endsWith('.test.mjs')).sort().map(file=>'tests/'+file);
 // Vercel filters source files through .vercelignore before starting its build.
 // Full deployment snapshot validation runs in Actions before production verification.
-const stages=[['tools/check-pricing.mjs'],['--test',...tests],['tools/build-reader-runtime.mjs'],['tools/build-vercel.mjs'],['tools/check-public-build.mjs','dist'],...(process.argv.includes('--hosted')?[]:[['tools/release-policy.mjs']]),['tools/verify-release.mjs']];
+// Bound concurrent full-catalog fixtures so shared editions do not multiply memory use by host CPU count.
+const stages=[['tools/check-pricing.mjs'],['--test','--max-old-space-size=1536','--test-concurrency=1',...tests],['tools/build-reader-runtime.mjs'],['tools/build-vercel.mjs'],['tools/check-public-build.mjs','dist'],...(process.argv.includes('--hosted')?[]:[['tools/release-policy.mjs']]),['tools/verify-release.mjs']];
 for(const args of stages){
   const stageEnvironment={...environment};
   // These are executable paths, not credentials. Only the test stage needs

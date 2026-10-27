@@ -20,6 +20,7 @@ import {createChapterFlow,isReadingDivider} from './reading-flow.mjs';
 import {startReadingLoad,mergeLoadedReadingRecords} from './reading-load.mjs';
 import {formatNoteSaveReceipt as noteSaveReceipt,positionSaveState,formatDraftSaveReceipt as draftSaveReceipt} from './save-receipts.mjs';
 import {mountReaderLoading} from './reader-loading.mjs';
+import {applySourceFormat,sourceResourcesNode,loadSourceStyles} from './source-resources.mjs';
 import {mountBookIntroduction,mountChapterEntry,mountContentsDialog} from './reader-navigation.mjs';
 import {mountReaderBookActionsBootstrap} from './reader-book-actions-bootstrap.mjs';
 import {mountParallelSettings,applyParallelAppearance,createParallelPair} from './parallel-reading.mjs';
@@ -196,13 +197,14 @@ for(const [key,unit] of typographyFields){
   controls.append(minus,value,plus);row.append(name,controls);$('typography-controls').append(row);
 }
 function passageView(p){return {mode:overrides[p.id]?.mode||(state.mode==='en'?'en':'zh'),variant:overrides[p.id]?.variant||state.variant};}
-function prose(layer,variant){const n=el('p',layer.fallback?'untranslated-original':'',layer.text);if(layer.kind==='original')applySourceLineation(n,layer.lineBreaks,document,layer.emphasis);n.lang=layer.lang;n.dataset.readingLayer=layer.kind;n.dataset.variant=variant;return n;}
+function prose(layer,variant){const n=el('p',layer.fallback?'untranslated-original':'',layer.text);if(layer.kind==='original')applySourceLineation(n,layer.lineBreaks,document,layer.emphasis);n.lang=layer.lang;n.dataset.readingLayer=layer.kind;n.dataset.variant=variant;return applySourceFormat(n,layer);}
 function fillPassage(node,p){
   if(node.contains($('note-panel')))document.body.append($('note-panel'));
   node.replaceChildren();const v=passageView(p),view=passagePresentation(p,{...v,mode:state.mode==='parallel'?'parallel':v.mode,sourceLanguage:book.sourceLanguage,sourceEmphasis:sourceEmphasisEligible(book)});
   if(state.mode==='parallel'){
     node.append(createParallelPair({document,layers:view.layers,variant:v.variant,prose,passageId:p.id,revealed:revealedTranslations,onReveal:change=>{const a=anchor();change();restoreAnchor(a);dispatchReaderEvent('reader:layout');}}));
   }else node.append(prose(view.layers[0],v.variant));
+  const resources=sourceResourcesNode(document,p.source?.resources,globalThis.location?.href);if(resources)node.append(resources);
   if(p.source?.labelBefore)node.prepend(el('span','source-passage-label',p.source.labelBefore));
   for(const text of node.querySelectorAll('p[data-reading-layer]'))highlights.paint(text,p.id);
 }
@@ -421,7 +423,7 @@ async function boot(){
   const generation=++loadGeneration,arrivalTicket=arrival.start();readerPresenceReady=false;dailyPresence.refresh();entryInteracted=false;restoringProgress=true;
   const loading=startReadingLoad({readBook:()=>openingBook(),readRecords:()=>api('/api/records')});
   try{
-    book=await loading.book;if(generation!==loadGeneration)return;if(selectedBookId){try{noteDrafts=createReadingDraftStore({storage:localStorage,scope:readerStorageKey('marginalia-reading-ending-drafts-v1'),book});noteDraftError=null;}catch(error){noteDraftError=error;announceUi(READER_UI+'draftUnavailable');}}if(book.title?.zh){$('running-book-title').textContent=book.title.zh;$('toc-book-title').textContent=book.title.zh;}if(selectedBookId)state.chapterId=book.readingStart?.chapterId||book.chapters[0].id;const initialRecords=loading.peekRecords();recordsPending=initialRecords===undefined;records=initialRecords||{comments:[],questions:[],readingSessions:[],readingMilestones:[],position:null};recordsUnavailable=selectedBookId&&!readerOwner()||!initialRecords;
+    book=await loading.book;if(generation!==loadGeneration)return;if(book.source?.formattedTables||book.source?.resources?.length){await loadSourceStyles(document);if(generation!==loadGeneration)return;}if(selectedBookId){try{noteDrafts=createReadingDraftStore({storage:localStorage,scope:readerStorageKey('marginalia-reading-ending-drafts-v1'),book});noteDraftError=null;}catch(error){noteDraftError=error;announceUi(READER_UI+'draftUnavailable');}}if(book.title?.zh){$('running-book-title').textContent=book.title.zh;$('toc-book-title').textContent=book.title.zh;}if(selectedBookId)state.chapterId=book.readingStart?.chapterId||book.chapters[0].id;const initialRecords=loading.peekRecords();recordsPending=initialRecords===undefined;records=initialRecords||{comments:[],questions:[],readingSessions:[],readingMilestones:[],position:null};recordsUnavailable=selectedBookId&&!readerOwner()||!initialRecords;
     readingBook=createReadingBook({book,readChapter:(id,version)=>api('/api/chapters/'+encodeURIComponent(id)+'?contentVersion='+encodeURIComponent(version)),onContent:()=>{indexBook();dispatchReaderEvent('reader:content');}});indexBook();
     readingNavigation=createReadingNavigation({isLoaded:readingBook.isLoaded,ensure:readingBook.ensure,commit:commitChapter,onPending:()=>announceUi(READER_UI+'chapterLoading'),onError:()=>announceUi(READER_UI+'chapterFailed')});
     let localPosition=null;try{localPosition=JSON.parse(localStorage.getItem(progressKey)||'null');}catch{}
@@ -467,7 +469,7 @@ listen($('continuous-reading'),'change',event=>{
   closePanel();dismissTools();renderChapter();restoreAnchor(a);queueReadingFlow();persist();
 });
 listen(document,'click',e=>{
-  if(e.target.closest('#note-panel,#paragraph-tools,#audio-bootstrap-status,#audio-import-input,#reading-session,dialog,.library-chat-launcher,.reading-header,.focus-actions,.experience-surface,.source-evidence,.page-turner,.paper-turn-handle'))return;
+  if(e.target.closest('#note-panel,#paragraph-tools,#audio-bootstrap-status,#audio-import-input,#reading-session,dialog,.library-chat-launcher,.reading-header,.focus-actions,.experience-surface,.source-evidence,.source-resource-links,.page-turner,.paper-turn-handle'))return;
   const selection=getSelection();if(selection?.toString().trim()&&selectedExcerpt&&$('paragraph-tools').dataset.excerpt==='true')return;
   const node=e.target.closest('.passage');if(node){if(!getSelection()?.toString()){const layer=e.target.closest('p')?.dataset.readingLayer;choosePassage(node.dataset.id,e.clientY,'',layer==='original'?'en':layer==='translation'?'zh':null);}return;}
   dismissTools();closePanel();
@@ -476,7 +478,7 @@ function captureExcerpt(y){
   try{const excerpt=captureDOMSelection(getSelection(),paragraphMap,book);if(!excerpt){if(getSelection()?.toString().trim()){selectedExcerpt=null;dismissTools();}return;}if(selectionKind==='excerpt'&&!$('paragraph-tools').hidden&&selectedExcerpt&&highlightKey(selectedExcerpt)===highlightKey(excerpt))return;const first=excerpt.parts[0];choosePassage(first.passageId,y,excerpt.parts.map(part=>part.text).join('\n\n'),first.language);selectedExcerpt=excerpt;selectionKind='excerpt';for(const part of excerpt.parts)document.getElementById(part.passageId)?.classList.add('is-selected');$('show-share').hidden=false;$('paragraph-tools').dataset.excerpt='true';highlights.updateTools(excerpt);positionTools();}
   catch(error){selectedExcerpt=null;dismissTools();announceUi(READER_UI+'selectAgain');}
 }
-listen(document,'pointerup',e=>{if(e.button!==0||e.target.closest('#note-panel,#paragraph-tools,#audio-bootstrap-status,#reading-session,dialog,.library-chat-launcher,[popover],.experience-surface,.source-evidence,.page-turner,.paper-turn-handle')||!book)return;captureExcerpt(e.clientY);});
+listen(document,'pointerup',e=>{if(e.button!==0||e.target.closest('#note-panel,#paragraph-tools,#audio-bootstrap-status,#reading-session,dialog,.library-chat-launcher,[popover],.experience-surface,.source-evidence,.source-resource-links,.page-turner,.paper-turn-handle')||!book)return;captureExcerpt(e.clientY);});
 let excerptTimer;listen(document,'selectionchange',()=>{clearTimeout(excerptTimer);if(book&&getSelection()?.toString().trim()&&$('chapter-text').contains(getSelection().anchorNode))excerptTimer=setTimeout(()=>captureExcerpt(),120);});
 listen(document,'keyup',e=>{if(book&&!e.target.closest('#audio-bootstrap-status,input,textarea,select,dialog,.library-chat-launcher,[popover]')&&(e.key==='Shift'||e.shiftKey))captureExcerpt();});
 listen(document,'keydown',e=>{

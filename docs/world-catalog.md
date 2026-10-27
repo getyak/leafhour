@@ -1,6 +1,6 @@
-# Thirty-two shared English editions
+# Sixty-four shared reading volumes and editions
 
-The default library contains 32 readable books: the original thirty editions plus Nietzsche’s Beyond Good and Evil and Thus Spake Zarathustra. This is the shared public catalog consumed by the website and MCP domain service. It is versioned with the application, not inserted into an account’s private `reader_documents` or the retired single-book `reader_books` archive. Personal progress, translations, annotations and reading history continue to use account storage.
+The default library contains 64 readable volumes and editions: the previous 32 plus 24 new works and a Chinese Tao Te Ching edition, represented by 32 additional reading volumes/editions (8 Chinese, 24 English originals or historical English translations). This is the shared public catalog consumed by the website and MCP domain service. It is versioned with the application, not inserted into an account’s private `reader_documents` or the retired single-book `reader_books` archive. Personal progress, translations, annotations and reading history continue to use account storage.
 
 `catalog/manifest.json` identifies each edition, language, translator, subjects, chapter count and source boundary samples. `catalog/world/*.json` stores the selected reading text in source chapter order, with download URLs, SHA-256 checksums and separate license/credit notices. The per-book `scopeNote`, visible in About this book, identifies omissions: some editions exclude author or translator prefaces, glossaries or editorial material as well as publisher preliminaries and illustrations. This is a reading selection, not a claim that every source volume is reproduced cover to cover.
 
@@ -27,7 +27,7 @@ Underlying texts and translations have source-specific public-domain assessments
 
 ## Reproduce and verify
 
-The import is offline and deterministic. Cache the exact `downloadUrl` for each artifact as `PG_ID.html`, `room.html`, or `ivan.xml`. Install development-only Python packages `beautifulsoup4` and `lxml`, then run:
+The import is offline and deterministic. Cache the exact `downloadUrl` for each artifact as `PG_ID.html`, `room.html`, or `ivan.xml`. Install development-only Python packages with `python3 -m pip install -r tools/catalog-requirements.txt`, then run:
 
 ```
 python3 tools/import-world-catalog.py /path/to/source-cache
@@ -48,3 +48,15 @@ The metadata compiler additionally needs the exact primary HTML for the original
 Local deployment verification: 747 tests, 746 passed, 1 existing platform-dependent skip, zero failures; isolated reading runtime and public release build passed. Deterministic reproduction matched all 27 pinned downloads. The 30-book export restored into a clean instance. A real browser displayed all 30 books, searched Woolf to find the matching book, opened Frankenstein’s first chapter and jumped through its contents to chapter 24. Verse rendering preserves source newlines. Largest full-book JSON response measured about 2.91 MB; no model request or real account write was used. Production acceptance is performed after merging and is separately reported.
 
 The subsequent [content audit](catalog-content-audit.md) compares the full selected reading text independently of the importer. All 30 books pass, covering 10,087,269 normalized source characters. Its [machine-readable report](catalog-content-audit.json) records every source hash, scope and excluded decorative gap. This establishes source fidelity within the disclosed scope; historical translations and source typographical errors have not received critical-edition proofreading.
+
+## Enduring classics batch (2026-10-28)
+
+The complete selection and edition boundaries are recorded in [the reading list](classics-reading-list-20261028.md). The [batch plan](superpowers/plans/2026-10-28-enduring-classics.md) and [local verification record](verification/2026-10-28-enduring-classics.md) distinguish completed source checks from pending Production acceptance. The new artifacts carry pinned extraction recipes and source digests. `tools/classic_catalog.py` dispatches to four source families and independently compares scoped source HTML against interleaved source headings and reading paragraphs. English layout whitespace is collapsed only for the text audit; Chinese comparison ignores whitespace. Reading artifacts preserve original verse line breaks and numeric table whitespace. Empty translations remain empty. The original 32 artifacts and manifest records are unchanged.
+
+The Red Chamber text is divided into three explicitly labeled reading ranges (1–40, 41–80, 81–120), not asserted print volumes. The last forty chapters are not wholly attributed to Cao Xueqin. The Wisdom of Life requires both selected English volumes; World as Will and Idea has three English volumes, which are not the German original's volume count. Epictetus contains 66 selected discourses and the complete 52-section Handbook, not the complete Discourses. The Zhuangzi source catalog misattributes its title/author; the actual 33 classical chapters and discrepancy are disclosed. Bacon's Novum Organum uses the historical W. Wood translation attribution with Joseph Devey as editor.
+
+Ten original illustrations are self-hosted under [app/book-assets/](../app/book-assets/README.md), with source URLs, digests, byte lengths and provenance in `server/catalog-book-assets.mjs`. Links remain outside author prose. Ten Wealth of Nations numeric tables have a separate preformatted presentation hint and preserve native horizontal keyboard scrolling. Hamlet retains speaker labels, stage directions and source verse breaks. Original source gaps and placeholders are retained rather than guessed.
+
+For the Prince source, the matching official Gutenberg license footer is recorded as an explicit pinned notice supplement. Its text is kept outside author prose. Run the scoped importer/auditor with `--only` and the added manifest IDs when only the new source cache is available. Python source tests run separately in CI; the application runtime does not require Python.
+
+The Darwin index is segmented on its original blank lines, with exact concatenation preserved in the artifact provenance. Decoded public-source documents are interned by source digest with a bounded encoded-byte cache; mutable book objects and account overlays are constructed separately. Table/figure CSS loads only for books that need it.

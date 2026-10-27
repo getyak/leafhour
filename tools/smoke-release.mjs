@@ -1,7 +1,9 @@
 import {readFile} from 'node:fs/promises';
 const base=process.env.READER_URL||'https://leafhour.com',expected=process.env.EXPECTED_SOURCE_COMMIT;
 const deadline=Date.now()+Number(process.env.RELEASE_WAIT_SECONDS||600)*1000;
-async function get(route){const response=await fetch(new URL(route,base),{signal:AbortSignal.timeout(15000),headers:{'Cache-Control':'no-cache'}});if(!response.ok)throw Error(route+' returned '+response.status);return response;}
+const requestTimeout=Number(process.env.SMOKE_REQUEST_TIMEOUT_MS||15000);
+if(!Number.isSafeInteger(requestTimeout)||requestTimeout<1000||requestTimeout>60000)throw Error('SMOKE_REQUEST_TIMEOUT_MS must be 1000–60000');
+async function get(route){const response=await fetch(new URL(route,base),{signal:AbortSignal.timeout(requestTimeout),headers:{'Cache-Control':'no-cache'}});if(!response.ok)throw Error(route+' returned '+response.status);return response;}
 if(expected){
   if(!/^[a-f0-9]{40}$/.test(expected))throw Error('Expected a full source commit');
   while(true){
@@ -14,16 +16,16 @@ const giftProbe='A'.repeat(43);
 for(const route of ['/reader-companion.mjs','/reader-companion-state.mjs','/reader-companion.css','/squirrel-motion.mjs','/squirrel-position.mjs','/book-reading-languages.mjs','/library-filter-controls.mjs','/library-filters.css','/reader-highlights.mjs','/passage-layers.mjs','/reader-navigation.mjs']){
   const response=await get(route);if(response.headers.get('content-type')?.includes('text/html')||!(await response.text()).length)throw Error('Missing companion asset: '+route);
 }
-const companion=await fetch(new URL('/api/library/books/gutenberg-alice/companion',base),{signal:AbortSignal.timeout(15000)});if(companion.status!==401)throw Error('Anonymous companion access did not require authentication');
-const preferenceMemory=await fetch(new URL('/api/account/preference-memory',base),{signal:AbortSignal.timeout(15000),headers:{'Cache-Control':'no-cache'}});
+const companion=await fetch(new URL('/api/library/books/gutenberg-alice/companion',base),{signal:AbortSignal.timeout(requestTimeout)});if(companion.status!==401)throw Error('Anonymous companion access did not require authentication');
+const preferenceMemory=await fetch(new URL('/api/account/preference-memory',base),{signal:AbortSignal.timeout(requestTimeout),headers:{'Cache-Control':'no-cache'}});
 if(preferenceMemory.status!==401)throw Error('Anonymous preference memory access did not require authentication');
 if(!preferenceMemory.headers.get('cache-control')?.split(',').some(value=>value.trim().toLowerCase()==='no-store'))throw Error('Preference memory response must not be cached');
-const uiPreferences=await fetch(new URL('/api/account/ui-preferences',base),{signal:AbortSignal.timeout(15000),headers:{'Cache-Control':'no-cache'}});
+const uiPreferences=await fetch(new URL('/api/account/ui-preferences',base),{signal:AbortSignal.timeout(requestTimeout),headers:{'Cache-Control':'no-cache'}});
 if(uiPreferences.status!==401)throw Error('Anonymous UI preference access did not require authentication');
 if(!uiPreferences.headers.get('cache-control')?.split(',').some(value=>value.trim().toLowerCase()==='no-store'))throw Error('UI preference response must not be cached');
 // cleanUrls can redirect an API .js URL before the OAuth handler. Check the
 // actual extensionless consent asset without accepting a redirect or HTML.
-const consentScript=await fetch(new URL('/api/mcp/consent-script',base),{redirect:'manual',signal:AbortSignal.timeout(15000),headers:{'Cache-Control':'no-cache'}});
+const consentScript=await fetch(new URL('/api/mcp/consent-script',base),{redirect:'manual',signal:AbortSignal.timeout(requestTimeout),headers:{'Cache-Control':'no-cache'}});
 if(consentScript.status!==200||!/(?:text|application)\/javascript\b/i.test(consentScript.headers.get('content-type')||'')||!(await consentScript.text()).includes("addEventListener('submit'"))throw Error('MCP consent script is unavailable or invalid');
 for(const route of ['/','/library','/gift/'+giftProbe,'/gift-preview','/book-gift.mjs','/book-gift.css','/gift-compose.mjs','/gift-compose.css','/gift-identity.mjs','/gift-compose-state.mjs','/gift-preview.mjs','/gift-ritual.mjs','/brand-assets/envelope-edge.svg','/brand-assets/letter-edge.svg','/library-profile.mjs','/library-book-actions.mjs','/library-personal.css','/reading-schedule.mjs','/shelf-order.mjs','/read?book=gutenberg-alice','/portal.js','/library-workspace.css','/library-workspace.mjs','/reading-flow.mjs','/reading-load.mjs','/reading-arrival.mjs','/reading-arrival.css','/save-receipts.mjs']){
   const response=await get(route);const body=await response.text();if(!body.length)throw Error('Empty response: '+route);
@@ -49,7 +51,7 @@ for(const route of ['/library?login=1','/read?book=gutenberg-alice','/gift-previ
 const session=await(await get('/api/auth/session')).json();if(session.user)throw Error('Anonymous request received a user');
 const catalog=JSON.parse(await readFile(new URL('../catalog/manifest.json',import.meta.url),'utf8'));
 const library=await(await get('/api/library')).json();if(library.books?.length!==catalog.length||library.books.some(book=>book.visibility!=='public'))throw Error('Anonymous catalog does not match the shared English editions');
-if(library.books.some(book=>book.sourceLanguage!=='en'||!Array.isArray(book.topics)||!book.topics.length))throw Error('Public catalog is missing original language or curated filter metadata');
+if(library.books.some(book=>!['en','zh'].includes(book.sourceLanguage)||!Array.isArray(book.topics)||!book.topics.length))throw Error('Public catalog is missing original language or curated filter metadata');
 if(library.books.some(book=>!Array.isArray(book.translationLanguages)||typeof book.supportsParallel!=='boolean'||!['none','partial','complete'].includes(book.translationCoverage)))throw Error('Public catalog is missing reading language metadata');
 const readingMetadata=JSON.parse(await readFile(new URL('../catalog/reading-metadata.json',import.meta.url),'utf8'));
 if(JSON.stringify(library.books.map(b=>b.bookId).sort())!==JSON.stringify(catalog.map(b=>b.id).sort()))throw Error('Production catalog IDs differ from the released manifest');
@@ -66,7 +68,7 @@ for(const entry of catalog){
   if(paragraphs.some(p=>Object.keys(p.translations).length))throw Error('Unexpected published translation: '+entry.id);
  }
 }
-for(const route of ['/api/book','/api/records']){const response=await fetch(new URL(route,base),{signal:AbortSignal.timeout(15000)});if(response.status!==404)throw Error('Retired route is accessible: '+route);}
-const gift=await fetch(new URL('/api/book-gifts/'+giftProbe,base),{signal:AbortSignal.timeout(15000)});if(gift.status!==404||!String((await gift.json()).error).includes('赠书信'))throw Error('Public gift endpoint did not reach its missing-letter response');
-const profile=await fetch(new URL('/api/account/profile',base),{method:'POST',headers:{Origin:new URL(base).origin,'Content-Type':'application/json','X-Reader-Owner':'guest'},body:'{}',signal:AbortSignal.timeout(15000)});if(profile.status!==401)throw Error('Anonymous profile write did not fail with authentication required');
+for(const route of ['/api/book','/api/records']){const response=await fetch(new URL(route,base),{signal:AbortSignal.timeout(requestTimeout)});if(response.status!==404)throw Error('Retired route is accessible: '+route);}
+const gift=await fetch(new URL('/api/book-gifts/'+giftProbe,base),{signal:AbortSignal.timeout(requestTimeout)});if(gift.status!==404||!String((await gift.json()).error).includes('赠书信'))throw Error('Public gift endpoint did not reach its missing-letter response');
+const profile=await fetch(new URL('/api/account/profile',base),{method:'POST',headers:{Origin:new URL(base).origin,'Content-Type':'application/json','X-Reader-Owner':'guest'},body:'{}',signal:AbortSignal.timeout(requestTimeout)});if(profile.status!==401)throw Error('Anonymous profile write did not fail with authentication required');
 console.log('Production smoke passed: source, pages, assets, MCP consent script, search discovery, private indexing exclusions, anonymous session, public catalog and gift/profile/UI preference access boundaries.');

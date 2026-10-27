@@ -4,6 +4,7 @@ import {authMessageId} from '../app/auth-errors.mjs';
 import {audioFailureCode} from '../app/audio-errors.mjs';
 import http from 'node:http';
 import {cjkFontAssets} from './cjk-font-assets.mjs';
+import {catalogBookAssets} from './catalog-book-assets.mjs';
 import {normalizeAppearance} from '../app/reading-preferences.mjs';
 import {validParagraphAnchor} from '../app/paragraph-anchor.mjs';
 import {applyPersonalRecordEdit,validatePersonalRecordMetadata,decodePersonalRecordId} from '../app/personal-records.mjs';
@@ -36,6 +37,9 @@ assets.set('/translation-first-use.mjs',['app/translation-first-use.mjs','text/j
 assets.set('/translation-first-use.css',['app/translation-first-use.css','text/css']);
 assets.set('/reader-return.mjs',['app/reader-return.mjs','text/javascript']);
 assets.set('/passage-layers.mjs',['app/passage-layers.mjs','text/javascript']);
+assets.set('/source-resources.mjs',['app/source-resources.mjs','text/javascript']);
+assets.set('/source-resources.css',['app/source-resources.css','text/css']);
+for(const asset of catalogBookAssets)assets.set(asset.url,['app/'+asset.file,asset.mime]);
 assets.set('/source-emphasis.mjs',['app/source-emphasis.mjs','text/javascript']);
 assets.set('/share-fonts.mjs',['app/share-fonts.mjs','text/javascript']);
 assets.set('/reader-entry.mjs',['app/reader-entry.mjs','text/javascript']);
