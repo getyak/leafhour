@@ -193,7 +193,7 @@
   "functions": {
     "api/*.js": {
       "maxDuration": 300,
-      "includeFiles": "{catalog/**,server/**,deploy/**,app/*.mjs,harness/**,skills/leafhour-author-portrait/**,.reader-runtime/**,node_modules/pdfjs-dist/wasm/**,node_modules/pdfjs-dist/cmaps/**,node_modules/pdfjs-dist/standard_fonts/**,node_modules/@napi-rs/canvas/**,node_modules/@napi-rs/canvas-*/**}"
+      "includeFiles": "{catalog/**,server/**,deploy/**,app/*.mjs,harness/**,skills/**,.reader-runtime/**,node_modules/pdfjs-dist/wasm/**,node_modules/pdfjs-dist/cmaps/**,node_modules/pdfjs-dist/standard_fonts/**,node_modules/@napi-rs/canvas/**,node_modules/@napi-rs/canvas-*/**}"
     }
   },
   "rewrites": [
