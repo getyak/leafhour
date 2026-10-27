@@ -3,18 +3,24 @@
 Usage: python3 tools/build-catalog-reading-metadata.py SOURCE_CACHE [--write]
 Requires beautifulsoup4; source cache is never downloaded or executed.
 """
-import json,re,hashlib,sys,subprocess,unicodedata
+import argparse,json,re,hashlib,sys,subprocess,unicodedata
 from pathlib import Path
 from bs4 import BeautifulSoup
-root=Path(__file__).resolve().parents[1];cache=Path(sys.argv[1])
+root=Path(__file__).resolve().parents[1]
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('source_cache');parser.add_argument('--write',action='store_true');parser.add_argument('--only',nargs='+')
+args=parser.parse_args();cache=Path(args.source_cache)
+if args.only and not set(args.only)<={e['id'] for e in json.loads((root/'catalog/manifest.json').read_text())}:parser.error('--only contains an unknown catalog ID')
 # Read the actual public domain service; it does not need account credentials.
 code="import {createLibraryService} from './server/library-service.mjs';const l=await createLibraryService({dataDir:'/tmp/catalog-layout-compiler',translator:null});const books=[];for(const b of await l.list(null))books.push(await l.getBook(null,b.bookId));console.log(JSON.stringify(books));"
 books=json.loads(subprocess.check_output(['node','--input-type=module','-e',code],cwd=root))
 norm=lambda s:re.sub(r'\s+',' ',unicodedata.normalize('NFC',s)).strip()
 canonical=lambda s:re.sub(r'[\s_]','',unicodedata.normalize('NFC',s))
 hashof=lambda s:hashlib.sha256(s.encode()).hexdigest()
-result={}
+target=root/'catalog/reading-metadata.json'
+result=json.loads(target.read_text()) if args.only else {}
 for book in books:
+ if args.only and book['bookId'] not in args.only:continue
  source=book['source'];entry={'contentVersion':book['contentVersion'],'passages':{}}
  url=source.get('downloadUrl') or source['url'];match=re.search(r'(?:/epub/|/ebooks/)(\d+)',url);key=match[1] if match else 'room' if 'gutenberg.net.au' in url else 'ivan'
  raw=(cache/(key+('.xml' if key=='ivan' else '.html'))).read_bytes()
@@ -64,6 +70,6 @@ for book in books:
  if book['bookId']=='gutenberg-au-room-of-ones-own':entry['notices']='Electronic edition produced by Col Choat. Project Gutenberg Australia 0200791, Edition 1; updated April 2020. First publication of the work: 1929; the electronic header does not identify one print edition.'
  result[book['bookId']]=entry
 encoded=json.dumps(result,ensure_ascii=False,indent=2)+'\n';target=root/'catalog/reading-metadata.json'
-if '--write' in sys.argv:target.write_text(encoded)
+if args.write:target.write_text(encoded)
 elif target.read_text()!=encoded:raise ValueError('Reading metadata reproduction mismatch')
 print(json.dumps({k:len(v['passages']) for k,v in result.items()},ensure_ascii=False))

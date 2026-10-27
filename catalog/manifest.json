@@ -658,5 +658,48 @@
     "opening": "MY BIRTH AND PARENTAGE—EARLY TASTES AND TRAVELS—MARRIAG",
     "ending": "THE END.",
     "scopeNote": "本版收录十九章和结语；书前引言及致读者见原文出处。"
+  },
+  {
+    "id": "gutenberg-beyond-good-and-evil",
+    "file": "world/beyond-good-and-evil.json",
+    "format": "structured",
+    "title": "超越善恶（善恶的彼岸）",
+    "originalTitle": "Beyond Good and Evil",
+    "author": "弗里德里希·尼采（Friedrich Nietzsche）",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/4363",
+    "description": "正文由 Helen Zimmern 英译，卷末诗歌由 L. A. Magnus 英译。",
+    "cover": "meditations",
+    "sourceLanguage": "en",
+    "originalLanguage": "de",
+    "translation": "Helen Zimmern (prose); L. A. Magnus (concluding poem)",
+    "topics": [
+      "philosophy"
+    ],
+    "bodyChapters": 9,
+    "opening": "The Will to Truth",
+    "ending": "And Light and Dark were one that wedding-morn.",
+    "scopeNote": "本版收录 Helen Zimmern 英译的作者序言与九章正文，以及 L. A. Magnus 英译的卷末诗歌；出版页与插图见原文出处。未附中文译文。"
+  },
+  {
+    "id": "gutenberg-zarathustra",
+    "file": "world/zarathustra.json",
+    "format": "structured",
+    "title": "查拉图斯特拉如是说",
+    "originalTitle": "Thus Spake Zarathustra: A Book for All and None",
+    "author": "弗里德里希·尼采（Friedrich Nietzsche）",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/1998",
+    "description": "Thomas Common 英译本，收录四部正文，以查拉图斯特拉的演说与寓言展开。",
+    "cover": "meditations",
+    "sourceLanguage": "en",
+    "originalLanguage": "de",
+    "translation": "Thomas Common (English translation)",
+    "topics": [
+      "philosophy",
+      "literature"
+    ],
+    "bodyChapters": 81,
+    "opening": "When Zarathustra was thirty years old",
+    "ending": "morning sun coming out of gloomy mountains.",
+    "scopeNote": "本版采用 Thomas Common 英译，收录序篇及四部正文；不含福尔斯特-尼采的导言与 Ludovici 的后附解说，原文出处保留完整版本。未附中文译文。"
   }
 ]

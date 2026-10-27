@@ -6,11 +6,16 @@ Usage: python3 tools/audit-catalog-content.py SOURCE_CACHE [--report FILE]
 This verifies selected main-text scope, not missing prefatory material or the
 correctness of historical translation/OCR. See per-book scopeNote.
 """
-import json,re,unicodedata,hashlib,sys,subprocess
+import argparse,json,re,unicodedata,hashlib,sys,subprocess
 from pathlib import Path
 from bs4 import BeautifulSoup,NavigableString,Tag,Comment
 root=Path(__file__).resolve().parents[1]
-cache=Path(sys.argv[1])
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('source_cache');parser.add_argument('--report');parser.add_argument('--only',nargs='+')
+args=parser.parse_args();cache=Path(args.source_cache)
+entries=json.loads((root/'catalog/manifest.json').read_text())
+if args.only and not set(args.only)<={e['id'] for e in entries}:parser.error('--only contains an unknown catalog ID')
+entries=[e for e in entries if not args.only or e['id'] in args.only]
 code="import {createLibraryService} from './server/library-service.mjs';const l=await createLibraryService({dataDir:'/tmp/catalog-content-audit-readonly',translator:null});const books=[];for(const b of await l.list(null))books.push(await l.getBook(null,b.bookId));console.log(JSON.stringify(books));"
 books={b['bookId']:b for b in json.loads(subprocess.check_output(['node','--input-type=module','-e',code],cwd=root))}
 block=set('html body div p section article pre blockquote li ul ol table tr td th h1 h2 h3 h4 h5 h6'.split())
@@ -24,7 +29,7 @@ def flat(el):
 norm=lambda t:re.sub(r'\s+',' ',unicodedata.normalize('NFC',t)).strip()
 def tokens(t):return re.findall(r"\w+(?:[’']\w+)*|[^\w\s]",unicodedata.normalize('NFC',t))
 results=[]
-for e in json.loads((root/'catalog/manifest.json').read_text()):
+for e in entries:
  if e.get('format')!='structured':
   raw=(root/'catalog'/e['file']).read_text();m=re.search(r'\*\*\* START OF THE PROJECT GUTENBERG EBOOK[^\n]*\*\*\*([\s\S]*?)\*\*\* END OF THE PROJECT GUTENBERG EBOOK',raw);body=norm(m[1]);target=norm(' '.join(p['original'] for sec in books[e['id']]['sections'] for p in sec['paragraphs']));
   if body!=target:raise ValueError('Legacy source sequence mismatch: '+e['id'])
@@ -41,6 +46,7 @@ for e in json.loads((root/'catalog/manifest.json').read_text()):
  original_paragraphs={norm(p) for c in d['chapters'] for p in c['paragraphs']}
  for x in s.select('h1,h2,h3,h4,h5,h6'):
   if norm(flat(x)).startswith(('Transcriber', 'Typographical errors corrected')):x.name='span';x.string='AUDIT_DIGITIZER_END'
+  elif key=='1998' and norm(flat(x))=='APPENDIX.':x.name='span';x.string='AUDIT_READING_SCOPE_END'
   elif key=='room' and norm(flat(x))=='THE END':x.name='span';x.string='AUDIT_DIGITIZER_END'
   elif norm(flat(x)) in original_paragraphs:x.name='span'
   else:x.decompose()
@@ -51,7 +57,7 @@ for e in json.loads((root/'catalog/manifest.json').read_text()):
  source=source[pos:]
  # Remove explicit source/digitizer end markers; no per-book final sentence cutoff.
  stops=[r'\*\*\*\s*END OF',r'End of (?:the |this )?Project Gutenberg',r'THE FULL PROJECT GUTENBERG',r'Transcriber[’\']s Note',r'Typographical errors corrected',r'CHISWICK PRESS',r'London: Printed by',r'The Home and the World by Rabindranath Tagore\. Translated']
- stops+=['AUDIT_DIGITIZER_END']
+ stops+=['AUDIT_DIGITIZER_END','AUDIT_READING_SCOPE_END']
  for st in stops:
   m=re.search(st,source,re.I)
   if m:source=source[:m.start()]
@@ -76,5 +82,5 @@ for e in json.loads((root/'catalog/manifest.json').read_text()):
  row={'id':e['id'],'sourceUrl':u,'sourceSha256':hashlib.sha256(raw).hexdigest(),'sourceChars':len(source),'matchedChars':matched,'scopeNote':e['scopeNote'],'differences':failures,'excludedGaps':ignored,'status':'pass' if not failures else 'fail'};results.append(row)
  print(e['id'],row['status'].upper(),len(source),'source characters',len(failures),'unexplained differences',flush=True)
 report={'kind':'catalog-source-sequence-audit','books':results,'passed':sum(x['status']=='pass' for x in results),'total':len(results)}
-if '--report' in sys.argv:Path(sys.argv[sys.argv.index('--report')+1]).write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
-if report['passed']!=30 or report['total']!=30:raise SystemExit('Source coverage audit failed; inspect report differences')
+if args.report:Path(args.report).write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+if report['passed']!=len(entries) or report['total']!=len(entries):raise SystemExit('Source coverage audit failed; inspect report differences')
