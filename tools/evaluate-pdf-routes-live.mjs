@@ -5,9 +5,9 @@
 //
 // Safety contract (from docs/pdf-paddleocr-evaluation.md, real A/B rules):
 // - Two phases. `--generate` builds samples, freezes human references and a
-//   signed intent (hashes + worst-case page budget) into a NEW --out dir.
-//   `--run` re-reads that intent, refuses on any hash drift, probes token
-//   validity with a zero-cost batch lookup, and only then submits.
+//   hashed intent (sources + code/config + page budget) into a NEW --out dir.
+//   `--run` durably claims it before token access/provider probes, then reserves
+//   each sample x mode before submit. Existing/partial/unknown runs never replay.
 // - Each sample x mode is submitted at most once. Total recognized pages are
 //   capped at 12 by construction (3 samples x 2 pages x 2 modes worst case).
 // - The access token is read from the repo .env (or process env) and is never
@@ -24,8 +24,9 @@ import {PDFDocument} from 'pdf-lib';
 import {createCanvas} from '@napi-rs/canvas';
 import {inspectNativePdf} from '../server/pdf-native.mjs';
 import {createBookIngestion} from '../server/book-ingestion.mjs';
-import {createPaddleProvider, PADDLE_MODEL} from '../server/paddleocr.mjs';
+import {createPaddleProvider} from '../server/paddleocr.mjs';
 import {digest} from '../server/document-import.mjs';
+import {createLiveIntent, assertFreshLiveRun, claimLiveRun, writeExclusiveEvidence} from './pdf-live-guard.mjs';
 
 const fontkit = createRequire(import.meta.url)('fontkit');
 const fixedDate = new Date('2026-10-27T00:00:00Z');
@@ -108,16 +109,56 @@ export function sampleCharset() {
 }
 
 // ---------------------------------------------------------------- drawing
-function wrapLines(text, font, size, maxWidth) {
+export function wrapLines(text, font, size, maxWidth) {
   const lines = [];
   let line = '';
   for (const ch of text) {
+    if (font.widthOfTextAtSize(ch, size) > maxWidth) throw Error('Glyph exceeds sample text width');
     const candidate = line + ch;
     if (line && font.widthOfTextAtSize(candidate, size) > maxWidth) { lines.push(line); line = ch; }
     else line = candidate;
   }
   if (line) lines.push(line);
   return lines;
+}
+
+// Return the actual drawing commands so tests can measure the same geometry
+// used for the PDF. Reading reference order remains left column, then right.
+export function layoutTextPage(blocks, layout, font) {
+  const draws = [];
+  const draw = (text, x, y, size) => {
+    const width = font.widthOfTextAtSize(text, size);
+    if (x < 40 || x + width > 560.001 || y < 30 || y + size > 770) throw Error('Sample text outside visible bounds');
+    draws.push({text, x, y, size, width});
+  };
+  if (layout === 'single-column') {
+    let y = 736;
+    for (const block of blocks) {
+      const size = block.kind === 'heading' ? 16 : 12.5;
+      for (const line of wrapLines(block.text, font, size, 512)) {
+        draw(line, 44, y, size); y -= size * 1.85;
+      }
+      y -= 10;
+    }
+  } else if (layout === 'two-columns-footnote') {
+    const left = blocks.filter(b => b.id.startsWith('L')), right = blocks.filter(b => b.id.startsWith('R'));
+    const foot = blocks.find(b => b.kind === 'footnote');
+    if (left.length !== 4 || right.length !== 4 || !foot) throw Error('Incomplete two-column reference');
+    let y = 730;
+    for (let i = 0; i < 4; i++) {
+      const l = wrapLines(left[i].text, font, 11.5, 238), r = wrapLines(right[i].text, font, 11.5, 238);
+      // Keep row-wise PDF insertion deliberately different from reading order.
+      l.forEach((text, n) => draw(text, 40, y - n * 19.55, 11.5));
+      r.forEach((text, n) => draw(text, 322, y - n * 19.55, 11.5));
+      y -= Math.max(l.length, r.length) * 19.55 + 14;
+    }
+    if (y < 130) throw Error('Columns overlap the footnote area');
+    let footY = 84;
+    for (const line of wrapLines(foot.text, font, 9, 512)) {
+      draw(line, 44, footY, 9); footY -= 14.4;
+    }
+  } else throw Error('Unsupported synthetic text layout');
+  return draws;
 }
 
 async function buildTextSample(sample, fontBytes) {
@@ -127,26 +168,7 @@ async function buildTextSample(sample, fontBytes) {
   const font = await doc.embedFont(fontBytes, {subset: false});
   for (const blocks of sample.pages) {
     const page = doc.addPage([600, 800]);
-    if (sample.layout === 'single-column') {
-      let y = 736;
-      for (const block of blocks) {
-        const size = block.kind === 'heading' ? 16 : 12.5;
-        for (const line of wrapLines(block.text, font, size, 512)) {
-          page.drawText(line, {font, x: 44, y, size}); y -= size * 1.85;
-        }
-        y -= 10;
-      }
-    } else { // two-columns-footnote: draw row-wise interleaved on purpose
-      const rows = [730, 684, 638, 592];
-      const left = blocks.filter(b => b.id.startsWith('L'));
-      const right = blocks.filter(b => b.id.startsWith('R'));
-      const foot = blocks.find(b => b.kind === 'footnote');
-      for (let i = 0; i < 4; i++) {
-        page.drawText(left[i].text, {font, x: 40, y: rows[i], size: 11.5});
-        page.drawText(right[i].text, {font, x: 322, y: rows[i], size: 11.5});
-      }
-      for (const line of wrapLines(foot.text, font, 9, 512)) page.drawText(line, {font, x: 44, y: 84, size: 9});
-    }
+    for (const {text, width: _width, ...position} of layoutTextPage(blocks, sample.layout, font)) page.drawText(text, {font, ...position});
   }
   return Buffer.from(await doc.save());
 }
@@ -159,7 +181,13 @@ async function buildScanSample(sample) {
     const canvas = createCanvas(1240, 1654), ctx = canvas.getContext('2d');
     ctx.fillStyle = 'white'; ctx.fillRect(0, 0, 1240, 1654);
     ctx.fillStyle = 'black'; ctx.font = '36px "PingFang SC", "Heiti SC", "STHeiti", sans-serif';
-    blocks.forEach((block, i) => ctx.fillText(block.text, 72, 150 + i * 92));
+    let y = 150;
+    for (const block of blocks) {
+      const font = {widthOfTextAtSize: text => ctx.measureText(text).width};
+      for (const line of wrapLines(block.text, font, 36, 1096)) { ctx.fillText(line, 72, y); y += 54; }
+      y += 38;
+    }
+    if (y > 1582) throw Error('Scan sample text exceeds visible height');
     const png = canvas.toBuffer('image/png');
     proofs.push(png);
     const image = await doc.embedPng(png);
@@ -198,7 +226,7 @@ function levenshtein(a, b) {
   return prev[b.length];
 }
 
-function pageMetrics(refBlocks, hypText) {
+export function pageMetrics(refBlocks, hypText) {
   const refText = referenceText(refBlocks);
   const hypStripped = stripWs(hypText ?? '');
   const found = [], missing = [], duplicates = [];
@@ -220,7 +248,7 @@ function pageMetrics(refBlocks, hypText) {
   if (footBlock) {
     const rank = byPosition.indexOf(footBlock.id);
     footnote = {
-      block: footBlock.id, belongsTo: footBlock.belongsTo, found: rank >= 0,
+      block: footBlock.id, expectedBelongsTo: footBlock.belongsTo, semanticOwnershipVerified: false, found: rank >= 0,
       isLastInReadingOrder: rank >= 0 && rank === byPosition.length - 1,
       ownerRank: byPosition.indexOf(footBlock.belongsTo), footnoteRank: rank,
     };
@@ -250,15 +278,21 @@ function memoryStore() {
   };
 }
 
-function instrumentedProvider(real) {
-  const stats = {submissions: 0, submittedPages: 0, submitMs: 0, resultMs: 0, statusPolls: 0, handleDigests: []};
+export function instrumentedProvider(real, {claim, sampleId, mode}) {
+  const stats = {attemptedSubmissions: 0, attemptedPages: 0, unknownOutcomePages: 0,
+    submissions: 0, submittedPages: 0, submitMs: 0, resultMs: 0, statusPolls: 0, handleDigests: []};
   const provider = {
     stats,
     async submit(bytes, opts) {
       const pages = (await PDFDocument.load(bytes)).getPageCount();
+      if (opts?.fileUrl) throw Error('Synthetic A/B cannot submit an external file URL');
+      const reservation = await claim.reserve({sampleId, mode, requestId: opts?.batchId, pages, batchSha256: digest(bytes)});
+      stats.attemptedSubmissions++; stats.attemptedPages += pages; stats.unknownOutcomePages += pages;
       const t = performance.now();
-      const handle = await real.submit(bytes, opts);
-      stats.submitMs += performance.now() - t;
+      let handle;
+      try { handle = await real.submit(bytes, opts); await claim.acknowledge(reservation, handle); }
+      finally { stats.submitMs += performance.now() - t; }
+      stats.unknownOutcomePages -= pages;
       stats.submissions++; stats.submittedPages += pages;
       stats.handleDigests.push(sha256(String(handle?.jobId ?? '')).slice(0, 16));
       return handle;
@@ -271,7 +305,10 @@ function instrumentedProvider(real) {
       return r;
     },
   };
-  if (real.recover) provider.recover = batchId => real.recover(batchId);
+  if (real.recover) provider.recover = batchId => {
+    if (stats.unknownOutcomePages) throw Error('Unknown submission retained; reconcile original request separately, never replay');
+    return real.recover(batchId);
+  };
   return provider;
 }
 
@@ -290,7 +327,9 @@ async function runRoute(fixture, mode, provider) {
         ? await ingestion.consent(user, job.id, {confirm: true, sourceHash: job.sourceHash})
         : await ingestion.advance(user, job.id);
     } catch (error) {
-      lastError = {name: error?.name ?? 'Error', status: error?.status ?? error?.statusCode ?? null};
+      const status = error?.status ?? error?.statusCode;
+      lastError = {name: /^[A-Za-z][A-Za-z0-9]{0,63}$/.test(error?.name ?? '') ? error.name : 'Error',
+        status: Number.isInteger(status) ? status : null};
       const view = await ingestion.view(user, job.id).catch(() => null);
       if (view?.state === 'needs_review' && resumes < 2) { resumes++; job = await ingestion.resume(user, job.id); continue; }
       job = view ?? job;
@@ -301,11 +340,21 @@ async function runRoute(fixture, mode, provider) {
   const rawDigests = [...store.blobs.entries()].filter(([k]) => /\/raw-/.test(k))
     .map(([k, v]) => ({key: k.split('/').pop(), sha256: digest(v), bytes: v.length}));
   const original = [...store.blobs.entries()].find(([k]) => k.endsWith('/source'))?.[1];
+  // Preserve text/geometry needed for offline inspection, excluding transport
+  // metadata and result/download URLs. This is a projection, not the raw blob.
+  const rawContentProjection = [...store.blobs.entries()].filter(([k]) => /\/raw-/.test(k)).map(([k, v]) => ({
+    key: k.split('/').pop(), rawSha256: digest(v), pages: JSON.parse(v).pages.map(p => ({
+      width: p.prunedResult?.width, height: p.prunedResult?.height,
+      blocks: p.prunedResult?.parsing_res_list?.map(b => ({text: b.block_content, label: b.block_label,
+        bbox: b.block_bbox, order: b.block_order})),
+    })),
+  }));
   return {
     mode, state: job.state, error: lastError, resumes,
     totalMs, recognitionPages: job.recognitionPages ?? null,
     providerStats: provider.stats,
     rawResultDigests: rawDigests,
+    rawContentProjection,
     sourceBytesVerified: !!original && original.equals(fixture.bytes),
     extractedPages: extracted ? extracted.pages.map(p => ({page: p.page, text: p.text, blank: !!p.blank})) : null,
     pageCoverageComplete: !!extracted && extracted.pages.length === fixture.sample.pages.length
@@ -327,98 +376,76 @@ function loadToken() {
 async function generate(outDir, fontPath) {
   const fontBytes = readFileSync(fontPath);
   const built = await buildSamples(fontBytes);
-  await mkdir(outDir);
-  const intentSamples = [];
+  await mkdir(outDir, {mode: 0o700});
   for (const fixture of built) {
-    await writeFile(path.join(outDir, fixture.sample.id + '.pdf'), fixture.bytes, {flag: 'wx'});
+    await writeFile(path.join(outDir, fixture.sample.id + '.pdf'), fixture.bytes, {flag: 'wx', mode: 0o600});
     for (let i = 0; i < fixture.proofs.length; i++) {
-      await writeFile(path.join(outDir, `${fixture.sample.id}-page${i + 1}.png`), fixture.proofs[i], {flag: 'wx'});
+      await writeFile(path.join(outDir, `${fixture.sample.id}-page${i + 1}.png`), fixture.proofs[i], {flag: 'wx', mode: 0o600});
     }
-    intentSamples.push({
-      id: fixture.sample.id, kind: fixture.sample.kind, layout: fixture.sample.layout,
-      sha256: digest(fixture.bytes), bytes: fixture.bytes.length, totalPages: fixture.sample.pages.length,
-      rights: {kind: 'synthetic', license: 'CC0-1.0', source: 'composed-in-tools/evaluate-pdf-routes-live.mjs', privateInputs: false},
-      pages: fixture.sample.pages.map((blocks, i) => ({
-        page: i + 1,
-        referenceBlocks: blocks.map(b => ({id: b.id, kind: b.kind, ...(b.belongsTo ? {belongsTo: b.belongsTo} : {}), text: b.text})),
-        expectedOrder: expectedOrder(blocks),
-        referenceText: referenceText(blocks),
-      })),
-    });
   }
-  const worstCasePages = intentSamples.reduce((n, s) => n + s.totalPages, 0) * 2;
-  const intent = {
-    schemaVersion: 1, evidenceKind: 'live-ab-real-provider', phase: 'intent-frozen-before-any-provider-call',
-    frozenAt: new Date().toISOString(),
-    model: PADDLE_MODEL, sdkPackage: '@paddleocr/api-sdk@0.2.3',
-    providerOptionsFrozenFromRepo: {useDocOrientationClassify: false, useDocUnwarping: false, markdownIgnoreLabels: ['header', 'footer', 'number', 'header_image', 'footer_image']},
-    batchPages: 2, worstCaseRecognizedPages: worstCasePages, hardCapRecognizedPages: 12,
-    samples: intentSamples,
-  };
-  await writeFile(path.join(outDir, 'intent.json'), JSON.stringify(intent, null, 2) + '\n', {flag: 'wx'});
-  console.log('Samples + frozen intent saved to', outDir, '| worst-case pages:', worstCasePages);
+  const intent = await createLiveIntent(built);
+  await writeExclusiveEvidence(path.join(outDir, 'intent.json'), intent);
+  console.log('Synthetic samples + frozen intent saved to', outDir, '| worst-case pages:', intent.worstCaseRecognizedPages);
 }
 
-async function run(outDir, fontPath) {
-  const intent = JSON.parse(await readFile(path.join(outDir, 'intent.json'), 'utf8'));
-  const fontBytes = readFileSync(fontPath);
-  const built = await buildSamples(fontBytes);
-  for (const fixture of built) {
-    const recorded = intent.samples.find(s => s.id === fixture.sample.id);
-    if (!recorded || recorded.sha256 !== digest(fixture.bytes)) throw Error('Sample hash drift vs frozen intent: ' + fixture.sample.id);
-  }
-  console.log('Intent hashes verified for', built.length, 'samples. Probing token validity (zero-cost batch lookup)…');
-  const token = loadToken();
-  if (!token) throw Error('PADDLEOCR_ACCESS_TOKEN not configured (repo .env or process env).');
-  const probeProvider = createPaddleProvider({env: {...process.env, PADDLEOCR_ACCESS_TOKEN: token}});
+// Explicit dependency boundaries allow offline integration tests to execute the
+// real run/claim/ledger without loading tokens, submitting OCR, or writing a library.
+export async function run(outDir, fontPath, {
+  build = buildSamples, readToken = loadToken, makeProvider = createPaddleProvider,
+  inspect = inspectNativePdf, route = runRoute,
+} = {}) {
+  await assertFreshLiveRun(outDir);
+  const intentText = await readFile(path.join(outDir, 'intent.json'), 'utf8');
+  const built = await build(readFileSync(fontPath));
+  const claim = await claimLiveRun(outDir, {intentText, built});
+  const token = readToken();
+  if (!token) throw Error('PADDLEOCR_ACCESS_TOKEN not configured; claim retained, do not replay.');
+  const providerEnv = {...process.env, PADDLEOCR_ACCESS_TOKEN: token};
+  await writeExclusiveEvidence(path.join(outDir, 'probe-started.json'), {runId: claim.runId, startedAt: new Date().toISOString()});
+  const probeProvider = makeProvider({env: providerEnv});
   let tokenProbe;
   try {
     const recovered = await probeProvider.recover('get209-probe-nonexistent-batch');
-    tokenProbe = {ok: true, detail: recovered === null ? 'batch lookup answered (no such batch); token accepted' : 'unexpected handle returned'};
-  } catch (error) {
-    tokenProbe = {ok: false, detail: 'probe failed: ' + (error?.name ?? 'Error')};
+    tokenProbe = {ok: recovered === null, detail: recovered === null ? 'batch lookup answered; token accepted, quota/cost not verified' : 'unexpected handle returned'};
+  } catch {
+    tokenProbe = {ok: false, detail: 'batch lookup failed; no error payload retained'};
   }
-  console.log('Token probe:', JSON.stringify(tokenProbe));
-  if (!tokenProbe.ok) {
-    await writeFile(path.join(outDir, 'report.json'), JSON.stringify({
-      schemaVersion: 1, evidenceKind: 'live-ab-real-provider', generatedAt: new Date().toISOString(),
-      status: 'blocked-token-probe-failed', tokenProbe, realOcrPages: 0, samples: [],
-    }, null, 2) + '\n', {flag: 'wx'});
-    return;
-  }
+  await writeExclusiveEvidence(path.join(outDir, 'probe-result.json'), {runId: claim.runId, tokenProbe});
   const samples = [];
-  let totalRecognized = 0, totalSubmissions = 0;
-  for (const fixture of built) {
-    const inspected = await inspectNativePdf(fixture.bytes);
-    const runs = [];
-    for (const mode of ['auto', 'ocr']) {
-      const provider = instrumentedProvider(createPaddleProvider({env: {...process.env, PADDLEOCR_ACCESS_TOKEN: token}}));
-      const result = await runRoute(fixture, mode, provider);
-      totalRecognized += provider.stats.submittedPages;
-      totalSubmissions += provider.stats.submissions;
-      const metrics = result.extractedPages
-        ? result.extractedPages.map((p, i) => ({page: p.page, ...pageMetrics(fixture.sample.pages[i], p.text)}))
-        : null;
-      runs.push({...result, extractedPages: undefined, metrics,
-        pagesText: result.extractedPages?.map(p => ({page: p.page, blank: p.blank, chars: p.text.length})) ?? null,
-        normalizedDigest: result.extractedPages ? digest(JSON.stringify(result.extractedPages.map(p => p.text))) : null});
-      console.log(fixture.sample.id, mode, '→ state:', result.state, '| submitted pages:', provider.stats.submittedPages, '| totalMs:', result.totalMs);
+  let status = tokenProbe.ok ? 'executed' : 'blocked-token-probe-failed';
+  if (tokenProbe.ok) {
+    routes: for (const fixture of built) {
+      const inspected = await inspect(fixture.bytes);
+      const runs = [];
+      samples.push({id: fixture.sample.id, layout: fixture.sample.layout,
+        nativeInspection: inspected.pages.map(p => ({page: p.page, needsRecognition: p.needsRecognition, chars: p.text.length})), runs});
+      for (const mode of ['auto', 'ocr']) {
+        const provider = instrumentedProvider(makeProvider({env: providerEnv}), {claim, sampleId: fixture.sample.id, mode});
+        const result = await route(fixture, mode, provider);
+        const metrics = result.extractedPages
+          ? result.extractedPages.map((p, i) => ({page: p.page, ...pageMetrics(fixture.sample.pages[i], p.text)})) : null;
+        const saved = {...result, metrics,
+          normalizedDigest: result.extractedPages ? digest(JSON.stringify(result.extractedPages.map(p => p.text))) : null};
+        // Save the complete synthetic hypothesis after each route, not only at
+        // final report creation; a later crash must not discard earlier text.
+        await writeExclusiveEvidence(path.join(outDir, `route-${fixture.sample.id}-${mode}.json`), saved);
+        runs.push(saved);
+        if (claim.summary().unknownOutcomePages) { status = 'blocked-unknown-submission'; break routes; }
+        if (result.state !== 'done') { status = 'incomplete'; break routes; }
+      }
     }
-    samples.push({
-      id: fixture.sample.id, layout: fixture.sample.layout,
-      nativeInspection: inspected.pages.map(p => ({page: p.page, needsRecognition: p.needsRecognition, chars: p.text.length})),
-      runs,
-    });
   }
+  const totals = claim.summary();
   const report = {
-    schemaVersion: 1, evidenceKind: 'live-ab-real-provider', generatedAt: new Date().toISOString(),
-    status: 'executed', tokenProbe,
+    schemaVersion: 2, evidenceKind: 'live-ab-real-provider', generatedAt: new Date().toISOString(),
+    status, runId: claim.runId, intentSha256: claim.intentSha256, tokenProbe,
     environment: {node: process.version, platform: process.platform, arch: process.arch},
-    totals: {recognizedPages: totalRecognized, submissions: totalSubmissions, worstCasePlanned: intent.worstCaseRecognizedPages},
-    samples,
+    totals: {...totals, recognizedPages: status === 'executed' ? totals.acknowledgedPages : null,
+      billingVerified: false, actualCost: null}, samples,
   };
-  await writeFile(path.join(outDir, 'report.json'), JSON.stringify(report, null, 2) + '\n', {flag: 'wx'});
-  console.log('Live A/B report saved. Recognized pages total:', totalRecognized);
+  await writeExclusiveEvidence(path.join(outDir, 'report.json'), report);
+  console.log('A/B evidence saved:', status, '| reserved pages:', totals.reservedPages, '| unknown outcome pages:', totals.unknownOutcomePages);
+  return report;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
