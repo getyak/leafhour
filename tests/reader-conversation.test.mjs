@@ -146,8 +146,8 @@ test('injected conversation creates one AI trigger in the tools surface and no g
   const reader={getBook:()=>book,isSelectionActive:()=>false,getAnchor:()=>({passageId:'p1'})};
   const integration={triggerHost,companionAnchor:pill,focusReturn:()=>{calls.returned++;pill.focus();},onUnread:value=>calls.unread.push(value),onOpen:()=>{calls.opened++;}};
   Object.assign(seams,{triggerHost,companionAnchor:pill,focusReturn:integration.focusReturn,onUnread:integration.onUnread,onOpen:integration.onOpen});
-  mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,api,integration});
-  await flush();
+  const instance=mountReaderConversation({renderMarkdown:renderChatMarkdown,bookId:'book-one',session:{user:{id:'reader-one'}},getReader:()=>reader,root:f.dialog,api,integration});
+  await instance.companionReady;await flush();
   const all=f.all;
   assert.equal(all(f.doc.body).filter(n=>n.className==='library-chat-launcher').length,0,'injected mode generates no hidden launcher');
   assert.equal(all(f.doc.body).filter(n=>n.className==='squirrel-companion-toggle').length,1,'exactly one companion toggle mounts');

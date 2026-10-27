@@ -1,0 +1,395 @@
+{
+  "schemaVersion": 1,
+  "id": "james-p-carse",
+  "revision": 1,
+  "visibility": "public",
+  "originalName": "James P. Carse",
+  "names": {
+    "en": "James P. Carse",
+    "zh-Hans": "詹姆斯·P. 卡斯",
+    "zh-Hant": "詹姆斯·P. 卡斯",
+    "ja": "ジェームズ・P・カース"
+  },
+  "intro": {
+    "en": "A scholar of religion and author of Finite and Infinite Games. This short record uses public publisher facts and an attributed obituary; the book’s specific biographical origins remain unestablished.",
+    "zh-Hans": "宗教学者，《有限与无限的游戏》的作者。这里以出版社资料和明确标注的讣告记下可查生平。现有证据尚不能说明这本书出自哪一次具体的人生转折。",
+    "zh-Hant": "宗教學者，《有限與無限的遊戲》的作者。這裡以出版社資料和明確標註的訃告記下可查生平。現有證據尚不能說明這本書出自哪一次具體的人生轉折。",
+    "ja": "宗教学者で『有限と無限のゲーム』の著者。出版社の公開情報と出所を示した訃報による小さな記録であり、この本を生んだ特定の人生の転機は確認できていない。"
+  },
+  "birth": {
+    "value": "1932-12-24",
+    "precision": "day",
+    "claimIds": [
+      "c-birth"
+    ]
+  },
+  "death": {
+    "value": "2020-09-25",
+    "precision": "day",
+    "claimIds": [
+      "c-death"
+    ]
+  },
+  "portrait": null,
+  "periods": [
+    {
+      "id": "c-public-record",
+      "from": "1932",
+      "to": "2020",
+      "title": {
+        "en": "A partial public record",
+        "zh-Hans": "可查的公开生平",
+        "zh-Hant": "可查的公開生平",
+        "ja": "確認できた公開記録"
+      },
+      "summary": {
+        "en": "The intervening years are not filled with inferred events.",
+        "zh-Hans": "没有核对到的年份保留空缺。",
+        "zh-Hant": "沒有核對到的年份保留空缺。",
+        "ja": "確認できていない年代は推測で埋めない。"
+      },
+      "eventIds": [
+        "c-born",
+        "event-carse-finite-infinite",
+        "event-carse-breakfast",
+        "event-carse-belief",
+        "c-died"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "c-born",
+      "date": {
+        "value": "1932-12-24",
+        "precision": "day",
+        "claimIds": [
+          "c-birth"
+        ]
+      },
+      "title": {
+        "en": "Born in Ohio",
+        "zh-Hans": "生于俄亥俄州",
+        "zh-Hant": "生於俄亥俄州",
+        "ja": "オハイオ州に生まれる"
+      },
+      "body": {
+        "en": "The Recorder obituary records his birth in Mansfield, Ohio.",
+        "zh-Hans": "《The Recorder》刊登的讣告记其生于俄亥俄州曼斯菲尔德。",
+        "zh-Hant": "《The Recorder》刊登的訃告記其生於俄亥俄州曼斯菲爾德。",
+        "ja": "『The Recorder』掲載の訃報によれば、オハイオ州マンスフィールドに生まれた。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "c-birth"
+      ]
+    },
+    {
+      "id": "event-carse-finite-infinite",
+      "date": {
+        "value": "1986",
+        "precision": "year",
+        "claimIds": [
+          "claim-carse-finite-infinite"
+        ]
+      },
+      "title": {
+        "en": "Finite and Infinite Games published",
+        "zh-Hans": "有限与无限的游戏出版",
+        "zh-Hant": "有限與無限的遊戲出版",
+        "ja": "有限と無限のゲームを刊行"
+      },
+      "body": {
+        "en": "The university catalogue records a 1986 Free Press edition. No private book text is included here.",
+        "zh-Hans": "大学目录记载了 1986 年 Free Press 版。此处不收录私人书籍正文。",
+        "zh-Hant": "大學目錄記載了 1986 年 Free Press 版。此處不收錄私人書籍正文。",
+        "ja": "大学図書館の目録は1986年のFree Press版を記録する。私蔵本の本文は掲載しない。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "carse-finite-infinite"
+      ],
+      "claimIds": [
+        "claim-carse-finite-infinite"
+      ]
+    },
+    {
+      "id": "event-carse-breakfast",
+      "date": {
+        "value": "1994",
+        "precision": "year",
+        "claimIds": [
+          "claim-carse-breakfast"
+        ]
+      },
+      "title": {
+        "en": "Breakfast at the Victory published",
+        "zh-Hans": "在胜利咖啡馆吃早餐出版",
+        "zh-Hant": "在勝利咖啡館吃早餐出版",
+        "ja": "ヴィクトリーで朝食をを刊行"
+      },
+      "body": {
+        "en": "The publisher identifies this 1994 work as The Mysticism of Ordinary Experience.",
+        "zh-Hans": "出版社将这部 1994 年作品的副标题列为 The Mysticism of Ordinary Experience。",
+        "zh-Hant": "出版社將這部 1994 年作品的副標題列為 The Mysticism of Ordinary Experience。",
+        "ja": "出版社によると、1994年刊の本書の副題は The Mysticism of Ordinary Experience。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "carse-breakfast"
+      ],
+      "claimIds": [
+        "claim-carse-breakfast"
+      ]
+    },
+    {
+      "id": "event-carse-belief",
+      "date": {
+        "value": "2008",
+        "precision": "year",
+        "claimIds": [
+          "claim-carse-belief"
+        ]
+      },
+      "title": {
+        "en": "The Religious Case Against Belief published",
+        "zh-Hans": "以宗教之名反对信仰出版",
+        "zh-Hant": "以宗教之名反對信仰出版",
+        "ja": "信仰に抗する宗教的立場を刊行"
+      },
+      "body": {
+        "en": "A 2008 work listed in the publisher’s author biography.",
+        "zh-Hans": "出版社作者简介所列的 2008 年作品。",
+        "zh-Hant": "出版社作者簡介所列的 2008 年作品。",
+        "ja": "出版社の著者紹介に記載された2008年の著作。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "carse-belief"
+      ],
+      "claimIds": [
+        "claim-carse-belief"
+      ]
+    },
+    {
+      "id": "c-died",
+      "date": {
+        "value": "2020-09-25",
+        "precision": "day",
+        "claimIds": [
+          "c-death"
+        ]
+      },
+      "title": {
+        "en": "Death in Massachusetts",
+        "zh-Hans": "逝于马萨诸塞州",
+        "zh-Hant": "逝於麻薩諸塞州",
+        "ja": "マサチューセッツ州で死去"
+      },
+      "body": {
+        "en": "His obituary reports that he died at home in Rowe, aged 87.",
+        "zh-Hans": "讣告记其在罗镇家中去世，享年 87 岁。",
+        "zh-Hant": "訃告記其在羅鎮家中去世，享年 87 歲。",
+        "ja": "訃報によればロウの自宅で亡くなった。87歳だった。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "c-death"
+      ]
+    }
+  ],
+  "works": [
+    {
+      "id": "carse-finite-infinite",
+      "title": {
+        "en": "Finite and Infinite Games",
+        "zh-Hans": "有限与无限的游戏",
+        "zh-Hant": "有限與無限的遊戲",
+        "ja": "有限と無限のゲーム"
+      },
+      "originalTitle": "Finite and Infinite Games",
+      "kind": "nonfiction",
+      "year": {
+        "value": "1986",
+        "precision": "year",
+        "claimIds": [
+          "claim-carse-finite-infinite"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "The university catalogue records a 1986 Free Press edition. No private book text is included here.",
+        "zh-Hans": "大学目录记载了 1986 年 Free Press 版。此处不收录私人书籍正文。",
+        "zh-Hant": "大學目錄記載了 1986 年 Free Press 版。此處不收錄私人書籍正文。",
+        "ja": "大学図書館の目録は1986年のFree Press版を記録する。私蔵本の本文は掲載しない。"
+      },
+      "claimIds": [
+        "claim-carse-finite-infinite"
+      ]
+    },
+    {
+      "id": "carse-breakfast",
+      "title": {
+        "en": "Breakfast at the Victory",
+        "zh-Hans": "在胜利咖啡馆吃早餐",
+        "zh-Hant": "在勝利咖啡館吃早餐",
+        "ja": "ヴィクトリーで朝食を"
+      },
+      "originalTitle": "Breakfast at the Victory",
+      "kind": "nonfiction",
+      "year": {
+        "value": "1994",
+        "precision": "year",
+        "claimIds": [
+          "claim-carse-breakfast"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "The publisher identifies this 1994 work as The Mysticism of Ordinary Experience.",
+        "zh-Hans": "出版社将这部 1994 年作品的副标题列为 The Mysticism of Ordinary Experience。",
+        "zh-Hant": "出版社將這部 1994 年作品的副標題列為 The Mysticism of Ordinary Experience。",
+        "ja": "出版社によると、1994年刊の本書の副題は The Mysticism of Ordinary Experience。"
+      },
+      "claimIds": [
+        "claim-carse-breakfast"
+      ]
+    },
+    {
+      "id": "carse-belief",
+      "title": {
+        "en": "The Religious Case Against Belief",
+        "zh-Hans": "以宗教之名反对信仰",
+        "zh-Hant": "以宗教之名反對信仰",
+        "ja": "信仰に抗する宗教的立場"
+      },
+      "originalTitle": "The Religious Case Against Belief",
+      "kind": "nonfiction",
+      "year": {
+        "value": "2008",
+        "precision": "year",
+        "claimIds": [
+          "claim-carse-belief"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "A 2008 work listed in the publisher’s author biography.",
+        "zh-Hans": "出版社作者简介所列的 2008 年作品。",
+        "zh-Hant": "出版社作者簡介所列的 2008 年作品。",
+        "ja": "出版社の著者紹介に記載された2008年の著作。"
+      },
+      "claimIds": [
+        "claim-carse-belief"
+      ]
+    }
+  ],
+  "contexts": [
+    {
+      "workId": "carse-finite-infinite",
+      "body": {
+        "en": "The publisher identifies Carse as an NYU scholar of the history and literature of religion, and the library catalogue identifies the 1986 edition. Neither inspected source explains a particular event that caused him to write this book. The relationship remains a gap in this record.",
+        "zh-Hans": "出版社确认他在纽约大学研究宗教史与宗教文学，大学目录确认 1986 年版本。这两份已核对资料都没有说明，哪一次具体经历促使他写下这本书。这一关联仍待查证。",
+        "zh-Hant": "出版社確認他在紐約大學研究宗教史與宗教文學，大學目錄確認 1986 年版本。這兩份已核對資料都沒有說明，哪一次具體經歷促使他寫下這本書。這一關聯仍待查證。",
+        "ja": "出版社はニューヨーク大学で宗教の歴史と文学を研究した学者と紹介し、大学の目録は1986年版を記録する。どちらの資料も、執筆を促した特定の出来事までは説明していない。この関係は未確認のままである。"
+      },
+      "relationship": "contemporary_context",
+      "eventIds": [
+        "event-carse-finite-infinite"
+      ],
+      "claimIds": [
+        "c-motive-gap"
+      ],
+      "excerptIds": []
+    }
+  ],
+  "excerpts": [],
+  "sources": [
+    {
+      "id": "carse-publisher",
+      "url": "https://www.simonandschuster.com/books/Finite-and-Infinite-Games/James-Carse/9781476731711",
+      "title": "Finite and Infinite Games — About the Author",
+      "publisher": "Simon & Schuster",
+      "accessedAt": "2026-10-27",
+      "license": "Copyright retained by the source. Selected short evidence excerpts only; not a full-page snapshot or a licence to republish the article.",
+      "excerpt": "history and literature of religion at New York University.\nThe Religious Case Against Belief (2008)\nBreakfast at the Victory\n(1994)",
+      "read": true,
+      "digest": "9f228967c30e76799e423b2192dbe316884578b0598e2ece5277316f2ca0df9f"
+    },
+    {
+      "id": "carse-catalog",
+      "url": "https://catalog.mercyhurst.edu/cgi-bin/koha/opac-ISBDdetail.pl?biblionumber=27502",
+      "title": "Finite and infinite games — catalogue record",
+      "publisher": "Mercyhurst University Libraries",
+      "accessedAt": "2026-10-27",
+      "license": "Copyright retained by the source. Selected short evidence excerpts only; not a full-page snapshot or a licence to republish the article.",
+      "excerpt": "Finite and infinite games / James P. Carse. - New York : Free Press, c1986. - 152 p. ; 22 cm.\nISBN: 0029059801\nLCCN: 86014304",
+      "read": true,
+      "digest": "681353c23da387e1bf9043ee46cc51c183044ac0d68275e0f3f72d54da94db0c"
+    },
+    {
+      "id": "carse-obituary",
+      "url": "https://www.legacy.com/us/obituaries/recorder/name/james-carse-obituary?id=12013688",
+      "title": "James Carse Obituary — The Recorder, 10 October 2020",
+      "publisher": "The Recorder / Legacy; obituary, family account",
+      "accessedAt": "2026-10-27",
+      "license": "Copyright retained by the source. Selected short evidence excerpts only; not a full-page snapshot or a licence to republish the article.",
+      "excerpt": "James P. Carse\npassed away\nin Rowe, Massachusetts, on September 25th.\nMansfield, Ohio\nDecember 24th, 1932\nPublished by Recorder on Oct. 10, 2020.",
+      "read": true,
+      "digest": "81272e1121b1984fa4371af672d7dc9e631877739842bf663f6825c1754c52dc"
+    }
+  ],
+  "claims": [
+    {
+      "id": "c-birth",
+      "text": "The Recorder obituary gives his birth as 24 December 1932 in Mansfield, Ohio; this is an attributed obituary fact.",
+      "sourceIds": [
+        "carse-obituary"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "claim-carse-finite-infinite",
+      "text": "Finite and Infinite Games is listed with the year 1986.",
+      "sourceIds": [
+        "carse-catalog"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "claim-carse-breakfast",
+      "text": "Breakfast at the Victory is listed with the year 1994.",
+      "sourceIds": [
+        "carse-publisher"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "claim-carse-belief",
+      "text": "The Religious Case Against Belief is listed with the year 2008.",
+      "sourceIds": [
+        "carse-publisher"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "c-death",
+      "text": "The Recorder obituary reports his death on 25 September 2020 in Rowe, Massachusetts.",
+      "sourceIds": [
+        "carse-obituary"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "c-motive-gap",
+      "text": "The inspected publisher biography and catalogue establish authorship and publication, but do not document a specific biographical cause for Finite and Infinite Games.",
+      "sourceIds": [
+        "carse-publisher",
+        "carse-catalog"
+      ],
+      "status": "uncertain"
+    }
+  ]
+}

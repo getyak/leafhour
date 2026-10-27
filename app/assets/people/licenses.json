@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "assets": [
+    {
+      "personId": "virginia-woolf",
+      "file": "virginia-woolf.jpg",
+      "sourceId": "woolf-portrait",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:George_Charles_Beresford_-_Virginia_Woolf_in_1902_-_Restoration.jpg",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/George_Charles_Beresford_-_Virginia_Woolf_in_1902_-_Restoration.jpg/960px-George_Charles_Beresford_-_Virginia_Woolf_in_1902_-_Restoration.jpg",
+      "accessedAt": "2026-10-27",
+      "creator": "George Charles Beresford (1864–1938); restoration by Adam Cuerden, 2016. Virginia Woolf, 1902.",
+      "license": "Public Domain Mark 1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "licenseEvidence": "The author died in 1938, so this work is in the public domain in its country of origin and other countries and areas where the copyright term is the author’s life plus 80 years or fewer. This work is in the public domain in the United States because it was published before January 1, 1931.",
+      "sha256": "41e205cff304f2a02aa49c6d56468233f5892f83e1f565db1c5fa477fe9965cf",
+      "modifications": "No local editing; official Wikimedia thumbnail response for Woolf; original downloaded bytes for Shelley.",
+      "jurisdictionNote": "Wikimedia Commons licence assessment inspected on 2026-10-27. Historical work is public domain in the United States; see source for country-specific term and faithful-reproduction details.",
+      "width": 960,
+      "height": 1311
+    },
+    {
+      "personId": "mary-shelley",
+      "file": "mary-shelley.jpg",
+      "sourceId": "shelley-portrait",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Richard_Rothwell_(1800-1868)_-_Mary_Wollstonecraft_Shelley_-_NPG_1235_-_National_Portrait_Gallery.jpg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Richard_Rothwell_%281800-1868%29_-_Mary_Wollstonecraft_Shelley_-_NPG_1235_-_National_Portrait_Gallery.jpg",
+      "accessedAt": "2026-10-27",
+      "creator": "Richard Rothwell (1800–1868), Mary Wollstonecraft Shelley, c.1831–1840. National Portrait Gallery, London, NPG 1235.",
+      "license": "Public Domain Mark 1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "licenseEvidence": "This is a faithful photographic reproduction of a two-dimensional, public domain work of art. The author died in 1868, so this work is in the public domain in its country of origin and other countries and areas where the copyright term is the author’s life plus 100 years or fewer. The photographic reproduction is considered public domain in the United States. In other jurisdictions, re-use of this content may be restricted.",
+      "sha256": "c0dc0557d629f750b4cb0761601911c19ffcccd4195001136d9ee2aca307ccf5",
+      "modifications": "No local editing; official Wikimedia thumbnail response for Woolf; original downloaded bytes for Shelley.",
+      "jurisdictionNote": "Wikimedia Commons licence assessment inspected on 2026-10-27. Historical work is public domain in the United States; see source for country-specific term and faithful-reproduction details.",
+      "width": 655,
+      "height": 800
+    }
+  ]
+}

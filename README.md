@@ -10,6 +10,8 @@ Development happens in the single public repository [getyak/leafhour](https://gi
 
 The reading page’s squirrel keeps you company after you sign in and remembers books where you turned it off: it first reads quietly for about 90 seconds, then at least every 5 minutes may leave one thought based on the passages currently and recently in the foreground, and stays silent when nothing fits. It speaks at most three times per reading session. Bubbles can be ignored, collapsed, or opened in the existing reading conversation; your drafts are never overwritten, and the companion can be turned off at any time in the conversation. The squirrel can be dragged or moved with Alt + arrow keys, its position is saved in the current browser, and bubbles travel with it; the persistent “accompanying” badge is gone. No messages appear while you select text, write notes, chat, or while the page is in the background; private notes are never read and nothing is pushed outside the site.
 
+Author portraits, work context, sharing and scoped person tools are described in [People and works](docs/author-portraits.md).
+
 ## What works today
 
 A complete path is available locally: website → public catalog → local reading room or email code → upload PDF / EPUB / TXT / Markdown → two translations per passage → personal records and reading conversation. The default catalog ships the complete English originals of *Alice’s Adventures in Wonderland*, *Meditations*, and *Walden*, with sources and licenses kept in `catalog/`; translations are generated on request and are never claimed to be complete up front. The default catalog contains no private sample books.

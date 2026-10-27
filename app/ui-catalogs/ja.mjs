@@ -2145,6 +2145,7 @@ export default Object.freeze({
   "data.settings.intro": "書斎全体のバックアップも、自分の記録だけの保存も。購読は不要です。",
   "data.settings.backupHelp": "読書用の原文と訳文を保存します。元ファイルは任意です。",
   "data.settings.restoreHelp": "ファイルを手元で確認し、同意してから復元を始めます。",
+  "chat.people.allowTurn": "この質問で人物資料の作成・変更・削除を許可する",
   "memory.allowTurn": "この質問で読書設定の変更を許可する",
   "memory.welcome": "まずは一冊から",
   "memory.title": "読書の好み",

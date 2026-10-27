@@ -136,7 +136,7 @@ listen($('open-reader-account'),'click',async()=>{
   }catch{accountRetry=true;if(!readerDisposed)announceUi('ui.generic.error');}
   finally{accountLoad=null;trigger.removeAttribute('aria-busy');}
 });
-const bookActions=mountReaderBookActionsBootstrap({document,info:bookInfo,getBook:()=>book,api,session:readerSession,bookId:selectedBookId,getOwner:()=>readerOwner()||'guest'});
+const bookActions=mountReaderBookActionsBootstrap({document,info:bookInfo,getBook:()=>book,getReader:()=>window.marginaliaReader,api,session:readerSession,bookId:selectedBookId,getOwner:()=>readerOwner()||'guest'});
 function anchor(){
   if(pagination.active)return pagination.anchor();
   const threshold=document.body.classList.contains('is-focused')?24:80;

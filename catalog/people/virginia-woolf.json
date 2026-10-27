@@ -1,0 +1,1230 @@
+{
+  "schemaVersion": 1,
+  "id": "virginia-woolf",
+  "revision": 1,
+  "visibility": "public",
+  "originalName": "Virginia Woolf",
+  "names": {
+    "en": "Virginia Woolf",
+    "zh-Hans": "弗吉尼亚·伍尔夫",
+    "zh-Hant": "維吉尼亞·吳爾芙",
+    "ja": "ヴァージニア・ウルフ"
+  },
+  "intro": {
+    "en": "A novelist, critic and publisher who asked what gives a writer the time and freedom to work. Her Cambridge talks became A Room of One’s Own.",
+    "zh-Hans": "她写小说、书评，也亲手印书。1928 年走进剑桥女子学院讲演时，她已做了十余年出版工作。《一间自己的房间》把问题落在写作所需的钱、空间和时间上。",
+    "zh-Hant": "她寫小說、書評，也親手印書。1928 年走進劍橋女子學院講演時，她已做了十餘年出版工作。《自己的房間》把問題落在寫作所需的錢、空間和時間上。",
+    "ja": "小説や書評を書き、自ら本を刷った作家。1928年、ケンブリッジの女子学寮で行った講演が『自分ひとりの部屋』となり、書くためのお金と場所を問いかけた。"
+  },
+  "birth": {
+    "value": "1882-01-25",
+    "precision": "day",
+    "claimIds": [
+      "w-birth"
+    ]
+  },
+  "death": {
+    "value": "1941-03-28",
+    "precision": "day",
+    "claimIds": [
+      "w-death"
+    ]
+  },
+  "portrait": {
+    "url": "/assets/people/virginia-woolf.jpg",
+    "alt": {
+      "en": "Virginia Woolf photographed in 1902",
+      "zh-Hans": "1902 年的弗吉尼亚·伍尔夫",
+      "zh-Hant": "1902 年的維吉尼亞·吳爾芙",
+      "ja": "1902年のヴァージニア・ウルフ"
+    },
+    "credit": "George Charles Beresford (1864–1938); restoration by Adam Cuerden, 2016. Virginia Woolf, 1902.",
+    "license": "Public domain; Public Domain Mark 1.0; faithful historical image. Jurisdiction details in licence record.",
+    "sourceId": "woolf-portrait"
+  },
+  "periods": [
+    {
+      "id": "w-childhood",
+      "from": "1882",
+      "to": "1904",
+      "title": {
+        "en": "Family and study",
+        "zh-Hans": "家庭与求学",
+        "zh-Hant": "家庭與求學",
+        "ja": "家族と学び"
+      },
+      "summary": {
+        "en": "London childhood, family losses and language studies.",
+        "zh-Hans": "在伦敦长大，经历亲人离世，也学习语言与历史。",
+        "zh-Hant": "在倫敦長大，經歷親人離世，也學習語言與歷史。",
+        "ja": "ロンドンで育ち、家族との別れを経験し、語学と歴史を学ぶ。"
+      },
+      "eventIds": [
+        "w-born",
+        "w-mother-dies",
+        "w-kings",
+        "w-father-dies"
+      ]
+    },
+    {
+      "id": "w-publisher",
+      "from": "1905",
+      "to": "1922",
+      "title": {
+        "en": "Critic and printer",
+        "zh-Hans": "书评与印书",
+        "zh-Hant": "書評與印書",
+        "ja": "書評と印刷"
+      },
+      "summary": {
+        "en": "Paid reviewing, a first novel and the Hogarth Press.",
+        "zh-Hans": "写书评，出版第一部小说，建立自己的出版社。",
+        "zh-Hant": "寫書評，出版第一部小說，建立自己的出版社。",
+        "ja": "書評を仕事にし、最初の小説を刊行し、出版社を始める。"
+      },
+      "eventIds": [
+        "w-reviewing",
+        "w-married",
+        "event-woolf-voyage",
+        "w-hogarth",
+        "w-jacob-published"
+      ]
+    },
+    {
+      "id": "w-room-period",
+      "from": "1925",
+      "to": "1929",
+      "title": {
+        "en": "Novels and a room",
+        "zh-Hans": "小说与房间",
+        "zh-Hant": "小說與房間",
+        "ja": "小説と部屋"
+      },
+      "summary": {
+        "en": "Major novels and two talks on women and fiction.",
+        "zh-Hans": "几部主要小说问世，她也走进女子学院谈写作。",
+        "zh-Hant": "幾部主要小說問世，她也走進女子學院談寫作。",
+        "ja": "代表的な小説を発表し、女子学寮で書くことを語る。"
+      },
+      "eventIds": [
+        "event-woolf-dalloway",
+        "event-woolf-lighthouse",
+        "w-cambridge-talks",
+        "w-room-published"
+      ]
+    },
+    {
+      "id": "w-late",
+      "from": "1931",
+      "to": "1941",
+      "title": {
+        "en": "Later work and war",
+        "zh-Hans": "晚年写作与战争",
+        "zh-Hant": "晚年寫作與戰爭",
+        "ja": "晩年の仕事と戦争"
+      },
+      "summary": {
+        "en": "New fiction and essays continued through the 1930s; war changed where she lived.",
+        "zh-Hans": "1930 年代继续写小说与随笔，战争改变了她的住处。",
+        "zh-Hant": "1930 年代繼續寫小說與隨筆，戰爭改變了她的住處。",
+        "ja": "1930年代も小説と評論を執筆。戦争は住まいを変えた。"
+      },
+      "eventIds": [
+        "event-woolf-waves",
+        "event-woolf-years",
+        "event-woolf-guineas",
+        "w-wartime",
+        "w-died"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "w-born",
+      "date": {
+        "value": "1882-01-25",
+        "precision": "day",
+        "claimIds": [
+          "w-birth"
+        ]
+      },
+      "title": {
+        "en": "Born in London",
+        "zh-Hans": "生于伦敦",
+        "zh-Hant": "生於倫敦",
+        "ja": "ロンドンに生まれる"
+      },
+      "body": {
+        "en": "Born Adeline Virginia Stephen, daughter of Julia and Leslie Stephen.",
+        "zh-Hans": "原名阿德琳·弗吉尼亚·斯蒂芬，父母为朱莉娅与莱斯利·斯蒂芬。",
+        "zh-Hant": "原名阿德琳·維吉尼亞·史蒂芬，父母為茱莉亞與萊斯利·史蒂芬。",
+        "ja": "アデリーン・ヴァージニア・スティーヴンとして生まれる。両親はジュリアとレズリー・スティーヴン。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "w-birth"
+      ]
+    },
+    {
+      "id": "w-mother-dies",
+      "date": {
+        "value": "1895",
+        "precision": "year",
+        "claimIds": [
+          "w-mother"
+        ]
+      },
+      "title": {
+        "en": "Her mother dies",
+        "zh-Hans": "母亲去世",
+        "zh-Hant": "母親去世",
+        "ja": "母の死"
+      },
+      "body": {
+        "en": "The loss was followed by a period of severe mental illness, as the Society biography records.",
+        "zh-Hans": "母亲去世后，她经历了一次严重的精神健康危机。此处沿用伍尔夫学会传记的记载。",
+        "zh-Hant": "母親去世後，她經歷了一次嚴重的精神健康危機。此處沿用吳爾芙學會傳記的記載。",
+        "ja": "母の死後、重い精神的不調を経験したとウルフ協会の伝記は記している。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "w-mother"
+      ]
+    },
+    {
+      "id": "w-kings",
+      "date": {
+        "value": "1897–1902",
+        "precision": "range",
+        "claimIds": [
+          "w-study"
+        ]
+      },
+      "title": {
+        "en": "Classes at King’s",
+        "zh-Hans": "在国王学院修课",
+        "zh-Hant": "在國王學院修課",
+        "ja": "キングズで学ぶ"
+      },
+      "body": {
+        "en": "She attended the Ladies’ Department, studying languages and history alongside her sister Vanessa.",
+        "zh-Hans": "她与姐姐瓦妮莎在女子部学习，课程包括希腊语、拉丁语、德语和历史。",
+        "zh-Hant": "她與姊姊凡妮莎在女子部學習，課程包括希臘語、拉丁語、德語和歷史。",
+        "ja": "姉ヴァネッサと女子部に通い、ギリシャ語、ラテン語、ドイツ語、歴史を学んだ。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "w-study"
+      ]
+    },
+    {
+      "id": "w-father-dies",
+      "date": {
+        "value": "1904",
+        "precision": "year",
+        "claimIds": [
+          "w-father"
+        ]
+      },
+      "title": {
+        "en": "Her father dies",
+        "zh-Hans": "父亲去世",
+        "zh-Hant": "父親去世",
+        "ja": "父の死"
+      },
+      "body": {
+        "en": "Leslie Stephen’s death marked another difficult period in her health.",
+        "zh-Hans": "莱斯利·斯蒂芬去世，她的精神健康再次出现严重危机。",
+        "zh-Hant": "萊斯利·史蒂芬去世，她的精神健康再次出現嚴重危機。",
+        "ja": "レズリー・スティーヴンが亡くなり、再び深刻な精神的不調に見舞われた。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "w-father"
+      ]
+    },
+    {
+      "id": "w-reviewing",
+      "date": {
+        "value": "1905",
+        "precision": "year",
+        "claimIds": [
+          "w-reviews"
+        ]
+      },
+      "title": {
+        "en": "A working critic",
+        "zh-Hans": "开始长期写书评",
+        "zh-Hant": "開始長期寫書評",
+        "ja": "書評を書く"
+      },
+      "body": {
+        "en": "She began a long association with the Times Literary Supplement.",
+        "zh-Hans": "她开始为《泰晤士报文学增刊》写书评，此后长期供稿。",
+        "zh-Hant": "她開始為《泰晤士報文學增刊》寫書評，此後長期供稿。",
+        "ja": "『タイムズ・リテラリー・サプリメント』への長年の寄稿が始まった。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "w-reviews"
+      ]
+    },
+    {
+      "id": "w-married",
+      "date": {
+        "value": "1912-08-10",
+        "precision": "day",
+        "claimIds": [
+          "w-marriage"
+        ]
+      },
+      "title": {
+        "en": "Marriage to Leonard Woolf",
+        "zh-Hans": "与伦纳德·伍尔夫结婚",
+        "zh-Hant": "與雷納德·吳爾芙結婚",
+        "ja": "レナード・ウルフと結婚"
+      },
+      "body": {
+        "en": "They married at St Pancras Registry Office.",
+        "zh-Hans": "两人在圣潘克拉斯登记处结婚。",
+        "zh-Hant": "兩人在聖潘克拉斯登記處結婚。",
+        "ja": "セント・パンクラスの登記所で結婚した。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "w-marriage"
+      ]
+    },
+    {
+      "id": "event-woolf-voyage",
+      "date": {
+        "value": "1915",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-voyage"
+        ]
+      },
+      "title": {
+        "en": "The Voyage Out published",
+        "zh-Hans": "远航出版",
+        "zh-Hant": "出航出版",
+        "ja": "船出を刊行"
+      },
+      "body": {
+        "en": "Her first published novel.",
+        "zh-Hans": "她出版的第一部长篇小说。",
+        "zh-Hant": "她出版的第一部長篇小說。",
+        "ja": "最初に刊行された長編小説。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "woolf-voyage"
+      ],
+      "claimIds": [
+        "claim-woolf-voyage"
+      ]
+    },
+    {
+      "id": "w-hogarth",
+      "date": {
+        "value": "1917",
+        "precision": "year",
+        "claimIds": [
+          "w-press"
+        ]
+      },
+      "title": {
+        "en": "The Hogarth Press",
+        "zh-Hans": "霍加斯出版社起步",
+        "zh-Hant": "霍加斯出版社起步",
+        "ja": "ホガース・プレスの始まり"
+      },
+      "body": {
+        "en": "Printing became part of the Woolfs’ daily work, beginning with a small hand press.",
+        "zh-Hans": "两人买下一台小型手动印刷机，印书进入了日常工作。",
+        "zh-Hant": "兩人買下一臺小型手動印刷機，印書進入了日常工作。",
+        "ja": "小さな手動印刷機を購入し、本を刷ることが二人の日常に加わった。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "w-press"
+      ]
+    },
+    {
+      "id": "w-jacob-published",
+      "date": {
+        "value": "1922",
+        "precision": "year",
+        "claimIds": [
+          "w-jacob"
+        ]
+      },
+      "title": {
+        "en": "Jacob’s Room",
+        "zh-Hans": "《雅各的房间》出版",
+        "zh-Hant": "《雅各的房間》出版",
+        "ja": "『ジェイコブの部屋』"
+      },
+      "body": {
+        "en": "The novel appeared in 1922.",
+        "zh-Hans": "这部长篇小说于 1922 年出版。",
+        "zh-Hant": "這部長篇小說於 1922 年出版。",
+        "ja": "1922年に刊行された長編小説。"
+      },
+      "kind": "publication",
+      "workIds": [],
+      "claimIds": [
+        "w-jacob"
+      ]
+    },
+    {
+      "id": "event-woolf-dalloway",
+      "date": {
+        "value": "1925",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-dalloway"
+        ]
+      },
+      "title": {
+        "en": "Mrs Dalloway published",
+        "zh-Hans": "达洛维夫人出版",
+        "zh-Hant": "戴洛維夫人出版",
+        "ja": "ダロウェイ夫人を刊行"
+      },
+      "body": {
+        "en": "A novel published in 1925.",
+        "zh-Hans": "1925 年出版的小说。",
+        "zh-Hant": "1925 年出版的小說。",
+        "ja": "1925年刊の小説。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "woolf-dalloway"
+      ],
+      "claimIds": [
+        "claim-woolf-dalloway"
+      ]
+    },
+    {
+      "id": "event-woolf-lighthouse",
+      "date": {
+        "value": "1927",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-lighthouse"
+        ]
+      },
+      "title": {
+        "en": "To the Lighthouse published",
+        "zh-Hans": "到灯塔去出版",
+        "zh-Hant": "到燈塔去出版",
+        "ja": "灯台へを刊行"
+      },
+      "body": {
+        "en": "Its imagined island draws on childhood St Ives.",
+        "zh-Hans": "小说中的岛屿写入了童年圣艾夫斯的经验。",
+        "zh-Hant": "小說中的島嶼寫入了童年聖艾夫斯的經驗。",
+        "ja": "島の描写には幼少期のセント・アイヴスが重なる。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "woolf-lighthouse"
+      ],
+      "claimIds": [
+        "claim-woolf-lighthouse"
+      ]
+    },
+    {
+      "id": "w-cambridge-talks",
+      "date": {
+        "value": "1928-10",
+        "precision": "month",
+        "claimIds": [
+          "w-talks"
+        ]
+      },
+      "title": {
+        "en": "Women and fiction at Cambridge",
+        "zh-Hans": "谈女性与小说",
+        "zh-Hant": "談女性與小說",
+        "ja": "女性と小説を語る"
+      },
+      "body": {
+        "en": "Her own introductory note names the Newnham and Girton societies and dates the talks to October 1928.",
+        "zh-Hans": "她在开篇说明中记下纽纳姆与格顿两所学院的社团，以及 1928 年 10 月的讲演时间。",
+        "zh-Hant": "她在開篇說明中記下紐納姆與格頓兩所學院的社團，以及 1928 年 10 月的講演時間。",
+        "ja": "冒頭の注記には、ニューナムとガートンの学会で1928年10月に講演したとある。"
+      },
+      "kind": "life",
+      "workIds": [
+        "woolf-room"
+      ],
+      "claimIds": [
+        "w-talks"
+      ]
+    },
+    {
+      "id": "w-room-published",
+      "date": {
+        "value": "1929",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-room"
+        ]
+      },
+      "title": {
+        "en": "A Room of One’s Own",
+        "zh-Hans": "《一间自己的房间》出版",
+        "zh-Hant": "《自己的房間》出版",
+        "ja": "『自分ひとりの部屋』"
+      },
+      "body": {
+        "en": "The Hogarth Press published the expanded essay in 1929.",
+        "zh-Hans": "霍加斯出版社于 1929 年出版扩写后的文章。",
+        "zh-Hant": "霍加斯出版社於 1929 年出版擴寫後的文章。",
+        "ja": "加筆された評論が1929年にホガース・プレスから刊行された。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "woolf-room"
+      ],
+      "claimIds": [
+        "claim-woolf-room"
+      ]
+    },
+    {
+      "id": "event-woolf-waves",
+      "date": {
+        "value": "1931",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-waves"
+        ]
+      },
+      "title": {
+        "en": "The Waves published",
+        "zh-Hans": "海浪出版",
+        "zh-Hant": "海浪出版",
+        "ja": "波を刊行"
+      },
+      "body": {
+        "en": "A novel published in 1931.",
+        "zh-Hans": "1931 年出版的小说。",
+        "zh-Hant": "1931 年出版的小說。",
+        "ja": "1931年刊の小説。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "woolf-waves"
+      ],
+      "claimIds": [
+        "claim-woolf-waves"
+      ]
+    },
+    {
+      "id": "event-woolf-years",
+      "date": {
+        "value": "1937",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-years"
+        ]
+      },
+      "title": {
+        "en": "The Years published",
+        "zh-Hans": "岁月出版",
+        "zh-Hant": "歲月出版",
+        "ja": "歳月を刊行"
+      },
+      "body": {
+        "en": "A novel published in 1937.",
+        "zh-Hans": "1937 年出版的小说。",
+        "zh-Hant": "1937 年出版的小說。",
+        "ja": "1937年刊の小説。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "woolf-years"
+      ],
+      "claimIds": [
+        "claim-woolf-years"
+      ]
+    },
+    {
+      "id": "event-woolf-guineas",
+      "date": {
+        "value": "1938",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-guineas"
+        ]
+      },
+      "title": {
+        "en": "Three Guineas published",
+        "zh-Hans": "三个基尼出版",
+        "zh-Hant": "三枚金幣出版",
+        "ja": "三ギニーを刊行"
+      },
+      "body": {
+        "en": "An essay on war, masculinity, women’s education and employment.",
+        "zh-Hans": "讨论战争、男性气质与女性教育、就业的长篇随笔。",
+        "zh-Hant": "討論戰爭、男性氣質與女性教育、就業的長篇隨筆。",
+        "ja": "戦争、男性性、女性の教育と仕事を論じる評論。"
+      },
+      "kind": "publication",
+      "workIds": [
+        "woolf-guineas"
+      ],
+      "claimIds": [
+        "claim-woolf-guineas"
+      ]
+    },
+    {
+      "id": "w-wartime",
+      "date": {
+        "value": "1940-08",
+        "precision": "month",
+        "claimIds": [
+          "w-war"
+        ]
+      },
+      "title": {
+        "en": "Monks House becomes home",
+        "zh-Hans": "迁居蒙克屋",
+        "zh-Hant": "遷居蒙克屋",
+        "ja": "モンクス・ハウスへ"
+      },
+      "body": {
+        "en": "After their London home was bombed, the Sussex house became their permanent home.",
+        "zh-Hans": "伦敦住所遭轰炸后，萨塞克斯的蒙克屋成为两人的常住地。",
+        "zh-Hant": "倫敦住所遭轟炸後，薩塞克斯的蒙克屋成為兩人的常住地。",
+        "ja": "ロンドンの住まいが爆撃を受け、サセックスの家が本拠となった。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "w-war"
+      ]
+    },
+    {
+      "id": "w-died",
+      "date": {
+        "value": "1941-03-28",
+        "precision": "day",
+        "claimIds": [
+          "w-death"
+        ]
+      },
+      "title": {
+        "en": "Death in Sussex",
+        "zh-Hans": "逝于萨塞克斯",
+        "zh-Hant": "逝於薩塞克斯",
+        "ja": "サセックスで死去"
+      },
+      "body": {
+        "en": "She died in the River Ouse, aged 59. Her posthumous publications belong to a separate publication history.",
+        "zh-Hans": "她在乌斯河中去世，享年 59 岁。身后出版的作品另属出版史。",
+        "zh-Hant": "她在烏斯河中去世，享年 59 歲。身後出版的作品另屬出版史。",
+        "ja": "ウーズ川で亡くなった。59歳だった。没後の刊行は生涯の出来事と分けて扱う。"
+      },
+      "kind": "life",
+      "workIds": [],
+      "claimIds": [
+        "w-death"
+      ]
+    }
+  ],
+  "works": [
+    {
+      "id": "woolf-voyage",
+      "title": {
+        "en": "The Voyage Out",
+        "zh-Hans": "远航",
+        "zh-Hant": "出航",
+        "ja": "船出"
+      },
+      "originalTitle": "The Voyage Out",
+      "kind": "novel",
+      "year": {
+        "value": "1915",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-voyage"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "Her first published novel.",
+        "zh-Hans": "她出版的第一部长篇小说。",
+        "zh-Hant": "她出版的第一部長篇小說。",
+        "ja": "最初に刊行された長編小説。"
+      },
+      "claimIds": [
+        "claim-woolf-voyage"
+      ]
+    },
+    {
+      "id": "woolf-dalloway",
+      "title": {
+        "en": "Mrs Dalloway",
+        "zh-Hans": "达洛维夫人",
+        "zh-Hant": "戴洛維夫人",
+        "ja": "ダロウェイ夫人"
+      },
+      "originalTitle": "Mrs Dalloway",
+      "kind": "novel",
+      "year": {
+        "value": "1925",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-dalloway"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "A novel published in 1925.",
+        "zh-Hans": "1925 年出版的小说。",
+        "zh-Hant": "1925 年出版的小說。",
+        "ja": "1925年刊の小説。"
+      },
+      "claimIds": [
+        "claim-woolf-dalloway"
+      ]
+    },
+    {
+      "id": "woolf-lighthouse",
+      "title": {
+        "en": "To the Lighthouse",
+        "zh-Hans": "到灯塔去",
+        "zh-Hant": "到燈塔去",
+        "ja": "灯台へ"
+      },
+      "originalTitle": "To the Lighthouse",
+      "kind": "novel",
+      "year": {
+        "value": "1927",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-lighthouse"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "Its imagined island draws on childhood St Ives.",
+        "zh-Hans": "小说中的岛屿写入了童年圣艾夫斯的经验。",
+        "zh-Hant": "小說中的島嶼寫入了童年聖艾夫斯的經驗。",
+        "ja": "島の描写には幼少期のセント・アイヴスが重なる。"
+      },
+      "claimIds": [
+        "claim-woolf-lighthouse",
+        "w-lighthouse-place"
+      ]
+    },
+    {
+      "id": "woolf-orlando",
+      "title": {
+        "en": "Orlando: A Biography",
+        "zh-Hans": "奥兰多",
+        "zh-Hant": "奧蘭多",
+        "ja": "オーランドー"
+      },
+      "originalTitle": "Orlando: A Biography",
+      "kind": "novel",
+      "year": {
+        "value": "1928",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-orlando"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "A fictional biography inspired by Vita Sackville-West.",
+        "zh-Hans": "一部受到维塔·萨克维尔-韦斯特启发的虚构传记。",
+        "zh-Hant": "一部受到薇塔·薩克維爾－韋斯特啟發的虛構傳記。",
+        "ja": "ヴィタ・サックヴィル＝ウェストに着想を得た架空の伝記。"
+      },
+      "claimIds": [
+        "claim-woolf-orlando",
+        "w-orlando-inspiration"
+      ]
+    },
+    {
+      "id": "woolf-room",
+      "title": {
+        "en": "A Room of One’s Own",
+        "zh-Hans": "一间自己的房间",
+        "zh-Hant": "自己的房間",
+        "ja": "自分ひとりの部屋"
+      },
+      "originalTitle": "A Room of One’s Own",
+      "kind": "essay",
+      "year": {
+        "value": "1929",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-room"
+        ]
+      },
+      "bookId": "gutenberg-au-room-of-ones-own",
+      "summary": {
+        "en": "An expanded essay based on two Cambridge talks given in October 1928.",
+        "zh-Hans": "由 1928 年 10 月在剑桥所作的两次讲演扩写而成。",
+        "zh-Hant": "由 1928 年 10 月在劍橋所作的兩次講演擴寫而成。",
+        "ja": "1928年10月のケンブリッジでの二つの講演を加筆した評論。"
+      },
+      "claimIds": [
+        "claim-woolf-room"
+      ]
+    },
+    {
+      "id": "woolf-waves",
+      "title": {
+        "en": "The Waves",
+        "zh-Hans": "海浪",
+        "zh-Hant": "海浪",
+        "ja": "波"
+      },
+      "originalTitle": "The Waves",
+      "kind": "novel",
+      "year": {
+        "value": "1931",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-waves"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "A novel published in 1931.",
+        "zh-Hans": "1931 年出版的小说。",
+        "zh-Hant": "1931 年出版的小說。",
+        "ja": "1931年刊の小説。"
+      },
+      "claimIds": [
+        "claim-woolf-waves"
+      ]
+    },
+    {
+      "id": "woolf-years",
+      "title": {
+        "en": "The Years",
+        "zh-Hans": "岁月",
+        "zh-Hant": "歲月",
+        "ja": "歳月"
+      },
+      "originalTitle": "The Years",
+      "kind": "novel",
+      "year": {
+        "value": "1937",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-years"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "A novel published in 1937.",
+        "zh-Hans": "1937 年出版的小说。",
+        "zh-Hant": "1937 年出版的小說。",
+        "ja": "1937年刊の小説。"
+      },
+      "claimIds": [
+        "claim-woolf-years"
+      ]
+    },
+    {
+      "id": "woolf-guineas",
+      "title": {
+        "en": "Three Guineas",
+        "zh-Hans": "三个基尼",
+        "zh-Hant": "三枚金幣",
+        "ja": "三ギニー"
+      },
+      "originalTitle": "Three Guineas",
+      "kind": "essay",
+      "year": {
+        "value": "1938",
+        "precision": "year",
+        "claimIds": [
+          "claim-woolf-guineas"
+        ]
+      },
+      "bookId": null,
+      "summary": {
+        "en": "An essay on war, masculinity, women’s education and employment.",
+        "zh-Hans": "讨论战争、男性气质与女性教育、就业的长篇随笔。",
+        "zh-Hant": "討論戰爭、男性氣質與女性教育、就業的長篇隨筆。",
+        "ja": "戦争、男性性、女性の教育と仕事を論じる評論。"
+      },
+      "claimIds": [
+        "claim-woolf-guineas"
+      ]
+    }
+  ],
+  "contexts": [
+    {
+      "workId": "woolf-room",
+      "body": {
+        "en": "Woolf says this essay grew from two talks in October 1928. The opening asks what a woman needs in order to write: money and a room. Its invented narrator and imagined colleges are explicitly presented as fiction, so the narrated incidents should not be read as a literal diary.",
+        "zh-Hans": "伍尔夫在开篇说明，这篇文章来自 1928 年 10 月的两次讲演。她把女性写作的问题落在钱与房间上，又明说叙述者和学院出自虚构。阅读这些遭遇时，需保留小说家的叙述手法，不能逐件当作她的日记。",
+        "zh-Hant": "吳爾芙在開篇說明，這篇文章來自 1928 年 10 月的兩次講演。她把女性寫作的問題落在錢與房間上，又明說敘述者和學院出自虛構。閱讀這些遭遇時，需保留小說家的敘述手法，不能逐件當作她的日記。",
+        "ja": "ウルフ自身の注記によれば、1928年10月の二つの講演をもとにした評論である。冒頭で書くためのお金と部屋を問い、語り手も学寮も架空だと断っている。作中の出来事をそのまま本人の日記として読むことはできない。"
+      },
+      "relationship": "author_testimony",
+      "eventIds": [
+        "w-cambridge-talks",
+        "w-room-published"
+      ],
+      "claimIds": [
+        "w-talks",
+        "w-room-quote"
+      ],
+      "excerptIds": [
+        "w-room-money",
+        "w-room-fiction"
+      ]
+    },
+    {
+      "workId": "woolf-lighthouse",
+      "body": {
+        "en": "The Society links the novel’s setting with St Ives, where the Stephen family spent childhood holidays. This supports a connection to place, not a single explanation of the whole novel.",
+        "zh-Hans": "伍尔夫学会将小说的场景与斯蒂芬一家度假的圣艾夫斯联系起来。这能说明地点的关联，尚不足以概括整部小说的创作缘由。",
+        "zh-Hant": "吳爾芙學會將小說的場景與史蒂芬一家度假的聖艾夫斯聯繫起來。這能說明地點的關聯，尚不足以概括整部小說的創作緣由。",
+        "ja": "ウルフ協会は、物語の舞台を幼少期に休暇を過ごしたセント・アイヴスと結びつける。場所との関わりを示す資料であり、作品全体の動機を一つに決めるものではない。"
+      },
+      "relationship": "documented_relation",
+      "eventIds": [
+        "event-woolf-lighthouse"
+      ],
+      "claimIds": [
+        "w-lighthouse-place"
+      ],
+      "excerptIds": []
+    }
+  ],
+  "excerpts": [
+    {
+      "id": "w-room-money",
+      "text": "a woman must have money and a room of her own if she is to write fiction;",
+      "language": "en",
+      "workId": "woolf-room",
+      "sourceId": "woolf-room-local",
+      "locator": "PG Australia 0200791, 1929 work; ONE, paragraph 1; bookId=gutenberg-au-room-of-ones-own; chapterId=ch02; passageId=90ed73bff38ddd2e-p00002; catalogSha256=90ed73bff38ddd2e01ddf69fa2302367931304675b45b941bc6caeb9600248d7",
+      "claimIds": [
+        "w-room-quote"
+      ],
+      "translations": {
+        "zh-Hans": {
+          "text": "一个女人要写小说，就必须有钱和一间自己的房间；",
+          "status": "draft",
+          "attribution": "Leafhour editorial translation; not independently reviewed"
+        },
+        "zh-Hant": {
+          "text": "一個女人要寫小說，就必須有錢和一間自己的房間；",
+          "status": "draft",
+          "attribution": "Leafhour editorial translation; not independently reviewed"
+        },
+        "ja": {
+          "text": "女性が小説を書くには、お金と自分ひとりの部屋が必要だ。",
+          "status": "draft",
+          "attribution": "Leafhour editorial translation; not independently reviewed"
+        }
+      }
+    },
+    {
+      "id": "w-room-fiction",
+      "text": "Fiction here is likely to contain more truth than fact.",
+      "language": "en",
+      "workId": "woolf-room",
+      "sourceId": "woolf-room-local",
+      "locator": "PG Australia 0200791, 1929 work; ONE, paragraph 1; bookId=gutenberg-au-room-of-ones-own; chapterId=ch02; passageId=90ed73bff38ddd2e-p00002; catalogSha256=90ed73bff38ddd2e01ddf69fa2302367931304675b45b941bc6caeb9600248d7",
+      "claimIds": [
+        "w-room-quote"
+      ],
+      "translations": {
+        "zh-Hans": {
+          "text": "在这里，虚构很可能比事实包含更多真相。",
+          "status": "draft",
+          "attribution": "Leafhour editorial translation; not independently reviewed"
+        },
+        "zh-Hant": {
+          "text": "在這裡，虛構很可能比事實包含更多真相。",
+          "status": "draft",
+          "attribution": "Leafhour editorial translation; not independently reviewed"
+        },
+        "ja": {
+          "text": "ここでは、虚構のほうが事実より多くの真実を含むかもしれない。",
+          "status": "draft",
+          "attribution": "Leafhour editorial translation; not independently reviewed"
+        }
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "woolf-biography",
+      "url": "https://virginiawoolfsociety.org.uk/resources/virginia-woolf-a-short-biography/",
+      "title": "Virginia Woolf: A Short Biography",
+      "publisher": "Virginia Woolf Society of Great Britain; S. N. Clarke",
+      "accessedAt": "2026-10-27",
+      "license": "Copyright retained by the source. Selected short evidence excerpts only; not a full-page snapshot or a licence to republish the article.",
+      "excerpt": "Adeline Virginia Stephen was born on 25 January 1882 in London.\nLeslie Stephen died in 1904\nThey were married\n10 August 1912.",
+      "read": true,
+      "digest": "581833064d06fb37826b150cad1bb9b560bf99b11fe72414a58d44cf518c9409"
+    },
+    {
+      "id": "woolf-kcl",
+      "url": "https://www.kcl.ac.uk/people/virginia-woolf",
+      "title": "Virginia Woolf",
+      "publisher": "King’s College London",
+      "accessedAt": "2026-10-27",
+      "license": "Copyright retained by the source. Selected short evidence excerpts only; not a full-page snapshot or a licence to republish the article.",
+      "excerpt": "was a student at the King’s College London Ladies’ Department from 1897–1902.\nGreek, Latin, German and history",
+      "read": true,
+      "digest": "5dd01614177805a8058a070615f37173bad0d2a1941ccccb8d16219422a4898b"
+    },
+    {
+      "id": "woolf-works",
+      "url": "https://virginiawoolfsociety.org.uk/resources/the-principal-works-of-virginia-woolf-1882-1941/",
+      "title": "The Principal Works of Virginia Woolf (1882–1941)",
+      "publisher": "Virginia Woolf Society of Great Britain",
+      "accessedAt": "2026-10-27",
+      "license": "Copyright retained by the source. Selected short evidence excerpts only; not a full-page snapshot or a licence to republish the article.",
+      "excerpt": "THE VOYAGE OUT 1915\nMRS. DALLOWAY 1925\nTO THE LIGHTHOUSE 1927\nORLANDO: A BIOGRAPHY 1928\nTHE WAVES 1931\nTHE YEARS 1937\nTHREE GUINEAS 1938",
+      "read": true,
+      "digest": "c29e905892142f9ef20adca242c65462f1e8bbe794522f9811d083f945c54ad4"
+    },
+    {
+      "id": "woolf-homes",
+      "url": "https://virginiawoolfsociety.org.uk/resources/virginia-woolfs-holiday-homes-in-the-country/",
+      "title": "Virginia Woolf’s Holiday Homes in the Country",
+      "publisher": "Virginia Woolf Society of Great Britain; Stuart N. Clarke",
+      "accessedAt": "2026-10-27",
+      "license": "Copyright retained by the source. Selected short evidence excerpts only; not a full-page snapshot or a licence to republish the article.",
+      "excerpt": "setting for To the Lighthouse is ‘really’ St Ives\nVirginia drowned in the nearby River Ouse on 28 March 1941",
+      "read": true,
+      "digest": "18c8d16ab3a1801ef476d5d0a7b778ada24e6929cd34747cf17d04654696816f"
+    },
+    {
+      "id": "woolf-smith",
+      "url": "https://www.smith.edu/libraries/libs/rarebook/exhibitions/conway/room.htm",
+      "title": "A Room of One’s Own: Virginia Woolf",
+      "publisher": "Smith College Libraries",
+      "accessedAt": "2026-10-27",
+      "license": "Copyright retained by the source. Selected short evidence excerpts only; not a full-page snapshot or a licence to republish the article.",
+      "excerpt": "London: Hogarth Press, 1929.\nThe essay is\nbased upon lectures Woolf gave at Cambridge in 1928 about “Women\nand Fiction.”",
+      "read": true,
+      "digest": "df06553b47aa16a2885eb05c44f3fcf5070f0d3771ddb89ba878f03ccb315b37"
+    },
+    {
+      "id": "woolf-room-local",
+      "url": "https://gutenberg.net.au/ebooks02/0200791h.html",
+      "title": "A Room of One’s Own — PG Australia 0200791, 1929 work",
+      "publisher": "Virginia Woolf; Project Gutenberg Australia",
+      "accessedAt": "2026-10-27",
+      "license": "Public domain underlying text (1929); Project Gutenberg Australia edition 0200791. See https://gutenberg.net.au/licence.html.",
+      "excerpt": "[* This essay is based upon two papers read to the Arts Society at Newnharn and the Odtaa at Girton in October 1928. The papers were too long to be read in full, and have since been altered and expanded.]\n\nBut, you may say, we asked you to speak about women and fiction—what, has that got to do with a room of one's own? I will try to explain. When you asked me to speak about women and fiction I sat down on the banks of a river and began to wonder what the words meant. They might mean simply a few remarks about Fanny Burney; a few more about Jane Austen; a tribute to the Brontës and a sketch of Haworth Parsonage under snow; some witticisms if possible about Miss Mitford; a respectful allusion to George Eliot; a reference to Mrs Gaskell and one would have done. But at second sight the words seemed not so simple. The title women and fiction might mean, and you may have meant it to mean, women and what they are like, or it might mean women and the fiction that they write; or it might mean women and the fiction that is written about them, or it might mean that somehow all three are inextricably mixed together and you want me to consider them in that light. But when I began to consider the subject in this last way, which seemed the most interesting, I soon saw that it had one fatal drawback. I should never be able to come to a conclusion. I should never be able to fulfil what is, I understand, the first duty of a lecturer to hand you after an hour's discourse a nugget of pure truth to wrap up between the pages of your notebooks and keep on the mantelpiece for ever. All I could do was to offer you an opinion upon one minor point—a woman must have money and a room of her own if she is to write fiction; and that, as you will see, leaves the great problem of the true nature of woman and the true nature of fiction unsolved. I have shirked the duty of coming to a conclusion upon these two questions—women and fiction remain, so far as I am concerned, unsolved problems. But in order to make some amends I am going to do what I can to show you how I arrived at this opinion about the room and the money. I am going to develop in your presence as fully and freely as I can the train of thought which led me to think this. Perhaps if I lay bare the ideas, the prejudices, that lie behind this statement you will find that they have some bearing upon women and some upon fiction. At any rate, when a subject is highly controversial—and any question about sex is that—one cannot hope to tell the truth. One can only show how one came to hold whatever opinion one does hold. One can only give one's audience the chance of drawing their own conclusions as they observe the limitations, the prejudices, the idiosyncrasies of the speaker. Fiction here is likely to contain more truth than fact. Therefore I propose, making use of all the liberties and licences of a novelist, to tell you the story of the two days that preceded my coming here—how, bowed down by the weight of the subject which you have laid upon my shoulders, I pondered it, and made it work in and out of my daily life. I need not say that what I am about to describe has no existence; Oxbridge is an invention; so is Fernham; 'I' is only a convenient term for somebody who has no real being. Lies will flow from my lips, but there may perhaps be some truth mixed up with them; it is for you to seek out this truth and to decide whether any part of it is worth keeping. If not, you will of course throw the whole of it into the waste-paper basket and forget all about it.",
+      "read": true,
+      "digest": "86a8c15af4facff79b7899e4ecf0b5f7d70e938652c95812e0ddb96dff9885dd"
+    },
+    {
+      "id": "woolf-portrait",
+      "url": "https://commons.wikimedia.org/wiki/File:George_Charles_Beresford_-_Virginia_Woolf_in_1902_-_Restoration.jpg",
+      "title": "George Charles Beresford (1864–1938); restoration by Adam Cuerden, 2016. Virginia Woolf, 1902.",
+      "publisher": "Wikimedia Commons; original creator and holding institution credited",
+      "accessedAt": "2026-10-27",
+      "license": "Public domain; Public Domain Mark 1.0; faithful historical image. Jurisdiction details in licence record.",
+      "excerpt": "The author died in 1938, so this work is in the public domain in its country of origin and other countries and areas where the copyright term is the author’s life plus 80 years or fewer. This work is in the public domain in the United States because it was published before January 1, 1931.",
+      "read": true,
+      "digest": "2b5e6f62aef1ccae684b3a8d6426eb907cff80f3b0e77c6fe0d266539b620706"
+    }
+  ],
+  "claims": [
+    {
+      "id": "w-birth",
+      "text": "Virginia Woolf was born in London on 25 January 1882.",
+      "sourceIds": [
+        "woolf-biography"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "w-mother",
+      "text": "Her mother died in 1895; the Society biography records a first mental breakdown.",
+      "sourceIds": [
+        "woolf-biography"
+      ],
+      "status": "uncertain"
+    },
+    {
+      "id": "w-study",
+      "text": "She studied Greek, Latin, German and history at King’s Ladies’ Department, 1897–1902.",
+      "sourceIds": [
+        "woolf-kcl"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "w-father",
+      "text": "Leslie Stephen died in 1904.",
+      "sourceIds": [
+        "woolf-biography"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "w-reviews",
+      "text": "She began reviewing in the Times Literary Supplement in 1905.",
+      "sourceIds": [
+        "woolf-biography"
+      ],
+      "status": "uncertain"
+    },
+    {
+      "id": "w-marriage",
+      "text": "Virginia and Leonard Woolf married on 10 August 1912.",
+      "sourceIds": [
+        "woolf-biography"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "claim-woolf-voyage",
+      "text": "The Voyage Out was published in 1915.",
+      "sourceIds": [
+        "woolf-works"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "claim-woolf-dalloway",
+      "text": "Mrs Dalloway was published in 1925.",
+      "sourceIds": [
+        "woolf-works"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "claim-woolf-lighthouse",
+      "text": "To the Lighthouse was published in 1927.",
+      "sourceIds": [
+        "woolf-works"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "claim-woolf-orlando",
+      "text": "Orlando: A Biography was published in 1928.",
+      "sourceIds": [
+        "woolf-works"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "claim-woolf-room",
+      "text": "A Room of One’s Own was published in 1929.",
+      "sourceIds": [
+        "woolf-smith",
+        "woolf-room-local"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "claim-woolf-waves",
+      "text": "The Waves was published in 1931.",
+      "sourceIds": [
+        "woolf-works"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "claim-woolf-years",
+      "text": "The Years was published in 1937.",
+      "sourceIds": [
+        "woolf-works"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "claim-woolf-guineas",
+      "text": "Three Guineas was published in 1938.",
+      "sourceIds": [
+        "woolf-works"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "w-press",
+      "text": "The Woolfs bought a hand printing press in 1917.",
+      "sourceIds": [
+        "woolf-biography"
+      ],
+      "status": "uncertain"
+    },
+    {
+      "id": "w-jacob",
+      "text": "Jacob’s Room was published in 1922.",
+      "sourceIds": [
+        "woolf-works"
+      ],
+      "status": "uncertain"
+    },
+    {
+      "id": "w-talks",
+      "text": "The author’s note says the essay expands two papers read at Newnham and Girton in October 1928.",
+      "sourceIds": [
+        "woolf-room-local"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "w-war",
+      "text": "After the London home was bombed in August 1940, Monks House became the Woolfs’ permanent home.",
+      "sourceIds": [
+        "woolf-homes"
+      ],
+      "status": "uncertain"
+    },
+    {
+      "id": "w-death",
+      "text": "Virginia Woolf died in the River Ouse on 28 March 1941.",
+      "sourceIds": [
+        "woolf-homes"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "w-room-quote",
+      "text": "The quoted wording is in the first body paragraph of the local PG Australia text.",
+      "sourceIds": [
+        "woolf-room-local"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "w-lighthouse-place",
+      "text": "The Society identifies St Ives as the imaginative setting behind To the Lighthouse.",
+      "sourceIds": [
+        "woolf-homes"
+      ],
+      "status": "verified"
+    },
+    {
+      "id": "w-orlando-inspiration",
+      "text": "The Society biography links Orlando to Vita Sackville-West and her ancestors at Knole.",
+      "sourceIds": [
+        "woolf-biography"
+      ],
+      "status": "uncertain"
+    }
+  ]
+}

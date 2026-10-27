@@ -1,3 +1,11 @@
+import {createPeopleService} from './people-service.mjs';
+import {createPeopleRoutes} from './people-routes.mjs';
+import {loadPeopleSeeds,createSourceReader,searchPeople} from './people-sources.mjs';
+import {createPeopleGeneration} from './people-generation.mjs';
+import {createPersonGenerator} from '../harness/person-generator.mjs';
+import {createPeopleFunding} from './people-funding.mjs';
+import {createPeopleRuntimeRoutes} from './people-runtime-routes.mjs';
+import {createPeopleGrants} from './people-grants.mjs';
 import {bookTransfer as transferReading} from './book-transfer.mjs';
 import {documentExportAssets} from './document-export-assets.mjs';
 import {cjkFontAssets} from './cjk-font-assets.mjs';
@@ -61,6 +69,14 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const sponsored=(user,feature,execute,maxCostUsd=.015)=>billing.enabled?withProviderMeter({ownerId:user?.id,feature,funding:'sponsored',maxCostUsd,record:facts=>billing.recordProviderCall(facts)},execute):execute();
   const auth=authService||await createEmailAuth({dataDir:path.join(dataDir,'auth'),sendCode:sendCode===undefined?await smtpSender():sendCode});
   const library=await createLibraryService({dataDir:path.join(dataDir,'library'),catalogDir,translator:translator===undefined?createTranslator(env):translator,dataStore});
+  const personSeeds=catalogDir===null?[]:await loadPeopleSeeds();
+  const publicBookIds=(await library.list(null)).map(book=>book.bookId);
+  const people=createPeopleService({dataDir:path.join(dataDir,'library'),dataStore,seeds:personSeeds,publicBookIds});
+  const peopleRoutes=createPeopleRoutes({people});
+  const peopleFunding=createPeopleFunding({store:people.store});
+  const peopleGeneration=createPeopleGeneration({people,generator:createPersonGenerator({env,validateRecord:people.validateRecord,publicBookIds}),search:searchPeople,sourceReaderFor:(_user,person)=>createSourceReader({sources:person.sources}),store:people.store,schedule,authorize:async(user,{personId})=>{await people.get(user,personId);return true;},fund:peopleFunding.fund});
+  const peopleRuntimeRoutes=createPeopleRuntimeRoutes({people,generation:peopleGeneration,auth,funding:peopleFunding});
+  const peopleGrants=createPeopleGrants({store:people.store,people});
   const provider=paddleProvider===undefined?createPaddleProvider({env}):paddleProvider;
   const ingestionStore=dataStore||createIngestionStorage({dataDir:path.join(dataDir,'ingestion')});
   const ingestion=createBookIngestion({store:ingestionStore,library,provider});
@@ -83,14 +99,14 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
   const readingGenerator=chatGenerator===undefined?createReaderChatGenerator():chatGenerator;
   const bookIntroductions=createBookIntroductionService({library,generator:introductionGenerator===undefined?createReaderChatGenerator({env,makeGenerator:createIntroductionGenerator}):introductionGenerator});
   const proactiveGenerator=companionGenerator===undefined?createReaderChatGenerator({makeGenerator:createCompanionGenerator}):companionGenerator;
-  const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,annotationGenerator:annotationGenerator===undefined?createReaderAnnotationGenerator({env}):annotationGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context)});
+  const chat=await createReaderChatService({companionGenerator:proactiveGenerator,library,people,dataDir:path.join(dataDir,'library'),dataStore,generator:readingGenerator,annotationGenerator:annotationGenerator===undefined?createReaderAnnotationGenerator({env}):annotationGenerator,onError:(error,context)=>readingGenerator?.reportFailure?.(error,context)});
   const creditGate=createCreditGate({billing,library,chat,record:facts=>billing.recordProviderCall(facts)});
   const billingRoutes=createBillingRoutes({billing,publicOrigin,gate:creditGate,verifyEmail:({req})=>typeof auth.emailVerifiedFor==='function'?auth.emailVerifiedFor(cookieToken(req)):false});
   // One quiet daily companion plan per account; no schedule, model job or
   // generation happens in this process. The external host owns the heartbeat.
   const dailyReading=createDailyReadingService({library,dataDir:path.join(dataDir,'library','daily'),dataStore});
   const portability=createLibraryPortability({library,chat,store:ingestionStore});
-  const remoteMcp=createRemoteMcp({origin:publicOrigin,dataDir:path.join(dataDir,'mcp'),dataStore,library,auth,annotations:chat.annotations});
+  const remoteMcp=createRemoteMcp({origin:publicOrigin,dataDir:path.join(dataDir,'mcp'),dataStore,library,auth,annotations:chat.annotations,people,peopleGrants,generation:peopleGeneration});
   let legacyBook=null;
   const audioLibrary={getBook:(owner,id)=>owner?.id==='legacy-local'&&legacyBook?.bookId===id?Promise.resolve(legacyBook):library.getBook(owner,id)};
   const durableAudio=dataStore&&['read','mutate','putBlob','blob'].every(k=>typeof dataStore[k]==='function');
@@ -104,8 +120,12 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     const commerce=p.match(/^\/(?:(en|zh-hans|zh-hant|ja)\/)?(pricing|terms|refunds)$/);
     if(commerce){if(!['GET','HEAD'].includes(req.method))throw fail('不支持这个请求',405);send(200,commercePage({kind:commerce[2],locale:({'zh-hans':'zh-Hans','zh-hant':'zh-Hant'})[commerce[1]]||commerce[1]||'en',billingEnabled:billing.enabled}),'text/html');return true;}
     if(p==='/api/internal/ingestion/wake'){if(req.method!=='POST'||!ingestionRunner.authorized(req.headers.authorization))throw fail('找不到这个操作',404);ingestionRunner.tick();send(202,{accepted:true});return true;}
-    const isAPI=p.startsWith('/api/billing/')||p==='/api/admin/billing/summary'||p.startsWith('/api/auth/')||p.startsWith('/api/library')||p.startsWith('/api/agent/')||p.startsWith('/api/account/')||p.startsWith('/api/book-gifts/');
+    const isAPI=p==='/api/people'||p.startsWith('/api/people/')||p.startsWith('/api/billing/')||p==='/api/admin/billing/summary'||p.startsWith('/api/auth/')||p.startsWith('/api/library')||p.startsWith('/api/agent/')||p.startsWith('/api/account/')||p.startsWith('/api/book-gifts/');
     const files={'/':'home.html','/library':'home.html','/en':'home.html','/zh-hans':'home.html','/zh-hant':'home.html','/ja':'home.html','/privacy':'en/privacy.html','/en/privacy':'en/privacy.html','/zh-hans/privacy':'zh-hans/privacy.html','/zh-hant/privacy':'zh-hant/privacy.html','/ja/privacy':'ja/privacy.html','/mcp':'en/mcp.html','/en/mcp':'en/mcp.html','/zh-hans/mcp':'zh-hans/mcp.html','/zh-hant/mcp':'zh-hant/mcp.html','/ja/mcp':'ja/mcp.html','/auth.css':'auth.css','/auth-dialog.mjs':'auth-dialog.mjs','/auth-flow.mjs':'auth-flow.mjs','/auth-errors.mjs':'auth-errors.mjs','/audio-errors.mjs':'audio-errors.mjs','/auth-return.mjs':'auth-return.mjs','/auth-assets/google.png':'auth-assets/google.png','/auth-assets/apple.svg':'auth-assets/apple.svg','/portal.css':'portal.css','/portal.js':'portal.js','/owner-scope.mjs':'owner-scope.mjs','/paragraph-anchor.mjs':'paragraph-anchor.mjs','/source-language.mjs':'source-language.mjs','/upload-state.mjs':'upload-state.mjs','/library-backup.mjs':'library-backup.mjs','/reader-api.mjs':'reader-api.mjs','/reading-progress.mjs':'reading-progress.mjs','/progress-sync.mjs':'progress-sync.mjs','/reader-translation.js':'reader-translation.js','/translation-first-use.mjs':'translation-first-use.mjs','/translation-first-use.css':'translation-first-use.css'};
+    if(p==='/people'||/^\/(?:people|p)\/[A-Za-z0-9_-]{1,128}$/.test(p))files[p]='people.html';
+    if(p.startsWith('/p/')){res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');res.setHeader('Referrer-Policy','no-referrer');}
+    for(const file of ['people.css','person-entry.css','people.mjs','people-copy.mjs','person-share.mjs','person-motion.mjs','person-return.mjs','person-return-controller.mjs','reader-companion-loader.mjs','person-model.mjs'])files['/'+file]=file;
+    if(/^\/assets\/people\/[A-Za-z0-9_.-]+\.(?:jpg|jpeg|png|webp)$/.test(p))files[p]=p.slice(1);
     for(const file of ['billing.css','billing.mjs','credit-client.mjs','credit-labels.mjs','commerce-pages.mjs'])files['/'+file]=file;
     files['/billing']='billing.html';files['/admin/billing']='billing.html';
     // The local library and reader share these exact public module URLs.
@@ -165,7 +185,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     for(const file of ['popover-controls.mjs','reader-book-actions-bootstrap.mjs'])files['/'+file]=file;
     if(!isAPI&&!files[p])return false;
     if(isAPI||p==='/billing'||p==='/admin/billing'||p==='/source-review'||p==='/library'||p==='/gift-preview'||safeGiftReturn(p))res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
-    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p==="/robots.txt"?"text/plain":p==="/sitemap.xml"?"application/xml":p.endsWith('.ttf')?'font/ttf':p.endsWith('.json')?'application/json':p.endsWith('.woff2')?'font/woff2':p.endsWith('.txt')?'text/plain':p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));if(type.startsWith('font/')||type==='application/json'){res.writeHead(200,{'Content-Type':type,'Content-Length':file.length});res.end(req.method==='HEAD'?undefined:file);return true;}send(200,files[p]==='home.html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
+    if(!isAPI){if(req.method!=='GET'&&req.method!=='HEAD')throw fail('不支持这个请求',405);const type=p==="/robots.txt"?"text/plain":p==="/sitemap.xml"?"application/xml":p.endsWith('.ttf')?'font/ttf':p.endsWith('.json')?'application/json':p.endsWith('.woff2')?'font/woff2':p.endsWith('.txt')?'text/plain':p.endsWith('.webp')?'image/webp':p.endsWith('.png')?'image/png':p.endsWith('.jpg')||p.endsWith('.jpeg')?'image/jpeg':p.endsWith('.svg')?'image/svg+xml':p.endsWith('.css')?'text/css':p.endsWith('.js')||p.endsWith('.mjs')?'text/javascript':'text/html';const file=await readFile(path.join(root,'app',files[p]));if(type.startsWith('font/')||type==='application/json'){res.writeHead(200,{'Content-Type':type,'Content-Length':file.length});res.end(req.method==='HEAD'?undefined:file);return true;}send(200,files[p]==='home.html'?portalDocument(file.toString('utf8'),p):file,type);return true;}
     if(req.method!=='GET'&&req.method!=='POST')throw fail('不支持这个请求',405);
     // Hosted clients must be configured explicitly; Host only describes a local HTTP instance.
     const originAllowed=webOrigins.has(req.headers.origin)||!publicOrigin&&req.headers.origin==='http://'+req.headers.host;
@@ -188,13 +208,20 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     const token=cookieToken(req);
     if(p==='/api/auth/logout'&&req.method==='POST'){await jsonBody(req,4096);try{await auth.logout(token,{expectedOwner:req.headers['x-reader-owner']});}catch(error){if(error.readerSessionChanged)res.setHeader('X-Reader-Session-Changed','1');throw error;}res.setHeader('Set-Cookie',`marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${publicOrigin?.startsWith('https:')?'; Secure':''}`);send(200,{signedOut:true});return true;}
     const user=req.method==='GET'&&p.startsWith('/api/book-gifts/')?null:await auth.userFor(token);
-    const ownerScoped=p.startsWith('/api/billing/')||p.startsWith('/api/admin/billing')||p.startsWith('/api/library')||p==='/api/account/preference-memory'||p==='/api/account/reading-preferences'||p==='/api/account/ui-preferences'||req.method==='POST'&&(p==='/api/account/profile'||/^\/api\/book-gifts\/[^/]+\/(?:accept|revoke)$/.test(p));
+    const ownerScoped=p==='/api/people'||p.startsWith('/api/people/')||p.startsWith('/api/billing/')||p.startsWith('/api/admin/billing')||p.startsWith('/api/library')||p==='/api/account/preference-memory'||p==='/api/account/reading-preferences'||p==='/api/account/ui-preferences'||req.method==='POST'&&(p==='/api/account/profile'||/^\/api\/book-gifts\/[^/]+\/(?:accept|revoke)$/.test(p));
     if(ownerScoped&&req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==(user?.id||'guest')){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房。原账户草稿仍留在原处。',409);}
-    const body=req.method==='POST'?await jsonBody(req,p.startsWith('/api/billing/')?32*1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
+    const body=req.method==='POST'?await jsonBody(req,p.startsWith('/api/people')?1024*1024:p.startsWith('/api/billing/')?32*1024:p==='/api/account/ui-preferences'?4*1024:['/api/account/reading-preferences','/api/account/preference-memory'].includes(p)?8*1024:p.startsWith('/api/library/daily-reading')||p.startsWith('/api/agent/daily-')?8*1024:p.startsWith('/api/auth/')||p.startsWith('/api/book-gifts/')||p.endsWith('/introduction')?4096:p.startsWith('/api/library/restore/')?2*1024*1024:p==='/api/account/profile'?160*1024:p.endsWith('/audio/import')||p.endsWith('/audio/validate')?32*1024*1024:['/api/library/import','/api/library/validate'].includes(p)?200*1024*1024:29*1024*1024):null;
     if(p==='/api/billing/account'&&user)await creditGate.recover(user);
     if(await billingRoutes.handle({req,res,url,user,body,send}))return true;
     const localAllowed=allowLocal&&['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress)&&!publicOrigin;
     const setSession=value=>res.setHeader('Set-Cookie',`marginalia_session=${value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${value?604800:0}${publicOrigin?.startsWith('https:')?'; Secure':''}`);
+    if(p==='/api/people'||p.startsWith('/api/people/')){
+      if(req.method==='POST'&&!user?.id)throw fail('请先进入自己的书房。',401);
+      if(req.method==='POST'&&req.headers['x-reader-owner']!==user.id)throw fail('请重新核对当前书房账户。',409);
+      if(await peopleRuntimeRoutes.handle({req,url,user,body,token,send}))return true;
+      if(await peopleRoutes.handle({req,res,url,user,body,send}))return true;
+      throw fail('找不到这个人物操作。',404);
+    }
     if(p==='/api/auth/session'&&req.method==='GET'){
       const capabilities=auth.capabilities?await auth.capabilities():{email:auth.emailAvailable,providers:{google:false,apple:false},otp:{digits:6,expiresIn:600,retryAfter:60}};
       // Host only hides unusable OAuth buttons; it never authorizes a web origin.
@@ -350,7 +377,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
           res.write(JSON.stringify(value)+'\n');
         };
         try{
-          const result=await creditGate.run({user,action:'conversation',bookId:id,input:body,execute:input=>chat.send(user,id,input,streaming?{onProgress:frame}:{})});
+          const result=await creditGate.run({user,action:'conversation',bookId:id,input:body,execute:input=>chat.send(user,id,input,{...(streaming?{onProgress:frame}:{}),authorizePeople:async()=> (await auth.userFor(token))?.id===user.id})});
           if(streaming){frame({type:'result',turn:result});res.end();}else send(200,result);
         }catch(error){
           if(!res.headersSent)throw error;
@@ -433,5 +460,5 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
     }
     throw fail('找不到这个操作',404);
   }
-  return {handle,library,portability,auth,billing,creditGate,profile,uiPreferences,gifts,giftQuotes,audio,audioRoutes,chat,bookIntroductions,dailyReading,ingestionRunner,setLegacyBook:book=>{legacyBook=book;}};
+  return {handle,library,people,peopleGeneration,peopleGrants,portability,auth,billing,creditGate,profile,uiPreferences,gifts,giftQuotes,audio,audioRoutes,chat,bookIntroductions,dailyReading,ingestionRunner,setLegacyBook:book=>{legacyBook=book;}};
 }

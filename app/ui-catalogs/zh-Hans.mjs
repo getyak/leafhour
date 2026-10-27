@@ -2145,6 +2145,7 @@ export default Object.freeze({
   "data.settings.intro": "备份书房，或只带走自己的记录。无需订阅。",
   "data.settings.backupHelp": "阅读文本与译文都会备份；原文件可选。",
   "data.settings.restoreHelp": "先在本机校验，确认后才开始恢复。",
+  "chat.people.allowTurn": "允许本次提问创建、修改或删除人物资料",
   "memory.allowTurn": "允许本次提问修改我的阅读偏好",
   "memory.welcome": "先从一本书开始",
   "memory.title": "我的阅读偏好",

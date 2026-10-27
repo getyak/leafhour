@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "publicBookIds": [
+    "gutenberg-au-room-of-ones-own",
+    "gutenberg-frankenstein"
+  ],
+  "people": [
+    {
+      "id": "virginia-woolf",
+      "file": "virginia-woolf.json",
+      "sha256": "8e599ded0116eb6af71167195e6cec5f082209f8a9a0323868bca048b1ac9d74"
+    },
+    {
+      "id": "mary-shelley",
+      "file": "mary-shelley.json",
+      "sha256": "2eb0f9be73cffa189eb6559845acfd925159020e5ccac06918699b4a95261513"
+    },
+    {
+      "id": "james-p-carse",
+      "file": "james-p-carse.json",
+      "sha256": "515454a835ba7a2d9afb41a0bde964a6324221f38f07329c885c1b6d11df9f27"
+    }
+  ]
+}
