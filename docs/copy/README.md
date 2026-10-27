@@ -21,6 +21,15 @@ Two consecutive runs are byte-identical. The tracked artifacts carry **no timest
 
 The lint corpus is generated into `build/copy/<locale>.txt` (git-ignored) together with `build/copy/manifest.json`, which maps **every emitted line** to one stable item id, locale, kind and value SHA256. Before any debt or exception matching, `tools/copy-lint.mjs` recomputes each item's exact bytes from its line range and compares them with the manifest declaration — changed bytes are an inventory failure and can never ride a documented debt binding. The export refuses to run on an empty corpus, parity gaps, duplicate ids or a declared hash that does not match the actual value.
 
+
+## Integrated source readback (2026-10-27)
+
+Fresh GitHub main is `12e185775c6f0d60fc71cbf2ae5568f0f9db83c2` (merged public PR209; design documents and pure prototype tests only). This independent integration normally merges privacy `9db15ac09283f8090fac6a58a02f03873259f81d` and ledger `f02adb6d128a833972d386c8cfd527c8ddb33240`, preserving both source histories. No previous context hashes or decisions were refreshed. Current generated inputDigest is `e4a326111267eb89bffbe0f52c1328bc33ac13d917ab737a27c7c3a2d70224ea`.
+
+The current scan has **2226 catalogue keys: 15 agent-reviewed / 2211 unreviewed**, and **8904 locale values: 60 reviewed / 8844 unknown**. Exactly 8 old keys / 32 locale decisions reopened after the privacy consumer/source changes: `sample.disclosure`, `sample.disclosureGeneral`, `sample.disclosureNone`, `sample.disclosureMetadata`, `translation.scopeBrief`, `translation.incomplete`, `translation.failed`, `reader.shell.aboutTranslation`. Five new `translation.firstUse.*` keys /20 values remain unknown; source review of privacy behavior does not automatically classify their wording. The original92 maintained decision records are historical scope, not92 current passes.
+
+Static candidates: **4866 total, 3 admitted, 4863 unknown**, including all 132 protected-source candidates; 3134 computed references remain unresolved.19 structural records retain historical verified/current unknown states and stay outside catalogue counts. These are regenerated figures, not fixed denominators. The original556076d snapshot below is retained as history.
+
 ## Current supplement and state boundaries
 
 `copy-ledger.json` is maintained source. Its 92 GET-218 catalogue decisions are bound to exact key/locale/value/source, historical record identity and inspected consumer/context hashes. The exporter emits per-locale states for ledger keys and an aggregate agent-reviewed key only when all four locales remain valid. Unchanged value bytes are insufficient when consumer locations or behavior source changes. Missing/stale/cross-key/cross-locale/duplicate evidence reopens unknown in `auditLedger.reopened`; no command silently refreshes it. New keys are counted from the current scan and start unreviewed. Re-review means inspecting the changed behavior, then deliberately updating only the affected binding and explanation. Never bulk refresh hashes to make a count green.

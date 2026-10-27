@@ -262,7 +262,7 @@
       },
       {
         "file": "app/index.html",
-        "sha256": "097c46c56e3ef1e77b4187f2093a073b5f38e379aa314d9f36bd8e604e3c872e"
+        "sha256": "37ced534d9c609260e8310b33104aab46092a5604a5fbcd04f496518dae0a113"
       },
       {
         "file": "app/interaction-craft.mjs",
@@ -586,7 +586,7 @@
       },
       {
         "file": "app/reader-translation.js",
-        "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
+        "sha256": "5d6e491f119b2b194cf848bb6a7987bbeba8b98e1619b687d6c7d94969e1c705"
       },
       {
         "file": "app/reader.js",
@@ -773,24 +773,28 @@
         "sha256": "d7c5b45abb3d16f6d680f7ec2e03921556b1fabd520eb1769a4984042c0cfd3d"
       },
       {
+        "file": "app/translation-first-use.mjs",
+        "sha256": "f5f2a96ce00a00fd6fbf4c59a69a4be17a96d304c5da6a932c8e4d41e2e0f38d"
+      },
+      {
         "file": "app/translation-state.mjs",
         "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
       },
       {
         "file": "app/ui-catalogs/en.mjs",
-        "sha256": "6527b967b9f2116657740db795a762f8b62287272092f1c6aa04074fe33f04e9"
+        "sha256": "a3d48dd89f77db2d4b88b70b6a229eb06239cfa95869577628aa8ee9002de19a"
       },
       {
         "file": "app/ui-catalogs/ja.mjs",
-        "sha256": "f6cbe84525bc97584e1782d14478b88b746d522ca15a30065727cd077b239de8"
+        "sha256": "6ed2819bd71bfae844591a4838e8a88eb4f5d6dbe0779caf5745e14eb65e84c7"
       },
       {
         "file": "app/ui-catalogs/zh-Hans.mjs",
-        "sha256": "2900289c6c58dc999f45f4f5c18aa1b81e9a34b7003c30573b536b588c29b9ad"
+        "sha256": "e1bd46c87f56631cd467cd5d78bad413a46668344965fd8ee6374e7c748e3704"
       },
       {
         "file": "app/ui-catalogs/zh-Hant.mjs",
-        "sha256": "a65db31f93d0ccea623974889477d5b094c6afb41247ac1402093e93ac0ff80d"
+        "sha256": "32280d4375b8aee0b10659d431ae01d8e3c7bef801193d79cd3a45049b72bd7c"
       },
       {
         "file": "app/ui-locale-codec.mjs",
@@ -1070,7 +1074,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "8786954f6959857fbc1d28bc0f8189feafe515bef867ba9e5b323e9609805b13"
+        "sha256": "0701c5f68c36b0614613a38a553e1e29faf1eadfce19f8087d3b8498a6446625"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1134,7 +1138,7 @@
       },
       {
         "file": "server/server.mjs",
-        "sha256": "502e8a63fb264b03974bd99c4adb795a32afc26943538b1c2e62310f8018ef65"
+        "sha256": "833bf4b338002638e150d70ca924089207f06bd8ff1d433fbd75d991327fc4de"
       },
       {
         "file": "server/source-revisions.mjs",
@@ -1157,7 +1161,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "4727aa60ec3b29a2ad2f2d801a041a553250d74ef713d556c0462299ac38b624"
+    "inputDigest": "e4a326111267eb89bffbe0f52c1328bc33ac13d917ab737a27c7c3a2d70224ea"
   },
   "locales": [
     "en",
@@ -1171,25 +1175,25 @@
       "locale": "en",
       "file": "app/ui-catalogs/en.mjs",
       "missing": false,
-      "entries": 2221
+      "entries": 2226
     },
     {
       "locale": "zh-Hans",
       "file": "app/ui-catalogs/zh-Hans.mjs",
       "missing": false,
-      "entries": 2221
+      "entries": 2226
     },
     {
       "locale": "zh-Hant",
       "file": "app/ui-catalogs/zh-Hant.mjs",
       "missing": false,
-      "entries": 2221
+      "entries": 2226
     },
     {
       "locale": "ja",
       "file": "app/ui-catalogs/ja.mjs",
       "missing": false,
-      "entries": 2221
+      "entries": 2226
     }
   ],
   "items": [
@@ -3859,7 +3863,7 @@
         },
         {
           "file": "app/reader-translation.js",
-          "line": 52,
+          "line": 47,
           "column": 85
         }
       ],
@@ -3921,7 +3925,7 @@
         },
         {
           "file": "app/reader-translation.js",
-          "line": 52,
+          "line": 47,
           "column": 42
         }
       ],
@@ -16381,13 +16385,18 @@
           "column": 32
         },
         {
+          "file": "app/translation-first-use.mjs",
+          "line": 63,
+          "column": 91
+        },
+        {
           "file": "server/library-service.mjs",
           "line": 373,
           "column": 239
         },
         {
           "file": "server/server.mjs",
-          "line": 98,
+          "line": 100,
           "column": 37
         }
       ],
@@ -16631,6 +16640,11 @@
           "file": "app/site-appearance.mjs",
           "line": 113,
           "column": 32
+        },
+        {
+          "file": "app/translation-first-use.mjs",
+          "line": 52,
+          "column": 29
         },
         {
           "file": "server/mcp-http.mjs",
@@ -17366,7 +17380,7 @@
         },
         {
           "file": "server/server.mjs",
-          "line": 152,
+          "line": 154,
           "column": 131
         }
       ],
@@ -50283,7 +50297,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 37,
+          "line": 33,
           "column": 112
         },
         {
@@ -51885,7 +51899,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 40,
+          "line": 36,
           "column": 41
         },
         {
@@ -52014,7 +52028,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 37,
+          "line": 33,
           "column": 136
         },
         {
@@ -52081,8 +52095,8 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 140,
-          "column": 84
+          "line": 147,
+          "column": 109
         },
         {
           "file": "app/translation-state.mjs",
@@ -52103,146 +52117,40 @@
         }
       ],
       "review": {
-        "state": "reviewed",
-        "by": "agent",
-        "classification": "A+E",
-        "surface": "reader feedback",
-        "trigger": "network or unknown response",
-        "decision": "preserve",
-        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
       },
       "localeReviews": {
         "en": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "reader feedback",
-          "trigger": "network or unknown response",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Transport failure does not prove generation failed or nothing was saved.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 44,
-            "recordSha256": "7b8c8f1eac6a31722a713b342d1e5c3e3907f1f586be6e7e3936cd7297c61d44"
-          },
-          "context": {
-            "consumersSha256": "83cb47f2c8b75293855dd9c69f191e458faddfeb07f24a3d0c73f4cf24a8c4a8",
-            "files": [
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              },
-              {
-                "file": "app/translation-state.mjs",
-                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
-              }
-            ]
-          },
-          "valueSha256": "1fcc63d2cb1c64e35bb58e0bfda589aef149a605d5f90012b88b922547156999",
-          "file": "app/ui-catalogs/en.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hans": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "reader feedback",
-          "trigger": "network or unknown response",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Transport failure does not prove generation failed or nothing was saved.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 45,
-            "recordSha256": "655596f1f71eb92fa8691d7e4f1713c9b65272d2a88da3c0d3e73734e16b7709"
-          },
-          "context": {
-            "consumersSha256": "83cb47f2c8b75293855dd9c69f191e458faddfeb07f24a3d0c73f4cf24a8c4a8",
-            "files": [
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              },
-              {
-                "file": "app/translation-state.mjs",
-                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
-              }
-            ]
-          },
-          "valueSha256": "5756b239db492c85e91c9d61e411ef0bc7bd1478407ad9294b1fbebb22552cd0",
-          "file": "app/ui-catalogs/zh-Hans.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hant": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "reader feedback",
-          "trigger": "network or unknown response",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Transport failure does not prove generation failed or nothing was saved.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 46,
-            "recordSha256": "bb1bdd670dbf1efac7f2e035abf02f35beebf31f32bd0127a086b3fab4c11e89"
-          },
-          "context": {
-            "consumersSha256": "83cb47f2c8b75293855dd9c69f191e458faddfeb07f24a3d0c73f4cf24a8c4a8",
-            "files": [
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              },
-              {
-                "file": "app/translation-state.mjs",
-                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
-              }
-            ]
-          },
-          "valueSha256": "eee769a9e5c44c091f833b1b23bd7534ef6f4e4f6783831179f4fba2ae195bf6",
-          "file": "app/ui-catalogs/zh-Hant.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "ja": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "reader feedback",
-          "trigger": "network or unknown response",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Transport failure does not prove generation failed or nothing was saved.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 47,
-            "recordSha256": "f21c1d66b5f52906490daff0a4ea3a5fd2916b55c3abfc287ba301dcf3fd313b"
-          },
-          "context": {
-            "consumersSha256": "83cb47f2c8b75293855dd9c69f191e458faddfeb07f24a3d0c73f4cf24a8c4a8",
-            "files": [
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              },
-              {
-                "file": "app/translation-state.mjs",
-                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
-              }
-            ]
-          },
-          "valueSha256": "0530460286b226c5caa48cf80a3043a6113ffa60522ad57eab41f3e243aab772",
-          "file": "app/ui-catalogs/ja.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         }
       }
     },
@@ -52346,7 +52254,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 45,
+          "line": 41,
           "column": 31
         },
         {
@@ -52413,7 +52321,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 132,
+          "line": 139,
           "column": 82
         }
       ],
@@ -52425,146 +52333,40 @@
         }
       ],
       "review": {
-        "state": "reviewed",
-        "by": "agent",
-        "classification": "A+E",
-        "surface": "reader feedback",
-        "trigger": "incomplete response",
-        "decision": "preserve",
-        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
       },
       "localeReviews": {
         "en": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "reader feedback",
-          "trigger": "incomplete response",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Do not equate an incomplete response with a known server failure; preserve retry identity.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 40,
-            "recordSha256": "a246f03abce5f699fbe94e63f6cf31b6696b081d63c9d9d8609bf321bf993d4f"
-          },
-          "context": {
-            "consumersSha256": "548bb3f5429b0595ecefc3c262e8a5995e643d54d2af26d98c1f1d7eda64fbf4",
-            "files": [
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              },
-              {
-                "file": "app/translation-state.mjs",
-                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
-              }
-            ]
-          },
-          "valueSha256": "a0d688da23c73fcc20f08f6515c3ff7b57c6416d3af90122194274cf29387c99",
-          "file": "app/ui-catalogs/en.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hans": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "reader feedback",
-          "trigger": "incomplete response",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Do not equate an incomplete response with a known server failure; preserve retry identity.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 41,
-            "recordSha256": "f483d5472bcf972395c1fb741fe65a5d31d84ddf1006f8c814b8a2fef261ead7"
-          },
-          "context": {
-            "consumersSha256": "548bb3f5429b0595ecefc3c262e8a5995e643d54d2af26d98c1f1d7eda64fbf4",
-            "files": [
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              },
-              {
-                "file": "app/translation-state.mjs",
-                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
-              }
-            ]
-          },
-          "valueSha256": "7ec06b02f30fc3e01f2f0f1884b017be27195eff7c4d2d3c3f8ef1f04e29678d",
-          "file": "app/ui-catalogs/zh-Hans.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hant": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "reader feedback",
-          "trigger": "incomplete response",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Do not equate an incomplete response with a known server failure; preserve retry identity.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 42,
-            "recordSha256": "4af80c42c1861dac706c8a01377dc8d6aea79fdc2c4508360ef341841e099487"
-          },
-          "context": {
-            "consumersSha256": "548bb3f5429b0595ecefc3c262e8a5995e643d54d2af26d98c1f1d7eda64fbf4",
-            "files": [
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              },
-              {
-                "file": "app/translation-state.mjs",
-                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
-              }
-            ]
-          },
-          "valueSha256": "7bca6ed086ce2d777c5077b1532433711c719074436865b7df8eacf657b564bf",
-          "file": "app/ui-catalogs/zh-Hant.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "ja": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "reader feedback",
-          "trigger": "incomplete response",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Do not equate an incomplete response with a known server failure; preserve retry identity.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 43,
-            "recordSha256": "71aa5008c00ab5f5bf20e7861c59cdbbff47ce9ce8eb23e6d089b7943386a5b5"
-          },
-          "context": {
-            "consumersSha256": "548bb3f5429b0595ecefc3c262e8a5995e643d54d2af26d98c1f1d7eda64fbf4",
-            "files": [
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              },
-              {
-                "file": "app/translation-state.mjs",
-                "sha256": "e344f67ba3944a412f297402ff9449a89e1aa4e99dee2c0888a8185149d8da15"
-              }
-            ]
-          },
-          "valueSha256": "2f3a1549ec9126bc737ec67db3b956fc3d638c4ebaa27ddd7edb2dd4416b6b57",
-          "file": "app/ui-catalogs/ja.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         }
       }
     },
@@ -53708,150 +53510,40 @@
         }
       ],
       "review": {
-        "state": "reviewed",
-        "by": "agent",
-        "classification": "A+D+E",
-        "surface": "translation details",
-        "trigger": "explicitly expand details",
-        "decision": "preserve",
-        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
       },
       "localeReviews": {
         "en": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "translation details",
-          "trigger": "explicitly expand details",
-          "classifications": [
-            "A",
-            "D",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Retain exact sample count, attribution, review status and license without repeating interaction help.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 4,
-            "recordSha256": "6ed14b0f902c6d6b7d922e50895367486ef5289e24ed0675ca831b3185b3e334"
-          },
-          "context": {
-            "consumersSha256": "46175e334c4a3d9e823c49411f2534117f34867ddcd11dd284e4b1d86d3f176b",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "94a1260beff2e11d2bb38a46caaf12df4b2f20b365926d5dc09cba60c9f6c12e",
-          "file": "app/ui-catalogs/en.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hans": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "translation details",
-          "trigger": "explicitly expand details",
-          "classifications": [
-            "A",
-            "D",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Retain exact sample count, attribution, review status and license without repeating interaction help.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 5,
-            "recordSha256": "bc5d678ceb8b70d9d1c090e8bb57e05c63b709a360d6aee735af9a261ef9322a"
-          },
-          "context": {
-            "consumersSha256": "46175e334c4a3d9e823c49411f2534117f34867ddcd11dd284e4b1d86d3f176b",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "189fe836728795dcd3f03081bd298b84dba48762c74b59944f09e2c2bb71b64a",
-          "file": "app/ui-catalogs/zh-Hans.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hant": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "translation details",
-          "trigger": "explicitly expand details",
-          "classifications": [
-            "A",
-            "D",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Retain exact sample count, attribution, review status and license without repeating interaction help.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 6,
-            "recordSha256": "787da46ba0864ff053df941d753d2fcef708cca0fd79e6e8c613ba3b4cc2cfba"
-          },
-          "context": {
-            "consumersSha256": "46175e334c4a3d9e823c49411f2534117f34867ddcd11dd284e4b1d86d3f176b",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "31460e708a3f60940e53ea1b7951d37c61df26762aa87cd3329bad6dafd6b189",
-          "file": "app/ui-catalogs/zh-Hant.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "ja": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "translation details",
-          "trigger": "explicitly expand details",
-          "classifications": [
-            "A",
-            "D",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Retain exact sample count, attribution, review status and license without repeating interaction help.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 7,
-            "recordSha256": "d3894ea427568b20f7729b9011ad80d79848a392350205ea78c8fff1125ef64b"
-          },
-          "context": {
-            "consumersSha256": "46175e334c4a3d9e823c49411f2534117f34867ddcd11dd284e4b1d86d3f176b",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "534550b906ebd343733a3795066d9c4d09c6141dfa5e3d92b2bbb72dc57af21d",
-          "file": "app/ui-catalogs/ja.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         }
       }
     },
@@ -53899,146 +53591,40 @@
         }
       ],
       "review": {
-        "state": "reviewed",
-        "by": "agent",
-        "classification": "A+E",
-        "surface": "retained translation-details wording; no current caller established",
-        "trigger": "unresolved: retained key has no static consumer; not claimed visible",
-        "decision": "preserve",
-        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
       },
       "localeReviews": {
         "en": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "retained translation-details wording; no current caller established",
-          "trigger": "unresolved: retained key has no static consumer; not claimed visible",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Remove a blanket AI attribution that cannot describe every saved translation. Review covers the delivered wording only; current exposure remains unknown.",
-          "exposure": "unknown",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 8,
-            "recordSha256": "d72322271825c2987f1c8bb8e30f5f7db98f6c3d1f24f1b5f17d8e8a2a027239"
-          },
-          "context": {
-            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "16a2e0f6421d371b370bfaba7448dd92b4aa4842fa67bad42c2d57268317931c",
-          "file": "app/ui-catalogs/en.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hans": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "retained translation-details wording; no current caller established",
-          "trigger": "unresolved: retained key has no static consumer; not claimed visible",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Remove a blanket AI attribution that cannot describe every saved translation. Review covers the delivered wording only; current exposure remains unknown.",
-          "exposure": "unknown",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 9,
-            "recordSha256": "7e7580c9cf1d5071424d022d4e54bf9f32400c6b925d2ec94ee511c10a0f37f1"
-          },
-          "context": {
-            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "1ccee1130cf13232f7836fedce5c0cb75104562c48b7dba0ba66ec3ed712e196",
-          "file": "app/ui-catalogs/zh-Hans.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hant": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "retained translation-details wording; no current caller established",
-          "trigger": "unresolved: retained key has no static consumer; not claimed visible",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Remove a blanket AI attribution that cannot describe every saved translation. Review covers the delivered wording only; current exposure remains unknown.",
-          "exposure": "unknown",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 10,
-            "recordSha256": "b5a7b8f11e8de590dc93c329b270f88d1085db5346419eaefec178e486a6311f"
-          },
-          "context": {
-            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "2fc8dc9fae2760716ebd837f9cd46d30654eef2bfd2f71fddf18852b8312b120",
-          "file": "app/ui-catalogs/zh-Hant.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "ja": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "retained translation-details wording; no current caller established",
-          "trigger": "unresolved: retained key has no static consumer; not claimed visible",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Remove a blanket AI attribution that cannot describe every saved translation. Review covers the delivered wording only; current exposure remains unknown.",
-          "exposure": "unknown",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 11,
-            "recordSha256": "c9c95666811fefd79897682a8f504639026d2394626adab0aa8b4925f35d6b5f"
-          },
-          "context": {
-            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "7646d10c216a30d0e63080bdc12a099996c4969a5c58c000c8f5e94e0bff2a7a",
-          "file": "app/ui-catalogs/ja.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         }
       }
     },
@@ -54080,7 +53666,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 70,
+          "line": 67,
           "column": 103
         }
       ],
@@ -54137,7 +53723,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 77,
+          "line": 74,
           "column": 95
         }
       ],
@@ -54194,7 +53780,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 77,
+          "line": 74,
           "column": 134
         }
       ],
@@ -54251,7 +53837,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 79,
+          "line": 76,
           "column": 174
         }
       ],
@@ -54308,7 +53894,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 81,
+          "line": 78,
           "column": 91
         }
       ],
@@ -54365,7 +53951,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 90,
+          "line": 87,
           "column": 74
         }
       ],
@@ -54422,7 +54008,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 95,
+          "line": 92,
           "column": 138
         }
       ],
@@ -54479,7 +54065,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 96,
+          "line": 93,
           "column": 48
         }
       ],
@@ -54536,7 +54122,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 99,
+          "line": 96,
           "column": 47
         }
       ],
@@ -54593,7 +54179,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 109,
+          "line": 106,
           "column": 68
         }
       ],
@@ -54650,7 +54236,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 109,
+          "line": 106,
           "column": 115
         }
       ],
@@ -54707,7 +54293,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 109,
+          "line": 106,
           "column": 164
         }
       ],
@@ -54764,7 +54350,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 109,
+          "line": 106,
           "column": 184
         }
       ],
@@ -54821,7 +54407,7 @@
       "consumers": [
         {
           "file": "app/reader-translation.js",
-          "line": 112,
+          "line": 109,
           "column": 109
         }
       ],
@@ -72463,146 +72049,40 @@
         }
       ],
       "review": {
-        "state": "reviewed",
-        "by": "agent",
-        "classification": "D+E",
-        "surface": "reader settings",
-        "trigger": "open reading settings",
-        "decision": "preserve",
-        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
       },
       "localeReviews": {
         "en": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "reader settings",
-          "trigger": "open reading settings",
-          "classifications": [
-            "D",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Source and translation metadata share one explicit location, accessible in original-only mode.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 84,
-            "recordSha256": "7177af58c334d76e02b0f46720e65b19fe184ccb8a40164930d1195f841175a4"
-          },
-          "context": {
-            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-            "files": [
-              {
-                "file": "app/index.html",
-                "sha256": "097c46c56e3ef1e77b4187f2093a073b5f38e379aa314d9f36bd8e604e3c872e"
-              },
-              {
-                "file": "app/reader-settings.mjs",
-                "sha256": "a620f3f5e846f343cab7fba1f3f0c74b9eae7148497766dd9f9c11fb89349635"
-              }
-            ]
-          },
-          "valueSha256": "32250d876f8b08ed093c4376acc5445b662ea20733f7719a7e64d61b73a08102",
-          "file": "app/ui-catalogs/en.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hans": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "reader settings",
-          "trigger": "open reading settings",
-          "classifications": [
-            "D",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Source and translation metadata share one explicit location, accessible in original-only mode.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 85,
-            "recordSha256": "61eced4ff784d2b28e12912127f1d99f4e9fbfad69d01650799b19a0cf720b39"
-          },
-          "context": {
-            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-            "files": [
-              {
-                "file": "app/index.html",
-                "sha256": "097c46c56e3ef1e77b4187f2093a073b5f38e379aa314d9f36bd8e604e3c872e"
-              },
-              {
-                "file": "app/reader-settings.mjs",
-                "sha256": "a620f3f5e846f343cab7fba1f3f0c74b9eae7148497766dd9f9c11fb89349635"
-              }
-            ]
-          },
-          "valueSha256": "fbdb5c1f2062bba827be8bada7e3037f35dd70ea46166fa44eb53237d18560c4",
-          "file": "app/ui-catalogs/zh-Hans.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hant": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "reader settings",
-          "trigger": "open reading settings",
-          "classifications": [
-            "D",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Source and translation metadata share one explicit location, accessible in original-only mode.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 86,
-            "recordSha256": "1145920ba1f3b7ea7ea8c69acecb8f178a0ea0216de6231db477cad377be5106"
-          },
-          "context": {
-            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-            "files": [
-              {
-                "file": "app/index.html",
-                "sha256": "097c46c56e3ef1e77b4187f2093a073b5f38e379aa314d9f36bd8e604e3c872e"
-              },
-              {
-                "file": "app/reader-settings.mjs",
-                "sha256": "a620f3f5e846f343cab7fba1f3f0c74b9eae7148497766dd9f9c11fb89349635"
-              }
-            ]
-          },
-          "valueSha256": "fa091ea50fc11ef12a430754f0ab313bec06eb124245128708a9600f6bab1619",
-          "file": "app/ui-catalogs/zh-Hant.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "ja": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "reader settings",
-          "trigger": "open reading settings",
-          "classifications": [
-            "D",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Source and translation metadata share one explicit location, accessible in original-only mode.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 87,
-            "recordSha256": "bea986c35073cf6f9a77577bde4004a4b7c79c0f05c34ce413609630282a5437"
-          },
-          "context": {
-            "consumersSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-            "files": [
-              {
-                "file": "app/index.html",
-                "sha256": "097c46c56e3ef1e77b4187f2093a073b5f38e379aa314d9f36bd8e604e3c872e"
-              },
-              {
-                "file": "app/reader-settings.mjs",
-                "sha256": "a620f3f5e846f343cab7fba1f3f0c74b9eae7148497766dd9f9c11fb89349635"
-              }
-            ]
-          },
-          "valueSha256": "6eb54670a07fcdc539754761d19057fc727ef3f9908c544443218cebdb8fc782",
-          "file": "app/ui-catalogs/ja.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         }
       }
     },
@@ -89279,13 +88759,7 @@
       },
       "missingLocales": [],
       "duplicates": [],
-      "consumers": [
-        {
-          "file": "app/reader-translation.js",
-          "line": 50,
-          "column": 173
-        }
-      ],
+      "consumers": [],
       "hints": [
         {
           "kind": "key-namespace",
@@ -89294,150 +88768,40 @@
         }
       ],
       "review": {
-        "state": "reviewed",
-        "by": "agent",
-        "classification": "A+B+E",
-        "surface": "passage translation action",
-        "trigger": "before explicit translation",
-        "decision": "preserve",
-        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
       },
       "localeReviews": {
         "en": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "passage translation action",
-          "trigger": "before explicit translation",
-          "classifications": [
-            "A",
-            "B",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Keep sending scope and private-note boundary beside the action; price confirmation remains unchanged.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 20,
-            "recordSha256": "7a5a9623d61aedda6f74c3c2c3b27176732f50206c5249b3ec9c1d83f44b4798"
-          },
-          "context": {
-            "consumersSha256": "24b19245cfc9d184accbbaa3985c7241ae3a386ad41d02a0e0a5d2f6e940722c",
-            "files": [
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              },
-              {
-                "file": "server/library-service.mjs",
-                "sha256": "5b8c84f33dff07f9f6c633773f76176fe988abb96fb6bdcbd2817a390f2a6f28"
-              }
-            ]
-          },
-          "valueSha256": "7e3ebec15bf606e2d7196eb7c953e68888d2b53ceb5349cad86f8caaccfd4e71",
-          "file": "app/ui-catalogs/en.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hans": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "passage translation action",
-          "trigger": "before explicit translation",
-          "classifications": [
-            "A",
-            "B",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Keep sending scope and private-note boundary beside the action; price confirmation remains unchanged.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 21,
-            "recordSha256": "0f9a10b7456ed784e6276b88f1eecc05e8bd61fc9c75499cfabf0595ce3828b6"
-          },
-          "context": {
-            "consumersSha256": "24b19245cfc9d184accbbaa3985c7241ae3a386ad41d02a0e0a5d2f6e940722c",
-            "files": [
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              },
-              {
-                "file": "server/library-service.mjs",
-                "sha256": "5b8c84f33dff07f9f6c633773f76176fe988abb96fb6bdcbd2817a390f2a6f28"
-              }
-            ]
-          },
-          "valueSha256": "97e3aeb2eb046badc7c81a8bd2b1efda4fbff93c455d0a72ccdc2d2357200a27",
-          "file": "app/ui-catalogs/zh-Hans.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hant": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "passage translation action",
-          "trigger": "before explicit translation",
-          "classifications": [
-            "A",
-            "B",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Keep sending scope and private-note boundary beside the action; price confirmation remains unchanged.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 22,
-            "recordSha256": "0dd6d9b0ebbfb92fc512f2dcaf5a448eff2ef5547aeb0e14594703218ede3b8c"
-          },
-          "context": {
-            "consumersSha256": "24b19245cfc9d184accbbaa3985c7241ae3a386ad41d02a0e0a5d2f6e940722c",
-            "files": [
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              },
-              {
-                "file": "server/library-service.mjs",
-                "sha256": "5b8c84f33dff07f9f6c633773f76176fe988abb96fb6bdcbd2817a390f2a6f28"
-              }
-            ]
-          },
-          "valueSha256": "f3b61080c776e2f4fa57029cf8536f256c75030f10c9e34dd497081c7ae800ed",
-          "file": "app/ui-catalogs/zh-Hant.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "ja": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "passage translation action",
-          "trigger": "before explicit translation",
-          "classifications": [
-            "A",
-            "B",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Keep sending scope and private-note boundary beside the action; price confirmation remains unchanged.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 23,
-            "recordSha256": "57af6f3630f7d486a589cca5173b1411a345adbe6a895587c83a11f798d877f7"
-          },
-          "context": {
-            "consumersSha256": "24b19245cfc9d184accbbaa3985c7241ae3a386ad41d02a0e0a5d2f6e940722c",
-            "files": [
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              },
-              {
-                "file": "server/library-service.mjs",
-                "sha256": "5b8c84f33dff07f9f6c633773f76176fe988abb96fb6bdcbd2817a390f2a6f28"
-              }
-            ]
-          },
-          "valueSha256": "236b1d8a19e15fc414bb4cabcaac2de524d087eb71a3a1a8c1ec0730a2b8aba5",
-          "file": "app/ui-catalogs/ja.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         }
       }
     },
@@ -124321,146 +123685,40 @@
         }
       ],
       "review": {
-        "state": "reviewed",
-        "by": "agent",
-        "classification": "A+E",
-        "surface": "translation details",
-        "trigger": "no saved translations",
-        "decision": "preserve",
-        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
       },
       "localeReviews": {
         "en": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "translation details",
-          "trigger": "no saved translations",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Do not attribute nonexistent translations to AI.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 12,
-            "recordSha256": "52340ff90fb9cec282e937234a95ef9776f64fd55541e84ddf721419dc28ead6"
-          },
-          "context": {
-            "consumersSha256": "4559499e688a56334841dad852bc4b0245339c34f2648098a294ef8c7f85988f",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "e5117103efaff8ee9ce34c2bbf22d7c68ec062ad9774895c6a1efdefca19ac54",
-          "file": "app/ui-catalogs/en.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hans": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "translation details",
-          "trigger": "no saved translations",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Do not attribute nonexistent translations to AI.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 13,
-            "recordSha256": "88ffe94feb84a9b8584f7727f1f1c8924e7500ec1b18cd7d7cfe8a7c023b613c"
-          },
-          "context": {
-            "consumersSha256": "4559499e688a56334841dad852bc4b0245339c34f2648098a294ef8c7f85988f",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "1fcc5a5aed052b5c440d623ab0ba97c656b99fa37b22bd73820fd3758994787a",
-          "file": "app/ui-catalogs/zh-Hans.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hant": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "translation details",
-          "trigger": "no saved translations",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Do not attribute nonexistent translations to AI.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 14,
-            "recordSha256": "04bccf9d1b1fbda7254831019861a39f55eea283db2e36743bc755d864cfd293"
-          },
-          "context": {
-            "consumersSha256": "4559499e688a56334841dad852bc4b0245339c34f2648098a294ef8c7f85988f",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "55144d2a39781c0d1d0f8e9956345bb892ee49810ae533b9120c49a80551e740",
-          "file": "app/ui-catalogs/zh-Hant.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "ja": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "translation details",
-          "trigger": "no saved translations",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Do not attribute nonexistent translations to AI.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 15,
-            "recordSha256": "ca1e18c51b9606b8fb998c9046ca64522551581f4d69402207dd14b0885ed789"
-          },
-          "context": {
-            "consumersSha256": "4559499e688a56334841dad852bc4b0245339c34f2648098a294ef8c7f85988f",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "96391ba1e4e82849d235422bb18c750ccf9585f072edaccf4e6478437d84c41f",
-          "file": "app/ui-catalogs/ja.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         }
       }
     },
@@ -124514,146 +123772,40 @@
         }
       ],
       "review": {
-        "state": "reviewed",
-        "by": "agent",
-        "classification": "A+E",
-        "surface": "translation details",
-        "trigger": "mixed or overridden saved translations",
-        "decision": "preserve",
-        "scope": "delivered wording and bound source context; no human-language or current-browser acceptance"
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
       },
       "localeReviews": {
         "en": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "translation details",
-          "trigger": "mixed or overridden saved translations",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Derive counts and provenance from real saved variants; never call reviewed human translations unreviewed AI.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 16,
-            "recordSha256": "512a05afbbcee1c2929e116783389170d842d48dc8586b087e7f6b6a3eaa8310"
-          },
-          "context": {
-            "consumersSha256": "095c0e37da840bcdccddb59e9c961549f42dccd9d0a36a867264fbfd9db16194",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "38996a431cb799bf187499891c892d720221d29da9d751a3dd2aa36beedbbd7b",
-          "file": "app/ui-catalogs/en.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hans": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "translation details",
-          "trigger": "mixed or overridden saved translations",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Derive counts and provenance from real saved variants; never call reviewed human translations unreviewed AI.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 17,
-            "recordSha256": "33e9554eef34592b4f98e4276c64a07e9c8668d56915f7650865f3870d267c3e"
-          },
-          "context": {
-            "consumersSha256": "095c0e37da840bcdccddb59e9c961549f42dccd9d0a36a867264fbfd9db16194",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "681daeb0b12de8265b3bcd9334293aae3ae09ab4b1f0919a5fd6034b4472fb18",
-          "file": "app/ui-catalogs/zh-Hans.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "zh-Hant": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "translation details",
-          "trigger": "mixed or overridden saved translations",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Derive counts and provenance from real saved variants; never call reviewed human translations unreviewed AI.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 18,
-            "recordSha256": "1e3b0f00712d1b0b4220a84a73ae646f1fd0f5b381034f12660a0f031123e279"
-          },
-          "context": {
-            "consumersSha256": "095c0e37da840bcdccddb59e9c961549f42dccd9d0a36a867264fbfd9db16194",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "82641956354734454caa0c2f57778f1d08ff48ec639f5d367a9aaa3c4d973d9b",
-          "file": "app/ui-catalogs/zh-Hant.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         },
         "ja": {
-          "state": "reviewed",
-          "by": "agent",
-          "surface": "translation details",
-          "trigger": "mixed or overridden saved translations",
-          "classifications": [
-            "A",
-            "E"
-          ],
-          "decision": "preserve",
-          "rationale": "Derive counts and provenance from real saved variants; never call reviewed human translations unreviewed AI.",
-          "exposure": "source-inspected; historical GET-218 browser evidence only",
-          "evidence": {
-            "file": "docs/verification/get-218/copy-decisions.json",
-            "index": 19,
-            "recordSha256": "01bd500d2b916f05911c19cfee4511bae831b6aa3511c6178c22e391490ecd32"
-          },
-          "context": {
-            "consumersSha256": "095c0e37da840bcdccddb59e9c961549f42dccd9d0a36a867264fbfd9db16194",
-            "files": [
-              {
-                "file": "app/catalog-sample.mjs",
-                "sha256": "0cc276ae4c0e488771c40f8a1b08aa14cf0c20bb0e286a761fdec6d33ba4eb8a"
-              },
-              {
-                "file": "app/reader-translation.js",
-                "sha256": "5d52f82a8147eb46d0188b95cc95d0482592ec18cf3463a52bb5cffa4139e570"
-              }
-            ]
-          },
-          "valueSha256": "bc25aae5d9c2b273a65351d53c586220da0493b142c03dc70afbf32503f235f2",
-          "file": "app/ui-catalogs/ja.mjs"
+          "state": "unknown",
+          "classification": "unknown",
+          "surface": "unknown",
+          "trigger": "unknown",
+          "decision": "unknown"
         }
       }
     },
@@ -126356,6 +125508,291 @@
         {
           "kind": "key-namespace",
           "evidence": "key-namespace:audio",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "translation.firstUse.title",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2234,
+          "column": 3,
+          "value": "Translate this paragraph?",
+          "sha256": "88772366a9aaff008373ed9040af82dac91ceefba7a2581de6263e7b1c8f142f"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2233,
+          "column": 3,
+          "value": "翻译这一段？",
+          "sha256": "64d6f53db40a18bb88fabc0245769605b6bd055f7d72dffe9be31b78b0f7e00b"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2233,
+          "column": 3,
+          "value": "翻譯這一段？",
+          "sha256": "c6298f2020419235a02cef15f2c570c9bc4194e97dc04a1ec8f19f4347a406e4"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2233,
+          "column": 3,
+          "value": "この段落を翻訳しますか？",
+          "sha256": "b939679a7953789858f2874ceac97176101469867fcc224d46f3d8079d69d8a0"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/translation-first-use.mjs",
+          "line": 87,
+          "column": 28
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:translation",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "translation.firstUse.body",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2235,
+          "column": 3,
+          "value": "Translating sends this paragraph and up to one paragraph before and after it to an AI. Your notes are not included.",
+          "sha256": "e03fa0f13c01a753f2acdd6d56de07f25eeded77587a56f8b719d051f7f26674"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2234,
+          "column": 3,
+          "value": "翻译会把这一段和前后各一段（如有）发给 AI，不会带上你的笔记。",
+          "sha256": "04bfc743678772d1baf759f50f0e4cfd36c281c4f8cdd9067c803c208e5db610"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2234,
+          "column": 3,
+          "value": "翻譯會把這一段和前後各一段（如有）傳給 AI，不會附上你的筆記。",
+          "sha256": "b0839f00ccd9b185adac64f8e3cfadc8e4d134dec40998af151e324c7f0d131c"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2234,
+          "column": 3,
+          "value": "翻訳のため、この段落と前後の段落（各1段落まで）をAIに送ります。ノートは送りません。",
+          "sha256": "f96c5c0d8f5f90bf60c66324cd89accb4f0c173b28bc6cf3e62631b020413a6e"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/translation-first-use.mjs",
+          "line": 87,
+          "column": 65
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:translation",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "translation.firstUse.accept",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2236,
+          "column": 3,
+          "value": "Translate this paragraph",
+          "sha256": "e703bc426bad7e7cb712b13f8ec607d372e47e2f29e6b1dc5ed5d0592b6ef6d4"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2235,
+          "column": 3,
+          "value": "翻译这一段",
+          "sha256": "122d4fc6784717beaec5368310c1b4f336ddfe55a809d5ae5f4040ce73b700c9"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2235,
+          "column": 3,
+          "value": "翻譯這一段",
+          "sha256": "648f53b8be96f096bea2e961d1a5c5c3ebdec438e656a3c7ba9ef9368e67e2d9"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2235,
+          "column": 3,
+          "value": "この段落を翻訳",
+          "sha256": "8ae577be1c0c3e6976b38f547d44e42fd4719f4c775e25ac0f84959f54d00a0c"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/translation-first-use.mjs",
+          "line": 87,
+          "column": 103
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:translation",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "translation.firstUse.cancel",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2237,
+          "column": 3,
+          "value": "Keep reading",
+          "sha256": "b4b02d9f43fff131ef44a07e6a294159bfffcd77203b451fa82fb58acc31904a"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2236,
+          "column": 3,
+          "value": "继续阅读",
+          "sha256": "4ec2a77b1ae3ba08753b5c02920f12189e3142329430ea10052dcc2d9e78c487"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2236,
+          "column": 3,
+          "value": "繼續閱讀",
+          "sha256": "217d775e8c9014c44a3f60f084489d339868f0e08aefea6a31bad05c649e1748"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2236,
+          "column": 3,
+          "value": "読書を続ける",
+          "sha256": "96ebec7a3e357003aae5e04f671c992e9c00d8a5b3ecffe479228509307c8cdc"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/translation-first-use.mjs",
+          "line": 87,
+          "column": 143
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:translation",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unreviewed",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "translation.firstUse.privacy",
+      "kind": "catalogue",
+      "values": {
+        "en": {
+          "file": "app/ui-catalogs/en.mjs",
+          "line": 2238,
+          "column": 3,
+          "value": "Privacy details",
+          "sha256": "445de1d2d283877c18d443fc9c549128b0613078ce95481be69a1adfd1817db5"
+        },
+        "zh-Hans": {
+          "file": "app/ui-catalogs/zh-Hans.mjs",
+          "line": 2237,
+          "column": 3,
+          "value": "隐私说明",
+          "sha256": "9d06d61ee41fcd3ea716903c4fc7328645e93e05bdfc855feeaa437c5deae323"
+        },
+        "zh-Hant": {
+          "file": "app/ui-catalogs/zh-Hant.mjs",
+          "line": 2237,
+          "column": 3,
+          "value": "隱私說明",
+          "sha256": "7ffac0e6bfe234906a149f4c5b611100133d993850684654c65cdfed24756466"
+        },
+        "ja": {
+          "file": "app/ui-catalogs/ja.mjs",
+          "line": 2237,
+          "column": 3,
+          "value": "プライバシーについて",
+          "sha256": "ddf566f1e66164d275bab12b25f995764a93f4299d8018031be4ce4bd45d6077"
+        }
+      },
+      "missingLocales": [],
+      "duplicates": [],
+      "consumers": [
+        {
+          "file": "app/translation-first-use.mjs",
+          "line": 87,
+          "column": 184
+        }
+      ],
+      "hints": [
+        {
+          "kind": "key-namespace",
+          "evidence": "key-namespace:translation",
           "confidence": "low"
         }
       ],
@@ -179641,6 +179078,58 @@
       }
     },
     {
+      "id": "candidate:app/index.html:139:496",
+      "file": "app/index.html",
+      "line": 139,
+      "column": 496,
+      "kind": "html-text",
+      "property": null,
+      "value": "Translating sends this paragraph and up to one paragraph before and after it to an AI. Your notes are not included.",
+      "sha256": "e03fa0f13c01a753f2acdd6d56de07f25eeded77587a56f8b719d051f7f26674",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/index.html:139:703",
+      "file": "app/index.html",
+      "line": 139,
+      "column": 703,
+      "kind": "html-text",
+      "property": null,
+      "value": "Privacy details",
+      "sha256": "445de1d2d283877c18d443fc9c549128b0613078ce95481be69a1adfd1817db5",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [
+        {
+          "kind": "dom-text",
+          "evidence": "html-text-node",
+          "confidence": "low"
+        }
+      ],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
       "id": "candidate:app/index.html:143:125",
       "file": "app/index.html",
       "line": 143,
@@ -194619,9 +194108,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-translation.js:14:115",
+      "id": "candidate:app/reader-translation.js:16:115",
       "file": "app/reader-translation.js",
-      "line": 14,
+      "line": 16,
       "column": 115,
       "kind": "js-attribute",
       "property": "role",
@@ -194639,9 +194128,9 @@
       }
     },
     {
-      "id": "candidate:app/reader-translation.js:79:220",
+      "id": "candidate:app/reader-translation.js:76:220",
       "file": "app/reader-translation.js",
-      "line": 79,
+      "line": 76,
       "column": 220,
       "kind": "js-attribute",
       "property": "role",
@@ -199831,6 +199320,26 @@
       "property": null,
       "value": "阅读对话 · 可拖动调整位置",
       "sha256": "d71e9163943366ab4eb7af96f30e2660a234b87edd6871163c6cf8dfebb1745d",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/translation-first-use.mjs:32:132",
+      "file": "app/translation-first-use.mjs",
+      "line": 32,
+      "column": 132,
+      "kind": "js-attribute",
+      "property": "aria-modal",
+      "value": "true",
+      "sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
       "protected": false,
       "protectionReason": null,
       "hints": [],
@@ -230707,9 +230216,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:83:168",
+      "id": "candidate:server/server.mjs:85:168",
       "file": "server/server.mjs",
-      "line": 83,
+      "line": 85,
       "column": 168,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230727,9 +230236,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:84:188",
+      "id": "candidate:server/server.mjs:86:188",
       "file": "server/server.mjs",
-      "line": 84,
+      "line": 86,
       "column": 188,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230747,9 +230256,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:85:81",
+      "id": "candidate:server/server.mjs:87:81",
       "file": "server/server.mjs",
-      "line": 85,
+      "line": 87,
       "column": 81,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230767,9 +230276,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:89:155",
+      "id": "candidate:server/server.mjs:91:155",
       "file": "server/server.mjs",
-      "line": 89,
+      "line": 91,
       "column": 155,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230787,9 +230296,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:90:52",
+      "id": "candidate:server/server.mjs:92:52",
       "file": "server/server.mjs",
-      "line": 90,
+      "line": 92,
       "column": 52,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230807,9 +230316,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:91:47",
+      "id": "candidate:server/server.mjs:93:47",
       "file": "server/server.mjs",
-      "line": 91,
+      "line": 93,
       "column": 47,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230827,9 +230336,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:93:109",
+      "id": "candidate:server/server.mjs:95:109",
       "file": "server/server.mjs",
-      "line": 93,
+      "line": 95,
       "column": 109,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230847,9 +230356,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:94:74",
+      "id": "candidate:server/server.mjs:96:74",
       "file": "server/server.mjs",
-      "line": 94,
+      "line": 96,
       "column": 74,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230867,9 +230376,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:101:80",
+      "id": "candidate:server/server.mjs:103:80",
       "file": "server/server.mjs",
-      "line": 101,
+      "line": 103,
       "column": 80,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230887,9 +230396,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:102:106",
+      "id": "candidate:server/server.mjs:104:106",
       "file": "server/server.mjs",
-      "line": 102,
+      "line": 104,
       "column": 106,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230907,9 +230416,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:102:219",
+      "id": "candidate:server/server.mjs:104:219",
       "file": "server/server.mjs",
-      "line": 102,
+      "line": 104,
       "column": 219,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230927,9 +230436,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:111:40",
+      "id": "candidate:server/server.mjs:113:40",
       "file": "server/server.mjs",
-      "line": 111,
+      "line": 113,
       "column": 40,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230947,9 +230456,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:117:159",
+      "id": "candidate:server/server.mjs:119:159",
       "file": "server/server.mjs",
-      "line": 117,
+      "line": 119,
       "column": 159,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230967,9 +230476,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:120:72",
+      "id": "candidate:server/server.mjs:122:72",
       "file": "server/server.mjs",
-      "line": 120,
+      "line": 122,
       "column": 72,
       "kind": "js-cjk-literal",
       "property": null,
@@ -230987,9 +230496,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:127:246",
+      "id": "candidate:server/server.mjs:129:246",
       "file": "server/server.mjs",
-      "line": 127,
+      "line": 129,
       "column": 246,
       "kind": "js-cjk-literal",
       "property": null,
@@ -231007,9 +230516,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:129:195",
+      "id": "candidate:server/server.mjs:131:195",
       "file": "server/server.mjs",
-      "line": 129,
+      "line": 131,
       "column": 195,
       "kind": "js-cjk-literal",
       "property": null,
@@ -231027,9 +230536,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:132:175",
+      "id": "candidate:server/server.mjs:134:175",
       "file": "server/server.mjs",
-      "line": 132,
+      "line": 134,
       "column": 175,
       "kind": "js-cjk-literal",
       "property": null,
@@ -231047,9 +230556,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:136:131",
+      "id": "candidate:server/server.mjs:138:131",
       "file": "server/server.mjs",
-      "line": 136,
+      "line": 138,
       "column": 131,
       "kind": "js-cjk-literal",
       "property": null,
@@ -231067,9 +230576,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:137:90",
+      "id": "candidate:server/server.mjs:139:90",
       "file": "server/server.mjs",
-      "line": 137,
+      "line": 139,
       "column": 90,
       "kind": "js-cjk-literal",
       "property": null,
@@ -231087,9 +230596,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:139:118",
+      "id": "candidate:server/server.mjs:141:118",
       "file": "server/server.mjs",
-      "line": 139,
+      "line": 141,
       "column": 118,
       "kind": "js-cjk-literal",
       "property": null,
@@ -231107,9 +230616,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:140:96",
+      "id": "candidate:server/server.mjs:142:96",
       "file": "server/server.mjs",
-      "line": 140,
+      "line": 142,
       "column": 96,
       "kind": "js-cjk-literal",
       "property": null,
@@ -231127,9 +230636,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:141:331",
+      "id": "candidate:server/server.mjs:143:331",
       "file": "server/server.mjs",
-      "line": 141,
+      "line": 143,
       "column": 331,
       "kind": "js-cjk-literal",
       "property": null,
@@ -231147,9 +230656,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:145:20",
+      "id": "candidate:server/server.mjs:147:20",
       "file": "server/server.mjs",
-      "line": 145,
+      "line": 147,
       "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
@@ -231167,9 +230676,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:147:61",
+      "id": "candidate:server/server.mjs:149:61",
       "file": "server/server.mjs",
-      "line": 147,
+      "line": 149,
       "column": 61,
       "kind": "js-cjk-literal",
       "property": null,
@@ -231187,9 +230696,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:157:18",
+      "id": "candidate:server/server.mjs:159:18",
       "file": "server/server.mjs",
-      "line": 157,
+      "line": 159,
       "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
@@ -231207,9 +230716,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:158:60",
+      "id": "candidate:server/server.mjs:160:60",
       "file": "server/server.mjs",
-      "line": 158,
+      "line": 160,
       "column": 60,
       "kind": "js-cjk-literal",
       "property": null,
@@ -231227,9 +230736,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:175:119",
+      "id": "candidate:server/server.mjs:177:119",
       "file": "server/server.mjs",
-      "line": 175,
+      "line": 177,
       "column": 119,
       "kind": "js-cjk-literal",
       "property": null,
@@ -246092,19 +245601,17 @@
       "unresolved": true
     },
     {
-      "kind": "concatenation",
+      "kind": "computed-member",
       "file": "app/reader-translation.js",
       "line": 27,
-      "expression": "'marginalia-translation-intent:v1:'+JSON.stringify([capturedOwner,bookId,bookVersion,passageId])",
-      "fragments": [
-        "marginalia-translation-intent:v1:"
-      ],
+      "expression": "getUiLocale()",
+      "fragments": [],
       "unresolved": true
     },
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 41,
+      "line": 37,
       "expression": "' · '+creditActionLabel('translation',getUiLocale())",
       "fragments": [
         " · "
@@ -246114,7 +245621,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 88,
+      "line": 85,
       "expression": "'/api/original/range?sha256='+info.sha256+'&offset='+offset+'&length='",
       "fragments": [
         "/api/original/range?sha256=",
@@ -246126,7 +245633,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 88,
+      "line": 85,
       "expression": "'/api/original/range?sha256='+info.sha256+'&offset='",
       "fragments": [
         "/api/original/range?sha256=",
@@ -246137,7 +245644,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 88,
+      "line": 85,
       "expression": "'/api/original/range?sha256='+info.sha256",
       "fragments": [
         "/api/original/range?sha256="
@@ -246147,7 +245654,7 @@
     {
       "kind": "concatenation",
       "file": "app/reader-translation.js",
-      "line": 112,
+      "line": 109,
       "expression": "'/source-review?book='+encodeURIComponent(bookId)",
       "fragments": [
         "/source-review?book="
@@ -251710,6 +251217,34 @@
       "line": 46,
       "expression": "event.key",
       "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/translation-first-use.mjs",
+      "line": 12,
+      "expression": "'marginalia-translation-disclosure:v1:'+JSON.stringify(fields)",
+      "fragments": [
+        "marginalia-translation-disclosure:v1:"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/translation-first-use.mjs",
+      "line": 57,
+      "expression": "(at+(event.shiftKey?-1:1)+order.length)%order.length",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/translation-first-use.mjs",
+      "line": 75,
+      "expression": "'marginalia-translation-intent:v1:'+JSON.stringify([owner,bookId,contentVersion,passageId])",
+      "fragments": [
+        "marginalia-translation-intent:v1:"
+      ],
       "unresolved": true
     },
     {
@@ -259753,7 +259288,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 42,
+      "line": 44,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -259763,7 +259298,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 42,
+      "line": 44,
       "expression": "'app/'+file",
       "fragments": [
         "app/"
@@ -259773,7 +259308,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 43,
+      "line": 45,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -259783,27 +259318,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 43,
-      "expression": "'app/'+file",
-      "fragments": [
-        "app/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 50,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 50,
+      "line": 45,
       "expression": "'app/'+file",
       "fragments": [
         "app/"
@@ -259833,7 +259348,27 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 58,
+      "line": 54,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 54,
+      "expression": "'app/'+file",
+      "fragments": [
+        "app/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 60,
       "expression": "'app/'+asset.file",
       "fragments": [
         "app/"
@@ -259843,26 +259378,6 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 59,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 59,
-      "expression": "'app/'+file",
-      "fragments": [
-        "app/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
       "line": 61,
       "expression": "'/'+file",
       "fragments": [
@@ -259883,7 +259398,27 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 62,
+      "line": 63,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 63,
+      "expression": "'app/'+file",
+      "fragments": [
+        "app/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 64,
       "expression": "'/assets/atmospheres/'+name+'.jpg'",
       "fragments": [
         "/assets/atmospheres/",
@@ -259894,7 +259429,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 62,
+      "line": 64,
       "expression": "'/assets/atmospheres/'+name",
       "fragments": [
         "/assets/atmospheres/"
@@ -259904,7 +259439,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 62,
+      "line": 64,
       "expression": "'app/assets/atmospheres/'+name+'.jpg'",
       "fragments": [
         "app/assets/atmospheres/",
@@ -259915,7 +259450,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 62,
+      "line": 64,
       "expression": "'app/assets/atmospheres/'+name",
       "fragments": [
         "app/assets/atmospheres/"
@@ -259925,7 +259460,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 63,
+      "line": 65,
       "expression": "'/assets/atmospheres/'+name+'.mp3'",
       "fragments": [
         "/assets/atmospheres/",
@@ -259936,7 +259471,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 63,
+      "line": 65,
       "expression": "'/assets/atmospheres/'+name",
       "fragments": [
         "/assets/atmospheres/"
@@ -259946,7 +259481,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 63,
+      "line": 65,
       "expression": "'app/assets/atmospheres/'+name+'.mp3'",
       "fragments": [
         "app/assets/atmospheres/",
@@ -259957,7 +259492,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 63,
+      "line": 65,
       "expression": "'app/assets/atmospheres/'+name",
       "fragments": [
         "app/assets/atmospheres/"
@@ -259967,7 +259502,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 81,
+      "line": 83,
       "expression": "recordsPath+'.pending'",
       "fragments": [
         ".pending"
@@ -259977,7 +259512,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 107,
+      "line": 109,
       "expression": "type+'; charset=utf-8'",
       "fragments": [
         "; charset=utf-8"
@@ -259987,7 +259522,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 110,
+      "line": 112,
       "expression": "'127.0.0.1:'+port",
       "fragments": [
         "127.0.0.1:"
@@ -259997,7 +259532,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 110,
+      "line": 112,
       "expression": "'localhost:'+port",
       "fragments": [
         "localhost:"
@@ -260007,7 +259542,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 110,
+      "line": 112,
       "expression": "'[::1]:'+port",
       "fragments": [
         "[::1]:"
@@ -260017,7 +259552,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 112,
+      "line": 114,
       "expression": "'http://'+host",
       "fragments": [
         "http://"
@@ -260027,7 +259562,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 120,
+      "line": 122,
       "expression": "'http://'+host",
       "fragments": [
         "http://"
@@ -260037,14 +259572,6 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 127,
-      "expression": "1",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/server.mjs",
       "line": 129,
       "expression": "1",
       "fragments": [],
@@ -260053,7 +259580,15 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 129,
+      "line": 131,
+      "expression": "1",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/server.mjs",
+      "line": 131,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -260061,7 +259596,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 129,
+      "line": 131,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -260069,7 +259604,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 132,
+      "line": 134,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -260077,7 +259612,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 132,
+      "line": 134,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -260085,7 +259620,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 156,
+      "line": 158,
       "expression": "'attachment; filename=\"'+filename+'\"'",
       "fragments": [
         "attachment; filename=\"",
@@ -260096,7 +259631,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 156,
+      "line": 158,
       "expression": "'attachment; filename=\"'+filename",
       "fragments": [
         "attachment; filename=\""
@@ -260106,7 +259641,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 167,
+      "line": 169,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -260114,7 +259649,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 167,
+      "line": 169,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -260122,7 +259657,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 175,
+      "line": 177,
       "expression": "'Leafhour 已启动：http://'+host+':'",
       "fragments": [
         "Leafhour 已启动：http://",
@@ -260133,7 +259668,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 175,
+      "line": 177,
       "expression": "'Leafhour 已启动：http://'+host",
       "fragments": [
         "Leafhour 已启动：http://"
@@ -260436,29 +259971,330 @@
   },
   "counts": {
     "catalogueFiles": 4,
-    "catalogueKeys": 2221,
-    "localeValues": 8884,
-    "itemsComplete": 2221,
+    "catalogueKeys": 2226,
+    "localeValues": 8904,
+    "itemsComplete": 2226,
     "itemsWithMissingLocales": 0,
     "duplicateKeys": 0,
-    "reviewedItems": 23,
-    "unreviewedItems": 2198,
-    "candidates": 4863,
-    "candidatesUnreviewed": 4860,
+    "reviewedItems": 15,
+    "unreviewedItems": 2211,
+    "candidates": 4866,
+    "candidatesUnreviewed": 4863,
     "candidatesProtected": 132,
     "itemsProtected": 9,
-    "dynamicConsumers": 3131,
-    "consumerReferences": 1589,
-    "keysWithoutStaticConsumers": 1199,
-    "reviewedLocaleValues": 92,
-    "unreviewedLocaleValues": 8792,
+    "dynamicConsumers": 3134,
+    "consumerReferences": 1595,
+    "keysWithoutStaticConsumers": 1200,
+    "reviewedLocaleValues": 60,
+    "unreviewedLocaleValues": 8844,
     "reviewedStaticItems": 3
   },
   "auditLedger": {
     "schemaVersion": 1,
     "by": "agent",
     "humanReviewed": false,
-    "reopened": [],
+    "reopened": [
+      {
+        "index": 4,
+        "key": "sample.disclosure",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 5,
+        "key": "sample.disclosure",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 6,
+        "key": "sample.disclosure",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 7,
+        "key": "sample.disclosure",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 8,
+        "key": "sample.disclosureGeneral",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 9,
+        "key": "sample.disclosureGeneral",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 10,
+        "key": "sample.disclosureGeneral",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 11,
+        "key": "sample.disclosureGeneral",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 12,
+        "key": "sample.disclosureNone",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 13,
+        "key": "sample.disclosureNone",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 14,
+        "key": "sample.disclosureNone",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 15,
+        "key": "sample.disclosureNone",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 16,
+        "key": "sample.disclosureMetadata",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 17,
+        "key": "sample.disclosureMetadata",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 18,
+        "key": "sample.disclosureMetadata",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 19,
+        "key": "sample.disclosureMetadata",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 20,
+        "key": "translation.scopeBrief",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 21,
+        "key": "translation.scopeBrief",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 22,
+        "key": "translation.scopeBrief",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 23,
+        "key": "translation.scopeBrief",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 40,
+        "key": "translation.incomplete",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 41,
+        "key": "translation.incomplete",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 42,
+        "key": "translation.incomplete",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 43,
+        "key": "translation.incomplete",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 44,
+        "key": "translation.failed",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 45,
+        "key": "translation.failed",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 46,
+        "key": "translation.failed",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 47,
+        "key": "translation.failed",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "consumer locations changed",
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 72,
+        "key": "reader.shell.aboutTranslation",
+        "locale": "en",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 73,
+        "key": "reader.shell.aboutTranslation",
+        "locale": "zh-Hans",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 74,
+        "key": "reader.shell.aboutTranslation",
+        "locale": "zh-Hant",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      },
+      {
+        "index": 75,
+        "key": "reader.shell.aboutTranslation",
+        "locale": "ja",
+        "state": "unknown",
+        "reasons": [
+          "source context changed or incomplete"
+        ]
+      }
+    ],
     "structuralDecisions": [
       {
         "id": "get218-structure-72",
