@@ -1,0 +1,29 @@
+{
+  "method": "Manual sentence review below the detector minimum of 500 Chinese characters; no distribution metrics or significance claims.",
+  "source": "docs/writing.md; lieflat-less-ai-tone v2, 2026-10-28",
+  "beforeAfter": "No Chinese prose rewrite required. Functional enumerations, precise source labels and privacy scope retained.",
+  "candidates": {
+    "meta": {
+      "n_candidates": 1,
+      "n_rename": 1,
+      "n_cohesion": 0,
+      "n_colon": 0,
+      "n_iso3": 0,
+      "truncated": false
+    },
+    "rename": [
+      {
+        "type": "rename",
+        "file": "leafhour-journal-copy-visible.txt",
+        "line": 1,
+        "para": "阅读足迹\n这个月读了 {count} 天\n选择一天，回看阅读记录。\n日期下方为分钟数。颜色越深，阅读越久；下划线表示笔记或读完的章节。\n图片包含日期和阅读时长，可选择附上书名。笔记和提问不进入图片。\n各本书中留下的想法、问题与摘录。\n阅读时记下想法、留下问题或划出一句话，都能在这里找到。\n原文位置待确认，笔记仍保留。",
+        "label": "0组",
+        "confidence": "高",
+        "reason": "独立界面标签与状态说明合并后形成的候选，不是同一正文段落；没有对同一概念反复更换实义名称。保留产品功能名称及数据口径。"
+      }
+    ],
+    "cohesion": [],
+    "colon": [],
+    "iso3": []
+  }
+}

@@ -24,7 +24,7 @@ const formatter=(id,params)=>id+(params?JSON.stringify(params):'');
 
 test('actual public and private shelf cards use complete message IDs and preserve their source titles',async()=>{
  const make=(tag,className='',text)=>({tag,className,textContent:text??'',children:[],dataset:{},setAttribute(){},addEventListener(){},append(...children){this.children.push(...children);}});
- const context={make,paintBookCover(){},readingBookUrl:()=>'/read?book=synthetic',ownedHref(){},bookActions:null,shelfDrag:null,mountCardLabels(){},roomIcons(){},cardLabel(node,id,params){assert.ok(Object.hasOwn(english,id),'shelf message exists: '+id);node.textContent=t(id,params);return node;}};
+ const context={make,paintBookCover(){},readingBookUrl:()=>'/read?book=synthetic',ownedHref(){},bookActions:null,notebook:null,shelfDrag:null,mountCardLabels(){},roomIcons(){},cardLabel(node,id,params){assert.ok(Object.hasOwn(english,id),'shelf message exists: '+id);node.textContent=t(id,params);return node;}};
  vm.createContext(context);vm.runInContext(declaration('bookCard')+'\nthis.cardFactory=bookCard;',context);
  try{for(const locale of ['en','zh-Hans','zh-Hant','ja']){
   await requestUiRoute(locale);
@@ -44,7 +44,7 @@ function uploadFixture(bindings={}){
   };
   const ownerScope=createOwnerScope();ownerScope.adopt('synthetic-a');
   const upload=createUploadState();upload.select({name:'synthetic.pdf',size:1});upload.begin();
-  const context={document:{querySelectorAll:()=>[]},$:el,t:formatter,getUiLocale,ownerScope,upload,createUploadState,homeMenu:null,invalidatePaletteLibraries(){},viewHistory:null,bookActions:null,shelfDrag:null,shelfRevision:0,orderOperation:null,authDialog:{reset(){}},pendingUpload:false,pendingChat:false,selectedCurrent:null,pdfOnboarding:null,followedPdfId:null,shelfControls:null,books:[],chat:null,shell:null,setupInvite:null,dashboard:null,renderBooks(){},landingBookCard(){assert.fail('no books expected');},...bindings};
+  const context={document:{querySelectorAll:()=>[]},$:el,t:formatter,getUiLocale,ownerScope,upload,createUploadState,homeMenu:null,invalidatePaletteLibraries(){},viewHistory:null,bookActions:null,notebook:null,shelfDrag:null,shelfRevision:0,orderOperation:null,authDialog:{reset(){}},pendingUpload:false,pendingChat:false,selectedCurrent:null,pdfOnboarding:null,followedPdfId:null,shelfControls:null,books:[],chat:null,shell:null,setupInvite:null,dashboard:null,renderBooks(){},landingBookCard(){assert.fail('no books expected');},...bindings};
   vm.createContext(context);
   vm.runInContext(['chromeLabels','specText','applySpec','own','uploadProgressMessage','paintStatus','status','showUploadProgress','updateUploadProgressLabel','clearPrivateUI'].map(declaration).join('\n')+'\nthis.progress=showUploadProgress;this.relabel=updateUploadProgressLabel;this.replace=status;this.clear=clearPrivateUI;',context);
   return {context,ownerScope,upload,el,ticket:ownerScope.capture()};

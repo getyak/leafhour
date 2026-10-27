@@ -15,6 +15,7 @@ import {safeReaderReturn,safeGiftReturn} from './reader-return.mjs';
 import {createLibraryViewHistory,safeLibraryReturn,writeLibraryView,authReturnTarget} from './library-view-state.mjs';
 import {chineseTrialUrl} from './catalog-sample.mjs';
 import {mountReadingDashboard} from './reading-dashboard.mjs';
+import {mountLibraryNotebook} from './library-notebook.mjs';
 import {roomShelf,readingBookUrl,libraryShelf,hasShelfFilters} from './library-workspace.mjs';
 import {mountShelfFilters} from './library-filter-controls.mjs';
 import {mountLibraryShell,roomIcons} from './library-shell.mjs';
@@ -56,7 +57,7 @@ const cardLabel=(node,id,params,attrName=null)=>{const value=t(id,params);if(att
 own($('confirm-upload'),{id:'portal.upload.save'});
 const ownerScope=createOwnerScope();
 let refreshGeneration=0,pdfOnboarding=null,followedPdfId=null;
-let session=null,books=[],shelfControls=null,selectedCurrent=null,pendingUpload=false,pendingChat=false,upload=createUploadState(),shell=null,chat=null,dashboard=null,bookActions=null,shelfDrag=null,setupInvite=null,shelfRevision=0,orderOperation=null,homeMenu=null,squirrelPosition=null;
+let session=null,books=[],shelfControls=null,selectedCurrent=null,pendingUpload=false,pendingChat=false,pendingNotebook=false,upload=createUploadState(),shell=null,chat=null,dashboard=null,notebook=null,bookActions=null,shelfDrag=null,setupInvite=null,shelfRevision=0,orderOperation=null,homeMenu=null,squirrelPosition=null;
 // GET-179: one pure view codec plus one explicit lifecycle adapter own the
 // library URL; overlays open/close/tab only through these explicit hooks.
 let viewHistory=null,bootstrapped=false,identityResolved=false,syncingOverlay=false;
@@ -108,19 +109,21 @@ function syncOverlay(target){
     if(kind!=='filter')shelfControls?.close();
     if(kind!=='settings'&&$('library-settings-dialog').open)$('library-settings-dialog').close();
     if(kind!=='calendar'&&$('reading-history').open)$('reading-history').close();
+    if(kind!=='notebook'&&$('library-notebook')?.open)$('library-notebook').close();
     if(kind!=='upload'&&$('upload-dialog').open)$('upload-dialog').close();
     if(kind!=='trash'&&bookActions?.getOverlayKind()==='trash')bookActions.closeDialog();
     if(kind==='filter')shelfControls?.open();
     else if(kind==='settings')shell?.openSettings(target.tab);
     else if(kind==='calendar')dashboard?.openHistory();
+    else if(kind==='notebook')notebook?.open();
     else if(kind==='upload'&&!$('upload-dialog').open)openUpload();
     else if(kind==='trash'&&bookActions?.getOverlayKind()!=='trash')bookActions?.trash();
   }finally{syncingOverlay=false;}
 }
 if(isLibrary)document.title=t('portal.title.library');
-const authDialog=mountAuthDialog({dialog:$('auth-dialog'),api,getSession:()=>session,getReturnTo:()=>uiHref(authReturnTarget({pendingUpload,readerReturn:returnToReader,libraryReturn:returnToLibrary,current:currentLibraryReturn(),ui:getUiNavigationLocale()})),onSessionSettled:()=>refresh().catch(error=>status('library-status',{id:'ui.generic.error'},true)),onAuthenticated:async()=>{const returnToChat=pendingChat;pendingChat=false;if(returnAfterAuth())return;try{await refresh();adoptPendingReturn();status('library-status','');if(pendingUpload)openUpload();else if(returnToChat)chat?.open();}catch(error){status('library-status',{id:'portal.status.signedInFailed'},true);}}});
+const authDialog=mountAuthDialog({dialog:$('auth-dialog'),api,getSession:()=>session,getReturnTo:()=>uiHref(authReturnTarget({pendingUpload,readerReturn:returnToReader,libraryReturn:pendingNotebook?'/library?notebook=1':returnToLibrary,current:currentLibraryReturn(),ui:getUiNavigationLocale()})),onSessionSettled:()=>refresh().catch(error=>status('library-status',{id:'ui.generic.error'},true)),onAuthenticated:async()=>{const returnToChat=pendingChat,returnToNotebook=pendingNotebook;pendingChat=false;pendingNotebook=false;if(returnAfterAuth())return;try{await refresh();adoptPendingReturn();status('library-status','');if(pendingUpload)openUpload();else if(returnToNotebook)notebook?.open();else if(returnToChat)chat?.open();}catch(error){status('library-status',{id:'portal.status.signedInFailed'},true);}}});
 const openAuth=message=>authDialog.open(message&&typeof message.messageId==='string'?message:undefined);
-$('auth-dialog').addEventListener('close',()=>{pendingChat=false;});
+$('auth-dialog').addEventListener('close',()=>{pendingChat=false;pendingNotebook=false;});
 const ensureUser=()=>{if(session?.user)return true;openAuth();return false;};
 const getOwner=()=>{const t=ownerScope.capture();return t.owner+':'+t.revision;};
 window.marginaliaPaletteAdapter={getOwner:()=>session?.user?.id||null,getOwnerToken:()=>{const t=ownerScope.capture();return t.owner+':'+t.revision;}};
@@ -129,6 +132,7 @@ window.marginaliaPaletteAdapter={getOwner:()=>session?.user?.id||null,getOwnerTo
 // explicit document port into the one existing bootstrap instance.
 if(isHomeNavRoute(location.pathname))homeMenu=mountHomeNavigation({document,getSession:()=>session,getBooks:()=>books,getOwner:()=>ownerScope.capture(),openAuth,openPalette:opener=>{document.dispatchEvent(new CustomEvent('palette:open',{detail:opener}));}});
 dashboard=mountReadingDashboard({root:$('reading-dashboard'),overviewRoot:$('reading-overview'),historyRoot:$('reading-history'),api,getSession:()=>session,getBooks:()=>books,getOwner,openAuth,refresh,onCurrentBook:book=>{selectedCurrent=book?.bookId||null;renderBooks();},onOverlay:overlay=>openOverlayFor(overlay),onClose:kind=>closeOverlayFor(kind,'user')});
+if(isLibrary){notebook=mountLibraryNotebook({api,getSession:()=>session,getOwner,getBooks:()=>books,openAuth:()=>{pendingNotebook=true;openAuth();},onOpen:()=>openOverlayFor({kind:'notebook'}),onClose:()=>closeOverlayFor('notebook','user')});$('library-notebook-open').addEventListener('click',()=>{shell?.closeNavigation();notebook.open();});}
 let taskStorage=null;try{taskStorage=localStorage;}catch{}
 const bookUploads=createBookUploadController({api,getOwner:()=>session?.user?.id||null,getSession:()=>session,storage:taskStorage,onReady:()=>{void refresh().catch(()=>status('library-status',{id:'ui.generic.error'},true));}});
 if(!isLibrary){const controls=$('library-filter-controls');controls.classList.add('home-shelf-filters');$('featured-books').before(controls);}
@@ -151,7 +155,7 @@ function clearPrivateUI({keepAuthDialog=false,preserveView=false}={}){
   // command-palette cache and rendered private results synchronously.
   invalidatePaletteLibraries();
   if(!preserveView)viewHistory?.adoptOwner();
-  bookActions?.clear();shelfDrag?.reset();shelfRevision=0;orderOperation=null;
+  notebook?.clear();bookActions?.clear();shelfDrag?.reset();shelfRevision=0;orderOperation=null;
   for(const id of ['upload-status','library-status','upload-filename'])status(id,'');
   for(const id of preserveView?['book-file']:['book-file','book-search'])$(id).value='';if(!keepAuthDialog){status('auth-status','');authDialog.reset();if($('auth-dialog').open)$('auth-dialog').close();}
   if($('upload-dialog').open)$('upload-dialog').close();$('upload-dialog').removeAttribute('aria-busy');$('confirm-upload').disabled=true;own($('confirm-upload'),{id:'portal.upload.save'});$('book-file').disabled=false;
@@ -328,7 +332,7 @@ function updatePortalLabels(){
   $('upload-explanation').textContent=t('portal.upload.explanation');
   $('drop-zone').setAttribute('aria-label',t('portal.upload.choose'));
   $('upload-dialog').querySelector('.dialog-close')?.setAttribute('aria-label',t('portal.upload.close'));
-  for(const [id,key] of [['sidebar-search-open','palette.title'],['library-calendar','nav.calendar'],['library-chat-open','nav.chat'],['upload-button','nav.bring'],['library-trash','nav.trash'],['library-settings','shell.settings.title']]){
+  for(const [id,key] of [['sidebar-search-open','palette.title'],['library-calendar','nav.calendar'],['library-notebook-open','nav.notebook'],['library-chat-open','nav.chat'],['upload-button','nav.bring'],['library-trash','nav.trash'],['library-settings','shell.settings.title']]){
     const button=$(id),label=button?.querySelector?.('.sidebar-label');if(!button)continue;
     if(label)label.textContent=t(key);button.setAttribute('aria-label',t(key));button.dataset.hint=t(key);
   }
