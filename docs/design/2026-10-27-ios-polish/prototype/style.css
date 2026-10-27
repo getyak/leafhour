@@ -799,6 +799,10 @@ svg.icon {
   padding: 36px 0;
   text-align: left;
 }
+.record-section-heading {display:flex;align-items:center;gap:9px;font-size:13px;line-height:20px;font-weight:600;color:var(--secondary);margin:24px 0 4px;}
+.record-section-heading span {font-size:11px;min-width:21px;padding:1px 6px;background:var(--wash);border-radius:8px;text-align:center;}
+.saved-notes-heading {margin-top:30px;}
+.note-draft-row strong {display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;white-space:normal;}
 .empty-records h3 {
   font:
     24px/1.5 "Songti SC",
@@ -883,7 +887,13 @@ svg.icon {
   font-size: 13px;
   line-height: 1.7;
   box-shadow: 0 5px 20px #0002;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
 }
+.phone-toast button {color:inherit;min-width:52px;min-height:44px;font-size:14px;font-weight:600;flex-shrink:0;border-radius:12px;}
+.phone-toast:has(button) {padding:5px 10px 5px 18px;}
 .study-notes {
   width: 260px;
   flex-shrink: 0;

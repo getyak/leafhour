@@ -190,6 +190,42 @@
       "source": "captures/21-pending-recovery.json",
       "svg": "exports/21-pending-recovery.svg",
       "png": "exports/21-pending-recovery.png"
+    },
+    {
+      "slug": "22-note-drafts",
+      "name": "22 · 从记录继续草稿",
+      "width": 402,
+      "height": 874,
+      "source": "captures/22-note-drafts.json",
+      "svg": "exports/22-note-drafts.svg",
+      "png": "exports/22-note-drafts.png"
+    },
+    {
+      "slug": "23-note-draft-editor",
+      "name": "23 · 原句与自己的草稿",
+      "width": 402,
+      "height": 874,
+      "source": "captures/23-note-draft-editor.json",
+      "svg": "exports/23-note-draft-editor.svg",
+      "png": "exports/23-note-draft-editor.png"
+    },
+    {
+      "slug": "24-note-save-undo",
+      "name": "24 · 保存之后可以撤销",
+      "width": 402,
+      "height": 874,
+      "source": "captures/24-note-save-undo.json",
+      "svg": "exports/24-note-save-undo.svg",
+      "png": "exports/24-note-save-undo.png"
+    },
+    {
+      "slug": "25-night-note-undo",
+      "name": "25 · 夜读保存与撤销",
+      "width": 320,
+      "height": 740,
+      "source": "captures/25-night-note-undo.json",
+      "svg": "exports/25-night-note-undo.svg",
+      "png": "exports/25-night-note-undo.png"
     }
   ]
 }

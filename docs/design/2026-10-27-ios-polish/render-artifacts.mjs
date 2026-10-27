@@ -54,12 +54,21 @@ try {
   await p.getByRole("button", { name: "读到这里", exact: true }).click();
   await p.locator('#reader-sheet[data-motion="settled"]').waitFor();
   assert.equal(await p.locator("#sheet-title").innerText(), "读到这里");
+  await p.locator('[data-action="note"]').click();
+  await p.locator('#reader-sheet[data-motion="settled"]').waitFor();
+  await p.locator('#note-field').fill('单文件的合成笔记');
+  await p.locator('[data-action="save-note"]').click();
+  await p.locator('#reader-sheet[data-motion="settled"]').waitFor();
+  await p.locator('[data-action="undo-note-save"]').click();
+  await p.locator('#reader-sheet[data-motion="settled"]').waitFor();
+  assert.equal(await p.locator('#note-field').inputValue(),'单文件的合成笔记');
   assert.deepEqual(errors, []);
   await p.close();
   report.standalone = {
     status: "pass",
     opensDirectlyFromLocalFile: true,
     externalCSSOrScriptDependencies: 0,
+    noteSaveAndUndo: "pass",
   };
   await fs.writeFile(
     path.join(root, "verification.json"),

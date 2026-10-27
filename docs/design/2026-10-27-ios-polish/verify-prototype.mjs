@@ -409,6 +409,7 @@ try {
     "prototype/selection-position.mjs",
     "prototype/reading-position.mjs",
     "prototype/companion-context.mjs",
+    "prototype/note-recovery.mjs",
     "prototype/style.css",
     "prototype/index.html",
   ])

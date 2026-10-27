@@ -809,6 +809,10 @@ svg.icon {
   padding: 36px 0;
   text-align: left;
 }
+.record-section-heading {display:flex;align-items:center;gap:9px;font-size:13px;line-height:20px;font-weight:600;color:var(--secondary);margin:24px 0 4px;}
+.record-section-heading span {font-size:11px;min-width:21px;padding:1px 6px;background:var(--wash);border-radius:8px;text-align:center;}
+.saved-notes-heading {margin-top:30px;}
+.note-draft-row strong {display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;white-space:normal;}
 .empty-records h3 {
   font:
     24px/1.5 "Songti SC",
@@ -893,7 +897,13 @@ svg.icon {
   font-size: 13px;
   line-height: 1.7;
   box-shadow: 0 5px 20px #0002;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
 }
+.phone-toast button {color:inherit;min-width:52px;min-height:44px;font-size:14px;font-weight:600;flex-shrink:0;border-radius:12px;}
+.phone-toast:has(button) {padding:5px 10px 5px 18px;}
 .study-notes {
   width: 260px;
   flex-shrink: 0;
@@ -1426,6 +1436,50 @@ svg.icon {
     };
   }
 
+  // docs/design/2026-10-27-ios-polish/prototype/note-recovery.mjs
+  var layers3 = /* @__PURE__ */ new Set(["source", "literal", "interpretive"]);
+  function decodeQuote(key2) {
+    try {
+      const values = JSON.parse(key2);
+      if (!Array.isArray(values) || values.length !== 6 || JSON.stringify(values) !== key2) return null;
+      const [passageId, version, layer, startUtf16, endUtf16, text] = values;
+      const absent = startUtf16 === null && endUtf16 === null;
+      const range = Number.isSafeInteger(startUtf16) && Number.isSafeInteger(endUtf16) && startUtf16 >= 0 && endUtf16 > startUtf16;
+      if (typeof passageId !== "string" || !passageId || typeof version !== "string" || !version || !layers3.has(layer) || typeof text !== "string" || !text.trim() || !absent && !range) return null;
+      return { passageId, version, layer, startUtf16, endUtf16, text };
+    } catch {
+      return null;
+    }
+  }
+  var splitsSurrogate = (text, offset) => text.charCodeAt(offset - 1) >= 55296 && text.charCodeAt(offset - 1) <= 56319 && text.charCodeAt(offset) >= 56320 && text.charCodeAt(offset) <= 57343;
+  function readNoteDrafts(drafts, { passages, version }) {
+    if (!drafts || typeof drafts !== "object" || Array.isArray(drafts)) return [];
+    return Object.entries(drafts).flatMap(([key2, text]) => {
+      if (typeof text !== "string" || !text.trim()) return [];
+      const quote = decodeQuote(key2);
+      if (!quote || quote.version !== version) return [];
+      const source = passages.find((p) => p.id === quote.passageId)?.[quote.layer];
+      if (typeof source !== "string") return [];
+      if (quote.startUtf16 === null) {
+        if (!source.includes(quote.text)) return [];
+      } else if (quote.endUtf16 > source.length || source.slice(quote.startUtf16, quote.endUtf16) !== quote.text || splitsSurrogate(source, quote.startUtf16) || splitsSurrogate(source, quote.endUtf16)) return [];
+      return [{ key: key2, quote, text }];
+    });
+  }
+  function undoNoteSave({ notes, drafts, receipt }) {
+    const unchanged = (status) => ({ status, notes, drafts });
+    if (!receipt?.note || typeof receipt.draftText !== "string" || !Array.isArray(notes)) return unchanged("unavailable");
+    const expected = receipt.note, key2 = quoteIdentity(expected.quote);
+    if (expected.author !== "user" || receipt.draftText.trim() !== expected.text) return unchanged("unavailable");
+    const index = notes.findIndex((note) => note.id === expected.id);
+    if (!expected.id || index < 0 || !decodeQuote(key2)) return unchanged("unavailable");
+    const actual = notes[index];
+    if (actual.author !== "user" || actual.text !== expected.text || quoteIdentity(actual.quote) !== key2) return unchanged("unavailable");
+    const current = drafts?.[key2];
+    if (current != null && (typeof current !== "string" || current.trim() && current !== receipt.draftText)) return unchanged("conflict");
+    return { status: "undone", notes: notes.filter((_, i) => i !== index), drafts: { ...drafts, [key2]: receipt.draftText }, quote: { ...expected.quote } };
+  }
+
   // docs/design/2026-10-27-ios-polish/prototype/app.js
   var icons = {
     library: '<path d="M4 4v16M9 4v16M14 4l6 15M3 4h3M8 4h3M3 20h8M14 4l3-1 6 16-3 1"/>',
@@ -1527,6 +1581,7 @@ svg.icon {
     answered: !!saved.answered,
     discussionStarted: saved.discussionStarted === true,
     previewQuote: null,
+    noteSaveUndo: null,
     route: "closed",
     detent: "half",
     returnFrame: null,
@@ -1589,12 +1644,33 @@ svg.icon {
     } catch {
     }
   }
-  function notify(text) {
-    $("phone-toast").textContent = text;
-    $("phone-toast").hidden = false;
+  function scheduleNoticeEnd() {
     clearTimeout(notify.timer);
-    notify.timer = setTimeout(() => $("phone-toast").hidden = true, 2800);
+    notify.timer = setTimeout(() => {
+      const toast = $("phone-toast");
+      if (toast.contains(document.activeElement)) return;
+      toast.hidden = true;
+      state.noteSaveUndo = null;
+    }, notify.undo ? 8e3 : 2800);
   }
+  function notify(text, { undo = false } = {}) {
+    notify.undo = undo;
+    if (!undo) state.noteSaveUndo = null;
+    const toast = $("phone-toast"), label = document.createElement("span");
+    label.textContent = text;
+    toast.replaceChildren(label);
+    if (undo) {
+      const button = document.createElement("button");
+      button.dataset.action = "undo-note-save";
+      button.textContent = "\u64A4\u9500";
+      toast.append(button);
+    }
+    toast.hidden = false;
+    scheduleNoticeEnd();
+  }
+  $("phone-toast").addEventListener("focusout", scheduleNoticeEnd);
+  $("phone-toast").addEventListener("pointerenter", () => clearTimeout(notify.timer));
+  $("phone-toast").addEventListener("pointerleave", scheduleNoticeEnd);
   function setStudy(title, detail) {
     $("study-state").textContent = title;
     $("study-detail").textContent = detail;
@@ -1676,6 +1752,16 @@ svg.icon {
   }
   function viewQuote() {
     return state.previewQuote || state.quote;
+  }
+  function noteDraftEntries() {
+    return readNoteDrafts(state.noteDrafts, { passages: paragraphs, version: readingDocument.sourceVersion });
+  }
+  function openNotePreview(quote, { capture = true } = {}) {
+    if (capture) captureComposer();
+    if (["companion", "discussion", "records"].includes(state.route)) state.returnFrame = { route: state.route, detent: state.detent, scrollTop: $("sheet-body").scrollTop, draft: state.draft, quote: { ...state.quote }, question: state.question, answered: state.answered };
+    else if (!["note", "original"].includes(state.route)) state.returnFrame = null;
+    state.previewQuote = { ...quote };
+    openRoute("note", "full", { capture: false });
   }
   function preserveCurrentQuestion() {
     if (!state.question.trim()) return;
@@ -1845,9 +1931,12 @@ svg.icon {
       title = "\u6211\u7684\u8BB0\u5F55";
       html = `<div class="segmented"><button data-record-tab="notes" class="${state.recordsTab === "notes" ? "active" : ""}">\u81EA\u5DF1\u7684\u7B14\u8BB0</button><button data-record-tab="discussion" class="${state.recordsTab === "discussion" ? "active" : ""}">\u8BA8\u8BBA</button></div>`;
       if (state.recordsTab === "notes") {
+        const drafts = noteDraftEntries();
+        if (drafts.length) html += `<div class="record-section-heading">\u672A\u4FDD\u5B58\u7684\u7B14\u8BB0 <span>${drafts.length}</span></div>` + drafts.map((d) => `<button class="list-row note-draft-row" data-note-draft="${escape(d.key)}"><span><span class="record-kind">\u8349\u7A3F \xB7 ${escape(layerLabel(d.quote.layer))}</span><strong>${escape(d.text.trim())}</strong><small>\u539F\u53E5 \xB7 ${escape(d.quote.text.slice(0, 32))}\u2026</small></span>${icon("right")}</button>`).join("");
+        if (state.notes.length && drafts.length) html += '<div class="record-section-heading saved-notes-heading">\u5DF2\u4FDD\u5B58</div>';
         html += state.notes.length ? state.notes.map(
           (n, i) => `<button class="list-row" data-record="${i}"><span><span class="record-kind">\u81EA\u5DF1\u7684\u7B14\u8BB0</span><strong>${escape(n.text)}</strong><small>\u74E6\u5C14\u767B\u6E56 \xB7 \u7B2C\u4E8C\u7AE0</small></span>${icon("right")}</button>`
-        ).join("") : '<div class="empty-records"><h3>\u8FD8\u6CA1\u6709\u7B14\u8BB0</h3><p>\u8BFB\u5230\u60F3\u7559\u4E0B\u7684\u8BDD\uFF0C\u53EF\u4EE5\u8BB0\u4E00\u53E5\u3002</p><button class="secondary-button" data-action="continue">\u56DE\u5230\u4E66\u91CC</button></div>';
+        ).join("") : drafts.length ? "" : '<div class="empty-records"><h3>\u8FD8\u6CA1\u6709\u7B14\u8BB0</h3><p>\u8BFB\u5230\u60F3\u7559\u4E0B\u7684\u8BDD\uFF0C\u53EF\u4EE5\u8BB0\u4E00\u53E5\u3002</p><button class="secondary-button" data-action="continue">\u56DE\u5230\u4E66\u91CC</button></div>';
       } else {
         html += state.turns.length ? state.turns.map(
           (turn, index) => `<button class="list-row" data-turn="${index}"><span><span class="record-kind">${turn.answered === false ? "\u672A\u5B8C\u6210\u63D0\u95EE" : "\u9605\u8BFB\u8BA8\u8BBA"} \xB7 \u539F\u578B\u6F14\u793A</span><strong>${escape(turn.question)}</strong><small>\u74E6\u5C14\u767B\u6E56 \xB7 ${escape(turn.quote.text.slice(0, 24))}\u2026</small></span>${icon("right")}</button>`
@@ -1866,6 +1955,7 @@ svg.icon {
     }
     $("sheet-title").textContent = title;
     $("sheet-back").hidden = !back;
+    $("sheet-back").lastElementChild.textContent = state.returnFrame?.route === "records" ? "\u8FD4\u56DE\u8BB0\u5F55" : "\u8FD4\u56DE\u8BA8\u8BBA";
     $("sheet-title").hidden = back;
     $("sheet-done").textContent = [
       "companion",
@@ -2086,7 +2176,7 @@ svg.icon {
     }
     if (name === "return-quote") {
       jumpTo((state.route === "note" || state.route === "original" ? viewQuote() : state.quote).passageId, { close: false });
-      notify("\u5DF2\u56DE\u5230\u63D0\u95EE\u539F\u53E5");
+      notify(state.route === "note" ? "\u5DF2\u56DE\u5230\u7B14\u8BB0\u539F\u53E5" : "\u5DF2\u56DE\u5230\u63D0\u95EE\u539F\u53E5");
       return;
     }
     if (name === "expand") {
@@ -2117,18 +2207,34 @@ svg.icon {
       return;
     }
     if (name === "save-note") {
-      const text = $("note-field")?.value.trim();
+      const draftText = $("note-field")?.value || "", text = draftText.trim();
       if (!text) {
         $("note-field")?.focus();
         return;
       }
-      state.notes.unshift({ text, quote: { ...viewQuote() }, author: "user" });
+      const note = { id: "prototype-note-" + crypto.randomUUID(), text, quote: { ...viewQuote() }, author: "user" };
+      state.notes.unshift(note);
       state.noteDrafts[quoteKey(viewQuote())] = "";
       $("note-field").value = "";
       persist();
-      notify("\u7B14\u8BB0\u5DF2\u4FDD\u5B58");
       if (state.returnFrame) backToDiscussion();
       else closeSheet();
+      state.noteSaveUndo = { note: { ...note, quote: { ...note.quote } }, draftText };
+      notify("\u7B14\u8BB0\u5DF2\u4FDD\u5B58", { undo: true });
+      return;
+    }
+    if (name === "undo-note-save") {
+      captureComposer();
+      const result = undoNoteSave({ notes: state.notes, drafts: state.noteDrafts, receipt: state.noteSaveUndo });
+      if (result.status !== "undone") {
+        notify(result.status === "conflict" ? "\u8FD9\u53E5\u5DF2\u6709\u65B0\u8349\u7A3F\uFF0C\u4E24\u4EFD\u5185\u5BB9\u90FD\u5DF2\u4FDD\u7559" : "\u8FD9\u6B21\u4FDD\u5B58\u5DF2\u5B8C\u6210\uFF0C\u53EF\u5728\u8BB0\u5F55\u4E2D\u67E5\u770B");
+        return;
+      }
+      state.notes = result.notes;
+      state.noteDrafts = result.drafts;
+      persist();
+      openNotePreview(result.quote, { capture: false });
+      notify("\u5DF2\u6062\u590D\u4E3A\u8349\u7A3F");
       return;
     }
     if (name === "retry") {
@@ -2186,6 +2292,11 @@ svg.icon {
     }
     if (button.dataset.action) {
       action(button.dataset.action);
+      return;
+    }
+    if (button.dataset.noteDraft !== void 0) {
+      const draft = noteDraftEntries().find((d) => d.key === button.dataset.noteDraft);
+      if (draft) openNotePreview(draft.quote);
       return;
     }
     if (button.dataset.layer) {

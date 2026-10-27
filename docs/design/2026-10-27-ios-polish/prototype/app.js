@@ -25,6 +25,7 @@ import { advanceSpring, resistedPosition, nearestDetent } from "./motion.mjs";
 import { placeSelectionMenu } from "./selection-position.mjs";
 import { normalizeReadingPosition, captureReadingPosition, restoreReadingPosition } from "./reading-position.mjs";
 import { quoteIdentity, resolveCompanionContext } from "./companion-context.mjs";
+import { readNoteDrafts, undoNoteSave } from "./note-recovery.mjs";
 
 const paragraphs = [
   {
@@ -118,6 +119,7 @@ const state = {
   answered: !!saved.answered,
   discussionStarted: saved.discussionStarted === true,
   previewQuote: null,
+  noteSaveUndo: null,
   route: "closed",
   detent: "half",
   returnFrame: null,
@@ -179,12 +181,33 @@ function persist() {
     );
   } catch {}
 }
-function notify(text) {
-  $("phone-toast").textContent = text;
-  $("phone-toast").hidden = false;
+function scheduleNoticeEnd() {
   clearTimeout(notify.timer);
-  notify.timer = setTimeout(() => ($("phone-toast").hidden = true), 2800);
+  notify.timer = setTimeout(() => {
+    const toast = $("phone-toast");
+    if (toast.contains(document.activeElement)) return;
+    toast.hidden = true;
+    state.noteSaveUndo = null;
+  }, notify.undo ? 8000 : 2800);
 }
+function notify(text, { undo = false } = {}) {
+  notify.undo = undo;
+  if (!undo) state.noteSaveUndo = null;
+  const toast = $("phone-toast"), label = document.createElement("span");
+  label.textContent = text;
+  toast.replaceChildren(label);
+  if (undo) {
+    const button = document.createElement("button");
+    button.dataset.action = "undo-note-save";
+    button.textContent = "撤销";
+    toast.append(button);
+  }
+  toast.hidden = false;
+  scheduleNoticeEnd();
+}
+$("phone-toast").addEventListener("focusout", scheduleNoticeEnd);
+$("phone-toast").addEventListener("pointerenter", () => clearTimeout(notify.timer));
+$("phone-toast").addEventListener("pointerleave", scheduleNoticeEnd);
 function setStudy(title, detail) {
   $("study-state").textContent = title;
   $("study-detail").textContent = detail;
@@ -277,6 +300,16 @@ function updateContextChrome() {
 }
 function viewQuote() {
   return state.previewQuote || state.quote;
+}
+function noteDraftEntries() {
+  return readNoteDrafts(state.noteDrafts, { passages: paragraphs, version: readingDocument.sourceVersion });
+}
+function openNotePreview(quote, { capture = true } = {}) {
+  if (capture) captureComposer();
+  if (["companion", "discussion", "records"].includes(state.route)) state.returnFrame = { route: state.route, detent: state.detent, scrollTop: $("sheet-body").scrollTop, draft: state.draft, quote: { ...state.quote }, question: state.question, answered: state.answered };
+  else if (!["note", "original"].includes(state.route)) state.returnFrame = null;
+  state.previewQuote = { ...quote };
+  openRoute("note", "full", { capture: false });
 }
 function preserveCurrentQuestion() {
   if (!state.question.trim()) return;
@@ -473,6 +506,9 @@ function renderBody() {
     title = "我的记录";
     html = `<div class="segmented"><button data-record-tab="notes" class="${state.recordsTab === "notes" ? "active" : ""}">自己的笔记</button><button data-record-tab="discussion" class="${state.recordsTab === "discussion" ? "active" : ""}">讨论</button></div>`;
     if (state.recordsTab === "notes") {
+      const drafts = noteDraftEntries();
+      if (drafts.length) html += `<div class="record-section-heading">未保存的笔记 <span>${drafts.length}</span></div>` + drafts.map(d => `<button class="list-row note-draft-row" data-note-draft="${escape(d.key)}"><span><span class="record-kind">草稿 · ${escape(layerLabel(d.quote.layer))}</span><strong>${escape(d.text.trim())}</strong><small>原句 · ${escape(d.quote.text.slice(0, 32))}…</small></span>${icon("right")}</button>`).join("");
+      if (state.notes.length && drafts.length) html += '<div class="record-section-heading saved-notes-heading">已保存</div>';
       html += state.notes.length
         ? state.notes
             .map(
@@ -480,7 +516,7 @@ function renderBody() {
                 `<button class="list-row" data-record="${i}"><span><span class="record-kind">自己的笔记</span><strong>${escape(n.text)}</strong><small>瓦尔登湖 · 第二章</small></span>${icon("right")}</button>`,
             )
             .join("")
-        : '<div class="empty-records"><h3>还没有笔记</h3><p>读到想留下的话，可以记一句。</p><button class="secondary-button" data-action="continue">回到书里</button></div>';
+        : drafts.length ? '' : '<div class="empty-records"><h3>还没有笔记</h3><p>读到想留下的话，可以记一句。</p><button class="secondary-button" data-action="continue">回到书里</button></div>';
     } else {
       html += state.turns.length
         ? state.turns
@@ -509,6 +545,7 @@ function renderBody() {
   }
   $("sheet-title").textContent = title;
   $("sheet-back").hidden = !back;
+  $("sheet-back").lastElementChild.textContent = state.returnFrame?.route === "records" ? "返回记录" : "返回讨论";
   $("sheet-title").hidden = back;
   $("sheet-done").textContent = [
     "companion",
@@ -746,7 +783,7 @@ function action(name) {
   }
   if (name === "return-quote") {
     jumpTo((state.route === "note" || state.route === "original" ? viewQuote() : state.quote).passageId, { close: false });
-    notify("已回到提问原句");
+    notify(state.route === "note" ? "已回到笔记原句" : "已回到提问原句");
     return;
   }
   if (name === "expand") {
@@ -777,18 +814,34 @@ function action(name) {
     return;
   }
   if (name === "save-note") {
-    const text = $("note-field")?.value.trim();
+    const draftText = $("note-field")?.value || "", text = draftText.trim();
     if (!text) {
       $("note-field")?.focus();
       return;
     }
-    state.notes.unshift({ text, quote: { ...viewQuote() }, author: "user" });
+    const note = { id: "prototype-note-" + crypto.randomUUID(), text, quote: { ...viewQuote() }, author: "user" };
+    state.notes.unshift(note);
     state.noteDrafts[quoteKey(viewQuote())] = "";
     $("note-field").value = "";
     persist();
-    notify("笔记已保存");
     if (state.returnFrame) backToDiscussion();
     else closeSheet();
+    state.noteSaveUndo = { note: { ...note, quote: { ...note.quote } }, draftText };
+    notify("笔记已保存", { undo: true });
+    return;
+  }
+  if (name === "undo-note-save") {
+    captureComposer();
+    const result = undoNoteSave({ notes: state.notes, drafts: state.noteDrafts, receipt: state.noteSaveUndo });
+    if (result.status !== "undone") {
+      notify(result.status === "conflict" ? "这句已有新草稿，两份内容都已保留" : "这次保存已完成，可在记录中查看");
+      return;
+    }
+    state.notes = result.notes;
+    state.noteDrafts = result.drafts;
+    persist();
+    openNotePreview(result.quote, { capture: false });
+    notify("已恢复为草稿");
     return;
   }
   if (name === "retry") {
@@ -852,6 +905,11 @@ document.addEventListener("click", (event) => {
   }
   if (button.dataset.action) {
     action(button.dataset.action);
+    return;
+  }
+  if (button.dataset.noteDraft !== undefined) {
+    const draft = noteDraftEntries().find(d => d.key === button.dataset.noteDraft);
+    if (draft) openNotePreview(draft.quote);
     return;
   }
   if (button.dataset.layer) {

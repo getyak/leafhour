@@ -1,0 +1,75 @@
+{
+  "fileURL": "https://www.figma.com/design/zjkapX58kUJZZh0la8F4Nw/Leafhour",
+  "fileName": "Leafhour · iOS · 半屏陪读",
+  "version": "2026-10-27 · note recovery",
+  "screens": {
+    "22-note-drafts": {
+      "id": "9:4111",
+      "name": "22 · 从记录继续草稿"
+    },
+    "23-note-draft-editor": {
+      "id": "9:4204",
+      "name": "23 · 原句与自己的草稿"
+    },
+    "24-note-save-undo": {
+      "id": "9:4297",
+      "name": "24 · 保存之后可以撤销"
+    },
+    "25-night-note-undo": {
+      "id": "9:4391",
+      "name": "25 · 夜读保存与撤销"
+    }
+  },
+  "connections": [
+    {
+      "nodeId": "9:4193",
+      "from": "22-note-drafts",
+      "control": "list-row note-draft-row",
+      "to": "23-note-draft-editor",
+      "destinationId": "9:4204"
+    },
+    {
+      "nodeId": "9:4272",
+      "from": "23-note-draft-editor",
+      "control": "sheet-back",
+      "to": "22-note-drafts",
+      "destinationId": "9:4111"
+    },
+    {
+      "nodeId": "9:4294",
+      "from": "23-note-draft-editor",
+      "control": "save-note",
+      "to": "24-note-save-undo",
+      "destinationId": "9:4297"
+    },
+    {
+      "nodeId": "9:4388",
+      "from": "24-note-save-undo",
+      "control": "undo-note-save",
+      "to": "23-note-draft-editor",
+      "destinationId": "9:4204"
+    }
+  ],
+  "flows": [
+    {
+      "nodeId": "9:4111",
+      "name": "笔记 · 草稿找回与撤销"
+    },
+    {
+      "nodeId": "9:4391",
+      "name": "夜读校对 · 保存与撤销"
+    }
+  ],
+  "nativeTextStyleBindingsReported": 70,
+  "oldFramesPreserved": [
+    "1:1869",
+    "3:3346",
+    "8:3910",
+    "8:4009"
+  ],
+  "limitations": [
+    "Four fixed editable specimens, four exact-state transitions. Night specimen is static and keeps its320x740 geometry.",
+    "Figma does not implement timer expiry, typing, keyboard focus or dynamic draft/undo conflicts. Those are Web checks.",
+    "Native iPhone, SwiftUI, Safari, system keyboard, VoiceOver and haptics remain unverified."
+  ]
+}
