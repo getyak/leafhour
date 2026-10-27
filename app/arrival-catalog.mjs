@@ -65,6 +65,19 @@ export const arrivalCatalog=Object.freeze({
     "passageId": "61a8ca66f7a58cd1-p00001",
     "contentVersion": "61a8ca66f7a58cd1b4744ba4d5149cf3c676e92f076fef83a53d33c0d1604a46"
   },
+  "gutenberg-beyond-good-and-evil": {
+    "bookId": "gutenberg-beyond-good-and-evil",
+    "title": "超越善恶（善恶的彼岸）",
+    "author": "弗里德里希·尼采（Friedrich Nietzsche）",
+    "chapter": "CHAPTER I. PREJUDICES OF PHILOSOPHERS",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/4363",
+    "original": "1. The Will to Truth, which is to tempt us to many a hazardous enterprise, the famous Truthfulness of which all philosophers have hitherto spoken with respect,…",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "e19805bf4bbb11e3-p00003",
+    "contentVersion": "e19805bf4bbb11e3e02e2a4df2ca3049baca32fca1a57bb83fe7040079c9e1d0"
+  },
   "gutenberg-bhagavad-gita": {
     "bookId": "gutenberg-bhagavad-gita",
     "title": "薄伽梵歌",
@@ -350,5 +363,18 @@ export const arrivalCatalog=Object.freeze({
     "context": "书中一段",
     "passageId": "e74a117f3ba44a2e-p00002",
     "contentVersion": "e74a117f3ba44a2e07a76329621692258c3be3fa43750f725fc1bb20f321cc3f"
+  },
+  "gutenberg-zarathustra": {
+    "bookId": "gutenberg-zarathustra",
+    "title": "查拉图斯特拉如是说",
+    "author": "弗里德里希·尼采（Friedrich Nietzsche）",
+    "chapter": "FIRST PART. ZARATHUSTRA’S DISCOURSES. · ZARATHUSTRA’S PROLOGUE.",
+    "sourceUrl": "https://www.gutenberg.org/ebooks/1998",
+    "original": "1. When Zarathustra was thirty years old, he left his home and the lake of his home, and went into the mountains.",
+    "translation": null,
+    "sourceLanguage": "en",
+    "context": "书中一段",
+    "passageId": "0429d315f5d90046-p00001",
+    "contentVersion": "0429d315f5d90046c051b09327b7665a83f3732b7a1e455319c173c78a4af5c1"
   }
 });

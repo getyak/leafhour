@@ -1,0 +1,34 @@
+{
+  "test": "ReadingUITests/testQuietChromeEdgesAndTenSecondIdle",
+  "passed": 1,
+  "failures": 0,
+  "seconds": 37.839,
+  "bundle": "org.leafhour.get272",
+  "images": [
+    {
+      "file": "screenshots/native-cold-resume-asleep.png",
+      "sha256": "02bc1b0a384ff1343d95b4e0bd7f9b240ba71999f5bc7f39f96c6f3be82b287d",
+      "timestamp": 1793112357.55
+    },
+    {
+      "file": "screenshots/native-scroll-asleep.png",
+      "sha256": "969c394a20cc5a615347c731263eeb16d58d4112994e4242ff6e86ca0ffec4dc",
+      "timestamp": 1793112344.529
+    },
+    {
+      "file": "screenshots/native-bottom-awake.png",
+      "sha256": "01ec57ed1a7ee68742216b87fa78264052590bb219d8154b0cf0717f7ff92673",
+      "timestamp": 1793112341.156
+    },
+    {
+      "file": "screenshots/native-idle-ten-seconds.png",
+      "sha256": "19751dd2ad21b3c83b6ff5f4d02abfe58768e9d3b7913c357d8996d2febb6057",
+      "timestamp": 1793112339.175
+    },
+    {
+      "file": "screenshots/native-top-awake.png",
+      "sha256": "67bef3c05202c079116cfc19e533ee03c809794d57651fd6c17cd21c52836a38",
+      "timestamp": 1793112328.742
+    }
+  ]
+}

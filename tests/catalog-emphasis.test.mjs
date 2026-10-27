@@ -42,11 +42,13 @@ const baseline={
  'gutenberg-equiano':[318,0,0,'b730a00993abea10fa1f6a0acf8059b05ae719f738e384f3d4a1119c506d0cfe'],
  'gutenberg-african-farm':[2343,0,0,'9eca71c535c02d110ef1d0f15f16618b2143f68a65a31c54b2c4d407c150bb99'],
  'gutenberg-douglass':[163,0,0,'898bd5dd9b560232de22fe6c92b8908a420e0e5af98b98188b8972386234d44d'],
- 'gutenberg-seacole':[466,0,0,'1602380467514c2ed7e993b9f1fcf6634f929b12aea39056eaf6ad3688538c1c']
+ 'gutenberg-seacole':[466,0,0,'1602380467514c2ed7e993b9f1fcf6634f929b12aea39056eaf6ad3688538c1c'],
+ 'gutenberg-beyond-good-and-evil':[319,0,0,'a7a5b47fe2612056bc2a26b2cb2fb13708fe4cf5391b0e980fd826fc7c5d6610'],
+ 'gutenberg-zarathustra':[3478,0,0,'bf35f86ffe4582d5a32d5bc6515d3033f8202143d53090f7494547fef8c8930e']
 };
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
 
-test('all thirty catalog books keep identical original text, IDs, contentVersion and hashes',async t=>{
+test('all shared catalog books keep identical original text, IDs, contentVersion and hashes',async t=>{
   const dir=await mkdtemp(path.join(tmpdir(),'catalog-emphasis-'));t.after(()=>rm(dir,{recursive:true,force:true}));
   const library=await createLibraryService({dataDir:dir}),entries=JSON.parse(await readFile('catalog/manifest.json','utf8'));
   assert.deepEqual(entries.map(e=>e.id).sort(),Object.keys(baseline).sort());
@@ -63,7 +65,7 @@ test('all thirty catalog books keep identical original text, IDs, contentVersion
     assert.equal(book.contentVersion,digest(file),entry.id+' contentVersion');
     paragraphs+=rows.length;pairs+=count;
   }
-  assert.equal(paragraphs,24238);
+  assert.equal(paragraphs,28035);
   assert.equal(pairs,528,'218 Alice + 31 Meditations + 279 Walden conservative pairs');
 });
 

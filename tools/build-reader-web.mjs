@@ -468,6 +468,14 @@ export async function buildReaderWeb({root,outputDir,html}){
  const css=await compile(styles.map(file=>'@import '+JSON.stringify('./'+file.slice(1))+';').join('\n'),'css');
  await mkdir(path.join(outputDir,'reader-web'),{recursive:true});
  for(const [prefix,extension,bytes]of [['reader','js',js],['style','css',css]]){if(bytes.length>(extension==='js'?320:200)*1024)throw Error('Reader bundle exceeds public asset budget: '+prefix+' '+bytes.length);const file='reader-web/'+prefix+'-'+createHash('sha256').update(bytes).digest('hex').slice(0,16)+'.'+extension;await writeFile(path.join(outputDir,file),bytes);files.push(file);}
+ // Quiet chrome is a small render-blocking asset so it never flashes a dock during startup.
+ // Keep the existing main-bundle budgets and explicitly audit/copy this separate source.
+ if(html.includes('<link rel="stylesheet" href="/reader-quiet.css" data-reader-chrome>')){
+  if(!allowed.has('app/reader-quiet.css'))throw Error('Non-public reader chrome stylesheet');
+  const bytes=await readFile(path.join(root,'app/reader-quiet.css'));
+  if(bytes.length>4*1024)throw Error('Reader chrome stylesheet exceeds 4 KiB');
+  await writeFile(path.join(outputDir,'reader-quiet.css'),bytes);files.push('reader-quiet.css');inputs.add('app/reader-quiet.css');
+ }
  html=html.replace(/<script\s+type="module"\s+src="\/[^"]+"\s*><\/script>/g,'').replace(/<link\s+rel="stylesheet"\s+href="\/[^"]+"\s*>/g,'');
  html=html.replace('</head>','<style data-reader-critical>'+READER_CRITICAL_CSS+'</style><link rel="preload" as="style" href="/'+files[1]+'" data-reader-styles><script type="module" src="/'+files[0]+'"></script></head>');
  return {html,files,inputs:[...inputs].sort()};

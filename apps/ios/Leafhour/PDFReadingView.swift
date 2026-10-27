@@ -5,11 +5,14 @@ import LeafhourCore
 struct PDFReadingView: UIViewRepresentable {
     let session: ReaderSession
     let onSelection: (SelectedQuote?) -> Void
+    let onWake: (ReaderChrome) -> Void
+    let onReadingScroll: () -> Void
     func makeCoordinator() -> Coordinator { Coordinator(parent: self) }
     func makeUIView(context: Context) -> PDFView {
         let view = PDFView(); view.autoScales = true; view.displayMode = .singlePageContinuous; view.displayDirection = .vertical; view.backgroundColor = .clear
         view.accessibilityIdentifier = "leafhour-pdf-reader"
         context.coordinator.view = view
+        context.coordinator.edgeTap = ReaderEdgeTapHandler(view: view, blocked: { [weak view] in view?.currentSelection != nil }, onWake: { [weak coordinator = context.coordinator] edge in coordinator?.parent.onWake(edge) })
         context.coordinator.observe(view)
         return view
     }
@@ -34,6 +37,7 @@ struct PDFReadingView: UIViewRepresentable {
         var navigationID: UUID?
         var restoring = false
         var userScrolled = false
+        var edgeTap: ReaderEdgeTapHandler?
         private var observers: [NSObjectProtocol] = []
         private var scrolling: NSKeyValueObservation?
         private weak var observedScroll: UIScrollView?
@@ -51,6 +55,7 @@ struct PDFReadingView: UIViewRepresentable {
             scrolling = target.observe(\.contentOffset, options: .new) { [weak self, weak target] _, _ in
                 DispatchQueue.main.async { [weak self] in
                     guard let self, !self.restoring, let target, target.isTracking || target.isDragging || target.isDecelerating else { return }
+                    self.parent.onReadingScroll()
                     self.userScrolled = true
                     self.delayed?.cancel(); let work = DispatchWorkItem { [weak self] in self?.capture() }; self.delayed = work
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.18, execute: work)

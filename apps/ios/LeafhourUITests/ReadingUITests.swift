@@ -79,4 +79,35 @@ final class ReadingUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "73 / 73")).firstMatch.waitForExistence(timeout: 5), app.debugDescription)
         capture("PDF-page-73-of-73")
     }
+    /// GET-272 uses a separate task app seeded through the normal OfflineLibrary import service.
+    func testQuietChromeEdgesAndTenSecondIdle() {
+        let reader = app.textViews["leafhour-epub-reader"]
+        XCTAssertTrue(reader.waitForExistence(timeout: 15), app.debugDescription)
+        let original = reader.value as? String
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.01)).tap()
+        XCTAssertTrue(app.buttons["返回书房"].waitForExistence(timeout: 3), app.debugDescription)
+        capture("GET272-native-top-awake")
+        Thread.sleep(forTimeInterval: 10)
+        XCTAssertFalse(app.buttons["返回书房"].exists)
+        XCTAssertFalse(app.buttons["目录"].exists)
+        XCTAssertFalse(app.buttons["阅读设置"].exists)
+        XCTAssertEqual(reader.value as? String, original)
+        capture("GET272-native-idle-ten-seconds")
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.99)).tap()
+        XCTAssertTrue(app.buttons["目录"].waitForExistence(timeout: 3), app.debugDescription)
+        capture("GET272-native-bottom-awake")
+        reader.swipeUp()
+        XCTAssertFalse(app.buttons["目录"].waitForExistence(timeout: 0.3))
+        capture("GET272-native-scroll-asleep")
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        XCTAssertFalse(app.buttons["目录"].exists, "A scrolled middle tap must not wake bottom controls")
+        reader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.01)).tap()
+        XCTAssertTrue(app.buttons["返回书房"].waitForExistence(timeout: 3), app.debugDescription)
+        Thread.sleep(forTimeInterval: 4)
+        app.terminate(); app.launch()
+        XCTAssertTrue(reader.waitForExistence(timeout: 10))
+        XCTAssertFalse(app.buttons["目录"].exists)
+        capture("GET272-native-cold-resume-asleep")
+    }
+
 }

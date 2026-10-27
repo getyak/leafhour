@@ -1,0 +1,26 @@
+[
+  {
+    "file": "screenshots/web-390-idle10.png",
+    "sha256": "03c1bf87e14b68db8abb6d1f713f971109942183f9e87393773956c5580f8f9b"
+  },
+  {
+    "file": "screenshots/web-390-awake.png",
+    "sha256": "eccc9457313c2e149f104fb1d192b18340ef866766893517ef702f38e2fb8fd6"
+  },
+  {
+    "file": "screenshots/web-390-edge-selection.png",
+    "sha256": "be8740cbfa2c9403ded2aec88df3a5560da3c3ba9d9c20dd8cc04ad7edafdfa8"
+  },
+  {
+    "file": "screenshots/web-390-paged-idle.png",
+    "sha256": "ba2b4dc2973cf69f6e54f721896af3613cacb77e712ec179c491a8cd8296ef59"
+  },
+  {
+    "file": "screenshots/web-390-paged-awake.png",
+    "sha256": "5528a1b837d4d0be17b863884f5ce6c7d733dfb0946f8bef0084cd0b228c4329"
+  },
+  {
+    "file": "screenshots/web-1440-idle10.png",
+    "sha256": "ddcb5a31914250143534947b8ba01a4abce0bd69d9184855037639f54e308d16"
+  }
+]
