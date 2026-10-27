@@ -2230,4 +2230,9 @@ export default Object.freeze({
   "chat.evidence":"查看依据",
   "chat.evidence.incomplete":"部分查找失败，回答可能不完整。",
   "audio.options": "更多听读方式",
+  "translation.firstUse.title": "翻译这一段？",
+  "translation.firstUse.body": "翻译会把这一段和前后各一段（如有）发给 AI，不会带上你的笔记。",
+  "translation.firstUse.accept": "翻译这一段",
+  "translation.firstUse.cancel": "继续阅读",
+  "translation.firstUse.privacy": "隐私说明",
 });

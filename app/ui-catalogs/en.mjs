@@ -2231,4 +2231,9 @@ export default Object.freeze({
   "chat.evidence":"About this answer",
   "chat.evidence.incomplete":"Some lookups failed. This answer may be incomplete.",
   "audio.options": "More listening options",
+  "translation.firstUse.title": "Translate this paragraph?",
+  "translation.firstUse.body": "Translating sends this paragraph and up to one paragraph before and after it to an AI. Your notes are not included.",
+  "translation.firstUse.accept": "Translate this paragraph",
+  "translation.firstUse.cancel": "Keep reading",
+  "translation.firstUse.privacy": "Privacy details",
 });

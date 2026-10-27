@@ -346,6 +346,8 @@
   "app/styles.css",
   "app/toolbar-placement.mjs",
   "app/translation-state.mjs",
+  "app/translation-first-use.mjs",
+  "app/translation-first-use.css",
   "app/typography.css",
   "app/ui-catalogs/en.mjs",
   "app/ui-catalogs/ja.mjs",

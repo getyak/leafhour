@@ -2230,4 +2230,9 @@ export default Object.freeze({
   "chat.evidence":"回答の根拠",
   "chat.evidence.incomplete":"一部の検索に失敗しました。回答が不完全な場合があります。",
   "audio.options": "ほかの読み上げ方法",
+  "translation.firstUse.title": "この段落を翻訳しますか？",
+  "translation.firstUse.body": "翻訳のため、この段落と前後の段落（各1段落まで）をAIに送ります。ノートは送りません。",
+  "translation.firstUse.accept": "この段落を翻訳",
+  "translation.firstUse.cancel": "読書を続ける",
+  "translation.firstUse.privacy": "プライバシーについて",
 });
