@@ -76,15 +76,15 @@ export function createRemoteMcp({origin,dataDir,dataStore,library,auth,annotatio
  const oauth=createMcpOAuth({origin,store:dataStore||createLockedJsonStore({dataDir}),library,peopleGrants});
  async function handle({req,res,url,send}){
   const p=url.pathname;
-  const metadata=['/.well-known/oauth-protected-resource','/.well-known/oauth-protected-resource/api/mcp','/.well-known/oauth-authorization-server'];
-  if(!metadata.includes(p)&&p!=='/api/mcp'&&!p.startsWith('/api/mcp/'))return false;
+  const metadata=['/.well-known/oauth-protected-resource','/.well-known/oauth-protected-resource/api/mcp','/.well-known/oauth-protected-resource/api/people/mcp','/.well-known/oauth-authorization-server'];
+  if(!metadata.includes(p)&&p!=='/api/mcp'&&p!=='/api/people/mcp'&&!p.startsWith('/api/mcp/'))return false;
   const json=(status,data)=>{res.setHeader('Content-Type','application/json; charset=utf-8');send(status,data);};
   const redirect=location=>{res.statusCode=303;res.setHeader('Location',location);res.end();};
   res.setHeader('Cache-Control','private, no-store');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
   try{
    if(req.headers.origin&&req.headers.origin!==origin)throw failure('This request origin is not allowed.',403);
-   const meta=metadata.includes(p)||p==='/api/mcp/metadata'||p==='/api/mcp/authorization-server';
-   if(meta){if(req.method!=='GET')throw failure('Use GET.',405);json(200,p.includes('authorization-server')?oauth.serverMetadata():oauth.resourceMetadata());return true;}
+   const meta=metadata.includes(p)||p==='/api/mcp/metadata'||p==='/api/mcp/people-metadata'||p==='/api/mcp/authorization-server';
+   if(meta){if(req.method!=='GET')throw failure('Use GET.',405);json(200,p.includes('authorization-server')?oauth.serverMetadata():oauth.resourceMetadata(origin+(p.includes('/api/people/mcp')||p==='/api/mcp/people-metadata'?'/api/people/mcp':'/api/mcp')));return true;}
    if(['/api/mcp/consent-script','/api/mcp/consent','/api/mcp/consent.js'].includes(p)){if(req.method!=='GET')throw failure('Use GET.',405);res.statusCode=200;res.setHeader('Content-Type','text/javascript; charset=utf-8');res.end(consentScript);return true;}
    if(p==='/api/mcp/oauth/register'){if(req.method!=='POST')throw failure('Use POST.',405);json(201,await oauth.register(await body(req,'json')));return true;}
    if(p==='/api/mcp/oauth/token'||p==='/api/mcp/oauth/revoke'){if(req.method!=='POST')throw failure('Use POST.',405);if(req.headers.authorization)throw failure('This endpoint accepts public PKCE clients only.',400);const form=await body(req,'form');if(p.endsWith('/token'))json(200,await oauth.exchange(form));else{await oauth.revoke(form);json(200,{});}return true;}
@@ -101,17 +101,18 @@ export function createRemoteMcp({origin,dataDir,dataStore,library,auth,annotatio
     if(req.method!=='POST'||req.headers.origin!==origin)throw failure('Confirm access on the Leafhour page.',403);
     const session=cookie(req),user=await auth.userFor(session);json(200,{location:await oauth.approve(await body(req,'json'),user,session)});return true;
    }
-   if(p!=='/api/mcp')throw failure('Unknown MCP endpoint.',404);
-   const token=req.headers.authorization?.match(/^Bearer ([A-Za-z0-9_-]{43})$/)?.[1],identity=await oauth.authenticate(token);
+   if(p!=='/api/mcp'&&p!=='/api/people/mcp')throw failure('Unknown MCP endpoint.',404);
+   const expectedResource=origin+p,boundOAuth={...oauth,authenticate:value=>oauth.authenticate(value,expectedResource)};
+   const token=req.headers.authorization?.match(/^Bearer ([A-Za-z0-9_-]{43})$/)?.[1],identity=await boundOAuth.authenticate(token);
    await oauth.rate('mcp:'+token,60);
    if(req.method!=='POST'){res.setHeader('Allow','POST');throw failure('This stateless MCP endpoint accepts POST.',405);}
    const input=await body(req,'json');if(Array.isArray(input)||!input||typeof input!=='object')throw failure('Use one JSON-RPC request.');
-   const server=identity.kind==='people'?createMcpPeopleServer({oauth,identity,token,people,peopleGrants,generation}):createMcpReadingServer({oauth,identity,token,library,annotations}),transport=new StreamableHTTPServerTransport({sessionIdGenerator:undefined,enableJsonResponse:true});
+   const server=identity.kind==='people'?createMcpPeopleServer({oauth:boundOAuth,identity,token,people,peopleGrants,generation}):createMcpReadingServer({oauth:boundOAuth,identity,token,library,annotations}),transport=new StreamableHTTPServerTransport({sessionIdGenerator:undefined,enableJsonResponse:true});
    const close=()=>{void server.close().catch(()=>{});};res.once('close',close);
    try{await server.connect(transport);await transport.handleRequest(req,res,input);}catch(error){await server.close();throw error;}return true;
   }catch(error){
    if(res.headersSent)throw error;
-   if(error.status===401)res.setHeader('WWW-Authenticate',`Bearer resource_metadata="${origin}/.well-known/oauth-protected-resource/api/mcp"${peopleGrants?'':', scope="content"'}, error="invalid_token"`);
+   if(error.status===401)res.setHeader('WWW-Authenticate',`Bearer resource_metadata="${origin}/.well-known/oauth-protected-resource${p==='/api/people/mcp'?'/api/people/mcp':'/api/mcp'}"${p==='/api/people/mcp'?'':', scope="content"'}, error="invalid_token"`);
    if(error.retryAfter)res.setHeader('Retry-After',String(error.retryAfter));
    json(error.status||500,{error:error.oauthError||(error.status===429?'temporarily_unavailable':'invalid_request'),error_description:error.status?error.message:'Leafhour is temporarily unavailable. Try again later.'});return true;
   }

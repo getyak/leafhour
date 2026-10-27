@@ -206,7 +206,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       res.setHeader('Set-Cookie',cookies);res.setHeader('Cache-Control','private, no-store');res.setHeader('Referrer-Policy','no-referrer');res.setHeader('Location',new URL(next,publicOrigin).href);res.statusCode=303;res.end();return true;
     }
     const token=cookieToken(req);
-    if(p==='/api/auth/logout'&&req.method==='POST'){await jsonBody(req,4096);try{await auth.logout(token,{expectedOwner:req.headers['x-reader-owner']});}catch(error){if(error.readerSessionChanged)res.setHeader('X-Reader-Session-Changed','1');throw error;}res.setHeader('Set-Cookie',`marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${publicOrigin?.startsWith('https:')?'; Secure':''}`);send(200,{signedOut:true});return true;}
+    if(p==='/api/auth/logout'&&req.method==='POST'){await jsonBody(req,4096);try{await auth.logout(token,{expectedOwner:req.headers['x-reader-owner']});if(/^[A-Za-z0-9_-]{43}$/.test(token||''))await people.fenceWrites();}catch(error){if(error.readerSessionChanged)res.setHeader('X-Reader-Session-Changed','1');throw error;}res.setHeader('Set-Cookie',`marginalia_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${publicOrigin?.startsWith('https:')?'; Secure':''}`);send(200,{signedOut:true});return true;}
     const user=req.method==='GET'&&p.startsWith('/api/book-gifts/')?null:await auth.userFor(token);
     const ownerScoped=p==='/api/people'||p.startsWith('/api/people/')||p.startsWith('/api/billing/')||p.startsWith('/api/admin/billing')||p.startsWith('/api/library')||p==='/api/account/preference-memory'||p==='/api/account/reading-preferences'||p==='/api/account/ui-preferences'||req.method==='POST'&&(p==='/api/account/profile'||/^\/api\/book-gifts\/[^/]+\/(?:accept|revoke)$/.test(p));
     if(ownerScoped&&req.headers['x-reader-owner']&&req.headers['x-reader-owner']!==(user?.id||'guest')){res.setHeader('X-Reader-Session-Changed','1');throw fail('账户已切换，请重新进入书房。原账户草稿仍留在原处。',409);}
@@ -219,7 +219,7 @@ export async function createPortal({dataDir,publicOrigin=null,additionalWebOrigi
       if(req.method==='POST'&&!user?.id)throw fail('请先进入自己的书房。',401);
       if(req.method==='POST'&&req.headers['x-reader-owner']!==user.id)throw fail('请重新核对当前书房账户。',409);
       if(await peopleRuntimeRoutes.handle({req,url,user,body,token,send}))return true;
-      if(await peopleRoutes.handle({req,res,url,user,body,send}))return true;
+      if(await peopleRoutes.handle({req,res,url,user,body,send,authorize:async()=>{const active=(await auth.userFor(token))?.id===(user?.id);if(!active&&!res.headersSent)res.setHeader('X-Reader-Session-Changed','1');return active;}}))return true;
       throw fail('找不到这个人物操作。',404);
     }
     if(p==='/api/auth/session'&&req.method==='GET'){

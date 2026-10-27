@@ -410,7 +410,7 @@
       },
       {
         "file": "app/people-copy.mjs",
-        "sha256": "3301f1fef364e2301edd1eb3413f4c52c80c694db06aa943bbdc7439e25b7d78"
+        "sha256": "a47e3af70254ae49c237dfbc0a44ebb24feea7361f87297ae69b225f660069b2"
       },
       {
         "file": "app/people.html",
@@ -418,11 +418,11 @@
       },
       {
         "file": "app/people.mjs",
-        "sha256": "6bc76b18c66e0f8758ab660b41ed98c309d5d7ef8df7ee80335be3fa5ca6708c"
+        "sha256": "2f00b5a6cab2ebdf584c0344a261ec6a5340787a3c1a56858f96c62b02b61a38"
       },
       {
         "file": "app/person-model.mjs",
-        "sha256": "5c4709be3a34c2dc6a51b6a51a125aec2639ca2d13f1193255f1f8c442dabe71"
+        "sha256": "b9c7777359d6924189e186594f008a5e79e7daf1dff1e304fab21acfde4a47e6"
       },
       {
         "file": "app/person-motion.mjs",
@@ -434,11 +434,11 @@
       },
       {
         "file": "app/person-return.mjs",
-        "sha256": "0e44c180aa04780db49a2afbc8470ee7d74a3b8c98b5d200f2b14324559ac01c"
+        "sha256": "646de8911486983e969bb73bd2c2ad40c1d485d2eb72ce63c11dd0213ccf5ccd"
       },
       {
         "file": "app/person-share.mjs",
-        "sha256": "53e37e4d49ebf9e708c017fe7f6f94bf039ff3c5441e0cd05d979e8102c7952c"
+        "sha256": "7d7dd7826ed3353f780a6a3d971bbbed316316aca12210911e4e8080742fb4c1"
       },
       {
         "file": "app/personal-record-editor.mjs",
@@ -534,7 +534,7 @@
       },
       {
         "file": "app/reader-book-actions.mjs",
-        "sha256": "077b47719b43d3544dbdc2b7d7497eafba8edd267ee9e1048a1ccf2e1127ef7e"
+        "sha256": "345f34ae8cd7c8676f682c635be234bfd2f41462d5308da5bd6c97dc143bf84b"
       },
       {
         "file": "app/reader-chat-workspace.mjs",
@@ -1074,11 +1074,11 @@
       },
       {
         "file": "server/mcp-http.mjs",
-        "sha256": "42bdc75780d0036c4c0b4ad70b4bd06ad81e6932a797f8ebc5e4c260dbdefda0"
+        "sha256": "8aedd12e9a0509908523d8299c9d32c1721a1331de97a4a7fe5ae1acaf89f3d9"
       },
       {
         "file": "server/mcp-oauth.mjs",
-        "sha256": "6661b4f5bcc4dc1782b8effcbefad3ac9143370424ce19f5b4e714c304dbeddf"
+        "sha256": "37c97c67ca192bb9baa0c7fd95b4f26027cdedd07bec208d244ea3effb06435b"
       },
       {
         "file": "server/mcp.mjs",
@@ -1114,11 +1114,11 @@
       },
       {
         "file": "server/people-generation.mjs",
-        "sha256": "60841553bad4cfc40b67082a309dd69d97dedd9d4156da4b40829292803ebfb1"
+        "sha256": "f924d08cc96f6fc772ec679aa8d4f457df4059d241ed2fd8233ca579320bf478"
       },
       {
         "file": "server/people-grants.mjs",
-        "sha256": "97b1715174ca47e47b43c0c4a47eb04f5f8263983bd86f7da7fc909cea753b3a"
+        "sha256": "72d64409a2c93fc2a211023ac73fa64cb4591631baa86a299766eb4fdc993476"
       },
       {
         "file": "server/people-mcp.mjs",
@@ -1126,7 +1126,7 @@
       },
       {
         "file": "server/people-routes.mjs",
-        "sha256": "13136c0c2727147f12ed59fca7cfa5071ff003c6272303be3b7613c5cbef8f84"
+        "sha256": "86114bfafd8209b7b2c8965a506f1fdc9b86682a998c1112be97c4532b2e1f45"
       },
       {
         "file": "server/people-runtime-routes.mjs",
@@ -1134,11 +1134,11 @@
       },
       {
         "file": "server/people-service.mjs",
-        "sha256": "5c1aec09cca5a1cdbeddbff7338fa7640d64be574397e097ad60ae70cddd3580"
+        "sha256": "45b2ea6b8f240c0ac2b7b6856258fdf9c7397c805aafff181223e9a681a3c0d0"
       },
       {
         "file": "server/people-sources.mjs",
-        "sha256": "0c2c8e5149ce15c99b77546f1d0cde6e69a14914a8a7213fa704869c7110358f"
+        "sha256": "9e4db0001d7052f90452f938319f529e8b464a36dd81c02d24675e0e5d0c55ec"
       },
       {
         "file": "server/people-tools.mjs",
@@ -1150,7 +1150,7 @@
       },
       {
         "file": "server/portal.mjs",
-        "sha256": "67908cf1615f60127db15721aba87b3f7ca9ec6b248d32f25db05aa809ada150"
+        "sha256": "d3a6b5993328e31ad9f322f38dc794f68d6440497cd6e9901f7f36ca29a202b1"
       },
       {
         "file": "server/preference-memory.mjs",
@@ -1237,7 +1237,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "e47d7d39a51aa9de8455733500ebb668faa36d4f352d2d5f172708798fdc6660"
+    "inputDigest": "5a4b3e6a1367e8ab8c0088da2d4e5db4a7c40bab7411b4d4746f13a4fa5f90db"
   },
   "locales": [
     "en",
@@ -16734,7 +16734,7 @@
         },
         {
           "file": "server/mcp-http.mjs",
-          "line": 110,
+          "line": 111,
           "column": 66
         },
         {
@@ -17140,32 +17140,32 @@
         },
         {
           "file": "app/person-model.mjs",
-          "line": 23,
+          "line": 24,
           "column": 59
         },
         {
           "file": "app/person-model.mjs",
-          "line": 24,
+          "line": 25,
           "column": 53
         },
         {
           "file": "app/person-model.mjs",
-          "line": 26,
+          "line": 27,
           "column": 45
         },
         {
           "file": "app/person-model.mjs",
-          "line": 29,
+          "line": 30,
           "column": 53
         },
         {
           "file": "app/person-model.mjs",
-          "line": 29,
+          "line": 30,
           "column": 177
         },
         {
           "file": "app/person-model.mjs",
-          "line": 54,
+          "line": 55,
           "column": 127
         },
         {
@@ -17250,7 +17250,7 @@
         },
         {
           "file": "server/people-service.mjs",
-          "line": 92,
+          "line": 95,
           "column": 250
         },
         {
@@ -17512,7 +17512,7 @@
         {
           "file": "app/people.mjs",
           "line": 54,
-          "column": 785
+          "column": 863
         },
         {
           "file": "app/reader-audio.js",
@@ -24327,7 +24327,7 @@
         },
         {
           "file": "app/people.mjs",
-          "line": 68,
+          "line": 69,
           "column": 2135
         },
         {
@@ -190771,9 +190771,429 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:3:21",
+      "id": "candidate:app/people-copy.mjs:3:40",
       "file": "app/people-copy.mjs",
       "line": 3,
+      "column": 40,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "连接自己的助手",
+      "sha256": "58a96fa2176574ee68bb66047f141d5dd323245b8427fdeb02e4d64b5d61b3c9",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:3:50",
+      "file": "app/people-copy.mjs",
+      "line": 3,
+      "column": 50,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "連接自己的助手",
+      "sha256": "b1f6759c29a07afc6ae7c240179dafe6db84a717061a515904f0492d163fc5e9",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:3:60",
+      "file": "app/people-copy.mjs",
+      "line": 3,
+      "column": 60,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "自分のアシスタントを接続",
+      "sha256": "afd52c38cfc1de21e1dd238c9a7f1d64422cdd6445014d5d60d2e3996f5a5e91",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:3:123",
+      "file": "app/people-copy.mjs",
+      "line": 3,
+      "column": 123,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "让自己的助手查阅人物资料",
+      "sha256": "c92875b5a41cc7c9335de65777b66e39445edf080cdf22bd2185184cc1920ccb",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:3:138",
+      "file": "app/people-copy.mjs",
+      "line": 3,
+      "column": 138,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "讓自己的助手查閱人物資料",
+      "sha256": "8fb3662e2a5917f6cc90c19189b5f462b4c934cc4065e9bfda281e48c90f0205",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:3:153",
+      "file": "app/people-copy.mjs",
+      "line": 3,
+      "column": 153,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "人物資料をアシスタントと読む",
+      "sha256": "e5eb4d1e14480c3d397ee0b343434e50c0c1c5ded4c127ced340a08f632b08bf",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:3:368",
+      "file": "app/people-copy.mjs",
+      "line": 3,
+      "column": 368,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "在助手中添加下方工具连接地址（MCP），再到授权页选择人物与允许的操作。书籍和私人笔记不在这次授权里。",
+      "sha256": "e06e388f275bd1d17374a7e5513d529b779e288d33ca8ccc056d9dff00cd75fd",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:3:422",
+      "file": "app/people-copy.mjs",
+      "line": 3,
+      "column": 422,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "在助手中新增下方工具連接位址（MCP），再到授權頁選擇人物與允許的操作。書籍和私人筆記不在這次授權裡。",
+      "sha256": "09df20879077c6e029a1774b7465166cafeba015acad8e42d62558caac030b29",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:3:476",
+      "file": "app/people-copy.mjs",
+      "line": 3,
+      "column": 476,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "アシスタントに以下のツール接続先（MCP）を追加し、認可画面で人物と操作を選びます。本と個人ノートは対象外です。",
+      "sha256": "a5074e98fbfec78caf315927c5b200842b057696b314aa9587693d5a2b513f6e",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:3:667",
+      "file": "app/people-copy.mjs",
+      "line": 3,
+      "column": 667,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "外部助手连接需要此实例使用 HTTPS 地址，本机阅读和人物编辑仍可使用。",
+      "sha256": "8a3dc5032c39ef2a25b0b3d07638175bc816eaf298697b202be95650e01b7261",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:3:707",
+      "file": "app/people-copy.mjs",
+      "line": 3,
+      "column": 707,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "外部助手連接需要此實例使用 HTTPS 位址，本機閱讀和人物編輯仍可使用。",
+      "sha256": "8052e5e7afd33f720ba67e911aa2bbe8ef6ce0594d5f47ad569a00dd85e64cde",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:3:747",
+      "file": "app/people-copy.mjs",
+      "line": 3,
+      "column": 747,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "外部アシスタントとの接続には HTTPS が必要です。ローカルの読書と人物編集は利用できます。",
+      "sha256": "e6946c8774c79d307b430832a8cb8df37d7a0544e746d94809ea8875350a5942",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:3:848",
+      "file": "app/people-copy.mjs",
+      "line": 3,
+      "column": 848,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "助手连接地址",
+      "sha256": "1c1568ee31d5877d3ee2cbdb9796e5ffd74d7b8cce028a180cb94cad5ae071a5",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:3:857",
+      "file": "app/people-copy.mjs",
+      "line": 3,
+      "column": 857,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "助手連接位址",
+      "sha256": "601f7dbd93e917321a235b279151729228b9d635d82707bd34c7e76a2e66a5de",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:3:866",
+      "file": "app/people-copy.mjs",
+      "line": 3,
+      "column": 866,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "接続先アドレス",
+      "sha256": "893f4f411ca7550e6cf36d608dfe0535a8a3698f338bafec6b562cc8cf1b6316",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:4:56",
+      "file": "app/people-copy.mjs",
+      "line": 4,
+      "column": 56,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Leafhour 参考译文",
+      "sha256": "4dd7fc5fc79f71bd7d0080c46bebbd6b89083f7538b9aba9a3beb9b0a094b6ab",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:4:72",
+      "file": "app/people-copy.mjs",
+      "line": 4,
+      "column": 72,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Leafhour 參考譯文",
+      "sha256": "12c82a4ae2d4a9f63d2794f45a699eab7981a1fbae336f7560826e811388f0f1",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:4:88",
+      "file": "app/people-copy.mjs",
+      "line": 4,
+      "column": 88,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "Leafhour 参考訳",
+      "sha256": "dcd16f1e4475b3e10c2f89eeb88045e2df16b500ced68b28e4f967f628afce9f",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:5:23",
+      "file": "app/people-copy.mjs",
+      "line": 5,
+      "column": 23,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "查看作品",
+      "sha256": "cc40ce33895e50f79ac62da52ad0fbf2f4fd91147d1f2b9b516e5bf756631cdd",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:5:30",
+      "file": "app/people-copy.mjs",
+      "line": 5,
+      "column": 30,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "查看作品",
+      "sha256": "cc40ce33895e50f79ac62da52ad0fbf2f4fd91147d1f2b9b516e5bf756631cdd",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:5:37",
+      "file": "app/people-copy.mjs",
+      "line": 5,
+      "column": 37,
+      "kind": "js-cjk-literal",
+      "property": null,
+      "value": "作品を見る",
+      "sha256": "96a899269f7cc68030b9189038d0b94cee7837c38658bbed4e68b116a26dc9d3",
+      "protected": false,
+      "protectionReason": null,
+      "hints": [],
+      "review": {
+        "state": "unknown",
+        "classification": "unknown",
+        "surface": "unknown",
+        "trigger": "unknown",
+        "decision": "unknown"
+      }
+    },
+    {
+      "id": "candidate:app/people-copy.mjs:6:21",
+      "file": "app/people-copy.mjs",
+      "line": 6,
       "column": 21,
       "kind": "js-cjk-literal",
       "property": null,
@@ -190791,9 +191211,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:3:33",
+      "id": "candidate:app/people-copy.mjs:6:33",
       "file": "app/people-copy.mjs",
-      "line": 3,
+      "line": 6,
       "column": 33,
       "kind": "js-cjk-literal",
       "property": null,
@@ -190811,9 +191231,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:3:45",
+      "id": "candidate:app/people-copy.mjs:6:45",
       "file": "app/people-copy.mjs",
-      "line": 3,
+      "line": 6,
       "column": 45,
       "kind": "js-cjk-literal",
       "property": null,
@@ -190831,9 +191251,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:3:79",
+      "id": "candidate:app/people-copy.mjs:6:79",
       "file": "app/people-copy.mjs",
-      "line": 3,
+      "line": 6,
       "column": 79,
       "kind": "js-cjk-literal",
       "property": null,
@@ -190851,9 +191271,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:3:91",
+      "id": "candidate:app/people-copy.mjs:6:91",
       "file": "app/people-copy.mjs",
-      "line": 3,
+      "line": 6,
       "column": 91,
       "kind": "js-cjk-literal",
       "property": null,
@@ -190871,9 +191291,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:3:103",
+      "id": "candidate:app/people-copy.mjs:6:103",
       "file": "app/people-copy.mjs",
-      "line": 3,
+      "line": 6,
       "column": 103,
       "kind": "js-cjk-literal",
       "property": null,
@@ -190891,9 +191311,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:4:36",
+      "id": "candidate:app/people-copy.mjs:7:36",
       "file": "app/people-copy.mjs",
-      "line": 4,
+      "line": 7,
       "column": 36,
       "kind": "js-cjk-literal",
       "property": null,
@@ -190911,9 +191331,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:4:47",
+      "id": "candidate:app/people-copy.mjs:7:47",
       "file": "app/people-copy.mjs",
-      "line": 4,
+      "line": 7,
       "column": 47,
       "kind": "js-cjk-literal",
       "property": null,
@@ -190931,9 +191351,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:4:58",
+      "id": "candidate:app/people-copy.mjs:7:58",
       "file": "app/people-copy.mjs",
-      "line": 4,
+      "line": 7,
       "column": 58,
       "kind": "js-cjk-literal",
       "property": null,
@@ -190951,9 +191371,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:4:107",
+      "id": "candidate:app/people-copy.mjs:7:107",
       "file": "app/people-copy.mjs",
-      "line": 4,
+      "line": 7,
       "column": 107,
       "kind": "js-cjk-literal",
       "property": null,
@@ -190971,9 +191391,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:4:123",
+      "id": "candidate:app/people-copy.mjs:7:123",
       "file": "app/people-copy.mjs",
-      "line": 4,
+      "line": 7,
       "column": 123,
       "kind": "js-cjk-literal",
       "property": null,
@@ -190991,9 +191411,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:4:139",
+      "id": "candidate:app/people-copy.mjs:7:139",
       "file": "app/people-copy.mjs",
-      "line": 4,
+      "line": 7,
       "column": 139,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191011,9 +191431,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:4:197",
+      "id": "candidate:app/people-copy.mjs:7:197",
       "file": "app/people-copy.mjs",
-      "line": 4,
+      "line": 7,
       "column": 197,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191031,9 +191451,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:4:210",
+      "id": "candidate:app/people-copy.mjs:7:210",
       "file": "app/people-copy.mjs",
-      "line": 4,
+      "line": 7,
       "column": 210,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191051,9 +191471,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:4:223",
+      "id": "candidate:app/people-copy.mjs:7:223",
       "file": "app/people-copy.mjs",
-      "line": 4,
+      "line": 7,
       "column": 223,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191071,9 +191491,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:36",
+      "id": "candidate:app/people-copy.mjs:8:36",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 36,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191091,9 +191511,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:45",
+      "id": "candidate:app/people-copy.mjs:8:45",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 45,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191111,9 +191531,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:54",
+      "id": "candidate:app/people-copy.mjs:8:54",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 54,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191131,9 +191551,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:99",
+      "id": "candidate:app/people-copy.mjs:8:99",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 99,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191151,9 +191571,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:111",
+      "id": "candidate:app/people-copy.mjs:8:111",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 111,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191171,9 +191591,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:123",
+      "id": "candidate:app/people-copy.mjs:8:123",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 123,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191191,9 +191611,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:186",
+      "id": "candidate:app/people-copy.mjs:8:186",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 186,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191211,9 +191631,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:195",
+      "id": "candidate:app/people-copy.mjs:8:195",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 195,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191231,9 +191651,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:204",
+      "id": "candidate:app/people-copy.mjs:8:204",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 204,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191251,9 +191671,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:289",
+      "id": "candidate:app/people-copy.mjs:8:289",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 289,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191271,9 +191691,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:311",
+      "id": "candidate:app/people-copy.mjs:8:311",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 311,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191291,9 +191711,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:333",
+      "id": "candidate:app/people-copy.mjs:8:333",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 333,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191311,9 +191731,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:421",
+      "id": "candidate:app/people-copy.mjs:8:421",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 421,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191331,9 +191751,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:433",
+      "id": "candidate:app/people-copy.mjs:8:433",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 433,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191351,9 +191771,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:445",
+      "id": "candidate:app/people-copy.mjs:8:445",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 445,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191371,9 +191791,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:529",
+      "id": "candidate:app/people-copy.mjs:8:529",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 529,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191391,9 +191811,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:548",
+      "id": "candidate:app/people-copy.mjs:8:548",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 548,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191411,9 +191831,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:567",
+      "id": "candidate:app/people-copy.mjs:8:567",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 567,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191431,9 +191851,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:634",
+      "id": "candidate:app/people-copy.mjs:8:634",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 634,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191451,9 +191871,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:641",
+      "id": "candidate:app/people-copy.mjs:8:641",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 641,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191471,9 +191891,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:648",
+      "id": "candidate:app/people-copy.mjs:8:648",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 648,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191491,9 +191911,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:691",
+      "id": "candidate:app/people-copy.mjs:8:691",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 691,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191511,9 +191931,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:698",
+      "id": "candidate:app/people-copy.mjs:8:698",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 698,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191531,9 +191951,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:705",
+      "id": "candidate:app/people-copy.mjs:8:705",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 705,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191551,9 +191971,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:796",
+      "id": "candidate:app/people-copy.mjs:8:796",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 796,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191571,9 +191991,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:823",
+      "id": "candidate:app/people-copy.mjs:8:823",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 823,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191591,9 +192011,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:850",
+      "id": "candidate:app/people-copy.mjs:8:850",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 850,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191611,9 +192031,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:901",
+      "id": "candidate:app/people-copy.mjs:8:901",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 901,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191631,9 +192051,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:906",
+      "id": "candidate:app/people-copy.mjs:8:906",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 906,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191651,9 +192071,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:911",
+      "id": "candidate:app/people-copy.mjs:8:911",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 911,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191671,9 +192091,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:936",
+      "id": "candidate:app/people-copy.mjs:8:936",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 936,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191691,9 +192111,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:941",
+      "id": "candidate:app/people-copy.mjs:8:941",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 941,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191711,9 +192131,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:946",
+      "id": "candidate:app/people-copy.mjs:8:946",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 946,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191731,9 +192151,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:979",
+      "id": "candidate:app/people-copy.mjs:8:979",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 979,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191751,9 +192171,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:986",
+      "id": "candidate:app/people-copy.mjs:8:986",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 986,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191771,9 +192191,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:993",
+      "id": "candidate:app/people-copy.mjs:8:993",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 993,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191791,9 +192211,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1021",
+      "id": "candidate:app/people-copy.mjs:8:1021",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1021,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191811,9 +192231,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1026",
+      "id": "candidate:app/people-copy.mjs:8:1026",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1026,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191831,9 +192251,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1031",
+      "id": "candidate:app/people-copy.mjs:8:1031",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1031,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191851,9 +192271,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1067",
+      "id": "candidate:app/people-copy.mjs:8:1067",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1067,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191871,9 +192291,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1074",
+      "id": "candidate:app/people-copy.mjs:8:1074",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1074,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191891,9 +192311,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1081",
+      "id": "candidate:app/people-copy.mjs:8:1081",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1081,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191911,9 +192331,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1127",
+      "id": "candidate:app/people-copy.mjs:8:1127",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1127,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191931,9 +192351,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1139",
+      "id": "candidate:app/people-copy.mjs:8:1139",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1139,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191951,9 +192371,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1151",
+      "id": "candidate:app/people-copy.mjs:8:1151",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1151,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191971,9 +192391,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1192",
+      "id": "candidate:app/people-copy.mjs:8:1192",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1192,
       "kind": "js-cjk-literal",
       "property": null,
@@ -191991,9 +192411,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1199",
+      "id": "candidate:app/people-copy.mjs:8:1199",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1199,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192011,9 +192431,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1206",
+      "id": "candidate:app/people-copy.mjs:8:1206",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1206,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192031,9 +192451,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1238",
+      "id": "candidate:app/people-copy.mjs:8:1238",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1238,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192051,9 +192471,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1243",
+      "id": "candidate:app/people-copy.mjs:8:1243",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1243,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192071,9 +192491,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1248",
+      "id": "candidate:app/people-copy.mjs:8:1248",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1248,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192091,9 +192511,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1304",
+      "id": "candidate:app/people-copy.mjs:8:1304",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1304,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192111,9 +192531,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1320",
+      "id": "candidate:app/people-copy.mjs:8:1320",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1320,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192131,9 +192551,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1336",
+      "id": "candidate:app/people-copy.mjs:8:1336",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1336,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192151,9 +192571,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1418",
+      "id": "candidate:app/people-copy.mjs:8:1418",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1418,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192171,9 +192591,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1441",
+      "id": "candidate:app/people-copy.mjs:8:1441",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1441,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192191,9 +192611,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1464",
+      "id": "candidate:app/people-copy.mjs:8:1464",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1464,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192211,9 +192631,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1510",
+      "id": "candidate:app/people-copy.mjs:8:1510",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1510,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192231,9 +192651,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1517",
+      "id": "candidate:app/people-copy.mjs:8:1517",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1517,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192251,9 +192671,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1524",
+      "id": "candidate:app/people-copy.mjs:8:1524",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1524,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192271,9 +192691,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1552",
+      "id": "candidate:app/people-copy.mjs:8:1552",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1552,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192291,9 +192711,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1559",
+      "id": "candidate:app/people-copy.mjs:8:1559",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1559,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192311,9 +192731,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1566",
+      "id": "candidate:app/people-copy.mjs:8:1566",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1566,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192331,9 +192751,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1619",
+      "id": "candidate:app/people-copy.mjs:8:1619",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1619,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192351,9 +192771,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1636",
+      "id": "candidate:app/people-copy.mjs:8:1636",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1636,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192371,9 +192791,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1653",
+      "id": "candidate:app/people-copy.mjs:8:1653",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1653,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192391,9 +192811,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1716",
+      "id": "candidate:app/people-copy.mjs:8:1716",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1716,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192411,9 +192831,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1727",
+      "id": "candidate:app/people-copy.mjs:8:1727",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1727,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192431,9 +192851,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1738",
+      "id": "candidate:app/people-copy.mjs:8:1738",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1738,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192451,9 +192871,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1824",
+      "id": "candidate:app/people-copy.mjs:8:1824",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1824,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192471,9 +192891,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1847",
+      "id": "candidate:app/people-copy.mjs:8:1847",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1847,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192491,9 +192911,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1870",
+      "id": "candidate:app/people-copy.mjs:8:1870",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1870,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192511,9 +192931,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1941",
+      "id": "candidate:app/people-copy.mjs:8:1941",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1941,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192531,9 +192951,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1951",
+      "id": "candidate:app/people-copy.mjs:8:1951",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1951,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192551,9 +192971,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1961",
+      "id": "candidate:app/people-copy.mjs:8:1961",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1961,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192571,9 +192991,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:1999",
+      "id": "candidate:app/people-copy.mjs:8:1999",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 1999,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192591,9 +193011,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2004",
+      "id": "candidate:app/people-copy.mjs:8:2004",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2004,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192611,9 +193031,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2009",
+      "id": "candidate:app/people-copy.mjs:8:2009",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2009,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192631,9 +193051,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2064",
+      "id": "candidate:app/people-copy.mjs:8:2064",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2064,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192651,9 +193071,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2079",
+      "id": "candidate:app/people-copy.mjs:8:2079",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2079,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192671,9 +193091,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2094",
+      "id": "candidate:app/people-copy.mjs:8:2094",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2094,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192691,9 +193111,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2138",
+      "id": "candidate:app/people-copy.mjs:8:2138",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2138,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192711,9 +193131,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2146",
+      "id": "candidate:app/people-copy.mjs:8:2146",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2146,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192731,9 +193151,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2154",
+      "id": "candidate:app/people-copy.mjs:8:2154",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2154,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192751,9 +193171,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2192",
+      "id": "candidate:app/people-copy.mjs:8:2192",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2192,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192771,9 +193191,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2199",
+      "id": "candidate:app/people-copy.mjs:8:2199",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2199,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192791,9 +193211,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2206",
+      "id": "candidate:app/people-copy.mjs:8:2206",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2206,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192811,9 +193231,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2246",
+      "id": "candidate:app/people-copy.mjs:8:2246",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2246,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192831,9 +193251,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2255",
+      "id": "candidate:app/people-copy.mjs:8:2255",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2255,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192851,9 +193271,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2264",
+      "id": "candidate:app/people-copy.mjs:8:2264",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2264,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192871,9 +193291,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2290",
+      "id": "candidate:app/people-copy.mjs:8:2290",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2290,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192891,9 +193311,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2295",
+      "id": "candidate:app/people-copy.mjs:8:2295",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2295,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192911,9 +193331,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2300",
+      "id": "candidate:app/people-copy.mjs:8:2300",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2300,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192931,9 +193351,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2327",
+      "id": "candidate:app/people-copy.mjs:8:2327",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2327,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192951,9 +193371,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2335",
+      "id": "candidate:app/people-copy.mjs:8:2335",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2335,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192971,9 +193391,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2343",
+      "id": "candidate:app/people-copy.mjs:8:2343",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2343,
       "kind": "js-cjk-literal",
       "property": null,
@@ -192991,9 +193411,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2374",
+      "id": "candidate:app/people-copy.mjs:8:2374",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2374,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193011,9 +193431,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2382",
+      "id": "candidate:app/people-copy.mjs:8:2382",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2382,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193031,9 +193451,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2390",
+      "id": "candidate:app/people-copy.mjs:8:2390",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2390,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193051,9 +193471,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2418",
+      "id": "candidate:app/people-copy.mjs:8:2418",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2418,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193071,9 +193491,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2426",
+      "id": "candidate:app/people-copy.mjs:8:2426",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2426,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193091,9 +193511,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2434",
+      "id": "candidate:app/people-copy.mjs:8:2434",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2434,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193111,9 +193531,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2476",
+      "id": "candidate:app/people-copy.mjs:8:2476",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2476,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193131,9 +193551,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2485",
+      "id": "candidate:app/people-copy.mjs:8:2485",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2485,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193151,9 +193571,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2494",
+      "id": "candidate:app/people-copy.mjs:8:2494",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2494,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193171,9 +193591,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2540",
+      "id": "candidate:app/people-copy.mjs:8:2540",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2540,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193191,9 +193611,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2547",
+      "id": "candidate:app/people-copy.mjs:8:2547",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2547,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193211,9 +193631,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2554",
+      "id": "candidate:app/people-copy.mjs:8:2554",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2554,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193231,9 +193651,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2598",
+      "id": "candidate:app/people-copy.mjs:8:2598",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2598,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193251,9 +193671,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2607",
+      "id": "candidate:app/people-copy.mjs:8:2607",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2607,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193271,9 +193691,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2616",
+      "id": "candidate:app/people-copy.mjs:8:2616",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2616,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193291,9 +193711,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2651",
+      "id": "candidate:app/people-copy.mjs:8:2651",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2651,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193311,9 +193731,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2658",
+      "id": "candidate:app/people-copy.mjs:8:2658",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2658,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193331,9 +193751,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2665",
+      "id": "candidate:app/people-copy.mjs:8:2665",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2665,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193351,9 +193771,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2697",
+      "id": "candidate:app/people-copy.mjs:8:2697",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2697,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193371,9 +193791,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2704",
+      "id": "candidate:app/people-copy.mjs:8:2704",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2704,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193391,9 +193811,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2711",
+      "id": "candidate:app/people-copy.mjs:8:2711",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2711,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193411,9 +193831,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2761",
+      "id": "candidate:app/people-copy.mjs:8:2761",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2761,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193431,9 +193851,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2768",
+      "id": "candidate:app/people-copy.mjs:8:2768",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2768,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193451,9 +193871,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2775",
+      "id": "candidate:app/people-copy.mjs:8:2775",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2775,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193471,9 +193891,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2818",
+      "id": "candidate:app/people-copy.mjs:8:2818",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2818,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193491,9 +193911,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2826",
+      "id": "candidate:app/people-copy.mjs:8:2826",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2826,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193511,9 +193931,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2834",
+      "id": "candidate:app/people-copy.mjs:8:2834",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2834,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193531,9 +193951,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2886",
+      "id": "candidate:app/people-copy.mjs:8:2886",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2886,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193551,9 +193971,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2893",
+      "id": "candidate:app/people-copy.mjs:8:2893",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2893,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193571,9 +193991,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2900",
+      "id": "candidate:app/people-copy.mjs:8:2900",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2900,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193591,9 +194011,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2956",
+      "id": "candidate:app/people-copy.mjs:8:2956",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2956,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193611,9 +194031,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2966",
+      "id": "candidate:app/people-copy.mjs:8:2966",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2966,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193631,9 +194051,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:2976",
+      "id": "candidate:app/people-copy.mjs:8:2976",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 2976,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193651,9 +194071,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3038",
+      "id": "candidate:app/people-copy.mjs:8:3038",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3038,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193671,9 +194091,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3048",
+      "id": "candidate:app/people-copy.mjs:8:3048",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3048,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193691,9 +194111,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3058",
+      "id": "candidate:app/people-copy.mjs:8:3058",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3058,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193711,9 +194131,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3108",
+      "id": "candidate:app/people-copy.mjs:8:3108",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3108,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193731,9 +194151,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3116",
+      "id": "candidate:app/people-copy.mjs:8:3116",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3116,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193751,9 +194171,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3124",
+      "id": "candidate:app/people-copy.mjs:8:3124",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3124,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193771,9 +194191,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3157",
+      "id": "candidate:app/people-copy.mjs:8:3157",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3157,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193791,9 +194211,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3164",
+      "id": "candidate:app/people-copy.mjs:8:3164",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3164,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193811,9 +194231,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3171",
+      "id": "candidate:app/people-copy.mjs:8:3171",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3171,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193831,9 +194251,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3217",
+      "id": "candidate:app/people-copy.mjs:8:3217",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3217,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193851,9 +194271,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3226",
+      "id": "candidate:app/people-copy.mjs:8:3226",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3226,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193871,9 +194291,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3235",
+      "id": "candidate:app/people-copy.mjs:8:3235",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3235,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193891,9 +194311,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3281",
+      "id": "candidate:app/people-copy.mjs:8:3281",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3281,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193911,9 +194331,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3292",
+      "id": "candidate:app/people-copy.mjs:8:3292",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3292,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193931,9 +194351,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3303",
+      "id": "candidate:app/people-copy.mjs:8:3303",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3303,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193951,9 +194371,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3335",
+      "id": "candidate:app/people-copy.mjs:8:3335",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3335,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193971,9 +194391,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3340",
+      "id": "candidate:app/people-copy.mjs:8:3340",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3340,
       "kind": "js-cjk-literal",
       "property": null,
@@ -193991,9 +194411,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3345",
+      "id": "candidate:app/people-copy.mjs:8:3345",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3345,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194011,9 +194431,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3378",
+      "id": "candidate:app/people-copy.mjs:8:3378",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3378,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194031,9 +194451,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3383",
+      "id": "candidate:app/people-copy.mjs:8:3383",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3383,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194051,9 +194471,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3388",
+      "id": "candidate:app/people-copy.mjs:8:3388",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3388,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194071,9 +194491,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3426",
+      "id": "candidate:app/people-copy.mjs:8:3426",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3426,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194091,9 +194511,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3434",
+      "id": "candidate:app/people-copy.mjs:8:3434",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3434,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194111,9 +194531,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3442",
+      "id": "candidate:app/people-copy.mjs:8:3442",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3442,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194131,9 +194551,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3486",
+      "id": "candidate:app/people-copy.mjs:8:3486",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3486,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194151,9 +194571,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3496",
+      "id": "candidate:app/people-copy.mjs:8:3496",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3496,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194171,9 +194591,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3506",
+      "id": "candidate:app/people-copy.mjs:8:3506",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3506,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194191,9 +194611,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3555",
+      "id": "candidate:app/people-copy.mjs:8:3555",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3555,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194211,9 +194631,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3564",
+      "id": "candidate:app/people-copy.mjs:8:3564",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3564,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194231,9 +194651,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3573",
+      "id": "candidate:app/people-copy.mjs:8:3573",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3573,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194251,9 +194671,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3683",
+      "id": "candidate:app/people-copy.mjs:8:3683",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3683,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194271,9 +194691,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3722",
+      "id": "candidate:app/people-copy.mjs:8:3722",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3722,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194291,9 +194711,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3761",
+      "id": "candidate:app/people-copy.mjs:8:3761",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3761,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194311,9 +194731,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3868",
+      "id": "candidate:app/people-copy.mjs:8:3868",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3868,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194331,9 +194751,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3891",
+      "id": "candidate:app/people-copy.mjs:8:3891",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3891,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194351,9 +194771,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3914",
+      "id": "candidate:app/people-copy.mjs:8:3914",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3914,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194371,9 +194791,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:3984",
+      "id": "candidate:app/people-copy.mjs:8:3984",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 3984,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194391,9 +194811,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4002",
+      "id": "candidate:app/people-copy.mjs:8:4002",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4002,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194411,9 +194831,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4020",
+      "id": "candidate:app/people-copy.mjs:8:4020",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4020,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194431,9 +194851,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4068",
+      "id": "candidate:app/people-copy.mjs:8:4068",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4068,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194451,9 +194871,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4075",
+      "id": "candidate:app/people-copy.mjs:8:4075",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4075,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194471,9 +194891,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4082",
+      "id": "candidate:app/people-copy.mjs:8:4082",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4082,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194491,9 +194911,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4118",
+      "id": "candidate:app/people-copy.mjs:8:4118",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4118,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194511,9 +194931,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4129",
+      "id": "candidate:app/people-copy.mjs:8:4129",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4129,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194531,9 +194951,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4140",
+      "id": "candidate:app/people-copy.mjs:8:4140",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4140,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194551,9 +194971,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4193",
+      "id": "candidate:app/people-copy.mjs:8:4193",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4193,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194571,9 +194991,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4202",
+      "id": "candidate:app/people-copy.mjs:8:4202",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4202,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194591,9 +195011,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4211",
+      "id": "candidate:app/people-copy.mjs:8:4211",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4211,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194611,9 +195031,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4253",
+      "id": "candidate:app/people-copy.mjs:8:4253",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4253,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194631,9 +195051,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4261",
+      "id": "candidate:app/people-copy.mjs:8:4261",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4261,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194651,9 +195071,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4269",
+      "id": "candidate:app/people-copy.mjs:8:4269",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4269,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194671,9 +195091,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4332",
+      "id": "candidate:app/people-copy.mjs:8:4332",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4332,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194691,9 +195111,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4344",
+      "id": "candidate:app/people-copy.mjs:8:4344",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4344,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194711,9 +195131,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4356",
+      "id": "candidate:app/people-copy.mjs:8:4356",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4356,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194731,9 +195151,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4412",
+      "id": "candidate:app/people-copy.mjs:8:4412",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4412,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194751,9 +195171,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4419",
+      "id": "candidate:app/people-copy.mjs:8:4419",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4419,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194771,9 +195191,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4426",
+      "id": "candidate:app/people-copy.mjs:8:4426",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4426,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194791,9 +195211,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4450",
+      "id": "candidate:app/people-copy.mjs:8:4450",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4450,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194811,9 +195231,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4455",
+      "id": "candidate:app/people-copy.mjs:8:4455",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4455,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194831,9 +195251,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4460",
+      "id": "candidate:app/people-copy.mjs:8:4460",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4460,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194851,9 +195271,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4490",
+      "id": "candidate:app/people-copy.mjs:8:4490",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4490,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194871,9 +195291,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4497",
+      "id": "candidate:app/people-copy.mjs:8:4497",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4497,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194891,9 +195311,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4504",
+      "id": "candidate:app/people-copy.mjs:8:4504",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4504,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194911,9 +195331,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4539",
+      "id": "candidate:app/people-copy.mjs:8:4539",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4539,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194931,9 +195351,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4548",
+      "id": "candidate:app/people-copy.mjs:8:4548",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4548,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194951,9 +195371,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4557",
+      "id": "candidate:app/people-copy.mjs:8:4557",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4557,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194971,9 +195391,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4592",
+      "id": "candidate:app/people-copy.mjs:8:4592",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4592,
       "kind": "js-cjk-literal",
       "property": null,
@@ -194991,9 +195411,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4599",
+      "id": "candidate:app/people-copy.mjs:8:4599",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4599,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195011,9 +195431,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4606",
+      "id": "candidate:app/people-copy.mjs:8:4606",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4606,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195031,9 +195451,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4628",
+      "id": "candidate:app/people-copy.mjs:8:4628",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4628,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195051,9 +195471,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4633",
+      "id": "candidate:app/people-copy.mjs:8:4633",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4633,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195071,9 +195491,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4638",
+      "id": "candidate:app/people-copy.mjs:8:4638",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4638,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195091,9 +195511,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4674",
+      "id": "candidate:app/people-copy.mjs:8:4674",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4674,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195111,9 +195531,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4681",
+      "id": "candidate:app/people-copy.mjs:8:4681",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4681,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195131,9 +195551,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4688",
+      "id": "candidate:app/people-copy.mjs:8:4688",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4688,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195151,9 +195571,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4718",
+      "id": "candidate:app/people-copy.mjs:8:4718",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4718,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195171,9 +195591,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4725",
+      "id": "candidate:app/people-copy.mjs:8:4725",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4725,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195191,9 +195611,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4732",
+      "id": "candidate:app/people-copy.mjs:8:4732",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4732,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195211,9 +195631,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4751",
+      "id": "candidate:app/people-copy.mjs:8:4751",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4751,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195231,9 +195651,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4756",
+      "id": "candidate:app/people-copy.mjs:8:4756",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4756,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195251,9 +195671,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4761",
+      "id": "candidate:app/people-copy.mjs:8:4761",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4761,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195271,9 +195691,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4784",
+      "id": "candidate:app/people-copy.mjs:8:4784",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4784,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195291,9 +195711,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4789",
+      "id": "candidate:app/people-copy.mjs:8:4789",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4789,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195311,9 +195731,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4794",
+      "id": "candidate:app/people-copy.mjs:8:4794",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4794,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195331,9 +195751,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4818",
+      "id": "candidate:app/people-copy.mjs:8:4818",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4818,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195351,9 +195771,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4824",
+      "id": "candidate:app/people-copy.mjs:8:4824",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4824,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195371,9 +195791,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4830",
+      "id": "candidate:app/people-copy.mjs:8:4830",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4830,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195391,9 +195811,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4858",
+      "id": "candidate:app/people-copy.mjs:8:4858",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4858,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195411,9 +195831,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4866",
+      "id": "candidate:app/people-copy.mjs:8:4866",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4866,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195431,9 +195851,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4874",
+      "id": "candidate:app/people-copy.mjs:8:4874",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4874,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195451,9 +195871,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4909",
+      "id": "candidate:app/people-copy.mjs:8:4909",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4909,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195471,9 +195891,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4916",
+      "id": "candidate:app/people-copy.mjs:8:4916",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4916,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195491,9 +195911,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:4923",
+      "id": "candidate:app/people-copy.mjs:8:4923",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 4923,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195511,9 +195931,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5018",
+      "id": "candidate:app/people-copy.mjs:8:5018",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5018,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195531,9 +195951,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5032",
+      "id": "candidate:app/people-copy.mjs:8:5032",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5032,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195551,9 +195971,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5046",
+      "id": "candidate:app/people-copy.mjs:8:5046",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5046,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195571,9 +195991,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5111",
+      "id": "candidate:app/people-copy.mjs:8:5111",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5111,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195591,9 +196011,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5123",
+      "id": "candidate:app/people-copy.mjs:8:5123",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5123,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195611,9 +196031,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5135",
+      "id": "candidate:app/people-copy.mjs:8:5135",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5135,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195631,9 +196051,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5178",
+      "id": "candidate:app/people-copy.mjs:8:5178",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5178,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195651,9 +196071,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5185",
+      "id": "candidate:app/people-copy.mjs:8:5185",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5185,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195671,9 +196091,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5192",
+      "id": "candidate:app/people-copy.mjs:8:5192",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5192,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195691,9 +196111,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5235",
+      "id": "candidate:app/people-copy.mjs:8:5235",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5235,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195711,9 +196131,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5244",
+      "id": "candidate:app/people-copy.mjs:8:5244",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5244,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195731,9 +196151,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5253",
+      "id": "candidate:app/people-copy.mjs:8:5253",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5253,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195751,9 +196171,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5387",
+      "id": "candidate:app/people-copy.mjs:8:5387",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5387,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195771,9 +196191,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5428",
+      "id": "candidate:app/people-copy.mjs:8:5428",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5428,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195791,9 +196211,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5469",
+      "id": "candidate:app/people-copy.mjs:8:5469",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5469,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195811,9 +196231,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5560",
+      "id": "candidate:app/people-copy.mjs:8:5560",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5560,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195831,9 +196251,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5571",
+      "id": "candidate:app/people-copy.mjs:8:5571",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5571,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195851,9 +196271,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5582",
+      "id": "candidate:app/people-copy.mjs:8:5582",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5582,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195871,9 +196291,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5626",
+      "id": "candidate:app/people-copy.mjs:8:5626",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5626,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195891,9 +196311,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5633",
+      "id": "candidate:app/people-copy.mjs:8:5633",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5633,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195911,9 +196331,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5640",
+      "id": "candidate:app/people-copy.mjs:8:5640",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5640,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195931,9 +196351,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5670",
+      "id": "candidate:app/people-copy.mjs:8:5670",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5670,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195951,9 +196371,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5676",
+      "id": "candidate:app/people-copy.mjs:8:5676",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5676,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195971,9 +196391,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5682",
+      "id": "candidate:app/people-copy.mjs:8:5682",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5682,
       "kind": "js-cjk-literal",
       "property": null,
@@ -195991,9 +196411,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5789",
+      "id": "candidate:app/people-copy.mjs:8:5789",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5789,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196011,9 +196431,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5820",
+      "id": "candidate:app/people-copy.mjs:8:5820",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5820,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196031,9 +196451,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5851",
+      "id": "candidate:app/people-copy.mjs:8:5851",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5851,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196051,9 +196471,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5934",
+      "id": "candidate:app/people-copy.mjs:8:5934",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5934,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196071,9 +196491,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5945",
+      "id": "candidate:app/people-copy.mjs:8:5945",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5945,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196091,9 +196511,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5956",
+      "id": "candidate:app/people-copy.mjs:8:5956",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5956,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196111,9 +196531,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5984",
+      "id": "candidate:app/people-copy.mjs:8:5984",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5984,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196131,9 +196551,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5991",
+      "id": "candidate:app/people-copy.mjs:8:5991",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5991,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196151,9 +196571,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:5998",
+      "id": "candidate:app/people-copy.mjs:8:5998",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 5998,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196171,9 +196591,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6047",
+      "id": "candidate:app/people-copy.mjs:8:6047",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6047,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196191,9 +196611,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6059",
+      "id": "candidate:app/people-copy.mjs:8:6059",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6059,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196211,9 +196631,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6071",
+      "id": "candidate:app/people-copy.mjs:8:6071",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6071,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196231,9 +196651,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6202",
+      "id": "candidate:app/people-copy.mjs:8:6202",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6202,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196251,9 +196671,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6233",
+      "id": "candidate:app/people-copy.mjs:8:6233",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6233,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196271,9 +196691,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6264",
+      "id": "candidate:app/people-copy.mjs:8:6264",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6264,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196291,9 +196711,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6325",
+      "id": "candidate:app/people-copy.mjs:8:6325",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6325,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196311,9 +196731,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6331",
+      "id": "candidate:app/people-copy.mjs:8:6331",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6331,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196331,9 +196751,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6337",
+      "id": "candidate:app/people-copy.mjs:8:6337",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6337,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196351,9 +196771,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6373",
+      "id": "candidate:app/people-copy.mjs:8:6373",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6373,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196371,9 +196791,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6381",
+      "id": "candidate:app/people-copy.mjs:8:6381",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6381,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196391,9 +196811,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6389",
+      "id": "candidate:app/people-copy.mjs:8:6389",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6389,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196411,9 +196831,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6424",
+      "id": "candidate:app/people-copy.mjs:8:6424",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6424,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196431,9 +196851,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6429",
+      "id": "candidate:app/people-copy.mjs:8:6429",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6429,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196451,9 +196871,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6434",
+      "id": "candidate:app/people-copy.mjs:8:6434",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6434,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196471,9 +196891,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6457",
+      "id": "candidate:app/people-copy.mjs:8:6457",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6457,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196491,9 +196911,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6462",
+      "id": "candidate:app/people-copy.mjs:8:6462",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6462,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196511,9 +196931,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6467",
+      "id": "candidate:app/people-copy.mjs:8:6467",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6467,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196531,9 +196951,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6505",
+      "id": "candidate:app/people-copy.mjs:8:6505",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6505,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196551,9 +196971,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6519",
+      "id": "candidate:app/people-copy.mjs:8:6519",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6519,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196571,9 +196991,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6533",
+      "id": "candidate:app/people-copy.mjs:8:6533",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6533,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196591,9 +197011,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6571",
+      "id": "candidate:app/people-copy.mjs:8:6571",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6571,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196611,9 +197031,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6578",
+      "id": "candidate:app/people-copy.mjs:8:6578",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6578,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196631,9 +197051,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6585",
+      "id": "candidate:app/people-copy.mjs:8:6585",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6585,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196651,9 +197071,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6618",
+      "id": "candidate:app/people-copy.mjs:8:6618",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6618,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196671,9 +197091,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6626",
+      "id": "candidate:app/people-copy.mjs:8:6626",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6626,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196691,9 +197111,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6634",
+      "id": "candidate:app/people-copy.mjs:8:6634",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6634,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196711,9 +197131,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6690",
+      "id": "candidate:app/people-copy.mjs:8:6690",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6690,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196731,9 +197151,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6702",
+      "id": "candidate:app/people-copy.mjs:8:6702",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6702,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196751,9 +197171,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6714",
+      "id": "candidate:app/people-copy.mjs:8:6714",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6714,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196771,9 +197191,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6763",
+      "id": "candidate:app/people-copy.mjs:8:6763",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6763,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196791,9 +197211,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6772",
+      "id": "candidate:app/people-copy.mjs:8:6772",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6772,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196811,9 +197231,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6781",
+      "id": "candidate:app/people-copy.mjs:8:6781",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6781,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196831,9 +197251,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6861",
+      "id": "candidate:app/people-copy.mjs:8:6861",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6861,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196851,9 +197271,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6877",
+      "id": "candidate:app/people-copy.mjs:8:6877",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6877,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196871,9 +197291,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6893",
+      "id": "candidate:app/people-copy.mjs:8:6893",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6893,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196891,9 +197311,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6952",
+      "id": "candidate:app/people-copy.mjs:8:6952",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6952,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196911,9 +197331,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6962",
+      "id": "candidate:app/people-copy.mjs:8:6962",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6962,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196931,9 +197351,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:6972",
+      "id": "candidate:app/people-copy.mjs:8:6972",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 6972,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196951,9 +197371,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7029",
+      "id": "candidate:app/people-copy.mjs:8:7029",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7029,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196971,9 +197391,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7050",
+      "id": "candidate:app/people-copy.mjs:8:7050",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7050,
       "kind": "js-cjk-literal",
       "property": null,
@@ -196991,9 +197411,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7071",
+      "id": "candidate:app/people-copy.mjs:8:7071",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7071,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197011,9 +197431,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7124",
+      "id": "candidate:app/people-copy.mjs:8:7124",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7124,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197031,9 +197451,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7133",
+      "id": "candidate:app/people-copy.mjs:8:7133",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7133,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197051,9 +197471,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7142",
+      "id": "candidate:app/people-copy.mjs:8:7142",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7142,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197071,9 +197491,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7253",
+      "id": "candidate:app/people-copy.mjs:8:7253",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7253,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197091,9 +197511,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7287",
+      "id": "candidate:app/people-copy.mjs:8:7287",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7287,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197111,9 +197531,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7321",
+      "id": "candidate:app/people-copy.mjs:8:7321",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7321,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197131,9 +197551,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7389",
+      "id": "candidate:app/people-copy.mjs:8:7389",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7389,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197151,9 +197571,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7398",
+      "id": "candidate:app/people-copy.mjs:8:7398",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7398,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197171,9 +197591,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7407",
+      "id": "candidate:app/people-copy.mjs:8:7407",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7407,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197191,9 +197611,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7455",
+      "id": "candidate:app/people-copy.mjs:8:7455",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7455,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197211,9 +197631,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7465",
+      "id": "candidate:app/people-copy.mjs:8:7465",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7465,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197231,9 +197651,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7475",
+      "id": "candidate:app/people-copy.mjs:8:7475",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7475,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197251,9 +197671,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7529",
+      "id": "candidate:app/people-copy.mjs:8:7529",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7529,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197271,9 +197691,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7538",
+      "id": "candidate:app/people-copy.mjs:8:7538",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7538,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197291,9 +197711,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7547",
+      "id": "candidate:app/people-copy.mjs:8:7547",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7547,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197311,9 +197731,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7592",
+      "id": "candidate:app/people-copy.mjs:8:7592",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7592,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197331,9 +197751,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7601",
+      "id": "candidate:app/people-copy.mjs:8:7601",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7601,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197351,9 +197771,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7610",
+      "id": "candidate:app/people-copy.mjs:8:7610",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7610,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197371,9 +197791,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7655",
+      "id": "candidate:app/people-copy.mjs:8:7655",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7655,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197391,9 +197811,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7664",
+      "id": "candidate:app/people-copy.mjs:8:7664",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7664,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197411,9 +197831,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7673",
+      "id": "candidate:app/people-copy.mjs:8:7673",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7673,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197431,9 +197851,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7805",
+      "id": "candidate:app/people-copy.mjs:8:7805",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7805,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197451,9 +197871,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7854",
+      "id": "candidate:app/people-copy.mjs:8:7854",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7854,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197471,9 +197891,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7903",
+      "id": "candidate:app/people-copy.mjs:8:7903",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7903,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197491,9 +197911,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:7998",
+      "id": "candidate:app/people-copy.mjs:8:7998",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 7998,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197511,9 +197931,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8015",
+      "id": "candidate:app/people-copy.mjs:8:8015",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8015,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197531,9 +197951,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8032",
+      "id": "candidate:app/people-copy.mjs:8:8032",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8032,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197551,9 +197971,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8087",
+      "id": "candidate:app/people-copy.mjs:8:8087",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8087,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197571,9 +197991,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8094",
+      "id": "candidate:app/people-copy.mjs:8:8094",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8094,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197591,9 +198011,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8101",
+      "id": "candidate:app/people-copy.mjs:8:8101",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8101,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197611,9 +198031,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8216",
+      "id": "candidate:app/people-copy.mjs:8:8216",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8216,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197631,9 +198051,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8244",
+      "id": "candidate:app/people-copy.mjs:8:8244",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8244,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197651,9 +198071,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8272",
+      "id": "candidate:app/people-copy.mjs:8:8272",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8272,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197671,9 +198091,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8347",
+      "id": "candidate:app/people-copy.mjs:8:8347",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8347,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197691,9 +198111,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8357",
+      "id": "candidate:app/people-copy.mjs:8:8357",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8357,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197711,9 +198131,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8367",
+      "id": "candidate:app/people-copy.mjs:8:8367",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8367,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197731,9 +198151,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8415",
+      "id": "candidate:app/people-copy.mjs:8:8415",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8415,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197751,9 +198171,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8426",
+      "id": "candidate:app/people-copy.mjs:8:8426",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8426,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197771,9 +198191,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8437",
+      "id": "candidate:app/people-copy.mjs:8:8437",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8437,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197791,9 +198211,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8489",
+      "id": "candidate:app/people-copy.mjs:8:8489",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8489,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197811,9 +198231,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8496",
+      "id": "candidate:app/people-copy.mjs:8:8496",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8496,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197831,9 +198251,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8503",
+      "id": "candidate:app/people-copy.mjs:8:8503",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8503,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197851,9 +198271,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8543",
+      "id": "candidate:app/people-copy.mjs:8:8543",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8543,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197871,9 +198291,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8552",
+      "id": "candidate:app/people-copy.mjs:8:8552",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8552,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197891,9 +198311,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8561",
+      "id": "candidate:app/people-copy.mjs:8:8561",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8561,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197911,9 +198331,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8657",
+      "id": "candidate:app/people-copy.mjs:8:8657",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8657,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197931,9 +198351,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8675",
+      "id": "candidate:app/people-copy.mjs:8:8675",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8675,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197951,9 +198371,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8693",
+      "id": "candidate:app/people-copy.mjs:8:8693",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8693,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197971,9 +198391,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8764",
+      "id": "candidate:app/people-copy.mjs:8:8764",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8764,
       "kind": "js-cjk-literal",
       "property": null,
@@ -197991,9 +198411,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8776",
+      "id": "candidate:app/people-copy.mjs:8:8776",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8776,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198011,9 +198431,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8788",
+      "id": "candidate:app/people-copy.mjs:8:8788",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8788,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198031,9 +198451,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8838",
+      "id": "candidate:app/people-copy.mjs:8:8838",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8838,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198051,9 +198471,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8853",
+      "id": "candidate:app/people-copy.mjs:8:8853",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8853,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198071,9 +198491,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8868",
+      "id": "candidate:app/people-copy.mjs:8:8868",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8868,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198091,9 +198511,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8911",
+      "id": "candidate:app/people-copy.mjs:8:8911",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8911,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198111,9 +198531,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8925",
+      "id": "candidate:app/people-copy.mjs:8:8925",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8925,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198131,9 +198551,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8939",
+      "id": "candidate:app/people-copy.mjs:8:8939",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8939,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198151,9 +198571,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8988",
+      "id": "candidate:app/people-copy.mjs:8:8988",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8988,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198171,9 +198591,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:8997",
+      "id": "candidate:app/people-copy.mjs:8:8997",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 8997,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198191,9 +198611,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9006",
+      "id": "candidate:app/people-copy.mjs:8:9006",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9006,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198211,9 +198631,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9121",
+      "id": "candidate:app/people-copy.mjs:8:9121",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9121,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198231,9 +198651,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9143",
+      "id": "candidate:app/people-copy.mjs:8:9143",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9143,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198251,9 +198671,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9165",
+      "id": "candidate:app/people-copy.mjs:8:9165",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9165,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198271,9 +198691,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9255",
+      "id": "candidate:app/people-copy.mjs:8:9255",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9255,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198291,9 +198711,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9270",
+      "id": "candidate:app/people-copy.mjs:8:9270",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9270,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198311,9 +198731,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9285",
+      "id": "candidate:app/people-copy.mjs:8:9285",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9285,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198331,9 +198751,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9327",
+      "id": "candidate:app/people-copy.mjs:8:9327",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9327,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198351,9 +198771,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9334",
+      "id": "candidate:app/people-copy.mjs:8:9334",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9334,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198371,9 +198791,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9341",
+      "id": "candidate:app/people-copy.mjs:8:9341",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9341,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198391,9 +198811,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9394",
+      "id": "candidate:app/people-copy.mjs:8:9394",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9394,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198411,9 +198831,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9406",
+      "id": "candidate:app/people-copy.mjs:8:9406",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9406,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198431,9 +198851,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9418",
+      "id": "candidate:app/people-copy.mjs:8:9418",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9418,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198451,9 +198871,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9471",
+      "id": "candidate:app/people-copy.mjs:8:9471",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9471,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198471,9 +198891,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9483",
+      "id": "candidate:app/people-copy.mjs:8:9483",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9483,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198491,9 +198911,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9495",
+      "id": "candidate:app/people-copy.mjs:8:9495",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9495,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198511,9 +198931,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9545",
+      "id": "candidate:app/people-copy.mjs:8:9545",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9545,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198531,9 +198951,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9554",
+      "id": "candidate:app/people-copy.mjs:8:9554",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9554,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198551,9 +198971,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9563",
+      "id": "candidate:app/people-copy.mjs:8:9563",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9563,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198571,9 +198991,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9609",
+      "id": "candidate:app/people-copy.mjs:8:9609",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9609,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198591,9 +199011,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9635",
+      "id": "candidate:app/people-copy.mjs:8:9635",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9635,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198611,9 +199031,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9661",
+      "id": "candidate:app/people-copy.mjs:8:9661",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9661,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198631,9 +199051,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9712",
+      "id": "candidate:app/people-copy.mjs:8:9712",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9712,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198651,9 +199071,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9718",
+      "id": "candidate:app/people-copy.mjs:8:9718",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9718,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198671,9 +199091,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9724",
+      "id": "candidate:app/people-copy.mjs:8:9724",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9724,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198691,9 +199111,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9760",
+      "id": "candidate:app/people-copy.mjs:8:9760",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9760,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198711,9 +199131,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9766",
+      "id": "candidate:app/people-copy.mjs:8:9766",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9766,
       "kind": "js-cjk-literal",
       "property": null,
@@ -198731,9 +199151,9 @@
       }
     },
     {
-      "id": "candidate:app/people-copy.mjs:5:9772",
+      "id": "candidate:app/people-copy.mjs:8:9772",
       "file": "app/people-copy.mjs",
-      "line": 5,
+      "line": 8,
       "column": 9772,
       "kind": "js-cjk-literal",
       "property": null,
@@ -199331,10 +199751,10 @@
       }
     },
     {
-      "id": "candidate:app/people.mjs:63:2017",
+      "id": "candidate:app/people.mjs:63:2006",
       "file": "app/people.mjs",
       "line": 63,
-      "column": 2017,
+      "column": 2006,
       "kind": "js-dom-literal",
       "property": "textContent",
       "value": "←",
@@ -199351,10 +199771,10 @@
       }
     },
     {
-      "id": "candidate:app/people.mjs:63:2089",
+      "id": "candidate:app/people.mjs:63:2078",
       "file": "app/people.mjs",
       "line": 63,
-      "column": 2089,
+      "column": 2078,
       "kind": "js-dom-literal",
       "property": "textContent",
       "value": "→",
@@ -252392,7 +252812,7 @@
     {
       "kind": "concatenation",
       "file": "app/people-copy.mjs",
-      "line": 9,
+      "line": 12,
       "expression": "'People copy parity: '+key",
       "fragments": [
         "People copy parity: "
@@ -252402,7 +252822,7 @@
     {
       "kind": "computed-member",
       "file": "app/people-copy.mjs",
-      "line": 9,
+      "line": 12,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -252410,7 +252830,7 @@
     {
       "kind": "computed-member",
       "file": "app/people-copy.mjs",
-      "line": 12,
+      "line": 15,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -252418,7 +252838,7 @@
     {
       "kind": "computed-member",
       "file": "app/people-copy.mjs",
-      "line": 12,
+      "line": 15,
       "expression": "locale",
       "fragments": [],
       "unresolved": true
@@ -252426,7 +252846,7 @@
     {
       "kind": "computed-member",
       "file": "app/people-copy.mjs",
-      "line": 12,
+      "line": 15,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -252434,7 +252854,7 @@
     {
       "kind": "concatenation",
       "file": "app/people-copy.mjs",
-      "line": 12,
+      "line": 15,
       "expression": "'Unknown person copy '+key",
       "fragments": [
         "Unknown person copy "
@@ -252444,7 +252864,7 @@
     {
       "kind": "computed-member",
       "file": "app/people-copy.mjs",
-      "line": 12,
+      "line": 15,
       "expression": "name",
       "fragments": [],
       "unresolved": true
@@ -252452,7 +252872,7 @@
     {
       "kind": "computed-member",
       "file": "app/people-copy.mjs",
-      "line": 12,
+      "line": 15,
       "expression": "name",
       "fragments": [],
       "unresolved": true
@@ -252460,7 +252880,7 @@
     {
       "kind": "computed-member",
       "file": "app/people-copy.mjs",
-      "line": 13,
+      "line": 16,
       "expression": "locale",
       "fragments": [],
       "unresolved": true
@@ -252468,7 +252888,7 @@
     {
       "kind": "computed-member",
       "file": "app/people-copy.mjs",
-      "line": 13,
+      "line": 16,
       "expression": "locale",
       "fragments": [],
       "unresolved": true
@@ -252476,7 +252896,7 @@
     {
       "kind": "computed-member",
       "file": "app/people-copy.mjs",
-      "line": 13,
+      "line": 16,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -252484,7 +252904,7 @@
     {
       "kind": "computed-member",
       "file": "app/people-copy.mjs",
-      "line": 13,
+      "line": 16,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -252492,7 +252912,7 @@
     {
       "kind": "computed-member",
       "file": "app/people-copy.mjs",
-      "line": 13,
+      "line": 16,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -252921,16 +253341,6 @@
       "kind": "concatenation",
       "file": "app/people.mjs",
       "line": 63,
-      "expression": "'https://leafhour.com'+location.pathname",
-      "fragments": [
-        "https://leafhour.com"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "app/people.mjs",
-      "line": 63,
       "expression": "'/api/people/'+person.id+'/preview'",
       "fragments": [
         "/api/people/",
@@ -252952,9 +253362,9 @@
       "kind": "concatenation",
       "file": "app/people.mjs",
       "line": 63,
-      "expression": "'https://leafhour.com/people/'+person.id",
+      "expression": "location.origin+'/people/'",
       "fragments": [
-        "https://leafhour.com/people/"
+        "/people/"
       ],
       "unresolved": true
     },
@@ -253109,9 +253519,9 @@
       "kind": "concatenation",
       "file": "app/people.mjs",
       "line": 63,
-      "expression": "'https://leafhour.com/p/'+publishedId",
+      "expression": "location.origin+'/p/'",
       "fragments": [
-        "https://leafhour.com/p/"
+        "/p/"
       ],
       "unresolved": true
     },
@@ -253139,7 +253549,17 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 66,
+      "line": 64,
+      "expression": "location.origin+'/api/people/mcp'",
+      "fragments": [
+        "/api/people/mcp"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "app/people.mjs",
+      "line": 67,
       "expression": "'/api/people/'+person.id+'/shares'",
       "fragments": [
         "/api/people/",
@@ -253150,7 +253570,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 66,
+      "line": 67,
       "expression": "'/api/people/'+person.id",
       "fragments": [
         "/api/people/"
@@ -253160,7 +253580,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 66,
+      "line": 67,
       "expression": "'/api/people/'+person.id+'/revoke'",
       "fragments": [
         "/api/people/",
@@ -253171,7 +253591,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 66,
+      "line": 67,
       "expression": "'/api/people/'+person.id",
       "fragments": [
         "/api/people/"
@@ -253181,7 +253601,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 68,
+      "line": 69,
       "expression": "'/api/people/'+person.id+'/generation/'+taskId+'/cancel'",
       "fragments": [
         "/api/people/",
@@ -253193,7 +253613,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 68,
+      "line": 69,
       "expression": "'/api/people/'+person.id+'/generation/'",
       "fragments": [
         "/api/people/",
@@ -253204,7 +253624,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 68,
+      "line": 69,
       "expression": "'/api/people/'+person.id",
       "fragments": [
         "/api/people/"
@@ -253214,7 +253634,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 68,
+      "line": 69,
       "expression": "'/api/people/'+person.id+'/generation/cancel-preparation'",
       "fragments": [
         "/api/people/",
@@ -253225,7 +253645,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 68,
+      "line": 69,
       "expression": "'/api/people/'+person.id",
       "fragments": [
         "/api/people/"
@@ -253235,7 +253655,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 68,
+      "line": 69,
       "expression": "'/api/people/'+person.id+'/prepare-generation'",
       "fragments": [
         "/api/people/",
@@ -253246,7 +253666,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 68,
+      "line": 69,
       "expression": "'/api/people/'+person.id",
       "fragments": [
         "/api/people/"
@@ -253256,7 +253676,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 68,
+      "line": 69,
       "expression": "'/api/people/'+person.id+'/generate'",
       "fragments": [
         "/api/people/",
@@ -253267,7 +253687,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 68,
+      "line": 69,
       "expression": "'/api/people/'+person.id",
       "fragments": [
         "/api/people/"
@@ -253277,7 +253697,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 68,
+      "line": 69,
       "expression": "'/api/people/'+person.id",
       "fragments": [
         "/api/people/"
@@ -253287,7 +253707,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 68,
+      "line": 69,
       "expression": "'/api/people/'+person.id+'/generation/'",
       "fragments": [
         "/api/people/",
@@ -253298,7 +253718,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 68,
+      "line": 69,
       "expression": "'/api/people/'+person.id",
       "fragments": [
         "/api/people/"
@@ -253308,7 +253728,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 69,
+      "line": 70,
       "expression": "'/api/people/shares/'+personId",
       "fragments": [
         "/api/people/shares/"
@@ -253318,7 +253738,7 @@
     {
       "kind": "concatenation",
       "file": "app/people.mjs",
-      "line": 69,
+      "line": 70,
       "expression": "'/api/people/'+personId",
       "fragments": [
         "/api/people/"
@@ -253491,7 +253911,7 @@
     {
       "kind": "concatenation",
       "file": "app/person-model.mjs",
-      "line": 18,
+      "line": 19,
       "expression": "'Invalid '+label",
       "fragments": [
         "Invalid "
@@ -253501,7 +253921,7 @@
     {
       "kind": "concatenation",
       "file": "app/person-model.mjs",
-      "line": 18,
+      "line": 19,
       "expression": "'Invalid public '+label",
       "fragments": [
         "Invalid public "
@@ -253511,7 +253931,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 21,
+      "line": 22,
       "expression": "section",
       "fragments": [],
       "unresolved": true
@@ -253519,7 +253939,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 23,
+      "line": 24,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -253527,7 +253947,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 23,
+      "line": 24,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -253535,7 +253955,7 @@
     {
       "kind": "concatenation",
       "file": "app/person-model.mjs",
-      "line": 23,
+      "line": 24,
       "expression": "'period '+k",
       "fragments": [
         "period "
@@ -253545,7 +253965,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 29,
+      "line": 30,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -253553,7 +253973,7 @@
     {
       "kind": "concatenation",
       "file": "app/person-model.mjs",
-      "line": 29,
+      "line": 30,
       "expression": "'source '+k",
       "fragments": [
         "source "
@@ -253563,7 +253983,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 31,
+      "line": 32,
       "expression": "section",
       "fragments": [],
       "unresolved": true
@@ -253571,7 +253991,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 46,
+      "line": 47,
       "expression": "k",
       "fragments": [],
       "unresolved": true
@@ -253579,7 +253999,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 54,
+      "line": 55,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -253587,7 +254007,7 @@
     {
       "kind": "concatenation",
       "file": "app/person-model.mjs",
-      "line": 54,
+      "line": 55,
       "expression": "locale+': '",
       "fragments": [
         ": "
@@ -253597,7 +254017,7 @@
     {
       "kind": "concatenation",
       "file": "app/person-model.mjs",
-      "line": 55,
+      "line": 56,
       "expression": "'pending-'+fingerprint",
       "fragments": [
         "pending-"
@@ -253607,7 +254027,7 @@
     {
       "kind": "concatenation",
       "file": "app/person-model.mjs",
-      "line": 55,
+      "line": 56,
       "expression": "'pending-'+fingerprint+'-'",
       "fragments": [
         "pending-",
@@ -253618,7 +254038,7 @@
     {
       "kind": "concatenation",
       "file": "app/person-model.mjs",
-      "line": 55,
+      "line": 56,
       "expression": "'pending-'+fingerprint",
       "fragments": [
         "pending-"
@@ -253628,7 +254048,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 56,
+      "line": 57,
       "expression": "section",
       "fragments": [],
       "unresolved": true
@@ -253636,7 +254056,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 56,
+      "line": 57,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -253644,7 +254064,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 56,
+      "line": 57,
       "expression": "section",
       "fragments": [],
       "unresolved": true
@@ -253652,47 +254072,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 56,
-      "expression": "key",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "app/person-model.mjs",
-      "line": 56,
-      "expression": "key",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "app/person-model.mjs",
-      "line": 56,
-      "expression": "key",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "app/person-model.mjs",
-      "line": 56,
-      "expression": "key",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "app/person-model.mjs",
-      "line": 56,
-      "expression": "key",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "app/person-model.mjs",
-      "line": 56,
+      "line": 57,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -253701,6 +254081,46 @@
       "kind": "computed-member",
       "file": "app/person-model.mjs",
       "line": 57,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/person-model.mjs",
+      "line": 57,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/person-model.mjs",
+      "line": 57,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/person-model.mjs",
+      "line": 57,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/person-model.mjs",
+      "line": 57,
+      "expression": "key",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "app/person-model.mjs",
+      "line": 58,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -253708,7 +254128,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 57,
+      "line": 58,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -253716,7 +254136,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 57,
+      "line": 58,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -253724,7 +254144,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 57,
+      "line": 58,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -253732,7 +254152,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 57,
+      "line": 58,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -253740,7 +254160,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-model.mjs",
-      "line": 57,
+      "line": 58,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -253815,7 +254235,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-share.mjs",
-      "line": 16,
+      "line": 17,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -253823,7 +254243,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-share.mjs",
-      "line": 19,
+      "line": 20,
       "expression": "end",
       "fragments": [],
       "unresolved": true
@@ -253831,17 +254251,17 @@
     {
       "kind": "concatenation",
       "file": "app/person-share.mjs",
-      "line": 25,
-      "expression": "'https://leafhour.com/people/'+person.id",
+      "line": 26,
+      "expression": "publicOrigin+'/people/'",
       "fragments": [
-        "https://leafhour.com/people/"
+        "/people/"
       ],
       "unresolved": true
     },
     {
       "kind": "template",
       "file": "app/person-share.mjs",
-      "line": 39,
+      "line": 40,
       "expression": "`${size}px ${family}`",
       "fragments": [
         "px "
@@ -253851,7 +254271,7 @@
     {
       "kind": "template",
       "file": "app/person-share.mjs",
-      "line": 41,
+      "line": 42,
       "expression": "`${page.nameSize}px ${family}`",
       "fragments": [
         "px "
@@ -253861,7 +254281,7 @@
     {
       "kind": "computed-member",
       "file": "app/person-share.mjs",
-      "line": 41,
+      "line": 42,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -253869,7 +254289,7 @@
     {
       "kind": "template",
       "file": "app/person-share.mjs",
-      "line": 42,
+      "line": 43,
       "expression": "`27px ${family}`",
       "fragments": [
         "27px "
@@ -253879,7 +254299,7 @@
     {
       "kind": "concatenation",
       "file": "app/person-share.mjs",
-      "line": 44,
+      "line": 45,
       "expression": "personCopy(options.locale||'en','original')+' · '",
       "fragments": [
         " · "
@@ -253889,7 +254309,7 @@
     {
       "kind": "template",
       "file": "app/person-share.mjs",
-      "line": 45,
+      "line": 46,
       "expression": "`${page.size}px ${family}`",
       "fragments": [
         "px "
@@ -253899,7 +254319,7 @@
     {
       "kind": "template",
       "file": "app/person-share.mjs",
-      "line": 46,
+      "line": 47,
       "expression": "`22px ${family}`",
       "fragments": [
         "22px "
@@ -253909,7 +254329,7 @@
     {
       "kind": "template",
       "file": "app/person-share.mjs",
-      "line": 46,
+      "line": 47,
       "expression": "`${size}px ${family}`",
       "fragments": [
         "px "
@@ -253919,7 +254339,7 @@
     {
       "kind": "template",
       "file": "app/person-share.mjs",
-      "line": 47,
+      "line": 48,
       "expression": "`${index+1} / ${result.pages.length}`",
       "fragments": [
         " / "
@@ -268789,7 +269209,7 @@
     {
       "kind": "computed-member",
       "file": "server/mcp-http.mjs",
-      "line": 105,
+      "line": 106,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -268797,7 +269217,7 @@
     {
       "kind": "concatenation",
       "file": "server/mcp-http.mjs",
-      "line": 106,
+      "line": 107,
       "expression": "'mcp:'+token",
       "fragments": [
         "mcp:"
@@ -268807,11 +269227,12 @@
     {
       "kind": "template",
       "file": "server/mcp-http.mjs",
-      "line": 114,
-      "expression": "`Bearer resource_metadata=\"${origin}/.well-known/oauth-protected-resource/api/mcp\"${peopleGrants?'':', scope=\"content\"'}, error=\"invalid_token\"`",
+      "line": 115,
+      "expression": "`Bearer resource_metadata=\"${origin}/.well-known/oauth-protected-resource${p==='/api/people/mcp'?'/api/people/mcp':'/api/mcp'}\"${p==='/api/people/mcp'?'':', sco",
       "fragments": [
         "Bearer resource_metadata=\"",
-        "/.well-known/oauth-protected-resource/api/mcp\"",
+        "/.well-known/oauth-protected-resource",
+        "\"",
         ", error=\"invalid_token\""
       ],
       "unresolved": true
@@ -268831,6 +269252,16 @@
       "expression": "origin+'/api/mcp'",
       "fragments": [
         "/api/mcp"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/mcp-oauth.mjs",
+      "line": 27,
+      "expression": "origin+'/api/people/mcp'",
+      "fragments": [
+        "/api/people/mcp"
       ],
       "unresolved": true
     },
@@ -269939,7 +270370,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 79,
+      "line": 82,
       "expression": "input.taskId",
       "fragments": [],
       "unresolved": true
@@ -269947,7 +270378,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 79,
+      "line": 82,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -269955,63 +270386,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 79,
-      "expression": "id",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/people-service.mjs",
-      "line": 81,
-      "expression": "owner",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/people-service.mjs",
-      "line": 81,
-      "expression": "owner",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/people-service.mjs",
       "line": 82,
-      "expression": "options.section",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/people-service.mjs",
-      "line": 82,
-      "expression": "options.section",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/people-service.mjs",
-      "line": 83,
-      "expression": "person.id",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/people-service.mjs",
-      "line": 83,
-      "expression": "person.id",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/people-service.mjs",
-      "line": 84,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -270020,6 +270395,54 @@
       "kind": "computed-member",
       "file": "server/people-service.mjs",
       "line": 84,
+      "expression": "owner",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/people-service.mjs",
+      "line": 84,
+      "expression": "owner",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/people-service.mjs",
+      "line": 85,
+      "expression": "options.section",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/people-service.mjs",
+      "line": 85,
+      "expression": "options.section",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/people-service.mjs",
+      "line": 86,
+      "expression": "person.id",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/people-service.mjs",
+      "line": 86,
+      "expression": "person.id",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/people-service.mjs",
+      "line": 87,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -270027,15 +270450,15 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 88,
-      "expression": "identityKey",
+      "line": 87,
+      "expression": "id",
       "fragments": [],
       "unresolved": true
     },
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 88,
+      "line": 91,
       "expression": "identityKey",
       "fragments": [],
       "unresolved": true
@@ -270044,6 +270467,14 @@
       "kind": "computed-member",
       "file": "server/people-service.mjs",
       "line": 91,
+      "expression": "identityKey",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/people-service.mjs",
+      "line": 94,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -270051,7 +270482,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 91,
+      "line": 94,
       "expression": "section",
       "fragments": [],
       "unresolved": true
@@ -270059,7 +270490,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 91,
+      "line": 94,
       "expression": "identityKey",
       "fragments": [],
       "unresolved": true
@@ -270067,7 +270498,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 91,
+      "line": 94,
       "expression": "section",
       "fragments": [],
       "unresolved": true
@@ -270075,7 +270506,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 91,
+      "line": 94,
       "expression": "identityKey",
       "fragments": [],
       "unresolved": true
@@ -270083,7 +270514,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 91,
+      "line": 94,
       "expression": "identityKey",
       "fragments": [],
       "unresolved": true
@@ -270091,7 +270522,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 92,
+      "line": 95,
       "expression": "identityKey",
       "fragments": [],
       "unresolved": true
@@ -270099,7 +270530,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 92,
+      "line": 95,
       "expression": "identityKey",
       "fragments": [],
       "unresolved": true
@@ -270107,7 +270538,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 92,
+      "line": 95,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -270115,7 +270546,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 92,
+      "line": 95,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -270123,7 +270554,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 92,
+      "line": 95,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -270131,7 +270562,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 92,
+      "line": 95,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -270139,7 +270570,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 92,
+      "line": 95,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -270147,7 +270578,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 92,
+      "line": 95,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -270155,7 +270586,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 92,
+      "line": 95,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -270163,7 +270594,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 92,
+      "line": 95,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -270171,7 +270602,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 92,
+      "line": 95,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -270179,7 +270610,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 92,
+      "line": 95,
       "expression": "field",
       "fragments": [],
       "unresolved": true
@@ -270187,7 +270618,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 92,
+      "line": 95,
       "expression": "index",
       "fragments": [],
       "unresolved": true
@@ -270195,14 +270626,6 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 93,
-      "expression": "id",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/people-service.mjs",
       "line": 96,
       "expression": "id",
       "fragments": [],
@@ -270211,7 +270634,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 96,
+      "line": 99,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -270219,7 +270642,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 96,
+      "line": 99,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -270227,7 +270650,7 @@
     {
       "kind": "computed-member",
       "file": "server/people-service.mjs",
-      "line": 97,
+      "line": 99,
       "expression": "id",
       "fragments": [],
       "unresolved": true
@@ -270237,42 +270660,6 @@
       "file": "server/people-service.mjs",
       "line": 100,
       "expression": "id",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/people-service.mjs",
-      "line": 100,
-      "expression": "shareId",
-      "fragments": [],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/people-service.mjs",
-      "line": 100,
-      "expression": "'/p/'+shareId",
-      "fragments": [
-        "/p/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/people-service.mjs",
-      "line": 101,
-      "expression": "'/p/'+shareId",
-      "fragments": [
-        "/p/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "computed-member",
-      "file": "server/people-service.mjs",
-      "line": 102,
-      "expression": "shareId",
       "fragments": [],
       "unresolved": true
     },
@@ -270280,6 +270667,50 @@
       "kind": "computed-member",
       "file": "server/people-service.mjs",
       "line": 103,
+      "expression": "id",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/people-service.mjs",
+      "line": 103,
+      "expression": "shareId",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/people-service.mjs",
+      "line": 103,
+      "expression": "'/p/'+shareId",
+      "fragments": [
+        "/p/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/people-service.mjs",
+      "line": 104,
+      "expression": "'/p/'+shareId",
+      "fragments": [
+        "/p/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/people-service.mjs",
+      "line": 105,
+      "expression": "shareId",
+      "fragments": [],
+      "unresolved": true
+    },
+    {
+      "kind": "computed-member",
+      "file": "server/people-service.mjs",
+      "line": 106,
       "expression": "shareId",
       "fragments": [],
       "unresolved": true
@@ -273781,11 +274212,11 @@
     "duplicateKeys": 0,
     "reviewedItems": 14,
     "unreviewedItems": 2213,
-    "candidates": 5373,
-    "candidatesUnreviewed": 5370,
+    "candidates": 5394,
+    "candidatesUnreviewed": 5391,
     "candidatesProtected": 132,
     "itemsProtected": 9,
-    "dynamicConsumers": 3511,
+    "dynamicConsumers": 3512,
     "consumerReferences": 1614,
     "keysWithoutStaticConsumers": 1200,
     "reviewedLocaleValues": 56,

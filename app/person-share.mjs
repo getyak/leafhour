@@ -1,10 +1,11 @@
 import {personCopy} from './people-copy.mjs';
 export const displayPersonLocator=value=>String(value||'').split(/;\s*(?:bookId|chapterId|passageId|catalogSha256)=/)[0];
 const language=(map,locale)=>typeof map==='string'?map:map?.[locale]||map?.en||Object.values(map||{}).find(v=>typeof v==='string')||'';
-export function publicPersonShare(person,{excerptId,locale='en',publicUrl,previewOnly=false}={}){
+export function publicPersonShare(person,{excerptId,locale='en',publicUrl,publicOrigin='https://leafhour.com',previewOnly=false}={}){
   if(person?.visibility!=='public')return null;
+  let configuredOrigin;try{const configured=new URL(publicOrigin);if(!['http:','https:'].includes(configured.protocol)||configured.username||configured.password) return null;configuredOrigin=configured.origin;}catch{return null;}
   let url;try{url=new URL(publicUrl);}catch{if(!previewOnly)return null;url=null;}
-  if(url&&(url.origin!=='https://leafhour.com'||!/^\/(?:people|p)\/[A-Za-z0-9_-]+$/.test(url.pathname)||[...url.searchParams.keys()].some(k=>!['ui','work'].includes(k))))return null;
+  if(url&&(url.origin!==configuredOrigin||url.username||url.password||url.hash||!/^\/(?:people|p)\/[A-Za-z0-9_-]+$/.test(url.pathname)||[...url.searchParams.keys()].some(k=>!['ui','work'].includes(k))))return null;
   if(url){for(const key of ['ui','work'])if(url.searchParams.getAll(key).length>1)return null;const ui=url.searchParams.get('ui'),work=url.searchParams.get('work');if(ui&&!['en','zh-Hans','zh-Hant','ja'].includes(ui)||work&&!person.works?.some(item=>item.id===work))return null;}
   const excerpt=excerptId?person.excerpts?.find(item=>item.id===excerptId):null;if(excerptId&&!excerpt)return null;
   const work=person.works?.find(item=>item.id===excerpt?.workId);
@@ -21,8 +22,8 @@ export function wrapShareText(text,{width,size,measure}){
   }
   return lines;
 }
-export function layoutPersonShare({person,excerpt=null,locale='en',ratio='portrait',measure=(text,size)=>[...text].length*size*.56,publicUrl,previewOnly=false,includePortrait=false}={}){
-  const data=publicPersonShare(person,{excerptId:excerpt?.id,locale,publicUrl:previewOnly?null:publicUrl||'https://leafhour.com/people/'+person.id,previewOnly});if(!data)throw Error('Invalid public share');
+export function layoutPersonShare({person,excerpt=null,locale='en',ratio='portrait',measure=(text,size)=>[...text].length*size*.56,publicUrl,publicOrigin='https://leafhour.com',previewOnly=false,includePortrait=false}={}){
+  const data=publicPersonShare(person,{excerptId:excerpt?.id,locale,publicUrl:previewOnly?null:publicUrl||publicOrigin+'/people/'+person.id,publicOrigin,previewOnly});if(!data)throw Error('Invalid public share');
   const width=1080,height=ratio==='square'?1080:1440,padding=72;
   let nameSize=76,nameLines=wrapShareText(data.name,{width:width-padding*2,size:nameSize,measure});while(nameLines.length>3&&nameSize>24){nameSize-=4;nameLines=wrapShareText(data.name,{width:width-padding*2,size:nameSize,measure});}
   const nameHeight=nameLines.length*nameSize*1.1,baseTop=Math.ceil(152+nameHeight+(data.originalName!==data.name?45:0)+50),portrait=includePortrait?{x:padding,y:baseTop,width:width-padding*2,height:ratio==='square'?210:420}:null,bodyTop=baseTop+(portrait?portrait.height+38:0),bodyBottom=height-154,size=42,lineHeight=65;

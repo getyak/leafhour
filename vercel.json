@@ -198,6 +198,10 @@
   },
   "rewrites": [
     {
+      "source": "/.well-known/oauth-protected-resource/api/people/mcp",
+      "destination": "/api/service?path=mcp/people-metadata"
+    },
+    {
       "source": "/people/:id",
       "destination": "/people"
     },

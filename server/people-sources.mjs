@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import {lookup as dnsLookup} from 'node:dns/promises';
 import https from 'node:https';
 import net from 'node:net';
-import {validatePersonRecord} from '../app/person-model.mjs';
+import {validatePersonRecord,personUrlHasCredentials} from '../app/person-model.mjs';
 const project=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 export const PEOPLE_SOURCE_HOSTS=Object.freeze(['www.gutenberg.org','gutenberg.net.au','virginiawoolfsociety.org.uk','www.smith.edu','libraries.smith.edu','www.kcl.ac.uk','www.chilterns.org.uk','hsm.ox.ac.uk','api.pageplace.de','www.nlm.nih.gov','www.themorgan.org','www.npg.org.uk','commons.wikimedia.org','www.simonandschuster.com','www.legacy.com','catalog.mercyhurst.edu','www.wikidata.org','openlibrary.org']);
 const fail=message=>Object.assign(new Error(message),{status:400,code:'INVALID_SOURCE'});
@@ -16,7 +16,7 @@ export function isPublicAddress(address){
  // Only global-unicast IPv6; reject transition, documentation and special-use ranges.
  return /^[23][0-9a-f]{0,3}:/.test(a)&&!a.startsWith('2001:db8:')&&!a.startsWith('2001:0:')&&!a.startsWith('2001::')&&!a.startsWith('2002:');
 }
-function sourceUrl(value,allowedHosts){let url;try{url=new URL(value);}catch{throw fail('Invalid source URL');}if(url.protocol!=='https:'||url.username||url.password||url.port&&url.port!=='443'||url.hash||!allowedHosts.has(url.hostname)||net.isIP(url.hostname))throw fail('Source host is not allowed');return url;}
+function sourceUrl(value,allowedHosts){let url;try{url=new URL(value);}catch{throw fail('Invalid source URL');}if(personUrlHasCredentials(value)||url.protocol!=='https:'||url.username||url.password||url.port&&url.port!=='443'||url.hash||!allowedHosts.has(url.hostname)||net.isIP(url.hostname))throw fail('Source host is not allowed');return url;}
 async function addresses(url,lookup){const rows=await lookup(url.hostname,{all:true,verbatim:true});if(!Array.isArray(rows)||!rows.length||rows.some(row=>!isPublicAddress(row.address)))throw fail('Source must resolve only to public addresses');return rows;}
 // Pin the verified DNS answer to the TLS request so a DNS rebind cannot bypass validation.
 async function secureFetch(url,{signal,addresses:rows}){return new Promise((resolve,reject)=>{

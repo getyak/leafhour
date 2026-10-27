@@ -24,19 +24,19 @@ export function createMcpOAuth({origin,store,library,peopleGrants=null,clock=Dat
  const scopesSupported=peopleGrants?[...MCP_READING_SCOPES,...PEOPLE_SCOPES]:MCP_READING_SCOPES;
  const scopesOf=value=>{if(typeof value!=='string')throw failure('invalid_scope');if(!value.split(' ').some(s=>s.startsWith('people:')))return readingScopes(value);const scopes=value.split(' ');if(!peopleGrants||!scopes.includes('people:read')||new Set(scopes).size!==scopes.length||scopes.some(s=>!PEOPLE_SCOPES.includes(s)))throw failure('invalid_scope');return PEOPLE_SCOPES.filter(s=>scopes.includes(s));};
  const base=new URL(origin);if(base.protocol!=='https:'||base.origin!==origin)throw Error('MCP OAuth requires a configured HTTPS origin.');
- const resource=origin+'/api/mcp',stateKey='mcp/oauth-v1';
+ const resource=origin+'/api/mcp',peopleResource=origin+'/api/people/mcp',resources=new Set([resource,...(peopleGrants?[peopleResource]:[])]),stateKey='mcp/oauth-v1';
  const mutate=fn=>store.mutate(stateKey,empty(),data=>{for(const key of ['requests','codes','tokens'])data[key]=data[key].filter(row=>row.expiresAt>clock());return fn(data);});
  async function rate(key,limit){
   const now=clock(),bucket=Math.floor(now/60000),id=hash(key);
   const allowed=await store.mutate('mcp/rate-v1',{bucket,counts:{}},data=>{if(data.bucket!==bucket){data.bucket=bucket;data.counts={};}const total=data.counts.all||0;if(total>=2000)return false;if(!Object.hasOwn(data.counts,id)&&Object.keys(data.counts).length>=1001)return false;data.counts.all=total+1;data.counts[id]=(data.counts[id]||0)+1;return data.counts[id]<=limit;});
   if(!allowed)throw Object.assign(failure('temporarily_unavailable',429),{retryAfter:60-Math.floor(now/1000)%60});
  }
- function resourceMetadata(){return {resource,authorization_servers:[origin],scopes_supported:[...scopesSupported],bearer_methods_supported:['header'],resource_name:'Leafhour reading'};}
+ function resourceMetadata(target=resource){if(!resources.has(target))throw failure('invalid_target');const person=target===peopleResource;return {resource:target,authorization_servers:[origin],scopes_supported:[...(person?PEOPLE_SCOPES:MCP_READING_SCOPES)],bearer_methods_supported:['header'],resource_name:person?'Leafhour people':'Leafhour reading'};}
  function serverMetadata(){return {issuer:origin,authorization_endpoint:origin+'/api/mcp/oauth/authorize',token_endpoint:origin+'/api/mcp/oauth/token',registration_endpoint:origin+'/api/mcp/oauth/register',revocation_endpoint:origin+'/api/mcp/oauth/revoke',response_types_supported:['code'],grant_types_supported:['authorization_code'],token_endpoint_auth_methods_supported:['none'],revocation_endpoint_auth_methods_supported:['none'],code_challenge_methods_supported:['S256'],scopes_supported:[...scopesSupported],authorization_response_iss_parameter_supported:true};}
  async function register(input){
   await rate('registration',10);
   if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(k=>!['client_name','redirect_uris','token_endpoint_auth_method','grant_types','response_types','scope','client_uri','logo_uri'].includes(k)))throw failure('invalid_client_metadata');
-  if(!Array.isArray(input.redirect_uris)||input.redirect_uris.length<1||input.redirect_uris.length>5||input.redirect_uris.some(uri=>{try{const u=new URL(uri);return !field(uri)||u.protocol!=='https:'||u.username||u.password||u.hash||u.href!==uri;}catch{return true;}}))throw failure('invalid_redirect_uri');
+  if(!Array.isArray(input.redirect_uris)||input.redirect_uris.length<1||input.redirect_uris.length>5||input.redirect_uris.some(uri=>{try{const u=new URL(uri);return !field(uri)||!(u.protocol==='https:'||u.protocol==='http:'&&['127.0.0.1','[::1]'].includes(u.hostname))||u.username||u.password||u.hash||u.href!==uri;}catch{return true;}}))throw failure('invalid_redirect_uri');
   if(input.token_endpoint_auth_method!==undefined&&input.token_endpoint_auth_method!=='none'||input.grant_types!==undefined&&JSON.stringify(input.grant_types)!=='["authorization_code"]'||input.response_types!==undefined&&JSON.stringify(input.response_types)!=='["code"]'||input.client_name!==undefined&&!field(input.client_name,120))throw failure('invalid_client_metadata');
   const client={client_id:opaque(),client_name:input.client_name||'MCP client',redirect_uris:[...new Set(input.redirect_uris)],token_endpoint_auth_method:'none',grant_types:['authorization_code'],response_types:['code'],scope:scopesOf(input.scope??'content').join(' ')};
   await mutate(data=>{if(data.clients.length>=1000)throw failure('temporarily_unavailable',503);data.clients.push(client);});return client;
@@ -50,8 +50,8 @@ export function createMcpOAuth({origin,store,library,peopleGrants=null,clock=Dat
   const uiLocales=p.ui_locales;delete p.ui_locales;
   const data=await store.read(stateKey,empty()),client=data.clients.find(c=>c.client_id===p.client_id);
   if(!client||!client.redirect_uris.includes(p.redirect_uri))throw failure('invalid_client');
-  if(p.response_type!=='code'||p.resource!==resource||p.code_challenge_method!=='S256'||!/^[A-Za-z0-9_-]{43}$/.test(p.code_challenge||'')||p.state!==undefined&&!field(p.state,1024))throw failure();
-  p.scope=scopesOf(p.scope??'content').join(' ');
+  if(p.response_type!=='code'||!resources.has(p.resource)||p.code_challenge_method!=='S256'||!/^[A-Za-z0-9_-]{43}$/.test(p.code_challenge||'')||p.state!==undefined&&!field(p.state,1024))throw failure();
+  p.scope=scopesOf(p.scope??(p.resource===peopleResource?'people:read':'content')).join(' ');if(p.resource===peopleResource&&!p.scope.startsWith('people:'))throw failure('invalid_scope');
   const request=opaque();await mutate(data=>{if(data.requests.length>=500)throw failure('temporarily_unavailable',503);data.requests.push({...p,...(uiLocales?{uiLocales}:{}),id:hash(request),expiresAt:clock()+600000});});return request;
  }
  async function consent(request,user,session){
@@ -79,19 +79,19 @@ export function createMcpOAuth({origin,store,library,peopleGrants=null,clock=Dat
  async function exchange(params){
   await rate('exchange',120);
   const p=parameters(params,['grant_type','client_id','redirect_uri','resource','code','code_verifier']);
-  if(p.grant_type!=='authorization_code'||p.resource!==resource||!/^[A-Za-z0-9_-]{43}$/.test(p.code||'')||!/^[A-Za-z0-9._~-]{43,128}$/.test(p.code_verifier||''))throw failure('invalid_grant');
+  if(p.grant_type!=='authorization_code'||!resources.has(p.resource)||!/^[A-Za-z0-9_-]{43}$/.test(p.code||'')||!/^[A-Za-z0-9._~-]{43,128}$/.test(p.code_verifier||''))throw failure('invalid_grant');
   const challenge=createHash('sha256').update(p.code_verifier).digest('base64url');
   const row=await mutate(data=>{const row=data.codes.find(r=>r.id===hash(p.code));if(!row||row.client_id!==p.client_id||row.redirect_uri!==p.redirect_uri||row.resource!==p.resource||!same(row.code_challenge,challenge))throw failure('invalid_grant');data.codes=data.codes.filter(r=>r!==row);return row;});
   // A storage failure after consumption requires reauthorization, never a
   // blind token-exchange retry. Credentials are returned only once.
   const grant=row.kind==='people'?await peopleGrants.issue({id:row.ownerId},row.personIds,scopesOf(row.scope)):await library.createMcpGrant({id:row.ownerId},row.bookId,scopesOf(row.scope??'content')),expiresAt=Math.min(Date.parse(grant.expiresAt),clock()+3600000);
-  await mutate(data=>{if(data.tokens.length>=1000)throw failure('temporarily_unavailable',503);data.tokens.push({id:hash(grant.token),grantId:grant.id,ownerId:row.ownerId,...(row.kind==='people'?{kind:'people',personIds:row.personIds}:{bookId:row.bookId}),clientId:row.client_id,resource,scope:row.scope??'content',expiresAt});});
-  return {access_token:grant.token,token_type:'Bearer',scope:row.scope??'content',resource,expires_in:Math.max(0,Math.floor((expiresAt-clock())/1000))};
+  await mutate(data=>{if(data.tokens.length>=1000)throw failure('temporarily_unavailable',503);data.tokens.push({id:hash(grant.token),grantId:grant.id,ownerId:row.ownerId,...(row.kind==='people'?{kind:'people',personIds:row.personIds}:{bookId:row.bookId}),clientId:row.client_id,resource:row.resource,scope:row.scope??'content',expiresAt});});
+  return {access_token:grant.token,token_type:'Bearer',scope:row.scope??'content',resource:row.resource,expires_in:Math.max(0,Math.floor((expiresAt-clock())/1000))};
  }
- async function authenticate(token){
+ async function authenticate(token,expectedResource=resource){
   if(!field(token,128))throw failure('invalid_token',401);
   const row=(await store.read(stateKey,empty())).tokens.find(r=>same(r.id,hash(token)));
-  if(!row||row.expiresAt<=clock()||row.resource!==resource)throw failure('invalid_token',401);
+  if(!row||row.expiresAt<=clock()||!resources.has(expectedResource)||row.resource!==expectedResource||row.resource===peopleResource&&row.kind!=='people')throw failure('invalid_token',401);
   scopesOf(row.scope);
   let user;try{user=row.kind==='people'?await peopleGrants.authenticate(token):await library.authorize(token,row.bookId,'content');}catch(e){if(e.status>=500)throw e;throw failure('invalid_token',401);}
   if(user.id!==row.ownerId)throw failure('invalid_token',401);return row.kind==='people'?{...row,personIds:[...user.grant.personIds,...user.grant.createdPersonIds]}:row;

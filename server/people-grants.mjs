@@ -14,7 +14,7 @@ export function createPeopleGrants({store,people,clock=Date.now}){
   if(!Array.isArray(scopes)||!scopes.includes('people:read')||new Set(scopes).size!==scopes.length||scopes.some(s=>!PEOPLE_SCOPES.includes(s))||!Array.isArray(personIds)||personIds.length>20||new Set(personIds).size!==personIds.length||personIds.some(x=>!validPersonId(x))||!personIds.length&&!scopes.includes('people:create'))throw fail(400);
   for(const personId of personIds)await people.get(user,personId);
   const token=randomBytes(32).toString('base64url'),grant={id:randomBytes(16).toString('hex'),tokenHash:hash(token),ownerId:user.id,personIds:[...personIds],createdPersonIds:[],creationRequests:[],scopes:[...scopes],expiresAt:clock()+3600000,revoked:false,readStateRevision:0,readState:null};
-  await store.mutate(key,empty(),data=>{data.grants=data.grants.filter(g=>g.expiresAt>clock()&&!g.revoked);if(data.grants.length>=1000)throw fail(429);data.grants.push(grant);});
+  await store.mutate(key,empty(),data=>{data.grants=data.grants.filter(g=>g.revocationPending===true||g.expiresAt>clock()&&!g.revoked);if(data.grants.length>=1000)throw fail(429);data.grants.push(grant);});
   return {id:grant.id,token,expiresAt:new Date(grant.expiresAt).toISOString()};
  }
  async function authenticate(token,scope='people:read',personId){tokenValid(token);return check(rowFor(await store.read(key,empty()),token),scope,personId);}
@@ -46,6 +46,14 @@ export function createPeopleGrants({store,people,clock=Date.now}){
   return store.mutate(key,empty(),data=>{const row=rowFor(data,token);check(row,'people:read');if((row.readStateRevision||0)!==expectedRevision)throw fail(409,'READ_STATE_CONFLICT','The reading state changed in another request; retry from the last completed page.');row.readState=structuredClone(state);row.readStateRevision=expectedRevision+1;return {revision:row.readStateRevision};});
  }
  async function invalidateReadState(token){tokenValid(token);return store.mutate(key,empty(),data=>{const row=rowFor(data,token);check(row,'people:read');row.readState=null;row.readStateRevision=(row.readStateRevision||0)+1;return {revision:row.readStateRevision};});}
- async function revoke(user,grantId){if(!user?.id)throw fail(401);return store.mutate(key,empty(),data=>{const row=data.grants.find(g=>g.id===grantId&&g.ownerId===user.id);if(!row)throw fail(404);row.revoked=true;row.readState=null;return {revoked:true};});}
+ async function revoke(user,grantId){
+  if(!user?.id)throw fail(401);
+  const result=await store.mutate(key,empty(),data=>{const row=data.grants.find(g=>g.id===grantId&&g.ownerId===user.id);if(!row)throw fail(404);row.revoked=true;row.revocationPending=true;row.readState=null;return {revoked:true};});
+  // A failed fence leaves access revoked but cannot acknowledge withdrawal.
+  // Retain its row across grant cleanup so the owner can retry the barrier.
+  if(typeof people?.fenceWrites==='function')await people.fenceWrites();
+  await store.mutate(key,empty(),data=>{const row=data.grants.find(g=>g.id===grantId&&g.ownerId===user.id);if(row)row.revocationPending=false;});
+  return result;
+ }
  return {issue,authenticate,create,readState,saveReadState,invalidateReadState,revoke};
 }

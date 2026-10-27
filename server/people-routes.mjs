@@ -10,33 +10,33 @@ function parsedBody(body){if(body===undefined||body===null)body={};fields(body,O
 // and parsed body; this adapter never trusts identity supplied in a request.
 export function createPeopleRoutes({people}={}){
  if(!people)throw TypeError('people service is required');
- return {async handle({req,res,url,user,body,send}){
+ return {async handle({req,res,url,user,body,send,authorize}){
   const target=url instanceof URL?url:new URL(req.url,'http://reader.local'),pathname=target.pathname;
   if(pathname!=='/api/people'&&!pathname.startsWith('/api/people/'))return false;
-  const get=req.method==='GET',post=req.method==='POST';
+  const get=req.method==='GET',post=req.method==='POST',access=authorize?{authorize}:{};
   if(pathname==='/api/people'||pathname==='/api/people/'){
-   if(get){const options=queryOptions(target.searchParams,['query','limit','cursor','includeDeleted','publicOnly']);res?.setHeader?.('Cache-Control','private, no-store');send(200,await people.list(user,options));return true;}
+   if(get){const options=queryOptions(target.searchParams,['query','limit','cursor','includeDeleted','publicOnly']);res?.setHeader?.('Cache-Control','private, no-store');send(200,await people.list(user,{...options,...access}));return true;}
    if(!post)return false;
    if(!user?.id)fail('Enter your own library first',401,'AUTH_REQUIRED');
-   const input=parsedBody(body);fields(input,['requestId','person']);queryOptions(target.searchParams,[]);send(201,await people.create(user,input));return true;
+   const input=parsedBody(body);fields(input,['requestId','person']);queryOptions(target.searchParams,[]);send(201,await people.create(user,input,access));return true;
   }
   const share=pathname.match(/^\/api\/people\/shares\/([^/]+)$/);
   if(share){if(!get)return false;queryOptions(target.searchParams,[]);res?.setHeader?.('Cache-Control','no-store');send(200,await people.getShare(identifier(share[1])));return true;}
   const match=pathname.match(/^\/api\/people\/([^/]+)(?:\/([^/]+))?$/);
   if(!match)return false;
   const id=identifier(match[1]),action=match[2];
-  if(!action&&get){const options=queryOptions(target.searchParams,['section','limit','cursor','includeDeleted','publicOnly']);res?.setHeader?.('Cache-Control','private, no-store');send(200,await people.get(user,id,options));return true;}
-  if(action==='shares'&&get){if(!user?.id)fail('Enter your own library first',401,'AUTH_REQUIRED');queryOptions(target.searchParams,[]);res?.setHeader?.('Cache-Control','private, no-store');send(200,await people.listShares(user,id));return true;}
+  if(!action&&get){const options=queryOptions(target.searchParams,['section','limit','cursor','includeDeleted','publicOnly']);res?.setHeader?.('Cache-Control','private, no-store');send(200,await people.get(user,id,{...options,...access}));return true;}
+  if(action==='shares'&&get){if(!user?.id)fail('Enter your own library first',401,'AUTH_REQUIRED');queryOptions(target.searchParams,[]);res?.setHeader?.('Cache-Control','private, no-store');send(200,await people.listShares(user,id,access));return true;}
   if(!post||!['update','delete','restore','preview','publish','revoke','export'].includes(action))return false;
   if(!user?.id)fail('Enter your own library first',401,'AUTH_REQUIRED');
   queryOptions(target.searchParams,[]);const input=parsedBody(body);
   const allowed={update:['requestId','expectedRevision','patch'],delete:['requestId','expectedRevision'],restore:['requestId','expectedRevision'],preview:['requestId','expectedRevision'],publish:['requestId','expectedRevision','previewToken'],revoke:['shareId'],export:['requestId','expectedRevision']};fields(input,allowed[action]);
   res?.setHeader?.('Cache-Control','private, no-store');
   let result;
-  if(action==='preview')result=await people.preview(user,id);
-  else if(action==='export')result=await people.exportRecord(user,id);
-  else if(action==='revoke')result=await people.revoke(user,id,input.shareId);
-  else result=await people[{update:'update',delete:'remove',restore:'restore',publish:'publish'}[action]](user,id,input);
+  if(action==='preview')result=await people.preview(user,id,access);
+  else if(action==='export')result=await people.exportRecord(user,id,access);
+  else if(action==='revoke')result=await people.revoke(user,id,input.shareId,access);
+  else result=await people[{update:'update',delete:'remove',restore:'restore',publish:'publish'}[action]](user,id,input,access);
   send(200,result);return true;
  }};
 }
