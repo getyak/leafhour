@@ -7,7 +7,7 @@ const source=await readFile(new URL('../app/reader-audio.js',import.meta.url),'u
 const preparedContexts=new WeakSet();
 function runInAudioContext(code,context){
  if(!preparedContexts.has(context)){
-  preparedContexts.add(context);context.t=t;context.createUiLabels=()=>({attr:(target,attr,id,params)=>target?.setAttribute?.(attr,t(id,params)),text:(target,id,params)=>{if(target)target.textContent=t(id,params);},forget(){},prune(){}});context.openImport=()=>context.importInput?.click();context.disposed=false;context.validScope=()=>true;context.listen=(target,type,handler)=>target.addEventListener(type,handler);
+  preparedContexts.add(context);context.t=t;context.createUiLabels=()=>({attr:(target,attr,id,params)=>target?.setAttribute?.(attr,t(id,params)),text:(target,id,params)=>{if(target)target.textContent=t(id,params);},forget(){},prune(){}});context.openImport=()=>context.importInput?.click();context.disposed=false;context.markGeneration=0;context.cancelOwnedSession=()=>{};context.cancelOwnedRequest=()=>{};context.validScope=()=>true;context.listen=(target,type,handler)=>target.addEventListener(type,handler);
   vm.runInContext(source.slice(source.indexOf('let sceneGeneration='),source.indexOf('const $=id=>')),context);
   const format=vm.runInContext('format',context);
   if(context.node){const node=context.node;context.node=(tag,cls,text)=>node(tag,cls,text===undefined?undefined:format(text));}
@@ -40,14 +40,14 @@ test('turning a page suspends audio following while playback stays active',()=>{
  assert.equal(f.context.active,active);assert.equal(f.playback.following,false);
 });
 
-test('audio follows an offscreen horizontal page even when its vertical bounds look visible',()=>{
- let navigated=null;const context=vm.createContext({active:{clips:[{passageId:'p20'}]},index:0,prefs:{follow:true},playback:{following:true},autoScrollUntil:0,innerHeight:800,clearMark(){},document:{body:{dataset:{paginated:'true'}},getElementById:()=>({classList:{add(){}},getBoundingClientRect:()=>({top:150,bottom:250})})},reader:()=>({isPassageVisible:()=>false,goToPassage:id=>{navigated=id;}})});
- runInAudioContext(source.slice(source.indexOf('function mark('),source.indexOf('\n',source.indexOf('function mark('))),context);context.mark();assert.equal(navigated,'p20');
+test('audio follows an offscreen horizontal page even when its vertical bounds look visible',async()=>{
+ let navigated=null;const context=vm.createContext({active:{clips:[{passageId:'p20'}]},index:0,prefs:{follow:true},playback:{following:true},autoScrollUntil:0,innerHeight:800,clearMark(){},document:{body:{dataset:{paginated:'true'}},getElementById:()=>({classList:{add(){}},setAttribute(){},getBoundingClientRect:()=>({top:150,bottom:250})})},reader:()=>({isPassageVisible:()=>false,goToPassage:id=>{navigated=id;}})});
+ runInAudioContext(source.slice(source.indexOf('async function mark('),source.indexOf('function label(')),context);await context.mark();assert.equal(navigated,'p20');
 });
 
-test('a dialogue never forces the reader to turn pages while listening to an explanation',()=>{
- let navigated=false;const context=vm.createContext({active:{mode:'dialogue',clips:[{passageId:'p20'}]},index:0,prefs:{follow:true},playback:{following:true},autoScrollUntil:0,innerHeight:800,clearMark(){},document:{body:{dataset:{paginated:'true'}},getElementById:()=>({classList:{add(){}},getBoundingClientRect:()=>({top:150,bottom:250})})},reader:()=>({isPassageVisible:()=>false,goToPassage:()=>navigated=true})});
- runInAudioContext(source.slice(source.indexOf('function mark('),source.indexOf('\n',source.indexOf('function mark('))),context);context.mark();assert.equal(navigated,false);
+test('a dialogue never forces the reader to turn pages while listening to an explanation',async()=>{
+ let navigated=false;const context=vm.createContext({active:{mode:'dialogue',clips:[{passageId:'p20'}]},index:0,prefs:{follow:true},playback:{following:true},autoScrollUntil:0,innerHeight:800,clearMark(){},document:{body:{dataset:{paginated:'true'}},getElementById:()=>({classList:{add(){}},setAttribute(){},getBoundingClientRect:()=>({top:150,bottom:250})})},reader:()=>({isPassageVisible:()=>false,goToPassage:()=>navigated=true})});
+ runInAudioContext(source.slice(source.indexOf('async function mark('),source.indexOf('function label(')),context);await context.mark();assert.equal(navigated,false);
 });
 
 test('seek feedback is disabled until media duration is known and describes the current position',()=>{

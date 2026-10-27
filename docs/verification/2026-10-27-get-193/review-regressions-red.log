@@ -1,0 +1,157 @@
+TAP version 13
+# Subtest: sidebar starts narration directly and continues exact source order until the chapter ends
+ok 1 - sidebar starts narration directly and continues exact source order until the chapter ends
+  ---
+  duration_ms: 228.168417
+  type: 'test'
+  ...
+# Subtest: late created narration is canceled after its book scope is disposed
+not ok 2 - late created narration is canceled after its book scope is disposed
+  ---
+  duration_ms: 81.184
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:39:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:43:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: disposing known generating narration cancels its owned session
+not ok 3 - disposing known generating narration cancels its owned session
+  ---
+  duration_ms: 102.969083
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:46:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:48:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: explicit play retries a failed preparation using the frozen start
+not ok 4 - explicit play retries a failed preparation using the frozen start
+  ---
+  duration_ms: 88.207542
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:50:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    1 !== 2
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:53:51)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: manual scrolling while the next batch is preparing disables following
+not ok 5 - manual scrolling while the next batch is preparing disables following
+  ---
+  duration_ms: 119.724083
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:55:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      [
+        'p1',
+    +   'p2'
+      ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'p1'
+  actual:
+    0: 'p1'
+    1: 'p2'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:60:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pagehide cannot be undone by an awaited source navigation
+not ok 6 - pagehide cannot be undone by an awaited source navigation
+  ---
+  duration_ms: 83.683292
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:62:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    1 !== 0
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:65:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pause while a clip is being prepared prevents late automatic playback
+ok 7 - pause while a clip is being prepared prevents late automatic playback
+  ---
+  duration_ms: 82.534833
+  type: 'test'
+  ...
+# Subtest: from-here captures a bounded batch instead of copying the remaining chapter into selected parts
+ok 8 - from-here captures a bounded batch instead of copying the remaining chapter into selected parts
+  ---
+  duration_ms: 55.510208
+  type: 'test'
+  ...
+# Subtest: a ready clip transport failure can be explicitly retried without a new session
+ok 9 - a ready clip transport failure can be explicitly retried without a new session
+  ---
+  duration_ms: 90.621125
+  type: 'test'
+  ...
+# Subtest: automatic continuation preserves manual reading rather than restoring follow
+ok 10 - automatic continuation preserves manual reading rather than restoring follow
+  ---
+  duration_ms: 99.080416
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 5
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1144.260875

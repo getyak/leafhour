@@ -1,0 +1,94 @@
+{
+  "captured_at": "2026-10-21T13:16:26Z",
+  "environment": "Existing Production before changes, Chromium 1243, 1440x1000",
+  "account_match": "Authenticated default test account matched before opening the public book",
+  "book": "gutenberg-alice",
+  "model": "gemini-3.8-flash-tts",
+  "input": {
+    "passageId": "01b38ea4c710a84b-p00007",
+    "text": "CHAPTER I. Down the Rabbit-Hole",
+    "start": 0,
+    "end": 31,
+    "textHash": "4027df5db805a2987e8b3ddedd2194a87ec295a7e38df79d822481759b187e89"
+  },
+  "audio": {
+    "mimeType": "audio/wav",
+    "bytes": 148198,
+    "checksum": "8cc22d62b80d51fc876b3c0da5f3496565b9a509a2762ca55286dea35f9901fe"
+  },
+  "media_events": [
+    {
+      "event": "play",
+      "trusted": true,
+      "at": 1792588585172,
+      "time": 0,
+      "duration": null,
+      "paused": false,
+      "readyState": 0,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "loadedmetadata",
+      "trusted": true,
+      "at": 1792588585194,
+      "time": 0,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 1,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "playing",
+      "trusted": true,
+      "at": 1792588585840,
+      "time": 0,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "at": 1792588585988,
+      "time": 0.059998,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "at": 1792588586252,
+      "time": 0.284056,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    }
+  ],
+  "verified": [
+    "real provider WAV returned",
+    "native media metadata and playing events",
+    "native currentTime advanced",
+    "current passage ID matched submitted source"
+  ],
+  "not_verified": [
+    "audible pronunciation or voice quality",
+    "multiple paragraph automatic playback",
+    "end-of-chapter behavior",
+    "final branch behavior",
+    "Production acceptance after merge"
+  ]
+}

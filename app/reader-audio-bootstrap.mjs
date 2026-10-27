@@ -38,10 +38,12 @@ export function mountAudioBootstrap({document=globalThis.document,window=documen
   if(action==='show-audio'||action==='listen-from-here'){
    const book=c.owner.getBook(),state=c.owner.getState(),selection=c.owner.getAudioSelection?.()||c.owner.getExcerpt();
    if(selection?.parts?.length){const parts=selection.parts.map(part=>Object.freeze({...part})),language=parts[0].language;
-    let values=parts;if(action==='listen-from-here'){const rows=book.sections.filter(s=>s.chapterId===selection.chapterId).flatMap(s=>s.paragraphs),at=rows.findIndex(p=>p.id===parts[0].passageId);values=rows.slice(at).map(p=>Object.freeze({passageId:p.id,language}));}
-    intent.input=Object.freeze({contentVersion:book.contentVersion,chapterId:selection.chapterId,language,variant:parts[0].variant||state.variant,parts:Object.freeze(values)});
+    intent.input=action==='listen-from-here'
+     ?Object.freeze({batch:true,contentVersion:book.contentVersion,chapterId:selection.chapterId,language,variant:parts[0].variant||state.variant,from:Object.freeze({passageId:parts[0].passageId,start:0})})
+     :Object.freeze({contentVersion:book.contentVersion,chapterId:selection.chapterId,language,variant:parts[0].variant||state.variant,parts:Object.freeze(parts)});
    }
   }
+  if(action==='listen-chapter')intent.reading=Object.freeze({chapterId:c.owner.getChapterId(),state:Object.freeze(c.owner.getState()),from:c.owner.getAnchor?.()?.passageId});
   intent.valid=()=>validScope(s)&&!intent.canceled&&intent.generation===generation&&intent.selectionGeneration===selectionGeneration;
   return intent;
  }
@@ -100,7 +102,7 @@ export function mountAudioBootstrap({document=globalThis.document,window=documen
   selected();if(scope&&hasRestore()){const s=scope,stamp=generation,intent={scope:s,overlay:document.querySelector('dialog[open]'),overlays:[...document.querySelectorAll('dialog[open]')],canceled:false};watchOverlay(intent.overlay);intent.valid=()=>validScope(s)&&generation===stamp&&!intent.canceled;restoration=intent;void restore(intent);}
  }
  listen(input,'change',()=>{const file=input.files?.[0],intent=picker;picker=null;if(!file||!intent?.valid()){input.value='';return;}intent.file=file;pending=intent;void run(intent);});
- for(const action of ['show-audio','listen-from-here','open-voice-settings','settings-listening-records','export-listening','import-listening'])listen($(action),'click',()=>activate(action));
+ for(const action of ['listen-options','show-audio','listen-from-here','open-voice-settings','settings-listening-records','export-listening','import-listening'])listen($(action),'click',()=>activate(action));
  const chapter=mountChapter({document,onListenChapter:()=>activate('listen-chapter')});cleanup.push(()=>chapter?.unmount?.());
  listen(retry,'click',()=>{if(loading)return;if(pending?.valid())void run(pending,true);else if(restoration?.valid())void restore(restoration,true);});listen(cancel,'click',()=>clearPending({restoreFocus:true}));listen(reload,'click',()=>window.location.reload());
  listen(document,'reader:selection',()=>selected());listen(document,'reader:selection-end',()=>selected(committingSelection));listen(document,'reader:ready',refresh);listen(document,'reader:session-changed',()=>{generation++;selectionGeneration++;clearPending();controller?.dispose();controller=null;mounting=null;scope=null;});

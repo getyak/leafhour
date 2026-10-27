@@ -1,0 +1,253 @@
+TAP version 13
+# Subtest: sidebar starts narration directly and continues exact source order until the chapter ends
+ok 1 - sidebar starts narration directly and continues exact source order until the chapter ends
+  ---
+  duration_ms: 211.14375
+  type: 'test'
+  ...
+# Subtest: late created narration is canceled after its book scope is disposed
+ok 2 - late created narration is canceled after its book scope is disposed
+  ---
+  duration_ms: 69.834417
+  type: 'test'
+  ...
+# Subtest: disposing known generating narration cancels its owned session
+ok 3 - disposing known generating narration cancels its owned session
+  ---
+  duration_ms: 75.405917
+  type: 'test'
+  ...
+# Subtest: explicit play retries a failed preparation using the frozen start
+ok 4 - explicit play retries a failed preparation using the frozen start
+  ---
+  duration_ms: 77.589375
+  type: 'test'
+  ...
+# Subtest: manual scrolling while the next batch is preparing disables following
+ok 5 - manual scrolling while the next batch is preparing disables following
+  ---
+  duration_ms: 80.238
+  type: 'test'
+  ...
+# Subtest: pagehide cannot be undone by an awaited source navigation
+ok 6 - pagehide cannot be undone by an awaited source navigation
+  ---
+  duration_ms: 85.77075
+  type: 'test'
+  ...
+# Subtest: stopping an uncertain create cancels by its original idempotency key
+not ok 7 - stopping an uncertain create cancels by its original idempotency key
+  ---
+  duration_ms: 52.062625
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:67:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:71:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: BFCache returns an invalid prepare intent to explicit recovery
+not ok 8 - BFCache returns an invalid prepare intent to explicit recovery
+  ---
+  duration_ms: 65.334459
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:73:41'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+
+      assert.ok(waits>=2)
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:78:81)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: BFCache returns an invalid create intent to explicit recovery
+not ok 9 - BFCache returns an invalid create intent to explicit recovery
+  ---
+  duration_ms: 74.903417
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:73:41'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+
+      assert.ok(waits>=2)
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:78:81)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pause while a clip is being prepared prevents late automatic playback
+ok 10 - pause while a clip is being prepared prevents late automatic playback
+  ---
+  duration_ms: 71.306
+  type: 'test'
+  ...
+# Subtest: from-here captures a bounded batch instead of copying the remaining chapter into selected parts
+ok 11 - from-here captures a bounded batch instead of copying the remaining chapter into selected parts
+  ---
+  duration_ms: 47.222208
+  type: 'test'
+  ...
+# Subtest: a ready clip transport failure can be explicitly retried without a new session
+ok 12 - a ready clip transport failure can be explicitly retried without a new session
+  ---
+  duration_ms: 61.736666
+  type: 'test'
+  ...
+# Subtest: automatic continuation preserves manual reading rather than restoring follow
+ok 13 - automatic continuation preserves manual reading rather than restoring follow
+  ---
+  duration_ms: 98.953334
+  type: 'test'
+  ...
+# Subtest: request cancellation persists before creation and across service instances
+not ok 14 - request cancellation persists before creation and across service instances
+  ---
+  duration_ms: 8.723125
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-service.test.mjs:7:1'
+  failureType: 'testCodeFailure'
+  error: 'audio.cancelRequest is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-service.test.mjs:9:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: request cancellation aborts an accepted session without its response ID
+not ok 15 - request cancellation aborts an accepted session without its response ID
+  ---
+  duration_ms: 31.25525
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-service.test.mjs:14:1'
+  failureType: 'testCodeFailure'
+  error: 'audio.cancelRequest is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-service.test.mjs:17:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: a request cancelled while source preparation is pending never synthesizes
+not ok 16 - a request cancelled while source preparation is pending never synthesizes
+  ---
+  duration_ms: 2.979125
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-service.test.mjs:20:1'
+  failureType: 'testCodeFailure'
+  error: 'audio.cancelRequest is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-service.test.mjs:25:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: parallel retries create one session and a key cannot be rebound to other text
+ok 17 - parallel retries create one session and a key cannot be rebound to other text
+  ---
+  duration_ms: 27.34225
+  type: 'test'
+  ...
+# Subtest: cancelled generation cannot publish a late result
+ok 18 - cancelled generation cannot publish a late result
+  ---
+  duration_ms: 41.33525
+  type: 'test'
+  ...
+# Subtest: changed content hides cached audio and a fresh instance retains completed audio without regenerating
+ok 19 - changed content hides cached audio and a fresh instance retains completed audio without regenerating
+  ---
+  duration_ms: 28.602875
+  type: 'test'
+  ...
+# Subtest: 402 is recorded without retries and listening position is independent of reading
+ok 20 - 402 is recorded without retries and listening position is independent of reading
+  ---
+  duration_ms: 26.238417
+  type: 'test'
+  ...
+# Subtest: edited dialogue preserves attribution and does not reuse audio of the previous text
+ok 21 - edited dialogue preserves attribution and does not reuse audio of the previous text
+  ---
+  duration_ms: 5.094917
+  type: 'test'
+  ...
+# Subtest: saved scripts and audio are discoverable without a browser resume key and remain owner scoped
+ok 22 - saved scripts and audio are discoverable without a browser resume key and remain owner scoped
+  ---
+  duration_ms: 24.454792
+  type: 'test'
+  ...
+# Subtest: another owner cannot abort a known active session
+ok 23 - another owner cannot abort a known active session
+  ---
+  duration_ms: 35.991542
+  type: 'test'
+  ...
+# Subtest: revoked generation authority prevents publishing and starting later clips
+ok 24 - revoked generation authority prevents publishing and starting later clips
+  ---
+  duration_ms: 37.404875
+  type: 'test'
+  ...
+# Subtest: one owner cannot start paid sessions in two books concurrently
+ok 25 - one owner cannot start paid sessions in two books concurrently
+  ---
+  duration_ms: 38.731416
+  type: 'test'
+  ...
+# Subtest: official WAV generation splits long reading, dialogue and AI answers without changing their text
+ok 26 - official WAV generation splits long reading, dialogue and AI answers without changing their text
+  ---
+  duration_ms: 23.189167
+  type: 'test'
+  ...
+# Subtest: a trailing-space answer completes official synthesis and impossible blank-only chunks fail before payment
+ok 27 - a trailing-space answer completes official synthesis and impossible blank-only chunks fail before payment
+  ---
+  duration_ms: 53.159875
+  type: 'test'
+  ...
+# Subtest: long English sentences are chunked from their exact selection rather than legacy coarse boundaries
+ok 28 - long English sentences are chunked from their exact selection rather than legacy coarse boundaries
+  ---
+  duration_ms: 1.683542
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 22
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1182.556875

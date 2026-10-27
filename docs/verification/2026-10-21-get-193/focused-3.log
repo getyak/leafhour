@@ -1,0 +1,1264 @@
+TAP version 13
+# Subtest: audio definition exposes an explicit mount without browser work on import
+ok 1 - audio definition exposes an explicit mount without browser work on import
+  ---
+  duration_ms: 22.636792
+  type: 'test'
+  ...
+# Subtest: no audio intent loads only one shared read-only metadata promise and honest real voice summary
+ok 2 - no audio intent loads only one shared read-only metadata promise and honest real voice summary
+  ---
+  duration_ms: 77.228333
+  type: 'test'
+  ...
+# Subtest: first show-audio executes once after the same pending module, without synthetic activation
+ok 3 - first show-audio executes once after the same pending module, without synthetic activation
+  ---
+  duration_ms: 27.636083
+  type: 'test'
+  ...
+# Subtest: first listen-from-here executes once after the same pending module, without synthetic activation
+ok 4 - first listen-from-here executes once after the same pending module, without synthetic activation
+  ---
+  duration_ms: 24.641125
+  type: 'test'
+  ...
+# Subtest: first listen-options executes once after the same pending module, without synthetic activation
+ok 5 - first listen-options executes once after the same pending module, without synthetic activation
+  ---
+  duration_ms: 18.93675
+  type: 'test'
+  ...
+# Subtest: first open-voice-settings executes once after the same pending module, without synthetic activation
+ok 6 - first open-voice-settings executes once after the same pending module, without synthetic activation
+  ---
+  duration_ms: 18.6885
+  type: 'test'
+  ...
+# Subtest: first settings-listening-records executes once after the same pending module, without synthetic activation
+ok 7 - first settings-listening-records executes once after the same pending module, without synthetic activation
+  ---
+  duration_ms: 18.29975
+  type: 'test'
+  ...
+# Subtest: first export-listening executes once after the same pending module, without synthetic activation
+ok 8 - first export-listening executes once after the same pending module, without synthetic activation
+  ---
+  duration_ms: 18.027333
+  type: 'test'
+  ...
+# Subtest: first import-listening executes once after the same pending module, without synthetic activation
+ok 9 - first import-listening executes once after the same pending module, without synthetic activation
+  ---
+  duration_ms: 19.004709
+  type: 'test'
+  ...
+# Subtest: intent before uiReady preserves selected parts/language/variant until direct first dispatch
+ok 10 - intent before uiReady preserves selected parts/language/variant until direct first dispatch
+  ---
+  duration_ms: 19.982083
+  type: 'test'
+  ...
+# Subtest: pending success is consumed after selectionABA, with no stale surface
+ok 11 - pending success is consumed after selectionABA, with no stale surface
+  ---
+  duration_ms: 10.90975
+  type: 'test'
+  ...
+# Subtest: pending failure is consumed after selectionABA, with no stale surface
+ok 12 - pending failure is consumed after selectionABA, with no stale surface
+  ---
+  duration_ms: 10.75075
+  type: 'test'
+  ...
+# Subtest: pending success is consumed after ownerABA, with no stale surface
+ok 13 - pending success is consumed after ownerABA, with no stale surface
+  ---
+  duration_ms: 10.926958
+  type: 'test'
+  ...
+# Subtest: pending failure is consumed after ownerABA, with no stale surface
+ok 14 - pending failure is consumed after ownerABA, with no stale surface
+  ---
+  duration_ms: 9.958417
+  type: 'test'
+  ...
+# Subtest: pending success is consumed after bookABA, with no stale surface
+ok 15 - pending success is consumed after bookABA, with no stale surface
+  ---
+  duration_ms: 10.145125
+  type: 'test'
+  ...
+# Subtest: pending failure is consumed after bookABA, with no stale surface
+ok 16 - pending failure is consumed after bookABA, with no stale surface
+  ---
+  duration_ms: 11.247375
+  type: 'test'
+  ...
+# Subtest: pending success is consumed after versionABA, with no stale surface
+ok 17 - pending success is consumed after versionABA, with no stale surface
+  ---
+  duration_ms: 15.286209
+  type: 'test'
+  ...
+# Subtest: pending failure is consumed after versionABA, with no stale surface
+ok 18 - pending failure is consumed after versionABA, with no stale surface
+  ---
+  duration_ms: 15.163875
+  type: 'test'
+  ...
+# Subtest: pending success is consumed after cancel, with no stale surface
+ok 19 - pending success is consumed after cancel, with no stale surface
+  ---
+  duration_ms: 10.732708
+  type: 'test'
+  ...
+# Subtest: pending failure is consumed after cancel, with no stale surface
+ok 20 - pending failure is consumed after cancel, with no stale surface
+  ---
+  duration_ms: 18.002417
+  type: 'test'
+  ...
+# Subtest: pending success is consumed after pagehide, with no stale surface
+ok 21 - pending success is consumed after pagehide, with no stale surface
+  ---
+  duration_ms: 10.732959
+  type: 'test'
+  ...
+# Subtest: pending failure is consumed after pagehide, with no stale surface
+ok 22 - pending failure is consumed after pagehide, with no stale surface
+  ---
+  duration_ms: 10.801875
+  type: 'test'
+  ...
+# Subtest: pending success is consumed after close, with no stale surface
+ok 23 - pending success is consumed after close, with no stale surface
+  ---
+  duration_ms: 10.119459
+  type: 'test'
+  ...
+# Subtest: pending failure is consumed after close, with no stale surface
+ok 24 - pending failure is consumed after close, with no stale surface
+  ---
+  duration_ms: 10.387167
+  type: 'test'
+  ...
+# Subtest: pending success is consumed after otherOverlay, with no stale surface
+ok 25 - pending success is consumed after otherOverlay, with no stale surface
+  ---
+  duration_ms: 17.227292
+  type: 'test'
+  ...
+# Subtest: pending failure is consumed after otherOverlay, with no stale surface
+ok 26 - pending failure is consumed after otherOverlay, with no stale surface
+  ---
+  duration_ms: 12.8795
+  type: 'test'
+  ...
+# Subtest: explicit retry consumes only base and fixed retry URL; locale does not import or duplicate business
+ok 27 - explicit retry consumes only base and fixed retry URL; locale does not import or duplicate business
+  ---
+  duration_ms: 21.884167
+  type: 'test'
+  ...
+# Subtest: second native loader failure exposes only explicit manual reload
+ok 28 - second native loader failure exposes only explicit manual reload
+  ---
+  duration_ms: 10.675125
+  type: 'test'
+  ...
+# Subtest: file gesture snapshots owner before picker; late File is never read after invalidation
+ok 29 - file gesture snapshots owner before picker; late File is never read after invalidation
+  ---
+  duration_ms: 9.939167
+  type: 'test'
+  ...
+# Subtest: file module success after cancellation never consumes File
+ok 30 - file module success after cancellation never consumes File
+  ---
+  duration_ms: 10.405417
+  type: 'test'
+  ...
+# Subtest: file module failure after cancellation never consumes File
+ok 31 - file module failure after cancellation never consumes File
+  ---
+  duration_ms: 9.68725
+  type: 'test'
+  ...
+# Subtest: persisted pagehide cancels pending intent but Back can mount from cached code
+ok 32 - persisted pagehide cancels pending intent but Back can mount from cached code
+  ---
+  duration_ms: 18.497542
+  type: 'test'
+  ...
+# Subtest: partial mount rollback removes media, dialog, player, observers and locale owner then allows a clean mount
+ok 33 - partial mount rollback removes media, dialog, player, observers and locale owner then allows a clean mount
+  ---
+  duration_ms: 15.315291
+  type: 'test'
+  ...
+# Subtest: authorized position restoration uses original marker once, without UUID/autoplay/dialog
+ok 34 - authorized position restoration uses original marker once, without UUID/autoplay/dialog
+  ---
+  duration_ms: 19.409834
+  type: 'test'
+  ...
+# Subtest: authorized job restoration uses original marker once, without UUID/autoplay/dialog
+ok 35 - authorized job restoration uses original marker once, without UUID/autoplay/dialog
+  ---
+  duration_ms: 18.100792
+  type: 'test'
+  ...
+# Subtest: authorized request restoration uses original marker once, without UUID/autoplay/dialog
+ok 36 - authorized request restoration uses original marker once, without UUID/autoplay/dialog
+  ---
+  duration_ms: 17.438208
+  type: 'test'
+  ...
+# Subtest: locale while pending formats only cached loading/read-selection/summary leaves
+ok 37 - locale while pending formats only cached loading/read-selection/summary leaves
+  ---
+  duration_ms: 22.473334
+  type: 'test'
+  ...
+# Subtest: file pipeline preserves size/validate/import/preferences/save/records order and never repeats succeeded import on failure
+ok 38 - file pipeline preserves size/validate/import/preferences/save/records order and never repeats succeeded import on failure
+  ---
+  duration_ms: 19.777125
+  type: 'test'
+  ...
+# Subtest: file stops after text when owner changes; no later file stage or private publication
+ok 39 - file stops after text when owner changes; no later file stage or private publication
+  ---
+  duration_ms: 17.901834
+  type: 'test'
+  ...
+# Subtest: file stops after validate when owner changes; no later file stage or private publication
+ok 40 - file stops after validate when owner changes; no later file stage or private publication
+  ---
+  duration_ms: 18.68275
+  type: 'test'
+  ...
+# Subtest: file stops after import when owner changes; no later file stage or private publication
+ok 41 - file stops after import when owner changes; no later file stage or private publication
+  ---
+  duration_ms: 17.859125
+  type: 'test'
+  ...
+# Subtest: file stops after preferences when owner changes; no later file stage or private publication
+ok 42 - file stops after preferences when owner changes; no later file stage or private publication
+  ---
+  duration_ms: 17.663041
+  type: 'test'
+  ...
+# Subtest: selection ABA after dispatch consumes pending preparation success
+ok 43 - selection ABA after dispatch consumes pending preparation success
+  ---
+  duration_ms: 19.381459
+  type: 'test'
+  ...
+# Subtest: selection ABA after dispatch consumes pending preparation failure
+ok 44 - selection ABA after dispatch consumes pending preparation failure
+  ---
+  duration_ms: 19.69475
+  type: 'test'
+  ...
+# Subtest: no valid task marker never initializes media or resumes tasks {}
+ok 45 - no valid task marker never initializes media or resumes tasks {}
+  ---
+  duration_ms: 8.764417
+  type: 'test'
+  ...
+# Subtest: no valid task marker never initializes media or resumes tasks {"marginalia-audio-preferences-v1":"{\\"speed\\":1.5}"}
+ok 46 - no valid task marker never initializes media or resumes tasks {"marginalia-audio-preferences-v1":"{\\"speed\\":1.5}"}
+  ---
+  duration_ms: 9.100542
+  type: 'test'
+  ...
+# Subtest: no valid task marker never initializes media or resumes tasks {"leafhour-guide-request-v1":"{broken","marginalia-audio-position-v1":"{broken"}
+ok 47 - no valid task marker never initializes media or resumes tasks {"leafhour-guide-request-v1":"{broken","marginalia-audio-position-v1":"{broken"}
+  ---
+  duration_ms: 8.148833
+  type: 'test'
+  ...
+# Subtest: no valid task marker never initializes media or resumes tasks {"leafhour-guide-request-v1":"{}","marginalia-audio-position-v1":"{}"}
+ok 48 - no valid task marker never initializes media or resumes tasks {"leafhour-guide-request-v1":"{}","marginalia-audio-position-v1":"{}"}
+  ---
+  duration_ms: 9.608333
+  type: 'test'
+  ...
+# Subtest: storage exceptions and anonymous metadata keep the original read-only request condition
+ok 49 - storage exceptions and anonymous metadata keep the original read-only request condition
+  ---
+  duration_ms: 9.554334
+  type: 'test'
+  ...
+# Subtest: synthetic restore 403 retains old marker and never autoplays/starts a new task
+ok 50 - synthetic restore 403 retains old marker and never autoplays/starts a new task
+  ---
+  duration_ms: 16.585667
+  type: 'test'
+  ...
+# Subtest: synthetic restore 404 retains old marker and never autoplays/starts a new task
+ok 51 - synthetic restore 404 retains old marker and never autoplays/starts a new task
+  ---
+  duration_ms: 16.09825
+  type: 'test'
+  ...
+# Subtest: synthetic restore 409 retains old marker and never autoplays/starts a new task
+ok 52 - synthetic restore 409 retains old marker and never autoplays/starts a new task
+  ---
+  duration_ms: 15.882834
+  type: 'test'
+  ...
+# Subtest: restore import failure preserves all markers and explicit intent retry shares the same one boot
+ok 53 - restore import failure preserves all markers and explicit intent retry shares the same one boot
+  ---
+  duration_ms: 20.87375
+  type: 'test'
+  ...
+# Subtest: initial not-ready reader restores once at reader:ready, concurrent first action shares mount and metadata
+ok 54 - initial not-ready reader restores once at reader:ready, concurrent first action shares mount and metadata
+  ---
+  duration_ms: 19.338833
+  type: 'test'
+  ...
+# Subtest: ready guide restoration keeps no autoplay through real runner and session polling
+ok 55 - ready guide restoration keeps no autoplay through real runner and session polling
+  ---
+  duration_ms: 24.483375
+  type: 'test'
+  ...
+# Subtest: metadata failure remains honest before intent and old owner metadata cannot overwrite newer state
+ok 56 - metadata failure remains honest before intent and old owner metadata cannot overwrite newer state
+  ---
+  duration_ms: 18.172292
+  type: 'test'
+  ...
+# Subtest: repeated direct mount and bootstrap return the same owner; disposal removes bindings without cancel API
+ok 57 - repeated direct mount and bootstrap return the same owner; disposal removes bindings without cancel API
+  ---
+  duration_ms: 17.177625
+  type: 'test'
+  ...
+# Subtest: background restoration has a local retry/cancel surface without modal, focus, or canceling authorized server work
+ok 58 - background restoration has a local retry/cancel surface without modal, focus, or canceling authorized server work
+  ---
+  duration_ms: 19.336125
+  type: 'test'
+  ...
+# Subtest: the original records-panel import entry uses the same synchronous picker and file handler
+ok 59 - the original records-panel import entry uses the same synchronous picker and file handler
+  ---
+  duration_ms: 18.965333
+  type: 'test'
+  ...
+# Subtest: BFCache while metadata is pending can recover without publishing the canceled metadata
+ok 60 - BFCache while metadata is pending can recover without publishing the canceled metadata
+  ---
+  duration_ms: 17.812333
+  type: 'test'
+  ...
+# Subtest: capabilities failure preserves the old no-restore branch while the summary stays honest after mount
+ok 61 - capabilities failure preserves the old no-restore branch while the summary stays honest after mount
+  ---
+  duration_ms: 15.788
+  type: 'test'
+  ...
+# Subtest: a settings summary changed by the mounted owner is not overwritten by its old eager metadata cache
+ok 62 - a settings summary changed by the mounted owner is not overwritten by its old eager metadata cache
+  ---
+  duration_ms: 18.384959
+  type: 'test'
+  ...
+# Subtest: bootstrap pagehide preserves the mounted audio final position and pause exactly once, persisted=false
+ok 63 - bootstrap pagehide preserves the mounted audio final position and pause exactly once, persisted=false
+  ---
+  duration_ms: 21.604416
+  type: 'test'
+  ...
+# Subtest: bootstrap pagehide preserves the mounted audio final position and pause exactly once, persisted=true
+ok 64 - bootstrap pagehide preserves the mounted audio final position and pause exactly once, persisted=true
+  ---
+  duration_ms: 23.78675
+  type: 'test'
+  ...
+# Subtest: a partial setup failure retries cleanly from cached code without duplicate metadata, media or bindings
+ok 65 - a partial setup failure retries cleanly from cached code without duplicate metadata, media or bindings
+  ---
+  duration_ms: 25.812583
+  type: 'test'
+  ...
+# Subtest: review R: cancel during mounted readiness prevents deferred restoration request and publication
+ok 66 - review R: cancel during mounted readiness prevents deferred restoration request and publication
+  ---
+  duration_ms: 20.301917
+  type: 'test'
+  ...
+# Subtest: review R: real reader selection-end invalidates pending source intent
+ok 67 - review R: real reader selection-end invalidates pending source intent
+  ---
+  duration_ms: 12.062625
+  type: 'test'
+  ...
+# Subtest: review R: settings action keeps cancellation surface in active modal subtree
+ok 68 - review R: settings action keeps cancellation surface in active modal subtree
+  ---
+  duration_ms: 12.490125
+  type: 'test'
+  ...
+# Subtest: review R: resize uses current viewport height rather than mount-time snapshot
+ok 69 - review R: resize uses current viewport height rather than mount-time snapshot
+  ---
+  duration_ms: 20.153875
+  type: 'test'
+  ...
+# Subtest: review R: invalidated export failure cannot publish into newer voice panel
+ok 70 - review R: invalidated export failure cannot publish into newer voice panel
+  ---
+  duration_ms: 30.796333
+  type: 'test'
+  ...
+# Subtest: review R1: cancel unfinished restore at guides fences later stages without server cancellation
+ok 71 - review R1: cancel unfinished restore at guides fences later stages without server cancellation
+  ---
+  duration_ms: 20.491458
+  type: 'test'
+  ...
+# Subtest: review R1: cancel unfinished restore at guides/j fences later stages without server cancellation
+ok 72 - review R1: cancel unfinished restore at guides/j fences later stages without server cancellation
+  ---
+  duration_ms: 20.102625
+  type: 'test'
+  ...
+# Subtest: review R1: cancel unfinished restore at sessions/s fences later stages without server cancellation
+ok 73 - review R1: cancel unfinished restore at sessions/s fences later stages without server cancellation
+  ---
+  duration_ms: 17.838416
+  type: 'test'
+  ...
+# Subtest: review R1: cancel retains completed playback owner and a new action reuses it
+ok 74 - review R1: cancel retains completed playback owner and a new action reuses it
+  ---
+  duration_ms: 21.378416
+  type: 'test'
+  ...
+# Subtest: review R3: committed show-audio tolerates its own real synchronous dismissal but later end fences response
+ok 75 - review R3: committed show-audio tolerates its own real synchronous dismissal but later end fences response
+  ---
+  duration_ms: 19.347375
+  type: 'test'
+  ...
+# Subtest: review R3: committed listen-from-here tolerates its own real synchronous dismissal but later end fences response
+ok 76 - review R3: committed listen-from-here tolerates its own real synchronous dismissal but later end fences response
+  ---
+  duration_ms: 22.049375
+  type: 'test'
+  ...
+# Subtest: review R4: failed settings load keeps retry and cancel interactive with owned focus
+ok 77 - review R4: failed settings load keeps retry and cancel interactive with owned focus
+  ---
+  duration_ms: 14.9675
+  type: 'test'
+  ...
+# Subtest: review R4: mounted records picker observes dynamic modal close before consuming File
+ok 78 - review R4: mounted records picker observes dynamic modal close before consuming File
+  ---
+  duration_ms: 22.879667
+  type: 'test'
+  ...
+# Subtest: review R4: mounted records import waiting for ready keeps loading inside its modal
+ok 79 - review R4: mounted records import waiting for ready keeps loading inside its modal
+  ---
+  duration_ms: 19.673
+  type: 'test'
+  ...
+# Subtest: review R6: panel replacement alone fences export resolve and download
+ok 80 - review R6: panel replacement alone fences export resolve and download
+  ---
+  duration_ms: 20.210416
+  type: 'test'
+  ...
+# Subtest: review R6: panel replacement alone fences export reject and download
+ok 81 - review R6: panel replacement alone fences export reject and download
+  ---
+  duration_ms: 20.358917
+  type: 'test'
+  ...
+# Subtest: review R4: a newer modal opened above settings keeps focus after old loader failure
+ok 82 - review R4: a newer modal opened above settings keeps focus after old loader failure
+  ---
+  duration_ms: 10.502375
+  type: 'test'
+  ...
+# Subtest: review R5: follow visibility uses resized height when playback starts
+ok 83 - review R5: follow visibility uses resized height when playback starts
+  ---
+  duration_ms: 24.810709
+  type: 'test'
+  ...
+# Subtest: review R1: canceled initialization can remount cached code on new intent with original restoration payload
+ok 84 - review R1: canceled initialization can remount cached code on new intent with original restoration payload
+  ---
+  duration_ms: 28.078625
+  type: 'test'
+  ...
+# Subtest: review R7: show-audio retry survives real reader click and dispatch dismissal exactly once
+ok 85 - review R7: show-audio retry survives real reader click and dispatch dismissal exactly once
+  ---
+  duration_ms: 22.148792
+  type: 'test'
+  ...
+# Subtest: review R7: listen-from-here retry survives real reader click and dispatch dismissal exactly once
+ok 86 - review R7: listen-from-here retry survives real reader click and dispatch dismissal exactly once
+  ---
+  duration_ms: 21.600208
+  type: 'test'
+  ...
+# Subtest: review R7: recovery retry keeps click and selection keyboard events inside its surface
+ok 87 - review R7: recovery retry keeps click and selection keyboard events inside its surface
+  ---
+  duration_ms: 10.748125
+  type: 'test'
+  ...
+# Subtest: review R7: recovery cancel keeps click and selection keyboard events inside its surface
+ok 88 - review R7: recovery cancel keeps click and selection keyboard events inside its surface
+  ---
+  duration_ms: 10.79225
+  type: 'test'
+  ...
+# Subtest: review R7: recovery reload keeps click and selection keyboard events inside its surface
+ok 89 - review R7: recovery reload keeps click and selection keyboard events inside its surface
+  ---
+  duration_ms: 11.018584
+  type: 'test'
+  ...
+# Subtest: review R7: outside-click still cancels waiting retry independently of recovery controls
+ok 90 - review R7: outside-click still cancels waiting retry independently of recovery controls
+  ---
+  duration_ms: 12.413792
+  type: 'test'
+  ...
+# Subtest: review R7: selection-end still cancels waiting retry independently of recovery controls
+ok 91 - review R7: selection-end still cancels waiting retry independently of recovery controls
+  ---
+  duration_ms: 11.145208
+  type: 'test'
+  ...
+# Subtest: review R7: ordinary reader pointer and keyboard callbacks remain active outside recovery surface
+ok 92 - review R7: ordinary reader pointer and keyboard callbacks remain active outside recovery surface
+  ---
+  duration_ms: 9.704709
+  type: 'test'
+  ...
+# Subtest: canonical voice UI: eager and mounted Kore descriptors follow locale without business effects
+ok 93 - canonical voice UI: eager and mounted Kore descriptors follow locale without business effects
+  ---
+  duration_ms: 18.233541
+  type: 'test'
+  ...
+# Subtest: canonical voice UI: custom Kore label and description remain literal
+ok 94 - canonical voice UI: custom Kore label and description remain literal
+  ---
+  duration_ms: 18.180042
+  type: 'test'
+  ...
+# Subtest: canonical voice UI: custom CustomVoice label and description remain literal
+ok 95 - canonical voice UI: custom CustomVoice label and description remain literal
+  ---
+  duration_ms: 17.869292
+  type: 'test'
+  ...
+# Subtest: canonical voice UI: restored player metadata retains descriptor across locale commits
+ok 96 - canonical voice UI: restored player metadata retains descriptor across locale commits
+  ---
+  duration_ms: 19.716083
+  type: 'test'
+  ...
+# Subtest: canonical voice UI: helper recognizes only exact server identity and field pairs
+ok 97 - canonical voice UI: helper recognizes only exact server identity and field pairs
+  ---
+  duration_ms: 0.209959
+  type: 'test'
+  ...
+# Subtest: review R8: first settings File survives its hidden input click through the real reader handler
+ok 98 - review R8: first settings File survives its hidden input click through the real reader handler
+  ---
+  duration_ms: 18.957584
+  type: 'test'
+  ...
+# Subtest: review R8: genuine selection-end still cancels the File captured after the owned input click
+ok 99 - review R8: genuine selection-end still cancels the File captured after the owned input click
+  ---
+  duration_ms: 10.077625
+  type: 'test'
+  ...
+# Subtest: review R8: genuine owner still cancels the File captured after the owned input click
+ok 100 - review R8: genuine owner still cancels the File captured after the owned input click
+  ---
+  duration_ms: 20.371875
+  type: 'test'
+  ...
+# Subtest: review R8: genuine overlay-close still cancels the File captured after the owned input click
+ok 101 - review R8: genuine overlay-close still cancels the File captured after the owned input click
+  ---
+  duration_ms: 27.595583
+  type: 'test'
+  ...
+# Subtest: review R8: genuine new-overlay still cancels the File captured after the owned input click
+ok 102 - review R8: genuine new-overlay still cancels the File captured after the owned input click
+  ---
+  duration_ms: 26.376541
+  type: 'test'
+  ...
+# Subtest: review R8: reader still dismisses on an unrelated input click
+ok 103 - review R8: reader still dismisses on an unrelated input click
+  ---
+  duration_ms: 11.121
+  type: 'test'
+  ...
+# Subtest: sidebar starts narration directly and continues exact source order until the chapter ends
+ok 104 - sidebar starts narration directly and continues exact source order until the chapter ends
+  ---
+  duration_ms: 100.295542
+  type: 'test'
+  ...
+# Subtest: pause while a clip is being prepared prevents late automatic playback
+ok 105 - pause while a clip is being prepared prevents late automatic playback
+  ---
+  duration_ms: 36.397958
+  type: 'test'
+  ...
+# Subtest: from-here captures a bounded batch instead of copying the remaining chapter into selected parts
+ok 106 - from-here captures a bounded batch instead of copying the remaining chapter into selected parts
+  ---
+  duration_ms: 25.761
+  type: 'test'
+  ...
+# Subtest: stop clears local playback immediately even while remote guide cancellation stalls
+ok 107 - stop clears local playback immediately even while remote guide cancellation stalls
+  ---
+  duration_ms: 1.196292
+  type: 'test'
+  ...
+# Subtest: waiting for a pending clip invalidates previous audio and continues with the ready clip
+ok 108 - waiting for a pending clip invalidates previous audio and continues with the ready clip
+  ---
+  duration_ms: 0.584
+  type: 'test'
+  ...
+# Subtest: interrupted clip never advertises an ongoing generation
+ok 109 - interrupted clip never advertises an ongoing generation
+  ---
+  duration_ms: 0.4035
+  type: 'test'
+  ...
+# Subtest: browsing into a neighboring chapter keeps audio active and releases automatic following
+ok 110 - browsing into a neighboring chapter keeps audio active and releases automatic following
+  ---
+  duration_ms: 0.321667
+  type: 'test'
+  ...
+# Subtest: turning a page suspends audio following while playback stays active
+ok 111 - turning a page suspends audio following while playback stays active
+  ---
+  duration_ms: 0.338792
+  type: 'test'
+  ...
+# Subtest: audio follows an offscreen horizontal page even when its vertical bounds look visible
+ok 112 - audio follows an offscreen horizontal page even when its vertical bounds look visible
+  ---
+  duration_ms: 0.326292
+  type: 'test'
+  ...
+# Subtest: a dialogue never forces the reader to turn pages while listening to an explanation
+ok 113 - a dialogue never forces the reader to turn pages while listening to an explanation
+  ---
+  duration_ms: 0.236625
+  type: 'test'
+  ...
+# Subtest: seek feedback is disabled until media duration is known and describes the current position
+ok 114 - seek feedback is disabled until media duration is known and describes the current position
+  ---
+  duration_ms: 0.222375
+  type: 'test'
+  ...
+# Subtest: preparing audio exposes busy state and restores available controls after failure
+ok 115 - preparing audio exposes busy state and restores available controls after failure
+  ---
+  duration_ms: 2.629208
+  type: 'test'
+  ...
+# Subtest: audio action clicks do not become record-list messages, while restore receipts remain visible
+ok 116 - audio action clicks do not become record-list messages, while restore receipts remain visible
+  ---
+  duration_ms: 0.901416
+  type: 'test'
+  ...
+# Subtest: switching an open audio panel preserves a stable focus target without taking focus from outside
+ok 117 - switching an open audio panel preserves a stable focus target without taking focus from outside
+  ---
+  duration_ms: 0.268458
+  type: 'test'
+  ...
+# Subtest: an unverified guide candidate is inspectable without paid synthesis or editable publication controls
+ok 118 - an unverified guide candidate is inspectable without paid synthesis or editable publication controls
+  ---
+  duration_ms: 0.412583
+  type: 'test'
+  ...
+# Subtest: narration continuation resumes the exact source offset and ends at the chapter boundary
+ok 119 - narration continuation resumes the exact source offset and ends at the chapter boundary
+  ---
+  duration_ms: 0.30025
+  type: 'test'
+  ...
+# Subtest: the top entry splits the book metadata trigger from a real current-chapter chooser
+ok 120 - the top entry splits the book metadata trigger from a real current-chapter chooser
+  ---
+  duration_ms: 6.940125
+  type: 'test'
+  ...
+# Subtest: the chapter heading stays quiet and the single listen entry is a 44px side-panel row
+ok 121 - the chapter heading stays quiet and the single listen entry is a 44px side-panel row
+  ---
+  duration_ms: 0.529167
+  type: 'test'
+  ...
+# Subtest: the top chapter entry stays disabled until readiness and names the current chapter
+ok 122 - the top chapter entry stays disabled until readiness and names the current chapter
+  ---
+  duration_ms: 0.461458
+  type: 'test'
+  ...
+# Subtest: choosing a chapter closes the chooser and lands in the selected chapter in false pagination mode
+ok 123 - choosing a chapter closes the chooser and lands in the selected chapter in false pagination mode
+  ---
+  duration_ms: 0.589459
+  type: 'test'
+  ...
+# Subtest: choosing a chapter closes the chooser and lands in the selected chapter in true pagination mode
+ok 124 - choosing a chapter closes the chooser and lands in the selected chapter in true pagination mode
+  ---
+  duration_ms: 0.314541
+  type: 'test'
+  ...
+# Subtest: Escape returns focus to the actual opener and stale openers fall back to the directory entry
+ok 125 - Escape returns focus to the actual opener and stale openers fall back to the directory entry
+  ---
+  duration_ms: 0.225166
+  type: 'test'
+  ...
+# Subtest: the sidebar listen entry needs explicit activation and navigation requests no audio or providers
+ok 126 - the sidebar listen entry needs explicit activation and navigation requests no audio or providers
+  ---
+  duration_ms: 0.250333
+  type: 'test'
+  ...
+# Subtest: the reader shell keeps audio generation out of navigation and the listen handler implicit-free
+ok 127 - the reader shell keeps audio generation out of navigation and the listen handler implicit-free
+  ---
+  duration_ms: 1.550833
+  type: 'test'
+  ...
+# Subtest: locale preserves an open contents dialog, opener, row identity and scroll without reading the book again
+ok 128 - locale preserves an open contents dialog, opener, row identity and scroll without reading the book again
+  ---
+  duration_ms: 8.518542
+  type: 'test'
+  ...
+# Subtest: actual audio owner preserves playing media, cached business state and accessible labels through four commits
+ok 129 - actual audio owner preserves playing media, cached business state and accessible labels through four commits
+  ---
+  duration_ms: 77.353667
+  type: 'test'
+  ...
+# Subtest: pending preparation success settles in effective language without automatic fallback
+ok 130 - pending preparation success settles in effective language without automatic fallback
+  ---
+  duration_ms: 27.816208
+  type: 'test'
+  ...
+# Subtest: pending preparation unknown settles in effective language without automatic fallback
+ok 131 - pending preparation unknown settles in effective language without automatic fallback
+  ---
+  duration_ms: 24.837625
+  type: 'test'
+  ...
+# Subtest: pending preparation typed settles in effective language without automatic fallback
+ok 132 - pending preparation typed settles in effective language without automatic fallback
+  ---
+  duration_ms: 21.092
+  type: 'test'
+  ...
+# Subtest: pending preparation wrongStatus settles in effective language without automatic fallback
+ok 133 - pending preparation wrongStatus settles in effective language without automatic fallback
+  ---
+  duration_ms: 21.696167
+  type: 'test'
+  ...
+# Subtest: manual script dirty textarea and pending estimate success keep native editing identity
+ok 134 - manual script dirty textarea and pending estimate success keep native editing identity
+  ---
+  duration_ms: 19.150708
+  type: 'test'
+  ...
+# Subtest: manual script dirty textarea and pending estimate failure keep native editing identity
+ok 135 - manual script dirty textarea and pending estimate failure keep native editing identity
+  ---
+  duration_ms: 18.004333
+  type: 'test'
+  ...
+# Subtest: voice, speed and guide native selects retain dirty values and focus without media or preference changes
+ok 136 - voice, speed and guide native selects retain dirty values and focus without media or preference changes
+  ---
+  duration_ms: 23.578583
+  type: 'test'
+  ...
+# Subtest: pending guide job success keeps UUID payload, timer and session through locale
+ok 137 - pending guide job success keeps UUID payload, timer and session through locale
+  ---
+  duration_ms: 22.995792
+  type: 'test'
+  ...
+# Subtest: pending guide job failure keeps UUID payload, timer and session through locale
+ok 138 - pending guide job failure keeps UUID payload, timer and session through locale
+  ---
+  duration_ms: 25.408917
+  type: 'test'
+  ...
+# Subtest: new explicit Ask uses locale framework while transcript, IDs, citations and existing draft stay literal
+ok 139 - new explicit Ask uses locale framework while transcript, IDs, citations and existing draft stay literal
+  ---
+  duration_ms: 16.365375
+  type: 'test'
+  ...
+# Subtest: closed old view and disposed owner consume late prepare/estimate completions and failures
+ok 140 - closed old view and disposed owner consume late prepare/estimate completions and failures
+  ---
+  duration_ms: 32.771542
+  type: 'test'
+  ...
+# Subtest: first meaningful audio controls await the physical ready promise, including English fallback
+ok 141 - first meaningful audio controls await the physical ready promise, including English fallback
+  ---
+  duration_ms: 11.245
+  type: 'test'
+  ...
+# Subtest: pending guide scope success keeps scope input and settles once in the effective locale
+ok 142 - pending guide scope success keeps scope input and settles once in the effective locale
+  ---
+  duration_ms: 16.240459
+  type: 'test'
+  ...
+# Subtest: pending guide scope failure keeps scope input and settles once in the effective locale
+ok 143 - pending guide scope failure keeps scope input and settles once in the effective locale
+  ---
+  duration_ms: 16.035375
+  type: 'test'
+  ...
+# Subtest: historical errors, retained scripts, source leaves and view registry remain literal and bounded
+ok 144 - historical errors, retained scripts, source leaves and view registry remain literal and bounded
+  ---
+  duration_ms: 25.034666
+  type: 'test'
+  ...
+# Subtest: saved records and resume entry format cached chapter/count descriptors without refetching
+ok 145 - saved records and resume entry format cached chapter/count descriptors without refetching
+  ---
+  duration_ms: 15.924417
+  type: 'test'
+  ...
+# Subtest: pending estimate from a replaced or disposed script cannot write its retained old leaf
+ok 146 - pending estimate from a replaced or disposed script cannot write its retained old leaf
+  ---
+  duration_ms: 50.9115
+  type: 'test'
+  ...
+# Subtest: actual runtime initial rejection resolves audio to coherent English without language-triggered reinitialization
+ok 147 - actual runtime initial rejection resolves audio to coherent English without language-triggered reinitialization
+  ---
+  duration_ms: 13.032042
+  type: 'test'
+  ...
+# Subtest: disposed media and guide owners consume late blobs/jobs without playback or scheduling
+ok 148 - disposed media and guide owners consume late blobs/jobs without playback or scheduling
+  ---
+  duration_ms: 25.632625
+  type: 'test'
+  ...
+# Subtest: persisted pagehide pauses audio but retains cached UI ownership for Back restoration
+ok 149 - persisted pagehide pauses audio but retains cached UI ownership for Back restoration
+  ---
+  duration_ms: 12.01075
+  type: 'test'
+  ...
+# Subtest: typed fallback activates corresponding original only on an explicit click
+ok 150 - typed fallback activates corresponding original only on an explicit click
+  ---
+  duration_ms: 12.653
+  type: 'test'
+  ...
+# Subtest: disposed bootstrap ignores late preferences without writing native controls
+ok 151 - disposed bootstrap ignores late preferences without writing native controls
+  ---
+  duration_ms: 10.127584
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after panel
+ok 152 - scene callbacks ask first wait consumes success after panel
+  ---
+  duration_ms: 13.585375
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after panel
+ok 153 - scene callbacks ask first wait consumes failure after panel
+  ---
+  duration_ms: 13.863709
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after stop
+ok 154 - scene callbacks ask first wait consumes success after stop
+  ---
+  duration_ms: 14.85875
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after stop
+ok 155 - scene callbacks ask first wait consumes failure after stop
+  ---
+  duration_ms: 14.448792
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after session
+ok 156 - scene callbacks ask first wait consumes success after session
+  ---
+  duration_ms: 15.708709
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after session
+ok 157 - scene callbacks ask first wait consumes failure after session
+  ---
+  duration_ms: 15.883541
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after clip
+ok 158 - scene callbacks ask first wait consumes success after clip
+  ---
+  duration_ms: 13.566042
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after clip
+ok 159 - scene callbacks ask first wait consumes failure after clip
+  ---
+  duration_ms: 13.222791
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after clipABA
+ok 160 - scene callbacks ask first wait consumes success after clipABA
+  ---
+  duration_ms: 20.211291
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after clipABA
+ok 161 - scene callbacks ask first wait consumes failure after clipABA
+  ---
+  duration_ms: 20.21475
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after ownerABA
+ok 162 - scene callbacks ask first wait consumes success after ownerABA
+  ---
+  duration_ms: 13.298334
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after ownerABA
+ok 163 - scene callbacks ask first wait consumes failure after ownerABA
+  ---
+  duration_ms: 14.988625
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after bookABA
+ok 164 - scene callbacks ask first wait consumes success after bookABA
+  ---
+  duration_ms: 15.321375
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after bookABA
+ok 165 - scene callbacks ask first wait consumes failure after bookABA
+  ---
+  duration_ms: 16.060417
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after book
+ok 166 - scene callbacks ask first wait consumes success after book
+  ---
+  duration_ms: 16.469417
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after book
+ok 167 - scene callbacks ask first wait consumes failure after book
+  ---
+  duration_ms: 15.834334
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes success after disposed
+ok 168 - scene callbacks ask first wait consumes success after disposed
+  ---
+  duration_ms: 16.4405
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask first wait consumes failure after disposed
+ok 169 - scene callbacks ask first wait consumes failure after disposed
+  ---
+  duration_ms: 15.639791
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after panel
+ok 170 - scene callbacks sources first wait consumes success after panel
+  ---
+  duration_ms: 16.2175
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after panel
+ok 171 - scene callbacks sources first wait consumes failure after panel
+  ---
+  duration_ms: 20.602208
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after stop
+ok 172 - scene callbacks sources first wait consumes success after stop
+  ---
+  duration_ms: 18.817833
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after stop
+ok 173 - scene callbacks sources first wait consumes failure after stop
+  ---
+  duration_ms: 15.310125
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after session
+ok 174 - scene callbacks sources first wait consumes success after session
+  ---
+  duration_ms: 17.504875
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after session
+ok 175 - scene callbacks sources first wait consumes failure after session
+  ---
+  duration_ms: 16.012333
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after clip
+ok 176 - scene callbacks sources first wait consumes success after clip
+  ---
+  duration_ms: 14.074042
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after clip
+ok 177 - scene callbacks sources first wait consumes failure after clip
+  ---
+  duration_ms: 13.567583
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after clipABA
+ok 178 - scene callbacks sources first wait consumes success after clipABA
+  ---
+  duration_ms: 20.777583
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after clipABA
+ok 179 - scene callbacks sources first wait consumes failure after clipABA
+  ---
+  duration_ms: 22.57275
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after ownerABA
+ok 180 - scene callbacks sources first wait consumes success after ownerABA
+  ---
+  duration_ms: 20.204959
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after ownerABA
+ok 181 - scene callbacks sources first wait consumes failure after ownerABA
+  ---
+  duration_ms: 15.459584
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after bookABA
+ok 182 - scene callbacks sources first wait consumes success after bookABA
+  ---
+  duration_ms: 14.113208
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after bookABA
+ok 183 - scene callbacks sources first wait consumes failure after bookABA
+  ---
+  duration_ms: 13.930333
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after book
+ok 184 - scene callbacks sources first wait consumes success after book
+  ---
+  duration_ms: 15.902916
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after book
+ok 185 - scene callbacks sources first wait consumes failure after book
+  ---
+  duration_ms: 14.022333
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes success after disposed
+ok 186 - scene callbacks sources first wait consumes success after disposed
+  ---
+  duration_ms: 13.523167
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources first wait consumes failure after disposed
+ok 187 - scene callbacks sources first wait consumes failure after disposed
+  ---
+  duration_ms: 15.422458
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after panel
+ok 188 - scene callbacks sources second wait consumes success after panel
+  ---
+  duration_ms: 15.144208
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after panel
+ok 189 - scene callbacks sources second wait consumes failure after panel
+  ---
+  duration_ms: 15.646541
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after stop
+ok 190 - scene callbacks sources second wait consumes success after stop
+  ---
+  duration_ms: 14.72925
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after stop
+ok 191 - scene callbacks sources second wait consumes failure after stop
+  ---
+  duration_ms: 14.156958
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after session
+ok 192 - scene callbacks sources second wait consumes success after session
+  ---
+  duration_ms: 15.780084
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after session
+ok 193 - scene callbacks sources second wait consumes failure after session
+  ---
+  duration_ms: 15.677083
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after clip
+ok 194 - scene callbacks sources second wait consumes success after clip
+  ---
+  duration_ms: 13.712167
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after clip
+ok 195 - scene callbacks sources second wait consumes failure after clip
+  ---
+  duration_ms: 14.145083
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after clipABA
+ok 196 - scene callbacks sources second wait consumes success after clipABA
+  ---
+  duration_ms: 21.186709
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after clipABA
+ok 197 - scene callbacks sources second wait consumes failure after clipABA
+  ---
+  duration_ms: 20.322875
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after ownerABA
+ok 198 - scene callbacks sources second wait consumes success after ownerABA
+  ---
+  duration_ms: 14.294958
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after ownerABA
+ok 199 - scene callbacks sources second wait consumes failure after ownerABA
+  ---
+  duration_ms: 13.6385
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after bookABA
+ok 200 - scene callbacks sources second wait consumes success after bookABA
+  ---
+  duration_ms: 13.691917
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after bookABA
+ok 201 - scene callbacks sources second wait consumes failure after bookABA
+  ---
+  duration_ms: 13.903
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after book
+ok 202 - scene callbacks sources second wait consumes success after book
+  ---
+  duration_ms: 13.335958
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after book
+ok 203 - scene callbacks sources second wait consumes failure after book
+  ---
+  duration_ms: 13.893
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes success after disposed
+ok 204 - scene callbacks sources second wait consumes success after disposed
+  ---
+  duration_ms: 15.485917
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources second wait consumes failure after disposed
+ok 205 - scene callbacks sources second wait consumes failure after disposed
+  ---
+  duration_ms: 16.060083
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask accepts pending success through locale commits
+ok 206 - scene callbacks ask accepts pending success through locale commits
+  ---
+  duration_ms: 23.076709
+  type: 'test'
+  ...
+# Subtest: scene callbacks ask accepts pending failure through locale commits
+ok 207 - scene callbacks ask accepts pending failure through locale commits
+  ---
+  duration_ms: 22.706792
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources accepts pending success through locale commits
+ok 208 - scene callbacks sources accepts pending success through locale commits
+  ---
+  duration_ms: 22.929792
+  type: 'test'
+  ...
+# Subtest: scene callbacks sources accepts pending failure through locale commits
+ok 209 - scene callbacks sources accepts pending failure through locale commits
+  ---
+  duration_ms: 22.991541
+  type: 'test'
+  ...
+1..209
+# tests 209
+# suites 0
+# pass 209
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1887.262167

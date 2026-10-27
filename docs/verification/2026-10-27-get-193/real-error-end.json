@@ -1,0 +1,168 @@
+{
+  "clipGets": 2,
+  "failed": "听读暂时无法完成，正文仍可阅读。",
+  "events": [
+    {
+      "event": "play",
+      "trusted": true,
+      "time": 0,
+      "duration": null,
+      "paused": false,
+      "readyState": 0,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "loadedmetadata",
+      "trusted": true,
+      "time": 0,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 1,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "time": 1.133905,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "playing",
+      "trusted": true,
+      "time": 1.133905,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "time": 1.333105,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "time": 1.599026,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "time": 1.864658,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "time": 2.131818,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "time": 2.39608,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "time": 2.661828,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "time": 2.928709,
+      "duration": 2.96,
+      "paused": false,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "timeupdate",
+      "trusted": true,
+      "time": 2.96,
+      "duration": 2.96,
+      "paused": true,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "pause",
+      "trusted": true,
+      "time": 2.96,
+      "duration": 2.96,
+      "paused": true,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    },
+    {
+      "event": "ended",
+      "trusted": true,
+      "time": 2.96,
+      "duration": 2.96,
+      "paused": true,
+      "readyState": 4,
+      "passages": [
+        "01b38ea4c710a84b-p00007"
+      ]
+    }
+  ],
+  "finished": "这一段旅程听完了。可以回到原文，停一会儿。",
+  "toggle": "重新播放",
+  "speaking": 0,
+  "time": 2.96,
+  "duration": 2.96,
+  "errors": [],
+  "newSynthesisRequests": [],
+  "faultInjection": "First clip GET returned injected 503; second GET uses the unchanged real cached provider WAV."
+}

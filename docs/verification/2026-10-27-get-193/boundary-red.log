@@ -1,0 +1,219 @@
+TAP version 13
+# Subtest: sidebar starts narration directly and continues exact source order until the chapter ends
+ok 1 - sidebar starts narration directly and continues exact source order until the chapter ends
+  ---
+  duration_ms: 251.05975
+  type: 'test'
+  ...
+# Subtest: late created narration is canceled after its book scope is disposed
+ok 2 - late created narration is canceled after its book scope is disposed
+  ---
+  duration_ms: 83.025666
+  type: 'test'
+  ...
+# Subtest: disposing known generating narration cancels its owned session
+ok 3 - disposing known generating narration cancels its owned session
+  ---
+  duration_ms: 99.997708
+  type: 'test'
+  ...
+# Subtest: explicit play retries a failed preparation using the frozen start
+ok 4 - explicit play retries a failed preparation using the frozen start
+  ---
+  duration_ms: 106.924708
+  type: 'test'
+  ...
+# Subtest: manual scrolling while the next batch is preparing disables following
+ok 5 - manual scrolling while the next batch is preparing disables following
+  ---
+  duration_ms: 90.247708
+  type: 'test'
+  ...
+# Subtest: pagehide cannot be undone by an awaited source navigation
+ok 6 - pagehide cannot be undone by an awaited source navigation
+  ---
+  duration_ms: 62.683458
+  type: 'test'
+  ...
+# Subtest: stopping an uncertain create cancels by its original idempotency key
+ok 7 - stopping an uncertain create cancels by its original idempotency key
+  ---
+  duration_ms: 53.063834
+  type: 'test'
+  ...
+# Subtest: BFCache returns an invalid prepare intent to explicit recovery
+ok 8 - BFCache returns an invalid prepare intent to explicit recovery
+  ---
+  duration_ms: 108.035
+  type: 'test'
+  ...
+# Subtest: BFCache returns an invalid create intent to explicit recovery
+ok 9 - BFCache returns an invalid create intent to explicit recovery
+  ---
+  duration_ms: 118.445542
+  type: 'test'
+  ...
+# Subtest: BFCache interrupted create failure can be explicitly recovered
+not ok 10 - BFCache interrupted create failure can be explicitly recovered
+  ---
+  duration_ms: 77.073667
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:80:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    1 !== 2
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-continuous.test.mjs:83:51)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pause while a clip is being prepared prevents late automatic playback
+ok 11 - pause while a clip is being prepared prevents late automatic playback
+  ---
+  duration_ms: 97.633541
+  type: 'test'
+  ...
+# Subtest: from-here captures a bounded batch instead of copying the remaining chapter into selected parts
+ok 12 - from-here captures a bounded batch instead of copying the remaining chapter into selected parts
+  ---
+  duration_ms: 70.017292
+  type: 'test'
+  ...
+# Subtest: a ready clip transport failure can be explicitly retried without a new session
+ok 13 - a ready clip transport failure can be explicitly retried without a new session
+  ---
+  duration_ms: 81.453167
+  type: 'test'
+  ...
+# Subtest: automatic continuation preserves manual reading rather than restoring follow
+ok 14 - automatic continuation preserves manual reading rather than restoring follow
+  ---
+  duration_ms: 102.925041
+  type: 'test'
+  ...
+# Subtest: request cancellation persists before creation and across service instances
+ok 15 - request cancellation persists before creation and across service instances
+  ---
+  duration_ms: 43.565208
+  type: 'test'
+  ...
+# Subtest: request cancellation aborts an accepted session without its response ID
+ok 16 - request cancellation aborts an accepted session without its response ID
+  ---
+  duration_ms: 27.524958
+  type: 'test'
+  ...
+# Subtest: a request cancelled while source preparation is pending never synthesizes
+ok 17 - a request cancelled while source preparation is pending never synthesizes
+  ---
+  duration_ms: 10.000083
+  type: 'test'
+  ...
+# Subtest: unknown requests fail closed when cancellation receipt capacity is exhausted
+not ok 18 - unknown requests fail closed when cancellation receipt capacity is exhausted
+  ---
+  duration_ms: 9.564375
+  type: 'test'
+  location: '/Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-service.test.mjs:28:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 413
+    code: 'record_limit'
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///Users/cubxxw/ops/symphony/runtime/workspaces/GET-193/tests/audio-service.test.mjs:32:2)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: parallel retries create one session and a key cannot be rebound to other text
+ok 19 - parallel retries create one session and a key cannot be rebound to other text
+  ---
+  duration_ms: 25.743875
+  type: 'test'
+  ...
+# Subtest: cancelled generation cannot publish a late result
+ok 20 - cancelled generation cannot publish a late result
+  ---
+  duration_ms: 42.272125
+  type: 'test'
+  ...
+# Subtest: changed content hides cached audio and a fresh instance retains completed audio without regenerating
+ok 21 - changed content hides cached audio and a fresh instance retains completed audio without regenerating
+  ---
+  duration_ms: 27.171375
+  type: 'test'
+  ...
+# Subtest: 402 is recorded without retries and listening position is independent of reading
+ok 22 - 402 is recorded without retries and listening position is independent of reading
+  ---
+  duration_ms: 29.599625
+  type: 'test'
+  ...
+# Subtest: edited dialogue preserves attribution and does not reuse audio of the previous text
+ok 23 - edited dialogue preserves attribution and does not reuse audio of the previous text
+  ---
+  duration_ms: 4.7255
+  type: 'test'
+  ...
+# Subtest: saved scripts and audio are discoverable without a browser resume key and remain owner scoped
+ok 24 - saved scripts and audio are discoverable without a browser resume key and remain owner scoped
+  ---
+  duration_ms: 26.329125
+  type: 'test'
+  ...
+# Subtest: another owner cannot abort a known active session
+ok 25 - another owner cannot abort a known active session
+  ---
+  duration_ms: 37.405792
+  type: 'test'
+  ...
+# Subtest: revoked generation authority prevents publishing and starting later clips
+ok 26 - revoked generation authority prevents publishing and starting later clips
+  ---
+  duration_ms: 39.204542
+  type: 'test'
+  ...
+# Subtest: one owner cannot start paid sessions in two books concurrently
+ok 27 - one owner cannot start paid sessions in two books concurrently
+  ---
+  duration_ms: 40.923375
+  type: 'test'
+  ...
+# Subtest: official WAV generation splits long reading, dialogue and AI answers without changing their text
+ok 28 - official WAV generation splits long reading, dialogue and AI answers without changing their text
+  ---
+  duration_ms: 51.488375
+  type: 'test'
+  ...
+# Subtest: a trailing-space answer completes official synthesis and impossible blank-only chunks fail before payment
+ok 29 - a trailing-space answer completes official synthesis and impossible blank-only chunks fail before payment
+  ---
+  duration_ms: 83.523959
+  type: 'test'
+  ...
+# Subtest: long English sentences are chunked from their exact selection rather than legacy coarse boundaries
+ok 30 - long English sentences are chunked from their exact selection rather than legacy coarse boundaries
+  ---
+  duration_ms: 1.59325
+  type: 'test'
+  ...
+1..30
+# tests 30
+# suites 0
+# pass 28
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1530.520375

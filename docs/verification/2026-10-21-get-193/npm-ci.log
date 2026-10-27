@@ -1,0 +1,5 @@
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+npm error code EALLOWREMOTE
+npm error Fetching packages of type "remote" have been disabled
+npm error Refusing to fetch "esbuild@https://registry.npmmirror.com/esbuild/-/esbuild-0.28.2.tgz"
+npm error A complete log of this run can be found in: /Users/cubxxw/.npm/_logs/2026-10-21T13_31_03_908Z-debug-0.log

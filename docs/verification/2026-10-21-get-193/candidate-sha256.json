@@ -1,0 +1,7 @@
+{
+  "app/index.html": "533498f89fef5c13f35fa98cb52e17781c9e7b0ce46ce74e63e454295d96a034",
+  "app/reader-audio-bootstrap.mjs": "8de8b76d88e37efcee10357ad2232db0eee70f92bac5c6bc97ed98825a46fd42",
+  "app/reader-audio.css": "7e848c662479d6c138912c9cf6b1836bea9652ba9b39658a40f61a2b4a42cf5d",
+  "app/reader-audio.js": "899eef101f3a3a758598302eea1a31e50e0083b87059d19ad422f69671f3f2b5",
+  "tests/audio-continuous.test.mjs": "a1fa036efb9bdb834003f96708abfc9c4f435236ad59b93e7de8969aad82914e"
+}

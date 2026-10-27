@@ -2236,6 +2236,7 @@ candidate:app/index.html:29:154,html-attribute,app/index.html,29,aria-label,unkn
 candidate:app/index.html:29:224,html-attribute,app/index.html,29,title,unknown,reviewable,,Reading tools · Hover or tap to expand
 candidate:app/index.html:32:195,html-attribute,app/index.html,32,aria-label,unknown,reviewable,,Collapse reading tools
 candidate:app/index.html:33:198,html-attribute,app/index.html,33,aria-label,unknown,reviewable,,Time recorded this session
+candidate:app/index.html:39:296,html-attribute,app/index.html,39,aria-label,unknown,reviewable,,More listening options
 candidate:app/index.html:45:176,html-attribute,app/index.html,45,aria-label,unknown,reviewable,,Close manual entry
 candidate:app/index.html:56:172,html-attribute,app/index.html,56,aria-label,unknown,reviewable,,Close reading prompts
 candidate:app/index.html:63:168,html-attribute,app/index.html,63,aria-label,unknown,reviewable,,Close draft list
@@ -2302,7 +2303,8 @@ candidate:app/index.html:35:299,html-text,app/index.html,35,,unknown,reviewable,
 candidate:app/index.html:35:398,html-text,app/index.html,35,,unknown,reviewable,,Foreground estimate
 candidate:app/index.html:36:92,html-text,app/index.html,36,,unknown,reviewable,,"Focused reading allows time to think without scrolling. Hidden, unfocused or paused time is excluded."
 candidate:app/index.html:38:122,html-text,app/index.html,38,,unknown,reviewable,,Add reading time
-candidate:app/index.html:39:159,html-text,app/index.html,39,,unknown,reviewable,,Listen to this chapter
+candidate:app/index.html:39:165,html-text,app/index.html,39,,unknown,reviewable,,Listen to this chapter
+candidate:app/index.html:39:355,html-text,app/index.html,39,,unknown,reviewable,,⋯
 candidate:app/index.html:40:109,html-text,app/index.html,40,,unknown,reviewable,,Sign in to record reading →
 candidate:app/index.html:40:245,html-text,app/index.html,40,,unknown,reviewable,,Reading prompts
 candidate:app/index.html:40:384,html-text,app/index.html,40,,unknown,reviewable,,Drafts
@@ -3138,15 +3140,16 @@ candidate:app/reader-audio-metadata.mjs:20:14,js-cjk-literal,app/reader-audio-me
 candidate:app/reader-audio-metadata.mjs:20:31,js-cjk-literal,app/reader-audio-metadata.mjs,20,,unknown,reviewable,,语气轻松，适合对话
 candidate:app/reader-audio-metadata.mjs:21:14,js-cjk-literal,app/reader-audio-metadata.mjs,21,,unknown,reviewable,,沉稳
 candidate:app/reader-audio-metadata.mjs:21:31,js-cjk-literal,app/reader-audio-metadata.mjs,21,,unknown,reviewable,,声音坚定，节奏从容
-candidate:app/reader-audio.js:40:107,js-attribute,app/reader-audio.js,40,aria-labelledby,unknown,protected,identifier,audio-dialog-title
-candidate:app/reader-audio.js:40:146,js-dom-literal,app/reader-audio.js,40,innerHTML,unknown,protected,quotation,"<header class=""audio-dialog-header""><h2 id=""audio-dialog-title""></h2><button type=""button"" aria-label=""Close listening panel"">Close</button></header><div class=""audio-dialog-body""></div>"
-candidate:app/reader-audio.js:41:143,js-dom-literal,app/reader-audio.js,41,innerHTML,unknown,protected,quotation,"<div class=""audio-player-main""><button class=""audio-play"" id=""audio-toggle"" aria-label=""Play"">▶</button><button class=""audio-playing-label"" id=""audio-expand"" aria-expanded=""false"" aria-controls=""audio-details""><strong id=""audio-now-title"">Listen to this passage</strong><small id=""audio-now-meta""></small></button><button class=""audio-player-icon audio-previous"" id=""audio-previous"" aria-label=""Previous clip"">‹</button><button class=""audio-player-icon audio-next"" id=""audio-next"" aria-label=""Next clip"">›</button><button class=""audio-player-icon"" id=""audio-close"" aria-label=""Stop and close audio"">×</button></div><div class=""audio-player-line""><input id=""audio-seek"" type=""range"" value=""0"" min=""0"" max=""100"" step=""0.1"" aria-label=""Clip progress""><span class=""audio-clock"" id=""audio-clock"">0:00 / 0:00</span></div><div class=""audio-player-details"" id=""audio-details"" hidden><button id=""audio-sound-settings"">Voice</button><select id=""audio-speed"" aria-label=""Playback speed""><option value=""0.75"">0.75×</option><option value=""1"">1×</option><option value=""1.25"">1.25×</option><option value=""1.5"">1.5×</option></select><button id=""audio-continue"" hidden>Prepare next part</button><button id=""audio-source"">View source</button><button id=""audio-ask"">Ask about this</button><button id=""audio-guide-retry"" hidden>Reload</button><button id=""audio-download"">Download clip</button><button id=""audio-script"" hidden>View script</button><button id=""audio-return-follow"" class=""audio-follow"" hidden>Return to spoken passage</button></div><p id=""audio-player-status"" class=""audio-player-status"" role=""status"" aria-live=""polite""></p>"
-candidate:app/reader-audio.js:58:181,js-attribute,app/reader-audio.js,58,role,unknown,reviewable,,status
-candidate:app/reader-audio.js:58:218,js-attribute,app/reader-audio.js,58,aria-live,unknown,reviewable,,polite
-candidate:app/reader-audio.js:82:88,js-attribute,app/reader-audio.js,82,aria-busy,unknown,reviewable,,true
-candidate:app/reader-audio.js:83:562,js-attribute,app/reader-audio.js,83,aria-busy,unknown,reviewable,,false
-candidate:app/reader-audio.js:93:225,js-attribute,app/reader-audio.js,93,aria-hidden,unknown,reviewable,,true
-candidate:app/reader-audio.js:178:187,js-cjk-literal,app/reader-audio.js,178,,unknown,reviewable,,读到这里，可以停一会儿。把一句话听完整，再回到原文，慢慢想。
+candidate:app/reader-audio.js:41:107,js-attribute,app/reader-audio.js,41,aria-labelledby,unknown,protected,identifier,audio-dialog-title
+candidate:app/reader-audio.js:41:146,js-dom-literal,app/reader-audio.js,41,innerHTML,unknown,protected,quotation,"<header class=""audio-dialog-header""><h2 id=""audio-dialog-title""></h2><button type=""button"" aria-label=""Close listening panel"">Close</button></header><div class=""audio-dialog-body""></div>"
+candidate:app/reader-audio.js:42:143,js-dom-literal,app/reader-audio.js,42,innerHTML,unknown,protected,quotation,"<div class=""audio-player-main""><button class=""audio-play"" id=""audio-toggle"" aria-label=""Play"">▶</button><button class=""audio-playing-label"" id=""audio-expand"" aria-expanded=""false"" aria-controls=""audio-details""><strong id=""audio-now-title"">Listen to this passage</strong><small id=""audio-now-meta""></small></button><button class=""audio-player-icon audio-previous"" id=""audio-previous"" aria-label=""Previous clip"">‹</button><button class=""audio-player-icon audio-next"" id=""audio-next"" aria-label=""Next clip"">›</button><button class=""audio-player-icon"" id=""audio-close"" aria-label=""Stop and close audio"">×</button></div><div class=""audio-player-line""><input id=""audio-seek"" type=""range"" value=""0"" min=""0"" max=""100"" step=""0.1"" aria-label=""Clip progress""><span class=""audio-clock"" id=""audio-clock"">0:00 / 0:00</span></div><div class=""audio-player-details"" id=""audio-details"" hidden><button id=""audio-sound-settings"">Voice</button><select id=""audio-speed"" aria-label=""Playback speed""><option value=""0.75"">0.75×</option><option value=""1"">1×</option><option value=""1.25"">1.25×</option><option value=""1.5"">1.5×</option></select><button id=""audio-continue"" hidden>Prepare next part</button><button id=""audio-source"">View source</button><button id=""audio-ask"">Ask about this</button><button id=""audio-guide-retry"" hidden>Reload</button><button id=""audio-download"">Download clip</button><button id=""audio-script"" hidden>View script</button><button id=""audio-return-follow"" class=""audio-follow"" hidden>Return to spoken passage</button></div><p id=""audio-player-status"" class=""audio-player-status"" role=""status"" aria-live=""polite""></p>"
+candidate:app/reader-audio.js:73:181,js-attribute,app/reader-audio.js,73,role,unknown,reviewable,,status
+candidate:app/reader-audio.js:73:218,js-attribute,app/reader-audio.js,73,aria-live,unknown,reviewable,,polite
+candidate:app/reader-audio.js:85:95,js-attribute,app/reader-audio.js,85,aria-current,unknown,reviewable,,true
+candidate:app/reader-audio.js:105:88,js-attribute,app/reader-audio.js,105,aria-busy,unknown,reviewable,,true
+candidate:app/reader-audio.js:106:562,js-attribute,app/reader-audio.js,106,aria-busy,unknown,reviewable,,false
+candidate:app/reader-audio.js:146:225,js-attribute,app/reader-audio.js,146,aria-hidden,unknown,reviewable,,true
+candidate:app/reader-audio.js:231:187,js-cjk-literal,app/reader-audio.js,231,,unknown,reviewable,,读到这里，可以停一会儿。把一句话听完整，再回到原文，慢慢想。
 candidate:app/reader-book-actions.mjs:31:178,js-attribute,app/reader-book-actions.mjs,31,lang,unknown,reviewable,,und
 candidate:app/reader-book-actions.mjs:42:123,js-attribute,app/reader-book-actions.mjs,42,aria-describedby,unknown,protected,identifier,book-intro-scope
 candidate:app/reader-book-actions.mjs:57:93,js-attribute,app/reader-book-actions.mjs,57,aria-hidden,unknown,reviewable,,true
@@ -3932,29 +3935,33 @@ candidate:server/audio-service.mjs:64:162,js-cjk-literal,server/audio-service.mj
 candidate:server/audio-service.mjs:68:477,js-cjk-literal,server/audio-service.mjs,68,,unknown,reviewable,,声音未能准备好，文字已保留。
 candidate:server/audio-service.mjs:72:192,js-cjk-literal,server/audio-service.mjs,72,,unknown,reviewable,,声音服务已关闭。
 candidate:server/audio-service.mjs:72:331,js-cjk-literal,server/audio-service.mjs,72,,unknown,reviewable,,请求标识无效。
-candidate:server/audio-service.mjs:73:258,js-cjk-literal,server/audio-service.mjs,73,,unknown,reviewable,,请求标识已用于其他文字。
-candidate:server/audio-service.mjs:74:50,js-cjk-literal,server/audio-service.mjs,74,,unknown,reviewable,,声音服务尚未配置。
-candidate:server/audio-service.mjs:77:194,js-cjk-literal,server/audio-service.mjs,77,,unknown,reviewable,,请求标识冲突。
-candidate:server/audio-service.mjs:78:105,js-cjk-literal,server/audio-service.mjs,78,,unknown,reviewable,,已有声音正在准备，请先取消或等它完成。
-candidate:server/audio-service.mjs:78:197,js-cjk-literal,server/audio-service.mjs,78,,unknown,reviewable,,听读记录较多，请先导出。
-candidate:server/audio-service.mjs:79:88,js-cjk-literal,server/audio-service.mjs,79,,unknown,reviewable,,请选择可用的声音。
-candidate:server/audio-service.mjs:80:207,js-cjk-literal,server/audio-service.mjs,80,,unknown,reviewable,,一次最多使用两个声音。
-candidate:server/audio-service.mjs:87:266,js-cjk-literal,server/audio-service.mjs,87,,unknown,reviewable,,这一段声音尚未准备好。
-candidate:server/audio-service.mjs:87:385,js-cjk-literal,server/audio-service.mjs,87,,unknown,reviewable,,声音文件校验失败，请重新生成。
-candidate:server/audio-service.mjs:88:268,js-cjk-literal,server/audio-service.mjs,88,,unknown,reviewable,,声音不可用。
-candidate:server/audio-service.mjs:88:414,js-cjk-literal,server/audio-service.mjs,88,,unknown,reviewable,,播放速度无效。
-candidate:server/audio-service.mjs:88:531,js-cjk-literal,server/audio-service.mjs,88,,unknown,reviewable,,跟随设置无效。
-candidate:server/audio-service.mjs:89:357,js-cjk-literal,server/audio-service.mjs,89,,unknown,reviewable,,播放位置无效。
-candidate:server/audio-service.mjs:90:96,js-cjk-literal,server/audio-service.mjs,90,,unknown,reviewable,,请使用章节导听，先确认范围后再准备讲解。
-candidate:server/audio-service.mjs:90:249,js-cjk-literal,server/audio-service.mjs,90,,unknown,reviewable,,正文版本已变化。
-candidate:server/audio-service.mjs:90:364,js-cjk-literal,server/audio-service.mjs,90,,unknown,reviewable,,讲稿服务尚未配置。
-candidate:server/audio-service.mjs:90:464,js-cjk-literal,server/audio-service.mjs,90,,unknown,reviewable,,讲稿正在准备，请稍后。
-candidate:server/audio-service.mjs:90:811,js-cjk-literal,server/audio-service.mjs,90,,unknown,reviewable,,讲稿记录较多，请先导出。
-candidate:server/audio-service.mjs:93:202,js-cjk-literal,server/audio-service.mjs,93,,unknown,reviewable,,讲稿请求标识已用于其他内容。
-candidate:server/audio-service.mjs:93:284,js-cjk-literal,server/audio-service.mjs,93,,unknown,reviewable,,讲稿记录较多，请先导出。
-candidate:server/audio-service.mjs:95:231,js-cjk-literal,server/audio-service.mjs,95,,unknown,reviewable,,讲稿的正文版本已变化。
-candidate:server/audio-service.mjs:95:369,js-cjk-literal,server/audio-service.mjs,95,,unknown,reviewable,,讲稿依据已变化。
-candidate:server/audio-service.mjs:96:314,js-cjk-literal,server/audio-service.mjs,96,,unknown,reviewable,,讲稿已在别处修改，请重新打开。
+candidate:server/audio-service.mjs:73:403,js-cjk-literal,server/audio-service.mjs,73,,unknown,reviewable,,请求标识已用于其他文字。
+candidate:server/audio-service.mjs:74:67,js-cjk-literal,server/audio-service.mjs,74,,unknown,reviewable,,取消请求记录较多，请在本机继续。
+candidate:server/audio-service.mjs:75:50,js-cjk-literal,server/audio-service.mjs,75,,unknown,reviewable,,声音服务尚未配置。
+candidate:server/audio-service.mjs:79:194,js-cjk-literal,server/audio-service.mjs,79,,unknown,reviewable,,请求标识冲突。
+candidate:server/audio-service.mjs:80:65,js-cjk-literal,server/audio-service.mjs,80,,unknown,reviewable,,取消请求记录较多，请在本机继续。
+candidate:server/audio-service.mjs:81:105,js-cjk-literal,server/audio-service.mjs,81,,unknown,reviewable,,已有声音正在准备，请先取消或等它完成。
+candidate:server/audio-service.mjs:81:197,js-cjk-literal,server/audio-service.mjs,81,,unknown,reviewable,,听读记录较多，请先导出。
+candidate:server/audio-service.mjs:82:88,js-cjk-literal,server/audio-service.mjs,82,,unknown,reviewable,,请选择可用的声音。
+candidate:server/audio-service.mjs:83:207,js-cjk-literal,server/audio-service.mjs,83,,unknown,reviewable,,一次最多使用两个声音。
+candidate:server/audio-service.mjs:92:95,js-cjk-literal,server/audio-service.mjs,92,,unknown,reviewable,,请求标识无效。
+candidate:server/audio-service.mjs:98:48,js-cjk-literal,server/audio-service.mjs,98,,unknown,reviewable,,取消请求记录较多，请在本机继续。
+candidate:server/audio-service.mjs:107:266,js-cjk-literal,server/audio-service.mjs,107,,unknown,reviewable,,这一段声音尚未准备好。
+candidate:server/audio-service.mjs:107:385,js-cjk-literal,server/audio-service.mjs,107,,unknown,reviewable,,声音文件校验失败，请重新生成。
+candidate:server/audio-service.mjs:108:268,js-cjk-literal,server/audio-service.mjs,108,,unknown,reviewable,,声音不可用。
+candidate:server/audio-service.mjs:108:414,js-cjk-literal,server/audio-service.mjs,108,,unknown,reviewable,,播放速度无效。
+candidate:server/audio-service.mjs:108:531,js-cjk-literal,server/audio-service.mjs,108,,unknown,reviewable,,跟随设置无效。
+candidate:server/audio-service.mjs:109:357,js-cjk-literal,server/audio-service.mjs,109,,unknown,reviewable,,播放位置无效。
+candidate:server/audio-service.mjs:110:96,js-cjk-literal,server/audio-service.mjs,110,,unknown,reviewable,,请使用章节导听，先确认范围后再准备讲解。
+candidate:server/audio-service.mjs:110:249,js-cjk-literal,server/audio-service.mjs,110,,unknown,reviewable,,正文版本已变化。
+candidate:server/audio-service.mjs:110:364,js-cjk-literal,server/audio-service.mjs,110,,unknown,reviewable,,讲稿服务尚未配置。
+candidate:server/audio-service.mjs:110:464,js-cjk-literal,server/audio-service.mjs,110,,unknown,reviewable,,讲稿正在准备，请稍后。
+candidate:server/audio-service.mjs:110:811,js-cjk-literal,server/audio-service.mjs,110,,unknown,reviewable,,讲稿记录较多，请先导出。
+candidate:server/audio-service.mjs:113:202,js-cjk-literal,server/audio-service.mjs,113,,unknown,reviewable,,讲稿请求标识已用于其他内容。
+candidate:server/audio-service.mjs:113:284,js-cjk-literal,server/audio-service.mjs,113,,unknown,reviewable,,讲稿记录较多，请先导出。
+candidate:server/audio-service.mjs:115:231,js-cjk-literal,server/audio-service.mjs,115,,unknown,reviewable,,讲稿的正文版本已变化。
+candidate:server/audio-service.mjs:115:369,js-cjk-literal,server/audio-service.mjs,115,,unknown,reviewable,,讲稿依据已变化。
+candidate:server/audio-service.mjs:116:314,js-cjk-literal,server/audio-service.mjs,116,,unknown,reviewable,,讲稿已在别处修改，请重新打开。
 candidate:server/audio-store.mjs:8:108,js-cjk-literal,server/audio-store.mjs,8,,unknown,reviewable,,云端声音存储尚未配置。
 candidate:server/audio-store.mjs:16:71,js-cjk-literal,server/audio-store.mjs,16,,unknown,reviewable,,声音标识无效。
 candidate:server/audio-store.mjs:20:96,js-cjk-literal,server/audio-store.mjs,20,,unknown,reviewable,,声音额度无法核验。

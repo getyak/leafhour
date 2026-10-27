@@ -36,7 +36,7 @@
       <p id="reading-time-help" class="reading-time-help" data-ui="reader.shell.focusHelp">Focused reading allows time to think without scrolling. Hidden, unfocused or paused time is excluded.</p>
     </details>
     <button id="manual-reading-open" aria-controls="manual-reading" type="button" disabled data-ui="reader.shell.manual">Add reading time</button>
-    <button id="listen-chapter" aria-controls="audio-dialog" class="listen-chapter" type="button" aria-haspopup="dialog" data-ui="reader.shell.listenChapter">Listen to this chapter</button>
+    <div class="listening-entry"><button id="listen-chapter" aria-controls="audio-dialog" class="listen-chapter" type="button" data-ui="reader.shell.listenChapter">Listen to this chapter</button><button id="listen-options" class="listen-options" type="button" aria-haspopup="dialog" aria-label="More listening options" data-ui-aria-label="audio.options">⋯</button></div>
     <a id="reading-login" class="reading-login" href="/library?login=1" data-ui="reader.shell.loginReading">Sign in to record reading →</a><button id="reading-guide-open" aria-controls="reading-guide" type="button" data-ui="reader.shell.guide">Reading prompts</button><button id="reading-drafts-open" aria-controls="reading-drafts" type="button" hidden data-ui="reader.shell.drafts">Drafts</button>
     <div class="reading-sync-row"><p id="reading-sync" role="status"></p><button id="reading-retry" type="button" hidden data-ui="reader.shell.retrySave">Retry saving</button><button id="reading-backup" type="button" hidden data-ui="reader.shell.backupPending">Save a recovery copy</button></div>
     </div>

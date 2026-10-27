@@ -11,6 +11,9 @@ test('audio HTTP requires an owner, rejects stale identity and serves private ex
  assert.equal((await post('sessions',{...headers,'X-Reader-Owner':'another'})).status,409);
  const response=await post('sessions');assert.equal(response.status,202);let s=await response.json();for(let i=0;i<30&&s.status==='generating';i++){await new Promise(r=>setTimeout(r,15));s=await(await fetch(root+'sessions/'+s.id,{headers})).json();}assert.equal(s.status,'ready');
  const clip=await fetch(root+'clips/'+s.clips[0].id,{headers});assert.match(clip.headers.get('content-type'),/audio\/wav/);assert.deepEqual(Buffer.from(await clip.arrayBuffer()),bytes);assert.match(clip.headers.get('cache-control'),/private/);assert.match(clip.headers.get('content-disposition'),/\.wav/);assert.equal(officialCalls,1);
+ const cancelUrl=root+'requests/http-cancelled/cancel';assert.equal((await fetch(cancelUrl,{method:'POST',headers,body:'{}'})).status,200);
+ assert.equal((await fetch(cancelUrl,{method:'POST',headers:{'Content-Type':'application/json',Origin:base},body:'{}'})).status,401);
+ const cancelled=await fetch(root+'sessions',{method:'POST',headers,body:JSON.stringify({...input,idempotencyKey:'http-cancelled'})});assert.equal((await cancelled.json()).status,'cancelled');assert.equal(officialCalls,1);
  assert.equal((await fetch(root+'clips/'+s.clips[0].id)).status,401);
  const textBackup=await(await fetch(root+'export?audio=0',{headers})).json();assert.deepEqual(textBackup.audio,[]);assert.equal(textBackup.sessions.length,1);
  const capabilities=await(await fetch(root+'capabilities')).json();assert.equal(capabilities.speechAvailable,true);assert.ok(!JSON.stringify(capabilities).includes('API_KEY'));
