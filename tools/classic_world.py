@@ -126,6 +126,28 @@ def _is_heading(node: Tag) -> bool:
                                   for c in node.get('class', [])))
 
 
+def _index_entries(value: str) -> list[str]:
+    """Keep each source entry intact, including its boundary whitespace."""
+    entries, lines = [], []
+    has_text = False
+    for line in value.splitlines(keepends=True):
+        lines.append(line)
+        if line.strip():
+            has_text = True
+        elif has_text:
+            entries.append(''.join(lines))
+            lines = []
+            has_text = False
+    tail = ''.join(lines)
+    if tail.strip():
+        entries.append(tail)
+    elif entries:
+        entries[-1] += tail
+    elif tail:
+        entries.append(tail)
+    return entries
+
+
 def _atoms(node) -> Iterator[tuple]:
     """Visit every descendant once, including text outside conventional p tags."""
     pending = []
@@ -324,7 +346,18 @@ def extract(pg_id: int, raw: bytes, part=None) -> dict:
         elif kind == 'image':
             compiler.image(element)
         else:
-            compiler._put(value, preformatted)
+            if (pg_id == 2009 and compiler.current is not None
+                    and compiler.current['kind'] == 'appendix'
+                    and _compact(compiler.current['title']) == 'INDEX.'):
+                entries = _index_entries(value)
+                if len(entries) > 1:
+                    compiler.current['sourceSegmentation'] = (
+                        'Original index block split at source blank lines; '
+                        'entry text, internal lineation and order preserved.')
+                for entry in entries:
+                    compiler._put(entry, preformatted)
+            else:
+                compiler._put(value, preformatted)
     # A changed source that ends with heading-only matter still retains it.
     if compiler.pending:
         pending = compiler.pending

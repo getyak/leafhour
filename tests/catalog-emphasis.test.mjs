@@ -63,7 +63,7 @@ const baseline={
 "gutenberg-odyssey":[1288,0,0,"0d4dfe437fadd1195da8133b59ddf91399b875f210e5dde5e9440b14826cd2fd"],
 "gutenberg-crime-and-punishment":[3914,0,0,"afb80ca603e76ff534a312636ce89ba22d5ec54801a723e32697f09e2f1f10e2"],
 "gutenberg-wealth-of-nations":[2122,0,0,"f51f596e583187a4bac60d77b48c13b58e6b4f263c7f4499398904bcf058ae98"],
-"gutenberg-origin-of-species":[1219,0,0,"2daadcd6f43f51eb2624af9dd431316a91dc91f649288cda61504509fb51c525"],
+"gutenberg-origin-of-species":[1936,0,0,"01e317ad97ec390c687d032d19b768830e61f085b23fec45dfa8c26997ffad66"],
 "gutenberg-peloponnesian-war":[1029,0,0,"3c12f84b49e99ce7094f4309a2a08af9f8154607af73728d3cf069271848accd"],
 "gutenberg-wisdom-of-life-1":[296,0,0,"2c68662e2778c64087fdb7a18f01ec9e2b3af1e8bf271491c53905d6d3a877fd"],
 "gutenberg-wisdom-of-life-2":[561,0,0,"7287f20d6902e961599fc89b0d64069c1db97fab6c57b8b067bd28306b13f7d4"],
@@ -97,7 +97,7 @@ test('all shared catalog books keep identical original text, IDs, contentVersion
     assert.equal(book.contentVersion,digest(file),entry.id+' contentVersion');
     paragraphs+=rows.length;pairs+=count;
   }
-  assert.equal(paragraphs,60654);
+  assert.equal(paragraphs,61371);
   assert.equal(pairs,528,'218 Alice + 31 Meditations + 279 Walden conservative pairs');
 });
 

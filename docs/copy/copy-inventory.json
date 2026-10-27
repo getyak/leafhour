@@ -34,7 +34,7 @@
       },
       {
         "file": "app/arrival-catalog.mjs",
-        "sha256": "7678bd211dbfffdae00a489a085dd3bddfb56158c878d06c0ccb78813236ca33"
+        "sha256": "cf348dae263696fb0296c0818376273d09e9ed20bfdb2d6130c520479c75c530"
       },
       {
         "file": "app/arrival-excerpt.mjs",
@@ -654,7 +654,7 @@
       },
       {
         "file": "app/reader.js",
-        "sha256": "002949405f22315e8a7c9a2e6c9acb3aea6abafa4bfcb73ca26573a953e7a899"
+        "sha256": "274724565833d6c7edc335721da471f854cef084d3fcecedf8ea4f604c571abd"
       },
       {
         "file": "app/reading-arrival.mjs",
@@ -822,7 +822,7 @@
       },
       {
         "file": "app/source-resources.mjs",
-        "sha256": "54d58533a20d4a48ef48156ec86e842cd8ea933c6140f081dde758b7eb84c804"
+        "sha256": "acc318bcc7eec08c6dd5a19940df9155ffcf7528800bfc880d9991b0856469f4"
       },
       {
         "file": "app/source-review.html",
@@ -1262,7 +1262,7 @@
       },
       {
         "file": "server/server.mjs",
-        "sha256": "a77baf5f44e5af53c40f08953a9fd237335e6cd0609b862bd8154d0844a73539"
+        "sha256": "82027344c673e3bfe017291cc9c70a305114426ed8783335bdee38a51fb7cce1"
       },
       {
         "file": "server/source-revisions.mjs",
@@ -1270,7 +1270,7 @@
       },
       {
         "file": "server/structured-catalog.mjs",
-        "sha256": "ec62c16844f121f2bd709dddad57407bb58616a45c93c97eb186792680b66378"
+        "sha256": "ff457170a3d9de36d88c66cad58ff94e21adc1458337a57d512133462daff94b"
       },
       {
         "file": "server/translation-batch.mjs",
@@ -1285,7 +1285,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "0c10be801dcda3a1e3ec66a200b51c7483ad54d08123a5993679ab1cf5b51301"
+    "inputDigest": "0b883c9293b5b6744bc2a1e089e73f16a5184a191ddd71f9ae18f6f9284fa876"
   },
   "locales": [
     "en",
@@ -16952,7 +16952,7 @@
         },
         {
           "file": "server/server.mjs",
-          "line": 107,
+          "line": 108,
           "column": 37
         }
       ],
@@ -18191,7 +18191,7 @@
         },
         {
           "file": "server/server.mjs",
-          "line": 161,
+          "line": 162,
           "column": 131
         }
       ],
@@ -247779,9 +247779,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:92:168",
+      "id": "candidate:server/server.mjs:93:168",
       "file": "server/server.mjs",
-      "line": 92,
+      "line": 93,
       "column": 168,
       "kind": "js-cjk-literal",
       "property": null,
@@ -247799,9 +247799,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:93:188",
+      "id": "candidate:server/server.mjs:94:188",
       "file": "server/server.mjs",
-      "line": 93,
+      "line": 94,
       "column": 188,
       "kind": "js-cjk-literal",
       "property": null,
@@ -247819,9 +247819,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:94:81",
+      "id": "candidate:server/server.mjs:95:81",
       "file": "server/server.mjs",
-      "line": 94,
+      "line": 95,
       "column": 81,
       "kind": "js-cjk-literal",
       "property": null,
@@ -247839,9 +247839,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:98:155",
+      "id": "candidate:server/server.mjs:99:155",
       "file": "server/server.mjs",
-      "line": 98,
+      "line": 99,
       "column": 155,
       "kind": "js-cjk-literal",
       "property": null,
@@ -247859,9 +247859,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:99:52",
+      "id": "candidate:server/server.mjs:100:52",
       "file": "server/server.mjs",
-      "line": 99,
+      "line": 100,
       "column": 52,
       "kind": "js-cjk-literal",
       "property": null,
@@ -247879,9 +247879,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:100:47",
+      "id": "candidate:server/server.mjs:101:47",
       "file": "server/server.mjs",
-      "line": 100,
+      "line": 101,
       "column": 47,
       "kind": "js-cjk-literal",
       "property": null,
@@ -247899,9 +247899,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:102:109",
+      "id": "candidate:server/server.mjs:103:109",
       "file": "server/server.mjs",
-      "line": 102,
+      "line": 103,
       "column": 109,
       "kind": "js-cjk-literal",
       "property": null,
@@ -247919,9 +247919,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:103:74",
+      "id": "candidate:server/server.mjs:104:74",
       "file": "server/server.mjs",
-      "line": 103,
+      "line": 104,
       "column": 74,
       "kind": "js-cjk-literal",
       "property": null,
@@ -247939,9 +247939,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:110:80",
+      "id": "candidate:server/server.mjs:111:80",
       "file": "server/server.mjs",
-      "line": 110,
+      "line": 111,
       "column": 80,
       "kind": "js-cjk-literal",
       "property": null,
@@ -247959,9 +247959,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:111:106",
+      "id": "candidate:server/server.mjs:112:106",
       "file": "server/server.mjs",
-      "line": 111,
+      "line": 112,
       "column": 106,
       "kind": "js-cjk-literal",
       "property": null,
@@ -247979,9 +247979,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:111:219",
+      "id": "candidate:server/server.mjs:112:219",
       "file": "server/server.mjs",
-      "line": 111,
+      "line": 112,
       "column": 219,
       "kind": "js-cjk-literal",
       "property": null,
@@ -247999,9 +247999,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:120:40",
+      "id": "candidate:server/server.mjs:121:40",
       "file": "server/server.mjs",
-      "line": 120,
+      "line": 121,
       "column": 40,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248019,9 +248019,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:126:159",
+      "id": "candidate:server/server.mjs:127:159",
       "file": "server/server.mjs",
-      "line": 126,
+      "line": 127,
       "column": 159,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248039,9 +248039,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:129:72",
+      "id": "candidate:server/server.mjs:130:72",
       "file": "server/server.mjs",
-      "line": 129,
+      "line": 130,
       "column": 72,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248059,9 +248059,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:136:246",
+      "id": "candidate:server/server.mjs:137:246",
       "file": "server/server.mjs",
-      "line": 136,
+      "line": 137,
       "column": 246,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248079,9 +248079,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:138:195",
+      "id": "candidate:server/server.mjs:139:195",
       "file": "server/server.mjs",
-      "line": 138,
+      "line": 139,
       "column": 195,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248099,9 +248099,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:141:175",
+      "id": "candidate:server/server.mjs:142:175",
       "file": "server/server.mjs",
-      "line": 141,
+      "line": 142,
       "column": 175,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248119,9 +248119,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:145:131",
+      "id": "candidate:server/server.mjs:146:131",
       "file": "server/server.mjs",
-      "line": 145,
+      "line": 146,
       "column": 131,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248139,9 +248139,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:146:90",
+      "id": "candidate:server/server.mjs:147:90",
       "file": "server/server.mjs",
-      "line": 146,
+      "line": 147,
       "column": 90,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248159,9 +248159,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:148:118",
+      "id": "candidate:server/server.mjs:149:118",
       "file": "server/server.mjs",
-      "line": 148,
+      "line": 149,
       "column": 118,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248179,9 +248179,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:149:96",
+      "id": "candidate:server/server.mjs:150:96",
       "file": "server/server.mjs",
-      "line": 149,
+      "line": 150,
       "column": 96,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248199,9 +248199,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:150:331",
+      "id": "candidate:server/server.mjs:151:331",
       "file": "server/server.mjs",
-      "line": 150,
+      "line": 151,
       "column": 331,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248219,9 +248219,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:154:20",
+      "id": "candidate:server/server.mjs:155:20",
       "file": "server/server.mjs",
-      "line": 154,
+      "line": 155,
       "column": 20,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248239,9 +248239,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:156:61",
+      "id": "candidate:server/server.mjs:157:61",
       "file": "server/server.mjs",
-      "line": 156,
+      "line": 157,
       "column": 61,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248259,9 +248259,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:166:18",
+      "id": "candidate:server/server.mjs:167:18",
       "file": "server/server.mjs",
-      "line": 166,
+      "line": 167,
       "column": 18,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248279,9 +248279,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:167:60",
+      "id": "candidate:server/server.mjs:168:60",
       "file": "server/server.mjs",
-      "line": 167,
+      "line": 168,
       "column": 60,
       "kind": "js-cjk-literal",
       "property": null,
@@ -248299,9 +248299,9 @@
       }
     },
     {
-      "id": "candidate:server/server.mjs:184:119",
+      "id": "candidate:server/server.mjs:185:119",
       "file": "server/server.mjs",
-      "line": 184,
+      "line": 185,
       "column": 119,
       "kind": "js-cjk-literal",
       "property": null,
@@ -281227,28 +281227,8 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 41,
+      "line": 42,
       "expression": "'app/'+asset.file",
-      "fragments": [
-        "app/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 49,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 49,
-      "expression": "'app/'+file",
       "fragments": [
         "app/"
       ],
@@ -281297,7 +281277,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 59,
+      "line": 52,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -281307,7 +281287,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 59,
+      "line": 52,
       "expression": "'app/'+file",
       "fragments": [
         "app/"
@@ -281317,7 +281297,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 61,
+      "line": 60,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -281327,7 +281307,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 61,
+      "line": 60,
       "expression": "'app/'+file",
       "fragments": [
         "app/"
@@ -281337,7 +281317,27 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 67,
+      "line": 62,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 62,
+      "expression": "'app/'+file",
+      "fragments": [
+        "app/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 68,
       "expression": "'app/'+asset.file",
       "fragments": [
         "app/"
@@ -281347,7 +281347,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 68,
+      "line": 69,
       "expression": "'/'+file",
       "fragments": [
         "/"
@@ -281357,27 +281357,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 68,
-      "expression": "'app/'+file",
-      "fragments": [
-        "app/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 70,
-      "expression": "'/'+file",
-      "fragments": [
-        "/"
-      ],
-      "unresolved": true
-    },
-    {
-      "kind": "concatenation",
-      "file": "server/server.mjs",
-      "line": 70,
+      "line": 69,
       "expression": "'app/'+file",
       "fragments": [
         "app/"
@@ -281388,6 +281368,26 @@
       "kind": "concatenation",
       "file": "server/server.mjs",
       "line": 71,
+      "expression": "'/'+file",
+      "fragments": [
+        "/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 71,
+      "expression": "'app/'+file",
+      "fragments": [
+        "app/"
+      ],
+      "unresolved": true
+    },
+    {
+      "kind": "concatenation",
+      "file": "server/server.mjs",
+      "line": 72,
       "expression": "'/assets/atmospheres/'+name+'.jpg'",
       "fragments": [
         "/assets/atmospheres/",
@@ -281398,7 +281398,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 71,
+      "line": 72,
       "expression": "'/assets/atmospheres/'+name",
       "fragments": [
         "/assets/atmospheres/"
@@ -281408,7 +281408,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 71,
+      "line": 72,
       "expression": "'app/assets/atmospheres/'+name+'.jpg'",
       "fragments": [
         "app/assets/atmospheres/",
@@ -281419,7 +281419,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 71,
+      "line": 72,
       "expression": "'app/assets/atmospheres/'+name",
       "fragments": [
         "app/assets/atmospheres/"
@@ -281429,7 +281429,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 72,
+      "line": 73,
       "expression": "'/assets/atmospheres/'+name+'.mp3'",
       "fragments": [
         "/assets/atmospheres/",
@@ -281440,7 +281440,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 72,
+      "line": 73,
       "expression": "'/assets/atmospheres/'+name",
       "fragments": [
         "/assets/atmospheres/"
@@ -281450,7 +281450,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 72,
+      "line": 73,
       "expression": "'app/assets/atmospheres/'+name+'.mp3'",
       "fragments": [
         "app/assets/atmospheres/",
@@ -281461,7 +281461,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 72,
+      "line": 73,
       "expression": "'app/assets/atmospheres/'+name",
       "fragments": [
         "app/assets/atmospheres/"
@@ -281471,7 +281471,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 90,
+      "line": 91,
       "expression": "recordsPath+'.pending'",
       "fragments": [
         ".pending"
@@ -281481,7 +281481,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 116,
+      "line": 117,
       "expression": "type+'; charset=utf-8'",
       "fragments": [
         "; charset=utf-8"
@@ -281491,7 +281491,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 119,
+      "line": 120,
       "expression": "'127.0.0.1:'+port",
       "fragments": [
         "127.0.0.1:"
@@ -281501,7 +281501,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 119,
+      "line": 120,
       "expression": "'localhost:'+port",
       "fragments": [
         "localhost:"
@@ -281511,7 +281511,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 119,
+      "line": 120,
       "expression": "'[::1]:'+port",
       "fragments": [
         "[::1]:"
@@ -281521,7 +281521,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 121,
+      "line": 122,
       "expression": "'http://'+host",
       "fragments": [
         "http://"
@@ -281531,7 +281531,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 129,
+      "line": 130,
       "expression": "'http://'+host",
       "fragments": [
         "http://"
@@ -281541,7 +281541,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 136,
+      "line": 137,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -281549,7 +281549,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 138,
+      "line": 139,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -281557,7 +281557,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 138,
+      "line": 139,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -281565,7 +281565,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 138,
+      "line": 139,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -281573,7 +281573,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 141,
+      "line": 142,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -281581,7 +281581,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 141,
+      "line": 142,
       "expression": "key",
       "fragments": [],
       "unresolved": true
@@ -281589,7 +281589,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 165,
+      "line": 166,
       "expression": "'attachment; filename=\"'+filename+'\"'",
       "fragments": [
         "attachment; filename=\"",
@@ -281600,7 +281600,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 165,
+      "line": 166,
       "expression": "'attachment; filename=\"'+filename",
       "fragments": [
         "attachment; filename=\""
@@ -281610,7 +281610,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 176,
+      "line": 177,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -281618,7 +281618,7 @@
     {
       "kind": "computed-member",
       "file": "server/server.mjs",
-      "line": 176,
+      "line": 177,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -281626,7 +281626,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 184,
+      "line": 185,
       "expression": "'Leafhour 已启动：http://'+host+':'",
       "fragments": [
         "Leafhour 已启动：http://",
@@ -281637,7 +281637,7 @@
     {
       "kind": "concatenation",
       "file": "server/server.mjs",
-      "line": 184,
+      "line": 185,
       "expression": "'Leafhour 已启动：http://'+host",
       "fragments": [
         "Leafhour 已启动：http://"
@@ -281772,7 +281772,7 @@
     {
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
-      "line": 7,
+      "line": 17,
       "expression": "'Invalid structured catalog: '+entry.id",
       "fragments": [
         "Invalid structured catalog: "
@@ -281782,7 +281782,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 8,
+      "line": 18,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -281790,7 +281790,7 @@
     {
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
-      "line": 11,
+      "line": 21,
       "expression": "'Invalid catalog source layout: '+entry.id",
       "fragments": [
         "Invalid catalog source layout: "
@@ -281800,7 +281800,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 13,
+      "line": 23,
       "expression": "Number(match[1])",
       "fragments": [],
       "unresolved": true
@@ -281808,7 +281808,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 13,
+      "line": 23,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -281816,7 +281816,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 14,
+      "line": 24,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -281824,7 +281824,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 14,
+      "line": 24,
       "expression": "1",
       "fragments": [],
       "unresolved": true
@@ -281832,7 +281832,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 14,
+      "line": 24,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -281840,7 +281840,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 14,
+      "line": 24,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -281848,7 +281848,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 14,
+      "line": 24,
       "expression": "Number(match[2])",
       "fragments": [],
       "unresolved": true
@@ -281856,7 +281856,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 14,
+      "line": 24,
       "expression": "2",
       "fragments": [],
       "unresolved": true
@@ -281864,7 +281864,7 @@
     {
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
-      "line": 14,
+      "line": 24,
       "expression": "'Invalid catalog source layout: '+entry.id",
       "fragments": [
         "Invalid catalog source layout: "
@@ -281874,7 +281874,7 @@
     {
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
-      "line": 17,
+      "line": 27,
       "expression": "'Invalid catalog chapter: '+entry.id",
       "fragments": [
         "Invalid catalog chapter: "
@@ -281884,7 +281884,7 @@
     {
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
-      "line": 18,
+      "line": 28,
       "expression": "'ch'+String(index+1).padStart(2,'0')",
       "fragments": [
         "ch"
@@ -281894,7 +281894,7 @@
     {
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
-      "line": 18,
+      "line": 28,
       "expression": "hash.slice(0,16)+'-p'",
       "fragments": [
         "-p"
@@ -281904,7 +281904,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 18,
+      "line": 28,
       "expression": "index+':'+paragraphIndex",
       "fragments": [
         ":"
@@ -281914,7 +281914,7 @@
     {
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
-      "line": 18,
+      "line": 28,
       "expression": "index+':'",
       "fragments": [
         ":"
@@ -281924,7 +281924,7 @@
     {
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
-      "line": 20,
+      "line": 30,
       "expression": "'Invalid catalog source headings: '+entry.id",
       "fragments": [
         "Invalid catalog source headings: "
@@ -281934,7 +281934,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 21,
+      "line": 31,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -281942,7 +281942,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 23,
+      "line": 33,
       "expression": "0",
       "fragments": [],
       "unresolved": true
@@ -281950,7 +281950,7 @@
     {
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
-      "line": 25,
+      "line": 35,
       "expression": "'Catalog has no body: '+entry.id",
       "fragments": [
         "Catalog has no body: "
@@ -281960,7 +281960,7 @@
     {
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
-      "line": 27,
+      "line": 37,
       "expression": "'Invalid catalog source resources: '+entry.id",
       "fragments": [
         "Invalid catalog source resources: "
@@ -281970,7 +281970,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 29,
+      "line": 39,
       "expression": "item.paragraphIndex",
       "fragments": [],
       "unresolved": true
@@ -281978,7 +281978,7 @@
     {
       "kind": "computed-member",
       "file": "server/structured-catalog.mjs",
-      "line": 29,
+      "line": 39,
       "expression": "item.chapterIndex",
       "fragments": [],
       "unresolved": true
@@ -281986,7 +281986,7 @@
     {
       "kind": "concatenation",
       "file": "server/structured-catalog.mjs",
-      "line": 30,
+      "line": 40,
       "expression": "'Invalid catalog source resource: '+entry.id",
       "fragments": [
         "Invalid catalog source resource: "

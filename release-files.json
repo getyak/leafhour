@@ -1192,5 +1192,6 @@
   "tools/classic_chinese.py",
   "tools/classic_nineteenth.py",
   "tools/classic_philosophy.py",
-  "tools/classic_world.py"
+  "tools/classic_world.py",
+  "app/source-resources.css"
 ]

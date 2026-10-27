@@ -193,6 +193,34 @@ class ClassicWorldTests(unittest.TestCase):
         self.assertEqual(body[-1]['paragraphs'][-2:], ['[When the winter is over.]', 'THE END'])
         self.assert_conserved(7142, raw, result)
 
+    def test_darwin_index_splits_only_at_source_blank_lines_below_passage_limit(self):
+        first = '\n  Aberrant ' + 'a' * 13000 + '.\n    —, related forms.\n\n'
+        second = '\tZebra ' + 'z' * 13000 + '.\n\n'
+        last = '  Zeuglodon, 302.\n'
+        index = first + second + last
+        # Both the actual p/BR source shape and a preformatted source retain
+        # their own entry text. No contemporary description enters paragraphs.
+        for source_tag, expected in [
+                ('<pre>' + index + '</pre>', [first, second, last]),
+                ('<p class="noindent">' + index.replace('\n', '<br>') + '</p>',
+                 ['\nAberrant ' + 'a' * 13000 + '.\n—, related forms.\n\n',
+                  'Zebra ' + 'z' * 13000 + '.\n\n', 'Zeuglodon, 302.\n'])]:
+            with self.subTest(source_tag=source_tag[:5]):
+                raw = document('<h1>Origin of Species</h1>'
+                               '<div class="chapter"><h2>CHAPTER IV. NATURAL SELECTION.</h2>'
+                               '<p>The accompanying diagram.</p><div class="fig">'
+                               '<img src="images/diagram.jpg" alt="[Illustration]"></div></div>'
+                               '<div class="chapter"><h2>INDEX.</h2>' + source_tag + '</div>')
+                result = self.module.extract(2009, raw)
+                chapter = result['chapters'][-1]
+                self.assertEqual(chapter['paragraphs'], expected)
+                self.assertLess(max(map(len, chapter['paragraphs'])), 24000)
+                self.assertEqual(''.join(chapter['paragraphs']), ''.join(expected))
+                self.assertIn('sourceSegmentation', chapter)
+                self.assertEqual((result['resources'][0]['chapterIndex'],
+                                  result['resources'][0]['paragraphIndex']), (1, 0))
+                self.assert_conserved(2009, raw, result)
+
 
 if __name__ == '__main__':
     unittest.main()

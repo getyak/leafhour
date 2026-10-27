@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {sourceResourceHref,sourceResourcesNode,applySourceFormat} from '../app/source-resources.mjs';
+import {sourceResourceHref,sourceResourcesNode,applySourceFormat,loadSourceStyles} from '../app/source-resources.mjs';
 import {pageKeyDirection} from '../app/reader-page-inputs.mjs';
 
 const document={createElement(tag){return {tagName:tag.toUpperCase(),children:[],classList:{values:[],add(value){this.values.push(value);}},setAttribute(key,value){this[key]=String(value);},append(...children){this.children.push(...children);}};}};
@@ -16,4 +16,13 @@ test('source-resource controls are separate from author text and use inert capti
 test('numeric tables keep keyboard arrows for native horizontal scrolling',()=>{
  const p=document.createElement('p');applySourceFormat(p,{kind:'original',preformatted:true});assert.ok(p.classList.values.includes('source-preformatted'));assert.equal(p.tabIndex,0);
  const event={key:'ArrowRight',target:{closest:selector=>selector.includes('.source-preformatted')?p:null}};assert.equal(pageKeyDirection(event),0);
+});
+
+test('source styles load once before formatted text and a failed load can retry',async()=>{
+ const links=[],doc={createElement(){return {};},head:{append(link){links.push(link);}}};
+ const first=loadSourceStyles(doc),same=loadSourceStyles(doc);assert.equal(first,same);assert.equal(links.length,1);assert.equal(links[0].href,'/source-resources.css');assert.equal(links[0].rel,'stylesheet');
+ links[0].onload();await first;assert.equal(loadSourceStyles(doc),first);
+ const retryLinks=[],bad={createElement(){return {remove(){this.removed=true;}};},head:{append(link){retryLinks.push(link);}}};
+ const failure=loadSourceStyles(bad);retryLinks[0].onerror();await assert.rejects(failure,/source styles/i);assert.equal(retryLinks[0].removed,true);
+ const retry=loadSourceStyles(bad);assert.equal(retryLinks.length,2);retryLinks[1].onload();await retry;
 });

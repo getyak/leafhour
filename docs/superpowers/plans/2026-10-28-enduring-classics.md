@@ -10,7 +10,7 @@
 
 - [x] Verify sources, rights, reading scopes and bibliographic credits; select the publishable list.
 - [x] Compile and independently audit each source. Add Chinese-original language handling, faithful table presentation and a source-figure link where required.
-- [ ] Add shared entries, frozen hashes, source metadata, packaging and the Chinese reading-list document. Run source and runtime regressions, copy checks and independent review.
+- [x] Add shared entries, frozen hashes, source metadata, packaging and the Chinese reading-list document. Run source and runtime regressions, copy checks and independent review.
 - [ ] Push a reviewed PR, wait for all checks, normally merge, then verify the exact Production release and public reading access.
 
 ## Boundaries

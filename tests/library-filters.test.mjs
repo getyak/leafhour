@@ -132,7 +132,7 @@ test('Chinese originals stay separate from translated English fiction',async t=>
   const dir=await mkdtemp(path.join(tmpdir(),'leafhour-fiction-catalog-'));
   t.after(()=>rm(dir,{recursive:true,force:true}));
   const library=await createLibraryService({dataDir:dir});
-  assert.deepEqual(libraryShelf(await library.list(null),{topic:'fiction',language:'zh',form:'original'}),[]);
+  assert.deepEqual(ids(libraryShelf(await library.list(null),{topic:'fiction',language:'zh',form:'original'})).sort(),['gutenberg-dream-red-chamber-1','gutenberg-dream-red-chamber-2','gutenberg-dream-red-chamber-3']);
   assert.ok(libraryShelf(await library.list(null),{topic:'fiction',language:'en'}).length>0,'unambiguous English novels carry the fiction topic');
 });
 
