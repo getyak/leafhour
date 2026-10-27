@@ -4,6 +4,14 @@ import {readFile} from 'node:fs/promises';
 import path from 'node:path';
 import { routeOf } from '../api/[...path].js';
 
+test('hosted function inclusion fits the platform configuration limit',async()=>{
+ const config=JSON.parse(await readFile(new URL('../vercel.json',import.meta.url),'utf8'));
+ // Vercel rejects this configuration before starting the build (maxLength 256).
+ for(const [name,settings]of Object.entries(config.functions||{})){
+  if(settings.includeFiles!==undefined)assert.ok(typeof settings.includeFiles==='string'&&settings.includeFiles.length<=256,`${name} includeFiles exceeds the 256-character platform limit`);
+ }
+});
+
 test('Vercel route uses catch-all query when available', () => {
   assert.equal(routeOf({ query: { path: ['records', 'export'] }, url: '/api/ignored' }), '/api/records/export');
 });
