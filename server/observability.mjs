@@ -48,7 +48,7 @@ export function createObservability({dataDir,dataStore=null,env=process.env,sche
   async function allowed(user,revision,category){const value=await consent(user);return value.revision===revision&&value[category]&&!(category==='analytics'&&excluded(user,value));}
   async function posthog(user,revision,event,actor,synthetic){
     if(!projectKey||!posthogHost||!await allowed(user,revision,observabilityCategory(event.name)))return;
-    const payload={api_key:projectKey,event:event.name,distinct_id:actor,timestamp:event.occurredAt,uuid:event.id,properties:{...event.properties,operationId:event.operationId,release,environment,synthetic,$process_person_profile:false,$ip:null,disable_geoip:true}};
+    const payload={api_key:projectKey,event:event.name,distinct_id:actor,timestamp:event.occurredAt,uuid:event.id,properties:{...event.properties,operationId:event.operationId,release,environment,synthetic,$process_person_profile:false,$ip:null,$geoip_disable:true}};
     await boundedFetch(posthogHost+'/i/v0/e/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   }
   async function sendSentry(user,revision,event,actor,synthetic,system=false){
