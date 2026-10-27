@@ -5,11 +5,11 @@ const tick=()=>new Promise(resolve=>setImmediate(resolve));
 
 function fixture(loadSurface){
   assert.equal(typeof module.mountReaderPageInputs,'function');
-  let page=1,active=true,blocked=false;const commits=[];
+  let page=1,active=true,blocked=false;const commits=[],provenance=[];
   const document=Object.assign(new EventTarget(),{defaultView:{getSelection:()=>''}});
-  const inputs=module.mountReaderPageInputs({document,viewport:{},text:{},getGeometry:()=>({active,page,count:5}),isBlocked:()=>blocked,onTurn:direction=>{page+=direction;commits.push(direction);},loadSurface});
+  const inputs=module.mountReaderPageInputs({document,viewport:{},text:{},getGeometry:()=>({active,page,count:5}),isBlocked:()=>blocked,onTurn:(direction,source)=>{page+=direction;commits.push(direction);provenance.push(source?.trusted===true);},loadSurface});
   const key=(value,patch={})=>{const event=new Event('keydown',{cancelable:true});Object.assign(event,{key:value,...patch});document.dispatchEvent(event);return event;};
-  return {inputs,key,commits,get page(){return page;},setBlocked:value=>blocked=value,setActive:value=>active=value};
+  return {inputs,key,commits,provenance,get page(){return page;},setBlocked:value=>blocked=value,setActive:value=>active=value};
 }
 
 test('left and right keys work while optional visuals are pending and after their download fails',async()=>{
@@ -26,4 +26,7 @@ test('basic keys leave composing input, modified shortcuts and blocked or inacti
 test('a late optional renderer never mounts after its input owner is disposed',async()=>{
   let resolve,mounted=0;const f=fixture(()=>new Promise(yes=>{resolve=yes;}));f.inputs.sync();f.inputs.dispose();
   resolve({default:()=>{mounted++;return {turn(){},cancel(){},sync(){},dispose(){}};}});await tick();f.key('ArrowRight');assert.equal(mounted,0);assert.deepEqual(f.commits,[]);
+});
+test('page inputs preserve trusted control provenance and do not label programmatic turns as trusted',()=>{
+  const f=fixture(()=>new Promise(()=>{}));f.inputs.turn(1,{trusted:true});f.inputs.turn(-1);assert.deepEqual(f.provenance,[true,false]);f.setBlocked(true);f.inputs.turn(1,{trusted:true});assert.equal(f.provenance.length,2);f.inputs.dispose();
 });

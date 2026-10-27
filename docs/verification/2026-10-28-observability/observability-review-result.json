@@ -1,0 +1,46 @@
+{
+  "scope": "synthetic account/book, intercepted first-party API; no production vendor receipt",
+  "fastResume": {
+    "consentDelayMs": 700,
+    "recordsDelayMs": 0,
+    "beforeFix": [
+      "reader_open_requested",
+      "reader_content_visible",
+      "reader_active"
+    ],
+    "afterFix": [
+      "reader_open_requested",
+      "reader_content_visible",
+      "reader_resume_result",
+      "reader_active"
+    ],
+    "resume": "restored",
+    "resumeObservationDurationMs": 1
+  },
+  "paginated": {
+    "firstParagraphOffscreen": true,
+    "scrollLeft": 13344,
+    "visibleEvent": true,
+    "resume": "restored",
+    "trustedNextActive": true,
+    "programmaticClickActive": false,
+    "trustedCommittedDragActive": true
+  },
+  "privateSentinelExported": false,
+  "thirdPartyRequests": [],
+  "focusedTests": {
+    "passed": 96,
+    "failed": 0,
+    "log": "/tmp/leafhour-observability-final-green.log"
+  },
+  "screenshots": [
+    "observability-settings-desktop.png",
+    "observability-settings-mobile.png",
+    "observability-resumed-spread.png"
+  ],
+  "limitations": [
+    "Isolated browser fixtures only; vendor receipt and production acceptance belong to parent.",
+    "Existing local CSP inline-style console errors remain.",
+    "Static dependency routes supplied by test harness; server worker separately fixed corresponding local mappings."
+  ]
+}

@@ -1,6 +1,14 @@
 // GET-192 immutable zh-Hant UI catalogue. Fixed public stateless ID→string
 // data with the same keys as app/ui-catalogs/en.mjs. No logic lives here.
 export default Object.freeze({
+  "observability.title": "改進 Leafhour",
+  "observability.description": "可隨時關閉，不含書中內容和個人紀錄。",
+  "observability.analytics": "使用統計",
+  "observability.analytics.description": "統計開啟、續讀等操作。",
+  "observability.diagnostics": "錯誤報告",
+  "observability.diagnostics.description": "傳送錯誤類別，協助排查故障。",
+  "observability.saved": "已儲存",
+  "observability.saveFailed": "設定未儲存，請再試一次。",
   "reader.location.fragmentPercent": "片段內 {percent}%",
   "reader.location.chapter": "第 {number} / {count} 章",
   "reader.location.fragment": "第 {number} / {count} 個片段",

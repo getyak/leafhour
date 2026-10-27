@@ -18,7 +18,7 @@
 <a class="skip" href="#main">跳到主要內容</a>
 <header class="site-header"><button class="palette-entry" data-palette-open type="button">搜尋與命令 <kbd data-palette-keycap></kbd></button><a class="brand" href="/zh-hant" aria-label="Leafhour 首頁"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 32V20A13 13 0 0 1 21 7h11v11a14 14 0 0 1-14 14H8Z"/><path d="M16 23h7v-9"/></svg></span><span class="brand-name" lang="en">Leafhour</span></a><nav aria-label="主導覽"><a href="/library?ui=zh-Hant">回到書房 ↗</a><a href="https://github.com/getyak/leafhour">GitHub</a><div class="home-languages" role="group" aria-label="語言"><a href="/privacy" lang="en" hreflang="en">English</a><a href="/zh-hans/privacy" lang="zh-Hans" hreflang="zh-Hans">简体中文</a><a aria-current="true" href="/zh-hant/privacy" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a><a href="/ja/privacy" lang="ja" hreflang="ja">日本語</a><a href="/library?settings=appearance" data-ui="ui.language.settings">介面語言設定</a></div></nav></header>
 <main id="main" class="privacy-document">
-  <h1>登入與個人資料</h1><p class="privacy-date">適用於 leafhour.com · 更新於 2026 年 10 月 22 日</p>
+  <h1>登入與個人資料</h1><p class="privacy-date">適用於 leafhour.com · 更新於 2026 年 10 月 28 日</p>
   <p>Leafhour 用登入身分確認書房的歸屬，保存你選擇上傳的書和閱讀記錄。公版樣書可以匿名試讀。本文說明這個線上實例如何處理資料；自行部署的實例由它的營運者負責。</p>
   <h2>登入時會用到什麼</h2>
   <p>郵箱登入使用你填寫的郵箱地址，由 Supabase Auth 校驗密碼或驗證碼，Resend 投遞驗證郵件。註冊與找回密碼先驗證郵箱，再設定密碼。選擇 Google 或 Apple 登入時，由相應供應商驗證身分，Supabase 接收帳戶識別碼、郵箱及供應商提供的基本資料，例如姓名和頭像。Leafhour 用這些資訊識別帳戶和維持登入，不申請郵箱內文、聯絡人、雲碟或行事曆權限。</p>
@@ -32,6 +32,8 @@
   <p>你選擇月付或年付訂閱時，由 Creem 提供結帳頁、處理每次付款，並透過登入後的客戶入口管理訂閱。Leafhour 將帳戶 ID 與本地訂單、結帳、交易、訂閱、客戶及退款識別碼關聯，保存商品、幣別、金額、付款與訂閱狀態、計費週期和不可變額度帳本。Creem 處理結帳所需的聯絡與付款資訊；Leafhour 不接收或保存完整銀行卡資料。私人書籍、提問、回答和筆記不會傳送給 Creem。</p>
   <p>供應商用量記錄與閱讀正文分開，保存操作及呼叫嘗試編號、功能、模型、供應商回報的 token 用量和可取得的費用估算；缺少的用量保留為未知。營運帳單報表使用必要的財務與用量事實，不展示私人正文或筆記。刪除閱讀資料或帳戶後，為付款對帳、爭議處理和法定義務可能仍需保留部分財務記錄，這類記錄的刪除請求會單獨核對。免費閱讀與匯出不以購買點數為前提。</p>
   <p><a href="/zh-hant/pricing">價格</a> · <a href="/zh-hant/terms">服務條款</a> · <a href="/zh-hant/refunds">退款政策</a></p>
+  <h2>使用情況與故障診斷</h2>
+  <p>你可在書房的資料設定中分別開啟使用情況統計和故障診斷，預設均關閉。開啟後，PostHog 接收操作結果和耗時，Sentry 接收故障類別。這些記錄不包含書籍正文、書名、筆記、選文、對話和登入資訊，不錄製頁面回放。服務中斷時，系統還可能向 Sentry 傳送不關聯帳號的故障記錄。</p>
   <h2>保存、匯出與刪除</h2>
   <p>書房資料會繼續保存，供你恢復閱讀和匯出。閱讀對話可以從對話視窗匯出，AI 回答與使用者原話分別標記。書房的「設定 → 資料與遷移」提供完整閱讀書房 ZIP 備份與恢復、個人記錄 Markdown/JSON 和選定分享預覽，無需訂閱。備份保留已同步的原文、譯文、評論、對話、引用、位置與時段，原始檔案可選擇納入；不包含登入憑據、Agent 授權或未完成的模型任務。聽讀音訊及聽讀歷史使用單獨的音訊匯出。未同步的閱讀記錄和未保存的草稿仍留在原瀏覽器，請先完成同步或保存。需要刪除帳戶或私人資料時，請聯絡下方郵箱；我們會先核對帳戶歸屬，再處理相關資料。託管服務為運行、安全和故障排查產生的日誌或備份，由相應服務按其保留機制處理。</p>
   <p>登入資料用於身分驗證、工作階段、安全和你請求的閱讀功能，不用於廣告投放，也不會出售。Supabase、Resend、Vercel、身分供應商和你主動呼叫的模型服務，會為提供對應功能處理必要的資料，並適用各自的隱私政策。</p>

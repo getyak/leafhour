@@ -63,7 +63,7 @@ test('all authored privacy notices explain billing metadata and link to local po
     const html=await readFile(path.join(root,'app',slug,'privacy.html'),'utf8');
     assert.match(html,/Creem/,'Billing processor must be named in '+slug);
     assert.ok(html.includes(labels[slug]),'Payment-card storage boundary must be explained in '+slug);
-    assert.match(html,/2026(?: 年)?(?:\s+10\s+月\s+22|[-/]10[-/]22)|October 22, 2026/,'Privacy date must reflect this update');
+    assert.match(html,/2026(?: 年)?(?:\s+10\s+月\s+28|[-/]10[-/]28)|October 28, 2026/,'Privacy date must reflect this update');
     for(const kind of ['pricing','terms','refunds'])assert.ok(html.includes('href="/'+slug+'/'+kind+'"'),'Missing '+slug+' '+kind+' link');
   }
 });

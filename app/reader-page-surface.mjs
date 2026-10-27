@@ -14,7 +14,7 @@ if(styleDocument?.head&&!styleDocument.querySelector('link[data-reader-paper]'))
 export default function mountReaderPageSurface({document,viewport,text,getGeometry,isBlocked=()=>false,onTurn}){
   const view=document.defaultView,host=viewport.parentElement;
   if(!document.createElement||!text.cloneNode||!host?.append)return {turn:onTurn,sync(){},cancel(){},dispose(){}};
-  let disposed=false,presentation=null,drag=null,ignoreClickUntil=0;
+  let disposed=false,presentation=null,drag=null,ignoreClickUntil=0,turnSource={trusted:false};
   const removers=[],handles=[];
   const selected=()=>!!view.getSelection()?.toString();
   const blocked=()=>disposed||document.hidden||isBlocked()||selected();
@@ -66,32 +66,33 @@ export default function mountReaderPageSurface({document,viewport,text,getGeomet
     presentation={root,strips,width,origin,direction};draw(0,direction);host.append(root);host.dataset.paperTurning='true';return true;
   }
   const motion=createPageTurn({requestFrame:fn=>view.requestAnimationFrame(fn),cancelFrame:id=>view.cancelAnimationFrame(id),reducedMotion:()=>reduced()||!presentation,
-    onPaint:state=>{if(!state.active)clear();else draw(state.progress,state.direction);},onCommit:direction=>{clear();if(!blocked())onTurn(direction);}});
+    onPaint:state=>{if(!state.active)clear();else draw(state.progress,state.direction);},onCommit:direction=>{clear();const source=turnSource;turnSource={trusted:false};if(!blocked())onTurn(direction,source);}});
   function cancel(){
-    const previous=drag;drag=null;
+    const previous=drag;drag=null;turnSource={trusted:false};
     if(previous)ignoreClickUntil=(view.performance?.now?.()||previous.time)+500;
     if(previous?.node.hasPointerCapture?.(previous.id))previous.node.releasePointerCapture(previous.id);
     motion.cancel();clear();
   }
-  function turn(direction){
+  function turn(direction,provenance={}){
     if(blocked())return false;
     const g=getGeometry();if(!g?.active)return false;
+    const source={trusted:provenance.trusted===true};turnSource=source;
     if(motion.active){const result=motion.turn(direction);if(!motion.active)clear();return result;}
-    if(g.page+direction<0||g.page+direction>=g.count){cancel();return onTurn(direction);}
-    if(!prepare(direction)){cancel();return onTurn(direction);}
+    if(g.page+direction<0||g.page+direction>=g.count){cancel();return onTurn(direction,source);}
+    if(!prepare(direction)){cancel();return onTurn(direction,source);}
     return motion.turn(direction);
   }
   for(const direction of [-1,1]){
     const node=document.createElement('button');node.type='button';node.className='paper-turn-handle '+(direction===1?'is-next':'is-previous');
     node.setAttribute('aria-labelledby',direction===1?'page-next':'page-previous');node.setAttribute('aria-controls','chapter-text');
-    node.addEventListener('click',event=>{if(event.detail&&event.timeStamp<ignoreClickUntil)return;turn(direction);});
+    node.addEventListener('click',event=>{if(event.detail&&event.timeStamp<ignoreClickUntil)return;turn(direction,{trusted:event.isTrusted===true});});
     listen(node,'pointerdown',event=>{
       if(event.button!==0||event.isPrimary===false||blocked())return;
       const g=getGeometry();if(!g?.active||!(direction===1?g.next:g.previous))return;
       prepare(direction);
       event.preventDefault();const current=motion.grab(direction);if(!current)return;
       const width=presentation?.width||Math.max(1,host.clientWidth/(g.columns===2?2:1)),last=leafSegments(current.progress,width,4,1).at(-1),distance=width-last.x-Math.cos(last.angle*Math.PI/180)*last.width;
-      drag={node,id:event.pointerId,x:event.clientX,time:event.timeStamp,width,distance,progress:current.progress,direction:current.direction,moved:false};node.setPointerCapture(event.pointerId);
+      drag={node,id:event.pointerId,x:event.clientX,time:event.timeStamp,width,distance,progress:current.progress,direction:current.direction,moved:false,trusted:event.isTrusted===true};node.setPointerCapture(event.pointerId);
     });
     listen(node,'pointermove',event=>{
       if(!drag||drag.id!==event.pointerId)return;if(blocked()){cancel();return;}
@@ -100,7 +101,7 @@ export default function mountReaderPageSurface({document,viewport,text,getGeomet
       const progress=leafDragProgress(drag.distance+delta,width);motion.drag(progress,(progress-drag.progress)/dt);drag.progress=progress;drag.time=event.timeStamp;
     });
     function release(event,cancelled){
-      if(!drag||drag.id!==event.pointerId)return;const previous=drag;drag=null;ignoreClickUntil=event.timeStamp+500;
+      if(!drag||drag.id!==event.pointerId)return;const previous=drag;drag=null;ignoreClickUntil=event.timeStamp+500;turnSource={trusted:!cancelled&&previous.trusted&&event.isTrusted===true};
       if(node.hasPointerCapture(event.pointerId))node.releasePointerCapture(event.pointerId);
       if(!cancelled&&!previous.moved)motion.turn(previous.direction);else motion.release(cancelled,{elapsed:event.timeStamp-previous.time});
       if(!motion.active)clear();
