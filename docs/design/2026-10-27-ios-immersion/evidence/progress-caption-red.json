@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-27T06:09:56.204Z",
+  "checks": [
+    {
+      "name": "progress-wake-is-separate-draggable-and-keeps-companion-explicit",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n\n'林中生活' !== '琐事与日子'\n"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "fail"
+}

@@ -1,0 +1,15 @@
+PASS handle-has-a-44-pixel-touch-target
+PASS scrim-changes-continuously-during-an-upward-drag
+PASS holding-the-sheet-still-clears-stale-flick-velocity
+PASS a-moving-sheet-can-be-grabbed-and-reversed-without-a-jump
+PASS pointer-cancellation-restores-the-detent-without-dismissing
+PASS reduced-motion-keeps-the-handle-operable-without-a-running-spring
+PASS selection-tools-follow-the-selected-paragraph-and-stay-in-bounds
+PASS confirming-a-quote-clears-the-temporary-paragraph-highlight
+PASS scrolling-keeps-visible-selection-tools-attached-to-the-source
+PASS scrolling-the-selection-out-of-view-dismisses-its-tools
+PASS a-closing-sheet-can-be-grabbed-and-cancelled-with-its-draft
+PASS dragging-away-and-back-is-not-treated-as-a-tap
+PASS real-touch-scrolling-keeps-tools-for-a-still-visible-selection
+PASS a-fast-upward-flick-keeps-the-handle-below-the-status-area
+

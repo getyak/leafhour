@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-27T06:09:14.894Z",
+  "checks": [
+    {
+      "name": "cancelled-and-multitouch-presses-never-produce-a-menu",
+      "status": "pass"
+    },
+    {
+      "name": "holding-above-a-sheet-yields-one-intent-and-preserves-the-draft-return",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "pass"
+}

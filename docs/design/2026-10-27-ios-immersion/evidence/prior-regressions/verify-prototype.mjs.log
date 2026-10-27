@@ -1,0 +1,13 @@
+PASS launch-enters-reading-with-companion-collapsed
+PASS repeated-word-selection-keeps-actual-utf16-range
+PASS restored-draft-never-adopts-another-passages-sent-question
+PASS citation-roundtrip-restores-half-detent-scroll-quote-and-draft
+PASS half-sheet-background-reading-survives-closing
+PASS reopen-restores-reading-and-keeps-discussion-collapsed
+PASS connection-recovery-requires-explicit-retry-and-retains-edited-draft
+PASS note-drafts-stay-with-their-own-quote-and-saved-notes-keep-user-attribution
+PASS 320px-large-text-night-and-reduced-motion-remain-operable
+PASS 13-core-states-render-at-402x874
+PASS no-page-errors-and-no-external-network-requests
+{"status":"pass","checks":11,"screens":13}
+

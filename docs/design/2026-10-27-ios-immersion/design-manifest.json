@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "source": "Observed prototype DOM geometry; text remains editable in SVG and capture JSON.",
+  "screens": [
+    {
+      "slug": "01-pure",
+      "name": "01 · 整屏是书",
+      "width": 402,
+      "height": 874,
+      "source": "captures/01-pure.json",
+      "svg": "exports/01-pure.svg",
+      "png": "exports/01-pure.png"
+    },
+    {
+      "slug": "02-top",
+      "name": "02 · 只唤醒顶部",
+      "width": 402,
+      "height": 874,
+      "source": "captures/02-top.json",
+      "svg": "exports/02-top.svg",
+      "png": "exports/02-top.png"
+    },
+    {
+      "slug": "03-progress",
+      "name": "03 · 进度为主，陪读按召唤",
+      "width": 402,
+      "height": 874,
+      "source": "captures/03-progress.json",
+      "svg": "exports/03-progress.svg",
+      "png": "exports/03-progress.png"
+    },
+    {
+      "slug": "04-selected",
+      "name": "04 · 长按，才有动作",
+      "width": 402,
+      "height": 874,
+      "source": "captures/04-selected.json",
+      "svg": "exports/04-selected.svg",
+      "png": "exports/04-selected.png"
+    },
+    {
+      "slug": "05-companion",
+      "name": "05 · 书在上方，陪读按需出现",
+      "width": 402,
+      "height": 874,
+      "source": "captures/05-companion.json",
+      "svg": "exports/05-companion.svg",
+      "png": "exports/05-companion.png"
+    },
+    {
+      "slug": "06-night-pure",
+      "name": "06 · 夜读只剩文字",
+      "width": 320,
+      "height": 740,
+      "source": "captures/06-night-pure.json",
+      "svg": "exports/06-night-pure.svg",
+      "png": "exports/06-night-pure.png"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-27T06:22:54.881Z",
+  "checks": [
+    {
+      "name": "a-second-long-press-keeps-the-new-selection-after-release",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'pure'\n- 'selection'\n"
+    },
+    {
+      "name": "right-clicking-selected-text-preserves-the-native-copy-range",
+      "status": "fail",
+      "message": "Expected values to be strictly equal:\n\n'' !== '我来到林中，'\n"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "fail"
+}

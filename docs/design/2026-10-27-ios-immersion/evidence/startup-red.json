@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-27T05:58:34.482Z",
+  "checks": [
+    {
+      "name": "direct-demo-intents-initialize-without-a-startup-race",
+      "status": "fail",
+      "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"Cannot access 'keyboardTools' before initialization\"\n+ ]\n- []\n"
+    }
+  ],
+  "errors": [
+    "Cannot access 'keyboardTools' before initialization"
+  ],
+  "externalRequests": []
+}

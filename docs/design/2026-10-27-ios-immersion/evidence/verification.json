@@ -1,0 +1,95 @@
+{
+  "at": "2026-10-27T06:26:26.134Z",
+  "checks": [
+    {
+      "name": "ten-seconds-of-reading-has-no-chrome-or-paragraph-controls",
+      "status": "pass"
+    },
+    {
+      "name": "ordinary-text-taps-never-open-tools-menu-or-companion",
+      "status": "pass"
+    },
+    {
+      "name": "touch-long-press-opens-an-anchored-native-range-without-chrome",
+      "status": "pass"
+    },
+    {
+      "name": "panning-cancels-a-hold-and-does-not-awaken-any-tools",
+      "status": "pass"
+    },
+    {
+      "name": "top-wake-is-exclusive-and-does-not-reflow-the-book",
+      "status": "pass"
+    },
+    {
+      "name": "progress-wake-is-separate-draggable-and-keeps-companion-explicit",
+      "status": "pass"
+    },
+    {
+      "name": "explaining-a-low-quote-keeps-book-visible-and-closing-is-pure-within-one-second",
+      "status": "pass"
+    },
+    {
+      "name": "range-adjustment-and-empty-space-dismissal-keep-the-old-discussion",
+      "status": "pass"
+    },
+    {
+      "name": "keyboard-wake-selection-and-timeout-have-no-hidden-focus-traps",
+      "status": "pass"
+    },
+    {
+      "name": "desktop-dragged-text-is-a-selection-intent-with-exact-offsets",
+      "status": "pass"
+    },
+    {
+      "name": "night-narrow-large-type-still-has-only-reading-at-rest",
+      "status": "pass"
+    },
+    {
+      "name": "direct-demo-intents-initialize-without-a-startup-race",
+      "status": "pass"
+    },
+    {
+      "name": "cancelled-and-multitouch-presses-never-produce-a-menu",
+      "status": "pass"
+    },
+    {
+      "name": "holding-above-a-sheet-yields-one-intent-and-preserves-the-draft-return",
+      "status": "pass"
+    },
+    {
+      "name": "waking-progress-refreshes-an-explicit-directory-jump",
+      "status": "pass"
+    },
+    {
+      "name": "a-second-long-press-keeps-the-new-selection-after-release",
+      "status": "pass"
+    },
+    {
+      "name": "right-clicking-selected-text-preserves-the-native-copy-range",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "pass",
+  "standalone": {
+    "status": "pass",
+    "opensDirectlyFromFile": true,
+    "externalRequests": 0,
+    "explicitCompanionAndPureReturn": "pass"
+  },
+  "sourceRoot": "../2026-10-27-ios-polish",
+  "sourceHashes": {
+    "prototype/app.js": "b702e544cc2d8bb39b0c7f90cb5afe765737e7761f7db6dbeb25164fb9e8bf97",
+    "prototype/style.css": "5d749ba5876df36804a5ceb4278a75e9e371a75ee871dacd6ccb969402a43b48",
+    "prototype/index.html": "abdf05674d951f7e1415c75c4c58cfd2c248ca26523cbf00f8bc5ddba5fa758b",
+    "prototype/motion.mjs": "53fd5df37f2034bcdf9fa47e7ae5d2bca1a11fff46bae63e77a30f2691ffd9ee",
+    "prototype/selection-position.mjs": "ffd097f46090c18b411f18b3891fc5fe73733242f7e0c2bba7f0f9c8b97cacf8",
+    "prototype/reading-position.mjs": "26c1c49866f01a7324c77e8b5c6db3845114bc1fc419d07bbb92b59f2eddf3ed",
+    "prototype/companion-context.mjs": "59a43939064c9f68d734c3b88d0066d9c4c55c85b2aa97d5b55f3867958ae4cb",
+    "prototype/note-recovery.mjs": "77a5d2e99e50cb3cd33afba947a0b2cc2f457c4a94141026f131e268167cf989",
+    "prototype/reading-intent.mjs": "5a6dc0333639b3ce46630bf566866ab68e96cc4e715b12c3e9bc110bbdc56efa",
+    "prototype/reading-progress.mjs": "81c38e3cdfc35d14e72373e26faa659593ac3697e37cf0914989924e41a670d2"
+  }
+}

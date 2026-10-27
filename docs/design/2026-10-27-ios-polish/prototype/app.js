@@ -26,6 +26,8 @@ import { placeSelectionMenu } from "./selection-position.mjs";
 import { normalizeReadingPosition, captureReadingPosition, restoreReadingPosition } from "./reading-position.mjs";
 import { quoteIdentity, resolveCompanionContext } from "./companion-context.mjs";
 import { readNoteDrafts, undoNoteSave } from "./note-recovery.mjs";
+import { initialIntent, transitionIntent, startHold, moveHold, holdReady, HOLD_MS } from "./reading-intent.mjs";
+import { positionAtProgress, progressAtPosition } from "./reading-progress.mjs";
 
 const paragraphs = [
   {
@@ -96,6 +98,7 @@ const initialQuote = () => ({
   endUtf16: paragraphs[0].interpretive.length,
   startCodePoint: 0,
 });
+let keyboardTools = false;
 const state = {
   theme: saved.theme === "night" ? "night" : "paper",
   size: Number.isFinite(Number(saved.size)) && saved.size != null ? Math.max(18, Math.min(28, Number(saved.size))) : 22,
@@ -120,6 +123,13 @@ const state = {
   discussionStarted: saved.discussionStarted === true,
   previewQuote: null,
   noteSaveUndo: null,
+  readingIntent: initialIntent(),
+  touchHold: null,
+  touchSelectionArmed: false,
+  lastPointerType: matchMedia("(pointer: coarse)").matches ? "touch" : "mouse",
+  selectionReturnFrame: null,
+  progressAdjusting: false,
+  progressScrollUntil: 0,
   route: "closed",
   detent: "half",
   returnFrame: null,
@@ -149,9 +159,46 @@ window.leafhourPrototype = {
     theme: state.theme,
     layer: state.layer,
     offline: state.offline,
+    intent: state.readingIntent.kind,
+    selection: state.pendingSelection ? { ...state.pendingSelection } : null,
   }),
   scenario: showScenario,
 };
+function syncReadingIntent() {
+  const kind = state.readingIntent.kind, active = document.activeElement;
+  if ((kind !== "top" && $("reader-nav").contains(active)) || (kind !== "progress" && $("reading-dock").contains(active))) $("reading-scroll").focus({ preventScroll: true });
+  $("phone").dataset.intent = kind;
+  $("reader-nav").inert = kind !== "top";
+  $("reading-dock").inert = kind !== "progress";
+  for (const id of ["wake-top", "wake-bottom"]) {
+    $(id).inert = !["pure", "top", "progress"].includes(kind);
+    $(id).setAttribute("aria-hidden", String($(id).inert));
+  }
+  $("wake-top").setAttribute("aria-expanded", String(kind === "top"));
+  $("wake-bottom").setAttribute("aria-expanded", String(kind === "progress"));
+}
+function setReadingIntent(type) {
+  state.readingIntent = transitionIntent(state.readingIntent, { type }, performance.now());
+  syncReadingIntent();
+  clearTimeout(setReadingIntent.timer);
+  if (state.readingIntent.expiresAt !== null && !state.readingIntent.pinned) setReadingIntent.timer = setTimeout(() => setReadingIntent("tick"), Math.max(0, state.readingIntent.expiresAt - performance.now()));
+}
+function wakeReadingTools(kind) {
+  if (state.route !== "closed") return;
+  hideSelectionMenu();
+  window.getSelection()?.removeAllRanges();
+  setReadingIntent(kind);
+  const active = document.activeElement;
+  if (keyboardTools && (active === $("wake-top") || active === $("wake-bottom"))) setReadingIntent("pin");
+}
+function updateProgress() {
+  const index = paragraphs.findIndex(p => p.id === state.readingPosition?.passageId);
+  $("dock-location").textContent = ["林中生活", "生活如此珍贵", "活得深入", "琐事与日子"][Math.max(0, index)];
+  const fraction = progressAtPosition(state.readingPosition, paragraphs, state.layer);
+  if (!state.progressAdjusting) $("reading-progress").value = String(Math.round(fraction * 1000));
+  $("progress-value").textContent = Math.round(fraction * 100) + "%";
+  $("reading-progress").setAttribute("aria-valuetext", Math.round(fraction * 100) + "%");
+}
 function persist() {
   const scroller = $("reading-scroll");
   if (!state.restoringReading && !state.readingTransition && readingGeometryMatches() && scroller.scrollTop !== state.readingTop)
@@ -266,7 +313,7 @@ function renderReader({ restore = true } = {}) {
   $("prose").innerHTML = paragraphs
     .map(
       (p, i) =>
-        `<p class="passage ${state.layer === "source" ? "source" : ""}" id="${p.id}" data-passage="${p.id}">${p.id === state.resumePassageId ? '<span class="resume-mark">上次读到这里</span>' : ""}<span class="passage-text">${escape(p[state.layer])}</span><button class="select-anchor" data-quote="${p.id}" aria-label="选择这一段">⌜</button></p>`,
+        `<p class="passage ${state.layer === "source" ? "source" : ""}" id="${p.id}" data-passage="${p.id}">${p.id === state.resumePassageId ? '<span class="resume-mark">上次读到这里</span>' : ""}<span class="passage-text">${escape(p[state.layer])}</span></p>`,
     )
     .join("");
   if (restore) restoreReaderAnchor(anchor);
@@ -329,7 +376,7 @@ function enterCompanion() {
   }
   state.discussionStarted = true;
   persist();
-  openRoute("companion", "half", { capture: false });
+  openRoute("companion", "half", { capture: false, exposeQuote: context.mode === "reading" ? context.quote : null });
 }
 function captureQuote(id, text, startOffset = null) {
   const p = paragraphs.find((p) => p.id === id) || paragraphs[0],
@@ -387,21 +434,54 @@ function takeQuote(next, { open = true } = {}) {
   if (open) openRoute("companion", "half", { capture: false });
 }
 function selectPassage(id) {
-  hideSelectionMenu();
-  state.pendingSelection = captureQuote(id);
-  $(id).classList.add("is-selected");
+  const text = $(id)?.querySelector(".passage-text");
+  if (!text) return;
+  const range = document.createRange();
+  range.selectNodeContents(text);
+  state.touchSelectionArmed = true;
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+  presentSelection(range);
+}
+function suspendForSelection() {
+  if (state.route === "closed") return;
+  captureComposer();
+  const frame = ["companion", "discussion", "records"].includes(state.route)
+    ? { route: state.route, detent: state.detent, scrollTop: $("sheet-body").scrollTop, draft: state.draft, quote: { ...state.quote }, question: state.question, answered: state.answered }
+    : state.returnFrame;
+  closeSheet({ immediate: true, focus: false });
+  state.selectionReturnFrame = frame;
+}
+function presentSelection(range) {
+  const parent = node => node.nodeType === 3 ? node.parentElement : node;
+  const first = parent(range.startContainer)?.closest(".passage-text"), last = parent(range.endContainer)?.closest(".passage-text");
+  if (!first || first !== last || !range.toString().trim()) return hideSelectionMenu();
+  suspendForSelection();
+  const prefix = document.createRange();
+  prefix.selectNodeContents(first);
+  prefix.setEnd(range.startContainer, range.startOffset);
+  hideSelectionMenu({ release: false });
+  const id = first.closest("[data-passage]").dataset.passage;
+  state.pendingSelection = captureQuote(id, range.toString(), prefix.toString().length);
+  state.selectionRange = range.cloneRange();
+  state.touchSelectionArmed = true;
+  if (range.toString() === first.textContent) $(id).classList.add("is-selected");
+  setReadingIntent("selection");
   $("selection-menu").hidden = false;
   positionSelectionMenu();
-  setStudy(
-    "选文决定问题的范围",
-    "选文不会自动替换当前讨论。点“解释这句”才用这句提问，旧草稿保留。",
-  );
+  setStudy("选区才唤醒动作", "只选字不会替换已有问题；点解释才采用这份原句，旧草稿仍保留。");
 }
-function hideSelectionMenu() {
+function hideSelectionMenu({ release = true } = {}) {
   $("selection-menu").hidden = true;
   state.pendingSelection = null;
   state.selectionRange = null;
   document.querySelectorAll(".passage.is-selected").forEach(n => n.classList.remove("is-selected"));
+  if (release) {
+    state.touchSelectionArmed = false;
+    state.selectionReturnFrame = null;
+    if (state.readingIntent.kind === "selection") setReadingIntent("pure");
+  }
 }
 function positionSelectionMenu() {
   const menu = $("selection-menu");
@@ -417,7 +497,9 @@ function positionSelectionMenu() {
   const reading = local($("reading-scroll").getBoundingClientRect());
   const nav = local($("reader-nav").getBoundingClientRect());
   const dock = local($("reading-dock").getBoundingClientRect());
-  const bounds = { left: 16, right: $("phone").clientWidth - 16, top: Math.max(reading.top, nav.bottom + 8), bottom: Math.min(reading.bottom, dock.top - 8) };
+  const bounds = { left: 16, right: $("phone").clientWidth - 16, top: reading.top + 8, bottom: reading.bottom - 8 };
+  if (state.readingIntent.kind === "top") bounds.top = Math.max(bounds.top, nav.bottom + 8);
+  if (state.readingIntent.kind === "progress") bounds.bottom = Math.min(bounds.bottom, dock.top - 8);
   if (state.route !== "closed") bounds.bottom = Math.min(bounds.bottom, local($("reader-sheet").getBoundingClientRect()).top - 8);
   const size = { width: menu.offsetWidth, height: menu.offsetHeight };
   if (anchor.bottom < bounds.top || anchor.top > bounds.bottom || bounds.bottom - bounds.top < size.height) return hideSelectionMenu();
@@ -431,6 +513,7 @@ function contextQuote(kind = "discussion") {
   const quote = kind === "note" ? viewQuote() : state.quote;
   const context = companionContext();
   const caption = kind === "note" ? "笔记原句 · " + layerLabel(quote.layer) : contextCaption(context);
+  if (kind === "discussion") return `<div class="context-quote" data-quote-kind="discussion" data-passage-id="${escape(quote.passageId)}" data-source-layer="${escape(quote.layer)}" data-selection-start="${quote.startUtf16 ?? ""}" data-selection-end="${quote.endUtf16 ?? ""}"><small data-context-label>${escape(caption)}</small><div class="context-actions"><button class="quote-excerpt quote-return" data-action="return-quote" aria-label="返回提问原句" aria-description="${escape(quote.text)}"><span class="quote-line">${escape(quote.text)}</span>${icon("external")}</button><button class="ask-current" data-action="ask-current" ${context.canAskCurrent ? "" : "hidden"}>改问正在读的段落 ${icon("right")}</button></div></div>`;
   return `<div class="context-quote" data-passage-id="${escape(quote.passageId)}" data-source-layer="${escape(quote.layer)}" data-selection-start="${quote.startUtf16 ?? ""}" data-selection-end="${quote.endUtf16 ?? ""}"><small ${kind === "discussion" ? "data-context-label" : ""}>${escape(caption)}</small><div class="quote-excerpt">${escape(quote.text)}</div><div class="context-actions"><button data-action="return-quote">${kind === "note" ? "返回笔记原句" : "返回提问原句"}</button>${kind === "discussion" ? `<button class="ask-current" data-action="ask-current" ${context.canAskCurrent ? "" : "hidden"}>改问正在读的段落 ${icon("right")}</button>` : ""}</div></div>`;
 }
 function answerText() {
@@ -583,12 +666,12 @@ function paintSheet() {
   $("reader-sheet").setAttribute("aria-modal", String(isFull));
   $("reader-sheet").setAttribute("role", isFull ? "dialog" : "region");
   $("sheet-grip").setAttribute("aria-expanded", String(isFull));
-  for (const node of [$("reader-nav"), $("reading-scroll"), $("reading-dock")])
-    node.inert = isFull;
+  $("reading-scroll").inert = isFull;
+  syncReadingIntent();
   if (becameModal && !$("reader-sheet").contains(document.activeElement))
     $("sheet-done").focus({ preventScroll: true });
   $("reading-scroll").style.paddingBottom =
-    state.route === "closed" ? "64px" : Math.max(64, visible - 85) + "px";
+    state.route === "closed" ? "24px" : Math.max(24, visible - 85) + "px";
   positionSelectionMenu();
 }
 function snap(detent, { immediate = false, onComplete = null } = {}) {
@@ -633,7 +716,7 @@ function snap(detent, { immediate = false, onComplete = null } = {}) {
 function openRoute(
   route,
   detent = "full",
-  { capture = true, restoreScroll = null } = {},
+  { capture = true, restoreScroll = null, exposeQuote = null } = {},
 ) {
   if (capture) captureComposer();
   if (!["note", "original"].includes(route)) state.previewQuote = null;
@@ -642,6 +725,7 @@ function openRoute(
   setClosingControls(false);
   state.route = route;
   hideSelectionMenu();
+  setReadingIntent("sheet");
   $("reader-sheet").inert = false;
   $("reader-sheet").hidden = false;
   renderBody();
@@ -654,6 +738,7 @@ function openRoute(
         (state.scrollRevision || 0) === scrollRevision
       )
         $("sheet-body").scrollTop = restoreScroll;
+      if (exposeQuote) exposeSelectedQuote(exposeQuote);
     },
   });
   setStudy(
@@ -688,23 +773,25 @@ function restoreClosingPanel() {
   state.detent = frame.detent;
   state.target = targetY(frame.detent);
   state.returnFrame = frame.returnFrame;
+  setReadingIntent("sheet");
   $("reader-sheet").inert = false;
   setClosingControls(false);
   setStudy("已回到原来的面板", "关闭已取消，原句、问题和草稿仍然保留。");
   return true;
 }
-function closeSheet() {
+function closeSheet({ immediate = false, focus = true } = {}) {
   if (state.route === "closed" && $("reader-sheet").hidden) return;
   captureComposer();
   if (state.route !== "closed") state.closingFrame = { route: state.route, detent: state.detent, returnFrame: state.returnFrame };
   state.route = "closed";
+  setReadingIntent("pure");
   $("reader-sheet").inert = false;
   setClosingControls(true);
-  for (const node of [$("reader-nav"), $("reading-scroll"), $("reading-dock")])
-    node.inert = false;
-  $("reading-scroll").style.paddingBottom = "64px";
+  $("reading-scroll").inert = false;
+  $("reading-scroll").style.paddingBottom = "24px";
   hideSelectionMenu();
   snap("closed", {
+    immediate,
     onComplete: () => {
       if (state.route === "closed") {
         $("reader-sheet").hidden = true;
@@ -721,7 +808,25 @@ function closeSheet() {
     "继续阅读",
     "保留你刚才主动读到的位置。需要回到提问处时，再点“返回提问原句”。",
   );
-  $("companion-button").focus({ preventScroll: true });
+  if (focus) $("reading-scroll").focus({ preventScroll: true });
+}
+function exposeSelectedQuote(quote) {
+  if (quote.layer !== state.layer) return;
+  const text = $(quote.passageId)?.querySelector(".passage-text");
+  if (!text) return;
+  let box = text.getBoundingClientRect();
+  if (text.firstChild?.nodeType === 3 && Number.isInteger(quote.startUtf16) && Number.isInteger(quote.endUtf16) && quote.endUtf16 <= text.firstChild.length) {
+    const range = document.createRange();
+    range.setStart(text.firstChild, quote.startUtf16); range.setEnd(text.firstChild, quote.endUtf16);
+    box = range.getBoundingClientRect();
+  }
+  const reading = $("reading-scroll").getBoundingClientRect(), sheet = $("reader-sheet").getBoundingClientRect();
+  if (box.top < sheet.top - 44 && box.bottom > reading.top + 8) return;
+  $("reading-scroll").scrollTop += box.top - reading.top - 40;
+  state.readingPosition = captureReadingPosition($("reading-scroll"), readerIdentity(), quote.passageId) || state.readingPosition;
+  state.readingTop = $("reading-scroll").scrollTop;
+  rememberReadingGeometry();
+  persist();
 }
 function captureComposer() {
   if (state.route === "note") {
@@ -876,12 +981,9 @@ function action(name) {
 document.addEventListener("click", (event) => {
   const button = event.target.closest("button");
   if (!button) return;
-  if (button.dataset.quote) {
-    selectPassage(button.dataset.quote);
-    return;
-  }
   if (button.dataset.selection) {
     const selected = state.pendingSelection || initialQuote();
+    const returnFromSelection = state.selectionReturnFrame;
     if (button.dataset.selection === "explain") {
       takeQuote(selected, { open: false });
       state.discussionStarted = true;
@@ -889,7 +991,8 @@ document.addEventListener("click", (event) => {
     } else {
       captureComposer();
       state.previewQuote = { ...selected };
-      if (["companion", "discussion"].includes(state.route)) state.returnFrame = { route: state.route, detent: state.detent, scrollTop: $("sheet-body").scrollTop, draft: state.draft, quote: { ...state.quote }, question: state.question, answered: state.answered };
+      if (returnFromSelection) state.returnFrame = returnFromSelection;
+      else if (["companion", "discussion"].includes(state.route)) state.returnFrame = { route: state.route, detent: state.detent, scrollTop: $("sheet-body").scrollTop, draft: state.draft, quote: { ...state.quote }, question: state.question, answered: state.answered };
       else if (!["note", "original"].includes(state.route)) state.returnFrame = null;
       hideSelectionMenu();
       window.getSelection()?.removeAllRanges();
@@ -899,7 +1002,7 @@ document.addEventListener("click", (event) => {
         ? "companion"
         : button.dataset.selection,
       button.dataset.selection === "explain" ? "half" : "full",
-      { capture: false },
+      { capture: false, exposeQuote: button.dataset.selection === "explain" ? selected : null },
     );
     return;
   }
@@ -969,10 +1072,11 @@ $("contents-button").onclick = () => openRoute("contents", "full");
 $("progress-button").onclick = () => openRoute("contents", "full");
 $("appearance-button").onclick = () => openRoute("appearance", "full");
 $("companion-button").onclick = enterCompanion;
+$("wake-top").onclick = () => wakeReadingTools("top");
+$("wake-bottom").onclick = () => wakeReadingTools("progress");
 $("sheet-done").onclick = closeSheet;
 $("sheet-back").onclick = backToDiscussion;
 $("sheet-scrim").onclick = () => snap("half");
-$("chapter-end").onclick = () => jumpTo(paragraphs[0].id);
 $("night-mode").onclick = () => {
   state.theme = state.theme === "paper" ? "night" : "paper";
   renderReader();
@@ -1044,72 +1148,88 @@ $("reading-scroll").addEventListener(
     state.readingTop = $("reading-scroll").scrollTop;
     if (!state.restoringReading && !state.readingTransition && readingGeometryMatches())
       state.readingPosition = captureReadingPosition($("reading-scroll"), readerIdentity()) || state.readingPosition;
-    const current = [...document.querySelectorAll("[data-passage]")].find(
-      (p) =>
-        p.getBoundingClientRect().bottom >
-        $("reading-scroll").getBoundingClientRect().top + 36,
-    );
-    $("dock-location").textContent = current
-      ? ["林中生活", "生活如此珍贵", "活得深入", "琐事与日子"][
-          paragraphs.findIndex((p) => p.id === current.id)
-        ]
-      : "林中生活";
     persist();
+    updateProgress();
+    if (!state.progressAdjusting && !state.restoringReading && performance.now() > state.progressScrollUntil) setReadingIntent("read");
     if (!$("selection-menu").hidden) requestAnimationFrame(positionSelectionMenu);
   },
   { passive: true },
 );
 for (const type of ["wheel", "touchstart", "pointerdown", "keydown"])
   $("reading-scroll").addEventListener(type, () => {
+    if (type === "wheel") setReadingIntent("read");
     state.restoringReading = false;
     state.readingTransition = false;
     $("reading-scroll").removeAttribute("data-restoring");
   }, { passive: true });
 document.addEventListener("selectionchange", () => {
   const selection = window.getSelection();
-  if (!selection || selection.isCollapsed || !selection.rangeCount) return;
-  const range = selection.getRangeAt(0),
-    startNode =
-      range.startContainer.nodeType === 3
-        ? range.startContainer.parentElement
-        : range.startContainer,
-    endNode =
-      range.endContainer.nodeType === 3
-        ? range.endContainer.parentElement
-        : range.endContainer,
-    startRoot = startNode?.closest(".passage-text"),
-    endRoot = endNode?.closest(".passage-text");
-  if (!startRoot || startRoot !== endRoot) {
-    hideSelectionMenu();
+  if (!selection || selection.isCollapsed || !selection.rangeCount) {
+    if (state.readingIntent.kind === "selection" && !state.touchHold) hideSelectionMenu();
     return;
   }
-  const prefix = document.createRange();
-  prefix.selectNodeContents(startRoot);
-  prefix.setEnd(range.startContainer, range.startOffset);
-  const id = startRoot.closest("[data-passage]").dataset.passage,
-    start = prefix.toString().length,
-    text = range.toString();
-  if (!text.trim()) return;
-  hideSelectionMenu();
-  state.pendingSelection = captureQuote(id, text, start);
-  state.selectionRange = range.cloneRange();
-  $("selection-menu").hidden = false;
-  positionSelectionMenu();
+  if (state.lastPointerType !== "mouse" && !state.touchSelectionArmed) return;
+  presentSelection(selection.getRangeAt(0));
+});
+function cancelTouchHold() {
+  clearTimeout(cancelTouchHold.timer);
+  state.touchHold = null;
+}
+$("reading-scroll").addEventListener("pointerdown", event => {
+  state.lastPointerType = event.pointerType || "mouse";
+  if (state.touchHold && state.touchHold.id !== event.pointerId) return cancelTouchHold();
+  const text = event.target.closest?.(".passage-text");
+  if (!text) return;
+  if (state.readingIntent.kind !== "selection") state.touchSelectionArmed = false;
+  state.touchHold = startHold({ id: event.pointerId, pointerType: event.pointerType, x: event.clientX, y: event.clientY, passageId: text.closest("[data-passage]").dataset.passage, isPrimary: event.isPrimary, button: event.button }, performance.now());
+  if (!state.touchHold) return;
+  cancelTouchHold.timer = setTimeout(() => {
+    if (!holdReady(state.touchHold, performance.now())) return;
+    state.touchSelectionArmed = true;
+    selectPassage(state.touchHold.passageId);
+  }, HOLD_MS);
+}, { passive: true });
+$("reading-scroll").addEventListener("pointermove", event => {
+  state.touchHold = moveHold(state.touchHold, { id: event.pointerId, x: event.clientX, y: event.clientY });
+  if (state.touchHold?.cancelled) {
+    clearTimeout(cancelTouchHold.timer);
+    setReadingIntent("read");
+  }
+}, { passive: true });
+for (const type of ["pointerup", "pointercancel"]) $("reading-scroll").addEventListener(type, cancelTouchHold, { passive: true });
+$("reading-scroll").addEventListener("contextmenu", event => {
+  if (!event.target.closest?.(".passage-text") || state.lastPointerType === "mouse") return;
+  state.touchSelectionArmed = true;
+  const selection = window.getSelection();
+  if (selection?.rangeCount && !selection.isCollapsed) presentSelection(selection.getRangeAt(0));
+  else selectPassage(event.target.closest("[data-passage]").dataset.passage);
+  // Keep native copying and selection controls; this prototype does not replace
+  // an operating system edit-menu implementation.
 });
 document.addEventListener("keydown", (event) => {
+  if (event.isComposing || event.keyCode === 229) return;
+  if ((event.key === "ContextMenu" || event.key === "F10" && event.shiftKey) && event.target.closest?.("#reading-scroll")) {
+    event.preventDefault();
+    state.touchSelectionArmed = true;
+    const selection = window.getSelection();
+    if (selection?.rangeCount && !selection.isCollapsed) presentSelection(selection.getRangeAt(0));
+    else selectPassage(currentReadingQuote().passageId);
+    return;
+  }
   if (event.key === "Escape") {
     event.preventDefault();
     if (state.route === "citation") backToDiscussion();
-    else if (!$("selection-menu").hidden) hideSelectionMenu();
+    else if (!$("selection-menu").hidden) { hideSelectionMenu(); window.getSelection()?.removeAllRanges(); }
     else if (state.route !== "closed") closeSheet();
+    else setReadingIntent("pure");
   }
 });
 $("selection-menu").addEventListener("mousedown", event => event.preventDefault());
 let outsideSelectionPress = null;
 document.addEventListener("pointerdown", event => {
   outsideSelectionPress = null;
-  if ($("selection-menu").hidden || $("selection-menu").contains(event.target) || event.target.closest?.("[data-quote]")) return;
-  if (event.target.closest?.("#reading-scroll")) outsideSelectionPress = { id: event.pointerId, x: event.clientX, y: event.clientY, distance: 0 };
+  if (event.button !== 0 || event.isPrimary === false || $("selection-menu").hidden || $("selection-menu").contains(event.target)) return;
+  if (event.target.closest?.("#reading-scroll")) outsideSelectionPress = { id: event.pointerId, x: event.clientX, y: event.clientY, distance: 0, startedAt: performance.now() };
   else hideSelectionMenu();
 });
 document.addEventListener("pointermove", event => {
@@ -1120,7 +1240,9 @@ document.addEventListener("pointerup", event => {
   const press = outsideSelectionPress;
   if (press?.id !== event.pointerId) return;
   outsideSelectionPress = null;
-  if (Math.max(press.distance, Math.hypot(event.clientX - press.x, event.clientY - press.y)) < 6) hideSelectionMenu();
+  // A completed long press owns its new selection. Secondary clicks retain the
+  // native range for the browser copy menu. Only a primary short tap cancels.
+  if (event.button === 0 && performance.now() - press.startedAt < HOLD_MS && Math.max(press.distance, Math.hypot(event.clientX - press.x, event.clientY - press.y)) < 6) { hideSelectionMenu(); window.getSelection()?.removeAllRanges(); }
 }, { passive: true });
 document.addEventListener("pointercancel", () => { outsideSelectionPress = null; }, { passive: true });
 const grip = $("sheet-grip");
@@ -1195,8 +1317,15 @@ function cancelDrag() {
 grip.addEventListener("pointercancel", cancelDrag);
 grip.addEventListener("lostpointercapture", cancelDrag);
 function showScenario(name) {
+  if (["top", "progress"].includes(name)) {
+    closeSheet({ immediate: true });
+    wakeReadingTools(name);
+    return;
+  }
   if (name === "resume") {
     closeSheet();
+    hideSelectionMenu();
+    setReadingIntent("pure");
     jumpTo(paragraphs[0].id);
     return;
   }
@@ -1247,7 +1376,9 @@ if (!restoredReading) {
 }
 rememberReadingGeometry();
 state.y = targetY("closed");
-setStudy("打开即续读", "从上次的位置进入正文，陪读面板保持收起。");
+setStudy("整屏是书", "点顶部边界看导航，点底部边界调进度；长按文字后再解释、核对或记一句。");
+setReadingIntent("pure");
+updateProgress();
 updateContextChrome();
 window.addEventListener("resize", () => {
   if (state.readingPosition) restoreReaderAnchor(state.readingPosition);
@@ -1281,3 +1412,33 @@ for (const event of ["wheel", "touchstart", "keydown"])
     },
     { passive: true },
   );
+
+document.addEventListener("pointerdown", () => { keyboardTools = false; }, true);
+document.addEventListener("keydown", () => { keyboardTools = true; }, true);
+for (const [id,kind] of [["reader-nav","top"],["reading-dock","progress"]]) {
+  $(id).addEventListener("focusin", () => { if (keyboardTools && state.readingIntent.kind === kind) setReadingIntent("pin"); });
+  $(id).addEventListener("focusout", () => queueMicrotask(() => { if (!$(id).contains(document.activeElement) && state.readingIntent.kind === kind) setReadingIntent("unpin"); }));
+}
+for (const id of ["wake-top","wake-bottom"]) $(id).addEventListener("focusout", () => queueMicrotask(() => {
+  if (![ $("reader-nav"), $("reading-dock") ].some(n => n.contains(document.activeElement))) setReadingIntent("unpin");
+}));
+const progress = $("reading-progress");
+function releaseProgress() {
+  state.progressAdjusting = false;
+  state.progressScrollUntil = performance.now() + 150;
+  if (keyboardTools && $("reading-dock").contains(document.activeElement)) setReadingIntent("pin");
+  else setReadingIntent("unpin");
+}
+progress.addEventListener("pointerdown", () => { state.progressAdjusting = true; setReadingIntent("pin"); });
+progress.addEventListener("input", () => {
+  state.progressAdjusting = true;
+  const position = positionAtProgress(Number(progress.value) / 1000, paragraphs, readerIdentity());
+  if (!position) return;
+  state.readingPosition = position;
+  restoreReaderAnchor(position);
+  state.readingTop = $("reading-scroll").scrollTop;
+  rememberReadingGeometry();
+  updateProgress();
+  persist();
+});
+for (const type of ["change","pointerup","pointercancel"]) progress.addEventListener(type, releaseProgress);

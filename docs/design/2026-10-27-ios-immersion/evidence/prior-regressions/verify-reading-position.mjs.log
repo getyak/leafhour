@@ -1,0 +1,13 @@
+PASS cold-resume-keeps-the-source-paragraph-across-widths
+PASS live-resize-does-not-rewrite-the-logical-character-anchor
+PASS legacy-pixels-migrate-without-dropping-the-current-session
+PASS a-foreign-document-locator-falls-back-to-the-start-safely
+PASS restoring-reading-does-not-rebind-a-previous-question-or-draft
+PASS the-entry-marker-follows-the-restored-paragraph
+PASS smaller-type-keeps-the-target-word-and-logical-offset-even-at-the-book-end
+PASS changing-text-layer-uses-the-same-paragraph-with-a-new-layer-offset
+PASS directory-jump-survives-panel-close-and-reopen-no-preference
+PASS directory-jump-survives-panel-close-and-reopen-reduce
+PASS a-note-record-jump-updates-reading-without-changing-its-bound-source
+PASS a-nonzero-character-anchor-survives-reflow-and-reentry
+

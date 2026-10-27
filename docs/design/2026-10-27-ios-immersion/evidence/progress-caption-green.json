@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-27T06:10:44.922Z",
+  "checks": [
+    {
+      "name": "progress-wake-is-separate-draggable-and-keeps-companion-explicit",
+      "status": "pass"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "status": "pass"
+}
