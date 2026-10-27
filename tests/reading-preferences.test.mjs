@@ -110,8 +110,8 @@ test('delayed and conflict restoration keep Chinese original-only books readable
     context.readerOwner=()=>context.readerSession?.user?.id||null;
     context.anchor=()=>anchor;
     vm.createContext(context);
-    vm.runInContext(reader.match(/^const dispatchReaderEvent=.*$/m)[0]+'\n'+delayed+'\n'+conflict+';this.restoreDelayed=adoptLoadedRecords;this.restoreConflict=reconcileProgress;',context);
-    if(restore==='delayed')await context.restoreDelayed(fresh,{generation:1,explicitEntry:false});else await context.restoreConflict(true);
+    vm.runInContext('let readerOpening=null;\n'+reader.match(/^const reportReadingResume=.*$/m)[0]+'\n'+reader.match(/^const dispatchReaderEvent=.*$/m)[0]+'\n'+delayed+'\n'+conflict+';this.resumeReport=()=>readerOpening;this.restoreDelayed=adoptLoadedRecords;this.restoreConflict=reconcileProgress;',context);
+    if(restore==='delayed'){await context.restoreDelayed(fresh,{generation:1,explicitEntry:false});assert.equal(context.resumeReport().position.passageId,'p22','the actual resume observer sees the restored anchor');}else await context.restoreConflict(true);
     assert.equal(rendered?.mode,sourceLanguage==='zh'?'en':'parallel',sourceLanguage+' '+restore);
     for(const key of ['readingPurpose','preferredLanguage','variant'])assert.equal(rendered[key],position[key],key);
     assert.equal(anchor.passageId,'p22');assert.equal(anchor.withinParagraph,.4);

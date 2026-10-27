@@ -12,11 +12,13 @@ The account's usage-analysis switch defaults off. Diagnostic collection has a se
 
 Only closed event names, random event/operation UUIDs, canonical time, deployed source commit, enumerated page/stage/outcome/error category, HTTP status, and bounded durations. Server-generated environment/synthetic classification cannot be overwritten by a browser. No book or passage IDs, book titles, selected text, original/translated content, annotations, questions/answers, raw exceptions, arbitrary URLs, network bodies, IP, cookies, email, authorization or download tokens leave through this integration. The Sentry client has default instrumentation disabled and reconstructs safe events before sending. Request failures retain a category and operation ID, not raw request context.
 
+Product-event v1 covers the signed-in web reader. Native iOS frontend visibility/interaction events are not added by this release; shared backend fault outcomes can still be observed under the account diagnostic setting. Do not interpret the web cohort as all-platform retention.
+
 ## Dashboard definitions
 
 - **故障**: diagnostic trends by event name, stage and release; Sentry issue view for safe error categories. Only unexpected server/reader faults count. Cancellation and ordinary validation/authentication failures do not become fault alerts.
 - **首次阅读**: sequential `library_opened` → `reader_open_requested` → `reader_content_visible`, with unique actors, sample counts and a bounded conversion window. The opening event means the current reader document observed after its initial consent check; it is timestamped then rather than backdated to navigation. A later opt-in does not reconstruct prior actions. Public catalogue browsing and private import are not conflated into an upload requirement.
-- **回来续读**: first `reader_active` to a subsequent `reader_active` within seven days, plus actual `reader_resume_result` outcome. `reader_active` is a foreground interaction proxy and does not prove understanding. Initial content visibility is not proof that delayed saved-position restoration succeeded.
+- **回来续读**: first `reader_active` to a subsequent `reader_active` within seven days, plus actual `reader_resume_result` outcome. `reader_active` is a foreground interaction proxy and does not prove understanding. Initial content visibility is not proof that delayed saved-position restoration succeeded. A saved target that cannot yet be observed remains pending; absence of a confirmed outcome is unknown, never a guessed success or failure.
 
 Production views exclude synthetic events and verification accounts. Consent-off visitors and missed delivery are outside observed samples; absence of an event alone does not prove abandonment. No synthetic adoption history is generated to fill dashboards. Fresh retention cohorts require real elapsed time.
 

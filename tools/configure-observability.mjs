@@ -16,7 +16,7 @@ export function observabilityDashboards(){
    {name:'从书房到正文',filters:{insight:'FUNNELS',date_from:'-30d',events:events(['library_opened','reader_open_requested','reader_content_visible']),properties:properties(),funnel_window_interval:1,funnel_window_interval_unit:'day',funnel_order_type:'ordered',display:'FunnelViz'}},
    trend('看到正文的读者',['reader_content_visible'],{events:events(['reader_content_visible']).map(e=>({...e,math:'dau'}))}),
   ]},
-  {name:'Leafhour · 回来续读',description:'首次有效前台交互后按天观察 7 天回来阅读；未成熟窗口不当作流失，阅读不证明理解。',insights:[
+  {name:'Leafhour · 回来续读',description:'首次有效前台交互后按天观察 7 天回来阅读；未成熟窗口不当作流失，阅读不证明理解。恢复图只含已确认结果，未观察到的结果保持未知。',insights:[
    {name:'7 天回来阅读',filters:{insight:'RETENTION',date_from:'-30d',target_entity:{id:'reader_active',name:'reader_active',type:'events'},returning_entity:{id:'reader_active',name:'reader_active',type:'events'},retention_type:'retention_first_time',period:'Day',total_intervals:8,display:'RetentionTable',properties:properties()}},
    trend('续读位置恢复结果',['reader_resume_result'],{breakdown:'outcome',breakdown_type:'event'}),
   ]},

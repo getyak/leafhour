@@ -374,7 +374,7 @@
       },
       {
         "file": "app/observability-bridge.mjs",
-        "sha256": "161f571225b5865353242b63d67b64ff404bc71c28c4143e20810f0b15e24ea5"
+        "sha256": "6bf5251c52fcc32c7c42fac0ac94037091406575ded7fa45a26102559f6a7311"
       },
       {
         "file": "app/observability-contract.mjs",
@@ -1201,7 +1201,7 @@
         "sha256": "531202f1814314b6c76bfef38b2ea66636425b1ca9b445db349e70ebb8bcd00e"
       }
     ],
-    "inputDigest": "2cd990ff2f19830e763d100da54755a0474324cae8551241ef4bf2b665835975"
+    "inputDigest": "89c19ba4602ce780427194ecb4ce009d5c40bc4f051074dd2ef7f4879fa3fcb0"
   },
   "locales": [
     "en",
@@ -245922,7 +245922,7 @@
     {
       "kind": "concatenation",
       "file": "app/observability-bridge.mjs",
-      "line": 16,
+      "line": 18,
       "expression": "'[data-id=\"'+position.passageId+'\"]'",
       "fragments": [
         "[data-id=\"",
@@ -245933,7 +245933,7 @@
     {
       "kind": "concatenation",
       "file": "app/observability-bridge.mjs",
-      "line": 16,
+      "line": 18,
       "expression": "'[data-id=\"'+position.passageId",
       "fragments": [
         "[data-id=\""

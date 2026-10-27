@@ -37,7 +37,12 @@ function fixture(html){
  const stack=[root],voids=new Set(['META','LINK','INPUT','BR','IMG','PATH']);
  for(const token of html.match(/<[^>]*>|[^<]+/g)||[]){if(token.startsWith('<!'))continue;if(token.startsWith('</')){const tag=token.slice(2,-1).toUpperCase();while(stack.length>1){if(stack.pop().tagName===tag)break;}continue;}if(token.startsWith('<')){const name=/^<([\w-]+)/.exec(token)?.[1];if(!name)continue;if(name==='html')continue;const node=document.createElement(name);for(const m of token.matchAll(/([\w-]+)(?:="([^"]*)")?/g)){if(m.index<name.length+1)continue;node.setAttribute(m[1],m[2]??'');}stack.at(-1).append(node);if(!voids.has(node.tagName)&&!token.endsWith('/>'))stack.push(node);}else stack.at(-1).append(document.createTextNode(token.replaceAll('&amp;','&').replaceAll('&lt;','<').replaceAll('&gt;','>').replaceAll('&#x27;',"'").replaceAll('&quot;','"')));}
  document.body=document.querySelector('body');document.activeElement=document.body;const win=new EventTarget();win.innerWidth=1400;win.innerHeight=900;win.scrollTo=win.scrollBy=()=>{};document.defaultView=win;
- return {document,win};
+ const frames=new Map(),idles=new Map();let frameId=0,idleId=0;
+ win.requestAnimationFrame=callback=>{frames.set(++frameId,callback);return frameId;};win.cancelAnimationFrame=id=>frames.delete(id);
+ win.requestIdleCallback=(callback,options={})=>{idles.set(++idleId,{callback,options});return idleId;};win.cancelIdleCallback=id=>idles.delete(id);
+ const paint=()=>{const batch=[...frames.values()];frames.clear();for(const callback of batch)callback(performance.now());};
+ const runIdle=()=>{const batch=[...idles.values()];idles.clear();for(const {callback}of batch)callback({didTimeout:false,timeRemaining:()=>50});};
+ return {document,win,frames,idles,paint,runIdle};
 }
 const syntheticBook=()=>({bookId:'synthetic-book',contentVersion:'a'.repeat(64),title:{zh:'原书标题 {reader.shell.close}',en:'Literal Source Title'},author:'原作者',description:'Original description {ui.language.label}',sourceLanguage:'en',source:{structure:'numbered_sections'},readingStart:{chapterId:'ch01',passageId:'p1'},chapters:[{id:'ch01',number:1,kind:'body',title:{zh:'真实章名',en:'Real chapter'},startPassageId:'p1'}],sections:[{chapterId:'ch01',number:1,paragraphs:[{id:'p1',original:'Literal **source** {ui.language.label}.',annotationIds:[],termIds:[],translations:{literal:{text:'已有直译 {lo}',status:'draft'},interpretive:{text:'已有意译 {li}',status:'draft'}},source:{printedPage:3}}]}],annotations:[],glossary:[]});
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
@@ -51,9 +56,13 @@ async function executeOwner(file,overrides={},inspection=null){
 }
 async function readerFixture(){
  await locale.requestUiRoute('en');const f=fixture(await readFile(new URL('../app/index.html',import.meta.url),'utf8')),book=syntheticBook(),records={comments:[],questions:[],highlights:[],readingSessions:[],readingMilestones:[],position:null},calls=[],writes=[],pending=[];let uuid=0;
- const selection={rangeCount:0,isCollapsed:true,toString:()=>'',anchorNode:null};f.document.getSelection=()=>selection;const frames=new Map(),timeouts=new Map();let timer=0;
- globals({document:f.document,window:f.win,location:{search:'?book=synthetic-book',pathname:'/read',origin:'https://example.test'},history:{replaceState(){}},localStorage:{getItem:()=>null,setItem:(...args)=>writes.push(args),removeItem:(...args)=>writes.push(args)},innerWidth:1400,innerHeight:900,scrollY:0,crypto:{randomUUID:()=> 'synthetic-'+ ++uuid},requestAnimationFrame:fn=>{frames.set(++timer,fn);return timer;},cancelAnimationFrame:id=>frames.delete(id),setTimeout:(fn,ms)=>{timeouts.set(++timer,{fn,ms});return timer;},clearTimeout:id=>timeouts.delete(id),setInterval:()=>++timer,clearInterval(){},matchMedia:()=>({matches:false,addEventListener(){},removeEventListener(){}}),MutationObserver:class{observe(){}disconnect(){}},ResizeObserver:class{observe(){}disconnect(){}},getSelection:()=>selection,fetch:()=>assert.fail('unexpected real transport'),Node:{TEXT_NODE:3},CustomEvent:class extends Event{constructor(name,options={}){super(name);this.detail=options.detail;}}});
- const readerApi={selectedBookId:'synthetic-book',readerSession:{user:{id:'owner-a'}},readerStorageKey:s=>s+'|owner-a|synthetic-book',readerFetch:async(url,options={})=>{calls.push({url,options});if(options.method==='POST'&&/comments|questions/.test(url))return new Promise(resolve=>pending.push({resolve,payload:JSON.parse(options.body)}));return {ok:true,json:async()=>url==='/api/records'?records:book};}};
+ const selection={rangeCount:0,isCollapsed:true,toString:()=>'',anchorNode:null};f.document.getSelection=()=>selection;const timeouts=new Map();let timer=0;
+ globals({document:f.document,window:f.win,location:{search:'?book=synthetic-book',pathname:'/read',origin:'https://example.test'},history:{replaceState(){}},localStorage:{getItem:()=>null,setItem:(...args)=>writes.push(args),removeItem:(...args)=>writes.push(args)},innerWidth:1400,innerHeight:900,scrollY:0,crypto:{randomUUID:()=> 'synthetic-'+ ++uuid},requestAnimationFrame:f.win.requestAnimationFrame,cancelAnimationFrame:f.win.cancelAnimationFrame,setTimeout:(fn,ms)=>{timeouts.set(++timer,{fn,ms});return timer;},clearTimeout:id=>timeouts.delete(id),setInterval:()=>++timer,clearInterval(){},matchMedia:()=>({matches:false,addEventListener(){},removeEventListener(){}}),MutationObserver:class{observe(){}disconnect(){}},ResizeObserver:class{observe(){}disconnect(){}},getSelection:()=>selection,fetch:()=>assert.fail('unexpected real transport'),Node:{TEXT_NODE:3},CustomEvent:class extends Event{constructor(name,options={}){super(name);this.detail=options.detail;}}});
+ // Execute the production pre-load facade too: its page UUID belongs to boot,
+ // while every effect assertion below takes its own post-boot baseline.
+ const apiSource=await readFile(new URL('../app/reader-api.mjs',import.meta.url),'utf8'),apiTree=parse(apiSource,{ecmaVersion:'latest',sourceType:'module'}),facadeInitializer=apiTree.body.find(n=>n.type==='ExportNamedDeclaration'&&n.declaration?.declarations?.some(row=>row.id.name==='readerObservability')).declaration.declarations.find(row=>row.id.name==='readerObservability').init;
+ const readerObservability=new Function('crypto','return ('+apiSource.slice(facadeInitializer.start,facadeInitializer.end)+');')(globalThis.crypto);
+ const readerApi={readerObservability,selectedBookId:'synthetic-book',readerSession:{user:{id:'owner-a'}},readerStorageKey:s=>s+'|owner-a|synthetic-book',readerFetch:async(url,options={})=>{calls.push({url,options});if(options.method==='POST'&&/comments|questions/.test(url))return new Promise(resolve=>pending.push({resolve,payload:JSON.parse(options.body)}));return {ok:true,json:async()=>url==='/api/records'?records:book};}};
  const ownership=await executeOwner('reader.js',{'./reader-api.mjs':readerApi,'./reader-highlights.mjs':{textRange,mountReaderHighlights:options=>mountReaderHighlights({...options,loadAnnotationModule:async()=>({mountReaderAnnotations:()=>({dispose(){},annotate(){}})})})},'./reader-presence.mjs':{mountReaderPresence:()=>({refresh(){}})},'./reader-loading.mjs':{mountReaderLoading:()=>({start:()=>1,setBook(){},finish(){}})},'./reader-pagination.mjs':{mountReaderPagination:()=>({active:false,update(){},unmount(){}})},'./reader-book-actions-bootstrap.mjs':{mountReaderBookActionsBootstrap:()=>({dispose(){}})},'./reader-conversation.mjs':{mountReaderConversation:()=>({dispose(){}}),readerInteractionBlocked:()=>false}},'({listenerCount:()=>listenerDisposers.size??listenerDisposers.length,disposed:()=>readerDisposed})');
  for(let i=0;i<6;i++)await tick();assert.equal(f.document.body.dataset.ready,'true','the actual reader booted a synthetic loaded chapter');
  return {...f,ownership,session:readerApi.readerSession,book,records,calls,writes,pending,selection,timeouts,uuid:()=>uuid};
@@ -74,6 +83,14 @@ test('actual reader boot, source Range, note IME and deferred save survive singl
 });
 
 export {fixture,Element,executeOwner,globals,resetGlobals,syntheticBook,tick};
+
+test('queued reader frames and idle callbacks cannot create identifiers or effects after disposal',async()=>{
+ const f=await readerFixture();try{
+  const baseline={uuid:f.uuid(),requests:f.calls.length,writes:f.writes.length};assert.ok(baseline.uuid>0,'the actual page and reader identifiers are already initialized');assert.ok(f.frames.size>0,'the real optional-observation scheduler queued a frame');
+  f.win.dispatchEvent(new Event('pagehide'));assert.equal(f.ownership.disposed(),true);f.paint();f.paint();assert.ok(f.idles.size>0,'both queued paint callbacks reached the real idle boundary');f.runIdle();await tick();await tick();
+  assert.deepEqual({uuid:f.uuid(),requests:f.calls.length,writes:f.writes.length},baseline,'a disposed document cannot import observation work or create any new reading effect');
+ }finally{f.win.dispatchEvent(new Event('pagehide'));resetGlobals();await locale.requestUiRoute('en');}
+});
 
 test('page controls never dismiss an open note or replace its unsaved composer',async()=>{
  const f=await readerFixture();try{
